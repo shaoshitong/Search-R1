@@ -90,7 +90,8 @@ class QwenBlockCountProbe(nn.Module):
         mask.masked_fill_(~allowed, torch.finfo(hidden.dtype).min)
         rotary = self.rotary(hidden, positions)
         for block in self.blocks:
-            kwargs = dict(attention_mask=mask, position_ids=positions, use_cache=False, output_attentions=False)
+            block_mask = valid if type(block.self_attn).__name__ == 'Qwen2FlashAttention2' else mask
+            kwargs = dict(attention_mask=block_mask, position_ids=positions, use_cache=False, output_attentions=False)
             if 'position_embeddings' in inspect.signature(block.forward).parameters:
                 kwargs['position_embeddings'] = rotary
             hidden = block(hidden, **kwargs)[0]
@@ -98,3 +99,33 @@ class QwenBlockCountProbe(nn.Module):
         last = causal.expand(valid.shape).masked_fill(~valid, -1).max(-1).values
         logits = self.head(hidden[torch.arange(len(hidden), device=hidden.device), last]).float()
         return CountMomentProbe.moments(self, logits)
+
+
+def load_official_initialization(path, *, expected_file_sha256, expected_encoder_files_sha256):
+    """Construct all three blocks from verified frozen encoder source tensors."""
+    from pathlib import Path
+    from search_g1.qprobe_features import OFFICIAL_REVISION, sha_file
+    from transformers import Qwen2Config
+    from transformers.models.qwen2.modeling_qwen2 import Qwen2DecoderLayer, Qwen2RMSNorm
+    if sha_file(path) != expected_file_sha256:raise ValueError('QPROBE_INITIALIZATION_FILE_SHA')
+    state=torch.load(Path(path),map_location='cpu',weights_only=True)
+    if state.get('schema_version')!=2 or state.get('architecture')!='qwen2_decoder3_count6':raise ValueError('QPROBE_INITIALIZATION_ARCHITECTURE')
+    if state.get('official_revision')!=OFFICIAL_REVISION or state.get('encoder_files_sha256')!=expected_encoder_files_sha256:raise ValueError('QPROBE_INITIALIZATION_OFFICIAL_SOURCE')
+    config=Qwen2Config.from_dict(state['qwen_config'])
+    config._attn_implementation=state['attention_implementation']
+    if state['source_layer_index']!=config.num_hidden_layers-1:raise ValueError('QPROBE_INITIALIZATION_NOT_FINAL_LAYER')
+    dtype=next(iter(state['source_layer_state'].values())).dtype
+    # State is the complete actual layer captured during official feature
+    # preparation. Random constructor values are all overwritten strictly.
+    with torch.random.fork_rng(devices=[]):
+        source=Qwen2DecoderLayer(config,layer_idx=state['source_layer_index']).to(dtype=dtype)
+        norm=Qwen2RMSNorm(config.hidden_size,eps=config.rms_norm_eps).to(dtype=dtype)
+        source.load_state_dict(state['source_layer_state'],strict=True)
+        norm.load_state_dict(state['source_norm_state'],strict=True)
+        if state_digest(source)!=state['source_layer_sha256'] or state_digest(norm)!=state['source_norm_sha256']:raise ValueError('QPROBE_INITIALIZATION_SOURCE_TENSOR_SHA')
+        source.requires_grad_(False);norm.requires_grad_(False)
+        result=QwenBlockCountProbe(source,norm,config)
+    result.initialization.update(official_revision=state['official_revision'],
+        encoder_files_sha256=state['encoder_files_sha256'],source_layer_index=state['source_layer_index'],
+        initialization_file_sha256=expected_file_sha256)
+    return result

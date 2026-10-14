@@ -56,6 +56,8 @@ def precompute(args):
     # loading. local_files_only prevents accidental model downloads or caches.
     hashes = verify_model(model_dir, Path(args.official_manifest))
     config = json.loads((model_dir/'config.json').read_text())
+    if args.feature_layer is None:
+        args.feature_layer = config['num_hidden_layers']-1 if getattr(args,'sequence_probe',False) else 27
     if not 0 <= args.feature_layer < config['num_hidden_layers']:
         raise ValueError('QPROBE_FEATURE_LAYER_OUT_OF_RANGE')
     template = dict(question_extraction=QUESTION_EXTRACTION_RULE,
@@ -81,13 +83,33 @@ def precompute(args):
     dtype = torch.float32 if args.device == 'cpu' else torch.bfloat16
     model = AutoModel.from_pretrained(model_dir, local_files_only=True, trust_remote_code=False,
                                      torch_dtype=dtype).to(args.device)
-    writer = FeatureCacheWriter(args.cache_dir, spec, len(rows))
+    if getattr(args, 'sequence_probe', False):
+        from search_g1.qprobe_sequence import SequenceCacheWriter, extract_question_sequences
+        if args.feature_layer != config['num_hidden_layers']-1:
+            raise ValueError('QPROBE_SEQUENCE_REQUIRES_LAST_LAYER')
+        spec.update(representation='frozen_token_sequence_v2', pooling='all_nonpadding_prompt_tokens')
+        writer = SequenceCacheWriter(args.cache_dir, spec, len(rows))
+        # Copy the actual official decoder layer, not random config initialization.
+        block = model.layers[-1]
+        source_state = {k:v.detach().cpu().clone() for k,v in block.state_dict().items()}
+        norm_state = {k:v.detach().cpu().clone() for k,v in model.norm.state_dict().items()}
+        from search_g1.qprobe_transformer import state_digest
+        initialization = dict(schema_version=2, architecture='qwen2_decoder3_count6',
+            official_revision=OFFICIAL_REVISION, encoder_files_sha256=spec['encoder_files_sha256'],
+            qwen_config=model.config.to_dict(), attention_implementation=model.config._attn_implementation, source_layer_index=args.feature_layer,
+            source_layer_state=source_state, source_layer_sha256=state_digest(block),
+            source_norm_state=norm_state, source_norm_sha256=state_digest(model.norm))
+        torch.save(initialization, writer.partial/'initialization.pt')
+        extract = extract_question_sequences
+    else:
+        writer = FeatureCacheWriter(args.cache_dir, spec, len(rows))
+        extract = extract_question_features
     started = time.monotonic()
     try:
         for offset in range(0, len(rows), args.batch_size):
             batch = rows[offset:offset+args.batch_size]
             questions = [q for q, _qid in batch]; qids = [qid for _q, qid in batch]
-            features = extract_question_features(model, tokenizer, questions, feature_layer=args.feature_layer,
+            features = extract(model, tokenizer, questions, feature_layer=args.feature_layer,
                 max_prompt_tokens=args.max_prompt_tokens, device=args.device)
             writer.append(qids, questions, features)
             print(json.dumps(dict(stage='question_feature_precompute', completed=writer.written,
@@ -97,7 +119,11 @@ def precompute(args):
         # Only this command's incomplete feature staging directory is removed;
         # source model, canonical data and other tasks are untouched.
         writer.abort(); raise
-    verification = FeatureCache(args.cache_dir).verify_all()
+    if getattr(args, "sequence_probe", False):
+        from search_g1.qprobe_sequence import SequenceCache
+        verification = SequenceCache(args.cache_dir).verify_all()
+    else:
+        verification = FeatureCache(args.cache_dir).verify_all()
     return dict(stage='question_feature_cache_complete', cache_dir=args.cache_dir,
                 manifest_sha256=sha_file(Path(args.cache_dir)/'manifest.json'),
                 elapsed_seconds=time.monotonic()-started, **verification)
@@ -180,7 +206,11 @@ def bootstrap_labels(audit_paths, provenance, question_by_id):
 
 def bootstrap(args):
     rows, _proof = train_questions(args.data, args.prompt_key)
-    cache = FeatureCache(args.cache_dir)
+    manifest = json.loads((Path(args.cache_dir)/'manifest.json').read_text())
+    if manifest.get('schema_version') == 2:
+        raise ValueError('QPROBE_SEQUENCE_BOOTSTRAP_REQUIRES_SEQUENCE_ONLINE_HEAD')
+    else:
+        cache = FeatureCache(args.cache_dir)
     provenance = json.loads(Path(args.provenance).read_text())
     labels, qids, questions = bootstrap_labels(args.audit, provenance, {qid:q for q,qid in rows})
     config = QProbeConfig.from_mapping(json.loads(Path(args.config).read_text()) if args.config else {})
@@ -206,8 +236,9 @@ def parser():
     make = modes.add_parser('precompute', help='Encode canonical train questions once; no rollout')
     make.add_argument('--data', required=True); make.add_argument('--model', required=True)
     make.add_argument('--official-manifest', required=True); make.add_argument('--cache-dir', required=True)
+    make.add_argument('--sequence-probe', action='store_true', help='Store frozen full last-layer tokens and actual official decoder initialization')
     make.add_argument('--device', default='cpu'); make.add_argument('--batch-size', type=int, default=4)
-    make.add_argument('--feature-layer', type=int, default=27)
+    make.add_argument('--feature-layer', type=int, default=None)
     make.add_argument('--max-prompt-tokens', type=int, default=4096)
     make.add_argument('--prompt-key', default='prompt'); make.set_defaults(func=precompute)
     boot = modes.add_parser('bootstrap', help='Initialize head from complete all-candidate strict labels')

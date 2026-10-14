@@ -1,0 +1,15 @@
+{
+  "scope": "CPU tiny actual Qwen2 plus mocked official precompute entry; no GPU/official weights",
+  "returncode": 0,
+  "stdout": "{\"stage\": \"question_feature_precompute\", \"completed\": 2, \"total\": 2, \"elapsed_seconds\": 0.0016226284205913544}\n",
+  "stderr": "test_each_of_three_layers_is_full_equal_independent_copy (search_g1.test_qprobe_transformer.TransformerProbeTests) ... ok\ntest_frozen_features_and_source_have_no_grad_but_all_blocks_train (search_g1.test_qprobe_transformer.TransformerProbeTests) ... ok\ntest_initializer_reloads_actual_source_tensors_and_rejects_wrong_source (search_g1.test_qprobe_transformer.TransformerProbeTests) ... ok\ntest_question_isolation_and_padding_invariance (search_g1.test_qprobe_transformer.TransformerProbeTests) ... ok\ntest_reject_pooled_cache_and_empty_question (search_g1.test_qprobe_transformer.TransformerProbeTests) ... ok\ntest_actual_qwen_last_layer_extraction_preserves_frozen_full_sequence (search_g1.test_qprobe_sequence.SequenceCacheTests) ... ok\ntest_incomplete_cache_cannot_publish_and_pooled_spec_rejected (search_g1.test_qprobe_sequence.SequenceCacheTests) ... ok\ntest_ragged_roundtrip_original_positions_and_order (search_g1.test_qprobe_sequence.SequenceCacheTests) ... ok\ntest_sequence_precompute_entry_publishes_verifiable_cache_and_initializer (search_g1.test_qprobe_sequence.SequenceCacheTests) ... ok\ntest_tampered_token_file_rejected_per_question_and_full_sha (search_g1.test_qprobe_sequence.SequenceCacheTests) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 0.107s\n\nOK\n",
+  "official_full_size_validation": false,
+  "training_integration_complete": false,
+  "source_files_sha256": {
+    "search_g1/qprobe_sequence.py": "e4fdca44f9b7961111cc60c2703fc9352174ae918ca2e0702a6d1b95d9ced208",
+    "search_g1/qprobe_transformer.py": "e3a7cb664a7c019203e8b9e6cd60528e915794927bfd3dff093f255c644c9d37",
+    "search_g1/qprobe_prepare.py": "cdfa8f5ea7a5bccef7397d8dfb152074508375a4fee81927730ede1ff2075ab6",
+    "search_g1/test_qprobe_transformer.py": "752076f896f56c69ef05d5d1230453a7eef6d8bda09ba0e59a02af09c31cd1fb",
+    "search_g1/test_qprobe_sequence.py": "3d7b8cbd27099761305ec6730e3b62f40a6c4fa3b0197974edbd6d0c09cfa2eb"
+  }
+}

@@ -48,6 +48,26 @@ class TransformerProbeTests(unittest.TestCase):
         changed = self.probe(batch, mask, torch.arange(7).expand(2,7))['logits']
         torch.testing.assert_close(two[0], changed[0], atol=2e-6, rtol=2e-5)
 
+    def test_initializer_reloads_actual_source_tensors_and_rejects_wrong_source(self):
+        import tempfile
+        from pathlib import Path
+        from search_g1.qprobe_features import OFFICIAL_REVISION, sha_file
+        from search_g1.qprobe_transformer import state_digest, load_official_initialization
+        norm=Qwen2RMSNorm(32,eps=self.config.rms_norm_eps)
+        state=dict(schema_version=2,architecture='qwen2_decoder3_count6',official_revision=OFFICIAL_REVISION,
+            encoder_files_sha256='a'*64,qwen_config=self.config.to_dict(),attention_implementation='eager',
+            source_layer_index=1,source_layer_state=self.source.state_dict(),source_layer_sha256=state_digest(self.source),
+            source_norm_state=norm.state_dict(),source_norm_sha256=state_digest(norm))
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/'initialization.pt';torch.save(state,p)
+            probe=load_official_initialization(p,expected_file_sha256=sha_file(p),expected_encoder_files_sha256='a'*64)
+            self.assertEqual(probe.initialization['full_state_sha256'],state_digest(self.source))
+            self.assertEqual(verify_full_copy(self.source,probe.blocks)['independent_copies'],3)
+            with self.assertRaisesRegex(ValueError,'OFFICIAL_SOURCE'):
+                load_official_initialization(p,expected_file_sha256=sha_file(p),expected_encoder_files_sha256='b'*64)
+            with self.assertRaisesRegex(ValueError,'FILE_SHA'):
+                load_official_initialization(p,expected_file_sha256='f'*64,expected_encoder_files_sha256='a'*64)
+
     def test_reject_pooled_cache_and_empty_question(self):
         with self.assertRaisesRegex(ValueError, 'FULL_TOKEN_FEATURES'):
             self.probe(torch.randn(2,32),torch.ones(2),torch.zeros(2,dtype=torch.long))
