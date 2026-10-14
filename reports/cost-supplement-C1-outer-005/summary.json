@@ -1,0 +1,60 @@
+{
+  "accepted_report_modified": false,
+  "added_once": true,
+  "allocator_billed_GPU_seconds": null,
+  "compatibility_generated_fallback_outers": [],
+  "complete_physical_emitted_prefix": true,
+  "config_sha256": "b2a47bdbd8d721579e983062eb3ee942cc1e4b6aa021e7c49861e3763cdb10de",
+  "end_to_end_cost_complete": false,
+  "exact_native_gen_prefix_seconds": null,
+  "existing_recorded_emitted_prefix": 3492082,
+  "generated_new_training": false,
+  "input_sha256": {
+    "closed_milestone_aggregate": "8a278e394f837401d571e11103a7c29a51174db259a527782e87d30de6723d2f",
+    "closed_native_prefix_scalars": "47ffb88716f4dab7d037d5b7ec9ebe38a19b226d171cbf8509d850e9941d48c0",
+    "original_sampling_cost": "64a4b724d6aa20da6dfbb2e6de818900219898ed22ea886e86aec34e3af57b3e"
+  },
+  "limits": [
+    "Physical emitted/prefill tokens include padding and discarded tails; not selected-leaf effective tokens.",
+    "Native raw_emitted_tokens has priority; generated_tokens is only the compatibility fallback. Both fields need not have the same meaning.",
+    "The native recorded outer wall/gen prefix excludes original pre-fault sampling and remains unchanged.",
+    "The separate first-RPC-to-compose interval omits pre-first-RPC setup and is not exact native gen duration.",
+    "Action/RPC/HTTP/compose components contain or overlap one another; they are not additive allocation billing.",
+    "Original zero-Adam sampling was reused once as committed outer1 input; no extra training outer or sampling is credited.",
+    "GPU active time and allocator billing remain unknown; complete emitted coverage does not mean complete end-to-end timing."
+  ],
+  "measured_GPU_active_seconds": null,
+  "milestone": 5,
+  "native_field_priority": [
+    "rollout/raw_emitted_tokens",
+    "rollout/generated_tokens"
+  ],
+  "original_RPC_duration_sum_seconds": 173.58600004483014,
+  "original_action_coverage": {
+    "completed_nonroot_candidates": 4916,
+    "full_log_read": true,
+    "generation_rpc_records": 32,
+    "initial_trajectories": 512,
+    "selected_training_rows": 2560,
+    "successful_unique_action_batches": 32
+  },
+  "original_closed_log_sha256": "ab0e7f5b642a0bf610dc2606c447db6c8e93980d777e96e11bc181083db5e27c",
+  "original_compose_seconds": 57.58970446884632,
+  "original_discarded_tokens": 99081,
+  "original_physical_emitted_added_once": 834605,
+  "original_prefill_tokens": 5422985,
+  "original_retained_tokens": 735524,
+  "protocol": "recursive_bran_ablation150_cost_supplement_v1",
+  "recorded_native_gen_seconds_unchanged": 1745.4934323001653,
+  "recorded_native_outer_wall_seconds_unchanged": 3625.7937591131777,
+  "recorded_outer_wall_gpu_hours_proxy_unchanged": 8.05731946469595,
+  "recovered_original_outer": 1,
+  "requested_label": "C1-root-only",
+  "run_id": "260d1debb6214d75b3d1a5954d88f524",
+  "scientific_source_commit": "233b0dc95de3f7b797d5b424d3b7dcaafca5328f",
+  "scope": "Supplement only the one omitted original sampling token count; immutable b95 report and EM are unchanged.",
+  "separate_original_first_RPC_to_compose_seconds": 401.640469789505,
+  "status": "COMPLETE_RECORDED_EMITTED_PREFIX_SUPPLEMENT",
+  "supplemental_emitted_prefix": 4326687,
+  "training_action": "NONE"
+}
