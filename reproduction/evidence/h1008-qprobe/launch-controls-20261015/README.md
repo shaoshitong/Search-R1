@@ -1,0 +1,1 @@
+Archived controls and CPU deployment evidence. Deployment scripts are consumed once-only controls; do not replay. Frozen remote training candidate is 86c80e960ab76cc98b17dd2b8d6b8bbc71f9a61f. No GPU job has been submitted. Full-size probe initialization and initial five iterations remain pending. Later archive commits do not change deployed runtime.
