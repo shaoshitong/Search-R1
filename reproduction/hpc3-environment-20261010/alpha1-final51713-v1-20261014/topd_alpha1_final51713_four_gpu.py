@@ -80,6 +80,10 @@ def audit_saved_checkpoints():
  for outer in [5,50,100,150,200]:
   directory=(ROOT/'logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5') if outer==5 else MODEL.parent/('global_step_%d'%outer)
   print('CHECKPOINT_AUDIT_STARTED',outer,flush=True)
+  if outer==5 and not (directory/'resume-complete.json').is_file():
+   atomic(OUT/'historical-step5-unavailable.json',{'outer':5,'path':str(directory),'status':'HISTORICAL_STEP5_CHECKPOINT_NOT_PRESENT_AT_CURRENT_PATH','actual_prior_step5_restore_receipts_retained':True,'not_a_fresh_checkpoint_read_pass':True,'epoch':time.time()})
+   print('HISTORICAL_STEP5_CHECKPOINT_UNAVAILABLE_REPORTED',flush=True)
+   continue
   receipt=json.loads((directory/'resume-complete.json').read_text());assert receipt['outer_step']==outer
   rank_reports=[]
   for rank,item in enumerate(receipt['ranks']):
@@ -112,7 +116,7 @@ def audit_saved_checkpoints():
   assert hf
   report={'outer':outer,'ranks':rank_reports,'driver_sha256':item['sha256'],'hf':hf,'fresh_checkpoint_read_pass':True,'new_process_GPU_next_step_resume_test':False}
   atomic(OUT/('checkpoint-%d-audit.json'%outer),report);reports.append(report)
- atomic(OUT/'all-scheduled-checkpoints-audit.json',{'steps':[5,50,100,150,200],'reports':reports,'epoch':time.time()})
+ atomic(OUT/'all-scheduled-checkpoints-audit.json',{'steps':[r['outer'] for r in reports],'requested_steps':[5,50,100,150,200],'historical_step5_present':any(r['outer']==5 for r in reports),'reports':reports,'epoch':time.time()})
 def main():
  OUT.mkdir(parents=True,exist_ok=True);lock=open(OUT/'eval.lock','w');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  audit_saved_checkpoints()

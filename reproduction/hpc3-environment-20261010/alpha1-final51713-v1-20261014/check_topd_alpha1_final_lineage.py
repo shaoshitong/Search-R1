@@ -44,6 +44,8 @@ def main():
     original5 = ROOT/'logs/topd-hpc3-712204/evidence/checkpoints/actor/global_step_5'
     for outer in [5, 50, 100, 150, 200]:
         directory = original5 if outer == 5 else RUN/('checkpoints/actor/global_step_%d'%outer)
+        if outer == 5 and not (directory/'resume-complete.json').is_file():
+            continue
         receipt = json.loads((directory/'resume-complete.json').read_text())
         assert receipt['status'] == 'ALL_FOUR_RANKS_AND_DRIVER_RESUME_STATE_VERIFIED'
         assert receipt['outer_step'] == outer and len(receipt['ranks']) == 4
@@ -58,7 +60,8 @@ def main():
                   epoch=time.time(), training_job=713717, alpha=1,
                   rank_audits=namespace['rank_audits'], math_outers=200,
                   frozen_teacher_rounds=200, checkpoint_paths_and_sizes_pass=True,
-                  full_checkpoint_SHA_and_CPU_tensor_read_deferred_to_allocated_job=True)
+                  full_checkpoint_SHA_and_CPU_tensor_read_deferred_to_allocated_job=True,
+                  historical_step5_present=(original5/'resume-complete.json').is_file())
     path = ROOT.parent/'outputs/training-preparation/alpha1-final51713-lineage-preflight.json'
     path.write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps(result), flush=True)
