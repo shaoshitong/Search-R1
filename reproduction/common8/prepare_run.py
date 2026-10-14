@@ -93,7 +93,7 @@ def verify_model(model, official_path):
     return hashes
 
 
-def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None,restore_receipt=None,execution_site=None):
+def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None,restore_receipt=None,execution_site=None,actor_micro_batch_per_rank=None):
     base,model,official_path=map(Path,(base,model,official_path))
     assert execution_site in (None,'hpc3')
     target=base/'logs/run-manifest.json'
@@ -134,21 +134,28 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         optimizer_semantics='fresh Adam, scheduler, RNG and sampler; official fresh actor; no prior checkpoint or diagnostic state',
         retrieval_placement='pending actual resource and retrieval-equivalence admission',
         probe_visible_device=None)
-    if execution_site=='hpc3':result['execution_site']='hpc3'
+    if execution_site in ('hpc3','h1008'):result['execution_site']=execution_site
+    if execution_site=='h1008':
+        from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE
+        assert os.environ.get('SEARCH_G1_EXECUTION_PROFILE')==NATIVE_BF16_PROFILE, 'H1008 must bind its BF16/FP32 execution recipe explicitly'
+        if restore_receipt:
+            assert restore_parent.get('execution_site')=='h1008' and restore_parent.get('actor_micro_batch_per_rank')==4, 'H1008 recovery must belong to the new same-budget experiment'
+        assert actor_micro_batch_per_rank in (None,4), 'Fresh H1008 budget binds local micro4'
+        assert os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE','8')=='8'
     if os.environ.get('SEARCH_G1_EXECUTION_PROFILE'):
         from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE, NATIVE4_BF16_PROFILE, SAMPLING_JOURNAL_POLICY
         size=int(os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE','8'))
         assert size in (4,8) and (size==8 or execution_site=='hpc3')
         profile=NATIVE_BF16_PROFILE if size==8 else NATIVE4_BF16_PROFILE
-        assert os.environ['SEARCH_G1_EXECUTION_PROFILE'] == profile and (restore_receipt or execution_site=='hpc3')
+        assert os.environ['SEARCH_G1_EXECUTION_PROFILE'] == profile and (restore_receipt or execution_site in ('hpc3','h1008'))
         result.update(precision_profile=profile, behavior_probability_policy=SAMPLING_JOURNAL_POLICY,
-            execution_backend='slurm', training_world_size=size, actor_micro_batch_per_rank=2 if size==8 else 4,
+            execution_backend='slurm', training_world_size=size, actor_micro_batch_per_rank=4 if execution_site=='h1008' else 2 if size==8 else 4,
             vllm_gpu_memory_utilization=rollout_memory_utilization, followup_checkpoint_required=True)
         result['budget'].update(world_size=size,compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
         from reproduction.common8.formal_contract import formal_mathematics
         result['budget'].update(formal_mathematics(result))
-    if execution_site=='hpc3':
-        result['execution_site']='hpc3'
+    if execution_site in ('hpc3','h1008'):
+        result['execution_site']=execution_site
         from reproduction.common8.topology import validate_base
         validate_base(base.resolve(),result)
     if restore_receipt:
@@ -198,6 +205,7 @@ if __name__=='__main__':
     p.add_argument('--allow-existing-gpu-processes',action='store_true')
     p.add_argument('--rollout-memory-utilization',type=float,default=0.1)
     p.add_argument('--local-retrieval-assets');p.add_argument('--restore-receipt')
-    p.add_argument('--execution-site',choices=('hpc3',));a=p.parse_args()
+    p.add_argument('--execution-site',choices=('hpc3','h1008'))
+    p.add_argument('--actor-micro-batch-per-rank',type=int,choices=(2,4));a=p.parse_args()
     print(json.dumps(prepare(a.base,a.model,a.official_manifest,a.source_commit,
-        a.allow_existing_gpu_processes,a.rollout_memory_utilization,a.local_retrieval_assets,a.restore_receipt,a.execution_site)))
+        a.allow_existing_gpu_processes,a.rollout_memory_utilization,a.local_retrieval_assets,a.restore_receipt,a.execution_site,a.actor_micro_batch_per_rank)))

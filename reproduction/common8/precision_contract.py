@@ -14,7 +14,11 @@ def bf16_policy(run):
         return True
     if profile == NATIVE_BF16_PROFILE:
         assert run.get('training_world_size') == 8 and run.get('execution_backend') == 'slurm'
-        assert run.get('actor_micro_batch_per_rank') == 2 and run.get('vllm_gpu_memory_utilization') == 0.1
+        if run.get('execution_site')=='h1008':
+            assert run.get('actor_micro_batch_per_rank')==4
+        else:
+            assert run.get('actor_micro_batch_per_rank')==2
+        assert run.get('vllm_gpu_memory_utilization')==0.1
         return True
     if profile == NATIVE4_BF16_PROFILE:
         assert run.get('training_world_size') == 4 and run.get('execution_backend') == 'slurm'
