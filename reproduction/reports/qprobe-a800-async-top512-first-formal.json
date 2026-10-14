@@ -1,0 +1,107 @@
+{
+  "role": "async_top512_first_formal_actual_progress",
+  "run_id": "1f34290a70454871aea9d368dc8a0b36",
+  "execution_id": "cfbc3d2ff0a44dfa84af1d7b07045ce7",
+  "source_commit": "1f75a186eea7b769c37a919096ea0b54372e5160",
+  "observed_unix": 1791999444.2424061,
+  "pipeline_pid": 3450307,
+  "pipeline_start_ticks": 607312295,
+  "pipeline_birth_matches": true,
+  "pipeline_alive": true,
+  "completed_outers": 2,
+  "processed_opportunities": 40,
+  "successful_adam": 40,
+  "skip": 0,
+  "four_rank_replicas_counted_once": true,
+  "first_formal_iteration_accepted": true,
+  "latest_actual_update": {
+    "actual_optimizer_writes": 20,
+    "metrics": {
+      "actor/grad_norm": 2.1012516948563373,
+      "actor/optimizer_steps_this_update": 20.0,
+      "actor/pg_loss": 0.10695506940656734,
+      "actor/ppo_kl": 0.0011955860686128973,
+      "actor/skipped_update_opportunities": 0.0,
+      "actor/update_opportunities_this_attempt": 20.0,
+      "critic/rewards/mean": 0.5089355111122131
+    },
+    "opportunities_processed": 20,
+    "optimizer_writes_after": 40,
+    "optimizer_writes_before": 20,
+    "step": 2
+  },
+  "reward_mean_of_steps_1_2_unknown": true,
+  "stage64": null,
+  "dev512": null,
+  "native_first_five_pending": true,
+  "primary_failed_due_file_limit": true,
+  "fallback_qualified_due_primary_not_eligible": true,
+  "current_trainer_process_from_oversize_ledger_unknown": true,
+  "gpu_samples": {
+    "cumulative_sample_count": 2773,
+    "identity_or_scalar_rejected_rows": 0,
+    "latest_devices": [
+      {
+        "physical_index": 0,
+        "sampled_run_peak_mib": 41947,
+        "total_mib": 81920,
+        "used_mib": 1613,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 1,
+        "sampled_run_peak_mib": 42043,
+        "total_mib": 81920,
+        "used_mib": 1709,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 2,
+        "sampled_run_peak_mib": 42043,
+        "total_mib": 81920,
+        "used_mib": 1709,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 3,
+        "sampled_run_peak_mib": 42393,
+        "total_mib": 81920,
+        "used_mib": 1613,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 5,
+        "sampled_run_peak_mib": 17891,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "physical_index": 6,
+        "sampled_run_peak_mib": 28721,
+        "total_mib": 81920,
+        "used_mib": 28721,
+        "util_percent": 95
+      }
+    ],
+    "latest_sample_age_seconds": 0.9008224010467529,
+    "latest_sample_unix": 1791999443.3411925,
+    "matching_sample_count": 2773,
+    "maximum_scanned_sampling_gap_seconds": 2.445986032485962,
+    "pretraining_history_only": false,
+    "process": {
+      "alive": true,
+      "birth_matches": true,
+      "pid": 3450307,
+      "sid": null,
+      "start_ticks": 607312295,
+      "state": "S",
+      "uid": null
+    },
+    "training_claimed": true
+  },
+  "gpu_complete_step_window_peak_unknown": true,
+  "teacher_warmup_excluded_from_formal": true,
+  "receipt_sha256": "190348276c925971663e4da8fa8d462925e4f332183c50a3731805c1fe4bc855",
+  "training_source_unchanged": true
+}

@@ -33,6 +33,7 @@ LINE_LIMIT=128*1024
 deadline=time.monotonic()+65
 spent=0
 metadata_files=[]
+bounded_failures=[];read_pass='pinned_run'
 documents={};ledgers={}
 class Unknown(Exception):pass
 def need(value,reason):
@@ -59,7 +60,21 @@ def snapshot(path,limit,append=False,tail=False,record=True):
  except FileNotFoundError:return None,None
  try:
   before=os.fstat(fd);need(stat.S_ISREG(before.st_mode) and before.st_uid==os.getuid(),'owner_or_type')
-  need(tail or before.st_size<=limit,'file_limit')
+  if not tail and before.st_size>limit:
+   location=dict(path_scope='unknown',relative_path=None)
+   for scope,name in (('runtime_source','repo'),('run_metadata','base')):
+    parent=globals().get(name)
+    if parent is None:continue
+    try:relative=path.relative_to(parent)
+    except ValueError:continue
+    text=str(relative)
+    if re.fullmatch(r'[A-Za-z0-9._/-]{1,512}',text) and '..' not in relative.parts:
+     location=dict(path_scope=scope,relative_path=text)
+    break
+   if len(bounded_failures)<4:
+    bounded_failures.append(dict(reason='file_limit',read_pass=read_pass,file_bytes=before.st_size,
+     limit_bytes=limit,data_read=False,**location))
+   raise Unknown('file_limit')
   start=max(0,before.st_size-limit) if tail else 0
   raw=take(fd,start,before.st_size);again=take(fd,start,before.st_size)
   after=os.fstat(fd);current=path.stat(follow_symlinks=False)
@@ -125,6 +140,8 @@ def same_execution(value):
   value.get('execution_backend')=='ssh_local' and value.get('slurm_job_id') is None,'execution_identity')
  if 'source_commit' in value:need(value['source_commit']==run['source_commit'],'source_identity')
 def section(function):
+ global read_pass
+ read_pass=function.__name__
  try:return function()
  except (Unknown,AssertionError,KeyError,IndexError,TypeError,ValueError,OverflowError,OSError) as failure:
   return dict(status='unknown',reason=str(failure) if isinstance(failure,Unknown) else type(failure).__name__)
@@ -429,8 +446,10 @@ try:
  need(run['actor_micro_batch_per_rank']==4 and run['budget']['per_rank_actor_micro_batch']==4 and
   run['budget']['ppo_micro_batch_size']==16 and run.get('question_probe') is not None,'micro4_qprobe_contract')
  need(type(payload['after_step']) is int and 0<=payload['after_step']<=200,'after_step')
- source_map_sha=digest(canonical(run['source_sha256']));run_manifest_sha=digest(budget_bytes(base/'logs/run-manifest.json',1024*1024))
+ source_map_sha=digest(canonical(run['source_sha256']));read_pass='run_manifest_hash'
+ run_manifest_sha=digest(budget_bytes(base/'logs/run-manifest.json',1024*1024))
  complete_updates=None;closed_attempts=None
+ read_pass='births'
  result['births']=births();result['reward_window']=section(reward_window)
  result['infra_window']=section(infra_window)
  result['runtime_status']=section(runtime_status);result['opportunity_counts']=section(opportunity_counts)
@@ -442,7 +461,7 @@ try:
 except (Unknown,AssertionError,KeyError,IndexError,TypeError,ValueError,OverflowError,OSError) as failure:
  result.update(status='unknown',reason=str(failure) if isinstance(failure,Unknown) else type(failure).__name__)
 finally:
- signal.alarm(0);result.update(observed_unix=time.time(),aggregate_bytes_read=spent,
+ signal.alarm(0);result.update(observed_unix=time.time(),aggregate_bytes_read=spent,bounded_failures=bounded_failures,
   limits=dict(aggregate_read_bytes=TOTAL_LIMIT,ledger_bytes=LEDGER_LIMIT,output_bytes=128*1024,deadline_seconds=65,
    readback_recheck_included=True,source_byte_checks_included=True))
 encoded=json.dumps(result,allow_nan=False)
@@ -459,7 +478,7 @@ if len(encoded.encode())>128*1024 and 'infra_window' in result:
   result.pop('infra_window');encoded=json.dumps(result,allow_nan=False)
 if len(encoded.encode())>128*1024:
  encoded=json.dumps(dict(role=result['role'],run_id=result['run_id'],execution_id=result['execution_id'],source_commit=result['source_commit'],
-  metadata_only=True,read_once=True,status='unknown',reason='output_limit'),allow_nan=False)
+  metadata_only=True,read_once=True,status='unknown',reason='output_limit',bounded_failures=bounded_failures),allow_nan=False)
 print('MILESTONE_JSON:'+encoded,flush=True)
 '''
 
