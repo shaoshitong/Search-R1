@@ -25,6 +25,17 @@
   "current_execution_complete_outers": 2,
   "current_execution_processed": 50,
   "current_execution_successful_retained_adam": 50,
+  "current_partial_attempt": {
+    "attempt_id": "4ee524d5f8ab4d6dabcf0d1082b4c536",
+    "attempt_index": 8,
+    "logical_update": 8,
+    "opportunities_remaining_or_unattempted": 10,
+    "optimizer_writes_after": 150,
+    "optimizer_writes_before": 140,
+    "processed": 10,
+    "processed_skip": 0,
+    "successful_adam": 10
+  },
   "delivered_anchor_sha256": "706f6a60eaf1a5c3c290dd262fd22e8be134b878e8f805e0755239ea563ad1e2",
   "delivery_gate": "publish sanitized scalar and hash; actually report to the user; record actual delivery; only then advance hourly anchor",
   "driver_restore_metadata_sha256": "b47788e642887b0063a7e53c8ff2c3a915bdb88edae487a6650ddd20029998d6",
@@ -179,6 +190,12 @@
   "pipeline_pid": 3640648,
   "pipeline_start_ticks": 608655430,
   "post_evaluation_rng_persisted": false,
+  "prepublication_schema_correction": {
+    "checked_unix": 1792011074.266319,
+    "prior_scalar_sha256": "937890797a1bcdadc8fa921f3a74d83adcb9bab96d6c981e010d8f68ecebadf5",
+    "prior_unreported_commit": "d082e15c",
+    "reason": "Separate returned partial updates from unknown in-flight optimizer activity; counts and reward unchanged"
+  },
   "private_publication_status": "pending",
   "processed_opportunities": 150,
   "recorded_error_present": false,
@@ -287,17 +304,8 @@
     "timing_s/update_critic",
     "timing_s/values"
   ],
-  "verifiable_inflight": {
-    "attempt_id": "4ee524d5f8ab4d6dabcf0d1082b4c536",
-    "attempt_index": 8,
-    "logical_update": 8,
-    "opportunities_remaining_or_unattempted": 10,
-    "optimizer_writes_after": 150,
-    "optimizer_writes_before": 140,
-    "processed": 10,
-    "processed_skip": 0,
-    "successful_adam": 10
-  },
+  "verifiable_inflight": null,
+  "verifiable_inflight_reason": "Captured returned opportunity prefix proves10 partial Adam writes, but no started-and-unreturned next opportunity",
   "worker_restore_metadata_sha256": "d2cf5511f93b83f6cb4a80bfc4dd11d68b6703f97aea44d9b96e7ff5873d9519",
   "write_rollbacks_current_execution": 0
 }
