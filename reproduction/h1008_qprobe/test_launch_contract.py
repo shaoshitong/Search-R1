@@ -60,7 +60,7 @@ class LaunchContractTests(unittest.TestCase):
             source_sha256={},initial_model_sha256={},input_sha256={},budget={},initial_probe_version='new:0:fit',
             behavior_probability_policy='sampling_journal_no_extra_hf_forward')
         with tempfile.TemporaryDirectory() as d:
-            base=Path(d);(base/'logs').mkdir();(base/'preparation').mkdir()
+            base=Path(d).resolve();(base/'logs').mkdir();(base/'preparation').mkdir()
             allocation=dict(accepted=True,run_id='new',slurm_job_id='7000',actual_cuda_runtime_uuids=['gpu'+str(i) for i in range(8)],
                 actual_allocation_detail='JobId=7000 JobState=RUNNING SubmitTime=s StartTime=t UserId=root Command=launch WorkDir=repo NodeList=h100-8')
             for n,v in [('logs/native-allocation-admission.json',allocation),('preparation/formal-inline-method.json',{})]+[(n,{}) for n in ['logs/retrieval-admission.json','logs/retrieval-http-admission.json','logs/evaluator-release-admission.json','logs/probe-coexistence-admission.json']]:
