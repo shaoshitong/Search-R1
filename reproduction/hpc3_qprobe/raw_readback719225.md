@@ -33,6 +33,23 @@ actor traces or all per-row actor tensor hashes, and is not the final200
 consumer or final native4 restore acceptance.
 
 Both commands print small JSON summaries; large raw tensors stay remote.
+
+`actor_rows15_readonly719225.sh` separately reopens the previously fullSHA and
+canonical-gold-bound raw15 with O_NOFOLLOW, hashes and loads from the same CPU
+descriptor, then checks stable identity. It reconstructs the original512
+parent-index group digests and all2560 ordered trajectory IDs. On an independent
+CPU output view it applies the original token-field cast and clones the saved
+sampling LP into old LP. Every eight-field tensor-row digest must equal the
+actual accepted actor gate, keyed by trajectory ID. It invokes no writer or HF
+forward. This covers actual15 row bytes and provenance; it does not independently
+reconstruct the private per-token context trace or claim coverage of all200.
+
+The head metric `head_optimizer_updates` counts this fit's Adam steps. It is
+not the cumulative saved Adam state counter. At outer16 the configured16-outer
+replay window expires teacher outer0 and retains8192 formal groups; the per-fit
+count changes to64 while the existing optimizer is preserved. Final head-Adam
+recovery acceptance must read and compare the actual saved optimizer state.
+
 Preserve summaries in a separate audit namespace. Keep the existing pinned
 EA follower and producer source unchanged. Any future final raw200 audit must
 use an independently published entry with original history partitions and
