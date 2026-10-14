@@ -124,8 +124,10 @@ def worker(commit):
     worker_error = None
     with (DIRECTORY/'audit.stdout').open('x') as stdout, (DIRECTORY/'audit.stderr').open('x') as stderr:
         try:
+            child_env = dict(os.environ, QPROBE_SOURCE=str(ctl.ROOT/'source'/'1843babdd96b387dd10d91e3207c9ea9489b6941'))
             child = subprocess.Popen([sys.executable, str(repository/ENTRY)], stdin=subprocess.DEVNULL,
-                                     stdout=stdout, stderr=stderr, cwd=str(repository), close_fds=True)
+                                     stdout=stdout, stderr=stderr, cwd=str(repository), close_fds=True,
+                                     env=child_env)
             actual_child = ctl.birth(ctl.process(child.pid))
             ctl.need(actual_child['uid'] == ctl.OWNER and actual_child['sid'] == process['sid'],
                      'direct CPU child owner/session differs')
