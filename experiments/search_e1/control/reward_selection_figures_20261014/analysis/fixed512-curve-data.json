@@ -1,0 +1,157 @@
+{
+  "steps": [
+    50,
+    100,
+    150,
+    200
+  ],
+  "series": [
+    {
+      "key": "Search-G1",
+      "name": "Soft Reward",
+      "points": [
+        {
+          "iteration": 50,
+          "em": 0.39453125,
+          "correct": 202,
+          "n": 512,
+          "f1": 0.46546063528485404,
+          "source": {
+            "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/latest-validation-identity.json",
+            "sha256": "2e496a8e56c2c676dcdb7a13dea5ff3d122c49801e74c61f4d231d76d996b47a"
+          }
+        },
+        {
+          "iteration": 100,
+          "em": 0.400390625,
+          "correct": 205,
+          "n": 512,
+          "f1": 0.4763330853174603,
+          "source": {
+            "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/latest-validation-identity.json",
+            "sha256": "aa3e212efe4359e17bac1907506c8769a23387ba1f98dc2739420016f9ae49e0"
+          }
+        },
+        {
+          "iteration": 150,
+          "em": 0.41796875,
+          "correct": 214,
+          "n": 512,
+          "f1": 0.4945793030753968,
+          "source": {
+            "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/latest-validation-identity.json",
+            "sha256": "e47997ea73ae6f4c5fb77e056d0eca7340ab0e21fb9143a0c935a54cb20f8004"
+          }
+        },
+        {
+          "iteration": 200,
+          "em": 0.4140625,
+          "correct": 212,
+          "n": 512,
+          "f1": 0.49615730406746034,
+          "source": {
+            "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/latest-validation-identity.json"
+          }
+        }
+      ]
+    },
+    {
+      "key": "g1-new",
+      "name": "Soft Reward -> Hard Reward",
+      "points": [
+        {
+          "iteration": 50,
+          "em": 0.388671875,
+          "correct": 199,
+          "n": 512,
+          "f1": 0.4652502987463925,
+          "source": {
+            "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/latest-validation-identity.json"
+          }
+        },
+        {
+          "iteration": 100,
+          "em": 0.431640625,
+          "correct": 221,
+          "n": 512,
+          "f1": 0.5117420014880952,
+          "source": {
+            "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/latest-validation-identity.json"
+          }
+        },
+        {
+          "iteration": 150,
+          "em": 0.435546875,
+          "correct": 223,
+          "n": 512,
+          "f1": 0.515336681547619,
+          "source": {
+            "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/latest-validation-identity.json"
+          }
+        },
+        {
+          "iteration": 200,
+          "em": 0.439453125,
+          "correct": 225,
+          "n": 512,
+          "f1": 0.515696304563492,
+          "source": {
+            "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/latest-validation-identity.json"
+          }
+        }
+      ]
+    },
+    {
+      "key": "g1-mixed",
+      "name": "Easy Selection+Soft Reward",
+      "points": [
+        {
+          "iteration": 50,
+          "em": 0.408203125,
+          "correct": 209,
+          "n": 512,
+          "f1": 0.4799959697420635,
+          "source": {
+            "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/logs/latest-validation-identity.json"
+          }
+        },
+        {
+          "iteration": 100,
+          "em": 0.46875,
+          "correct": 240,
+          "n": 512,
+          "f1": 0.5501054067460317,
+          "source": {
+            "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/logs/latest-validation-identity.json"
+          }
+        },
+        {
+          "iteration": 150,
+          "em": 0.48046875,
+          "correct": 246,
+          "n": 512,
+          "f1": 0.5651801215277777,
+          "source": {
+            "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/logs/latest-validation-identity.json"
+          }
+        },
+        {
+          "iteration": 200,
+          "em": 0.52734375,
+          "correct": 270,
+          "n": 512,
+          "f1": 0.610577876984127,
+          "source": {
+            "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/logs/latest-validation-identity.json",
+            "sha256": "84f80a6bd71128f09ad8420030335894c93629eef93143369de27a0e3edd0f13"
+          }
+        }
+      ]
+    }
+  ],
+  "score": "Fixed 512-question evaluation, strict EM",
+  "confirmed_at": "2026-10-14 20:14 CST",
+  "latest_remote_refresh": "2026-10-14 23:10 CST: existing default mgmt-host SSH route succeeded, iter200 unchanged",
+  "group_std": "sample standard deviation within each question group of 5, correction=1",
+  "advantage": "(r-mean_group(r))/(std_group(r)+1e-6)"
+}
