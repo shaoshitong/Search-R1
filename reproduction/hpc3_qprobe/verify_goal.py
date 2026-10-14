@@ -90,6 +90,35 @@ def step_part(parts, step):
     return owners[0]
 
 
+def read_complete_teacher_cache(cache):
+    """Consume an existing teacher receipt without reaching a cache writer.
+
+    The training cache's verify_complete also publishes complete.json. A final
+    reader must instead fail if that receipt disappears, including during the
+    full chunk/raw reads, rather than recreate it from otherwise valid chunks.
+    """
+    from search_g1.qprobe_warmup import QUESTIONS, CHUNK_SIZE, GROUP_SIZE, STATUS
+    complete_path=cache.root/'complete.json'
+    original=complete_path.read_bytes()
+    chunks=[cache.read_chunk(i) for i in range(QUESTIONS//CHUNK_SIZE)]
+    need(all(chunk is not None for chunk in chunks), 'teacher all5120 chunks missing')
+    groups=[group for chunk in chunks for group in chunk['groups']]
+    ids=[tid for group in groups for tid in group['trajectory_ids']]
+    need(len(ids)==QUESTIONS*GROUP_SIZE and len(set(ids))==len(ids),
+         'teacher full pool trajectory IDs differ')
+    protocol={key:chunks[0]['contracts'][key] for key in (
+        'sampling_contract_sha','strict_scoring_contract_sha','retriever_version')}
+    need(all({key:chunk['contracts'][key] for key in protocol}==protocol for chunk in chunks),
+         'teacher actual chunk protocols differ')
+    receipt=dict(status=STATUS,questions=QUESTIONS,trajectories=len(ids),
+        identity_sha256=sha_file(cache.root/'identity.json'),protocol=protocol,
+        chunks=[dict(relative_path='chunk-%02d.json'%i,
+                     sha256=sha_file(cache.root/('chunk-%02d.json'%i))) for i in range(len(chunks))])
+    need(json.loads(original)==receipt and complete_path.read_bytes()==original,
+         'existing teacher complete receipt differs or changed during read')
+    return receipt,groups,chunks
+
+
 def verify_teacher(base, run):
     from search_g1.qprobe_warmup import TeacherCache, verify_frozen
     from search_g1.full_state_restore import equal_tree
@@ -110,7 +139,7 @@ def verify_teacher(base, run):
         need(run['source_sha256'].get(name)==sha, 'teacher sampling/scoring source differs')
     # Already completed immutable cache: avoid creating a writer/lock or label.
     cache=TeacherCache.__new__(TeacherCache);cache.root=cache_root;cache.identity=identity
-    cached,groups,chunks=cache.verify_complete()
+    cached,groups,chunks=read_complete_teacher_cache(cache)
     ready_path=base/'artifacts/question-probe/teacher-warmup-ready.json'
     ready=json.loads(ready_path.read_text())
     need(ready['fitted_questions']==5120 and ready['completed_training_outers']==0 and
@@ -312,7 +341,7 @@ def verify_attempt_parts(parts):
     return attempts,hashes,formal
 
 
-def verify(base, audit_base):
+def verify(base, audit_base, *, publish_receipt=True):
     base=Path(base).resolve();audit_base=Path(audit_base).resolve()
     need(os.getuid()==14090,'actual jxu957 final CPU owner required')
     run=json.loads((base/'logs/run-manifest.json').read_text())
@@ -385,8 +414,9 @@ def verify(base, audit_base):
         bitwise_continuation_of_failed_execution=False if any(
             (part['run'].get('full_state_restore') or {}).get('kind')=='question_probe_saved_checkpoint'
             for part in parts) else None)
-    from reproduction.hpc3_qprobe.control import publish
-    publish(base/'logs/qprobe-final-goal-acceptance.json',result)
+    if publish_receipt:
+        from reproduction.hpc3_qprobe.control import publish
+        publish(base/'logs/qprobe-final-goal-acceptance.json',result)
     return result
 
 

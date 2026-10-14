@@ -55,7 +55,9 @@ class GoalTests(unittest.TestCase):
             base=Path(folder);(base/'logs').mkdir();(base/'logs/run-manifest.json').write_text(json.dumps({'run_id':'fixture'}))
             with patch('reproduction.hpc3_qprobe.verify_goal.os.getuid',return_value=14090),\
                  patch('reproduction.hpc3_qprobe.verify_goal.subprocess.check_output') as query:
-                with self.assertRaisesRegex(ValueError,'completed200 receipt missing'):verify(base,base/'audit')
+                for publish_receipt in (True,False):
+                    with self.assertRaisesRegex(ValueError,'completed200 receipt missing'):
+                        verify(base,base/'audit',publish_receipt=publish_receipt)
                 query.assert_not_called()
 
 
