@@ -1,0 +1,23 @@
+{
+  "qprobe-h1008-launch-cpu-result-v1.json": {
+    "scope": "CPU fresh native launch/adoption/admission contract only, no GPU jobs",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "test_old_evaluation_must_finish_all_rows_and_actual_exit0_before_new_start (reproduction.h1008_qprobe.test_launch_contract.LaunchContractTests) ... ok\ntest_prospective_admission_calls_real_unstarted_import_without_smoke_claim (reproduction.h1008_qprobe.test_launch_contract.LaunchContractTests) ... ok\ntest_reduced_startup_route_only_targets_new_h1008_sequence_experiment (reproduction.h1008_qprobe.test_launch_contract.LaunchContractTests) ... ok\ntest_reject_trained_live150_wrong_encoder_or_calibration_before_copy (reproduction.h1008_qprobe.test_launch_contract.LaunchContractTests) ... ok\ntest_round0_actual_source_target_sha_copy_and_historical_verification (reproduction.h1008_qprobe.test_launch_contract.LaunchContractTests) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.070s\n\nOK\n"
+  },
+  "qprobe-h1008-real-cpu-prepare-v2.json": {
+    "scope": "actual official-file fullSHA/canonical-data CPU prepare with pending site patch; no GPU or training",
+    "pending_prepare_module_sha256": "45365a24b2b91aa49d24fc774e2418b3467f14319e6bb4b90625c1ddf5b8d68e",
+    "returncode": 0,
+    "stdout": "{\"run_id\": \"6dd6661079fb436fa403551aba1e8f24\", \"training_world_size\": 8, \"actor_micro_batch_per_rank\": 4, \"initial_model\": \"/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725\", \"reference_model\": \"/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725\", \"model_revision\": \"aa8e72537993ba99e69dfaafa59ed015b17504d1\", \"precision_profile\": \"native8_bf16_varlen_fp32_master\", \"budget\": {\"profile\": \"common8\", \"model_id\": \"Qwen/Qwen2.5-3B-Instruct\", \"model_revision\": \"aa8e72537993ba99e69dfaafa59ed015b17504d1\", \"common_manifest_sha256\": \"0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\", \"fresh_actor\": true, \"fixed_original_reference\": true, \"world_size\": 8, \"train_batch_size\": 512, \"n_agent\": 5, \"rollout_n\": 1, \"sequence_parallel_size\": 1, \"trajectory_count\": 2560, \"ppo_mini_batch_size\": 128, \"ppo_epochs\": 1, \"optimizer_steps_per_outer\": 20, \"optimizer_opportunities_per_outer\": 20, \"optimizer_completion_rule\": \"all20_opportunities_processed_and_at_least_one_write\", \"optimizer_step_count_semantics\": \"opportunities; actual successful writes reported separately\", \"ppo_micro_batch_size\": 32, \"per_rank_actor_micro_batch\": 4, \"log_prob_micro_batch_size\": 32, \"per_rank_log_prob_micro_batch\": 4, \"learning_rate\": 1e-06, \"gradient_clip_global_l2\": 1.0, \"target_actual_outer_updates\": 200, \"split_counts\": {\"train\": 169028, \"validation\": 512, \"stage\": 64, \"final\": 51713}, \"training_start_checkpoint\": null, \"lr_warmup_steps_ratio\": 0.0, \"learning_rate_schedule\": \"linear_fixed_outer_warmup_then_constant\", \"advantage_estimator\": \"grpo\", \"original_state_masking\": true, \"objective_reduction\": \"original four-row micro masked_mean\", \"reference_kl_coefficient\": 0.0, \"reference_kl_type\": \"low_var_kl\", \"sampling_temperature\": 1.0, \"sampling_top_p\": 1.0, \"epsilon\": 0.2, \"compute_dtype\": \"bfloat16\", \"rollout_dtype\": \"bfloat16\", \"allow_tf32\": null, \"lr_warmup_steps\": 57, \"entropy_coefficient\": 0.0, \"contract_kind\": \"fresh200_warmup57\", \"policy_safety_mode\": \"inline_first_five\", \"safeguards\": {\"dual_clip\": 3.0, \"epsilon\": 0.2, \"target_old_policy_kl\": 0.2, \"kl_log_bound\": 30.0, \"negative_tail_limit\": 0.01}}, \"completed_updates\": 0, \"optimizer_semantics\": \"fresh Adam, scheduler, RNG and sampler; official fresh actor; no prior checkpoint or diagnostic state\"}\n",
+    "stderr": ""
+  },
+  "qprobe-h1008-real-zero-binding-v1.json": {
+    "scope": "actual real source-zero versus real new CPU-prepared official/data bindings; no GPU training",
+    "returncode": 0,
+    "stdout": "{\"actual_official_zero_source_binding\": true, \"actor_checkpoint_inherited\": false, \"target_completed_updates\": 0, \"actor_micro_per_rank\": 4, \"calibration_inputs_equal\": true}\n",
+    "stderr": ""
+  },
+  "actual_training_started": false,
+  "actual_gpu_probe_loaded": false
+}

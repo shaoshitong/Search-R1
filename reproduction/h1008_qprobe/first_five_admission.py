@@ -30,6 +30,7 @@ def verify_probability(base,run,probability,receipts):
 
 def prepare(base,run,document,method,initial,receipts):
     from reproduction.common8 import formal_inline_safety as safety
+    from reproduction.common8.freeze_calibration_plan import _unstarted
     from reproduction.common8.formal_contract import FORMAL_COUNTING,FORMAL_SAFEGUARDS
     from reproduction.common8.policy_calibration_plan import document_sha256
     from reproduction.common8.verify_data import digest
@@ -55,6 +56,6 @@ def prepare(base,run,document,method,initial,receipts):
         created_unix=time.time(),optimizer_counting=FORMAL_COUNTING,**FORMAL_SAFEGUARDS,
         monitoring_scope='actual full-rollout sampling journal plus original finite/KL/tail safeguards',
         semantics='prospective candidates; real first1..5 and next start required, same process to200')
-    safety.verify_plan(base,artifact,run);safety._unstarted(base,run)
+    safety.verify_plan(base,artifact,run);_unstarted(base,run)
     safety.write_once(Path(base)/safety.PLAN,artifact)
     return artifact

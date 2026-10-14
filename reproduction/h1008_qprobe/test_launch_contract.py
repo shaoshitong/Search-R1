@@ -51,6 +51,29 @@ class LaunchContractTests(unittest.TestCase):
         self.assertTrue(validate_predecessor(result,cleanup,terminal))
         for r,c,t in [({'qa_count':51712},cleanup,terminal),(result,{'cleaned':False},terminal),(result,cleanup,dict(terminal,state='RUNNING')),(result,cleanup,dict(terminal,exit_code='1:0'))]:
             with self.assertRaises(ValueError):validate_predecessor(r,c,t)
+    def test_prospective_admission_calls_real_unstarted_import_without_smoke_claim(self):
+        from unittest.mock import patch
+        from reproduction.common8 import formal_inline_safety as safety
+        from reproduction.h1008_qprobe.first_five_admission import prepare
+        run=dict(execution_site='h1008',training_world_size=8,startup_admission_mode='actual_first_five',
+            question_probe={'probe_architecture':'qwen2_decoder3_count6'},run_id='new',source_commit='code',
+            source_sha256={},initial_model_sha256={},input_sha256={},budget={},initial_probe_version='new:0:fit',
+            behavior_probability_policy='sampling_journal_no_extra_hf_forward')
+        with tempfile.TemporaryDirectory() as d:
+            base=Path(d);(base/'logs').mkdir();(base/'preparation').mkdir()
+            allocation=dict(accepted=True,run_id='new',slurm_job_id='7000',actual_cuda_runtime_uuids=['gpu'+str(i) for i in range(8)],
+                actual_allocation_detail='JobId=7000 JobState=RUNNING SubmitTime=s StartTime=t UserId=root Command=launch WorkDir=repo NodeList=h100-8')
+            for n,v in [('logs/native-allocation-admission.json',allocation),('preparation/formal-inline-method.json',{})]+[(n,{}) for n in ['logs/retrieval-admission.json','logs/retrieval-http-admission.json','logs/evaluator-release-admission.json','logs/probe-coexistence-admission.json']]:
+                (base/n).write_text(json.dumps(v))
+            with patch.dict('os.environ',{'SLURM_JOB_ID':'7000'}), \
+                    patch.object(safety,'verify_plan') as verify, \
+                    patch('reproduction.common8.freeze_calibration_plan._unstarted') as unstarted:
+                artifact=prepare(base,run,{}, {},{'archive':'recorded-zero'},{})
+            unstarted.assert_called_once_with(base,run);verify.assert_called_once()
+            self.assertFalse(artifact['healthy_checkpoint_accepted'])
+            self.assertFalse(artifact['probability']['standalone_synthetic_gpu_smoke_performed'])
+            self.assertTrue(artifact['probability']['actual_model_initialization_required_before_first_write'])
+
     def test_reduced_startup_route_only_targets_new_h1008_sequence_experiment(self):
         run=dict(execution_site='h1008',training_world_size=8,startup_admission_mode='actual_first_five',question_probe={'probe_architecture':'qwen2_decoder3_count6'})
         self.assertTrue(selected(run))

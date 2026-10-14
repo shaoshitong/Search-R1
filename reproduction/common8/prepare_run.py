@@ -95,7 +95,7 @@ def verify_model(model, official_path):
 
 def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None,restore_receipt=None,execution_site=None,actor_micro_batch_per_rank=None):
     base,model,official_path=map(Path,(base,model,official_path))
-    assert execution_site in (None,'hpc3')
+    assert execution_site in (None,'hpc3','h1008')
     target=base/'logs/run-manifest.json'
     assert not target.exists(), 'Inspect the existing run rather than create a duplicate'
     data_proof=verify(base/'data')
