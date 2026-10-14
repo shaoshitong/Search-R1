@@ -9,6 +9,7 @@ for p in D.glob('*.py'):
 files['helpers/C_stream.py']=(D.parent/'g1-reward-correlation-20261010/reconstruct_train_raw_c_preflight_v2.py').read_bytes();files['helpers/replay_core.py']=(D.parent/'g1-reward-correlation-20261010/historical_replay/replay_core.py').read_bytes();files['helpers/stats.py']=(D.parent/'g1-diversity-20261014/aggregate_remote.py').read_text().split('MODE=MODE_VALUE')[0].encode()
 files['analysis/fixed512-curve-data.json']=(D/'fixed512-curve-data.json').read_bytes();files['analysis/native-reward-means.json']=(D/'native-reward-means.json').read_bytes()
 for p in out.glob('*.drawio'):files['figures/'+p.name]=p.read_bytes()
+for p in out.glob('*.canvas.tsx'):files['figures/'+p.name]=p.read_bytes()
 files['README.md']='''# Reward selection comparison figures, 2026-10-14
 
 Native editable draw.io diagrams, no bitmap-wrapped diagrams. Labels: Soft Reward; Soft Reward -> Hard Reward; Easy Selection+Soft Reward. Fixed512 EM is from immutable native evaluation identities at outer50/100/150/200. Native training reward means are from actual update ledgers. The two reward definitions have different scales.
