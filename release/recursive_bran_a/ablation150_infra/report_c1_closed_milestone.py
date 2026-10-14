@@ -19,7 +19,7 @@ def sha(path):
 
 def csv_bytes(rows):
     stream = io.StringIO(newline='')
-    writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
+    writer = csv.DictWriter(stream, fieldnames=list(rows[0]), lineterminator='\n')
     writer.writeheader()
     writer.writerows(rows)
     return stream.getvalue().encode()
