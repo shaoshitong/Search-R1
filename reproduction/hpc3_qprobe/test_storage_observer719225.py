@@ -4,6 +4,8 @@ import hashlib
 import os
 from pathlib import Path
 import tempfile
+import stat
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -40,6 +42,28 @@ class StorageObservation(unittest.TestCase):
                                ('1234\t/some/other/root\n', '', 0), ('1.2\t'+str(observer.MEASURE), '', 0)):
             with self.subTest(output=out, stderr=err, exit_code=code):
                 self.assertIsNone(observer.allocated_usage(out, err, code))
+
+    def test_authorized_shared_mou_parent_is_accepted_with_actual_group_access(self):
+        metadata = SimpleNamespace(st_uid=observer.SHARED_UID, st_gid=observer.SHARED_GID,
+                                   st_mode=stat.S_IFDIR | 0o770)
+        with patch.object(Path, 'lstat', return_value=metadata), \
+                patch.object(os, 'getgroups', return_value=[observer.SHARED_GID]), \
+                patch.object(os, 'access', return_value=True):
+            self.assertEqual(observer.shared_directory(observer.ROOT, write=True), metadata)
+
+    def test_foreign_or_symlink_or_inaccessible_shared_parent_is_rejected(self):
+        for owner, group, mode, member, access in (
+                (99999, observer.SHARED_GID, stat.S_IFDIR | 0o770, True, True),
+                (observer.SHARED_UID, 99999, stat.S_IFDIR | 0o770, True, True),
+                (observer.SHARED_UID, observer.SHARED_GID, stat.S_IFLNK | 0o770, True, True),
+                (observer.SHARED_UID, observer.SHARED_GID, stat.S_IFDIR | 0o770, False, True),
+                (observer.SHARED_UID, observer.SHARED_GID, stat.S_IFDIR | 0o770, True, False)):
+            metadata = SimpleNamespace(st_uid=owner, st_gid=group, st_mode=mode)
+            with self.subTest(owner=owner, group=group, mode=mode, member=member, access=access), \
+                    patch.object(Path, 'lstat', return_value=metadata), \
+                    patch.object(os, 'getgroups', return_value=[observer.SHARED_GID] if member else []), \
+                    patch.object(os, 'access', return_value=access), self.assertRaises(ValueError):
+                observer.shared_directory(observer.ROOT, write=True)
 
     def test_existing_claim_never_relaunches_even_without_handle(self):
         a, b, c = self.contexts()

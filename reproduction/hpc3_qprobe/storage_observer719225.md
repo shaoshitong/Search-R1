@@ -7,10 +7,13 @@ jobs, copy checkpoints, clean directories, or approve goal completion.
 
 Run the pinned published script with the existing JXU CPU Python and `--start`.
 Use the same pinned script with `--inspect` for subsequent checks. Both validate
-the owner's native UID14090 and the source deployment's complete-file SHA
+the caller's native UID14090 and the source deployment's complete-file SHA
 receipt. Only small claim/process/result/log files are created in the fixed
 `ROOT/observations/storage719225-20261015` directory. An existing claim always
 means inspect; the entry cannot generate a new nonce or replay that launch.
+Existing shared parents retain their actual mou176 UID21930/GID21919 and
+group access. Private observation files and the immutable deployed source
+remain JXU-owned; no directory permissions are changed by the observer.
 
 The detached supervisor records its actual Linux process birth and the direct
 du child's PID/start_ticks/SID/UID. A short SSH observation timeout does not

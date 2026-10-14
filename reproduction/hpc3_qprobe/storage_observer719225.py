@@ -20,6 +20,8 @@ ROOT = Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014')
 MEASURE = ROOT.parent
 CONTROL = ROOT / 'observations' / 'storage719225-20261015'
 UID = 14090
+SHARED_UID = 21930  # Actual mou176 owner of the already-authorized shared parents.
+SHARED_GID = 21919
 TIMEOUT = 1800
 RELATIVE_SOURCE = 'reproduction/hpc3_qprobe/storage_observer719225.py'
 
@@ -28,6 +30,16 @@ def owned(path, directory=False):
     s = Path(path).lstat()
     if s.st_uid != UID or not (stat.S_ISDIR(s.st_mode) if directory else stat.S_ISREG(s.st_mode)):
         raise ValueError('Wrong owner or unsafe observation path: ' + str(path))
+    return s
+
+
+def shared_directory(path, write=False):
+    s = Path(path).lstat()
+    access = os.R_OK | os.X_OK | (os.W_OK if write else 0)
+    if (not stat.S_ISDIR(s.st_mode) or s.st_uid not in (UID, SHARED_UID) or
+            s.st_gid != SHARED_GID or SHARED_GID not in os.getgroups() or
+            not os.access(str(path), access)):
+        raise ValueError('Actual authorized shared-parent access differs: ' + str(path))
     return s
 
 
@@ -87,7 +99,9 @@ def source():
     root = file.parents[2]
     if root.parent != ROOT / 'source' or not re.fullmatch('[0-9a-f]{40}', root.name):
         raise ValueError('Only a separately published immutable source may run this observer')
-    for directory in (ROOT, ROOT / 'source', root, file.parent.parent, file.parent):
+    for directory in (ROOT, ROOT / 'source', ROOT / 'preparation'):
+        shared_directory(directory)
+    for directory in (root, file.parent.parent, file.parent):
         owned(directory, directory=True)
     owned(file)
     receipt = read_json(ROOT / 'preparation' / ('source-' + root.name + '-verification.json'))
@@ -102,8 +116,8 @@ def source():
 def validate():
     if os.getuid() != UID:
         raise ValueError('Actual JXU owner required')
-    for path in (MEASURE, ROOT):
-        owned(path, directory=True)
+    shared_directory(MEASURE)
+    shared_directory(ROOT, write=True)
     observations = CONTROL.parent
     if observations.exists() or observations.is_symlink():
         owned(observations, directory=True)
