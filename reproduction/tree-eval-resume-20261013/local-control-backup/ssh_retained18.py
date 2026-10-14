@@ -7,15 +7,14 @@ import argparse
 import json
 import os
 from pathlib import Path
-import re
 import shlex
 import stat
-import tempfile
 import subprocess
 
 CONFIG = '/home/lichen/.claude/projects/-home-lichen/memory/reference_h100_retained18_route_20261008.public.json'
 TARGETS = {'h100-10': '10.33.0.18', 'h100-8': '10.33.0.8',
            'h100-5': '10.33.0.5', 'h100-11': '10.33.4.14'}
+MGMT_CONTROL_PARENT = Path('/tmp').resolve() / 'tree-mgmt-3fw9a1ab'
 
 
 def _management_control_options():
@@ -28,16 +27,14 @@ def _management_control_options():
             '$' in value or not os.path.isabs(value) or len(os.fsencode(value)) > 80):
         raise ValueError('TREE_MGMT_CONTROL_PATH requires a literal absolute path of at most 80 bytes')
     path = Path(value)
-    if value != str(path) or not re.fullmatch(r'[A-Za-z0-9_.-]+', path.name):
-        raise ValueError('TREE_MGMT_CONTROL_PATH requires a simple socket filename')
+    if value != str(path) or path.name != 'control':
+        raise ValueError('TREE_MGMT_CONTROL_PATH requires this task socket filename: control')
     parent = path.parent
     real_parent = parent.resolve(strict=True)
     info = parent.lstat()
-    temp_roots = {Path('/tmp').resolve(), Path(tempfile.gettempdir()).resolve()}
     if (not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or
-            stat.S_IMODE(info.st_mode) != 0o700 or real_parent.parent not in temp_roots or
-            not re.fullmatch(r'tree-mgmt-[A-Za-z0-9_-]{6,}', real_parent.name)):
-        raise ValueError('ControlPath parent must be an owned mode-700 tree-mgmt-* temporary directory')
+            stat.S_IMODE(info.st_mode) != 0o700 or real_parent != MGMT_CONTROL_PARENT):
+        raise ValueError('ControlPath parent must be this task owned mode-700 /tmp/tree-mgmt-3fw9a1ab directory')
     if path.is_symlink() or (path.exists() and
             (not stat.S_ISSOCK(path.lstat().st_mode) or path.lstat().st_uid != os.getuid())):
         raise ValueError('ControlPath may only name an absent path or an owned Unix socket')

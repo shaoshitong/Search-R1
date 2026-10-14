@@ -1,12 +1,12 @@
 {
-  "checked_at_utc": "2026-10-14T22:39:09.864372+00:00",
-  "scope": "Minimal local path validation; no SSH invoked, no ControlMaster/socket created, no remote state read or changed.",
+  "checked_at_utc": "2026-10-14T22:42:07.569034+00:00",
+  "scope": "Minimal local correction validation only; no SSH invoked, no ControlMaster/socket created, no remote state read or changed. Existing path safety checks were retained.",
   "checks_passed": [
     "syntax",
-    "unset route equals original byte-for-byte argv",
-    "private absolute path adds only outer SSH options",
-    "empty relative newline NUL overlong unrelated paths rejected",
-    "non-private directory rejected"
+    "unset route equals original argv",
+    "fixed task directory and control filename accepted; no SSH executed",
+    "another same-user mode-700 tree-mgmt-* directory rejected",
+    "other socket filename rejected"
   ],
   "actual_followup_owner": "Main controller must perform two authenticated readbacks after optional deployment."
 }
