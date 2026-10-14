@@ -29,6 +29,7 @@ from pathlib import Path
 TOTAL_LIMIT=64*1024*1024
 SMALL_LIMIT=2*1024*1024
 LEDGER_LIMIT=8*1024*1024
+PROCESS_LEDGER_LIMIT=16*1024*1024
 LINE_LIMIT=128*1024
 deadline=time.monotonic()+65
 spent=0
@@ -150,7 +151,7 @@ def section(function):
 REMOTE_READ = r'''
 def births():
  producer=run['pipeline_identity'];claim,_=document('logs/training-launch-claim.json')
- ledger,_=document('logs/process-ledger.json',8*1024*1024)
+ ledger,_=document('logs/process-ledger.json',PROCESS_LEDGER_LIMIT)
  need(claim is not None and ledger is not None,'training_birth_metadata_missing')
  same_execution(claim);need(ledger['run_id']==run['run_id'],'ledger_run')
  trainer=ledger['jobs']['trainer']['leader']
@@ -305,7 +306,7 @@ def opportunity_counts():
   current_partial=results[0]['current_partial'] if agreement and not partial_files else None,
   scope='from-start newline-complete OPPORTUNITY receipts including closed and current unclosed attempts; four replicas counted once; no tail-derived cumulative count')
 def runtime_status():
- stage,_=document('logs/pipeline-status.json');ledger,_=document('logs/process-ledger.json',8*1024*1024)
+ stage,_=document('logs/pipeline-status.json');ledger,_=document('logs/process-ledger.json',PROCESS_LEDGER_LIMIT)
  need(stage is not None and ledger is not None and stage['run_id']==ledger['run_id']==run['run_id'],'runtime_status_identity')
  need(type(stage['stage']) is str and re.fullmatch('[A-Z][A-Z0-9_]{0,95}',stage['stage']),'pipeline_stage_schema')
  jobs=ledger['jobs'];need(type(jobs) is dict and len(jobs)<=32,'job_count_limit')
@@ -462,7 +463,8 @@ except (Unknown,AssertionError,KeyError,IndexError,TypeError,ValueError,Overflow
  result.update(status='unknown',reason=str(failure) if isinstance(failure,Unknown) else type(failure).__name__)
 finally:
  signal.alarm(0);result.update(observed_unix=time.time(),aggregate_bytes_read=spent,bounded_failures=bounded_failures,
-  limits=dict(aggregate_read_bytes=TOTAL_LIMIT,ledger_bytes=LEDGER_LIMIT,output_bytes=128*1024,deadline_seconds=65,
+  limits=dict(aggregate_read_bytes=TOTAL_LIMIT,ledger_bytes=LEDGER_LIMIT,process_ledger_bytes=PROCESS_LEDGER_LIMIT,
+   output_bytes=128*1024,deadline_seconds=65,
    readback_recheck_included=True,source_byte_checks_included=True))
 encoded=json.dumps(result,allow_nan=False)
 if len(encoded.encode())>128*1024 and 'infra_window' in result:
