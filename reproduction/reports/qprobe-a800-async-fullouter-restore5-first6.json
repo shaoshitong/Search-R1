@@ -1,0 +1,185 @@
+{
+  "aborted_attempts_current_execution": 0,
+  "accumulation": 8,
+  "actor_global_micro_batch": 16,
+  "actor_local_micro_batch": 4,
+  "actual_cuda_worker_driver_restore_metadata_verified": true,
+  "actual_receipt_sha256": "32fc83ed3d93771ef608454a73d8fc978746de68af0dbc6d6138e75c8aa15a0e",
+  "complete_outers": 6,
+  "current_execution_complete_outers": 1,
+  "execution_id": "59ef9209e5724cf6adc6b126d30071c8",
+  "exploration_questions": 0,
+  "four_rank_counts_equal": true,
+  "full_goal_complete": false,
+  "inherited_complete_outers": 5,
+  "latest_complete_reward": {
+    "attempt_id": "556af8c0932d47bdb38e8c439fbc6def",
+    "attempt_index": 6,
+    "full_budget_complete": true,
+    "optimizer_call_attempts": 20,
+    "optimizer_write_rollbacks": 0,
+    "optimizer_writes_after": 120,
+    "optimizer_writes_before": 100,
+    "processed": 20,
+    "reward_mean": 0.566737949848175,
+    "skip": 0,
+    "step": 6,
+    "successful_adam": 20,
+    "unattempted": 0
+  },
+  "latest_head": {
+    "actor_snapshot_id": "1f34290a70454871aea9d368dc8a0b36:6",
+    "feature_spec_sha": "aaea09aac50ebe4cc3c424af0c2273cc9e0e13a8ab9049acd8f1804d3394a9d4",
+    "head_version": "qprobe:6:6:0756b7341d154c26",
+    "metadata_sha256": "84599dd19b94eee07d25a732c17c95b2696d5af3a4b23b2773455fe3aa33c339",
+    "outer": 6,
+    "prediction_version": "qprobe:5:5:79dd1912d7c183c0",
+    "recorded_head_update": {
+      "completed_outer": 6,
+      "head_optimizer_updates": 64,
+      "replay_groups": 8192,
+      "update_count": 6
+    },
+    "scope": "existing committed head event after returned whole actor outer; no head tensor read/reload",
+    "status": "observed"
+  },
+  "live_births_verified": true,
+  "monitor_actual_forward_count": 21,
+  "monitor_reuse_count": 19,
+  "native_resumed_five": {
+    "accepted": null,
+    "first_resumed_outer": 6,
+    "last_resumed_outer": 10,
+    "original_native_first_five_accepted": false,
+    "scope": "only a produced native6..10 receipt establishes resumed-five acceptance",
+    "status": "missing"
+  },
+  "new_complete_reward_steps": [
+    6
+  ],
+  "new_execution_gpu_samples": {
+    "complete_step_window_peaks": {
+      "reason": "not_computed_by_this_metadata_entry",
+      "status": "unknown"
+    },
+    "execution_id": "59ef9209e5724cf6adc6b126d30071c8",
+    "inherited_execution_peak_mib": null,
+    "latest_devices": [
+      {
+        "index": 0,
+        "total_mib": 81920,
+        "used_mib": 1615,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "total_mib": 81920,
+        "used_mib": 1713,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "total_mib": 81920,
+        "used_mib": 1713,
+        "util_percent": 0
+      },
+      {
+        "index": 3,
+        "total_mib": 81920,
+        "used_mib": 1615,
+        "util_percent": 0
+      },
+      {
+        "index": 5,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81920,
+        "used_mib": 27777,
+        "util_percent": 90
+      }
+    ],
+    "latest_sample_unix": 1792009098.4861596,
+    "maximum_scanned_sampling_gap_seconds": 2.4886581897735596,
+    "sample_count": 997,
+    "sampled_pipeline_lifetime_peak_mib": {
+      "0": 39747,
+      "1": 39841,
+      "2": 39841,
+      "3": 40191,
+      "5": 17889,
+      "6": 27777
+    },
+    "sampled_scanned_tail_peak_mib": {
+      "0": 39747,
+      "1": 39841,
+      "2": 39841,
+      "3": 40191,
+      "5": 17889,
+      "6": 27777
+    },
+    "scan_from_start": true,
+    "scope": "existing physical-node occupancy of this new execution only, including its startup; no old execution peak merged and no complete-step GPU peak computed",
+    "status": "observed"
+  },
+  "new_execution_reward_max": 0.566737949848175,
+  "new_execution_reward_mean": 0.566737949848175,
+  "new_execution_reward_min": 0.566737949848175,
+  "new_scoring_performed": false,
+  "observed_unix": 1792009100.5690713,
+  "old_policy_safety_and_loss_unchanged": true,
+  "optimizer_call_attempts_current_execution": 20,
+  "other_infra_and_wall_time_speedup_unknown": true,
+  "parent_step5_scores": {
+    "scope": "existing source scores SHA-linked by CPU qualification; historical execution measurements, no repeated evaluation or new accuracy gate",
+    "scores": {
+      "development_after5": {
+        "current_evaluation_performed": false,
+        "metadata_sha256": "3db18ff0ef15785b9d5209bfab1b3fd091acc46815bfbd03cc6ebba810a1f1ae",
+        "status": "observed",
+        "weighted_em": 0.24609375,
+        "weighted_f1": 0.3364310899469057
+      },
+      "development_before": {
+        "current_evaluation_performed": false,
+        "metadata_sha256": "76d23555b5c3a769db32d644fde75e9b9bc1b5656e4f717d5f43cd212b213cb9",
+        "status": "observed",
+        "weighted_em": 0.177734375,
+        "weighted_f1": 0.24118301022177743
+      },
+      "stage64_after5": {
+        "current_evaluation_performed": false,
+        "metadata_sha256": "66de8ac16e6ba1641944c5cd5ab4b26e639d6f7b6704234f24dbe5ec2c8ac963",
+        "status": "observed",
+        "step": 5,
+        "weighted_em": 0.328125,
+        "weighted_f1": 0.4153017776950518
+      }
+    },
+    "status": "observed"
+  },
+  "partial_retained_adam": 0,
+  "pipeline_birth": 608655430,
+  "pipeline_pid": 3640648,
+  "previous_execution_reward_not_in_mean": true,
+  "previous_same_experiment_step5_reward": 0.569266140460968,
+  "processed_opportunities": 120,
+  "recorded_error_present": false,
+  "role": "actual_restored_first_complete_outer_scalar",
+  "run_id": "1f34290a70454871aea9d368dc8a0b36",
+  "selected_predicted_questions": 512,
+  "skip": 0,
+  "source_commit": "91f673c58ff415115c581b36568801b39ae3db86",
+  "step6_minus_parent_step5_reward": -0.0025281906127929688,
+  "successful_retained_adam": 120,
+  "target_complete_outers": 200,
+  "trainer_birth": 608698451,
+  "trainer_pid": 3648487,
+  "training_world_size": 4,
+  "unattempted_current_execution": 0,
+  "verifiable_inflight": null,
+  "write_rollbacks_current_execution": 0
+}
