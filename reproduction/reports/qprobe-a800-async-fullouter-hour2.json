@@ -1,0 +1,348 @@
+{
+  "aborted_attempts_current_execution": 0,
+  "accounting_scope": "hour1 anchor150 already includes10 returned writes in partial8; finish8 adds10, complete9/10 adds40, partial11 adds1, so total delta51; current total201=complete outer budget200 plus returned partial11 write1; four replicas counted once",
+  "actor_global_micro_batch": 16,
+  "actor_local_micro_batch": 4,
+  "actual_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-async-fullouter-next-native-window-observation.json",
+  "actual_receipt_sha256": "fd76f7baca178ac40d78f5bc60c824b7992dccaf18c833e1459247ebb7585e1e",
+  "actual_user_delivery_unix": null,
+  "after_delivered_complete_step": 7,
+  "anchor_partial_retained_adam_already_counted": 10,
+  "authority_binding": {
+    "acquisition_authority_sha256": "7e986c87a288fcc1025ea7dde9def4423322391f597a9740ab9fb330e86bb40e",
+    "complete_file_hashes_required_equal": false,
+    "dynamic_authority_local_read_sha256": "506e1fb620240e626674d37e5cec8a4f3edfb22a5fee475229802ec92643530c",
+    "identity_verified": true,
+    "scope": "authority may receive progress updates under same identity; fresh receipt is the numerical source"
+  },
+  "baseline_delivery_receipt_sha256": "1444379a8f81cbc93e6b5896b041cfeb1e1165c13079ba18d0f091928f7d2ef9",
+  "bounded_failure_count": 0,
+  "checkpoint10_actual_cuda_restore_accepted": false,
+  "checkpoint10_declared_file_count": 13,
+  "checkpoint10_declared_inventory_sha256": "e91503ecd5b2f1c98dfe0c0ac940e7d1f9703a866ae0246c47d5f3009fa7f88c",
+  "checkpoint10_head_declared_sha256": "f09f60d643b6cd958ea757ce81686f369335f14bf3eeb41617f65a5a18443c72",
+  "checkpoint10_manifest_sha256": "b2dbf2ebc4bc29d380333d99741fea7f6a2e1973b96366f9aab24f9df36d9e27",
+  "checkpoint10_metadata_sha256": "f006943f7d40d38a4ddf81c45c92e6807ba74964854a18e6516fe4d4f64db9ca",
+  "checkpoint10_pair_metadata_sha256": "6f3051805d10f9767d4e1fe046cb3d0c17169b7d44dd8254e66bdc306ec89936",
+  "checkpoint10_pair_producer_status": "QPROBE_COMPLETED_PAIR_FULL_SHA_CPU_STATES_PASS",
+  "checkpoint10_producer_recorded_actual_optimizer_writes_per_rank": 200,
+  "checkpoint10_producer_recorded_finite_all_saved_tensors": true,
+  "checkpoint10_producer_recorded_validated_tensor_count": 435,
+  "checkpoint10_question_state_declared_sha256": "bc41c08500b4230a8f76ce532fb0a8292d58ce7c7e2743010c7aaa031a2fba1b",
+  "checkpoint10_step": 10,
+  "checkpoint10_validation_scope": "save-time native CPU producer full-state/pair validation metadata only; actual_cuda_restore_accepted=false; noCP10 CUDA reload verified, no tensor read/hash/finite recheck by this observer; distinct from prior actualCP5 CUDA restore",
+  "closed_unattempted_current_execution": 0,
+  "complete_outer_successful_retained_adam": 200,
+  "complete_outers": 10,
+  "contains_only_scalars_hashes_and_small_identities": true,
+  "cp5_actual_cuda_worker_driver_restore_metadata_verified": true,
+  "cp5_driver_restore_metadata_sha256": "b47788e642887b0063a7e53c8ff2c3a915bdb88edae487a6650ddd20029998d6",
+  "cp5_restore_metadata_scope": "already-verified actual worker and driver restore JSON for inheritedCP5; no new state/tensor readback or reload by this report preparation",
+  "cp5_worker_restore_metadata_sha256": "d2cf5511f93b83f6cb4a80bfc4dd11d68b6703f97aea44d9b96e7ff5873d9519",
+  "current_execution_complete_outer_successful_retained_adam": 100,
+  "current_execution_complete_outers": 5,
+  "current_execution_processed": 101,
+  "current_execution_successful_retained_adam": 101,
+  "current_partial_attempt": {
+    "attempt_id": "bfbfc9c7ccca42b1869f90bc54d3af80",
+    "attempt_index": 11,
+    "logical_update": 11,
+    "opportunities_remaining_or_unattempted": 19,
+    "optimizer_writes_after": 201,
+    "optimizer_writes_before": 200,
+    "processed": 1,
+    "processed_skip": 0,
+    "successful_adam": 1
+  },
+  "delivered_anchor_sha256": "2aa2bafee06811770d140280fd0bf184c072d89b1d05d9d24ce41e91cad074cb",
+  "delivery_gate": "at/after hourly due publish sanitized scalar/hash, actually report to the user, record actual delivery, and only then advance the anchor; this preparation performs none of those steps",
+  "execution_id": "59ef9209e5724cf6adc6b126d30071c8",
+  "exploration_questions": 0,
+  "formal_delivery_status": "pending",
+  "four_rank_counts_equal": true,
+  "full_goal_complete": false,
+  "gpu": {
+    "auxiliary_latest_devices": [
+      {
+        "index": 5,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81920,
+        "used_mib": 28503,
+        "util_percent": 0
+      }
+    ],
+    "complete_step_window_peaks": {
+      "reason": "not_computed_by_this_metadata_entry",
+      "status": "unknown"
+    },
+    "inherited_execution_peak_mib": null,
+    "latest_sample_unix": 1792014550.0186012,
+    "maximum_scanned_sampling_gap_seconds": 2.4886581897735596,
+    "process_specific_peak_attribution": "unknown",
+    "sample_count": 3554,
+    "sampled_new_execution_physical_node_occupancy_peak_mib": {
+      "0": 41081,
+      "1": 41177,
+      "2": 41177,
+      "3": 41527,
+      "5": 17889,
+      "6": 28503
+    },
+    "scan_from_start": true,
+    "scope": "existing physical-node occupancy of this new execution only, including its startup; no old execution peak merged and no complete-step GPU peak computed",
+    "training_latest_devices": [
+      {
+        "index": 0,
+        "total_mib": 81920,
+        "used_mib": 39707,
+        "util_percent": 100
+      },
+      {
+        "index": 1,
+        "total_mib": 81920,
+        "used_mib": 39803,
+        "util_percent": 99
+      },
+      {
+        "index": 2,
+        "total_mib": 81920,
+        "used_mib": 39803,
+        "util_percent": 100
+      },
+      {
+        "index": 3,
+        "total_mib": 81920,
+        "used_mib": 39559,
+        "util_percent": 99
+      }
+    ],
+    "training_latest_used_gib_range": [
+      38.6318359375,
+      38.8701171875
+    ]
+  },
+  "gradient_accumulation": 8,
+  "head": {
+    "actor_snapshot_id": "1f34290a70454871aea9d368dc8a0b36:10",
+    "head_version": "qprobe:10:10:8eedc8830f752f1c",
+    "metadata_sha256": "2fae0fbd7a8d1964d17ba378f96eddd69b195915460b6cff4fa5872f0784a6e7",
+    "outer": 10,
+    "prediction_version": "qprobe:9:9:758b8469580df647",
+    "recorded_head_update": {
+      "completed_outer": 10,
+      "head_optimizer_updates": 80,
+      "replay_groups": 10240,
+      "update_count": 10
+    },
+    "scope": "existing committed head event JSON; no head tensor read/reload"
+  },
+  "hour_number": 2,
+  "hourly_anchor_advanced": false,
+  "hourly_due_local": "2026-10-15T05:53:16.579867+08:00",
+  "hourly_due_unix": 1792014796.579867,
+  "inherited_complete_outers": 5,
+  "monitor_by_complete_step": [
+    {
+      "actual_forward_count": 21.0,
+      "reused_forward_count": 19.0,
+      "step": 8
+    },
+    {
+      "actual_forward_count": 21.0,
+      "reused_forward_count": 19.0,
+      "step": 9
+    },
+    {
+      "actual_forward_count": 21.0,
+      "reused_forward_count": 19.0,
+      "step": 10
+    }
+  ],
+  "must_wait_until_due_before_publication": true,
+  "native_resumed_five": {
+    "accepted": true,
+    "extra_validation_performed": false,
+    "first_resumed_outer": 6,
+    "last_resumed_outer": 10,
+    "metadata_sha256": "2a68945a13a27246c22f4b17a90628ec782a31ff319fa9b8b6351a339fd7aed4",
+    "next_outer": 11,
+    "original_native_first_five_accepted": false,
+    "scope": "already-produced native acceptance of this execution6..10 suffix; not the failed original1..5 native receipt or full200 acceptance",
+    "source_actual_optimizer_writes_per_rank": 100,
+    "source_completed_outer": 5,
+    "status": "observed",
+    "total_budget": 200
+  },
+  "native_resumed_five_accepted": true,
+  "native_resumed_five_extra_validation_performed": false,
+  "new_current_execution_scores_status": "missing",
+  "new_scoring_performed": false,
+  "observed_local": "2026-10-15T05:49:10.899700+08:00",
+  "observed_seconds_before_due": 245.68016719818115,
+  "observed_unix": 1792014550.8996997,
+  "optimizer_call_attempts_current_execution": 101,
+  "other_infra_and_wall_time_speedup_status": "unknown",
+  "parent_step5_scores": {
+    "dev512": {
+      "metadata_sha256": "3db18ff0ef15785b9d5209bfab1b3fd091acc46815bfbd03cc6ebba810a1f1ae",
+      "question_count": 512,
+      "step": 5,
+      "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "weighted_em": 0.24609375,
+      "weighted_f1": 0.3364310899469057
+    },
+    "scope": "historical parent step5 existing metadata only; no current execution scoring performed",
+    "stage64": {
+      "metadata_sha256": "66de8ac16e6ba1641944c5cd5ab4b26e639d6f7b6704234f24dbe5ec2c8ac963",
+      "question_count": 64,
+      "step": 5,
+      "validation_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "weighted_em": 0.328125,
+      "weighted_f1": 0.4153017776950518
+    }
+  },
+  "partial_outer_counted_complete": false,
+  "partial_processed_not_complete": 1,
+  "partial_successful_retained_adam_not_complete": 1,
+  "per_rank_prefix_sha256": {
+    "0": "b2e0a47e46cf9bacc0fa16907c2cc68f4979c610b0688d186c627a55fbc6acb4",
+    "1": "355a2ed3e0b7e86cc5912f1f6180a1308a26d0a58a75471968a89ad184d70252",
+    "2": "5ae3de064634a93a8790533d59b45e574550f92f905d00a2f4ef35dec823f96b",
+    "3": "8a2e249580aa4d34c1d4b1ffd2040291a3786eabd94336b372e1f8b371738559"
+  },
+  "pipeline_alive_birth_matches": true,
+  "pipeline_pid": 3640648,
+  "pipeline_start_ticks": 608655430,
+  "post_evaluation_rng_persisted": false,
+  "previous_hourly_scalar_sha256": "53b1afc151fd1a8a44d010767e728fe4ffc44ec421c560197df488970c832a6a",
+  "private_publication_status": "pending",
+  "processed_opportunities": 201,
+  "recorded_error_present": false,
+  "replica_counts_counted_once": true,
+  "reward_comparison": {
+    "hourly_window_mean_change": -0.007369647423426273,
+    "previous_hourly_complete_steps": [
+      6,
+      7
+    ],
+    "previous_hourly_window_mean": 0.5674624145030975,
+    "same_execution": true,
+    "scope": "current8/9/10 mean minus actual delivered hour1 current-execution6/7 mean"
+  },
+  "reward_window": {
+    "after_complete_step": 7,
+    "closed_attempt_prefix_sha256": "a8092b079b3edd2034a5952fc2a886ef7d7cd2ff6d654d8fa63f0cf6955f467b",
+    "complete_prefix_sha256": "772ea51c9b33ed189dfe8a674dd8a1955adc132ccc7e31e5f166ec24a2a861d5",
+    "complete_steps": [
+      8,
+      9,
+      10
+    ],
+    "count": 3,
+    "latest_reward": 0.5889948010444641,
+    "latest_step": 10,
+    "maximum": 0.5889948010444641,
+    "mean": 0.5600927670796713,
+    "minimum": 0.5291731357574463,
+    "per_step": [
+      {
+        "reward_mean": 0.5291731357574463,
+        "step": 8
+      },
+      {
+        "reward_mean": 0.5621103644371033,
+        "step": 9
+      },
+      {
+        "reward_mean": 0.5889948010444641,
+        "step": 10
+      }
+    ],
+    "scope": "newly returned complete8/9/10 only; parent rewards, previous hourly6/7 and partial11 excluded"
+  },
+  "role": "actual_hour2_sanitized_scalar_prepared_pending_due_publication_and_user_delivery",
+  "run_id": "1f34290a70454871aea9d368dc8a0b36",
+  "runtime_jobs": [
+    {
+      "exit_code": 0,
+      "name": "retrieval-stage",
+      "state": "STOPPED"
+    },
+    {
+      "exit_code": null,
+      "name": "retriever",
+      "state": "STARTED"
+    },
+    {
+      "exit_code": null,
+      "name": "probe-server",
+      "state": "STARTED"
+    },
+    {
+      "exit_code": 0,
+      "name": "probe-admission",
+      "state": "STOPPED"
+    },
+    {
+      "exit_code": null,
+      "name": "trainer",
+      "state": "STARTED"
+    }
+  ],
+  "runtime_stage": "GRPO_1_TO_200",
+  "same_process_continuation_evidence": "same pipeline/trainer exact births remain live and logical outer11 has1 actual returned retained opportunity after accepted6..10",
+  "same_process_continuation_past_native_resumed_five_verified": true,
+  "saved_checkpoint_rng_verified": true,
+  "schema_version": 1,
+  "selected_predicted_questions": 512,
+  "since_actual_delivered_anchor": {
+    "complete_outers": 3,
+    "processed_opportunities": 51,
+    "skip": 0,
+    "successful_retained_adam": 51
+  },
+  "since_anchor_new_partial_outer11_retained_adam": 1,
+  "since_anchor_writes_complete_outer9_and10": 40,
+  "since_anchor_writes_to_finish_outer8": 10,
+  "skip": 0,
+  "snapshot_scope": "actual05:49:10 snapshot; not a new05:53 real-time measurement",
+  "source_commit": "91f673c58ff415115c581b36568801b39ae3db86",
+  "successful_retained_adam": 201,
+  "target_complete_outers": 200,
+  "trainer_alive_birth_matches": true,
+  "trainer_pid": 3648487,
+  "trainer_start_ticks": 608698451,
+  "training_hardware": "A800",
+  "training_world_size": 4,
+  "unpersisted_infra_fields": [
+    "infra/reference_forward_skipped",
+    "infra/rollout/completed_requests_sum",
+    "infra/rollout/completed_trajectories",
+    "infra/rollout/engine_steps_sum",
+    "infra/rollout/environment_actions",
+    "infra/rollout/generation_requests",
+    "infra/rollout/peak_inflight_trajectories",
+    "infra/rollout/phase_elapsed_seconds",
+    "infra/rollout/retrieval_concurrency",
+    "infra/rollout/weight_syncs_per_rank",
+    "timing_s/adv",
+    "timing_s/candidate_fill",
+    "timing_s/gen",
+    "timing_s/question_probe_update",
+    "timing_s/ref",
+    "timing_s/save_checkpoint",
+    "timing_s/step",
+    "timing_s/testing",
+    "timing_s/update_actor",
+    "timing_s/update_critic",
+    "timing_s/values"
+  ],
+  "verifiable_inflight": null,
+  "verifiable_inflight_reason": "Captured returned prefix proves1 retained partial Adam write in logical outer11, but no started-and-unreturned next opportunity; null means not established, not zero ongoing work",
+  "write_rollbacks_current_execution": 0
+}
