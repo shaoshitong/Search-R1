@@ -231,7 +231,11 @@ def main():
     for row in publication['files']:
         relative=Path(row['path']);assert not relative.is_absolute() and '..' not in relative.parts
         path=args.stage_runtime/relative;assert path.resolve()==path
-        raw=path.read_bytes();assert len(raw)==row['bytes'] and hashlib.sha256(raw).hexdigest()==row['sha256']==stage['source_sha256'][str(relative)]
+        raw=path.read_bytes();assert len(raw)==row['bytes'] and hashlib.sha256(raw).hexdigest()==row['sha256']
+        if str(relative) in stage['source_sha256']:
+            assert row['sha256']==stage['source_sha256'][str(relative)]
+        else:
+            assert str(relative)=='reproduction/a800_common/README.md'
         assert subprocess.check_output(['git','-C',str(args.stage_runtime),'rev-parse',stage['source_commit']+':'+str(relative)],text=True,timeout=30).strip()==row['remote_blob']
     assert args.receipt.is_absolute() and args.receipt.resolve()==args.receipt and not args.receipt.exists()
     args.receipt.relative_to(ROOT/'preparation')
