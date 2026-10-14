@@ -22,7 +22,8 @@ def main():
               'release/recursive_bran_a/ablation150_v1/contracts.py',
               'release/recursive_bran_a/ablation150_v1/__init__.py',
               'release/recursive_bran_a/ablation150_infra/analysis_cli.py',
-              'release/recursive_bran_a/ablation150_infra/auxiliary_cli.py']
+              'release/recursive_bran_a/ablation150_infra/auxiliary_cli.py',
+              'search_r1/baselines/rollout.py']
     files = {name: base64.b64encode(subprocess.check_output(
         ['git', 'show', f'{commit}:{name}'])).decode() for name in paths}
     payload = base64.b64encode(gzip.compress(json.dumps(dict(commit=commit, files=files)).encode())).decode()
