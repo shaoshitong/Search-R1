@@ -213,7 +213,10 @@ def publish_completed_pair(trainer, checkpoint):
         used_attempt_ids=ranks[0]['used_attempt_ids'],policy_rejections=ranks[0]['policy_rejections']))
     _publish(directory/'reward-probe-manifest.json',live)
     boundary_record=_file_record(boundary['path'],relative_path='boundary-driver.pt')
-    run_record=_file_record(base/'logs/run-manifest.json',relative_path='run-manifest.json')
+    # Refit/restore can publish a new live manifest after this save point. Pin
+    # its boundary copy so later progress cannot invalidate an earlier receipt.
+    _publish(directory/'run-manifest.json',run)
+    run_record=_file_record(directory/'run-manifest.json',relative_path='run-manifest.json')
     reward_record=_file_record(directory/'reward-probe-manifest.json',relative_path='reward-probe-manifest.json')
     receipt=dict(schema_version=1,status=PAIR_STATUS,kind=PAIR_KIND,step=outer,run_id=run['run_id'],
         checkpoint=str(checkpoint),source_base=str(base),source_run_manifest=run_record,

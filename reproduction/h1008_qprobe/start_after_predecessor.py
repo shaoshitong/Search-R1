@@ -14,7 +14,8 @@ def read(path):
 def readiness(base):
     config = read(base / 'preparation/h1008-launch-config.json')
     predecessor = Path(config['predecessor_evaluation_base'])
-    terminal_path = base / 'preparation/predecessor-exit0.json'
+    terminal_base = Path(config.get('predecessor_terminal_evidence_base', str(base)))
+    terminal_path = terminal_base / 'preparation/predecessor-exit0.json'
     if not terminal_path.exists():
         return False
     terminal = read(terminal_path)
@@ -50,6 +51,16 @@ def run(base, deadline_seconds=14400):
             if any((base / 'preparation' / name).exists() for name in ('submit-intent.json', 'submit-receipt.json')):
                 raise RuntimeError('Existing submission intent/receipt; inspect outcome, no replay')
             if readiness(base):
+                config = read(base / 'preparation/h1008-launch-config.json')
+                terminal_base = Path(config.get('predecessor_terminal_evidence_base', str(base)))
+                target = base / 'preparation/predecessor-exit0.json'
+                if terminal_base != base and not target.exists():
+                    # Preserve actual terminal evidence from the original read-only
+                    # observer across an unstarted candidate redeployment.
+                    with target.open('xb') as handle:
+                        handle.write((terminal_base / 'preparation/predecessor-exit0.json').read_bytes())
+                        handle.flush()
+                        os.fsync(handle.fileno())
                 receipt = submit(base, read(base / 'preparation/source-files.json'))
                 publish(status, dict(stage='SUBMITTED_ONCE', submitted=True,
                                      receipt=receipt, checked_unix=time.time()))

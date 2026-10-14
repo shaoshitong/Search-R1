@@ -67,7 +67,7 @@ class PairFixture:
         head_proof=dict(path=str(self.state/'question-probe-state.pt.head.pt'),bytes=(self.state/'question-probe-state.pt.head.pt').stat().st_size,
             sha256=head_receipt['checkpoint_sha'])
         qproof.update(completed_outer=outer,actor_snapshot_id=actor_id,feature_spec_sha='f'*64,head_version=head.version,head=head_proof)
-        self.progress=dict(completed_outer=outer,cumulative_writes=self.writes,attempt_index=self.attempt_index,aborted_attempts=2)
+        self.progress=dict(completed_outer=outer,cumulative_writes=self.writes,attempt_index=self.attempt_index,aborted_attempts=2,full_budget_outer=outer)
         driver=atomic_save(self.state/'driver.pt',dict(completed_outer=outer,candidate_stream=self.stream,rng=driver_rng(),
             probe_version=f'{self.run_id}:0:old',question_probe=qproof,attempt_progress=self.progress))
         manifest=dict(completed_outer=outer,worker_files=proofs,driver_file=driver,question_probe=qproof)
@@ -132,6 +132,19 @@ class PairCheckpointTests(unittest.TestCase):
             self.assertEqual(fixture.rank_states[0]['rng']['cuda_placeholder'].item(),1)
             from search_g1.full_state_restore import source
             self.assertEqual(source(p)[1]['step'],50)
+
+    def test_completed_pair_remains_readable_after_live_run_manifest_changes(self):
+        with tempfile.TemporaryDirectory() as name:
+            fixture=PairFixture(name);proof=fixture.publish()
+            _,receipt,_,_,frozen=read_source(proof['path'])
+            pinned=Path(receipt['source_run_manifest']['path'])
+            self.assertTrue(pinned.is_relative_to(Path(proof['path']).parent))
+            self.assertEqual(frozen,fixture.run)
+            live=dict(fixture.run,completed_updates=100,initial_probe_version='later-live-probe')
+            (fixture.base/'logs/run-manifest.json').write_text(json.dumps(live))
+            _,again,_,_,saved=read_source(proof['path'])
+            self.assertEqual(saved,fixture.run)
+            self.assertEqual(again['source_run_manifest']['full_read_sha256'],digest(pinned))
 
     def test_source_hash_metadata_rejects_changed_head(self):
         with tempfile.TemporaryDirectory() as name:

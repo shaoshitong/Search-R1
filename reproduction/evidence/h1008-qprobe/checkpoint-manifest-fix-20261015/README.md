@@ -1,0 +1,1 @@
+Paired checkpoint now pins a per-save-point immutable run manifest. Two remote CPU synthetic paired-state tests passed; not actual CUDA reload acceptance. Only own CPU pre-start dispatcher was stopped before any submission; predecessor evaluation untouched. Candidate redeploys into a new namespace and retains original terminal observer.
