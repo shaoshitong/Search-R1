@@ -1,0 +1,340 @@
+{
+  "aborted_attempts_current_execution": 0,
+  "accounting_scope": "hour2 anchor201 already includes1 returned write in partial11; finish11 adds19, complete12/13 adds40, so total delta59; all current260 writes belong to13 complete20-write outers; no returned partial attempt; four replicas counted once",
+  "actor_global_micro_batch": 16,
+  "actor_local_micro_batch": 4,
+  "actual_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-async-fullouter-next-pre-hour3-observation.json",
+  "actual_receipt_sha256": "9b9708dda98091c89cf03fa1524e1c0523a75f4f0dfcd9f1432b6f05963fe8b7",
+  "actual_user_delivery_unix": null,
+  "after_delivered_complete_step": 10,
+  "anchor_partial_retained_adam_already_counted": 1,
+  "authority_binding": {
+    "acquisition_authority_sha256": "08f26409afdcdfeefd2f301c60fa9bd60032152e6dd58d81c1cc129cd4645f92",
+    "complete_file_hashes_required_equal": false,
+    "dynamic_authority_local_read_sha256": "bcb40d82f206188021039c5ebc0147a69ee2dc67d6e8b81e773f8a4f68baa9b2",
+    "identity_verified": true,
+    "scope": "authority may receive progress updates under same identity; fresh receipt is numerical source"
+  },
+  "baseline_delivery_receipt_sha256": "71f0a2735110182aa0916a2c8a9e7d1eab7eada3c6e36ab24565c09805aa7499",
+  "bounded_failure_count": 0,
+  "checkpoint10_actual_cuda_restore_accepted": false,
+  "checkpoint10_declared_file_count": 13,
+  "checkpoint10_declared_inventory_sha256": "e91503ecd5b2f1c98dfe0c0ac940e7d1f9703a866ae0246c47d5f3009fa7f88c",
+  "checkpoint10_head_declared_sha256": "f09f60d643b6cd958ea757ce81686f369335f14bf3eeb41617f65a5a18443c72",
+  "checkpoint10_manifest_sha256": "b2dbf2ebc4bc29d380333d99741fea7f6a2e1973b96366f9aab24f9df36d9e27",
+  "checkpoint10_metadata_sha256": "f006943f7d40d38a4ddf81c45c92e6807ba74964854a18e6516fe4d4f64db9ca",
+  "checkpoint10_pair_metadata_sha256": "6f3051805d10f9767d4e1fe046cb3d0c17169b7d44dd8254e66bdc306ec89936",
+  "checkpoint10_pair_producer_status": "QPROBE_COMPLETED_PAIR_FULL_SHA_CPU_STATES_PASS",
+  "checkpoint10_producer_recorded_actual_optimizer_writes_per_rank": 200,
+  "checkpoint10_producer_recorded_finite_all_saved_tensors": true,
+  "checkpoint10_producer_recorded_validated_tensor_count": 435,
+  "checkpoint10_question_state_declared_sha256": "bc41c08500b4230a8f76ce532fb0a8292d58ce7c7e2743010c7aaa031a2fba1b",
+  "checkpoint10_step": 10,
+  "checkpoint10_validation_scope": "save-time native CPU producer full-state/pair validation metadata only; actual_cuda_restore_accepted=false; noCP10 CUDA reload verified, no tensor read/hash/finite recheck by this observer; distinct from prior actualCP5 CUDA restore",
+  "closed_unattempted_current_execution": 0,
+  "complete_outer_successful_retained_adam": 260,
+  "complete_outers": 13,
+  "contains_only_scalars_hashes_and_small_identities": true,
+  "cp5_actual_cuda_worker_driver_restore_metadata_verified": true,
+  "cp5_driver_restore_metadata_sha256": "b47788e642887b0063a7e53c8ff2c3a915bdb88edae487a6650ddd20029998d6",
+  "cp5_restore_metadata_scope": "already-verified actual worker and driver restore JSON for inheritedCP5; no new state/tensor readback or reload by this report preparation",
+  "cp5_worker_restore_metadata_sha256": "d2cf5511f93b83f6cb4a80bfc4dd11d68b6703f97aea44d9b96e7ff5873d9519",
+  "current_execution_complete_outer_successful_retained_adam": 160,
+  "current_execution_complete_outers": 8,
+  "current_execution_processed": 160,
+  "current_execution_successful_retained_adam": 160,
+  "current_partial_attempt": null,
+  "delivered_anchor_sha256": "b9ee02491c45956c9bd2270d724e88f5c3aef1f673ecc4204c8204ea099ed545",
+  "delivery_gate": "at/after hourly due publish sanitized scalar/hash, actually report to the user, record actual delivery, and only then advance anchor; this preparation performs none of those steps",
+  "execution_id": "59ef9209e5724cf6adc6b126d30071c8",
+  "exploration_questions": 0,
+  "formal_delivery_status": "pending",
+  "four_rank_counts_equal": true,
+  "full_goal_complete": false,
+  "gpu": {
+    "auxiliary_latest_devices": [
+      {
+        "index": 5,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81920,
+        "used_mib": 28503,
+        "util_percent": 0
+      }
+    ],
+    "complete_step_window_peaks": {
+      "reason": "not_computed_by_this_metadata_entry",
+      "status": "unknown"
+    },
+    "inherited_execution_peak_mib": null,
+    "instantaneous_training_util_zero_is_not_evidence_of_stall": true,
+    "latest_sample_unix": 1792018197.7872834,
+    "maximum_scanned_sampling_gap_seconds": 2.4886581897735596,
+    "process_specific_peak_attribution": "unknown",
+    "sample_count": 5264,
+    "sampled_new_execution_physical_node_occupancy_peak_mib": {
+      "0": 41081,
+      "1": 41177,
+      "2": 41177,
+      "3": 41527,
+      "5": 17889,
+      "6": 28503
+    },
+    "scan_from_start": true,
+    "scope": "existing physical-node occupancy of this new execution only, including its startup; no old execution peak merged and no complete-step GPU peak computed",
+    "training_latest_devices": [
+      {
+        "index": 0,
+        "total_mib": 81920,
+        "used_mib": 1615,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "total_mib": 81920,
+        "used_mib": 1711,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "total_mib": 81920,
+        "used_mib": 1711,
+        "util_percent": 0
+      },
+      {
+        "index": 3,
+        "total_mib": 81920,
+        "used_mib": 1615,
+        "util_percent": 0
+      }
+    ],
+    "training_latest_used_gib_range": [
+      1.5771484375,
+      1.6708984375
+    ]
+  },
+  "gradient_accumulation": 8,
+  "head": {
+    "actor_snapshot_id": "1f34290a70454871aea9d368dc8a0b36:13",
+    "head_version": "qprobe:13:13:41be57f032e89a86",
+    "metadata_sha256": "37363bfdaff57decf7a3b3852df6760e83a7a534f82e0cc4d44dd9667e7f2ed2",
+    "outer": 13,
+    "prediction_version": "qprobe:12:12:30833bbb3c5e7bef",
+    "recorded_head_update": {
+      "completed_outer": 13,
+      "head_optimizer_updates": 92,
+      "replay_groups": 11776,
+      "update_count": 13
+    },
+    "scope": "existing committed head event JSON; no head tensor read/reload"
+  },
+  "hour_number": 3,
+  "hourly_anchor_advanced": false,
+  "hourly_due_local": "2026-10-15T06:54:50.345034+08:00",
+  "hourly_due_unix": 1792018490.345034,
+  "inherited_complete_outers": 5,
+  "monitor_by_complete_step": [
+    {
+      "actual_forward_count": 21.0,
+      "reused_forward_count": 19.0,
+      "step": 11
+    },
+    {
+      "actual_forward_count": 21.0,
+      "reused_forward_count": 19.0,
+      "step": 12
+    },
+    {
+      "actual_forward_count": 21.0,
+      "reused_forward_count": 19.0,
+      "step": 13
+    }
+  ],
+  "must_wait_until_due_before_publication": true,
+  "native_resumed_five": {
+    "accepted": true,
+    "extra_validation_performed": false,
+    "first_resumed_outer": 6,
+    "last_resumed_outer": 10,
+    "metadata_sha256": "2a68945a13a27246c22f4b17a90628ec782a31ff319fa9b8b6351a339fd7aed4",
+    "next_outer": 11,
+    "original_native_first_five_accepted": false,
+    "scope": "already-produced native acceptance of this execution6..10 suffix; not the failed original1..5 native receipt or full200 acceptance",
+    "source_actual_optimizer_writes_per_rank": 100,
+    "source_completed_outer": 5,
+    "status": "observed",
+    "total_budget": 200
+  },
+  "native_resumed_five_accepted": true,
+  "native_resumed_five_extra_validation_performed": false,
+  "new_current_execution_scores_status": "missing",
+  "new_scoring_performed": false,
+  "observed_local": "2026-10-15T06:49:58.385674+08:00",
+  "observed_seconds_before_due": 291.9593596458435,
+  "observed_unix": 1792018198.3856742,
+  "optimizer_call_attempts_current_execution": 160,
+  "other_infra_and_wall_time_speedup_status": "unknown",
+  "parent_step5_scores": {
+    "dev512": {
+      "metadata_sha256": "3db18ff0ef15785b9d5209bfab1b3fd091acc46815bfbd03cc6ebba810a1f1ae",
+      "question_count": 512,
+      "step": 5,
+      "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "weighted_em": 0.24609375,
+      "weighted_f1": 0.3364310899469057
+    },
+    "scope": "historical parent step5 existing metadata only; no current execution scoring performed",
+    "stage64": {
+      "metadata_sha256": "66de8ac16e6ba1641944c5cd5ab4b26e639d6f7b6704234f24dbe5ec2c8ac963",
+      "question_count": 64,
+      "step": 5,
+      "validation_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "weighted_em": 0.328125,
+      "weighted_f1": 0.4153017776950518
+    }
+  },
+  "partial_outer_counted_complete": false,
+  "partial_processed_not_complete": 0,
+  "partial_successful_retained_adam_not_complete": 0,
+  "per_rank_prefix_sha256": {
+    "0": "bbab65f73886959515cbf24a491bbe055afb6d4df420593a829d52042e7c12fe",
+    "1": "4e85a20ee5b236ce47dd6c88ae91614033e7b93981156b61acf7a56d5771a704",
+    "2": "ff38c076fedc3c29b7a8b8e4083f23b88e4671062494008c80d8de20fa8de4a4",
+    "3": "0145b3a87d8a307218d067481ed9b137a9df7afec1b19217a7bb738f9840e128"
+  },
+  "pipeline_alive_birth_matches": true,
+  "pipeline_pid": 3640648,
+  "pipeline_start_ticks": 608655430,
+  "post_evaluation_rng_persisted": false,
+  "previous_hourly_scalar_sha256": "8ba7ba9dae61782bc6dd051045797372364cca889f13c48676c71bf4a3c49f82",
+  "private_publication_status": "pending",
+  "processed_opportunities": 260,
+  "recorded_error_present": false,
+  "replica_counts_counted_once": true,
+  "reward_comparison": {
+    "hourly_window_mean_change": 0.05804640054702759,
+    "previous_hourly_complete_steps": [
+      8,
+      9,
+      10
+    ],
+    "previous_hourly_window_mean": 0.5600927670796713,
+    "same_execution": true,
+    "scope": "current11/12/13 mean minus actual delivered hour2 current-execution8/9/10 mean"
+  },
+  "reward_window": {
+    "after_complete_step": 10,
+    "closed_attempt_prefix_sha256": "4f68e1200d5c5c14b95180e99cbab7b44043457e23ea038ae96af023c58691b8",
+    "complete_prefix_sha256": "0d628afa1ce4eab05054283667ca5e5da2b022eb722d9438cf91694e0f81c4ee",
+    "complete_steps": [
+      11,
+      12,
+      13
+    ],
+    "count": 3,
+    "latest_reward": 0.6328049898147583,
+    "latest_step": 13,
+    "maximum": 0.6328049898147583,
+    "mean": 0.6181391676266988,
+    "minimum": 0.5972404479980469,
+    "per_step": [
+      {
+        "reward_mean": 0.5972404479980469,
+        "step": 11
+      },
+      {
+        "reward_mean": 0.6243720650672913,
+        "step": 12
+      },
+      {
+        "reward_mean": 0.6328049898147583,
+        "step": 13
+      }
+    ],
+    "scope": "newly returned complete11/12/13 only; previous hourly8/9/10 and parent rewards excluded"
+  },
+  "role": "actual_hour3_sanitized_scalar_prepared_pending_due_publication_and_user_delivery",
+  "run_id": "1f34290a70454871aea9d368dc8a0b36",
+  "runtime_jobs": [
+    {
+      "exit_code": 0,
+      "name": "retrieval-stage",
+      "state": "STOPPED"
+    },
+    {
+      "exit_code": null,
+      "name": "retriever",
+      "state": "STARTED"
+    },
+    {
+      "exit_code": null,
+      "name": "probe-server",
+      "state": "STARTED"
+    },
+    {
+      "exit_code": 0,
+      "name": "probe-admission",
+      "state": "STOPPED"
+    },
+    {
+      "exit_code": null,
+      "name": "trainer",
+      "state": "STARTED"
+    }
+  ],
+  "runtime_stage": "GRPO_1_TO_200",
+  "same_process_continuation_evidence": "same exact live pipeline/trainer births with newly returned complete11/12/13 after accepted6..10; native next_outer11 is historical acceptance metadata, not current progress",
+  "same_process_continuation_past_native_resumed_five_verified": true,
+  "saved_checkpoint_rng_verified": true,
+  "schema_version": 1,
+  "selected_predicted_questions": 512,
+  "since_actual_delivered_anchor": {
+    "complete_outers": 3,
+    "processed_opportunities": 59,
+    "skip": 0,
+    "successful_retained_adam": 59
+  },
+  "since_anchor_new_partial_retained_adam": 0,
+  "since_anchor_writes_complete_outer12_and13": 40,
+  "since_anchor_writes_to_finish_outer11": 19,
+  "skip": 0,
+  "snapshot_scope": "actual06:49:58 snapshot; not a new06:54 real-time measurement",
+  "source_commit": "91f673c58ff415115c581b36568801b39ae3db86",
+  "successful_retained_adam": 260,
+  "target_complete_outers": 200,
+  "trainer_alive_birth_matches": true,
+  "trainer_pid": 3648487,
+  "trainer_start_ticks": 608698451,
+  "training_hardware": "A800",
+  "training_world_size": 4,
+  "unpersisted_infra_fields": [
+    "infra/reference_forward_skipped",
+    "infra/rollout/completed_requests_sum",
+    "infra/rollout/completed_trajectories",
+    "infra/rollout/engine_steps_sum",
+    "infra/rollout/environment_actions",
+    "infra/rollout/generation_requests",
+    "infra/rollout/peak_inflight_trajectories",
+    "infra/rollout/phase_elapsed_seconds",
+    "infra/rollout/retrieval_concurrency",
+    "infra/rollout/weight_syncs_per_rank",
+    "timing_s/adv",
+    "timing_s/candidate_fill",
+    "timing_s/gen",
+    "timing_s/question_probe_update",
+    "timing_s/ref",
+    "timing_s/save_checkpoint",
+    "timing_s/step",
+    "timing_s/testing",
+    "timing_s/update_actor",
+    "timing_s/update_critic",
+    "timing_s/values"
+  ],
+  "verifiable_inflight": null,
+  "verifiable_inflight_reason": "Captured returned prefix contains no partial returned attempt and does not establish a started-and-unreturned next opportunity; null means not established, not zero ongoing work",
+  "write_rollbacks_current_execution": 0
+}
