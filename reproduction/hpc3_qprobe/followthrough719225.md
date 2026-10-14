@@ -24,6 +24,16 @@ real retained child exit0 plus fresh complete source/archive/target SHA. A
 digest caches that completed verification within the supervisor; the final
 submit preflight freshly repeats all five verifications.
 
+Before creating a new archive claim, the helper waits at most10s for two
+complete, identical JSON observations of the pair receipt, checking its
+canonical regular-file path and actual owner. This tolerates the unchanged
+producer's visible but unfinished publication. Permanently incomplete JSON,
+non-object JSON, unsafe paths and owners remain failures. Existing archive
+claims and unknown child outcomes are inspected without repeating this launch
+or creating another claim. This independent helper fix applies to a future
+controller or separately authorized recovery of a genuinely failed owned CPU
+controller; it never replaces or restarts an already alive controller.
+
 Only actual producerCOMPLETED0/final51713/ownedcleanup plus all five complete
 archives allow the one existing final-audit submission controller. CPU child0
 does not imply native submission success. Unknown or failed claims are retained

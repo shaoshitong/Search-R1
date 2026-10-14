@@ -62,6 +62,91 @@ class FollowthroughTests(unittest.TestCase):
             completed_outer=5,next_outer=6,source_receipt_sha256=sha))
         self.publish(self.base/'preparation/checkpoint-restoration.json',dict(source_receipt=str(receipt),source_receipt_sha256=sha))
 
+    def pair_path(self,step=5):
+        return self.base/'artifacts/question-probe/completed-pairs'/('global_step_'+str(step))/'source-receipt.json'
+
+    def test_visible_partial_pair_finishes_before_any_archive_claim(self):
+        directory=self.pair(5);path=self.pair_path();path.write_text('{"step":')
+        ready=worker.pair_ready
+        def finish(_):
+            self.assertFalse(directory.exists())
+            if path.read_text()=='{"step":':self.publish(path,dict(step=5,fixture_only=True))
+        def launch(base,commit,step):
+            self.assertEqual(json.loads(path.read_text()),dict(step=5,fixture_only=True))
+            self.assertFalse(directory.exists());directory.mkdir(parents=True)
+        with patch.object(worker,'accounting',return_value=self.actual),\
+             patch.object(worker,'pair_ready',side_effect=lambda step:ready(step,timeout=.2,poll=.001)) as check,\
+             patch.object(worker.time,'sleep',side_effect=finish),\
+             patch.object(worker.control,'launch_archive',side_effect=launch) as submit,\
+             patch.object(worker.control,'inspect_archive',return_value=self.observation(5,False)):
+            result=worker.one_tick('helper',{})
+        check.assert_called_once_with(5);submit.assert_called_once_with(self.base,'helper',5)
+        self.assertEqual(result['phase'],'ACTUAL_PRODUCER_OR_ARCHIVE_WAIT')
+
+    def test_permanently_partial_pair_times_out_without_claim_or_launch(self):
+        directory=self.pair(5);path=self.pair_path();path.write_text('{"step":')
+        ready=worker.pair_ready
+        with patch.object(worker,'accounting',return_value=self.actual),\
+             patch.object(worker,'pair_ready',side_effect=lambda step:ready(step,timeout=.02,poll=.002)),\
+             patch.object(worker.control,'launch_archive') as launch,\
+             patch.object(worker.control,'inspect_archive') as inspect:
+            with self.assertRaisesRegex(ValueError,'PAIR_RECEIPT_READY_TIMEOUT'):worker.one_tick('helper',{})
+        launch.assert_not_called();inspect.assert_not_called();self.assertFalse(directory.exists())
+        self.assertEqual(path.read_text(),'{"step":')
+
+    def test_valid_json_replacement_requires_two_new_stable_observations(self):
+        self.pair(5);path=self.pair_path();self.publish(path,dict(publication='first'))
+        old_inode=path.stat().st_ino;waits=[]
+        def replace_once(_):
+            waits.append(True)
+            if len(waits)==1:
+                replacement=path.with_suffix('.new');self.publish(replacement,dict(publication='final'))
+                replacement.replace(path)
+        with patch.object(worker.time,'sleep',side_effect=replace_once):
+            value=worker.pair_ready(5,timeout=.2,poll=.001)
+        self.assertEqual(value,dict(publication='final'));self.assertEqual(len(waits),2)
+        self.assertNotEqual(path.stat().st_ino,old_inode)
+
+    def test_valid_but_continuously_changing_pair_is_not_ready(self):
+        self.pair(5);path=self.pair_path();old=path.read_bytes();sleep=worker.time.sleep
+        def change(delay):
+            st=path.stat();os.utime(path,ns=(st.st_atime_ns,st.st_mtime_ns+1));sleep(delay)
+        with patch.object(worker.time,'sleep',side_effect=change):
+            with self.assertRaisesRegex(ValueError,'PAIR_RECEIPT_READY_TIMEOUT'):
+                worker.pair_ready(5,timeout=.02,poll=.002)
+        self.assertEqual(path.read_bytes(),old)
+
+    def test_non_object_pair_is_rejected_without_readiness_retry(self):
+        self.pair(5);path=self.pair_path()
+        for value in ([],None,'receipt',5):
+            self.publish(path,value)
+            with self.subTest(value=value),patch.object(worker.time,'sleep') as sleep:
+                with self.assertRaisesRegex(ValueError,'PAIR_RECEIPT_JSON_OBJECT_REQUIRED'):
+                    worker.pair_ready(5,timeout=.1,poll=.001)
+                sleep.assert_not_called()
+
+    def test_pair_readiness_rejects_link_parent_link_owner_and_fifo(self):
+        self.pair(5);path=self.pair_path();original=self.base/'original.json'
+        original.write_bytes(path.read_bytes());path.unlink();path.symlink_to(original)
+        with self.assertRaisesRegex(ValueError,'PAIR_RECEIPT_UNSAFE_PATH'):worker.pair_ready(5)
+        path.unlink();path.write_bytes(original.read_bytes())
+        with patch.object(worker.control,'OWNER',os.getuid()+1):
+            with self.assertRaisesRegex(ValueError,'UNSAFE_FILE_OR_OWNER'):worker.pair_ready(5)
+        path.unlink();os.mkfifo(path)
+        with self.assertRaisesRegex(ValueError,'UNSAFE_FILE_OR_OWNER'):worker.pair_ready(5)
+        path.unlink();path.parent.rmdir();path.parent.symlink_to(self.base,target_is_directory=True)
+        with self.assertRaisesRegex(ValueError,'PAIR_RECEIPT_UNSAFE_PATH'):worker.pair_ready(5)
+
+    def test_existing_claim_with_partial_pair_is_inspected_without_replay(self):
+        directory=self.pair(5);directory.mkdir(parents=True);self.pair_path().write_text('{"step":')
+        with patch.object(worker,'accounting',return_value=self.actual),\
+             patch.object(worker,'pair_ready') as readiness,\
+             patch.object(worker.control,'inspect_archive',return_value=self.observation(5,False)) as inspect,\
+             patch.object(worker.control,'launch_archive') as launch:
+            result=worker.one_tick('helper',{})
+        readiness.assert_not_called();launch.assert_not_called();inspect.assert_called_once_with(self.base,5,full=False)
+        self.assertEqual(result['archives']['5']['status'],'CPU_ARCHIVE_RUNNING')
+
     def test_fixed_binding_rejects_wrong_job_resources_or_admission_sha(self):
         self.submission_binding()
         with patch.object(worker.control,'caps'):
