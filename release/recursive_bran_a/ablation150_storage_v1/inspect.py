@@ -31,16 +31,19 @@ def require(condition, reason):
 def mounted_capacity(path):
     """Measure only an already mounted path; never mount or transfer anything."""
     path = Path(path).resolve(strict=True)
+    # statvfs first resolves an existing automount before its backing identity
+    # is read. The autofs trigger is not the filesystem storing payloads.
+    fs = os.statvfs(path)
     matches = []
     for line in Path('/proc/self/mountinfo').read_text().splitlines():
         left, right = line.split(' - ', 1)
         fields, filesystem = left.split(), right.split()
         mount = Path(fields[4].replace('\\040', ' ').replace('\\134', '\\'))
         if path.is_relative_to(mount):
-            matches.append((len(mount.parts), mount, filesystem))
+            matches.append((len(mount.parts), mount, filesystem, int(fields[0])))
     require(matches, 'existing mount identity unavailable')
-    _, mount, filesystem = max(matches, key=lambda row: row[0])
-    fs = os.statvfs(path)
+    _, mount, filesystem, _ = max(matches,
+        key=lambda row: (row[0], row[2][0] != 'autofs', row[3]))
     return dict(path=str(path), mountpoint=str(mount), fstype=filesystem[0],
                 source=filesystem[1], free_bytes=fs.f_bavail * fs.f_frsize,
                 total_bytes=fs.f_blocks * fs.f_frsize, transfer_executed=False)
