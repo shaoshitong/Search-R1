@@ -1,0 +1,173 @@
+{
+  "role": "qualified_async_top512_progress",
+  "run_id": "1f34290a70454871aea9d368dc8a0b36",
+  "execution_id": "cfbc3d2ff0a44dfa84af1d7b07045ce7",
+  "source_commit": "1f75a186eea7b769c37a919096ea0b54372e5160",
+  "observed_unix": 1792000077.9936426,
+  "births": {
+    "pipeline": {
+      "alive": true,
+      "birth_matches": true,
+      "pid": 3450307,
+      "sid": 3450307,
+      "start_ticks": 607312295,
+      "state": "S",
+      "uid": 0
+    },
+    "status": "observed",
+    "trainer": {
+      "alive": true,
+      "birth_matches": true,
+      "pid": 3459201,
+      "sid": 3459201,
+      "start_ticks": 607358250,
+      "state": "S",
+      "uid": 0
+    }
+  },
+  "complete_outers": 2,
+  "processed_opportunities": 53,
+  "successful_adam": 53,
+  "skip": 0,
+  "partial_returned_adam_not_complete": 13,
+  "verifiable_inflight": null,
+  "reward_window": {
+    "after_complete_step": 0,
+    "complete_prefix_sha256": "058227248d44e5a3c471c8b3b4592cbdb07204fd08da32f74ac03c53f3ed871d",
+    "latest": {
+      "attempt_id": "4c4972b755a64fc6917871b8723d4c85",
+      "attempt_index": 2,
+      "optimizer_writes_after": 40,
+      "optimizer_writes_before": 20,
+      "reward_mean": 0.5089355111122131,
+      "skip": 0,
+      "step": 2,
+      "successful_adam": 20
+    },
+    "new_complete_rows": [
+      {
+        "attempt_id": "9c3f35c533b342e9b417f55b184ba0e4",
+        "attempt_index": 1,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 0,
+        "reward_mean": 0.5104583501815796,
+        "skip": 0,
+        "step": 1,
+        "successful_adam": 20
+      },
+      {
+        "attempt_id": "4c4972b755a64fc6917871b8723d4c85",
+        "attempt_index": 2,
+        "optimizer_writes_after": 40,
+        "optimizer_writes_before": 20,
+        "reward_mean": 0.5089355111122131,
+        "skip": 0,
+        "step": 2,
+        "successful_adam": 20
+      }
+    ],
+    "newly_complete_steps": [
+      1,
+      2
+    ],
+    "partial_final_status": null,
+    "recorded_complete_outers": 2,
+    "scope": "returned whole formal outer rows once per four-rank collective; no partial attempt is included",
+    "status": "observed",
+    "window_count": 2,
+    "window_max": 0.5104583501815796,
+    "window_mean": 0.5096969306468964,
+    "window_min": 0.5089355111122131
+  },
+  "monitor_forward_counts": [
+    {
+      "step": 1,
+      "actual": 21,
+      "reused": 19
+    },
+    {
+      "step": 2,
+      "actual": 21,
+      "reused": 19
+    }
+  ],
+  "other_rollout_timing_sync_fields_unobserved": true,
+  "new_run_gpu_samples": {
+    "complete_step_window_peaks": {
+      "reason": "not_computed_by_this_metadata_entry",
+      "status": "unknown"
+    },
+    "latest_devices": [
+      {
+        "index": 0,
+        "total_mib": 81920,
+        "used_mib": 39793,
+        "util_percent": 96
+      },
+      {
+        "index": 1,
+        "total_mib": 81920,
+        "used_mib": 39889,
+        "util_percent": 100
+      },
+      {
+        "index": 2,
+        "total_mib": 81920,
+        "used_mib": 39889,
+        "util_percent": 96
+      },
+      {
+        "index": 3,
+        "total_mib": 81920,
+        "used_mib": 40239,
+        "util_percent": 100
+      },
+      {
+        "index": 5,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81920,
+        "used_mib": 28721,
+        "util_percent": 0
+      }
+    ],
+    "latest_sample_unix": 1792000077.2152972,
+    "maximum_scanned_sampling_gap_seconds": 2.445986032485962,
+    "sample_count": 3070,
+    "sampled_pipeline_lifetime_peak_mib": {
+      "0": 41947,
+      "1": 42043,
+      "2": 42043,
+      "3": 42393,
+      "5": 17891,
+      "6": 28721
+    },
+    "sampled_scanned_tail_peak_mib": {
+      "0": 41947,
+      "1": 42043,
+      "2": 42043,
+      "3": 42393,
+      "5": 17891,
+      "6": 28721
+    },
+    "scan_from_start": true,
+    "scope": "existing physical-node occupancy samples over pipeline lifetime/scanned tail, including startup; not exclusive model peaks or complete-step GPU peaks; nativefive separately reports its recorded window boundaries",
+    "status": "observed"
+  },
+  "stage64": null,
+  "dev512": null,
+  "native_first_five": {
+    "accepted": null,
+    "scope": "row5 alone never establishes native-five acceptance",
+    "status": "missing"
+  },
+  "teacher_warmup_excluded": true,
+  "observer_metadata_compatibility_fixed": true,
+  "actual_qualification_sha256": "ffe31df221db879c32c2c2cdc5cb7c26edbcf2926a2213637a04f2313aee3576",
+  "source_hot_edited": false,
+  "no_added_gpu_tests_or_evals": true
+}
