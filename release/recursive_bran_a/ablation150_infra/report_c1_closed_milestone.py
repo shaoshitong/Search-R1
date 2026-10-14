@@ -108,11 +108,15 @@ def main():
         'pg_loss': 'actor/pg_loss', 'selected_train_reward': 'critic/score/mean',
         'lr_before': 'actor/lr_before_outer', 'lr_after': 'actor/lr',
         'native_gen_seconds': 'timing_s/gen', 'native_update_seconds': 'timing_s/update_actor',
+        'native_reference_seconds': 'timing_s/ref',
+        'native_advantage_seconds': 'timing_s/adv', 'native_testing_seconds': 'timing_s/testing',
         'native_step_seconds': 'timing_s/step', 'raw_emitted_tokens_recorded': 'rollout/raw_emitted_tokens',
         'dev_em_if_milestone': 'val/em/all'}
     for step in range(1, outer + 1):
         history.append(dict(outer=step, **{label: metrics[str(step)].get(key)
                                           for label, key in fields.items()}))
+        history[-1]['rolling_save_seconds_outside_native_step'] = saved[
+            'rolling_coordinator_save_seconds_by_outer'].get(str(step), {}).get('save_seconds')
     loss = [row['pg_loss'] for row in history if row['pg_loss'] is not None]
     assert all(math.isfinite(value) for value in loss)
     summary = dict(protocol='recursive_C1_closed_milestone_public_v1', milestone=outer,
