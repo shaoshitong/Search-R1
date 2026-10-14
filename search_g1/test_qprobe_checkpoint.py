@@ -93,6 +93,15 @@ class PairFixture:
             inline_attempt_progress=SimpleNamespace(**self.progress,pending=None),
             reward_fn=SimpleNamespace(expected_probe_version=self.reward_version,no_self=True),
             actor_rollout_wg=SimpleNamespace(capture_mixed_state=self.capture_boundary))
+        # Explicit synthetic raw prefix for the new provenance snapshot. These
+        # tiny fixture rows are never a formal monitor/native execution claim.
+        updates=[dict(run_id=self.run_id,step=i,attempt_id=self.ids[i+1]) for i in range(1,outer+1)]
+        attempts=[dict(run_id=self.run_id,logical_update=1,attempt_id=tag,complete_outer=False)
+                  for tag in self.ids[:2]]
+        attempts += [dict(run_id=self.run_id,logical_update=i,attempt_id=self.ids[i+1],complete_outer=True)
+                     for i in range(1,outer+1)]
+        for name,rows in (('actual-updates.jsonl',updates),('actual-attempts.jsonl',attempts)):
+            (self.base/'logs'/name).write_text(''.join(json.dumps(row)+'\n' for row in rows))
 
     def capture_boundary(self,directory,checkpoint=False):
         assert checkpoint is False

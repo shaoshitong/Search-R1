@@ -30,9 +30,13 @@ def file_records(value):
         for item in value:yield from file_records(item)
 
 
-def destination(original, source_base, target_base):
+def destination(original, source_base, target_base,checkpoint=None):
     original=Path(original).resolve();source_base=Path(source_base).resolve()
     if original.is_relative_to(source_base):return target_base/original.relative_to(source_base)
+    if checkpoint is not None and original.is_relative_to(Path(checkpoint).resolve()):
+        # Retained foreign CP5 is one complete tree, including training_state.
+        # Hashing each parent separately would detach Adam/head from HF files.
+        return target_base/'restored-checkpoint'/original.relative_to(Path(checkpoint).resolve())
     # Keep external encoder files together, so HF index relative paths work.
     group=hashlib.sha256(str(original.parent).encode()).hexdigest()
     return target_base/'external'/group/original.name
@@ -66,12 +70,12 @@ def copy_checked(source, target, expected_sha, expected_bytes):
 def relocate(receipt, target_base):
     value=copy.deepcopy(receipt);source_base=Path(receipt['source_base']).resolve()
     for row in file_records(value):
-        path=destination(row['path'],source_base,target_base);st=path.stat()
+        path=destination(row['path'],source_base,target_base,receipt['checkpoint']);st=path.stat()
         if st.st_size!=row['bytes'] or sha_file(path)!=row['full_read_sha256']:
             raise ValueError('Relocated receipt does not match actual destination bytes')
         row.update(path=str(path),inode=st.st_ino,mtime_ns=st.st_mtime_ns)
     for name in ('checkpoint','question_probe_state_path','head_path'):
-        value[name]=str(destination(value[name],source_base,target_base))
+        value[name]=str(destination(value[name],source_base,target_base,receipt['checkpoint']))
     value['source_base']=str(target_base)
     value['actual_cuda_restore_accepted']=False
     # Do not stamp a new producer, state, counters, or scientific acceptance.
@@ -109,7 +113,7 @@ def archive(receipt_path):
     files=[]
     with (directory/'progress.jsonl').open('x') as progress:
         for source,row in sorted(rows.items()):
-            paths=[destination(source,origin,b) for b in (archive_base,target_base)]
+            paths=[destination(source,origin,b,receipt['checkpoint']) for b in (archive_base,target_base)]
             for target in paths:copy_checked(source,target,row['full_read_sha256'],row['bytes'])
             record=dict(source_path=source,archive_path=str(paths[0]),target_path=str(paths[1]),
                         bytes=row['bytes'],sha256=row['full_read_sha256'])

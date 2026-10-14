@@ -149,12 +149,18 @@ def pair(base,run,step):
     need(type(step) is int and step in STEPS,'only five fixed real pairs are supported')
     path=Path(base)/'artifacts/question-probe/completed-pairs'/('global_step_'+str(step))/'source-receipt.json'
     value=read(path)
+    expected_checkpoint=Path(run['checkpoint_dir'])/'actor'/('global_step_'+str(step))
+    if step==5 and (run.get('full_state_restore') or {}).get('kind')=='question_probe_saved_checkpoint':
+        expected_checkpoint=Path(run['full_state_restore']['source_checkpoint'])
+        need(value.get('checkpoint_origin') is not None,'actual restored source5 boundary missing')
+        from search_g1.qprobe_checkpoint import read_source
+        read_source(path)
     need(type(value['step']) is int and type(value['world_size']) is int and
          value['schema_version']==1 and value['kind']=='question_probe_pair' and
          value['status']=='QPROBE_COMPLETED_PAIR_FULL_SHA_CPU_STATES_PASS' and value['step']==step and
          value['world_size']==4 and value['run_id']==run['run_id'] and
          value['actor_snapshot_id']==run['run_id']+':'+str(step) and
-         value['source_base']==str(base) and value['checkpoint']==str(Path(run['checkpoint_dir'])/'actor'/('global_step_'+str(step))),
+         value['source_base']==str(base) and value['checkpoint']==str(expected_checkpoint),
          'actual pair identity/path differs')
     manifest=Path(base)/'logs/run-manifest.json'
     need(value['source_run_manifest']['path']==str(manifest) and
@@ -406,8 +412,14 @@ def final_ready(base,commit):
          final['step']==200 and final['final'] is True and len(final['question_ids'])==len(final['em'])==len(final['f1'])==51713 and
          len(final['counts'])==7 and sum(final['counts'].values())==51713,'actual producer200/final51713/cleanup missing')
     records=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
+    offset=run.get('full_state_restore',{}).get('completed_outer',0)
+    need([row['step'] for row in records]==list(range(offset+1,201)) and all(row['run_id']==run['run_id'] for row in records),
+         'actual current successful suffix required; replayed prefix/update201 forbidden')
+    from search_g1.qprobe_saved_checkpoint import history_parts
+    from reproduction.hpc3_qprobe.verify_goal import part_updates
+    records,history_proofs=part_updates(history_parts(base,run,last=200))
     need([row['step'] for row in records]==list(range(1,201)) and all(row['run_id']==run['run_id'] for row in records),
-         'actual successful1..200 required; update201 forbidden')
+         'actual original successful1..200 required; update201 forbidden')
     proofs={}
     for step in STEPS:
         p,checkpoint=pair(base,run,step);value=inspect_archive(base,step,full=True)
@@ -423,7 +435,7 @@ def final_ready(base,commit):
                commit,read(publication['publication_path'])['files'],uuid.uuid4().hex)
     return repository,run,binding,dict(source=publication,actual_producer_accounting=accounting,
         final_identity_sha256=digest(base/'logs/final-identity.json'),producer_cleanup_sha256=digest(base/'logs/cleanup-status.json'),
-        full_run_acceptance_sha256=digest(base/'logs/full-run-acceptance.json'),archives=proofs)
+        full_run_acceptance_sha256=digest(base/'logs/full-run-acceptance.json'),original_training_parts=history_proofs,archives=proofs)
 
 
 def submit_audit(base,commit):

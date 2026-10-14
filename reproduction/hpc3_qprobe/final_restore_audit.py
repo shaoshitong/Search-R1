@@ -102,11 +102,23 @@ def final_pair_gate(receipt, parent):
 
 
 def full_records(receipt):
-    history = receipt.get('historical_artifacts', {})
-    return (receipt['files'] + receipt['boundary_worker_files'] +
-            [receipt['boundary_driver'], receipt['source_run_manifest'], receipt['reward_probe_manifest']] +
-            receipt['reward_files'] + history.get('checkpoints', []) +
-            list(history.get('development', {}).values()) + history.get('reward_archives', []))
+    """Use the transport publisher's complete recursive record schema.
+
+    Recovery adds foreign-checkpoint and original-producer provenance records.
+    They are independent dependencies, not optional reporting metadata. Keep
+    the exact archive file set and reject conflicting repeated identities.
+    """
+    from reproduction.hpc3_qprobe.archive_completed_pair import file_records
+    records={}
+    for row in file_records(receipt):
+        path=row['path']
+        need(isinstance(path,str) and path,'malformed dependency file path')
+        previous=records.get(path)
+        if previous is not None:
+            need(all(previous[key]==row[key] for key in ('inode','bytes','mtime_ns','full_read_sha256')),
+                 'duplicate dependency path has conflicting identity/SHA')
+        else:records[path]=row
+    return [records[path] for path in sorted(records)]
 
 
 def verify_record_bytes(records):

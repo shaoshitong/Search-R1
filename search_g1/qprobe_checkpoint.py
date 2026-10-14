@@ -13,6 +13,7 @@ import random
 import shutil
 import time
 import uuid
+from search_g1.qprobe_saved_checkpoint import SAVED_KIND, SAVED_STATUS, QPROBE_RESTORE_KINDS
 
 import numpy as np
 import torch
@@ -107,7 +108,7 @@ def _historical_artifacts(base,run,outer):
     """Freeze only existing bounded evidence; absent early outputs stay absent."""
     from reproduction.common8.formal_contract import SAVE_STEPS
     inherited={}
-    if (run.get('full_state_restore') or {}).get('kind')==PAIR_KIND:
+    if (run.get('full_state_restore') or {}).get('kind') in QPROBE_RESTORE_KINDS:
         inherited=read_source(run['full_state_restore']['source_receipt'])[1].get('historical_artifacts',{})
     checkpoints={item['step']:item for item in inherited.get('checkpoints',[])}
     for step in SAVE_STEPS:
@@ -123,7 +124,9 @@ def _historical_artifacts(base,run,outer):
         value=_read_json(path)
         if value.get('run_id')==run['run_id'] and type(value.get('round')) is int and value['round']<=min(outer//50,3)*50:
             archives[value['version']]=dict(version=value['version'],round=value['round'],**_file_record(path))
+    from search_g1.qprobe_saved_checkpoint import history_records
     return dict(checkpoints=[checkpoints[k] for k in sorted(checkpoints)],development=development,
+        training_parts=history_records(base,run,outer),
         reward_archives=list(archives.values()),raw_training_prefix_verified=False,
         scope='immutable available historical artifact pointers only; raw prefix training history is not reconstructed')
 
@@ -133,8 +136,21 @@ def publish_completed_pair(trainer, checkpoint):
     from reproduction.common8.topology import world_size
     from search_g1.training_state import atomic_save,driver_rng,compact_stream_state
     base=Path(os.environ['SEARCH_G1_BASE']).resolve();checkpoint=Path(checkpoint).resolve()
-    _need(checkpoint.is_relative_to(base),'CHECKPOINT_OUTSIDE_TASK')
     run=_read_json(base/'logs/run-manifest.json');complete=_read_json(checkpoint/'complete.json')
+    checkpoint_origin=None
+    if not checkpoint.is_relative_to(base):
+        binding=run.get('full_state_restore') or {}
+        _need(binding.get('kind')==SAVED_KIND and trainer.global_steps==5 and
+              checkpoint==Path(binding['source_checkpoint']).resolve(),'CHECKPOINT_OUTSIDE_TASK')
+        prefix=verified_runtime_prefix(base,run)
+        _need(prefix['completed_outer']==5 and prefix['writes']==100,'ACTUAL_SAVED_CHECKPOINT_RESTORE_MISSING')
+        checkpoint_origin=dict(source_receipt=_file_record(binding['source_receipt']),
+            actual_workers=_file_record(base/'logs/full-state-restored-workers.json'),
+            actual_driver=_file_record(base/'logs/full-state-restored-driver.json'),
+            actual_question_probe=_file_record(base/'logs/full-state-restored-question-probe.json'),
+            actual_allocation=_file_record(base/'logs/native-allocation-admission.json'),
+            actual_saved_predevelopment_boundary_restored=True,
+            lost_post_evaluation_rng_reconstructed=False)
     outer=trainer.global_steps;size=world_size(run);actor_id=run['run_id']+':'+str(outer)
     _need(type(outer) is int and 1<=outer<=200 and complete['step']==outer and
           complete['run_id']==run['run_id'] and complete['finite_all_saved_tensors'] is True,
@@ -220,6 +236,7 @@ def publish_completed_pair(trainer, checkpoint):
         boundary_worker_files=boundary_records,historical_artifacts=_historical_artifacts(base,run,outer),
         reward_probe_manifest=reward_record,reward_files=reward_files,reward_probe_version=live['version'],
         reward_probe_round=live['round'],question_probe_state_path=str(qpath),head_path=str(head_path),
+        checkpoint_origin=checkpoint_origin,
         feature_spec_sha=qstate['feature_spec_sha'],head_version=qstate['head_version'],
         hf_saved_tensor_count=complete['validated_tensor_count'],attempt_progress=
             dict(completed_outer=outer,cumulative_writes=progress.cumulative_writes,
@@ -244,17 +261,25 @@ def _identity_record(row):
 
 def read_source(receipt_path):
     path=Path(receipt_path).resolve();receipt=_read_json(path)
+    if receipt.get('status')==SAVED_STATUS:
+        from search_g1.qprobe_saved_checkpoint import read_source as read_saved
+        return read_saved(path)
     _need(receipt.get('status')==PAIR_STATUS and receipt.get('schema_version')==1,'RECEIPT_SCHEMA_MISMATCH')
     outer=receipt['step'];size=receipt['world_size'];checkpoint=Path(receipt['checkpoint']).resolve()
     base=Path(receipt['source_base']).resolve()
     _need(type(outer) is int and 1<=outer<=200 and size in (4,8),'RECEIPT_COUNTER_OR_TOPOLOGY_INVALID')
-    _need(checkpoint.is_relative_to(base) and receipt['actor_snapshot_id']==receipt['run_id']+':'+str(outer),
+    foreign=receipt.get('checkpoint_origin')
+    _need((checkpoint.is_relative_to(base) or foreign is not None) and
+          receipt['actor_snapshot_id']==receipt['run_id']+':'+str(outer),
           'RECEIPT_ACTOR_PATH_BINDING_MISMATCH')
     history=receipt.get('historical_artifacts',{})
     historical_records=history.get('checkpoints',[])+list(history.get('development',{}).values())+history.get('reward_archives',[])
     all_records=receipt['files']+receipt['boundary_worker_files']+[receipt['boundary_driver'],receipt['source_run_manifest'],
         receipt['reward_probe_manifest']]+receipt['reward_files']
     all_records+=historical_records
+    if foreign:
+        all_records += [foreign[k] for k in ('source_receipt','actual_workers','actual_driver',
+                                            'actual_question_probe','actual_allocation')]
     identity=tuple(_identity_record(row) for row in all_records)
     actual={str(p.relative_to(checkpoint)) for p in checkpoint.rglob('*') if p.is_file()}
     _need(actual=={row['relative_path'] for row in receipt['files']},'SOURCE_CHECKPOINT_FILE_SET_CHANGED')
@@ -266,12 +291,35 @@ def read_source(receipt_path):
         # inode/size/mtime binding. Hash and parse actual small state/head files;
         # each worker additionally fully hashes its own Adam state before load.
         small=[receipt['boundary_driver'],receipt['source_run_manifest'],receipt['reward_probe_manifest']]+historical_records
+        if foreign:
+            small += [foreign[k] for k in ('source_receipt','actual_workers','actual_driver',
+                                           'actual_question_probe','actual_allocation')]
         small += [row for row in receipt['files'] if row['path'] in
                   (receipt['question_probe_state_path'],receipt['head_path'])]
         for row in small:_need(digest(row['path'])==row['full_read_sha256'],'SOURCE_SMALL_FILE_SHA_MISMATCH')
         parent=_read_json(receipt['source_run_manifest']['path'])
         _need(parent['run_id']==receipt['run_id'],'SOURCE_RUN_BINDING_MISMATCH')
         _need(parent.get('question_probe') is not None,'SOURCE_HAS_NO_QUESTION_PROBE_METHOD')
+        if foreign:
+            _need(outer==5 and foreign['actual_saved_predevelopment_boundary_restored'] is True and
+                  foreign['lost_post_evaluation_rng_reconstructed'] is False,'FOREIGN_CHECKPOINT_SCOPE_CHANGED')
+            original=_read_json(foreign['source_receipt']['path'])
+            _need(original['kind']==SAVED_KIND and original['status']==SAVED_STATUS and
+                  original['run_id']==receipt['run_id'] and original['step']==5,
+                  'FOREIGN_ORIGIN_SOURCE_RELABELED')
+            old_files={row['relative_path']:row['full_read_sha256'] for row in original['files']}
+            _need(old_files=={row['relative_path']:row['full_read_sha256'] for row in receipt['files']},
+                  'FOREIGN_CHECKPOINT_BYTES_DIFFER')
+            workers=_read_json(foreign['actual_workers']['path'])['ranks']
+            head=_read_json(foreign['actual_question_probe']['path'])
+            _need(sorted(row['rank'] for row in workers)==list(range(size)) and all(
+                  row['actual_optimizer_writes']==100 and row['scheduler_last_epoch']==5 and
+                  row['actual_adam_scheduler_readback_equal'] and row['actual_rng_readback_equal'] for row in workers),
+                  'FOREIGN_ACTUAL_WORKER_RESTORE_MISSING')
+            _need(head['completed_outer']==5 and head['readback_passes']==2 and
+                  head['actual_constructed_candidate_stream_equal'] and head['actual_head_adam_private_rng_replay_equal'] and
+                  head['actual_selector_rng_equal'] and head['actual_postconstruction_driver_rng_equal'],
+                  'FOREIGN_ACTUAL_HEAD_DATA_RESTORE_MISSING')
         ranks=receipt['ranks'];_need(sorted(row['rank'] for row in ranks)==list(range(size)),'SOURCE_RANKS_INVALID')
         _need(sorted(row['rank'] for row in receipt['boundary_worker_files'])==list(range(size)),
               'SOURCE_BOUNDARY_RNG_RANKS_INVALID')
@@ -340,7 +388,7 @@ def bind_restore(run, receipt_path):
     run['retriever_topk']=topk
     run.update(run_id=parent['run_id'],native_ray_execution_id=uuid.uuid4().hex,
         initial_probe_version=receipt['reward_probe_version'],pretraining_baseline_policy='reuse_historical',
-        full_state_restore=dict(kind=PAIR_KIND,source_receipt=str(path),source_receipt_sha256=digest(path),
+        full_state_restore=dict(kind=receipt['kind'],source_receipt=str(path),source_receipt_sha256=digest(path),
             source_checkpoint=str(checkpoint),source_base=str(base),
             source_run_manifest_sha256=receipt['source_run_manifest']['full_read_sha256'],
             completed_outer=receipt['step'],actual_optimizer_writes_per_rank=progress['cumulative_writes'],
@@ -350,6 +398,9 @@ def bind_restore(run, receipt_path):
             question_probe_state_path=receipt['question_probe_state_path'],feature_spec_sha=receipt['feature_spec_sha'],
             followup_acceptance_outer=min(receipt['step']+5,200)),
         optimizer_semantics='actual paired actor/head/Adam/scheduler/RNG/source-stream restoration; CUDA readback required')
+    if receipt['kind']==SAVED_KIND:
+        run['full_state_restore'].update(sampling_rng_boundary=receipt['sampling_rng_boundary'],
+            post_evaluation_rng_available=False,bitwise_continuation_from_failed_post_evaluation=False)
     return run
 
 
@@ -418,6 +469,14 @@ def verified_runtime_prefix(base,run):
     _need(driver['actual_driver_rng_readback_equal'] and driver['completed_outer']==outer and
         driver['actual_candidate_source_cursor']==receipt['driver_state']['source_consumed'],
         'ACTUAL_DRIVER_READBACK_MISSING')
+    if receipt['kind']==SAVED_KIND or receipt.get('checkpoint_origin'):
+        head=_read_json(base/'logs/full-state-restored-question-probe.json')
+        _need(head['completed_outer']==outer and head['readback_passes']==2 and
+              head['source_receipt_sha256']==digest(run['full_state_restore']['source_receipt']) and
+              head['candidate_source_cursor']==receipt['driver_state']['source_consumed'] and
+              head['actual_head_adam_private_rng_replay_equal'] and head['actual_selector_rng_equal'] and
+              head['actual_constructed_candidate_stream_equal'] and head['actual_postconstruction_driver_rng_equal'],
+              'ACTUAL_HEAD_SELECTOR_STREAM_READBACK_MISSING')
     used=receipt['ranks'][0]['used_attempt_ids']
     return dict(completed_outer=outer,writes=progress['cumulative_writes'],attempt_index=progress['attempt_index'],
                 rejections=receipt['ranks'][0]['policy_rejections'],aborted=progress['aborted_attempts'],

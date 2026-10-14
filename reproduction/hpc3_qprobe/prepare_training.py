@@ -55,22 +55,36 @@ def main():
     from reproduction.common8.prepare_run import prepare
     model=Path('/data/user/jxu957/experiments/topd-20261008/runtime/assets/qwen2.5-3b-instruct-aa8e725')
     storage_admission(base,model)
+    binding=base/'preparation/checkpoint-restoration.json'
+    restore=None
+    if binding.is_file():
+        value=json.loads(binding.read_text())
+        from search_g1.full_state_restore import digest,source
+        if value['source_receipt_sha256']!=digest(value['source_receipt']):
+            raise ValueError('Explicit restoration source changed')
+        _,receipt,_,_,_=source(value['source_receipt'])
+        if receipt['world_size']!=4 or receipt['step']!=5 or value['target']!=str(base):
+            raise ValueError('Native4 checkpoint5 restoration differs')
+        restore=value['source_receipt']
     run=prepare(base,model,base/'preparation/official-model-manifest.json',a.commit,
         rollout_memory_utilization=0.1,
         local_retrieval_assets='/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/assets-root/assets/wiki',
-        execution_site='hpc3')
+        execution_site='hpc3',restore_receipt=restore)
     from reproduction.common8.qprobe_bind import bind
     from reproduction.common8.stage_retrieval import ASSETS
     from search_g1.qprobe_features import sha_json
-    run=bind(base,base/'question-features',retriever_version=sha_json(ASSETS),
-        exploration_questions=64,seed=20261013,teacher_warmup_cache=base/'teacher-warmup-cache')
+    if restore is None:
+        run=bind(base,base/'question-features',retriever_version=sha_json(ASSETS),
+            exploration_questions=64,seed=20261013,teacher_warmup_cache=base/'teacher-warmup-cache')
     from reproduction.common8.configuration import resolved
     resolved(base)
     # The existing pipeline owns the one durable resource admission. Preparing
     # a second admission here would collide with its immutable receipt.
     print(json.dumps(dict(stage='hpc3_question_probe_configuration_prepared',run_id=run['run_id'],
         extra_frozen_teacher_warmup_outers=1,target_successful_training_outers=200,
-        actual_training_outers_completed=0,actual_allocation_admission_pending=True)),flush=True)
+        actual_training_outers_completed=0 if restore is None else run['full_state_restore']['completed_outer'],
+        historical_teacher_reused=restore is not None,actual_cuda_restore_pending=restore is not None,
+        actual_allocation_admission_pending=True)),flush=True)
 
 
 if __name__=='__main__':main()

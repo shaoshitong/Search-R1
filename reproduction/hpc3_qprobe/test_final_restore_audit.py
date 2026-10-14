@@ -89,13 +89,28 @@ class FinalAuditGuardTests(unittest.TestCase):
                 audit.verify_record_bytes([row])
 
     def test_full_records_include_external_boundary_and_reward_dependencies(self):
-        value=dict(files=[{'path':'actor'}],boundary_worker_files=[{'path':'rng'}],
-                   boundary_driver={'path':'driver'},source_run_manifest={'path':'manifest'},
-                   reward_probe_manifest={'path':'reward_manifest'},reward_files=[{'path':'reward_weights'}],
-                   historical_artifacts=dict(checkpoints=[{'path':'cp5'}],development={'before':{'path':'dev0'}},
-                                             reward_archives=[{'path':'archive'}]))
+        def record(name):
+            return dict(path=name,inode=1,bytes=1,mtime_ns=1,full_read_sha256='a'*64)
+        value=dict(files=[record('actor')],boundary_worker_files=[record('rng')],
+                   boundary_driver=record('driver'),source_run_manifest=record('manifest'),
+                   reward_probe_manifest=record('reward_manifest'),reward_files=[record('reward_weights')],
+                   historical_artifacts=dict(checkpoints=[record('cp5')],development={'before':record('dev0')},
+                                             reward_archives=[record('archive')],
+                                             training_parts=[dict(source_run_manifest=record('prefix_manifest'))]),
+                   checkpoint_origin=dict(source_receipt=record('saved_source'),actual_workers=record('workers'),
+                                          actual_driver=record('driver'),actual_question_probe=record('qprobe'),
+                                          actual_allocation=record('allocation')))
         self.assertEqual({v['path'] for v in audit.full_records(value)},
-                         {'actor','rng','driver','manifest','reward_manifest','reward_weights','cp5','dev0','archive'})
+                         {'actor','rng','driver','manifest','reward_manifest','reward_weights','cp5','dev0','archive',
+                          'prefix_manifest','saved_source','workers','qprobe','allocation'})
+        self.assertEqual(len(audit.full_records(value)),14)  # Identical driver record is read once.
+
+    def test_full_records_reject_conflicting_duplicate_provenance(self):
+        row=dict(path='/synthetic/path',inode=1,bytes=1,mtime_ns=1,full_read_sha256='a'*64)
+        for key,value in [('inode',2),('bytes',2),('mtime_ns',2),('full_read_sha256','b'*64)]:
+            changed=dict(row,**{key:value})
+            with self.subTest(key=key),self.assertRaisesRegex(ValueError,'conflicting identity/SHA'):
+                audit.full_records(dict(files=[row],historical_artifacts=dict(training_parts=[dict(source_run_manifest=changed)])))
 
     def test_optimizer_and_scheduler_locks_preserve_exact_state_dict(self):
         parameter=torch.nn.Parameter(torch.tensor([1.]))
@@ -180,6 +195,74 @@ class FinalAuditGuardTests(unittest.TestCase):
             self.assertEqual(audit.verify_transport(path,receipts['target'],expected_step=5)['step'],5)
             for step in (0,1,199,201,True):
                 with self.assertRaises(ValueError):audit.verify_transport(path,receipts['target'],expected_step=step)
+
+    def test_foreign_checkpoint_and_training_provenance_real_bytecopies_pass_transport(self):
+        """Real text bytecopies exercise dependencies, never claim CUDA/model validity."""
+        from reproduction.hpc3_qprobe.archive_completed_pair import file_records,copy_checked,destination,relocate
+        with tempfile.TemporaryDirectory() as folder,patch.object(audit,'OWNER',os.getuid()):
+            top=Path(folder).resolve();origin=top/'resumed';origin.mkdir()
+            old=top/'original';checkpoint=old/'actor/global_step_5'
+            def record(path):
+                path.parent.mkdir(parents=True,exist_ok=True)
+                path.write_bytes(('explicit synthetic dependency '+str(path.relative_to(top))).encode())
+                st=path.stat()
+                return dict(path=str(path),inode=st.st_ino,bytes=st.st_size,mtime_ns=st.st_mtime_ns,
+                    full_read_sha256=audit.digest(path))
+            files=[record(checkpoint/'model.safetensors'),record(checkpoint/'training_state/question-probe-state.pt'),
+                   record(checkpoint/'training_state/head.pt')]
+            source_manifest=record(origin/'logs/run-manifest.json')
+            original_manifest=record(old/'logs/run-manifest.json')
+            foreign={key:record(origin/'proofs'/(key+'.json')) for key in
+                ('source_receipt','actual_workers','actual_driver','actual_question_probe','actual_allocation')}
+            receipt=dict(run_id='a'*32,step=5,world_size=4,kind='question_probe_pair',
+                status='QPROBE_COMPLETED_PAIR_FULL_SHA_CPU_STATES_PASS',source_base=str(origin),
+                checkpoint=str(checkpoint),question_probe_state_path=files[1]['path'],head_path=files[2]['path'],
+                files=files,boundary_worker_files=[record(origin/'pair5/rng/rank-0.pt')],
+                boundary_driver=record(origin/'pair5/driver.pt'),source_run_manifest=source_manifest,
+                reward_probe_manifest=record(origin/'pair5/reward-manifest.json'),reward_files=[],
+                checkpoint_origin=dict(foreign,actual_saved_predevelopment_boundary_restored=False,
+                    synthetic_fixture_only=True,lost_post_evaluation_rng_reconstructed=False),
+                historical_artifacts=dict(training_parts=[dict(base=str(old),first=1,last=5,
+                    source_run_manifest=original_manifest)],checkpoints=[],development={},reward_archives=[]),
+                actual_cuda_restore_accepted=False)
+            source=origin/'receipt.json';source.write_text(json.dumps(receipt))
+            # The real publisher traverses all nested records. This was wider
+            # than the old hard-coded native audit consumer dependency list.
+            original_records={row['path']:row for row in file_records(receipt)}
+            self.assertEqual(set(original_records),{row['path'] for row in audit.full_records(receipt)})
+            roots={role:top/role for role in ('archive','target')}
+            for root in roots.values():root.mkdir()
+            payload=[]
+            for name,row in sorted(original_records.items()):
+                copies={role:destination(name,origin,root,checkpoint) for role,root in roots.items()}
+                for path in copies.values():copy_checked(name,path,row['full_read_sha256'],row['bytes'])
+                payload.append(dict(source_path=name,archive_path=str(copies['archive']),
+                    target_path=str(copies['target']),bytes=row['bytes'],sha256=row['full_read_sha256']))
+            receipts={}
+            for role,root in roots.items():
+                path=root/'receipt.json';moved=relocate(receipt,root);path.write_text(json.dumps(moved))
+                self.assertEqual(Path(moved['checkpoint']),root/'restored-checkpoint')
+                self.assertEqual(Path(moved['files'][2]['path']).parent,root/'restored-checkpoint/training_state')
+                receipts[role]=dict(path=str(path),sha256=audit.digest(path))
+            proof=dict(schema_version=1,status='QPROBE_PAIR_SOURCE_ARCHIVE_TARGET_FULL_SHA_PASS',step=5,
+                world_size=4,run_id='a'*32,source_manifest_sha256=source_manifest['full_read_sha256'],
+                source_receipt=dict(path=str(source),sha256=audit.digest(source)),
+                archive_receipt=receipts['archive'],target_receipt=receipts['target'],files=payload)
+            for role in roots:proof[role+'_file_set']=[row[role+'_path'] for row in payload]+[receipts[role]['path']]
+            complete=top/'complete.json';complete.write_text(json.dumps(proof))
+            passed=audit.verify_transport(complete,receipts['target']['path'],expected_step=5)
+            self.assertEqual(passed['full_read_file_count'],len(original_records))
+            # A declared omission must fail even when every remaining byte is correct.
+            omitted=copy.deepcopy(proof)
+            omitted['files']=[row for row in payload if row['source_path']!=foreign['actual_workers']['path']]
+            complete.write_text(json.dumps(omitted))
+            with self.assertRaisesRegex(ValueError,'payload file set differs'):
+                audit.verify_transport(complete,receipts['target']['path'],expected_step=5)
+            complete.write_text(json.dumps(proof))
+            copied_original=next(row for row in payload if row['source_path']==original_manifest['path'])
+            target=Path(copied_original['target_path']);target.write_bytes(b'X'*target.stat().st_size)
+            with self.assertRaisesRegex(ValueError,'fresh source/archive/target'):
+                audit.verify_transport(complete,receipts['target']['path'],expected_step=5)
 
     def test_reward_install_reads_relocated_target_files_without_source_fallback(self):
         with tempfile.TemporaryDirectory() as folder:

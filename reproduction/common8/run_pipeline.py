@@ -75,7 +75,7 @@ def request_interrupt(sig,frame):
 
 def verify_initial_probe_binding(run):
     restore=run.get('full_state_restore')
-    if restore and restore.get('kind')=='question_probe_pair':
+    if restore and restore.get('kind') in ('question_probe_pair','question_probe_saved_checkpoint'):
         version=restore['reward_probe_version']
         assert isinstance(version,str) and version and run['initial_probe_version']==version, 'Paired restored reward probe binding differs'
     else:
@@ -349,7 +349,7 @@ class Pipeline:
         return 'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP'
     def initial_probe_calibration(self):
         if self.run.get('full_state_restore'):
-            if self.run['full_state_restore'].get('kind')=='question_probe_pair':
+            if self.run['full_state_restore'].get('kind') in ('question_probe_pair','question_probe_saved_checkpoint'):
                 from search_g1.qprobe_checkpoint import install_restored_reward_probe
                 receipt=install_restored_reward_probe(self.base,self.run)
                 self.stage('RESTORING_PINNED_COMPLETED_PAIR_REWARD_PROBE_NO_NEW_CALIBRATION',

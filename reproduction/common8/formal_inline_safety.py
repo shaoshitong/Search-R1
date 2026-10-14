@@ -199,7 +199,7 @@ def archive_initial_probe(base, run):
     base=Path(base).resolve()
     live = read(base / 'artifacts/live/manifest.json')
     binding=run.get('full_state_restore') or {}
-    if binding.get('kind')=='question_probe_pair':
+    if binding.get('kind') in ('question_probe_pair','question_probe_saved_checkpoint'):
         from search_g1.qprobe_checkpoint import read_source
         _,source,_,_,_=read_source(binding['source_receipt'])
         pinned=read(source['reward_probe_manifest']['path'])
@@ -273,7 +273,7 @@ def verify_plan(base, artifact, run):
     for key, value in FORMAL_SAFEGUARDS.items():
         assert type(artifact[key]) in (int, float) and artifact[key] == value
     binding=run.get('full_state_restore') or {}
-    frozen_writes=(binding['actual_optimizer_writes_per_rank'] if binding.get('kind')=='question_probe_pair' else
+    frozen_writes=(binding['actual_optimizer_writes_per_rank'] if binding.get('kind') in ('question_probe_pair','question_probe_saved_checkpoint') else
                    100 if binding else 0)
     assert artifact['actual_optimizer_writes_at_freeze'] == frozen_writes
     assert artifact['optimizer_counting'] == FORMAL_COUNTING
@@ -292,7 +292,7 @@ def verify_plan(base, artifact, run):
     assert digest(archive) == initial['archive_sha256']
     live = read(archive)
     assert live['run_id'] == run['run_id'] and live['version'] == run['initial_probe_version']
-    if binding.get('kind')=='question_probe_pair':
+    if binding.get('kind') in ('question_probe_pair','question_probe_saved_checkpoint'):
         from search_g1.qprobe_checkpoint import read_source
         _,source,_,_,_=read_source(binding['source_receipt'])
         pinned=read(source['reward_probe_manifest']['path'])
@@ -305,7 +305,7 @@ def verify_plan(base, artifact, run):
     assert allocation['accepted'] is True and allocation['run_id'] == run['run_id']
     assert artifact['native_birth'] == native_birth(allocation)
     assert artifact['slurm_job_id'] == allocation['slurm_job_id']
-    if binding.get('kind')=='question_probe_pair':
+    if binding.get('kind') in ('question_probe_pair','question_probe_saved_checkpoint'):
         from search_g1.full_state_restore import verify_guarded_restore
         verify_guarded_restore(base,run,artifact['probability'])
     elif run.get('execution_backend', 'slurm') == 'ssh_local':

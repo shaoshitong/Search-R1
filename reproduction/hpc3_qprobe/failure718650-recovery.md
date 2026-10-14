@@ -31,10 +31,32 @@ claim/process/result after an unknown outcome; never replay it. It retains
 large files remotely, makes independent small evidence copies and reports
 actual full-read byte progress. No GPU job or training is submitted by it.
 
-Recovery remains required: freshly verify the saved checkpoint and immutable
-raw prefix, implement explicit native4 restoration of the real saved boundary,
-verify actor/HF/Adam/scheduler/RNG/head/replay/selector/constructed-stream
-readbacks, preserve the measured dev512 result and truthfully complete pair5.
-Then continue outer6..200 with an authenticated source prefix and all five
-checkpoint archives/final native four-rank restore/no201 acceptance. Do not
-reset to official0 or regenerate the accepted frozen teacher5120 cache.
+The implemented recovery entry is `recover_saved718650.py`: `start-prepare`
+detaches one claimed CPU preparation; `preflight` resolves the actual recipe
+without creating the live run manifest; `submit` requires that preflight and
+submits one four-GPU allocation. Each mode needs the verified published commit.
+An existing claim must be inspected after an unknown outcome, never replayed.
+
+`question_probe_saved_checkpoint` is a distinct source admission, **not** a
+completed-pair receipt. Its 21-file saved checkpoint, original raw1..5, actual
+failure and CPU readback records are cross-bound by identity and SHA. Native
+startup loads this saved pre-evaluation worker/driver RNG, skips accepted
+teacher warmup and the already measured fixed dev5, then requires actual
+actor/HF435/Adam100/scheduler5/RNG on four workers plus two equal readbacks of
+the actual head/replay/private RNG/selector/constructed stream and driver RNG.
+Only then can it publish pair5 with an authenticated foreign checkpoint origin
+and a genuinely captured new idle boundary. The unavailable old postdev RNG
+remains explicitly unavailable; it is never described as bitwise recovered.
+
+Historical prefix1..5 stays in its original producer directory and the new
+producer writes only6..200. Every milestone carries bounded original producer
+manifest/raw-row hashes. Final consumers reject gaps, overlaps, copied current
+prefixes and update201. All five checkpoint archives keep each checkpoint's
+HF and training states together, copy every origin/history record, require
+complete matching payload sets, and verify source/archive/target SHA before
+the actual final native four-rank restore and final CPU acceptance.
+
+Actual native restoration and continuation remain pending until real receipts
+and completed training iterations prove them. CPU tests and source publication
+do not substitute for that acceptance. Never reset to official0 or regenerate
+the accepted frozen teacher5120 cache.

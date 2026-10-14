@@ -828,7 +828,7 @@ class RayPPOTrainer(object):
                         setattr(inline_attempts,name,progress[name])
                     # Finish only the canonical dev512-after5 that the failed
                     # allocation never reached. Do not repeat initial/stage64.
-                    if run['full_state_restore'].get('kind') == 'question_probe_pair':
+                    if run['full_state_restore'].get('kind') in ('question_probe_pair','question_probe_saved_checkpoint'):
                         # The completed pair already has its historical evaluation.
                         # Future validation runs at the normal common8 cadence.
                         pass
@@ -895,6 +895,16 @@ class RayPPOTrainer(object):
                     self.qprobe_runtime.restore(snapshot, run['run_id']+':'+str(continuation_k))
                 if self.qprobe_runtime.completed_outer != continuation_k:
                     raise ValueError("Actor and question-probe successful outer counters differ")
+                if restored:
+                    from search_g1.qprobe_saved_checkpoint import record_runtime_restore
+                    record_runtime_restore(self,self.config.trainer.full_state_restore_receipt)
+                    if run['full_state_restore'].get('kind')=='question_probe_saved_checkpoint':
+                        # Complete the real restored idle boundary before6, using
+                        # the original saved actor/head bytes and historical512.
+                        from search_g1.qprobe_checkpoint import publish_completed_pair
+                        self.global_steps=continuation_k
+                        publish_completed_pair(self,run['full_state_restore']['source_checkpoint'])
+                        self.global_steps=continuation_k+1
                 if continuation_k == 0 and self.config.question_probe.get('teacher_warmup_cache'):
                     from search_g1.qprobe_warmup_boundary import run as teacher_warmup
                     teacher_warmup(self, generation_manager, self.qprobe_runtime, mixed_stream)

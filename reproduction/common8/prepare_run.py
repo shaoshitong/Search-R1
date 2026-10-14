@@ -153,7 +153,7 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         validate_base(base.resolve(),result)
     if restore_receipt:
         from search_g1.qprobe_checkpoint import PAIR_STATUS
-        if restore_source.get('status')==PAIR_STATUS:
+        if restore_source.get('status') in (PAIR_STATUS,'QPROBE_SAVED_CHECKPOINT5_PRE_DEVELOPMENT_FULL_SHA_CPU_PASS'):
             # This CLI is the native eight-rank route. Four-rank local sources
             # use the local preparation entry; changing shard layout is forbidden.
             assert restore_source['world_size']==result['training_world_size'], 'Checkpoint shard layout must match actual native topology'

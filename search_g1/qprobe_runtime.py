@@ -461,7 +461,7 @@ def _retriever_contract(config, run):
     if not isinstance(index_version, str) or not index_version.strip():
         raise RuntimeError("Question-probe labels require a pinned retriever index version")
     topk = int(config.retriever.topk)
-    if (run.get("full_state_restore") or {}).get("kind") == "question_probe_pair" and \
+    if (run.get("full_state_restore") or {}).get("kind") in ("question_probe_pair","question_probe_saved_checkpoint") and \
             topk != run.get("retriever_topk", 3):
         raise RuntimeError("Paired question-probe restore changed the pinned retrieval topk")
     semantic = dict(topk=topk, recorded_index_version=index_version)

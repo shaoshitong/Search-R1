@@ -17,6 +17,13 @@ from reproduction.common8.formal_contract import (
 from reproduction.common8.topology import ranks
 
 
+def qprobe_restoration_kind(restoration):
+    if not restoration:return None
+    if restoration.get('kind')=='question_probe_pair':return 'question_probe_pair'
+    from search_g1.qprobe_saved_checkpoint import SAVED_KIND
+    return SAVED_KIND if restoration.get('kind')==SAVED_KIND else None
+
+
 def verify_five_scheduler_prefix(five, full):
     """Compare the actual complete five interval, independent of row counts."""
     selected=[row for row in full['selected_rows'] if 1<=row['logical_update']<=5]
@@ -135,7 +142,12 @@ def verify_full(base):
     data=verify(base/'data')
     records=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
     restoration=run.get('full_state_restore')
-    paired_restoration=bool(restoration and restoration.get('kind')=='question_probe_pair')
+    # A saved CP5 has a real actor/head/driver checkpoint, but no published
+    # post-development pair. Keep its separate kind while sharing the
+    # question-probe state and historical-artifact consumer paths.
+    qprobe_kind=qprobe_restoration_kind(restoration)
+    saved_restoration=qprobe_kind is not None and qprobe_kind!='question_probe_pair'
+    paired_restoration=qprobe_kind is not None
     first=restoration['completed_outer']+1 if restoration else 1
     assert [r['step'] for r in records]==list(range(first,TARGET_UPDATES+1))
     assert all(r['run_id']==run['run_id'] and all(math.isfinite(v) for v in r['metrics'].values()) for r in records)
@@ -339,6 +351,12 @@ def verify_full(base):
             pinned_reward_calibration_raw_rebuilt=False,
             missing_historical_checkpoints=missing_historical_checkpoints,
             scope='saved parent prefix model/Adam/scheduler/head/RNG and raw current suffix; not an assertion that all1..200 historical raw receipts are available')
+        if saved_restoration:
+            proof['restoration_verification_scope'].update(
+                restoration_kind=qprobe_kind,
+                sampling_rng_boundary='saved checkpoint5 before development512',
+                post_development_rng_available=False,
+                bitwise_continuation_of_failed_execution=False)
     if initial_probe_adoption is not None:proof['initial_probe_adoption']=initial_probe_adoption
     from reproduction.common8.calibration_runtime import write_once
     write_once(base/'logs/full-run-acceptance.json',proof)
