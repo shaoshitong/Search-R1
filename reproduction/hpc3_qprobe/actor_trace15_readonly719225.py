@@ -48,7 +48,12 @@ def read_bound(path, expected_sha=None, load=None, mode=None):
     return value, dict(path=str(path), sha256=digest, bytes=before.st_size)
 
 
-def audit():
+def audit(*, base=BASE, source=ORIGINAL, step=STEP, job_id='719225', raw_sha=RAW_SHA,
+          canonical_validator=None, attempt_id=None):
+    # Each caller is a fresh CPU process. Defaults preserve the retained pilot;
+    # generalized readers pass an authenticated historical producer explicitly.
+    BASE, ORIGINAL, STEP, RAW_SHA = Path(base), Path(source), step, raw_sha
+    need(type(STEP) is int and 1 <= STEP <= 200, 'only original formal1..200 accepted')
     need(os.getuid() == 14090 and os.environ.get('CUDA_VISIBLE_DEVICES') == '', 'actual CPU owner required')
     need(all(os.environ.get(k) == '1' for k in ('OMP_NUM_THREADS', 'MKL_NUM_THREADS',
          'OPENBLAS_NUM_THREADS', 'NUMEXPR_NUM_THREADS', 'BLIS_NUM_THREADS', 'VECLIB_MAXIMUM_THREADS')),
@@ -57,6 +62,8 @@ def audit():
     os.chdir(str(ORIGINAL))
     sys.path.insert(0, str(ORIGINAL))
     import torch
+    torch.set_num_threads(1)
+    torch.set_num_interop_threads(1)
     from verl import DataProto
     from search_g1.qprobe_runtime import _complete_generation
     from reproduction.common8.behavior_runtime import (actor_rows, cast_token_fields, row_hash, read_gate_receipt)
@@ -75,18 +82,49 @@ def audit():
         need(hashlib.sha256((ORIGINAL/name).read_bytes()).hexdigest() == run['source_sha256'][name],
              'original reader source bytes differ')
     ledger_bytes, _ = read_bound(BASE/'logs/actual-updates.jsonl')
-    matches = [r for r in map(json.loads, ledger_bytes.splitlines()) if r['step'] == STEP]
-    need(len(matches) == 1, 'completed actual15 must occur exactly once')
-    row = matches[0]
+    updates = list(map(json.loads, ledger_bytes.splitlines()))
+    transaction = None
+    if attempt_id is None:
+        matches = [r for r in updates if r['step'] == STEP]
+        need(len(matches) == 1, 'completed actual outer must occur exactly once')
+        row = matches[0]
+    else:
+        need(isinstance(attempt_id, str) and len(attempt_id) == 32 and
+             all(c in '0123456789abcdef' for c in attempt_id), 'actual attempt UUID required')
+        attempt_bytes, attempt_file = read_bound(BASE/'logs/actual-attempts.jsonl')
+        attempts = [r for r in map(json.loads, attempt_bytes.splitlines()) if r['attempt_id'] == attempt_id]
+        need(len(attempts) == 1, 'actual normal-return attempt must occur exactly once')
+        attempt = attempts[0]
+        count = attempt['optimizer_writes_this_attempt']
+        need(attempt['logical_update'] == STEP and attempt['run_id'] == run['run_id'] and
+             attempt['opportunities_processed'] == 20 and type(count) is int and 0 <= count <= 20 and
+             type(attempt['complete_outer']) is bool and attempt['complete_outer'] is (count > 0) and
+             attempt['scheduler_advances'] == int(count > 0) and
+             attempt['status'] == ('complete' if count > 0 else 'recoverable_guard'),
+             'actual attempt terminal transaction differs')
+        matches = [r for r in updates if r['attempt_id'] == attempt_id]
+        if attempt['complete_outer']:
+            need(len(matches) == 1 and matches[0]['step'] == STEP and
+                 matches[0]['attempt_index'] == attempt['attempt_index'], 'successful attempt/update differs')
+            row = matches[0]
+        else:
+            need(not matches, 'fully skipped attempt has a successful update')
+            row = dict(attempt, step=STEP)
+        transaction = dict(attempt_id=attempt_id, attempt_index=attempt['attempt_index'],
+                           complete_outer=attempt['complete_outer'], actual_optimizer_writes=count,
+                           scheduler_advances=attempt['scheduler_advances'], ledger_file=attempt_file,
+                           attempt_record_sha256=document_sha256(attempt))
     aid = row['attempt_id']
-    binding = read_gate_receipt(BASE, run, STEP, update_record=row)
+    binding = (read_gate_receipt(BASE, run, STEP, update_record=row)
+               if transaction is None or transaction['complete_outer'] else
+               read_gate_receipt(BASE, run, STEP, attempt_id=aid, attempt_index=row['attempt_index']))
     gate_bytes, gate_file = read_bound(BASE/'logs'/('behavior-probability-attempt-'+aid+'.json'),
                                      binding['proof_sha256'], mode=0o600)
     gate = json.loads(gate_bytes)
     allocation_bytes, allocation_file = read_bound(BASE/'logs/native-allocation-admission.json')
     allocation = json.loads(allocation_bytes)
     job = allocation['slurm_job_id']
-    need(allocation['accepted'] is True and allocation['run_id'] == run['run_id'] and job == '719225',
+    need(allocation['accepted'] is True and allocation['run_id'] == run['run_id'] and job == job_id,
          'actual retained native4 allocation differs')
     raw, raw_file = read_bound(BASE/'artifacts/question-probe/attempts'/aid/'real-rollout.pt', RAW_SHA,
                                lambda f: torch.load(f, map_location='cpu', weights_only=False))
@@ -95,7 +133,11 @@ def audit():
     need(ident['run_id'] == run['run_id'] and ident['source_sha256'] == run['source_sha256'] and
          ident['slurm_job_id'] == job and ident['logical_update'] == STEP and ident['attempt_id'] == aid and
          ident['policy_snapshot_id'] == gate['policy_snapshot_id'] == snapshot, 'raw/gate actual identity differs')
+    if transaction is not None:
+        need(ident['attempt_index'] == gate['attempt_index'] == transaction['attempt_index'],
+             'actual attempt index differs')
     _complete_generation(raw['output'], ident)
+    canonical_proof = canonical_validator(raw, run, row, raw_file) if canonical_validator is not None else None
     parents = []
     for i, value in enumerate(raw['parents'].non_tensor_batch['index']):
         if hasattr(value, 'item'):
@@ -148,8 +190,11 @@ def audit():
                                              rebuilt_sha, mode=0o600)
     need(private_bytes == rebuilt_bytes, 'rebuilt trace differs from actual original bytes')
     need(rebuilt_sha == context['trace_sha256'] == proof['trace_sha256'] == gate['trace_sha256'] ==
-         gate['private_trace_sha256'] == row['behavior_trace_sha256'], 'full private trace SHA bindings differ')
-    return dict(status='ACTUAL_RAW15_PRIVATE_TRACE_ALLTOKENS_AND_ACTOR_ROWS_EQUAL', epoch=time.time(),
+         gate['private_trace_sha256'], 'full private trace SHA bindings differ')
+    if transaction is None or transaction['complete_outer']:
+        need(rebuilt_sha == row['behavior_trace_sha256'], 'successful actor trace/update SHA differs')
+    return dict(status=('ACTUAL_RAW_CANONICAL_TRACE_ALLTOKENS_AND_ACTOR_ROWS_EQUAL' if canonical_proof is not None
+                        else 'ACTUAL_RAW15_PRIVATE_TRACE_ALLTOKENS_AND_ACTOR_ROWS_EQUAL'), epoch=time.time(),
                 step=STEP, job=job, source_commit=ORIGINAL.name, source_manifest=manifest_file,
                 raw_file=raw_file, gate_file=gate_file, allocation_file=allocation_file, private_trace_file=private_file,
                 actual_private_trace_byte_equal=True, actual_all2560_ordered_ids_equal=True,
@@ -160,7 +205,10 @@ def audit():
                 tensor_rows_combined_sha256=document_sha256(tensor_rows),
                 hf_forward_performed=False, model_weights_loaded=False, generated_trajectories=0,
                 actor_or_head_updates_performed=0, evidence_files_written=0,
-                scope='actual15 only; paired with prior raw15 canonical-gold/strict-EM readback; not all200/native final restore')
+                canonical_proof=canonical_proof, actual_attempt_transaction=transaction,
+                scope=('one authenticated actual completed outer; same-fd raw canonical labels plus actual actor trace; not all200/native final restore'
+                       if canonical_proof is not None else
+                       'actual15 only; paired with prior raw15 canonical-gold/strict-EM readback; not all200/native final restore'))
 
 
 if __name__ == '__main__':
