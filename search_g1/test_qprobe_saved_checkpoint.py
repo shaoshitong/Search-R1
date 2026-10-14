@@ -30,13 +30,23 @@ class SavedFixture:
     def __init__(self,directory):
         self.fixture=PairFixture(Path(directory).resolve(),outer=5);f=self.fixture;self.base=f.base;self.cp=f.cp
         self.directory=f.base/'failed-job-718650';self.directory.mkdir()
-        for i in range(9):(f.cp/('synthetic-extra-%d'%i)).write_bytes(b'tiny fixture; no native model claim')
+        (f.cp/'weights.safetensors').unlink()
+        shards=['model-%05d-of-00003.safetensors'%i for i in range(1,4)]
+        for name in shards:(f.cp/name).write_bytes(b'tiny fixture; no native model claim')
+        write(f.cp/'model.safetensors.index.json',dict(weight_map={'w'+str(i):name for i,name in enumerate(shards)}))
+        auxiliary={'added_tokens.json','generation_config.json','merges.txt','special_tokens_map.json',
+                   'tokenizer.json','tokenizer_config.json','vocab.json'}
+        for name in auxiliary:(f.cp/name).write_bytes(b'tiny auxiliary fixture')
         complete=json.loads((f.cp/'complete.json').read_text())
         complete.update(validated_tensor_count=435,actual_optimizer_writes_per_rank=100,
                         question_probe=dict(feature_spec_sha='f'*64,head_version=f.trainer.qprobe_runtime.version))
-        complete['files_sha256']={str(p.relative_to(f.cp)):digest(p) for p in f.cp.rglob('*') if p.is_file() and p.name!='complete.json'}
+        complete['files_sha256']={str(p.relative_to(f.cp)):digest(p) for p in f.cp.rglob('*')
+                                 if p.is_file() and p.name not in auxiliary|{'complete.json'}}
         write(f.cp/'complete.json',complete)
         live=json.loads((f.base/'artifacts/live/manifest.json').read_text())
+        live['encoder_sha256'].pop('weights.safetensors')
+        live['encoder_sha256'].update({name:digest(f.cp/name) for name in shards+['model.safetensors.index.json']})
+        write(f.base/'artifacts/live/manifest.json',live)
         f.run['initial_model_sha256']=live['encoder_sha256'];write(f.base/'logs/run-manifest.json',f.run)
         ranks=[dict(rank=i,actual_optimizer_writes=100,scheduler_last_epoch=5,scheduler_step_count=6,
             completed_outer=5,last_attempt_index=5,used_attempt_ids=['fixture-%d'%j for j in range(5)],
@@ -109,6 +119,14 @@ class SavedCheckpointTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             f=SavedFixture(folder);f.receipt['head_path']=str(f.cp/'config.json');write(f.path,f.receipt)
             with self.assertRaisesRegex(ValueError,'SAVED_STATE_BINDING_DIFFERS'):saved.read_source(f.path)
+
+    def test_complete_core_table_and_all_seven_auxiliary_bytes_have_distinct_exact_sets(self):
+        with tempfile.TemporaryDirectory() as folder:
+            f=SavedFixture(folder);r=saved.read_source(f.path)[1]
+            self.assertEqual(len(r['files']),21)
+            self.assertEqual(len(json.loads((f.cp/'complete.json').read_text())['files_sha256']),13)
+            (f.cp/'tokenizer.json').write_bytes(b'changed auxiliary')
+            with self.assertRaisesRegex(ValueError,'SOURCE_FILE_CHANGED'):saved.read_source(f.path)
 
     def test_lost_postdev_rng_cannot_be_marked_bitwise(self):
         with tempfile.TemporaryDirectory() as folder:

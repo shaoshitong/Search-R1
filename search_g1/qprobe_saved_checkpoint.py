@@ -235,11 +235,17 @@ def verify_failure_proofs(receipt,parent):
          {k:v for k,v in row.items() if k!='relative_path'}
          for row in r['files']),'PRESERVED_CHECKPOINT_FILES_DIFFER')
     complete=read(cp/'complete.json')
+    auxiliary={'added_tokens.json','generation_config.json','merges.txt','special_tokens_map.json',
+               'tokenizer.json','tokenizer_config.json','vocab.json'}
+    index=read(cp/'model.safetensors.index.json')
+    core=set(index['weight_map'].values())|{'config.json','model.safetensors.index.json',
+        'training_state/driver.pt','training_state/manifest.json','training_state/question-probe-state.pt',
+        'training_state/question-probe-state.pt.head.pt'}|{'training_state/rank-%d.pt'%i for i in range(4)}
     need(complete['run_id']==r['run_id'] and complete['step']==5 and
          complete['validated_tensor_count']==r['hf_saved_tensor_count']==435 and
          complete['finite_all_saved_tensors'] is True and complete['actual_optimizer_writes_per_rank']==100 and
          all(by_name[name]['full_read_sha256']==sha for name,sha in complete['files_sha256'].items()) and
-         set(complete['files_sha256'])==set(by_name)-{'complete.json'} and
+         set(complete['files_sha256'])==core and set(by_name)==core|auxiliary|{'complete.json'} and
          r['driver_file']==by_name['training_state/driver.pt'] and
          r['question_probe_state_path']==by_name['training_state/question-probe-state.pt']['path'] and
          r['head_path']==by_name['training_state/question-probe-state.pt.head.pt']['path'] and

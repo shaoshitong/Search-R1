@@ -60,3 +60,14 @@ Actual native restoration and continuation remain pending until real receipts
 and completed training iterations prove them. CPU tests and source publication
 do not substitute for that acceptance. Never reset to official0 or regenerate
 the accepted frozen teacher5120 cache.
+
+The first detached preparation under `08faa0f` ended with a verified CPU
+failure before any target directory, preparation intent or Slurm submission:
+the new reader incorrectly equated the 13-entry core checkpoint SHA table
+with the complete 21-file payload. The corrected reader requires the exact
+index-derived core13 plus seven tokenizer/config auxiliaries and complete.json;
+all21 still match the independently preserved full-SHA failure inventory.
+`--recover-failed-preparation` permits one distinct `control-repair1` claim
+only for this exact original terminal failure and verified dead process birth.
+It retains the original control/source-admission bytes and refuses an existing
+target, prepare intent, retry directory or live original process.

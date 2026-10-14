@@ -115,15 +115,36 @@ def preflight(commit):
     return result
 
 
-def start_prepare(commit):
+def start_prepare(commit,recover_failed=False):
     metadata();source,_=verified_source(commit)
+    prior=None
+    if recover_failed:
+        original=ROOT/'recovery718650-control'
+        prior_claim=json.loads((original/'claim.json').read_text())
+        prior_result=json.loads((original/'result.json').read_text())
+        process=json.loads((original/'process.json').read_text())
+        need(prior_claim['commit']=='08faa0f81eb2141280355e33983a3aa45372fde2' and
+             prior_claim['failed_job']==JOB and prior_result['exit_code']==1 and
+             prior_result['error']=="ValueError('QPROBE_SAVED_CHECKPOINT_ORIGINAL_COMPLETE_OR_SAVED_STATE_BINDING_DIFFERS')" and
+             all(prior_result['birth'][key]==process['birth'][key] for key in ('pid','uid','sid','start_ticks')),
+             'GENUINE_FAILED_PREPARATION_REQUIRED')
+        from reproduction.a800.owned_processes import identity
+        try:actual=identity(process['pid'])
+        except (FileNotFoundError,ProcessLookupError):actual=None
+        need(actual is None or actual['state']=='Z' or
+             any(actual[key]!=process['birth'][key] for key in ('pid','uid','sid','start_ticks')),
+             'PRIOR_PREPARATION_STILL_LIVE')
+        existing_source()
+        prior=dict(control=str(original),result_sha256=sha_file(original/'result.json'),
+                   process_sha256=sha_file(original/'process.json'),exit_code=1)
     need(not CONTROL.exists() and not TARGET.exists() and
          not (ROOT/'preparation/recovery718650-prepare-intent.json').exists(),'EXISTING_PREPARATION_OUTCOME_INSPECT')
     CONTROL.mkdir(mode=0o770)
     command=[str(BASE/'env/bin/python'),'-m','reproduction.hpc3_qprobe.recover_saved718650',
              'supervise-prepare','--commit',commit]
+    if recover_failed:command.append('--recover-failed-preparation')
     publish(CONTROL/'claim.json',dict(commit=commit,command=command,cwd=str(source),target=str(TARGET),
-        failed_job=JOB,checked_unix=time.time(),training_submission=False))
+        failed_job=JOB,recovery_of_actual_cpu_failure=prior,checked_unix=time.time(),training_submission=False))
     env=dict(os.environ,QPROBE_SOURCE=str(source),CUDA_VISIBLE_DEVICES='',
              OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',PYTHONUNBUFFERED='1')
     with (CONTROL/'output.log').open('xb') as stream:
@@ -185,7 +206,13 @@ def submit(commit):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('mode',choices=('prepare','start-prepare','supervise-prepare','preflight','submit'));p.add_argument('--commit',required=True)
+    p.add_argument('--recover-failed-preparation',action='store_true')
     a=p.parse_args()
+    if a.recover_failed_preparation:
+        need(a.mode in ('start-prepare','supervise-prepare'),'FAILED_PREPARATION_MODE_DIFFERS')
+        CONTROL=ROOT/'recovery718650-control-repair1'
     if a.mode=='supervise-prepare':sys.exit(supervise_prepare(a.commit))
+    if a.mode=='start-prepare':
+        print(json.dumps(start_prepare(a.commit,a.recover_failed_preparation)),flush=True);sys.exit(0)
     result={'prepare':fresh,'start-prepare':start_prepare,'preflight':preflight,'submit':submit}[a.mode](a.commit)
     print(json.dumps(result),flush=True)
