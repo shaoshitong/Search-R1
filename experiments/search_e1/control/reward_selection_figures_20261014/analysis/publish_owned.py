@@ -10,6 +10,10 @@ files['helpers/C_stream.py']=(D.parent/'g1-reward-correlation-20261010/reconstru
 files['analysis/fixed512-curve-data.json']=(D/'fixed512-curve-data.json').read_bytes();files['analysis/native-reward-means.json']=(D/'native-reward-means.json').read_bytes()
 for name in ['hard-conditioned-soft-data-20261015.json','hard-conditioned-soft-data-validation-20261015.json','hard-conditioned-verification.json','hard-conditioned-source-backup.json','all-correct-soft-binning-20261015.json','all-correct-soft-binning-validation-20261015.json','all-correct-source-backup.json']:
  files['analysis/'+name]=(D/name).read_bytes()
+for name in ['selection-storyboard-source-backup.json','selection-storyboard-verification.json']:
+ files['analysis/'+name]=(D/name).read_bytes()
+storyboard_backup=json.loads((D/'selection-storyboard-source-backup.json').read_text())
+files['figures/templates/user-three-chart-storyboard.drawio']=Path(storyboard_backup['path']).read_bytes()
 backup=json.load((D/'hard-conditioned-source-backup.json').open())
 files['figures/templates/user-edited-before-hard-conditioning.drawio']=Path(backup['path']).read_bytes()
 for p in out.glob('*.drawio'):files['figures/'+p.name]=p.read_bytes()
@@ -17,6 +21,8 @@ for p in out.glob('*.canvas.tsx'):files['figures/'+p.name]=p.read_bytes()
 files['README.md']='''# Reward selection comparison figures, 2026-10-14
 
 Native editable draw.io diagrams, no bitmap-wrapped diagrams. Labels: Soft Reward; Soft Reward -> Hard Reward; Easy Selection+Soft Reward. Fixed512 EM is from immutable native evaluation identities at outer50/100/150/200. Native training reward means are from actual update ledgers. The two reward definitions have different scales.
+
+The latest hard-conditioned-soft-reward-amplification.drawio is one compact three-chart storyboard based on the user's edited first page. It preserves iter20 histogram bins/counts, excludes all-wrong groups, and uses the original twelve fixed512 EM points. Equal-width charts share a frame and native curved arrows. Native robot, magnifier, question-pool and filter icons explain the progression. The actual selection prefers mixed strict-EM groups (Hard EM std>0), with all-correct fallback when needed; it does not rank questions by Soft std or remove all all-correct groups. Nonzero Soft preferences among equally correct answers are not by themselves proof of incorrect gradients. The user's incoming full drawing is retained as a template backup. build_selection_storyboard.py includes hash guards against overwriting subsequent edits.
 
 Diversity is the sample standard deviation (correction1) within each original question's five responses. A=(r-group_mean)/(group_std+1e-6), not token weighted. Strict EM component distributions are reconstructed from source-bound token/scorer or immutable selection receipts, and are not the actual soft-policy advantages. Historical Soft Reward reconstruction is available at1/20/40/60/80/100/120/140. Its per-row soft rewards use frozen historical encoders and readout heads, not guaranteed bitwise online recovery.
 
