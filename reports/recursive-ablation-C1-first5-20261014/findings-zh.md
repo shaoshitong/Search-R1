@@ -18,3 +18,5 @@ C1前5轮的8个rank各完成100次真实Adam、无跳过，loss有限；第6轮
 第5轮采样507.17秒、更新207.13秒、dev512评测721.20秒；阶段可能重叠。第1轮曾在更新前发生目录约束故障，复用保存的批次完成更新；其replay计时不含原采样，累计记录耗时不可当完整资源账单。未保存的worker CUDA/vLLM RNG不声称逐位恢复。
 
 早期5轮差值不足以判断机制效果；主要比较仍为各组150轮。
+
+补充已关闭的第5轮树计量（仅CPU读取已有记录）：入选轨迹合计 424962 个有效policy token位置，其中重复的采样token位置为 65499（15.4129%）。分母按已保存的root model_mask和入选child完整训练token计数；该比率按所有入选轨迹的重复token occurrence计算，不能作为每条子轨迹的平均继承前缀比例。原生记录与接受SHA见 sparse-tree-summary.json、sparse-tree-export-acceptance.json。该补充未生成新轨迹或新增评测。
