@@ -11,7 +11,8 @@ from reproduction.common8.source_files import runtime_files
 
 
 def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
-         initial_head_checkpoint=None, seed=20261013, teacher_warmup_cache=None):
+         initial_head_checkpoint=None, seed=20261013, teacher_warmup_cache=None,
+         infra_rollout=None):
     base = Path(base).resolve()
     manifest = base / "logs/run-manifest.json"
     run = json.loads(manifest.read_text())
@@ -63,6 +64,9 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
         settings["initial_head_checkpoint"] = str(initial_path)
     proposed = dict(run, question_probe=settings, retriever_version=retriever_version,
                     mixed_first_selection=False)
+    if infra_rollout is not None:
+        from search_g1.rollout_phase_contract import validate
+        proposed['infra_rollout']=validate(infra_rollout,run['training_world_size'])
     arguments(proposed, base)
     current_source = {
         str(path.relative_to(repo)): hashlib.sha256(path.read_bytes()).hexdigest()

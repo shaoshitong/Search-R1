@@ -483,6 +483,8 @@ class RayPPOTrainer(object):
             topk = self.config.retriever.topk,
         )
 
+        from search_g1.rollout_phase_contract import configure_generation
+        configure_generation(gen_config,self.config.actor_rollout_ref.rollout)
         # Agent config preparation
         generation_manager = LLMGenerationManager(
             tokenizer=self.tokenizer,
@@ -859,6 +861,8 @@ class RayPPOTrainer(object):
             topk = self.config.retriever.topk,
         )
 
+        from search_g1.rollout_phase_contract import configure_generation
+        configure_generation(gen_config,self.config.actor_rollout_ref.rollout)
         generation_manager = LLMGenerationManager(
             tokenizer=self.tokenizer,
             actor_rollout_wg=self.actor_rollout_wg,
@@ -984,6 +988,8 @@ class RayPPOTrainer(object):
                                     initial_input_ids=first_input_ids,
                                 )
 
+                        from search_g1.rollout_phase_contract import scalar_metrics as rollout_phase_metrics
+                        metrics.update(rollout_phase_metrics(final_gen_batch_output))
                         # final_gen_batch_output.batch.apply(lambda x: x.long(), inplace=True)
                         if behavior_identity is not None:
                             from reproduction.common8.behavior_runtime import (

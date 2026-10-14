@@ -375,6 +375,7 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def update_actor(self, data: DataProto):
+        self._assert_generation_phase_inactive()
         data = data.to(torch.device('cuda', torch.cuda.current_device()))
 
         assert self._is_actor
@@ -510,6 +511,7 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_log_prob(self, data: DataProto) -> DataProto:
+        self._assert_generation_phase_inactive()
         """mostly copying from generate_sequences"""
         independent_meta = {}
         if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
@@ -544,6 +546,123 @@ class ActorRolloutRefWorker(Worker):
         log_gpu_memory_usage('After recompute log prob', logger=logger)
         return output
 
+    def _assert_generation_phase_inactive(self):
+        if (getattr(self, '_resident_generation_phase', None) is not None or
+                getattr(self, '_generation_phase_setup_pending', False)):
+            raise RuntimeError('Actor computation cannot overlap a frozen generation phase')
+
+    def _generation_boundary_agreement(self, value):
+        gathered = [None] * torch.distributed.get_world_size()
+        torch.distributed.all_gather_object(gathered, value)
+        if any(item != gathered[0] for item in gathered) or value.get('error') is not None:
+            raise RuntimeError('Ranks disagree or rejected the generation phase boundary')
+
+    def _generation_setup_agreement(self, error, stage):
+        errors = [None] * torch.distributed.get_world_size()
+        torch.distributed.all_gather_object(errors, error)
+        if any(value is not None for value in errors):
+            raise RuntimeError('Generation phase setup rejected at '+stage)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def begin_generation_phase(self, snapshot_meta):
+        import copy
+        import hashlib
+        import json
+        error = None
+        if type(snapshot_meta) is dict and all(type(snapshot_meta.get(k)) is str and snapshot_meta[k]
+                                               for k in ('phase_id', 'policy_snapshot_id')):
+            self._generation_phase_attempt_handle = {key: snapshot_meta[key] for key in ('phase_id', 'policy_snapshot_id')}
+            if getattr(self, '_resident_generation_phase', None) is None:
+                self._generation_phase_sync_before = self.rollout_sharding_manager.phase_weight_sync_count
+                self._generation_phase_actor_offloaded = False
+        try:
+            self._assert_generation_phase_inactive()
+            assert self._is_rollout and os.environ.get('SEARCH_G1_PROFILE') == 'common8'
+            assert self.config.rollout.name == 'vllm' and self.config.rollout.tensor_model_parallel_size == 1
+            assert type(snapshot_meta) is dict
+            for key in ('phase_id', 'policy_snapshot_id'):
+                assert type(snapshot_meta[key]) is str and snapshot_meta[key]
+            identity = snapshot_meta['behavior_identity']
+            assert identity['policy_snapshot_id'] == snapshot_meta['policy_snapshot_id']
+            provenance = self.rollout.inference_engine.llm_engine._common8_generation_provenance
+            assert identity['run_id'] == provenance['run_id'] and identity['slurm_job_id'] == provenance['slurm_job_id']
+            source_sha = hashlib.sha256(json.dumps(identity['source_sha256'],sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()).hexdigest()
+            assert source_sha == provenance['source_map_sha256']
+            identity_sha = hashlib.sha256(json.dumps(snapshot_meta,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()).hexdigest()
+        except Exception as failure:
+            error = type(failure).__name__
+            identity_sha = None
+        self._generation_boundary_agreement(dict(identity_sha256=identity_sha, error=error))
+        self._generation_phase_setup_pending = True
+        preload_error = None
+        try:
+            if self._is_offload_param:
+                self._generation_phase_params_loaded = True
+                load_fsdp_param_and_grad(module=self.actor_module_fsdp, device_id=torch.cuda.current_device(), load_grad=self._is_offload_grad)
+        except Exception as failure:
+            preload_error = type(failure).__name__
+        self._generation_setup_agreement(preload_error, 'actor_preload')
+        sync_error = None
+        try:
+            self.rollout_sharding_manager.begin_phase(snapshot_meta['policy_snapshot_id'])
+        except Exception as failure:
+            sync_error = type(failure).__name__
+        self._generation_setup_agreement(sync_error, 'weight_sync')
+        begin_error = None
+        try:
+            if self._is_offload_param:
+                # The vLLM loader owns its sampling parameters after sync. Move
+                # training shards once, before KV-cache initialization; no
+                # actor parameter transitions occur in rank-local requests.
+                offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+                self._generation_phase_params_loaded = False
+                self._generation_phase_actor_offloaded = True
+            self.rollout.begin_generation_phase(snapshot_meta)
+        except Exception as failure:
+            begin_error = type(failure).__name__
+        self._generation_setup_agreement(begin_error, 'engine_setup')
+        self._resident_generation_phase = copy.deepcopy(snapshot_meta)
+        return {key: snapshot_meta[key] for key in ('phase_id', 'policy_snapshot_id')}
+
+    @register(dispatch_mode=Dispatch.DP_COMPUTE, blocking=False)
+    @torch.no_grad()
+    def advance_generation_phase(self, handle, new_requests, max_steps=8):
+        phase = getattr(self, '_resident_generation_phase', None)
+        if phase is None or handle != {key: phase[key] for key in ('phase_id', 'policy_snapshot_id')}:
+            raise ValueError('Rank-local requests do not belong to the active phase')
+        # No FSDP/TP preprocessing, synchronization or probability recompute here.
+        return self.rollout.advance_generation_phase(handle, new_requests, max_steps=max_steps)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def end_generation_phase(self, handle, abort=False):
+        phase = getattr(self, '_resident_generation_phase', None)
+        error = None
+        try:
+            assert type(abort) is bool
+            expected = ({key: phase[key] for key in ('phase_id', 'policy_snapshot_id')} if phase is not None
+                        else getattr(self, '_generation_phase_attempt_handle', None))
+            assert handle == expected and (phase is not None or abort)
+            if not abort:
+                assert not self.rollout._generation_phase['service'].pending
+        except (AssertionError,KeyError,TypeError) as failure:
+            error = type(failure).__name__
+        self._generation_boundary_agreement(dict(handle=handle, abort=abort, error=error))
+        result = (self.rollout.end_generation_phase(handle, abort=abort)
+                  if self.rollout._generation_phase is not None or self.rollout._generation_phase_setup_handle is not None
+                  else dict(completed_requests=0, engine_steps=0, already_closed=True))
+        if self.rollout_sharding_manager._phase_setup_snapshot is not None:
+            self.rollout_sharding_manager.end_phase(handle['policy_snapshot_id'])
+        if self._is_offload_param and getattr(self, '_generation_phase_params_loaded', False):
+            offload_fsdp_param_and_grad(module=self.actor_module_fsdp, offload_grad=self._is_offload_grad)
+            self._generation_phase_params_loaded = False
+        self._resident_generation_phase = None
+        self._generation_phase_setup_pending = False
+        torch.cuda.empty_cache()
+        syncs = self.rollout_sharding_manager.phase_weight_sync_count - self._generation_phase_sync_before
+        result.update(phase_id=handle['phase_id'], policy_snapshot_id=handle['policy_snapshot_id'], weight_syncs=syncs,
+                      actor_params_offloaded_during_phase=self._generation_phase_actor_offloaded, aborted=abort)
+        return result
+
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def generate_sequences(self, prompts: DataProto):
         if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
@@ -552,6 +671,7 @@ class ActorRolloutRefWorker(Worker):
                 raise ValueError('common8 model-smoke exception requires explicit greedy mode')
             if not smoke and prompts.meta_info.get('recompute_log_prob') is not False:
                 raise ValueError('common8 requires explicit recompute_log_prob=False before rollout; driver audits actual behavior first')
+        self._assert_generation_phase_inactive()
         prompts = prompts.to(torch.device('cuda', torch.cuda.current_device()))
         # set to False if it is validation
         recompute_log_prob = prompts.meta_info.get('recompute_log_prob', True)
@@ -600,6 +720,7 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_ref_log_prob(self, data: DataProto):
+        self._assert_generation_phase_inactive()
         assert self._is_ref
 
         data = data.to(torch.device('cuda', torch.cuda.current_device()))
@@ -629,12 +750,14 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def capture_mixed_state(self, directory, checkpoint=False):
+        self._assert_generation_phase_inactive()
         assert self._is_actor and self._is_rollout
         from search_g1.training_state import capture_worker
         return capture_worker(self,directory,checkpoint=checkpoint)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def capture_frozen_teacher_boundary(self, directory):
+        self._assert_generation_phase_inactive()
         assert self._is_actor and self._is_rollout
         from search_g1.qprobe_teacher_worker import capture
         return capture(self, directory)
@@ -653,6 +776,7 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None):
+        self._assert_generation_phase_inactive()
         assert self._is_actor
         import torch
         if self._is_offload_param:

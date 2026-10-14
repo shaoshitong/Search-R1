@@ -43,6 +43,10 @@ class FSDPVLLMShardingManager(BaseShardingManager):
         self.inference_engine = inference_engine
         self.model_config = model_config
         self.device_mesh = device_mesh
+        self._phase_snapshot = None
+        self._phase_setup_snapshot = None
+        self._rng_swapped = False
+        self.phase_weight_sync_count = 0
 
         # Full params
         self.full_params = full_params
@@ -67,6 +71,9 @@ class FSDPVLLMShardingManager(BaseShardingManager):
             self.gen_random_states = None
 
     def __enter__(self):
+        if self._phase_snapshot is not None:
+            raise RuntimeError('Per-request FSDP synchronization inside resident rollout phase')
+        self._rng_swapped = False
         log_gpu_memory_usage('Before state_dict() in sharding manager memory', logger=logger)
         params = self.module.state_dict()
         log_gpu_memory_usage('After state_dict() in sharding manager memory', logger=logger)
@@ -89,6 +96,7 @@ class FSDPVLLMShardingManager(BaseShardingManager):
         if self.device_mesh is not None:
             self.torch_random_states = torch.cuda.get_rng_state()
             torch.cuda.set_rng_state(self.gen_random_states)
+            self._rng_swapped = True
 
     def __exit__(self, exc_type, exc_value, traceback):
         log_gpu_memory_usage('Before vllm offload in sharding manager', logger=logger)
@@ -105,9 +113,28 @@ class FSDPVLLMShardingManager(BaseShardingManager):
         torch.cuda.empty_cache()
 
         # restore random states
-        if self.device_mesh is not None:
+        if self.device_mesh is not None and self._rng_swapped:
             self.gen_random_states = torch.cuda.get_rng_state()
             torch.cuda.set_rng_state(self.torch_random_states)
+            self._rng_swapped = False
+
+    def begin_phase(self, policy_snapshot_id):
+        if (type(policy_snapshot_id) is not str or not policy_snapshot_id or
+                self._phase_snapshot is not None or self._phase_setup_snapshot is not None):
+            raise ValueError('Missing snapshot or overlapping resident rollout phase')
+        self._phase_setup_snapshot = policy_snapshot_id
+        self.__enter__()
+        self._phase_snapshot = policy_snapshot_id
+        self.phase_weight_sync_count += 1
+
+    def end_phase(self, policy_snapshot_id):
+        if self._phase_setup_snapshot != policy_snapshot_id:
+            raise ValueError('Closing a different resident actor snapshot')
+        try:
+            self.__exit__(None, None, None)
+        finally:
+            self._phase_snapshot = None
+            self._phase_setup_snapshot = None
 
     def preprocess_data(self, data: DataProto) -> DataProto:
         # TODO: Current impl doesn't consider FSDP with torch micro-dp

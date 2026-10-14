@@ -57,6 +57,8 @@ def arguments(base):
                      str(monitor_trajectories_per_rank(run)))
     from reproduction.common8.qprobe_configuration import arguments as qprobe_arguments
     overrides.extend(qprobe_arguments(run, base))
+    from search_g1.rollout_phase_contract import hydra_arguments
+    overrides.extend(hydra_arguments(run))
     if run.get('full_state_restore'):
         restore=run['full_state_restore']
         overrides += ['+actor_rollout_ref.model.actor_checkpoint_path='+json.dumps(restore['source_checkpoint']),

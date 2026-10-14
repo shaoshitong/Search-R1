@@ -72,7 +72,7 @@ class QProbeInitial0SourceTests(unittest.TestCase):
             initial_probe_adoption_source_base=sources.ORIGINAL_BASE,
             mixed_first_selection=False, retriever_version='1'*64,
             question_probe=dict(candidate_questions=5120, selected_questions=512,
-                responses_per_question=5, exploration_questions=64,
+                responses_per_question=5, exploration_questions=0,
                 bootstrap_max_groups_per_outer=5120,
                 teacher_warmup_cache='/data/shaoshitong/new-qprobe/teacher-warmup-cache'))
 

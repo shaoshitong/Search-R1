@@ -28,7 +28,7 @@ BASELINE = '/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d1
 BASELINE_COMMIT = '34e63b7b12f4056503803905c1b3dd1be95f0adc'
 BASELINE_RUN_ID = '1db662001a0f4d998928bcf6f5f33c9d'
 INITIAL_PROBES = '/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef'
-TEACHER_CACHE = '/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-resilient4096-v3'
+TEACHER_CACHE = '/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v3-async-top512'
 FEATURE_SOURCE_BASE = '/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18'
 FEATURE_SOURCE_COMMIT = 'bf4b88d04c166951691029b18d05d91ece7c7054'
 FEATURE_SOURCE_RUN = '0f49c2a664b448f59b5f21dd49f9b10b'
@@ -43,7 +43,8 @@ FEATURE_PRODUCERS = ('search_g1/qprobe_features.py','search_g1/qprobe_prepare.py
 MAX_BUNDLE = 32 * 1024**2
 REVIEW_CHECKS = (
     'official_model_and_canonical_data', 'frozen_teacher_5120_x_5',
-    'bootstrap_all_5120_groups', 'exploration_64', 'formal_200_not_201',
+    'bootstrap_all_5120_groups', 'exploration_0_top512', 'formal_200_not_201',
+    'independent_trajectory_phase_v1',
     'four_rank_bf16_local4_global16_accum8_ref8', 'recoverable_guards_lr_warmup57',
 )
 
@@ -372,8 +373,9 @@ sys.path.insert(0,str(base/'repo'))
 from reproduction.common8.qprobe_bind import bind
 from reproduction.common8.stage_retrieval import ASSETS
 from search_g1.qprobe_features import sha_json
-run=bind(base,base/'question-features',exploration_questions=64,retriever_version=sha_json(ASSETS),
- seed=20261013,teacher_warmup_cache=teacher_storage(intent))
+from search_g1.rollout_phase_contract import DEFAULT_ROLLOUT_PHASE
+run=bind(base,base/'question-features',exploration_questions=0,retriever_version=sha_json(ASSETS),
+ seed=20261013,teacher_warmup_cache=teacher_storage(intent),infra_rollout=DEFAULT_ROLLOUT_PHASE)
 receipt=dict(stage='QPROBE_BOUND_PRELAUNCH',deployment_id=intent['deployment_id'],run_id=run['run_id'],
  source_commit=run['source_commit'],question_probe=run['question_probe'],target_updates=200,
  extra_frozen_teacher_warmup_outers=1,completed_training_outers=0,trainer_started=False,checked_unix=time.time())
@@ -517,7 +519,9 @@ assert sha(owned(base/'question-features/manifest.json'))==ready['manifest_sha25
 if ready.get('kind')=='copied_verified_existing_encoding':assert read(base/'logs/qprobe-feature-adoption.json')==ready
 assert read(base/'logs/qprobe-bound.json')['run_id']==run['run_id']
 assert q['candidate_questions']==5120 and q['selected_questions']==512 and q['responses_per_question']==5
-assert q['exploration_questions']==64 and q['bootstrap_max_groups_per_outer']==5120
+assert q['exploration_questions']==0 and q['bootstrap_max_groups_per_outer']==5120
+from search_g1.rollout_phase_contract import DEFAULT_ROLLOUT_PHASE
+assert run['infra_rollout']==DEFAULT_ROLLOUT_PHASE and run['infra_rollout']['mode']=='independent_trajectory_phase_v1'
 assert q['teacher_warmup_cache']==str(teacher_storage(intent)) and q['cache_dir']==str(base/'question-features')
 assert not q.get('initial_head_checkpoint') and not run.get('full_state_restore') and run['mixed_first_selection'] is False
 assert run['target_updates']==200 and run['completed_updates']==0 and run['training_world_size']==4

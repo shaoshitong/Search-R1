@@ -78,6 +78,9 @@ def teacher_identity(manifest, *, feature_spec_sha, sampling_config, agent_confi
             if name.startswith(('search_r1/llm_agent/','verl/workers/rollout/vllm_rollout/')) or name in (
                 'reproduction/common8/generation_behavior.py','reproduction/common8/behavior_runtime.py',
                 'reproduction/common8/context_budget.py',
+                'reproduction/common8/sampling_capture.py',
+                'search_g1/async_rollout_runtime.py','search_g1/rollout_phase_contract.py',
+                'verl/workers/fsdp_workers.py','verl/workers/sharding_manager/fsdp_vllm.py',
                 'search_g1/qprobe_teacher_worker.py','search_g1/qprobe_warmup.py')})
 
 

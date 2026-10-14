@@ -131,6 +131,73 @@ def stage_pending(value, outer=1, attempt_id="test-attempt", count=512):
     return labels
 
 
+class PublishedHeadCheckpointReceiptTests(unittest.TestCase):
+    """Real tiny head publication consumed by the unchanged native checkpoint guard."""
+    @classmethod
+    def setUpClass(cls):
+        cls.old_threads = torch.get_num_threads()
+        torch.set_num_threads(1)
+
+    @classmethod
+    def tearDownClass(cls):
+        torch.set_num_threads(cls.old_threads)
+
+    def checkpoint(self, base):
+        from search_g1.training_state import atomic_save
+        checkpoint = base / "checkpoint"
+        directory = checkpoint / "training_state"
+        directory.mkdir(parents=True)
+        value = runtime(base / "artifacts")
+        stage_pending(value)
+        value.complete_outer(1, "run:1")
+        question = value.save_checkpoint(directory, 1, {"consumed_source_rows": 512}, "reward0",
+                                         actor_snapshot_id="run:1")
+        workers = []
+        for rank in range(4):
+            state = dict(run_id="run", rank=rank, world_size=4, scheduler={"last_epoch": 1},
+                         actual_optimizer_writes=20, optimizer={"state": {0: {
+                             "step": torch.tensor(20.), "exp_avg": torch.zeros(1),
+                             "exp_avg_sq": torch.zeros(1)}}})
+            workers.append(dict(atomic_save(directory / f"rank-{rank}.pt", state), rank=rank))
+        driver = atomic_save(directory / "driver.pt", dict(completed_outer=1,
+                             candidate_stream={"consumed_source_rows": 512}))
+        (directory / "manifest.json").write_text(json.dumps(dict(completed_outer=1,
+            worker_files=workers, driver_file=driver, question_probe=question)))
+        (base / "logs").mkdir()
+        (base / "logs/run-manifest.json").write_text(json.dumps(dict(profile="common8", run_id="run",
+            training_world_size=4, question_probe={})))
+        return checkpoint, question
+
+    def consume(self, base, checkpoint):
+        from reproduction.common8 import runtime as native
+        # Only HF model validation is substituted; the actual worker/driver/head
+        # byte, hash and CPU-state checkpoint checks all execute unchanged.
+        with patch.dict(os.environ, SEARCH_G1_BASE=str(base), SEARCH_G1_TRAINING_WORLD_SIZE="4"), \
+                patch.object(native, "hf_checkpoint_complete", return_value={"files_sha256": {}}):
+            return native.checkpoint_complete(1, checkpoint)
+
+    def test_real_published_head_passes_native_receipt_consumer(self):
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            checkpoint, question = self.checkpoint(base)
+            result = self.consume(base, checkpoint)
+            self.assertEqual(result["question_probe"]["actor_snapshot_id"], "run:1")
+            self.assertEqual(result["actual_optimizer_writes_per_rank"], 20)
+            self.assertEqual(result["files_sha256"]["training_state/question-probe-state.pt.head.pt"],
+                             question["head"]["checkpoint_sha"])
+
+    def test_modified_head_bytes_are_rejected_before_complete_publication(self):
+        with tempfile.TemporaryDirectory() as temp:
+            base = Path(temp)
+            checkpoint, question = self.checkpoint(base)
+            path = Path(question["head"]["path"])
+            raw = bytearray(path.read_bytes())
+            raw[-1] ^= 1  # Keep file size unchanged: the native hash check must reject it.
+            path.write_bytes(raw)
+            with self.assertRaises(AssertionError):
+                self.consume(base, checkpoint)
+            self.assertFalse((checkpoint / "complete.json").exists())
+
 class QuestionProbeTransactionTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

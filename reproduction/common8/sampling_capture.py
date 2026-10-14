@@ -346,6 +346,99 @@ class GroupCapture:
             row['effective_stop_provenance'] = copy.deepcopy(self.records[row['request_id']])
 
 
+class RequestCapture:
+    """Bind concurrent engine groups to their own caller and submitted tokens."""
+    def __init__(self, engine):
+        self.engine = engine
+        self.requests = {}
+        self.seen_requests = set()
+        self.seen_sequences = set()
+
+    def register(self, request_id, caller, metadata, call_id, row_id, tokens):
+        _require(type(request_id) is str and request_id and request_id not in self.seen_requests,
+                 'request identity reused inside sampling phase')
+        self.requests[request_id] = GroupCapture(self.engine, caller, metadata, call_id, [row_id], [tokens])
+        self.seen_requests.add(request_id)
+
+    def before(self, request_id, seq, caller):
+        _require(request_id in self.requests and seq.seq_id not in self.seen_sequences,
+                 'unregistered request or reused engine sequence')
+        self.requests[request_id].before(request_id, seq, caller)
+        self.seen_sequences.add(seq.seq_id)
+
+    def after(self, request_id, seq, caller, group):
+        _require(request_id in self.requests, 'unregistered actual request group')
+        self.requests[request_id].after(request_id, seq, caller, group)
+
+    def attach(self, behavior):
+        request_id = behavior['request_id']
+        _require(request_id in self.requests, 'unknown or repeated engine completion')
+        self.requests[request_id].attach([behavior])
+        del self.requests[request_id]
+
+    def abort(self, request_id):
+        _require(request_id in self.requests, 'unknown request cancellation')
+        del self.requests[request_id]
+
+
+class ContinuousRequestService:
+    """Single-owner SyncEngine scheduler; independent requests share decode steps.
+
+    Ray serializes calls on each rank. No background thread, batch generate,
+    distributed operation or completion-order row inference is used here.
+    """
+    def __init__(self, engine, capture, behavior_reader):
+        self.engine = engine
+        self.capture = capture
+        self.behavior_reader = behavior_reader
+        self.pending = {}
+        self.completed_count = 0
+        self.engine_steps = 0
+
+    def submit(self, request_id, tokens, caller, metadata, context):
+        _require(request_id not in self.pending, 'duplicate pending request')
+        self.capture.register(request_id, caller, metadata, context['rollout_call_id'], context['row_id'], tokens)
+        self.pending[request_id] = copy.deepcopy(context)
+        # vLLM 0.6.3 accepts TokensPrompt here, preserving actual caller identity.
+        self.engine.add_request(request_id, {'prompt_token_ids': list(tokens)}, caller)
+
+    def advance(self, max_steps=8):
+        _require(type(max_steps) is int and 1 <= max_steps <= 16, 'unbounded engine advance')
+        completed = []
+        for _ in range(max_steps):
+            if not self.pending:
+                _require(not self.engine.has_unfinished_requests(), 'engine has unbound requests')
+                break
+            _require(self.engine.has_unfinished_requests(), 'pending requests disappeared from engine')
+            outputs = self.engine.step()
+            self.engine_steps += 1
+            for output in outputs:
+                _require(output.request_id in self.pending, 'engine returned unbound request')
+                if not output.finished:
+                    continue
+                rows = self.behavior_reader([output])
+                _require(type(rows) is list and len(rows) == 1 and rows[0]['request_id'] == output.request_id,
+                         'completion behavior identity differs')
+                self.capture.attach(rows[0])
+                context = self.pending.pop(output.request_id)
+                completed.append(dict(request_id=output.request_id, behavior=rows[0], context=context))
+                self.completed_count += 1
+            if completed:
+                break
+        return completed
+
+    def close(self, abort=False):
+        _require(type(abort) is bool, 'ambiguous phase cancellation')
+        if abort:
+            for request_id in list(self.pending):
+                self.engine.abort_request(request_id)
+                self.capture.abort(request_id)
+                del self.pending[request_id]
+        _require(not self.pending and not self.capture.requests and not self.engine.has_unfinished_requests(),
+                 'sampling phase closed before requests finished')
+        return dict(completed_requests=self.completed_count, engine_steps=self.engine_steps)
+
+
 @contextmanager
 def capture_scope(engine, caller, metadata, call_id, row_ids, requests):
     previous = getattr(engine, '_common8_stop_capture', None)

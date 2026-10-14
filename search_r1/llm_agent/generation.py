@@ -21,6 +21,15 @@ class GenerationConfig:
     no_think_rl: bool=False
     search_url: str = None
     topk: int = 3
+    async_phase_enabled: bool = False
+    agent_workers: int = 256
+    max_inflight_trajectories: int = 256
+    generation_max_num_seqs: int = 64
+    generation_max_batched_tokens: int = 8192
+    retrieval_concurrency: int = 16
+    tool_timeout: float = 30.0
+    tool_retries: int = 2
+    engine_step_budget: int = 8
 
 class LLMGenerationManager:
     def __init__(
@@ -221,6 +230,9 @@ class LLMGenerationManager:
         """Run main LLM generation loop."""
 
         if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
+            if self.config.async_phase_enabled:
+                from search_g1.async_rollout_runtime import run
+                return run(self, gen_batch, initial_input_ids)
             from reproduction.common8.generation_behavior import run
             return run(self, gen_batch, initial_input_ids)
 

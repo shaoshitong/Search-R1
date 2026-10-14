@@ -65,6 +65,66 @@ def generate_padded(manager, active, captured_records=None):
                 meta_info=copy.deepcopy(result.meta_info))
 
 
+def validated_raw_turn(manager, output, local, record, *, request_tokens, row_id, identity, call_id, ordinal, sampling):
+    """Shared native-token/probability/stop checks for batch and independent requests."""
+    tokenizer = manager.tokenizer
+    pad, eos = tokenizer.pad_token_id, tokenizer.eos_token_id
+    special = sorted(set(int(value) for value in tokenizer.all_special_ids))
+    _require(record['actual_request_token_ids'] == request_tokens and
+             record['policy_snapshot_id'] == identity['policy_snapshot_id'] and
+             record['rollout_call_id'] == call_id and record['rollout_ordinal'] == ordinal and
+             record['eos_token_id'] == eos and record['pad_token_id'] == pad,
+             'actual_sampling_identity_or_request_changed')
+    current = record['sampling']
+    if sampling is None:
+        sampling = copy.deepcopy(current)
+    _require(current == sampling, 'actual_sampler_changed_between_turns_or_ranks')
+    count = record['raw_generated_token_count']
+    _require(type(count) is int and count == len(record['raw_generated_token_ids']) and
+             len(record['selected_logprobs']) == count,
+             'actual_pre_padding_raw_count_changed')
+    _require(output.batch['responses'][local, :count].tolist() == record['raw_generated_token_ids'] and
+             output.batch['sampling_mask'][local].sum().item() == count,
+             'raw_tensor_or_sampling_mask_changed')
+    original = torch.tensor(record['selected_logprobs'], dtype=torch.float32)
+    _require(torch.equal(output.batch['sampling_log_probs'][local, :count].cpu(), original),
+             'native_selected_probability_transport_changed')
+    _require('effective_stop_provenance' in record and 'request_id' in record,
+             'missing_actual_group_stop_provenance')
+    proof = record['effective_stop_provenance']
+    try:
+        stop_ids, seq_eos = validate_effective_stop_provenance(proof,
+            request_id=record['request_id'], actual_request_token_ids=request_tokens,
+            sampling=current, eos_token_id=eos, pad_token_id=pad)
+    except (ValueError, TypeError, KeyError) as error:
+        raise BehaviorTraceError('invalid_effective_stop_provenance') from error
+    config_proof = proof['generation_config']
+    _require(proof['rollout_call_id'] == call_id and proof['row_id'] == row_id and
+             config_proof['run_id'] == identity['run_id'] and
+             config_proof['slurm_job_id'] == identity['slurm_job_id'] and
+             config_proof['source_map_sha256'] == document_sha256(identity['source_sha256']),
+             'actual_group_stop_identity_changed')
+    cut = raw_prefix_to_first_closing_tag(record['raw_generated_token_ids'],
+        lambda tokens: tokenizer.decode(tokens, skip_special_tokens=False,
+                                        clean_up_tokenization_spaces=False),
+        eos_token_id=eos, pad_token_id=pad, special_token_ids=special,
+        executor_decode=lambda tokens: tokenizer.decode(tokens, skip_special_tokens=True,
+                                        clean_up_tokenization_spaces=False),
+        effective_stop_token_ids=sorted(stop_ids))
+    # Keep primary EOS termination semantics. An alternate configured
+    # terminal requires a matching native reason, or actual sequence EOS.
+    if cut['trailing_eos_excluded']:
+        _require(record['finish_reason'] == 'stop' and
+                 record['stop_reason'] in (None, eos), 'unproven_actual_EOS_stop')
+    elif cut.get('trailing_actual_stop_excluded', False):
+        terminal = record['raw_generated_token_ids'][-1]
+        _require(record['finish_reason'] == 'stop' and
+                 (type(record['stop_reason']) is int and record['stop_reason'] == terminal or
+                  record['stop_reason'] is None and seq_eos == terminal),
+                 'unproven_actual_terminal_stop')
+    return cut, sampling
+
+
 def _observation_ids(manager, texts, limits=None):
     if limits is not None:
         rows = [observation_tokens(manager.tokenizer, text, min(int(manager.config.max_obs_length), limit))
@@ -160,58 +220,9 @@ def _run(manager, gen_batch, initial_input_ids, captured_records):
             texts = [''] * len(row_ids)
             for local, index in enumerate(indices):
                 record = records[local]
-                _require(record['actual_request_token_ids'] == requests[local] and
-                         record['policy_snapshot_id'] == identity['policy_snapshot_id'] and
-                         record['rollout_call_id'] == call_id and record['rollout_ordinal'] == ordinal and
-                         record['eos_token_id'] == eos and record['pad_token_id'] == pad,
-                         'actual_sampling_identity_or_request_changed')
-                current = record['sampling']
-                if sampling is None:
-                    sampling = copy.deepcopy(current)
-                _require(current == sampling, 'actual_sampler_changed_between_turns_or_ranks')
-                count = record['raw_generated_token_count']
-                _require(type(count) is int and count == len(record['raw_generated_token_ids']) and
-                         len(record['selected_logprobs']) == count,
-                         'actual_pre_padding_raw_count_changed')
-                _require(output.batch['responses'][local, :count].tolist() == record['raw_generated_token_ids'] and
-                         output.batch['sampling_mask'][local].sum().item() == count,
-                         'raw_tensor_or_sampling_mask_changed')
-                original = torch.tensor(record['selected_logprobs'], dtype=torch.float32)
-                _require(torch.equal(output.batch['sampling_log_probs'][local, :count].cpu(), original),
-                         'native_selected_probability_transport_changed')
-                _require('effective_stop_provenance' in record and 'request_id' in record,
-                         'missing_actual_group_stop_provenance')
-                proof = record['effective_stop_provenance']
-                try:
-                    stop_ids, seq_eos = validate_effective_stop_provenance(proof,
-                        request_id=record['request_id'], actual_request_token_ids=requests[local],
-                        sampling=current, eos_token_id=eos, pad_token_id=pad)
-                except (ValueError, TypeError, KeyError) as error:
-                    raise BehaviorTraceError('invalid_effective_stop_provenance') from error
-                config_proof = proof['generation_config']
-                _require(proof['rollout_call_id'] == call_id and proof['row_id'] == row_ids[index] and
-                         config_proof['run_id'] == identity['run_id'] and
-                         config_proof['slurm_job_id'] == identity['slurm_job_id'] and
-                         config_proof['source_map_sha256'] == document_sha256(identity['source_sha256']),
-                         'actual_group_stop_identity_changed')
-                cut = raw_prefix_to_first_closing_tag(record['raw_generated_token_ids'],
-                    lambda tokens: tokenizer.decode(tokens, skip_special_tokens=False,
-                                                    clean_up_tokenization_spaces=False),
-                    eos_token_id=eos, pad_token_id=pad, special_token_ids=special,
-                    executor_decode=lambda tokens: tokenizer.decode(tokens, skip_special_tokens=True,
-                                                    clean_up_tokenization_spaces=False),
-                    effective_stop_token_ids=sorted(stop_ids))
-                # Keep primary EOS termination semantics. An alternate configured
-                # terminal requires a matching native reason, or actual sequence EOS.
-                if cut['trailing_eos_excluded']:
-                    _require(record['finish_reason'] == 'stop' and
-                             record['stop_reason'] in (None, eos), 'unproven_actual_EOS_stop')
-                elif cut.get('trailing_actual_stop_excluded', False):
-                    terminal = record['raw_generated_token_ids'][-1]
-                    _require(record['finish_reason'] == 'stop' and
-                             (type(record['stop_reason']) is int and record['stop_reason'] == terminal or
-                              record['stop_reason'] is None and seq_eos == terminal),
-                             'unproven_actual_terminal_stop')
+                cut, sampling = validated_raw_turn(manager, output, local, record,
+                    request_tokens=requests[local], row_id=row_ids[index], identity=identity,
+                    call_id=call_id, ordinal=ordinal, sampling=sampling)
                 cuts.append(cut)
                 texts[index] = cut['execution_text']
             next_obs, dones, valid_action, is_search = manager.execute_predictions(
@@ -255,6 +266,18 @@ def _run(manager, gen_batch, initial_input_ids, captured_records):
                     if not dones[index]:
                         turns_stats[index] += 1
             active_counts.append(sum(active))
+    return assemble_output(row_ids=row_ids, identity=identity, budget=budget, left=left,
+        attention=attention, pad=pad, responses=responses, probabilities=probabilities,
+        info_masks=info_masks, turns=turns, final_meta=final_meta, sampling=sampling,
+        clipped_observations=clipped_observations, early_final_turns=early_final_turns,
+        turns_stats=turns_stats, active=active, valid_actions=valid_actions, valid_searches=valid_searches,
+        actual_retrieval=actual_retrieval, active_counts=active_counts)
+
+
+def assemble_output(*, row_ids, identity, budget, left, attention, pad, responses, probabilities,
+                    info_masks, turns, final_meta, sampling, clipped_observations, early_final_turns,
+                    turns_stats, active, valid_actions, valid_searches, actual_retrieval, active_counts):
+    """Restore canonical input order after all complete native trajectories finish."""
     _require(sampling is not None and all(turns), 'missing_actual_rollout')
     width = max(map(len, responses))
     _require(width > 0, 'no_actual_response_tokens')

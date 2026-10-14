@@ -67,7 +67,8 @@ actions cannot start the pipeline. The official actor stays fresh; one extra
 frozen-teacher outer generates all 5120 canonical question groups × 5 actual
 responses, fits the new question-selection head on all 5120 groups, and restores
 the actor RNG boundary. The actor then performs 200 successful training outers
-with candidate5120/selected512/G5/E64. The extra teacher outer is outside that
+with candidate5120/selected512/G5/E0, taking the top512 predicted diversity
+scores with the existing identity-based tie ordering. The extra teacher outer is outside that
 budget and performs no actor optimizer or scheduler writes.
 
 The existing G1 binary reward probes remain separate from this new question
@@ -84,9 +85,9 @@ Publish the exact source commit first, then use one small local handle throughou
 ```text
 python -m reproduction.a800_common.deploy_qprobe stage --handle HANDLE.json \
   --source-commit FULL_PUBLISHED_SHA \
-  --published-ref refs/heads/codex/qprobe-teacher-warmup-a800-20261014 \
+  --published-ref refs/heads/codex/qprobe-a800-async-top512-20261014 \
   --baseline-intent-sha256 21ab1fc56365501b2082808f660dc7f3f130bedc9bb4748c63ada21c6032de3a \
-  --teacher-warmup-cache /data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v2
+  --teacher-warmup-cache /data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v3-async-top512
 python -m reproduction.a800_common.deploy_qprobe prepare --handle HANDLE.json
 python -m reproduction.a800_common.deploy_qprobe feature-plan --handle HANDLE.json
 python -m reproduction.a800_common.deploy_qprobe inspect --handle HANDLE.json
@@ -156,27 +157,26 @@ Use the new handle for launch; the failed BF4 handle remains historical evidence
 The repair seals generation metadata from the returned complete behavior
 identity and every actual turn's matching snapshot. It rejects absent or mixed
 turn evidence and a conflicting existing top-level value, then retains all
-original strict checks. It changes no frozen G1 scientific producer. The shared
-schema2 teacher cache's scientific identity therefore remains compatible and
-existing identity or failed zero-chunk evidence is preserved.
+original strict checks. The current bounded-context and asynchronous sampling
+protocol has a separate teacher namespace; the old v2 identity, chunks and
+failed-run evidence remain preserved for their original protocol.
 
-Placement adapters are outside the teacher identity's rollout/scorer source
-map. The frozen scientific producers and fixed feature producers retain their
-exact bytes, so this placement change keeps the shared schema2 cache identity
-and copies the completed BF4 encoding into the new run without re-encoding.
+The fixed feature producers retain their exact bytes, so the completed BF4
+encoding is copied into the new run without re-encoding. Rollout source changes
+are recorded separately and cannot silently authorize reuse of old teacher labels.
 
 Actor local4/global16 changes the training micro-batch only. The teacher identity
 binds the complete rollout configuration, whose global log-prob micro-batch32
-and other sampling fields remain unchanged. A matching completed schema2 cache
-therefore reuses all5120 questions/25600 trajectories. Each fresh official actor
-gets a newly fitted5120-group head; no old actor, head checkpoint or Adam state
+and all effective sampling fields. The first asynchronous v3 launch generates
+5120 questions/25600 trajectories under its new protocol. Each fresh official actor
+gets a newly fitted5120-group head with40 head optimizer updates; no old actor, head checkpoint or Adam state
 is inherited. Initial0 frozen reward-head adoption permits exactly this
 local2→4/global8→16/two-row→four-row budget transition alongside the existing
 FP32→BF16 transition and retains every other identity/budget check.
 
 The teacher cache defaults to the stable remote namespace
-`/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v2`, so a later fresh
-actor launch can reuse accepted trajectories. Choose another explicit
+`/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v3-async-top512`, so a later fresh
+actor launch with the exact same qualified protocol can reuse accepted trajectories. Choose another explicit
 `--teacher-warmup-cache` only when creating a new intent. Its real path and
 parent must be owned by the current remote user and contain no symlink. The
 schema2 scientific identity binds model/data, question sampling/configuration,
@@ -203,15 +203,16 @@ the exact `source_commit` and complete `source_sha256` map, a past positive
   "official_model_and_canonical_data": true,
   "frozen_teacher_5120_x_5": true,
   "bootstrap_all_5120_groups": true,
-  "exploration_64": true,
+  "exploration_0_top512": true,
+  "independent_trajectory_phase_v1": true,
   "formal_200_not_201": true,
   "four_rank_bf16_local4_global16_accum8_ref8": true,
-  "unchanged_guards_lr_warmup57": true
+  "recoverable_guards_lr_warmup57": true
 }
 ```
 
 The adapter never manufactures that review. Its launch gate independently
-checks the bound E64, all5120 bootstrap limit, remote teacher cache, canonical
+checks the bound E0/top512 and asynchronous phase configuration, all5120 bootstrap limit, remote teacher cache, canonical
 feature cache and four-rank recipe before the original launcher performs its
 actual process/GPU admission. Every mutation has an exclusive local/remote
 claim. A timeout or failure preserves the same namespace and forbids automatic

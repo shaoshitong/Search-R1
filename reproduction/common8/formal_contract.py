@@ -105,6 +105,11 @@ def verify_formal_config(document, run, base):
         log_prob_micro_batch_size=32, dtype=run['budget']['rollout_dtype'], tensor_model_parallel_size=1,
         name='vllm', gpu_memory_utilization=run.get('vllm_gpu_memory_utilization',0.4)), 'Rollout mathematics')
     exact(reference, dict(log_prob_micro_batch_size=32), 'Reference micro batch')
+    if run.get('infra_rollout') is not None:
+        from search_g1.rollout_phase_contract import validate
+        phase=validate(run['infra_rollout'],world_size(run))
+        assert rollout['async_phase_enabled'] is True
+        exact(rollout,{k:v for k,v in phase.items() if k!='mode'},'Rollout phase execution limits')
     exact(document['algorithm'], dict(adv_estimator='grpo', no_think_rl=False), 'Advantages')
     exact(document['data'], dict(train_batch_size=512, val_batch_size=64,
         max_prompt_length=4096, max_response_length=500, max_start_length=2048,

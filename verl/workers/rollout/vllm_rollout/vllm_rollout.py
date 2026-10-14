@@ -121,6 +121,14 @@ class vLLMRollout(BaseRollout):
 
         assert model_hf_config.max_position_embeddings >= config.prompt_length + config.response_length, \
             "model context length should be greater than total sequence length"
+        scheduler_options = {}
+        for source, target in (('generation_max_num_seqs', 'max_num_seqs'),
+                               ('generation_max_batched_tokens', 'max_num_batched_tokens')):
+            value = config.get(source, None)
+            if value is not None:
+                if type(value) is not int or value <= 0:
+                    raise ValueError('Invalid continuous generation scheduler bound')
+                scheduler_options[target] = value
         self.inference_engine = LLM(actor_module,
                                     tokenizer=tokenizer,
                                     model_hf_config=model_hf_config,
@@ -130,7 +138,14 @@ class vLLMRollout(BaseRollout):
                                     gpu_memory_utilization=config.gpu_memory_utilization,
                                     skip_tokenizer_init=False,
                                     max_model_len=config.prompt_length + config.response_length,
-                                    load_format=config.load_format)
+                                    load_format=config.load_format,
+                                    **scheduler_options)
+        scheduler = self.inference_engine.llm_engine.scheduler_config
+        for field, value in scheduler_options.items():
+            if getattr(scheduler, field) != value:
+                raise ValueError('Actual vLLM scheduler differs from declared phase bound')
+        self.generation_scheduler_limits = {field: getattr(scheduler, field)
+            for field in ('max_num_seqs', 'max_num_batched_tokens')}
 
         # Offload vllm model to reduce peak memory usage
         self.inference_engine.offload_model_weights()
@@ -154,6 +169,110 @@ class vLLMRollout(BaseRollout):
         self.sampling_params = SamplingParams(**kwargs)
 
         self.pad_token_id = tokenizer.pad_token_id
+        self.eos_token_id = tokenizer.eos_token_id
+        self._generation_phase = None
+        self._generation_phase_setup_handle = None
+        self._generation_cache_setup_started = False
+
+    def begin_generation_phase(self, snapshot_meta):
+        if (self._generation_phase is not None or self._generation_phase_setup_handle is not None or vllm_version != '0.6.3' or
+                self.config.n != 1 or self.config.tensor_model_parallel_size != 1):
+            raise ValueError('Continuous generation requires one idle vLLM0.6.3 TP1 engine')
+        from reproduction.common8.sampling_capture import RequestCapture, ContinuousRequestService
+        from verl.third_party.vllm.vllm_v_0_6_3.llm import capture_request_behavior
+        engine = self.inference_engine.llm_engine
+        if getattr(engine, '_common8_stop_capture', None) is not None or engine.has_unfinished_requests():
+            raise ValueError('Engine has requests or capture outside the declared phase')
+        self._generation_phase_setup_handle = {key: snapshot_meta[key] for key in ('phase_id', 'policy_snapshot_id')}
+        if self.config.free_cache_engine:
+            self._generation_cache_setup_started = True
+            self.inference_engine.init_cache_engine()
+        capture = RequestCapture(engine)
+        self._generation_phase = dict(identity=copy.deepcopy(snapshot_meta), capture=capture,
+            service=ContinuousRequestService(engine, capture, capture_request_behavior),
+            trajectory_ids=set(snapshot_meta['behavior_identity']['trajectory_ids']))
+        engine._common8_stop_capture = capture
+
+    def advance_generation_phase(self, handle, new_requests, max_steps=8):
+        phase = self._generation_phase
+        if phase is None or handle != {key: phase['identity'][key] for key in ('phase_id', 'policy_snapshot_id')}:
+            raise ValueError('Generation request is outside its frozen phase')
+        if type(new_requests) is not list:
+            raise ValueError('Generation submissions must be an explicit list')
+        for request in new_requests:
+            if (type(request) is not dict or request.get('policy_snapshot_id') != handle['policy_snapshot_id'] or
+                    type(request.get('rollout_ordinal')) is not int or request['rollout_ordinal'] < 0):
+                raise ValueError('Generation request snapshot/ordinal differs')
+            for name in ('request_id', 'row_id', 'rollout_call_id', 'question_id'):
+                if type(request.get(name)) is not str or not request[name]:
+                    raise ValueError('Missing independent generation identity: '+name)
+            if request['row_id'] not in phase['trajectory_ids']:
+                raise ValueError('Request trajectory is absent from its frozen phase')
+            tokens = request['prompt_token_ids']
+            if (type(tokens) is not list or not tokens or any(type(token) is not int or token < 0 for token in tokens) or
+                    type(request.get('response_index')) is not int or request['response_index'] not in range(5)):
+                raise ValueError('Invalid trajectory prompt or response identity')
+            meta = request['meta_info']
+            do_sample = meta.get('do_sample')
+            if type(do_sample) is not bool or meta.get('recompute_log_prob') is not False:
+                raise ValueError('Phase requests require explicit sampling mode and captured old probabilities')
+            if meta.get('validate', False) and do_sample:
+                raise ValueError('Validation generation requires actual greedy caller')
+            params = copy.deepcopy(self.sampling_params)
+            maximum = request.get('max_tokens', meta.get('max_tokens', self.config.response_length))
+            if type(maximum) is not int or not 1 <= maximum <= self.config.response_length:
+                raise ValueError('Request completion budget exceeds the declared rollout')
+            params.max_tokens = maximum
+            if not do_sample:
+                for key, value in dict(best_of=1, top_p=1.0, top_k=-1, min_p=0.0, temperature=0.0, n=1).items():
+                    setattr(params, key, value)
+            metadata = actual_sampling_metadata(params, do_sample)
+            context = copy.deepcopy(request)
+            context['sampling'] = metadata
+            phase['service'].submit(request['request_id'], tokens, params, metadata, context)
+        completed = []
+        for result in phase['service'].advance(max_steps):
+            completed.append(dict(request_id=result['request_id'], output=self._phase_request_output(result)))
+        return dict(completed=completed, pending_request_ids=list(phase['service'].pending))
+
+    def _phase_request_output(self, result):
+        context, row = result['context'], result['behavior']
+        if row['actual_request_token_ids'] != context['prompt_token_ids']:
+            raise ValueError('Actual asynchronous request tokens differ')
+        row.update(schema_version=1, rollout_call_id=context['rollout_call_id'], rollout_ordinal=context['rollout_ordinal'],
+            row_id=context['row_id'], policy_snapshot_id=context['policy_snapshot_id'], sampling=context['sampling'],
+            eos_token_id=self.eos_token_id, pad_token_id=self.pad_token_id)
+        count = row['raw_generated_token_count']
+        length = self.config.response_length
+        if count > length:
+            raise ValueError('Actual asynchronous completion exceeds response budget')
+        prompt = torch.tensor([context['prompt_token_ids']], dtype=torch.long)
+        response = torch.full((1, length), self.pad_token_id, dtype=torch.long)
+        response[0, :count] = torch.tensor(row['raw_generated_token_ids'], dtype=torch.long)
+        sampled = torch.zeros((1, length), dtype=torch.bool)
+        sampled[0, :count] = True
+        probabilities = torch.zeros((1, length), dtype=torch.float32)
+        probabilities[0, :count] = torch.tensor(row['selected_logprobs'], dtype=torch.float32)
+        attention = torch.cat((torch.ones_like(prompt), get_eos_mask(response, self.eos_token_id, torch.long)), dim=-1)
+        positions = torch.arange(prompt.shape[1]+length, dtype=torch.long).unsqueeze(0)
+        batch = TensorDict(dict(prompts=prompt, responses=response, input_ids=torch.cat((prompt, response), dim=-1),
+            attention_mask=attention, position_ids=positions, sampling_log_probs=probabilities, sampling_mask=sampled), batch_size=1)
+        return DataProto(batch=batch, non_tensor_batch={'sampling_behavior': np.array([row], dtype=object)})
+
+    def end_generation_phase(self, handle, abort=False):
+        phase = self._generation_phase
+        if handle != self._generation_phase_setup_handle or (phase is None and not abort):
+            raise ValueError('Closing a different sampling phase')
+        result = (phase['service'].close(abort=abort) if phase is not None
+                  else dict(completed_requests=0, engine_steps=0, partial_setup_aborted=True))
+        result['scheduler_limits'] = copy.deepcopy(self.generation_scheduler_limits)
+        self.inference_engine.llm_engine._common8_stop_capture = None
+        if self._generation_cache_setup_started:
+            self.inference_engine.free_cache_engine()
+            self._generation_cache_setup_started = False
+        self._generation_phase = None
+        self._generation_phase_setup_handle = None
+        return result
 
     @contextmanager
     def update_sampling_params(self, **kwargs):
@@ -173,6 +292,8 @@ class vLLMRollout(BaseRollout):
 
     @torch.no_grad()
     def generate_sequences(self, prompts: DataProto, **kwargs) -> DataProto:
+        if self._generation_phase is not None:
+            raise ValueError('Legacy batch generation cannot enter an active continuous phase')
         common8 = os.environ.get('SEARCH_G1_PROFILE') == 'common8'
         smoke = prompts.meta_info.get('common8_model_smoke') is True
         if common8 and smoke and prompts.meta_info.get('do_sample') is not False:

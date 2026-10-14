@@ -16,6 +16,21 @@ def questions(n):
 
 
 class QuestionProbeSelectionTests(unittest.TestCase):
+    def test_zero_exploration_selects_top512_and_ignores_exploration_rng(self):
+        candidates = questions(600)
+        probabilities = np.zeros((600, 6))
+        probabilities[:, 0] = 1
+        probabilities[87:] = np.array([0, 0, .5, .5, 0, 0])
+        first = select_questions(candidates, probabilities, exploration_questions=0,
+                                 rng=np.random.default_rng(1), tie_seed="top512")
+        other = select_questions(candidates, probabilities, exploration_questions=0,
+                                 rng=np.random.default_rng(999), tie_seed="top512")
+        self.assertEqual(first, other)
+        self.assertEqual(len(first), 512)
+        self.assertTrue(all(row.ordinal >= 87 and row.selection_source == "predicted_diversity"
+                            for row in first))
+        self.assertEqual([row.ordinal for row in first], sorted(row.ordinal for row in first))
+
     def test_mean_half_does_not_imply_within_group_diversity(self):
         prediction = count_predictions([[.5, 0, 0, 0, 0, .5], [0, 0, .5, .5, 0, 0]])
         np.testing.assert_allclose(prediction["mean"], [.5, .5])

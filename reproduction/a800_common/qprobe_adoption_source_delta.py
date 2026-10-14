@@ -43,11 +43,17 @@ INTEGRATION_EDITS = frozenset((
     'reproduction/a800_common/test_deploy_qprobe.py',
     'search_g1/qprobe_runtime.py',
     'search_g1/test_qprobe_runtime.py',
+    'search_g1/test_qprobe_selection.py',
     'search_g1/qprobe_warmup.py',
     'search_g1/test_qprobe_warmup.py',
     # Bounded-context and recoverable-update repair. Each actual source pair
     # remains inventoried against the pinned baseline and original receipt.
     'reproduction/common8/context_budget.py',
+    'reproduction/common8/configuration.py',
+    'reproduction/common8/formal_contract.py',
+    'reproduction/common8/qprobe_bind.py',
+    'reproduction/common8/sampling_capture.py',
+    'reproduction/common8/test_continuous_sampling.py',
     'reproduction/common8/generation_behavior.py',
     'reproduction/common8/formal_attempt_audit.py',
     'reproduction/common8/recoverable_attempt.py',
@@ -56,6 +62,9 @@ INTEGRATION_EDITS = frozenset((
     'reproduction/common8/update_evidence.py',
     'reproduction/common8/worker_evidence.py',
     'search_g1/full_state_restore.py',
+    'search_g1/async_rollout_runtime.py',
+    'search_g1/test_async_rollout_runtime.py',
+    'search_g1/rollout_phase_contract.py',
     'search_g1/logprob_memory.py',
     'search_g1/monitor_forward_reuse.py',
     'search_g1/numerics.py',
@@ -65,6 +74,10 @@ INTEGRATION_EDITS = frozenset((
     'search_g1/qprobe_model.py',
     'search_g1/training_state.py',
     'verl/trainer/ppo/ray_trainer.py',
+    'search_r1/llm_agent/generation.py',
+    'verl/workers/fsdp_workers.py',
+    'verl/workers/sharding_manager/fsdp_vllm.py',
+    'verl/workers/rollout/vllm_rollout/vllm_rollout.py',
     'verl/utils/torch_functional.py',
     'verl/workers/actor/dp_actor.py',
 ))
@@ -158,7 +171,7 @@ def validate_fresh_run(run, old):
     _check(type(settings) is dict and run.get('mixed_first_selection') is False,
            'QPROBE_ADOPTION_NOT_QUESTION_PROBE_SELECTION')
     for name, value in dict(candidate_questions=5120, selected_questions=512,
-                            responses_per_question=5, exploration_questions=64,
+                            responses_per_question=5, exploration_questions=0,
                             bootstrap_max_groups_per_outer=5120).items():
         _check(type(settings.get(name)) is int and settings[name] == value,
                'QPROBE_ADOPTION_QUESTION_BUDGET_CHANGED: ' + name)
