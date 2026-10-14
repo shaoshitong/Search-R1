@@ -32,7 +32,9 @@ export default function RewardSelectionStory(){
 }
 '''.replace('SVG_DATA',json.dumps(svg,ensure_ascii=False))
 p=O/'reward-selection-storyboard.canvas.tsx';p.write_text(code)
-audit=json.loads((D/'selection-storyboard-verification.json').read_text())
+audit_path=D/'right-flow-verification-20261015.json' if (D/'right-flow-verification-20261015.json').exists() else D/'selection-storyboard-verification.json'
+audit=json.loads(audit_path.read_text())
+assert audit['drawio_sha256']==hashlib.sha256((O/'hard-conditioned-soft-reward-amplification.drawio').read_bytes()).hexdigest()
 audit['canvas_preview']={'path':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'self_contained':True,'raster_images':0,'source_svg_sha256':hashlib.sha256((O/'hard-conditioned-soft-reward-amplification.svg').read_bytes()).hexdigest()}
-(D/'selection-storyboard-verification.json').write_text(json.dumps(audit,indent=2))
+audit_path.write_text(json.dumps(audit,indent=2))
 print(p)
