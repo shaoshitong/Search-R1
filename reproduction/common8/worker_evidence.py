@@ -88,7 +88,7 @@ def read_console_form(base, run_id):
                     selected_opportunities=[x for x in opportunities if x['context']['attempt_id']==budget['attempt_id']]
                     processed=budget['opportunities_processed']
                     assert [x['opportunity_index'] for x in selected_opportunities]==list(range(processed))
-                    assert 1<=processed<=20 and 1<=budget['optimizer_writes']<=processed
+                    assert processed==20 and 1<=budget['optimizer_writes']<=processed
                     assert sum(x['optimizer_write_succeeded'] for x in selected_opportunities)==budget['optimizer_writes']
                     assert budget['full_budget_complete']==(budget['optimizer_writes']==20)
                     assert len(selected)==sum(2 if x['guard_stage']=='after_minibatch' or x['status']=='written' else 1

@@ -295,9 +295,9 @@ class OuterSchedulerEvidence:
         self._check_state()
         before = self.pending['writes_before']
         if self.recoverable:
-            _need(type(opportunities_processed) is int and 1<=opportunities_processed<=WRITES_PER_OUTER and
+            _need(type(opportunities_processed) is int and opportunities_processed==WRITES_PER_OUTER and
                   type(optimizer_writes) is int and 1<=optimizer_writes-before<=opportunities_processed,
-                  'At least one retained safe Adam write required before scheduler boundary advance')
+                  'All20 processed opportunities and at least one retained Adam write required before scheduler advance')
         else:
             _need(type(optimizer_writes) is int and optimizer_writes - before == WRITES_PER_OUTER,
                   'Exactly20 dynamically observed real optimizer writes required before scheduler advance')
@@ -307,7 +307,7 @@ class OuterSchedulerEvidence:
         if self.recoverable:
             row['opportunities_processed']=opportunities_processed
             row['full_budget_complete']=optimizer_writes-before==WRITES_PER_OUTER
-            row['update_status']='complete' if row['full_budget_complete'] else 'partial'
+            row['update_status']='complete'
         self._append(row)
         self.prepared = row
         return row

@@ -1,4 +1,4 @@
-"""Formal attempt accounting; safe progress and full twenty-write budgets are distinct."""
+"""Count complete twenty-opportunity attempts separately from retained Adam writes."""
 import json
 import os
 import uuid
@@ -54,13 +54,17 @@ class AttemptProgress:
         assert type(statuses) is list and len(statuses)==processed
         assert all(value in ('written','written_with_post_guard','skipped_guard','rolled_back_guard') for value in statuses)
         assert sum(value in ('written','written_with_post_guard') for value in statuses)==count
-        complete=count>0
+        complete=processed==20 and count>0
         assert representative['complete_outer'] is complete
         full_budget=count==20 and processed==20
         if version==2:
             assert representative['full_budget_complete'] is full_budget
             assert representative['opportunities_unattempted']==20-processed
-            assert representative['status']==('complete' if full_budget else 'partial' if complete else 'recoverable_guard')
+            assert representative['status']==('complete' if complete else 'partial' if count>0 else 'recoverable_guard')
+            assert representative['retained_partial_adam_writes'] is (count>0 and not complete)
+            calls=representative['optimizer_calls_this_attempt'];rollbacks=representative['optimizer_rollbacks_this_attempt']
+            assert type(calls) is int and type(rollbacks) is int and 0<=rollbacks<=calls<=processed
+            assert rollbacks==statuses.count('rolled_back_guard') and calls==count+rollbacks
         else:
             assert representative['status']==('complete' if complete else 'recoverable_guard')
         assert representative['scheduler_advances']==int(complete)

@@ -159,14 +159,15 @@ def monitor_reference_contract(base, run):
     producers and nonlocal calibration retain their exact eight-key identity.
     """
     from reproduction.common8.policy_calibration_plan import _strict_json, document_sha256
-    from reproduction.common8.safety_calibration_evidence import ZERO_REFERENCE_MONITOR_PRODUCER_SHA256
+    from reproduction.common8.safety_calibration_evidence import ZERO_REFERENCE_MONITOR_PRODUCER_SHA256S
     producer = 'verl/workers/actor/dp_actor.py'
+    producer_sha = run.get('source_sha256', {}).get(producer)
     if (run.get('execution_backend') != 'ssh_local' or
-            run.get('source_sha256', {}).get(producer) != ZERO_REFERENCE_MONITOR_PRODUCER_SHA256):
+            producer_sha not in ZERO_REFERENCE_MONITOR_PRODUCER_SHA256S):
         return None
     assert_formal_run(run)
     repo = Path(__file__).resolve().parents[2]
-    assert hashlib.sha256((repo / producer).read_bytes()).hexdigest() == ZERO_REFERENCE_MONITOR_PRODUCER_SHA256
+    assert hashlib.sha256((repo / producer).read_bytes()).hexdigest() == producer_sha
     base = Path(base).resolve()
     def owned_document(relative):
         path = base / relative
@@ -190,5 +191,5 @@ def monitor_reference_contract(base, run):
         run_id=run['run_id'], calibration_sha256=document_sha256(plan),
         resolved_config_sha256=proof['resolved_config_sha256'],
         source_map_sha256=proof['source_map_sha256'],
-        producer_source_sha256=ZERO_REFERENCE_MONITOR_PRODUCER_SHA256,
+        producer_source_sha256=producer_sha,
         use_kl_loss=True, reference_kl_coefficient=actor['kl_loss_coef'], state_masking=True)

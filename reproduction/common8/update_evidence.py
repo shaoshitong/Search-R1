@@ -47,7 +47,7 @@ def record(step,metrics,probe_version,attempt_result=None):
         assert all(value>=0 and value.is_integer() for key,value in scalar.items() if key in monitor_keys)
     assert all(math.isfinite(v) for v in scalar.values())
     if inline:
-        assert isinstance(attempt_result,dict) and attempt_result['status'] in ('complete','partial')
+        assert isinstance(attempt_result,dict) and attempt_result['status']=='complete'
         assert attempt_result['all_ranks_agreed'] is True
         assert type(attempt_result['real_rank_count']) is int and attempt_result['real_rank_count']==world_size(run), \
             'Completed attempt rank count differs from the actual run topology'
@@ -58,8 +58,7 @@ def record(step,metrics,probe_version,attempt_result=None):
         assert type(before) is int and type(after) is int and before>=0
         assert type(successes) is int and 1<=successes<=20 and after-before==successes
         processed=attempt_result['opportunities_processed']
-        assert 1<=processed<=20 and scalar['actor/update_opportunities_this_attempt']==processed
-        if attempt_result.get('recovery_protocol_version',1)==1: assert processed==20
+        assert processed==20 and scalar['actor/update_opportunities_this_attempt']==processed
         assert scalar['actor/optimizer_steps_this_update']==successes
         assert scalar['actor/skipped_update_opportunities']==20-successes
     else:

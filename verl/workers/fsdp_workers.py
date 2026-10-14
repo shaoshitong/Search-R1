@@ -422,7 +422,7 @@ class ActorRolloutRefWorker(Worker):
                     metrics = self.actor.update_policy(data=data)
                 delta_time = timer.last
                 attempt_result=getattr(self.actor,'_last_attempt_result',None)
-                if attempt_result is not None and attempt_result['status']=='recoverable_guard':
+                if attempt_result is not None and not attempt_result['complete_outer']:
                     if scheduler_evidence is None or not scheduler_evidence.recoverable:
                         raise RuntimeError('Recoverable actor result lacks its explicit formal scheduler')
                     def abort_scheduler_attempt():

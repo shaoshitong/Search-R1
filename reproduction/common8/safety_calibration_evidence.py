@@ -53,6 +53,10 @@ MONITOR_TENSORS = frozenset((
 # This producer selects reference probabilities only for a nonzero coefficient.
 # Older producers and calibration evidence keep their original eight-key schema.
 ZERO_REFERENCE_MONITOR_PRODUCER_SHA256 = 'aecafa308b1f9999b3388e68e3c707c133c82aafbdab124770111917ed00ad49'
+ZERO_REFERENCE_MONITOR_PRODUCER_SHA256S = frozenset((
+    ZERO_REFERENCE_MONITOR_PRODUCER_SHA256,
+    '139de8655f071b469bfbfc926d8973d2995740d2fa16481ac25898e2d92f173c',
+))
 _SHA256 = re.compile(r'[0-9a-f]{64}\Z')
 
 
@@ -118,7 +122,7 @@ def _reference_required(binding):
     _require(contract['use_kl_loss'] is True and contract['state_masking'] is True and
              type(contract['reference_kl_coefficient']) in (int, float) and
              contract['reference_kl_coefficient'] == 0 and
-             contract['producer_source_sha256'] == ZERO_REFERENCE_MONITOR_PRODUCER_SHA256,
+             contract['producer_source_sha256'] in ZERO_REFERENCE_MONITOR_PRODUCER_SHA256S,
              'Monitor reference contract differs from the zero-reference producer')
     for name in ('calibration_sha256', 'resolved_config_sha256', 'source_map_sha256', 'producer_source_sha256'):
         _hash(contract[name], name)

@@ -423,9 +423,9 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
         processed=_integer(attempt['opportunities_processed'], 'opportunities_processed', minimum=1)
         _require(count <= processed <= 20 and attempt['optimizer_writes_before'] == writes and
                  attempt['optimizer_writes_after'] == writes + count, 'Actual retained write counters differ')
-        complete = count > 0; full_budget=count==20 and processed==20
+        complete = processed==20 and count>0; full_budget=count==20 and processed==20
         _require(type(attempt['complete_outer']) is bool and attempt['complete_outer'] is complete and
-                 attempt['status'] == ('complete' if full_budget or (version==1 and complete) else 'partial' if complete else 'recoverable_guard') and
+                 attempt['status'] == ('complete' if complete else 'partial' if version==2 and count>0 else 'recoverable_guard') and
                  type(attempt['scheduler_advances']) is int and attempt['scheduler_advances'] == int(complete) and
                  attempt['completed_outer'] == completed + int(complete), 'Actual driver safe progress or warmup differs')
         statuses = attempt['opportunity_statuses']
@@ -435,6 +435,9 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
                  'Actual driver opportunity returns differ')
         if version==2:
             _require(attempt['full_budget_complete'] is full_budget and attempt['opportunities_unattempted']==20-processed and
+                     attempt['retained_partial_adam_writes'] is (count>0 and not complete) and
+                     _integer(attempt['optimizer_rollbacks_this_attempt'],'actual attempt rollbacks')==statuses.count('rolled_back_guard') and
+                     _integer(attempt['optimizer_calls_this_attempt'],'actual attempt calls')==count+statuses.count('rolled_back_guard') and
                      attempt['current_step_rollback'] is True and attempt['no_automatic_rollback'] is False,
                      'Transaction driver full budget/rollback semantics differ')
         else:

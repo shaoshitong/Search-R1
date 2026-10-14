@@ -442,9 +442,10 @@ class DataParallelPPOActor(BasePPOActor):
         writes_after = getattr(self,'_optimizer_writes',0)
         processed = len(self._last_opportunities)
         progressed = writes_after > writes_before
+        complete = processed == 20 and progressed
         full_budget = processed == 20 and writes_after - writes_before == 20
         rejected = next((row for row in self._last_opportunities if row['guard_stage']), None)
-        result = dict(status='complete' if full_budget else 'partial' if progressed else 'recoverable_guard',
+        result = dict(status='complete' if complete else 'partial' if progressed else 'recoverable_guard',
             recovery_protocol_version=2,
             rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
             logical_update=logical_update,attempt_id=attempt_id,attempt_index=attempt_index,
@@ -457,9 +458,9 @@ class DataParallelPPOActor(BasePPOActor):
             opportunity_statuses=[row['status'] for row in self._last_opportunities],
             guard_stage=rejected['guard_stage'] if rejected else None,
             guard_reasons=rejected['guard_reasons'] if rejected else [],
-            # complete_outer retains its scheduler/rollout-boundary meaning.
-            # full_budget_complete is the separate twenty-write budget fact.
-            complete_outer=progressed,retained_partial_adam_writes=progressed and not full_budget,
+            # All twenty opportunities must finish before a logical boundary.
+            # Twenty returned Adam writes are a separate diagnostic.
+            complete_outer=complete,retained_partial_adam_writes=progressed and not complete,
             no_automatic_rollback=False, current_step_rollback=True)
         result.update(actual_monitor_forward_count=getattr(self,'_actual_monitor_forward_count',0),
                       reused_monitor_forward_count=getattr(self,'_reused_monitor_forward_count',0))
@@ -467,7 +468,7 @@ class DataParallelPPOActor(BasePPOActor):
         if full_budget:
             self._full_budget_outers = getattr(self,'_full_budget_outers',0)+1
         result['full_budget_outers'] = getattr(self,'_full_budget_outers',0)
-        if progressed:
+        if complete:
             assert 1<=result['optimizer_writes_this_attempt']<=20
             self._complete_outers = logical_update
         else:
@@ -482,8 +483,10 @@ class DataParallelPPOActor(BasePPOActor):
                 guard_stage=result['guard_stage'],guard_reasons=result['guard_reasons'],
                 opportunities_processed=processed,
                 recoverable_guard=True,complete_outer=False,scheduler_advances=0,
-                retained_partial_adam_writes=False,no_automatic_rollback=False,
+                retained_partial_adam_writes=progressed,no_automatic_rollback=False,
                 current_step_rollback=True,recovery_protocol_version=2,
+                optimizer_calls_this_attempt=result['optimizer_calls_this_attempt'],
+                optimizer_rollbacks_this_attempt=result['optimizer_rollbacks_this_attempt'],
                 actual_monitor_forward_count=result['actual_monitor_forward_count'],
                 reused_monitor_forward_count=result['reused_monitor_forward_count']),collective=True,group=group)
         self._last_attempt_result = result
@@ -629,7 +632,9 @@ class DataParallelPPOActor(BasePPOActor):
                 metrics['actor/update_opportunities_this_attempt']=len(self._last_opportunities)
                 metrics['actor/full_budget_complete']=int(writes==20)
                 metrics['actor/unattempted_update_opportunities']=20-len(self._last_opportunities)
-                metrics['actor/skipped_update_opportunities']=20-writes
+                metrics['actor/skipped_update_opportunities']=len(self._last_opportunities)-writes
+                if len(self._last_opportunities)<20:
+                    return metrics  # Retain Adam; no completed budget or exclusive step proof.
             else:
                 assert writes == 20
             if safety_enabled and self._policy_execution_role != 'production':

@@ -61,6 +61,7 @@ INTEGRATION_EDITS = frozenset((
     'reproduction/common8/formal_attempt_audit.py',
     'reproduction/common8/safety_calibration_evidence.py',
     'reproduction/common8/test_zero_reference_monitor_schema.py',
+    'reproduction/common8/test_complete_outer_accounting.py',
     'reproduction/common8/recoverable_attempt.py',
     'reproduction/common8/runtime.py',
     'reproduction/common8/scheduler.py',
