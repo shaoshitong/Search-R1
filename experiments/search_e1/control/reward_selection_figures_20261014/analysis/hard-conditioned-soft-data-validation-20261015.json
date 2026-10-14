@@ -1,0 +1,40 @@
+{
+  "source_sha256": "2fadf346927a6ed1ca634b5f691e38049971f4fb48b1c6d40c3b4d5814708f17",
+  "local_aggregate_sha256": "ef06708c2854866325b298538b497f9b08926908452496b986b305139d58d2bb",
+  "checks": [
+    {
+      "iteration": 20,
+      "groups": 512,
+      "trajectories": 2560,
+      "hist_counts": "passed",
+      "subgroups": "passed",
+      "zero_group_mean_delta_and_advantage": "passed",
+      "finite_group_bound": "passed"
+    },
+    {
+      "iteration": 100,
+      "groups": 512,
+      "trajectories": 2560,
+      "hist_counts": "passed",
+      "subgroups": "passed",
+      "zero_group_mean_delta_and_advantage": "passed",
+      "finite_group_bound": "passed"
+    },
+    {
+      "iteration": 140,
+      "groups": 512,
+      "trajectories": 2560,
+      "hist_counts": "passed",
+      "subgroups": "passed",
+      "zero_group_mean_delta_and_advantage": "passed",
+      "finite_group_bound": "passed"
+    }
+  ],
+  "example_recomputed_independently": true,
+  "example_std_A": 0.9596830627819058,
+  "example_expected_std_A": 0.959683062781906,
+  "notes": [
+    "A has sample std <=1 per five-response group; large inverse divisor does not imply an unbounded advantage or a measured exploding gradient.",
+    "A distribution alone cannot establish gradient error; confirming error requires evidence that soft within-group order is spurious or harmful."
+  ]
+}
