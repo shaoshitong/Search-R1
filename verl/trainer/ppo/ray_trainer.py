@@ -895,7 +895,7 @@ class RayPPOTrainer(object):
                 run = __import__('json').loads((Path(os.environ['SEARCH_G1_BASE'])/
                                                'logs/run-manifest.json').read_text())
                 self.qprobe_runtime = QProbeRuntime(self.config.question_probe,
-                                                    os.environ['SEARCH_G1_BASE'], self.tokenizer)
+                                                    os.environ['SEARCH_G1_BASE'], self.tokenizer, worker_group=self.actor_rollout_wg)
                 restored = getattr(self, '_restored_qprobe_state', None)
                 snapshot = restored['path'] if restored else self.config.question_probe.get("snapshot_path")
                 if snapshot:

@@ -111,7 +111,7 @@ def _prediction_cpu(prediction):
 
 
 class QProbeRuntime:
-    def __init__(self, config, base_dir, tokenizer=None, *, feature_cache=None, head=None):
+    def __init__(self, config, base_dir, tokenizer=None, *, feature_cache=None, head=None, worker_group=None):
         self.config = validate_config(config)
         self.base = Path(base_dir).resolve()
         self.output_dir = Path(self.config.get("output_dir") or self.base / "artifacts/question-probe").resolve()
@@ -119,6 +119,7 @@ class QProbeRuntime:
             raise ValueError("Question-probe output must be inside this task's run directory")
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.tokenizer = tokenizer
+        self.worker_group = worker_group
         if feature_cache is None:
             from search_g1.qprobe_features import FeatureCache
             cache_dir = self.config.get("cache_dir")
@@ -139,6 +140,12 @@ class QProbeRuntime:
             initial = self.config.get("initial_head_checkpoint")
             if initial:
                 head = OnlineQProbe.load(initial, expected_feature_spec_sha=self.feature_spec_sha)
+                if self.config.get('sequence_device')=='allocated_rank7':
+                    from search_g1.qprobe_sequence_rpc import RemoteSequenceQProbe, worker_transport
+                    if worker_group is None:raise ValueError('QPROBE_GPU_WORKER_GROUP_REQUIRED')
+                    restored_head=head
+                    head=RemoteSequenceQProbe(self.cache,self.config,worker_transport(worker_group))
+                    head.load_state_dict(restored_head.state_dict())
                 expected_head_config = QProbeConfig.from_mapping(self.config)
                 if head.config != expected_head_config:
                     raise ValueError("Initial question-probe head config differs from the effective runtime config")
@@ -147,8 +154,13 @@ class QProbeRuntime:
                     from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
                     if self.cache.spec.get('representation') != 'frozen_token_sequence_v2':
                         raise ValueError('QPROBE_THREE_BLOCKS_REQUIRE_SEQUENCE_CACHE')
-                    head = OnlineSequenceQProbe.fresh(self.cache, self.config,
-                        device=self.config.get('sequence_device','cpu'))
+                    if self.config.get('sequence_device')=='allocated_rank7':
+                        from search_g1.qprobe_sequence_rpc import RemoteSequenceQProbe, worker_transport
+                        if worker_group is None:raise ValueError('QPROBE_GPU_WORKER_GROUP_REQUIRED')
+                        head=RemoteSequenceQProbe(self.cache,self.config,worker_transport(worker_group))
+                    else:
+                        head = OnlineSequenceQProbe.fresh(self.cache, self.config,
+                            device=self.config.get('sequence_device','cpu'))
                 else:
                     head = OnlineQProbe(self.cache.feature_dim, QProbeConfig.from_mapping(self.config),
                                        feature_spec_sha=self.feature_spec_sha)
@@ -158,6 +170,8 @@ class QProbeRuntime:
             raise ValueError("Probe head and fixed feature cache dimensions differ")
         self._bind_head_architecture(head)
         self.head = head
+        if self.config.get('sequence_device')=='allocated_rank7':
+            _write_json(self.output_dir/'gpu-worker-initialization.json',head.worker_receipt)
         self.selection_rng = np.random.default_rng(self.config.get("seed", 42))
         self.pending = None
         self.completed_outer = int(getattr(self.head, "completed_outer", 0))
@@ -321,6 +335,13 @@ class QProbeRuntime:
                                expected_feature_spec_sha=self.feature_spec_sha)
         if head.version != state["head_version"] or int(head.completed_outer) != state["completed_outer"]:
             raise ValueError("Question-probe head state is ahead of/behind the paired actor")
+        if self.config.get('sequence_device')=='allocated_rank7':
+            # The current worker proxy is already initialized from the same
+            # official source. Restore all paired optimizer/RNG/replay state
+            # there, rather than moving a CPU head into the GPU-less driver.
+            from search_g1.qprobe_sequence_rpc import RemoteSequenceQProbe
+            if not isinstance(self.head,RemoteSequenceQProbe):raise ValueError('QPROBE_REMOTE_PROXY_REQUIRED')
+            self.head.load_state_dict(head.state_dict());head=self.head
         self._bind_head_architecture(head)
         self.head = head
         self.completed_outer = state["completed_outer"]
