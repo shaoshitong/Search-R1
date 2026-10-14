@@ -1,0 +1,303 @@
+{
+  "aborted_attempts_current_execution": 0,
+  "accounting_scope": "authenticated saved5/100 prefix once, complete current-execution6/7 adds40, partial logical8 adds10 retained writes but no complete outer; four replicas counted once; remaining10 is not a processed skip",
+  "actor_global_micro_batch": 16,
+  "actor_local_micro_batch": 4,
+  "actual_cuda_worker_driver_restore_metadata_verified": true,
+  "actual_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-async-fullouter-next30min-observation.json",
+  "actual_receipt_sha256": "f9cc97bd931e8f26f32d2b323e9d028d9f76a2a0b16cb1a94ce698ca1fdb427e",
+  "actual_user_delivery_unix": null,
+  "after_delivered_complete_step": 5,
+  "authority_binding": {
+    "acquisition_authority_sha256": "6119a04680a4fbdf556cbfaed80df30df2bd69e77b2aea4f678d9acdbf2a1d0e",
+    "complete_file_hashes_required_equal": false,
+    "dynamic_authority_local_read_sha256": "69c6cf1e7d0bad83bfeb3e12e8d6f1cbf5eccd6cd187a0093d64c99f3dc1cb5d",
+    "identity_verified": true,
+    "scope": "authority may receive progress updates under the same run/execution/source; fresh receipt is the numerical source"
+  },
+  "baseline_delivery_receipt_sha256": "c7de754e9ecdebfb432fdb49e963b1b18d11555f6b653cd87810ae21f1e60425",
+  "bounded_failure_count": 0,
+  "closed_unattempted_current_execution": 0,
+  "complete_outer_successful_retained_adam": 140,
+  "complete_outers": 7,
+  "contains_only_scalars_hashes_and_small_identities": true,
+  "current_execution_complete_outer_successful_retained_adam": 40,
+  "current_execution_complete_outers": 2,
+  "current_execution_processed": 50,
+  "current_execution_successful_retained_adam": 50,
+  "delivered_anchor_sha256": "706f6a60eaf1a5c3c290dd262fd22e8be134b878e8f805e0755239ea563ad1e2",
+  "delivery_gate": "publish sanitized scalar and hash; actually report to the user; record actual delivery; only then advance hourly anchor",
+  "driver_restore_metadata_sha256": "b47788e642887b0063a7e53c8ff2c3a915bdb88edae487a6650ddd20029998d6",
+  "execution_id": "59ef9209e5724cf6adc6b126d30071c8",
+  "exploration_questions": 0,
+  "formal_delivery_status": "pending",
+  "four_rank_counts_equal": true,
+  "fresh_receipt_rebuilt_report": true,
+  "full_goal_complete": false,
+  "gpu": {
+    "auxiliary_latest_devices": [
+      {
+        "index": 5,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81920,
+        "used_mib": 28503,
+        "util_percent": 0
+      }
+    ],
+    "complete_step_window_peaks": {
+      "reason": "not_computed_by_this_metadata_entry",
+      "status": "unknown"
+    },
+    "inherited_execution_peak_mib": null,
+    "latest_sample_unix": 1792010912.6847234,
+    "maximum_scanned_sampling_gap_seconds": 2.4886581897735596,
+    "process_specific_peak_attribution": "unknown",
+    "sample_count": 1848,
+    "sampled_new_execution_physical_node_occupancy_peak_mib": {
+      "0": 41081,
+      "1": 41177,
+      "2": 41177,
+      "3": 41527,
+      "5": 17889,
+      "6": 28503
+    },
+    "scan_from_start": true,
+    "scope": "existing physical-node occupancy of this new execution only, including its startup; no old execution peak merged and no complete-step GPU peak computed",
+    "training_latest_devices": [
+      {
+        "index": 0,
+        "total_mib": 81920,
+        "used_mib": 41081,
+        "util_percent": 100
+      },
+      {
+        "index": 1,
+        "total_mib": 81920,
+        "used_mib": 41177,
+        "util_percent": 100
+      },
+      {
+        "index": 2,
+        "total_mib": 81920,
+        "used_mib": 41177,
+        "util_percent": 100
+      },
+      {
+        "index": 3,
+        "total_mib": 81920,
+        "used_mib": 41527,
+        "util_percent": 100
+      }
+    ],
+    "training_latest_used_gib_range": [
+      40.1181640625,
+      40.5537109375
+    ]
+  },
+  "gradient_accumulation": 8,
+  "head": {
+    "actor_snapshot_id": "1f34290a70454871aea9d368dc8a0b36:7",
+    "head_version": "qprobe:7:7:61e0027ebe1c566b",
+    "metadata_sha256": "a9eef7de502793e7633be51cf9b901281650477208335015e9925f7439df18b2",
+    "outer": 7,
+    "prediction_version": "qprobe:6:6:0756b7341d154c26",
+    "recorded_head_update": {
+      "completed_outer": 7,
+      "head_optimizer_updates": 68,
+      "replay_groups": 8704,
+      "update_count": 7
+    },
+    "scope": "existing committed head event JSON; no head tensor read/reload"
+  },
+  "hour_number": 1,
+  "hourly_anchor_advanced": false,
+  "hourly_due_local": "2026-10-15T04:45:00.828467+08:00",
+  "hourly_due_unix": 1792010700.828467,
+  "inherited_complete_outers": 5,
+  "monitor_by_complete_step": [
+    {
+      "actual_forward_count": 21.0,
+      "reused_forward_count": 19.0,
+      "step": 6
+    },
+    {
+      "actual_forward_count": 21.0,
+      "reused_forward_count": 19.0,
+      "step": 7
+    }
+  ],
+  "native_resumed_five": {
+    "accepted": null,
+    "first_resumed_outer": 6,
+    "last_resumed_outer": 10,
+    "original_native_first_five_accepted": false,
+    "scope": "only a produced native6..10 receipt establishes resumed-five acceptance; logical7 complete and partial8 do not establish acceptance",
+    "status": "missing"
+  },
+  "new_current_execution_scores_status": "missing",
+  "new_scoring_performed": false,
+  "observed_local": "2026-10-15T04:48:34.871087+08:00",
+  "observed_seconds_after_due": 214.04262042045593,
+  "observed_unix": 1792010914.8710873,
+  "old_04_18_candidate_used_as_fresh": false,
+  "optimizer_call_attempts_current_execution": 50,
+  "other_infra_and_wall_time_speedup_status": "unknown",
+  "parent_step5_scores": {
+    "dev512": {
+      "metadata_sha256": "3db18ff0ef15785b9d5209bfab1b3fd091acc46815bfbd03cc6ebba810a1f1ae",
+      "question_count": 512,
+      "step": 5,
+      "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "weighted_em": 0.24609375,
+      "weighted_f1": 0.3364310899469057
+    },
+    "scope": "historical parent step5 existing metadata only; no current execution scoring performed",
+    "stage64": {
+      "metadata_sha256": "66de8ac16e6ba1641944c5cd5ab4b26e639d6f7b6704234f24dbe5ec2c8ac963",
+      "question_count": 64,
+      "step": 5,
+      "validation_sha256": "b529fe2a4b6424091aa4ca827a28337c978808ecde0e01e6fe7c867e14a9084e",
+      "weighted_em": 0.328125,
+      "weighted_f1": 0.4153017776950518
+    }
+  },
+  "partial_outer_counted_complete": false,
+  "partial_processed_not_complete": 10,
+  "partial_successful_retained_adam_not_complete": 10,
+  "per_rank_prefix_sha256": {
+    "0": "a360ba8d5fa09894fe8ef5d294d6fd050f05bbecf49e58db8d902317b824c495",
+    "1": "b0f783debe4cd0789edce089aef956189d5a2766c79cab147ee1f50727c013f7",
+    "2": "a70e7247efa33ab4f0af19ff2e4aba92336906c5bce52fc0296e20cdad58f589",
+    "3": "e0950877b10d3545ed12c134c4e59729d3215bc68b4ff32c0c0cd0ff92ab3e4e"
+  },
+  "pipeline_alive_birth_matches": true,
+  "pipeline_pid": 3640648,
+  "pipeline_start_ticks": 608655430,
+  "post_evaluation_rng_persisted": false,
+  "private_publication_status": "pending",
+  "processed_opportunities": 150,
+  "recorded_error_present": false,
+  "replica_counts_counted_once": true,
+  "restore_metadata_scope": "existing producer JSON readbacks only; saved checkpoint RNG, not post-evaluation RNG; no state or tensor read by this report preparation",
+  "reward_comparison": {
+    "hourly_window_mean_change": null,
+    "hourly_window_mean_change_reason": "actual delivered switch5 anchor has an empty new-execution reward window; cross-execution mean change is not computed",
+    "previous_hourly_window_mean": null,
+    "step7_minus_step6_same_execution": 0.0014489293098449707
+  },
+  "reward_window": {
+    "after_complete_step": 5,
+    "closed_attempt_prefix_sha256": "4a8181f776856edf62989a8356fceb1a013bc1ad077b92c741016ebf0e59ea54",
+    "complete_prefix_sha256": "5174300604ea2341d03e7733e028df90d72e964125ff1d7e0d277369bc7ecd76",
+    "complete_steps": [
+      6,
+      7
+    ],
+    "count": 2,
+    "latest_reward": 0.56818687915802,
+    "latest_step": 7,
+    "maximum": 0.56818687915802,
+    "mean": 0.5674624145030975,
+    "minimum": 0.566737949848175,
+    "per_step": [
+      {
+        "reward_mean": 0.566737949848175,
+        "step": 6
+      },
+      {
+        "reward_mean": 0.56818687915802,
+        "step": 7
+      }
+    ],
+    "scope": "new-execution returned complete6/7 only; partial8 and parent execution rewards excluded"
+  },
+  "role": "actual_hour1_sanitized_scalar_prepared_pending_publication_and_user_delivery",
+  "run_id": "1f34290a70454871aea9d368dc8a0b36",
+  "runtime_jobs": [
+    {
+      "exit_code": 0,
+      "name": "retrieval-stage",
+      "state": "STOPPED"
+    },
+    {
+      "exit_code": null,
+      "name": "retriever",
+      "state": "STARTED"
+    },
+    {
+      "exit_code": null,
+      "name": "probe-server",
+      "state": "STARTED"
+    },
+    {
+      "exit_code": 0,
+      "name": "probe-admission",
+      "state": "STOPPED"
+    },
+    {
+      "exit_code": null,
+      "name": "trainer",
+      "state": "STARTED"
+    }
+  ],
+  "runtime_stage": "GRPO_1_TO_200",
+  "saved_checkpoint_rng_verified": true,
+  "schema_version": 1,
+  "selected_predicted_questions": 512,
+  "since_actual_delivered_anchor": {
+    "complete_outers": 2,
+    "processed_opportunities": 50,
+    "skip": 0,
+    "successful_retained_adam": 50
+  },
+  "skip": 0,
+  "source_commit": "91f673c58ff415115c581b36568801b39ae3db86",
+  "successful_retained_adam": 150,
+  "target_complete_outers": 200,
+  "trainer_alive_birth_matches": true,
+  "trainer_pid": 3648487,
+  "trainer_start_ticks": 608698451,
+  "training_hardware": "A800",
+  "training_world_size": 4,
+  "unpersisted_infra_fields": [
+    "infra/reference_forward_skipped",
+    "infra/rollout/completed_requests_sum",
+    "infra/rollout/completed_trajectories",
+    "infra/rollout/engine_steps_sum",
+    "infra/rollout/environment_actions",
+    "infra/rollout/generation_requests",
+    "infra/rollout/peak_inflight_trajectories",
+    "infra/rollout/phase_elapsed_seconds",
+    "infra/rollout/retrieval_concurrency",
+    "infra/rollout/weight_syncs_per_rank",
+    "timing_s/adv",
+    "timing_s/candidate_fill",
+    "timing_s/gen",
+    "timing_s/question_probe_update",
+    "timing_s/ref",
+    "timing_s/save_checkpoint",
+    "timing_s/step",
+    "timing_s/testing",
+    "timing_s/update_actor",
+    "timing_s/update_critic",
+    "timing_s/values"
+  ],
+  "verifiable_inflight": {
+    "attempt_id": "4ee524d5f8ab4d6dabcf0d1082b4c536",
+    "attempt_index": 8,
+    "logical_update": 8,
+    "opportunities_remaining_or_unattempted": 10,
+    "optimizer_writes_after": 150,
+    "optimizer_writes_before": 140,
+    "processed": 10,
+    "processed_skip": 0,
+    "successful_adam": 10
+  },
+  "worker_restore_metadata_sha256": "d2cf5511f93b83f6cb4a80bfc4dd11d68b6703f97aea44d9b96e7ff5873d9519",
+  "write_rollbacks_current_execution": 0
+}
