@@ -14,11 +14,15 @@ def main():
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
     paths = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', commit,
         'release/recursive_bran_a/ablation150_aggregate_watch_v1',
-        'release/recursive_bran_a/ablation150_storage_v1'], text=True).splitlines()
+        'release/recursive_bran_a/ablation150_storage_v1',
+        'release/recursive_bran_a/ablation150_closed_storage_v2',
+        'release/recursive_bran_a/ablation150_tree_summary_v1',
+        'release/recursive_bran_a/ablation150_archive_v1'], text=True).splitlines()
     paths += ['release/recursive_bran_a/ablation150_reports_v1/report.py',
               'release/recursive_bran_a/ablation150_v1/contracts.py',
               'release/recursive_bran_a/ablation150_v1/__init__.py',
-              'release/recursive_bran_a/ablation150_infra/analysis_cli.py']
+              'release/recursive_bran_a/ablation150_infra/analysis_cli.py',
+              'release/recursive_bran_a/ablation150_infra/auxiliary_cli.py']
     files = {name: base64.b64encode(subprocess.check_output(
         ['git', 'show', f'{commit}:{name}'])).decode() for name in paths}
     payload = base64.b64encode(gzip.compress(json.dumps(dict(commit=commit, files=files)).encode())).decode()
