@@ -137,6 +137,13 @@ class FollowthroughTests(unittest.TestCase):
         path.unlink();path.parent.rmdir();path.parent.symlink_to(self.base,target_is_directory=True)
         with self.assertRaisesRegex(ValueError,'PAIR_RECEIPT_UNSAFE_PATH'):worker.pair_ready(5)
 
+    def test_existing_unsafe_pair_cannot_be_treated_as_not_yet_published(self):
+        directory=self.pair(5);path=self.pair_path();path.unlink();os.mkfifo(path)
+        with patch.object(worker,'accounting',return_value=self.actual),\
+             patch.object(worker.control,'launch_archive') as launch:
+            with self.assertRaisesRegex(ValueError,'UNSAFE_FILE_OR_OWNER'):worker.one_tick('helper',{})
+        launch.assert_not_called();self.assertFalse(directory.exists())
+
     def test_existing_claim_with_partial_pair_is_inspected_without_replay(self):
         directory=self.pair(5);directory.mkdir(parents=True);self.pair_path().write_text('{"step":')
         with patch.object(worker,'accounting',return_value=self.actual),\

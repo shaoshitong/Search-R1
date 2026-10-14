@@ -213,7 +213,7 @@ def one_tick(commit,verified_archives):
     for step in control.STEPS:
         pair=BASE/'artifacts/question-probe/completed-pairs'/('global_step_'+str(step))/'source-receipt.json'
         directory=components/('archive-'+str(step))
-        if not pair.is_file():
+        if not pair.exists() and not pair.is_symlink():
             need(actual['state']!='COMPLETED','COMPLETED_PRODUCER_MISSING_PAIR_'+str(step))
             break
         if not directory.exists():
