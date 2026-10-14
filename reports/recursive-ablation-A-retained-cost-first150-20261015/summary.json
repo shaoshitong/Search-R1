@@ -1,0 +1,404 @@
+{
+  "protocol": "retained_A_native_ancestry_scalar150_public_report_v1",
+  "status": "COMPLETE_EXISTING_A_ANCESTRY_SCALAR150_REPORT",
+  "goal_complete": false,
+  "observed_reader_time": 1792002635.4632099,
+  "prefix_outer_count": 150,
+  "configured_gpu_count": 8,
+  "segments": {
+    "original": {
+      "run_id": "1c806d15752d44a7ac99687f0737d7e3",
+      "config_sha256": "653193a4eb06bd28667f78ac14a66a2d1c97200ca8199b8521dcc2d3de35b319",
+      "declared_source_commit": "7966a1e76d6abddb4349d57c4727d69fe62fb16d",
+      "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+      "small_receipt_proofs": {
+        "configuration_receipt": {
+          "bytes": 735,
+          "sha256": "97c6702b1f67a03f508734e86ee8c7448d59868096ef42d6add621befaace393"
+        },
+        "resolved_config": {
+          "bytes": 8916,
+          "sha256": "653193a4eb06bd28667f78ac14a66a2d1c97200ca8199b8521dcc2d3de35b319"
+        },
+        "entry_receipt": {
+          "bytes": 120,
+          "sha256": "97a1fa24fabb38ea7ea0912c593c810144b338541e1dd651f2ef6a6d8a469864"
+        }
+      },
+      "retained_log": {
+        "bytes": 866240389,
+        "sha256": "f58bf70cc16000000e7adf5ca52a6335e89a6639f565f85dbde8415c1f63dcb9",
+        "retained_outer_range": [
+          1,
+          100
+        ],
+        "identical_repeated_scalar_lines": 0,
+        "full_source_log_read": true,
+        "line_hash_convention": "captured: exact retained UTF-8 line stripped of surrounding whitespace (ANSI retained), matching the existing reference reader; raw: exact line bytes"
+      }
+    },
+    "recovery": {
+      "run_id": "d97047b5902642c883d24aa908945cda",
+      "config_sha256": "43e28cc7ecc0d38a93324bf480aafb23a0c1ecdb979e9ea587d0358ae095233d",
+      "declared_source_commit": "a1ec638575268747468b1a14ff8fd5f858ca0e1a",
+      "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+      "small_receipt_proofs": {
+        "configuration_receipt": {
+          "bytes": 906,
+          "sha256": "a5b6b612930c4f17472ef1b2ba0d1bcfa622b1f1cbbb9f0adff92f80ad5ae3c9"
+        },
+        "resolved_config": {
+          "bytes": 8968,
+          "sha256": "43e28cc7ecc0d38a93324bf480aafb23a0c1ecdb979e9ea587d0358ae095233d"
+        },
+        "entry_receipt": {
+          "bytes": 119,
+          "sha256": "09106916b84bccb8d1ddbf4f7161e11ce9bd194b4dbfa167361041ad982331f4"
+        }
+      },
+      "retained_log": {
+        "bytes": 837546504,
+        "sha256": "3be4a20dae7629f14ed2fb9203ac0900eda2f0b13a0338045552adcdaf83573f",
+        "retained_outer_range": [
+          101,
+          150
+        ],
+        "identical_repeated_scalar_lines": 0,
+        "full_source_log_read": true,
+        "line_hash_convention": "captured: exact retained UTF-8 line stripped of surrounding whitespace (ANSI retained), matching the existing reference reader; raw: exact line bytes"
+      }
+    }
+  },
+  "prefixes": {
+    "5": {
+      "outer": 5,
+      "status": "COMPLETE_RETAINED_ANCESTRY_SCALARS",
+      "observed_closed_outers": 5,
+      "missing_outers": [],
+      "per_scalar_outer_coverage": {
+        "actor/scheduler_step_after_outer": 5,
+        "rollout/context_mismatches": 5,
+        "rollout/generated_tokens": 5,
+        "rollout/generation_rpc_calls": 5,
+        "rollout/generation_rpc_wall_seconds": 5,
+        "rollout/interaction_wall_seconds": 5,
+        "rollout/padded_rows": 5,
+        "rollout/prefill_tokens": 5,
+        "rollout/raw_discarded_tail_tokens": 5,
+        "rollout/raw_emitted_tokens": 5,
+        "rollout/raw_inherited_leaf_tokens": 5,
+        "rollout/raw_retained_tokens": 5,
+        "rollout/raw_slots": 5,
+        "rollout/retrieval_calls": 5,
+        "rollout/retrieval_http_calls": 5,
+        "rollout/retrieval_http_json_wall_seconds": 5,
+        "rollout/semantic_prefix_scan_cpu_seconds": 5,
+        "rollout/semantic_prefix_scan_wall_seconds": 5,
+        "rollout/trajectories": 5,
+        "timing_s/adv": 5,
+        "timing_s/gen": 5,
+        "timing_s/ref": 5,
+        "timing_s/save_checkpoint": 1,
+        "timing_s/stage_testing": 5,
+        "timing_s/step": 5,
+        "timing_s/testing": 1,
+        "timing_s/update_actor": 5,
+        "training/actual_adam_calls_per_rank": 5,
+        "training/actual_outer_updates": 5,
+        "training/consumed_sampling_rounds": 5
+      },
+      "recorded_prefix_sums": {
+        "rollout/context_mismatches": 0,
+        "rollout/generated_tokens": 4201950,
+        "rollout/generation_rpc_calls": 157,
+        "rollout/generation_rpc_wall_seconds": 1403.1844312911853,
+        "rollout/interaction_wall_seconds": 879.1386531097814,
+        "rollout/padded_rows": 445,
+        "rollout/prefill_tokens": 26983977,
+        "rollout/raw_discarded_tail_tokens": 527677,
+        "rollout/raw_emitted_tokens": 4201950,
+        "rollout/raw_inherited_leaf_tokens": 354312,
+        "rollout/raw_retained_tokens": 3674273,
+        "rollout/raw_slots": 24364000,
+        "rollout/retrieval_calls": 20412,
+        "rollout/retrieval_http_calls": 157,
+        "rollout/retrieval_http_json_wall_seconds": 878.1764449775219,
+        "rollout/semantic_prefix_scan_cpu_seconds": 198.11812186699723,
+        "rollout/semantic_prefix_scan_wall_seconds": 197.26715699024498,
+        "rollout/trajectories": 27105,
+        "timing_s/adv": 57.21303040906787,
+        "timing_s/gen": 3100.384455129504,
+        "timing_s/ref": 216.1348835984245,
+        "timing_s/save_checkpoint": 9.872019290924072e-07,
+        "timing_s/stage_testing": 5.2121467888355255e-05,
+        "timing_s/step": 6367.460793449543,
+        "timing_s/testing": 750.9191756695509,
+        "timing_s/update_actor": 1958.1045678444207
+      },
+      "physical_emitted_token_prefix_complete": true,
+      "allocated_gpu_hours_from_recorded_outer_wall": 14.149912874332319,
+      "actual_adam_each_rank": 100,
+      "historical_rework_cost_covered": false
+    },
+    "50": {
+      "outer": 50,
+      "status": "COMPLETE_RETAINED_ANCESTRY_SCALARS",
+      "observed_closed_outers": 50,
+      "missing_outers": [],
+      "per_scalar_outer_coverage": {
+        "actor/scheduler_step_after_outer": 50,
+        "rollout/context_mismatches": 50,
+        "rollout/generated_tokens": 50,
+        "rollout/generation_rpc_calls": 50,
+        "rollout/generation_rpc_wall_seconds": 50,
+        "rollout/interaction_wall_seconds": 50,
+        "rollout/padded_rows": 50,
+        "rollout/prefill_tokens": 50,
+        "rollout/raw_discarded_tail_tokens": 50,
+        "rollout/raw_emitted_tokens": 50,
+        "rollout/raw_inherited_leaf_tokens": 50,
+        "rollout/raw_retained_tokens": 50,
+        "rollout/raw_slots": 50,
+        "rollout/retrieval_calls": 50,
+        "rollout/retrieval_http_calls": 50,
+        "rollout/retrieval_http_json_wall_seconds": 50,
+        "rollout/semantic_prefix_scan_cpu_seconds": 50,
+        "rollout/semantic_prefix_scan_wall_seconds": 50,
+        "rollout/trajectories": 50,
+        "timing_s/adv": 50,
+        "timing_s/gen": 50,
+        "timing_s/ref": 50,
+        "timing_s/save_checkpoint": 2,
+        "timing_s/stage_testing": 50,
+        "timing_s/step": 50,
+        "timing_s/testing": 2,
+        "timing_s/update_actor": 50,
+        "training/actual_adam_calls_per_rank": 50,
+        "training/actual_outer_updates": 50,
+        "training/consumed_sampling_rounds": 50
+      },
+      "recorded_prefix_sums": {
+        "rollout/context_mismatches": 0,
+        "rollout/generated_tokens": 36237021,
+        "rollout/generation_rpc_calls": 1628,
+        "rollout/generation_rpc_wall_seconds": 9362.257026391104,
+        "rollout/interaction_wall_seconds": 4565.808739011176,
+        "rollout/padded_rows": 4831,
+        "rollout/prefill_tokens": 271096765,
+        "rollout/raw_discarded_tail_tokens": 3803148,
+        "rollout/raw_emitted_tokens": 36237021,
+        "rollout/raw_inherited_leaf_tokens": 3185499,
+        "rollout/raw_retained_tokens": 32433873,
+        "rollout/raw_slots": 243380000,
+        "rollout/retrieval_calls": 210021,
+        "rollout/retrieval_http_calls": 1628,
+        "rollout/retrieval_http_json_wall_seconds": 4556.290370013565,
+        "rollout/semantic_prefix_scan_cpu_seconds": 1664.9373564512232,
+        "rollout/semantic_prefix_scan_wall_seconds": 1657.7831759881228,
+        "rollout/trajectories": 270704,
+        "timing_s/adv": 555.8626227881759,
+        "timing_s/gen": 20981.153745305724,
+        "timing_s/ref": 705.3595461193472,
+        "timing_s/save_checkpoint": 2.9280781745910645e-06,
+        "timing_s/stage_testing": 0.0006014695391058922,
+        "timing_s/step": 35911.5667691743,
+        "timing_s/testing": 1484.248293521814,
+        "timing_s/update_actor": 9424.903687606566
+      },
+      "physical_emitted_token_prefix_complete": true,
+      "allocated_gpu_hours_from_recorded_outer_wall": 79.80348170927623,
+      "actual_adam_each_rank": 1000,
+      "historical_rework_cost_covered": false
+    },
+    "100": {
+      "outer": 100,
+      "status": "COMPLETE_RETAINED_ANCESTRY_SCALARS",
+      "observed_closed_outers": 100,
+      "missing_outers": [],
+      "per_scalar_outer_coverage": {
+        "actor/scheduler_step_after_outer": 100,
+        "rollout/context_mismatches": 100,
+        "rollout/generated_tokens": 100,
+        "rollout/generation_rpc_calls": 100,
+        "rollout/generation_rpc_wall_seconds": 100,
+        "rollout/interaction_wall_seconds": 100,
+        "rollout/padded_rows": 100,
+        "rollout/prefill_tokens": 100,
+        "rollout/raw_discarded_tail_tokens": 100,
+        "rollout/raw_emitted_tokens": 100,
+        "rollout/raw_inherited_leaf_tokens": 100,
+        "rollout/raw_retained_tokens": 100,
+        "rollout/raw_slots": 100,
+        "rollout/retrieval_calls": 100,
+        "rollout/retrieval_http_calls": 100,
+        "rollout/retrieval_http_json_wall_seconds": 100,
+        "rollout/semantic_prefix_scan_cpu_seconds": 100,
+        "rollout/semantic_prefix_scan_wall_seconds": 100,
+        "rollout/trajectories": 100,
+        "timing_s/adv": 100,
+        "timing_s/gen": 100,
+        "timing_s/ref": 100,
+        "timing_s/save_checkpoint": 3,
+        "timing_s/stage_testing": 100,
+        "timing_s/step": 100,
+        "timing_s/testing": 3,
+        "timing_s/update_actor": 100,
+        "training/actual_adam_calls_per_rank": 100,
+        "training/actual_outer_updates": 100,
+        "training/consumed_sampling_rounds": 100
+      },
+      "recorded_prefix_sums": {
+        "rollout/context_mismatches": 0,
+        "rollout/generated_tokens": 73528992,
+        "rollout/generation_rpc_calls": 3290,
+        "rollout/generation_rpc_wall_seconds": 18612.74229192175,
+        "rollout/interaction_wall_seconds": 8443.447637135163,
+        "rollout/padded_rows": 9558,
+        "rollout/prefill_tokens": 582119777,
+        "rollout/raw_discarded_tail_tokens": 11969754,
+        "rollout/raw_emitted_tokens": 73528992,
+        "rollout/raw_inherited_leaf_tokens": 6396853,
+        "rollout/raw_retained_tokens": 61559238,
+        "rollout/raw_slots": 501804000,
+        "rollout/retrieval_calls": 447386,
+        "rollout/retrieval_http_calls": 3290,
+        "rollout/retrieval_http_json_wall_seconds": 8423.53672597278,
+        "rollout/semantic_prefix_scan_cpu_seconds": 3321.571033003577,
+        "rollout/semantic_prefix_scan_wall_seconds": 3307.4112920193,
+        "rollout/trajectories": 544759,
+        "timing_s/adv": 1127.9938192199916,
+        "timing_s/gen": 41493.12363758683,
+        "timing_s/ref": 1256.5276040313765,
+        "timing_s/save_checkpoint": 3.7821009755134583e-06,
+        "timing_s/stage_testing": 0.0011876486241817474,
+        "timing_s/step": 69411.14569764864,
+        "timing_s/testing": 2124.004829518497,
+        "timing_s/update_actor": 17780.20743634738
+      },
+      "physical_emitted_token_prefix_complete": true,
+      "allocated_gpu_hours_from_recorded_outer_wall": 154.2469904392192,
+      "actual_adam_each_rank": 2000,
+      "historical_rework_cost_covered": false
+    },
+    "150": {
+      "outer": 150,
+      "status": "COMPLETE_RETAINED_ANCESTRY_SCALARS",
+      "observed_closed_outers": 150,
+      "missing_outers": [],
+      "per_scalar_outer_coverage": {
+        "actor/scheduler_step_after_outer": 150,
+        "rollout/context_mismatches": 150,
+        "rollout/generated_tokens": 150,
+        "rollout/generation_rpc_calls": 150,
+        "rollout/generation_rpc_wall_seconds": 150,
+        "rollout/interaction_wall_seconds": 150,
+        "rollout/padded_rows": 150,
+        "rollout/prefill_tokens": 150,
+        "rollout/raw_discarded_tail_tokens": 150,
+        "rollout/raw_emitted_tokens": 150,
+        "rollout/raw_inherited_leaf_tokens": 150,
+        "rollout/raw_retained_tokens": 150,
+        "rollout/raw_slots": 150,
+        "rollout/retrieval_calls": 150,
+        "rollout/retrieval_http_calls": 150,
+        "rollout/retrieval_http_json_wall_seconds": 150,
+        "rollout/semantic_prefix_scan_cpu_seconds": 150,
+        "rollout/semantic_prefix_scan_wall_seconds": 150,
+        "rollout/trajectories": 150,
+        "timing_s/adv": 150,
+        "timing_s/gen": 150,
+        "timing_s/ref": 150,
+        "timing_s/save_checkpoint": 4,
+        "timing_s/stage_testing": 150,
+        "timing_s/step": 150,
+        "timing_s/testing": 4,
+        "timing_s/update_actor": 150,
+        "training/actual_adam_calls_per_rank": 150,
+        "training/actual_outer_updates": 150,
+        "training/consumed_sampling_rounds": 150
+      },
+      "recorded_prefix_sums": {
+        "rollout/context_mismatches": 0,
+        "rollout/generated_tokens": 113750940,
+        "rollout/generation_rpc_calls": 5152,
+        "rollout/generation_rpc_wall_seconds": 27346.35041614715,
+        "rollout/interaction_wall_seconds": 13510.326968054287,
+        "rollout/padded_rows": 14830,
+        "rollout/prefill_tokens": 998886954,
+        "rollout/raw_discarded_tail_tokens": 22198183,
+        "rollout/raw_emitted_tokens": 113750940,
+        "rollout/raw_inherited_leaf_tokens": 10480327,
+        "rollout/raw_retained_tokens": 91552757,
+        "rollout/raw_slots": 790832000,
+        "rollout/retrieval_calls": 747936,
+        "rollout/retrieval_http_calls": 5152,
+        "rollout/retrieval_http_json_wall_seconds": 13477.069165913388,
+        "rollout/semantic_prefix_scan_cpu_seconds": 5001.650457855446,
+        "rollout/semantic_prefix_scan_wall_seconds": 4980.734391068108,
+        "rollout/trajectories": 821152,
+        "timing_s/adv": 1774.3866124115884,
+        "timing_s/gen": 64144.32507080957,
+        "timing_s/ref": 1859.737508884631,
+        "timing_s/save_checkpoint": 5.764886736869812e-06,
+        "timing_s/stage_testing": 0.0016191108152270317,
+        "timing_s/step": 105651.56981989555,
+        "timing_s/testing": 2801.8627612320706,
+        "timing_s/update_actor": 26233.291467051953
+      },
+      "physical_emitted_token_prefix_complete": true,
+      "allocated_gpu_hours_from_recorded_outer_wall": 234.78126626643456,
+      "actual_adam_each_rank": 3000,
+      "historical_rework_cost_covered": false
+    }
+  },
+  "boundary_pack_line_and_scalar_match": {
+    "5": true,
+    "50": true,
+    "100": true,
+    "150": true
+  },
+  "provenance": {
+    "input_reader_result": {
+      "bytes": 231382,
+      "sha256": "bef0e5b58514a238a9b1114fa7becc78fc155cb2b3fd2ab3064271affbb2c04b"
+    },
+    "writer_source": {
+      "bytes": 7494,
+      "sha256": "be1327fb479d2cd10aeaf194405210d2ab404118fdfdba552de096c2a1633cd7"
+    },
+    "retained_boundary_pack": {
+      "bytes": 8373,
+      "sha256": "c3fabcd0dc7830283e4e9f88360e59a7ac3d561cb7570f2d66e941669744f45c"
+    },
+    "native_chain_receipts": {
+      "parent_post100": {
+        "bytes": 17253,
+        "sha256": "bb0599ced9db88eaa5dfec21ead76d214a8a1f5b4a64aa7baa4b85a41ceebce2"
+      },
+      "continuation_binding": {
+        "bytes": 2387,
+        "sha256": "3977a3deb8317ae73c1c7e5bfa58191e51f774295a3a1f8b80438a8491104ae8"
+      },
+      "migration": {
+        "bytes": 21813,
+        "sha256": "79fb843b6295258db2bf14b87277c1e4b917c0300b7789004bf6873e54476126"
+      },
+      "final_post150": {
+        "bytes": 17510,
+        "sha256": "eac297e697caf21fe8b08c78ce0851d1bd9dd2b3fd9c47604495772b1d0ed944"
+      }
+    },
+    "native_worker_driver_restore_receipt_accepted": true,
+    "independent_tensor_reload_performed": false
+  },
+  "scope": {
+    "physical_tokens": "Recorded raw_emitted_tokens, including padding/discarded tails by native convention; not training-token counts or independent token reconstruction",
+    "phase_walls": "Existing native phase timers may overlap. Do not add them to total step. Step includes scheduled dev/save when native does; no separate CPU/GPU utilization claim",
+    "gpu_hours": "Eight configured GPUs times recorded completed-outer step wall only; not active GPU time, Slurm lease billing, startup, downtime or historical rework",
+    "historical_rework": "Original101..118 and partial119 were unpersisted and replayed after saved100. Their physical cost and earlier failed launches are NOT covered by ancestry sums",
+    "identity": "Two actual entry/run/config/source segments joined only by the actual saved100 native migration receipt; no common fabricated config or bitwise vLLM restoration claim",
+    "actions": "Existing log/receipt reads only; no A evaluation, QA/raw-text export, model/tensor/weight reads, GPU/HTTP/signals/locks or Node writes"
+  },
+  "runtime_timing_warning": "历史两段运行的infra/runtime及资源状态存在差异。耗时差是观察结果，不能仅据此证明算法造成速度变化。",
+  "public_projection": "Prefix aggregates and bounded source SHA provenance only; Node/local absolute paths, inodes, mtimes, PIDs and all150 raw scalar rows are omitted."
+}
