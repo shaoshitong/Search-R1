@@ -61,27 +61,8 @@ def step_line(draw,hist,X,Y,color,total=None,dash=False):
  total=total or sum(hist['counts']);pts=[]
  for i,n in enumerate(hist['counts']):pts.extend([(X(hist['edges'][i]),Y(n/total*100)),(X(hist['edges'][i+1]),Y(n/total*100))])
  draw.line(pts,color,2.3,dash)
-for step in [20,100,140]:
- r=next(v for v in old['rows'] if v['step']==step);stats.page(f'Soft vs hard, iter{step}',1240,1090)
- stats.text(f'Reward distributions · iteration {step}',105,30,1030,36,27,bold=True)
- stats.text('Same 512 questions × 5 responses from the Soft Reward experiment',105,74,1030,28,20,MUTED)
- x,y=135,178;X,Y=panel_axes(stats,x,y,'(a) Raw reward values',-.15,1.65,90,[0,.5,1,1.5],[0,30,60,90],'Reward r')
- # Hard reward is an exact binary distribution, not inferred from a trajectory mean.
- for v,n in [(0,r['trajectories']-round(r['em']*r['trajectories'])),(1,round(r['em']*r['trajectories']))]:stats.bar(X(v)-4,Y(n/r['trajectories']*100),8,Y(0)-Y(n/r['trajectories']*100),'#99A2AA',75)
- step_line(stats,r['R_hist'],X,Y,COLORS[0]);stats.text('Hard Reward',x+25,y+12,160,25,18,'#7B8791');stats.text('Soft Reward',x+265,y+12,160,25,18,COLORS[0])
- x,y=755,178;X,Y=panel_axes(stats,x,y,'(b) Within-question reward std',0,1.01,100,[0,.25,.5,.75,1],[0,25,50,75,100],'Sample std over 5 rewards')
- hardstd_hist={'edges':r['R_std_hist']['edges'],'counts':[0]*len(r['R_std_hist']['counts'])}
- import bisect
- for k,n in enumerate(r['correct_count_hist']):
-  sd=math.sqrt(k*(5-k)/20);idx=min(len(hardstd_hist['counts'])-1,bisect.bisect_right(hardstd_hist['edges'],sd)-1);hardstd_hist['counts'][idx]+=n
- step_line(stats,hardstd_hist,X,Y,'#89959F',dash=True);step_line(stats,r['R_std_hist'],X,Y,COLORS[0]);stats.text(f'Hard mean std: {r["C_std"]["mean"]:.4f}',x+14,y+32,290,25,18,'#7B8791');stats.text(f'Soft mean std: {r["R_std"]["mean"]:.4f}',x+14,y+62,290,25,18,COLORS[0])
- x,y=135,638;X,Y=panel_axes(stats,x,y,'(c) Normalized reward / advantage',-1.85,1.85,100,[-1.5,-1,-.5,0,.5,1,1.5],[0,25,50,75,100],'A = (r − group mean) / (group std + ε)')
- step_line(stats,r['C_A_hist'],X,Y,'#89959F',dash=True);step_line(stats,r['R_A_hist'],X,Y,COLORS[0]);stats.text('All trajectories, including zero advantages',x+15,y+18,420,25,18,MUTED)
- x,y=755,638;X,Y=panel_axes(stats,x,y,'(d) Advantages in nonconstant groups',-1.85,1.85,40,[-1.5,-1,-.5,0,.5,1,1.5],[0,10,20,30,40],'Normalized advantage A')
- step_line(stats,r['C_active_A_hist'],X,Y,'#89959F',dash=True);step_line(stats,r['R_active_A_hist'],X,Y,COLORS[0]);stats.text('Hard Reward',x+20,y+15,170,25,18,'#7B8791');stats.text('Soft Reward',x+230,y+15,170,25,18,COLORS[0])
- stats.text('std uses correction = 1; ε = 10⁻⁶. Soft rewards are historical frozen-probe reconstructions.',105,1020,1100,27,18,MUTED)
- notes.append({'iteration':step,'hard_mean_group_std':r['C_std']['mean'],'soft_mean_group_std':r['R_std']['mean'],'groups':512,'trajectories':2560,'raw_reward_std_global':r['R']['std'],'soft_reward_coverage':'historical reconstruction, not online bitwise values'})
-stats.write('reward-std-and-advantage-distributions.drawio')
+from repair_reward_histograms import build as build_reward_histograms
+stats,notes=build_reward_histograms(old)
 # Paired per-question std, including and excluding exactly constant groups.
 q=Draw();q.page('Question std, iter100',1240,690);r=next(v for v in old['rows'] if v['step']==100)
 q.text('Per-question reward diversity = sample std',105,30,1060,36,27,bold=True)
