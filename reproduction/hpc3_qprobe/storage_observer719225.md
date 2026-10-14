@@ -22,6 +22,9 @@ as pending; it is never represented as cleaned or as successful measurement.
 Acceptance requires the actual waited du exit0, empty stderr, exactly one
 integer/tab/fixed-root output line, stable owner metadata, source/process
 bindings, and output SHA. Missing process without a result remains unknown;
+Large failed-output summaries are capped at16KiB each while preserving their
+full byte counts and SHA; successful measurements require untruncated output
+and actual empty stderr. Truncation never converts failure into success.
 PID reuse fails the original-birth check. The result covers a non-atomic walk
 while training may grow files. It does not prove a hard filesystem quota,
 future2TB allowance, an atomic endpoint, or all200/final recovery completion.

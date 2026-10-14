@@ -74,6 +74,7 @@ class StorageObservation(unittest.TestCase):
                       started_unix=1, completed_unix=2, stdout=stdout, stderr='',
                       stdout_sha256=hashlib.sha256(stdout.encode()).hexdigest(),
                       stderr_sha256=hashlib.sha256(b'').hexdigest())
+        observer.bound_outputs(result)
         observer.publish(self.control / 'result.json', result)
         value = self.inspect_with(None)
         self.assertEqual(value['result']['allocated_bytes'], 1234)
@@ -85,6 +86,17 @@ class StorageObservation(unittest.TestCase):
                          status='ACTUAL_DU_COMPLETED0_USAGE_MEASURED'))
         with self.assertRaises(ValueError):
             self.inspect_with(None)
+
+    def test_large_failure_output_is_bounded_without_losing_its_full_sha(self):
+        stderr = 'Permission denied\n' * 200000
+        value = observer.bound_outputs(dict(stdout='', stderr=stderr))
+        self.assertEqual(value['stderr_sha256'], hashlib.sha256(stderr.encode()).hexdigest())
+        self.assertEqual(value['stderr_bytes'], len(stderr.encode()))
+        self.assertTrue(value['stderr_truncated'])
+        self.assertLessEqual(len(value['stderr'].encode()), 16384)
+        self.assertLess(len(json.dumps(value)), 2**21)
+        self.assertIsNone(observer.allocated_usage('123\t'+str(observer.MEASURE)+'\n',
+                                                  value['stderr'], 0))
 
     def test_wrong_result_scope_is_rejected(self):
         observer.publish(self.control / 'result.json', dict(source=self.claim['source'],

@@ -117,6 +117,18 @@ def allocated_usage(stdout, stderr, returncode):
     return int(match.group(1))
 
 
+def bound_outputs(value):
+    for name in ('stdout', 'stderr'):
+        output = value.get(name)
+        if isinstance(output, str):
+            raw = output.encode('utf-8')
+            value[name + '_sha256'] = hashlib.sha256(raw).hexdigest()
+            value[name + '_bytes'] = len(raw)
+            value[name + '_truncated'] = len(raw) > 16384
+            value[name] = raw[:16384].decode('utf-8', errors='replace')
+    return value
+
+
 def inspect():
     current = validate()
     if not CONTROL.exists() and not CONTROL.is_symlink():
@@ -152,6 +164,8 @@ def inspect():
             stdout, stderr = result.get('stdout'), result.get('stderr')
             allocated = allocated_usage(stdout, stderr, result.get('actual_du_exit_code'))
             if (allocated is None or allocated != result.get('allocated_bytes') or
+                    result.get('stdout_truncated') is not False or result.get('stderr_truncated') is not False or
+                    result.get('stdout_bytes') != len(stdout.encode()) or result.get('stderr_bytes') != 0 or
                     hashlib.sha256(stdout.encode()).hexdigest() != result.get('stdout_sha256') or
                     hashlib.sha256(stderr.encode()).hexdigest() != result.get('stderr_sha256')):
                 raise ValueError('Actual completed du output/exit/bytes differ')
@@ -223,6 +237,7 @@ def worker():
             value.update(du_process=actual_child, actual_du_exit_code=child.poll(),
                          actual_du_child_still_live=child.returncode is None)
     value.update(completed_unix=time.time(), duration_seconds=time.time() - started)
+    bound_outputs(value)
     publish(CONTROL / 'result.json', value)
     return value
 
