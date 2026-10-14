@@ -1,0 +1,143 @@
+{
+  "actual_adam_each_rank": 1000,
+  "aggregate_difference_pp": 2.34375,
+  "comparison_scope": "Aggregate EM only; no paired/bootstrap/new A evaluation",
+  "config_sha256": "b2a47bdbd8d721579e983062eb3ee942cc1e4b6aa021e7c49861e3763cdb10de",
+  "cost": {
+    "A-original": {
+      "actual_adam_each_rank_recorded": 1000,
+      "historical_rework_covered": false,
+      "native_step_seconds": 35911.5667691743,
+      "retained_emitted_tokens": 36237021,
+      "rolling_save_prefix_seconds": null,
+      "world_times_native_wall_GPU_hours_proxy": 79.80348170927623
+    },
+    "C1-root-only": {
+      "native_step_seconds": 32779.00825221557,
+      "original_emitted_added_once": 834605,
+      "retained_emitted_tokens": 36650822,
+      "rolling_save_covered_outers": 48,
+      "rolling_save_prefix_seconds_outside_native_step": 2136.721268423833,
+      "separate_original_first_RPC_to_compose_seconds": 401.640469789505,
+      "world_times_native_wall_GPU_hours_proxy": 72.84224056047904
+    },
+    "GPU_active_or_billed_time": null,
+    "end_to_end_time_complete": false,
+    "scope": "Retained ancestry; padding/discarded tails included. Native clocks and separate rolling clocks differ. Historical infra differs; no causal speedup ratio."
+  },
+  "dev512": {
+    "A-original": {
+      "all": {
+        "count": 512,
+        "em": 0.388671875,
+        "f1": 0.4735448795995672,
+        "hits": 199
+      },
+      "hotpotqa": {
+        "count": 256,
+        "em": 0.390625,
+        "f1": null,
+        "hits": 100
+      },
+      "nq": {
+        "count": 256,
+        "em": 0.38671875,
+        "f1": null,
+        "hits": 99
+      }
+    },
+    "C1-root-only": {
+      "all": {
+        "count": 512,
+        "em": 0.412109375,
+        "f1": 0.4797588045634922,
+        "hits": 211
+      },
+      "hotpotqa": {
+        "count": 256,
+        "em": 0.44140625,
+        "f1": 0.47868303571428583,
+        "hits": 113
+      },
+      "nq": {
+        "count": 256,
+        "em": 0.3828125,
+        "f1": 0.4808345734126985,
+        "hits": 98
+      }
+    }
+  },
+  "goal_complete": false,
+  "inherited_policy_occurrence_fraction": {
+    "definition": "Duplicate retained sampled policy-token occurrences across selected leaves divided by all selected leaf policy-token occurrences. Numerator is native raw_inherited_leaf_tokens (total raw action-token occurrences minus unique(sample_id,offset)); denominator sums saved root.model_mask plus selected branch_end.cost.full_training_model_tokens. This is not the average child inherited-prefix fraction.",
+    "denominator": 454918,
+    "numerator": 77476,
+    "value": 0.17030761587802637
+  },
+  "limitations": [
+    "Single seed and sparse formal milestones do not establish stable causal superiority.",
+    "Selected TRAIN reward and PPO loss are not fixed heldout EM; cohorts differ.",
+    "Recorded Adam/finite scalars are not an independent tensor/logit/gradient reload.",
+    "C1 original sampling token count is supplemented once; full original timing and GPU billing remain unknown.",
+    "Branch elapsed times overlap; inherited fraction is over all selected policy occurrences, not mean child prefix length."
+  ],
+  "milestone": 50,
+  "native_scalar_prefix_outers": 50,
+  "pg_loss": {
+    "all_recorded_finite": true,
+    "first": 0.00047085151891224086,
+    "last": 0.0007409015648590867,
+    "maximum": 0.0010583920426142867,
+    "minimum": 8.237305082730018e-05,
+    "observed_outers": 50
+  },
+  "post_evaluation_manifest_sha256": "ab6240d770c2c66415915ca5f09b044c912a1c9633e8cc095e41441bb8aff862",
+  "protocol": "recursive_C1_closed_milestone_public_v1",
+  "run_id": "260d1debb6214d75b3d1a5954d88f524",
+  "scientific_source_commit": "233b0dc95de3f7b797d5b424d3b7dcaafca5328f",
+  "skips_each_rank": 0,
+  "tree": {
+    "accepted": 510,
+    "all_correct": 98,
+    "all_wrong": 212,
+    "attempts": 4907,
+    "branch_cost_scope": "Child suffix generated tokens, retrieval calls and shared-batch elapsed times from already saved branch_end.cost. Summed branch elapsed times overlap across questions; not GPU wall.",
+    "branch_positions": {
+      "0": 2730,
+      "1": 1727,
+      "2": 382,
+      "3": 68
+    },
+    "candidate_generations": {
+      "1": 4907
+    },
+    "candidates": 4907,
+    "mixed": 202,
+    "policy_denominator_missing_questions": 0,
+    "questions": 512,
+    "recorded_all_candidate_branch_cost_sum": {
+      "branch_wall_seconds": 161696.69489963353,
+      "model_calls": 9865,
+      "new_generated_tokens": 701783,
+      "retrieval_calls": 5066
+    },
+    "recorded_selected_nonroot_branch_cost_sum": {
+      "branch_wall_seconds": 69603.08357057907,
+      "model_calls": 4222,
+      "new_generated_tokens": 302569,
+      "retrieval_calls": 2223
+    },
+    "reward_0_to_1": 270,
+    "reward_1_to_0": 240,
+    "scope": "Recorded closed trees only; no statistics at unrecorded outer",
+    "selected": 2560,
+    "selected_generations": {
+      "0": 512,
+      "1": 2048
+    },
+    "selected_policy_token_occurrences": 454918,
+    "selected_reward_count_unavailable": 0,
+    "shortfalls": 0,
+    "status": "COMPLETE_CLOSED_TREE512"
+  }
+}
