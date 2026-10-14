@@ -51,6 +51,19 @@ class LaunchContractTests(unittest.TestCase):
         self.assertTrue(validate_predecessor(result,cleanup,terminal))
         for r,c,t in [({'qa_count':51712},cleanup,terminal),(result,{'cleaned':False},terminal),(result,cleanup,dict(terminal,state='RUNNING')),(result,cleanup,dict(terminal,exit_code='1:0'))]:
             with self.assertRaises(ValueError):validate_predecessor(r,c,t)
+    def test_finished_evaluation_teardown_failure_requires_full_release_evidence(self):
+        result={'qa_count':51713};cleanup={'cleaned':True}
+        terminal=dict(job_id=3395,state='FAILED',exit_code='1:0')
+        closure=dict(job_id=3395,error="AssertionError('final-evaluator left owned subprocesses')",
+            evaluator_exit_code=0,owned_birth_count=235,original_births_still_live=[],
+            gpu_processes='',cgroup_exists=False,final_result_sha256='a'*64,cleanup_sha256='b'*64)
+        self.assertTrue(validate_predecessor(result,cleanup,terminal,closure))
+        for key,value in [('evaluator_exit_code',1),('original_births_still_live',[1]),
+                          ('cgroup_exists',True),('gpu_processes','foreign or own GPU PID'),
+                          ('error','different failure')]:
+            with self.assertRaises(ValueError):
+                validate_predecessor(result,cleanup,terminal,dict(closure,**{key:value}))
+
     def test_prospective_admission_calls_real_unstarted_import_without_smoke_claim(self):
         from unittest.mock import patch
         from reproduction.common8 import formal_inline_safety as safety

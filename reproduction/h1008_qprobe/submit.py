@@ -9,10 +9,24 @@ import time
 from reproduction.h1008_qprobe.adopt_reward_zero import digest
 
 
-def validate_predecessor(result,cleanup,terminal):
+def validate_predecessor(result,cleanup,terminal,closure=None):
     if result.get('qa_count')!=51713:raise ValueError('WAIT_FOR_ALL51713_FINAL_RESULTS')
     if cleanup.get('cleaned') is not True:raise ValueError('WAIT_FOR_OWNED_EVALUATION_RELEASE')
-    if terminal.get('job_id')!=3395 or terminal.get('state')!='COMPLETED' or terminal.get('exit_code')!='0:0':raise ValueError('ACTUAL_PREDECESSOR_EXIT0_REQUIRED')
+    native_success=terminal.get('job_id')==3395 and terminal.get('state')=='COMPLETED' and terminal.get('exit_code')=='0:0'
+    if not native_success:
+        # Do not rewrite a failed native job into success. A finished evaluator
+        # with independently verified subsequent cleanup may still release this
+        # unrelated fresh experiment after the exact known teardown assertion.
+        if not (terminal.get('job_id')==3395 and terminal.get('state')=='FAILED' and terminal.get('exit_code')=='1:0'
+                and closure and closure.get('job_id')==3395
+                and closure.get('error')=="AssertionError('final-evaluator left owned subprocesses')"
+                and closure.get('evaluator_exit_code')==0
+                and closure.get('owned_birth_count',0)>0
+                and closure.get('original_births_still_live')==[]
+                and closure.get('gpu_processes')==''
+                and closure.get('cgroup_exists') is False
+                and closure.get('final_result_sha256') and closure.get('cleanup_sha256')):
+            raise ValueError('ACTUAL_PREDECESSOR_EXIT0_OR_VERIFIED_TEARDOWN_CLOSURE_REQUIRED')
     return True
 
 
@@ -27,7 +41,12 @@ def submit(base,source_files):
     predecessor=Path(config['predecessor_evaluation_base'])
     result=json.loads((predecessor/'journal/final-result.json').read_text());cleanup=json.loads((predecessor/'logs/cleanup-status.json').read_text())
     terminal=json.loads((base/'preparation/predecessor-exit0.json').read_text())
-    validate_predecessor(result,cleanup,terminal)
+    closure_path=base/'preparation/predecessor-teardown-closure.json'
+    closure=json.loads(closure_path.read_text()) if closure_path.exists() else None
+    validate_predecessor(result,cleanup,terminal,closure)
+    if closure:
+        assert digest(predecessor/'journal/final-result.json')==closure['final_result_sha256']
+        assert digest(predecessor/'logs/cleanup-status.json')==closure['cleanup_sha256']
     assert result['run_id']==cleanup['run_id']==config['predecessor_run_id']
     assert result['step']==200 and result['final'] is True
     assert result['checkpoint_manifest_sha256']==config['predecessor_checkpoint_manifest_sha256']
