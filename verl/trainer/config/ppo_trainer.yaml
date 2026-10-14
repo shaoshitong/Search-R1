@@ -27,6 +27,10 @@ question_probe:
   snapshot_path: null
   initial_head_checkpoint: null
   head_hidden_size: 64
+  probe_architecture: count_mlp
+  sequence_device: cpu
+  sequence_train_micro: 4
+  sequence_predict_micro: 32
   head_learning_rate: 0.0003
   head_batch_size: 256
   head_epochs_per_outer: 2

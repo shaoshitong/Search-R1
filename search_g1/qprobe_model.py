@@ -115,6 +115,7 @@ def count_moment_loss(prediction, counts, config: QProbeConfig, weights=None):
         raise ValueError('QPROBE_COUNTS_MUST_BE_INT64_VECTOR')
     if len(counts) != len(prediction['logits']) or bool(((counts < 0) | (counts > 5)).any()):
         raise ValueError('QPROBE_INVALID_COUNTS')
+    counts = counts.to(prediction['logits'].device)
     means = counts.float() / 5
     stds = (counts.float() * (5 - counts.float()) / 20).sqrt()
     ce = F.cross_entropy(prediction['logits'].float(), counts, reduction='none')
@@ -125,6 +126,7 @@ def count_moment_loss(prediction, counts, config: QProbeConfig, weights=None):
         weights = torch.ones_like(loss)
     if weights.shape != loss.shape or not torch.isfinite(weights).all() or bool((weights <= 0).any()):
         raise ValueError('QPROBE_INVALID_REPLAY_WEIGHTS')
+    weights = weights.to(loss.device)
     weighted = lambda x: (x * weights).sum() / weights.sum()
     return weighted(loss), dict(count_ce=weighted(ce), mean_mse=weighted(mean_mse), std_mse=weighted(std_mse))
 
@@ -198,24 +200,42 @@ class OnlineQProbe:
         self.protocol = None
         self.actor_snapshot_id = None
 
+    checkpoint_schema_version = SCHEMA_VERSION
+
+    def _validate_features(self, features):
+        return validate_features(features, self.feature_dim)
+
+    def _concat_features(self, batches):
+        return torch.cat(batches, dim=0)
+
+    def _state_features(self):
+        return self.replay_features
+
+    def _restore_features(self, state):
+        return state.clone().float().cpu()
+
+    def _forward(self, features):
+        return self.model(features)
+
     @property
     def version(self):
         digest = hashlib.sha256(self.feature_spec_sha.encode())
         for key, value in sorted(self.model.state_dict().items()):
-            digest.update(key.encode()); digest.update(value.detach().cpu().numpy().tobytes())
+            digest.update(key.encode()); digest.update(value.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes())
         return f'qprobe:{self.completed_outer}:{self.update_count}:{digest.hexdigest()[:16]}'
 
     def predict(self, features):
         self.model.eval()
         with torch.no_grad():
-            return {k: v.detach().clone() for k, v in self.model(features).items()}
+            return {k: v.detach().clone() for k, v in self._forward(features).items()}
 
     def _fit(self, outer):
         if not self.replay_labels:
             raise ValueError('QPROBE_CANNOT_FIT_WITHOUT_REAL_LABELS')
-        counts = torch.tensor([x['correct_count'] for x in self.replay_labels], dtype=torch.long)
+        device = next(self.model.parameters()).device
+        counts = torch.tensor([x['correct_count'] for x in self.replay_labels], dtype=torch.long, device=device)
         weights = torch.tensor([2 ** (-(outer - x['source_outer']) / self.config.replay_half_life_outer)
-                                for x in self.replay_labels], dtype=torch.float32)
+                                for x in self.replay_labels], dtype=torch.float32, device=device)
         # Use a global denominator. Per-mini normalization cancels recency
         # weights in homogeneous mini-batches and changes the intended objective.
         weights = weights * (len(weights) / weights.sum())
@@ -225,7 +245,7 @@ class OnlineQProbe:
             order = torch.randperm(len(counts), generator=self.rng)
             for offset in range(0, len(order), self.config.head_batch_size):
                 index = order[offset:offset + self.config.head_batch_size]
-                prediction = self.model(self.replay_features[index])
+                prediction = self._forward(self.replay_features[index])
                 loss, _ = count_moment_loss(prediction, counts[index], self.config)
                 # Replace the mean with the exact global age-weighted batch
                 # estimator; count_moment_loss above validates both target and output.
@@ -259,7 +279,7 @@ class OnlineQProbe:
             raise ValueError('QPROBE_OUTER_ALREADY_UPDATED')
         if outer <= self.completed_outer:
             raise ValueError('QPROBE_OLD_OR_FUTURE_HEAD_ACTOR_PAIR')
-        features = validate_features(features, self.feature_dim).clone()
+        features = self._validate_features(features).clone()
         if len(labels) != len(features) or not labels:
             raise ValueError('QPROBE_LABEL_FEATURE_COUNT_MISMATCH')
         valid = [validate_label(x, outer=outer, run_id=run_id, attempt_id=attempt_id,
@@ -277,7 +297,7 @@ class OnlineQProbe:
         try:
             self.protocol = protocol
             self.replay_labels += valid
-            self.replay_features = torch.cat([self.replay_features, features], dim=0)
+            self.replay_features = self._concat_features([self.replay_features, features])
             keep = [i for i, item in enumerate(self.replay_labels)
                     if item['source_outer'] > outer - self.config.replay_window_outer]
             self.replay_labels = [self.replay_labels[i] for i in keep]
@@ -305,7 +325,7 @@ class OnlineQProbe:
         if type(actor_outer) is not int or actor_outer < 0:
             raise ValueError('QPROBE_INVALID_BOOTSTRAP_ACTOR_OUTER')
         _required_text(actor_snapshot_id, 'actor_snapshot_id')
-        features = validate_features(features, self.feature_dim)
+        features = self._validate_features(features)
         if len(labels) != len(features):
             raise ValueError('QPROBE_LABEL_FEATURE_COUNT_MISMATCH')
         valid = []
@@ -348,21 +368,21 @@ class OnlineQProbe:
         return metrics
 
     def state_dict(self):
-        return copy.deepcopy(dict(schema_version=SCHEMA_VERSION, config=asdict(self.config),
+        return copy.deepcopy(dict(schema_version=self.checkpoint_schema_version, config=asdict(self.config),
             feature_dim=self.feature_dim, feature_spec_sha=self.feature_spec_sha,
             model=self.model.state_dict(), optimizer=self.optimizer.state_dict(),
             rng=self.rng.get_state(), replay_labels=self.replay_labels,
-            replay_features=self.replay_features, completed_outer=self.completed_outer,
+            replay_features=self._state_features(), completed_outer=self.completed_outer,
             update_count=self.update_count, completed_attempts=self.completed_attempts,
             protocol=self.protocol, actor_snapshot_id=self.actor_snapshot_id))
 
     def _restore_state(self, state):
-        if state.get('schema_version') != SCHEMA_VERSION or state['feature_dim'] != self.feature_dim:
+        if state.get('schema_version') != self.checkpoint_schema_version or state['feature_dim'] != self.feature_dim:
             raise ValueError('QPROBE_CHECKPOINT_SCHEMA_MISMATCH')
         self.model.load_state_dict(state['model'], strict=True)
         self.optimizer.load_state_dict(state['optimizer'])
         self.rng.set_state(state['rng'])
-        self.replay_features = state['replay_features'].clone().float().cpu()
+        self.replay_features = self._restore_features(state['replay_features'])
         self.replay_labels = copy.deepcopy(state['replay_labels'])
         self.completed_outer = state['completed_outer']; self.update_count = state['update_count']
         self.completed_attempts = dict(state['completed_attempts'])
@@ -403,6 +423,11 @@ class OnlineQProbe:
         if expected_checkpoint_sha and _sha_file(path) != expected_checkpoint_sha:
             raise ValueError('QPROBE_CHECKPOINT_SHA_MISMATCH')
         state = torch.load(path, map_location='cpu', weights_only=True)
+        if state.get('schema_version') == 2:
+            from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
+            return OnlineSequenceQProbe.from_checkpoint_state(state,
+                expected_actor_snapshot_id=expected_actor_snapshot_id,
+                expected_feature_spec_sha=expected_feature_spec_sha)
         if state.get('schema_version') != SCHEMA_VERSION:
             raise ValueError('QPROBE_CHECKPOINT_SCHEMA_MISMATCH')
         if expected_actor_snapshot_id is not None and state.get('actor_snapshot_id') != expected_actor_snapshot_id:
@@ -428,7 +453,7 @@ class OnlineQProbe:
             protocol = {key:label[key] for key in ('sampling_contract_sha','strict_scoring_contract_sha','retriever_version')}
             if protocol != instance.protocol:
                 raise ValueError('QPROBE_CHECKPOINT_REPLAY_PROTOCOL_MISMATCH')
-        if instance.replay_features.numel(): validate_features(instance.replay_features, instance.feature_dim)
+        if len(instance.replay_features): instance._validate_features(instance.replay_features)
         if any(not torch.isfinite(value).all() for value in instance.model.state_dict().values()):
             raise ValueError('QPROBE_NONFINITE_CHECKPOINT')
         for optimizer_state in instance.optimizer.state.values():

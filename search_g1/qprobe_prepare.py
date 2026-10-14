@@ -208,13 +208,19 @@ def bootstrap(args):
     rows, _proof = train_questions(args.data, args.prompt_key)
     manifest = json.loads((Path(args.cache_dir)/'manifest.json').read_text())
     if manifest.get('schema_version') == 2:
-        raise ValueError('QPROBE_SEQUENCE_BOOTSTRAP_REQUIRES_SEQUENCE_ONLINE_HEAD')
+        from search_g1.qprobe_sequence import SequenceCache
+        cache = SequenceCache(args.cache_dir)
     else:
         cache = FeatureCache(args.cache_dir)
     provenance = json.loads(Path(args.provenance).read_text())
     labels, qids, questions = bootstrap_labels(args.audit, provenance, {qid:q for q,qid in rows})
-    config = QProbeConfig.from_mapping(json.loads(Path(args.config).read_text()) if args.config else {})
-    probe = OnlineQProbe(cache.feature_dim, config, feature_spec_sha=cache.spec_sha)
+    values = json.loads(Path(args.config).read_text()) if args.config else {}
+    config = QProbeConfig.from_mapping(values)
+    if manifest.get('schema_version') == 2:
+        from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
+        probe = OnlineSequenceQProbe.fresh(cache, values, device=values.get('sequence_device','cpu'))
+    else:
+        probe = OnlineQProbe(cache.feature_dim, config, feature_spec_sha=cache.spec_sha)
     metrics = probe.bootstrap(labels, cache.get_features(qids, questions),
                               actor_outer=provenance['actor_outer'], actor_snapshot_id=provenance['actor_snapshot_id'])
     receipt = probe.save(args.output, actor_snapshot_id=provenance['actor_snapshot_id'])

@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 FIELDS = frozenset((
+    "probe_architecture", "sequence_device", "sequence_train_micro", "sequence_predict_micro",
     "candidate_questions", "selected_questions", "responses_per_question",
     "exploration_questions", "seed", "cache_dir", "output_dir", "snapshot_path", "initial_head_checkpoint",
     "head_learning_rate", "head_batch_size", "head_epochs_per_outer",

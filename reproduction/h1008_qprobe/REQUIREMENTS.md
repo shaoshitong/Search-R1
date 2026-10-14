@@ -20,3 +20,7 @@ Start only after the current CP200 final evaluation (job3395) finishes and relea
 ## Completion evidence still required
 
 This document and isolated source checkout are preparation, not a running or accepted experiment. Pending: sequence cache, Qwen block integration with online fitting/teacher warmup/checkpoint, eight-GPU launch and allocation bindings, actual official tensor full-copy readback, targeted tests, source publication/remote fullSHA, fresh initialization, five complete outer acceptance, all200 and final evaluation/closure.
+
+## Prepared online protocol
+
+Sequence features now flow through selection and completed-outer fitting. Three blocks and the count projection use FP32 trainable parameters and Adam state; physical probe train micro4 accumulates to the upstream logical head batch256, prediction micro32 bounds candidate memory. Checkpoint schema2 binds Qwen configuration, actual attention implementation, initialization source, optimizer, private RNG, ragged replay and actor pairing. Legacy pooled heads remain schema1. Tiny actual Qwen CPU runtime/rollback/save/reload/next-update tests pass (27 tests, no GPU or official full-size claim). Actual full-size precompute, H1008 launch/deploy and all training acceptance remain pending.

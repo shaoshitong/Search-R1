@@ -111,7 +111,7 @@ def load_official_initialization(path, *, expected_file_sha256, expected_encoder
     state=torch.load(Path(path),map_location='cpu',weights_only=True)
     if state.get('schema_version')!=2 or state.get('architecture')!='qwen2_decoder3_count6':raise ValueError('QPROBE_INITIALIZATION_ARCHITECTURE')
     if state.get('official_revision')!=OFFICIAL_REVISION or state.get('encoder_files_sha256')!=expected_encoder_files_sha256:raise ValueError('QPROBE_INITIALIZATION_OFFICIAL_SOURCE')
-    config=Qwen2Config.from_dict(state['qwen_config'])
+    config=Qwen2Config.from_dict(copy.deepcopy(state['qwen_config']))
     config._attn_implementation=state['attention_implementation']
     if state['source_layer_index']!=config.num_hidden_layers-1:raise ValueError('QPROBE_INITIALIZATION_NOT_FINAL_LAYER')
     dtype=next(iter(state['source_layer_state'].values())).dtype

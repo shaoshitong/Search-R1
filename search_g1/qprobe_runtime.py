@@ -99,6 +99,8 @@ def validate_config(config):
         raise ValueError("The new count head must update every successful outer iteration")
     if type(config.get("seed", 42)) is not int:
         raise ValueError("Question-probe seed must be an integer")
+    if config.get('probe_architecture','count_mlp') not in ('count_mlp','qwen2_decoder3_count6'):
+        raise ValueError('Unknown question-probe architecture')
     return config
 
 
@@ -122,7 +124,12 @@ class QProbeRuntime:
             cache_dir = self.config.get("cache_dir")
             if not cache_dir:
                 raise ValueError("A prepared immutable remote question feature cache is required")
-            feature_cache = FeatureCache(cache_dir)
+            manifest = json.loads((Path(cache_dir)/'manifest.json').read_text())
+            if manifest.get('schema_version') == 2:
+                from search_g1.qprobe_sequence import SequenceCache
+                feature_cache = SequenceCache(cache_dir)
+            else:
+                feature_cache = FeatureCache(cache_dir)
         self.cache = feature_cache
         if not getattr(self.cache, "spec_sha", None) or not getattr(self.cache, "feature_dim", 0):
             raise ValueError("Feature cache lacks its immutable spec or feature dimension")
@@ -136,17 +143,39 @@ class QProbeRuntime:
                 if head.config != expected_head_config:
                     raise ValueError("Initial question-probe head config differs from the effective runtime config")
             else:
-                head = OnlineQProbe(self.cache.feature_dim, QProbeConfig.from_mapping(self.config),
-                                   feature_spec_sha=self.feature_spec_sha)
+                if self.config.get('probe_architecture','count_mlp') == 'qwen2_decoder3_count6':
+                    from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
+                    if self.cache.spec.get('representation') != 'frozen_token_sequence_v2':
+                        raise ValueError('QPROBE_THREE_BLOCKS_REQUIRE_SEQUENCE_CACHE')
+                    head = OnlineSequenceQProbe.fresh(self.cache, self.config,
+                        device=self.config.get('sequence_device','cpu'))
+                else:
+                    head = OnlineQProbe(self.cache.feature_dim, QProbeConfig.from_mapping(self.config),
+                                       feature_spec_sha=self.feature_spec_sha)
         if getattr(head, "feature_spec_sha", self.feature_spec_sha) != self.feature_spec_sha:
             raise ValueError("Probe head belongs to a different feature namespace")
         if getattr(head, "feature_dim", self.cache.feature_dim) != self.cache.feature_dim:
             raise ValueError("Probe head and fixed feature cache dimensions differ")
+        self._bind_head_architecture(head)
         self.head = head
         self.selection_rng = np.random.default_rng(self.config.get("seed", 42))
         self.pending = None
         self.completed_outer = int(getattr(self.head, "completed_outer", 0))
         self.completed_attempts = set()
+
+    def _bind_head_architecture(self, head):
+        from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
+        wants_sequence = self.config.get('probe_architecture','count_mlp') == 'qwen2_decoder3_count6'
+        if wants_sequence != isinstance(head,OnlineSequenceQProbe):
+            raise ValueError('QPROBE_HEAD_ARCHITECTURE_CONFIG_MISMATCH')
+        if wants_sequence:
+            if self.cache.spec.get('representation') != 'frozen_token_sequence_v2':
+                raise ValueError('QPROBE_THREE_BLOCKS_REQUIRE_SEQUENCE_CACHE')
+            if head.train_micro != self.config.get('sequence_train_micro',4) or head.predict_micro != self.config.get('sequence_predict_micro',32):
+                raise ValueError('QPROBE_SEQUENCE_MICRO_CONFIG_MISMATCH')
+            if head.initialization.get('initialization_file_sha256') != self.cache.manifest['files']['initialization.pt']['sha256']:
+                raise ValueError('QPROBE_HEAD_INITIALIZATION_CACHE_MISMATCH')
+            head.set_device(self.config.get('sequence_device','cpu'))
 
     @property
     def version(self):
@@ -155,10 +184,15 @@ class QProbeRuntime:
     def score(self, questions):
         """A narrow qid/question API: no labels or complete DataProto enter the cache/head."""
         features = self.cache.get_features([q.qid for q in questions], [q.question for q in questions])
-        if features.ndim != 2 or features.shape != (len(questions), self.cache.feature_dim):
-            raise ValueError("Question cache returned the wrong feature layout")
-        if not torch.isfinite(features).all():
-            raise ValueError("Question features are nonfinite")
+        if self.config.get('probe_architecture','count_mlp') == 'qwen2_decoder3_count6':
+            from search_g1.qprobe_sequence import SequenceFeatures
+            if not isinstance(features,SequenceFeatures) or len(features)!=len(questions) or features.feature_dim!=self.cache.feature_dim:
+                raise ValueError('Question sequence cache returned the wrong feature layout')
+        else:
+            if features.ndim != 2 or features.shape != (len(questions), self.cache.feature_dim):
+                raise ValueError("Question cache returned the wrong feature layout")
+            if not torch.isfinite(features).all():
+                raise ValueError("Question features are nonfinite")
         frozen_version = self.version
         prediction = _prediction_cpu(self.head.predict(features))
         if self.version != frozen_version:
@@ -287,6 +321,7 @@ class QProbeRuntime:
                                expected_feature_spec_sha=self.feature_spec_sha)
         if head.version != state["head_version"] or int(head.completed_outer) != state["completed_outer"]:
             raise ValueError("Question-probe head state is ahead of/behind the paired actor")
+        self._bind_head_architecture(head)
         self.head = head
         self.completed_outer = state["completed_outer"]
         self.completed_attempts = set(state["completed_attempts"])
