@@ -1,0 +1,100 @@
+"""Three full-copy Qwen decoder blocks over frozen question token features.
+
+This module is the sequence probe core, not a replacement for the old pooled
+cache/online fitting protocol. Integration must explicitly bind sequence data.
+"""
+from __future__ import annotations
+import copy
+import hashlib
+import inspect
+import torch
+from torch import nn
+from search_g1.qprobe_model import CountMomentProbe
+
+
+def state_digest(module):
+    digest = hashlib.sha256()
+    for name, value in sorted(module.state_dict().items()):
+        value = value.detach().cpu().contiguous()
+        digest.update(name.encode())
+        digest.update(str((tuple(value.shape), value.dtype)).encode())
+        digest.update(value.view(torch.uint8).numpy().tobytes())
+    return digest.hexdigest()
+
+
+def verify_full_copy(source, copies):
+    original = source.state_dict()
+    owned = set()
+    for block in copies:
+        state = block.state_dict()
+        if state.keys() != original.keys():
+            raise ValueError('QPROBE_QWEN_COPY_KEYS_DIFFER')
+        for name, value in state.items():
+            expected = original[name]
+            if value.dtype != expected.dtype or value.shape != expected.shape or not torch.equal(value, expected):
+                raise ValueError('QPROBE_QWEN_COPY_TENSOR_DIFFERS:' + name)
+            if value.numel():
+                pointer = (value.device, value.untyped_storage().data_ptr())
+                source_pointer = (expected.device, expected.untyped_storage().data_ptr())
+                if pointer == source_pointer or pointer in owned:
+                    raise ValueError('QPROBE_QWEN_COPY_SHARED_STORAGE:' + name)
+                owned.add(pointer)
+    return {'full_state_sha256': state_digest(source),
+            'tensor_count_per_block': len(original), 'independent_copies': len(copies)}
+
+
+class QwenBlockCountProbe(nn.Module):
+    """Official final-layer features -> three copied blocks -> count projection."""
+    def __init__(self, last_decoder_layer, final_norm, qwen_config):
+        super().__init__()
+        from transformers.models.qwen2.modeling_qwen2 import Qwen2DecoderLayer, Qwen2RotaryEmbedding
+        if not isinstance(last_decoder_layer, Qwen2DecoderLayer):
+            raise TypeError('QPROBE_REQUIRES_ACTUAL_QWEN2_DECODER_LAYER')
+        if getattr(qwen_config, 'model_type', None) != 'qwen2':
+            raise ValueError('QPROBE_REQUIRES_QWEN2_CONFIG')
+        self.feature_dim = qwen_config.hidden_size
+        # deepcopy retains all parameters, buffers and exact attention/MLP class.
+        self.blocks = nn.ModuleList([copy.deepcopy(last_decoder_layer) for _ in range(3)])
+        self.initialization = verify_full_copy(last_decoder_layer, self.blocks)
+        self.final_norm = copy.deepcopy(final_norm)
+        dtype = next(last_decoder_layer.parameters()).dtype
+        device = next(last_decoder_layer.parameters()).device
+        self.rotary = Qwen2RotaryEmbedding(config=copy.deepcopy(qwen_config), device=device)
+        self.head = nn.Linear(self.feature_dim, 6, bias=True, device=device, dtype=dtype)
+        nn.init.zeros_(self.head.weight); nn.init.zeros_(self.head.bias)
+        self.register_buffer('means', torch.arange(6, device=device, dtype=torch.float32)/5)
+        self.register_buffer('variances', torch.arange(6, device=device, dtype=torch.float32)*(5-torch.arange(6, device=device))/20)
+        self.register_buffer('stds', self.variances.sqrt())
+        for parameter in self.parameters(): parameter.requires_grad_(True)
+        self.config = copy.deepcopy(qwen_config)
+
+    def forward(self, frozen_hidden, attention_mask, position_ids):
+        if frozen_hidden.ndim != 3 or frozen_hidden.shape[-1] != self.feature_dim:
+            raise ValueError('QPROBE_REQUIRES_FULL_TOKEN_FEATURES')
+        if attention_mask.shape != frozen_hidden.shape[:2] or position_ids.shape != attention_mask.shape:
+            raise ValueError('QPROBE_SEQUENCE_MASK_POSITION_SHAPE')
+        if position_ids.dtype != torch.long or bool((position_ids < 0).any()):
+            raise ValueError('QPROBE_INVALID_ORIGINAL_POSITIONS')
+        if not torch.isfinite(frozen_hidden).all() or not bool(((attention_mask == 0) | (attention_mask == 1)).all()):
+            raise ValueError('QPROBE_INVALID_SEQUENCE_FEATURES')
+        if bool((attention_mask.sum(-1) == 0).any()):
+            raise ValueError('QPROBE_EMPTY_QUESTION_SEQUENCE')
+        parameter = next(self.blocks.parameters())
+        hidden = frozen_hidden.detach().to(device=parameter.device, dtype=parameter.dtype)
+        valid = attention_mask.to(device=parameter.device, dtype=torch.bool)
+        positions = position_ids.to(parameter.device)
+        length = hidden.shape[1]
+        causal = torch.arange(length, device=parameter.device)
+        allowed = (causal[:, None] >= causal[None, :])[None, None] & valid[:, None, None, :]
+        mask = torch.zeros(allowed.shape, dtype=hidden.dtype, device=hidden.device)
+        mask.masked_fill_(~allowed, torch.finfo(hidden.dtype).min)
+        rotary = self.rotary(hidden, positions)
+        for block in self.blocks:
+            kwargs = dict(attention_mask=mask, position_ids=positions, use_cache=False, output_attentions=False)
+            if 'position_embeddings' in inspect.signature(block.forward).parameters:
+                kwargs['position_embeddings'] = rotary
+            hidden = block(hidden, **kwargs)[0]
+        hidden = self.final_norm(hidden)
+        last = causal.expand(valid.shape).masked_fill(~valid, -1).max(-1).values
+        logits = self.head(hidden[torch.arange(len(hidden), device=hidden.device), last]).float()
+        return CountMomentProbe.moments(self, logits)
