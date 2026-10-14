@@ -1,0 +1,70 @@
+{
+  "config_sha256": "b2a47bdbd8d721579e983062eb3ee942cc1e4b6aa021e7c49861e3763cdb10de",
+  "coverage": {
+    "completed_nonroot_candidates": 4916,
+    "full_log_read": true,
+    "generation_rpc_records": 32,
+    "initial_trajectories": 512,
+    "selected_training_rows": 2560,
+    "successful_unique_action_batches": 32
+  },
+  "evidence": {
+    "closed_original_log_bytes": 7155056,
+    "closed_original_log_sha256": "ab0e7f5b642a0bf610dc2606c447db6c8e93980d777e96e11bc181083db5e27c",
+    "original_actual_parent_wait_rc": 1,
+    "original_entry_terminal_rc": 1,
+    "private_accepted_reader_result_sha256": "64a4b724d6aa20da6dfbb2e6de818900219898ed22ea886e86aec34e3af57b3e",
+    "zero_write_manifest_sha256": "7295d56549a1f34f11b4999baa7c36a0427c953d34b9dd3031cabfa2907af2e1"
+  },
+  "group": "C1-root-only",
+  "limits": [
+    "Action sums count physical emitted/prefill tokens including GPU divisibility padding; they are not selected leaf token totals.",
+    "RPC start is derived from the recorded end timestamp and monotonic duration. The RPC window and first-RPC-to-compose interval omit pre-first-RPC setup and are not the exact native gen timer.",
+    "Initial and nonroot trajectory elapsed sums overlap shared batch execution; do not add them to phase wall time or multiply them into GPU billing.",
+    "CPU driver timing and shared RPC wall are recorded scalar clocks, not GPU kernel utilization or allocator billing.",
+    "Sampling completed before a namespace programming failure at zero Adam writes; its prepared2560 was reused once. Do not count this evidence as a second training outer."
+  ],
+  "observation_utc": "2026-10-14T18:01:48.139919+00:00",
+  "protocol": "ablation150_C1_original_sampling_cost_supplement_v1",
+  "reader_source_commit": "e585e4338ffeff71b8d91a25f3ccc675d68c7a2a",
+  "recorded_action_cost_sum": {
+    "action_driver_cpu_seconds": 75.25931715700003,
+    "action_wall_seconds": 322.761329443194,
+    "context_mismatches": 0,
+    "generated_tokens": 834605,
+    "generation_rpc_calls": 32,
+    "generation_rpc_wall_seconds": 173.58600004483014,
+    "interaction_wall_seconds": 87.42788882087916,
+    "padded_rows": 94,
+    "prefill_tokens": 5422985,
+    "raw_discarded_tail_tokens": 99081,
+    "raw_emitted_tokens": 834605,
+    "raw_retained_tokens": 735524,
+    "raw_slots": 4972000,
+    "retrieval_calls": 4237,
+    "retrieval_http_calls": 32,
+    "retrieval_http_json_wall_seconds": 87.24653798155487,
+    "semantic_prefix_scan_cpu_seconds": 36.728431732999724,
+    "semantic_prefix_scan_wall_seconds": 36.57571156229824
+  },
+  "run_id": "260d1debb6214d75b3d1a5954d88f524",
+  "scientific_source_commit": "233b0dc95de3f7b797d5b424d3b7dcaafca5328f",
+  "scope": {
+    "extra_sampling_or_training": false,
+    "original_optimizer_calls_per_rank": 0,
+    "original_outer": 1,
+    "prepared_rows_reused_once_for_committed_outer1": 2560
+  },
+  "status": "COMPLETE_RECORDED_ACTION_COUNTS_WITH_TIMING_LIMITS",
+  "time_scopes": {
+    "allocator_billed_GPU_seconds": null,
+    "compose_seconds": 57.58970446884632,
+    "exact_native_timing_s_gen": null,
+    "first_RPC_to_compose_end_wall_seconds": 401.640469789505,
+    "generation_RPC_window_wall_seconds": 344.0012125968933,
+    "initial_trajectory_elapsed_sum_seconds_overlapping": 20028.885974573903,
+    "measured_GPU_active_seconds": null,
+    "nonroot_trajectory_elapsed_sum_seconds_overlapping": 114312.5822791662
+  },
+  "training_action": "NONE"
+}
