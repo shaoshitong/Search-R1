@@ -12,7 +12,7 @@ from reproduction.common8.source_files import runtime_files
 
 def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
          initial_head_checkpoint=None, seed=20261013, teacher_warmup_cache=None,
-         infra_rollout=None):
+         infra_rollout=None, sequence_device="cpu", sequence_train_micro=4, sequence_predict_micro=32):
     base = Path(base).resolve()
     manifest = base / "logs/run-manifest.json"
     run = json.loads(manifest.read_text())
@@ -35,7 +35,12 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
     cache = Path(cache_dir).resolve()
     from search_g1.qprobe_features import FeatureCache
     from search_g1.qprobe_model import OnlineQProbe, QProbeConfig
-    features = FeatureCache(cache)
+    cache_manifest=json.loads((cache/'manifest.json').read_text())
+    if cache_manifest.get('schema_version') == 2:
+        from search_g1.qprobe_sequence import SequenceCache
+        features=SequenceCache(cache)
+    else:
+        features=FeatureCache(cache)
     features.verify_all()
     if features.manifest['count'] != 169028 or features.spec.get('train_parquet_sha256') != run['input_sha256']['train.parquet']:
         raise ValueError("Question feature cache does not cover the verified canonical training artifact")
@@ -49,6 +54,11 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
     settings.update({("head_hidden_size" if key == "hidden_size" else key): value
                      for key,value in asdict(head_config).items()
                      if key != "bootstrap_max_groups_per_outer" or teacher_warmup_cache})
+    if cache_manifest.get('schema_version') == 2:
+        if type(sequence_train_micro) is not int or sequence_train_micro<1 or type(sequence_predict_micro) is not int or sequence_predict_micro<1:
+            raise ValueError('Invalid physical sequence-probe micro batch')
+        settings.update(probe_architecture='qwen2_decoder3_count6',sequence_device=sequence_device,
+            sequence_train_micro=sequence_train_micro,sequence_predict_micro=sequence_predict_micro)
     if teacher_warmup_cache:
         path = Path(teacher_warmup_cache)
         if not path.is_absolute() or not str(path.resolve()).startswith(('/data/', '/mnt/', '/backup/')):
@@ -57,6 +67,11 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
     if initial_head_checkpoint:
         initial_path = Path(initial_head_checkpoint).resolve()
         head = OnlineQProbe.load(initial_path, expected_feature_spec_sha=features.spec_sha)
+        from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
+        if isinstance(head,OnlineSequenceQProbe) != (cache_manifest.get('schema_version') == 2):
+            raise ValueError('Initial probe architecture differs from feature cache')
+        if isinstance(head,OnlineSequenceQProbe) and head.initialization.get('initialization_file_sha256') != features.manifest['files']['initialization.pt']['sha256']:
+            raise ValueError('Initial three-block probe was initialized from different tensors')
         if head.completed_outer != 0:
             raise ValueError("A fresh actor requires a head at outer 0; later actors require a completed paired receipt")
         if head.config != head_config:
@@ -102,11 +117,15 @@ def main():
     parser.add_argument("--initial-head-checkpoint")
     parser.add_argument("--seed", type=int, default=20261013)
     parser.add_argument('--teacher-warmup-cache')
+    parser.add_argument('--sequence-device',default='cpu')
+    parser.add_argument('--sequence-train-micro',type=int,default=4)
+    parser.add_argument('--sequence-predict-micro',type=int,default=32)
     args = parser.parse_args()
     run = bind(args.base, args.cache_dir, exploration_questions=args.exploration_questions,
                retriever_version=args.retriever_version,
                initial_head_checkpoint=args.initial_head_checkpoint, seed=args.seed,
-               teacher_warmup_cache=args.teacher_warmup_cache)
+               teacher_warmup_cache=args.teacher_warmup_cache,sequence_device=args.sequence_device,
+               sequence_train_micro=args.sequence_train_micro,sequence_predict_micro=args.sequence_predict_micro)
     print(json.dumps({"run_id": run["run_id"], "selection_mode": "question_probe",
                       "question_probe": run["question_probe"], "training_started": False}))
 

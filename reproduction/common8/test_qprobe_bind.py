@@ -21,6 +21,8 @@ class QProbeBindingTests(unittest.TestCase):
                  source_sha256={str(p.relative_to(repo)):hashlib.sha256(p.read_bytes()).hexdigest()
                                 for p in repo.rglob('*') if p.is_file()})
         (base/'logs/run-manifest.json').write_text(json.dumps(run))
+        (base/'remote-features').mkdir()
+        (base/'remote-features/manifest.json').write_text(json.dumps({'schema_version':1}))
         cache=SimpleNamespace(manifest={'count':169028},spec={'train_parquet_sha256':'actual-train-sha'},
                               spec_sha='f'*64,verify_all=lambda:None)
         return base,run,cache
@@ -36,6 +38,21 @@ class QProbeBindingTests(unittest.TestCase):
             self.assertEqual(json.loads((base/'preparation/question-probe-pre-bind.json').read_text()),old)
             with self.assertRaises(ValueError):
                 bind(base,base/'remote-features',retriever_version='immutable-index')
+
+    def test_sequence_binding_records_architecture_micros_and_uniform64(self):
+        with tempfile.TemporaryDirectory() as root:
+            base,old,cache=self.fixture(root)
+            (base/'remote-features/manifest.json').write_text(json.dumps({'schema_version':2}))
+            with patch('search_g1.qprobe_sequence.SequenceCache',return_value=cache):
+                run=bind(base,base/'remote-features',retriever_version='index',
+                    sequence_device='cpu',sequence_train_micro=4,sequence_predict_micro=32)
+            q=run['question_probe']
+            self.assertEqual(q['exploration_questions'],64)
+            self.assertEqual(q['selected_questions']-q['exploration_questions'],448)
+            self.assertEqual(q['probe_architecture'],'qwen2_decoder3_count6')
+            self.assertEqual(q['sequence_train_micro'],4)
+            self.assertEqual(q['sequence_predict_micro'],32)
+            self.assertFalse(run.get('full_state_restore'))
 
     def test_wrong_train_artifact_or_incomplete_cache_rejected_without_manifest_write(self):
         for bad in ('count','train'):
