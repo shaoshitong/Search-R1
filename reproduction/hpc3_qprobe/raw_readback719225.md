@@ -34,6 +34,14 @@ consumer or final native4 restore acceptance.
 
 Both commands print small JSON summaries; large raw tensors stay remote.
 
+`historical_raw_readonly718650.sh` preserves the original1..5 partition at
+oldBASE/recovery718509, actual job718650/source5816, while using the unchanged
+strict scorer from original1843. Do not stamp current719225 provenance onto
+these immutable rows. The canonical train and tokenizer hashes must still
+match that historical producer manifest. Like the teacher command, a complete
+five-outer scan can exceed a short SSH observer window; retain its native
+CPU handle and do not replay an unknown launch.
+
 `actor_rows15_readonly719225.sh` separately reopens the previously fullSHA and
 canonical-gold-bound raw15 with O_NOFOLLOW, hashes and loads from the same CPU
 descriptor, then checks stable identity. It reconstructs the original512
