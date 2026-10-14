@@ -62,7 +62,7 @@ def step_line(draw,hist,X,Y,color,total=None,dash=False):
  for i,n in enumerate(hist['counts']):pts.extend([(X(hist['edges'][i]),Y(n/total*100)),(X(hist['edges'][i+1]),Y(n/total*100))])
  draw.line(pts,color,2.3,dash)
 from repair_reward_histograms import build as build_reward_histograms
-if 'conditionDefinition="hard-std-zero-vs-positive"' in (OUT/'reward-std-and-advantage-distributions.drawio').read_text():
+if 'conditionDefinition=' in (OUT/'reward-std-and-advantage-distributions.drawio').read_text():
  notes=[{'iteration':r['step'],'hard_mean_group_std':r['C_std']['mean'],'soft_mean_group_std':r['R_std']['mean'],'groups':512,'trajectories':2560,'raw_reward_std_global':r['R']['std'],'soft_reward_coverage':'historical reconstruction, not online bitwise values'} for r in old['rows'] if r['step'] in [20,100,140]]
  print('User-edited Hard-conditioned figure preserved; use update_hard_conditioned_drawio.py for this figure')
 else:

@@ -8,7 +8,7 @@ for p in D.glob('*.py'):
  files['analysis/'+p.name]=p.read_bytes()
 files['helpers/C_stream.py']=(D.parent/'g1-reward-correlation-20261010/reconstruct_train_raw_c_preflight_v2.py').read_bytes();files['helpers/replay_core.py']=(D.parent/'g1-reward-correlation-20261010/historical_replay/replay_core.py').read_bytes();files['helpers/stats.py']=(D.parent/'g1-diversity-20261014/aggregate_remote.py').read_text().split('MODE=MODE_VALUE')[0].encode()
 files['analysis/fixed512-curve-data.json']=(D/'fixed512-curve-data.json').read_bytes();files['analysis/native-reward-means.json']=(D/'native-reward-means.json').read_bytes()
-for name in ['hard-conditioned-soft-data-20261015.json','hard-conditioned-soft-data-validation-20261015.json','hard-conditioned-verification.json','hard-conditioned-source-backup.json']:
+for name in ['hard-conditioned-soft-data-20261015.json','hard-conditioned-soft-data-validation-20261015.json','hard-conditioned-verification.json','hard-conditioned-source-backup.json','all-correct-soft-binning-20261015.json','all-correct-soft-binning-validation-20261015.json','all-correct-source-backup.json']:
  files['analysis/'+name]=(D/name).read_bytes()
 backup=json.load((D/'hard-conditioned-source-backup.json').open())
 files['figures/templates/user-edited-before-hard-conditioning.drawio']=Path(backup['path']).read_bytes()

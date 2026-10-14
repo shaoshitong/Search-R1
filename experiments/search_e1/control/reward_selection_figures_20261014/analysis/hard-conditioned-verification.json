@@ -1,23 +1,24 @@
 {
-  "verified_utc": "2026-10-14T16:48:56.370471+00:00",
+  "verified_utc": "2026-10-14T17:01:20.891027+00:00",
   "source_sha256": "2fadf346927a6ed1ca634b5f691e38049971f4fb48b1c6d40c3b4d5814708f17",
-  "condition_defined_only_by_hard_std": true,
-  "soft_std_zero_groups_retained": true,
-  "conditional_histograms_sum_to_original_histograms": true,
+  "conditions": "all-correct (Hard std=0, Hard mean=1) versus mixed (Hard std>0)",
+  "all_wrong_excluded_from_every_panel": true,
+  "soft_std_zero_groups_not_used_as_selection_criterion": true,
+  "included_plus_excluded_histograms_sum_to_original_histograms": true,
   "user_legend_and_removed_title_preserved": true,
   "figures": [
     {
       "file": "reward-std-and-advantage-distributions.drawio",
-      "sha256": "0911a3fcc214eef2eb47cb0604ba108d6c5bf8ea3f63ea0e83773386c840b000",
+      "sha256": "46f01635f23767a5c7fbe16033262442e0e354fb302430aaf8863f4eba4dcc0f",
       "pages": 3,
       "native_editable": true
     },
     {
       "file": "hard-conditioned-soft-reward-amplification.drawio",
-      "sha256": "9d9c7a24ff3473d8f47a54a0def6d14d062062f5888a0abb3488e4df7d051239",
+      "sha256": "6a72f0bbd4182cf81e9ca74ff7c685c1352a7e4efbefb6087e38cc36f919f74d",
       "pages": 3,
       "native_editable": true
     }
   ],
-  "interpretation": "Nonzero soft ordering and normalization amplification in EM-invariant groups; does not alone establish an erroneous gradient."
+  "interpretation": "All-correct Soft advantages are broadly distributed after removing all-wrong groups; group normalization does not mathematically guarantee a smooth population distribution."
 }
