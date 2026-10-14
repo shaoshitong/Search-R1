@@ -140,7 +140,6 @@ def run_final(config, binding, source_base, directory):
     from verl.utils import hf_tokenizer
     from verl.utils.dataset.rl_dataset import RLHFDataset, collate_fn
     from verl.single_controller.ray import RayWorkerGroup, RayClassWithInitArgs
-    from verl.single_controller.ray.base import create_colocated_worker_cls
     from verl.trainer.ppo.ray_trainer import ResourcePoolManager, Role
     from verl.trainer.main_ppo_eco import EcoRewardManager
     from search_r1.llm_agent.generation import LLMGenerationManager, GenerationConfig
@@ -169,10 +168,11 @@ def run_final(config, binding, source_base, directory):
     pools = ResourcePoolManager({'final_rollout': [8]}, {Role.ActorRollout: 'final_rollout'})
     pools.create_resource_pool()
     worker_cls = ray.remote(make_worker_class())
-    colocated = create_colocated_worker_cls({'actor_rollout': RayClassWithInitArgs(
-        cls=worker_cls, config=config.actor_rollout_ref, role='actor_rollout')})
-    group = RayWorkerGroup(resource_pool=pools.get_resource_pool(Role.ActorRollout), ray_cls_with_init=colocated)
-    workers = group.spawn(prefix_set={'actor_rollout'})['actor_rollout']
+    # A single rollout role needs no colocated WorkerDict. Its zero-argument
+    # base constructor is incompatible with ActorRolloutRefWorker subclasses.
+    workers = RayWorkerGroup(resource_pool=pools.get_resource_pool(Role.ActorRollout),
+        ray_cls_with_init=RayClassWithInitArgs(cls=worker_cls,
+            config=config.actor_rollout_ref, role='actor_rollout'))
     proofs = workers.init_model()
     assert len(proofs) == 8 and sorted(p['rank'] for p in proofs) == list(range(8))
     assert len({p['cuda_uuid'] for p in proofs}) == 8
@@ -190,7 +190,9 @@ def run_final(config, binding, source_base, directory):
     manager = LLMGenerationManager(tokenizer=tokenizer, actor_rollout_wg=workers,
                                   config=generation, is_validation=True)
     scorer.reset_metrics()
+    import time
     for batch_dict in loader:
+        batch_started = time.monotonic()
         offset = len(rows)
         batch = DataProto.from_single_dict(batch_dict)
         row_ids = [f"{binding['run_id']}-final200-ordinal-{offset+i}" for i in range(len(batch))]
@@ -230,7 +232,8 @@ def run_final(config, binding, source_base, directory):
         append_batch(directory, journal_binding, ids, sources, new_rows)
         rows = load_prefix(directory, journal_binding, ids, sources)
         print('SEARCH_G1_FINAL_RESUME_PROGRESS='+json.dumps(dict(qa_count=len(rows), target=51713,
-            checkpoint_step=200, optimizer_steps=0)), flush=True)
+            checkpoint_step=200, optimizer_steps=0, batch_seconds=time.monotonic()-batch_started,
+            batch_questions=len(new_rows), completed_unix=time.time())), flush=True)
     return aggregate_final(journal_binding, ids, sources, rows)
 
 

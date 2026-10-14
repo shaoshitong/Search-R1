@@ -60,6 +60,30 @@ class BindingTests(unittest.TestCase):
         self.assertEqual(result.data.val_batch_size, 256)
         self.assertEqual(result.actor_rollout_ref.rollout.gpu_memory_utilization, .35)
 
+    def test_single_role_uses_direct_ray_constructor_with_required_arguments(self):
+        import ast
+        import inspect
+        from reproduction.common8.final_resume_runner import run_final
+        tree = ast.parse(inspect.getsource(run_final))
+        assignments = [node for node in ast.walk(tree) if isinstance(node, ast.Assign)
+            and any(isinstance(t, ast.Name) and t.id == 'workers' for t in node.targets)]
+        self.assertEqual(len(assignments), 1)
+        calls = []
+        class RequiredWorker:
+            def __init__(self, config, role):
+                calls.append((config, role))
+        def with_args(cls, **kwargs):
+            return lambda: cls(**kwargs)
+        def group(resource_pool, ray_cls_with_init):
+            return ray_cls_with_init()
+        scope = dict(RayWorkerGroup=group, RayClassWithInitArgs=with_args,
+            worker_cls=RequiredWorker, config=types.SimpleNamespace(actor_rollout_ref='cp200'),
+            pools=types.SimpleNamespace(get_resource_pool=lambda role: 'eight'),
+            Role=types.SimpleNamespace(ActorRollout='rollout'))
+        exec(compile(ast.Module(body=assignments, type_ignores=[]), '<actual-ray-construction>', 'exec'), scope)
+        self.assertEqual(calls, [('cp200', 'actor_rollout')])
+        self.assertIsInstance(scope['workers'], RequiredWorker)
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
