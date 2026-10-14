@@ -322,6 +322,9 @@ def verify_plan(base, artifact, run):
     elif run.get('full_state_restore'):
         from search_g1.full_state_restore import verify_guarded_restore
         verify_guarded_restore(base,run,artifact['probability'])
+    elif run.get('execution_site')=='h1008' and run.get('startup_admission_mode')=='actual_first_five':
+        from reproduction.h1008_qprobe.first_five_admission import verify_probability
+        verify_probability(base,run,artifact['probability'],receipts)
     else:
         from reproduction.common8.production_safety_admission import _verify_parent_probability
         _verify_parent_probability(base, run, artifact['probability'], receipts)
@@ -344,6 +347,8 @@ def prepare(base):
     if run.get('full_state_restore'):
         from search_g1.full_state_restore import prepare_guarded_restore
         return prepare_guarded_restore(base,run,document,method,initial,receipts)
+    from reproduction.h1008_qprobe.first_five_admission import selected,prepare as prepare_first_five
+    if selected(run):return prepare_first_five(base,run,document,method,initial,receipts)
     if run.get('execution_backend', 'slurm') == 'ssh_local':
         return _prepare_local(base, run, document, method, initial, receipts)
     root = base / 'logs/policy-safety-admission-receipts/parent'

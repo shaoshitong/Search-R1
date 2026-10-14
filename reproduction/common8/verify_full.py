@@ -29,6 +29,9 @@ def verify_five_scheduler_prefix(five, full):
 
 def verify_a800_adopted_initial_probe(base, run, live, archive_path):
     """Read the genuine official initial0 adoption chain after this run trains."""
+    if live.get('adoption_origin',{}).get('kind')=='h1008_official_zero_archive_v1':
+        from reproduction.h1008_qprobe.adopt_reward_zero import verify_adopted
+        return verify_adopted(base,run,live,archive_path)
     from reproduction.a800_common import adopt_initial_probes as adoption
     from reproduction.common8.policy_calibration_plan import canonical_bytes
     base=adoption._namespace(base)

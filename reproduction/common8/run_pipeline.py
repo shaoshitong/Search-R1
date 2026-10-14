@@ -348,12 +348,14 @@ class Pipeline:
             supported_execution_role(self.run,self.base)
             sampler=threading.Thread(target=self.sample,daemon=True);sampler.start()
             restoring=bool(self.run.get('full_state_restore'))
-            if restoring:
+            from reproduction.h1008_qprobe.first_five_admission import selected
+            guarded_fresh=selected(self.run)
+            if restoring or guarded_fresh:
                 allocation=json.loads((self.base/'logs/native-allocation-admission.json').read_text())
                 assert allocation['accepted'] and allocation['slurm_job_id']==os.environ['SLURM_JOB_ID']
                 publish(self.base/'logs/eight-rank-admission.json',dict(accepted=True,run_id=self.run['run_id'],
                     slurm_job_id=os.environ['SLURM_JOB_ID'],actual_cuda_runtime_uuids=allocation['actual_cuda_runtime_uuids'],
-                    scope='current native allocation only; full checkpoint GPU restore required before Adam',
+                    scope='current native allocation only; actual model initialization/restore required before Adam; first-five acceptance pending',
                     repeated_synthetic_gpu_tests=False))
             else:
                 self.fresh_mechanics_admission()
@@ -381,10 +383,10 @@ class Pipeline:
             resumed=self.endpoint('probe-server',e,'18012/resume','post',{'version':health['version']})
             assert resumed['resumed'] is True and resumed['version']==health['version']
             publish(self.base/'logs/evaluator-release-admission.json',dict(run_id=self.run['run_id'],released=released,resumed=resumed))
-            if restoring:
+            if restoring or guarded_fresh:
                 publish(self.base/'logs/probe-coexistence-admission.json',dict(accepted=True,run_id=self.run['run_id'],
                     slurm_job_id=os.environ['SLURM_JOB_ID'],scope='frozen original probe and current resource binding; real model restore before Adam required',
-                    repeated_model_smoke=False,actual_model_restore_pending=True))
+                    repeated_model_smoke=False,actual_model_restore_pending=restoring,actual_fresh_initialization_pending=guarded_fresh))
             else:
                 self.stage('REAL_MODEL_RETRIEVER_PROBE_COEXISTENCE')
                 smoke=self.smoke('coexistence')
