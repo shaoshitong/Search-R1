@@ -272,12 +272,23 @@ for name,sha in intent['source_sha256'].items():assert digest(repo/name)==sha
 run=read('logs/run-manifest.json');method=read('preparation/formal-inline-method.json');template=read('preparation/formal-inline-method-template.json')
 assert run['source_commit']==intent['source_commit'] and run['source_sha256']==intent['source_sha256']
 assert run['execution_backend']=='ssh_local' and run['slurm_job_id'] is None and run['execution_host']==socket.gethostname()
-assert run['completed_updates']==0 and run['training_world_size']==4 and run['initial_probe_version'] is None
+assert run['completed_updates']==0 and run['training_world_size']==4
+restore=run.get('full_state_restore')
+if restore:
+    sys.path.insert(0,str(repo))
+    from search_g1.qprobe_checkpoint import read_source,SAVED_CHECKPOINT_STATUS
+    path,qualification,_,_,parent=read_source(restore['source_receipt'])
+    assert qualification['status']==SAVED_CHECKPOINT_STATUS and restore['kind']=='question_probe_saved_checkpoint'
+    assert qualification['step']==restore['completed_outer']==5 and restore['actual_optimizer_writes_per_rank']==100
+    assert intent['saved_checkpoint_restore']==dict(source_receipt=str(path),source_receipt_sha256=digest(path))
+    assert run['run_id']==qualification['run_id']==parent['run_id'] and run['initial_probe_version']==qualification['reward_probe_version']
+else:assert run['initial_probe_version'] is None and not intent.get('saved_checkpoint_restore')
 for row in intent['inputs']:
     if row['target'].startswith('data/'):assert run['input_sha256'][Path(row['target']).name]==row['sha256']
 official=read('preparation/official-model-manifest-original.json');model_records={row['file']:row['sha256'] for row in official['files']}
 assert all(model_records[name]==sha for name,sha in run['initial_model_sha256'].items())
-assert {k:v for k,v in method.items() if k not in ('source_commit','source_map_sha256','created_unix')}=={k:v for k,v in template.items() if k not in ('source_commit','source_map_sha256','created_unix')}
+expected_template=dict(template,fresh_states=not bool(restore))
+assert {k:v for k,v in method.items() if k not in ('source_commit','source_map_sha256','created_unix')}=={k:v for k,v in expected_template.items() if k not in ('source_commit','source_map_sha256','created_unix')}
 sys.path.insert(0,str(repo))
 from reproduction.common8.formal_inline_safety import verify_method
 from reproduction.common8.formal_contract import assert_formal_run

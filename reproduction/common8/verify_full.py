@@ -135,7 +135,7 @@ def verify_full(base):
     data=verify(base/'data')
     records=[json.loads(line) for line in (base/'logs/actual-updates.jsonl').read_text().splitlines()]
     restoration=run.get('full_state_restore')
-    paired_restoration=bool(restoration and restoration.get('kind')=='question_probe_pair')
+    paired_restoration=bool(restoration and restoration.get('kind')in ('question_probe_pair','question_probe_saved_checkpoint'))
     first=restoration['completed_outer']+1 if restoration else 1
     assert [r['step'] for r in records]==list(range(first,TARGET_UPDATES+1))
     assert all(r['run_id']==run['run_id'] and all(math.isfinite(v) for v in r['metrics'].values()) for r in records)

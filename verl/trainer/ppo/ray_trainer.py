@@ -833,7 +833,7 @@ class RayPPOTrainer(object):
                         progress['completed_outer'] if progress['cumulative_writes']==progress['completed_outer']*20 else 0)
                     # Finish only the canonical dev512-after5 that the failed
                     # allocation never reached. Do not repeat initial/stage64.
-                    if run['full_state_restore'].get('kind') == 'question_probe_pair':
+                    if run['full_state_restore'].get('kind') in ('question_probe_pair','question_probe_saved_checkpoint'):
                         # The completed pair already has its historical evaluation.
                         # Future validation runs at the normal common8 cadence.
                         pass

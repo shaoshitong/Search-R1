@@ -150,3 +150,45 @@ def verify_formal_config(document, run, base):
         resolved_config_sha256=hashlib.sha256(canonical_bytes(document)).hexdigest(),
         source_map_sha256=hashlib.sha256(canonical_bytes(run['source_sha256'])).hexdigest(),
         source_snapshot_semantics='bound disk source hashes; not proof of loaded modules')
+
+
+def monitor_reference_contract(base, run):
+    """Bind the seven-key schema to the actual zero-reference launch contract.
+
+    No missing tensor or nominal zero budget can select this schema. Legacy
+    producers and nonlocal calibration retain their exact eight-key identity.
+    """
+    from reproduction.common8.policy_calibration_plan import _strict_json, document_sha256
+    from reproduction.common8.safety_calibration_evidence import ZERO_REFERENCE_MONITOR_PRODUCER_SHA256
+    producer = 'verl/workers/actor/dp_actor.py'
+    if (run.get('execution_backend') != 'ssh_local' or
+            run.get('source_sha256', {}).get(producer) != ZERO_REFERENCE_MONITOR_PRODUCER_SHA256):
+        return None
+    assert_formal_run(run)
+    repo = Path(__file__).resolve().parents[2]
+    assert hashlib.sha256((repo / producer).read_bytes()).hexdigest() == ZERO_REFERENCE_MONITOR_PRODUCER_SHA256
+    base = Path(base).resolve()
+    def owned_document(relative):
+        path = base / relative
+        assert path.is_file() and not path.is_symlink() and path.resolve().is_relative_to(base)
+        assert path.stat().st_size <= 1024 * 1024
+        return _strict_json(path.read_bytes())
+    launch = owned_document('logs/resolved-training-config.json')
+    plan = owned_document('logs/policy-safety-calibration.json')
+    assert launch['run_id'] == plan['run_id'] == run['run_id']
+    assert launch['execution_id'] == run['execution_id'] and launch['execution_backend'] == 'ssh_local'
+    document = launch['resolved_config']
+    proof = verify_formal_config(document, run, base)
+    probability = plan['probability']
+    assert probability['source_sha256'] == run['source_sha256']
+    assert probability['run_id'] == run['run_id']
+    assert launch['resolved_config_sha256'] == probability['resolved_config_sha256'] == proof['resolved_config_sha256']
+    actor = document['actor_rollout_ref']['actor']
+    assert actor['use_kl_loss'] is True and actor['state_masking'] is True
+    assert type(actor['kl_loss_coef']) in (int, float) and actor['kl_loss_coef'] == 0
+    return dict(schema_version=1, role='bound_actual_zero_reference_monitor',
+        run_id=run['run_id'], calibration_sha256=document_sha256(plan),
+        resolved_config_sha256=proof['resolved_config_sha256'],
+        source_map_sha256=proof['source_map_sha256'],
+        producer_source_sha256=ZERO_REFERENCE_MONITOR_PRODUCER_SHA256,
+        use_kl_loss=True, reference_kl_coefficient=actor['kl_loss_coef'], state_masking=True)

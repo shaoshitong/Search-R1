@@ -205,7 +205,7 @@ def archive_initial_probe(base, run):
     base=Path(base).resolve()
     live = read(base / 'artifacts/live/manifest.json')
     binding=run.get('full_state_restore') or {}
-    if binding.get('kind')=='question_probe_pair':
+    if binding.get('kind')in ('question_probe_pair','question_probe_saved_checkpoint'):
         from search_g1.qprobe_checkpoint import read_source
         _,source,_,_,_=read_source(binding['source_receipt'])
         pinned=read(source['reward_probe_manifest']['path'])
@@ -226,7 +226,9 @@ def archive_initial_probe(base, run):
             archive_sha256=digest(archive),version=live['version'],model_revision=run['model_revision'],
             initial_model_sha256=run['initial_model_sha256'],input_sha256=run['input_sha256'],
             restored_probe_round=live['round'],source_pair_receipt_sha256=digest(Path(binding['source_receipt'])),
-            semantics='pinned completed-pair reward probe, not fresh0 calibration')
+            semantics=('pinned saved-checkpoint reward probe, not fresh0 calibration'
+                if binding['kind']=='question_probe_saved_checkpoint' else
+                'pinned completed-pair reward probe, not fresh0 calibration'))
         write_once(base/INITIAL,receipt);files[INITIAL]=digest(base/INITIAL)
         return receipt,files
     assert live['run_id'] == run['run_id'] and type(live['round']) is int and live['round'] == 0
@@ -279,7 +281,7 @@ def verify_plan(base, artifact, run):
     for key, value in FORMAL_SAFEGUARDS.items():
         assert type(artifact[key]) in (int, float) and artifact[key] == value
     binding=run.get('full_state_restore') or {}
-    frozen_writes=(binding['actual_optimizer_writes_per_rank'] if binding.get('kind')=='question_probe_pair' else
+    frozen_writes=(binding['actual_optimizer_writes_per_rank'] if binding.get('kind')in ('question_probe_pair','question_probe_saved_checkpoint') else
                    100 if binding else 0)
     assert artifact['actual_optimizer_writes_at_freeze'] == frozen_writes
     assert artifact['optimizer_counting'] == FORMAL_COUNTING
@@ -298,7 +300,7 @@ def verify_plan(base, artifact, run):
     assert digest(archive) == initial['archive_sha256']
     live = read(archive)
     assert live['run_id'] == run['run_id'] and live['version'] == run['initial_probe_version']
-    if binding.get('kind')=='question_probe_pair':
+    if binding.get('kind')in ('question_probe_pair','question_probe_saved_checkpoint'):
         from search_g1.qprobe_checkpoint import read_source
         _,source,_,_,_=read_source(binding['source_receipt'])
         pinned=read(source['reward_probe_manifest']['path'])
@@ -311,7 +313,7 @@ def verify_plan(base, artifact, run):
     assert allocation['accepted'] is True and allocation['run_id'] == run['run_id']
     assert artifact['native_birth'] == native_birth(allocation)
     assert artifact['slurm_job_id'] == allocation['slurm_job_id']
-    if binding.get('kind')=='question_probe_pair':
+    if binding.get('kind')in ('question_probe_pair','question_probe_saved_checkpoint'):
         from search_g1.full_state_restore import verify_guarded_restore
         verify_guarded_restore(base,run,artifact['probability'])
     elif run.get('execution_backend', 'slurm') == 'ssh_local':
@@ -494,10 +496,11 @@ def verify_first_five(base, run, behavior_gates, scheduler_receipts):
                 assert all(x == expected_writes for x in proof['adam_steps'])
                 assert proof['attempt_id'] == complete_attempts[-1]['attempt_id']
                 assert proof['attempt_index'] == complete_attempts[-1]['attempt_index']
+    from reproduction.common8.formal_contract import monitor_reference_contract
     binding = dict(schema_version=1, role='production', policy_safety_mode=SAFETY_MODE,
         run_id=run['run_id'], calibration_sha256=sha, outer_count=5, initial_optimizer_writes=0,
         candidate_thresholds=FORMAL_SAFEGUARDS, complete_attempts=complete_attempts,
-        training_world_size=world_size(run))
+        training_world_size=world_size(run), monitor_reference_contract=monitor_reference_contract(base, run))
     transactional=any(row.get('recovery_protocol_version',1)==2 for row in complete_attempts)
     if transactional:
         # All actual monitor/write/rollback rows were checked by the attempt

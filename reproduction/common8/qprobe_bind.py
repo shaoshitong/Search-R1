@@ -93,6 +93,42 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
     return proposed
 
 
+def bind_restored_features(base, cache_dir):
+    """Relocate only an authenticated checkpoint's immutable feature cache."""
+    base=Path(base).resolve();manifest=base/'logs/run-manifest.json'
+    run=json.loads(manifest.read_text());binding=run['full_state_restore']
+    if any((base/'logs'/name).exists() for name in ('training-launch-claim.json','actual-attempts.jsonl',
+            'actual-updates.jsonl','resolved-training-config.json','policy-safety-calibration.json')):
+        raise ValueError('A restored feature binding must precede all training claims')
+    from search_g1.qprobe_checkpoint import read_source,digest
+    path,receipt,_,_,parent=read_source(binding['source_receipt'])
+    if digest(path)!=binding['source_receipt_sha256'] or run['run_id']!=receipt['run_id']:
+        raise ValueError('Restored feature binding differs from the authenticated source')
+    from search_g1.qprobe_features import FeatureCache
+    cache=Path(cache_dir).resolve();features=FeatureCache(cache)
+    features.verify_all()
+    if cache!=base/'question-features' or features.spec_sha!=receipt['feature_spec_sha'] or \
+            features.manifest['count']!=169028 or features.spec['train_parquet_sha256']!=run['input_sha256']['train.parquet']:
+        raise ValueError('Restored head requires its exact canonical feature specification')
+    if run['source_sha256']!={str(p.relative_to(base/'repo')):hashlib.sha256(p.read_bytes()).hexdigest()
+                              for p in runtime_files(base/'repo')}:
+        raise ValueError('Restored source bytes changed before feature binding')
+    proposed=dict(run,question_probe=dict(run['question_probe'],cache_dir=str(cache),
+                                        output_dir=str(base/'artifacts/question-probe')))
+    from search_g1.qprobe_runtime import validate_config
+    ignore={'cache_dir','output_dir','initial_head_checkpoint','snapshot_path','restore_state'}
+    if {k:v for k,v in validate_config(proposed['question_probe']).items() if k not in ignore} != \
+            {k:v for k,v in validate_config(parent['question_probe']).items() if k not in ignore}:
+        raise ValueError('Restored head configuration changed')
+    arguments(proposed,base)
+    backup=base/'preparation/question-probe-pre-bind.json'
+    with backup.open('xb') as stream:
+        stream.write(manifest.read_bytes());stream.flush();os.fsync(stream.fileno())
+    from reproduction.a800.owned_processes import publish
+    publish(manifest,proposed)
+    return proposed
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base", required=True)

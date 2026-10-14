@@ -291,10 +291,13 @@ class Pipeline:
         return 'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP'
     def initial_probe_calibration(self):
         if self.run.get('full_state_restore'):
-            if self.run['full_state_restore'].get('kind')=='question_probe_pair':
+            if self.run['full_state_restore'].get('kind')in ('question_probe_pair','question_probe_saved_checkpoint'):
                 from search_g1.qprobe_checkpoint import install_restored_reward_probe
                 receipt=install_restored_reward_probe(self.base,self.run)
-                self.stage('RESTORING_PINNED_COMPLETED_PAIR_REWARD_PROBE_NO_NEW_CALIBRATION',
+                stage=('RESTORING_PINNED_SAVED_CHECKPOINT_REWARD_PROBE_NO_NEW_CALIBRATION'
+                    if self.run['full_state_restore']['kind']=='question_probe_saved_checkpoint' else
+                    'RESTORING_PINNED_COMPLETED_PAIR_REWARD_PROBE_NO_NEW_CALIBRATION')
+                self.stage(stage,
                            version=receipt['version'],round=receipt['round'])
                 return
             from search_g1.full_state_restore import source

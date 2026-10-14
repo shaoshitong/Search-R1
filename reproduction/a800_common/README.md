@@ -219,3 +219,27 @@ claim. A timeout or failure preserves the same namespace and forbids automatic
 retry; use `inspect` and diagnose the real state. The local source bundle is
 deleted only after A800 returns the matching SHA receipt. Keep a failed relay
 bundle until its target is verified. No SSH configuration or credentials change.
+
+Saved CP5 restoration uses a separate explicit intent, not the fresh0 route.
+After the new published source's CPU qualifier has authenticated the original
+checkpoint, pass `--restore-receipt REMOTE_SOURCE_RECEIPT.json` and
+`--restore-receipt-sha256 FULL_SHA256` to `stage`. Then use the same `prepare`,
+`feature-adopt`, `bind`, review and `launch` actions with that new handle.
+Feature adoption copies the existing immutable encoding; `feature-plan` is
+forbidden for this route. The original source/checkpoint/logs remain unchanged.
+
+The distinct `question_probe_saved_checkpoint` state restores the original run
+lineage into a new execution and namespace, including CP5 actor weights, master
+optimizer state, scheduler, saved worker/driver RNG, sampler cursor and question
+head. Logical training continues at6 through200. Its RNG boundary is the saved
+checkpoint before the later development evaluation; post-evaluation RNG was
+not persisted and bitwise post-evaluation continuation is not claimed. Existing
+development512 measurements are linked without repeating evaluation, teacher
+generation or head bootstrap fitting. CPU qualification is not CUDA/FSDP reload
+acceptance; the single resumed trainer must perform the existing actual model,
+Adam, scheduler and RNG readbacks before its first write.
+
+The independent deployment review additionally requires
+`saved_cp5_full_actor_head_optimizer_scheduler_rng_sampler`,
+`logical6_to200_no_repeated_teacher_or_evaluation`, and
+`saved_rng_not_post_evaluation_boundary`, all true for the exact published source.

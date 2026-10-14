@@ -50,6 +50,9 @@ MONITOR_TENSORS = frozenset((
     'responses', 'input_ids', 'attention_mask', 'position_ids',
     'old_log_probs', 'advantages', 'loss_mask', 'ref_log_prob',
 ))
+# This producer selects reference probabilities only for a nonzero coefficient.
+# Older producers and calibration evidence keep their original eight-key schema.
+ZERO_REFERENCE_MONITOR_PRODUCER_SHA256 = 'aecafa308b1f9999b3388e68e3c707c133c82aafbdab124770111917ed00ad49'
 _SHA256 = re.compile(r'[0-9a-f]{64}\Z')
 
 
@@ -98,7 +101,32 @@ def _adjacent(previous, current):
             _require(left == right, 'Adjacent unchanged-policy exact field differs: ' + name)
 
 
-def _identity(value, monitor_count=4):
+def _reference_required(binding):
+    contract = binding.get('monitor_reference_contract')
+    if contract is None:
+        return True
+    _require(isinstance(contract, Mapping) and set(contract) == {
+        'schema_version', 'role', 'run_id', 'calibration_sha256',
+        'resolved_config_sha256', 'source_map_sha256', 'producer_source_sha256',
+        'use_kl_loss', 'reference_kl_coefficient', 'state_masking',
+    }, 'Unexpected monitor reference contract')
+    _require(type(contract['schema_version']) is int and contract['schema_version'] == 1 and
+             contract['role'] == 'bound_actual_zero_reference_monitor' and
+             contract['run_id'] == binding['run_id'] and
+             contract['calibration_sha256'] == binding['calibration_sha256'],
+             'Unbound monitor reference contract')
+    _require(contract['use_kl_loss'] is True and contract['state_masking'] is True and
+             type(contract['reference_kl_coefficient']) in (int, float) and
+             contract['reference_kl_coefficient'] == 0 and
+             contract['producer_source_sha256'] == ZERO_REFERENCE_MONITOR_PRODUCER_SHA256,
+             'Monitor reference contract differs from the zero-reference producer')
+    for name in ('calibration_sha256', 'resolved_config_sha256', 'source_map_sha256', 'producer_source_sha256'):
+        _hash(contract[name], name)
+    return False
+
+
+def _identity(value, monitor_count=4, *, reference_required=True):
+    _require(type(reference_required) is bool, 'Invalid reference requirement')
     _require(type(monitor_count) is int and monitor_count in (4, 8), 'Unsupported local monitor count')
     _require(isinstance(value, Mapping), 'Missing local monitor identity')
     _require(set(value) == {'selection_indices', 'actor_token_lengths', 'tensor_sha256'},
@@ -115,7 +143,8 @@ def _identity(value, monitor_count=4):
         _integer(length, 'actor_token_length', minimum=1)
     _require(lengths == sorted(lengths), 'Monitor lengths are not stratified')
     hashes = value['tensor_sha256']
-    _require(isinstance(hashes, Mapping) and set(hashes) == MONITOR_TENSORS,
+    expected = MONITOR_TENSORS if reference_required else MONITOR_TENSORS - {'ref_log_prob'}
+    _require(isinstance(hashes, Mapping) and set(hashes) == expected,
              'Missing actual common8 monitor tensor hashes')
     for name, digest in hashes.items():
         _hash(digest, name)
@@ -205,6 +234,7 @@ def verify_formal_segment(rows_by_rank, binding):
     Rejected monitors must correspond to explicit guarded skip/postwrite records.
     """
     from reproduction.common8.formal_contract import FORMAL_SAFEGUARDS, SAFETY_MODE, consumed_lr
+    reference_required = _reference_required(binding)
     size = binding.get('training_world_size', 8)
     _require(type(size) is int and size in (4, 8), 'Unsupported formal evidence topology')
     monitor_count = 32 // size
@@ -288,7 +318,8 @@ def verify_formal_segment(rows_by_rank, binding):
                     _require(row['objective_weight_definition'] == OBJECTIVE_WEIGHT_DEFINITION and
                              row['monitoring_scope'] == scope, 'Formal monitor weighting/scope differs')
                     _integer(row['rejection_count'], 'actual cumulative rejection_count')
-                    _identity(row['monitor_identity'], monitor_count=monitor_count)
+                    _identity(row['monitor_identity'], monitor_count=monitor_count,
+                              reference_required=reference_required)
                     if identity is None:
                         identity = copy.deepcopy(row['monitor_identity']); identities[(outer, rank)] = identity
                     _require(identity == row['monitor_identity'], 'Frozen formal monitor inputs changed')

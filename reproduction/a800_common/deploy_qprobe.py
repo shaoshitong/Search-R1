@@ -47,6 +47,8 @@ REVIEW_CHECKS = (
     'independent_trajectory_phase_v1',
     'four_rank_bf16_local4_global16_accum8_ref8', 'recoverable_guards_lr_warmup57',
 )
+RESTORE_REVIEW_CHECKS = ('saved_cp5_full_actor_head_optimizer_scheduler_rng_sampler',
+    'logical6_to200_no_repeated_teacher_or_evaluation', 'saved_rng_not_post_evaluation_boundary')
 
 
 def validate_intent(intent):
@@ -63,6 +65,11 @@ def validate_intent(intent):
     validate_teacher_cache(intent['teacher_warmup_cache'])
     assert intent['launch_services'] is False and intent['target_updates'] == 200
     assert intent['gpu_placement_policy']==PLACEMENT_POLICY and intent['gpu_placement_bound'] is False
+    restore=intent.get('saved_checkpoint_restore')
+    if restore is not None:
+        assert set(restore)=={'source_receipt','source_receipt_sha256'}
+        validate_teacher_cache(restore['source_receipt'])
+        assert re.fullmatch('[0-9a-f]{64}',restore['source_receipt_sha256'])
     return intent
 
 
@@ -104,8 +111,9 @@ def validate_review(review, intent):
     assert review['reviewer'] != review['implementation_actor']
     assert review['source_commit'] == intent['source_commit']
     assert review['source_sha256'] == intent['source_sha256']
-    assert set(review['checks']) == set(REVIEW_CHECKS)
-    assert all(review['checks'][key] is True for key in REVIEW_CHECKS)
+    checks=REVIEW_CHECKS+(RESTORE_REVIEW_CHECKS if intent.get('saved_checkpoint_restore') else ())
+    assert set(review['checks']) == set(checks)
+    assert all(review['checks'][key] is True for key in checks)
     assert type(review['reviewed_unix']) in (int, float) and 0 < review['reviewed_unix'] <= time.time()
     return review
 
@@ -116,7 +124,11 @@ def validate_feature_origin(old, new, ready, exit_receipt, manifest):
     assert new['run_id'] != old['run_id'] and new['execution_id'] != old['execution_id'] and new['source_commit'] != old['source_commit']
     for candidate in (old,new):
         assert candidate['profile']=='common8' and candidate['execution_backend']=='ssh_local'
-        assert candidate['training_world_size']==4 and candidate['completed_updates']==0 and not candidate.get('full_state_restore')
+        assert candidate['training_world_size']==4 and candidate['completed_updates']==0
+        binding=candidate.get('full_state_restore')
+        if binding:
+            assert candidate is new and binding['kind']=='question_probe_saved_checkpoint'
+            assert binding['completed_outer']==5 and binding['actual_optimizer_writes_per_rank']==100
         assert candidate['initial_model']==candidate['reference_model']=='/data/search-g1/assets/qwen2.5-3b-instruct'
         assert candidate['model_revision']=='aa8e72537993ba99e69dfaafa59ed015b17504d1'
     assert len(old['initial_model_sha256'])==9 and old['initial_model_sha256']==new['initial_model_sha256']
@@ -216,6 +228,24 @@ def check(intent):
  assert cache.is_absolute() and str(cache)==intent['teacher_warmup_cache']
  assert intent['launch_services'] is False and intent['target_updates']==200
  assert intent['gpu_placement_policy']=='launch_time_four_idle_excluding_auxiliary_v1' and intent['gpu_placement_bound'] is False
+ restore=intent.get('saved_checkpoint_restore')
+ if restore is not None:
+  assert set(restore)=={'source_receipt','source_receipt_sha256'}
+  path=Path(restore['source_receipt'])
+  assert re.fullmatch(r'/(data|mnt|backup)/[A-Za-z0-9._/-]+',str(path)) and '..' not in path.parts
+  assert path.is_absolute() and re.fullmatch('[0-9a-f]{64}',restore['source_receipt_sha256'])
+def restored_source(intent,repo):
+ binding=intent.get('saved_checkpoint_restore')
+ if binding is None:return None
+ path=owned(binding['source_receipt']);assert sha(path)==binding['source_receipt_sha256']
+ sys.path.insert(0,str(repo))
+ from search_g1.qprobe_checkpoint import read_source,SAVED_CHECKPOINT_STATUS,SAVED_CHECKPOINT_KIND
+ _,receipt,_,origin,parent=read_source(path)
+ assert receipt['status']==SAVED_CHECKPOINT_STATUS and receipt['kind']==SAVED_CHECKPOINT_KIND
+ assert receipt['step']==5 and receipt['world_size']==4 and receipt['attempt_progress']['cumulative_writes']==100
+ assert receipt['actual_cpu_readback'] is True and receipt['actual_cuda_restore_accepted'] is False
+ assert origin!=Path(intent['base']) and parent['source_commit']!=intent['source_commit']
+ return receipt,parent
 def teacher_storage(intent,create_parent=False):
  cache=Path(intent['teacher_warmup_cache']);assert cache.resolve()==cache and not cache.is_symlink()
  existing=cache if cache.exists() else cache.parent
@@ -296,6 +326,7 @@ once(base/'logs/source-staging-complete.json',receipt);output(receipt)
 
 REMOTE_PREPARE = REMOTE_COMMON + r'''
 payload=json.load(sys.stdin);intent=payload['intent'];source,staged_repo=staged(intent)
+restoration=restored_source(intent,staged_repo)
 base=Path(intent['base']);assert base.parent==base.parent.resolve() and base.parent.is_dir()
 baseline=owned(intent['baseline_base']);original=baseline/'preparation/deployment-intent.json'
 assert sha(owned(original))==intent['baseline_intent_sha256'];old=read(original)
@@ -324,6 +355,8 @@ deployment=dict(schema_version=1,role='fresh_a800_common_deployment_intent',depl
  auxiliary_physical_indices=[5,6],target_updates=200,same_process_after_five=True,
  initial_probes_source_base=intent['initial_probes_source_base'],
  remote_canonical_source_base=str(baseline),remote_original_intent_sha256=intent['baseline_intent_sha256'])
+if restoration:
+ deployment.update(state_policy='authenticated_saved_checkpoint_resume',saved_checkpoint_restore=intent['saved_checkpoint_restore'])
 once(base/'preparation/deployment-intent.json',deployment)
 once(base/'logs/deployment-input-receipt.json',dict(deployment_id=intent['deployment_id'],inputs=rows,
  exact_original_remote_bytes=True,controller_data_or_model_bytes_transferred=False,training_data_partitioned=False,
@@ -336,10 +369,12 @@ once(base/'logs/deployment-source-receipt.json',dict(deployment_id=intent['deplo
 from reproduction.common8.policy_calibration_plan import document_sha256
 template=read(base/'preparation/formal-inline-method-template.json');method=dict(template)
 method.update(source_commit=intent['source_commit'],source_map_sha256=document_sha256(intent['source_sha256']),created_unix=time.time())
+if restoration:method['fresh_states']=False
 once(base/'preparation/formal-inline-method.json',method)
 args=['/data/search-g1/env/bin/python','-m','reproduction.a800_common.prepare_run','--base',str(base),
  '--model','/data/search-g1/assets/qwen2.5-3b-instruct','--official-manifest',str(base/'preparation/official-model-manifest-original.json'),
- '--source-commit',intent['source_commit'],'--initial-probes-source-base',intent['initial_probes_source_base']]
+ '--source-commit',intent['source_commit']]
+args+=['--restore-receipt',intent['saved_checkpoint_restore']['source_receipt']] if restoration else ['--initial-probes-source-base',intent['initial_probes_source_base']]
 with (base/'preparation/prepare-run.log').open('xb') as log:
  result=subprocess.run(args,cwd=repo,env=environment(base,repo),stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,timeout=900)
  log.flush();os.fsync(log.fileno())
@@ -348,13 +383,15 @@ assert result.returncode==0, 'CPU run preparation failed; inspect this claimed b
 run=read(base/'logs/run-manifest.json')
 from reproduction.common8.formal_inline_safety import verify_method
 verify_method(method,run);unlaunched(base)
-assert run['source_sha256']==intent['source_sha256'] and run.get('question_probe') is None
+assert run['source_sha256']==intent['source_sha256']
+assert (run.get('question_probe') is not None)==bool(restoration)
 assert run['initial_model']==run['reference_model']=='/data/search-g1/assets/qwen2.5-3b-instruct'
 assert run['training_world_size']==4 and run['target_updates']==200 and run['completed_updates']==0
 assert sha(original)==intent['baseline_intent_sha256']
 receipt=dict(stage='CPU_PREPARED_NO_GPU_OR_PIPELINE_LAUNCH',deployment_id=intent['deployment_id'],base=str(base),
  run_id=run['run_id'],execution_id=run['execution_id'],source_commit=run['source_commit'],
- qprobe_binding_pending=True,teacher_warmup_pending=True,trainer_started=False,checked_unix=time.time())
+ qprobe_binding_pending=True,teacher_warmup_pending=not bool(restoration),
+ inherited_completed_outer=5 if restoration else 0,trainer_started=False,checked_unix=time.time())
 once(base/'logs/qprobe-prepared.json',receipt);output(receipt)
 '''
 
@@ -370,15 +407,22 @@ assert sha(owned(base/'question-features/manifest.json'))==features['manifest_sh
 if features.get('kind')=='copied_verified_existing_encoding':assert read(base/'logs/qprobe-feature-adoption.json')==features
 once(base/'logs/qprobe-bind-claim.json',dict(deployment_id=intent['deployment_id'],claimed_unix=time.time(),no_automatic_retry=True))
 sys.path.insert(0,str(base/'repo'))
-from reproduction.common8.qprobe_bind import bind
+from reproduction.common8.qprobe_bind import bind,bind_restored_features
 from reproduction.common8.stage_retrieval import ASSETS
 from search_g1.qprobe_features import sha_json
 from search_g1.rollout_phase_contract import DEFAULT_ROLLOUT_PHASE
-run=bind(base,base/'question-features',exploration_questions=0,retriever_version=sha_json(ASSETS),
- seed=20261013,teacher_warmup_cache=teacher_storage(intent),infra_rollout=DEFAULT_ROLLOUT_PHASE)
+restoration=restored_source(intent,base/'repo')
+if restoration:
+ assert before['full_state_restore']['source_receipt_sha256']==intent['saved_checkpoint_restore']['source_receipt_sha256']
+ run=bind_restored_features(base,base/'question-features')
+else:
+ run=bind(base,base/'question-features',exploration_questions=0,retriever_version=sha_json(ASSETS),
+  seed=20261013,teacher_warmup_cache=teacher_storage(intent),infra_rollout=DEFAULT_ROLLOUT_PHASE)
 receipt=dict(stage='QPROBE_BOUND_PRELAUNCH',deployment_id=intent['deployment_id'],run_id=run['run_id'],
  source_commit=run['source_commit'],question_probe=run['question_probe'],target_updates=200,
- extra_frozen_teacher_warmup_outers=1,completed_training_outers=0,trainer_started=False,checked_unix=time.time())
+ extra_frozen_teacher_warmup_outers=0 if restoration else 1,
+ completed_training_outers=5 if restoration else 0,teacher_regeneration_or_head_refit_required=not bool(restoration),
+ trainer_started=False,checked_unix=time.time())
 once(base/'logs/qprobe-bound.json',receipt);output(receipt)
 '''
 
@@ -391,7 +435,7 @@ from reproduction.a800_common.deploy_qprobe import (FEATURE_SOURCE_BASE,FEATURE_
  FEATURE_FILE_SHA,FEATURE_SPEC_SHA,FEATURE_PRODUCERS,validate_feature_origin)
 origin=owned(payload['feature_source_base']);assert str(origin)==FEATURE_SOURCE_BASE and origin!=base
 new=read(base/'logs/run-manifest.json');old=read(origin/'logs/run-manifest.json')
-assert new.get('question_probe') is None and new['source_commit']==intent['source_commit']
+assert (new.get('question_probe') is not None)==bool(intent.get('saved_checkpoint_restore')) and new['source_commit']==intent['source_commit']
 for name in ('qprobe-feature-claim.json','qprobe-bind-claim.json','qprobe-feature-adopt-claim.json'):
  assert not (base/'logs'/name).exists(), 'Feature preparation or binding already claimed'
 target=base/'question-features';assert not target.exists() and not target.is_symlink()
@@ -523,7 +567,16 @@ assert q['exploration_questions']==0 and q['bootstrap_max_groups_per_outer']==51
 from search_g1.rollout_phase_contract import DEFAULT_ROLLOUT_PHASE
 assert run['infra_rollout']==DEFAULT_ROLLOUT_PHASE and run['infra_rollout']['mode']=='independent_trajectory_phase_v1'
 assert q['teacher_warmup_cache']==str(teacher_storage(intent)) and q['cache_dir']==str(base/'question-features')
-assert not q.get('initial_head_checkpoint') and not run.get('full_state_restore') and run['mixed_first_selection'] is False
+assert not q.get('initial_head_checkpoint') and run['mixed_first_selection'] is False
+restoration=restored_source(intent,repo)
+if restoration:
+ binding=run['full_state_restore'];receipt,parent=restoration
+ assert binding['kind']=='question_probe_saved_checkpoint' and binding['completed_outer']==5
+ assert binding['actual_optimizer_writes_per_rank']==100 and run['run_id']==receipt['run_id']==parent['run_id']
+ assert binding['source_receipt']==intent['saved_checkpoint_restore']['source_receipt']
+ assert binding['source_receipt_sha256']==intent['saved_checkpoint_restore']['source_receipt_sha256']
+ assert binding['post_evaluation_rng_persisted'] is False and run['initial_probe_version']==receipt['reward_probe_version']
+else:assert not run.get('full_state_restore')
 assert run['target_updates']==200 and run['completed_updates']==0 and run['training_world_size']==4
 from search_g1.qprobe_features import FeatureCache,sha_json
 from reproduction.common8.stage_retrieval import ASSETS
@@ -582,6 +635,9 @@ def stage(args):
         teacher_warmup_cache=str(validate_teacher_cache(args.teacher_warmup_cache or TEACHER_CACHE)),
         bundle_bytes=bundle.stat().st_size, bundle_sha256=digest(bundle), target_updates=200,
         launch_services=False, gpu_placement_policy=PLACEMENT_POLICY,gpu_placement_bound=False,created_unix=time.time())
+    if args.restore_receipt:
+        assert args.initial_probes_source_base is None, 'Saved-state restoration excludes fresh initial-probe adoption'
+        intent['saved_checkpoint_restore']=dict(source_receipt=args.restore_receipt,source_receipt_sha256=args.restore_receipt_sha256)
     write_once(handle, validate_intent(intent))
     data = io.BytesIO()
     with tarfile.open(fileobj=data, mode='w') as archive:
@@ -623,6 +679,7 @@ def invoke(handle, intent, action, code, payload, timeout):
 
 def feature_plan(intent, physical_index=6, batch_size=32):
     validate_intent(intent)
+    assert not intent.get('saved_checkpoint_restore'), 'A saved-state restore copies the existing encoding; never recompute it'
     assert physical_index in (5, 6) and type(batch_size) is int and batch_size > 0
     base = Path(intent['base'])
     return dict(base=str(base), repo=str(base/'repo'), source_commit=intent['source_commit'],
@@ -642,6 +699,7 @@ def main():
     parser.add_argument('--baseline-intent-sha256');parser.add_argument('--review-receipt', type=Path)
     parser.add_argument('--initial-probes-source-base')
     parser.add_argument('--teacher-warmup-cache')
+    parser.add_argument('--restore-receipt');parser.add_argument('--restore-receipt-sha256')
     parser.add_argument('--feature-source-base')
     parser.add_argument('--physical-index', type=int, choices=(5,6), default=6)
     parser.add_argument('--batch-size', type=int, default=32)
@@ -649,9 +707,10 @@ def main():
     assert args.action=='feature-adopt' or args.feature_source_base is None
     if args.action == 'stage':
         assert args.source_commit and args.published_ref and args.baseline_intent_sha256
+        assert bool(args.restore_receipt)==bool(args.restore_receipt_sha256)
         result = stage(args)
     else:
-        assert args.source_commit is None and args.published_ref is None and args.baseline_intent_sha256 is None and args.initial_probes_source_base is None and args.teacher_warmup_cache is None
+        assert args.source_commit is None and args.published_ref is None and args.baseline_intent_sha256 is None and args.initial_probes_source_base is None and args.teacher_warmup_cache is None and args.restore_receipt is None and args.restore_receipt_sha256 is None
         handle = args.handle.resolve();intent = validate_intent(json.loads(handle.read_text()))
         if args.action == 'feature-plan':
             result = feature_plan(intent, args.physical_index, args.batch_size)

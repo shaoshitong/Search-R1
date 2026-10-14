@@ -128,7 +128,7 @@ def prepare(base,model,official_path,commit,initial_probes_source_base=None,rest
         from search_g1.qprobe_checkpoint import bind_restore
         result['actor_micro_batch_per_rank']=restore_parent['actor_micro_batch_per_rank']
         result['budget']=copy.deepcopy(restore_parent['budget'])
-        for key in ('precision_profile','behavior_probability_policy'):
+        for key in ('precision_profile','behavior_probability_policy','infra_rollout'):
             if key in restore_parent:result[key]=copy.deepcopy(restore_parent[key])
         bind_restore(result,restore_receipt)
     assert_formal_run(result)

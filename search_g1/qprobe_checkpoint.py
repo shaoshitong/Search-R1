@@ -20,6 +20,9 @@ import torch
 
 PAIR_STATUS = 'QPROBE_COMPLETED_PAIR_FULL_SHA_CPU_STATES_PASS'
 PAIR_KIND = 'question_probe_pair'
+SAVED_CHECKPOINT_STATUS = 'QPROBE_SAVED_CHECKPOINT_FULL_SHA_CPU_STATES_PASS'
+SAVED_CHECKPOINT_KIND = 'question_probe_saved_checkpoint'
+QPROBE_RESTORE_STATUSES = (PAIR_STATUS, SAVED_CHECKPOINT_STATUS)
 _SOURCE_CACHE = {}
 
 
@@ -107,7 +110,7 @@ def _historical_artifacts(base,run,outer):
     """Freeze only existing bounded evidence; absent early outputs stay absent."""
     from reproduction.common8.formal_contract import SAVE_STEPS
     inherited={}
-    if (run.get('full_state_restore') or {}).get('kind')==PAIR_KIND:
+    if (run.get('full_state_restore') or {}).get('kind') in (PAIR_KIND,SAVED_CHECKPOINT_KIND):
         inherited=read_source(run['full_state_restore']['source_receipt'])[1].get('historical_artifacts',{})
     checkpoints={item['step']:item for item in inherited.get('checkpoints',[])}
     for step in SAVE_STEPS:
@@ -246,6 +249,9 @@ def _identity_record(row):
 
 def read_source(receipt_path):
     path=Path(receipt_path).resolve();receipt=_read_json(path)
+    if receipt.get('status')==SAVED_CHECKPOINT_STATUS:
+        from search_g1.qprobe_saved_checkpoint import read_source as read_saved_source
+        return read_saved_source(path)
     _need(receipt.get('status')==PAIR_STATUS and receipt.get('schema_version')==1,'RECEIPT_SCHEMA_MISMATCH')
     outer=receipt['step'];size=receipt['world_size'];checkpoint=Path(receipt['checkpoint']).resolve()
     base=Path(receipt['source_base']).resolve()
@@ -324,6 +330,14 @@ def bind_restore(run, receipt_path):
     run['data_selection_mode']='question_probe'
     for key in ('budget','input_sha256','initial_model_sha256','training_world_size','actor_micro_batch_per_rank'):
         _need(run.get(key)==parent.get(key),'TARGET_MODEL_DATA_OR_BUDGET_MISMATCH_'+key)
+    phase=parent.get('infra_rollout')
+    if phase is not None:
+        from search_g1.rollout_phase_contract import validate
+        phase=validate(phase,parent['training_world_size'])
+        _need(run.get('infra_rollout',phase)==phase,'TARGET_ROLLOUT_PHASE_CHANGED')
+        run['infra_rollout']=copy.deepcopy(phase)
+    else:
+        _need(run.get('infra_rollout') is None,'TARGET_ADDED_AN_UNBOUND_ROLLOUT_PHASE')
     from search_g1.qprobe_runtime import validate_config
     ignore={'cache_dir','output_dir','initial_head_checkpoint','snapshot_path','restore_state'}
     new={k:v for k,v in validate_config(run['question_probe']).items() if k not in ignore}
@@ -340,9 +354,10 @@ def bind_restore(run, receipt_path):
     _need(type(topk) is int and topk>0,'SOURCE_RETRIEVER_TOPK_INVALID')
     _need(run.get('retriever_topk',topk)==topk,'TARGET_RETRIEVER_TOPK_CHANGED')
     run['retriever_topk']=topk
+    kind=SAVED_CHECKPOINT_KIND if receipt['status']==SAVED_CHECKPOINT_STATUS else PAIR_KIND
     run.update(run_id=parent['run_id'],native_ray_execution_id=uuid.uuid4().hex,
         initial_probe_version=receipt['reward_probe_version'],pretraining_baseline_policy='reuse_historical',
-        full_state_restore=dict(kind=PAIR_KIND,source_receipt=str(path),source_receipt_sha256=digest(path),
+        full_state_restore=dict(kind=kind,source_receipt=str(path),source_receipt_sha256=digest(path),
             source_checkpoint=str(checkpoint),source_base=str(base),
             source_run_manifest_sha256=receipt['source_run_manifest']['full_read_sha256'],
             completed_outer=receipt['step'],actual_optimizer_writes_per_rank=progress['cumulative_writes'],
@@ -352,6 +367,11 @@ def bind_restore(run, receipt_path):
             question_probe_state_path=receipt['question_probe_state_path'],feature_spec_sha=receipt['feature_spec_sha'],
             followup_acceptance_outer=min(receipt['step']+5,200)),
         optimizer_semantics='actual paired actor/head/Adam/scheduler/RNG/source-stream restoration; CUDA readback required')
+    if kind==SAVED_CHECKPOINT_KIND:
+        run['full_state_restore'].update(boundary_type='saved_checkpoint',
+            boundary_origin=receipt['boundary_origin'],boundary_scope=receipt['boundary_scope'],
+            post_evaluation_rng_persisted=False)
+        run['optimizer_semantics']='saved CP actor/head/Adam/scheduler/RNG/source-stream restoration; post-evaluation RNG unavailable; actual CUDA readback required'
     return run
 
 
@@ -378,7 +398,9 @@ def restore_driver(trainer, receipt_path):
     from search_g1.training_state import compact_stream_state,driver_rng
     from search_g1.full_state_restore import equal_tree,bind_restored_probe,publish
     _,receipt,checkpoint,_,_=read_source(receipt_path)
-    saved=torch.load(receipt['boundary_driver']['path'],map_location='cpu',weights_only=False)
+    saved_boundary=receipt['status']==SAVED_CHECKPOINT_STATUS
+    driver_file=receipt['driver_file'] if saved_boundary else receipt['boundary_driver']
+    saved=torch.load(driver_file['path'],map_location='cpu',weights_only=False)
     base=Path(os.environ['SEARCH_G1_BASE']);run=_read_json(base/'logs/run-manifest.json')
     live=_read_json(base/'artifacts/live/manifest.json')
     bind_restored_probe(trainer,saved,run,live,receipt['run_id'])
@@ -392,10 +414,12 @@ def restore_driver(trainer, receipt_path):
     row=dict(source_checkpoint=str(checkpoint),actual_driver_rng_readback_equal=True,
         completed_outer=receipt['step'],actual_candidate_source_cursor=saved['candidate_stream']['consumed_source_rows'],
         candidate_order_count=len(saved['candidate_stream']['candidate_order']),pending_offset=saved['candidate_stream']['pending_offset'],
-        actual_probe_version=saved['probe_version'],actual_probe_round=saved['probe_round'],
-        attempt_progress=copy.deepcopy(saved['attempt_progress']),used_attempt_ids=saved['used_attempt_ids'],
+        actual_probe_version=saved['probe_version'],actual_probe_round=receipt['reward_probe_round'] if saved_boundary else saved['probe_round'],
+        attempt_progress=copy.deepcopy(saved['attempt_progress']),
+        used_attempt_ids=receipt['ranks'][0]['used_attempt_ids'] if saved_boundary else saved['used_attempt_ids'],
         reward_alpha_fixed=True,historical_reward_diagnostics_restored=False,
-        source_driver_full_sha256=receipt['boundary_driver']['full_read_sha256'],checked_unix=time.time())
+        source_driver_full_sha256=driver_file['full_read_sha256'],checked_unix=time.time())
+    if saved_boundary:row.update(sampling_rng_source='authenticated saved-checkpoint driver RNG',post_evaluation_rng_persisted=False)
     publish(base/'logs/full-state-restored-driver.json',row)
     return row
 
@@ -420,6 +444,15 @@ def verified_runtime_prefix(base,run):
     _need(driver['actual_driver_rng_readback_equal'] and driver['completed_outer']==outer and
         driver['actual_candidate_source_cursor']==receipt['driver_state']['source_consumed'],
         'ACTUAL_DRIVER_READBACK_MISSING')
+    if receipt['status']==SAVED_CHECKPOINT_STATUS:
+        states={row['relative_path']:row for row in receipt['files']}
+        _need(all(row['source_checkpoint']==receipt['checkpoint'] and row['source_run_id']==receipt['run_id'] and
+            row['source_state_full_sha256']==states[f'training_state/rank-{row["rank"]}.pt']['full_read_sha256'] and
+            row['post_evaluation_rng_persisted'] is False for row in workers),
+            'SAVED_CHECKPOINT_ACTUAL_WORKER_SOURCE_MISMATCH')
+        _need(driver['source_checkpoint']==receipt['checkpoint'] and
+            driver['source_driver_full_sha256']==receipt['driver_file']['full_read_sha256'] and
+            driver['post_evaluation_rng_persisted'] is False,'SAVED_CHECKPOINT_ACTUAL_DRIVER_SOURCE_MISMATCH')
     used=receipt['ranks'][0]['used_attempt_ids']
     return dict(completed_outer=outer,writes=progress['cumulative_writes'],attempt_index=progress['attempt_index'],
                 rejections=receipt['ranks'][0]['policy_rejections'],aborted=progress['aborted_attempts'],

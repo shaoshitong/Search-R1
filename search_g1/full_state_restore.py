@@ -22,8 +22,8 @@ def digest(path):
 
 def source(receipt_path):
     p=Path(receipt_path).resolve();r=json.loads(p.read_text())
-    from search_g1.qprobe_checkpoint import PAIR_STATUS,read_source
-    if r.get('status')==PAIR_STATUS:return read_source(p)
+    from search_g1.qprobe_checkpoint import PAIR_STATUS,QPROBE_RESTORE_STATUSES,read_source
+    if r.get('status') in QPROBE_RESTORE_STATUSES:return read_source(p)
     assert r['status']=='SOURCE_CHECKPOINT5_FULL_SHA_AND_CPU_STATES_PASS'
     assert r['step']==5 and r['cpu_regression_tests']==3
     assert len(r['ranks'])==8 and sorted(v['rank'] for v in r['ranks'])==list(range(8))
@@ -61,8 +61,8 @@ def execution_budget_compatible(run, parent):
 
 def bind(run,receipt_path):
     p,r,checkpoint,origin,parent=source(receipt_path)
-    from search_g1.qprobe_checkpoint import PAIR_STATUS,bind_restore
-    if r.get('status')==PAIR_STATUS:return bind_restore(run,receipt_path)
+    from search_g1.qprobe_checkpoint import PAIR_STATUS,QPROBE_RESTORE_STATUSES,bind_restore
+    if r.get('status') in QPROBE_RESTORE_STATUSES:return bind_restore(run,receipt_path)
     execution_budget_compatible(run, parent)
     assert run['input_sha256']==parent['input_sha256']
     assert run['initial_model_sha256']==parent['initial_model_sha256']
@@ -89,8 +89,8 @@ def from_config(config):
     p,r,checkpoint,origin,parent=source(receipt)
     assert Path(config.actor_rollout_ref.model.actor_checkpoint_path).resolve()==checkpoint
     assert config.trainer.total_training_steps==201 and config.trainer.acceptance_step==5
-    from search_g1.qprobe_checkpoint import PAIR_STATUS
-    if r.get('status')==PAIR_STATUS:
+    from search_g1.qprobe_checkpoint import PAIR_STATUS,QPROBE_RESTORE_STATUSES
+    if r.get('status') in QPROBE_RESTORE_STATUSES:
         from reproduction.common8.topology import world_size
         assert world_size(parent)==r['world_size']
         assert config.actor_rollout_ref.actor.ppo_micro_batch_size==parent['actor_micro_batch_per_rank']*r['world_size']
@@ -136,8 +136,8 @@ def restore_worker(worker,receipt_path):
     from verl.utils.fsdp_utils import load_fsdp_param_and_grad,offload_fsdp_param_and_grad
     from search_g1.training_state import worker_rng,cpu_tree
     p,r,checkpoint,origin,parent=source(receipt_path);rank=worker.rank
-    from search_g1.qprobe_checkpoint import PAIR_STATUS,validate_rank_state
-    paired=r.get('status')==PAIR_STATUS
+    from search_g1.qprobe_checkpoint import PAIR_STATUS,QPROBE_RESTORE_STATUSES,validate_rank_state
+    paired=r.get('status') in QPROBE_RESTORE_STATUSES
     size=r['world_size'] if paired else 8
     outer=r['step'] if paired else 5
     writes=r['attempt_progress']['cumulative_writes'] if paired else 100
@@ -193,7 +193,7 @@ def restore_worker(worker,receipt_path):
         worker.actor._policy_rejections=parent_monitor[-1]['rejection_count']
     if paired:
         from search_g1.qprobe_checkpoint import boundary_worker_rng
-        rng=boundary_worker_rng(r,rank,saved)
+        rng=boundary_worker_rng(r,rank,saved) if r['status']==PAIR_STATUS else saved['rng']
     else:rng=saved['rng']
     manager=worker.rollout_sharding_manager
     engine=worker.rollout.inference_engine.llm_engine;assert not engine.has_unfinished_requests()
@@ -217,7 +217,10 @@ def restore_worker(worker,receipt_path):
         last_attempt_index=worker.actor._last_attempt_index,
         policy_rejections=worker.actor._policy_rejections,
         source_run_id=saved['run_id'],source_step=outer,checked_unix=time.time())
-    if paired:row['sampling_rng_source']='authenticated post-evaluation/refit boundary-worker-rng'
+    if paired:
+        row['sampling_rng_source']=('authenticated post-evaluation/refit boundary-worker-rng' if r['status']==PAIR_STATUS else
+            'authenticated saved-checkpoint worker RNG; post-evaluation RNG unavailable')
+        row['post_evaluation_rng_persisted']=r['status']==PAIR_STATUS
     publish(Path(os.environ['SEARCH_G1_BASE'])/'logs'/f'full-state-restored-rank-{rank}.json',row)
     return row
 
@@ -233,7 +236,7 @@ def bind_restored_probe(trainer,saved,run,live,source_run_id):
     if 'run_id' in saved:assert saved['run_id']==source_run_id
     assert version==run['initial_probe_version']==live['version']
     binding=run.get('full_state_restore') or {}
-    if binding.get('kind')=='question_probe_pair':
+    if binding.get('kind')in ('question_probe_pair','question_probe_saved_checkpoint'):
         assert live['round']==binding['reward_probe_round'] and version==binding['reward_probe_version']
     else:assert live['round']==0
     assert trainer.reward_fn.no_self is True, 'Uncheckpointed adaptive reward cannot be resumed'
@@ -247,8 +250,8 @@ def bind_restored_probe(trainer,saved,run,live,source_run_id):
 
 
 def restore_driver(trainer,receipt_path):
-    from search_g1.qprobe_checkpoint import PAIR_STATUS,restore_driver as restore_pair_driver
-    if json.loads(Path(receipt_path).read_text()).get('status')==PAIR_STATUS:
+    from search_g1.qprobe_checkpoint import PAIR_STATUS,QPROBE_RESTORE_STATUSES,restore_driver as restore_pair_driver
+    if json.loads(Path(receipt_path).read_text()).get('status') in QPROBE_RESTORE_STATUSES:
         return restore_pair_driver(trainer,receipt_path)
     import torch,numpy as np
     from search_g1.training_state import driver_rng,compact_stream_state
@@ -281,13 +284,13 @@ def prepare_guarded_restore(base,run,document,method,initial,receipts):
     base=Path(base);binding=active(run);p,r,cp,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']
     allocation=json.loads((base/'logs/native-allocation-admission.json').read_text())
-    paired=binding.get('kind')=='question_probe_pair'
+    paired=binding.get('kind')in ('question_probe_pair','question_probe_saved_checkpoint')
     actual_writes=binding['actual_optimizer_writes_per_rank'] if paired else 100
     step=binding['completed_outer'] if paired else 5
     probability=dict(role='verified_full_state_restore_source',run_id=run['run_id'],
         slurm_job_id=allocation['slurm_job_id'],actual_optimizer_writes=actual_writes,
         source_receipt_sha256=digest(p),source_checkpoint=str(cp),source_step=step,
-        source_sha256=run['source_sha256'],resolved_config_sha256=document_sha256(document),
+        source_sha256=run['source_sha256'],resolved_config=document,resolved_config_sha256=document_sha256(document),
         actual_cuda_runtime_uuids=allocation['actual_cuda_runtime_uuids'],
         actual_model_gpu_restore_required_before_first_write=True,
         actual_behavior_probability_accepted=False,physical_execution_authenticated=False)
@@ -310,12 +313,15 @@ def verify_guarded_restore(base,run,probability):
     binding=active(run);p,r,cp,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']==probability['source_receipt_sha256']
     assert probability['role']=='verified_full_state_restore_source'
-    if binding.get('kind')=='question_probe_pair':
+    if binding.get('kind')in ('question_probe_pair','question_probe_saved_checkpoint'):
         assert probability['actual_optimizer_writes']==binding['actual_optimizer_writes_per_rank']
         assert probability['source_step']==binding['completed_outer']
     else:assert probability['actual_optimizer_writes']==100 and probability['source_step']==5
     assert probability['source_checkpoint']==str(cp) and probability['run_id']==run['run_id']==parent['run_id']
     assert probability['source_sha256']==run['source_sha256']
+    from reproduction.common8.formal_contract import verify_formal_config
+    config_proof=verify_formal_config(probability['resolved_config'],run,base)
+    assert config_proof['resolved_config_sha256']==probability['resolved_config_sha256']
     allocation=json.loads((Path(base)/'logs/native-allocation-admission.json').read_text())
     assert probability['slurm_job_id']==allocation['slurm_job_id']
     assert probability['actual_cuda_runtime_uuids']==allocation['actual_cuda_runtime_uuids']
@@ -333,7 +339,7 @@ def accept_resumed_five(records):
     from reproduction.common8.worker_evidence import read_console_form
     base=Path(os.environ['SEARCH_G1_BASE']);run=json.loads((base/'logs/run-manifest.json').read_text())
     binding=active(run)
-    paired=(binding or {}).get('kind')=='question_probe_pair'
+    paired=(binding or {}).get('kind')in ('question_probe_pair','question_probe_saved_checkpoint')
     first=binding['completed_outer']+1 if paired else 6
     last=min(first+4,200) if paired else 10
     assert binding and [r['step'] for r in records]==list(range(first,last+1))
@@ -365,7 +371,7 @@ def accept_resumed_five(records):
 
 def verified_runtime_prefix(base,run):
     """Require actual restored worker/driver readbacks before auditing a suffix."""
-    if (active(run) or {}).get('kind')=='question_probe_pair':
+    if (active(run) or {}).get('kind')in ('question_probe_pair','question_probe_saved_checkpoint'):
         from search_g1.qprobe_checkpoint import verified_runtime_prefix as pair_prefix
         return pair_prefix(base,run)
     base=Path(base);binding=active(run);assert binding
@@ -392,7 +398,7 @@ def verified_runtime_prefix(base,run):
 def record_original_baseline(base,run):
     """Link the actual official0 evaluation; do not repeat or relabel its rows."""
     p,r,cp,origin,parent=source(active(run)['source_receipt'])
-    if (active(run) or {}).get('kind')=='question_probe_pair':
+    if (active(run) or {}).get('kind')in ('question_probe_pair','question_probe_saved_checkpoint'):
         historical=r.get('historical_artifacts',{}).get('development',{}).get('before')
         original=None
         if historical:
@@ -422,7 +428,7 @@ def record_original_baseline(base,run):
 
 
 def verify_restored_pair(base,run):
-    if (active(run) or {}).get('kind')=='question_probe_pair':
+    if (active(run) or {}).get('kind')in ('question_probe_pair','question_probe_saved_checkpoint'):
         p,r,_,_,_=source(active(run)['source_receipt'])
         before=json.loads((Path(base)/'logs/formal-inline-development-before.json').read_text())
         assert before['source_pair_receipt_sha256']==digest(p) and before['current_evaluation_performed'] is False
@@ -432,7 +438,10 @@ def verify_restored_pair(base,run):
             assert digest(item['path'])==item['full_read_sha256']
             measurements[key]=dict(path=item['path'],sha256=item['full_read_sha256'],
                                     original=json.loads(Path(item['path']).read_text()))
-        return dict(role='completed_pair_historical_development_evidence',
+        role=('saved_checkpoint_historical_development_evidence'
+            if active(run)['kind']=='question_probe_saved_checkpoint' else
+            'completed_pair_historical_development_evidence')
+        return dict(role=role,
             source_completed_outer=r['step'],source_receipt_sha256=digest(p),
             current_evaluation_performed=False,paired_same_run=False,
             available_historical_measurements=measurements,
@@ -469,7 +478,7 @@ def optimizer_construction_config(config,model_path):
     p,r,checkpoint,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']
     assert config.get('completed_updates',0)==r['step']==binding['completed_outer']
-    if binding.get('kind')!='question_probe_pair':assert r['step']==5
+    if binding.get('kind')not in ('question_probe_pair','question_probe_saved_checkpoint'):assert r['step']==5
     assert Path(model_path).resolve()==checkpoint
     construction=copy.deepcopy(dict(config));construction['completed_updates']=0
     # This does not change the resolved training counter or pretend restoration

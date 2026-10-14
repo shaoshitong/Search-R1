@@ -19,7 +19,7 @@ from reproduction.common8.safety_calibration_evidence import (
     EvidenceError, GLOBAL_FIELDS, GRADIENT_CLIP_FLOAT32_TOLERANCE, GRADIENT_CLIP_LIMIT,
     OBJECTIVE_WEIGHT_DEFINITION, QUANTILE_METHOD,
     _adjacent, _enforcement, _finite, _hash, _identity, _integer, _require,
-    _row, _same_arithmetic, _statistics,
+    _row, _same_arithmetic, _statistics, _reference_required,
 )
 
 
@@ -163,7 +163,8 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
                 _require(row['context']==context and row['calibration_sha256']==binding['calibration_sha256'] and
                          row['execution_role']=='production' and row['monitoring_scope']==monitor_scope(run),
                          'Transaction monitor policy identity differs')
-                _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run))
+                _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run),
+                          reference_required=_reference_required(binding))
                 if identity is None: identity = row['monitor_identity']
                 _require(identity==row['monitor_identity'], 'Transaction frozen sample changed')
                 statistics = _monitor_statistics(row)
@@ -283,7 +284,8 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run
                          'Actual monitor prospective plan or enforced role differs')
                 _require(row['objective_weight_definition'] == OBJECTIVE_WEIGHT_DEFINITION and
                          row['monitoring_scope'] == monitor_scope(run), 'Actual monitor weight/scope differs')
-                _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run))
+                _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run),
+                          reference_required=_reference_required(binding))
                 if identity is None:
                     identity = copy.deepcopy(row['monitor_identity']); identities[rank] = identity
                 _require(identity == row['monitor_identity'], 'Actual frozen monitor identity changed')
@@ -398,7 +400,9 @@ def _verify_attempt_history(base, run, complete_records, scheduler_receipts, *, 
         rank_workers[rank] = workers; rank_schedulers[rank] = scheduler
         selected_hashes[str(rank)] = document_sha256(workers)
         scheduler_hashes[str(rank)] = document_sha256(scheduler)
-    binding = dict(run_id=run['run_id'], calibration_sha256=plan_sha256)
+    from reproduction.common8.formal_contract import monitor_reference_contract
+    binding = dict(run_id=run['run_id'], calibration_sha256=plan_sha256,
+                   monitor_reference_contract=monitor_reference_contract(base, run))
     completed=prefix['completed_outer'];writes=prefix['writes'];aborted=prefix['aborted'];rejections=prefix['rejections'];summaries=[]
     scheduler_cursors = {rank: 0 for rank in ranks(run)}; worker_cursors = {rank: 0 for rank in ranks(run)}
     job = rank_schedulers[0][0]['slurm_job_id']

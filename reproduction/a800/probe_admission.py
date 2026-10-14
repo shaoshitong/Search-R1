@@ -22,7 +22,7 @@ def atomic(path, payload):
 
 def initial_evaluator(run):
     binding=run.get('full_state_restore') or {}
-    if binding.get('kind')=='question_probe_pair':
+    if binding.get('kind') in ('question_probe_pair','question_probe_saved_checkpoint'):
         from search_g1.qprobe_checkpoint import read_source
         _,receipt,_,_,_=read_source(binding['source_receipt'])
         live=json.loads(Path(receipt['reward_probe_manifest']['path']).read_text())
@@ -59,7 +59,7 @@ def calibrated_version(run, live):
         assert math.isfinite(report[key+'_cv_auc']) and 0<=report[key+'_cv_auc']<=1
     for name,value in run['initial_model_sha256'].items():
         assert digest(Path(run['initial_model'])/name)==value
-    paired=(run.get('full_state_restore') or {}).get('kind')=='question_probe_pair'
+    paired=(run.get('full_state_restore') or {}).get('kind') in ('question_probe_pair','question_probe_saved_checkpoint')
     required=set(encoder_hashes) if paired else set(encoder_hashes)-{'vocab.json','merges.txt','generation_config.json'}
     assert set(live['encoder_sha256'])==required, 'Incomplete encoder fingerprint'
     for name,value in live['encoder_sha256'].items():
