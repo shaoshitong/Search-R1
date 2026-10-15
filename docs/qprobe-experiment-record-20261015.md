@@ -536,3 +536,10 @@ native721485在1792080433完成59轮、1792080583完成60轮、1792081018完成6
 当前2TB预算未来容量风险仍需处理。准备HPC3→HKUST3只复制旧人类CANCELLED719225的原5/50 checkpoint及额外100 archive、恢复依赖/原receipt metadata，共118个去重文件121296682925B，计划SHA0c9a27ca36509f885ad2c0d0d5ff357a3c4f7055ce485ec5ff607ec9dc6d75f2。新工具强制source before/after与HK3 target逐文件完整SHA、单writer、RAM密码、实际held worker wait验收及未知结果只inspect。目标HK3原ssh别名、UID1002/实际boot固定，fresh可用10.24TB。当前只备份，无删除授权、源清理或释放空间；旧原件和当前目标全部产物仍保留。备份验收后才可形成精确三树115100389376B腾挪提案并请求新的范围授权。执行前须已commit/push/两端源码全SHA与真实rsync dry-run通过；7项本地scope/heldwait测试已通过。
 
 65014c9代码已推送并在HPC3/HK3两端1074文件完整SHA通过；实际远端rsync dry-run认证/协议/118文件清单通过，无payload复制。只读审查随后发现绑定写入失败可能遗失held wait、终态摘要未重核当前target全集两处P1，以及本地SSH timeout未落盘；全部在start前修正。新实现finally收敛直接child实际wait，终态核完整manifest/前后token/各阶段wait0/当前目标118文件path-owner-size-inode-device-mtime及无额外文件，timeout保存UNKNOWN_NO_REPLAY。12项本地测试通过（包括Popen后publish失败、缺件/改inode/非零wait/异token/timeout），仍未启动备份，旧预检证据保留，待修复源码发布后重新预检。
+
+
+## 2026-10-16 01:10 CST 备份真实复制与保留旧100依赖核验准备
+
+afda9f708ad0d93312c162d3aa8452816c420f35两端1074文件全SHA发布和真实dry-run通过后，备份仅start一次，token800d9a5f728445d893d741e635b43ba1，HK3 supervisor3806261/start987513611、worker3806263/start987513616、rsync3808257/start987529760，均SID3806261/UID1002。源before实际118文件121296682925B全SHA通过且SSH child真实wait0，source-before.stdout SHA afffeea6704718f2f8302f034ae8e5972ac5e39b7f6290c7c82c070ed1dadfe9。实际复制allocated由1.659→9.631→20.826→32.886→48.793→80.051GB持续增长，stderr0。源after/目标全SHA及最终held0仍待完成；未新增删除，释放0B。
+
+一次372个当前日志/manifest、teacher-ready、current pair5/50和保留旧source100小JSON引用扫描全部完成，无skip。当前目标不引用候选三树；旧source100明确引用旧5/50 checkpoint下complete.json两个小清单，未来必须保留其HPC3原路径，不能整树删。草案排除两文件后候选78文件115100222440逻辑B，仍无删除授权/执行入口。准备独立一次read-only旧source100完整SHA核验，固定原transport/receipt及全部恢复依赖，零tensor/model import、GPU或训练动作；真实held child wait，源别名若越过两保留清单则拒绝。5项本地完整性/原生4卡/别名/发布失败wait测试通过，执行须在最新源码推送和HPC3全SHA发布之后。
