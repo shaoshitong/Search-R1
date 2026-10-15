@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "role": "sanitized_warmup10_f4fb_fresh_start_actual",
+  "run_id": "f4fb19b1fede4dffaac823b8937f35cf",
+  "execution_id": "fa8986ebec0e4be78f15e79dd05fb7fa",
+  "source_commit": "ab8f8ca07f19419d7558f916d98513055cc3f71c",
+  "source_map_sha256": "f34d1e5621ba477428f4c95deabacddce8b4f28d22007be49a26001c77b8340f",
+  "official_model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "common_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+  "bootstrap_head_epochs": 10,
+  "formal_head_epochs_per_outer": 2,
+  "head_batch_size": 256,
+  "expected_bootstrap_head_adam": 200,
+  "same_training_groups": 5120,
+  "independent_validation": false,
+  "teacher_trajectory_count": 25600,
+  "teacher_current_reuse_qualification_status": "pending; archival metadata complete only",
+  "actual_warmup_status": {
+    "reason": "warmup_ready_not_recorded",
+    "status": "unknown"
+  },
+  "verified_initial_boundary": {
+    "complete_outers": 0,
+    "successful_adam": 0
+  },
+  "current_actual_complete_outers": null,
+  "current_actual_successful_adam": null,
+  "target_complete_outers": 200,
+  "actual_launch": {
+    "pid": 98452,
+    "start_ticks": 614134225,
+    "sid": 98452,
+    "launched_unix": 1792061750.9428937,
+    "training_physical_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "auxiliary_physical_indices": [
+      5,
+      6
+    ],
+    "gpu_binding_sha256": "1b92b8f5de4974823c19e048b69baba25f92b21f0dc9625671a45a39eb733dbd"
+  },
+  "first_actual_progress": {
+    "observed_unix": 1792061781.628292,
+    "pipeline_birth_matches": true,
+    "pipeline_alive": true,
+    "stage": "VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL",
+    "recorded_error_present": false,
+    "trainer_birth_not_recorded": true,
+    "receipt_sha256": "808937f607234f45af59b6e618ace0bc9b3a70fc29e5bde0f19b4ac53b6a9e34"
+  },
+  "old_execution_terminal": {
+    "run_prefix": "f847",
+    "complete_outers": 4,
+    "successful_adam": 97,
+    "partial_successful_adam": 17,
+    "skip": 0,
+    "cleanup_recorded_births": 192,
+    "owned_cuda_remaining": 0,
+    "old_state_inherited": false
+  },
+  "reward": null,
+  "stage64": null,
+  "dev512": null,
+  "new_scores": false
+}
