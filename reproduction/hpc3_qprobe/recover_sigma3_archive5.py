@@ -161,8 +161,12 @@ def successful_du(path,*,now=None):
     actual,actual_record=reader.document(Path(original.get('path','')))
     need(actual_record['sha256']==original.get('sha256'),'actual du observer result SHA differs')
     observer_source=actual.get('source') or {}
+    filename=Path(observer_source.get('path','storage_observer_sigma3_archive5_failure.py')).stem
+    need(filename in ('storage_observer_sigma3_archive5_failure',
+                      'storage_observer_sigma3_archive5_permission_repaired'),
+         'only the exact original or repaired storage diagnostic is permitted')
     observer,publication=reader.load_fixed(observer_source.get('commit'),
-        'storage_observer_sigma3_archive5_failure','_unused_control')
+        filename,'_unused_control')
     observed=observer.inspect()
     need(Path(original['path'])==observer.CONTROL/'result.json' and
          observed['status']=='ACTUAL_DU_COMPLETED0_USAGE_MEASURED' and
