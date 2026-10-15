@@ -12,7 +12,8 @@ from reproduction.common8.source_files import runtime_files
 
 def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
          initial_head_checkpoint=None, seed=20261013, teacher_warmup_cache=None,
-         infra_rollout=None, sequence_device="cpu", sequence_train_micro=4, sequence_predict_micro=32):
+         infra_rollout=None, sequence_device="cpu", sequence_train_micro=4, sequence_predict_micro=32,
+         teacher_warmup_epochs=None, teacher_warmup_compatible_sources=None):
     base = Path(base).resolve()
     manifest = base / "logs/run-manifest.json"
     run = json.loads(manifest.read_text())
@@ -64,6 +65,14 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
         if not path.is_absolute() or not str(path.resolve()).startswith(('/data/', '/mnt/', '/backup/')):
             raise ValueError('Teacher warmup cache must reside on explicit remote storage')
         settings['teacher_warmup_cache'] = str(path.resolve())
+        if teacher_warmup_epochs is not None:
+            if type(teacher_warmup_epochs) is not int or teacher_warmup_epochs < 1:
+                raise ValueError('Teacher warmup epochs must be a positive integer')
+            settings['teacher_warmup_epochs'] = teacher_warmup_epochs
+        if teacher_warmup_compatible_sources:
+            if set(teacher_warmup_compatible_sources) != {'search_g1/qprobe_warmup.py'}:
+                raise ValueError('Only warmup fitting/metric source may reuse teacher identity')
+            settings['teacher_warmup_compatible_source_sha256'] = teacher_warmup_compatible_sources['search_g1/qprobe_warmup.py']
     if initial_head_checkpoint:
         initial_path = Path(initial_head_checkpoint).resolve()
         head = OnlineQProbe.load(initial_path, expected_feature_spec_sha=features.spec_sha)

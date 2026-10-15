@@ -66,6 +66,28 @@ class ScoringProvenanceTests(unittest.TestCase):
             self.assertEqual(old[key], new[key])
         self.assertNotEqual(old['run_id'], new['run_id'])
 
+    def test_only_warmup_fit_instrumentation_can_reuse_teacher_identity(self):
+        old = dict(self.manifest, source_sha256=dict(self.sources,
+            **{'search_g1/qprobe_warmup.py':'a'*64,
+               'search_g1/async_rollout_runtime.py':'b'*64}))
+        changed = dict(old, source_sha256=dict(old['source_sha256'],
+            **{'search_g1/qprobe_warmup.py':'c'*64}))
+        expected = teacher_identity(old, **self.settings)
+        self.assertEqual(expected, teacher_identity(changed, **self.settings,
+            compatible_warmup_source_sha256='a'*64))
+        changed['source_sha256']['search_g1/async_rollout_runtime.py']='d'*64
+        self.assertNotEqual(expected, teacher_identity(changed, **self.settings,
+            compatible_warmup_source_sha256='a'*64))
+
+    def test_curve_callback_serializes_with_remote_path_and_rejects_local_output(self):
+        from functools import partial
+        import cloudpickle
+        from search_g1.qprobe_warmup import write_training_curve
+        callback=cloudpickle.loads(cloudpickle.dumps(partial(write_training_curve,
+            '/Users/not-allowed/curve.jsonl','synthetic-run')))
+        with self.assertRaisesRegex(ValueError,'MUST_REMAIN_REMOTE'):
+            callback(dict(event='epoch',epoch=0,training_groups=5120))
+
 
 class MomentTests(unittest.TestCase):
     def test_every_binary_count_and_sample_std(self):

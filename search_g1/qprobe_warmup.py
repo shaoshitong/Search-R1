@@ -60,12 +60,20 @@ def verify_frozen(before, after, expected_world_size=8):
 
 
 def teacher_identity(manifest, *, feature_spec_sha, sampling_config, agent_config,
-                     max_turns, seed, questions):
+                     max_turns, seed, questions, compatible_warmup_source_sha256=None):
     """A reusable official-teacher namespace, independent of a fresh run's ID."""
     from search_g1.qprobe_runtime import strict_scoring_sources
     scorer_sources = strict_scoring_sources()
     if any(manifest['source_sha256'].get(name) != sha for name, sha in scorer_sources.items()):
         raise ValueError('WARMUP_ACTUAL_STRICT_SCORER_DIFFERS_FROM_BOUND_SOURCE')
+    sources = dict(manifest['source_sha256'])
+    if compatible_warmup_source_sha256 is not None:
+        if (not isinstance(compatible_warmup_source_sha256, str) or len(compatible_warmup_source_sha256) != 64
+                or any(c not in '0123456789abcdef' for c in compatible_warmup_source_sha256)):
+            raise ValueError('WARMUP_COMPATIBLE_SOURCE_SHA_INVALID')
+        # Only fitting/metric instrumentation changed. Sampling, template,
+        # scoring, model and data identities below remain exact comparisons.
+        sources['search_g1/qprobe_warmup.py'] = compatible_warmup_source_sha256
     return dict(schema=2, model_revision=manifest['model_revision'],
         teacher_frozen_evidence_required=True, training_world_size=manifest.get('training_world_size',8),
         model_files_sha256=manifest['initial_model_sha256'],
@@ -74,7 +82,7 @@ def teacher_identity(manifest, *, feature_spec_sha, sampling_config, agent_confi
         retriever_version=manifest['retriever_version'], feature_spec_sha=feature_spec_sha,
         sampling_config=sampling_config, agent_config=agent_config, max_turns=max_turns,
         seed=seed, questions=questions, scorer_sources=scorer_sources,
-        rollout_sources={name:value for name,value in manifest['source_sha256'].items()
+        rollout_sources={name:value for name,value in sources.items()
             if name.startswith(('search_r1/llm_agent/','verl/workers/rollout/vllm_rollout/')) or name in (
                 'reproduction/common8/generation_behavior.py','reproduction/common8/behavior_runtime.py',
                 'reproduction/common8/context_budget.py',
@@ -82,6 +90,18 @@ def teacher_identity(manifest, *, feature_spec_sha, sampling_config, agent_confi
                 'search_g1/async_rollout_runtime.py','search_g1/rollout_phase_contract.py',
                 'verl/workers/fsdp_workers.py','verl/workers/sharding_manager/fsdp_vllm.py',
                 'search_g1/qprobe_teacher_worker.py','search_g1/qprobe_warmup.py')})
+
+
+def write_training_curve(path, run_id, record):
+    """Serializable callback: rank7 writes only scalar records on remote storage."""
+    path = Path(path)
+    if not path.is_absolute() or not str(path).startswith(('/mnt/', '/data/', '/backup/')):
+        raise ValueError('WARMUP_CURVE_MUST_REMAIN_REMOTE')
+    value = dict(record, run_id=run_id, checked_unix=time.time())
+    with path.open('a') as stream:
+        stream.write(json.dumps(value, sort_keys=True, allow_nan=False)+'\n')
+        stream.flush(); os.fsync(stream.fileno())
+    print(json.dumps(dict(stage='teacher_warmup_curve', **value)), flush=True)
 
 
 class TeacherCache:
@@ -212,6 +232,7 @@ def run(trainer, manager, runtime, stream):
         agent_config={k: getattr(trainer.config.data, k) for k in (
             'max_start_length','max_prompt_length','max_response_length','max_obs_length')},
         max_turns=trainer.config.max_turns, seed=runtime.config['seed'],
+        compatible_warmup_source_sha256=runtime.config.get('teacher_warmup_compatible_source_sha256'),
         questions=[dict(qid=qid, question_hash=question_text_sha(q)) for _,q,qid in rows])
     cache = TeacherCache(cache_path, identity)
     try:
@@ -262,8 +283,19 @@ def run(trainer, manager, runtime, stream):
         labels = [dict(g, complete=True, selection_source='bootstrap_all_candidate',
             **proof['protocol']) for g in groups]
         features = runtime.cache.get_features([x[2] for x in rows], [x[1] for x in rows])
+        fit_kwargs = {}
+        epochs = runtime.config.get('teacher_warmup_epochs')
+        curve_path = runtime.output_dir/'teacher-warmup-training-curve.jsonl'
+        if epochs is not None:
+            from functools import partial
+            if type(epochs) is not int or epochs < 1:
+                raise ValueError('WARMUP_INVALID_EPOCH_COUNT')
+            with curve_path.open('x') as stream:
+                stream.flush(); os.fsync(stream.fileno())
+            fit_kwargs.update(warmup_epochs=epochs,
+                curve_callback=partial(write_training_curve, str(curve_path), manifest['run_id']))
         fitted = runtime.head.bootstrap(labels, features, actor_outer=0,
-            actor_snapshot_id=manifest['run_id']+':0')
+            actor_snapshot_id=manifest['run_id']+':0', **fit_kwargs)
         if fitted['bootstrap_groups'] != QUESTIONS:
             raise ValueError('WARMUP_HEAD_DID_NOT_FIT_ALL_5120_GROUPS')
         head_path = runtime.output_dir/'teacher-warmup-head/initial.pt'
@@ -280,6 +312,18 @@ def run(trainer, manager, runtime, stream):
             after_workers=after_workers, actor_rng_restored=restored,
             extra_warmup_outers=1, completed_training_outers=0, target_training_outers=200,
             checked_unix=time.time())
+        if epochs is not None:
+            records=[json.loads(line) for line in curve_path.read_text().splitlines()]
+            epoch_records=[row for row in records if row['event']=='epoch' and row['epoch']>0]
+            step_records=[row for row in records if row['event']=='optimizer_step']
+            expected_updates=epochs*math.ceil(QUESTIONS/runtime.head.config.head_batch_size)
+            if ([row['epoch'] for row in epoch_records] != list(range(1,epochs+1))
+                    or len(step_records)!=expected_updates or fitted['head_optimizer_updates']!=expected_updates
+                    or any(row['training_groups']!=QUESTIONS for row in epoch_records)):
+                raise ValueError('WARMUP_TRAINING_CURVE_OR_ACTUAL_UPDATES_INCOMPLETE')
+            result.update(warmup_epochs=epochs, same_training_questions_evaluated=QUESTIONS,
+                held_out_validation_used=False, training_curve=dict(path=str(curve_path),
+                sha256=sha_file(curve_path), optimizer_updates=len(step_records), epochs=len(epoch_records)))
         write_once(runtime.output_dir/'teacher-warmup-ready.json', result)
         print(json.dumps(dict(stage='frozen_teacher_warmup_head_ready', fitted_questions=QUESTIONS,
             reused_questions=reused, completed_training_outers=0, target_training_outers=200)), flush=True)
