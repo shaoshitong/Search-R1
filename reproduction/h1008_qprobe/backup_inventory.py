@@ -74,6 +74,36 @@ def inventory(receipt_path, expected_receipt_sha, *, allowed_roots=('/mnt/data',
         if relative.is_absolute() or '..' in relative.parts:raise ValueError('Feature file escapes cache')
         add(cache/relative,row['sha256'],'frozen_token_features',row['bytes'])
     for name,sha in run['initial_model_sha256'].items():add(Path(run['initial_model'])/name,sha,'official_actor_reference_initializer')
+    # Root-disk /dataset is not exported to h100-10. Use only the completed,
+    # byte-verified same-host staging aliases, retaining original payload paths.
+    stage_root=base/'backup-dependencies/official-model-once-v1'
+    stage_result=stage_root/'RESULT.json';aliases=[]
+    if stage_result.exists():
+        stage=json.loads(stage_result.read_text());intent=json.loads((stage_root/'INTENT.json').read_text())
+        if stage.get('status')!='SAME_HOST_OFFICIAL_MODEL_STAGE_FULL_SHA_PASS' or stage['run_id']!=pair['run_id'] or intent['run_id']!=pair['run_id']:
+            raise ValueError('Completed staging identity required')
+        expected=run['initial_model_sha256'];original=Path(run['initial_model']).resolve()
+        if intent['files_sha256']!=expected or Path(stage['source_model']).resolve()!=original:
+            raise ValueError('Staged official source identity differs')
+        staged_names=set()
+        for item in stage['files']:
+            source=Path(item['source_path']).resolve();target=Path(item['staged_path']).resolve();name=source.name
+            if source!=original/name or name in staged_names or name not in expected or not target.is_relative_to(stage_root/'model'):
+                raise ValueError('Staging alias escapes official dependency')
+            if not target.is_file() or target.stat().st_size!=item['bytes']:
+                raise ValueError('Staged dependency size changed')
+            if any(item[key]!=expected[name] for key in ('expected_sha256','source_full_read_sha256','staged_full_read_sha256')):
+                raise ValueError('Staging full SHA differs from official identity')
+            rows[str(source)]['exported_source_path']=str(target)
+            aliases.append(dict(original_source_path=str(source),exported_source_path=str(target),expected_sha256=expected[name]))
+            staged_names.add(name)
+        if staged_names!=set(expected):raise ValueError('Incomplete official staging aliases')
+        for path in (stage_result,stage_root/'INTENT.json',stage_root/'LAUNCH.json'):add(path,digest(path),'staging_alias_evidence')
+        code=[p for p in (base/'preparation').glob('stage-official-backup-*.py') if digest(p)==intent['worker_source_sha256']]
+        if not code:raise ValueError('Published staging worker source missing')
+        for path in code:add(path,intent['worker_source_sha256'],'staging_worker_source')
+    elif any(str(Path(run['initial_model']).resolve()).startswith(prefix) for prefix in ('/dataset/',)):
+        raise ValueError('Official root-disk dependency staging still pending')
     for name,sha in run['input_sha256'].items():add(base/'data'/name,sha,'canonical_input')
     source_manifest=base/'preparation/source-files.json'
     add(source_manifest,digest(source_manifest),'source_file_manifest')
@@ -83,7 +113,7 @@ def inventory(receipt_path, expected_receipt_sha, *, allowed_roots=('/mnt/data',
         add(base/'repo'/relative,sha,'frozen_source')
     return dict(schema_version=1,status='BACKUP_INVENTORY_ONLY',run_id=pair['run_id'],step=step,
         source_base=str(base),paired_receipt_sha256=expected_receipt_sha,source_commit=run['source_commit'],
-        files=sorted(rows.values(),key=lambda row:row['source_path']),bytes=sum(row['bytes'] for row in rows.values()),
+        files=sorted(rows.values(),key=lambda row:row['source_path']),bytes=sum(row['bytes'] for row in rows.values()),source_aliases=aliases,
         independent_full_sha_performed=False,semantic_reload_performed=False,all_experiment_backup_complete=False,
         remaining=['independent filesystem copy and source/target complete SHA','actual semantic reload',
                    'retrieval assets and terminal raw logs/rollouts/final evaluation archival'])
