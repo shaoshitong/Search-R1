@@ -57,3 +57,40 @@ reuses the published pure metric/rank/native/restore validators. Run the usual
 appendN, credited candidateN collection, then ratesN sequence. Unknown candidate
 details stay unknown until a subsequent cumulative snapshot joins the immutable
 supplement; old cumulative snapshots are never rewritten.
+
+## Completed dev boundaries120–200
+
+`collect_nested_dev_costs.py` now accepts optional `--through-outer N` for
+120,125,...200; default120 retains the old CLI. It requires the corresponding
+immutable `CUMULATIVE_COST_THROUGHN.json` and `FULL_OUTERN_PROGRESS_RECEIPT.json`
+with actual completed dev512 (NQ256+Hotpot256), original778/355 run identity,
+and complete eight-rank native metadata. Missing completion/dev evidence returns
+`PENDING_ACTUAL_COMPLETED_DEV_EVIDENCE` without SSH or an output write. Final200
+does not borrow199 metrics/dev; if actual dev512 is absent it remains pending.
+
+Only after realFULL125, CUM125 and dev125 exist:
+
+    env TREE_MGMT_CONTROL_PATH=/tmp/tree-mgmt-3fw9a1ab/control python3 -B /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-local-cost-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/collect_nested_dev_costs.py \
+      --base /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013 \
+      --ssh-helper /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/ssh_retained18.py \
+      --through-outer 125
+
+Subsequent actual boundaries replace125 with130,...200. Each new boundary creates
+independent immutable `DEV5_N_NATIVE_COST_SUPPLEMENT.json/md`; original5–120,
+shared original control JSON bytes and previous supplements are never replaced.
+The nearest earlier supplement is reused only after its SHA, original control
+SHA/bytes, source/config/model/data/outer/dev identity and both mirrors match.
+Each original row retains its original observation metadata; only new missing
+fixed control JSONs are read on H10018 with nice15 and the existing task route.
+Original rows exceeding the small summary budget use complete-field parts with
+SHA/bytes/selectors, each below100000bytes; no required scalar is dropped.
+An existing identical supplement is verified locally and returns without SSH.
+
+Dev5 remainsba9/22be, laterdev778/355. Original official model/data identity and
+actual per-dataset counts are fixed; independently uncaptured split-file SHA
+staysnull. HTTP calls/queryevents remain separate, PAD==EOS nonpad counts do not
+become precise engine emissions, and unknown scoring calls remainnull.
+Validation wall/processCPU are already contained in outer/service scopes and
+must not be added again. Collection failure preserves one error receipt, makes
+no automatic retry and infers no training fault. Range publication only used
+AST/CLIhelp checks and did not collect future125 or run an evaluation.
