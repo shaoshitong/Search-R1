@@ -7,6 +7,7 @@ import re
 import shutil
 import subprocess
 import time
+import pwd
 
 from .common import BASE,DEFAULT_BASE,own,read,sha,publish
 
@@ -25,7 +26,10 @@ def main():
     rows=subprocess.check_output(['sacct','-nP','-X','-j',args.job,'--format=JobID,State,ExitCode,User'],text=True).strip().splitlines()
     if len(rows)!=1 or rows[0].split('|')[0]!=args.job or rows[0].split('|')[1].split()[0] not in ('FAILED','OUT_OF_MEMORY','TIMEOUT'):
         raise ValueError('Source is not an authenticated failed terminal execution')
-    if subprocess.check_output(['squeue','-h','-j',args.job,'-o','%i'],text=True).strip():
+    if rows[0].split('|')[3] != pwd.getpwuid(os.getuid()).pw_name:
+        raise ValueError('Source failed job belongs to another account')
+    active=subprocess.check_output(['squeue','-h','-u',str(os.getuid()),'-o','%i'],text=True).split()
+    if args.job in active:
         raise ValueError('Source job is still active')
     for name in ('training-launch-claim.json','actual-updates.jsonl'):
         if (source/'logs'/name).exists():

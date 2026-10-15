@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 import shutil
 
-from .common import BASE, MODEL, REUSED, sha
+from .common import DEFAULT_BASE, MODEL, REUSED, sha
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
     p.add_argument('--source-receipt',required=True,type=Path);p.add_argument('--commit',required=True)
     args=p.parse_args();base=args.base
     if (base.resolve()!=base or base.is_symlink() or base.stat().st_uid!=os.getuid() or
-            re.fullmatch(re.escape(str(BASE))+r'-r[1-9][0-9]*',str(base)) is None):
+            re.fullmatch(re.escape(str(DEFAULT_BASE))+r'-r[1-9][0-9]*',str(base)) is None):
         raise ValueError('Restart requires a new independently owned numbered namespace')
     if (base/'logs/run-manifest.json').exists():
         raise ValueError('Restart already prepared; reconcile it instead of duplicating')

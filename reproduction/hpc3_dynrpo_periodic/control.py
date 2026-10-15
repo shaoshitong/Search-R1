@@ -14,7 +14,7 @@ import tarfile
 import time
 import re
 
-from .common import BASE, PIN
+from .common import BASE, DEFAULT_BASE, PIN
 from .local_control import run
 
 REPO = Path(__file__).resolve().parents[2]
@@ -122,7 +122,7 @@ def main():
     p.add_argument('--base',type=Path)
     args=p.parse_args()
     if args.base is not None:
-        if re.fullmatch(re.escape(str(BASE))+r'(?:-r[1-9][0-9]*)?',str(args.base)) is None:
+        if re.fullmatch(re.escape(str(DEFAULT_BASE))+r'(?:-r[1-9][0-9]*)?',str(args.base)) is None:
             raise ValueError('Only this independent experiment or a numbered restart is permitted')
         BASE=args.base
     if args.action in ('publish-deploy','publish-stage'):
