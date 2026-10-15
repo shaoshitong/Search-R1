@@ -1,6 +1,6 @@
 {
   "role": "sanitized_sigma3_new_loss_release_and_actual_preclaim_fault",
-  "recorded_unix": 1792047633.000615,
+  "recorded_unix": 1792050451.273303,
   "source_commit": "9ec12a3b0ca919be0f083927439d4f2fdef42e48",
   "source_map_sha256": "2efbe2e4a7a5280567c415a6796b6a059f462ec9d2d580ae39623317b931e5ff",
   "operations_introduction_commit": "a521995b09d35d70dc27a6c8d0c5835e634c7e60",
@@ -135,6 +135,10 @@
     {
       "path": "preparation/qprobe-a800-sigma3-loss-deployment.inspect-1792047415277211000.json",
       "sha256": "c7de16c7817284ec997c02227dff0b7c74eac3dbf8b8e2609ddc69eac1e722d7"
+    },
+    {
+      "path": "preparation/qprobe-a800-sigma3-fresh-start-fix-deployment.inspect-1792050214040750000.json",
+      "sha256": "a0ba75b1923327c754fa592bec5979995fc7acba48795d84d3c137e93f92ed68"
     }
   ],
   "baseline": {
@@ -164,6 +168,26 @@
     "first_positive_flow_verified": false,
     "first_complete_formal_iteration_verified": false,
     "formal_complete_outers_verified": 0,
-    "scores_for_new_run": null
+    "scores_for_new_run": null,
+    "actual_runtime_status": {
+      "run_id": "157362c09cfd4665b43019c09de99ac7",
+      "execution_id": "a75219f8b9d04a778b0f7594ca08de11",
+      "observed_unix": 1792050214.04075,
+      "pipeline_alive": false,
+      "trainer_alive": false,
+      "trainer_exit_code": 1,
+      "initial_reward_probe_adoption_succeeded": true,
+      "probe_admission_succeeded": true,
+      "actual_failure": "WARMUP_TEACHER_DATA_SAMPLING_OR_SCORING_NAMESPACE_CHANGED",
+      "failure_source": {
+        "file": "search_g1/qprobe_warmup.py",
+        "line": 101
+      },
+      "first_complete_formal_iteration_verified": false,
+      "formal_complete_outers_verified": 0,
+      "formal_adam_verified": 0,
+      "cache_identity_not_weakened": true,
+      "root_cause_keypaths_pending": true
+    }
   }
 }

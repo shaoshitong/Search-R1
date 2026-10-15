@@ -164,7 +164,7 @@ LOSS_SCALARS=('sigma3_ce','count_ce','std_mse','normalized_sample_std_mse',
  'sigma3_ce_contribution','std_mse_contribution','count_ce_contribution',
  'replay_weighted_loss','bootstrap_groups','completed_outer','head_optimizer_updates')
 def fresh_origin():
- need(run['completed_updates']==0 and run['target_updates']==200 and run.get('initial_probe_version') is None,'fresh_zero_origin')
+ need(run['completed_updates']==0 and run['target_updates']==200,'fresh_zero_origin')
  need(all(run.get(key) is None for key in ('actor_checkpoint','reference_checkpoint','resume_path',
   'inherited_policy_run_id','inherited_optimizer_run_id','inherited_scheduler_run_id','full_state_restore')),'inherited_state_not_fresh')
  need(payload['intent'].get('saved_checkpoint_restore') is None,'intent_inherited_state_not_fresh')
@@ -172,6 +172,53 @@ def fresh_origin():
  need(all(q.get(key) is None for key in ('initial_head_checkpoint','snapshot_path','restore_state')),'inherited_question_head_not_fresh')
  need(all(type(q.get(key)) is int and q[key]==value for key,value in
   dict(candidate_questions=5120,selected_questions=512,responses_per_question=5,exploration_questions=0).items()),'fresh_top512_e0_contract')
+ initial=run.get('initial_probe_version')
+ if initial is None:
+  return dict(status='observed',initial_training_outer=0,initial_optimizer_writes=0,
+   initial_reward_probe=dict(status='not_yet_recorded'),inherited_training_state=False)
+ need(type(initial) is str and re.fullmatch(re.escape(run['run_id'])+r':0:[0-9a-f]{32}',initial),
+  'initial_reward_probe_not_this_run_zero')
+ origin_base='/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef'
+ need(run.get('initial_probe_adoption_source_base')==payload['intent'].get('initial_probes_source_base')==origin_base,
+  'initial_reward_probe_origin_base')
+ adoption,adoption_info=document('logs/initial-probe-adoption.json')
+ live,live_info=document('artifacts/live/manifest.json')
+ accepted,accepted_info=document('logs/initial-probes-accepted.json')
+ need(adoption is not None and live is not None and accepted is not None,'initial_reward_probe_adoption_metadata_missing')
+ need(adoption['role']=='a800_initial_probe_adoption' and adoption['schema_version']==1 and
+  adoption['run_id']==run['run_id'] and adoption['execution_id']==run['execution_id'] and
+  adoption['source_commit']==run['source_commit'] and adoption['adopted'] is True and adoption['version']==initial and
+  adoption['inherited_training_state'] is False and adoption['new_calibration_generated'] is False and
+  adoption['new_discovery_performed'] is False and adoption['actual_original_calibration_exit_code']==0,
+  'initial_reward_probe_adoption_identity')
+ origin=adoption['origin']
+ need(type(origin) is dict and origin['base']==origin_base and origin['run_id']!=run['run_id'] and
+  origin['execution_id']!=run['execution_id'] and live['adoption_origin']==origin and
+  type(origin['version']) is str and origin['version'].startswith(origin['run_id']+':0:'),
+  'initial_reward_probe_adoption_origin')
+ need(live['run_id']==run['run_id'] and type(live['round']) is int and live['round']==0 and live['version']==initial and
+  live['encoder']==run['initial_model'] and live['target_source_commit']==run['source_commit'] and
+  live['target_source_sha256']==run['source_sha256'] and live['new_calibration_generated'] is False and
+  live['head_sha256']==origin['head_sha256'] and live['encoder_sha256']==origin['encoder_sha256'],
+  'initial_reward_probe_live_identity')
+ need(type(live['encoder_sha256']) is dict and bool(live['encoder_sha256']) and
+  all(run['initial_model_sha256'].get(key)==hash_value(sha) for key,sha in live['encoder_sha256'].items()),
+  'initial_reward_probe_official_encoder_fingerprint')
+ live_sha=live_info['scanned_sha256']
+ need(hash_value(adoption['live_manifest_sha256'])==live_sha and accepted['run_id']==run['run_id'] and
+  accepted['accepted'] is True and accepted['version']==initial and hash_value(accepted['live_manifest_sha256'])==live_sha,
+  'initial_reward_probe_actual_admission_identity')
+ token=initial.rsplit(':',1)[1]
+ relative='artifacts/round_0-adopted-'+token+'/version-manifest.json'
+ need(adoption['target_archive']==str(base/relative),'initial_reward_probe_archive_namespace')
+ archive,archive_info=document(relative)
+ need(archive is not None and archive==live and
+  hash_value(adoption['target_archive_sha256'])==archive_info['scanned_sha256'],'initial_reward_probe_archive_identity')
+ return dict(status='observed',initial_training_outer=0,initial_optimizer_writes=0,inherited_training_state=False,
+  initial_reward_probe=dict(status='observed',version=initial,round=0,source_base=origin_base,
+   adoption_metadata_sha256=adoption_info['scanned_sha256'],live_manifest_sha256=live_sha,
+   accepted_metadata_sha256=accepted_info['scanned_sha256'],archive_metadata_sha256=archive_info['scanned_sha256'],
+   scope='existing current-run initial G1 reward-probe adoption/admission JSON; not restored actor/optimizer/RNG/sampler/question-head state; no probe/model tensor or HTTP readback'))
 def configured_loss(value):
  need(type(value) is dict,'question_probe_configuration_missing')
  for key,expected in EXPECTED_LOSS.items():
@@ -228,15 +275,23 @@ def loss_identity():
 
 
 def births():
- producer=run['pipeline_identity'];claim,_=document('logs/training-launch-claim.json')
- ledger,_=document('logs/process-ledger.json',PROCESS_LEDGER_LIMIT)
- need(claim is not None and ledger is not None,'training_birth_metadata_missing')
- same_execution(claim);need(ledger['run_id']==run['run_id'],'ledger_run')
- trainer=ledger['jobs']['trainer']['leader']
- need((trainer['pid'],trainer['start_ticks'])==(claim['shell_pid'],claim['shell_start_ticks']),'trainer_claim_birth')
+ producer=run.get('pipeline_identity');need(type(producer) is dict,'pipeline_birth_metadata_missing')
  pipeline_claim,_=document('logs/pipeline-launch-claim.json');need(pipeline_claim is not None,'pipeline_claim_missing')
  same_execution(pipeline_claim);need(pipeline_claim['pipeline_identity']==producer,'pipeline_claim_birth')
- return dict(status='observed',pipeline=process(producer),trainer=process(trainer))
+ pipeline=process(producer);claim,_=document('logs/training-launch-claim.json')
+ ledger,_=document('logs/process-ledger.json',PROCESS_LEDGER_LIMIT)
+ if claim is None or ledger is None:
+  return dict(status='unknown',reason='training_birth_metadata_missing',pipeline=pipeline,
+   trainer=dict(status='unknown',reason='training_birth_metadata_missing'))
+ same_execution(claim);need(ledger['run_id']==run['run_id'],'ledger_run')
+ jobs=ledger['jobs'];need(type(jobs) is dict,'process_ledger_jobs_schema')
+ job=jobs.get('trainer')
+ if job is None:
+  return dict(status='unknown',reason='trainer_job_not_yet_recorded',pipeline=pipeline,
+   trainer=dict(status='unknown',reason='trainer_job_not_yet_recorded'))
+ trainer=job['leader']
+ need((trainer['pid'],trainer['start_ticks'])==(claim['shell_pid'],claim['shell_start_ticks']),'trainer_claim_birth')
+ return dict(status='observed',pipeline=pipeline,trainer=process(trainer))
 def reward_window():
  updates,info=rows('logs/actual-updates.jsonl');attempts,attempt_info=rows('logs/actual-attempts.jsonl')
  need(attempts is not None and attempt_info['scan_from_start'],'closed_attempt_ledger_missing_or_not_from_start')
@@ -593,7 +648,7 @@ result=dict(role='qprobe_existing_sigma3_fresh_window_readonly',run_id=request['
  source_commit=request['intent']['source_commit'],base=request['intent']['base'],status='unknown',metadata_only=True,
  read_once=True,remote_mutation=False,no_model_or_tensor_reads=True,no_qa_or_token_files=True,no_native_verifier=True)
 try:
- exec(common_code,globals());run=pinned_run();fresh_origin()
+ exec(common_code,globals());run=pinned_run();result['fresh_origin']=fresh_origin()
  need(run['actor_micro_batch_per_rank']==4 and run['budget']['per_rank_actor_micro_batch']==4 and
   run['budget']['ppo_micro_batch_size']==16 and run.get('question_probe') is not None,'micro4_qprobe_contract')
  need(type(payload['after_step']) is int and 0<=payload['after_step']<=200,'after_step')
@@ -601,7 +656,7 @@ try:
  run_manifest_sha=digest(budget_bytes(base/'logs/run-manifest.json',1024*1024))
  complete_updates=None;closed_attempts=None;driver_attempt_partial=False
  read_pass='births'
- result['births']=births();result['reward_window']=section(reward_window)
+ result['births']=section(births);result['reward_window']=section(reward_window)
  result['infra_window']=section(infra_window)
  result['runtime_status']=section(runtime_status);result['opportunity_counts']=section(opportunity_counts)
  result['loss_identity']=section(loss_identity)
