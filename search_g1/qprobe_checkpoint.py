@@ -256,12 +256,29 @@ def publish_completed_pair(trainer, checkpoint, *, saved_boundary=None):
                 actual_cuda_restore_accepted=False)
 
 
-def publish_terminal_saved_pair(base, checkpoint, terminal_job_id):
+def publish_terminal_saved_pair(base, checkpoint, terminal_job_id, *, terminal_evidence=None, expected_terminal_sha=None):
     """Recover a complete saved pair after terminal failure, without live RNG claims."""
     import subprocess
     from types import SimpleNamespace
     base=Path(base).resolve();checkpoint=Path(checkpoint).resolve()
-    native=subprocess.check_output(['scontrol','show','job',str(int(terminal_job_id)),'-o'],text=True)
+    try:
+        native=subprocess.check_output(['scontrol','show','job',str(int(terminal_job_id)),'-o'],text=True)
+    except subprocess.CalledProcessError:
+        # Slurm purges completed jobs quickly. Use only an explicitly pinned
+        # actual terminal receipt, and separately require an available queue
+        # showing that this source job is absent. Observation failure alone
+        # never proves a terminal execution.
+        _need(terminal_evidence is not None and expected_terminal_sha is not None,'PINNED_TERMINAL_EVIDENCE_REQUIRED')
+        evidence=Path(terminal_evidence).resolve()
+        _need(evidence.is_relative_to(base/'preparation') and digest(evidence)==expected_terminal_sha,
+              'TERMINAL_EVIDENCE_SHA_MISMATCH')
+        terminal=_read_json(evidence)
+        _need(terminal['job_id']==int(terminal_job_id) and terminal['cleanup_true'] is True and
+              terminal['cgroup_gone'] is True and terminal['original_processes_gone'] is True,
+              'TERMINAL_RELEASE_EVIDENCE_MISSING')
+        queue=subprocess.run(['squeue','-h','-o','%i'],capture_output=True,text=True,check=True)
+        _need(str(int(terminal_job_id)) not in queue.stdout.split(),'SOURCE_JOB_STILL_QUEUED')
+        native=terminal['native']
     _need(f'JobId={int(terminal_job_id)} ' in native and any('JobState='+s+' ' in native
           for s in ('FAILED','CANCELLED','TIMEOUT','OUT_OF_MEMORY','COMPLETED')),'SOURCE_JOB_NOT_TERMINAL')
     _need(not list(Path('/sys/fs/cgroup').glob(f'**/job_{int(terminal_job_id)}')),'SOURCE_CGROUP_STILL_PRESENT')

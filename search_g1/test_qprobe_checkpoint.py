@@ -316,6 +316,27 @@ class PairCheckpointTests(unittest.TestCase):
 
 
 class TerminalSavedPairTests(unittest.TestCase):
+    def test_purged_slurm_requires_pinned_actual_terminal_and_available_empty_queue(self):
+        import subprocess
+        with tempfile.TemporaryDirectory() as name:
+            fixture=PairFixture(name,outer=5,size=8)
+            driver=torch.load(fixture.state/'driver.pt',weights_only=False)
+            live_path=fixture.base/'artifacts/live/manifest.json';live=json.loads(live_path.read_text())
+            live['version']=driver['probe_version'];live_path.write_text(json.dumps(live))
+            (fixture.base/'logs/cleanup-status.json').write_text(json.dumps(dict(run_id=fixture.run_id,cleaned=True)))
+            evidence=fixture.base/'preparation/terminal.json';evidence.parent.mkdir()
+            evidence.write_text(json.dumps(dict(job_id=999999,cleanup_true=True,cgroup_gone=True,
+                original_processes_gone=True,native='JobId=999999 JobState=FAILED ExitCode=1:0 ')))
+            with patch('subprocess.check_output',side_effect=subprocess.CalledProcessError(1,['scontrol'])), \
+                    patch('subprocess.run',return_value=SimpleNamespace(stdout='')):
+                with self.assertRaisesRegex(ValueError,'PINNED_TERMINAL'):
+                    publish_terminal_saved_pair(fixture.base,fixture.cp,999999)
+                with self.assertRaisesRegex(ValueError,'TERMINAL_EVIDENCE_SHA'):
+                    publish_terminal_saved_pair(fixture.base,fixture.cp,999999,terminal_evidence=evidence,expected_terminal_sha='0'*64)
+                result=publish_terminal_saved_pair(fixture.base,fixture.cp,999999,
+                    terminal_evidence=evidence,expected_terminal_sha=digest(evidence))
+            self.assertEqual(read_source(result['path'])[1]['step'],5)
+
     def test_terminal_checkpoint_uses_actual_saved_rng_not_post_evaluation_rng(self):
         with tempfile.TemporaryDirectory() as name:
             fixture=PairFixture(name,outer=5,size=8)
