@@ -39,6 +39,10 @@ Current timing/variance belongs to FULLN. Current dev is null on non-dev outers,
 while latest real completed dev and its immutable curve remain identified.
 ActiveN+1 sampling completion, partial writes and variance remain unknown. Old
 current rollout pointers and overwritten aliases are retained as historical.
+Each FULLN publication also clears `active_outer_rollout_cost`, scopes
+`current_active_sampling_cost_scope` to unknown nextN+1 sampling cost, and sets
+`current_active_outer_full_metric_pending=true`; prior active sampling costs
+cannot carry into the new active outer. CompleteN cost fields retain their scope.
 CandidateN is a separately bound supplement for the following cumulative join;
 the script never appends or double-counts it into CUMN. CPU seconds come only
 from actual resource `CPUUsageNSec / 1e9`; final service CPU remains null.
