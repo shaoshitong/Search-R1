@@ -58,6 +58,32 @@ def digest(value):
     return isinstance(value, str) and len(value) == 64 and all(c in '0123456789abcdef' for c in value)
 
 
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        need(key not in result, 'Duplicate JSON object key: ' + key)
+        result[key] = value
+    return result
+
+
+def strict_loads(raw, *args, **kwargs):
+    need('object_pairs_hook' not in kwargs and 'object_hook' not in kwargs, 'Strict JSON object decoder cannot be overridden')
+    return json.loads(raw, *args, object_pairs_hook=unique_object, **kwargs)
+
+
+class StrictJSON:
+    # Bind only each isolated dependency module's JSON name; never patch stdlib
+    # json globally or modify a published dependency file.
+    loads = staticmethod(strict_loads)
+
+    @staticmethod
+    def load(stream, *args, **kwargs):
+        return strict_loads(stream.read(), *args, **kwargs)
+
+    def __getattr__(self, name):
+        return getattr(json, name)
+
+
 class LocalInputs:
     def __init__(self, base, mirrors):
         self.base, self.mirrors, self.refs = base.resolve(strict=True), mirrors, {}
@@ -92,7 +118,7 @@ class LocalInputs:
         for ref in parts:
             need(isinstance(ref, dict) and ref.get('json_selector') == 'value', 'CUM part selector differs: ' + field)
             need(ref.get('file') not in seen, 'Duplicate CUM part: ' + field);seen.add(ref.get('file'))
-            part = json.loads(self.reference(ref))
+            part = strict_loads(self.reference(ref))
             need(isinstance(part, dict) and part.get('schema') == schema and part.get('original_field') == field, 'CUM part original field/schema differs: ' + field)
             chunk = part.get('value')
             need(isinstance(chunk, dict if kind == 'mapping' else list), 'CUM part container type differs: ' + field)
@@ -109,6 +135,7 @@ def module(name):
     need(sha(path.read_bytes()) == DEPENDENCIES[name], 'Published local dependency SHA differs: ' + name)
     spec = importlib.util.spec_from_file_location('final_candidate_' + name, path)
     value = importlib.util.module_from_spec(spec);spec.loader.exec_module(value)
+    value.json = StrictJSON()
     return value
 
 
@@ -161,7 +188,7 @@ def add_terminal_outcomes(original, terminal):
 def prepare(base, cumulative_sha, registry_sha):
     need(digest(cumulative_sha) and digest(registry_sha), 'Explicit original CUM/registry SHA256 required')
     initial = (base / CUM).read_bytes();need(len(initial) <= MAX_BYTES and sha(initial) == cumulative_sha, 'Original CUM200 SHA/size differs')
-    raw_cum = json.loads(initial);mirrors = [Path(x) for x in raw_cum['mirrors']]
+    raw_cum = strict_loads(initial);mirrors = [Path(x) for x in raw_cum['mirrors']]
     need(len(mirrors) == 2 and len(set(mirrors)) == 2 and all(p.is_absolute() for p in mirrors), 'Two actual inline mirror paths required')
     inputs = LocalInputs(base, mirrors);inputs.read(CUM, cumulative_sha, len(initial), MAX_BYTES)
     cumulative = {k:inputs.expand(v, k) for k, v in raw_cum.items()}
@@ -180,19 +207,19 @@ def prepare(base, cumulative_sha, registry_sha):
         inputs.read(name, ref['sha256'], ref['bytes'])
     counts = native_counts(evidence, cumulative)
     book_ref = cumulative['derived_input_snapshots']['index']
-    book = json.loads(inputs.read(book_ref['file'], book_ref['sha256_at_collection'], book_ref['bytes']))
+    book = strict_loads(inputs.read(book_ref['file'], book_ref['sha256_at_collection'], book_ref['bytes']))
     need(book['effective_history']['latest_effective_outer'] == 200 and [r['outer'] for r in book['effective_rows']] == list(range(1, 201)), 'CUM-bound credited book coverage differs')
     row_ref = next(r for r in book['effective_rows'] if r['outer'] == 200)
     block_ref = next(r for r in book['scalar_blocks'] if r['file'] == row_ref['block_file'])
-    block = json.loads(inputs.read(block_ref['file'], block_ref['sha256'], block_ref['bytes']))
+    block = strict_loads(inputs.read(block_ref['file'], block_ref['sha256'], block_ref['bytes']))
     row = copy.deepcopy(block['rows'][row_ref['block_row_index']])
-    registry = json.loads(inputs.read(REGISTRY, registry_sha, limit=MAX_BYTES))
+    registry = strict_loads(inputs.read(REGISTRY, registry_sha, limit=MAX_BYTES))
     refs = [r for r in registry['indexes'] if r.get('outer') == 200]
     need(len(refs) == 1 and refs[0].get('file') == INDEX, 'Exactly one candidate200 registry entry required')
-    extension = json.loads(inputs.read(INDEX, refs[0]['sha256'], refs[0]['bytes'], MAX_BYTES))
+    extension = strict_loads(inputs.read(INDEX, refs[0]['sha256'], refs[0]['bytes'], MAX_BYTES))
     need(len(extension.get('parts', [])) == 1 and extension['parts'][0].get('file') == PART, 'Candidate200 index part differs')
     part_ref = extension['parts'][0]
-    part = json.loads(inputs.read(PART, part_ref['sha256'], part_ref['bytes'], MAX_BYTES))
+    part = strict_loads(inputs.read(PART, part_ref['sha256'], part_ref['bytes'], MAX_BYTES))
     need(part.get('unit') == UNIT and part.get('run_directory') == RUN and part.get('completed_rollout_steps') == [200], 'Candidate200 unit/run/completion differs')
     supplement = part['source_pin'].get('supplemental_controller_poll')
     if supplement:
@@ -284,31 +311,49 @@ def publish(base, mirrors, artifacts):
             need(all((folder / name).read_bytes() == raw for folder in [base] + mirrors), 'Final output byte readback differs')
 
 
+def verify_outputs(base, mirrors, artifacts, refs, expected_result):
+    # Derive the entire descriptor closure from the real root, rather than
+    # trusting a receipt to enumerate whichever files it chooses to retain.
+    root = STEM + '.json';markdown = STEM + '.md'
+    need(root in refs and markdown in refs, 'Final JSON and Markdown roots are required')
+    outputs = LocalInputs(base, mirrors)
+    value = strict_loads(outputs.reference(refs[root]))
+    need(isinstance(value, dict), 'Final JSON root must be an object')
+    expanded = {key:outputs.expand(item, key, 'final_candidate_scalar_field_part_v1') for key, item in value.items()}
+    need(expanded == expected_result, 'Final expanded scalar result differs from original evidence')
+    raw = (base / markdown).read_bytes()
+    need(raw == artifacts[markdown] and all((m / markdown).read_bytes() == raw for m in mirrors), 'Final Markdown bytes differ')
+    closure = dict(outputs.refs)
+    closure[markdown] = dict(file=markdown, bytes=len(raw), sha256=sha(raw))
+    need(closure == refs, 'Final complete descriptor closure differs from output manifest')
+    for name, expected in artifacts.items():
+        need(all((folder / name).read_bytes() == expected for folder in [base] + mirrors), 'Final reconstructed output bytes differ: ' + name)
+
+
 def run(args):
     base = args.base.resolve(strict=True)
+    receipt_name = STEM + '_LOCAL_RECEIPT.json'
+    receipt_path = base / receipt_name
     required = [CUM, FULL, NATIVE, REGISTRY, INDEX, PART]
     absent = [name for name in required if not (base / name).exists()]
     if absent:
+        need(not receipt_path.exists(), 'Existing final receipt lacks required original inputs: ' + ', '.join(absent))
         return dict(status='PENDING_ACTUAL200_CANDIDATE_EVIDENCE', missing=absent, outputs_written=False, remote_operations=False)
-    receipt_name = STEM + '_LOCAL_RECEIPT.json'
-    if (base / receipt_name).exists():
-        prior = json.loads((base / receipt_name).read_bytes());mirrors = [Path(p) for p in prior['mirrors']]
-        need(prior['source_CUM200']['sha256'] == args.cumulative_sha256 and prior['source_registry']['sha256'] == args.registry_sha256 and prior['source_script_sha256'] == sha(Path(__file__).read_bytes()), 'Existing final receipt input/source binding differs')
-        source_raw = (base / CUM).read_bytes()
-        need(sha(source_raw) == args.cumulative_sha256 and json.loads(source_raw)['mirrors'] == prior['mirrors'], 'Existing final receipt original CUM/mirrors differ')
-        need(prior['input_refs'].get(CUM) == prior['source_CUM200'] and prior['input_refs'].get(REGISTRY) == prior['source_registry'], 'Existing final receipt omitted original input binding')
-        inputs = LocalInputs(base, mirrors)
-        for ref in prior['input_refs'].values():inputs.reference(ref, 4000000)
-        for ref in prior['output_refs'].values():
-            if ref['file'].endswith('.json'):
-                inputs.reference(ref)
-            else:
-                need(ref['file'] == STEM + '.md', 'Unexpected final non-JSON output reference')
-                raw = (base / ref['file']).read_bytes()
-                need(len(raw) == ref['bytes'] and sha(raw) == ref['sha256'] and all((m/ref['file']).read_bytes() == raw for m in mirrors), 'Existing final Markdown differs')
-        need(all((m/receipt_name).read_bytes() == (base/receipt_name).read_bytes() for m in mirrors), 'Existing final receipt mirror differs')
-        return dict(status='ALREADY_EXISTS_BYTES_VERIFIED', receipt=receipt_name, outputs_written=False, remote_operations=False)
+    prior = None
+    if receipt_path.exists():
+        need(receipt_path.stat().st_size <= MAX_BYTES, 'Existing final receipt exceeds metadata budget')
+        prior = strict_loads(receipt_path.read_bytes())
+        need(isinstance(prior, dict) and prior.get('schema') == 'final_candidate_cost_local_receipt_v1', 'Existing final receipt schema differs')
+    # Both fresh publication and idempotent readback must validate the same
+    # original FULL/native/CUM/index/candidate evidence. Never use FINAL as a
+    # cumulative source or add candidate200 to a previous FINAL a second time.
     result, inputs, mirrors = prepare(base, args.cumulative_sha256, args.registry_sha256)
+    if prior is not None:
+        created = prior.get('created_utc')
+        need(isinstance(created, str), 'Existing final receipt creation time is missing')
+        timestamp = datetime.fromisoformat(created)
+        need(timestamp.tzinfo is not None and timestamp.utcoffset().total_seconds() == 0, 'Existing final receipt creation time is not UTC')
+        result['created_utc'] = created
     artifacts = bounded_fields(result)
     artifacts[STEM + '.md'] = ('# 最后训练候选成本补充\n\n实际FULL/native/CUM200与candidate200全部绑定；仅补末轮一次，原CUM200及所有输入不改。\n\n'
         'sampling、outer wall、dev与driver/service CPU沿用原累计范围；fallback与accepted重叠，候选子集不再加到总采样。DP padding分摊、独立结果wall、FLOPs/实际GPU计费/能耗未知。\n\n'
@@ -323,10 +368,17 @@ def run(args):
         remote_operations=False, tensor_model_or_raw_rollout_read=False, independent_cold_reload_performed=False,
         final51713_or_HF_or_cleanup_or_terminal_CPU_acceptance_claimed=False, whole_goal_completion_claimed=False,
         both_mirrors_byte_readback_passes=2)
+    if prior is not None:
+        need(prior == receipt and receipt_path.read_bytes() == encoded(receipt), 'Existing final receipt differs from complete reconstructed input/output manifest')
+        verify_outputs(base, mirrors, artifacts, refs, result)
+        need(all((m / receipt_name).read_bytes() == receipt_path.read_bytes() for m in mirrors), 'Existing final receipt mirror differs')
+        for ref in inputs.refs.values():inputs.read(ref['file'], ref['sha256'], ref['bytes'])
+        return dict(status='ALREADY_EXISTS_BYTES_VERIFIED', receipt=receipt_name, outputs_written=False, remote_operations=False)
     artifacts[receipt_name] = encoded(receipt)
     # Recheck all SHA-bound inputs before any output and after publication.
     for ref in inputs.refs.values():inputs.read(ref['file'], ref['sha256'], ref['bytes'])
     publish(base, mirrors, artifacts)
+    verify_outputs(base, mirrors, {name:raw for name, raw in artifacts.items() if name != receipt_name}, refs, result)
     for ref in inputs.refs.values():inputs.read(ref['file'], ref['sha256'], ref['bytes'])
     return dict(status='ACTUAL_TRAINING_CANDIDATE200_SUPPLEMENT_PUBLISHED', artifacts={name:dict(bytes=len(raw), sha256=sha(raw)) for name, raw in artifacts.items()},
                 candidate_outcome_scalar_coverage_complete=receipt['candidate_outcome_scalar_coverage_complete'], remote_operations=False, whole_goal_completion_claimed=False)

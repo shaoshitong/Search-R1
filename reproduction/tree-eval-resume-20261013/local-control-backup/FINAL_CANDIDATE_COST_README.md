@@ -7,7 +7,7 @@
 从工作区根目录调用，两个 SHA 必须取实际不可变 CUM200及包含candidate200的 registry快照，不能预填未来值：
 
 ```sh
-python3 -B work/tree-speed-repair-20261008/nested-final-candidate-cost-source/reproduction/tree-eval-resume-20261013/local-control-backup/finalize_nested_candidate_costs.py \
+python3 -B work/tree-speed-repair-20261008/nested-final-candidate-cost-fix-source/reproduction/tree-eval-resume-20261013/local-control-backup/finalize_nested_candidate_costs.py \
   --base outputs/tree-nested-branch-handoff-20261013 \
   --cumulative-sha256 ACTUAL_CUM200_RAW_FILE_SHA256 \
   --registry-sha256 ACTUAL_REGISTRY_WITH_CANDIDATE200_SHA256
@@ -17,4 +17,8 @@ python3 -B work/tree-speed-repair-20261008/nested-final-candidate-cost-source/re
 
 新输出为 `FINAL_CANDIDATE_COST_THROUGH200.json/md`、`final_candidate_cost_parts/*.json` 和 `FINAL_CANDIDATE_COST_THROUGH200_LOCAL_RECEIPT.json`。每个文件最多100000字节（比100KiB更严格）。完整dict/list字段按实际大小分页；若一个嵌套容器超过预算，也完整分页，`original_field`使用点路径或`[index]`路径。必须按receipt的全部`output_refs`核对SHA/bytes与两镜像，不能固定分片数。可用 `LocalInputs.expand(value, field, 'final_candidate_scalar_field_part_v1')` 动态还原新FINAL字段；旧CUM使用默认schema。
 
-所有已有输出先做不覆盖检查；receipt最后写入，并进行两次全部输出字节读回。重复调用已存在同源receipt只核对绑定，不重新累计。该产物仅证明training candidate元数据闭合，不代表完整goal、51713评测、HF冷重载、资源清理或服务终态CPU验收。CUM中的service CPU null保持null；DP padding分摊、独立结果wall、FLOPs、真实GPU计费与能耗不推算。
+所有已有输出先做不覆盖检查；receipt最后写入，并进行两次全部输出字节读回。重复调用仍重新验证原始FULL/native/CUM/index/candidate，并仅从原CUM200在内存重建预期结果以比较字节；不把已有FINAL作为累计输入。receipt必须逐字节等于完整重建的schema、输入和输出manifest，FINAL JSON/MD根文件及递归分页闭包必须全部存在且与manifest精确一致，删减manifest不能通过幂等检查。缺少原始输入但已有receipt会明确报错。
+
+CUM、分片、registry、candidate、receipt及复用本地helper读取的所有JSON层级均拒绝重复对象key，包括SHA/bytes正确的JSON分片；仅在本进程导入的隔离helper模块绑定strict decoder，不修改旧helper文件或全局标准库。
+
+该产物仅证明training candidate元数据闭合，不代表完整goal、51713评测、HF冷重载、资源清理或服务终态CPU验收。CUM中的service CPU null保持null；DP padding分摊、独立结果wall、FLOPs、真实GPU计费与能耗不推算。
