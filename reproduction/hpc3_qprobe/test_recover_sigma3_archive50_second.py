@@ -37,6 +37,9 @@ class ActualFailureBytes(unittest.TestCase):
         self.observed=dict(actual_live_birth=False,process=self.read(recovery.OLD_FOLLOW/'process.json'),
             result=self.read(recovery.OLD_FOLLOW/'result.json'),state=self.read(recovery.OLD_FOLLOW/'state.json'))
         original_read=reader.read_file;original_snapshot=recovery.snapshot
+        original_exists=Path.exists;original_symlink=Path.is_symlink
+        self.stack.enter_context(patch.object(Path,'exists',lambda path:original_exists(self.map(path))))
+        self.stack.enter_context(patch.object(Path,'is_symlink',lambda path:original_symlink(self.map(path))))
         def read_file(path,**kwargs):return original_read(self.map(Path(path)),**kwargs)
         def digest(path):
             if 'raw-control' in str(path):return 'a'*64
@@ -63,6 +66,12 @@ class ActualFailureBytes(unittest.TestCase):
         return path
 
     def read(self,path):return json.loads(self.map(Path(path)).read_bytes())
+
+    def test_absence_checks_use_only_fixture_files_never_live_original_scope(self):
+        original=recovery.ARCHIVE/'task-result.json'
+        self.assertFalse(original.exists())
+        self.map(original).write_text('{}')
+        self.assertTrue(original.exists())
 
     def test_exact_actual_held1_failure_and_original_bytes_accept(self):
         result=recovery.failure_evidence()
