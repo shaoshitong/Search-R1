@@ -111,6 +111,38 @@ def rows_from_summary(base, mirrors, summary):
     return rows
 
 
+def cumulative_dev_evaluations(base, mirrors, cumulative):
+    field = 'completed_dev_evaluations'
+    value = cumulative.get(field)
+    if isinstance(value, list):
+        rows = value
+    else:
+        if not isinstance(value, dict) or value.get('storage') != 'complete_original_field_parts' or value.get('container_type') != 'list':
+            raise ValueError('Unknown cumulative completed dev list storage')
+        count = value.get('original_entries');parts = value.get('parts')
+        if not isinstance(count, int) or isinstance(count, bool) or count < 0 or not isinstance(parts, list):
+            raise ValueError('Cumulative completed dev part count/type differs')
+        rows = [];seen = set()
+        for reference in parts:
+            if not isinstance(reference, dict) or not isinstance(reference.get('file'), str) or reference.get('json_selector') != 'value':
+                raise ValueError('Cumulative completed dev part file/selector differs')
+            size = reference.get('bytes');digest = reference.get('sha256')
+            if not isinstance(size, int) or isinstance(size, bool) or not 0 < size <= 100000 or not isinstance(digest, str) or len(digest) != 64 or any(c not in '0123456789abcdef' for c in digest):
+                raise ValueError('Cumulative completed dev part SHA/bytes metadata differs')
+            if reference['file'] in seen:
+                raise ValueError('Duplicate cumulative completed dev part file')
+            seen.add(reference['file'])
+            part = json.loads(read_bound(base, mirrors, dict(file=reference['file'], bytes=size, sha256=digest)))
+            if not isinstance(part, dict) or part.get('schema') != 'cumulative_scalar_field_part_v1' or part.get('original_field') != field or not isinstance(part.get('value'), list):
+                raise ValueError('Cumulative completed dev part field/schema/type differs')
+            rows.extend(part['value'])
+        if len(rows) != count:
+            raise ValueError('Cumulative completed dev original entry count differs')
+    if any(not isinstance(row, dict) for row in rows):
+        raise ValueError('Cumulative completed dev entry type differs')
+    return rows
+
+
 def control_row(pin, raw, meta, saved):
     value = json.loads(raw)
     for key in ['code_commit', 'config_sha256', 'data_identity', 'model_identity', 'job_id']:
@@ -206,9 +238,15 @@ def completed_inputs(base, through):
     cumulative = json.loads(raw);full = json.loads((base / full_name).read_bytes())
     if cumulative.get('through_effective_outer') != through or full.get('completed_outer') != through:
         raise ValueError('Actual CUM/FULL completed outer differs')
-    dev = full.get('actual_dev512');devs = cumulative.get('completed_dev_evaluations')
-    if not isinstance(dev, dict) or dev.get('outer') != through or dev.get('status') != 'VALIDATION_COST_COMPLETE' or dev.get('rows') != 512 or not isinstance(devs, list) or [x.get('outer') for x in devs] != list(range(5, through + 1, 5)):
+    mirrors = [Path(x) for x in cumulative['mirrors']]
+    devs = cumulative_dev_evaluations(base, mirrors, cumulative)
+    if [x.get('outer') for x in devs] != list(range(5, through + 1, 5)):
+        raise ValueError('Cumulative completed dev outer coverage differs')
+    dev = full.get('actual_dev512')
+    if not isinstance(dev, dict) or dev.get('outer') != through or dev.get('status') != 'VALIDATION_COST_COMPLETE' or dev.get('rows') != 512:
         return None
+    # Normalize only this parsed view; the original CUM bytes/SHA remain bound.
+    cumulative = dict(cumulative, completed_dev_evaluations=devs)
     if full.get('source_commit') != CHILD or full.get('config_sha256') != CONFIGS[CHILD]:
         raise ValueError('Completed source/config differs from fixed protocol')
     run_id = 'tree-nested-branch-fresh200-not-slurm;systemd:' + CHILD
