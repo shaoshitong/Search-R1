@@ -155,10 +155,10 @@ def launch(base,run):
     assert supported_execution_role(run,base)=='production'
     assert run['completed_updates']==0
     if run.get('full_state_restore'):
-        from search_g1.qprobe_checkpoint import read_source,digest,SAVED_CHECKPOINT_STATUS
+        from search_g1.qprobe_checkpoint import read_source,digest as restore_digest,SAVED_CHECKPOINT_STATUS
         binding=run['full_state_restore'];path,receipt,_,_,_=read_source(binding['source_receipt'])
         assert receipt['status']==SAVED_CHECKPOINT_STATUS and binding['kind']=='question_probe_saved_checkpoint'
-        assert digest(path)==binding['source_receipt_sha256'] and run['initial_probe_version']==receipt['reward_probe_version']
+        assert restore_digest(path)==binding['source_receipt_sha256'] and run['initial_probe_version']==receipt['reward_probe_version']
     else:assert run['initial_probe_version'] is None
     assert os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE')=='4'
     for name in ('logs','tmp','ray','cache/triton','cache/inductor','cache/hf','artifacts'):

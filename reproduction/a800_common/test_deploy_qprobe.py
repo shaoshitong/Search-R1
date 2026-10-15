@@ -355,5 +355,32 @@ class ProspectiveControlTests(unittest.TestCase):
             self.assertLess(bundle.stat().st_size,control.MAX_BUNDLE)
 
 
+class FreshPipelineStartupTests(unittest.TestCase):
+    def test_fresh_source_hashes_reach_native_admission_without_restore_import(self):
+        from reproduction.a800_common import run_pipeline as pipeline
+        from reproduction.common8 import native_allocation
+        class ReachedNativeAdmission(Exception):
+            pass
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory).resolve();(base/'repo').mkdir()
+            source=base/'repo'/'fixture.py';source.write_bytes(b'fixed_source = True\n')
+            run=dict(run_id='a'*32,execution_id='b'*32,completed_updates=0,initial_probe_version=None,
+                     execution_host=pipeline.socket.gethostname(),
+                     source_sha256={'fixture.py':hashlib.sha256(source.read_bytes()).hexdigest()})
+            with mock.patch.dict(os.environ,{'RAY_TMPDIR':'/unused','SEARCH_G1_TRAINING_WORLD_SIZE':'4'}), \
+                 mock.patch.multiple(pipeline,validate_base=mock.DEFAULT,assert_formal_run=mock.DEFAULT,
+                     bound_ray_tmp_dir=mock.DEFAULT,execution_job_id=mock.DEFAULT,supported_execution_role=mock.DEFAULT) as gates, \
+                 mock.patch.object(pipeline.signal,'signal'),mock.patch.object(pipeline.socket,'socket'), \
+                 mock.patch.object(native_allocation,'bind_idle_local_placement',return_value=dict(run)), \
+                 mock.patch.object(native_allocation,'local_placement',return_value=([0,1,2,3],[5,6],None,None)), \
+                 mock.patch.object(native_allocation,'admit',side_effect=ReachedNativeAdmission) as admit:
+                gates['bound_ray_tmp_dir'].return_value='/unused'
+                gates['execution_job_id'].return_value=None
+                gates['supported_execution_role'].return_value='production'
+                with self.assertRaises(ReachedNativeAdmission):
+                    pipeline.launch(base,run)
+                admit.assert_called_once_with(base)
+
+
 if __name__ == '__main__':
     unittest.main()
