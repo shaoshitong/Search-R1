@@ -599,3 +599,19 @@ New storage observer keeps the proven3pureENOENT retry/fullheldproof logic and u
 以此新鲜基线，加未来100/150/200三源六副本约345.34GB、200复制所需encoder约27.21GB，以及42–61实测保留RAW均值0.757GB/轮估计剩余118轮，预计最终约1.935TB、余约65.44GB。该估计未计其他实验后续增长及额外评测产物；不能替代每次archive的真实全du和2TB门禁。115.1GB清理已体现在新鲜基线中，不重复扣减。详细估计保存在storage-projection-after-exact78-and-full-du0-20261016.json。
 
 当前721485四卡完成82/200，四rank各1640 Adam写入，scheduler/head一致，无新fatal；83已完成512×5采集。原RAWf979已实际验收1..82；原b894同一进程等100，5/50完整三方SHA通过。科学源码ACA和训练/RAW/follower均未重启或热改。目标保持ACTIVE；固定100/150/200、最终exactnative51713、全部五套三方SHA、最终真实native4恢复与两次dataequal、全RAW/独立最终CPU/no201仍待完成。
+
+
+## 2026-10-16 02:36 CST：native83完成与选题验收到82
+
+当前四卡721485实际完成83/200，四rank各1660 Adam写入，scheduler/head均与成功outer83一致；83拟合总loss0.9893484711647034，第84轮已开始。对照前一次82轮/1640写入的实测，确认一个完整iteration正向完成，未见新fatal。原RAWf979在83成功返回后已启动同一次真实CPU原始轨迹审计，尚未将其当作held0；5/50归档已全SHA通过，原b894同一进程等100。未重启、热改或新增训练。
+
+用已发布源码e6a22a52ad87f0d51b3ff5d8bc7d4d91feb6aa5a纯CPU重消费实际RAW1..82 held-child/claim/result/stdout两次，并新鲜hash每轮head/scalar，生成只读选题汇总。无模型加载、轨迹生成、参数更新、远端证据写入。该汇总不代替最终200原始轨迹重解码或真实native4恢复，也不是postfit二/六分类准确率或方差拟合。
+
+| 范围 | Top448混合数/题次 | Top448混合命中率 | 随机64混合数/题次 | 随机混合命中率 | Top448提升 | Top448真实平均样本标准差 | 随机真实平均样本标准差 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1–82累计 | 14652/36736 | 39.8846% | 1335/5248 | 25.4383% | +14.4463pp | 0.196306 | 0.124891 |
+| 73–82最近10轮 | 1378/4480 | 30.7589% | 135/640 | 21.0938% | +9.6652pp | 0.151199 | 0.103757 |
+
+最近10轮全512生成前标准差预测MAE0.209036、MSE0.052766；全512每轮内部mixed-AUC均值0.550431、成对concordance均值0.546335。Top448对应0.528189/0.525786；这些排名指标仅各自同一policy的轮内计算再取算术均值，禁止跨policy混池。选题仍相对随机有正提升，但最近10轮Top448与随机绝对混合率、真实标准差均低于累计值；不能因此改动当前科学配置或将loss下降当作选择性能已通过最终验收。
+
+小型完整逐轮数据sigma3-audited-selection-metrics-outer1-82.json为217997字节，SHA674bc9fda6d89b7f0cdc86eeac6012f5bf7cf51941ee0807d46706485ef03055；原审计sigma3-progress-summary-max82-service-1792089362.json保留完整路径/SHA/held证明。该数据不含tensor/rollout，符合本地小审计限制。目标保持ACTIVE，固定100/150/200、finalnative51713、五套三方SHA、最终native4两次dataequal/RAW/独立CPU/no201仍未验收。
