@@ -1,5 +1,7 @@
 # Question diversity probe 与 mixed-first 的正式iter延迟
 
+> 对象更正：用户随后明确要同线程的H100八卡探针实验。本文件比较A800历史版本，不是该请求的目标；其亚秒/数秒探针成本不适用于H100 job3402。正确对照为 `outputs/h100-qprobe-vs-mixed-latency-20261016/REPORT.md`。
+
 2026-10-16只读实际console标量核查。没有重跑模型、训练、生成或评估，没有停止/修改作业，也没有下载问题、轨迹、token、tensor或权重。
 
 ## 核心结果
