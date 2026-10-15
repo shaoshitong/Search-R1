@@ -1,0 +1,255 @@
+{
+  "epoch": 1792053827.942268,
+  "status": "COSEARCH200_DUAL_MODEL_FULL_FINAL_IN_PROGRESS_VERIFIED",
+  "job": 721542,
+  "scheduler": "721542|RUNNING|47:46|ACD1-19",
+  "source_commit": "28d430c5c2de4685ffa1c22dbf70b38e5ee951f5",
+  "control_source_backup_commit": "fe1bc58000396589ec28e38b3e9bf29f882c84e0",
+  "full_target_questions": 51713,
+  "gpus_requested": 4,
+  "main_replicas": 2,
+  "reranker_replicas": 2,
+  "official_rows": 6996,
+  "model_step": 200,
+  "training_job": 713379,
+  "latest_progress": {
+    "epoch": 1792053822.1720002,
+    "main_active": [
+      11,
+      13
+    ],
+    "main_calls": 1853,
+    "main_replicas": 2,
+    "question_concurrency": 128,
+    "reranker_active": [
+      24,
+      21
+    ],
+    "reranker_calls": 1224,
+    "reranker_replicas": 2,
+    "rows": 6976,
+    "seconds": 138.784729719162,
+    "total": 51713
+  },
+  "real_gpu_two_sample_progress": {
+    "all_owned_services_alive": true,
+    "checkpoint_step": 200,
+    "epoch": 1792053723.3066945,
+    "first": {
+      "epoch": 1792053707.8617978,
+      "main_active": [
+        15,
+        17
+      ],
+      "main_calls": 253,
+      "main_replicas": 2,
+      "question_concurrency": 128,
+      "reranker_active": [
+        15,
+        14
+      ],
+      "reranker_calls": 158,
+      "reranker_replicas": 2,
+      "rows": 6432,
+      "seconds": 24.47452712059021,
+      "total": 51713
+    },
+    "gpus": 4,
+    "job": 721542,
+    "second": {
+      "epoch": 1792053717.3471544,
+      "main_active": [
+        22,
+        23
+      ],
+      "main_calls": 374,
+      "main_replicas": 2,
+      "question_concurrency": 128,
+      "reranker_active": [
+        26,
+        27
+      ],
+      "reranker_calls": 225,
+      "reranker_replicas": 2,
+      "rows": 6496,
+      "seconds": 33.95988345146179,
+      "total": 51713
+    },
+    "status": "DUAL_MODEL_REAL_QUESTION_PROGRESS_TWO_SAMPLES_PASS"
+  },
+  "independent_prefix_audit": {
+    "datasets": {
+      "nq": 3610,
+      "triviaqa": 3118
+    },
+    "epoch": 1792053773.9518316,
+    "gpu_window_mean": {
+      "GPU-0d25752e-b11a-1247-a6fc-9c4fc1c88275": 49.5,
+      "GPU-81310f13-8e80-9411-465f-0e2a7bac4a78": 87.75,
+      "GPU-8a3996d5-7484-1965-96f6-cef8676bfd9e": 51.5,
+      "GPU-92d4f7c8-614d-c765-8e42-aa83c0beafb9": 84.0
+    },
+    "gpu_window_samples": 4,
+    "immutable_model_and_protocol_binding_pass": true,
+    "independent_saved_row_score_pass": true,
+    "job": 721542,
+    "latest_progress": {
+      "epoch": 1792053771.781914,
+      "main_active": [
+        9,
+        7
+      ],
+      "main_calls": 1153,
+      "main_replicas": 2,
+      "question_concurrency": 128,
+      "reranker_active": [
+        24,
+        23
+      ],
+      "reranker_calls": 737,
+      "reranker_replicas": 2,
+      "rows": 6752,
+      "seconds": 88.39464330673218,
+      "total": 51713
+    },
+    "metrics_final": false,
+    "previous_accepted_rows_preserved": true,
+    "profiles": {
+      "128": 5432,
+      "256": 1296
+    },
+    "real_reranker_calls": 13679,
+    "request_retry_events": 64,
+    "reranker_success": 13677,
+    "retry_events_with_accepted_rows": 64,
+    "rows": 6728,
+    "startup_two_samples": {
+      "all_owned_services_alive": true,
+      "checkpoint_step": 200,
+      "epoch": 1792053723.3066945,
+      "first": {
+        "epoch": 1792053707.8617978,
+        "main_active": [
+          15,
+          17
+        ],
+        "main_calls": 253,
+        "main_replicas": 2,
+        "question_concurrency": 128,
+        "reranker_active": [
+          15,
+          14
+        ],
+        "reranker_calls": 158,
+        "reranker_replicas": 2,
+        "rows": 6432,
+        "seconds": 24.47452712059021,
+        "total": 51713
+      },
+      "gpus": 4,
+      "job": 721542,
+      "second": {
+        "epoch": 1792053717.3471544,
+        "main_active": [
+          22,
+          23
+        ],
+        "main_calls": 374,
+        "main_replicas": 2,
+        "question_concurrency": 128,
+        "reranker_active": [
+          26,
+          27
+        ],
+        "reranker_calls": 225,
+        "reranker_replicas": 2,
+        "rows": 6496,
+        "seconds": 33.95988345146179,
+        "total": 51713
+      },
+      "status": "DUAL_MODEL_REAL_QUESTION_PROGRESS_TWO_SAMPLES_PASS"
+    },
+    "status": "RESTORED128_ALL_ACCEPTED_ROWS_AND_DUAL_MODEL_PROGRESS_AUDIT_PASS"
+  },
+  "question_concurrency": 128,
+  "gpu_recent_samples": 7,
+  "gpu_recent_mean": {
+    "GPU-8a3996d5-7484-1965-96f6-cef8676bfd9e": 51.57142857142857,
+    "GPU-0d25752e-b11a-1247-a6fc-9c4fc1c88275": 52.714285714285715,
+    "GPU-81310f13-8e80-9411-465f-0e2a7bac4a78": 81.85714285714286,
+    "GPU-92d4f7c8-614d-c765-8e42-aa83c0beafb9": 81.28571428571429
+  },
+  "gpu_latest": {
+    "epoch": 1792053813.9033048,
+    "gpus": "GPU-8a3996d5-7484-1965-96f6-cef8676bfd9e, 53, 75241, 81559\nGPU-0d25752e-b11a-1247-a6fc-9c4fc1c88275, 52, 75185, 81559\nGPU-81310f13-8e80-9411-465f-0e2a7bac4a78, 68, 76093, 81559\nGPU-92d4f7c8-614d-c765-8e42-aa83c0beafb9, 88, 76395, 81559",
+    "services": [
+      {
+        "port": 18100,
+        "ready": true,
+        "kind": "llm",
+        "requests": 879,
+        "generated_tokens": 101166,
+        "prompt_tokens": 850055,
+        "active": 12
+      },
+      {
+        "port": 18101,
+        "ready": true,
+        "kind": "llm",
+        "requests": 859,
+        "generated_tokens": 96077,
+        "prompt_tokens": 844641,
+        "active": 11
+      },
+      {
+        "port": 18102,
+        "ready": true,
+        "kind": "llm",
+        "requests": 573,
+        "generated_tokens": 139441,
+        "prompt_tokens": 4842604,
+        "active": 21
+      },
+      {
+        "port": 18103,
+        "ready": true,
+        "kind": "llm",
+        "requests": 574,
+        "generated_tokens": 134757,
+        "prompt_tokens": 4858312,
+        "active": 21
+      },
+      {
+        "port": 18087,
+        "ready": true,
+        "kind": "retrieval",
+        "requests": 1218,
+        "generated_tokens": 0,
+        "prompt_tokens": 0,
+        "active": 0
+      }
+    ]
+  },
+  "request_retry_events": 64,
+  "retry_events_now_accepted": 64,
+  "all_owned_services_healthy": true,
+  "complete_present": false,
+  "acceptance_present": false,
+  "final_metrics_available": false,
+  "runtime_performance_trial": "256 measured slower and more retries; restored128 with all accepted rows preserved",
+  "protocol_and_models_unchanged": true,
+  "repair_wait": {
+    "deadline_epoch": 1792054354.4120088,
+    "epoch": 1792053470.4404078,
+    "error": "AssertionError()",
+    "job": 721542,
+    "no_automatic_retry": true,
+    "pid": 221707,
+    "status": "VERIFIED_REPAIR_ACCEPTED_EXECUTING",
+    "wait_id": "4665adc152a647d8b305a86b50fe6023"
+  },
+  "current_failure": false,
+  "remote_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015",
+  "recurring_codex_monitor_created": false,
+  "full_completion_then_independent_cpu_acceptance_configured": true
+}
