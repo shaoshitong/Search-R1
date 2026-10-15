@@ -231,11 +231,18 @@ def child_wait(name,args,password,directory=None):
     env=dict(os.environ,SSHPASS=password)
     with (directory/(name+'.stdout')).open('xb') as stdout,(directory/(name+'.stderr')).open('xb') as stderr:
         child=subprocess.Popen(args,stdin=subprocess.DEVNULL,stdout=stdout,stderr=stderr,env=env)
-        row=birth(child.pid);need(row is not None and row['uid']==1002,'actual backup child owner differs')
-        publish(directory/(name+'.child.json'),dict(actual_process=row,command=args,started_unix=time.time()))
-        publish(directory/'state.json',dict(phase=name,actual_child=row,epoch=time.time()),replace=True)
-        code=child.wait()
-    publish(directory/(name+'.wait.json'),dict(actual_process=row,actual_exit_code=code,completed_unix=time.time()))
+        row=None;binding_error=None
+        try:
+            row=birth(child.pid);need(row is not None and row['uid']==1002,'actual backup child owner differs')
+            publish(directory/(name+'.child.json'),dict(actual_process=row,command=args,started_unix=time.time()))
+            publish(directory/'state.json',dict(phase=name,actual_child=row,epoch=time.time()),replace=True)
+        except Exception as exc:binding_error=exc
+        finally:
+            # Even failed metadata must retain this direct child until its real exit.
+            code=child.wait()
+        publish(directory/(name+'.wait.json'),dict(actual_process=row,actual_held_pid=child.pid,
+            actual_exit_code=code,binding_error=repr(binding_error) if binding_error else None,completed_unix=time.time()))
+        if binding_error:raise binding_error
     need(code==0,'actual backup child failed: '+name)
     return (directory/(name+'.stdout')).read_bytes()
 
@@ -297,9 +304,18 @@ def start(commit,password):
         deletion_authorized=False,source_cleanup_performed=False))
     with (CONTROL/'supervisor.log').open('xb') as log:
         child=subprocess.Popen(command,stdin=subprocess.PIPE,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
-        actual=birth(child.pid);need(actual and actual['sid']==actual['pid'] and actual['uid']==1002,'backup worker birth differs')
-        publish(CONTROL/'process.json',dict(actual_process=actual,source_commit=commit,token=token))
-        child.stdin.write((password+'\n').encode());child.stdin.close()
+        actual=None
+        try:
+            actual=birth(child.pid);need(actual and actual['sid']==actual['pid'] and actual['uid']==1002,'backup worker birth differs')
+            publish(CONTROL/'process.json',dict(actual_process=actual,source_commit=commit,token=token))
+            child.stdin.write((password+'\n').encode());child.stdin.close()
+        except Exception as exc:
+            try:child.stdin.close()
+            except Exception:pass
+            code=child.wait()
+            publish(CONTROL/'start-failure.json',dict(status='ACTUAL_START_BINDING_FAILED_RETAIN_CLAIM',
+                actual_process=actual,actual_child_exit_code=code,error=repr(exc),source_cleanup_performed=False))
+            raise
     return dict(status='REMOTE_RESERVE_STARTED_ONCE',actual_process=actual,token=token,source_commit=commit,
                 target=str(TARGET),source_cleanup_performed=False)
 
@@ -365,15 +381,22 @@ def supervise(commit,token,password):
     command=[sys.executable,str(repo/RELATIVE),'worker','--commit',commit,'--token',token]
     with (CONTROL/'worker.log').open('xb') as log:
         child=subprocess.Popen(command,stdin=subprocess.PIPE,stdout=log,stderr=subprocess.STDOUT)
-        actual=birth(child.pid);need(actual and actual['uid']==1002 and actual['sid']==os.getsid(0),'held reserve worker birth differs')
-        publish(CONTROL/'worker-process.json',dict(actual_process=actual,source_commit=commit,token=token))
-        child.stdin.write((password+'\n').encode());child.stdin.close()
-        code=child.wait()
+        actual=None;binding_error=None
+        try:
+            actual=birth(child.pid);need(actual and actual['uid']==1002 and actual['sid']==os.getsid(0),'held reserve worker birth differs')
+            publish(CONTROL/'worker-process.json',dict(actual_process=actual,source_commit=commit,token=token))
+            child.stdin.write((password+'\n').encode())
+        except Exception as exc:binding_error=exc
+        finally:
+            try:child.stdin.close()
+            except Exception as exc:
+                if binding_error is None:binding_error=exc
+            finally:code=child.wait()
     result=dict(status='ACTUAL_HELD_REMOTE_RESERVE_WORKER_FAILED',actual_child_exit_code=code,
         exit_code=1,actual_supervisor=birth(os.getpid()),actual_worker=actual,completed_unix=time.time(),
-        source_cleanup_performed=False)
+        source_cleanup_performed=False,binding_error=repr(binding_error) if binding_error else None)
     try:
-        if code==0:
+        if code==0 and binding_error is None:
             returned=read_owned(CONTROL/'worker-result.json',1002)
             need(returned['actual_process']==actual and returned['exit_code']==0 and returned['status']==STATUS and
                  returned['source_cleanup_performed'] is False and digest(CONTROL/'complete.json')==returned['complete_sha256'],
@@ -384,6 +407,53 @@ def supervise(commit,token,password):
         result['validation_error']=repr(exc)
     publish(CONTROL/'result.json',result)
     return result['exit_code']
+
+
+def verify_terminal_metadata(p,commit,claim,binding,result,worker):
+    need(result['status']=='ACTUAL_HELD_REMOTE_RESERVE_WORKER_COMPLETED0' and
+         result['actual_child_exit_code']==0 and result['binding_error'] is None and
+         result['actual_supervisor']==binding['actual_process'] and result['actual_worker']==worker and
+         digest(CONTROL/'complete.json')==result['complete_sha256'],'held complete result or bytes differ')
+    complete=read_owned(CONTROL/'complete.json',1002)
+    need(complete['status']==STATUS and complete['verified_bytes']==p['total_bytes'] and
+         complete['verified_files']==len(p['files']) and complete['source_commit']==commit and
+         complete['plan_sha256']==PLAN_SHA and complete['actual_process']==worker and
+         complete['source_cleanup_performed'] is False and complete['deletion_authorized'] is False,
+         'terminal reserve scope incomplete')
+    manifest=read_owned(CONTROL/'source-manifest.json',1002)
+    need(manifest['files']==p['files'] and manifest['groups']==p['groups'] and manifest['source_commit']==commit and
+         manifest['plan_sha256']==PLAN_SHA and hashlib.sha256(canonical(manifest)).hexdigest()==complete['manifest_sha256'],
+         'terminal original manifest differs')
+    expected=[dict(path=x['path'],bytes=x['bytes'],sha256=x['sha256']) for x in p['files']]
+    target_rows={x['source_path']:x for x in complete['files']}
+    need(len(complete['files'])==len(target_rows)==len(expected) and set(target_rows)=={x['path'] for x in p['files']},
+         'terminal target manifest is not the fixed full set')
+    for phase in ('before','after'):
+        value=complete['source_'+phase]
+        need(value['status']=='ORIGINAL_SOURCE_FULL_SHA_PASS' and value['files']==expected and
+             value['source_commit']==commit and value['token']==claim['token'] and value['phase']==phase and
+             value['manifest_sha256']==complete['manifest_sha256'] and value['source_cleanup_performed'] is False,
+             'terminal source phase receipt differs')
+    for name in ('source-before','rsync-copy','source-after'):
+        child=read_owned(CONTROL/(name+'.child.json'),1002)
+        wait=read_owned(CONTROL/(name+'.wait.json'),1002)
+        need(wait['actual_exit_code']==0 and wait['binding_error'] is None and
+             wait['actual_process']==child['actual_process'] and wait['actual_held_pid']==child['actual_process']['pid'] and
+             not live(child['actual_process']),'terminal phase lacks actual held wait0')
+    for source in p['files']:
+        row=target_rows[source['path']];target=PAYLOAD/source['path'].lstrip('/')
+        need(row['target_path']==str(target) and row['bytes']==source['bytes'] and row['sha256']==source['sha256'],
+             'terminal target member binding differs')
+        s=target.lstat()
+        need(target.resolve()==target and stat.S_ISREG(s.st_mode) and s.st_uid==1002 and
+             (s.st_ino,s.st_dev,s.st_size,s.st_mtime_ns)==tuple(row[k] for k in ('inode','device','bytes','mtime_ns')),
+             'terminal target member missing or changed')
+    actual=set()
+    for target in PAYLOAD.rglob('*'):
+        s=target.lstat();need(stat.S_ISREG(s.st_mode) or stat.S_ISDIR(s.st_mode),'unsafe terminal target entry')
+        if stat.S_ISREG(s.st_mode):actual.add(str(target))
+    need(actual=={x['target_path'] for x in complete['files']},'terminal payload fileset differs')
+    return complete
 
 
 def inspect(commit):
@@ -418,17 +488,9 @@ def inspect(commit):
             with path.open('rb') as f:f.seek(max(0,path.stat().st_size-4096));tail=f.read().decode(errors='replace')
             out[name]=dict(bytes=path.stat().st_size,tail=tail)
     if result and result['exit_code']==0:
-        need(result['status']=='ACTUAL_HELD_REMOTE_RESERVE_WORKER_COMPLETED0' and
-             result['actual_child_exit_code']==0 and result['actual_supervisor']==binding['actual_process'] and
-             result['actual_worker']==out.get('worker',{}).get('process') and
-             digest(CONTROL/'complete.json')==result['complete_sha256'],'held complete result or bytes differ')
-        complete=read_owned(CONTROL/'complete.json',1002)
-        need(complete['status']==STATUS and complete['verified_bytes']==p['total_bytes'] and
-             complete['verified_files']==len(p['files']) and complete['source_commit']==commit and
-             complete['plan_sha256']==PLAN_SHA and complete['actual_process']==result['actual_worker'] and
-             complete['source_cleanup_performed'] is False and complete['deletion_authorized'] is False,
-             'terminal reserve scope incomplete')
+        verify_terminal_metadata(p,commit,claim,binding,result,out.get('worker',{}).get('process'))
         out['complete_sha256']=result['complete_sha256']
+        out['current_target_metadata_full_set_verified']=True
         out['actual_terminal_accepted']=not out['actual_live_birth'] and not out.get('worker',{}).get('live',True)
     return out
 

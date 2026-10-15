@@ -105,13 +105,20 @@ def main():
         args+=['python3',str(r.TARGET/'source'/a.commit/r.RELATIVE),a.mode,'--commit',a.commit]
         command=' '.join(shlex.quote(x) for x in args)
         data=credential()+'\n' if a.mode in ('preflight','start') else ''
-    result=ssh(command,data);data=None
-    observation=dict(mode=a.mode,source_commit=a.commit,returncode=result.returncode,
-        stdout=result.stdout,stderr=result.stderr,epoch=time.time(),source_cleanup_performed=False)
+    try:
+        result=ssh(command,data)
+        observation=dict(mode=a.mode,source_commit=a.commit,returncode=result.returncode,
+            stdout=result.stdout,stderr=result.stderr,epoch=time.time(),source_cleanup_performed=False)
+    except subprocess.TimeoutExpired as exc:
+        def decoded(value):return value.decode(errors='replace') if isinstance(value,bytes) else (value or '')
+        observation=dict(status='UNKNOWN_NO_REPLAY',mode=a.mode,source_commit=a.commit,returncode=None,
+            stdout=decoded(exc.stdout),stderr=decoded(exc.stderr),epoch=time.time(),source_cleanup_performed=False,
+            next_action='Inspect the same remote claim/process/preflight; timeout is not terminal and never authorizes replay')
+    finally:data=None
     a.audit_dir.mkdir(parents=True,exist_ok=True)
     audit=a.audit_dir/('old-original-reserve-'+a.mode+'-'+str(time.time_ns())+'.json')
     audit.write_text(json.dumps(observation,ensure_ascii=False,indent=2)+'\n')
-    r.need(result.returncode==0,'actual remote '+a.mode+' failed; evidence '+str(audit))
+    r.need(observation['returncode']==0,'actual remote '+a.mode+' incomplete or failed; inspect evidence '+str(audit))
     value=json.loads(result.stdout)
     if a.mode=='publish':value={k:value[k] for k in ('status','commit','source','file_count','archive_sha256','checked_unix')}
     print(json.dumps(dict(audit=str(audit),observed=value),ensure_ascii=False),flush=True)
