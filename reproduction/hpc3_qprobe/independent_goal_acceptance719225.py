@@ -228,6 +228,14 @@ def ea_evidence(ea, publication_proof):
          goal.get('status') == GOAL_STATUS and goal.get('run_id') == RUN and
          goal.get('completed_outer') == 200 and goal.get('update201_performed') is False,
          'EA actual full CPU consumer/goal binding differs')
+    audit_base, native, native_file, accepted_file, actual = native_evidence(goal, binding)
+    return audit_base, native, dict(claim=claim_file, binding=binding_file, goal=goal_file,
+        accepted=accepted_file, native=native_file, accounting=actual,
+        result=result_file, process_file=process_file, process=process)
+
+
+def native_evidence(goal, binding):
+    """The same actual native4/no-new-work gates for either CPU final route."""
     audit_base = Path(binding['audit_base'])
     need(audit_base.is_absolute() and audit_base.resolve() == audit_base and
          audit_base.parent == ROOT.parent and audit_base not in (BASE, OLD_BASE), 'actual final audit base unsafe')
@@ -248,9 +256,69 @@ def ea_evidence(ea, publication_proof):
     prior = binding.get('actual_native_audit_accounting') or {}
     need(prior.get('job') == actual['job'] and prior.get('state') == 'COMPLETED' and prior.get('exit_code') == '0:0' and
          prior.get('raw', '').strip() == actual['raw'].strip(), 'EA native accounting differs from actual job')
-    return audit_base, native, dict(claim=claim_file, binding=binding_file, goal=goal_file,
-        accepted=accepted_file, native=native_file, accounting=actual,
-        result=result_file, process_file=process_file, process=process)
+    return audit_base, native, native_file, accepted_file, actual
+
+
+def recovery_options(recovery_commit, followthrough_commit):
+    need((recovery_commit is None) == (followthrough_commit is None),
+         'explicit recovery requires both structural and held followthrough source commits')
+    if recovery_commit is not None:
+        need(all(isinstance(value, str) and re.fullmatch('[0-9a-f]{40}', value)
+                 for value in (recovery_commit, followthrough_commit)), 'exact recovery source pins required')
+
+
+def producer_acceptance(recovery_commit=None):
+    if recovery_commit is None:
+        return completed('719225'), None
+    from reproduction.hpc3_qprobe.final_control import final_producer
+    run, binding, actual, reference = final_producer(BASE, recovery_commit=recovery_commit)
+    need(run['run_id'] == RUN and binding['producer_job'] == '719225' and reference is not None and
+         reference['commit'] == recovery_commit and reference['original_producer_state'] == 'FAILED' and
+         reference['original_producer_exit_code'] == '1:0', 'typed failed full200 producer binding differs')
+    return dict(job='719225', state='FAILED', exit_code='1:0', raw=actual), reference
+
+
+def recovery_evidence(recovery_commit, followthrough_commit, reference):
+    helper, source = load_fixed(followthrough_commit, 'recovery_followthrough719225', 'ctl')
+    held = helper.consume(followthrough_commit, recovery_commit)
+    need(held.get('status') == helper.HELD_STATUS and held.get('source') == source and
+         type(held.get('actual_child_exit_code')) is int and held['actual_child_exit_code'] == 0 and
+         held.get('producer_final_cpu_recovery') == reference and
+         held.get('original_accounting_remains_failed') is True and held.get('goal_complete') is False and
+         held.get('full_objective_accepted') is False and
+         held.get('independent_teacher_raw_final_consumer_still_required') is True,
+         'recovery final CPU consumer lacks its actual typed held0/full200 boundary')
+    directory = ROOT/'followthrough/recovery719225-finalcpu-20261015'
+    need(helper.DIRECTORY == directory, 'recovery CPU consumer scope differs')
+    claim, claim_file = document(directory/'claim.json')
+    result, result_file = document(directory/'result.json')
+    process, process_file = document(directory/'process.json'); child, child_file = document(directory/'child.json')
+    goal, goal_file = document(directory/'goal-acceptance.json')
+    binding, binding_file = document(directory/'final-consumer-binding.json')
+    need(claim.get('source') == source and claim.get('recovery_commit') == recovery_commit and
+         claim.get('admission', {}).get('producer_final_cpu_recovery') == reference and
+         held['result_path'] == str(directory/'result.json') and held['result_sha256'] == result_file['sha256'] and
+         held['goal_acceptance']['sha256'] == goal_file['sha256'] and
+         held['consumer_binding']['sha256'] == binding_file['sha256'] and
+         result.get('process') == process and result.get('child') == child and
+         binding.get('actual_process') == child and binding.get('helper_commit') == followthrough_commit and
+         binding.get('recovery_commit') == recovery_commit and binding.get('full_cpu_consumer_returned') is True and
+         binding.get('goal_sha256') == goal_file['sha256'] and
+         goal.get('status') == GOAL_STATUS and goal.get('run_id') == RUN and goal.get('completed_outer') == 200 and
+         goal.get('update201_performed') is False and goal.get('producer_final_cpu_recovery') == reference and
+         goal.get('original_producer_accounting_remains_failed') is True,
+         'separate recovery claim/held result/goal/binding bytes differ')
+    audit_base, native, native_file, accepted_file, actual = native_evidence(goal, binding)
+    need(str(audit_base) == held['audit_base'], 'recovery held native audit base differs')
+    original_anchors = list(held['original_ea']['files'].values())
+    return audit_base, native, dict(kind='ACTUAL_SEPARATE_HELD_RECOVERY_CPU_CONSUMER', source=source,
+        recovery_commit=recovery_commit, followthrough_commit=followthrough_commit,
+        producer_final_cpu_recovery=reference, original_EA_failure=held['original_ea'],
+        original_producer_accounting_remains_failed=True, actual_child_exit_code=0,
+        claim=claim_file, binding=binding_file, goal=goal_file, accepted=accepted_file, native=native_file,
+        accounting=actual, result=result_file, process_file=process_file, process=child,
+        additional_anchors=[child_file, held['output'], reference['result'], reference['output'],
+            reference['structural_acceptance']]+original_anchors)
 
 
 def bound_record(record, expected, *, private=False):
@@ -404,8 +472,37 @@ def raw_evidence(raw):
         actual_record_list_sha256=final['record_list_sha256'], fresh_original_proofs_sha256=canonical_sha(originals)), tasks
 
 
+def raw_final_evidence(raw, raw_publication, commit, recovery_commit=None):
+    if recovery_commit is None:
+        proof, tasks = raw_evidence(raw)
+        need(proof['source'] == raw_publication, 'normal RAW source differs')
+        return proof, tasks
+    terminal, _ = document(raw.DIRECTORY/'result.json')
+    if terminal.get('status') == raw.STATUS:
+        proof, tasks = raw_evidence(raw)
+        need(proof['source'] == raw_publication, 'original successful RAW source differs')
+        return proof, tasks
+    from reproduction.hpc3_qprobe import raw_terminal_reaggregation719225 as recon
+    need(terminal.get('status') == recon.FAILED_STATUS,
+         'explicit recovery cannot replace live/unknown/differently stopped RAW evidence')
+    proof = recon.verify(commit, recovery_commit)
+    need(proof.get('status') == recon.STATUS and proof.get('source', {}).get('commit') == commit and
+         proof.get('original_raw_source') == raw_publication and
+         proof.get('producer_final_cpu_recovery', {}).get('commit') == recovery_commit and
+         proof.get('original_raw_status_remains_failed') is True and proof.get('goal_complete') is False and
+         proof.get('full_objective_accepted') is False and
+         proof.get('independent_final_actual_held_wait0_still_required') is True and
+         proof.get('precise_original_aggregation_call_failure_proven') is False and
+         proof.get('actor_model_loaded') is False and all(type(proof.get(key)) is int and proof[key] == 0
+             for key in ('decode_reexecuted', 'generated_trajectories', 'actor_head_or_scheduler_updates',
+                         'receipt_or_cache_or_claim_writes', 'process_or_job_submissions')),
+         'fresh recovered RAW conjunction has another source, scope or unproved original success')
+    return proof, proof['tasks']
+
+
 def teacher_evidence(repository, old_run):
     baseline, baseline_file = document(repository/BASELINE)
+    retained = SharedReads(); retained.remember(baseline_file)
     payload = {k: baseline[k] for k in BASELINE_FIELDS}
     need(canonical_sha(payload) == BASELINE_PAYLOAD_SHA, 'authentic teacher decode baseline changed')
     measured = payload[BASELINE_FIELDS[0]]; cross = payload[BASELINE_FIELDS[1]]
@@ -416,6 +513,7 @@ def teacher_evidence(repository, old_run):
     root = Path(old_run['question_probe']['teacher_warmup_cache']).resolve(strict=True)
     need(root.is_relative_to(ROOT.parent) and root != ROOT.parent, 'teacher cache escaped experiments')
     identity, identity_file = document(root/'identity.json'); complete, complete_file = document(root/'complete.json')
+    retained.remember(identity_file); retained.remember(complete_file)
     need(identity['training_world_size'] == 4 and identity['seed'] == old_run['question_probe']['seed'] and
          len(identity['questions']) == 5120 and len({q['qid'] for q in identity['questions']}) == 5120 and
          identity['model_revision'] == old_run['model_revision'] == OFFICIAL_MODEL_REVISION and
@@ -423,8 +521,8 @@ def teacher_evidence(repository, old_run):
          identity['train_parquet_sha256'] == old_run['input_sha256']['train.parquet'] and
          complete['identity_sha256'] == identity_file['sha256'] and complete['questions'] == 5120 and
          complete['trajectories'] == 25600 and len(complete['chunks']) == 10, 'teacher namespace/full completion differs')
-    train_sha = read_file(OLD_BASE/'data/train.parquet', expected_sha=old_run['input_sha256']['train.parquet'],
-                          alias=True, shared=True)[1]['sha256']
+    train_sha = retained.read(OLD_BASE/'data/train.parquet', old_run['input_sha256']['train.parquet'],
+                             alias=True, shared=True)['sha256']
     from search_g1.qprobe_warmup import verify_frozen, moments
     groups = []; trajectory_ids = []; proof_rows = []; counts = {str(k): 0 for k in range(6)}
     for index, previous in enumerate(measured):
@@ -439,6 +537,7 @@ def teacher_evidence(repository, old_run):
                  'actual_frozen_four_rank_and_raw_provenance_equal')), 'authentic teacher decode flags differ')
         chunk_path = root/('chunk-%02d.json' % index)
         chunk, chunk_file = document(chunk_path)
+        retained.remember(chunk_file)
         need(chunk_file['sha256'] == previous['chunk_sha256'] == complete['chunks'][index]['sha256'] and
              complete['chunks'][index]['relative_path'] == chunk_path.name and chunk['index'] == index and
              len(chunk['groups']) == 512, 'teacher label/chunk bytes changed since actual decode')
@@ -446,6 +545,7 @@ def teacher_evidence(repository, old_run):
         need(relative.name == str(relative) and previous['raw_sha256'] == raw['sha256'] and
              previous['raw_bytes'] == raw['bytes'], 'authentic teacher raw identity differs')
         raw_file = read_file(root/relative, expected_sha=previous['raw_sha256'], expected_bytes=previous['raw_bytes'])[1]
+        retained.remember(raw_file)
         verify_frozen(chunk['frozen_workers']['before'], chunk['frozen_workers']['after'], 4)
         expected_run = '0742d8e346284d6da9656a826ce14395' if index < 2 else RUN
         need(previous['teacher_run_id'] == expected_run, 'historical teacher producer was relabeled')
@@ -470,9 +570,10 @@ def teacher_evidence(repository, old_run):
     for mapping in (identity['scorer_sources'], identity['rollout_sources']):
         for name, sha in mapping.items():
             need(old_run['source_sha256'].get(name) == sha, 'teacher original source namespace differs')
-            read_file(ROOT/'source'/old_run['source_commit']/name, expected_sha=sha)
+            retained.read(ROOT/'source'/old_run['source_commit']/name, sha)
     for name in TOKENIZERS:
-        read_file(Path(old_run['initial_model'])/name, expected_sha=identity['model_files_sha256'][name], shared=True)
+        retained.read(Path(old_run['initial_model'])/name, identity['model_files_sha256'][name], shared=True)
+    retained.finish()
     return dict(baseline=baseline_file, authentic_original_summary_sha256=ORIGINAL_TEACHER_PROOF_SHA,
         authentic_payload_sha256=BASELINE_PAYLOAD_SHA, identity=identity_file, complete=complete_file,
         fresh_chunk_raw_proofs_sha256=canonical_sha(proof_rows), questions=5120, trajectories=25600,
@@ -480,23 +581,31 @@ def teacher_evidence(repository, old_run):
         historical_first1024_relabelled_as_current=False, regenerated_trajectories=0)
 
 
-def verify(commit):
+def verify(commit, *, recovery_commit=None, recovery_followthrough_commit=None):
     need(os.getuid() == OWNER and os.environ.get('CUDA_VISIBLE_DEVICES') == '' and
          os.environ.get('PYTHONDONTWRITEBYTECODE') == '1' and sys.dont_write_bytecode and
          all(os.environ.get(k) == '1' for k in CAPS), 'actual CPU-only owner/caps/no-bytecode required')
     # Fail before any heavy dependency/import/large source or evidence read.
     run, old_run, early = early_history()
-    producer_accounting = completed('719225')
+    recovery_options(recovery_commit, recovery_followthrough_commit)
+    producer_accounting, reference = producer_acceptance(recovery_commit)
     repository, own_publication = publication(commit)
     need(Path(__file__).resolve() == repository/'reproduction/hpc3_qprobe/independent_goal_acceptance719225.py' and
          os.environ.get('QPROBE_SOURCE') == str(repository), 'loaded independent immutable source differs')
-    ea, ea_publication = load_fixed(EA, 'followthrough719225', 'control')
-    audit_base, native, ea_proof = ea_evidence(ea, ea_publication)
+    if recovery_commit is None:
+        ea, ea_publication = load_fixed(EA, 'followthrough719225', 'control')
+        audit_base, native, ea_proof = ea_evidence(ea, ea_publication)
+    else:
+        audit_base, native, ea_proof = recovery_evidence(recovery_commit, recovery_followthrough_commit, reference)
     from reproduction.hpc3_qprobe.verify_goal import verify as verify_goal
-    fresh = verify_goal(BASE, audit_base, publish_receipt=False)
+    extra = {} if recovery_commit is None else dict(recovery_commit=recovery_commit)
+    fresh = verify_goal(BASE, audit_base, publish_receipt=False, **extra)
     need(fresh['status'] == GOAL_STATUS and fresh['run_id'] == RUN and fresh['completed_outer'] == 200 and
          fresh['update201_performed'] is False and fresh['actual_attempts'] >= 200 and
          fresh['bitwise_continuation_of_failed_execution'] is False, 'fresh full goal/failed-boundary scope differs')
+    need(fresh.get('producer_final_cpu_recovery') == reference and
+         (recovery_commit is None or fresh.get('original_producer_accounting_remains_failed') is True),
+         'fresh independent goal uses another normal/recovery boundary')
     # Reconsume the native producer's actual two readbacks, never reload CUDA.
     from reproduction.hpc3_qprobe.final_restore_audit import verify_two_boundaries
     allocation, _ = document(audit_base/'logs/native-allocation-admission.json')
@@ -535,38 +644,57 @@ def verify(commit):
         expected = feature_manifest['files'][name]
         feature_proofs.append(read_file(feature_root/name, expected_sha=expected['sha256'], expected_bytes=expected['bytes'])[1])
     raw, raw_publication = load_fixed(RAW, 'raw_audit_followthrough719225', 'ctl')
-    raw_proof, tasks = raw_evidence(raw)
-    need(len(tasks) == fresh['actual_attempts'] and raw_proof['source'] == raw_publication,
+    raw_proof, tasks = raw_final_evidence(raw, raw_publication, commit, recovery_commit)
+    need(len(tasks) == fresh['actual_attempts'],
          'independent raw omitted or added normal-return attempts')
+    need(raw_proof.get('producer_final_cpu_recovery', reference) == reference,
+         'fresh RAW uses another typed structural recovery')
     teacher = teacher_evidence(repository, old_run)
     # Prevent cross-gate time-of-check substitution; all terminal small anchors
     # are stable while the heavy full reads complete.
     for row in [early['current_updates'], early['original_updates'], early['current_manifest'],
                 early['original_manifest'], ea_proof['claim'], ea_proof['binding'], ea_proof['goal'],
                 ea_proof['accepted'], ea_proof['native'], ea_proof['result'], ea_proof['process_file'],
-                audit_manifest, raw_proof['result'], raw_proof['claim']]+feature_proofs[:1]:
-        read_file(row['path'], expected_sha=row['sha256'], expected_bytes=row['bytes'])
+                audit_manifest, raw_proof['result'], raw_proof['claim']]+feature_proofs[:1]+ea_proof.get('additional_anchors', [])+list(
+                    raw_proof.get('original_failure', {}).get('original_file_anchors', {}).values()):
+        read_file(row['path'], expected_sha=row['sha256'], expected_bytes=row.get('bytes'))
     for row in feature_proofs:
+        read_file(row['path'], expected_sha=row['sha256'], expected_bytes=row['bytes'])
         need(signature(Path(row['resolved_path']).lstat()) == tuple(row['stat_identity']),
              'native fixed feature cache changed during final conjunction')
-    completed('719225'); completed(native['slurm_job_id'])
-    return dict(status=STATUS, run_id=RUN, producer_job='719225', producer_commit=PRODUCER,
+    _, after_reference = producer_acceptance(recovery_commit)
+    need(after_reference == reference, 'typed producer changed during independent final conjunction')
+    if recovery_commit is not None:
+        _, _, after = recovery_evidence(recovery_commit, recovery_followthrough_commit, reference)
+        need(all(after[key] == ea_proof[key] for key in ('source', 'claim', 'binding', 'goal', 'result',
+             'process_file', 'additional_anchors')), 'actual held recovery changed during independent final conjunction')
+    completed(native['slurm_job_id'])
+    result = dict(status=STATUS, run_id=RUN, producer_job='719225', producer_commit=PRODUCER,
         original_prefix=dict(job='718650', source_commit=OLD_PRODUCER, first=1, last=5),
         current_suffix=dict(first=6, last=200), completed_outer=200, world_size=4, source=own_publication,
-        producer_accounting=producer_accounting, actual_EA_full_CPU_consumer=ea_proof,
+        producer_accounting=producer_accounting,
         fresh_full_goal=fresh, independent_all_normal_return_raw=raw_proof, authentic_teacher=teacher,
         actual_native_two_readbacks_reconsumed=True, update201_performed=False,
         bitwise_continuation_of_failed_execution=False, receipt_or_cache_or_claim_writes=0,
         training_or_helper_or_native_job_submissions=0, actor_model_loaded=False, generated_trajectories=0,
         new_actor_head_or_scheduler_updates=0, goal_complete=False, checked_unix=time.time(),
         scope='pure final evidence conjunction; root alone marks the authorized goal complete after reviewing stdout')
+    if recovery_commit is None:
+        result['actual_EA_full_CPU_consumer'] = ea_proof
+    else:
+        result.update(recovery_commit=recovery_commit, recovery_followthrough_commit=recovery_followthrough_commit,
+            producer_final_cpu_recovery=reference, original_producer_accounting_remains_failed=True,
+            actual_recovery_full_CPU_consumer=ea_proof, original_EA_status_remains_failed=True)
+    return result
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--commit', required=True)
+    parser.add_argument('--recovery-commit'); parser.add_argument('--recovery-followthrough-commit')
     args = parser.parse_args()
-    print(json.dumps(verify(args.commit), ensure_ascii=False, allow_nan=False), flush=True)
+    print(json.dumps(verify(args.commit, recovery_commit=args.recovery_commit,
+        recovery_followthrough_commit=args.recovery_followthrough_commit), ensure_ascii=False, allow_nan=False), flush=True)
 
 
 if __name__ == '__main__':

@@ -225,3 +225,29 @@ does not claim that the unavailable GPU context query succeeded. Current
 telemetry records bounded query failures as durable gaps, requires genuine
 successful samples, and retains strict device/UUID/schema/durability and
 training-evidence checks. Persistent query failure remains a failure.
+
+## Independent final consumer after an eligible terminal CPU failure
+
+The independent final reader and its once-only holder accept an explicit pair
+of `--recovery-commit` and `--recovery-followthrough-commit` pins. Omitting both
+keeps the original successful-producer route. Passing only one is rejected.
+Recovery admission first requires actual outer200, the narrowly qualified
+original producer failure, the separately held structural-recovery consumer,
+and the separately held recovery followthrough with its new goal receipt and
+actual native4 audit. The failed producer and original EA result retain their
+failed status; the new consumer cannot label them successful.
+
+An original RAW success is consumed directly. Only an explicitly qualified
+terminal original RAW read failure can use the fresh pure-CPU reaggregation;
+live, unknown and unrelated failures refuse this route. Its original failure
+bytes are copied into the independent once scope and verified before launch,
+after the child returns and when consuming the held result. Both supervisor
+and child must be terminal, with the actual integer child wait status0 and
+unchanged complete stdout/stderr hashes. The final reader rechecks the typed
+producer reference and all recovery/native/raw anchors at its ending boundary.
+
+This route retains the full teacher, raw/private, checkpoint transport, native
+restore and no-update201 conjunction. It does not submit training, regenerate
+labels, change any healthy run or mark the root goal complete. A missing200
+refuses before creating its scope. The same once path covers normal and
+explicit recovery intents; an existing unknown scope is never replayed.
