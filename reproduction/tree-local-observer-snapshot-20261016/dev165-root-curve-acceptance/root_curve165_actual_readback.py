@@ -1,0 +1,57 @@
+from pathlib import Path
+import json,hashlib,datetime,csv,io,re,importlib.util,time
+w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013';ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+def read(p):return json.loads(p.read_bytes())
+def pin(p,sha=None,size=None,mirror=True):
+ raw=p.read_bytes();hh=hashlib.sha256(raw).hexdigest()
+ if sha:assert hh==sha,p
+ if size is not None:assert len(raw)==size,p
+ if mirror:
+  for m in ms:assert (m/p.relative_to(b)).read_bytes()==raw,p
+ return dict(path=str(p),bytes=len(raw),sha256=hh)
+cp=b/'LEARNING_CURVE_COMPLETE_THROUGH165.json';op=b/'LEARNING_CURVE_COMPLETE_THROUGH160.json';c=read(cp);o=read(op)
+assert c['training_points'][:160]==o['training_points'] and c['completed_dev512_points'][:32]==o['completed_dev512_points']
+assert len(c['training_points'])==165 and len(c['completed_dev512_points'])==33
+def segments(p,key):
+ s=p.read_text();match=re.search('"'+key+'"\\s*:\\s*\\[',s);assert match
+ i=match.end();out=[];dec=json.JSONDecoder()
+ while True:
+  while s[i].isspace() or s[i]==',':i+=1
+  if s[i]==']':return out
+  _,end=dec.raw_decode(s,i);out.append(s[i:end]);i=end
+assert segments(cp,'training_points')[:160]==segments(op,'training_points')
+assert segments(cp,'completed_dev512_points')[:32]==segments(op,'completed_dev512_points')
+oldcsv=(b/'LEARNING_CURVE_COMPLETE_THROUGH160.csv').read_bytes();newcsv=(b/'LEARNING_CURVE_COMPLETE_THROUGH165.csv').read_bytes()
+assert len(oldcsv)==168201 and hashlib.sha256(oldcsv).hexdigest()=='8c9f755667da83de9b5cebc9a0c28256eb1bde1d60dbfac75dceb0dc96f68f1a'
+assert newcsv.startswith(oldcsv) and len(list(csv.DictReader(io.StringIO(newcsv.decode()))))==198
+bp=b/'LEARNING_CURVE_THROUGH165_COST_SUPPLEMENT_BINDING.json';binding=read(bp);assert binding['through_outer']==165 and binding['actual_remote_incremental_collection_invocations']==1 and binding['preceding_pending_remote_operations'] is False
+refs={k:pin(Path(x['path']),x['sha256'],x['bytes'],not k.startswith('source_poll') and Path(x['path']).is_relative_to(b)) for k,x in binding['references'].items()}
+assert refs['curve']==pin(cp,'754d0ef57d8182dcda085ecab576051715e039a50d05e30878d4b3c0c19834cc',942131)
+new=[]
+for n in range(161,166):
+ t=next(x for x in c['training_points'] if x['outer']==n);fp=b/f'FULL_OUTER{n}_PROGRESS_RECEIPT.json';f=read(fp);pp=w/t['source_poll'];p=read(pp);m=f['iteration_metrics']
+ assert str(pp)==f['input_bindings']['poll']['path'] and hashlib.sha256(pp.read_bytes()).hexdigest()==f['input_bindings']['poll']['sha256']
+ assert next(x for x in p['iteration_metrics'] if int(x['step'])==n)==m
+ for k,mk in [('pure_intra_adv_population_variance','tree_variance/intra_adv_population_variance'),('raw_within_tree_reward_population_variance','tree_variance/within_root_raw_reward_population_variance'),('total_actual_adv_population_variance','tree_variance/group_actual_adv_population_variance'),('training_reward_mean','critic/score/mean'),('step_wall_seconds','timing_s/step')]:assert t[k]==m[mk],(n,k)
+ assert t['actual_cumulative_adam_calls_per_rank']==f['per_rank_actual_total_adam'] and t['actual_outer_adam_calls_per_rank']==f['actual_outer_successful_writes_per_rank']
+ assert t['source_commit']==f['source_commit'] and t['config_sha256']==f['config_sha256']
+ new.append(dict(outer=n,full=pin(fp,t['source_receipt_sha256']),poll=pin(pp,t['source_poll_sha256'],mirror=False)))
+full=read(b/'FULL_OUTER165_PROGRESS_RECEIPT.json');dev=next(x for x in c['completed_dev512_points'] if x['outer']==165);actual=full['actual_dev512']
+assert dev['rows']==actual['rows']==512 and dev['ledger_sha256']==actual['ledger_sha256'] and dev['f1']==actual['metrics']['val/f1/all'] and dev['em']==actual['metrics']['val/em/all']
+sp=w/'work/tree-speed-repair-20261008/nested-dev-cumulative-parts-source/reproduction/tree-eval-resume-20261013/local-control-backup/collect_nested_dev_costs.py'
+assert hashlib.sha256(sp.read_bytes()).hexdigest()=='545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0'
+spec=importlib.util.spec_from_file_location('published_dev_decoder',sp);mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+d=json.loads(mod.read_bound(b,ms,dict(path='DEV5_165_NATIVE_COST_SUPPLEMENT.json',bytes=7041,sha256='4dc7dbab1990b9088f272b6b77b63eaaf0020bdaaa1f19c4432e709b42d3ac6c')));rows=mod.rows_from_summary(b,ms,d);old=read(b/'DEV5_160_NATIVE_COST_SUPPLEMENT.json');oldrows=mod.rows_from_summary(b,ms,old)
+assert len(rows)==33 and len(oldrows)==32 and rows[:32]==oldrows
+parts=[pin(b/x['file'],x['sha256'],x['bytes']) for x in d['rows']['parts']]
+costparts=[pin(Path(x['path']),x['sha256'],x['bytes']) for x in binding['cumulative_cost_part_references']]
+rootdevpath=b/'ROOT_DEV165_NATIVE_COST_ACTUAL_READBACK.json';rd=read(rootdevpath)
+assert len(costparts)==rd['actual_ref_counts']['cum_parts']
+row=rows[-1];assert row['outer']==165 and row['ledger_sha256']==dev['ledger_sha256']
+control=read(Path(refs['dev165_original_control_summary']['path']));assert control['ledger_sha256']==row['ledger_sha256'] and control['metrics']==actual['metrics']
+rootdev=pin(rootdevpath,'ed1c63d0b2abee62f3696b2b3a906c5d792c917dc036670bf7d4b2cc1293f66d',68410);assert refs['root_dev_native_cost_readback']==rootdev
+r=dict(schema='root_curve_and_dev_native_cost_through165_actual_paged_readback_v2',created_at_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),executor='/root',scope='Actual local immutable-source and first-FULL original-poll reconciliation; complete paged dev rows read through published decoder; no new remote read/evaluation/test/code review/tensor access.',references=refs,curve165=refs['curve'],csv165=refs['csv'],old_curve160=pin(op,'145e00c24b025a07994aa3e97a0d8a3a45ee444b8862c9fd85fab2e89594a360',891886),old160_training_dev_objects_raw_fragments_and_CSV168201_prefix_preserved=True,new161_165_bindings=new,actual_completed_dev165=dev,new_dev5_165=refs['dev_native_cost'],rows_storage=d['rows']['storage'],actual_decoded_rows=33,all_complete_rows_parts=parts,cumulative_cost_complete_field_parts=costparts,old32_dev_control_rows_unchanged=True,actual_dev165_control=refs['dev165_original_control_summary'],root_dev165_actual_readback=rootdev,cost_supplement_binding=pin(bp,'8f2e18efb8411c8d60a51fcf9e584b459447cdacb004c5efe076990b5e184cce',28161),native=refs['native165_metadata'],actual_native_counters=row['counters'],observer_wall_seconds=row['wall_seconds'],fullmetric_dev_seconds=full['normal_dev512_wall_seconds'],wall_CPU_added_again=False,both_mirrors_actual_byte_readback=True,goal_status='active',goal_complete=False)
+rp=b/'ROOT_CURVE_DEV_COST_THROUGH165_ACTUAL_READBACK.json';assert not rp.exists();raw=(json.dumps(r,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode()
+for p in [rp,*[m/rp.name for m in ms]]:p.write_bytes(raw)
+first=pin(rp);time.sleep(1);assert pin(rp)==first
+print(json.dumps(dict(root_readback=first)))
