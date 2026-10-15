@@ -22,7 +22,7 @@ from reproduction.common8.precision_evidence import PrecisionObservation, verify
 LOGPROB_ATOL = 0.05  # Original unchanged backend parity bound, not a training hyperparameter.
 
 
-def compare(old, reference, mask, raw_tokens, raw_logprobs, responses):
+def compare(old, reference, mask, raw_tokens, raw_logprobs, responses, *, require_parity=True):
     old, reference, mask = old.cpu(), reference.cpu(), mask.cpu()
     raw_tokens, raw_logprobs, responses = raw_tokens.cpu(), raw_logprobs.cpu(), responses.cpu()
     assert old.shape == reference.shape == mask.shape == responses.shape
@@ -40,14 +40,20 @@ def compare(old, reference, mask, raw_tokens, raw_logprobs, responses):
     actor_ref = (old[valid].float() - reference[valid].float()).abs()
     actor_rollout = (old[:, :width][raw_valid].float() - raw_logprobs[raw_valid].float()).abs()
     result = dict(actor_reference_max_abs=float(actor_ref.max()),
-                  actor_vllm_max_abs=float(actor_rollout.max()), tolerance=LOGPROB_ATOL,
+                  actor_vllm_max_abs=float(actor_rollout.max()), tolerance=LOGPROB_ATOL if require_parity else None,
                   valid_tokens_per_question=mask.sum(-1).tolist())
-    assert result['actor_reference_max_abs'] <= LOGPROB_ATOL, result
-    assert result['actor_vllm_max_abs'] <= LOGPROB_ATOL, result
+    if require_parity:
+        assert result['actor_reference_max_abs'] <= LOGPROB_ATOL, result
+        assert result['actor_vllm_max_abs'] <= LOGPROB_ATOL, result
+    else:
+        result.update(cross_backend_difference_is_diagnostic=True,
+            behavior_probability_policy='sampling_journal_no_extra_hf_forward')
     return result
 
 
 def aggregate(proofs, run_id, job_id, phase, ids, uuids, run=None):
+    from reproduction.hpc3_dynrpo_periodic.smoke_identity import active
+    journal_smoke=active(run)
     size=len(uuids)
     assert size in (4,8) and len(proofs) == size
     per_rank=64//size
@@ -63,10 +69,19 @@ def aggregate(proofs, run_id, job_id, phase, ids, uuids, run=None):
         assert proof['sync_load_format'] == 'dtensor'
         verify_precision(proof['runtime_precision'],run)
         assert len(proof['question_ids']) == per_rank
-        assert proof['parity']['tolerance'] == LOGPROB_ATOL
+        if journal_smoke:
+            assert proof['exact_model_identity']['actor_reference_masters_equal'] is True
+            assert proof['exact_model_identity']['masters_unchanged_after_smoke'] is True
+            assert proof['exact_model_identity']['vllm']['accepted'] is True
+            assert proof['exact_model_identity']['vllm']['independent_reader'] is True
+            assert proof['parity']['tolerance'] is None
+            assert proof['parity']['cross_backend_difference_is_diagnostic'] is True
+        else:
+            assert proof['parity']['tolerance'] == LOGPROB_ATOL
         assert len(proof['parity']['valid_tokens_per_question']) == per_rank
         assert all(n > 0 for n in proof['parity']['valid_tokens_per_question'])
-        assert all(0 <= proof['parity'][k] <= LOGPROB_ATOL for k in
+        assert all(0 <= proof['parity'][k] and __import__('math').isfinite(proof['parity'][k]) and
+                   (journal_smoke or proof['parity'][k] <= LOGPROB_ATOL) for k in
                    ('actor_reference_max_abs', 'actor_vllm_max_abs'))
         all_ids.extend(proof['question_ids']); config_hashes.add(proof['resolved_config_sha256'])
     assert all_ids == ids and len(ids) == len(set(ids)) == 64
@@ -153,6 +168,14 @@ def main(base, phase):
         reference.init_model()
         # Installed after init/profiling; only actual synced model forwards are observed.
         precision = PrecisionObservation(actor, reference)
+        from reproduction.hpc3_dynrpo_periodic.smoke_identity import active,master_identity,qwen_weight_readback
+        journal_smoke=active(run)
+        initial_masters=None
+        if journal_smoke:
+            initial_masters=dict(actor=master_identity(actor.actor_module_fsdp),
+                                 reference=master_identity(reference.ref_module_fsdp))
+            collective(initial_masters['actor']==initial_masters['reference'],
+                       'Actual initial actor/reference FP32 master shards differ')
         for role, module in (('actor', actor.actor_module_fsdp), ('reference', reference.ref_module_fsdp)):
             require_finite({n: p.detach() for n, p in module.named_parameters()},
                            stage='common8-smoke-initial-' + role, process_group=module.process_group)
@@ -166,7 +189,7 @@ def main(base, phase):
                                      meta_info={'do_sample': False, 'recompute_log_prob': True,
                                                 'common8_model_smoke': True})
         engine = actor.rollout.inference_engine
-        capture, sync_calls = [], []
+        capture, sync_calls, weight_readbacks = [], [], []
         original_generate, original_sync = engine.generate, engine.sync_model_weights
         def generate(*args, **kwargs):
             output = original_generate(*args, **kwargs)
@@ -174,7 +197,12 @@ def main(base, phase):
             return output
         def sync(*args, **kwargs):
             sync_calls.append(kwargs.get('load_format'))
-            return original_sync(*args, **kwargs)
+            result=original_sync(*args, **kwargs)
+            if journal_smoke:
+                weights=args[0] if args else kwargs['actor_weights']
+                model=engine.llm_engine.model_executor.worker.model_runner.model
+                weight_readbacks.append(qwen_weight_readback(weights,model,actor.actor_module_fsdp.module.config))
+            return result
         # Observation hooks on this disposable smoke worker; no active trainer is modified.
         engine.generate, engine.sync_model_weights = generate, sync
         try:
@@ -197,10 +225,19 @@ def main(base, phase):
         output = output.to('cpu')
         collective(len(capture) == len(sync_calls) == 1, 'Did not observe exactly one actual rollout and weight sync')
         response_width = output.batch['responses'].shape[-1]
+        exact_identity=None
+        if journal_smoke:
+            after=dict(actor=master_identity(actor.actor_module_fsdp),reference=master_identity(reference.ref_module_fsdp))
+            collective(after==initial_masters,'Initial smoke mutated actual model master parameters')
+            collective(len(weight_readbacks)==1 and weight_readbacks[0]['accepted'],
+                       'Actual vLLM synchronized BF16 weights differ from the actor')
+            exact_identity=dict(actor_reference_masters_equal=True,masters_unchanged_after_smoke=True,
+                master_shards=initial_masters,vllm=weight_readbacks[0])
         parity, error = None, None
         try:
             parity = compare(output.batch['old_log_probs'], ref.batch['ref_log_prob'],
-                             output.batch['attention_mask'][:, -response_width:], *capture[0], output.batch['responses'])
+                             output.batch['attention_mask'][:, -response_width:], *capture[0], output.batch['responses'],
+                             require_parity=not journal_smoke)
         except AssertionError as failure:
             error = str(failure)
             print('COMMON8_MODEL_PARITY_REJECTED=' + json.dumps(dict(rank=rank, error=error)), flush=True)
@@ -226,6 +263,7 @@ def main(base, phase):
                      internal_separate_logprob_max_abs=float(api_error.max()),
                      runtime_precision=runtime_precision,
                      parity=parity, resident_services_before_generation=services,
+                     exact_model_identity=exact_identity,
                      initial_parameters_finite=True, checked_unix=time.time(),
                      scope='64-question single-action greedy actual worker smoke; not agent EM or full training peak')
         with (root / f'rank-{rank}.json').open('x') as f:
