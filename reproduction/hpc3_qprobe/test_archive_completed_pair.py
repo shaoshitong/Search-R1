@@ -1,14 +1,65 @@
 """Byte-copy/relocation CPU tests; fixtures are text, no actual model states."""
 import copy
+import contextlib
+import io
+import json
 from pathlib import Path
+import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from reproduction.hpc3_qprobe.archive_completed_pair import copy_checked, destination, relocate, file_records
+from reproduction.hpc3_qprobe import archive_completed_pair as transport
 from search_g1.qprobe_features import sha_file
 
 
 class ArchiveTests(unittest.TestCase):
+    def measurement(self, results):
+        output=io.StringIO()
+        with patch.object(transport.subprocess,'run',side_effect=results) as run,contextlib.redirect_stdout(output):
+            value=transport.measured_owner_storage('fixture',5)
+        return value,run,[json.loads(line) for line in output.getvalue().splitlines()]
+
+    def test_complete_zero_error_measurement_admits_exact_bytes(self):
+        value,run,logs=self.measurement([subprocess.CompletedProcess([],0,'1234\t'+str(transport.ROOT.parent)+'\n','')])
+        self.assertEqual(value,1234);self.assertEqual(run.call_count,1)
+        self.assertTrue(logs[0]['accepted']);self.assertEqual(logs[0]['actual_returncode'],0)
+
+    def test_live_enoent_requires_new_complete_zero_error_walk(self):
+        error='du: cannot access '+str(transport.ROOT.parent)+"/cache/old': No such file or directory\n"
+        good='4321\t'+str(transport.ROOT.parent)+'\n'
+        value,run,logs=self.measurement([subprocess.CompletedProcess([],1,'999\tbad\n',error),
+                                       subprocess.CompletedProcess([],0,good,'')])
+        self.assertEqual(value,4321);self.assertEqual(run.call_count,2)
+        self.assertEqual(logs[0]['stderr'],error);self.assertFalse(logs[0]['accepted'])
+        self.assertTrue(logs[1]['accepted'])
+
+    def test_permission_malformed_and_mixed_errors_fail_without_retry(self):
+        root=str(transport.ROOT.parent)
+        for rc,stdout,stderr in [(1,'123\t'+root+'\n','du: cannot read '+root+'/private: Permission denied\n'),
+                                 (0,'123\t/other\n',''),(0,'123\t'+root+'\n','\n'),
+                                 (1,'','du: '+root+'/a: No such file or directory\ndu: Permission denied\n')]:
+            output=io.StringIO()
+            with self.subTest(stderr=stderr),patch.object(transport.subprocess,'run',return_value=
+                    subprocess.CompletedProcess([],rc,stdout,stderr)) as run,contextlib.redirect_stdout(output):
+                with self.assertRaises(ValueError):transport.measured_owner_storage('fixture',5)
+                self.assertEqual(run.call_count,1)
+                logged=json.loads(output.getvalue());self.assertEqual(logged['stderr'],stderr)
+                self.assertFalse(logged['accepted'])
+
+    def test_enoent_exhaustion_and_timeout_are_preserved_not_accepted(self):
+        error='du: '+str(transport.ROOT.parent)+'/gone: No such file or directory\n'
+        output=io.StringIO()
+        with patch.object(transport.subprocess,'run',return_value=subprocess.CompletedProcess([],1,'',error)) as run,contextlib.redirect_stdout(output):
+            with self.assertRaises(ValueError):transport.measured_owner_storage('fixture',5)
+            self.assertEqual(run.call_count,3)
+        self.assertEqual(len(output.getvalue().splitlines()),3)
+        output=io.StringIO()
+        with patch.object(transport.subprocess,'run',side_effect=subprocess.TimeoutExpired(['du'],1800,output=b'partial',stderr=b'error')),contextlib.redirect_stdout(output):
+            with self.assertRaises(subprocess.TimeoutExpired):transport.measured_owner_storage('fixture',5)
+        record=json.loads(output.getvalue());self.assertFalse(record['accepted']);self.assertIn('partial',record['stdout'])
+
     def test_two_independent_copies_and_actual_receipt_relocation(self):
         with tempfile.TemporaryDirectory() as folder:
             root=Path(folder);source=root/'source';source.mkdir()

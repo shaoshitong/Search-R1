@@ -9,6 +9,7 @@ import copy
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import time
@@ -82,6 +83,41 @@ def relocate(receipt, target_base):
     return value
 
 
+def measured_owner_storage(run_id, step):
+    """Only a complete zero-error walk admits copies; retain every failure.
+
+    Live cache entries can disappear during du. Retry at most three complete
+    walks for that exact ENOENT case, never subtract/ignore inaccessible files.
+    Permission, quota, malformed output and other failures remain failures.
+    """
+    command=['du','-s','-B1',str(ROOT.parent)]
+    for attempt in range(1,4):
+        started=time.time()
+        try:
+            measured=subprocess.run(command,capture_output=True,text=True,timeout=1800,
+                                    env=dict(os.environ,LC_ALL='C'))
+        except subprocess.TimeoutExpired as error:
+            print(json.dumps(dict(stage='archive_owner_storage_measurement_timeout',run_id=run_id,
+                step=step,attempt=attempt,started_unix=started,completed_unix=time.time(),
+                stdout=repr(error.stdout),stderr=repr(error.stderr),accepted=False)),flush=True)
+            raise
+        match=re.fullmatch(r'([0-9]+)\t'+re.escape(str(ROOT.parent))+r'\n?',measured.stdout)
+        accepted=measured.returncode==0 and measured.stderr=='' and match is not None
+        print(json.dumps(dict(stage='archive_owner_storage_measurement',run_id=run_id,step=step,
+            attempt=attempt,started_unix=started,completed_unix=time.time(),
+            actual_returncode=measured.returncode,stdout=measured.stdout,stderr=measured.stderr,
+            accepted=accepted)),flush=True)
+        if accepted:return int(match.group(1))
+        lines=measured.stderr.splitlines()
+        raced=measured.returncode==1 and bool(lines) and all(
+            line.startswith('du: ') and str(ROOT.parent)+'/' in line and
+            line.endswith(': No such file or directory') for line in lines)
+        if not raced or attempt==3:
+            raise ValueError('Fresh owner storage measurement failed: rc='+str(measured.returncode)+
+                             '; stderr='+measured.stderr+'; stdout='+measured.stdout)
+    raise AssertionError('unreachable storage admission')
+
+
 def archive(receipt_path):
     if os.getuid()!=14090:raise ValueError('Actual jxu957 archive owner required')
     from search_g1.qprobe_checkpoint import read_source
@@ -98,9 +134,8 @@ def archive(receipt_path):
         if path in rows and (rows[path]['bytes'],rows[path]['full_read_sha256'])!=(row['bytes'],row['full_read_sha256']):
             raise ValueError('Conflicting source records')
         rows[path]=row
-    measured=subprocess.run(['du','-s','-B1',str(ROOT.parent)],capture_output=True,text=True,timeout=1800)
-    if measured.returncode or measured.stderr.strip():raise ValueError('Fresh owner storage measurement failed')
-    allocated=int(measured.stdout.split('\t')[0]);required=2*sum(row['bytes'] for row in rows.values())+2**30
+    allocated=measured_owner_storage(receipt['run_id'],receipt['step'])
+    required=2*sum(row['bytes'] for row in rows.values())+2**30
     if allocated+required>2*10**12:raise ValueError('Explicit own2TB archive/target allowance exceeded')
     os.umask(0o007);directory.mkdir(parents=True,mode=0o770)
     claim=dict(source_receipt=dict(path=str(original),sha256=sha_file(original)),run_id=receipt['run_id'],
