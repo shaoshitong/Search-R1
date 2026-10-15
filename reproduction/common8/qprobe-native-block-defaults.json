@@ -1,0 +1,72 @@
+{
+  "role": "native_qwen_lastblock_binary_probe_recipe",
+  "native_class": "transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer",
+  "native_model": "Qwen/Qwen2.5-3B-Instruct",
+  "native_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "native_layer_index": 35,
+  "manual_block_reimplementation": false,
+  "question_feature_encoder_frozen_layer": 27,
+  "feature_dim": 2048,
+  "global_max_tokens": 244,
+  "native_query_heads": 16,
+  "native_kv_heads": 2,
+  "native_mlp_intermediate_size": 11008,
+  "native_block_output_size": 2048,
+  "head_outputs": [
+    "binary_mixed_logit",
+    "bounded_sample_std"
+  ],
+  "trainable_parameters": [
+    "copied_native_block_all_parameters",
+    "fresh_flatten_linear"
+  ],
+  "detach_feature_inputs": true,
+  "loss": {
+    "binary_bce_weight": 1.0,
+    "normalized_sample_std_mse_weight": 0.3,
+    "sample_std_bound_squared": 0.3,
+    "count6": false,
+    "sigma3": false,
+    "rank_loss": false,
+    "class_reweighting": false
+  },
+  "warmup": {
+    "groups": 5120,
+    "responses_per_group": 5,
+    "epochs": 10,
+    "batch_size": 256,
+    "learning_rate": 0.0003,
+    "head_seed": 1729,
+    "expected_returned_adam_updates": 200,
+    "reuse_qualified_teacher_and_token_features": true,
+    "inherit_old_trained_head_or_adam": false,
+    "independent_validation": false,
+    "metrics_scope": "same5120_training_only"
+  },
+  "formal": {
+    "candidate_questions": 5120,
+    "selected_questions": 512,
+    "exploration_questions": 0,
+    "ranking": "binary_p_mixed",
+    "std_tie_break": false,
+    "head_epochs_per_completed_outer": 2,
+    "replay_completed_formal_outer_window": 8,
+    "teacher_warmup_in_replay": false,
+    "age_weights": [
+      2.0,
+      1.0,
+      0.5,
+      0.25,
+      0.125,
+      0.0625,
+      0.03125,
+      0.015625
+    ],
+    "outside_window_weight": 0.0,
+    "loss_reduction": "mean(w_i*L_i)",
+    "normalize_age_weights": false,
+    "classification_report_metric": "binary_accuracy",
+    "actor_recipe_unchanged": true,
+    "actor_official_fresh_200": true
+  }
+}
