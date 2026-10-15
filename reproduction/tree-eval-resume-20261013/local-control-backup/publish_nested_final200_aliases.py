@@ -248,6 +248,119 @@ def poll_identity(c, poll, resource):
     return progress, ps, rs, active, restore
 
 
+def actual_final_phase(c, poll, resource, active):
+    """Strong terminal/handoff evidence precedes retained final-stage log text.
+
+    This is local validation only. The frozen core/finalizer are not changed.
+    Active MainPID identifies the original supervisor; an actual body terminal
+    result does not imply that its service/cgroup has already disappeared.
+    """
+    ps, rs, observed_active = c.validate_unit(poll, resource, 200)
+    c.need(observed_active == active and ps.get('InvocationID') == rs.get('InvocationID') == c.INVOCATION,
+           'Final-phase original Invocation/active state differs', 'REJECTED_INPUT_NO_WRITE')
+    c.need(all(poll.get(k) == v for k,v in dict(source_commit=c.SOURCE,unit=c.UNIT,job_id=c.JOB,run=c.RUN).items()),
+           'Final-phase original source/job/unit/run differs', 'REJECTED_INPUT_NO_WRITE')
+    c.need((poll.get('progress') or {}).get('actual_completed_outer_from_attempt_results') == 200
+           and not (poll.get('progress') or {}).get('errors'), 'Final-phase actual200 progress differs')
+    expected_cgroup = '/system.slice/'+c.UNIT
+    for observed in (ps, rs):
+        if 'ControlGroup' in observed:
+            allowed = (expected_cgroup,) if active else (expected_cgroup, '')
+            c.need(observed['ControlGroup'] in allowed,
+                   'Final-phase observation is not the exact own cgroup', 'REJECTED_INPUT_NO_WRITE')
+        tasks = observed.get('TasksCurrent')
+        if not active and tasks is not None and re.fullmatch(r'\d+', str(tasks).strip()):
+            c.need(int(str(tasks).strip()) == 0, 'Inactive original unit still reports tasks', 'REJECTED_INPUT_NO_WRITE')
+    own = resource.get('own_cgroup') or {}
+    c.need(isinstance(own, dict), 'Own cgroup observation must be metadata', 'REJECTED_INPUT_NO_WRITE')
+    pids = own.get('pids.current')
+    if pids is not None:
+        c.need(type(pids) in (str, int) and re.fullmatch(r'\d+', str(pids).strip()),
+               'Own cgroup process count is invalid', 'REJECTED_INPUT_NO_WRITE')
+        pids = int(str(pids).strip())
+        c.need(active or pids == 0, 'Inactive original unit still has own cgroup tasks', 'REJECTED_INPUT_NO_WRITE')
+    c.need(own.get('own_cgroup_live_descendants_empty', True) is not False,
+           'Explicit live own descendants contradict terminal evidence', 'REJECTED_INPUT_NO_WRITE')
+    result = poll.get('run_result')
+    if result is not None:
+        c.need(isinstance(result, dict) and result.get('code_commit') == c.SOURCE and result.get('job_id') == c.JOB,
+               'Run-result original source/job differs', 'REJECTED_INPUT_NO_WRITE')
+        for key, expected in (('config_sha256',c.CONFIG),('run',c.RUN),('run_directory',c.RUN),
+                              ('unit',c.UNIT),('invocation_id',c.INVOCATION),('InvocationID',c.INVOCATION)):
+            c.need(key not in result or result[key] == expected,
+                   'Run-result explicit '+key+' differs', 'REJECTED_INPUT_NO_WRITE')
+    if result and result.get('status') == 'ACTUAL_HUMAN_AUTHORIZED_DIRECT_FRESH200_TRAINING_COMPLETE':
+        c.need(result.get('actual_completed_outer') == 200 and result.get('training_body_exit_code') == 0
+               and result.get('own_cgroup_live_residual_empty') is True and not result.get('cleanup_error'),
+               'Actual normal200 terminal/exit/reported own cleanup differs', 'REJECTED_INPUT_NO_WRITE')
+        residual = result.get('cleanup_residual', {})
+        c.need(isinstance(residual, dict) and all(value == 'Z' for value in residual.values()),
+               'Reported live cleanup residual contradicts terminal result', 'REJECTED_INPUT_NO_WRITE')
+        return dict(kind='actual_training_terminal', evidence=result, normal_exit_claimed=True)
+    handoff = resource.get('final_handoff')
+    if handoff is not None:
+        authority = handoff.get('authority') if isinstance(handoff, dict) else None
+        c.need(isinstance(handoff, dict) and handoff.get('status') == 'EXPLICIT_NESTED_TRAIN200_FINAL_EVALUATION_HANDOFF_AUTHORIZED'
+               and handoff.get('training_source_commit') == c.SOURCE and handoff.get('training_unit') == c.UNIT
+               and handoff.get('training_run') == c.RUN and handoff.get('actual_training_completed_outer') == 200
+               and handoff.get('exact_executor_resume') is False and handoff.get('training_stop_or_resume_by_wrapper') is False
+               and isinstance(authority, dict) and authority.get('scope') == 'only_final_evaluation_after_completed_training200'
+               and all(isinstance(authority.get(key), str) and authority[key].strip()
+                       for key in ('human_instruction', 'original_instruction_time')),
+               'Exact final-only handoff/source/authority differs', 'REJECTED_INPUT_NO_WRITE')
+        for key, expected in (('config_sha256',c.CONFIG),('training_job_id',c.JOB),
+                              ('invocation_id',c.INVOCATION),('training_invocation_id',c.INVOCATION)):
+            c.need(key not in handoff or handoff[key] == expected,
+                   'Handoff explicit '+key+' differs', 'REJECTED_INPUT_NO_WRITE')
+        c.need(not active and all(item.get('MainPID') == '0' for item in (ps,rs)),
+               'Authorized handoff requires the actually terminal original unit', 'REJECTED_INPUT_NO_WRITE')
+        failed_progress = (result or {}).get('actual_progress_evidence') or {}
+        c.need(result and result.get('status') == 'FAILED'
+               and failed_progress.get('actual_completed_outer_from_attempt_results') == 200
+               and c.counts(failed_progress.get('completed_actual_optimizer_calls_per_rank'), 'Handoff terminal calls')
+                   == c.counts((poll.get('progress') or {}).get('completed_actual_optimizer_calls_per_rank'), 'Handoff poll calls'),
+               'Handoff must retain the real failed final-phase supervisor and actual200 accounting', 'REJECTED_INPUT_NO_WRITE')
+        # The existing probe's zero pids.current is an actual own-scope count.
+        # If the cgroup already disappeared (null), require separate captured
+        # own-descendant evidence; never interpret null as an empty cgroup.
+        terminal = resource.get('final_handoff_original_terminal') or {}
+        terminal_state = terminal.get('systemd') or {}
+        captured_empty = (terminal.get('unit') == c.UNIT and terminal.get('actual_completed_training_outer') == 200
+                          and terminal_state.get('MainPID') == '0'
+                          and terminal_state.get('ActiveState') in ('inactive', 'failed')
+                          and terminal_state.get('ControlGroup', '') in (expected_cgroup, '')
+                          and terminal_state.get('InvocationID',c.INVOCATION) == c.INVOCATION
+                          and terminal_state.get('own_cgroup_live_descendants_empty') is True)
+        residual = result.get('cleanup_residual', {})
+        reported_empty = (result.get('own_cgroup_live_residual_empty') is True and not result.get('cleanup_error')
+                          and isinstance(residual,dict) and all(state == 'Z' for state in residual.values()))
+        c.need(pids == 0 or captured_empty or reported_empty,
+               'Handoff own cgroup empty state is unobserved', 'PENDING_FINAL_PHASE_NO_WRITE')
+        return dict(kind='explicit_authorized_final_only_handoff', evidence=handoff, normal_exit_claimed=False)
+    return c.final_phase(poll, resource, active)
+
+
+def recorded_final_phase(c, poll, resource, active, recorded):
+    """Validate immutable as-of phase separately from stronger phase selection."""
+    actual = actual_final_phase(c, poll, resource, active)
+    try:
+        original = c.final_phase(poll, resource, active)
+    except c.Observation:
+        # Only the known retained-log ordering defect may be bypassed. All
+        # original fixed identities/200/native/rank/cost gates remain outside
+        # this function. Never invent a different old proof or rewrite it.
+        stage = (poll.get('logs') or {}).get('stage.log') or ''
+        c.need(not active and actual['kind'] in ('actual_training_terminal','explicit_authorized_final_only_handoff')
+               and ('Final validation dataset size: 51713' in stage or 'Final validation metrics:' in stage)
+               and recorded == actual,
+               'Recorded final phase differs beyond the known old ordering defect', 'REJECTED_INPUT_NO_WRITE')
+        return actual, dict(scope='Strong actual terminal/handoff revalidated; frozen core cannot pass retained final log with inactive unit.',
+                            original_recorded_phase=recorded,old_core_retained_log_ordering_bypassed=True)
+    c.need(recorded == original, 'Immutable original as-of final phase differs', 'REJECTED_INPUT_NO_WRITE')
+    return actual, dict(scope='Immutable phase matches frozen core at its bound observation; stronger terminal/handoff priority is separate.',
+                        original_recorded_phase=recorded,old_core_retained_log_ordering_bypassed=False)
+
+
 def validate(c, finalizer, inputs):
     b = inputs.base
     proof, proof_pin = inputs.read(b/PROOF)
@@ -299,15 +412,15 @@ def validate(c, finalizer, inputs):
            and full.get('per_rank_actual_total_adam') == totals
            and full.get('native_manifest_sha256') == proof.get('native_manifest_sha256') == native['manifest_sha256']
            and full.get('native_driver_next_step') == record['driver']['next_step'] == 201
-           and full.get('actual_training_pid') == int(rs1['MainPID']) and proof.get('main_pid') == int(rs['MainPID'])
-           and full.get('final_phase_evidence') == c.final_phase(first, resource1, active1),
+           and full.get('actual_training_pid') == int(rs1['MainPID']) and proof.get('main_pid') == int(rs['MainPID']),
            'FULL/proof actual metric/native/phase/PID differs', 'REJECTED_INPUT_NO_WRITE')
+    _, full_phase_scope = recorded_final_phase(c, first, resource1, active1, full.get('final_phase_evidence'))
     if metric is None:
         c.need(all(r['attempt_id'] == guard['training_attempts'] for r in ranks),
                'Actual200 rank attempt differs', 'REJECTED_INPUT_NO_WRITE')
     c.need(full.get('last_rank_summaries') == ranks, 'FULL rank returns differ', 'REJECTED_INPUT_NO_WRITE')
-    final = c.final_phase(second, resource, active)
-    c.need(proof.get('final_phase_evidence') == final and proof.get('run_result') == second.get('run_result'),
+    final, proof_phase_scope = recorded_final_phase(c, second, resource, active, proof.get('final_phase_evidence'))
+    c.need(proof.get('run_result') == second.get('run_result'),
            'Actual final phase/terminal/handoff proof differs', 'REJECTED_INPUT_NO_WRITE')
     sizes1, sizes2 = first.get('own_output_files') or {}, second.get('own_output_files') or {}
     growth = {name:sizes2[name]-sizes1[name] if c.integer(sizes1.get(name)) and c.integer(sizes2.get(name)) else None
@@ -385,7 +498,8 @@ def validate(c, finalizer, inputs):
     return dict(proof=proof,proof_pin=proof_pin,full=full,full_pin=full_pin,first_pin=first_pin,
         poll=second,poll_pin=second_pin,resource=resource,resource_pin=resource_pin,native=native,native_pin=native_pin,
         record=record,guard=guard,completed=completed,totals=totals,restore=restore,ranks=ranks,metric=metric,
-        final=final,active=active,ps=ps,rs=rs,costs=costs,cost_pin=cost_pin,index_pin=index_pin,
+        final=final,phase_validation=dict(full_asof=full_phase_scope,finalizer_asof=proof_phase_scope),
+        active=active,ps=ps,rs=rs,costs=costs,cost_pin=cost_pin,index_pin=index_pin,
         candidate_pin=candidate_pin,rates=rates,rates_pin=rates_pin,registry_pin=registry_pin,
         dev=actual_dev,dev_seconds=seconds,curve_pin=curve_pin)
 
@@ -493,6 +607,11 @@ def aliases(c, d, metadata, now, receipt_path):
         current_observation_error=None,current_failure_evidence=None,current_observation_failure_evidence=None,
         training_terminal_proven=kind == 'actual_training_terminal',run_result=p.get('run_result'),
         current_final_phase_evidence=d['final'],final_phase_evidence=d['final'],
+        original_unit_active_at_bound_poll=d['active'],
+        training_body_terminal_does_not_establish_unit_exit=d['active'] and d['final']['kind'] == 'actual_training_terminal',
+        original_full_final_phase_evidence=d['full'].get('final_phase_evidence'),
+        original_finalizer_final_phase_evidence=d['proof'].get('final_phase_evidence'),
+        final_phase_validation_scope=d['phase_validation'],
         current_final_phase_source_poll=d['poll_pin'],current_final_phase_resource=d['resource_pin'],
         current_service_CPUUsageNSec_at_bound_poll=d['rs'].get('CPUUsageNSec'),
         current_service_CPU_scope='Raw actual resource observation only; terminal whole-service CPU is not accepted by this metadata publisher.',

@@ -48,6 +48,31 @@ evidence. It never asserts final51713/HF/tokenizer acceptance, final CPU accepta
 resource cleanup, a cold reload or goal completion. CUM200 is never rewritten; the
 separate final candidate-cost entry remains separate.
 
+This fixed entry gives a strictly source/job/actual200/exit-bound normal terminal
+result, or a strictly authorized final-only handoff, priority over retained final
+validation log text. Both systemd observations must still identify the original
+Invocation and original active PID or actual terminal MainPID0. Explicit other
+cgroups or nonzero inactive task counts are refused. Normal terminal results must
+retain successful body exit and their reported own-cleanup evidence; handoff must
+retain the failed final-phase supervisor, actual200 counts and a real empty-own-scope
+observation. A null process count is never interpreted as an empty cgroup. A body
+terminal result observed while the original supervisor remains active is explicitly
+separate from service exit or resource acceptance.
+
+Immutable FULL/finalizer phase records are validated at their original observation
+scope and retained unchanged. In particular, an active original poll can legally
+contain a terminal body result while the frozen core recorded its final-log phase;
+that original record is not forced to equal this entry's stronger phase selection.
+The known inactive-with-retained-log ordering failure is bypassed only when the
+strict local terminal/handoff checks pass and the recorded strong phase agrees.
+
+The frozen core/finalizer themselves still check final-validation log text before
+terminal/handoff evidence and can reject MainPID0 with retained logs. This release
+does not repair them. At actual200, first preserve their genuine active final-phase
+FULL and two-observation evidence before terminal-only metadata postprocessing.
+This alias entry never rewrites those original receipts or claims that the frozen
+producer gained terminal-log support; missing original evidence remains PENDING.
+
 Publication is a guarded local multi-file operation, not a global atomic filesystem
 transaction. Every source and both mirrors are checked again before writing; all
 fourteen targets and three receipt copies are read back twice. An identical rerun
