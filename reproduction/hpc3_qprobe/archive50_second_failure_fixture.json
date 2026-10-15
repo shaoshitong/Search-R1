@@ -1,0 +1,473 @@
+{
+  "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/final-control/70827e85fe584f0c84453aae907918a4/archive-50": {
+    "launch-receipt.json": {
+      "value": {
+        "status": "ACTUAL_DETACHED_CPU_ARCHIVE_STARTED",
+        "token": "ee943bcc62f34c9fbee0126362ccaa8d",
+        "actual_process": {
+          "pid": 4038103,
+          "start_ticks": 78802397,
+          "sid": 4038103,
+          "uid": 14090
+        },
+        "claim_path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/final-control/70827e85fe584f0c84453aae907918a4/archive-50/submit-claim.json",
+        "claim_sha256": "8d79166547f70259369b37d18b80bd33c17b8177b6bda231378c3397ef496587",
+        "source_commit": "dc9c79bc5e5c7d1b4e3134d30fe168223de10215",
+        "step": 50
+      },
+      "bytes": 535,
+      "sha256": "8ec7c24fd1410a4fd03897d4f2287687f5c126dc20132eee580511111bab0643",
+      "inode": 10991239571,
+      "device": 49
+    },
+    "runner-binding.json": {
+      "value": {
+        "token": "ee943bcc62f34c9fbee0126362ccaa8d",
+        "claim_sha256": "8d79166547f70259369b37d18b80bd33c17b8177b6bda231378c3397ef496587",
+        "actual_process": {
+          "pid": 4038103,
+          "start_ticks": 78802397,
+          "sid": 4038103,
+          "uid": 14090
+        },
+        "controller": {
+          "pid": 4037307,
+          "start_ticks": 78801800,
+          "sid": 4037307,
+          "uid": 14090
+        },
+        "created_unix": 1792078419.5300202
+      },
+      "bytes": 395,
+      "sha256": "72e1ec6133825c822a4b298e7b9eec7e1d50617c6c56d7ddc73cc20ccb780786",
+      "inode": 10991139731,
+      "device": 49
+    },
+    "submit-claim.json": {
+      "value": {
+        "schema_version": 1,
+        "role": "detached_cpu_pair_archive",
+        "token": "ee943bcc62f34c9fbee0126362ccaa8d",
+        "step": 50,
+        "producer": {
+          "base": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "producer_commit": "aca0e779e94ddc3fbd50e49c3d59e2e889fbcf12",
+          "producer_job": "721485",
+          "source_manifest_sha256": "ef830dd3ee84fdf34838c53730183d7e08a7801ad115aad662dedec54d379678",
+          "original_submission_sha256": "6af42f58d85dab8d8d88905bcaded1363ad486b0f6b8b84baec9f32f01ea4248",
+          "original_claim_sha256": "d0e704ee5a2f6d7ce9c77de3d06b6cbc4727201486700074bb01a99f0041cd91",
+          "native_allocation_sha256": "05477abf6b9f2971f01cbcd7a488d93bfca9d431f59c665959672004b84a22c0",
+          "recovery_submission_sha256": "12e8228355f4bfe15a78b73a54913ff141f17779abead5b3c3e4731e3d492bdc",
+          "recovery_claim_sha256": "064dfa3cbd6f0664b60810a6f40fc1bf3b0c13909504ffe52152de26f20692e6",
+          "preserved_pre_model_failure_sha256": "210ef14e4d385bb43f7112ef46432a12341831d1788e8d818ff2493747191e95",
+          "original_failed_job": "721449"
+        },
+        "pair": {
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/completed-pairs/global_step_50/source-receipt.json",
+          "sha256": "c149938fe61b4ffb9ae2a0d746d921369ddf058ced65d254f4f14b8da4fe23e1",
+          "step": 50,
+          "run_id": "70827e85fe584f0c84453aae907918a4"
+        },
+        "source": {
+          "commit": "dc9c79bc5e5c7d1b4e3134d30fe168223de10215",
+          "publication_path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/preparation/source-dc9c79bc5e5c7d1b4e3134d30fe168223de10215-verification.json",
+          "publication_sha256": "582b680146d4a9bff90caab2bd7f4a20d6ce3efea1ac9f2d95282a8e68d8f146"
+        },
+        "command": [
+          "bash",
+          "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/final_control.sh",
+          "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215",
+          "archive-worker",
+          "--claim",
+          "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/final-control/70827e85fe584f0c84453aae907918a4/archive-50/submit-claim.json",
+          "--token",
+          "ee943bcc62f34c9fbee0126362ccaa8d"
+        ],
+        "controller": {
+          "pid": 4037307,
+          "start_ticks": 78801800,
+          "sid": 4037307,
+          "uid": 14090
+        },
+        "actual_accounting": "721485|RUNNING|0:0|jxu957|14090|jxu957|formal-user|emergency_acd\n",
+        "created_unix": 1792078419.517678,
+        "training_permitted": false,
+        "direct_gpu_device_access_permitted": false,
+        "native_gpu_audit_submission_permitted": false
+      },
+      "bytes": 2703,
+      "sha256": "8d79166547f70259369b37d18b80bd33c17b8177b6bda231378c3397ef496587",
+      "inode": 10991139729,
+      "device": 49
+    },
+    "task-binding.json": {
+      "value": {
+        "token": "ee943bcc62f34c9fbee0126362ccaa8d",
+        "claim_sha256": "8d79166547f70259369b37d18b80bd33c17b8177b6bda231378c3397ef496587",
+        "actual_process": {
+          "pid": 4038121,
+          "start_ticks": 78802569,
+          "sid": 4038103,
+          "uid": 14090
+        },
+        "supervisor": {
+          "pid": 4038103,
+          "start_ticks": 78802397,
+          "sid": 4038103,
+          "uid": 14090
+        },
+        "created_unix": 1792078421.249905
+      },
+      "bytes": 394,
+      "sha256": "dc717b653b92c6a3cdbcf1100a18ccb210d28f55c73732f073e6e61f4eb20a1b",
+      "inode": 10991165129,
+      "device": 49
+    },
+    "task-entered.json": {
+      "value": {
+        "token": "ee943bcc62f34c9fbee0126362ccaa8d",
+        "actual_process": {
+          "pid": 4038121,
+          "start_ticks": 78802569,
+          "sid": 4038103,
+          "uid": 14090
+        },
+        "claim_sha256": "8d79166547f70259369b37d18b80bd33c17b8177b6bda231378c3397ef496587",
+        "entered_unix": 1792078422.2077036
+      },
+      "bytes": 286,
+      "sha256": "9b9d5772bf10174fb4da862940dd56b5192982e9489ec83fd1c73dfef8125a2e",
+      "inode": 10991478330,
+      "device": 49
+    },
+    "task.log": {
+      "value": "{\"stage\": \"archive_owner_storage_measurement\", \"run_id\": \"70827e85fe584f0c84453aae907918a4\", \"step\": 50, \"attempt\": 1, \"started_unix\": 1792078426.6836822, \"completed_unix\": 1792078511.6821854, \"actual_returncode\": 1, \"stdout\": \"1407769903104\\t/data/user/jxu957/experiments\\n\", \"stderr\": \"du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-native-thread5-20261015/warmup-token-features': Permission denied\\ndu: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-native-thread5-20261015/token-features.partial-mbd17p25': Permission denied\\n\", \"accepted\": false}\nTraceback (most recent call last):\n  File \"/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/retriever-python310-candidate/lib/python3.10/runpy.py\", line 196, in _run_module_as_main\n    return _run_code(code, main_globals, None,\n  File \"/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/retriever-python310-candidate/lib/python3.10/runpy.py\", line 86, in _run_code\n    exec(code, run_globals)\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/final_control.py\", line 669, in <module>\n    if __name__=='__main__':main()\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/final_control.py\", line 650, in main\n    result={'archive-worker':archive_worker,'archive-exec':archive_exec,\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/final_control.py\", line 350, in archive_exec\n    result=archive(claim['pair']['path'])\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/archive_completed_pair.py\", line 137, in archive\n    allocated=measured_owner_storage(receipt['run_id'],receipt['step'])\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/archive_completed_pair.py\", line 116, in measured_owner_storage\n    raise ValueError('Fresh owner storage measurement failed: rc='+str(measured.returncode)+\nValueError: Fresh owner storage measurement failed: rc=1; stderr=du: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-native-thread5-20261015/warmup-token-features': Permission denied\ndu: cannot read directory '/data/user/jxu957/experiments/qprobe-teacher-warmup200-native-thread5-20261015/token-features.partial-mbd17p25': Permission denied\n; stdout=1407769903104\t/data/user/jxu957/experiments\n\n",
+      "bytes": 2758,
+      "sha256": "81276ebf2457200eb29048293af60ef2a10a79ae53c8bb61c9c66a58ec1ef12e",
+      "inode": 10991331347,
+      "device": 49
+    },
+    "worker-result.json": {
+      "value": {
+        "token": "ee943bcc62f34c9fbee0126362ccaa8d",
+        "actual_task_exit_code": 1,
+        "actual_task_birth": {
+          "pid": 4038121,
+          "start_ticks": 78802569,
+          "sid": 4038103,
+          "uid": 14090
+        },
+        "actual_supervisor": {
+          "pid": 4038103,
+          "start_ticks": 78802397,
+          "sid": 4038103,
+          "uid": 14090
+        },
+        "claim_sha256": "8d79166547f70259369b37d18b80bd33c17b8177b6bda231378c3397ef496587",
+        "finished_unix": 1792078512.3364935,
+        "status": "CPU_CHILD_FAILED_OR_MISSING_RECEIPT",
+        "role": "detached_cpu_pair_archive"
+      },
+      "bytes": 526,
+      "sha256": "53e0552362336bff17b10c1ad08fc0bd9ff4f692f417549a08c2b98df11bbd43",
+      "inode": 10991480235,
+      "device": 49
+    },
+    "worker.log": {
+      "value": "Traceback (most recent call last):\n  File \"/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/retriever-python310-candidate/lib/python3.10/runpy.py\", line 196, in _run_module_as_main\n    return _run_code(code, main_globals, None,\n  File \"/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/retriever-python310-candidate/lib/python3.10/runpy.py\", line 86, in _run_code\n    exec(code, run_globals)\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/final_control.py\", line 669, in <module>\n    if __name__=='__main__':main()\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/final_control.py\", line 650, in main\n    result={'archive-worker':archive_worker,'archive-exec':archive_exec,\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/final_control.py\", line 390, in archive_worker\n    return supervise(claim_path,token,'detached_cpu_pair_archive','archive-exec',\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/final_control.py\", line 384, in supervise\n    need(code==0 and value['status']==success_status,\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/final_control.py\", line 33, in need\n    if not ok:raise ValueError('QPROBE_FINAL_CONTROL: '+message)\nValueError: QPROBE_FINAL_CONTROL: actual archive child failed or did not publish a valid result; inspect immutable claim and log\n",
+      "bytes": 1805,
+      "sha256": "62ef0b3df8dfd08b9a40f1d5e6ab8dcac1b94a9e8acd211c5ab9f7f2ca5fd24d",
+      "inode": 10991239570,
+      "device": 49
+    }
+  },
+  "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/followthrough/721485-archive50-recovery-20261015": {
+    "claim.json": {
+      "value": {
+        "schema_version": 1,
+        "binding": {
+          "base": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "producer_commit": "aca0e779e94ddc3fbd50e49c3d59e2e889fbcf12",
+          "producer_job": "721485",
+          "source_manifest_sha256": "ef830dd3ee84fdf34838c53730183d7e08a7801ad115aad662dedec54d379678",
+          "original_submission_sha256": "6af42f58d85dab8d8d88905bcaded1363ad486b0f6b8b84baec9f32f01ea4248",
+          "original_claim_sha256": "d0e704ee5a2f6d7ce9c77de3d06b6cbc4727201486700074bb01a99f0041cd91",
+          "native_allocation_sha256": "05477abf6b9f2971f01cbcd7a488d93bfca9d431f59c665959672004b84a22c0",
+          "recovery_submission_sha256": "12e8228355f4bfe15a78b73a54913ff141f17779abead5b3c3e4731e3d492bdc",
+          "recovery_claim_sha256": "064dfa3cbd6f0664b60810a6f40fc1bf3b0c13909504ffe52152de26f20692e6",
+          "preserved_pre_model_failure_sha256": "210ef14e4d385bb43f7112ef46432a12341831d1788e8d818ff2493747191e95",
+          "original_failed_job": "721449",
+          "sigma3_settings_sha256": "f547eacb553f4d8efb244432e9effe8bea2f0039710876ceaefc96d78580ccda"
+        },
+        "source": {
+          "commit": "dc9c79bc5e5c7d1b4e3134d30fe168223de10215",
+          "publication_path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/preparation/source-dc9c79bc5e5c7d1b4e3134d30fe168223de10215-verification.json",
+          "publication_sha256": "582b680146d4a9bff90caab2bd7f4a20d6ce3efea1ac9f2d95282a8e68d8f146"
+        },
+        "recovery": {
+          "status": "SIGMA3_ARCHIVE50_FIRST_F979_PRE_COPY_FAILURE_PRESERVED_ONCE",
+          "source": {
+            "commit": "dc9c79bc5e5c7d1b4e3134d30fe168223de10215",
+            "publication_path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/preparation/source-dc9c79bc5e5c7d1b4e3134d30fe168223de10215-verification.json",
+            "publication_sha256": "582b680146d4a9bff90caab2bd7f4a20d6ce3efea1ac9f2d95282a8e68d8f146"
+          },
+          "intent": {
+            "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/final-control/70827e85fe584f0c84453aae907918a4/archive50-recovery-first-f979/intent.json",
+            "sha256": "949cd3187fc39fefd9f83a0e617fce5254393b1b1d77f910cc6c7ae66a5e460f"
+          },
+          "migration": {
+            "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/final-control/70827e85fe584f0c84453aae907918a4/archive50-recovery-first-f979/migration.json",
+            "sha256": "bc69d2dbe9ad2640ba0efeac7e07dee88cc8a8ac958983980db3a0ecf61bc224"
+          },
+          "failure_fingerprint": "01054fe05ea4ee9dfaaf1eee1424821508f901c7f6cc2513adbaf21c7a3c84aa",
+          "original_follower": {
+            "pid": 3861035,
+            "start_ticks": 78678649,
+            "sid": 3861035,
+            "uid": 14090
+          },
+          "original_archive_child_exit": 1,
+          "original_failure_preserved": true,
+          "observer_recovery": {
+            "status": "SIGMA3_ACTUAL_ACCOUNTING_OUTAGE_RAW49_FOLLOW5_HANDOFF",
+            "source": {
+              "commit": "f979d53cdb0d348e87c5877d84403252e85cd784",
+              "publication_path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/preparation/source-f979d53cdb0d348e87c5877d84403252e85cd784-verification.json",
+              "publication_sha256": "5ae2c7a0cf548f9e106ae1f6f84def1d44c3b8932e19534506f6be917913f924"
+            },
+            "intent": {
+              "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/observations/service-outage-721485-after49-20261015/intent.json",
+              "sha256": "a24c4a9735f19d0bdee7ebdd8f61d8e1fb763cc0bb64fb76220a1545763b1f3d"
+            },
+            "handoff": {
+              "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/observations/service-outage-721485-after49-20261015/handoff.json",
+              "sha256": "e2a2981f062ce8f0d434b8a4149f8df31ebf7b67b05c7d909a56a982b34635e1"
+            },
+            "failure_fingerprint": "f90f088151f69a41a5db2c84100b7056a9f0015588657558a97d76c9c2c73429",
+            "original_raw_source": "0cca743462da769667262417f8064084f93fc912",
+            "original_raw_process": {
+              "pid": 1171759,
+              "start_ticks": 75909729,
+              "sid": 1171759,
+              "uid": 14090
+            },
+            "original_raw_accepted": 49,
+            "original_follow_source": "09ccff26c5b764cc4c6a285c1e8f57a8e9b07726",
+            "original_follow_process": {
+              "pid": 2688346,
+              "start_ticks": 76403669,
+              "sid": 2688346,
+              "uid": 14090
+            },
+            "legacy_archive5_recovery": {
+              "status": "SIGMA3_ARCHIVE5_FIRST_9C_PRE_COPY_FAILURE_PRESERVED_ONCE",
+              "source": {
+                "commit": "09ccff26c5b764cc4c6a285c1e8f57a8e9b07726",
+                "publication_path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/preparation/source-09ccff26c5b764cc4c6a285c1e8f57a8e9b07726-verification.json",
+                "publication_sha256": "1b5a9c71e10ec2e7e518d4a9d20fdf7cfeda6abea23f2f98ad07201ad797a0ab"
+              },
+              "intent": {
+                "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/final-control/70827e85fe584f0c84453aae907918a4/archive5-recovery-first-9c/intent.json",
+                "sha256": "c1baacd5026af45cf531a1a697cb87a08c70913bee25436274f06996c653a921"
+              },
+              "migration": {
+                "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/final-control/70827e85fe584f0c84453aae907918a4/archive5-recovery-first-9c/migration.json",
+                "sha256": "6ecbb30faebec3afb7d8431c1375055fa31c66cf63e10a9569efe1ec83622add"
+              },
+              "failure_fingerprint": "2a88674734d641a1427e53a8e57f41eb694f57f17797a832390cd0afdcf739ae",
+              "original_follower": {
+                "pid": 1045047,
+                "start_ticks": 75858599,
+                "sid": 1045047,
+                "uid": 14090
+              },
+              "original_archive_child_exit": 1,
+              "original_failure_preserved": true,
+              "training_source": "aca0e779e94ddc3fbd50e49c3d59e2e889fbcf12",
+              "producer_job": "721485",
+              "run_id": "70827e85fe584f0c84453aae907918a4"
+            },
+            "training_performed": false
+          },
+          "legacy_archive5_recovery": {
+            "status": "SIGMA3_ARCHIVE5_FIRST_9C_PRE_COPY_FAILURE_PRESERVED_ONCE",
+            "source": {
+              "commit": "09ccff26c5b764cc4c6a285c1e8f57a8e9b07726",
+              "publication_path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/preparation/source-09ccff26c5b764cc4c6a285c1e8f57a8e9b07726-verification.json",
+              "publication_sha256": "1b5a9c71e10ec2e7e518d4a9d20fdf7cfeda6abea23f2f98ad07201ad797a0ab"
+            },
+            "intent": {
+              "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/final-control/70827e85fe584f0c84453aae907918a4/archive5-recovery-first-9c/intent.json",
+              "sha256": "c1baacd5026af45cf531a1a697cb87a08c70913bee25436274f06996c653a921"
+            },
+            "migration": {
+              "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/final-control/70827e85fe584f0c84453aae907918a4/archive5-recovery-first-9c/migration.json",
+              "sha256": "6ecbb30faebec3afb7d8431c1375055fa31c66cf63e10a9569efe1ec83622add"
+            },
+            "failure_fingerprint": "2a88674734d641a1427e53a8e57f41eb694f57f17797a832390cd0afdcf739ae",
+            "original_follower": {
+              "pid": 1045047,
+              "start_ticks": 75858599,
+              "sid": 1045047,
+              "uid": 14090
+            },
+            "original_archive_child_exit": 1,
+            "original_failure_preserved": true,
+            "training_source": "aca0e779e94ddc3fbd50e49c3d59e2e889fbcf12",
+            "producer_job": "721485",
+            "run_id": "70827e85fe584f0c84453aae907918a4"
+          },
+          "training_source": "aca0e779e94ddc3fbd50e49c3d59e2e889fbcf12",
+          "producer_job": "721485",
+          "run_id": "70827e85fe584f0c84453aae907918a4"
+        },
+        "command": [
+          "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/env/bin/python",
+          "-m",
+          "reproduction.hpc3_qprobe.recover_sigma3_archive50",
+          "supervise",
+          "--commit",
+          "dc9c79bc5e5c7d1b4e3134d30fe168223de10215"
+        ],
+        "cwd": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215",
+        "created_unix": 1792078413.5426762,
+        "training_submission_permitted": false,
+        "actor_model_reload_permitted": false,
+        "direct_gpu_access_permitted": false,
+        "native_final_restore_only_submission_permitted": true
+      },
+      "bytes": 8188,
+      "sha256": "22334f62077f49ef5186b5a7f5326062b5225660cf402cc22f676a2077c085ab",
+      "inode": 10991119104,
+      "device": 49
+    },
+    "output.log": {
+      "value": "Traceback (most recent call last):\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/followthrough_sigma3.py\", line 298, in supervise\n    result=one_tick(commit,verified)\n  File \"/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source/dc9c79bc5e5c7d1b4e3134d30fe168223de10215/reproduction/hpc3_qprobe/followthrough_sigma3.py\", line 220, in one_tick\n    raise ValueError('QPROBE_FOLLOWTHROUGH_SIGMA3_ACTUAL_ARCHIVE_FAILED_'+str(step))\nValueError: QPROBE_FOLLOWTHROUGH_SIGMA3_ACTUAL_ARCHIVE_FAILED_50\n",
+      "bytes": 609,
+      "sha256": "143f663a8e3e487af2b1514a5b3d49f7b393ac08e89eb4bf94fc6fc19811d4ae",
+      "inode": 10991272885,
+      "device": 49
+    },
+    "process.json": {
+      "value": {
+        "actual_process": {
+          "pid": 4037307,
+          "start_ticks": 78801800,
+          "sid": 4037307,
+          "uid": 14090
+        },
+        "commit": "dc9c79bc5e5c7d1b4e3134d30fe168223de10215",
+        "control": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/followthrough/721485-archive50-recovery-20261015",
+        "checked_unix": 1792078413.5542674
+      },
+      "bytes": 338,
+      "sha256": "ca885c847951552b3997027d276419548055308917df32048d407419e4d870c3",
+      "inode": 10991119106,
+      "device": 49
+    },
+    "result.json": {
+      "value": {
+        "exit_code": 1,
+        "error": "ValueError('QPROBE_FOLLOWTHROUGH_SIGMA3_ACTUAL_ARCHIVE_FAILED_50')",
+        "result": {
+          "phase": "ACTUAL_PRODUCER_OR_ARCHIVE_WAIT",
+          "accounting": {
+            "job": "721485",
+            "state": "RUNNING",
+            "exit_code": "0:0",
+            "raw": "721485|RUNNING|0:0|jxu957|14090|jxu957|formal-user|emergency_acd\n",
+            "checked_unix": 1792078480.2861006
+          },
+          "archives": {
+            "5": {
+              "status": "ACTUAL_CPU_ARCHIVE_CHILD_COMPLETED0",
+              "transport_path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/archives/70827e85fe584f0c84453aae907918a4/global_step_5/complete.json",
+              "transport_sha256": "39e2edbaf0f92871aacb303011671a002e3ad2530fb43ab01959df134bb87b76",
+              "actual_child_exit": 0,
+              "fresh_full_sha_verified": true
+            },
+            "50": {
+              "status": "CPU_ARCHIVE_RUNNING",
+              "actual_payload_bytes": 0,
+              "actual_payload_files": 0,
+              "runner_alive": true,
+              "actual_child_exit": null
+            }
+          },
+          "actual_final_native_restore_accepted": false
+        },
+        "actual_process": {
+          "pid": 4037307,
+          "start_ticks": 78801800,
+          "sid": 4037307,
+          "uid": 14090
+        },
+        "checked_unix": 1792078542.5607188,
+        "training_submission_performed": false,
+        "actor_model_loaded": false,
+        "direct_gpu_device_access_performed": false,
+        "native_final_restore_only_submission_permitted": true
+      },
+      "bytes": 1405,
+      "sha256": "dab2742b77c83418b877c2e9794264cd49e2509afaf288c8224296047e2319af",
+      "inode": 10991424731,
+      "device": 49
+    },
+    "started.json": {
+      "value": {
+        "actual_process": {
+          "pid": 4037307,
+          "start_ticks": 78801800,
+          "sid": 4037307,
+          "uid": 14090
+        },
+        "checked_unix": 1792078417.931003
+      },
+      "bytes": 152,
+      "sha256": "ae8815f01e6e8ff7b22e8817eebe8b9349474da3f39e27348ec20d3b6ef317a8",
+      "inode": 10991272926,
+      "device": 49
+    },
+    "state.json": {
+      "value": {
+        "phase": "ACTUAL_CPU_FOLLOWTHROUGH_STOPPED_FOR_DIAGNOSIS",
+        "error": "ValueError('QPROBE_FOLLOWTHROUGH_SIGMA3_ACTUAL_ARCHIVE_FAILED_50')",
+        "previous_actual_state": {
+          "phase": "ACTUAL_PRODUCER_OR_ARCHIVE_WAIT",
+          "accounting": {
+            "job": "721485",
+            "state": "RUNNING",
+            "exit_code": "0:0",
+            "raw": "721485|RUNNING|0:0|jxu957|14090|jxu957|formal-user|emergency_acd\n",
+            "checked_unix": 1792078480.2861006
+          },
+          "archives": {
+            "5": {
+              "status": "ACTUAL_CPU_ARCHIVE_CHILD_COMPLETED0",
+              "transport_path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/archives/70827e85fe584f0c84453aae907918a4/global_step_5/complete.json",
+              "transport_sha256": "39e2edbaf0f92871aacb303011671a002e3ad2530fb43ab01959df134bb87b76",
+              "actual_child_exit": 0,
+              "fresh_full_sha_verified": true
+            },
+            "50": {
+              "status": "CPU_ARCHIVE_RUNNING",
+              "actual_payload_bytes": 0,
+              "actual_payload_files": 0,
+              "runner_alive": true,
+              "actual_child_exit": null
+            }
+          },
+          "actual_final_native_restore_accepted": false
+        },
+        "full_objective_accepted": false,
+        "checked_unix": 1792078542.5578337
+      },
+      "bytes": 1026,
+      "sha256": "217890c7af4b15e6dd1f322af34900db6fa67082f886823496208b057e9c9472",
+      "inode": 10991480804,
+      "device": 49
+    }
+  }
+}
