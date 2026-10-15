@@ -62,3 +62,21 @@ is complete and disjoint from the fixed diagnostic. It never infers future
 prefix features from final answers or labels.
 
 An actual vLLM0.6.3 UUID device-parsing failure in predecessor3407 occurred before new rollout or Adam in epoch2. Recovery stages the independently verified complete epoch1 head/Adam/eight-rank RNG and the already reserved epoch2 selection into a new published runtime. Original source, checkpoint, partial outputs and terminal evidence remain untouched. Numeric CUDA device IDs are resolved from the allocated UUIDs before importing vLLM.
+
+## Isolated authorized learning-rate reduction
+
+The explicit3e-4→3e-5 resume retains the same logical run, complete preceding model,
+all Adam moments/actual steps and eight-rank RNGs. In the new namespace recovery
+writes a target `train/run-claim.json` and a `train/learning-rate-transition.json`
+(schema_version1) containing both complete scientific bindings and canonical
+hashes, source checkpoint SHA, source complete epoch/start epoch, same run_id,
+and `authorized_change_only: learning_rate`. No other binding field may differ.
+
+Only the first resumed epoch may load the old LR checkpoint binding, and only at
+that exact complete source epoch with its pinned bytes. Later epochs require the
+new target binding. Adam `load_state_dict` happens before checking the loaded LR
+and setting only every parameter group's LR to3e-5. Moment tensors, step counters,
+other Adam options and saved RNG state are not reset. Actual optimizer group LRs
+are recorded in each update ledger, metrics, completed checkpoint and receipt;
+the explicit transition provenance is retained. This adds no GPU preflight or
+healthy-runtime gate and does not modify an existing job.

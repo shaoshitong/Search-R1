@@ -82,6 +82,88 @@ def auroc(logits, labels):
     return (rank_sum - positive * (positive + 1) / 2) / (positive * negative)
 
 
+def binding_digest(binding):
+    return hashlib.sha256(canonical(binding)).hexdigest()
+
+
+def validate_learning_rate_transition(transition, target_binding, epoch, run_id):
+    """An explicit isolated resume may change only the LR, never scientific fields."""
+    if transition is None:
+        return None
+    if transition.get('schema_version') != 1 or transition.get('authorized_change_only') != 'learning_rate':
+        raise ValueError('Explicit LR-only transition receipt required')
+    source = transition['source_binding']
+    target = transition['target_binding']
+    if transition['run_id'] != run_id or not run_id:
+        raise ValueError('LR transition logical run identity differs')
+    if binding_digest(source) != transition['source_binding_sha256'] or binding_digest(target) != transition['target_binding_sha256']:
+        raise ValueError('LR transition binding hashes differ')
+    if target != target_binding:
+        raise ValueError('Current target recipe differs from the authorized LR transition')
+    if (source.get('learning_rate'), target.get('learning_rate'), transition['source_learning_rate'], transition['target_learning_rate']) != (.0003, .00003, .0003, .00003):
+        raise ValueError('Only the authorized3e-4 to3e-5 transition is permitted')
+    expected = dict(source, learning_rate=target['learning_rate'])
+    if expected != target:
+        raise ValueError('LR resume cannot change any other binding field')
+    source_epoch, start = transition['source_complete_epoch'], transition['start_epoch']
+    if type(source_epoch) is not int or type(start) is not int or source_epoch < 1 or start != source_epoch + 1 or epoch < start:
+        raise ValueError('LR transition is not at a complete checkpoint boundary')
+    checkpoint_sha = transition['source_checkpoint_sha256']
+    if not isinstance(checkpoint_sha, str) or len(checkpoint_sha) != 64 or any(c not in '0123456789abcdef' for c in checkpoint_sha):
+        raise ValueError('LR transition must pin complete source checkpoint bytes')
+    return dict(source_complete_epoch=source_epoch, start_epoch=start,
+                source_learning_rate=.0003, target_learning_rate=.00003,
+                source_binding_sha256=transition['source_binding_sha256'],
+                target_binding_sha256=transition['target_binding_sha256'],
+                source_checkpoint_sha256=checkpoint_sha, run_id=run_id,
+                authorized_change_only='learning_rate')
+
+
+def validate_saved_binding(saved, receipt, target_binding, epoch, transition):
+    """Accept old LR binding only for the exact first resumed complete checkpoint."""
+    if saved['epoch'] != epoch - 1 or receipt['epoch'] != epoch - 1:
+        raise ValueError('Latest checkpoint is not the immediately preceding complete epoch')
+    saved_binding = saved['binding']
+    saved_sha = binding_digest(saved_binding)
+    if saved['binding_sha256'] != saved_sha or receipt['binding_sha256'] != saved_sha:
+        raise ValueError('Saved checkpoint full binding or receipt differs')
+    first_transition = transition is not None and epoch == transition['start_epoch']
+    if first_transition:
+        if saved_binding != transition['source_binding'] or saved_sha != transition['source_binding_sha256']:
+            raise ValueError('First resumed checkpoint is not the authorized source recipe')
+        if receipt['sha256'] != transition['source_checkpoint_sha256'] or saved['epoch'] != transition['source_complete_epoch']:
+            raise ValueError('First resumed checkpoint bytes or boundary differs')
+    elif saved_binding != target_binding:
+        raise ValueError('Checkpoint cannot change fixed training or diagnostic binding')
+    return first_transition
+
+
+def optimizer_learning_rates(optimizer):
+    rates = [float(group['lr']) for group in optimizer.param_groups]
+    if not rates or any(not math.isfinite(rate) or rate <= 0 for rate in rates):
+        raise ValueError('Optimizer learning rates must be finite and positive')
+    return rates
+
+
+def apply_restored_learning_rate(optimizer, expected_loaded_rate, target_rate, allow_override):
+    """Call after load_state_dict: modify group LR only, preserving Adam state."""
+    loaded = optimizer_learning_rates(optimizer)
+    if any(rate != expected_loaded_rate for rate in loaded):
+        raise ValueError('Loaded actual optimizer LR differs from the saved recipe')
+    if not math.isfinite(target_rate) or target_rate <= 0:
+        raise ValueError('Invalid target learning rate')
+    if not allow_override and any(rate != target_rate for rate in loaded):
+        raise ValueError('Optimizer LR change requires an authorized first-resume transition')
+    if allow_override:
+        for group in optimizer.param_groups:
+            group['lr'] = target_rate
+    actual = optimizer_learning_rates(optimizer)
+    if any(rate != target_rate for rate in actual):
+        raise RuntimeError('Actual optimizer LR was not set to the target')
+    return dict(loaded_optimizer_learning_rates=loaded, actual_optimizer_learning_rates=actual,
+                override_applied=bool(allow_override))
+
+
 def main():
     import numpy as np
     import torch
@@ -106,6 +188,8 @@ def main():
     rank, local, world = (int(os.environ[k]) for k in ('RANK', 'LOCAL_RANK', 'WORLD_SIZE'))
     if world != 8 or torch.cuda.device_count() != 8:
         raise ValueError('Probe fitting requires eight actual visible GPUs and ranks')
+    if not math.isfinite(args.learning_rate) or args.learning_rate <= 0:
+        raise ValueError('Learning rate must be finite and positive')
     if not 1 <= args.epoch <= args.epochs or args.save_every < 1:
         raise ValueError('Invalid epoch boundary')
     out, model_dir = remote(args.output), remote(args.model_dir)
@@ -134,9 +218,17 @@ def main():
                        learning_rate=args.learning_rate, seed=args.seed, epochs=args.epochs,
                        save_every=args.save_every, test_manifest_sha256=test.manifest_sha,
                        diagnostic_questions=512, diagnostic_trajectories=2560)
-        binding_sha = hashlib.sha256(canonical(binding)).hexdigest()
+        binding_sha = binding_digest(binding)
+        transition_path = out / 'learning-rate-transition.json'
+        transition = read(transition_path) if transition_path.exists() else None
+        transition_provenance = None
+        if transition is not None:
+            run_id = read(out.parent / 'preparation/launch-config.json')['run_id']
+            transition_provenance = validate_learning_rate_transition(transition, binding, args.epoch, run_id)
+            transition_provenance['transition_receipt_sha256'] = sha(transition_path)
         rank_bindings = [None] * world
-        dist.all_gather_object(rank_bindings, (binding_sha, train.manifest_sha, plan_sha))
+        dist.all_gather_object(rank_bindings, (binding_sha, train.manifest_sha, plan_sha,
+                                                  binding_digest(transition) if transition is not None else None))
         if len(set(rank_bindings)) != 1:
             raise RuntimeError('Rank dataset or sampling binding differs')
         epoch_dir = out / 'epochs' / ('epoch-%04d' % args.epoch)
@@ -146,7 +238,8 @@ def main():
             if args.epoch == 1:
                 once(out / 'run-claim.json', dict(binding=binding, binding_sha256=binding_sha, observed_utc=utc()))
             else:
-                if read(out / 'run-claim.json')['binding_sha256'] != binding_sha:
+                claim = read(out / 'run-claim.json')
+                if claim['binding_sha256'] != binding_sha or claim['binding'] != binding:
                     raise ValueError('Epoch cannot change fixed training or diagnostic binding')
         dist.barrier()
         claimed = True
@@ -154,10 +247,12 @@ def main():
         model = PrefixCorrectnessProbe(model_dir, max_tokens=20).to(device=device, dtype=torch.float32)
         optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate, weight_decay=0)
         restored_step = 0
+        lr_restore = dict(loaded_optimizer_learning_rates=optimizer_learning_rates(optimizer),
+                          actual_optimizer_learning_rates=optimizer_learning_rates(optimizer), override_applied=False)
         if args.epoch > 1:
             receipt = read(out / 'latest.json')
             latest = out / 'latest.pt'
-            if receipt['epoch'] != args.epoch - 1 or receipt['binding_sha256'] != binding_sha:
+            if receipt['epoch'] != args.epoch - 1:
                 raise ValueError('Latest checkpoint is not the immediately preceding complete epoch')
             # One rank checks checkpoint bytes; every rank loads the same committed file.
             check = [sha(latest) == receipt['sha256'] if rank == 0 else None]
@@ -165,10 +260,11 @@ def main():
             if check != [True]:
                 raise ValueError('Latest head checkpoint bytes differ')
             saved = torch.load(latest, map_location='cpu', weights_only=False)
-            if saved['epoch'] != args.epoch - 1 or saved['binding_sha256'] != binding_sha:
-                raise ValueError('Checkpoint epoch/binding differs')
+            first_lr_transition = validate_saved_binding(saved, receipt, binding, args.epoch, transition)
             model.load_state_dict(saved['model'], strict=True)
             optimizer.load_state_dict(saved['optimizer'])
+            loaded_rate = transition['source_learning_rate'] if first_lr_transition else args.learning_rate
+            lr_restore = apply_restored_learning_rate(optimizer, loaded_rate, args.learning_rate, first_lr_transition)
             for state in optimizer.state.values():
                 for key, value in list(state.items()):
                     if isinstance(value, torch.Tensor) and key != 'step':
@@ -181,6 +277,8 @@ def main():
             torch.set_rng_state(state['torch_cpu'])
             torch.cuda.set_rng_state(state['torch_cuda'], device)
             restored_step = actual_adam_steps(optimizer)
+            if saved['actual_adam_steps_per_rank'] != [(args.epoch - 1) * len(plan)] * world:
+                raise ValueError('Complete checkpoint eight-rank actual Adam boundary differs')
             if restored_step != saved['actual_adam_steps_per_rank'][rank]:
                 raise ValueError('Checkpoint actual Adam step differs')
             del saved
@@ -210,6 +308,9 @@ def main():
                 raise FloatingPointError('Actual nonfinite head gradient')
             optimizer.step()
             actual = actual_adam_steps(optimizer)
+            actual_rates = optimizer_learning_rates(optimizer)
+            if any(rate != args.learning_rate for rate in actual_rates):
+                raise RuntimeError('Actual optimizer LR drifted from the bound target')
             if actual != restored_step + step:
                 raise RuntimeError('Actual head Adam counter did not advance exactly once')
             count = len(ids)
@@ -219,7 +320,8 @@ def main():
             total_count += count
             append(epoch_dir / ('rank-%d-updates.jsonl' % rank), dict(observed_utc=utc(), epoch=args.epoch,
                    epoch_step=step, actual_adam_steps=actual, local_trajectories=count,
-                   loss=float(loss.detach()), sampler_plan_sha256=plan_sha))
+                   loss=float(loss.detach()), sampler_plan_sha256=plan_sha,
+                   actual_optimizer_learning_rates=actual_rates, actual_learning_rate=actual_rates[0]))
         stats = torch.tensor([total_loss, total_correct, total_positive, total_count], device=device, dtype=torch.float64)
         dist.all_reduce(stats)
         if int(stats[3].item()) != 25600:
@@ -264,6 +366,9 @@ def main():
                            test_manifest_sha256=test.manifest_sha, train_manifest_sha256=train.manifest_sha,
                            sampler_plan_sha256=plan_sha, sampling='natural_no_replacement',
                            global_batch=args.global_batch, last_global_batch=len(plan[-1]),
+                           actual_optimizer_learning_rates=optimizer_learning_rates(optimizer),
+                           actual_learning_rate=optimizer_learning_rates(optimizer)[0],
+                           learning_rate_restore=lr_restore, learning_rate_transition=transition_provenance,
                            cuda_peak_allocated_bytes=int(torch.cuda.max_memory_allocated(device)),
                            cuda_peak_reserved_bytes=int(torch.cuda.max_memory_reserved(device)))
             once(epoch_dir / 'metrics.json', metrics)
@@ -273,7 +378,9 @@ def main():
                               model={key: value.detach().cpu() for key, value in model.module.state_dict().items()},
                               optimizer=optimizer.state_dict(), rank_rng=all_rng,
                               actual_adam_steps_per_rank=counts,
-                              train_manifest_sha256=train.manifest_sha, test_manifest_sha256=test.manifest_sha)
+                              train_manifest_sha256=train.manifest_sha, test_manifest_sha256=test.manifest_sha,
+                              actual_optimizer_learning_rates=optimizer_learning_rates(optimizer),
+                              learning_rate_transition=transition_provenance)
             partial, latest = out / 'latest.pt.partial', out / 'latest.pt'
             if partial.exists():
                 raise FileExistsError('Uncommitted checkpoint partial requires explicit recovery')
@@ -287,6 +394,9 @@ def main():
                 os.link(latest, target)
             receipt = dict(epoch=args.epoch, binding_sha256=binding_sha, sha256=checkpoint_sha,
                            bytes=latest.stat().st_size, actual_adam_steps_per_rank=counts,
+                           actual_optimizer_learning_rates=optimizer_learning_rates(optimizer),
+                           actual_learning_rate=optimizer_learning_rates(optimizer)[0],
+                           learning_rate_transition=transition_provenance,
                            immutable_saved=args.epoch % args.save_every == 0 or args.epoch == args.epochs,
                            observed_utc=utc())
             temp = out / 'latest.json.partial'
