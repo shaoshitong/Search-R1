@@ -39,7 +39,10 @@ def prepare():
   accepted_rows=len(list((OUT/'rows').glob('*.json'))),baseline_progress=read('progress.json'),
   previous_wait_id=read('repair-wait.json')['wait_id'],model_and_protocol_unchanged=True)
  assert not (OUT/'performance-handoff-intent.json').exists()
- atomic(OUT/'performance.json',json.loads(config.read_text()))
+ temporary=OUT/'performance.json.tmp'
+ with temporary.open('wb') as stream:
+  stream.write(config.read_bytes());stream.flush();os.fsync(stream.fileno())
+ temporary.replace(OUT/'performance.json')
  assert sha(OUT/'performance.json')==CONFIG_SHA
  atomic(OUT/'performance-handoff-intent.json',intent)
  assert pathlib.Path('/proc',str(pid),'stat').read_text().rsplit(')',1)[1].split()[19]==tick
