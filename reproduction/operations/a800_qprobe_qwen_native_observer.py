@@ -32,6 +32,13 @@ def native_version(value,outer):
 def native_adam(outer):
  window=min(outer,8)
  return 200+4*(window*(window+1)//2+8*max(0,outer-8))
+def validate_native_launch_claim(value,review_sha256):
+ need(type(value) is dict and set(value)=={'run_id','execution_id','source_commit','review_sha256','no_automatic_retry','claimed_unix'},'native_launch_claim_schema')
+ need(all(type(value[key]) is str and value[key]==run[key] for key in ('run_id','execution_id','source_commit')),'native_launch_claim_identity')
+ need(type(value['review_sha256']) is str and re.fullmatch('[0-9a-f]{64}',value['review_sha256']) and
+  value['review_sha256']==review_sha256,'native_launch_claim_review_binding')
+ need(value['no_automatic_retry'] is True and number(value['claimed_unix']) and value['claimed_unix']>0,'native_launch_claim_once')
+ return value
 def validate_native_recipe(q):
  expected=dict(head_kind='qwen_native_lastblock_binary_v1',loss_mode='token_binary_std_v1',ranking='binary_mixed_probability',
   candidate_questions=5120,selected_questions=512,responses_per_question=5,exploration_questions=0,
@@ -86,8 +93,8 @@ def pinned_run():
  need(qualified['stage']=='NATIVE_FRESH_FORMAL200_PRELAUNCH_QUALIFIED' and qualified['run_id']==run['run_id'] and
   qualified['execution_id']==run['execution_id'] and qualified['source_commit']==intent['source_commit'] and qualified['source_map_sha256']==source_map_sha,'prelaunch_identity')
  for key in ('warmup_ready_sha256','warmup_head_sha256','bank_manifest_sha256'):need(release[key]==qualified[key],'release_asset_binding')
- same_execution(claim);same_execution(launch)
- need(claim['review_sha256']==release_info['scanned_sha256'] and launch['deployment_id']==intent['deployment_id'],'actual_launch_review_binding')
+ validate_native_launch_claim(claim,release_info['scanned_sha256']);same_execution(launch)
+ need(launch['deployment_id']==intent['deployment_id'],'actual_launch_review_binding')
  return run
 def native_initialization():
  q=run['question_probe'];path=Path(q['initial_head_ready']);relative=str(path.relative_to(base))

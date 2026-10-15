@@ -54,6 +54,21 @@ class NativeObserverTests(unittest.TestCase):
             logs['logs/optimizer-rank-'+str(rank)+'.jsonl']=records
         return logs
 
+    def test_native_launch_claim_matches_producer_and_rejects_cross_identity(self):
+        env=self.namespace();review='a'*64
+        claim=dict(run_id='1'*32,execution_id='2'*32,source_commit='3'*40,
+            review_sha256=review,no_automatic_retry=True,claimed_unix=1792074720.5)
+        self.assertEqual(env['validate_native_launch_claim'](claim,review),claim)
+        for key,value in (('run_id','9'*32),('execution_id','9'*32),('source_commit','9'*40),
+                          ('review_sha256','b'*64),('no_automatic_retry',False),('claimed_unix',float('nan'))):
+            with self.subTest(key=key),self.assertRaises(env['Unknown']):
+                env['validate_native_launch_claim'](dict(claim,**{key:value}),review)
+        with self.assertRaises(env['Unknown']):
+            env['validate_native_launch_claim'](dict(claim,execution_backend='ssh_local'),review)
+        launch=dict(claim,execution_backend='ssh_local',slurm_job_id=None)
+        env['same_execution'](launch)
+        with self.assertRaises(env['Unknown']):env['same_execution'](claim)
+
     def test_fresh_four_rank_twenty_rule_native_prefix_and_unknown_partial(self):
         for path,_,sha in observer.READERS:
             self.assertEqual(hashlib.sha256((observer.OPS/path).read_bytes()).hexdigest(),sha)
