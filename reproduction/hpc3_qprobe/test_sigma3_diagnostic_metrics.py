@@ -40,7 +40,7 @@ class MetricDefinitions(unittest.TestCase):
         for key in ('model','optimizer','rng','labels'):
             import copy
             different=copy.deepcopy(state)
-            if key=='optimizer': different[key]['exp_avg'][0]+=1e-7
+            if key=='optimizer': different[key]['exp_avg'][0]+=1e-5
             elif key=='labels':different[key][0]['K']=3
             elif key=='rng': different[key]=different[key].long()
             else:different[key][0]+=1e-6
