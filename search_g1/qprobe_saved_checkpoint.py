@@ -45,6 +45,22 @@ def _require(condition, message):
         raise ValueError('QPROBE_SAVED_CHECKPOINT_' + message)
 
 
+def _head_kind(config):
+    kind = config.get('head_kind', 'count6_v1')
+    _require(kind in ('count6_v1', 'token_binary_v1'), 'UNKNOWN_HEAD_KIND')
+    return kind
+
+
+def _feature_cache_files(config):
+    if _head_kind(config) == 'token_binary_v1':
+        return ('manifest.json', 'index.jsonl', 'offsets.npy', 'lengths.npy', 'packed_features.npy')
+    return ('manifest.json', 'index.jsonl', 'features.npy')
+
+
+def _head5_prefix(config):
+    return 'qprobe-token:5:5:' if _head_kind(config) == 'token_binary_v1' else 'qprobe:5:5:'
+
+
 def _remote(path):
     original = Path(path)
     resolved = original.resolve()
@@ -231,7 +247,7 @@ def qualify_saved_checkpoint(base, directory, *, expected_run_id, expected_execu
     """Explicit remote CPU operation, defined here and never run during import."""
     from safetensors import safe_open
     from search_g1.full_state_restore import equal_tree
-    from search_g1.qprobe_features import FeatureCache
+    from search_g1.qprobe_runtime import cache_for_config
     from verl.utils.checkpoint_integrity import validate_saved_checkpoint
     base, directory = _remote(base), _remote(directory)
     _require(not directory.exists() and not directory.is_relative_to(base) and
@@ -303,7 +319,9 @@ def qualify_saved_checkpoint(base, directory, *, expected_run_id, expected_execu
     _check_proof(qproof['head'], by_name, 'training_state/question-probe-state.pt.head.pt')
     _require(qstate['schema_version'] == 1 and qstate['completed_attempts'] == prefix['attempt_ids'] and
              qstate['reward_probe_version'] == run['initial_probe_version'] and
-             qstate['head_version'].startswith('qprobe:5:5:'), 'HEAD5_ATTEMPTS_OR_REWARD_BINDING_MISMATCH')
+             _head_kind(qstate['config']) == _head_kind(run['question_probe']) and
+             qstate['head_version'].startswith(_head5_prefix(run['question_probe'])),
+             'HEAD5_ATTEMPTS_OR_REWARD_BINDING_MISMATCH')
     np.random.default_rng().bit_generator.state = qstate['selection_rng']
     driver_record = _check_proof(state_manifest['driver_file'], by_name, 'training_state/driver.pt')
     driver = torch.load(driver_record['path'], map_location='cpu', weights_only=False)
@@ -352,9 +370,13 @@ def qualify_saved_checkpoint(base, directory, *, expected_run_id, expected_execu
             row = _file_record(encoder_file, relative_path='reward_encoder/' + name)
         _require(row['full_read_sha256'] == sha, 'REWARD_ENCODER_SHA_MISMATCH')
         reward_files.append(row)
-    cache = FeatureCache(_remote(run['question_probe']['cache_dir']), expected_spec_sha=qstate['feature_spec_sha'])
+    feature_names = _feature_cache_files(run['question_probe'])
+    feature_root = _remote(run['question_probe']['cache_dir'])
+    cache = cache_for_config(dict(run['question_probe'], cache_dir=str(feature_root)))
+    _require(cache.path == feature_root and cache.spec_sha == qstate['feature_spec_sha'],
+             'FEATURE_REPRESENTATION_OR_SPEC_CHANGED')
     cache.verify_all()
-    feature_files = [_file_record(_owned(cache.path / name)) for name in ('manifest.json', 'index.jsonl', 'features.npy')]
+    feature_files = [_file_record(_owned(cache.path / name)) for name in feature_names]
     history = _historical_artifacts(base, run, 5)
     _require(set(history['development']) == {'before', 'after5'}, 'EXISTING_DEVELOPMENT_PAIR_MISSING')
     from reproduction.common8.formal_inline_evaluation import verify_pair
@@ -467,9 +489,10 @@ def read_source(receipt_path):
                      row['full_read_sha256'] == parent['initial_model_sha256'][name]
                      for name, row in canonical.items()), 'CANONICAL_MODEL_RECORDS_SUBSTITUTED')
         feature_paths = {Path(row['path']) for row in receipt['feature_files']}
+        feature_names = _feature_cache_files(parent['question_probe'])
         _require(feature_paths == {_remote(parent['question_probe']['cache_dir']) / name
-                     for name in ('manifest.json', 'index.jsonl', 'features.npy')} and
-                 len(feature_paths) == len(receipt['feature_files']) == 3 and
+                     for name in feature_names} and
+                 len(feature_paths) == len(receipt['feature_files']) == len(feature_names) and
                  next(row['full_read_sha256'] for row in receipt['feature_files']
                       if row['path'].endswith('/manifest.json')) == receipt['feature_cache_manifest_sha256'],
                  'FIXED_FEATURE_CACHE_RECORDS_SUBSTITUTED')
@@ -514,6 +537,8 @@ def read_source(receipt_path):
         equal_tree(qstate['candidate_state'], driver['candidate_stream'])
         _require(driver['completed_outer'] == 5 and driver['probe_version'] == receipt['reward_probe_version'] and
                  qstate['completed_attempts'] == actual_prefix['attempt_ids'] and
+                 _head_kind(qstate['config']) == _head_kind(parent['question_probe']) and
+                 qstate['head_version'].startswith(_head5_prefix(parent['question_probe'])) and
                  qstate['head_version'] == receipt['head_version'] and qstate['feature_spec_sha'] == receipt['feature_spec_sha'] and
                  driver['candidate_stream']['consumed_source_rows'] == receipt['driver_state']['source_consumed'],
                  'QUALIFIED_DRIVER_HEAD_OR_CANDIDATE_BINDING_CHANGED')

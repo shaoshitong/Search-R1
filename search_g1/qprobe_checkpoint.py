@@ -86,10 +86,10 @@ def _validate_qstate(checkpoint, outer, actor_snapshot_id):
     _need(state['completed_outer']==outer and state['actor_snapshot_id']==actor_snapshot_id,'HEAD_ACTOR_BINDING_MISMATCH')
     head_file=state['head_file'];_need(Path(head_file).name==head_file,'HEAD_FILE_ESCAPES_CHECKPOINT')
     head_path=directory/head_file;_need(digest(head_path)==state['head_sha256'],'HEAD_SHA_MISMATCH')
-    from search_g1.qprobe_model import OnlineQProbe
-    head=OnlineQProbe.load(head_path,expected_actor_snapshot_id=actor_snapshot_id,
-                          expected_feature_spec_sha=state['feature_spec_sha'],
-                          expected_checkpoint_sha=state['head_sha256'])
+    from search_g1.qprobe_runtime import load_head_checkpoint
+    head=load_head_checkpoint(head_path,state['config'],expected_actor_snapshot_id=actor_snapshot_id,
+                             expected_feature_spec_sha=state['feature_spec_sha'],
+                             expected_checkpoint_sha=state['head_sha256'])
     _need(head.completed_outer==outer and head.version==state['head_version'],'HEAD_OUTER_VERSION_MISMATCH')
     return state,path,head_path
 
@@ -323,6 +323,12 @@ def bind_restore(run, receipt_path):
         # bootstrap head or retain the old task's writable output directory.
         run['question_probe']['initial_head_checkpoint']=None
         run['question_probe']['snapshot_path']=None
+        if run['question_probe'].get('head_kind') == 'token_binary_v1':
+            # This completed actor/head pair supplies every Head/Adam/RNG/replay
+            # field. The original warmup artifact is no longer an input.
+            run['question_probe']['snapshot_path']=receipt['question_probe_state_path']
+            for key in ('initial_head_checkpoint_sha256', 'initial_head_ready', 'initial_head_ready_sha256'):
+                run['question_probe'][key]=None
         if run.get('checkpoint_dir'):
             target_base=Path(run['checkpoint_dir']).resolve().parents[1]
             run['question_probe']['output_dir']=str(target_base/'artifacts/question-probe')
@@ -339,7 +345,8 @@ def bind_restore(run, receipt_path):
     else:
         _need(run.get('infra_rollout') is None,'TARGET_ADDED_AN_UNBOUND_ROLLOUT_PHASE')
     from search_g1.qprobe_runtime import validate_config
-    ignore={'cache_dir','output_dir','initial_head_checkpoint','snapshot_path','restore_state'}
+    ignore={'cache_dir','output_dir','initial_head_checkpoint','snapshot_path','restore_state',
+            'initial_head_checkpoint_sha256','initial_head_ready','initial_head_ready_sha256'}
     new={k:v for k,v in validate_config(run['question_probe']).items() if k not in ignore}
     old={k:v for k,v in validate_config(parent['question_probe']).items() if k not in ignore}
     _need(new==old,'TARGET_HEAD_CONFIGURATION_MISMATCH')

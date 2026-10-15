@@ -112,8 +112,9 @@ def bind_restored_features(base, cache_dir):
     path,receipt,_,_,parent=read_source(binding['source_receipt'])
     if digest(path)!=binding['source_receipt_sha256'] or run['run_id']!=receipt['run_id']:
         raise ValueError('Restored feature binding differs from the authenticated source')
-    from search_g1.qprobe_features import FeatureCache
-    cache=Path(cache_dir).resolve();features=FeatureCache(cache)
+    from search_g1.qprobe_runtime import cache_for_config
+    cache=Path(cache_dir).resolve()
+    features=cache_for_config(dict(run['question_probe'], cache_dir=str(cache)))
     features.verify_all()
     if cache!=base/'question-features' or features.spec_sha!=receipt['feature_spec_sha'] or \
             features.manifest['count']!=169028 or features.spec['train_parquet_sha256']!=run['input_sha256']['train.parquet']:
@@ -124,7 +125,8 @@ def bind_restored_features(base, cache_dir):
     proposed=dict(run,question_probe=dict(run['question_probe'],cache_dir=str(cache),
                                         output_dir=str(base/'artifacts/question-probe')))
     from search_g1.qprobe_runtime import validate_config
-    ignore={'cache_dir','output_dir','initial_head_checkpoint','snapshot_path','restore_state'}
+    ignore={'cache_dir','output_dir','initial_head_checkpoint','snapshot_path','restore_state',
+            'initial_head_checkpoint_sha256','initial_head_ready','initial_head_ready_sha256'}
     if {k:v for k,v in validate_config(proposed['question_probe']).items() if k not in ignore} != \
             {k:v for k,v in validate_config(parent['question_probe']).items() if k not in ignore}:
         raise ValueError('Restored head configuration changed')

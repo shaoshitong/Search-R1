@@ -17,7 +17,15 @@ import torch
 
 from search_g1.qprobe_selection import (
     QuestionPool, count_predictions, prequential_metrics, select_questions, validate_budget,
+    binary_predictions, binary_prequential_metrics, select_binary_questions,
 )
+
+
+TOKEN_BINARY_HEAD = "token_binary_v1"
+
+
+def _is_token_binary(config):
+    return config.get("head_kind") == TOKEN_BINARY_HEAD
 
 
 def _sha(path):
@@ -81,25 +89,81 @@ def _plain_config(config):
 
 def validate_config(config):
     config = _plain_config(config)
+    token_binary = _is_token_binary(config)
     validate_budget(config.get("candidate_questions", 5120), config.get("selected_questions", 512),
-                    config.get("exploration_questions", 64), config.get("responses_per_question", 5))
+                    config.get("exploration_questions", 0 if token_binary else 64), config.get("responses_per_question", 5))
     # The native behavior identity contract and eight-rank actor budget are 512/G5.
     if config.get("selected_questions", 512) != 512:
         raise ValueError("Native question-probe runtime requires selected_questions=512")
     if config.get("post_rollout_em_filter", False) is not False:
         raise ValueError("Question-probe mode forbids post-rollout filtering or refill")
-    if config.get("ranking", "expected_sample_std") != "expected_sample_std":
-        raise ValueError("The implemented acquisition ranks expected sample std")
+    ranking = "binary_mixed_probability" if token_binary else "expected_sample_std"
+    if config.get("ranking", ranking) != ranking:
+        raise ValueError("Question-probe ranking differs from its head representation")
+    if token_binary:
+        if config.get("candidate_questions", 5120) != 5120 or config.get("exploration_questions", 0) != 0:
+            raise ValueError("Token binary acquisition requires candidate5120/Top512/E0")
+        if config.get("target_statistic", "sample_std") != "sample_std" or config.get("std_loss_weight", .3) != .3:
+            raise ValueError("Token binary training requires sample std with auxiliary weight .3")
+        if config.get("max_tokens", 244) != 244:
+            raise ValueError("Token binary formal head requires global max_tokens=244")
+        if type(config.get("prediction_batch_size", 128)) is not int or config.get("prediction_batch_size", 128) < 1:
+            raise ValueError("Token binary prediction batch size must be a positive integer")
     if config.get("exploration_order", "uniform_first") != "uniform_first":
         raise ValueError("Question-probe exploration must be drawn uniformly before Top selection")
     if type(config.get("std_ddof", 1)) is not int or config.get("std_ddof", 1) != 1 or \
             config.get("target", "strict_terminal_em") != "strict_terminal_em":
         raise ValueError("Question-probe labels require strict terminal EM and sample std ddof=1")
     if type(config.get("update_every_completed_outer", 1)) is not int or config.get("update_every_completed_outer", 1) != 1:
-        raise ValueError("The new count head must update every successful outer iteration")
+        raise ValueError("The question head must update every successful outer iteration")
     if type(config.get("seed", 42)) is not int:
         raise ValueError("Question-probe seed must be an integer")
     return config
+
+
+def cache_for_config(config):
+    """Load the immutable representation required by the configured head."""
+    cache_dir = config.get("cache_dir")
+    if not cache_dir:
+        raise ValueError("A prepared immutable remote question feature cache is required")
+    if _is_token_binary(config):
+        from search_g1.qprobe_token_features import TokenFeatureCache
+        return TokenFeatureCache(cache_dir)
+    from search_g1.qprobe_features import FeatureCache
+    return FeatureCache(cache_dir)
+
+
+def load_head_checkpoint(path, config, *, feature_cache=None, expected_actor_snapshot_id=None,
+                         expected_feature_spec_sha=None, expected_checkpoint_sha=None):
+    """Typed loading shared with actor/head pairing checks; verify bytes first."""
+    if expected_checkpoint_sha is not None and _sha(path) != expected_checkpoint_sha:
+        raise ValueError("Question-probe head checkpoint hash differs")
+    kwargs = dict(expected_actor_snapshot_id=expected_actor_snapshot_id,
+                  expected_feature_spec_sha=expected_feature_spec_sha)
+    if _is_token_binary(config):
+        from search_g1.qprobe_token_online import OnlineTokenBinaryQProbe
+        return OnlineTokenBinaryQProbe.load(path, feature_provider=feature_cache,
+                                           device=config.get("head_device", "cpu"), **kwargs)
+    from search_g1.qprobe_model import OnlineQProbe
+    return OnlineQProbe.load(path, **kwargs)
+
+
+def _token_cache_binding(cache):
+    """Bind metadata/packed-file hashes without copying or reading token tensors."""
+    ordered = hashlib.sha256()
+    index = getattr(cache, "index", None)
+    if not isinstance(index, dict) or not index:
+        raise ValueError("Token cache lacks question hash/length bindings")
+    for qid in getattr(cache, "ids", index):
+        row = index[qid]
+        if row.get("qid", qid) != qid or not row.get("question_hash") or type(row.get("length")) is not int:
+            raise ValueError("Token cache question metadata is invalid")
+        ordered.update(json.dumps([qid, row], sort_keys=True, ensure_ascii=False,
+                                  separators=(",", ":")).encode() + b"\n")
+    return dict(spec_sha=cache.spec_sha, feature_dim=cache.feature_dim,
+                global_max_tokens=cache.spec["global_max_tokens"],
+                index_sha256=ordered.hexdigest(),
+                manifest_sha256=_document_sha(getattr(cache, "manifest", {})))
 
 
 def _prediction_cpu(prediction):
@@ -118,42 +182,118 @@ class QProbeRuntime:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.tokenizer = tokenizer
         if feature_cache is None:
-            from search_g1.qprobe_features import FeatureCache
-            cache_dir = self.config.get("cache_dir")
-            if not cache_dir:
-                raise ValueError("A prepared immutable remote question feature cache is required")
-            feature_cache = FeatureCache(cache_dir)
+            feature_cache = cache_for_config(self.config)
         self.cache = feature_cache
         if not getattr(self.cache, "spec_sha", None) or not getattr(self.cache, "feature_dim", 0):
             raise ValueError("Feature cache lacks its immutable spec or feature dimension")
         self.feature_spec_sha = self.cache.spec_sha
+        self.token_binary = _is_token_binary(self.config)
+        self.cache_binding = None
+        if self.token_binary:
+            self.cache_binding = _token_cache_binding(self.cache)
+            if self.cache_binding["global_max_tokens"] != self.config.get("max_tokens", 244):
+                raise ValueError("Token feature cache and global head padding differ")
         if head is None:
-            from search_g1.qprobe_model import OnlineQProbe, QProbeConfig
             initial = self.config.get("initial_head_checkpoint")
+            if self.token_binary:
+                from search_g1.qprobe_token_online import OnlineTokenBinaryQProbe, TokenOnlineQProbeConfig
+                head_type, config_type = OnlineTokenBinaryQProbe, TokenOnlineQProbeConfig
+            else:
+                from search_g1.qprobe_model import OnlineQProbe, QProbeConfig
+                head_type, config_type = OnlineQProbe, QProbeConfig
             if initial:
-                head = OnlineQProbe.load(initial, expected_feature_spec_sha=self.feature_spec_sha)
-                expected_head_config = QProbeConfig.from_mapping(self.config)
+                expected_sha = self.config.get("initial_head_checkpoint_sha256")
+                if self.token_binary and not expected_sha:
+                    raise ValueError("Token binary initial head requires its checkpoint SHA256")
+                head = load_head_checkpoint(initial, self.config, feature_cache=self.cache,
+                    expected_feature_spec_sha=self.feature_spec_sha, expected_checkpoint_sha=expected_sha)
+                expected_head_config = config_type.from_mapping(self.config)
                 if head.config != expected_head_config:
                     raise ValueError("Initial question-probe head config differs from the effective runtime config")
             else:
-                head = OnlineQProbe(self.cache.feature_dim, QProbeConfig.from_mapping(self.config),
-                                   feature_spec_sha=self.feature_spec_sha)
+                extra = dict(feature_provider=self.cache, device=self.config.get("head_device", "cpu")) if self.token_binary else {}
+                head = head_type(self.cache.feature_dim, config_type.from_mapping(self.config),
+                                 feature_spec_sha=self.feature_spec_sha, **extra)
         if getattr(head, "feature_spec_sha", self.feature_spec_sha) != self.feature_spec_sha:
             raise ValueError("Probe head belongs to a different feature namespace")
         if getattr(head, "feature_dim", self.cache.feature_dim) != self.cache.feature_dim:
             raise ValueError("Probe head and fixed feature cache dimensions differ")
+        if self.token_binary and hasattr(head, "attach_feature_provider"):
+            head.attach_feature_provider(self.cache)
         self.head = head
         self.selection_rng = np.random.default_rng(self.config.get("seed", 42))
         self.pending = None
         self.completed_outer = int(getattr(self.head, "completed_outer", 0))
         self.completed_attempts = set()
+        self.initial_head_adoption = None
 
     @property
     def version(self):
         return self.head.version
 
+    def bootstrap_initial_head(self):
+        """Verify the consumed warmup adoption at logical0; never fit/reroll here."""
+        if not self.token_binary:
+            raise ValueError("Ready head adoption is exclusive to token_binary_v1")
+        if self.completed_outer != 0 or int(self.head.completed_outer) != 0 or self.pending is not None:
+            raise ValueError("Token binary initial adoption must precede formal outer1")
+        ready_path = self.config.get("initial_head_ready")
+        ready_sha = self.config.get("initial_head_ready_sha256")
+        head_path = self.config.get("initial_head_checkpoint")
+        head_sha = self.config.get("initial_head_checkpoint_sha256")
+        if not ready_path or not ready_sha or not head_path or not head_sha:
+            raise ValueError("Token binary formal initialization requires paired ready/checkpoint hashes")
+        if _sha(ready_path) != ready_sha or _sha(head_path) != head_sha:
+            raise ValueError("Token binary adopted initial ready/checkpoint hash differs")
+        ready = json.loads(Path(ready_path).read_text())
+        receipt = ready.get("head_receipt", {})
+        receipt_sha = receipt.get("checkpoint_sha", receipt.get("sha256"))
+        provenance = getattr(self.head, "initialization_provenance", {})
+        feature_sha = ready.get("feature_spec_sha", ready.get("token_feature_spec_sha256"))
+        if (ready.get("stage") != "TOKEN_BINARY_FORMAL_INITIAL_HEAD_ADOPTED" or
+                receipt_sha != head_sha or feature_sha != self.feature_spec_sha or
+                ready.get("actual_head_adam_updates") != 200 or ready.get("completed_outer") != 0 or
+                ready.get("warmup_questions") != 5120 or ready.get("trajectories_regenerated") is not False or
+                ready.get("no_head_refit") is not True or
+                provenance.get("warmup_checkpoint_sha256") != ready.get("raw_warmup_checkpoint_sha256") or
+                not provenance.get("warmup_checkpoint_sha256") or
+                provenance.get("warmup_head_adam_steps") != 200 or
+                provenance.get("adopted_at_completed_outer") != 0 or provenance.get("no_refit") is not True):
+            raise ValueError("Token binary formal ready does not prove exact warmup10 logical0 adoption")
+        if hasattr(self.head, "_adam_steps") and self.head._adam_steps() != 200:
+            raise ValueError("Token binary adopted optimizer differs from completed warmup10")
+        self.initial_head_adoption = dict(ready_sha256=ready_sha, checkpoint_sha256=head_sha,
+            warmup_checkpoint_sha256=provenance["warmup_checkpoint_sha256"], logical_outer=0,
+            head_version=self.version, no_head_refit=True, trajectories_regenerated=False)
+        return copy.deepcopy(self.initial_head_adoption)
+
     def score(self, questions):
         """A narrow qid/question API: no labels or complete DataProto enter the cache/head."""
+        if self.token_binary:
+            questions = list(questions)
+            frozen_version = self.version
+            qids = []
+            for question in questions:
+                row = self.cache.index.get(question.qid)
+                if row is None or row["question_hash"] != question.question_hash:
+                    raise ValueError("Token cache question text/hash differs or qid is absent")
+                qids.append(question.qid)
+            probability, std = [], []
+            batch_size = self.config.get("prediction_batch_size", 128)
+            for start in range(0, len(qids), batch_size):
+                prediction = self.head.predict(qids[start:start + batch_size])
+                current = binary_predictions(prediction["mixed_probability"], prediction["predicted_sample_std"])
+                if len(current["mixed_probability"]) != len(qids[start:start + batch_size]):
+                    raise ValueError("Token binary head changed the prediction batch length")
+                probability.append(current["mixed_probability"])
+                std.append(current["predicted_sample_std"])
+                if self.version != frozen_version:
+                    raise RuntimeError("Probe changed during frozen question prediction")
+            if not qids:
+                raise ValueError("Token binary prediction requires questions")
+            prediction = binary_predictions(np.concatenate(probability), np.concatenate(std))
+            # These compact handles are all that may enter replay/pending state.
+            return tuple(qids), prediction, frozen_version
         features = self.cache.get_features([q.qid for q in questions], [q.question for q in questions])
         if features.ndim != 2 or features.shape != (len(questions), self.cache.feature_dim):
             raise ValueError("Question cache returned the wrong feature layout")
@@ -171,8 +311,19 @@ class QProbeRuntime:
             raise RuntimeError("Previous question-probe attempt has not been completed or aborted")
         if attempt_id in self.completed_attempts:
             raise RuntimeError("Question-probe attempt was already committed")
-        self.pending = dict(outer=outer, attempt_id=attempt_id, selected=selected,
-            features=features.detach().cpu().clone(), probabilities=np.asarray(probabilities).copy(),
+        if self.token_binary:
+            if prediction_version != self.version:
+                raise RuntimeError("Token binary head changed after frozen selection")
+            qids = list(features)
+            if len(qids) != 512 or len(set(qids)) != 512 or any(not isinstance(qid, str) for qid in qids):
+                raise ValueError("Token binary transaction requires 512 unique selected qid handles")
+            prediction = binary_predictions(probabilities["mixed_probability"], probabilities["predicted_sample_std"])
+            if len(prediction["mixed_probability"]) != 512:
+                raise ValueError("Token binary transaction prediction count differs")
+            data = dict(qids=qids, binary_prediction={k: v.copy() for k, v in prediction.items()})
+        else:
+            data = dict(features=features.detach().cpu().clone(), probabilities=np.asarray(probabilities).copy())
+        self.pending = dict(outer=outer, attempt_id=attempt_id, selected=list(selected), **data,
             prediction_version=prediction_version, policy_snapshot_id=policy_snapshot_id,
             contracts=dict(contracts), labels=None, prequential=None)
 
@@ -182,7 +333,16 @@ class QProbeRuntime:
         if len(labels) != 512 or len(strict_vectors) != 512:
             raise ValueError("Incomplete selected question labels")
         sources = [label["selection_source"] for label in labels]
-        measured = prequential_metrics(self.pending["probabilities"], strict_vectors, sources)
+        if self.token_binary:
+            for qid, label, vector in zip(self.pending["qids"], labels, strict_vectors):
+                if label.get("complete") is not True or label.get("qid") != qid or \
+                        label.get("question_hash") != self.cache.index[qid]["question_hash"] or label.get("strict_em") != list(vector):
+                    raise ValueError("Token binary selected strict labels differ from their frozen qid/hash binding")
+            prediction = self.pending["binary_prediction"]
+            measured = binary_prequential_metrics(prediction["mixed_probability"], prediction["predicted_sample_std"],
+                                                    strict_vectors, sources)
+        else:
+            measured = prequential_metrics(self.pending["probabilities"], strict_vectors, sources)
         # This is measured against the immutable pre-rollout predictions, before fit.
         self.pending["labels"] = copy.deepcopy(labels)
         self.pending["prequential"] = measured
@@ -199,9 +359,12 @@ class QProbeRuntime:
             raise RuntimeError("Repeated or future/rewound question-probe outer commit")
         if not isinstance(actor_snapshot_id, str) or not actor_snapshot_id:
             raise ValueError("Successful actor snapshot identity is required")
+        if self.token_binary and self.version != pending["prediction_version"]:
+            raise RuntimeError("Token binary head changed before complete-only commit")
         old_head = self.head.state_dict()
         try:
-            result = self.head.update_completed_outer(outer, pending["labels"], pending["features"],
+            result = self.head.update_completed_outer(outer, pending["labels"],
+                pending["qids"] if self.token_binary else pending["features"],
                 policy_snapshot_id=pending["policy_snapshot_id"],
                 sampling_contract_sha=pending["contracts"]["sampling_contract_sha"],
                 strict_scoring_contract_sha=pending["contracts"]["strict_scoring_contract_sha"],
@@ -252,6 +415,9 @@ class QProbeRuntime:
             head_file=head_path.name, head_sha256=_sha(head_path),
             candidate_state=candidate_state, reward_probe_version=reward_probe_version,
             head_receipt=head_receipt)
+        if self.token_binary:
+            state.update(head_kind=TOKEN_BINARY_HEAD, cache_binding=self.cache_binding,
+                         initial_head_adoption=self.initial_head_adoption)
         receipt = _atomic_save(path, state)
         return dict(receipt, actor_snapshot_id=actor_snapshot_id, completed_outer=self.completed_outer,
                     feature_spec_sha=self.feature_spec_sha, head_version=self.version,
@@ -273,8 +439,13 @@ class QProbeRuntime:
             raise ValueError("Question-probe snapshot does not belong to the restored actor")
         if state["feature_spec_sha"] != self.feature_spec_sha:
             raise ValueError("Question-probe restore feature namespace differs")
+        if self.token_binary and (state.get("head_kind") != TOKEN_BINARY_HEAD or
+                                  state.get("cache_binding") != self.cache_binding):
+            raise ValueError("Token binary restore head/cache representation differs")
         # Runtime paths may change on a new node. Acquisition/training settings cannot.
-        ignore = {"cache_dir", "output_dir", "initial_head_checkpoint", "snapshot_path", "restore_state"}
+        ignore = {"cache_dir", "output_dir", "initial_head_checkpoint", "snapshot_path", "restore_state",
+                  "initial_head_checkpoint_sha256", "initial_head_ready", "initial_head_ready_sha256",
+                  "head_device"}
         old = {k: v for k, v in state["config"].items() if k not in ignore}
         new = {k: v for k, v in self.config.items() if k not in ignore}
         if old != new:
@@ -282,15 +453,16 @@ class QProbeRuntime:
         head_path = Path(path).parent / state["head_file"]
         if head_path.name != state["head_file"] or _sha(head_path) != state["head_sha256"]:
             raise ValueError("Question-probe head file/hash differs from paired snapshot")
-        from search_g1.qprobe_model import OnlineQProbe
-        head = OnlineQProbe.load(head_path, expected_actor_snapshot_id=expected_actor_snapshot_id,
-                               expected_feature_spec_sha=self.feature_spec_sha)
+        head = load_head_checkpoint(head_path, self.config, feature_cache=self.cache,
+            expected_actor_snapshot_id=expected_actor_snapshot_id, expected_feature_spec_sha=self.feature_spec_sha,
+            expected_checkpoint_sha=state["head_sha256"])
         if head.version != state["head_version"] or int(head.completed_outer) != state["completed_outer"]:
             raise ValueError("Question-probe head state is ahead of/behind the paired actor")
         self.head = head
         self.completed_outer = state["completed_outer"]
         self.completed_attempts = set(state["completed_attempts"])
         self.selection_rng.bit_generator.state = state["selection_rng"]
+        self.initial_head_adoption = state.get("initial_head_adoption")
         return state
 
 
@@ -546,6 +718,8 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
         raise RuntimeError("The trainer must own a paired question-probe runtime")
     if runtime.pending is not None:
         raise RuntimeError("Previous question-probe attempt was not resolved")
+    if runtime.token_binary and runtime.completed_outer == 0:
+        runtime.bootstrap_initial_head()
     outer = int(trainer.global_steps)
     tag = attempt_identity["attempt_id"] if attempt_identity is not None else str(outer)
     if not isinstance(tag, str) or not tag or Path(tag).name != tag:
@@ -559,9 +733,14 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
         feature_spec_sha=runtime.feature_spec_sha))
     candidate_parents, questions = _collect_pool(stream, runtime.config.get("candidate_questions", 5120))
     features, predictions, prediction_version = runtime.score(questions)
-    members = select_questions(questions, predictions["probabilities"],
-        selected_questions=512, exploration_questions=runtime.config.get("exploration_questions", 64),
-        rng=runtime.selection_rng, tie_seed=str(runtime.config.get("seed", 42)) + ":" + str(outer))
+    exploration_questions = runtime.config.get("exploration_questions", 0 if runtime.token_binary else 64)
+    if runtime.token_binary:
+        members = select_binary_questions(questions, predictions["mixed_probability"], predictions["predicted_sample_std"],
+            selected_questions=512, exploration_questions=exploration_questions)
+    else:
+        members = select_questions(questions, predictions["probabilities"],
+            selected_questions=512, exploration_questions=exploration_questions,
+            rng=runtime.selection_rng, tie_seed=str(runtime.config.get("seed", 42)) + ":" + str(outer))
     ordinals = [m.ordinal for m in members]
     parent = stream.materialize(candidate_parents, ordinals) if isinstance(stream, QProbeCandidateStream) \
         else subset(candidate_parents, ordinals)
@@ -573,30 +752,41 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
     acquisition = dict(stage="question_probe_selection_frozen", step=outer,
         attempt_id=tag, feature_spec_sha=runtime.feature_spec_sha, head_version=prediction_version,
         policy_snapshot_id=identity["policy_snapshot_id"], attempted_candidates=len(questions),
-        selected_groups=512, exploration_questions=runtime.config.get("exploration_questions", 64),
-        prediction_before_label=True, post_rollout_em_filter=False, ranking="expected_sample_std",
+        selected_groups=512, exploration_questions=exploration_questions,
+        prediction_before_label=True, post_rollout_em_filter=False,
+        ranking="binary_mixed_probability" if runtime.token_binary else "expected_sample_std",
         selection_rng_before=before_selection_rng,
-        selection_rng_after=copy.deepcopy(runtime.selection_rng.bit_generator.state),
-        questions=[dict(ordinal=q.ordinal, qid=q.qid, question_hash=q.question_hash,
-            content_sha256=q.content_hash, probabilities=predictions["probabilities"][q.ordinal].tolist(),
-            predicted_mean=float(predictions["mean"][q.ordinal]),
-            predicted_std=float(predictions["expected_std"][q.ordinal]),
-            predicted_variance=float(predictions["expected_variance"][q.ordinal]),
-            predicted_mixed_probability=float(predictions["mixed_probability"][q.ordinal]),
-            selected=q.ordinal in chosen,
-            selection_source=next((m.selection_source for m in members if m.ordinal == q.ordinal), "unselected"))
-            for q in questions])
+        selection_rng_after=copy.deepcopy(runtime.selection_rng.bit_generator.state))
+    member_sources = {m.ordinal: m.selection_source for m in members}
+    acquisition["questions"] = []
+    for question in questions:
+        index = question.ordinal
+        row = dict(ordinal=index, qid=question.qid, question_hash=question.question_hash,
+            content_sha256=question.content_hash, predicted_mixed_probability=float(predictions["mixed_probability"][index]),
+            selected=index in chosen, selection_source=member_sources.get(index, "unselected"))
+        if runtime.token_binary:
+            row["predicted_sample_std"] = float(predictions["predicted_sample_std"][index])
+        else:
+            row.update(probabilities=predictions["probabilities"][index].tolist(),
+                predicted_mean=float(predictions["mean"][index]), predicted_std=float(predictions["expected_std"][index]),
+                predicted_variance=float(predictions["expected_variance"][index]))
+        acquisition["questions"].append(row)
     # Durable prediction/selection evidence exists before the first real generated token.
     _write_json(directory / "selection.json", acquisition)
-    selected_features = features[ordinals].clone()
-    selected_probabilities = predictions["probabilities"][ordinals].copy()
+    if runtime.token_binary:
+        selected_features = [features[index] for index in ordinals]
+        selected_probabilities = {key: value[ordinals].copy() for key, value in predictions.items()}
+    else:
+        selected_features = features[ordinals].clone()
+        selected_probabilities = predictions["probabilities"][ordinals].copy()
     repeated = parent.repeat(repeat_times=5, interleave=True)
     gen = repeated.pop(batch_keys=["input_ids", "attention_mask", "position_ids"])
     attach_generation_identity(gen, identity, do_sample=True)
     before_workers = trainer.actor_rollout_wg.capture_mixed_state(str(directory / "before-generation-worker-rng"))
     _atomic_save(directory / "before-generation.pt", dict(stream=compact_stream_state(stream.state()),
         driver_rng=driver_rng(), selection_rng=copy.deepcopy(runtime.selection_rng.bit_generator.state),
-        identity=identity, parents=parent, selected_features=selected_features,
+        identity=identity, parents=parent,
+        **({"selected_qids": selected_features} if runtime.token_binary else {"selected_features": selected_features}),
         head_version=prediction_version, worker_files=before_workers))
     manager.timing_raw = {}
     output = manager.run_llm_loop(gen_batch=gen,
@@ -625,8 +815,7 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
     audit = dict(selection_mode="question_probe", attempted_candidates=len(questions), selected_groups=512,
         selected_mixed=categories.count("mixed"), selected_all_correct=categories.count("all_correct"),
         selected_all_wrong=categories.count("all_wrong"), selected_all_correct_fallback=0,
-        selected_random_exploration=runtime.config.get("exploration_questions", 64),
-        selected_predicted_diversity=512-runtime.config.get("exploration_questions", 64),
+        selected_random_exploration=exploration_questions,
         responses_per_group=5, raw_generated_trajectories=2560,
         raw_generated_policy_tokens=int(output.batch["sampling_mask"].sum().item()),
         raw_actual_retrieval_calls=sum(output.meta_info["actual_retrieval_stats"]),
@@ -642,6 +831,10 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
             trajectory_ids=identity["trajectory_ids"][i*5:(i+1)*5], strict_correctness=vectors[i],
             category=categories[i], selected=True, source=m.selection_source)
             for i, m in enumerate(members)])
+    audit["selected_predicted_binary_mixed" if runtime.token_binary else "selected_predicted_diversity"] = 512-exploration_questions
+    if runtime.token_binary:
+        audit["head_kind"] = TOKEN_BINARY_HEAD
+        audit["ranking"] = "binary_mixed_probability"
     # Keep the semantic hashes and their exact payloads alongside transport
     # evidence. All 5120 candidates were predicted, but only these 512 selected
     # groups have actual labels; the audit never presents them as an unbiased

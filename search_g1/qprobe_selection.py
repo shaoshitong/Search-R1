@@ -1,7 +1,8 @@
 """Question-only, uniform-first selection before any real rollout is observed.
 
-Only question identities and a six-class predicted count distribution enter
-this module. Strict correctness is deliberately absent from its public DTO.
+Question-only predictions enter selection. Count-distribution and token-binary
+heads have separate selectors and diagnostics; neither invents the other
+representation. Strict correctness is absent from both selection DTOs.
 """
 from dataclasses import dataclass
 import hashlib
@@ -55,7 +56,7 @@ def validate_budget(candidate_questions=5120, selected_questions=512,
     if selected_questions > candidate_questions or exploration_questions > selected_questions:
         raise ValueError("Invalid question-probe selection budget")
     if type(responses_per_question) is not int or responses_per_question != 5:
-        raise ValueError("The six-count probe requires exactly five responses")
+        raise ValueError("The question probe requires exactly five responses")
 
 
 def count_predictions(probabilities):
@@ -190,5 +191,87 @@ def prequential_metrics(probabilities, strict_vectors, sources):
             sigma3_accuracy=float((sigma_probabilities.argmax(1) ==
                                     np.minimum(actual_counts, 5 - actual_counts)).mean()),
             classification_zero_division=0.0,
+            prediction_scope="selected_questions_before_rollout_and_before_fit")
+    return result
+
+
+@dataclass(frozen=True)
+class BinarySelectedQuestion:
+    ordinal: int
+    qid: str
+    selection_source: str
+    predicted_mixed_probability: float
+    predicted_sample_std: float
+
+
+def binary_predictions(mixed_probability, predicted_sample_std):
+    """Validate the two direct outputs without synthesizing count probabilities."""
+    def vector(value, name):
+        if hasattr(value, "detach"):
+            value = value.detach().cpu().numpy()
+        value = np.asarray(value, dtype=np.float64)
+        if value.ndim != 1 or not np.isfinite(value).all():
+            raise ValueError("Expected a finite question vector: " + name)
+        return value
+    probability = vector(mixed_probability, "mixed_probability")
+    std = vector(predicted_sample_std, "predicted_sample_std")
+    if probability.shape != std.shape or (probability < 0).any() or (probability > 1).any():
+        raise ValueError("Binary prediction probabilities or lengths are invalid")
+    if (std < 0).any() or (std > COUNT_STDS.max() + 1e-7).any():
+        raise ValueError("Predicted sample std is outside its G5 bound")
+    return dict(mixed_probability=probability, predicted_sample_std=std)
+
+
+def select_binary_questions(questions, mixed_probability, predicted_sample_std, *,
+                            selected_questions=512, exploration_questions=0):
+    """Top binary pMixed only; qid hash breaks ties independently of std/order."""
+    questions = list(questions)
+    validate_budget(len(questions), selected_questions, exploration_questions)
+    if exploration_questions != 0:
+        raise ValueError("Token binary acquisition requires exploration_questions=0")
+    if sorted(q.ordinal for q in questions) != list(range(len(questions))):
+        raise ValueError("Question ordinals must form a complete original-order pool")
+    if len({q.qid for q in questions}) != len(questions) or len({q.content_hash for q in questions}) != len(questions):
+        raise ValueError("Duplicate candidate question identity or content")
+    prediction = binary_predictions(mixed_probability, predicted_sample_std)
+    if len(prediction["mixed_probability"]) != len(questions):
+        raise ValueError("Prediction/question count differs")
+    order = sorted(range(len(questions)), key=lambda i: (
+        -float(prediction["mixed_probability"][i]), hashlib.sha256(questions[i].qid.encode()).hexdigest()))
+    return [BinarySelectedQuestion(questions[i].ordinal, questions[i].qid, "predicted_binary_mixed",
+                float(prediction["mixed_probability"][i]), float(prediction["predicted_sample_std"][i]))
+            for i in sorted(order[:selected_questions], key=lambda i: questions[i].ordinal)]
+
+
+def binary_prequential_metrics(mixed_probability, predicted_sample_std, strict_vectors, sources):
+    """Selected G5 labels measured against frozen direct binary/std predictions."""
+    prediction = binary_predictions(mixed_probability, predicted_sample_std)
+    labels = np.asarray(strict_vectors)
+    if labels.shape != (len(prediction["mixed_probability"]), 5) or labels.dtype.kind not in "iu" or not np.isin(labels, (0, 1)).all():
+        raise ValueError("Exactly five binary strict-EM labels are required per selected question")
+    if len(sources) != len(labels) or any(source != "predicted_binary_mixed" for source in sources):
+        raise ValueError("Token binary labels require the binary selection source")
+    counts = labels.sum(1).astype(np.int64)
+    truth = (counts > 0) & (counts < 5)
+    stds = COUNT_STDS[counts]
+    result = {}
+    for name in ("all", "predicted_binary_mixed"):
+        probability = prediction["mixed_probability"]
+        positive = probability >= .5
+        tp, tn, fp, fn = [int(value.sum()) for value in
+                         (truth & positive, ~truth & ~positive, ~truth & positive, truth & ~positive)]
+        std_mse = float(np.square(prediction["predicted_sample_std"] - stds).mean())
+        clipped = np.clip(probability, 1e-12, 1 - 1e-12)
+        result[name] = dict(questions=len(labels), binary_threshold=.5,
+            binary_accuracy=float((positive == truth).mean()),
+            binary_confusion=dict(tp=tp, tn=tn, fp=fp, fn=fn),
+            binary_bce=float(-(truth * np.log(clipped) + ~truth * np.log1p(-clipped)).mean()),
+            mixed_brier=float(np.square(probability - truth).mean()),
+            std_mae=float(np.abs(prediction["predicted_sample_std"] - stds).mean()),
+            std_mse_raw=std_mse, std_mse_normalized=std_mse / .3,
+            std_loss_contribution=.3 * std_mse / .3,
+            actual_mixed_fraction=float(truth.mean()), predicted_mixed_fraction=float(positive.mean()),
+            actual_sample_std_mean=float(stds.mean()), actual_em_mean=float((counts / 5).mean()),
+            all_wrong_fraction=float((counts == 0).mean()), all_correct_fraction=float((counts == 5).mean()),
             prediction_scope="selected_questions_before_rollout_and_before_fit")
     return result

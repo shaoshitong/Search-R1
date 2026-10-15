@@ -902,7 +902,12 @@ class RayPPOTrainer(object):
                     self.qprobe_runtime.restore(snapshot, run['run_id']+':'+str(continuation_k))
                 if self.qprobe_runtime.completed_outer != continuation_k:
                     raise ValueError("Actor and question-probe successful outer counters differ")
-                if continuation_k == 0 and self.config.question_probe.get('teacher_warmup_cache'):
+                if continuation_k == 0 and self.config.question_probe.get('head_kind') == 'token_binary_v1':
+                    # The same experiment's ten-epoch head warmup was completed
+                    # separately. Authenticate that head, without teacher sampling
+                    # or an additional head fit before the first actor update.
+                    self.qprobe_runtime.bootstrap_initial_head()
+                elif continuation_k == 0 and self.config.question_probe.get('teacher_warmup_cache'):
                     from search_g1.qprobe_warmup import run as teacher_warmup
                     teacher_warmup(self, generation_manager, self.qprobe_runtime, mixed_stream)
 
