@@ -29,10 +29,12 @@ def remote(script, evidence, control_path=None, compat_handshake=False, target='
             raise ValueError('Management control socket must be owned and private')
         subprocess.run(['/usr/bin/ssh','-S',str(socket),'-O','check','mgmt-host'],check=True,capture_output=True,timeout=10)
         args+=['-S',str(socket),'-o','ControlMaster=no']
-    command='/usr/bin/python3 -c '+shlex.quote(script)
+    # Keep source payloads off nested shell argv (Linux MAX_ARG_STRLEN).
+    # The existing management relay forwards stdin unchanged to this Python.
+    command='/usr/bin/python3 -'
     management=MGMT.replace("target='h100-8'",'target='+repr(target)).replace('retained18 SSH-W h100-8','retained18 SSH-W '+target).replace('WORKER_CMD',repr(command))
     args+=['mgmt-host','env -u LD_LIBRARY_PATH /usr/bin/python3 -c '+shlex.quote(management)]
-    process=subprocess.run(args,capture_output=True,timeout=270)
+    process=subprocess.run(args,input=script.encode(),capture_output=True,timeout=270)
     record=dict(utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),returncode=process.returncode,
                 stdout=process.stdout.decode(),stderr=process.stderr.decode(),route='mgmt-host alias -> retained18 -> '+target,
                 global_network_configuration_changed=False)
