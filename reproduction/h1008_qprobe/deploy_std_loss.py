@@ -30,8 +30,8 @@ with tarfile.open(fileobj=io.BytesIO(archive),mode='r:gz') as t:
 for name,sha in meta['files'].items():assert hashlib.sha256((base/'repo'/name).read_bytes()).hexdigest()==sha,name
 for d in ('env','bootstrap-tools','bootstrap-assets','assets','retriever-gpu-lib'):
  assert (old/d).exists();(base/d).symlink_to((old/d).resolve(),target_is_directory=True)
-for f in (old/'data').iterdir():
- if f.is_file():(base/'data'/f.name).symlink_to(f.resolve())
+for name in ('manifest.json','train.parquet','validation.parquet','stage.parquet','final.parquet','exclusions-audit.json'):
+ f=old/'data'/name;assert f.is_file();(base/'data'/name).symlink_to(f.resolve())
 for name in ('official-model-manifest-original.json','predecessor-exit0.json','predecessor-teardown-closure.json'):
  with (base/'preparation'/name).open('xb') as f:f.write((old/'preparation'/name).read_bytes());f.flush();os.fsync(f.fileno())
 config=json.loads((old/'preparation/h1008-launch-config.json').read_text())
