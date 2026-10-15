@@ -365,6 +365,29 @@ class FileAndParentTests(unittest.TestCase):
         (self.prefix / 'alias').symlink_to(path)
         with self.assertRaises(audit.Incomplete):self.reader.file(self.prefix / 'alias')
 
+    def test_same_size_rewrite_with_preserved_mtime_requires_fresh_full_sha(self):
+        path = self.write(self.prefix / 'same-metadata.json', {'real':'old'})
+        before = path.stat();record = self.record(path)
+        path.write_text(json.dumps({'real':'new'}))
+        os.utime(path, ns=(before.st_atime_ns, before.st_mtime_ns))
+        after = path.stat()
+        self.assertEqual((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns),
+                         (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns))
+        # Neither mtime nor ctime decides whether a previous SHA may be reused.
+        self.assertNotEqual(self.reader.digest(path), record['full_read_sha256'])
+        with self.assertRaises(audit.Incomplete):self.reader.record(record)
+        self.assertEqual(self.reader.hashed_bytes, 3 * before.st_size)
+
+    def test_repeated_fresh_hash_reads_each_consume_the_byte_budget(self):
+        path = self.prefix / 'repeated';path.write_bytes(b'abcd')
+        reader = audit.Reader(self.prefix, max_hash_bytes=8)
+        expected = hashlib.sha256(b'abcd').hexdigest()
+        self.assertEqual(reader.digest(path), expected)
+        self.assertEqual(reader.digest(path), expected)
+        self.assertEqual(reader.hashed_bytes, 8)
+        with self.assertRaises(audit.Incomplete) as caught:reader.digest(path)
+        self.assertEqual(caught.exception.code, 'AUDIT_HASH_BYTE_BUDGET_EXCEEDED')
+
     def test_foreign_namespace_and_wrong_parent_rejected(self):
         foreign = Path(self.temp.name).resolve() / 'foreign';foreign.mkdir()
         with self.assertRaises(audit.Incomplete):self.reader.namespace(foreign)

@@ -447,12 +447,17 @@ def check_refit_documents(complete, state, chunks, pre, post, run, outer, before
 
 
 class Reader:
-    """No symlink traversal; stable full hashes; bounded files, bytes and time."""
+    """No symlink traversal; fresh full hashes; bounded actual bytes and time.
+
+    Every digest rereads the file, including repeated authenticated records.
+    Shared filesystems can retain inode/size/mtime after a same-size rewrite;
+    metadata is a stability check, never permission to reuse an earlier SHA.
+    The hash byte budget therefore counts all reads, not unique file sizes.
+    """
     def __init__(self, namespace_prefix=DEFAULT_BASE, *, max_seconds=7200, max_hash_bytes=2 * 1024**4):
         self.prefix = Path(namespace_prefix)
         self.deadline = time.monotonic() + max_seconds
         self.maximum_bytes, self.hashed_bytes, self.files_read = max_hash_bytes, 0, 0
-        self.hash_cache = {}
 
     def tick(self):
         require(time.monotonic() < self.deadline, 'AUDIT_DEADLINE_EXCEEDED')
@@ -500,17 +505,18 @@ class Reader:
         path = self.file(path)
         before = path.stat()
         key = (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
-        if key not in self.hash_cache:
-            require(self.hashed_bytes + before.st_size <= self.maximum_bytes,
-                    'AUDIT_HASH_BYTE_BUDGET_EXCEEDED', path)
-            digest = hashlib.sha256()
-            with path.open('rb') as stream:
-                for block in iter(lambda: stream.read(8 * 1024**2), b''):
-                    self.tick(); digest.update(block); self.hashed_bytes += len(block)
-            self.hash_cache[key] = digest.hexdigest()
+        require(self.hashed_bytes + before.st_size <= self.maximum_bytes,
+                'AUDIT_HASH_BYTE_BUDGET_EXCEEDED', path)
+        digest, read_bytes = hashlib.sha256(), 0
+        with path.open('rb') as stream:
+            for block in iter(lambda: stream.read(8 * 1024**2), b''):
+                self.tick(); self.hashed_bytes += len(block); read_bytes += len(block)
+                require(self.hashed_bytes <= self.maximum_bytes, 'AUDIT_HASH_BYTE_BUDGET_EXCEEDED', path)
+                digest.update(block)
         after = path.stat()
-        require(key == (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns), 'FILE_CHANGED_DURING_AUDIT', path)
-        return self.hash_cache[key]
+        require(read_bytes == before.st_size and
+                key == (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns), 'FILE_CHANGED_DURING_AUDIT', path)
+        return digest.hexdigest()
 
     def record(self, row):
         path = self.file(row['path']);stat = path.stat()
