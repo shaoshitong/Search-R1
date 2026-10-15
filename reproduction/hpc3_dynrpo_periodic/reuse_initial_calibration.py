@@ -124,13 +124,15 @@ def reuse_initial_calibration(base, run):
         assert {p.name: hashes[p.relative_to(origin).as_posix()] for p in (origin/'dumps').iterdir()
                 if p.is_file()} == live['dump_sha256']
         original_manifest_sha = digest(live_path)
-        target = base/'artifacts'/('round_0-reused-'+uuid.uuid4().hex)
+        target = base/'artifacts'/('round_0-attempt-'+uuid.uuid4().hex)
         live_target = base/'artifacts/live'
         assert not target.exists() and not live_target.exists(), 'Never overwrite calibration artifacts'
         shutil.copytree(origin, target)
         for name, sha in hashes.items():
             assert digest(target/name) == sha
-        (target/'version-manifest.json').rename(target/'historical-version-manifest.json')
+        historical = target/('historical-version-manifest-'+original_manifest_sha+'.json')
+        assert not historical.exists(), 'Never overwrite an older historical calibration manifest'
+        (target/'version-manifest.json').rename(historical)
         moved = dict(live, run_id=run['run_id'], version=run['run_id']+':0:'+uuid.uuid4().hex,
             commit=str(target/'heads/commit_probe.pkl'), boundary=str(target/'heads/boundary_probe.pkl'),
             published_unix=time.time(), historical_origin=dict(source_base=str(source),
