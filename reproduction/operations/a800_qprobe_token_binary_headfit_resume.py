@@ -69,6 +69,13 @@ def parent_qualification():
  live,reused_sessions=survivors([worker]);assert not live and not reused_sessions
  rows=list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True,timeout=20))))
  remaining,reused_pids=contexts([worker,producer],rows);assert not remaining and not reused_pids
+ gpu_query_started_unix=time.time()
+ gpu_rows=list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.used,utilization.gpu','--format=csv,noheader,nounits'],text=True,timeout=20))))
+ gpu_inventory=[dict(physical_index=int(row[0]),gpu_uuid=row[1].strip(),used_mib=float(row[2]),util_percent=float(row[3])) for row in gpu_rows]
+ assert len({row['physical_index'] for row in gpu_inventory})==len(gpu_inventory) and len({row['gpu_uuid'] for row in gpu_inventory})==len(gpu_inventory)
+ assert all(row['physical_index']>=0 and math.isfinite(row['used_mib']) and row['used_mib']>=0 and math.isfinite(row['util_percent']) and 0<=row['util_percent']<=100 for row in gpu_inventory)
+ occupied_uuids={row[0].strip() for row in rows if row}
+ eligible_idle_indices=[row['physical_index'] for row in gpu_inventory if row['physical_index'] not in (5,6) and row['gpu_uuid'] not in occupied_uuids and row['used_mib']<=256 and row['util_percent']==0]
  exit_record=document(parent/'logs/run-exit.json');failure=document(parent/'warmup/run-failure.json')
  assert exit_record['exit_code']==1 and sha(parent/'logs/run-exit.json')=='6af047d6fa270727d86d4e1ecbd96df5cfd22fa37ecab2b745c4e2502457bbd0'
  assert sha(parent/'warmup/run-failure.json')=='3f26f96ddab67a086e2a3c627a4018b9b2917130f096eecdf0e6224645f38900'
@@ -95,6 +102,7 @@ def parent_qualification():
   observed_failure_type='AssertionError',observed_failure_line=246,head_adam_updates=0,
   completed_encoded_questions=5120,token_feature_manifest_sha256=sha(manifest_path),token_feature_spec_sha256=manifest['spec_sha'],
   token_feature_declared_files=manifest['files'],full_feature_sha_verification_delegated_to_cpu_prepare=True,
+  physical_gpu_inventory=gpu_inventory,eligible_idle_nonauxiliary_indices=eligible_idle_indices,gpu_query_started_unix=gpu_query_started_unix,
   old_actual_cleanup=old_cleanup,checked_unix=time.time())
 '''
 
