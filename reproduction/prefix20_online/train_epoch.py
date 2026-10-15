@@ -98,7 +98,7 @@ def main():
     parser.add_argument('--model-dir', required=True)
     parser.add_argument('--epoch', required=True, type=int)
     parser.add_argument('--epochs', type=int, default=1000)
-    parser.add_argument('--global-batch', type=int, default=25600)
+    parser.add_argument('--global-batch', type=int, default=256)
     parser.add_argument('--save-every', type=int, default=10)
     parser.add_argument('--learning-rate', type=float, default=.0003)
     parser.add_argument('--seed', type=int, default=1729)

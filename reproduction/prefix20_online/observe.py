@@ -62,6 +62,7 @@ def observe(base):
         current_train_errors={str(rank):small(train/'epochs'/epoch_name/('rank-%d-error.json'%rank)) for rank in range(8)},
         current_feature_progress={str(rank):small(base/'epochs'/epoch_name/'features'/('progress-rank-%d.json'%rank)) for rank in range(8)},
         current_rollout_complete=None, current_rollout_ranks={},
+        current_rollout_progress={str(rank):small(base/'epochs'/epoch_name/'rollout'/('rank-%d-progress.json'%rank)) for rank in range(8)},
         pipeline_complete=small(base/'logs/pipeline-complete.json'), cleanup=small(base/'logs/cleanup-status.json'))
     complete = small(base/'epochs'/epoch_name/'complete.json', limit=2*1024**2)
     if complete:

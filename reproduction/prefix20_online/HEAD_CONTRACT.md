@@ -10,8 +10,8 @@ turns. No question or retrieval hidden position enters the head.
 Each epoch traverses all 25,600 trajectory samples exactly once. This latest
 protocol deliberately replaces the old balanced replacement sampler. The loss
 is unweighted mean BCEWithLogits at the natural class prior. The default is a
-single global batch25,600, local3,200 on each of eight DDP ranks, no gradient
-accumulation: one real Adam update per epoch, 1,000 planned updates per rank.
+global batch256, local32 on each of eight DDP ranks, no gradient
+accumulation: 100 real Adam updates per epoch, 100,000 planned updates per rank.
 Learning rate remains3e-4. A smaller configurable batch remains possible after
 an actual memory failure; its actual update count must be reported as changed.
 
