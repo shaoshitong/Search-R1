@@ -32,7 +32,7 @@ def main():
     base.mkdir(mode=0o770,exist_ok=True)
     if base.stat().st_uid!=os.getuid():raise ValueError('This namespace belongs to another owner')
     for name in ('preparation','logs','source','data','env/bin','cache/hf','cache/triton','cache/torch-extensions',
-                 'cache/inductor','tmp','warmup','assets','bootstrap-tools/python-dev/usr/include'):
+                 'cache/inductor','tmp','warmup','assets','env/lib/python3.10','bootstrap-tools/python-dev/usr/include'):
         (base/name).mkdir(parents=True,exist_ok=True)
     source=base/'source'/publication['commit']
     if source.exists():
@@ -87,6 +87,7 @@ def main():
     link(base/'bootstrap-tools/python-dev/usr/include/python3.10',headers)
     binary=REUSED/'runtime/retriever-python310-candidate/bin/python3.10'
     site=REUSED/'source/env/lib/python3.10/site-packages'
+    link(base/'env/lib/python3.10/site-packages',site)
     wrapper='#!/usr/bin/env bash\nset -euo pipefail\n'
     wrapper+='export PYTHONPATH="${QPROBE_SOURCE:-'+str(base/'repo')+'}:'+str(base/'retriever-gpu-lib')+':'+str(site)+'${PYTHONPATH:+:$PYTHONPATH}"\n'
     wrapper+='export LD_LIBRARY_PATH="'+str(REUSED/'runtime/retriever-python310-candidate/lib')+'${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"\n'
