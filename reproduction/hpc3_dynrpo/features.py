@@ -9,28 +9,27 @@ import time
 from .common import BASE, DATA, MODEL, own, read, sha, publish, progress, teacher_labels, normalize_preparation_gpu
 
 
-def durable_cursor(writer):
+def durable_cursor(writer, cursor_path):
     from search_g1.qprobe_features import sha_json
     writer.packed.flush()
     writer.index.flush(); os.fsync(writer.index.fileno())
     with (writer.partial/'packed_features.npy').open('rb') as f:
         os.fsync(f.fileno())
-    publish(BASE/'preparation/feature-cursor.json', dict(
+    publish(cursor_path, dict(
         partial=str(writer.partial), written=writer.written, index_bytes=writer.index.tell(),
         spec_sha=sha_json(writer.spec),
         checked_unix=time.time()))
 
 
-def reopen_writer(path, spec, records):
+def reopen_writer(path, spec, records, cursor):
     import numpy as np
     from search_g1.qprobe_token_features import TokenFeatureCacheWriter
     from search_g1.qprobe_features import sha_json
-    cursor = BASE/'preparation/feature-cursor.json'
     if not cursor.exists():
         if list(path.parent.glob(path.name+'.partial-*')):
             raise ValueError('Unclaimed partial bank exists; inspect before resuming')
         result = TokenFeatureCacheWriter(path, spec, records)
-        durable_cursor(result)
+        durable_cursor(result,cursor)
         return result
     c = read(cursor); partial = Path(c['partial'])
     if partial.parent != path.parent or not partial.name.startswith(path.name+'.partial-') or c['spec_sha'] != sha_json(spec):
@@ -51,6 +50,7 @@ def reopen_writer(path, spec, records):
 
 def main():
     parser = argparse.ArgumentParser(); parser.add_argument('--batch-size', type=int, default=64)
+    parser.add_argument('--phase',choices=('warmup','full'),default='full')
     args = parser.parse_args(); own(BASE)
     gpu = normalize_preparation_gpu()
     import numpy as np
@@ -62,12 +62,16 @@ def main():
     from search_g1.qprobe_token_features import scan_token_lengths, extract_question_token_features, TokenFeatureCache
     if torch.cuda.device_count() != 1:
         raise ValueError('Actual preparation CUDA visibility differs')
-    destination = BASE/'token-features'
-    if (BASE/'preparation/features-ready.json').is_file():
-        previous = read(BASE/'preparation/features-ready.json')
+    warmup_only = args.phase=='warmup'
+    destination = BASE/('warmup-token-features' if warmup_only else 'token-features')
+    ready_path=BASE/'preparation'/('warmup-features-ready.json' if warmup_only else 'features-ready.json')
+    cursor_path=BASE/'preparation'/('warmup-feature-cursor.json' if warmup_only else 'feature-cursor.json')
+    target_count=5120 if warmup_only else 169028
+    if ready_path.is_file():
+        previous = read(ready_path)
         if sha(destination/'manifest.json') != previous['manifest_sha256']:
             raise ValueError('Existing accepted bank changed')
-        progress('FULL_TOKEN_BANK_ALREADY_ACCEPTED', rows=169028); return
+        progress('TOKEN_BANK_ALREADY_ACCEPTED', rows=target_count,feature_phase=args.phase); return
     progress('VERIFYING_CANONICAL_MODEL_DATA_TEACHER', gpu_uuid=gpu)
     manifest_path = BASE/'preparation/official-model-manifest.json'
     if manifest_path.exists():
@@ -108,43 +112,64 @@ def main():
         global_max_tokens=244,global_train_rows=169028,global_scan_sha256=sha(scan_path),
         token_feature_producer_sha256=sha(Path(__file__)),teacher_identity_sha256=provenance['teacher_identity_sha256'],
         teacher_complete_sha256=provenance['teacher_complete_sha256'],original_label_feature_spec_sha256=provenance['original_feature_spec_sha256'])
+    by_id={qid:(question,record) for (question,qid),record in zip(rows,records)}
+    if warmup_only:
+        rows=[(by_id[g['qid']][0],g['qid']) for g in labels]
+        records=[by_id[g['qid']][1] for g in labels]
+        reused=None
+    else:
+        reused=TokenFeatureCache(BASE/'warmup-token-features',expected_spec_sha=sha_json(spec))
+        if reused.manifest['count']!=5120:
+            raise ValueError('The initial5120 token features must be generated before the full bank')
     if not destination.exists():
-        writer = reopen_writer(destination,spec,records)
-        progress('ENCODER_LOADING', rows=writer.written,total=169028,packed_bytes=scan['total_tokens']*2048*2,gpu_uuid=gpu)
+        writer = reopen_writer(destination,spec,records,cursor_path)
+        progress('ENCODER_LOADING', rows=writer.written,total=target_count,
+                 packed_bytes=int(writer.offsets[-1])*2048*2,gpu_uuid=gpu,feature_phase=args.phase)
         model = AutoModel.from_pretrained(MODEL,local_files_only=True,trust_remote_code=False,
                     torch_dtype=torch.bfloat16,attn_implementation='sdpa').to('cuda:0')
         model.requires_grad_(False); model.eval(); started = time.monotonic(); first = writer.written
         try:
             for start in range(writer.written,len(rows),args.batch_size):
                 chunk = rows[start:start+args.batch_size]
-                values = extract_question_token_features(model,tokenizer,[x[0] for x in chunk],
-                            feature_layer=27,max_tokens=244,device='cuda:0')
-                writer.append([x[1] for x in chunk],values)
+                existing=[qid for _,qid in chunk if reused is not None and qid in reused.index]
+                missing=[(question,qid) for question,qid in chunk if qid not in existing]
+                values={}
+                if existing:
+                    batch=reused.get_batch(existing,device='cpu')['features']
+                    values.update({qid:batch[n,:reused.index[qid]['length']].clone() for n,qid in enumerate(existing)})
+                if missing:
+                    encoded=extract_question_token_features(model,tokenizer,[x[0] for x in missing],
+                                feature_layer=27,max_tokens=244,device='cuda:0')
+                    values.update(zip([x[1] for x in missing],encoded))
+                writer.append([x[1] for x in chunk],[values[qid] for _,qid in chunk])
                 if writer.written % 256 == 0 or writer.written == len(rows):
-                    durable_cursor(writer)
-                    progress('TOKEN_FEATURE_ENCODING',rows=writer.written,total=169028,
+                    durable_cursor(writer,cursor_path)
+                    progress('TOKEN_FEATURE_ENCODING',rows=writer.written,total=target_count,feature_phase=args.phase,
                              real_tokens=int(writer.offsets[writer.written]),seconds=time.monotonic()-started,
                              new_rows=writer.written-first)
-            durable_cursor(writer)
+            durable_cursor(writer,cursor_path)
             del model
             torch.cuda.empty_cache()
-            progress('TOKEN_BANK_FULL_SHA',rows=writer.written,total=169028)
+            progress('TOKEN_BANK_FULL_SHA',rows=writer.written,total=target_count,feature_phase=args.phase)
             writer.finish()
         except BaseException:
             # Only the accepted fsynced prefix may be resumed; every staged file is retained.
             raise
     cache = TokenFeatureCache(destination); cache.verify_all()
-    if cache.manifest['count'] != 169028 or cache.manifest['total_tokens'] != 18367021:
+    if cache.manifest['count'] != target_count or not warmup_only and cache.manifest['total_tokens'] != 18367021:
         raise ValueError('Full canonical bank is incomplete')
     for label in labels:
         if cache.index[label['qid']]['question_hash'] != label['question_hash']:
             raise ValueError('Warmup label is not the canonical token row')
+        if reused is not None and cache.index[label['qid']]['feature_sha256']!=reused.index[label['qid']]['feature_sha256']:
+            raise ValueError('Full bank did not reuse the actual warmup feature bytes')
     receipt = dict(stage='HPC3_FULL_TOKEN_BANK_FULL_SHA_PASS',cache_dir=str(destination),manifest_sha256=sha(destination/'manifest.json'),
-        spec_sha=cache.spec_sha,count=169028,total_tokens=18367021,global_max_tokens=244,model_revision=official['revision'],
+        spec_sha=cache.spec_sha,count=target_count,total_tokens=cache.manifest['total_tokens'],global_max_tokens=244,model_revision=official['revision'],
         model_files_sha256=hashes,teacher_provenance=provenance,files=cache.manifest['files'],checked_unix=time.time(),
-        shared_inputs_modified=False,trajectories_generated=0,formal_actor_outers=0)
-    publish(BASE/'preparation/features-ready.json',receipt,once=True)
-    progress('FULL_TOKEN_BANK_ACCEPTED',rows=169028,manifest_sha256=receipt['manifest_sha256'])
+        shared_inputs_modified=False,trajectories_generated=0,formal_actor_outers=0,feature_phase=args.phase,
+        newly_encoded_rows=5120 if warmup_only else 163908,reused_own_warmup_rows=0 if warmup_only else 5120)
+    publish(ready_path,receipt,once=True)
+    progress('TOKEN_BANK_ACCEPTED',rows=target_count,feature_phase=args.phase,manifest_sha256=receipt['manifest_sha256'])
 
 
 if __name__ == '__main__':

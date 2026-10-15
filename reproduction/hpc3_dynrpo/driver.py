@@ -26,6 +26,9 @@ def submit(phase, commit):
         ready=read(BASE/'warmup/ready.json')
         if ready['head_adam_steps']!=200 or sha(BASE/'warmup/fresh-head.pt')!=ready['head_sha256']:
             raise ValueError('Cannot submit formal training before the own accepted warmup')
+        full=read(BASE/'preparation/features-ready.json')
+        if full['count']!=169028 or sha(BASE/'token-features/manifest.json')!=full['manifest_sha256']:
+            raise ValueError('Cannot submit formal training before the complete token bank')
     gpus,cpus,memory=(1,12,'128G') if phase=='preparation' else (4,48,'512G')
     command=['sbatch','--parsable','--partition=emergency_acd','--nodes=1','--ntasks=1',
         '--gres=gpu:'+str(gpus),'--cpus-per-task='+str(cpus),'--mem='+memory,'--time=7-00:00:00',
@@ -65,14 +68,15 @@ def run_preparation(commit):
     subprocess.run([sys.executable,'-m','unittest',*modules],env=test_env,check=True)
     publish(BASE/'preparation/native-cpu-tests.json',dict(passed=True,modules=modules,commit=commit,
         cuda_visible_devices='',checked_unix=time.time()))
-    for module in ('features','warmup'):
-        progress(module.upper()+'_PROCESS_STARTING',formal_actor_outers=0)
-        process=subprocess.Popen([sys.executable,'-u','-m','reproduction.hpc3_dynrpo.'+module])
+    phases=[('features_warmup','features',['--phase','warmup']),('warmup','warmup',[]),('features','features',['--phase','full'])]
+    for label,module,arguments in phases:
+        progress(label.upper()+'_PROCESS_STARTING',formal_actor_outers=0)
+        process=subprocess.Popen([sys.executable,'-u','-m','reproduction.hpc3_dynrpo.'+module,*arguments])
         code=process.wait()
         exit_record=dict(pid=process.pid,returncode=code,job=os.environ['SLURM_JOB_ID'],checked_unix=time.time())
-        publish(BASE/'preparation'/(module+'-process-exit-'+os.environ['SLURM_JOB_ID']+'.json'),exit_record,once=True)
-        publish(BASE/'preparation'/(module+'-process-exit.json'),exit_record)
-        if code: raise RuntimeError(module+' exited '+str(code)+'; partial state preserved')
+        publish(BASE/'preparation'/(label+'-process-exit-'+os.environ['SLURM_JOB_ID']+'.json'),exit_record,once=True)
+        publish(BASE/'preparation'/(label+'-process-exit.json'),exit_record)
+        if code: raise RuntimeError(label+' exited '+str(code)+'; partial state preserved')
     submit('formal',commit)
     progress('PREPARATION_COMPLETED_FORMAL_QUEUED',warmup_adam_steps=200,formal_actor_outers=0)
 

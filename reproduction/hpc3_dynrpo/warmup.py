@@ -101,8 +101,8 @@ def main():
         if sha(BASE/'warmup/fresh-head.pt') != accepted['head_sha256']:
             raise ValueError('Accepted warmup changed')
         progress('WARMUP_ALREADY_ACCEPTED',head_adam_steps=200); return
-    feature = read(BASE/'preparation/features-ready.json')
-    cache = TokenFeatureCache(BASE/'token-features',expected_spec_sha=feature['spec_sha'])
+    feature = read(BASE/'preparation/warmup-features-ready.json')
+    cache = TokenFeatureCache(BASE/'warmup-token-features',expected_spec_sha=feature['spec_sha'])
     if sha(cache.path/'manifest.json') != feature['manifest_sha256']:
         raise ValueError('Warmup input bank changed')
     labels,provenance = teacher_labels(); qids = [g['qid'] for g in labels]

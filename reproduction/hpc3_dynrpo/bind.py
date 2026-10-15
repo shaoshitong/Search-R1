@@ -20,11 +20,19 @@ def main():
     if ready['head_adam_steps']!=200 or sha(raw)!=ready['head_sha256']:
         raise ValueError('Own warmup10 is not fully accepted')
     cache=TokenFeatureCache(BASE/'token-features',expected_spec_sha=ready['token_feature_spec_sha256'])
-    if sha(cache.path/'manifest.json')!=ready['token_feature_manifest_sha256']:
-        raise ValueError('Adopted bank differs from the own actual warmup')
+    full_ready=read(BASE/'preparation/features-ready.json')
+    if sha(cache.path/'manifest.json')!=full_ready['manifest_sha256'] or cache.manifest['count']!=169028:
+        raise ValueError('The full canonical token bank is not accepted')
+    warmup_cache=TokenFeatureCache(BASE/'warmup-token-features',expected_spec_sha=cache.spec_sha)
+    if sha(warmup_cache.path/'manifest.json')!=ready['token_feature_manifest_sha256']:
+        raise ValueError('Own actual warmup bank changed')
     labels,provenance=teacher_labels();qids=[g['qid'] for g in labels]
     if provenance!=ready['label_producer_provenance']:
         raise ValueError('Own teacher provenance changed')
+    for qid in qids:
+        for field in ('question_hash','length','token_ids_sha256','feature_sha256'):
+            if cache.index[qid][field]!=warmup_cache.index[qid][field]:
+                raise ValueError('Full bank did not preserve the initial5120 feature bytes')
     if (BASE/'logs/run-manifest.json').exists():
         raise ValueError('Run already prepared; inspect existing binding rather than reinitialize')
     run=prepare(BASE,MODEL,BASE/'preparation/official-model-manifest.json',commit,
