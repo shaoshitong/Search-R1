@@ -111,6 +111,10 @@ def main():
     children=[]
     (OUT/'tmp').mkdir(parents=True, exist_ok=True)
     base_env=env()
+    performance=OUT/'performance.json'
+    concurrency=json.loads(performance.read_text())['question_concurrency'] if performance.exists() else 128
+    assert isinstance(concurrency,int) and 1<=concurrency<=512
+    base_env['COSEARCH_EVAL_CONCURRENCY']=str(concurrency)
     opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
     def launch(command,name,variables):

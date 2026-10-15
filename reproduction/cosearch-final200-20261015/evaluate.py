@@ -104,7 +104,9 @@ async def main():
     initial_rows = len(results)
     deadline = float(os.environ['COSEARCH_SLICE_DEADLINE']) if os.environ.get('COSEARCH_SLICE_DEADLINE') else None
     inflight = set()
-    semaphore = asyncio.Semaphore(128)
+    concurrency = int(os.environ.get('COSEARCH_EVAL_CONCURRENCY', '128'))
+    assert 1 <= concurrency <= 512
+    semaphore = asyncio.Semaphore(concurrency)
     timeout = aiohttp.ClientTimeout(total=3600)
     async with aiohttp.ClientSession(timeout=timeout, trust_env=False,
                                      connector=aiohttp.TCPConnector(limit=256)) as session:
@@ -134,12 +136,14 @@ async def main():
                             data_source=str(source['data_source']), model_actions=agent.actions,
                             response_mask=output.response_mask, reranker_events=agent.reranks,
                             inference_received_gold=False, binding_sha256=binding_sha,
+                            question_concurrency=concurrency,
                             **metrics)
                         atomic(OUT/('rows/%05d.json'%index), row)
                         results[index] = row
                         if len(results)%32 == 0 or len(results) == N:
                             atomic(OUT/'progress.json', dict(epoch=time.time(),
                                 rows=len(results), total=N, seconds=time.time()-started,
+                                question_concurrency=concurrency,
                                 main_calls=main_manager.requests, reranker_calls=rank_manager.requests,
                                 main_active=main_manager.active, reranker_active=rank_manager.active))
                             print('SCORED_ROWS', len(results), flush=True)
@@ -160,7 +164,7 @@ async def main():
             if index in results:
                 continue
             inflight.add(asyncio.create_task(question(index)))
-            if len(inflight) >= 256:
+            if len(inflight) >= 2*concurrency:
                 done, inflight = await wait_progress(inflight, deadline)
                 for task in done:
                     task.result()
