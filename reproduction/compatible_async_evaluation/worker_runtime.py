@@ -31,6 +31,7 @@ def phase_profile():
 
 def make_worker_class(binding_env='SEARCH_G1_COMPAT_EVAL_BINDING'):
     import torch
+    import vllm, transformers
     import torch.distributed as dist
     from omegaconf import OmegaConf
     from transformers import GenerationConfig
@@ -93,7 +94,10 @@ def make_worker_class(binding_env='SEARCH_G1_COMPAT_EVAL_BINDING'):
                 actual_vllm_config_dtype=str(engine.model_config.dtype),
                 actual_engine_max_model_len=engine.model_config.max_model_len,
                 optimizer_constructed=False, optimizer_steps=0, actual_model_loaded=True,
-                async_phase_enabled=True)
+                async_phase_enabled=True, actual_vllm_version=vllm.__version__,
+                actual_torch_version=torch.__version__, actual_transformers_version=transformers.__version__,
+                actual_engine_max_num_seqs=engine.scheduler_config.max_num_seqs,
+                actual_engine_max_num_batched_tokens=engine.scheduler_config.max_num_batched_tokens)
 
         @register(dispatch_mode=Dispatch.ONE_TO_ALL)
         def begin_generation_phase(self, snapshot_meta):

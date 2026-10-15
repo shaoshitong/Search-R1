@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "role": "compatible_async_evaluation_protocol_specification",
+  "status": "SPECIFICATION_ONLY_NOT_IMPLEMENTED_NOT_EXECUTED",
+  "recipe_id": "old-context-fp32-async",
+  "protocol_authoritative_source": {
+    "historical_run": "15bb15365346401da1d919e9cde8f813",
+    "job": 3364,
+    "base": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011",
+    "source_commit": "2de313e3e455e005e0d7db83104942bad8bd977a",
+    "baseline_path": "logs/formal-inline-development-before.json",
+    "baseline_full_read_sha256": "211b30cc1b974b55fc2474f1325889d879bc8b6d79060c02b465a105b80d528f",
+    "resolved_config": "logs/resolved-training-config.json",
+    "independent_small_config_read": "work/baseline512-audit-legacy-config-fields-v1.json",
+    "content_policy_parent": "d00e4f8811cb4a2119c7d088280f7a97cd149d7e^",
+    "async_implementation_commit": "1f75a186"
+  },
+  "datasets": {
+    "manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "validation": {
+      "qa_count": 512,
+      "sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "source_counts": {
+        "nq": 256,
+        "hotpotqa": 256
+      }
+    },
+    "final": {
+      "qa_count": 51713,
+      "sha256": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+      "source_counts": "read_and_verify_exact_pinned_manifest_final_record",
+      "retain_repeated_occurrences": true
+    },
+    "same_order_required": true,
+    "no_resampling_or_dedup": true
+  },
+  "checkpoints": {
+    "admitted_steps": [
+      0,
+      5,
+      50,
+      100,
+      150,
+      200
+    ],
+    "step0": "official_revision_aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "other_steps": "same_experiment_complete_checkpoint_HF_files_and_source_receipt_sha",
+    "no_optimizer_or_training_restore": true
+  },
+  "execution": {
+    "world_size": 8,
+    "tensor_parallel_size": 1,
+    "validation_batch_size": 64,
+    "shuffle": false,
+    "drop_last": false,
+    "controller": "reproduction.compatible_async_evaluation.async_controller.run",
+    "async_phase_enabled": true,
+    "hf_load_dtype": "float32_actual_parameters_not_config_claim",
+    "fsdp_param_dtype": "float32_actual",
+    "vllm_dtype": "float32_actual",
+    "use_remove_padding": false,
+    "enforce_eager": true,
+    "cache_fraction": 0.1,
+    "engine_max_model_len": 4596,
+    "no_train_runtime_hot_edit": true,
+    "isolated_runtime_and_result_namespace": true,
+    "effective_engine_batching": "current async scheduler fields bound by evaluated resolved config and actual loaded engine proof",
+    "scheduler": "retained_1f75a18_resident_phase_rank_local_engine_ticks"
+  },
+  "context": {
+    "max_start_length": 2048,
+    "max_prompt_length": 4096,
+    "max_response_length": 500,
+    "max_obs_length": 500,
+    "max_turns": 4,
+    "final_generation_ordinal": 4,
+    "final_generation_do_search": false,
+    "answer_reserve_tokens": null,
+    "early_final_by_context_reserve": false,
+    "observation_tokenization": "old_batch_tokenizer_padding_longest_add_special_tokens_false",
+    "observation_truncate": "old_input_ids[:, :500], then remove pad ids",
+    "preserve_information_closing_wrapper": false,
+    "request_tokens": "full_prompt_plus_retained_response_no_silent_rolling_crop",
+    "reject_overbudget": "old_loop_exact_assertions"
+  },
+  "sampling": {
+    "do_sample": false,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "top_k": -1,
+    "n": 1,
+    "best_of": 1,
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "repetition_penalty": 1.0,
+    "max_tokens": 500,
+    "logprobs": 1,
+    "ignore_eos": false,
+    "detokenize": false,
+    "official_generation_config_sha256": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9",
+    "official_generation_eos_token_ids": [
+      151645,
+      151643
+    ],
+    "official_bos_token_id": 151643,
+    "official_pad_token_id": 151643,
+    "neutral_caller_overrides_official_temperature_top_p_top_k_repetition_defaults": true,
+    "stop_provenance": "same_official_generation_fields_and_actual_sequence_group_capture; first_closing_answer_or_search_tag_raw_prefix_logic_sha_pinned"
+  },
+  "retrieval": {
+    "topk": 3,
+    "index_sha256": "69c98463fdb41fc08737d88513c597725f311c44f7ba6dca4b05d8c7c658d166",
+    "corpus_sha256": "85a787a692e73fdd657e86411bfd1ac810ed193b1eea4a478de449d4871c06b9",
+    "encoder": "intfloat/e5-base-v2",
+    "revision": "f52bf8ec8c7124536f0efb74aca902b2995e5bcd",
+    "encoder_dtype": "float16",
+    "query_prefix": "query: ",
+    "pooling": "mean",
+    "faiss_shards": 8,
+    "use_float16": true,
+    "url": "bound_local_loopback_retriever_equivalent_to_old127.0.0.1:18010/retrieve",
+    "passage_format_source": "pinned_old_generation.py"
+  },
+  "scoring": {
+    "strict_gold_alias_EM": true,
+    "F1": "same_qa_em.normalize_answer_alias_max_F1",
+    "missing_invalid_answer": "keep_question_EM0_F10",
+    "rows": "canonical_occurrence_order",
+    "weighted_summary": "all_rows_not_mean_of_source_averages"
+  },
+  "interpretation": {
+    "old_before0_EM": 0.177734375,
+    "old_before0_F1": 0.24118301022177743,
+    "current_3399_before0_and_dev5": "new_recipe_diagnostic_not_legacy_canonical",
+    "new_probe_cannot_explain_before0_improvement": true,
+    "protocol_specification_is_not_GPU_execution_or_quality_proof": true,
+    "comparison_note": "Content and FP32 reverted; asynchronous scheduling retained. This is not a synchronous byte-equivalence claim."
+  },
+  "evaluation_infrastructure_base_commit": "cda611600853bd18a6c259598aa1626da2ae1d80",
+  "content_revert_commit": "d00e4f8811cb4a2119c7d088280f7a97cd149d7e",
+  "precision_revert_commit": "a8c311685af6bf2d71ba6d977515106ff164f127",
+  "retained_async_commit": "1f75a186"
+}
