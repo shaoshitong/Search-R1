@@ -14,6 +14,10 @@ import subprocess
 import sys
 import time
 
+os.environ['HF_HUB_DISABLE_XET'] = '1'
+os.environ['HF_HUB_DISABLE_TELEMETRY'] = '1'
+os.environ['HF_HUB_DISABLE_PROGRESS_BARS'] = '1'
+
 RUNTIME = 'fcb77204f48d5cb8ec21c68df7d4a2c937b3557a'
 REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
 MANIFEST = '0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'
