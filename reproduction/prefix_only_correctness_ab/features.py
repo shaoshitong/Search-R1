@@ -297,6 +297,8 @@ def encode(args):
         for segment in original['segments']:
             if segment['policy_start']>=n:break
             seg=dict(segment);take=min(segment['policy_length'],n-segment['policy_start'])
+            seg['source_context_sha256']=seg.pop('context_sha256')
+            seg['source_context_length']=segment['context_length']
             seg.update(take_length=take,policy_length=take,context_length=segment['request_length']+take,
                        target_feature_offset=total+segment['policy_start'])
             chosen.append(seg);segments.append(seg)
