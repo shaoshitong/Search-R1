@@ -60,3 +60,5 @@ the finite pool is exhausted, excludes the fixed diagnostic, and regenerates
 each recycled question's own new G5 trajectories. The head verifies every epoch
 is complete and disjoint from the fixed diagnostic. It never infers future
 prefix features from final answers or labels.
+
+An actual vLLM0.6.3 UUID device-parsing failure in predecessor3407 occurred before new rollout or Adam in epoch2. Recovery stages the independently verified complete epoch1 head/Adam/eight-rank RNG and the already reserved epoch2 selection into a new published runtime. Original source, checkpoint, partial outputs and terminal evidence remain untouched. Numeric CUDA device IDs are resolved from the allocated UUIDs before importing vLLM.
