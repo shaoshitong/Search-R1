@@ -1,15 +1,18 @@
-"""Route only the native question Head onto one already admitted actor GPU.
+"""Run the native Head driver in a process born with an admitted GPU UUID.
 
-Ray schedules the trainer driver as a CPU task and clears its CUDA visibility.
-This hook changes only that task's process environment after Ray's assignment.
-It does not alter Ray runtime_env, request a GPU resource, seed an RNG, or change
-child actor placement. It runs at the actual training entry, never as a test.
+The CPU Ray task only validates metadata and waits for this process. A fresh
+Python interpreter connects to the same Ray cluster and runs the unchanged
+trainer body. Actor GPU placement and the original two runtime env vars remain
+unchanged; the Head shares the first admitted actor GPU without a reservation.
 """
 import hashlib
 import json
 import os
 from pathlib import Path
+import pickle
 import socket
+import subprocess
+import sys
 import time
 
 
@@ -17,6 +20,10 @@ HEAD_KIND = 'qwen_native_lastblock_binary_v1'
 SOURCE_PATH = 'search_g1/qprobe_driver_gpu.py'
 ENTRY_PATH = 'verl/trainer/main_ppo_eco.py'
 RECEIPT_PATH = 'logs/native-qwen-driver-gpu-route.json'
+PROCESS_CLAIM = 'logs/native-qwen-driver-process-once.json'
+PROCESS_EXIT = 'logs/native-qwen-driver-process-exit.json'
+RAY_RUNTIME_ENV = {'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}}
+MAX_PAYLOAD_BYTES = 4 * 1024**2
 
 
 def _require(condition, message):
@@ -98,15 +105,27 @@ def validate_driver_route(run, allocation, placement, pipeline_claim, training_c
                 shares_admitted_actor_training_gpu=True)
 
 
-def install_driver_visibility(route, *, environ, cuda_initialized, cuda_device_count, cuda_uuids):
-    """Injectable identity checks; performs no tensor allocation or RNG operation."""
+def child_environment(route, environ):
+    """Bind a copy for exec; never change the already running Ray worker."""
     _require(environ.get('RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES') in (None, ''),
              'RAY_GLOBAL_CUDA_OVERRIDE_FORBIDDEN')
+    result = dict(environ)
+    result['CUDA_VISIBLE_DEVICES'] = route['gpu_uuid']
+    result.pop('RAY_ADDRESS', None)
+    return result
+
+
+def verify_driver_visibility(route, *, environ, birth_visible, cuda_initialized, cuda_device_count, cuda_uuids):
+    """Actual child-entry identity check, with no late visibility mutation."""
+    _require(environ.get('RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES') in (None, ''),
+             'RAY_GLOBAL_CUDA_OVERRIDE_FORBIDDEN')
+    _require(birth_visible == environ.get('CUDA_VISIBLE_DEVICES') == route['gpu_uuid'],
+             'DRIVER_NOT_BORN_WITH_BOUND_GPU_UUID')
     _require(cuda_initialized() is False, 'CUDA_INITIALIZED_BEFORE_BOUND_DRIVER_ROUTE')
-    environ['CUDA_VISIBLE_DEVICES'] = route['gpu_uuid']
     _require(cuda_device_count() == 1 and cuda_uuids(1) == [route['gpu_uuid']],
              'ACTUAL_CUDA_UUID_DIFFERS_FROM_FIRST_ADMITTED_TRAINING_GPU')
     return dict(actual_cuda_runtime_uuids=[route['gpu_uuid']], cuda_visible_devices=route['gpu_uuid'],
+                birth_cuda_visible_devices=birth_visible, visibility_changed_after_process_birth=False,
                 cuda_initialized_before=False, tensor_allocation_performed=False, rng_seed_performed=False)
 
 
@@ -117,16 +136,11 @@ def _birth(pid):
     return dict(pid=pid, start_ticks=int(fields[19]), sid=int(fields[3]), uid=root.stat().st_uid)
 
 
-def bind_native_driver_gpu(config):
-    """Native-only actual Ray-task entry before any question Head CUDA work."""
+def _bound_route(config):
+    """The same source, allocation, placement and live-shell checks in both processes."""
     settings = _config_value(config, 'question_probe', {}) or {}
-    if _config_value(settings, 'head_kind') != HEAD_KIND:
-        return None
-    import ray
-    import torch
-    from reproduction.common8.native_allocation import cuda_uuids, _write_local_once, LOCAL_BINDING_RECEIPT
+    from reproduction.common8.native_allocation import LOCAL_BINDING_RECEIPT
     from reproduction.common8.topology import validate_base
-    _require(ray.get_gpu_ids() == [], 'DRIVER_MUST_REMAIN_A_CPU_RAY_TASK')
     base = Path(os.environ['SEARCH_G1_BASE'])
     _require(base.resolve() == base and str(base).startswith(('/data/', '/mnt/', '/backup/')),
              'BASE_NOT_CANONICAL_REMOTE_STORAGE')
@@ -152,15 +166,147 @@ def bind_native_driver_gpu(config):
     incoming = os.environ.get('CUDA_VISIBLE_DEVICES')
     route = validate_driver_route(run, allocation, placement, pipeline, claim,
         head_device=_config_value(settings, 'head_device'), hostname=socket.gethostname(), incoming_visible=incoming)
-    actual = install_driver_visibility(route, environ=os.environ, cuda_initialized=torch.cuda.is_initialized,
-        cuda_device_count=torch.cuda.device_count, cuda_uuids=cuda_uuids)
-    event = dict(stage='NATIVE_QWEN_DRIVER_SHARED_TRAINING_GPU_BOUND', run_id=run['run_id'],
-        execution_id=run['execution_id'], source_commit=run['source_commit'], producer_identity=_birth(os.getpid()),
-        hostname=socket.gethostname(), incoming_cuda_visible_devices=incoming, **route, **actual,
+    binding = dict(run_id=run['run_id'], execution_id=run['execution_id'], source_commit=run['source_commit'],
         allocation_sha256=_sha(allocation_path), placement_sha256=_sha(placement_path),
         training_claim_sha256=_sha(claim_path), source_sha256=run['source_sha256'][SOURCE_PATH],
-        ray_runtime_env_modified=False, child_actor_cuda_assignment_unchanged=True,
-        scope='actual native question-Head driver routing within the admitted actor GPUs; no extra GPU reservation or GPU test',
-        observed_unix=time.time())
-    _write_local_once(base/RECEIPT_PATH, event)
-    return event
+        entry_source_sha256=run['source_sha256'][ENTRY_PATH])
+    return base, route, binding
+
+
+def capture_cpu_rng():
+    import random
+    import numpy as np
+    import torch
+    return dict(python=random.getstate(), numpy=np.random.get_state(), torch_cpu=torch.get_rng_state())
+
+
+def cpu_rng_sha256(state):
+    """Stable identity of only Python, NumPy and Torch CPU RNG bytes."""
+    digest = hashlib.sha256(repr(state['python']).encode())
+    name, keys, position, gaussian, cached = state['numpy']
+    digest.update(repr((name, str(keys.dtype), keys.shape, position, gaussian, cached)).encode())
+    digest.update(keys.tobytes())
+    digest.update(state['torch_cpu'].numpy().tobytes())
+    return digest.hexdigest()
+
+
+def restore_cpu_rng(state):
+    import random
+    import numpy as np
+    import torch
+    random.setstate(state['python'])
+    np.random.set_state(state['numpy'])
+    torch.set_rng_state(state['torch_cpu'])
+    actual = cpu_rng_sha256(capture_cpu_rng())
+    _require(actual == cpu_rng_sha256(state), 'CPU_RNG_TRANSFER_READBACK_CHANGED')
+    return actual
+
+
+def _cluster_identity(address, namespace):
+    _require(isinstance(address, str) and address not in ('auto', 'local') and
+             ':' in address and address.rsplit(':', 1)[1].isdigit() and
+             isinstance(namespace, str) and bool(namespace), 'EXACT_PRIVATE_RAY_CLUSTER_REQUIRED')
+    return dict(ray_gcs_address=address, ray_namespace=namespace)
+
+
+def _spawn_driver_process(base, payload, environment):
+    raw = pickle.dumps(payload, protocol=4)
+    _require(len(raw) <= MAX_PAYLOAD_BYTES, 'DRIVER_CONFIG_RNG_PAYLOAD_OVERSIZE')
+    sha = hashlib.sha256(raw).hexdigest()
+    from reproduction.common8.native_allocation import _write_local_once
+    claim = dict(stage='NATIVE_QWEN_DRIVER_FRESH_PROCESS_ONCE', **payload['binding'],
+        **payload['cluster'], parent_identity=payload['parent_identity'], route=payload['route'],
+        payload_sha256=sha, payload_bytes=len(raw), cpu_rng_sha256=payload['cpu_rng_sha256'],
+        child_cuda_visible_devices=environment['CUDA_VISIBLE_DEVICES'], ray_gpu_resources_reserved=0,
+        claimed_unix=time.time())
+    _write_local_once(base/PROCESS_CLAIM, claim)
+    child = subprocess.Popen([sys.executable, '-m', 'search_g1.qprobe_driver_gpu',
+        '--native-driver-child', '--payload-sha256', sha], cwd=base/'repo', env=environment,
+        stdin=subprocess.PIPE, start_new_session=False)
+    child.communicate(raw)
+    _write_local_once(base/PROCESS_EXIT, dict(stage='NATIVE_QWEN_DRIVER_FRESH_PROCESS_EXIT',
+        **payload['binding'], parent_identity=payload['parent_identity'], child_pid=child.pid,
+        exit_code=child.returncode, payload_sha256=sha, observed_unix=time.time()))
+    _require(child.returncode == 0, 'FRESH_DRIVER_CHILD_EXIT_' + str(child.returncode))
+
+
+def run_native_driver(config):
+    """Native-only CPU Ray wrapper: no CUDA query, no retry and no GPU request."""
+    settings = _config_value(config, 'question_probe', {}) or {}
+    if _config_value(settings, 'head_kind') != HEAD_KIND:
+        return False
+    state = capture_cpu_rng()
+    import ray
+    _require(ray.get_gpu_ids() == [], 'WRAPPER_MUST_REMAIN_A_CPU_RAY_TASK')
+    base, route, binding = _bound_route(config)
+    context = ray.get_runtime_context()
+    cluster = _cluster_identity(context.gcs_address, context.namespace)
+    payload = dict(schema_version=1, config=config, cpu_rng=state, cpu_rng_sha256=cpu_rng_sha256(state),
+        parent_identity=_birth(os.getpid()), route=route, binding=binding, cluster=cluster)
+    _spawn_driver_process(base, payload, child_environment(route, os.environ))
+    return True
+
+
+def _child(raw, expected_sha):
+    """Only stdin from the live owned wrapper can enter the original trainer body."""
+    _require(len(raw) <= MAX_PAYLOAD_BYTES and hashlib.sha256(raw).hexdigest() == expected_sha,
+             'DRIVER_STDIN_PAYLOAD_SHA_CHANGED')
+    # Do not leave a driver/actor Ray job behind if its synchronous wrapper dies.
+    # This precedes unpickling CPU tensors, which itself imports Torch.
+    parent_identity = _birth(os.getppid())
+    import ctypes
+    import signal
+    _require(ctypes.CDLL(None, use_errno=True).prctl(1, signal.SIGTERM, 0, 0, 0) == 0,
+             'PARENT_DEATH_SIGNAL_BINDING_FAILED')
+    _require(_birth(os.getppid()) == parent_identity, 'WRAPPER_DIED_DURING_CHILD_BOOTSTRAP')
+    payload = pickle.loads(raw)
+    _require(payload.get('schema_version') == 1 and parent_identity == payload['parent_identity'],
+             'WRAPPER_BIRTH_CHANGED')
+    base, route, binding = _bound_route(payload['config'])
+    cluster = _cluster_identity(**dict(address=payload['cluster']['ray_gcs_address'],
+                                      namespace=payload['cluster']['ray_namespace']))
+    claim = _json(base/PROCESS_CLAIM)
+    _require(binding == payload['binding'] and route == payload['route'] and
+             claim['payload_sha256'] == expected_sha and claim['parent_identity'] == payload['parent_identity'] and
+             claim['route'] == route and all(claim[key] == value for key, value in {**binding, **cluster}.items()) and
+             claim['cpu_rng_sha256'] == payload['cpu_rng_sha256'] == cpu_rng_sha256(payload['cpu_rng']),
+             'FRESH_DRIVER_CLAIM_CHANGED')
+    initial_environment = dict(item.split(b'=', 1) for item in Path('/proc/self/environ').read_bytes().split(b'\0')
+                               if b'=' in item)
+    born_visible = initial_environment.get(b'CUDA_VISIBLE_DEVICES', b'').decode()
+    _require(born_visible == os.environ.get('CUDA_VISIBLE_DEVICES') == route['gpu_uuid'],
+             'DRIVER_NOT_BORN_WITH_BOUND_GPU_UUID')
+    import ray
+    _require(not ray.is_initialized(), 'CHILD_MUST_CONNECT_WITHOUT_STARTING_A_RAY_CLUSTER')
+    ray.init(address=cluster['ray_gcs_address'], namespace=cluster['ray_namespace'], runtime_env=RAY_RUNTIME_ENV)
+    try:
+        context = ray.get_runtime_context()
+        _require(_cluster_identity(context.gcs_address, context.namespace) == cluster and ray.get_gpu_ids() == [],
+                 'CHILD_NOT_CONNECTED_TO_ORIGINAL_CPU_DRIVER_CLUSTER')
+        import torch
+        from reproduction.common8.native_allocation import cuda_uuids, _write_local_once
+        actual = verify_driver_visibility(route, environ=os.environ, birth_visible=born_visible,
+            cuda_initialized=torch.cuda.is_initialized, cuda_device_count=torch.cuda.device_count, cuda_uuids=cuda_uuids)
+        from verl.trainer.main_ppo_eco import run_main_task
+        restored_sha = restore_cpu_rng(payload['cpu_rng'])
+        _require(restored_sha == payload['cpu_rng_sha256'], 'ORIGINAL_DRIVER_CPU_RNG_NOT_RESTORED')
+        _write_local_once(base/RECEIPT_PATH, dict(stage='NATIVE_QWEN_DRIVER_SHARED_TRAINING_GPU_BOUND',
+            **binding, **cluster, **route, **actual, producer_identity=_birth(os.getpid()),
+            parent_identity=payload['parent_identity'], hostname=socket.gethostname(),
+            payload_sha256=expected_sha, cpu_rng_sha256=restored_sha, original_driver_cpu_rng_restored=True,
+            driver_process_kind='fresh_python_exec_with_birth_bound_cuda_visibility',
+            ray_runtime_env_modified=False, child_actor_cuda_assignment_unchanged=True,
+            scope='actual native driver shares an admitted actor GPU; no extra GPU reservation or GPU test',
+            observed_unix=time.time()))
+        run_main_task(payload['config'])
+    finally:
+        ray.shutdown()
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--native-driver-child', action='store_true', required=True)
+    parser.add_argument('--payload-sha256', required=True)
+    args = parser.parse_args()
+    _child(sys.stdin.buffer.read(MAX_PAYLOAD_BYTES+1), args.payload_sha256)

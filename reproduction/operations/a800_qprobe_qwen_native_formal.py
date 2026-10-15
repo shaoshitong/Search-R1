@@ -24,7 +24,7 @@ import uuid
 sys.dont_write_bytecode=True
 ROOT=Path('/Users/shaoshitong/Documents/Search-G1')
 OPS=Path(__file__).resolve().parents[2]
-RUNTIME=ROOT/'qprobe-qwen-native-formal'
+RUNTIME=ROOT/'qprobe-qwen-native-driver-process-fix'
 SUPPORT_PATH='reproduction/operations/a800_qprobe_qwen_block_warmup10.py'
 SUPPORT_COMMIT='a4d2328574c3a51dd3f201d7ffcad53acd8fd839'
 SUPPORT_SHA='f95f3314a58b5499544f050c3e886fd711ca5a39e34c9dac631757c7c75bc635'
@@ -54,13 +54,19 @@ def authority(warmup,base,intent):
     assert intent['warmup_handle']['base']==intent['warmup_base'] and intent['warmup_handle']['source_commit']==intent['warmup_source_commit']
     assert hashlib.sha256(base.canonical(intent['warmup_handle']['source_sha256'])).hexdigest()==intent['warmup_source_map_sha256']
     assert (intent['warmup_base'],intent['warmup_source_commit'],intent['warmup_source_map_sha256'])==(QUALIFIED_WARMUP_BASE,QUALIFIED_WARMUP_SOURCE,QUALIFIED_WARMUP_MAP)
+    if intent.get('qualified_bank_origin') is not None:
+        origin=intent['qualified_bank_origin']
+        assert origin['role']=='native_qwen_preupdate_qualified_bank_origin_v1' and intent['bank_base']==origin['bank_base']
+        assert intent['base']!=origin['base'] and intent['source_commit']!=origin['source_commit']
 
 
 def stage_code(warmup,scaffold,base):
     code=warmup.program(scaffold,base,'stage')
     old_role=repr(warmup.ROLE);old_prefix=repr(warmup.PREFIX)+"+intent['deployment_id']"
     assert code.count(old_role)==2 and code.count(old_prefix)==2
-    return code.replace(old_role,repr(ROLE)).replace(old_prefix,repr(PREFIX)+"+intent['deployment_id']")
+    code=code.replace(old_role,repr(ROLE)).replace(old_prefix,repr(PREFIX)+"+intent['deployment_id']")
+    marker=';seen=set()\nwhile True:';assert code.count(marker)==1
+    return code.replace(marker,"\nif intent.get('qualified_bank_origin') is not None:\n origin=intent['qualified_bank_origin'];expected['preparation/qualified-bank-terminal-audit.json']=(origin['terminal_audit_bytes'],origin['terminal_audit_sha256'])\nseen=set()\nwhile True:")
 
 
 REMOTE=r'''
@@ -106,6 +112,34 @@ def remote_code(base):
     return common.replace(role,repr(ROLE)).replace(prefix,repr(PREFIX)+"+intent['deployment_id']")+'\n'+REMOTE
 
 
+def qualified_bank_origin(base,args,repo,mapping):
+    supplied=(args.qualified_bank_origin_handle,args.bank_admitted_receipt,args.terminal_audit_receipt)
+    if not any(path is not None for path in supplied):return None
+    assert all(path is not None for path in supplied), 'All three qualified bank-origin inputs are required'
+    path=repo/'reproduction/a800_common/qprobe_qwen_formal_ops.py'
+    spec=importlib.util.spec_from_file_location('published_native_bank_origin_binding',path)
+    helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+    old=base.document(args.qualified_bank_origin_handle);receipt=base.document(args.bank_admitted_receipt)
+    assert old['base']==helper.QUALIFIED_BANK_ORIGIN and old['source_commit']==helper.QUALIFIED_BANK_SOURCE
+    assert hashlib.sha256(base.canonical(old['source_sha256'])).hexdigest()==helper.QUALIFIED_BANK_MAP
+    assert receipt['exit_code']==0 and receipt['base']==old['base'] and receipt['source_commit']==old['source_commit']
+    observation=receipt['observation'];assert observation['base']==old['base'] and observation['source_commit']==old['source_commit']
+    item=observation['files']['logs/native-bank-admitted.json'];complete=observation['files'][old['bank_base']+'/complete.json']
+    assert item['sha256']==helper.QUALIFIED_BANK_ADMIT and complete['sha256']==helper.QUALIFIED_BANK_COMPLETE
+    assert complete['metadata']['source_commit']==old['source_commit'] and complete['metadata']['feature_manifest_sha256']==helper.QUALIFIED_BANK_MANIFEST
+    audit_path=args.terminal_audit_receipt.resolve();assert base.digest(audit_path)==helper.QUALIFIED_BANK_TERMINAL_AUDIT
+    origin=dict(role='native_qwen_preupdate_qualified_bank_origin_v1',base=old['base'],source_commit=old['source_commit'],
+        source_map_sha256=helper.QUALIFIED_BANK_MAP,run_id=helper.QUALIFIED_BANK_RUN,execution_id=helper.QUALIFIED_BANK_EXECUTION,
+        bank_base=old['bank_base'],complete_sha256=complete['sha256'],feature_manifest_sha256=item['metadata']['feature_manifest_sha256'],
+        admitted_sha256=item['sha256'],admitted=item['metadata'],producer_source_sha256={name:old['source_sha256'][name] for name in helper.QUALIFIED_BANK_PRODUCERS},
+        old_handle_sha256=base.digest(args.qualified_bank_origin_handle),old_intent_canonical_sha256=hashlib.sha256(base.canonical(old)).hexdigest(),
+        bank_admitted_observation_sha256=base.digest(args.bank_admitted_receipt),terminal_audit=str(audit_path),
+        terminal_audit_sha256=base.digest(audit_path),terminal_audit_bytes=audit_path.stat().st_size,
+        formal_completed_outers=0,actor_or_head_updates_inherited=False)
+    helper.validate_qualified_bank_origin(origin,mapping);helper.validate_terminal_bank_origin(origin,base.document(audit_path))
+    return origin
+
+
 def create(warmup,scaffold,base,args):
     human=base.document(warmup.HUMAN);warmup.validate_human(human);assert human['formal200_explicitly_authorized_by_latest_goal'] is True
     repo=args.source_repo.resolve();commit=args.source_commit
@@ -116,6 +150,7 @@ def create(warmup,scaffold,base,args):
     assert all(name in mapping for name in ('reproduction/a800_common/qprobe_qwen_formal_ops.py','reproduction/a800_common/qprobe_token_feature_bank.py','reproduction/common8/qprobe_qwen_bind.py'))
     assert publication['source_commit']==publication['remote_commit']==commit and publication['remote_fresh_object_store_disk_git_hash_equal'] is True
     assert publication['source_map_sha256']==hashlib.sha256(base.canonical(mapping)).hexdigest()
+    origin=qualified_bank_origin(base,args,repo,mapping)
     bundle=args.bundle.resolve();subprocess.run(['git','-C',str(repo),'bundle','verify',str(bundle)],capture_output=True,check=True)
     assert subprocess.check_output(['git','-C',str(repo),'bundle','list-heads',str(bundle)],text=True).split()[0]==commit
     qualified=base.document(args.warmup_handle)
@@ -127,8 +162,9 @@ def create(warmup,scaffold,base,args):
         source_publication=str(args.source_publication.resolve()),source_publication_bytes=args.source_publication.stat().st_size,source_publication_sha256=base.digest(args.source_publication),bundle=str(bundle),bundle_bytes=bundle.stat().st_size,bundle_sha256=base.digest(bundle),
         human_intent_sha256=base.digest(warmup.HUMAN),native_formal_200_authorized=True,source_publication_authorized=True,target_updates=200,head_device='cuda:0',
         warmup_handle=qualified,warmup_handle_sha256=base.digest(args.warmup_handle),warmup_base=qualified['base'],warmup_source_commit=qualified['source_commit'],warmup_source_map_sha256=hashlib.sha256(base.canonical(qualified['source_sha256'])).hexdigest(),
-        bank_base='/data/shaoshitong/Search-G1-qprobe-fulltoken-feature-bank-'+bank_identifier,baseline_base=old['baseline_base'],baseline_commit=old['baseline_commit'],baseline_intent_sha256=old['baseline_intent_sha256'],initial_probes_source_base='/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef',
+        bank_base=origin['bank_base'] if origin is not None else '/data/shaoshitong/Search-G1-qprobe-fulltoken-feature-bank-'+bank_identifier,baseline_base=old['baseline_base'],baseline_commit=old['baseline_commit'],baseline_intent_sha256=old['baseline_intent_sha256'],initial_probes_source_base='/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef',
         parent_intent=qualified['parent_intent'],headfit_resume_only=True,resume_token_feature_output=qualified['resume_token_feature_output'],cleanup_library_repo=qualified['cleanup_library_repo'],cleanup_library_source=qualified['cleanup_library_source'],cleanup_library_source_sha256=qualified['cleanup_library_source_sha256'],no_automatic_retry=True)
+    if origin is not None:intent['qualified_bank_origin']=origin
     authority(warmup,base,intent);handle=args.handle.resolve() if args.handle else ROOT/'preparation'/('qprobe-qwen-native-formal-'+identifier+'.json')
     base.once(handle,intent);print(json.dumps(dict(handle=str(handle),base=intent['base'],bank_base=intent['bank_base'],source_commit=commit,warmup_base=intent['warmup_base'])))
 
@@ -137,6 +173,7 @@ def perform(warmup,scaffold,base,args):
     commit=subprocess.check_output(['git','-C',str(OPS),'rev-parse','HEAD'],text=True).strip();relative=str(Path(__file__).resolve().relative_to(OPS))
     assert subprocess.check_output(['git','-C',str(OPS),'show',commit+':'+relative])==Path(__file__).read_bytes(), 'Publish exact formal operator first'
     handle=args.handle.resolve();intent=base.document(handle);authority(warmup,base,intent)
+    assert not (intent.get('qualified_bank_origin') is not None and args.action in ('bank-prepare','bank-encode')), 'Existing qualified bank must not be prepared or encoded again'
     payload=dict(intent=intent,operator_commit=commit,action=args.action,worker=base.WORKER,admission=args.admission)
     if args.action=='warmup-admit':assert args.warmup_receipt;payload['warmup_receipt']=base.document(args.warmup_receipt)
     if args.action=='launch':assert args.review;payload['review']=base.document(args.review)
@@ -147,7 +184,10 @@ def perform(warmup,scaffold,base,args):
         stream=io.BytesIO()
         with tarfile.open(fileobj=stream,mode='w') as archive:
             raw=base.canonical(payload);item=tarfile.TarInfo('request.json');item.size=len(raw);archive.addfile(item,io.BytesIO(raw))
-            for path,name,expected in ((Path(intent['bundle']),'preparation/published-source.bundle',intent['bundle_sha256']),(Path(intent['source_publication']),'preparation/source-publication.json',intent['source_publication_sha256'])):
+            inputs=[(Path(intent['bundle']),'preparation/published-source.bundle',intent['bundle_sha256']),(Path(intent['source_publication']),'preparation/source-publication.json',intent['source_publication_sha256'])]
+            if intent.get('qualified_bank_origin') is not None:
+                origin=intent['qualified_bank_origin'];inputs.append((Path(origin['terminal_audit']),'preparation/qualified-bank-terminal-audit.json',origin['terminal_audit_sha256']))
+            for path,name,expected in inputs:
                 assert base.digest(path)==expected
                 with path.open('rb') as source:item=tarfile.TarInfo(name);item.size=path.stat().st_size;archive.addfile(item,source)
         data=stream.getvalue()
@@ -172,6 +212,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('action',choices=('create','stage','prepare','warmup-admit','bank-prepare','bank-encode','bank-admit','bind','adopt-initial0','prepare-launch','launch','observe'))
     parser.add_argument('--handle',type=Path);parser.add_argument('--receipt',type=Path);parser.add_argument('--source-repo',type=Path,default=RUNTIME);parser.add_argument('--source-commit');parser.add_argument('--source-publication',type=Path);parser.add_argument('--bundle',type=Path)
     parser.add_argument('--warmup-handle',type=Path);parser.add_argument('--warmup-receipt',type=Path);parser.add_argument('--physical-index',type=int);parser.add_argument('--review',type=Path);parser.add_argument('--admission',action='store_true')
+    parser.add_argument('--qualified-bank-origin-handle',type=Path);parser.add_argument('--bank-admitted-receipt',type=Path);parser.add_argument('--terminal-audit-receipt',type=Path)
     args=parser.parse_args();assert not args.admission or args.action=='observe';warmup,scaffold,base=support()
     if args.action=='create':
         assert all(value is not None for value in (args.source_commit,args.source_publication,args.bundle,args.warmup_handle));return create(warmup,scaffold,base,args)

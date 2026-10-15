@@ -132,6 +132,20 @@ def _source_map(base, run, provenance=None):
 
 
 def _outside_ray_bootstrap(raw):
+    native_process = (b'@ray.remote\n'
+                      b'def main_task(config):\n'
+                      b'    from search_g1.qprobe_driver_gpu import run_native_driver\n'
+                      b'    if run_native_driver(config):\n'
+                      b'        return\n'
+                      b'    run_main_task(config)\n\n\n'
+                      b'def run_main_task(config):\n')
+    if native_process in raw:
+        _check(raw.count(native_process) == 1
+               and raw.count(b'def run_main_task(config):\n') == 1,
+               'Unrecognized native driver scientific-body relocation')
+        # Remove only this exact transport wrapper/function header. Every byte
+        # of the original scientific body remains in the source comparison.
+        raw = raw.replace(native_process, b'@ray.remote\ndef main_task(config):\n', 1)
     native_hook = (b'def main_task(config):\n'
                    b'    from search_g1.qprobe_driver_gpu import bind_native_driver_gpu\n'
                    b'    bind_native_driver_gpu(config)\n')
