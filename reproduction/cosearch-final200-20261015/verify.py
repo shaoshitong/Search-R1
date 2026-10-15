@@ -54,16 +54,16 @@ def main():
         for key,value in expected.items():
             assert row[key]==value,(index,key)
         for event in row['reranker_events']:
-            if not event.get('model_tool_input_error', False):
+            if event['reranker_prompt_tokens']>0:
                 assert event['num_retrieved_docs']==50
                 assert 0<event['reranker_prompt_tokens']<=16384
                 assert isinstance(event['native_retained_reranker_output'],str)
+                rerank_calls+=1
             else:
-                assert not event['reranker_success']
+                assert event.get('model_tool_input_error',False) and not event['reranker_success']
             if event['reranker_success']:
                 assert event['num_reranked_docs']==5
                 rerank_success+=1
-            rerank_calls+=1
         rows.append(row)
     assert summarize(rows)==complete['metrics']
     assert len(complete['metrics']['datasets'])==7

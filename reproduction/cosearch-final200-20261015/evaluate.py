@@ -77,7 +77,7 @@ async def main():
                 model_input_error = (tool_call.name not in self.tools or
                     not isinstance(arguments, dict) or
                     not isinstance(arguments.get('query'), str) or
-                    not arguments['query'].strip())
+                    not arguments['query'])
             except (ValueError, TypeError):
                 model_input_error = True
             response = await super()._call_tool(tool_call, tools_kwargs, agent_data)
