@@ -1,0 +1,98 @@
+{
+  "status": "COSEARCH200_DUAL_MODEL_FINAL51713_COMPLETED_AND_INDEPENDENTLY_ACCEPTED",
+  "epoch": 1792065935.29525,
+  "training_job": 713379,
+  "evaluation_job": 721542,
+  "independent_audit_job": 722490,
+  "checkpoint_step": 200,
+  "questions": 51713,
+  "correct": 25234,
+  "EM": 0.4879624079051689,
+  "F1": 0.5630729533879519,
+  "datasets": {
+    "2wikimultihopqa": {
+      "correct": 5650,
+      "em": 0.44926844783715014,
+      "f1": 0.518099790336217,
+      "questions": 12576,
+      "trajectories": 12576
+    },
+    "bamboogle": {
+      "correct": 56,
+      "em": 0.448,
+      "f1": 0.5607619047619047,
+      "questions": 125,
+      "trajectories": 125
+    },
+    "hotpotqa": {
+      "correct": 3299,
+      "em": 0.44550979068197166,
+      "f1": 0.5696869729744086,
+      "questions": 7405,
+      "trajectories": 7405
+    },
+    "musique": {
+      "correct": 492,
+      "em": 0.20355812991311542,
+      "f1": 0.2851071417364522,
+      "questions": 2417,
+      "trajectories": 2417
+    },
+    "nq": {
+      "correct": 1690,
+      "em": 0.46814404432132967,
+      "f1": 0.5568716478784922,
+      "questions": 3610,
+      "trajectories": 3610
+    },
+    "popqa": {
+      "correct": 6757,
+      "em": 0.4736104296628583,
+      "f1": 0.5192878630602072,
+      "questions": 14267,
+      "trajectories": 14267
+    },
+    "triviaqa": {
+      "correct": 7290,
+      "em": 0.6443914081145584,
+      "f1": 0.7253470210919756,
+      "questions": 11313,
+      "trajectories": 11313
+    }
+  },
+  "scorer_version": "common-em-v4-final-model-action",
+  "inference": "Native CoSearch main model plus separately trained reranker; search top50 then rerank top5; greedy; both roles from checkpoint200",
+  "both_models_SHA_and_export_readback_pass": true,
+  "full_question_identity_and_independent_rescoring_pass": true,
+  "no_gold_answers_to_inference": true,
+  "all_retry_events_eventually_accepted": true,
+  "retry_events": 497,
+  "real_reranker_calls": 111205,
+  "native_rerank_success": 111177,
+  "native_rerank_format_fallbacks": 28,
+  "owned_gpu_processes_reaped": true,
+  "evaluation_and_audit_completed_zero_exit": true,
+  "gpu_allocation_released": true,
+  "source_manifest_SHA_pass": true,
+  "source_manifest_sha256": "3a854b28470f35f5dedde2e01b21454bdff72010d9050be723aca98addb6f471",
+  "producer_commit": "28d430c5c2de4685ffa1c22dbf70b38e5ee951f5",
+  "latest_control_source_commit": "fe1bc58000396589ec28e38b3e9bf29f882c84e0",
+  "backup_branch": "codex/cosearch200-final51713-20261015",
+  "remote_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015",
+  "raw_predictions_remain_remote": true,
+  "recurring_codex_monitor_created": false,
+  "completion_receipt_sha256": "523198910d73336f6e633c3e02ce1691c75ec9a156023ed6bb1ce1d7741254a8",
+  "last_allocation_resumed_missing_questions": 11,
+  "comparison": {
+    "topd_alpha01": {
+      "EM": 0.444008276448862,
+      "F1": 0.5047508537547575
+    },
+    "topd_alpha1": {
+      "EM": 0.2629512888441978,
+      "F1": 0.28950107978698203
+    },
+    "cosearch_minus_topd_alpha01_EM_percentage_points": 4.395413145630695,
+    "cosearch_minus_topd_alpha01_F1_percentage_points": 5.832209963319446
+  }
+}
