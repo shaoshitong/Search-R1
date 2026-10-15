@@ -37,6 +37,12 @@
 若FULL轮次的固定poll已经只显示下一轮controller，可对一个已计入完整轮显式添加`--supplemental-controller-poll NATIVE5_CONTINUE_POLL_533.json`。补充poll必须是同source/run/unit/fresh/config、同attempt/outer且COMPLETE、时间不晚于原FULL观测；它只是此前采样证据，不是更新完成凭据。FULL/native绑定保持原样，远端仍只读固定本轮audit/controller/config，并核对实际controller与补充poll字段一致。补充poll SHA/bytes单独保存在candidate source_pin；后续累计重新验证该SHA，只在累计内存副本补齐原未知controller字段，旧FULL/CUM/块不回写。46示例为`--first-outer 46 --last-outer 46 --supplemental-controller-poll NATIVE5_CONTINUE_POLL_533.json`；已存46累计仍unknown，补充供47及以后使用，不加训练信用。
 # Historical107–118 readback bridge
 
+`collect_nested_dev_costs.py --base <audit-base> --ssh-helper <ssh_retained18.py>`
+with this task's explicit `TREE_MGMT_CONTROL_PATH` reads only24 fixed completed
+dev5..120 control JSON summaries pinned by immutableCUM120. It preserves original
+summary bytes and native counter names in a separate supplement, never rewrites
+CUM120 or double-adds validation wall/processCPU. It does not read JSONL/PT.
+
 `backfill_nested_historical_full.py --base outputs/tree-nested-branch-handoff-20261013`
 publishes only immutable historical FULL107–118 from the actual gap107–119 scalar
 readback and existing FULL119 anchor. Every receipt explicitly says
