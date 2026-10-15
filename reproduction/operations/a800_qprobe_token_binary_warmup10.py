@@ -187,7 +187,9 @@ base.mkdir(mode=0o700,exist_ok=False)
 for relative in ('logs','preparation','tmp','cache/hf','cache/triton','cache/inductor'):(base/relative).mkdir(parents=True,exist_ok=True)
 once(base/'preparation/intent.json',intent)
 expected={'preparation/published-source.bundle':(intent['bundle_bytes'],intent['bundle_sha256']),'preparation/source-publication.json':(intent['source_publication_bytes'],intent['source_publication_sha256'])};seen=set()
-for item in archive:
+while True:
+ item=archive.next()
+ if item is None:break
  assert item.isfile() and item.name in expected and item.name not in seen
  size,digest=expected[item.name];assert item.size==size
  path=base/item.name;raw=archive.extractfile(item).read(size+1);assert len(raw)==size and hashlib.sha256(raw).hexdigest()==digest
