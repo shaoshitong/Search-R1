@@ -86,7 +86,7 @@ def main():
     p.add_argument('--first',type=int,default=107)
     p.add_argument('--last',type=int,default=119)
     args=p.parse_args()
-    if args.native_outer is not None and not 107<=args.native_outer<=119:raise ValueError('Only historical107..119 permitted')
+    if args.native_outer is not None and not 107<=args.native_outer<=120:raise ValueError('Only native metadata107..120 permitted')
     if (args.first,args.last)!=(107,119):raise ValueError('Only fixed historical107..119 gap permitted')
     spec=importlib.util.spec_from_file_location('gap_route',args.ssh_helper)
     helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
