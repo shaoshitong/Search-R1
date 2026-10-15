@@ -10,8 +10,10 @@ DEFAULT_ROLLOUT_PHASE = dict(
 def validate(value, world_size=4):
     if not isinstance(value, dict) or set(value) != set(DEFAULT_ROLLOUT_PHASE):
         raise ValueError('Incomplete rollout phase contract')
-    if value['mode'] != DEFAULT_ROLLOUT_PHASE['mode'] or world_size != 4:
-        raise ValueError('This rollout phase requires the four independent TP1 engines')
+    if value['mode'] != DEFAULT_ROLLOUT_PHASE['mode']:
+        raise ValueError('Unsupported independent trajectory rollout mode')
+    if type(world_size) is not int or world_size not in (4, 8):
+        raise ValueError('This rollout phase requires four or eight independent TP1 engines')
     for key in ('agent_workers', 'max_inflight_trajectories', 'generation_max_num_seqs',
                 'generation_max_batched_tokens', 'retrieval_concurrency', 'engine_step_budget'):
         if type(value[key]) is not int or value[key] <= 0:
