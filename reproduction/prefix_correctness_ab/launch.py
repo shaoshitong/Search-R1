@@ -42,7 +42,7 @@ def config(base):
 
 def sbatch_command(base,c):
     return ['sbatch','--parsable','--partition=gpu','--oversubscribe','--nodelist=h100-8','--nodes=1','--ntasks=1',
-        '--cpus-per-task=96','--mem=512G','--time=2-00:00:00','--signal=B:TERM@60','--export=NONE',
+        '--cpus-per-task=96','--mem=512G','--gres=gpu:8','--time=2-00:00:00','--signal=B:TERM@60','--export=NONE',
         '--job-name=g1-prefix10-20-'+c['run_id'][:12],'--comment=g1-prefix10-20:'+c['run_id'],
         '--chdir='+str(base),'--output='+str(base/'logs/native-%j.log'),'--error='+str(base/'logs/native-%j.log'),
         str(base/'preparation/native-launch.sh')]
@@ -113,7 +113,7 @@ def native_admission(base,c):
     job=os.environ['SLURM_JOB_ID'];raw=subprocess.check_output(['scontrol','show','job',job,'-o'],text=True,timeout=30);j=fields(raw)
     need(j['JobId']==job and j['NodeList']=='h100-8' and j['JobState']=='RUNNING' and j['NumNodes']=='1','ACTUAL_NATIVE_JOB_CHANGED')
     need(int(j['NumCPUs'])>=96 and memory_bytes(j['TRES'])>=512*2**30,'NATIVE_CPU_MEMORY_BUDGET_REQUIRED')
-    need(j.get('OverSubscribe')!='NO' and j.get('TresPerNode','(null)') in ('(null)','N/A'),'AUTHORIZED_SHARED_NO_SECOND_GRES_REQUIRED')
+    need(j.get('OverSubscribe')!='NO' and j.get('TresPerNode') in ('gres:gpu:8','gres:gpu:h100:8'),'SHARED_EIGHT_GPU_GRES_REQUIRED')
     need(os.environ.get('CUDA_VISIBLE_DEVICES')=='0,1,2,3,4,5,6,7','PHYSICAL_SPLIT_CHANGED')
     queue=subprocess.check_output(['squeue','-h','-w','h100-8','-t','RUNNING,COMPLETING','-o','%i'],text=True,timeout=30).split()
     allowed={str(r['job_id']):r for r in c.get('preserved_foreign_allocations',[])}
@@ -128,8 +128,76 @@ def native_admission(base,c):
     need(all((r[0].strip(),r[1].strip()) in allowed_apps for r in apps if r),'UNBOUND_FOREIGN_GPU_PROCESS_PRESERVE_AND_INSPECT')
     result=dict(role=ROLE,run_id=c['run_id'],slurm_job_id=job,node='h100-8',actual_native=raw,
         actual_physical_gpu_uuids=c['physical_gpu_uuids'],groups={'10':c['physical_gpu_uuids'][:4],'20':c['physical_gpu_uuids'][4:]},
-        allocation_mode='shared',secondary_gres_reserved=False,accepted=True,checked_unix=time.time())
+        allocation_mode='shared',gpu_gres_reserved=True,accepted=True,checked_unix=time.time())
     once(base/'logs/native-allocation.json',result);return result
+
+
+def birth_states(records):
+    from reproduction.a800.owned_processes import identity
+    result=[]
+    for record in records:
+        try:current=identity(record['pid'])
+        except (FileNotFoundError,ProcessLookupError,PermissionError):continue
+        if all(current[k]==record[k] for k in ('start_ticks','sid','uid')):result.append(current)
+    return result
+
+
+def torchrun_owned_class():
+    """Elastic ranks use new sessions; bind actual PPID ancestry, not just SID."""
+    from reproduction.a800.owned_processes import OwnedProcesses,identity,same,signal_owned
+    class TorchrunOwnedProcesses(OwnedProcesses):
+        def __init__(self,*args):
+            self.handles={}
+            super().__init__(*args)
+        def start(self,name,*args):
+            process=super().start(name,*args);self.handles[name]=process;return process
+        def reap(self):
+            for process in self.handles.values():
+                if process.poll() is not None:process.wait()
+        def observe(self,name):
+            self.reap();job=self.jobs[name];snapshot={}
+            for path in Path('/proc').iterdir():
+                if not path.name.isdecimal():continue
+                try:
+                    record=identity(int(path.name));raw=(path/'stat').read_text();parts=raw[raw.rfind(')')+2:].split()
+                    if int(parts[19])!=record['start_ticks']:continue
+                    record['ppid']=int(parts[1]);snapshot[record['pid']]=record
+                except (FileNotFoundError,ProcessLookupError,PermissionError):continue
+            bound={int(pid) for pid,record in job['ledger'].items() if record['pid'] in snapshot and
+                all(snapshot[record['pid']][k]==record[k] for k in ('start_ticks','sid','uid'))}
+            changed=True
+            while changed:
+                changed=False
+                for pid,record in snapshot.items():
+                    if pid in bound or record['ppid'] not in bound or record['uid']!=job['leader']['uid']:continue
+                    parent=snapshot[record['ppid']]
+                    if record['start_ticks']<parent['start_ticks']:continue
+                    record['ownership_parent_birth']={k:parent[k] for k in ('pid','start_ticks','sid','uid')}
+                    bound.add(pid);changed=True
+            for pid in bound:
+                current=snapshot[pid];old=job['ledger'].get(str(pid))
+                if old and any(current[k]!=old[k] for k in ('start_ticks','sid','uid')):raise ValueError('OWNED_BIRTH_CHANGED')
+                if old and 'ownership_parent_birth' in old:current['ownership_parent_birth']=old['ownership_parent_birth']
+                job['ledger'][str(pid)]=current
+            self.save()
+            return [snapshot[pid] for pid in bound if snapshot[pid]['state']!='Z']
+        def stop(self,name):
+            job=self.jobs[name]
+            if job['state']=='STOPPED':self.reap();return
+            try:
+                job['state']='CLEANUP_PENDING';self.save()
+                for sig,seconds in ((signal.SIGINT,15),(signal.SIGTERM,3),(signal.SIGKILL,3)):
+                    for record in self.observe(name):
+                        try:signal_owned(record,sig)
+                        except ProcessLookupError:pass
+                    deadline=time.monotonic()+seconds
+                    while self.observe(name) and time.monotonic()<deadline:time.sleep(.2)
+                    if not self.observe(name):break
+                self.reap();need(not self.observe(name),'OWNED_ACTIVE_PROCESS_CLEANUP_INCOMPLETE')
+                job['state']='STOPPED';self.save()
+            except Exception as e:
+                job.update(state='CLEANUP_FAILED',cleanup_error=repr(e));self.save();raise
+    return TorchrunOwnedProcesses
 
 
 class DeferredInterrupt:
@@ -174,17 +242,17 @@ def torchrun(c,prefix,stage,max_tokens,base):
 
 
 def run(base):
-    from reproduction.a800.owned_processes import OwnedProcesses,same,identity
+    from reproduction.a800.owned_processes import same,identity
     from reproduction.h1008_qprobe.pipeline import UUIDLocks
     base=Path(base).resolve();c=config(base);root=base/'preparation'
     intent=read(root/'submit-intent.json');need(intent['config_sha256']==sha(root/'launch-config.json'),'SUBMITTED_CONFIG_CHANGED')
     need(not (base/'logs/process-ledger.json').exists(),'EXISTING_PROCESS_LEDGER_INSPECT_NO_REPLAY')
-    native_admission(base,c);lease=UUIDLocks(c['physical_gpu_uuids']);owned=OwnedProcesses(base/'logs/process-ledger.json',c['run_id'])
+    native_admission(base,c);lease=UUIDLocks(c['physical_gpu_uuids']);owned=torchrun_owned_class()(base/'logs/process-ledger.json',c['run_id'])
     interrupt=DeferredInterrupt();previous={s:signal.getsignal(s) for s in (signal.SIGINT,signal.SIGTERM)}
     for s in previous:signal.signal(s,interrupt.handler)
     states={};success=False
     try:
-        env=os.environ.copy();env.update(PYTHONPATH=str(base/'repo'),TOKENIZERS_PARALLELISM='false',OMP_NUM_THREADS='8')
+        env=os.environ.copy();env.update(PYTHONPATH=str(base/'repo'),TOKENIZERS_PARALLELISM='false',OMP_NUM_THREADS='8',NCCL_NVLS_ENABLE='0')
         for key in ('RAY_ADDRESS','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):env.pop(key,None)
         if c.get('prepared_inputs_source') or read(c['sources_json']).get('prepared_scan'):
             max_tokens=import_prepared_inputs(c,base)
@@ -219,17 +287,19 @@ def run(base):
         success=True
     finally:
         try:
-            owned.stop_all();births=[r for j in owned.jobs.values() for r in j['ledger'].values()];deadline=time.monotonic()+60
+            owned.stop_all();owned.reap();births=[r for j in owned.jobs.values() for r in j['ledger'].values()];deadline=time.monotonic()+60
             while True:
                 apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid','--format=csv,noheader,nounits'],text=True,timeout=30).split()
-                live=[r for r in births if same(r)];contexts=[]
+                present=birth_states(births)
+                live=[r for r in present if r['state']!='Z'];zombies=[r for r in present if r['state']=='Z'];contexts=[]
                 for pid in set(apps)&{str(r['pid']) for r in births}:
                     try:current=identity(int(pid))
                     except (FileNotFoundError,ProcessLookupError):contexts.append(pid);continue
                     if any(str(r['pid'])==pid and all(current[k]==r[k] for k in ('start_ticks','sid','uid')) for r in births):contexts.append(pid)
                 if not live and not contexts:break
                 need(time.monotonic()<deadline,'OWNED_GPU_OR_PROCESS_RELEASE_PENDING');time.sleep(.5)
-            once(base/'logs/cleanup-status.json',dict(role=ROLE,run_id=c['run_id'],cleaned=True,owned_births_released=True,owned_gpu_contexts_released=True,checked_unix=time.time()))
+            once(base/'logs/cleanup-status.json',dict(role=ROLE,run_id=c['run_id'],cleaned=True,owned_active_processes_released=True,owned_births_released=not zombies,
+                zombie_owned_births_remaining=[r['pid'] for r in zombies],owned_gpu_contexts_released=True,checked_unix=time.time()))
         finally:
             lease.close()
             for s,h in previous.items():signal.signal(s,h)

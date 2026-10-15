@@ -47,7 +47,13 @@ def observe(base):
     result=dict(base=str(base),run_id=(c or {}).get('run_id'),checked_unix=time.time(),submit_receipt=receipt,groups={})
     ledger=small(base/'logs/process-ledger.json',limit=4*1024*1024)
     births=[r for j in (ledger or {}).get('jobs',{}).values() for r in j.get('ledger',{}).values()]
-    result['owned_births_recorded']=len(births);result['owned_births_still_live']=sum(same(r) for r in births)
+    from reproduction.prefix_correctness_ab.launch import birth_states
+    present=birth_states(births)
+    result['owned_births_recorded']=len(births);result['owned_births_present']=len(present)
+    result['owned_active_births']=sum(r['state']!='Z' for r in present)
+    result['owned_zombie_births']=sum(r['state']=='Z' for r in present)
+    result['owned_births_still_live']=result['owned_active_births']
+    result['owned_births_all_gone']=not present
     for prefix in (10,20):
         root=base/'groups'/('prefix-'+str(prefix));feature=root/'features';train=root/'train'
         result['groups'][str(prefix)]=dict(physical_gpu_indices=list(range(4)) if prefix==10 else list(range(4,8)),
@@ -79,7 +85,7 @@ def observe(base):
                     if any(str(r['pid'])==pid and all(actual[k]==r[k] for k in ('start_ticks','sid','uid')) for r in births):owned_contexts.append(pid)
                 result['recorded_gpu_pids_present']=sorted(owned_contexts)
                 result['native_resource_closure_verified']=bool(result['cleanup'] and result['cleanup'].get('cleaned') is True and
-                    result['owned_births_still_live']==0 and not cgroup and not result['recorded_gpu_pids_present'])
+                    result['owned_births_all_gone'] and not cgroup and not result['recorded_gpu_pids_present'])
                 result['native_actual_exit0_verified']=j.get('JobState')=='COMPLETED' and j.get('ExitCode')=='0:0'
         except (subprocess.CalledProcessError,subprocess.TimeoutExpired) as e:
             result['native_observation_unavailable']=str(e)

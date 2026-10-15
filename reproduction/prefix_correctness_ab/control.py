@@ -8,11 +8,13 @@ import argparse
 import base64
 import hashlib
 import importlib.util
+import io
 import json
 from pathlib import Path
 import shlex
 import subprocess
 import sys
+import tarfile
 import time
 
 REPO = Path(__file__).resolve().parents[2]
@@ -128,10 +130,11 @@ with tempfile.TemporaryDirectory(prefix='prefix10-20-transport-') as td:
 
 
 def deploy(args):
-    files={}
-    for line in git('ls-tree','-r','--format=%(objectname) %(path)',args.commit).decode().splitlines():
-        oid,name=line.split(' ',1);files[name]=hashlib.sha256(git('cat-file','blob',oid)).hexdigest()
-    archive=base64.b64encode(git('archive','--format=tar',args.commit)).decode()
+    archive_bytes=git('archive','--format=tar',args.commit)
+    with tarfile.open(fileobj=io.BytesIO(archive_bytes)) as source:
+        files={item.name:hashlib.sha256(source.extractfile(item).read()).hexdigest()
+               for item in source if item.isfile()}
+    archive=base64.b64encode(archive_bytes).decode()
     payload=dict(base=args.base,commit=args.commit,files=files,archive=archive,target_inputs=args.target_inputs,run_id=args.run_id,model=MODEL_H100,env=ENV_H100)
     code=r'''
 import json,base64,io,tarfile,pathlib,hashlib,os,subprocess
