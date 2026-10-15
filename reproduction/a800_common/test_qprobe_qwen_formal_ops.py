@@ -1,8 +1,12 @@
 """Tiny CPU-only validation of fresh-actor and independent-release contracts."""
+import ast
 import copy
+import hashlib
 import json
+import os
 from pathlib import Path
 import socket
+import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -17,6 +21,41 @@ def fresh():
 
 
 class NativeFormalOpsTest(unittest.TestCase):
+    def test_recorded_children_use_real_c4_leader_contract_and_keep_birth_checks(self):
+        repo=Path(ops.__file__).resolve().parents[2]
+        raw=subprocess.check_output(['git','-C',str(repo),'show','c4d156de124de7a94652d75858bcbabc8c56083c:reproduction/a800/owned_processes.py'])
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),'df83d747f3b86a187eb2dc4267ac146a6afeab7338f274ab5ecd8e7de9e2969e')
+        function=next(node for node in ast.parse(raw).body if isinstance(node,ast.FunctionDef) and node.name=='owned_session_survivors')
+        current={};checked=[]
+        def identity(pid):
+            if pid not in current:raise ProcessLookupError(pid)
+            return current[pid]
+        def proc_path(path):
+            self.assertEqual(path,'/proc')
+            return SimpleNamespace(iterdir=lambda:[SimpleNamespace(name=str(pid)) for pid in current])
+        namespace=dict(Path=proc_path,identity=identity,os=os)
+        exec(compile(ast.Module(body=[function],type_ignores=[]),'<actual-published-C4-owned-session-contract>','exec'),namespace)
+        survivors=namespace['owned_session_survivors']
+        leader=dict(pid=100,start_ticks=10,sid=100,uid=77)
+        child=dict(pid=101,start_ticks=12,sid=100,uid=77)
+        with self.assertRaises(AssertionError):survivors([leader,child])
+        def actual_birth_alive(record):
+            checked.append(record['pid']);actual=current.get(record['pid'])
+            return actual is not None and all(actual[key]==record[key] for key in ('pid','start_ticks','sid','uid')) and actual['state'] not in ('Z','X')
+        with patch.object(ops,'alive',side_effect=actual_birth_alive):
+            ops.require_recorded_sessions_gone([leader,child,dict(leader)],survivors)
+            self.assertIn(child['pid'],checked)
+            for unbound in (dict(child,sid=999),dict(child,uid=78)):
+                with self.subTest(unbound=unbound),self.assertRaises(AssertionError):
+                    ops.require_recorded_sessions_gone([leader,unbound],survivors)
+            current[101]=dict(child,state='R')
+            with self.assertRaises(AssertionError):ops.require_recorded_sessions_gone([leader,child],survivors)
+            current.clear();current[103]=dict(pid=103,start_ticks=13,sid=100,uid=77,state='R')
+            with self.assertRaises(AssertionError):ops.require_recorded_sessions_gone([leader,child],survivors)
+            current[100]=dict(leader,start_ticks=99,state='R')
+            ops.require_recorded_sessions_gone([leader,child],survivors)
+            self.assertEqual(survivors([leader])[1],[100])
+
     def test_qualified_bank_origin_requires_terminal_proof_and_unchanged_file_seal(self):
         cache=ops.QUALIFIED_BANK_BASE+'/token-features'
         admitted=dict(stage='FULL_BANK_SHA_AND_ENCODER_RESOURCE_RELEASE_ADMITTED',complete_sha256=ops.QUALIFIED_BANK_COMPLETE,
