@@ -26,7 +26,7 @@ def submit(phase, commit):
         ready=read(BASE/'warmup/ready.json')
         if ready['head_adam_steps']!=200 or sha(BASE/'warmup/fresh-head.pt')!=ready['head_sha256']:
             raise ValueError('Cannot submit formal training before the own accepted warmup')
-    gpus,cpus,memory=(1,16,'128G') if phase=='preparation' else (4,48,'512G')
+    gpus,cpus,memory=(1,12,'128G') if phase=='preparation' else (4,48,'512G')
     command=['sbatch','--parsable','--partition=emergency_acd','--nodes=1','--ntasks=1',
         '--gres=gpu:'+str(gpus),'--cpus-per-task='+str(cpus),'--mem='+memory,'--time=7-00:00:00',
         '--job-name=dynrpo-native5-'+phase,'--export=NONE','--chdir='+str(BASE),

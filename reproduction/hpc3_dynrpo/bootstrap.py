@@ -11,6 +11,7 @@ from pathlib import Path
 import sys
 import tarfile
 import time
+import subprocess
 
 EXPECTED='/data/user/jxu957/experiments/qprobe-teacher-warmup200-native-thread5-20261015'
 REUSED=Path('/data/user/jxu957/experiments/cosearch-continue300-x203-20261008')
@@ -51,6 +52,25 @@ def main():
             if hashlib.sha256((stage/name).read_bytes()).hexdigest()!=digest:
                 raise ValueError('Remote source file differs: '+name)
         stage.rename(source)
+    existing=base/'preparation/source-publication.json'
+    if existing.exists() and json.loads(existing.read_text())['commit']!=publication['commit']:
+        # A returned, rejected sbatch is not an unknown submission or a running
+        # experiment. Preserve its receipts before correcting the resource limit.
+        rejected=base/'preparation/preparation-submission.json'
+        outcome=json.loads(rejected.read_text())
+        if outcome.get('returncode')==0 or outcome.get('job') or outcome.get('stdout','').strip():
+            raise ValueError('Cannot upgrade an existing successful or ambiguous submission')
+        if (base/'preparation/preparation-controller.json').exists() or (base/'logs/run-manifest.json').exists():
+            raise ValueError('A producer started; retain its immutable source')
+        queue=subprocess.check_output(['squeue','-h','-u',str(os.getuid()),'--name=dynrpo-native5-preparation','-o','%i'],text=True)
+        if queue.strip():raise ValueError('An existing queued producer must be reconciled first')
+        old=json.loads(existing.read_text())['commit']
+        history=base/'preparation'/('rejected-submit-'+old);history.mkdir(exist_ok=False)
+        for name in ('source-publication.json','deployment-plan.json','preparation-submit-claim.json','preparation-submission.json'):
+            (base/'preparation'/name).rename(history/name)
+        alias=base/'repo'
+        if not alias.is_symlink():raise ValueError('Source alias is not owned deployment metadata')
+        temporary=base/'repo.next';temporary.symlink_to(source);temporary.replace(alias)
     def link(target,origin):
         origin=Path(origin)
         if not origin.exists():raise ValueError('Shared input unavailable: '+str(origin))
