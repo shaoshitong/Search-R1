@@ -97,7 +97,9 @@ ARCHIVE50_SECOND_RECOVERY_SOURCE='b89495c8ec1f2a7fb0d5cd70d89974c16c801cff'
 ARCHIVE100_RECOVERY_SOURCE='4194ad2c21c5e10ae5ee3b0212fb6fbf3e02f41b'
 ARCHIVE100_SECOND_RECOVERY_SOURCE='23ab8b0c8af403ec830644ff4fa04eeef7f55927'
 ARCHIVE100_THIRD_RECOVERY_SOURCE='f8a332a72257f54bf0c01a01fce592e2515d7937'
+ARCHIVE100_FOURTH_RECOVERY_SOURCE='5f0065b98d1239c994addc19fd0b7e32f506d7fd'
 ARCHIVE100_ROUTES={
+    ARCHIVE100_FOURTH_RECOVERY_SOURCE:('recover_sigma3_archive100_fourth',ROOT/'followthrough/721485-archive100-recovery-fourth-20261016'),
     ARCHIVE100_RECOVERY_SOURCE:('recover_sigma3_archive100',ROOT/'followthrough/721485-archive100-recovery-20261016'),
     ARCHIVE100_SECOND_RECOVERY_SOURCE:('recover_sigma3_archive100_second',ROOT/'followthrough/721485-archive100-recovery-second-20261016'),
     ARCHIVE100_THIRD_RECOVERY_SOURCE:('recover_sigma3_archive100_third',ROOT/'followthrough/721485-archive100-recovery-third-20261016'),
@@ -153,6 +155,19 @@ def prior_archive50_evidence(recovery,archive_recovery_commit):
 
 def prior_archive100_evidence(recovery,archive100_recovery_commit):
     """Fresh C1 preservation proof beneath the exact registered second100 route."""
+    if archive100_recovery_commit==ARCHIVE100_FOURTH_RECOVERY_SOURCE:
+        need(isinstance(recovery,dict) and recovery.get('source',{}).get('commit')==archive100_recovery_commit and
+             isinstance(recovery.get('prior_archive100_third_recovery'),dict),
+             'fourth archive100 handoff lost its original F8 recovery')
+        from reproduction.hpc3_qprobe.recovery_lineage_stage import consume
+        third=consume(ARCHIVE100_THIRD_RECOVERY_SOURCE,'recover_sigma3_archive100_third')
+        need(third==recovery['prior_archive100_third_recovery'] and
+             third.get('source',{}).get('commit')==ARCHIVE100_THIRD_RECOVERY_SOURCE and
+             all(recovery.get(key)==third.get(key) for key in (
+                 'prior_archive100_recovery','prior_archive100_second_recovery',
+                 'prior_archive50_second_recovery','inherited_archive50','observer_recovery','legacy_archive5_recovery')),
+             'original F8/C5/C1/B894/RAW/archive5 lineage changed beneath fourth archive100')
+        return third['prior_archive100_recovery']
     if archive100_recovery_commit==ARCHIVE100_THIRD_RECOVERY_SOURCE:
         need(isinstance(recovery,dict) and recovery.get('source',{}).get('commit')==archive100_recovery_commit and
              isinstance(recovery.get('prior_archive100_second_recovery'),dict),
@@ -254,7 +269,8 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit, reco
         observer_recovery=(recovery['observer_recovery'] if archive_recovery_commit else recovery) if observer_recovery_commit else None,
         archive50_recovery=fifty,archive100_recovery=recovery if archive100_recovery_commit else None,
         archive100_prior_recovery=prior100,
-        archive100_second_prior_recovery=recovery['prior_archive100_second_recovery'] if archive100_recovery_commit==ARCHIVE100_THIRD_RECOVERY_SOURCE else None,
+        archive100_second_prior_recovery=recovery['prior_archive100_second_recovery'] if archive100_recovery_commit in (ARCHIVE100_THIRD_RECOVERY_SOURCE,ARCHIVE100_FOURTH_RECOVERY_SOURCE) else None,
+        archive100_third_prior_recovery=recovery['prior_archive100_third_recovery'] if archive100_recovery_commit==ARCHIVE100_FOURTH_RECOVERY_SOURCE else None,
         archive50_prior_recovery=prior_archive50_evidence(fifty,archive_recovery_commit))
 
 def native_evidence(goal, binding):
@@ -531,6 +547,9 @@ def held_archive_evidence(run, producer, followthrough, follow_source, follow_pr
             value, proof = document(folder/name)
             retained.remember(proof); values.append(value)
         claim, runner, child, result, task = values
+        if archive100_recovery_commit==ARCHIVE100_FOURTH_RECOVERY_SOURCE and step in (100,150,200):
+            need(claim.get('storage_wait_protocol')=='actual-full-du-repair-v1',
+                 'fourth archive lacks its explicit actual storage wait protocol')
         publication_for_claim=follow_source;controllers=[follow_process]
         if str(step) in inherited:
             previous=inherited[str(step)]
@@ -729,6 +748,8 @@ def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recov
                      'original C1/B894 changed during archive100 conjunction')
                 need(latest.get('prior_archive100_second_recovery')==follow_proof['archive100_second_prior_recovery'],
                      'original C5 changed during final third archive100 conjunction')
+                need(latest.get('prior_archive100_third_recovery')==follow_proof['archive100_third_prior_recovery'],
+                     'original F8 changed during final fourth archive100 conjunction')
             else:
                 need(follow.consume(archive_recovery_commit)==follow_proof['archive50_recovery'],'archive50 handoff changed during conjunction')
             need(prior_archive50_evidence(follow_proof['archive50_recovery'],archive_recovery_commit)==
