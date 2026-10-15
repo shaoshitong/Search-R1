@@ -1,6 +1,8 @@
 import unittest
 import numpy as np
+import torch
 from reproduction.hpc3_qprobe.analyze_sigma3_fit_readonly import metrics
+from reproduction.hpc3_qprobe.reconstruct_sigma3_head_metrics import exact_tree, NotExact
 
 
 class MetricDefinitions(unittest.TestCase):
@@ -30,6 +32,19 @@ class MetricDefinitions(unittest.TestCase):
         m = metrics(p,[0,5],[1,3])
         self.assertEqual(m['count_accuracy'],.25)
         self.assertEqual(m['binary_probability_accuracy'],1)
+
+    def test_exact_tree_checks_optimizer_rng_dtype_and_all_labels(self):
+        state = dict(model=torch.tensor([1.]), optimizer={'exp_avg':torch.tensor([2.])},
+            rng=torch.tensor([3],dtype=torch.uint8), labels=[{'K':2}])
+        exact_tree(state,state)
+        for key in ('model','optimizer','rng','labels'):
+            import copy
+            different=copy.deepcopy(state)
+            if key=='optimizer': different[key]['exp_avg'][0]+=1e-7
+            elif key=='labels':different[key][0]['K']=3
+            elif key=='rng': different[key]=different[key].long()
+            else:different[key][0]+=1e-6
+            with self.assertRaises(NotExact):exact_tree(different,state)
 
 
 if __name__ == '__main__': unittest.main()
