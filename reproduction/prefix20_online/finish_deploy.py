@@ -65,7 +65,9 @@ with (prep/'finish-deploy-control.lock').open('a') as lock:
  sys.path.insert(0,str(b/'repo'))
  from reproduction.common8.native_allocation import fields
  terminal=fields(native);job=str(read(source/'preparation/submit-receipt.json')['job_id'])
- assert terminal['JobId']==job=='3407' and terminal['JobState']=='FAILED' and terminal['ExitCode']=='1:0'
+ assert terminal['JobId']==job and terminal['JobState'] in ('FAILED','CANCELLED','TIMEOUT','OUT_OF_MEMORY','NODE_FAIL','PREEMPTED','COMPLETED')
+ if c['restore'].get('source_job_id') is not None:assert str(c['restore']['source_job_id'])==job
+ if c['restore'].get('expected_source_exit_code') is not None:assert terminal['ExitCode']==c['restore']['expected_source_exit_code']
  assert terminal['Comment']=='g1-prefix20-online:'+c['run_id']
  assert terminal['Command']==str(source/'preparation/native-launch.sh') and terminal['WorkDir']==str(source)
  from reproduction.prefix_only_correctness_ab.launch import birth_states
@@ -76,7 +78,7 @@ with (prep/'finish-deploy-control.lock').open('a') as lock:
  from reproduction.prefix20_online.recovery import stage
  restored=stage(c,terminal=terminal)
  once(prep/'launch-config.json',c);once(prep/'source-files.json',p['files'])
- result=dict(status='CODE_DEPLOYED_RECOVERY_STAGED_NOT_SUBMITTED',base=str(b),commit=p['runtime_commit'],control_commit=p['control_commit'],run_id=c['run_id'],target_code_files=len(p['files']),all_target_code_full_sha_match=True,cached_features_manifest_sha256=c['cached_features_manifest_sha256'],config_sha256=sha(prep/'launch-config.json'),models_or_rollouts_copied_from_Mac=False,remote_checkpoint_staged=True,completed_epoch=restored['completed_epoch'],start_epoch=restored['start_epoch'],head_sha256=restored['head_sha256'],reserved_pending_selection_reused=restored['reserved_pending_selection_reused'],terminal_source='pinned_original_native_record_after_Slurm_purge',terminal_evidence_sha256=p['terminal_sha256'],native_submission_attempted=False,checked_unix=time.time())
+ result=dict(status='CODE_DEPLOYED_RECOVERY_STAGED_NOT_SUBMITTED',base=str(b),commit=p['runtime_commit'],control_commit=p['control_commit'],run_id=c['run_id'],target_code_files=len(p['files']),all_target_code_full_sha_match=True,cached_features_manifest_sha256=c['cached_features_manifest_sha256'],config_sha256=sha(prep/'launch-config.json'),models_or_rollouts_copied_from_Mac=False,remote_checkpoint_staged=True,completed_epoch=restored['completed_epoch'],start_epoch=restored['start_epoch'],head_sha256=restored['head_sha256'],reserved_pending_selection_reused=restored['reserved_pending_selection_reused'],source_job_id=job,source_native_state=terminal['JobState'],source_native_exit_code=terminal['ExitCode'],target_learning_rate=c['learning_rate'],terminal_source='pinned_original_native_record_after_Slurm_purge',terminal_evidence_sha256=p['terminal_sha256'],native_submission_attempted=False,checked_unix=time.time())
  once(prep/'deploy-receipt.json',result);once(prep/'finish-deploy-receipt.json',result)
  print(json.dumps(result))
 '''.replace('PAYLOAD', repr(payload))
