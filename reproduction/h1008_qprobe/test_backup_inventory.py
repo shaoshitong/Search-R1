@@ -45,7 +45,7 @@ class BackupInventoryTests(unittest.TestCase):
                 if corrupt:
                     with self.assertRaisesRegex(ValueError,'Staging full SHA'):inventory(path,digest(path),allowed_roots=(root,))
                 else:
-                    plan=inventory(path,digest(path),allowed_roots=(root,));self.assertEqual(plan['source_aliases'][0]['exported_source_path'],str(target))
+                    plan=inventory(path,digest(path),allowed_roots=(root,));self.assertEqual(plan['source_aliases'][0]['exported_source_path'],str(target.resolve()))
                     self.assertFalse(plan['independent_full_sha_performed'])
 
     def test_missing_boundary_or_changed_pinned_cache_and_extra_checkpoint_are_rejected(self):
