@@ -951,8 +951,10 @@ class RayPPOTrainer(object):
                         ("attempted_candidates","selected_mixed","selected_all_correct_fallback","raw_generated_trajectories", "raw_generated_policy_tokens",
                          "raw_actual_retrieval_calls", "candidate_fill_seconds")})
                     if self.qprobe_runtime is not None:
+                        predicted_metric = ('selected_predicted_binary_mixed' if self.qprobe_runtime.token_binary
+                                            else 'selected_predicted_diversity')
                         for name in ('selected_all_wrong','selected_all_correct',
-                                     'selected_random_exploration','selected_predicted_diversity'):
+                                     'selected_random_exploration',predicted_metric):
                             metrics['selection/'+name] = mixed_audit[name]
                         for slice_name, values in mixed_audit['prequential'].items():
                             for name, value in values.items():
