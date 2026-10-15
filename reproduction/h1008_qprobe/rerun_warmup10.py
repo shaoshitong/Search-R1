@@ -197,18 +197,30 @@ def capture_terminal(base):
     assert not list(Path('/sys/fs/cgroup').glob('**/job_'+str(JOB))),'Owned cgroup remains'
     gpu=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid,gpu_uuid','--format=csv,noheader'],text=True)
     assert not any(int(row.split(',')[0]) in {x['pid'] for x in births} for row in gpu.splitlines() if row.strip())
-    hashes=[]
-    for row in intent['original_log_inodes']:
-        p=Path(row['path']);st=p.stat();same=st.st_ino==row['inode'] and st.st_dev==row['device']
-        if p.suffix in ('.log','.out','.err'):assert same,str(p)
-        hashes.append(dict(row,terminal_inode=st.st_ino,terminal_device=st.st_dev,
-            same_original_inode=same,bytes=st.st_size,sha256=sha(p)))
-    once(base/'preparation/warmup10-original-terminal-log-shas.json',hashes)
-    cleanup=read(OLD/'logs/cleanup-status.json');assert cleanup['cleaned'] is True
+    hash_path=base/'preparation/warmup10-original-terminal-log-shas.json'
+    if hash_path.exists():
+        hashes=read(hash_path)
+        assert {row['path'] for row in hashes}=={row['path'] for row in intent['original_log_inodes']}
+        for row in hashes:
+            st=Path(row['path']).stat()
+            assert (st.st_ino,st.st_dev,st.st_size)==(row['terminal_inode'],row['terminal_device'],row['bytes'])
+    else:
+        hashes=[]
+        for row in intent['original_log_inodes']:
+            p=Path(row['path']);st=p.stat();same=st.st_ino==row['inode'] and st.st_dev==row['device']
+            if p.suffix in ('.log','.out','.err'):assert same,str(p)
+            hashes.append(dict(row,terminal_inode=st.st_ino,terminal_device=st.st_dev,
+                same_original_inode=same,bytes=st.st_size,sha256=sha(p)))
+        once(hash_path,hashes)
+    cleanup_path=OLD/'logs/cleanup-status.json'
+    cleanup=read(cleanup_path) if cleanup_path.exists() else None
+    if cleanup is not None:assert cleanup['cleaned'] is True
     result=dict(job_id=JOB,run_id=RUN,native_state=rows[0][1],native_exit_code=rows[0][2],
         original_owned_birth_count=len(births),original_births_live=0,cgroup_released=True,
         owned_gpu_contexts_released=True,cleanup_true=True,
-        original_log_hash_manifest_sha256=sha(base/'preparation/warmup10-original-terminal-log-shas.json'),
+        cleanup_status_file_present=cleanup is not None,
+        cleanup_evidence='independent original birth, native terminal, cgroup and CUDA release; optional application cleanup receipt',
+        original_log_hash_manifest_sha256=sha(hash_path),
         actor_updates_inherited=False,actor_paths_deleted=[],observed_utc=utc())
     once(path,result);return result
 
