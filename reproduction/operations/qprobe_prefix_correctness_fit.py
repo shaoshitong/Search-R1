@@ -27,7 +27,13 @@ ROLE='qwen_native_prefix5_trajectory_correctness_warmup20'
 FIT=dict(epochs=20,batch_size=256,micro_batch_size=32,learning_rate=.0003,seed=1729,
     loss='BCEWithLogits',weight_decay=0.,class_weights=None,outputs=1,
     training_questions=5120,training_trajectories=25600,test_questions=512,test_trajectories=2560,
-    expected_head_adam_updates=2000,final_epoch=20,test_used_for_optimization=False)
+    expected_head_adam_updates=2000,final_epoch=20,test_used_for_optimization=False,
+    sampling=dict(kind='dynamic_class_balanced_uniform_with_replacement',replace=True,per_class_per_batch=128,positive_per_batch=128,
+        negative_per_batch=128,batches_per_epoch=100,positive_exposures_per_epoch=12800,
+        negative_exposures_per_epoch=12800,shuffle_each_batch=True),
+    primary_report='raw_balanced_accuracy_at_probability_0.5',
+    prior_correction='raw_logit+log(natural_full_training_positive_prior/(1-natural_full_training_positive_prior))',
+    prior_correction_assumption='case_control_label_conditional_sampling_stability; not guaranteed calibration')
 
 
 def canonical(value):return json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()
@@ -169,18 +175,28 @@ def binary_metrics(logits,labels,*,training_prior):
     import torch
     if logits.ndim!=1 or labels.shape!=logits.shape or not len(logits) or not torch.isfinite(logits).all() or not torch.isin(labels,torch.tensor([0.,1.])).all():
         raise ValueError('PREFIX_FIT_INVALID_BINARY_METRIC_INPUT')
-    truth=labels.bool();prediction=logits>=0;size=len(labels)
-    tp,tn,fp,fn=[int(value.sum()) for value in (truth&prediction,~truth&~prediction,~truth&prediction,truth&~prediction)]
-    nll=float(torch.nn.functional.binary_cross_entropy_with_logits(logits.double(),labels.double()))
-    positive=tp+fn;majority=max(positive,size-positive)/size
-    prior=min(max(training_prior,1e-12),1-1e-12)
-    prior_nll=-(positive*math.log(prior)+(size-positive)*math.log1p(-prior))/size
-    return dict(samples=size,positive_count=positive,negative_count=size-positive,positive_fraction=positive/size,
-        binary_bce=nll,nll=nll,binary_accuracy=(tp+tn)/size,threshold=.5,threshold_tie_count=int((logits==0).sum()),
-        confusion=dict(tp=tp,tn=tn,fp=fp,fn=fn),predicted_positive_count=tp+fp,predicted_positive_fraction=(tp+fp)/size,
+    truth=labels.bool();size=len(labels);positive=int(truth.sum())
+    if not 0<training_prior<1 or not 0<positive<size:raise ValueError('PREFIX_FIT_METRICS_REQUIRE_BOTH_CLASSES_AND_NATURAL_PRIOR')
+    def measured(values):
+        prediction=values>=0
+        tp,tn,fp,fn=[int(value.sum()) for value in (truth&prediction,~truth&~prediction,~truth&prediction,truth&~prediction)]
+        nll=float(torch.nn.functional.binary_cross_entropy_with_logits(values.double(),labels.double()))
+        return dict(binary_bce=nll,nll=nll,binary_accuracy=(tp+tn)/size,
+            balanced_accuracy=.5*(tp/(tp+fn)+tn/(tn+fp)),true_positive_rate=tp/(tp+fn),true_negative_rate=tn/(tn+fp),
+            threshold=.5,threshold_tie_count=int((values==0).sum()),confusion=dict(tp=tp,tn=tn,fp=fp,fn=fn),
+            predicted_positive_count=tp+fp,predicted_positive_fraction=(tp+fp)/size)
+    raw=measured(logits);shift=math.log(training_prior)-math.log1p(-training_prior)
+    corrected=measured(logits.double()+shift);majority=max(positive,size-positive)/size
+    prior_nll=-(positive*math.log(training_prior)+(size-positive)*math.log1p(-training_prior))/size
+    common=dict(samples=size,positive_count=positive,negative_count=size-positive,positive_fraction=positive/size,
         always_correct_baseline_accuracy=positive/size,always_incorrect_baseline_accuracy=(size-positive)/size,
-        majority_baseline_accuracy=majority,accuracy_above_majority_baseline=(tp+tn)/size-majority,
+        majority_baseline_accuracy=majority,always_incorrect_balanced_accuracy=.5,always_correct_balanced_accuracy=.5,
         constant_training_prior_probability=training_prior,constant_training_prior_nll=prior_nll)
+    return dict(common,**raw,accuracy_above_majority_baseline=raw['binary_accuracy']-majority,
+        raw=dict(common,**raw),prior_corrected=dict(common,**corrected),prior_corrected_logit_shift=shift,
+        balanced_accuracy_above_constant_baseline=raw['balanced_accuracy']-.5,
+        primary_metric='raw_balanced_accuracy_at_probability_0.5',
+        prior_correction_assumption=FIT['prior_correction_assumption'])
 
 
 def adam_steps(optimizer):
@@ -223,12 +239,24 @@ def fit(model,cache,ids,output,binding):
     optimizer=torch.optim.Adam(model.parameters(),lr=FIT['learning_rate'],weight_decay=0.)
     rng=torch.Generator(device='cpu').manual_seed(FIT['seed']+1)
     epochs=[];minis=[];saved=[];updates=0;prior=model.training
-    training_prior=sum(cache.index[tid]['strict_em'] for tid in ids['train'])/len(ids['train'])
+    positive_pool=torch.tensor([i for i,tid in enumerate(ids['train']) if cache.index[tid]['strict_em']==1],dtype=torch.long)
+    negative_pool=torch.tensor([i for i,tid in enumerate(ids['train']) if cache.index[tid]['strict_em']==0],dtype=torch.long)
+    if not len(positive_pool) or not len(negative_pool):raise ValueError('PREFIX_FIT_BALANCED_SAMPLING_REQUIRES_BOTH_CLASSES')
+    training_prior=len(positive_pool)/len(ids['train'])
     try:
         for epoch in range(FIT['epochs']+1):
+            exposures=Counter();sample_digest=hashlib.sha256();positive_exposures=negative_exposures=0
             if epoch:
-                model.train();order=torch.randperm(len(ids['train']),generator=rng)
-                for batch_index,index in enumerate(order.split(FIT['batch_size'])):
+                model.train()
+                for batch_index in range(FIT['sampling']['batches_per_epoch']):
+                    selected_positive=positive_pool[torch.randint(len(positive_pool),(128,),generator=rng)]
+                    selected_negative=negative_pool[torch.randint(len(negative_pool),(128,),generator=rng)]
+                    index=torch.cat((selected_positive,selected_negative));index=index[torch.randperm(256,generator=rng)]
+                    ordered_ids=[ids['train'][i] for i in index.tolist()]
+                    sampled_positive=sum(cache.index[tid]['strict_em'] for tid in ordered_ids)
+                    if sampled_positive!=128 or len(index)!=256:raise ValueError('PREFIX_FIT_DYNAMIC_BATCH_NOT_128_POSITIVE_128_NEGATIVE')
+                    positive_exposures+=sampled_positive;negative_exposures+=len(index)-sampled_positive
+                    exposures.update(index.tolist());sample_digest.update(canonical(ordered_ids)+b'\n')
                     optimizer.zero_grad(set_to_none=True);loss_sum=0.;correct=0;before=adam_steps(optimizer)
                     for micro in index.split(FIT['micro_batch_size']):
                         selected=[ids['train'][i] for i in micro.tolist()];batch=cache.get_batch(selected,device='cuda:0')
@@ -243,12 +271,28 @@ def fit(model,cache,ids,output,binding):
                     row=dict(epoch=epoch,minibatch_index=batch_index,batch_size=len(index),micro_batch_size=FIT['micro_batch_size'],
                         learning_rate=float(optimizer.param_groups[0]['lr']),head_update_ordinal=updates,
                         head_adam_steps_before=before,head_adam_steps_after=adam_steps(optimizer),
+                        sampled_positive=sampled_positive,sampled_negative=len(index)-sampled_positive,
+                        unique_sampled_trajectories=len(set(ordered_ids)),repeated_sample_exposures=len(index)-len(set(ordered_ids)),
+                        sampled_trajectory_ids_sha256=hashlib.sha256(canonical(ordered_ids)).hexdigest(),
                         pre_step_binary_bce=loss_sum,pre_step_nll=loss_sum,pre_step_binary_accuracy=correct/len(index))
                     minis.append(row);append(output/'minibatch-metrics.jsonl',row)
                     if row['head_adam_steps_after']!=updates or any(not torch.isfinite(p).all() for p in model.parameters()):
                         raise ValueError('PREFIX_FIT_NONFINITE_PARAMETERS_OR_ACTUAL_ADAM_COUNT')
+                if positive_exposures!=12800 or negative_exposures!=12800 or updates!=epoch*100:
+                    raise ValueError('PREFIX_FIT_BALANCED_EPOCH_EXPOSURES_OR_ADAM_COUNT_CHANGED')
+            sampling=dict(contract=FIT['sampling'],sampling_performed=epoch>0,
+                sampled_positive=positive_exposures,sampled_negative=negative_exposures,
+                total_sample_exposures=positive_exposures+negative_exposures,unique_sampled_trajectories=len(exposures),
+                repeated_sample_exposures=sum(exposures.values())-len(exposures),
+                unique_positive_trajectories=sum(cache.index[ids['train'][i]]['strict_em']==1 for i in exposures),
+                unique_negative_trajectories=sum(cache.index[ids['train'][i]]['strict_em']==0 for i in exposures),
+                unique_sampled_questions=len({cache.index[ids['train'][i]]['qid'] for i in exposures}),
+                maximum_trajectory_exposures=max(exposures.values(),default=0),
+                ordered_sample_ids_sha256=sample_digest.hexdigest(),
+                sample_digest_encoding='sha256(concatenated canonical ordered trajectory-id batch JSON plus newline)',
+                natural_full_training_positive_prior=training_prior)
             state=rng.get_state().clone();before=adam_steps(optimizer)
-            row=dict(epoch=epoch,actual_head_adam_updates=updates,
+            row=dict(epoch=epoch,actual_head_adam_updates=updates,sampling=sampling,
                 train=evaluate(model,cache,ids['train'],epoch=epoch,split='train',updates=updates,training_prior=training_prior),
                 test=evaluate(model,cache,ids['test'],epoch=epoch,split='test',updates=updates,training_prior=training_prior))
             if not torch.equal(state,rng.get_state()) or adam_steps(optimizer)!=before:raise ValueError('PREFIX_FIT_EVALUATION_MUTATED_TRAINING_STATE')
@@ -257,16 +301,24 @@ def fit(model,cache,ids,output,binding):
             once(output/('epoch-%02d.json'%epoch),row);event(output,'epoch_train_and_fixed_test_complete',**row)
         if updates!=2000 or adam_steps(optimizer)!=2000 or len(minis)!=2000 or len(epochs)!=21:
             raise ValueError('PREFIX_FIT_DID_NOT_COMPLETE_ALL_20_EPOCHS_AND_2000_ADAM')
-        best=max(epochs,key=lambda row:(row['test']['binary_accuracy'],-row['epoch']))
+        best=max(epochs,key=lambda row:(row['test']['balanced_accuracy'],-row['epoch']))
         result=dict(role=ROLE,stage='PREFIX_CORRECTNESS_WARMUP20_COMPLETE',config=FIT,binding=binding,
             actual_head_adam_updates=updates,epoch_history=epochs,minibatch_history=minis,
             final_epoch=20,final_metrics=epochs[-1],final_checkpoint=saved[-1],
             best_test_epoch_diagnostic_only=best['epoch'],best_test_metrics_diagnostic_only=best['test'],
+            best_test_primary_metric='raw_balanced_accuracy_at_probability_0.5',
             best_epoch_controls_training_or_final_model=False,actor_updated=False,formal_training_started=False)
         once(output/'metrics.json',result)
         once(output/'ready.json',dict(stage=result['stage'],actual_head_adam_updates=updates,completed_epochs=20,
             epoch_records=21,minibatch_records=2000,final_epoch=20,final_checkpoint=saved[-1],
+            balanced_sampling=True,per_class_per_batch=128,replace=True,natural_training_positive_prior=training_prior,
+            prior_corrected_logit_offset=math.log(training_prior)-math.log1p(-training_prior),
             metrics_sha256=sha(output/'metrics.json'),binding=binding,best_epoch_diagnostic_only=best['epoch'],
+            loss_contract=dict(objective='mean(BCEWithLogits(raw_correctness_logit, strict_em))',class_weights=None,auxiliary_losses=None),
+            sampling_contract=dict(FIT['sampling'],natural_full_training_positive_prior=training_prior),
+            probability_contract=dict(raw='posterior under balanced case-control training distribution',
+                prior_corrected_logit_shift=math.log(training_prior)-math.log1p(-training_prior),
+                prior_correction_assumption=FIT['prior_correction_assumption']),
             actor_updated=False,formal_training_started=False,resource_release_audit_required=True))
         return result
     except BaseException:
@@ -329,6 +381,8 @@ def run(args):
             feature_provider_source_sha256=sha(feature_path),cache_manifest_sha256=sha(cache.path/'manifest.json'),
             cache_spec_sha256=cache.spec_sha,cache_full_sha_seal=seal,split_proof=cache.manifest['split_proof'],
             positive_counts=positive,global_max_tokens=cache.max_tokens,actual_position_ids_from_cache=True,
+            sampling_contract=dict(FIT['sampling'],natural_full_training_positive_prior=positive['train']/25600),
+            probability_contract=dict(prior_correction=FIT['prior_correction'],assumption=FIT['prior_correction_assumption']),
             official_model_config=official,official_block_source=block_source,initial_block_proof=copy_proof,
             initial_readout_proof=readout,native_implementation=native,gpu=dict(gpu,born_cuda_visible_devices=born),config=FIT,
             precision=dict(head_parameters='float32',float32_matmul_precision=torch.get_float32_matmul_precision(),
@@ -339,6 +393,9 @@ def run(args):
         result=fit(model,cache,ids,output,binding)
         event(output,'all_20_epochs_complete',actual_head_adam_updates=result['actual_head_adam_updates'],final_epoch=20,
             final_test_binary_accuracy=result['final_metrics']['test']['binary_accuracy'],
+            final_test_raw_balanced_accuracy=result['final_metrics']['test']['balanced_accuracy'],
+            final_test_prior_corrected_binary_accuracy=result['final_metrics']['test']['prior_corrected']['binary_accuracy'],
+            final_test_prior_corrected_nll=result['final_metrics']['test']['prior_corrected']['nll'],
             final_test_majority_baseline_accuracy=result['final_metrics']['test']['majority_baseline_accuracy'])
         return 0
     except BaseException as failure:

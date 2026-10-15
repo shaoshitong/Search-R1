@@ -1,7 +1,7 @@
-"""Publish, stage and run a trajectory-prefix probe warmup; never starts PPO.
+"""Publish and run a balanced trajectory-prefix probe warmup; never starts PPO.
 
-The worker replays existing teacher tokens, then fits one correctness logit for
-20 epochs, evaluating the fixed question-disjoint 512-question set each epoch.
+The worker reuses the completed prefix cache, then fits one correctness logit
+with dynamically balanced batches for20 epochs and a fixed new512-question test.
 All large inputs and outputs remain on the A800 host. Unknown launch outcomes
 must be observed through the same handle, never retried automatically.
 """
@@ -22,8 +22,8 @@ OPS = Path(__file__).resolve().parents[2]
 SOURCE = 'fcb77204f48d5cb8ec21c68df7d4a2c937b3557a'
 DIAGNOSTIC = ROOT/'preparation/qprobe-native-new512-diagnostic-deployment-20261016.json'
 FORMAL = ROOT/'preparation/qprobe-qwen-native-selection-metrics-fix-deployment.json'
-HUMAN = ROOT/'preparation/qprobe-prefix-correctness-warmup20-human-intent-20261016.json'
-PREFIX = '/data/shaoshitong/Search-G1-qprobe-prefix-correctness-warmup20-'
+HUMAN = ROOT/'preparation/qprobe-prefix-correctness-balanced-warmup20-human-intent-20261016.json'
+PREFIX = '/data/shaoshitong/Search-G1-qprobe-prefix-correctness-balanced20-'
 PYTHON = '/data/search-g1/env/bin/python'
 FILES = ('qprobe_prefix_correctness_features.py', 'qprobe_prefix_correctness_fit.py',
          'a800_qprobe_prefix_warmup20.py')
@@ -67,7 +67,7 @@ def publication():
 COMMON = r'''
 import base64,csv,hashlib,io,json,os,pathlib,subprocess,sys,time
 p=json.load(sys.stdin);h=p['handle'];b=pathlib.Path(h['base']);repo=pathlib.Path(h['runtime_repo'])
-assert str(b).startswith('/data/shaoshitong/Search-G1-qprobe-prefix-correctness-warmup20-')
+assert str(b).startswith('/data/shaoshitong/Search-G1-qprobe-prefix-correctness-balanced20-')
 assert len(b.name.rsplit('-',1)[-1])==32 and b.resolve()==b
 def read(q):return json.loads(pathlib.Path(q).read_text())
 def digest(q):return hashlib.sha256(pathlib.Path(q).read_bytes()).hexdigest()
@@ -98,12 +98,22 @@ for name,value in p['files'].items():
 once(b/'intent.json',h);once(b/'human-intent.json',p['human']);source()
 assert read(pathlib.Path(h['test_base'])/'teacher-exit.json')['exit_code']==0
 assert read(pathlib.Path(h['test_base'])/'inference/new512-complete.json')['new_random512_test'] is True
+feature_root=pathlib.Path(h['feature_output_dir'])
+assert feature_root.resolve()==feature_root and str(feature_root).startswith('/data/shaoshitong/Search-G1-qprobe-prefix-correctness-warmup20-')
+qualified=read(feature_root/'features-complete.json')
+assert qualified['count']==28160 and qualified['G5_regenerated'] is False
+assert qualified['manifest_sha256']==h['feature_manifest_sha256']==digest(feature_root/'cache/manifest.json')
+assert qualified['actor_trained'] is False and qualified['head_trained'] is False
+assert h['feature_cache_dir']==str(feature_root/'cache')
+assert h['balanced_sampling'] is True and h['batch_class_counts']==dict(correct=128,incorrect=128)
+assert digest(feature_root.parent/'qprobe_prefix_correctness_features.py')==h['operator_sha256']['qprobe_prefix_correctness_features.py']
 import shutil
 free=shutil.disk_usage(b).free
 assert free>=80*1024**3, 'Need remote capacity for packed features and epoch checkpoints'
 v=dict(stage='PREFIX_WARMUP20_STAGED',checked_unix=time.time(),base=str(b),source_commit=h['operator_commit'],
  runtime_source=h['runtime_source'],remote_free_bytes=free,formal_training_started=False,
- teacher_generation_repeated=False,train_questions=5120,test_questions=512,epochs=20,expected_head_adam=2000)
+ teacher_generation_repeated=False,prefix_encoding_repeated=False,feature_manifest_sha256=h['feature_manifest_sha256'],
+ balanced_sampling=True,batch_class_counts=h['batch_class_counts'],train_questions=5120,test_questions=512,epochs=20,expected_head_adam=2000)
 once(b/'logs/staged.json',v);print(json.dumps(v),flush=True)
 '''
 
@@ -135,8 +145,16 @@ once(b/'logs/launch.json',v);print(json.dumps(v),flush=True)
 
 OBSERVE = COMMON+r'''
 source();docs={}
-for name in ('logs/staged.json','logs/launch.json','logs/status.json','logs/exit.json','features/features-complete.json',
- 'features/progress.json','features/feature-failure.json','features/scan-complete.json','features/cache/manifest.json',
+def compact_epoch(v):
+ out={k:v[k] for k in ('epoch','actual_head_adam_updates','sampling') if k in v}
+ for split in ('train','test'):
+  if split not in v:continue
+  x=v[split];names=('samples','questions','positive_fraction','binary_accuracy','balanced_accuracy','binary_bce','majority_baseline_accuracy','constant_training_prior_probability','constant_training_prior_nll','prior_corrected_logit_shift')
+  out[split]={k:x[k] for k in names if k in x}
+  if 'prior_corrected' in x:out[split]['prior_corrected']={k:x['prior_corrected'][k] for k in names if k in x['prior_corrected']}
+ if 'checkpoint' in v:out['checkpoint_sha256']=v['checkpoint']['sha256']
+ return out
+for name in ('logs/staged.json','logs/launch.json','logs/status.json','logs/exit.json',
  'warmup/ready.json','warmup/failure.json','warmup/partial-state.json'):
  q=b/name
  if q.exists():
@@ -155,14 +173,14 @@ for name in ('worker','features','fit'):
  for line in raw.decode(errors='replace').splitlines():
   try:
    x=json.loads(line)
-   if isinstance(x,dict):markers.append(x)
+   if isinstance(x,dict):markers.append(dict(stage=x.get('stage'),**compact_epoch(x)) if 'train' in x and 'test' in x else x)
   except ValueError:
    if line.startswith(('AssertionError','ValueError','RuntimeError','ImportError','ModuleNotFoundError','TypeError','KeyError','AttributeError','torch.cuda.OutOfMemoryError')):errors.append(line)
  logs[name]=dict(bytes=q.stat().st_size,mtime=q.stat().st_mtime,markers=markers[-2:],errors=errors[-3:])
 epochs=[]
 for q in sorted((b/'warmup').glob('epoch-*.json')):
  assert q.stat().st_size<=32*1024
- epochs.append(read(q))
+ epochs.append(compact_epoch(read(q)))
 docs['epochs']=epochs
 metrics=b/'warmup/minibatch-metrics.jsonl'
 if metrics.exists():
@@ -193,11 +211,9 @@ def worker(handle_path):
 
     try:
         actions = [
-            ('features', [PYTHON, str(base/FILES[0]), '--runtime-repo', str(repo), '--teacher-cache', h['teacher_cache'],
-                '--test-base', h['test_base'], '--output-dir', str(base/'features'), '--physical-index', str(h['physical_index']),
-                '--micro-batch-size', '32']),
-            ('fit', [PYTHON, str(base/FILES[1]), '--runtime-repo', str(repo), '--cache-dir', str(base/'features/cache'),
-                '--output-dir', str(base/'warmup'), '--physical-index', str(h['physical_index']), '--epochs', '20']),
+            ('fit', [PYTHON, str(base/FILES[1]), '--runtime-repo', str(repo), '--cache-dir', h['feature_cache_dir'],
+                '--cache-manifest-sha256',h['feature_manifest_sha256'], '--output-dir', str(base/'warmup'),
+                '--physical-index', str(h['physical_index']), '--epochs', '20']),
         ]
         for action, args in actions:
             status.update(stage='RUNNING_'+action.upper(), action=action); publish()
@@ -212,6 +228,7 @@ def worker(handle_path):
         ready=read(base/'warmup/ready.json')
         assert ready['actual_head_adam_updates']==2000 and ready['completed_epochs']==20
         assert ready['epoch_records']==21 and ready['final_epoch']==20
+        assert ready['balanced_sampling'] is True and ready['per_class_per_batch']==128 and ready['replace'] is True
         assert ready['actor_updated'] is False and ready['formal_training_started'] is False
         status.update(stage='PREFIX_WARMUP20_COMPLETE',exit_code=0,head_adam_updates=2000,finished_unix=time.time())
     except BaseException as error:
@@ -226,6 +243,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--action',choices=('stage','run-once','observe'))
     parser.add_argument('--handle',required=True); parser.add_argument('--worker',action='store_true')
+    parser.add_argument('--reuse-features-from',type=Path)
     args = parser.parse_args()
     if args.worker:
         worker(args.handle); return
@@ -235,12 +253,23 @@ def main():
         assert not path.exists()
         commit,mapping = publication(); diagnostic = read(DIAGNOSTIC); human = read(HUMAN)
         assert diagnostic['runtime_source'] == SOURCE and human['fit']['epochs'] == 20
-        h = dict(role='trajectory_prefix_correctness_warmup20_only',base=PREFIX+uuid.uuid4().hex,
+        assert args.reuse_features_from is not None
+        feature_output=args.reuse_features_from
+        assert feature_output.is_absolute() and str(feature_output).startswith('/data/shaoshitong/Search-G1-qprobe-prefix-correctness-warmup20-')
+        # The already saved, bounded parent observation authenticates the completed cache.
+        parent=read(ROOT/'preparation/qprobe-prefix-encoding-completed-for-balanced20-20261016.json')
+        assert parent['feature_output_dir']==str(feature_output) and parent['encoder_released'] is True
+        h = dict(role='trajectory_prefix_correctness_balanced_warmup20_only',base=PREFIX+uuid.uuid4().hex,
             runtime_repo=diagnostic['runtime_repo'],runtime_source=SOURCE,operator_commit=commit,operator_sha256=mapping,
             human_intent_sha256=sha(HUMAN),teacher_cache='/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v4-sigma3-fullouter',
             test_base=diagnostic['base'],physical_index=0,epochs=20,train_questions=5120,test_questions=512,
             train_trajectories=25600,test_trajectories=2560,expected_head_adam_updates=2000,
             actor_training_budget=0,formal_training_remains_stopped=True,created_unix=time.time(),no_automatic_retry=True)
+        h.update(feature_output_dir=str(feature_output),feature_cache_dir=str(feature_output/'cache'),
+            feature_manifest_sha256=parent['manifest_sha256'],feature_parent_receipt_sha256=sha(ROOT/'preparation/qprobe-prefix-encoding-completed-for-balanced20-20261016.json'),
+            balanced_sampling=True,batch_class_counts=dict(correct=128,incorrect=128),
+            sample_with_replacement=True,fixed_test_distribution_unchanged=True,
+            original_prior_probability_correction='corrected_logit=balanced_logit+logit(full_training_positive_prior)')
         once(path,h)
         payload = dict(handle=h,human=human,files={name:base64.b64encode((OPS/'reproduction/operations'/name).read_bytes()).decode() for name in FILES})
         code=STAGE
