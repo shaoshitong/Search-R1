@@ -37,7 +37,10 @@ def sampling_observation(core, alias, poll, resource, native, full, outer):
     core.validate_restore(poll)
     metric = core.validate_metric(poll, outer)
     ranks = core.validate_ranks(poll, metric, outer)
-    _, guard, completed, totals = core.validate_native(native, progress, outer)
+    _, _, completed, totals = core.validate_native(native, progress, outer)
+    all_skipped_attempts = poll['progress'].get('all_skipped_attempts')
+    core.need(type(all_skipped_attempts) is int and all_skipped_attempts >= 0,
+              'Actual progress all_skipped_attempts must be a nonnegative integer', 'REJECTED_INPUT_NO_WRITE')
     core.need(active and metric == full['iteration_metrics']
               and completed == full['per_rank_successful_adam']
               and totals == full['per_rank_actual_total_adam']
@@ -71,7 +74,7 @@ def sampling_observation(core, alias, poll, resource, native, full, outer):
         latest_original_Controller_outer=outer, next_Controller_result_present=False,
         actual_next_stage=outer+1, main_pid=ps['MainPID'], invocation_id=rs['InvocationID'],
         CPUUsageNSec=cpu_ns, service_CPU_seconds=cpu_seconds,
-        direct_child_rank_record_count=poll['direct_rank_records'], all_skipped_attempts=guard['refused_attempts'])
+        direct_child_rank_record_count=poll['direct_rank_records'], all_skipped_attempts=all_skipped_attempts)
 
 
 def main():

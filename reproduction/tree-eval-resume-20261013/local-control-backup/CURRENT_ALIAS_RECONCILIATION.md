@@ -70,6 +70,8 @@ PID/Invocation/source/config, completeN/nativeN/rankN and actual nextN+1 stage;
 both stage and retriever bytes must increase. A new next-outer Controller result,
 metric, rank update, completion, stale epoch, paused goal or repeated pair refuses
 publication. Do not replay an older pair after the training phase changes.
+The wait receipt reads `all_skipped_attempts` from the original poll progress and
+requires a nonnegative integer; native guard refused attempts are a separate count.
 
 ```sh
 python3 publish_nested_verified_wait.py --outer N \
