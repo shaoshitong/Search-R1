@@ -62,6 +62,11 @@ question_probe:
   micro_batch_size: null
   head_device: cpu
   teacher_replay_excluded: false
+  refit_every_outer: null
+  refit_epochs: null
+  refit_groups: null
+  online_student_features: false
+  inherit_probe_optimizer: false
 
 actor_rollout_ref:
   hybrid_engine: True

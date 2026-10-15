@@ -49,7 +49,9 @@ def restore_engine(state, *, device='cpu', epochs=20):
     engine.model.load_state_dict(state['model'], strict=True)
     engine.model.to(device=engine.device, dtype=torch.float32)
     engine.optimizer = torch.optim.Adam(engine.model.parameters(), lr=config.learning_rate)
-    engine.optimizer.load_state_dict(state['optimizer'])
+    # CPU load_state_dict can alias input Adam tensors. A restored learner must
+    # never mutate the immutable source snapshot or another restored instance.
+    engine.optimizer.load_state_dict(copy.deepcopy(state['optimizer']))
     engine.rng = torch.Generator(device='cpu')
     engine.rng.set_state(state['private_rng'])
     engine.update_count, engine.fitted = state['update_count'], state['fitted']

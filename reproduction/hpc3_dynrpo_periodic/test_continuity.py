@@ -83,5 +83,36 @@ class Continuity(TestCase):
         with self.assertRaisesRegex(ValueError,'COUNTER_MISMATCH'):
             fit_phase(engine,self.inputs,self.lengths,self.counts,self.ids,phase,lambda *a:None)
 
+    def test_probe_gradient_never_reaches_student_features(self):
+        features=self.inputs.clone().requires_grad_(True)
+        engine=restore_engine(self.initial.state_dict(),epochs=2)
+        from search_g1.qprobe_token_model import token_binary_loss
+        prediction=engine.model(features,self.lengths)
+        loss,_=token_binary_loss(prediction,self.counts,engine.config)
+        loss.backward()
+        self.assertIsNone(features.grad)
+        self.assertTrue(any(p.grad is not None for p in engine.model.parameters()))
+
+    def test_student_outers_do_not_fit_or_change_probe_between_boundaries(self):
+        from search_g1.qprobe_periodic_runtime import PeriodicRuntime
+        runtime=PeriodicRuntime.__new__(PeriodicRuntime)
+        runtime.head=mock.Mock()
+        runtime.head.version='fixed-weights'
+        runtime.head._adam_steps.return_value=400
+        runtime.completed_outer=0;runtime.completed_attempts=set()
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as root:
+            runtime.output_dir=Path(root)
+            for outer in range(1,201):
+                runtime.pending=dict(outer=outer,labels=[{}]*512,
+                    prediction_version='fixed-weights',attempt_id='attempt-'+str(outer),prequential={})
+                event=runtime.complete_outer(outer,'actor:'+str(outer))
+                self.assertEqual(event['head_update']['head_optimizer_updates'],0)
+                self.assertEqual(runtime.version,'fixed-weights')
+                self.assertEqual(runtime.execution_phase,'PROBE_PENDING' if outer in REFIT_OUTERS else
+                    ('FINAL_EVALUATION_PENDING' if outer==200 else 'STUDENT_READY'))
+        runtime.head.optimizer.step.assert_not_called()
+
 
 if __name__=='__main__':unittest.main(verbosity=2)

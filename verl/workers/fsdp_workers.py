@@ -748,6 +748,23 @@ class ActorRolloutRefWorker(Worker):
         torch.cuda.empty_cache()
         return output
 
+    @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
+    def compute_question_probe_features(self, data: DataProto):
+        from search_g1.qprobe_periodic_features import worker_features
+        return worker_features(self, data)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def capture_periodic_probe_boundary(self, directory):
+        self._assert_generation_phase_inactive()
+        from search_g1.qprobe_periodic_worker import capture
+        return capture(self, directory)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def restore_periodic_probe_rng(self, directory):
+        self._assert_generation_phase_inactive()
+        from search_g1.qprobe_periodic_worker import restore_rng
+        return restore_rng(self, directory)
+
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def capture_mixed_state(self, directory, checkpoint=False):
         self._assert_generation_phase_inactive()

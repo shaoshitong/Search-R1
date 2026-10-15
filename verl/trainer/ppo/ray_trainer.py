@@ -894,8 +894,13 @@ class RayPPOTrainer(object):
                 from search_g1.qprobe_runtime import QProbeRuntime
                 run = __import__('json').loads((Path(os.environ['SEARCH_G1_BASE'])/
                                                'logs/run-manifest.json').read_text())
-                self.qprobe_runtime = QProbeRuntime(self.config.question_probe,
-                                                    os.environ['SEARCH_G1_BASE'], self.tokenizer)
+                if self.config.question_probe.get('head_kind') == 'qwen_native_periodic_lastblock_binary_v1':
+                    from search_g1.qprobe_periodic_runtime import PeriodicRuntime
+                    self.qprobe_runtime = PeriodicRuntime(self, self.config.question_probe,
+                                                         os.environ['SEARCH_G1_BASE'],self.tokenizer)
+                else:
+                    self.qprobe_runtime = QProbeRuntime(self.config.question_probe,
+                                                       os.environ['SEARCH_G1_BASE'], self.tokenizer)
                 restored = getattr(self, '_restored_qprobe_state', None)
                 snapshot = restored['path'] if restored else self.config.question_probe.get("snapshot_path")
                 if snapshot:
@@ -903,7 +908,8 @@ class RayPPOTrainer(object):
                 if self.qprobe_runtime.completed_outer != continuation_k:
                     raise ValueError("Actor and question-probe successful outer counters differ")
                 if continuation_k == 0 and self.config.question_probe.get('head_kind') in (
-                        'token_binary_v1', 'qwen_native_lastblock_binary_v1'):
+                        'token_binary_v1', 'qwen_native_lastblock_binary_v1',
+                        'qwen_native_periodic_lastblock_binary_v1'):
                     # The same experiment's ten-epoch head warmup was completed
                     # separately. Authenticate that head, without teacher sampling
                     # or an additional head fit before the first actor update.
@@ -911,6 +917,12 @@ class RayPPOTrainer(object):
                 elif continuation_k == 0 and self.config.question_probe.get('teacher_warmup_cache'):
                     from search_g1.qprobe_warmup import run as teacher_warmup
                     teacher_warmup(self, generation_manager, self.qprobe_runtime, mixed_stream)
+                if (continuation_k > 0 and hasattr(self.qprobe_runtime,'refit_after_checkpoint') and
+                        self.qprobe_runtime.execution_phase == 'PROBE_PENDING'):
+                    # Finish the pending probe phase at this exact student CP;
+                    # never rerun the already completed student prefix.
+                    checkpoint = self.config.actor_rollout_ref.model.actor_checkpoint_path
+                    self.qprobe_runtime.refit_after_checkpoint(generation_manager,checkpoint)
 
         # start training loop
         for epoch in (itertools.count() if inline_attempts is not None else range(self.config.trainer.total_epochs)):
@@ -1169,6 +1181,7 @@ class RayPPOTrainer(object):
 
                     if self.config.trainer.save_freq > 0 and \
                             (self.global_steps % self.config.trainer.save_freq == 0 or
+                            (hasattr(self.qprobe_runtime,'refit_after_checkpoint') and self.global_steps % 25 == 0) or
                             self.global_steps == self.config.trainer.get('acceptance_step',0) or
                             (self.config.trainer.get('full_state_restore_receipt',None) and self.global_steps == min(continuation_k + 5, self.total_training_steps - 1)) or
                             self.global_steps + 1 >= self.total_training_steps):
@@ -1177,6 +1190,11 @@ class RayPPOTrainer(object):
                             from reproduction.profile import checkpoint_complete
                             checkpoint = os.path.join(self.config.trainer.default_local_dir, 'actor', f'global_step_{self.global_steps}')
                             checkpoint_complete(self.global_steps, checkpoint)
+
+                    if checkpoint is not None and hasattr(self.qprobe_runtime,'refit_after_checkpoint'):
+                        # Model + all rank Adam/scheduler/RNG and cursor are on
+                        # disk and validated BEFORE any extra probe rollouts.
+                        self.qprobe_runtime.refit_after_checkpoint(generation_manager,checkpoint)
 
                 # collect metrics
                 metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))

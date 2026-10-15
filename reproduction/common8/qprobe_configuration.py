@@ -15,6 +15,7 @@ FIELDS = frozenset((
     "hidden_size", "num_attention_heads", "num_key_value_heads", "intermediate_size",
     "rms_norm_eps", "rope_theta", "max_position_embeddings", "source_layer", "num_hidden_layers",
     "attention_implementation", "micro_batch_size", "head_device", "teacher_replay_excluded",
+    "refit_every_outer", "refit_epochs", "refit_groups", "online_student_features", "inherit_probe_optimizer",
 ))
 
 
@@ -34,7 +35,19 @@ def arguments(run, base):
     if loss_mode not in ("count6_moments_v1", "sigma3_std_aux6_v1", "token_binary_std_v1"):
         raise ValueError("Unknown question-probe loss mode")
     binary_kind = values.get("head_kind", "count6_v1")
-    if binary_kind in ("token_binary_v1", "qwen_native_lastblock_binary_v1"):
+    if binary_kind == 'qwen_native_periodic_lastblock_binary_v1':
+        from search_g1.qprobe_periodic_runtime import validate_config
+        validate_config(values)
+        if values.get('head_device') != 'cuda:0':
+            raise ValueError('Periodic native head requires its first admitted training GPU')
+        for key in ('initial_head_checkpoint','initial_head_ready'):
+            if not values.get('snapshot_path') and not Path(values.get(key,'')).is_absolute():
+                raise ValueError('Periodic head requires actual warmup adoption paths')
+        for key in ('initial_head_checkpoint_sha256','initial_head_ready_sha256'):
+            if not values.get('snapshot_path') and (not isinstance(values.get(key),str) or
+                    len(values[key]) != 64 or any(c not in '0123456789abcdef' for c in values[key])):
+                raise ValueError('Periodic head requires immutable warmup SHA')
+    elif binary_kind in ("token_binary_v1", "qwen_native_lastblock_binary_v1"):
         required = dict(loss_mode="token_binary_std_v1", ranking="binary_mixed_probability",
             candidate_questions=5120, selected_questions=512, exploration_questions=0,
             responses_per_question=5, feature_dim=2048, head_hidden_size=128, attention_heads=4,

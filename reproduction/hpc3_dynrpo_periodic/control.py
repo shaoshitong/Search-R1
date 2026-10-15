@@ -115,13 +115,15 @@ with (b/'preparation'/(PHASE+'-submit.lock')).open('a') as lock:
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('action',choices=('publish-deploy','preparation','formal'))
-    p.add_argument('--output',required=True,type=Path);args=p.parse_args()
+    p.add_argument('--output',required=True,type=Path)
+    p.add_argument('--partition',choices=('acd_u','acd_ue','emergency_acd'),default='acd_u')
+    args=p.parse_args()
     if args.action=='publish-deploy':
         record,archive=publish(args.output)
         result=deploy(record,archive,args.output)
     else:
         record=json.loads((args.output/'source-publication.json').read_text())
-        result=submit(args.action,record['commit'],args.output)
+        result=submit(args.action,record['commit'],args.output,args.partition)
     print(json.dumps(result))
 
 

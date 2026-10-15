@@ -64,7 +64,7 @@ def _native_run():
     return base, run, job
 
 
-def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,attempt_id=None,attempt_index=None,candidate_offset=0,teacher_warmup=False):
+def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,attempt_id=None,attempt_index=None,candidate_offset=0,teacher_warmup=False,probe_refit=False):
     base, run, job = _native_run()
     count = len(parent_batch)
     assert type(logical_update) is int and logical_update >= 0
@@ -80,13 +80,16 @@ def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,
         if hasattr(group, 'item'):
             group = group.item()
         parent_ids.append(str(index + candidate_offset) + '-' + document_sha256(group))
-    inline=run.get('policy_safety_mode')=='inline_first_five' and not validation and not teacher_warmup
+    if probe_refit:
+        assert not validation and not teacher_warmup and logical_update in range(25,200,25)
+        assert run.get('question_probe',{}).get('head_kind')=='qwen_native_periodic_lastblock_binary_v1'
+    inline=run.get('policy_safety_mode')=='inline_first_five' and not validation and not teacher_warmup and not probe_refit
     if inline:
         assert isinstance(attempt_id,str) and len(attempt_id)==32 and all(char in '0123456789abcdef' for char in attempt_id)
         assert type(attempt_index) is int and attempt_index>=1
     else:
         assert attempt_id is None and attempt_index is None
-    occurrence=('-attempt-'+attempt_id) if inline else ''
+    occurrence=('-attempt-'+attempt_id) if inline else ('-probe-refit' if probe_refit else '')
     ids = [run['run_id'] + '-' + str(logical_update) + occurrence + '-' + parent + '-sample-' + str(sample)
            for parent in parent_ids for sample in range(repeats)]
     # A validation nonce distinguishes repeated before/after calls at one step.

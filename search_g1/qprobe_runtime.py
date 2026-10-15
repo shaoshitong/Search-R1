@@ -23,10 +23,11 @@ from search_g1.qprobe_selection import (
 
 TOKEN_BINARY_HEAD = "token_binary_v1"
 NATIVE_QWEN_HEAD = "qwen_native_lastblock_binary_v1"
+PERIODIC_QWEN_HEAD = "qwen_native_periodic_lastblock_binary_v1"
 
 
 def _is_token_binary(config):
-    return config.get("head_kind") in (TOKEN_BINARY_HEAD, NATIVE_QWEN_HEAD)
+    return config.get("head_kind") in (TOKEN_BINARY_HEAD, NATIVE_QWEN_HEAD, PERIODIC_QWEN_HEAD)
 
 
 def _is_native_qwen(config):
@@ -94,6 +95,9 @@ def _plain_config(config):
 
 def validate_config(config):
     config = _plain_config(config)
+    if config.get('head_kind') == PERIODIC_QWEN_HEAD:
+        from search_g1.qprobe_periodic_runtime import validate_config as periodic_config
+        return periodic_config(config)
     token_binary = _is_token_binary(config)
     validate_budget(config.get("candidate_questions", 5120), config.get("selected_questions", 512),
                     config.get("exploration_questions", 0 if token_binary else 64), config.get("responses_per_question", 5))
@@ -138,6 +142,9 @@ def cache_for_config(config):
     cache_dir = config.get("cache_dir")
     if not cache_dir:
         raise ValueError("A prepared immutable remote question feature cache is required")
+    if config.get('head_kind') == PERIODIC_QWEN_HEAD:
+        from search_g1.qprobe_periodic_features import QuestionMetadata
+        return QuestionMetadata(cache_dir)
     if _is_token_binary(config):
         from search_g1.qprobe_token_features import TokenFeatureCache
         return TokenFeatureCache(cache_dir)
@@ -153,6 +160,9 @@ def load_head_checkpoint(path, config, *, feature_cache=None, expected_actor_sna
     kwargs = dict(expected_actor_snapshot_id=expected_actor_snapshot_id,
                   expected_feature_spec_sha=expected_feature_spec_sha)
     device = config.get("head_device", "cpu") if feature_cache is not None else "cpu"
+    if config.get('head_kind') == PERIODIC_QWEN_HEAD:
+        from search_g1.qprobe_periodic_model import PeriodicQwenProbe
+        return PeriodicQwenProbe.load(path,feature_provider=None,device=device,**kwargs)
     if _is_native_qwen(config):
         from search_g1.qprobe_qwen_block_online import OnlineQwenBlockQProbe
         return OnlineQwenBlockQProbe.load(path, feature_provider=feature_cache,

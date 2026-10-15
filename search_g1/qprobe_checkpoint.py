@@ -80,8 +80,9 @@ def validate_rank_state(saved, rank, world_size, outer, *, expected_writes=None)
         used_attempt_ids=used,policy_rejections=saved['policy_rejections'],optimizer_tensors_finite=True)
 
 
-def _validate_qstate(checkpoint, outer, actor_snapshot_id):
-    directory=Path(checkpoint)/'training_state';path=directory/'question-probe-state.pt'
+def _validate_qstate(checkpoint, outer, actor_snapshot_id, state_path=None):
+    path=Path(state_path) if state_path is not None else Path(checkpoint)/'training_state/question-probe-state.pt'
+    directory=path.parent
     state=torch.load(path,map_location='cpu',weights_only=False)
     _need(state['completed_outer']==outer and state['actor_snapshot_id']==actor_snapshot_id,'HEAD_ACTOR_BINDING_MISMATCH')
     head_file=state['head_file'];_need(Path(head_file).name==head_file,'HEAD_FILE_ESCAPES_CHECKPOINT')
@@ -131,7 +132,7 @@ def _historical_artifacts(base,run,outer):
         scope='immutable available historical artifact pointers only; raw prefix training history is not reconstructed')
 
 
-def publish_completed_pair(trainer, checkpoint):
+def publish_completed_pair(trainer, checkpoint, periodic_phase=None):
     """Call after checkpoint verification AND any scheduled old-probe adoption."""
     from reproduction.common8.topology import world_size
     from search_g1.training_state import atomic_save,driver_rng,compact_stream_state
@@ -166,7 +167,10 @@ def publish_completed_pair(trainer, checkpoint):
     signature=lambda row:(row['actual_optimizer_writes'],row['last_attempt_index'],
         tuple(row['used_attempt_ids']),row['policy_rejections'])
     _need(len({signature(row) for row in ranks})==1,'WORKER_COUNTERS_DIVERGE')
-    qstate,qpath,head_path=_validate_qstate(checkpoint,outer,actor_id)
+    periodic = run.get('question_probe',{}).get('head_kind') == 'qwen_native_periodic_lastblock_binary_v1'
+    state_path = getattr(trainer.qprobe_runtime,'post_refit_state_path',None) if periodic and periodic_phase != 'before_probe' else None
+    qstate,qpath,head_path=_validate_qstate(checkpoint,outer,actor_id,state_path)
+    probe_files = [] if state_path is None else [_file_record(qpath),_file_record(head_path)]
     from search_g1.full_state_restore import equal_tree
     current_stream=compact_stream_state(trainer.mixed_stream.state())
     equal_tree(qstate['candidate_state'],current_stream)
@@ -177,7 +181,7 @@ def publish_completed_pair(trainer, checkpoint):
           progress.attempt_index==ranks[0]['last_attempt_index'],'DRIVER_WORKER_COUNTERS_MISMATCH')
     _need(progress.aborted_attempts==progress.attempt_index-outer,'DRIVER_ABORTED_COUNTER_MISMATCH')
     live=_read_json(base/'artifacts/live/manifest.json')
-    expected_round=min(outer//50,3)*50
+    expected_round=min(((outer-1) if periodic_phase=='before_probe' else outer)//50,3)*50
     _need(live['run_id']==run['run_id'] and live['version']==trainer.reward_fn.expected_probe_version and
           live['round']==expected_round,'FINAL_REWARD_PROBE_NOT_ADOPTED')
     reward_files=[]
@@ -192,7 +196,8 @@ def publish_completed_pair(trainer, checkpoint):
         if row is None:row=_file_record(path,relative_path='reward_encoder/'+name)
         _need(row['full_read_sha256']==sha,'REWARD_ENCODER_SHA_MISMATCH')
         reward_files.append(row)
-    directory=base/'artifacts/question-probe/completed-pairs'/f'global_step_{outer}'
+    pair_group = 'pending-probe-pairs' if periodic_phase == 'before_probe' else 'completed-pairs'
+    directory=base/'artifacts/question-probe'/pair_group/f'global_step_{outer}'
     directory.mkdir(parents=True,exist_ok=False)
     # Evaluation and reward refit can advance vLLM/actor RNG AFTER the original
     # checkpoint worker snapshot. Capture the real final idle boundary separately.
@@ -221,7 +226,9 @@ def publish_completed_pair(trainer, checkpoint):
     receipt=dict(schema_version=1,status=PAIR_STATUS,kind=PAIR_KIND,step=outer,run_id=run['run_id'],
         checkpoint=str(checkpoint),source_base=str(base),source_run_manifest=run_record,
         world_size=size,actor_snapshot_id=actor_id,ranks=ranks,files=records,boundary_driver=boundary_record,
-        boundary_worker_files=boundary_records,historical_artifacts=_historical_artifacts(base,run,outer),
+        boundary_worker_files=boundary_records,question_probe_files=probe_files,
+        execution_phase=qstate.get('execution_phase','STUDENT_READY'),
+        historical_artifacts=_historical_artifacts(base,run,outer),
         reward_probe_manifest=reward_record,reward_files=reward_files,reward_probe_version=live['version'],
         reward_probe_round=live['round'],question_probe_state_path=str(qpath),head_path=str(head_path),
         feature_spec_sha=qstate['feature_spec_sha'],head_version=qstate['head_version'],
@@ -262,7 +269,7 @@ def read_source(receipt_path):
     historical_records=history.get('checkpoints',[])+list(history.get('development',{}).values())+history.get('reward_archives',[])
     all_records=receipt['files']+receipt['boundary_worker_files']+[receipt['boundary_driver'],receipt['source_run_manifest'],
         receipt['reward_probe_manifest']]+receipt['reward_files']
-    all_records+=historical_records
+    all_records+=historical_records+receipt.get('question_probe_files',[])
     identity=tuple(_identity_record(row) for row in all_records)
     actual={str(p.relative_to(checkpoint)) for p in checkpoint.rglob('*') if p.is_file()}
     _need(actual=={row['relative_path'] for row in receipt['files']},'SOURCE_CHECKPOINT_FILE_SET_CHANGED')
@@ -274,6 +281,7 @@ def read_source(receipt_path):
         # inode/size/mtime binding. Hash and parse actual small state/head files;
         # each worker additionally fully hashes its own Adam state before load.
         small=[receipt['boundary_driver'],receipt['source_run_manifest'],receipt['reward_probe_manifest']]+historical_records
+        small += receipt.get('question_probe_files',[])
         small += [row for row in receipt['files'] if row['path'] in
                   (receipt['question_probe_state_path'],receipt['head_path'])]
         for row in small:_need(digest(row['path'])==row['full_read_sha256'],'SOURCE_SMALL_FILE_SHA_MISMATCH')
@@ -300,7 +308,11 @@ def read_source(receipt_path):
               boundary['run_id']==receipt['run_id'],'BOUNDARY_DRIVER_BINDING_MISMATCH')
         _need(boundary['used_attempt_ids']==ranks[0]['used_attempt_ids'] and
               boundary['policy_rejections']==ranks[0]['policy_rejections'],'BOUNDARY_ATTEMPT_IDS_MISMATCH')
-        qstate,_,_=_validate_qstate(checkpoint,outer,receipt['actor_snapshot_id'])
+        external_state = receipt['question_probe_state_path'] if receipt.get('question_probe_files') else None
+        if external_state is not None:
+            _need(Path(external_state).resolve().is_relative_to(base/'artifacts/question-probe'),
+                  'POST_REFIT_STATE_OUTSIDE_OWN_PROBE_NAMESPACE')
+        qstate,_,_=_validate_qstate(checkpoint,outer,receipt['actor_snapshot_id'],external_state)
         equal_tree(qstate['candidate_state'],boundary['candidate_stream'])
         _need(qstate['head_version']==receipt['head_version'] and
               qstate['feature_spec_sha']==receipt['feature_spec_sha'],'SOURCE_HEAD_BINDING_MISMATCH')
@@ -323,7 +335,8 @@ def bind_restore(run, receipt_path):
         # bootstrap head or retain the old task's writable output directory.
         run['question_probe']['initial_head_checkpoint']=None
         run['question_probe']['snapshot_path']=None
-        if run['question_probe'].get('head_kind') in ('token_binary_v1', 'qwen_native_lastblock_binary_v1'):
+        if run['question_probe'].get('head_kind') in ('token_binary_v1', 'qwen_native_lastblock_binary_v1',
+                                                    'qwen_native_periodic_lastblock_binary_v1'):
             # This completed actor/head pair supplies every Head/Adam/RNG/replay
             # field. The original warmup artifact is no longer an input.
             run['question_probe']['snapshot_path']=receipt['question_probe_state_path']
