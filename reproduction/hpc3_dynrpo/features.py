@@ -50,7 +50,7 @@ def reopen_writer(path, spec, records):
 
 
 def main():
-    parser = argparse.ArgumentParser(); parser.add_argument('--batch-size', type=int, default=32)
+    parser = argparse.ArgumentParser(); parser.add_argument('--batch-size', type=int, default=64)
     args = parser.parse_args(); own(BASE)
     gpu = normalize_preparation_gpu()
     import numpy as np
@@ -125,7 +125,10 @@ def main():
                     progress('TOKEN_FEATURE_ENCODING',rows=writer.written,total=169028,
                              real_tokens=int(writer.offsets[writer.written]),seconds=time.monotonic()-started,
                              new_rows=writer.written-first)
-            durable_cursor(writer); progress('TOKEN_BANK_FULL_SHA',rows=writer.written,total=169028)
+            durable_cursor(writer)
+            del model
+            torch.cuda.empty_cache()
+            progress('TOKEN_BANK_FULL_SHA',rows=writer.written,total=169028)
             writer.finish()
         except BaseException:
             # Only the accepted fsynced prefix may be resumed; every staged file is retained.
