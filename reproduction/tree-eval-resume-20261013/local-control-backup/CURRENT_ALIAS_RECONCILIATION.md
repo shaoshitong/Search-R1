@@ -60,3 +60,31 @@ decompressing each stored member must reproduce the exact original bytes.
 Implementation was prepared from the already published FULL125 evidence and
 ROOT_FULL125_PUBLICATION_READBACK_1323_1324 data scopes. No training job, new test,
 review, canonical publication or script invocation is part of code publication.
+
+## Sampling-only verified wait
+
+`publish_nested_verified_wait.py` reuses the published787 alias helper and
+core676d, without changing either. After an already reconciled actual FULLN,
+select two current same-N poll/resource pairs. Both must report the original
+PID/Invocation/source/config, completeN/nativeN/rankN and actual nextN+1 stage;
+both stage and retriever bytes must increase. A new next-outer Controller result,
+metric, rank update, completion, stale epoch, paused goal or repeated pair refuses
+publication. Do not replay an older pair after the training phase changes.
+
+```sh
+python3 publish_nested_verified_wait.py --outer N \
+  --first-poll /local/workspace/outputs/tree-nested-branch-handoff-20261013/FIRST_POLL.json \
+  --first-resource /local/workspace/outputs/tree-nested-branch-handoff-20261013/FIRST_RESOURCE.json \
+  --second-poll /local/workspace/outputs/tree-nested-branch-handoff-20261013/SECOND_POLL.json \
+  --second-resource /local/workspace/outputs/tree-nested-branch-handoff-20261013/SECOND_RESOURCE.json \
+  --workspace /local/workspace
+```
+
+Only latest observation/live sampling proof and verified_wait/block0 are updated
+in the six canonical documents and two mirrors. Existing FULL/native/Adam,
+cost/curve/dev and immutable proof are not rewritten. The small immutable wait
+receipt is named from both actual poll filenames and binds their SHA/size/epochs,
+both log increments and actual resource CPUUsageNSec integers/CPU seconds. The
+same14 prior documents use mtime0 gzip and exact decompression readback. No next
+partial Adam, variance or scoring values are synthesized. Publishing the source
+does not call the entry; the root owner selects a still-current actual pair.
