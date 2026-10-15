@@ -1,12 +1,31 @@
 # 原生 Qwen 最后一层二分类探针：执行说明（2026-10-15）
 
-文档日期：2026-10-15。**最新状态截至 2026-10-15 23:26:10（Asia/Shanghai）**。目标为 **10 个 warmup epoch，随后完成 200 个正式 actor outer**，每个正式 outer 更新探针 2 个 epoch。当前隔离 runtime 为 `a47abb701f62a6c4eb9e8e8c987c67a4cf804098`；新4fd508的CPU26、既有warmup/fullbank采用、Head绑定、initial0和预启动检查均已实际exit0。正式launch尚待本次实际部署批准，尚无正式outer/Adam更新。旧92bb与ff1196均为失败历史，禁止重复执行。
+文档日期：2026-10-15。**最新状态截至 2026-10-15 23:39:13（Asia/Shanghai）**。最新人工目标为 **10 个 warmup epoch，随后完成 200 个正式 actor outer**，每个完整正式 outer 更新探针 2 个 epoch；这覆盖旧目标中20 epoch的描述。当前隔离 runtime 为 `a47abb701f62a6c4eb9e8e8c987c67a4cf804098`，已于23:28:10完成唯一一次实际 launch。23:39:13的原生 primary 只读凭据确认 pipeline `310262/birth615768175` 与 trainer `317298/birth615811482` 均实测存活，阶段已进入 `GRPO_1_TO_200`，没有记录错误。
+
+**当前正式完整 outer、optimizer机会、成功actor Adam、reward和选中题混合比例仍为 unknown，尚未证明首个完整正式 outer。** 训练进程启动和GPU计算不等于已完成更新，不能填为0或声称正式恢复验收已经完成。既有096c的10 epoch／200次Head Adam已验收采用；99.8828%仅为同一5120题的warmup训练集准确率，不是正式 rollout 表现。下一步只沿下文当前handle做有界只读进展观察，不重跑任何准备或启动动作。旧92bb与ff1196均为失败历史，禁止重复执行。
 
 旧92bb/source927 于 **22:47:32** 真实失败：`AssertionError: Cannot obtain actual CUDA device properties` 发生在 `main_task` 的 driver GPU 入口 hook，尚未进入原训练 body。已确认 **formal outer=0、正式 actor Adam=0、正式 Head 更新=0**；warmup 的200次 Head Adam另计。22:50:23 的观察确认 pipeline/trainer 均已退出，22:54:35 的终态审计接受34条 owned birth 的清理核验：0 owned SID process、0 owned CUDA context，项目 trainer live 列表为空。**禁止重新执行旧92bb handle 的 prepare/repair/launch action。**
 
 修复采用出生即绑定准入 GPU UUID 的 fresh Python driver，同步接入原 Ray 集群执行原训练 body；C4审计保留所有PID birth检查并只接收有完整绑定的会话主进程。算法、科学 body、四卡 actor 资源池及 CPU RNG 移交保持不变。有效096c native warmup10/200和169,028行 token bank已经验收复用，没有重跑warmup、teacher rollout或bank编码。
 
-## 历史 source927 与现场身份
+## 当前现场身份
+
+| 项目 | 当前固定值 |
+|---|---|
+| runtime checkout | `/Users/shaoshitong/Documents/Search-G1/qprobe-qwen-native-driver-process-fix` |
+| runtime commit / branch | `a47abb701f62a6c4eb9e8e8c987c67a4cf804098` / `codex/qprobe-qwen-native-driver-process-fix-20261015` |
+| runtime source map SHA256 | `e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916`，508个运行文件 |
+| 当前 handle | `/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json` |
+| 当前远端 base | `/data/shaoshitong/Search-G1-a800-fresh200-4fd508e35bc84658ba892a97248f8a7f` |
+| run / execution | `524254af06a1472daa1368daba4e0b17` / `fd91bd58d4cf40a89b35427267f9d34e` |
+| 当前 native primary | `/Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_qprobe_qwen_native_observer.py` |
+| primary SHA256 / published commit | `ed53322142808483fbc74fee758468219626b403e52f10c09c5c71d42eeb4351` / `098ae78a50945684973a41a2de47ab81825f15ba` |
+| 最新实际只读凭据 | `preparation/qprobe-qwen-native-driver-process-fix-v2-native-startup2.json`，SHA256=`fd19e9866c5c730c2fac2f5cd73a807c63b1f002fb031bb6ac49256ac3452dec` |
+| 当前实测进程 | pipeline `310262/birth615768175`；trainer `317298/birth615811482`，均存活且birth匹配 |
+
+CPU26、warmup/fullbank采用、Head绑定、initial0、预启动、实际部署批准和唯一launch均已完成，不是当前待执行步骤。当前工作仅为核实正式训练真实推进，并由同一进程完成200个完整outer及既定验收；不重复warmup、teacher生成或fullbank编码。
+
+## 历史 source927 与失败现场身份（禁止执行）
 
 | 项目 | 固定值 |
 |---|---|
@@ -70,8 +89,8 @@ formal objective = mean(w_i * L_i)
 | token feature spec SHA256 | `fcc9d61db156ddbb4e96dcd6c9437797b978dbbfc9774145a28e0c761de1a9e7` |
 | 完整 bank | 169,028行；复用5120行、补编码163,908行；完整SHA与 encoder owned-resource release 已 admit |
 | full-bank manifest SHA256 | `fa8c9513f89b3700851f8fe75665bf515a82e7f491bc3a52a643a6e82aa243e9` |
-| 旧92bb converted formal initial Head | logical0 / 实际warmupHeadAdam200 / 空formal replay / teacher excluded；SHA256=`82e995c1aae9d01833b6229bc879c98d20bb84e107301a2ff2c1885b23e773d0` |
-| 旧92bb converted initial ready SHA256 | `c5bdbdb02ca5477235fc8b857dbd56baea13f4c6f54f67d44ad7c3b191316fb7` |
+| 当前4fd508 converted formal initial Head | logical0 / 实际warmupHeadAdam200 / 空formal replay / teacher excluded；SHA256=`a269238b0c6c2c182efc058612de895a33f65f7ce9d66966d1973c571fe0f3f1` |
+| 当前4fd508 converted initial ready SHA256 | `5b707c21b91594effeef57de1b4b53e276398c4a7bfc837b131986aa7880e462` |
 
 Warmup 的两个 loss 部分并非都持续下降。标准差辅助贡献在 epoch1–10 几乎保持 `0.0884375`；下表只比较同一5120训练集的起点和终点。
 
@@ -95,60 +114,33 @@ Warmup 的两个 loss 部分并非都持续下降。标准差辅助贡献在 epo
 
 旧 c83d 在 Head 初始化前因 JSON binding 键类型失败、0 Adam，故障历史保留。有效096c warmup已完成；两个命名空间都不能通过重复 action 重新执行。
 
-## 操作入口与执行顺序
+## 当前操作与监控
 
-从对应 checkout 的项目根目录使用以下相对入口：
+当前a47／4fd508已完成 `stage → prepare → warmup-admit → qualified-bank-admit → bind → adopt-initial0 → prepare-launch → launch`，且实际部署批准已闭合。**不得再执行这些动作，也不得重跑warmup、teacher rollout、bank-prepare或bank-encode。** OPS正式入口和远端helper保留为已执行历史与故障处理依据，不是当前待执行清单；旧92bb、ff1196的handle及旧claim修复入口禁止用于当前作业。
 
-- `reproduction/operations/a800_qprobe_qwen_native_formal.py`：现场一次性 stage/prepare/bank/bind/launch 与 metadata observe。
-- `reproduction/operations/a800_qprobe_qwen_prelaunch_claim_repair.py`：旧92bb预启动 claim 碰撞的历史一次性修复入口，已使用，不作为新实验步骤。
-- `reproduction/a800_common/qprobe_qwen_formal_ops.py`：远端 source-bound helper，由前述 OPS 调用。
-- `reproduction/common8/qprobe_qwen_bind.py`：CPU核验并采用本次 native warmup，保存并回读 formal initial Head。
-- `reproduction/operations/a800_qprobe_qwen_native_observer.py`：正式训练的单次有界 primary metadata read。
-- `reproduction/operations/a800_qprobe_qwen_hourly_format.py`：纯本地 hourly scalar/hash formatter。
+当前唯一primary为上表固定SHA的 `a800_qprobe_qwen_native_observer.py`。它每次只读现有JSON/scalar、四rank机会账本、PID birth、Head/checkpoint/评分metadata及已持久GPU采样；一次有界SSH上限65秒／64MiB读取／128KiB输出，不读取模型、tensor、QA/token，不调用native verifier，也不新增GPU测试、概率扫描或评测。正常每30分钟一次，不进入分钟级SSH轮询，不为了试查同时调用其他reader。
 
-参数含义：`HANDLE` 是对应实验本地 prospective deployment JSON 的绝对路径。旧文件 `preparation/qprobe-qwen-native-formal-cpu-repair-v2-deployment.json` 仅作失败历史核验，禁止重复 action；新 handle 为 **pending**。`RECEIPT` 必须每次使用新的本地小型JSON路径；`RUNTIME_REPO` 必须是该 handle 精确绑定的干净源码 checkout；`RELEASE_REVIEW` 必须属于对应部署；`DELIVERED_STEP` 是同一 run/execution 上真实已交付报告的最后完整 outer，不能用最新观察值替代。
-
-旧92bb的历史依赖顺序为 `create → stage → prepare → warmup-admit → bank-prepare → bank-encode → bank-admit → bind → adopt-initial0 → prepare-launch → launch`。新的隔离实验使用新 handle、已发布源码/清单和代码 bundle，严格核验后复用096c warmup及现有 qualified bank，不重复 bank-prepare/bank-encode。新实验的 Head 绑定、initial0、预启动和 launch 资格须由新源码与新现场凭据确认，精确入口和标识尚为 **pending**。
-
-旧92bb的 `prepare-launch` 曾失败于 OPS 外层 guard 与 helper 同时独占创建 `prepare-launch-once.json`，发生在 actor claim 之前。历史修复入口 `a800_qprobe_qwen_prelaunch_claim_repair.py` 沿用 source927 原 `prepare_launch` 的严格校验，以独立 claim 保留失败记录；该修复已执行，随后发出一次 launch。后续 OPS guard 使用 `native-formal-operator-` 前缀，与 helper claim 分开。之后的22:47:32 trainer故障是独立的 driver CUDA 入口故障，不能通过重复历史 claim 修复或 launch 解决。
-
-**下面整段命令仅保存旧92bb操作历史，不得执行，也不是新实验模板。** 新隔离实验不再使用该 claim 修复入口；待新的精确发布/现场绑定凭据补齐后，再提供对应操作步骤。
+下面是**当前同一handle**的唯一只读命令；receipt使用新时间戳路径，不能覆盖已有凭据。在真正同run/execution/source/base的正式小时交付anchor建立前，`--after-step`保持fresh初始边界 **0**，不能混用warmup或旧run的anchor。正式anchor建立后，只换成该anchor实际已交付的完整outer值，不能用最新观察值替代。
 
 ```bash
-# 历史92bb命令记录：禁止重新执行 repair/launch。
-python3 reproduction/operations/a800_qprobe_qwen_native_formal.py observe \
-  --handle "$HANDLE" --receipt "$RECEIPT"
-
-# 历史：独立claim修复已执行一次。
-python3 reproduction/operations/a800_qprobe_qwen_prelaunch_claim_repair.py \
-  --handle "$HANDLE" --receipt "$RECEIPT"
-
-# 历史：idle admission及launch已执行，trainer随后失败。
-python3 reproduction/operations/a800_qprobe_qwen_native_formal.py observe \
-  --handle "$HANDLE" --admission --receipt "$RECEIPT"
-python3 reproduction/operations/a800_qprobe_qwen_native_formal.py launch \
-  --handle "$HANDLE" --review "$RELEASE_REVIEW" --receipt "$RECEIPT"
+QPROBE_RECEIPT="/Users/shaoshitong/Documents/Search-G1/progress-checks/native-qwen-primary-$(date -u +%Y%m%dT%H%M%SZ).json"
+python3 /Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_qprobe_qwen_native_observer.py \
+  --handle /Users/shaoshitong/Documents/Search-G1/preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json \
+  --runtime /Users/shaoshitong/Documents/Search-G1/qprobe-qwen-native-driver-process-fix \
+  --expected-run 524254af06a1472daa1368daba4e0b17 \
+  --expected-execution fd91bd58d4cf40a89b35427267f9d34e \
+  --after-step 0 --receipt "$QPROBE_RECEIPT"
 ```
 
-对于之后实际绑定的新实验，每条命令的 `RECEIPT` 都要更换，不能复用同一路径。传输断开或返回 launch receipt 后，以同一 handle 的 `observe` 确认流程，不再次发送原 action。一次提交成功、PID存活或首条日志都不等于训练有效推进。正式启动后至少核验两次实际前进，并确认至少一个完整正式 outer 正常返回。旧92bb已确认终态，不能因历史存活记录恢复轮询或重复启动。
+23:39:13凭据确认trainer存活及阶段进入`GRPO_1_TO_200`，但尚无闭合的正式attempt前缀；completeouter、actor Adam、skip和reward均保持unknown。还须沿同一进程核实至少两次真实训练推进及首个完整正常outer，首五轮按既有native gate验收后继续6..200，不为里程碑停训或另加200轮。SSH超时、缺失账本或unknown不等于退出，不能据此重复launch；真实故障须先保存错误与终态身份，并确认本项目trainer退出后再采用独立修复／兼容恢复入口。
 
-训练 GPU 由启动时实际 idle/UUID placement 绑定，训练选四张且排除辅助5/6；辅助5/6也需满足其角色的空闲条件。`head_device=cuda:0` 指当前训练 CUDA namespace 的第一张已分配卡，不是静态指定物理0。不能抢占或停止别人的进程，也不用全局 Ray stop 清理。
+训练GPU由唯一启动时的实际idle／UUID placement绑定，实际训练卡为0/1/2/3，辅助5/6；活跃进程不重新选卡。`head_device=cuda:0`指当前训练CUDA namespace的第一张已分配卡。不能抢占或停止他人进程，也不用全局Ray stop。GPU当次占用、本execution累计采样峰、完整步骤窗口峰及采样空档分别报告；低瞬时利用率不能判定退出，未计算的窗口峰保持unknown。
 
-新实验正常监控每30分钟一次有界 metadata read，不做分钟级 SSH 轮询，不为监控加载 Head、tensor、QA/token 或重新评分。正式 primary observer 必须待新 runtime已发布、实际启动/部署凭据齐全后使用。**以下旧92bb身份的调用仅为历史记录，不能用来监控尚未绑定的新实验：**
+`a800_qprobe_qwen_hourly_format.py`是已发布的纯本地formatter，仅消费已保存的这一次primary receipt与真正同run的已交付anchor，不访问远端或改写anchor。正式小时报告按交付anchor到期执行：先发布允许的scalar/hash、实际向用户交付，再推进anchor；普通30分钟观察不推进。报告区分processed、完整outer成功Adam、retained partial Adam、skip、unattempted和可证inflight，四rank副本只计一次；区分拟合前selected512指标与拟合后recent8指标。无新增完整outer、reward或评分须明确说，缺失指标保留unknown，不填0或混入旧run。现有warmup phase anchor不是当前正式训练小时进度。
 
-```bash
-python3 reproduction/operations/a800_qprobe_qwen_native_observer.py \
-  --handle "$HANDLE" --runtime "$RUNTIME_REPO" \
-  --expected-run 862bccb5fcf348ce8454f9a332f37bdd \
-  --expected-execution 027e65da351a4e018dd377b806c19434 \
-  --after-step "$DELIVERED_STEP" --receipt "$PRIMARY_RECEIPT"
+### 旧操作历史（禁止重新执行）
 
-python3 reproduction/operations/a800_qprobe_qwen_hourly_format.py \
-  --receipt "$PRIMARY_RECEIPT" --delivered-anchor "$DELIVERED_ANCHOR" \
-  --output "$NEW_HOURLY_SCALARS"
-```
-
-`PRIMARY_RECEIPT`、`NEW_HOURLY_SCALARS` 是新的小型本地JSON路径；`DELIVERED_ANCHOR` 是同run/execution/source/base的既有实际交付记录，至少含 `delivered=true`、`completed_outer`、`delivered_unix`。先格式化和交付报告，再更新交付anchor；formatter不会改写anchor。报告区分 processed、完整outer返回的Adam、retained partial Adam、skip与unattempted，区分拟合前selected512指标和拟合后recent8指标，保留已有EM及GPU采样gap。未计算的完整步骤GPU峰值和缺失指标写 unknown，不填0或混入旧run。
+旧92bb依赖顺序曾包含 `bank-prepare → bank-encode`；全bank已完成，当前不重复该编码。旧92bb的`prepare-launch`曾因OPS与helper创建同名独占claim失败；历史一次性claim修复已执行，后续OPS guard改用`native-formal-operator-`前缀。22:47:32的trainer GPU入口故障是另一真实故障，不能靠重试旧claim修复或launch解决。旧源码、claim和失败凭据保留，但旧92bb／ff1196命令不作为当前监控或启动模板。
 
 ## 保存、资源与最终完成条件
 
@@ -172,25 +164,25 @@ checkpoint、Head/Adam、packed token bank、原始 rollout 和完整逐题输�
 
 先前 primary 的 `execution_identity` unknown 来自 observer 将 native launch claim 套用了包含 backend 的另一种 schema，不是已验证的 trainer 故障。OPS `098ae78a50945684973a41a2de47ab81825f15ba` 改为校验 source927 实际生产的六字段 typed claim；launch receipt 的 backend 校验以及4rank、source、bank、Head和计数规则保持严格。该修复只更正 metadata reader，不修改 runtime927、模型、奖励、算法或本次启动；原日期 release 文件证明与失败记录保留。
 
-### 2026-10-15 22:47:32失败与22:54:35终态验收（Asia/Shanghai）
+### 2026-10-15 22:47:32失败与22:54:35终态验收（Asia/Shanghai，历史）
 
 source927 的 CPU Ray `main_task` 在 driver GPU hook 中调用实际 CUDART UUID 核验，返回 `AssertionError: Cannot obtain actual CUDA device properties`，尚未进入原训练 body。22:50:23观察已确认 pipeline/trainer gone；终态凭据进一步确认正式 outer=0、正式 actor Adam=0、正式 Head更新=0，没有可伪装为已更新 state 的恢复点。有效096c warmup的200次 Head Adam和已验169,028行 bank保留。
 
 22:54:35的 `qprobe-qwen-native-formal-92bb-terminal-failure-owned-audit.json` 核验34条 owned birth，`terminal_owned_cleanup_accepted=true`，owned SID process、owned CUDA context及项目 trainer live均为空。旧源码、claim、日志和资产保留；禁止重复旧 handle。
 
-新隔离 fresh-process 修复准备中：在进程出生前设置已绑定 GPU UUID，连接同一私有 Ray 集群，CPU wrapper只等待；原训练 body和科学配置不变，并移交恢复原CPU RNG、保留 Head private RNG。新的发布 commit/source map、run/execution、handle及实际启动结果均为 **pending**。warmup与bank复用不重跑；目标仍是完成200个正式outer，当前尚未完成首个正式outer。
+当时新隔离fresh-process修复尚在准备：在进程出生前设置已绑定GPU UUID，连接同一私有Ray集群，CPU wrapper只等待；原训练body和科学配置不变，并移交恢复原CPU RNG、保留Head private RNG。当时发布commit/source map、run/execution、handle及启动结果均为pending；此状态已被下文a47／4fd508的实际发布、唯一launch和23:39:13观察取代。warmup与bank复用不重跑。
 
-### 2026-10-15 启动故障修复源码发布
+### 2026-10-15 启动故障修复源码发布（9713／ff1196历史）
 
 修复源码已发布为 `9713a0ce3f33ef22ca5acfa5442ffbcec0bee3f5`，分支 `codex/qprobe-qwen-native-driver-process-fix-20261015`，508 个 runtime 文件的 source map SHA256 为 `c95e96b93cfedc19f1fdff1aff93e1854cdd1e6cd777e5330abe757889929582`；全508文件已从全新Git对象库核验。OPS qualified-bank 复用入口为 `e093c4d3c67a8ee70e8b7a364fc10a9ac99789bb`。新 prospective handle 是 `preparation/qprobe-qwen-native-driver-process-fix-deployment.json`，远端独立目录为 `/data/shaoshitong/Search-G1-a800-fresh200-ff1196a974114d7abe9b1be0c764b721`。此处发布的是修复代码，实际 CPU 资格和正式 launch / 完整 outer 仍须后续 receipt 确认。
 
 CPU Ray 包装任务不再晚改 CUDA 可见性；它同步等待一个在进程出生时绑定准入 GPU UUID 的 Python driver，后者接入同一个 Ray GCS/namespace。四 GPU actor pool、原始科学循环和 CPU RNG 状态保持原样，不增加 GPU 资源请求。旧 namespace 没有 actor 更新，因此新 namespace 是正式0起点的继续执行，不声称恢复了未产生的 actor state。
 
-### 2026-10-15 C4资源审计接口修正与当前部署
+### 2026-10-15 C4资源审计接口修正与a47部署准备记录
 
 上一修复源码9713的独立准备目录ff1196完成CPU26和warmup验收，但在bank-admit把子进程传给只接收会话主进程的C4接口，实际退出1。无GPU/actor启动、无正式Adam、缓存和warmup未改，旧claim保留且禁止重复执行。
 
-当前修复runtime为 `a47abb701f62a6c4eb9e8e8c987c67a4cf804098`，source map为 `e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916`（508文件，fresh remote Git核验）。保留每一个PID的实际birth检查，要求每条记录的SID/UID都有已绑定主进程，再仅把主进程交给原C4接口；原PID/SID复用规则未放宽。新handle `preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json`，base `/data/shaoshitong/Search-G1-a800-fresh200-4fd508e35bc84658ba892a97248f8a7f`，run `524254af06a1472daa1368daba4e0b17` / execution `fd91bd58d4cf40a89b35427267f9d34e`。CPU26/noCUDA与warmup采用已实际通过；169028 bank已从原fullSHA封存+五文件stat/原producer/终态证明验收复用，bank-admit实际exit0，没有再次编码或重hash75GB。后续bind/initial0/prelaunch/launch必须按新实际receipt核验；此处尚不声称正式训练已恢复。
+修复runtime为 `a47abb701f62a6c4eb9e8e8c987c67a4cf804098`，source map为 `e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916`（508文件，fresh remote Git核验）。保留每一个PID的实际birth检查，要求每条记录的SID/UID都有已绑定主进程，再仅把主进程交给原C4接口；原PID/SID复用规则未放宽。新handle `preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json`，base `/data/shaoshitong/Search-G1-a800-fresh200-4fd508e35bc84658ba892a97248f8a7f`，run `524254af06a1472daa1368daba4e0b17` / execution `fd91bd58d4cf40a89b35427267f9d34e`。CPU26/noCUDA与warmup采用已实际通过；169028 bank已从原fullSHA封存+五文件stat/原producer/终态证明验收复用，bank-admit实际exit0，没有再次编码或重hash75GB。随后bind／initial0／prelaunch／launch均已有实际成功receipt，见下文；这些准备结果不等于完成正式outer。
 
 当前4fd508实际Head绑定已exit0：initial Head SHA256 `a269238b0c6c2c182efc058612de895a33f65f7ce9d66966d1973c571fe0f3f1`，ready SHA256 `5b707c21b91594effeef57de1b4b53e276398c4a7bfc837b131986aa7880e462`。这是同次096c nativewarmup的200HeadAdam/private RNG在新formal0 namespace的采用，teacher replay为空，不是actor恢复或新的Head拟合。
 
@@ -199,3 +191,9 @@ CPU Ray 包装任务不再晚改 CUDA 可见性；它同步等待一个在进程
 ### 2026-10-15 23:28:10（Asia/Shanghai）实际启动更新
 
 本次实际部署批准 SHA256 为 `5be741c36e322e9973a2cf299a344ec091886337ae22851b29ba8cb96f18879e`。四张训练卡与辅助5/6均通过空闲准入，唯一 launch 实际 exit0；deployment launch receipt SHA256 为 `ff4e503f23143fe396eb34578a43679fdfb7d8d04a1fe56e0b5da9684f1bf3a8`。新4fd508 pipeline已经一次启动，正在准备检索服务，正式trainer/完整outer/Adam仍待真实推进确认。禁止重复launch；首个有界native只读检查不早于23:33:10，正常监控每30分钟一次，不增加GPU测试或额外评测。
+
+### 2026-10-15 23:39:13（Asia/Shanghai）当前实际观察
+
+`preparation/qprobe-qwen-native-driver-process-fix-v2-native-startup2.json`实际exit0／`READ_RETURNED`，文件SHA256为`fd19e9866c5c730c2fac2f5cd73a807c63b1f002fb031bb6ac49256ac3452dec`。source／run／execution／base与当前a47／4fd508精确相符，已发布runtime和独立actual release资格均为observed。pipeline `310262/birth615768175`、trainer `317298/birth615811482`均存活且birth匹配；retriever与probe-server存活，probe-admission实际exit0，阶段为`GRPO_1_TO_200`，没有记录错误或bounded failure。
+
+已有采样显示四张训练卡均开始占用并有计算活动；这只能证明当前启动流程进入训练阶段，不能单独证明Adam成功返回。正式attempt账本前缀尚未闭合，因此完整outer／optimizer机会／actor Adam／skip／reward／selected512 mixed与accuracy仍为unknown；stage64、dev512和nativefive凭据尚未生成。保留缺失状态，不把warmup的200次Head Adam或99.8828%训练集accuracy当成正式训练结果。下一步沿上述同handle唯一primary核实真实推进和首个完整outer，禁止重复launch或准备动作。
