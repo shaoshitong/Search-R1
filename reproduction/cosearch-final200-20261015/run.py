@@ -247,6 +247,24 @@ def main():
         assert not (OUT/'complete.json').exists()
         print('DURABLE_QUESTION_SLICE_COMPLETE_REQUEUE_SAME_JOB',flush=True)
         subprocess.run(['scontrol','requeue',os.environ['SLURM_JOB_ID']],check=True)
+    else:
+        # Submit CPU acceptance only after the full denominator is durably complete.
+        # This has no dependency on previous experiments and consumes no GPUs.
+        audit_lock=(OUT/'audit-submit.lock').open('a')
+        fcntl.flock(audit_lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        if not (OUT/'audit-job.id').exists():
+            assert not (OUT/'audit-submit-intent.json').exists(), 'Resolve an unknown previous audit submission first'
+            assert not subprocess.check_output(['squeue','-h','-u','mou176',
+                '--name','cosearch200-final-audit','-o','%i'],text=True).strip()
+            atomic(OUT/'audit-submit-intent.json',dict(epoch=time.time(),
+                producer_job=int(os.environ['SLURM_JOB_ID']),
+                complete_sha256=sha(OUT/'complete.json')))
+            audit_job=subprocess.check_output(['sbatch','--parsable',
+                '--dependency=afterany:'+os.environ['SLURM_JOB_ID'],
+                str(TOOLS/'acceptance.sbatch')],text=True).strip().split(';')[0]
+            assert audit_job.isdigit()
+            (OUT/'audit-job.id').write_text(audit_job+'\n')
+            print('FULL_FINAL_COMPLETE_CPU_ACCEPTANCE_SUBMITTED',audit_job,flush=True)
 
 
 if __name__=='__main__':
