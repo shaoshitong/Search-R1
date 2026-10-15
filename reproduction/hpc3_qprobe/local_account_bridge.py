@@ -11,9 +11,14 @@ import shlex
 import sys
 
 
-def run(account, command, payload, control_work, shell=False):
+LOGIN_HOSTS = ('10.120.81.30', '10.120.48.31', '10.120.48.32', '10.120.48.33')
+
+
+def run(account, command, payload, control_work, shell=False, login_host=LOGIN_HOSTS[0]):
     if account not in ('mou176', 'jxu957'):
         raise ValueError('Account is outside the explicit authorized pair')
+    if login_host not in LOGIN_HOSTS:
+        raise ValueError('Login host is outside the observed HPC3 gateway/login nodes')
     spec = importlib.util.spec_from_file_location('campus_transport', Path(control_work)/'start_cosearch_flash_hf.py')
     m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
     secret = Path('/Users/shaoshitong/Documents/remote_codex_control/memories/hpc3-credentials.private.md').read_text()
@@ -24,7 +29,7 @@ def run(account, command, payload, control_work, shell=False):
            '-oControlMaster=no', '-S', 'none',
            '-oHostKeyAlias=hpc3login.hpc.hkust-gz.edu.cn',
            '-oUserKnownHostsFile=/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts',
-           '-oConnectTimeout=8', account+'@10.120.81.30']
+           '-oConnectTimeout=8', account+'@'+login_host]
     if shell:
         if payload:
             raise ValueError('Shell channel requires a self-contained command')
@@ -43,5 +48,8 @@ if __name__ == '__main__':
     p = argparse.ArgumentParser(); p.add_argument('--account', required=True, choices=('mou176', 'jxu957'))
     p.add_argument('--control-work', required=True); p.add_argument('--command', required=True)
     p.add_argument('--shell', action='store_true')
-    a = p.parse_args(); result = run(a.account, a.command, sys.stdin.read(), a.control_work, shell=a.shell)
+    p.add_argument('--login-host', choices=LOGIN_HOSTS, default=LOGIN_HOSTS[0],
+                   help='Explicit HPC3 endpoint; strict existing host-key verification is preserved')
+    a = p.parse_args(); result = run(a.account, a.command, sys.stdin.read(), a.control_work,
+                                    shell=a.shell, login_host=a.login_host)
     print(result.stdout, end=''); print(result.stderr, file=sys.stderr, end=''); sys.exit(result.returncode)
