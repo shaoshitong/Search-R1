@@ -28,7 +28,7 @@ def main():
                 gpu_memory_utilization=args.memory, enforce_eager=True,
                 max_model_len=24576, max_num_seqs=128,
                 max_num_batched_tokens=16384, enable_chunked_prefill=True,
-                enable_prefix_caching=True, disable_log_requests=True, seed=42)
+                enable_prefix_caching=True, enable_log_requests=False, seed=42)
             app.state.engine = AsyncLLMEngine.from_engine_args(engine_args)
         else:
             import aiohttp

@@ -106,6 +106,7 @@ def main():
         with socket.socket() as sock:
             assert sock.connect_ex(('127.0.0.1',port))!=0, ('Port occupied; do not interfere',port)
     children=[]
+    (OUT/'tmp').mkdir(parents=True, exist_ok=True)
     base_env=env()
     opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
