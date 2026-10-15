@@ -140,6 +140,13 @@ the original failure/task set. No original795 failure is replaced or relabeled
 PASS. It creates no process, job, receipt or scope, decodes nothing again and
 still requires the independent final holder's actual wait0 consumption.
 
+An actual remote128-test run found that a same-size immediate overwrite could
+escape SharedReads' metadata-only final check. Final acceptance now fully hashes
+every retained original file again, with unchanged path/inode/ownership/mode
+binding. This intentionally adds terminal read IO; it does not add generation,
+decoding or model work. A deterministic test models equal metadata on changed
+bytes, so detection cannot depend on sleeping for a newer filesystem timestamp.
+
 The independent held final recovery branch and combined final positive
 integration remain separate work. No recovery scope or job has been activated.
 If the healthy original producer succeeds, its existing chain remains

@@ -25,6 +25,17 @@ def write(path, value, *, binary=False, mode=0o600):
 
 
 class FileTests(unittest.TestCase):
+    def test_final_full_sha_rejects_equal_metadata_same_size_rewrite(self):
+        with tempfile.TemporaryDirectory() as folder, patch.object(audit, 'OWNER', os.getuid()):
+            path = Path(folder).resolve()/'train'; record = write(path, b'data', binary=True)
+            # Model indistinguishable remote metadata without sleeping or
+            # weakening the expected content assertion.
+            with patch.object(audit, 'signature', return_value=(1, 2, 4, 5, 6)):
+                reader = audit.SharedReads(); reader.read(path, record['sha256'])
+                path.write_bytes(b'edit')
+                with self.assertRaisesRegex(ValueError, 'changed during final full SHA'):
+                    reader.finish()
+
     def test_changed_same_size_and_symlink_private_file_rejected(self):
         with tempfile.TemporaryDirectory() as folder, patch.object(audit, 'OWNER', os.getuid()):
             path = Path(folder).resolve()/'raw.pt'; original = write(path, b'abcd', binary=True)

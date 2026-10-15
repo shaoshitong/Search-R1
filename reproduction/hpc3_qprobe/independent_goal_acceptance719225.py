@@ -260,12 +260,13 @@ def bound_record(record, expected, *, private=False):
 
 
 class SharedReads:
-    """Full-hash identical canonical/source assets once, reject any later change.
+    """Reuse immutable asset reads, then finish with complete content hashes.
 
     An attempt's raw and trace always get their own complete read. The same
     immutable train/tokenizer/science files would otherwise be reread hundreds
-    of times. Reuse requires identical expected SHA and stable inode/ctime, and
-    the final terminal pass checks every retained identity again.
+    of times. Reuse requires identical expected SHA and stable inode/ctime.
+    Final acceptance hashes every retained file again: filesystem timestamps
+    can fail to distinguish an immediate same-size in-place rewrite.
     """
     def __init__(self):
         self.files = {}
@@ -273,9 +274,12 @@ class SharedReads:
     def read(self, path, sha, *, shared=False, alias=False):
         path = Path(path); key = str(path)
         if key in self.files:
-            proof, resolved, identity = self.files[key]
+            proof, resolved, identity, access = self.files[key]
+            observed = resolved.lstat()
             need(sha == proof['sha256'] and path.resolve(strict=True) == resolved and
-                 signature(resolved.lstat()) == identity, 'shared original asset changed across attempt proofs')
+                 signature(observed) == identity and
+                 (observed.st_uid, observed.st_gid, stat.S_IMODE(observed.st_mode)) == access,
+                 'shared original asset changed across attempt proofs')
             return proof
         proof = read_file(path, expected_sha=sha, shared=shared, alias=alias)[1]
         self.remember(proof)
@@ -284,17 +288,31 @@ class SharedReads:
     def remember(self, proof):
         path = Path(proof['path']); resolved = path.resolve(strict=True)
         identity = tuple(proof['stat_identity'])
-        need(str(resolved) == proof['resolved_path'] and signature(resolved.lstat()) == identity,
+        observed = resolved.lstat()
+        access = (observed.st_uid, observed.st_gid, stat.S_IMODE(observed.st_mode))
+        need(str(resolved) == proof['resolved_path'] and signature(observed) == identity,
              'original asset changed after full read')
         old = self.files.get(str(path))
-        need(old is None or (old[0]['sha256'] == proof['sha256'] and old[1:] == (resolved, identity)),
+        need(old is None or (old[0]['sha256'] == proof['sha256'] and old[1:] == (resolved, identity, access)),
              'original asset changed across full reads')
-        self.files[str(path)] = (proof, resolved, identity)
+        self.files[str(path)] = (proof, resolved, identity, access)
 
     def finish(self):
-        for path, (_, resolved, identity) in self.files.items():
-            need(Path(path).resolve(strict=True) == resolved and signature(resolved.lstat()) == identity,
+        for path, (proof, resolved, identity, access) in self.files.items():
+            observed = resolved.lstat()
+            need(Path(path).resolve(strict=True) == resolved and signature(observed) == identity and
+                 (observed.st_uid, observed.st_gid, stat.S_IMODE(observed.st_mode)) == access,
                  'shared original asset changed before final acceptance')
+            try:
+                read_file(path, expected_sha=proof['sha256'], expected_bytes=proof['bytes'],
+                          alias=Path(path) != resolved, shared=access[0] == SHARED_OWNER,
+                          mode=access[2])
+            except ValueError as error:
+                raise ValueError('INDEPENDENT_GOAL719225: shared original asset changed during final full SHA: '+str(error)) from error
+            after = resolved.lstat()
+            need(signature(after) == identity and Path(path).resolve(strict=True) == resolved and
+                 (after.st_uid, after.st_gid, stat.S_IMODE(after.st_mode)) == access,
+                 'shared original asset changed during final full SHA')
 
 
 def fresh_attempt(task, output, shared_reads=None):
