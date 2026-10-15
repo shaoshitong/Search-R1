@@ -685,3 +685,12 @@ C5 start实际执行一次，PID4104475/start80968623持续读取并于179210041
 P1修复及第三100实现f8a332a72257f54bf0c01a01fce592e2515d7937已推送，1106个远端源文件于1792101296.5155344完整SHA通过（归档SHA3fb54d91428fea7f52add07136a18746bd88233ba72589ea52c78c7c4cb7d026），只读复核确认P1闭合且无新P0/P1。修复版真实原C5/Stage等价对照已执行到独立CPU观察进程，结果仍待实际返回，旧a1e诊断不替代它。四卡112已完整all4Adam2240/head/scheduler，113采集完成但未提前接受。
 
 独立reader/holder只新增精确f8a第三route/scope，入口及最终边界重新完整Stage消费原C5，明确输出并绑定原C5和原C1两份prior证明，原B894/dc9/f979/09cc保持身份。原5/50只继承真实held0且全SHA的原claim；100/150/200/native-submit仅接受第三follower的真实来源与控制进程。102项相关本地协议测试通过，包括三scope互换拒绝、priorC5/C1/原50变化拒绝、missing200先于source/scope/spawn拒绝，以及所有五套归档与native-submit实际held0门；最终200/native4两次完整恢复/no201未放宽。第三100仍未执行，目标ACTIVE。
+
+
+### 2026-10-16 06:08 CST：114轮真实指标与F8归档失败
+
+修复版Stage对真实C5消费者的完整证明等价复核通过，SHA546e5b276b241f752bdc297f7f7fe48b7d3909b28606e23c1137c1bd7e053e2a，原消费者79.4092秒、Stage19.1183秒。F8恢复实际执行一次，原C5八文件9717字节同SHA/inode原子保全后独立读回通过，新follower277215/start81134743启动。归档runner281967/start81137069、child286742/start81138876因新的R10 tmp/torchelastic_oirmwa6a目录Permission denied，独立全DU真实退出1；部分1540205047808字节未接受，复制前失败。child于1792101874.5357316 held1，follower于1792101889.941727退出1，三出生身份死亡且payload根缺失。原始归档8文件、follower6文件的小字节完整副本和SHA已保存；禁止重放F8 start/intent。主训练及原RAW未改动。
+
+原四卡721485完整1..114，全部4rank各2280 Adam写入/head/scheduler连续，原RAW实际held0至114；115正在进行，无实际fatal。114轮Top448混合111/448=24.7768%，随机13/64=20.3125%；105–114轮1199/4480=26.7634%，随机120/640=18.75%，差8.0134个百分点。最终200及归档/恢复验收未完成。
+
+旧通用观察器slot1已核对NOT_STARTED后启动一次（368375/start81175784，du368376/start81175792），保留同一进程观察，不因超时重放。新增独立测量namespace入口复用原完整DU worker的私有模块实例，槽位1..64各有排他claim；同时验证入口和复用core的发布SHA，不改原观察器文件或已有槽位。失败部分总量拒绝、最多3次纯ENOENT、permission不重试及原生held-child完整检查全部沿用。只有代码推送并完整发布后才执行新入口。
