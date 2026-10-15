@@ -185,3 +185,18 @@ CE3以logits成对logsumexp实现，避免小概率下溢。去掉均值MSE，�
 新job721449已经一次提交，源码aca0e779e94ddc3fbd50e49c3d59e2e889fbcf12；4 GPU、48 CPU、512 GiB，emergency_acd。提交阶段实际held child wait0、教师22文件完整SHA通过；提交后仍须核验实际actor/head迭代。总预算200，不因初期检查完成而停止。
 
 721449随后在加载actor前因共享临时目录700权限导致全项目du核验失败（FAILED1:0，formal0）。原错误与终态保留至远端failed-job-721449。目录所有者按既有共享访问授权，仅将该临时目录组读/进入权限改为750；未改loss或模型。核对具体报错、原submission、完整源SHA、无actor/optimizer工作及目录du成功后，一次提交恢复job721485，仍运行同一aca0训练源码。此失败是启动存储门禁问题，不是新loss训练结果。
+
+## 新损失的实际warmup（2026-10-15）
+
+恢复作业721485在ACD1-21实际分配4卡，已通过初始模型和模型/检索共存检查。新缓存复用5120题、25600条教师轨迹，预测头实际完成40次Adam更新；容量仍为hidden64、135622参数。四rank actor参数、optimizer和scheduler冻结核验通过，warmup边界四rank RNG恢复相等。
+
+| warmup拟合后指标 | 实测值 |
+| --- | ---: |
+| 三标准差类CE | 0.8169189692 |
+| 按sqrt(0.3)归一化的标准差MSE | 0.1708564758 |
+| 六类辅助CE（未乘0.1） | 1.3284107447 |
+| 实际总loss | 1.1206165552 |
+
+总loss与CE3+标准差MSE+0.1CE6相等；mean_mse仅作诊断，权重0。warmup-ready收据SHA256为0d4f1029289d7d7a8a0936798ff1cb8a66a39005a0c7ffbc24b78d1d7550ac62，head版本qprobe:0:0:dfcc10256ce0e802。此时正式第1轮已开始采样，完成计数仍为0，不作为正式iteration验收。旧719225保持人工停止。
+
+已发布独立的新实验归档及最终native4跟进入口followthrough_sigma3，发布源码9c34720ecd564dfe902127d0167474d27b115cfe、全部1025文件远端SHA通过；它不会启动或改动训练，按实际配对checkpoint和最终200证据推进。训练源码继续固定aca0，不热改。独立raw审计入口发布0cca743462da769667262417f8064084f93fc912，须实际首轮完成后才允许一次启动。最终200、固定里程碑、51713评分、三副本SHA和实际恢复仍待完成。
