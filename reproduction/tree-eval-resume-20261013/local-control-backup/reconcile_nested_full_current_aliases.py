@@ -7,6 +7,7 @@ import argparse
 import copy
 from datetime import datetime, timezone
 import fcntl
+import gzip
 import importlib.util
 import json
 from pathlib import Path
@@ -479,8 +480,14 @@ def main():
         core.need(not receipt_path.exists(), 'Another alias publisher completed', 'CONCURRENT_UPDATE_NO_WRITE')
         snapshot.mkdir();manifest=[]
         for index,(path,raw) in enumerate(prior_raw.items()):
-            member = snapshot/f'{index:02d}-{path.name}';member.write_bytes(raw)
-            manifest.append(dict(source=str(path), snapshot=str(member), bytes=len(raw), sha256=core.digest(raw)))
+            member = snapshot/f'{index:02d}-{path.name}.gz'
+            member.write_bytes(gzip.compress(raw, mtime=0))
+            stored = member.read_bytes()
+            core.need(gzip.decompress(stored) == raw, 'Prior gzip snapshot does not restore exact original bytes')
+            manifest.append(dict(source=str(path), original_bytes=len(raw), original_sha256=core.digest(raw),
+                                 stored_gzip_path=str(member), stored_bytes=len(stored),
+                                 stored_sha256=core.digest(stored), gzip_mtime=0,
+                                 exact_original_bytes_readback=True))
         (snapshot/'SNAPSHOT_MANIFEST.json').write_bytes(core.json_bytes(dict(files=manifest, created_at_utc=now)))
         for path,raw in outputs.items():
             core.atomic_replace(path,raw)

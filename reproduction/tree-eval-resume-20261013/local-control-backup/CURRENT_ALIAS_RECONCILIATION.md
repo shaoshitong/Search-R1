@@ -43,12 +43,15 @@ CandidateN is a separately bound supplement for the following cumulative join;
 the script never appends or double-counts it into CUMN. CPU seconds come only
 from actual resource `CPUUsageNSec / 1e9`; final service CPU remains null.
 
-On explicit invocation, small prior JSON/Markdown snapshots are saved before
+On explicit invocation, small prior JSON/Markdown snapshots are saved as closed
+gzip members with `mtime=0` before
 replacing root/nested STATUS and REPORT, CURRENT_NATIVE_RECOVERY_FOLLOWUP,
 CURRENT_OBSERVER_CONNECTION_STATE and both existing local mirrors. The shared
 publisher lock and re-read hashes reject concurrent writes. An immutable
 CURRENT_ALIAS_RECONCILIATION_OUTERN receipt binds the evidence. This step does
 not accept the remaining200/final51713/HF-tokenizer/cleanup goal.
+The snapshot manifest records original and stored gzip sizes/SHA256; reading and
+decompressing each stored member must reproduce the exact original bytes.
 
 Implementation was prepared from the already published FULL125 evidence and
 ROOT_FULL125_PUBLICATION_READBACK_1323_1324 data scopes. No training job, new test,
