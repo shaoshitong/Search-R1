@@ -3,10 +3,12 @@ import copy
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from reproduction.common8 import qprobe_qwen_bind as binding
 from reproduction.common8.qprobe_configuration import arguments
@@ -14,6 +16,44 @@ from search_g1.qprobe_qwen_block_online import QwenBlockOnlineConfig
 
 
 class NativeBindingTests(unittest.TestCase):
+    def test_qualified_bank_bind_uses_admitted_stat_seal_and_never_falls_back(self):
+        from reproduction.a800_common import qprobe_qwen_formal_ops as ops
+        with tempfile.TemporaryDirectory() as directory:
+            fixture_root=Path(directory).resolve()
+            base=fixture_root/'target';(base/'preparation').mkdir(parents=True)
+            bank=fixture_root/'bank';cache_path=bank/'token-features';cache_path.mkdir(parents=True)
+            manifest=dict(spec_sha=binding.TOKEN_SPEC_SHA,count=169028)
+            (cache_path/'manifest.json').write_text(json.dumps(manifest))
+            for name in ops.BANK_FILES[1:]:(cache_path/name).write_bytes(b'metadata fixture only')
+            files=[]
+            for name in ops.BANK_FILES:
+                path=cache_path/name;st=path.stat()
+                files.append(dict(path=str(path),device=st.st_dev,inode=st.st_ino,bytes=st.st_size,mtime_ns=st.st_mtime_ns))
+            run=dict(source_commit='a'*40,source_sha256=dict(producer='b'*64))
+            intent=dict(base=str(base),source_commit=run['source_commit'],source_sha256=run['source_sha256'],bank_base=str(bank),qualified_bank_origin=dict(source_commit=ops.QUALIFIED_BANK_SOURCE))
+            intent_path=base/'preparation/intent.json';intent_path.write_text(json.dumps(intent))
+            admitted=dict(cache_dir=str(cache_path),files=files,source_commit=run['source_commit'],reused_qualified_bank=True,
+                original_full_sha_seal_revalidated=True,bank_reencoded=False,packed_features_rehashed=False,
+                actor_or_head_updates_inherited=False,formal_completed_outers=0,feature_spec_sha256=binding.TOKEN_SPEC_SHA,
+                feature_manifest_sha256=binding.sha_file(cache_path/'manifest.json'),complete_sha256=ops.QUALIFIED_BANK_COMPLETE,
+                qualified_bank_origin=dict(source_commit=ops.QUALIFIED_BANK_SOURCE,admitted_sha256=ops.QUALIFIED_BANK_ADMIT))
+            cache=SimpleNamespace(path=cache_path,manifest=manifest,verify_all=Mock())
+            def required(_base,_intent):
+                self.assertEqual((_base,_intent),(base,intent));ops.check_bank_file_seal(admitted);return admitted
+            with patch.object(ops,'validate_intent') as validate,patch.object(ops,'required_bank',side_effect=required):
+                proof=binding._verify_token_bank(base,run,cache)
+                self.assertTrue(proof['reused_qualified_bank']);self.assertFalse(proof['full_file_sha_verified_in_this_bind'])
+                validate.assert_called_once_with(intent);cache.verify_all.assert_not_called()
+                admitted['original_full_sha_seal_revalidated']=False
+                with self.assertRaisesRegex(ValueError,'SEAL_NOT_ADMITTED'):binding._verify_token_bank(base,run,cache)
+                admitted['original_full_sha_seal_revalidated']=True
+                packed=cache_path/'packed_features.npy';st=packed.stat();os.utime(packed,ns=(st.st_atime_ns,st.st_mtime_ns+1))
+                with self.assertRaises(AssertionError):binding._verify_token_bank(base,run,cache)
+                cache.verify_all.assert_not_called()
+            intent_path.write_text('{}')
+            ordinary=binding._verify_token_bank(base,run,cache)
+            self.assertFalse(ordinary['reused_qualified_bank']);cache.verify_all.assert_called_once_with()
+
     def metadata(self):
         sources = {'fixture-'+str(index):'7'*64 for index in range(489)}
         sources['search_g1/qprobe_qwen_block_model.py'] = binding.NATIVE_MODEL_SHA

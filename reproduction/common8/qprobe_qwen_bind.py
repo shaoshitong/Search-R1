@@ -260,6 +260,32 @@ def _resolved_prospective(base,run,phase):
     return resolved
 
 
+def _verify_token_bank(base,run,cache):
+    intent_path=base/'preparation/intent.json'
+    intent=_json(intent_path) if intent_path.exists() else {}
+    if intent.get('qualified_bank_origin') is None:
+        cache.verify_all()
+        return dict(reused_qualified_bank=False,full_file_sha_verified_in_this_bind=True)
+    from reproduction.a800_common.qprobe_qwen_formal_ops import validate_intent,required_bank
+    if (intent['base']!=str(base) or intent['source_commit']!=run['source_commit'] or
+            intent['source_sha256']!=run['source_sha256'] or cache.path!=Path(intent['bank_base'])/'token-features'):
+        raise ValueError('QWEN_BIND_QUALIFIED_BANK_TARGET_CHANGED')
+    validate_intent(intent)
+    admitted=required_bank(base,intent)
+    if (admitted.get('reused_qualified_bank') is not True or admitted.get('original_full_sha_seal_revalidated') is not True or
+            admitted.get('bank_reencoded') is not False or admitted.get('packed_features_rehashed') is not False or
+            admitted.get('actor_or_head_updates_inherited') is not False or admitted.get('formal_completed_outers')!=0 or
+            type(admitted.get('formal_completed_outers')) is not int or admitted.get('source_commit')!=run['source_commit'] or
+            admitted['cache_dir']!=str(cache.path) or admitted['feature_spec_sha256']!=TOKEN_SPEC_SHA or
+            sha_file(cache.path/'manifest.json')!=admitted['feature_manifest_sha256'] or
+            cache.manifest!=_json(cache.path/'manifest.json')):
+        raise ValueError('QWEN_BIND_QUALIFIED_BANK_SEAL_NOT_ADMITTED')
+    return dict(reused_qualified_bank=True,original_full_sha_seal_revalidated=True,
+        full_file_sha_verified_in_this_bind=False,packed_features_rehashed=False,
+        feature_manifest_sha256=admitted['feature_manifest_sha256'],complete_sha256=admitted['complete_sha256'],
+        qualified_bank_origin=copy.deepcopy(admitted['qualified_bank_origin']))
+
+
 def bind(base,cache_dir,*,warmup_ready,warmup_ready_sha256,retriever_version,infra_rollout):
     import torch
     from search_g1.qprobe_qwen_block_online import OnlineQwenBlockQProbe,QwenBlockOnlineConfig
@@ -275,7 +301,8 @@ def bind(base,cache_dir,*,warmup_ready,warmup_ready_sha256,retriever_version,inf
             any(run.get(key) for key in ('actor_checkpoint_path','resume_from_path','initial_actor_checkpoint','restored_from'))):
         raise ValueError('QWEN_BIND_REQUIRES_FRESH_OFFICIAL_ACTOR_200')
     ready,prepared = _read_warmup(warmup_ready,warmup_ready_sha256,run)
-    cache = TokenFeatureCache(cache_dir,expected_spec_sha=TOKEN_SPEC_SHA); cache.verify_all()
+    cache = TokenFeatureCache(cache_dir,expected_spec_sha=TOKEN_SPEC_SHA)
+    bank_verification = _verify_token_bank(base,run,cache)
     if (cache.manifest['count'] != 169028 or cache.spec['global_max_tokens'] != 244 or
             cache.manifest['total_tokens'] != 18367021 or cache.spec['train_parquet_sha256'] != run['input_sha256']['train.parquet'] or
             cache.spec['encoder_revision'] != OFFICIAL_REVISION):
@@ -319,6 +346,7 @@ def bind(base,cache_dir,*,warmup_ready,warmup_ready_sha256,retriever_version,inf
         actual_head_adam_updates=200,completed_outer=0,warmup_questions=5120,teacher_trajectories_reused=25600,
         trajectories_regenerated=False,no_head_refit=True,teacher_replay_excluded=True,
         native_block_proof=copy.deepcopy(ready['native_block_proof']),actor_optimizer_inherited=False,actor_checkpoint_inherited=False,
+        token_bank_verification=bank_verification,
         initialization_provenance=head.initialization_provenance,
         actual_warmup=dict(ready_path=str(warmup_ready),ready_sha256=warmup_ready_sha256,source_commit=WARMUP_SOURCE,
             source_map_sha256=WARMUP_SOURCE_MAP,prepared_sha256=ready['prepared_sha256'],head_sha256=ready['head_sha256']),

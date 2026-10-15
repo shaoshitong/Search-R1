@@ -4,8 +4,11 @@ import json
 from pathlib import Path
 import socket
 import tempfile
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
+from reproduction.a800_common import qprobe_qwen_formal_ops as ops
 from reproduction.a800_common.qprobe_qwen_formal_ops import CPU_MODULES,CPU_PROGRAM,validate_cpu_checks,validate_fresh,validate_release,once
 
 
@@ -14,6 +17,38 @@ def fresh():
 
 
 class NativeFormalOpsTest(unittest.TestCase):
+    def test_qualified_bank_origin_requires_terminal_proof_and_unchanged_file_seal(self):
+        cache=ops.QUALIFIED_BANK_BASE+'/token-features'
+        admitted=dict(stage='FULL_BANK_SHA_AND_ENCODER_RESOURCE_RELEASE_ADMITTED',complete_sha256=ops.QUALIFIED_BANK_COMPLETE,
+            cache_dir=cache,feature_manifest_sha256=ops.QUALIFIED_BANK_MANIFEST,feature_spec_sha256=ops.SPEC_SHA,
+            owned_sessions_remaining=0,owned_cuda_contexts_remaining=0,
+            files=[dict(path=cache+'/'+name,device=7,inode=index+1,bytes=100+index,mtime_ns=1000+index) for index,name in enumerate(ops.BANK_FILES)])
+        origin=dict(role='native_qwen_preupdate_qualified_bank_origin_v1',base=ops.QUALIFIED_BANK_ORIGIN,
+            source_commit=ops.QUALIFIED_BANK_SOURCE,source_map_sha256=ops.QUALIFIED_BANK_MAP,run_id=ops.QUALIFIED_BANK_RUN,
+            execution_id=ops.QUALIFIED_BANK_EXECUTION,bank_base=ops.QUALIFIED_BANK_BASE,complete_sha256=ops.QUALIFIED_BANK_COMPLETE,
+            feature_manifest_sha256=ops.QUALIFIED_BANK_MANIFEST,admitted_sha256=ops.QUALIFIED_BANK_ADMIT,
+            terminal_audit_sha256=ops.QUALIFIED_BANK_TERMINAL_AUDIT,producer_source_sha256=ops.QUALIFIED_BANK_PRODUCERS,
+            formal_completed_outers=0,actor_or_head_updates_inherited=False,old_handle_sha256='a'*64,
+            old_intent_canonical_sha256='b'*64,bank_admitted_observation_sha256='c'*64,terminal_audit_bytes=50000,admitted=admitted)
+        audit=dict(role='native_qwen92bb_actual_terminal_failure_and_onlyowned_resource_audit',source_commit=origin['source_commit'],
+            run_id=origin['run_id'],execution_id=origin['execution_id'],terminal_owned_cleanup_accepted=True,owned_birth_records=34,
+            live_owned_session_processes=[],owned_cuda_contexts_remaining=[],all_project_trainers_live=[],
+            one_nvml_read_only_query=True,no_tensor_or_gpu_test=True,no_stop_or_restart=True,metadata_files={
+                'logs/cleanup-status.json':dict(value=dict(cleaned=True,execution_backend='ssh_local',slurm_job_id=None,run_id=origin['run_id'],execution_id=origin['execution_id'])),
+                'logs/pipeline-status.json':dict(value=dict(stage='FAILED')),
+                'logs/process-ledger.json':dict(value=dict(jobs=dict(trainer=dict(state='STOPPED'))))})
+        ops.validate_qualified_bank_origin(origin,ops.QUALIFIED_BANK_PRODUCERS);ops.validate_terminal_bank_origin(origin,audit)
+        for key,value in (('source_commit','9'*40),('feature_manifest_sha256','9'*64),('formal_completed_outers',1)):
+            with self.subTest(key=key),self.assertRaises(AssertionError):ops.validate_qualified_bank_origin(dict(origin,**{key:value}),ops.QUALIFIED_BANK_PRODUCERS)
+        with self.assertRaises(AssertionError):ops.validate_qualified_bank_origin(origin,dict(ops.QUALIFIED_BANK_PRODUCERS,**{'search_g1/qprobe_token_features.py':'9'*64}))
+        with self.assertRaises(AssertionError):ops.validate_terminal_bank_origin(origin,dict(audit,live_owned_session_processes=[dict(pid=1)]))
+        seals={row['path']:SimpleNamespace(st_dev=row['device'],st_ino=row['inode'],st_size=row['bytes'],st_mtime_ns=row['mtime_ns']) for row in admitted['files']}
+        with patch.object(ops,'owned',side_effect=lambda path:SimpleNamespace(stat=lambda:seals[path])):
+            ops.check_bank_file_seal(admitted)
+            seals[cache+'/packed_features.npy'].st_mtime_ns+=1
+            with self.assertRaises(AssertionError):ops.check_bank_file_seal(admitted)
+        with self.assertRaises(AssertionError):ops.bank_command(Path('/unused'),Path('/unused'),dict(qualified_bank_origin=origin),prepare_only=True)
+
     def test_pristine_actor_budget_and_native_logical_gpu_requirement(self):
         run=fresh();validate_fresh(run,bound=False)
         for name,value in (('completed_updates',5),('full_state_restore',dict(saved=True)),('actor_micro_batch_per_rank',2)):

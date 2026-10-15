@@ -26,6 +26,20 @@ INITIAL0='/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f0
 QUALIFIED_WARMUP_BASE='/data/shaoshitong/Search-G1-qprobe-qwen-lastblock-warmup10-096c8297cba74f8089063e763686671e'
 QUALIFIED_WARMUP_SOURCE='e81445905bf8b15dbb0bdec3afa29d99ab0b11d8'
 QUALIFIED_WARMUP_MAP='006912cc7817b2ae8abde32a85c42d21b2c1976bf0b5618066c6aa9d2f0674ad'
+QUALIFIED_BANK_SOURCE='927163041cf0ddf2c2c517efc466177d76dc2a18'
+QUALIFIED_BANK_MAP='7ce4d02996393270a47e1d3840ab5ee793205e17e3154de18193c19b4120851e'
+QUALIFIED_BANK_ORIGIN=PREFIX+'92bb58c18ae74ca9bc59fe1ba5dc02b6'
+QUALIFIED_BANK_BASE='/data/shaoshitong/Search-G1-qprobe-fulltoken-feature-bank-8be88f0d4ac1470f95fe13b4fe146a3f'
+QUALIFIED_BANK_RUN='862bccb5fcf348ce8454f9a332f37bdd'
+QUALIFIED_BANK_EXECUTION='027e65da351a4e018dd377b806c19434'
+QUALIFIED_BANK_COMPLETE='e27f0afa69c31a9248977a78fe2093bfd1049a324fc3c860bc963c75a84b68e9'
+QUALIFIED_BANK_MANIFEST='fa8c9513f89b3700851f8fe75665bf515a82e7f491bc3a52a643a6e82aa243e9'
+QUALIFIED_BANK_ADMIT='efaa3a8bc9912cdc5a51884f5e626645ffe565980d3145edffad2bf7f241bdf1'
+QUALIFIED_BANK_TERMINAL_AUDIT='214270332335330c32851b8db31e5e4d14d70cd734633837a16bf4adc13c2191'
+QUALIFIED_BANK_PRODUCERS={
+    'reproduction/a800_common/qprobe_token_feature_bank.py':'4b03e3e980a5e79516804ec4e263942759a3ea048e6ea34071eaa1fcad52cb35',
+    'search_g1/qprobe_token_features.py':'408ac3c710cbcbb3684c93bdf57fd170c54266038fb6e0aced581accf1e5769b'}
+BANK_FILES=('manifest.json','index.jsonl','offsets.npy','lengths.npy','packed_features.npy')
 PYTHON='/data/search-g1/env/bin/python'
 CPU_MODULES=(
     'search_g1.test_qprobe_qwen_block_online',
@@ -111,6 +125,48 @@ def alive(record):
     except (FileNotFoundError,ProcessLookupError):return False
 
 
+def validate_qualified_bank_origin(origin,source_sha256):
+    expected=dict(role='native_qwen_preupdate_qualified_bank_origin_v1',base=QUALIFIED_BANK_ORIGIN,
+        source_commit=QUALIFIED_BANK_SOURCE,source_map_sha256=QUALIFIED_BANK_MAP,run_id=QUALIFIED_BANK_RUN,
+        execution_id=QUALIFIED_BANK_EXECUTION,bank_base=QUALIFIED_BANK_BASE,complete_sha256=QUALIFIED_BANK_COMPLETE,
+        feature_manifest_sha256=QUALIFIED_BANK_MANIFEST,admitted_sha256=QUALIFIED_BANK_ADMIT,
+        terminal_audit_sha256=QUALIFIED_BANK_TERMINAL_AUDIT,producer_source_sha256=QUALIFIED_BANK_PRODUCERS,
+        formal_completed_outers=0,actor_or_head_updates_inherited=False)
+    assert all(origin.get(key)==value for key,value in expected.items())
+    assert origin['formal_completed_outers'] is not False and origin['actor_or_head_updates_inherited'] is False
+    assert all(source_sha256.get(name)==digest for name,digest in QUALIFIED_BANK_PRODUCERS.items())
+    for key in ('old_handle_sha256','old_intent_canonical_sha256','bank_admitted_observation_sha256'):
+        assert re.fullmatch('[0-9a-f]{64}',origin[key])
+    assert type(origin['terminal_audit_bytes']) is int and 0<origin['terminal_audit_bytes']<=2*1024**2
+    admitted=origin['admitted']
+    assert admitted['stage']=='FULL_BANK_SHA_AND_ENCODER_RESOURCE_RELEASE_ADMITTED' and admitted['complete_sha256']==QUALIFIED_BANK_COMPLETE
+    assert admitted['cache_dir']==QUALIFIED_BANK_BASE+'/token-features' and admitted['feature_manifest_sha256']==QUALIFIED_BANK_MANIFEST
+    assert admitted['feature_spec_sha256']==SPEC_SHA and admitted['owned_sessions_remaining']==admitted['owned_cuda_contexts_remaining']==0
+    assert len(admitted['files'])==5 and {row['path'] for row in admitted['files']}=={admitted['cache_dir']+'/'+name for name in BANK_FILES}
+    for row in admitted['files']:
+        assert all(type(row[key]) is int and row[key]>=0 for key in ('device','inode','bytes','mtime_ns'))
+
+
+def validate_terminal_bank_origin(origin,audit):
+    assert audit['role']=='native_qwen92bb_actual_terminal_failure_and_onlyowned_resource_audit'
+    assert all(audit[key]==origin[key] for key in ('source_commit','run_id','execution_id'))
+    assert audit['terminal_owned_cleanup_accepted'] is True and audit['owned_birth_records']==34
+    assert audit['live_owned_session_processes']==audit['owned_cuda_contexts_remaining']==audit['all_project_trainers_live']==[]
+    assert audit['one_nvml_read_only_query'] is True and audit['no_tensor_or_gpu_test'] is True and audit['no_stop_or_restart'] is True
+    metadata=audit['metadata_files'];cleanup=metadata['logs/cleanup-status.json']['value']
+    assert cleanup['cleaned'] is True and cleanup['execution_backend']=='ssh_local' and cleanup['slurm_job_id'] is None
+    assert all(cleanup[key]==origin[key] for key in ('run_id','execution_id'))
+    assert metadata['logs/pipeline-status.json']['value']['stage']=='FAILED'
+    assert all(job['state']=='STOPPED' for job in metadata['logs/process-ledger.json']['value']['jobs'].values())
+
+
+def check_bank_file_seal(value):
+    assert len(value['files'])==5 and {row['path'] for row in value['files']}=={value['cache_dir']+'/'+name for name in BANK_FILES}
+    for row in value['files']:
+        st=owned(row['path']).stat()
+        assert (st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns)==(row['device'],row['inode'],row['bytes'],row['mtime_ns'])
+
+
 def validate_intent(intent):
     assert intent['role']==ROLE and intent['host']=='baai-a800' and re.fullmatch('[0-9a-f]{32}',intent['deployment_id'])
     assert intent['base']==PREFIX+intent['deployment_id'] and re.fullmatch('[0-9a-f]{40}',intent['source_commit'])
@@ -123,6 +179,9 @@ def validate_intent(intent):
     assert hashlib.sha256(canonical(intent['warmup_handle']['source_sha256'])).hexdigest()==intent['warmup_source_map_sha256']
     assert intent['initial_probes_source_base']==INITIAL0 and intent['head_device']=='cuda:0'
     assert intent['source_publication_authorized'] is True and intent.get('saved_checkpoint_restore') is None
+    if intent.get('qualified_bank_origin') is not None:
+        origin=intent['qualified_bank_origin'];validate_qualified_bank_origin(origin,intent['source_sha256'])
+        assert intent['bank_base']==origin['bank_base'] and intent['source_commit']!=origin['source_commit'] and intent['base']!=origin['base']
 
 
 def load(base):
@@ -275,6 +334,7 @@ def required_warmup(base,intent):
 
 
 def bank_command(base,repo,intent,*,prepare_only,physical_index=None):
+    assert intent.get('qualified_bank_origin') is None, 'Qualified existing bank must be admitted, never prepared or encoded again'
     if not prepare_only:required_warmup(base,intent)
     args=[PYTHON,'-m','reproduction.a800_common.qprobe_token_feature_bank','--output-dir',intent['bank_base'],'--source-commit',intent['source_commit'],'--source-publication',str(base/'preparation/source-publication.json')]
     if prepare_only:args+=['--prepare-only']
@@ -299,6 +359,7 @@ def helpers(intent):
 
 
 def bank_admit(base,repo,intent):
+    if intent.get('qualified_bank_origin') is not None:return qualified_bank_admit(base,repo,intent)
     required_warmup(base,intent);bank=Path(intent['bank_base']);complete=read(bank/'complete.json');ended=read(bank/'encode-exit.json')
     assert ended['exit_code']==0 and complete['stage']=='FULL_CANONICAL_TOKEN_BANK_PRODUCED'
     assert ended['producer_identity']==complete['producer_identity']
@@ -314,9 +375,61 @@ def bank_admit(base,repo,intent):
     cache=TokenFeatureCache(bank/'token-features',expected_spec_sha=SPEC_SHA);cache.verify_all()
     assert cache.manifest['count']==169028 and cache.manifest['total_tokens']==18367021 and sha(cache.path/'manifest.json')==complete['feature_manifest_sha256'] and cache.manifest['files']==complete['full_file_sha256']
     files=[]
-    for name in ('manifest.json','index.jsonl','offsets.npy','lengths.npy','packed_features.npy'):
+    for name in BANK_FILES:
         path=owned(cache.path/name);st=path.stat();files.append(dict(path=str(path),device=st.st_dev,inode=st.st_ino,bytes=st.st_size,mtime_ns=st.st_mtime_ns))
     value=dict(stage='FULL_BANK_SHA_AND_ENCODER_RESOURCE_RELEASE_ADMITTED',feature_manifest_sha256=complete['feature_manifest_sha256'],feature_spec_sha256=SPEC_SHA,cache_dir=str(cache.path),files=files,complete_sha256=sha(bank/'complete.json'),encoder_worker=leader,encoder_producer=producer,owned_sessions_remaining=0,owned_cuda_contexts_remaining=0,reused_session_count=len(reused_sessions),reused_pid_count=len(reused_pids),checked_unix=time.time())
+    once(base/'logs/native-bank-admitted.json',value);return value
+
+
+def qualified_bank_metadata(base,repo,intent):
+    origin=intent['qualified_bank_origin'];validate_qualified_bank_origin(origin,intent['source_sha256'])
+    old=Path(origin['base']);old_intent=read(old/'preparation/intent.json')
+    assert hashlib.sha256(canonical(old_intent)).hexdigest()==origin['old_intent_canonical_sha256']
+    assert old_intent['source_commit']==origin['source_commit'] and old_intent['base']==str(old) and old_intent['bank_base']==intent['bank_base']
+    assert hashlib.sha256(canonical(old_intent['source_sha256'])).hexdigest()==origin['source_map_sha256']
+    for name,digest in QUALIFIED_BANK_PRODUCERS.items():assert old_intent['source_sha256'][name]==digest==sha(old/'repo'/name)==sha(repo/name)
+    audit_path=base/'preparation/qualified-bank-terminal-audit.json'
+    assert audit_path.stat().st_size==origin['terminal_audit_bytes'] and sha(audit_path)==origin['terminal_audit_sha256']
+    audit=read(audit_path,2*1024**2);validate_terminal_bank_origin(origin,audit)
+    for relative,item in audit['metadata_files'].items():assert sha(old/relative)==item['sha256']
+    old_run=read(old/'logs/run-manifest.json')
+    assert all(old_run[key]==origin[key] for key in ('source_commit','run_id','execution_id')) and old_run['completed_updates']==0
+    assert old_run.get('full_state_restore') is None
+    for name in ('actual-attempts.jsonl','actual-updates.jsonl')+tuple('optimizer-rank-'+str(rank)+'.jsonl' for rank in range(4)):
+        path=old/'logs'/name;assert not path.exists() or path.stat().st_size==0, 'Origin is not pre-update'
+    assert not list((old/'artifacts/question-probe/completed').glob('*.json'))
+    admitted_path=old/'logs/native-bank-admitted.json';assert sha(admitted_path)==origin['admitted_sha256']
+    admitted=read(admitted_path);assert admitted==origin['admitted'];check_bank_file_seal(admitted)
+    bank=Path(intent['bank_base']);complete=read(bank/'complete.json');ended=read(bank/'encode-exit.json')
+    assert sha(bank/'complete.json')==origin['complete_sha256'] and complete['source_commit']==origin['source_commit'] and complete['source_map_sha256']==origin['source_map_sha256']
+    assert ended['exit_code']==0 and ended['producer_identity']==complete['producer_identity']==admitted['encoder_producer']
+    assert read(old/'logs/bank-encode-launch.json')['process']==admitted['encoder_worker']
+    assert complete['stage']=='FULL_CANONICAL_TOKEN_BANK_PRODUCED' and complete['rows']==169028 and complete['reused_rows']==5120 and complete['newly_encoded_rows']==163908
+    assert complete['canonical_order'] is complete['reused_rows_byte_exact'] is True and complete['teacher_trajectories_generated']==complete['head_adam_updates']==0 and complete['actor_started'] is False
+    cache=Path(admitted['cache_dir']);manifest=read(cache/'manifest.json')
+    assert sha(cache/'manifest.json')==complete['feature_manifest_sha256']==origin['feature_manifest_sha256']
+    assert manifest['files']==complete['full_file_sha256'] and manifest['count']==169028 and manifest['total_tokens']==18367021
+    assert manifest['spec_sha']==complete['feature_spec_sha256']==SPEC_SHA and hashlib.sha256(canonical(manifest['spec'])).hexdigest()==SPEC_SHA
+    run=read(base/'logs/run-manifest.json');validate_fresh(run,bound=False if run.get('question_probe') is None else True)
+    science=complete['qualification'];assert science['model_revision']==run['model_revision']
+    assert all(science['canonical_input_sha256'][name]==digest for name,digest in run['input_sha256'].items())
+    assert manifest['spec']['train_parquet_sha256']==run['input_sha256']['train.parquet']
+    assert manifest['spec']['encoder_files_sha256']==hashlib.sha256(canonical(science['model_files_sha256'])).hexdigest()
+    records={}
+    launch=audit['metadata_files']['logs/deployment-launch-receipt.json']['value']
+    for record in [launch,admitted['encoder_worker'],admitted['encoder_producer']]+[record for job in audit['metadata_files']['logs/process-ledger.json']['value']['jobs'].values() for record in [job['leader'],*job['ledger'].values()]]:
+        identity={key:record[key] for key in ('pid','start_ticks','sid','uid')};records[tuple(identity.values())]=identity
+    assert all(not alive(record) for record in records.values())
+    survivors,_=helpers(intent);live,_=survivors(list(records.values()));assert not live
+    return admitted
+
+
+def qualified_bank_admit(base,repo,intent):
+    required_warmup(base,intent);admitted=qualified_bank_metadata(base,repo,intent);origin=intent['qualified_bank_origin']
+    value=dict(admitted,source_commit=intent['source_commit'],qualified_bank_origin=dict(base=origin['base'],source_commit=origin['source_commit'],
+        source_map_sha256=origin['source_map_sha256'],admitted_sha256=origin['admitted_sha256'],terminal_audit_sha256=origin['terminal_audit_sha256']),
+        reused_qualified_bank=True,bank_reencoded=False,packed_features_rehashed=False,original_full_sha_seal_revalidated=True,
+        actor_or_head_updates_inherited=False,formal_completed_outers=0,checked_unix=time.time())
     once(base/'logs/native-bank-admitted.json',value);return value
 
 
@@ -324,9 +437,14 @@ def required_bank(base,intent):
     value=read(base/'logs/native-bank-admitted.json');assert value['stage']=='FULL_BANK_SHA_AND_ENCODER_RESOURCE_RELEASE_ADMITTED'
     assert value['cache_dir']==intent['bank_base']+'/token-features' and sha(Path(value['cache_dir'])/'manifest.json')==value['feature_manifest_sha256']
     assert sha(Path(intent['bank_base'])/'complete.json')==value['complete_sha256']
-    for row in value['files']:
-        st=owned(row['path']).stat();assert (st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns)==(row['device'],row['inode'],row['bytes'],row['mtime_ns'])
+    check_bank_file_seal(value)
     assert not alive(value['encoder_worker']) and not alive(value['encoder_producer'])
+    if intent.get('qualified_bank_origin') is not None:
+        admitted=qualified_bank_metadata(base,base/'repo',intent);origin=intent['qualified_bank_origin']
+        assert value['reused_qualified_bank'] is True and value['source_commit']==intent['source_commit']
+        assert value['bank_reencoded'] is value['packed_features_rehashed'] is value['actor_or_head_updates_inherited'] is False
+        assert value['original_full_sha_seal_revalidated'] is True and value['files']==admitted['files']
+        assert value['qualified_bank_origin']=={key:origin[key] for key in ('base','source_commit','source_map_sha256','admitted_sha256','terminal_audit_sha256')}
     return value
 
 

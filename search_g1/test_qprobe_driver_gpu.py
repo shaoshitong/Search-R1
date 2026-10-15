@@ -3,13 +3,25 @@ import ast
 import copy
 import os
 from pathlib import Path
+import pickle
+import random
+from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
-import torch
+import numpy as np
 
 from search_g1 import qprobe_driver_gpu as driver
 from reproduction.common8.native_allocation import LOCAL_BINDING_RECEIPT, LOCAL_PLACEMENT_POLICY
+
+
+class CpuRngBytes:
+    """Explicit metadata-only stand-in for Torch's CPU RNG byte tensor."""
+    def __init__(self, value):
+        self.value = value
+
+    def numpy(self):
+        return np.frombuffer(self.value, dtype=np.uint8)
 
 
 def fixture():
@@ -47,27 +59,31 @@ class NativeDriverGpuTests(unittest.TestCase):
         return driver.validate_driver_route(*(values or fixture()), head_device='cuda:0',
             hostname='test-a800', incoming_visible=kwargs.pop('incoming_visible', ''), **kwargs)
 
-    def test_cpu_ray_task_routes_to_first_admitted_uuid_without_extra_gpu_or_rng_change(self):
+    def test_child_is_born_on_first_admitted_uuid_without_mutating_worker_environment_or_rng(self):
         route = self.route()
         self.assertEqual(route['physical_index'], 1)
         self.assertEqual(route['gpu_uuid'], 'GPU-fixture-1')
         self.assertEqual(route['ray_gpu_resources_reserved'], 0)
         self.assertTrue(route['shares_admitted_actor_training_gpu'])
         environment = {'CUDA_VISIBLE_DEVICES': ''}
-        before = torch.get_rng_state().clone()
+        child = driver.child_environment(route, environment)
+        self.assertEqual(environment, {'CUDA_VISIBLE_DEVICES': ''})
+        self.assertEqual(child, {'CUDA_VISIBLE_DEVICES': route['gpu_uuid']})
+        before = random.getstate()
         calls = []
         def count():
-            calls.append(('count', environment['CUDA_VISIBLE_DEVICES'])); return 1
+            calls.append(('count', child['CUDA_VISIBLE_DEVICES'])); return 1
         def uuids(size):
-            calls.append(('uuid', environment['CUDA_VISIBLE_DEVICES'])); self.assertEqual(size, 1)
+            calls.append(('uuid', child['CUDA_VISIBLE_DEVICES'])); self.assertEqual(size, 1)
             return [route['gpu_uuid']]
-        proof = driver.install_driver_visibility(route, environ=environment, cuda_initialized=lambda: False,
-            cuda_device_count=count, cuda_uuids=uuids)
-        self.assertEqual(environment, {'CUDA_VISIBLE_DEVICES': 'GPU-fixture-1'})
+        proof = driver.verify_driver_visibility(route, environ=child, birth_visible=route['gpu_uuid'],
+            cuda_initialized=lambda: False, cuda_device_count=count, cuda_uuids=uuids)
+        self.assertEqual(environment, {'CUDA_VISIBLE_DEVICES': ''})
         self.assertEqual(calls, [('count', 'GPU-fixture-1'), ('uuid', 'GPU-fixture-1')])
         self.assertFalse(proof['rng_seed_performed'])
         self.assertFalse(proof['tensor_allocation_performed'])
-        self.assertTrue(torch.equal(before, torch.get_rng_state()))
+        self.assertFalse(proof['visibility_changed_after_process_birth'])
+        self.assertEqual(before, random.getstate())
 
     def test_auxiliary_visibility_wrong_uuid_order_or_unbound_launch_identity_reject(self):
         for fault in ('auxiliary', 'uuid_order', 'claim', 'placement', 'allocation', 'pipeline'):
@@ -84,42 +100,137 @@ class NativeDriverGpuTests(unittest.TestCase):
 
     def test_preinitialized_cuda_or_ray_global_override_is_forbidden(self):
         route = self.route()
-        for environment, initialized in (({'CUDA_VISIBLE_DEVICES': ''}, True),
-                ({'CUDA_VISIBLE_DEVICES': '', 'RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES': '1'}, False)):
+        for environment, initialized, born in (({'CUDA_VISIBLE_DEVICES': route['gpu_uuid']}, True, route['gpu_uuid']),
+                ({'CUDA_VISIBLE_DEVICES': route['gpu_uuid'], 'RAY_EXPERIMENTAL_NOSET_CUDA_VISIBLE_DEVICES': '1'}, False, route['gpu_uuid']),
+                ({'CUDA_VISIBLE_DEVICES': route['gpu_uuid']}, False, '')):
             with self.subTest(initialized=initialized), self.assertRaises(ValueError):
-                driver.install_driver_visibility(route, environ=environment, cuda_initialized=lambda: initialized,
+                driver.verify_driver_visibility(route, environ=environment, birth_visible=born,
+                    cuda_initialized=lambda: initialized,
                     cuda_device_count=lambda: self.fail('No identity query after forbidden environment'),
                     cuda_uuids=lambda _size: self.fail('No UUID query after forbidden environment'))
-            self.assertEqual(environment['CUDA_VISIBLE_DEVICES'], '')
+            self.assertEqual(environment['CUDA_VISIBLE_DEVICES'], route['gpu_uuid'])
 
     def test_actual_cuda_mapping_must_be_one_exact_training_uuid(self):
         route = self.route()
         for count, uuids in ((0, []), (2, [route['gpu_uuid'], 'GPU-fixture-5']), (1, ['GPU-foreign'])):
             with self.subTest(count=count), self.assertRaisesRegex(ValueError, 'ACTUAL_CUDA_UUID_DIFFERS'):
-                driver.install_driver_visibility(route, environ={}, cuda_initialized=lambda: False,
+                driver.verify_driver_visibility(route, environ={'CUDA_VISIBLE_DEVICES': route['gpu_uuid']},
+                    birth_visible=route['gpu_uuid'], cuda_initialized=lambda: False,
                     cuda_device_count=lambda: count, cuda_uuids=lambda _size: uuids)
 
     def test_non_native_entry_has_no_file_or_cuda_side_effects(self):
         with patch.object(driver, '_json', side_effect=AssertionError('No manifest read for old heads')):
-            self.assertIsNone(driver.bind_native_driver_gpu(dict(question_probe=dict(head_kind='count6_v1'))))
+            self.assertFalse(driver.run_native_driver(dict(question_probe=dict(head_kind='count6_v1'))))
 
-    def test_exact_entry_hook_precedes_framework_work_and_source_guard_keeps_other_code_frozen(self):
-        from reproduction.a800_common.adopt_initial_probes import _outside_ray_bootstrap
+    def test_single_process_launch_uses_birth_environment_stdin_and_propagates_failure(self):
+        payload = dict(schema_version=1, config={'unchanged': True}, binding={'run_id': 'a'*32},
+            route=self.route(), cluster=driver._cluster_identity('127.0.0.1:1234', 'same-private-namespace'),
+            parent_identity={'pid': 123, 'start_ticks': 456}, cpu_rng_sha256='f'*64)
+        environment = driver.child_environment(payload['route'], {'CUDA_VISIBLE_DEVICES': '', 'RAY_ADDRESS': 'auto'})
+        for code in (0, 3):
+            child = Mock(pid=789, returncode=code)
+            records = []
+            with patch.object(driver.subprocess, 'Popen', return_value=child) as spawn, \
+                    patch('reproduction.common8.native_allocation._write_local_once', side_effect=lambda p, v: records.append((p, v))):
+                if code == 0:
+                    driver._spawn_driver_process(Path('/data/fixture'), payload, environment)
+                else:
+                    with self.assertRaisesRegex(ValueError, 'FRESH_DRIVER_CHILD_EXIT_3'):
+                        driver._spawn_driver_process(Path('/data/fixture'), payload, environment)
+                spawn.assert_called_once()
+                command, = spawn.call_args.args
+                self.assertEqual(command[:4], [driver.sys.executable, '-m', 'search_g1.qprobe_driver_gpu', '--native-driver-child'])
+                self.assertEqual(spawn.call_args.kwargs, dict(cwd=Path('/data/fixture/repo'), env=environment,
+                    stdin=driver.subprocess.PIPE, start_new_session=False))
+                raw, = child.communicate.call_args.args
+                self.assertEqual(pickle.loads(raw), payload)
+                self.assertEqual(records[0][0], Path('/data/fixture')/driver.PROCESS_CLAIM)
+                self.assertEqual(records[1][1]['exit_code'], code)
+                self.assertNotIn('RAY_ADDRESS', environment)
+                self.assertEqual(records[0][1]['ray_gpu_resources_reserved'], 0)
+
+    def test_cpu_rng_roundtrip_preserves_python_numpy_and_torch_sequences(self):
+        # Test the exact handoff protocol without installing/loading Torch.
+        # The mock has only CPU get/set APIs, so CUDA access fails immediately.
+        cpu_backend = random.Random(123)
+        backend = SimpleNamespace(
+            get_rng_state=lambda: CpuRngBytes(pickle.dumps(cpu_backend.getstate(), protocol=4)),
+            set_rng_state=lambda value: cpu_backend.setstate(pickle.loads(value.value)))
+        with patch.dict('sys.modules', torch=backend):
+            original = driver.capture_cpu_rng()
+            try:
+                state = pickle.loads(pickle.dumps(original, protocol=4))
+                sha = driver.cpu_rng_sha256(state)
+                expected = (random.random(), np.random.random(), cpu_backend.random())
+                self.assertEqual(driver.restore_cpu_rng(state), sha)
+                actual = (random.random(), np.random.random(), cpu_backend.random())
+                self.assertEqual(actual, expected)
+            finally:
+                driver.restore_cpu_rng(original)
+
+    def test_parent_death_guard_precedes_tensor_unpickling_and_checks_parent_birth(self):
+        import hashlib
+        raw = b'mocked owned stdin'
+        parent = dict(pid=123, start_ticks=456, uid=os.getuid(), sid=123)
+        events = []
+        library = Mock()
+        library.prctl.side_effect = lambda *args: events.append(('prctl', args)) or 0
+        def unpack(_raw):
+            events.append(('unpickle',)); return {'schema_version': 0}
+        with patch.object(driver, '_birth', return_value=parent), patch('ctypes.CDLL', return_value=library), \
+                patch.object(driver.pickle, 'loads', side_effect=unpack):
+            with self.assertRaisesRegex(ValueError, 'WRAPPER_BIRTH_CHANGED'):
+                driver._child(raw, hashlib.sha256(raw).hexdigest())
+        self.assertEqual([item[0] for item in events], ['prctl', 'unpickle'])
+        with patch.object(driver, '_birth', side_effect=[parent, dict(parent, start_ticks=999)]), \
+                patch('ctypes.CDLL', return_value=library), patch.object(driver.pickle, 'loads') as unpack:
+            with self.assertRaisesRegex(ValueError, 'WRAPPER_DIED_DURING_CHILD_BOOTSTRAP'):
+                driver._child(raw, hashlib.sha256(raw).hexdigest())
+            unpack.assert_not_called()
+
+    def test_exact_body_relocation_keeps_original_bytes_ast_and_ray_bootstrap(self):
+        # Load the actual narrow source guard without training dependencies.
+        guard_path = Path(__file__).resolve().parents[1]/'reproduction/a800_common/adopt_initial_probes.py'
+        guard = next(item for item in ast.parse(guard_path.read_bytes()).body
+                     if isinstance(item, ast.FunctionDef) and item.name == '_outside_ray_bootstrap')
+        def check(condition, message):
+            if not condition: raise ValueError(message)
+        context = dict(_check=check)
+        exec(compile(ast.Module(body=[guard], type_ignores=[]), str(guard_path), 'exec'), context)
+        _outside_ray_bootstrap = context['_outside_ray_bootstrap']
         path = Path(__file__).resolve().parents[1]/driver.ENTRY_PATH
         raw = path.read_bytes()
         tree = ast.parse(raw)
         function = next(item for item in tree.body if isinstance(item, ast.FunctionDef) and item.name == 'main_task')
         self.assertIsInstance(function.body[0], ast.ImportFrom)
         self.assertEqual(function.body[0].module, 'search_g1.qprobe_driver_gpu')
-        self.assertEqual(function.body[1].value.func.id, 'bind_native_driver_gpu')
+        self.assertEqual(function.body[1].test.func.id, 'run_native_driver')
         self.assertEqual(len(function.decorator_list), 1)
         self.assertEqual(ast.unparse(function.decorator_list[0]), 'ray.remote')
-        exact = (b'    from search_g1.qprobe_driver_gpu import bind_native_driver_gpu\n'
-                 b'    bind_native_driver_gpu(config)\n')
-        previous = raw.replace(exact, b'', 1)
+        exact = (b'@ray.remote\ndef main_task(config):\n'
+                 b'    from search_g1.qprobe_driver_gpu import run_native_driver\n'
+                 b'    if run_native_driver(config):\n'
+                 b'        return\n'
+                 b'    run_main_task(config)\n\n\n'
+                 b'def run_main_task(config):\n')
+        self.assertEqual(raw.count(exact), 1)
+        previous = raw.replace(exact, b'@ray.remote\ndef main_task(config):\n', 1)
         self.assertEqual(_outside_ray_bootstrap(raw), _outside_ray_bootstrap(previous))
+        previous_tree = ast.parse(previous)
+        old = next(item for item in previous_tree.body if isinstance(item, ast.FunctionDef) and item.name == 'main_task')
+        body = next(item for item in tree.body if isinstance(item, ast.FunctionDef) and item.name == 'run_main_task')
+        self.assertEqual([ast.dump(item) for item in body.body], [ast.dump(item) for item in old.body])
         changed = raw.replace(b'    trainer.fit()\n', b'    trainer.fit()\n    alter_reward()\n')
         self.assertNotEqual(_outside_ray_bootstrap(changed), _outside_ray_bootstrap(previous))
+        changed = raw.replace(b'    run_main_task(config)\n', b'    run_main_task(config)\n    alter_reward()\n')
+        self.assertNotEqual(_outside_ray_bootstrap(changed), _outside_ray_bootstrap(previous))
+        helper = ast.parse(Path(driver.__file__).read_bytes())
+        child = next(item for item in helper.body if isinstance(item, ast.FunctionDef) and item.name == '_child')
+        init = next(item for item in ast.walk(child) if isinstance(item, ast.Call) and ast.unparse(item.func) == 'ray.init')
+        self.assertEqual({item.arg for item in init.keywords}, {'address', 'namespace', 'runtime_env'})
+        self.assertEqual(driver.RAY_RUNTIME_ENV, {'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
+        wrapper = next(item for item in helper.body if isinstance(item, ast.FunctionDef) and item.name == 'run_native_driver')
+        self.assertFalse(any(isinstance(item, ast.Attribute) and item.attr == 'cuda' for item in ast.walk(wrapper)))
 
 
 if __name__ == '__main__': unittest.main()
