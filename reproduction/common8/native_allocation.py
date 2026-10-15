@@ -32,6 +32,30 @@ def fields(text):
     return result
 
 
+NATIVE_BIRTH_FIELDS = ('JobId', 'SubmitTime', 'StartTime', 'UserId', 'Command', 'WorkDir', 'NodeList')
+WRAPPED_BATCH_SCRIPT_ROLE = 'actual_slurm_controller_wrapped_batch_script_v1'
+
+
+def wrapped_batch_script_identity(job, content):
+    """Bind actual controller script bytes when sbatch --wrap has no Command."""
+    assert job['Command'] == '(null)', 'Only a wrapped null Command uses script identity'
+    assert isinstance(content, str) and '\x00' not in content
+    lines = content.splitlines()
+    assert len(lines) >= 3 and lines[0].startswith('#!')
+    assert lines[1] == '# This script was created by sbatch --wrap.', 'Not an actual sbatch wrapper'
+    assert any(line.strip() and not line.lstrip().startswith('#') for line in lines[2:]), 'Empty sbatch wrapper'
+    return dict(role=WRAPPED_BATCH_SCRIPT_ROLE,
+        slurm_job_birth={name: job[name] for name in NATIVE_BIRTH_FIELDS},
+        content=content, sha256=hashlib.sha256(content.encode('utf-8')).hexdigest())
+
+
+def verify_wrapped_batch_script(allocation, job):
+    script = allocation['actual_batch_script']
+    expected = wrapped_batch_script_identity(job, script['content'])
+    assert script == expected, 'Actual wrapped batch script identity differs'
+    return script['sha256']
+
+
 def allocated_indices(detail, node, count=8):
     line=next((line for line in detail.splitlines() if 'Nodes='+node+' ' in line), '')
     m=re.search(r'GRES=gpu:(?:h100:)?(\d+)\(IDX:([^)]*)\)',line)
@@ -146,6 +170,12 @@ def admit(base):
     assert run['profile']=='common8' and run['completed_updates']==0
     detail=subprocess.check_output(['scontrol','show','job','-d',job_id],text=True)
     job=fields(detail)
+    batch_script = None
+    if job.get('Command') == '(null)':
+        # Read Slurm's stored script; never reconstruct it from an expected
+        # launch command or substitute a synthetic Command for the controller.
+        content = subprocess.check_output(['scontrol','write','batch_script',job_id,'-']).decode('utf-8')
+        batch_script = wrapped_batch_script_identity(job, content)
     from reproduction.common8.shared_slurm import POLICY as SHARED_POLICY
     sharing=run.get('slurm_gpu_sharing_policy')==SHARED_POLICY
     from reproduction.common8.topology import world_size
@@ -169,6 +199,8 @@ def admit(base):
         physical_gpu_inventory=rows,actual_cuda_runtime_uuids=actual,
         active_node_jobs=active,foreign_compute_applications=applications,checked_unix=time.time(),
         accepted=False,scope='raw actual resource observation before admission; not acceptance')
+    if batch_script is not None:
+        observation['actual_batch_script'] = batch_script
     with (base/'logs/native-allocation-observation.json').open('x') as f:
         json.dump(observation,f,indent=2);f.flush();os.fsync(f.fileno())
     cohosts = run.get('shared_gpu_cohosts')
@@ -201,6 +233,8 @@ def admit(base):
         foreign_compute_applications=applications,shared_gpu_policy=run.get('shared_gpu_policy'),
         bound_cohosts=cohosts,actual_memory_inventory=memory_rows,checked_unix=time.time(),
         training_world_size=size, scope='native allocation and actual UUID mapping before project GPU work; not model/GRPO acceptance')
+    if batch_script is not None:
+        proof['actual_batch_script'] = batch_script
     if size==4 and not sharing:
         by_uuid={row[1]:int(row[0]) for row in rows}
         proof.update(gpu_index_mapping_policy='slurm_global_minor_to_process_nvml_uuid_v1',

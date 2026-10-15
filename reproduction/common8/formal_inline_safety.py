@@ -76,12 +76,20 @@ def native_birth(allocation):
             training_physical_indices=allocation['training_physical_indices'],
             assigned_gpu_uuids=allocation['assigned_gpu_uuids'],
             training_cuda_runtime_uuids=allocation['actual_cuda_runtime_uuids'])
-    from reproduction.common8.native_allocation import fields
+    from reproduction.common8.native_allocation import (fields, NATIVE_BIRTH_FIELDS,
+                                                        verify_wrapped_batch_script)
     job = fields(allocation['actual_allocation_detail'])
-    names = ('JobId', 'SubmitTime', 'StartTime', 'UserId', 'Command', 'WorkDir', 'NodeList')
-    assert all(name in job and job[name] not in ('Unknown', '(null)', 'N/A') for name in names)
+    names = NATIVE_BIRTH_FIELDS
+    assert all(name in job and job[name] not in ('Unknown', '(null)', 'N/A')
+               for name in names if name != 'Command')
     assert job['JobState'] == 'RUNNING' and job['JobId'] == allocation['slurm_job_id']
-    return {name: job[name] for name in names}
+    birth = {name: job[name] for name in names}
+    if job['Command'] == '(null)':
+        birth.update(command_identity_policy='actual_slurm_controller_wrapped_batch_script_v1',
+                     batch_script_sha256=verify_wrapped_batch_script(allocation, job))
+    else:
+        assert job['Command'] not in ('Unknown', 'N/A', ''), 'No actual Slurm command identity'
+    return birth
 
 
 def verify_prospective_probability(base, run, probability, receipts):
