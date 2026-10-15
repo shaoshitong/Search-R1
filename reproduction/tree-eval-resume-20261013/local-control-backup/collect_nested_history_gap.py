@@ -29,7 +29,7 @@ def native(outer):
  receipt,rmeta=read(path);mp=Path(receipt['history_manifest_path']);manifest,mmeta=read(mp)
  if receipt.get('source_commit')!=source or receipt.get('completed_outer')!=outer:raise ValueError('Wrong native source/outer')
  identity=manifest['identity']
- if identity.get('code_commit')!=source or identity.get('completed_step')!=outer:raise ValueError('Wrong manifest identity')
+ if identity.get('code_commit')!=source or identity.get('completed_step')!=outer or identity.get('config_sha256')!='355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3':raise ValueError('Wrong manifest source/config/outer identity')
  if mmeta['sha256']!=receipt.get('history_manifest_sha256') or mmeta['sha256']!=receipt.get('source_manifest_sha256'):raise ValueError('Archive differs from original writer manifest SHA')
  return dict(observed_epoch=time.time(),source_commit=source,tensor_contents_read=False,independent_cold_reload_performed=False,outer=outer,receipt_path=str(path),receipt_sha256=rmeta['sha256'],manifest_sha256=mmeta['sha256'],recorded_original_manifest_sha256=receipt['source_manifest_sha256'],archive_matches_original_manifest=True,manifest_status=manifest.get('status'),identity=identity,receipt=receipt)
 if cfg.get('dev_outer') is not None:
@@ -96,7 +96,7 @@ def main():
     p.add_argument('--first',type=int,default=107)
     p.add_argument('--last',type=int,default=119)
     args=p.parse_args()
-    if args.native_outer is not None and not 107<=args.native_outer<=120:raise ValueError('Only native metadata107..120 permitted')
+    if args.native_outer is not None and not 6<=args.native_outer<=200:raise ValueError('Only fixed child native metadata6..200 permitted')
     if args.dev_outer is not None and (args.dev_outer!=120 or args.native_outer is not None):raise ValueError('Only separate fixed dev120 control read permitted')
     if (args.first,args.last)!=(107,119):raise ValueError('Only fixed historical107..119 gap permitted')
     spec=importlib.util.spec_from_file_location('gap_route',args.ssh_helper)
