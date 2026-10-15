@@ -331,6 +331,12 @@ class Pipeline:
             publish(target/'manifest.json',live)
             self.stage('RESTORING_ORIGINAL_FROZEN_PROBE_NO_NEW_CALIBRATION',source_base=str(origin),version=live['version'])
             return
+        from reproduction.hpc3_dynrpo_periodic.reuse_initial_calibration import reuse_initial_calibration
+        reused=reuse_initial_calibration(self.base,self.run)
+        if reused:
+            self.stage('REUSING_MEASURED_INITIAL_CALIBRATION_NO_NEW_ROLLOUTS',
+                version=reused['version'],historical_origin=reused['historical_origin'])
+            return
         role=supported_execution_role(self.run,self.base)
         if role==CALIBRATION_ROLES[0] or (role=='production' and self.run.get('contract_kind')==CONTRACT_KIND):
             self.stage('REAL_INITIAL_300_QUESTION_CALIBRATION')

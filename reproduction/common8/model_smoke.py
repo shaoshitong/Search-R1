@@ -89,6 +89,17 @@ def aggregate(proofs, run_id, job_id, phase, ids, uuids, run=None):
     return list(config_hashes)[0]
 
 
+def _read_process_ledger(path, *, attempts=51, retry_delay=0.1):
+    """Tolerate brief shared-filesystem ENOENT visibility during publication."""
+    for attempt in range(attempts):
+        try:
+            return json.loads(path.read_text())
+        except FileNotFoundError:
+            if attempt + 1 == attempts:
+                raise
+            time.sleep(retry_delay)
+
+
 def coexistence(base, run, job):
     """Require this run's actual resident services; a phase name is insufficient."""
     import requests
@@ -97,7 +108,7 @@ def coexistence(base, run, job):
     retrieval = json.loads((base / 'logs/retrieval-admission.json').read_text())
     assert retrieval['accepted'] is True
     assert retrieval['run_id'] == run['run_id'] and retrieval['slurm_job_id'] == job['JobId']
-    ledger = json.loads((base / 'logs/process-ledger.json').read_text())
+    ledger = _read_process_ledger(base / 'logs/process-ledger.json')
     assert ledger['run_id'] == run['run_id']
     for name in ('retriever', 'probe-server'):
         owned = ledger['jobs'][name]
