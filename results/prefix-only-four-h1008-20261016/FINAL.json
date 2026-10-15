@@ -1,0 +1,836 @@
+{
+  "HF_requested_dataset_local_exception_retained": true,
+  "actor_updates": 0,
+  "arms": {
+    "10": {
+      "actual_adam_steps_per_rank": [
+        2000,
+        2000
+      ],
+      "binding_summary": {
+        "accumulation": 1,
+        "corrected_logit_shift": -1.2668049210318928,
+        "epochs": 20,
+        "global_batch": 256,
+        "local_batch": 128,
+        "natural_training_positive_prior": 0.2198046875,
+        "planned_adam_steps_per_rank": 2000,
+        "prefix_tokens": 10,
+        "sampling": "balanced",
+        "seed": 1729,
+        "shared_max_tokens": 80,
+        "steps_per_epoch": 100,
+        "world_size": 2
+      },
+      "cuda_peak_allocated_bytes": 1929314816,
+      "cuda_peak_reserved_bytes": 2254438400,
+      "diagnostic_evaluations": 21,
+      "epoch": 20,
+      "feature_manifest_sha256": "dde3ed49d5d21934d0691a69c30dc8b313e93e9a8bbc4701aa64c09ab46dec15",
+      "final_checkpoint": {
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000
+        ],
+        "binding_matches_claim": true,
+        "bytes": 926949410,
+        "cpu_load_performed": true,
+        "epoch": 20,
+        "full_sha256": "e9971c4bfe6a5aa516501f5a4cd3697430e33966fd8b45fce6d4c043ca9001b1",
+        "model_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_moment_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_parameter_states": 14,
+        "optimizer_step_values": [
+          2000
+        ],
+        "path": "/mnt/data/shaoshitong/search-g1-prefix-only-four-warmup20-20261016-58d687c/groups/prefix-10/train/head-epoch-20.pt",
+        "rng_field_names": [
+          "actual_adam_steps",
+          "numpy",
+          "python",
+          "rank",
+          "sampler",
+          "torch_cpu",
+          "torch_cuda"
+        ],
+        "rng_ranks": [
+          0,
+          1
+        ],
+        "semantic_reload_performed": false
+      },
+      "fixed_epoch20_ranking": {
+        "auroc": 0.5996751177184216,
+        "genuine_logit_tied_pairs": 4793,
+        "identity_and_labels_sha256": "d1784608867ab5336eb063bafac9f1289d8dabe3791a43c3af7f363e279f6cc9",
+        "method": "Mann-Whitney average tied ranks on raw logits; no sigmoid; fixed epoch20",
+        "negative": 2001,
+        "no_predictions_exported": true,
+        "positive": 559,
+        "prediction_file_bytes": 355600,
+        "prediction_file_sha256": "56a814f8921e713a4eaeece2d5bb9645de298909ffdd43d485060b0ed4f5602d",
+        "unique_raw_logits": 934
+      },
+      "head_fit_seconds": 126.92073021829128,
+      "input_scan_sha256": "056e15067383c3831c3c6fc91426d8b9bba154571e6894dd19d7009f40b719ce",
+      "physical_gpu_indices": [
+        0,
+        1
+      ],
+      "prior_corrected_diagnostic": {
+        "accuracy": 0.75078125,
+        "balanced_accuracy": 0.5311816363732266,
+        "bce": 1.2335411470551256,
+        "brier": 0.21671822728528795,
+        "count": 2560,
+        "f1": 0.19849246231155782,
+        "fn": 480,
+        "fp": 158,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.3333333333333333,
+        "probability_mean": 0.11504932124488065,
+        "probability_quantiles": {
+          "0": 3.760517447213098e-16,
+          "0.01": 3.7865711965484186e-09,
+          "0.1": 6.041785586299829e-06,
+          "0.5": 0.006582051986254088,
+          "0.9": 0.4704426469804084,
+          "0.99": 0.9925306141620647,
+          "1": 0.9999933487232568
+        },
+        "recall": 0.1413237924865832,
+        "saturation_above_0_99": 0.01171875,
+        "saturation_below_0_01": 0.542578125,
+        "tn": 1843,
+        "tp": 79
+      },
+      "raw_diagnostic": {
+        "accuracy": 0.7234375,
+        "balanced_accuracy": 0.54269645141651,
+        "bce": 1.1433916656973524,
+        "brier": 0.23008593404116442,
+        "count": 2560,
+        "f1": 0.2594142259414226,
+        "fn": 435,
+        "fp": 273,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.3123425692695214,
+        "probability_mean": 0.18303881389641466,
+        "probability_quantiles": {
+          "0": 1.3347932285976013e-15,
+          "0.01": 1.3440409770490404e-08,
+          "0.1": 2.144494842091395e-05,
+          "0.5": 0.02297736991002561,
+          "0.9": 0.7592254042296177,
+          "0.99": 0.9978842965994068,
+          "1": 0.9999981261246162
+        },
+        "recall": 0.22182468694096602,
+        "saturation_above_0_99": 0.01953125,
+        "saturation_below_0_01": 0.441015625,
+        "tn": 1728,
+        "tp": 124
+      },
+      "sampled_balanced_train_accuracy": 0.9503125,
+      "sampled_balanced_train_bce": 0.12645377855747938,
+      "total_positive_training_draws": 256000,
+      "total_training_draws": 512000,
+      "train_measure": "online balanced with-replacement draws, not a natural full-training-set re-forward"
+    },
+    "20": {
+      "actual_adam_steps_per_rank": [
+        2000,
+        2000
+      ],
+      "binding_summary": {
+        "accumulation": 1,
+        "corrected_logit_shift": -1.2668049210318928,
+        "epochs": 20,
+        "global_batch": 256,
+        "local_batch": 128,
+        "natural_training_positive_prior": 0.2198046875,
+        "planned_adam_steps_per_rank": 2000,
+        "prefix_tokens": 20,
+        "sampling": "balanced",
+        "seed": 1729,
+        "shared_max_tokens": 80,
+        "steps_per_epoch": 100,
+        "world_size": 2
+      },
+      "cuda_peak_allocated_bytes": 2012187136,
+      "cuda_peak_reserved_bytes": 2470445056,
+      "diagnostic_evaluations": 21,
+      "epoch": 20,
+      "feature_manifest_sha256": "86c100961ae9bb75a11da3d39f1026c36e88dfd29ae68dc34a0786c5d185cd1b",
+      "final_checkpoint": {
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000
+        ],
+        "binding_matches_claim": true,
+        "bytes": 926949410,
+        "cpu_load_performed": true,
+        "epoch": 20,
+        "full_sha256": "7b844d836f9d97a2f8b8784c77f987121c45436bfc31156e50397fac653faf42",
+        "model_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_moment_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_parameter_states": 14,
+        "optimizer_step_values": [
+          2000
+        ],
+        "path": "/mnt/data/shaoshitong/search-g1-prefix-only-four-warmup20-20261016-58d687c/groups/prefix-20/train/head-epoch-20.pt",
+        "rng_field_names": [
+          "actual_adam_steps",
+          "numpy",
+          "python",
+          "rank",
+          "sampler",
+          "torch_cpu",
+          "torch_cuda"
+        ],
+        "rng_ranks": [
+          0,
+          1
+        ],
+        "semantic_reload_performed": false
+      },
+      "fixed_epoch20_ranking": {
+        "auroc": 0.5832955615215648,
+        "genuine_logit_tied_pairs": 5793,
+        "identity_and_labels_sha256": "d1784608867ab5336eb063bafac9f1289d8dabe3791a43c3af7f363e279f6cc9",
+        "method": "Mann-Whitney average tied ranks on raw logits; no sigmoid; fixed epoch20",
+        "negative": 2001,
+        "no_predictions_exported": true,
+        "positive": 559,
+        "prediction_file_bytes": 355600,
+        "prediction_file_sha256": "f176fb2c078a213f55f3b50405a8b2b46d3b390a94ce9558100c9fb99ed09dd0",
+        "unique_raw_logits": 853
+      },
+      "head_fit_seconds": 133.1772475503385,
+      "input_scan_sha256": "056e15067383c3831c3c6fc91426d8b9bba154571e6894dd19d7009f40b719ce",
+      "physical_gpu_indices": [
+        2,
+        3
+      ],
+      "prior_corrected_diagnostic": {
+        "accuracy": 0.75546875,
+        "balanced_accuracy": 0.531601819841421,
+        "bce": 1.488467976802961,
+        "brier": 0.22188966731372955,
+        "count": 2560,
+        "f1": 0.19329896907216493,
+        "fn": 484,
+        "fp": 142,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.3456221198156682,
+        "probability_mean": 0.09758168285449707,
+        "probability_quantiles": {
+          "0": 8.390848602376234e-17,
+          "0.01": 1.2293196849311827e-09,
+          "0.1": 1.7310080140790984e-06,
+          "0.5": 0.0013868881649194424,
+          "0.9": 0.40893556902674566,
+          "0.99": 0.9922953372081483,
+          "1": 0.9999996005572868
+        },
+        "recall": 0.13416815742397137,
+        "saturation_above_0_99": 0.012109375,
+        "saturation_below_0_01": 0.666015625,
+        "tn": 1859,
+        "tp": 75
+      },
+      "raw_diagnostic": {
+        "accuracy": 0.729296875,
+        "balanced_accuracy": 0.5303300943445988,
+        "bce": 1.364413030759462,
+        "brier": 0.2337703074121676,
+        "count": 2560,
+        "f1": 0.22222222222222224,
+        "fn": 460,
+        "fp": 233,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.29819277108433734,
+        "probability_mean": 0.145616045059338,
+        "probability_quantiles": {
+          "0": 2.978326268620228e-16,
+          "0.01": 4.363462233903899e-09,
+          "0.1": 6.144174602214718e-06,
+          "0.5": 0.004905405705722035,
+          "0.9": 0.7106283025898368,
+          "0.99": 0.9978172835546547,
+          "1": 0.9999998874648379
+        },
+        "recall": 0.1771019677996422,
+        "saturation_above_0_99": 0.021875,
+        "saturation_below_0_01": 0.56015625,
+        "tn": 1768,
+        "tp": 99
+      },
+      "sampled_balanced_train_accuracy": 0.9918359375,
+      "sampled_balanced_train_bce": 0.03792156090144999,
+      "total_positive_training_draws": 256000,
+      "total_training_draws": 512000,
+      "train_measure": "online balanced with-replacement draws, not a natural full-training-set re-forward"
+    },
+    "40": {
+      "actual_adam_steps_per_rank": [
+        2000,
+        2000
+      ],
+      "binding_summary": {
+        "accumulation": 1,
+        "corrected_logit_shift": -1.2668049210318928,
+        "epochs": 20,
+        "global_batch": 256,
+        "local_batch": 128,
+        "natural_training_positive_prior": 0.2198046875,
+        "planned_adam_steps_per_rank": 2000,
+        "prefix_tokens": 40,
+        "sampling": "balanced",
+        "seed": 1729,
+        "shared_max_tokens": 80,
+        "steps_per_epoch": 100,
+        "world_size": 2
+      },
+      "cuda_peak_allocated_bytes": 2522035200,
+      "cuda_peak_reserved_bytes": 2866806784,
+      "diagnostic_evaluations": 21,
+      "epoch": 20,
+      "feature_manifest_sha256": "fda4b45c14133f6139e37ea52a0b5e94915f382df011c58b334996cec379adea",
+      "final_checkpoint": {
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000
+        ],
+        "binding_matches_claim": true,
+        "bytes": 926949410,
+        "cpu_load_performed": true,
+        "epoch": 20,
+        "full_sha256": "e13ee713c7d707e10a9195687739723cf10170b4b0b9eb13a8dfff11da62500f",
+        "model_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_moment_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_parameter_states": 14,
+        "optimizer_step_values": [
+          2000
+        ],
+        "path": "/mnt/data/shaoshitong/search-g1-prefix-only-four-warmup20-20261016-58d687c/groups/prefix-40/train/head-epoch-20.pt",
+        "rng_field_names": [
+          "actual_adam_steps",
+          "numpy",
+          "python",
+          "rank",
+          "sampler",
+          "torch_cpu",
+          "torch_cuda"
+        ],
+        "rng_ranks": [
+          0,
+          1
+        ],
+        "semantic_reload_performed": false
+      },
+      "fixed_epoch20_ranking": {
+        "auroc": 0.5786140918807143,
+        "genuine_logit_tied_pairs": 6885,
+        "identity_and_labels_sha256": "d1784608867ab5336eb063bafac9f1289d8dabe3791a43c3af7f363e279f6cc9",
+        "method": "Mann-Whitney average tied ranks on raw logits; no sigmoid; fixed epoch20",
+        "negative": 2001,
+        "no_predictions_exported": true,
+        "positive": 559,
+        "prediction_file_bytes": 355600,
+        "prediction_file_sha256": "f9bdcc213510e540784e7a066685d9811778031b079484daf1f44e6df82afbc5",
+        "unique_raw_logits": 747
+      },
+      "head_fit_seconds": 141.53080466017127,
+      "input_scan_sha256": "056e15067383c3831c3c6fc91426d8b9bba154571e6894dd19d7009f40b719ce",
+      "physical_gpu_indices": [
+        4,
+        5
+      ],
+      "prior_corrected_diagnostic": {
+        "accuracy": 0.75546875,
+        "balanced_accuracy": 0.5174210747935514,
+        "bce": 3.840223490881384,
+        "brier": 0.23325367354619336,
+        "count": 2560,
+        "f1": 0.1448087431693989,
+        "fn": 506,
+        "fp": 120,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.3063583815028902,
+        "probability_mean": 0.0696991040333307,
+        "probability_quantiles": {
+          "0": 7.644708473841455e-39,
+          "0.01": 1.2124610478527024e-23,
+          "0.1": 1.0222146242362553e-15,
+          "0.5": 1.922979495321922e-08,
+          "0.9": 0.06649590883857807,
+          "0.99": 0.9999867724437096,
+          "1": 0.9999999999999787
+        },
+        "recall": 0.09481216457960644,
+        "saturation_above_0_99": 0.0328125,
+        "saturation_below_0_01": 0.872265625,
+        "tn": 1881,
+        "tp": 53
+      },
+      "raw_diagnostic": {
+        "accuracy": 0.75234375,
+        "balanced_accuracy": 0.5244461847788091,
+        "bce": 3.66102623141022,
+        "brier": 0.2378235694892728,
+        "count": 2560,
+        "f1": 0.17447916666666666,
+        "fn": 492,
+        "fp": 142,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.32057416267942584,
+        "probability_mean": 0.08442822440749977,
+        "probability_quantiles": {
+          "0": 2.7134843139867624e-38,
+          "0.01": 4.3036226246244867e-23,
+          "0.1": 3.628344178047032e-15,
+          "0.5": 6.825602910446288e-08,
+          "0.9": 0.20181322226037882,
+          "0.99": 0.9999962733607158,
+          "1": 0.999999999999994
+        },
+        "recall": 0.11985688729874776,
+        "saturation_above_0_99": 0.03828125,
+        "saturation_below_0_01": 0.846875,
+        "tn": 1859,
+        "tp": 67
+      },
+      "sampled_balanced_train_accuracy": 0.98859375,
+      "sampled_balanced_train_bce": 0.057883869208872056,
+      "total_positive_training_draws": 256000,
+      "total_training_draws": 512000,
+      "train_measure": "online balanced with-replacement draws, not a natural full-training-set re-forward"
+    },
+    "80": {
+      "actual_adam_steps_per_rank": [
+        2000,
+        2000
+      ],
+      "binding_summary": {
+        "accumulation": 1,
+        "corrected_logit_shift": -1.2668049210318928,
+        "epochs": 20,
+        "global_batch": 256,
+        "local_batch": 128,
+        "natural_training_positive_prior": 0.2198046875,
+        "planned_adam_steps_per_rank": 2000,
+        "prefix_tokens": 80,
+        "sampling": "balanced",
+        "seed": 1729,
+        "shared_max_tokens": 80,
+        "steps_per_epoch": 100,
+        "world_size": 2
+      },
+      "cuda_peak_allocated_bytes": 3536199168,
+      "cuda_peak_reserved_bytes": 3995074560,
+      "diagnostic_evaluations": 21,
+      "epoch": 20,
+      "feature_manifest_sha256": "e16a98e71064b52d088591071bbf8afd55a69f03fd1bf8f400c7830933981eba",
+      "final_checkpoint": {
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000
+        ],
+        "binding_matches_claim": true,
+        "bytes": 926949410,
+        "cpu_load_performed": true,
+        "epoch": 20,
+        "full_sha256": "8f347a2d9bb661ae7f68554bec1882166339513e24a114c22d077382ae0b6c21",
+        "model_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_moment_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_parameter_states": 14,
+        "optimizer_step_values": [
+          2000
+        ],
+        "path": "/mnt/data/shaoshitong/search-g1-prefix-only-four-warmup20-20261016-58d687c/groups/prefix-80/train/head-epoch-20.pt",
+        "rng_field_names": [
+          "actual_adam_steps",
+          "numpy",
+          "python",
+          "rank",
+          "sampler",
+          "torch_cpu",
+          "torch_cuda"
+        ],
+        "rng_ranks": [
+          0,
+          1
+        ],
+        "semantic_reload_performed": false
+      },
+      "fixed_epoch20_ranking": {
+        "auroc": 0.7042185526199334,
+        "genuine_logit_tied_pairs": 6904,
+        "identity_and_labels_sha256": "d1784608867ab5336eb063bafac9f1289d8dabe3791a43c3af7f363e279f6cc9",
+        "method": "Mann-Whitney average tied ranks on raw logits; no sigmoid; fixed epoch20",
+        "negative": 2001,
+        "no_predictions_exported": true,
+        "positive": 559,
+        "prediction_file_bytes": 355600,
+        "prediction_file_sha256": "5af193b91d222c905d7b3c3d1d9238862867c2ef8accfba6f41adc8dcfb4f990",
+        "unique_raw_logits": 752
+      },
+      "head_fit_seconds": 176.89809313043952,
+      "input_scan_sha256": "056e15067383c3831c3c6fc91426d8b9bba154571e6894dd19d7009f40b719ce",
+      "physical_gpu_indices": [
+        6,
+        7
+      ],
+      "prior_corrected_diagnostic": {
+        "accuracy": 0.781640625,
+        "balanced_accuracy": 0.5457651317453974,
+        "bce": 1.833951511701148,
+        "brier": 0.20113886380152685,
+        "count": 2560,
+        "f1": 0.20256776034236804,
+        "fn": 488,
+        "fp": 71,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.5,
+        "probability_mean": 0.06141902182853315,
+        "probability_quantiles": {
+          "0": 2.8148161224852504e-20,
+          "0.01": 1.4111237614351902e-14,
+          "0.1": 2.7429829843427283e-10,
+          "0.5": 7.757792942453596e-06,
+          "0.9": 0.1099723390443229,
+          "0.99": 0.9884784207550095,
+          "1": 0.9999948199728429
+        },
+        "recall": 0.12701252236135957,
+        "saturation_above_0_99": 0.009375,
+        "saturation_below_0_01": 0.830859375,
+        "tn": 1930,
+        "tp": 71
+      },
+      "raw_diagnostic": {
+        "accuracy": 0.78203125,
+        "balanced_accuracy": 0.5672861243796706,
+        "bce": 1.6504843560110114,
+        "brier": 0.19995062029127403,
+        "count": 2560,
+        "f1": 0.27154046997389036,
+        "fn": 455,
+        "fp": 103,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.5024154589371981,
+        "probability_mean": 0.08652000129915935,
+        "probability_quantiles": {
+          "0": 9.991171568224243e-20,
+          "0.01": 5.008774637843255e-14,
+          "0.1": 9.736200303530205e-10,
+          "0.5": 2.753569111458347e-05,
+          "0.9": 0.3048688709099544,
+          "0.99": 0.9967269350293284,
+          "1": 0.9999985406237789
+        },
+        "recall": 0.18604651162790697,
+        "saturation_above_0_99": 0.0171875,
+        "saturation_below_0_01": 0.778515625,
+        "tn": 1898,
+        "tp": 104
+      },
+      "sampled_balanced_train_accuracy": 1.0,
+      "sampled_balanced_train_bce": 2.3255499495462573e-05,
+      "total_positive_training_draws": 256000,
+      "total_training_draws": 512000,
+      "train_measure": "online balanced with-replacement draws, not a natural full-training-set re-forward"
+    }
+  },
+  "best_epoch_selection_performed": false,
+  "cgroup_released": true,
+  "code_backup_policy": "Archival scripts from consumed once observations; do not blindly replay them.",
+  "comparison_checks": {
+    "same_epoch20_test_identity_and_labels_across_four_arms": true,
+    "same_global_sampler_plan_per_epoch_across_four_arms": true,
+    "same_test_count_and_positive_at_all_84_evaluations": true
+  },
+  "comparison_epoch": 20,
+  "constant_natural_training_prior_diagnostic": {
+    "diagnostic_bce": 0.5248297208059305,
+    "diagnostic_brier": 0.17068064727783203,
+    "majority_accuracy": 0.781640625,
+    "majority_correct": 2001,
+    "probability": 0.2198046875
+  },
+  "coverage_scope": "All28160 train+diagnostic trajectories, not diagnostic-only.",
+  "cpu_checkpoint_load_performed": true,
+  "diagnostic_negative": 2001,
+  "diagnostic_positive": 559,
+  "diagnostic_questions": 512,
+  "diagnostic_trajectories": 2560,
+  "encoder_context": "Each retained turn uses its actual request including observations available then, plus the taken generated prefix; frozen layer27 post-block outputs are sliced to policy positions.",
+  "evidence": [
+    {
+      "bytes": 6927,
+      "path": "code-backup/audit_hf_trajectory_overlap_20261016_v2.py",
+      "sha256": "facdab7226f83d07026e2fc6f1439943ddc23127771fd345f154e223354eb250"
+    },
+    {
+      "bytes": 11968,
+      "path": "code-backup/read_prefix_only_four_final_metrics_once.py",
+      "sha256": "0065305f87b04e277c906195a212f24fe8b49fcf5a85c99ccbbf661c7501fafe"
+    },
+    {
+      "bytes": 7189,
+      "path": "code-backup/read_prefix_only_four_terminal_closure_once.py",
+      "sha256": "9b13d3184d33c22f20b57d127882a32c88701f06ba2f12811157294fb67bfc66"
+    },
+    {
+      "bytes": 3360,
+      "path": "code-backup/watch_prefix_only_four_actual.py",
+      "sha256": "241f4d95bb4b525e2017c9ccda5871ef21f1d109d6f0d6da0974ad68619fc4f7"
+    },
+    {
+      "bytes": 239212,
+      "path": "evidence/final-metrics-transport.json",
+      "sha256": "caf0b782050ddbeda522f5db3f4ae98673d7980bede7ee2dd99ecc88655a54e6"
+    },
+    {
+      "bytes": 1918,
+      "path": "evidence/hf-dataset-summary.json",
+      "sha256": "eaa5e3ad28fc2aef3c8af2a32bae0f8364b781c2e40d25b9b40379f5c100f33e"
+    },
+    {
+      "bytes": 3614,
+      "path": "evidence/hf-download-manifest.json",
+      "sha256": "d6d45d4513b6956e5a0114d123fb15993072a38e03cc80d8f8b108be978dfda8"
+    },
+    {
+      "bytes": 4613,
+      "path": "evidence/hf-overlap-audit-v2.json",
+      "sha256": "03642995ae2b243c3833cdf4ebf5402ba6d00a5812e07262f27c4d7376ad0cf9"
+    },
+    {
+      "bytes": 1594,
+      "path": "evidence/resource-closure.json",
+      "sha256": "786767202c18b0ef4838b9f9390b77fce823317dda74bed2e7e83383c0adf288"
+    },
+    {
+      "bytes": 4786,
+      "path": "evidence/terminal-closure-transport.json",
+      "sha256": "87d14e703b35557cb13ff919aab99c6c445636863a7b566eff8e157127c405cf"
+    },
+    {
+      "bytes": 302876,
+      "path": "metrics.json",
+      "sha256": "7f63e08100efe6e524b2221dd8734edb01ab1ecb3bef4c7d286771e4f7b274a4"
+    }
+  ],
+  "evidence_publication": "Artifact publication follows the frozen runtime commit; no executed runtime science is modified.",
+  "formal_training_started": false,
+  "frozen_runtime_source_commit": "58d687c3aa81f96657df126d1ab7979043cafb89",
+  "gpu_applications_remaining": 0,
+  "head_input": "Only concatenated retained policy-position hidden states; no question or environment hidden positions. Every arm has identical maximum80 head capacity and copied last block.",
+  "head_rope_positions": "Explicit original per-turn request-length offsets; gaps or resets across turns preserved. Causal head attention follows concatenated policy order.",
+  "hf_download_and_overlap": {
+    "GPU_used": false,
+    "all_final_local_file_SHA_verified": true,
+    "config": "official_qwen25_frozen_g5_20261016",
+    "download_manifest": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/datasets/Trajectory_in_Search/official_qwen25_frozen_g5_20261016/DOWNLOAD-MANIFEST.json",
+      "sha256": "d6d45d4513b6956e5a0114d123fb15993072a38e03cc80d8f8b108be978dfda8"
+    },
+    "downloaded_parquet_bytes": 40518460,
+    "downloaded_payload_bytes": 40526961,
+    "earlier_audit_note": "OVERLAP-AUDIT.json is superseded by v2: the initial normalized-content comparison used the exact-text hash domain incorrectly. v2 compares actual canonical question text under the same NFKC+whitespace rule.",
+    "interpretation": "This HF config contains the same original5120 teacher and same newly sampled512 diagnostic used here, not a disjoint extra dataset.",
+    "local_directory": "/Users/shaoshitong/Documents/Search-G1/datasets/Trajectory_in_Search/official_qwen25_frozen_g5_20261016",
+    "observed_utc": "2026-10-15T19:08:52.916506+00:00",
+    "original_rollouts_or_models_downloaded": false,
+    "overlap": {
+      "cross_train_test_overlap": 0,
+      "normalized_question_content_exact": true,
+      "qid_exact": true,
+      "strict_em_disagreements": 0,
+      "test_questions": 512,
+      "test_trajectories": 2560,
+      "train_questions": 5120,
+      "train_trajectories": 25600,
+      "trajectory_id_exact": true
+    },
+    "overlap_audit": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/datasets/Trajectory_in_Search/official_qwen25_frozen_g5_20261016/OVERLAP-AUDIT-v2.json",
+      "sha256": "03642995ae2b243c3833cdf4ebf5402ba6d00a5812e07262f27c4d7376ad0cf9"
+    },
+    "remote_files_written": false,
+    "repo_id": "Sutoonq/Trajectory_in_Search",
+    "repo_private": true,
+    "repo_revision": "bf55ef1a67282772162994d0ff4ca0e21a086e42",
+    "status": "LOCAL_SPECIFIED_CONFIG_DOWNLOAD_AND_IDENTITY_OVERLAP_COMPLETE",
+    "training_or_automation_changed": false
+  },
+  "independent_checkpoint_backup_complete": false,
+  "input_representation": "multi_turn_retained_policy_prefix_layer27_v1",
+  "input_scan_summaries": {
+    "056e15067383c3831c3c6fc91426d8b9bba154571e6894dd19d7009f40b719ce": {
+      "encoder_global_max_tokens": 1766,
+      "head_max_tokens": 80,
+      "max_policy_prefix_tokens": 80,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-only-four-derived-inputs-20261016-96a20179b7784025b647c6aa0279303e/inputs/scan-complete.json",
+      "position_provenance": "reconstructed_per_native_request_length_plus_generated_offset",
+      "prefix_coverage": {
+        "10": {
+          "full_length": 28160,
+          "length_histogram": {
+            "10": 28160
+          },
+          "multi_turn_count": 0,
+          "short_count": 0,
+          "total": 28160,
+          "zero_length_count": 0
+        },
+        "20": {
+          "full_length": 28160,
+          "length_histogram": {
+            "20": 28160
+          },
+          "multi_turn_count": 0,
+          "short_count": 0,
+          "total": 28160,
+          "zero_length_count": 0
+        },
+        "40": {
+          "full_length": 28157,
+          "length_histogram": {
+            "38": 2,
+            "39": 1,
+            "40": 28157
+          },
+          "multi_turn_count": 253,
+          "short_count": 3,
+          "total": 28160,
+          "zero_length_count": 0
+        },
+        "80": {
+          "full_length": 22370,
+          "length_histogram": {
+            "38": 2,
+            "39": 1,
+            "40": 1,
+            "41": 1,
+            "42": 1,
+            "43": 8,
+            "44": 5,
+            "45": 6,
+            "46": 12,
+            "47": 21,
+            "48": 22,
+            "49": 22,
+            "50": 44,
+            "51": 40,
+            "52": 46,
+            "53": 60,
+            "54": 80,
+            "55": 86,
+            "56": 107,
+            "57": 127,
+            "58": 148,
+            "59": 154,
+            "60": 160,
+            "61": 163,
+            "62": 177,
+            "63": 209,
+            "64": 223,
+            "65": 215,
+            "66": 223,
+            "67": 233,
+            "68": 245,
+            "69": 235,
+            "70": 265,
+            "71": 276,
+            "72": 280,
+            "73": 263,
+            "74": 277,
+            "75": 244,
+            "76": 261,
+            "77": 287,
+            "78": 292,
+            "79": 268,
+            "80": 22370
+          },
+          "multi_turn_count": 14776,
+          "short_count": 5790,
+          "total": 28160,
+          "zero_length_count": 0
+        }
+      },
+      "prefix_source": "same_trajectory_turn_order_actual_kept_policy_tokens",
+      "sha256": "056e15067383c3831c3c6fc91426d8b9bba154571e6894dd19d7009f40b719ce",
+      "split_proof": {
+        "disjoint_normalized_content": true,
+        "disjoint_qid": true,
+        "disjoint_question_hash": true,
+        "teacher_identity_sha256": "88998de7a30455b9135b02cc3c82251fbc1ba1765708244538b6a66c1371e871",
+        "test_identity_sha256": "a1ebab40dfa21e3f69ad414ba64729ab51833380e749afb0aa673bbcb6efc3a7",
+        "test_questions": 512,
+        "test_regenerated": false,
+        "train_questions": 5120
+      }
+    }
+  },
+  "job_id": 3406,
+  "large_training_artifacts_remain_remote": true,
+  "native_exit_code": "0:0",
+  "native_runtime": "00:07:30",
+  "native_state": "COMPLETED",
+  "node": "h100-8",
+  "observed_utc": "2026-10-15T19:17:17.228045+00:00",
+  "original_owned_birth_count": 24,
+  "prior_correction_assumption": "Label-conditional sampling stability; calibration is not guaranteed.",
+  "quality_assessment": {
+    "comparison_limit": "The80 arm often reaches a later turn with real retrieved observations in encoder context (14776/28160 trajectories cross turns). This is not an isolated first-turn token-count comparison; ranking improvement cannot be attributed only to additional token count.",
+    "fixed_epoch20_80_raw_correct": 2002,
+    "majority_correct": 2001,
+    "proper_losses": "All four raw and prior-corrected diagnostic BCE/Brier values are worse than the constant natural training-prior baseline; fitted accuracy does not establish calibrated probability quality.",
+    "ranking": "At fixed epoch20 the80 arm has the highest observed AUROC among these arms (.7042185526). No significance or population-generalization claim is made.",
+    "raw_80_accuracy_advantage_percentage_points": 0.0390625,
+    "raw_80_accuracy_advantage_trajectories": 1
+  },
+  "remaining_owned_active_or_zombie_births": 0,
+  "remote_base": "/mnt/data/shaoshitong/search-g1-prefix-only-four-warmup20-20261016-58d687c",
+  "run_id": "f1c2e9c06b1b44c89f7d7adb6453a7ad",
+  "schema_version": 1,
+  "semantic_reload_performed": false,
+  "status": "OFFLINE_PREFIX_ONLY_FOUR_ARM_REQUESTED_RUN_COMPLETE",
+  "terminal_log_full_sha_bytes": 7371941,
+  "terminal_log_full_sha_files": 50
+}

@@ -1,0 +1,37 @@
+{
+  "status": "LOCAL_SPECIFIED_CONFIG_DOWNLOAD_AND_IDENTITY_OVERLAP_COMPLETE",
+  "observed_utc": "2026-10-15T19:08:52.916506+00:00",
+  "local_directory": "/Users/shaoshitong/Documents/Search-G1/datasets/Trajectory_in_Search/official_qwen25_frozen_g5_20261016",
+  "repo_id": "Sutoonq/Trajectory_in_Search",
+  "config": "official_qwen25_frozen_g5_20261016",
+  "repo_revision": "bf55ef1a67282772162994d0ff4ca0e21a086e42",
+  "repo_private": true,
+  "downloaded_payload_bytes": 40526961,
+  "downloaded_parquet_bytes": 40518460,
+  "all_final_local_file_SHA_verified": true,
+  "overlap": {
+    "train_questions": 5120,
+    "train_trajectories": 25600,
+    "test_questions": 512,
+    "test_trajectories": 2560,
+    "qid_exact": true,
+    "normalized_question_content_exact": true,
+    "trajectory_id_exact": true,
+    "strict_em_disagreements": 0,
+    "cross_train_test_overlap": 0
+  },
+  "interpretation": "This HF config contains the same original5120 teacher and same newly sampled512 diagnostic used here, not a disjoint extra dataset.",
+  "download_manifest": {
+    "path": "/Users/shaoshitong/Documents/Search-G1/datasets/Trajectory_in_Search/official_qwen25_frozen_g5_20261016/DOWNLOAD-MANIFEST.json",
+    "sha256": "d6d45d4513b6956e5a0114d123fb15993072a38e03cc80d8f8b108be978dfda8"
+  },
+  "overlap_audit": {
+    "path": "/Users/shaoshitong/Documents/Search-G1/datasets/Trajectory_in_Search/official_qwen25_frozen_g5_20261016/OVERLAP-AUDIT-v2.json",
+    "sha256": "03642995ae2b243c3833cdf4ebf5402ba6d00a5812e07262f27c4d7376ad0cf9"
+  },
+  "earlier_audit_note": "OVERLAP-AUDIT.json is superseded by v2: the initial normalized-content comparison used the exact-text hash domain incorrectly. v2 compares actual canonical question text under the same NFKC+whitespace rule.",
+  "original_rollouts_or_models_downloaded": false,
+  "GPU_used": false,
+  "remote_files_written": false,
+  "training_or_automation_changed": false
+}
