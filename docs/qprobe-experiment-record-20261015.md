@@ -655,3 +655,13 @@ B894 CPU follower与原archive100实际退出1：全量du遇到新R6临时目录
 The archive100 recovery implementation is published as4194ad2c21c5e10ae5ee3b0212fb6fbf3e02f41b; remote1097 source files matched at1792097689.1649547. The independent final reader/holder now use a separate archive100_recovery_commit pin while retaining B894 as archive50, dc9 as its prior handoff, f979 as original RAW/service and09cc as original archive5. The exact original50 claim, held0 and transport remain inherited; later archives and native submit bind only the new100 follower. Five new protocol tests plus51 existing recovery/reader/holder/transport tests passed locally; these are compatibility tests, not real200 acceptance.
 
 The first read-only100 preflight exceeded the former55-second SSH observation window; this is UNKNOWN, not a terminal training/recovery failure. The local transport now preserves its55-second default and permits an explicitly bounded1..1800-second observation for this longer already-authorized SHA validation. Both SSH and HK3 observation deadlines remain finite, strict endpoint/kernel binding and RAM/stdin credentials are unchanged, and timeout never permits replay. No100 recovery start has yet been sent.
+
+### 2026-10-16 05:28 CST：第100轮第二次归档恢复准备
+
+上述C1恢复4194ad2已实际执行一次：原B894失败control完整字节及inode经原子移动保存在failed-archive-100-b894，原follower保留原位，新C1 follower实际启动。随后C1归档worker再次因其他实验新R8临时目录Permission denied，在独立全du准入阶段真实退出1（1792098910.566765）；C1 follower退出1于1792098924.3780577。三个固定出生身份均已死亡，payload根实际缺失，task-result不存在。部分du数值1532322361344B不接受为使用量，失败证据完整保留；不能重放已有C1 intent或start。
+
+实际DUslot10只报告当时仍存在的两个R8 torchelastic根，已发布A2 helper由原MOU属主对4个实际mode700目录FD执行750，JXU按同一inode和14目录遍历读回通过。后续全量DUslot11实际退出0、stderr空，完成于1792099186.5770264，allocated1532964118528B，两次终态读回通过；此值为活跃目录非原子实测，不能代替未来归档worker的独立全du或硬quota证明。所有完成修复/DU intent禁止重放。
+
+新增recover_sigma3_archive100_second固定消费C1实际claim/wait/log/六条R8错误及三个死亡出生身份；同一验证阶段只consume一次原C1完整链，原5/50及f979/09cc身份保持不变。新排他scope只原子保全这次失败control为failed-archive-100-second-c1，拒绝任何payload根、活动或未知进程及已有intent，仍需明确新鲜全DU0并保留标准worker独立2TB门禁。已有本地只读审查未发现实质问题，11项新协议测试及32项相关恢复/归档回归测试通过。源码必须提交、推送、全SHA发布后才允许执行；当前尚未执行第二次恢复，也未接受100归档。
+
+同一原四卡训练已实际完成108轮，全部4rank各2160 Adam写入，head/scheduler连续，109正在进行；未重启或热改。原RAW held0至107，第108轮实际CPU child正在审计。最新108轮Top448混合131/448（29.2411%），随机11/64（17.1875%）；已重消费的98–107最近10轮为1198/4480（26.7411%）和117/640（18.28125%）。目标仍ACTIVE，200及所有最终归档/原始轨迹/实际native4两次读回/no201门禁尚未完成。
