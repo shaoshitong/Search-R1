@@ -2,7 +2,7 @@
 import unittest
 
 from .pool import initialize_records, next_selection, identity, prepare, atomic, read
-from .rollout import prompt_tokens, compact_prefix
+from .rollout import prompt_tokens, compact_prefix, _configure_one_visible_gpu
 
 
 def source(index, content=None):
@@ -98,6 +98,21 @@ class PoolTest(unittest.TestCase):
         with self.assertRaises(ValueError): next_selection(pool,state,3)
         _,after=next_selection(pool,state,2)
         with self.assertRaises(ValueError): next_selection(pool,after,2)
+
+    def test_vllm063_uuid_assignment_resolves_numeric_before_any_torch_import(self):
+        import os
+        from unittest.mock import patch
+        uuids=['GPU-fixture-%d'%i for i in range(8)]
+        inventory='\n'.join('%d, %s'%(i,u) for i,u in enumerate(uuids))
+        env=dict(CUDA_VISIBLE_DEVICES=','.join(reversed(uuids)),RANK='3',WORLD_SIZE='8',LOCAL_RANK='3')
+        with patch.dict(os.environ,env,clear=True), patch('subprocess.check_output',return_value=inventory):
+            binding=_configure_one_visible_gpu(3)
+            self.assertEqual(os.environ['CUDA_VISIBLE_DEVICES'],'4')
+            self.assertEqual(os.environ['CUDA_DEVICE_ORDER'],'PCI_BUS_ID')
+            self.assertEqual(binding['gpu_uuid'],uuids[4])
+            self.assertEqual(binding['physical_gpu_index'],4)
+            self.assertNotIn('RANK',os.environ)
+            self.assertNotIn('WORLD_SIZE',os.environ)
 
     def test_official_chat_prefill_keeps_question_context(self):
         class Tokenizer:

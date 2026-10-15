@@ -51,18 +51,47 @@ def compact_prefix(turns, trajectory_id, limit=20):
 def _configure_one_visible_gpu(rank):
     visible = os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',')
     visible = [value for value in visible if value]
-    if len(visible) != 8 or not 0 <= rank < 8:
+    if len(visible) != 8 or len(set(visible)) != 8 or not 0 <= rank < 8:
         raise ValueError('Fresh rollout needs exactly eight actually assigned visible GPUs')
-    # No distributed actor/optimizer group is needed for these eight TP1 engines.
-    os.environ['CUDA_VISIBLE_DEVICES'] = visible[rank]
+    # vLLM0.6.3 int() parses physical_device_id and rejects a UUID in CVD.
+    # Resolve the already assigned identity before importing torch or vLLM;
+    # retain the UUID in evidence rather than weakening the eight-GPU binding.
+    import csv
+    import io
+    inventory = list(csv.reader(io.StringIO(subprocess.check_output(
+        ['nvidia-smi', '--query-gpu=index,uuid', '--format=csv,noheader,nounits'],
+        text=True, timeout=30))))
+    by_uuid = {}; by_index = {}
+    for row in inventory:
+        if len(row) != 2 or not row[0].strip().isdigit() or not row[1].strip().startswith('GPU-'):
+            raise ValueError('Cannot resolve assigned GPU UUIDs from actual NVML inventory')
+        index, gpu_uuid = int(row[0].strip()), row[1].strip()
+        if gpu_uuid in by_uuid or index in by_index:
+            raise ValueError('Actual GPU inventory identity repeats')
+        by_uuid[gpu_uuid] = index; by_index[index] = gpu_uuid
+    assigned = []
+    for value in visible:
+        if value.isdigit() and int(value) in by_index:
+            assigned.append((int(value), by_index[int(value)]))
+        elif value in by_uuid:
+            assigned.append((by_uuid[value], value))
+        else:
+            raise ValueError('An assigned visible GPU is absent from actual NVML inventory')
+    if len({value[1] for value in assigned}) != 8:
+        raise ValueError('Assigned visible devices resolve to duplicate physical GPUs')
+    physical_index, gpu_uuid = assigned[rank]
+    os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
+    os.environ['CUDA_VISIBLE_DEVICES'] = str(physical_index)
     for key in ('RANK', 'LOCAL_RANK', 'WORLD_SIZE', 'LOCAL_WORLD_SIZE', 'GROUP_RANK',
                 'ROLE_RANK', 'ROLE_WORLD_SIZE', 'MASTER_ADDR', 'MASTER_PORT'):
         os.environ.pop(key, None)
-    return visible[rank]
+    return dict(physical_gpu_index=physical_index, gpu_uuid=gpu_uuid,
+                originally_assigned_device=visible[rank], cuda_device_order='PCI_BUS_ID')
 
 
 def worker(config_path, epoch, rank):
-    config = read(config_path); selected_device = _configure_one_visible_gpu(rank)
+    config = read(config_path); device_binding = _configure_one_visible_gpu(rank)
+    selected_device = device_binding['gpu_uuid']
     import torch
     from transformers import AutoTokenizer
     from vllm import LLM, SamplingParams
@@ -145,6 +174,8 @@ def worker(config_path, epoch, rank):
             expected_trajectories=3200, correct_trajectories=correct, active_trajectories=active, pending_generation=len(pending),
             pending_retrieval=len(tools), peak_inflight=peak, generation_requests=requests_count,
             elapsed_seconds=time.monotonic()-started, utc=utc(), device=selected_device,
+            physical_gpu_index=device_binding['physical_gpu_index'],
+            cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'], device_binding=device_binding,
             gpu_memory_utilization=utilization, scheduler_limits=limits, seed=seed))
 
     def finish_environment(state, environment, full_stream, prefix_stream):
@@ -247,7 +278,10 @@ def worker(config_path, epoch, rank):
         with path.open('rb') as stream:
             os.fsync(stream.fileno())
     result = dict(schema_version=1, epoch=epoch, rank=rank, questions=640, trajectories=completed,
-        device=selected_device, model_revision=REVISION, frozen_actor_updates=0,
+        device=selected_device, device_binding=device_binding,
+        physical_gpu_index=device_binding['physical_gpu_index'],
+        cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'],
+        model_revision=REVISION, frozen_actor_updates=0,
         strict_correct_trajectories=correct, strict_incorrect_trajectories=completed-correct,
         source_model_dir=model, seed=seed, pad_token_id=int(tokenizer.pad_token_id),
         eos_token_id=int(tokenizer.eos_token_id), selection_sha256=digest(epoch_root/'selection.json'),
