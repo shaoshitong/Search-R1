@@ -7,7 +7,7 @@
 #SBATCH --cpus-per-task=48
 #SBATCH --mem=384G
 #SBATCH --gres=gpu:4
-#SBATCH --time=2-00:00:00
+#SBATCH --time=04:00:00
 #SBATCH --output=/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/slurm-%j.log
 set -euo pipefail
 TASK_BASE=/data/user/jxu957/experiments/cosearch-continue300-x203-20261008

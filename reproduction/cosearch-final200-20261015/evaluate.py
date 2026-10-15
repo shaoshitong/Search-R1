@@ -3,11 +3,19 @@ import asyncio
 import collections
 import hashlib
 import json
+import os
 import pathlib
 import sys
 import time
 import types
 from common import OUT, SOURCE, TRAIN, N, atomic, sha
+
+
+async def wait_progress(tasks, deadline):
+    """Drain accepted questions until the allocation's safe stopping boundary."""
+    remaining = None if deadline is None else max(0., deadline-time.time())
+    return await asyncio.wait(tasks, timeout=remaining,
+                              return_when=asyncio.FIRST_COMPLETED)
 
 
 class Manager:
@@ -93,6 +101,8 @@ async def main():
         assert row['row_id'] not in results
         results[row['row_id']] = row
     started = time.time()
+    initial_rows = len(results)
+    deadline = float(os.environ['COSEARCH_SLICE_DEADLINE']) if os.environ.get('COSEARCH_SLICE_DEADLINE') else None
     inflight = set()
     semaphore = asyncio.Semaphore(128)
     timeout = aiohttp.ClientTimeout(total=3600)
@@ -145,15 +155,34 @@ async def main():
 
         # Bound task objects as well as active questions. Keep engines fed continuously.
         for index in range(N):
+            if deadline is not None and time.time() >= deadline:
+                break
             if index in results:
                 continue
             inflight.add(asyncio.create_task(question(index)))
             if len(inflight) >= 256:
-                done, inflight = await asyncio.wait(inflight, return_when=asyncio.FIRST_COMPLETED)
+                done, inflight = await wait_progress(inflight, deadline)
                 for task in done:
                     task.result()
+                if not done:
+                    break
         if inflight:
-            await asyncio.gather(*inflight)
+            while inflight:
+                done, inflight = await wait_progress(inflight, deadline)
+                for task in done:
+                    task.result()
+                if not done:
+                    for task in inflight:
+                        task.cancel()
+                    await asyncio.gather(*inflight, return_exceptions=True)
+                    break
+    if len(results) < N:
+        assert len(results) > initial_rows, 'No accepted progress in this allocation; do not requeue blindly'
+        atomic(OUT/('slices/%d.json'%int(started)), dict(epoch=time.time(),
+            rows=len(results), new_rows=len(results)-initial_rows, total=N,
+            binding_sha256=binding_sha, all_accepted_rows_durable=True,
+            cancelled_only_unaccepted_questions=True))
+        return 75
     assert sorted(results) == list(range(N))
     rows = [results[index] for index in range(N)]
     assert collections.Counter(x['question_answer_sha256'] for x in rows) == expected
@@ -165,4 +194,4 @@ async def main():
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    raise SystemExit(asyncio.run(main()))

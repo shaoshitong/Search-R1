@@ -1,5 +1,6 @@
 """One owned allocation: verify/export both FSDP roles, then native dual inference."""
 import fcntl
+import datetime
 import gc
 import json
 import os
@@ -60,6 +61,7 @@ def merge_role(role, name, saved):
 
 def main():
     assert os.environ.get('SLURM_JOB_ID')
+    started_epoch = time.time()
     lock=(OUT/'eval.lock').open('a')
     fcntl.flock(lock, fcntl.LOCK_EX|fcntl.LOCK_NB)
     manifest=json.loads((OUT/'source-manifest.json').read_text())
@@ -147,6 +149,7 @@ def main():
         except subprocess.SubprocessError:
             pass
 
+    partial = False
     try:
         # Native retriever is isolated in its verified CUDA FAISS Python environment.
         sys.path.insert(0,str(TRAIN/'tools'))
@@ -184,13 +187,38 @@ def main():
                 '--memory',str(memory)],'server%d'%index,variables))
         for index,child in enumerate(servers):
             wait_ready('http://127.0.0.1:%d/health'%(18100+index),child)
-        evaluation=launch([str(PYTHON),'-B',str(TOOLS/'evaluate.py')],'evaluation',base_env)
+        job_info=subprocess.check_output(['scontrol','show','job',os.environ['SLURM_JOB_ID'],'-o'],text=True)
+        end_text=next(item.split('=',1)[1] for item in job_info.split() if item.startswith('EndTime='))
+        deadline=datetime.datetime.fromisoformat(end_text).timestamp()-180
+        evaluation_env=dict(base_env,COSEARCH_SLICE_DEADLINE=str(deadline))
+        evaluation=launch([str(PYTHON),'-B',str(TOOLS/'evaluate.py')],'evaluation',evaluation_env)
+        first_progress = None
+        startup_checked = False
         while evaluation.poll() is None:
             assert all(child.poll() is None for child in children if child is not evaluation)
             metrics()
+            progress_file=OUT/'progress.json'
+            if progress_file.exists() and not startup_checked:
+                progress=json.loads(progress_file.read_text())
+                if progress['epoch']>=started_epoch and progress['rows']>=32 and progress['reranker_calls']>0:
+                    if first_progress is None:
+                        first_progress=progress
+                    elif (progress['rows']>first_progress['rows'] and
+                          progress['main_calls']>first_progress['main_calls'] and
+                          progress['reranker_calls']>first_progress['reranker_calls']):
+                        atomic(OUT/'startup-verified.json',dict(epoch=time.time(),
+                            job=int(os.environ['SLURM_JOB_ID']),
+                            status='DUAL_MODEL_REAL_QUESTION_PROGRESS_TWO_SAMPLES_PASS',
+                            first=first_progress,second=progress,
+                            all_owned_services_alive=True,
+                            checkpoint_step=200,gpus=4))
+                        startup_checked=True
             time.sleep(15)
-        assert evaluation.returncode==0
-        assert json.loads((OUT/'complete.json').read_text())['rows']==N
+        if evaluation.returncode==75:
+            partial = True
+        else:
+            assert evaluation.returncode==0
+            assert json.loads((OUT/'complete.json').read_text())['rows']==N
     except BaseException as error:
         atomic(OUT/('failure-'+os.environ['SLURM_JOB_ID']+'.json'),
                dict(epoch=time.time(),error=repr(error),training_untouched=True))
@@ -211,6 +239,10 @@ def main():
         atomic(OUT/('cleanup-'+os.environ['SLURM_JOB_ID']+'.json'),
                dict(epoch=time.time(),all_owned_children_reaped=all(c.poll() is not None for c in children),
                     only_exact_owned_child_process_groups=True))
+    if partial:
+        assert not (OUT/'complete.json').exists()
+        print('DURABLE_QUESTION_SLICE_COMPLETE_REQUEUE_SAME_JOB',flush=True)
+        subprocess.run(['scontrol','requeue',os.environ['SLURM_JOB_ID']],check=True)
 
 
 if __name__=='__main__':
