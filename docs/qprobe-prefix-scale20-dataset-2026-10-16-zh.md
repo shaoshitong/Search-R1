@@ -31,3 +31,5 @@
 `reproduction/operations/a800_qprobe_prefix_scale20.py` 提供 `--action stage/run-once/observe --handle <本地handle>`。stage读取最新人工意图、固定runtime fcb源码和已推送操作文件SHA，创建新独立远端目录；run-once只启动一次，未知SSH结果必须观察同一handle。训练卡使用真实空闲四张（排除辅助5/6），实际indices/UUID绑定后不更换，不使用或停止其他进程。当前GPU1和7的其他任务保留。
 
 `qprobe_prefix_teacher_scale20.py` 是远端teacher构建入口，`qprobe_prefix_scale20_encode.py` 是后续特征编码入口。原runtime不热修改。实现、执行入口与必要配置必须先提交推送，并实际核验远端Git SHA/blob。
+
+独立只读入口 `a800_qprobe_prefix_scale20_observer.py --handle <同一handle>` 在一次有界SSH内读取已有pipeline阶段、driver出生身份、标签封存进度、encoder进度及安全日志元数据；不改变正在执行的controller或worker。旧5120与全训练集题级缓存的范围哈希分别记录为provenance，生成所用官方模型、数据、采样和评分另行严格匹配；统一前缀缓存复用时逐文件完整SHA核验。
