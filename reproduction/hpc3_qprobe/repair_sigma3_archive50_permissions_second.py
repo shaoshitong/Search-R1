@@ -12,7 +12,7 @@ import stat
 import time
 
 ROOT=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014')
-PARENT=ROOT.parent/'cosearch-continue300-x203-20261008/runtime/cosearch-final200-two-gpu-20261015/cache/tmp'
+PARENT=ROOT.parent/'qprobe-teacher-warmup200-native-thread5-20261015'
 CONTROL=ROOT/'preparation/archive50-permission-repair-second-20261015'
 
 
@@ -32,7 +32,7 @@ def matches(s,row,mode=0o700):
 def main():
     assert os.getuid()==21930 and 21919 in os.getgroups(),'original authorized MOU owner/group required'
     file=Path(__file__).resolve();repo=file.parents[2]
-    assert repo.parent==ROOT/'source' and len(repo.name)==20
+    assert repo.parent==ROOT/'source' and len(repo.name)==40
     proof=json.loads((ROOT/'preparation'/('source-'+repo.name+'-verification.json')).read_text())
     assert proof['status']=='PUBLISHED_SOURCE_FULL_SHA_PASS' and proof['commit']==proof['published_remote_sha']==repo.name
     targets=file.with_name('archive50_permission_targets_second.json');rows=json.loads(targets.read_text())
