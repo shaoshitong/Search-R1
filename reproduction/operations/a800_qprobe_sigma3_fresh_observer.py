@@ -642,6 +642,100 @@ def gpu_samples():
   maximum_scanned_sampling_gap_seconds=max(gaps) if gaps else None,scan_from_start=info['scan_from_start'],
   complete_step_window_peaks=dict(status='unknown',reason='not_computed_by_this_metadata_entry'),
   scope='existing physical-node occupancy samples over pipeline lifetime/scanned tail, including startup; not exclusive model peaks or complete-step GPU peaks; nativefive separately reports its recorded window boundaries')
+def existing_teacher_cache_progress():
+ name=run['question_probe'].get('teacher_warmup_cache')
+ need(type(name) is str and name==payload['intent'].get('teacher_warmup_cache'),'teacher_cache_intent_binding')
+ cache=Path(name)
+ need(cache.is_absolute() and re.fullmatch(r'/(data|mnt|backup)/[A-Za-z0-9._/-]+',name) and
+  '..' not in cache.parts and cache.resolve()==cache and not cache.is_symlink(),'teacher_cache_canonical_remote_path')
+ scope='existing stable teacher-cache JSON metadata only; no raw rollout, tensor, labels, group vectors or question IDs returned; no raw-file SHA verification, complete-cache qualification or inferred current-run generation'
+ if not cache.exists():
+  return dict(status='not_yet_recorded',reason='teacher_cache_directory_missing',cache_root=name,
+   path_scope='intent_bound_external_teacher_cache_metadata',current_run_generation='unknown',scope=scope)
+ current=cache.stat(follow_symlinks=False)
+ need(stat.S_ISDIR(current.st_mode) and current.st_uid==os.getuid(),'teacher_cache_root_owner_or_type')
+ files=[]
+ def cache_document(relative):
+  info=dict(path_scope='intent_bound_external_teacher_cache_metadata',relative_path=relative)
+  try:
+   raw,saved=snapshot(cache/relative,4*1024*1024,record=False)
+   if raw is None:
+    info.update(status='not_yet_recorded');files.append(info);return None,info
+   value=json.loads(raw);need(type(value) is dict,'teacher_cache_metadata_object')
+   info.update(status='observed',file_bytes=saved['file_bytes'],metadata_sha256=saved['scanned_sha256'],
+    verified_initial_range_unchanged=saved['verified_initial_range_unchanged'])
+   files.append(info);return value,info
+  except (Unknown,KeyError,TypeError,ValueError,OSError) as failure:
+   info.update(status='unknown',reason=str(failure) if isinstance(failure,Unknown) else type(failure).__name__)
+   files.append(info);return None,info
+ header,header_info=cache_document('identity.json')
+ header_out=dict(status=header_info['status'],metadata_sha256=header_info.get('metadata_sha256'),questions_count=None)
+ if header is not None:
+  questions=header.get('questions')
+  need(type(questions) is list,'teacher_cache_header_question_list')
+  header_out.update(questions_count=len(questions),recorded_schema=scalar(header.get('schema')),
+   recorded_world_size=scalar(header.get('training_world_size')),
+   recorded_frozen_evidence_required=scalar(header.get('teacher_frozen_evidence_required')),
+   declared_teacher_model_matches_current=header.get('model_revision')==run['model_revision'] and
+    header.get('model_files_sha256')==run['initial_model_sha256'],
+   declared_train_data_matches_current=header.get('train_parquet_sha256')==run['input_sha256']['train.parquet'] and
+    header.get('data_manifest_sha256')==run['budget']['common_manifest_sha256'])
+  workers=(header.get('rollout_sources') or {}).get('verl/workers/fsdp_workers.py')
+  header_out['declared_fsdp_worker_source_matches_current']=workers==run['source_sha256'].get('verl/workers/fsdp_workers.py') if workers is not None else None
+ def frozen_metadata(value):
+  need(type(value) is dict and value.get('actual_frozen_rank_readback') is True and
+   type(value.get('actual_world_size')) is int and value['actual_world_size']==4,'teacher_chunk_frozen_metadata_missing')
+  before=value['before'];after=value['after']
+  need(type(before) is list and type(after) is list and len(before)==len(after)==4,'teacher_chunk_frozen_rank_count')
+  before=sorted(before,key=lambda item:item['rank']);after=sorted(after,key=lambda item:item['rank'])
+  for rank,(first,last) in enumerate(zip(before,after)):
+   need(type(first['rank']) is int and type(last['rank']) is int and first['rank']==last['rank']==rank,
+    'teacher_chunk_frozen_rank_identity')
+   for field in ('actual_optimizer_writes','completed_outer'):
+    need(type(first[field]) is int and type(last[field]) is int and first[field]==last[field]==0,
+     'teacher_chunk_frozen_nonzero_counters')
+   for field in ('parameter_sha256','optimizer_sha256','scheduler_sha256'):
+    need(hash_value(first[field])==hash_value(last[field]),'teacher_chunk_frozen_declared_hash_mismatch')
+  return dict(status='observed',evidence='producer_declared_frozen_workers_JSON',ranks=4,
+   recorded_optimizer_writes_per_rank=0,recorded_completed_outer=0,recorded_before_after_hashes_equal=True)
+ chunks=[];groups_total=0;trajectories_total=0
+ for index in range(10):
+  value,info=cache_document('chunk-%02d.json'%index)
+  item=dict(index=index,status=info['status'],metadata_sha256=info.get('metadata_sha256'))
+  if value is not None:
+   try:
+    groups=value.get('groups');need(type(value.get('index')) is int and value['index']==index and
+     type(groups) is list and len(groups)==512,'teacher_chunk_metadata_counts')
+    need(all(type(group) is dict and type(group.get('trajectory_ids')) is list and
+     len(group['trajectory_ids'])==5 for group in groups),'teacher_chunk_trajectory_metadata_counts')
+    proof=value['raw_rollout'];need(type(proof) is dict and proof['relative_path']=='rollout-%02d.pt'%index and
+     integer(proof['bytes'],1),'teacher_chunk_raw_rollout_declaration')
+    item.update(groups_count=512,trajectory_count=2560,evidence='validated_metadata_counts_only',
+     raw_rollout_declared_bytes=proof['bytes'],raw_rollout_declared_sha256=hash_value(proof['sha256']),raw_rollout_read=False)
+    item['frozen_workers']=section(lambda: frozen_metadata(value.get('frozen_workers')))
+    groups_total+=512;trajectories_total+=2560
+   except (Unknown,KeyError,TypeError,ValueError) as failure:
+    item.update(status='unknown',reason=str(failure) if isinstance(failure,Unknown) else type(failure).__name__)
+  chunks.append(item)
+ complete,complete_info=cache_document('complete.json')
+ complete_out=dict(status=complete_info['status'],metadata_sha256=complete_info.get('metadata_sha256'))
+ if complete is not None:
+  producer_status=complete.get('status')
+  need(type(producer_status) is str and re.fullmatch('[A-Z0-9_]{1,96}',producer_status),'teacher_complete_producer_status')
+  complete_out.update(producer_declared_status=producer_status,evidence='producer_declaration_only',
+   declared_questions=scalar(complete.get('questions')),declared_trajectories=scalar(complete.get('trajectories')),
+   declared_identity_sha256=hash_value(complete['identity_sha256']),
+   declared_identity_matches_read_header=complete['identity_sha256']==header_info.get('metadata_sha256') if header is not None else None,
+   full_sha_cache_qualification_by_observer=False)
+ known=sum(item['status']=='observed' and item.get('groups_count')==512 for item in chunks)
+ unknown=any(item['status']=='unknown' for item in chunks) or header_info['status']=='unknown' or complete_info['status']=='unknown'
+ return dict(status='unknown' if unknown else 'observed' if header is not None else 'not_yet_recorded',
+  cache_root=name,path_scope='intent_bound_external_teacher_cache_metadata',header=header_out,complete=complete_out,
+  completed_chunk_metadata_count=known,validated_metadata_groups_count=groups_total,
+  validated_metadata_trajectory_count=trajectories_total,expected_chunk_count=10,expected_questions=5120,
+  expected_trajectories=25600,counts_scope='completed JSON chunks only; uniqueness, labels, raw-file bytes and in-progress generation are unverified',
+  current_run_generation='unknown_reusable_cache_origin_not_proven',chunks=chunks,metadata_files=files,
+  file_limit_bytes=4*1024*1024,scope=scope)
 raw_payload=sys.stdin.read(1024*1024+1);need(len(raw_payload.encode())<=1024*1024,'payload_limit')
 request=json.loads(raw_payload);sys.stdin=io.StringIO(raw_payload)
 result=dict(role='qprobe_existing_sigma3_fresh_window_readonly',run_id=request['expected_run'],execution_id=request['expected_execution'],
@@ -662,6 +756,7 @@ try:
  result['loss_identity']=section(loss_identity)
  result['latest_head_commit']=section(head_commit)
  result['checkpoint_head_metadata']=section(checkpoint_metadata);result['gpu_samples']=section(gpu_samples)
+ result['existing_teacher_cache_progress']=section(existing_teacher_cache_progress)
  need('torch' not in sys.modules,'unexpected_torch_import')
  result['status']='observed';result['metadata_files']=metadata_files
 except (Unknown,AssertionError,KeyError,IndexError,TypeError,ValueError,OverflowError,OSError) as failure:
@@ -672,6 +767,10 @@ finally:
    output_bytes=128*1024,deadline_seconds=65,
    readback_recheck_included=True,source_byte_checks_included=True))
 encoded=json.dumps(result,allow_nan=False)
+if len(encoded.encode())>JSON_LIMIT and 'existing_teacher_cache_progress' in result:
+ result['existing_teacher_cache_progress']=dict(status='unknown',reason='optional_output_budget',
+  scope='optional teacher cache metadata omitted to preserve the primary scientific result')
+ encoded=json.dumps(result,allow_nan=False)
 if len(encoded.encode())>JSON_LIMIT and 'infra_window' in result:
  supplemental=result['infra_window']
  result['infra_window']=dict(status='unknown',reason='supplemental_output_budget',
