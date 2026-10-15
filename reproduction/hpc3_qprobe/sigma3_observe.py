@@ -93,7 +93,8 @@ def observe():
     for p in (BASE/'logs').glob('*.log'):
         with p.open('rb') as f:f.seek(max(0,p.stat().st_size-65536));tail=f.read().decode(errors='replace')
         matches=[line[:1200] for line in tail.splitlines() if re.search(r'Traceback \(most recent call last\)|CUDA out of memory|SEARCH_G1_FATAL|AssertionError|ValueError:|RuntimeError:',line)]
-        if matches:errors.append(dict(path=str(p),matches=matches[-12:]))
+        if matches and (not p.name.startswith('training-') or p.name=='training-'+job+'.log'):
+            errors.append(dict(path=str(p),matches=matches[-12:]))
         logs[p.name]=dict(bytes=p.stat().st_size,tail=tail[-1600:])
     out['recent_error_patterns']=errors;out['logs']=logs
     if updates:
