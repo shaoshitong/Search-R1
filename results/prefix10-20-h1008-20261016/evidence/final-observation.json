@@ -1,0 +1,447 @@
+{
+  "base": "/mnt/data/shaoshitong/search-g1-prefix10-20-warmup20-20261016-94cc1d4",
+  "run_id": "8b4462dc02054e75af85dbdda8fa55de",
+  "checked_unix": 1792088750.5676322,
+  "submit_receipt": {
+    "status": "SUBMITTED",
+    "returncode": 0,
+    "stdout": "3405\n",
+    "stderr": "",
+    "intent_sha256": "28e280f99acd8ca49683c2d45989862f528d7b883defc7bd07aaecded877ff93",
+    "job_id": "3405"
+  },
+  "groups": {
+    "10": {
+      "physical_gpu_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "feature_progress": {
+        "0": {
+          "completed_rows": 7040,
+          "observed_utc": "2026-10-15T18:21:19.191486+00:00",
+          "prefix_length": 10,
+          "rank": 0,
+          "stage": "LAYER27_PREFIX_ENCODING",
+          "total_rows": 7040
+        },
+        "1": {
+          "completed_rows": 7040,
+          "observed_utc": "2026-10-15T18:21:19.216097+00:00",
+          "prefix_length": 10,
+          "rank": 1,
+          "stage": "LAYER27_PREFIX_ENCODING",
+          "total_rows": 7040
+        },
+        "2": {
+          "completed_rows": 7040,
+          "observed_utc": "2026-10-15T18:21:18.738538+00:00",
+          "prefix_length": 10,
+          "rank": 2,
+          "stage": "LAYER27_PREFIX_ENCODING",
+          "total_rows": 7040
+        },
+        "3": {
+          "completed_rows": 7040,
+          "observed_utc": "2026-10-15T18:21:18.773119+00:00",
+          "prefix_length": 10,
+          "rank": 3,
+          "stage": "LAYER27_PREFIX_ENCODING",
+          "total_rows": 7040
+        }
+      },
+      "feature_complete": {
+        "actor_optimizer_updates": 0,
+        "count": 28160,
+        "global_max_tokens": 262,
+        "head_optimizer_updates": 0,
+        "manifest_sha256": "c9206116fd4a014af3c23b8bd53e3687039e539952cdcdac9c1404dbdee76987",
+        "prefix_length": 10,
+        "role": "PREFIX_FEATURES_COMPLETE"
+      },
+      "feature_errors": {
+        "0": null,
+        "1": null,
+        "2": null,
+        "3": null
+      },
+      "train_progress": {
+        "actor_updates": 0,
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "binding_sha256": "1d5cc6ec9f6e8116576816a034e49917609ca1ae580c51644aa9fa605f05c8d5",
+        "diagnostic_evaluations": 21,
+        "elapsed_seconds": 199.95228915289044,
+        "epoch": 20,
+        "formal_training_started": false,
+        "observed_utc": "2026-10-15T18:25:00.908479+00:00",
+        "stage": "COMPLETE",
+        "status": "OFFLINE_PREFIX_HEAD_20_EPOCHS_COMPLETE"
+      },
+      "latest_epoch_metrics": {
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "corrected_logit_shift": -1.2668049210318928,
+        "elapsed_seconds": 0.3694736286997795,
+        "epoch": 20,
+        "natural_training_positive_prior": 0.2198046875,
+        "observed_utc": "2026-10-15T18:24:59.569793+00:00",
+        "prior_corrected": {
+          "accuracy": 0.5171875,
+          "balanced_accuracy": 0.5345216479416821,
+          "bce": 1.8832108227648774,
+          "brier": 0.3965099999661602,
+          "count": 2560,
+          "f1": 0.33832976445396146,
+          "fn": 243,
+          "fp": 993,
+          "majority_accuracy": 0.781640625,
+          "negative": 2001,
+          "positive": 559,
+          "precision": 0.24140565317035906,
+          "probability_mean": 0.5038807063863215,
+          "probability_quantiles": {
+            "0": "nested metadata omitted",
+            "0.01": "nested metadata omitted",
+            "0.1": "nested metadata omitted",
+            "0.5": "nested metadata omitted",
+            "0.9": "nested metadata omitted",
+            "0.99": "nested metadata omitted",
+            "1": "nested metadata omitted"
+          },
+          "recall": 0.5652951699463328,
+          "saturation_above_0_99": 0.16171875,
+          "saturation_below_0_01": 0.1609375,
+          "tn": 1008,
+          "tp": 316
+        },
+        "raw": {
+          "accuracy": 0.46328125,
+          "balanced_accuracy": 0.5361353312610242,
+          "bce": 2.3099149270660395,
+          "brier": 0.4581669117331185,
+          "count": 2560,
+          "f1": 0.35127478753541075,
+          "fn": 187,
+          "fp": 1187,
+          "majority_accuracy": 0.781640625,
+          "negative": 2001,
+          "positive": 559,
+          "precision": 0.2386144964720975,
+          "probability_mean": 0.6055524159798975,
+          "probability_quantiles": {
+            "0": "nested metadata omitted",
+            "0.01": "nested metadata omitted",
+            "0.1": "nested metadata omitted",
+            "0.5": "nested metadata omitted",
+            "0.9": "nested metadata omitted",
+            "0.99": "nested metadata omitted",
+            "1": "nested metadata omitted"
+          },
+          "recall": 0.6654740608228981,
+          "saturation_above_0_99": 0.227734375,
+          "saturation_below_0_01": 0.11796875,
+          "tn": 814,
+          "tp": 372
+        },
+        "split": "new_512_question_diagnostic"
+      },
+      "train_result": {
+        "actor_updates": 0,
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "binding_sha256": "1d5cc6ec9f6e8116576816a034e49917609ca1ae580c51644aa9fa605f05c8d5",
+        "diagnostic_evaluations": 21,
+        "elapsed_seconds": 199.95228915289044,
+        "epoch": 20,
+        "formal_training_started": false,
+        "observed_utc": "2026-10-15T18:25:00.908479+00:00",
+        "status": "OFFLINE_PREFIX_HEAD_20_EPOCHS_COMPLETE"
+      },
+      "train_error": null,
+      "train_rank_errors": {
+        "0": null,
+        "1": null,
+        "2": null,
+        "3": null
+      }
+    },
+    "20": {
+      "physical_gpu_indices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "feature_progress": {
+        "0": {
+          "completed_rows": 7040,
+          "observed_utc": "2026-10-15T18:21:22.017236+00:00",
+          "prefix_length": 20,
+          "rank": 0,
+          "stage": "LAYER27_PREFIX_ENCODING",
+          "total_rows": 7040
+        },
+        "1": {
+          "completed_rows": 7040,
+          "observed_utc": "2026-10-15T18:21:22.270192+00:00",
+          "prefix_length": 20,
+          "rank": 1,
+          "stage": "LAYER27_PREFIX_ENCODING",
+          "total_rows": 7040
+        },
+        "2": {
+          "completed_rows": 7040,
+          "observed_utc": "2026-10-15T18:21:22.708667+00:00",
+          "prefix_length": 20,
+          "rank": 2,
+          "stage": "LAYER27_PREFIX_ENCODING",
+          "total_rows": 7040
+        },
+        "3": {
+          "completed_rows": 7040,
+          "observed_utc": "2026-10-15T18:21:22.631340+00:00",
+          "prefix_length": 20,
+          "rank": 3,
+          "stage": "LAYER27_PREFIX_ENCODING",
+          "total_rows": 7040
+        }
+      },
+      "feature_complete": {
+        "actor_optimizer_updates": 0,
+        "count": 28160,
+        "global_max_tokens": 262,
+        "head_optimizer_updates": 0,
+        "manifest_sha256": "cb1f2376361d7bd8fe2c1a64198eb10f72f0bee87b31c13182a928ffaa68a2a4",
+        "prefix_length": 20,
+        "role": "PREFIX_FEATURES_COMPLETE"
+      },
+      "feature_errors": {
+        "0": null,
+        "1": null,
+        "2": null,
+        "3": null
+      },
+      "train_progress": {
+        "actor_updates": 0,
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "binding_sha256": "b5f61fd67a76c7d4649b208831dcc86cc0cad48086ea5ee3d424f94c6e40d302",
+        "diagnostic_evaluations": 21,
+        "elapsed_seconds": 208.79965315759182,
+        "epoch": 20,
+        "formal_training_started": false,
+        "observed_utc": "2026-10-15T18:25:11.194385+00:00",
+        "stage": "COMPLETE",
+        "status": "OFFLINE_PREFIX_HEAD_20_EPOCHS_COMPLETE"
+      },
+      "latest_epoch_metrics": {
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "corrected_logit_shift": -1.2668049210318928,
+        "elapsed_seconds": 0.3538089357316494,
+        "epoch": 20,
+        "natural_training_positive_prior": 0.2198046875,
+        "observed_utc": "2026-10-15T18:25:09.906309+00:00",
+        "prior_corrected": {
+          "accuracy": 0.715625,
+          "balanced_accuracy": 0.5299639983228421,
+          "bce": 2.8802466599029346,
+          "brier": 0.2627236509476616,
+          "count": 2560,
+          "f1": 0.23529411764705885,
+          "fn": 447,
+          "fp": 281,
+          "majority_accuracy": 0.781640625,
+          "negative": 2001,
+          "positive": 559,
+          "precision": 0.28498727735368956,
+          "probability_mean": 0.15512962394007182,
+          "probability_quantiles": {
+            "0": "nested metadata omitted",
+            "0.01": "nested metadata omitted",
+            "0.1": "nested metadata omitted",
+            "0.5": "nested metadata omitted",
+            "0.9": "nested metadata omitted",
+            "0.99": "nested metadata omitted",
+            "1": "nested metadata omitted"
+          },
+          "recall": 0.2003577817531306,
+          "saturation_above_0_99": 0.07578125,
+          "saturation_below_0_01": 0.728515625,
+          "tn": 1720,
+          "tp": 112
+        },
+        "raw": {
+          "accuracy": 0.707421875,
+          "balanced_accuracy": 0.5401865256995831,
+          "bce": 2.8185778414363334,
+          "brier": 0.272883982665174,
+          "count": 2560,
+          "f1": 0.26640548481880505,
+          "fn": 423,
+          "fp": 326,
+          "majority_accuracy": 0.781640625,
+          "negative": 2001,
+          "positive": 559,
+          "precision": 0.2943722943722944,
+          "probability_mean": 0.18473306063613176,
+          "probability_quantiles": {
+            "0": "nested metadata omitted",
+            "0.01": "nested metadata omitted",
+            "0.1": "nested metadata omitted",
+            "0.5": "nested metadata omitted",
+            "0.9": "nested metadata omitted",
+            "0.99": "nested metadata omitted",
+            "1": "nested metadata omitted"
+          },
+          "recall": 0.24329159212880144,
+          "saturation_above_0_99": 0.090625,
+          "saturation_below_0_01": 0.683203125,
+          "tn": 1675,
+          "tp": 136
+        },
+        "split": "new_512_question_diagnostic"
+      },
+      "train_result": {
+        "actor_updates": 0,
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "binding_sha256": "b5f61fd67a76c7d4649b208831dcc86cc0cad48086ea5ee3d424f94c6e40d302",
+        "diagnostic_evaluations": 21,
+        "elapsed_seconds": 208.79965315759182,
+        "epoch": 20,
+        "formal_training_started": false,
+        "observed_utc": "2026-10-15T18:25:11.194385+00:00",
+        "status": "OFFLINE_PREFIX_HEAD_20_EPOCHS_COMPLETE"
+      },
+      "train_error": null,
+      "train_rank_errors": {
+        "0": null,
+        "1": null,
+        "2": null,
+        "3": null
+      }
+    }
+  },
+  "owned_births_recorded": 20,
+  "owned_births_present": 0,
+  "owned_active_births": 0,
+  "owned_zombie_births": 0,
+  "owned_births_still_live": 0,
+  "owned_births_all_gone": true,
+  "scan_complete": {
+    "count": 28160,
+    "encoder_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "files": {
+      "index.jsonl": {
+        "bytes": 34149043,
+        "sha256": "ef78f3a96a735dbcc9f87c2f22c1195b5ad56b0fa44cc6da2c5215d754a3082a"
+      },
+      "offsets.npy": {
+        "bytes": 225416,
+        "sha256": "4e002acb00b29e20728ff7f7421de4eed23aa290b3ec46ef7f0ff6fea73f1bd9"
+      },
+      "packed_input_ids.npy": {
+        "bytes": 35518288,
+        "sha256": "394a009397bf2c64d08385fd3cf7aa92c44c5ee53a74c0e5be37beef0d2a8e7b"
+      }
+    },
+    "global_max_tokens": 262,
+    "model_dir": "/data/search-g1/assets/qwen2.5-3b-instruct",
+    "model_files_sha256": {
+      "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+      "generation_config.json": "ea35dfb6fc5051b01114f9b995820d55dab01ed33ee490f6378b442af82c09f9",
+      "merges.txt": "599bab54075088774b1733fde865d5bd747cbcc7a547c5bc12610e874e26f5e3",
+      "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+      "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+      "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+      "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+      "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+    },
+    "pad_token_id": 151643,
+    "pad_token_provenance": "official_tokenizer.pad_token_id",
+    "position_provenance": "reconstructed_contiguous_unpadded_actual_request",
+    "prefix_source": "first_native_request_raw_including_observed_EOS",
+    "role": "prefix10_20_shared_raw_id_scan",
+    "schema_version": 2,
+    "sources_sha256": "f85859a6029ad14cb5dc19abbce94efcc27a48dd34a74efa607c1fa7fcd846ea",
+    "split_counts": {
+      "test": 2560,
+      "train": 25600
+    },
+    "split_proof": {
+      "disjoint_normalized_content": true,
+      "disjoint_qid": true,
+      "disjoint_question_hash": true,
+      "teacher_identity_sha256": "88998de7a30455b9135b02cc3c82251fbc1ba1765708244538b6a66c1371e871",
+      "test_identity_sha256": "a1ebab40dfa21e3f69ad414ba64729ab51833380e749afb0aa673bbcb6efc3a7",
+      "test_questions": 512,
+      "test_regenerated": false,
+      "train_questions": 5120
+    }
+  },
+  "cleanup": {
+    "role": "prefix10_20_correctness_balanced_warmup20",
+    "run_id": "8b4462dc02054e75af85dbdda8fa55de",
+    "cleaned": true,
+    "owned_active_processes_released": true,
+    "owned_births_released": true,
+    "zombie_owned_births_remaining": [],
+    "owned_gpu_contexts_released": true,
+    "checked_unix": 1792088715.411202
+  },
+  "pipeline_complete": {
+    "role": "prefix10_20_correctness_balanced_warmup20",
+    "run_id": "8b4462dc02054e75af85dbdda8fa55de",
+    "prefix_lengths": [
+      10,
+      20
+    ],
+    "epochs": 20,
+    "intended_steps_per_rank": 2000,
+    "completed_group_processes": true,
+    "native_actual_exit0_verified": false,
+    "native_cgroup_release_verified": false,
+    "post_exit_observer_required": true
+  },
+  "native_terminal_verified": true,
+  "native_resource_closure_verified": true,
+  "native": {
+    "job_id": "3405",
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "node": "h100-8"
+  },
+  "native_terminal_raw": "JobId=3405 JobName=g1-prefix10-20-8b4462dc0205 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898661 Nice=0 Account=(null) QOS=(null) JobState=COMPLETED Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:04:54 TimeLimit=2-00:00:00 TimeMin=N/A SubmitTime=2026-10-16T02:20:21 EligibleTime=2026-10-16T02:20:21 AccrueTime=2026-10-16T02:20:21 StartTime=2026-10-16T02:20:21 EndTime=2026-10-16T02:25:15 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T02:20:21 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:1885478 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=96 NumTasks=1 CPUs/Task=96 ReqB:S:C:T=0:0:*:* TRES=cpu=96,mem=512G,node=1,billing=96 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=96 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-prefix10-20-warmup20-20261016-94cc1d4/preparation/native-launch.sh WorkDir=/mnt/data/shaoshitong/search-g1-prefix10-20-warmup20-20261016-94cc1d4 Comment=g1-prefix10-20:8b4462dc02054e75af85dbdda8fa55de  StdErr=/mnt/data/shaoshitong/search-g1-prefix10-20-warmup20-20261016-94cc1d4/logs/native-3405.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-prefix10-20-warmup20-20261016-94cc1d4/logs/native-3405.log Power= TresPerNode=gres:gpu:8 \n",
+  "native_cgroup_exists": false,
+  "recorded_gpu_pids_present": [],
+  "native_actual_exit0_verified": true
+}

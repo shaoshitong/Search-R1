@@ -1,0 +1,362 @@
+{
+  "actor_updates": 0,
+  "arms": {
+    "10": {
+      "actual_adam_steps_per_rank": [
+        2000,
+        2000,
+        2000,
+        2000
+      ],
+      "binding_summary": {
+        "accumulation": 1,
+        "corrected_logit_shift": -1.2668049210318928,
+        "epochs": 20,
+        "global_batch": 256,
+        "local_batch": 64,
+        "natural_training_positive_prior": 0.2198046875,
+        "planned_adam_steps_per_rank": 2000,
+        "prefix_tokens": 10,
+        "sampling": "balanced",
+        "seed": 1729,
+        "shared_max_tokens": 262,
+        "steps_per_epoch": 100,
+        "world_size": 4
+      },
+      "diagnostic_evaluations": 21,
+      "epoch": 20,
+      "final_checkpoint": {
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "binding_matches_claim": true,
+        "bytes": 931456890,
+        "cpu_load_performed": true,
+        "epoch": 20,
+        "full_sha256": "a7ffe5c1acf97520178d6156ef7cf7d371a4e6fceabb0527f303979bc05ca1ca",
+        "model_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_moment_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_parameter_states": 14,
+        "optimizer_step_values": [
+          2000
+        ],
+        "path": "/mnt/data/shaoshitong/search-g1-prefix10-20-warmup20-20261016-94cc1d4/groups/prefix-10/train/head-epoch-20.pt",
+        "rng_field_names": [
+          "actual_adam_steps",
+          "numpy",
+          "python",
+          "rank",
+          "sampler",
+          "torch_cpu",
+          "torch_cuda"
+        ],
+        "rng_ranks": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "semantic_reload_performed": false
+      },
+      "head_fit_seconds": 199.95228915289044,
+      "physical_gpu_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "prior_corrected_diagnostic": {
+        "accuracy": 0.5171875,
+        "balanced_accuracy": 0.5345216479416821,
+        "bce": 1.8832108227648774,
+        "brier": 0.3965099999661602,
+        "count": 2560,
+        "f1": 0.33832976445396146,
+        "fn": 243,
+        "fp": 993,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.24140565317035906,
+        "probability_mean": 0.5038807063863215,
+        "probability_quantiles": {
+          "0": 7.651463516205206e-20,
+          "0.01": 6.711857617417694e-08,
+          "0.1": 0.0016724281120573969,
+          "0.5": 0.5231260077803517,
+          "0.9": 0.9969686010970655,
+          "0.99": 0.9999941302642885,
+          "1": 1.0
+        },
+        "recall": 0.5652951699463328,
+        "saturation_above_0_99": 0.16171875,
+        "saturation_below_0_01": 0.1609375,
+        "tn": 1008,
+        "tp": 316
+      },
+      "raw_diagnostic": {
+        "accuracy": 0.46328125,
+        "balanced_accuracy": 0.5361353312610242,
+        "bce": 2.3099149270660395,
+        "brier": 0.4581669117331185,
+        "count": 2560,
+        "f1": 0.35127478753541075,
+        "fn": 187,
+        "fp": 1187,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.2386144964720975,
+        "probability_mean": 0.6055524159798975,
+        "probability_quantiles": {
+          "0": 2.7158820118920623e-19,
+          "0.01": 2.3823690999334297e-07,
+          "0.1": 0.005911068856243796,
+          "0.5": 0.7956581000631541,
+          "0.9": 0.9991440993632549,
+          "0.99": 0.9999983463104141,
+          "1": 1.0
+        },
+        "recall": 0.6654740608228981,
+        "saturation_above_0_99": 0.227734375,
+        "saturation_below_0_01": 0.11796875,
+        "tn": 814,
+        "tp": 372
+      },
+      "sampled_balanced_train_accuracy": 0.9621484375,
+      "sampled_balanced_train_bce": 0.18994506938179256,
+      "total_positive_training_draws": 256000,
+      "total_training_draws": 512000,
+      "train_measure": "online balanced with-replacement draws, not a natural full-training-set re-forward"
+    },
+    "20": {
+      "actual_adam_steps_per_rank": [
+        2000,
+        2000,
+        2000,
+        2000
+      ],
+      "binding_summary": {
+        "accumulation": 1,
+        "corrected_logit_shift": -1.2668049210318928,
+        "epochs": 20,
+        "global_batch": 256,
+        "local_batch": 64,
+        "natural_training_positive_prior": 0.2198046875,
+        "planned_adam_steps_per_rank": 2000,
+        "prefix_tokens": 20,
+        "sampling": "balanced",
+        "seed": 1729,
+        "shared_max_tokens": 262,
+        "steps_per_epoch": 100,
+        "world_size": 4
+      },
+      "diagnostic_evaluations": 21,
+      "epoch": 20,
+      "final_checkpoint": {
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "binding_matches_claim": true,
+        "bytes": 931456890,
+        "cpu_load_performed": true,
+        "epoch": 20,
+        "full_sha256": "33c85485bd764704cce8e0b8e413262fbb493f77f889b1e23dd7f53d47490751",
+        "model_parameter_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_moment_dtypes": [
+          "torch.float32"
+        ],
+        "optimizer_parameter_states": 14,
+        "optimizer_step_values": [
+          2000
+        ],
+        "path": "/mnt/data/shaoshitong/search-g1-prefix10-20-warmup20-20261016-94cc1d4/groups/prefix-20/train/head-epoch-20.pt",
+        "rng_field_names": [
+          "actual_adam_steps",
+          "numpy",
+          "python",
+          "rank",
+          "sampler",
+          "torch_cpu",
+          "torch_cuda"
+        ],
+        "rng_ranks": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "semantic_reload_performed": false
+      },
+      "head_fit_seconds": 208.79965315759182,
+      "physical_gpu_indices": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "prior_corrected_diagnostic": {
+        "accuracy": 0.715625,
+        "balanced_accuracy": 0.5299639983228421,
+        "bce": 2.8802466599029346,
+        "brier": 0.2627236509476616,
+        "count": 2560,
+        "f1": 0.23529411764705885,
+        "fn": 447,
+        "fp": 281,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.28498727735368956,
+        "probability_mean": 0.15512962394007182,
+        "probability_quantiles": {
+          "0": 2.9667943659417913e-21,
+          "0.01": 3.086820694796347e-17,
+          "0.1": 3.2760259980428545e-11,
+          "0.5": 1.8609775868635893e-05,
+          "0.9": 0.9371413210858986,
+          "0.99": 0.9999999108722559,
+          "1": 1.0
+        },
+        "recall": 0.2003577817531306,
+        "saturation_above_0_99": 0.07578125,
+        "saturation_below_0_01": 0.728515625,
+        "tn": 1720,
+        "tp": 112
+      },
+      "raw_diagnostic": {
+        "accuracy": 0.707421875,
+        "balanced_accuracy": 0.5401865256995831,
+        "bce": 2.8185778414363334,
+        "brier": 0.272883982665174,
+        "count": 2560,
+        "f1": 0.26640548481880505,
+        "fn": 423,
+        "fp": 326,
+        "majority_accuracy": 0.781640625,
+        "negative": 2001,
+        "positive": 559,
+        "precision": 0.2943722943722944,
+        "probability_mean": 0.18473306063613176,
+        "probability_quantiles": {
+          "0": 1.0530617357553812e-20,
+          "0.01": 1.0956650033262367e-16,
+          "0.1": 1.1628233028868813e-10,
+          "0.5": 6.605214485464791e-05,
+          "0.9": 0.9814534354878828,
+          "0.99": 0.999999974890009,
+          "1": 1.0
+        },
+        "recall": 0.24329159212880144,
+        "saturation_above_0_99": 0.090625,
+        "saturation_below_0_01": 0.683203125,
+        "tn": 1675,
+        "tp": 136
+      },
+      "sampled_balanced_train_accuracy": 0.956796875,
+      "sampled_balanced_train_bce": 0.27157377750467276,
+      "total_positive_training_draws": 256000,
+      "total_training_draws": 512000,
+      "train_measure": "online balanced with-replacement draws, not a natural full-training-set re-forward"
+    }
+  },
+  "cgroup_released": true,
+  "code_backup_policy": "Audit scripts are archival code from consumed once observations, not new execution instructions; do not blindly replay them.",
+  "constant_natural_training_prior_diagnostic": {
+    "diagnostic_bce": 0.5248297208059305,
+    "diagnostic_brier": 0.17068064727783203,
+    "majority_accuracy": 0.781640625,
+    "probability": 0.2198046875
+  },
+  "cpu_checkpoint_load_performed": true,
+  "diagnostic_negative": 2001,
+  "diagnostic_positive": 559,
+  "diagnostic_questions": 512,
+  "diagnostic_trajectories": 2560,
+  "evidence": [
+    {
+      "bytes": 151658,
+      "original_local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix10-20-final-metrics.json",
+      "path": "metrics.json",
+      "sha256": "c3d66a40840abaab09a772349f524bf49e11bcb5198e60059a6bb459098cdbf3"
+    },
+    {
+      "bytes": 1613,
+      "original_local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix3405-exit0-resource-closure-summary-v1.json",
+      "path": "evidence/resource-closure.json",
+      "sha256": "f3ef06f976d3f7a8b42d30aeeca6eb6af398ddeee259caf1e58efc0473acc2c0"
+    },
+    {
+      "bytes": 4687,
+      "original_local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix3405-terminal-closure-20261015T182643967112Z.json",
+      "path": "evidence/terminal-closure-transport.json",
+      "sha256": "0a5ee565607946b587d0d3403f5618aecebdea10e8137117158f3cb480d382ab"
+    },
+    {
+      "bytes": 16291,
+      "original_local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix-observe-1792088751171361000.json",
+      "path": "evidence/final-observation.json",
+      "sha256": "621a648096f94e7a026ef004eed63654cae015b47ecab35ce88675ff63fdbf1a"
+    },
+    {
+      "bytes": 15466,
+      "original_local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix10-20-data-diagnostic-summary-20261015T180923935942Z.json",
+      "path": "evidence/data-diagnostic-summary.json",
+      "sha256": "5e4ac44d72847932f3c8137f4105252e2b6ce54fa7583f8e666ea7bb10793ca6"
+    },
+    {
+      "bytes": 6465,
+      "original_local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/read_prefix3405_terminal_closure_once.py",
+      "path": "code-backup/read_prefix3405_terminal_closure_once.py",
+      "sha256": "856865f47f204510dc4068f5bccab42b2c2a85856d37a6a9b60c18044a48ee79"
+    },
+    {
+      "bytes": 7038,
+      "original_local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix10-20-delivery-audit-code/prefix_final_metrics.py",
+      "path": "code-backup/prefix_final_metrics.py",
+      "sha256": "3eff6a86d3dc7794bdf8d9c04ac2af0fe6ac71991e9ea4b103658c41791cc0ec"
+    },
+    {
+      "bytes": 4379,
+      "original_local_path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix10-20-delivery-audit-code/prefix10_20_data_diagnostic.py",
+      "path": "code-backup/prefix10_20_data_diagnostic.py",
+      "sha256": "a2b8acb2ef6deb00a8737d9cad5bdf6338355b24a179a1a1308e60b0fe5c4b7a"
+    }
+  ],
+  "evidence_publication": "This artifact publication follows the frozen runtime commit; it changes no executed science.",
+  "formal_training_started": false,
+  "frozen_runtime_source_commit": "94cc1d40bd58ea7dc8f8e232e8ad585b4c883108",
+  "gpu_applications_remaining": 0,
+  "independent_checkpoint_backup_complete": false,
+  "job_id": 3405,
+  "large_artifacts_remain_remote": true,
+  "native_exit_code": "0:0",
+  "native_runtime": "00:04:54",
+  "native_state": "COMPLETED",
+  "node": "h100-8",
+  "observed_utc": "2026-10-15T18:28:33.304385+00:00",
+  "original_owned_birth_count": 20,
+  "owned_active_or_zombie_remaining": 0,
+  "prior_correction_assumption": "Label-conditional sampling stability; calibration is not guaranteed",
+  "quality_assessment": "At fixed epoch20 both arms are below the diagnostic majority accuracy baseline and have worse BCE/Brier than the constant natural training-prior probability. Completion and fitting accuracy do not establish useful held-out probabilities.",
+  "remote_base": "/mnt/data/shaoshitong/search-g1-prefix10-20-warmup20-20261016-94cc1d4",
+  "run_id": "8b4462dc02054e75af85dbdda8fa55de",
+  "same_global_sampler_plan_per_epoch_across_arms": true,
+  "schema_version": 1,
+  "semantic_reload_performed": false,
+  "status": "OFFLINE_PREFIX10_AND20_REQUESTED_RUN_COMPLETE",
+  "terminal_log_full_sha_bytes": 5395881,
+  "terminal_log_full_sha_files": 36
+}
