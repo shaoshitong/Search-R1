@@ -96,9 +96,33 @@ the end, and publishes only into an already owned separate recovery-controller
 once directory. Normal receipt paths and default finished-pipeline checks remain
 strict. Neither adapter claims that a native job or the final goal has run.
 
-An end-to-end recovery controller, RAW795 terminal reaggregation if needed, and
-the independent held final conjunction remain separate work. No recovery scope
-or job has been activated.
+The third stage is `recovery_followthrough719225.py`. Its `start --commit <new
+published helper> --recovery-commit <actual held stage1 helper>` entry refuses
+healthy or missing200 producers before creating a scope. It verifies and copies
+the pinned EA's exact producer-failure traceback, claim/source, stopped birth,
+self-reported exit1 and failure marker. EA has no external parent wait receipt;
+the new proof explicitly preserves that distinction. It does not infer current
+completion from EA's previous state, which can be stale when one_tick raises.
+
+The new supervisor retains a CPU worker with an actual wait status. That worker
+reconsumes existing serial fixed archives and requires full claim/controller,
+runner/task births, token, wait0 and task-result SHA binding. Both processes must
+be dead before accepting a completed archive. Transport path and actual SHA are
+checked before fresh source/archive/independent-target verification. Only a
+missing control scope with no payload may create a new archive intent. Unknown,
+partial, failed or orphan scopes are never replayed.
+
+After all five archives it uses the explicit typed final-control branch and the
+EA-pinned native4 restore-only entry. Final CPU submission also requires the
+complete held runner/task identity chain. Known queue/registration states wait
+on the same job; unknown outcomes require inspection. Actual native COMPLETED0,
+no new actor/head/scheduler/generation work, readback/accepted hashes and owned
+cleanup bind the separate goal receipt. The terminal consumer rechecks original
+failure/copies, actual worker wait0, source, output SHA and native/goal identity.
+Every result retains `full_objective_accepted=False` and `goal_complete=False`.
+
+RAW795 terminal reaggregation if needed and the independent held final
+conjunction remain separate work. No recovery scope or job has been activated.
 If the healthy original producer succeeds, its existing chain remains
 authoritative and no recovery job is submitted. Constructed protocol tests do
 not establish real training, real Slurm failure or real native recovery.
