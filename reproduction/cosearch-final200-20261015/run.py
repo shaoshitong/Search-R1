@@ -189,11 +189,11 @@ def main():
         memory_rows=subprocess.check_output(['nvidia-smi','--query-gpu=uuid,memory.free,memory.total',
             '--format=csv,noheader,nounits'],text=True)
         for line in memory_rows.splitlines():
-            uuid,free,total=[x.strip() for x in line.split(',')]
-            if uuid in visible:
+            gpu_uuid,free,total=[x.strip() for x in line.split(',')]
+            if gpu_uuid in visible:
                 fraction=min(.82,float(free)/float(total)-.08)
-                assert fraction>=.35, ('Insufficient leased GPU memory after native index sharding',uuid,free,total)
-                budgets[uuid]=dict(free_MiB=int(free),total_MiB=int(total),llm_memory_fraction=fraction)
+                assert fraction>=.35, ('Insufficient leased GPU memory after native index sharding',gpu_uuid,free,total)
+                budgets[gpu_uuid]=dict(free_MiB=int(free),total_MiB=int(total),llm_memory_fraction=fraction)
         assert set(budgets)==set(visible)
         atomic(OUT/'gpu-budgets.json',dict(epoch=time.time(),native_faiss_index_shards=4,
             gpus=budgets,headroom_fraction=.08))
