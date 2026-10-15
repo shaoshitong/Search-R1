@@ -8,8 +8,8 @@ from reproduction.hpc3_qprobe import final_control as c
 
 class ArchiveBindingTests(unittest.TestCase):
     def test_legacy_route_unchanged_and_recovery_requires_full_failed_chain(self):
-        with tempfile.TemporaryDirectory() as d:
-            b=Path(d)/c.SIGMA3_BASENAME;(b/'preparation').mkdir(parents=True);(b/'failed-job-721449').mkdir()
+        with tempfile.TemporaryDirectory() as d, patch.object(c,'OWNER',__import__('os').getuid()):
+            b=Path(d).resolve()/c.SIGMA3_BASENAME;(b/'preparation').mkdir(parents=True);(b/'failed-job-721449').mkdir()
             def write(name,value):(b/name).write_text(json.dumps(value))
             sha=c.SIGMA3_PRODUCER_SOURCE
             prior=dict(job='721449',returncode=0,commit=sha);claim=dict(commit=sha,command=['original'])
