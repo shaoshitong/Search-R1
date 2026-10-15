@@ -28,7 +28,7 @@ async def main():
             if self.role=='ranker':
                 text='<reason>Select relevant passages.</reason><rerank>[2] > [1] > [3] > [4] > [5]</rerank>'
             elif self.calls==1:
-                text='<reason>Search now.</reason><search>test query</search>'
+                text='<reason>Search now.</reason><tool_call>{"name":"search","arguments":{"query":"test query"}}</tool_call>'
             else:
                 text='<reason>Use the retrieved evidence.</reason><answer>Paris</answer>'
             return types.SimpleNamespace(token_ids=tokenizer.encode(text,add_special_tokens=False),log_probs=None)
