@@ -1,8 +1,8 @@
 # 原生 Qwen 最后一层二分类探针：执行说明（2026-10-15）
 
-文档日期：2026-10-15。**状态截至 2026-10-15 22:35（Asia/Shanghai）**。目标为 **10 个 warmup epoch，随后完成 200 个正式 actor outer**，每个正式 outer 更新探针 2 个 epoch。本文件记录该时间点的实际版本、配置和执行状态；后续进展以同一 run/execution 的实际 receipt 为准。
+文档日期：2026-10-15。**最新状态截至 2026-10-15 22:44:07（Asia/Shanghai）**。目标为 **10 个 warmup epoch，随后完成 200 个正式 actor outer**，每个正式 outer 更新探针 2 个 epoch。本文件记录该时间点的实际版本、配置和执行状态；后续进展以同一 run/execution 的实际 receipt 为准。
 
-native warmup、完整 token bank、初始 Head 绑定和 initial0 采用均已 accepted。预启动 claim 文件名碰撞的独立修复入口正在准备，正式 actor **尚未 launch，尚无已完成的正式训练 outer**。历史 handle 记录一次性操作，不能重复执行已经发出的 action。
+native warmup、完整 token bank、初始 Head 绑定和 initial0 采用均已 accepted。正式 pipeline 已一次性调度，pipeline 与 retriever 实测存活，正在加载原 Flat FP16 双分片检索索引；**trainer 尚未创建，尚无正式 outer 完成记录可确认，正式 Adam 数量 unknown**。历史 handle 记录一次性操作，不能重复执行已经发出的 action。
 
 ## 固定源码与现场身份
 
@@ -13,6 +13,7 @@ native warmup、完整 token bank、初始 Head 绑定和 initial0 采用均已 
 | runtime source map SHA256 | `7ce4d02996393270a47e1d3840ab5ee793205e17e3154de18193c19b4120851e`，508 个运行文件 |
 | OPS / observer / formatter commit | `03608b925c8c2948eff4ef5827064a04372ca504` |
 | OPS claim 修复与续接入口 commit | `d95b13c9762823982c7238eaef5742f53b44d871` |
+| native observer typed-claim 修复 commit | `098ae78a50945684973a41a2de47ab81825f15ba` |
 | 有效 native warmup commit | `e81445905bf8b15dbb0bdec3afa29d99ab0b11d8` |
 | warmup source map SHA256 | `006912cc7817b2ae8abde32a85c42d21b2c1976bf0b5618066c6aa9d2f0674ad` |
 | 正式 run / execution | `862bccb5fcf348ce8454f9a332f37bdd` / `027e65da351a4e018dd377b806c19434` |
@@ -104,9 +105,9 @@ Warmup 的两个 loss 部分并非都持续下降。标准差辅助贡献在 epo
 
 新实验的依赖顺序为 `create → stage → prepare → warmup-admit → bank-prepare → bank-encode → bank-admit → bind → adopt-initial0 → prepare-launch → launch`。`create` 使用新 handle、已发布源码/清单/代码 bundle 和经验证的 warmup handle。**本次 bank、Head 绑定和 initial0 采用均已验收，不重跑这些步骤。**
 
-本次 `prepare-launch` 失败于 OPS 外层 guard 与 helper 同时独占创建 `prepare-launch-once.json`。失败发生在 actor claim 之前，runtime927 仍 git clean。修复入口 `a800_qprobe_qwen_prelaunch_claim_repair.py` 沿用 source927 原 `prepare_launch` 的严格校验，以独立 claim 保留旧失败记录；它不重跑 cache/warmup，也不修改活动 runtime。后续新部署的 OPS guard 使用 `native-formal-operator-` 前缀，与 helper claim 分开。**截至本状态时间，修复仍在准备，尚无修复成功凭据。**
+本次 `prepare-launch` 曾失败于 OPS 外层 guard 与 helper 同时独占创建 `prepare-launch-once.json`。失败发生在 actor claim 之前。修复入口 `a800_qprobe_qwen_prelaunch_claim_repair.py` 沿用 source927 原 `prepare_launch` 的严格校验，以独立 claim 保留旧失败记录；它不重跑 cache/warmup，也不修改活动 runtime。后续新部署的 OPS guard 使用 `native-formal-operator-` 前缀，与 helper claim 分开。当前 pipeline 已一次性调度，runtime927 保持原样。
 
-当前继续顺序为：观察同一 handle → 独立预启动修复成功 → 实际 idle admission → launch 一次。修复入口须使用已发布且与 release 清单一致的文件。
+新 run 的预启动顺序为：独立预启动修复成功 → 实际 idle admission → launch 一次，入口须与 release 清单一致。**当前 handle 已发出 launch，只继续 observe；下面的修复与 launch 命令是未执行过这些 action 的新 run 模板，不用于重启当前任务。**
 
 ```bash
 # 在 OPS checkout 根目录；观察不会重复 execute。
@@ -152,8 +153,16 @@ checkpoint、Head/Adam、packed token bank、原始 rollout 和完整逐题输�
 
 完整目标需要：实际完成1..200的正式outer/恢复链、所需checkpoint与有限性/SHA凭据、按原顺序覆盖最终51,713题的binary strict EM/F1与七来源统计（NQ固定3610题），以及最后的only-owned资源清理验收。大规模逐题结果留远端，公开只发布允许的scalar/hash。清理按本任务记录的 PID birth/session/UUID 所有权进行，保留源码、日志、checkpoint与必要复现资产；不能因为节点到期或文档发布提前宣告目标完成。
 
-## 当前执行状态
+## 执行状态记录
 
 截至 **2026-10-15 22:35（Asia/Shanghai）**：warmup10/200 HeadAdam及资源释放、full169028bank完整SHA及资源释放、bind和initial0采用均已 accepted。initial0 的 `adopted:true` proof SHA256 为 `811af902563e2e438f02b5ed3ae72d09eca3c813ca19559ed869ad0047c1b920`；其200次warmup Head Adam不计入正式训练进度。
 
 独立预启动 claim 修复源码已提交并推送，旧失败 claim 保留。该修复的实际执行、正式 launch 和正式 outer 进展仍按后续真实凭据确认。本文件不把已完成的前置阶段视作正式训练已启动。
+
+### 2026-10-15 22:44:07（Asia/Shanghai）实测更新
+
+本次 primary receipt 为 `preparation/qprobe-qwen-native-formal-cpu-repair-v2-native-startup2-claimfixed.json`。源码/发布与实际部署资格、native initialization 均为 observed。pipeline PID=`271789`、birth ticks=`615472668` 实测存活；retriever PID=`272694`、birth ticks=`615481120` 实测存活且状态为 `R`。阶段为 `STARTING_ORIGINAL_FLAT_FP16_TWO_SHARD_RETRIEVER`，正在加载索引，本次 metadata read 未记录错误。
+
+trainer 尚未创建；尚无完整正式 outer 的记录可供确认，complete prefix、optimizer opportunity 和正式 Adam 计数均为 unknown，不能报告为已验证的0。pipeline/retriever 存活也不代表 actor 已有有效训练进展；后续仍需确认两次实际前进及首个完整 outer。
+
+先前 primary 的 `execution_identity` unknown 来自 observer 将 native launch claim 套用了包含 backend 的另一种 schema，不是已验证的 trainer 故障。OPS `098ae78a50945684973a41a2de47ab81825f15ba` 改为校验 source927 实际生产的六字段 typed claim；launch receipt 的 backend 校验以及4rank、source、bank、Head和计数规则保持严格。该修复只更正 metadata reader，不修改 runtime927、模型、奖励、算法或本次启动；原日期 release 文件证明与失败记录保留。
