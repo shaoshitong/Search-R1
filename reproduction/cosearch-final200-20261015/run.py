@@ -10,6 +10,8 @@ import subprocess
 import sys
 import time
 import urllib.request
+import traceback
+import uuid
 from common import BASE, TRAIN, OUT, TOOLS, SOURCE, PYTHON, N, atomic, sha, env
 
 
@@ -111,6 +113,17 @@ def main():
     children=[]
     (OUT/'tmp').mkdir(parents=True, exist_ok=True)
     base_env=env()
+    # Match the already working native CoSearch launcher: only Unix sockets use
+    # node /tmp; model files, package caches and all predictions stay shared.
+    rpc=pathlib.Path('/tmp')/('cs-final-rpc-'+str(os.getuid())+'-'+os.environ['SLURM_JOB_ID'])
+    rpc.mkdir(mode=0o700,exist_ok=True)
+    assert rpc.stat().st_uid==os.getuid()
+    assert len((str(rpc)+'/'+'x'*36).encode())<107
+    probe=rpc/('probe-'+uuid.uuid4().hex[:8])
+    with socket.socket(socket.AF_UNIX) as sock:
+        sock.bind(str(probe))
+    probe.unlink()
+    base_env['VLLM_RPC_BASE_PATH']=str(rpc)
     performance=OUT/'performance.json'
     concurrency=json.loads(performance.read_text())['question_concurrency'] if performance.exists() else 128
     assert isinstance(concurrency,int) and 1<=concurrency<=512
@@ -244,6 +257,7 @@ def main():
         atomic(OUT/('cleanup-'+os.environ['SLURM_JOB_ID']+'.json'),
                dict(epoch=time.time(),all_owned_children_reaped=all(c.poll() is not None for c in children),
                     only_exact_owned_child_process_groups=True))
+        lock.close()
     if partial:
         assert not (OUT/'complete.json').exists()
         print('DURABLE_QUESTION_SLICE_COMPLETE_REQUEUE_SAME_JOB',flush=True)
@@ -268,5 +282,34 @@ def main():
             print('FULL_FINAL_COMPLETE_CPU_ACCEPTANCE_SUBMITTED',audit_job,flush=True)
 
 
+def await_explicit_repair(error_text):
+    """Keep only this failed allocation briefly; never retry an unknown error."""
+    info=subprocess.check_output(['scontrol','show','job',os.environ['SLURM_JOB_ID'],'-o'],text=True)
+    end=next(x.split('=',1)[1] for x in info.split() if x.startswith('EndTime='))
+    deadline=min(time.time()+900,datetime.datetime.fromisoformat(end).timestamp()-180)
+    cookie=uuid.uuid4().hex
+    atomic(OUT/'repair-wait.json',dict(epoch=time.time(),job=int(os.environ['SLURM_JOB_ID']),
+        pid=os.getpid(),wait_id=cookie,deadline_epoch=deadline,error=error_text,
+        status='OWNED_FAILED_SERVICES_STOPPED_AWAITING_VERIFIED_REPAIR',
+        no_automatic_retry=True))
+    command=OUT/'repair-command.json'
+    while time.time()<deadline:
+        if command.exists():
+            approved=json.loads(command.read_text())
+            if (approved.get('wait_id')==cookie and approved.get('job')==int(os.environ['SLURM_JOB_ID'])
+                and approved.get('manifest_sha256')==sha(OUT/'source-manifest.json')):
+                print('EXPLICIT_VERIFIED_REPAIR_EXEC_SAME_ALLOCATION',flush=True)
+                os.execv(sys.executable,[sys.executable,'-B',str(TOOLS/'run.py')])
+        time.sleep(2)
+    raise RuntimeError('Verified repair did not arrive before the bounded allocation deadline: '+error_text)
+
+
 if __name__=='__main__':
-    main()
+    failed=None
+    try:
+        main()
+    except Exception as error:
+        traceback.print_exc()
+        failed=repr(error)
+    if failed is not None:
+        await_explicit_repair(failed)
