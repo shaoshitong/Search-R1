@@ -125,7 +125,7 @@ def scan_rollout(complete_path, output):
     return proof
 
 
-def encode(inputs, output, model_dir, micro_batch_size):
+def encode(inputs, output, model_dir, micro_batch_size, attention_implementation='sdpa'):
     import numpy as np
     import torch
     import torch.distributed as dist
@@ -157,7 +157,7 @@ def encode(inputs, output, model_dir, micro_batch_size):
     # identity and feature destination offsets stay fixed through the reordering.
     segments.sort(key=lambda s: s['context_length'])
     model = AutoModel.from_pretrained(str(model_path), torch_dtype=torch.bfloat16,
-                                     attn_implementation='flash_attention_2', local_files_only=True,
+                                     attn_implementation=attention_implementation, local_files_only=True,
                                      trust_remote_code=False, low_cpu_mem_usage=True)
     model.requires_grad_(False).eval().to('cuda:' + str(local))
     if len(model.layers) != 36 or model.config.hidden_size != 2048:
@@ -232,6 +232,7 @@ def encode(inputs, output, model_dir, micro_batch_size):
         spec = dict(representation=REPRESENTATION, prefix_length=20, feature_layer=27, boundary='post_block',
                     feature_dim=2048, encoder_revision=REVISION, encoder_model_dir=str(model_path),
                     encoder_files_sha256=proof['model_files_sha256'], feature_dtype='bfloat16',
+                    encoder_attention_implementation=attention_implementation,
                     global_max_tokens=20, head_max_tokens=20, pad_token_id=proof['pad_token_id'],
                     prefix_window='multi_turn_actual_kept_policy_tokens',
                     encoder_frozen=True, encoder_optimizer_updates=0, question_hidden_stored=False,
@@ -261,7 +262,9 @@ class FeatureCache:
         self.spec = self.manifest['spec']
         if (self.manifest['representation'] != REPRESENTATION or self.spec['prefix_length'] != 20 or
             self.spec['encoder_revision'] != REVISION or self.spec['feature_layer'] != 27 or
-            self.spec['boundary'] != 'post_block' or self.spec.get('question_hidden_stored') is not False):
+            self.spec['boundary'] != 'post_block' or self.spec.get('question_hidden_stored') is not False or
+            self.spec.get('encoder_frozen') is not True or
+            self.spec.get('prefix_window') != 'multi_turn_actual_kept_policy_tokens'):
             raise ValueError('Require official frozen layer27 twenty-policy-token feature cache')
         if self.manifest['spec_sha'] != hashlib.sha256(canonical(self.spec)).hexdigest():
             raise ValueError('Feature encoder specification differs')
@@ -323,13 +326,14 @@ def main():
     parser.add_argument('--output', required=True)
     parser.add_argument('--model')
     parser.add_argument('--micro-batch-size', type=int, default=32)
+    parser.add_argument('--attention-implementation', choices=('sdpa', 'flash_attention_2'), default='sdpa')
     args = parser.parse_args()
     if args.rollout_complete:
         print(json.dumps(scan_rollout(args.rollout_complete, args.output)), flush=True)
     else:
         if not args.inputs or not args.model or args.micro_batch_size < 1:
             parser.error('Encoding requires --inputs, --model and positive --micro-batch-size')
-        encode(args.inputs, args.output, args.model, args.micro_batch_size)
+        encode(args.inputs, args.output, args.model, args.micro_batch_size, args.attention_implementation)
 
 
 if __name__ == '__main__':

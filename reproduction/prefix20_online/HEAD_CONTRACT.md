@@ -22,6 +22,13 @@ trajectory diagnostic feature cache is reused, without re-generating test
 trajectories. Evaluation occurs after every epoch with raw accuracy, balanced
 accuracy, BCE, Brier, AUROC and class counts. Predictions and tensors stay remote.
 
+The frozen encoder defaults to BF16 SDPA, matching the cached first-epoch and
+fixed diagnostic extraction backend. SDPA may select its own supported fused
+kernel on H100. This is backend consistency, not a bitwise-equality claim across
+different batch shapes. The trainable copied block continues to use FA2.
+`--attention-implementation flash_attention_2` is an explicit optional encoder
+setting recorded in new feature manifests, not the default run setting.
+
 The standalone phases release GPU models between them:
 
 1. Rollout writes `complete.json` and eight gzip compact prefix row shards.
