@@ -92,6 +92,9 @@ def verify_cached_asset_records(base,manifest):
 def read_manifest(base):
     path = base / 'preparation/compatible-evaluation-manifest.json'
     manifest = json.loads(path.read_text())
+    if 'resume_intent_sha256' in manifest:
+        from reproduction.compatible_async_evaluation.resume import verify_resume_receipt
+        verify_resume_receipt(base, manifest)
     assert manifest['role']==ROLE
     assert manifest['checkpoint_step'] in protocol()['checkpoints']['admitted_steps']
     assert Path(manifest['base']).resolve() == base

@@ -19,7 +19,7 @@ def once(path,value):
         json.dump(value,f,indent=2,allow_nan=False);f.flush();os.fsync(f.fileno())
 
 
-def prepare(args):
+def prepare(args, *, resume_plan=None):
     if not sys.platform.startswith('linux'):raise ValueError('COMPAT_PREPARATION_MUST_STAY_REMOTE_LINUX')
     base=Path(args.base).resolve()
     control=Path(__file__).resolve().parents[2];spec=protocol()
@@ -89,6 +89,8 @@ def prepare(args):
     base.mkdir(parents=True,exist_ok=True)
     for folder in ('preparation','logs','journal','tmp','cache'):(base/folder).mkdir()
     once(base/'preparation/prepare-intent.json',dict(role=ROLE,run_id=run_id,checkpoint_step=step,split=args.split,recipe_sha256=digest(PROTOCOL_PATH),execution_id=args.execution_id))
+    if resume_plan is not None:
+        once(base/'preparation/resume-intent.json',resume_plan)
     config=base/'preparation/reference-config.json';config.write_bytes(old_config.read_bytes())
     target=base/'preparation/binding.json';once(target,binding)
     (base/'env').symlink_to(env,target_is_directory=True)
@@ -103,6 +105,8 @@ def prepare(args):
         retrieval_server_source=str(control/'search_r1/search/retrieval_server.py'),
         retrieval_reference_admission=str(reference),retrieval_reference_admission_sha256=reference_sha,
         ray_tmp_dir='/tmp/g1ca-'+args.execution_id[:12],**sharing)
+    if resume_plan is not None:
+        manifest['resume_intent_sha256']=digest(base/'preparation/resume-intent.json')
     once(base/'preparation/compatible-evaluation-manifest.json',manifest)
     launch=base/'preparation/launch.sh'
     launch.write_text('#!/bin/bash\nset -euo pipefail\nexport PYTHONPATH='+shlex.quote(str(control))+'\nexec '+shlex.join([str(base/'env/bin/python'),'-m','reproduction.compatible_async_evaluation.pipeline','--base',str(base)])+'\n')

@@ -38,3 +38,35 @@ Remote CLI entry points:
 
 Preparation does not submit a job. Inspect an existing execution's intent and
 receipts before retrying; never overwrite/replay an occupied namespace.
+
+Terminal evaluation resume (remote CPU preparation only):
+
+```
+python -m reproduction.compatible_async_evaluation.resume \
+  --prior-base OLD_REMOTE_EVALUATION --base NEW_EMPTY_REMOTE_EVALUATION \
+  --control-publication-proof NEW_CONTROL_ROOT/publication-proof.json \
+  --control-commit FULL_PUBLISHED_SHA --sharing-bindings REMOTE_SHARING_JSON
+```
+
+This requires two actual terminal/accounting observations, an empty native-job
+cgroup, no original PID births/sessions/GPU contexts, and a partial contiguous
+journal of complete 64-question batches with its prior actual FP32 worker proof.
+Checkpoint, data/order, duplicate occurrence ordinals, generation, recipe and
+scientific code are unchanged. Only execution/control files may differ. Both
+control commits and the original file hashes are retained in the new intent.
+Only scalar journal files are copied remotely; original artifacts remain intact.
+New process ledger, Ray namespace and owned services are created upon a later
+explicit Slurm launch. No job is submitted by preparation.
+
+Before accounting is purged, `--prior-base OLD --base UNUSED --capture-terminal
+REMOTE_PROOF.json` can preserve two actual terminal/release observations. Later
+pass `--terminal-proof REMOTE_PROOF.json --terminal-proof-sha256 INDEPENDENT_SHA`.
+Missing SSH/accounting alone never proves exit: the pinned artifact must match
+that exact prior native job/manifest/ledger, and current queue/process/cgroup/GPU
+release checks still run. Command failures remain errors.
+
+Any occupied or partly prepared target is refused. Use `--base NEW --inspect` to
+read its once intent/receipt; inspect unknown outcomes before choosing another
+fresh namespace. Pipeline refuses launch until the matching resume receipt and
+copied prefix hashes exist. A complete journal is a finished-result verification
+case, not a resume. No actual GPU resume has yet been performed or validated.
