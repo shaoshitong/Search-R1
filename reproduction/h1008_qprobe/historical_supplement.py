@@ -29,6 +29,9 @@ PARENT_SHA='9a992b9cd35f7adfd24a492c348b50707bea28198ccdf49b3760753e56b8f45c'
 WORKER_SHA='f789e3b58c04a204d8bfbd702f3738f29061e53248777315c8b3e4e4d10aa2fa'
 RATE=20971520
 RESERVE=137438953472
+SOURCE_PREPARATION_COMMIT='b1eedbb1a4a5d020a8a5192abc5e151905ae32ca'
+SOURCE_INVENTORY_SHA='23f94ee594327263061b461a4523b4fc871d09368330e4f2963b2bb13c48c98a'
+SOURCE_PLAN_SHA='1fe291e1250ee68b695c5c19d7c83838f72848b84ab0115b6d10cdf55b1416e7'
 
 
 def sha(path):
@@ -84,6 +87,7 @@ def prepare_source(plan_path,commit):
     if socket.gethostname().split('.')[0]!='h100-8':raise ValueError('SOURCE_H1008_ONLY')
     plan=read(plan_path);rows=validate_plan(plan)
     if SOURCE_ROOT.exists():raise ValueError('SOURCE_OCCUPIED_INSPECT_DO_NOT_REPLAY')
+    if commit!=SOURCE_PREPARATION_COMMIT:raise ValueError('FROZEN_B1_SOURCE_PREPARATION_ONLY_NO_REPREPARE')
     if sha(PAIR)!=PAIR_SHA or sha(PARENT_INVENTORY)!=PARENT_SHA:raise ValueError('SOURCE_PAIR_OR_PARENT_INVENTORY_SHA_DIFFERS')
     pair=read(PAIR);parent=read(PARENT_INVENTORY);validate_pair_rows(pair,rows)
     if parent.get('run_id')!=RUN or parent.get('step')!=5 or parent.get('paired_receipt_sha256')!=PAIR_SHA or len(parent['files'])!=1122:
@@ -117,6 +121,34 @@ def parent_finished(parent):
     return dict(result_sha256=sha(parent/'RESULT.json'),writer_birth_not_live=True)
 
 
+def validate_prepared_source(receipt,inventory,intent,plan,inventory_sha,plan_sha):
+    # Execution-control fixes must not rewrite/reprepare the already consumed b1 source.
+    if inventory_sha!=SOURCE_INVENTORY_SHA or plan_sha!=SOURCE_PLAN_SHA:
+        raise ValueError('FROZEN_B1_SOURCE_INVENTORY_OR_PLAN_SHA_DIFFERS')
+    if receipt.get('status')!='SOURCE_HISTORICAL_SUPPLEMENT_INVENTORY_READY' or receipt.get('run_id')!=RUN or receipt.get('step')!=5 or receipt.get('source_pair_sha256')!=PAIR_SHA or receipt.get('parent_inventory_sha256')!=PARENT_SHA or receipt.get('control_commit')!=SOURCE_PREPARATION_COMMIT or receipt.get('inventory_path')!=str(SOURCE_ROOT/'inventory.json') or receipt.get('inventory_sha256')!=SOURCE_INVENTORY_SHA:
+        raise ValueError('SUPPLEMENT_FROZEN_SOURCE_RECEIPT_DIFFERS')
+    if inventory.get('status')!='BACKUP_INVENTORY_ONLY' or inventory.get('run_id')!=RUN or inventory.get('step')!=5 or inventory.get('files')!=plan['files'] or inventory.get('bytes')!=836891 or inventory.get('paired_receipt_sha256')!=PAIR_SHA or inventory.get('parent_inventory_sha256')!=PARENT_SHA or inventory.get('control_commit')!=SOURCE_PREPARATION_COMMIT:
+        raise ValueError('SUPPLEMENT_FROZEN_INVENTORY_BINDINGS_DIFFER')
+    if intent.get('run_id')!=RUN or intent.get('step')!=5 or intent.get('control_commit')!=SOURCE_PREPARATION_COMMIT or intent.get('source_pair_sha256')!=PAIR_SHA or intent.get('parent_inventory_sha256')!=PARENT_SHA or intent.get('plan_sha256')!=SOURCE_PLAN_SHA:
+        raise ValueError('SUPPLEMENT_FROZEN_SOURCE_INTENT_DIFFERS')
+
+
+def require_actual_nfs_mount(source):
+    # An autofs mountpoint can produce multiple findmnt rows. Bind the mounted
+    # filesystem to the actual file's stat device, never the first/arbitrary row.
+    source=Path(source);before=source.stat().st_dev
+    device=str(os.major(before))+':'+str(os.minor(before))
+    raw=subprocess.check_output(['findmnt','--raw','-n','-T',str(source),'-o','FSTYPE,MAJ:MIN'],text=True)
+    matching=[]
+    for line in raw.splitlines():
+        fields=line.split()
+        if len(fields)!=2:raise ValueError('SOURCE_MOUNT_RECORD_INVALID')
+        if fields[1]==device:matching.append(fields[0])
+    if len(matching)!=1 or matching[0] not in ('nfs','nfs4') or source.stat().st_dev!=before:
+        raise ValueError('ACTUAL_SOURCE_DEVICE_NFS_MOUNT_REQUIRED')
+    return dict(device=device,filesystem=matching[0])
+
+
 def start_target(plan_path,commit):
     if socket.gethostname().split('.')[0]!='h100-10':raise ValueError('TARGET_H10010_ONLY')
     plan=read(plan_path);validate_plan(plan);root=Path(plan['recommended_target_root'])
@@ -124,21 +156,19 @@ def start_target(plan_path,commit):
     # All checks precede a new copy intent. No mutation of the existing bundle.
     parent=parent_finished(PARENT)
     receipt=read(exported(SOURCE_ROOT/'RECEIPT.json'));inventory=exported(receipt['inventory_path'])
-    if receipt.get('status')!='SOURCE_HISTORICAL_SUPPLEMENT_INVENTORY_READY' or receipt.get('run_id')!=RUN or receipt.get('step')!=5 or receipt.get('source_pair_sha256')!=PAIR_SHA or receipt.get('parent_inventory_sha256')!=PARENT_SHA or receipt.get('control_commit')!=commit or Path(receipt['inventory_path'])!=SOURCE_ROOT/'inventory.json' or sha(inventory)!=receipt['inventory_sha256']:
-        raise ValueError('SUPPLEMENT_SOURCE_RECEIPT_DIFFERS')
-    small=read(inventory)
-    if small.get('files')!=plan['files'] or small.get('bytes')!=836891 or small.get('paired_receipt_sha256')!=PAIR_SHA or small.get('parent_inventory_sha256')!=PARENT_SHA or small.get('control_commit')!=commit:raise ValueError('SUPPLEMENT_INVENTORY_BINDINGS_DIFFER')
+    small=read(inventory);source_intent=read(exported(SOURCE_ROOT/'INTENT.json'))
+    validate_prepared_source(receipt,small,source_intent,plan,sha(inventory),sha(plan_path))
     if sha(exported(PAIR))!=PAIR_SHA or sha(exported(PARENT_INVENTORY))!=PARENT_SHA:raise ValueError('EXPORTED_PAIR_OR_PARENT_CHANGED')
     validate_pair_rows(read(exported(PAIR)),plan['files'])
     code=Path(plan['worker_path'])
     if sha(code)!=WORKER_SHA:raise ValueError('PUBLISHED_GENERIC_COPY_WORKER_SHA_DIFFERS')
     spec=importlib.util.spec_from_file_location('published_historical_supplement_copy',code);worker=importlib.util.module_from_spec(spec);spec.loader.exec_module(worker)
     worker.validate_environment(root)
-    if not subprocess.check_output(['findmnt','-n','-T',str(EXPORT),'-o','FSTYPE'],text=True).strip().startswith('nfs'):raise ValueError('EXPORTED_SOURCE_NFS_REQUIRED')
     if worker.RATE!=RATE or worker.RESERVE!=RESERVE:raise ValueError('GENERIC_COPY_BUDGET_DIFFERS')
     if shutil.disk_usage(root.parent).free<836891+RESERVE:raise ValueError('SUPPLEMENT_ORDINARY_128GIB_RESERVE_REQUIRED')
     for row in plan['files']:
         source=exported(row['source_path'])
+        require_actual_nfs_mount(source)
         if source.is_symlink() or not source.resolve().is_relative_to(EXPORT.resolve()) or source.stat().st_dev==root.parent.stat().st_dev or source.stat().st_size!=row['bytes']:
             raise ValueError('INDEPENDENT_NFS_SOURCE_EXT4_TARGET_REQUIRED')
     # Serialize this once controller; the original worker has already finished.
@@ -148,7 +178,7 @@ def start_target(plan_path,commit):
         parent_finished(PARENT)
         launched=worker.launch(root,inventory,receipt['inventory_sha256'],RUN)
         if not (root/'LAUNCH.json').is_file() or 'pid' not in launched:raise ValueError('UNKNOWN_LAUNCH_OUTCOME_INSPECT_NO_REPLAY')
-        once(root/'SUPPLEMENT-RECEIPT.json',dict(control_commit=commit,run_id=RUN,step=5,source_pair_sha256=PAIR_SHA,parent_inventory_sha256=PARENT_SHA,parent_release=parent,inventory_sha256=receipt['inventory_sha256'],files=3,bytes=836891,launch=launched,semantic_reload_performed=False,all_experiment_backup_complete=False))
+        once(root/'SUPPLEMENT-RECEIPT.json',dict(control_commit=commit,run_id=RUN,step=5,source_pair_sha256=PAIR_SHA,parent_inventory_sha256=PARENT_SHA,parent_release=parent,source_preparation_control_commit=SOURCE_PREPARATION_COMMIT,source_plan_sha256=SOURCE_PLAN_SHA,inventory_sha256=receipt['inventory_sha256'],files=3,bytes=836891,launch=launched,semantic_reload_performed=False,all_experiment_backup_complete=False))
         return dict(root=str(root),launch=launched,files=3,bytes=836891,complete=False)
 
 

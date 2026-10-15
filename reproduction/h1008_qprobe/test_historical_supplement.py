@@ -51,6 +51,28 @@ class HistoricalSupplementTests(unittest.TestCase):
             with patch.object(s,'sha',side_effect=lambda p:s.WORKER_SHA if Path(p).name=='copy-worker.py' else s.PARENT_SHA),patch.object(Path,'read_text',text):
                 with self.assertRaisesRegex(ValueError,'STILL_LIVE'):s.parent_finished(root)
 
+    def test_autofs_stack_selects_actual_file_device_nfs(self):
+        from types import SimpleNamespace
+        device=s.os.makedev(0,50)
+        with patch.object(Path,'stat',return_value=SimpleNamespace(st_dev=device)),patch.object(s.subprocess,'check_output',return_value='autofs 0:49\nnfs4 0:50\n') as command:
+            self.assertEqual(s.require_actual_nfs_mount('/remote/source'),dict(device='0:50',filesystem='nfs4'))
+            self.assertEqual(command.call_args.args[0],['findmnt','--raw','-n','-T','/remote/source','-o','FSTYPE,MAJ:MIN'])
+        for raw in ('autofs 0:50\nnfs4 0:49\n','autofs 0:49\nnfs4 0:51\n','nfs4 0:50\nnfs4 0:50\n'):
+            with patch.object(Path,'stat',return_value=SimpleNamespace(st_dev=device)),patch.object(s.subprocess,'check_output',return_value=raw):
+                with self.assertRaisesRegex(ValueError,'DEVICE_NFS'):s.require_actual_nfs_mount('/remote/source')
+
+    def test_new_execution_control_accepts_only_exact_prepared_b1_source(self):
+        receipt=dict(status='SOURCE_HISTORICAL_SUPPLEMENT_INVENTORY_READY',run_id=s.RUN,step=5,source_pair_sha256=s.PAIR_SHA,parent_inventory_sha256=s.PARENT_SHA,control_commit=s.SOURCE_PREPARATION_COMMIT,inventory_path=str(s.SOURCE_ROOT/'inventory.json'),inventory_sha256=s.SOURCE_INVENTORY_SHA)
+        inventory=dict(status='BACKUP_INVENTORY_ONLY',run_id=s.RUN,step=5,files=self.plan['files'],bytes=836891,paired_receipt_sha256=s.PAIR_SHA,parent_inventory_sha256=s.PARENT_SHA,control_commit=s.SOURCE_PREPARATION_COMMIT)
+        intent=dict(run_id=s.RUN,step=5,control_commit=s.SOURCE_PREPARATION_COMMIT,source_pair_sha256=s.PAIR_SHA,parent_inventory_sha256=s.PARENT_SHA,plan_sha256=s.SOURCE_PLAN_SHA)
+        s.validate_prepared_source(receipt,inventory,intent,self.plan,s.SOURCE_INVENTORY_SHA,s.SOURCE_PLAN_SHA)
+        for obj,key in ((receipt,'control_commit'),(inventory,'control_commit'),(intent,'control_commit')):
+            old=obj[key];obj[key]='a'*40
+            with self.assertRaises(ValueError):s.validate_prepared_source(receipt,inventory,intent,self.plan,s.SOURCE_INVENTORY_SHA,s.SOURCE_PLAN_SHA)
+            obj[key]=old
+        for inv_sha,plan_sha in (('0'*64,s.SOURCE_PLAN_SHA),(s.SOURCE_INVENTORY_SHA,'0'*64)):
+            with self.assertRaises(ValueError):s.validate_prepared_source(receipt,inventory,intent,self.plan,inv_sha,plan_sha)
+
     def test_existing_supplement_target_refuses_before_parent_query(self):
         with tempfile.TemporaryDirectory() as tmp:
             plan_path=Path(tmp)/'plan.json';plan_path.write_text(json.dumps(self.plan))
