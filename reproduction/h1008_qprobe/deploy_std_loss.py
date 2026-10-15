@@ -6,6 +6,8 @@ from pathlib import Path
 import shlex
 import subprocess
 import sys
+import tempfile
+import uuid
 
 REMOTE = '''import sys,json,pathlib,io,tarfile,hashlib,os
 P=pathlib.Path;stream=sys.stdin.buffer;n=int.from_bytes(stream.read(8),'big');meta=json.loads(stream.read(n));archive=stream.read(meta['archive_bytes'])
@@ -65,8 +67,19 @@ def main():
         return original(args,*a,**kw)
     t.subprocess.run=direct
     header=json.dumps(meta).encode()
-    stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
-    print(t.remote('/usr/bin/python3 -c '+shlex.quote(REMOTE),'outputs/gigpo-e1-instruct200/QPROBE3-STDLOSS-DEPLOY-'+stamp+'.json',stdin=len(header).to_bytes(8,'big')+header+archive,emit=False))
+    # Spool source code through SFTP: avoid a large multiplexed SSH stdin stream.
+    # This payload contains the Git source archive and file hashes, never assets.
+    remote_payload='/tmp/qprobe3-code-'+uuid.uuid4().hex+'.payload'
+    with tempfile.TemporaryDirectory(prefix='qprobe3-code-') as directory:
+        payload=Path(directory)/'source.payload'
+        payload.write_bytes(len(header).to_bytes(8,'big')+header+archive)
+        payload.chmod(0o600)
+        original(['/usr/bin/scp','-o','ControlPath='+socket,'-o','ControlMaster=no',str(payload),'mgmt-host:'+remote_payload],check=True,timeout=120,capture_output=True)
+        t.MGMT=t.MGMT.replace('input=sys.stdin.buffer.read()', 'input=Path('+repr(remote_payload)+').read_bytes()')
+        stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+        result=t.remote('/usr/bin/python3 -c '+shlex.quote(REMOTE),'outputs/gigpo-e1-instruct200/QPROBE3-STDLOSS-DEPLOY-'+stamp+'.json',emit=False)
+        print(result)
+        original(['/usr/bin/ssh','-S',socket,'mgmt-host','rm -- '+shlex.quote(remote_payload)],check=True,capture_output=True,timeout=30)
 
 
 if __name__=='__main__':main()
