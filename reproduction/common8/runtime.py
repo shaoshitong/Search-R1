@@ -14,6 +14,7 @@ from reproduction.common8.formal_contract import (
     FORMAL_COUNTING, assert_formal_run, consumed_lr,
 )
 from reproduction.common8.policy_calibration_plan import canonical_bytes
+from reproduction.common8.ledger_snapshot import read_owned_ledger_snapshot
 from reproduction.common8.topology import world_size, ranks, actor_local_micro, actor_local_mini, local_trajectories, execution_job_id
 
 
@@ -178,7 +179,7 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
         assert claim['execution_backend'] == allocation['execution_backend'] == 'ssh_local'
         assert claim['execution_id'] == allocation['execution_id'] == run['execution_id']
         assert claim['hostname'] == allocation['node']
-    owned = json.loads((base/'logs/process-ledger.json').read_text())
+    owned, owned_snapshot = read_owned_ledger_snapshot(base/'logs/process-ledger.json')
     assert owned['run_id']==run['run_id']
     trainer=owned['jobs']['trainer']
     leader=trainer['leader']
@@ -312,7 +313,8 @@ def verify_scheduler_receipts(base, run, first, last, behavior_gates):
             fatal_console_check=console_check,
             selected_rows_sha256=hashlib.sha256(prefix).hexdigest(),
             observed_file_sha256=hashlib.sha256(raw).hexdigest(),
-            owned_process_ledger_sha256=digest(base/'logs/process-ledger.json'),
+            owned_process_ledger_sha256=owned_snapshot['sha256'],
+            owned_process_ledger_snapshot=dict(owned_snapshot),
             cumulative_actual_optimizer_writes=physical_writes,
             complete_outer_optimizer_opportunities=complete_count*20,
             optimizer_completion_rule=FORMAL_COUNTING,

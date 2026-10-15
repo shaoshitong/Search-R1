@@ -2,6 +2,7 @@
 import copy
 import hashlib
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -165,6 +166,33 @@ class FormalContractTests(unittest.TestCase):
                 with self.subTest(field=field),self.assertRaises(AssertionError):self.verify_scheduler(base,run,1,2,gates)
             path.write_bytes(original+original.splitlines()[0]+b'\n')
             with self.assertRaises(AssertionError):self.verify_scheduler(base,run,1,2,gates)
+
+    def test_scheduler_ranks_share_the_exact_ledger_snapshot_used_for_births(self):
+        from reproduction.common8.ledger_snapshot import read_owned_ledger_snapshot
+        with tempfile.TemporaryDirectory() as root:
+            base,run,gates=self.scheduler_fixture(root)
+            ledger=base/'logs/process-ledger.json'
+            original=ledger.read_bytes()
+
+            def snapshot_then_publish_later(path):
+                document,proof=read_owned_ledger_snapshot(path)
+                later=copy.deepcopy(document)
+                later['jobs']['trainer']['ledger']={}
+                temp=ledger.with_suffix('.replacement')
+                temp.write_text(json.dumps(later));os.replace(temp,ledger)
+                return document,proof
+
+            with patch('reproduction.common8.runtime.read_owned_ledger_snapshot',
+                       side_effect=snapshot_then_publish_later) as snapshot:
+                proof=self.verify_scheduler(base,run,1,2,gates)
+            self.assertEqual(snapshot.call_count,1)
+            self.assertEqual({r['owned_process_ledger_sha256'] for r in proof.values()},
+                             {hashlib.sha256(original).hexdigest()})
+            self.assertNotEqual(hashlib.sha256(ledger.read_bytes()).hexdigest(),
+                                hashlib.sha256(original).hexdigest())
+            # A genuinely missing birth in the actual next snapshot stays fatal.
+            with self.assertRaisesRegex(AssertionError,'birth absent'):
+                self.verify_scheduler(base,run,1,2,gates)
 
     def test_fatal_console_invalidates_otherwise_complete_scheduler_triplets(self):
         with tempfile.TemporaryDirectory() as root:
