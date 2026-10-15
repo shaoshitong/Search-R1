@@ -13,6 +13,7 @@ from reproduction.compatible_async_evaluation.journal import make_binding,append
 class ResumeTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
+        hostname=patch.object(resume.socket,'gethostname',return_value='h100-8.local');hostname.start();self.addCleanup(hostname.stop)
         self.base=Path(self.temp.name);(self.base/'journal').mkdir();(self.base/'logs').mkdir()
         self.ids=['duplicate'+str(i//2) for i in range(512)];self.sources=['nq']*256+['hotpotqa']*256
         self.jb=make_binding('a'*32,'b'*64,protocol()['datasets']['validation']['sha256'],self.ids,self.sources,5,'validation')
@@ -138,7 +139,9 @@ class ResumeTests(unittest.TestCase):
         ledger=self.base/'logs/process-ledger.json';ledger.write_text(json.dumps(dict(run_id=manifest['run_id'],jobs={'worker':dict(leader=birth,ledger={'543210':birth})})))
         retained=dict(slurm_job_id='123',state='CANCELLED',exit_code='0:9',native_proof_sha256=digest(native),process_ledger_sha256=digest(ledger),original_births_released=True,bound_native_cgroups_unpopulated=True,owned_gpu_contexts_released=True)
         def purged(command):
-            if command[0]=='squeue':return ''
+            if command[0]=='squeue':
+                self.assertEqual(command,['squeue','-h','-o','%i|%T'])
+                return '999|RUNNING\n'
             if command[0]=='nvidia-smi':return '543210\n'
             raise subprocess.CalledProcessError(1,command)
         # The foreign current PID has a different birth, so do not claim it is ours.
@@ -164,6 +167,12 @@ class ResumeTests(unittest.TestCase):
             snapshot=resume.terminal_snapshot(self.base,manifest)
             self.assertEqual(snapshot['state'],'FAILED')
             self.assertEqual(snapshot['actual_scontrol_stdout'],'JobId=123 JobState=FAILED ExitCode=1:0')
+
+    def test_release_observation_on_wrong_node_is_rejected(self):
+        (self.base/'logs/compatible-native-allocation.json').write_text(json.dumps({'node':'h100-8'}))
+        with patch.object(resume.socket,'gethostname',return_value='h100-10.local'):
+            with self.assertRaisesRegex(ValueError,'ORIGINAL_NODE'):
+                resume.terminal_snapshot(self.base,{})
 
     def test_running_or_missing_accounting_is_not_terminal(self):
         manifest=dict(run_id='a'*32,execution_id='d'*32,checkpoint_step=5,split='validation',recipe_sha256='c'*64)

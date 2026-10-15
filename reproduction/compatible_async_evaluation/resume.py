@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import socket
 import subprocess
 import sys
 from types import SimpleNamespace
@@ -39,12 +40,13 @@ def terminal_snapshot(prior,manifest,retained=None):
     """Query the actual same native job and local original process/cgroup births."""
     from reproduction.a800.owned_processes import same,identity
     proof=read(prior/'logs/compatible-native-allocation.json')
+    if socket.gethostname().split('.')[0]!=proof.get('node'):raise ValueError('RESUME_LOCAL_RELEASE_CHECK_MUST_RUN_ON_ORIGINAL_NODE')
     if any(proof.get(k)!=manifest[k] for k in ('run_id','execution_id','checkpoint_step','split','recipe_sha256')) or proof.get('accepted') is not True or proof.get('node')!='h100-8':
         raise ValueError('RESUME_NATIVE_EXECUTION_BINDING_MISMATCH')
     job=str(proof['slurm_job_id'])
     if not job.isdecimal():raise ValueError('RESUME_NATIVE_JOB_ID_INVALID')
-    queue=command(['squeue','-h','-j',job,'-o','%i|%T'])
-    if queue.strip():raise ValueError('RESUME_PRIOR_JOB_STILL_QUEUED_OR_RUNNING')
+    queue=command(['squeue','-h','-o','%i|%T'])
+    if any(line.split('|',1)[0].strip()==job for line in queue.splitlines()):raise ValueError('RESUME_PRIOR_JOB_STILL_QUEUED_OR_RUNNING')
     state=exitcode=None
     accounting_errors=[]
     native=raw=None
