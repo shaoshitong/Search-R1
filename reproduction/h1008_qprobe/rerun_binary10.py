@@ -167,7 +167,9 @@ def request_stop(base):
     native=subprocess.check_output(['scontrol','show','job','-o',str(JOB)],text=True)
     fields=dict(re.findall(r'(\w+)=(\S+)',native))
     assert fields['JobId']==str(JOB) and fields['JobState']=='RUNNING' and fields['NodeList']=='h100-8'
-    assert str(OLD) in fields['Command'] and str(OLD) in fields['WorkDir']
+    assert fields['Command']==str(OLD/'preparation/launch-h1008.sh')
+    assert fields['WorkDir']=='/root'  # Actual original3401 submission directory; launch itself cd's to OLD/repo.
+    assert fields['StdOut']==fields['StdErr']==str(OLD/'logs/native-3401.log')
     ledger=read(OLD/'logs/process-ledger.json')
     births=[row for job in ledger['jobs'].values() for row in job['ledger'].values()]
     assert births and any(live(row) for row in births),'No authenticated original owned process remains'
