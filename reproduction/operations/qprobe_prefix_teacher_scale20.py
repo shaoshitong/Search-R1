@@ -132,8 +132,10 @@ def old_sources():
 
 
 def science_equal(actual, original):
+    # A question-only feature-cache scope is provenance, not a teacher sampling
+    # or scoring parameter. Prefix features have their own official binding.
     for name in ('model_revision', 'model_files_sha256', 'train_parquet_sha256', 'data_manifest_sha256',
-                 'retriever_version', 'feature_spec_sha', 'agent_config', 'max_turns', 'scorer_sources', 'rollout_sources'):
+                 'retriever_version', 'agent_config', 'max_turns', 'scorer_sources', 'rollout_sources'):
         assert actual[name] == original[name], 'Frozen scientific identity differs: ' + name
     a, b = dict(actual['sampling_config']), dict(original['sampling_config'])
     for key in EXECUTION_KEYS: a.pop(key); b.pop(key)
@@ -166,11 +168,23 @@ def stage(args, out):
     assert reuse_manifest['count'] == 28160 and reuse_manifest['split_counts'] == dict(train=25600, test=2560)
     assert reuse_spec['encoder_files_sha256'] == old['model_files_sha256']
     assert reuse_spec['encoder_revision'] == old['model_revision'] and reuse_spec['feature_layer'] == 27
+    assert reuse_spec['encoder_model_dir'] == original['initial_model']
+    assert reuse_spec['encoder_config_sha256'] == old['model_files_sha256']['config.json']
+    assert reuse_spec['feature_dim'] == 2048 and reuse_spec['actual_position_ids'] is True
     assert reuse_spec['representation'] == 'actual_prompt_policy_prefix5_alltokens_layer27_v1'
     assert reuse_spec['feature_dtype'] == reuse_spec['encoder_compute_dtype'] == 'bfloat16'
+    question_cache_provenance = dict(old_question_feature_spec_sha256=old['feature_spec_sha'],
+        heldout_question_feature_spec_sha256=test_identity['feature_spec_sha'],
+        question_cache_spec_equal=old['feature_spec_sha']==test_identity['feature_spec_sha'],
+        same_question_feature_cache_reused=False, question_features_read_for_scale20_generation=False,
+        interpretation='distinct question-cache coverage identities; original teacher model/data/scoring/sampling independently equal',
+        unified_actual_prefix_cache_manifest_sha256=REUSE_MANIFEST_SHA,
+        unified_actual_prefix_spec_sha256=reuse_manifest['spec_sha'])
+    verified_reuse_files = {}
     for name, proof in reuse_manifest['files'].items():
         item = reuse/name; assert item.resolve() == item and item.stat().st_size == proof['bytes']
-    assert sha(reuse/'index.jsonl') == reuse_manifest['files']['index.jsonl']['sha256']
+        actual_sha = sha(item); assert actual_sha == proof['sha256'], 'Reused prefix cache full SHA differs: ' + name
+        verified_reuse_files[name] = dict(bytes=item.stat().st_size, sha256=actual_sha)
     expected_rows = [(g['trajectory_ids'][j], split, g['qid'], g['question_hash'], g['strict_em'][j])
         for split, values in (('train',old_groups),('test',heldout['groups'])) for g in values for j in range(GROUP)]
     actual_rows = []
@@ -213,6 +227,7 @@ def stage(args, out):
             questions=selected, feature_spec_sha256=old['feature_spec_sha'],
             original_train_sha256=sha(train), old_identity_sha256=OLD_IDENTITY_SHA,
             old_complete_sha256=OLD_COMPLETE_SHA, heldout_selection_sha256=sha(test / 'selection.json'),
+            question_feature_cache_provenance=question_cache_provenance,
             split_proof=dict(disjoint_qid=True, disjoint_question_hash=True, disjoint_normalized_question_content=True,
                 fixed_heldout_questions=CHUNK, fixed_heldout_teacher_reused=True, heldout_labels_used_for_training=False))
         once(root / 'selection.json', selection)
@@ -239,9 +254,13 @@ def stage(args, out):
             heldout_base=str(test), heldout_selection_sha256=sha(test / 'selection.json'),
             heldout_labels_sha256=sha(test / 'teacher-cache/labels.json'),
             original_chunk_sources=descriptors, protocol=protocol, strict_protocol=old_complete['protocol'],
+            question_feature_cache_provenance=question_cache_provenance,
             runtime_source_commit=RUNTIME_SHA, split_proof=selection['split_proof'],
             encoder_spec=reuse_spec, reuse=dict(cache_dir=str(reuse),manifest_sha256=REUSE_MANIFEST_SHA,
-                train_trajectories=25600,test_trajectories=2560,count=28160,source_ids_and_labels_exact_equal=True),
+                train_trajectories=25600,test_trajectories=2560,count=28160,source_ids_and_labels_exact_equal=True,
+                actual_full_sha_verified=True, qualification=dict(role='stage_actual_reused_prefix_cache_full_sha_seal',
+                    producer_source_sha256=sha(__file__),runtime_source_commit=RUNTIME_SHA,
+                    manifest_sha256=REUSE_MANIFEST_SHA,files=verified_reuse_files,actual_full_sha_verified=True)),
             resume_policy='immutable completed chunks are fully SHA-verified and skipped; a new execution owns only missing chunks',
             resume_rng_policy='fresh official workers in a new execution; never regenerate accepted G5 events',
             training_forbidden=True)
@@ -284,6 +303,7 @@ def stage(args, out):
         dataset_dir=str(root), dataset_plan_sha256=execution['dataset_plan_sha256'], execution_profile=protocol['execution_profile'],
         requested_training_indices=args.train_indices, auxiliary_indices=[5, 6], actor_training_budget=0, head_training_budget=0,
         raw_policy=args.raw_policy, checked_unix=time.time())
+    result['question_feature_cache_provenance'] = question_cache_provenance
     once(out / 'stage-complete.json', result); print(json.dumps(result), flush=True)
 
 
