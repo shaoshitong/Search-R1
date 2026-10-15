@@ -163,7 +163,8 @@ def main():
             raise ValueError('Warmup label is not the canonical token row')
         if reused is not None and cache.index[label['qid']]['feature_sha256']!=reused.index[label['qid']]['feature_sha256']:
             raise ValueError('Full bank did not reuse the actual warmup feature bytes')
-    receipt = dict(stage='HPC3_FULL_TOKEN_BANK_FULL_SHA_PASS',cache_dir=str(destination),manifest_sha256=sha(destination/'manifest.json'),
+    receipt = dict(stage='HPC3_WARMUP5120_TOKEN_BANK_FULL_SHA_PASS' if warmup_only else 'HPC3_FULL_TOKEN_BANK_FULL_SHA_PASS',
+        cache_dir=str(destination),manifest_sha256=sha(destination/'manifest.json'),
         spec_sha=cache.spec_sha,count=target_count,total_tokens=cache.manifest['total_tokens'],global_max_tokens=244,model_revision=official['revision'],
         model_files_sha256=hashes,teacher_provenance=provenance,files=cache.manifest['files'],checked_unix=time.time(),
         shared_inputs_modified=False,trajectories_generated=0,formal_actor_outers=0,feature_phase=args.phase,
