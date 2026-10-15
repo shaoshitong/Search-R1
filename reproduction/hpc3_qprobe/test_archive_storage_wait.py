@@ -54,7 +54,9 @@ class StorageWait(unittest.TestCase):
                         claim={'parent_process':own},process=dict(own,pid=state['pid']))
                 def start():
                     item.CONTROL.mkdir()
-                    code='import pathlib;pathlib.Path('+repr(str(item.CONTROL/'result.json'))+').write_text('+repr(json.dumps(value))+')'
+                    code=('import pathlib;target=pathlib.Path('+repr(str(item.CONTROL/'result.json'))+');'
+                          'temporary=target.with_suffix(".tmp");temporary.write_text('+repr(json.dumps(value))+');'
+                          'temporary.replace(target)')
                     child=item.subprocess.Popen([sys.executable,'-c',code]);children.append(child);state['pid']=child.pid
                     return inspect()
                 item.inspect=inspect;item.start=start;cores.append(item);return item
