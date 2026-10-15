@@ -34,7 +34,7 @@ def read(path):
 
 def remote(path):
     p = Path(path)
-    if not p.is_absolute() or p.resolve() != p or not str(p).startswith(('/mnt/', '/data/', '/backup/')):
+    if not p.is_absolute() or p.resolve() != p or not str(p).startswith(('/mnt/', '/data/', '/dataset/', '/backup/')):
         raise ValueError('Explicit remote artifact path required: '+str(p))
     return p
 
