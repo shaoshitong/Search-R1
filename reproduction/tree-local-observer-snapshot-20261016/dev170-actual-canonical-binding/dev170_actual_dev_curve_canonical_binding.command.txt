@@ -1,0 +1,89 @@
+python3 -B - <<'PY'
+from pathlib import Path
+import json,hashlib,gzip,datetime,os,time
+w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013';ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+def h(raw):return hashlib.sha256(raw).hexdigest()
+def read(p):return json.loads(p.read_bytes())
+def pin(p):
+ raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=h(raw))
+def atomic(p,raw):
+ q=p.with_name(p.name+'.170-closure.tmp');q.write_bytes(raw);os.replace(q,p)
+paths=[w/'outputs/STATUS.json',w/'outputs/tree-nested-branch/STATUS.json',b/'CURRENT_NATIVE_RECOVERY_FOLLOWUP.json',b/'CURRENT_OBSERVER_CONNECTION_STATE.json']
+reports=[w/'outputs/REPORT.md',w/'outputs/tree-nested-branch/REPORT.md',*[m/'REPORT.md' for m in ms]]
+allp=paths+[m/p.name for m in ms for p in paths[1:]]+reports;assert len(allp)==14
+refs=dict(dev_native=pin(b/'DEV5_170_NATIVE_COST_SUPPLEMENT.json'),dev_readback=pin(b/'ROOT_DEV170_NATIVE_COST_ACTUAL_READBACK.json'),dev_executor=pin(b/'DEV5_170_NATIVE_COST_LOCAL_RECEIPT.json'),curve=pin(b/'LEARNING_CURVE_COMPLETE_THROUGH170.json'),curve_binding=pin(b/'LEARNING_CURVE_THROUGH170_COST_SUPPLEMENT_BINDING.json'),root_curve_readback=pin(b/'ROOT_CURVE_DEV_COST_THROUGH170_ACTUAL_READBACK.json'),milestone=pin(b/'MILESTONE150_HF_NATIVE_METADATA.json'),pending170=pin(b/'OUTER170_UPDATES_NATIVE_DEV_PENDING_ACTUAL_2102_2103.json'),full=pin(b/'FULL_OUTER170_PROGRESS_RECEIPT.json'),curve_csv=pin(b/'LEARNING_CURVE_COMPLETE_THROUGH170.csv'),curve_publication=pin(b/'LEARNING_CURVE_THROUGH170_LOCAL_PUBLICATION.json'),progress=pin(b/'OUTER170_FULL_NEXT171_ACTUAL_PROGRESS.json'),generic_alias=pin(b/'CURRENT_ALIAS_RECONCILIATION_OUTER170.json'))
+assert refs['milestone']['sha256']=='cdefa3df073c919e03ec092caa34fd9eb7de0de0b57ef568e30706a2ed5336dc'
+assert refs['dev_native']['sha256']=='4b34f52a1a3a8447f23c4ebdb8c55a83c9254c8fc72cf8ba3ad367d69b2e6722' and refs['dev_readback']['sha256']=='f1afb5d6c6c686fe771acb9f04f065bfd10d5f46199024f1fe6711a780007d13'
+assert refs['curve']['sha256']=='5c542620c45852c1570f5dcfca79e8b4ae6e4352335a8452d31abed0ecb791c9' and refs['root_curve_readback']['sha256']=='87f853ad7a05e818ef36ccf34611dc9e6c9c4cb3e9512f89663491613e231f23'
+assert refs['dev_executor']['sha256']=='29c0ea107ed07fe91b2d76742246c3909b0a32380927015022153c79cc364415'
+assert refs['pending170']['sha256']=='dfb7378e8d5bbbc4b795bd9e3ac7e7a3d79cd328bdbee4272607699975d23401'
+md=read(Path(refs['milestone']['path']));assert md['manifest_status']=='COMPLETE_SAME_WORLD_STATE_SAVED' and md['native_manifest']['identity']['completed_step']==150
+assert all(x['actual_total_optimizer_calls']==3000 and x['scheduler_last_epoch']==150 and x['full_worker_state_finite'] is True for x in md['native_manifest']['worker_states'])
+assert read(Path(refs['root_curve_readback']['path']))['executor']=='/root'
+e=read(Path(refs['dev_executor']['path']));assert e['collector_source_commit']=='1edaf50bb8e14de51db936e0859e369792011233' and e['collector_source_sha256']=='545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0'
+assert e['new_entry_main_invocations_this_task']==e['actual_remote_incremental_collection_invocations']==1 and e['preceding_local_pending_invocations']==0 and e['remote_collector_exit_code']==0
+required_pins={'dev_native':(7058,'4b34f52a1a3a8447f23c4ebdb8c55a83c9254c8fc72cf8ba3ad367d69b2e6722'),'dev_readback':(80637,'f1afb5d6c6c686fe771acb9f04f065bfd10d5f46199024f1fe6711a780007d13'),'dev_executor':(59548,'29c0ea107ed07fe91b2d76742246c3909b0a32380927015022153c79cc364415'),'curve':(992265,'5c542620c45852c1570f5dcfca79e8b4ae6e4352335a8452d31abed0ecb791c9'),'curve_binding':(28387,'533545b6c7661cf2ecf5f50c2f990b5eacf756ef596d2d4e4bbc0ff8053e2150'),'root_curve_readback':(16248,'87f853ad7a05e818ef36ccf34611dc9e6c9c4cb3e9512f89663491613e231f23'),'curve_csv':(181572,'74f072b4d93b48213bda7b1601f81d4f9f7922c6fc93978b0e5fe02b916d24f1'),'curve_publication':(29846,'996450f698bff2feb82b82897e0b1c0dd8ce810a293edbb1772d97a37a9a113b'),'full':(31896,'a1d5f8b8a8af07324594657e5b26b16a670dba5d3ecd27fb7d27dac8040390be'),'pending170':(10259,'dfb7378e8d5bbbc4b795bd9e3ac7e7a3d79cd328bdbee4272607699975d23401'),'progress':(12124,'85bb0274dc9bbd39e8891d19afb437b39b673d1ff655bc9f09130070784185c5'),'generic_alias':(4190,'2a6f7517766dca9f23f56586c445c1ebcce7890b6e1de12d40a0d403fa7eabac')}
+for key,(size,digest) in required_pins.items():assert refs[key]['bytes']==size and refs[key]['sha256']==digest,key
+assert e['same_entry_executor_attested_cumulative_main_invocations']==e['same_entry_executor_attested_cumulative_remote_incremental_invocations']==3 and e['same_entry_prior_confirmed_main_invocations']==e['same_entry_prior_confirmed_remote_incremental_invocations']==2
+protected_names=['DEV5_165_NATIVE_COST_SUPPLEMENT.json','DEV5_165_NATIVE_COST_SUPPLEMENT.md','DEV5_165_NATIVE_COST_LOCAL_RECEIPT.json','ROOT_DEV165_NATIVE_COST_ACTUAL_READBACK.json','CUMULATIVE_COST_THROUGH165.json','COST_OUTER165_LOCAL_RECEIPT.json','FULL_OUTER165_PROGRESS_RECEIPT.json','NATIVE_HISTORY_165_METADATA_READBACK.json','LEARNING_CURVE_COMPLETE_THROUGH165.json','LEARNING_CURVE_COMPLETE_THROUGH165.csv','LEARNING_CURVE_THROUGH165_COST_SUPPLEMENT_BINDING.json','LEARNING_CURVE_THROUGH165_LOCAL_PUBLICATION.json','ROOT_CURVE_DEV_COST_THROUGH165_ACTUAL_READBACK.json','OUTER165_CURVE_DEVCOST_CURRENT_ALIAS_CLOSURE.json']
+protected_paths={b/n for n in protected_names}
+for ref in read(b/'DEV5_165_NATIVE_COST_SUPPLEMENT.json')['rows']['parts']:protected_paths.add(b/ref['file'])
+for value in read(b/'CUMULATIVE_COST_THROUGH165.json').values():
+ if isinstance(value,dict) and value.get('storage')=='complete_original_field_parts':
+  for ref in value['parts']:protected_paths.add(b/ref['file'])
+for ref in read(b/'ROOT_DEV165_NATIVE_COST_ACTUAL_READBACK.json')['control_file_and_inner_ledger_bindings']:
+ p=Path(ref['path']);protected_paths.add(p if p.is_absolute() else (w/p if p.parts[0] in ('outputs','work') else b/p))
+protected165={p:p.read_bytes() for p in sorted(protected_paths)}
+assert h((b/'DEV5_165_NATIVE_COST_LOCAL_RECEIPT.json').read_bytes())=='22408dab7242eb6f60297b2714fb80a200b648fa67ea2d73a5c1bfdf89e6a982'
+assert len((b/'LEARNING_CURVE_COMPLETE_THROUGH165.csv').read_bytes())==174892
+binding_source=pin(w/'work/tree-speed-repair-20261008/dev170_actual_dev_curve_canonical_binding.command.txt')
+prior={p:p.read_bytes() for p in allp};assert prior[paths[0]]==prior[paths[1]] and len({prior[p] for p in reports})==1
+for p in paths:
+ s=read(p);assert s['completed_outer']==170 and s['active_outer']==171 and s['latest_dev512_outer']==170 and s['goal_status']=='active'
+ assert s['current_milestone150_metadata']==refs['milestone'] and s['current_HF_permanent_milestone150_complete'] is True
+ assert s['per_rank_actual_total_adam']=={str(i):3400 for i in range(8)} and s['actual_current_restore_outer']==5
+now=datetime.datetime.now(datetime.timezone.utc);snap=b/('outer170_curve_devcost_current_prior_'+now.strftime('%Y%m%dT%H%M%S%fZ'));snap.mkdir();members=[]
+for i,(p,raw) in enumerate(prior.items()):
+ q=snap/f'{i:02d}-{p.name}.gz';q.write_bytes(gzip.compress(raw,mtime=0));gz=q.read_bytes();assert gzip.decompress(gz)==raw
+ members.append(dict(original_path=str(p),original_bytes=len(raw),original_sha256=h(raw),stored_gzip_path=str(q),stored_bytes=len(gz),stored_sha256=h(gz),gzip_mtime=0,exact_original_bytes_readback=True))
+manifest=snap/'SNAPSHOT_MANIFEST.json';manifest.write_text(json.dumps(dict(files=members,created_at_utc=now.isoformat()),ensure_ascii=False,indent=2)+'\n')
+assert all(p.read_bytes()==raw for p,raw in prior.items())
+retired_keys=['current_dev_native_cost_supplement','current_dev_native_cost_publication','dev_native_cost_actual_last_collected_outer','learning_curve_complete_outer','learning_curve_complete','learning_curve_complete_sha256','current_learning_curve_cost_supplement_binding','current_curve_and_dev_cost_actual_readback']
+before=[pin(p) for p in paths]
+for p in paths:
+ s=read(p);s['historical_outer165_curve_dev_cost_pointers_before170']={k:s[k] for k in retired_keys if k in s}
+ s['historical_dev_cost_collector_actual_before170']={k:s[k] for k in ['dev_native_cost_collector_source_commit','dev_native_cost_collector_publication','dev_native_cost_collector_latest_actual_executor_receipt','dev_native_cost_collector_new_entry_actual_main_invocations','dev_native_cost_collector_actual_remote_incremental_invocations'] if k in s}
+ s.update(dev_native_cost_collector_source_commit=e['collector_source_commit'],dev_native_cost_collector_actual_entry=e['collector_source'],dev_native_cost_collector_publication=s['dev_native_cost_collector_latest_available_publication'],dev_native_cost_collector_latest_actual_source_commit=e['collector_source_commit'],dev_native_cost_collector_latest_actual_entry=e['collector_source'],dev_native_cost_collector_latest_actual_executor_receipt=refs['dev_executor'],dev_native_cost_collector_selected_new_entry_actual_invoked=True,dev_native_cost_collector_selected_next_completed_dev_outer=175,dev_native_cost_collector_new_entry_actual_main_invocations=3,dev_native_cost_collector_actual_remote_incremental_invocations=3,dev_native_cost_collector_latest_actual_main_invocations_delta=1,dev_native_cost_collector_latest_actual_remote_incremental_invocations_delta=1,dev_native_cost_collector_preceding_local_pending_invocations=0,dev_native_cost_collector_actual_scope='Actual DEV160, DEV165 and DEV170 each used1ed entry once by cost-owner; cumulative SHA-bound executor-attested main3/remote3/PENDING0, latest170 delta1/1/0. Sole new170 and old33 controls/rows unchanged corroborate; no independent system-wide process-log audit is claimed.',dev_native_cost_collector_available_scope='Published1ed entry actually used at completeDEV160, DEV165 and DEV170; next eligible complete dev175. Training source778 unchanged.')
+ s['historical_pending170_updates_and_native_evidence']=refs['pending170'];s['historical_pending170_scope']='Immutable retrospective asof2102/2103: actual170 updates/native complete while dev170 and FULL170 pending. Superseded by separately actual FULL170/dev170/live171 evidence.'
+ s.update(current_dev_native_cost_supplement=refs['dev_native'],current_dev_native_cost_publication=refs['dev_readback'],dev_native_cost_actual_last_collected_outer=170,learning_curve_complete_outer=170,learning_curve_complete_through_outer=170,learning_curve_complete=refs['curve'],learning_curve_complete_sha256=refs['curve']['sha256'],current_learning_curve_cost_supplement_binding=refs['curve_binding'],current_curve_and_dev_cost_actual_readback=refs['root_curve_readback'])
+ raw=(json.dumps(s,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode();atomic(p,raw)
+ if p!=paths[0]:
+  for m in ms:atomic(m/p.name,raw)
+report=prior[reports[0]].decode()+'\nActual curve/dev native-cost boundary170 uses all34 completed dev controls,2 complete dev row parts and5 cumulative cost field parts; old165 JSON objects/raw spans and CSV174892-byte prefix remain exact. DEV170 F1=57.42947048611112%, EM=49.0234375% (512=NQ256+Hot256). FULL170 wall1793.755628682673s contains current dev170 testing622.3724833354354s; training/archive remainder1171.3831453472376s, no dev CPU/wall added twice. Same1ed collector confirmed executor-attested cumulative main3/remote3/PENDING0, latest170 delta1/1/0; no raw process-log claim. HF/native150 remains metadata-only, not independent cold reload. Pending170 is historical asof2102/2103; current FULL170/dev170/live171 proved separately.\n'
+for p in reports:atomic(p,report.encode())
+assert paths[0].read_bytes()==paths[1].read_bytes()
+for m in ms:
+ for p in paths[1:]:assert (m/p.name).read_bytes()==p.read_bytes()
+ assert (m/'REPORT.md').read_bytes()==reports[0].read_bytes()
+input_product_observations=[]
+for i in range(2):
+ assert all(p.read_bytes()==raw for p,raw in protected165.items())
+ assert paths[0].read_bytes()==paths[1].read_bytes()
+ for m in ms:
+  for p in paths[1:]:assert (m/p.name).read_bytes()==p.read_bytes()
+  assert (m/'REPORT.md').read_bytes()==reports[0].read_bytes()
+ for p in paths:
+  state=read(p);assert state['completed_outer']==170 and state['active_outer']==171 and state['latest_dev512_outer']==170 and state['learning_curve_complete_outer']==state['learning_curve_complete_through_outer']==state['dev_native_cost_actual_last_collected_outer']==170 and state['actual_current_restore_outer']==5
+  assert state['current_dev_native_cost_supplement']==refs['dev_native'] and state['current_curve_and_dev_cost_actual_readback']==refs['root_curve_readback'] and state['dev_native_cost_collector_new_entry_actual_main_invocations']==state['dev_native_cost_collector_actual_remote_incremental_invocations']==3 and state['dev_native_cost_collector_selected_next_completed_dev_outer']==175
+ observation=dict(pass_number=i+1,observed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),canonical_files=len(paths),mirror_roots=2,protected165_files=len(protected165),old165_bytes_preserved=True);input_product_observations.append(observation);print(json.dumps(observation))
+ if i==0:time.sleep(1)
+r=dict(schema='outer170_curve_dev_cost_current_alias_closure_v1',created_at_utc=now.isoformat(),completed_outer=170,active_outer=171,latest_dev_outer=170,curve_actual_through=170,dev_native_cost_actual_through=170,permanent_HF_native_milestone_preserved_outer=150,prior_closed14_gzip_manifest=pin(manifest),references=refs,binding_command_source=binding_source,historical_successful165_binding_source=dict(bytes=9363,sha256='4121889c9db9fd8a92598708fd1ec7719ea510f7ae1f77c1044756e9be937c7e'),protected165_originals=[dict(path=str(p),bytes=len(raw),sha256=h(raw)) for p,raw in protected165.items()],actual_local_readback_observations=input_product_observations,old165_original_bytes_preserved=True,cold_load5_helper_to_be_run_LAST_by_root_after_this_binding=True,before=before,after=[pin(p) for p in paths],report=pin(reports[0]),two_mirrors_byte_equal=True,counters_or_training_modified=False,global_atomic_transaction=False,source_hot_modified=False,remote_actions=False,new_eval_test_code_review=False,goal_status='active',goal_complete=False)
+p=b/'OUTER170_CURVE_DEVCOST_CURRENT_ALIAS_CLOSURE.json';assert not p.exists();raw=(json.dumps(r,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode()
+for q in [p,*[m/p.name for m in ms]]:atomic(q,raw)
+for i in range(2):
+ for q in [p,*[m/p.name for m in ms]]:assert q.read_bytes()==raw
+ assert all(q.read_bytes()==v for q,v in protected165.items())
+ print(json.dumps(dict(receipt_readback_pass=i+1,observed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),copies=3,old165_bytes_preserved=True)))
+ if i==0:time.sleep(1)
+print(json.dumps(pin(p)))
+PY
