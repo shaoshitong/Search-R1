@@ -20,6 +20,8 @@ def save_then_refit(trainer, manager):
     checkpoint = Path(trainer.config.trainer.default_local_dir)/'actor'/('global_step_'+str(trainer.global_steps))
     trainer._save_checkpoint()
     checkpoint_complete(trainer.global_steps,str(checkpoint))
+    from search_g1.qprobe_checkpoint import publish_completed_pair
+    publish_completed_pair(trainer,checkpoint,periodic_phase='before_probe')
     trainer.qprobe_runtime.refit_after_checkpoint(manager,checkpoint)
     return str(checkpoint)
 
@@ -32,6 +34,19 @@ def finish_pending_restore(trainer,manager,checkpoint):
     trainer.global_steps=runtime.completed_outer
     try:
         result=runtime.refit_after_checkpoint(manager,checkpoint)
+        if trainer.global_steps in (50,100,150):
+            current=runtime.base/'logs'/('validation-step'+str(trainer.global_steps)+'.json')
+            manifest=json.loads((runtime.base/'logs/run-manifest.json').read_text())
+            source=Path(manifest['full_state_restore']['source_base'])/'logs'/current.name
+            if source.is_file() and not current.exists():
+                # Reuse only actual immutable canonical512 scores at this CP.
+                from search_g1.qprobe_runtime import _write_json
+                proof=json.loads(source.read_text())
+                if proof['step']!=trainer.global_steps or proof['run_id']!=manifest['run_id'] or len(proof['question_ids'])!=512:
+                    raise ValueError('PERIODIC_RECOVERY_VALIDATION_IDENTITY_CHANGED')
+                _write_json(current,proof)
+            elif not current.exists():
+                trainer._validate()
         if trainer.global_steps in (50,100,150):
             live=json.loads((runtime.base/'artifacts/live/manifest.json').read_text())
             if live['round'] < trainer.global_steps:

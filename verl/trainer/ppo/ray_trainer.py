@@ -836,7 +836,10 @@ class RayPPOTrainer(object):
                     if run['full_state_restore'].get('kind') in ('question_probe_pair','question_probe_saved_checkpoint'):
                         # The completed pair already has its historical evaluation.
                         # Future validation runs at the normal common8 cadence.
-                        pass
+                        if (run.get('question_probe',{}).get('head_kind')=='qwen_native_periodic_lastblock_binary_v1' and restored_outer==5):
+                            source=__import__('json').loads(Path(run['full_state_restore']['source_receipt']).read_text())
+                            if not source.get('historical_artifacts',{}).get('development',{}).get('after5'):
+                                evaluate_development(self)
                     elif run.get('followup_checkpoint_required'):
                         from search_g1.full_state_restore import reuse_development_after5
                         reuse_development_after5(base,run)
@@ -1172,7 +1175,16 @@ class RayPPOTrainer(object):
                                     if isinstance(value, (int, float)) and not isinstance(value, bool):
                                         metrics['question_probe/'+name] = value
 
-                    # validate
+                    periodic_checkpoint = hasattr(self.qprobe_runtime,'refit_after_checkpoint') and (
+                        self.global_steps % 25 == 0 or self.global_steps == self.config.trainer.get('acceptance_step',0) or
+                        (self.config.trainer.get('full_state_restore_receipt',None) and self.global_steps == min(continuation_k+5,self.total_training_steps-1)) or
+                        self.global_steps+1 >= self.total_training_steps)
+                    if periodic_checkpoint:
+                        with _timer('save_checkpoint_and_periodic_probe',timing_raw):
+                            from search_g1.qprobe_periodic_refit import save_then_refit
+                            checkpoint=save_then_refit(self,generation_manager)
+
+                    # validate only after the periodic learner state is durable.
                     if self.val_reward_fn is not None and self.config.trainer.test_freq > 0 and \
                         (self.global_steps % self.config.trainer.test_freq == 0 or
                         self.global_steps == self.config.trainer.get('acceptance_step',0)):
@@ -1180,21 +1192,16 @@ class RayPPOTrainer(object):
                             val_metrics: dict = self._validate()
                         metrics.update(val_metrics)
 
-                    if self.config.trainer.save_freq > 0 and \
+                    if not hasattr(self.qprobe_runtime,'refit_after_checkpoint') and self.config.trainer.save_freq > 0 and \
                             (self.global_steps % self.config.trainer.save_freq == 0 or
-                            (hasattr(self.qprobe_runtime,'refit_after_checkpoint') and self.global_steps % 25 == 0) or
                             self.global_steps == self.config.trainer.get('acceptance_step',0) or
                             (self.config.trainer.get('full_state_restore_receipt',None) and self.global_steps == min(continuation_k + 5, self.total_training_steps - 1)) or
                             self.global_steps + 1 >= self.total_training_steps):
                         with _timer('save_checkpoint', timing_raw):
-                            if hasattr(self.qprobe_runtime,'refit_after_checkpoint'):
-                                from search_g1.qprobe_periodic_refit import save_then_refit
-                                checkpoint = save_then_refit(self,generation_manager)
-                            else:
-                                self._save_checkpoint()
-                                from reproduction.profile import checkpoint_complete
-                                checkpoint = os.path.join(self.config.trainer.default_local_dir, 'actor', f'global_step_{self.global_steps}')
-                                checkpoint_complete(self.global_steps, checkpoint)
+                            self._save_checkpoint()
+                            from reproduction.profile import checkpoint_complete
+                            checkpoint = os.path.join(self.config.trainer.default_local_dir, 'actor', f'global_step_{self.global_steps}')
+                            checkpoint_complete(self.global_steps, checkpoint)
 
                 # collect metrics
                 metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))

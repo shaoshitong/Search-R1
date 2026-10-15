@@ -127,9 +127,16 @@ def _historical_artifacts(base,run,outer):
         value=_read_json(path)
         if value.get('run_id')==run['run_id'] and type(value.get('round')) is int and value['round']<=min(outer//50,3)*50:
             archives[value['version']]=dict(version=value['version'],round=value['round'],**_file_record(path))
-    return dict(checkpoints=[checkpoints[k] for k in sorted(checkpoints)],development=development,
+    result=dict(checkpoints=[checkpoints[k] for k in sorted(checkpoints)],development=development,
         reward_archives=list(archives.values()),raw_training_prefix_verified=False,
         scope='immutable available historical artifact pointers only; raw prefix training history is not reconstructed')
+    if run.get('question_probe',{}).get('head_kind')=='qwen_native_periodic_lastblock_binary_v1':
+        validation={row['step']:row for row in inherited.get('validation',[])}
+        for step in (5,50,100,150,200):
+            path=base/'logs'/('validation-step'+str(step)+'.json')
+            if step<=outer and path.is_file():validation[step]=dict(step=step,**_file_record(path))
+        result['validation']=[validation[k] for k in sorted(validation)]
+    return result
 
 
 def publish_completed_pair(trainer, checkpoint, periodic_phase=None):
@@ -279,7 +286,7 @@ def read_source(receipt_path):
               'EXTERNAL_CHECKPOINT_SOURCE_CHANGED')
     _need(receipt['actor_snapshot_id']==receipt['run_id']+':'+str(outer),'RECEIPT_ACTOR_PATH_BINDING_MISMATCH')
     history=receipt.get('historical_artifacts',{})
-    historical_records=history.get('checkpoints',[])+list(history.get('development',{}).values())+history.get('reward_archives',[])
+    historical_records=history.get('checkpoints',[])+list(history.get('development',{}).values())+history.get('reward_archives',[])+history.get('validation',[])
     all_records=receipt['files']+receipt['boundary_worker_files']+[receipt['boundary_driver'],receipt['source_run_manifest'],
         receipt['reward_probe_manifest']]+receipt['reward_files']
     all_records+=historical_records+receipt.get('question_probe_files',[])

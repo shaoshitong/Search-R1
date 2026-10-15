@@ -17,6 +17,8 @@ final split and existing actor/reward recipe. No other chat's output is written.
   The old169028 cache is read for question/token metadata only.
 - Full checkpoints at25/50/75/100/125/150/175/200 supplement existing checkpoints
   and dev512 evaluation. Save and actual full-state verification precede refit.
+  The periodic learner is also saved before scheduled validation, so a scoring
+  failure cannot erase an otherwise completed student checkpoint.
 
 ## State and recovery
 
@@ -33,6 +35,12 @@ Probe checkpoints are saved every epoch and after caught exceptions. A small
 in-flight Adam ledger detects unpersisted possible updates after SIGKILL/OOM;
 the program refuses to silently label an older epoch a lossless continuation.
 Such a hard-kill ambiguity requires explicit recovery disposition.
+
+`resume.py` prepares a numbered `-r1`, `-r2`, etc. namespace from an actual
+authenticated pair receipt. A pending probe phase can continue from its saved
+epoch/permutation/Adam and regenerate detached features at the same student.
+Original pre-probe files remain read-only. The post-probe pair references that
+same authenticated student checkpoint without repeating student updates.
 
 Existing paired actor restoration remains responsible for actual CUDA model,
 Adam/scheduler and RNG readback. CPU tests are not a four-GPU restart acceptance.

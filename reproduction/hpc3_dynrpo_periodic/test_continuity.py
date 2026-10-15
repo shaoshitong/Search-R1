@@ -121,9 +121,10 @@ class Continuity(TestCase):
         events=[]
         trainer._save_checkpoint.side_effect=lambda:events.append('save-full-state')
         trainer.qprobe_runtime.refit_after_checkpoint.side_effect=lambda *a:events.append('rollout-and-fit')
-        with mock.patch('reproduction.profile.checkpoint_complete',side_effect=lambda *a:events.append('verify-full-state')):
+        with mock.patch('reproduction.profile.checkpoint_complete',side_effect=lambda *a:events.append('verify-full-state')), \
+                mock.patch('search_g1.qprobe_checkpoint.publish_completed_pair',side_effect=lambda *a,**k:events.append('accepted-pre-pair')):
             save_then_refit(trainer,object())
-        self.assertEqual(events,['save-full-state','verify-full-state','rollout-and-fit'])
+        self.assertEqual(events,['save-full-state','verify-full-state','accepted-pre-pair','rollout-and-fit'])
 
     def test_failed_checkpoint_verification_never_starts_refit(self):
         from search_g1.qprobe_periodic_refit import save_then_refit

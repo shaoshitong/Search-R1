@@ -83,6 +83,10 @@ def record_validation(base, step, ids, sources, rewards, final=False, *, f1=None
         f1=f1, weighted_f1=math.fsum(f1)/len(f1),
         correct=sum(scores), weighted_em=sum(scores)/len(scores),
         validation_sha256=record['sha256'], checked_unix=time.time())
+    if (run.get('question_probe',{}).get('head_kind')=='qwen_native_periodic_lastblock_binary_v1' and
+            split=='validation' and int(step) in (5,50,100,150,200)):
+        from search_g1.qprobe_runtime import _write_json
+        _write_json(base/'logs'/('validation-step'+str(int(step))+'.json'),proof)
     # Repeated normalized questions in the canonical final product are retained.
     filename = 'final-identity.json' if final else 'latest-' + split + '-identity.json'
     path = base / 'logs' / filename
