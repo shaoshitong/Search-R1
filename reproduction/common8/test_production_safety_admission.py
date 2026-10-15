@@ -120,7 +120,7 @@ class ProductionSafetyAdmissionTests(unittest.TestCase):
     def test_parent_probability_receipts_use_actual_writer_schema_and_precision(self):
         from reproduction.common8.test_model_smoke import ModelSmokeTests
         rows,ids,uuids=ModelSmokeTests().proofs()
-        run=dict(run_id='cpu-only');receipts={}
+        run=dict(run_id='cpu-only',profile='common8');receipts={}
         probability=dict(slurm_job_id='123',question_ids=ids,actual_cuda_runtime_uuids=uuids,resolved_config_sha256='same')
         with tempfile.TemporaryDirectory() as temporary:
             base=Path(temporary);parent=base/'logs/policy-safety-admission-receipts/parent';parent.mkdir(parents=True)
