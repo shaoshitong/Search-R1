@@ -58,7 +58,7 @@ def signature(value):
 
 
 def read_file(path, *, expected_sha=None, expected_bytes=None, capture=False,
-              shared=False, alias=False, mode=None):
+              shared=False, alias=False, mode=None, capture_limit=32*2**20):
     """One retained fd, complete hash, stable birth/metadata; never writes.
 
     Only manifest-bound canonical data/model assets may have a prepared symlink
@@ -76,7 +76,8 @@ def read_file(path, *, expected_sha=None, expected_bytes=None, capture=False,
     if mode is not None:
         need(stat.S_IMODE(before.st_mode) == mode, 'private evidence mode differs')
     if capture:
-        need(before.st_size <= 32*2**20, 'bounded JSON/source read exceeded')
+        need(type(capture_limit) is int and 0 < capture_limit <= 128*2**20 and
+             before.st_size <= capture_limit, 'bounded JSON/source read exceeded')
     flags = os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
     pieces = [] if capture else None
     with os.fdopen(os.open(str(resolved), flags), 'rb') as stream:

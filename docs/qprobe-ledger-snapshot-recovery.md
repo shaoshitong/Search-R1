@@ -26,8 +26,8 @@ cannot retroactively repair job719225's already loaded built-in verifier.
 
 ## Terminal recovery boundary
 
-There is currently no implemented shortcut that accepts a FAILED producer as
-COMPLETED0. If job719225 actually fails only in its final CPU acceptance after
+There is no shortcut that accepts a FAILED producer as COMPLETED0. If job719225
+actually fails only in its final CPU acceptance after
 all200 authentic updates and final51713 are complete, recovery requires a new
 typed proof bound to the original FAILED accounting, source/run/base/claims,
 precise ledger-read traceback, actual trainer exit0, final-acceptance exit1,
@@ -45,6 +45,35 @@ restore-only audit with two equal readbacks, and consume original teacher/raw
 proofs through the independent final verifier. The original FAILED accounting
 must stay FAILED; no fabricated pipeline/EA/RAW PASS receipts are permitted.
 
-Implementing that typed recovery controller remains separate work. If the
-healthy original producer succeeds, its existing chain remains authoritative and
-no recovery job is submitted.
+The first recovery stage is implemented in
+`reproduction/hpc3_qprobe/final_cpu_ledger_recovery719225.py`. It admits only the
+actual terminal `FAILED|1:0` producer with a Slurm end time, the pinned original
+submission/allocation/source, authentic original1..5/current6..200, original
+trainer exit0/final-acceptance exit1, stopped owned births, successful cleanup
+and the precise original `FileNotFoundError` for this producer's process ledger.
+Bare read-stage ENOENT without a filename requires the exact original runtime
+line181/pathlib-read or runtime315/verify_data-line17 digest/lambda tail chain;
+unrelated bare ENOENT remains fatal. Original source SHA is verified in full.
+A healthy/pending producer or missing200 rejects before any once directory,
+source scan, child or claim. Other exceptions and cleanup/training failures
+reject. Existing unknown scopes are inspected without replay.
+
+The once scope preserves complete bounded copies of the original failure files
+and verifier source, binds their full SHA to the original accounting and claims,
+and rechecks both original and preserved bytes before/after its held CPU child.
+The child invokes `verify_full(..., publish_receipt=False)`, independently checks
+all original attempts/head/actor/scheduler evidence, canonical fixed/final
+metrics and five paired-checkpoint metadata, then writes a new separate
+`structural-acceptance.json`. Its supervisor records an actual child wait,
+PID/start/session/UID, source, stdout/stderr full SHA and error. Its readonly
+consumer requires both processes terminal and equal original/preserved evidence.
+`verify_full` retains its original publish-on-success default. The new separate
+stage keeps the producer FAILED and explicitly reports `goal_complete=False`.
+
+This stage is not an end-to-end final recovery controller. Integrating its typed
+receipt into all five existing archive claims, an actual native4 restore-only
+job, RAW795 terminal reaggregation if needed, and the independent held final
+conjunction remains separate work. No recovery scope or job has been activated.
+If the healthy original producer succeeds, its existing chain remains
+authoritative and no recovery job is submitted. Constructed protocol tests do
+not establish real training, real Slurm failure or real native recovery.

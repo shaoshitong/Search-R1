@@ -131,7 +131,7 @@ def verify_a800_adopted_initial_probe(base, run, live, archive_path):
         new_calibration_generated=False,inherited_training_state=False)
 
 
-def verify_full(base):
+def _verify_full(base):
     from verl.utils.checkpoint_integrity import validate_saved_checkpoint
     base=Path(base);run=json.loads((base/'logs/run-manifest.json').read_text())
     assert_formal_run(run)
@@ -358,8 +358,14 @@ def verify_full(base):
                 post_development_rng_available=False,
                 bitwise_continuation_of_failed_execution=False)
     if initial_probe_adoption is not None:proof['initial_probe_adoption']=initial_probe_adoption
-    from reproduction.common8.calibration_runtime import write_once
-    write_once(base/'logs/full-run-acceptance.json',proof)
+    return proof
+
+
+def verify_full(base, *, publish_receipt=True):
+    proof = _verify_full(base)
+    if publish_receipt:
+        from reproduction.common8.calibration_runtime import write_once
+        write_once(Path(base)/'logs/full-run-acceptance.json',proof)
     return proof
 
 
