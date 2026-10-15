@@ -149,22 +149,54 @@ def worker(commit):
         raise
 
 
+def same_birth(left, right):
+    return bool(left and right and all(left.get(k)==right.get(k) for k in ('pid','start_ticks','sid','uid')))
+
+
+def accepted_stage(out):
+    controller=out.get('sigma3-stage-controller.json',{})
+    child=out.get('sigma3-stage-child.json',{})
+    wait=out.get('sigma3-stage-wait.json',{})
+    complete=out.get('sigma3-stage-complete.json',{})
+    return bool(controller and child and wait and complete and not out.get('sigma3-stage-failure.json')
+        and not out.get('sigma3-supervisor-failure.json') and wait.get('actual_wait_exit_code')==0
+        and wait.get('complete_receipt_exists') is True
+        and controller.get('commit')==child.get('commit')==wait.get('commit')==complete.get('result',{}).get('commit')
+        and same_birth(wait.get('child_birth'),child.get('birth'))
+        and same_birth(wait.get('supervisor_birth'),child.get('supervisor_birth'))
+        and same_birth(wait.get('supervisor_birth'),controller.get('birth')))
+
+
 def supervisor(commit):
     from reproduction.hpc3_qprobe.control import publish
     from reproduction.a800.owned_processes import identity
     isolated_base()
     source=ROOT/'source'/commit
     command=[str(LEGACY/'env/bin/python'),'-u','-m','reproduction.hpc3_qprobe.sigma3_experiment','worker','--commit',commit]
-    child=subprocess.Popen(command,cwd=source,stdin=subprocess.DEVNULL)
-    birth=identity(child.pid)
-    publish(BASE/'preparation/sigma3-stage-child.json',dict(pid=child.pid,birth=birth,command=command,
-        supervisor_birth=identity(os.getpid()),commit=commit,epoch=time.time()))
-    code=child.wait()
-    result=dict(actual_wait_exit_code=code,child_birth=birth,supervisor_birth=identity(os.getpid()),
-        commit=commit,epoch=time.time(),complete_receipt_exists=(BASE/'preparation/sigma3-stage-complete.json').is_file())
-    publish(BASE/'preparation/sigma3-stage-wait.json',result)
-    if code:raise SystemExit(code)
-    return result
+    child=None;birth=None
+    try:
+        child=subprocess.Popen(command,cwd=source,stdin=subprocess.DEVNULL)
+        birth=identity(child.pid)
+        publish(BASE/'preparation/sigma3-stage-child.json',dict(pid=child.pid,birth=birth,command=command,
+            supervisor_birth=identity(os.getpid()),commit=commit,epoch=time.time()))
+        code=child.wait()
+        result=dict(actual_wait_exit_code=code,child_birth=birth,supervisor_birth=identity(os.getpid()),
+            commit=commit,epoch=time.time(),complete_receipt_exists=(BASE/'preparation/sigma3-stage-complete.json').is_file())
+        publish(BASE/'preparation/sigma3-stage-wait.json',result)
+        if code:raise SystemExit(code)
+        return result
+    except BaseException as error:
+        # Popen retains this direct child's identity until wait reaps it.
+        # Only this child is signalled; any submitted Slurm job is reconciled
+        # from its once claim, never cancelled or submitted again here.
+        if child is not None and child.returncode is None:
+            child.terminate()
+            try:child.wait(timeout=10)
+            except subprocess.TimeoutExpired:child.kill();child.wait()
+        publish(BASE/'preparation/sigma3-supervisor-failure.json',dict(error=str(error),
+            type=type(error).__name__,actual_child_wait=None if child is None else child.returncode,
+            child_birth=birth,commit=commit,epoch=time.time()))
+        raise
 
 
 def start(commit):
@@ -188,16 +220,17 @@ def start(commit):
 
 def inspect():
     out=dict(epoch=time.time(),base=str(BASE))
-    for name in ('sigma3-stage-controller.json','sigma3-stage-child.json','sigma3-stage-wait.json','sigma3-stage-complete.json','sigma3-stage-failure.json','training-submission.json'):
+    for name in ('sigma3-stage-controller.json','sigma3-supervisor-failure.json','sigma3-stage-child.json','sigma3-stage-wait.json','sigma3-stage-complete.json','sigma3-stage-failure.json','training-submission.json'):
         p=BASE/'preparation'/name
         if p.is_file():out[name]=json.loads(p.read_text())
     from reproduction.a800.owned_processes import identity
     controller=out.get('sigma3-stage-controller.json')
     if controller:
-        try:out['supervisor_actual_live_birth']=identity(controller['pid'])==controller['birth']
+        try:
+            actual=identity(controller['pid'])
+            out['supervisor_actual_live_birth']=same_birth(actual,controller['birth']) and actual['state']!='Z'
         except (ProcessLookupError,FileNotFoundError):out['supervisor_actual_live_birth']=False
-    out['stage_accepted']=bool(out.get('sigma3-stage-wait.json',{}).get('actual_wait_exit_code')==0 and
-        out.get('sigma3-stage-complete.json') and not out.get('sigma3-stage-failure.json'))
+    out['stage_accepted']=accepted_stage(out)
     for p in [BASE/'logs/sigma3-stage.log']+sorted((BASE/'logs').glob('training-*.log')):
         if p.is_file():
             with p.open('rb') as f:f.seek(max(0,p.stat().st_size-10000));tail=f.read().decode(errors='replace')
