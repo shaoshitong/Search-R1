@@ -90,9 +90,20 @@ def producer_acceptance():
     return completed(JOB), binding
 
 
-def followthrough_evidence(follow, publication_proof, followthrough_commit):
+def followthrough_route(followthrough_commit, recovery_commit=None):
+    if recovery_commit is None:
+        need(followthrough_commit == FOLLOWTHROUGH,'exact published sigma3 followthrough pin required')
+        return 'followthrough_sigma3', FOLLOWTHROUGH_DIRECTORY
+    need(isinstance(recovery_commit,str) and re.fullmatch('[0-9a-f]{40}',recovery_commit) is not None and
+         followthrough_commit == recovery_commit and recovery_commit != FOLLOWTHROUGH,
+         'explicit archive5 recovery/followthrough source pin differs')
+    return 'recover_sigma3_archive5', ROOT/'followthrough/721485-archive5-recovery-20261015'
+
+
+def followthrough_evidence(follow, publication_proof, followthrough_commit, recovery_commit=None):
+    _, expected_directory = followthrough_route(followthrough_commit,recovery_commit)
     need(follow.BASE == BASE and follow.RUN == RUN and follow.JOB == JOB and follow.PRODUCER == PRODUCER and
-         follow.DIRECTORY == FOLLOWTHROUGH_DIRECTORY, 'followthrough scope differs')
+         follow.DIRECTORY == expected_directory, 'followthrough scope differs')
     observed = follow.inspect()
     need(observed.get('actual_live_birth') is False, 'followthrough actual supervisor has not finished')
     result = observed.get('result')
@@ -113,6 +124,8 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit):
          claim.get('training_submission_permitted') is False and claim.get('actor_model_reload_permitted') is False and
          claim.get('direct_gpu_access_permitted') is False and claim.get('native_final_restore_only_submission_permitted') is True,
          'followthrough original once source/birth/intent differs')
+    recovery = follow.consume(recovery_commit) if recovery_commit is not None else None
+    need(claim.get('recovery') == recovery,'followthrough archive5 recovery proof differs')
     returned = result.get('result') or {}
     goal_path = BASE/'logs/qprobe-final-goal-acceptance.json'
     goal, goal_file = document(goal_path)
@@ -129,7 +142,7 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit):
     audit_base, native, native_file, accepted_file, actual = native_evidence(goal, binding)
     return audit_base, native, dict(source=publication_proof, claim=claim_file, binding=binding_file, goal=goal_file,
         accepted=accepted_file, native=native_file, accounting=actual,
-        result=result_file, process_file=process_file, process=process)
+        result=result_file, process_file=process_file, process=process, archive5_recovery=recovery)
 
 def native_evidence(goal, binding):
     """The same actual native4/no-new-work gates for either CPU final route."""
@@ -480,8 +493,9 @@ def initial_head_evidence(run):
                 fresh_actor_outer=0,loss=LOSS,actor_model_weights_loaded=False,head_checkpoint_loaded=True)
 
 
-def native_source_gate(run, native, audit_run, source_document, followthrough_commit):
-    need(followthrough_commit == FOLLOWTHROUGH and
+def native_source_gate(run, native, audit_run, source_document, followthrough_commit, recovery_commit=None):
+    followthrough_route(followthrough_commit,recovery_commit)
+    need(
          native['audit_commit'] == audit_run['source_commit'] == followthrough_commit and
          audit_run['run_id'] == RUN and audit_run['final_restore_audit']['audit_id'] == native['audit_id'],
          'native audit source is not the authenticated sigma3 followthrough source')
@@ -502,18 +516,18 @@ def fresh_goal_gate(fresh):
          fresh['actual_training_parts'][0]['source_commit'] == PRODUCER,'fresh complete sigma3 history differs')
 
 
-def verify(commit, *, followthrough_commit):
+def verify(commit, *, followthrough_commit, recovery_commit=None):
     need(os.getuid() == OWNER and os.environ.get('CUDA_VISIBLE_DEVICES') == '' and
          os.environ.get('PYTHONDONTWRITEBYTECODE') == '1' and sys.dont_write_bytecode and
          all(os.environ.get(k) == '1' for k in CAPS),'actual CPU owner/caps/no-bytecode required')
     run, early = early_history()  # Before Torch/NumPy, publication or large I/O.
-    need(followthrough_commit == FOLLOWTHROUGH,'exact published sigma3 followthrough pin required')
+    filename, _ = followthrough_route(followthrough_commit,recovery_commit)
     producer_accounting, producer = producer_acceptance()
     repository, own_source = publication(commit)
     need(Path(__file__).resolve() == repository/'reproduction/hpc3_qprobe/independent_goal_acceptance_sigma3.py' and
          os.environ.get('QPROBE_SOURCE') == str(repository),'loaded independent immutable source differs')
-    follow, follow_source = load_fixed(followthrough_commit,'followthrough_sigma3','control')
-    audit_base, native, follow_proof = followthrough_evidence(follow,follow_source,followthrough_commit)
+    follow, follow_source = load_fixed(followthrough_commit,filename,'control')
+    audit_base, native, follow_proof = followthrough_evidence(follow,follow_source,followthrough_commit,recovery_commit)
     held, held_anchors = held_archive_evidence(run,producer,follow,follow_source,follow_proof['process'])
     submitted = held['native_submit']['actual_native_submission']
     need(submitted['job'] == native['slurm_job_id'] and submitted['audit_base'] == str(audit_base),
@@ -525,7 +539,7 @@ def verify(commit, *, followthrough_commit):
     allocation, _ = document(audit_base/'logs/native-allocation-admission.json')
     audit_run, audit_manifest = document(audit_base/'logs/run-manifest.json')
     source_document, _ = document(Path(follow_source['publication_path']))
-    native_source_gate(run,native,audit_run,source_document,followthrough_commit)
+    native_source_gate(run,native,audit_run,source_document,followthrough_commit,recovery_commit)
     own_document, _ = document(Path(own_source['publication_path']))
     for name, sha in run['source_sha256'].items():
         if name.startswith(('verl/','search_g1/','search_r1/','reproduction/common8/')) and not Path(name).name.startswith('test_'):
@@ -564,12 +578,14 @@ def verify(commit, *, followthrough_commit):
     anchors += [audit_manifest,raw_proof['result'],raw_proof['claim'],copy['receipt'],initial['ready'],initial['head']]+features+held_anchors
     for row in anchors:
         read_file(row['path'],expected_sha=row['sha256'],expected_bytes=row.get('bytes'))
+    if recovery_commit is not None:
+        need(follow.consume(recovery_commit) == follow_proof['archive5_recovery'],'archive5 recovery changed during final conjunction')
     after_accounting, after_producer = producer_acceptance()
     need(after_producer == producer,'producer recovery chain changed during final conjunction')
     completed(native['slurm_job_id'])
     return dict(status=STATUS,run_id=RUN,producer_job=JOB,producer_commit=PRODUCER,
         current_history=dict(first=1,last=200,fresh_official_actor=True),completed_outer=200,world_size=4,
-        source=own_source,followthrough_commit=followthrough_commit,producer_accounting=after_accounting,
+        source=own_source,followthrough_commit=followthrough_commit,recovery_commit=recovery_commit,producer_accounting=after_accounting,
         producer_binding=producer,actual_followthrough_full_CPU_consumer=follow_proof,
         independent_all_normal_return_raw=raw_proof,authentic_teacher=teacher,independent_teacher_copy=copy,
         fresh_head=initial,fresh_full_goal=fresh,actual_archive_and_submit_held_children=held,
@@ -582,8 +598,9 @@ def verify(commit, *, followthrough_commit):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--commit',required=True);parser.add_argument('--followthrough-commit',required=True)
+    parser.add_argument('--recovery-commit')
     args=parser.parse_args()
-    print(__import__('json').dumps(verify(args.commit,followthrough_commit=args.followthrough_commit),allow_nan=False),flush=True)
+    print(__import__('json').dumps(verify(args.commit,followthrough_commit=args.followthrough_commit,recovery_commit=args.recovery_commit),allow_nan=False),flush=True)
 
 
 if __name__ == '__main__':main()
