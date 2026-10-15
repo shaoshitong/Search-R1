@@ -78,7 +78,7 @@ def validate_cleanup_job(job, script, *, cleanup_job, failed_job, source, old_no
             job.get('UserId') == username+'('+str(uid)+')' and
             job.get('JobName') == 'dynrpo-thread5-cleanup-'+failed_job and
             job.get('WorkDir') == str(source) and job.get('ReqNodeList') == old_node and
-            job.get('NumNodes') == '1' and
+            job.get('NumNodes') in (('1', '1-1') if job.get('JobState') == 'PENDING' else ('1',)) and
             (job.get('JobState') != 'RUNNING' or job.get('NodeList') == old_node),
             'Deferred cleanup is not the authenticated owned original-node job')
     lines = [line.strip() for line in script.splitlines() if line.strip() and not line.lstrip().startswith('#')]

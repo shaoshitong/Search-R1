@@ -104,9 +104,10 @@ class DeferredRetryTests(unittest.TestCase):
 
     def test_cleanup_job_must_be_live_owned_original_node_and_exact_script(self):
         self.validate_job()
+        self.validate_job(dict(self.job,NumNodes='1-1'))  # Actual Slurm pending exact-one-node range.
         self.validate_job(dict(self.job,JobState='RUNNING',NodeList=self.node))
         for change in (dict(JobState='CANCELLED'),dict(UserId='foreign(9)'),dict(ReqNodeList='ACD1-13'),
-                       dict(WorkDir=str(self.target)),dict(JobName='foreign'),dict(JobState='RUNNING',NodeList='ACD1-13')):
+                       dict(WorkDir=str(self.target)),dict(JobName='foreign'),dict(NumNodes='1-2'),dict(JobState='RUNNING',NodeList='ACD1-13')):
             with self.subTest(change=change),self.assertRaises(ValueError):self.validate_job(dict(self.job,**change))
         for script in (self.script.replace('--failed-job '+self.failed,'--failed-job 99'),
                        self.script+'echo altered\n',self.script.replace('reconcile_cleanup','train')):
