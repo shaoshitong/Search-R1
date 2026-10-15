@@ -3,7 +3,9 @@
 CPU preparation authenticates the original teacher label producer separately
 from the new token representation and scans all canonical question lengths.
 Run encodes only the same5120 questions, unloads the official frozen encoder,
-then fits a fresh head for10epochs. This entry never starts formal training.
+then fits a fresh head for10epochs. Explicit feature-only recovery authenticates
+one completed encoder artifact and fits a fresh head in a new process without
+loading the encoder or inheriting Head/Adam state. No formal training starts.
 """
 import argparse
 import csv
@@ -21,6 +23,12 @@ import traceback
 
 sys.dont_write_bytecode=True
 TEACHER='/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v4-sigma3-fullouter'
+RESUME_OUTPUT='/data/shaoshitong/Search-G1-qprobe-token-binary-warmup10-a799f7aff3e94045b64791655b878c31/warmup'
+RESUME_SOURCE='bed0f379f6f65f0695fdc2e24b72818edf1c61c9'
+RESUME_METADATA_SHA={
+    'prepared.json':'449cbfcaa514bca3eb368f395ebfe7ad770685a31e6fcaadcb755ad2c57dace9',
+    'run-failure.json':'3f26f96ddab67a086e2a3c627a4018b9b2917130f096eecdf0e6224645f38900',
+    'run-claim.json':'3ad2df1b753bf865f4dfcc0e9da303c652e27d4b444b99f75bb6106c10046a73'}
 
 
 def sha(path):
@@ -150,12 +158,15 @@ def qualified_labels(args,run,rows,old_features,config,mapping,output):
 
 
 def task_config(args):
-    return dict(source_commit=args.source_commit,teacher_identity_sha256=args.teacher_identity_sha256,source_run_base=str(args.source_run_base),
+    config=dict(source_commit=args.source_commit,teacher_identity_sha256=args.teacher_identity_sha256,source_run_base=str(args.source_run_base),
         auxiliary_weight=args.auxiliary_weight,target_statistic=args.target_statistic,top_k=512,exploration_questions=0,
         epochs=10,batch_size=256,learning_rate=3e-4,head_seed=args.head_seed,feature_dtype=args.feature_dtype)
+    if args.resume_token_feature_output is not None:config['resume_token_feature_output']=str(args.resume_token_feature_output)
+    return config
 
 
 def prepare(args,output,mapping):
+    if args.resume_token_feature_output is not None:return prepare_head_only(args,output,mapping)
     import numpy as np
     from transformers import AutoTokenizer
     from search_g1.qprobe_token_features import scan_token_lengths
@@ -189,6 +200,129 @@ def prepare(args,output,mapping):
         global_max_tokens=scan['global_max_tokens'],teacher_identity_sha256=provenance['teacher_identity_sha256'],formal_training_started=False)),flush=True)
 
 
+
+def resume_encoded_features(args,output,mapping):
+    """Authenticate one completed encoder artifact; no encoder/head state load."""
+    import numpy as np
+    from reproduction.a800_common.deploy import published_source
+    from reproduction.common8.source_files import runtime_files
+    from search_g1.qprobe_features import question_text_sha,sha_json
+    from search_g1.qprobe_token_features import TokenFeatureCache
+    parent=remote(args.resume_token_feature_output);assert str(parent)==RESUME_OUTPUT
+    for name,expected in RESUME_METADATA_SHA.items():assert sha(parent/name)==expected
+    previous=read(parent/'prepared.json');failure=read(parent/'run-failure.json');claim=read(parent/'run-claim.json')
+    assert previous['stage']=='TOKEN_BINARY_WARMUP_CPU_PREPARED' and previous['task_config']['source_commit']==RESUME_SOURCE
+    assert failure['failure_type']=='AssertionError' and any(frame['file']=='qprobe_token_warmup.py' and frame['function']=='run' and frame['line']==246 for frame in failure['frames'])
+    keys=('pid','start_ticks','sid','uid');expected_runner=(145986,614484752,145985,os.getuid())
+    assert tuple(claim[key] for key in keys)==tuple(failure[key] for key in keys)==expected_runner
+    assert claim['task_config']==previous['task_config']
+    current_config={key:value for key,value in task_config(args).items() if key not in ('source_commit','resume_token_feature_output')}
+    assert current_config=={key:value for key,value in previous['task_config'].items() if key!='source_commit'}
+    prior_repo=parent.parent/'repo';old_map=published_source(prior_repo,RESUME_SOURCE)
+    assert subprocess.check_output(['git','-C',str(prior_repo),'rev-parse','HEAD'],text=True).strip()==RESUME_SOURCE
+    assert old_map==previous['source_sha256']=={str(path.relative_to(prior_repo)):sha(path) for path in runtime_files(prior_repo)}
+    assert previous['source_map_sha256']==hashlib.sha256(canonical(old_map)).hexdigest()
+    publication=read(parent.parent/'preparation/source-publication.json')
+    assert publication['source_commit']==publication['remote_commit']==RESUME_SOURCE and publication['remote_fresh_object_store_disk_git_hash_equal'] is True
+    assert publication['source_map_sha256']==previous['source_map_sha256']
+    runner_name='reproduction/a800_common/qprobe_token_warmup.py'
+    assert set(mapping)==set(old_map) and all(mapping[name]==old_map[name] for name in mapping if name!=runner_name), 'Resume changed scientific/core/feature source'
+    original_lines=(prior_repo/runner_name).read_text().splitlines()
+    assert 'assert torch.cuda.memory_allocated()==0' in original_lines[245]
+    for name in ('fresh-head.pt','fresh-head.partial.pt','warmup-metrics.json','ready.json','partial-head.pt','partial-head.json'):
+        assert not (parent/name).exists() and not (parent/name).is_symlink()
+    parent_log=parent.parent/'logs'
+    assert sha(parent_log/'run-exit.json')=='6af047d6fa270727d86d4e1ecbd96df5cfd22fa37ecab2b745c4e2502457bbd0'
+    assert sha(parent_log/'run-launch.json')=='b28f6fb7d3da7a6058451f2dc526142565cdc805a331e7ff8f153d0e362f3414'
+    assert read(parent_log/'run-exit.json')['exit_code']==1
+    worker=read(parent_log/'run-launch.json')['process']
+    assert tuple(worker[key] for key in keys)==(145985,614484748,145985,os.getuid())
+    def process(pid):
+        path=Path('/proc')/str(pid);raw=(path/'stat').read_text();fields=raw[raw.rfind(')')+2:].split()
+        return dict(pid=pid,start_ticks=int(fields[19]),sid=int(fields[3]),uid=path.stat().st_uid,state=fields[0])
+    for record in (worker,claim):
+        try:actual=process(record['pid'])
+        except (FileNotFoundError,ProcessLookupError):continue
+        assert actual['state'] in ('Z','X') or any(actual[key]!=record[key] for key in keys), 'Original encoder process still live'
+    try:current_leader=process(worker['pid'])
+    except (FileNotFoundError,ProcessLookupError):current_leader=None
+    reused_session=current_leader is not None and current_leader['pid']==current_leader['sid'] and current_leader['start_ticks']!=worker['start_ticks']
+    if not reused_session:
+        for path in Path('/proc').iterdir():
+            if not path.name.isdigit():continue
+            try:actual=process(int(path.name))
+            except (FileNotFoundError,ProcessLookupError):continue
+            except PermissionError:
+                try:assert path.stat().st_uid!=os.getuid()
+                except FileNotFoundError:pass
+                continue
+            assert actual['state'] in ('Z','X') or (actual['sid'],actual['uid'])!=(worker['sid'],worker['uid']), 'Original encoder session survivor'
+    for name,item in previous['prepared_files'].items():assert (parent/name).stat().st_size==item['bytes'] and sha(parent/name)==item['sha256']
+    base,origin,rows,hashes,old_features,config=assets(args,mapping)
+    chosen,groups,provenance=qualified_labels(args,origin,rows,old_features,config,mapping,output)
+    assert provenance==previous['label_producer_provenance']
+    scan=read(parent/'global-scan.json');assert scan==previous['global_scan']
+    lengths=np.load(parent/'global-token-lengths.npy',allow_pickle=False)
+    assert lengths.dtype==np.int32 and lengths.shape==(169028,) and int(lengths.max())==scan['global_max_tokens']
+    bindings=[json.loads(line) for line in (parent/'global-token-bindings.jsonl').read_text().splitlines()]
+    assert len(bindings)==169028
+    for index,((question,qid),record) in enumerate(zip(rows,bindings)):
+        assert (record['qid'],record['question_hash'],record['length'])==(qid,question_text_sha(question),int(lengths[index]))
+    cache=TokenFeatureCache(parent/'token-features');cache.verify_all();assert cache.manifest['count']==5120
+    qids=[qid for _,_,qid in chosen];assert cache.ids==qids
+    for index,question,qid in chosen:
+        item=cache.index[qid];record=bindings[index]
+        assert all(item[key]==record[key] for key in ('qid','question_hash','length','token_ids_sha256'))
+    tokenizer_files={name:value for name,value in hashes.items() if name in ('tokenizer.json','tokenizer_config.json','vocab.json','merges.txt')}
+    template=dict(question_extraction=old_features['spec']['question_extraction'],prompt_key='prompt',added_template=None,tokenizer_add_special_tokens=True,truncation=False)
+    expected_spec=dict(encoder_id=old_features['spec']['encoder_id'],encoder_revision=origin['model_revision'],encoder_files_sha256=sha_json(hashes),tokenizer_sha256=sha_json(tokenizer_files),
+        train_manifest_sha256=origin['input_sha256']['manifest.json'],train_parquet_sha256=origin['input_sha256']['train.parquet'],split='train',question_extraction=old_features['spec']['question_extraction'],
+        representation='all_nonpadding_question_tokens_packed_v1',feature_layer=27,feature_dim=2048,encoder_compute_dtype='bfloat16',feature_dtype=args.feature_dtype,
+        prompt_template_sha256=sha_json(template),prompt_spec=template,token_feature_producer_sha256=old_map['search_g1/qprobe_token_features.py'],original_label_feature_spec_sha256=old_features['spec_sha'],
+        global_max_tokens=scan['global_max_tokens'],global_train_rows=169028,truncation=False,tokenizer_add_special_tokens=True,
+        global_scan_sha256=sha(parent/'global-scan.json'),teacher_identity_sha256=provenance['teacher_identity_sha256'],teacher_complete_sha256=provenance['teacher_complete_sha256'])
+    assert cache.spec==expected_spec
+    assert cache.manifest['total_tokens']*2048*(2 if args.feature_dtype=='bfloat16' else 4)==previous['work_cost']['packed_feature_bytes']
+    for start in range(0,5120,64):
+        batch=cache.get_batch(qids[start:start+64],device='cpu');del batch
+        progress(output,dict(stage='resume_token_feature_full_validation',verified_questions=min(start+64,5120),total_questions=5120))
+    recovery=dict(source_output=str(parent),source_commit=RESUME_SOURCE,parent_prepared_sha256=sha(parent/'prepared.json'),
+        parent_failure_sha256=sha(parent/'run-failure.json'),parent_run_claim_sha256=sha(parent/'run-claim.json'),
+        parent_source_map_sha256=previous['source_map_sha256'],feature_cache_dir=str(cache.path),feature_manifest_sha256=sha(cache.path/'manifest.json'),
+        token_feature_spec_sha256=cache.spec_sha,feature_files=cache.manifest['files'],global_metadata_files=previous['prepared_files'],
+        old_encoder_failure_preserved=True,old_head_initialized=False,old_head_adam_updates=0,
+        old_encoder_process_births_exited=True,old_encoder_session_exited=True,owned_cuda_release_required_from_operations=True,
+        token_features_full_sha_verified=True,scientific_source_identical_except_runner=True,
+        old_head_inherited=False,encoder_reencoded=False,formal_training_started=False)
+    return cache,qids,groups,provenance,scan,recovery
+
+
+def prepare_head_only(args,output,mapping):
+    cache,qids,groups,provenance,scan,recovery=resume_encoded_features(args,output,mapping)
+    once(output/'global-scan.json',scan)
+    prepared=dict(stage='TOKEN_BINARY_HEAD_ONLY_CPU_PREPARED',task_config=task_config(args),source_sha256=mapping,
+        source_map_sha256=hashlib.sha256(canonical(mapping)).hexdigest(),label_producer_provenance=provenance,
+        global_scan=scan,parent_feature_resume=recovery,prepared_files={'global-scan.json':dict(sha256=sha(output/'global-scan.json'),bytes=(output/'global-scan.json').stat().st_size)},
+        no_gpu_model_loaded=True,encoder_reencoded=False,headfit_only=True,formal_training_started=False,checked_unix=time.time())
+    once(output/'prepared.json',prepared)
+    print(json.dumps(dict(stage=prepared['stage'],output_dir=str(output),prepared_sha256=sha(output/'prepared.json'),
+        global_max_tokens=scan['global_max_tokens'],feature_manifest_sha256=recovery['feature_manifest_sha256'],
+        headfit_only=True,formal_training_started=False)),flush=True)
+
+
+def run_head_only(args,output,mapping,gpu):
+    import torch
+    assert torch.cuda.device_count()==1
+    prepared=read(output/'prepared.json')
+    assert prepared['stage']=='TOKEN_BINARY_HEAD_ONLY_CPU_PREPARED' and prepared['task_config']==task_config(args) and prepared['source_sha256']==mapping
+    assert sha(output/'global-scan.json')==prepared['prepared_files']['global-scan.json']['sha256']
+    cache,qids,groups,provenance,scan,recovery=resume_encoded_features(args,output,mapping)
+    assert recovery==prepared['parent_feature_resume'] and provenance==prepared['label_producer_provenance']
+    assert torch.cuda.memory_allocated()==0, 'Head-only process has unexpected pre-head Torch allocation'
+    progress(output,dict(stage='head_only_features_qualified',encoded_questions_this_process=0,head_optimizer_updates=0,encoder_loaded_in_this_process=False))
+    return fit_and_save(args,output,prepared,gpu,cache,qids,groups,provenance,headfit_only=True,recovery=recovery)
+
+
 def gpu_admission(index):
     import fcntl
     assert not any(name=='torch' or name.startswith('torch.') for name in sys.modules)
@@ -206,6 +340,7 @@ def gpu_admission(index):
 
 
 def run(args,output,mapping,gpu):
+    if args.resume_token_feature_output is not None:return run_head_only(args,output,mapping,gpu)
     import numpy as np
     import torch
     from transformers import AutoModel,AutoTokenizer
@@ -247,28 +382,63 @@ def run(args,output,mapping,gpu):
     progress(output,dict(stage='official_encoder_unloaded',torch_allocated_bytes=0,encoded_questions=5120))
     cache=TokenFeatureCache(output/'token-features',expected_spec_sha=feature_manifest['spec_sha'])
     qids=[qid for _,_,qid in chosen];assert cache.ids==qids
+    return fit_and_save(args,output,prepared,gpu,cache,qids,groups,provenance)
+
+
+def save_remote_state(path,state):
+    import torch
+    temporary=path.with_suffix('.partial.pt')
+    assert not path.exists() and not temporary.exists()
+    torch.save(state,temporary)
+    with temporary.open('rb') as stream:os.fsync(stream.fileno())
+    os.rename(temporary,path)
+    fd=os.open(path.parent,os.O_RDONLY)
+    try:os.fsync(fd)
+    finally:os.close(fd)
+
+
+def fit_and_save(args,output,prepared,gpu,cache,qids,groups,provenance,*,headfit_only=False,recovery=None):
+    """Fresh Head/Adam only; preserve actual partial writes on fit failure."""
+    import numpy as np
+    import torch
+    from search_g1.qprobe_token_model import TokenBinaryQProbeConfig,TokenBinaryWarmup
+    assert len(qids)==len(groups)==5120 and cache.ids==qids
     counts=np.asarray([group['correct_count'] for group in groups],dtype=np.int64)
-    head_config=TokenBinaryQProbeConfig(max_tokens=spec['global_max_tokens'],feature_dim=2048,hidden_size=128,attention_heads=4,epochs=10,batch_size=256,
+    head_config=TokenBinaryQProbeConfig(max_tokens=cache.spec['global_max_tokens'],feature_dim=2048,hidden_size=128,attention_heads=4,epochs=10,batch_size=256,
         learning_rate=3e-4,auxiliary_weight=args.auxiliary_weight,target_statistic=args.target_statistic,seed=args.head_seed,top_k=512)
     fresh=TokenBinaryWarmup(head_config,device='cuda:0')
-    metrics=fresh.fit(cache,cache.lengths.copy(),counts,qids,progress_callback=lambda event:progress(output,event))
-    assert fresh.update_count==200 and len(metrics['epoch_history'])==11 and len(metrics['minibatch_history'])==200
+    assert fresh.update_count==fresh._adam_steps()==0 and fresh.fitted is False and not fresh.optimizer.state
+    progress(output,dict(stage='fresh_head_initialized',head_optimizer_updates=0,head_adam_steps=0,headfit_only=headfit_only,
+        encoder_loaded_in_this_process=not headfit_only,encoded_questions_this_process=0 if headfit_only else 5120,old_head_inherited=False))
+    try:
+        metrics=fresh.fit(cache,cache.lengths.copy(),counts,qids,progress_callback=lambda event:progress(output,event))
+        assert fresh.update_count==fresh._adam_steps()==200 and fresh.fitted is True
+        assert len(metrics['epoch_history'])==11 and len(metrics['minibatch_history'])==200
+    except BaseException:
+        # State remains partial: no rollback, counters reset, or implicit retry.
+        partial=output/'partial-head.pt'
+        save_remote_state(partial,dict(token_feature_spec_sha256=cache.spec_sha,label_producer_provenance=provenance,
+            parent_feature_resume=recovery,head=fresh.state_dict()))
+        once(output/'partial-head.json',dict(stage='TOKEN_BINARY_PARTIAL_HEAD_PRESERVED',head_optimizer_updates=fresh.update_count,
+            head_adam_steps=fresh._adam_steps(),fitted=fresh.fitted,head_sha256=sha(partial),head_bytes=partial.stat().st_size,
+            headfit_only=headfit_only,old_head_inherited=False,rollback_performed=False,automatic_retry=False,formal_training_started=False))
+        raise
     once(output/'warmup-metrics.json',metrics)
-    state=dict(token_feature_spec_sha256=cache.spec_sha,label_producer_provenance=provenance,head=fresh.state_dict())
-    head_path=output/'fresh-head.pt';temporary=output/'fresh-head.partial.pt';torch.save(state,temporary)
-    with temporary.open('rb') as stream:os.fsync(stream.fileno())
-    os.rename(temporary,head_path)
+    state=dict(token_feature_spec_sha256=cache.spec_sha,label_producer_provenance=provenance,parent_feature_resume=recovery,head=fresh.state_dict())
+    head_path=output/'fresh-head.pt';save_remote_state(head_path,state)
     loaded=torch.load(head_path,map_location='cpu',weights_only=False)
     assert loaded['token_feature_spec_sha256']==cache.spec_sha and loaded['head']['update_count']==200
-    assert loaded['head']['config']==state['head']['config']
+    assert loaded['head']['config']==state['head']['config'] and loaded['head']['fitted'] is True
     for name,value in state['head']['model'].items():
         actual=loaded['head']['model'][name];assert torch.equal(value.detach().cpu(),actual) and bool(torch.isfinite(actual).all())
     ready=dict(stage='TOKEN_BINARY_FRESH_HEAD_WARMUP10_COMPLETE',source_commit=args.source_commit,source_map_sha256=prepared['source_map_sha256'],
-        task_config=task_config(args),**gpu,questions=5120,teacher_trajectories_reused=25600,trajectories_generated=0,global_max_tokens=spec['global_max_tokens'],
-        token_feature_spec_sha256=cache.spec_sha,token_feature_manifest_sha256=sha(output/'token-features/manifest.json'),
+        task_config=task_config(args),**gpu,questions=5120,teacher_trajectories_reused=25600,trajectories_generated=0,global_max_tokens=cache.spec['global_max_tokens'],
+        token_feature_spec_sha256=cache.spec_sha,token_feature_manifest_sha256=sha(cache.path/'manifest.json'),feature_cache_dir=str(cache.path),
         original_teacher_feature_spec_sha256=provenance['original_feature_spec_sha256'],teacher_identity_sha256=provenance['teacher_identity_sha256'],
         feature_representation='all_question_tokens_no_pooling_no_truncation',old_pooled_vector_features_read=False,old_head_inherited=False,
-        encoder_unloaded_before_head_fit=True,head_optimizer_updates=200,epoch_records=11,minibatch_records=200,
+        encoder_unloaded_before_head_fit=not headfit_only,headfit_only=headfit_only,encoder_loaded_in_this_process=not headfit_only,
+        encoded_questions_this_process=0 if headfit_only else 5120,encoder_process_exited_before_head_fit=headfit_only,
+        parent_feature_resume=recovery,head_optimizer_updates=200,head_adam_steps=200,epoch_records=11,minibatch_records=200,
         head_sha256=sha(head_path),head_bytes=head_path.stat().st_size,metrics_sha256=sha(output/'warmup-metrics.json'),prepared_sha256=sha(output/'prepared.json'),
         metrics_scope='same5120_training_fit_only_no_independent_validation',formal_training_started=False,automatic_formal_200_launch=False,checked_unix=time.time())
     once(output/'ready.json',ready);print(json.dumps(ready,allow_nan=False),flush=True)
@@ -279,11 +449,15 @@ def main():
     for name in ('source-run-base','output-dir','source-publication'):parser.add_argument('--'+name,type=Path,required=True)
     parser.add_argument('--source-commit',required=True);parser.add_argument('--teacher-identity-sha256',required=True)
     parser.add_argument('--prepare-only',action='store_true');parser.add_argument('--physical-index',type=int)
+    parser.add_argument('--resume-token-feature-output',type=Path,default=None)
     parser.add_argument('--encode-batch-size',type=int,default=4);parser.add_argument('--feature-dtype',choices=('bfloat16','float32'),default='bfloat16')
     parser.add_argument('--target-statistic',choices=('sample_std','sample_variance'),default='sample_std')
     parser.add_argument('--auxiliary-weight',type=float,default=0.3);parser.add_argument('--head-seed',type=int,default=1729)
     args=parser.parse_args();output=remote(args.output_dir);origin=remote(args.source_run_base)
     assert output!=origin and origin not in output.parents and Path(TEACHER) not in output.parents
+    if args.resume_token_feature_output is not None:
+        parent=remote(args.resume_token_feature_output);assert str(parent)==RESUME_OUTPUT
+        assert output!=parent and parent.parent not in output.parents and output not in parent.parents
     assert args.encode_batch_size>0 and args.auxiliary_weight>=0 and args.auxiliary_weight<float('inf')
     assert os.environ.get('SLURM_JOB_ID') is None, 'This entry requires explicit local one-GPU admission'
     assert args.prepare_only or args.physical_index is not None
