@@ -106,7 +106,7 @@ def main():
         from search_g1.qprobe_features import sha_json
         from search_g1.rollout_phase_contract import DEFAULT_ROLLOUT_PHASE
         run=bind(base,cache,exploration_questions=64,retriever_version=sha_json(ASSETS),
-            teacher_warmup_cache=str(base/'teacher-warmup'),infra_rollout=DEFAULT_ROLLOUT_PHASE,
+            teacher_warmup_cache=config.get('frozen_teacher_cache',str(base/'teacher-warmup')),infra_rollout=DEFAULT_ROLLOUT_PHASE,
             sequence_device='allocated_rank7',sequence_train_micro=4,sequence_predict_micro=32)
         run['startup_admission_mode']='actual_first_five'
         from reproduction.a800.owned_processes import publish
