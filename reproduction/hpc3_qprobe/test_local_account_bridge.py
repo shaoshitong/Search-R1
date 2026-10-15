@@ -31,13 +31,27 @@ class LoginEndpointTest(unittest.TestCase):
         ssh = ast.literal_eval(run_call.args[0])
         self.assertEqual(call.args[0], 'hkust3')
         self.assertNotIn('fixture-password', call.args[1])
-        self.assertEqual(call.kwargs['observation_timeout'], 65)
+        self.assertEqual(call.kwargs['observation_timeout'], kwargs.get('observation_timeout',55)+10)
+        observed=next(k.value for k in run_call.keywords if k.arg=='timeout')
+        self.assertEqual(ast.literal_eval(observed),kwargs.get('observation_timeout',55))
         self.assertEqual(result.stdout, 'safe-output')
         self.assertIn('-oStrictHostKeyChecking=yes', ssh)
         self.assertIn('-oHostKeyAlias=hpc3login.hpc.hkust-gz.edu.cn', ssh)
         self.assertIn('-oUserKnownHostsFile=/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts', ssh)
         self.assertEqual(call.kwargs['input'].splitlines()[0], 'fixture-password')
         return ssh, call.kwargs['input']
+
+    def test_explicit_long_observation_preserves_endpoint_channel_and_RAM_credentials(self):
+        ssh,_=self.invoke(login_host='10.120.48.31',expected_host_identity=self.HOST,observation_timeout=1200)
+        self.assertEqual(ssh[-2],'jxu957@10.120.48.31')
+        self.assertIn('-oControlMaster=no',ssh)
+
+    def test_invalid_timeout_refuses_before_credential_or_transport(self):
+        with patch.object(bridge.Path,'read_text') as credential:
+            for timeout in (0,1801,True,55.5,'1200',None):
+                with self.subTest(timeout=timeout),self.assertRaises(ValueError):
+                    bridge.run('jxu957','readonly','','/fixture',observation_timeout=timeout)
+            credential.assert_not_called()
 
     def test_default_preserves_existing_gateway_and_exec_channel(self):
         ssh, payload = self.invoke()

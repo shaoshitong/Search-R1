@@ -40,7 +40,9 @@ def bound_command(command, login_host, expected_host_identity):
 
 
 def run(account, command, payload, control_work, shell=False, login_host=LOGIN_HOSTS[0],
-        expected_host_identity=None):
+        expected_host_identity=None, observation_timeout=55):
+    if type(observation_timeout) is not int or not 1<=observation_timeout<=1800:
+        raise ValueError('Explicit bounded observation timeout must be an integer1..1800')
     if account not in ('mou176', 'jxu957'):
         raise ValueError('Account is outside the explicit authorized pair')
     if login_host not in LOGIN_HOSTS:
@@ -65,8 +67,8 @@ def run(account, command, payload, control_work, shell=False, login_host=LOGIN_H
         payload = command+'\n_qprobe_bridge_status=$?\nexit $_qprobe_bridge_status\n'
     else:
         ssh.append(command)
-    code = "import os,sys,subprocess;env=os.environ.copy();env['SSHPASS']=sys.stdin.readline().rstrip('\\n');data=sys.stdin.read();r=subprocess.run("+repr(ssh)+",input=data,env=env,capture_output=True,text=True,timeout=55);print(r.stdout,end='');print(r.stderr,file=sys.stderr,end='');sys.exit(r.returncode)"
-    result = m.campus('hkust3', 'python3 -c '+shlex.quote(code), input=password+'\n'+payload, observation_timeout=65)
+    code = "import os,sys,subprocess;env=os.environ.copy();env['SSHPASS']=sys.stdin.readline().rstrip('\\n');data=sys.stdin.read();r=subprocess.run("+repr(ssh)+",input=data,env=env,capture_output=True,text=True,timeout="+str(observation_timeout)+");print(r.stdout,end='');print(r.stderr,file=sys.stderr,end='');sys.exit(r.returncode)"
+    result = m.campus('hkust3', 'python3 -c '+shlex.quote(code), input=password+'\n'+payload, observation_timeout=observation_timeout+10)
     password = None
     return result
 
@@ -79,7 +81,8 @@ if __name__ == '__main__':
                    help='Explicit HPC3 endpoint; strict existing host-key verification is preserved')
     p.add_argument('--host-identity-json', type=json.loads,
                    help='Previously observed hostname, boot_id and pid_namespace; mismatch never runs the command')
+    p.add_argument('--observation-timeout',type=int,default=55,help='Bounded SSH observation only; a timeout never authorizes replay')
     a = p.parse_args(); result = run(a.account, a.command, sys.stdin.read(), a.control_work,
                                     shell=a.shell, login_host=a.login_host,
-                                    expected_host_identity=a.host_identity_json)
+                                    expected_host_identity=a.host_identity_json, observation_timeout=a.observation_timeout)
     print(result.stdout, end=''); print(result.stderr, file=sys.stderr, end=''); sys.exit(result.returncode)

@@ -650,3 +650,8 @@ New storage observer keeps the proven3pureENOENT retry/fullheldproof logic and u
 B894 CPU follower与原archive100实际退出1：全量du遇到新R6临时目录Permission denied，在复制前拒绝部分空间结果。原100pair和所有失败记录保留，payload根实际缺失；原5/50已通过的归档保持原claim/source/controller及transport SHA。R6、R7的实际DU错误分别触发已发布a2最小FD目录权限修复，并由JXU按原inode读回；不修改正常训练、RAW或其他任务内容。
 
 新增recover_sigma3_archive100：固定原100pair/claim/wait/log SHA和三个死亡进程身份；排他intent后只原子保全失败control，保留旧follower原位；必须消费明确slot的真实held0完整DU，再由标准归档worker独立执行完整DU和2TB准入。继续原5/50记录，后续100/150/200及最终native4仍走原完整验收。真实字节fixture覆盖篡改、活动进程、空payload目录/悬挂链接、错slot、原50身份及未知intent不重放。恢复尚未启动，最终200未验收。
+
+
+The archive100 recovery implementation is published as4194ad2c21c5e10ae5ee3b0212fb6fbf3e02f41b; remote1097 source files matched at1792097689.1649547. The independent final reader/holder now use a separate archive100_recovery_commit pin while retaining B894 as archive50, dc9 as its prior handoff, f979 as original RAW/service and09cc as original archive5. The exact original50 claim, held0 and transport remain inherited; later archives and native submit bind only the new100 follower. Five new protocol tests plus51 existing recovery/reader/holder/transport tests passed locally; these are compatibility tests, not real200 acceptance.
+
+The first read-only100 preflight exceeded the former55-second SSH observation window; this is UNKNOWN, not a terminal training/recovery failure. The local transport now preserves its55-second default and permits an explicitly bounded1..1800-second observation for this longer already-authorized SHA validation. Both SSH and HK3 observation deadlines remain finite, strict endpoint/kernel binding and RAM/stdin credentials are unchanged, and timeout never permits replay. No100 recovery start has yet been sent.
