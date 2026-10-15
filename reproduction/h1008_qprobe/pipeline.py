@@ -56,6 +56,15 @@ def main():
     run=prepare(base,config['official_model'],config['official_manifest'],config['source_commit'],
         rollout_memory_utilization=.1,local_retrieval_assets=config['retrieval_assets'],execution_site='h1008',actor_micro_batch_per_rank=4,
         restore_receipt=config.get('restore_receipt'))
+    if config.get('historical_development_baseline'):
+        # Reuse an authenticated historical scalar reference; do not repeat an
+        # unrelated dev512 generation before this requested train-set warmup.
+        run.update(pretraining_baseline_policy='reuse_historical',
+            historical_development_baseline=config['historical_development_baseline'])
+        from reproduction.common8.formal_inline_evaluation import historical_baseline
+        historical_baseline(base,run)
+        from reproduction.a800.owned_processes import publish
+        publish(base/'logs/run-manifest.json',run)
     from reproduction.common8.native_allocation import admit
     allocation=admit(base)
     # Some admission producers persist the authoritative object rather than

@@ -61,8 +61,55 @@ def validate(base):
     for name,digest in read(base/'preparation/source-files.json').items():assert sha(base/'repo'/name)==digest,name
     return config
 
+def historical_official0_scalar():
+    """Remote-only derivation from authenticated old official0; never return rows.
+
+    This is a historical reference under the old evaluation implementation,
+    not a new async before0 measurement or a same-run paired baseline.
+    """
+    source=Path('/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011')
+    artifact=source/'logs/formal-inline-development-before.json'
+    original_sha='211b30cc1b974b55fc2474f1325889d879bc8b6d79060c02b465a105b80d528f'
+    assert artifact.is_file() and not artifact.is_symlink() and artifact.stat().st_size<=256*1024
+    assert sha(artifact)==original_sha,'Historical official0 original artifact changed'
+    evidence=read(artifact);run=read(source/'logs/run-manifest.json')
+    native_path=source/'logs/native-current-receipt.json'
+    native_sha='5135350b71ddc5d99d91524064fcd1ba5ff5b943e5cf596400418836db8b5d37'
+    assert sha(native_path)==native_sha,'Historical native receipt changed'
+    native=read(native_path)
+    assert native['job']=='3364' and native['fields']['JobId']=='3364'
+    assert native['fields']['Command']==str(source/'preparation/launch-mixed-native.sh')
+    assert evidence['schema_version']==1 and evidence['role']=='formal_inline_development_evaluation' and evidence['step']==0
+    assert evidence['run_id']==run['run_id']=='15bb15365346401da1d919e9cde8f813'
+    assert run['source_commit']=='2de313e3e455e005e0d7db83104942bad8bd977a'
+    manifest_path=source/'data/manifest.json';manifest=read(manifest_path)
+    common_sha=sha(manifest_path)
+    assert common_sha=='0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24'
+    validation=manifest['splits']['validation']
+    assert evidence['validation_sha256']==validation['sha256']=='3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb'
+    assert evidence['question_count']==validation['rows']==512
+    assert evidence['source_counts']==validation['source_counts']=={'nq':256,'hotpotqa':256}
+    assert evidence['correct_count']==91 and evidence['weighted_em']==91/512
+    assert evidence['weighted_f1']==0.24118301022177743
+    assert run['model_revision']=='aa8e72537993ba99e69dfaafa59ed015b17504d1'
+    scalar=dict(schema_version=1,role='historical_development_baseline',
+        source_run_id=run['run_id'],source_native_job_id=native['job'],source_commit=run['source_commit'],
+        common_manifest_sha256=common_sha,validation_sha256=validation['sha256'],
+        model_revision=run['model_revision'],question_count=evidence['question_count'],
+        source_counts=evidence['source_counts'],correct=evidence['correct_count'],
+        weighted_em=evidence['weighted_em'],weighted_f1=evidence['weighted_f1'],
+        source_original_artifact_path=str(artifact),source_original_artifact_sha256=original_sha,
+        source_native_receipt_sha256=native_sha,current_run_evaluation_performed=False,
+        paired_same_run=False,current_async_protocol_baseline=False,
+        semantics='Historical old3364 official0 reference only; not a new async protocol baseline or paired comparison')
+    for key in ('valid_action_rate','executed_search_question_rate','executed_search_calls_per_question'):
+        if key in evidence:scalar[key]=evidence[key]
+    return scalar
+
+
 def deploy_remote(meta):
-    old_identity();base=Path(meta['base'])
+    old_manifest,_=old_identity();base=Path(meta['base'])
+    historical_scalar=historical_official0_scalar()
     assert not base.exists(),'Deployment exists; inspect existing intent/receipt, never replay'
     assert re.fullmatch(r'/mnt/data/shaoshitong/search-g1-qprobe3-warmup10-[0-9a-f]{7}-20261015',str(base))
     original=read(STAGED/'preparation/source-files.json')
@@ -96,6 +143,13 @@ def deploy_remote(meta):
         superseded_job_id=JOB,superseded_training_base=str(OLD),superseded_run_id=RUN,
         official_manifest=str(base/'preparation/official-model-manifest-original.json'))
     config.pop('restore_source_job_id',None);config.pop('restore_terminal_relative',None)
+    assert historical_scalar['model_revision']==old_manifest['model_revision']
+    assert sha(base/'data/manifest.json')==historical_scalar['common_manifest_sha256']
+    relative='preparation/historical-official0-scalar.json'
+    once(base/relative,historical_scalar)
+    config['historical_development_baseline']=dict(historical_scalar,
+        source_artifact_relative=relative,source_artifact_sha256=sha(base/relative))
+    config['pretraining_baseline_policy']='reuse_historical'
     (base/'question-features').symlink_to(Path(config['precomputed_question_features']['path']).resolve(),target_is_directory=True)
     once(base/'preparation/source-files.json',meta['files']);once(base/'preparation/h1008-launch-config.json',config)
     validate(base)
