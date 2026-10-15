@@ -57,21 +57,36 @@ def main():
         # A returned, rejected sbatch is not an unknown submission or a running
         # experiment. Preserve its receipts before correcting the resource limit.
         rejected=base/'preparation/preparation-submission.json'
-        outcome=json.loads(rejected.read_text())
+        if rejected.exists():
+            outcome=json.loads(rejected.read_text())
+        else:
+            if (base/'preparation/preparation-submit-claim.json').exists():
+                raise ValueError('Prior submission outcome is unknown; reconcile it first')
+            outcome=dict(returncode=1,stdout='')
         if outcome.get('job'):
             job=outcome['job']
             if not str(job).isdecimal():raise ValueError('Unknown prior job identity')
             accounting=subprocess.check_output(['sacct','-nP','-X','-j',job,'--format=JobID,State,ExitCode'],text=True)
             entries=[row.split('|') for row in accounting.splitlines() if row.strip()]
-            if len(entries)!=1 or entries[0][0]!=job or entries[0][1].split()[0] not in ('FAILED','CANCELLED','OUT_OF_MEMORY','TIMEOUT'):
+            completed_preparation=(len(entries)==1 and entries[0][0]==job and entries[0][1]=='COMPLETED' and
+                entries[0][2]=='0:0' and (base/'warmup/ready.json').is_file())
+            if len(entries)!=1 or entries[0][0]!=job or (entries[0][1].split()[0] not in ('FAILED','CANCELLED','OUT_OF_MEMORY','TIMEOUT') and not completed_preparation):
                 raise ValueError('Existing producer is not an authenticated failed terminal job')
         elif outcome.get('returncode')==0 or outcome.get('stdout','').strip():
             raise ValueError('Cannot upgrade an ambiguous submission')
+        accepted_warmup=(base/'warmup/ready.json').is_file()
+        if accepted_warmup:
+            ready=json.loads((base/'warmup/ready.json').read_text())
+            if ready.get('head_adam_steps')!=400 or hashlib.sha256((base/'warmup/continued-head.pt').read_bytes()).hexdigest()!=ready['head_sha256']:
+                raise ValueError('Accepted continuous warmup is not intact')
         for name in ('logs/run-manifest.json','preparation/warmup-feature-cursor.json',
                      'preparation/feature-cursor.json','warmup/latest-state.pt','warmup/ready.json'):
-            if (base/name).exists():raise ValueError('Real model/feature state exists; use a state-bound recovery instead')
+            if (base/name).exists() and not (accepted_warmup and name.startswith('warmup/')):
+                raise ValueError('Real model/feature state exists; use a state-bound recovery instead')
         queue=subprocess.check_output(['squeue','-h','-u',str(os.getuid()),'--name=dynrpo-periodic5-preparation','-o','%i'],text=True)
         if queue.strip():raise ValueError('An existing queued producer must be reconciled first')
+        queue=subprocess.check_output(['squeue','-h','-u',str(os.getuid()),'--name=dynrpo-periodic5-formal','-o','%i'],text=True)
+        if queue.strip():raise ValueError('An existing formal job must not be hot modified')
         old=json.loads(existing.read_text())['commit']
         history=base/'preparation'/('rejected-submit-'+old);history.mkdir(exist_ok=False)
         for name in ('source-publication.json','deployment-plan.json','preparation-submit-claim.json','preparation-submission.json',

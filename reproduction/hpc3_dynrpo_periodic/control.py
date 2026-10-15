@@ -95,7 +95,7 @@ with (b/'preparation'/(PHASE+'-submit.lock')).open('a') as lock:
  claim=b/'preparation'/(PHASE+'-submit-claim.json')
  with claim.open('x') as f:json.dump(dict(phase=PHASE,commit=COMMIT,partition=PARTITION,claimed_unix=time.time()),f);f.flush();os.fsync(f.fileno())
  entry=str(b/'source'/COMMIT/'reproduction/hpc3_dynrpo_periodic/run.sh')
- args=['sbatch','--parsable','--job-name='+name,'--partition='+PARTITION,'--time=7-00:00:00','--nodes=1','--ntasks=1','--cpus-per-task='+str(CPUS),'--mem='+MEMORY,'--gres=gpu:'+str(GPUS),'--chdir='+str(b),'--output='+str(b/'logs'/(PHASE+'-%j.log')),'--export=ALL','--wrap=bash '+entry+' '+PHASE+' '+str(b)+' '+COMMIT]
+ args=['sbatch','--parsable','--job-name='+name,'--partition='+PARTITION,'--time=7-00:00:00','--nodes=1','--ntasks=1','--cpus-per-task='+str(CPUS),'--mem='+MEMORY,'--gres=gpu:'+str(GPUS),'--chdir='+str(b),'--output='+str(b/'logs'/(PHASE+'-%j.log')),'--export=NONE','--wrap=bash '+entry+' '+PHASE+' '+str(b)+' '+COMMIT]
  if PHASE=='formal':args.insert(2,'--exclude=ACD1-21')
  r=subprocess.run(args,text=True,capture_output=True)
  value=dict(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,phase=PHASE,partition=PARTITION,commit=COMMIT,submitted_unix=time.time())
