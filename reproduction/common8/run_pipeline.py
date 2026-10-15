@@ -349,6 +349,10 @@ class Pipeline:
             c=self.start('initial-probe-adoption',command,self.training_gpus)
             self.wait('initial-probe-adoption',c)
     def fresh_mechanics_admission(self):
+        if self.run.get('question_probe',{}).get('head_kind')=='qwen_native_periodic_lastblock_binary_v1':
+            self.stage('NATIVE_DRIVER_CUDA_IMPORT_SMOKE')
+            p=self.start('driver-import-smoke',[self.python,'-m','reproduction.hpc3_dynrpo_periodic.driver_smoke'],self.training_gpus)
+            self.wait('driver-import-smoke',p,300)
         self.stage('NATIVE_RANK_MECHANICS',training_world_size=self.world)
         root=self.base/'logs/eight-rank-mechanics';root.mkdir(exist_ok=False)
         p=self.start('gpu-preflight',[self.python,'-m','torch.distributed.run','--standalone','--nproc_per_node='+str(self.world),'reproduction/common8/gpu_preflight.py'],self.training_gpus,{'SEARCH_G1_GPU_PREFLIGHT_DIR':str(root)})

@@ -705,7 +705,13 @@ def main(config):
              runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}},
              **local_resources)
     try:
-        ray.get(main_task.remote(config))
+        if run is not None and run.get('question_probe',{}).get('head_kind') == 'qwen_native_periodic_lastblock_binary_v1':
+            # A CPU Ray worker starts with CUDA hidden. Route it before importing
+            # this framework module, whose extensions can cache zero devices.
+            from reproduction.hpc3_dynrpo_periodic.ray_driver import periodic_main_task
+            ray.get(periodic_main_task.remote(config))
+        else:
+            ray.get(main_task.remote(config))
     finally:
         ray.shutdown()
 
@@ -714,6 +720,10 @@ def main(config):
 def main_task(config):
     from search_g1.qprobe_driver_gpu import bind_native_driver_gpu
     bind_native_driver_gpu(config)
+    return run_main_task(config)
+
+
+def run_main_task(config):
     from verl.utils.fs import copy_local_path_from_hdfs
     from pprint import pprint
     from omegaconf import OmegaConf
