@@ -1,0 +1,102 @@
+from pathlib import Path
+from datetime import datetime,timezone
+import json,hashlib,math,importlib.util,time,subprocess
+W=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2');B=W/'outputs/tree-nested-branch-handoff-20261013';M=[W/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')];S=W/'work/tree-speed-repair-20261008/nested-dev-cumulative-parts-source/reproduction/tree-eval-resume-20261013/local-control-backup/collect_nested_dev_costs.py';ENTRY='1edaf50bb8e14de51db936e0859e369792011233'
+C='778b2b43dad90fc0c1c5d95d77c2326286011b73';P='ba9f6627ec9a4e9749830d7b6acca53f6feec6b4';CFG='355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3';MODEL='744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0';DATA='0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24';RUN='/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:'+C;UNIT='sst-tree-nested-branch-fresh200-778b2b43.service';INV='a313bda919834d24b4c5d491698d39ce';INNER='de2377de9454cbc1eca2aa299abb19a3157003de29169178a425dc67e6ae1a31'
+F={};R={};PARTS=[];FIELDS={};OBS=[]
+def sh(r):return hashlib.sha256(r).hexdigest()
+def unique(pairs):
+ d={}
+ for k,v in pairs:assert k not in d,k;d[k]=v
+ return d
+def load(r):return json.loads(r,object_pairs_hook=unique)
+def path(n):
+ p=Path(n);return p if p.is_absolute() else (W/p if p.parts[0] in ('outputs','work') else B/p)
+def read(n,h=None,z=None):
+ p=path(n).resolve();assert p.is_relative_to(W) and p.suffix in ('.json','.md','.py','.patch','.csv'),str(p);r=p.read_bytes();assert len(r)<4000000
+ if h is not None:assert sh(r)==h,'SHA '+str(p)
+ if z is not None:assert len(r)==z,'size '+str(p)
+ mirror=p.is_relative_to(B) and not p.name.startswith(('NATIVE5_CONTINUE_POLL_','NATIVE5_CONTINUE_RESOURCE_'))
+ ref=dict(path=str(p),bytes=len(r),sha256=sh(r),mirror_checked=mirror)
+ if str(p) in F:assert F[str(p)]==ref,'Changed '+str(p)
+ if mirror:
+  for m in M:assert (m/p.relative_to(B)).read_bytes()==r,'mirror '+str(p)
+ F[str(p)]=ref;R[str(p)]=r
+ return load(r) if p.suffix=='.json' else r
+def bound(ref,hint=None):
+ n=ref.get('path') or ref.get('file') or hint;assert isinstance(n,str),(ref,hint)
+ if n.startswith(('/dataset/','/mnt/')):OBS.append(ref);return None
+ return read(n,ref['sha256'],ref['bytes'])
+def refs(v):
+ if isinstance(v,list):
+  for x in v:refs(x)
+ elif isinstance(v,dict):
+  if isinstance(v.get('sha256'),str) and len(v['sha256'])==64 and type(v.get('bytes')) is int and (v.get('path') or v.get('file')):bound(v);return
+  for k,x in v.items():
+   if isinstance(x,dict) and isinstance(x.get('sha256'),str) and len(x['sha256'])==64 and type(x.get('bytes')) is int and Path(k).suffix in ('.json','.md','.py','.patch','.csv'):bound(x,k)
+   else:refs(x)
+def expand(v,k):
+ if isinstance(v,dict) and v.get('storage')=='complete_original_field_parts':
+  kind=v['container_type'];out={} if kind=='mapping' else [];seen=set()
+  for ref in v['parts']:
+   assert ref.get('json_selector')=='value' and ref['file'] not in seen;seen.add(ref['file']);part=bound(ref);assert part['schema']=='cumulative_scalar_field_part_v1' and part['original_field']==k
+   val=part['value'];assert isinstance(val,dict if kind=='mapping' else list)
+   if kind=='mapping':assert not set(out)&set(val);out.update(val)
+   else:out.extend(val)
+   PARTS.append(dict(original_field=k,**ref))
+  assert len(out)==v['original_entries'];FIELDS[k]=dict(entries=len(out),parts=len(v['parts']),container_type=kind);return expand(out,k)
+ if isinstance(v,dict):return {n:expand(x,k+'.'+n) for n,x in v.items()}
+ if isinstance(v,list):return [expand(x,k+'['+str(i)+']') for i,x in enumerate(v)]
+ return v
+sr=read(str(S),'545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0',27911);assert subprocess.run(['git','-C',str(S.parent),'show',ENTRY+':reproduction/tree-eval-resume-20261013/local-control-backup/collect_nested_dev_costs.py'],check=True,stdout=subprocess.PIPE).stdout==sr
+spec=importlib.util.spec_from_file_location('dev165_actual_independent_reader',S);mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+owner=read('DEV5_165_NATIVE_COST_LOCAL_RECEIPT.json','22408dab7242eb6f60297b2714fb80a200b648fa67ea2d73a5c1bfdf89e6a982',21484);summ=read('DEV5_165_NATIVE_COST_SUPPLEMENT.json','4dc7dbab1990b9088f272b6b77b63eaaf0020bdaaa1f19c4432e709b42d3ac6c',7041);cost=read('COST_OUTER165_LOCAL_RECEIPT.json','269b8f563f3bd81ce6e7fa98e8b25e62b64b3b876499aae57fa8970d2f0e24aa',62429);raw=read('CUMULATIVE_COST_THROUGH165.json','1c4f301cf130ebb90947a1ce460f38b3f7108332eedb0b710cb21f91867f181c',75313);cum={k:expand(v,k) for k,v in raw.items()}
+oldroot=read('ROOT_DEV160_NATIVE_COST_ACTUAL_READBACK.json','6aa6f73e60789c78ee35faec9ea004f1433bfd9e29adf0d3da1697090f05b01e',57067);oldowner=read('DEV5_160_NATIVE_COST_LOCAL_RECEIPT.json','a169dcb969c0d9228847b47b577e7058fea888ac3fbc52e542c232594a1eee0d',19440);old=read('DEV5_160_NATIVE_COST_SUPPLEMENT.json','9a35edbc359c155231560ce3d18306fa706f9b6682cd1e00265bf128cace4ce6',7021)
+refs(cost)
+for k in ['collector_source','reviewed_entry_selection','source_FULL','source_CUM','source_native_metadata','cost_outer_receipt','supplement','markdown','prior_immutable_supplement','same_entry_prior_actual_executor_attestation']:
+ if k in owner:bound(owner[k])
+for k in ['source_CUM_all_complete_field_parts','rows_part_refs','prior_rows_part_refs','local_original_control_refs']:refs(owner.get(k,[]))
+for ref in summ['rows']['parts']+old['rows']['parts']:bound(ref)
+rows=mod.rows_from_summary(B,M,summ);prior=mod.rows_from_summary(B,M,old);assert len(rows)==33 and len(prior)==32 and rows[:-1]==prior and [r['outer'] for r in rows]==list(range(5,166,5));assert summ['newly_read_remote_control_outers']==[165] and summ['reused_original_control_outers']==list(range(5,161,5))
+full=bound(owner['source_FULL']);native=bound(owner['source_native_metadata']);poll=bound(full['input_bindings']['poll']);res=bound(full['input_bindings']['resource']);assert Path(full['input_bindings']['poll']['path']).name=='NATIVE5_CONTINUE_POLL_2006.json' and Path(full['input_bindings']['resource']['path']).name=='NATIVE5_CONTINUE_RESOURCE_2006.json'
+for k,v in dict(source_commit=C,config_sha256=CFG,unit=UNIT,run=RUN,completed_outer=165,actual_training_pid=503255,actual_training_invocation_id=INV,goal_status='active').items():assert full[k]==v,k
+ids=native['identity'];assert all(ids.get(k)==v for k,v in dict(code_commit=C,config_sha256=CFG,model_identity=MODEL,data_identity=DATA,completed_step=165,actual_update_limit=200,run_id=Path(RUN).name,job_id='not-slurm;systemd:'+C).items());assert native['archive_matches_original_manifest'] is True and native['manifest_status']=='COMPLETE_NATIVE_ROLLING_STATE_SAVED'
+totals={str(i):3300 for i in range(8)};assert full['per_rank_actual_total_adam']==full['per_rank_successful_adam']==totals==cum['successful_optimizer_accounting']['successful_calls_per_rank_through165']==cum['successful_optimizer_accounting']['direct_observed_calls_per_rank'];workers=native['receipt']['workers'];assert len(workers)==8 and {w['rank'] for w in workers}==set(range(8))
+for w in workers:assert w['actual_total_optimizer_calls']==3300 and w['observed_adam_steps']==[3300] and w['scheduler_last_epoch']==165 and w['full_worker_state_finite'] is True
+assert native['receipt']['driver']['next_step']==166 and [r['outer'] for r in cum['rows_counted_once']]==list(range(1,166)) and cum['through_effective_outer']==165
+actual=full['actual_dev512'];met=actual['metrics'];assert actual['outer']==165 and actual['rows']==512 and actual['phase']=='periodic' and actual['ledger_sha256']==INNER;assert met['val/qa_count/all']==512 and met['val/qa_count/nq']==met['val/qa_count/hotpotqa']==256 and met['val/f1/all']==0.5803354414682542 and met['val/em/all']==0.50390625
+assert len(cum['completed_dev_evaluations'])==33 and [x['outer'] for x in cum['completed_dev_evaluations']]==list(range(5,166,5));dev=cum['completed_dev_evaluations'][-1];assert dev['F1']==met['val/f1/all'] and dev['EM']==met['val/em/all'] and dev['ledger_sha256']==INNER and dev['ledger']==actual['path']
+assert poll['source_commit']==C and poll['unit']==UNIT and poll['run']==RUN and poll['progress']['actual_completed_outer_from_attempt_results']==165 and any(x.get('ledger_sha256')==INNER and x.get('metrics')==met for x in poll['development']);assert summ['model_identity']==MODEL and summ['data_identity']==DATA and summ['split_identity']['independent_split_file_sha256'] is None
+oldmap={r['outer']:r for r in oldroot['control_file_and_inner_ledger_bindings']};controls=[];pins=[]
+for row,dev in zip(rows,cum['completed_dev_evaluations']):
+ n=row['outer'];sc=P if n==5 else C;run='/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:'+sc
+ pin=dict(outer=n,code_commit=sc,config_sha256=mod.CONFIGS[sc],model_identity=MODEL,data_identity=DATA,job_id='not-slurm;systemd:'+sc,run=run,path=run+'/output/validation-cost/'+dev['ledger'],phase=dev['phase'],ledger_sha256=dev['ledger_sha256'],F1=dev['F1'],EM=dev['EM']);pins.append(pin);control=bound(row['local_original_summary']);cr=mod.read_bound(B,M,row['local_original_summary']);assert mod.control_row(pin,cr,row['source_control_summary'],row['local_original_summary'])==row
+ assert control['metrics']['val/qa_count/all']==512 and control['metrics']['val/qa_count/nq']==control['metrics']['val/qa_count/hotpotqa']==256 and row['precise_engine_emitted_tokens'] is None and row['scoring_call_event_total'] is None
+ if n<165:assert len(cr)==oldmap[n]['bytes'] and sh(cr)==oldmap[n]['control_file_sha256'] and row==prior[n//5-1]
+ controls.append(dict(outer=n,path=row['local_original_summary']['path'],bytes=len(cr),control_file_sha256=sh(cr),inner_ledger_sha256=row['ledger_sha256'],source_commit=sc,prior32_object_and_original_bytes_preserved=n<165))
+assert controls[-1]['bytes']==3611 and controls[-1]['control_file_sha256']=='fdf1b30cda18face7d50b15d1fb5b0f23e8c3a5f2a291fc4394f9b6149f5d5cf' and controls[-1]['inner_ledger_sha256']==INNER
+program=sh(mod.REMOTE.replace('PIN_DATA',repr(pins[-1:])).encode());assert program==summ['remote_program_sha256']==owner['remote_program_sha256'] and summ['collector_source_sha256']==owner['collector_source_sha256']==sh(sr) and owner['collector_source_commit']==ENTRY
+assert owner['new_entry_main_invocations_this_task']==owner['actual_remote_incremental_collection_invocations']==1 and owner['preceding_local_pending_invocations']==0 and owner['remote_collector_exit_code']==0 and owner['same_entry_executor_attested_cumulative_main_invocations']==owner['same_entry_executor_attested_cumulative_remote_incremental_invocations']==2;assert oldowner['new_entry_main_invocations_this_task']==oldowner['actual_remote_incremental_collection_invocations']==1
+for key,record in summ['native_counter_totals'].items():
+ vals=[(r['counters'] or {}).get(key) for r in rows];good=[x for x in vals if mod.numeric(x)];total=math.fsum(good) if good else None;missing=[r['outer'] for r,x in zip(rows,vals) if not mod.numeric(x)];assert record==dict(total=total if len(good)==len(vals) else None,known_sum=total,missing_outers=missing),key
+for key,field in [('original_validation_observer_wall_seconds','wall_seconds'),('original_validation_trainer_process_cpu_seconds','trainer_process_cpu_seconds')]:
+ vals=[r[field] for r in rows];good=[x for x in vals if mod.numeric(x)];total=math.fsum(good) if good else None;missing=[r['outer'] for r,x in zip(rows,vals) if not mod.numeric(x)];assert summ[key]==dict(total=total if len(good)==len(vals) else None,known_sum=total,missing_outers=missing)
+assert summ['precise_engine_emitted_tokens'] is None and summ['scoring_call_event_total'] is None
+for i in range(2):
+ for name,ref in F.items():
+  p=Path(name);r=p.read_bytes();assert r==R[name] and sh(r)==ref['sha256'] and len(r)==ref['bytes'],name
+  if ref['mirror_checked']:
+   for m in M:assert (m/p.relative_to(B)).read_bytes()==r,name
+ print(json.dumps(dict(input_readback_pass=i+1,unique_files=len(F),mirrored_files=sum(x['mirror_checked'] for x in F.values()))))
+ if i==0:time.sleep(1)
+receipt=dict(schema='root_dev165_native_cost_actual_local_readback_v1',status='PASS_ACTUAL_DEV165_LOCAL_ARTIFACT_READBACK',observed_utc=datetime.now(timezone.utc).isoformat(),executor='/root/final_candidate_cost_context_free_review',outer=165,goal_status='active',scope='Independent actual local artifact/reference/object readback only; no collector invocation, remote query, new code review or training test. Gates curve165 without waiting ROOT_FULL165.',candidate_entry_commit=ENTRY,collector_source=F[str(S)],source_pins={n:dict(bytes=F[str(B/n)]['bytes'],sha256=F[str(B/n)]['sha256']) for n in ['CUMULATIVE_COST_THROUGH165.json','COST_OUTER165_LOCAL_RECEIPT.json','DEV5_165_NATIVE_COST_SUPPLEMENT.json','DEV5_165_NATIVE_COST_LOCAL_RECEIPT.json','FULL_OUTER165_PROGRESS_RECEIPT.json','NATIVE_HISTORY_165_METADATA_READBACK.json']},actual_ref_counts=dict(cost_mirrored_artifacts=len(cost['mirrored_artifacts']),cum_complete_fields=len(FIELDS),cum_parts=len(PARTS),cum_completed_dev_entries=33,new_dev_row_parts=len(summ['rows']['parts']),new_dev_rows=33,old_dev_row_parts=len(old['rows']['parts']),old_dev_rows=32,all_original_control_summaries=33,preserved_old_control_summaries=32,new_remote_control_summaries=1,unique_audited_files=len(F),unique_mirrored_files=sum(x['mirror_checked'] for x in F.values()),input_byte_readback_passes=2,mirror_roots=2),cumulative_fields_dynamic=FIELDS,cumulative_part_refs=PARTS,new_row_part_refs=summ['rows']['parts'],old_row_part_refs=old['rows']['parts'],control_file_and_inner_ledger_bindings=controls,prior32_rows_exact_object_equal=True,prior32_control_original_bytes_SHA_preserved=True,original_CUM165_raw_bytes_SHA_preserved=True,actual165_identity=dict(source_commit=C,config_sha256=CFG,model_identity=MODEL,data_identity=DATA,rows=512,nq_rows=256,hotpotqa_rows=256,F1=met['val/f1/all'],EM=met['val/em/all'],phase='periodic',ledger=actual['path'],inner_ledger_sha256=INNER,control_file_bytes=3611,control_file_sha256=controls[-1]['control_file_sha256'],actual_total_adam_per_rank=totals,scheduler_last_epoch=165,native_driver_next_step=166,training_pid=503255,training_invocation=INV,first_FULL_poll='NATIVE5_CONTINUE_POLL_2006.json',first_FULL_resource='NATIVE5_CONTINUE_RESOURCE_2006.json'),actual_new_collection_binding=dict(executor_receipt_attested_new_entry_main_invocations=1,executor_receipt_attested_remote_incremental_invocations=1,executor_receipt_attested_preceding_pending_invocations=0,executor_exit_code=0,same_entry_executor_attested_cumulative_main_invocations_160_plus165=2,same_entry_executor_attested_cumulative_remote_incremental_invocations_160_plus165=2,artifact_corroboration_new_remote_outers=[165],artifact_corroboration_reused_outers=list(range(5,161,5)),independently_reconstructed_remote_program_sha256=program,remote_program_pin_count=1,evidence_limit='Invocation counts are SHA-bound owner receipt attestations corroborated by sole new165 row/control and one-pin remote-program hash; reviewer did not independently observe process logs or remote execution.',this_readback_collector_or_SSH_invocations=0),actual165_counters=rows[-1]['counters'],validated_native_dev_counter_totals=summ['native_counter_totals'],original_validation_observer_wall_seconds=summ['original_validation_observer_wall_seconds'],original_validation_trainer_process_cpu_seconds=summ['original_validation_trainer_process_cpu_seconds'],accounting=dict(validation_wall_CPU_already_in_outer_service_not_added_again=True,precise_engine_emitted_tokens=None,scoring_call_event_total=None,independent_split_file_sha256=None,final_service_CPU_seconds=None,submitted_prefill_is_repeated_events=True,returned_nonpad_is_not_precise_engine_emitted=True,HTTP_calls_and_query_events_distinct=True),two_pass_local_input_and_mirror_bytes_verified=True,mirrors=[str(m) for m in M],files=sorted(F.values(),key=lambda x:x['path']),remote_descriptors_not_followed=OBS,inconsistencies=[],owner_completion_gate='Owner completion confirmation and pinned165 artifacts received through root before output write.',audit_scope_correction='Initial overstrict check expected raw poll/resource mirrors and stopped before writing. Historical ROOT_DEV160 and explicit root scope confirm these raw observations are BASE-only; both local SHA/bytes passes were completed with mirror_checked=false. Artifact mirrors were checked twice. A later suffix whitelist was broadened only to byte-check existing COST165 historical small CSV refs. No training fault, remote action or collector invocation occurred.',reviewer_actions=dict(remote_operations=False,collector_or_main_invoked=False,training_or_evaluation_modified=False,code_review_or_training_tests=False,tensor_model_rollout_JSONL_read=False,canonical_STATUS_REPORT_FUP_observer_modified=False,old_DEV160_outputs_rewritten=False,immutable_CUM_rewritten=False),receipt_publication=dict(new_file_only=True,copies=3,byte_readback_passes=2),raw_observation_sources_scope='Original FULL165/native/poll/resource/control values are local SHA-bound actual artifacts, with raw poll/resource mirrored=false by historical policy. No new remote observation/cold reload/final51713/HF/cleanup/goal completion is claimed.')
+out=(json.dumps(receipt,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode();assert len(out)<=100000;name='ROOT_DEV165_NATIVE_COST_ACTUAL_READBACK.json'
+for folder in [B]+M:assert not (folder/name).exists() or (folder/name).read_bytes()==out
+for folder in [B]+M:
+ if not (folder/name).exists():(folder/name).write_bytes(out)
+for i in range(2):
+ for folder in [B]+M:assert (folder/name).read_bytes()==out
+ for p in F:assert Path(p).read_bytes()==R[p]
+ print(json.dumps(dict(receipt_readback_pass=i+1,copies=3,source_inputs_preserved=True)))
+ if i==0:time.sleep(1)
+print(json.dumps(dict(status=receipt['status'],file=str(B/name),bytes=len(out),sha256=sh(out),dev_parts=len(summ['rows']['parts']),dev_rows=33,cum_parts=len(PARTS),cost_refs=len(cost['mirrored_artifacts']),unique_audited_files=len(F),unique_mirrored_files=sum(x['mirror_checked'] for x in F.values()))))
