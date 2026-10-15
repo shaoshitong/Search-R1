@@ -195,3 +195,7 @@ CPU Ray 包装任务不再晚改 CUDA 可见性；它同步等待一个在进程
 当前4fd508实际Head绑定已exit0：initial Head SHA256 `a269238b0c6c2c182efc058612de895a33f65f7ce9d66966d1973c571fe0f3f1`，ready SHA256 `5b707c21b91594effeef57de1b4b53e276398c4a7bfc837b131986aa7880e462`。这是同次096c nativewarmup的200HeadAdam/private RNG在新formal0 namespace的采用，teacher replay为空，不是actor恢复或新的Head拟合。
 
 实际预启动已exit0：`NATIVE_FRESH_FORMAL200_PRELAUNCH_QUALIFIED` SHA256 `84275048987d2e00f1d5984d4f38b42cafbc706f1e1b9aef09b8505d6e334fa4`。CPU26 receipt `781251a64a91ffc8c064ed8cd6115917b1282d122e9cd63e65e9fc9f3d481b2c`，original initial0采用proof `f646f6a5ae991d8743cdcc09ca58ada97097028376a8fe782db773cc9442a4a8`。所有CPU步骤通过不等于GPU启动或正式训练推进。
+
+### 2026-10-15 23:28:10（Asia/Shanghai）实际启动更新
+
+本次实际部署批准 SHA256 为 `5be741c36e322e9973a2cf299a344ec091886337ae22851b29ba8cb96f18879e`。四张训练卡与辅助5/6均通过空闲准入，唯一 launch 实际 exit0；deployment launch receipt SHA256 为 `ff4e503f23143fe396eb34578a43679fdfb7d8d04a1fe56e0b5da9684f1bf3a8`。新4fd508 pipeline已经一次启动，正在准备检索服务，正式trainer/完整outer/Adam仍待真实推进确认。禁止重复launch；首个有界native只读检查不早于23:33:10，正常监控每30分钟一次，不增加GPU测试或额外评测。
