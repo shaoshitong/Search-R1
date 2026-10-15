@@ -121,7 +121,7 @@ def main():
     site=REUSED/'source/env/lib/python3.10/site-packages'
     link(base/'env/lib/python3.10/site-packages',site)
     wrapper='#!/usr/bin/env bash\nset -euo pipefail\n'
-    wrapper+='export PYTHONPATH="${QPROBE_SOURCE:-'+str(base/'repo')+'}:'+str(base/'retriever-gpu-lib')+':'+str(site)+'${PYTHONPATH:+:$PYTHONPATH}"\n'
+    wrapper+='export PYTHONPATH="${QPROBE_SOURCE:-'+str(base/'repo')+'}:'+str(base/'env/overlay')+':'+str(base/'retriever-gpu-lib')+':'+str(site)+'${PYTHONPATH:+:$PYTHONPATH}"\n'
     wrapper+='export LD_LIBRARY_PATH="'+str(REUSED/'runtime/retriever-python310-candidate/lib')+'${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"\n'
     wrapper+='unset PYTHONHOME\nexec '+str(binary)+' "$@"\n'
     target=base/'env/bin/python'
