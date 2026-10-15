@@ -24,7 +24,7 @@ class ArchiveBindingTests(unittest.TestCase):
             write('preparation/recovery721449-submit-claim.json',rc)
             with self.assertRaisesRegex(ValueError,'unknown'):c.producer_submission(b,run)
             write('preparation/recovery721449-submission.json',rec)
-            with patch.object(c.subprocess,'check_output',return_value=failure['accounting']):
+            with patch.object(c,'slurm_query',return_value=failure['accounting']):
                 selected,_,chain=c.producer_submission(b,run)
                 self.assertEqual(selected['job'],'721485');self.assertEqual(chain['original_failed_job'],'721449')
                 log.write_text('changed')

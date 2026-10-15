@@ -641,3 +641,12 @@ New storage observer keeps the proven3pureENOENT retry/fullheldproof logic and u
 
 目标保持ACTIVE，不能完成于90或Slurm RUNNING。固定100/150/200、最终exactnative51713与七源EM/F1 macro+weighted、全部五套三方完整SHA、实际native4全状态恢复与两次dataequal、完整RAW/独立finalCPU/no201均仍待最终实际验收。RAW90 exactheldchild如下，下一步只consume同一child：
 {"pid": 2283511, "sid": 3857750, "start_ticks": 80168080, "uid": 14090}
+
+
+### 2026-10-16 第100轮固定验证与归档100故障
+
+实际四卡721485已完成102轮，原f979独立RAW读回held0至102；第102轮Top448混合126/448（28.125%），随机15/64（23.4375%）；最近93–102轮分别1192/4480（26.6071%）和129/640（20.15625%）。固定同一512题第100轮EM206/512（40.234375%），F1=48.6545926372%；第50轮EM185/512（36.1328125%），提升4.1015625个百分点。
+
+B894 CPU follower与原archive100实际退出1：全量du遇到新R6临时目录Permission denied，在复制前拒绝部分空间结果。原100pair和所有失败记录保留，payload根实际缺失；原5/50已通过的归档保持原claim/source/controller及transport SHA。R6、R7的实际DU错误分别触发已发布a2最小FD目录权限修复，并由JXU按原inode读回；不修改正常训练、RAW或其他任务内容。
+
+新增recover_sigma3_archive100：固定原100pair/claim/wait/log SHA和三个死亡进程身份；排他intent后只原子保全失败control，保留旧follower原位；必须消费明确slot的真实held0完整DU，再由标准归档worker独立执行完整DU和2TB准入。继续原5/50记录，后续100/150/200及最终native4仍走原完整验收。真实字节fixture覆盖篡改、活动进程、空payload目录/悬挂链接、错slot、原50身份及未知intent不重放。恢复尚未启动，最终200未验收。
