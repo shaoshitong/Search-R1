@@ -60,7 +60,8 @@ def main():
         if isinstance(args,list) and 'mgmt-host' in args:
             args=list(args);proxy='ProxyCommand=/usr/bin/nc -X 5 -x 127.0.0.1:7892 %h %p'
             if proxy in args:i=args.index(proxy);del args[i-1:i+1]
-            args[1:1]=['-S',socket,'-o','ControlMaster=no']
+            ssh_index=args.index('/usr/bin/ssh')
+            args[ssh_index+1:ssh_index+1]=['-S',socket,'-o','ControlMaster=no']
         return original(args,*a,**kw)
     t.subprocess.run=direct
     header=json.dumps(meta).encode()
