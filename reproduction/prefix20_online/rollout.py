@@ -249,7 +249,8 @@ def worker(config_path, epoch, rank):
     result = dict(schema_version=1, epoch=epoch, rank=rank, questions=640, trajectories=completed,
         device=selected_device, model_revision=REVISION, frozen_actor_updates=0,
         strict_correct_trajectories=correct, strict_incorrect_trajectories=completed-correct,
-        source_model_dir=model, seed=seed, selection_sha256=digest(epoch_root/'selection.json'),
+        source_model_dir=model, seed=seed, pad_token_id=int(tokenizer.pad_token_id),
+        eos_token_id=int(tokenizer.eos_token_id), selection_sha256=digest(epoch_root/'selection.json'),
         questions_sha256=digest(epoch_root/'questions.json'),
         prefix=dict(path=str(prefix_path), sha256=digest(prefix_path), bytes=prefix_path.stat().st_size, count=completed),
         full=dict(path=str(full_path), sha256=digest(full_path), bytes=full_path.stat().st_size, count=completed),
@@ -320,11 +321,14 @@ def launch_epoch(config_path, epoch):
         for stream in streams:
             stream.close()
     ranks = [read(rollout/('rank-%d-complete.json' % rank)) for rank in range(8)]
-    tokenizer_config = read(Path(config['model_dir'])/'config.json')
+    pad_tokens = {row['pad_token_id'] for row in ranks}
+    if len(pad_tokens) != 1 or any(type(value) is not int or value < 0 for value in pad_tokens):
+        raise ValueError('Actual official tokenizer pad IDs differ across rollout engines')
+    pad_token_id = next(iter(pad_tokens))
     result = dict(schema_version=1, role='fresh_official_5120_G5_prefix20_epoch', epoch=epoch,
         questions=5120, trajectories=sum(row['trajectories'] for row in ranks),
         model_revision=config['model_revision'], model_files_sha256=config['model_files_sha256'],
-        model_dir=config['model_dir'], pad_token_id=tokenizer_config.get('pad_token_id',151643),
+        model_dir=config['model_dir'], pad_token_id=pad_token_id,
         run_id=config['run_id'], source_commit=config.get('source_commit'),
         selection_sha256=proof['selection_sha256'], questions_sha256=proof['questions_sha256'],
         questions_path=proof['questions_path'], pool_sha256=proof['pool_sha256'],

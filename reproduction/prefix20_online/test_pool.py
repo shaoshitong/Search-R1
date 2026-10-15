@@ -1,7 +1,7 @@
 """Focused CPU fixtures for no-repeat pool cycling and true prefix provenance."""
 import unittest
 
-from .pool import initialize_records, next_selection, identity
+from .pool import initialize_records, next_selection, identity, prepare, atomic, read
 from .rollout import prompt_tokens, compact_prefix
 
 
@@ -54,6 +54,40 @@ class PoolTest(unittest.TestCase):
             self.assertEqual(len(ids),len(set(ids)))
             if cycle<state['cycle']:
                 self.assertEqual(len(ids),len(pool['records']))
+
+    def test_cached_epoch_saves_original_questions_gold_without_advancing_pool(self):
+        import sys
+        import tempfile
+        from pathlib import Path
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        rows=[source(i) for i in range(9)]
+        old=[cached(rows[0],'train'),cached(rows[1],'train'),
+             cached(rows[7],'test'),cached(rows[8],'test')]
+        pool,state=initialize_records(rows,old,train_sha256='fixture',
+            seed=11,epoch_questions=2,diagnostic_questions=2)
+        class Table:
+            def __init__(self, contents): self.contents=contents
+            def take(self, indices): return Table([self.contents[i] for i in indices])
+            def to_pylist(self): return self.contents
+        parquet=SimpleNamespace(read_table=lambda *a,**k:Table(rows))
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory); (root/'question-pool').mkdir()
+            atomic(root/'question-pool/pool.json',pool)
+            atomic(root/'question-pool/state.json',state)
+            config=dict(base=str(root),canonical_train='fixture.parquet',cached_inputs='/remote/cached')
+            with patch.dict(sys.modules, {'pyarrow':SimpleNamespace(parquet=parquet),'pyarrow.parquet':parquet}):
+                result=prepare(config,1)
+                again=prepare(config,1)
+            self.assertEqual(result,again)
+            self.assertEqual(result['source'],'cached')
+            self.assertFalse(result['fresh_rollout_required'])
+            self.assertEqual(read(root/'question-pool/state.json'),state)
+            bundle=read(result['questions_path'])
+            self.assertEqual([r['qid'] for r in bundle['rows']],pool['epoch1_cached_qids'])
+            self.assertEqual(bundle['rows'][0]['prompt'],rows[0]['prompt'])
+            self.assertEqual(bundle['rows'][0]['reward_model'],rows[0]['reward_model'])
+            self.assertFalse(bundle['fresh_rollout_required'])
 
     def test_sequence_cannot_skip_epochs_or_rewind(self):
         rows=[source(i) for i in range(9)]

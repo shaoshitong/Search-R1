@@ -152,6 +152,21 @@ def next_selection(pool, state, epoch):
     return selection, out
 
 
+def cached_selection(pool, cached_inputs, pool_sha256):
+    """Bind epoch1 to its existing teacher order without consuming the pool twice."""
+    index = {row['qid']: (i, row) for i, row in enumerate(pool['records'])}
+    rows = [dict(index[qid][1], pool_index=index[qid][0], pool_cycle=0)
+            for qid in pool['epoch1_cached_qids']]
+    return dict(schema_version=1, role='cached_rollout_epoch_selection', epoch=1,
+        source='cached', cached_inputs=cached_inputs, questions=len(rows), trajectories=len(rows)*5,
+        trajectory_group_size=5, fresh_rollout_required=False,
+        canonical_train_sha256=pool['canonical_train_sha256'],
+        fixed_test_qids_sha256=pool['fixed_test_qids_sha256'],
+        fixed_test_normalized_text_sha256=pool['fixed_test_normalized_text_sha256'],
+        question_order_sha256=hashlib.sha256(canonical(rows)).hexdigest(),
+        pool_cycle_start=0, pool_cycle_end=0, pool_sha256=pool_sha256, rows=rows)
+
+
 def prepare(config, epoch):
     import fcntl
     root = Path(config['base']) / 'question-pool'; root.mkdir(parents=True, exist_ok=True)
@@ -170,8 +185,10 @@ def prepare(config, epoch):
             immutable(pool_path, pool); atomic(state_path, state)
         pool, state = read(pool_path), read(state_path)
         if epoch == 1:
-            return dict(epoch=1, source='cached', cached_inputs=config['cached_inputs'],
-                        questions=5120, trajectories=25600, pool_sha256=digest(pool_path))
+            target = Path(config['base'])/'epochs/epoch-0001/selection.json'
+            selection = cached_selection(pool, config['cached_inputs'], digest(pool_path))
+            immutable(target, selection)
+            return enrich_selection(config, target, selection)
         target = Path(config['base']) / 'epochs' / ('epoch-%04d' % epoch) / 'selection.json'
         if target.exists():
             saved = read(target)
@@ -195,9 +212,9 @@ def prepare(config, epoch):
 
 def enrich_selection(config, selection_path, selection):
     """Save the selected original questions and gold answers for later reuse."""
-    import pyarrow.parquet as pq
     path = selection_path.parent / 'questions.json'
     if not path.exists():
+        import pyarrow.parquet as pq
         columns = ['prompt', 'reward_model', 'data_source', 'extra_info']
         table = pq.read_table(config['canonical_train'], columns=columns)
         selected = table.take([row['source_index'] for row in selection['rows']]).to_pylist()
@@ -207,9 +224,11 @@ def enrich_selection(config, selection_path, selection):
             if any(actual[k] != binding[k] for k in actual):
                 raise ValueError('Selected canonical prompt/gold source changed')
             rows.append(dict(binding, **{k: original[k] for k in columns}))
-        immutable(path, dict(schema_version=1, role='immutable_fresh_epoch_question_gold_bundle',
+        immutable(path, dict(schema_version=1, role='immutable_epoch_question_gold_bundle',
             epoch=selection['epoch'], selection_sha256=digest(selection_path),
-            canonical_train_sha256=selection['canonical_train_sha256'], questions=5120,
+            canonical_train_sha256=selection['canonical_train_sha256'], questions=selection['questions'],
+            source=selection.get('source', 'fresh_rollout'),
+            fresh_rollout_required=selection['fresh_rollout_required'],
             seed=config.get('seed', 1729), rows=rows))
     saved = read(path)
     if saved['selection_sha256'] != digest(selection_path) or saved['epoch'] != selection['epoch']:
