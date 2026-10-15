@@ -121,8 +121,27 @@ cleanup bind the separate goal receipt. The terminal consumer rechecks original
 failure/copies, actual worker wait0, source, output SHA and native/goal identity.
 Every result retains `full_objective_accepted=False` and `goal_complete=False`.
 
-RAW795 terminal reaggregation if needed and the independent held final
-conjunction remain separate work. No recovery scope or job has been activated.
+`raw_terminal_reaggregation719225.py` adds a pure fresh conjunction only after
+typed719225 failure admission and actual dead RAW795 with every original
+normal-return child already retained. The original result must be a missing or
+stale read failure; its full supervisor output, claim, pinned source, parts and
+birth remain unchanged. A fresh original claim read pins the actual real Python
+executable recorded by795, which differs from the producer's prepared env alias.
+Accepted and attempt directories must be exact full sets, including guarded
+zero-write normal returns. Each original child is reconsumed to real integer
+wait0, terminal birth, empty stderr and unchanged source/claim/result/output.
+
+RAW795 did not persist a traceback or internal exception phase. The new reader
+explicitly says its original failing call site is unproven, rather than claiming
+an exact aggregation or process-ledger failure. It freshly checks raw/private,
+canonical data, tokenizer and original scientific source bytes with SharedReads,
+rechecks all child anchors, matches fresh formal UUID order and finally rechecks
+the original failure/task set. No original795 failure is replaced or relabeled
+PASS. It creates no process, job, receipt or scope, decodes nothing again and
+still requires the independent final holder's actual wait0 consumption.
+
+The independent held final recovery branch and combined final positive
+integration remain separate work. No recovery scope or job has been activated.
 If the healthy original producer succeeds, its existing chain remains
 authoritative and no recovery job is submitted. Constructed protocol tests do
 not establish real training, real Slurm failure or real native recovery.
