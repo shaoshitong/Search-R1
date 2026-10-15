@@ -12,6 +12,7 @@ import shlex
 import subprocess
 import tarfile
 import time
+import re
 
 from .common import BASE, PIN
 from .local_control import run
@@ -114,10 +115,16 @@ with (b/'preparation'/(PHASE+'-submit.lock')).open('a') as lock:
 
 
 def main():
+    global BASE
     p=argparse.ArgumentParser();p.add_argument('action',choices=('publish-deploy','publish-stage','deploy','preparation','formal'))
     p.add_argument('--output',required=True,type=Path)
     p.add_argument('--partition',choices=('acd_u','acd_ue','emergency_acd'),default='acd_u')
+    p.add_argument('--base',type=Path)
     args=p.parse_args()
+    if args.base is not None:
+        if re.fullmatch(re.escape(str(BASE))+r'(?:-r[1-9][0-9]*)?',str(args.base)) is None:
+            raise ValueError('Only this independent experiment or a numbered restart is permitted')
+        BASE=args.base
     if args.action in ('publish-deploy','publish-stage'):
         record,archive=publish(args.output)
         result=deploy(record,archive,args.output,stage_only=args.action=='publish-stage')

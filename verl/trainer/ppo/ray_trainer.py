@@ -922,7 +922,8 @@ class RayPPOTrainer(object):
                     # Finish the pending probe phase at this exact student CP;
                     # never rerun the already completed student prefix.
                     checkpoint = self.config.actor_rollout_ref.model.actor_checkpoint_path
-                    self.qprobe_runtime.refit_after_checkpoint(generation_manager,checkpoint)
+                    from search_g1.qprobe_periodic_refit import finish_pending_restore
+                    finish_pending_restore(self,generation_manager,checkpoint)
 
         # start training loop
         for epoch in (itertools.count() if inline_attempts is not None else range(self.config.trainer.total_epochs)):

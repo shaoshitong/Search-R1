@@ -12,6 +12,7 @@ import sys
 import tarfile
 import time
 import subprocess
+import re
 
 EXPECTED='/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016'
 REUSED=Path('/data/user/jxu957/experiments/cosearch-continue300-x203-20261008')
@@ -22,7 +23,7 @@ def main():
     os.umask(0o007)
     record=json.loads(sys.stdin.buffer.readline());publication,plan=record['publication'],record['plan']
     base=Path(plan['base'])
-    if str(base)!=EXPECTED or base.resolve()!=base or base.is_symlink():
+    if re.fullmatch(re.escape(EXPECTED)+r'(?:-r[1-9][0-9]*)?',str(base)) is None or base.resolve()!=base or base.is_symlink():
         raise ValueError('Refuse deployment outside the independent namespace')
     if publication['pinned_base']!='1af0d14937a3da6666eec63e8caa50c192d481e6' or not publication['pushed_and_fetched']:
         raise ValueError('Unpublished code cannot be deployed')

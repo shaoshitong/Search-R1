@@ -25,7 +25,11 @@ case "$PHASE" in
   formal)
     exec 9>"$BASE/preparation/formal.lock"
     flock -n 9
-    python -u -m reproduction.hpc3_dynrpo_periodic.bind
+    if [[ -f "$BASE/logs/run-manifest.json" ]]; then
+      python -c 'import json,os; from pathlib import Path; r=json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text()); assert r.get("full_state_restore"), "Existing fresh run cannot be launched twice"'
+    else
+      python -u -m reproduction.hpc3_dynrpo_periodic.bind
+    fi
     exec python -u -m reproduction.common8.run_pipeline --base "$BASE" --export-port 18016
     ;;
   *) exit 2 ;;

@@ -137,8 +137,14 @@ def publish_completed_pair(trainer, checkpoint, periodic_phase=None):
     from reproduction.common8.topology import world_size
     from search_g1.training_state import atomic_save,driver_rng,compact_stream_state
     base=Path(os.environ['SEARCH_G1_BASE']).resolve();checkpoint=Path(checkpoint).resolve()
-    _need(checkpoint.is_relative_to(base),'CHECKPOINT_OUTSIDE_TASK')
     run=_read_json(base/'logs/run-manifest.json');complete=_read_json(checkpoint/'complete.json')
+    inherited_checkpoint_receipt = None
+    if not checkpoint.is_relative_to(base):
+        binding=run.get('full_state_restore') or {}
+        _need(binding.get('source_checkpoint')==str(checkpoint),'CHECKPOINT_OUTSIDE_TASK')
+        inherited_checkpoint_receipt=binding['source_receipt']
+        _,origin,original,_,_=read_source(inherited_checkpoint_receipt)
+        _need(original==checkpoint and origin['run_id']==run['run_id'],'INHERITED_CHECKPOINT_NOT_AUTHENTICATED')
     outer=trainer.global_steps;size=world_size(run);actor_id=run['run_id']+':'+str(outer)
     _need(type(outer) is int and 1<=outer<=200 and complete['step']==outer and
           complete['run_id']==run['run_id'] and complete['finite_all_saved_tensors'] is True,
@@ -225,6 +231,7 @@ def publish_completed_pair(trainer, checkpoint, periodic_phase=None):
     reward_record=_file_record(directory/'reward-probe-manifest.json',relative_path='reward-probe-manifest.json')
     receipt=dict(schema_version=1,status=PAIR_STATUS,kind=PAIR_KIND,step=outer,run_id=run['run_id'],
         checkpoint=str(checkpoint),source_base=str(base),source_run_manifest=run_record,
+        inherited_checkpoint_receipt=inherited_checkpoint_receipt,
         world_size=size,actor_snapshot_id=actor_id,ranks=ranks,files=records,boundary_driver=boundary_record,
         boundary_worker_files=boundary_records,question_probe_files=probe_files,
         execution_phase=qstate.get('execution_phase','STUDENT_READY'),
@@ -263,8 +270,14 @@ def read_source(receipt_path):
     outer=receipt['step'];size=receipt['world_size'];checkpoint=Path(receipt['checkpoint']).resolve()
     base=Path(receipt['source_base']).resolve()
     _need(type(outer) is int and 1<=outer<=200 and size in (4,8),'RECEIPT_COUNTER_OR_TOPOLOGY_INVALID')
-    _need(checkpoint.is_relative_to(base) and receipt['actor_snapshot_id']==receipt['run_id']+':'+str(outer),
-          'RECEIPT_ACTOR_PATH_BINDING_MISMATCH')
+    if not checkpoint.is_relative_to(base):
+        original_receipt=receipt.get('inherited_checkpoint_receipt')
+        _need(original_receipt is not None and Path(original_receipt).resolve()!=path,
+              'EXTERNAL_CHECKPOINT_HAS_NO_AUTHENTICATED_SOURCE')
+        _,origin,original,_,_=read_source(original_receipt)
+        _need(original==checkpoint and origin['run_id']==receipt['run_id'] and origin['step']==outer,
+              'EXTERNAL_CHECKPOINT_SOURCE_CHANGED')
+    _need(receipt['actor_snapshot_id']==receipt['run_id']+':'+str(outer),'RECEIPT_ACTOR_PATH_BINDING_MISMATCH')
     history=receipt.get('historical_artifacts',{})
     historical_records=history.get('checkpoints',[])+list(history.get('development',{}).values())+history.get('reward_archives',[])
     all_records=receipt['files']+receipt['boundary_worker_files']+[receipt['boundary_driver'],receipt['source_run_manifest'],

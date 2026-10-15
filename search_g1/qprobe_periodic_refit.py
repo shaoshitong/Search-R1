@@ -24,6 +24,25 @@ def save_then_refit(trainer, manager):
     return str(checkpoint)
 
 
+def finish_pending_restore(trainer,manager,checkpoint):
+    """Continue a pending phase, including the scheduled original reward refit."""
+    from search_g1.qprobe_checkpoint import publish_completed_pair
+    runtime=trainer.qprobe_runtime
+    next_outer=trainer.global_steps
+    trainer.global_steps=runtime.completed_outer
+    try:
+        result=runtime.refit_after_checkpoint(manager,checkpoint)
+        if trainer.global_steps in (50,100,150):
+            live=json.loads((runtime.base/'artifacts/live/manifest.json').read_text())
+            if live['round'] < trainer.global_steps:
+                from reproduction.profile import refresh_after_checkpoint
+                trainer.reward_fn.expected_probe_version=refresh_after_checkpoint(trainer.global_steps,checkpoint)
+        publish_completed_pair(trainer,checkpoint)
+        return result
+    finally:
+        trainer.global_steps=next_outer
+
+
 def _restore_driver_rng(state):
     torch.set_rng_state(state['torch_cpu'])
     np.random.set_state(state['numpy'])
@@ -31,8 +50,7 @@ def _restore_driver_rng(state):
 
 
 def run(trainer, manager, runtime, checkpoint):
-    from reproduction.hpc3_dynrpo_periodic.warmup import save
-    from reproduction.hpc3_dynrpo_periodic.common import publish
+    from reproduction.hpc3_dynrpo_periodic.state_io import save, publish
     from reproduction.common8.behavior_runtime import prepare_identity, attach_generation_identity
     from search_g1.qprobe_checkpoint import publish_completed_pair, read_source
     from search_g1.training_state import driver_rng, compact_stream_state
@@ -54,6 +72,14 @@ def run(trainer, manager, runtime, checkpoint):
         runtime.post_refit_state_path = str(state_path)
         return accepted
     pre_receipt = runtime.output_dir/'pending-probe-pairs'/('global_step_'+str(outer))/'source-receipt.json'
+    run_manifest = json.loads((runtime.base/'logs/run-manifest.json').read_text())
+    restore_binding = run_manifest.get('full_state_restore') or {}
+    inherited_directory = None
+    if restore_binding.get('completed_outer') == outer:
+        candidate = Path(restore_binding['source_base'])/'artifacts/question-probe/periodic-refits'/str(outer)
+        inherited_receipt = Path(restore_binding['source_receipt'])
+        if candidate != directory and inherited_receipt.is_file():
+            pre_receipt,inherited_directory = inherited_receipt,candidate
     if not pre_receipt.exists():
         if runtime.execution_phase != 'PROBE_PENDING':
             raise ValueError('PERIODIC_REFIT_REQUIRES_CHECKPOINTED_PENDING_STAGE')
@@ -64,14 +90,17 @@ def run(trainer, manager, runtime, checkpoint):
     state_path = directory/'latest-state.pt'
     manifest = directory/'latest-state.json'
     ledger = directory/'update-ledger.json'
-    if manifest.exists():
-        pointer = json.loads(manifest.read_text())
-        if _sha(state_path) != pointer['sha256']:
+    recovery_root = directory if manifest.exists() else inherited_directory
+    recovery_manifest = None if recovery_root is None else recovery_root/'latest-state.json'
+    if recovery_manifest is not None and recovery_manifest.exists():
+        recovery_state,recovery_ledger = recovery_root/'latest-state.pt',recovery_root/'update-ledger.json'
+        pointer = json.loads(recovery_manifest.read_text())
+        if _sha(recovery_state) != pointer['sha256']:
             raise ValueError('PERIODIC_PHASE_RECOVERY_SHA_CHANGED')
-        saved = torch.load(state_path,map_location='cpu',weights_only=False)
+        saved = torch.load(recovery_state,map_location='cpu',weights_only=False)
         if saved['outer'] != outer or saved['pre_receipt_sha256'] != _sha(pre_receipt):
             raise ValueError('PERIODIC_PHASE_BELONGS_TO_DIFFERENT_STUDENT_CHECKPOINT')
-        if ledger.exists() and json.loads(ledger.read_text())['possible_adam_steps'] > saved['head']['update_count']:
+        if recovery_ledger.exists() and json.loads(recovery_ledger.read_text())['possible_adam_steps'] > saved['head']['update_count']:
             raise ValueError('PERIODIC_UNSAVED_ADAM_WRITES_AFTER_HARD_KILL_REQUIRE_EXPLICIT_DECISION')
         runtime.head = PeriodicQwenProbe(restore_engine(saved['head'],device=runtime.config['head_device']),
             runtime.feature_spec_sha,completed_outer=outer,actor_snapshot_id=actor_id,
