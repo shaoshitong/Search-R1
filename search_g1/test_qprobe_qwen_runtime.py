@@ -1,4 +1,5 @@
 """Native Qwen routing and complete-outer transactions with tiny CPU providers."""
+import ast
 import copy
 import hashlib
 import json
@@ -54,6 +55,75 @@ def initial_ready(value, base, **ready_changes):
 
 
 class NativeQwenRuntimeTests(unittest.TestCase):
+    def test_real_selection_audit_and_trainer_scalar_consumers_use_binary_source(self):
+        import numpy as np
+        import torch
+        from search_g1.qprobe_selection import (select_binary_questions,select_questions,
+            binary_prequential_metrics,prequential_metrics)
+        producer_tree=ast.parse(Path(native.__file__).read_text())
+        collect=next(node for node in producer_tree.body if isinstance(node,ast.FunctionDef) and node.name=='collect')
+        start=next(index for index,node in enumerate(collect.body) if isinstance(node,ast.Assign) and
+            any(isinstance(target,ast.Name) and target.id=='categories' for target in node.targets))
+        end=next(index for index,node in enumerate(collect.body) if isinstance(node,ast.Expr) and
+            isinstance(node.value,ast.Call) and isinstance(node.value.func,ast.Attribute) and
+            isinstance(node.value.func.value,ast.Name) and node.value.func.value.id=='audit' and node.value.func.attr=='update')
+        producer=compile(ast.Module(body=collect.body[start:end],type_ignores=[]),'<actual-collect-audit>','exec')
+        trainer_path=Path(native.__file__).resolve().parents[1]/'verl/trainer/ppo/ray_trainer.py'
+        source=trainer_path.read_text();tree=ast.parse(source)
+        fit=next(node for node in ast.walk(tree) if isinstance(node,ast.FunctionDef) and node.name=='fit')
+        scalar=next(node for node in ast.walk(fit) if isinstance(node,ast.If) and
+            ast.unparse(node.test)=='self.qprobe_runtime is not None' and
+            'selected_all_wrong' in ast.get_source_segment(source,node))
+        grouped=next(node for node in ast.walk(fit) if isinstance(node,ast.If) and
+            ast.unparse(node.test)=='mixed_stream is not None' and
+            'original_reward_mean' in ast.get_source_segment(source,node))
+        scalar=compile(ast.Module(body=[scalar],type_ignores=[]),'<actual-trainer-selection-scalars>','exec')
+        grouped=compile(ast.Module(body=[grouped],type_ignores=[]),'<actual-trainer-selection-reward-scalars>','exec')
+        candidates=questions();probability=np.linspace(0.,1.,len(candidates));std=np.full(len(candidates),.2)
+        counts=np.zeros((len(candidates),6));counts[:,2]=1.
+        vectors=[[int(j<index%6) for j in range(5)] for index in range(512)]
+        for kind in (native.NATIVE_QWEN_HEAD,'token_binary_v1','count6'):
+            with self.subTest(kind=kind):
+                binary=kind!='count6';exploration=0 if binary else 64
+                if binary:
+                    members=select_binary_questions(candidates,probability,std)
+                    ordinals=[member.ordinal for member in members]
+                    measured=binary_prequential_metrics(probability[ordinals],std[ordinals],vectors,[m.selection_source for m in members])
+                    self.assertEqual(ordinals,list(range(4608,5120)))
+                else:
+                    members=select_questions(candidates,counts,rng=np.random.default_rng(1729),tie_seed='fixture')
+                    ordinals=[member.ordinal for member in members]
+                    measured=prequential_metrics(counts[ordinals],vectors,[m.selection_source for m in members])
+                runtime=SimpleNamespace(token_binary=binary,head_kind=kind,feature_spec_sha='a'*64)
+                trainer=SimpleNamespace(reward_fn=SimpleNamespace(expected_probe_version='initial0'))
+                env=dict(runtime=runtime,trainer=trainer,vectors=vectors,questions=candidates,members=members,
+                    exploration_questions=exploration,measured=measured,outer=1,tag='fixture',prediction_version='frozen',
+                    identity=dict(policy_snapshot_id='run:0',trajectory_ids=[str(index) for index in range(2560)]),
+                    output=SimpleNamespace(batch=dict(sampling_mask=torch.ones((2560,1))),meta_info=dict(actual_retrieval_stats=[0]*2560)),
+                    manager=SimpleNamespace(timing_raw={}),stream=SimpleNamespace(consumed=5120),
+                    run=dict(source_commit='b'*40,model_revision='official',budget=dict(common_manifest_sha256='c'*64)),
+                    time=native.time,started=native.time.monotonic())
+                exec(producer,env);audit=env['audit'];metrics={}
+                env.update(self=SimpleNamespace(qprobe_runtime=runtime),mixed_audit=audit,metrics=metrics)
+                exec(scalar,env)
+                predicted='predicted_binary_mixed' if binary else 'predicted_diversity'
+                other='predicted_diversity' if binary else 'predicted_binary_mixed'
+                self.assertEqual(metrics['selection/selected_'+predicted],512-exploration)
+                self.assertNotIn('selection/selected_'+other,metrics)
+                self.assertEqual(metrics['question_probe/prequential/all/binary_accuracy'],measured['all']['binary_accuracy'])
+                sources=np.repeat(np.array([m.selection_source for m in members],dtype=object),5)
+                env.update(torch=torch,mixed_stream=object(),selection_mode='question_probe',
+                    batch=SimpleNamespace(non_tensor_batch=dict(selection_source=sources),batch=dict(
+                        responses=torch.zeros((2560,2)),loss_mask=torch.ones((2560,2),dtype=torch.bool),
+                        token_level_rewards=torch.full((2560,2),.125),advantages=torch.full((2560,2),-.5))))
+                exec(grouped,env)
+                self.assertEqual(metrics['selection/'+predicted+'/trajectories'],(512-exploration)*5)
+                self.assertEqual(metrics['selection/random_exploration/trajectories'],exploration*5)
+                self.assertEqual(metrics['selection/'+predicted+'/original_reward_mean'],.25)
+                self.assertEqual(metrics['selection/'+predicted+'/original_advantage_mean'],-.5)
+                self.assertEqual(metrics['selection/'+predicted+'/original_advantage_abs_mean'],.5)
+                self.assertNotIn('selection/'+other+'/trajectories',metrics)
+
     def test_native_recipe_rejects_old_epochs_replay_teacher_inclusion_and_normalization(self):
         config = dict(head_kind=native.NATIVE_QWEN_HEAD)
         native.validate_config(config)
