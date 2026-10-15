@@ -323,7 +323,7 @@ def bind_restore(run, receipt_path):
         # bootstrap head or retain the old task's writable output directory.
         run['question_probe']['initial_head_checkpoint']=None
         run['question_probe']['snapshot_path']=None
-        if run['question_probe'].get('head_kind') == 'token_binary_v1':
+        if run['question_probe'].get('head_kind') in ('token_binary_v1', 'qwen_native_lastblock_binary_v1'):
             # This completed actor/head pair supplies every Head/Adam/RNG/replay
             # field. The original warmup artifact is no longer an input.
             run['question_probe']['snapshot_path']=receipt['question_probe_state_path']

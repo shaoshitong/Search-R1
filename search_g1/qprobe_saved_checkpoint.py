@@ -29,6 +29,9 @@ BOUNDARY_ORIGIN = 'saved_checkpoint_before_postcheckpoint_development'
 BOUNDARY_SCOPE = ('actual saved CP5 actor/head/Adam/scheduler/worker RNG/driver RNG/source stream; '
                   'existing later dev512 is reused; post-evaluation RNG was not persisted')
 QUALIFICATION_ROLE = 'qprobe_saved_checkpoint_cpu_qualification'
+NATIVE_HEAD_KIND = 'qwen_native_lastblock_binary_v1'
+NATIVE_WARMUP_SOURCE = 'e81445905bf8b15dbb0bdec3afa29d99ab0b11d8'
+NATIVE_WARMUP_READY = '/data/shaoshitong/Search-G1-qprobe-qwen-lastblock-warmup10-096c8297cba74f8089063e763686671e/warmup/ready.json'
 HF_SIDECARS = frozenset(('generation_config.json', 'tokenizer_config.json',
     'special_tokens_map.json', 'added_tokens.json', 'vocab.json', 'merges.txt', 'tokenizer.json'))
 HF_SHARDS = frozenset(f'model-{index:05d}-of-00003.safetensors' for index in range(1, 4))
@@ -47,18 +50,48 @@ def _require(condition, message):
 
 def _head_kind(config):
     kind = config.get('head_kind', 'count6_v1')
-    _require(kind in ('count6_v1', 'token_binary_v1'), 'UNKNOWN_HEAD_KIND')
+    _require(kind in ('count6_v1', 'token_binary_v1', NATIVE_HEAD_KIND), 'UNKNOWN_HEAD_KIND')
     return kind
 
 
 def _feature_cache_files(config):
-    if _head_kind(config) == 'token_binary_v1':
+    if _head_kind(config) in ('token_binary_v1', NATIVE_HEAD_KIND):
         return ('manifest.json', 'index.jsonl', 'offsets.npy', 'lengths.npy', 'packed_features.npy')
     return ('manifest.json', 'index.jsonl', 'features.npy')
 
 
 def _head5_prefix(config):
+    if _head_kind(config) == NATIVE_HEAD_KIND:
+        return 'qprobe-qwen:5:5:'
     return 'qprobe-token:5:5:' if _head_kind(config) == 'token_binary_v1' else 'qprobe:5:5:'
+
+
+def _native_head_proof(qstate, head_path, actor_id, cache):
+    """CPU readback of native copy/adoption/formal replay, with exact cache metadata."""
+    from search_g1.qprobe_runtime import load_head_checkpoint, _token_cache_binding
+    _require(_head_kind(qstate['config']) == NATIVE_HEAD_KIND and qstate.get('head_kind') == NATIVE_HEAD_KIND and
+             qstate.get('cache_binding') == _token_cache_binding(cache), 'NATIVE_HEAD_OR_CACHE_BINDING_CHANGED')
+    head = load_head_checkpoint(head_path, qstate['config'], feature_cache=None,
+        expected_actor_snapshot_id=actor_id, expected_feature_spec_sha=cache.spec_sha,
+        expected_checkpoint_sha=qstate['head_sha256'])
+    provenance = head.initialization_provenance
+    verification = head.verify_native_provenance()
+    _require(head.completed_outer == head.update_count == 5 and head.version == qstate['head_version'] and
+             head.version.startswith('qprobe-qwen:5:5:') and head._adam_steps() == 260 and
+             verification.get('accepted') is True and verification.get('teacher_replay_excluded') is True and
+             provenance.get('warmup_source_commit') == NATIVE_WARMUP_SOURCE and
+             provenance.get('warmup_ready') == NATIVE_WARMUP_READY and
+             provenance.get('teacher_replay_excluded') is True and
+             len(head.replay_labels) == len(head.replay_features) == 2560 and
+             sorted(row['source_outer'] for row in head.replay_labels) ==
+                 [outer for outer in range(1, 6) for _ in range(512)], 'NATIVE_WARMUP_OR_FORMAL_REPLAY_CHANGED')
+    for label, qid in zip(head.replay_labels, head.replay_features):
+        _require(label['qid'] == qid and cache.index[qid]['question_hash'] == label['question_hash'],
+                 'NATIVE_REPLAY_FEATURE_IDENTITY_CHANGED')
+    return dict(head_kind=NATIVE_HEAD_KIND, completed_outer=5, formal_updates=5,
+                warmup_adam_updates=200, actual_head_adam_updates=260,
+                formal_replay_groups=2560, teacher_replay_excluded=True,
+                native_provenance=verification, actual_cuda_restore_accepted=False)
 
 
 def _remote(path):
@@ -377,6 +410,8 @@ def qualify_saved_checkpoint(base, directory, *, expected_run_id, expected_execu
              'FEATURE_REPRESENTATION_OR_SPEC_CHANGED')
     cache.verify_all()
     feature_files = [_file_record(_owned(cache.path / name)) for name in feature_names]
+    native_head = _native_head_proof(qstate, head_path, actor_id, cache) \
+        if _head_kind(run['question_probe']) == NATIVE_HEAD_KIND else None
     history = _historical_artifacts(base, run, 5)
     _require(set(history['development']) == {'before', 'after5'}, 'EXISTING_DEVELOPMENT_PAIR_MISSING')
     from reproduction.common8.formal_inline_evaluation import verify_pair
@@ -395,6 +430,8 @@ def qualify_saved_checkpoint(base, directory, *, expected_run_id, expected_execu
         original_first_five_safety_logs_revalidated=True,
         source_first_five_selected_evidence_sha256=safety_audit['selected_evidence_sha256'],
         scope='saved-state CPU qualification with original safety logs revalidated; no native-five receipt reconstructed')
+    if native_head is not None:
+        qualification['native_head'] = native_head
     receipt = dict(schema_version=1, status=SAVED_CHECKPOINT_STATUS, kind=SAVED_CHECKPOINT_KIND,
         run_id=run['run_id'], source_execution_id=run['execution_id'], source_commit=run['source_commit'],
         step=5, world_size=4, checkpoint=str(checkpoint), source_base=str(base), actor_snapshot_id=actor_id,
@@ -542,6 +579,12 @@ def read_source(receipt_path):
                  qstate['head_version'] == receipt['head_version'] and qstate['feature_spec_sha'] == receipt['feature_spec_sha'] and
                  driver['candidate_stream']['consumed_source_rows'] == receipt['driver_state']['source_consumed'],
                  'QUALIFIED_DRIVER_HEAD_OR_CANDIDATE_BINDING_CHANGED')
+        if _head_kind(parent['question_probe']) == NATIVE_HEAD_KIND:
+            from search_g1.qprobe_runtime import cache_for_config
+            cache = cache_for_config(parent['question_probe'])
+            _require(cache.spec_sha == receipt['feature_spec_sha'], 'NATIVE_FEATURE_SPEC_CHANGED')
+            native_head = _native_head_proof(qstate, receipt['head_path'], receipt['actor_snapshot_id'], cache)
+            equal_tree(qualification.get('native_head'), native_head)
         live = _read_json(receipt['reward_probe_manifest']['path'])
         _require(live['run_id'] == receipt['run_id'] and live['version'] == receipt['reward_probe_version'] and
                  live['round'] == receipt['reward_probe_round'] == 0, 'PINNED_REWARD_PROBE_CHANGED')

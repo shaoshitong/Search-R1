@@ -22,10 +22,15 @@ from search_g1.qprobe_selection import (
 
 
 TOKEN_BINARY_HEAD = "token_binary_v1"
+NATIVE_QWEN_HEAD = "qwen_native_lastblock_binary_v1"
 
 
 def _is_token_binary(config):
-    return config.get("head_kind") == TOKEN_BINARY_HEAD
+    return config.get("head_kind") in (TOKEN_BINARY_HEAD, NATIVE_QWEN_HEAD)
+
+
+def _is_native_qwen(config):
+    return config.get("head_kind") == NATIVE_QWEN_HEAD
 
 
 def _sha(path):
@@ -109,6 +114,13 @@ def validate_config(config):
             raise ValueError("Token binary formal head requires global max_tokens=244")
         if type(config.get("prediction_batch_size", 128)) is not int or config.get("prediction_batch_size", 128) < 1:
             raise ValueError("Token binary prediction batch size must be a positive integer")
+    if _is_native_qwen(config):
+        if config.get("head_epochs_per_outer", 2) != 2 or config.get("replay_window_outer", 8) != 8:
+            raise ValueError("Native Qwen formal head requires two epochs and eight completed formal outers")
+        if config.get("bootstrap_head_epochs", 10) != 10:
+            raise ValueError("Native Qwen initial head requires the completed ten epoch warmup")
+        if config.get("teacher_warmup_in_replay", False) is not False or config.get("normalize_replay_weights", False) is not False:
+            raise ValueError("Native Qwen formal replay excludes teacher rows and weight normalization")
     if config.get("exploration_order", "uniform_first") != "uniform_first":
         raise ValueError("Question-probe exploration must be drawn uniformly before Top selection")
     if type(config.get("std_ddof", 1)) is not int or config.get("std_ddof", 1) != 1 or \
@@ -140,10 +152,15 @@ def load_head_checkpoint(path, config, *, feature_cache=None, expected_actor_sna
         raise ValueError("Question-probe head checkpoint hash differs")
     kwargs = dict(expected_actor_snapshot_id=expected_actor_snapshot_id,
                   expected_feature_spec_sha=expected_feature_spec_sha)
+    device = config.get("head_device", "cpu") if feature_cache is not None else "cpu"
+    if _is_native_qwen(config):
+        from search_g1.qprobe_qwen_block_online import OnlineQwenBlockQProbe
+        return OnlineQwenBlockQProbe.load(path, feature_provider=feature_cache,
+                                        device=device, **kwargs)
     if _is_token_binary(config):
         from search_g1.qprobe_token_online import OnlineTokenBinaryQProbe
         return OnlineTokenBinaryQProbe.load(path, feature_provider=feature_cache,
-                                           device=config.get("head_device", "cpu"), **kwargs)
+                                           device=device, **kwargs)
     from search_g1.qprobe_model import OnlineQProbe
     return OnlineQProbe.load(path, **kwargs)
 
@@ -188,6 +205,8 @@ class QProbeRuntime:
             raise ValueError("Feature cache lacks its immutable spec or feature dimension")
         self.feature_spec_sha = self.cache.spec_sha
         self.token_binary = _is_token_binary(self.config)
+        self.native_qwen = _is_native_qwen(self.config)
+        self.head_kind = self.config.get("head_kind")
         self.cache_binding = None
         if self.token_binary:
             self.cache_binding = _token_cache_binding(self.cache)
@@ -195,7 +214,10 @@ class QProbeRuntime:
                 raise ValueError("Token feature cache and global head padding differ")
         if head is None:
             initial = self.config.get("initial_head_checkpoint")
-            if self.token_binary:
+            if self.native_qwen:
+                from search_g1.qprobe_qwen_block_online import OnlineQwenBlockQProbe, QwenBlockOnlineConfig
+                head_type, config_type = OnlineQwenBlockQProbe, QwenBlockOnlineConfig
+            elif self.token_binary:
                 from search_g1.qprobe_token_online import OnlineTokenBinaryQProbe, TokenOnlineQProbeConfig
                 head_type, config_type = OnlineTokenBinaryQProbe, TokenOnlineQProbeConfig
             else:
@@ -211,6 +233,8 @@ class QProbeRuntime:
                 if head.config != expected_head_config:
                     raise ValueError("Initial question-probe head config differs from the effective runtime config")
             else:
+                if self.native_qwen and not (self.config.get("snapshot_path") or self.config.get("restore_state")):
+                    raise ValueError("Native Qwen formal runtime requires an adopted or paired restored head")
                 extra = dict(feature_provider=self.cache, device=self.config.get("head_device", "cpu")) if self.token_binary else {}
                 head = head_type(self.cache.feature_dim, config_type.from_mapping(self.config),
                                  feature_spec_sha=self.feature_spec_sha, **extra)
@@ -250,7 +274,8 @@ class QProbeRuntime:
         receipt_sha = receipt.get("checkpoint_sha", receipt.get("sha256"))
         provenance = getattr(self.head, "initialization_provenance", {})
         feature_sha = ready.get("feature_spec_sha", ready.get("token_feature_spec_sha256"))
-        if (ready.get("stage") != "TOKEN_BINARY_FORMAL_INITIAL_HEAD_ADOPTED" or
+        expected_stage = "QWEN_NATIVE_FORMAL_INITIAL_HEAD_ADOPTED" if self.native_qwen else "TOKEN_BINARY_FORMAL_INITIAL_HEAD_ADOPTED"
+        if (ready.get("stage") != expected_stage or
                 receipt_sha != head_sha or feature_sha != self.feature_spec_sha or
                 ready.get("actual_head_adam_updates") != 200 or ready.get("completed_outer") != 0 or
                 ready.get("warmup_questions") != 5120 or ready.get("trajectories_regenerated") is not False or
@@ -262,9 +287,26 @@ class QProbeRuntime:
             raise ValueError("Token binary formal ready does not prove exact warmup10 logical0 adoption")
         if hasattr(self.head, "_adam_steps") and self.head._adam_steps() != 200:
             raise ValueError("Token binary adopted optimizer differs from completed warmup10")
+        if self.native_qwen:
+            proof = ready.get("native_block_proof", {})
+            if (ready.get("teacher_replay_excluded") is not True or
+                    provenance.get("teacher_replay_excluded") is not True or
+                    provenance.get("formal_replay_groups_at_adoption") != 0 or
+                    getattr(self.head, "replay_labels", None) != [] or
+                    getattr(self.head, "replay_features", None) != [] or
+                    getattr(self.head, "protocol", None) is not None or
+                    getattr(self.head, "update_count", -1) != 0 or
+                    proof.get("native_class") != "transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer" or
+                    proof.get("official_block_copy_verified") is not True or proof.get("block_index") != 35 or
+                    not proof.get("transformers_version")):
+                raise ValueError("Native Qwen initial head lacks its actual native copy or empty formal replay proof")
+            self.head.verify_native_provenance()
         self.initial_head_adoption = dict(ready_sha256=ready_sha, checkpoint_sha256=head_sha,
             warmup_checkpoint_sha256=provenance["warmup_checkpoint_sha256"], logical_outer=0,
             head_version=self.version, no_head_refit=True, trajectories_regenerated=False)
+        if self.native_qwen:
+            self.initial_head_adoption.update(teacher_replay_excluded=True,
+                                             native_block_proof=copy.deepcopy(ready["native_block_proof"]))
         return copy.deepcopy(self.initial_head_adoption)
 
     def score(self, questions):
@@ -416,7 +458,7 @@ class QProbeRuntime:
             candidate_state=candidate_state, reward_probe_version=reward_probe_version,
             head_receipt=head_receipt)
         if self.token_binary:
-            state.update(head_kind=TOKEN_BINARY_HEAD, cache_binding=self.cache_binding,
+            state.update(head_kind=self.head_kind, cache_binding=self.cache_binding,
                          initial_head_adoption=self.initial_head_adoption)
         receipt = _atomic_save(path, state)
         return dict(receipt, actor_snapshot_id=actor_snapshot_id, completed_outer=self.completed_outer,
@@ -439,7 +481,7 @@ class QProbeRuntime:
             raise ValueError("Question-probe snapshot does not belong to the restored actor")
         if state["feature_spec_sha"] != self.feature_spec_sha:
             raise ValueError("Question-probe restore feature namespace differs")
-        if self.token_binary and (state.get("head_kind") != TOKEN_BINARY_HEAD or
+        if self.token_binary and (state.get("head_kind") != self.head_kind or
                                   state.get("cache_binding") != self.cache_binding):
             raise ValueError("Token binary restore head/cache representation differs")
         # Runtime paths may change on a new node. Acquisition/training settings cannot.
@@ -456,6 +498,11 @@ class QProbeRuntime:
         head = load_head_checkpoint(head_path, self.config, feature_cache=self.cache,
             expected_actor_snapshot_id=expected_actor_snapshot_id, expected_feature_spec_sha=self.feature_spec_sha,
             expected_checkpoint_sha=state["head_sha256"])
+        if self.native_qwen:
+            from search_g1.qprobe_qwen_block_online import QwenBlockOnlineConfig
+            if head.config != QwenBlockOnlineConfig.from_mapping(self.config):
+                raise ValueError("Restored native Qwen head config differs from its actor runtime")
+            head.verify_native_provenance()
         if head.version != state["head_version"] or int(head.completed_outer) != state["completed_outer"]:
             raise ValueError("Question-probe head state is ahead of/behind the paired actor")
         self.head = head
@@ -833,7 +880,7 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
             for i, m in enumerate(members)])
     audit["selected_predicted_binary_mixed" if runtime.token_binary else "selected_predicted_diversity"] = 512-exploration_questions
     if runtime.token_binary:
-        audit["head_kind"] = TOKEN_BINARY_HEAD
+        audit["head_kind"] = runtime.head_kind
         audit["ranking"] = "binary_mixed_probability"
     # Keep the semantic hashes and their exact payloads alongside transport
     # evidence. All 5120 candidates were predicted, but only these 512 selected

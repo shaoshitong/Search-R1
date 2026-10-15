@@ -704,6 +704,8 @@ def main(config):
 
 @ray.remote
 def main_task(config):
+    from search_g1.qprobe_driver_gpu import bind_native_driver_gpu
+    bind_native_driver_gpu(config)
     from verl.utils.fs import copy_local_path_from_hdfs
     from pprint import pprint
     from omegaconf import OmegaConf

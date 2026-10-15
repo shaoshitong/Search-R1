@@ -6,8 +6,10 @@ Only the explicitly named integration edits may differ from that baseline.
 The document excludes only its own byte hash, avoiding a self-referential map.
 """
 import argparse
+import copy
 import hashlib
 import json
+import os
 from pathlib import Path, PurePosixPath
 import subprocess
 
@@ -22,6 +24,11 @@ DELTA_PATH = 'reproduction/a800_common/qprobe-initial0-adoption-source-delta.jso
 ROLE = 'a800_qprobe_frozen_g1_initial0_source_delta'
 PRECISION_PROFILE = 'bf16_policy_fp32_master'
 MODEL_REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
+NATIVE_HEAD_KIND = 'qwen_native_lastblock_binary_v1'
+NATIVE_WARMUP_BASE = Path('/data/shaoshitong/Search-G1-qprobe-qwen-lastblock-warmup10-096c8297cba74f8089063e763686671e')
+NATIVE_WARMUP_SOURCE = 'e81445905bf8b15dbb0bdec3afa29d99ab0b11d8'
+NATIVE_WARMUP_SOURCE_MAP = '006912cc7817b2ae8abde32a85c42d21b2c1976bf0b5618066c6aa9d2f0674ad'
+_NATIVE_INITIAL_CACHE = {}
 
 # No directory or suffix exception: these are the explicitly assigned changes
 # after the published question-probe baseline. Their actual bytes are still
@@ -98,6 +105,37 @@ INTEGRATION_EDITS = frozenset((
     'verl/workers/rollout/vllm_rollout/vllm_rollout.py',
     'verl/utils/torch_functional.py',
     'verl/workers/actor/dp_actor.py',
+    # Explicit question-only feature/head additions, separate from frozen G1
+    # reward calibration. Every added/edited byte remains in the exact delta.
+    'search_g1/qprobe_token_features.py',
+    'search_g1/qprobe_token_model.py',
+    'search_g1/qprobe_token_online.py',
+    'search_g1/test_qprobe_token_model.py',
+    'search_g1/test_qprobe_token_online.py',
+    'search_g1/test_qprobe_token_runtime.py',
+    'search_g1/qprobe_qwen_block_model.py',
+    'search_g1/qprobe_qwen_block_online.py',
+    'search_g1/test_qprobe_qwen_block_model.py',
+    'search_g1/test_qprobe_qwen_block_online.py',
+    'search_g1/test_qprobe_qwen_runtime.py',
+    'search_g1/test_qprobe_saved_native_checkpoint.py',
+    'search_g1/test_qprobe_checkpoint.py',
+    'search_g1/qprobe_driver_gpu.py',
+    'search_g1/test_qprobe_driver_gpu.py',
+    'verl/trainer/main_ppo_eco.py',
+    'reproduction/common8/qprobe_token_bind.py',
+    'reproduction/common8/qprobe_qwen_bind.py',
+    'reproduction/common8/test_qprobe_qwen_bind.py',
+    'reproduction/common8/qprobe-native-block-defaults.json',
+    'reproduction/common8/test_native_qprobe_configuration.py',
+    'reproduction/a800_common/qprobe_token_warmup.py',
+    'reproduction/a800_common/qprobe_qwen_block_warmup.py',
+    'reproduction/a800_common/test_qprobe_qwen_block_warmup.py',
+    'reproduction/a800_common/qprobe_token_feature_bank.py',
+    'reproduction/a800_common/test_qprobe_token_feature_bank.py',
+    'reproduction/a800_common/test_qprobe_native_initial_adoption.py',
+    'reproduction/a800_common/qprobe_qwen_formal_ops.py',
+    'reproduction/a800_common/test_qprobe_qwen_formal_ops.py',
 ))
 
 # These implement original G1 calibration, hidden-feature extraction, binary
@@ -157,6 +195,124 @@ def _source_map(mapping):
     return mapping
 
 
+def _native_storage_path(value):
+    path = Path(value)
+    _check(path.is_absolute() and path == path.resolve() and
+           str(path).startswith(('/data/', '/mnt/', '/backup/')),
+           'QPROBE_ADOPTION_NATIVE_PATH_NOT_CANONICAL_REMOTE_STORAGE')
+    return path
+
+
+def _owned_native_file(value):
+    path = _native_storage_path(value)
+    _check(path.is_file() and not path.is_symlink() and path.stat().st_uid == os.getuid(),
+           'QPROBE_ADOPTION_NATIVE_INITIAL_FILE_NOT_OWNED')
+    return path
+
+
+def _file_sha(path):
+    digest = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(4 * 1024**2), b''):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _native_json(path, expected_sha):
+    _check(type(expected_sha) is str and len(expected_sha) == 64 and
+           all(c in '0123456789abcdef' for c in expected_sha) and
+           path.stat().st_size <= 128 * 1024**2 and _file_sha(path) == expected_sha,
+           'QPROBE_ADOPTION_NATIVE_INITIAL_METADATA_SHA_CHANGED')
+    return json.loads(path.read_bytes())
+
+
+def _native_file_identity(path):
+    state = path.stat()
+    return (str(path), state.st_dev, state.st_ino, state.st_size,
+            state.st_mtime_ns, state.st_ctime_ns, state.st_uid)
+
+
+def validate_native_initial_head(run, settings):
+    """Accept only this experiment's owned logical0 native warmup adoption."""
+    _check(settings.get('snapshot_path') is None and settings.get('restore_state') is None,
+           'QPROBE_ADOPTION_NATIVE_INITIAL_MUST_NOT_RESTORE_AN_ACTOR_PAIR')
+    checkpoint_dir = _native_storage_path(run.get('checkpoint_dir', ''))
+    base = checkpoint_dir.parents[1]
+    directory = base / 'artifacts/question-probe/native-qwen-warmup-adoption'
+    _check(checkpoint_dir == base / 'checkpoints/search-g1-common8' and
+           settings.get('output_dir') == str(base / 'artifacts/question-probe') and
+           settings.get('initial_head_checkpoint') == str(directory / 'initial.pt') and
+           settings.get('initial_head_ready') == str(directory / 'ready.json'),
+           'QPROBE_ADOPTION_NATIVE_INITIAL_OUTSIDE_NEW_RUN_ARTIFACTS')
+    head_path = _owned_native_file(directory / 'initial.pt')
+    ready_path = _owned_native_file(directory / 'ready.json')
+    ready = _native_json(ready_path, settings.get('initial_head_ready_sha256'))
+    head_sha = settings.get('initial_head_checkpoint_sha256')
+    receipt = ready.get('head_receipt', {})
+    actual = ready.get('actual_warmup', {})
+    expected_raw = NATIVE_WARMUP_BASE / 'warmup/ready.json'
+    _check(type(head_sha) is str and len(head_sha) == 64 and all(c in '0123456789abcdef' for c in head_sha) and
+           ready.get('stage') == 'QWEN_NATIVE_FORMAL_INITIAL_HEAD_ADOPTED' and
+           ready.get('run_id') == run['run_id'] and ready.get('source_commit') == run['source_commit'] and
+           receipt.get('path') == str(head_path) and receipt.get('actor_snapshot_id') == run['run_id'] + ':0' and
+           receipt.get('checkpoint_sha', receipt.get('sha256')) == head_sha and
+           ready.get('actual_head_adam_updates') == 200 and ready.get('completed_outer') == 0 and
+           ready.get('warmup_questions') == 5120 and ready.get('no_head_refit') is True and
+           ready.get('teacher_trajectories_reused') == 25600 and ready.get('formal_training_started') is False and
+           ready.get('actual_saved_head_cpu_readback') is True and
+           ready.get('teacher_replay_excluded') is True and ready.get('trajectories_regenerated') is False and
+           ready.get('actor_optimizer_inherited') is False and ready.get('actor_checkpoint_inherited') is False and
+           actual.get('ready_path') == str(expected_raw) and actual.get('source_commit') == NATIVE_WARMUP_SOURCE and
+           actual.get('source_map_sha256') == NATIVE_WARMUP_SOURCE_MAP,
+           'QPROBE_ADOPTION_NATIVE_INITIAL_NOT_THIS_FRESH_WARMUP_EXPERIMENT')
+    raw_path = _owned_native_file(expected_raw)
+    raw = _native_json(raw_path, actual.get('ready_sha256'))
+    proof = raw.get('native_block_proof', {})
+    _check(raw.get('stage') == 'QWEN_LAST_BLOCK_FRESH_HEAD_WARMUP10_COMPLETE' and
+           raw.get('source_commit') == NATIVE_WARMUP_SOURCE and raw.get('source_map_sha256') == NATIVE_WARMUP_SOURCE_MAP and
+           raw.get('head_sha256') == actual.get('head_sha256') == ready.get('raw_warmup_checkpoint_sha256') and
+           raw.get('prepared_sha256') == actual.get('prepared_sha256') and
+           raw.get('head_optimizer_updates') == raw.get('head_adam_steps') == 200 and
+           raw.get('epoch_records') == 11 and raw.get('minibatch_records') == 200 and raw.get('questions') == 5120 and
+           raw.get('trajectories_generated') == 0 and raw.get('formal_training_started') is False and
+           raw.get('old_head_inherited') is False and raw.get('token_feature_spec_sha256') == ready.get('feature_spec_sha') and
+           proof == ready.get('native_block_proof') and proof.get('official_block_copy_verified') is True and
+           proof.get('native_class') == 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer' and
+           proof.get('block_index') == 35 and proof.get('official_revision') == MODEL_REVISION and
+           bool(proof.get('transformers_version')),
+           'QPROBE_ADOPTION_NATIVE_WARMUP_COMPLETION_OR_COPY_PROOF_CHANGED')
+    identity = _native_file_identity(head_path)
+    cache_key = (run['run_id'], run['source_commit'], document_sha(settings), document_sha(ready),
+                 document_sha(raw), identity)
+    if cache_key not in _NATIVE_INITIAL_CACHE:
+        from search_g1.qprobe_runtime import load_head_checkpoint
+        from search_g1.qprobe_qwen_block_online import QwenBlockOnlineConfig
+        head = load_head_checkpoint(head_path, settings, expected_actor_snapshot_id=run['run_id'] + ':0',
+            expected_feature_spec_sha=ready['feature_spec_sha'], expected_checkpoint_sha=head_sha)
+        provenance = head.initialization_provenance
+        verified = head.verify_native_provenance()
+        _check(head.config == QwenBlockOnlineConfig.from_mapping(settings) and
+               head.feature_spec_sha == ready['feature_spec_sha'] and
+               head.completed_outer == head.update_count == 0 and head._adam_steps() == 200 and
+               head.replay_labels == [] and head.replay_features == [] and head.protocol is None and
+               verified.get('accepted') is True and verified.get('teacher_replay_excluded') is True and
+               provenance == ready.get('initialization_provenance') and
+               provenance.get('warmup_source_commit') == NATIVE_WARMUP_SOURCE and
+               provenance.get('warmup_ready') == str(expected_raw) and
+               provenance.get('warmup_ready_sha256') == actual['ready_sha256'] and
+               provenance.get('warmup_checkpoint_sha256') == raw['head_sha256'] and
+               provenance.get('warmup_head_adam_steps') == 200 and provenance.get('no_refit') is True and
+               provenance.get('teacher_replay_excluded') is True and
+               provenance.get('formal_replay_groups_at_adoption') == 0 and
+               head.initial_block_proof == raw.get('initial_block_proof') and
+               head.initial_readout_proof == raw.get('initial_readout_proof') and
+               head.native_implementation == raw.get('native_implementation') and
+               _native_file_identity(head_path) == identity,
+               'QPROBE_ADOPTION_NATIVE_INITIAL_HEAD_STATE_OR_LINEAGE_CHANGED')
+        _NATIVE_INITIAL_CACHE[cache_key] = copy.deepcopy(verified)
+    return copy.deepcopy(_NATIVE_INITIAL_CACHE[cache_key])
+
+
 def validate_fresh_run(run, old):
     """Keep the special source route exclusive to this fresh official actor."""
     _check(old['run_id'] == ORIGINAL_RUN_ID
@@ -193,9 +349,12 @@ def validate_fresh_run(run, old):
                             bootstrap_max_groups_per_outer=5120).items():
         _check(type(settings.get(name)) is int and settings[name] == value,
                'QPROBE_ADOPTION_QUESTION_BUDGET_CHANGED: ' + name)
-    _check(all(settings.get(name) is None for name in
-               ('initial_head_checkpoint', 'snapshot_path')),
-           'QPROBE_ADOPTION_MUST_NOT_INHERIT_A_QUESTION_HEAD')
+    if settings.get('head_kind') == NATIVE_HEAD_KIND:
+        validate_native_initial_head(run, settings)
+    else:
+        _check(all(settings.get(name) is None for name in
+                   ('initial_head_checkpoint', 'snapshot_path')),
+               'QPROBE_ADOPTION_MUST_NOT_INHERIT_A_QUESTION_HEAD')
     teacher = settings.get('teacher_warmup_cache')
     _check(type(teacher) is str and Path(teacher).is_absolute()
            and str(Path(teacher)).startswith(('/data/', '/mnt/', '/backup/'))

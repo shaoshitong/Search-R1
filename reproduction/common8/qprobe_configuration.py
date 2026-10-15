@@ -12,6 +12,9 @@ FIELDS = frozenset((
     "head_kind", "ranking", "max_tokens", "feature_dim", "attention_heads", "head_seed",
     "target_statistic", "initial_head_checkpoint_sha256", "initial_head_ready",
     "initial_head_ready_sha256",
+    "hidden_size", "num_attention_heads", "num_key_value_heads", "intermediate_size",
+    "rms_norm_eps", "rope_theta", "max_position_embeddings", "source_layer", "num_hidden_layers",
+    "attention_implementation", "micro_batch_size", "head_device", "teacher_replay_excluded",
 ))
 
 
@@ -30,7 +33,8 @@ def arguments(run, base):
     loss_mode = values.get("loss_mode", "count6_moments_v1")
     if loss_mode not in ("count6_moments_v1", "sigma3_std_aux6_v1", "token_binary_std_v1"):
         raise ValueError("Unknown question-probe loss mode")
-    if values.get("head_kind", "count6_v1") == "token_binary_v1":
+    binary_kind = values.get("head_kind", "count6_v1")
+    if binary_kind in ("token_binary_v1", "qwen_native_lastblock_binary_v1"):
         required = dict(loss_mode="token_binary_std_v1", ranking="binary_mixed_probability",
             candidate_questions=5120, selected_questions=512, exploration_questions=0,
             responses_per_question=5, feature_dim=2048, head_hidden_size=128, attention_heads=4,
@@ -39,11 +43,21 @@ def arguments(run, base):
             bootstrap_max_groups_per_outer=5120, head_batch_size=256,
             head_epochs_per_outer=2, replay_window_outer=16, replay_half_life_outer=4,
             head_learning_rate=0.0003, seed=20261013, head_seed=1729)
-        if any(values.get(key) != value or isinstance(values.get(key), bool)
+        if binary_kind == "qwen_native_lastblock_binary_v1":
+            required.pop("attention_heads")
+            required.pop("replay_half_life_outer")
+            required.update(hidden_size=2048, head_hidden_size=2048, num_attention_heads=16, num_key_value_heads=2,
+                intermediate_size=11008, rms_norm_eps=1e-6, rope_theta=1000000.0,
+                max_position_embeddings=32768, source_layer=35, num_hidden_layers=36,
+                attention_implementation="sdpa", micro_batch_size=32,
+                replay_window_outer=8, teacher_replay_excluded=True)
+        if any(values.get(key) != value or (isinstance(values.get(key), bool) != isinstance(value, bool))
                for key, value in required.items()):
             raise ValueError("Token binary probe requires its explicitly bound effective recipe")
         if type(values.get("max_tokens")) is not int or values["max_tokens"] <= 0:
             raise ValueError("Token binary probe requires the canonical global token maximum")
+        if binary_kind == "qwen_native_lastblock_binary_v1" and values["max_tokens"] != 244:
+            raise ValueError("Native question head requires its canonical global 244-token maximum")
         paired_restore = bool(values.get("snapshot_path"))
         for key in ("initial_head_checkpoint_sha256", "initial_head_ready_sha256"):
             value = values.get(key)
@@ -59,6 +73,8 @@ def arguments(run, base):
                 raise ValueError("Token binary initialization requires an explicit artifact path: " + key)
         if paired_restore and not Path(values["snapshot_path"]).is_absolute():
             raise ValueError("Paired token-head restoration requires an absolute state path")
+        if binary_kind == "qwen_native_lastblock_binary_v1" and values.get("head_device") != "cuda:0":
+            raise ValueError("Native question head must use the first admitted training GPU in its bound CUDA namespace")
     elif loss_mode == "token_binary_std_v1":
         raise ValueError("Token binary loss requires the all-token binary head")
     if loss_mode == "sigma3_std_aux6_v1":

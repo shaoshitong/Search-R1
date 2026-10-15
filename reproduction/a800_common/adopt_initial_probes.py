@@ -132,6 +132,14 @@ def _source_map(base, run, provenance=None):
 
 
 def _outside_ray_bootstrap(raw):
+    native_hook = (b'def main_task(config):\n'
+                   b'    from search_g1.qprobe_driver_gpu import bind_native_driver_gpu\n'
+                   b'    bind_native_driver_gpu(config)\n')
+    if native_hook in raw:
+        _check(raw.count(native_hook) == 1, 'Repeated native question-Head driver routing hook')
+        # Only this exact native-only entry hook is transport integration. The
+        # helper's full bytes remain bound by the precise source delta below.
+        raw = raw.replace(native_hook, b'def main_task(config):\n', 1)
     start = b'def main(config):\n'
     end = b'    try:\n        ray.get(main_task.remote(config))\n'
     _check(raw.count(start) == 1 and raw.count(end) == 1,

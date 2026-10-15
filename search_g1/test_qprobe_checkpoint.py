@@ -67,7 +67,8 @@ class PairFixture:
         head_proof=dict(path=str(self.state/'question-probe-state.pt.head.pt'),bytes=(self.state/'question-probe-state.pt.head.pt').stat().st_size,
             sha256=head_receipt['checkpoint_sha'])
         qproof.update(completed_outer=outer,actor_snapshot_id=actor_id,feature_spec_sha='f'*64,head_version=head.version,head=head_proof)
-        self.progress=dict(completed_outer=outer,cumulative_writes=self.writes,attempt_index=self.attempt_index,aborted_attempts=2)
+        self.progress=dict(completed_outer=outer,cumulative_writes=self.writes,attempt_index=self.attempt_index,
+            aborted_attempts=2,full_budget_outer=0)  # Historical generic fixture uses 18/20 writes per outer.
         driver=atomic_save(self.state/'driver.pt',dict(completed_outer=outer,candidate_stream=self.stream,rng=driver_rng(),
             probe_version=f'{self.run_id}:0:old',question_probe=qproof,attempt_progress=self.progress))
         manifest=dict(completed_outer=outer,worker_files=proofs,driver_file=driver,question_probe=qproof)
