@@ -106,13 +106,13 @@ class QProbeInitial0SourceTests(unittest.TestCase):
                 self.rebound_delta()
 
     def test_changed_core_rejects_even_with_updated_pairs(self):
-        self.current['verl/workers/actor/dp_actor.py'] = '9'*64
+        self.current['reproduction/common8/behavior_runtime.py'] = '9'*64
         self.rebound_delta()
         with self.assertRaisesRegex(ValueError, 'UNAPPROVED_INTEGRATION_EDIT'):
             self.validate()
 
-    def test_changed_qprobe_feature_or_head_definition_rejects(self):
-        for name in ('search_g1/qprobe_features.py', 'search_g1/qprobe_model.py'):
+    def test_changed_qprobe_feature_definition_rejects(self):
+        for name in ('search_g1/qprobe_features.py', 'search_g1/qprobe_prepare.py'):
             with self.subTest(name=name):
                 saved = self.current[name]
                 self.current[name] = '9'*64
@@ -121,6 +121,17 @@ class QProbeInitial0SourceTests(unittest.TestCase):
                     self.validate()
                 self.current[name] = saved
                 self.rebound_delta()
+
+    def test_explicit_question_head_loss_edits_require_exact_complete_source_delta(self):
+        self.run['question_probe'].update(loss_mode='sigma3_std_aux6_v1',mean_loss_weight=0.0,
+                                          std_loss_weight=3.0,count_aux_loss_weight=0.1)
+        for name in ('search_g1/qprobe_model.py','reproduction/common8/qprobe_configuration.py',
+                     'reproduction/common8/qprobe_bind.py','verl/trainer/config/ppo_trainer.yaml'):
+            with self.subTest(name=name):
+                saved=self.current[name];self.current[name]='9'*64
+                with self.assertRaisesRegex(ValueError,'TARGET_SOURCE_MAP_DIFFERS'):self.validate()
+                self.rebound_delta();self.assertEqual(self.validate(),self.delta['changes'])
+                self.current[name]=saved;self.rebound_delta()
 
     def test_changed_allowed_integration_bytes_need_a_new_exact_delta(self):
         self.current['search_g1/qprobe_warmup.py'] = '9'*64

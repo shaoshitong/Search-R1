@@ -6,7 +6,7 @@ FIELDS = frozenset((
     "candidate_questions", "selected_questions", "responses_per_question",
     "exploration_questions", "seed", "cache_dir", "output_dir", "snapshot_path", "initial_head_checkpoint",
     "head_learning_rate", "head_batch_size", "head_epochs_per_outer",
-    "mean_loss_weight", "std_loss_weight", "replay_window_outer",
+    "loss_mode", "mean_loss_weight", "std_loss_weight", "count_aux_loss_weight", "replay_window_outer",
     "replay_half_life_outer", "head_hidden_size",
     "bootstrap_max_groups_per_outer", "teacher_warmup_cache",
 ))
@@ -21,6 +21,14 @@ def arguments(run, base):
         raise ValueError("Unknown question_probe manifest fields")
     base = Path(base).resolve()
     values = dict(settings)
+    loss_mode = values.get("loss_mode", "count6_moments_v1")
+    if loss_mode not in ("count6_moments_v1", "sigma3_std_aux6_v1"):
+        raise ValueError("Unknown question-probe loss mode")
+    if loss_mode == "sigma3_std_aux6_v1":
+        if not {"mean_loss_weight", "std_loss_weight", "count_aux_loss_weight"} <= set(values):
+            raise ValueError("Sigma3 loss must explicitly bind all loss weights")
+        if values["mean_loss_weight"] != 0:
+            raise ValueError("Sigma3 loss requires mean_loss_weight=0")
     values.setdefault("candidate_questions", 5120)
     values.setdefault("selected_questions", 512)
     values.setdefault("responses_per_question", 5)

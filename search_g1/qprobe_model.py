@@ -25,6 +25,8 @@ from torch.nn import functional as F
 SCHEMA_VERSION = 1
 GROUP_SIZE = 5
 S_MAX = math.sqrt(0.3)
+LEGACY_LOSS_MODE = 'count6_moments_v1'
+SIGMA3_LOSS_MODE = 'sigma3_std_aux6_v1'
 
 
 @dataclass(frozen=True)
@@ -39,6 +41,9 @@ class QProbeConfig:
     bootstrap_max_groups_per_outer: int = 512
     hidden_size: int = 64
     seed: int = 1729
+    # Missing fields in historical checkpoints retain the original CE6 loss.
+    loss_mode: str = LEGACY_LOSS_MODE
+    count_aux_loss_weight: float = 0.1
 
     def __post_init__(self):
         for name in ('head_batch_size', 'head_epochs_per_outer',
@@ -49,12 +54,25 @@ class QProbeConfig:
             value = getattr(self, name)
             if not isinstance(value, (float, int)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f'QPROBE_INVALID_CONFIG: {name} must be positive and finite')
-        for name in ('mean_loss_weight', 'std_loss_weight'):
+        for name in ('mean_loss_weight', 'std_loss_weight', 'count_aux_loss_weight'):
             value = getattr(self, name)
             if not isinstance(value, (float, int)) or not math.isfinite(value) or value < 0:
                 raise ValueError(f'QPROBE_INVALID_CONFIG: {name} must be nonnegative and finite')
         if type(self.seed) is not int or not 0 <= self.seed < 2**63:
             raise ValueError('QPROBE_INVALID_CONFIG: seed must be a nonnegative int64')
+        if self.loss_mode not in (LEGACY_LOSS_MODE, SIGMA3_LOSS_MODE):
+            raise ValueError('QPROBE_INVALID_CONFIG: unsupported loss_mode')
+        if self.loss_mode == SIGMA3_LOSS_MODE and self.mean_loss_weight != 0:
+            raise ValueError('QPROBE_INVALID_CONFIG: sigma3 loss requires mean_loss_weight=0')
+
+    @property
+    def loss_identity(self):
+        std_term = (f'{self.std_loss_weight:g}*'
+                    '((E[sample_std]-sample_std(K))/sqrt(0.3))^2')
+        if self.loss_mode == SIGMA3_LOSS_MODE:
+            return (f'{self.loss_mode}:CE3(K->min(K,5-K))+{std_term}'
+                    f'+{self.count_aux_loss_weight:g}*CE6')
+        return f'{self.loss_mode}:CE6+{self.mean_loss_weight:g}*mean_MSE+{std_term}'
 
     @classmethod
     def from_mapping(cls, values: Mapping | None):
@@ -110,23 +128,52 @@ def validate_features(features, feature_dim):
     return features.detach().to(device='cpu', dtype=torch.float32)
 
 
-def count_moment_loss(prediction, counts, config: QProbeConfig, weights=None):
+def count_moment_group_loss(prediction, counts, config: QProbeConfig):
+    """The single per-group objective used for both Adam and loss reporting."""
     if not isinstance(counts, torch.Tensor) or counts.dtype != torch.long or counts.ndim != 1:
         raise ValueError('QPROBE_COUNTS_MUST_BE_INT64_VECTOR')
-    if len(counts) != len(prediction['logits']) or bool(((counts < 0) | (counts > 5)).any()):
+    logits = prediction['logits'].float()
+    if logits.ndim != 2 or logits.shape[1] != 6 or not torch.isfinite(logits).all():
+        raise ValueError('QPROBE_INVALID_LOGITS')
+    if len(counts) != len(logits) or not len(counts) or bool(((counts < 0) | (counts > 5)).any()):
         raise ValueError('QPROBE_INVALID_COUNTS')
-    means = counts.float() / 5
     stds = (counts.float() * (5 - counts.float()) / 20).sqrt()
-    ce = F.cross_entropy(prediction['logits'].float(), counts, reduction='none')
-    mean_mse = (prediction['mean'] - means).square()
+    ce = F.cross_entropy(logits, counts, reduction='none')
     std_mse = ((prediction['expected_std'] - stds) / S_MAX).square()
-    loss = ce + config.mean_loss_weight * mean_mse + config.std_loss_weight * std_mse
+    std_contribution = config.std_loss_weight * std_mse
+    if config.loss_mode == SIGMA3_LOSS_MODE:
+        # Softmax over these paired logsumexp logits is exactly
+        # q=(p0+p5, p1+p4, p2+p3), including extreme logits where p underflows.
+        sigma_logits = torch.stack([torch.logsumexp(logits[:, [k, 5-k]], dim=-1)
+                                    for k in range(3)], dim=-1)
+        sigma_classes = torch.minimum(counts, 5-counts)
+        sigma_ce = F.cross_entropy(sigma_logits, sigma_classes, reduction='none')
+        count_contribution = config.count_aux_loss_weight * ce
+        loss = sigma_ce + std_contribution + count_contribution
+        parts = dict(sigma3_ce=sigma_ce, count_ce=ce, std_mse=std_mse,
+                     normalized_sample_std_mse=std_mse, sigma3_ce_contribution=sigma_ce,
+                     std_mse_contribution=std_contribution, count_ce_contribution=count_contribution)
+    else:
+        mean_mse = (prediction['mean'] - counts.float()/5).square()
+        mean_contribution = config.mean_loss_weight * mean_mse
+        loss = ce + mean_contribution + std_contribution
+        parts = dict(count_ce=ce, mean_mse=mean_mse, std_mse=std_mse,
+                     count_ce_contribution=ce, mean_mse_contribution=mean_contribution,
+                     std_mse_contribution=std_contribution)
+    if not torch.isfinite(loss).all():
+        raise ValueError('QPROBE_NONFINITE_TRAINING_LOSS')
+    return loss, parts
+
+
+def count_moment_loss(prediction, counts, config: QProbeConfig, weights=None):
+    loss, parts = count_moment_group_loss(prediction, counts, config)
     if weights is None:
         weights = torch.ones_like(loss)
-    if weights.shape != loss.shape or not torch.isfinite(weights).all() or bool((weights <= 0).any()):
+    if (not isinstance(weights, torch.Tensor) or weights.shape != loss.shape or
+        not torch.isfinite(weights).all() or bool((weights <= 0).any())):
         raise ValueError('QPROBE_INVALID_REPLAY_WEIGHTS')
     weighted = lambda x: (x * weights).sum() / weights.sum()
-    return weighted(loss), dict(count_ce=weighted(ce), mean_mse=weighted(mean_mse), std_mse=weighted(std_mse))
+    return weighted(loss), {key: weighted(value) for key, value in parts.items()}
 
 
 def _sha_file(path):
@@ -226,13 +273,9 @@ class OnlineQProbe:
             for offset in range(0, len(order), self.config.head_batch_size):
                 index = order[offset:offset + self.config.head_batch_size]
                 prediction = self.model(self.replay_features[index])
-                loss, _ = count_moment_loss(prediction, counts[index], self.config)
-                # Replace the mean with the exact global age-weighted batch
-                # estimator; count_moment_loss above validates both target and output.
-                group_loss = F.cross_entropy(prediction['logits'], counts[index], reduction='none')
-                group_loss += self.config.mean_loss_weight * (prediction['mean'] - counts[index].float()/5).square()
-                target_std = (counts[index].float()*(5-counts[index].float())/20).sqrt()
-                group_loss += self.config.std_loss_weight * ((prediction['expected_std']-target_std)/S_MAX).square()
+                group_loss, _ = count_moment_group_loss(prediction, counts[index], self.config)
+                # Preserve the global age-weighted estimator. Normalizing only
+                # within this mini-batch would cancel homogeneous recency weights.
                 loss = (group_loss * weights[index]).mean()
                 if not torch.isfinite(loss):
                     raise ValueError('QPROBE_NONFINITE_TRAINING_LOSS')
@@ -246,7 +289,8 @@ class OnlineQProbe:
         pred = self.predict(self.replay_features)
         objective, parts = count_moment_loss(pred, counts, self.config, weights)
         return dict(replay_groups=len(counts), head_optimizer_updates=updates,
-                    replay_weighted_loss=float(objective), **{k: float(v) for k, v in parts.items()})
+                    replay_weighted_loss=float(objective), loss_mode=self.config.loss_mode,
+                    loss_identity=self.config.loss_identity, **{k: float(v) for k, v in parts.items()})
 
     def update_completed_outer(self, outer: int, labels: Sequence[dict], features: torch.Tensor, *,
                                policy_snapshot_id: str, sampling_contract_sha: str,
@@ -349,6 +393,7 @@ class OnlineQProbe:
 
     def state_dict(self):
         return copy.deepcopy(dict(schema_version=SCHEMA_VERSION, config=asdict(self.config),
+            loss_identity=self.config.loss_identity,
             feature_dim=self.feature_dim, feature_spec_sha=self.feature_spec_sha,
             model=self.model.state_dict(), optimizer=self.optimizer.state_dict(),
             rng=self.rng.get_state(), replay_labels=self.replay_labels,
@@ -359,6 +404,8 @@ class OnlineQProbe:
     def _restore_state(self, state):
         if state.get('schema_version') != SCHEMA_VERSION or state['feature_dim'] != self.feature_dim:
             raise ValueError('QPROBE_CHECKPOINT_SCHEMA_MISMATCH')
+        if state.get('loss_identity', self.config.loss_identity) != self.config.loss_identity:
+            raise ValueError('QPROBE_CHECKPOINT_LOSS_IDENTITY_MISMATCH')
         self.model.load_state_dict(state['model'], strict=True)
         self.optimizer.load_state_dict(state['optimizer'])
         self.rng.set_state(state['rng'])
@@ -370,7 +417,11 @@ class OnlineQProbe:
 
     def load_state_dict(self, state):
         """In-memory transaction rollback; file restoration should use ``load``."""
-        if state.get('config') != asdict(self.config) or state.get('feature_spec_sha') != self.feature_spec_sha:
+        # Old serialized configs omit loss_mode/count_aux_loss_weight. Applying
+        # their legacy defaults is compatible only with the same legacy config.
+        if (not isinstance(state.get('config'), Mapping) or
+            QProbeConfig.from_mapping(state['config']) != self.config or
+            state.get('feature_spec_sha') != self.feature_spec_sha):
             raise ValueError('QPROBE_ROLLBACK_NAMESPACE_MISMATCH')
         self._restore_state(copy.deepcopy(state))
 
@@ -395,7 +446,8 @@ class OnlineQProbe:
         return dict(path=str(path), checkpoint_sha=sha, sha256=sha, bytes=path.stat().st_size,
                     actor_snapshot_id=actor_snapshot_id,
                     version=self.version, completed_outer=self.completed_outer,
-                    feature_spec_sha=self.feature_spec_sha, update_count=self.update_count)
+                    feature_spec_sha=self.feature_spec_sha, update_count=self.update_count,
+                    loss_mode=self.config.loss_mode, loss_identity=self.config.loss_identity)
 
     @classmethod
     def load(cls, path, expected_actor_snapshot_id=None, expected_feature_spec_sha=None,

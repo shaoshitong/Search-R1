@@ -33,9 +33,38 @@ class QProbeBindingTests(unittest.TestCase):
             self.assertEqual(run['question_probe']['exploration_questions'],128)
             self.assertEqual(run['question_probe']['seed'],20261013)
             self.assertEqual(run['question_probe']['head_learning_rate'],3e-4)
+            self.assertEqual(run['question_probe']['loss_mode'],'count6_moments_v1')
+            self.assertEqual(run['question_probe']['count_aux_loss_weight'],0.1)
             self.assertEqual(json.loads((base/'preparation/question-probe-pre-bind.json').read_text()),old)
             with self.assertRaises(ValueError):
                 bind(base,base/'remote-features',retriever_version='immutable-index')
+
+    def test_sigma3_binding_records_explicit_new_loss_and_fresh_all5120_head(self):
+        with tempfile.TemporaryDirectory() as root:
+            base,old,cache=self.fixture(root)
+            with patch('search_g1.qprobe_features.FeatureCache',return_value=cache):
+                run=bind(base,base/'remote-features',exploration_questions=0,retriever_version='immutable-index',
+                    teacher_warmup_cache='/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v3-async-top512',
+                    loss_mode='sigma3_std_aux6_v1',mean_loss_weight=0.0,
+                    std_loss_weight=3.0,count_aux_loss_weight=0.1)
+            q=run['question_probe']
+            self.assertEqual({key:q[key] for key in ('loss_mode','mean_loss_weight','std_loss_weight','count_aux_loss_weight')},
+                dict(loss_mode='sigma3_std_aux6_v1',mean_loss_weight=0.0,std_loss_weight=3.0,count_aux_loss_weight=0.1))
+            self.assertEqual((q['candidate_questions'],q['selected_questions'],q['responses_per_question'],
+                              q['exploration_questions'],q['bootstrap_max_groups_per_outer']), (5120,512,5,0,5120))
+            self.assertNotIn('initial_head_checkpoint',q)
+            self.assertEqual(json.loads((base/'preparation/question-probe-pre-bind.json').read_text()),old)
+
+    def test_sigma3_cannot_inherit_a_historical_head_or_implicit_mean_loss(self):
+        for patch_values in ({'initial_head_checkpoint':'/data/old/head.pt'}, {'mean_loss_weight':0.1}):
+            with self.subTest(patch_values=patch_values),tempfile.TemporaryDirectory() as root:
+                base,old,cache=self.fixture(root)
+                values=dict(loss_mode='sigma3_std_aux6_v1',mean_loss_weight=0.0,std_loss_weight=3.0,count_aux_loss_weight=0.1)
+                values.update(patch_values)
+                with patch('search_g1.qprobe_features.FeatureCache',return_value=cache),self.assertRaises(ValueError):
+                    bind(base,base/'remote-features',retriever_version='index',**values)
+                self.assertEqual(json.loads((base/'logs/run-manifest.json').read_text()),old)
+                self.assertFalse((base/'preparation/question-probe-pre-bind.json').exists())
 
     def test_wrong_train_artifact_or_incomplete_cache_rejected_without_manifest_write(self):
         for bad in ('count','train'):

@@ -243,3 +243,55 @@ The independent deployment review additionally requires
 `saved_cp5_full_actor_head_optimizer_scheduler_rng_sampler`,
 `logical6_to200_no_repeated_teacher_or_evaluation`, and
 `saved_rng_not_post_evaluation_boundary`, all true for the exact published source.
+
+For the sigma3 loss experiment, create a new handle with `--fresh-sigma3` at
+`stage`. This flag is exclusive with saved-checkpoint restoration and fixes
+the original initial0 reward calibration and qualified v3 teacher cache. Every
+later action reads that immutable handle; do not add the flag to later actions.
+
+```sh
+python -m reproduction.a800_common.deploy_qprobe stage --fresh-sigma3 \
+  --handle SIGMA3_HANDLE.json --source-commit PUBLISHED_FULL_COMMIT \
+  --published-ref refs/heads/codex/qprobe-a800-sigma3-loss-20261015 \
+  --baseline-intent-sha256 ORIGINAL_BASELINE_INTENT_SHA256
+python -m reproduction.a800_common.deploy_qprobe prepare --handle SIGMA3_HANDLE.json
+python -m reproduction.a800_common.deploy_qprobe feature-adopt --handle SIGMA3_HANDLE.json \
+  --feature-source-base /data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18
+python -m reproduction.a800_common.deploy_qprobe bind --handle SIGMA3_HANDLE.json
+python -m reproduction.a800_common.deploy_qprobe launch --handle SIGMA3_HANDLE.json \
+  --review-receipt SIGMA3_REVIEW.json
+```
+
+The explicit question-probe fields are `loss_mode: sigma3_std_aux6_v1`,
+`mean_loss_weight: 0.0`, `std_loss_weight: 3.0`, and
+`count_aux_loss_weight: 0.1`. The loss is CE3 over
+`(p0+p5, p1+p4, p2+p3)`, plus three times the squared error between predicted
+and actual **sample standard deviation**, normalized by `sqrt(0.3)`, plus
+`0.1 * CE6`. It does not supervise variance or the mean. The six-count output
+and expected-sample-std Top512 acquisition stay unchanged, with E0 and5120
+candidates. The new official actor/reference, actor Adam/scheduler, all worker
+and driver RNG, sampler and question head start fresh; the cached labels fit
+a new head on all5120 groups. Existing runs and historical checkpoints retain
+their legacy loss unless their immutable configuration explicitly selects the
+new mode. The launch gate rejects inherited state and question-head paths.
+
+The teacher's schema2 identity includes relevant rollout/scoring source bytes,
+model/data, sampling, retriever and question bindings. It excludes question-head
+loss source and settings, so this loss change alone reuses qualified v3
+trajectories without a source-identity exception. Full identity equality,
+chunk and raw-rollout SHA checks, complete5120/G5 labels and frozen-worker
+evidence still apply. A relevant rollout/scorer change remains incompatible.
+Frozen initial0 reward-head adoption is separate from question-head state:
+after all edits, regenerate `qprobe-initial0-adoption-source-delta.json` with
+`python -m reproduction.a800_common.qprobe_adoption_source_delta` before the
+final commit and publication. Its exact source map and changed-source pairs
+preserve the original frozen G1 calibration/scoring bytes.
+
+The independent sigma3 review needs the eight common checks above plus
+`fresh_official_actor_reference_optimizer_scheduler_rng_sampler_head`,
+`sigma3_ce_normalized_sample_std_mse3_aux6_ce_point1`, and
+`reuse_teacher_v3_full_identity_and_sha_no_old_question_head`, all true for the
+exact published commit and source map. No extra evaluation or GPU preflight is
+introduced. The four-rank BF16 local4/global16/accum8, LR1e-6/warmup57,
+20 opportunities per complete outer, existing speed optimizations and guards,
+and the formal200-outer target are retained.

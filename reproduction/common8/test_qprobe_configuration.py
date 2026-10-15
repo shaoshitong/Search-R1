@@ -41,11 +41,37 @@ class QProbeConfigurationTests(unittest.TestCase):
             self.assertEqual(config.data.selection_mode, "legacy")
             self.assertTrue(config.data.mixed_first_selection)
 
+    def test_sigma3_arguments_bind_all_loss_fields_without_changing_actor_controls(self):
+        with tempfile.TemporaryDirectory() as root:
+            base,run=self.fixture(root,0)
+            loss=dict(loss_mode='sigma3_std_aux6_v1',mean_loss_weight=0.0,
+                      std_loss_weight=3.0,count_aux_loss_weight=0.1)
+            run['question_probe'].update(loss)
+            overrides=arguments(run,base)
+            parsed={key:json.loads(raw) for key,raw in (row.split('=',1) for row in overrides[1:])}
+            for name,value in loss.items():self.assertEqual(parsed['question_probe.'+name],value)
+            self.assertEqual(overrides[0],'data.selection_mode=question_probe')
+            self.assertTrue(all(row.startswith('question_probe.') for row in overrides[1:]))
+            for name in loss:
+                changed=copy.deepcopy(run);changed['question_probe'].pop(name)
+                if name=='loss_mode':continue  # A legacy manifest may omit its historical default.
+                with self.subTest(missing=name),self.assertRaisesRegex(ValueError,'explicitly bind'):
+                    arguments(changed,base)
+
+    def test_sigma3_real_hydra_resolves_explicit_loss_fields(self):
+        with tempfile.TemporaryDirectory() as root:
+            base,run=self.fixture(root,0)
+            loss=dict(loss_mode='sigma3_std_aux6_v1',mean_loss_weight=0.0,std_loss_weight=3.0,count_aux_loss_weight=0.1)
+            run['question_probe'].update(loss);(base/'logs/run-manifest.json').write_text(json.dumps(run))
+            _,config,_=configuration.resolved(base)
+            for name,value in loss.items():self.assertEqual(config.question_probe[name],value)
+
     def test_invalid_budgets_or_relative_paths_rejected_before_launch(self):
         for changed in ({"exploration_questions": True}, {"exploration_questions": -1},
                         {"exploration_questions": 513}, {"selected_questions": 128},
                         {"responses_per_question": 4}, {"cache_dir": "relative"},
-                        {"unknown": 1}):
+                        {"unknown": 1}, {"loss_mode":"unknown"},
+                        {"loss_mode":"sigma3_std_aux6_v1"}):
             with self.subTest(changed=changed), tempfile.TemporaryDirectory() as root:
                 base, run = self.fixture(root, 64)
                 run["question_probe"].update(changed)

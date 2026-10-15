@@ -8,7 +8,8 @@ from unittest import mock
 
 import torch
 
-from search_g1.qprobe_model import CountMomentProbe, OnlineQProbe, QProbeConfig, count_moment_loss
+from search_g1.qprobe_model import (CountMomentProbe, OnlineQProbe, QProbeConfig,
+                                   count_moment_loss, count_moment_group_loss)
 
 
 def labels(outer, n=6, count=None):
@@ -24,6 +25,13 @@ def advance(probe, outer, features, values=None, **overrides):
     metadata.update(overrides)
     return probe.update_completed_outer(outer, labels(outer, len(features)) if values is None else values,
                                         features, **metadata)
+
+
+def sigma3_config(**overrides):
+    config = dict(loss_mode='sigma3_std_aux6_v1', mean_loss_weight=0.0,
+                  std_loss_weight=3.0, count_aux_loss_weight=0.1)
+    config.update(overrides)
+    return QProbeConfig(**config)
 
 
 class QProbeModelTests(unittest.TestCase):
@@ -87,6 +95,135 @@ class QProbeModelTests(unittest.TestCase):
         per = ce + .1*(p['mean']-counts.float()/5).square() + .1*((p['expected_std']-std)/math.sqrt(.3)).square()
         self.assertAlmostEqual(loss.item(), ((per*weights).sum()/weights.sum()).item(), places=6)
         self.assertTrue(torch.isfinite(pieces['count_ce']))
+
+    def test_sigma3_formula_mapping_and_gradients(self):
+        model = CountMomentProbe(3)
+        logits = torch.tensor([[2.,-1.,.4,.8,-.2,1.], [-.3,1.8,.2,-.9,.4,1.],
+                               [1.,.6,-.4,2.,.1,-1.], [.2,-.4,1.3,.7,-.8,1.],
+                               [1.4,.3,-.6,.5,1.7,-.2], [-.7,.1,.5,-1.,.4,2.]],
+                              requires_grad=True)
+        counts = torch.arange(6)
+        weights = torch.tensor([1.,.25,2.,.5,1.5,.75])
+        pred = model.moments(logits)
+        p = logits.softmax(-1)
+        q = torch.stack((p[:,0]+p[:,5], p[:,1]+p[:,4], p[:,2]+p[:,3]), dim=-1)
+        target = torch.tensor([0,1,2,2,1,0])
+        ce3 = -q[torch.arange(6), target].log()
+        ce6 = -p[torch.arange(6), counts].log()
+        expected_std = math.sqrt(.2)*q[:,1] + math.sqrt(.3)*q[:,2]
+        torch.testing.assert_close(pred['expected_std'], expected_std)
+        target_std = (counts.float()*(5-counts.float())/20).sqrt()
+        std_mse = ((expected_std-target_std)/math.sqrt(.3)).square()
+        manual = ((ce3+3*std_mse+.1*ce6)*weights).sum()/weights.sum()
+        loss, pieces = count_moment_loss(pred, counts, sigma3_config(), weights)
+        torch.testing.assert_close(loss, manual)
+        torch.testing.assert_close(pieces['sigma3_ce'], (ce3*weights).sum()/weights.sum())
+        torch.testing.assert_close(pieces['normalized_sample_std_mse'], pieces['std_mse'])
+        torch.testing.assert_close(loss, pieces['sigma3_ce_contribution']+
+                                   pieces['std_mse_contribution']+pieces['count_ce_contribution'])
+        actual_grad, = torch.autograd.grad(loss, logits, retain_graph=True)
+        manual_grad, = torch.autograd.grad(manual, logits)
+        torch.testing.assert_close(actual_grad, manual_grad)
+        self.assertNotIn('mean_mse', pieces)
+
+    def test_sigma3_extreme_logits_have_finite_loss_and_gradients(self):
+        logits = torch.tensor([[1000.,-1000.,-1000.,-1000.,-1000.,1000.],
+                               [-1000.,-1000.,1000.,1000.,-1000.,-1000.]], requires_grad=True)
+        pred = CountMomentProbe(3).moments(logits)
+        counts = torch.tensor([2,0])
+        self.assertEqual(pred['probabilities'][0,2].item(), 0)
+        loss, pieces = count_moment_loss(pred, counts, sigma3_config())
+        self.assertTrue(torch.isfinite(loss))
+        self.assertGreater(pieces['sigma3_ce'].item(), 1900)
+        gradient, = torch.autograd.grad(loss, logits)
+        self.assertTrue(torch.isfinite(gradient).all())
+
+    def test_sigma3_fit_matches_independent_global_recency_adam(self):
+        config = sigma3_config(head_learning_rate=.01, head_epochs_per_outer=1,
+                               head_batch_size=1, replay_half_life_outer=1.)
+        actual = OnlineQProbe(3, config)
+        manual = OnlineQProbe(3, config)
+        x = torch.tensor([[1.,2.,-1.], [-1.,.5,2.]])
+        counts = torch.tensor([0,2])
+        actual.replay_labels = [dict(correct_count=0, source_outer=1),
+                                dict(correct_count=2, source_outer=3)]
+        actual.replay_features = x.clone()
+        weights = torch.tensor([.25,1.]); weights *= len(weights)/weights.sum()
+        order = torch.randperm(len(counts), generator=manual.rng)
+        for index in order.split(1):
+            pred = manual.model(x[index])
+            logits = pred['logits']
+            paired = torch.stack([torch.logsumexp(logits[:, [k,5-k]], -1)
+                                  for k in range(3)], -1)
+            ce3 = torch.nn.functional.cross_entropy(paired, torch.minimum(counts[index],5-counts[index]),
+                                                    reduction='none')
+            ce6 = torch.nn.functional.cross_entropy(logits, counts[index], reduction='none')
+            target_std = (counts[index].float()*(5-counts[index].float())/20).sqrt()
+            std_mse = ((pred['expected_std']-target_std)/math.sqrt(.3)).square()
+            objective = ((ce3+3*std_mse+.1*ce6)*weights[index]).mean()
+            manual.optimizer.zero_grad(set_to_none=True)
+            objective.backward(); manual.optimizer.step()
+        report = actual._fit(3)
+        for key, value in actual.model.state_dict().items():
+            torch.testing.assert_close(value, manual.model.state_dict()[key], rtol=0, atol=0)
+        self.assertTrue(torch.equal(actual.rng.get_state(), manual.rng.get_state()))
+        expected, _ = count_moment_loss(actual.predict(x), counts, config, weights)
+        self.assertAlmostEqual(report['replay_weighted_loss'], expected.item(), places=6)
+        self.assertEqual(report['head_optimizer_updates'], 2)
+        self.assertEqual(report['loss_mode'], config.loss_mode)
+        self.assertEqual(report['loss_identity'], config.loss_identity)
+
+    def test_sigma3_bootstrap_and_online_use_shared_loss_and_progress(self):
+        import search_g1.qprobe_model as module
+        config = sigma3_config(head_learning_rate=.03, head_epochs_per_outer=1, head_batch_size=32)
+        probe = OnlineQProbe(3, config)
+        x = torch.tensor([[1.,2.,3.]]*4)
+        history = labels(1,4,count=2)
+        for item in history:
+            item.update(source_outer=1,selection_source='bootstrap_all_candidate',run_id='old',
+                        attempt_id='old-1',policy_snapshot_id='actor-before-1',sampling_contract_sha='s'*64,
+                        strict_scoring_contract_sha='c'*64,retriever_version='retriever-fixed')
+        before, _ = count_moment_loss(probe.predict(x), torch.full((4,),2), config)
+        with mock.patch.object(module, 'count_moment_group_loss', wraps=count_moment_group_loss) as shared:
+            bootstrap = probe.bootstrap(history,x,actor_outer=1,actor_snapshot_id='actor-after-1')
+            self.assertEqual(shared.call_count, 2)  # One Adam batch and one report.
+            online = advance(probe,2,x,labels(2,4,count=2))
+            self.assertEqual(shared.call_count, 4)
+        self.assertLess(bootstrap['replay_weighted_loss'], before.item())
+        self.assertLess(online['replay_weighted_loss'], bootstrap['replay_weighted_loss'])
+        for report in (bootstrap, online):
+            self.assertEqual(report['loss_identity'], config.loss_identity)
+            self.assertAlmostEqual(report['replay_weighted_loss'], report['sigma3_ce_contribution']+
+                                   report['std_mse_contribution']+report['count_ce_contribution'], places=6)
+
+    def test_loss_checkpoint_legacy_defaults_and_sigma3_binding(self):
+        x = torch.ones(2,3)
+        legacy = OnlineQProbe(3,feature_spec_sha='f'*64)
+        advance(legacy,1,x)
+        old_state = legacy.state_dict()
+        old_state['config'].pop('loss_mode'); old_state['config'].pop('count_aux_loss_weight')
+        old_state.pop('loss_identity'); old_state['actor_snapshot_id'] = 'actor-after-1'
+        restored = OnlineQProbe(3,feature_spec_sha='f'*64)
+        restored.load_state_dict(old_state)
+        self.assertEqual(restored.config.loss_mode, 'count6_moments_v1')
+        self.assertEqual(restored.version, legacy.version)
+        fresh = OnlineQProbe(3,sigma3_config(),feature_spec_sha='f'*64)
+        with self.assertRaisesRegex(ValueError, 'NAMESPACE_MISMATCH'):
+            fresh.load_state_dict(old_state)
+        advance(fresh,1,x)
+        with tempfile.TemporaryDirectory() as directory:
+            old_path = Path(directory)/'old.pt'; torch.save(old_state, old_path)
+            self.assertEqual(OnlineQProbe.load(old_path).config.loss_mode, 'count6_moments_v1')
+            path = Path(directory)/'sigma3.pt'
+            receipt = fresh.save(path,actor_snapshot_id='actor-after-1')
+            reloaded = OnlineQProbe.load(path)
+            self.assertEqual(reloaded.config, fresh.config)
+            self.assertEqual(receipt['loss_identity'], fresh.config.loss_identity)
+            advance(fresh,2,x); advance(reloaded,2,x)
+            self.assertEqual(reloaded.version, fresh.version)
+        forged = fresh.state_dict(); forged['loss_identity'] = 'CE6'
+        with self.assertRaisesRegex(ValueError, 'LOSS_IDENTITY_MISMATCH'):
+            fresh.load_state_dict(forged)
 
     def test_updates_do_not_perturb_actor_rng_and_evict_old_labels(self):
         probe = OnlineQProbe(4, dict(replay_window_outer=2, head_epochs_per_outer=1))
@@ -161,6 +298,10 @@ class QProbeModelTests(unittest.TestCase):
 
     def test_numeric_and_config_guards(self):
         with self.assertRaises(ValueError): QProbeConfig(replay_half_life_outer=0)
+        with self.assertRaises(ValueError): QProbeConfig(loss_mode='unknown')
+        with self.assertRaisesRegex(ValueError,'mean_loss_weight=0'):
+            QProbeConfig(loss_mode='sigma3_std_aux6_v1')
+        with self.assertRaises(ValueError): sigma3_config(count_aux_loss_weight=float('nan'))
         self.assertEqual(QProbeConfig.from_mapping({'head_hidden_size':32}).hidden_size,32)
         with self.assertRaises(ValueError): QProbeConfig.from_mapping({'head_hidden_size':32,'hidden_size':64})
         with self.assertRaises(ValueError): OnlineQProbe(4).predict(torch.full((1,4),float('nan')))

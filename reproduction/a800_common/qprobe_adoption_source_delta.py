@@ -55,6 +55,14 @@ INTEGRATION_EDITS = frozenset((
     'reproduction/common8/configuration.py',
     'reproduction/common8/formal_contract.py',
     'reproduction/common8/qprobe_bind.py',
+    # The new question head loss changes neither frozen G1 reward heads nor
+    # the teacher's accepted trajectories; exact edited bytes remain bound.
+    'reproduction/common8/qprobe_configuration.py',
+    'reproduction/common8/qprobe-head-defaults.json',
+    'reproduction/common8/test_qprobe_bind.py',
+    'reproduction/common8/test_qprobe_configuration.py',
+    'search_g1/test_qprobe_model.py',
+    'verl/trainer/config/ppo_trainer.yaml',
     'reproduction/common8/sampling_capture.py',
     'reproduction/common8/test_continuous_sampling.py',
     'reproduction/common8/generation_behavior.py',

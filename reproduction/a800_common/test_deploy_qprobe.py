@@ -11,6 +11,7 @@ import subprocess
 import tempfile
 import time
 import unittest
+from types import SimpleNamespace
 from unittest import mock
 
 from reproduction.a800_common import deploy_qprobe as control
@@ -54,6 +55,65 @@ def feature_origin():
 
 
 class ProspectiveControlTests(unittest.TestCase):
+    def test_fresh_sigma3_intent_is_exact_and_excludes_restore_or_different_cache(self):
+        selected=dict(intent(),fresh_question_probe_loss=dict(control.SIGMA3_LOSS))
+        self.assertIs(control.validate_intent(selected),selected)
+        namespace={};exec(control.REMOTE_COMMON,namespace)
+        namespace['check'](selected)
+        mutations=(lambda row:row.update(saved_checkpoint_restore=dict(source_receipt='/data/prior/receipt.json',source_receipt_sha256='a'*64)),
+            lambda row:row['fresh_question_probe_loss'].update(std_loss_weight=0.1),
+            lambda row:row.update(teacher_warmup_cache='/data/other/teacher'),
+            lambda row:row.update(initial_probes_source_base='/data/shaoshitong/Search-G1-a800-fresh200-'+'a'*32))
+        for index,mutate in enumerate(mutations):
+            changed=copy.deepcopy(selected);mutate(changed)
+            with self.subTest(index=index),self.assertRaises(AssertionError):control.validate_intent(changed)
+            with self.subTest(remote=index),self.assertRaises(AssertionError):namespace['check'](changed)
+        with self.assertRaisesRegex(AssertionError,'excludes saved-state'):
+            control.stage(SimpleNamespace(fresh_sigma3=True,restore_receipt='/data/prior/receipt.json'))
+
+    def test_fresh_sigma3_gate_rejects_old_state_and_requires_loss_specific_review(self):
+        selected=dict(intent(),fresh_question_probe_loss=dict(control.SIGMA3_LOSS))
+        run=dict(source_commit=selected['source_commit'],profile='common8',execution_backend='ssh_local',
+            completed_updates=0,target_updates=200,training_world_size=4,
+            initial_model='/data/search-g1/assets/qwen2.5-3b-instruct',reference_model='/data/search-g1/assets/qwen2.5-3b-instruct',
+            model_revision='aa8e72537993ba99e69dfaafa59ed015b17504d1',
+            question_probe=dict(control.SIGMA3_LOSS,teacher_warmup_cache=control.TEACHER_CACHE))
+        self.assertIs(control.validate_fresh_sigma3_run(selected,run),run)
+        for name in ('actor_checkpoint','reference_checkpoint','resume_path','inherited_policy_run_id',
+                     'inherited_optimizer_run_id','inherited_scheduler_run_id','full_state_restore'):
+            with self.subTest(name=name),self.assertRaises(AssertionError):
+                control.validate_fresh_sigma3_run(selected,dict(run,**{name:'prior'}))
+        for name in ('initial_head_checkpoint','snapshot_path','restore_state'):
+            changed=copy.deepcopy(run);changed['question_probe'][name]='prior'
+            with self.subTest(name=name),self.assertRaises(AssertionError):control.validate_fresh_sigma3_run(selected,changed)
+        review=dict(role='a800_qprobe_independent_code_review',approved=True,independent=True,
+            reviewer='independent',implementation_actor='implementation',source_commit=selected['source_commit'],
+            source_sha256=selected['source_sha256'],reviewed_unix=time.time()-1,
+            checks={key:True for key in control.REVIEW_CHECKS+control.SIGMA3_REVIEW_CHECKS})
+        self.assertIs(control.validate_review(review,selected),review)
+        review['checks'].pop(control.SIGMA3_REVIEW_CHECKS[0])
+        with self.assertRaises(AssertionError):control.validate_review(review,selected)
+
+    def test_teacher_identity_excludes_head_loss_but_keeps_rollout_and_scorer_sha(self):
+        from search_g1.qprobe_runtime import strict_scoring_sources
+        from search_g1.qprobe_warmup import teacher_identity
+        manifest=dict(model_revision='official',training_world_size=4,initial_model_sha256={'model':'a'*64},
+            input_sha256={'train.parquet':'b'*64},budget={'common_manifest_sha256':'c'*64},retriever_version='d'*64,
+            source_sha256=dict(strict_scoring_sources(),**{'search_g1/qprobe_model.py':'1'*64,
+                'reproduction/common8/qprobe_configuration.py':'2'*64,'reproduction/common8/qprobe_bind.py':'3'*64,
+                'search_g1/qprobe_warmup.py':'4'*64,'search_g1/qprobe_teacher_worker.py':'5'*64}))
+        kwargs=dict(feature_spec_sha='f'*64,sampling_config={'n_agent':5},agent_config={'max_prompt_length':4096},
+                    max_turns=4,seed=20261013,questions=[{'qid':'one','question_hash':'q'}])
+        expected=teacher_identity(manifest,**kwargs)
+        changed=copy.deepcopy(manifest);changed['question_probe']=dict(control.SIGMA3_LOSS)
+        for name in ('search_g1/qprobe_model.py','reproduction/common8/qprobe_configuration.py','reproduction/common8/qprobe_bind.py'):
+            changed['source_sha256'][name]='9'*64
+        self.assertEqual(expected,teacher_identity(changed,**kwargs))
+        changed['source_sha256']['search_g1/qprobe_teacher_worker.py']='9'*64
+        self.assertNotEqual(expected,teacher_identity(changed,**kwargs))
+        changed['source_sha256']['search_g1/signals.py']='9'*64
+        with self.assertRaisesRegex(ValueError,'STRICT_SCORER_DIFFERS'):teacher_identity(changed,**kwargs)
+
     def test_prepared_micro4_derives_and_resolves_the_actual_four_rank_contract(self):
         from reproduction.a800_common import prepare_run as preparation
         from reproduction.common8.formal_contract import formal_mathematics,verify_formal_config

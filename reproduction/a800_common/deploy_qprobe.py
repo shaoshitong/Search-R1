@@ -29,6 +29,11 @@ BASELINE_COMMIT = '34e63b7b12f4056503803905c1b3dd1be95f0adc'
 BASELINE_RUN_ID = '1db662001a0f4d998928bcf6f5f33c9d'
 INITIAL_PROBES = '/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef'
 TEACHER_CACHE = '/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v3-async-top512'
+SIGMA3_LOSS = dict(loss_mode='sigma3_std_aux6_v1', mean_loss_weight=0.0,
+                  std_loss_weight=3.0, count_aux_loss_weight=0.1)
+SIGMA3_REVIEW_CHECKS = ('fresh_official_actor_reference_optimizer_scheduler_rng_sampler_head',
+                      'sigma3_ce_normalized_sample_std_mse3_aux6_ce_point1',
+                      'reuse_teacher_v3_full_identity_and_sha_no_old_question_head')
 FEATURE_SOURCE_BASE = '/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18'
 FEATURE_SOURCE_COMMIT = 'bf4b88d04c166951691029b18d05d91ece7c7054'
 FEATURE_SOURCE_RUN = '0f49c2a664b448f59b5f21dd49f9b10b'
@@ -66,6 +71,13 @@ def validate_intent(intent):
     assert intent['launch_services'] is False and intent['target_updates'] == 200
     assert intent['gpu_placement_policy']==PLACEMENT_POLICY and intent['gpu_placement_bound'] is False
     restore=intent.get('saved_checkpoint_restore')
+    fresh_loss=intent.get('fresh_question_probe_loss')
+    if fresh_loss is not None:
+        assert type(fresh_loss) is dict and fresh_loss == SIGMA3_LOSS
+        assert all(type(fresh_loss[key]) in (int,float) for key in SIGMA3_LOSS if key != 'loss_mode')
+        assert restore is None, 'Fresh sigma3 selection cannot restore training state'
+        assert intent['initial_probes_source_base'] == INITIAL_PROBES
+        assert intent['teacher_warmup_cache'] == TEACHER_CACHE
     if restore is not None:
         assert set(restore)=={'source_receipt','source_receipt_sha256'}
         validate_teacher_cache(restore['source_receipt'])
@@ -112,10 +124,34 @@ def validate_review(review, intent):
     assert review['source_commit'] == intent['source_commit']
     assert review['source_sha256'] == intent['source_sha256']
     checks=REVIEW_CHECKS+(RESTORE_REVIEW_CHECKS if intent.get('saved_checkpoint_restore') else ())
+    if intent.get('fresh_question_probe_loss') is not None:checks+=SIGMA3_REVIEW_CHECKS
     assert set(review['checks']) == set(checks)
     assert all(review['checks'][key] is True for key in checks)
     assert type(review['reviewed_unix']) in (int, float) and 0 < review['reviewed_unix'] <= time.time()
     return review
+
+
+def validate_fresh_sigma3_run(intent, run):
+    """Admit the explicit new loss only with genuinely fresh training state."""
+    if intent.get('fresh_question_probe_loss') is None:
+        return run
+    validate_intent(intent)
+    assert run['source_commit'] == intent['source_commit']
+    assert run['profile'] == 'common8' and run['execution_backend'] == 'ssh_local'
+    assert run['completed_updates'] == 0 and run['target_updates'] == 200
+    assert run['training_world_size'] == 4
+    assert run['initial_model'] == run['reference_model'] == '/data/search-g1/assets/qwen2.5-3b-instruct'
+    assert run['model_revision'] == 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
+    for name in ('actor_checkpoint', 'reference_checkpoint', 'resume_path',
+                 'inherited_policy_run_id', 'inherited_optimizer_run_id',
+                 'inherited_scheduler_run_id', 'full_state_restore'):
+        assert run.get(name) is None, 'Fresh sigma3 run inherited state: '+name
+    q=run['question_probe']
+    assert {key:q.get(key) for key in SIGMA3_LOSS} == SIGMA3_LOSS
+    assert all(type(q[key]) in (int,float) for key in SIGMA3_LOSS if key != 'loss_mode')
+    assert all(q.get(key) is None for key in ('initial_head_checkpoint','snapshot_path','restore_state'))
+    assert q['teacher_warmup_cache'] == TEACHER_CACHE
+    return run
 
 
 def validate_feature_origin(old, new, ready, exit_receipt, manifest):
@@ -229,6 +265,13 @@ def check(intent):
  assert intent['launch_services'] is False and intent['target_updates']==200
  assert intent['gpu_placement_policy']=='launch_time_four_idle_excluding_auxiliary_v1' and intent['gpu_placement_bound'] is False
  restore=intent.get('saved_checkpoint_restore')
+ fresh_loss=intent.get('fresh_question_probe_loss')
+ if fresh_loss is not None:
+  assert type(fresh_loss) is dict and fresh_loss==dict(loss_mode='sigma3_std_aux6_v1',mean_loss_weight=0.0,std_loss_weight=3.0,count_aux_loss_weight=0.1)
+  assert all(type(fresh_loss[key]) in (int,float) for key in ('mean_loss_weight','std_loss_weight','count_aux_loss_weight'))
+  assert restore is None, 'Fresh sigma3 selection cannot restore training state'
+  assert intent['initial_probes_source_base']=='/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef'
+  assert intent['teacher_warmup_cache']=='/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v3-async-top512'
  if restore is not None:
   assert set(restore)=={'source_receipt','source_receipt_sha256'}
   path=Path(restore['source_receipt'])
@@ -400,7 +443,7 @@ payload=json.load(sys.stdin);intent=payload['intent'];staged(intent);base=owned(
 assert read(base/'preparation/qprobe-intent.json')==intent
 before=read(base/'logs/run-manifest.json');features=read(base/'preparation/features-ready.json')
 sys.path.insert(0,str(base/'repo'))
-from reproduction.a800_common.deploy_qprobe import validate_prepared_features
+from reproduction.a800_common.deploy_qprobe import validate_prepared_features,validate_fresh_sigma3_run
 validate_prepared_features(features,before)
 assert features['cache_dir']==str(base/'question-features')
 assert sha(owned(base/'question-features/manifest.json'))==features['manifest_sha256']
@@ -417,7 +460,9 @@ if restoration:
  run=bind_restored_features(base,base/'question-features')
 else:
  run=bind(base,base/'question-features',exploration_questions=0,retriever_version=sha_json(ASSETS),
-  seed=20261013,teacher_warmup_cache=teacher_storage(intent),infra_rollout=DEFAULT_ROLLOUT_PHASE)
+  seed=20261013,teacher_warmup_cache=teacher_storage(intent),infra_rollout=DEFAULT_ROLLOUT_PHASE,
+  **intent.get('fresh_question_probe_loss',{}))
+validate_fresh_sigma3_run(intent,run)
 receipt=dict(stage='QPROBE_BOUND_PRELAUNCH',deployment_id=intent['deployment_id'],run_id=run['run_id'],
  source_commit=run['source_commit'],question_probe=run['question_probe'],target_updates=200,
  extra_frozen_teacher_warmup_outers=0 if restoration else 1,
@@ -546,7 +591,7 @@ REMOTE_LAUNCH_GATE = REMOTE_COMMON + r'''
 payload=json.load(sys.stdin);intent=payload['intent'];staged(intent);base=owned(intent['base']);unlaunched(base)
 assert read(base/'preparation/qprobe-intent.json')==intent
 sys.path.insert(0,str(base/'repo'))
-from reproduction.a800_common.deploy_qprobe import validate_review,validate_prepared_features
+from reproduction.a800_common.deploy_qprobe import validate_review,validate_prepared_features,validate_fresh_sigma3_run
 from reproduction.a800_common import deploy as published_deploy
 repo=owned(base/'repo');assert git('-C',str(repo),'rev-parse','HEAD')==intent['source_commit']
 assert not git('-C',str(repo),'status','--porcelain') and source_map(repo)==intent['source_sha256']
@@ -557,6 +602,7 @@ assert payload['launch_code']==published_deploy.REMOTE_LAUNCH_PREPARED
 assert payload['embedded_launcher_sha256']==hashlib.sha256(published_deploy.REMOTE_LAUNCH_PREPARED.encode()).hexdigest()
 review=validate_review(payload['review'],intent)
 run=read(base/'logs/run-manifest.json');q=run['question_probe']
+validate_fresh_sigma3_run(intent,run)
 ready=validate_prepared_features(read(base/'preparation/features-ready.json'),run)
 assert ready['cache_dir']==str(base/'question-features')
 assert sha(owned(base/'question-features/manifest.json'))==ready['manifest_sha256']
@@ -613,6 +659,10 @@ def create_bundle(repo, commit, ref, bundle):
 
 def stage(args):
     repo = Path(__file__).resolve().parents[2]
+    assert not (args.fresh_sigma3 and args.restore_receipt), 'Fresh sigma3 excludes saved-state restoration'
+    if args.fresh_sigma3:
+        assert args.initial_probes_source_base in (None,INITIAL_PROBES)
+        assert args.teacher_warmup_cache in (None,TEACHER_CACHE)
     assert re.fullmatch('[0-9a-f]{40}', args.source_commit)
     assert re.fullmatch(r'refs/heads/[A-Za-z0-9][A-Za-z0-9._/-]*', args.published_ref)
     assert re.fullmatch('[0-9a-f]{64}', args.baseline_intent_sha256)
@@ -635,6 +685,7 @@ def stage(args):
         teacher_warmup_cache=str(validate_teacher_cache(args.teacher_warmup_cache or TEACHER_CACHE)),
         bundle_bytes=bundle.stat().st_size, bundle_sha256=digest(bundle), target_updates=200,
         launch_services=False, gpu_placement_policy=PLACEMENT_POLICY,gpu_placement_bound=False,created_unix=time.time())
+    if args.fresh_sigma3:intent['fresh_question_probe_loss']=dict(SIGMA3_LOSS)
     if args.restore_receipt:
         assert args.initial_probes_source_base is None, 'Saved-state restoration excludes fresh initial-probe adoption'
         intent['saved_checkpoint_restore']=dict(source_receipt=args.restore_receipt,source_receipt_sha256=args.restore_receipt_sha256)
@@ -700,6 +751,8 @@ def main():
     parser.add_argument('--initial-probes-source-base')
     parser.add_argument('--teacher-warmup-cache')
     parser.add_argument('--restore-receipt');parser.add_argument('--restore-receipt-sha256')
+    parser.add_argument('--fresh-sigma3', action='store_true',
+                        help='Bind the new sigma3/std/aux6 loss in a fresh official-model namespace')
     parser.add_argument('--feature-source-base')
     parser.add_argument('--physical-index', type=int, choices=(5,6), default=6)
     parser.add_argument('--batch-size', type=int, default=32)
@@ -710,7 +763,7 @@ def main():
         assert bool(args.restore_receipt)==bool(args.restore_receipt_sha256)
         result = stage(args)
     else:
-        assert args.source_commit is None and args.published_ref is None and args.baseline_intent_sha256 is None and args.initial_probes_source_base is None and args.teacher_warmup_cache is None and args.restore_receipt is None and args.restore_receipt_sha256 is None
+        assert args.source_commit is None and args.published_ref is None and args.baseline_intent_sha256 is None and args.initial_probes_source_base is None and args.teacher_warmup_cache is None and args.restore_receipt is None and args.restore_receipt_sha256 is None and not args.fresh_sigma3
         handle = args.handle.resolve();intent = validate_intent(json.loads(handle.read_text()))
         if args.action == 'feature-plan':
             result = feature_plan(intent, args.physical_index, args.batch_size)

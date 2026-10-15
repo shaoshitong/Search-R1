@@ -12,7 +12,8 @@ from reproduction.common8.source_files import runtime_files
 
 def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
          initial_head_checkpoint=None, seed=20261013, teacher_warmup_cache=None,
-         infra_rollout=None):
+         infra_rollout=None, loss_mode='count6_moments_v1',
+         mean_loss_weight=0.1, std_loss_weight=0.1, count_aux_loss_weight=0.1):
     base = Path(base).resolve()
     manifest = base / "logs/run-manifest.json"
     run = json.loads(manifest.read_text())
@@ -41,7 +42,12 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
         raise ValueError("Question feature cache does not cover the verified canonical training artifact")
     if teacher_warmup_cache and initial_head_checkpoint:
         raise ValueError('Teacher warmup and historical initial head are distinct initialization routes')
-    head_config = QProbeConfig(seed=seed, bootstrap_max_groups_per_outer=5120 if teacher_warmup_cache else 512)
+    if loss_mode == 'sigma3_std_aux6_v1' and initial_head_checkpoint:
+        raise ValueError('The sigma3 loss requires a fresh question head')
+    head_config = QProbeConfig(seed=seed, loss_mode=loss_mode,
+        mean_loss_weight=mean_loss_weight, std_loss_weight=std_loss_weight,
+        count_aux_loss_weight=count_aux_loss_weight,
+        bootstrap_max_groups_per_outer=5120 if teacher_warmup_cache else 512)
     settings = dict(cache_dir=str(cache), output_dir=str(base / "artifacts/question-probe"),
                     candidate_questions=5120, selected_questions=512,
                     responses_per_question=5, exploration_questions=exploration_questions,
@@ -138,11 +144,18 @@ def main():
     parser.add_argument("--initial-head-checkpoint")
     parser.add_argument("--seed", type=int, default=20261013)
     parser.add_argument('--teacher-warmup-cache')
+    parser.add_argument('--loss-mode', choices=('count6_moments_v1', 'sigma3_std_aux6_v1'),
+                        default='count6_moments_v1')
+    parser.add_argument('--mean-loss-weight', type=float, default=0.1)
+    parser.add_argument('--std-loss-weight', type=float, default=0.1)
+    parser.add_argument('--count-aux-loss-weight', type=float, default=0.1)
     args = parser.parse_args()
     run = bind(args.base, args.cache_dir, exploration_questions=args.exploration_questions,
                retriever_version=args.retriever_version,
                initial_head_checkpoint=args.initial_head_checkpoint, seed=args.seed,
-               teacher_warmup_cache=args.teacher_warmup_cache)
+               teacher_warmup_cache=args.teacher_warmup_cache, loss_mode=args.loss_mode,
+               mean_loss_weight=args.mean_loss_weight, std_loss_weight=args.std_loss_weight,
+               count_aux_loss_weight=args.count_aux_loss_weight)
     print(json.dumps({"run_id": run["run_id"], "selection_mode": "question_probe",
                       "question_probe": run["question_probe"], "training_started": False}))
 
