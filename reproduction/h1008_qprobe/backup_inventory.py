@@ -16,7 +16,7 @@ def digest(path):
     return h.hexdigest()
 
 
-def inventory(receipt_path, expected_receipt_sha, *, allowed_roots=('/mnt/data','/dataset')):
+def inventory(receipt_path, expected_receipt_sha, *, allowed_roots=('/mnt/data','/dataset'), official_stage_root=None):
     receipt_path=Path(receipt_path).resolve()
     if digest(receipt_path)!=expected_receipt_sha:raise ValueError('Paired receipt SHA differs')
     pair=json.loads(receipt_path.read_text())
@@ -76,11 +76,12 @@ def inventory(receipt_path, expected_receipt_sha, *, allowed_roots=('/mnt/data',
     for name,sha in run['initial_model_sha256'].items():add(Path(run['initial_model'])/name,sha,'official_actor_reference_initializer')
     # Root-disk /dataset is not exported to h100-10. Use only the completed,
     # byte-verified same-host staging aliases, retaining original payload paths.
-    stage_root=base/'backup-dependencies/official-model-once-v1'
+    stage_root=(Path(official_stage_root).resolve() if official_stage_root is not None
+                else base/'backup-dependencies/official-model-once-v1')
     stage_result=stage_root/'RESULT.json';aliases=[]
     if stage_result.exists():
         stage=json.loads(stage_result.read_text());intent=json.loads((stage_root/'INTENT.json').read_text())
-        if stage.get('status')!='SAME_HOST_OFFICIAL_MODEL_STAGE_FULL_SHA_PASS' or stage['run_id']!=pair['run_id'] or intent['run_id']!=pair['run_id']:
+        if stage.get('status')!='SAME_HOST_OFFICIAL_MODEL_STAGE_FULL_SHA_PASS' or stage['run_id']!=intent['run_id'] or (official_stage_root is None and stage['run_id']!=pair['run_id']):
             raise ValueError('Completed staging identity required')
         expected=run['initial_model_sha256'];original=Path(run['initial_model']).resolve()
         if intent['files_sha256']!=expected or Path(stage['source_model']).resolve()!=original:
@@ -99,11 +100,37 @@ def inventory(receipt_path, expected_receipt_sha, *, allowed_roots=('/mnt/data',
             staged_names.add(name)
         if staged_names!=set(expected):raise ValueError('Incomplete official staging aliases')
         for path in (stage_result,stage_root/'INTENT.json',stage_root/'LAUNCH.json'):add(path,digest(path),'staging_alias_evidence')
-        code=[p for p in (base/'preparation').glob('stage-official-backup-*.py') if digest(p)==intent['worker_source_sha256']]
+        code=[p for p in (stage_root.parent.parent/'preparation').glob('stage-official-backup-*.py') if digest(p)==intent['worker_source_sha256']]
         if not code:raise ValueError('Published staging worker source missing')
         for path in code:add(path,intent['worker_source_sha256'],'staging_worker_source')
     elif any(str(Path(run['initial_model']).resolve()).startswith(prefix) for prefix in ('/dataset/',)):
         raise ValueError('Official root-disk dependency staging still pending')
+    # Frozen teacher data can belong to a previous official-only producer.
+    # Preserve its original identity instead of relabelling it as this run.
+    teacher_path=probe.get('teacher_warmup_cache')
+    if teacher_path:
+        teacher=Path(teacher_path).resolve();complete=teacher/'complete.json'
+        proof=json.loads(complete.read_text())
+        if proof.get('status')!='FROZEN_TEACHER_WARMUP_5120_G5_FULL_SHA_PASS' or proof.get('questions')!=5120 or proof.get('trajectories')!=25600:
+            raise ValueError('Complete official teacher pool required')
+        ready_path=base/'artifacts/question-probe/teacher-warmup-ready.json'
+        ready=json.loads(ready_path.read_text())
+        if ready.get('status')!='FROZEN_TEACHER_WARMUP_HEAD_READY' or ready.get('cache_receipt')!=proof or ready.get('fitted_questions')!=5120:
+            raise ValueError('Teacher proof differs from actual fresh head bootstrap')
+        add(ready_path,digest(ready_path),'actual_teacher_bootstrap_receipt')
+        initial=ready['head_checkpoint'];add(initial['path'],initial['sha256'],'initial_teacher_fitted_head',initial['bytes'])
+        add(complete,digest(complete),'frozen_teacher_complete')
+        add(teacher/'identity.json',proof['identity_sha256'],'frozen_teacher_identity')
+        expected={'chunk-%02d.json'%i for i in range(10)}
+        if {x['relative_path'] for x in proof['chunks']}!=expected or len(proof['chunks'])!=10:
+            raise ValueError('Teacher chunk set differs')
+        for chunk in proof['chunks']:
+            path=teacher/chunk['relative_path']
+            if digest(path)!=chunk['sha256']:raise ValueError('Teacher chunk SHA changed')
+            add(path,chunk['sha256'],'frozen_teacher_labels')
+            raw=json.loads(path.read_text())['raw_rollout'];source=(teacher/raw['relative_path']).resolve()
+            if source.parent!=teacher:raise ValueError('Teacher raw rollout escapes namespace')
+            add(source,raw['sha256'],'frozen_teacher_raw_rollout',raw['bytes'])
     for name,sha in run['input_sha256'].items():add(base/'data'/name,sha,'canonical_input')
     source_manifest=base/'preparation/source-files.json'
     add(source_manifest,digest(source_manifest),'source_file_manifest')

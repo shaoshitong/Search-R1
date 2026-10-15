@@ -48,6 +48,46 @@ class BackupInventoryTests(unittest.TestCase):
                     plan=inventory(path,digest(path),allowed_roots=(root,));self.assertEqual(plan['source_aliases'][0]['exported_source_path'],str(target.resolve()))
                     self.assertFalse(plan['independent_full_sha_performed'])
 
+    def test_authenticated_official_stage_can_be_reused_without_relabelling_run(self):
+        with tempfile.TemporaryDirectory() as root:
+            path,pair=self.fixture(root);base=Path(pair['source_base']);stage=Path(root)/'old/backup-dependencies/official-model-once-v1'
+            (stage/'model').mkdir(parents=True);(stage.parent.parent/'preparation').mkdir()
+            original=Path(root)/'official/model.txt';target=stage/'model/model.txt';target.write_bytes(original.read_bytes());sha=digest(original)
+            code=stage.parent.parent/'preparation/stage-official-backup-fixture.py';code.write_text('small worker fixture')
+            (stage/'INTENT.json').write_text(json.dumps(dict(run_id='old-official',files_sha256={'model.txt':sha},worker_source_sha256=digest(code))))
+            (stage/'LAUNCH.json').write_text('{}')
+            row=dict(source_path=str(original),staged_path=str(target),bytes=target.stat().st_size,expected_sha256=sha,source_full_read_sha256=sha,staged_full_read_sha256=sha)
+            (stage/'RESULT.json').write_text(json.dumps(dict(status='SAME_HOST_OFFICIAL_MODEL_STAGE_FULL_SHA_PASS',run_id='old-official',source_model=str(original.parent),files=[row])))
+            result=inventory(path,digest(path),allowed_roots=(root,),official_stage_root=stage)
+            self.assertEqual(result['run_id'],'fresh')
+            self.assertEqual(result['source_aliases'][0]['exported_source_path'],str(target.resolve()))
+            row['source_full_read_sha256']='0'*64
+            data=json.loads((stage/'RESULT.json').read_text());data['files']=[row];(stage/'RESULT.json').write_text(json.dumps(data))
+            with self.assertRaisesRegex(ValueError,'Staging full SHA'):
+                inventory(path,digest(path),allowed_roots=(root,),official_stage_root=stage)
+
+    def test_teacher_closure_is_bound_to_actual_bootstrap_and_contains_raw_sources(self):
+        with tempfile.TemporaryDirectory() as root:
+            path,pair=self.fixture(root);base=Path(pair['source_base']);teacher=Path(root)/'old-teacher';teacher.mkdir()
+            (teacher/'identity.json').write_text('{}');chunks=[]
+            for index in range(10):
+                raw=teacher/('rollout-%02d.pt'%index);raw.write_bytes(b'tiny raw fixture')
+                chunk=teacher/('chunk-%02d.json'%index)
+                chunk.write_text(json.dumps(dict(raw_rollout=dict(relative_path=raw.name,sha256=digest(raw),bytes=raw.stat().st_size))))
+                chunks.append(dict(relative_path=chunk.name,sha256=digest(chunk)))
+            proof=dict(status='FROZEN_TEACHER_WARMUP_5120_G5_FULL_SHA_PASS',questions=5120,trajectories=25600,identity_sha256=digest(teacher/'identity.json'),chunks=chunks)
+            (teacher/'complete.json').write_text(json.dumps(proof))
+            ready=base/'artifacts/question-probe/teacher-warmup-ready.json';ready.parent.mkdir(parents=True)
+            head=ready.parent/'initial.pt';head.write_bytes(b'tiny initial head')
+            receipt=dict(status='FROZEN_TEACHER_WARMUP_HEAD_READY',cache_receipt=proof,fitted_questions=5120,head_checkpoint=dict(path=str(head),sha256=digest(head),bytes=head.stat().st_size))
+            ready.write_text(json.dumps(receipt))
+            manifest=Path(pair['source_run_manifest']['path']);run=json.loads(manifest.read_text());run['question_probe']['teacher_warmup_cache']=str(teacher);manifest.write_text(json.dumps(run))
+            pair['source_run_manifest'].update(full_read_sha256=digest(manifest),bytes=manifest.stat().st_size);path.write_text(json.dumps(pair))
+            result=inventory(path,digest(path),allowed_roots=(root,))
+            self.assertEqual(sum('frozen_teacher_raw_rollout' in x['roles'] for x in result['files']),10)
+            receipt['cache_receipt']=dict(proof,questions=1);ready.write_text(json.dumps(receipt))
+            with self.assertRaisesRegex(ValueError,'Teacher proof differs'):inventory(path,digest(path),allowed_roots=(root,))
+
     def test_missing_boundary_or_changed_pinned_cache_and_extra_checkpoint_are_rejected(self):
         for change in ('boundary','cache','extra'):
             with self.subTest(change=change),tempfile.TemporaryDirectory() as root:
