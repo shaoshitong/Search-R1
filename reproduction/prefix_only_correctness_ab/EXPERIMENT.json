@@ -1,0 +1,81 @@
+{
+  "user_request": "Continue question+10/20/40/80; remove question positions after encoder layer27 for classification",
+  "encoder_input": "original full actual first prompt plus own raw first-request prefix",
+  "encoder_layer_index": 27,
+  "encoder_boundary": "post_block",
+  "encoder_frozen": true,
+  "feature_input_to_head": "prefix_hidden_only",
+  "question_hidden_passed_to_head": false,
+  "head_block": "one complete copy of official decoder index35",
+  "head_flatten_max_prefix": 80,
+  "head_rope_positions": "original_prompt_length+arange(actual_prefix_length)",
+  "prefix_lengths": [
+    10,
+    20,
+    40,
+    80
+  ],
+  "epochs": 20,
+  "steps_per_epoch": 100,
+  "expected_adam_steps_per_rank": 2000,
+  "global_batch_per_arm": 256,
+  "world_size_per_arm": 2,
+  "local_batch": 128,
+  "gradient_accumulation": 1,
+  "sampling": "with-replacement global128correct+128wrong",
+  "loss": "mean BCEWithLogits, own trajectory strict_EM",
+  "learning_rate": 0.0003,
+  "master_optimizer_dtype": "float32",
+  "compute_dtype": "bfloat16",
+  "seed": 1729,
+  "train_questions": 5120,
+  "train_trajectories": 25600,
+  "diagnostic_questions": 512,
+  "diagnostic_trajectories": 2560,
+  "diagnostic_epochs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+  ],
+  "fixed_final_epoch": 20,
+  "teacher_regenerated": false,
+  "physical_indices": {
+    "10": [
+      0,
+      1
+    ],
+    "20": [
+      2,
+      3
+    ],
+    "40": [
+      4,
+      5
+    ],
+    "80": [
+      6,
+      7
+    ]
+  },
+  "models_features_predictions": "remote only",
+  "formal_actor_training_started": false,
+  "previous_results_preserved": true
+}
