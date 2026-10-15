@@ -10,6 +10,7 @@ from pathlib import Path
 import re
 import shlex
 import sys
+import subprocess
 
 
 LOGIN_HOSTS = ('10.120.81.30', '10.120.48.31', '10.120.48.32', '10.120.48.33')
@@ -37,6 +38,22 @@ def bound_command(command, login_host, expected_host_identity):
             ' sys.exit(86)\n'
             "os.execv('/bin/bash',['bash','-c',"+repr(command)+'])\n')
     return 'python3 -c '+shlex.quote(code)
+
+
+def _campus_long(command,payload,timeout):
+    """Same two authorized HK3 routes; both preserve an explicit long deadline."""
+    primary=['ssh','-T','-oBatchMode=yes','-oStrictHostKeyChecking=yes','-oConnectTimeout=8','hkust3',command]
+    fallback=['ssh','-T','-B','en0','-oProxyCommand=none','-oProxyJump=none',
+        '-oBatchMode=yes','-oStrictHostKeyChecking=yes','-oConnectTimeout=8','hkust3',command]
+    for index,args in enumerate((primary,fallback)):
+        try:
+            result=subprocess.run(args,input=payload,capture_output=True,text=True,timeout=timeout)
+        except subprocess.TimeoutExpired as error:
+            output=error.stdout or ''
+            if isinstance(output,bytes):output=output.decode(errors='replace')
+            return subprocess.CompletedProcess(args,124,output,
+                'Observation timed out; inspect the existing remote operation before retry')
+        if result.returncode!=255 or index==1:return result
 
 
 def run(account, command, payload, control_work, shell=False, login_host=LOGIN_HOSTS[0],
@@ -68,7 +85,10 @@ def run(account, command, payload, control_work, shell=False, login_host=LOGIN_H
     else:
         ssh.append(command)
     code = "import os,sys,subprocess;env=os.environ.copy();env['SSHPASS']=sys.stdin.readline().rstrip('\\n');data=sys.stdin.read();r=subprocess.run("+repr(ssh)+",input=data,env=env,capture_output=True,text=True,timeout="+str(observation_timeout)+");print(r.stdout,end='');print(r.stderr,file=sys.stderr,end='');sys.exit(r.returncode)"
-    result = m.campus('hkust3', 'python3 -c '+shlex.quote(code), input=password+'\n'+payload, observation_timeout=observation_timeout+10)
+    outer_command='python3 -c '+shlex.quote(code)
+    result = (m.campus('hkust3',outer_command,input=password+'\n'+payload,observation_timeout=65)
+              if observation_timeout==55 else
+              _campus_long(outer_command,password+'\n'+payload,observation_timeout+10))
     password = None
     return result
 

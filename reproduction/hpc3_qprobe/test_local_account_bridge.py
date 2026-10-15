@@ -21,7 +21,8 @@ class LoginEndpointTest(unittest.TestCase):
         credential = '\u8d26\u53f7 jxu957 \u5bc6\u7801: `fixture-password`'
         with patch.object(bridge.importlib.util, 'spec_from_file_location', return_value=spec), \
              patch.object(bridge.importlib.util, 'module_from_spec', return_value=module), \
-             patch.object(bridge.Path, 'read_text', return_value=credential):
+             patch.object(bridge.Path, 'read_text', return_value=credential), \
+             patch.object(bridge,'_campus_long',side_effect=lambda command,payload,timeout:campus('hkust3',command,input=payload,observation_timeout=timeout)):
             result = bridge.run('jxu957', 'printf readonly', '', '/fixture/control', **kwargs)
         call = campus.call_args
         python_code = shlex.split(call.args[1])[2]
@@ -40,6 +41,30 @@ class LoginEndpointTest(unittest.TestCase):
         self.assertIn('-oUserKnownHostsFile=/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts', ssh)
         self.assertEqual(call.kwargs['input'].splitlines()[0], 'fixture-password')
         return ssh, call.kwargs['input']
+
+    def test_primary255_fallback_uses_same_long_deadline_and_keeps_strict_route(self):
+        first=subprocess.CompletedProcess([],255,'','unavailable')
+        second=subprocess.CompletedProcess([],0,'bound-result','')
+        with patch.object(bridge.subprocess,'run',side_effect=[first,second]) as run:
+            self.assertIs(bridge._campus_long('bound command','RAM stdin',1210),second)
+            self.assertEqual(run.call_count,2)
+            for call in run.call_args_list:
+                self.assertEqual(call.kwargs['timeout'],1210)
+                self.assertEqual(call.kwargs['input'],'RAM stdin')
+                self.assertIn('-oStrictHostKeyChecking=yes',call.args[0])
+                self.assertEqual(call.args[0][-2:],['hkust3','bound command'])
+            self.assertIn('-oProxyJump=none',run.call_args_list[1].args[0])
+
+    def test_long_observation_timeout_is_unknown_and_never_replays_on_fallback(self):
+        for failure in (subprocess.TimeoutExpired('fixture',1210,output=b'partial evidence'),):
+            with patch.object(bridge.subprocess,'run',side_effect=failure) as run:
+                result=bridge._campus_long('bound command','RAM stdin',1210)
+                self.assertEqual(result.returncode,124);self.assertEqual(result.stdout,'partial evidence')
+                self.assertIn('inspect the existing',result.stderr);self.assertEqual(run.call_count,1)
+        with patch.object(bridge.subprocess,'run',side_effect=[subprocess.CompletedProcess([],255,'',''),
+                subprocess.TimeoutExpired('fixture',1210)]) as run:
+            self.assertEqual(bridge._campus_long('bound command','RAM stdin',1210).returncode,124)
+            self.assertEqual(run.call_count,2)
 
     def test_explicit_long_observation_preserves_endpoint_channel_and_RAM_credentials(self):
         ssh,_=self.invoke(login_host='10.120.48.31',expected_host_identity=self.HOST,observation_timeout=1200)
