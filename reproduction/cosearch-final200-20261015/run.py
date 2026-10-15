@@ -101,6 +101,7 @@ def main():
     mapping={line.split(',')[0].strip():line.split(',')[1].strip()
              for line in inventory.splitlines()}
     visible=[item if item.startswith('GPU-') else mapping[item] for item in visible]
+    physical={uuid:index for index,uuid in mapping.items()}
     import socket
     for port in [18086,18087,18100,18101,18102,18103]:
         with socket.socket() as sock:
@@ -176,7 +177,7 @@ def main():
         for index,(name,gpu) in enumerate([
                 ('main',0),('main',1),('reranker',2),('reranker',3)]):
             memory=budgets[visible[gpu]]['llm_memory_fraction']
-            variables=dict(base_env,CUDA_VISIBLE_DEVICES=visible[gpu],
+            variables=dict(base_env,CUDA_VISIBLE_DEVICES=physical[visible[gpu]],
                 TRITON_CACHE_DIR=str(OUT/('cache/triton%d'%index)))
             servers.append(launch([str(PYTHON),'-B',str(TOOLS/'service.py'),'llm',
                 '--model',str(OUT/'models'/name),'--port',str(18100+index),
