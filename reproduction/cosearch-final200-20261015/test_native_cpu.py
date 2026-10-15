@@ -1,5 +1,6 @@
 """Use the actual author's agent/tool methods with deterministic fake model outputs."""
 import asyncio
+import ast
 import json
 import types
 import sys
@@ -40,8 +41,14 @@ async def main():
             return types.SimpleNamespace(token_ids=tokenizer.encode(text,add_special_tokens=False),log_probs=None)
 
     main_manager,ranker=FakeManager('main'),FakeManager('ranker')
-    loop=CoSearchAgentLoop(types.SimpleNamespace(config=config),main_manager,tokenizer,None,
+    tree=ast.parse((OUT/'tools/evaluate.py').read_text())
+    main_node=next(n for n in tree.body if isinstance(n,ast.AsyncFunctionDef) and n.name=='main')
+    audit_node=next(n for n in main_node.body if isinstance(n,ast.ClassDef) and n.name=='AuditedLoop')
+    namespace={'CoSearchAgentLoop':CoSearchAgentLoop,'json':json}
+    exec(compile(ast.Module(body=[audit_node],type_ignores=[]),'actual-evaluation-wrapper','exec'),namespace)
+    loop=namespace['AuditedLoop'](types.SimpleNamespace(config=config),main_manager,tokenizer,None,
                           reranker_server_manager=ranker,reranker_tokenizer=tokenizer)
+    loop.actions,loop.reranks=[],[]
 
     async def retrieve(query,top_n):
         assert query=='test query' and top_n==50
@@ -54,6 +61,10 @@ async def main():
         reward_model={'ground_truth':{'target':[]}},tools_kwargs={})
     assert main_manager.calls==2 and ranker.calls==1 and len(ranked)==1
     assert any(role=='ranker' and 'Which city?' in text for role,text in prompts)
+    assert len(loop.actions)==2 and len(loop.reranks)==1
+    assert loop.reranks[0]['reranker_success'] and loop.reranks[0]['num_retrieved_docs']==50
+    assert '<rerank>' in loop.reranks[0]['native_retained_reranker_output']
+    assert loop.reranks[0]['reranker_prompt_tokens']>0
     assert 'Evidence passage 2' in prompts[-1][1]
     assert prompts[-1][1].index('Evidence passage 2')<prompts[-1][1].index('Evidence passage 1')
     assert score('<answer>Paris</answer>',['Paris'])['em']==1
@@ -63,6 +74,7 @@ async def main():
                 fake_main_calls=2,fake_reranker_calls=1,candidates=50,selected=5,
                 selected_order_reaches_main=True,model_tool_boundaries_preserved=True,
                 actual_training_shared_search_adapter=True,main_search_stop_matches_training=True,
+                actual_production_audit_wrapper=True,
                 native_question_restored_from_original_prompt=True,
                 GPU_inference_not_tested=True,gold_targets_not_given_to_agent=True)
     atomic(OUT/'native-agent-cpu-contract.json',result)
