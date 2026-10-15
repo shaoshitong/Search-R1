@@ -1,0 +1,180 @@
+{
+  "base": "/data/shaoshitong/Search-G1-a800-fresh200-e9c4c584107b4624bcc9787aaf24b7a2",
+  "checkpoint_head_metadata": {
+    "checkpoints": [],
+    "scope": "JSON producer proofs and declared versions/hashes only; no model/state/head tensor read, hash, finite recheck or CUDA/FSDP reload",
+    "status": "observed"
+  },
+  "complete_outers": 1,
+  "counts": {
+    "cumulative_processed": 22,
+    "cumulative_skip": 0,
+    "cumulative_successful_adam": 22,
+    "current_execution_closed_attempt_unattempted": 0,
+    "current_execution_optimizer_call_attempts": 22,
+    "current_execution_optimizer_write_rollbacks": 0,
+    "four_rank_complete_prefix_agreement": true
+  },
+  "current_partial": {
+    "logical_update": 2,
+    "opportunities_remaining_or_unattempted": 18,
+    "processed": 2,
+    "processed_skip": 0,
+    "successful_adam": 2,
+    "terminal_kind": null
+  },
+  "execution_id": "60fca3cc2edd4dedb3773230b91f34ea",
+  "gpu_samples": {
+    "complete_step_window_peaks": {
+      "reason": "not_computed_by_this_metadata_entry",
+      "status": "unknown"
+    },
+    "latest_devices": [
+      {
+        "index": 0,
+        "total_mib": 81920,
+        "used_mib": 50447,
+        "util_percent": 95
+      },
+      {
+        "index": 1,
+        "total_mib": 81920,
+        "used_mib": 41689,
+        "util_percent": 100
+      },
+      {
+        "index": 2,
+        "total_mib": 81920,
+        "used_mib": 41689,
+        "util_percent": 12
+      },
+      {
+        "index": 3,
+        "total_mib": 81920,
+        "used_mib": 41445,
+        "util_percent": 100
+      },
+      {
+        "index": 5,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81920,
+        "used_mib": 28517,
+        "util_percent": 0
+      }
+    ],
+    "latest_sample_unix": 1792082874.5589921,
+    "maximum_scanned_sampling_gap_seconds": 2.2578585147857666,
+    "sample_count": 1153,
+    "sampled_pipeline_lifetime_peak_mib": {
+      "0": 50447,
+      "1": 41689,
+      "2": 41689,
+      "3": 41445,
+      "5": 18013,
+      "6": 28517
+    },
+    "scope": "existing physical-node occupancy samples over pipeline lifetime/scanned tail, including startup; not exclusive model peaks or complete-step GPU peaks; nativefive separately reports its recorded window boundaries"
+  },
+  "head_commit": {
+    "actor_snapshot_id": "509c391b7e5c4174bfb55f724f41a3d6:1",
+    "head_version": "qprobe-qwen:1:1:85fc091ae5288c1d",
+    "metadata_sha256": "4b1427c67112c4d13c6a027540175071e73e2295cd6161cad4a3883dfe726344",
+    "outer": 1,
+    "postfit_replay_binary_accuracy": 0.552734375,
+    "prediction_version": "qprobe-qwen:0:0:303512d6ba7301a6",
+    "raw_age_weighted_replay_loss": 14.249250411987305,
+    "recorded_head_update": {
+      "completed_outer": 1,
+      "head_adam_steps_after": 204,
+      "head_adam_steps_before": 200,
+      "head_optimizer_updates": 4,
+      "replay_groups": 512,
+      "update_count": 1
+    },
+    "replay_age_weights": [
+      2.0,
+      1.0,
+      0.5,
+      0.25,
+      0.125,
+      0.0625,
+      0.03125,
+      0.015625
+    ],
+    "replay_ages_included": [
+      0
+    ],
+    "replay_mean_raw_weight": 2.0,
+    "replay_unweighted_total_loss_status": "unknown_not_recorded",
+    "teacher_replay_excluded": true,
+    "weighted_binary_bce": 13.996517181396484,
+    "weighted_normalized_std_mse": 0.8424478769302368
+  },
+  "inflight": "unknown_not_counted",
+  "input_receipt_sha256": "d1479d5a95d2058444108fe0ab09a7faf4fa33b51a4b21a552854d3155f16667",
+  "live": {
+    "pipeline": true,
+    "recorded_error_present": false,
+    "stage": "GRPO_1_TO_200",
+    "trainer": true
+  },
+  "native_first_five": {
+    "accepted": null,
+    "scope": "row5 alone never establishes native-five acceptance",
+    "status": "missing"
+  },
+  "no_new_tests_or_evaluations": true,
+  "observed_shanghai": "2026-10-16T00:47:56.535523+08:00",
+  "observed_unix": 1792082876.5355232,
+  "publication_content": "scalar_and_hash_only_no_questions_tokens_rollouts_models_or_credentials",
+  "qualifications": {
+    "all_candidate5120_accuracy": "unknown_only_selected512_labeled",
+    "full_final_goal_complete": false,
+    "training_fit_not_independent_validation": true,
+    "warmup_epochs": 10,
+    "warmup_excluded_from_formal_200": true,
+    "warmup_head_adam": 200
+  },
+  "reward_complete_outer_window": {
+    "after_complete_step": 0,
+    "newly_complete_steps": [
+      1
+    ],
+    "window_count": 1,
+    "window_max": 0.4302433431148529,
+    "window_mean": 0.4302433431148529,
+    "window_min": 0.4302433431148529
+  },
+  "role": "native_qwen_formal_first_delivered_report_scalars",
+  "run_id": "509c391b7e5c4174bfb55f724f41a3d6",
+  "schema_version": 1,
+  "scores": {
+    "scores": {
+      "development_after5": {
+        "status": "missing"
+      },
+      "stage": {
+        "status": "missing"
+      },
+      "validation": {
+        "status": "missing"
+      }
+    },
+    "status": "observed"
+  },
+  "selected_prequential": {
+    "predicted_mixed_count": 512,
+    "prefit_binary_accuracy": 0.509765625,
+    "selected_questions": 512,
+    "step": 1,
+    "true_mixed_count": 261,
+    "true_mixed_fraction": 0.509765625
+  },
+  "source_commit": "fcb77204f48d5cb8ec21c68df7d4a2c937b3557a",
+  "target_outers": 200
+}
