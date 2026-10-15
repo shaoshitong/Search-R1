@@ -1,0 +1,44 @@
+python3 -B - <<'PY'
+from pathlib import Path
+import json,hashlib,importlib.util,re,datetime
+w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013';ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')];sha=lambda r:hashlib.sha256(r).hexdigest()
+raw_names={'NATIVE5_CONTINUE_RESOURCE_2098.json', 'NATIVE5_CONTINUE_POLL_2098.json', 'NATIVE5_CONTINUE_RESOURCE_2097.json', 'NATIVE5_CONTINUE_POLL_2097.json'};refs={}
+def rd(n):
+ raw=(b/n).read_bytes()
+ if n not in raw_names:
+  for m in ms:
+   q=m/n
+   assert q.read_bytes()==raw
+ refs[n]={'file':n,'bytes':len(raw),'sha256':sha(raw)};return json.loads(raw)
+cp=w/'work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/sync_nested_native_progress.py'
+assert sha(cp.read_bytes())=='676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1'
+s=importlib.util.spec_from_file_location('pending170_core',cp);c=importlib.util.module_from_spec(s);s.loader.exec_module(c)
+p1=rd('NATIVE5_CONTINUE_POLL_2097.json');r1=rd('NATIVE5_CONTINUE_RESOURCE_2097.json');p2=rd('NATIVE5_CONTINUE_POLL_2098.json');r2=rd('NATIVE5_CONTINUE_RESOURCE_2098.json');native=rd('NATIVE_HISTORY_170_METADATA_READBACK.json')
+assert refs['NATIVE_HISTORY_170_METADATA_READBACK.json']['sha256']=='923b57c2d99790babfc843ea66ce497dd6b94d7fa616dcaed94e432bf8e0b635' and refs['NATIVE_HISTORY_170_METADATA_READBACK.json']['bytes']==8355 and native['manifest_sha256']=='08bb722ccf3a4749f5a93d48e0d6e07f7ad173b1e8084d257fbc45bb5c7793db' and native['receipt_sha256']=='f072694f5c1ea1ada93b0cf74a85f3757f0565bf5a32222cddf05361eee6037e'
+record,guard,completed,totals=c.validate_native(native,p1['progress'],170);obs=[]
+for p,r in [(p1,r1),(p2,r2)]:
+ ps,rs,active=c.validate_unit(p,r,170)
+ assert active and p['progress']['actual_completed_outer_from_attempt_results']==170 and not p['progress'].get('errors') and p.get('run_result') is None
+ assert c.counts(p['progress']['completed_actual_optimizer_calls_per_rank'],'actual170')==completed
+ assert p['progress']['training_attempts_seen']==guard['training_attempts'] and p['progress']['all_skipped_attempts']==guard['refused_attempts']
+ assert max(m['step'] for m in p['iteration_metrics'])==169
+ assert not any(d.get('outer')==170 and d.get('status')=='VALIDATION_COST_COMPLETE' for d in p['development'])
+ assert re.search(r'epoch\s+\d+,\s*step\s+171\b',p['logs']['stage.log']) is None
+ assert 170 in r['state']['indexed_completed_outers'] and r['state']['audit_error_count']==0
+ obs.append({'poll_epoch':p['epoch'],'resource_epoch':r['epoch'],'MainPID':ps['MainPID'],'InvocationID':rs['InvocationID'],'service_CPU_seconds':int(rs['CPUUsageNSec'])/1e9})
+assert obs[1]['poll_epoch']>obs[0]['poll_epoch'] and obs[1]['service_CPU_seconds']>obs[0]['service_CPU_seconds']
+ranks=p2['last_rank_summaries'];assert len(ranks)==8 and {r['rank'] for r in ranks}==set(range(8))
+assert all(r['outer_step']==r['attempt_id']==170 and r['successful_optimizer_calls']>0 and r['finite_grad_norms']>=r['successful_optimizer_calls'] and r['nonzero_grad_norms']>0 and r['local_shard_sample_delta']['finite']==r['local_shard_sample_delta']['count'] and r['local_shard_sample_delta']['nonzero']>0 for r in ranks)
+for n in ['FULL_OUTER169_PROGRESS_RECEIPT.json','OUTER169_FULL_NEXT170_ACTUAL_PROGRESS.json','CUMULATIVE_COST_THROUGH169.json','ROOT_FULL169_PUBLICATION_READBACK_2073_2077.json']:rd(n)
+assert refs['ROOT_FULL169_PUBLICATION_READBACK_2073_2077.json']['sha256']=='344890574f742f4c92904be5f933c123792036ca782c82a85f7f2dea751a2fc4' and refs['ROOT_FULL169_PUBLICATION_READBACK_2073_2077.json']['bytes']==18112
+latest=max((d for d in p2['development'] if d['status']=='VALIDATION_COST_COMPLETE'),key=lambda d:d['outer']);assert latest['outer']==165 and latest['rows']==512
+v={'schema':'nested_dev170_verified_wait_v1','status':'ACTUAL_NATIVE170_DEV170_RESULT_PENDING','created_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'goal_status':'active','source_commit':c.SOURCE,'config_sha256':c.CONFIG,'unit':c.UNIT,'run':c.RUN,'original_PID':int(c.PID),'invocation_id':c.INVOCATION,'actual_observations':obs,'actual_optimizer_completed_outer':170,'actual_successful_adam_per_rank':completed,'actual_total_adam_per_rank':totals,'child_successful_adam_per_rank':{k:x-100 for k,x in completed.items()},'actual_outer_successful_writes_per_rank':{str(r['rank']):r['successful_optimizer_calls'] for r in ranks},'original_rank_records':ranks,'rank_opportunity_and_guard_skip_fields':'Original processed/guard-skip fields absent and unknown; skipped_empty_minibatches is separate. No missing zero inferred.','latest_saved_native_outer':170,'native_manifest_sha256':native['manifest_sha256'],'native_archive_receipt_sha256':native['receipt_sha256'],'actual_cold_loaded_native_outer':5,'independent_cold_reload_performed':False,'tensor_contents_read':False,'native_saved_driver_next_step':record['driver']['next_step'],'saved_cursor171_is_not_live_outer171':True,'current_outer170_full_metric':None,'current_outer170_wall_seconds':None,'current_outer170_training_variances':None,'current_outer170_reward':None,'dev170_result':None,'latest_completed_dev512':latest,'score_updated':False,'stage_and_retriever_log_growth':{k:p2['own_output_files'][k]-p1['own_output_files'][k] for k in ('stage.log','retriever.log')},'input_refs':refs,'raw_observation_sources_scope':'Original poll/resource2097/2098 are BASE-only actual bytes/SHA-bound sources; no raw mirror copying or raw mirror byte-equality claim. Native170 and prior FULL/progress/CUM/root169 artifacts and the new result receipt retain three-location two-pass byte readbacks.','raw_observation_files':sorted(raw_names),'canonical_FULL_boundary':169,'canonical_publication_updated':False,'outer171_entered_claimed':False,'whole_goal_complete':False,'training_or_remote_mutation':False,'scope':'Actual170 updates/native saved. Normal dev170 result is pending. FULL169/cost169 remain prior complete metric/accounting boundary; no new score/timing/variance/final acceptance/exact resume inferred.'}
+n='OUTER170_UPDATES_NATIVE_DEV_PENDING_ACTUAL_2097_2098.json';assert not (b/n).exists();raw=(json.dumps(v,ensure_ascii=False,indent=2)+'\n').encode()
+for f in [b]+ms:(f/n).write_bytes(raw)
+for _ in range(2):
+ assert all((f/n).read_bytes()==raw for f in [b]+ms)
+ for name,ref in refs.items():
+  z=(b/name).read_bytes();assert len(z)==ref['bytes'] and sha(z)==ref['sha256']
+  if name not in raw_names:assert all((m/name).read_bytes()==z for m in ms)
+print(json.dumps({'pending170':{'file':n,'bytes':len(raw),'sha256':sha(raw)},'actual_adam_per_rank':completed,'dev170_result':None,'last_FULL':169,'canonical_updated':False,'mirrors_twice_equal':True,'raw_observations_BASE_only':True}))
+PY
