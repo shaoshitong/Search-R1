@@ -17,6 +17,20 @@ from reproduction.common8.safety_calibration_evidence import (
 )
 
 
+class ActualMonitorTensorTests(unittest.TestCase):
+    def test_reference_free_actual_actor_monitor_retains_required_inputs(self):
+        from reproduction.common8.safety_calibration_evidence import _identity
+        identity=dict(selection_indices=[0,1,2,3],actor_token_lengths=[1,2,3,4],
+                      tensor_sha256={key:'a'*64 for key in MONITOR_TENSORS})
+        _identity(identity)
+        identity['tensor_sha256'].pop('ref_log_prob');_identity(identity)
+        identity['tensor_sha256'].pop('old_log_probs')
+        with self.assertRaises(EvidenceError):_identity(identity)
+        identity['tensor_sha256']['old_log_probs']='a'*64
+        identity['tensor_sha256']['unknown_tensor']='a'*64
+        with self.assertRaises(EvidenceError):_identity(identity)
+
+
 def digest(text):
     return hashlib.sha256(text.encode()).hexdigest()
 

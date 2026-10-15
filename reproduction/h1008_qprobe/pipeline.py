@@ -32,6 +32,8 @@ def build_pipeline(base,run,config):
     from reproduction.common8.run_pipeline import Pipeline
     class H1008Pipeline(Pipeline):
         def initial_probe_calibration(self):
+            if self.run.get('full_state_restore'):
+                return super().initial_probe_calibration()
             from reproduction.h1008_qprobe.adopt_reward_zero import adopt
             receipt=adopt(self.base,config['reward_zero_source_base'],config['reward_zero_archive'],config['reward_zero_archive_sha256'])
             self.stage('AUTHENTICATED_OFFICIAL_ZERO_REWARD_CALIBRATION_REUSED',version=receipt['version'],new_actor_or_optimizer_state_inherited=False)
@@ -41,8 +43,9 @@ def build_pipeline(base,run,config):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--base',type=Path,required=True);a=p.parse_args();base=a.base.resolve()
     config=json.loads((base/'preparation/h1008-launch-config.json').read_text())
-    assert config['role']=='fresh_h1008_transformer3_question_probe200'
-    assert config['base']==str(base) and not config.get('restore_receipt')
+    assert config['role'] in ('fresh_h1008_transformer3_question_probe200','restore_h1008_transformer3_question_probe200')
+    assert config['base']==str(base)
+    assert bool(config.get('restore_receipt')) == (config['role']=='restore_h1008_transformer3_question_probe200')
     assert socket.gethostname().split('.')[0]=='h100-8'
     os.environ.update(SEARCH_G1_BASE=str(base),SEARCH_G1_PROFILE='common8',SEARCH_G1_TRAINING_WORLD_SIZE='8',
         SEARCH_G1_EXECUTION_PROFILE='native8_bf16_varlen_fp32_master',HF_HUB_OFFLINE='1',HF_DATASETS_OFFLINE='1')
@@ -51,7 +54,8 @@ def main():
     from reproduction.common8.prepare_run import prepare
     # prepare() binds independent official actor/ref and new optimizer/RNG state.
     run=prepare(base,config['official_model'],config['official_manifest'],config['source_commit'],
-        rollout_memory_utilization=.1,local_retrieval_assets=config['retrieval_assets'],execution_site='h1008',actor_micro_batch_per_rank=4)
+        rollout_memory_utilization=.1,local_retrieval_assets=config['retrieval_assets'],execution_site='h1008',actor_micro_batch_per_rank=4,
+        restore_receipt=config.get('restore_receipt'))
     from reproduction.common8.native_allocation import admit
     allocation=admit(base)
     # Some admission producers persist the authoritative object rather than
@@ -105,9 +109,10 @@ def main():
         from reproduction.common8.stage_retrieval import ASSETS
         from search_g1.qprobe_features import sha_json
         from search_g1.rollout_phase_contract import DEFAULT_ROLLOUT_PHASE
-        run=bind(base,cache,exploration_questions=64,retriever_version=sha_json(ASSETS),
-            teacher_warmup_cache=config.get('frozen_teacher_cache',str(base/'teacher-warmup')),infra_rollout=DEFAULT_ROLLOUT_PHASE,
-            sequence_device='allocated_rank7',sequence_train_micro=4,sequence_predict_micro=32)
+        if not config.get('restore_receipt'):
+            run=bind(base,cache,exploration_questions=64,retriever_version=sha_json(ASSETS),
+                teacher_warmup_cache=config.get('frozen_teacher_cache',str(base/'teacher-warmup')),infra_rollout=DEFAULT_ROLLOUT_PHASE,
+                sequence_device='allocated_rank7',sequence_train_micro=4,sequence_predict_micro=32)
         run['startup_admission_mode']='actual_first_five'
         from reproduction.a800.owned_processes import publish
         publish(base/'logs/run-manifest.json',run)

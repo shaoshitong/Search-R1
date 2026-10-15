@@ -115,7 +115,11 @@ def _identity(value, monitor_count=4):
         _integer(length, 'actor_token_length', minimum=1)
     _require(lengths == sorted(lengths), 'Monitor lengths are not stratified')
     hashes = value['tensor_sha256']
-    _require(isinstance(hashes, Mapping) and set(hashes) == MONITOR_TENSORS,
+    # Production actor batches omit reference probabilities when ref-KL is
+    # disabled. The sampled-old-policy monitor still authenticates all seven
+    # actual input tensors; calibration batches may additionally carry ref.
+    _require(isinstance(hashes, Mapping) and
+             MONITOR_TENSORS - {'ref_log_prob'} <= set(hashes) <= MONITOR_TENSORS,
              'Missing actual common8 monitor tensor hashes')
     for name, digest in hashes.items():
         _hash(digest, name)

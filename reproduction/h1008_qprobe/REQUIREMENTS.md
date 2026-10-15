@@ -1,3 +1,5 @@
+2026-10-15 terminal3399 repair: five coupled outers/100actualAdam perrank and dev512 EM.263671875 F1.35150392054302937 completed; old monitor audit wrongly demanded ref_log_prob despite refKL0 production batches. Repaired audit accepts all seven required actual tensors with optional reference hash; required missing/unknown rejected. Remote22CPU tests plus actualfirstfive readonly audit PASS. Recovery uses authenticated savedCP5 model/head/Adam100/scheduler5/candidate/RNG; unavailable post-dev RNG is not fabricated (rng_boundary_stage=saved_checkpoint_before_development). Same logicalrun, noreset0. Actual GPU recovery/6–10+11 and independent copy still pending. Historical17.77% before0 is not same inference recipe; dataset/order/weights/scoring unchanged, wrapper/contextbudget and dtype/async changed.
+
 # Fresh H1008 question probe experiment
 
 Source branch: `codex/qprobe-a800-async-top512-20261014`, independently resolved upstream HEAD `1f75a186eea7b769c37a919096ea0b54372e5160`.

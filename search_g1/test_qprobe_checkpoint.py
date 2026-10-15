@@ -15,7 +15,7 @@ from unittest.mock import patch
 import torch
 
 from search_g1.qprobe_checkpoint import (PAIR_STATUS,bind_restore,digest,install_restored_reward_probe,
-    publish_completed_pair,read_source,restore_driver,validate_rank_state,boundary_worker_rng)
+    publish_completed_pair,publish_terminal_saved_pair,read_source,restore_driver,validate_rank_state,boundary_worker_rng)
 from search_g1.qprobe_model import OnlineQProbe
 from search_g1.training_state import atomic_save,driver_rng
 
@@ -313,6 +313,27 @@ class PairCheckpointTests(unittest.TestCase):
             path=Path(selected['path']);path.write_bytes(path.read_bytes()+b'corrupt')
             with self.assertRaisesRegex(ValueError,'SOURCE_FILE_CHANGED'):
                 boundary_worker_rng(receipt,0,fixture.rank_states[0])
+
+
+class TerminalSavedPairTests(unittest.TestCase):
+    def test_terminal_checkpoint_uses_actual_saved_rng_not_post_evaluation_rng(self):
+        with tempfile.TemporaryDirectory() as name:
+            fixture=PairFixture(name,outer=5,size=8)
+            driver=torch.load(fixture.state/'driver.pt',weights_only=False)
+            live_path=fixture.base/'artifacts/live/manifest.json';live=json.loads(live_path.read_text())
+            live['version']=driver['probe_version'];live_path.write_text(json.dumps(live))
+            (fixture.base/'logs/cleanup-status.json').write_text(json.dumps(dict(run_id=fixture.run_id,cleaned=True)))
+            with patch('subprocess.check_output',return_value='JobId=999999 JobState=FAILED ExitCode=1:0 '):
+                result=publish_terminal_saved_pair(fixture.base,fixture.cp,999999)
+            receipt=read_source(result['path'])[1]
+            self.assertEqual(receipt['rng_boundary_stage'],'saved_checkpoint_before_development')
+            from search_g1.full_state_restore import equal_tree
+            boundary=torch.load(receipt['boundary_driver']['path'],weights_only=False)
+            equal_tree(boundary['rng'],driver['rng'])
+            for rank,state in enumerate(fixture.rank_states):
+                equal_tree(boundary_worker_rng(receipt,rank,state),state['rng'])
+            child=copy.deepcopy(fixture.run);bind_restore(child,result['path'])
+            self.assertEqual(child['full_state_restore']['completed_outer'],5)
 
 
 if __name__=='__main__':unittest.main()

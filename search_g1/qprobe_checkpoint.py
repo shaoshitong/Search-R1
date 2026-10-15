@@ -128,7 +128,7 @@ def _historical_artifacts(base,run,outer):
         scope='immutable available historical artifact pointers only; raw prefix training history is not reconstructed')
 
 
-def publish_completed_pair(trainer, checkpoint):
+def publish_completed_pair(trainer, checkpoint, *, saved_boundary=None):
     """Call after checkpoint verification AND any scheduled old-probe adoption."""
     from reproduction.common8.topology import world_size
     from search_g1.training_state import atomic_save,driver_rng,compact_stream_state
@@ -193,7 +193,23 @@ def publish_completed_pair(trainer, checkpoint):
     directory.mkdir(parents=True,exist_ok=False)
     # Evaluation and reward refit can advance vLLM/actor RNG AFTER the original
     # checkpoint worker snapshot. Capture the real final idle boundary separately.
-    boundary_workers=trainer.actor_rollout_wg.capture_mixed_state(str(directory/'boundary-worker-rng'),checkpoint=False)
+    if saved_boundary is None:
+        boundary_workers=trainer.actor_rollout_wg.capture_mixed_state(str(directory/'boundary-worker-rng'),checkpoint=False)
+        boundary_rng=driver_rng()
+        rng_stage='post_development_and_probe_adoption'
+    else:
+        # A terminal execution can recover its already complete checkpoint.
+        # Preserve the RNG that was actually saved there, never fabricate the
+        # unavailable post-evaluation live boundary.
+        boundary_workers=[]
+        (directory/'boundary-worker-rng').mkdir()
+        for proof in manifest['worker_files']:
+            saved=torch.load(proof['path'],map_location='cpu',weights_only=False)
+            saved={k:v for k,v in saved.items() if k not in ('optimizer','scheduler')}
+            row=atomic_save(directory/'boundary-worker-rng'/f'rank-{proof["rank"]}.pt',saved)
+            row['rank']=proof['rank'];boundary_workers.append(row)
+        boundary_rng=saved_boundary['rng']
+        rng_stage='saved_checkpoint_before_development'
     _need(sorted(item['rank'] for item in boundary_workers)==list(range(size)),'BOUNDARY_RNG_RANKS_MISSING')
     boundary_records=[]
     for proof in boundary_workers:
@@ -205,7 +221,7 @@ def publish_completed_pair(trainer, checkpoint):
         saved=torch.load(proof['path'],map_location='cpu',weights_only=False)
         boundary_worker_rng(dict(boundary_worker_files=boundary_records),proof['rank'],saved)
     boundary=atomic_save(directory/'boundary-driver.pt',dict(completed_outer=outer,run_id=run['run_id'],
-        candidate_stream=current_stream,rng=driver_rng(),probe_version=live['version'],probe_round=live['round'],
+        candidate_stream=current_stream,rng=boundary_rng,probe_version=live['version'],probe_round=live['round'],
         question_probe=manifest['question_probe'],question_probe_state_path=str(qpath),actor_snapshot_id=actor_id,
         attempt_progress=dict(completed_outer=outer,cumulative_writes=progress.cumulative_writes,
             attempt_index=progress.attempt_index,aborted_attempts=progress.aborted_attempts,
@@ -230,13 +246,46 @@ def publish_completed_pair(trainer, checkpoint):
                  attempt_index=progress.attempt_index,aborted_attempts=progress.aborted_attempts,
             full_budget_outer=progress.full_budget_outer),
         driver_state=dict(completed_outer=outer,source_consumed=current_stream['consumed_source_rows']),
-        actual_cuda_restore_accepted=False,scope='full-file SHA and CPU saved-state checks; actual CUDA/FSDP reload pending',
+        actual_cuda_restore_accepted=False,rng_boundary_stage=rng_stage,
+        scope='full-file SHA and CPU saved-state checks; actual CUDA/FSDP reload pending',
         checked_unix=time.time())
     path=directory/'source-receipt.json';_publish(path,receipt)
     # Read back immutable receipt and all small boundary/head bindings.
     read_source(path)
     return dict(path=str(path),sha256=digest(path),status=PAIR_STATUS,step=outer,
                 actual_cuda_restore_accepted=False)
+
+
+def publish_terminal_saved_pair(base, checkpoint, terminal_job_id):
+    """Recover a complete saved pair after terminal failure, without live RNG claims."""
+    import subprocess
+    from types import SimpleNamespace
+    base=Path(base).resolve();checkpoint=Path(checkpoint).resolve()
+    native=subprocess.check_output(['scontrol','show','job',str(int(terminal_job_id)),'-o'],text=True)
+    _need(f'JobId={int(terminal_job_id)} ' in native and any('JobState='+s+' ' in native
+          for s in ('FAILED','CANCELLED','TIMEOUT','OUT_OF_MEMORY','COMPLETED')),'SOURCE_JOB_NOT_TERMINAL')
+    _need(not list(Path('/sys/fs/cgroup').glob(f'**/job_{int(terminal_job_id)}')),'SOURCE_CGROUP_STILL_PRESENT')
+    run=_read_json(base/'logs/run-manifest.json')
+    cleanup=_read_json(base/'logs/cleanup-status.json')
+    _need(cleanup['run_id']==run['run_id'] and cleanup['cleaned'] is True,'SOURCE_CLEANUP_NOT_PROVEN')
+    manifest=_read_json(checkpoint/'training_state/manifest.json')
+    driver=torch.load(manifest['driver_file']['path'],map_location='cpu',weights_only=False)
+    _need(digest(manifest['driver_file']['path'])==manifest['driver_file']['sha256'],'SAVED_DRIVER_SHA_MISMATCH')
+    outer=manifest['completed_outer'];qstate,_,_=_validate_qstate(checkpoint,outer,run['run_id']+':'+str(outer))
+    live=_read_json(base/'artifacts/live/manifest.json')
+    _need(driver['probe_version']==live['version']==qstate['reward_probe_version'],
+          'SAVED_REWARD_PROBE_DIFFERS_FROM_LIVE')
+    from search_g1.full_state_restore import equal_tree
+    equal_tree(driver['candidate_stream'],qstate['candidate_state'])
+    trainer=SimpleNamespace(global_steps=outer,mixed_stream=SimpleNamespace(state=lambda:driver['candidate_stream']),
+        qprobe_runtime=SimpleNamespace(completed_outer=outer,version=qstate['head_version']),
+        inline_attempt_progress=SimpleNamespace(**driver['attempt_progress'],pending=None),
+        reward_fn=SimpleNamespace(expected_probe_version=driver['probe_version']))
+    old=os.environ.get('SEARCH_G1_BASE');os.environ['SEARCH_G1_BASE']=str(base)
+    try:return publish_completed_pair(trainer,checkpoint,saved_boundary=driver)
+    finally:
+        if old is None:os.environ.pop('SEARCH_G1_BASE',None)
+        else:os.environ['SEARCH_G1_BASE']=old
 
 
 def _identity_record(row):
@@ -343,6 +392,8 @@ def bind_restore(run, receipt_path):
     _need(type(topk) is int and topk>0,'SOURCE_RETRIEVER_TOPK_INVALID')
     _need(run.get('retriever_topk',topk)==topk,'TARGET_RETRIEVER_TOPK_CHANGED')
     run['retriever_topk']=topk
+    if 'infra_rollout' in parent:
+        run['infra_rollout']=copy.deepcopy(parent['infra_rollout'])
     run.update(run_id=parent['run_id'],native_ray_execution_id=uuid.uuid4().hex,
         initial_probe_version=receipt['reward_probe_version'],pretraining_baseline_policy='reuse_historical',
         full_state_restore=dict(kind=PAIR_KIND,source_receipt=str(path),source_receipt_sha256=digest(path),
