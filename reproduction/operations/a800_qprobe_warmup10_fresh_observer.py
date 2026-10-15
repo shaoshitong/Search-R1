@@ -236,7 +236,8 @@ def recorded_loss(value):
 def latest_prefit_diagnostics():
  window=result['reward_window']
  if window.get('status')!='observed' or window.get('latest') is None:return dict(status='unknown',reason='no_complete_formal_row')
- latest=window['latest'];event=document(base/'artifacts/question-probe/completed'/(latest['attempt_id']+'.json'))
+ latest=window['latest'];event,event_info=document(base/'artifacts/question-probe/completed'/(latest['attempt_id']+'.json'))
+ need(event is not None,'prefit_complete_event_missing')
  need(event['outer']==latest['step'] and event['attempt_id']==latest['attempt_id'],'prefit_complete_row_binding')
  values=event['prequential']['all'];need(values['questions']==512 and values['binary_threshold']==.5,'prefit512_binary_schema')
  confusion=values['binary_confusion'];need(sum(confusion[k] for k in ('tp','tn','fp','fn'))==512,'prefit512_binary_counts')
@@ -246,7 +247,7 @@ def latest_prefit_diagnostics():
 def warmup_training_records():
  path=base/'artifacts/question-probe/teacher-warmup-ready.json'
  if not path.is_file():return dict(status='unknown',reason='warmup_ready_not_recorded')
- ready=document(path);q=run['question_probe'];metrics=ready['head_metrics']
+ ready,ready_info=document(path);need(ready is not None,'warmup_ready_missing');q=run['question_probe'];metrics=ready['head_metrics']
  need(q.get('bootstrap_head_epochs')==10 and q.get('head_epochs_per_outer')==2 and q.get('head_batch_size')==256,'warmup10_formal2_manifest')
  need(ready['fitted_questions']==5120 and ready['completed_training_outers']==0 and metrics['fit_epochs']==10 and metrics['head_batch_size']==256 and metrics['head_optimizer_updates']==200,'warmup10_actual_schedule')
  epochs=metrics['epoch_history'];mini=metrics['minibatch_history']
