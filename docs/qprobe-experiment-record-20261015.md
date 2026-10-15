@@ -245,4 +245,4 @@ CE3以logits成对logsumexp实现，避免小概率下溢。去掉均值MSE，�
 
 新第5轮归档CPU子进程已实际exit0，完整三方校验39个依赖文件、每份44,550,414,490字节；无partial残留。运输证明SHA为39e2edbaf0f92871aacb303011671a002e3ad2530fb43ab01959df134bb87b76，archive/target重定位收据SHA分别为16dcb2d53a0d73bd61cb7bb1c14e0d4ef958bd0a981f54b9c6fbd6f5c7bf1b61、9595ca9e481634422da4557794dd9176b2e3ce77fb485d861e0e1a31d3b161ed。新follower随后又独立重读三份完整SHA并通过，继续等待第50轮。此处证明完整复制与CPU文件校验，最终200的四卡实际model/Adam/scheduler/RNG/head/replay/data/selector恢复仍待执行。
 
-新训练721485在1792055471.9246435已完整提交1至10轮、四rank各200次Adam写入，scheduler/head提交一致，第11轮已开始。第10轮head为qprobe:10:10:f48dab288e44c9b5，在线拟合loss1.171981；Top448混合211/448（47.0982%），随机15/64（23.4375%）。独立raw审计当时1至9轮实际wait0通过，第10轮待随后核验。没有新的致命错误、训练重启、容量或PPO/reward修改。目标保持ACTIVE，200、50/100/150/200固定验证、native51713和最终实际四卡恢复均不在此阶段提前宣称完成。
+新训练721485在1792055471.9246435已完整提交1至10轮、四rank各200次Adam写入，scheduler/head提交一致，第11轮已开始。第10轮head为qprobe:10:10:f48dab288e44c9b5，在线拟合loss1.171981；Top448混合211/448（47.0982%），随机15/64（23.4375%）。独立raw审计随后在1792055560确认1至10轮均实际wait0通过。没有新的致命错误、训练重启、容量或PPO/reward修改。目标保持ACTIVE，200、50/100/150/200固定验证、native51713和最终实际四卡恢复均不在此阶段提前宣称完成。
