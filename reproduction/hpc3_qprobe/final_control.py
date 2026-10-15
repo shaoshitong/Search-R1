@@ -93,6 +93,44 @@ def source(commit):
     return repository,dict(commit=commit,publication_path=str(proof_path),publication_sha256=digest(proof_path))
 
 
+SIGMA3_BASENAME='qprobe-teacher-warmup200-sigma3-20261015'
+SIGMA3_PRODUCER_SOURCE='aca0e779e94ddc3fbd50e49c3d59e2e889fbcf12'
+
+
+def producer_submission(base,run):
+    """Keep originals; consume only the bound pre-model sigma3 failure chain."""
+    base=Path(base)
+    prior=read(base/'preparation/training-submission.json')
+    claim=read(base/'preparation/training-submit-claim.json')
+    chain={}
+    if base.name!=SIGMA3_BASENAME:return prior,claim,chain
+    recovery_path=base/'preparation/recovery721449-submission.json'
+    recovery_claim_path=base/'preparation/recovery721449-submit-claim.json'
+    if not recovery_path.exists():
+        need(not recovery_claim_path.exists(),'sigma3 recovery submission unknown; inspect original intent')
+        return prior,claim,chain
+    recovery=read(recovery_path);recovery_claim=read(recovery_claim_path)
+    preserved_path=base/'failed-job-721449/failure-and-recovery.json';failure=read(preserved_path)
+    need(run['source_commit']==SIGMA3_PRODUCER_SOURCE and not run.get('full_state_restore') and
+         prior.get('job')=='721449' and prior.get('returncode')==0 and
+         prior.get('commit')==claim.get('commit')==SIGMA3_PRODUCER_SOURCE,
+         'sigma3 original failed source binding differs')
+    need(recovery.get('returncode')==0 and recovery.get('recovery_of')==recovery_claim.get('recovery_of')=='721449' and
+         recovery.get('commit')==recovery_claim.get('commit')==SIGMA3_PRODUCER_SOURCE and
+         re.fullmatch('[1-9][0-9]*',str(recovery.get('job',''))) is not None and recovery['job']!='721449' and
+         recovery_claim.get('failure')==failure and failure.get('original_submission')==prior and
+         failure.get('original_claim')==claim and failure.get('actor_started') is False and failure.get('formal_outers')==0 and
+         failure.get('original_log_sha256')==digest(base/'failed-job-721449/training.log'),
+         'sigma3 pre-model failure/recovery chain differs')
+    original=subprocess.check_output(['sacct','-nP','-X','-j','721449',
+        '--format=JobID,State,ExitCode,UID,NodeList'],text=True,timeout=30).strip()
+    need(original==failure.get('accounting')=='721449|FAILED|1:0|14090|ACD1-56',
+         'sigma3 original job is not actual known failed721449')
+    chain=dict(recovery_submission_sha256=digest(recovery_path),recovery_claim_sha256=digest(recovery_claim_path),
+        preserved_pre_model_failure_sha256=digest(preserved_path),original_failed_job='721449')
+    return recovery,recovery_claim,chain
+
+
 def producer(base,*,complete=False):
     owner();base=Path(base)
     need(base.is_absolute() and base.resolve()==base and base.parent==ROOT.parent and
@@ -102,7 +140,7 @@ def producer(base,*,complete=False):
     need(re.fullmatch('[0-9a-f]{32}',run['run_id']) is not None and run['training_world_size']==4 and
          run['actor_micro_batch_per_rank']==4 and run.get('execution_site')=='hpc3' and
          run.get('execution_backend','slurm')=='slurm','actual native4 producer required')
-    prior=read(base/'preparation/training-submission.json');claim=read(base/'preparation/training-submit-claim.json')
+    prior,claim,recovery_chain=producer_submission(base,run)
     job=prior['job'];need(re.fullmatch('[1-9][0-9]*',job) is not None,'actual producer job missing')
     entry=ROOT/'source'/run['source_commit']/'reproduction/hpc3_qprobe/train.sh'
     need(prior['returncode']==0 and prior['commit']==claim['commit']==run['source_commit'] and
@@ -145,7 +183,7 @@ def producer(base,*,complete=False):
     binding=dict(base=str(base),run_id=run['run_id'],producer_commit=run['source_commit'],producer_job=job,
         source_manifest_sha256=digest(manifest),original_submission_sha256=digest(base/'preparation/training-submission.json'),
         original_claim_sha256=digest(base/'preparation/training-submit-claim.json'),
-        native_allocation_sha256=digest(allocation_path))
+        native_allocation_sha256=digest(allocation_path),**recovery_chain)
     return run,binding,raw
 
 
