@@ -10,6 +10,7 @@ from unittest.mock import patch
 
 from reproduction.hpc3_qprobe import independent_goal_acceptance_sigma3 as reader
 from reproduction.hpc3_qprobe import independent_goal_control_sigma3 as holder
+from reproduction.hpc3_qprobe import recovery_lineage_stage as lineage
 from reproduction.hpc3_qprobe.test_independent_goal_acceptance_sigma3 import write
 from reproduction.hpc3_qprobe.test_independent_goal_control_sigma3 import output_fixture
 
@@ -223,6 +224,70 @@ class InheritedHeldReceipts(unittest.TestCase):
                     path.write_bytes(original)
                     path=folders[200]/'worker-result.json';value=json.loads(path.read_bytes());value['actual_task_exit_code']=1;write(path,value)
                     with self.assertRaisesRegex(ValueError,'actual held original child0'):consume()
+
+
+class ExactThird100Route(unittest.TestCase):
+    def test_third_pin_module_follower_and_scope_cannot_be_swapped_with_either_prior(self):
+        pins=PINS[:-1]+(reader.ARCHIVE100_THIRD_RECOVERY_SOURCE,)
+        name,folder=reader.followthrough_route(pins[-1],*pins)
+        self.assertEqual((name,folder.name),('recover_sigma3_archive100_third','721485-archive100-recovery-third-20261016'))
+        scopes={holder.scope(*(PINS[:-1]+(pin,))) for pin in reader.ARCHIVE100_ROUTES}
+        self.assertEqual(len(scopes),3)
+        self.assertTrue(holder.scope(*pins).name.endswith('-archive100-recovery-third'))
+        for old in (PINS[-1],reader.ARCHIVE100_SECOND_RECOVERY_SOURCE):
+            with self.assertRaises(ValueError):reader.followthrough_route(old,*pins)
+            with self.assertRaises(ValueError):reader.followthrough_route(pins[-1],*(PINS[:-1]+(old,)))
+
+    def test_stage_reconsumes_exact_c5_with_c1_b894_and_inherited50_unchanged(self):
+        prior50={'source':{'commit':reader.ARCHIVE50_FIRST_RECOVERY_SOURCE}}
+        fifty={'source':{'commit':PINS[2]},'prior_archive50_recovery':prior50,
+               'observer_recovery':{'raw':'f979'},'legacy_archive5_recovery':{'five':'09cc'}}
+        first={'source':{'commit':PINS[-1]}}
+        second=dict(source={'commit':reader.ARCHIVE100_SECOND_RECOVERY_SOURCE},prior_archive100_recovery=first,
+            prior_archive50_second_recovery=fifty,observer_recovery=fifty['observer_recovery'],
+            legacy_archive5_recovery=fifty['legacy_archive5_recovery'],inherited_archive50={'original':'B89450'})
+        third=dict(second,source={'commit':reader.ARCHIVE100_THIRD_RECOVERY_SOURCE},prior_archive100_second_recovery=second)
+        def load(commit,*_):return SimpleNamespace(consume=lambda _:fifty if commit==PINS[2] else prior50),{}
+        with patch.object(lineage,'consume',return_value=second) as consume,patch.object(reader,'load_fixed',side_effect=load):
+            self.assertEqual(reader.archive50_recovery_evidence(third,PINS[2],reader.ARCHIVE100_THIRD_RECOVERY_SOURCE,with_prior100=True),(fifty,first))
+            consume.assert_called_once_with(reader.ARCHIVE100_SECOND_RECOVERY_SOURCE,'recover_sigma3_archive100_second')
+        for key in ('prior_archive100_second_recovery','prior_archive100_recovery','prior_archive50_second_recovery','inherited_archive50','observer_recovery','legacy_archive5_recovery'):
+            bad=copy.deepcopy(third);bad[key]={}
+            with self.subTest(key=key),patch.object(lineage,'consume',return_value=second),patch.object(reader,'load_fixed',side_effect=load),self.assertRaises(ValueError):
+                reader.archive50_recovery_evidence(bad,PINS[2],reader.ARCHIVE100_THIRD_RECOVERY_SOURCE)
+        with patch.object(lineage,'consume',return_value={}),self.assertRaises(ValueError):
+            reader.prior_archive100_evidence(third,reader.ARCHIVE100_THIRD_RECOVERY_SOURCE)
+
+    def test_stdout_binds_both_prior100s_and_original50raw_and_rejects_missing_c5(self):
+        pins=PINS[:-1]+(reader.ARCHIVE100_THIRD_RECOVERY_SOURCE,);commit='a'*40
+        _,admission,proof=output_fixture(commit)
+        for value in (admission,proof):
+            value.update(recovery_commit=pins[0],observer_recovery_commit=pins[1],archive_recovery_commit=pins[2],archive100_recovery_commit=pins[3])
+        first={'source':{'commit':PINS[-1]}}
+        second={'source':{'commit':reader.ARCHIVE100_SECOND_RECOVERY_SOURCE},'prior_archive100_recovery':first}
+        third={'source':{'commit':pins[-1]},'prior_archive100_recovery':first,'prior_archive100_second_recovery':second}
+        admission.update(followthrough_source={'commit':pins[-1]},raw_source={'commit':pins[1]},
+            archive5_recovery={'five':'09cc'},observer_recovery={'raw':'f979'},archive50_recovery={'fifty':'B894'},
+            archive50_prior_recovery={'prior':'dc9'},archive100_recovery=third,archive100_prior_recovery=first,
+            archive100_second_prior_recovery=second)
+        proof['followthrough_commit']=pins[-1];follow=proof['actual_followthrough_full_CPU_consumer']
+        follow['source']=admission['followthrough_source']
+        for key in ('archive5_recovery','observer_recovery','archive50_recovery','archive50_prior_recovery','archive100_recovery','archive100_prior_recovery','archive100_second_prior_recovery'):
+            follow[key]=admission[key]
+        proof['independent_all_normal_return_raw']['source']=admission['raw_source']
+        holder.accept_output(proof,commit,pins[-1],admission,*pins)
+        for key in ('archive100_prior_recovery','archive100_second_prior_recovery','archive50_recovery'):
+            bad=copy.deepcopy(proof);bad['actual_followthrough_full_CPU_consumer'][key]={}
+            with self.subTest(key=key),self.assertRaises(ValueError):holder.accept_output(bad,commit,pins[-1],admission,*pins)
+        bad=copy.deepcopy(admission);bad.pop('archive100_second_prior_recovery')
+        with self.assertRaisesRegex(ValueError,'authenticated C5'):holder.accept_output(proof,commit,pins[-1],bad,*pins)
+        bad=copy.deepcopy(admission);bad['archive100_second_prior_recovery']['prior_archive100_recovery']={}
+        with self.assertRaises(ValueError):holder.accept_output(proof,commit,pins[-1],bad,*pins)
+
+    def test_third200earlyrefusal_and_allfive_held0_sources_still_required(self):
+        with patch(__name__+'.PINS',PINS[:-1]+(reader.ARCHIVE100_THIRD_RECOVERY_SOURCE,)):
+            Exact100Route.test_less_than200_refuses_before_scope_source_or_spawn_on_new_route(self)
+            InheritedHeldReceipts.test_exact_original5_and50_and_new100150200_native_sources_are_required(self)
 
 
 if __name__=='__main__':unittest.main()

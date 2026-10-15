@@ -25,7 +25,8 @@ def scope(recovery_commit=None,observer_recovery_commit=None,archive_recovery_co
     if archive100_recovery_commit is not None:
         reader.followthrough_route(archive100_recovery_commit,recovery_commit,observer_recovery_commit,
                                    archive_recovery_commit,archive100_recovery_commit)
-        suffix='-archive100-recovery-second' if archive100_recovery_commit==reader.ARCHIVE100_SECOND_RECOVERY_SOURCE else '-archive100-recovery'
+        suffix=('-archive100-recovery-third' if archive100_recovery_commit==reader.ARCHIVE100_THIRD_RECOVERY_SOURCE else
+                '-archive100-recovery-second' if archive100_recovery_commit==reader.ARCHIVE100_SECOND_RECOVERY_SOURCE else '-archive100-recovery')
         return DIRECTORY.with_name(DIRECTORY.name+suffix)
     if archive_recovery_commit==reader.ARCHIVE50_SECOND_RECOVERY_SOURCE:
         return DIRECTORY.with_name(DIRECTORY.name+'-archive50-recovery-second')
@@ -104,6 +105,7 @@ def ready(followthrough_commit, recovery_commit=None,observer_recovery_commit=No
         observer_recovery_commit=observer_recovery_commit,archive_recovery_commit=archive_recovery_commit,archive100_recovery_commit=archive100_recovery_commit,observer_recovery=(recovery['observer_recovery'] if archive_recovery_commit else recovery) if observer_recovery_commit else None,
         archive50_recovery=fifty,archive100_recovery=recovery if archive100_recovery_commit else None,
         archive100_prior_recovery=prior100,
+        archive100_second_prior_recovery=recovery['prior_archive100_second_recovery'] if archive100_recovery_commit==reader.ARCHIVE100_THIRD_RECOVERY_SOURCE else None,
         archive50_prior_recovery=reader.prior_archive50_evidence(fifty,archive_recovery_commit),
         archive5_recovery=recovery['legacy_archive5_recovery'] if observer_recovery_commit else recovery,
         followthrough_source=source,followthrough_result_sha256=follow_file['sha256'],
@@ -114,7 +116,7 @@ def ready(followthrough_commit, recovery_commit=None,observer_recovery_commit=No
 
 def accept_output(proof,commit,followthrough_commit,admission,recovery_commit=None,observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None):
     reader.followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit)
-    if archive100_recovery_commit==reader.ARCHIVE100_SECOND_RECOVERY_SOURCE:
+    if archive100_recovery_commit in (reader.ARCHIVE100_SECOND_RECOVERY_SOURCE,reader.ARCHIVE100_THIRD_RECOVERY_SOURCE):
         prior=admission.get('archive100_prior_recovery') if isinstance(admission,dict) else None
         ctl.need(isinstance(prior,dict) and prior.get('source',{}).get('commit')==reader.ARCHIVE100_RECOVERY_SOURCE and
             (admission.get('archive100_recovery') or {}).get('prior_archive100_recovery')==prior,
@@ -122,6 +124,15 @@ def accept_output(proof,commit,followthrough_commit,admission,recovery_commit=No
     else:
         ctl.need(not isinstance(admission,dict) or admission.get('archive100_prior_recovery') is None,
             'unregistered prior archive100 in independent admission')
+    if archive100_recovery_commit==reader.ARCHIVE100_THIRD_RECOVERY_SOURCE:
+        second=admission.get('archive100_second_prior_recovery') if isinstance(admission,dict) else None
+        ctl.need(isinstance(second,dict) and second.get('source',{}).get('commit')==reader.ARCHIVE100_SECOND_RECOVERY_SOURCE and
+            second.get('prior_archive100_recovery')==prior and
+            (admission.get('archive100_recovery') or {}).get('prior_archive100_second_recovery')==second,
+            'third archive100 stdout admission lost its separately authenticated C5 recovery')
+    else:
+        ctl.need(not isinstance(admission,dict) or admission.get('archive100_second_prior_recovery') is None,
+            'unregistered second prior archive100 in independent admission')
     ctl.need(proof.get('status')==reader.STATUS and proof.get('run_id')==reader.RUN and
         proof.get('producer_job')==reader.JOB and proof.get('producer_commit')==reader.PRODUCER and
         proof.get('source',{}).get('commit')==commit and proof.get('followthrough_commit')==followthrough_commit and
@@ -149,6 +160,7 @@ def accept_output(proof,commit,followthrough_commit,admission,recovery_commit=No
         follow.get('archive50_recovery')==admission.get('archive50_recovery') and
         follow.get('archive100_recovery')==admission.get('archive100_recovery') and
         follow.get('archive100_prior_recovery')==admission.get('archive100_prior_recovery') and
+        follow.get('archive100_second_prior_recovery')==admission.get('archive100_second_prior_recovery') and
         follow.get('archive50_prior_recovery')==admission.get('archive50_prior_recovery') and
         admission.get('recovery_commit')==recovery_commit and admission.get('observer_recovery_commit')==observer_recovery_commit and admission.get('archive_recovery_commit')==archive_recovery_commit and admission.get('archive100_recovery_commit')==archive100_recovery_commit,
         'independent output changed its admitted followthrough/raw/source boundary')

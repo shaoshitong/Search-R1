@@ -96,9 +96,11 @@ ARCHIVE50_FIRST_RECOVERY_SOURCE='dc9c79bc5e5c7d1b4e3134d30fe168223de10215'
 ARCHIVE50_SECOND_RECOVERY_SOURCE='b89495c8ec1f2a7fb0d5cd70d89974c16c801cff'
 ARCHIVE100_RECOVERY_SOURCE='4194ad2c21c5e10ae5ee3b0212fb6fbf3e02f41b'
 ARCHIVE100_SECOND_RECOVERY_SOURCE='23ab8b0c8af403ec830644ff4fa04eeef7f55927'
+ARCHIVE100_THIRD_RECOVERY_SOURCE='f8a332a72257f54bf0c01a01fce592e2515d7937'
 ARCHIVE100_ROUTES={
     ARCHIVE100_RECOVERY_SOURCE:('recover_sigma3_archive100',ROOT/'followthrough/721485-archive100-recovery-20261016'),
     ARCHIVE100_SECOND_RECOVERY_SOURCE:('recover_sigma3_archive100_second',ROOT/'followthrough/721485-archive100-recovery-second-20261016'),
+    ARCHIVE100_THIRD_RECOVERY_SOURCE:('recover_sigma3_archive100_third',ROOT/'followthrough/721485-archive100-recovery-third-20261016'),
 }
 
 
@@ -151,6 +153,20 @@ def prior_archive50_evidence(recovery,archive_recovery_commit):
 
 def prior_archive100_evidence(recovery,archive100_recovery_commit):
     """Fresh C1 preservation proof beneath the exact registered second100 route."""
+    if archive100_recovery_commit==ARCHIVE100_THIRD_RECOVERY_SOURCE:
+        need(isinstance(recovery,dict) and recovery.get('source',{}).get('commit')==archive100_recovery_commit and
+             isinstance(recovery.get('prior_archive100_second_recovery'),dict),
+             'third archive100 handoff lost its original C5 recovery')
+        from reproduction.hpc3_qprobe.recovery_lineage_stage import consume
+        second=consume(ARCHIVE100_SECOND_RECOVERY_SOURCE,'recover_sigma3_archive100_second')
+        need(second==recovery['prior_archive100_second_recovery'] and
+             second.get('source',{}).get('commit')==ARCHIVE100_SECOND_RECOVERY_SOURCE and
+             second.get('prior_archive100_recovery',{}).get('source',{}).get('commit')==ARCHIVE100_RECOVERY_SOURCE and
+             second['prior_archive100_recovery']==recovery.get('prior_archive100_recovery') and
+             all(recovery.get(key)==second.get(key) for key in (
+                 'prior_archive50_second_recovery','inherited_archive50','observer_recovery','legacy_archive5_recovery')),
+             'original C5/C1/B894/RAW/archive5 lineage changed beneath third archive100')
+        return second['prior_archive100_recovery']
     if archive100_recovery_commit==ARCHIVE100_SECOND_RECOVERY_SOURCE:
         need(isinstance(recovery,dict) and recovery.get('source',{}).get('commit')==archive100_recovery_commit and
              isinstance(recovery.get('prior_archive100_recovery'),dict),
@@ -238,6 +254,7 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit, reco
         observer_recovery=(recovery['observer_recovery'] if archive_recovery_commit else recovery) if observer_recovery_commit else None,
         archive50_recovery=fifty,archive100_recovery=recovery if archive100_recovery_commit else None,
         archive100_prior_recovery=prior100,
+        archive100_second_prior_recovery=recovery['prior_archive100_second_recovery'] if archive100_recovery_commit==ARCHIVE100_THIRD_RECOVERY_SOURCE else None,
         archive50_prior_recovery=prior_archive50_evidence(fifty,archive_recovery_commit))
 
 def native_evidence(goal, binding):
@@ -710,6 +727,8 @@ def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recov
                 fifty,prior100=archive50_recovery_evidence(latest,archive_recovery_commit,archive100_recovery_commit,with_prior100=True)
                 need(fifty==follow_proof['archive50_recovery'] and prior100==follow_proof['archive100_prior_recovery'],
                      'original C1/B894 changed during archive100 conjunction')
+                need(latest.get('prior_archive100_second_recovery')==follow_proof['archive100_second_prior_recovery'],
+                     'original C5 changed during final third archive100 conjunction')
             else:
                 need(follow.consume(archive_recovery_commit)==follow_proof['archive50_recovery'],'archive50 handoff changed during conjunction')
             need(prior_archive50_evidence(follow_proof['archive50_recovery'],archive_recovery_commit)==
