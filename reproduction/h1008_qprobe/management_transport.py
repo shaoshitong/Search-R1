@@ -11,12 +11,13 @@ import sys
 
 MGMT = "import json,shlex,subprocess,datetime,sys\nfrom pathlib import Path\ncfg=json.loads(Path('/home/lichen/.claude/projects/-home-lichen/memory/reference_h100_retained18_route_20261008.public.json').read_text())\ntarget='h100-8';ip=cfg['targets'][target];gateway=cfg['gateway_ip'];user=cfg['user']\nprefix=['env','-u','LD_LIBRARY_PATH','ssh','-T','-i',cfg['management_identity_file'],'-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UpdateHostKeys=no','-o','ConnectTimeout=8','-o','ConnectionAttempts=1']\nargs=prefix.copy()\nif ip!=gateway:args+=['-o','ProxyCommand='+shlex.join(prefix+['-W','%h:%p',user+'@'+gateway])]\nkeys=cfg.get('trusted_target_host_keys',{}).get(target)\nif keys:args+=['-o','KnownHostsCommand='+shlex.join(['/bin/echo','\\n'.join(keys)])]\nr=subprocess.run(args+[user+'@'+ip,WORKER_CMD],input=sys.stdin.buffer.read(),capture_output=True,timeout=240)\nprint(json.dumps({'route':'retained18 SSH-W h100-8','returncode':r.returncode,'stdout':r.stdout.decode(),'stderr':r.stderr.decode(),'utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}))\n"
 
-def remote(script, evidence, control_path=None):
+def remote(script, evidence, control_path=None, compat_handshake=False):
     args=['env','-u','LD_LIBRARY_PATH','/usr/bin/ssh','-T',
           '-o','BatchMode=yes','-o','IdentitiesOnly=yes',
           '-o','StrictHostKeyChecking=yes','-o','UpdateHostKeys=no',
-          '-o','IPQoS=none','-o','KexAlgorithms=curve25519-sha256',
           '-o','ConnectTimeout=30','-o','ServerAliveInterval=15','-o','ServerAliveCountMax=4']
+    if compat_handshake:
+        args+=['-o','IPQoS=none','-o','KexAlgorithms=curve25519-sha256']
     if control_path:
         socket=Path(control_path);parent=socket.parent
         if not parent.name.startswith('qprobe3-mgmt-'):
@@ -41,8 +42,8 @@ def remote(script, evidence, control_path=None):
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--evidence',required=True);parser.add_argument('--control-path')
-    args=parser.parse_args();print(remote(sys.stdin.read(),args.evidence,args.control_path))
+    parser=argparse.ArgumentParser();parser.add_argument('--evidence',required=True);parser.add_argument('--control-path');parser.add_argument('--compat-handshake',action='store_true')
+    args=parser.parse_args();print(remote(sys.stdin.read(),args.evidence,args.control_path,args.compat_handshake))
 
 
 if __name__=='__main__':main()
