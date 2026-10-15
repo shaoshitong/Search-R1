@@ -114,6 +114,27 @@ class ValidationStage(unittest.TestCase):
         self.assertEqual(dict(self.calls),{pin:2 for pin in PINS})
         self.assertIsNot(stage,other)
 
+    def test_nested_private_stage_dependency_stays_in_the_same_dag(self):
+        shared=SimpleNamespace(consume=lambda *args:None)
+        original=self.load
+        def load(pin,name,attribute):
+            module,proof=original(pin,name,attribute)
+            if pin==PINS[-1]:
+                module.lineage=shared
+                def consume(commit):
+                    self.calls[pin]+=1
+                    return [module.lineage.consume(PINS[-2],lineage.RECOVERIES[PINS[-2]]) for _ in range(4)]
+                module.consume=consume
+            return module,proof
+        with patch.object(lineage.reader,'load_fixed',side_effect=load):
+            stage,module,value=self.stage()
+            self.assertIs(module.lineage,stage)
+            self.assertTrue(all(item==value[0] for item in value))
+            stage.seal()
+        self.assertEqual(self.calls[PINS[-2]],2)
+        self.assertEqual(self.calls[PINS[-1]],2)
+        self.assertIsNot(shared,stage)
+
     def test_plain_owned_json_is_rehashed_after_original_consumers_reran(self):
         stage,_,_=self.stage();module,_=stage.load_fixed(PINS[-1],lineage.RECOVERIES[PINS[-1]],'control')
         path=self.root/'worker-result.json';path.write_text('{"exit":0}')

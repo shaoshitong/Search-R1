@@ -272,7 +272,7 @@ def command(repository,mode,claim,token):
     return ['bash',str(repository/ENTRY),str(repository),mode,'--claim',str(claim),'--token',token]
 
 
-def launch_archive(base,commit,step):
+def launch_archive(base,commit,step,*,storage_wait_protocol=False):
     repository,publication=source(commit);run,binding,accounting=producer(base);p,checkpoint=pair(Path(base),run,step)
     root=control_root(binding);directory=root/('archive-'+str(step))
     need(not directory.exists(),'archive control already attempted; inspect, never replay')
@@ -284,6 +284,9 @@ def launch_archive(base,commit,step):
         pair=checkpoint,source=publication,command=cmd,controller=birth(process(os.getpid())),
         actual_accounting=accounting,created_unix=time.time(),training_permitted=False,
         direct_gpu_device_access_permitted=False,native_gpu_audit_submission_permitted=False)
+    if storage_wait_protocol:
+        need(step in (100,150,200),'repair-wait archive scope differs')
+        claim['storage_wait_protocol']='actual-full-du-repair-v1'
     publish(claim_path,claim)  # Durable exclusive intent before Popen.
     with (directory/'worker.log').open('x') as output:
         child=subprocess.Popen(cmd,stdin=subprocess.DEVNULL,stdout=output,stderr=subprocess.STDOUT,start_new_session=True)
@@ -347,7 +350,10 @@ def archive_exec(claim_path,token):
                                                  claim_sha256=digest(claim_path),entered_unix=time.time()))
         from reproduction.hpc3_qprobe.archive_completed_pair import archive
         from reproduction.hpc3_qprobe.final_restore_audit import verify_transport
-        result=archive(claim['pair']['path'])
+        if claim['step'] in (100,150,200) and claim.get('storage_wait_protocol')=='actual-full-du-repair-v1':
+            from reproduction.hpc3_qprobe.archive_storage_wait import measure
+            result=archive(claim['pair']['path'],storage_measurement=lambda run,step:measure(claim_path,token,run,step))
+        else:result=archive(claim['pair']['path'])
         transport=read(result['path']);verified=verify_transport(result['path'],transport['target_receipt']['path'],
                                                                expected_step=claim['step'])
         publish(directory/'task-result.json',dict(status='CPU_PAIR_SOURCE_ARCHIVE_TARGET_FULL_SHA_PASS',

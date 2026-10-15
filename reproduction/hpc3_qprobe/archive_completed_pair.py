@@ -118,7 +118,7 @@ def measured_owner_storage(run_id, step):
     raise AssertionError('unreachable storage admission')
 
 
-def archive(receipt_path):
+def archive(receipt_path,*,storage_measurement=None):
     if os.getuid()!=14090:raise ValueError('Actual jxu957 archive owner required')
     from search_g1.qprobe_checkpoint import read_source
     original,receipt,_,origin,parent=read_source(receipt_path)
@@ -134,7 +134,8 @@ def archive(receipt_path):
         if path in rows and (rows[path]['bytes'],rows[path]['full_read_sha256'])!=(row['bytes'],row['full_read_sha256']):
             raise ValueError('Conflicting source records')
         rows[path]=row
-    allocated=measured_owner_storage(receipt['run_id'],receipt['step'])
+    measure=measured_owner_storage if storage_measurement is None else storage_measurement
+    allocated=measure(receipt['run_id'],receipt['step'])
     required=2*sum(row['bytes'] for row in rows.values())+2**30
     if allocated+required>2*10**12:raise ValueError('Explicit own2TB archive/target allowance exceeded')
     os.umask(0o007);directory.mkdir(parents=True,mode=0o770)

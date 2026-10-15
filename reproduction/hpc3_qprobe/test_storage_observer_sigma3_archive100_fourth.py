@@ -1,6 +1,8 @@
 """Local protocol checks for isolated observation slots; no remote work."""
 from pathlib import Path
 from types import SimpleNamespace
+import subprocess
+import sys
 import unittest
 
 from reproduction.hpc3_qprobe import storage_observer_sigma3_archive100_fourth as wrapper
@@ -8,12 +10,27 @@ from reproduction.hpc3_qprobe import storage_observer_sigma3_after_actual_denial
 
 
 class ObserverNamespace(unittest.TestCase):
+    def test_actual_child_is_retained_and_reaped_while_parent_remains_live(self):
+        core=SimpleNamespace(subprocess=subprocess)
+        def start():
+            child=core.subprocess.Popen([sys.executable,'-c','print("actual-observer-complete")'],stdout=subprocess.PIPE)
+            return {'pid':child.pid}
+        core.start=start
+        value,held=wrapper.start_held(core)
+        self.assertEqual(value['pid'],held.pid)
+        self.assertIs(core.subprocess,subprocess)
+        output,_=held.communicate(timeout=10)
+        self.assertEqual(held.wait(),0)
+        self.assertEqual(output,b'actual-observer-complete\n')
+        # A second wait uses the retained status; no child is relaunched.
+        self.assertEqual(held.wait(),0)
+
     def test_private_configuration_does_not_patch_the_canonical_worker(self):
         before=(canonical.__file__,canonical.CONTROL,canonical.SLOT,canonical.RELATIVE_SOURCE)
-        private=SimpleNamespace();entry=Path('/fixture/entry.py')
+        private=SimpleNamespace();entry=Path('/fixture/source/reproduction/hpc3_qprobe/entry.py')
         result=wrapper.configure(private,17,entry)
         self.assertIs(result,private)
-        self.assertEqual(private.CONTROL,wrapper.ROOT/'observations'/(wrapper.PREFIX+'17'))
+        self.assertEqual(private.CONTROL,wrapper.ROOT/'observations'/(wrapper.PREFIX+'source-17'))
         self.assertEqual(private.RELATIVE_SOURCE,wrapper.RELATIVE)
         self.assertEqual(private.__file__,str(entry))
         self.assertEqual((canonical.__file__,canonical.CONTROL,canonical.SLOT,canonical.RELATIVE_SOURCE),before)

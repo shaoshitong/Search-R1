@@ -119,14 +119,27 @@ def matches(s,row,mode):
         row['device'],row['inode'],21930,21919,mode)
 
 
+def existing_reported_roots(roots):
+    """A genuinely removed temporary root needs no permission mutation."""
+    existing=[];missing=[]
+    for root in roots:
+        try:directory_row(root)
+        except FileNotFoundError:
+            need(not root.exists() and not root.is_symlink(),'missing root changed or became a link')
+            missing.append(str(root))
+        else:existing.append(root)
+    return existing,missing
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--failure',type=Path,required=True)
     parser.add_argument('--failure-sha',required=True);a=parser.parse_args();os.umask(0o007)
     commit=code_guard();value,roots=failure(a.failure,a.failure_sha)
     control=ROOT/'preparation'/('storage-actual-denial-repair-'+a.failure_sha[:24])
     need(not control.exists() and not control.is_symlink(),'existing/unknown intent is inspect-only; never replay')
+    existing,missing=existing_reported_roots(roots)
     all_dirs={};targets={}
-    for root in roots:
+    for root in existing:
         todo=[root]
         while todo:
             path=todo.pop();row=directory_row(path);all_dirs[str(path)]=row
@@ -147,6 +160,7 @@ def main():
         control.mkdir(mode=0o770)
         publish(control/'intent.json',dict(source_commit=commit,failure_path=str(a.failure),failure_sha256=a.failure_sha,
             original_stderr_sha256=value['stderr_sha256'],roots=[str(p) for p in roots],targets=list(targets.values()),
+            missing_reported_roots=missing,
             authorization='prior explicit shared experiments mou176/jxu957 chmod-R770; minimum exact mode700 directory to750',
             actual_process=birth(os.getpid()),created_unix=time.time(),recursive_chmod=False,training_actions=0))
         changed=[]
@@ -158,6 +172,7 @@ def main():
             publish(control/('changed-'+str(len(changed))+'.json'),changed[-1])
         result=dict(status='ACTUAL_REPORTED_DENIED_SHARED_DIRECTORIES_EXACT_FD_REPAIRED',source_commit=commit,
             failure_sha256=a.failure_sha,changed=changed,inspected_directories=len(all_dirs),recursive_chmod=False,
+            missing_reported_roots=missing,
             regular_file_actions=0,training_actions=0,completed_unix=time.time())
         publish(control/'result.json',result);print(json.dumps(dict(control=str(control),**result)),flush=True)
     finally:

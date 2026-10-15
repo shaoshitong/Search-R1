@@ -24,7 +24,7 @@ def configure(core,slot,entry):
     core.__file__=str(entry)
     core.RELATIVE_SOURCE=RELATIVE
     core.SLOT=slot
-    core.CONTROL=ROOT/'observations'/(PREFIX+str(slot))
+    core.CONTROL=ROOT/'observations'/(PREFIX+Path(entry).parents[2].name+'-'+str(slot))
     return core
 
 
@@ -46,6 +46,21 @@ def load_core(slot):
     spec=importlib.util.spec_from_file_location('_sigma3_fourth_private_du_worker',repo/CORE_RELATIVE)
     core=importlib.util.module_from_spec(spec);spec.loader.exec_module(core)
     return configure(core,slot,entry)
+
+
+def start_held(core):
+    """Retain the real observer Popen; the archive parent must wait/reap it."""
+    original=core.subprocess;children=[]
+    class PrivateSubprocess:
+        def __getattr__(self,name):return getattr(original,name)
+        def Popen(self,*args,**kwargs):
+            child=original.Popen(*args,**kwargs);children.append(child);return child
+    core.subprocess=PrivateSubprocess()
+    try:actual=core.start()
+    finally:core.subprocess=original
+    if len(children)!=1:
+        raise ValueError('Fresh observer launch did not yield exactly one held child; no replay')
+    return actual,children[0]
 
 
 def main():

@@ -21,6 +21,7 @@ RECOVERIES={
     'b89495c8ec1f2a7fb0d5cd70d89974c16c801cff':'recover_sigma3_archive50_second',
     '4194ad2c21c5e10ae5ee3b0212fb6fbf3e02f41b':'recover_sigma3_archive100',
     '23ab8b0c8af403ec830644ff4fa04eeef7f55927':'recover_sigma3_archive100_second',
+    'f8a332a72257f54bf0c01a01fce592e2515d7937':'recover_sigma3_archive100_third',
 }
 
 
@@ -83,6 +84,7 @@ class Stage:
         if id(module) in self.prepared:return
         self.prepared.add(id(module))
         if hasattr(module,'reader'):module.reader=self
+        if hasattr(module,'lineage'):module.lineage=self
         if callable(getattr(module,'consume',None)):
             original=module.consume
             @functools.wraps(original)
@@ -135,6 +137,12 @@ class Stage:
             if RECOVERIES.get(commit)==filename:self.prepare(module,commit,filename)
             self.modules[key]=(module,proof)
         return self.modules[key]
+
+    def consume(self,commit,filename):
+        """A private consumer's nested Stage dependency belongs to this DAG."""
+        need(RECOVERIES.get(commit)==filename,'unregistered nested recovery consumer')
+        module,_=self.load_fixed(commit,filename,'control')
+        return module.consume(commit)
 
     def seal(self):
         need(self.state=='open' and self.proofs,'stage must have a completed dependency graph')
