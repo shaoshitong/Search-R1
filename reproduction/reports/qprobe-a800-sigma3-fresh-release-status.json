@@ -88,11 +88,16 @@
     "failure_location": {
       "file": "reproduction/a800_common/run_pipeline.py",
       "line": 170,
-      "operation": "service socket bind"
+      "operation": "source digest check, local import shadows digest in fresh branch"
     },
-    "exact_errno_and_port_owner": "pending narrow read-only diagnosis",
+    "exact_errno_and_port_owner": {
+      "type": "UnboundLocalError",
+      "errno": null,
+      "port_investigation": "not needed for non-socket exception"
+    },
     "duplicate_launch_performed": false,
-    "goal_complete": false
+    "goal_complete": false,
+    "actual_error_log_sha256": "fa15db39a4d47f843de26536c2bfbf97f52569e5cb0a0fa89457522f09a3fc64"
   },
   "evidence": [
     {
@@ -140,5 +145,25 @@
     "publication_commit": "3ee7a65116a880bdf51b0a181fbc03d84cac3879",
     "figure": "reproduction/reports/qprobe-mixed-accuracy-iter1-35/figure.png"
   },
-  "no_credentials_models_environment_or_qa_token_payload": true
+  "no_credentials_models_environment_or_qa_token_payload": true,
+  "startup_repair": {
+    "source_commit": "aa56499c894bfd18e6fcf6c189d2aa2008403a14",
+    "source_map_sha256": "d45d360230fcb0d97ecd2663991c12db622030326be96266dd59f8c333ef20bf",
+    "changed_runtime_function": "restore branch local alias only; global digest restored for fresh startup",
+    "cpu_regression_pass": true,
+    "independent_targeted_release_review_approved": true,
+    "new_namespace_required": true,
+    "new_run_id": "157362c09cfd4665b43019c09de99ac7",
+    "new_execution_id": "a75219f8b9d04a778b0f7594ca08de11",
+    "new_pipeline": {
+      "pid": 4116877,
+      "start_ticks": 612760539
+    },
+    "actual_launch_unix": 1792048014.0841906,
+    "launch_exit_code": 0,
+    "first_positive_flow_verified": false,
+    "first_complete_formal_iteration_verified": false,
+    "formal_complete_outers_verified": 0,
+    "scores_for_new_run": null
+  }
 }
