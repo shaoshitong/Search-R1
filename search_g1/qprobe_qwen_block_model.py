@@ -94,7 +94,7 @@ def native_implementation_binding(config=None):
     config = config or QwenBlockQProbeConfig()
     objects = dict(decoder_layer=Qwen2DecoderLayer,rotary_embedding=Qwen2RotaryEmbedding,
                    causal_padding_mask=_prepare_4d_causal_attention_mask_for_sdpa)
-    return dict(transformers_version=transformers.__version__,torch_version=str(torch.__version__),
+    binding = dict(transformers_version=transformers.__version__,torch_version=str(torch.__version__),
         attention_implementation=config.attention_implementation,
         implementations={key:dict(qualified_name=value.__module__+'.'+value.__name__,
             source_sha256=hashlib.sha256(Path(inspect.getsourcefile(value)).read_bytes()).hexdigest())
@@ -102,6 +102,8 @@ def native_implementation_binding(config=None):
         decoder_forward_parameters=list(inspect.signature(Qwen2DecoderLayer.forward).parameters),
         rotary_forward_parameters=list(inspect.signature(Qwen2RotaryEmbedding.forward).parameters),
         native_config=config.native_config().to_dict())
+    # HF config includes integer id2label keys; persisted JSON uses string keys.
+    return json.loads(json.dumps(binding,sort_keys=True,allow_nan=False))
 
 
 class QwenLastBlockQuestionProbe(nn.Module):

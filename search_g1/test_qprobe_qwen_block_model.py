@@ -3,6 +3,7 @@ import copy
 from dataclasses import replace
 import hashlib
 import importlib.util
+import json
 import math
 import unittest
 
@@ -103,6 +104,8 @@ class QwenBlockTests(unittest.TestCase):
         for name,p in model.named_parameters():
             torch.testing.assert_close(p.grad,full_gradients[name],rtol=2e-5,atol=2e-6)
         binding = native_implementation_binding(config)
+        self.assertEqual(binding,json.loads(json.dumps(binding,sort_keys=True,allow_nan=False)))
+        self.assertEqual(set(binding['native_config']['id2label']),{'0','1'})
         self.assertIn('Qwen2DecoderLayer',binding['implementations']['decoder_layer']['qualified_name'])
         self.assertEqual(binding['attention_implementation'],'sdpa')
 
