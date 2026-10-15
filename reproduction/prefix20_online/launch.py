@@ -320,8 +320,51 @@ def run(base):
         return [python, '-m', 'torch.distributed.run', '--standalone', '--nproc_per_node=8',
                 '-m', module] + args
 
+    def start_retriever():
+        nonlocal retriever
+        stage('STARTING_OWN_RETRIEVER')
+        env_root = Path(c['environment_root'])
+        libs = list((env_root/'lib/python3.10/site-packages/nvidia').glob('*/lib'))
+        libs += [env_root/'lib/python3.10/site-packages/torch/lib']
+        retrieve_env = dict(env, PYTHONPATH=c['retriever_gpu_lib']+':'+str(base/'repo'),
+                            LD_LIBRARY_PATH=':'.join(map(str, libs)))
+        retriever = start('retriever', [python, '-m', 'reproduction.prefix20_online.retriever',
+            '--index', c['retrieval_index'], '--corpus', c['retrieval_corpus'],
+            '--encoder', c['retrieval_encoder'], '--cache', str(base/'retrieval-cache'),
+            '--run-id', c['run_id'], '--port', str(c.get('retrieval_port', 18010)),
+            '--batch-queries', str(c.get('retrieval_batch_queries', 512))], retrieve_env)
+        import urllib.request
+        deadline = time.monotonic()+1800
+        while True:
+            interrupt.check()
+            owned.observe('retriever')
+            if retriever.poll() is not None:
+                raise RuntimeError('Own retrieval service failed during loading')
+            try:
+                with urllib.request.urlopen('http://127.0.0.1:'+str(c.get('retrieval_port', 18010))+'/health', timeout=5) as response:
+                    ready = json.load(response)
+                if ready.get('ok') and ready.get('run_id') == c['run_id'] and ready.get('gpu_shards') == 8:
+                    break
+            except (OSError, ValueError):
+                pass
+            if time.monotonic() > deadline:
+                raise TimeoutError('Own retrieval loading did not become ready')
+            time.sleep(5)
     try:
-        for epoch in range(1, int(c.get('epochs', 1000))+1):
+        start_epoch = int(c.get('start_epoch', 1))
+        if not 1 <= start_epoch <= int(c.get('epochs', 1000)):
+            raise ValueError('Invalid isolated continuation epoch')
+        if start_epoch > 1:
+            restored = read(base/'preparation/restore-receipt.json')
+            latest = read(base/'train/latest.json')
+            if restored['start_epoch'] != start_epoch or latest['epoch'] != start_epoch-1:
+                raise ValueError('Isolated completed head boundary differs from requested next epoch')
+            epoch = start_epoch
+            stage('RESTORED_COMPLETED_HEAD', completed_epoch=latest['epoch'],
+                  actual_adam_steps_per_rank=latest['actual_adam_steps_per_rank'],
+                  source_base=restored['source_base'])
+            start_retriever()
+        for epoch in range(start_epoch, int(c.get('epochs', 1000))+1):
             root = base/'epochs'/('epoch-%04d' % epoch)
             phase('e%04d-rollout' % epoch, [python, '-m', 'reproduction.prefix20_online.rollout',
                   '--config', str(base/'preparation/launch-config.json'), '--epoch', str(epoch)])
@@ -349,34 +392,7 @@ def run(base):
             if epoch > 1:
                 prune_rebuildable(base, epoch)
             if epoch == 1 and int(c.get('epochs', 1000)) > 1:
-                stage('STARTING_OWN_RETRIEVER')
-                env_root = Path(c['environment_root'])
-                libs = list((env_root/'lib/python3.10/site-packages/nvidia').glob('*/lib'))
-                libs += [env_root/'lib/python3.10/site-packages/torch/lib']
-                retrieve_env = dict(env, PYTHONPATH=c['retriever_gpu_lib']+':'+str(base/'repo'),
-                                    LD_LIBRARY_PATH=':'.join(map(str, libs)))
-                retriever = start('retriever', [python, '-m', 'reproduction.prefix20_online.retriever',
-                    '--index', c['retrieval_index'], '--corpus', c['retrieval_corpus'],
-                    '--encoder', c['retrieval_encoder'], '--cache', str(base/'retrieval-cache'),
-                    '--run-id', c['run_id'], '--port', str(c.get('retrieval_port', 18010)),
-                    '--batch-queries', str(c.get('retrieval_batch_queries', 512))], retrieve_env)
-                import urllib.request
-                deadline = time.monotonic()+1800
-                while True:
-                    interrupt.check()
-                    owned.observe('retriever')
-                    if retriever.poll() is not None:
-                        raise RuntimeError('Own retrieval service failed during loading')
-                    try:
-                        with urllib.request.urlopen('http://127.0.0.1:'+str(c.get('retrieval_port', 18010))+'/health', timeout=5) as response:
-                            ready = json.load(response)
-                        if ready.get('ok') and ready.get('run_id') == c['run_id'] and ready.get('gpu_shards') == 8:
-                            break
-                    except (OSError, ValueError):
-                        pass
-                    if time.monotonic() > deadline:
-                        raise TimeoutError('Own retrieval loading did not become ready')
-                    time.sleep(5)
+                start_retriever()
         success = True
     except BaseException as error:
         stage('FAILED', error_type=type(error).__name__, error=str(error))

@@ -59,8 +59,14 @@ c['cached_features_manifest_sha256']=actual
 for key in ('environment_root','model_dir','cached_features','cached_inputs','canonical_train','retrieval_index','retrieval_corpus','retrieval_encoder','retriever_gpu_lib'):
  assert pathlib.Path(c[key]).is_absolute() and pathlib.Path(c[key]).exists(),key
 assert (pathlib.Path(c['environment_root'])/'bin/python').is_file()
+restore=None
+if c.get('restore'):
+ import sys
+ sys.path.insert(0,str(b/'repo'))
+ from reproduction.prefix20_online.recovery import stage
+ restore=stage(c)
 once(b/'preparation/launch-config.json',c);once(b/'preparation/source-files.json',p['files'])
-proof=dict(status='CODE_DEPLOYED_NOT_SUBMITTED',base=str(b),commit=p['commit'],run_id=c['run_id'],target_code_files=len(p['files']),all_target_code_full_sha_match=True,cached_features_manifest_sha256=actual,config_sha256=sha(b/'preparation/launch-config.json'),models_or_rollouts_copied=False,checked_unix=time.time())
+proof=dict(status='CODE_DEPLOYED_NOT_SUBMITTED',base=str(b),commit=p['commit'],run_id=c['run_id'],target_code_files=len(p['files']),all_target_code_full_sha_match=True,cached_features_manifest_sha256=actual,config_sha256=sha(b/'preparation/launch-config.json'),models_or_rollouts_copied_from_Mac=False,remote_checkpoint_staged=bool(restore),isolated_recovery=(dict(completed_epoch=restore['completed_epoch'],start_epoch=restore['start_epoch'],head_sha256=restore['head_sha256'],reserved_pending_selection_reused=restore['reserved_pending_selection_reused']) if restore else None),checked_unix=time.time())
 once(b/'preparation/deploy-receipt.json',proof);print(json.dumps(proof))
 '''.replace('PAYLOAD', repr(payload))
     target(args, code, 'prefix20-online-deploy')

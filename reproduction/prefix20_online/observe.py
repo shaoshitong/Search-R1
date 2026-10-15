@@ -53,7 +53,7 @@ def observe(base):
     epoch_name = 'epoch-%04d' % epoch
     train = base/'train'
     result = dict(base=str(base), run_id=c.get('run_id'), observed_unix=time.time(),
-        submit_receipt=receipt, stage=stage, latest=small(train/'latest.json'),
+        submit_receipt=receipt, restore_receipt=small(base/'preparation/restore-receipt.json'), stage=stage, latest=small(train/'latest.json'),
         latest_metrics=tail_json(train/'metrics.jsonl'),
         latest_train_progress=tail_json(train/'progress.jsonl'),
         current_train_complete=small(train/'epochs'/epoch_name/'complete.json'),
