@@ -1,0 +1,144 @@
+{
+  "role": "sanitized_sigma3_new_loss_release_and_actual_preclaim_fault",
+  "recorded_unix": 1792047633.000615,
+  "source_commit": "9ec12a3b0ca919be0f083927439d4f2fdef42e48",
+  "source_map_sha256": "2efbe2e4a7a5280567c415a6796b6a059f462ec9d2d580ae39623317b931e5ff",
+  "operations_introduction_commit": "a521995b09d35d70dc27a6c8d0c5835e634c7e60",
+  "run_id": "c5289001497e458485b98030e71d5f36",
+  "execution_id": "aaecb213f394427ca308b25fa23cea60",
+  "new_loss": {
+    "mode": "sigma3_std_aux6_v1",
+    "sigma3_ce_weight": 1.0,
+    "normalized_sample_std_mse_weight": 3.0,
+    "aux6_ce_weight": 0.1,
+    "mean_loss_weight": 0.0,
+    "std_normalizer": "sqrt(.3)",
+    "count_to_sigma_class": [
+      0,
+      1,
+      2,
+      2,
+      1,
+      0
+    ]
+  },
+  "selection": {
+    "candidate_questions": 5120,
+    "selected_questions": 512,
+    "exploration_questions": 0
+  },
+  "fresh_state": {
+    "actor": true,
+    "reference_official_fixed": true,
+    "Adam": true,
+    "scheduler": true,
+    "RNG": true,
+    "sampler": true,
+    "question_head": true,
+    "checkpoint_inherited": false,
+    "teacher_trajectories_reuse_only_if_qualified": true,
+    "new_head_bootstrap_questions": 5120
+  },
+  "unchanged_recipe": {
+    "world": 4,
+    "precision": "BF16_actor_reference_rollout_FP32master_reduce_selectedLP",
+    "actor_micro_per_rank": 4,
+    "actor_micro_global": 16,
+    "accumulation": 8,
+    "old_logprob_micro_per_rank": 8,
+    "mini": 128,
+    "epoch": 1,
+    "trajectories_per_outer": 2560,
+    "opportunities_per_outer": 20,
+    "lr": 1e-06,
+    "warmup_complete_outers": 57,
+    "target_complete_outers": 200
+  },
+  "single_independent_release_review_approved": true,
+  "routine_reviews_disabled": true,
+  "cpu_checks": {
+    "loss": 8,
+    "binding_identity": 38
+  },
+  "new_gpu_tests_added": 0,
+  "new_evaluations_added": 0,
+  "old_human_stop": {
+    "run_id": "1f34290a70454871aea9d368dc8a0b36",
+    "execution_id": "59ef9209e5724cf6adc6b126d30071c8",
+    "owned_births_exited": 190,
+    "owned_cuda_contexts_remaining": 0,
+    "private_corpus_cache_removed": true,
+    "original_assets_present": true,
+    "pre_signal_complete_outers": 38,
+    "pre_signal_complete_adam": 760,
+    "pre_signal_returned_partial_next_outer_adam": 17,
+    "count_scope": "pre-SIGTERM captured prefix; final post-SIGTERM counts not inferred; partial preserved, not rolled back; replicas counted once"
+  },
+  "new_status": {
+    "actual_single_pipeline_launch_exit_code": 0,
+    "actual_pipeline_birth": {
+      "pid": 4107391,
+      "start_ticks": 612679933
+    },
+    "actual_same_handle_inspect_pipeline_alive": false,
+    "pipeline_claimed": false,
+    "trainer_claimed": false,
+    "formal_complete_outers": 0,
+    "formal_adam": 0,
+    "failure_location": {
+      "file": "reproduction/a800_common/run_pipeline.py",
+      "line": 170,
+      "operation": "service socket bind"
+    },
+    "exact_errno_and_port_owner": "pending narrow read-only diagnosis",
+    "duplicate_launch_performed": false,
+    "goal_complete": false
+  },
+  "evidence": [
+    {
+      "path": "preparation/qprobe-sigma3-source-publication.json",
+      "sha256": "a6acc0840739d4de6f56dd2f12c5f33c53b5367ba29d5f2654d16a44ac9e6cc3"
+    },
+    {
+      "path": "preparation/qprobe-sigma3-operations-publication.json",
+      "sha256": "2c713627e03b520f72bccaf29d95fddd4f4b8a467272eaf56016130eeafd711f"
+    },
+    {
+      "path": "preparation/qprobe-sigma3-independent-release-review.json",
+      "sha256": "6b974d81912679360872bcaefd625c254694ea0f26e99bc5acfce7446cc7ac3e"
+    },
+    {
+      "path": "preparation/qprobe-sigma3-reviewed-prepared-switch-ready.json",
+      "sha256": "9ddddf73b00f62701e1dca9c25ea826c35ada90543bbd8d2857e067f8dbdff88"
+    },
+    {
+      "path": "preparation/qprobe-sigma3-old1f342-stop-once.result.json",
+      "sha256": "b1027267ef005635758982b58ed4958bf855f3436e37b363c0e1cad11a90a665"
+    },
+    {
+      "path": "preparation/qprobe-sigma3-old1f342-cleanup-audit-1792047144197610000.result.json",
+      "sha256": "753c7c0adacb0f1a9d41a580de1822e84a4201d8d9cff2595d1f895486368034"
+    },
+    {
+      "path": "preparation/qprobe-a800-sigma3-loss-deployment.launch-1792047208319905000.json",
+      "sha256": "843428a512c263a15b9b2cffac1ce335f41f03dd0628595b3efffdc389508dba"
+    },
+    {
+      "path": "preparation/qprobe-sigma3-startup-flow-observation1.json",
+      "sha256": "2a6f8f73e2ed3ff074aa827c74c6cfef0ab92381023c6f0ffd2c2f1120228a88"
+    },
+    {
+      "path": "preparation/qprobe-a800-sigma3-loss-deployment.inspect-1792047415277211000.json",
+      "sha256": "c7de16c7817284ec997c02227dff0b7c74eac3dbf8b8e2609ddc69eac1e722d7"
+    }
+  ],
+  "baseline": {
+    "iterations": [
+      1,
+      35
+    ],
+    "publication_commit": "3ee7a65116a880bdf51b0a181fbc03d84cac3879",
+    "figure": "reproduction/reports/qprobe-mixed-accuracy-iter1-35/figure.png"
+  },
+  "no_credentials_models_environment_or_qa_token_payload": true
+}
