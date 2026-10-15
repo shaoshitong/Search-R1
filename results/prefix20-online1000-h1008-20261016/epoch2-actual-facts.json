@@ -1,0 +1,886 @@
+{
+  "GPU_computation_performed": false,
+  "actual_adam_after_per_rank": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "actual_adam_before_per_rank": [
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100
+  ],
+  "actual_adam_increment_per_rank": [
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100
+  ],
+  "base": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f",
+  "console_phase_records": [
+    {
+      "actual_adam_steps_per_rank": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "checked_unix": 1792094216.816587,
+      "completed_epoch": 1,
+      "epoch": 2,
+      "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+      "source_base": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-5545622",
+      "stage": "RESTORED_COMPLETED_HEAD"
+    },
+    {
+      "checked_unix": 1792094216.8170428,
+      "epoch": 2,
+      "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+      "stage": "STARTING_OWN_RETRIEVER"
+    },
+    {
+      "checked_unix": 1792094354.8252878,
+      "epoch": 2,
+      "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+      "stage": "e0002-rollout"
+    },
+    {
+      "checked_unix": 1792094756.1706939,
+      "epoch": 2,
+      "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+      "stage": "e0002-pack"
+    },
+    {
+      "checked_unix": 1792094762.7854245,
+      "epoch": 2,
+      "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+      "stage": "e0002-encode"
+    },
+    {
+      "checked_unix": 1792094791.3075666,
+      "epoch": 2,
+      "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+      "stage": "e0002-train"
+    },
+    {
+      "actual_adam_steps_per_rank": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "checked_unix": 1792094819.8926625,
+      "epoch": 2,
+      "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+      "stage": "EPOCH_COMPLETE"
+    },
+    {
+      "checked_unix": 1792094820.211763,
+      "epoch": 3,
+      "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+      "stage": "e0003-rollout"
+    }
+  ],
+  "current_stage": {
+    "checked_unix": 1792094820.211763,
+    "epoch": 3,
+    "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+    "stage": "e0003-rollout"
+  },
+  "derived_cache_pruned": {
+    "checked_unix": 1792094820.2088702,
+    "durable_head_sha256": "f2d3b35edaf6934296b7f247dc50f1e812dc8fc121b815bf6ef5e37da9614b00",
+    "epoch": 2,
+    "full_raw_retained": true,
+    "questions_and_compact_retained": true,
+    "removed_bytes": {
+      "features": 2165408923,
+      "inputs": 70805667
+    }
+  },
+  "encoder_rank_receipts": [],
+  "epoch": 2,
+  "epoch3_start_observed": true,
+  "fixed_diagnostic_seconds": 0.13351373001933098,
+  "fresh_rollout_complete": true,
+  "head_checkpoint_metadata": {
+    "epoch": 2,
+    "independent_model_hash_performed": false,
+    "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/latest.pt",
+    "producer_checkpoint_sha256": "f2d3b35edaf6934296b7f247dc50f1e812dc8fc121b815bf6ef5e37da9614b00"
+  },
+  "job_id": 3408,
+  "latest_bundle": {
+    "actual_adam_steps_per_rank": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "config_sha256": "9eb2df6c824eb34ad2190834df4511955e4ed0d22246624dffa09785311c75c3",
+    "epoch": 2,
+    "head_path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/latest.pt",
+    "head_sha256": "f2d3b35edaf6934296b7f247dc50f1e812dc8fc121b815bf6ef5e37da9614b00",
+    "pool_json_sha256": "ae13710254e7ae77cf5531b62a755ec2000bc3fba20051bbafaff1f6714aa8fc",
+    "pool_state_path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/pool-state-at-head-completion.json",
+    "pool_state_sha256": "365183e945ed253f0b4627f3aa9f2cf697010b3b26c084ba8ee5428873abba2c",
+    "rollout_complete_sha256": "51455e3aa782ec05559aaa61a9ba283ae324209c584d399550a55347b2334a79",
+    "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+    "selection_sha256": "f02ecd0b60162712e5feb8830f4a8ea06222d92ef46690682af4a8b39db7c44f"
+  },
+  "latest_bundle_proof": {
+    "bytes": 903,
+    "independent_small_file_full_sha256": "c9a9a48173b2d914abf816ce15f1d37a31540508e69cd3d0a87e7c558de1f866",
+    "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/latest-bundle.json"
+  },
+  "metrics": {
+    "actual_adam_steps_per_rank": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "auroc": 0.6223793291189825,
+    "cuda_peak_allocated_bytes": 1923195392,
+    "cuda_peak_reserved_bytes": 2004877312,
+    "diagnostic_seconds": 0.13351373001933098,
+    "epoch": 2,
+    "global_batch": 256,
+    "last_global_batch": 256,
+    "observed_utc": "2026-10-15T20:06:49.355729+00:00",
+    "raw": {
+      "accuracy": 0.745703125,
+      "balanced_accuracy": 0.5530718540550834,
+      "bce": 0.5785900922119723,
+      "brier": 0.18673983354564808,
+      "count": 2560,
+      "f1": 0.26606538895152204,
+      "fn": 441,
+      "fp": 210,
+      "majority_accuracy": 0.781640625,
+      "negative": 2001,
+      "positive": 559,
+      "precision": 0.3597560975609756,
+      "probability_mean": 0.23400723226194292,
+      "probability_quantiles": {
+        "0": 0.0007096703991005882,
+        "0.01": 0.007577241267860811,
+        "0.1": 0.03021458706739398,
+        "0.5": 0.1634454411084719,
+        "0.9": 0.5563995792788694,
+        "0.99": 0.8577681049901036,
+        "1": 0.9621075733703927
+      },
+      "recall": 0.2110912343470483,
+      "saturation_above_0_99": 0.0,
+      "saturation_below_0_01": 0.0203125,
+      "tn": 1791,
+      "tp": 118
+    },
+    "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f",
+    "sampling": "natural_no_replacement",
+    "test_manifest_sha256": "86c100961ae9bb75a11da3d39f1026c36e88dfd29ae68dc34a0786c5d185cd1b",
+    "train_manifest_sha256": "420e3abbb74aceb3f8014d28599f67a4ebaa2e0f85d8ad4c714d889af6f74441",
+    "train_metric_semantics": "one-pass online predictions before each own batch update",
+    "train_online_accuracy": 0.7500390625,
+    "train_online_bce": 0.5937013317644596,
+    "train_positive": 5484,
+    "train_seconds": 4.839403536170721,
+    "train_trajectories": 25600,
+    "train_unique_trajectories": 25600
+  },
+  "metrics_proof": {
+    "bytes": 1521,
+    "independent_small_file_full_sha256": "68c995dccfc7c3bd6e8e23a2676a38ba54108ba29af1f670a72b4237e56151cf",
+    "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/metrics.json"
+  },
+  "model_bytes_downloaded": false,
+  "model_independent_full_hash_performed": false,
+  "observed_utc": "2026-10-15T20:09:52.305606+00:00",
+  "phase_wall_seconds_including_startup_cleanup_polling_and_publication": {
+    "e0002-encode": 28.52214217185974,
+    "e0002-pack": 6.614730596542358,
+    "e0002-rollout": 401.34540605545044,
+    "e0002-train": 28.58509588241577
+  },
+  "pool_boundary": {
+    "cursor": 10240,
+    "cycle": 0,
+    "next_epoch": 3,
+    "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/pool-state-at-head-completion.json",
+    "sha256": "365183e945ed253f0b4627f3aa9f2cf697010b3b26c084ba8ee5428873abba2c"
+  },
+  "question_overlap_with_cached_epoch1": 0,
+  "questions": 5120,
+  "questions_bundle": {
+    "bytes": 5122447,
+    "independent_small_file_full_sha256": "5856f49db255460c77d5f728936864ba6cd5ae9fda04780adee23756909b9ee8",
+    "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/questions.json"
+  },
+  "rank_Adam_not_summed": true,
+  "rank_facts": [
+    {
+      "actual_adam_after": 200,
+      "actual_adam_before": 100,
+      "actual_adam_increment": 100,
+      "actual_update_records": 100,
+      "complete_receipt": {
+        "bytes": 2088,
+        "independent_small_file_full_sha256": "925ad593798c9a871a24f8b79cdba5d3b29b62f0f43653b36c730a6eb3af089d",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-0-complete.json"
+      },
+      "first_update": {
+        "actual_adam_steps": 101,
+        "epoch": 2,
+        "epoch_step": 1,
+        "local_trajectories": 32,
+        "loss": 0.8033294081687927,
+        "observed_utc": "2026-10-15T20:06:44.999222+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "last_update": {
+        "actual_adam_steps": 200,
+        "epoch": 2,
+        "epoch_step": 100,
+        "local_trajectories": 32,
+        "loss": 0.7449409365653992,
+        "observed_utc": "2026-10-15T20:06:49.216309+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "rank": 0,
+      "rollout_elapsed_seconds": 329.8075729422271,
+      "rollout_questions": 640,
+      "rollout_trajectories": 3200,
+      "strict_correct_trajectories": 650,
+      "update_ledger": {
+        "bytes": 24096,
+        "independent_small_file_full_sha256": "6c0b80b7655e56ad9a1a8ecb424c397214b8e0e21e790b306fedd45d4aba745e",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-0-updates.jsonl"
+      }
+    },
+    {
+      "actual_adam_after": 200,
+      "actual_adam_before": 100,
+      "actual_adam_increment": 100,
+      "actual_update_records": 100,
+      "complete_receipt": {
+        "bytes": 2089,
+        "independent_small_file_full_sha256": "e40ae21219f0e1f700262534064a99bce90fd0aa76e72bab6a65db570bad373c",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-1-complete.json"
+      },
+      "first_update": {
+        "actual_adam_steps": 101,
+        "epoch": 2,
+        "epoch_step": 1,
+        "local_trajectories": 32,
+        "loss": 0.3913846015930176,
+        "observed_utc": "2026-10-15T20:06:44.972444+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "last_update": {
+        "actual_adam_steps": 200,
+        "epoch": 2,
+        "epoch_step": 100,
+        "local_trajectories": 32,
+        "loss": 0.4271256923675537,
+        "observed_utc": "2026-10-15T20:06:49.216318+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "rank": 1,
+      "rollout_elapsed_seconds": 319.8806326240301,
+      "rollout_questions": 640,
+      "rollout_trajectories": 3200,
+      "strict_correct_trajectories": 743,
+      "update_ledger": {
+        "bytes": 24092,
+        "independent_small_file_full_sha256": "c3012a16408e685ce42ac44e5424eb78a3f83a1ef929063eae76cd8f0dd5c855",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-1-updates.jsonl"
+      }
+    },
+    {
+      "actual_adam_after": 200,
+      "actual_adam_before": 100,
+      "actual_adam_increment": 100,
+      "actual_update_records": 100,
+      "complete_receipt": {
+        "bytes": 2089,
+        "independent_small_file_full_sha256": "926b102289a14df2d55467e3a2032198fdeb55ec6752bc8425d497af83270988",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-2-complete.json"
+      },
+      "first_update": {
+        "actual_adam_steps": 101,
+        "epoch": 2,
+        "epoch_step": 1,
+        "local_trajectories": 32,
+        "loss": 0.7846900820732117,
+        "observed_utc": "2026-10-15T20:06:44.993469+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "last_update": {
+        "actual_adam_steps": 200,
+        "epoch": 2,
+        "epoch_step": 100,
+        "local_trajectories": 32,
+        "loss": 0.5019965171813965,
+        "observed_utc": "2026-10-15T20:06:49.216936+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "rank": 2,
+      "rollout_elapsed_seconds": 327.1244940161705,
+      "rollout_questions": 640,
+      "rollout_trajectories": 3200,
+      "strict_correct_trajectories": 646,
+      "update_ledger": {
+        "bytes": 24092,
+        "independent_small_file_full_sha256": "fa819de5d794d55172fbbb242fb13f6c1f513904821a5567fac3c40296131d46",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-2-updates.jsonl"
+      }
+    },
+    {
+      "actual_adam_after": 200,
+      "actual_adam_before": 100,
+      "actual_adam_increment": 100,
+      "actual_update_records": 100,
+      "complete_receipt": {
+        "bytes": 2090,
+        "independent_small_file_full_sha256": "ad470e15a2c9a82e9090ea7d25a5b4ef21b5c81dda873ce36c77e02a1401a05b",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-3-complete.json"
+      },
+      "first_update": {
+        "actual_adam_steps": 101,
+        "epoch": 2,
+        "epoch_step": 1,
+        "local_trajectories": 32,
+        "loss": 0.37789854407310486,
+        "observed_utc": "2026-10-15T20:06:44.996358+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "last_update": {
+        "actual_adam_steps": 200,
+        "epoch": 2,
+        "epoch_step": 100,
+        "local_trajectories": 32,
+        "loss": 0.670888364315033,
+        "observed_utc": "2026-10-15T20:06:49.216830+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "rank": 3,
+      "rollout_elapsed_seconds": 326.8520195186138,
+      "rollout_questions": 640,
+      "rollout_trajectories": 3200,
+      "strict_correct_trajectories": 714,
+      "update_ledger": {
+        "bytes": 24102,
+        "independent_small_file_full_sha256": "c5dd9da765c5e1fffbddafbfa1b9a9351e636e0299ced1151420ed67fcf9c468",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-3-updates.jsonl"
+      }
+    },
+    {
+      "actual_adam_after": 200,
+      "actual_adam_before": 100,
+      "actual_adam_increment": 100,
+      "actual_update_records": 100,
+      "complete_receipt": {
+        "bytes": 2090,
+        "independent_small_file_full_sha256": "fdd51c5a0a475d10288e982eadfdce6fd6e875eaf4907f56f99ea04aee84979a",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-4-complete.json"
+      },
+      "first_update": {
+        "actual_adam_steps": 101,
+        "epoch": 2,
+        "epoch_step": 1,
+        "local_trajectories": 32,
+        "loss": 0.6709871292114258,
+        "observed_utc": "2026-10-15T20:06:44.973136+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "last_update": {
+        "actual_adam_steps": 200,
+        "epoch": 2,
+        "epoch_step": 100,
+        "local_trajectories": 32,
+        "loss": 0.7304465770721436,
+        "observed_utc": "2026-10-15T20:06:49.217027+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "rank": 4,
+      "rollout_elapsed_seconds": 322.69085185974836,
+      "rollout_questions": 640,
+      "rollout_trajectories": 3200,
+      "strict_correct_trajectories": 654,
+      "update_ledger": {
+        "bytes": 24095,
+        "independent_small_file_full_sha256": "40034f49b335b6311caca845d17bb96eac667a1b1c6022970af76c288e13a017",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-4-updates.jsonl"
+      }
+    },
+    {
+      "actual_adam_after": 200,
+      "actual_adam_before": 100,
+      "actual_adam_increment": 100,
+      "actual_update_records": 100,
+      "complete_receipt": {
+        "bytes": 2090,
+        "independent_small_file_full_sha256": "fb809c70917059a065c49142941776528ead2bde61df4a4499af6c89cedaa089",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-5-complete.json"
+      },
+      "first_update": {
+        "actual_adam_steps": 101,
+        "epoch": 2,
+        "epoch_step": 1,
+        "local_trajectories": 32,
+        "loss": 0.5649476051330566,
+        "observed_utc": "2026-10-15T20:06:44.972447+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "last_update": {
+        "actual_adam_steps": 200,
+        "epoch": 2,
+        "epoch_step": 100,
+        "local_trajectories": 32,
+        "loss": 0.5148686170578003,
+        "observed_utc": "2026-10-15T20:06:49.216312+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "rank": 5,
+      "rollout_elapsed_seconds": 335.0426050834358,
+      "rollout_questions": 640,
+      "rollout_trajectories": 3200,
+      "strict_correct_trajectories": 662,
+      "update_ledger": {
+        "bytes": 24107,
+        "independent_small_file_full_sha256": "9aefbfa308d068024056707be406367540881916d506e4dea69666807d59c3ee",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-5-updates.jsonl"
+      }
+    },
+    {
+      "actual_adam_after": 200,
+      "actual_adam_before": 100,
+      "actual_adam_increment": 100,
+      "actual_update_records": 100,
+      "complete_receipt": {
+        "bytes": 2090,
+        "independent_small_file_full_sha256": "f100806e0bb497e7fcea0bf6a03a9d5a69b6e1e46e494d894055565e19cb637e",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-6-complete.json"
+      },
+      "first_update": {
+        "actual_adam_steps": 101,
+        "epoch": 2,
+        "epoch_step": 1,
+        "local_trajectories": 32,
+        "loss": 0.6096749305725098,
+        "observed_utc": "2026-10-15T20:06:44.973020+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "last_update": {
+        "actual_adam_steps": 200,
+        "epoch": 2,
+        "epoch_step": 100,
+        "local_trajectories": 32,
+        "loss": 0.36842361092567444,
+        "observed_utc": "2026-10-15T20:06:49.216943+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "rank": 6,
+      "rollout_elapsed_seconds": 319.86234348639846,
+      "rollout_questions": 640,
+      "rollout_trajectories": 3200,
+      "strict_correct_trajectories": 723,
+      "update_ledger": {
+        "bytes": 24094,
+        "independent_small_file_full_sha256": "5ca250d2af1c904def2587c6f764e1c542d4f245bab52ea2adbafda4e9c70f29",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-6-updates.jsonl"
+      }
+    },
+    {
+      "actual_adam_after": 200,
+      "actual_adam_before": 100,
+      "actual_adam_increment": 100,
+      "actual_update_records": 100,
+      "complete_receipt": {
+        "bytes": 2090,
+        "independent_small_file_full_sha256": "8e54efe2397cc7b1b556a18d25fe491367d73a957ced5beaa8bac12920319f89",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-7-complete.json"
+      },
+      "first_update": {
+        "actual_adam_steps": 101,
+        "epoch": 2,
+        "epoch_step": 1,
+        "local_trajectories": 32,
+        "loss": 0.432075560092926,
+        "observed_utc": "2026-10-15T20:06:44.996812+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "last_update": {
+        "actual_adam_steps": 200,
+        "epoch": 2,
+        "epoch_step": 100,
+        "local_trajectories": 32,
+        "loss": 0.36131569743156433,
+        "observed_utc": "2026-10-15T20:06:49.216313+00:00",
+        "sampler_plan_sha256": "a7d8923e7b64dff49dc8c988bf4727581f5e2ba50b25a0e43ed04f4f5218d76f"
+      },
+      "rank": 7,
+      "rollout_elapsed_seconds": 312.75748337060213,
+      "rollout_questions": 640,
+      "rollout_trajectories": 3200,
+      "strict_correct_trajectories": 692,
+      "update_ledger": {
+        "bytes": 24089,
+        "independent_small_file_full_sha256": "f6a343cd2456dbfacc2148d1fe6054e68c95d3a4410894bce61da60f4d97d331",
+        "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-7-updates.jsonl"
+      }
+    }
+  ],
+  "remote_files_written": false,
+  "retained_rollout_assets": [
+    {
+      "bytes": 959474,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-0-prefix20.jsonl.gz",
+      "producer_receipt_sha256": "aa4cdfe6e446aa385e1e0e21b719076cfa617144e4b4dc74b6949252ce78a75d",
+      "rank": 0,
+      "role": "reusable_compact_prefix",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 10901206,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-0-full.jsonl.gz",
+      "producer_receipt_sha256": "3249d33a94144dabcb285ad6db26c4b7073bf280b017e7b8539e88ad21d9ae5f",
+      "rank": 0,
+      "role": "original_full_rollout",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 949383,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-1-prefix20.jsonl.gz",
+      "producer_receipt_sha256": "549d31f5df0e835280169541adbdf2cda277fc40ef63d2c9770e259db8744d51",
+      "rank": 1,
+      "role": "reusable_compact_prefix",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 10724084,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-1-full.jsonl.gz",
+      "producer_receipt_sha256": "13212efa9466cf70ca24798ace1ddf93ecbb543858d8ba14c24a20540dafc11f",
+      "rank": 1,
+      "role": "original_full_rollout",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 947187,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-2-prefix20.jsonl.gz",
+      "producer_receipt_sha256": "67bcd38dd6c02613385df3ee97d7ac22673a9b8c378862b38cec657b412ab522",
+      "rank": 2,
+      "role": "reusable_compact_prefix",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 10989018,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-2-full.jsonl.gz",
+      "producer_receipt_sha256": "f8fdb8c72ca99c3df55f0dcaf8deebf8326b17380b5149102c75a700aa46e68e",
+      "rank": 2,
+      "role": "original_full_rollout",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 962643,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-3-prefix20.jsonl.gz",
+      "producer_receipt_sha256": "679f5a8a52c4cc0c87850b494aacaedfe855f898bb32e09aeea8f81a48276845",
+      "rank": 3,
+      "role": "reusable_compact_prefix",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 10880490,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-3-full.jsonl.gz",
+      "producer_receipt_sha256": "d01ae58a6c60cdc566be1a1d0c942c2a311e40fb412e6ecaa43ff5b08978f344",
+      "rank": 3,
+      "role": "original_full_rollout",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 946510,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-4-prefix20.jsonl.gz",
+      "producer_receipt_sha256": "a6dfc9d96ef67a479b50a85dd8a046c67de10987c468610730ed17433cd46c98",
+      "rank": 4,
+      "role": "reusable_compact_prefix",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 10731436,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-4-full.jsonl.gz",
+      "producer_receipt_sha256": "170a2fb75e169dc37c3d07a742323652479d77502d80ba75f6d40844d3e70977",
+      "rank": 4,
+      "role": "original_full_rollout",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 947320,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-5-prefix20.jsonl.gz",
+      "producer_receipt_sha256": "cf5ad5a3375eadfe69906b9055e4b4f380f1a43988a1a9a31d0e3e8d11726ac3",
+      "rank": 5,
+      "role": "reusable_compact_prefix",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 11269684,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-5-full.jsonl.gz",
+      "producer_receipt_sha256": "c5c487d94e898f067aa9d92f6d60830eb96f44207e100d44a24cbedea0975413",
+      "rank": 5,
+      "role": "original_full_rollout",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 965254,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-6-prefix20.jsonl.gz",
+      "producer_receipt_sha256": "c997d483687886d5816a6535c9cdfc15eec8a3b057779905a09263a14b0366bc",
+      "rank": 6,
+      "role": "reusable_compact_prefix",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 10717423,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-6-full.jsonl.gz",
+      "producer_receipt_sha256": "34076bbb0d13f9edef6a51ea7e772becaa7eb338e7e41643e20dfa7bed365735",
+      "rank": 6,
+      "role": "original_full_rollout",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 938274,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-7-prefix20.jsonl.gz",
+      "producer_receipt_sha256": "ccbacc9ce4440a44f9fe0c1c456b31105c2cd56d31ee0a5c37f97cf8fc305f66",
+      "rank": 7,
+      "role": "reusable_compact_prefix",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    },
+    {
+      "bytes": 10474074,
+      "count": 3200,
+      "independent_payload_full_sha_performed": false,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-7-full.jsonl.gz",
+      "producer_receipt_sha256": "ce02a49122d58a605b3e7b30d8ce66a01328f8aff3484de1502903f11b9ba907",
+      "rank": 7,
+      "role": "original_full_rollout",
+      "sha_semantics": "Producer receipt hash only; payload not independently reread by this audit."
+    }
+  ],
+  "role": "FIRST_FRESH_EPOCH2_ACTUAL_FACTS",
+  "rollout_complete": {
+    "bytes": 22721,
+    "independent_small_file_full_sha256": "51455e3aa782ec05559aaa61a9ba283ae324209c584d399550a55347b2334a79",
+    "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/complete.json"
+  },
+  "run_id": "8a6b24dc19664cb3a3fb97101f21c54e",
+  "runtime_source_commit": "ca1c60f49a29c30ca299c1d6073ee9a4bb86655b",
+  "selection": {
+    "bytes": 1423232,
+    "independent_small_file_full_sha256": "f02ecd0b60162712e5feb8830f4a8ea06222d92ef46690682af4a8b39db7c44f",
+    "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/selection.json"
+  },
+  "small_file_readback_proofs": [
+    {
+      "bytes": 1423232,
+      "independent_small_file_full_sha256": "f02ecd0b60162712e5feb8830f4a8ea06222d92ef46690682af4a8b39db7c44f",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/selection.json"
+    },
+    {
+      "bytes": 5122447,
+      "independent_small_file_full_sha256": "5856f49db255460c77d5f728936864ba6cd5ae9fda04780adee23756909b9ee8",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/questions.json"
+    },
+    {
+      "bytes": 22721,
+      "independent_small_file_full_sha256": "51455e3aa782ec05559aaa61a9ba283ae324209c584d399550a55347b2334a79",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/complete.json"
+    },
+    {
+      "bytes": 438,
+      "independent_small_file_full_sha256": "54e09639f0d3d554698483d6ce572d43b5bcb36147024a018cb3286956b90747",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/complete.json"
+    },
+    {
+      "bytes": 1521,
+      "independent_small_file_full_sha256": "68c995dccfc7c3bd6e8e23a2676a38ba54108ba29af1f670a72b4237e56151cf",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/metrics.json"
+    },
+    {
+      "bytes": 1237225,
+      "independent_small_file_full_sha256": "365183e945ed253f0b4627f3aa9f2cf697010b3b26c084ba8ee5428873abba2c",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/pool-state-at-head-completion.json"
+    },
+    {
+      "bytes": 903,
+      "independent_small_file_full_sha256": "c9a9a48173b2d914abf816ce15f1d37a31540508e69cd3d0a87e7c558de1f866",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/latest-bundle.json"
+    },
+    {
+      "bytes": 119,
+      "independent_small_file_full_sha256": "bc186da34543da774ef95b26c9319ff0d5348abf8c2979c272c708f12ce4c980",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/logs/pipeline-status.json"
+    },
+    {
+      "bytes": 1424267,
+      "independent_small_file_full_sha256": "062788597605ea83877ffda1b78e9ae4c36f624ee4bedbcaf8db76a48ef4b27e",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0001/selection.json"
+    },
+    {
+      "bytes": 2088,
+      "independent_small_file_full_sha256": "925ad593798c9a871a24f8b79cdba5d3b29b62f0f43653b36c730a6eb3af089d",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-0-complete.json"
+    },
+    {
+      "bytes": 24096,
+      "independent_small_file_full_sha256": "6c0b80b7655e56ad9a1a8ecb424c397214b8e0e21e790b306fedd45d4aba745e",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-0-updates.jsonl"
+    },
+    {
+      "bytes": 2089,
+      "independent_small_file_full_sha256": "e40ae21219f0e1f700262534064a99bce90fd0aa76e72bab6a65db570bad373c",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-1-complete.json"
+    },
+    {
+      "bytes": 24092,
+      "independent_small_file_full_sha256": "c3012a16408e685ce42ac44e5424eb78a3f83a1ef929063eae76cd8f0dd5c855",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-1-updates.jsonl"
+    },
+    {
+      "bytes": 2089,
+      "independent_small_file_full_sha256": "926b102289a14df2d55467e3a2032198fdeb55ec6752bc8425d497af83270988",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-2-complete.json"
+    },
+    {
+      "bytes": 24092,
+      "independent_small_file_full_sha256": "fa819de5d794d55172fbbb242fb13f6c1f513904821a5567fac3c40296131d46",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-2-updates.jsonl"
+    },
+    {
+      "bytes": 2090,
+      "independent_small_file_full_sha256": "ad470e15a2c9a82e9090ea7d25a5b4ef21b5c81dda873ce36c77e02a1401a05b",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-3-complete.json"
+    },
+    {
+      "bytes": 24102,
+      "independent_small_file_full_sha256": "c5dd9da765c5e1fffbddafbfa1b9a9351e636e0299ced1151420ed67fcf9c468",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-3-updates.jsonl"
+    },
+    {
+      "bytes": 2090,
+      "independent_small_file_full_sha256": "fdd51c5a0a475d10288e982eadfdce6fd6e875eaf4907f56f99ea04aee84979a",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-4-complete.json"
+    },
+    {
+      "bytes": 24095,
+      "independent_small_file_full_sha256": "40034f49b335b6311caca845d17bb96eac667a1b1c6022970af76c288e13a017",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-4-updates.jsonl"
+    },
+    {
+      "bytes": 2090,
+      "independent_small_file_full_sha256": "fb809c70917059a065c49142941776528ead2bde61df4a4499af6c89cedaa089",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-5-complete.json"
+    },
+    {
+      "bytes": 24107,
+      "independent_small_file_full_sha256": "9aefbfa308d068024056707be406367540881916d506e4dea69666807d59c3ee",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-5-updates.jsonl"
+    },
+    {
+      "bytes": 2090,
+      "independent_small_file_full_sha256": "f100806e0bb497e7fcea0bf6a03a9d5a69b6e1e46e494d894055565e19cb637e",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-6-complete.json"
+    },
+    {
+      "bytes": 24094,
+      "independent_small_file_full_sha256": "5ca250d2af1c904def2587c6f764e1c542d4f245bab52ea2adbafda4e9c70f29",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-6-updates.jsonl"
+    },
+    {
+      "bytes": 2090,
+      "independent_small_file_full_sha256": "8e54efe2397cc7b1b556a18d25fe491367d73a957ced5beaa8bac12920319f89",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/rollout/rank-7-complete.json"
+    },
+    {
+      "bytes": 24089,
+      "independent_small_file_full_sha256": "f6a343cd2456dbfacc2148d1fe6054e68c95d3a4410894bce61da60f4d97d331",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/rank-7-updates.jsonl"
+    },
+    {
+      "bytes": 269,
+      "independent_small_file_full_sha256": "6d79e84d96df64371428f4401ec0c48bd7a4c4bccc6f352b90dca6c0d9415a17",
+      "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/epochs/epoch-0002/derived-cache-pruned.json"
+    }
+  ],
+  "train_complete": {
+    "bytes": 438,
+    "independent_small_file_full_sha256": "54e09639f0d3d554698483d6ce572d43b5bcb36147024a018cb3286956b90747",
+    "path": "/mnt/data/shaoshitong/search-g1-prefix20-online1000-20261016-ca1c60f/train/epochs/epoch-0002/complete.json"
+  },
+  "training_loop_seconds": 4.839403536170721,
+  "training_state_or_automation_modified": false,
+  "trajectories": 25600,
+  "transport_proof": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix20-online-epoch2-actual-facts-transport-v1.json",
+    "sha256": "35be7a2b1536a571961198654308780e86156c5d3ce948550801b9eaeec4c847"
+  },
+  "unique_question_ids": 5120
+}
