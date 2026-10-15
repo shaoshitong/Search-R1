@@ -18,6 +18,7 @@ Example after the root owner selects already completed actual evidence:
 ```sh
 python3 reconcile_nested_full_current_aliases.py \
   --outer 126 \
+  --metadata-source-commit PUBLISHED_METADATA_COMMIT40 \
   --poll outputs/tree-nested-branch-handoff-20261013/NATIVE5_CONTINUE_POLL_ACTUAL.json \
   --resource outputs/tree-nested-branch-handoff-20261013/NATIVE5_CONTINUE_RESOURCE_ACTUAL.json \
   --proof outputs/tree-nested-branch-handoff-20261013/OUTER126_FULL_NEXT127_ACTUAL_PROGRESS.json \
@@ -25,7 +26,12 @@ python3 reconcile_nested_full_current_aliases.py \
 ```
 
 The example poll/resource placeholders must be replaced with the owner's actual
-latest same-N observations. Creating or publishing this script does not invoke it.
+latest same-N observations. Creating or publishing this script does not invoke it. The required
+`--metadata-source-commit` is the separately published and read-back verified
+40-hex commit for the exact executing script. Local Git must resolve that commit
+and its script blob must equal the executing bytes. No HEAD or old787 source
+marker is inferred; the immutable receipt records this metadata commit and script
+SHA256 separately from the frozen training source778.
 
 The script reads SHA-bound local FULLN/native/cost/curve/candidateN evidence,
 reuses the published unit/restore/metric/ranks/native validators and reconstructs
@@ -35,6 +41,13 @@ nextN+1; it cannot overwrite a newer current boundary or observation epoch.
 
 Actual Adam and skip counts remain separate from processed opportunities.
 Cold restore stays5/100 each; latest native writerN is a different boundary.
+Direct child physical calls sum the validated native per-rank total counters
+minus the actual per-rank cold restore counts, including recorded child partial
+writes. Credited child calls use the completed counters with the same subtraction.
+Effective boundary rank-equivalent calls separately sum the native totals;
+all-history physical calls stay unknown because failed ancestor attempts exist.
+Current child ranges, record counts, FULL receipt paths/hashes, native hashes and
+source markers advance consistently in all four canonical JSON documents.
 Current timing/variance belongs to FULLN. Current dev is null on non-dev outers,
 while latest real completed dev and its immutable curve remain identified.
 ActiveN+1 sampling completion, partial writes and variance remain unknown. Old
@@ -90,3 +103,18 @@ both log increments and actual resource CPUUsageNSec integers/CPU seconds. The
 same14 prior documents use mtime0 gzip and exact decompression readback. No next
 partial Adam, variance or scoring values are synthesized. Publishing the source
 does not call the entry; the root owner selects a still-current actual pair.
+
+
+## Counter and receipt scope correction publication
+
+Status: `UNEXECUTED`. This correction is prepared in an isolated worktree from
+`72c0af09100e4f031768dd762367248e45dbf215`; publication does not deploy or invoke it.
+The existing source778 training, canonical documents, immutable FULL/native/dev/
+curve/cost artifacts and historical first-invocation markers remain untouched.
+The root owner arranges one context-free review of the published bytes before
+first actual use with completed FULL150 and the new required metadata source arg.
+Do not replay or overwrite the existing FULL149 reconciliation receipt.
+The unchanged verified-wait and metadata-scope helpers still pin the prior
+`f8775e26` alias bytes; use those helpers from the preserved original checkout.
+Invoke this revised reconciler directly from its isolated published worktree;
+copying it over the old helper dependency would invalidate those pins.

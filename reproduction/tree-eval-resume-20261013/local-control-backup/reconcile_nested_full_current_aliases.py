@@ -1,7 +1,8 @@
 """Reconcile local current aliases after an already finalized FULL outer6..199.
 
-This entry never collects evidence, starts a process, evaluates, or repairs a
-pending publication. Its only writes are small local report data and snapshots.
+This entry never collects evidence, starts training, evaluates, or repairs a
+pending publication. Local Git subprocesses bind its metadata source; its only
+writes are small local report data and snapshots.
 """
 import argparse
 import copy
@@ -12,6 +13,7 @@ import importlib.util
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 
 sys.dont_write_bytecode = True
@@ -32,6 +34,28 @@ def dependencies():
     finalizer = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(finalizer)
     return core, finalizer, paths
+
+
+def metadata_source(core, commit):
+    core.need(isinstance(commit, str) and re.fullmatch('[0-9a-f]{40}', commit) is not None,
+              'An explicit 40-hex metadata source commit is required', 'REJECTED_INPUT_NO_WRITE')
+    path = Path(__file__).resolve()
+    git = ['git', '-C', str(HERE)]
+    try:
+        root = Path(subprocess.run(git+['rev-parse', '--show-toplevel'], check=True,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.decode().strip()).resolve()
+        resolved = subprocess.run(git+['rev-parse', '--verify', commit+'^{commit}'], check=True,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.decode().strip()
+        relative = path.relative_to(root).as_posix()
+        committed = subprocess.run(git+['show', commit+':'+relative], check=True,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout
+    except (OSError, ValueError, subprocess.CalledProcessError) as error:
+        raise ValueError('Explicit metadata source is not an available local Git commit/file') from error
+    raw = path.read_bytes()
+    core.need(resolved == commit and committed == raw,
+              'Explicit metadata commit does not bind the executing script bytes', 'REJECTED_INPUT_NO_WRITE')
+    return dict(commit=commit, repository_path=relative,
+                script=dict(path=str(path), bytes=len(raw), sha256=core.digest(raw)))
 
 
 class Inputs:
@@ -168,7 +192,8 @@ def validate(args, core, finalizer, inputs, base):
     poll, poll_pin = inputs.read(args.poll)
     resource, resource_pin = inputs.read(args.resource)
     ps, rs, active = core.validate_unit(poll, resource, n)
-    core.validate_restore(poll)
+    restore, _ = core.validate_restore(poll)
+    restored = core.counts(restore['driver']['completed_optimizer_calls_per_rank'], 'Actual restored calls')
     latest_metric = core.validate_metric(poll, n)
     core.validate_ranks(poll, latest_metric, n)
     core.validate_native(native, identity(core, poll, n), n)
@@ -222,7 +247,7 @@ def validate(args, core, finalizer, inputs, base):
     return dict(proof=proof, proof_pin=proof_pin, full=full, full_pin=full_pin, poll=poll,
                 poll_pin=poll_pin, resource=resource, resource_pin=resource_pin, native=native,
                 native_pin=native_pin, native_record=native_record, guard=guard, completed=completed,
-                totals=totals, ranks=ranks, metric=metric, costs=costs, cost_pin=cost_pin,
+                totals=totals, restored=restored, ranks=ranks, metric=metric, costs=costs, cost_pin=cost_pin,
                 cost_parts=cost_parts, candidate_pin=candidate_pin, index_pin=index_pin,
                 registry_pin=registry_pin, rates=rates, rates_pin=rates_pin, curve_pin=curve_pin,
                 curve_end=int(curve_end), actual_dev=actual_dev, latest_dev=latest_dev,
@@ -233,7 +258,9 @@ def aliases(core, n, data, receipt_pin, now):
     p, f, proof, metric = [data[k] for k in ('poll', 'full', 'proof', 'metric')]
     completed, totals = data['completed'], data['totals']
     latest, dev = data['latest_dev'], data['actual_dev']
-    child = {rank:value-100 for rank, value in totals.items()}
+    restored = data['restored']
+    child = {rank:value-restored[rank] for rank, value in totals.items()}
+    credited_child = {rank:value-restored[rank] for rank, value in completed.items()}
     cost_scope = proof['candidate_cost_join_scope']
     dev_seconds = f['normal_dev512_wall_seconds'] if dev is not None else None
     variances = copy.deepcopy(f['current_training_variances'])
@@ -247,16 +274,28 @@ def aliases(core, n, data, receipt_pin, now):
         completed_outer=n, current_outer=n, actual_completed_outer=n, actual_optimizer_completed_outer=n,
         last_confirmed_outer=n, last_confirmed_chain_outer=n, last_confirmed_optimizer_outer=n,
         last_durable_completed_outer=n, new_completed_outer=n-5,
+        new_completed_outer_scope=f'Actual completed direct child6..{n} ({n-5} outers); the cold-restored native5 ancestor boundary stays separate, effective completed boundary is{n}.',
         actual_total_adam_per_rank=totals, per_rank_actual_total_adam=totals,
         per_rank_successful_adam=completed, successful_adam_per_rank=completed,
-        actual_successful_adam_per_rank=completed, child_successful_adam_per_rank=child,
-        actual_physical_rank_optimizer_calls=sum(totals.values()), inherited_completed_outer=5,
+        last_confirmed_chain_adam_per_rank=completed,
+        actual_successful_adam_per_rank=completed, child_successful_adam_per_rank=credited_child,
+        successful_adam_per_rank_scope=f'Actual credited native5 restore plus direct child6..{n}; failed ancestor calls are excluded.',
+        child_successful_adam_per_rank_scope=f'Actual credited direct child6..{n} calls from validated per-rank completed counters minus the actual cold-restored native5 boundary.',
+        actual_physical_rank_optimizer_calls=sum(child.values()),
+        actual_physical_rank_optimizer_calls_scope=f'Actual direct child6..{n} successful calls from validated native per-rank total counters minus actual cold-restored counts; includes recorded child partial writes and excludes inherited/failed ancestor physical calls.',
+        actual_physical_rank_optimizer_calls_all_history=None,
+        actual_physical_rank_optimizer_calls_all_history_scope='Unknown: failed ancestor attempts include unrecorded partial optimizer calls; effective counters cannot establish all-history physical calls.',
+        effective_boundary_rank_calls=sum(totals.values()),
+        effective_boundary_rank_calls_scope=f'Actual native{n} per-rank total counters summed: effective restored native5 plus direct child6..{n}, including recorded child partial writes; historical failed physical calls are excluded.',
+        inherited_completed_outer=5,
         actual_current_restore_outer=5, restored_outer=5, loaded_native_restore_outer=5,
-        actual_current_restore_adam_per_rank={str(r):100 for r in range(8)},
+        actual_current_restore_adam_per_rank=restored,
         actual_current_restore_scope=f'Actual cold-loaded5/100 each remains unchanged; writer-complete native{n} is a distinct saved boundary.',
         actual_child_counters_known=True, effective_counters_known=True,
         actual_training_progress=p['progress'], all_skipped_attempts=p['progress']['all_skipped_attempts'],
         direct_rank_record_count=p['direct_rank_records'], direct_child_rank_record_count=p['direct_rank_records'],
+        direct_child_rank_records=p['direct_rank_records'], inherited_rank_records=40,
+        effective_rank_records=p['direct_rank_records']+40,
         inherited_rank_record_count=40, effective_chain_rank_record_count=p['direct_rank_records']+40,
         actual_outer_successful_writes_per_rank=f['actual_outer_successful_writes_per_rank'],
         actual_outer_processed_opportunities_per_rank=f['actual_outer_processed_opportunities_per_rank'],
@@ -268,6 +307,7 @@ def aliases(core, n, data, receipt_pin, now):
         last_confirmed_active_outer=n+1, latest_active_sampling_outer=n+1,
         active_outer_sampling_complete=None, active_outer_sampling_complete_confirmed=None,
         active_outer_actual_partial_Adam_calls=None, current_partial_optimizer_calls_per_rank=None,
+        active_outer_optimizer_scope=f'Actual next{n+1} entered; its completed or partial optimizer writes remain unknown.',
         active_outer_advantage_variance=None, active_outer_full_update_unconfirmed=True,
         active_outer_optimizer_completion_confirmed=False, next_outer_sampling_complete=None,
         current_active_rollout_progress=None, current_live_sampling_progress=None,
@@ -279,6 +319,8 @@ def aliases(core, n, data, receipt_pin, now):
         native_saved_driver_next_step=n+1, native_saved_cursor_is_not_live_next_outer_entry=True,
         native_manifest_sha256=data['native']['manifest_sha256'],
         native_manifest_history_receipt_sha256=data['native']['receipt_sha256'],
+        latest_native_manifest_sha256=data['native']['manifest_sha256'],
+        latest_native_history_receipt_sha256=data['native']['receipt_sha256'],
         latest_native_metadata_scope=f'Actual writer/archive native{n} JSON metadata; no independent PT cold reload.',
         current_iteration_metrics=metric, current_outer_full_metric=metric,
         current_iteration_metric_pending=False, current_full_outer_metric_pending=False,
@@ -316,7 +358,11 @@ def aliases(core, n, data, receipt_pin, now):
         last_complete_full_metric_outer=n, last_confirmed_full_metric_outer=n,
         full_metric_last_seen=n, current_metric_outer=n,
         current_full_outer_progress_receipt=Path(data['full_pin']['path']).name,
+        current_full_outer_progress_receipt_sha256=data['full_pin']['sha256'],
         last_full_outer_progress_receipt=Path(data['full_pin']['path']).name,
+        last_full_outer_progress_receipt_sha256=data['full_pin']['sha256'],
+        last_full_receipt=str(Path(core.BASE_REL)/Path(data['full_pin']['path']).name),
+        last_full_receipt_sha256=data['full_pin']['sha256'],
         current_completed_progress_evidence=data['proof_pin']['path'],
         current_completed_progress_sha256=data['proof_pin']['sha256'],
         evidence=data['poll_pin']['path'], last_progress_receipt=Path(data['full_pin']['path']).name,
@@ -333,12 +379,14 @@ def aliases(core, n, data, receipt_pin, now):
         current_systemd=p['systemd'], latest_guard=p['latest_guard'], same_instance_confirmed=True,
         same_instance_repoll_required=False, current_observation_training_action='none',
         state_scope=f'Actual same-instance FULL/native{n} and next{n+1} entry; current remote state is known at the bound poll.',
+        canonical_field_authority_scope=f'Generic current/actual/latest aliases refer to actual FULL{n} and active{n+1} at the bound poll; explicitly numbered older fields and proofs remain historical. The target remains200 plus final51713/HF/cost/acceptance/cleanup.',
         observed_current_training_phase=phase, current_next_outer_scope=f'Actual stage{n+1} entered; its completion/write/variance counts remain unknown.',
         expected_next_outer=n+1, expected_next_outer_scope='Actual stage entry, separate from saved native driver cursor.',
         current_latest_sampling_interval_log_growth=None,
         current_latest_sampling_interval_scope='The immutable two-observation proof establishes activity; no new next-outer sample/update counts are inferred.',
         training_action='none', training_terminal_proven=False, run_result=None, restart_or_submit_performed=False,
         last_nonterminal_service_CPU_seconds=data['cpu_seconds'],
+        last_nonterminal_service_CPU_scope=f'Actual bound resource {Path(data["resource_pin"]["path"]).name} CPUUsageNSec/1e9; nonterminal service observation, final CPU unknown.',
         last_nonterminal_service_CPUUsageNSec=data['cpu_nsec'], final_service_CPU_seconds=None,
         actual_total_service_cpu_seconds=None, current_service_CPU_scope='Actual resource CPUUsageNSec/1e9 at this poll; nonterminal service total, not per-outer cost.',
         per_outer_costs_through=n, latest_cost_complete_outer=n, latest_cost_complete_scope=cost_scope,
@@ -357,7 +405,11 @@ def aliases(core, n, data, receipt_pin, now):
         learning_curve_complete=data['curve_pin'], learning_curve_complete_through_outer=data['curve_end'],
         learning_curve_complete_scope='Existing hash-bound curve; not synthesized or extended by reconciliation.',
         effective_source_segments=data['costs']['effective_source_segments'],
-        current_alias_reconciliation=receipt_pin, updated_at=now, recorded_at_utc=now,
+        current_alias_reconciliation=receipt_pin,
+        local_current_alias_reconciler_latest_available_source_commit=data['metadata_source']['commit'],
+        local_current_alias_reconciler_latest_actual_source_commit=data['metadata_source']['commit'],
+        local_current_alias_reconciler_latest_actual_script_sha256=data['metadata_source']['script']['sha256'],
+        updated_at=now, recorded_at_utc=now,
         final200_51713_HF_tokenizer_acceptance_complete=False, final_evaluation_complete=False,
         independent_cold_reload_performed=False, exact_executor_resume=False,
         health=f'Healthy original PID{core.PID}/Invocation{core.INVOCATION}; FULL/native{n} complete and actual next{n+1} entered, next update details unknown.')
@@ -374,13 +426,17 @@ def aliases(core, n, data, receipt_pin, now):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--outer', required=True, type=int)
+    parser.add_argument('--metadata-source-commit', required=True)
     for name in ('poll', 'resource', 'proof', 'workspace'):
         parser.add_argument('--'+name, required=True, type=Path)
     args = parser.parse_args()
     core, finalizer, dependency_paths = dependencies()
+    metadata = metadata_source(core, args.metadata_source_commit)
     workspace = args.workspace.resolve();base = workspace/core.BASE_REL
     inputs = Inputs(workspace, core)
+    inputs.pins.append(metadata['script'])
     data = validate(args, core, finalizer, inputs, base);n = args.outer
+    data['metadata_source'] = metadata
     paths = [workspace/'outputs/STATUS.json', workspace/'outputs/tree-nested-branch/STATUS.json',
              base/'CURRENT_NATIVE_RECOVERY_FOLLOWUP.json', base/'CURRENT_OBSERVER_CONNECTION_STATE.json']
     previous = [(path, *inputs.read(path)) for path in paths]
@@ -405,12 +461,15 @@ def main():
     monotonic_all(core, mirror_previous, n, data['poll']['epoch'])
     snapshot = base/f'canonical_alias_snapshot_before_outer{n}_{datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")}'
     receipt = dict(schema='nested_full_current_alias_reconciliation_v1', status='ACTUAL_FULL_LOCAL_ALIASES_RECONCILED',
-        created_at_utc=now, source_commit=core.SOURCE, outer=n, actual_next_outer_entered=n+1,
+        created_at_utc=now, source_commit=core.SOURCE,
+        metadata_source_commit=metadata['commit'], source_script_sha256=metadata['script']['sha256'],
+        source_script_repository_path=metadata['repository_path'], outer=n, actual_next_outer_entered=n+1,
         full=data['full_pin'], proof=data['proof_pin'], native=data['native_pin'], cost=data['cost_pin'],
         curve=data['curve_pin'], poll=data['poll_pin'], resource=data['resource_pin'],
         pinned_core_sha256=CORE_SHA, pinned_finalizer_sha256=FINALIZER_SHA,
-        actual_adam_per_rank=data['totals'], actual_child_adam_per_rank={k:v-100 for k,v in data['totals'].items()},
-        actual_restore_outer=5, actual_restore_adam_per_rank={str(r):100 for r in range(8)},
+        actual_adam_per_rank=data['totals'],
+        actual_child_adam_per_rank={k:v-data['restored'][k] for k,v in data['totals'].items()},
+        actual_restore_outer=5, actual_restore_adam_per_rank=data['restored'],
         writer_complete_outer=n, current_dev_outer=n if data['actual_dev'] else None,
         latest_dev_outer=data['latest_dev']['outer'], next_sampling_complete=None, next_partial_adam=None,
         next_variance=None, CPUUsageNSec=data['cpu_nsec'], nonterminal_service_CPU_seconds=data['cpu_seconds'],
