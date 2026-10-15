@@ -9,6 +9,9 @@ No shared environment, NumPy, Torch, GPU, or model asset is modified.
 """
 from __future__ import annotations
 
+import sys
+sys.dont_write_bytecode = True
+
 import argparse
 import ast
 import contextlib
@@ -21,7 +24,6 @@ import os
 from pathlib import Path
 import re
 import subprocess
-import sys
 import tempfile
 import time
 
@@ -92,13 +94,21 @@ def inventory(overlay):
     if overlay.is_symlink() or not overlay.is_dir():
         raise ValueError('Missing or symlinked CPU overlay')
     for item in overlay.iterdir():
-        if allowed.fullmatch(item.name) is None:
+        if allowed.fullmatch(item.name) is None and not (item.name == '__pycache__' and item.is_dir()):
             raise ValueError('Unexpected overlay content (NumPy/Torch overrides are forbidden): ' + item.name)
     result = {}
     for path in sorted(overlay.rglob('*')):
         if path.is_symlink():
             raise ValueError('Overlay wheel installed an untrusted symlink')
         if path.is_file():
+            # A caller without -B may create normal interpreter caches after
+            # acceptance. Ignore only direct, standard CPython cache files for
+            # an existing regular source; all .py/.so/metadata bytes stay bound.
+            cache = re.fullmatch(r'(.+)\.cpython-[0-9]+(?:\.opt-[12])?\.pyc', path.name)
+            if path.parent.name == '__pycache__' and cache is not None:
+                source = path.parent.parent/(cache.group(1)+'.py')
+                if source.is_file() and not source.is_symlink():
+                    continue
             h = hashlib.sha256()
             with path.open('rb') as f:
                 for data in iter(lambda: f.read(4*1024**2), b''):

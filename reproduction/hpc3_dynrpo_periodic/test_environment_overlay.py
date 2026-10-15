@@ -1,5 +1,6 @@
 """Pure CPU safety fixtures; actual package import/CV proof is remote --check."""
 import tempfile
+import json
 from pathlib import Path
 import unittest
 
@@ -42,6 +43,36 @@ class OverlayTests(unittest.TestCase):
             (root/'joblib').symlink_to(root/'threadpoolctl.py')
             with self.assertRaisesRegex(ValueError, 'symlink'):
                 overlay.inventory(root)
+
+    def test_standard_runtime_pyc_does_not_change_installed_inventory(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root/'threadpoolctl.py').write_text('# accepted source\n')
+            (root/'joblib').mkdir(); (root/'joblib/__init__.py').write_text('# accepted package\n')
+            before = overlay.inventory(root)
+            for source in (root/'threadpoolctl.py', root/'joblib/__init__.py'):
+                cache = source.parent/'__pycache__'; cache.mkdir()
+                (cache/(source.stem+'.cpython-310.pyc')).write_bytes(b'normal runtime cache')
+                (cache/(source.stem+'.cpython-310.opt-1.pyc')).write_bytes(b'optimized runtime cache')
+            self.assertEqual(overlay.inventory(root), before)
+            # No broad exclusion of extra cache contents or sourceless bytecode.
+            (root/'__pycache__/foreign.cpython-310.pyc').write_bytes(b'unbound')
+            self.assertNotEqual(overlay.inventory(root), before)
+            (root/'__pycache__/foreign.cpython-310.pyc').unlink()
+            (root/'__pycache__/extra.py').write_text('# must stay hashed\n')
+            self.assertNotEqual(overlay.inventory(root), before)
+
+    def test_changed_source_still_rejects_the_accepted_overlay(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary); root = base/'env/overlay'; root.mkdir(parents=True)
+            source = root/'threadpoolctl.py'; source.write_text('# accepted\n')
+            saved = dict(base=str(base), pins=overlay.PINS, files_sha256=overlay.inventory(root))
+            (base/'env/overlay-installed.json').write_text(json.dumps(saved))
+            cache = root/'__pycache__'; cache.mkdir()
+            (cache/'threadpoolctl.cpython-310.pyc').write_bytes(b'normal cache')
+            source.write_text('# changed implementation\n')
+            with self.assertRaisesRegex(ValueError, 'content changed'):
+                overlay.check(base)
 
     def test_actual_calibration_import_coverage(self):
         repo = Path(__file__).resolve().parents[2]
