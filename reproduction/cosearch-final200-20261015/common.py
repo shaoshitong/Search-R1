@@ -43,6 +43,7 @@ def env():
         BASE/'source/author-native/env/lib/python3.11/site-packages']))
     values.update(HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1',
                   HF_HUB_DISABLE_TELEMETRY='1',VLLM_NO_USAGE_STATS='1',DO_NOT_TRACK='1',
+                  GLOO_SOCKET_IFNAME='lo',NCCL_SOCKET_IFNAME='lo',VLLM_HOST_IP='127.0.0.1',
                   PYTHONDONTWRITEBYTECODE='1', TOKENIZERS_PARALLELISM='false',
                   HF_HOME=str(OUT/'cache/hf'), HF_DATASETS_CACHE=str(OUT/'cache/datasets'),
                   TMPDIR=str(OUT/'cache/tmp'), OMP_NUM_THREADS='8',
