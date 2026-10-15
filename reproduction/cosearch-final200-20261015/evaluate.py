@@ -99,7 +99,7 @@ async def main():
     async with aiohttp.ClientSession(timeout=timeout, trust_env=False,
                                      connector=aiohttp.TCPConnector(limit=256)) as session:
         main_manager = Manager(session, [18100,18101], [1,1])
-        rank_manager = Manager(session, [18102,18103], [3,1])
+        rank_manager = Manager(session, [18102,18103], [1,1])
 
         async def question(index):
             async with semaphore:

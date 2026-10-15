@@ -141,7 +141,8 @@ def main():
                 except OSError:
                     pass
             with (OUT/'utilization.jsonl').open('a') as stream:
-                stream.write(json.dumps(dict(epoch=time.time(),gpus=text,services=records))+'\n')
+                own='\n'.join(line for line in text.splitlines() if line.split(',')[0].strip() in visible)
+                stream.write(json.dumps(dict(epoch=time.time(),gpus=own,services=records))+'\n')
         except subprocess.SubprocessError:
             pass
 
@@ -150,16 +151,31 @@ def main():
         sys.path.insert(0,str(TRAIN/'tools'))
         from retriever_spec import specification
         command,variables=specification(OUT)
-        variables['CUDA_VISIBLE_DEVICES']=visible[3]
+        variables['CUDA_VISIBLE_DEVICES']=','.join(visible)
         variables['COSEARCH_LEASED_UUIDS']=','.join(visible)
         service=launch(command,'retriever',variables)
         wait_ready('http://127.0.0.1:18086/openapi.json',service)
         batch=launch([str(PYTHON),'-B',str(TOOLS/'service.py'),'retrieval','--port','18087'],
                      'retrieval-batcher',base_env)
         wait_ready('http://127.0.0.1:18087/health',batch)
+        # Native FAISS shards the index across the same four leased GPUs.
+        # Reserve actual remaining memory rather than assuming one card holds the index.
+        budgets={}
+        memory_rows=subprocess.check_output(['nvidia-smi','--query-gpu=uuid,memory.free,memory.total',
+            '--format=csv,noheader,nounits'],text=True)
+        for line in memory_rows.splitlines():
+            uuid,free,total=[x.strip() for x in line.split(',')]
+            if uuid in visible:
+                fraction=min(.82,float(free)/float(total)-.08)
+                assert fraction>=.35, ('Insufficient leased GPU memory after native index sharding',uuid,free,total)
+                budgets[uuid]=dict(free_MiB=int(free),total_MiB=int(total),llm_memory_fraction=fraction)
+        assert set(budgets)==set(visible)
+        atomic(OUT/'gpu-budgets.json',dict(epoch=time.time(),native_faiss_index_shards=4,
+            gpus=budgets,headroom_fraction=.08))
         servers=[]
-        for index,(name,gpu,memory) in enumerate([
-                ('main',0,.82),('main',1,.82),('reranker',2,.82),('reranker',3,.28)]):
+        for index,(name,gpu) in enumerate([
+                ('main',0),('main',1),('reranker',2),('reranker',3)]):
+            memory=budgets[visible[gpu]]['llm_memory_fraction']
             variables=dict(base_env,CUDA_VISIBLE_DEVICES=visible[gpu],
                 TRITON_CACHE_DIR=str(OUT/('cache/triton%d'%index)))
             servers.append(launch([str(PYTHON),'-B',str(TOOLS/'service.py'),'llm',
