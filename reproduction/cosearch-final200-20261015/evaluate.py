@@ -81,13 +81,17 @@ async def main():
             except (ValueError, TypeError):
                 model_input_error = True
             response = await super()._call_tool(tool_call, tools_kwargs, agent_data)
-            _, _, detail = response
+            tool_response, _, detail = response
             if detail.get('reranker_crashed') and not model_input_error:
                 raise RuntimeError('Infrastructure failure: '+str(detail))
             event = {key: detail.get(key) for key in
                 ['reranker_success','reranker_fallback','reranker_fallback_reason',
                  'num_retrieved_docs','num_reranked_docs','sub_query']}
             event['model_tool_input_error'] = model_input_error
+            event['native_retained_reranker_output']=self.reranker_tokenizer.decode(
+                tool_response.response_ids or [],skip_special_tokens=True)
+            event['reranker_prompt_tokens']=len(tool_response.prompt_ids or [])
+            event['returned_tool_text']=tool_response.text
             self.reranks.append(event)
             return response
 

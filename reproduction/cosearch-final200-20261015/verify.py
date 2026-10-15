@@ -56,6 +56,8 @@ def main():
         for event in row['reranker_events']:
             if not event.get('model_tool_input_error', False):
                 assert event['num_retrieved_docs']==50
+                assert 0<event['reranker_prompt_tokens']<=16384
+                assert isinstance(event['native_retained_reranker_output'],str)
             else:
                 assert not event['reranker_success']
             if event['reranker_success']:
