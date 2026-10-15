@@ -233,9 +233,10 @@ def main():
                 # Process groups contain only children started by this evaluation.
                 import signal
                 os.killpg(child.pid,signal.SIGTERM)
+        cleanup_deadline=time.monotonic()+45
         for child in children:
             try:
-                child.wait(timeout=30)
+                child.wait(timeout=max(.1,cleanup_deadline-time.monotonic()))
             except subprocess.TimeoutExpired:
                 import signal
                 os.killpg(child.pid,signal.SIGKILL)
