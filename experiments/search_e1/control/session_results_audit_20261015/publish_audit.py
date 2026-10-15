@@ -10,8 +10,12 @@ branch='codex/session-results-audit-20261015'
 base=['git','-C',str(repo)]
 def run(args,**kwargs):return subprocess.run(base+args,check=True,capture_output=True,**kwargs).stdout
 files={p.name:p.read_bytes() for p in D.glob('*.py')}
+for p in D.glob('*.cjs'):files[p.name]=p.read_bytes()
 for name in ['all-seven-results.json','g1-audit.json','tree-e1-b-audit.json','gigpo-co-audit.json','topd-audit.json']:
  files[name]=(D/name).read_bytes()
+for name in ['final-seven-table-data.json','plot-chain-audit.json','visual-payload.json','visual-build-verification.json','canvas-verification.json','browser-verification.json','results.canvas.tsx','interactive.html','ranking.html','final-seven.html','final-seven-table.md']:
+ if (D/name).exists():files[name]=(D/name).read_bytes()
+for p in (D/'figures').glob('*.svg'):files['figures/'+p.name]=p.read_bytes()
 for name,raw in files.items():assert not re.search(rb'hf_[A-Za-z0-9]{20,}|-----BEGIN (?:OPENSSH|RSA|EC) PRIVATE KEY-----',raw),name
 target=branch if run(['ls-remote','origin','refs/heads/'+branch]).strip() else 'codex/reward-selection-figures-20261014'
 run(['fetch','origin',target]);parent=run(['rev-parse','FETCH_HEAD']).decode().strip()
