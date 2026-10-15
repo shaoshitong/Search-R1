@@ -22,6 +22,8 @@ RAW_STATUS='ACTUAL_RAW_ALL200_AND_ALL_NORMAL_RETURN_ATTEMPTS_PASS'
 
 
 def scope(recovery_commit=None,observer_recovery_commit=None,archive_recovery_commit=None):
+    if archive_recovery_commit==reader.ARCHIVE50_SECOND_RECOVERY_SOURCE:
+        return DIRECTORY.with_name(DIRECTORY.name+'-archive50-recovery-second')
     if archive_recovery_commit is not None:return DIRECTORY.with_name(DIRECTORY.name+'-archive50-recovery')
     if observer_recovery_commit is not None:return DIRECTORY.with_name(DIRECTORY.name+'-service-recovery')
     return DIRECTORY if recovery_commit is None else DIRECTORY.with_name(DIRECTORY.name+'-archive5-recovery')
@@ -95,6 +97,7 @@ def ready(followthrough_commit, recovery_commit=None,observer_recovery_commit=No
     return dict(history=history,producer_binding=binding,producer_accounting=accounting,recovery_commit=recovery_commit,
         observer_recovery_commit=observer_recovery_commit,archive_recovery_commit=archive_recovery_commit,observer_recovery=(recovery['observer_recovery'] if archive_recovery_commit else recovery) if observer_recovery_commit else None,
         archive50_recovery=recovery if archive_recovery_commit else None,
+        archive50_prior_recovery=reader.prior_archive50_evidence(recovery,archive_recovery_commit),
         archive5_recovery=recovery['legacy_archive5_recovery'] if observer_recovery_commit else recovery,
         followthrough_source=source,followthrough_result_sha256=follow_file['sha256'],
         goal_sha256=goal_file['sha256'],followthrough_binding_sha256=consumer_file['sha256'],
@@ -129,6 +132,7 @@ def accept_output(proof,commit,followthrough_commit,admission,recovery_commit=No
         follow.get('archive5_recovery')==admission.get('archive5_recovery') and
         follow.get('observer_recovery')==admission.get('observer_recovery') and
         follow.get('archive50_recovery')==admission.get('archive50_recovery') and
+        follow.get('archive50_prior_recovery')==admission.get('archive50_prior_recovery') and
         admission.get('recovery_commit')==recovery_commit and admission.get('observer_recovery_commit')==observer_recovery_commit and admission.get('archive_recovery_commit')==archive_recovery_commit,
         'independent output changed its admitted followthrough/raw/source boundary')
 

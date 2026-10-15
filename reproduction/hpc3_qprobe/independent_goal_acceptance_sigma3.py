@@ -92,6 +92,10 @@ def producer_acceptance():
     return completed(JOB), binding
 
 
+ARCHIVE50_FIRST_RECOVERY_SOURCE='dc9c79bc5e5c7d1b4e3134d30fe168223de10215'
+ARCHIVE50_SECOND_RECOVERY_SOURCE='b89495c8ec1f2a7fb0d5cd70d89974c16c801cff'
+
+
 def followthrough_route(followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None):
     if archive_recovery_commit is not None:
         need(isinstance(archive_recovery_commit,str) and re.fullmatch('[0-9a-f]{40}',archive_recovery_commit) is not None and
@@ -99,6 +103,8 @@ def followthrough_route(followthrough_commit, recovery_commit=None, observer_rec
              observer_recovery_commit=='f979d53cdb0d348e87c5877d84403252e85cd784' and
              archive_recovery_commit not in (FOLLOWTHROUGH,ARCHIVE5_RECOVERY_SOURCE,observer_recovery_commit),
              'explicit archive50/new follower, original RAWf979 and archive5 pins required')
+        if archive_recovery_commit==ARCHIVE50_SECOND_RECOVERY_SOURCE:
+            return 'recover_sigma3_archive50_second',ROOT/'followthrough/721485-archive50-recovery-second-20261015'
         return 'recover_sigma3_archive50',ROOT/'followthrough/721485-archive50-recovery-20261015'
     if observer_recovery_commit is not None:
         need(re.fullmatch('[0-9a-f]{40}',observer_recovery_commit) is not None and
@@ -113,6 +119,20 @@ def followthrough_route(followthrough_commit, recovery_commit=None, observer_rec
          followthrough_commit == recovery_commit and recovery_commit != FOLLOWTHROUGH,
          'explicit archive5 recovery/followthrough source pin differs')
     return 'recover_sigma3_archive5', ROOT/'followthrough/721485-archive5-recovery-20261015'
+
+
+def prior_archive50_evidence(recovery,archive_recovery_commit):
+    if archive_recovery_commit==ARCHIVE50_SECOND_RECOVERY_SOURCE:
+        need(isinstance(recovery,dict) and isinstance(recovery.get('prior_archive50_recovery'),dict),
+             'second archive50 handoff lost its original first recovery')
+        prior=recovery['prior_archive50_recovery']
+        old,_=load_fixed(ARCHIVE50_FIRST_RECOVERY_SOURCE,'recover_sigma3_archive50','control')
+        need(old.consume(ARCHIVE50_FIRST_RECOVERY_SOURCE)==prior,
+             'original first archive50 handoff changed during second recovery conjunction')
+        return prior
+    need(not isinstance(recovery,dict) or 'prior_archive50_recovery' not in recovery,
+         'unregistered second archive50 recovery source')
+    return None
 
 
 def followthrough_evidence(follow, publication_proof, followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None):
@@ -160,7 +180,8 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit, reco
         result=result_file, process_file=process_file, process=process,
         archive5_recovery=recovery['legacy_archive5_recovery'] if observer_recovery_commit else recovery,
         observer_recovery=(recovery['observer_recovery'] if archive_recovery_commit else recovery) if observer_recovery_commit else None,
-        archive50_recovery=recovery if archive_recovery_commit else None)
+        archive50_recovery=recovery if archive_recovery_commit else None,
+        archive50_prior_recovery=prior_archive50_evidence(recovery,archive_recovery_commit))
 
 def native_evidence(goal, binding):
     """The same actual native4/no-new-work gates for either CPU final route."""
@@ -613,6 +634,8 @@ def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recov
     if observer_recovery_commit is not None:
         if archive_recovery_commit is not None:
             need(follow.consume(archive_recovery_commit)==follow_proof['archive50_recovery'],'archive50 handoff changed during conjunction')
+            need(prior_archive50_evidence(follow_proof['archive50_recovery'],archive_recovery_commit)==
+                 follow_proof['archive50_prior_recovery'],'first archive50 recovery changed during final conjunction')
             observer,_=load_fixed(observer_recovery_commit,'recover_sigma3_followthrough_service','control')
             need(observer.consume(observer_recovery_commit)==follow_proof['observer_recovery'],'original observer handoff changed')
         else:need(follow.consume(observer_recovery_commit)==follow_proof['observer_recovery'],'observer handoff changed during final conjunction')

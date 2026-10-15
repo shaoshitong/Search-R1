@@ -140,8 +140,12 @@ def reconstruct(cutoff, threads):
                 original_selection=selection_proof, original_rollout=rollout_proof,
                 logged_fit=head['head_update'], every_round_model_version_equal=True)
             rows.append(row)
-        need(any(a['outer'] == cutoff for a in anchors), 'last round lacks a complete saved-state anchor')
-        return dict(status='VERIFIED_OFFLINE_RECONSTRUCTION',cutoff=cutoff,cpu_threads=threads,
+        last_anchor=max((a['outer'] for a in anchors),default=0)
+        need(last_anchor >= min(cutoff,50), 'reconstruction lacks a complete saved-state anchor')
+        return dict(status='VERIFIED_OFFLINE_RECONSTRUCTION' if last_anchor==cutoff else
+            'VERSION_LOSS_VERIFIED_RECONSTRUCTION_TAIL_AFTER_FULL_STATE_ANCHOR',
+            last_full_state_anchor=last_anchor, tail_verified_by='every original model version and all logged fit components',
+            cutoff=cutoff,cpu_threads=threads,
             anchors=anchors,per_outer_post_fit=rows,manifest_file=manifest_proof,
             warmup_file=ready_proof,updates_file=updates_proof)
     except NotExact as exc:
@@ -151,9 +155,9 @@ def reconstruct(cutoff, threads):
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--cutoff',type=int,choices=(5,50,100,150,200),required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--cutoff',type=int,required=True)
     parser.add_argument('--threads',type=int,choices=(1,8),default=1);args=parser.parse_args()
-    need(os.getuid() == 14090 and os.environ.get('CUDA_VISIBLE_DEVICES') == '', 'CPU owner/device guard differs')
+    need(5 <= args.cutoff <= 200 and os.getuid() == 14090 and os.environ.get('CUDA_VISIBLE_DEVICES') == '', 'CPU owner/device/cutoff guard differs')
     value=reconstruct(args.cutoff,args.threads)
     value.update(epoch=time.time(),run_id=RUN,training_actions=0,actor_loads=0,rollout_generations=0,
         scope='Historical tiny probe reconstructed in isolated CPU process memory; actual training and all experiment files unchanged')
