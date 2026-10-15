@@ -1,0 +1,94 @@
+{
+  "role": "scale20_dataset_first_two_new_chunks_actual",
+  "date": "2026-10-16",
+  "checked_unix": 1792089901.2147017,
+  "status": "RUNNING_NOT_COMPLETE",
+  "target_questions": 102400,
+  "target_trajectories": 512000,
+  "reused_questions": 5120,
+  "reused_trajectories": 25600,
+  "actual_completed_questions": 6144,
+  "actual_completed_trajectories": 30720,
+  "actual_complete_chunks": 12,
+  "actual_new_completed_questions": 1024,
+  "actual_new_completed_trajectories": 5120,
+  "first_two_new_chunk_generation_seconds": [
+    218.74329544324428,
+    222.95758884493262
+  ],
+  "first_two_new_durable_unix": [
+    1792089623.8005352,
+    1792089866.2767031
+  ],
+  "actual_end_to_end_questions_per_second": 2.1338087208369543,
+  "teacher_remaining_estimate_seconds": 45109.94779431075,
+  "feature_encoding_estimate_minutes": [
+    20,
+    60
+  ],
+  "remaining_total_estimate_hours_rounded": 13,
+  "estimate_is_conditional_on_observed_throughput": true,
+  "original_512_generation_seconds": 219.0493595,
+  "earlier_fast_forecast_hours": [
+    4,
+    8
+  ],
+  "earlier_forecast_status": "SUPERSEDED_BY_ACTUAL_FIRST_TWO_CHUNKS",
+  "batching_speedup_not_observed_in_first_two_chunks": true,
+  "first_complete_new_chunk_verified": true,
+  "two_actual_new_progress_measurements_verified": true,
+  "actual_actor_optimizer_updates": 0,
+  "actual_head_optimizer_updates": 0,
+  "formal_training_remains_human_stopped": true,
+  "heldout_questions": 512,
+  "heldout_trajectories": 2560,
+  "heldout_excluded_from_training": true,
+  "active_operator_commit": "0277a4b0b5466b5f8767624b544c0001b47a89d6",
+  "runtime_source": "fcb77204f48d5cb8ec21c68df7d4a2c937b3557a",
+  "reader_commit": "36580b649e2ea136524d477da8869a73addef6f3",
+  "reader_sha256": "cfed50e14f6cfc5267c6b928fdcf0da93a1c4022a678cc7426e50ab03da23191",
+  "run_id": "62407ad0ed404586998439ca1f55b902",
+  "execution_id": "dd3032e313e14ce2b9c8fea996aaf721",
+  "selection_sha256": "491bd9de6d4d15d8a388b8fe32e17b3f85121e0f4ca5ae712a0ea1427e71e938",
+  "dataset_plan_sha256": "ea8640c5bba11e1b2689614efa45e5eb53d43276417abb1bbadd112a1ab9b2c3",
+  "training_indices": [
+    0,
+    2,
+    3,
+    4
+  ],
+  "training_gpu_uuids": [
+    "GPU-9b8498ae-93e5-dee7-545a-25669080cf83",
+    "GPU-19f588c3-3f42-a910-5f9a-21687befed5b",
+    "GPU-ef98537d-a371-e4f0-56f9-53ce0084a7b9",
+    "GPU-c63282c6-1d05-224e-234b-2a8c794b1f04"
+  ],
+  "gpu_placement_binding_sha256": "9ddf407d5d73075d9842c6b6f9f298e1777910c1fff83c0474dcf1f5206b8ac8",
+  "execution_limits": {
+    "agent_workers": 1024,
+    "engine_step_budget": 8,
+    "generation_max_batched_tokens": 32768,
+    "generation_max_num_seqs": 256,
+    "max_inflight_trajectories": 1024,
+    "retrieval_concurrency": 32,
+    "tool_retries": 2,
+    "tool_timeout": 30.0
+  },
+  "original_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+  "original_model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "monitor_interval_minutes": 30,
+  "monitor_scope": "dataset_and_frozen_features_only",
+  "head_training_resumed": false,
+  "dataset_features_complete": false,
+  "only_owned_cleanup_complete": false,
+  "evidence": [
+    {
+      "name": "qprobe-prefix-scale20-native-observation-1792089735178223000.json",
+      "sha256": "dc2734ad8ccb6120a29fc79bf85d73770bd7376e340d11740bd81dfac0e39a16"
+    },
+    {
+      "name": "qprobe-prefix-scale20-native-observation-1792089901201115000.json",
+      "sha256": "71cd9ee12a6d30b24fd274dcff3df2c8079004ee8b5d96a9a2b002b65db28583"
+    }
+  ]
+}
