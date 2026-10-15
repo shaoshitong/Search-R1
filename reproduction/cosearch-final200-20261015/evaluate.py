@@ -45,20 +45,21 @@ async def main():
     from omegaconf import OmegaConf
     from transformers import AutoTokenizer
     from verl.experimental.agent_loop.co_search_agent_loop import CoSearchAgentLoop
+    from verl.experimental.agent_loop.tool_parser import SearchR1ToolParser, FunctionCall
     from common_em import score, identity, summarize
+    from question_metadata import install, install_parser
+    from input_contract import load_inputs
+
+    install(CoSearchAgentLoop)
+    install_parser(SearchR1ToolParser,FunctionCall)
 
     config = OmegaConf.create(json.loads((OUT/'native-config.json').read_text()))
     config.actor_rollout_ref.rollout.multi_turn.tool_config_path = str(OUT/'tool.yaml')
     config.data.tool_config_path = str(OUT/'tool.yaml')
     tokenizer = AutoTokenizer.from_pretrained(OUT/'models/main', local_files_only=True)
     rr_tokenizer = AutoTokenizer.from_pretrained(OUT/'models/reranker', local_files_only=True)
-    frame = pd.read_parquet(TRAIN/'data/final.parquet')
-    references = [json.loads(line) for line in (TRAIN/'data/final.jsonl').open() if line.strip()]
-    assert len(frame) == len(references) == N
+    frame,references,question_metadata = load_inputs()
     expected = collections.Counter(identity(x['question'], x['answers']) for x in references)
-    actual = collections.Counter(identity(x['extra_info']['question'], x['reward_model']['ground_truth'])
-                                 for _, x in frame.iterrows())
-    assert actual == expected
 
     class AuditedLoop(CoSearchAgentLoop):
         async def _handle_generating_state(self, data, *args, **kwargs):
@@ -96,7 +97,9 @@ async def main():
         row = json.loads(path.read_text())
         assert row['binding_sha256'] == binding_sha and path.name == '%05d.json'%row['row_id']
         source = frame.iloc[row['row_id']]
-        assert row['question_answer_sha256'] == identity(source['extra_info']['question'],
+        reference=references[row['row_id']]
+        assert row['question_uid']==reference['question_id']
+        assert row['question_answer_sha256'] == identity(reference['question'],
                                                         source['reward_model']['ground_truth'])
         assert row['row_id'] not in results
         results[row['row_id']] = row
@@ -116,6 +119,7 @@ async def main():
         async def question(index):
             async with semaphore:
                 source = frame.iloc[index]
+                reference=references[index]
                 for attempt in range(3):
                     agent = AuditedLoop(types.SimpleNamespace(config=config), main_manager,
                         tokenizer, None, reranker_server_manager=rank_manager,
@@ -124,15 +128,16 @@ async def main():
                     try:
                         output, _ = await agent.run(
                             sampling_params=dict(temperature=0., top_p=1., top_k=-1, n=1),
-                            raw_prompt=list(source['prompt']), uid=str(index),
-                            extra_info={'question':source['extra_info']['question']},
+                            raw_prompt=list(source['prompt']), uid=reference['question_id'],
+                            extra_info=question_metadata[index],
                             reward_model={'ground_truth':{'target':[]}}, tools_kwargs={})
                         last = agent.actions[-1] if agent.actions else None
                         refs = source['reward_model']['ground_truth']
                         metrics = score(last['text'] if last else None, refs,
                                         boundary_verified=bool(last and last['fully_retained']))
-                        row = dict(row_id=index, question_uid=str(index),
-                            question_answer_sha256=identity(source['extra_info']['question'], refs),
+                        row = dict(row_id=index, question_uid=reference['question_id'],
+                            native_prompt_question_sha256=hashlib.sha256(question_metadata[index]['question'].encode()).hexdigest(),
+                            question_answer_sha256=identity(reference['question'], refs),
                             data_source=str(source['data_source']), model_actions=agent.actions,
                             response_mask=output.response_mask, reranker_events=agent.reranks,
                             inference_received_gold=False, binding_sha256=binding_sha,

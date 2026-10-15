@@ -1,6 +1,7 @@
 """Independent CPU acceptance of saved dual-model final predictions; no training."""
 import collections
 import json
+import hashlib
 import pathlib
 import subprocess
 import time
@@ -23,6 +24,9 @@ def main():
     assert sha(TRAIN/'data/final.jsonl')==binding['data_jsonl_sha256']
     assert sha(OUT/'binding.json')==complete['binding_sha256']
     data=pd.read_parquet(TRAIN/'data/final.parquet')
+    references=[json.loads(line) for line in (TRAIN/'data/final.jsonl').open() if line.strip()]
+    from question_metadata import with_question
+    assert len(references)==N
     assert len(data)==N
     assert len(list((OUT/'rows').glob('*.json')))==N
     rows=[]
@@ -30,12 +34,18 @@ def main():
     for index in range(N):
         row=json.loads((OUT/('rows/%05d.json'%index)).read_text())
         source=data.iloc[index]
-        assert row['row_id']==index and row['question_uid']==str(index)
+        reference=references[index]
+        assert row['row_id']==index and row['question_uid']==reference['question_id']
         assert row['binding_sha256']==complete['binding_sha256']
         assert row['inference_received_gold'] is False
         assert row['data_source']==source['data_source']
-        assert row['question_answer_sha256']==identity(source['extra_info']['question'],
+        original=with_question(dict(raw_prompt=list(source['prompt']),extra_info=dict(source['extra_info'])))
+        question=original['extra_info']['question']
+        assert question.strip()==reference['question'].strip()
+        assert row['native_prompt_question_sha256']==hashlib.sha256(question.encode()).hexdigest()
+        assert row['question_answer_sha256']==identity(reference['question'],
                                                        source['reward_model']['ground_truth'])
+        assert row['question_answer_sha256']==identity(reference['question'],reference['answers'])
         last=row['model_actions'][-1] if row['model_actions'] else None
         if last:
             assert last['author']=='main_model'
