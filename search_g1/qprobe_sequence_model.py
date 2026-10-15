@@ -2,7 +2,7 @@
 import copy
 from dataclasses import asdict
 import torch
-from search_g1.qprobe_model import OnlineQProbe, QProbeConfig, validate_label, count_moment_loss, S_MAX
+from search_g1.qprobe_model import OnlineQProbe, QProbeConfig, validate_label, count_moment_loss, count_moment_group_loss, S_MAX
 from torch.nn import functional as F
 from search_g1.qprobe_sequence import SequenceFeatures
 from search_g1.qprobe_transformer import QwenBlockCountProbe, load_official_initialization
@@ -78,11 +78,7 @@ class OnlineSequenceQProbe(OnlineQProbe):
                 for offset in range(0,len(batch),self.train_micro):
                     index=batch[offset:offset+self.train_micro];out=self._forward(self.replay_features[index])
                     target=counts[index].to(out['logits'].device)
-                    count_moment_loss(out,target,self.config)
-                    loss=F.cross_entropy(out['logits'],target,reduction='none')
-                    loss+=self.config.mean_loss_weight*(out['mean']-target.float()/5).square()
-                    std=(target.float()*(5-target.float())/20).sqrt()
-                    loss+=self.config.std_loss_weight*((out['expected_std']-std)/S_MAX).square()
+                    loss, _ = count_moment_group_loss(out,target,self.config)
                     # Sum over physical micro, divide by original logical batch:
                     # exactly the upstream global age-weighted mean estimator.
                     scalar=(loss*weights[index].to(loss.device)).sum()/len(batch)

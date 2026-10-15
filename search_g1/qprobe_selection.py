@@ -157,10 +157,25 @@ def prequential_metrics(probabilities, strict_vectors, sources):
             count_nll=float(-np.log(np.maximum(prediction["probabilities"][rows, counts[rows]], 1e-12)).mean()),
             mean_mae=float(np.abs(prediction["mean"][mask] - means[mask]).mean()),
             std_mae=float(np.abs(prediction["expected_std"][mask] - stds[mask]).mean()),
+            std_mse=float(np.square(prediction["expected_std"][mask] - stds[mask]).mean()),
             mixed_brier=float(np.square(prediction["mixed_probability"][mask] - mixed[mask]).mean()),
             actual_mixed_fraction=float(mixed[mask].mean()),
             actual_sample_std_mean=float(stds[mask].mean()),
             actual_em_mean=float(means[mask].mean()),
             all_wrong_fraction=float((counts[mask] == 0).mean()),
             all_correct_fraction=float((counts[mask] == 5).mean()))
+    score_delta = prediction['expected_std'][:, None] - prediction['expected_std'][None, :]
+    truth_delta = stds[:, None] - stds[None, :]
+    comparable = truth_delta > 0
+    result['ranking'] = dict(scope='selected_questions_prediction_before_rollout_before_fit',
+        comparable_pairs=int(comparable.sum()),
+        pairwise_concordance=(float(((score_delta[comparable] > 0).sum() +
+                                    .5*(score_delta[comparable] == 0).sum()) / comparable.sum())
+                              if comparable.any() else None))
+    top = result['predicted_diversity']; random = result['random_exploration']
+    if top['questions'] and random['questions']:
+        t, r = top['actual_mixed_fraction'], random['actual_mixed_fraction']
+        result['top_vs_random'] = dict(top_questions=top['questions'], random_questions=random['questions'],
+            mixed_hit_rate_difference=t-r, mixed_hit_rate_ratio=t/r if r > 0 else None,
+            actual_sample_std_mean_difference=top['actual_sample_std_mean']-random['actual_sample_std_mean'])
     return result

@@ -84,9 +84,24 @@ class QProbeModelTests(unittest.TestCase):
         loss, pieces = count_moment_loss(p, counts, QProbeConfig(), weights)
         ce = -p['probabilities'][torch.arange(2),counts].log()
         std = (counts.float()*(5-counts.float())/20).sqrt()
-        per = ce + .1*(p['mean']-counts.float()/5).square() + .1*((p['expected_std']-std)/math.sqrt(.3)).square()
+        q = torch.stack([p['probabilities'][:, pair].sum(-1) for pair in ((0,5),(1,4),(2,3))], -1)
+        cls = torch.minimum(counts, 5-counts)
+        per = -q[torch.arange(2), cls].log() + .1*ce + ((p['expected_std']-std)/math.sqrt(.3)).square()
         self.assertAlmostEqual(loss.item(), ((per*weights).sum()/weights.sum()).item(), places=6)
         self.assertTrue(torch.isfinite(pieces['count_ce']))
+
+    def test_std_main_loss_is_symmetric_and_ignores_mean(self):
+        model = CountMomentProbe(3)
+        logits = torch.tensor([[1., -2., 3., .5, -1., 2.]], requires_grad=True)
+        pred = model.moments(logits)
+        config = QProbeConfig(count_aux_loss_weight=0)
+        left, _ = count_moment_loss(pred, torch.tensor([1]), config)
+        pred['mean'] = torch.tensor([999.])
+        right, _ = count_moment_loss(pred, torch.tensor([4]), config)
+        self.assertTrue(torch.equal(left, right))
+        left.backward()
+        self.assertTrue(torch.isfinite(logits.grad).all())
+        with self.assertRaises(ValueError): QProbeConfig(mean_loss_weight=.1)
 
     def test_updates_do_not_perturb_actor_rng_and_evict_old_labels(self):
         probe = OnlineQProbe(4, dict(replay_window_outer=2, head_epochs_per_outer=1))

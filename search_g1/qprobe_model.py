@@ -29,8 +29,10 @@ S_MAX = math.sqrt(0.3)
 
 @dataclass(frozen=True)
 class QProbeConfig:
-    mean_loss_weight: float = 0.1
-    std_loss_weight: float = 0.1
+    mean_loss_weight: float = 0.0
+    std_loss_weight: float = 1.0
+    count_aux_loss_weight: float = 0.1
+    loss_version: str = "std_class_ce_v1"
     head_learning_rate: float = 3e-4
     head_batch_size: int = 256
     head_epochs_per_outer: int = 2
@@ -49,7 +51,9 @@ class QProbeConfig:
             value = getattr(self, name)
             if not isinstance(value, (float, int)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f'QPROBE_INVALID_CONFIG: {name} must be positive and finite')
-        for name in ('mean_loss_weight', 'std_loss_weight'):
+        if self.loss_version != 'std_class_ce_v1' or self.mean_loss_weight != 0:
+            raise ValueError('QPROBE_REQUIRES_STD_CLASS_LOSS_WITHOUT_MEAN_MSE')
+        for name in ('mean_loss_weight', 'std_loss_weight', 'count_aux_loss_weight'):
             value = getattr(self, name)
             if not isinstance(value, (float, int)) or not math.isfinite(value) or value < 0:
                 raise ValueError(f'QPROBE_INVALID_CONFIG: {name} must be nonnegative and finite')
@@ -116,19 +120,34 @@ def count_moment_loss(prediction, counts, config: QProbeConfig, weights=None):
     if len(counts) != len(prediction['logits']) or bool(((counts < 0) | (counts > 5)).any()):
         raise ValueError('QPROBE_INVALID_COUNTS')
     counts = counts.to(prediction['logits'].device)
-    means = counts.float() / 5
-    stds = (counts.float() * (5 - counts.float()) / 20).sqrt()
-    ce = F.cross_entropy(prediction['logits'].float(), counts, reduction='none')
-    mean_mse = (prediction['mean'] - means).square()
-    std_mse = ((prediction['expected_std'] - stds) / S_MAX).square()
-    loss = ce + config.mean_loss_weight * mean_mse + config.std_loss_weight * std_mse
+    loss, parts = count_moment_group_loss(prediction, counts, config)
     if weights is None:
         weights = torch.ones_like(loss)
     if weights.shape != loss.shape or not torch.isfinite(weights).all() or bool((weights <= 0).any()):
         raise ValueError('QPROBE_INVALID_REPLAY_WEIGHTS')
     weights = weights.to(loss.device)
     weighted = lambda x: (x * weights).sum() / weights.sum()
-    return weighted(loss), dict(count_ce=weighted(ce), mean_mse=weighted(mean_mse), std_mse=weighted(std_mse))
+    return weighted(loss), {key: weighted(value) for key, value in parts.items()}
+
+
+def count_moment_group_loss(prediction, counts, config):
+    """Per-question loss; physical micros share the logical batch denominator."""
+    logits = prediction['logits'].float()
+    if counts.dtype != torch.long or counts.ndim != 1 or len(counts) != len(logits):
+        raise ValueError('QPROBE_COUNTS_MUST_BE_INT64_VECTOR')
+    counts = counts.to(logits.device)
+    if bool(((counts < 0) | (counts > 5)).any()):
+        raise ValueError('QPROBE_INVALID_COUNTS')
+    # logsumexp merges K and 5-K before CE, preserving stable gradients.
+    std_logits = torch.stack([torch.logsumexp(logits[:, pair], dim=-1)
+                              for pair in ((0, 5), (1, 4), (2, 3))], dim=-1)
+    std_class = torch.minimum(counts, 5 - counts)
+    std_ce = F.cross_entropy(std_logits, std_class, reduction='none')
+    count_ce = F.cross_entropy(logits, counts, reduction='none')
+    true_std = (counts.float() * (5 - counts.float()) / 20).sqrt()
+    std_mse = ((prediction['expected_std'].float() - true_std) / S_MAX).square()
+    loss = std_ce + config.std_loss_weight * std_mse + config.count_aux_loss_weight * count_ce
+    return loss, dict(std_class_ce=std_ce, count_ce=count_ce, std_mse=std_mse)
 
 
 def _sha_file(path):
@@ -249,10 +268,7 @@ class OnlineQProbe:
                 loss, _ = count_moment_loss(prediction, counts[index], self.config)
                 # Replace the mean with the exact global age-weighted batch
                 # estimator; count_moment_loss above validates both target and output.
-                group_loss = F.cross_entropy(prediction['logits'], counts[index], reduction='none')
-                group_loss += self.config.mean_loss_weight * (prediction['mean'] - counts[index].float()/5).square()
-                target_std = (counts[index].float()*(5-counts[index].float())/20).sqrt()
-                group_loss += self.config.std_loss_weight * ((prediction['expected_std']-target_std)/S_MAX).square()
+                group_loss, _ = count_moment_group_loss(prediction, counts[index], self.config)
                 loss = (group_loss * weights[index]).mean()
                 if not torch.isfinite(loss):
                     raise ValueError('QPROBE_NONFINITE_TRAINING_LOSS')
