@@ -1,0 +1,57 @@
+python3 -B - <<'PY'
+from pathlib import Path
+import json,hashlib,datetime,gzip,ast,time
+n=__OUTER__;a=__FIRST__;z=__SECOND__;w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013';ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+def read(p):return json.loads(p.read_bytes())
+def h(raw):return hashlib.sha256(raw).hexdigest()
+def pin(p,mirror=True):
+ raw=p.read_bytes()
+ if mirror:
+  for m in ms:assert(m/p.relative_to(b)).read_bytes()==raw,p
+ return dict(path=str(p),bytes=len(raw),sha256=h(raw))
+rp=b/f'VERIFIED_WAIT_NATIVE5_CONTINUE_POLL_{a}_NATIVE5_CONTINUE_POLL_{z}.json';r=read(rp);receipt=pin(rp)
+assert r['completed_outer']==n and r['active_outer']==n+1 and r['goal_status']=='active' and r['goal_turn_classification']=='verified_wait' and r['consecutive_blocked_goal_turns']==0
+assert r['source_commit']=='778b2b43dad90fc0c1c5d95d77c2326286011b73' and r['source_script_sha256']=='0db3bd8dfd228dea80873c383d313666ad59e0175cc7f9abf6b40f7feaff1785'
+assert r['alias_dependency_sha256']=='f8775e2673d2844125a6683622880066cf870a3e6070a1ac847f5bb62ed8aafc' and r['core_dependency_sha256']=='676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1'
+assert not r['next_outer_Controller_complete_observed'] and not r['next_outer_credit_observed'] and all(r[k] is None for k in ['next_outer_partial_Adam','next_outer_sampling_complete','next_outer_variance','next_outer_scoring'])
+sp=w/'work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/publish_nested_verified_wait.py';assert h(sp.read_bytes())==r['source_script_sha256']
+nodes=[x for x in ast.walk(ast.parse(sp.read_text())) if isinstance(x,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='common' for t in x.targets)];assert len(nodes)==1 and isinstance(nodes[0].value,ast.Call)
+allowed={k.arg for k in nodes[0].value.keywords};assert None not in allowed
+full=read(b/f'FULL_OUTER{n}_PROGRESS_RECEIPT.json');p1=read(b/f'NATIVE5_CONTINUE_POLL_{a}.json');p2=read(b/f'NATIVE5_CONTINUE_POLL_{z}.json');R1=read(b/f'NATIVE5_CONTINUE_RESOURCE_{a}.json');R2=read(b/f'NATIVE5_CONTINUE_RESOURCE_{z}.json')
+assert p1['epoch']<p2['epoch'] and r['observed_epochs']==[p1['epoch'],p2['epoch']]
+for i,p,R,facts in [(a,p1,R1,r['actual_observations'][0]),(z,p2,R2,r['actual_observations'][1])]:
+ assert p['source_commit']==r['source_commit'] and p['progress']['actual_completed_outer_from_attempt_results']==n and p['progress']['errors']==[] and p['run_result'] is None
+ assert p['progress']['completed_actual_optimizer_calls_per_rank']==full['per_rank_actual_total_adam']==facts['actual_adam_per_rank']
+ assert facts['all_skipped_attempts']==p['progress']['all_skipped_attempts'] and not any(x['candidate_outer']>n for x in p['rollout_cost'])
+ assert 'MainPID=503255\n' in R['training_systemd'] and 'InvocationID=a313bda919834d24b4c5d491698d39ce\n' in R['training_systemd'] and 'ActiveState=active\n' in R['training_systemd']
+ assert facts['actual_next_stage']==n+1 and facts['latest_original_Controller_outer']==n and facts['next_Controller_result_present'] is False
+assert all(r['log_byte_growth'][k]==p2['own_output_files'][k]-p1['own_output_files'][k]>0 for k in ['stage.log','retriever.log'])
+assert r['actual_observations'][1]['CPUUsageNSec']>r['actual_observations'][0]['CPUUsageNSec']
+snapshot=Path(r['prior_snapshot_manifest']);man=read(snapshot);assert len(man['files'])==14;json_count=report_count=0;changes=[];stable={}
+for row in man['files']:
+ g=Path(row['stored_gzip_path']).read_bytes();assert len(g)==row['stored_bytes'] and h(g)==row['stored_sha256'] and int.from_bytes(g[4:8],'little')==0
+ oldraw=gzip.decompress(g);assert len(oldraw)==row['original_bytes'] and h(oldraw)==row['original_sha256']
+ p=Path(row['source']);newraw=p.read_bytes();stable[p]=newraw
+ if p.suffix=='.json':
+  old=json.loads(oldraw);new=json.loads(newraw);assert {k:v for k,v in old.items() if k not in allowed}=={k:v for k,v in new.items() if k not in allowed}
+  for k in ['completed_outer','active_outer','per_rank_actual_total_adam','actual_total_adam_per_rank','latest_dev512_outer','current_training_variances','learning_curve_complete_outer','dev_native_cost_actual_last_collected_outer','current_milestone150_metadata','current_dev_native_cost_supplement']:
+   if k in old:assert old[k]==new[k],k
+  assert new['completed_outer']==n and new['active_outer']==n+1 and new['latest_dev512_outer']==165 and new['goal_status']=='active' and new['whole_goal_turn_classification']=='verified_wait'
+  assert new['learning_curve_complete_outer']==new['dev_native_cost_actual_last_collected_outer']==165 and new['active_outer_actual_partial_Adam_calls'] is None
+  changes.append(dict(path=str(p),actual_changed_fields=[k for k in set(old)|set(new) if old.get(k)!=new.get(k)]));json_count+=1
+ else:assert newraw.endswith(oldraw);report_count+=1
+assert json_count==10 and report_count==4
+paths=[w/'outputs/STATUS.json',w/'outputs/tree-nested-branch/STATUS.json',b/'CURRENT_NATIVE_RECOVERY_FOLLOWUP.json',b/'CURRENT_OBSERVER_CONNECTION_STATE.json'];assert paths[0].read_bytes()==paths[1].read_bytes()
+for m in ms:
+ for p in paths[1:]:assert(m/p.name).read_bytes()==p.read_bytes()
+ assert(m/'REPORT.md').read_bytes()==(w/'outputs/REPORT.md').read_bytes()==(w/'outputs/tree-nested-branch/REPORT.md').read_bytes()
+references=dict(full=pin(b/f'FULL_OUTER{n}_PROGRESS_RECEIPT.json'),cost=pin(b/f'CUMULATIVE_COST_THROUGH{n}.json'),latest_curve=pin(b/'LEARNING_CURVE_COMPLETE_THROUGH165.json'),latest_dev_native_cost=pin(b/'DEV5_165_NATIVE_COST_SUPPLEMENT.json'),milestone150=pin(b/'MILESTONE150_HF_NATIVE_METADATA.json'),first_poll=pin(b/f'NATIVE5_CONTINUE_POLL_{a}.json',False),second_poll=pin(b/f'NATIVE5_CONTINUE_POLL_{z}.json',False),first_resource=pin(b/f'NATIVE5_CONTINUE_RESOURCE_{a}.json',False),second_resource=pin(b/f'NATIVE5_CONTINUE_RESOURCE_{z}.json',False))
+for p in [rp,snapshot,*[Path(x['path']) for x in references.values()]]:stable[p]=p.read_bytes()
+time.sleep(1)
+for p,raw in stable.items():assert p.read_bytes()==raw
+proof=dict(schema='root_verified_wait_actual_readback_v2',created_at_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),executor='/root',status='ACTUAL_CA32_WAIT_ENTRY_TWO_POLLS_AND_MIRRORS_VERIFIED',receipt=receipt,producer_source_commit='ca32b384987bb8fce3acbd17aad592f55ab7c248',actual_entry_sha256=r['source_script_sha256'],completed_outer=n,active_outer=n+1,actual_observations=r['actual_observations'],log_byte_growth=r['log_byte_growth'],all_skipped_counter_matches_original_progress=True,previous14_gzip_original_bytes_SHA_verified=True,snapshot_manifest=pin(snapshot,False),actual_metadata_changes_limited_to_published_producer_fields=changes,current_canonical_protected_counters_cost_curve_dev_milestone_unchanged=True,canonical_after_actual=[pin(p,False) for p in paths],references=references,raw_poll_resource_mirror_scope='BASE-only pins, not claimed mirrored',latest_dev=full['latest_actual_dev512'],current_dev=full['actual_dev512'],actual_two_readbacks_preserved=True,counter_or_cost_credit_added=False,remote_actions=False,new_training=False,source778_modified=False,goal_status='active',whole_goal_turn_classification='verified_wait',consecutive_blocked_goal_turns=0)
+out=b/f'ROOT_VERIFIED_WAIT_READBACK_{a}_{z}.json';assert not out.exists();raw=(json.dumps(proof,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode()
+for p in [out,*[m/out.name for m in ms]]:p.write_bytes(raw)
+one=pin(out);time.sleep(1);assert pin(out)==one
+print(json.dumps(one))
+PY
