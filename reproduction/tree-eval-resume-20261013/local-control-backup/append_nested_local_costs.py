@@ -135,6 +135,15 @@ def actual_inputs(base, receipt_path):
     if ranks and (len(ranks) != 8 or sorted(r.get("rank") for r in ranks) != list(range(8))):
         raise ValueError("Available direct rank evidence is inconsistent")
     bindings = {name: binding, pn: pb, nn: nb}
+    retrospective = None
+    if full.get("evidence_mode") == "RETROSPECTIVE_SOURCE_READBACK":
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("local_retrospective_full", Path(__file__).with_name("backfill_nested_historical_full.py"))
+        bridge = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(bridge)
+        retrospective = bridge.cost_evidence(base, full, poll, native)
+        metric, controller, ranks = [retrospective[k] for k in ("metric", "controller", "ranks")]
+        bindings.update({k: {"bytes": v["bytes"], "sha256": v["sha256"]} for k, v in retrospective["bindings"].items()})
     resource_ref = None
     resource_binding = full.get("input_bindings", {}).get("resource")
     if isinstance(resource_binding, dict):
@@ -146,7 +155,8 @@ def actual_inputs(base, receipt_path):
     return {"step": step, "target": target, "source": source, "full_name": name,
             "full": full, "poll_name": pn, "poll": poll, "native_name": nn,
             "native": native, "metric": metric, "controller": controller,
-            "ranks": ranks, "bindings": bindings, "resource_ref": resource_ref}
+            "ranks": ranks, "bindings": bindings, "resource_ref": resource_ref,
+            "retrospective": retrospective}
 
 
 def supplemental_controller_input(base, reference, evidence):
@@ -193,13 +203,17 @@ def new_row(index, evidence):
     def ref(name, selector):
         return {"source_file": name, "source_sha256": e["bindings"][name]["sha256"], "json_selector": selector}
     actual_counts = p.get("progress", {}).get("completed_actual_optimizer_calls_per_rank")
+    retrospective = e.get("retrospective")
+    metric_name = retrospective["gap_name"] if retrospective else e["poll_name"]
+    if retrospective:
+        actual_counts = retrospective["completed"]
     row = {
         "row_id": row_id, "scope": "child_native_continuation", "source_commit": source,
         "outer": step, "effective_history": True, "experiment_origin": p.get("experiment_origin"),
         "identity_ref": "source_identity_by_commit." + source,
-        "rollout_controller_cost": c, "metric_evidence": e["poll_name"] + ":iteration_metrics[step=" + str(step) + "]",
+        "rollout_controller_cost": c, "metric_evidence": metric_name + ":iteration_metrics[step=" + str(step) + "]",
         "full_outer_evidence": e["full_name"], "full_outer_status": full.get("status"),
-        "full_metric_status": "ACTUAL_CURRENT_OUTER_METRIC" if m and numeric(m.get("timing_s/step")) else "PENDING_CURRENT_OUTER_FULL_METRIC",
+        "full_metric_status": ("ACTUAL_HISTORICAL_OUTER_METRIC_RETROSPECTIVE_SOURCE_READBACK" if retrospective else "ACTUAL_CURRENT_OUTER_METRIC") if m and numeric(m.get("timing_s/step")) else "PENDING_CURRENT_OUTER_FULL_METRIC",
         "original_other_iteration_scalars": {k: v for k, v in m.items() if not any(k.startswith(pre) for pre in PREFIXES.values()) and k not in OPT_KEYS},
         "candidate_cost_detail": {
             "candidate_counts": {k: m.get(v) for k, v in [("all", "rollout/candidate_attempts"), ("accepted", "rollout/candidate_accepted"), ("discarded", "rollout/candidate_discarded"), ("fallback", "rollout/candidate_fallbacks")]},
@@ -212,7 +226,7 @@ def new_row(index, evidence):
             "per_outer_direct_rank_summaries": [{k: v for k, v in r.items() if k != "local_shard_sample_delta"} for r in e["ranks"]],
             "cumulative_calls_per_rank": actual_counts,
             "count_boundary": "Actual source/native cumulative state includes inherited ancestors. New successful credit uses only this completed outer direct records; failed2/6 and bootstrap costs remain separate.",
-            "direct_rank_detail_ref": ref(e["poll_name"], "last_rank_summaries[outer_step=" + str(step) + "]")},
+            "direct_rank_detail_ref": ref(metric_name, "direct_rank_summaries_by_outer." + str(step) if retrospective else "last_rank_summaries[outer_step=" + str(step) + "]")},
         "native_manifest_metadata": {
             "evidence_file": e["native_name"], "source_manifest_path": nr.get("source_manifest_path"),
             "source_manifest_sha256": nr.get("source_manifest_sha256"), "source_manifest_bytes": nr.get("source_manifest_bytes"),
@@ -253,6 +267,13 @@ def new_row(index, evidence):
             "full_metric_skipped_opportunities", "no_all20_writes_or_zero_skip_assumption", "all_skipped_attempts",
             "normal_dev512_wall_seconds", "training_archive_wall_seconds_excluding_current_dev"] if k in full},
     }
+    if retrospective:
+        row["retrospective_source_readback"] = {"evidence_mode": full["evidence_mode"],
+            "observed_epoch": full["observed_epoch"], "scope": full["retrospective_evidence_scope"],
+            "source_readback": ref(metric_name, "metric/rank/controller/dev original file bindings"),
+            "live_poll_completed_outer_at_collection": p["progress"]["actual_completed_outer_from_attempt_results"],
+            "historical_counter_source": full["historical_counter_source"],
+            "actual_next_outer_entry_scope": full["actual_next_outer_entry_scope"]}
     for key, prefix in PREFIXES.items():
         row[key] = {k: v for k, v in m.items() if k.startswith(prefix)}
     dev = row["development_evaluation"]

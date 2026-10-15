@@ -35,3 +35,19 @@
 每个实际轮产生immutable CANDIDATE_COST_EXTENSION_OUTER0020.json/md及candidate_cost_backfill/CANDIDATE_OUTER0020.json；后续替换轮次。每个JSON<=100000字节。CANDIDATE_COST_EXTENSION_INPUTS.json是本地派生输入列表，记录每份immutable index SHA/bytes。append的后续累计默认读取此列表，逐份验证index/part/outer/source/config及原FULL/poll/native SHA，只在内存累计副本中引用每轮一次；列表本身仅按本次读取SHA记录，不冒充原始证据。可用--candidate-extension-inputs显式指定列表。未完成/尚无候选part的21等轮仍unknown，不借上轮成本。旧through20/块及3..19补账保持原字节。origin沿fresh母链，非从基座清零；padding结果分摊、独立结果wall和实际GPU计费不推算。
 
 若FULL轮次的固定poll已经只显示下一轮controller，可对一个已计入完整轮显式添加`--supplemental-controller-poll NATIVE5_CONTINUE_POLL_533.json`。补充poll必须是同source/run/unit/fresh/config、同attempt/outer且COMPLETE、时间不晚于原FULL观测；它只是此前采样证据，不是更新完成凭据。FULL/native绑定保持原样，远端仍只读固定本轮audit/controller/config，并核对实际controller与补充poll字段一致。补充poll SHA/bytes单独保存在candidate source_pin；后续累计重新验证该SHA，只在累计内存副本补齐原未知controller字段，旧FULL/CUM/块不回写。46示例为`--first-outer 46 --last-outer 46 --supplemental-controller-poll NATIVE5_CONTINUE_POLL_533.json`；已存46累计仍unknown，补充供47及以后使用，不加训练信用。
+# Historical107–118 readback bridge
+
+`backfill_nested_historical_full.py --base outputs/tree-nested-branch-handoff-20261013`
+publishes only immutable historical FULL107–118 from the actual gap107–119 scalar
+readback and existing FULL119 anchor. Every receipt explicitly says
+`RETROSPECTIVE_SOURCE_READBACK`. Its `source_poll` remains the original live119
+observation, while metric/rank/controller/dev source selectors bind the actual
+gap SHA and original remote file hashes. No synthetic poll or current-state
+write is produced. Cumulative counters and attempt accounting come from each
+nativeN persisted guard; no independent tensor read/cold reload is claimed.
+
+The appender recognizes only this explicitly marked historical evidence and
+reuses the published pure metric/rank/native/restore validators. Run the usual
+appendN, credited candidateN collection, then ratesN sequence. Unknown candidate
+details stay unknown until a subsequent cumulative snapshot joins the immutable
+supplement; old cumulative snapshots are never rewritten.
