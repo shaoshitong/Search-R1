@@ -14,6 +14,7 @@ import re
 import subprocess
 import time
 import uuid
+from reproduction.hpc3_qprobe.slurm_readonly import query as slurm_query, SlurmReadUnavailable
 
 ROOT=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014')
 OWNER=14090
@@ -122,8 +123,8 @@ def producer_submission(base,run):
          failure.get('original_claim')==claim and failure.get('actor_started') is False and failure.get('formal_outers')==0 and
          failure.get('original_log_sha256')==digest(base/'failed-job-721449/training.log'),
          'sigma3 pre-model failure/recovery chain differs')
-    original=subprocess.check_output(['sacct','-nP','-X','-j','721449',
-        '--format=JobID,State,ExitCode,UID,NodeList'],text=True,timeout=30).strip()
+    original=slurm_query(['sacct','-nP','-X','-j','721449',
+        '--format=JobID,State,ExitCode,UID,NodeList'],timeout=30).strip()
     need(original==failure.get('accounting')=='721449|FAILED|1:0|14090|ACD1-56',
          'sigma3 original job is not actual known failed721449')
     chain=dict(recovery_submission_sha256=digest(recovery_path),recovery_claim_sha256=digest(recovery_claim_path),
@@ -172,8 +173,8 @@ def producer(base,*,complete=False):
          'actual native producer detail binding differs')
     need(allocated_indices(detail,allocation['node'],count=4)==indices,
          'actual native producer GPU index detail differs')
-    raw=subprocess.check_output(['sacct','-nP','-X','-j',job,
-        '--format=JobID,State,ExitCode,User,UID,Account,QOS,Partition'],text=True,timeout=30)
+    raw=slurm_query(['sacct','-nP','-X','-j',job,
+        '--format=JobID,State,ExitCode,User,UID,Account,QOS,Partition'],timeout=30)
     rows=[line.split('|') for line in raw.splitlines() if line.strip()]
     need(len(rows)==1 and rows[0][0]==job and rows[0][3:]==[
         'jxu957','14090','jxu957','formal-user','emergency_acd'],'actual producer accounting owner differs')
@@ -306,16 +307,7 @@ def worker_binding(claim_path,token,kind,role='detached_cpu_pair_archive'):
     _,publication=source(claim['source']['commit']);need(publication==claim['source'],'worker source publication changed')
     from reproduction.hpc3_qprobe.probe_cpu_runtime import verify as verify_cpu_runtime
     verify_cpu_runtime()  # Full dependency reads are detached too, never a55s foreground assumption.
-    if role=='detached_cpu_final_audit_submission':
-        run,binding,_,recovery=final_producer(claim['producer']['base'],recovery_commit=claim.get('recovery_commit'))
-        need(claim.get('producer_final_cpu_recovery')==recovery,'CPU submit recovery binding changed')
-    else:run,binding,_=producer(claim['producer']['base'])
-    component='audit-controller' if role=='detached_cpu_final_audit_submission' else 'archive-'+str(claim['step'])
-    if role=='detached_cpu_pair_archive':
-        _,checkpoint=pair(Path(binding['base']),run,claim['step']);need(checkpoint==claim['pair'],'CPU pair changed')
-    need(binding==claim['producer'] and
-         claim_path==ROOT/'final-control'/run['run_id']/component/'submit-claim.json',
-         'CPU archive claim source/producer/path changed')
+    # Bind this already-claimed birth before waiting for the scheduler service.
     receipt=claim_path.parent/(kind+'-binding.json');deadline=time.monotonic()+15
     while not receipt.exists():
         need(time.monotonic()<deadline,'CPU launch outcome unknown: runner binding missing; do not replay')
@@ -323,6 +315,23 @@ def worker_binding(claim_path,token,kind,role='detached_cpu_pair_archive'):
     actual=read(receipt)
     need(actual['token']==token and actual['claim_sha256']==digest(claim_path) and
          actual['actual_process']==birth(process(os.getpid())),'only the actually bound CPU process may enter')
+    while True:
+        try:
+            if role=='detached_cpu_final_audit_submission':
+                run,binding,_,recovery=final_producer(claim['producer']['base'],recovery_commit=claim.get('recovery_commit'))
+                need(claim.get('producer_final_cpu_recovery')==recovery,'CPU submit recovery binding changed')
+            else:run,binding,_=producer(claim['producer']['base'])
+            break
+        except SlurmReadUnavailable as exc:
+            print(json.dumps(dict(phase='UNKNOWN_ACCOUNTING_WAIT',kind=kind,token=token,
+                actual_process=birth(process(os.getpid())),query_failure=exc.evidence)),flush=True)
+            time.sleep(20)
+    component='audit-controller' if role=='detached_cpu_final_audit_submission' else 'archive-'+str(claim['step'])
+    if role=='detached_cpu_pair_archive':
+        _,checkpoint=pair(Path(binding['base']),run,claim['step']);need(checkpoint==claim['pair'],'CPU pair changed')
+    need(binding==claim['producer'] and
+         claim_path==ROOT/'final-control'/run['run_id']/component/'submit-claim.json',
+         'CPU archive claim source/producer/path changed')
     return claim,claim_path.parent
 
 
@@ -581,7 +590,7 @@ def reconcile_audit(base,job,*,recovery_commit=None):
         value=read(directory/'submission.json')
         need(value.get('job',job)==job and value['returncode'] in (None,0),'cannot adopt a definite rejected submission')
     from reproduction.common8.native_allocation import fields
-    raw=subprocess.check_output(['scontrol','show','job','-d',job],text=True,timeout=30);actual=fields(raw)
+    raw=slurm_query(['scontrol','show','job','-d',job],timeout=30);actual=fields(raw)
     repository=ROOT/'source'/claim['proof'].get('native_audit_source',claim['proof']['source'])['commit']
     need(actual['JobId']==job and actual['UserId']=='jxu957(14090)' and actual['Account']=='jxu957' and
          actual['QOS']=='formal-user' and actual['Partition']=='emergency_acd' and actual['JobName']=='qprobe-final200audit' and
@@ -590,12 +599,12 @@ def reconcile_audit(base,job,*,recovery_commit=None):
          actual['TresPerNode'] in ('gres:gpu:4','gres:gpu:h100:4','gres/gpu:4') and
          actual['JobState'] in ('PENDING','RUNNING','COMPLETING','COMPLETED') and
          actual['NodeList'] not in ('ACD1-31','ACD1-67'),'actual final audit job does not match the one original intent')
-    queue=subprocess.check_output(['squeue','-h','-u','jxu957','-o','%i|%128j'],text=True,timeout=30)
+    queue=slurm_query(['squeue','-h','-u','jxu957','-o','%i|%128j'],timeout=30)
     matching={job}
     for line in queue.splitlines():
         other,name=(value.strip() for value in line.split('|',1))
         if name!='qprobe-final200audit' or other==job:continue
-        detail=fields(subprocess.check_output(['scontrol','show','job','-d',other],text=True,timeout=30))
+        detail=fields(slurm_query(['scontrol','show','job','-d',other],timeout=30))
         if detail.get('UserId')=='jxu957(14090)' and detail.get('WorkDir')==claim['audit_base'] and detail.get('Command')==actual['Command']:
             matching.add(other)
     need(matching=={job},'more than one actual job matches this nonce workdir/source intent; diagnose, never replay')
@@ -625,8 +634,8 @@ def inspect_audit(base,*,recovery_commit=None):
     if receipt.is_file():
         observed=read(receipt);need(observed['claim_sha256']==value['claim_sha256'],'audit receipt differs');value.update(observed)
     if value.get('job'):
-        value['actual_accounting']=subprocess.check_output(['sacct','-nP','-X','-j',value['job'],
-            '--format=JobID,State,ExitCode,UID,Account,QOS,Partition'],text=True,timeout=30)
+        value['actual_accounting']=slurm_query(['sacct','-nP','-X','-j',value['job'],
+            '--format=JobID,State,ExitCode,UID,Account,QOS,Partition'],timeout=30)
     value['cpu_controller']=cpu
     return value
 

@@ -134,8 +134,11 @@ def aggregate(outers):
 def accepted_prefix(raw,parts):
     folder=raw.DIRECTORY/'accepted';s=folder.lstat()
     need(folder.resolve()==folder and stat.S_ISDIR(s.st_mode) and s.st_uid==ctl.OWNER,'unsafe accepted receipt directory')
-    with os.scandir(folder) as entries:
-        paths=sorted(Path(e.path) for e in entries if e.name.endswith('.json'))
+    if hasattr(raw,'accepted_paths'):
+        paths=raw.accepted_paths()
+    else:
+        with os.scandir(folder) as entries:
+            paths=sorted(Path(e.path) for e in entries if e.name.endswith('.json'))
     need(paths and [p.name for p in paths]==['%06d.json'%i for i in range(1,len(paths)+1)],
          'accepted receipt namespace is not an exact contiguous attempt prefix')
     tasks=raw.actual_tasks(parts);need(len(tasks)>=len(paths),'accepted prefix extends beyond actual normal-return attempts')
@@ -149,19 +152,22 @@ def accepted_prefix(raw,parts):
     return values,tasks
 
 
-def summarize(commit,*,max_outer=None):
+def summarize(commit,*,max_outer=None,raw_recovery_commit=None):
     ctl.owner();ctl.caps()
     need(sys.dont_write_bytecode and os.environ.get('PYTHONDONTWRITEBYTECODE')=='1','bytecode writes must be disabled')
     repository,source=ctl.source(commit)
     need(Path(__file__).resolve()==repository/'reproduction/hpc3_qprobe/summarize_sigma3_progress.py' and
          os.environ.get('QPROBE_SOURCE')==str(repository),'summary must load its own published immutable source')
-    raw,raw_source=reader.load_fixed(RAW,'raw_audit_followthrough_sigma3','ctl')
-    _,verified=raw.validate(RAW);need(verified==raw_source and raw.BASE==BASE,'fixed RAW0cca module source/scope differs')
+    raw_pin=raw_recovery_commit or RAW
+    raw,raw_source=reader.load_fixed(raw_pin,'recover_sigma3_raw49' if raw_recovery_commit else 'raw_audit_followthrough_sigma3','ctl')
+    _,verified=raw.validate(raw_pin);need(verified==raw_source and raw.BASE==BASE,'actual RAW module source/scope differs')
+    recovery=raw.service().consume(raw_pin) if raw_recovery_commit else None
     claim,claim_file=reader.document(raw.DIRECTORY/'claim.json');supervisor,process_file=reader.document(raw.DIRECTORY/'process.json')
     parts=claim['parts']
     need(claim['source']==raw_source and claim['training_control_permitted'] is False and claim['goal_complete'] is False and
          len(parts)==1 and parts[0]['first']==1 and parts[0]['last']==200 and
          raw.birth_ok(supervisor) and supervisor['sid']==supervisor['pid'],'RAW original once claim/birth differs')
+    need(claim.get('recovery')==recovery,'RAW explicit recovery handoff differs')
     producer=parts[0]['producer']
     need(producer['base']==str(BASE) and producer['run_id']==RUN and producer['producer_job']==JOB and
          producer['producer_commit']==PRODUCER,'RAW original fresh producer identity differs')
@@ -180,7 +186,7 @@ def summarize(commit,*,max_outer=None):
     for proof in (claim_file,process_file,manifest):retained.remember(proof)
     outers=[];proofs=[];guards=[]
     for record,accepted_file in selected:
-        task=record['task'];folder=raw.DIRECTORY/'attempts'/task['attempt_id']
+        task=record['task'];folder=raw.task_directory(task) if raw_recovery_commit else raw.DIRECTORY/'attempts'/task['attempt_id']
         consumed=raw.consume_task(task,folder,supervisor)
         need(consumed==record,'accepted receipt differs from actual held child/output')
         output,output_file=reader.document(folder/'audit.stdout')
@@ -205,14 +211,16 @@ def summarize(commit,*,max_outer=None):
     # The original live producer may append later tasks. Only this immutable
     # bounded prefix must remain equal; a partial active ledger fails closed.
     need(raw.actual_tasks(parts)[:count]==[r[0]['task'] for r in selected],'actual guarded attempt prefix changed during summary')
-    need([raw.consume_task(r[0]['task'],raw.DIRECTORY/'attempts'/r[0]['task']['attempt_id'],supervisor) for r in selected]==
+    need([raw.consume_task(r[0]['task'],raw.task_directory(r[0]['task']) if raw_recovery_commit else
+         raw.DIRECTORY/'attempts'/r[0]['task']['attempt_id'],supervisor) for r in selected]==
          [r[0] for r in selected],'original held task/result graph changed during summary')
     retained.finish()
     return dict(status=STATUS,run_id=RUN,producer_job=JOB,producer_commit=PRODUCER,source=source,raw_source=raw_source,
         successful_outer_prefix=last,accepted_successful_outer_prefix_available=available,
         normal_return_attempts_consumed=count,fully_skipped_guard_attempts=len(guards),guards=guards,
         cumulative=aggregate(outers),recent10=aggregate(outers[-10:]),per_outer=outers,proofs=proofs,
-        raw_original_claim=claim_file,raw_original_supervisor=process_file,
+        raw_original_claim=claim_file,raw_original_supervisor=process_file,raw_recovery_commit=raw_recovery_commit,
+        raw_recovery=recovery,
         goal_complete=False,actor_model_loaded=False,generated_trajectories=0,new_updates=0,evidence_writes=0,
         scope='partial audited successful prefix only; fresh scalar/head hashes; not fresh raw/private re-decode or final200/native4 acceptance',
         checked_unix=time.time())
@@ -222,7 +230,8 @@ def main():
     for name in ctl.CAPS:os.environ[name]='1'
     os.environ.update(CUDA_VISIBLE_DEVICES='',PYTHONDONTWRITEBYTECODE='1');sys.dont_write_bytecode=True
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--commit',required=True);p.add_argument('--max-outer',type=int)
-    a=p.parse_args();print(json.dumps(summarize(a.commit,max_outer=a.max_outer),allow_nan=False),flush=True)
+    p.add_argument('--raw-recovery-commit')
+    a=p.parse_args();print(json.dumps(summarize(a.commit,max_outer=a.max_outer,raw_recovery_commit=a.raw_recovery_commit),allow_nan=False),flush=True)
 
 
 if __name__=='__main__':main()

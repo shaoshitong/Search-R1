@@ -28,6 +28,8 @@ RAW = '0cca743462da769667262417f8064084f93fc912'
 FOLLOWTHROUGH = '9c34720ecd564dfe902127d0167474d27b115cfe'
 RAW_DIRECTORY = ROOT/'observations/raw-all200-sigma3-721485-20261015'
 FOLLOWTHROUGH_DIRECTORY = ROOT/'followthrough'/JOB
+ARCHIVE5_RECOVERY_SOURCE = '09ccff26c5b764cc4c6a285c1e8f57a8e9b07726'
+SERVICE_RECOVERY_DIRECTORY = ROOT/'observations/service-outage-721485-after49-20261015'
 TEACHER_ORIGIN = ROOT.parent/'qprobe-teacher-warmup200-4gpu-jxu957-recovery718509-20261014/teacher-warmup-cache'
 TEACHER_RUNS = ('0742d8e346284d6da9656a826ce14395',)*2 + ('c3856315d3f345d7920ebf5725a083b4',)*8
 LOSS = dict(loss_mode='sigma3', mean_loss_weight=0., std_loss_weight=1., auxiliary_count_loss_weight=.1)
@@ -90,7 +92,13 @@ def producer_acceptance():
     return completed(JOB), binding
 
 
-def followthrough_route(followthrough_commit, recovery_commit=None):
+def followthrough_route(followthrough_commit, recovery_commit=None, observer_recovery_commit=None):
+    if observer_recovery_commit is not None:
+        need(re.fullmatch('[0-9a-f]{40}',observer_recovery_commit) is not None and
+             followthrough_commit==observer_recovery_commit and recovery_commit==ARCHIVE5_RECOVERY_SOURCE and
+             observer_recovery_commit not in (FOLLOWTHROUGH,ARCHIVE5_RECOVERY_SOURCE),
+             'explicit observer recovery and original archive5 source pins required')
+        return 'recover_sigma3_followthrough_service',SERVICE_RECOVERY_DIRECTORY/'followthrough-control'
     if recovery_commit is None:
         need(followthrough_commit == FOLLOWTHROUGH,'exact published sigma3 followthrough pin required')
         return 'followthrough_sigma3', FOLLOWTHROUGH_DIRECTORY
@@ -100,8 +108,8 @@ def followthrough_route(followthrough_commit, recovery_commit=None):
     return 'recover_sigma3_archive5', ROOT/'followthrough/721485-archive5-recovery-20261015'
 
 
-def followthrough_evidence(follow, publication_proof, followthrough_commit, recovery_commit=None):
-    _, expected_directory = followthrough_route(followthrough_commit,recovery_commit)
+def followthrough_evidence(follow, publication_proof, followthrough_commit, recovery_commit=None, observer_recovery_commit=None):
+    _, expected_directory = followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit)
     need(follow.BASE == BASE and follow.RUN == RUN and follow.JOB == JOB and follow.PRODUCER == PRODUCER and
          follow.DIRECTORY == expected_directory, 'followthrough scope differs')
     observed = follow.inspect()
@@ -124,7 +132,7 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit, reco
          claim.get('training_submission_permitted') is False and claim.get('actor_model_reload_permitted') is False and
          claim.get('direct_gpu_access_permitted') is False and claim.get('native_final_restore_only_submission_permitted') is True,
          'followthrough original once source/birth/intent differs')
-    recovery = follow.consume(recovery_commit) if recovery_commit is not None else None
+    recovery = follow.consume(observer_recovery_commit or recovery_commit) if recovery_commit is not None else None
     need(claim.get('recovery') == recovery,'followthrough archive5 recovery proof differs')
     returned = result.get('result') or {}
     goal_path = BASE/'logs/qprobe-final-goal-acceptance.json'
@@ -142,7 +150,9 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit, reco
     audit_base, native, native_file, accepted_file, actual = native_evidence(goal, binding)
     return audit_base, native, dict(source=publication_proof, claim=claim_file, binding=binding_file, goal=goal_file,
         accepted=accepted_file, native=native_file, accounting=actual,
-        result=result_file, process_file=process_file, process=process, archive5_recovery=recovery)
+        result=result_file, process_file=process_file, process=process,
+        archive5_recovery=recovery['legacy_archive5_recovery'] if observer_recovery_commit else recovery,
+        observer_recovery=recovery if observer_recovery_commit else None)
 
 def native_evidence(goal, binding):
     """The same actual native4/no-new-work gates for either CPU final route."""
@@ -224,9 +234,11 @@ def fresh_attempt(task, output, shared_reads=None):
                 fresh_original_files=len(proofs), original_file_proofs_sha256=canonical_sha(proofs),
                 raw_sha256=output['raw_file']['sha256'], private_trace_sha256=output['private_trace_file']['sha256'])
 
-def raw_evidence(raw):
-    need(raw.BASE == BASE and raw.DIRECTORY == RAW_DIRECTORY, 'raw scope differs')
-    observed = raw.inspect(RAW)
+def raw_evidence(raw, *, raw_commit=RAW, observer_recovery_commit=None):
+    expected=SERVICE_RECOVERY_DIRECTORY/'raw-control' if observer_recovery_commit else RAW_DIRECTORY
+    need(raw.BASE == BASE and raw.DIRECTORY == expected and
+         raw_commit==(observer_recovery_commit or RAW), 'raw scope/source differs')
+    observed = raw.inspect(raw_commit)
     need(observed.get('status') == raw.STATUS and observed.get('actual_live_birth') is False and
          observed.get('actual_child_live_birth') is False, 'actual all200 raw CPU audit not terminal/pass')
     final, final_file = document(raw.DIRECTORY/'result.json')
@@ -235,13 +247,13 @@ def raw_evidence(raw):
     tasks = raw.actual_tasks(claim['parts'])
     need(final['status'] == raw.STATUS and final['process'] == process and
          final['claim_sha256'] == claim_file['sha256'] and final['source'] == claim['source'] and
-         final['source']['commit'] == RAW and birth_ok(process) and process['sid'] == process['pid'] and
+         final['source']['commit'] == raw_commit and birth_ok(process) and process['sid'] == process['pid'] and
          [t['step'] for t in tasks if t['complete_outer']] == list(range(1, 201)) and
          [r['task'] for r in final['records']] == tasks and final['normal_return_attempts'] == len(tasks) and
          final['successful_formal_outers'] == list(range(1, 201)), 'all normal-return raw attempt set differs')
     consumed = []; originals = []; shared_reads = SharedReads()
     for task in tasks:
-        directory = raw.DIRECTORY/'attempts'/task['attempt_id']
+        directory = raw.task_directory(task) if observer_recovery_commit else raw.DIRECTORY/'attempts'/task['attempt_id']
         record = raw.consume_task(task, directory, process)
         consumed.append(record)
         output, output_file = document(directory/'audit.stdout')
@@ -398,10 +410,11 @@ def validate_archive_documents(claim, runner, task_binding, result, task, *,
         task_result_sha256=result['task_result_sha256'], actual_runner=parent, actual_child=child)
 
 
-def held_archive_evidence(run, producer, followthrough, follow_source, follow_process):
+def held_archive_evidence(run, producer, followthrough, follow_source, follow_process, *, observer_recovery_commit=None):
     """Consume existing held children; never create or replay an intent."""
     retained = SharedReads(); results = {}
     components = ROOT/'final-control'/RUN
+    inherited=followthrough.service().inherited()['existing_archive_claims'] if observer_recovery_commit else {}
     for step in (5,50,100,150,200,None):
         folder = components/('audit-controller' if step is None else 'archive-'+str(step))
         values = []
@@ -409,8 +422,18 @@ def held_archive_evidence(run, producer, followthrough, follow_source, follow_pr
             value, proof = document(folder/name)
             retained.remember(proof); values.append(value)
         claim, runner, child, result, task = values
+        publication_for_claim=follow_source;controllers=[follow_process]
+        if str(step) in inherited:
+            previous=inherited[str(step)]
+            need(values[0]['source']==previous['source'] and
+                 ctl.digest(folder/'submit-claim.json')==previous['sha256'] and
+                 str(folder/'submit-claim.json')==previous['path'],
+                 'original archive claim changed during observer recovery')
+            _,publication_for_claim=publication(previous['source']['commit'])
+            need(publication_for_claim==previous['source'],'original archive source publication differs')
+            controllers=[previous['controller']]
         measured = validate_archive_documents(claim,runner,child,result,task,step=step,
-            binding=producer,publication=follow_source,allowed_controllers=[follow_process],
+            binding=producer,publication=publication_for_claim,allowed_controllers=controllers,
             alive=ctl.live,final_submit=step is None)
         need(measured['ready'] is True,'held archive/submit supervisor has not actually finished')
         if step is not None:
@@ -493,8 +516,8 @@ def initial_head_evidence(run):
                 fresh_actor_outer=0,loss=LOSS,actor_model_weights_loaded=False,head_checkpoint_loaded=True)
 
 
-def native_source_gate(run, native, audit_run, source_document, followthrough_commit, recovery_commit=None):
-    followthrough_route(followthrough_commit,recovery_commit)
+def native_source_gate(run, native, audit_run, source_document, followthrough_commit, recovery_commit=None, observer_recovery_commit=None):
+    followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit)
     need(
          native['audit_commit'] == audit_run['source_commit'] == followthrough_commit and
          audit_run['run_id'] == RUN and audit_run['final_restore_audit']['audit_id'] == native['audit_id'],
@@ -516,19 +539,19 @@ def fresh_goal_gate(fresh):
          fresh['actual_training_parts'][0]['source_commit'] == PRODUCER,'fresh complete sigma3 history differs')
 
 
-def verify(commit, *, followthrough_commit, recovery_commit=None):
+def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recovery_commit=None):
     need(os.getuid() == OWNER and os.environ.get('CUDA_VISIBLE_DEVICES') == '' and
          os.environ.get('PYTHONDONTWRITEBYTECODE') == '1' and sys.dont_write_bytecode and
          all(os.environ.get(k) == '1' for k in CAPS),'actual CPU owner/caps/no-bytecode required')
     run, early = early_history()  # Before Torch/NumPy, publication or large I/O.
-    filename, _ = followthrough_route(followthrough_commit,recovery_commit)
+    filename, _ = followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit)
     producer_accounting, producer = producer_acceptance()
     repository, own_source = publication(commit)
     need(Path(__file__).resolve() == repository/'reproduction/hpc3_qprobe/independent_goal_acceptance_sigma3.py' and
          os.environ.get('QPROBE_SOURCE') == str(repository),'loaded independent immutable source differs')
     follow, follow_source = load_fixed(followthrough_commit,filename,'control')
-    audit_base, native, follow_proof = followthrough_evidence(follow,follow_source,followthrough_commit,recovery_commit)
-    held, held_anchors = held_archive_evidence(run,producer,follow,follow_source,follow_proof['process'])
+    audit_base, native, follow_proof = followthrough_evidence(follow,follow_source,followthrough_commit,recovery_commit,observer_recovery_commit)
+    held, held_anchors = held_archive_evidence(run,producer,follow,follow_source,follow_proof['process'],observer_recovery_commit=observer_recovery_commit)
     submitted = held['native_submit']['actual_native_submission']
     need(submitted['job'] == native['slurm_job_id'] and submitted['audit_base'] == str(audit_base),
          'actual native submit/restore identity differs')
@@ -539,7 +562,7 @@ def verify(commit, *, followthrough_commit, recovery_commit=None):
     allocation, _ = document(audit_base/'logs/native-allocation-admission.json')
     audit_run, audit_manifest = document(audit_base/'logs/run-manifest.json')
     source_document, _ = document(Path(follow_source['publication_path']))
-    native_source_gate(run,native,audit_run,source_document,followthrough_commit,recovery_commit)
+    native_source_gate(run,native,audit_run,source_document,followthrough_commit,recovery_commit,observer_recovery_commit)
     own_document, _ = document(Path(own_source['publication_path']))
     for name, sha in run['source_sha256'].items():
         if name.startswith(('verl/','search_g1/','search_r1/','reproduction/common8/')) and not Path(name).name.startswith('test_'):
@@ -568,8 +591,9 @@ def verify(commit, *, followthrough_commit, recovery_commit=None):
     for name in ('features.npy','index.jsonl'):
         item = manifest['files'][name]
         features.append(read_file(feature_root/name,expected_sha=item['sha256'],expected_bytes=item['bytes'])[1])
-    raw, raw_source = load_fixed(RAW,'raw_audit_followthrough_sigma3','ctl')
-    raw_proof, tasks = raw_evidence(raw)
+    raw_commit=observer_recovery_commit or RAW
+    raw, raw_source = load_fixed(raw_commit,'recover_sigma3_raw49' if observer_recovery_commit else 'raw_audit_followthrough_sigma3','ctl')
+    raw_proof, tasks = raw_evidence(raw,raw_commit=raw_commit,observer_recovery_commit=observer_recovery_commit)
     need(raw_proof['source'] == raw_source and len(tasks) == fresh['actual_attempts'],'raw source/all normal-return attempt count differs')
     copy = teacher_copy_evidence(run)
     teacher = teacher_evidence(repository,run)
@@ -578,14 +602,19 @@ def verify(commit, *, followthrough_commit, recovery_commit=None):
     anchors += [audit_manifest,raw_proof['result'],raw_proof['claim'],copy['receipt'],initial['ready'],initial['head']]+features+held_anchors
     for row in anchors:
         read_file(row['path'],expected_sha=row['sha256'],expected_bytes=row.get('bytes'))
-    if recovery_commit is not None:
+    if observer_recovery_commit is not None:
+        need(follow.consume(observer_recovery_commit)==follow_proof['observer_recovery'],'observer handoff changed during final conjunction')
+        legacy,_=load_fixed(recovery_commit,'recover_sigma3_archive5','control')
+        need(legacy.consume(recovery_commit)==follow_proof['archive5_recovery'],'original archive5 handoff changed')
+    elif recovery_commit is not None:
         need(follow.consume(recovery_commit) == follow_proof['archive5_recovery'],'archive5 recovery changed during final conjunction')
     after_accounting, after_producer = producer_acceptance()
     need(after_producer == producer,'producer recovery chain changed during final conjunction')
     completed(native['slurm_job_id'])
     return dict(status=STATUS,run_id=RUN,producer_job=JOB,producer_commit=PRODUCER,
         current_history=dict(first=1,last=200,fresh_official_actor=True),completed_outer=200,world_size=4,
-        source=own_source,followthrough_commit=followthrough_commit,recovery_commit=recovery_commit,producer_accounting=after_accounting,
+        source=own_source,followthrough_commit=followthrough_commit,recovery_commit=recovery_commit,
+        observer_recovery_commit=observer_recovery_commit,producer_accounting=after_accounting,
         producer_binding=producer,actual_followthrough_full_CPU_consumer=follow_proof,
         independent_all_normal_return_raw=raw_proof,authentic_teacher=teacher,independent_teacher_copy=copy,
         fresh_head=initial,fresh_full_goal=fresh,actual_archive_and_submit_held_children=held,
@@ -599,8 +628,10 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--commit',required=True);parser.add_argument('--followthrough-commit',required=True)
     parser.add_argument('--recovery-commit')
+    parser.add_argument('--observer-recovery-commit')
     args=parser.parse_args()
-    print(__import__('json').dumps(verify(args.commit,followthrough_commit=args.followthrough_commit,recovery_commit=args.recovery_commit),allow_nan=False),flush=True)
+    print(__import__('json').dumps(verify(args.commit,followthrough_commit=args.followthrough_commit,
+        recovery_commit=args.recovery_commit,observer_recovery_commit=args.observer_recovery_commit),allow_nan=False),flush=True)
 
 
 if __name__ == '__main__':main()

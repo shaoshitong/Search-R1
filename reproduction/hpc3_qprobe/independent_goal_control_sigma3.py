@@ -21,12 +21,14 @@ HELD_STATUS='ACTUAL_HELD_INDEPENDENT_SIGMA3_FINAL200_CONSUMER_COMPLETED0'
 RAW_STATUS='ACTUAL_RAW_ALL200_AND_ALL_NORMAL_RETURN_ATTEMPTS_PASS'
 
 
-def scope(recovery_commit=None):
+def scope(recovery_commit=None,observer_recovery_commit=None):
+    if observer_recovery_commit is not None:return DIRECTORY.with_name(DIRECTORY.name+'-service-recovery')
     return DIRECTORY if recovery_commit is None else DIRECTORY.with_name(DIRECTORY.name+'-archive5-recovery')
 
 
-def recovery_args(recovery_commit):
-    return [] if recovery_commit is None else ['--recovery-commit',recovery_commit]
+def recovery_args(recovery_commit,observer_recovery_commit=None):
+    args=[] if recovery_commit is None else ['--recovery-commit',recovery_commit]
+    return args+([] if observer_recovery_commit is None else ['--observer-recovery-commit',observer_recovery_commit])
 
 
 def caps():
@@ -46,11 +48,11 @@ def source_header(commit):
     return dict(commit=commit,publication_path=record['path'],publication_sha256=record['sha256'])
 
 
-def ready(followthrough_commit, recovery_commit=None):
+def ready(followthrough_commit, recovery_commit=None,observer_recovery_commit=None):
     _,history=reader.early_history()  # No source traversal or scope before200.
-    filename,folder=reader.followthrough_route(followthrough_commit,recovery_commit)
+    filename,folder=reader.followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit)
     accounting,binding=reader.producer_acceptance()
-    source=source_header(followthrough_commit);raw_source=source_header(reader.RAW)
+    source=source_header(followthrough_commit);raw_source=source_header(observer_recovery_commit or reader.RAW)
     follow,follow_file=reader.document(folder/'result.json');follow_process,_=reader.document(folder/'process.json')
     follow_claim,_=reader.document(folder/'claim.json');consumer,consumer_file=reader.document(folder/'final-consumer-binding.json')
     goal,goal_file=reader.document(reader.BASE/'logs/qprobe-final-goal-acceptance.json')
@@ -70,31 +72,41 @@ def ready(followthrough_commit, recovery_commit=None):
         goal.get('update201_performed') is False,'sigma3 followthrough lacks its actual terminal CPU return')
     recovery=None
     if recovery_commit is not None:
-        recovered,_=reader.load_fixed(recovery_commit,filename,'control')
-        recovery=recovered.consume(recovery_commit)
+        recovered,_=reader.load_fixed(observer_recovery_commit or recovery_commit,filename,'control')
+        recovery=recovered.consume(observer_recovery_commit or recovery_commit)
     ctl.need(follow_claim.get('recovery')==recovery,'sigma3 archive5 recovery intent differs')
     audit_base,native,_,_,_=reader.native_evidence(goal,consumer)
-    result,result_file=reader.document(reader.RAW_DIRECTORY/'result.json')
-    process,process_file=reader.document(reader.RAW_DIRECTORY/'process.json')
-    claim,claim_file=reader.document(reader.RAW_DIRECTORY/'claim.json')
+    raw_directory=reader.SERVICE_RECOVERY_DIRECTORY/'raw-control' if observer_recovery_commit else reader.RAW_DIRECTORY
+    if observer_recovery_commit:
+        raw,_=reader.load_fixed(observer_recovery_commit,'recover_sigma3_raw49','ctl')
+        observed=raw.inspect(observer_recovery_commit)
+        ctl.need(observed['status']==RAW_STATUS and not observed['actual_live_birth'] and
+            not observed['actual_child_live_birth'] and observed['recovery']==recovery,
+            'service-recovered RAW is not the same actual terminal handoff')
+    result,result_file=reader.document(raw_directory/'result.json')
+    process,process_file=reader.document(raw_directory/'process.json')
+    claim,claim_file=reader.document(raw_directory/'claim.json')
     ctl.need(result['status']==RAW_STATUS and result['source']==claim['source']==raw_source and
         reader.birth_ok(process) and process['pid']==process['sid'] and result['process']==process and
         result['claim_sha256']==claim_file['sha256'] and not ctl.live(process) and
         result['successful_formal_outers']==list(range(1,201)) and result['normal_return_attempts']>=200,
         'all200 raw consumer is not actual terminal PASS')
-    return dict(history=history,producer_binding=binding,producer_accounting=accounting,recovery_commit=recovery_commit,archive5_recovery=recovery,
+    return dict(history=history,producer_binding=binding,producer_accounting=accounting,recovery_commit=recovery_commit,
+        observer_recovery_commit=observer_recovery_commit,observer_recovery=recovery if observer_recovery_commit else None,
+        archive5_recovery=recovery['legacy_archive5_recovery'] if observer_recovery_commit else recovery,
         followthrough_source=source,followthrough_result_sha256=follow_file['sha256'],
         goal_sha256=goal_file['sha256'],followthrough_binding_sha256=consumer_file['sha256'],
         raw_source=raw_source,raw_result_sha256=result_file['sha256'],raw_claim_sha256=claim_file['sha256'],
         raw_process=process_file,audit_base=str(audit_base),native_job=native['slurm_job_id'],checked_unix=time.time())
 
 
-def accept_output(proof,commit,followthrough_commit,admission,recovery_commit=None):
-    reader.followthrough_route(followthrough_commit,recovery_commit)
+def accept_output(proof,commit,followthrough_commit,admission,recovery_commit=None,observer_recovery_commit=None):
+    reader.followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit)
     ctl.need(proof.get('status')==reader.STATUS and proof.get('run_id')==reader.RUN and
         proof.get('producer_job')==reader.JOB and proof.get('producer_commit')==reader.PRODUCER and
         proof.get('source',{}).get('commit')==commit and proof.get('followthrough_commit')==followthrough_commit and
-        proof.get('recovery_commit')==recovery_commit and proof.get('completed_outer')==200 and proof.get('world_size')==4 and
+        proof.get('recovery_commit')==recovery_commit and proof.get('observer_recovery_commit')==observer_recovery_commit and
+        proof.get('completed_outer')==200 and proof.get('world_size')==4 and
         proof.get('current_history')==dict(first=1,last=200,fresh_official_actor=True) and
         proof.get('actual_native_two_readbacks_reconsumed') is True and proof.get('update201_performed') is False and
         proof.get('goal_complete') is False and proof.get('actor_model_loaded') is False and
@@ -113,16 +125,17 @@ def accept_output(proof,commit,followthrough_commit,admission,recovery_commit=No
         raw.get('result',{}).get('sha256')==admission['raw_result_sha256'] and
         raw.get('claim',{}).get('sha256')==admission['raw_claim_sha256'] and
         follow.get('archive5_recovery')==admission.get('archive5_recovery') and
-        admission.get('recovery_commit')==recovery_commit,
+        follow.get('observer_recovery')==admission.get('observer_recovery') and
+        admission.get('recovery_commit')==recovery_commit and admission.get('observer_recovery_commit')==observer_recovery_commit,
         'independent output changed its admitted followthrough/raw/source boundary')
 
 
-def consume(commit,*,followthrough_commit,recovery_commit=None):
-    directory=scope(recovery_commit)
+def consume(commit,*,followthrough_commit,recovery_commit=None,observer_recovery_commit=None):
+    directory=scope(recovery_commit,observer_recovery_commit)
     _,publication=ctl.source(commit)
     claim=ctl.read(directory/'claim.json');process=ctl.read(directory/'process.json')
     child=ctl.read(directory/'child.json');result=ctl.read(directory/'result.json')
-    ctl.need(claim.get('followthrough_commit')==followthrough_commit and claim.get('recovery_commit')==recovery_commit and
+    ctl.need(claim.get('followthrough_commit')==followthrough_commit and claim.get('recovery_commit')==recovery_commit and claim.get('observer_recovery_commit')==observer_recovery_commit and
         claim['source']==publication==result['source'] and claim['source']['commit']==commit and
         result['claim_sha256']==ctl.digest(directory/'claim.json') and result['process']==process and
         result['child']==child and reader.birth_ok(process) and reader.birth_ok(child) and
@@ -139,46 +152,46 @@ def consume(commit,*,followthrough_commit,recovery_commit=None):
     ctl.need(result['stderr']['bytes']==0 and result['stdout']['bytes']<=32*2**20,
              'held sigma3 child errors or unbounded output')
     proof=ctl.read(directory/'consumer.stdout')
-    accept_output(proof,commit,followthrough_commit,claim['admission'],recovery_commit)
+    accept_output(proof,commit,followthrough_commit,claim['admission'],recovery_commit,observer_recovery_commit)
     return dict(status=HELD_STATUS,result_path=str(directory/'result.json'),result_sha256=ctl.digest(directory/'result.json'),
         stdout_path=str(directory/'consumer.stdout'),stdout_sha256=result['stdout']['sha256'],
         actual_child_exit_code=0,completed_outer=200,world_size=4,goal_complete=False,
         scope='root reviews complete stdout before marking the goal complete')
 
 
-def inspect(commit,*,followthrough_commit,recovery_commit=None):
-    directory=scope(recovery_commit)
+def inspect(commit,*,followthrough_commit,recovery_commit=None,observer_recovery_commit=None):
+    directory=scope(recovery_commit,observer_recovery_commit)
     ctl.owner()
     if not directory.exists():return dict(status='NOT_STARTED',directory=str(directory),goal_complete=False)
     ctl.need(directory.resolve()==directory and directory.stat().st_uid==ctl.OWNER,'unsafe final sigma3 observer directory')
     claim=ctl.read(directory/'claim.json')
-    ctl.need(claim['source']['commit']==commit and claim.get('followthrough_commit')==followthrough_commit and claim.get('recovery_commit')==recovery_commit,
+    ctl.need(claim['source']['commit']==commit and claim.get('followthrough_commit')==followthrough_commit and claim.get('recovery_commit')==recovery_commit and claim.get('observer_recovery_commit')==observer_recovery_commit,
              'existing final sigma3 scope has another source; inspect original, never replay')
     process=ctl.read(directory/'process.json') if (directory/'process.json').exists() else None
     child=ctl.read(directory/'child.json') if (directory/'child.json').exists() else None
     live=process is not None and ctl.live(process)
     result=ctl.read(directory/'result.json') if (directory/'result.json').exists() else None
     if result is not None and result['supervisor_exit_code']==0 and not live:
-        return consume(commit,followthrough_commit=followthrough_commit,recovery_commit=recovery_commit)
+        return consume(commit,followthrough_commit=followthrough_commit,recovery_commit=recovery_commit,observer_recovery_commit=observer_recovery_commit)
     return dict(status='ACTUAL_SIGMA3_FINAL_CPU_LIVE' if live else
         'ACTUAL_SIGMA3_FINAL_CPU_FAILED_INSPECT' if result is not None else 'UNKNOWN_NO_REPLAY',
         process=process,child=child,actual_supervisor_live=live,actual_child_live=bool(child and ctl.live(child)),
         result=result,goal_complete=False,checked_unix=time.time())
 
 
-def start(commit,*,followthrough_commit,recovery_commit=None):
-    directory=scope(recovery_commit)
+def start(commit,*,followthrough_commit,recovery_commit=None,observer_recovery_commit=None):
+    directory=scope(recovery_commit,observer_recovery_commit)
     caps()
-    if directory.exists() or directory.is_symlink():return inspect(commit,followthrough_commit=followthrough_commit,recovery_commit=recovery_commit)
-    admission=ready(followthrough_commit,recovery_commit)
+    if directory.exists() or directory.is_symlink():return inspect(commit,followthrough_commit=followthrough_commit,recovery_commit=recovery_commit,observer_recovery_commit=observer_recovery_commit)
+    admission=ready(followthrough_commit,recovery_commit,observer_recovery_commit)
     repository,publication=ctl.source(commit);os.environ['QPROBE_SOURCE']=str(repository)
     ctl.need(directory.parent.is_dir() and directory.parent.resolve()==directory.parent and
         directory.parent.stat().st_uid==ctl.OWNER,'owned observation parent must already exist')
     try:directory.mkdir(mode=0o770)
-    except FileExistsError:return inspect(commit,followthrough_commit=followthrough_commit,recovery_commit=recovery_commit)
-    command=[sys.executable,'-m',MODULE,'supervise','--commit',commit,'--followthrough-commit',followthrough_commit]+recovery_args(recovery_commit)
+    except FileExistsError:return inspect(commit,followthrough_commit=followthrough_commit,recovery_commit=recovery_commit,observer_recovery_commit=observer_recovery_commit)
+    command=[sys.executable,'-m',MODULE,'supervise','--commit',commit,'--followthrough-commit',followthrough_commit]+recovery_args(recovery_commit,observer_recovery_commit)
     ctl.publish(directory/'claim.json',dict(source=publication,admission=admission,command=command,
-        cwd=str(repository),created_unix=time.time(),followthrough_commit=followthrough_commit,recovery_commit=recovery_commit,training_control_permitted=False))
+        cwd=str(repository),created_unix=time.time(),followthrough_commit=followthrough_commit,recovery_commit=recovery_commit,observer_recovery_commit=observer_recovery_commit,training_control_permitted=False))
     with (directory/'supervisor.stdout').open('xb') as out,(directory/'supervisor.stderr').open('xb') as err:
         child=subprocess.Popen(command,cwd=str(repository),stdout=out,stderr=err,start_new_session=True)
     birth=ctl.birth(ctl.process(child.pid))
@@ -187,8 +200,8 @@ def start(commit,*,followthrough_commit,recovery_commit=None):
     return dict(status='ACTUAL_SIGMA3_FINAL_CPU_STARTED_NOT_ACCEPTED',process=birth,goal_complete=False)
 
 
-def supervise(commit,*,followthrough_commit,recovery_commit=None):
-    directory=scope(recovery_commit)
+def supervise(commit,*,followthrough_commit,recovery_commit=None,observer_recovery_commit=None):
+    directory=scope(recovery_commit,observer_recovery_commit)
     caps();repository,publication=ctl.source(commit);os.environ['QPROBE_SOURCE']=str(repository)
     own=ctl.birth(ctl.process(os.getpid()));started=time.time();process=None;child=None;child_code=None;error=None;code=1
     try:
@@ -198,9 +211,9 @@ def supervise(commit,*,followthrough_commit,recovery_commit=None):
             time.sleep(.05)
         claim=ctl.read(directory/'claim.json')
         ctl.need(ctl.read(directory/'process.json')==own and claim['source']==publication and
-            claim['cwd']==str(repository) and claim.get('followthrough_commit')==followthrough_commit and claim.get('recovery_commit')==recovery_commit,
+            claim['cwd']==str(repository) and claim.get('followthrough_commit')==followthrough_commit and claim.get('recovery_commit')==recovery_commit and claim.get('observer_recovery_commit')==observer_recovery_commit,
             'actual sigma3 supervisor source/birth differs')
-        command=[sys.executable,'-m',CONSUMER,'--commit',commit,'--followthrough-commit',followthrough_commit]+recovery_args(recovery_commit)
+        command=[sys.executable,'-m',CONSUMER,'--commit',commit,'--followthrough-commit',followthrough_commit]+recovery_args(recovery_commit,observer_recovery_commit)
         with (directory/'consumer.stdout').open('xb') as out,(directory/'consumer.stderr').open('xb') as err:
             process=subprocess.Popen(command,cwd=str(repository),stdout=out,stderr=err)
             child=ctl.birth(ctl.process(process.pid))
@@ -212,7 +225,7 @@ def supervise(commit,*,followthrough_commit,recovery_commit=None):
         ctl.need(child_code==0 and not ctl.live(child),'actual sigma3 consumer did not return0')
         ctl.need((directory/'consumer.stderr').stat().st_size==0,'actual sigma3 stderr is nonempty')
         ctl.need((directory/'consumer.stdout').stat().st_size<=32*2**20,'unbounded sigma3 consumer stdout')
-        accept_output(ctl.read(directory/'consumer.stdout'),commit,followthrough_commit,claim['admission'],recovery_commit);code=0
+        accept_output(ctl.read(directory/'consumer.stdout'),commit,followthrough_commit,claim['admission'],recovery_commit,observer_recovery_commit);code=0
     except BaseException as exc:
         error=repr(exc)
         import traceback
@@ -233,7 +246,7 @@ def supervise(commit,*,followthrough_commit,recovery_commit=None):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('mode',choices=('start','supervise','inspect'));parser.add_argument('--commit',required=True)
-    parser.add_argument('--followthrough-commit',required=True);parser.add_argument('--recovery-commit');args=parser.parse_args();caps()
-    if args.mode=='supervise':sys.exit(supervise(args.commit,followthrough_commit=args.followthrough_commit,recovery_commit=args.recovery_commit))
-    print(json.dumps(start(args.commit,followthrough_commit=args.followthrough_commit,recovery_commit=args.recovery_commit) if args.mode=='start' else
-        inspect(args.commit,followthrough_commit=args.followthrough_commit,recovery_commit=args.recovery_commit),allow_nan=False),flush=True)
+    parser.add_argument('--followthrough-commit',required=True);parser.add_argument('--recovery-commit');parser.add_argument('--observer-recovery-commit');args=parser.parse_args();caps()
+    if args.mode=='supervise':sys.exit(supervise(args.commit,followthrough_commit=args.followthrough_commit,recovery_commit=args.recovery_commit,observer_recovery_commit=args.observer_recovery_commit))
+    print(json.dumps(start(args.commit,followthrough_commit=args.followthrough_commit,recovery_commit=args.recovery_commit,observer_recovery_commit=args.observer_recovery_commit) if args.mode=='start' else
+        inspect(args.commit,followthrough_commit=args.followthrough_commit,recovery_commit=args.recovery_commit,observer_recovery_commit=args.observer_recovery_commit),allow_nan=False),flush=True)

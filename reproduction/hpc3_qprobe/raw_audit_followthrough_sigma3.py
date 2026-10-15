@@ -16,6 +16,7 @@ import time
 import uuid
 
 from reproduction.hpc3_qprobe import final_control as ctl
+from reproduction.hpc3_qprobe.slurm_readonly import SlurmReadUnavailable
 
 BASE = ctl.ROOT.parent/'qprobe-teacher-warmup200-sigma3-20261015'
 DIRECTORY = ctl.ROOT/'observations/raw-all200-sigma3-721485-20261015'
@@ -166,7 +167,7 @@ def accept_result(task, result, output, supervisor, child_live):
 def consume_task(task, directory, supervisor):
     claim=ctl.read(directory/'claim.json');result=ctl.read(directory/'result.json')
     ctl.need(claim['task']==task and result['task']==task and result['claim_sha256']==ctl.digest(directory/'claim.json') and
-             result['source']==claim['source']==ctl.read(DIRECTORY/'claim.json')['source'] and
+             result['source']==claim['source']==ctl.read(directory.parent.parent/'claim.json')['source'] and
              result['completed_unix']>=result['started_unix']>=claim['created_unix'],
              'task claim/result/source differs')
     child=ctl.read(directory/'child.json')
@@ -223,18 +224,26 @@ def execute_task(repository, publication, task, supervisor):
     return consume_task(task,directory,supervisor)
 
 
-def worker(commit):
+def worker(commit, *, initial_records=None):
     repository,publication=validate(commit);claim=ctl.read(DIRECTORY/'claim.json')
     supervisor=ctl.birth(ctl.process(os.getpid()))
     ctl.need(birth_ok(supervisor) and supervisor['sid']==supervisor['pid'],'detached audit birth differs')
     ctl.publish(DIRECTORY/'process.json',supervisor)
-    records=[];started=time.time()
+    records=list(initial_records or []);started=time.time();plan_checked=False
     try:
-        ctl.need(claim['source']==publication and claim['parts']==plan(),'actual once audit source/plan differs')
+        ctl.need(claim['source']==publication,'actual once audit source differs')
         while True:
-            try:tasks=actual_tasks(claim['parts'])
+            try:
+                if not plan_checked:
+                    ctl.need(claim['parts']==plan(),'actual once audit plan differs')
+                    plan_checked=True
+                tasks=actual_tasks(claim['parts'])
             except ChangingObservation:
                 state(dict(phase='ACTIVE_LEDGER_READ_WAIT',process=supervisor,completed_attempt_audits=len(records)))
+                time.sleep(20);continue
+            except SlurmReadUnavailable as exc:
+                state(dict(phase='UNKNOWN_ACCOUNTING_WAIT',process=supervisor,
+                    completed_attempt_audits=len(records),query_failure=exc.evidence))
                 time.sleep(20);continue
             ctl.need(len(tasks)>=len(records) and [r['task'] for r in records]==tasks[:len(records)],
                      'previous actual attempt prefix changed')
@@ -260,7 +269,11 @@ def worker(commit):
                             formal_attempt_audits=formal,goal_complete=False,
                             scope='all200 canonical raw and every normal-return actor trace; final native4/archive/score acceptance separate')
                 ctl.publish(DIRECTORY/'result.json',result);return result
-            _,_,accounting=ctl.producer(BASE)
+            try:_,_,accounting=ctl.producer(BASE)
+            except SlurmReadUnavailable as exc:
+                state(dict(phase='UNKNOWN_ACCOUNTING_WAIT',process=supervisor,
+                    completed_attempt_audits=len(records),query_failure=exc.evidence))
+                time.sleep(20);continue
             if '|RUNNING|' not in accounting and '|COMPLETING|' not in accounting:
                 raise ValueError('Producer terminal before exact200 raw/normal-return attempt audit')
             state(dict(phase='ACTUAL_PRODUCER_OR_HEAD_PUBLICATION_WAIT',process=supervisor,

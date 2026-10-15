@@ -14,6 +14,7 @@ import stat
 import subprocess
 import sys
 import time
+from reproduction.hpc3_qprobe.slurm_readonly import query as slurm_query, SlurmReadUnavailable
 
 from reproduction.hpc3_qprobe import final_control as control
 
@@ -120,8 +121,8 @@ def fixed_binding():
 
 
 def accounting(job=JOB,*,allow_missing=False):
-    raw=subprocess.check_output(['sacct','-nP','-X','-j',job,
-        '--format=JobID,State,ExitCode,User,UID,Account,QOS,Partition'],text=True,timeout=30)
+    raw=slurm_query(['sacct','-nP','-X','-j',job,
+        '--format=JobID,State,ExitCode,User,UID,Account,QOS,Partition'],timeout=30)
     rows=[line.split('|') for line in raw.splitlines() if line.strip()]
     if not rows and allow_missing:return None
     need(len(rows)==1 and rows[0][0]==job and rows[0][3:]==
@@ -131,7 +132,7 @@ def accounting(job=JOB,*,allow_missing=False):
 
 def queued_detail():
     from reproduction.common8.native_allocation import fields
-    raw=subprocess.check_output(['scontrol','show','job',JOB],text=True,timeout=30)
+    raw=slurm_query(['scontrol','show','job',JOB],timeout=30)
     row=fields(raw)
     need(row['JobId']==JOB and row['UserId']=='jxu957(14090)' and row['Account']=='jxu957' and
          row['QOS']=='formal-user' and row['Partition']=='emergency_acd' and row['NumCPUs']=='48' and
@@ -146,7 +147,7 @@ def final_registration_wait(audit):
     """Bounded wait for known sbatch job's DB row, never fabricate its state."""
     job=audit['job'];claim=read(ROOT/'final-control'/RUN/'final-audit/submit-claim.json')
     from reproduction.common8.native_allocation import fields
-    raw=subprocess.check_output(['scontrol','show','job','-d',job],text=True,timeout=30);actual=fields(raw)
+    raw=slurm_query(['scontrol','show','job','-d',job],timeout=30);actual=fields(raw)
     need(claim['audit_base']==audit['audit_base'] and actual['JobId']==job and
          actual['UserId']=='jxu957(14090)' and actual['Account']=='jxu957' and actual['QOS']=='formal-user' and
          actual['Partition']=='emergency_acd' and actual['WorkDir']==claim['audit_base'] and
@@ -278,7 +279,7 @@ def one_tick(commit,verified_archives):
         full_objective_accepted=True)
 
 
-def supervise(commit):
+def supervise(commit, *, initial_verified_archives=None):
     code=0;error=None;result=None
     birth=control.birth(control.process(os.getpid()))
     try:
@@ -287,12 +288,19 @@ def supervise(commit):
             need(time.monotonic()<deadline,'PARENT_PROCESS_BINDING_MISSING_INSPECT_NO_REPLAY')
             time.sleep(.05)
         claim=read(DIRECTORY/'claim.json');record=read(DIRECTORY/'process.json')
-        need(birth==record['actual_process'] and claim['binding']==fixed_binding() and
-             claim['source']['commit']==commit and claim['cwd']==str(Path.cwd().resolve()),'ACTUAL_SUPERVISOR_BINDING_DIFFERS')
-        control.source(commit);verified={}
+        need(birth==record['actual_process'] and claim['source']['commit']==commit and
+             claim['cwd']==str(Path.cwd().resolve()),'ACTUAL_SUPERVISOR_BINDING_DIFFERS')
+        control.source(commit);verified=dict(initial_verified_archives or {})
         control.publish(DIRECTORY/'started.json',dict(actual_process=birth,checked_unix=time.time()))
         while True:
-            result=one_tick(commit,verified);publish_state(result)
+            try:
+                need(claim['binding']==fixed_binding(),'ACTUAL_SUPERVISOR_PRODUCER_BINDING_DIFFERS')
+                result=one_tick(commit,verified)
+            except SlurmReadUnavailable as exc:
+                publish_state(dict(phase='UNKNOWN_ACCOUNTING_WAIT',query_failure=exc.evidence,
+                    previous_actual_state=result,full_objective_accepted=False))
+                time.sleep(60);continue
+            publish_state(result)
             if result.get('full_objective_accepted'):break
             time.sleep(60)
     except Exception as exc:

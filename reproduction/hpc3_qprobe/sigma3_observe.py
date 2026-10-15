@@ -7,6 +7,7 @@ import re
 import subprocess
 import time
 from reproduction.hpc3_qprobe.sigma3_experiment import BASE, LOSS
+from reproduction.hpc3_qprobe.slurm_readonly import query as slurm_query, SlurmReadUnavailable
 
 PRODUCER='721449'
 SOURCE='aca0e779e94ddc3fbd50e49c3d59e2e889fbcf12'
@@ -43,8 +44,14 @@ def observe():
     if os.getuid()!=14090 or BASE.resolve()!=BASE:raise ValueError('SIGMA3_OBSERVER_OWNER_OR_ROOT_DIFFERS')
     job=producer()
     out=dict(epoch=time.time(),base=str(BASE),job=job,training_mutations=0,goal_complete=False)
-    out['accounting']=subprocess.check_output(['sacct','-nP','-X','-j',job,'--format=JobID,State,ExitCode,UID,AllocTRES,NodeList'],text=True,timeout=20)
-    out['queue']=subprocess.check_output(['squeue','-h','-j',job,'-o','%i|%T|%R'],text=True,timeout=20)
+    out['scheduler_query_errors']={}
+    for key,argv in (
+        ('accounting',['sacct','-nP','-X','-j',job,'--format=JobID,State,ExitCode,UID,AllocTRES,NodeList']),
+        ('queue',['squeue','-h','-j',job,'-o','%i|%T|%R'])):
+        try:out[key]=slurm_query(argv,timeout=20)
+        except SlurmReadUnavailable as exc:
+            out[key]=None;out['scheduler_query_errors'][key]=exc.evidence
+    out['scheduler_state_known']=not out['scheduler_query_errors']
     settings=document(BASE/'preparation/sigma3-experiment.json')
     if not settings or settings['value']['head_overrides']!=LOSS:raise ValueError('SIGMA3_OBSERVED_LOSS_SETTINGS_DIFFERS')
     out['loss_settings']=settings

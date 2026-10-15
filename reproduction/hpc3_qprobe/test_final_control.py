@@ -46,7 +46,7 @@ class FinalControlTests(unittest.TestCase):
         path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value))
 
     def producer(self):
-        with patch.object(control.subprocess,'check_output',return_value=self.raw):return control.producer(self.base)
+        with patch.object(control,'slurm_query',return_value=self.raw):return control.producer(self.base)
 
     def receipt(self,step):
         path=self.base/'artifacts/question-probe/completed-pairs'/('global_step_'+str(step))/'source-receipt.json'
@@ -66,13 +66,13 @@ class FinalControlTests(unittest.TestCase):
 
     def test_actual_producer_owner_state_source_and_completed0_required(self):
         self.producer()
-        with patch.object(control.subprocess,'check_output',return_value=self.raw),self.assertRaisesRegex(ValueError,'COMPLETED0'):
+        with patch.object(control,'slurm_query',return_value=self.raw),self.assertRaisesRegex(ValueError,'COMPLETED0'):
             control.producer(self.base,complete=True)
         for raw in (self.raw.replace('RUNNING','PENDING'),self.raw.replace('14090','21930'),
                     self.raw+self.raw,self.raw.replace('RUNNING|0:0','COMPLETED|1:0')):
-            with self.subTest(raw=raw),patch.object(control.subprocess,'check_output',return_value=raw),self.assertRaises(ValueError):
+            with self.subTest(raw=raw),patch.object(control,'slurm_query',return_value=raw),self.assertRaises(ValueError):
                 control.producer(self.base)
-        with patch.object(control.subprocess,'check_output',return_value=self.raw.replace('RUNNING','COMPLETED')):
+        with patch.object(control,'slurm_query',return_value=self.raw.replace('RUNNING','COMPLETED')):
             control.producer(self.base,complete=True)
         bad=copy.deepcopy(self.run);bad['slurm_job_id']='999';self.write(self.base/'logs/run-manifest.json',bad)
         with self.assertRaises(ValueError):self.producer()
@@ -130,12 +130,12 @@ class FinalControlTests(unittest.TestCase):
 
     def test_existing_attempt_or_payload_prevents_another_process(self):
         self.receipt(5);run,binding,_=self.producer();directory=control.control_root(binding)/'archive-5';directory.mkdir()
-        with patch.object(control,'source',return_value=(self.root,{})),patch.object(control.subprocess,'check_output',return_value=self.raw), \
+        with patch.object(control,'source',return_value=(self.root,{})),patch.object(control,'slurm_query',return_value=self.raw), \
              patch.object(control.subprocess,'Popen') as popen,self.assertRaisesRegex(ValueError,'already attempted'):
             control.launch_archive(self.base,self.commit,5)
         popen.assert_not_called();directory.rmdir()
         payload=self.root/'archives'/self.run_id/'global_step_5';payload.mkdir(parents=True)
-        with patch.object(control,'source',return_value=(self.root,{})),patch.object(control.subprocess,'check_output',return_value=self.raw), \
+        with patch.object(control,'source',return_value=(self.root,{})),patch.object(control,'slurm_query',return_value=self.raw), \
              patch.object(control.subprocess,'Popen') as popen,self.assertRaisesRegex(ValueError,'payload already exists'):
             control.launch_archive(self.base,self.commit,5)
         popen.assert_not_called()
@@ -152,7 +152,7 @@ class FinalControlTests(unittest.TestCase):
             self.assertTrue(kwargs['start_new_session']);self.assertEqual(kwargs['stdin'],subprocess.DEVNULL)
             return type('Child',(),{'pid':42})()
         with patch.object(control,'source',return_value=(repository,publication)), \
-             patch.object(control.subprocess,'check_output',return_value=self.raw), \
+             patch.object(control,'slurm_query',return_value=self.raw), \
              patch.object(control,'process',side_effect=[leader,child_birth]), \
              patch.object(control.subprocess,'Popen',side_effect=start):result=control.launch_archive(self.base,self.commit,5)
         self.assertEqual(result['actual_process'],control.birth(child_birth))
@@ -204,7 +204,7 @@ class FinalControlTests(unittest.TestCase):
         payload=self.root/'archives'/self.run_id/'global_step_5';payload.mkdir(parents=True)
         (payload/'weights.partial').write_bytes(b'x'*19);(payload/'other').write_bytes(b'y'*7)
         before=sorted(str(p) for p in self.top.rglob('*'))
-        with patch.object(control.subprocess,'check_output',return_value=self.raw),patch.object(control.subprocess,'Popen') as popen:
+        with patch.object(control,'slurm_query',return_value=self.raw),patch.object(control.subprocess,'Popen') as popen:
             result=control.inspect_archive(self.base,5)
         self.assertEqual(result['actual_payload_bytes'],26);self.assertEqual(result['partial_copy_bytes'],19)
         self.assertEqual(result['status'],'LAUNCH_OUTCOME_UNKNOWN_DO_NOT_REPLAY');popen.assert_not_called()
@@ -249,7 +249,7 @@ class FinalControlTests(unittest.TestCase):
         replay.assert_not_called()
 
     def test_final_submit_never_prepares_work_when_actual_final_evidence_is_missing(self):
-        with patch.object(control,'source',return_value=(self.root,{})),patch.object(control.subprocess,'check_output',return_value=self.raw), \
+        with patch.object(control,'source',return_value=(self.root,{})),patch.object(control,'slurm_query',return_value=self.raw), \
              patch.object(control.subprocess,'run') as submit,self.assertRaisesRegex(ValueError,'COMPLETED0'):
             control.submit_audit(self.base,self.commit)
         submit.assert_not_called();self.assertFalse((self.root/'final-control').exists())
@@ -385,7 +385,7 @@ class FinalControlTests(unittest.TestCase):
             str(self.root/'source'/native/'reproduction/hpc3_qprobe/final_restore_audit.sh')+
             ' NumCPUs=48 MinMemoryNode=512G NumNodes=1 TresPerNode=gres:gpu:4 JobState=PENDING NodeList=(null)')
         with patch.object(control,'final_producer',return_value=(self.run,binding,'actual FAILED1:0',reference)), \
-                patch.object(control.subprocess,'check_output',side_effect=[detail,'']) as query, \
+                patch.object(control,'slurm_query',side_effect=[detail,'']) as query, \
                 patch.object(control.subprocess,'run') as submit:
             result=control.reconcile_audit(self.base,'67890',recovery_commit='c'*40)
             self.assertEqual(result['status'],'ACTUAL_SLURM_RECONCILED');submit.assert_not_called()
@@ -410,7 +410,7 @@ class FinalControlTests(unittest.TestCase):
         leader=dict(pid=41,start_ticks=71,sid=41,uid=control.OWNER,state='S')
         child_birth=dict(pid=42,start_ticks=72,sid=42,uid=control.OWNER,state='S')
         with patch.object(control,'source',return_value=(repository,publication)), \
-             patch.object(control.subprocess,'check_output',return_value=self.raw.replace('RUNNING','COMPLETED')), \
+             patch.object(control,'slurm_query',return_value=self.raw.replace('RUNNING','COMPLETED')), \
              patch.object(control,'process',side_effect=[leader,child_birth]), \
              patch.object(control.subprocess,'Popen',return_value=type('Child',(),{'pid':42})()) as popen, \
              patch.object(control,'final_ready') as heavy,patch.object(control,'submit_audit') as slurm:
@@ -445,18 +445,18 @@ class FinalControlTests(unittest.TestCase):
         for field,bad in [('UserId','mou176(21930)'),('WorkDir','/other'),('NumCPUs','96'),('TresPerNode','gres:gpu:8'),('NodeList','ACD1-31')]:
             changed=dict(observed);changed[field]=bad
             with patch.object(control,'producer',return_value=(self.run,binding,self.raw)), \
-                 patch.object(control.subprocess,'check_output',return_value=' '.join(k+'='+v for k,v in changed.items())), \
+                 patch.object(control,'slurm_query',return_value=' '.join(k+'='+v for k,v in changed.items())), \
                  patch.object(control.subprocess,'run') as submit,self.assertRaises(ValueError):control.reconcile_audit(self.base,'56789')
             submit.assert_not_called();self.assertFalse((directory/'reconciled-submission.json').exists())
         detail=' '.join(k+'='+v for k,v in observed.items())
         duplicate=dict(observed,JobId='56790')
         with patch.object(control,'producer',return_value=(self.run,binding,self.raw)), \
-             patch.object(control.subprocess,'check_output',side_effect=[detail,'56790|qprobe-final200audit\n',
+             patch.object(control,'slurm_query',side_effect=[detail,'56790|qprobe-final200audit\n',
                         ' '.join(k+'='+v for k,v in duplicate.items())]), \
              self.assertRaisesRegex(ValueError,'more than one actual job'):control.reconcile_audit(self.base,'56789')
         self.assertFalse((directory/'reconciled-submission.json').exists())
         with patch.object(control,'producer',return_value=(self.run,binding,self.raw)), \
-             patch.object(control.subprocess,'check_output',side_effect=[detail,'56789|qprobe-final200audit\n']), \
+             patch.object(control,'slurm_query',side_effect=[detail,'56789|qprobe-final200audit\n']), \
              patch.object(control.subprocess,'run') as submit:result=control.reconcile_audit(self.base,'56789')
         self.assertEqual(result['status'],'ACTUAL_SLURM_RECONCILED');self.assertIsNone(result['returncode']);submit.assert_not_called()
 

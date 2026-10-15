@@ -386,3 +386,13 @@ job721485在1792071362.64187实际完整完成1至40轮，四rank各800次actor 
 第40轮拟合loss1.1730874777＝CE3 0.8554528952＋归一化σMSE 0.1663975567＋0.1×CE6 1.5123704672，公式误差2.09e-8；meanMSE诊断0.1597543806仍权重0。回放8192题次、batch256、2个epoch、本次64次Adam更新。证据sigma3-progress-summary-max40-1792071463.json完整SHA 15a419e2ed2f17eb0072227e7f5f5c5cedfe2c7a0d6c849a3d1f6496b6eacf47；本地sigma3-window-comparison-through40.json同时绑定本次及第30轮汇总完整SHA。
 
 原归档follower09cc在1792071373.3764284经同一主机身份guard确认实际存活，第5轮三份完整SHA已验收，仍等待第50轮。下一次固定actor验证、完整项目存储实测和新三副本验收均在第50轮；不额外生成第40轮固定评测。目标保持ACTIVE，完整200轮、最终native51713、所有里程碑完整三副本SHA、实际native4恢复、独立最终CPU验收及no201仍待最终证明。
+
+
+## 2026-10-15 23:12 CST actual Login1 accounting outage / CPU recovery preparation
+
+Login1 Munge socket/accounting service failed at about22:45CST. Original RAW0cca supervisor1171759/start75909729 stopped after authentic held0 audits1..49 with exact sacct CalledProcessError at1792075504.6165059. Original09cc follower2688346/start76403669 stopped with exit1 at1792075543.145685 after accepted archive5. Both original terminal result/state/claim/output remain in place; samehostname/boot/PIDnamespace proves both births dead. This is distinct from prior wrongLogin2 UNKNOWN observation. Small diagnostic munge-service-diagnostic-1792075742.json binds the actual errors and deaths; service later recovered.
+
+Training721485 ACA continued untouched: at1792076968.4465215 complete1..51, four ranks each1020 Adam writes with matching scheduler/head;52started, nofatalerror. Step50 fixedvalidation/checkpoint executed but exactscore/fullarchive still pending. Typed once CPU continuation is implemented locally and68 targeted/regression tests passed; independent review ongoing, not yetpublished orstarted. OriginalRAW49/archive5/legacyrecovery evidence remains immutable; newRAW onlysuffix50onward, newfollower carries accepted5 and claims onlynew50+components. Futurefinalreader/holder requires explicit observer_recovery_commit plus original09cc recovery pin. Readonlyscheduler transport failures wait as UNKNOWN, while successful invalidowner/state/source still fail. No training restart, hotedit, extraeval, scientificchange, or newdeletion. GoalACTIVE; all200/finalnative4/fullSHA/finalheldCPU/no201 remain required.
+
+
+Independent read-only review by existing qprobe_launch_review found no remaining confirmed P0/P1 in this typed service recovery; private cross-source bindings, explicit final pins, original49/new suffix and archive5 lineage checked. Local68 tests passed. Full positive old49/new151/archive5/newnative combination still requires actual200 final acceptance; no partial progress is substituted. local_publish now accepts explicit existing Login1 host/boot/PIDnamespace binding, preserving default behavior.

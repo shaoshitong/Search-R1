@@ -40,6 +40,8 @@ print(json.dumps(out))
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--control-work',type=Path,required=True)
     parser.add_argument('--audit-dir',type=Path,required=True)
+    parser.add_argument('--login-host')
+    parser.add_argument('--host-identity-json',type=json.loads)
     parser.add_argument('--branch',default='codex/qprobe-teacher-warmup-hpc3-20261014');args=parser.parse_args()
     repo=Path(__file__).resolve().parents[2]
     sha=subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip()
@@ -58,7 +60,10 @@ def main():
         archive=base64.b64encode(archive).decode())
     # The account's actual shell access has been restored. New deployment
     # receipts must be authored by JXU for the later native restore audit.
-    result=run('jxu957','python3 -c '+shlex.quote(REMOTE),json.dumps(payload),args.control_work)
+    binding={}
+    if args.login_host is not None:binding['login_host']=args.login_host
+    if args.host_identity_json is not None:binding['expected_host_identity']=args.host_identity_json
+    result=run('jxu957','python3 -c '+shlex.quote(REMOTE),json.dumps(payload),args.control_work,**binding)
     assert result.returncode==0,result.stderr
     value=json.loads(result.stdout)
     assert value['commit']==sha and value['file_count']==len(files) and value['status']=='PUBLISHED_SOURCE_FULL_SHA_PASS'
