@@ -1,0 +1,333 @@
+{
+  "role": "sanitized_sigma3_first_actual_formal_progress",
+  "run_id": "f84749ca43be42bd91f2bc63d73347dd",
+  "execution_id": "ffdc8bb4690d4b8793335d9a718e3dcb",
+  "runtime_source_commit": "c200f9ebcaba6fd08039f24df8e7ffc55cf19c40",
+  "observed_unix": 1792057106.9123468,
+  "complete_outers": 2,
+  "target_complete_outers": 200,
+  "processed": 40,
+  "successful_adam": 40,
+  "skip": 0,
+  "optimizer_call_attempts": 40,
+  "optimizer_write_rollbacks": 0,
+  "aborted_attempts": 0,
+  "closed_unattempted": 0,
+  "partial_recorded": null,
+  "verifiable_inflight": null,
+  "four_rank_complete_prefix_agreement": true,
+  "replicas_counted_once": true,
+  "births": {
+    "pipeline": {
+      "alive": true,
+      "birth_matches": true,
+      "pid": 4153158,
+      "sid": 4153158,
+      "start_ticks": 613067849,
+      "state": "S",
+      "uid": 0
+    },
+    "status": "observed",
+    "trainer": {
+      "alive": true,
+      "birth_matches": true,
+      "pid": 4159844,
+      "sid": 4159844,
+      "start_ticks": 613114005,
+      "state": "S",
+      "uid": 0
+    }
+  },
+  "recorded_error_present": false,
+  "reward_window": {
+    "after_complete_step": 0,
+    "closed_attempt_partial_final_status": null,
+    "closed_attempt_prefix_sha256": "7ed24f24d4a9c060ad7171a423d0f65189a280b1233376ef4de5f88c3234e0c8",
+    "complete_prefix_sha256": "b9c8733b4b6c5fd0af30b0bbb5200836f1dee5afc98675275e277e5b3b99fb2d",
+    "cumulative_full_budget_complete_outers": 2,
+    "current_execution_aborted_attempts": 0,
+    "current_execution_closed_attempts": 2,
+    "current_execution_complete_outers": 2,
+    "current_execution_full_budget_complete_outers": 2,
+    "fresh_initial_completed_outers": 0,
+    "latest": {
+      "attempt_id": "db81ae620747468097ed8e479069e8fe",
+      "attempt_index": 2,
+      "full_budget_complete": true,
+      "optimizer_call_attempts": 20,
+      "optimizer_write_rollbacks": 0,
+      "optimizer_writes_after": 40,
+      "optimizer_writes_before": 20,
+      "processed": 20,
+      "reward_mean": 0.4200168251991272,
+      "skip": 0,
+      "step": 2,
+      "successful_adam": 20,
+      "unattempted": 0
+    },
+    "new_complete_rows": [
+      {
+        "attempt_id": "162f551fdf0a42469f79cbf68e774db0",
+        "attempt_index": 1,
+        "full_budget_complete": true,
+        "optimizer_call_attempts": 20,
+        "optimizer_write_rollbacks": 0,
+        "optimizer_writes_after": 20,
+        "optimizer_writes_before": 0,
+        "processed": 20,
+        "reward_mean": 0.36118075251579285,
+        "skip": 0,
+        "step": 1,
+        "successful_adam": 20,
+        "unattempted": 0
+      },
+      {
+        "attempt_id": "db81ae620747468097ed8e479069e8fe",
+        "attempt_index": 2,
+        "full_budget_complete": true,
+        "optimizer_call_attempts": 20,
+        "optimizer_write_rollbacks": 0,
+        "optimizer_writes_after": 40,
+        "optimizer_writes_before": 20,
+        "processed": 20,
+        "reward_mean": 0.4200168251991272,
+        "skip": 0,
+        "step": 2,
+        "successful_adam": 20,
+        "unattempted": 0
+      }
+    ],
+    "newly_complete_steps": [
+      1,
+      2
+    ],
+    "partial_final_status": null,
+    "recorded_complete_outers": 2,
+    "scope": "official fresh-zero execution logical1..200 returned whole outer rows; 20 processed opportunities and positive retained Adam required; partial attempts excluded from scientific reward window",
+    "status": "observed",
+    "window_count": 2,
+    "window_max": 0.4200168251991272,
+    "window_mean": 0.39059878885746,
+    "window_min": 0.36118075251579285
+  },
+  "actual_loss": {
+    "evidence": {
+      "latest_committed": {
+        "actor_snapshot_id": "f84749ca43be42bd91f2bc63d73347dd:2",
+        "feature_spec_sha": "aaea09aac50ebe4cc3c424af0c2273cc9e0e13a8ab9049acd8f1804d3394a9d4",
+        "fit": {
+          "loss_identity": "sigma3_std_aux6_v1:CE3(K->min(K,5-K))+3*((E[sample_std]-sample_std(K))/sqrt(0.3))^2+0.1*CE6",
+          "loss_identity_sha256": "ed9887947610bead4d1e6d92b0a296f016f36e5c868a813d05d2a0147958cd47",
+          "loss_mode": "sigma3_std_aux6_v1",
+          "recorded_scalars": {
+            "bootstrap_groups": null,
+            "completed_outer": 2,
+            "count_ce": 1.3557915687561035,
+            "count_ce_contribution": 0.1355791538953781,
+            "head_optimizer_updates": 48,
+            "normalized_sample_std_mse": 0.17675375938415527,
+            "replay_weighted_loss": 1.5577633380889893,
+            "sigma3_ce": 0.8919227719306946,
+            "sigma3_ce_contribution": 0.8919227719306946,
+            "std_mse": 0.17675375938415527,
+            "std_mse_contribution": 0.5302613377571106
+          },
+          "status": "observed"
+        },
+        "head_version": "qprobe:2:2:3da78fd29a99f065",
+        "metadata_sha256": "080778962ba118a05bd670e8228f41ed4dadd063443ab6532a3115a0478397b6",
+        "outer": 2,
+        "prediction_version": "qprobe:1:1:f2011725a6da9c48",
+        "status": "observed"
+      },
+      "manifest": {
+        "configuration": {
+          "count_aux_loss_weight": 0.1,
+          "loss_mode": "sigma3_std_aux6_v1",
+          "mean_loss_weight": 0.0,
+          "std_loss_weight": 3.0
+        },
+        "metadata_sha256": "657baf2740af3ee65846362838dedbd916412f90e96d7e8cca966ed70035dfbb",
+        "status": "observed"
+      },
+      "resolved": {
+        "configuration": {
+          "count_aux_loss_weight": 0.1,
+          "loss_mode": "sigma3_std_aux6_v1",
+          "mean_loss_weight": 0.0,
+          "std_loss_weight": 3.0
+        },
+        "metadata_sha256": "475fbde15504dfbff3c395c7d9f5b685032d8ed9ea41cbd12b62db1c86b5e690",
+        "resolved_config_sha256": "36e2d03a8c8e3318d24a5bc038c7a2f4150920df061d3039f0fdf1eb897a1da0",
+        "status": "observed"
+      },
+      "warmup": {
+        "actor_snapshot_id": "f84749ca43be42bd91f2bc63d73347dd:0",
+        "declared_head_sha256": "8a34948bbb115213be405b192f4b40d04bfc25a7f35f7ce1d02d389c845ae641",
+        "feature_spec_sha": "aaea09aac50ebe4cc3c424af0c2273cc9e0e13a8ab9049acd8f1804d3394a9d4",
+        "fit": {
+          "loss_identity": "sigma3_std_aux6_v1:CE3(K->min(K,5-K))+3*((E[sample_std]-sample_std(K))/sqrt(0.3))^2+0.1*CE6",
+          "loss_identity_sha256": "ed9887947610bead4d1e6d92b0a296f016f36e5c868a813d05d2a0147958cd47",
+          "loss_mode": "sigma3_std_aux6_v1",
+          "recorded_scalars": {
+            "bootstrap_groups": 5120,
+            "completed_outer": 0,
+            "count_ce": 1.475027322769165,
+            "count_ce_contribution": 0.14750275015830994,
+            "head_optimizer_updates": 40,
+            "normalized_sample_std_mse": 0.18639568984508514,
+            "replay_weighted_loss": 1.6002871990203857,
+            "sigma3_ce": 0.8935976028442383,
+            "sigma3_ce_contribution": 0.8935976028442383,
+            "std_mse": 0.18639568984508514,
+            "std_mse_contribution": 0.5591870546340942
+          },
+          "status": "observed"
+        },
+        "head_version": "qprobe:0:0:16dacfa00c087edb",
+        "metadata_sha256": "0fb27f558bd7e4c7b36e5c52a74df44da257e8715cdd33553e19455839fd5fa8",
+        "save": {
+          "loss_identity": "sigma3_std_aux6_v1:CE3(K->min(K,5-K))+3*((E[sample_std]-sample_std(K))/sqrt(0.3))^2+0.1*CE6",
+          "loss_identity_sha256": "ed9887947610bead4d1e6d92b0a296f016f36e5c868a813d05d2a0147958cd47",
+          "loss_mode": "sigma3_std_aux6_v1",
+          "recorded_scalars": {
+            "bootstrap_groups": null,
+            "completed_outer": 0,
+            "count_ce": null,
+            "count_ce_contribution": null,
+            "head_optimizer_updates": null,
+            "normalized_sample_std_mse": null,
+            "replay_weighted_loss": null,
+            "sigma3_ce": null,
+            "sigma3_ce_contribution": null,
+            "std_mse": null,
+            "std_mse_contribution": null
+          },
+          "status": "observed"
+        },
+        "status": "observed"
+      }
+    },
+    "expected_configuration": {
+      "count_aux_loss_weight": 0.1,
+      "loss_mode": "sigma3_std_aux6_v1",
+      "mean_loss_weight": 0.0,
+      "std_loss_weight": 3.0
+    },
+    "expected_loss_identity": "sigma3_std_aux6_v1:CE3(K->min(K,5-K))+3*((E[sample_std]-sample_std(K))/sqrt(0.3))^2+0.1*CE6",
+    "scope": "current run manifest, SHA-checked resolved configuration, and existing producer fit/save JSON declarations only; no inferred defaults, tensor readback, verifier, new fit or evaluation",
+    "status": "observed"
+  },
+  "latest_head_commit": {
+    "actor_snapshot_id": "f84749ca43be42bd91f2bc63d73347dd:2",
+    "feature_spec_sha": "aaea09aac50ebe4cc3c424af0c2273cc9e0e13a8ab9049acd8f1804d3394a9d4",
+    "head_version": "qprobe:2:2:3da78fd29a99f065",
+    "metadata_sha256": "080778962ba118a05bd670e8228f41ed4dadd063443ab6532a3115a0478397b6",
+    "outer": 2,
+    "prediction_version": "qprobe:1:1:f2011725a6da9c48",
+    "recorded_head_update": {
+      "completed_outer": 2,
+      "head_optimizer_updates": 48,
+      "replay_groups": 6144,
+      "update_count": 2
+    },
+    "scope": "existing committed head event after returned whole actor outer; no head tensor read/reload",
+    "status": "observed"
+  },
+  "gpu_samples": {
+    "complete_step_window_peaks": {
+      "reason": "not_computed_by_this_metadata_entry",
+      "status": "unknown"
+    },
+    "latest_devices": [
+      {
+        "index": 0,
+        "total_mib": 81920,
+        "used_mib": 1705,
+        "util_percent": 0
+      },
+      {
+        "index": 1,
+        "total_mib": 81920,
+        "used_mib": 1801,
+        "util_percent": 0
+      },
+      {
+        "index": 2,
+        "total_mib": 81920,
+        "used_mib": 1801,
+        "util_percent": 0
+      },
+      {
+        "index": 3,
+        "total_mib": 81920,
+        "used_mib": 1705,
+        "util_percent": 0
+      },
+      {
+        "index": 5,
+        "total_mib": 81920,
+        "used_mib": 17887,
+        "util_percent": 0
+      },
+      {
+        "index": 6,
+        "total_mib": 81920,
+        "used_mib": 28821,
+        "util_percent": 0
+      }
+    ],
+    "latest_sample_unix": 1792057105.1830118,
+    "maximum_scanned_sampling_gap_seconds": 2.349923610687256,
+    "sample_count": 2822,
+    "sampled_pipeline_lifetime_peak_mib": {
+      "0": 43667,
+      "1": 43763,
+      "2": 43763,
+      "3": 44113,
+      "5": 17889,
+      "6": 28821
+    },
+    "sampled_scanned_tail_peak_mib": {
+      "0": 43667,
+      "1": 43763,
+      "2": 43763,
+      "3": 44113,
+      "5": 17889,
+      "6": 28821
+    },
+    "scan_from_start": true,
+    "scope": "existing physical-node occupancy samples over pipeline lifetime/scanned tail, including startup; not exclusive model peaks or complete-step GPU peaks; nativefive separately reports its recorded window boundaries",
+    "status": "observed"
+  },
+  "stage64": null,
+  "dev512": null,
+  "first_complete_formal_iteration_verified": true,
+  "first_two_complete_formal_rows_verified": true,
+  "warmup": {
+    "teacher_groups": 5120,
+    "teacher_trajectories": 25600,
+    "fresh_head_fit_updates": 40,
+    "counts_toward_formal200": false
+  },
+  "unchanged_selection": {
+    "candidates": 5120,
+    "top_selected": 512,
+    "random": 0
+  },
+  "unchanged_recipe": {
+    "world": 4,
+    "actor_micro_per_rank": 4,
+    "actor_micro_global": 16,
+    "accumulation": 8,
+    "lr": 1e-06,
+    "complete_outer_warmup": 57
+  },
+  "actual_observation_sha256": "012b5edca096463703933f79318cee229d5b47dbece645a778c8c3fd41c8c46d",
+  "automation_status": "ACTIVE",
+  "routine_reviews_added": 0,
+  "new_gpu_tests_added": 0,
+  "new_evaluations_added": 0,
+  "goal_status": "active",
+  "no_credentials_models_environment_qa_or_token_payload": true
+}
