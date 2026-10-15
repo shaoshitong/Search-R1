@@ -173,6 +173,108 @@ class QProbeModelTests(unittest.TestCase):
         self.assertEqual(report['loss_mode'], config.loss_mode)
         self.assertEqual(report['loss_identity'], config.loss_identity)
 
+    def test_bootstrap_ten_epochs_log_full_training_replay_and_keep_formal_two(self):
+        config = sigma3_config(bootstrap_head_epochs=10, head_epochs_per_outer=2,
+                               head_batch_size=256, bootstrap_max_groups_per_outer=5120,
+                               hidden_size=4)
+        probe = OnlineQProbe(3, config)
+        x = torch.arange(5120 * 3, dtype=torch.float32).reshape(5120, 3) / 5120
+        history = labels(0, 5120)
+        for item in history:
+            item.update(source_outer=0, selection_source='bootstrap_all_candidate', run_id='teacher',
+                        attempt_id='teacher-0', policy_snapshot_id='teacher:0', sampling_contract_sha='s',
+                        strict_scoring_contract_sha='c', retriever_version='r')
+        global_rng = torch.get_rng_state().clone()
+        expected_rng = torch.Generator().set_state(probe.rng.get_state())
+        for _ in range(11):  # One bootstrap selection and ten actual epoch shuffles.
+            torch.randperm(5120, generator=expected_rng)
+        full_predictions = []
+        forward, step = probe.model.forward, probe.optimizer.step
+        def capture(features):
+            prediction = forward(features)
+            if len(features) == 5120:
+                self.assertFalse(probe.model.training)
+                full_predictions.append((probe._adam_steps(),
+                    {key: value.detach().clone() for key, value in prediction.items()}))
+            else:
+                self.assertTrue(probe.model.training)
+            return prediction
+        with mock.patch.object(probe.model, 'forward', side_effect=capture), \
+             mock.patch.object(probe.optimizer, 'step', wraps=step) as adam:
+            report = probe.bootstrap(history, x, actor_outer=0, actor_snapshot_id='student:0')
+            self.assertEqual(adam.call_count, 200)
+        self.assertEqual([row[0] for row in full_predictions], list(range(0, 201, 20)))
+        self.assertTrue(torch.equal(global_rng, torch.get_rng_state()))
+        self.assertTrue(torch.equal(expected_rng.get_state(), probe.rng.get_state()))
+        self.assertFalse(probe.model.training)
+        self.assertEqual(report['fit_epochs'], 10)
+        self.assertEqual(report['head_optimizer_updates'], 200)
+        self.assertEqual(report['head_adam_steps_before'], 0)
+        self.assertEqual(report['head_adam_steps_after'], 200)
+        self.assertEqual([row['epoch'] for row in report['epoch_history']], list(range(11)))
+        counts = torch.tensor([item['correct_count'] for item in probe.replay_labels])
+        sigma = torch.minimum(counts, 5-counts)
+        truth = (counts > 0) & (counts < 5)
+        target_std = (counts.float() * (5-counts.float()) / 20).sqrt()
+        for epoch, (_, pred) in enumerate(full_predictions):
+            row = report['epoch_history'][epoch]
+            p = pred['probabilities']; q = torch.stack((p[:,0]+p[:,5], p[:,1]+p[:,4], p[:,2]+p[:,3]), -1)
+            ce3 = -q[torch.arange(5120), sigma].log().mean()
+            ce6 = -p[torch.arange(5120), counts].log().mean()
+            std_mse = ((pred['expected_std']-target_std)/math.sqrt(.3)).square().mean()
+            self.assertEqual(row['replay_groups'], 5120)
+            self.assertEqual(row['head_adam_steps'], epoch * 20)
+            self.assertEqual(row['head_optimizer_updates'], epoch * 20)
+            self.assertEqual(row['head_batch_size'], 256)
+            self.assertEqual(row['head_learning_rate'], config.head_learning_rate)
+            self.assertEqual(row['dataset_scope'], 'training_replay_not_independent_holdout')
+            self.assertAlmostEqual(row['sigma3_ce'], ce3.item(), places=6)
+            self.assertAlmostEqual(row['count_ce'], ce6.item(), places=6)
+            self.assertAlmostEqual(row['normalized_sample_std_mse'], std_mse.item(), places=6)
+            self.assertAlmostEqual(row['total_loss'], (ce3 + 3*std_mse + .1*ce6).item(), places=6)
+            self.assertAlmostEqual(row['std_mse_contribution'], (3*std_mse).item(), places=6)
+            self.assertAlmostEqual(row['count_ce_contribution'], (.1*ce6).item(), places=6)
+            predicted = p[:,1:5].sum(-1) >= .5
+            tp, tn, fp, fn = [int(mask.sum()) for mask in
+                (truth & predicted, ~truth & ~predicted, ~truth & predicted, truth & ~predicted)]
+            binary = row['binary_mixed']
+            self.assertEqual([binary[key] for key in ('true_positive','true_negative','false_positive','false_negative')], [tp,tn,fp,fn])
+            self.assertEqual(binary['threshold'], .5)
+            self.assertAlmostEqual(binary['accuracy'], (tp+tn)/5120)
+            safe = lambda n, d: n/d if d else 0.
+            recall, specificity = safe(tp,tp+fn), safe(tn,tn+fp)
+            self.assertAlmostEqual(binary['recall'], recall)
+            self.assertAlmostEqual(binary['specificity'], specificity)
+            self.assertAlmostEqual(binary['balanced_accuracy'], (recall+specificity)/2)
+            self.assertAlmostEqual(binary['precision'], safe(tp,tp+fp))
+            self.assertAlmostEqual(binary['f1'], safe(2*tp,2*tp+fp+fn))
+            self.assertAlmostEqual(row['true_mixed_fraction'], truth.float().mean().item())
+            self.assertAlmostEqual(row['predicted_mixed_fraction'], predicted.float().mean().item())
+            self.assertAlmostEqual(row['sigma3_accuracy'], (q.argmax(-1)==sigma).float().mean().item())
+            self.assertAlmostEqual(row['count6_accuracy'], (p.argmax(-1)==counts).float().mean().item())
+            self.assertAlmostEqual(row['sigma3_majority_baseline_accuracy'], torch.bincount(sigma).max().item()/5120)
+            self.assertAlmostEqual(row['count6_majority_baseline_accuracy'], torch.bincount(counts).max().item()/5120)
+            self.assertAlmostEqual(row['sigma_mae'], (pred['expected_std']-target_std).abs().mean().item())
+        self.assertEqual(report['training_summary'], report['epoch_history'][-1])
+        self.assertEqual(len(report['minibatch_history']), 200)
+        for index, row in enumerate(report['minibatch_history']):
+            self.assertEqual((row['epoch'], row['minibatch_index'], row['batch_size']), (index//20+1,index%20,256))
+            self.assertEqual((row['head_update_ordinal'],row['head_adam_steps_before'],row['head_adam_steps_after']), (index+1,index,index+1))
+            parts = row['loss_parts']
+            self.assertAlmostEqual(row['pre_step_weighted_loss'], parts['sigma3_ce_contribution']+
+                                   parts['std_mse_contribution']+parts['count_ce_contribution'], places=6)
+        with mock.patch.object(probe.model, 'forward', wraps=forward) as formal_forward:
+            formal = probe._fit(0)
+        self.assertEqual(formal['fit_epochs'], 2)
+        self.assertEqual(formal['head_optimizer_updates'], 40)
+        self.assertEqual(formal_forward.call_count, 41)  # Forty Adam batches + original final replay forward.
+        self.assertEqual(formal['head_adam_steps_after'], 240)
+        self.assertEqual(formal['epoch_history'], [])
+        self.assertEqual(probe.state_dict()['config']['bootstrap_head_epochs'], 10)
+        legacy = OnlineQProbe(3); old = legacy.state_dict(); old['config'].pop('bootstrap_head_epochs')
+        legacy.load_state_dict(old)
+        self.assertIsNone(legacy.config.bootstrap_head_epochs)
+
     def test_sigma3_bootstrap_and_online_use_shared_loss_and_progress(self):
         import search_g1.qprobe_model as module
         config = sigma3_config(head_learning_rate=.03, head_epochs_per_outer=1, head_batch_size=32)

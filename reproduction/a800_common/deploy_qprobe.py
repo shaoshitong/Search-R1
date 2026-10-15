@@ -34,6 +34,8 @@ SIGMA3_LOSS = dict(loss_mode='sigma3_std_aux6_v1', mean_loss_weight=0.0,
 SIGMA3_REVIEW_CHECKS = ('fresh_official_actor_reference_optimizer_scheduler_rng_sampler_head',
                       'sigma3_ce_normalized_sample_std_mse3_aux6_ce_point1',
                       'teacher_namespace_full_identity_and_sha_no_old_question_head')
+WARMUP10_REVIEW_CHECKS = ('bootstrap_head_10epochs_200updates_training_fit_only',
+                        'formal_head_twoepochs_batch256_qualified_teacher_v4_fresh_state')
 FEATURE_SOURCE_BASE = '/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18'
 FEATURE_SOURCE_COMMIT = 'bf4b88d04c166951691029b18d05d91ece7c7054'
 FEATURE_SOURCE_RUN = '0f49c2a664b448f59b5f21dd49f9b10b'
@@ -72,6 +74,10 @@ def validate_intent(intent):
     assert intent['gpu_placement_policy']==PLACEMENT_POLICY and intent['gpu_placement_bound'] is False
     restore=intent.get('saved_checkpoint_restore')
     fresh_loss=intent.get('fresh_question_probe_loss')
+    bootstrap_epochs=intent.get('fresh_bootstrap_head_epochs')
+    if bootstrap_epochs is not None:
+        assert type(bootstrap_epochs) is int and bootstrap_epochs == 10
+        assert fresh_loss == SIGMA3_LOSS and restore is None
     if fresh_loss is not None:
         assert type(fresh_loss) is dict and fresh_loss == SIGMA3_LOSS
         assert all(type(fresh_loss[key]) in (int,float) for key in SIGMA3_LOSS if key != 'loss_mode')
@@ -125,6 +131,7 @@ def validate_review(review, intent):
     assert review['source_sha256'] == intent['source_sha256']
     checks=REVIEW_CHECKS+(RESTORE_REVIEW_CHECKS if intent.get('saved_checkpoint_restore') else ())
     if intent.get('fresh_question_probe_loss') is not None:checks+=SIGMA3_REVIEW_CHECKS
+    if intent.get('fresh_bootstrap_head_epochs') is not None:checks+=WARMUP10_REVIEW_CHECKS
     assert set(review['checks']) == set(checks)
     assert all(review['checks'][key] is True for key in checks)
     assert type(review['reviewed_unix']) in (int, float) and 0 < review['reviewed_unix'] <= time.time()
@@ -151,6 +158,11 @@ def validate_fresh_sigma3_run(intent, run):
     assert all(type(q[key]) in (int,float) for key in SIGMA3_LOSS if key != 'loss_mode')
     assert all(q.get(key) is None for key in ('initial_head_checkpoint','snapshot_path','restore_state'))
     assert q['teacher_warmup_cache'] == TEACHER_CACHE
+    if intent.get('fresh_bootstrap_head_epochs') is not None:
+        assert type(q.get('bootstrap_head_epochs')) is int and q['bootstrap_head_epochs'] == 10
+        assert type(q.get('head_epochs_per_outer')) is int and q['head_epochs_per_outer'] == 2
+        assert type(q.get('head_batch_size')) is int and q['head_batch_size'] == 256
+        assert q['bootstrap_max_groups_per_outer'] == 5120 and (5120//q['head_batch_size'])*q['bootstrap_head_epochs'] == 200
     return run
 
 
@@ -266,6 +278,10 @@ def check(intent):
  assert intent['gpu_placement_policy']=='launch_time_four_idle_excluding_auxiliary_v1' and intent['gpu_placement_bound'] is False
  restore=intent.get('saved_checkpoint_restore')
  fresh_loss=intent.get('fresh_question_probe_loss')
+ bootstrap_epochs=intent.get('fresh_bootstrap_head_epochs')
+ if bootstrap_epochs is not None:
+  assert type(bootstrap_epochs) is int and bootstrap_epochs==10
+  assert fresh_loss==dict(loss_mode='sigma3_std_aux6_v1',mean_loss_weight=0.0,std_loss_weight=3.0,count_aux_loss_weight=0.1) and restore is None
  if fresh_loss is not None:
   assert type(fresh_loss) is dict and fresh_loss==dict(loss_mode='sigma3_std_aux6_v1',mean_loss_weight=0.0,std_loss_weight=3.0,count_aux_loss_weight=0.1)
   assert all(type(fresh_loss[key]) in (int,float) for key in ('mean_loss_weight','std_loss_weight','count_aux_loss_weight'))
@@ -461,6 +477,7 @@ if restoration:
 else:
  run=bind(base,base/'question-features',exploration_questions=0,retriever_version=sha_json(ASSETS),
   seed=20261013,teacher_warmup_cache=teacher_storage(intent),infra_rollout=DEFAULT_ROLLOUT_PHASE,
+  bootstrap_head_epochs=intent.get('fresh_bootstrap_head_epochs'),
   **intent.get('fresh_question_probe_loss',{}))
 validate_fresh_sigma3_run(intent,run)
 receipt=dict(stage='QPROBE_BOUND_PRELAUNCH',deployment_id=intent['deployment_id'],run_id=run['run_id'],
@@ -659,6 +676,9 @@ def create_bundle(repo, commit, ref, bundle):
 
 def stage(args):
     repo = Path(__file__).resolve().parents[2]
+    bootstrap_epochs=getattr(args,'bootstrap_head_epochs',None)
+    if bootstrap_epochs is not None:
+        assert args.fresh_sigma3 and bootstrap_epochs == 10 and not args.restore_receipt
     assert not (args.fresh_sigma3 and args.restore_receipt), 'Fresh sigma3 excludes saved-state restoration'
     if args.fresh_sigma3:
         assert args.initial_probes_source_base in (None,INITIAL_PROBES)
@@ -686,6 +706,7 @@ def stage(args):
         bundle_bytes=bundle.stat().st_size, bundle_sha256=digest(bundle), target_updates=200,
         launch_services=False, gpu_placement_policy=PLACEMENT_POLICY,gpu_placement_bound=False,created_unix=time.time())
     if args.fresh_sigma3:intent['fresh_question_probe_loss']=dict(SIGMA3_LOSS)
+    if bootstrap_epochs is not None:intent['fresh_bootstrap_head_epochs']=bootstrap_epochs
     if args.restore_receipt:
         assert args.initial_probes_source_base is None, 'Saved-state restoration excludes fresh initial-probe adoption'
         intent['saved_checkpoint_restore']=dict(source_receipt=args.restore_receipt,source_receipt_sha256=args.restore_receipt_sha256)
@@ -753,6 +774,8 @@ def main():
     parser.add_argument('--restore-receipt');parser.add_argument('--restore-receipt-sha256')
     parser.add_argument('--fresh-sigma3', action='store_true',
                         help='Bind the new sigma3/std/aux6 loss in a fresh official-model namespace')
+    parser.add_argument('--bootstrap-head-epochs', type=int, choices=(10,),
+                        help='Fit the fresh question head for 10 warmup epochs; formal head epochs stay 2')
     parser.add_argument('--feature-source-base')
     parser.add_argument('--physical-index', type=int, choices=(5,6), default=6)
     parser.add_argument('--batch-size', type=int, default=32)
@@ -763,7 +786,7 @@ def main():
         assert bool(args.restore_receipt)==bool(args.restore_receipt_sha256)
         result = stage(args)
     else:
-        assert args.source_commit is None and args.published_ref is None and args.baseline_intent_sha256 is None and args.initial_probes_source_base is None and args.teacher_warmup_cache is None and args.restore_receipt is None and args.restore_receipt_sha256 is None and not args.fresh_sigma3
+        assert args.source_commit is None and args.published_ref is None and args.baseline_intent_sha256 is None and args.initial_probes_source_base is None and args.teacher_warmup_cache is None and args.restore_receipt is None and args.restore_receipt_sha256 is None and not args.fresh_sigma3 and args.bootstrap_head_epochs is None
         handle = args.handle.resolve();intent = validate_intent(json.loads(handle.read_text()))
         if args.action == 'feature-plan':
             result = feature_plan(intent, args.physical_index, args.batch_size)

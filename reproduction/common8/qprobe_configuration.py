@@ -5,7 +5,7 @@ from pathlib import Path
 FIELDS = frozenset((
     "candidate_questions", "selected_questions", "responses_per_question",
     "exploration_questions", "seed", "cache_dir", "output_dir", "snapshot_path", "initial_head_checkpoint",
-    "head_learning_rate", "head_batch_size", "head_epochs_per_outer",
+    "head_learning_rate", "head_batch_size", "head_epochs_per_outer", "bootstrap_head_epochs",
     "loss_mode", "mean_loss_weight", "std_loss_weight", "count_aux_loss_weight", "replay_window_outer",
     "replay_half_life_outer", "head_hidden_size",
     "bootstrap_max_groups_per_outer", "teacher_warmup_cache",
@@ -21,6 +21,9 @@ def arguments(run, base):
         raise ValueError("Unknown question_probe manifest fields")
     base = Path(base).resolve()
     values = dict(settings)
+    bootstrap_epochs = values.get("bootstrap_head_epochs")
+    if bootstrap_epochs is not None and (type(bootstrap_epochs) is not int or bootstrap_epochs <= 0):
+        raise ValueError("Bootstrap head epochs must be a positive integer or null")
     loss_mode = values.get("loss_mode", "count6_moments_v1")
     if loss_mode not in ("count6_moments_v1", "sigma3_std_aux6_v1"):
         raise ValueError("Unknown question-probe loss mode")

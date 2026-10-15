@@ -163,4 +163,32 @@ def prequential_metrics(probabilities, strict_vectors, sources):
             actual_em_mean=float(means[mask].mean()),
             all_wrong_fraction=float((counts[mask] == 0).mean()),
             all_correct_fraction=float((counts[mask] == 5).mean()))
+        # Reuse the immutable pre-rollout predictions and actual selected labels.
+        # These diagnostics add no inference, sampling, filtering, or loss weight.
+        actual_mixed = mixed[mask].astype(bool)
+        predicted_mixed = prediction["mixed_probability"][mask] >= 0.5
+        tp = int((actual_mixed & predicted_mixed).sum())
+        tn = int((~actual_mixed & ~predicted_mixed).sum())
+        fp = int((~actual_mixed & predicted_mixed).sum())
+        fn = int((actual_mixed & ~predicted_mixed).sum())
+        ratio = lambda numerator, denominator: numerator / denominator if denominator else 0.0
+        recall, specificity = ratio(tp, tp + fn), ratio(tn, tn + fp)
+        present_recalls = ([recall] if tp + fn else []) + ([specificity] if tn + fp else [])
+        p = prediction["probabilities"][rows]
+        sigma_probabilities = np.stack((p[:, 0] + p[:, 5], p[:, 1] + p[:, 4],
+                                        p[:, 2] + p[:, 3]), axis=1)
+        actual_counts = counts[mask]
+        result[name].update(
+            binary_threshold=0.5, binary_accuracy=ratio(tp + tn, len(rows)),
+            binary_balanced_accuracy=float(np.mean(present_recalls)),
+            binary_confusion=dict(tp=tp, tn=tn, fp=fp, fn=fn),
+            binary_precision=ratio(tp, tp + fp), binary_recall=recall,
+            binary_specificity=specificity, binary_f1=ratio(2 * tp, 2 * tp + fp + fn),
+            predicted_mixed_fraction=float(predicted_mixed.mean()),
+            binary_majority_baseline=max(float(actual_mixed.mean()), float((~actual_mixed).mean())),
+            count_accuracy=float((p.argmax(1) == actual_counts).mean()),
+            sigma3_accuracy=float((sigma_probabilities.argmax(1) ==
+                                    np.minimum(actual_counts, 5 - actual_counts)).mean()),
+            classification_zero_division=0.0,
+            prediction_scope="selected_questions_before_rollout_and_before_fit")
     return result

@@ -47,6 +47,9 @@ INTEGRATION_EDITS = frozenset((
     'search_g1/qprobe_runtime.py',
     'search_g1/test_qprobe_runtime.py',
     'search_g1/test_qprobe_selection.py',
+    # Derived prequential diagnostics use the same saved predictions/labels.
+    # Their exact source pair does not change frozen G1 reward calibration.
+    'search_g1/qprobe_selection.py',
     'search_g1/qprobe_warmup.py',
     'search_g1/test_qprobe_warmup.py',
     # Bounded-context and recoverable-update repair. Each actual source pair

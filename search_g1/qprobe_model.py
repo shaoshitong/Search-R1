@@ -44,12 +44,16 @@ class QProbeConfig:
     # Missing fields in historical checkpoints retain the original CE6 loss.
     loss_mode: str = LEGACY_LOSS_MODE
     count_aux_loss_weight: float = 0.1
+    bootstrap_head_epochs: int | None = None
 
     def __post_init__(self):
         for name in ('head_batch_size', 'head_epochs_per_outer',
                      'replay_window_outer', 'bootstrap_max_groups_per_outer', 'hidden_size'):
             if type(getattr(self, name)) is not int or getattr(self, name) <= 0:
                 raise ValueError(f'QPROBE_INVALID_CONFIG: {name} must be a positive integer')
+        if (self.bootstrap_head_epochs is not None and
+            (type(self.bootstrap_head_epochs) is not int or self.bootstrap_head_epochs <= 0)):
+            raise ValueError('QPROBE_INVALID_CONFIG: bootstrap_head_epochs must be None or a positive integer')
         for name in ('head_learning_rate', 'replay_half_life_outer'):
             value = getattr(self, name)
             if not isinstance(value, (float, int)) or not math.isfinite(value) or value <= 0:
@@ -257,9 +261,67 @@ class OnlineQProbe:
         with torch.no_grad():
             return {k: v.detach().clone() for k, v in self.model(features).items()}
 
-    def _fit(self, outer):
+    def _adam_steps(self):
+        steps = [int(state['step'].item()) if isinstance(state['step'], torch.Tensor) else int(state['step'])
+                 for state in self.optimizer.state.values() if 'step' in state]
+        if steps and len(set(steps)) != 1:
+            raise ValueError('QPROBE_INCONSISTENT_HEAD_ADAM_STEPS')
+        return steps[0] if steps else 0
+
+    def _training_summary(self, prediction, counts, weights, *, epoch, epochs, updates):
+        """Full training replay statistics, using the same per-group objective."""
+        objective, parts = count_moment_loss(prediction, counts, self.config, weights)
+        size = len(counts)
+        probabilities = prediction['probabilities']
+        sigma_probabilities = torch.stack([probabilities[:, k] + probabilities[:, 5-k]
+                                           for k in range(3)], dim=-1)
+        sigma_classes = torch.minimum(counts, 5-counts)
+        true_mixed = (counts > 0) & (counts < 5)
+        predicted_mixed = prediction['mixed_probability'] >= .5
+        tp = int((true_mixed & predicted_mixed).sum())
+        tn = int((~true_mixed & ~predicted_mixed).sum())
+        fp = int((~true_mixed & predicted_mixed).sum())
+        fn = int((true_mixed & ~predicted_mixed).sum())
+        ratio = lambda numerator, denominator: numerator / denominator if denominator else 0.
+        recall, specificity = ratio(tp, tp + fn), ratio(tn, tn + fp)
+        recalls = ([recall] if tp + fn else []) + ([specificity] if tn + fp else [])
+        sigma_counts = torch.bincount(sigma_classes, minlength=3)
+        count_counts = torch.bincount(counts, minlength=6)
+        sigma_predicted, count_predicted = sigma_probabilities.argmax(-1), probabilities.argmax(-1)
+        class_accuracy = lambda truth, predicted, classes: [
+            ratio(int(((truth == k) & (predicted == k)).sum()), int((truth == k).sum()))
+            for k in range(classes)]
+        target_std = (counts.float() * (5-counts.float()) / 20).sqrt()
+        return dict(dataset_scope='training_replay_not_independent_holdout', replay_groups=size,
+            epoch=epoch, fit_epochs=epochs, head_batch_size=self.config.head_batch_size,
+            head_learning_rate=float(self.optimizer.param_groups[0]['lr']),
+            head_optimizer_updates=updates, head_adam_steps=self._adam_steps(),
+            replay_weighted_loss=float(objective), total_loss=float(objective),
+            **{key: float(value) for key, value in parts.items()},
+            binary_mixed=dict(threshold=.5, true_positive=tp, true_negative=tn,
+                false_positive=fp, false_negative=fn, accuracy=ratio(tp + tn, size),
+                balanced_accuracy=sum(recalls) / len(recalls), precision=ratio(tp, tp + fp),
+                recall=recall, specificity=specificity, f1=ratio(2 * tp, 2 * tp + fp + fn),
+                balanced_accuracy_definition='mean recall over classes present in training replay',
+                zero_division=0.),
+            true_mixed_fraction=float(true_mixed.float().mean()),
+            predicted_mixed_fraction=float(predicted_mixed.float().mean()),
+            sigma3_accuracy=float((sigma_predicted == sigma_classes).float().mean()),
+            count6_accuracy=float((count_predicted == counts).float().mean()),
+            sigma3_majority_baseline_accuracy=float(sigma_counts.max()) / size,
+            count6_majority_baseline_accuracy=float(count_counts.max()) / size,
+            sigma3_majority_class=int(sigma_counts.argmax()), count6_majority_class=int(count_counts.argmax()),
+            sigma3_label_counts=sigma_counts.tolist(), count6_label_counts=count_counts.tolist(),
+            sigma3_per_class_accuracy=class_accuracy(sigma_classes, sigma_predicted, 3),
+            count6_per_class_accuracy=class_accuracy(counts, count_predicted, 6),
+            sigma_mae=float((prediction['expected_std'] - target_std).abs().mean()))
+
+    def _fit(self, outer, *, epochs=None, log_warmup=False):
         if not self.replay_labels:
             raise ValueError('QPROBE_CANNOT_FIT_WITHOUT_REAL_LABELS')
+        epochs = self.config.head_epochs_per_outer if epochs is None else epochs
+        if type(epochs) is not int or epochs <= 0:
+            raise ValueError('QPROBE_INVALID_FIT_EPOCHS')
         counts = torch.tensor([x['correct_count'] for x in self.replay_labels], dtype=torch.long)
         weights = torch.tensor([2 ** (-(outer - x['source_outer']) / self.config.replay_half_life_outer)
                                 for x in self.replay_labels], dtype=torch.float32)
@@ -267,18 +329,41 @@ class OnlineQProbe:
         # weights in homogeneous mini-batches and changes the intended objective.
         weights = weights * (len(weights) / weights.sum())
         updates = 0
+        adam_before = self._adam_steps()
+        epoch_history, minibatch_history = [], []
         self.model.train()
-        for _ in range(self.config.head_epochs_per_outer):
+
+        def summarize(epoch):
+            training = self.model.training
+            try:
+                self.model.eval()
+                with torch.no_grad():
+                    prediction = self.model(self.replay_features)
+                    return self._training_summary(prediction, counts, weights,
+                        epoch=epoch, epochs=epochs, updates=updates)
+            finally:
+                self.model.train(training)
+
+        if log_warmup:
+            epoch_history.append(summarize(0))
+        for epoch in range(1, epochs + 1):
             order = torch.randperm(len(counts), generator=self.rng)
-            for offset in range(0, len(order), self.config.head_batch_size):
+            for batch_index, offset in enumerate(range(0, len(order), self.config.head_batch_size)):
                 index = order[offset:offset + self.config.head_batch_size]
                 prediction = self.model(self.replay_features[index])
-                group_loss, _ = count_moment_group_loss(prediction, counts[index], self.config)
+                group_loss, group_parts = count_moment_group_loss(prediction, counts[index], self.config)
                 # Preserve the global age-weighted estimator. Normalizing only
                 # within this mini-batch would cancel homogeneous recency weights.
                 loss = (group_loss * weights[index]).mean()
                 if not torch.isfinite(loss):
                     raise ValueError('QPROBE_NONFINITE_TRAINING_LOSS')
+                minibatch = dict(epoch=epoch, minibatch_index=batch_index, batch_size=len(index),
+                    head_update_ordinal=updates + 1, head_adam_steps_before=self._adam_steps(),
+                    head_learning_rate=float(self.optimizer.param_groups[0]['lr']),
+                    pre_step_weighted_loss=float(loss.detach()),
+                    weight_reduction='mean(loss_i * globally_normalized_replay_weight_i)',
+                    loss_parts={key: float((value.detach() * weights[index]).mean())
+                                for key, value in group_parts.items()})
                 self.optimizer.zero_grad(set_to_none=True)
                 loss.backward()
                 if any(p.grad is not None and not torch.isfinite(p.grad).all() for p in self.model.parameters()):
@@ -286,11 +371,26 @@ class OnlineQProbe:
                 self.optimizer.step(); updates += 1
                 if any(not torch.isfinite(p).all() for p in self.model.parameters()):
                     raise ValueError('QPROBE_NONFINITE_PARAMETERS')
-        pred = self.predict(self.replay_features)
-        objective, parts = count_moment_loss(pred, counts, self.config, weights)
+                minibatch['head_adam_steps_after'] = self._adam_steps()
+                minibatch_history.append(minibatch)
+            if log_warmup:
+                epoch_history.append(summarize(epoch))
+        if log_warmup:
+            summary = epoch_history[-1]
+            self.model.eval()
+        else:
+            # Reuse the existing final replay forward; formal fits add no eval forwards.
+            pred = self.predict(self.replay_features)
+            summary = self._training_summary(pred, counts, weights,
+                epoch=epochs, epochs=epochs, updates=updates)
+        parts = {key: summary[key] for key in group_parts}
         return dict(replay_groups=len(counts), head_optimizer_updates=updates,
-                    replay_weighted_loss=float(objective), loss_mode=self.config.loss_mode,
-                    loss_identity=self.config.loss_identity, **{k: float(v) for k, v in parts.items()})
+                    replay_weighted_loss=summary['replay_weighted_loss'], loss_mode=self.config.loss_mode,
+                    loss_identity=self.config.loss_identity, **parts,
+                    fit_epochs=epochs, head_batch_size=self.config.head_batch_size,
+                    head_learning_rate=float(self.optimizer.param_groups[0]['lr']),
+                    head_adam_steps_before=adam_before, head_adam_steps_after=self._adam_steps(),
+                    training_summary=summary, epoch_history=epoch_history, minibatch_history=minibatch_history)
 
     def update_completed_outer(self, outer: int, labels: Sequence[dict], features: torch.Tensor, *,
                                policy_snapshot_id: str, sampling_contract_sha: str,
@@ -385,7 +485,8 @@ class OnlineQProbe:
         self.replay_labels = [x[1] for x in valid]
         self.replay_features = features[[x[0] for x in valid]].clone()
         self.protocol = protocol
-        metrics = self._fit(actor_outer)
+        metrics = self._fit(actor_outer, epochs=self.config.bootstrap_head_epochs,
+                            log_warmup=self.config.bootstrap_head_epochs is not None)
         self.completed_outer = actor_outer
         self.actor_snapshot_id = actor_snapshot_id
         metrics.update(bootstrap_groups=len(valid), version=self.version, completed_outer=actor_outer)
@@ -447,6 +548,8 @@ class OnlineQProbe:
                     actor_snapshot_id=actor_snapshot_id,
                     version=self.version, completed_outer=self.completed_outer,
                     feature_spec_sha=self.feature_spec_sha, update_count=self.update_count,
+                    head_epochs_per_outer=self.config.head_epochs_per_outer,
+                    bootstrap_head_epochs=self.config.bootstrap_head_epochs,
                     loss_mode=self.config.loss_mode, loss_identity=self.config.loss_identity)
 
     @classmethod

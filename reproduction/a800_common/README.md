@@ -169,7 +169,7 @@ Actor local4/global16 changes the training micro-batch only. The teacher identit
 binds the complete rollout configuration, whose global log-prob micro-batch32
 and all effective sampling fields. The first asynchronous v3 launch generates
 5120 questions/25600 trajectories under its new protocol. Each fresh official actor
-gets a newly fitted5120-group head with40 head optimizer updates; no old actor, head checkpoint or Adam state
+gets a newly fitted5120-group head with40 head optimizer updates under the historical two-epoch default; no old actor, head checkpoint or Adam state
 is inherited. Initial0 frozen reward-head adoption permits exactly this
 local2→4/global8→16/two-row→four-row budget transition alongside the existing
 FP32→BF16 transition and retains every other identity/budget check.
@@ -302,3 +302,50 @@ exact published commit and source map. No extra evaluation or GPU preflight is
 introduced. The four-rank BF16 local4/global16/accum8, LR1e-6/warmup57,
 20 opportunities per complete outer, existing speed optimizations and guards,
 and the formal200-outer target are retained.
+
+For the explicit warmup10 experiment, create a separate fresh handle and add
+`--bootstrap-head-epochs 10` at `stage`:
+
+```sh
+python -m reproduction.a800_common.deploy_qprobe stage --fresh-sigma3 \
+  --bootstrap-head-epochs 10 \
+  --handle WARMUP10_HANDLE.json --source-commit PUBLISHED_FULL_COMMIT \
+  --published-ref refs/heads/codex/qprobe-a800-sigma3-warmup10-20261015 \
+  --baseline-intent-sha256 ORIGINAL_BASELINE_INTENT_SHA256
+python -m reproduction.a800_common.deploy_qprobe prepare --handle WARMUP10_HANDLE.json
+python -m reproduction.a800_common.deploy_qprobe feature-adopt --handle WARMUP10_HANDLE.json \
+  --feature-source-base /data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18
+python -m reproduction.a800_common.deploy_qprobe bind --handle WARMUP10_HANDLE.json
+python -m reproduction.a800_common.deploy_qprobe launch --handle WARMUP10_HANDLE.json \
+  --review-receipt WARMUP10_REVIEW.json
+```
+
+The immutable intent records `fresh_bootstrap_head_epochs: 10`. The bound head
+config records `bootstrap_head_epochs: 10`, `head_epochs_per_outer: 2`, and
+`head_batch_size: 256`. Bootstrap fits all5120 teacher groups every epoch,
+giving20 minibatches per epoch and200 fresh head Adam updates in ten epochs.
+Only bootstrap uses this override; subsequent formal outer updates retain
+two head epochs. Historical configs use `bootstrap_head_epochs: null`, which
+follows their existing `head_epochs_per_outer` value.
+
+Reuse the completed, qualified v4 trajectories at
+`/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v4-sigma3-fullouter`.
+The warmup, worker, rollout and strict scorer source bytes retain their exact
+teacher identity. Full cache identity/chunk/raw-rollout SHA checks continue;
+the new head starts from fresh parameters and Adam state and never loads an
+earlier `initial.pt`. All5120 groups are used for fitting. The reported
+`training_summary`, per-epoch history and200 minibatch records are training-fit
+statistics on that same pool; they are not an independent validation set or
+holdout estimate. This route adds no generation, random comparison or evaluation
+beyond the unchanged formal recipe. The official actor/reference, actor Adam,
+scheduler, RNG and sampler also start fresh before formal outer1 through200.
+The original789 initial0 reward-probe adoption remains a separate exact-source
+route and does not import question-head or actor training state.
+
+The one focused source review adds exactly these checks to the eleven sigma3
+checks: `bootstrap_head_10epochs_200updates_training_fit_only` and
+`formal_head_twoepochs_batch256_qualified_teacher_v4_fresh_state`. Both must be
+true for the final published source map. Bind and launch independently reject
+a changed formal epoch count, batch size, missing bootstrap10 override or
+inherited actor/head state. Regenerate the initial0 source-delta document only
+after the final core and binding edits, then publish before an owned switch.
