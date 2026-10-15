@@ -75,6 +75,7 @@ class PipelineCalibrationTests(unittest.TestCase):
                 base=Path(root);(base/'logs').mkdir();pipeline=Pipeline.__new__(Pipeline)
                 pipeline.base=base;pipeline.run=dict(run_id='CPU-sampler-fixture',source_sha256={'fixture.py':'a'*64})
                 pipeline.physical_indices={0};pipeline.max_used={};pipeline.sample_error=None
+                pipeline.job_id='123';pipeline.local=False
                 pipeline.stop_sampling=threading.Event();pipeline.stage=Mock();seen=[];real=os.fsync
                 def rows(*args):
                     pipeline.stop_sampling.set()
@@ -93,6 +94,28 @@ class PipelineCalibrationTests(unittest.TestCase):
                     self.assertEqual(pipeline.stage.call_args.args[0],'FAILED')
                 else:
                     self.assertIsNone(pipeline.sample_error);pipeline.finish_sampling(None);pipeline.stage.assert_not_called()
+
+    def test_transient_query_fork_failure_records_gap_then_real_sample(self):
+        import errno
+        with tempfile.TemporaryDirectory() as root:
+            base=Path(root);(base/'logs').mkdir();pipeline=Pipeline.__new__(Pipeline)
+            pipeline.base=base;pipeline.run=dict(run_id='CPU-query-retry',source_sha256={'fixture.py':'a'*64})
+            pipeline.physical_indices={0};pipeline.max_used={};pipeline.sample_error=None
+            pipeline.job_id='123';pipeline.local=False;pipeline.stop_sampling=threading.Event()
+            calls=[]
+            def rows(*args):
+                calls.append(1)
+                if len(calls)==1:raise BlockingIOError(errno.EAGAIN,'constructed temporary fork exhaustion')
+                pipeline.stop_sampling.set()
+                return [['0','constructed-uuid','2','81920','5']]
+            with patch('reproduction.common8.run_pipeline.gpu_rows',side_effect=rows), \
+                    patch('reproduction.a800.owned_processes.identity',return_value=dict(pid=123,start_ticks=456,sid=123,uid=0)), \
+                    patch.object(pipeline.stop_sampling,'wait',return_value=False):pipeline.sample()
+            self.assertIsNone(pipeline.sample_error);self.assertEqual(len(calls),2)
+            errors=(base/'logs/gpu-sampling-errors.jsonl').read_text().splitlines()
+            self.assertEqual(len(errors),1);self.assertTrue(json.loads(errors[0])['retrying'])
+            samples=(base/'logs/gpu-samples-CPU-query-retry.jsonl').read_text().splitlines()
+            self.assertEqual(len(samples),1);self.assertEqual(json.loads(samples[0])['gpus'][0]['used_mib'],2)
 
     def test_live_or_failed_sampler_cannot_acknowledge_finished(self):
         for alive,error in ((True,None),(False,'constructed failed sampler')):
