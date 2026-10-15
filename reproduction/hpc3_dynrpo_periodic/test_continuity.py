@@ -147,5 +147,17 @@ class Continuity(TestCase):
         with self.assertRaisesRegex(ValueError,'ALLOCATION_MISMATCH'):
             validate_route(run,allocation,claim,'ACD1-9','foreign-job')
 
+    def test_hard_kill_cannot_silently_rewind_adam(self):
+        from search_g1.qprobe_periodic_refit import verify_phase_recovery
+        saved=dict(outer=25,pre_receipt_sha256='pre',head=dict(update_count=420))
+        pointer=dict(sha256='state')
+        verify_phase_recovery(saved,pointer,actual_sha='state',outer=25,pre_receipt_sha='pre',
+                              ledger=dict(possible_adam_steps=420))
+        with self.assertRaisesRegex(ValueError,'UNSAVED_ADAM_WRITES'):
+            verify_phase_recovery(saved,pointer,actual_sha='state',outer=25,pre_receipt_sha='pre',
+                                  ledger=dict(possible_adam_steps=421))
+        with self.assertRaisesRegex(ValueError,'DIFFERENT_STUDENT'):
+            verify_phase_recovery(saved,pointer,actual_sha='state',outer=50,pre_receipt_sha='pre')
+
 
 if __name__=='__main__':unittest.main(verbosity=2)

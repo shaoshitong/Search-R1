@@ -49,6 +49,15 @@ def _restore_driver_rng(state):
     random.setstate(state['python'])
 
 
+def verify_phase_recovery(saved,pointer,*,actual_sha,outer,pre_receipt_sha,ledger=None):
+    if actual_sha != pointer['sha256']:
+        raise ValueError('PERIODIC_PHASE_RECOVERY_SHA_CHANGED')
+    if saved['outer'] != outer or saved['pre_receipt_sha256'] != pre_receipt_sha:
+        raise ValueError('PERIODIC_PHASE_BELONGS_TO_DIFFERENT_STUDENT_CHECKPOINT')
+    if ledger is not None and ledger['possible_adam_steps'] > saved['head']['update_count']:
+        raise ValueError('PERIODIC_UNSAVED_ADAM_WRITES_AFTER_HARD_KILL_REQUIRE_EXPLICIT_DECISION')
+
+
 def run(trainer, manager, runtime, checkpoint):
     from reproduction.hpc3_dynrpo_periodic.state_io import save, publish
     from reproduction.common8.behavior_runtime import prepare_identity, attach_generation_identity
@@ -95,13 +104,12 @@ def run(trainer, manager, runtime, checkpoint):
     if recovery_manifest is not None and recovery_manifest.exists():
         recovery_state,recovery_ledger = recovery_root/'latest-state.pt',recovery_root/'update-ledger.json'
         pointer = json.loads(recovery_manifest.read_text())
-        if _sha(recovery_state) != pointer['sha256']:
+        actual_sha = _sha(recovery_state)
+        if actual_sha != pointer['sha256']:
             raise ValueError('PERIODIC_PHASE_RECOVERY_SHA_CHANGED')
         saved = torch.load(recovery_state,map_location='cpu',weights_only=False)
-        if saved['outer'] != outer or saved['pre_receipt_sha256'] != _sha(pre_receipt):
-            raise ValueError('PERIODIC_PHASE_BELONGS_TO_DIFFERENT_STUDENT_CHECKPOINT')
-        if recovery_ledger.exists() and json.loads(recovery_ledger.read_text())['possible_adam_steps'] > saved['head']['update_count']:
-            raise ValueError('PERIODIC_UNSAVED_ADAM_WRITES_AFTER_HARD_KILL_REQUIRE_EXPLICIT_DECISION')
+        verify_phase_recovery(saved,pointer,actual_sha=actual_sha,outer=outer,
+            pre_receipt_sha=_sha(pre_receipt),ledger=json.loads(recovery_ledger.read_text()) if recovery_ledger.exists() else None)
         runtime.head = PeriodicQwenProbe(restore_engine(saved['head'],device=runtime.config['head_device']),
             runtime.feature_spec_sha,completed_outer=outer,actor_snapshot_id=actor_id,
             phases=runtime.head.phases)

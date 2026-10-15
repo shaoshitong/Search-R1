@@ -59,6 +59,12 @@ def restore_engine(state, *, device='cpu', epochs=20):
     engine.native_implementation = copy.deepcopy(state['native_implementation'])
     if engine._adam_steps() != engine.update_count or not engine.optimizer.state:
         raise ValueError('PERIODIC_PROBE_ADAM_STATE_MISSING_OR_DIVERGENT')
+    if any(not torch.isfinite(p).all() for p in engine.model.parameters()):
+        raise ValueError('PERIODIC_RESTORED_PROBE_HAS_NONFINITE_PARAMETERS')
+    for value in engine.optimizer.state.values():
+        if any(k not in value or not torch.isfinite(value[k]).all()
+               for k in ('step','exp_avg','exp_avg_sq')):
+            raise ValueError('PERIODIC_RESTORED_ADAM_INCOMPLETE_OR_NONFINITE')
     return engine
 
 

@@ -76,6 +76,8 @@ class PeriodicRuntime(QProbeRuntime):
         return copy.deepcopy(self.initial_head_adoption)
 
     def score(self, questions):
+        if self.execution_phase != 'STUDENT_READY':
+            raise ValueError('PERIODIC_NEXT_STUDENT_OUTER_REQUIRES_COMPLETED_PROBE_PHASE')
         questions = list(questions)
         # The fixed initial bank is metadata only here; no feature-cache reader.
         provider = encode(self.trainer,questions,self.cache)
@@ -117,7 +119,16 @@ class PeriodicRuntime(QProbeRuntime):
             raise ValueError('PERIODIC_CANNOT_SAVE_PENDING_ACTOR_LABELS')
         path = Path(path)
         head_path = path.with_name(path.name+'.head.pt')
-        head_receipt = self.head.save(head_path,actor_snapshot_id=actor_snapshot_id)
+        from search_g1.full_state_restore import equal_tree
+        if head_path.exists():
+            existing = PeriodicQwenProbe.load(head_path,expected_actor_snapshot_id=actor_snapshot_id,
+                expected_feature_spec_sha=self.feature_spec_sha,expected_checkpoint_sha=_sha(head_path))
+            equal_tree(existing._engine.state_dict(),self.head._engine.state_dict())
+            equal_tree(existing.phases,self.head.phases)
+            head_receipt = dict(path=str(head_path),bytes=head_path.stat().st_size,sha256=_sha(head_path))
+            del existing
+        else:
+            head_receipt = self.head.save(head_path,actor_snapshot_id=actor_snapshot_id)
         state = dict(schema_version=1,config=self.config,feature_spec_sha=self.feature_spec_sha,
             actor_snapshot_id=actor_snapshot_id,completed_outer=self.completed_outer,
             completed_attempts=sorted(self.completed_attempts),head_version=self.version,
@@ -126,7 +137,11 @@ class PeriodicRuntime(QProbeRuntime):
             head_file=head_path.name,head_sha256=_sha(head_path),candidate_state=candidate_state,
             reward_probe_version=reward_probe_version,head_receipt=head_receipt,
             head_kind=HEAD_KIND,cache_binding=self.cache_binding,initial_head_adoption=self.initial_head_adoption)
-        receipt = _atomic_save(path,state)
+        if path.exists():
+            equal_tree(torch.load(path,map_location='cpu',weights_only=False),state)
+            receipt = dict(path=str(path),bytes=path.stat().st_size,sha256=_sha(path))
+        else:
+            receipt = _atomic_save(path,state)
         return dict(receipt,actor_snapshot_id=actor_snapshot_id,completed_outer=self.completed_outer,
             head_version=self.version,feature_spec_sha=self.feature_spec_sha,head=head_receipt,
             execution_phase=self.execution_phase)
