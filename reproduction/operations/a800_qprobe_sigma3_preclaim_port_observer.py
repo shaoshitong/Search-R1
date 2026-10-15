@@ -210,6 +210,8 @@ def local_inputs(support):
     assert all(value is True for value in review['checks'].values())
     launch=values[str(LAUNCH)];assert launch['action']=='launch' and launch['exit_code']==0 and len(launch['observations'])==1
     first=launch['observations'][0]
+    assert first['stage']=='PREPARED_PIPELINE_LAUNCHED'
+    first={key:value for key,value in first.items() if key!='stage'}
     assert (first['run_id'],first['execution_id'],first['source_commit'],first['pid'],first['start_ticks'],first['sid'])==(RUN,EXECUTION,SOURCE,PID,TICKS,PID)
     inspected=values[str(INSPECT)];assert inspected['action']=='inspect' and inspected['exit_code']==0 and inspected['observations']
     for row in inspected['observations']:
@@ -240,7 +242,7 @@ def main():
     route=module.ssh_command(remote);assert route[-1].startswith('python3 -c ')
     route[-1]=shlex.quote('/data/search-g1/env/bin/python')+' -c '+shlex.quote(remote)
     assert local_inputs(support)==payload
-    stem='qprobe-sigma3-preclaim-port-read-once';claim=ROOT/'preparation'/(stem+'.json');output=claim.with_name(claim.stem+'.result.json')
+    stem='qprobe-sigma3-preclaim-port-read-once-v2';claim=ROOT/'preparation'/(stem+'.json');output=claim.with_name(claim.stem+'.result.json')
     request=dict(role='a800_qprobe_sigma3_preclaim_port_one_read_claim',run_id=RUN,execution_id=EXECUTION,source_commit=SOURCE,
         original_pipeline_birth=dict(pid=PID,start_ticks=TICKS,sid=PID),operator_commit=operator_commit,operator_sha256=hashlib.sha256(raw).hexdigest(),
         operator_publication_sha256=support.sha(args.operator_publication),remote_code_sha256=hashlib.sha256(remote.encode()).hexdigest(),
