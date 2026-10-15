@@ -34,7 +34,11 @@ def atomic(path, data):
 
 def env():
     values = dict(os.environ)
-    values['PYTHONPATH'] = ':'.join(map(str, [TOOLS, SOURCE, SOURCE/'verl',
+    built = json.loads((BASE/'runtime/pytrec-eval-05-hpc-build/build-complete.json').read_text())
+    extension = pathlib.Path(built['extension'])
+    assert built['status'] == 'PYTREC_05_NATIVE_IMPORT_METRICS_PASS'
+    assert sha(extension) == built['sha256']
+    values['PYTHONPATH'] = ':'.join(map(str, [TOOLS, SOURCE, SOURCE/'verl', extension.parent,
         BASE/'runtime/flash-attn-281-hpc-build/lib',
         BASE/'source/author-native/env/lib/python3.11/site-packages']))
     values.update(HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1',

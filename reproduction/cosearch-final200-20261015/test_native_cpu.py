@@ -2,7 +2,9 @@
 import asyncio
 import json
 import types
-from common import OUT, atomic
+import sys
+from common import OUT, atomic, env
+sys.path[:0] = env()['PYTHONPATH'].split(':')
 
 
 async def main():
