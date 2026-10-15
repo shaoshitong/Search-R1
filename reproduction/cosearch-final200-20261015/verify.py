@@ -44,7 +44,10 @@ def main():
         for key,value in expected.items():
             assert row[key]==value,(index,key)
         for event in row['reranker_events']:
-            assert event['num_retrieved_docs']==50
+            if not event.get('model_tool_input_error', False):
+                assert event['num_retrieved_docs']==50
+            else:
+                assert not event['reranker_success']
             if event['reranker_success']:
                 assert event['num_reranked_docs']==5
                 rerank_success+=1

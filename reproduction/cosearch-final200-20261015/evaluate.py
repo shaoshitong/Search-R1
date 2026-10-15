@@ -63,13 +63,23 @@ async def main():
             return state
 
         async def _call_tool(self, tool_call, tools_kwargs, agent_data):
+            try:
+                arguments = json.loads(tool_call.arguments)
+                model_input_error = (tool_call.name not in self.tools or
+                    not isinstance(arguments, dict) or
+                    not isinstance(arguments.get('query'), str) or
+                    not arguments['query'].strip())
+            except (ValueError, TypeError):
+                model_input_error = True
             response = await super()._call_tool(tool_call, tools_kwargs, agent_data)
             _, _, detail = response
-            if detail.get('reranker_crashed'):
+            if detail.get('reranker_crashed') and not model_input_error:
                 raise RuntimeError('Infrastructure failure: '+str(detail))
-            self.reranks.append({key: detail.get(key) for key in
+            event = {key: detail.get(key) for key in
                 ['reranker_success','reranker_fallback','reranker_fallback_reason',
-                 'num_retrieved_docs','num_reranked_docs','sub_query']})
+                 'num_retrieved_docs','num_reranked_docs','sub_query']}
+            event['model_tool_input_error'] = model_input_error
+            self.reranks.append(event)
             return response
 
     results = {}
