@@ -32,6 +32,15 @@ def native(outer):
  if identity.get('code_commit')!=source or identity.get('completed_step')!=outer:raise ValueError('Wrong manifest identity')
  if mmeta['sha256']!=receipt.get('history_manifest_sha256') or mmeta['sha256']!=receipt.get('source_manifest_sha256'):raise ValueError('Archive differs from original writer manifest SHA')
  return dict(observed_epoch=time.time(),source_commit=source,tensor_contents_read=False,independent_cold_reload_performed=False,outer=outer,receipt_path=str(path),receipt_sha256=rmeta['sha256'],manifest_sha256=mmeta['sha256'],recorded_original_manifest_sha256=receipt['source_manifest_sha256'],archive_matches_original_manifest=True,manifest_status=manifest.get('status'),identity=identity,receipt=receipt)
+if cfg.get('dev_outer') is not None:
+ path=run/'output/validation-cost/validation-506917-23.json'
+ result=dict(summary_schema='tree_nested_dev120_cost_control_readback_v1',observed_epoch=time.time(),source_commit=source,run=str(run),requested_outer=120,path=str(path),exists=path.is_file(),source_file=None,status=None,rows=None,actual_dev_complete=False,dev_f1=None,dev_em=None,control=None,read_only=True,tensor_contents_read=False,raw_answers_or_jsonl_read=False)
+ if result['exists']:
+  value,meta=read(path);complete=value.get('status')=='VALIDATION_COST_COMPLETE' and value.get('actual_completed_outer')==120 and value.get('evaluated_rows')==512
+  fields=('status','phase','actual_completed_outer','evaluated_rows','dataset_rows','start_epoch','end_epoch','wall_seconds','ledger_sha256','error','code_commit','config_sha256')
+  result.update(source_file=meta,status=value.get('status'),rows=value.get('evaluated_rows'),actual_dev_complete=complete,control={k:value[k] for k in fields if k in value},source_original_keys=sorted(value))
+  if complete:result.update(dev_f1=value.get('metrics',{}).get('val/f1/all'),dev_em=value.get('metrics',{}).get('val/em/all'));result['control']['metrics']=value.get('metrics')
+ print(json.dumps(dict(mode='dev',dev=result),allow_nan=False));raise SystemExit
 if cfg['native_outer'] is not None:
  print(json.dumps(dict(mode='native',native=native(cfg['native_outer'])),allow_nan=False));raise SystemExit
 started=time.time();first,last=cfg['first'],cfg['last']
@@ -83,19 +92,22 @@ def main():
     p.add_argument('--base',type=Path,required=True)
     p.add_argument('--ssh-helper',type=Path,default=Path(__file__).with_name('ssh_retained18.py'))
     p.add_argument('--native-outer',type=int)
+    p.add_argument('--dev-outer',type=int)
     p.add_argument('--first',type=int,default=107)
     p.add_argument('--last',type=int,default=119)
     args=p.parse_args()
     if args.native_outer is not None and not 107<=args.native_outer<=120:raise ValueError('Only native metadata107..120 permitted')
+    if args.dev_outer is not None and (args.dev_outer!=120 or args.native_outer is not None):raise ValueError('Only separate fixed dev120 control read permitted')
     if (args.first,args.last)!=(107,119):raise ValueError('Only fixed historical107..119 gap permitted')
     spec=importlib.util.spec_from_file_location('gap_route',args.ssh_helper)
     helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
-    cfg=dict(native_outer=args.native_outer,first=args.first,last=args.last,dev=[110,115])
+    cfg=dict(native_outer=args.native_outer,dev_outer=args.dev_outer,first=args.first,last=args.last,dev=[110,115])
     code=REMOTE.replace('__CONFIG__',repr(cfg))
     response=helper.run('env CUDA_VISIBLE_DEVICES= python3 -B -c '+shlex.quote(code),timeout=60)
     if response.returncode:raise RuntimeError('Read-only gap unavailable; current unknown: '+response.stderr[-1600:])
     payload=json.loads(response.stdout)
     if payload['mode']=='native':items=[(f'NATIVE_HISTORY_{args.native_outer}_METADATA_READBACK.json',payload['native'])]
+    elif payload['mode']=='dev':items=[('DEV120_COST_CONTROL_READBACK.json',payload['dev'])]
     else:
         gap=payload['gap'];gap['collector_source_sha256']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest();gap['remote_program_sha256']=hashlib.sha256(code.encode()).hexdigest();gap['ssh_helper_sha256']=hashlib.sha256(args.ssh_helper.read_bytes()).hexdigest()
         items=[('HISTORICAL_GAP107_119_SCALAR_READBACK.json',gap)]+[(f'NATIVE_HISTORY_{x["outer"]}_METADATA_READBACK.json',x) for x in gap['native_metadata_readbacks']]
