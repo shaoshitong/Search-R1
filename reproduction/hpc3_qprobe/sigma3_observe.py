@@ -27,11 +27,24 @@ def rows(path):
         incomplete_tail_ignored=len(raw)-len(complete),path=str(path))
 
 
+def producer():
+    recovery=BASE/'preparation/recovery721449-submission.json'
+    if recovery.exists():
+        value=json.loads(recovery.read_text())
+        if value.get('returncode')!=0 or value.get('commit')!=SOURCE or value.get('recovery_of')!='721449' or not str(value.get('job','')).isdecimal():
+            raise ValueError('SIGMA3_RECOVERY_SUBMISSION_NOT_ACCEPTED')
+        return value['job']
+    if (BASE/'preparation/recovery721449-submit-claim.json').exists():
+        raise ValueError('SIGMA3_RECOVERY_OUTCOME_UNKNOWN_INSPECT_EXISTING_NO_REPLAY')
+    return PRODUCER
+
+
 def observe():
     if os.getuid()!=14090 or BASE.resolve()!=BASE:raise ValueError('SIGMA3_OBSERVER_OWNER_OR_ROOT_DIFFERS')
-    out=dict(epoch=time.time(),base=str(BASE),job=PRODUCER,training_mutations=0,goal_complete=False)
-    out['accounting']=subprocess.check_output(['sacct','-nP','-X','-j',PRODUCER,'--format=JobID,State,ExitCode,UID,AllocTRES,NodeList'],text=True,timeout=20)
-    out['queue']=subprocess.check_output(['squeue','-h','-j',PRODUCER,'-o','%i|%T|%R'],text=True,timeout=20)
+    job=producer()
+    out=dict(epoch=time.time(),base=str(BASE),job=job,training_mutations=0,goal_complete=False)
+    out['accounting']=subprocess.check_output(['sacct','-nP','-X','-j',job,'--format=JobID,State,ExitCode,UID,AllocTRES,NodeList'],text=True,timeout=20)
+    out['queue']=subprocess.check_output(['squeue','-h','-j',job,'-o','%i|%T|%R'],text=True,timeout=20)
     settings=document(BASE/'preparation/sigma3-experiment.json')
     if not settings or settings['value']['head_overrides']!=LOSS:raise ValueError('SIGMA3_OBSERVED_LOSS_SETTINGS_DIFFERS')
     out['loss_settings']=settings
