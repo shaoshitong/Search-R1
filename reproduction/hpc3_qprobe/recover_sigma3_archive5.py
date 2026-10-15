@@ -163,7 +163,8 @@ def successful_du(path,*,now=None):
     observer_source=actual.get('source') or {}
     filename=Path(observer_source.get('path','storage_observer_sigma3_archive5_failure.py')).stem
     need(filename in ('storage_observer_sigma3_archive5_failure',
-                      'storage_observer_sigma3_archive5_permission_repaired'),
+                      'storage_observer_sigma3_archive5_permission_repaired',
+                      'storage_observer_sigma3_archive5_permission_second'),
          'only the exact original or repaired storage diagnostic is permitted')
     observer,publication=reader.load_fixed(observer_source.get('commit'),
         filename,'_unused_control')
