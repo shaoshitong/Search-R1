@@ -805,7 +805,7 @@ def ray_evaluate(base):
     need(not ray.is_initialized(), 'PRIVATE_FRESH_RAY_REQUIRED')
     ray.init(address='local', num_gpus=4, num_cpus=16,
         _temp_dir=verify_ray(run, run['ray_tmp_dir']),
-        runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'true', 'NCCL_DEBUG': 'WARN'}})
+        runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'false', 'RAYON_NUM_THREADS': '1', 'NCCL_DEBUG': 'WARN'}})
     try:
         pool = RayResourcePool([4], use_gpu=True, max_colocate_count=1,
                                name_prefix='cp200-eval-'+run['native_ray_execution_id'][:12])
