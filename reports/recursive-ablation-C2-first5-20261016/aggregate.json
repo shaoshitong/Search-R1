@@ -1,0 +1,253 @@
+{
+  "protocol": "recursive_bran_ablation150_closed_milestone_v1",
+  "time": 1792098196.6358008,
+  "reference_condition": "A-original",
+  "conditions": {
+    "A-original": {
+      "condition_id": "A-original",
+      "run_id": "retained-A-native-multiple-entries",
+      "config_sha256": null,
+      "world_size": 8,
+      "milestones": {
+        "5": {
+          "outer": 5,
+          "dev512": {
+            "all": {
+              "count": 512,
+              "hits": 96,
+              "em": 0.1875,
+              "f1": 0.2506663069679139
+            },
+            "nq": {
+              "count": 256,
+              "hits": 54,
+              "em": 0.2109375,
+              "f1": null
+            },
+            "hotpotqa": {
+              "count": 256,
+              "hits": 42,
+              "em": 0.1640625,
+              "f1": null
+            }
+          },
+          "dev_status": "COMPLETE_NATIVE_AGGREGATE",
+          "native_actual_adam_each_rank": null,
+          "receipts_complete_through_outer": false,
+          "receipt_adam_each_rank": null,
+          "receipt_skips_each_rank": null,
+          "scalar_coverage_count": 0,
+          "complete_scalar_prefix": false,
+          "generated_tokens_recorded_sum": null,
+          "complete_generated_token_prefix": false,
+          "allocated_gpu_hours_from_recorded_outer_wall": null,
+          "recorded_stage_seconds_sum": {},
+          "tree": null,
+          "boundary_policy_loss": null,
+          "boundary_train_selected_reward": null,
+          "cost_scope": "Recorded emitted tokens include padding and discarded tails per native convention. Stage sums overlap; do not add components to total step. GPU hours = configured world size × recorded outer wall, not active GPU utilization or allocation lease.",
+          "recorded_boundary_scalars": {
+            "actor/lr": 8.771929824561403e-08,
+            "actor/lr_before_outer": 7.017543859649122e-08,
+            "actor/scheduler_step_after_outer": 5.0,
+            "actor/scheduler_step_before_outer": 4.0,
+            "rollout/generated_tokens": 823617.0,
+            "rollout/raw_emitted_tokens": 823617.0,
+            "timing_s/adv": 11.536676481366158,
+            "timing_s/gen": 506.69774331338704,
+            "timing_s/ref": 10.482818650081754,
+            "timing_s/save_checkpoint": 9.872019290924072e-07,
+            "timing_s/stage_testing": 7.3229894042015076e-06,
+            "timing_s/step": 1550.2230439959094,
+            "timing_s/testing": 750.9191756695509,
+            "timing_s/update_actor": 207.7076744446531,
+            "training/actual_adam_calls_per_rank": 100.0,
+            "training/actual_outer_updates": 5.0,
+            "training/attempt_id": 5.0,
+            "training/consumed_sampling_rounds": 5.0,
+            "training/normal_guard_rounds": 0.0,
+            "training/optimizer_write_rounds": 5.0,
+            "training/refused_attempts": 0.0,
+            "training/zero_write_sampling_rounds": 0.0
+          },
+          "cost_coverage": "Retained boundary scalars only; no complete prefix cost available in reference pack"
+        }
+      },
+      "sampled_memory": null
+    },
+    "C2-random-final": {
+      "condition_id": "C2-random-final",
+      "run_id": "350fddf4b8804a6384c263b6398b5df2",
+      "config_sha256": "171f32844dc30fbf741c42b25b244f84c6992b5788879fdd182433b6a0e3685d",
+      "world_size": 8,
+      "milestones": {
+        "5": {
+          "outer": 5,
+          "dev512": {
+            "all": {
+              "count": 512,
+              "hits": 100,
+              "em": 0.1953125,
+              "f1": 0.25825239250051824
+            },
+            "nq": {
+              "count": 256,
+              "hits": 59,
+              "em": 0.23046875,
+              "f1": 0.3194713643318343
+            },
+            "hotpotqa": {
+              "count": 256,
+              "hits": 41,
+              "em": 0.16015625,
+              "f1": 0.19703342066920193
+            }
+          },
+          "dev_status": "COMPLETE_NATIVE_AGGREGATE",
+          "native_actual_adam_each_rank": 100.0,
+          "receipts_complete_through_outer": true,
+          "receipt_adam_each_rank": 100,
+          "receipt_skips_each_rank": 0,
+          "scalar_coverage_count": 5,
+          "complete_scalar_prefix": true,
+          "generated_tokens_recorded_sum": 4236381.0,
+          "complete_generated_token_prefix": true,
+          "allocated_gpu_hours_from_recorded_outer_wall": 9.274306612761897,
+          "recorded_stage_seconds_sum": {
+            "timing_s/gen": 2148.553569480777,
+            "timing_s/ref": 56.84214188810438,
+            "timing_s/adv": 56.82216979749501,
+            "timing_s/update_actor": 881.8408075897023,
+            "timing_s/stage_testing": 2.9319897294044495e-05,
+            "timing_s/step": 4173.437975742854,
+            "timing_s/testing": 742.057609221898,
+            "timing_s/save_checkpoint": 1.017935574054718e-06
+          },
+          "tree": null,
+          "boundary_policy_loss": 0.0001783846819307655,
+          "boundary_train_selected_reward": 0.16289062798023224,
+          "cost_scope": "Recorded emitted tokens include padding and discarded tails per native convention. Stage sums overlap; do not add components to total step. GPU hours = configured world size × recorded outer wall, not active GPU utilization or allocation lease.",
+          "recorded_boundary_scalars": {
+            "actor/lr": 8.771929824561403e-08,
+            "actor/lr_before_outer": 7.017543859649122e-08,
+            "actor/scheduler_step_after_outer": 5.0,
+            "actor/scheduler_step_before_outer": 4.0,
+            "timing_s/adv": 11.454097437672317,
+            "timing_s/gen": 507.8898971751332,
+            "timing_s/ref": 11.128633712418377,
+            "timing_s/save_checkpoint": 1.017935574054718e-06,
+            "timing_s/stage_testing": 8.643604815006256e-06,
+            "timing_s/step": 1546.3085380522534,
+            "timing_s/testing": 742.057609221898,
+            "timing_s/update_actor": 215.61464181821793,
+            "training/actual_adam_calls_per_rank": 100,
+            "training/actual_outer_updates": 5,
+            "training/attempt_id": 5,
+            "training/consumed_sampling_rounds": 5,
+            "training/normal_guard_rounds": 0,
+            "training/optimizer_write_rounds": 5,
+            "training/refused_attempts": 0,
+            "training/zero_write_sampling_rounds": 0
+          },
+          "cost_coverage": {
+            "recorded_only": true,
+            "end_to_end_coverage_complete": false,
+            "recovered_outer1_original_sampling_excluded": false,
+            "original_sampling_cost_unknown": false
+          }
+        }
+      },
+      "sampled_memory": null
+    }
+  },
+  "comparisons": {
+    "C2-random-final": {
+      "5": {
+        "status": "COMPLETE_AGGREGATE",
+        "aggregate_difference_pp": 0.78125,
+        "scope": "Same-outer aggregate EM difference; no paired or causal claim"
+      }
+    }
+  },
+  "limitations": [
+    "Native scalars/receipts are not independent Adam tensor reloads.",
+    "TRAIN cohorts and selected reward are not fixed dev EM.",
+    "Latest human scope is aggregate EM; no paired/bootstrap/replay.",
+    "Only existing recorded native finite/scheduler scalar evidence is checked; no tensor load, model replay, new inference, or independent Adam reload is performed."
+  ],
+  "milestone_report_complete": true,
+  "goal_complete": false,
+  "requested_label": "C2-random-final",
+  "milestone": 5,
+  "reuse_of": null,
+  "generated_new_training": true,
+  "reference_provenance": {
+    "captured_line_hash_convention": "UTF-8 of exact retained line string, without line terminator",
+    "captured_line_sha256": "eb27d6ad7d1b3a2916daa2475a6952c38c91586aed9b40113a9574b1b713514e",
+    "captured_records_sha256": "8a36f069425e1803519a9d28c59a18d2ed04e1c1bd94f6511b68b1551c6bf96c",
+    "native_log": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/logs/training.log",
+    "new_inference": false
+  },
+  "native_evidence": {
+    "boundary": {
+      "path": "/dataset/shaoshitong/recursive-ablation150-20261014/C2-random-final/checkpoints/training_state/global_step_5/post-evaluation/manifest.json",
+      "sha256": "0ba8f3698b6a58bb8ec72ccc9c9a9d0968c0ba926b7d62f0130bdfbb64a72d08",
+      "boundary_phase": "post-evaluation",
+      "recorded_full_worker_state_finite": true,
+      "scheduler_each_rank": 5,
+      "native_tensor_reload_performed": false
+    },
+    "dev512": {
+      "all": {
+        "count": 512,
+        "hits": 100,
+        "em": 0.1953125,
+        "f1": 0.25825239250051824
+      },
+      "nq": {
+        "count": 256,
+        "hits": 59,
+        "em": 0.23046875,
+        "f1": 0.3194713643318343
+      },
+      "hotpotqa": {
+        "count": 256,
+        "hits": 41,
+        "em": 0.16015625,
+        "f1": 0.19703342066920193
+      }
+    },
+    "native_completion": {
+      "path": "/dataset/shaoshitong/recursive-ablation150-20261014/C2-random-final/output/attempt-f4a75df68f084f90997dbaa2f9e5ca8c/completed-outers.jsonl",
+      "record_sha256": "1aa2e9b9fcc98a5a87333ca406ffdb7d192c57d7693b743c738e57d55c886a43"
+    },
+    "native_log": {
+      "path": "/dataset/shaoshitong/recursive-ablation150-20261014/C2-random-final/logs/training.log",
+      "captured_line_sha256": "eb6750156e86e4bd28d9d7f37254c8ce9e7b13490a86235f66c0d5580dec8474",
+      "normalization": "ANSI/process prefix removed only"
+    },
+    "adam_receipts": [
+      {
+        "path": "/dataset/shaoshitong/recursive-ablation150-20261014/C2-random-final/output/attempt-f4a75df68f084f90997dbaa2f9e5ca8c/attempt-results/attempt-000001.json",
+        "sha256": "1fc18f1b47290d55309a4ecad4a4ca9ae5aa51619cd34e490eae4f6f0e061148"
+      },
+      {
+        "path": "/dataset/shaoshitong/recursive-ablation150-20261014/C2-random-final/output/attempt-f4a75df68f084f90997dbaa2f9e5ca8c/attempt-results/attempt-000002.json",
+        "sha256": "4da2ce3cdb5af268baa82cf0a4fae8b283007006596196c885933b9b0e7c58ea"
+      },
+      {
+        "path": "/dataset/shaoshitong/recursive-ablation150-20261014/C2-random-final/output/attempt-f4a75df68f084f90997dbaa2f9e5ca8c/attempt-results/attempt-000003.json",
+        "sha256": "0d979c7d9c84ae90358ac1a434972c0769cde2cec7b5064ffddba7191c32f3da"
+      },
+      {
+        "path": "/dataset/shaoshitong/recursive-ablation150-20261014/C2-random-final/output/attempt-f4a75df68f084f90997dbaa2f9e5ca8c/attempt-results/attempt-000004.json",
+        "sha256": "ac47db6736c25d1c2d4e90bb2b704852db67f064ff358654faf6d1c0585ae922"
+      },
+      {
+        "path": "/dataset/shaoshitong/recursive-ablation150-20261014/C2-random-final/output/attempt-f4a75df68f084f90997dbaa2f9e5ca8c/attempt-results/attempt-000005.json",
+        "sha256": "c0ab83d8edff65e32e77d508bb8056e5dc92441dbbc655ec7ed834338b87bf52"
+      }
+    ]
+  },
+  "configuration_receipt_sha256": "fae476919fe901c9062e4afe41195c96cafbcad45c8ff0a0691cae783a7a399e"
+}
