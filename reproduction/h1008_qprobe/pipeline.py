@@ -64,25 +64,43 @@ def main():
             TRITON_CACHE_DIR=str(base/'cache/triton'),TORCHINDUCTOR_CACHE_DIR=str(base/'cache/inductor'),OMP_NUM_THREADS='8')
         for n in ('tmp','cache/hf','cache/triton','cache/inductor','artifacts'):(base/n).mkdir(parents=True,exist_ok=True)
         cache=base/'question-features'
-        command=[str(base/'env/bin/python'),'-m','search_g1.qprobe_prepare','precompute','--data',str(base/'data'),
-            '--model',config['official_model'],'--official-manifest',config['official_manifest'],'--cache-dir',str(cache),
-            '--sequence-probe','--device','cuda:0','--batch-size','8']
-        once(base/'logs/sequence-precompute-intent.json',dict(command=command,run_id=run['run_id'],actual_actor_updates=0))
-        from reproduction.a800.owned_processes import OwnedProcesses
-        owned=OwnedProcesses(base/'logs/sequence-precompute-process-ledger.json',run['run_id'])
-        try:
-            assert native._interrupt_requested is None,'Interrupted before feature preparation'
-            process=owned.start('sequence-precompute',command,env,base/'logs/sequence-precompute.log',base/'repo')
-            while True:
-                owned.observe('sequence-precompute')
-                assert native._interrupt_requested is None,'Feature preparation interrupted; owned cleanup follows'
-                code=process.poll()
-                if code is not None:break
-                time.sleep(1)
-            owned.jobs['sequence-precompute']['exit_code']=code;owned.save()
-        finally:owned.stop_all()
-        once(base/'logs/sequence-precompute-exit.json',dict(exit_code=code,run_id=run['run_id'],checked_unix=time.time()))
-        assert code==0,'Preserve precompute logs/staging; do not silently replay'
+        reused=config.get('precomputed_question_features')
+        if reused:
+            import hashlib
+            from search_g1.qprobe_sequence import SequenceCache
+            from search_g1.qprobe_features import sha_json, sha_file
+            assert cache.resolve()==Path(reused['path']).resolve()
+            assert sha_file(cache/'manifest.json')==reused['manifest_sha256']
+            features=SequenceCache(cache)
+            assert features.manifest['count']==169028
+            assert features.spec['train_parquet_sha256']==run['input_sha256']['train.parquet']
+            assert features.spec['encoder_revision']==run['model_revision']
+            assert features.spec['encoder_files_sha256']==sha_json(run['initial_model_sha256'])
+            assert features.spec['official_manifest_sha256']==sha_file(config['official_manifest'])
+            once(base/'logs/sequence-feature-reuse.json',dict(source=str(cache.resolve()),
+                manifest_sha256=reused['manifest_sha256'],actor_optimizer_state_inherited=False,
+                full_sha_checked_by_binding=True,run_id=run['run_id']))
+            del features
+        else:
+            command=[str(base/'env/bin/python'),'-m','search_g1.qprobe_prepare','precompute','--data',str(base/'data'),
+                '--model',config['official_model'],'--official-manifest',config['official_manifest'],'--cache-dir',str(cache),
+                '--sequence-probe','--device','cuda:0','--batch-size','8']
+            once(base/'logs/sequence-precompute-intent.json',dict(command=command,run_id=run['run_id'],actual_actor_updates=0))
+            from reproduction.a800.owned_processes import OwnedProcesses
+            owned=OwnedProcesses(base/'logs/sequence-precompute-process-ledger.json',run['run_id'])
+            try:
+                assert native._interrupt_requested is None,'Interrupted before feature preparation'
+                process=owned.start('sequence-precompute',command,env,base/'logs/sequence-precompute.log',base/'repo')
+                while True:
+                    owned.observe('sequence-precompute')
+                    assert native._interrupt_requested is None,'Feature preparation interrupted; owned cleanup follows'
+                    code=process.poll()
+                    if code is not None:break
+                    time.sleep(1)
+                owned.jobs['sequence-precompute']['exit_code']=code;owned.save()
+            finally:owned.stop_all()
+            once(base/'logs/sequence-precompute-exit.json',dict(exit_code=code,run_id=run['run_id'],checked_unix=time.time()))
+            assert code==0,'Preserve precompute logs/staging; do not silently replay'
         from reproduction.common8.qprobe_bind import bind
         from reproduction.common8.stage_retrieval import ASSETS
         from search_g1.qprobe_features import sha_json
