@@ -338,11 +338,12 @@ def run(base):
                 ['--train-cache', train_cache, '--test-cache', c['cached_features'],
                  '--test-manifest-sha', c['cached_features_manifest_sha256'], '--model-dir', c['model_dir'],
                  '--output', str(base/'train'), '--epoch', str(epoch), '--epochs', str(c.get('epochs', 1000)),
-                 '--global-batch', str(c.get('global_batch', 25600)), '--save-every', str(c.get('save_every', 10)),
+                 '--global-batch', str(c.get('global_batch', 256)), '--save-every', str(c.get('save_every', 10)),
                  '--learning-rate', str(c.get('learning_rate', .0003)), '--seed', str(c.get('seed', 1729))]))
             current = read(base/'train/latest.json')
-            if current['epoch'] != epoch or len(current['actual_adam_steps_per_rank']) != 8:
-                raise RuntimeError('Actual head boundary incomplete')
+            expected_adam = epoch * ((25600 + int(c.get('global_batch',256))-1) // int(c.get('global_batch',256)))
+            if current['epoch'] != epoch or current['actual_adam_steps_per_rank'] != [expected_adam]*8:
+                raise RuntimeError('Actual eight-rank head Adam boundary incomplete')
             snapshot_pool(base, epoch, c, current)
             stage('EPOCH_COMPLETE', actual_adam_steps_per_rank=current['actual_adam_steps_per_rank'])
             if epoch > 1:
