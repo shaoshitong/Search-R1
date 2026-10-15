@@ -104,6 +104,49 @@ def parent_qualification():
   token_feature_declared_files=manifest['files'],full_feature_sha_verification_delegated_to_cpu_prepare=True,
   physical_gpu_inventory=gpu_inventory,eligible_idle_nonauxiliary_indices=eligible_idle_indices,gpu_query_started_unix=gpu_query_started_unix,
   old_actual_cleanup=old_cleanup,checked_unix=time.time())
+def completion_resource_audit():
+ pending=dict(status='pending',accepted=False,metadata_only=True,no_remote_mutation=True,no_tensor_readback=True,nvml_queries=0)
+ nvml_queries=0
+ if not (output/'ready.json').is_file() or not (base/'logs/run-exit.json').is_file():
+  return dict(pending,reason='ready_and_successful_worker_exit_not_both_recorded')
+ try:
+  exit_record=document(base/'logs/run-exit.json')
+  if exit_record['exit_code']!=0:return dict(pending,reason='worker_exit_not_successful',worker_exit_code=exit_record['exit_code'])
+  launch=document(base/'logs/run-launch.json');claim=document(output/'run-claim.json');ready=document(output/'ready.json');prepared=document(output/'prepared.json')
+  keys=('pid','start_ticks','sid','uid');worker=launch['process'];producer={key:claim[key] for key in keys}
+  assert all(type(row[key]) is int for row in (worker,producer) for key in keys)
+  assert worker['pid']==worker['sid']==producer['sid'] and worker['pid']!=producer['pid'] and worker['uid']==producer['uid']==os.getuid()
+  assert all(row['pid']>0 and row['start_ticks']>0 for row in (worker,producer))
+  assert {key:ready[key] for key in keys}==producer and ready['hostname']==claim['hostname']==socket.gethostname()
+  assert ready['source_commit']==launch['source_commit']==ready['task_config']['source_commit']==intent['source_commit']
+  assert ready['task_config']==claim['task_config']==prepared['task_config'] and ready['task_config']['resume_token_feature_output']==intent['resume_token_feature_output']
+  assert ready['stage']=='TOKEN_BINARY_FRESH_HEAD_WARMUP10_COMPLETE' and prepared['stage']=='TOKEN_BINARY_HEAD_ONLY_CPU_PREPARED'
+  assert ready['source_map_sha256']==prepared['source_map_sha256']==hashlib.sha256(canonical(intent['source_sha256'])).hexdigest()
+  assert ready['prepared_sha256']==sha(output/'prepared.json') and ready['headfit_only'] is True and ready['encoder_loaded_in_this_process'] is False and ready['encoded_questions_this_process']==0
+  assert ready['encoder_process_exited_before_head_fit'] is True and ready['formal_training_started'] is False and ready['automatic_formal_200_launch'] is False
+  assert ready['physical_index']==launch['physical_index'] and ready['physical_index'] not in (5,6) and ready['physical_gpu_uuid']==launch['gpu_uuid']
+  assert ready['questions']==5120 and ready['head_optimizer_updates']==ready['head_adam_steps']==200 and ready['epoch_records']==11 and ready['minibatch_records']==200
+  metrics_path=output/'warmup-metrics.json';metrics=document(metrics_path,2*1024**2);metrics_sha=sha(metrics_path,2*1024**2)
+  assert ready['metrics_sha256']==metrics_sha and metrics['role']=='token_binary_question_head_training_warmup'
+  assert metrics['training_groups']==5120 and metrics['fit_epochs']==10 and metrics['actual_head_adam_updates']==metrics['expected_head_adam_updates']==200
+  assert metrics['actor_updated'] is False and metrics['reference_updated'] is False and metrics['formal_training_started'] is False
+  epochs=metrics['epoch_history'];minis=metrics['minibatch_history'];assert len(epochs)==11 and len(minis)==200
+  assert all(row['epoch']==epoch and row['actual_head_adam_updates']==epoch*20 for epoch,row in enumerate(epochs))
+  assert all(row['head_update_ordinal']==index+1 and row['head_adam_steps_before']==index and row['head_adam_steps_after']==index+1 and row['epoch']==index//20+1 and row['minibatch_index']==index%20 and row['batch_size']==256 for index,row in enumerate(minis))
+  assert metrics['training_summary']==epochs[-1] and not (output/'run-failure.json').exists()
+  _,_,survivors,contexts,_=isolated_library();worker_state=process(worker);producer_state=process(producer)
+  live,reused_sessions=survivors([worker]);query_started=time.time();nvml_queries=1
+  rows=list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True,timeout=20))))
+  remaining,reused_pids=contexts([worker,producer],rows)
+  accepted=not worker_state['alive'] and not producer_state['alive'] and not live and not remaining
+  return dict(status='accepted' if accepted else 'pending',accepted=accepted,metadata_only=True,no_remote_mutation=True,no_tensor_readback=True,
+   source_commit=intent['source_commit'],ready_sha256=sha(output/'ready.json'),metrics_sha256=metrics_sha,worker=worker,runner=producer,
+   worker_birth=worker_state,runner_birth=producer_state,live_pinned_births=int(worker_state['alive'])+int(producer_state['alive']),
+   actual_private_session_survivors=len(live),owned_cuda_contexts_remaining=len(remaining),reused_session_count=len(reused_sessions),reused_pid_count=len(reused_pids),
+   worker_exit_code=0,head_optimizer_updates=200,head_adam_steps=200,epoch_records=11,minibatch_records=200,
+   nvml_queries=1,nvml_query_started_unix=query_started,checked_unix=time.time())
+ except (AssertionError,KeyError,TypeError,ValueError,OSError,subprocess.SubprocessError) as failure:
+  return dict(pending,reason='terminal_metadata_or_resource_audit_not_qualified',failure_type=type(failure).__name__,nvml_queries=nvml_queries,checked_unix=time.time())
 '''
 
 
@@ -139,6 +182,8 @@ once(base/'logs/prior-published-bundle-transport.json',dict(prior_base=str(prior
     if action=='observe':
         assert body.count("'warmup/warmup-metrics.json'")==1
         body=body.replace("'warmup/warmup-metrics.json'","'warmup/partial-head.json','warmup/warmup-metrics.json'",1)
+        assert body.count('emit(result)')==1
+        body=body.replace('emit(result)',"result['completion_resource_audit']=completion_resource_audit()\nemit(result)",1)
     if action=='run-once':
         assert body.count(base.OLD)==1;body=body.replace(base.OLD,'',1)
         # The head-only continuation must carry the exact reviewed preparation.
