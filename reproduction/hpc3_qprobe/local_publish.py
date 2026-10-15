@@ -39,11 +39,12 @@ print(json.dumps(out))
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--control-work',type=Path,required=True)
-    parser.add_argument('--audit-dir',type=Path,required=True);args=parser.parse_args()
+    parser.add_argument('--audit-dir',type=Path,required=True)
+    parser.add_argument('--branch',default='codex/qprobe-teacher-warmup-hpc3-20261014');args=parser.parse_args()
     repo=Path(__file__).resolve().parents[2]
     sha=subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip()
     remote=subprocess.check_output(['git','ls-remote','git@github.com:shaoshitong/Search-R1.git',
-        'refs/heads/codex/qprobe-teacher-warmup-hpc3-20261014'],text=True).split()[0]
+        'refs/heads/'+args.branch],text=True).split()[0]
     assert remote==sha,'Latest implementation has not been pushed'
     archive=subprocess.check_output(['git','-C',str(repo),'archive','--format=tar.gz',sha])
     assert len(archive)<30*1024**2

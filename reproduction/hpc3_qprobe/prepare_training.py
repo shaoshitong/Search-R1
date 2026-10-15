@@ -73,9 +73,20 @@ def main():
     from reproduction.common8.qprobe_bind import bind
     from reproduction.common8.stage_retrieval import ASSETS
     from search_g1.qprobe_features import sha_json
+    loss_overrides = None
+    experiment = base/'preparation/sigma3-experiment.json'
+    if base == Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015') and not experiment.is_file():
+        raise ValueError('SIGMA3_LOSS_SETTINGS_MARKER_REQUIRED')
+    if experiment.is_file():
+        from reproduction.hpc3_qprobe.sigma3_experiment import validate_settings
+        settings = validate_settings(json.loads(experiment.read_text()), base)
+        if restore is not None:
+            raise ValueError('SIGMA3_FRESH_EXPERIMENT_CANNOT_RESTORE_OLD_LOSS_ACTOR')
+        loss_overrides = settings['head_overrides']
     if restore is None:
         run=bind(base,base/'question-features',retriever_version=sha_json(ASSETS),
-            exploration_questions=64,seed=20261013,teacher_warmup_cache=base/'teacher-warmup-cache')
+            exploration_questions=64,seed=20261013,teacher_warmup_cache=base/'teacher-warmup-cache',
+            head_overrides=loss_overrides)
     from reproduction.common8.configuration import resolved
     resolved(base)
     # The existing pipeline owns the one durable resource admission. Preparing

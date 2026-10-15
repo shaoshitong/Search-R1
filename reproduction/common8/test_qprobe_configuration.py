@@ -34,6 +34,20 @@ class QProbeConfigurationTests(unittest.TestCase):
                 self.assertEqual(config.actor_rollout_ref.actor.policy_safety.dual_clip, 3.)
                 self.assertEqual(len(overrides), len({x.split("=", 1)[0] for x in overrides}))
 
+    def test_sigma3_resolves_all_loss_controls_without_changing_actor(self):
+        with tempfile.TemporaryDirectory() as root:
+            base, run = self.fixture(root, 64)
+            _, old, _ = configuration.resolved(base)
+            run['question_probe'].update(loss_mode='sigma3', mean_loss_weight=0.,
+                std_loss_weight=1., auxiliary_count_loss_weight=.1)
+            (base/'logs/run-manifest.json').write_text(json.dumps(run))
+            _, new, _ = configuration.resolved(base)
+            self.assertEqual(old.actor_rollout_ref, new.actor_rollout_ref)
+            self.assertEqual(new.question_probe.loss_mode, 'sigma3')
+            self.assertEqual(new.question_probe.std_loss_weight, 1.)
+            self.assertEqual(new.question_probe.mean_loss_weight, 0.)
+            self.assertEqual(new.question_probe.auxiliary_count_loss_weight, .1)
+
     def test_unbound_defaults_leave_legacy_recipe_unchanged(self):
         with tempfile.TemporaryDirectory() as root:
             base, _ = baseline_tests.ConfigurationTests().fixture(root)

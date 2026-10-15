@@ -6,6 +6,7 @@ FIELDS = frozenset((
     "candidate_questions", "selected_questions", "responses_per_question",
     "exploration_questions", "seed", "cache_dir", "output_dir", "snapshot_path", "initial_head_checkpoint",
     "head_learning_rate", "head_batch_size", "head_epochs_per_outer",
+    "loss_mode", "auxiliary_count_loss_weight",
     "mean_loss_weight", "std_loss_weight", "replay_window_outer",
     "replay_half_life_outer", "head_hidden_size",
     "bootstrap_max_groups_per_outer", "teacher_warmup_cache",

@@ -163,4 +163,15 @@ def prequential_metrics(probabilities, strict_vectors, sources):
             actual_em_mean=float(means[mask].mean()),
             all_wrong_fraction=float((counts[mask] == 0).mean()),
             all_correct_fraction=float((counts[mask] == 5).mean()))
+        scores = prediction['expected_std'][mask]
+        truth = stds[mask]
+        different = truth[:, None] > truth[None, :]
+        delta = scores[:, None] - scores[None, :]
+        if different.any():
+            result[name]['std_pairwise_concordance'] = float(((delta > 0) + .5*(delta == 0))[different].mean())
+        positive = mixed[mask].astype(bool)
+        cross = positive[:, None] & ~positive[None, :]
+        if cross.any():
+            result[name]['std_mixed_auc'] = float(((delta > 0) + .5*(delta == 0))[cross].mean())
+        result[name]['std_mse'] = float(np.square(scores-truth).mean())
     return result

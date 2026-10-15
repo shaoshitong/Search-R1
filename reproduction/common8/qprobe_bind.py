@@ -11,7 +11,7 @@ from reproduction.common8.source_files import runtime_files
 
 
 def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
-         initial_head_checkpoint=None, seed=20261013, teacher_warmup_cache=None):
+         initial_head_checkpoint=None, seed=20261013, teacher_warmup_cache=None, head_overrides=None):
     base = Path(base).resolve()
     manifest = base / "logs/run-manifest.json"
     run = json.loads(manifest.read_text())
@@ -40,7 +40,11 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
         raise ValueError("Question feature cache does not cover the verified canonical training artifact")
     if teacher_warmup_cache and initial_head_checkpoint:
         raise ValueError('Teacher warmup and historical initial head are distinct initialization routes')
-    head_config = QProbeConfig(seed=seed, bootstrap_max_groups_per_outer=5120 if teacher_warmup_cache else 512)
+    overrides = {} if head_overrides is None else dict(head_overrides)
+    if set(overrides) - {'loss_mode', 'std_loss_weight', 'mean_loss_weight', 'auxiliary_count_loss_weight'}:
+        raise ValueError('Only explicit loss controls may be overridden')
+    head_config = QProbeConfig(seed=seed, bootstrap_max_groups_per_outer=5120 if teacher_warmup_cache else 512,
+                               **overrides)
     settings = dict(cache_dir=str(cache), output_dir=str(base / "artifacts/question-probe"),
                     candidate_questions=5120, selected_questions=512,
                     responses_per_question=5, exploration_questions=exploration_questions,
