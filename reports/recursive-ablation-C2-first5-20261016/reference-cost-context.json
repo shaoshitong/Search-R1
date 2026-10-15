@@ -1,0 +1,47 @@
+{
+  "protocol": "recursive_ablation150_existing_reference_cost_context_v1",
+  "milestone": 5,
+  "new_inference": false,
+  "goal_complete": false,
+  "inputs": {
+    "A": {
+      "path": "reports/recursive-ablation-A-retained-cost-first150-20261015/summary.json",
+      "sha256": "c5931796f9ad0aecfdb0540eef1d6a96a24d0252986cd6cf32b7dd30689b32e6"
+    },
+    "C2": {
+      "path": "reports/recursive-ablation-C2-first5-20261016/aggregate.json",
+      "sha256": "ac9b54e065a222f85a51dd2ccc8360760e32deafd0283c89713a6e446a9e3dc3"
+    }
+  },
+  "A_original": {
+    "physical_emitted_tokens": 4201950,
+    "recorded_Adam_each_rank": 100,
+    "recorded_native_step_seconds": 6367.460793449543,
+    "generation_seconds": 3100.384455129504,
+    "reference_seconds": 216.1348835984245,
+    "actor_update_seconds": 1958.1045678444207,
+    "configured_GPU_hour_proxy": 14.149912874332319,
+    "dev_hits": 96
+  },
+  "C2_random_final": {
+    "physical_emitted_tokens": 4236381.0,
+    "recorded_Adam_each_rank": 100,
+    "recorded_native_step_seconds": 4173.437975742854,
+    "generation_seconds": 2148.553569480777,
+    "reference_seconds": 56.84214188810438,
+    "actor_update_seconds": 881.8408075897023,
+    "configured_GPU_hour_proxy": 9.274306612761897,
+    "dev_hits": 100
+  },
+  "emitted_token_difference_percent": 0.8194052761218096,
+  "aggregate_dev_difference_pp": 0.78125,
+  "limits": [
+    "Prior accepted recorded source summaries, not new source log scans or optimizer tensor reloads.",
+    "Historical infra/runtime and initialization conditions differ; observed timing ratio is not a causal algorithm speedup.",
+    "Native stage timers overlap; do not sum them. Rolling save outside native step is not included.",
+    "GPU-hour proxy is world_size*recorded_step_wall/3600, not GPU busy time or billed allocation.",
+    "Emitted tokens include padding/discarded tails; not effective selected policy tokens.",
+    "Historical discarded/reworked A outers are excluded; this is final-ancestry prefix cost, not all physical resource consumption.",
+    "Only five outers/single seed and aggregate EM; no paired or long-run superiority conclusion."
+  ]
+}
