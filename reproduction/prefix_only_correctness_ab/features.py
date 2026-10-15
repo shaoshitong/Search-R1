@@ -14,7 +14,7 @@ import sys
 import time
 
 REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
-REPRESENTATION = 'prefix_only_first_request_layer27_v1'
+REPRESENTATION = 'multi_turn_retained_policy_prefix_layer27_v1'
 
 
 def canonical(value):
@@ -138,97 +138,97 @@ def load_verified_raw(descriptor):
     return raw
 
 
-def first_request_prefix(turns, trajectory_id, limit=80):
-    """Native first-request IDs within the action actually kept by the executor.
+def retained_segments(turns, trajectory_id, limit=80):
+    """Actual same-trajectory policy tokens across native tool turns, no tail.
 
-    The kept boundary limits the observation window; it is not a numeric head
-    feature. Full-turn stop metadata and discarded generated tails never enter
-    encoder inputs. Prefixes cannot cross an environment/tool boundary.
+    Each segment retains its own exact request context. Environment tokens are
+    context for encoder attention, never positions in the stored head sequence.
     """
     if not turns: raise ValueError('Missing original behavior turns')
-    turn = turns[0]
-    if turn['trajectory_id'] != trajectory_id or turn['turn_index'] != 0:
-        raise ValueError('First-request trajectory/ordinal binding differs')
-    prompt = turn['actual_request_token_ids']; raw = turn['raw_generated_token_ids']
-    if not prompt or any(type(x) is not int or x<0 for x in prompt+raw): raise ValueError('Invalid original token IDs')
-    if turn['raw_generated_token_count'] != len(raw): raise ValueError('Raw token count differs')
-    # Stop is represented only if actually within the observed raw prefix. No
-    # whole-turn finish_reason/final_turn/kept_count is exposed as a feature.
-    kept=turn['kept_token_count']
-    if type(kept)is not int or not 0<=kept<=len(raw) or turn['prefix_cut']['kept_token_ids']!=raw[:kept]:
-        raise ValueError('Actual first-action kept prefix differs from native generated IDs')
-    prefix = raw[:min(limit,kept)]; eos = turn['eos_token_id']
-    return list(prompt), list(prefix), dict(raw_prefix_token_count=len(prefix),observed_eos=eos in prefix,eos_token_id=eos,
-        actual_request_sha256=hashlib.sha256(canonical(prompt)).hexdigest(),
-        raw_prefix_sha256=hashlib.sha256(canonical(prefix)).hexdigest(),
-        prefix_window='actual_kept_first_request_policy_tokens',
-        mask_position_provenance='reconstructed_unpadded_actual_request_causal_positions',
-        whole_turn_future_metadata_used_as_features=False)
+    segments=[];policy=[];positions=[];remaining=limit
+    for ordinal,turn in enumerate(turns):
+        if turn['trajectory_id']!=trajectory_id or turn['turn_index']!=ordinal:
+            raise ValueError('Trajectory/turn-order identity differs')
+        request=turn['actual_request_token_ids'];raw=turn['raw_generated_token_ids'];kept=turn['kept_token_count']
+        if not request or any(type(x)is not int or x<0 for x in request+raw):raise ValueError('Invalid original token IDs')
+        if turn['raw_generated_token_count']!=len(raw) or type(kept)is not int or not 0<=kept<=len(raw) or turn['prefix_cut']['kept_token_ids']!=raw[:kept]:
+            raise ValueError('Actual kept action differs from native generated prefix')
+        take=min(remaining,kept)
+        if take:
+            begin=len(policy);tokens=list(raw[:take]);position_start=len(request)
+            segments.append(dict(turn_index=ordinal,request_length=len(request),take_length=take,
+                                 policy_start=begin,policy_length=take,position_start=position_start,
+                                 context_tokens=list(request)+tokens))
+            policy.extend(tokens);positions.extend(range(position_start,position_start+take));remaining-=take
+        if remaining==0:break
+    return segments,policy,positions
 
 
 def scan(args):
     import numpy as np
-    source_path = remote(args.sources); sources=read(source_path); out=remote(args.output)
-    out.mkdir(parents=True,exist_ok=False)
-    ds,split_proof=descriptors(sources)
-    rows=[];ids=[];offsets=[0];seen=set()
+    source_path=remote(args.sources);sources=read(source_path);out=remote(args.output)
+    out.mkdir(parents=True,exist_ok=False);ds,split_proof=descriptors(sources)
+    rows=[];contexts=[];policy_ids=[];policy_positions=[];policy_offsets=[0];seen=set()
     for d in ds:
-        raw=load_verified_raw(d); output=raw['output']; identity=raw['identity']; groups=d['groups']
-        tids=list(identity['trajectory_ids']); actual=list(output.non_tensor_batch['behavior_trajectory_id'])
+        raw=load_verified_raw(d);output=raw['output'];identity=raw['identity'];groups=d['groups']
+        tids=list(identity['trajectory_ids']);actual=list(output.non_tensor_batch['behavior_trajectory_id'])
         if tids!=actual or tids!=[t for g in groups for t in g['trajectory_ids']] or len(tids)!=len(groups)*5:
             raise ValueError('Trajectory-to-label order differs')
-        if raw['question_bindings'] != [dict(qid=g['qid'],question_hash=g['question_hash']) for g in groups]:
-            raise ValueError('Original question binding differs')
+        if raw['question_bindings']!=[dict(qid=g['qid'],question_hash=g['question_hash']) for g in groups]:raise ValueError('Original question binding differs')
         turns=output.non_tensor_batch['behavior_turns']
-        if len(turns)!=len(tids): raise ValueError('Behavior row count differs')
+        if len(turns)!=len(tids):raise ValueError('Behavior row count differs')
         for i,tid in enumerate(tids):
-            if tid in seen: raise ValueError('Duplicate trajectory identity')
-            seen.add(tid); group=groups[i//5]; labels=group['strict_em']
-            if len(labels)!=5 or any(type(v)is not int or v not in (0,1) for v in labels): raise ValueError('Invalid trajectory EM labels')
-            prompt,prefix,meta=first_request_prefix(turns[i],tid,80); tokens=prompt+prefix
+            if tid in seen:raise ValueError('Duplicate trajectory identity')
+            seen.add(tid);group=groups[i//5];labels=group['strict_em']
+            if len(labels)!=5 or any(type(v)is not int or v not in(0,1) for v in labels):raise ValueError('Invalid trajectory EM labels')
+            segments,tokens,positions=retained_segments(turns[i],tid,80);records=[]
+            for segment in segments:
+                context=segment.pop('context_tokens');segment.update(context_offset=len(contexts),context_length=len(context),
+                    context_sha256=hashlib.sha256(canonical(context)).hexdigest())
+                contexts.extend(context);records.append(segment)
             row=dict(row=len(rows),trajectory_id=tid,split=d['split'],qid=group['qid'],question_hash=group['question_hash'],
-                strict_em=labels[i%5],prompt_length=len(prompt),prefix_length=len(prefix),length=len(tokens),offset=offsets[-1],
-                source_raw_path=d['raw_path'],source_raw_sha256=d['raw_sha256'],source_raw_row=i,
-                source_label_sha256=d['label_sha256'],policy_snapshot_id=identity['policy_snapshot_id'],
-                actor_run_id=identity['run_id'],**meta)
-            rows.append(row);ids.extend(tokens);offsets.append(len(ids))
-        progress(out,0,stage='RAW_ID_SCAN',rows=len(rows));del raw,output
-    if sum(r['split']=='train' for r in rows)!=25600 or sum(r['split']=='test' for r in rows)!=2560:
-        raise ValueError('Incomplete trajectory dataset')
+                     strict_em=labels[i%5],length=len(tokens),prefix_length=len(tokens),policy_offset=policy_offsets[-1],segments=records,
+                     segment_bounds=[{k:seg[k] for k in ('turn_index','policy_start','policy_length','position_start')} for seg in records],
+                     source_raw_path=d['raw_path'],source_raw_sha256=d['raw_sha256'],source_raw_row=i,
+                     source_label_sha256=d['label_sha256'],policy_snapshot_id=identity['policy_snapshot_id'],actor_run_id=identity['run_id'],
+                     policy_prefix_sha256=hashlib.sha256(canonical(tokens)).hexdigest(),position_ids_sha256=hashlib.sha256(canonical(positions)).hexdigest(),
+                     position_provenance='reconstructed_per_native_request_length_plus_generated_offset',
+                     whole_turn_future_metadata_used_as_features=False)
+            rows.append(row);policy_ids.extend(tokens);policy_positions.extend(positions);policy_offsets.append(len(policy_ids))
+        progress(out,0,stage='MULTI_TURN_RETAINED_POLICY_SCAN',rows=len(rows));del raw,output
+    if sum(r['split']=='train' for r in rows)!=25600 or sum(r['split']=='test' for r in rows)!=2560:raise ValueError('Incomplete trajectory dataset')
     model=remote(args.model)
     for name,h in sources['model_files_sha256'].items():
-        if Path(name).name!=name or sha(model/name)!=h: raise ValueError('Official encoder asset differs: '+name)
-    config=read(model/'config.json')
-    pad=sources.get('pad_token_id')
-    pad_provenance='sources_json.pad_token_id'
+        if Path(name).name!=name or sha(model/name)!=h:raise ValueError('Official encoder asset differs: '+name)
+    config=read(model/'config.json');pad=sources.get('pad_token_id');pad_provenance='sources_json.pad_token_id'
+    if pad is None:pad=config.get('pad_token_id');pad_provenance='official_config.pad_token_id'
     if pad is None:
-        pad=config.get('pad_token_id');pad_provenance='official_config.pad_token_id'
-    if pad is None:
-        # Query tokenizer metadata only. Original request/prefix IDs are never
-        # decoded, encoded or otherwise replaced by the tokenizer.
         from transformers import AutoTokenizer
-        tokenizer=AutoTokenizer.from_pretrained(str(model),local_files_only=True,trust_remote_code=False)
-        pad=tokenizer.pad_token_id;pad_provenance='official_tokenizer.pad_token_id'
-    if type(pad)is not int or pad<0: raise ValueError('Official pad token ID unavailable')
-    np.save(out/'packed_input_ids.npy',np.asarray(ids,dtype=np.int64),allow_pickle=False)
-    np.save(out/'offsets.npy',np.asarray(offsets,dtype=np.int64),allow_pickle=False)
-    for name in ('packed_input_ids.npy','offsets.npy'):
+        pad=AutoTokenizer.from_pretrained(str(model),local_files_only=True,trust_remote_code=False).pad_token_id;pad_provenance='official_tokenizer.pad_token_id'
+    if type(pad)is not int or pad<0:raise ValueError('Official pad token ID unavailable')
+    arrays={'packed_context_ids.npy':np.asarray(contexts,dtype=np.int64),'packed_policy_ids.npy':np.asarray(policy_ids,dtype=np.int64),
+            'packed_policy_positions.npy':np.asarray(policy_positions,dtype=np.int64),'policy_offsets.npy':np.asarray(policy_offsets,dtype=np.int64)}
+    for name,array in arrays.items():
+        np.save(out/name,array,allow_pickle=False)
         with (out/name).open('rb') as f:os.fsync(f.fileno())
     with (out/'index.jsonl').open('x') as f:
         for row in rows:f.write(canonical(row).decode()+'\n')
         f.flush();os.fsync(f.fileno())
-    proof=dict(schema_version=2,role='prefix_only10_20_40_80_shared_raw_id_scan',count=len(rows),split_counts=dict(train=25600,test=2560),
-        encoder_global_max_tokens=max(r['length'] for r in rows),head_max_tokens=80,max_raw_prefix_tokens=80,
-        prefix_coverage={str(limit):dict(total=len(rows),full_length=sum(r['prefix_length']>=limit for r in rows),
-            short_count=sum(r['prefix_length']<limit for r in rows),zero_length_count=sum(r['prefix_length']==0 for r in rows),
-            observed_eos_count=sum(r['observed_eos'] and r['prefix_length']<=limit for r in rows),
-            length_histogram={str(k):sum(min(limit,r['prefix_length'])==k for r in rows) for k in sorted({min(limit,r['prefix_length']) for r in rows})}) for limit in (10,20,40,80)},
-        encoder_revision=REVISION,model_dir=str(model),model_files_sha256=sources['model_files_sha256'],
-        sources_sha256=sha(source_path),split_proof=split_proof,pad_token_id=pad,pad_token_provenance=pad_provenance,
-        position_provenance='reconstructed_contiguous_unpadded_actual_request',prefix_source='first_native_request_raw_within_actual_kept_action',prefix_window='actual_kept_first_request_policy_tokens',
-        short_prefix_rule='stop_at_actual_first_action_kept_boundary_including_early_closing_tag_or_EOS_stop; terminal_EOS_not_fabricated; never_cross_turns',
-        zero_prefix_rule='retain_original_row_and_label_with_empty_prefix; report_zero_count; never_drop_or_fabricate_tokens',
-        files={n:dict(sha256=sha(out/n),bytes=(out/n).stat().st_size) for n in ('packed_input_ids.npy','offsets.npy','index.jsonl')})
+    proof=dict(schema_version=3,role='multi_turn_retained_policy_prefix_shared_scan',representation=REPRESENTATION,count=len(rows),
+               split_counts=dict(train=25600,test=2560),encoder_global_max_tokens=max(seg['context_length'] for r in rows for seg in r['segments']),
+               head_max_tokens=80,max_policy_prefix_tokens=80,max_raw_prefix_tokens=80,
+               legacy_raw_limit_field_semantics='max_raw_prefix_tokens aliases cumulative max_policy_prefix_tokens; discarded raw tails excluded',
+               prefix_coverage={str(limit):dict(total=len(rows),full_length=sum(r['length']>=limit for r in rows),
+                   short_count=sum(r['length']<limit for r in rows),zero_length_count=sum(r['length']==0 for r in rows),
+                   multi_turn_count=sum(any(seg['policy_start']<limit and seg['turn_index']>0 for seg in r['segments']) for r in rows),
+                   length_histogram={str(k):sum(min(limit,r['length'])==k for r in rows) for k in sorted({min(limit,r['length']) for r in rows})}) for limit in (10,20,40,80)},
+               encoder_revision=REVISION,model_dir=str(model),model_files_sha256=sources['model_files_sha256'],sources_sha256=sha(source_path),
+               split_proof=split_proof,pad_token_id=pad,pad_token_provenance=pad_provenance,
+               position_provenance='reconstructed_per_native_request_length_plus_generated_offset',
+               prefix_source='same_trajectory_turn_order_actual_kept_policy_tokens',prefix_window='multi_turn_actual_kept_policy_tokens',
+               short_prefix_rule='continue_across_actual_turns_until80_or_true_trajectory_policy_exhaustion; no_discarded_tail_or_environment_positions',
+               zero_prefix_rule='retain_original_row_and_label_and_report; never_fabricate_tokens_or_drop',
+               files={n:dict(sha256=sha(out/n),bytes=(out/n).stat().st_size) for n in tuple(arrays)+('index.jsonl',)})
     once(out/'scan-complete.json',proof);return proof
 
 
@@ -244,7 +244,7 @@ def validate_prepared_inputs(inputs, sources_path, model_path, *, verify_model=T
     proof_path=source/'scan-complete.json';proof=read(proof_path);model=remote(model_path)
     mapping=proof['model_files_sha256']
     if proof['encoder_revision']!=REVISION:raise ValueError('Prepared encoder revision differs')
-    if proof.get('prefix_window')!='actual_kept_first_request_policy_tokens':raise ValueError('Prepared input includes an unbound raw-tail window')
+    if proof.get('prefix_window')!='multi_turn_actual_kept_policy_tokens' or proof.get('representation')!=REPRESENTATION:raise ValueError('Prepared input includes an unbound raw-tail window')
     relocated=sources.get('prepared_scan')
     if relocated is None:
         if sha(config_path)!=proof['sources_sha256'] or str(model)!=proof['model_dir']:
@@ -279,66 +279,70 @@ def encode(args):
     from transformers import AutoModel
     source=remote(Path(args.inputs).resolve());out=remote(args.output);proof=read(source/'scan-complete.json')
     rank=int(os.environ.get('RANK','0'));local=int(os.environ.get('LOCAL_RANK','0'));world=int(os.environ.get('WORLD_SIZE','1'))
-    if world!=2: raise ValueError('Prefix-only feature extraction uses two actual producer ranks per arm')
+    if world!=2:raise ValueError('Two producer ranks per arm required')
     torch.cuda.set_device(local);dist.init_process_group('nccl')
     if rank==0:
-        out.mkdir(parents=True,exist_ok=False)
-        proof,relocation=validate_prepared_inputs(source,args.sources,args.model,verify_model=False)
+        out.mkdir(parents=True,exist_ok=False);proof,relocation=validate_prepared_inputs(source,args.sources,args.model,verify_model=False)
         once(out/'input-relocation.json',relocation)
     dist.barrier()
-    if args.max_tokens!=80 or proof['head_max_tokens']!=80 or proof['max_raw_prefix_tokens']!=80 or args.prefix_length not in (10,20,40,80): raise ValueError('Shared eighty-token head capacity differs')
-    rows=[json.loads(line) for line in (source/'index.jsonl').read_text().splitlines()]
-    original_offsets=np.load(source/'offsets.npy',allow_pickle=False,mmap_mode='r');packed_ids=np.load(source/'packed_input_ids.npy',allow_pickle=False,mmap_mode='r')
-    selected=[];total=0
-    for row in rows[rank::world]:
-        r=dict(row);r['prefix_length']=min(args.prefix_length,row['prefix_length']);r['length']=r['prefix_length'];r['encoder_length']=row['prompt_length']+r['prefix_length']
-        r['source_prefix80_sha256']=row['raw_prefix_sha256']
-        original_start=int(original_offsets[row['row']]);prefix_ids=packed_ids[original_start+row['prompt_length']:original_start+r['encoder_length']].tolist()
-        r['raw_prefix_sha256']=hashlib.sha256(canonical(prefix_ids)).hexdigest();r['raw_prefix_token_count']=len(prefix_ids);r['observed_eos']=r['eos_token_id'] in prefix_ids
-        r['feature_shard']=rank;r['feature_offset']=total;r['row']=row['row'];total+=r['length'];selected.append(r)
+    if args.max_tokens!=80 or proof['head_max_tokens']!=80 or proof['max_policy_prefix_tokens']!=80 or args.prefix_length not in(10,20,40,80):raise ValueError('Shared eighty-token head capacity differs')
+    rows=[json.loads(x) for x in (source/'index.jsonl').read_text().splitlines()]
+    contexts=np.load(source/'packed_context_ids.npy',allow_pickle=False,mmap_mode='r')
+    policy_ids=np.load(source/'packed_policy_ids.npy',allow_pickle=False,mmap_mode='r')
+    policy_positions=np.load(source/'packed_policy_positions.npy',allow_pickle=False,mmap_mode='r')
+    selected=[];segments=[];total=0
+    for original in rows[rank::world]:
+        r=dict(original);n=min(args.prefix_length,original['length']);r['length']=r['prefix_length']=n;r['feature_shard']=rank;r['feature_offset']=total
+        chosen=[]
+        for segment in original['segments']:
+            if segment['policy_start']>=n:break
+            seg=dict(segment);take=min(segment['policy_length'],n-segment['policy_start'])
+            seg.update(take_length=take,policy_length=take,context_length=segment['request_length']+take,
+                       target_feature_offset=total+segment['policy_start'])
+            chosen.append(seg);segments.append(seg)
+        r['segments']=chosen;r['segment_bounds']=[{k:seg[k] for k in ('turn_index','policy_start','policy_length','position_start')} for seg in chosen]
+        lo=r['policy_offset'];r['policy_prefix_sha256']=hashlib.sha256(canonical(policy_ids[lo:lo+n].tolist())).hexdigest()
+        r['position_ids_sha256']=hashlib.sha256(canonical(policy_positions[lo:lo+n].tolist())).hexdigest()
+        total+=n;selected.append(r)
     model=AutoModel.from_pretrained(args.model,torch_dtype=torch.bfloat16,attn_implementation='sdpa',local_files_only=True,trust_remote_code=False,low_cpu_mem_usage=True)
     model.requires_grad_(False);model.eval();model.to('cuda:'+str(local))
-    if len(model.layers)!=36 or model.config.hidden_size!=2048: raise ValueError('Official Qwen model dimensions differ')
+    if len(model.layers)!=36 or model.config.hidden_size!=2048:raise ValueError('Wrong official Qwen encoder shape')
     captured=[]
-    def hook(_module,_inputs,output):
-        captured.append(output[0] if isinstance(output,tuple) else output)
-        # No layers28..35/final norm/LM vocabulary projection are needed. The
-        # original decoder attention mask and RoPE creation before layer27 run.
-        raise _LayerCaptured()
+    def hook(_module,_inputs,value):
+        captured.append(value[0] if isinstance(value,tuple) else value);raise _LayerCaptured()
     handle=model.layers[27].register_forward_hook(hook)
-    target=out/('features-shard-%d.npy'%rank)
-    array=np.lib.format.open_memmap(target,mode='w+',dtype=np.uint16,shape=(total,2048))
-    index=out/('index-shard-%d.jsonl'%rank)
+    target=out/('features-shard-%d.npy'%rank);array=np.lib.format.open_memmap(target,mode='w+',dtype=np.uint16,shape=(total,2048))
     try:
-        with index.open('x') as log,torch.inference_mode():
-            for start in range(0,len(selected),args.micro_batch_size):
-                chosen=selected[start:start+args.micro_batch_size];width=max(r['encoder_length'] for r in chosen)
-                tokens=torch.full((len(chosen),width),proof['pad_token_id'],dtype=torch.long,device=local)
-                mask=torch.zeros_like(tokens);positions=torch.zeros_like(tokens)
-                for i,r in enumerate(chosen):
-                    lo=int(original_offsets[r['row']]);length=r['encoder_length']
-                    tokens[i,:length]=torch.from_numpy(np.array(packed_ids[lo:lo+length],copy=True)).to(local)
-                    mask[i,:length]=1;positions[i,:length]=torch.arange(length,device=local)
+        with torch.inference_mode():
+            for start in range(0,len(segments),args.micro_batch_size):
+                batch=segments[start:start+args.micro_batch_size];width=max(seg['context_length'] for seg in batch)
+                tokens=torch.full((len(batch),width),proof['pad_token_id'],dtype=torch.long,device=local);mask=torch.zeros_like(tokens);positions=torch.zeros_like(tokens)
+                for i,seg in enumerate(batch):
+                    lo=seg['context_offset'];n=seg['context_length'];tokens[i,:n]=torch.from_numpy(np.array(contexts[lo:lo+n],copy=True)).to(local)
+                    mask[i,:n]=1;positions[i,:n]=torch.arange(n,device=local)
                 captured.clear()
                 try:model(input_ids=tokens,attention_mask=mask,position_ids=positions,use_cache=False,output_hidden_states=False,return_dict=True)
                 except _LayerCaptured:pass
                 if len(captured)!=1:raise ValueError('Layer27 capture missing')
                 hidden=captured.pop()
-                for i,r in enumerate(chosen):
-                    h=hidden[i,r['prompt_length']:r['encoder_length']].detach().cpu().contiguous()
-                    if h.dtype!=torch.bfloat16 or not bool(torch.isfinite(h).all()):raise ValueError('Invalid frozen feature tensor')
-                    raw=h.view(torch.int16).numpy().view(np.uint16);lo=r['feature_offset'];array[lo:lo+r['length']]=raw
-                    r['feature_sha256']=hashlib.sha256(raw.tobytes()).hexdigest();log.write(canonical(r).decode()+'\n')
-                log.flush();array.flush();progress(out,rank,stage='LAYER27_PREFIX_ENCODING',completed_rows=start+len(chosen),total_rows=len(selected),prefix_length=args.prefix_length)
-            log.flush();os.fsync(log.fileno());array.flush()
+                for i,seg in enumerate(batch):
+                    h=hidden[i,seg['request_length']:seg['context_length']].detach().cpu().contiguous()
+                    if h.shape!=(seg['policy_length'],2048) or h.dtype!=torch.bfloat16 or not bool(torch.isfinite(h).all()):raise ValueError('Invalid causal generated-token features')
+                    lo=seg['target_feature_offset'];array[lo:lo+seg['policy_length']]=h.view(torch.int16).numpy().view(np.uint16)
+                array.flush();progress(out,rank,stage='MULTI_TURN_LAYER27_SEGMENT_ENCODING',completed_segments=start+len(batch),total_segments=len(segments),prefix_length=args.prefix_length)
     finally:handle.remove()
-    del model,array;torch.cuda.empty_cache()
-    shard=dict(rank=rank,count=len(selected),total_tokens=total,files={n:dict(sha256=sha(out/n),bytes=(out/n).stat().st_size) for n in (target.name,index.name)})
+    index=out/('index-shard-%d.jsonl'%rank)
+    with index.open('x') as f:
+        for r in selected:
+            lo=r['feature_offset'];r['feature_sha256']=hashlib.sha256(array[lo:lo+r['length']].tobytes()).hexdigest();f.write(canonical(r).decode()+'\n')
+        f.flush();os.fsync(f.fileno())
+    array.flush();del array,model;torch.cuda.empty_cache()
+    shard=dict(rank=rank,count=len(selected),total_tokens=total,segment_count=len(segments),files={n:dict(sha256=sha(out/n),bytes=(out/n).stat().st_size) for n in(target.name,index.name)})
     once(out/('shard-%d-complete.json'%rank),shard);dist.barrier()
     if rank==0:
         shards=[read(out/('shard-%d-complete.json'%r)) for r in range(world)];combined=[];files={}
         for sh in shards:
-            combined.extend(json.loads(line) for line in (out/('index-shard-%d.jsonl'%sh['rank'])).read_text().splitlines());files.update(sh['files'])
+            combined.extend(json.loads(x) for x in(out/('index-shard-%d.jsonl'%sh['rank'])).read_text().splitlines());files.update(sh['files'])
         combined.sort(key=lambda r:r['row'])
         if [r['row'] for r in combined]!=list(range(proof['count'])):raise ValueError('Feature shard coverage differs')
         with (out/'index.jsonl').open('x') as f:
@@ -346,19 +350,19 @@ def encode(args):
             f.flush();os.fsync(f.fileno())
         files['index.jsonl']=dict(sha256=sha(out/'index.jsonl'),bytes=(out/'index.jsonl').stat().st_size)
         spec=dict(representation=REPRESENTATION,prefix_length=args.prefix_length,feature_layer=27,boundary='post_block',feature_dim=2048,
-                  encoder_revision=REVISION,encoder_model_dir=str(remote(args.model)),encoder_files_sha256=proof['model_files_sha256'],
-                  feature_dtype='bfloat16',encoder_compute_dtype='bfloat16',global_max_tokens=80,head_max_tokens=80,encoder_global_max_tokens=proof['encoder_global_max_tokens'],pad_token_id=proof['pad_token_id'],
-                  pad_token_provenance=proof['pad_token_provenance'],
-                  position_provenance=proof['position_provenance'],prefix_source=proof['prefix_source'],prefix_window=proof['prefix_window'],split_question_isolation=True,
-                  encoder_frozen=True,encoder_optimizer_updates=0,labels_passed_to_encoder=False,
-                  encoder_input='actual_request_plus_raw_prefix',stored_features='prefix_positions_only',
-                  absolute_positions='prompt_length+arange(prefix_length)',question_hidden_stored=False,executed_decoder_indices=list(range(28)))
-        manifest=dict(schema_version=2,representation=REPRESENTATION,count=proof['count'],split_counts=proof['split_counts'],feature_dim=2048,
-                      global_max_tokens=80,head_max_tokens=80,encoder_global_max_tokens=proof['encoder_global_max_tokens'],spec=spec,spec_sha=hashlib.sha256(canonical(spec)).hexdigest(),files=files,shards=shards,
-                      inputs_dir=str(source),inputs_scan_sha256=sha(source/'scan-complete.json'),sources_sha256=proof['sources_sha256'],
-                      relocated_sources_sha256=sha(args.sources),input_relocation=read(out/'input-relocation.json'),split_proof=proof['split_proof'])
-        once(out/'manifest.json',manifest);once(out/'features-complete.json',dict(role='PREFIX_FEATURES_COMPLETE',prefix_length=args.prefix_length,
-             manifest_sha256=sha(out/'manifest.json'),count=proof['count'],global_max_tokens=80,head_max_tokens=80,encoder_global_max_tokens=proof['encoder_global_max_tokens'],actor_optimizer_updates=0,head_optimizer_updates=0))
+            encoder_revision=REVISION,encoder_model_dir=str(remote(args.model)),encoder_files_sha256=proof['model_files_sha256'],
+            feature_dtype='bfloat16',encoder_compute_dtype='bfloat16',global_max_tokens=80,head_max_tokens=80,
+            encoder_global_max_tokens=proof['encoder_global_max_tokens'],pad_token_id=proof['pad_token_id'],pad_token_provenance=proof['pad_token_provenance'],
+            position_provenance=proof['position_provenance'],prefix_source=proof['prefix_source'],prefix_window=proof['prefix_window'],split_question_isolation=True,
+            encoder_frozen=True,encoder_optimizer_updates=0,labels_passed_to_encoder=False,stored_features='generated_policy_positions_only_across_native_turns',
+            absolute_positions='each_segment_request_length+local_policy_offset',question_hidden_stored=False,environment_hidden_stored=False,
+            executed_decoder_indices=list(range(28)))
+        manifest=dict(schema_version=3,representation=REPRESENTATION,count=proof['count'],split_counts=proof['split_counts'],feature_dim=2048,
+            global_max_tokens=80,head_max_tokens=80,encoder_global_max_tokens=proof['encoder_global_max_tokens'],spec=spec,spec_sha=hashlib.sha256(canonical(spec)).hexdigest(),files=files,shards=shards,
+            inputs_dir=str(source),inputs_scan_sha256=sha(source/'scan-complete.json'),sources_sha256=proof['sources_sha256'],
+            relocated_sources_sha256=sha(args.sources),input_relocation=read(out/'input-relocation.json'),split_proof=proof['split_proof'])
+        once(out/'manifest.json',manifest);once(out/'features-complete.json',dict(role='PREFIX_FEATURES_COMPLETE',representation=REPRESENTATION,prefix_length=args.prefix_length,
+            manifest_sha256=sha(out/'manifest.json'),count=proof['count'],global_max_tokens=80,head_max_tokens=80,encoder_global_max_tokens=proof['encoder_global_max_tokens'],actor_optimizer_updates=0,head_optimizer_updates=0))
     dist.barrier();dist.destroy_process_group()
 
 
@@ -368,10 +372,10 @@ class PrefixFeatureCache:
         self.path=remote(path);p=self.path/'manifest.json'
         if expected_manifest_sha is not None and sha(p)!=expected_manifest_sha:raise ValueError('Feature manifest SHA differs')
         self.manifest=read(p);self.spec=self.manifest['spec']
-        if self.manifest['schema_version']!=2 or self.manifest['representation']!=REPRESENTATION or self.spec['prefix_length'] not in (10,20,40,80):
+        if self.manifest['schema_version']!=3 or self.manifest['representation']!=REPRESENTATION or self.spec['prefix_length'] not in (10,20,40,80):
             raise ValueError('Wrong prefix feature schema')
         self.spec_sha=hashlib.sha256(canonical(self.spec)).hexdigest()
-        if self.spec_sha!=self.manifest['spec_sha'] or self.spec['feature_layer']!=27 or self.spec['boundary']!='post_block' or self.spec.get('prefix_window')!='actual_kept_first_request_policy_tokens':raise ValueError('Wrong feature encoder/window spec')
+        if self.spec_sha!=self.manifest['spec_sha'] or self.spec['feature_layer']!=27 or self.spec['boundary']!='post_block' or self.spec.get('prefix_window')!='multi_turn_actual_kept_policy_tokens':raise ValueError('Wrong feature encoder/window spec')
         self.feature_dim=2048;self.max_tokens=self.manifest['global_max_tokens']
         if self.max_tokens!=80 or self.spec['head_max_tokens']!=80 or self.spec.get('question_hidden_stored') is not False:raise ValueError('Expected prefix-only shared eighty-token head capacity')
         self.ids_by_split={'train':[],'test':[]};self.index={}
@@ -387,8 +391,9 @@ class PrefixFeatureCache:
             if tid in self.index or type(r['strict_em'])is not int or r['strict_em']not in(0,1) or r['length']>self.max_tokens:raise ValueError('Feature row identity differs')
             self.index[tid]=r;self.ids_by_split[r['split']].append(tid)
         self.ids=list(self.index);self.verified=set()
-        self.inputs=Path(self.manifest['inputs_dir']);self.offsets=np.load(self.inputs/'offsets.npy',allow_pickle=False,mmap_mode='r')
-        self.input_ids=np.load(self.inputs/'packed_input_ids.npy',allow_pickle=False,mmap_mode='r')
+        self.inputs=Path(self.manifest['inputs_dir'])
+        self.input_ids=np.load(self.inputs/'packed_policy_ids.npy',allow_pickle=False,mmap_mode='r')
+        self.position_ids=np.load(self.inputs/'packed_policy_positions.npy',allow_pickle=False,mmap_mode='r')
         if len(self.ids)!=self.manifest['count'] or {k:len(v) for k,v in self.ids_by_split.items()}!=self.manifest['split_counts']:
             raise ValueError('Incomplete feature cache')
 
@@ -409,10 +414,11 @@ class PrefixFeatureCache:
             if r['trajectory_id']not in self.verified:
                 if hashlib.sha256(raw.tobytes()).hexdigest()!=r['feature_sha256']:raise ValueError('Feature row SHA differs')
                 self.verified.add(r['trajectory_id'])
-            features[i,:n]=torch.from_numpy(raw.view(np.int16)).view(torch.bfloat16);mask[i,:n]=1;pos[i,:n]=r['prompt_length']+torch.arange(n)
-            offset=int(self.offsets[r['row']])+r['prompt_length'];tokens[i,:n]=torch.from_numpy(np.array(self.input_ids[offset:offset+n],copy=True));policy[i,:n]=1
+            features[i,:n]=torch.from_numpy(raw.view(np.int16)).view(torch.bfloat16);mask[i,:n]=1
+            offset=r['policy_offset'];pos[i,:n]=torch.from_numpy(np.array(self.position_ids[offset:offset+n],copy=True))
+            tokens[i,:n]=torch.from_numpy(np.array(self.input_ids[offset:offset+n],copy=True));policy[i,:n]=1
         return dict(features=features.to(device),attention_mask=mask.to(device),position_ids=pos.to(device),input_ids=tokens.to(device),policy_mask=policy.to(device),
-                    prompt_lengths=torch.tensor([r['prompt_length'] for r in rows],dtype=torch.long,device=device))
+                    policy_segments=[r['segment_bounds'] for r in rows])
 
 
 def main():

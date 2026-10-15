@@ -1,14 +1,14 @@
 {
   "user_request": "Continue question+10/20/40/80; remove question positions after encoder layer27 for classification",
-  "encoder_input": "original full actual first prompt plus own raw first-request prefix",
+  "encoder_input": "For each actual tool turn segment: that actual request token IDs including prior tool history plus its retained generated prefix",
   "encoder_layer_index": 27,
   "encoder_boundary": "post_block",
   "encoder_frozen": true,
-  "feature_input_to_head": "prefix_hidden_only",
+  "feature_input_to_head": "first N retained policy-token layer27 hidden positions across actual turns of same trajectory, concatenated in policy order",
   "question_hidden_passed_to_head": false,
   "head_block": "one complete copy of official decoder index35",
   "head_flatten_max_prefix": 80,
-  "head_rope_positions": "original_prompt_length+arange(actual_prefix_length)",
+  "head_rope_positions": "explicit per-token original request_length + turn-local generated offset; preserve interturn gaps or original context-crop resets",
   "prefix_lengths": [
     10,
     20,
@@ -77,5 +77,11 @@
   },
   "models_features_predictions": "remote only",
   "formal_actor_training_started": false,
-  "previous_results_preserved": true
+  "previous_results_preserved": true,
+  "user_latest_quote": "首个工具前50，再从第二段补30到80",
+  "prefix_window": "same_trajectory_multi_turn_retained_policy_tokens",
+  "no_discarded_raw_tail": true,
+  "retrieval_hidden_passed_to_head": false,
+  "retrieval_context_in_encoder": "only actual observations that precede each selected segment",
+  "short_prefix_rule": "only when total retained policy tokens across complete trajectory are fewer than target N"
 }

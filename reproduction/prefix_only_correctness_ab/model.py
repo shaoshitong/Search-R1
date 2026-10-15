@@ -7,20 +7,43 @@ import torch
 from torch import nn
 
 
-def validate_prefix_positions(mask, positions, starts, max_positions=32768):
-    if starts.ndim != 1 or starts.shape[0] != mask.shape[0] or starts.dtype != torch.long:
-        raise ValueError('Require one original absolute prefix start per sample')
+def expected_policy_positions(segments, max_positions=32768):
+    """Validate retained policy segments without assuming cross-turn position monotonicity."""
+    expected = []
+    previous_turn = -1
+    for segment in segments:
+        offset = segment['policy_start']
+        length = segment['policy_length']
+        start = segment['position_start']
+        turn = segment['turn_index']
+        if any(type(value) is not int for value in (offset, length, start, turn)):
+            raise ValueError('Segment coordinates must be actual integer metadata')
+        if offset != len(expected) or length < 1 or start < 1 or turn <= previous_turn:
+            raise ValueError('Policy segments must cover the retained sequence in actual turn order')
+        if start + length > max_positions:
+            raise ValueError('Policy segment exceeds the official RoPE position range')
+        expected.extend(range(start, start + length))
+        previous_turn = turn
+    if not 1 <= len(expected) <= 80:
+        raise ValueError('Require one to eighty actual retained policy tokens')
+    return expected
+
+
+def validate_prefix_positions(mask, positions, policy_segments, max_positions=32768):
     if positions.dtype != torch.long or positions.shape != mask.shape or mask.dtype != torch.bool:
-        raise ValueError('Invalid prefix mask/position metadata')
-    if bool((starts < 1).any()) or not bool(mask[:, 0].all()):
-        raise ValueError('Actual prompt and prefix must be nonempty')
-    if bool((mask[:, 1:] & ~mask[:, :-1]).any()):
-        raise ValueError('Prefix padding must be on the right')
-    expected = starts[:, None] + torch.arange(mask.shape[1], device=mask.device)[None, :]
-    if not torch.equal(positions[mask], expected[mask]):
-        raise ValueError('Prefix RoPE positions must preserve the actual prompt offset')
-    if bool((positions[mask] >= max_positions).any()):
-        raise ValueError('Prefix exceeds the official position range')
+        raise ValueError('Invalid policy mask/position metadata')
+    if len(policy_segments) != mask.shape[0]:
+        raise ValueError('One segment identity record is required per trajectory')
+    rows = [expected_policy_positions(segments, max_positions) for segments in policy_segments]
+    width = mask.shape[1]
+    if any(len(row) > width for row in rows):
+        raise ValueError('Policy segment length exceeds feature sequence width')
+    expected_positions = torch.tensor([row + [0] * (width - len(row)) for row in rows],
+                                     dtype=torch.long, device=positions.device)
+    expected_mask = torch.tensor([[True] * len(row) + [False] * (width - len(row)) for row in rows],
+                                dtype=torch.bool, device=mask.device)
+    if not torch.equal(mask, expected_mask) or not torch.equal(positions[mask], expected_positions[mask]):
+        raise ValueError('Head tokens must match original per-turn positions and retained segment boundaries')
 
 
 class PrefixCorrectnessProbe(nn.Module):
@@ -75,7 +98,7 @@ class PrefixCorrectnessProbe(nn.Module):
             raise ValueError('Invalid sequence length or empty sequence')
         if bool((mask[:, 1:] & ~mask[:, :-1]).any()):
             raise ValueError('Expected right padding')
-        validate_prefix_positions(mask, positions, batch['prompt_lengths'], self.max_positions)
+        validate_prefix_positions(mask, positions, batch['policy_segments'], self.max_positions)
         kwargs = dict(attention_mask=mask, position_ids=positions,
                       position_embeddings=self.rotary(features, positions),
                       use_cache=False, output_attentions=False)

@@ -228,7 +228,8 @@ def import_prepared_inputs(c,base):
     once(base/'logs/prepared-input-import.json',dict(role='remote_short_input_import',source=str(source.resolve()),target=str(target),
         scan_sha256=record['scan_complete_sha256'],relocation=relocation,
         raw_scan_repeated=False,encoder_model_full_sha_verified_once=True,all_short_input_files_full_sha_match=True,
-        encoder_global_max_tokens=proof['encoder_global_max_tokens'],head_max_tokens=proof['head_max_tokens']))
+        encoder_global_max_tokens=proof['encoder_global_max_tokens'],head_max_tokens=proof['head_max_tokens'],
+        representation=proof.get('representation'),prefix_window=proof.get('prefix_window'),max_policy_prefix_tokens=proof.get('max_policy_prefix_tokens')))
     return proof['head_max_tokens']
 
 

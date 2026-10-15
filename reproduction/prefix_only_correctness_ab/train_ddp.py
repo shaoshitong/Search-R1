@@ -83,6 +83,7 @@ def binary_metrics(logits, labels, shift=0.0):
 
 
 def validate_cache(cache, prefix):
+    from .model import expected_policy_positions
     train, test = cache.ids_by_split['train'], cache.ids_by_split['test']
     if len(train) != 25600 or len(test) != 2560 or len(set(train + test)) != 28160:
         raise ValueError('Require unique 25600 train and 2560 test trajectories')
@@ -98,8 +99,8 @@ def validate_cache(cache, prefix):
                 raise ValueError('Require strict trajectory EM labels')
             if not 0 < int(row['length']) == int(row['prefix_length']) <= prefix:
                 raise ValueError('Only actual nonempty prefix positions may enter the head')
-            if int(row['prompt_length']) < 1 or int(row['prompt_length']) + int(row['length']) > 32768:
-                raise ValueError('Invalid original absolute prefix position span')
+            if len(expected_policy_positions(row['segment_bounds'])) != int(row['length']):
+                raise ValueError('Retained policy segment coverage differs from actual prefix length')
         groups[split] = (set(qids), hashes)
     if groups['train'][0] & groups['test'][0] or groups['train'][1] & groups['test'][1]:
         raise ValueError('Question leakage between fitting and diagnosis')
@@ -107,7 +108,7 @@ def validate_cache(cache, prefix):
         raise ValueError('All four heads require the same maximum prefix width80')
     if cache.feature_dim != 2048:
         raise ValueError('Unexpected feature width')
-    if cache.manifest.get('representation') != 'prefix_only_first_request_layer27_v1':
+    if cache.manifest.get('representation') != 'multi_turn_retained_policy_prefix_layer27_v1':
         raise ValueError('Wrong feature representation')
     spec = cache.spec
     if int(spec['prefix_length']) != prefix:
@@ -178,8 +179,8 @@ def main():
                        cache_manifest=cache.manifest, shared_max_tokens=cache.max_tokens,
                        feature_layer=27, feature_boundary='post_block', encoder_trainable=False,
                        head_input='prefix_positions_only', head_max_prefix=80,
-                       encoder_context='complete_actual_prompt_plus_actual_raw_prefix',
-                       head_rope_positions='original_prompt_length_plus_prefix_offset',
+                       encoder_context='each_turn_actual_request_plus_taken_retained_policy_prefix',
+                       head_rope_positions='explicit_original_positions_per_retained_turn_segment',
                        question_hidden_passed_to_head=False,
                        natural_training_positive_prior=prior, corrected_logit_shift=prior_shift,
                        correction_assumption='Label-conditional sampling stability; calibration is not guaranteed',
