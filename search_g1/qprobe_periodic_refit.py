@@ -14,6 +14,16 @@ from search_g1.qprobe_periodic_features import encode
 from search_g1.qprobe_runtime import _sha, _write_json, _contracts, _complete_generation
 
 
+def save_then_refit(trainer, manager):
+    """The sole live trainer boundary: full save, actual verification, then fit."""
+    from reproduction.profile import checkpoint_complete
+    checkpoint = Path(trainer.config.trainer.default_local_dir)/'actor'/('global_step_'+str(trainer.global_steps))
+    trainer._save_checkpoint()
+    checkpoint_complete(trainer.global_steps,str(checkpoint))
+    trainer.qprobe_runtime.refit_after_checkpoint(manager,checkpoint)
+    return str(checkpoint)
+
+
 def _restore_driver_rng(state):
     torch.set_rng_state(state['torch_cpu'])
     np.random.set_state(state['numpy'])

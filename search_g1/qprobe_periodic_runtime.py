@@ -79,6 +79,10 @@ class PeriodicRuntime(QProbeRuntime):
         questions = list(questions)
         # The fixed initial bank is metadata only here; no feature-cache reader.
         provider = encode(self.trainer,questions,self.cache)
+        self.last_online_feature_evidence = dict(source='current_student_online',
+            student_completed_outer=provider.student_boundary[0],
+            student_optimizer_writes=provider.student_boundary[1],questions=len(questions),
+            feature_layer=27,dynamic_tensors_persisted=False,student_gradient_enabled=False)
         self.head.attach_feature_provider(provider)
         try:
             return super().score(questions)

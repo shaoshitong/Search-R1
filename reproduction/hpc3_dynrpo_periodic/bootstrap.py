@@ -52,6 +52,11 @@ def main():
             if hashlib.sha256((stage/name).read_bytes()).hexdigest()!=digest:
                 raise ValueError('Remote source file differs: '+name)
         stage.rename(source)
+    if plan.get('stage_only') is True:
+        print(json.dumps(dict(status='IMMUTABLE_SOURCE_STAGED_FULL_SHA_PASS',
+            source=str(source),commit=publication['commit'],file_count=len(publication['files']),
+            current_runtime_source_changed=False,checked_unix=time.time())))
+        return
     existing=base/'preparation/source-publication.json'
     if existing.exists() and json.loads(existing.read_text())['commit']!=publication['commit']:
         # A returned, rejected sbatch is not an unknown submission or a running
@@ -88,7 +93,8 @@ def main():
         queue=subprocess.check_output(['squeue','-h','-u',str(os.getuid()),'--name=dynrpo-periodic5-formal','-o','%i'],text=True)
         if queue.strip():raise ValueError('An existing formal job must not be hot modified')
         old=json.loads(existing.read_text())['commit']
-        history=base/'preparation'/('rejected-submit-'+old);history.mkdir(exist_ok=False)
+        history=base/'preparation'/(('accepted-preparation-source-' if accepted_warmup else 'rejected-submit-')+old)
+        history.mkdir(exist_ok=False)
         for name in ('source-publication.json','deployment-plan.json','preparation-submit-claim.json','preparation-submission.json',
                      'preparation-controller.json','native-cpu-tests.json','progress.json'):
             path=base/'preparation'/name

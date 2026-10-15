@@ -114,5 +114,38 @@ class Continuity(TestCase):
                     ('FINAL_EVALUATION_PENDING' if outer==200 else 'STUDENT_READY'))
         runtime.head.optimizer.step.assert_not_called()
 
+    def test_real_trainer_boundary_verifies_checkpoint_before_refit(self):
+        from search_g1.qprobe_periodic_refit import save_then_refit
+        trainer=mock.Mock();trainer.global_steps=25
+        trainer.config.trainer.default_local_dir='/data/own/checkpoints'
+        events=[]
+        trainer._save_checkpoint.side_effect=lambda:events.append('save-full-state')
+        trainer.qprobe_runtime.refit_after_checkpoint.side_effect=lambda *a:events.append('rollout-and-fit')
+        with mock.patch('reproduction.profile.checkpoint_complete',side_effect=lambda *a:events.append('verify-full-state')):
+            save_then_refit(trainer,object())
+        self.assertEqual(events,['save-full-state','verify-full-state','rollout-and-fit'])
+
+    def test_failed_checkpoint_verification_never_starts_refit(self):
+        from search_g1.qprobe_periodic_refit import save_then_refit
+        trainer=mock.Mock();trainer.global_steps=25
+        trainer.config.trainer.default_local_dir='/data/own/checkpoints'
+        with mock.patch('reproduction.profile.checkpoint_complete',side_effect=ValueError('actual SHA mismatch')):
+            with self.assertRaisesRegex(ValueError,'SHA mismatch'):
+                save_then_refit(trainer,object())
+        trainer.qprobe_runtime.refit_after_checkpoint.assert_not_called()
+
+    def test_driver_uses_only_the_first_admitted_slurm_gpu(self):
+        from search_g1.qprobe_periodic_driver import validate_route
+        run=dict(run_id='own',execution_site='hpc3',training_world_size=4,
+            question_probe=dict(head_kind='qwen_native_periodic_lastblock_binary_v1',head_device='cuda:0'))
+        allocation=dict(run_id='own',accepted=True,node='ACD1-9',slurm_job_id='42',
+            training_world_size=4,actual_cuda_runtime_uuids=['GPU-a','GPU-b','GPU-c','GPU-d'])
+        claim=dict(run_id='own',slurm_job_id='42')
+        route=validate_route(run,allocation,claim,'ACD1-9','42')
+        self.assertEqual(route['gpu_uuid'],'GPU-a')
+        self.assertEqual(route['ray_gpu_resources_reserved'],0)
+        with self.assertRaisesRegex(ValueError,'ALLOCATION_MISMATCH'):
+            validate_route(run,allocation,claim,'ACD1-9','foreign-job')
+
 
 if __name__=='__main__':unittest.main(verbosity=2)

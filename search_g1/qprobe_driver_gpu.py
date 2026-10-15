@@ -120,6 +120,9 @@ def _birth(pid):
 def bind_native_driver_gpu(config):
     """Native-only actual Ray-task entry before any question Head CUDA work."""
     settings = _config_value(config, 'question_probe', {}) or {}
+    if _config_value(settings,'head_kind') == 'qwen_native_periodic_lastblock_binary_v1':
+        from search_g1.qprobe_periodic_driver import bind
+        return bind(config)
     if _config_value(settings, 'head_kind') != HEAD_KIND:
         return None
     import ray

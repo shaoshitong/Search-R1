@@ -814,6 +814,8 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
         ranking="binary_mixed_probability" if runtime.token_binary else "expected_sample_std",
         selection_rng_before=before_selection_rng,
         selection_rng_after=copy.deepcopy(runtime.selection_rng.bit_generator.state))
+    if hasattr(runtime,'last_online_feature_evidence'):
+        acquisition['online_features'] = copy.deepcopy(runtime.last_online_feature_evidence)
     member_sources = {m.ordinal: m.selection_source for m in members}
     acquisition["questions"] = []
     for question in questions:

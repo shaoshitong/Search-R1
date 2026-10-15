@@ -46,6 +46,7 @@ def encode(trainer, questions, metadata, *, batch_size=16):
     from verl import DataProto
     questions = list(questions)
     rows = {}
+    writer_boundary = None
     for start in range(0,len(questions),batch_size):
         chunk = questions[start:start+batch_size]
         if len(chunk) % 4:
@@ -65,12 +66,19 @@ def encode(trainer, questions, metadata, *, batch_size=16):
             mask[i,:len(token)] = 1
         data = DataProto.from_dict(tensors=dict(input_ids=ids,attention_mask=mask))
         result = trainer.actor_rollout_wg.compute_question_probe_features(data)
+        boundary = (result.meta_info['student_completed_outer'],result.meta_info['student_optimizer_writes'])
+        if writer_boundary is None:
+            writer_boundary = boundary
+        if writer_boundary != boundary:
+            raise ValueError('PERIODIC_STUDENT_CHANGED_DURING_FEATURE_ENCODING')
         features = result.batch['question_probe_features']
         if features.shape != (len(chunk),244,2048) or features.requires_grad:
             raise ValueError('PERIODIC_LIVE_STUDENT_FEATURE_SHAPE_OR_GRADIENT')
         for i,q in enumerate(chunk):
             rows[q.qid] = features[i,:metadata.index[q.qid]['length']].detach().cpu().contiguous().clone()
-    return EphemeralFeatures(rows)
+    provider = EphemeralFeatures(rows)
+    provider.student_boundary = writer_boundary
+    return provider
 
 
 def worker_features(worker, data):
@@ -106,7 +114,10 @@ def worker_features(worker, data):
             raise ValueError('PERIODIC_STUDENT_FEATURE_HOOK_FAILED')
         if before != (getattr(worker.actor,'_optimizer_writes',0),getattr(worker.actor,'_complete_outers',0)):
             raise ValueError('PERIODIC_ENCODER_UPDATED_STUDENT')
-        return DataProto.from_dict(tensors={'question_probe_features':captured[0]})
+        result = DataProto.from_dict(tensors={'question_probe_features':captured[0]})
+        result.meta_info.update(student_completed_outer=before[1],student_optimizer_writes=before[0],
+                                feature_layer=27,features_detached=True)
+        return result
     finally:
         handle.remove()
         module.train(prior)

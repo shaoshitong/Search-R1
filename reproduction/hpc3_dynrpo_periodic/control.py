@@ -58,12 +58,12 @@ def publish(output):
     return record,archive.getvalue()
 
 
-def deploy(publication, archive, output):
+def deploy(publication, archive, output, *, stage_only=False):
     plan = dict(base=str(BASE),source_commit=publication['commit'],
                 target_outer=200,probe_boundaries=list(range(0,200,25)),
                 save_boundaries=list(range(25,201,25)),fit_epochs=20,
                 inherited_warmup_epochs=10,student_parameters_copied=False,
-                preparation_partition='acd_u',formal_gpus=4)
+                preparation_partition='acd_u',formal_gpus=4,stage_only=stage_only)
     header = dict(publication=publication,plan=plan,
                   archive_sha256=hashlib.sha256(archive).hexdigest())
     script = (REPO/'reproduction/hpc3_dynrpo_periodic/bootstrap.py').read_text()
@@ -114,13 +114,16 @@ with (b/'preparation'/(PHASE+'-submit.lock')).open('a') as lock:
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('action',choices=('publish-deploy','preparation','formal'))
+    p=argparse.ArgumentParser();p.add_argument('action',choices=('publish-deploy','publish-stage','deploy','preparation','formal'))
     p.add_argument('--output',required=True,type=Path)
     p.add_argument('--partition',choices=('acd_u','acd_ue','emergency_acd'),default='acd_u')
     args=p.parse_args()
-    if args.action=='publish-deploy':
+    if args.action in ('publish-deploy','publish-stage'):
         record,archive=publish(args.output)
-        result=deploy(record,archive,args.output)
+        result=deploy(record,archive,args.output,stage_only=args.action=='publish-stage')
+    elif args.action=='deploy':
+        record=json.loads((args.output/'source-publication.json').read_text())
+        result=deploy(record,(args.output/'code-only.tar.gz').read_bytes(),args.output)
     else:
         record=json.loads((args.output/'source-publication.json').read_text())
         result=submit(args.action,record['commit'],args.output,args.partition)

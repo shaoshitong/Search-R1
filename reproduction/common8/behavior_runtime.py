@@ -60,6 +60,9 @@ def _native_run():
     # This is a current disk-source identity check, not proof of loaded modules.
     for name, expected in run['source_sha256'].items():
         path = base / 'repo' / name
+        if run.get('question_probe',{}).get('head_kind') == 'qwen_native_periodic_lastblock_binary_v1':
+            from search_g1.qprobe_periodic_driver import source_root
+            path = source_root(base,run)/name
         assert path.resolve() == path and hashlib.sha256(path.read_bytes()).hexdigest() == expected
     return base, run, job
 

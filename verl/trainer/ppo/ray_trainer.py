@@ -1186,15 +1186,14 @@ class RayPPOTrainer(object):
                             (self.config.trainer.get('full_state_restore_receipt',None) and self.global_steps == min(continuation_k + 5, self.total_training_steps - 1)) or
                             self.global_steps + 1 >= self.total_training_steps):
                         with _timer('save_checkpoint', timing_raw):
-                            self._save_checkpoint()
-                            from reproduction.profile import checkpoint_complete
-                            checkpoint = os.path.join(self.config.trainer.default_local_dir, 'actor', f'global_step_{self.global_steps}')
-                            checkpoint_complete(self.global_steps, checkpoint)
-
-                    if checkpoint is not None and hasattr(self.qprobe_runtime,'refit_after_checkpoint'):
-                        # Model + all rank Adam/scheduler/RNG and cursor are on
-                        # disk and validated BEFORE any extra probe rollouts.
-                        self.qprobe_runtime.refit_after_checkpoint(generation_manager,checkpoint)
+                            if hasattr(self.qprobe_runtime,'refit_after_checkpoint'):
+                                from search_g1.qprobe_periodic_refit import save_then_refit
+                                checkpoint = save_then_refit(self,generation_manager)
+                            else:
+                                self._save_checkpoint()
+                                from reproduction.profile import checkpoint_complete
+                                checkpoint = os.path.join(self.config.trainer.default_local_dir, 'actor', f'global_step_{self.global_steps}')
+                                checkpoint_complete(self.global_steps, checkpoint)
 
                 # collect metrics
                 metrics.update(compute_data_metrics(batch=batch, use_critic=self.use_critic))

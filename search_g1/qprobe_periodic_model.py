@@ -6,7 +6,6 @@ student supplies detached question features through a separate provider.
 from dataclasses import asdict, fields, replace
 import copy
 import hashlib
-import io
 
 import torch
 
@@ -179,9 +178,27 @@ class PeriodicQwenProbe:
             self.model.train(prior)
 
     def state_dict(self):
+        self.validate_state()
         return dict(schema_version=1, head_kind=HEAD_KIND, head=self._engine.state_dict(),
                     feature_spec_sha=self.feature_spec_sha, completed_outer=self.completed_outer,
                     actor_snapshot_id=self.actor_snapshot_id, phases=copy.deepcopy(self.phases))
+
+    def validate_state(self):
+        if self.config != QwenBlockQProbeConfig(epochs=20):
+            raise ValueError('PERIODIC_PRODUCTION_NATIVE_CONFIG_CHANGED')
+        outers = [row['outer'] for row in self.phases]
+        if (not outers or outers != list(REFIT_OUTERS[:len(outers)]) or
+                outers[-1] > self.completed_outer or not 0 <= self.completed_outer <= 200 or
+                any(row['fit_epochs'] != 20 or row['head_adam_steps_after'] != 400*(index+1)
+                    for index,row in enumerate(self.phases)) or
+                self._adam_steps() != 400*len(self.phases)):
+            raise ValueError('PERIODIC_COMPLETED_PHASES_OR_REAL_ADAM_BUDGET_DIVERGE')
+        if (self._engine.initial_block_proof.get('source_layer') != 35 or
+                not self._engine.initial_readout_proof.get('fresh') or
+                self._engine.initial_readout_proof.get('seed') != 1729 or
+                any(not name.startswith(('block.','output.')) for name,_ in self.model.named_parameters())):
+            raise ValueError('PERIODIC_ORIGINAL_LAST_LAYER_READOUT_IDENTITY_CHANGED')
+        return True
 
     def save(self, path, *, actor_snapshot_id):
         from search_g1.training_state import atomic_save
@@ -207,4 +224,5 @@ class PeriodicQwenProbe:
                      completed_outer=saved['completed_outer'], actor_snapshot_id=saved['actor_snapshot_id'],
                      phases=saved['phases'])
         result.attach_feature_provider(feature_provider)
+        result.validate_state()
         return result
