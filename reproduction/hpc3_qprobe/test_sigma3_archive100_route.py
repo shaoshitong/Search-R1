@@ -18,6 +18,73 @@ PINS=(reader.ARCHIVE5_RECOVERY_SOURCE,'f979d53cdb0d348e87c5877d84403252e85cd784'
 
 
 class Exact100Route(unittest.TestCase):
+    def test_second100_has_exact_source_module_and_distinct_follower_and_holder_scope(self):
+        pins=PINS[:-1]+(reader.ARCHIVE100_SECOND_RECOVERY_SOURCE,)
+        name,folder=reader.followthrough_route(pins[-1],*pins)
+        self.assertEqual(name,'recover_sigma3_archive100_second')
+        self.assertEqual(folder.name,'721485-archive100-recovery-second-20261016')
+        self.assertTrue(holder.scope(*pins).name.endswith('-archive100-recovery-second'))
+        self.assertNotEqual(holder.scope(*pins),holder.scope(*PINS))
+        self.assertEqual(holder.recovery_args(*pins)[-2:],['--archive100-recovery-commit',pins[-1]])
+        with self.assertRaises(ValueError):reader.followthrough_route(PINS[-1],*pins)
+        with self.assertRaises(ValueError):reader.followthrough_route(pins[-1],*PINS)
+        for index in range(4):
+            bad=list(pins);bad[index]='a'*40
+            with self.subTest(index=index),self.assertRaises(ValueError):reader.followthrough_route(pins[-1],*bad)
+
+    def test_second100_reconsumes_c1_once_and_rejects_prior_or_inheritance_retagging(self):
+        prior50={'source':{'commit':reader.ARCHIVE50_FIRST_RECOVERY_SOURCE}}
+        fifty={'source':{'commit':PINS[2]},'prior_archive50_recovery':prior50,
+               'observer_recovery':{'raw':'f979'},'legacy_archive5_recovery':{'five':'09cc'}}
+        first={'source':{'commit':PINS[-1]},'prior_archive50_second_recovery':fifty,
+               'observer_recovery':fifty['observer_recovery'],'legacy_archive5_recovery':fifty['legacy_archive5_recovery'],
+               'inherited_archive50':{'original':'B89450'}}
+        second=dict(first,source={'commit':reader.ARCHIVE100_SECOND_RECOVERY_SOURCE},prior_archive100_recovery=first)
+        values={PINS[-1]:first,PINS[2]:fifty,reader.ARCHIVE50_FIRST_RECOVERY_SOURCE:prior50}
+        def load(commit,*_):return SimpleNamespace(consume=lambda _:values[commit]),{}
+        with patch.object(reader,'load_fixed',side_effect=load) as loads:
+            measured=reader.archive50_recovery_evidence(second,PINS[2],reader.ARCHIVE100_SECOND_RECOVERY_SOURCE,with_prior100=True)
+            self.assertEqual(measured,(fifty,first))
+            self.assertEqual([c.args[0] for c in loads.call_args_list],list(values))
+        for key in ('prior_archive100_recovery','prior_archive50_second_recovery','inherited_archive50','observer_recovery','legacy_archive5_recovery'):
+            bad=copy.deepcopy(second);bad[key]={}
+            with self.subTest(key=key),patch.object(reader,'load_fixed',side_effect=load),self.assertRaises(ValueError):
+                reader.archive50_recovery_evidence(bad,PINS[2],reader.ARCHIVE100_SECOND_RECOVERY_SOURCE)
+        for broken in values:
+            def changed(commit,*_):return SimpleNamespace(consume=lambda _:{} if commit==broken else values[commit]),{}
+            with self.subTest(actual_changed=broken),patch.object(reader,'load_fixed',side_effect=changed),self.assertRaises(ValueError):
+                reader.archive50_recovery_evidence(second,PINS[2],reader.ARCHIVE100_SECOND_RECOVERY_SOURCE)
+        with self.assertRaises(ValueError):reader.prior_archive100_evidence(second,PINS[-1])
+
+    def test_second100_final_output_requires_separate_c1_and_original50raw_boundaries(self):
+        pins=PINS[:-1]+(reader.ARCHIVE100_SECOND_RECOVERY_SOURCE,)
+        commit='a'*40;_,admission,proof=output_fixture(commit)
+        for value in (admission,proof):
+            value.update(recovery_commit=pins[0],observer_recovery_commit=pins[1],
+                archive_recovery_commit=pins[2],archive100_recovery_commit=pins[3])
+        first={'source':{'commit':PINS[-1]},'preserved_failure':'C1 actual held1'}
+        second={'source':{'commit':pins[-1]},'prior_archive100_recovery':first}
+        admission.update(followthrough_source={'commit':pins[-1]},raw_source={'commit':pins[1]},
+            archive5_recovery={'five':'09cc'},observer_recovery={'raw':'f979'},archive50_recovery={'fifty':'B894'},
+            archive50_prior_recovery={'prior':'dc9'},archive100_recovery=second,archive100_prior_recovery=first)
+        proof['followthrough_commit']=pins[-1];follow=proof['actual_followthrough_full_CPU_consumer']
+        follow['source']=admission['followthrough_source']
+        for key in ('archive5_recovery','observer_recovery','archive50_recovery','archive50_prior_recovery','archive100_recovery','archive100_prior_recovery'):
+            follow[key]=admission[key]
+        proof['independent_all_normal_return_raw']['source']=admission['raw_source']
+        holder.accept_output(proof,commit,pins[-1],admission,*pins)
+        for key in ('archive100_prior_recovery','archive50_recovery','observer_recovery'):
+            bad=copy.deepcopy(proof);bad['actual_followthrough_full_CPU_consumer'][key]={}
+            with self.subTest(key=key),self.assertRaises(ValueError):holder.accept_output(bad,commit,pins[-1],admission,*pins)
+        bad=copy.deepcopy(admission);bad.pop('archive100_prior_recovery')
+        with self.assertRaisesRegex(ValueError,'authenticated C1'):holder.accept_output(proof,commit,pins[-1],bad,*pins)
+        bad=copy.deepcopy(admission);bad['archive100_recovery']['prior_archive100_recovery']={}
+        with self.assertRaisesRegex(ValueError,'authenticated C1'):holder.accept_output(proof,commit,pins[-1],bad,*pins)
+
+    def test_second100_missing200_still_refuses_before_any_source_scope_or_spawn(self):
+        with patch(__name__+'.PINS',PINS[:-1]+(reader.ARCHIVE100_SECOND_RECOVERY_SOURCE,)):
+            self.test_less_than200_refuses_before_scope_source_or_spawn_on_new_route()
+
     def test_distinct100_route_scope_and_cli_preserve_all_four_prior_pins(self):
         name,folder=reader.followthrough_route(PINS[-1],*PINS)
         self.assertEqual(name,'recover_sigma3_archive100')
@@ -90,6 +157,10 @@ class Exact100Route(unittest.TestCase):
 
 
 class InheritedHeldReceipts(unittest.TestCase):
+    def test_second100_still_requires_original5_and50_allfive_held0_and_native_source(self):
+        with patch(__name__+'.PINS',PINS[:-1]+(reader.ARCHIVE100_SECOND_RECOVERY_SOURCE,)):
+            self.test_exact_original5_and50_and_new100150200_native_sources_are_required()
+
     def test_exact_original5_and50_and_new100150200_native_sources_are_required(self):
         with tempfile.TemporaryDirectory() as d,patch.object(reader,'OWNER',os.getuid()),\
              patch.object(reader.shared,'OWNER',os.getuid()):

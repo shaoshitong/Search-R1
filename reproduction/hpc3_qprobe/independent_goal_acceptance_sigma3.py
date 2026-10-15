@@ -95,17 +95,22 @@ def producer_acceptance():
 ARCHIVE50_FIRST_RECOVERY_SOURCE='dc9c79bc5e5c7d1b4e3134d30fe168223de10215'
 ARCHIVE50_SECOND_RECOVERY_SOURCE='b89495c8ec1f2a7fb0d5cd70d89974c16c801cff'
 ARCHIVE100_RECOVERY_SOURCE='4194ad2c21c5e10ae5ee3b0212fb6fbf3e02f41b'
+ARCHIVE100_SECOND_RECOVERY_SOURCE='23ab8b0c8af403ec830644ff4fa04eeef7f55927'
+ARCHIVE100_ROUTES={
+    ARCHIVE100_RECOVERY_SOURCE:('recover_sigma3_archive100',ROOT/'followthrough/721485-archive100-recovery-20261016'),
+    ARCHIVE100_SECOND_RECOVERY_SOURCE:('recover_sigma3_archive100_second',ROOT/'followthrough/721485-archive100-recovery-second-20261016'),
+}
 
 
 def followthrough_route(followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None):
     if archive100_recovery_commit is not None:
-        need(archive100_recovery_commit==ARCHIVE100_RECOVERY_SOURCE and
+        need(archive100_recovery_commit in ARCHIVE100_ROUTES and
              followthrough_commit==archive100_recovery_commit and
              archive_recovery_commit==ARCHIVE50_SECOND_RECOVERY_SOURCE and
              recovery_commit==ARCHIVE5_RECOVERY_SOURCE and
              observer_recovery_commit=='f979d53cdb0d348e87c5877d84403252e85cd784',
              'explicit archive100/new follower and original B894/RAWf979/archive5 pins required')
-        return 'recover_sigma3_archive100',ROOT/'followthrough/721485-archive100-recovery-20261016'
+        return ARCHIVE100_ROUTES[archive100_recovery_commit]
     if archive_recovery_commit is not None:
         need(isinstance(archive_recovery_commit,str) and re.fullmatch('[0-9a-f]{40}',archive_recovery_commit) is not None and
              followthrough_commit==archive_recovery_commit and recovery_commit==ARCHIVE5_RECOVERY_SOURCE and
@@ -144,14 +149,37 @@ def prior_archive50_evidence(recovery,archive_recovery_commit):
     return None
 
 
-def archive50_recovery_evidence(recovery,archive_recovery_commit,archive100_recovery_commit=None):
+def prior_archive100_evidence(recovery,archive100_recovery_commit):
+    """Fresh C1 preservation proof beneath the exact registered second100 route."""
+    if archive100_recovery_commit==ARCHIVE100_SECOND_RECOVERY_SOURCE:
+        need(isinstance(recovery,dict) and recovery.get('source',{}).get('commit')==archive100_recovery_commit and
+             isinstance(recovery.get('prior_archive100_recovery'),dict),
+             'second archive100 handoff lost its original C1 recovery')
+        prior=recovery['prior_archive100_recovery']
+        old,_=load_fixed(ARCHIVE100_RECOVERY_SOURCE,'recover_sigma3_archive100','control')
+        need(old.consume(ARCHIVE100_RECOVERY_SOURCE)==prior and
+             prior.get('source',{}).get('commit')==ARCHIVE100_RECOVERY_SOURCE and
+             all(recovery.get(key)==prior.get(key) for key in (
+                 'prior_archive50_second_recovery','inherited_archive50','observer_recovery','legacy_archive5_recovery')),
+             'original C1/B894/RAW/archive5 lineage changed beneath second archive100')
+        return prior
+    need(archive100_recovery_commit in (None,ARCHIVE100_RECOVERY_SOURCE) and
+         (not isinstance(recovery,dict) or 'prior_archive100_recovery' not in recovery),
+         'unregistered second archive100 recovery source')
+    return None
+
+
+def archive50_recovery_evidence(recovery,archive_recovery_commit,archive100_recovery_commit=None,*,with_prior100=False):
     """Reconsume the original B894 handoff beneath a separately authenticated100 route."""
-    if archive100_recovery_commit is None:return recovery if archive_recovery_commit else None
-    need(archive100_recovery_commit==ARCHIVE100_RECOVERY_SOURCE and
+    if archive100_recovery_commit is None:
+        fifty=recovery if archive_recovery_commit else None
+        return (fifty,None) if with_prior100 else fifty
+    need(archive100_recovery_commit in ARCHIVE100_ROUTES and
          archive_recovery_commit==ARCHIVE50_SECOND_RECOVERY_SOURCE and isinstance(recovery,dict) and
          recovery.get('source',{}).get('commit')==archive100_recovery_commit and
          isinstance(recovery.get('prior_archive50_second_recovery'),dict),
          'archive100 handoff lost its exact original B894 recovery')
+    prior100=prior_archive100_evidence(recovery,archive100_recovery_commit)
     fifty=recovery['prior_archive50_second_recovery']
     old,_=load_fixed(ARCHIVE50_SECOND_RECOVERY_SOURCE,'recover_sigma3_archive50_second','control')
     need(old.consume(ARCHIVE50_SECOND_RECOVERY_SOURCE)==fifty and
@@ -159,7 +187,7 @@ def archive50_recovery_evidence(recovery,archive_recovery_commit,archive100_reco
          recovery.get('legacy_archive5_recovery')==fifty.get('legacy_archive5_recovery'),
          'original B894/RAW/archive5 handoff changed beneath archive100')
     prior_archive50_evidence(fifty,archive_recovery_commit)
-    return fifty
+    return (fifty,prior100) if with_prior100 else fifty
 
 
 def followthrough_evidence(follow, publication_proof, followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None):
@@ -188,7 +216,7 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit, reco
          'followthrough original once source/birth/intent differs')
     recovery = follow.consume(followthrough_commit) if recovery_commit is not None else None
     need(claim.get('recovery') == recovery,'followthrough archive5 recovery proof differs')
-    fifty=archive50_recovery_evidence(recovery,archive_recovery_commit,archive100_recovery_commit)
+    fifty,prior100=archive50_recovery_evidence(recovery,archive_recovery_commit,archive100_recovery_commit,with_prior100=True)
     returned = result.get('result') or {}
     goal_path = BASE/'logs/qprobe-final-goal-acceptance.json'
     goal, goal_file = document(goal_path)
@@ -209,6 +237,7 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit, reco
         archive5_recovery=recovery['legacy_archive5_recovery'] if observer_recovery_commit else recovery,
         observer_recovery=(recovery['observer_recovery'] if archive_recovery_commit else recovery) if observer_recovery_commit else None,
         archive50_recovery=fifty,archive100_recovery=recovery if archive100_recovery_commit else None,
+        archive100_prior_recovery=prior100,
         archive50_prior_recovery=prior_archive50_evidence(fifty,archive_recovery_commit))
 
 def native_evidence(goal, binding):
@@ -678,8 +707,9 @@ def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recov
             if archive100_recovery_commit is not None:
                 latest=follow.consume(archive100_recovery_commit)
                 need(latest==follow_proof['archive100_recovery'],'archive100 handoff changed during conjunction')
-                need(archive50_recovery_evidence(latest,archive_recovery_commit,archive100_recovery_commit)==
-                     follow_proof['archive50_recovery'],'original B894 changed during archive100 conjunction')
+                fifty,prior100=archive50_recovery_evidence(latest,archive_recovery_commit,archive100_recovery_commit,with_prior100=True)
+                need(fifty==follow_proof['archive50_recovery'] and prior100==follow_proof['archive100_prior_recovery'],
+                     'original C1/B894 changed during archive100 conjunction')
             else:
                 need(follow.consume(archive_recovery_commit)==follow_proof['archive50_recovery'],'archive50 handoff changed during conjunction')
             need(prior_archive50_evidence(follow_proof['archive50_recovery'],archive_recovery_commit)==
