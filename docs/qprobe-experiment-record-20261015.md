@@ -527,3 +527,10 @@ native721485在1792080433完成59轮、1792080583完成60轮、1792081018完成6
 容量投影并非新DU/quota证明：archive50复制前实际DU0=1,488,134,529,024B，两份载荷76,742,651,357B。未来100/150/200三源六副本估计345,341,317,707B，另计200两份150 encoder约27.21GB，固定产物约1.937TB，余62.57GB。最近20轮42–61仅rollout、behavior JSON、selection/audit、before/after边界文件的allocated均值0.757GB/轮，139轮按此推算最终约2.043TB，至少约42.68GB缺口；私有额外痕迹、校准/评测及其他共享目录增长尚未计入。已清理204.22GB已在基线内，不能重复扣减。fresh DU+2TB门禁不变。
 
 下一步准备可核验远端保留/腾挪方案；未新增删除授权，未删除或移动旧原始5/50/100、旧100额外archive、当前目标任何源/副本/RAW/teacher。证据storage-projection-after-pair50-and-recent20.json及sigma3-recent20-storage-metadata-1792081009.json；只读review确认有实质容量风险，但投影不能当必然硬quota超限。
+
+
+## 2026-10-16 00:41 CST 拟合诊断至65与非破坏备份准备
+
+真实native721485与原RAWf979均完成65，四rank各1300 Adam写入、scheduler/head一致；66已完成512×5采集。未重启或修改训练。独立CPU历史诊断从原完整head50重算51–65，每轮原model version和全部fit loss一致，50–58全部指标与上一诊断逐项完全一致；65暂无完整状态终点锚。完整replay65：二分类72.6196%、六分类47.1436%、方差RMSE0.107527/R²0.161850；当前512：71.4844%/45.7031%/0.112142/0.026211。当前题56–65二分类均值70.8008%，多数类68.3984%，优势2.4023pp；1–10对应优势9.0625pp。数据sigma3-postfit-training-metrics-outer0-65.json SHA e8ca2d05daa88e509a1569dcc7fb704491359f7063f6647d71c6cdd67d8275bd，本地实验记录保留每轮完整表与静态曲线。不得将loss下降直接当方差解释能力提高或据此判定过拟合。
+
+当前2TB预算未来容量风险仍需处理。准备HPC3→HKUST3只复制旧人类CANCELLED719225的原5/50 checkpoint及额外100 archive、恢复依赖/原receipt metadata，共118个去重文件121296682925B，计划SHA0c9a27ca36509f885ad2c0d0d5ff357a3c4f7055ce485ec5ff607ec9dc6d75f2。新工具强制source before/after与HK3 target逐文件完整SHA、单writer、RAM密码、实际held worker wait验收及未知结果只inspect。目标HK3原ssh别名、UID1002/实际boot固定，fresh可用10.24TB。当前只备份，无删除授权、源清理或释放空间；旧原件和当前目标全部产物仍保留。备份验收后才可形成精确三树115100389376B腾挪提案并请求新的范围授权。执行前须已commit/push/两端源码全SHA与真实rsync dry-run通过；7项本地scope/heldwait测试已通过。
