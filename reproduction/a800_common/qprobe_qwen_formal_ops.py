@@ -180,9 +180,15 @@ def validate_cpu_checks(proof,expected):
 
 def cpu_checks(base,repo,intent):
     expected=cpu_expectation(repo,intent);path=base/'logs/native-formal-cpu-checks.json';log_path=base/'logs/native-formal-cpu-checks.log'
+    # Synthetic manifests own their test topology; never inherit production's
+    # four-GPU override into this CPU-only child. The real parent stays bound.
+    assert os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE')=='4'
+    fixture_env=environment(base,repo)
+    fixture_env.pop('SEARCH_G1_TRAINING_WORLD_SIZE',None)
     with log_path.open('xb') as log:
-        result=subprocess.run([PYTHON,'-c',CPU_PROGRAM,str(path),canonical(expected).decode(),str(repo)],cwd=repo,env=environment(base,repo),stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,timeout=900)
+        result=subprocess.run([PYTHON,'-c',CPU_PROGRAM,str(path),canonical(expected).decode(),str(repo)],cwd=repo,env=fixture_env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,timeout=900)
         log.flush();os.fsync(log.fileno())
+    assert os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE')=='4'
     proof=read(path);validate_cpu_checks(proof,expected);assert result.returncode==0
     return dict(receipt_sha256=sha(path),log_sha256=sha(log_path),**proof)
 

@@ -131,7 +131,7 @@ class QwenOnlineTests(unittest.TestCase):
                 self.assertEqual(head.version,restored.version)
                 tampered = copy.deepcopy(before)
                 tampered['initialization_provenance']['teacher_replay_excluded'] = False
-                with self.assertRaisesRegex(ValueError,'PROVENANCE_CHANGED'): restored.load_state_dict(tampered)
+                with self.assertRaisesRegex(ValueError,'TOKEN_QPROBE_INVALID_CHECKPOINT_COUNTERS'): restored.load_state_dict(tampered)
                 bad_wrapper = copy.deepcopy(wrapper); bad_wrapper['head']['fitted'] = False
                 bad_path = Path(directory)/'partial.pt'; torch.save(bad_wrapper,bad_path)
                 bad_kwargs = dict(kwargs,expected_checkpoint_sha=hashlib.sha256(bad_path.read_bytes()).hexdigest())
