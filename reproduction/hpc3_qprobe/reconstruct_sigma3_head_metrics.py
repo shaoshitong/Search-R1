@@ -66,7 +66,7 @@ def summarize(probe, outer):
         current_cohort=metrics(prediction[current], counts[current]))
 
 
-def reconstruct(cutoff, threads):
+def reconstruct(cutoff, threads, start_outer=0):
     torch.set_num_threads(threads)
     import search_g1.qprobe_model as original_math
     original_path = Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/source')/PRODUCER/'search_g1/qprobe_model.py'
@@ -76,16 +76,28 @@ def reconstruct(cutoff, threads):
     need(manifest['run_id'] == RUN and manifest['source_commit'] == PRODUCER and
         manifest['training_world_size'] == 4, 'actual producer differs')
     ready, ready_proof = read_json(BASE/'artifacts/question-probe/teacher-warmup-ready.json')
-    probe = OnlineQProbe.load(ready['head_checkpoint']['path'],
-        expected_actor_snapshot_id=RUN+':0', expected_checkpoint_sha=ready['head_checkpoint']['sha256'])
+    anchors=[]
+    if start_outer:
+        need(start_outer==50 and cutoff>=start_outer,'only actual saved head50 is an allowed tail boundary')
+        path=BASE/'checkpoints/search-g1-common8/actor/global_step_50/training_state/question-probe-state.pt.head.pt'
+        driver,driver_proof=read_tensor_state(path.with_name('question-probe-state.pt'),False)
+        need(driver['head_file']==path.name and driver['completed_outer']==50 and
+            driver['actor_snapshot_id']==RUN+':50','actual tail checkpoint binding differs')
+        probe=OnlineQProbe.load(path,expected_actor_snapshot_id=RUN+':50',
+            expected_checkpoint_sha=driver['head_sha256'])
+        saved,proof=read_tensor_state(path,True);exact_tree(probe.state_dict(),saved)
+        anchors.append(dict(outer=50,status='LOADED_ORIGINAL_FULL_STATE_TENSOR_EXACT',head_file=proof,binding_file=driver_proof))
+    else:
+        probe = OnlineQProbe.load(ready['head_checkpoint']['path'],
+            expected_actor_snapshot_id=RUN+':0', expected_checkpoint_sha=ready['head_checkpoint']['sha256'])
     need(all(getattr(probe.config,k) == v for k,v in LOSS.items()), 'actual sigma3 loss differs')
     updates, updates_proof = read_json_lines(BASE/'logs/actual-updates.jsonl')
     need(len(updates) >= cutoff and [u['step'] for u in updates] == list(range(1,len(updates)+1)),
         'actual completed sequence differs')
-    rows, anchors = [summarize(probe,0)], []
-    current_step = 0
+    rows = [summarize(probe,start_outer)]
+    current_step = start_outer
     try:
-        for update in updates[:cutoff]:
+        for update in updates[start_outer:cutoff]:
             current_step = step = update['step']; aid = update['attempt_id']
             directory = BASE/'artifacts/question-probe/attempts'/aid
             head, head_proof = read_json(BASE/'artifacts/question-probe/completed'/(aid+'.json'))
@@ -145,7 +157,7 @@ def reconstruct(cutoff, threads):
         return dict(status='VERIFIED_OFFLINE_RECONSTRUCTION' if last_anchor==cutoff else
             'VERSION_LOSS_VERIFIED_RECONSTRUCTION_TAIL_AFTER_FULL_STATE_ANCHOR',
             last_full_state_anchor=last_anchor, tail_verified_by='every original model version and all logged fit components',
-            cutoff=cutoff,cpu_threads=threads,
+            cutoff=cutoff,start_outer=start_outer,cpu_threads=threads,
             anchors=anchors,per_outer_post_fit=rows,manifest_file=manifest_proof,
             warmup_file=ready_proof,updates_file=updates_proof)
     except NotExact as exc:
@@ -156,9 +168,10 @@ def reconstruct(cutoff, threads):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--cutoff',type=int,required=True)
+    parser.add_argument('--start-outer',type=int,choices=(0,50),default=0)
     parser.add_argument('--threads',type=int,choices=(1,8),default=1);args=parser.parse_args()
     need(5 <= args.cutoff <= 200 and os.getuid() == 14090 and os.environ.get('CUDA_VISIBLE_DEVICES') == '', 'CPU owner/device/cutoff guard differs')
-    value=reconstruct(args.cutoff,args.threads)
+    value=reconstruct(args.cutoff,args.threads,args.start_outer)
     value.update(epoch=time.time(),run_id=RUN,training_actions=0,actor_loads=0,rollout_generations=0,
         scope='Historical tiny probe reconstructed in isolated CPU process memory; actual training and all experiment files unchanged')
     print(json.dumps(value,allow_nan=False),flush=True)
