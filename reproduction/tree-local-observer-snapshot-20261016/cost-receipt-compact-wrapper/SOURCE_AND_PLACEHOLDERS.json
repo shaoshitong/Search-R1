@@ -1,0 +1,124 @@
+{
+  "schema": "cost_receipt_compact_wrapper_exact_source_v1",
+  "source_transcript_path": "/Users/shaoshitong/.codex/sessions/2026/10/16/rollout-2026-10-16T05-41-38-01a14183-7a96-7e40-9f5c-3f08e01cb65d.jsonl",
+  "source_JSONL_line_1based": 326,
+  "source_selector": "payload.item.command[2]",
+  "successful_execution_UTC": "2026-10-15T22:21:48.170Z",
+  "successful_execution_exit_code": 0,
+  "original_command_file": "COST168_ACTUAL_SUCCESS_RECEIPT_WRAPPER.command.txt",
+  "original_command_bytes": 11002,
+  "original_command_sha256": "ef4b470090bdcf2d9374a471973e403ab54716b57f22ec4cc8639f4ef4697c6c",
+  "template_file": "FUTURE_COST_RECEIPT_COMPACT_WRAPPER.template.command.txt",
+  "template_bytes": 10753,
+  "template_sha256": "9f1d1f3aef762d0aa43aa49ef8b853d780e5a91018e26721e6ddfc7b58200d78",
+  "only_behavioral_change": "Receipt json.dumps replaces indent=2 with separators=(',',':'); ensure_ascii=False, allow_nan=False, original final newline, <=100000 assertion and atomic_copy immutable=True retained.",
+  "explicit_parameter_placeholders": [
+    {
+      "placeholder": "__OUTER__",
+      "historical168_value": "168",
+      "meaning": "Actual new completed outer; numeric substitution at n only."
+    },
+    {
+      "placeholder": "__PREVIOUS_OUTER__",
+      "historical168_value": "167",
+      "meaning": "Actual immutable predecessor; numeric substitution at prev only."
+    },
+    {
+      "placeholder": "__PREVIOUS_CUM_FILE__",
+      "historical168_value": "CUMULATIVE_COST_THROUGH167.json",
+      "meaning": "Original predecessor CUM filename relative to BASE."
+    },
+    {
+      "placeholder": "__PREVIOUS_CUM_SHA256__",
+      "historical168_value": "27e668df5f7d9744a1e0974807629beab3e1e17a81a514a8914414374bfc7861",
+      "meaning": "Actual predecessor CUM raw-byte SHA256."
+    },
+    {
+      "placeholder": "__PREVIOUS_CANDIDATE_FILE__",
+      "historical168_value": "candidate_cost_backfill/CANDIDATE_OUTER0167.json",
+      "meaning": "Actual predecessor candidate file relative to BASE."
+    },
+    {
+      "placeholder": "__PREVIOUS_CANDIDATE_SHA256__",
+      "historical168_value": "926c34a240a9c73111497b6bb18532c7fb689e6834bc67821448d4936aedd984",
+      "meaning": "Actual predecessor candidate raw-byte SHA256."
+    },
+    {
+      "placeholder": "__CURRENT_CUM_FILE__",
+      "historical168_value": "CUMULATIVE_COST_THROUGH168.json",
+      "meaning": "Actual current CUM filename relative to BASE."
+    },
+    {
+      "placeholder": "__CURRENT_CUM_SHA256__",
+      "historical168_value": "d79e8ce33b102527175687646d98b4358341136c6e1d9683313cc7109c16676c",
+      "meaning": "Actual current CUM raw-byte SHA256."
+    },
+    {
+      "placeholder": "__FIRST_FULL_POLL_SHA256__",
+      "historical168_value": "32a16f9ff86f798f47b53305be9e85ca3a43cdf9ea5d2e4bbefed41314124bdf",
+      "meaning": "Original first FULL-bound poll SHA256; do not invent or substitute a later poll."
+    },
+    {
+      "placeholder": "__CURRENT_NATIVE_READBACK_SHA256__",
+      "historical168_value": "ab7a76ecec83bb38584088ad07fe444bad2545f2ff371d8f811c7e086a911447",
+      "meaning": "Actual current native metadata readback SHA256 bound by FULL."
+    },
+    {
+      "placeholder": "__FIRST_MIRROR_READBACK_JSON__",
+      "historical168_value": "/tmp/cost168-mirror-readback1.json",
+      "meaning": "Existing actual first mirror-readback JSON path; the original read and unlink operations are retained."
+    },
+    {
+      "placeholder": "__PREVIOUS_COST_FILE__",
+      "historical168_value": "COST_OUTER167_LOCAL_RECEIPT.json",
+      "meaning": "Actual immutable predecessor COST receipt filename relative to BASE."
+    },
+    {
+      "placeholder": "__PREVIOUS_COST_SHA256__",
+      "historical168_value": "79dd18ff3036a08002f6b63a26e8c86fa01e106da3890e201b879d7d2ebd03ca",
+      "meaning": "Actual immutable predecessor COST receipt raw-byte SHA256."
+    },
+    {
+      "placeholder": "__PUBLISHED_STATUS__",
+      "historical168_value": "COST168_PUBLISHED_SECOND_REAL_BYTES_SHA_MIRROR_READBACK_COMPLETE",
+      "meaning": "Original progress-output label with the actual selected new boundary."
+    },
+    {
+      "placeholder": "__PREVIOUS_CANDIDATE_JOINED_KEY__",
+      "historical168_value": "candidate167_joined_once",
+      "meaning": "Use candidate<prev>_joined_once for both output label and existing receipt lookup."
+    },
+    {
+      "placeholder": "__CURRENT_CANDIDATE_FOR_NEXT_KEY__",
+      "historical168_value": "candidate168_for169",
+      "meaning": "Progress-output label candidate<n>_for<n+1>."
+    },
+    {
+      "placeholder": "__CURRENT_DEV_NULL_KEY__",
+      "historical168_value": "no_dev168",
+      "meaning": "Progress-output label no_dev<n>; the actual dev-is-None expression remains unchanged."
+    }
+  ],
+  "changed_original_command_lines": [
+    5,
+    20,
+    21,
+    22,
+    53,
+    54,
+    55,
+    56
+  ],
+  "rebinding_all_placeholders_to_original_values_yields_only_serialization_change": true,
+  "reversing_that_single_serialization_change_recovers_original_command_bytes": true,
+  "actual168_in_memory_equivalence": {
+    "original_bytes": 98819,
+    "original_sha256": "e4e5cf714c92f21c180495716e3bd6285a6fd3c2d45cd1e036ab50ee6231b50a",
+    "compact_bytes": 65031,
+    "loads_objects_equal": true,
+    "compact_was_not_written": true
+  },
+  "original_and_template_executed_compiled_or_tested_by_this_task": false,
+  "training_runtime_or_canonical_modified": false,
+  "170_ready_or_accepted_claimed": false
+}
