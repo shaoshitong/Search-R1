@@ -167,6 +167,16 @@ def check_bank_file_seal(value):
         assert (st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns)==(row['device'],row['inode'],row['bytes'],row['mtime_ns'])
 
 
+def require_recorded_sessions_gone(records,survivors):
+    records=list(records)
+    leaders={tuple(record[key] for key in ('pid','start_ticks','sid','uid')):record
+        for record in records if record['pid']==record['sid']}
+    known={(record['sid'],record['uid']) for record in leaders.values()}
+    assert leaders and all((record['sid'],record['uid']) in known for record in records), 'Recorded child has no bound private-session leader'
+    assert all(not alive(record) for record in records)
+    live,_=survivors(list(leaders.values()));assert not live
+
+
 def validate_intent(intent):
     assert intent['role']==ROLE and intent['host']=='baai-a800' and re.fullmatch('[0-9a-f]{32}',intent['deployment_id'])
     assert intent['base']==PREFIX+intent['deployment_id'] and re.fullmatch('[0-9a-f]{40}',intent['source_commit'])
@@ -419,8 +429,7 @@ def qualified_bank_metadata(base,repo,intent):
     launch=audit['metadata_files']['logs/deployment-launch-receipt.json']['value']
     for record in [launch,admitted['encoder_worker'],admitted['encoder_producer']]+[record for job in audit['metadata_files']['logs/process-ledger.json']['value']['jobs'].values() for record in [job['leader'],*job['ledger'].values()]]:
         identity={key:record[key] for key in ('pid','start_ticks','sid','uid')};records[tuple(identity.values())]=identity
-    assert all(not alive(record) for record in records.values())
-    survivors,_=helpers(intent);live,_=survivors(list(records.values()));assert not live
+    survivors,_=helpers(intent);require_recorded_sessions_gone(records.values(),survivors)
     return admitted
 
 

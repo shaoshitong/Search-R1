@@ -1,10 +1,10 @@
 # 原生 Qwen 最后一层二分类探针：执行说明（2026-10-15）
 
-文档日期：2026-10-15。**最新已验终态截至 2026-10-15 22:54:35（Asia/Shanghai）**。目标为 **10 个 warmup epoch，随后完成 200 个正式 actor outer**，每个正式 outer 更新探针 2 个 epoch。下文 source927 / 92bb 的启动信息均为带时间的历史记录；新的隔离修复源码 commit、source map、run/execution 和 handle 均为 **pending**，待实际发布和绑定后补齐。
+文档日期：2026-10-15。**最新状态截至 2026-10-15 23:26:10（Asia/Shanghai）**。目标为 **10 个 warmup epoch，随后完成 200 个正式 actor outer**，每个正式 outer 更新探针 2 个 epoch。当前隔离 runtime 为 `a47abb701f62a6c4eb9e8e8c987c67a4cf804098`；新4fd508的CPU26、既有warmup/fullbank采用、Head绑定、initial0和预启动检查均已实际exit0。正式launch尚待本次实际部署批准，尚无正式outer/Adam更新。旧92bb与ff1196均为失败历史，禁止重复执行。
 
 旧92bb/source927 于 **22:47:32** 真实失败：`AssertionError: Cannot obtain actual CUDA device properties` 发生在 `main_task` 的 driver GPU 入口 hook，尚未进入原训练 body。已确认 **formal outer=0、正式 actor Adam=0、正式 Head 更新=0**；warmup 的200次 Head Adam另计。22:50:23 的观察确认 pipeline/trainer 均已退出，22:54:35 的终态审计接受34条 owned birth 的清理核验：0 owned SID process、0 owned CUDA context，项目 trainer live 列表为空。**禁止重新执行旧92bb handle 的 prepare/repair/launch action。**
 
-新的隔离 fresh-process GPU 绑定修复准备中：原 CPU Ray wrapper 只等待，从出生即绑定已准入 GPU UUID 的新进程连接原 Ray 集群并执行原训练 body。算法、科学 body、四卡 actor 资源池及 RNG 语义保持不变。有效096c native warmup10/200和169,028行 token bank继续复用，不重跑 warmup、teacher rollout 或 bank 编码；新实验仍从正式0开始。
+修复采用出生即绑定准入 GPU UUID 的 fresh Python driver，同步接入原 Ray 集群执行原训练 body；C4审计保留所有PID birth检查并只接收有完整绑定的会话主进程。算法、科学 body、四卡 actor 资源池及 CPU RNG 移交保持不变。有效096c native warmup10/200和169,028行 token bank已经验收复用，没有重跑warmup、teacher rollout或bank编码。
 
 ## 历史 source927 与现场身份
 
@@ -19,12 +19,12 @@
 | 有效 native warmup commit | `e81445905bf8b15dbb0bdec3afa29d99ab0b11d8` |
 | warmup source map SHA256 | `006912cc7817b2ae8abde32a85c42d21b2c1976bf0b5618066c6aa9d2f0674ad` |
 | 旧92bb run / execution | `862bccb5fcf348ce8454f9a332f37bdd` / `027e65da351a4e018dd377b806c19434` |
-| 新隔离修复 commit / source map | **pending** |
-| 新隔离实验 run / execution / handle | **pending** |
+| 新隔离修复 commit / source map | `a47abb701f62a6c4eb9e8e8c987c67a4cf804098` / `e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916` |
+| 新隔离实验 run / execution / handle | `524254af06a1472daa1368daba4e0b17` / `fd91bd58d4cf40a89b35427267f9d34e` / `preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json` |
 
 旧92bb工作区 `/data/shaoshitong/Search-G1-a800-fresh200-92bb58c18ae74ca9bc59fe1ba5dc02b6` 保留失败源码、日志及已验资产，不作为活动训练现场。有效 warmup 位于 `/data/shaoshitong/Search-G1-qprobe-qwen-lastblock-warmup10-096c8297cba74f8089063e763686671e/warmup`。
 
-日期为 2026-10-15 的独立 release 包保存 runtime 源码、OPS 原始文件和执行说明，其来源清单为 `docs/releases/qprobe-qwen-native-block-2026-10-15-manifest.json`，实际绑定的科学参数和 artifact hash 为 `docs/releases/qprobe-qwen-native-block-2026-10-15-config.json`。现有清单和配置记录旧92bb/source927；本次文档更新不将其冒充新隔离修复的发布证明。表中的 OPS03608 是原操作入口的固定版本；历史修复入口的来源以 release 清单为准。**保留旧 runtime927，不热改旧 repo；新实验使用另行发布并绑定的隔离源码。** OPS 针对 A800 现有资产、认证路由和现场目录；复现前需具备这些现场依赖。
+日期为 2026-10-15 的独立 release 包保存 runtime 源码、OPS 原始文件和执行说明，其来源清单为 `docs/releases/qprobe-qwen-native-block-2026-10-15-manifest.json`，实际绑定的科学参数和 artifact hash 为 `docs/releases/qprobe-qwen-native-block-2026-10-15-config.json`。现有清单和配置精确记录新a47abb源码与已核验Head绑定；旧927/9713失败版本的清单和Git历史均保留。表中的 OPS03608 是原操作入口的固定版本；历史修复入口的来源以 release 清单为准。**保留旧 runtime927，不热改旧 repo；新实验使用另行发布并绑定的隔离源码。** OPS 针对 A800 现有资产、认证路由和现场目录；复现前需具备这些现场依赖。
 
 当前公开仓库的发布许可仅覆盖代码、配置、执行文档和经清理的 scalar/hash 记录。凭证、模型权重、Head/Adam checkpoint、token features、原始 QA/rollout、完整逐题评测及环境包均不进入 Git。
 
@@ -185,3 +185,13 @@ source927 的 CPU Ray `main_task` 在 driver GPU hook 中调用实际 CUDART UUI
 修复源码已发布为 `9713a0ce3f33ef22ca5acfa5442ffbcec0bee3f5`，分支 `codex/qprobe-qwen-native-driver-process-fix-20261015`，508 个 runtime 文件的 source map SHA256 为 `c95e96b93cfedc19f1fdff1aff93e1854cdd1e6cd777e5330abe757889929582`；全508文件已从全新Git对象库核验。OPS qualified-bank 复用入口为 `e093c4d3c67a8ee70e8b7a364fc10a9ac99789bb`。新 prospective handle 是 `preparation/qprobe-qwen-native-driver-process-fix-deployment.json`，远端独立目录为 `/data/shaoshitong/Search-G1-a800-fresh200-ff1196a974114d7abe9b1be0c764b721`。此处发布的是修复代码，实际 CPU 资格和正式 launch / 完整 outer 仍须后续 receipt 确认。
 
 CPU Ray 包装任务不再晚改 CUDA 可见性；它同步等待一个在进程出生时绑定准入 GPU UUID 的 Python driver，后者接入同一个 Ray GCS/namespace。四 GPU actor pool、原始科学循环和 CPU RNG 状态保持原样，不增加 GPU 资源请求。旧 namespace 没有 actor 更新，因此新 namespace 是正式0起点的继续执行，不声称恢复了未产生的 actor state。
+
+### 2026-10-15 C4资源审计接口修正与当前部署
+
+上一修复源码9713的独立准备目录ff1196完成CPU26和warmup验收，但在bank-admit把子进程传给只接收会话主进程的C4接口，实际退出1。无GPU/actor启动、无正式Adam、缓存和warmup未改，旧claim保留且禁止重复执行。
+
+当前修复runtime为 `a47abb701f62a6c4eb9e8e8c987c67a4cf804098`，source map为 `e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916`（508文件，fresh remote Git核验）。保留每一个PID的实际birth检查，要求每条记录的SID/UID都有已绑定主进程，再仅把主进程交给原C4接口；原PID/SID复用规则未放宽。新handle `preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json`，base `/data/shaoshitong/Search-G1-a800-fresh200-4fd508e35bc84658ba892a97248f8a7f`，run `524254af06a1472daa1368daba4e0b17` / execution `fd91bd58d4cf40a89b35427267f9d34e`。CPU26/noCUDA与warmup采用已实际通过；169028 bank已从原fullSHA封存+五文件stat/原producer/终态证明验收复用，bank-admit实际exit0，没有再次编码或重hash75GB。后续bind/initial0/prelaunch/launch必须按新实际receipt核验；此处尚不声称正式训练已恢复。
+
+当前4fd508实际Head绑定已exit0：initial Head SHA256 `a269238b0c6c2c182efc058612de895a33f65f7ce9d66966d1973c571fe0f3f1`，ready SHA256 `5b707c21b91594effeef57de1b4b53e276398c4a7bfc837b131986aa7880e462`。这是同次096c nativewarmup的200HeadAdam/private RNG在新formal0 namespace的采用，teacher replay为空，不是actor恢复或新的Head拟合。
+
+实际预启动已exit0：`NATIVE_FRESH_FORMAL200_PRELAUNCH_QUALIFIED` SHA256 `84275048987d2e00f1d5984d4f38b42cafbc706f1e1b9aef09b8505d6e334fa4`。CPU26 receipt `781251a64a91ffc8c064ed8cd6115917b1282d122e9cd63e65e9fc9f3d481b2c`，original initial0采用proof `f646f6a5ae991d8743cdcc09ca58ada97097028376a8fe782db773cc9442a4a8`。所有CPU步骤通过不等于GPU启动或正式训练推进。
