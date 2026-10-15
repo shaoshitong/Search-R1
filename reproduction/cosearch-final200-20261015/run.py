@@ -125,9 +125,13 @@ def main():
     probe.unlink()
     base_env['VLLM_RPC_BASE_PATH']=str(rpc)
     performance=OUT/'performance.json'
-    concurrency=json.loads(performance.read_text())['question_concurrency'] if performance.exists() else 128
+    settings=json.loads(performance.read_text()) if performance.exists() else {}
+    concurrency=settings.get('question_concurrency',128)
+    main_replicas=settings.get('main_replicas',2)
     assert isinstance(concurrency,int) and 1<=concurrency<=512
+    assert isinstance(main_replicas,int) and 1<=main_replicas<=3
     base_env['COSEARCH_EVAL_CONCURRENCY']=str(concurrency)
+    base_env['COSEARCH_MAIN_REPLICAS']=str(main_replicas)
     opener=urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
     def launch(command,name,variables):
@@ -195,7 +199,7 @@ def main():
             gpus=budgets,headroom_fraction=.08))
         servers=[]
         for index,(name,gpu) in enumerate([
-                ('main',0),('main',1),('reranker',2),('reranker',3)]):
+                ('main' if gpu<main_replicas else 'reranker',gpu) for gpu in range(4)]):
             memory=budgets[visible[gpu]]['llm_memory_fraction']
             variables=dict(base_env,CUDA_VISIBLE_DEVICES=physical[visible[gpu]],
                 TRITON_CACHE_DIR=str(OUT/('cache/triton%d'%index)))

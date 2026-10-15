@@ -112,13 +112,15 @@ async def main():
     deadline = float(os.environ['COSEARCH_SLICE_DEADLINE']) if os.environ.get('COSEARCH_SLICE_DEADLINE') else None
     inflight = set()
     concurrency = int(os.environ.get('COSEARCH_EVAL_CONCURRENCY', '128'))
+    main_replicas=int(os.environ.get('COSEARCH_MAIN_REPLICAS','2'))
     assert 1 <= concurrency <= 512
+    assert 1<=main_replicas<=3
     semaphore = asyncio.Semaphore(concurrency)
     timeout = aiohttp.ClientTimeout(total=3600)
     async with aiohttp.ClientSession(timeout=timeout, trust_env=False,
                                      connector=aiohttp.TCPConnector(limit=256)) as session:
-        main_manager = Manager(session, [18100,18101], [1,1])
-        rank_manager = Manager(session, [18102,18103], [1,1])
+        main_manager = Manager(session, list(range(18100,18100+main_replicas)), [1]*main_replicas)
+        rank_manager = Manager(session, list(range(18100+main_replicas,18104)), [1]*(4-main_replicas))
 
         async def question(index):
             async with semaphore:
@@ -146,6 +148,7 @@ async def main():
                             response_mask=output.response_mask, reranker_events=agent.reranks,
                             inference_received_gold=False, binding_sha256=binding_sha,
                             question_concurrency=concurrency,
+                            main_replicas=main_replicas,reranker_replicas=4-main_replicas,
                             **metrics)
                         atomic(OUT/('rows/%05d.json'%index), row)
                         results[index] = row
@@ -153,6 +156,7 @@ async def main():
                             atomic(OUT/'progress.json', dict(epoch=time.time(),
                                 rows=len(results), total=N, seconds=time.time()-started,
                                 question_concurrency=concurrency,
+                                main_replicas=main_replicas,reranker_replicas=4-main_replicas,
                                 main_calls=main_manager.requests, reranker_calls=rank_manager.requests,
                                 main_active=main_manager.active, reranker_active=rank_manager.active))
                             print('SCORED_ROWS', len(results), flush=True)
