@@ -80,8 +80,13 @@ def capture_terminal(base):
     owned={r['pid'] for r in births};assert not any(int(r.split(',')[0]) in owned for r in gpu.splitlines() if r.strip())
     original=[]
     for row in intent['original_log_inodes']:
-        f=Path(row['path']);st=f.stat();assert st.st_ino==row['inode'] and st.st_dev==row['device'],str(f)
-        original.append(dict(row,bytes=st.st_size,sha256=sha(f)))
+        f=Path(row['path']);st=f.stat()
+        same=st.st_ino==row['inode'] and st.st_dev==row['device']
+        # Append-only raw logs must retain their original inode. JSON receipts
+        # such as process-ledger are atomically replaced during normal cleanup.
+        if f.suffix in ('.log','.out','.err'):assert same,str(f)
+        original.append(dict(row,terminal_inode=st.st_ino,terminal_device=st.st_dev,
+            same_original_inode=same,bytes=st.st_size,sha256=sha(f)))
     # Full raw log hashes and manifests stay remote; return a compact receipt.
     once(base/'preparation/std-loss-original-terminal-log-shas.json',original)
     result=dict(job_id=JOB,native_state=rows[0][1],native_exit_code=rows[0][2],original_owned_birth_count=len(births),original_births_live=0,
