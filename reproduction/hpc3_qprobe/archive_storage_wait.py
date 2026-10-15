@@ -97,47 +97,57 @@ def measure(claim_path,token,run_id,step):
              'existing measurement scope is inspect-only; never replay')
         ctl.publish(binding_path,dict(claim_sha256=claim_sha,token=token,archive_child=own,
             control=str(core.CONTROL),slot=slot,source_commit=claim['source']['commit'],started_unix=time.time()))
-        launched,child=observer.start_held(core)
-        observed_birth=launched.get('process')
-        need(observed_birth is not None and observed_birth['pid']==child.pid and
-             observed_birth['uid']==ctl.OWNER,'held observer child birth differs')
-        while True:
-            actual=core.inspect();value=actual.get('result')
-            need(actual.get('claim',{}).get('parent_process')==own,'measurement parent birth differs')
-            if value is not None and not actual['actual_du_live_birth']:
-                # A detached observer is still our direct child. Reap it before
-                # using birth predicates, which deliberately include zombies.
-                code=child.wait(timeout=30)
-                ctl.publish(folder/('storage-measurement-'+str(index)+'-held.json'),dict(
-                    claim_sha256=claim_sha,token=token,archive_child=own,observer_birth=observed_birth,
-                    actual_observer_wait_exit_code=code,finished_unix=time.time()))
-                need(code==0,'held observer exited abnormally')
-                actual=core.inspect();value=actual['result']
-                need(not actual['actual_live_birth'] and not actual['actual_du_live_birth'],
-                     'observer/DU still live after held wait')
-                break
-            need(actual['actual_live_birth'] or actual['actual_du_live_birth'],
-                 'measurement outcome unknown; retain claim and refuse replay')
-            need(child.poll() is None,'held observer died without a complete DU result; no replay')
-            time.sleep(5)
-        failure_path=core.CONTROL/'result.json';failure_sha=ctl.digest(failure_path)
-        if actual['status']=='ACTUAL_DU_COMPLETED0_USAGE_MEASURED':
-            allocated=accepted_usage(actual)
-            ctl.publish(folder/('storage-measurement-'+str(index)+'-accepted.json'),dict(
-                claim_sha256=claim_sha,token=token,allocated_bytes=allocated,result_path=str(failure_path),
-                result_sha256=failure_sha,actual_process=own,accepted_unix=time.time()))
-            return allocated
-        # This parser accepts only actual in-scope reported permission roots,
-        # optionally accompanied by ordinary disappearing temporary entries.
-        repair.failure(failure_path,failure_sha)
-        ctl.publish(folder/('storage-measurement-'+str(index)+'-waiting.json'),dict(
-            phase='WAITING_STORAGE_REPAIR',claim_sha256=claim_sha,token=token,actual_process=own,
-            failure_path=str(failure_path),failure_sha256=failure_sha,payload_created=False,checked_unix=time.time()))
-        while True:
-            need(ctl.digest(claim_path)==claim_sha and ctl.digest(failure_path)==failure_sha and
-                 not payload.exists() and not payload.is_symlink(),'waiting claim/failure/payload changed')
-            repaired=repair_evidence(failure_path,failure_sha,claim['source']['commit'])
-            if repaired is not None:break
-            time.sleep(10)
-        ctl.publish(folder/('storage-measurement-'+str(index)+'-repair-accepted.json'),repaired)
-    raise ValueError('Sixteen actual permission failures; retain the live diagnosis, no archive acceptance')
+        child=None
+        try:
+            launched,child=observer.start_held(core)
+            observed_birth=launched.get('process')
+            need(observed_birth is not None and observed_birth['pid']==child.pid and
+                 observed_birth['uid']==ctl.OWNER,'held observer child birth differs')
+            while True:
+                actual=core.inspect();value=actual.get('result')
+                need(actual.get('claim',{}).get('parent_process')==own,'measurement parent birth differs')
+                if value is not None and not actual['actual_du_live_birth']:
+                    # A detached observer is still our direct child. Reap it before
+                    # using birth predicates, which deliberately include zombies.
+                    code=child.wait(timeout=30)
+                    ctl.publish(folder/('storage-measurement-'+str(index)+'-held.json'),dict(
+                        claim_sha256=claim_sha,token=token,archive_child=own,observer_birth=observed_birth,
+                        actual_observer_wait_exit_code=code,finished_unix=time.time()))
+                    need(code==0,'held observer exited abnormally')
+                    actual=core.inspect();value=actual['result']
+                    need(not actual['actual_live_birth'] and not actual['actual_du_live_birth'],
+                         'observer/DU still live after held wait')
+                    break
+                need(actual['actual_live_birth'] or actual['actual_du_live_birth'],
+                     'measurement outcome unknown; retain claim and refuse replay')
+                need(child.poll() is None,'held observer died without a complete DU result; no replay')
+                time.sleep(5)
+            failure_path=core.CONTROL/'result.json';failure_sha=ctl.digest(failure_path)
+            if actual['status']=='ACTUAL_DU_COMPLETED0_USAGE_MEASURED':
+                allocated=accepted_usage(actual)
+                ctl.publish(folder/('storage-measurement-'+str(index)+'-accepted.json'),dict(
+                    claim_sha256=claim_sha,token=token,allocated_bytes=allocated,result_path=str(failure_path),
+                    result_sha256=failure_sha,actual_process=own,accepted_unix=time.time()))
+                return allocated
+            # This parser accepts only actual in-scope reported permission roots,
+            # optionally accompanied by ordinary disappearing temporary entries.
+            repair.failure(failure_path,failure_sha)
+            ctl.publish(folder/('storage-measurement-'+str(index)+'-waiting.json'),dict(
+                phase='WAITING_STORAGE_REPAIR',claim_sha256=claim_sha,token=token,actual_process=own,
+                failure_path=str(failure_path),failure_sha256=failure_sha,payload_created=False,checked_unix=time.time()))
+            while True:
+                need(ctl.digest(claim_path)==claim_sha and ctl.digest(failure_path)==failure_sha and
+                     not payload.exists() and not payload.is_symlink(),'waiting claim/failure/payload changed')
+                repaired=repair_evidence(failure_path,failure_sha,claim['source']['commit'])
+                if repaired is not None:break
+                time.sleep(10)
+            ctl.publish(folder/('storage-measurement-'+str(index)+'-repair-accepted.json'),repaired)
+        except BaseException as error:
+            cleanup=observer.reap_held(child) if child is not None else None
+            record=dict(phase='ARCHIVE_MEASUREMENT_EXCEPTION_HELD_CLEANUP',claim_sha256=claim_sha,
+                token=token,archive_child=own,error=repr(error),observer_cleanup=cleanup,
+                cleanup_pending=cleanup is not None and cleanup['cleanup_pending'],checked_unix=time.time())
+            try:ctl.publish(folder/('storage-measurement-'+str(index)+'-exception.json'),record)
+            except BaseException:print(json.dumps(record),flush=True)
+            raise
+    raise ValueError('Sixteen actual permission failures; retain all diagnosis evidence, no archive acceptance')

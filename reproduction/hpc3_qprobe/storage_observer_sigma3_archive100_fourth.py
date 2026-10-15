@@ -11,6 +11,8 @@ import json
 import os
 from pathlib import Path
 import re
+import subprocess
+import time
 
 ROOT=Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014')
 RELATIVE='reproduction/hpc3_qprobe/storage_observer_sigma3_archive100_fourth.py'
@@ -57,10 +59,28 @@ def start_held(core):
             child=original.Popen(*args,**kwargs);children.append(child);return child
     core.subprocess=PrivateSubprocess()
     try:actual=core.start()
+    except BaseException as error:
+        cleanup=[reap_held(child) for child in children]
+        record=dict(phase='OBSERVER_START_EXCEPTION_HELD_CLEANUP',error=repr(error),
+                    children=cleanup,cleanup_pending=any(x['cleanup_pending'] for x in cleanup),checked_unix=time.time())
+        try:core.publish(core.CONTROL/'parent-launch-error.json',record)
+        except BaseException:print(json.dumps(record),flush=True)
+        raise
     finally:core.subprocess=original
     if len(children)!=1:
+        cleanup=[reap_held(child) for child in children]
+        print(json.dumps(dict(phase='UNEXPECTED_OBSERVER_CHILD_COUNT',children=cleanup,
+                              cleanup_pending=any(x['cleanup_pending'] for x in cleanup))),flush=True)
         raise ValueError('Fresh observer launch did not yield exactly one held child; no replay')
     return actual,children[0]
+
+
+def reap_held(child,timeout=1860):
+    """Wait for this direct observer, including its bounded DU cleanup path."""
+    try:code=child.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:code=None
+    return dict(pid=child.pid,actual_observer_wait_exit_code=code,
+                cleanup_pending=code is None,finished_unix=time.time())
 
 
 def main():

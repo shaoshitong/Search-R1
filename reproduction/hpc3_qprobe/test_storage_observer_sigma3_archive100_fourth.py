@@ -3,6 +3,8 @@ from pathlib import Path
 from types import SimpleNamespace
 import subprocess
 import sys
+import tempfile
+import json
 import unittest
 
 from reproduction.hpc3_qprobe import storage_observer_sigma3_archive100_fourth as wrapper
@@ -10,6 +12,31 @@ from reproduction.hpc3_qprobe import storage_observer_sigma3_after_actual_denial
 
 
 class ObserverNamespace(unittest.TestCase):
+    def test_actual_unfinished_child_is_explicit_cleanup_pending(self):
+        child=subprocess.Popen([sys.executable,'-c','import time;time.sleep(30)'])
+        try:
+            result=wrapper.reap_held(child,timeout=.001)
+            self.assertTrue(result['cleanup_pending'])
+            self.assertIsNone(result['actual_observer_wait_exit_code'])
+        finally:
+            child.terminate();child.wait(timeout=10)
+
+    def test_exception_after_actual_popen_still_waits_and_records_cleanup(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            children=[];directory=Path(temporary)
+            core=SimpleNamespace(subprocess=subprocess,CONTROL=directory,
+                publish=lambda p,v:p.write_text(json.dumps(v)))
+            def start():
+                children.append(core.subprocess.Popen([sys.executable,'-c','pass']))
+                raise OSError('actual failure after Popen')
+            core.start=start
+            with self.assertRaisesRegex(OSError,'after Popen'):wrapper.start_held(core)
+            self.assertEqual(children[0].returncode,0)
+            record=json.loads((directory/'parent-launch-error.json').read_text())
+            self.assertFalse(record['cleanup_pending'])
+            self.assertEqual(record['children'][0]['actual_observer_wait_exit_code'],0)
+            self.assertIs(core.subprocess,subprocess)
+
     def test_actual_child_is_retained_and_reaped_while_parent_remains_live(self):
         core=SimpleNamespace(subprocess=subprocess)
         def start():

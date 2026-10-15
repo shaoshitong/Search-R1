@@ -686,6 +686,16 @@ P1修复及第三100实现f8a332a72257f54bf0c01a01fce592e2515d7937已推送，11
 
 独立reader/holder只新增精确f8a第三route/scope，入口及最终边界重新完整Stage消费原C5，明确输出并绑定原C5和原C1两份prior证明，原B894/dc9/f979/09cc保持身份。原5/50只继承真实held0且全SHA的原claim；100/150/200/native-submit仅接受第三follower的真实来源与控制进程。102项相关本地协议测试通过，包括三scope互换拒绝、priorC5/C1/原50变化拒绝、missing200先于source/scope/spawn拒绝，以及所有五套归档与native-submit实际held0门；最终200/native4两次完整恢复/no201未放宽。第三100仍未执行，目标ACTIVE。
 
+### 2026-10-16：F8失败保留与同一归档worker等待修复
+
+上述F8后来实际执行一次：原C5八文件9717B原子保全后独立同SHA/inode读回。独立归档全DU因新R10的torchelastic_oirmwa6a权限失败，在复制前held1退出；follower也实际退出1。三出生身份死亡，原100pair及14份原始小文件字节保留，payload根缺失。原四卡115完整、116采集中，原RAW未改动。
+
+新增第四typed F8交接精确绑定原claim/wait/log SHA、三dead birth及pair，分别保留C1/C5/F8三份prior和原B89450/RAW/5。外部额外DU0是实现自加的重复检查，移除；唯一复制准入仍在原archive-storage.lock内执行完整DU、真实held wait、完整零错误输出及2TB预算判断，随后才创建payload。权限失败保留完整DU receipt，同一归档worker进入WAITING_STORAGE_REPAIR；同源MOU精确FD修复记录及JXU当前inode/权限/遍历复核通过，才启动新编号完整DU。部分总量、未知或已有claim均不接受或重放，主训练/RAW不动。
+
+旧slot1真实DU1报告R10和R11临时根；A2 helper遇到一个已经消失的R11根，在intent和任何权限修改前退出1，未冒称成功。新版helper单独记录确实已消失的报告根，只改变仍存在的实际报告树内700目录FD为750；JXU复核消失根仍不存在，复制仍需下一次完整DU0。没有删除、递归chmod或主动扫描修复其他实验。
+
+审查发现正常与异常路径都必须持有并回收observer Popen，现由私有core捕获真实handle，正常wait后再消费DU；Popen后start失败、inspect或receipt写入异常也真实wait，超时明确记录cleanup_pending而不冒称终态。真实本地子进程测试覆盖正常回收、异常回收、pending及permission期间零payload/同parent修复后再测。F8内部依赖只对私有模块绑定同一Stage，seal继续完整原consumer/sourceSHA/保留字节复核。实现尚未执行，须发布及精确第四route注册后再一次启动；最终200全部门禁保留。
+
 
 ### 2026-10-16 06:08 CST：114轮真实指标与F8归档失败
 
