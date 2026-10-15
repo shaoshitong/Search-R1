@@ -227,14 +227,14 @@ def _actual_actor_methods(torch):
     from verl.utils.py_functional import append_to_dict
     source=Path(__file__).resolve().parents[2]/'verl/workers/actor/dp_actor.py'
     actor=next(node for node in ast.parse(source.read_text()).body if isinstance(node,ast.ClassDef) and node.name=='DataParallelPPOActor')
-    methods=[node for node in actor.body if isinstance(node,ast.FunctionDef) and node.name in ('__init__','_update_policy_attempt','_optimizer_step')]
+    methods=[node for node in actor.body if isinstance(node,ast.FunctionDef) and node.name in ('__init__','_update_policy_attempt','_optimizer_step','_invalidate_monitor_forward_cache','_commit_optimizer_write','_rollback_optimizer_write')]
     for method in methods:
         method.decorator_list=[];method.returns=None
         for arg in method.args.args:arg.annotation=None
     from search_g1.compute_precision import ComputePrecision
     class FixtureBase:
         def __init__(self,config):self.config=config
-    namespace=dict(torch=torch,FSDP=FullyShardedDataParallel,require_finite=require_finite,
+    namespace=dict(torch=torch,os=os,json=json,FSDP=FullyShardedDataParallel,require_finite=require_finite,
         append_to_dict=append_to_dict,ComputePrecision=ComputePrecision,BasePPOActor=FixtureBase,
         verl_F=SimpleNamespace(entropy_from_logits=lambda value:value))
     # Compile the real constructor and methods together: zero-argument super()
@@ -274,7 +274,7 @@ def _gloo_actor_worker(rank,world,endpoint,base_name,whole_skip):
         actor._optimizer_step=lambda:methods['_optimizer_step'](actor)
         def observe(frozen,safety,tail,stage):
             opportunity=actor._gradient_diagnostic_context['minibatch_index']
-            injected=(whole_skip or opportunity in (2,6) or (opportunity==4 and stage=='after_minibatch'))
+            injected=whole_skip
             delta=(module.weight.detach()-1.).double()
             if rank==0 and injected:delta=delta+2.
             report=monitor(delta,torch.ones_like(delta),torch.ones_like(delta),torch.ones_like(delta),
@@ -289,7 +289,7 @@ def _gloo_actor_worker(rank,world,endpoint,base_name,whole_skip):
             # A failure on only one rank must skip the same current opportunity
             # everywhere, then continue through all later opportunities.
             loss=module.weight.sum()
-            require_finite({'loss':loss*(float('nan') if rank==0 and opportunity==0 else 1.)},
+            require_finite({'loss':loss*(float('nan') if rank==0 and opportunity==2 else 1.)},
                 stage='before_backward',recoverable=True)
             optimizer.zero_grad();loss.backward();norm=actor._optimizer_step()
             kwargs['metrics'].update({'actor/pg_loss':[float(loss.detach())],'actor/grad_norm':[float(norm)]})
@@ -309,21 +309,26 @@ def _gloo_actor_worker(rank,world,endpoint,base_name,whole_skip):
              patch('reproduction.common8.formal_inline_safety.publish_optimizer_state'):
             metrics=methods['_update_policy_attempt'](actor,data)
         rows=actor._last_opportunities
-        assert len(rows)==20 and [row['opportunity_index'] for row in rows]==list(range(20))
-        expected=0 if whole_skip else 17
+        # Current transactional protocol ends this attempt at its first real
+        # guard. Earlier accepted Adam writes remain; skipped work is not a full
+        # outer and a fresh rollout is required, rather than reusing stale data.
+        processed=1 if whole_skip else 3
+        assert len(rows)==processed and [row['opportunity_index'] for row in rows]==list(range(processed))
+        expected=0 if whole_skip else 2
         assert actor._optimizer_writes==expected
         assert (not optimizer.state) if whole_skip else int(optimizer.state[module.weight]['step'])==expected
-        assert rows[4]['status']==('skipped_guard' if whole_skip else 'written_with_post_guard')
+        assert rows[-1]['status']=='skipped_guard' and not rows[-1]['optimizer_write_succeeded']
         if not whole_skip:
-            assert rows[0]['status']=='skipped_guard' and rows[1]['status']=='written'
-            assert rows[-1]['status']=='written' and metrics['actor/update_opportunities_this_attempt']==20
+            assert all(row['status']=='written' for row in rows[:-1])
+            assert rows[-1]['optimizer_writes_before']==rows[-1]['optimizer_writes_after']==2
+            assert metrics['actor/update_opportunities_this_attempt']==3
         (Path(base_name)/f'constructed-result-{rank}.json').write_text(json.dumps(
             dict(actual_writes=actor._optimizer_writes,opportunities=len(rows),statuses=[row['status'] for row in rows])))
     finally:dist.destroy_process_group()
 
 
 class ActualGlooOpportunityTests(unittest.TestCase):
-    def test_collective_guard_skips_current_opportunity_and_continues_after_retained_adam(self):
+    def test_collective_real_guard_ends_attempt_after_retained_adam(self):
         import torch.multiprocessing as mp
         for whole_skip in (False,True):
             with self.subTest(whole_skip=whole_skip),tempfile.TemporaryDirectory() as name:
@@ -333,9 +338,9 @@ class ActualGlooOpportunityTests(unittest.TestCase):
                 self.assertTrue(all(v==results[0] for v in results))
                 for rank in range(8):
                     rows=[json.loads(line) for line in (base/f'logs/optimizer-rank-{rank}.jsonl').read_text().splitlines()]
-                    self.assertEqual(sum(row['kind']=='POLICY_MONITOR' for row in rows),40)
-                    self.assertEqual(sum(row['kind']=='OPPORTUNITY' for row in rows),20)
-                    self.assertEqual(sum(row['kind']=='OPTIMIZER_WRITE' for row in rows),0 if whole_skip else 17)
+                    self.assertEqual(sum(row['kind']=='POLICY_MONITOR' for row in rows),1 if whole_skip else 5)
+                    self.assertEqual(sum(row['kind']=='OPPORTUNITY' for row in rows),1 if whole_skip else 3)
+                    self.assertEqual(sum(row['kind']=='OPTIMIZER_WRITE' for row in rows),0 if whole_skip else 2)
 
     def test_post_write_corruption_and_unapproved_stage_are_fatal(self):
         import torch

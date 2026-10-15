@@ -34,8 +34,20 @@ def once(path,value):
     with Path(path).open('x') as f:json.dump(value,f,indent=2);f.flush();os.fsync(f.fileno())
 
 
+def validate_binary_review(base,config):
+    """A one-time user-requested independent review, never a training-time gate."""
+    if config.get('probe_architecture') != 'qwen2_decoder3_binary_mix_v1':return
+    review=json.loads((Path(base)/'preparation/binary-math-code-review.json').read_text())
+    if not (review.get('reviewed_source_commit')==config['source_commit']
+            and review.get('math_approved') is True and review.get('final_code_approved') is True
+            and review.get('unresolved_blocking_findings')==[]
+            and review.get('independent_reviewer')=='baseline512_audit'):
+        raise ValueError('BINARY_INDEPENDENT_REVIEW_NOT_APPROVED_FOR_THIS_SOURCE')
+
+
 def submit(base,source_files):
     base=Path(base).resolve();config=json.loads((base/'preparation/h1008-launch-config.json').read_text())
+    validate_binary_review(base,config)
     restoring=config['role']=='restore_h1008_transformer3_question_probe200'
     if not restoring and (config['role']!='fresh_h1008_transformer3_question_probe200' or config.get('restore_receipt')):raise ValueError('FRESH_OFFICIAL_ONLY')
     if (base/'preparation/submit-intent.json').exists() or (base/'preparation/submit-receipt.json').exists():raise RuntimeError('Submission already attempted; query receipt/queue, never replay')

@@ -62,7 +62,7 @@ def agree_attempt_result(result, *, group=None):
                   'opportunity_statuses', 'guard_stage', 'guard_reasons',
                   'complete_outer', 'full_budget_complete', 'recovery_protocol_version',
                   'optimizer_calls_this_attempt', 'optimizer_rollbacks_this_attempt',
-                  'actual_monitor_forward_count', 'reused_monitor_forward_count')
+                  'actual_monitor_forward_count', 'reused_monitor_forward_count', 'extra_policy_monitor_forwards')
         if any(any(peer.get(name) != result.get(name) for name in shared) for peer in results):
             raise RuntimeError('Collective attempt dispositions or actual Adam counts differ')
     return result
@@ -91,7 +91,8 @@ def dual_clip_terms(delta, advantages, mask, epsilon, c):
 
 @torch.no_grad()
 def monitor(delta, advantages, mask, weights, *, c, kl_log_bound, target_kl,
-            negative_tail_limit, group=None, execution_role='production'):
+            negative_tail_limit, group=None, execution_role='production',
+            finite_thresholds_diagnostic_only=False):
     """Global weighted k3 and exact negative-token quantiles, matching collectives.
 
     Invalid/over-bound samples generate finite diagnostics and a rejection flag;
@@ -100,6 +101,10 @@ def monitor(delta, advantages, mask, weights, *, c, kl_log_bound, target_kl,
     observation. The numerator is diagnostic when kl_estimate_complete is false.
     """
     enforcement = enforcement_for_role(execution_role)
+    if type(finite_thresholds_diagnostic_only) is not bool:
+        raise ValueError('Finite-threshold monitoring mode must be an explicit bool')
+    if finite_thresholds_diagnostic_only:
+        enforcement.update(negative_tail='observe_only',old_policy_kl='observe_only',log_ratio_bound='observe_only')
     tail_valid = negative_tail_limit is None if execution_role == DISCOVERY_ROLE else (
         type(negative_tail_limit) in (int, float) and math.isfinite(negative_tail_limit) and 0 <= negative_tail_limit <= 1)
     if not (math.isfinite(target_kl) and target_kl > 0 and tail_valid and
@@ -147,8 +152,13 @@ def monitor(delta, advantages, mask, weights, *, c, kl_log_bound, target_kl,
     if mass <= 0 or count <= 0: reasons.append('empty_effective_samples')
     if kl is not None and kl > target_kl: reasons.append('old_policy_kl')
     if negative_tail_limit is not None and fraction > negative_tail_limit: reasons.append('negative_advantage_tail')
+    threshold_reasons = {'delta_above_kl_log_bound','old_policy_kl','negative_advantage_tail'}
+    warnings = [reason for reason in reasons if finite_thresholds_diagnostic_only and reason in threshold_reasons]
+    fatal = [reason for reason in reasons if reason not in warnings]
     return dict(execution_role=execution_role, enforcement=enforcement,
-                allowed=not reasons,reasons=reasons,sampled_old_policy_kl=kl,
+                finite_thresholds_diagnostic_only=finite_thresholds_diagnostic_only,
+                diagnostic_warnings=warnings,fatal_reasons=fatal,
+                allowed=not fatal,reasons=fatal,sampled_old_policy_kl=kl,
                 kl_estimate_complete=complete,effective_weight_mass=mass if finite_totals else None,
                 weighted_k3_numerator=numerator if finite_totals else None,
                 negative_effective_weight_mass=nmass if finite_totals else None,
@@ -222,8 +232,29 @@ def bind_actual_config(actor_config, group=None):
         if os.environ.get('SEARCH_G1_PROFILE')=='common8':
             run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
             monitor_count=monitor_trajectories_per_rank(run)
+            diagnostic = run.get('finite_thresholds_diagnostic_only',False)
+            configured_diagnostic = s.get('finite_thresholds_diagnostic_only',False) if s else False
+            if type(diagnostic) is not bool or configured_diagnostic is not diagnostic:
+                ok=False
+            if diagnostic and (s is None or s.get('enabled') is not True or s.get('dual_clip')!=3. or document.get('clip_ratio')!=.2 or
+                    (run.get('question_probe') or {}).get('probe_architecture')!='qwen2_decoder3_binary_mix_v1' or run.get('policy_calibration_role','production')!='production'):
+                ok=False
+            extra = run.get('extra_policy_monitor_forwards',True)
+            configured_extra = s.get('extra_policy_monitor_forwards',True) if s else True
+            if type(extra) is not bool or configured_extra is not extra:
+                ok=False
+            if not extra and not diagnostic:
+                ok=False
             if run.get('policy_safety_required') is True and (s is None or s.get('enabled') is not True):
                 ok=False
+        if s and s.get('extra_policy_monitor_forwards',True) is False and os.environ.get('SEARCH_G1_PROFILE')!='common8':
+            ok=False
+        if s and type(s.get('extra_policy_monitor_forwards',True)) is not bool:
+            ok=False
+        if s and s.get('finite_thresholds_diagnostic_only',False) and os.environ.get('SEARCH_G1_PROFILE')!='common8':
+            ok=False
+        if s and type(s.get('finite_thresholds_diagnostic_only',False)) is not bool:
+            ok=False
         if s and s['enabled']:
             epsilon=float(document['clip_ratio']);c=float(s['dual_clip'])
             ok=ok and (isinstance(s['enabled'],bool) and 0<epsilon<1 and math.isfinite(c) and c>1+epsilon

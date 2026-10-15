@@ -13,7 +13,8 @@ from reproduction.common8.source_files import runtime_files
 def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
          initial_head_checkpoint=None, seed=20261013, teacher_warmup_cache=None,
          infra_rollout=None, sequence_device="cpu", sequence_train_micro=4, sequence_predict_micro=32,
-         teacher_warmup_epochs=None, teacher_warmup_compatible_sources=None):
+         teacher_warmup_epochs=None, teacher_warmup_compatible_sources=None,
+         probe_architecture="qwen2_decoder3_binary_mix_v1", probe_loss=None):
     base = Path(base).resolve()
     manifest = base / "logs/run-manifest.json"
     run = json.loads(manifest.read_text())
@@ -47,6 +48,10 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
         raise ValueError("Question feature cache does not cover the verified canonical training artifact")
     if teacher_warmup_cache and initial_head_checkpoint:
         raise ValueError('Teacher warmup and historical initial head are distinct initialization routes')
+    if probe_architecture != 'qwen2_decoder3_binary_mix_v1':
+        raise ValueError('QPROBE_NEW_RUN_REQUIRES_BINARY_SEQUENCE_ARCHITECTURE')
+    if probe_loss is not None and probe_loss != dict(loss_version='binary_mix_variance_v1', variance_loss_weight=.1):
+        raise ValueError('QPROBE_NEW_RUN_REQUIRES_EXPLICIT_BINARY_LOSS')
     head_config = QProbeConfig(seed=seed, bootstrap_max_groups_per_outer=5120 if teacher_warmup_cache else 512)
     settings = dict(cache_dir=str(cache), output_dir=str(base / "artifacts/question-probe"),
                     candidate_questions=5120, selected_questions=512,
@@ -58,7 +63,7 @@ def bind(base, cache_dir, *, exploration_questions=64, retriever_version,
     if cache_manifest.get('schema_version') == 2:
         if type(sequence_train_micro) is not int or sequence_train_micro<1 or type(sequence_predict_micro) is not int or sequence_predict_micro<1:
             raise ValueError('Invalid physical sequence-probe micro batch')
-        settings.update(probe_architecture='qwen2_decoder3_count6',sequence_device=sequence_device,
+        settings.update(probe_architecture=probe_architecture,sequence_device=sequence_device,
             sequence_train_micro=sequence_train_micro,sequence_predict_micro=sequence_predict_micro)
     if teacher_warmup_cache:
         path = Path(teacher_warmup_cache)

@@ -50,7 +50,40 @@ def _attempt_identity(row):
     return attempt, index
 
 
-def _monitor_statistics(row):
+def _monitor_statistics(row, diagnostic_only=False):
+    if diagnostic_only:
+        _require(row.get('finite_thresholds_diagnostic_only') is True,
+                 'Actual monitor omitted the bound diagnostic-only threshold mode')
+        _require(row.get('enforcement')==dict(negative_tail='observe_only',old_policy_kl='observe_only',
+                 numerical_finite='enforced',dual_clip='enforced',log_ratio_bound='observe_only'),
+                 'Diagnostic mode must retain numerical rejection and DualClip')
+        reasons=[]
+        if row['kl_estimate_complete']:
+            if row['sampled_old_policy_kl']>FORMAL_SAFEGUARDS['target_old_policy_kl']: reasons.append('old_policy_kl')
+        else:
+            nonfinite_totals=any(row[name] is None for name in ('effective_weight_mass','weighted_k3_numerator',
+                'negative_effective_weight_mass','tail_effective_weight_mass'))
+            if nonfinite_totals: reasons.append('nonfinite_global_totals')
+            if row['invalid_count']: reasons.append('nonfinite_or_negative_effective_input')
+            if row['overflow_count']: reasons.append('delta_above_kl_log_bound')
+            if row['effective_token_count']<=0 or (not nonfinite_totals and row['effective_weight_mass']<=0):
+                reasons.append('empty_effective_samples')
+        if row['negative_tail_weight_fraction']>FORMAL_SAFEGUARDS['negative_tail_limit']:
+            reasons.append('negative_advantage_tail')
+        thresholds={'delta_above_kl_log_bound','old_policy_kl','negative_advantage_tail'}
+        warnings=[reason for reason in reasons if reason in thresholds]
+        fatal=[reason for reason in reasons if reason not in thresholds]
+        _require(row.get('diagnostic_warnings')==warnings and row.get('fatal_reasons')==fatal and
+                 row['reasons']==fatal and row['allowed']==(not fatal),
+                 'Monitor finite warnings/fatal numerical disposition differs')
+        # Reuse unchanged scalar/count/arithmetic verification. Normalization is
+        # only for the legacy reader's expectation, never an actual skip claim.
+        _monitor_statistics(dict(row,reasons=reasons,allowed=not reasons,finite_thresholds_diagnostic_only=False))
+        result={name:copy.deepcopy(row[name]) for name in GLOBAL_FIELDS}
+        result.update(finite_thresholds_diagnostic_only=True,diagnostic_warnings=warnings,fatal_reasons=fatal)
+        return result
+    _require(row.get('finite_thresholds_diagnostic_only',False) is False,
+             'Unbound diagnostic-only monitor mode')
     _require(type(row['allowed']) is bool and type(row['kl_estimate_complete']) is bool,
              'Malformed actual monitor decision')
     _require(isinstance(row['reasons'], list) and all(isinstance(x, str) and x for x in row['reasons']),
@@ -126,6 +159,9 @@ def _monitor_statistics(row):
 def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *, run):
     """Audit only actual executed opportunities; rolled-back calls are not writes."""
     observations = {}; final_rejections = []; decisions_by_rank = []; executions = []
+    extra_monitors = run.get('extra_policy_monitor_forwards',True)
+    _require(type(extra_monitors) is bool and (extra_monitors or run.get('finite_thresholds_diagnostic_only') is True),
+             'Omitted monitor forwards require explicit diagnostic-only run binding')
     for rank in ranks(run):
         rows = rows_by_rank[rank]
         decisions = [row for row in rows if row['kind']=='OPPORTUNITY']
@@ -155,7 +191,7 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
             _require(decision['optimizer_writes_before']==counter and
                      decision['optimizer_writes_after']==counter+int(success), 'Transaction retained write counter differs')
             local_monitors = [row for row in monitors if row['context']['minibatch_index']==mini]
-            stages = ['before_minibatch', 'after_minibatch'] if success or decision['guard_stage']=='after_minibatch' else ['before_minibatch']
+            stages = (['before_minibatch', 'after_minibatch'] if success or decision['guard_stage']=='after_minibatch' else ['before_minibatch']) if extra_monitors else []
             _require([row['stage'] for row in local_monitors]==stages,
                      'Transaction monitor execution differs from actual guard boundary')
             for row in local_monitors:
@@ -166,7 +202,7 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
                 _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run))
                 if identity is None: identity = row['monitor_identity']
                 _require(identity==row['monitor_identity'], 'Transaction frozen sample changed')
-                statistics = _monitor_statistics(row)
+                statistics = _monitor_statistics(row,run.get('finite_thresholds_diagnostic_only',False))
                 rejections += int(not row['allowed'])
                 _require(row['rejection_count']==rejections, 'Transaction rejection counter differs')
                 _require(row['optimizer_writes']==counter+int(row['stage']=='after_minibatch'),
@@ -195,6 +231,10 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
             _require(decision['status']==attempt['opportunity_statuses'][mini], 'Driver and transaction worker statuses differ')
             counter += int(success)
         terminal = rows[-1]
+        if not extra_monitors:
+            _require(not monitors and terminal.get('actual_monitor_forward_count')==0 and
+                     terminal.get('reused_monitor_forward_count')==0 and terminal.get('extra_policy_monitor_forwards') is False,
+                     'No-extra-forward execution must report actual zero monitor counts')
         _row(terminal, rank, binding, 'OUTER_BUDGET' if attempt['complete_outer'] else 'ABORTED_ATTEMPT')
         _require(terminal['opportunities_processed']==len(decisions) and terminal['optimizer_writes']==counter-attempt['optimizer_writes_before'] and
                  terminal['cumulative_writes']==counter==attempt['optimizer_writes_after'], 'Transaction terminal totals differ')
@@ -279,7 +319,7 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run
                 _require(row['stage'] == stage and row['optimizer_writes'] == writes,
                          'Actual monitor/write order differs')
                 _require(row['calibration_sha256'] == binding['calibration_sha256'] and
-                         row['execution_role'] == 'production' and row['enforcement'] == _enforcement('production'),
+                         row['execution_role'] == 'production' and row['enforcement'] == dict(_enforcement('production'),**(dict(negative_tail='observe_only',old_policy_kl='observe_only',log_ratio_bound='observe_only') if run.get('finite_thresholds_diagnostic_only',False) else {})),
                          'Actual monitor prospective plan or enforced role differs')
                 _require(row['objective_weight_definition'] == OBJECTIVE_WEIGHT_DEFINITION and
                          row['monitoring_scope'] == monitor_scope(run), 'Actual monitor weight/scope differs')
@@ -287,7 +327,7 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run
                 if identity is None:
                     identity = copy.deepcopy(row['monitor_identity']); identities[rank] = identity
                 _require(identity == row['monitor_identity'], 'Actual frozen monitor identity changed')
-                statistics = _monitor_statistics(row)
+                statistics = _monitor_statistics(row,run.get('finite_thresholds_diagnostic_only',False))
                 rejections += int(not row['allowed'])
                 _require(_integer(row['rejection_count'], 'rejection_count') == rejections,
                          'Actual cumulative policy rejection counter differs')

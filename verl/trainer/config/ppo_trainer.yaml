@@ -27,17 +27,15 @@ question_probe:
   snapshot_path: null
   initial_head_checkpoint: null
   head_hidden_size: 64
-  probe_architecture: count_mlp
+  probe_architecture: binary_mlp
   sequence_device: cpu
   sequence_train_micro: 4
   sequence_predict_micro: 32
   head_learning_rate: 0.0003
   head_batch_size: 256
   head_epochs_per_outer: 2
-  mean_loss_weight: 0.0
-  std_loss_weight: 1.0
-  count_aux_loss_weight: 0.1
-  loss_version: std_class_ce_v1
+  variance_loss_weight: 0.1
+  loss_version: binary_mix_variance_v1
   replay_window_outer: 16
   replay_half_life_outer: 4
   bootstrap_max_groups_per_outer: 512
@@ -65,6 +63,8 @@ actor_rollout_ref:
     state_masking: False
     clip_ratio: 0.2
     policy_safety:
+      extra_policy_monitor_forwards: true # new binary diagnostic-only run may omit these optional forwards
+      finite_thresholds_diagnostic_only: false # new binary run may explicitly bind finite thresholds as warnings
       mode: null # inline_first_five is an explicit formal-only recoverable mode
       enabled: false
       dual_clip: 3.0

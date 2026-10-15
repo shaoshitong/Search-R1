@@ -123,8 +123,14 @@ def main():
                 teacher_warmup_cache=config.get('frozen_teacher_cache',str(base/'teacher-warmup')),infra_rollout=DEFAULT_ROLLOUT_PHASE,
                 sequence_device='allocated_rank7',sequence_train_micro=4,sequence_predict_micro=32,
                 teacher_warmup_epochs=config.get('warmup_epochs'),
-                teacher_warmup_compatible_sources=config.get('warmup_compatible_source_sha256'))
+                teacher_warmup_compatible_sources=config.get('warmup_compatible_source_sha256'),
+                probe_architecture=config['probe_architecture'],probe_loss=config['new_loss'])
         run['startup_admission_mode']='actual_first_five'
+        if config.get('probe_architecture')=='qwen2_decoder3_binary_mix_v1':
+            assert config.get('finite_thresholds_diagnostic_only') is True
+            run['finite_thresholds_diagnostic_only']=True
+            assert config.get('extra_policy_monitor_forwards') is False
+            run['extra_policy_monitor_forwards']=False
         from reproduction.a800.owned_processes import publish
         publish(base/'logs/run-manifest.json',run)
         from reproduction.common8.disk_admission import admit as disk_admit

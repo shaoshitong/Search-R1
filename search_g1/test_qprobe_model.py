@@ -8,7 +8,7 @@ from unittest import mock
 
 import torch
 
-from search_g1.qprobe_model import CountMomentProbe, OnlineQProbe, QProbeConfig, count_moment_loss
+from search_g1.qprobe_model import BinaryMixVarianceProbe, OnlineQProbe, QProbeConfig, binary_mix_variance_loss, binary_predictions
 
 
 def labels(outer, n=6, count=None):
@@ -35,73 +35,68 @@ class QProbeModelTests(unittest.TestCase):
     def tearDownClass(cls):
         torch.set_num_threads(cls.old_threads)
 
-    def test_all_32_binary_groups_match_sample_std(self):
-        probe = CountMomentProbe(4)
-        for em in itertools.product([0,1], repeat=5):
-            values = torch.tensor(em, dtype=torch.float32)
-            count = sum(em)
-            self.assertAlmostEqual(probe.means[count].item(), values.mean().item())
-            self.assertAlmostEqual(probe.stds[count].item(), values.std(correction=1).item())
-        self.assertAlmostEqual(probe.stds.max().item(), math.sqrt(.3), places=6)
+    def test_all_32_binary_groups_match_unbiased_sample_variance(self):
+        for em in itertools.product([0,1],repeat=5):
+            values=torch.tensor(em,dtype=torch.float32);k=sum(em)
+            self.assertAlmostEqual(k*(5-k)/20,values.var(correction=1).item(),places=6)
+            self.assertEqual(int(1<=k<=4),int(0<values.sum()<5))
+        self.assertAlmostEqual(max(k*(5-k)/20 for k in range(6)),.3)
 
-    def test_same_expected_accuracy_can_have_opposite_diversity(self):
-        model = CountMomentProbe(4)
-        logits = torch.full((2,6), -100.0)
-        logits[0,[0,5]] = 0; logits[1,[2,3]] = 0
-        prediction = model.moments(logits)
-        self.assertTrue(torch.allclose(prediction['mean'], torch.tensor([.5,.5])))
-        self.assertLess(prediction['expected_std'][0].item(), 1e-30)
-        self.assertAlmostEqual(prediction['expected_std'][1].item(), math.sqrt(.3), places=6)
-        self.assertTrue(torch.allclose(prediction['mixed_probability'], torch.tensor([0.,1.]), atol=1e-6))
+    def test_two_output_binary_head_has_no_fake_count_or_accuracy_distribution(self):
+        prediction=BinaryMixVarianceProbe(4)(torch.ones(2,4))
+        self.assertEqual(set(prediction),{'mix_logit','variance_logit','mixed_probability','expected_variance'})
+        self.assertEqual(prediction['mixed_probability'].shape,(2,))
+        self.assertTrue(torch.equal(prediction['mixed_probability'],torch.full((2,),.5)))
+        torch.testing.assert_close(prediction['expected_variance'],torch.full((2,),.15))
 
-    def test_expected_variance_is_not_expected_std_squared(self):
-        model = CountMomentProbe(3)
-        logits = torch.full((1,6), -100.); logits[0,[0,2]] = 0.
-        pred = model.moments(logits)
-        self.assertGreater(pred['expected_variance'].item(), pred['expected_std'].square().item())
+    def test_binary_rank_is_independent_of_variance(self):
+        prediction=binary_predictions(torch.tensor([-2.,2.]),torch.tensor([20.,-20.]))
+        self.assertLess(prediction['mixed_probability'][0],prediction['mixed_probability'][1])
+        self.assertGreater(prediction['expected_variance'][0],prediction['expected_variance'][1])
 
     def test_cold_head_ties_every_question_and_preserves_global_rng(self):
-        torch.manual_seed(123); before = torch.get_rng_state().clone()
-        probe = OnlineQProbe(8)
+        torch.manual_seed(123);before=torch.get_rng_state().clone();probe=OnlineQProbe(8)
+        self.assertTrue(torch.equal(before,torch.get_rng_state()))
+        pred=probe.predict(torch.arange(32).float().reshape(4,8))
+        self.assertTrue(torch.equal(pred['mixed_probability'],torch.full((4,),.5)))
+        self.assertFalse(any(v.requires_grad for v in pred.values()))
+
+    def test_constructor_seeds_only_cpu_without_touching_actor_cuda_rng(self):
+        torch.random.default_generator.manual_seed(123)
+        before = torch.get_rng_state().clone()
+        with mock.patch('torch.cuda.manual_seed_all', side_effect=AssertionError('actor CUDA RNG must remain untouched')) as cuda_seed:
+            OnlineQProbe(8)
+        cuda_seed.assert_not_called()
         self.assertTrue(torch.equal(before, torch.get_rng_state()))
-        pred = probe.predict(torch.arange(32).float().reshape(4,8))
-        self.assertTrue(torch.allclose(pred['probabilities'], torch.full((4,6), 1/6)))
-        self.assertEqual(len(set(pred['expected_std'].tolist())), 1)
-        self.assertFalse(any(value.requires_grad for value in pred.values()))
 
-    def test_real_labels_reduce_prequential_count_nll(self):
-        probe = OnlineQProbe(4, dict(head_learning_rate=.03, head_epochs_per_outer=6, head_batch_size=32))
-        x = torch.tensor([[1.,2.,3.,4.]]*32)
-        before = -probe.predict(x)['probabilities'][:,2].log().mean().item()
-        for outer in range(1,4): advance(probe, outer, x, labels(outer,32,count=2))
-        after = -probe.predict(x)['probabilities'][:,2].log().mean().item()
-        self.assertLess(after, before*.6)
-        self.assertEqual(probe.update_count, 3)
+    def test_real_labels_reduce_binary_nll(self):
+        probe=OnlineQProbe(4,dict(head_learning_rate=.03,head_epochs_per_outer=6,head_batch_size=32))
+        x=torch.tensor([[1.,2.,3.,4.]]*32)
+        before=-probe.predict(x)['mixed_probability'].log().mean().item()
+        for outer in range(1,4):advance(probe,outer,x,labels(outer,32,count=2))
+        after=-probe.predict(x)['mixed_probability'].log().mean().item()
+        self.assertLess(after,before*.6)
 
-    def test_age_weighted_objective_matches_manual_complete_replay(self):
-        model = CountMomentProbe(3); p = model(torch.ones(2,3))
-        weights = torch.tensor([1.,.25]); counts = torch.tensor([0,2])
-        loss, pieces = count_moment_loss(p, counts, QProbeConfig(), weights)
-        ce = -p['probabilities'][torch.arange(2),counts].log()
-        std = (counts.float()*(5-counts.float())/20).sqrt()
-        q = torch.stack([p['probabilities'][:, pair].sum(-1) for pair in ((0,5),(1,4),(2,3))], -1)
-        cls = torch.minimum(counts, 5-counts)
-        per = -q[torch.arange(2), cls].log() + .1*ce + ((p['expected_std']-std)/math.sqrt(.3)).square()
-        self.assertAlmostEqual(loss.item(), ((per*weights).sum()/weights.sum()).item(), places=6)
-        self.assertTrue(torch.isfinite(pieces['count_ce']))
+    def test_age_weighted_binary_aux_objective_matches_manual_replay(self):
+        prediction=binary_predictions(torch.tensor([-.3,.8],requires_grad=True),torch.tensor([.1,-.4],requires_grad=True))
+        counts=torch.tensor([0,2]);weights=torch.tensor([1.,.25])
+        loss,parts=binary_mix_variance_loss(prediction,counts,QProbeConfig(),weights)
+        bce=torch.nn.functional.binary_cross_entropy_with_logits(prediction['mix_logit'],torch.tensor([0.,1.]),reduction='none')
+        variance=counts.float()*(5-counts.float())/20
+        per=bce+.1*((prediction['expected_variance']-variance)/.3).square()
+        torch.testing.assert_close(loss,(per*weights).sum()/weights.sum())
+        self.assertEqual(set(parts),{'mixed_bce','variance_mse_normalized'})
+        loss.backward();self.assertTrue(torch.isfinite(prediction['mix_logit'].grad).all())
 
-    def test_std_main_loss_is_symmetric_and_ignores_mean(self):
-        model = CountMomentProbe(3)
-        logits = torch.tensor([[1., -2., 3., .5, -1., 2.]], requires_grad=True)
-        pred = model.moments(logits)
-        config = QProbeConfig(count_aux_loss_weight=0)
-        left, _ = count_moment_loss(pred, torch.tensor([1]), config)
-        pred['mean'] = torch.tensor([999.])
-        right, _ = count_moment_loss(pred, torch.tensor([4]), config)
-        self.assertTrue(torch.equal(left, right))
-        left.backward()
-        self.assertTrue(torch.isfinite(logits.grad).all())
-        with self.assertRaises(ValueError): QProbeConfig(mean_loss_weight=.1)
+    def test_complement_targets_are_symmetric_and_old_loss_rejected(self):
+        prediction=binary_predictions(torch.tensor([.2]),torch.tensor([-.3]))
+        for k in range(6):
+            left,_=binary_mix_variance_loss(prediction,torch.tensor([k]),QProbeConfig())
+            right,_=binary_mix_variance_loss(prediction,torch.tensor([5-k]),QProbeConfig())
+            torch.testing.assert_close(left,right,rtol=0,atol=0)
+        with self.assertRaises(ValueError):QProbeConfig(loss_version='std_class_ce_v1')
+        with self.assertRaises(ValueError):QProbeConfig.from_mapping({'count_aux_loss_weight':.1})
+        with self.assertRaises(ValueError):QProbeConfig(variance_loss_weight=.2)
 
     def test_updates_do_not_perturb_actor_rng_and_evict_old_labels(self):
         probe = OnlineQProbe(4, dict(replay_window_outer=2, head_epochs_per_outer=1))
@@ -152,7 +147,7 @@ class QProbeModelTests(unittest.TestCase):
             self.assertEqual(probe.version,clone.version)
             advance(probe,2,x); advance(clone,2,x)
             self.assertEqual(probe.version,clone.version)
-            self.assertTrue(torch.equal(probe.predict(x)['probabilities'],clone.predict(x)['probabilities']))
+            self.assertTrue(torch.equal(probe.predict(x)['mixed_probability'],clone.predict(x)['mixed_probability']))
             with self.assertRaisesRegex(ValueError,'ACTOR_BINDING'): OnlineQProbe.load(path,'wrong-actor')
             with self.assertRaisesRegex(ValueError,'FEATURE_SPEC'): OnlineQProbe.load(path,expected_feature_spec_sha='wrong')
             with self.assertRaises(FileExistsError): probe.save(path,actor_snapshot_id='actor-after-2')
@@ -173,6 +168,14 @@ class QProbeModelTests(unittest.TestCase):
         future=dict(history[0],source_outer=5)
         with self.assertRaisesRegex(ValueError,'FUTURE'):
             OnlineQProbe(4).bootstrap([future],torch.ones(1,4),actor_outer=4,actor_snapshot_id='actor-after-4')
+
+    def test_old_six_class_checkpoints_are_not_admitted(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'old.pt'
+            for version in (1,2):
+                torch.save({'schema_version':version,'probe_architecture':'qwen2_decoder3_count6'},path)
+                with self.assertRaisesRegex(ValueError,'SCHEMA'):
+                    OnlineQProbe.load(path)
 
     def test_numeric_and_config_guards(self):
         with self.assertRaises(ValueError): QProbeConfig(replay_half_life_outer=0)

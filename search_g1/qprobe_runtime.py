@@ -16,7 +16,7 @@ import numpy as np
 import torch
 
 from search_g1.qprobe_selection import (
-    QuestionPool, count_predictions, prequential_metrics, select_questions, validate_budget,
+    QuestionPool, binary_predictions, prequential_metrics, select_questions, validate_budget,
 )
 
 
@@ -81,6 +81,10 @@ def _plain_config(config):
 
 def validate_config(config):
     config = _plain_config(config)
+    if any(name in config for name in ('mean_loss_weight','std_loss_weight','count_aux_loss_weight')):
+        raise ValueError('QPROBE_OLD_COUNT_LOSS_CONFIG_NOT_ACCEPTED')
+    if config.get('loss_version','binary_mix_variance_v1') != 'binary_mix_variance_v1' or config.get('variance_loss_weight',.1) != .1:
+        raise ValueError('QPROBE_BINARY_MAIN_AND_POINT_ONE_VARIANCE_AUX_REQUIRED')
     validate_budget(config.get("candidate_questions", 5120), config.get("selected_questions", 512),
                     config.get("exploration_questions", 64), config.get("responses_per_question", 5))
     # The native behavior identity contract and eight-rank actor budget are 512/G5.
@@ -88,26 +92,24 @@ def validate_config(config):
         raise ValueError("Native question-probe runtime requires selected_questions=512")
     if config.get("post_rollout_em_filter", False) is not False:
         raise ValueError("Question-probe mode forbids post-rollout filtering or refill")
-    if config.get("ranking", "expected_sample_std") != "expected_sample_std":
-        raise ValueError("The implemented acquisition ranks expected sample std")
+    if config.get("ranking", "mixed_probability") != "mixed_probability":
+        raise ValueError("The implemented acquisition ranks direct binary mixed probability")
     if config.get("exploration_order", "uniform_first") != "uniform_first":
         raise ValueError("Question-probe exploration must be drawn uniformly before Top selection")
     if type(config.get("std_ddof", 1)) is not int or config.get("std_ddof", 1) != 1 or \
             config.get("target", "strict_terminal_em") != "strict_terminal_em":
         raise ValueError("Question-probe labels require strict terminal EM and sample std ddof=1")
     if type(config.get("update_every_completed_outer", 1)) is not int or config.get("update_every_completed_outer", 1) != 1:
-        raise ValueError("The new count head must update every successful outer iteration")
+        raise ValueError("The binary mixed head must update every successful outer iteration")
     if type(config.get("seed", 42)) is not int:
         raise ValueError("Question-probe seed must be an integer")
-    if config.get('probe_architecture','count_mlp') not in ('count_mlp','qwen2_decoder3_count6'):
+    if config.get('probe_architecture','binary_mlp') not in ('binary_mlp','qwen2_decoder3_binary_mix_v1'):
         raise ValueError('Unknown question-probe architecture')
     return config
 
 
 def _prediction_cpu(prediction):
-    if "probabilities" not in prediction:
-        raise ValueError("Question-probe head omitted its six-count probabilities")
-    return count_predictions(prediction["probabilities"])
+    return binary_predictions(prediction)
 
 
 class QProbeRuntime:
@@ -150,7 +152,7 @@ class QProbeRuntime:
                 if head.config != expected_head_config:
                     raise ValueError("Initial question-probe head config differs from the effective runtime config")
             else:
-                if self.config.get('probe_architecture','count_mlp') == 'qwen2_decoder3_count6':
+                if self.config.get('probe_architecture','binary_mlp') == 'qwen2_decoder3_binary_mix_v1':
                     from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
                     if self.cache.spec.get('representation') != 'frozen_token_sequence_v2':
                         raise ValueError('QPROBE_THREE_BLOCKS_REQUIRE_SEQUENCE_CACHE')
@@ -179,7 +181,7 @@ class QProbeRuntime:
 
     def _bind_head_architecture(self, head):
         from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
-        wants_sequence = self.config.get('probe_architecture','count_mlp') == 'qwen2_decoder3_count6'
+        wants_sequence = self.config.get('probe_architecture','binary_mlp') == 'qwen2_decoder3_binary_mix_v1'
         if wants_sequence != isinstance(head,OnlineSequenceQProbe):
             raise ValueError('QPROBE_HEAD_ARCHITECTURE_CONFIG_MISMATCH')
         if wants_sequence:
@@ -198,7 +200,7 @@ class QProbeRuntime:
     def score(self, questions):
         """A narrow qid/question API: no labels or complete DataProto enter the cache/head."""
         features = self.cache.get_features([q.qid for q in questions], [q.question for q in questions])
-        if self.config.get('probe_architecture','count_mlp') == 'qwen2_decoder3_count6':
+        if self.config.get('probe_architecture','binary_mlp') == 'qwen2_decoder3_binary_mix_v1':
             from search_g1.qprobe_sequence import SequenceFeatures
             if not isinstance(features,SequenceFeatures) or len(features)!=len(questions) or features.feature_dim!=self.cache.feature_dim:
                 raise ValueError('Question sequence cache returned the wrong feature layout')
@@ -213,14 +215,14 @@ class QProbeRuntime:
             raise RuntimeError("Probe changed during frozen question prediction")
         return features.detach().cpu(), prediction, frozen_version
 
-    def begin_outer(self, *, outer, attempt_id, selected, features, probabilities,
+    def begin_outer(self, *, outer, attempt_id, selected, features, predictions,
                     prediction_version, policy_snapshot_id, contracts):
         if self.pending is not None:
             raise RuntimeError("Previous question-probe attempt has not been completed or aborted")
         if attempt_id in self.completed_attempts:
             raise RuntimeError("Question-probe attempt was already committed")
         self.pending = dict(outer=outer, attempt_id=attempt_id, selected=selected,
-            features=features.detach().cpu().clone(), probabilities=np.asarray(probabilities).copy(),
+            features=features.detach().cpu().clone(), predictions=binary_predictions(predictions),
             prediction_version=prediction_version, policy_snapshot_id=policy_snapshot_id,
             contracts=dict(contracts), labels=None, prequential=None)
 
@@ -229,8 +231,19 @@ class QProbeRuntime:
             raise RuntimeError("Missing or repeated question-probe label transaction")
         if len(labels) != 512 or len(strict_vectors) != 512:
             raise ValueError("Incomplete selected question labels")
+        vectors = np.asarray(strict_vectors)
+        if vectors.shape != (512,5) or vectors.dtype.kind not in 'iu' or not np.isin(vectors,(0,1)).all():
+            raise ValueError('Incomplete or nonbinary selected question labels')
+        if any(list(label.get('strict_em',())) != list(vector) for label,vector in zip(labels,strict_vectors)):
+            raise ValueError('Selected question label/vector alignment differs')
         sources = [label["selection_source"] for label in labels]
-        measured = prequential_metrics(self.pending["probabilities"], strict_vectors, sources)
+        try:
+            measured = prequential_metrics(self.pending["predictions"], strict_vectors, sources)
+            json.dumps(measured,allow_nan=False)
+        except Exception as error:
+            measured = dict(diagnostic_error=dict(stage='prequential_metrics',error_type=type(error).__name__),
+                diagnostic_complete=False,scope='selected_questions_prediction_before_rollout_before_fit')
+            print('QPROBE_DIAGNOSTIC_ERROR='+json.dumps(measured),flush=True)
         # This is measured against the immutable pre-rollout predictions, before fit.
         self.pending["labels"] = copy.deepcopy(labels)
         self.pending["prequential"] = measured
@@ -293,7 +306,7 @@ class QProbeRuntime:
         path = Path(path)
         head_path = path.with_name(path.name + ".head.pt")
         head_receipt = self.head.save(head_path, actor_snapshot_id=actor_snapshot_id)
-        state = dict(schema_version=1, config=self.config, feature_spec_sha=self.feature_spec_sha,
+        state = dict(schema_version=2, config=self.config, feature_spec_sha=self.feature_spec_sha,
             actor_snapshot_id=actor_snapshot_id, completed_outer=self.completed_outer,
             completed_attempts=sorted(self.completed_attempts), head_version=self.version,
             selection_rng=copy.deepcopy(self.selection_rng.bit_generator.state),
@@ -317,7 +330,7 @@ class QProbeRuntime:
         if self.pending is not None:
             raise RuntimeError("Cannot restore over an active probe transaction")
         state = torch.load(path, map_location="cpu", weights_only=False)
-        if state.get("schema_version") != 1 or state["actor_snapshot_id"] != expected_actor_snapshot_id:
+        if state.get("schema_version") != 2 or state["actor_snapshot_id"] != expected_actor_snapshot_id:
             raise ValueError("Question-probe snapshot does not belong to the restored actor")
         if state["feature_spec_sha"] != self.feature_spec_sha:
             raise ValueError("Question-probe restore feature namespace differs")
@@ -615,7 +628,7 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
         feature_spec_sha=runtime.feature_spec_sha))
     candidate_parents, questions = _collect_pool(stream, runtime.config.get("candidate_questions", 5120))
     features, predictions, prediction_version = runtime.score(questions)
-    members = select_questions(questions, predictions["probabilities"],
+    members = select_questions(questions, predictions,
         selected_questions=512, exploration_questions=runtime.config.get("exploration_questions", 64),
         rng=runtime.selection_rng, tie_seed=str(runtime.config.get("seed", 42)) + ":" + str(outer))
     ordinals = [m.ordinal for m in members]
@@ -630,13 +643,11 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
         attempt_id=tag, feature_spec_sha=runtime.feature_spec_sha, head_version=prediction_version,
         policy_snapshot_id=identity["policy_snapshot_id"], attempted_candidates=len(questions),
         selected_groups=512, exploration_questions=runtime.config.get("exploration_questions", 64),
-        prediction_before_label=True, post_rollout_em_filter=False, ranking="expected_sample_std",
+        prediction_before_label=True, post_rollout_em_filter=False, ranking="mixed_probability",
         selection_rng_before=before_selection_rng,
         selection_rng_after=copy.deepcopy(runtime.selection_rng.bit_generator.state),
         questions=[dict(ordinal=q.ordinal, qid=q.qid, question_hash=q.question_hash,
-            content_sha256=q.content_hash, probabilities=predictions["probabilities"][q.ordinal].tolist(),
-            predicted_mean=float(predictions["mean"][q.ordinal]),
-            predicted_std=float(predictions["expected_std"][q.ordinal]),
+            content_sha256=q.content_hash,
             predicted_variance=float(predictions["expected_variance"][q.ordinal]),
             predicted_mixed_probability=float(predictions["mixed_probability"][q.ordinal]),
             selected=q.ordinal in chosen,
@@ -645,7 +656,7 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
     # Durable prediction/selection evidence exists before the first real generated token.
     _write_json(directory / "selection.json", acquisition)
     selected_features = features[ordinals].clone()
-    selected_probabilities = predictions["probabilities"][ordinals].copy()
+    selected_predictions = {key:value[ordinals].copy() for key,value in predictions.items()}
     repeated = parent.repeat(repeat_times=5, interleave=True)
     gen = repeated.pop(batch_keys=["input_ids", "attention_mask", "position_ids"])
     attach_generation_identity(gen, identity, do_sample=True)
@@ -671,7 +682,7 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
         strict_em=values, selection_source=m.selection_source)
         for m, values in zip(members, vectors)]
     runtime.begin_outer(outer=outer, attempt_id=tag, selected=ordinals, features=selected_features,
-        probabilities=selected_probabilities, prediction_version=prediction_version,
+        predictions=selected_predictions, prediction_version=prediction_version,
         policy_snapshot_id=identity["policy_snapshot_id"], contracts=contracts)
     measured = runtime.observe_labels(labels, vectors)
     _atomic_save(directory / "real-rollout.pt", dict(parents=parent, output=output, identity=identity,
@@ -682,7 +693,7 @@ def collect(trainer, manager, stream, attempt_identity, runtime=None):
         selected_mixed=categories.count("mixed"), selected_all_correct=categories.count("all_correct"),
         selected_all_wrong=categories.count("all_wrong"), selected_all_correct_fallback=0,
         selected_random_exploration=runtime.config.get("exploration_questions", 64),
-        selected_predicted_diversity=512-runtime.config.get("exploration_questions", 64),
+        selected_predicted_mixed=512-runtime.config.get("exploration_questions", 64),
         responses_per_group=5, raw_generated_trajectories=2560,
         raw_generated_policy_tokens=int(output.batch["sampling_mask"].sum().item()),
         raw_actual_retrieval_calls=sum(output.meta_info["actual_retrieval_stats"]),

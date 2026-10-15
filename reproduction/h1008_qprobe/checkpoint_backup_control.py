@@ -8,7 +8,7 @@ from reproduction.h1008_qprobe.management_transport import remote
 
 PREPARE='''import pathlib,json,hashlib,importlib.util,os
 P=pathlib.Path;meta=META;base=P(meta['base']);run=json.loads((base/'logs/run-manifest.json').read_text())
-assert run['run_id']==meta['run_id'] and run['question_probe']['loss_version']=='std_class_ce_v1'
+assert run['run_id']==meta['run_id'] and run['question_probe']['loss_version']in ('std_class_ce_v1','binary_mix_variance_v1')
 step=meta['step'];receipt=base/'artifacts/question-probe/completed-pairs'/('global_step_'+str(step))/'source-receipt.json'
 root=base/'preparation'/('independent-backup-global_step_'+str(step)+'-once-v1')
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()

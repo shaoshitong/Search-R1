@@ -540,8 +540,12 @@ def verify_first_five(base, run, behavior_gates, scheduler_receipts):
             all_attempts_selected_evidence_sha256=all_attempts['selected_evidence_sha256'])),
         sampled_kl_max=max((r['sampled_old_policy_kl'] for r in segment['global_monitors']
                           if r['kl_estimate_complete']), default=None),
-        negative_tail_weight_fraction_max=max(r['negative_tail_weight_fraction'] for r in segment['global_monitors']),
-        semantics='fixed32-trajectory monitors, not all2560; structural acceptance does not assert accuracy success')
+        negative_tail_weight_fraction_max=max((r['negative_tail_weight_fraction'] for r in segment['global_monitors']),default=None),
+        extra_policy_monitor_forwards=run.get('extra_policy_monitor_forwards',True),
+        sampled_policy_diagnostics_available=bool(segment['global_monitors']),
+        semantics=('fixed32-trajectory monitors, not all2560; structural acceptance does not assert accuracy success'
+            if run.get('extra_policy_monitor_forwards',True) else
+            'Optional extra policy-monitor forwards not executed; sampled KL/tail unavailable, not zero or PASS; actual updates and finite-state evidence audited'))
 
 
 if __name__ == '__main__':

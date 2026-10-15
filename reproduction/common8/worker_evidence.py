@@ -91,9 +91,14 @@ def read_console_form(base, run_id):
                     assert 1<=processed<=20 and 1<=budget['optimizer_writes']<=processed
                     assert sum(x['optimizer_write_succeeded'] for x in selected_opportunities)==budget['optimizer_writes']
                     assert budget['full_budget_complete']==(budget['optimizer_writes']==20)
-                    assert len(selected)==sum(2 if x['guard_stage']=='after_minibatch' or x['status']=='written' else 1
-                        for x in selected_opportunities)
-                    assert all(x['monitor_identity']==selected[0]['monitor_identity'] for x in selected)
+                    if run.get('extra_policy_monitor_forwards',True):
+                        assert len(selected)==sum(2 if x['guard_stage']=='after_minibatch' or x['status']=='written' else 1
+                            for x in selected_opportunities)
+                        assert all(x['monitor_identity']==selected[0]['monitor_identity'] for x in selected)
+                    else:
+                        assert run.get('finite_thresholds_diagnostic_only') is True
+                        assert selected==[] and budget.get('extra_policy_monitor_forwards') is False
+                        assert budget['actual_monitor_forward_count']==budget['reused_monitor_forward_count']==0
                     continue
                 assert len(selected)==40,'Missing pre/post policy monitors for completed outer'
                 if inline:

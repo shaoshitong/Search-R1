@@ -10,7 +10,7 @@ REMOTE='''import pathlib,json,hashlib,os,socket,subprocess
 P=pathlib.Path;meta=META;target=meta['target'];assert socket.gethostname().split('.')[0]==target
 if target=='h100-8':
  base=P(meta['base']);run=json.loads((base/'logs/run-manifest.json').read_text())
- assert run['run_id']==meta['run_id'] and run['question_probe']['loss_version']=='std_class_ce_v1'
+ assert run['run_id']==meta['run_id'] and run['question_probe']['loss_version']in ('std_class_ce_v1','binary_mix_variance_v1')
  root=base/'preparation/backup-tools'/meta['commit'];assert root.resolve().is_relative_to(base.resolve()/'preparation')
 else:
  root=P('/mnt/data/shaoshitong/search-g1-qprobe3-independent-backup-20261015/published-tools')/meta['commit']

@@ -6,7 +6,7 @@ from pathlib import Path
 
 def selected(run):
     return (run.get('execution_site')=='h1008' and run.get('startup_admission_mode')=='actual_first_five'
-        and run.get('question_probe',{}).get('probe_architecture')=='qwen2_decoder3_count6'
+        and run.get('question_probe',{}).get('probe_architecture')in ('qwen2_decoder3_count6','qwen2_decoder3_binary_mix_v1')
         and run.get('training_world_size')==8)
 
 

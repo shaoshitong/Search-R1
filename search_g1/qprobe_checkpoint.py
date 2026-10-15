@@ -80,6 +80,9 @@ def validate_rank_state(saved, rank, world_size, outer, *, expected_writes=None)
 def _validate_qstate(checkpoint, outer, actor_snapshot_id):
     directory=Path(checkpoint)/'training_state';path=directory/'question-probe-state.pt'
     state=torch.load(path,map_location='cpu',weights_only=False)
+    _need(state.get('schema_version')==2,'BINARY_HEAD_RUNTIME_SCHEMA_REQUIRED')
+    from search_g1.qprobe_runtime import validate_config
+    validate_config(state['config'])
     _need(state['completed_outer']==outer and state['actor_snapshot_id']==actor_snapshot_id,'HEAD_ACTOR_BINDING_MISMATCH')
     head_file=state['head_file'];_need(Path(head_file).name==head_file,'HEAD_FILE_ESCAPES_CHECKPOINT')
     head_path=directory/head_file;_need(digest(head_path)==state['head_sha256'],'HEAD_SHA_MISMATCH')

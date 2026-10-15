@@ -1,6 +1,6 @@
 """Scalar, in-sample probe diagnostics; never a held-out quality claim."""
 import torch
-from search_g1.qprobe_model import S_MAX
+from search_g1.qprobe_model import V_MAX
 
 
 def binary_mixed_training_metrics(prediction, counts, *, top_k=448):
@@ -18,8 +18,8 @@ def binary_mixed_training_metrics(prediction, counts, *, top_k=448):
     if not ((counts >= 0) & (counts <= 5)).all():
         raise ValueError('QPROBE_METRICS_COUNTS_INVALID')
     p = prediction['mixed_probability'].detach().cpu().double()
-    sigma = prediction['expected_std'].detach().cpu().double()
-    if p.shape != counts.shape or sigma.shape != counts.shape or not torch.isfinite(p).all() or not torch.isfinite(sigma).all() or not ((p >= 0) & (p <= 1)).all():
+    variance = prediction['expected_variance'].detach().cpu().double()
+    if p.shape != counts.shape or variance.shape != counts.shape or not torch.isfinite(p).all() or not torch.isfinite(variance).all() or not ((p >= 0) & (p <= 1)).all() or not ((variance >= 0) & (variance <= V_MAX + 1e-7)).all():
         raise ValueError('QPROBE_METRICS_PREDICTIONS_INVALID')
     truth = (counts >= 1) & (counts <= 4)
     selected = p >= .5
@@ -30,12 +30,10 @@ def binary_mixed_training_metrics(prediction, counts, *, top_k=448):
     effective_k = min(top_k, len(counts))
     order = torch.argsort(p, descending=True, stable=True)
     hits = int(truth[order[:effective_k]].sum())
-    sigma_order = torch.argsort(sigma, descending=True, stable=True)
-    sigma_hits = int(truth[sigma_order[:effective_k]].sum())
     random_rate = float(truth.double().mean())
     target = truth.double(); safe_p = p.clamp(1e-12, 1 - 1e-12)
-    true_sigma = (counts.double() * (5 - counts.double()) / 20).sqrt()
-    sigma_mse = float(((sigma - true_sigma) ** 2).mean())
+    true_variance = counts.double() * (5-counts.double())/20
+    variance_mse = float(((variance-true_variance)**2).mean())
     return dict(
         metric_scope='same_training_questions_in_sample', binary_target='1<=K<=4',
         binary_threshold=.5, training_groups=len(counts), mixed_groups=int(truth.sum()),
@@ -53,8 +51,6 @@ def binary_mixed_training_metrics(prediction, counts, *, top_k=448):
         random_mixed_hits_expected=effective_k * random_rate,
         top_mixed_rate_lift=hits / effective_k - random_rate,
         p_mix_top_mixed_hits=hits, p_mix_top_mixed_rate=hits / effective_k,
-        sigma_top_mixed_hits=sigma_hits, sigma_top_mixed_rate=sigma_hits / effective_k,
-        sigma_top_mixed_rate_lift=sigma_hits / effective_k - random_rate,
-        sigma_mse=sigma_mse, sigma_normalized_mse=sigma_mse / S_MAX ** 2,
-        sigma_mae=float((sigma - true_sigma).abs().mean()),
+        variance_mse=variance_mse, variance_normalized_mse=variance_mse / V_MAX ** 2,
+        variance_mae=float((variance - true_variance).abs().mean()),
     )

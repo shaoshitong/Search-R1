@@ -8,6 +8,8 @@ from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
 from search_g1.training_state import cpu_tree
 
 
+ARCHITECTURE='qwen2_decoder3_binary_mix_v1'
+
 OPERATIONS=frozenset(('init','predict','update_completed_outer','bootstrap','state_dict','load_state_dict','bind_actor'))
 
 
@@ -25,7 +27,7 @@ def execute_probe(head, operation, payload):
     elif operation=='state_dict':result=cpu_tree(head.state_dict())
     elif operation=='load_state_dict':head.load_state_dict(payload['state']);result=True
     elif operation=='bind_actor':head.actor_snapshot_id=payload['actor_snapshot_id'];result=True
-    return dict(result=result,version=head.version,completed_outer=head.completed_outer,
+    return dict(probe_architecture=ARCHITECTURE,head_schema_version=3,result=result,version=head.version,completed_outer=head.completed_outer,
         update_count=head.update_count,actor_snapshot_id=head.actor_snapshot_id)
 
 
@@ -43,7 +45,7 @@ def worker_operation(worker, operation, payload):
         worker._sequence_qprobe=head
         from reproduction.common8.native_allocation import cuda_uuids
         uuids=cuda_uuids(count=torch.cuda.device_count())
-        return dict(feature_dim=head.feature_dim,feature_spec_sha=head.feature_spec_sha,
+        return dict(probe_architecture=ARCHITECTURE,head_schema_version=3,feature_dim=head.feature_dim,feature_spec_sha=head.feature_spec_sha,
             config=asdict(head.config),train_micro=head.train_micro,predict_micro=head.predict_micro,
             initialization=head.initialization,version=head.version,completed_outer=head.completed_outer,
             update_count=head.update_count,actor_snapshot_id=head.actor_snapshot_id,
@@ -81,6 +83,8 @@ class RemoteSequenceQProbe(OnlineSequenceQProbe):
         self.train_micro=receipt['train_micro'];self.predict_micro=receipt['predict_micro'];self.initialization=copy.deepcopy(receipt['initialization'])
         self.worker_receipt=receipt;self._accept(receipt)
     def _accept(self,receipt):
+        if receipt.get('probe_architecture')!=ARCHITECTURE or receipt.get('head_schema_version')!=3:
+            raise ValueError('QPROBE_RPC_BINARY_HEAD_SCHEMA_REQUIRED')
         self._version=receipt['version'];self.completed_outer=receipt['completed_outer'];self.update_count=receipt['update_count'];self.actor_snapshot_id=receipt['actor_snapshot_id']
     def _request(self,operation,payload):
         receipt=self.transport(operation,payload);self._accept(receipt);return receipt['result']

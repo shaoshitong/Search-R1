@@ -929,13 +929,8 @@ class RayPPOTrainer(object):
                         ("attempted_candidates","selected_mixed","selected_all_correct_fallback","raw_generated_trajectories", "raw_generated_policy_tokens",
                          "raw_actual_retrieval_calls", "candidate_fill_seconds")})
                     if self.qprobe_runtime is not None:
-                        for name in ('selected_all_wrong','selected_all_correct',
-                                     'selected_random_exploration','selected_predicted_diversity'):
-                            metrics['selection/'+name] = mixed_audit[name]
-                        for slice_name, values in mixed_audit['prequential'].items():
-                            for name, value in values.items():
-                                if isinstance(value, (int, float)) and not isinstance(value, bool):
-                                    metrics['question_probe/prequential/'+slice_name+'/'+name] = value
+                        from search_g1.qprobe_driver_metrics import selection_diagnostics
+                        metrics.update(selection_diagnostics(mixed_audit))
                 else:
                     batch: DataProto = DataProto.from_single_dict(batch_dict)
                     behavior_identity = None
@@ -1094,7 +1089,7 @@ class RayPPOTrainer(object):
                         response_mask = (batch.batch['loss_mask'] if 'loss_mask' in batch.batch
                             else batch.batch['attention_mask'][:, -response_width:]).bool()
                         rewards = batch.batch['token_level_rewards'].sum(-1)
-                        selection_sources = ('random_exploration','predicted_diversity') if selection_mode == 'question_probe' else ('mixed','all_correct_fallback')
+                        selection_sources = ('random_exploration','predicted_mixed') if selection_mode == 'question_probe' else ('mixed','all_correct_fallback')
                         for source in selection_sources:
                             rows = torch.as_tensor(sources == source, device=rewards.device)
                             metrics['selection/'+source+'/trajectories'] = int(rows.sum())

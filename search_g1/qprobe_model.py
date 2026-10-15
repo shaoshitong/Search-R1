@@ -1,8 +1,5 @@
-"""CPU-only online question probe. Gold labels never enter ``predict``.
-
-The six-class distribution describes K, the number of strictly correct answers
-in a complete group of five. It induces E[mean] and E[sample std], rather than
-incorrectly using sqrt(E[mean] * (1 - E[mean])) for within-group diversity.
+"""Binary mixed-group probability and bounded sample-variance auxiliary probe.
+Gold outcomes enter fitting only; never question prediction.
 """
 from __future__ import annotations
 
@@ -22,17 +19,17 @@ from torch import nn
 from torch.nn import functional as F
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 3
+ARCHITECTURE = "binary_mix_variance_v1"
+V_MAX = 0.3
 GROUP_SIZE = 5
 S_MAX = math.sqrt(0.3)
 
 
 @dataclass(frozen=True)
 class QProbeConfig:
-    mean_loss_weight: float = 0.0
-    std_loss_weight: float = 1.0
-    count_aux_loss_weight: float = 0.1
-    loss_version: str = "std_class_ce_v1"
+    variance_loss_weight: float = 0.1
+    loss_version: str = "binary_mix_variance_v1"
     head_learning_rate: float = 3e-4
     head_batch_size: int = 256
     head_epochs_per_outer: int = 2
@@ -51,12 +48,10 @@ class QProbeConfig:
             value = getattr(self, name)
             if not isinstance(value, (float, int)) or not math.isfinite(value) or value <= 0:
                 raise ValueError(f'QPROBE_INVALID_CONFIG: {name} must be positive and finite')
-        if self.loss_version != 'std_class_ce_v1' or self.mean_loss_weight != 0:
-            raise ValueError('QPROBE_REQUIRES_STD_CLASS_LOSS_WITHOUT_MEAN_MSE')
-        for name in ('mean_loss_weight', 'std_loss_weight', 'count_aux_loss_weight'):
-            value = getattr(self, name)
-            if not isinstance(value, (float, int)) or not math.isfinite(value) or value < 0:
-                raise ValueError(f'QPROBE_INVALID_CONFIG: {name} must be nonnegative and finite')
+        if self.loss_version != 'binary_mix_variance_v1':
+            raise ValueError('QPROBE_REQUIRES_BINARY_MIX_VARIANCE_LOSS')
+        if type(self.variance_loss_weight) not in (int,float) or self.variance_loss_weight != 0.1:
+            raise ValueError('QPROBE_VARIANCE_AUXILIARY_WEIGHT_MUST_BE_POINT_ONE')
         if type(self.seed) is not int or not 0 <= self.seed < 2**63:
             raise ValueError('QPROBE_INVALID_CONFIG: seed must be a nonnegative int64')
 
@@ -65,6 +60,8 @@ class QProbeConfig:
         # Runtime selector/feature options share the config namespace. Only the
         # explicitly named head options are consumed here; no actor knobs are read.
         values = {} if values is None else dict(values)
+        if any(k in values for k in ('mean_loss_weight','std_loss_weight','count_aux_loss_weight')):
+            raise ValueError('QPROBE_OLD_COUNT_LOSS_CONFIG_NOT_ACCEPTED')
         if 'head_hidden_size' in values:
             if 'hidden_size' in values and values['hidden_size'] != values['head_hidden_size']:
                 raise ValueError('QPROBE_CONFLICTING_HEAD_HIDDEN_SIZE')
@@ -73,37 +70,27 @@ class QProbeConfig:
         return cls(**{k: v for k, v in values.items() if k in allowed})
 
 
-class CountMomentProbe(nn.Module):
+def binary_predictions(mix_logit, variance_logit):
+    if mix_logit.ndim != 1 or variance_logit.shape != mix_logit.shape or not torch.isfinite(mix_logit).all() or not torch.isfinite(variance_logit).all():
+        raise ValueError('QPROBE_INVALID_BINARY_LOGITS')
+    variance = V_MAX * torch.sigmoid(variance_logit.float())
+    return dict(mix_logit=mix_logit.float(), variance_logit=variance_logit.float(),
+                mixed_probability=torch.sigmoid(mix_logit.float()), expected_variance=variance)
+
+
+class BinaryMixVarianceProbe(nn.Module):
     def __init__(self, feature_dim: int, hidden_size: int = 64):
         super().__init__()
         if type(feature_dim) is not int or feature_dim < 1:
             raise ValueError('QPROBE_INVALID_FEATURE_DIM')
-        self.feature_dim = feature_dim
-        self.net = nn.Sequential(nn.LayerNorm(feature_dim), nn.Linear(feature_dim, hidden_size),
-                                 nn.GELU(), nn.Linear(hidden_size, 6))
-        # No learned labels => no invented question ranking. Uniform K yields
-        # equal predictions; selector's independent tie RNG supplies exploration.
-        nn.init.zeros_(self.net[-1].weight)
-        nn.init.zeros_(self.net[-1].bias)
-        k = torch.arange(6, dtype=torch.float32)
-        self.register_buffer('means', k / GROUP_SIZE)
-        self.register_buffer('variances', k * (GROUP_SIZE - k) / 20)
-        self.register_buffer('stds', self.variances.sqrt())
+        self.feature_dim=feature_dim
+        self.net=nn.Sequential(nn.LayerNorm(feature_dim),nn.Linear(feature_dim,hidden_size),
+                               nn.GELU(),nn.Linear(hidden_size,2))
+        nn.init.zeros_(self.net[-1].weight);nn.init.zeros_(self.net[-1].bias)
 
-    def forward(self, features: torch.Tensor):
-        features = validate_features(features, self.feature_dim)
-        logits = self.net(features)
-        if not torch.isfinite(logits).all():
-            raise ValueError('QPROBE_NONFINITE_LOGITS')
-        return self.moments(logits)
-
-    def moments(self, logits: torch.Tensor):
-        if logits.ndim != 2 or logits.shape[1] != 6 or not torch.isfinite(logits).all():
-            raise ValueError('QPROBE_INVALID_LOGITS')
-        p = logits.float().softmax(-1)
-        return dict(logits=logits, probabilities=p, mean=p @ self.means,
-                    expected_std=p @ self.stds, expected_variance=p @ self.variances,
-                    mixed_probability=p[:, 1:5].sum(-1))
+    def forward(self, features):
+        logits=self.net(validate_features(features,self.feature_dim))
+        return binary_predictions(logits[:,0],logits[:,1])
 
 
 def validate_features(features, feature_dim):
@@ -114,13 +101,13 @@ def validate_features(features, feature_dim):
     return features.detach().to(device='cpu', dtype=torch.float32)
 
 
-def count_moment_loss(prediction, counts, config: QProbeConfig, weights=None):
+def binary_mix_variance_loss(prediction, counts, config: QProbeConfig, weights=None):
     if not isinstance(counts, torch.Tensor) or counts.dtype != torch.long or counts.ndim != 1:
         raise ValueError('QPROBE_COUNTS_MUST_BE_INT64_VECTOR')
-    if len(counts) != len(prediction['logits']) or bool(((counts < 0) | (counts > 5)).any()):
+    if len(counts) != len(prediction['mix_logit']) or bool(((counts < 0) | (counts > 5)).any()):
         raise ValueError('QPROBE_INVALID_COUNTS')
-    counts = counts.to(prediction['logits'].device)
-    loss, parts = count_moment_group_loss(prediction, counts, config)
+    counts = counts.to(prediction['mix_logit'].device)
+    loss, parts = binary_mix_variance_group_loss(prediction, counts, config)
     if weights is None:
         weights = torch.ones_like(loss)
     if weights.shape != loss.shape or not torch.isfinite(weights).all() or bool((weights <= 0).any()):
@@ -130,24 +117,27 @@ def count_moment_loss(prediction, counts, config: QProbeConfig, weights=None):
     return weighted(loss), {key: weighted(value) for key, value in parts.items()}
 
 
-def count_moment_group_loss(prediction, counts, config):
-    """Per-question loss; physical micros share the logical batch denominator."""
-    logits = prediction['logits'].float()
+def binary_mix_variance_group_loss(prediction, counts, config):
+    """G5 binary mixed label and unbiased sample variance, no count classifier.
+
+    y=1 iff 1<=K<=4; v=K(5-K)/20 has attainable maximum .3.
+    Loss = BCEWithLogits(z_mix,y) + .1 * ((.3*sigmoid(z_var)-v)/.3)^2.
+    """
+    logits=prediction['mix_logit'].float()
     if counts.dtype != torch.long or counts.ndim != 1 or len(counts) != len(logits):
         raise ValueError('QPROBE_COUNTS_MUST_BE_INT64_VECTOR')
-    counts = counts.to(logits.device)
-    if bool(((counts < 0) | (counts > 5)).any()):
-        raise ValueError('QPROBE_INVALID_COUNTS')
-    # logsumexp merges K and 5-K before CE, preserving stable gradients.
-    std_logits = torch.stack([torch.logsumexp(logits[:, pair], dim=-1)
-                              for pair in ((0, 5), (1, 4), (2, 3))], dim=-1)
-    std_class = torch.minimum(counts, 5 - counts)
-    std_ce = F.cross_entropy(std_logits, std_class, reduction='none')
-    count_ce = F.cross_entropy(logits, counts, reduction='none')
-    true_std = (counts.float() * (5 - counts.float()) / 20).sqrt()
-    std_mse = ((prediction['expected_std'].float() - true_std) / S_MAX).square()
-    loss = std_ce + config.std_loss_weight * std_mse + config.count_aux_loss_weight * count_ce
-    return loss, dict(std_class_ce=std_ce, count_ce=count_ce, std_mse=std_mse)
+    counts=counts.to(logits.device)
+    if bool(((counts < 0)|(counts > 5)).any()):raise ValueError('QPROBE_INVALID_COUNTS')
+    if logits.ndim != 1 or not torch.isfinite(logits).all():raise ValueError('QPROBE_INVALID_BINARY_LOGITS')
+    variance_logit=prediction['variance_logit'].float()
+    variance=V_MAX*variance_logit.sigmoid()
+    if variance.shape != logits.shape or not torch.isfinite(variance_logit).all():
+        raise ValueError('QPROBE_INVALID_VARIANCE_LOGITS')
+    target=((counts>0)&(counts<5)).float()
+    true_variance=counts.float()*(5-counts.float())/20
+    bce=F.binary_cross_entropy_with_logits(logits,target,reduction='none')
+    variance_mse=((variance-true_variance)/V_MAX).square()
+    return bce+config.variance_loss_weight*variance_mse,dict(mixed_bce=bce,variance_mse_normalized=variance_mse)
 
 
 def _sha_file(path):
@@ -207,8 +197,9 @@ class OnlineQProbe:
         self.feature_dim = feature_dim
         self.feature_spec_sha = feature_spec_sha
         with torch.random.fork_rng(devices=[]):
-            torch.manual_seed(self.config.seed)
-            self.model = CountMomentProbe(feature_dim, self.config.hidden_size).cpu()
+            # CPU-only initialization: torch.manual_seed also seeds actor CUDA RNG.
+            torch.random.default_generator.manual_seed(self.config.seed)
+            self.model = BinaryMixVarianceProbe(feature_dim, self.config.hidden_size).cpu()
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.config.head_learning_rate)
         self.rng = torch.Generator(device='cpu').manual_seed(self.config.seed + 1)
         self.replay_labels = []
@@ -265,10 +256,10 @@ class OnlineQProbe:
             for offset in range(0, len(order), self.config.head_batch_size):
                 index = order[offset:offset + self.config.head_batch_size]
                 prediction = self._forward(self.replay_features[index])
-                loss, _ = count_moment_loss(prediction, counts[index], self.config)
+                loss, _ = binary_mix_variance_loss(prediction, counts[index], self.config)
                 # Replace the mean with the exact global age-weighted batch
-                # estimator; count_moment_loss above validates both target and output.
-                group_loss, _ = count_moment_group_loss(prediction, counts[index], self.config)
+                # estimator; binary_mix_variance_loss above validates both target and output.
+                group_loss, _ = binary_mix_variance_group_loss(prediction, counts[index], self.config)
                 loss = (group_loss * weights[index]).mean()
                 if not torch.isfinite(loss):
                     raise ValueError('QPROBE_NONFINITE_TRAINING_LOSS')
@@ -280,7 +271,7 @@ class OnlineQProbe:
                 if any(not torch.isfinite(p).all() for p in self.model.parameters()):
                     raise ValueError('QPROBE_NONFINITE_PARAMETERS')
         pred = self.predict(self.replay_features)
-        objective, parts = count_moment_loss(pred, counts, self.config, weights)
+        objective, parts = binary_mix_variance_loss(pred, counts, self.config, weights)
         return dict(replay_groups=len(counts), head_optimizer_updates=updates,
                     replay_weighted_loss=float(objective), **{k: float(v) for k, v in parts.items()})
 
@@ -384,7 +375,7 @@ class OnlineQProbe:
         return metrics
 
     def state_dict(self):
-        return copy.deepcopy(dict(schema_version=self.checkpoint_schema_version, config=asdict(self.config),
+        return copy.deepcopy(dict(schema_version=self.checkpoint_schema_version, probe_architecture=ARCHITECTURE, config=asdict(self.config),
             feature_dim=self.feature_dim, feature_spec_sha=self.feature_spec_sha,
             model=self.model.state_dict(), optimizer=self.optimizer.state_dict(),
             rng=self.rng.get_state(), replay_labels=self.replay_labels,
@@ -393,7 +384,8 @@ class OnlineQProbe:
             protocol=self.protocol, actor_snapshot_id=self.actor_snapshot_id))
 
     def _restore_state(self, state):
-        if state.get('schema_version') != self.checkpoint_schema_version or state['feature_dim'] != self.feature_dim:
+        expected_architecture=getattr(self, 'probe_architecture', ARCHITECTURE)
+        if state.get('schema_version') != self.checkpoint_schema_version or state.get('probe_architecture') != expected_architecture or state['feature_dim'] != self.feature_dim:
             raise ValueError('QPROBE_CHECKPOINT_SCHEMA_MISMATCH')
         self.model.load_state_dict(state['model'], strict=True)
         self.optimizer.load_state_dict(state['optimizer'])
@@ -439,12 +431,12 @@ class OnlineQProbe:
         if expected_checkpoint_sha and _sha_file(path) != expected_checkpoint_sha:
             raise ValueError('QPROBE_CHECKPOINT_SHA_MISMATCH')
         state = torch.load(path, map_location='cpu', weights_only=True)
-        if state.get('schema_version') == 2:
+        if state.get('schema_version') == 3 and state.get('probe_architecture') == 'qwen2_decoder3_binary_mix_v1':
             from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
             return OnlineSequenceQProbe.from_checkpoint_state(state,
                 expected_actor_snapshot_id=expected_actor_snapshot_id,
                 expected_feature_spec_sha=expected_feature_spec_sha)
-        if state.get('schema_version') != SCHEMA_VERSION:
+        if state.get('schema_version') != SCHEMA_VERSION or state.get('probe_architecture') != ARCHITECTURE:
             raise ValueError('QPROBE_CHECKPOINT_SCHEMA_MISMATCH')
         if expected_actor_snapshot_id is not None and state.get('actor_snapshot_id') != expected_actor_snapshot_id:
             raise ValueError('QPROBE_ACTOR_BINDING_MISMATCH')

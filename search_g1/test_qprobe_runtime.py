@@ -120,10 +120,10 @@ def stage_pending(value, outer=1, attempt_id="test-attempt", count=512):
     labels = [dict(complete=True, qid="q" + str(i),
                    question_hash=hashlib.sha256(("q" + str(i)).encode()).hexdigest(),
                    strict_em=[int(j < i % 6) for j in range(5)],
-                   selection_source="random_exploration" if i < 64 else "predicted_diversity")
+                   selection_source="random_exploration" if i < 64 else "predicted_mixed")
               for i in range(count)]
     value.begin_outer(outer=outer, attempt_id=attempt_id, selected=list(range(count)), features=features,
-        probabilities=prediction["probabilities"].numpy(), prediction_version=value.version,
+        predictions={key:prediction[key] for key in ("mixed_probability","expected_variance")}, prediction_version=value.version,
         policy_snapshot_id="pre-update-actor:" + str(outer),
         contracts=dict(run_id="run", sampling_contract_sha="sampling", strict_scoring_contract_sha="strict",
                        retriever_version="retriever"))
@@ -295,7 +295,7 @@ class QuestionProbeTransactionTests(unittest.TestCase):
             self.assertEqual(value.config["exploration_questions"], 0)
             self.assertEqual(value.cache.calls, [(["question-id"], ["just the question"])])
             self.assertEqual(version, value.version)
-            self.assertEqual(output["probabilities"].shape, (1, 6))
+            self.assertEqual(output["mixed_probability"].shape, (1,))
         with self.assertRaises(ValueError): validate_config({"post_rollout_em_filter": True})
 
     def test_bootstrap_head_configuration_cannot_silently_override_runtime(self):
@@ -432,7 +432,7 @@ def fake_attach(batch, identity, *, do_sample):
 
 
 class NativeFakeManager:
-    config = SimpleNamespace(max_start_length=2)
+    config = SimpleNamespace(max_start_length=2,max_prompt_length=4096,max_response_length=500,max_obs_length=500)
 
     def __init__(self, missing_row=False):
         self.calls = []
@@ -501,7 +501,7 @@ class QuestionProbeNativeCollectorTests(unittest.TestCase):
         trainer = SimpleNamespace(global_steps=1, tokenizer=CharTokenizer(),
             actor_rollout_wg=SimpleNamespace(capture_mixed_state=capture),
             reward_fn=SimpleNamespace(expected_probe_version="old-reward-probe0"),
-            config=SimpleNamespace(max_turns=4, data=SimpleNamespace(max_response_length=500),
+            config=SimpleNamespace(max_turns=4, data=SimpleNamespace(max_start_length=2,max_prompt_length=4096,max_response_length=500,max_obs_length=500),
                                    retriever=SimpleNamespace(url="http://private-retriever", topk=3)))
         return trainer, value, snapshots
 
@@ -523,7 +523,7 @@ class QuestionProbeNativeCollectorTests(unittest.TestCase):
             self.assertEqual((len(parents), len(output)), (2560, 2560))
             self.assertEqual(audit["raw_generated_trajectories"], 2560)
             self.assertEqual(audit["selected_random_exploration"], 64)
-            self.assertEqual(audit["selected_predicted_diversity"], 448)
+            self.assertEqual(audit["selected_predicted_mixed"], 448)
             self.assertEqual(audit["retriever_url"], "http://private-retriever")
             self.assertEqual(audit["retriever_contract"], dict(topk=3, recorded_index_version="immutable-index-version"))
             self.assertEqual(audit["sampling_contract"]["temperature"], 1.)

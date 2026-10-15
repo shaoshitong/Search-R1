@@ -49,7 +49,7 @@ class QProbeBindingTests(unittest.TestCase):
             q=run['question_probe']
             self.assertEqual(q['exploration_questions'],64)
             self.assertEqual(q['selected_questions']-q['exploration_questions'],448)
-            self.assertEqual(q['probe_architecture'],'qwen2_decoder3_count6')
+            self.assertEqual(q['probe_architecture'],'qwen2_decoder3_binary_mix_v1')
             self.assertEqual(q['sequence_train_micro'],4)
             self.assertEqual(q['sequence_predict_micro'],32)
             self.assertFalse(run.get('full_state_restore'))

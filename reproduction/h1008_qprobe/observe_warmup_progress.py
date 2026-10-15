@@ -29,7 +29,7 @@ def snapshot(base, job):
     keys=('epoch','optimizer_update','replay_weighted_loss','binary_accuracy',
           'binary_precision','binary_recall','binary_f1','binary_bce','binary_brier',
           'binary_majority_accuracy_baseline','p_mix_mean','p_mix_min','p_mix_max',
-          'sigma_top_mixed_rate','p_mix_top_mixed_rate','random_mixed_rate_expected')
+          'p_mix_top_mixed_rate','random_mixed_rate_expected','variance_mse','variance_normalized_mse')
     ledger=read(base/'logs/process-ledger.json');owned=[]
     for name,value in ledger.get('jobs',{}).items():
         for birth in value.get('ledger',{}).values():
@@ -77,7 +77,8 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--base',type=Path,required=True)
     parser.add_argument('--job',type=int,required=True);parser.add_argument('--samples',type=int,default=2)
     parser.add_argument('--interval',type=float,default=20);args=parser.parse_args()
-    assert str(args.base).startswith('/mnt/data/shaoshitong/search-g1-qprobe3-warmup10-')
+    assert str(args.base).startswith(('/mnt/data/shaoshitong/search-g1-qprobe3-warmup10-',
+        '/mnt/data/shaoshitong/search-g1-qprobe3-binary10-'))
     assert 1<=args.samples<=3 and 0<=args.interval<=30
     for index in range(args.samples):
         if index:time.sleep(args.interval)

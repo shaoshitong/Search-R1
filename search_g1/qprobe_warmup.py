@@ -104,6 +104,27 @@ def write_training_curve(path, run_id, record):
     print(json.dumps(dict(stage='teacher_warmup_curve', **value)), flush=True)
 
 
+def training_curve_summary(path, epochs, expected_updates, questions):
+    """Diagnostic persistence failure never undoes actual head fitting."""
+    summary = dict(path=str(path), complete=False, optimizer_updates_observed=0, epochs_observed=0)
+    try:
+        records = [json.loads(line) for line in Path(path).read_text().splitlines()]
+        baseline_records = [row for row in records if row['event']=='epoch' and row['epoch']==0]
+        epoch_records = [row for row in records if row['event']=='epoch' and row['epoch']>0]
+        step_records = [row for row in records if row['event']=='optimizer_step']
+        baseline_recorded = len(baseline_records)==1 and baseline_records[0].get('training_groups')==questions
+        summary.update(initial_baseline_recorded=baseline_recorded,optimizer_updates_observed=len(step_records),epochs_observed=len(epoch_records),
+            sha256=sha_file(path))
+        summary['complete'] = (baseline_recorded and [row['epoch'] for row in epoch_records]==list(range(1,epochs+1))
+            and len(step_records)==expected_updates
+            and all(row.get('training_groups')==questions for row in epoch_records))
+        if not summary['complete']:
+            summary['diagnostic_error']=dict(stage='training_curve',error_type='IncompleteTrainingCurve')
+    except Exception as error:
+        summary['diagnostic_error']=dict(stage='training_curve',error_type=type(error).__name__)
+    return summary
+
+
 class TeacherCache:
     def __init__(self, root, identity):
         self.root = Path(root).resolve()
@@ -290,8 +311,12 @@ def run(trainer, manager, runtime, stream):
             from functools import partial
             if type(epochs) is not int or epochs < 1:
                 raise ValueError('WARMUP_INVALID_EPOCH_COUNT')
-            with curve_path.open('x') as stream:
-                stream.flush(); os.fsync(stream.fileno())
+            try:
+                with curve_path.open('x') as stream:
+                    stream.flush(); os.fsync(stream.fileno())
+            except Exception as error:
+                print(json.dumps(dict(stage='diagnostic_error',diagnostic='warmup_curve_create',
+                    error_type=type(error).__name__)),flush=True)
             fit_kwargs.update(warmup_epochs=epochs,
                 curve_callback=partial(write_training_curve, str(curve_path), manifest['run_id']))
         fitted = runtime.head.bootstrap(labels, features, actor_outer=0,
@@ -313,17 +338,16 @@ def run(trainer, manager, runtime, stream):
             extra_warmup_outers=1, completed_training_outers=0, target_training_outers=200,
             checked_unix=time.time())
         if epochs is not None:
-            records=[json.loads(line) for line in curve_path.read_text().splitlines()]
-            epoch_records=[row for row in records if row['event']=='epoch' and row['epoch']>0]
-            step_records=[row for row in records if row['event']=='optimizer_step']
             expected_updates=epochs*math.ceil(QUESTIONS/runtime.head.config.head_batch_size)
-            if ([row['epoch'] for row in epoch_records] != list(range(1,epochs+1))
-                    or len(step_records)!=expected_updates or fitted['head_optimizer_updates']!=expected_updates
-                    or any(row['training_groups']!=QUESTIONS for row in epoch_records)):
-                raise ValueError('WARMUP_TRAINING_CURVE_OR_ACTUAL_UPDATES_INCOMPLETE')
-            result.update(warmup_epochs=epochs, same_training_questions_evaluated=QUESTIONS,
-                held_out_validation_used=False, training_curve=dict(path=str(curve_path),
-                sha256=sha_file(curve_path), optimizer_updates=len(step_records), epochs=len(epoch_records)))
+            if fitted['head_optimizer_updates']!=expected_updates:
+                raise ValueError('WARMUP_ACTUAL_OPTIMIZER_UPDATE_BUDGET_INCOMPLETE')
+            curve = training_curve_summary(curve_path,epochs,expected_updates,QUESTIONS)
+            result.update(warmup_epochs=epochs, training_evaluation_questions_requested=QUESTIONS,
+                same_training_questions_evaluated=QUESTIONS if curve['complete'] else None,
+                held_out_validation_used=False, training_curve=curve)
+            if not curve['complete']:
+                result['diagnostic_error']=curve['diagnostic_error']
+                print(json.dumps(dict(stage='diagnostic_error',**curve)),flush=True)
         write_once(runtime.output_dir/'teacher-warmup-ready.json', result)
         print(json.dumps(dict(stage='frozen_teacher_warmup_head_ready', fitted_questions=QUESTIONS,
             reused_questions=reused, completed_training_outers=0, target_training_outers=200)), flush=True)

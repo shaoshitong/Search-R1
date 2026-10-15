@@ -55,6 +55,16 @@ def arguments(base):
         overrides.append(key + '=' + raw)
     overrides.append('actor_rollout_ref.actor.policy_safety.monitor_trajectories_per_rank='+
                      str(monitor_trajectories_per_rank(run)))
+    diagnostic = run.get('finite_thresholds_diagnostic_only',False)
+    if type(diagnostic) is not bool:
+        raise ValueError('Finite-threshold monitoring manifest flag must be bool')
+    if diagnostic and (run.get('question_probe') or {}).get('probe_architecture')!='qwen2_decoder3_binary_mix_v1':
+        raise ValueError('Diagnostic-only finite thresholds require explicitly bound binary run')
+    overrides.append('actor_rollout_ref.actor.policy_safety.finite_thresholds_diagnostic_only='+str(diagnostic).lower())
+    extra = run.get('extra_policy_monitor_forwards',True)
+    if type(extra) is not bool or (not extra and not diagnostic):
+        raise ValueError('No-extra-monitor mode requires explicit binary diagnostic-only binding')
+    overrides.append('actor_rollout_ref.actor.policy_safety.extra_policy_monitor_forwards='+str(extra).lower())
     from reproduction.common8.qprobe_configuration import arguments as qprobe_arguments
     overrides.extend(qprobe_arguments(run, base))
     from search_g1.rollout_phase_contract import hydra_arguments
@@ -84,6 +94,8 @@ def resolved(base):
     assert config.data.train_files == str(Path(base).resolve() / 'data/train.parquet')
     assert config.data.val_files == str(Path(base).resolve() / 'data/stage.parquet')
     verify_formal_config(OmegaConf.to_container(config, resolve=True), run, base)
+    assert config.actor_rollout_ref.actor.policy_safety.finite_thresholds_diagnostic_only is run.get('finite_thresholds_diagnostic_only',False)
+    assert config.actor_rollout_ref.actor.policy_safety.extra_policy_monitor_forwards is run.get('extra_policy_monitor_forwards',True)
     from reproduction.common8.qprobe_configuration import validate as validate_qprobe
     validate_qprobe(config, run, base)
     return run, config, overrides

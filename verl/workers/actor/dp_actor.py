@@ -382,7 +382,8 @@ class DataParallelPPOActor(BasePPOActor):
             report = monitor(torch.cat(values),torch.cat(advantages),torch.cat(masks),torch.cat(weights),
                              c=float(safety.dual_clip),kl_log_bound=float(safety.kl_log_bound),
                              target_kl=float(safety.target_old_policy_kl),negative_tail_limit=tail_limit,group=group,
-                             execution_role=self._policy_execution_role)
+                             execution_role=self._policy_execution_role,
+                             finite_thresholds_diagnostic_only=safety.get('finite_thresholds_diagnostic_only',False))
             self._actual_monitor_forward_count += 1
         report.update(rank=torch.distributed.get_rank() if torch.distributed.is_initialized() else 0,
                       stage=stage,context=context,
@@ -461,7 +462,8 @@ class DataParallelPPOActor(BasePPOActor):
             # full_budget_complete is the separate twenty-write budget fact.
             complete_outer=progressed,retained_partial_adam_writes=progressed and not full_budget,
             no_automatic_rollback=False, current_step_rollback=True)
-        result.update(actual_monitor_forward_count=getattr(self,'_actual_monitor_forward_count',0),
+        result.update(extra_policy_monitor_forwards=bool((self.config.get('policy_safety') or {}).get('extra_policy_monitor_forwards',True)),
+                      actual_monitor_forward_count=getattr(self,'_actual_monitor_forward_count',0),
                       reused_monitor_forward_count=getattr(self,'_reused_monitor_forward_count',0))
         agree_attempt_result(result,group=group)
         if full_budget:
@@ -484,6 +486,7 @@ class DataParallelPPOActor(BasePPOActor):
                 recoverable_guard=True,complete_outer=False,scheduler_advances=0,
                 retained_partial_adam_writes=False,no_automatic_rollback=False,
                 current_step_rollback=True,recovery_protocol_version=2,
+                extra_policy_monitor_forwards=result['extra_policy_monitor_forwards'],
                 actual_monitor_forward_count=result['actual_monitor_forward_count'],
                 reused_monitor_forward_count=result['reused_monitor_forward_count']),collective=True,group=group)
         self._last_attempt_result = result
@@ -531,6 +534,8 @@ class DataParallelPPOActor(BasePPOActor):
 
         safety = self.config.get('policy_safety', None)
         safety_enabled = safety is not None and safety.enabled
+        extra_monitor_forwards = safety_enabled and safety.get('extra_policy_monitor_forwards',True)
+        frozen = None
         if safety_enabled:
             from search_g1.policy_safety import bind_policy_phase
             group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
@@ -545,23 +550,24 @@ class DataParallelPPOActor(BasePPOActor):
                     writes=writes_before,group=group,complete=False,
                     attempt_id=data.meta_info['attempt_id'],attempt_index=data.meta_info['attempt_index'])
                 self._inline_initial_optimizer_published=True
-            from reproduction.common8.topology import monitor_trajectories_per_rank
-            monitor_count=monitor_trajectories_per_rank()
-            assert common8 and safety.monitor_trajectories_per_rank == monitor_count
-            # Freeze actual old/advantage/mask/input bytes once; select length strata.
-            length_mask=batch['loss_mask'] if self.config.state_masking else batch['attention_mask'][:,-batch['responses'].shape[1]:]
-            ordered=torch.argsort(length_mask.sum(-1),stable=True)
-            indices=ordered[torch.linspace(0,len(batch)-1,monitor_count,device=ordered.device).long()]
-            require_finite({'monitor_actor_lengths':length_mask[indices].sum(-1)},
-                           stage='frozen_monitor_selection_before_any_minibatch',
-                           process_group=group,positive=('monitor_actor_lengths',))
-            frozen=batch[indices].clone()
-            self._monitor_temperature=temperature
-            import hashlib
-            self._monitor_identity=dict(selection_indices=indices.detach().cpu().tolist(),
-                actor_token_lengths=length_mask[indices].sum(-1).detach().cpu().tolist(),
-                tensor_sha256={name:hashlib.sha256(value.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()).hexdigest()
-                               for name,value in frozen.items()})
+            if extra_monitor_forwards:
+                from reproduction.common8.topology import monitor_trajectories_per_rank
+                monitor_count=monitor_trajectories_per_rank()
+                assert common8 and safety.monitor_trajectories_per_rank == monitor_count
+                # Freeze actual old/advantage/mask/input bytes once; select length strata.
+                length_mask=batch['loss_mask'] if self.config.state_masking else batch['attention_mask'][:,-batch['responses'].shape[1]:]
+                ordered=torch.argsort(length_mask.sum(-1),stable=True)
+                indices=ordered[torch.linspace(0,len(batch)-1,monitor_count,device=ordered.device).long()]
+                require_finite({'monitor_actor_lengths':length_mask[indices].sum(-1)},
+                               stage='frozen_monitor_selection_before_any_minibatch',
+                               process_group=group,positive=('monitor_actor_lengths',))
+                frozen=batch[indices].clone()
+                self._monitor_temperature=temperature
+                import hashlib
+                self._monitor_identity=dict(selection_indices=indices.detach().cpu().tolist(),
+                    actor_token_lengths=length_mask[indices].sum(-1).detach().cpu().tolist(),
+                    tensor_sha256={name:hashlib.sha256(value.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()).hexdigest()
+                                   for name,value in frozen.items()})
         metrics = {}
         attempt_meta = {key:data.meta_info[key] for key in ('attempt_id','attempt_index')} if getattr(self,'_recoverable_guard_mode',False) else {}
         self._last_opportunities = []
@@ -618,6 +624,7 @@ class DataParallelPPOActor(BasePPOActor):
         self.actor_optimizer.zero_grad()
         self._invalidate_monitor_forward_cache()
         if safety_enabled:
+            metrics['actor/extra_policy_monitor_forwards_enabled']=int(extra_monitor_forwards)
             metrics['actor/actual_monitor_forward_count']=self._actual_monitor_forward_count
             metrics['actor/reused_monitor_forward_count']=self._reused_monitor_forward_count
         if common8:
@@ -650,7 +657,8 @@ class DataParallelPPOActor(BasePPOActor):
                 local_mini=self.config.ppo_mini_batch_size, local_micro=self.config.ppo_micro_batch_size, optimizer_writes=writes,
                 cumulative_writes=self._optimizer_writes)
             if safety_enabled:
-                budget.update(actual_monitor_forward_count=self._actual_monitor_forward_count,
+                budget.update(extra_policy_monitor_forwards=bool(extra_monitor_forwards),
+                              actual_monitor_forward_count=self._actual_monitor_forward_count,
                               reused_monitor_forward_count=self._reused_monitor_forward_count)
             if getattr(self,'_recoverable_guard_mode',False):
                 budget.update(**attempt_meta,opportunities_processed=len(self._last_opportunities),
@@ -664,7 +672,8 @@ class DataParallelPPOActor(BasePPOActor):
         """One update opportunity; caller records its disposition on every rank."""
         group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
         recoverable = getattr(self,'_recoverable_guard_mode',False)
-        if safety_enabled:
+        extra_monitor_forwards = safety_enabled and safety.get('extra_policy_monitor_forwards',True)
+        if extra_monitor_forwards:
             self._monitor_old_policy(frozen,safety,tail_limit,'before_minibatch')
         if self.config.use_dynamic_bsz:
             micro_batches,_ = rearrange_micro_batches(batch=mini_batch,
@@ -725,5 +734,5 @@ class DataParallelPPOActor(BasePPOActor):
                 'actor/ppo_kl':ppo_kl.detach().item()})
         grad_norm=self._optimizer_step()
         append_to_dict(metrics,{'actor/grad_norm':grad_norm.detach().item()})
-        if safety_enabled:
+        if extra_monitor_forwards:
             self._monitor_old_policy(frozen,safety,tail_limit,'after_minibatch')

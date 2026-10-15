@@ -94,7 +94,7 @@ def precompute(args):
         source_state = {k:v.detach().cpu().clone() for k,v in block.state_dict().items()}
         norm_state = {k:v.detach().cpu().clone() for k,v in model.norm.state_dict().items()}
         from search_g1.qprobe_transformer import state_digest
-        initialization = dict(schema_version=2, architecture='qwen2_decoder3_count6',
+        initialization = dict(schema_version=3, architecture='official_qwen2_last_layer_source_v1',
             official_revision=OFFICIAL_REVISION, encoder_files_sha256=spec['encoder_files_sha256'],
             qwen_config=model.config.to_dict(), attention_implementation=model.config._attn_implementation, source_layer_index=args.feature_layer,
             source_layer_state=source_state, source_layer_sha256=state_digest(block),

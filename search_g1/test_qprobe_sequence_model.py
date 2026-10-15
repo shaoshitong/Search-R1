@@ -9,7 +9,7 @@ from transformers.models.qwen2.modeling_qwen2 import Qwen2DecoderLayer,Qwen2RMSN
 from search_g1.qprobe_model import OnlineQProbe
 from search_g1.qprobe_sequence import SequenceFeatures
 from search_g1.qprobe_sequence_model import OnlineSequenceQProbe
-from search_g1.qprobe_transformer import QwenBlockCountProbe
+from search_g1.qprobe_transformer import QwenBlockBinaryProbe
 from search_g1.qprobe_features import OFFICIAL_REVISION
 
 
@@ -19,7 +19,7 @@ class OnlineSequenceTests(unittest.TestCase):
         config._attn_implementation='eager'
         with torch.random.fork_rng(devices=[]):
             torch.manual_seed(42);source=Qwen2DecoderLayer(config,layer_idx=1)
-            model=QwenBlockCountProbe(source,Qwen2RMSNorm(8,eps=config.rms_norm_eps),config)
+            model=QwenBlockBinaryProbe(source,Qwen2RMSNorm(8,eps=config.rms_norm_eps),config)
         model.initialization.update(official_revision=OFFICIAL_REVISION,encoder_files_sha256='a'*64,source_layer_index=1,initialization_file_sha256='b'*64)
         return model
     def probe(self,micro=2):return OnlineSequenceQProbe(self.model(),dict(head_batch_size=4,head_epochs_per_outer=2,seed=17,head_learning_rate=.01),'c'*64,train_micro=micro,predict_micro=2)
@@ -45,6 +45,20 @@ class OnlineSequenceTests(unittest.TestCase):
             for i,j in zip(a.optimizer.state.values(),b.optimizer.state.values()):
                 for key in i:torch.testing.assert_close(i[key],j[key],rtol=0,atol=0)
             with self.assertRaisesRegex(ValueError,'ACTOR_BINDING'):OnlineQProbe.load(p,expected_actor_snapshot_id='wrong')
+    def test_diagnostic_failure_does_not_abort_valid_fit(self):
+        from unittest.mock import patch
+        probe=self.probe()
+        # Real input/loss/gradient checks remain outside these reporting catches.
+        probe.replay_features=self.features()
+        probe.replay_labels=[dict(correct_count=k,source_outer=0) for k in [0,1,3,5]]
+        def fail(_):raise OSError('diagnostic sink unavailable')
+        with patch('search_g1.qprobe_sequence_model.binary_mixed_training_metrics',side_effect=RuntimeError('diagnostic metric unavailable')):
+            result=probe._fit(0,epochs=2,curve_callback=fail)
+        self.assertEqual(result['head_optimizer_updates'],2)
+        self.assertFalse(result['diagnostics_complete'])
+        self.assertEqual({e['stage'] for e in result['diagnostic_errors']},{'curve_callback','binary_training_metrics'})
+        self.assertEqual(probe._adam_step_range(),(2,2))
+
     def test_failed_fit_restores_blocks_head_optimizer_rng_and_replay(self):
         a=self.probe();self.update(a);before=a.state_dict();version=a.version
         def broken(outer):
@@ -63,17 +77,17 @@ class OnlineSequenceTests(unittest.TestCase):
             spec={'representation':'frozen_token_sequence_v2'}
             manifest={'files':{'initialization.pt':{'sha256':'b'*64}}}
             def get_features(cache,qids,questions):return self.features()[:len(qids)]
-        cfg=dict(probe_architecture='qwen2_decoder3_count6',head_batch_size=4,head_epochs_per_outer=2,
+        cfg=dict(probe_architecture='qwen2_decoder3_binary_mix_v1',head_batch_size=4,head_epochs_per_outer=2,
             seed=17,head_learning_rate=.01,sequence_train_micro=2,sequence_predict_micro=2,sequence_device='cpu')
         with tempfile.TemporaryDirectory() as d:
             runtime=QProbeRuntime(cfg,d,feature_cache=Cache(),head=self.probe())
             features,pred,version=runtime.score([PredictQuestion(0,'a','qa'),PredictQuestion(1,'b','qb')])
-            self.assertIsInstance(features,SequenceFeatures);self.assertEqual(pred['probabilities'].shape,(2,6))
+            self.assertIsInstance(features,SequenceFeatures);self.assertEqual(pred['mixed_probability'].shape,(2,))
             self.update(runtime.head);runtime.completed_outer=1
             path=Path(d)/'paired.pt';runtime.save(path,'actor1')
             other=QProbeRuntime(cfg,d,feature_cache=Cache(),head=self.probe());other.restore(path,'actor1')
             self.assertEqual(other.head.version,runtime.head.version)
-            with self.assertRaisesRegex(ValueError,'ARCHITECTURE_CONFIG'):
+            with self.assertRaisesRegex(ValueError,'[Aa]rchitecture'):
                 QProbeRuntime(dict(cfg,probe_architecture='count_mlp'),d,feature_cache=Cache(),head=self.probe())
 
     def test_incompatible_source_or_physical_micro_cannot_restore(self):

@@ -59,6 +59,8 @@ def validate(base):
     assert config['warmup_epochs']==10 and config.get('warmup_compatible_source_sha256',{}).keys()=={WARMUP}
     assert config['probe_architecture']=='qwen2_decoder3_binary_mix_v1'
     assert config['new_loss']==dict(loss_version='binary_mix_variance_v1',variance_loss_weight=.1)
+    assert config['finite_thresholds_diagnostic_only'] is True
+    assert config['extra_policy_monitor_forwards'] is False
     assert not any(config.get(key) for key in ('restore_source_job_id','restore_terminal_relative'))
     for name,digest in read(base/'preparation/source-files.json').items():assert sha(base/'repo'/name)==digest,name
     return config
@@ -141,7 +143,7 @@ def deploy_remote(meta):
     assert WARMUP in teacher['rollout_sources'],'Teacher identity schema must be inspected; do not guess compatibility SHA'
     config.update(role='fresh_h1008_transformer3_question_probe200',base=str(base),source_commit=meta['commit'],
         restore_receipt=None,warmup_epochs=10,probe_architecture='qwen2_decoder3_binary_mix_v1',
-        new_loss=dict(loss_version='binary_mix_variance_v1',variance_loss_weight=.1),
+        new_loss=dict(loss_version='binary_mix_variance_v1',variance_loss_weight=.1),finite_thresholds_diagnostic_only=True,extra_policy_monitor_forwards=False,
         warmup_compatible_source_sha256={WARMUP:teacher['rollout_sources'][WARMUP]},
         superseded_job_id=JOB,superseded_training_base=str(OLD),superseded_run_id=RUN,
         official_manifest=str(base/'preparation/official-model-manifest-original.json'))

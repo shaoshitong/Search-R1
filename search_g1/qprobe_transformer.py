@@ -9,7 +9,7 @@ import hashlib
 import inspect
 import torch
 from torch import nn
-from search_g1.qprobe_model import CountMomentProbe
+from search_g1.qprobe_model import binary_predictions
 
 
 def state_digest(module):
@@ -43,8 +43,8 @@ def verify_full_copy(source, copies):
             'tensor_count_per_block': len(original), 'independent_copies': len(copies)}
 
 
-class QwenBlockCountProbe(nn.Module):
-    """Official final-layer features -> three copied blocks -> count projection."""
+class QwenBlockBinaryProbe(nn.Module):
+    """Official final-layer features -> three copied blocks -> binary mixed/variance projections."""
     def __init__(self, last_decoder_layer, final_norm, qwen_config):
         super().__init__()
         from transformers.models.qwen2.modeling_qwen2 import Qwen2DecoderLayer, Qwen2RotaryEmbedding
@@ -60,11 +60,8 @@ class QwenBlockCountProbe(nn.Module):
         dtype = next(last_decoder_layer.parameters()).dtype
         device = next(last_decoder_layer.parameters()).device
         self.rotary = Qwen2RotaryEmbedding(config=copy.deepcopy(qwen_config), device=device)
-        self.head = nn.Linear(self.feature_dim, 6, bias=True, device=device, dtype=dtype)
+        self.head = nn.Linear(self.feature_dim, 2, bias=True, device=device, dtype=dtype)
         nn.init.zeros_(self.head.weight); nn.init.zeros_(self.head.bias)
-        self.register_buffer('means', torch.arange(6, device=device, dtype=torch.float32)/5)
-        self.register_buffer('variances', torch.arange(6, device=device, dtype=torch.float32)*(5-torch.arange(6, device=device))/20)
-        self.register_buffer('stds', self.variances.sqrt())
         for parameter in self.parameters(): parameter.requires_grad_(True)
         self.config = copy.deepcopy(qwen_config)
 
@@ -98,7 +95,7 @@ class QwenBlockCountProbe(nn.Module):
         hidden = self.final_norm(hidden)
         last = causal.expand(valid.shape).masked_fill(~valid, -1).max(-1).values
         logits = self.head(hidden[torch.arange(len(hidden), device=hidden.device), last]).float()
-        return CountMomentProbe.moments(self, logits)
+        return binary_predictions(logits[:,0],logits[:,1])
 
 
 def load_official_initialization(path, *, expected_file_sha256, expected_encoder_files_sha256):
@@ -109,7 +106,12 @@ def load_official_initialization(path, *, expected_file_sha256, expected_encoder
     from transformers.models.qwen2.modeling_qwen2 import Qwen2DecoderLayer, Qwen2RMSNorm
     if sha_file(path) != expected_file_sha256:raise ValueError('QPROBE_INITIALIZATION_FILE_SHA')
     state=torch.load(Path(path),map_location='cpu',weights_only=True)
-    if state.get('schema_version')!=2 or state.get('architecture')!='qwen2_decoder3_count6':raise ValueError('QPROBE_INITIALIZATION_ARCHITECTURE')
+    initializer=(state.get('schema_version'),state.get('architecture'))
+    allowed={'schema_version','architecture','official_revision','encoder_files_sha256','qwen_config',
+        'attention_implementation','source_layer_index','source_layer_state','source_layer_sha256',
+        'source_norm_state','source_norm_sha256'}
+    if set(state)!=allowed or initializer not in ((2,'qwen2_decoder3_count6'),(3,'official_qwen2_last_layer_source_v1')):
+        raise ValueError('QPROBE_INITIALIZATION_ARCHITECTURE')
     if state.get('official_revision')!=OFFICIAL_REVISION or state.get('encoder_files_sha256')!=expected_encoder_files_sha256:raise ValueError('QPROBE_INITIALIZATION_OFFICIAL_SOURCE')
     config=Qwen2Config.from_dict(copy.deepcopy(state['qwen_config']))
     config._attn_implementation=state['attention_implementation']
@@ -124,8 +126,10 @@ def load_official_initialization(path, *, expected_file_sha256, expected_encoder
         norm.load_state_dict(state['source_norm_state'],strict=True)
         if state_digest(source)!=state['source_layer_sha256'] or state_digest(norm)!=state['source_norm_sha256']:raise ValueError('QPROBE_INITIALIZATION_SOURCE_TENSOR_SHA')
         source.requires_grad_(False);norm.requires_grad_(False)
-        result=QwenBlockCountProbe(source,norm,config)
-    result.initialization.update(official_revision=state['official_revision'],
+        result=QwenBlockBinaryProbe(source,norm,config)
+    result.initialization.update(fresh_binary_head=True,initializer_schema=state['schema_version'],
+        initializer_architecture=state['architecture'],probe_architecture='qwen2_decoder3_binary_mix_v1',
+        official_revision=state['official_revision'],
         encoder_files_sha256=state['encoder_files_sha256'],source_layer_index=state['source_layer_index'],
         initialization_file_sha256=expected_file_sha256)
     return result

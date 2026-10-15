@@ -59,7 +59,7 @@ class PairFixture:
             sampling_contract_sha='s',strict_scoring_contract_sha='c',retriever_version='r',run_id=self.run_id,attempt_id=self.ids[-1])
         actor_id=self.run_id+':'+str(outer)
         head_receipt=head.save(self.state/'question-probe-state.pt.head.pt',actor_snapshot_id=actor_id)
-        qstate=dict(schema_version=1,actor_snapshot_id=actor_id,completed_outer=outer,feature_spec_sha='f'*64,
+        qstate=dict(schema_version=2,actor_snapshot_id=actor_id,completed_outer=outer,feature_spec_sha='f'*64,
             head_version=head.version,head_file='question-probe-state.pt.head.pt',head_sha256=head_receipt['checkpoint_sha'],
             config=self.run['question_probe'],candidate_state=self.stream,completed_attempts=[self.ids[-1]],
             reward_probe_version=f'{self.run_id}:0:old',selection_rng={})

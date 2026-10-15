@@ -16,7 +16,7 @@ class SequenceRPCTests(unittest.TestCase):
         cache=SimpleNamespace(path=Path('/remote/features'),spec_sha='c'*64)
         def transport(op,payload):
             calls.append(op)
-            if op=='init':return dict(feature_dim=8,feature_spec_sha='c'*64,config=vars(head.config),
+            if op=='init':return dict(probe_architecture='qwen2_decoder3_binary_mix_v1',head_schema_version=3,feature_dim=8,feature_spec_sha='c'*64,config=vars(head.config),
                 train_micro=2,predict_micro=2,initialization=head.initialization,version=head.version,
                 completed_outer=0,update_count=0,actor_snapshot_id=None,worker_rank=7,world_size=8,
                 actual_probe_device='cuda:7',gpu_uuid='synthetic-test-gpu7')
@@ -36,7 +36,7 @@ class SequenceRPCTests(unittest.TestCase):
     def test_remote_fit_checkpoint_rollback_and_pairing_use_same_local_protocol(self):
         helper,head,proxy,calls=self.proxy();features=helper.features()
         a=proxy.predict(features);b=head.predict(features)
-        torch.testing.assert_close(a['probabilities'],b['probabilities'],rtol=0,atol=0)
+        torch.testing.assert_close(a['mixed_probability'],b['mixed_probability'],rtol=0,atol=0)
         helper.update(proxy);before=proxy.state_dict();version=proxy.version
         helper.update(proxy,2);proxy.load_state_dict(before);self.assertEqual(proxy.version,version)
         with tempfile.TemporaryDirectory() as d:

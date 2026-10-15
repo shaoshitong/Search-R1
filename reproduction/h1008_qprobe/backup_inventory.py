@@ -56,7 +56,7 @@ def inventory(receipt_path, expected_receipt_sha, *, allowed_roots=('/mnt/data',
     run=json.loads(run_path.read_text())
     if run['run_id']!=pair['run_id'] or run['training_world_size']!=8:raise ValueError('Run identity differs')
     probe=run['question_probe']
-    if probe['probe_architecture']!='qwen2_decoder3_count6' or probe['exploration_questions']!=64 or probe['selected_questions']!=512:
+    if probe['probe_architecture'] not in ('qwen2_decoder3_count6','qwen2_decoder3_binary_mix_v1') or probe['exploration_questions']!=64 or probe['selected_questions']!=512:
         raise ValueError('Wrong question probe experiment')
     cache=Path(probe['cache_dir']).resolve();manifest=cache/'manifest.json'
     feature=json.loads(manifest.read_text())
