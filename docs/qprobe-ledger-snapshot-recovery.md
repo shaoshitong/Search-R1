@@ -70,10 +70,35 @@ consumer requires both processes terminal and equal original/preserved evidence.
 `verify_full` retains its original publish-on-success default. The new separate
 stage keeps the producer FAILED and explicitly reports `goal_complete=False`.
 
-This stage is not an end-to-end final recovery controller. Integrating its typed
-receipt into all five existing archive claims, an actual native4 restore-only
-job, RAW795 terminal reaggregation if needed, and the independent held final
-conjunction remains separate work. No recovery scope or job has been activated.
+`final_control` now has an explicit `recovery_commit` branch through final CPU
+submission, its held worker, full preflight, actual Slurm intent, readonly inspect
+and unique-job reconciliation. Default calls still require actual COMPLETED0.
+The branch privately loads the exact published stage1 consumer and reconsumes
+its actual held0 proof, original/preserved bytes and precise FAILED1:0 evidence;
+the same stable reference is bound through every subsequent claim. It retains
+the original once paths, so any prior/unknown native intent still prevents a
+second submission. All five completed source/archive/independent-target full
+SHA checks and canonical final51713 remain required before native submission.
+
+CPU and native source pins are intentionally distinct on recovery. The repaired
+CPU verifier may differ in `common8`, while native loading/training-state code
+must match original1843 exactly. The native entry and commit are therefore the
+already published EA source `ea4601109969e358b65ab8251d64798926748b7d`, whose
+protected scientific source prefixes match1843. Its publication is freshly
+verified, `bind_audit` still checks every protected hash, and submit/reconcile
+both bind the actual EA native command. The original native four-rank restore
+and two-readback checks are not relaxed.
+
+`verify_goal` also accepts an explicit consumed recovery commit. It reads the
+separate structural receipt, keeps original pipeline FAILED, retains every
+teacher/attempt/fixed/archive/native/metric gate, reconsumes the typed failure at
+the end, and publishes only into an already owned separate recovery-controller
+once directory. Normal receipt paths and default finished-pipeline checks remain
+strict. Neither adapter claims that a native job or the final goal has run.
+
+An end-to-end recovery controller, RAW795 terminal reaggregation if needed, and
+the independent held final conjunction remain separate work. No recovery scope
+or job has been activated.
 If the healthy original producer succeeds, its existing chain remains
 authoritative and no recovery job is submitted. Constructed protocol tests do
 not establish real training, real Slurm failure or real native recovery.

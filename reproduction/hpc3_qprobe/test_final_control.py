@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -252,6 +253,156 @@ class FinalControlTests(unittest.TestCase):
              patch.object(control.subprocess,'run') as submit,self.assertRaisesRegex(ValueError,'COMPLETED0'):
             control.submit_audit(self.base,self.commit)
         submit.assert_not_called();self.assertFalse((self.root/'final-control').exists())
+
+    def test_typed_final_producer_consumes_exact_held_failure_and_preserves_failed_accounting(self):
+        from reproduction.hpc3_qprobe import independent_goal_acceptance719225 as reader
+        _,binding,_=self.producer();binding['producer_job']='719225';binding['base']=str(self.base)
+        raw='719225|FAILED|1:0|jxu957|14090|jxu957|formal-user|emergency_acd\n'
+        recovery_commit='c'*40;publication=dict(commit=recovery_commit,publication_sha256='d'*64)
+        directory=self.root/'observations/typed-recovery';directory.mkdir(parents=True)
+        consumed=dict(status='held-CPU0',source=publication,actual_child_exit_code=0,goal_complete=False,
+            original_accounting_remains_failed=True,
+            native4_restore_and_all_archives_and_independent_final_still_required=True,
+            failure=dict(kind='ledger-only',producer=binding,fingerprint='e'*64),
+            result_path=str(directory/'result.json'),result_sha256='f'*64,
+            output=dict(path=str(directory/'consumer.stdout'),sha256='1'*64,bytes=100),
+            structural_acceptance=dict(path=str(directory/'structural-acceptance.json'),sha256='2'*64,bytes=200))
+        helper=SimpleNamespace(HELD_STATUS='held-CPU0',FAILURE_KIND='ledger-only',DIRECTORY=directory,
+            consume=lambda commit:copy.deepcopy(consumed))
+        with patch.object(control,'producer',return_value=(self.run,binding,raw)) as producer, \
+                patch.object(reader,'BASE',self.base),patch.object(reader,'RUN',self.run_id), \
+                patch.object(reader,'PRODUCER',self.commit), \
+                patch.object(reader,'load_fixed',return_value=(helper,publication)) as load:
+            run,actual,accounting,ref=control.final_producer(self.base,recovery_commit=recovery_commit)
+            producer.assert_called_once_with(self.base,complete=False)
+            load.assert_called_once_with(recovery_commit,'final_cpu_ledger_recovery719225','ctl')
+            self.assertEqual(accounting,raw);self.assertEqual(actual,binding)
+            self.assertEqual(ref['original_producer_state'],'FAILED');self.assertEqual(ref['original_producer_exit_code'],'1:0')
+            self.assertFalse(ref['goal_complete'])
+            for key,bad in (('goal_complete',True),('actual_child_exit_code',1),
+                    ('original_accounting_remains_failed',False),('source',dict(commit='0'*40))):
+                original=copy.deepcopy(consumed);consumed[key]=bad
+                with self.subTest(key=key),self.assertRaises(ValueError):
+                    control.final_producer(self.base,recovery_commit=recovery_commit)
+                consumed.clear();consumed.update(original)
+            for bad_raw in (raw.replace('FAILED','RUNNING'),raw.replace('1:0','2:0')):
+                producer.return_value=(self.run,binding,bad_raw)
+                with self.assertRaisesRegex(ValueError,'cannot replace healthy'):
+                    control.final_producer(self.base,recovery_commit=recovery_commit)
+
+    def test_normal_final_producer_never_loads_a_recovery_summary(self):
+        from reproduction.hpc3_qprobe import independent_goal_acceptance719225 as reader
+        with patch.object(control,'producer',return_value=(self.run,{},'actual COMPLETED0')) as producer, \
+                patch.object(reader,'load_fixed') as load:
+            self.assertEqual(control.final_producer(self.base)[-1],None)
+            producer.assert_called_once_with(self.base,complete=True);load.assert_not_called()
+
+    def test_typed_cpu_controller_and_native_gpu_entry_have_distinct_published_sources(self):
+        repository,binding,proof,root=self.audit_fixture()
+        native=control.RECOVERY_NATIVE_AUDIT_SOURCE
+        proof.update(native_audit_source=dict(commit=native),producer_final_cpu_recovery=dict(commit='c'*40))
+        cpu_birth=dict(pid=99,start_ticks=101,sid=99,uid=control.OWNER,state='S')
+        test=subprocess.CompletedProcess(['sbatch'],0,'test only accepted','')
+        submitted=subprocess.CompletedProcess(['sbatch'],0,'67890\n','')
+        with patch.object(control,'final_ready',return_value=(repository,self.run,binding,proof)), \
+                patch.object(control,'process',return_value=cpu_birth), \
+                patch.object(control.subprocess,'run',side_effect=[test,submitted]) as submit:
+            result=control.submit_audit(self.base,self.commit,recovery_commit='c'*40)
+        self.assertEqual(result['job'],'67890')
+        claim=control.read(root/'final-audit/submit-claim.json');cmd=claim['command']
+        self.assertEqual(cmd[-5],str(self.root/'source'/native/'reproduction/hpc3_qprobe/final_restore_audit.sh'))
+        self.assertEqual(cmd[-3],native);self.assertEqual(claim['proof']['source']['commit'],self.commit)
+        self.assertEqual(claim['recovery_commit'],'c'*40);self.assertIn('remains FAILED1:0',claim['dependency_policy'])
+        self.assertIn('--gres=gpu:4',cmd);self.assertEqual(submit.call_count,2)
+
+    def test_recovery_claim_cannot_replay_an_existing_normal_or_unknown_native_intent(self):
+        repository,binding,proof,root=self.audit_fixture();(root/'final-audit').mkdir()
+        proof['producer_final_cpu_recovery']=dict(commit='c'*40)
+        with patch.object(control,'final_ready',return_value=(repository,self.run,binding,proof)), \
+                patch.object(control.subprocess,'run') as submit,self.assertRaisesRegex(ValueError,'already attempted'):
+            control.submit_audit(self.base,self.commit,recovery_commit='c'*40)
+        submit.assert_not_called()
+
+    def test_recovery_preflight_rechecks_all_five_archives_and_binds_original_native_science(self):
+        from reproduction.hpc3_qprobe import independent_goal_acceptance719225 as reader
+        from reproduction.hpc3_qprobe import verify_goal as goal
+        from reproduction.hpc3_qprobe import final_restore_audit as native
+        from search_g1 import qprobe_saved_checkpoint
+        _,binding,_=self.producer();repository=self.root/'source'/self.commit
+        structural=self.root/'separate/structural-acceptance.json'
+        self.write(structural,dict(structural_accepted=True,actual_outer_updates=200,run_id=self.run_id))
+        recovery=dict(commit='c'*40,structural_acceptance=dict(path=str(structural),sha256=control.digest(structural)))
+        self.write(self.base/'logs/pipeline-status.json',dict(run_id=self.run_id,stage='FAILED'))
+        self.write(self.base/'logs/cleanup-status.json',dict(run_id=self.run_id,cleaned=True))
+        self.write(self.base/'logs/final-identity.json',dict(run_id=self.run_id,step=200,final=True,
+            question_ids=['q']*51713,em=[0]*51713,f1=[0.0]*51713,counts=dict(nq=51707,a=1,b=1,c=1,d=1,e=1,f=1)))
+        rows=[dict(step=i,run_id=self.run_id) for i in range(1,201)]
+        (self.base/'logs/actual-updates.jsonl').write_text(''.join(json.dumps(row)+'\n' for row in rows))
+        cpu_publication=dict(commit=self.commit,publication_path=str(self.root/'cpu-source.json'))
+        self.write(Path(cpu_publication['publication_path']),dict(files={'observer-only':'changed'}))
+        native_publication=dict(commit=control.RECOVERY_NATIVE_AUDIT_SOURCE,
+            publication_path=str(self.root/'native-source.json'))
+        protected={'reproduction/common8/runtime.py':'original protected source SHA'}
+        self.write(Path(native_publication['publication_path']),dict(files=protected))
+        target=self.root/'target.json';self.write(target,{})
+        transports={}
+        for step in control.STEPS:
+            path,_=self.receipt(step);transport=self.root/('transport-'+str(step)+'.json')
+            self.write(transport,dict(source_receipt=dict(path=str(path),sha256=control.digest(path))))
+            transports[step]=dict(actual_task_exit_code=0,status='ACTUAL_CPU_ARCHIVE_CHILD_COMPLETED0',
+                transport_path=str(transport),fresh_full_sha=dict(path=str(transport),target_receipt=dict(path=str(target))))
+        with patch.object(control,'source',return_value=(repository,cpu_publication)), \
+                patch.object(control,'final_producer',return_value=(self.run,binding,'actual FAILED1:0',recovery)), \
+                patch.object(qprobe_saved_checkpoint,'history_parts',return_value=['authentic original parts']), \
+                patch.object(goal,'part_updates',return_value=(rows,['original history proof'])), \
+                patch.object(control,'inspect_archive',side_effect=lambda base,step,full:transports[step]) as archives, \
+                patch.object(reader,'publication',return_value=(self.root/'native-source',native_publication)) as source, \
+                patch.object(native,'bind_audit') as bind:
+            result=control.final_ready(self.base,self.commit,recovery_commit='c'*40)
+            self.assertEqual([call.args[1] for call in archives.call_args_list],[5,50,100,150,200])
+            self.assertTrue(all(call.kwargs['full'] is True for call in archives.call_args_list))
+            source.assert_called_once_with(control.RECOVERY_NATIVE_AUDIT_SOURCE)
+            self.assertEqual(bind.call_args.args[4],control.RECOVERY_NATIVE_AUDIT_SOURCE)
+            self.assertEqual(bind.call_args.args[5],protected)
+            self.assertEqual(result[-1]['actual_producer_accounting'],'actual FAILED1:0')
+            self.assertEqual(result[-1]['full_run_acceptance_path'],str(structural))
+            bind.reset_mock();transports[100]['actual_task_exit_code']=1
+            with self.assertRaisesRegex(ValueError,'all five actual completed'):
+                control.final_ready(self.base,self.commit,recovery_commit='c'*40)
+            bind.assert_not_called()
+
+    def test_recovery_reconcile_uses_actual_EA_native_entry_and_same_once_reference(self):
+        _,binding,proof,root=self.audit_fixture();directory=root/'final-audit';directory.mkdir()
+        native=control.RECOVERY_NATIVE_AUDIT_SOURCE;proof['native_audit_source']=dict(commit=native)
+        reference=dict(commit='c'*40,failure_fingerprint='d'*64)
+        audit_base=self.root/'audit-base'
+        claim=dict(producer=binding,audit_base=str(audit_base),proof=proof,token='token',
+            recovery_commit='c'*40,producer_final_cpu_recovery=reference)
+        control.publish(directory/'submit-claim.json',claim)
+        self.write(directory/'submission.json',dict(returncode=None,status='SUBMIT_OUTCOME_UNKNOWN_DO_NOT_REPLAY'))
+        detail=('JobId=67890 UserId=jxu957(14090) Account=jxu957 QOS=formal-user Partition=emergency_acd '+
+            'JobName=qprobe-final200audit WorkDir='+str(audit_base)+' Command='+
+            str(self.root/'source'/native/'reproduction/hpc3_qprobe/final_restore_audit.sh')+
+            ' NumCPUs=48 MinMemoryNode=512G NumNodes=1 TresPerNode=gres:gpu:4 JobState=PENDING NodeList=(null)')
+        with patch.object(control,'final_producer',return_value=(self.run,binding,'actual FAILED1:0',reference)), \
+                patch.object(control.subprocess,'check_output',side_effect=[detail,'']) as query, \
+                patch.object(control.subprocess,'run') as submit:
+            result=control.reconcile_audit(self.base,'67890',recovery_commit='c'*40)
+            self.assertEqual(result['status'],'ACTUAL_SLURM_RECONCILED');submit.assert_not_called()
+            self.assertEqual([call.args[0][0] for call in query.call_args_list],['scontrol','squeue'])
+            with self.assertRaisesRegex(ValueError,'intent'):
+                control.inspect_audit(self.base,recovery_commit='e'*40)
+
+    def test_cpu_intent_mismatch_is_rejected_before_native_intent_exists(self):
+        _,binding,_,root=self.audit_fixture();directory=root/'audit-controller';directory.mkdir()
+        reference=dict(commit='c'*40,failure_fingerprint='d'*64)
+        control.publish(directory/'submit-claim.json',dict(producer=binding,recovery_commit='wrong',
+            producer_final_cpu_recovery=reference))
+        with patch.object(control,'final_producer',return_value=(self.run,binding,'actual FAILED1:0',reference)), \
+                patch.object(control,'controller_state') as state:
+            with self.assertRaisesRegex(ValueError,'CPU submit producer/recovery intent'):
+                control.inspect_audit(self.base,recovery_commit='c'*40)
+            state.assert_not_called()
 
     def test_short_audit_start_detaches_before_any_big_sha_preflight(self):
         repository=self.root/'source'/self.commit

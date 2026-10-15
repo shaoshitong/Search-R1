@@ -341,7 +341,55 @@ def verify_attempt_parts(parts):
     return attempts,hashes,formal
 
 
-def verify(base, audit_base, *, publish_receipt=True):
+def structural_acceptance(base,run,*,recovery_commit=None):
+    """Keep normal receipts strict; consume a separate typed CPU receipt explicitly."""
+    base=Path(base);recovery=None;accounting=None
+    path=base/'logs/full-run-acceptance.json'
+    if recovery_commit is not None:
+        from reproduction.hpc3_qprobe.final_control import final_producer
+        actual,_,accounting,recovery=final_producer(base,recovery_commit=recovery_commit)
+        need(actual==run and recovery is not None,'typed structural recovery has another actual run')
+        path=Path(recovery['structural_acceptance']['path'])
+        need(path!=base/'logs/full-run-acceptance.json' and path.resolve()==path and
+             sha_file(path)==recovery['structural_acceptance']['sha256'],
+             'separate typed structural acceptance bytes/path differ')
+    full=json.loads(path.read_text())
+    need(full['structural_accepted'] is True and full['actual_outer_updates']==200 and full['run_id']==run['run_id'],
+         'full structural/evaluation acceptance missing')
+    return full,recovery,accounting
+
+
+def producer_finished(base,run,*,recovery_commit=None,expected_recovery=None):
+    base=Path(base)
+    if recovery_commit is not None:
+        from reproduction.hpc3_qprobe.final_control import final_producer
+        actual,_,_,recovery=final_producer(base,recovery_commit=recovery_commit)
+        need(actual==run and recovery==expected_recovery,'typed final CPU failure changed during final verification')
+    else:need(expected_recovery is None,'normal producer cannot carry a recovery summary')
+    pipeline=json.loads((base/'logs/pipeline-status.json').read_text())
+    cleanup=json.loads((base/'logs/cleanup-status.json').read_text())
+    need(pipeline['run_id']==run['run_id'] and pipeline['stage']==('FAILED' if recovery_commit is not None else
+         'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP') and
+         cleanup['cleaned'] is True and cleanup['run_id']==run['run_id'],
+         'training producer/final evaluation/owned cleanup not finished')
+
+
+def publish_goal(base,result,*,recovery_commit=None):
+    from reproduction.hpc3_qprobe.control import publish
+    path=Path(base)/'logs/qprobe-final-goal-acceptance.json'
+    if recovery_commit is not None:
+        from reproduction.hpc3_qprobe.final_control import ROOT,OWNER
+        path=ROOT/'followthrough/recovery719225-finalcpu-20261015/goal-acceptance.json'
+        need(path.parent.is_dir() and path.parent.resolve()==path.parent and
+             path.parent.stat().st_uid==OWNER,'separate recovery controller must already own its once scope')
+        need(result.get('producer_final_cpu_recovery',{}).get('commit')==recovery_commit and
+             result.get('original_producer_accounting_remains_failed') is True,
+             'recovery goal publication lacks typed original FAILED binding')
+    else:need('producer_final_cpu_recovery' not in result,'normal goal cannot publish a recovery summary')
+    publish(path,result)
+
+
+def verify(base, audit_base, *, publish_receipt=True,recovery_commit=None):
     base=Path(base).resolve();audit_base=Path(audit_base).resolve()
     need(os.getuid()==14090,'actual jxu957 final CPU owner required')
     run=json.loads((base/'logs/run-manifest.json').read_text())
@@ -354,9 +402,7 @@ def verify(base, audit_base, *, publish_receipt=True):
          'actual current completed200 suffix missing or contains copied prefix/update201; no source recovery may be loaded by audit')
     need(run['training_world_size']==4,'this audit requires the actual native4 topology')
     parts=history_parts(base,run);updates,history=part_updates(parts)
-    full=json.loads((base/'logs/full-run-acceptance.json').read_text())
-    need(full['structural_accepted'] is True and full['actual_outer_updates']==200 and full['run_id']==run['run_id'],
-         'full structural/evaluation acceptance missing')
+    full,recovery,producer_accounting=structural_acceptance(base,run,recovery_commit=recovery_commit)
     initial=parts[0]
     need(initial['first']==1 and initial['run'].get('full_state_restore') is None,
          'teacher must come from the actual initial fresh producer')
@@ -392,14 +438,11 @@ def verify(base, audit_base, *, publish_receipt=True):
         need(native[key]==0,'restore audit performed new work: '+key)
     state=subprocess.check_output(['sacct','-nP','-j',native['slurm_job_id'],'-X','--format=JobID,State,ExitCode,UID'],text=True,timeout=30).strip()
     need(state==native['slurm_job_id']+'|COMPLETED|0:0|14090','actual restore job has not completed successfully')
-    pipeline=json.loads((base/'logs/pipeline-status.json').read_text())
-    cleanup=json.loads((base/'logs/cleanup-status.json').read_text())
-    need(pipeline['run_id']==run['run_id'] and pipeline['stage']=='FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP' and
-         cleanup['cleaned'] is True and cleanup['run_id']==run['run_id'],'training producer/final evaluation/owned cleanup not finished')
+    producer_finished(base,run,recovery_commit=recovery_commit,expected_recovery=recovery)
     recovery_path=base/'preparation/recovery-source-binding.json'
     if recovery_path.is_file():
-        recovery=json.loads(recovery_path.read_text())
-        if recovery.get('failed_job')=='718509':
+        historical_recovery=json.loads(recovery_path.read_text())
+        if historical_recovery.get('failed_job')=='718509':
             from reproduction.hpc3_qprobe.telemetry_failure718509 import cleanup_binding
             cleanup_binding(require_complete=True)
     need(len(source_em)==len(source_f1)==7 and sum(full['final_counts'].values())==51713,'canonical final51713/seven sources missing')
@@ -414,12 +457,13 @@ def verify(base, audit_base, *, publish_receipt=True):
         bitwise_continuation_of_failed_execution=False if any(
             (part['run'].get('full_state_restore') or {}).get('kind')=='question_probe_saved_checkpoint'
             for part in parts) else None)
-    if publish_receipt:
-        from reproduction.hpc3_qprobe.control import publish
-        publish(base/'logs/qprobe-final-goal-acceptance.json',result)
+    if recovery is not None:
+        result.update(producer_final_cpu_recovery=recovery,original_producer_accounting=producer_accounting,
+                      original_producer_accounting_remains_failed=True)
+    if publish_receipt:publish_goal(base,result,recovery_commit=recovery_commit)
     return result
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--audit-base',required=True);a=p.parse_args()
-    print(json.dumps(verify(a.base,a.audit_base)),flush=True)
+    p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--audit-base',required=True);p.add_argument('--recovery-commit');a=p.parse_args()
+    print(json.dumps(verify(a.base,a.audit_base,recovery_commit=a.recovery_commit)),flush=True)

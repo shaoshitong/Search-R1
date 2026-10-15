@@ -20,6 +20,10 @@ OWNER=14090
 STEPS=(5,50,100,150,200)
 MODULE='reproduction.hpc3_qprobe.final_control'
 ENTRY='reproduction/hpc3_qprobe/final_control.sh'
+# Its protected actor/restore/common8 files match original1843 byte for byte.
+# New coherent-reader/CPU-revalidation code is deliberately not loaded in the
+# native restore allocation. CPU controller and native audit have distinct pins.
+RECOVERY_NATIVE_AUDIT_SOURCE='ea4601109969e358b65ab8251d64798926748b7d'
 CAPS=('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS',
       'BLIS_NUM_THREADS','VECLIB_MAXIMUM_THREADS')
 
@@ -145,6 +149,42 @@ def producer(base,*,complete=False):
     return run,binding,raw
 
 
+def final_producer(base,*,recovery_commit=None):
+    """Default COMPLETED0, or one explicitly consumed typed final-CPU failure.
+
+    The optional branch preserves actual FAILED accounting. A string, summary
+    PASS or structural JSON alone is never an admission to native allocation.
+    The pinned recovery helper independently consumes its actual held wait,
+    original failure, preserved bytes, full200 and source publication again.
+    """
+    run,binding,accounting=producer(base,complete=recovery_commit is None)
+    if recovery_commit is None:return run,binding,accounting,None
+    from reproduction.hpc3_qprobe import independent_goal_acceptance719225 as reader
+    need(Path(base)==reader.BASE and binding['producer_job']=='719225' and
+         binding['run_id']==reader.RUN and binding['producer_commit']==reader.PRODUCER,
+         'typed final CPU recovery belongs only to the original719225 producer')
+    actual=[line.split('|') for line in accounting.splitlines() if line.strip()]
+    need(len(actual)==1 and actual[0][1:3]==['FAILED','1:0'],
+         'typed recovery cannot replace healthy, unknown or differently failed accounting')
+    recovery,publication=reader.load_fixed(recovery_commit,'final_cpu_ledger_recovery719225','ctl')
+    consumed=recovery.consume(recovery_commit)
+    need(consumed['status']==recovery.HELD_STATUS and consumed['source']==publication and
+         consumed['actual_child_exit_code']==0 and consumed['goal_complete'] is False and
+         consumed['original_accounting_remains_failed'] is True and
+         consumed['native4_restore_and_all_archives_and_independent_final_still_required'] is True and
+         consumed['failure']['kind']==recovery.FAILURE_KIND and
+         consumed['failure']['producer']==binding and
+         consumed['result_path']==str(recovery.DIRECTORY/'result.json'),
+         'actual typed held CPU recovery is absent or belongs to another producer')
+    reference=dict(commit=recovery_commit,source=publication,status=consumed['status'],
+        result=dict(path=consumed['result_path'],sha256=consumed['result_sha256']),
+        output={key:consumed['output'][key] for key in ('path','sha256','bytes')},
+        structural_acceptance={key:consumed['structural_acceptance'][key] for key in ('path','sha256','bytes')},
+        failure_fingerprint=consumed['failure']['fingerprint'],original_producer_state='FAILED',
+        original_producer_exit_code='1:0',goal_complete=False)
+    return run,binding,accounting,reference
+
+
 def pair(base,run,step):
     need(type(step) is int and step in STEPS,'only five fixed real pairs are supported')
     path=Path(base)/'artifacts/question-probe/completed-pairs'/('global_step_'+str(step))/'source-receipt.json'
@@ -228,7 +268,10 @@ def worker_binding(claim_path,token,kind,role='detached_cpu_pair_archive'):
     _,publication=source(claim['source']['commit']);need(publication==claim['source'],'worker source publication changed')
     from reproduction.hpc3_qprobe.probe_cpu_runtime import verify as verify_cpu_runtime
     verify_cpu_runtime()  # Full dependency reads are detached too, never a55s foreground assumption.
-    run,binding,_=producer(claim['producer']['base'],complete=role=='detached_cpu_final_audit_submission')
+    if role=='detached_cpu_final_audit_submission':
+        run,binding,_,recovery=final_producer(claim['producer']['base'],recovery_commit=claim.get('recovery_commit'))
+        need(claim.get('producer_final_cpu_recovery')==recovery,'CPU submit recovery binding changed')
+    else:run,binding,_=producer(claim['producer']['base'])
     component='audit-controller' if role=='detached_cpu_final_audit_submission' else 'archive-'+str(claim['step'])
     if role=='detached_cpu_pair_archive':
         _,checkpoint=pair(Path(binding['base']),run,claim['step']);need(checkpoint==claim['pair'],'CPU pair changed')
@@ -301,9 +344,9 @@ def archive_worker(claim_path,token):
                      'CPU_PAIR_SOURCE_ARCHIVE_TARGET_FULL_SHA_PASS','ACTUAL_CPU_ARCHIVE_CHILD_COMPLETED0')
 
 
-def start_audit(base,commit):
+def start_audit(base,commit,*,recovery_commit=None):
     """Short SSH entry; every heavy SHA read and actual submit runs detached."""
-    repository,publication=source(commit);_,binding,accounting=producer(base,complete=True)
+    repository,publication=source(commit);_,binding,accounting,recovery=final_producer(base,recovery_commit=recovery_commit)
     root=control_root(binding);directory=root/'audit-controller'
     need(not directory.exists() and not (root/'final-audit').exists(),'audit controller/submission already attempted; inspect, never replay')
     directory.mkdir(mode=0o770);token=uuid.uuid4().hex;claim_path=directory/'submit-claim.json'
@@ -312,6 +355,7 @@ def start_audit(base,commit):
         source=publication,command=cmd,controller=birth(process(os.getpid())),actual_accounting=accounting,
         created_unix=time.time(),training_permitted=False,direct_gpu_device_access_permitted=False,
         native_gpu_audit_submission_permitted=True)
+    if recovery is not None:claim.update(recovery_commit=recovery_commit,producer_final_cpu_recovery=recovery)
     publish(claim_path,claim)
     with (directory/'worker.log').open('x') as output:
         child=subprocess.Popen(cmd,stdin=subprocess.DEVNULL,stdout=output,stderr=subprocess.STDOUT,start_new_session=True)
@@ -327,7 +371,8 @@ def audit_exec(claim_path,token):
     claim,directory=worker_binding(claim_path,token,'task','detached_cpu_final_audit_submission')
     publish(directory/'task-entered.json',dict(token=token,actual_process=birth(process(os.getpid())),
                                              phase='FRESH_FULL_SHA_THEN_ONCE_NATIVE_SUBMIT',entered_unix=time.time()))
-    result=submit_audit(claim['producer']['base'],claim['source']['commit'])
+    extra={'recovery_commit':claim['recovery_commit']} if claim.get('recovery_commit') is not None else {}
+    result=submit_audit(claim['producer']['base'],claim['source']['commit'],**extra)
     publish(directory/'task-result.json',dict(status='CPU_FINAL_SUBMIT_CONTROLLER_RETURNED',token=token,
         claim_sha256=digest(claim_path),actual_process=birth(process(os.getpid())),submission=result,
         training_performed=False,direct_gpu_device_access_performed=False,
@@ -402,12 +447,15 @@ def inspect_archive(base,step,*,full=False):
     return value
 
 
-def final_ready(base,commit):
-    repository,publication=source(commit);run,binding,accounting=producer(base,complete=True);base=Path(base)
-    updates=read(base/'logs/full-run-acceptance.json');pipeline=read(base/'logs/pipeline-status.json');cleanup=read(base/'logs/cleanup-status.json')
+def final_ready(base,commit,*,recovery_commit=None):
+    repository,publication=source(commit);run,binding,accounting,recovery=final_producer(base,recovery_commit=recovery_commit);base=Path(base)
+    structural=Path(recovery['structural_acceptance']['path']) if recovery is not None else base/'logs/full-run-acceptance.json'
+    if recovery is not None:need(digest(structural)==recovery['structural_acceptance']['sha256'],'recovered structural bytes changed')
+    updates=read(structural);pipeline=read(base/'logs/pipeline-status.json');cleanup=read(base/'logs/cleanup-status.json')
     final=read(base/'logs/final-identity.json')
     need(updates['structural_accepted'] is True and updates['actual_outer_updates']==200 and updates['run_id']==run['run_id'] and
-         pipeline['run_id']==run['run_id'] and pipeline['stage']=='FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP' and
+         pipeline['run_id']==run['run_id'] and pipeline['stage']==('FAILED' if recovery is not None else
+             'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP') and
          cleanup['cleaned'] is True and cleanup['run_id']==run['run_id'] and final['run_id']==run['run_id'] and
          final['step']==200 and final['final'] is True and len(final['question_ids'])==len(final['em'])==len(final['f1'])==51713 and
          len(final['counts'])==7 and sum(final['counts'].values())==51713,'actual producer200/final51713/cleanup missing')
@@ -431,28 +479,41 @@ def final_ready(base,commit):
     receipt=proofs['200']['target_receipt']
     # Catch loading/science incompatibility before reserving a final allocation.
     from reproduction.hpc3_qprobe.final_restore_audit import bind_audit
+    native_commit=commit;native_publication=publication
+    if recovery is not None:
+        from reproduction.hpc3_qprobe.independent_goal_acceptance719225 import publication as read_publication
+        _,native_publication=read_publication(RECOVERY_NATIVE_AUDIT_SOURCE)
+        native_commit=RECOVERY_NATIVE_AUDIT_SOURCE
     bind_audit(run,read(receipt['path']),Path(receipt['path']),ROOT.parent/'qprobe-teacher-warmup200-final200-audit-preflight',
-               commit,read(publication['publication_path'])['files'],uuid.uuid4().hex)
+               native_commit,read(native_publication['publication_path'])['files'],uuid.uuid4().hex)
     return repository,run,binding,dict(source=publication,actual_producer_accounting=accounting,
         final_identity_sha256=digest(base/'logs/final-identity.json'),producer_cleanup_sha256=digest(base/'logs/cleanup-status.json'),
-        full_run_acceptance_sha256=digest(base/'logs/full-run-acceptance.json'),original_training_parts=history_proofs,archives=proofs)
+        full_run_acceptance_path=str(structural),full_run_acceptance_sha256=digest(structural),
+        producer_final_cpu_recovery=recovery,native_audit_source=native_publication,
+        original_training_parts=history_proofs,archives=proofs)
 
 
-def submit_audit(base,commit):
-    repository,run,binding,proof=final_ready(base,commit);root=control_root(binding);directory=root/'final-audit'
+def submit_audit(base,commit,*,recovery_commit=None):
+    extra={'recovery_commit':recovery_commit} if recovery_commit is not None else {}
+    repository,run,binding,proof=final_ready(base,commit,**extra);root=control_root(binding);directory=root/'final-audit'
     need(not directory.exists(),'final audit submission already attempted; inspect/reconcile, never replay')
     directory.mkdir(mode=0o770);token=uuid.uuid4().hex
     audit_base=ROOT.parent/('qprobe-teacher-warmup200-final200-audit-'+run['run_id'][:12]+'-'+token[:12])
     audit_base.mkdir(mode=0o770);(audit_base/'logs').mkdir(mode=0o770)
     transport=proof['archives']['200'];receipt=transport['target_receipt']['path']
+    native_commit=proof.get('native_audit_source',proof['source'])['commit']
+    native_repository=ROOT/'source'/native_commit
     cmd=['sbatch','--parsable','--account=jxu957','--qos=formal-user','--partition=emergency_acd',
          '--nodes=1','--ntasks=1','--gres=gpu:4','--cpus-per-task=48','--mem=512G','--time=12:00:00',
          '--exclude=ACD1-31,ACD1-67','--job-name=qprobe-final200audit','--export=NONE','--chdir='+str(audit_base),
          '--output='+str(audit_base/'logs/native-%j.log'),'--error='+str(audit_base/'logs/native-%j.log'),
-         str(repository/'reproduction/hpc3_qprobe/final_restore_audit.sh'),str(audit_base),commit,receipt,transport['path']]
+         str(native_repository/'reproduction/hpc3_qprobe/final_restore_audit.sh'),str(audit_base),native_commit,receipt,transport['path']]
     claim=dict(schema_version=1,role='native4_final200_restore_only_submission',token=token,producer=binding,
         audit_base=str(audit_base),command=cmd,proof=proof,controller=birth(process(os.getpid())),
         created_unix=time.time(),dependency_policy='actual producer COMPLETED0 and final cleanup already verified; no retention-dependent Slurm dependency')
+    if recovery_commit is not None:
+        claim.update(recovery_commit=recovery_commit,producer_final_cpu_recovery=proof['producer_final_cpu_recovery'],
+            dependency_policy='actual producer remains FAILED1:0; precise typed held CPU full200 revalidation and owned cleanup verified; no retention-dependent Slurm dependency')
     publish(directory/'submit-claim.json',claim)
     test=subprocess.run(cmd[:1]+['--test-only']+cmd[1:],capture_output=True,text=True,timeout=30)
     publish(directory/'test-only.json',dict(command=cmd,returncode=test.returncode,stdout=test.stdout,stderr=test.stderr))
@@ -471,9 +532,11 @@ def submit_audit(base,commit):
     publish(directory/'submission.json',value);return value
 
 
-def reconcile_audit(base,job):
+def reconcile_audit(base,job,*,recovery_commit=None):
     """Explicit unique-job adoption after unknown sbatch; never calls sbatch."""
-    _,binding,_=producer(base,complete=True);directory=control_root(binding,create=False)/'final-audit';claim=read(directory/'submit-claim.json')
+    _,binding,_,recovery=final_producer(base,recovery_commit=recovery_commit);directory=control_root(binding,create=False)/'final-audit';claim=read(directory/'submit-claim.json')
+    need(claim.get('recovery_commit')==recovery_commit and claim.get('producer_final_cpu_recovery')==recovery,
+         'actual final audit recovery intent changed; never replay')
     need(re.fullmatch('[1-9][0-9]*',job) is not None and claim['producer']==binding,'actual job/producer binding required')
     need(not (directory/'reconciled-submission.json').exists(),'already reconciled; inspect instead')
     if (directory/'submission.json').is_file():
@@ -481,7 +544,7 @@ def reconcile_audit(base,job):
         need(value.get('job',job)==job and value['returncode'] in (None,0),'cannot adopt a definite rejected submission')
     from reproduction.common8.native_allocation import fields
     raw=subprocess.check_output(['scontrol','show','job','-d',job],text=True,timeout=30);actual=fields(raw)
-    repository=ROOT/'source'/claim['proof']['source']['commit']
+    repository=ROOT/'source'/claim['proof'].get('native_audit_source',claim['proof']['source'])['commit']
     need(actual['JobId']==job and actual['UserId']=='jxu957(14090)' and actual['Account']=='jxu957' and
          actual['QOS']=='formal-user' and actual['Partition']=='emergency_acd' and actual['JobName']=='qprobe-final200audit' and
          actual['WorkDir']==claim['audit_base'] and actual['Command']==str(repository/'reproduction/hpc3_qprobe/final_restore_audit.sh') and
@@ -504,13 +567,19 @@ def reconcile_audit(base,job):
     publish(directory/'reconciled-submission.json',value);return value
 
 
-def inspect_audit(base):
-    _,binding,_=producer(base,complete=True);root=control_root(binding,create=False);directory=root/'final-audit'
-    cpu=controller_state(root/'audit-controller') if (root/'audit-controller/submit-claim.json').is_file() else None
+def inspect_audit(base,*,recovery_commit=None):
+    _,binding,_,recovery=final_producer(base,recovery_commit=recovery_commit);root=control_root(binding,create=False);directory=root/'final-audit'
+    cpu=None;cpu_claim=root/'audit-controller/submit-claim.json'
+    if cpu_claim.is_file():
+        original=read(cpu_claim)
+        need(original['producer']==binding and original.get('recovery_commit')==recovery_commit and
+             original.get('producer_final_cpu_recovery')==recovery,'CPU submit producer/recovery intent differs')
+        cpu=controller_state(cpu_claim.parent)
     if not (directory/'submit-claim.json').is_file():
         return dict(status='FINAL_SUBMIT_CPU_PREFLIGHT_RUNNING_OR_FAILED_NO_SLURM_INTENT',cpu_controller=cpu)
     claim=read(directory/'submit-claim.json')
-    need(claim['producer']==binding,'audit producer differs')
+    need(claim['producer']==binding and claim.get('recovery_commit')==recovery_commit and
+         claim.get('producer_final_cpu_recovery')==recovery,'audit producer/recovery intent differs')
     receipt=directory/'reconciled-submission.json'
     if not receipt.is_file():receipt=directory/'submission.json'
     value=dict(audit_base=claim['audit_base'],claim_sha256=digest(directory/'submit-claim.json'),
@@ -527,24 +596,26 @@ def inspect_audit(base):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('mode',choices=('archive-start','archive-inspect','archive-worker','archive-exec','audit-start','audit-worker','audit-exec','audit-inspect','audit-reconcile'))
-    p.add_argument('--base');p.add_argument('--commit');p.add_argument('--step',type=int);p.add_argument('--claim');p.add_argument('--token');p.add_argument('--job')
+    p.add_argument('--base');p.add_argument('--commit');p.add_argument('--step',type=int);p.add_argument('--claim');p.add_argument('--token');p.add_argument('--job');p.add_argument('--recovery-commit')
     a=p.parse_args();owner()
     if a.mode in ('archive-worker','archive-exec','audit-worker','audit-exec'):
-        need(a.claim and a.token and not any((a.base,a.commit,a.step,a.job)),'worker cannot rebind controller arguments')
+        need(a.claim and a.token and not any((a.base,a.commit,a.step,a.job,a.recovery_commit)),'worker cannot rebind controller arguments')
         result={'archive-worker':archive_worker,'archive-exec':archive_exec,
                 'audit-worker':audit_worker,'audit-exec':audit_exec}[a.mode](a.claim,a.token)
     else:
         need(a.base and not any((a.claim,a.token)),'canonical producer base required')
         if a.mode in ('archive-start','audit-start'):need(a.commit,'published helper commit required')
+        need(a.recovery_commit is None or a.mode in ('audit-start','audit-inspect','audit-reconcile'),
+             'typed final CPU recovery is an explicit final-audit argument only')
         if a.mode.startswith('archive-'):need(a.step in STEPS and not a.job,'fixed archive step required')
         else:need(a.step is None,'final audit is always strict200; no alternate step accepted')
         if a.mode=='audit-reconcile':need(a.job and not a.commit,'one actual job required for explicit reconciliation')
         elif a.mode.startswith('audit-'):need(not a.job,'actual job may only be supplied to reconcile')
         if a.mode=='archive-start':result=launch_archive(a.base,a.commit,a.step)
         elif a.mode=='archive-inspect':result=inspect_archive(a.base,a.step)
-        elif a.mode=='audit-start':result=start_audit(a.base,a.commit)
-        elif a.mode=='audit-inspect':result=inspect_audit(a.base)
-        else:result=reconcile_audit(a.base,a.job)
+        elif a.mode=='audit-start':result=start_audit(a.base,a.commit,recovery_commit=a.recovery_commit)
+        elif a.mode=='audit-inspect':result=inspect_audit(a.base,recovery_commit=a.recovery_commit)
+        else:result=reconcile_audit(a.base,a.job,recovery_commit=a.recovery_commit)
     print(json.dumps(result,allow_nan=False),flush=True)
 
 
