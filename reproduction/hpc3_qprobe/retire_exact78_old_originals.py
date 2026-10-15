@@ -192,6 +192,15 @@ def open_hash(row,root,snapshot):
 def unlink_held(item):
     held_check(item)
     row,parent,fd,_=item;allocated=os.fstat(fd).st_blocks*512
+    # NFS can briefly report identical inode/size/timestamps after a same-size
+    # write. The batch preflight cannot substitute for this immediate FD read.
+    os.lseek(fd,0,os.SEEK_SET);h=hashlib.sha256()
+    while True:
+        block=os.read(fd,8*2**20)
+        if not block:break
+        h.update(block)
+    need(h.hexdigest()==row['sha256'],'candidate content changed after batch full SHA')
+    held_check(item)
     os.unlink(Path(row['path']).name,dir_fd=parent);os.fsync(parent)
     need(not os.path.lexists(row['path']),'approved file name remains after unlink')
     return allocated
@@ -246,7 +255,7 @@ def supervise(commit):
                 stdin=subprocess.PIPE,stdout=log,stderr=subprocess.STDOUT)
             try:
                 actual=reserve.birth(child.pid)
-                need(actual and actual['sid']==parent['actual_process']['sid'] and actual['uid']==OWNER,'worker birth differs')
+                need(actual and actual['pid']==child.pid and actual['pid']!=parent['actual_process']['pid'] and actual['sid']==parent['actual_process']['sid'] and actual['uid']==OWNER,'worker birth differs')
                 reserve.publish(DIRECTORY/'worker-process.json',dict(source_commit=commit,actual_process=actual))
                 child.stdin.write(b'ready\n');child.stdin.close()
             except BaseException as exc:
