@@ -35,6 +35,31 @@ class RunnerTests(unittest.TestCase):
             path=Path(directory)/'compatible-result.json';path.symlink_to(target)
             with self.assertRaises(ValueError):runner.finalize_result(path,{})
 
+    def test_prepared_ray_namespace_is_accepted_and_other_namespaces_rejected(self):
+        # Exercise the actual producer expression and consumer assertions without
+        # launching the pipeline, Ray, CUDA, or any service.
+        root=Path(__file__).parent
+        prepared=ast.parse((root/'prepare.py').read_text())
+        expression=next(keyword.value for call in ast.walk(prepared)
+            if isinstance(call,ast.Call) for keyword in call.keywords
+            if keyword.arg=='ray_tmp_dir')
+        execution_id='0123456789abcdef0123456789abcdef'
+        from types import SimpleNamespace
+        generated=eval(compile(ast.Expression(expression),'<prepare-ray-path>','eval'),
+            {'args':SimpleNamespace(execution_id=execution_id)})
+        pipeline=ast.parse((root/'pipeline.py').read_text())
+        checks=[node for node in ast.walk(pipeline) if isinstance(node,ast.Assert)
+            and 'ray_tmp' in ast.unparse(node.test)]
+        self.assertEqual(len(checks),2)
+        code=compile(ast.fix_missing_locations(ast.Module(body=checks,type_ignores=[])),
+            '<actual-pipeline-ray-path-checks>','exec')
+        scope={'manifest':{'execution_id':execution_id},'ray_tmp':Path(generated)}
+        exec(code,scope)
+        for invalid in ('/tmp/g1l-'+execution_id[:12],'/tmp/g1ca-foreign',
+                        '/tmp/g1ca-'+execution_id[:12]+'/child','relative'):
+            with self.assertRaises(AssertionError):
+                exec(code,dict(scope,ray_tmp=Path(invalid)))
+
     def test_new_controller_and_worker_only_no_old_tree_activation_or_fit(self):
         source=Path(runner.__file__).read_text();tree=ast.parse(source)
         for forbidden in ('legacy_eval_control','activate(', 'setup_worker','legacy_source_root','canonical_legacy_evaluation'):

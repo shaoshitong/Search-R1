@@ -382,7 +382,7 @@ def main():
     for name in ('logs', 'tmp', 'ray', 'cache/hf', 'cache/triton', 'cache/inductor', 'cache/corpus'):
         (base / name).mkdir(parents=True, exist_ok=True)
     ray_tmp = Path(manifest['ray_tmp_dir'])
-    assert ray_tmp.is_absolute() and str(ray_tmp).startswith('/tmp/g1l-')
+    assert ray_tmp.is_absolute() and str(ray_tmp) == '/tmp/g1ca-' + manifest['execution_id'][:12]
     assert len(str(ray_tmp)) < 32, 'Ray Unix sockets require a short private root'
     ray_tmp.mkdir(mode=0o700, exist_ok=False)
     signal.signal(signal.SIGTERM, interrupted)
