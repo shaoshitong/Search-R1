@@ -2,8 +2,8 @@
   "date": "2026-10-15",
   "timezone": "Asia/Shanghai",
   "role": "native_qwen_block_source_and_execution_release_manifest",
-  "runtime_source_commit": "a47abb701f62a6c4eb9e8e8c987c67a4cf804098",
-  "runtime_source_map_sha256": "e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916",
+  "runtime_source_commit": "fcb77204f48d5cb8ec21c68df7d4a2c937b3557a",
+  "runtime_source_map_sha256": "19edc0fd3382948decd0e06074e4e82d0f29ef269163131ef07472d29c6e2b1b",
   "runtime_file_count": 508,
   "operations_source_commit": "e093c4d3c67a8ee70e8b7a364fc10a9ac99789bb",
   "operations_files": {
@@ -107,7 +107,7 @@
     "runtime_source_map_sha256": "7ce4d02996393270a47e1d3840ab5ee793205e17e3154de18193c19b4120851e",
     "runtime_file_count": 508
   },
-  "repair_scope": "Birth-bound GPU visibility in a fresh driver process; exact original scientific body and CPU RNG retained. Strict qualified bank reuse after actual pre-update failure; no teacher rollout, encoder or Head warmup rerun.",
+  "repair_scope": "Use native/token-binary selected_predicted_binary_mixed and predicted_binary_mixed in the existing metrics and reward/advantage source diagnostics; retain count6 diversity semantics. No ranking, reward, PPO, probe loss, driver, or scientific parameter change. Prior birth-bound GPU driver and strict qualified bank reuse remain unchanged.",
   "old_failed_namespace_preserved": true,
   "prior_preflight_source_versions": [
     {
@@ -115,5 +115,92 @@
       "source_map_sha256": "c95e96b93cfedc19f1fdff1aff93e1854cdd1e6cd777e5330abe757889929582"
     }
   ],
-  "c4_session_audit_contract_repair": true
+  "c4_session_audit_contract_repair": true,
+  "updated_date": "2026-10-16",
+  "previous_runtime_source_commit": "a47abb701f62a6c4eb9e8e8c987c67a4cf804098",
+  "previous_runtime_source_map_sha256": "e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916",
+  "runtime_source_publication": {
+    "path": "preparation/qprobe-qwen-native-selection-metrics-fix-source-publication.json",
+    "sha256": "7ec2a13ebd457faecbecd7896ed26bc7d2348053a9fd745d0dba750f75bd958a",
+    "remote_commit": "fcb77204f48d5cb8ec21c68df7d4a2c937b3557a",
+    "published_ref": "refs/heads/codex/qprobe-qwen-native-selection-metrics-fix-20261015",
+    "fresh_508_git_objects_verified": true
+  },
+  "changed_runtime_files_from_previous_source": {
+    "reproduction/a800_common/qprobe-initial0-adoption-source-delta.json": {
+      "sha256": "ec3af0091ced0393a57e51b8af705e1fdff33a89b768f8fa635359d4707131fc",
+      "bytes": 90397,
+      "git_blob": "3608f007ef9658b1ba1cdcbc370ace12bb27ce1c"
+    },
+    "search_g1/test_qprobe_qwen_runtime.py": {
+      "sha256": "201d1a7abd5ba75a257dbb3d30ced531f7fc42e4372d779720d04a621fdf1f2c",
+      "bytes": 14452,
+      "git_blob": "60818e1fbc8aacd658b884f1fd33ceb45c368bd2"
+    },
+    "verl/trainer/ppo/ray_trainer.py": {
+      "sha256": "b16304376a76594f179d3d855f849f88c5db613bd2cf22e44dfa4d1487463151",
+      "bytes": 70453,
+      "git_blob": "576428bd6a51aae3f157e89b74f7e20564253705"
+    }
+  },
+  "prior_failed_selection_namespace": {
+    "source_commit": "a47abb701f62a6c4eb9e8e8c987c67a4cf804098",
+    "source_map_sha256": "e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916",
+    "base": "/data/shaoshitong/Search-G1-a800-fresh200-4fd508e35bc84658ba892a97248f8a7f",
+    "run_id": "524254af06a1472daa1368daba4e0b17",
+    "execution_id": "fd91bd58d4cf40a89b35427267f9d34e",
+    "completed_outers": 0,
+    "actor_adam_updates": 0,
+    "terminal_owned_cleanup_accepted": true,
+    "terminal_evidence_sha256": "2fbd584464bb284f1014a3b44bd5d33824bbff05a880fb4c2fd2895e29d4dd3a",
+    "preoptimizer_scalar_evidence_sha256": "5fd477f8ad0a4505c552046500037194b05e3068f9ded9e62b9db2acf346124e"
+  },
+  "current_deployment_prelaunch": {
+    "base": "/data/shaoshitong/Search-G1-a800-fresh200-e9c4c584107b4624bcc9787aaf24b7a2",
+    "run_id": "509c391b7e5c4174bfb55f724f41a3d6",
+    "execution_id": "60fca3cc2edd4dedb3773230b91f34ea",
+    "status": "PRELAUNCH_QUALIFIED_ACTUAL_RELEASE_AND_LAUNCH_COMPLETED",
+    "prepared_actions_actual_exit0": true,
+    "source_review_sha256": "143cdcc8cd5793bc765cb99811b88d3977b079c351bcfb9ae5ad75506ffbfcde",
+    "qualified_bank_reused": true,
+    "teacher_generated": false,
+    "head_refit": false,
+    "bank_reencoded": false,
+    "packed_bank_rehashed": false,
+    "idle_admission_unix": 1792080331.558,
+    "actual_deployment_release_sha256": "29d504e99763530b03d6083a4620bccd4b3273918b6fdfc05acb5ef71c1a77c1",
+    "actual_launch_sha256": "5d39300a9ae1e4b54ed810e4c1c69aaf923ed78c0886310d311a741785cc73ec",
+    "proofs": {
+      "cpu_compatibility_sha256": "c58253d6b35af51d520256a6ec018e5d1e7d02399383e086fe70a3d8cabab572",
+      "qualified_bank_admission_sha256": "39060b1e2b49ce40309fb854ee1d234b7960ac8a7f76e4474c730662eeb41308",
+      "qprobe_bound_sha256": "8fc4b910a6e46b118a8a38eb27e615408d12fbdbdf9b932817eaca664388a4c8",
+      "formal_initial_head_sha256": "014cdb4d4baf8f36f7ecb476ed8f6ac781b2a87dd48ace34943969b85466e105",
+      "formal_initial_head_ready_sha256": "a97370f67a0c66a33560d3b4ff55d719d0ecff898a813b5ba6e1f7f6104e716e",
+      "initial0_adoption_sha256": "14c39bc8550237cca43d18990867385090230fe8c9de401fbf9d6580747e9e71",
+      "native_prelaunch_sha256": "12b285e617867ea897a2f0c0bb844e81c91c3e42020ef245d805a01cb5456ade",
+      "prelaunch_run_manifest_sha256": "f725b07bc4227eff2bd8eb931220f8853ec9f84ffa405498a391f7ae31131a04"
+    }
+  },
+  "current_actual_launch": {
+    "status": "LAUNCH_METADATA_SUCCESS_PROGRESS_PENDING",
+    "actual_release_review_sha256": "29d504e99763530b03d6083a4620bccd4b3273918b6fdfc05acb5ef71c1a77c1",
+    "deployment_launch_receipt_sha256": "5d39300a9ae1e4b54ed810e4c1c69aaf923ed78c0886310d311a741785cc73ec",
+    "local_launch_observation_sha256": "e93e6bfdefb3512b96b2d4cb9b0fdebd7f665945872fcc1caac2802ab39e5812",
+    "launched_unix": 1792080410.1045697,
+    "pipeline_launch_identity": {
+      "pid": 340952,
+      "start_ticks": 616000142,
+      "sid": 340952,
+      "uid": 0
+    },
+    "pipeline_stage": "VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL",
+    "pipeline_stage_unix": 1792080421.3989437,
+    "first_native_primary_not_before_unix": 1792081010.10457,
+    "pipeline_live_verified": false,
+    "trainer_progress_verified": false,
+    "first_complete_outer_verified": false,
+    "actual_opportunity_counts": "unknown",
+    "actual_reward": "unknown",
+    "do_not_repeat_prepare_or_launch": true
+  }
 }

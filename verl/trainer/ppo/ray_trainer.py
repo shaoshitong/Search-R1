@@ -936,7 +936,8 @@ class RayPPOTrainer(object):
                          "raw_actual_retrieval_calls", "candidate_fill_seconds")})
                     if self.qprobe_runtime is not None:
                         for name in ('selected_all_wrong','selected_all_correct',
-                                     'selected_random_exploration','selected_predicted_diversity'):
+                                     'selected_random_exploration',
+                                     'selected_predicted_binary_mixed' if self.qprobe_runtime.token_binary else 'selected_predicted_diversity'):
                             metrics['selection/'+name] = mixed_audit[name]
                         for slice_name, values in mixed_audit['prequential'].items():
                             for name, value in values.items():
@@ -1100,7 +1101,11 @@ class RayPPOTrainer(object):
                         response_mask = (batch.batch['loss_mask'] if 'loss_mask' in batch.batch
                             else batch.batch['attention_mask'][:, -response_width:]).bool()
                         rewards = batch.batch['token_level_rewards'].sum(-1)
-                        selection_sources = ('random_exploration','predicted_diversity') if selection_mode == 'question_probe' else ('mixed','all_correct_fallback')
+                        if selection_mode == 'question_probe':
+                            predicted_source = 'predicted_binary_mixed' if self.qprobe_runtime.token_binary else 'predicted_diversity'
+                            selection_sources = ('random_exploration',predicted_source)
+                        else:
+                            selection_sources = ('mixed','all_correct_fallback')
                         for source in selection_sources:
                             rows = torch.as_tensor(sources == source, device=rewards.device)
                             metrics['selection/'+source+'/trajectories'] = int(rows.sum())

@@ -1,0 +1,317 @@
+{
+  "checked_contracts": [
+    {
+      "facts": [
+        "5120 unique candidates -> Top512 by mixed_probability, E0, std not tie break.",
+        "512 unique selected qids, [512] pMixed/std vectors, exact [512,5] integer labels.",
+        "Real 2560 ordered behavior trajectories, sampling mask/logprob shape and finite checks precede pending transaction."
+      ],
+      "name": "collect identities, fields and shapes",
+      "refs": [
+        {
+          "lines": [
+            688,
+            727,
+            780,
+            892
+          ],
+          "path": "search_g1/qprobe_runtime.py"
+        }
+      ],
+      "status": "Static interface consistent; existing run collected actual2560"
+    },
+    {
+      "facts": [
+        "2560/4=640 local trajectories;128/4=32 local mini;local micro4/global16;32/4=8 accumulation;640/32=20 opportunities.",
+        "finish requires exactly all4 rank results and matching logical attempt/counters/statuses; incomplete attempts do not advance complete counter or Head."
+      ],
+      "name": "four-rank actor geometry and counters",
+      "refs": [
+        {
+          "lines": [
+            17,
+            65
+          ],
+          "path": "reproduction/common8/topology.py"
+        },
+        {
+          "lines": [
+            506,
+            534
+          ],
+          "path": "verl/workers/actor/dp_actor.py"
+        },
+        {
+          "lines": [
+            28,
+            81
+          ],
+          "path": "reproduction/common8/recoverable_attempt.py"
+        }
+      ],
+      "status": "Static interface consistent; actual optimizer progress not claimed"
+    },
+    {
+      "facts": [
+        "Head update only after actual rank finish complete_outer; abort discards pending labels without fit.",
+        "512 qid/hash-bound groups added per complete formal outer, recent8 only, two epochs/batch256, raw age weights 2*2**(-age), teacher excluded.",
+        "Exact BCE+.3 normalized sample-std group objective; no new reward/loss/ranking behavior in repair."
+      ],
+      "name": "complete-only native Head update",
+      "refs": [
+        {
+          "lines": [
+            1133,
+            1171
+          ],
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "lines": [
+            393,
+            435
+          ],
+          "path": "search_g1/qprobe_runtime.py"
+        },
+        {
+          "lines": [
+            139,
+            201
+          ],
+          "path": "search_g1/qprobe_qwen_block_online.py"
+        }
+      ],
+      "status": "Static interface consistent"
+    },
+    {
+      "facts": [
+        "Warmup remains actual10epochs/200HeadAdam; logical0 complete count/update count/replay remain0; no refit.",
+        "Canonical169028 bank/18367021 tokens remains qualified by original manifest/file seals and source binding; no reencode.",
+        "Native HF Qwen2DecoderLayer35 exact copied tensor provenance and layer27 all-valid-token2048 cache/pad244/flattenLinear2 unchanged."
+      ],
+      "name": "qualified warmup and sourcebank adoption",
+      "refs": [
+        {
+          "lines": [
+            292,
+            378
+          ],
+          "path": "reproduction/common8/qprobe_qwen_bind.py"
+        },
+        {
+          "lines": [
+            394,
+            457
+          ],
+          "path": "reproduction/a800_common/qprobe_qwen_formal_ops.py"
+        },
+        {
+          "lines": [
+            264,
+            322
+          ],
+          "path": "search_g1/qprobe_runtime.py"
+        }
+      ],
+      "status": "Existing adoption contracts retained"
+    },
+    {
+      "facts": [
+        "Fresh child born with bound GPU UUID and same exact Ray cluster/namespace, restored CPU RNG.",
+        "Historical driver EXIT1 wraps post-collect KeyError; it is not evidence of a new driver route fault."
+      ],
+      "name": "startup birth/Ray/CUDA route",
+      "refs": [
+        {
+          "lines": [
+            118,
+            129
+          ],
+          "path": "search_g1/qprobe_driver_gpu.py"
+        },
+        {
+          "lines": [
+            233,
+            303
+          ],
+          "path": "search_g1/qprobe_driver_gpu.py"
+        }
+      ],
+      "status": "Already passed in historical actual run; unchanged in repair"
+    },
+    {
+      "facts": [
+        "Saving requires no pending labels and equal actor/Head completed outer; typed load verifies Head SHA, native provenance, actor id/version and counters.",
+        "Nativefive acceptance is written before post-evaluation completed-pair receipt; nativefive alone is not a completed Head/actor pair.",
+        "Existing acceptance still needs CP5/Head receipt, post-eval completed pair and same-process outer6 evidence; no added GPU test or evaluation requested."
+      ],
+      "name": "checkpoint5 typed Head/actor boundary",
+      "refs": [
+        {
+          "lines": [
+            722,
+            755
+          ],
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        },
+        {
+          "lines": [
+            83,
+            94
+          ],
+          "path": "search_g1/qprobe_checkpoint.py"
+        },
+        {
+          "lines": [
+            134,
+            235
+          ],
+          "path": "search_g1/qprobe_checkpoint.py"
+        }
+      ],
+      "status": "Static interface consistent; existing final-acceptance attention retained"
+    }
+  ],
+  "checked_unix": 1792079978.7336571,
+  "conclusion": "Exact selection-metrics repair is source usable. Two confirmed metrics semantic drift defects are resolved; no additional certain fatal issue was found within the targeted downstream static scope. Actual new runtime completion remains the mainline measured-progress responsibility.",
+  "confirmed_findings": [
+    {
+      "cause": "Binary producer emits selected_predicted_binary_mixed; old consumer unconditionally required selected_predicted_diversity.",
+      "classification": "Observed fatal error, fixed by exact commit",
+      "evidence": "4fd508 child reached run_main_task -> fit:940 KeyError selected_predicted_diversity after 512x5 collection; all four optimizer-rank files and driver attempt/update ledgers absent.",
+      "id": "F1",
+      "minimal_fix": "Read the real binary scalar key when runtime.token_binary, retain diversity only for count6.",
+      "resolved_in": "fcb77204f48d5cb8ec21c68df7d4a2c937b3557a",
+      "source_refs": [
+        {
+          "lines": [
+            881
+          ],
+          "path": "search_g1/qprobe_runtime.py"
+        },
+        {
+          "lines": [
+            937,
+            942
+          ],
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        }
+      ]
+    },
+    {
+      "classification": "Confirmed downstream diagnostic omission, fixed by exact commit",
+      "evidence": "Binary selector emits predicted_binary_mixed for all 512 selected groups; old reward/advantage source loop only matched random_exploration/predicted_diversity and would report 0 selected trajectories for the latter.",
+      "id": "F2",
+      "minimal_fix": "Choose the real binary selection source in the grouped scalar loop; do not synthesize a diversity alias.",
+      "resolved_in": "fcb77204f48d5cb8ec21c68df7d4a2c937b3557a",
+      "source_refs": [
+        {
+          "lines": [
+            239,
+            243
+          ],
+          "path": "search_g1/qprobe_selection.py"
+        },
+        {
+          "lines": [
+            1104,
+            1119
+          ],
+          "path": "verl/trainer/ppo/ray_trainer.py"
+        }
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-qwen-native-formal-4fd508-terminal-diagnosis-exact-argv-v2.json",
+      "scope": "Existing local copy; not a fresh remote observation",
+      "sha256": "2fbd584464bb284f1014a3b44bd5d33824bbff05a880fb4c2fd2895e29d4dd3a"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-qwen-native-formal-4fd508-preoptimizer-scalar-evidence.json",
+      "scope": "Existing local copy; not a fresh remote observation",
+      "sha256": "5fd477f8ad0a4505c552046500037194b05e3068f9ded9e62b9db2acf346124e"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-qwen-native-driver-process-fix-v2-native-progress1.json",
+      "scope": "Existing local copy; not a fresh remote observation",
+      "sha256": "c82d2e8d8ab5871a9ab162b7158bcd226732e43d16d672f249baf8b3776c4dca"
+    }
+  ],
+  "expected_scalar_counts": {
+    "actor_accumulation": 8,
+    "actor_global_micro": 16,
+    "actor_local_micro": 4,
+    "actor_opportunities": 20,
+    "actor_world_size": 4,
+    "head_adam_steps": {
+      "0": 200,
+      "1": 204,
+      "2": 212,
+      "200": 6488,
+      "3": 224,
+      "4": 240,
+      "5": 260,
+      "8": 344,
+      "9": 376
+    },
+    "raw_age_weights": [
+      2,
+      1.0,
+      0.5,
+      0.25,
+      0.125,
+      0.0625,
+      0.03125,
+      0.015625
+    ],
+    "selected_questions": 512,
+    "trajectories": 2560
+  },
+  "new_unresolved_fatal_findings": [],
+  "prior_failed_source_commit": "a47abb701f62a6c4eb9e8e8c987c67a4cf804098",
+  "restrictions": {
+    "extra_evaluation": false,
+    "gpu_tests": false,
+    "job_start_or_stop": false,
+    "model_or_tensor_reads": false,
+    "remote_calls": false,
+    "source_mutation": false
+  },
+  "reviewer": "/root/native_startup_hidden_hazards",
+  "role": "native_qwen_targeted_local_startup_hidden_hazards_static_audit",
+  "scope": "Targeted local source and existing scalar/hash metadata only, limited to native/token-binary collect -> metrics -> source diagnostics -> complete actor -> Head -> checkpoint5/nativefive. Not a whole-repository review or a guarantee of future runtime success.",
+  "source_commit": "fcb77204f48d5cb8ec21c68df7d4a2c937b3557a",
+  "source_map_sha256": "19edc0fd3382948decd0e06074e4e82d0f29ef269163131ef07472d29c6e2b1b",
+  "source_review": {
+    "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-qwen-native-selection-metrics-fix-independent-source-review.json",
+    "sha256": "143cdcc8cd5793bc765cb99811b88d3977b079c351bcfb9ae5ad75506ffbfcde",
+    "source_usable": true
+  },
+  "source_sha256": {
+    "reproduction/a800_common/qprobe_qwen_formal_ops.py": "e91d24806f6710cbd5136c301c3ed692325be5a2f8a3369dc7cc1e349f55f2f8",
+    "reproduction/common8/qprobe_qwen_bind.py": "22aaf909aebc1245ca14035caa8cbc75c451bc54b98df445b5763958780d449a",
+    "reproduction/common8/recoverable_attempt.py": "458feede31f6324da433f0634bf61bbc40b9e0c85cdeaa9cdee643a94461e74b",
+    "reproduction/common8/runtime.py": "e51a6e3dec7e674ed7179400503f8cf522a6b3017080dda6954664039c718517",
+    "reproduction/common8/topology.py": "6796c89414e62106a29868983ff445d79831c2785fd5597565417f8653f62e26",
+    "search_g1/qprobe_checkpoint.py": "e8ca1fdee303f37a611bdb33abbb506943a1f6fd86408f69c6cda8fe3ca2d612",
+    "search_g1/qprobe_qwen_block_model.py": "69ba7c7437e01ca21e96266ce515d3998717669342df8ef6f578dcc73666730e",
+    "search_g1/qprobe_qwen_block_online.py": "93b449bfd77e589132e8f125c3bdd829457f3d1733070f39b16fc48efd44cc1a",
+    "search_g1/qprobe_runtime.py": "e4e204c12fb1378937199283e13670be7d4b842a61cf402f8542018feec18468",
+    "search_g1/qprobe_selection.py": "f573e7ba3e6869421ec080240d12b026d690af9d8bcc8a13f7cad0b961715484",
+    "search_g1/qprobe_token_online.py": "93bb772a5ece07353181cbf33085d4e8c7d60c33fcb00f4ec0e30d5cebc5fda4",
+    "verl/trainer/ppo/ray_trainer.py": "b16304376a76594f179d3d855f849f88c5db613bd2cf22e44dfa4d1487463151",
+    "verl/workers/actor/dp_actor.py": "139de8655f071b469bfbfc926d8973d2995740d2fa16481ac25898e2d92f173c"
+  },
+  "unverified_suspicions_reported": [],
+  "verification": {
+    "exact_commit_three_file_diff_reviewed": true,
+    "implementation_reported_actual_producer_consumer_regression": "1 test PASS,0.192s; native/token/count6",
+    "independent_duplicate_test_execution": false,
+    "source_map_508_recomputed": true,
+    "source_worktree_clean": true,
+    "syntax_ast_parse_six_modules": true,
+    "two_local_source_reads": true
+  }
+}

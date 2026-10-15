@@ -1,7 +1,7 @@
 {
   "date": "2026-10-15",
   "timezone": "Asia/Shanghai",
-  "runtime_source_commit": "a47abb701f62a6c4eb9e8e8c987c67a4cf804098",
+  "runtime_source_commit": "fcb77204f48d5cb8ec21c68df7d4a2c937b3557a",
   "official_model": "Qwen/Qwen2.5-3B-Instruct",
   "official_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
   "common_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
@@ -115,12 +115,61 @@
     "warmup_head": "9b32f40ea573b855dc9e3be627fce7be1c03a1ba0b0e374808a81db311bb6849",
     "warmup_ready": "2f13faecb07a98a8fc87a0e9d52d1e93f1ae720d8043bef21193205807b2c466",
     "full_token_bank_manifest": "fa8c9513f89b3700851f8fe75665bf515a82e7f491bc3a52a643a6e82aa243e9",
-    "formal_initial_head": "a269238b0c6c2c182efc058612de895a33f65f7ce9d66966d1973c571fe0f3f1",
-    "formal_initial_head_ready": "5b707c21b91594effeef57de1b4b53e276398c4a7bfc837b131986aa7880e462"
+    "formal_initial_head": "014cdb4d4baf8f36f7ecb476ed8f6ac781b2a87dd48ace34943969b85466e105",
+    "formal_initial_head_ready": "a97370f67a0c66a33560d3b4ff55d719d0ecff898a813b5ba6e1f7f6104e716e"
   },
   "prior_failed_formal_initial_head_hashes": {
     "formal_initial_head": "82e995c1aae9d01833b6229bc879c98d20bb84e107301a2ff2c1885b23e773d0",
     "formal_initial_head_ready": "c5bdbdb02ca5477235fc8b857dbd56baea13f4c6f54f67d44ad7c3b191316fb7"
   },
-  "new_formal_initial_binding": "actual CPU-only bind exit0; own native HeadAdam200/private RNG and empty formal replay retained, no actor started"
+  "new_formal_initial_binding": "Actual CPU-only bind exit0 in e9c4 namespace; own native warmup HeadAdam200/private RNG retained, formal logical0 and empty replay, teacher excluded; no refit or actor state inheritance. This is preparation evidence, not CUDA progress or complete outer acceptance.",
+  "updated_date": "2026-10-16",
+  "runtime_source_map_sha256": "19edc0fd3382948decd0e06074e4e82d0f29ef269163131ef07472d29c6e2b1b",
+  "current_deployment": {
+    "handle": "preparation/qprobe-qwen-native-selection-metrics-fix-deployment.json",
+    "runtime_checkout": "/Users/shaoshitong/Documents/Search-G1/qprobe-qwen-native-selection-metrics-fix",
+    "base": "/data/shaoshitong/Search-G1-a800-fresh200-e9c4c584107b4624bcc9787aaf24b7a2",
+    "run_id": "509c391b7e5c4174bfb55f724f41a3d6",
+    "execution_id": "60fca3cc2edd4dedb3773230b91f34ea",
+    "status": "All CPU preparation and actual-deployment release approved; unique launch actual exit0 at 2026-10-16 00:06:50 Asia/Shanghai. Metadata launch success is not live identity, returned Adam or complete-outer acceptance."
+  },
+  "prior_failed_selection_namespace_head_hashes": {
+    "source_commit": "a47abb701f62a6c4eb9e8e8c987c67a4cf804098",
+    "run_id": "524254af06a1472daa1368daba4e0b17",
+    "execution_id": "fd91bd58d4cf40a89b35427267f9d34e",
+    "formal_initial_head": "a269238b0c6c2c182efc058612de895a33f65f7ce9d66966d1973c571fe0f3f1",
+    "formal_initial_head_ready": "5b707c21b91594effeef57de1b4b53e276398c4a7bfc837b131986aa7880e462"
+  },
+  "current_prelaunch_proofs": {
+    "cpu_compatibility_sha256": "c58253d6b35af51d520256a6ec018e5d1e7d02399383e086fe70a3d8cabab572",
+    "qualified_bank_admission_sha256": "39060b1e2b49ce40309fb854ee1d234b7960ac8a7f76e4474c730662eeb41308",
+    "qprobe_bound_sha256": "8fc4b910a6e46b118a8a38eb27e615408d12fbdbdf9b932817eaca664388a4c8",
+    "formal_initial_head_sha256": "014cdb4d4baf8f36f7ecb476ed8f6ac781b2a87dd48ace34943969b85466e105",
+    "formal_initial_head_ready_sha256": "a97370f67a0c66a33560d3b4ff55d719d0ecff898a813b5ba6e1f7f6104e716e",
+    "initial0_adoption_sha256": "14c39bc8550237cca43d18990867385090230fe8c9de401fbf9d6580747e9e71",
+    "native_prelaunch_sha256": "12b285e617867ea897a2f0c0bb844e81c91c3e42020ef245d805a01cb5456ade",
+    "prelaunch_run_manifest_sha256": "f725b07bc4227eff2bd8eb931220f8853ec9f84ffa405498a391f7ae31131a04"
+  },
+  "current_actual_launch": {
+    "status": "LAUNCH_METADATA_SUCCESS_PROGRESS_PENDING",
+    "actual_release_review_sha256": "29d504e99763530b03d6083a4620bccd4b3273918b6fdfc05acb5ef71c1a77c1",
+    "deployment_launch_receipt_sha256": "5d39300a9ae1e4b54ed810e4c1c69aaf923ed78c0886310d311a741785cc73ec",
+    "local_launch_observation_sha256": "e93e6bfdefb3512b96b2d4cb9b0fdebd7f665945872fcc1caac2802ab39e5812",
+    "launched_unix": 1792080410.1045697,
+    "pipeline_launch_identity": {
+      "pid": 340952,
+      "start_ticks": 616000142,
+      "sid": 340952,
+      "uid": 0
+    },
+    "pipeline_stage": "VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL",
+    "pipeline_stage_unix": 1792080421.3989437,
+    "first_native_primary_not_before_unix": 1792081010.10457,
+    "pipeline_live_verified": false,
+    "trainer_progress_verified": false,
+    "first_complete_outer_verified": false,
+    "actual_opportunity_counts": "unknown",
+    "actual_reward": "unknown",
+    "do_not_repeat_prepare_or_launch": true
+  }
 }

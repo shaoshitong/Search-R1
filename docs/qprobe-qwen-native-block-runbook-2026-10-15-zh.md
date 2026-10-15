@@ -1,29 +1,36 @@
 # 原生 Qwen 最后一层二分类探针：执行说明（2026-10-15）
 
-文档日期：2026-10-15。**最新状态截至 2026-10-15 23:39:13（Asia/Shanghai）**。最新人工目标为 **10 个 warmup epoch，随后完成 200 个正式 actor outer**，每个完整正式 outer 更新探针 2 个 epoch；这覆盖旧目标中20 epoch的描述。当前隔离 runtime 为 `a47abb701f62a6c4eb9e8e8c987c67a4cf804098`，已于23:28:10完成唯一一次实际 launch。23:39:13的原生 primary 只读凭据确认 pipeline `310262/birth615768175` 与 trainer `317298/birth615811482` 均实测存活，阶段已进入 `GRPO_1_TO_200`，没有记录错误。
+首次文档日期：2026-10-15；**本次更新日期：2026-10-16（Asia/Shanghai）**。最新人工目标为 **10 个 warmup epoch，随后完成 200 个正式 actor outer**，每个完整正式 outer 更新探针 2 个 epoch；这覆盖旧目标中20 epoch的描述。旧a47／4fd508在23:39:13曾确认trainer存活，随后于23:41真实退出：首次512×5轨迹收齐后，旧指标消费者读取不存在的`selected_predicted_diversity`，而原生二分类producer实际输出`selected_predicted_binary_mixed`。四rank机会文件与driver更新账本均未生成，actor更新尚未调用，因此该失败run的**完整outer=0、actor Adam=0**，生成的首batch不计正式训练。
 
-**当前正式完整 outer、optimizer机会、成功actor Adam、reward和选中题混合比例仍为 unknown，尚未证明首个完整正式 outer。** 训练进程启动和GPU计算不等于已完成更新，不能填为0或声称正式恢复验收已经完成。既有096c的10 epoch／200次Head Adam已验收采用；99.8828%仅为同一5120题的warmup训练集准确率，不是正式 rollout 表现。下一步只沿下文当前handle做有界只读进展观察，不重跑任何准备或启动动作。旧92bb与ff1196均为失败历史，禁止重复执行。
+当前修复runtime为 `fcb77204f48d5cb8ec21c68df7d4a2c937b3557a`。**截至2026-10-16 00:07:10（Asia/Shanghai）的实际回执**，新独立e9c4 namespace已完成全部CPU准备和actual release批准，并于 **00:06:50唯一一次launch实际exit0**；launch记录pipeline身份为`340952/birth616000142/SID340952/UID0`，阶段记录为`VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL`。**这证明metadata launch成功，尚未证明该PID当前存活、trainer推进、首个完整outer或Adam返回；实际OP／reward仍为unknown。** 首次同handle native primary检查不早于00:16:50，之后正常每30分钟一次，不重复准备或launch。
+
+修复只对齐真实二分类指标字段与相邻reward／advantage来源诊断，不改变选题、奖励、损失、PPO、driver或科学参数。已有096c的10 epoch／200次Head Adam及完整bank已在新namespace实际验收采用，不重跑teacher生成、warmup拟合或bank编码；qualified formal初始化为logical0／Head formal更新0／空replay，与尚未观测到的实际训练计数分开。99.8828%仅为同一5120题的warmup训练集准确率，不是正式rollout表现。
 
 旧92bb/source927 于 **22:47:32** 真实失败：`AssertionError: Cannot obtain actual CUDA device properties` 发生在 `main_task` 的 driver GPU 入口 hook，尚未进入原训练 body。已确认 **formal outer=0、正式 actor Adam=0、正式 Head 更新=0**；warmup 的200次 Head Adam另计。22:50:23 的观察确认 pipeline/trainer 均已退出，22:54:35 的终态审计接受34条 owned birth 的清理核验：0 owned SID process、0 owned CUDA context，项目 trainer live 列表为空。**禁止重新执行旧92bb handle 的 prepare/repair/launch action。**
 
-修复采用出生即绑定准入 GPU UUID 的 fresh Python driver，同步接入原 Ray 集群执行原训练 body；C4审计保留所有PID birth检查并只接收有完整绑定的会话主进程。算法、科学 body、四卡 actor 资源池及 CPU RNG 移交保持不变。有效096c native warmup10/200和169,028行 token bank已经验收复用，没有重跑warmup、teacher rollout或bank编码。
+既有修复采用出生即绑定准入GPU UUID的fresh Python driver，同步接入原Ray集群执行原训练body；C4审计保留所有PID birth检查并只接收有完整绑定的会话主进程。该driver路径已在历史4fd到达真实轨迹生成，当前fcb修复保留原样。有效096c native warmup10/200和169,028行token bank保留，没有重跑warmup、teacher rollout或bank编码。92bb、ff1196和4fd508均为失败历史，禁止重复旧handle动作。
 
 ## 当前现场身份
 
 | 项目 | 当前固定值 |
 |---|---|
-| runtime checkout | `/Users/shaoshitong/Documents/Search-G1/qprobe-qwen-native-driver-process-fix` |
-| runtime commit / branch | `a47abb701f62a6c4eb9e8e8c987c67a4cf804098` / `codex/qprobe-qwen-native-driver-process-fix-20261015` |
-| runtime source map SHA256 | `e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916`，508个运行文件 |
-| 当前 handle | `/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json` |
-| 当前远端 base | `/data/shaoshitong/Search-G1-a800-fresh200-4fd508e35bc84658ba892a97248f8a7f` |
-| run / execution | `524254af06a1472daa1368daba4e0b17` / `fd91bd58d4cf40a89b35427267f9d34e` |
+| runtime checkout | `/Users/shaoshitong/Documents/Search-G1/qprobe-qwen-native-selection-metrics-fix` |
+| runtime commit / branch | `fcb77204f48d5cb8ec21c68df7d4a2c937b3557a` / `codex/qprobe-qwen-native-selection-metrics-fix-20261015` |
+| runtime source map SHA256 | `19edc0fd3382948decd0e06074e4e82d0f29ef269163131ef07472d29c6e2b1b`，508个运行文件 |
+| 当前 handle | `/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-qwen-native-selection-metrics-fix-deployment.json` |
+| 当前远端 base | `/data/shaoshitong/Search-G1-a800-fresh200-e9c4c584107b4624bcc9787aaf24b7a2` |
+| run / execution | `509c391b7e5c4174bfb55f724f41a3d6` / `60fca3cc2edd4dedb3773230b91f34ea` |
 | 当前 native primary | `/Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_qprobe_qwen_native_observer.py` |
 | primary SHA256 / published commit | `ed53322142808483fbc74fee758468219626b403e52f10c09c5c71d42eeb4351` / `098ae78a50945684973a41a2de47ab81825f15ba` |
-| 最新实际只读凭据 | `preparation/qprobe-qwen-native-driver-process-fix-v2-native-startup2.json`，SHA256=`fd19e9866c5c730c2fac2f5cd73a807c63b1f002fb031bb6ac49256ac3452dec` |
-| 当前实测进程 | pipeline `310262/birth615768175`；trainer `317298/birth615811482`，均存活且birth匹配 |
+| 源码实际发布凭据 | `preparation/qprobe-qwen-native-selection-metrics-fix-source-publication.json`，SHA256=`7ec2a13ebd457faecbecd7896ed26bc7d2348053a9fd745d0dba750f75bd958a`；已push并fresh核验508个Git对象 |
+| 独立源码审查凭据 | `preparation/qprobe-qwen-native-selection-metrics-fix-independent-source-review.json`，SHA256=`143cdcc8cd5793bc765cb99811b88d3977b079c351bcfb9ae5ad75506ffbfcde`；仅批准源码与新namespace准备，不冒称实际部署批准 |
+| 当前实测准备 | stage／CPU26／warmup200／qualified bank／bind／initial0／prelaunch实际exit0，actual release已批准，唯一launch实际exit0；无新trainer进展证明 |
+| 当前actual release SHA256 | `29d504e99763530b03d6083a4620bccd4b3273918b6fdfc05acb5ef71c1a77c1` |
+| 当前deployment launch SHA256 | `5d39300a9ae1e4b54ed810e4c1c69aaf923ed78c0886310d311a741785cc73ec` |
+| launch记录身份与阶段 | pipeline `340952/birth616000142/SID340952/UID0`；`VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL`，尚非live／完整outer证明 |
+| 首次native primary最早时间 | `1792081010.10457`，即2026-10-16 00:16:50（Asia/Shanghai） |
 
-CPU26、warmup/fullbank采用、Head绑定、initial0、预启动、实际部署批准和唯一launch均已完成，不是当前待执行步骤。当前工作仅为核实正式训练真实推进，并由同一进程完成200个完整outer及既定验收；不重复warmup、teacher生成或fullbank编码。
+当前新e9c4实际部署批准及唯一launch均已完成；下一步按最早时间使用下文同handle唯一primary核实真实训练推进。stage／prepare／warmup-admit／bank-admit／bind／initial0／prelaunch／launch已成功，不得重复。旧namespace动作保留失败claim，不重新执行。新e9c4 Head／ready／prelaunch／release／launch均有各自精确哈希，旧4fd对应哈希仅为历史。正式初始化仍从0开始，不声称恢复旧actor状态或继承未发生的Adam，也不把初始化0当作已观测实际训练计数。
 
 ## 历史 source927 与失败现场身份（禁止执行）
 
@@ -38,12 +45,12 @@ CPU26、warmup/fullbank采用、Head绑定、initial0、预启动、实际部署
 | 有效 native warmup commit | `e81445905bf8b15dbb0bdec3afa29d99ab0b11d8` |
 | warmup source map SHA256 | `006912cc7817b2ae8abde32a85c42d21b2c1976bf0b5618066c6aa9d2f0674ad` |
 | 旧92bb run / execution | `862bccb5fcf348ce8454f9a332f37bdd` / `027e65da351a4e018dd377b806c19434` |
-| 新隔离修复 commit / source map | `a47abb701f62a6c4eb9e8e8c987c67a4cf804098` / `e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916` |
-| 新隔离实验 run / execution / handle | `524254af06a1472daa1368daba4e0b17` / `fd91bd58d4cf40a89b35427267f9d34e` / `preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json` |
+| 旧4fd修复 commit / source map | `a47abb701f62a6c4eb9e8e8c987c67a4cf804098` / `e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916` |
+| 旧4fd run / execution / handle | `524254af06a1472daa1368daba4e0b17` / `fd91bd58d4cf40a89b35427267f9d34e` / `preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json` |
 
 旧92bb工作区 `/data/shaoshitong/Search-G1-a800-fresh200-92bb58c18ae74ca9bc59fe1ba5dc02b6` 保留失败源码、日志及已验资产，不作为活动训练现场。有效 warmup 位于 `/data/shaoshitong/Search-G1-qprobe-qwen-lastblock-warmup10-096c8297cba74f8089063e763686671e/warmup`。
 
-日期为 2026-10-15 的独立 release 包保存 runtime 源码、OPS 原始文件和执行说明，其来源清单为 `docs/releases/qprobe-qwen-native-block-2026-10-15-manifest.json`，实际绑定的科学参数和 artifact hash 为 `docs/releases/qprobe-qwen-native-block-2026-10-15-config.json`。现有清单和配置精确记录新a47abb源码与已核验Head绑定；旧927/9713失败版本的清单和Git历史均保留。表中的 OPS03608 是原操作入口的固定版本；历史修复入口的来源以 release 清单为准。**保留旧 runtime927，不热改旧 repo；新实验使用另行发布并绑定的隔离源码。** OPS 针对 A800 现有资产、认证路由和现场目录；复现前需具备这些现场依赖。
+首次日期为2026-10-15的独立release包在2026-10-16更新，保存runtime源码、OPS原始文件和执行说明。来源清单为 `docs/releases/qprobe-qwen-native-block-2026-10-15-manifest.json`，科学参数和artifact hash为 `docs/releases/qprobe-qwen-native-block-2026-10-15-config.json`。现有清单记录fcb源码、相对a47精确三个文件的SHA／Git blob、来源publication及新e9c4的实际Head绑定／initial0／预启动哈希；未借用旧4fd哈希。旧927／9713／a47的清单和Git历史保留，OPS15个文件字节不变。表中的OPS03608是原操作入口固定版本；具体来源以release清单为准。**不热改旧或活跃runtime；新实验使用另行发布并绑定的隔离源码。** OPS针对A800现有资产、认证路由和现场目录；复现前需具备这些现场依赖。
 
 当前公开仓库的发布许可仅覆盖代码、配置、执行文档和经清理的 scalar/hash 记录。凭证、模型权重、Head/Adam checkpoint、token features、原始 QA/rollout、完整逐题评测及环境包均不进入 Git。
 
@@ -89,8 +96,8 @@ formal objective = mean(w_i * L_i)
 | token feature spec SHA256 | `fcc9d61db156ddbb4e96dcd6c9437797b978dbbfc9774145a28e0c761de1a9e7` |
 | 完整 bank | 169,028行；复用5120行、补编码163,908行；完整SHA与 encoder owned-resource release 已 admit |
 | full-bank manifest SHA256 | `fa8c9513f89b3700851f8fe75665bf515a82e7f491bc3a52a643a6e82aa243e9` |
-| 当前4fd508 converted formal initial Head | logical0 / 实际warmupHeadAdam200 / 空formal replay / teacher excluded；SHA256=`a269238b0c6c2c182efc058612de895a33f65f7ce9d66966d1973c571fe0f3f1` |
-| 当前4fd508 converted initial ready SHA256 | `5b707c21b91594effeef57de1b4b53e276398c4a7bfc837b131986aa7880e462` |
+| 当前e9c4 converted formal initial Head | 新bind实际exit0；同次native warmup200／private RNG、空formal replay且teacher excluded；SHA256=`014cdb4d4baf8f36f7ecb476ed8f6ac781b2a87dd48ace34943969b85466e105` |
+| 当前e9c4 converted initial ready SHA256 | `a97370f67a0c66a33560d3b4ff55d719d0ecff898a813b5ba6e1f7f6104e716e` |
 
 Warmup 的两个 loss 部分并非都持续下降。标准差辅助贡献在 epoch1–10 几乎保持 `0.0884375`；下表只比较同一5120训练集的起点和终点。
 
@@ -116,25 +123,25 @@ Warmup 的两个 loss 部分并非都持续下降。标准差辅助贡献在 epo
 
 ## 当前操作与监控
 
-当前a47／4fd508已完成 `stage → prepare → warmup-admit → qualified-bank-admit → bind → adopt-initial0 → prepare-launch → launch`，且实际部署批准已闭合。**不得再执行这些动作，也不得重跑warmup、teacher rollout、bank-prepare或bank-encode。** OPS正式入口和远端helper保留为已执行历史与故障处理依据，不是当前待执行清单；旧92bb、ff1196的handle及旧claim修复入口禁止用于当前作业。
+当前fcb／e9c4已实际完成stage、CPU26、warmup-admit、qualified-bank-admit、bind、adopt-initial0、prepare-launch、actual release批准和唯一launch。**全部准备及launch已成功，不得重复；不能重跑warmup拟合、teacher rollout、bank-prepare或bank-encode。** qualified bank已按规定身份／原SHA封存／stat和owned终态完成采用核验，`sealed reuse=true`，未编码也未重新hash packed bank。旧92bb、ff1196、4fd508的handle及旧claim修复入口禁止用于当前作业。
 
 当前唯一primary为上表固定SHA的 `a800_qprobe_qwen_native_observer.py`。它每次只读现有JSON/scalar、四rank机会账本、PID birth、Head/checkpoint/评分metadata及已持久GPU采样；一次有界SSH上限65秒／64MiB读取／128KiB输出，不读取模型、tensor、QA/token，不调用native verifier，也不新增GPU测试、概率扫描或评测。正常每30分钟一次，不进入分钟级SSH轮询，不为了试查同时调用其他reader。
 
-下面是**当前同一handle**的唯一只读命令；receipt使用新时间戳路径，不能覆盖已有凭据。在真正同run/execution/source/base的正式小时交付anchor建立前，`--after-step`保持fresh初始边界 **0**，不能混用warmup或旧run的anchor。正式anchor建立后，只换成该anchor实际已交付的完整outer值，不能用最新观察值替代。
+当前native primary的runtime／actual release／launch资格已闭合。下面是**当前同一handle**的唯一只读命令，首次检查不早于2026-10-16 **00:16:50**（Asia/Shanghai），不为试查调用其他旧reader。receipt使用新时间戳路径，不能覆盖已有凭据。在真正同run/execution/source/base的正式小时交付anchor建立前，`--after-step`保持fresh初始边界 **0**，不能混用warmup或旧run的anchor。正式anchor建立后，只换成该anchor实际已交付的完整outer值，不能用最新观察值替代。
 
 ```bash
 QPROBE_RECEIPT="/Users/shaoshitong/Documents/Search-G1/progress-checks/native-qwen-primary-$(date -u +%Y%m%dT%H%M%SZ).json"
 python3 /Users/shaoshitong/Documents/Search-G1/repo/reproduction/operations/a800_qprobe_qwen_native_observer.py \
-  --handle /Users/shaoshitong/Documents/Search-G1/preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json \
-  --runtime /Users/shaoshitong/Documents/Search-G1/qprobe-qwen-native-driver-process-fix \
-  --expected-run 524254af06a1472daa1368daba4e0b17 \
-  --expected-execution fd91bd58d4cf40a89b35427267f9d34e \
+  --handle /Users/shaoshitong/Documents/Search-G1/preparation/qprobe-qwen-native-selection-metrics-fix-deployment.json \
+  --runtime /Users/shaoshitong/Documents/Search-G1/qprobe-qwen-native-selection-metrics-fix \
+  --expected-run 509c391b7e5c4174bfb55f724f41a3d6 \
+  --expected-execution 60fca3cc2edd4dedb3773230b91f34ea \
   --after-step 0 --receipt "$QPROBE_RECEIPT"
 ```
 
-23:39:13凭据确认trainer存活及阶段进入`GRPO_1_TO_200`，但尚无闭合的正式attempt前缀；completeouter、actor Adam、skip和reward均保持unknown。还须沿同一进程核实至少两次真实训练推进及首个完整正常outer，首五轮按既有native gate验收后继续6..200，不为里程碑停训或另加200轮。SSH超时、缺失账本或unknown不等于退出，不能据此重复launch；真实故障须先保存错误与终态身份，并确认本项目trainer退出后再采用独立修复／兼容恢复入口。
+旧4fd在23:39:13的存活记录已被23:41真实退出和终态审计取代；其完整outer／actor Adam实核均为0。新e9c4当前只证明launch metadata成功，不能借用旧run的rollout统计、birth或GPU峰。须沿同一新进程核实至少两次真实训练推进及首个完整正常outer，首五轮按既有native gate验收后继续6..200，不为里程碑停训或另加200轮。SSH超时、缺失账本或unknown不等于退出，不能据此重复launch；真实故障须先保存错误与终态身份，并确认本项目trainer退出后再采用独立修复／兼容恢复入口。
 
-训练GPU由唯一启动时的实际idle／UUID placement绑定，实际训练卡为0/1/2/3，辅助5/6；活跃进程不重新选卡。`head_device=cuda:0`指当前训练CUDA namespace的第一张已分配卡。不能抢占或停止他人进程，也不用全局Ray stop。GPU当次占用、本execution累计采样峰、完整步骤窗口峰及采样空档分别报告；低瞬时利用率不能判定退出，未计算的窗口峰保持unknown。
+训练GPU已在本次唯一启动前按实际idle／UUID placement准入，四张训练卡排除辅助5/6，辅助5/6也通过原空闲准入；实际绑定indices／UUID以新namespace持久manifest为准，不沿用旧4fd分配作证明，活跃进程不重新选卡。`head_device=cuda:0`指当前训练CUDA namespace的第一张已分配卡。不能抢占或停止他人进程，也不用全局Ray stop。GPU当次占用、本execution累计采样峰、完整步骤窗口峰及采样空档分别报告；低瞬时利用率不能判定退出，未计算的窗口峰保持unknown。
 
 `a800_qprobe_qwen_hourly_format.py`是已发布的纯本地formatter，仅消费已保存的这一次primary receipt与真正同run的已交付anchor，不访问远端或改写anchor。正式小时报告按交付anchor到期执行：先发布允许的scalar/hash、实际向用户交付，再推进anchor；普通30分钟观察不推进。报告区分processed、完整outer成功Adam、retained partial Adam、skip、unattempted和可证inflight，四rank副本只计一次；区分拟合前selected512指标与拟合后recent8指标。无新增完整outer、reward或评分须明确说，缺失指标保留unknown，不填0或混入旧run。现有warmup phase anchor不是当前正式训练小时进度。
 
@@ -178,22 +185,44 @@ source927 的 CPU Ray `main_task` 在 driver GPU hook 中调用实际 CUDART UUI
 
 CPU Ray 包装任务不再晚改 CUDA 可见性；它同步等待一个在进程出生时绑定准入 GPU UUID 的 Python driver，后者接入同一个 Ray GCS/namespace。四 GPU actor pool、原始科学循环和 CPU RNG 状态保持原样，不增加 GPU 资源请求。旧 namespace 没有 actor 更新，因此新 namespace 是正式0起点的继续执行，不声称恢复了未产生的 actor state。
 
-### 2026-10-15 C4资源审计接口修正与a47部署准备记录
+### 2026-10-15 C4资源审计接口修正与a47部署准备记录（历史）
 
 上一修复源码9713的独立准备目录ff1196完成CPU26和warmup验收，但在bank-admit把子进程传给只接收会话主进程的C4接口，实际退出1。无GPU/actor启动、无正式Adam、缓存和warmup未改，旧claim保留且禁止重复执行。
 
 修复runtime为 `a47abb701f62a6c4eb9e8e8c987c67a4cf804098`，source map为 `e15d3e34f487f154403846737e9e17a7fc9d1a6aba3785a746758e5c3b1b5916`（508文件，fresh remote Git核验）。保留每一个PID的实际birth检查，要求每条记录的SID/UID都有已绑定主进程，再仅把主进程交给原C4接口；原PID/SID复用规则未放宽。新handle `preparation/qprobe-qwen-native-driver-process-fix-v2-deployment.json`，base `/data/shaoshitong/Search-G1-a800-fresh200-4fd508e35bc84658ba892a97248f8a7f`，run `524254af06a1472daa1368daba4e0b17` / execution `fd91bd58d4cf40a89b35427267f9d34e`。CPU26/noCUDA与warmup采用已实际通过；169028 bank已从原fullSHA封存+五文件stat/原producer/终态证明验收复用，bank-admit实际exit0，没有再次编码或重hash75GB。随后bind／initial0／prelaunch／launch均已有实际成功receipt，见下文；这些准备结果不等于完成正式outer。
 
-当前4fd508实际Head绑定已exit0：initial Head SHA256 `a269238b0c6c2c182efc058612de895a33f65f7ce9d66966d1973c571fe0f3f1`，ready SHA256 `5b707c21b91594effeef57de1b4b53e276398c4a7bfc837b131986aa7880e462`。这是同次096c nativewarmup的200HeadAdam/private RNG在新formal0 namespace的采用，teacher replay为空，不是actor恢复或新的Head拟合。
+当时4fd508实际Head绑定已exit0：initial Head SHA256 `a269238b0c6c2c182efc058612de895a33f65f7ce9d66966d1973c571fe0f3f1`，ready SHA256 `5b707c21b91594effeef57de1b4b53e276398c4a7bfc837b131986aa7880e462`。这是同次096c nativewarmup的200HeadAdam/private RNG在该formal0 namespace的采用，teacher replay为空，不是actor恢复或新的Head拟合；这些哈希不作为新e9c4绑定凭据。
 
 实际预启动已exit0：`NATIVE_FRESH_FORMAL200_PRELAUNCH_QUALIFIED` SHA256 `84275048987d2e00f1d5984d4f38b42cafbc706f1e1b9aef09b8505d6e334fa4`。CPU26 receipt `781251a64a91ffc8c064ed8cd6115917b1282d122e9cd63e65e9fc9f3d481b2c`，original initial0采用proof `f646f6a5ae991d8743cdcc09ca58ada97097028376a8fe782db773cc9442a4a8`。所有CPU步骤通过不等于GPU启动或正式训练推进。
 
-### 2026-10-15 23:28:10（Asia/Shanghai）实际启动更新
+### 2026-10-15 23:28:10（Asia/Shanghai）历史4fd实际启动更新
 
-本次实际部署批准 SHA256 为 `5be741c36e322e9973a2cf299a344ec091886337ae22851b29ba8cb96f18879e`。四张训练卡与辅助5/6均通过空闲准入，唯一 launch 实际 exit0；deployment launch receipt SHA256 为 `ff4e503f23143fe396eb34578a43679fdfb7d8d04a1fe56e0b5da9684f1bf3a8`。新4fd508 pipeline已经一次启动，正在准备检索服务，正式trainer/完整outer/Adam仍待真实推进确认。禁止重复launch；首个有界native只读检查不早于23:33:10，正常监控每30分钟一次，不增加GPU测试或额外评测。
+当时4fd实际部署批准SHA256为`5be741c36e322e9973a2cf299a344ec091886337ae22851b29ba8cb96f18879e`。四张训练卡与辅助5/6通过空闲准入，唯一launch实际exit0；deployment launch receipt SHA256为`ff4e503f23143fe396eb34578a43679fdfb7d8d04a1fe56e0b5da9684f1bf3a8`。4fd508 pipeline当时一次启动并准备检索服务，trainer／完整outer／Adam尚待确认。之后已真实退出，不能把此启动回执作为当前live或新e9c4资格；禁止重复该launch。
 
-### 2026-10-15 23:39:13（Asia/Shanghai）当前实际观察
+### 2026-10-15 23:39:13（Asia/Shanghai）历史4fd实际观察
 
-`preparation/qprobe-qwen-native-driver-process-fix-v2-native-startup2.json`实际exit0／`READ_RETURNED`，文件SHA256为`fd19e9866c5c730c2fac2f5cd73a807c63b1f002fb031bb6ac49256ac3452dec`。source／run／execution／base与当前a47／4fd508精确相符，已发布runtime和独立actual release资格均为observed。pipeline `310262/birth615768175`、trainer `317298/birth615811482`均存活且birth匹配；retriever与probe-server存活，probe-admission实际exit0，阶段为`GRPO_1_TO_200`，没有记录错误或bounded failure。
+`preparation/qprobe-qwen-native-driver-process-fix-v2-native-startup2.json`实际exit0／`READ_RETURNED`，文件SHA256为`fd19e9866c5c730c2fac2f5cd73a807c63b1f002fb031bb6ac49256ac3452dec`。source／run／execution／base与当时a47／4fd508精确相符，已发布runtime和独立actual release资格均为observed。pipeline `310262/birth615768175`、trainer `317298/birth615811482`当时均存活且birth匹配；retriever与probe-server存活，probe-admission实际exit0，阶段为`GRPO_1_TO_200`，当时没有记录错误或bounded failure。该存活状态已被后续真实退出取代。
 
-已有采样显示四张训练卡均开始占用并有计算活动；这只能证明当前启动流程进入训练阶段，不能单独证明Adam成功返回。正式attempt账本前缀尚未闭合，因此完整outer／optimizer机会／actor Adam／skip／reward／selected512 mixed与accuracy仍为unknown；stage64、dev512和nativefive凭据尚未生成。保留缺失状态，不把warmup的200次Head Adam或99.8828%训练集accuracy当成正式训练结果。下一步沿上述同handle唯一primary核实真实推进和首个完整outer，禁止重复launch或准备动作。
+当时采样显示四张训练卡开始占用并有计算活动，未单独证明Adam成功返回；正式attempt账本前缀当时未闭合，各正式指标保持unknown，stage64／dev512／nativefive缺失。后续终态证据确认完整outer=0、actor Adam=0；不能把本段启动观察当成当前live，或把warmup200次Head Adam／99.8828%训练集accuracy当成正式训练结果。
+
+### 2026-10-15 23:41真实退出与首batch证据（历史4fd）
+
+终态诊断`preparation/qprobe-qwen-native-formal-4fd508-terminal-diagnosis-exact-argv-v2.json`的SHA256为`2fbd584464bb284f1014a3b44bd5d33824bbff05a880fb4c2fd2895e29d4dd3a`，`terminal_owned_cleanup_accepted=true`。真实根因位于`ray_trainer.fit:940`：二分类producer发出`selected_predicted_binary_mixed`，旧consumer仍强制读取`selected_predicted_diversity`，在actor更新前触发KeyError。四rank OP文件和driver update／attempt账本均不存在，未调用actor optimizer；完整outer=0、actor Adam=0，旧namespace源码／claim／日志保留且禁止重启。
+
+小型scalar证据`preparation/qprobe-qwen-native-formal-4fd508-preoptimizer-scalar-evidence.json`，SHA256=`5fd477f8ad0a4505c552046500037194b05e3068f9ded9e62b9db2acf346124e`，保留首次完整收齐512题×5轨迹的拟合前统计：真实mixed为271／512=52.9297%，二分类accuracy=52.9297%，binary BCE=2.1107070164。该批512题均被预测为mixed，实际全对44题、全错197题。**这些是失败attempt的生成前预测与随后真实轨迹标签的对照，不是完整outer、探针拟合后结果、dev512或新e9c4表现。** 2560条已生成轨迹留远端，生成成本保留但不计正式完成轮数。
+
+### 2026-10-16 二分类指标接口修复与新e9c4准备
+
+新runtime `fcb77204f48d5cb8ec21c68df7d4a2c937b3557a`／508文件map `19edc0fd3382948decd0e06074e4e82d0f29ef269163131ef07472d29c6e2b1b`已按公开授权push，并从fresh Git对象核验508文件。相对a47仅三个源码文件变化：`verl/trainer/ppo/ray_trainer.py`对齐真实binary scalar和reward／advantage来源诊断，`search_g1/test_qprobe_qwen_runtime.py`保留相应producer／consumer回归fixture，`reproduction/a800_common/qprobe-initial0-adoption-source-delta.json`绑定精确新源码哈希；具体SHA／Git blob见release manifest。没有伪造diversity别名，旧count6语义保留，科学公式与原生Qwen block字节不变。
+
+独立源码审查SHA为`143cdcc8cd5793bc765cb99811b88d3977b079c351bcfb9ae5ad75506ffbfcde`；针对性静态隐患记录为`preparation/qprobe-qwen-native-selection-hidden-hazards-static-audit.json`（SHA256=`cb2e91e366774786671959aafb68d9d3d4a0847f8b1f9efd683ad52c8b654c22`）。其检查未新增GPU测试或额外评测，也不保证未来runtime成功。
+
+新e9c4的实际准备凭据已全部exit0：CPU26 proof SHA256=`c58253d6b35af51d520256a6ec018e5d1e7d02399383e086fe70a3d8cabab572`；qualified bank-admit SHA256=`39060b1e2b49ce40309fb854ee1d234b7960ac8a7f76e4474c730662eeb41308`（sealed reuse，无encode／packed rehash）；qprobe-bound SHA256=`8fc4b910a6e46b118a8a38eb27e615408d12fbdbdf9b932817eaca664388a4c8`；initial0 adoption SHA256=`14c39bc8550237cca43d18990867385090230fe8c9de401fbf9d6580747e9e71`。新Head和ready哈希见资产表，formal logical0、Head formal更新0、空replay，保留已有warmup200／private RNG。
+
+`preparation/qprobe-qwen-native-selection-metrics-fix-prelaunch-actual.json`记录实际prepare-launch exit0：native-prelaunch SHA256=`12b285e617867ea897a2f0c0bb844e81c91c3e42020ef245d805a01cb5456ade`，对应run-manifest SHA256=`f725b07bc4227eff2bd8eb931220f8853ec9f84ffa405498a391f7ae31131a04`。00:05:31的空闲准入确认四张训练卡及辅助5/6满足原规则。CPU准备、空闲准入和后续launch metadata均不能单独证明正式训练推进。
+
+### 2026-10-16 00:06:50（Asia/Shanghai）当前e9c4唯一launch
+
+exact actual release凭据`preparation/qprobe-qwen-native-selection-metrics-fix-independent-release-review.json`已批准，SHA256=`29d504e99763530b03d6083a4620bccd4b3273918b6fdfc05acb5ef71c1a77c1`。`preparation/qprobe-qwen-native-selection-metrics-fix-launch-actual.json`的本地观察文件SHA256为`e93e6bfdefb3512b96b2d4cb9b0fdebd7f665945872fcc1caac2802ab39e5812`，记录唯一launch实际exit0；deployment launch receipt SHA256=`5d39300a9ae1e4b54ed810e4c1c69aaf923ed78c0886310d311a741785cc73ec`。launch时间`1792080410.1045697`，pipeline记录身份`340952/birth616000142/SID340952/UID0`，阶段在`1792080421.3989437`记录为`VERIFYING_EXISTING_LOCAL_ORIGINAL_RETRIEVAL`。
+
+这是metadata launch成功，**不是PID实测live、trainer实测推进、首个完整outer或Adam返回验收**。当前actual OP／reward及正式完成前缀尚未生成，保持unknown；qualified initial0／warmup200另列。唯一合格primary沿本页新handle／runtime／run／execution，首次不早于`1792081010.10457`（00:16:50），正常每30分钟一次，不添加GPU测试或额外评测，也不重跑任何CPU／launch动作。
