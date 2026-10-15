@@ -19,7 +19,8 @@ async def main():
     install_parser(SearchR1ToolParser,FunctionCall)
     config=OmegaConf.create(json.loads((OUT/'native-config.json').read_text()))
     config.actor_rollout_ref.rollout.multi_turn.tool_config_path=str(OUT/'tool.yaml')
-    tokenizer=AutoTokenizer.from_pretrained(config.actor_rollout_ref.model.path,local_files_only=True)
+    tokenizer=AutoTokenizer.from_pretrained(OUT/'models/main',local_files_only=True)
+    rr_tokenizer=AutoTokenizer.from_pretrained(OUT/'models/reranker',local_files_only=True)
     prompts=[]
 
     class FakeManager:
@@ -28,7 +29,8 @@ async def main():
 
         async def generate(self,request_id,prompt_ids,sampling_params,**kwargs):
             self.calls+=1
-            prompts.append((self.role,tokenizer.decode(prompt_ids)))
+            active_tokenizer=rr_tokenizer if self.role=='ranker' else tokenizer
+            prompts.append((self.role,active_tokenizer.decode(prompt_ids)))
             assert sampling_params['temperature']==0
             if self.role!='ranker':
                 assert '</search>' in sampling_params['stop'] and sampling_params['include_stop_str_in_output']
@@ -38,7 +40,7 @@ async def main():
                 text='<think>Search now.</think><search>test query</search>'
             else:
                 text='<think>Use the retrieved evidence.</think><answer>Paris</answer>'
-            return types.SimpleNamespace(token_ids=tokenizer.encode(text,add_special_tokens=False),log_probs=None)
+            return types.SimpleNamespace(token_ids=active_tokenizer.encode(text,add_special_tokens=False),log_probs=None)
 
     main_manager,ranker=FakeManager('main'),FakeManager('ranker')
     tree=ast.parse((OUT/'tools/evaluate.py').read_text())
@@ -47,7 +49,7 @@ async def main():
     namespace={'CoSearchAgentLoop':CoSearchAgentLoop,'json':json}
     exec(compile(ast.Module(body=[audit_node],type_ignores=[]),'actual-evaluation-wrapper','exec'),namespace)
     loop=namespace['AuditedLoop'](types.SimpleNamespace(config=config),main_manager,tokenizer,None,
-                          reranker_server_manager=ranker,reranker_tokenizer=tokenizer)
+                          reranker_server_manager=ranker,reranker_tokenizer=rr_tokenizer)
     loop.actions,loop.reranks=[],[]
 
     async def retrieve(query,top_n):
