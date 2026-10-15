@@ -28,12 +28,12 @@ BASELINE = '/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d1
 BASELINE_COMMIT = '34e63b7b12f4056503803905c1b3dd1be95f0adc'
 BASELINE_RUN_ID = '1db662001a0f4d998928bcf6f5f33c9d'
 INITIAL_PROBES = '/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef'
-TEACHER_CACHE = '/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v3-async-top512'
+TEACHER_CACHE = '/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v4-sigma3-fullouter'
 SIGMA3_LOSS = dict(loss_mode='sigma3_std_aux6_v1', mean_loss_weight=0.0,
                   std_loss_weight=3.0, count_aux_loss_weight=0.1)
 SIGMA3_REVIEW_CHECKS = ('fresh_official_actor_reference_optimizer_scheduler_rng_sampler_head',
                       'sigma3_ce_normalized_sample_std_mse3_aux6_ce_point1',
-                      'reuse_teacher_v3_full_identity_and_sha_no_old_question_head')
+                      'teacher_namespace_full_identity_and_sha_no_old_question_head')
 FEATURE_SOURCE_BASE = '/data/shaoshitong/Search-G1-a800-fresh200-27bab88929e048b4869f3889b99d8e18'
 FEATURE_SOURCE_COMMIT = 'bf4b88d04c166951691029b18d05d91ece7c7054'
 FEATURE_SOURCE_RUN = '0f49c2a664b448f59b5f21dd49f9b10b'
@@ -271,7 +271,7 @@ def check(intent):
   assert all(type(fresh_loss[key]) in (int,float) for key in ('mean_loss_weight','std_loss_weight','count_aux_loss_weight'))
   assert restore is None, 'Fresh sigma3 selection cannot restore training state'
   assert intent['initial_probes_source_base']=='/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef'
-  assert intent['teacher_warmup_cache']=='/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v3-async-top512'
+  assert intent['teacher_warmup_cache']=='/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v4-sigma3-fullouter'
  if restore is not None:
   assert set(restore)=={'source_receipt','source_receipt_sha256'}
   path=Path(restore['source_receipt'])

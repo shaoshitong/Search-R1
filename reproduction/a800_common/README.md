@@ -87,7 +87,7 @@ python -m reproduction.a800_common.deploy_qprobe stage --handle HANDLE.json \
   --source-commit FULL_PUBLISHED_SHA \
   --published-ref refs/heads/codex/qprobe-a800-async-top512-20261014 \
   --baseline-intent-sha256 21ab1fc56365501b2082808f660dc7f3f130bedc9bb4748c63ada21c6032de3a \
-  --teacher-warmup-cache /data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v3-async-top512
+  --teacher-warmup-cache /data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v4-sigma3-fullouter
 python -m reproduction.a800_common.deploy_qprobe prepare --handle HANDLE.json
 python -m reproduction.a800_common.deploy_qprobe feature-plan --handle HANDLE.json
 python -m reproduction.a800_common.deploy_qprobe inspect --handle HANDLE.json
@@ -175,7 +175,7 @@ local2→4/global8→16/two-row→four-row budget transition alongside the exist
 FP32→BF16 transition and retains every other identity/budget check.
 
 The teacher cache defaults to the stable remote namespace
-`/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v3-async-top512`, so a later fresh
+`/data/shaoshitong/Search-G1-qprobe-shared/teacher-warmup-v4-sigma3-fullouter`, so a later fresh
 actor launch with the exact same qualified protocol can reuse accepted trajectories. Choose another explicit
 `--teacher-warmup-cache` only when creating a new intent. Its real path and
 parent must be owned by the current remote user and contain no symlink. The
@@ -246,13 +246,13 @@ The independent deployment review additionally requires
 
 For the sigma3 loss experiment, create a new handle with `--fresh-sigma3` at
 `stage`. This flag is exclusive with saved-checkpoint restoration and fixes
-the original initial0 reward calibration and qualified v3 teacher cache. Every
+the original initial0 reward calibration and the strict v4 teacher namespace. Every
 later action reads that immutable handle; do not add the flag to later actions.
 
 ```sh
 python -m reproduction.a800_common.deploy_qprobe stage --fresh-sigma3 \
   --handle SIGMA3_HANDLE.json --source-commit PUBLISHED_FULL_COMMIT \
-  --published-ref refs/heads/codex/qprobe-a800-sigma3-loss-20261015 \
+  --published-ref refs/heads/codex/qprobe-a800-sigma3-teacher-v4-20261015 \
   --baseline-intent-sha256 ORIGINAL_BASELINE_INTENT_SHA256
 python -m reproduction.a800_common.deploy_qprobe prepare --handle SIGMA3_HANDLE.json
 python -m reproduction.a800_common.deploy_qprobe feature-adopt --handle SIGMA3_HANDLE.json \
@@ -277,8 +277,15 @@ new mode. The launch gate rejects inherited state and question-head paths.
 
 The teacher's schema2 identity includes relevant rollout/scoring source bytes,
 model/data, sampling, retriever and question bindings. It excludes question-head
-loss source and settings, so this loss change alone reuses qualified v3
-trajectories without a source-identity exception. Full identity equality,
+loss source and settings. The older v3 cache is incompatible with the required
+full-outer guard repair in `verl/workers/fsdp_workers.py`: its source SHA changes
+from `c59cf8d4a2a92e72eaeb63e598d2dfef8fbd1ce7fc2b9e3336d1245411714483`
+to `6dbb1b384fa56905f5db06d57c8accf4806dcb981e98dce7fda0b339adf62aab`.
+The guard repair remains in force; the v3 cache stays immutable. A fresh v4
+namespace generates the required 25,600 frozen-teacher trajectories and fits
+a fresh head on all5120 groups. This cost is recorded outside formal200.
+Later identical teacher identities can reuse qualified v4 chunks. No source
+compatibility alias or identity exception is introduced. Full identity equality,
 chunk and raw-rollout SHA checks, complete5120/G5 labels and frozen-worker
 evidence still apply. A relevant rollout/scorer change remains incompatible.
 Frozen initial0 reward-head adoption is separate from question-head state:
@@ -290,7 +297,7 @@ preserve the original frozen G1 calibration/scoring bytes.
 The independent sigma3 review needs the eight common checks above plus
 `fresh_official_actor_reference_optimizer_scheduler_rng_sampler_head`,
 `sigma3_ce_normalized_sample_std_mse3_aux6_ce_point1`, and
-`reuse_teacher_v3_full_identity_and_sha_no_old_question_head`, all true for the
+`teacher_namespace_full_identity_and_sha_no_old_question_head`, all true for the
 exact published commit and source map. No extra evaluation or GPU preflight is
 introduced. The four-rank BF16 local4/global16/accum8, LR1e-6/warmup57,
 20 opportunities per complete outer, existing speed optimizations and guards,
