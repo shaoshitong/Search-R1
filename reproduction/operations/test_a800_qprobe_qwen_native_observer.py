@@ -82,7 +82,70 @@ class NativeObserverTests(unittest.TestCase):
         self.assertEqual(env['native_adam'](8),344);self.assertEqual(env['native_adam'](9),376)
         self.assertEqual(env['native_version']('qprobe-qwen:1:1:'+'a'*16,1),'qprobe-qwen:1:1:'+'a'*16)
         with self.assertRaises(env['Unknown']):env['native_version']('qprobe:1:1:'+'a'*16,1)
+        env['payload']['after_step']=0
+        commit=dict(stage='question_probe_outer_committed',outer=1,attempt_id='4'*32,
+            successful_actor_snapshot_id='1'*32+':1',prediction_version='qprobe-qwen:0:0:'+'a'*16,
+            head_version='qprobe-qwen:1:1:'+'b'*16,prequential={'all':dict(questions=512,binary_threshold=.5,
+                prediction_scope='selected_questions_before_rollout_and_before_fit',
+                binary_confusion=dict(tp=100,tn=300,fp=50,fn=62),actual_mixed_fraction=162/512,
+                predicted_mixed_fraction=150/512,binary_accuracy=400/512)})
+        env['document']=lambda relative:(copy.deepcopy(commit),dict(scanned_sha256='c'*64))
+        classification=env['selected_prequential_window']()
+        self.assertEqual(classification['latest']['true_mixed_count'],162)
+        self.assertEqual(classification['window_true_mixed_fraction'],162/512)
+        self.assertEqual(classification['window_prefit_binary_accuracy'],400/512)
+        env['document']=lambda relative:(None,None)
+        missing=env['selected_prequential_window']()
+        self.assertEqual(missing['status'],'unknown')
+        self.assertIsNone(missing['window_true_mixed_fraction'])
+        self.assertIsNone(missing['window_prefit_binary_accuracy'])
         self.assertNotIn('torch',observer.__dict__)
+
+    def test_local_hourly_formatter_uses_delivered_anchor_and_separates_scopes(self):
+        from reproduction.operations.a800_qprobe_qwen_hourly_format import format_summary
+        identity=dict(run_id='1'*32,execution_id='2'*32,source_commit='3'*40,
+            base='/data/shaoshitong/Search-G1-a800-fresh200-'+'4'*32)
+        anchor=dict(identity,delivered=True,completed_outer=1,delivered_unix=150.)
+        classification=[dict(status='observed',step=step,selected_questions=512,true_mixed_count=mixed,
+            true_mixed_fraction=mixed/512,predicted_mixed_count=250,predicted_mixed_fraction=250/512,
+            prefit_correct_count=correct,prefit_binary_accuracy=correct/512)
+            for step,mixed,correct in ((1,200,400),(2,300,420))]
+        observation=dict(identity,role='qprobe_native_fresh_primary_metadata_readonly',status='observed',observed_unix=200.,
+            reward_window=dict(status='observed',after_complete_step=0,recorded_complete_outers=2,
+                new_complete_rows=[dict(step=step,reward_mean=reward,successful_adam=18,skip=2,processed=20)
+                                   for step,reward in ((1,.2),(2,.4))],latest=dict(step=2,reward_mean=.4)),
+            opportunity_counts=dict(status='observed',four_rank_complete_prefix_agreement=True,
+                current_execution_processed=43,current_execution_successful_adam=38,current_execution_skip=5,
+                current_execution_complete_outer_successful_adam=36,
+                current_partial=dict(attempt_index=3,logical_update=3,processed=3,successful_adam=2,
+                    processed_skip=1,opportunities_remaining_or_unattempted=17)),
+            selected_prequential_window=dict(status='observed',after_complete_step=0,records=classification,latest=classification[-1]),
+            latest_head_commit=dict(status='observed',outer=2,postfit_replay_binary_accuracy=.9,
+                raw_age_weighted_replay_loss=.8,replay_mean_raw_weight=1.5,replay_ages_included=[0,1],
+                recorded_head_update=dict(replay_groups=1024,head_optimizer_updates=8,head_adam_steps_after=212)),
+            gpu_samples=dict(status='observed',sample_count=10,latest_sample_unix=199.,
+                maximum_scanned_sampling_gap_seconds=5.,scan_from_start=False),scores=dict(scores={}))
+        receipt=dict(identity,role='single_native_qwen_primary_metadata_receipt',observation=observation)
+        summary=format_summary(receipt,anchor)
+        self.assertEqual(summary['complete_return_window']['newly_complete_steps'],[2])
+        self.assertEqual(summary['complete_return_window']['returned_adam'],18)
+        self.assertEqual(summary['complete_return_window']['reward_mean'],.4)
+        self.assertEqual(summary['cumulative_actor_counts']['current_execution_successful_adam'],38)
+        self.assertEqual(summary['selected_prequential']['true_mixed_fraction'],300/512)
+        self.assertEqual(summary['selected_prequential']['prefit_binary_accuracy'],420/512)
+        self.assertEqual(summary['postfit_recent8_replay']['postfit_replay_binary_accuracy'],.9)
+        self.assertEqual(summary['postfit_recent8_replay']['raw_age_weighted_replay_loss'],.8)
+        self.assertIsNone(summary['postfit_recent8_replay']['unweighted_replay_total_loss'])
+        self.assertEqual(summary['gpu_samples']['complete_step_window_peaks']['status'],'unknown')
+        self.assertFalse(summary['anchor_mutated'])
+        self.assertEqual(anchor['completed_outer'],1)
+        wrong=dict(anchor,execution_id='9'*32)
+        with self.assertRaisesRegex(ValueError,'CROSS_RUN'):format_summary(receipt,wrong)
+        with self.assertRaisesRegex(ValueError,'ACTUAL_DELIVERED'):format_summary(receipt,dict(anchor,delivered=False))
+        missing=copy.deepcopy(receipt);missing['observation'].pop('selected_prequential_window')
+        unknown=format_summary(missing,anchor)
+        self.assertEqual(unknown['status'],'unknown')
+        self.assertEqual(unknown['selected_prequential']['status'],'unknown')
 
 
 if __name__=='__main__':unittest.main()

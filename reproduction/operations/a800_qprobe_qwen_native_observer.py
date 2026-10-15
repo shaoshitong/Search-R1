@@ -141,10 +141,48 @@ def head_commit():
  return dict(status='observed',outer=outer,actor_snapshot_id=value['successful_actor_snapshot_id'],head_version=value['head_version'],
   prediction_version=value['prediction_version'],feature_spec_sha=hash_value(value['feature_spec_sha']),metadata_sha256=info['scanned_sha256'],
   recorded_head_update=select(h,('completed_outer','update_count','head_optimizer_updates','replay_groups','head_adam_steps_before','head_adam_steps_after')),
-  training_binary_accuracy=accuracy,training_replay_weighted_loss=total,weighted_binary_bce=bce,weighted_normalized_std_mse=mse,
+  training_binary_accuracy=accuracy,postfit_replay_binary_accuracy=accuracy,
+  training_replay_weighted_loss=total,raw_age_weighted_replay_loss=total,
+  replay_unweighted_total_loss=None,replay_unweighted_total_loss_status='unknown_not_recorded',
+  replay_ages_included=list(range(n)),replay_mean_raw_weight=sum(2.*2**(-age) for age in range(n))/n,
+  weighted_binary_bce=bce,weighted_normalized_std_mse=mse,
   teacher_replay_excluded=True,replay_age_weights=[2.,1.,.5,.25,.125,.0625,.03125,.015625],
   gpu_complete_step_window_peaks=dict(status='unknown',reason='not_computed_by_this_metadata_entry'),
-  scope='existing complete-outer Head JSON; no Head tensor read or additional fit/evaluation')
+  scope='post-fit recent8 replay; changing replay and raw age mass, not fixed-set loss improvement; no Head tensor read or additional fit/evaluation')
+def selected_prequential_row(update):
+ step=update['step'];value,info=document('artifacts/question-probe/completed/'+update['attempt_id']+'.json')
+ need(value is not None,'selected_prefit_commit_metadata_missing')
+ need(value['stage']=='question_probe_outer_committed' and value['outer']==step and value['attempt_id']==update['attempt_id'] and
+  value['successful_actor_snapshot_id']==run['run_id']+':'+str(step),'selected_prefit_actor_identity')
+ native_version(value['prediction_version'],step-1);native_version(value['head_version'],step)
+ p=value['prequential']['all'];confusion=p['binary_confusion']
+ need(p['questions']==512 and p['binary_threshold']==.5 and
+  p['prediction_scope']=='selected_questions_before_rollout_and_before_fit' and
+  all(integer(confusion[k]) for k in ('tp','tn','fp','fn')) and sum(confusion[k] for k in ('tp','tn','fp','fn'))==512,'selected_prefit_scope_and_counts')
+ mixed=confusion['tp']+confusion['fn'];predicted=confusion['tp']+confusion['fp'];correct=confusion['tp']+confusion['tn']
+ need(all(number(p[k]) for k in ('actual_mixed_fraction','predicted_mixed_fraction','binary_accuracy')) and
+  math.isclose(p['actual_mixed_fraction'],mixed/512,rel_tol=0.,abs_tol=1e-12) and
+  math.isclose(p['predicted_mixed_fraction'],predicted/512,rel_tol=0.,abs_tol=1e-12) and
+  math.isclose(p['binary_accuracy'],correct/512,rel_tol=0.,abs_tol=1e-12),'selected_prefit_scalar_confusion_agreement')
+ return dict(status='observed',step=step,selected_questions=512,true_mixed_count=mixed,true_mixed_fraction=mixed/512,
+  predicted_mixed_count=predicted,predicted_mixed_fraction=predicted/512,prefit_correct_count=correct,
+  prefit_binary_accuracy=correct/512,metadata_sha256=info['scanned_sha256'])
+def selected_prequential_window():
+ need(complete_updates is not None,'complete_prefix_unknown')
+ if not complete_updates:return dict(status='missing',reason='no_recorded_complete_outer')
+ fresh=[row for row in complete_updates if row['step']>payload['after_step']]
+ records=[]
+ for update in fresh:
+  item=section(lambda:selected_prequential_row(update));item['step']=update['step'];records.append(item)
+ latest=section(lambda:selected_prequential_row(complete_updates[-1]));latest['step']=complete_updates[-1]['step']
+ known=all(row['status']=='observed' for row in records);questions=512*len(records)
+ return dict(status='observed' if known else 'unknown',after_complete_step=payload['after_step'],records=records,latest=latest,
+  window_outer_count=len(records),window_question_count=questions if known else None,
+  window_true_mixed_count=sum(row['true_mixed_count'] for row in records) if known else None,
+  window_true_mixed_fraction=sum(row['true_mixed_count'] for row in records)/questions if known and questions else None,
+  window_predicted_mixed_fraction=sum(row['predicted_mixed_count'] for row in records)/questions if known and questions else None,
+  window_prefit_binary_accuracy=sum(row['prefit_correct_count'] for row in records)/questions if known and questions else None,
+  scope='selected512 complete G5 groups per returned actor outer; frozen binary predictions before rollout and Head fit; not all5120 candidates or a heldout evaluation')
 '''
 
 
@@ -166,6 +204,7 @@ try:
  result['opportunity_counts']=section(opportunity_counts);result['infra_window']=section(infra_window)
  result['runtime_status']=section(runtime_status);result['scores']=section(scores);result['native_first_five']=section(native_five)
  result['latest_head_commit']=section(head_commit);result['checkpoint_head_metadata']=section(checkpoint_metadata)
+ result['selected_prequential_window']=section(selected_prequential_window)
  result['gpu_samples']=section(gpu_samples)
  result['gpu_complete_step_window_peaks']=dict(status='unknown',reason='not_computed_by_this_metadata_entry')
  need('torch' not in sys.modules,'unexpected_torch_import');result['status']='observed'
