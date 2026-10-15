@@ -584,3 +584,18 @@ Fresh observer uses canonical archive policy: atmost3complete scans only for pur
 The R2 fullscan genuinely failed1 at1792088402.8222516 after68.1227s for another newly-created torchelastic_wfz3wjm8 root under the same-r2/tmp; previous10fixedinodes stilltraversable. Partial1470302076928B is not accepted. Instead of publishing another guessed whole-tree permission change, prepare a helper that consumes an owned terminal published DU failure with exactSHA, validates complete stderr and dead process/child births, and selects only actualreported permission roots matching the fixed periodic25-20261016/tmp pattern. OriginalMOUowner21930/GID21919 may change only actualmode700directoryFDs to750 below those roots, after everyFDguard passes. Exclusive control is keyed byfailureSHA; no replay. File bytes/modes/model/cache/retrieval/training untouched.
 
 New storage observer keeps the proven3pureENOENT retry/fullheldproof logic and uses bounded numeric fresh slots(1..16), each with separate originalclaim/process/results; no source rewrites are needed for a genuinely failed later slot. Dynamic repair has strict model/cache/path/mixederror/liveDU refusal tests; together with prior retry tests8PASS. Actualexecution stillrequirespushed/fullSHA source and actualpriorfailureSHA; no new training/control action is permitted.
+
+
+## 2026-10-16 02:33 CST：授权清理与清理后全量空间复核完成
+
+本次批准的78个旧文件已删除，合计115,100,222,440逻辑字节（约115.1GB）；原操作的实际子进程退出0，完成凭证SHA为3a506e71835a7083319a17fddd29ca04374b53f64720953011b84d8932e6f9cd。旧第100轮原检查点37文件在删除前、删除后均完整SHA通过；两份被引用的旧5/50 complete.json仍在HPC3。HKUST3完整备份118文件121,296,682,925字节仍保留，源前后及目标完整SHA、实际退出0、文件/目录fsync均已通过。02:29再次独立读取清理、备份与保留100的凭证通过。此清理已终态完成，禁止重放。
+
+清理后的全experiments扫描此前被其他periodic25实验新建的mode700临时目录阻断，部分du输出从未当作总量。按用户此前两账号共享experiments授权，原MOU属主仅对实际报错目录及其私有子目录做精确FD700→750，JXU随后逐项确认同一inode可读可遍历。固定8目录、R2固定2目录后，另对实际新R2失败修复2目录，对新R3失败修复4目录；所有失败凭证、once intent和逐目录结果均保留。未改普通文件、模型、缓存、检索或训练；未联系其他任务。
+
+通用修复和有界扫描槽位源码a2e4934b7375e8202eae1a1e46f3c326d116c0b0已推送，HPC3全部1094文件SHA通过（归档SHA abd4c2c507f9c55d3b90e40fa50faef3f338fb65789d1994e0388a8411f0c48d）。已有只读审查无确认P0/P1，8项范围/失败/重试测试通过。修复仅消费已终止、已发布、完整错误和全结果SHA匹配的实际失败，不允许接受部分du或重放未知intent。
+
+新独立slot3完整扫描于1792089159.771583真实du退出0、stderr0，测得experiments allocated总量1,472,658,509,824字节（约1.473TB）。结果SHA ecf0b797ff64ec96661e6f339427cca8669af3afd928e09a5577e9fd07671bf3；两次终态检查1792089180/9203重新消费实际子进程、claim及各attempt证明通过。按2TB预算当前余527,341,490,176字节；这是活跃目录非原子实测，不是存储硬quota证明。该已完成slot3同样禁止重放。
+
+以此新鲜基线，加未来100/150/200三源六副本约345.34GB、200复制所需encoder约27.21GB，以及42–61实测保留RAW均值0.757GB/轮估计剩余118轮，预计最终约1.935TB、余约65.44GB。该估计未计其他实验后续增长及额外评测产物；不能替代每次archive的真实全du和2TB门禁。115.1GB清理已体现在新鲜基线中，不重复扣减。详细估计保存在storage-projection-after-exact78-and-full-du0-20261016.json。
+
+当前721485四卡完成82/200，四rank各1640 Adam写入，scheduler/head一致，无新fatal；83已完成512×5采集。原RAWf979已实际验收1..82；原b894同一进程等100，5/50完整三方SHA通过。科学源码ACA和训练/RAW/follower均未重启或热改。目标保持ACTIVE；固定100/150/200、最终exactnative51713、全部五套三方SHA、最终真实native4恢复与两次dataequal、全RAW/独立最终CPU/no201仍待完成。
