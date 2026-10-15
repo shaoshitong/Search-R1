@@ -6,7 +6,9 @@ from pathlib import Path
 import shlex
 import subprocess
 import sys
-import tempfile
+import base64
+import concurrent.futures
+import hashlib
 import uuid
 
 REMOTE = '''import sys,json,pathlib,io,tarfile,hashlib,os
@@ -53,33 +55,23 @@ def main():
     assert proof['published_control_commit']==commit and proof['all_blobs_full_sha_match']
     archive=gzip.compress(subprocess.check_output(['git','archive',commit],cwd=repo))
     meta=dict(commit=commit,files=proof['files'],archive_bytes=len(archive),base='/mnt/data/shaoshitong/search-g1-qprobe3-stdloss-'+commit[:7]+'-20261015-v1')
-    sys.path.insert(0,'work')
-    import search_g1_restore5_transport as t
-    original=subprocess.run
+    from reproduction.h1008_qprobe.management_transport import remote
     socket=json.loads(Path('work/qprobe3-management-current.json').read_text())['socket']
-    subprocess.run(['ssh','-S',socket,'-O','check','mgmt-host'],check=True,capture_output=True)
-    def direct(args,*a,**kw):
-        if isinstance(args,list) and 'mgmt-host' in args:
-            args=list(args);proxy='ProxyCommand=/usr/bin/nc -X 5 -x 127.0.0.1:7892 %h %p'
-            if proxy in args:i=args.index(proxy);del args[i-1:i+1]
-            ssh_index=args.index('/usr/bin/ssh')
-            args[ssh_index+1:ssh_index+1]=['-S',socket,'-o','ControlMaster=no']
-        return original(args,*a,**kw)
-    t.subprocess.run=direct
-    header=json.dumps(meta).encode()
-    # Spool source code through SFTP: avoid a large multiplexed SSH stdin stream.
-    # This payload contains the Git source archive and file hashes, never assets.
-    remote_payload='/tmp/qprobe3-code-'+uuid.uuid4().hex+'.payload'
-    with tempfile.TemporaryDirectory(prefix='qprobe3-code-') as directory:
-        payload=Path(directory)/'source.payload'
-        payload.write_bytes(len(header).to_bytes(8,'big')+header+archive)
-        payload.chmod(0o600)
-        original(['/usr/bin/scp','-o','ControlPath='+socket,'-o','ControlMaster=no',str(payload),'mgmt-host:'+remote_payload],check=True,timeout=120,capture_output=True)
-        t.MGMT=t.MGMT.replace('input=sys.stdin.buffer.read()', 'input=Path('+repr(remote_payload)+').read_bytes()')
-        stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
-        result=t.remote('/usr/bin/python3 -c '+shlex.quote(REMOTE),'outputs/gigpo-e1-instruct200/QPROBE3-STDLOSS-DEPLOY-'+stamp+'.json',emit=False)
-        print(result)
-        original(['/usr/bin/ssh','-S',socket,'mgmt-host','rm -- '+shlex.quote(remote_payload)],check=True,capture_output=True,timeout=30)
+    header=json.dumps(meta).encode();payload=len(header).to_bytes(8,'big')+header+archive
+    stage='/mnt/data/shaoshitong/qprobe3-code-staging-'+uuid.uuid4().hex
+    stamp=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+    prefix='outputs/gigpo-e1-instruct200/QPROBE3-CODE-'+stamp
+    remote("from pathlib import Path;Path("+repr(stage)+").mkdir(mode=0o700)",prefix+'-claim.json',socket)
+    chunks=[payload[i:i+32768] for i in range(0,len(payload),32768)]
+    def send(item):
+        index,data=item;digest=hashlib.sha256(data).hexdigest()
+        script="import base64,hashlib;from pathlib import Path\ndata=base64.b64decode("+repr(base64.b64encode(data).decode())+")\nassert hashlib.sha256(data).hexdigest()=="+repr(digest)+"\nwith Path("+repr(stage+'/'+str(index))+ ").open('xb') as f:f.write(data)\nprint('source_chunk_sha_pass')"
+        return remote(script,prefix+'-chunk'+str(index)+'.json',socket)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+        list(pool.map(send,enumerate(chunks)))
+    assembly="import pathlib,hashlib\np=pathlib.Path("+repr(stage)+")\ndata=b''.join((p/str(i)).read_bytes() for i in range("+str(len(chunks))+"))\nassert hashlib.sha256(data).hexdigest()=="+repr(hashlib.sha256(payload).hexdigest())+"\n(p/'payload').write_bytes(data)\n"
+    script=assembly+REMOTE.replace('stream=sys.stdin.buffer;',"stream=io.BytesIO(pathlib.Path("+repr(stage+'/payload')+").read_bytes());")
+    print(remote(script,prefix+'-deploy.json',socket))
 
 
 if __name__=='__main__':main()
