@@ -1,0 +1,43 @@
+{
+  "scope": "Adapted local-only execution of prior successful two-pass bounded public plain-GRPO metadata refresh. No discovery, SSH, training, tests, canonical writes, or outside-scope document reads. Only immutable refresh receipt is published.",
+  "prior_successful_source_log": "/Users/shaoshitong/.codex/sessions/2026/10/16/rollout-2026-10-16T05-41-38-01a14183-7a96-7e40-9f5c-3f08e01cb65d.jsonl",
+  "prior_commands": [
+    {
+      "line": 396,
+      "selector": "payload.item.command[2]",
+      "bytes": 2666,
+      "sha256": "a10c62fa184c2718980ff6388241fcc8d1a65b7e0fe4baea2b59835049c99ebe"
+    },
+    {
+      "line": 412,
+      "selector": "payload.item.command[2]",
+      "bytes": 7682,
+      "sha256": "2b84d3e91f0d7204db5b734d4b43c4a5b4a7da6440cba781e9a9b6452afc8671"
+    }
+  ],
+  "changes": [
+    "Bind prior receipt PUBLIC_GRPO_CONTROL_REFRESH_20261015T222956Z.json and same original28 scope.",
+    "Use unique metadata-only temporary first-pass file and absolute BASE.",
+    "Remove filename discovery and outside-scope fixed-input content rereads. Fixed input pins remain inherited provenance.",
+    "Parent context completed170/sampling171/dev170; no new remote observation.",
+    "Require unchanged two rounds,25 content reads+3 stat-only and at least59 seconds between start times before preserving prior bounded qualification finding."
+  ],
+  "temporary_first_pass_path": "/tmp/public-grpo-control-refresh-pass1-20261015T232816Z.json",
+  "invocation_order": [
+    "Run pass1 from workspace with python3 -B.",
+    "Wait about60 seconds using bounded waits, inspect actual first-pass change output.",
+    "Only if all28 inputs unchanged, run publish source from workspace with python3 -B. Otherwise stop and report changed evidence; never invent qualification."
+  ],
+  "source_files": [
+    {
+      "filename": "public_grpo_control_refresh_pass1.py",
+      "bytes": 2748,
+      "sha256": "7117f0858723b34bf6687636874072a6fec747329c9e899c03ae70c848d8cab4"
+    },
+    {
+      "filename": "public_grpo_control_refresh_publish.py",
+      "bytes": 6761,
+      "sha256": "857cb2d3fe9f30614f8600be6040ac297ab4c8c1348099a175363b9db28bda97"
+    }
+  ]
+}
