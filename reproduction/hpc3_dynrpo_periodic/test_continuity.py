@@ -160,5 +160,14 @@ class Continuity(TestCase):
         with self.assertRaisesRegex(ValueError,'DIFFERENT_STUDENT'):
             verify_phase_recovery(saved,pointer,actual_sha='state',outer=50,pre_receipt_sha='pre')
 
+    def test_triton_and_inductor_are_both_private_to_each_process(self):
+        from reproduction.hpc3_dynrpo_periodic.process_cache import cache_paths,PREFIX
+        first,second=cache_paths(PREFIX,123),cache_paths(PREFIX,124)
+        self.assertEqual(set(first),{'TRITON_CACHE_DIR','TORCHINDUCTOR_CACHE_DIR'})
+        self.assertTrue(all(first[k]!=second[k] for k in first))
+        self.assertTrue(all('/process-123' in path for path in first.values()))
+        self.assertIsNone(cache_paths('/data/another-thread',123))
+        self.assertIsNotNone(cache_paths(PREFIX+'-r1',123))
+
 
 if __name__=='__main__':unittest.main(verbosity=2)

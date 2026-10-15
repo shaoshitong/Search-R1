@@ -25,6 +25,8 @@ evaluation.  Those metrics are monitoring signals and are not required for the
 representation-reward training path.
 """
 
+from reproduction.hpc3_dynrpo_periodic.process_cache import bind_process_cache
+bind_process_cache()
 from verl import DataProto
 import torch
 import os

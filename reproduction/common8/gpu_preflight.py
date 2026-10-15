@@ -1,6 +1,8 @@
 """Native-Slurm eight-rank mechanics test; not evidence of GRPO/model acceptance."""
 import datetime,json,os,time
 from pathlib import Path
+from reproduction.hpc3_dynrpo_periodic.process_cache import bind_process_cache
+bind_process_cache()
 import torch
 import torch.distributed as dist
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, CPUOffload, MixedPrecision

@@ -6,8 +6,10 @@ import os
 from pathlib import Path
 import subprocess
 import time
+import re
 
-BASE = Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016')
+DEFAULT_BASE = Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016')
+BASE = Path(os.environ.get('SEARCH_G1_BASE',str(DEFAULT_BASE)))
 MODEL = Path('/data/user/jxu957/experiments/topd-20261008/runtime/assets/qwen2.5-3b-instruct-aa8e725')
 DATA = Path('/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b')
 TEACHER = Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/teacher-warmup-cache')
@@ -33,7 +35,8 @@ def read(path):
 
 def own(base):
     base = Path(base)
-    if base != BASE or base.resolve() != BASE or base.is_symlink():
+    if (base != BASE or base.resolve() != BASE or base.is_symlink() or
+            re.fullmatch(re.escape(str(DEFAULT_BASE))+r'(?:-r[1-9][0-9]*)?',str(base)) is None):
         raise ValueError('This deployment can write only its independent HPC3 namespace')
     return base
 

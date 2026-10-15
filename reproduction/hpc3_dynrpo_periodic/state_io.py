@@ -4,13 +4,13 @@ import os
 from pathlib import Path
 import re
 
-from .common import BASE
+from .common import BASE, DEFAULT_BASE
 
 
 def active_base():
     base=Path(os.environ.get('SEARCH_G1_BASE',str(BASE)))
     if (base.resolve()!=base or base.is_symlink() or
-            re.fullmatch(re.escape(str(BASE))+r'(?:-r[1-9][0-9]*)?',str(base)) is None or
+            re.fullmatch(re.escape(str(DEFAULT_BASE))+r'(?:-r[1-9][0-9]*)?',str(base)) is None or
             base.stat().st_uid != os.getuid()):
         raise ValueError('PERIODIC_STATE_OUTSIDE_OWN_EXPERIMENT_OR_RESTART')
     return base

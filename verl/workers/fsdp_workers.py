@@ -19,6 +19,8 @@ import logging
 import os
 import warnings
 
+from reproduction.hpc3_dynrpo_periodic.process_cache import bind_process_cache
+bind_process_cache()
 import torch
 import torch.distributed
 import verl.utils.hdfs_io as hdfs_io
