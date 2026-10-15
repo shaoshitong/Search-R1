@@ -90,7 +90,7 @@ if action=='observe':
  emit(value)
 else:
  assert not (base/'logs'/(action+'-launch.json')).exists()
- once(base/'logs'/(action+'-launch-once.json'),dict(action=action,source_commit=intent['source_commit'],claimed_unix=time.time(),no_automatic_retry=True))
+ once(base/'logs'/('native-formal-operator-'+action+'-launch-once.json'),dict(action=action,source_commit=intent['source_commit'],claimed_unix=time.time(),no_automatic_retry=True))
  with (base/'logs'/(action+'-worker.log')).open('xb') as log:
   child=subprocess.Popen(['/data/search-g1/env/bin/python','-c',p['worker'],json.dumps(dict(base=str(base),repo=str(repo),action=action,args=args))],cwd=repo,env=environment(),stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
   record=dict(action=action,source_commit=intent['source_commit'],process=birth(child.pid),no_automatic_retry=True,launched_unix=time.time())
