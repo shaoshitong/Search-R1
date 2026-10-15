@@ -426,7 +426,9 @@ def main():
     updated.update(status='TRAINING_RUNNING' if outer < TARGET else 'TRAIN200_COMPLETE_FINAL_WORK_PENDING',
         phase='TRAINING_RUNNING' if outer < TARGET else 'TRAIN200_COMPLETE_FINAL_WORK_PENDING',
         observed_epoch=epoch,last_observed_epoch=epoch,current_outer=outer,completed_outer=outer,new_completed_outer=outer-RESTORE,
-        actual_current_restore_outer=outer,actual_current_restore_adam_per_rank=completed,
+        actual_current_restore_outer=restore_receipt['driver']['completed_outer_updates'],
+        actual_current_restore_adam_per_rank=copy.deepcopy(restore_receipt['driver']['completed_optimizer_calls_per_rank']),
+        actual_optimizer_completed_outer=outer,
         successful_adam_per_rank=completed,actual_total_adam_per_rank=totals,
         effective_counters_known=True,actual_child_counters_known=True,
         all_skipped_attempts=progress.get('all_skipped_attempts'),direct_rank_record_count=poll.get('direct_rank_records'),
@@ -457,6 +459,7 @@ def main():
         running_source_hot_modified=False,extra_prelaunch_review=False,exact_executor_resume=False,
         goal_complete=False,formal_effect_complete=False,goal_status='active',full_iteration_log_pending=metric_pending,
         current_iteration_metrics=metric,current_full_outer_metric_pending=metric_pending,
+        current_iteration_metric_pending=metric_pending,full_iteration_metric_pending=metric_pending,
         latest_actual_dev512_scores=latest_dev_scores,current_training_variances=current_variances,
         current_candidate_cost_scalars=current_candidate_costs)
     if latest_dev is not None and latest_dev in poll.get('development', []):

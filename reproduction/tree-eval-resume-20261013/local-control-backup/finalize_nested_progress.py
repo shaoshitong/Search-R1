@@ -14,7 +14,7 @@ import sys
 import sync_nested_native_progress as core
 
 ORIGINAL_VALIDATOR_SHA = 'c413fc582c2aaa46fefb00aa7d9cf1a368f3655ec5059a9192c7efba3d09d07a'
-DEPENDENCY_SHA = '020bec1d2f1f06aa2149ad5cc1d1c72f41567c3b8cd10de10193b9a7d1a964c6'
+DEPENDENCY_SHA = '676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1'
 need = core.need
 
 
