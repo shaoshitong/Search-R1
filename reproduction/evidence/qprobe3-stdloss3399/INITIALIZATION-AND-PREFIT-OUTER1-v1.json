@@ -1,0 +1,192 @@
+{
+  "run_id": "c025948ebc0947f69d86af84871a9237",
+  "job_id": 3399,
+  "node": "h100-8",
+  "frozen_training_source": "545d4cf00da9bed3a6e61f3ab286e48ceac8573c",
+  "base": "/mnt/data/shaoshitong/search-g1-qprobe3-stdloss-545d4cf-20261015-v2",
+  "gpu_initialization": {
+    "feature_dim": 2048,
+    "feature_spec_sha": "468decd3a5deb787c10a6871418896df77b6956530250b7178647f9bf89d386b",
+    "config": {
+      "mean_loss_weight": 0.0,
+      "std_loss_weight": 1.0,
+      "count_aux_loss_weight": 0.1,
+      "loss_version": "std_class_ce_v1",
+      "head_learning_rate": 0.0003,
+      "head_batch_size": 256,
+      "head_epochs_per_outer": 2,
+      "replay_window_outer": 16,
+      "replay_half_life_outer": 4.0,
+      "bootstrap_max_groups_per_outer": 5120,
+      "hidden_size": 64,
+      "seed": 20261013
+    },
+    "train_micro": 4,
+    "predict_micro": 32,
+    "initialization": {
+      "full_state_sha256": "28ea6b9f58f77fa5802cf2b2b15de4b76fbf6991449e74f84a03f613c6a7535a",
+      "tensor_count_per_block": 12,
+      "independent_copies": 3,
+      "official_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+      "encoder_files_sha256": "515cc4186a7431ffd2ae609f4d03157ebe3c23eb952d1a8e03cc835201d6620e",
+      "source_layer_index": 35,
+      "initialization_file_sha256": "d59f4d084dd04a7758bb2ff1b82a728b3eae0f6194f262343fa7509b081f6b3c"
+    },
+    "version": "qprobe:0:0:f692359467f16298",
+    "completed_outer": 0,
+    "update_count": 0,
+    "actor_snapshot_id": null,
+    "worker_rank": 7,
+    "world_size": 8,
+    "actual_probe_device": "cuda:0",
+    "gpu_uuid": "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e"
+  },
+  "gpu_initialization_record_sha256": "0341917fdb488e8897d9a8503458a7c03279d2262ad227928f5c06590037cee8",
+  "teacher": {
+    "utc": "2026-10-15T07:19:06.038383+00:00",
+    "status": "FROZEN_TEACHER_WARMUP_5120_G5_FULL_SHA_PASS",
+    "questions": 5120,
+    "trajectories": 25600,
+    "actual_groups_in_sha_checked_chunks": 5120,
+    "source_run_question_counts": {
+      "4e2fd299bf5e4f3e86d910661f6389b9": 4608,
+      "c025948ebc0947f69d86af84871a9237": 512
+    },
+    "complete_record_sha256": "cafa15bc997a3d44173bcd2e352516b92fa7139739368631fc61e490bd66f087",
+    "independent_target_backup_performed": false,
+    "actor_updates_counted": 0
+  },
+  "head_ready": {
+    "utc": "2026-10-15T07:23:04.504781+00:00",
+    "status": "FROZEN_TEACHER_WARMUP_HEAD_READY",
+    "reused_questions": 4608,
+    "fitted_questions": 5120,
+    "head_checkpoint": {
+      "actor_snapshot_id": "c025948ebc0947f69d86af84871a9237:0",
+      "bytes": 5067894510,
+      "checkpoint_sha": "254714bd513b69af9512a67dde0c9eca8a8f2b89f554df09685e14251cdcab98",
+      "completed_outer": 0,
+      "feature_spec_sha": "468decd3a5deb787c10a6871418896df77b6956530250b7178647f9bf89d386b",
+      "path": "/mnt/data/shaoshitong/search-g1-qprobe3-stdloss-545d4cf-20261015-v2/artifacts/question-probe/teacher-warmup-head/initial.pt",
+      "sha256": "254714bd513b69af9512a67dde0c9eca8a8f2b89f554df09685e14251cdcab98",
+      "update_count": 0,
+      "version": "qprobe:0:0:20bfb54a4f161b82"
+    },
+    "head_optimizer_updates": 40,
+    "actor_rng_restored": [
+      {
+        "rank": 0,
+        "rng_equal": true
+      },
+      {
+        "rank": 1,
+        "rng_equal": true
+      },
+      {
+        "rank": 2,
+        "rng_equal": true
+      },
+      {
+        "rank": 3,
+        "rng_equal": true
+      },
+      {
+        "rank": 4,
+        "rng_equal": true
+      },
+      {
+        "rank": 5,
+        "rng_equal": true
+      },
+      {
+        "rank": 6,
+        "rng_equal": true
+      },
+      {
+        "rank": 7,
+        "rng_equal": true
+      }
+    ],
+    "rank_count_before": 8,
+    "rank_count_after": 8,
+    "ready_record_sha256": "be21857628d843c379da8bd58b417d4373557a5e99eba8d2ae584851acfa1b2a",
+    "completed_training_outers": 0
+  },
+  "prefit_rollout1": {
+    "step": 1,
+    "selected_groups": 512,
+    "selected_mixed": 257,
+    "selected_all_correct": 46,
+    "selected_all_wrong": 209,
+    "selected_random_exploration": 64,
+    "selected_predicted_diversity": 448,
+    "responses_per_group": 5,
+    "raw_generated_trajectories": 2560,
+    "raw_generated_policy_tokens": 400247,
+    "raw_actual_retrieval_calls": 2848,
+    "candidate_fill_seconds": 312.73322239518166,
+    "candidate_generation_timings": {},
+    "question_probe_version": "qprobe:0:0:20bfb54a4f161b82",
+    "policy_snapshot_id": "c025948ebc0947f69d86af84871a9237:1:policy-868a4d602b1849a098685982e253ef0b",
+    "prequential": {
+      "all": {
+        "questions": 512,
+        "count_nll": 1.6474175686140287,
+        "mean_mae": 0.29317622118687725,
+        "std_mae": 0.2449705947393948,
+        "std_mse": 0.06459693775377957,
+        "mixed_brier": 0.2626323578269212,
+        "actual_mixed_fraction": 0.501953125,
+        "actual_sample_std_mean": 0.24666290380874553,
+        "actual_em_mean": 0.323046875,
+        "all_wrong_fraction": 0.408203125,
+        "all_correct_fraction": 0.08984375
+      },
+      "random_exploration": {
+        "questions": 64,
+        "count_nll": 1.5076549354543602,
+        "mean_mae": 0.2817281255731359,
+        "std_mae": 0.23079615639091705,
+        "std_mse": 0.05977057904883213,
+        "mixed_brier": 0.24468547547169675,
+        "actual_mixed_fraction": 0.4375,
+        "actual_sample_std_mean": 0.21450137840720812,
+        "actual_em_mean": 0.28125,
+        "all_wrong_fraction": 0.484375,
+        "all_correct_fraction": 0.078125
+      },
+      "predicted_diversity": {
+        "questions": 448,
+        "count_nll": 1.6673836590654096,
+        "mean_mae": 0.2948116634174117,
+        "std_mae": 0.24699551450346308,
+        "std_mse": 0.06528641756877207,
+        "mixed_brier": 0.2651961981633818,
+        "actual_mixed_fraction": 0.5111607142857143,
+        "actual_sample_std_mean": 0.25125740743753655,
+        "actual_em_mean": 0.32901785714285714,
+        "all_wrong_fraction": 0.39732142857142855,
+        "all_correct_fraction": 0.09151785714285714
+      },
+      "ranking": {
+        "scope": "selected_questions_prediction_before_rollout_before_fit",
+        "comparable_pairs": 81807,
+        "pairwise_concordance": 0.5322527412079651
+      },
+      "top_vs_random": {
+        "top_questions": 448,
+        "random_questions": 64,
+        "mixed_hit_rate_difference": 0.0736607142857143,
+        "mixed_hit_rate_ratio": 1.1683673469387756,
+        "actual_sample_std_mean_difference": 0.03675602903032843
+      }
+    },
+    "source_audit_sha256": "e75ab5fa7e1cdd85ad230c161da3490d396498a32fef4859d3794432a381c8d0"
+  },
+  "actor_writes_per_rank_observed": 20,
+  "complete_actor_and_head_outer_not_yet_observed": true,
+  "scope": "remote scalar/hash summary only; no tensors/log rows/questions/trajectories exported",
+  "quality_claim": "single rollout descriptive observation; no stable algorithm gain or loss optimality demonstrated",
+  "goal_complete": false,
+  "evidence_observed_utc": "2026-10-15T07:32:03.322424+00:00"
+}
