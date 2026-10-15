@@ -396,3 +396,14 @@ Training721485 ACA continued untouched: at1792076968.4465215 complete1..51, four
 
 
 Independent read-only review by existing qprobe_launch_review found no remaining confirmed P0/P1 in this typed service recovery; private cross-source bindings, explicit final pins, original49/new suffix and archive5 lineage checked. Local68 tests passed. Full positive old49/new151/archive5/newnative combination still requires actual200 final acceptance; no partial progress is substituted. local_publish now accepts explicit existing Login1 host/boot/PIDnamespace binding, preserving default behavior.
+
+
+## 2026-10-15 23:14 CST CPU service recovery activated and fixed50 scored
+
+Recovery source f979d53cdb0d348e87c5877d84403252e85cd784 pushed and1052 files remotely fullSHA verified at1792077108.0338483. NewRAW3857750/start78675791 andnewfollower3861035/start78678649 started exactlyonce onboundLogin1; old49/archive5/oldcontrollers remain unchanged. Authentic RAW50 held0 accepted by1792077223.9461803;51childrunning. Newfollower accepted retainedarchive5, claimed newarchive50 once, actualrunnerlive butpayload0 at1792077246.610543, not archiveacceptance. Native complete52/all4Adam1040 at1792077196.6291971,53started, nofatalerrors.
+
+Fixed512 step50 exactorderedidentity/sourceSHA/run checked: EM185/512=36.1328125%, F1=44.534195188492065%; NQ96/256=37.5%, F1=48.44990079365079%; Hotpot89/256=34.765625%, F1=40.618489583333334%. OriginalledgerSHA9d14949bf46c6efa17e4f258b641364b9b3478801287930da7cbfadf2a53c02c androwSHAf4ebe095ab8ebe0aab075dc19796b1c9b9776c7b8ff7c1edfb6c50906224fadb; sourcepair50SHAc149938fe61b4ffb9ae2a0d746d921369ddf058ced65d254f4f14b8da4fe23e1. No newgeneration/modelreload performed for scoring.
+
+Explicit recovered metricsreader fullSHA/held graph reconsumed1..50 at1792077258.6292398: latest41..50 Top1719/4480=38.3705357%, random147/640=22.96875%, difference15.4017857pp. CumulativeTop10054/22400=44.8839286%, random888/3200=27.75%. This remains partial evidence; final200/fullnative/fullRAW/finalheldCPU pending.
+
+Step50 fullproject metadata du firstdiagnostic used systemPython3.6 incompatiblecapture_output; subsequent compatible readonlywalk timedout40s andownedmeasurementchild was killed by subprocess timeout cleanup. Both failures retained, no usage inferred. New once-only outer50 adapter preserves existing canonical helddu/source/birth/exit/SHA checks with1800s detachedmeasurement, uniqueclaimdirectory. It changes only its entry filename/controlnamespace; no deletion or trainingcontrol. Hardquota remainsunknown; last actualfullDU still1,326,682,820,608B at1792055385.3160028 until newwalk returns0.
