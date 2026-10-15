@@ -1,5 +1,6 @@
 """Verify endpoint pinning without opening a connection or reading credentials."""
 import ast
+import io
 import shlex
 import subprocess
 import types
@@ -10,6 +11,9 @@ from reproduction.hpc3_qprobe import local_account_bridge as bridge
 
 
 class LoginEndpointTest(unittest.TestCase):
+    HOST = dict(hostname='ACD-Login-1', boot_id='a27512a3-24a0-4ca3-aa92-98d2a5256d9a',
+                pid_namespace='pid:[4026531836]')
+
     def invoke(self, **kwargs):
         campus = Mock(return_value=subprocess.CompletedProcess([], 0, 'safe-output', ''))
         module = types.SimpleNamespace(campus=campus)
@@ -58,6 +62,43 @@ class LoginEndpointTest(unittest.TestCase):
                     bridge.run('jxu957', 'readonly', '', '/fixture', login_host=host)
             with self.assertRaises(ValueError):
                 bridge.run('other-account', 'readonly', '', '/fixture')
+            credential.assert_not_called()
+
+    def test_kernel_guard_executes_only_after_exact_identity_match(self):
+        ssh, _ = self.invoke(login_host='10.120.48.31', expected_host_identity=self.HOST)
+        wrapper = shlex.split(ssh[-1]);self.assertEqual(wrapper[:2], ['python3', '-c'])
+        for actual, should_exec in (
+            (self.HOST, True),
+            (dict(self.HOST, boot_id='new-boot'), False),
+            (dict(self.HOST, hostname='ACD-Login-2'), False),
+            (dict(self.HOST, pid_namespace='pid:[999]'), False),
+        ):
+            with self.subTest(actual=actual), \
+                 patch('builtins.open', return_value=io.StringIO(actual['boot_id'])), \
+                 patch('socket.gethostname', return_value=actual['hostname']), \
+                 patch('os.readlink', return_value=actual['pid_namespace']), \
+                 patch('os.execv') as execute, patch('sys.stderr', new_callable=io.StringIO):
+                if should_exec:
+                    exec(compile(wrapper[2], '<host-guard>', 'exec'), {})
+                    execute.assert_called_once_with('/bin/bash', ['bash', '-c', 'printf readonly'])
+                else:
+                    with self.assertRaises(SystemExit) as error:
+                        exec(compile(wrapper[2], '<host-guard>', 'exec'), {})
+                    self.assertEqual(error.exception.code, 86)
+                    execute.assert_not_called()
+
+    def test_identity_cannot_be_ambiguous_or_attached_to_gateway(self):
+        with patch.object(bridge.Path, 'read_text') as credential:
+            for host, identity in (
+                ('10.120.81.30', self.HOST),
+                ('10.120.48.32', self.HOST),
+                ('10.120.48.31', dict(self.HOST, pid_namespace='unbound')),
+                ('10.120.48.31', dict(self.HOST, boot_id='invalid')),
+                ('10.120.48.31', dict(hostname='ACD-Login-1')),
+            ):
+                with self.subTest(host=host, identity=identity), self.assertRaises(ValueError):
+                    bridge.run('jxu957', 'readonly', '', '/fixture', login_host=host,
+                               expected_host_identity=identity)
             credential.assert_not_called()
 
 

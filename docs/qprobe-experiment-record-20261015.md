@@ -346,3 +346,14 @@ job721485在1792066509.7976224实际完整完成1至30轮，四rank各600次acto
 第30轮拟合loss1.2211579084＝CE3 0.8964479566＋归一化σMSE 0.1704084575＋0.1×CE6 1.5430129766，公式误差1.97e-7；meanMSE诊断0.1447500587仍权重0。回放8192题次、batch256、2个epoch、本次64次Adam更新。证据sigma3-progress-summary-max30-1792066604.json完整SHA cf45299b911c1ed528138ba20ccbeebfe43b1a9bb92f3d81f76d92e82a1b3f58；本地派生记录sigma3-window-comparison-through30.json同时绑定本次和第20轮原汇总完整SHA。
 
 归档跟进09cc原进程在1792066608.0689752实际存活，第5轮三份完整SHA已验收，仍等待第50轮；最终native4恢复尚未执行。下一次固定actor验证为第50轮，不补做第30轮评测。目标保持ACTIVE：200轮、固定50/100/150/200、最终native51713、全部里程碑三副本完整SHA、实际四卡恢复和独立最终CPU验收均仍待完成。
+
+
+## 登录节点身份绑定修复（2026-10-15约21:02 CST）
+
+第35轮训练已实际完整结束，四rank各700次actor Adam写入，第36轮继续。1792068972/9003两次原RAW检查返回UNKNOWN_NO_REPLAY：当时查询落在ACD-Login-2，找不到原PID1171759；共享state却持续更新并启动第35轮审计child。没有故障终态或退出证据，未重启、重放或热改任何训练/审计进程。诊断保留在raw721485-unknown-birth-diagnostic-1792069045.json；网关10.120.81.30对应ACD-chess，实际登录节点映射由该集群/etc/hosts和DNS核对。
+
+通过现有StrictHostKeyChecking=yes、原HostKeyAlias和原knownhosts，明确连接Login-1（10.120.48.31），1792069300.606421实际找到RAW1171759/start75909729及归档follower2688346/start76403669，PID/SID/UID、command和cwd均与原0cca/09cc一致，状态S。该主机boot_id为a27512a3-24a0-4ca3-aa92-98d2a5256d9a、PID namespace为pid:[4026531836]。原不可变receipt保持原样，另以login1-bound-birth-diagnostic-1792069300.json保存主机绑定实证；当时共享RAW状态登记35轮完成，完整consumer仍另作复核。
+
+独立审查指出：在另一主机上/proc缺失不能证明进程死亡。local_account_bridge新增显式固定节点白名单，默认网关行为不变；可传已观测的hostname/boot_id/pid_namespace，远端在运行请求命令前逐项匹配。主机、启动实例或PID namespace不同即返回UNKNOWN_HOST_IDENTITY_MISMATCH/exit86，不执行请求命令，也不新增或放宽SSH主机信任。后续本任务RAW、归档、指标和最终CPU进程检查均绑定原Login-1身份；连接失败或身份不符不作为重启授权。
+
+相关本地隔离测试覆盖默认入口不变、固定节点仍严格校验、shell/stdin/退出语义、非法endpoint/账号/身份在读取凭据前拒绝，以及hostname/boot/PID namespace任一不符时禁止exec；不访问真实凭据或远端。训练ACA、RAW0cca、归档与最终恢复09cc、指标d934保持原版本；该修复只处理本地控制连接及观测范围。
