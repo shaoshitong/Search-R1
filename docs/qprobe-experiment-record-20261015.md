@@ -615,3 +615,29 @@ New storage observer keeps the proven3pureENOENT retry/fullheldproof logic and u
 最近10轮全512生成前标准差预测MAE0.209036、MSE0.052766；全512每轮内部mixed-AUC均值0.550431、成对concordance均值0.546335。Top448对应0.528189/0.525786；这些排名指标仅各自同一policy的轮内计算再取算术均值，禁止跨policy混池。选题仍相对随机有正提升，但最近10轮Top448与随机绝对混合率、真实标准差均低于累计值；不能因此改动当前科学配置或将loss下降当作选择性能已通过最终验收。
 
 小型完整逐轮数据sigma3-audited-selection-metrics-outer1-82.json为217997字节，SHA674bc9fda6d89b7f0cdc86eeac6012f5bf7cf51941ee0807d46706485ef03055；原审计sigma3-progress-summary-max82-service-1792089362.json保留完整路径/SHA/held证明。该数据不含tensor/rollout，符合本地小审计限制。目标保持ACTIVE，固定100/150/200、finalnative51713、五套三方SHA、最终native4两次dataequal/RAW/独立CPU/no201仍未验收。
+
+
+## 2026-10-16 03:22 CST：四卡native90里程碑与实际审计等待
+
+同一HPC3/jxu957作业721485保持4GPU/ACD1-21/emergency_acd，科学源码aca0e779e94ddc3fbd50e49c3d59e2e889fbcf12未改动。连续83→90成功迭代均核对全部4rank的每轮20次实际Adam写入、scheduler及head提交；90成功前缀1..90、每rank累计1800写入在1792092106.7232976通过，head qprobe:90:90:4242349d5f84f05e，fitloss0.9442072510719299。第91轮已开始，不能将未完成91提前计入。当前观察无新fatal，未重启、热改或额外提交训练。
+
+原RAWf979 supervisor3857750/start78675791实际heldCPU0验收前缀1..89；第90轮同一直接child actualbirth live，尚未退出验收，不把LIVE当成功或故障。原b894 follower58027/start78951603在1792092108仍实际live等100，5/50原三方完整SHA证明保持已验收；light观测不宣称新SHA。原审计、归档进程均未重启。任何观察延迟均只重读同一handle，未据此恢复。
+
+| 成功outer | 每rank累计Adam写入 | 原始head fitloss | native实测证据 |
+| --- | --- | --- | --- |
+| 84 | 1680 | 0.9893519282 | recovery721485-progress-1792089906.json |
+| 85 | 1700 | 0.9899488091 | recovery721485-progress-1792090173.json |
+| 86 | 1720 | 0.9909700751 | recovery721485-progress-1792090569.json |
+| 87 | 1740 | 0.9713534713 | recovery721485-progress-1792090985.json |
+| 88 | 1760 | 0.9614369273 | recovery721485-progress-1792091366.json |
+| 89 | 1780 | 0.9486702085 | recovery721485-progress-1792091736.json |
+| 90 | 1800 | 0.9442072511 | recovery721485-progress-1792092114.json |
+
+每个回合均至少两次实测，并等一个完整native迭代返回或记录同一具体审计child的实际verified wait。原RAW87更慢的child2054890/start80056686在1792091072已terminal/stdout6360B/stderr0/result2663B，1792091081由原supervisor重消费通过；没有把延迟当作故障。RAW88/89分别1792091433/1792091804实际接受。最新RAW service-raw-inspect-1792092107.json、follower archive50-existing-follower-light-1792092108.json，完整小型运行审计保存在本地outputs/qprobe-sigma3-loss-20261015。
+
+当前90轮Top448生成前选题的实际混合率122/448=27.2321%，随机组11/64=17.1875%；真实平均样本标准差分别0.132779/0.083147。这是单轮prequential观测，不是训练后二/六分类准确率或方差拟合；最近10轮的已完整重消费汇总仍截至82，待100完整状态锚后再更新，不用单轮推断算法优劣或据此修改科学配置。
+
+已授权exact78清理、HKUST3完整118文件备份、保留旧100/两份小清单及postcleanup DUslot3两次验收均保持完成；不得重放清理、DU或已完成failureSHA权限intent。最后完整空间实测1792089159为1,472,658,509,824B，当前活跃目录继续增长，不能把旧数值当新鲜quota/归档容量证明。未来每次archive仍独立strict全du/2TB门禁。
+
+目标保持ACTIVE，不能完成于90或Slurm RUNNING。固定100/150/200、最终exactnative51713与七源EM/F1 macro+weighted、全部五套三方完整SHA、实际native4全状态恢复与两次dataequal、完整RAW/独立finalCPU/no201均仍待最终实际验收。RAW90 exactheldchild如下，下一步只consume同一child：
+{"pid": 2283511, "sid": 3857750, "start_ticks": 80168080, "uid": 14090}
