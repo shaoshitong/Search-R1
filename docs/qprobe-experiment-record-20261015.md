@@ -516,3 +516,14 @@ Fresh MOU metadata1792078780.7602317 identifiesexacttwoUID21930/GID21919 mode700
 新独立DU真实wait0、stderr0，1792079646.3112707测得1,487,487,234,048B（非原子使用量实测，不是硬quota证明）。b89495c8ec1f2a7fb0d5cd70d89974c16c801cff一次恢复原第二故障到failed-archive-50-second-dc9，INTENT archive50-recovery-second-dc9。初次SSH55s超时没有重试：后续真实host/boot/PIDnamespace查询确认新supervisor58027/start78951603、原子migration与once claim已存在，结果未知状态据此解除。新claim SHA943239779ce4bf0a85ae52034763ecdbb49854a2f487b379e01f082b469cbd83；runner60118/start78953557，task64094/start78955802。
 
 archive worker自身独立DU于1792080018.9327197真实rc0、stderr0，测得1,488,134,529,024B。实际复制载荷从1792080029的1,113,739,616B增至1792080120的19,844,995,283B；尚未完成archive50完整source/archive/target SHA，不能视为验收。原native训练56→58、四rank1160 actor写入及scheduler/head一致，无fatal；RAW f97955→57实际held0，均未重启/热改。第二最终reader/holder显式注册b894，独立second scope及dc9原first migration重消费已纳入admission/stdout/最终末尾重验；相关39测试通过，既有只读reviewer复核无新增确定性P0/P1。目标保持ACTIVE，100/150/200、exactnative51713、最终真实native4、全量RAW/finalheldCPU/no201仍必需。
+
+
+## 2026-10-16 00:22 CST archive50完整验收、native61与后续容量投影
+
+第二恢复b894的archive50真实child64094已wait0，1792080594.355055返回三方完整SHA PASS。原claim/wait/task/transport及relocated receipt小文件SHA已逐一核对；transport413ef94f42a4a360e632e69225ac2910bd06056d26da1d9673185b6f2088fe76绑定原pair50 c149938fe61b4ffb9ae2a0d746d921369ddf058ced65d254f4f14b8da4fe23e1，覆盖全部35文件，每份38,371,257,523B。原supervisor58027在1792080911.6261125又独立fresh重读源/归档/target通过，现等100；archive5仍沿用原39e2证明。实际native CUDA恢复尚未发生。
+
+native721485在1792080433完成59轮、1792080583完成60轮、1792081018完成61轮，四rank各1220次Adam、scheduler/head一致，无fatal，62已收集真实512/G5。原RAWf979在1792081202实际held0前缀1..61；训练及RAW未重启。目标ACTIVE；固定100/150/200、final51713、全部五套三方完整SHA、最终native4两次dataequal、全量RAW/独立heldCPU/no201仍未完成。
+
+容量投影并非新DU/quota证明：archive50复制前实际DU0=1,488,134,529,024B，两份载荷76,742,651,357B。未来100/150/200三源六副本估计345,341,317,707B，另计200两份150 encoder约27.21GB，固定产物约1.937TB，余62.57GB。最近20轮42–61仅rollout、behavior JSON、selection/audit、before/after边界文件的allocated均值0.757GB/轮，139轮按此推算最终约2.043TB，至少约42.68GB缺口；私有额外痕迹、校准/评测及其他共享目录增长尚未计入。已清理204.22GB已在基线内，不能重复扣减。fresh DU+2TB门禁不变。
+
+下一步准备可核验远端保留/腾挪方案；未新增删除授权，未删除或移动旧原始5/50/100、旧100额外archive、当前目标任何源/副本/RAW/teacher。证据storage-projection-after-pair50-and-recent20.json及sigma3-recent20-storage-metadata-1792081009.json；只读review确认有实质容量风险，但投影不能当必然硬quota超限。
