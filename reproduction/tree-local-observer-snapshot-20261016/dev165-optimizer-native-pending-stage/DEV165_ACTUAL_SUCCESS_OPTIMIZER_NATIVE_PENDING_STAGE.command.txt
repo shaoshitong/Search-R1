@@ -1,0 +1,43 @@
+python3 -B - <<'PY'
+from pathlib import Path
+import json,hashlib,importlib.util,re,datetime
+w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013';ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')];sha=lambda r:hashlib.sha256(r).hexdigest()
+refs={}
+def rd(n):
+ raw=(b/n).read_bytes()
+ for m in ms:
+  q=m/n
+  if not q.exists() and n in {'NATIVE5_CONTINUE_POLL_2002.json','NATIVE5_CONTINUE_RESOURCE_2002.json','NATIVE5_CONTINUE_POLL_2003.json','NATIVE5_CONTINUE_RESOURCE_2003.json'}:q.write_bytes(raw)
+  assert q.read_bytes()==raw
+ refs[n]={'file':n,'bytes':len(raw),'sha256':sha(raw)};return json.loads(raw)
+cp=w/'work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/sync_nested_native_progress.py'
+assert sha(cp.read_bytes())=='676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1'
+s=importlib.util.spec_from_file_location('pending165_core',cp);c=importlib.util.module_from_spec(s);s.loader.exec_module(c)
+p1=rd('NATIVE5_CONTINUE_POLL_2002.json');r1=rd('NATIVE5_CONTINUE_RESOURCE_2002.json');p2=rd('NATIVE5_CONTINUE_POLL_2003.json');r2=rd('NATIVE5_CONTINUE_RESOURCE_2003.json');native=rd('NATIVE_HISTORY_165_METADATA_READBACK.json')
+assert refs['NATIVE_HISTORY_165_METADATA_READBACK.json']['sha256']=='d29d3f9445644af7f9ecaf5419279d0615fb910fa40b10fdefd9c4ebcaf2cb95'
+record,guard,completed,totals=c.validate_native(native,p1['progress'],165);obs=[]
+for p,r in [(p1,r1),(p2,r2)]:
+ ps,rs,active=c.validate_unit(p,r,165)
+ assert active and p['progress']['actual_completed_outer_from_attempt_results']==165 and not p['progress'].get('errors') and p.get('run_result') is None
+ assert c.counts(p['progress']['completed_actual_optimizer_calls_per_rank'],'actual165')==completed
+ assert p['progress']['training_attempts_seen']==guard['training_attempts'] and p['progress']['all_skipped_attempts']==guard['refused_attempts']
+ assert max(m['step'] for m in p['iteration_metrics'])==164
+ assert not any(d.get('outer')==165 and d.get('status')=='VALIDATION_COST_COMPLETE' for d in p['development'])
+ assert re.search(r'epoch\s+\d+,\s*step\s+166\b',p['logs']['stage.log']) is None
+ assert 165 in r['state']['indexed_completed_outers'] and r['state']['audit_error_count']==0
+ obs.append({'poll_epoch':p['epoch'],'resource_epoch':r['epoch'],'MainPID':ps['MainPID'],'InvocationID':rs['InvocationID'],'service_CPU_seconds':int(rs['CPUUsageNSec'])/1e9})
+assert obs[1]['poll_epoch']>obs[0]['poll_epoch'] and obs[1]['service_CPU_seconds']>obs[0]['service_CPU_seconds']
+ranks=p2['last_rank_summaries'];assert len(ranks)==8 and {r['rank'] for r in ranks}==set(range(8))
+assert all(r['outer_step']==r['attempt_id']==165 and r['successful_optimizer_calls']>0 and r['finite_grad_norms']>=r['successful_optimizer_calls'] and r['nonzero_grad_norms']>0 and r['local_shard_sample_delta']['finite']==r['local_shard_sample_delta']['count'] and r['local_shard_sample_delta']['nonzero']>0 for r in ranks)
+for n in ['FULL_OUTER164_PROGRESS_RECEIPT.json','OUTER164_FULL_NEXT165_ACTUAL_PROGRESS.json','CUMULATIVE_COST_THROUGH164.json','ROOT_FULL164_PUBLICATION_READBACK_1977_1981.json']:rd(n)
+assert refs['ROOT_FULL164_PUBLICATION_READBACK_1977_1981.json']['sha256']=='76187585ff71ca970fb15ed48efe18b2df2a1b4d53905f72b12348873450563f'
+latest=max((d for d in p2['development'] if d['status']=='VALIDATION_COST_COMPLETE'),key=lambda d:d['outer']);assert latest['outer']==160 and latest['rows']==512
+v={'schema':'nested_dev165_verified_wait_v1','status':'ACTUAL_NATIVE165_DEV165_RESULT_PENDING','created_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'goal_status':'active','source_commit':c.SOURCE,'config_sha256':c.CONFIG,'unit':c.UNIT,'run':c.RUN,'original_PID':int(c.PID),'invocation_id':c.INVOCATION,'actual_observations':obs,'actual_optimizer_completed_outer':165,'actual_successful_adam_per_rank':completed,'actual_total_adam_per_rank':totals,'child_successful_adam_per_rank':{k:x-100 for k,x in completed.items()},'actual_outer_successful_writes_per_rank':{str(r['rank']):r['successful_optimizer_calls'] for r in ranks},'original_rank_records':ranks,'rank_opportunity_and_guard_skip_fields':'Original processed/guard-skip fields absent and unknown; skipped_empty_minibatches is separate. No missing zero inferred.','latest_saved_native_outer':165,'native_manifest_sha256':native['manifest_sha256'],'native_archive_receipt_sha256':native['receipt_sha256'],'actual_cold_loaded_native_outer':5,'independent_cold_reload_performed':False,'tensor_contents_read':False,'native_saved_driver_next_step':record['driver']['next_step'],'saved_cursor166_is_not_live_outer166':True,'current_outer165_full_metric':None,'current_outer165_wall_seconds':None,'current_outer165_training_variances':None,'current_outer165_reward':None,'dev165_result':None,'latest_completed_dev512':latest,'score_updated':False,'stage_and_retriever_log_growth':{k:p2['own_output_files'][k]-p1['own_output_files'][k] for k in ('stage.log','retriever.log')},'input_refs':refs,'canonical_FULL_boundary':164,'canonical_publication_updated':False,'outer166_entered_claimed':False,'whole_goal_complete':False,'training_or_remote_mutation':False,'scope':'Actual165 updates/native saved. Normal dev165 result is pending. FULL164/cost164 remain prior complete metric/accounting boundary; no new score/timing/variance/final acceptance/exact resume inferred.'}
+n='OUTER165_UPDATES_NATIVE_DEV_PENDING_ACTUAL_2002_2003.json';assert not (b/n).exists();raw=(json.dumps(v,ensure_ascii=False,indent=2)+'\n').encode()
+for f in [b]+ms:(f/n).write_bytes(raw)
+for _ in range(2):
+ assert all((f/n).read_bytes()==raw for f in [b]+ms)
+ for name,ref in refs.items():
+  z=(b/name).read_bytes();assert len(z)==ref['bytes'] and sha(z)==ref['sha256'];assert all((m/name).read_bytes()==z for m in ms)
+print(json.dumps({'pending165':{'file':n,'bytes':len(raw),'sha256':sha(raw)},'actual_adam_per_rank':completed,'dev165_result':None,'last_FULL':164,'canonical_updated':False,'mirrors_twice_equal':True}))
+PY
