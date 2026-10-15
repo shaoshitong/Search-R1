@@ -42,6 +42,7 @@ def env():
         BASE/'runtime/flash-attn-281-hpc-build/lib',
         BASE/'source/author-native/env/lib/python3.11/site-packages']))
     values.update(HF_HUB_OFFLINE='1', TRANSFORMERS_OFFLINE='1',
+                  HF_HUB_DISABLE_TELEMETRY='1',VLLM_NO_USAGE_STATS='1',DO_NOT_TRACK='1',
                   PYTHONDONTWRITEBYTECODE='1', TOKENIZERS_PARALLELISM='false',
                   HF_HOME=str(OUT/'cache/hf'), HF_DATASETS_CACHE=str(OUT/'cache/datasets'),
                   TMPDIR=str(OUT/'cache/tmp'), OMP_NUM_THREADS='8',

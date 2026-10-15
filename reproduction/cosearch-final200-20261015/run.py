@@ -298,6 +298,9 @@ def await_explicit_repair(error_text):
             approved=json.loads(command.read_text())
             if (approved.get('wait_id')==cookie and approved.get('job')==int(os.environ['SLURM_JOB_ID'])
                 and approved.get('manifest_sha256')==sha(OUT/'source-manifest.json')):
+                resumed=json.loads((OUT/'repair-wait.json').read_text())
+                resumed.update(epoch=time.time(),status='VERIFIED_REPAIR_ACCEPTED_EXECUTING')
+                atomic(OUT/'repair-wait.json',resumed)
                 print('EXPLICIT_VERIFIED_REPAIR_EXEC_SAME_ALLOCATION',flush=True)
                 os.execv(sys.executable,[sys.executable,'-B',str(TOOLS/'run.py')])
         time.sleep(2)
