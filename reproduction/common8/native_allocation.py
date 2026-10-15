@@ -76,6 +76,24 @@ def cuda_uuids(count=8):
     return result
 
 
+def nvml_minor_number(gpu_uuid):
+    """NVML supports device minors even when nvidia-smi's query parser does not."""
+    import ctypes
+    library=ctypes.CDLL('libnvidia-ml.so.1')
+    if library.nvmlInit_v2()!=0:raise RuntimeError('NVML initialization failed')
+    try:
+        handle=ctypes.c_void_p();minor=ctypes.c_uint()
+        get_handle=library.nvmlDeviceGetHandleByUUID
+        get_handle.argtypes=[ctypes.c_char_p,ctypes.POINTER(ctypes.c_void_p)]
+        get_minor=library.nvmlDeviceGetMinorNumber
+        get_minor.argtypes=[ctypes.c_void_p,ctypes.POINTER(ctypes.c_uint)]
+        if get_handle(gpu_uuid.encode(),ctypes.byref(handle))!=0 or get_minor(handle,ctypes.byref(minor))!=0:
+            raise RuntimeError('Cannot authenticate allocated GPU minor from UUID')
+        return minor.value
+    finally:
+        library.nvmlShutdown()
+
+
 def validate(job, node, visible, active_jobs, gpu_rows, applications, allocated, actual_cuda_uuids, allowed_applications=None):
     assert job['JobState']=='RUNNING', 'No active native allocation'
     assert job['NodeList']==node and job['NumNodes']=='1', 'Allocation is not this single node'
@@ -136,9 +154,11 @@ def admit(base):
     assert job['JobId']==job_id
     visible=os.environ.get('CUDA_VISIBLE_DEVICES','').split(',')
     active=subprocess.check_output(['squeue','-h','-w',node,'-t','RUNNING,COMPLETING','-o','%i'],text=True).split()
-    query='index,uuid,memory.total,minor_number' if size==4 and not sharing else 'index,uuid,memory.total'
+    query='index,uuid,memory.total'
     raw=subprocess.check_output(['nvidia-smi','--query-gpu='+query,'--format=csv,noheader,nounits'],text=True)
     rows=[[x.strip() for x in r] for r in csv.reader(io.StringIO(raw))]
+    if size==4 and not sharing:
+        rows=[row+[str(nvml_minor_number(row[1]))] for row in rows]
     raw_apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True)
     applications=[r for r in csv.reader(io.StringIO(raw_apps)) if r]
     assert torch.cuda.device_count()==size

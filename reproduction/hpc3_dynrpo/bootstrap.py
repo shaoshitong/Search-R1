@@ -58,16 +58,26 @@ def main():
         # experiment. Preserve its receipts before correcting the resource limit.
         rejected=base/'preparation/preparation-submission.json'
         outcome=json.loads(rejected.read_text())
-        if outcome.get('returncode')==0 or outcome.get('job') or outcome.get('stdout','').strip():
-            raise ValueError('Cannot upgrade an existing successful or ambiguous submission')
-        if (base/'preparation/preparation-controller.json').exists() or (base/'logs/run-manifest.json').exists():
-            raise ValueError('A producer started; retain its immutable source')
+        if outcome.get('job'):
+            job=outcome['job']
+            if not str(job).isdecimal():raise ValueError('Unknown prior job identity')
+            accounting=subprocess.check_output(['sacct','-nP','-X','-j',job,'--format=JobID,State,ExitCode'],text=True)
+            entries=[row.split('|') for row in accounting.splitlines() if row.strip()]
+            if len(entries)!=1 or entries[0][0]!=job or entries[0][1] not in ('FAILED','CANCELLED','OUT_OF_MEMORY','TIMEOUT'):
+                raise ValueError('Existing producer is not an authenticated failed terminal job')
+        elif outcome.get('returncode')==0 or outcome.get('stdout','').strip():
+            raise ValueError('Cannot upgrade an ambiguous submission')
+        for name in ('logs/run-manifest.json','preparation/warmup-feature-cursor.json',
+                     'preparation/feature-cursor.json','warmup/latest-state.pt','warmup/ready.json'):
+            if (base/name).exists():raise ValueError('Real model/feature state exists; use a state-bound recovery instead')
         queue=subprocess.check_output(['squeue','-h','-u',str(os.getuid()),'--name=dynrpo-native5-preparation','-o','%i'],text=True)
         if queue.strip():raise ValueError('An existing queued producer must be reconciled first')
         old=json.loads(existing.read_text())['commit']
         history=base/'preparation'/('rejected-submit-'+old);history.mkdir(exist_ok=False)
-        for name in ('source-publication.json','deployment-plan.json','preparation-submit-claim.json','preparation-submission.json'):
-            (base/'preparation'/name).rename(history/name)
+        for name in ('source-publication.json','deployment-plan.json','preparation-submit-claim.json','preparation-submission.json',
+                     'preparation-controller.json','native-cpu-tests.json','progress.json'):
+            path=base/'preparation'/name
+            if path.exists():path.rename(history/name)
         alias=base/'repo'
         if not alias.is_symlink():raise ValueError('Source alias is not owned deployment metadata')
         temporary=base/'repo.next';temporary.symlink_to(source);temporary.replace(alias)

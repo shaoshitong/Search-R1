@@ -108,8 +108,10 @@ def normalize_preparation_gpu():
     tokens = raw.split(',')
     if len(tokens) != 1 or not tokens[0]:
         raise ValueError('Preparation requires exactly one allocated GPU')
-    rows = subprocess.check_output(['nvidia-smi', '--query-gpu=index,uuid,minor_number', '--format=csv,noheader,nounits'], text=True)
+    from reproduction.common8.native_allocation import nvml_minor_number
+    rows = subprocess.check_output(['nvidia-smi', '--query-gpu=index,uuid', '--format=csv,noheader,nounits'], text=True)
     inventory = [list(map(str.strip, row.split(','))) for row in rows.splitlines()]
+    inventory = [row+[str(nvml_minor_number(row[1]))] for row in inventory]
     if tokens[0].startswith('GPU-'):
         choices = [row[1] for row in inventory if row[1] == tokens[0]]
     else:
