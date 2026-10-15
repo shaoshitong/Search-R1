@@ -331,13 +331,15 @@ once(base/'logs/old-cleanup-repair-once.json',dict(no_automatic_retry=True,archi
 for name in tuple(sys.modules):
  if name in ('reproduction','search_g1') or name.startswith(('reproduction.','search_g1.')):del sys.modules[name]
 sys.path[:]=[str(oldrepo)]+[x for x in sys.path if x not in (str(repo),str(oldrepo),intent['cleanup_library_repo'],'')]
-from reproduction.a800.owned_processes import OwnedProcesses,publish,remaining_cuda_contexts,owned_session_survivors
+from reproduction.a800.owned_processes import OwnedProcesses,publish
 from reproduction.a800_common.cache import cleanup
 owned=OwnedProcesses(oldbase/'logs/process-ledger.json',old['run_id']);assert owned.recovery_only is True
 owned.stop_all();cleanup(oldbase)
-actual,reused=owned_session_survivors(leaders);assert not actual and not reused
+# Retained C4 functions keep their original module globals after sys.modules
+# isolation; ab8 intentionally supplies only its native recovery implementation.
+actual,reused=survivors(leaders);assert not actual and not reused
 rows=list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True,timeout=20))))
-remaining,reused_pids=remaining_cuda_contexts(records,rows);assert not remaining
+remaining,reused_pids=contexts(records,rows);assert not remaining
 assert all(Path(path).exists() for path in old['retrieval_asset_paths'].values()) and Path(old['initial_model']).is_dir() and Path(old['reference_model']).is_dir()
 publish(oldbase/'logs/cleanup-status.json',dict(run_id=old['run_id'],execution_id=old['execution_id'],execution_backend='ssh_local',slurm_job_id=None,cleaned=True,scope='only recorded project PID births and private local corpus cache',checked_unix=time.time(),terminal_native_cleanup_repair_archive=str(archive)))
 actual=audit();receipt=dict(stage='OLD_TERMINAL_NATIVE_CLEANUP_REPAIRED_AND_ACTUALLY_VERIFIED',accepted=True,verification=actual,original_failure_preserved=True,original_archive_manifest_sha256=sha(archive/'manifest.json'),checked_unix=time.time())
