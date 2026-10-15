@@ -407,8 +407,13 @@ def aliases(core, n, data, receipt_pin, now):
         effective_source_segments=data['costs']['effective_source_segments'],
         current_alias_reconciliation=receipt_pin,
         local_current_alias_reconciler_latest_available_source_commit=data['metadata_source']['commit'],
+        local_current_alias_reconciler_latest_available_sha256=data['metadata_source']['script']['sha256'],
+        local_current_alias_reconciler_latest_available_not_yet_invoked=False,
         local_current_alias_reconciler_latest_actual_source_commit=data['metadata_source']['commit'],
+        local_current_alias_reconciler_latest_actual_sha256=data['metadata_source']['script']['sha256'],
         local_current_alias_reconciler_latest_actual_script_sha256=data['metadata_source']['script']['sha256'],
+        local_current_alias_reconciler_latest_actual_outer=n,
+        local_current_alias_reconciler_latest_actual_receipt=receipt_pin,
         updated_at=now, recorded_at_utc=now,
         final200_51713_HF_tokenizer_acceptance_complete=False, final_evaluation_complete=False,
         independent_cold_reload_performed=False, exact_executor_resume=False,
@@ -486,6 +491,9 @@ def main():
         core.need(isinstance(archive, dict), 'Historical alias archive type differs', 'REJECTED_INPUT_NO_WRITE')
         archive[str(n)] = dict(scope='Prior generic aliases; historical after this FULL reconciliation.',
                               fields={k:old[k] for k,v in common.items() if k in old and old[k] != v})
+        archive[str(n)]['metadata_source_latest_tuple'] = {
+            k:copy.deepcopy(old[k]) for k in common
+            if k.startswith('local_current_alias_reconciler_latest_') and k in old}
         if old.get('current_active_rollout_progress') is not None:
             archive[str(n)]['retired_current_rollout_pointer'] = old['current_active_rollout_progress']
         value.update(copy.deepcopy(common));updated.append(value)
