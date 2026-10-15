@@ -191,8 +191,17 @@ def scan(args):
     for name,h in sources['model_files_sha256'].items():
         if Path(name).name!=name or sha(model/name)!=h: raise ValueError('Official encoder asset differs: '+name)
     config=read(model/'config.json')
-    pad=sources.get('pad_token_id',config.get('pad_token_id'))
-    if type(pad)is not int: raise ValueError('Explicit pad token ID required')
+    pad=sources.get('pad_token_id')
+    pad_provenance='sources_json.pad_token_id'
+    if pad is None:
+        pad=config.get('pad_token_id');pad_provenance='official_config.pad_token_id'
+    if pad is None:
+        # Query tokenizer metadata only. Original request/prefix IDs are never
+        # decoded, encoded or otherwise replaced by the tokenizer.
+        from transformers import AutoTokenizer
+        tokenizer=AutoTokenizer.from_pretrained(str(model),local_files_only=True,trust_remote_code=False)
+        pad=tokenizer.pad_token_id;pad_provenance='official_tokenizer.pad_token_id'
+    if type(pad)is not int or pad<0: raise ValueError('Official pad token ID unavailable')
     np.save(out/'packed_input_ids.npy',np.asarray(ids,dtype=np.int64),allow_pickle=False)
     np.save(out/'offsets.npy',np.asarray(offsets,dtype=np.int64),allow_pickle=False)
     for name in ('packed_input_ids.npy','offsets.npy'):
@@ -202,7 +211,7 @@ def scan(args):
         f.flush();os.fsync(f.fileno())
     proof=dict(schema_version=2,role='prefix10_20_shared_raw_id_scan',count=len(rows),split_counts=dict(train=25600,test=2560),
         global_max_tokens=max(r['length'] for r in rows),encoder_revision=REVISION,model_dir=str(model),model_files_sha256=sources['model_files_sha256'],
-        sources_sha256=sha(source_path),split_proof=split_proof,pad_token_id=pad,
+        sources_sha256=sha(source_path),split_proof=split_proof,pad_token_id=pad,pad_token_provenance=pad_provenance,
         position_provenance='reconstructed_contiguous_unpadded_actual_request',prefix_source='first_native_request_raw_including_observed_EOS',
         files={n:dict(sha256=sha(out/n),bytes=(out/n).stat().st_size) for n in ('packed_input_ids.npy','offsets.npy','index.jsonl')})
     once(out/'scan-complete.json',proof);return proof
@@ -323,6 +332,7 @@ def encode(args):
         spec=dict(representation=REPRESENTATION,prefix_length=args.prefix_length,feature_layer=27,boundary='post_block',feature_dim=2048,
                   encoder_revision=REVISION,encoder_model_dir=str(remote(args.model)),encoder_files_sha256=proof['model_files_sha256'],
                   feature_dtype='bfloat16',encoder_compute_dtype='bfloat16',global_max_tokens=args.max_tokens,pad_token_id=proof['pad_token_id'],
+                  pad_token_provenance=proof['pad_token_provenance'],
                   position_provenance=proof['position_provenance'],prefix_source=proof['prefix_source'],split_question_isolation=True,
                   encoder_frozen=True,encoder_optimizer_updates=0,labels_passed_to_encoder=False,executed_decoder_indices=list(range(28)))
         manifest=dict(schema_version=2,representation=REPRESENTATION,count=proof['count'],split_counts=proof['split_counts'],feature_dim=2048,
