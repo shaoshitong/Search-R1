@@ -139,7 +139,12 @@ def load_verified_raw(descriptor):
 
 
 def first_request_prefix(turns, trajectory_id, limit=80):
-    """Only native first-request IDs. Never consult whole-turn kept policy masks."""
+    """Native first-request IDs within the action actually kept by the executor.
+
+    The kept boundary limits the observation window; it is not a numeric head
+    feature. Full-turn stop metadata and discarded generated tails never enter
+    encoder inputs. Prefixes cannot cross an environment/tool boundary.
+    """
     if not turns: raise ValueError('Missing original behavior turns')
     turn = turns[0]
     if turn['trajectory_id'] != trajectory_id or turn['turn_index'] != 0:
@@ -149,11 +154,14 @@ def first_request_prefix(turns, trajectory_id, limit=80):
     if turn['raw_generated_token_count'] != len(raw): raise ValueError('Raw token count differs')
     # Stop is represented only if actually within the observed raw prefix. No
     # whole-turn finish_reason/final_turn/kept_count is exposed as a feature.
-    prefix = raw[:limit]; eos = turn['eos_token_id']
-    if eos in prefix: prefix = prefix[:prefix.index(eos)+1]
+    kept=turn['kept_token_count']
+    if type(kept)is not int or not 0<=kept<=len(raw) or turn['prefix_cut']['kept_token_ids']!=raw[:kept]:
+        raise ValueError('Actual first-action kept prefix differs from native generated IDs')
+    prefix = raw[:min(limit,kept)]; eos = turn['eos_token_id']
     return list(prompt), list(prefix), dict(raw_prefix_token_count=len(prefix),observed_eos=eos in prefix,eos_token_id=eos,
         actual_request_sha256=hashlib.sha256(canonical(prompt)).hexdigest(),
         raw_prefix_sha256=hashlib.sha256(canonical(prefix)).hexdigest(),
+        prefix_window='actual_kept_first_request_policy_tokens',
         mask_position_provenance='reconstructed_unpadded_actual_request_causal_positions',
         whole_turn_future_metadata_used_as_features=False)
 
@@ -217,8 +225,8 @@ def scan(args):
             length_histogram={str(k):sum(min(limit,r['prefix_length'])==k for r in rows) for k in sorted({min(limit,r['prefix_length']) for r in rows})}) for limit in (10,20,40,80)},
         encoder_revision=REVISION,model_dir=str(model),model_files_sha256=sources['model_files_sha256'],
         sources_sha256=sha(source_path),split_proof=split_proof,pad_token_id=pad,pad_token_provenance=pad_provenance,
-        position_provenance='reconstructed_contiguous_unpadded_actual_request',prefix_source='first_native_request_raw_including_observed_EOS',
-        short_prefix_rule='retain_actual_observed_raw_tokens_through_EOS; never_pad_with_real_tokens_or_cross_turns',
+        position_provenance='reconstructed_contiguous_unpadded_actual_request',prefix_source='first_native_request_raw_within_actual_kept_action',prefix_window='actual_kept_first_request_policy_tokens',
+        short_prefix_rule='stop_at_actual_first_action_kept_boundary_including_early_closing_tag_or_EOS_stop; terminal_EOS_not_fabricated; never_cross_turns',
         zero_prefix_rule='retain_original_row_and_label_with_empty_prefix; report_zero_count; never_drop_or_fabricate_tokens',
         files={n:dict(sha256=sha(out/n),bytes=(out/n).stat().st_size) for n in ('packed_input_ids.npy','offsets.npy','index.jsonl')})
     once(out/'scan-complete.json',proof);return proof
@@ -236,6 +244,7 @@ def validate_prepared_inputs(inputs, sources_path, model_path, *, verify_model=T
     proof_path=source/'scan-complete.json';proof=read(proof_path);model=remote(model_path)
     mapping=proof['model_files_sha256']
     if proof['encoder_revision']!=REVISION:raise ValueError('Prepared encoder revision differs')
+    if proof.get('prefix_window')!='actual_kept_first_request_policy_tokens':raise ValueError('Prepared input includes an unbound raw-tail window')
     relocated=sources.get('prepared_scan')
     if relocated is None:
         if sha(config_path)!=proof['sources_sha256'] or str(model)!=proof['model_dir']:
@@ -340,7 +349,7 @@ def encode(args):
                   encoder_revision=REVISION,encoder_model_dir=str(remote(args.model)),encoder_files_sha256=proof['model_files_sha256'],
                   feature_dtype='bfloat16',encoder_compute_dtype='bfloat16',global_max_tokens=80,head_max_tokens=80,encoder_global_max_tokens=proof['encoder_global_max_tokens'],pad_token_id=proof['pad_token_id'],
                   pad_token_provenance=proof['pad_token_provenance'],
-                  position_provenance=proof['position_provenance'],prefix_source=proof['prefix_source'],split_question_isolation=True,
+                  position_provenance=proof['position_provenance'],prefix_source=proof['prefix_source'],prefix_window=proof['prefix_window'],split_question_isolation=True,
                   encoder_frozen=True,encoder_optimizer_updates=0,labels_passed_to_encoder=False,
                   encoder_input='actual_request_plus_raw_prefix',stored_features='prefix_positions_only',
                   absolute_positions='prompt_length+arange(prefix_length)',question_hidden_stored=False,executed_decoder_indices=list(range(28)))
@@ -362,7 +371,7 @@ class PrefixFeatureCache:
         if self.manifest['schema_version']!=2 or self.manifest['representation']!=REPRESENTATION or self.spec['prefix_length'] not in (10,20,40,80):
             raise ValueError('Wrong prefix feature schema')
         self.spec_sha=hashlib.sha256(canonical(self.spec)).hexdigest()
-        if self.spec_sha!=self.manifest['spec_sha'] or self.spec['feature_layer']!=27 or self.spec['boundary']!='post_block':raise ValueError('Wrong feature encoder spec')
+        if self.spec_sha!=self.manifest['spec_sha'] or self.spec['feature_layer']!=27 or self.spec['boundary']!='post_block' or self.spec.get('prefix_window')!='actual_kept_first_request_policy_tokens':raise ValueError('Wrong feature encoder/window spec')
         self.feature_dim=2048;self.max_tokens=self.manifest['global_max_tokens']
         if self.max_tokens!=80 or self.spec['head_max_tokens']!=80 or self.spec.get('question_hidden_stored') is not False:raise ValueError('Expected prefix-only shared eighty-token head capacity')
         self.ids_by_split={'train':[],'test':[]};self.index={}
