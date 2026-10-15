@@ -67,6 +67,17 @@ class Stage:
             value=original(path);self.remember(path,value,proof['publication_sha256']);return value
         # load_fixed returned a private controller, never an active/shared one.
         control.digest=digest
+        if hasattr(control,'read'):
+            original_read=control.read
+            @functools.wraps(original_read)
+            def read(path):
+                expected=original_read(path)  # Keep the original scope guards.
+                raw,record=reader.read_file(path,capture=True)
+                value=json.loads(raw)
+                need(value==expected,'immutable JSON changed between owned reads')
+                self.remember(record['path'],record['sha256'],proof['publication_sha256'])
+                return value  # Object and retained SHA come from the same full read.
+            control.read=read
 
     def prepare(self,module,commit,name):
         if id(module) in self.prepared:return
@@ -110,6 +121,17 @@ class Stage:
             self.publications[commit]=proof
             self.remember(proof['publication_path'],proof['publication_sha256'])
             self.prepare_control(getattr(module,control_attribute),proof)
+            if callable(getattr(module,'read_json',None)):
+                original_json=module.read_json
+                @functools.wraps(original_json)
+                def read_json(path,with_sha=False):
+                    expected=original_json(path,with_sha=with_sha)
+                    raw,record=reader.read_file(path,capture=True)
+                    value=json.loads(raw);actual=(value,record['sha256']) if with_sha else value
+                    need(actual==expected,'owned observer JSON changed during stage read')
+                    self.remember(record['path'],record['sha256'],proof['publication_sha256'])
+                    return actual
+                module.read_json=read_json
             if RECOVERIES.get(commit)==filename:self.prepare(module,commit,filename)
             self.modules[key]=(module,proof)
         return self.modules[key]

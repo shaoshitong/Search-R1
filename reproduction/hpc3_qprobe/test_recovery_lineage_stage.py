@@ -1,6 +1,7 @@
 """Nested original consumers plus byte/source/live boundary attacks; no remote I/O."""
 from collections import Counter
 import hashlib
+import json
 import os
 from pathlib import Path
 import tempfile
@@ -39,7 +40,8 @@ class ValidationStage(unittest.TestCase):
 
     def load(self,pin,name,attribute):
         self.publication(pin);self.loads[pin]+=1
-        control=SimpleNamespace(digest=self.digest,live=lambda _:not self.dead)
+        control=SimpleNamespace(digest=self.digest,live=lambda _:not self.dead,
+                                read=lambda path:json.loads(Path(path).read_bytes()))
         module=SimpleNamespace(reader=lineage.reader,**{attribute:control})
         index=PINS.index(pin)
         def consume(commit):
@@ -111,6 +113,70 @@ class ValidationStage(unittest.TestCase):
         other,module,_=self.stage();other.seal()
         self.assertEqual(dict(self.calls),{pin:2 for pin in PINS})
         self.assertIsNot(stage,other)
+
+    def test_plain_owned_json_is_rehashed_after_original_consumers_reran(self):
+        stage,_,_=self.stage();module,_=stage.load_fixed(PINS[-1],lineage.RECOVERIES[PINS[-1]],'control')
+        path=self.root/'worker-result.json';path.write_text('{"exit":0}')
+        self.assertEqual(module.control.read(path),{'exit':0})
+        original=self.publication
+        def mutate(pin):
+            result=original(pin);s=path.stat();path.write_text('{"exit":1}')
+            os.utime(path,ns=(s.st_atime_ns,s.st_mtime_ns));return result
+        with patch.object(lineage.reader,'publication',side_effect=mutate),self.assertRaises(ValueError):stage.seal()
+
+    def test_observer_plain_json_and_with_sha_reads_are_both_retained(self):
+        path=self.root/'observer.json';path.write_text('{"value":0}')
+        original=self.load
+        def load(pin,name,attribute):
+            module,proof=original(pin,name,attribute)
+            module.read_json=lambda p,with_sha=False:(json.loads(Path(p).read_bytes()),self.digest(p)) if with_sha else json.loads(Path(p).read_bytes())
+            return module,proof
+        with patch.object(lineage.reader,'load_fixed',side_effect=load):
+            stage,module,_=self.stage()
+        self.assertEqual(module.read_json(path),{'value':0})
+        self.assertEqual(module.read_json(path,with_sha=True),({'value':0},self.digest(path)))
+        original=self.publication
+        def mutate(pin):
+            result=original(pin);path.write_text('{"value":1}');return result
+        with patch.object(lineage.reader,'publication',side_effect=mutate),self.assertRaises(ValueError):stage.seal()
+
+    def test_original50_five_held_json_files_rehash_even_when_shared_validator_hashes_them(self):
+        fixture=json.loads(Path(__file__).with_name('archive100_third_failure_fixture.json').read_text())
+        entries=next(value for name,value in fixture.items() if name.endswith('/archive-50'))
+        folder=self.root/'final-control'/lineage.reader.RUN/'archive-50';folder.mkdir(parents=True)
+        names=('submit-claim.json','runner-binding.json','task-binding.json','worker-result.json','task-result.json')
+        for name in names:
+            raw=entries[name]['value'].encode();self.assertEqual(self.digest_bytes(raw),entries[name]['sha256'])
+            (folder/name).write_bytes(raw)
+        claim=json.loads((folder/names[0]).read_bytes());original_load=self.load
+        def load(pin,name,attribute):
+            module,proof=original_load(pin,name,attribute);original_consume=module.consume
+            def consume(commit):
+                value=original_consume(commit)
+                if commit==PINS[-1]:
+                    docs=[module.control.read(folder/n) for n in names]
+                    held=lineage.reader.validate_archive_documents(*docs,step=50,binding=claim['producer'],
+                        publication=claim['source'],allowed_controllers=[claim['controller']],alive=lambda _:False)
+                    self.assertTrue(held['ready']);value['held50']=held
+                return value
+            module.consume=consume;return module,proof
+        with patch.object(lineage.reader,'ROOT',self.root),\
+             patch.object(lineage.reader.ctl,'command',return_value=claim['command']),\
+             patch.object(lineage.reader,'birth_ok',side_effect=lambda b:isinstance(b,dict) and b.get('uid')==14090),\
+             patch.object(lineage.reader,'load_fixed',side_effect=load):
+            for name in names:
+                with self.subTest(file=name):
+                    stage,_,_=self.stage()
+                    self.assertTrue(all(str(folder/n) in stage.retained for n in names))
+                    path=folder/name;raw=path.read_bytes();original=self.publication
+                    def mutate(pin):
+                        result=original(pin);s=path.stat();path.write_bytes(b'X'+raw[1:])
+                        os.utime(path,ns=(s.st_atime_ns,s.st_mtime_ns));return result
+                    with patch.object(lineage.reader,'publication',side_effect=mutate),self.assertRaises(ValueError):stage.seal()
+                    path.write_bytes(raw)
+
+    @staticmethod
+    def digest_bytes(value):return hashlib.sha256(value).hexdigest()
 
 
 if __name__=='__main__':unittest.main()
