@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import subprocess
 import time
@@ -63,9 +64,17 @@ def capture_terminal(base):
     ledger=read(OLD/'logs/process-ledger.json');births=[r for job in ledger['jobs'].values() for r in job['ledger'].values()]
     assert births and not [r for r in births if live(r)],'Original owned births still live; observe same job'
     assert not live(intent['driver'])
-    native=subprocess.check_output(['sacct','-j',str(JOB),'-n','-P','-o','JobIDRaw,State,ExitCode'],text=True)
-    rows=[r.split('|') for r in native.splitlines() if r.split('|')[0]==str(JOB)]
-    assert len(rows)==1 and rows[0][1].split()[0] in ('CANCELLED','FAILED','COMPLETED','TIMEOUT','NODE_FAIL','OUT_OF_MEMORY'),native
+    accounting=subprocess.run(['sacct','-j',str(JOB),'-n','-P','-o','JobIDRaw,State,ExitCode'],capture_output=True,text=True)
+    if accounting.returncode==0:
+        rows=[r.split('|') for r in accounting.stdout.splitlines() if r.split('|')[0]==str(JOB)]
+        assert len(rows)==1,accounting.stdout
+    else:
+        # This cluster disables Slurm accounting; controller state is authoritative.
+        native=subprocess.check_output(['scontrol','show','job','-o',str(JOB)],text=True)
+        fields=dict(re.findall(r'(\w+)=(\S+)',native))
+        assert fields['JobId']==str(JOB) and fields['BatchHost']=='h100-8'
+        rows=[[str(JOB),fields['JobState'],fields['ExitCode']]]
+    assert rows[0][1].split()[0] in ('CANCELLED','FAILED','COMPLETED','TIMEOUT','NODE_FAIL','OUT_OF_MEMORY'),rows
     groups=list(Path('/sys/fs/cgroup').glob('**/job_'+str(JOB)));assert not groups,'Owned cgroup still exists'
     gpu=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid,gpu_uuid','--format=csv,noheader'],text=True)
     owned={r['pid'] for r in births};assert not any(int(r.split(',')[0]) in owned for r in gpu.splitlines() if r.strip())
