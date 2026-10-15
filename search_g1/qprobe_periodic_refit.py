@@ -78,7 +78,17 @@ def run(trainer, manager, runtime, checkpoint):
         _restore_driver_rng(saved['driver_rng'])
         feature_hashes = saved.get('feature_hashes')
     else:
-        indices = runtime.refit_rng.choice(len(trainer.train_dataloader.dataset),size=5120,replace=False).tolist()
+        # Draw uniformly without replacement, excluding duplicate canonical
+        # question content as well as duplicate row IDs.
+        from search_g1.qprobe_selection import QuestionPool
+        pool,indices = QuestionPool(5120),[]
+        source = trainer.train_dataloader.dataset
+        for index in runtime.refit_rng.permutation(len(source)).tolist():
+            question,qid = original_question_and_id(source.dataframe.iloc[index],source.prompt_key)
+            if pool.reserve(qid,question) is not None:
+                indices.append(index)
+            if len(indices)==5120:
+                break
         labels,feature_hashes = [],None
         phase = dict(start_steps=runtime.head._adam_steps(),epoch=0,batch=0,order=None,
                      minibatches=[],summaries=[])
@@ -165,6 +175,11 @@ def run(trainer, manager, runtime, checkpoint):
         del provider
     if result['head_optimizer_updates'] != 400 or phase['epoch'] != 20:
         raise ValueError('PERIODIC_REFIT_DID_NOT_FINISH_TWENTY_FULL_EPOCHS')
+    final_frozen = trainer.actor_rollout_wg.capture_periodic_probe_boundary(str(directory/('frozen-after-fit-'+str(time.time_ns()))))
+    for before,after in zip(sorted(frozen_before,key=lambda r:r['rank']),sorted(final_frozen,key=lambda r:r['rank'])):
+        for key in ('rank','parameter_sha256','actual_optimizer_writes','completed_outer','scheduler_sha256','adam_steps'):
+            if before[key] != after[key]:
+                raise ValueError('PERIODIC_PROBE_FIT_UPDATED_STUDENT_'+key)
     runtime.head._version_cache = None
     runtime.head.phases.append(dict(outer=outer,**result))
     runtime.execution_phase = 'STUDENT_READY'

@@ -63,7 +63,7 @@ def main():
             if not str(job).isdecimal():raise ValueError('Unknown prior job identity')
             accounting=subprocess.check_output(['sacct','-nP','-X','-j',job,'--format=JobID,State,ExitCode'],text=True)
             entries=[row.split('|') for row in accounting.splitlines() if row.strip()]
-            if len(entries)!=1 or entries[0][0]!=job or entries[0][1] not in ('FAILED','CANCELLED','OUT_OF_MEMORY','TIMEOUT'):
+            if len(entries)!=1 or entries[0][0]!=job or entries[0][1].split()[0] not in ('FAILED','CANCELLED','OUT_OF_MEMORY','TIMEOUT'):
                 raise ValueError('Existing producer is not an authenticated failed terminal job')
         elif outcome.get('returncode')==0 or outcome.get('stdout','').strip():
             raise ValueError('Cannot upgrade an ambiguous submission')

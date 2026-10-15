@@ -103,6 +103,7 @@ class PeriodicRuntime(QProbeRuntime):
         self.completed_outer = self.head.completed_outer = outer
         self.completed_attempts.add(pending['attempt_id'])
         self.pending = None
+        self.post_refit_state_path = None
         self.execution_phase = 'PROBE_PENDING' if outer in REFIT_OUTERS else (
             'FINAL_EVALUATION_PENDING' if outer==200 else 'STUDENT_READY')
         return event
