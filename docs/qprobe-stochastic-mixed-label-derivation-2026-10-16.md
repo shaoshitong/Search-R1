@@ -4,7 +4,7 @@ Date: 2026-10-16, Asia/Shanghai. This is a proposed mathematical reframing; it d
 
 ## Target
 
-Explain why a question's mixed/nonmixed label changes across groups of five responses, and derive objectives that estimate its propensity to produce an informative G5 group. Distinguish finite-cache fitting, new-sampling prediction, and cross-question generalization.
+Explain why a question's mixed/nonmixed label changes across groups of five responses, and derive objectives that estimate its propensity to produce an informative G5 group. Distinguish finite-cache fitting, new-sampling prediction, and cross-question generalization. The later prefix5 proposal conditions this utility on already observed trajectory prefixes and is analyzed separately below.
 
 ## Status
 
@@ -14,7 +14,7 @@ The stable target is a probability conditional on the question, actor version, a
 
 ## Invariant Object
 
-q_t(x): probability that a future G5 from question x and actor version t contains both correct and incorrect responses. This is the acquisition utility; it is not a deterministic semantic class of a question.
+The acquisition utility is the probability that the five continuations contain both correct and incorrect responses, conditional on information available at selection time. Before any prefix is observed this is q_t(x). After observing five prefixes it is q_t(x,s_1,...,s_5). These are different conditional probabilities of the same event, not interchangeable inputs to one formula.
 
 ## Assumptions
 
@@ -115,6 +115,26 @@ The original sample-standard-deviation target is sqrt(S²). Its squared-error op
 With M independently sampled G5 groups at the same actor version, estimate q from their mean mixed indicator. Its conditional variance is q(1-q)/M. A smoothed estimate such as (sum_m Y_m+a)/(M+a+b) introduces an explicit Beta prior rather than claiming to be assumption-free.
 
 This supports keeping the mixed-probability head while fitting soft frequency targets. It costs more generation. No extra repeated G5 generation is authorized by this note; the current requested diagnostic remains one new random512×5 set.
+
+### Step 7. Prefix-conditioned per-trajectory correctness — later user proposal
+
+Let s_j contain the first up-to-five actually sampled policy tokens of trajectory j, including the valid short length if EOS occurs earlier. Define p_j=P(C_j=1|x,s_j,t). A new head can fit one observed final correctness label C_j per stored trajectory using BCEWithLogits(z_theta(x,s_j),C_j). No explicit mixed-frequency target is needed for this conditional correctness objective.
+
+If the five suffix continuations are conditionally independent given their prefixes and the fixed actor/protocol,
+
+q_t(x,s_1,...,s_5)=1-product_j(p_j)-product_j(1-p_j).
+
+The single-p binomial formula applies only when the five conditional probabilities coincide. In particular, replacing p_j by their mean before raising to the fifth power is not generally valid. The earlier maximum15/16 is a bound for identically distributed responses before distinguishing prefixes; it need not bound the probability conditional on heterogeneous observed prefixes.
+
+For repeated identical question/prefix inputs, summed per-trajectory BCE reduces to the count likelihood for their shared p. For distinct informative prefixes it permits different conditional probabilities. More observed information can only improve the optimal Bayes predictor's expected risk; a finite fitted model using five largely boilerplate tokens is not guaranteed to realize that improvement.
+
+There are25,600 trajectory observations but only5,120 question clusters in the existing teacher cache. A question-separated test is needed to assess cross-question generalization; a random trajectory split can leak the same questions into both sets. Identical prefixes with conflicting final labels remain intrinsically noisy.
+
+The current rollout interface persists token IDs and sampling log probabilities, not the target encoder-layer hidden states. Offline extraction can replay only the exact actual prompt token IDs plus the stored five-token prefix through the frozen encoder, capturing layer27. It need not forward the future suffix or regenerate the cached trajectories. Existing question-only layer27 states are not a KV cache and cannot be assumed to resume a differently formatted prompt. Prompt format, positions, valid-token masks, encoder identity, and the new maximum input length must be bound explicitly.
+
+Using this predictor for selection adds a prefix stage over all5,120 candidate questions: five prefixes per question, up to128,000 sampled prefix tokens per outer. The selected512 questions must continue the same five prefix trajectories under the same actor snapshot, with their token/probability journals retained; unselected prefixes are extra acquisition cost, not PPO training trajectories. An offline prefix predictor alone does not implement this continuation contract.
+
+The existing native copied block can be retained with a new single-logit readout; the independent std regression objective can be removed in this proposed version. Recomputing the head's input bound is necessary; the old244 bound plus5 is valid only if the same question token sequence remains the full prompt, which has not been established for actual rollout prompts. This is a proposal/prototype design, not authorization to restart formal training.
 
 ## Remarks and Interpretation
 
