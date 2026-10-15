@@ -1,0 +1,8 @@
+python3 -B - <<'PY'
+from pathlib import Path
+import json,re
+b=Path('outputs/tree-nested-branch-handoff-20261013')
+for i in __IDS__:
+ p=json.loads((b/f'NATIVE5_CONTINUE_POLL_{i}.json').read_text());r=json.loads((b/f'NATIVE5_CONTINUE_RESOURCE_{i}.json').read_text());s=r['training_systemd'];get=lambda k:re.search(r'^'+k+r'=(.*)$',s,re.M).group(1)
+ print(json.dumps(dict(poll=i,epoch=p['epoch'],completed=p['progress']['actual_completed_outer_from_attempt_results'],adam=p['progress']['completed_actual_optimizer_calls_per_rank'],lastFULL=max(x['step'] for x in p['iteration_metrics']),errors=p['progress']['errors'],terminal=p['run_result'],PID=get('MainPID'),Invocation=get('InvocationID'),state=get('ActiveState'),CPU=int(get('CPUUsageNSec'))/1e9,OOM=p['latest_guard']['own_cgroup_resources']['memory.events'],GPU=[g['total_gpu_util'] for g in p['latest_guard']['gpus']],stage=p['own_output_files']['stage.log'],retriever=p['own_output_files']['retriever.log'],latestController=max(x['candidate_outer'] for x in p['rollout_cost']),watcher_latest=max(r['state']['indexed_completed_outers']),watcher_errors=r['state']['audit_error_count'])))
+PY

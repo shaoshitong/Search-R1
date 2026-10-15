@@ -1,0 +1,58 @@
+python3 -B - <<'PY'
+from pathlib import Path
+import json,hashlib,datetime,re,os,gzip,time,importlib.util
+n=__BASE_OUTER__;ids=[__BEFORE__,__COMPLETE__,__RECHECK__];w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013';ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+def read(p):return json.loads(p.read_bytes())
+def h(raw):return hashlib.sha256(raw).hexdigest()
+def pin(p):
+ raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=h(raw))
+def atomic(p,raw):
+ q=p.with_name(p.name+'.controller.tmp');q.write_bytes(raw);os.replace(q,p)
+full=read(b/f'FULL_OUTER{n}_PROGRESS_RECEIPT.json');polls=[read(b/f'NATIVE5_CONTINUE_POLL_{i}.json') for i in ids];resources=[read(b/f'NATIVE5_CONTINUE_RESOURCE_{i}.json') for i in ids];p=polls[-1];r=resources[-1]
+cp=w/'work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/sync_nested_native_progress.py';assert h(cp.read_bytes())=='676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1'
+spec=importlib.util.spec_from_file_location('published_progress',cp);core=importlib.util.module_from_spec(spec);spec.loader.exec_module(core)
+assert 6<=n<=199 and full['completed_outer']==n and full['full_iteration_metric_pending'] is False
+native=read(b/f'NATIVE_HISTORY_{n}_METADATA_READBACK.json')
+for q,t in zip(polls,resources):
+ assert q['source_commit']==full['source_commit'] and q['progress']['actual_completed_outer_from_attempt_results']==n and q['progress']['completed_actual_optimizer_calls_per_rank']==full['per_rank_actual_total_adam']
+ assert q['progress']['errors']==[] and q['run_result'] is None and q['progress']['partial_attempt_evidence']==[]
+ _,_,active=core.validate_unit(q,t,n);assert active;core.validate_restore(q);core.validate_native(native,q['progress'],n)
+controller=[x for x in p['rollout_cost'] if x['candidate_outer']==n+1];assert len(controller)==1;controller=controller[0]
+assert controller['status']=='TRAINING_ROLLOUT_COST_COMPLETE' and controller['actual_optimizer_writes'] is None and controller['costs']['context_mismatches']==0
+assert controller['code_commit']==full['source_commit'] and controller['config_sha256']==full['config_sha256'] and controller['completed_outer_before']==n and controller['question_rows']==2*full['iteration_metrics']['tree_variance/question_count']
+assert polls[0]['epoch']<controller['end_epoch']<polls[1]['epoch']<polls[2]['epoch'] and not any(x['candidate_outer']==n+1 for x in polls[0]['rollout_cost'])
+cpus=[int(re.search(r'^CPUUsageNSec=(\d+)$',z['training_systemd'],re.M).group(1)) for z in resources];assert cpus[0]<cpus[1]<cpus[2]
+out=b/f'ROLLOUT{n+1}_COMPLETE_UPDATES_PENDING_ACTUAL_{ids[0]}_{ids[1]}_{ids[2]}.json';assert not out.exists()
+paths=[w/'outputs/STATUS.json',w/'outputs/tree-nested-branch/STATUS.json',b/'CURRENT_NATIVE_RECOVERY_FOLLOWUP.json',b/'CURRENT_OBSERVER_CONNECTION_STATE.json'];reports=[w/'outputs/REPORT.md',w/'outputs/tree-nested-branch/REPORT.md',*[m/'REPORT.md' for m in ms]];allp=paths+[m/q.name for m in ms for q in paths[1:]]+reports;assert len(allp)==14
+prior={q:q.read_bytes() for q in allp};assert prior[paths[0]]==prior[paths[1]] and len({prior[q] for q in reports})==1
+for q in paths:
+ s=read(q);assert s['completed_outer']==n and s['active_outer']==n+1 and s['goal_status']=='active' and s['last_actual_poll_epoch']<=p['epoch']
+now=datetime.datetime.now(datetime.timezone.utc);snapshot=b/f'controller{n+1}_phase_prior_{ids[0]}_{ids[1]}_{ids[2]}_{now.strftime("%Y%m%dT%H%M%S%fZ")}';snapshot.mkdir();members=[]
+for i,(q,raw) in enumerate(prior.items()):
+ gz=snapshot/f'{i:02d}-{q.name}.gz';g=gzip.compress(raw,mtime=0);gz.write_bytes(g);assert gzip.decompress(gz.read_bytes())==raw
+ members.append(dict(source=str(q),original_bytes=len(raw),original_sha256=h(raw),stored_gzip_path=str(gz),stored_bytes=len(g),stored_sha256=h(g),gzip_mtime=0))
+manifest=snapshot/'SNAPSHOT_MANIFEST.json';manifest.write_text(json.dumps(dict(files=members,created_at_utc=now.isoformat()),ensure_ascii=False,indent=2)+'\n')
+label=f'ACTUAL_ROLLOUT{n+1}_COMPLETE_OPTIMIZER_UNKNOWN_FULL{n}'
+receipt=dict(schema='actual_Controller_transition_updates_pending_v2',created_at_utc=now.isoformat(),status=label,goal_turn_classification='progress',progress_scope=f'New original Controller{n+1} output strictly between{ids[0]} and{ids[1]}; rechecked{ids[2]}; no new optimizer/native/full credit.',snapshots=[dict(poll=pin(b/f'NATIVE5_CONTINUE_POLL_{i}.json'),resource=pin(b/f'NATIVE5_CONTINUE_RESOURCE_{i}.json')) for i in ids],raw_observation_mirror_scope='BASE-only original pins, not claimed mirrored',observed_epochs=[x['epoch'] for x in polls],source_commit=full['source_commit'],config_sha256=full['config_sha256'],unit=full['unit'],run=full['run'],PID=503255,InvocationID='a313bda919834d24b4c5d491698d39ce',actual_completed_outer=n,actual_Adam_per_rank=full['per_rank_actual_total_adam'],latest_saved_native_outer=n,actual_cold_load_outer=5,active_outer=n+1,actual_sampling_complete_outer=n+1,actual_original_controller_cost=controller,exact_scoring_calls=controller['costs'].get('scoring_calls'),scoring_scope='Only actual original Controller field if present; otherwise null. No future FULL scoring inferred.',next_outer_optimizer_completion=None,next_outer_partial_Adam=None,next_outer_variance=None,original_Controller_question_rows=controller['question_rows'],controller_input_rows_scope='Original question_rows counts two root input rows per configured question:1024 for512 questions. Raw key retained; not1024 unique questions. Current full-question count is verified only with completed FULL metrics.',current_dev_outer=full['actual_dev512']['outer'] if full['actual_dev512'] else None,latest_dev_outer=full['latest_dev512_outer'],score_updated=False,nonterminal_service_CPUUsageNSec=cpus[-1],interval_service_CPU_seconds=(cpus[-1]-cpus[0])/1e9,exact_post_Controller_subphase=None,errors=[],terminal=None,prior_closed14_manifest=pin(manifest),training_action='none',new_training_or_restore=False,source_hot_modified=False,goal_status='active',goal_complete=False,global_atomic_transaction=False)
+raw=(json.dumps(receipt,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode();rp=dict(path=str(out),bytes=len(raw),sha256=h(raw))
+common=dict(phase=label,current_phase=label,observed_current_training_phase=f'Original Controller{n+1} complete; exact ref/adv/actor subphase and partial Adam unknown. Original instance live with higher actual CPU; complete outer still{n}.',last_completed_sampling_outer=n+1,last_confirmed_poll=str(b/f'NATIVE5_CONTINUE_POLL_{ids[-1]}.json'),last_actual_poll_epoch=p['epoch'],last_successful_observation_epoch=p['epoch'],current_observation_path=str(b/f'NATIVE5_CONTINUE_POLL_{ids[-1]}.json'),current_resource_observation=pin(b/f'NATIVE5_CONTINUE_RESOURCE_{ids[-1]}.json'),last_confirmed_resource_epoch=r['epoch'],current_systemd=p['systemd'],latest_guard=p['latest_guard'],current_remote_state=f'KNOWN_AT_ORIGINAL_CONTROLLER{n+1}_AND_SAME_INSTANCE_REPOLL',current_remote_health_known=True,current_observation_unknown=False,current_observation_error=None,current_failure_evidence=None,current_observation_failure_evidence=None,same_instance_confirmed=True,same_instance_repoll_required=False,current_live_sampling_progress=None,current_active_rollout_progress=rp,active_outer_sampling_complete=True,active_outer_sampling_complete_confirmed=True,next_outer_sampling_complete=True,active_outer_rollout_cost=controller,current_active_sampling_cost_scope=f'Actual Controller{n+1} aggregate only; cumulative/candidate-outcome cost acceptance through{n}. No next optimizer/fullmetric credit.',active_outer_actual_partial_Adam_calls=None,current_partial_optimizer_calls_per_rank=None,active_outer_advantage_variance=None,next_outer_scoring=None,current_active_outer_full_metric_pending=True,active_outer_optimizer_scope=f'Original Controller{n+1} complete; actual partial or completed optimizer writes for{n+1} remain unknown. Completed outer credit stays{n}.',last_nonterminal_service_CPUUsageNSec=cpus[-1],last_nonterminal_service_CPU_seconds=cpus[-1]/1e9,goal_turn_classification='progress',whole_goal_turn_classification='progress',consecutive_blocked_goal_turns=0,current_consecutive_blocked_goal_turns=0,blocked_audit_consecutive_goal_turns=0,current_observation_training_action='none',updated_at=now.isoformat(),recorded_at_utc=now.isoformat())
+assert all(q.read_bytes()==old for q,old in prior.items())
+atomic(out,raw)
+for q in paths:
+ s=json.loads(prior[q]);s.update(common);new=(json.dumps(s,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode();atomic(q,new)
+ if q!=paths[0]:
+  for m in ms:atomic(m/q.name,new)
+dev=full['latest_actual_dev512'];note=(f'Actual Controller{n+1} sampling complete, wall{controller["wall_seconds"]}s; exact post-controller subphase and partial/completed optimizer writes unknown. Complete outer/native{n} and actual Adam{full["per_rank_actual_total_adam"]} remain unchanged. Original PID503255/Invocation unchanged; two positive reads show increasing service CPU, no errors/terminal/OOM. Latest dev{dev["outer"]} F1{100*dev["metrics"]["val/f1/all"]}% EM{100*dev["metrics"]["val/em/all"]}%, no new score. Controller cost is separate observed aggregate; no future FULL/cumulative credit. Goal active; no training action.\n\n').encode()
+for q in reports:atomic(q,note+prior[q])
+for m in ms:atomic(m/out.name,raw)
+for pass_no in range(2):
+ assert paths[0].read_bytes()==paths[1].read_bytes()
+ for q in paths:
+  new=read(q);old=json.loads(prior[q]);assert {k:v for k,v in old.items() if k not in common}=={k:v for k,v in new.items() if k not in common}
+ for m in ms:
+  for q in paths[1:]:assert(m/q.name).read_bytes()==q.read_bytes()
+  assert(m/'REPORT.md').read_bytes()==reports[0].read_bytes() and (m/out.name).read_bytes()==out.read_bytes()
+ assert all(q.read_bytes()==reports[0].read_bytes() for q in reports)
+ if pass_no==0:time.sleep(1)
+print(json.dumps(dict(receipt=rp,completed=n,active=n+1,actual_Controller_complete=True,next_Adam_unknown=True,nonterminal_CPU_seconds=cpus[-1]/1e9,two_mirrors_2byte_passes=True,remote_actions=False)))
+PY

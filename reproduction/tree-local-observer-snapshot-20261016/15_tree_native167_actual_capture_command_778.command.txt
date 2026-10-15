@@ -1,0 +1,33 @@
+env TREE_MGMT_CONTROL_PATH=/tmp/tree-mgmt-3fw9a1ab/control python3 -B - <<'PY'
+from pathlib import Path
+import importlib.util,json,hashlib,shlex,time
+w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013';outer=167
+out=b/f'NATIVE_HISTORY_{outer}_METADATA_READBACK.json';assert not out.exists(),'Preserve successful immutable readback'
+source='778b2b43dad90fc0c1c5d95d77c2326286011b73'
+code=r'''from pathlib import Path
+import json,hashlib,time
+source='778b2b43dad90fc0c1c5d95d77c2326286011b73';outer=167
+run=Path('/dataset/shaoshitong/search-r1-rl/tree-grpo/runs')/('tree-nested-branch-fresh200-not-slurm;systemd:'+source)
+rp=run/'output/native-manifest-history'/f'source-{source}-outer-{outer:06d}.receipt.json'
+rr=rp.read_bytes();receipt=json.loads(rr);mp=Path(receipt['history_manifest_path']);mr=mp.read_bytes();manifest=json.loads(mr);op=Path(receipt['source_manifest_path']);original=op.read_bytes()
+h=lambda x:hashlib.sha256(x).hexdigest()
+assert receipt['tensor_contents_read'] is False and receipt['independent_cold_reload_performed'] is False and receipt['source_commit']==source and receipt['completed_outer']==outer
+assert h(mr)==h(original)==receipt['history_manifest_sha256']==receipt['source_manifest_sha256']
+assert mr==original and manifest['identity']['completed_step']==outer
+d=dict(observed_epoch=time.time(),source_commit=source,tensor_contents_read=False,independent_cold_reload_performed=False,outer=outer,receipt_path=str(rp),receipt_sha256=h(rr),manifest_sha256=h(mr),recorded_original_manifest_sha256=receipt['source_manifest_sha256'],archive_matches_original_manifest=mr==original,manifest_status=manifest['status'],identity=manifest['identity'],receipt=receipt)
+print(json.dumps(d,ensure_ascii=False,allow_nan=False))'''
+sp=w/'work/tree-speed-repair-20261008/ssh_retained18.py';assert hashlib.sha256(sp.read_bytes()).hexdigest()=='8065815f4452923bcb96fbdc12b96b246b7834f85f1bc2a9f75623912c157021'
+spec=importlib.util.spec_from_file_location('ssh_actual_metadata',sp);ssh=importlib.util.module_from_spec(spec);spec.loader.exec_module(ssh)
+r=ssh.run('env CUDA_VISIBLE_DEVICES= python3 -c '+shlex.quote(code),timeout=60)
+assert r.returncode==0,r.stderr[-1500:];d=json.loads(r.stdout)
+cp=w/'work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/sync_nested_native_progress.py'
+assert hashlib.sha256(cp.read_bytes()).hexdigest()=='676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1'
+spec=importlib.util.spec_from_file_location('core_actual_native',cp);core=importlib.util.module_from_spec(spec);spec.loader.exec_module(core)
+p=json.loads((b/'NATIVE5_CONTINUE_POLL_2029.json').read_text());record,guard,completed,totals=core.validate_native(d,p['progress'],outer)
+raw=(json.dumps(d,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode();ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+for q in [out,*[m/out.name for m in ms]]:q.write_bytes(raw)
+for pass_no in range(2):
+ for q in [out,*[m/out.name for m in ms]]:assert q.read_bytes()==raw
+ if pass_no==0:time.sleep(1)
+print(json.dumps(dict(path=str(out),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest(),manifest_sha256=d['manifest_sha256'],receipt_sha256=d['receipt_sha256'],actual_adam_per_rank=totals,scheduler=outer,driver_next_saved_cursor=outer+1,tensor_read=False,independent_cold_reload=False,mirrors_2byte_passes=True)))
+PY

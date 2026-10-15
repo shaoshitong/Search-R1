@@ -1,0 +1,8 @@
+(async()=>{
+async function command(cmd){let r=await tools.exec_command({cmd,max_output_tokens:2500,yield_time_ms:1000});while(r.session_id&&r.exit_code===undefined)r=await tools.write_stdin({session_id:r.session_id,chars:"",max_output_tokens:2500,yield_time_ms:1000});return r;}
+const ids=load("tree_next_readonly_pair_778");if(!Array.isArray(ids)||ids.length!==2||!ids.every(Number.isSafeInteger)||ids[0]>=ids[1])throw Error("Explicit ordered numeric poll pair required");
+const ck="python3 -B - <<'PY'\nfrom pathlib import Path\nb=Path('outputs/tree-nested-branch-handoff-20261013')\nfor i in "+JSON.stringify(ids)+":\n for stem in ['NATIVE5_CONTINUE_POLL','NATIVE5_CONTINUE_RESOURCE']:\n  assert not (b/f'{stem}_{i}.json').exists(),'Read existing observation instead of overwrite'\nPY";
+let pre=await command(ck);if(pre.exit_code!==0){text(pre);throw Error("Existing readonly observations require inspect");}
+async function pair(i){const pc=load("tree_poll_cmd_778").replaceAll("__ID__",String(i));const rc="env TREE_MGMT_CONTROL_PATH='/tmp/tree-mgmt-3fw9a1ab/control' PYTHONDONTWRITEBYTECODE=1 python3 work/tree-speed-repair-20261008/probe_native5_history_watch.py outputs/tree-nested-branch-handoff-20261013/NATIVE5_CONTINUE_RESOURCE_"+i+".json > /dev/null";const rs=await Promise.allSettled([command(pc),command(rc)]);for(let j=0;j<rs.length;j++)if(rs[j].status!=="fulfilled"||rs[j].value.exit_code!==0){text({i,j,result:rs[j]});throw Error("Readonly observation unavailable; no terminal inferred");}store("tree_loop_last_successful_poll_778",i);}
+await pair(ids[0]);await new Promise(r=>setTimeout(r,45000));await pair(ids[1]);text(await command(load("tree_poll_pair_summary_cmd_778").replace("__IDS__",JSON.stringify(ids))));
+})()

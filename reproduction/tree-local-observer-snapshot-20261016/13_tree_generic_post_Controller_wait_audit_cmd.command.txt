@@ -1,0 +1,27 @@
+python3 -B - <<'PY'
+from pathlib import Path
+import json,hashlib,datetime,re,time,importlib.util
+n=__BASE_OUTER__;a=__FIRST__;z=__SECOND__;w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013';ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+def read(p):return json.loads(p.read_bytes())
+def pin(p):raw=p.read_bytes();return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+cp=b/'__CONTROLLER_FILE__';cr=read(cp);assert pin(cp)['sha256']=='__CONTROLLER_SHA__' and cr['actual_completed_outer']==n and cr['actual_sampling_complete_outer']==n+1
+full=read(b/f'FULL_OUTER{n}_PROGRESS_RECEIPT.json');p1=read(b/f'NATIVE5_CONTINUE_POLL_{a}.json');p2=read(b/f'NATIVE5_CONTINUE_POLL_{z}.json');r1=read(b/f'NATIVE5_CONTINUE_RESOURCE_{a}.json');r2=read(b/f'NATIVE5_CONTINUE_RESOURCE_{z}.json')
+sp=w/'work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/sync_nested_native_progress.py';assert pin(sp)['sha256']=='676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1'
+spec=importlib.util.spec_from_file_location('actual_unit_validator',sp);core=importlib.util.module_from_spec(spec);spec.loader.exec_module(core)
+facts=[]
+for p,r in [(p1,r1),(p2,r2)]:
+ _,_,active=core.validate_unit(p,r,n);assert active
+ assert p['progress']['actual_completed_outer_from_attempt_results']==n and p['progress']['completed_actual_optimizer_calls_per_rank']==full['per_rank_actual_total_adam'] and p['progress']['partial_attempt_evidence']==[]
+ assert p['progress']['errors']==[] and p['run_result'] is None and p['rollout_cost']==[cr['actual_original_controller_cost']]
+ assert max(x['step'] for x in p['iteration_metrics'])==n
+ cpu=int(re.search(r'^CPUUsageNSec=(\d+)$',r['training_systemd'],re.M).group(1))
+ facts.append(dict(epoch=p['epoch'],CPUUsageNSec=cpu,completed_outer=n,actual_adam_per_rank=p['progress']['completed_actual_optimizer_calls_per_rank'],Controller_outer=n+1,partial_or_complete_next_Adam_unknown=True,stage_bytes=p['own_output_files']['stage.log'],retriever_bytes=p['own_output_files']['retriever.log'],OOM_events=p['latest_guard']['own_cgroup_resources']['memory.events'],instantaneous_whole_card_GPU_util=[g['total_gpu_util'] for g in p['latest_guard']['gpus']]))
+assert facts[0]['epoch']<facts[1]['epoch'] and facts[0]['CPUUsageNSec']<facts[1]['CPUUsageNSec']
+proof=dict(schema='actual_post_Controller_live_wait_readback_v2',created_at_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),status=f'ACTUAL_CONTROLLER{n+1}_COMPLETE_WAITING_UPDATES_FULL{n}',source_commit=full['source_commit'],unit=full['unit'],PID=503255,InvocationID='a313bda919834d24b4c5d491698d39ce',controller_transition=pin(cp),full=pin(b/f'FULL_OUTER{n}_PROGRESS_RECEIPT.json'),observations=facts,input_pins=[pin(b/f'{stem}_{i}.json') for i in [a,z] for stem in ['NATIVE5_CONTINUE_POLL','NATIVE5_CONTINUE_RESOURCE']],raw_observation_mirror_scope='BASE-only pins',completed_outer=n,active_outer=n+1,latest_saved_native=n,next_partial_Adam=None,next_complete_Adam=None,next_FULL_metric=None,exact_ref_adv_actor_subphase=None,service_CPU_is_nonterminal=True,GPU_samples_do_not_prove_own_active_compute_or_stoppage=True,latest_dev=full['latest_actual_dev512'],score_updated=False,old_cumulative_cost_not_extended=True,canonical_modified=False,remote_actions=False,training_actions=False,source_modified=False,whole_goal_turn_classification='verified_wait',consecutive_blocked_goal_turns=0,goal_status='active')
+out=b/f'POST_CONTROLLER{n+1}_LIVE_WAIT_ACTUAL_{a}_{z}.json';assert not out.exists();raw=(json.dumps(proof,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode()
+for p in [out,*[m/out.name for m in ms]]:p.write_bytes(raw)
+for pass_no in range(2):
+ for p in [out,*[m/out.name for m in ms]]:assert p.read_bytes()==raw
+ if pass_no==0:time.sleep(1)
+print(json.dumps(pin(out)))
+PY
