@@ -82,7 +82,7 @@ def submit(phase, commit, output, partition='acd_u'):
         raise ValueError('Unknown phase or priority tier')
     cpus, memory, gpus = (12,'128G',1) if phase=='preparation' else (48,'512G',4)
     # This lock is independent of both the other chat and the runtime lock.
-    script = '''import fcntl,json,os,subprocess,time
+    script = '''import fcntl,json,os,subprocess,time,sys
 from pathlib import Path
 b=Path(BASE);p=b/'preparation'/(PHASE+'-submission.json')
 with (b/'preparation'/(PHASE+'-submit.lock')).open('a') as lock:
@@ -93,13 +93,18 @@ with (b/'preparation'/(PHASE+'-submit.lock')).open('a') as lock:
   print(json.dumps(dict(status='EXISTING_OWN_JOB_NO_DUPLICATE',queue=active)));raise SystemExit(0)
  if p.exists():
   print(json.dumps(dict(status='EXISTING_SUBMISSION_REQUIRES_RECONCILIATION',receipt=json.loads(p.read_text()))));raise SystemExit(0)
+ exclusions=[]
+ if PHASE=='formal':
+  sys.path.insert(0,str(b/'source'/COMMIT))
+  from reproduction.hpc3_dynrpo_periodic.retry_before_training import excluded_nodes
+  exclusions=excluded_nodes(b,COMMIT)
  claim=b/'preparation'/(PHASE+'-submit-claim.json')
  with claim.open('x') as f:json.dump(dict(phase=PHASE,commit=COMMIT,partition=PARTITION,claimed_unix=time.time()),f);f.flush();os.fsync(f.fileno())
  entry=str(b/'source'/COMMIT/'reproduction/hpc3_dynrpo_periodic/run.sh')
  args=['sbatch','--parsable','--job-name='+name,'--partition='+PARTITION,'--time=7-00:00:00','--nodes=1','--ntasks=1','--cpus-per-task='+str(CPUS),'--mem='+MEMORY,'--gres=gpu:'+str(GPUS),'--chdir='+str(b),'--output='+str(b/'logs'/(PHASE+'-%j.log')),'--export=NONE','--wrap=bash '+entry+' '+PHASE+' '+str(b)+' '+COMMIT]
- if PHASE=='formal':args.insert(2,'--exclude=ACD1-21')
+ if PHASE=='formal':args.insert(2,'--exclude='+','.join(exclusions))
  r=subprocess.run(args,text=True,capture_output=True)
- value=dict(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,phase=PHASE,partition=PARTITION,commit=COMMIT,submitted_unix=time.time())
+ value=dict(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,phase=PHASE,partition=PARTITION,commit=COMMIT,excluded_nodes=exclusions,submitted_unix=time.time())
  if r.returncode==0 and r.stdout.strip().split(';')[0].isdigit():value['job']=r.stdout.strip().split(';')[0]
  with p.open('x') as f:json.dump(value,f);f.flush();os.fsync(f.fileno())
  print(json.dumps(value))

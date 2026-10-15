@@ -19,6 +19,10 @@ def recipe():
 
 def main():
     own(BASE)
+    # Pure-CPU admission must reject the old uncleaned node before importing
+    # torch, preparing models, or starting any GPU/runtime subprocess.
+    from .retry_before_training import guard_allocation
+    guard_allocation(BASE, os.environ['SEARCH_G1_SOURCE_COMMIT'])
     import torch
     from reproduction.common8.prepare_run import prepare
     from reproduction.common8.stage_retrieval import ASSETS

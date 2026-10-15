@@ -1134,6 +1134,7 @@ class Auditor:
     def cleanup(self):
         require(self.chain, 'AUTHENTICATED_CHAIN_UNAVAILABLE')
         result = []
+        verified = set()
         for segment in self.chain:
             base, run = segment['base'], segment['run']
             cleanup = self.reader.json(base / 'logs/cleanup-status.json')
@@ -1156,6 +1157,67 @@ class Auditor:
                 job = self.backend.terminal_job(base, run, submission, require_success=False)
                 job['scope'] = 'Fresh terminal ancestor accounting and owned cleanup; failed ancestor need not have completed the target'
             result.append(dict(base=str(base), cleanup_sha256=self.reader.digest(base / 'logs/cleanup-status.json'), **job))
+            verified.add(str(base))
+        # A zero-update retry starts a new scientific runID, so it does not
+        # appear in the full-state learner ancestry above. Its earlier owned
+        # resources remain final-acceptance obligations, including any node
+        # deliberately excluded while its dedicated cleanup job was queued.
+        from reproduction.hpc3_dynrpo_periodic.retry_before_training import DEFERRED_KIND
+        for segment in self.chain:
+            base, seen = segment['base'], set()
+            for _ in range(32):
+                require(str(base) not in seen, 'ZERO_UPDATE_RETRY_CLEANUP_CYCLE', base)
+                seen.add(str(base))
+                path = base / 'preparation/zero-update-retry.json'
+                if not path.exists():
+                    break
+                retry = self.reader.json(path)
+                require(retry.get('student_updates_before_failure') == 0 and
+                        retry.get('inherited_probe_adam_steps') == 400 and retry.get('probe_optimizer_reset') is False,
+                        'ZERO_UPDATE_RETRY_CLEANUP_CERTIFICATE_INVALID', path)
+                source = self.reader.namespace(retry['source_base'])
+                require(source != base, 'ZERO_UPDATE_RETRY_CLEANUP_CYCLE', source)
+                source_run = self.reader.json(source / 'logs/run-manifest.json')
+                submission = self.reader.json(source / 'preparation/formal-submission.json')
+                require(source_run.get('run_id') == retry.get('source_run_id') and
+                        submission.get('job') == retry.get('source_job'),
+                        'ZERO_UPDATE_RETRY_SOURCE_IDENTITY_CHANGED', source)
+                cleanup = self.reader.json(source / 'logs/cleanup-status.json')
+                ledger = self.reader.json(source / 'logs/process-ledger.json')
+                require(cleanup.get('cleaned') is True and
+                        cleanup.get('run_id') == ledger.get('run_id') == source_run['run_id'] and
+                        ledger.get('jobs') and all(item.get('state') == 'STOPPED' and not item.get('remaining')
+                                                  for item in ledger['jobs'].values()),
+                        'ZERO_UPDATE_RETRY_SOURCE_CLEANUP_INCOMPLETE', source)
+                deferred = retry.get('deferred_cleanup')
+                if deferred is not None:
+                    snapshot = Path(deferred.get('source_ledger_snapshot', ''))
+                    require(deferred.get('kind') == DEFERRED_KIND and deferred.get('cleaned') is False and
+                            deferred.get('final_acceptance_requires_actual_source_cleanup') is True and
+                            deferred.get('source_base') == str(source) and
+                            deferred.get('target_base') == str(base) and
+                            deferred.get('source_job') == submission['job'] and
+                            deferred.get('source_run_id') == source_run['run_id'] and
+                            deferred.get('head_sha256') == retry.get('inherited_probe_sha256') and
+                            snapshot == base / 'preparation/deferred-source-process-ledger.json' and
+                            self.reader.digest(snapshot) == deferred.get('source_ledger_sha256') and
+                            self.reader.json(snapshot).get('run_id') == source_run['run_id'] and
+                            self.reader.digest(source / 'logs/run-manifest.json') == deferred.get('source_run_manifest_sha256') and
+                            cleanup.get('failed_job') == submission['job'] and
+                            cleanup.get('execution_hostname') == deferred.get('source_node') and
+                            cleanup.get('original_allocation_hostname_verified') is True and
+                            cleanup.get('all_owned_sessions_absent') is True and
+                            cleanup.get('recorded_cuda_contexts_absent') is True,
+                            'DEFERRED_ZERO_UPDATE_SOURCE_CLEANUP_NOT_VERIFIED', source)
+                if str(source) not in verified:
+                    job = self.backend.terminal_job(source, source_run, submission, require_success=False)
+                    result.append(dict(base=str(source), zero_update_ancestor=True,
+                        deferred_cleanup_was_required=deferred is not None,
+                        cleanup_sha256=self.reader.digest(source / 'logs/cleanup-status.json'), **job))
+                    verified.add(str(source))
+                base = source
+            else:
+                raise Incomplete('ZERO_UPDATE_RETRY_CLEANUP_DEPTH_EXCEEDED')
         return result
 
     def execute(self):

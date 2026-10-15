@@ -17,7 +17,7 @@
 
 `reproduction/hpc3_dynrpo_periodic` 保存独立部署、连续 warmup、绑定、提交及恢复入口。`bootstrap.py` 引用既有只读基础环境，同时将本实验自己的 `env/overlay` 放到依赖搜索路径前。缺失校准依赖只安装到本实验overlay，不改共享环境；校内源和包版本由 `environment_overlay.py` 固定。正式提交前必须完成安装及真实CPU校准拟合/序列化回读检查。
 
-训练开始前的失败只能在实际确认没有 student launch claim、更新或 checkpoint，并且原计算节点清理通过后，使用 `retry_before_training.py` 保留400 Adam的探针状态重试。训练开始后必须走真实完整checkpoint恢复，不得使用此前入口重置 student。
+训练开始前的失败只能在实际确认没有 student launch claim、更新或 checkpoint后，使用 `retry_before_training.py` 保留400 Adam的探针状态重试。通常要求原计算节点清理通过。唯一延期分支须另外鉴证旧作业终止、只存在预训练组件、源锁已释放、400步状态实际回读、账本快照、本人所有的清理作业，以及新旧节点强制隔离；不得伪造清理完成。新作业实际提交和绑定都排除旧节点，旧清理仍是最终验收义务，不以旧失败作业成功作为新训练依赖。训练开始后必须走真实完整checkpoint恢复，不得使用此前入口重置 student。
 
 `reconcile_cleanup.py` 仅在旧失败作业原计算节点上的新 CPU Slurm allocation 内检查旧作业资源。它复核账号、作业、节点、出生身份、所有本任务session、CUDA上下文与私有staging；登录节点的 `/proc` 或 `/dev/shm` 不能作为计算节点清理证据。源模型、数据及checkpoint不由此清理。
 
