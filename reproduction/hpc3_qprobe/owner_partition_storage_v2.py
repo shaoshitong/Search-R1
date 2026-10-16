@@ -144,6 +144,8 @@ def admission_lock(request_path):
 def authorize_owner(path,commit):
     _,source=code_guard(commit,JXU)
     with admission_lock(path):
+        refusal=unclaimed_admission_refusal(path,commit)
+        if refusal is not None:return refusal
         request,proof=request_guard(path,commit)
         need(request['roots'] and not (Path(path).parent/'mou-control').exists() and
              not (Path(path).parent/'request-closed.json').exists(),'owner request is closed or already claimed')
@@ -366,6 +368,8 @@ def owner_command(interpreter,mode,path,commit,token):
 def owner_start(path,commit):
     repo,source=code_guard(commit,MOU)
     with admission_lock(path):
+        refusal=unclaimed_admission_refusal(path,commit)
+        if refusal is not None:return refusal
         request,proof=request_guard(path,commit);grant,grant_proof=authorization_guard(path,request,proof)
         need(request['roots'],'no owner scan is needed for an empty frontier')
         directory=Path(path).parent/'mou-control'
@@ -681,6 +685,32 @@ def consume(archive,allow_active_archive_child=False):
          'complete partition arithmetic or safety semantics differ')
     return dict(protocol=PROTOCOL,allocated_upper_bound_bytes=upper,complete=proof,request=request_proof,
                 jxu_result=du_proof,owner=owner,complete_partition_coverage=True,exact_usage_or_hardquota_claimed=False)
+
+
+def unclaimed_admission_refusal(path,commit):
+    """Caller holds the admission lock; only proven zero-claim races are benign."""
+    path=Path(path);request,proof=request_guard(path,commit,active=False)
+    directory=path.parent/'mou-control'
+    need(not directory.exists() and not directory.is_symlink(),
+         'existing owner claim is inspect-only; never replay')
+    archive=path.parent.parent
+    pointer,pointer_proof=document(archive/'owner-storage-active.json',(JXU,),protected=True)
+    active_path=Path(pointer['request_path']);active,active_proof=request_guard(active_path,commit,active=False)
+    need(pointer['request_sha256']==active_proof['sha256'] and pointer['attempt']==active['attempt'] and
+         pointer['archive_child']==active['archive_child'] and active['step']==request['step'],
+         'active pointer cannot prove the current source-bound request')
+    closed=path.parent/'request-closed.json';closed_proof=None
+    if closed.exists():
+        value,closed_proof=document(closed,(JXU,),protected=True)
+        need(value['status']=='ACTUAL_FAILED_COMPLEMENT_REQUEST_CLOSED' and value['source']==request['source'] and
+             value['request']==proof and value['owner_claim_present'] is False,
+             'closed request is not a proven zero-owner-claim refusal')
+    if active_path==path and closed_proof is None:return None
+    need(not directory.exists() and not directory.is_symlink(),'owner claim appeared while admission lock held')
+    return dict(status='ACTUAL_OWNER_REQUEST_NOT_ADMITTED',protocol=PROTOCOL,source=request['source'],request=proof,
+        active_request=active_proof,active_pointer=pointer_proof,closed_request=closed_proof,
+        reason='closed_or_superseded_request_with_no_owner_claim',owner_claim_created=False,
+        training_actions=0,permission_changes=0,checked_unix=time.time())
 
 
 def inspect_storage(step,commit):

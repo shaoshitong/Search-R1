@@ -54,6 +54,20 @@ class DriverOnce(unittest.TestCase):
             self.assertEqual([c.args[:2] for c in call.call_args_list],[('jxu957','authorize-owner'),('mou176','owner-confirm')])
             self.assertTrue(self.driver.act(150,self.state('ARCHIVE_COMPLETED')))
 
+    def test_proven_closed_request_refusal_follows_new_request_without_replay(self):
+        refusal=dict(status='ACTUAL_OWNER_REQUEST_NOT_ADMITTED',protocol=local.PROTOCOL,source=SOURCE,
+            request=self.request,owner_claim_created=False,reason='closed_or_superseded_request_with_no_owner_claim',
+            training_actions=0,permission_changes=0)
+        with patch.object(self.driver,'call',return_value=refusal) as call:
+            self.assertFalse(self.driver.act(150,self.state('AUTHORIZE_OWNER')))
+            self.assertFalse(self.driver.act(150,self.state('START_OWNER')))
+            with self.assertRaisesRegex(ValueError,'already attempted'):self.driver.act(150,self.state('START_OWNER'))
+            self.assertEqual(call.call_count,2)
+            self.request=dict(self.request,path=self.request['path'].replace('attempt-1','attempt-2'),sha256='b'*64)
+            call.return_value=dict(refusal,request=self.request)
+            self.assertFalse(self.driver.act(150,self.state('START_OWNER')))
+            self.assertEqual(call.call_count,3)
+
     def test_unknown_or_failed_state_and_source_mismatch_never_launch(self):
         with patch.object(self.driver,'call') as call:
             for action in ['ARCHIVE_FAILED','UNKNOWN_OWNER_ADMISSION','UNKNOWN_ARCHIVE_ADMISSION','not-known']:
@@ -73,7 +87,7 @@ class InspectionDecisions(unittest.TestCase):
         self.request_path=self.archive/'owner-storage-attempt-1/request.json';self.request_path.parent.mkdir()
         self.proof=dict(path=str(self.request_path),sha256='a'*64,bytes=1)
         self.child=dict(pid=111,start_ticks=11,sid=110,uid=storage.JXU)
-        self.request=dict(attempt=1,archive_child=self.child,roots=['fixture'])
+        self.request=dict(attempt=1,step=150,source=SOURCE,archive_child=self.child,roots=['fixture'])
         self.state=dict(actual_task_exit_code=None,task_alive=True,actual_task=self.child)
         self.files={str(self.archive/'submit-claim.json'):self.claim,
                     str(self.archive/'owner-storage-active.json'):dict(request_path=str(self.request_path),
@@ -124,6 +138,31 @@ class InspectionDecisions(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'scoped to150/200'):storage.inspect_storage(100,COMMIT)
         (self.request_path.parent/'mou-control').mkdir()
         self.assertEqual(storage.inspect_storage(150,COMMIT)['action'],'UNKNOWN_OWNER_ADMISSION')
+
+    def test_zero_claim_closed_and_superseded_admissions_are_typed_and_no_popen(self):
+        closed=self.request_path.parent/'request-closed.json';closed.write_text('{}')
+        self.files[str(closed)]=dict(status='ACTUAL_FAILED_COMPLEMENT_REQUEST_CLOSED',source=SOURCE,
+                                   request=self.proof,owner_claim_present=False)
+        with patch.object(storage,'admission_lock'),patch.object(storage.subprocess,'Popen') as popen:
+            for action in (storage.authorize_owner,storage.owner_start):
+                value=action(self.request_path,COMMIT)
+                self.assertEqual(value['status'],'ACTUAL_OWNER_REQUEST_NOT_ADMITTED')
+                self.assertFalse(value['owner_claim_created'])
+            popen.assert_not_called()
+        closed.unlink();new=self.archive/'owner-storage-attempt-2/request.json'
+        new_proof=dict(self.proof,path=str(new),sha256='b'*64);new_request=dict(self.request,attempt=2,step=150)
+        self.request['step']=150
+        self.files[str(self.archive/'owner-storage-active.json')].update(request_path=str(new),request_sha256='b'*64,attempt=2)
+        with patch.object(storage,'request_guard',side_effect=lambda path,*a,**k:(new_request,new_proof) if Path(path)==new else (self.request,self.proof)),\
+             patch.object(storage,'admission_lock'),patch.object(storage.subprocess,'Popen') as popen:
+            for action in (storage.authorize_owner,storage.owner_start):
+                value=action(self.request_path,COMMIT)
+                self.assertEqual(value['active_request'],new_proof)
+            popen.assert_not_called()
+
+    def test_existing_claim_or_unproven_closed_metadata_is_not_benign(self):
+        (self.request_path.parent/'mou-control').mkdir()
+        with self.assertRaisesRegex(ValueError,'existing owner claim'):storage.unclaimed_admission_refusal(self.request_path,COMMIT)
 
 
 if __name__=='__main__':unittest.main()

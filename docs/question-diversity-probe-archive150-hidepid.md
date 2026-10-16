@@ -147,3 +147,11 @@ The final independent reader must explicitly pin this new recovery source and
 V2 module, preserving prior S and5f lineage and every existing final gate.
 No training command, science file, private directory mode or GPU allocation
 is changed by this recovery.
+
+Review found a real admission race: a complete JXU scan may fail and close or
+supersede its request after the local inspection. Authorize/start now check
+the original request and actual active request under the same admission lock.
+Only a source-bound closed/superseded request with no MOU claim receives a
+typed zero-admission result. The local driver keeps its original durable
+intent and follows the next request. Existing claims and transport timeouts
+remain unknown and never authorize an owner-start replay.

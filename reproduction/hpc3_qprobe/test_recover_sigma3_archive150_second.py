@@ -42,6 +42,7 @@ class ActualSecond150Failure(unittest.TestCase):
         self.stack.enter_context(patch.object(recovery.control,'digest',side_effect=self.digest))
         self.stack.enter_context(patch.object(reader,'read_file',side_effect=lambda p,**kw:original_read(self.map(p),**kw)))
         self.stack.enter_context(patch.object(recovery,'snapshot',side_effect=lambda p:original_snapshot(self.map(p))))
+        self.original_retirement_snapshot=recovery.retirement_snapshot
         self.stack.enter_context(patch.object(recovery,'retirement_snapshot',return_value={
             name:{k:v for k,v in row.items() if k!='raw_base64'} for name,row in self.files[str(recovery.RETIREMENT)].items()}))
         self.stack.enter_context(patch.object(recovery.retirement,'protected_document',side_effect=self.protected))
@@ -124,6 +125,21 @@ class ActualSecond150Failure(unittest.TestCase):
         path=self.map(recovery.RETIREMENT/'mou-report.json');value=json.loads(path.read_bytes())
         value['foreign_process_declared_dead']=True;path.write_text(json.dumps(value))
         with self.assertRaisesRegex(ValueError,'protected graph'):recovery.failure_evidence()
+
+    def test_retirement_snapshot_rejects_foreign_owner_for_nonreport_json(self):
+        folder=self.map(recovery.RETIREMENT);fixture=self.root/'role-fixture.json'
+        fixture.write_text(json.dumps({str(folder):self.files[str(recovery.RETIREMENT)]}))
+        with patch.multiple(recovery,RETIREMENT=folder,FIXTURE=fixture),\
+             patch.multiple(recovery.storage,MOU=os.getuid(),JXU=os.getuid()+1,GID=os.getgid()):
+            with self.assertRaisesRegex(ValueError,'unsafe retained file'):self.original_retirement_snapshot()
+
+    def test_retirement_snapshot_rejects_group_writable_protected_json(self):
+        folder=self.map(recovery.RETIREMENT);fixture=self.root/'mode-fixture.json'
+        fixture.write_text(json.dumps({str(folder):self.files[str(recovery.RETIREMENT)]}))
+        (folder/'mou-report.json').chmod(0o660)
+        with patch.multiple(recovery,RETIREMENT=folder,FIXTURE=fixture),\
+             patch.multiple(recovery.storage,MOU=os.getuid(),JXU=os.getuid(),GID=os.getgid()):
+            with self.assertRaisesRegex(ValueError,'protected owner mode'):self.original_retirement_snapshot()
 
     def test_only150_and200_use_v2(self):
         with patch.object(recovery.control,'launch_archive') as launch:

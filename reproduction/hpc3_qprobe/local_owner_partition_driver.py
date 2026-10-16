@@ -94,14 +94,21 @@ class Driver:
              'actual failed or unknown original control; inspect retained evidence')
         if action in ('AUTHORIZE_OWNER','START_OWNER','CONFIRM_OWNER'):
             proof=state['request'];path=proof['path'];key=proof['sha256']
-            if action=='AUTHORIZE_OWNER':self.call('jxu957','authorize-owner',request=path)
+            result=None
+            if action=='AUTHORIZE_OWNER':result=self.call('jxu957','authorize-owner',request=path)
             elif action=='CONFIRM_OWNER':self.call('mou176','owner-confirm',request=path)
             else:
                 need(key not in self.started,'owner-start was already attempted; unknown outcome forbids replay')
                 intent=self.directory/('owner-start-'+key+'.json')
                 publish(intent,dict(request=proof,source_commit=self.commit,created_unix=time.time(),
                                     unknown_outcome_must_not_replay=True))
-                self.started.add(key);self.call('mou176','owner-start',request=path)
+                self.started.add(key);result=self.call('mou176','owner-start',request=path)
+            if result is not None and result.get('status')=='ACTUAL_OWNER_REQUEST_NOT_ADMITTED':
+                need(result.get('source',{}).get('commit')==self.commit and result.get('protocol')==PROTOCOL and
+                     result.get('request')==proof and result.get('owner_claim_created') is False and
+                     result.get('reason')=='closed_or_superseded_request_with_no_owner_claim' and
+                     result.get('training_actions')==result.get('permission_changes')==0,
+                     'unproven benign refusal; no replay')
         else:need(action in ('WAIT_FOR_ARCHIVE_CLAIM','WAIT_FOR_STORAGE_REQUEST','WAIT_FOR_NEXT_REQUEST',
                             'WAIT_FOR_JXU_ONLY_SCAN','OWNER_CONFIRMED'),'unrecognized remote action')
         return False
