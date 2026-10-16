@@ -37,3 +37,5 @@ PPO policy loss的两个保存点为第5轮0.000178384681931、第50轮0.0009115
 阶段计时互有包含，不相加。第50轮原生outer wall包含正式dev与关键节点工作，不代表普通训练轮耗时；前缀原生wall不覆盖全部rolling保存、启动、停机和分配时长。微小save_checkpoint占位标量不代表关键权重实际保存耗时。GPU小时代理不是实际GPU忙碌时间或账单。历史A与本次infra/runtime不同，耗时差不作算法提速因果证据。A完整前缀成本见[已有报告](../recursive-ablation-A-retained-cost-first150-20261015/findings-zh.md)，原逐点参考包的未知覆盖标记保持原样。
 
 科学源码`233b0dc95de3f7b797d5b424d3b7dcaafca5328f`、运行入口`09f3f8cd4d42a7b0db6c7825e256d997aa0389c5`保持。本地合并器`b565fbc89493aefa6896fb180be145cde1e840a8`，导出胶囊SHA见aggregate.json；本报告不是新的训练部署。训练终态、剩余22个标签节点、后续五个独立条件和归档仍须继续完成，整个goal保持ACTIVE。
+
+前50轮与A的实际生成量、分阶段耗时对照见[成本补充](reference-cost-context50.md)。这是已有完整前缀记录的对照，不修改原始参考包覆盖标记。
