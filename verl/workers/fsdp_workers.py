@@ -52,6 +52,8 @@ class ActorRolloutRefWorker(Worker):
 
     def __init__(self, config: DictConfig, role: str):
         super().__init__()
+        from search_g1.process_jit_cache import configure
+        self.process_jit_cache = configure()
         if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
             from reproduction.common8.batch_contract import independent_worker_config
             config = independent_worker_config(config)

@@ -11,6 +11,8 @@ import os
 import time
 from pathlib import Path
 
+from search_g1.process_jit_cache import configure
+configure()
 import torch
 
 from reproduction.common8.configuration import REPO, resolved

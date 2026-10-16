@@ -1,6 +1,8 @@
 """Native-Slurm eight-rank mechanics test; not evidence of GRPO/model acceptance."""
 import datetime,json,os,time
 from pathlib import Path
+from search_g1.process_jit_cache import configure
+process_jit_cache=configure()
 import torch
 import torch.distributed as dist
 from torch.distributed.fsdp import FullyShardedDataParallel as FSDP, CPUOffload, MixedPrecision
@@ -71,7 +73,7 @@ try:
   fsdp_cpu_offload=True,global_l2_upstream_equivalence=True,large_finite_l2=True,
   one_rank_nan_rejected_without_gradient_mutation=True,empty_rank_collective_rejection=True,
   real_adam_lr=1e-6,scheduler_scope='synthetic mechanics with legacy constant LR; not fresh200 warmup evidence',
-  parameters_and_adam_finite=True,actual_grpo_updates=0,checked_unix=time.time())
+  parameters_and_adam_finite=True,actual_grpo_updates=0,process_jit_cache=process_jit_cache,checked_unix=time.time())
  with (root/f'rank-{rank}.json').open('x') as f:
   json.dump(proof,f,indent=2);f.flush();os.fsync(f.fileno())
  dist.barrier()
