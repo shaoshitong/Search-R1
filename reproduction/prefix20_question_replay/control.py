@@ -9,7 +9,7 @@ def main():
     p.add_argument('--base',required=True);p.add_argument('--commit');p.add_argument('--config');p.add_argument('--receipts',required=True)
     a=p.parse_args()
     if a.phase=='deploy':
-        archive=subprocess.check_output(['git','-C',str(REPO),'archive','--format=tar',a.commit])
+        archive=subprocess.check_output(['git','-C',str(REPO),'archive','--format=tar.gz',a.commit])
         with tarfile.open(fileobj=io.BytesIO(archive))as t:
             files={x.name:hashlib.sha256(t.extractfile(x).read()).hexdigest()for x in t if x.isfile()}
         c=json.loads(Path(a.config).read_text());c.update(base=a.base,source_commit=a.commit)
