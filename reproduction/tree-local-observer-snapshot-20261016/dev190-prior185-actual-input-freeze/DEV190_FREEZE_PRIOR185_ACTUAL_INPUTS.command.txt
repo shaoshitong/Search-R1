@@ -1,0 +1,29 @@
+python3 -B - <<'PY'
+from pathlib import Path
+from datetime import datetime,timezone
+import hashlib,json
+w=Path.cwd().resolve();b=w/'outputs/tree-nested-branch-handoff-20261013';m=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+def pin(p):
+ p=p.resolve(strict=True);raw=p.read_bytes();assert 0<len(raw)<4000000
+ if p.is_relative_to(b):
+  for root in m:assert (root/p.relative_to(b)).read_bytes()==raw
+ return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+namespath=w/'work/tree-speed-repair-20261008/dev190-curve-rootcurve-canonical-sourceprep/PRIOR_MANIFEST_REQUIRED_NAMES.json';nr=pin(namespath);assert nr['bytes']==724 and nr['sha256']=='9c8ba411e86a7a6029e790eb15a72ad7c676f7ee3d46da9a5b984bd944a406e7'
+names=json.loads(namespath.read_text());assert isinstance(names,list) and len(names)==15
+rootref=pin(b/'ROOT_FULL185_PUBLICATION_READBACK_2343_2345.json');assert rootref['bytes']==35395 and rootref['sha256']=='e62fbc9ed44096cdaa0cb3796b866f5edf98298c2b7a59530ba8b81d02725686'
+root=json.loads(Path(rootref['path']).read_text());assert root['completed_outer']==185 and root['source1ed_confirmed_actual_main_invocations_cumulative']==root['source1ed_confirmed_actual_remote_incremental_invocations_cumulative']==6
+cost=json.loads((b/'COST_OUTER185_LOCAL_RECEIPT.json').read_text());oldreg=cost['mirrored_artifacts']['CANDIDATE_COST_EXTENSION_INPUTS.json'];assert oldreg['bytes']==25397 and oldreg['sha256']=='0baa52d337eaaeb7bbb6014a480ec4b0de1a67b72b79ce62977303f0b661b6d0'
+registry_asof=dict(path=str(b/'CANDIDATE_COST_EXTENSION_INPUTS.json'),bytes=oldreg['bytes'],sha256=oldreg['sha256'])
+pending=pin(b/'OUTER185_UPDATES_NATIVE_DEV_PENDING_ACTUAL_2335_2337.json');assert pending['bytes']==16784 and pending['sha256']=='48b6d584731911fed78047177b5e3ce80d3545c27f9ec94f27d10b7e1062952f'
+prior=dict(schema='dev190_prior185_actual_evidence_v1',prior_outer=185,source_pins={n:pin(b/n) for n in names},root_full=rootref,registry_asof=registry_asof,pending_phase_evidence=pending)
+owner_names=dict(supplement='DEV5_185_NATIVE_COST_SUPPLEMENT.json',owner_receipt='DEV5_185_NATIVE_COST_LOCAL_RECEIPT.json',root_actual_readback='ROOT_DEV185_NATIVE_COST_ACTUAL_READBACK.json',execution='DEV5_185_NATIVE_COST_COLLECTOR_EXECUTION.json',original_control='dev_native_cost_summaries/DEV_OUTER0185_SUMMARY.json',full='FULL_OUTER185_PROGRESS_RECEIPT.json',native='NATIVE_HISTORY_185_METADATA_READBACK.json',cumulative='CUMULATIVE_COST_THROUGH185.json',cost='COST_OUTER185_LOCAL_RECEIPT.json')
+curve_names=dict(json='LEARNING_CURVE_COMPLETE_THROUGH185.json',csv='LEARNING_CURVE_COMPLETE_THROUGH185.csv',publication='LEARNING_CURVE_THROUGH185_LOCAL_PUBLICATION.json',binding='LEARNING_CURVE_THROUGH185_COST_SUPPLEMENT_BINDING.json',root_readback='ROOT_CURVE_DEV_COST_THROUGH185_ACTUAL_READBACK.json')
+owner=dict(outer=185,**{k:pin(b/n) for k,n in owner_names.items()},curve={k:pin(b/n) for k,n in curve_names.items()})
+for name,obj in [('DEV190_PRIOR185_ACTUAL_EVIDENCE.json',prior),('DEV190_OWNER_PRIOR185_ACTUAL_INPUTS.json',owner)]:
+ raw=(json.dumps(obj,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode()
+ for rootpath in [b,*m]:
+  p=rootpath/name;assert not p.exists(),'Actual immutable config already exists; retain original';p.write_bytes(raw)
+ for unused in range(2):
+  for rootpath in [b,*m]:assert (rootpath/name).read_bytes()==raw
+ print(json.dumps(dict(actual_prior185_input=pin(b/name),scope='Actual185 originals only; no future190 success, collector, SSH or canonical mutation; historical registry descriptor retained asof without current raw identity claim',observed_utc=datetime.now(timezone.utc).isoformat())))
+PY
