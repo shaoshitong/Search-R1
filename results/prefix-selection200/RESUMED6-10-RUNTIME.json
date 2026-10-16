@@ -1,0 +1,54 @@
+{
+  "job": "3420",
+  "node": "h100-8",
+  "completed_outers": 10,
+  "resumed_complete_outers": [
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "per_outer_wall_seconds": {
+    "6": 352.147869348526,
+    "7": 342.86018896102905,
+    "8": 349.35699367523193,
+    "9": 360.0922248363495,
+    "10": 347.51467084884644
+  },
+  "mean_wall_seconds": 350.39438953399656,
+  "min_wall_seconds": 342.86018896102905,
+  "max_wall_seconds": 360.0922248363495,
+  "phase_mean_seconds": {
+    "actor": 112.75594603791833,
+    "continue": 91.27938597127795,
+    "prefix": 81.48000567406416,
+    "probe-update": 27.02251902669668,
+    "score": 33.60664401501417
+  },
+  "timing_semantics": "actual start of prefix outerN to actual start of prefix outerN+1; excludes milestoneQA and startup/recovery",
+  "actor_adam_per_rank": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "probe_adam_per_rank": [
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100
+  ],
+  "source_runtime": "144126615b09184b4f066d3565be027b44a2c954",
+  "qa5_em": 0.2421875,
+  "qa5_f1": 0.30340246775793644,
+  "verified_utc": "2026-10-16T13:45:59.873789+00:00"
+}
