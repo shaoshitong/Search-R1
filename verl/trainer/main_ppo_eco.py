@@ -701,9 +701,13 @@ def main(config):
         if run.get('training_world_size') == 4:
             local_resources=dict(num_cpus=16, object_store_memory=8*1024**3,
                                  include_dashboard=False)
+    ray_runtime=dict(runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'false', 'RAYON_NUM_THREADS': '1', 'NCCL_DEBUG': 'WARN'}})
+    if run is not None and run.get('execution_site')=='hpc3' and run.get('training_world_size')==4 and \
+            run.get('question_probe',{}).get('head_kind')=='qwen_native_periodic_lastblock_binary_v1':
+        from reproduction.hpc3_dynrpo_periodic.ray_threads import init_options
+        ray_runtime=init_options()
     ray.init(address='local', num_gpus=config.trainer.n_gpus_per_node, _temp_dir=ray_tmp_dir,
-             runtime_env={'env_vars': {'TOKENIZERS_PARALLELISM': 'false', 'RAYON_NUM_THREADS': '1', 'NCCL_DEBUG': 'WARN'}},
-             **local_resources)
+             **ray_runtime, **local_resources)
     try:
         if run is not None and run.get('question_probe',{}).get('head_kind') == 'qwen_native_periodic_lastblock_binary_v1':
             # A CPU Ray worker starts with CUDA hidden. Route it before importing

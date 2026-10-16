@@ -4,6 +4,8 @@ import ray
 
 @ray.remote(max_retries=0)
 def periodic_main_task(config):
+    from reproduction.hpc3_dynrpo_periodic.ray_threads import verify_environment
+    verify_environment()
     from search_g1.qprobe_driver_gpu import bind_native_driver_gpu
     bind_native_driver_gpu(config)
     from verl.trainer.main_ppo_eco import run_main_task
@@ -14,6 +16,8 @@ def periodic_main_task(config):
 def driver_import_smoke(expected_uuid):
     """Actual CPU-task CUDA/import check; no training claim or optimizer."""
     import os
+    from reproduction.hpc3_dynrpo_periodic.ray_threads import verify_environment
+    rpc_threads=verify_environment()
     import torch
     from search_g1.qprobe_driver_gpu import install_driver_visibility
     from reproduction.common8.native_allocation import cuda_uuids
@@ -36,4 +40,4 @@ def driver_import_smoke(expected_uuid):
     assert value.item()==0
     return dict(proof,framework_import_after_binding=True,actual_cuda_compute=True,
                 optimizer_updates=0,ray_gpu_ids=ray.get_gpu_ids(),actual_tokenizer_batch=64,
-                tokenizer_parallelism=os.environ['TOKENIZERS_PARALLELISM'])
+                tokenizer_parallelism=os.environ['TOKENIZERS_PARALLELISM'],ray_rpc_threads=rpc_threads)

@@ -21,6 +21,7 @@ class RestoreRequestTests(unittest.TestCase):
         self.commit = 'a'*40
         self.receipt_path = self.source/'artifacts/question-probe/pending-probe-pairs/global_step_5/source-receipt.json'
         self.receipt = dict(status=restore.PAIR_STATUS,kind='question_probe_pair',step=5,world_size=4,
+                            attempt_progress=dict(cumulative_writes=100),
                             run_id='source-run',source_base=str(self.source))
         self.write(self.receipt_path,self.receipt)
         self.write(self.source/'logs/run-manifest.json',dict(run_id='source-run',
@@ -35,6 +36,11 @@ class RestoreRequestTests(unittest.TestCase):
             source_base=str(self.source),source_job='724530',source_run_id='source-run',
             source_receipt=str(self.receipt_path),source_receipt_sha256=restore.sha(self.receipt_path))
         self.write(self.target/'preparation/restore-request.json',self.request)
+        (self.source/'logs/actual-updates.jsonl').write_text(json.dumps(dict(
+            step=5,update_status='complete',full_budget_complete=True))+'\n')
+        for rank in range(4):
+            (self.source/'logs'/('optimizer-rank-'+str(rank)+'.jsonl')).write_text(json.dumps(dict(
+                kind='OPTIMIZER_WRITE',rank=rank,run_id='source-run',write_count=100))+'\n')
         self.patch = mock.patch.object(restore,'DEFAULT_BASE',self.prefix)
         self.patch.start()
         self.queue = mock.patch.object(restore.subprocess,'check_output',side_effect=self.slurm)
@@ -81,6 +87,53 @@ class RestoreRequestTests(unittest.TestCase):
         run['full_state_restore']={}
         self.write(self.target/'logs/run-manifest.json',run)
         with self.assertRaises(ValueError):restore.prepare(self.target,self.commit)
+
+    def test_cleanup_failure_requires_actual_original_node_reconciliation(self):
+        self.write(self.source/'logs/pipeline-status.json',
+                   dict(run_id='source-run',stage='OWNED_CLEANUP_FAILED'))
+        with self.assertRaisesRegex(ValueError,'ORIGINAL_NODE_CLEANUP_UNPROVEN'):
+            restore.validate_request(self.target,self.commit)
+        self.write(self.source/'logs/native-allocation-admission.json',
+                   dict(run_id='source-run',slurm_job_id='724530',accepted=True,node='ACD1-19'))
+        proof=dict(run_id='source-run',cleaned=True,failed_job='724530',
+                   original_allocation_hostname_verified=True,all_owned_sessions_absent=True,
+                   recorded_cuda_contexts_absent=True,execution_hostname='ACD1-19',cleanup_job_id='724800')
+        self.write(self.source/'logs/cleanup-status.json',proof)
+        self.assertEqual(restore.validate_request(self.target,self.commit)[1]['step'],5)
+        for key,value in (('failed_job','99'),('execution_hostname','ACD1-20'),
+                          ('cleanup_job_id','724530'),('all_owned_sessions_absent',False),
+                          ('recorded_cuda_contexts_absent',False),
+                          ('original_allocation_hostname_verified',False)):
+            self.write(self.source/'logs/cleanup-status.json',dict(proof,**{key:value}))
+            with self.subTest(key=key),self.assertRaisesRegex(ValueError,'ORIGINAL_NODE_CLEANUP_UNPROVEN'):
+                restore.validate_request(self.target,self.commit)
+
+    def test_newer_real_updates_cannot_be_discarded_without_bound_user_approval(self):
+        (self.source/'logs/actual-updates.jsonl').write_text(json.dumps(dict(
+            step=6,update_status='complete',full_budget_complete=True))+'\n')
+        for rank in range(4):
+            (self.source/'logs'/('optimizer-rank-'+str(rank)+'.jsonl')).write_text(json.dumps(dict(
+                kind='OPTIMIZER_WRITE',rank=rank,run_id='source-run',write_count=120))+'\n')
+        with self.assertRaisesRegex(ValueError,'EXPLICIT_USER_APPROVAL'):
+            restore.validate_request(self.target,self.commit)
+        approval=dict(approved_by='user',approved_unix=1,human_instruction='Resume CP5 and recompute6',
+                      source_job='724530',checkpoint_outer=5,source_completed_outer=6,
+                      source_optimizer_writes_per_rank=[120]*4,recompute_complete_outers=[6],lossless_resume=False)
+        self.write(self.target/'preparation/restore-request.json',dict(self.request,
+                   unsaved_suffix_authorization=approval))
+        restore.validate_request(self.target,self.commit)
+        for key,value in (('source_job','99'),('checkpoint_outer',4),('recompute_complete_outers',[]),
+                          ('source_optimizer_writes_per_rank',[100]*4),('lossless_resume',True)):
+            self.write(self.target/'preparation/restore-request.json',dict(self.request,
+                       unsaved_suffix_authorization=dict(approval,**{key:value})))
+            with self.subTest(key=key),self.assertRaisesRegex(ValueError,'EXPLICIT_USER_APPROVAL'):
+                restore.validate_request(self.target,self.commit)
+
+    def test_partial_rank_write_also_requires_explicit_approval(self):
+        path=self.source/'logs/optimizer-rank-2.jsonl'
+        path.write_text(json.dumps(dict(kind='OPTIMIZER_WRITE',rank=2,run_id='source-run',write_count=101))+'\n')
+        with self.assertRaisesRegex(ValueError,'EXPLICIT_USER_APPROVAL'):
+            restore.validate_request(self.target,self.commit)
 
     def test_bad_present_restore_request_cannot_fall_back_to_fresh_bind(self):
         envbin=self.target/'env/bin';envbin.mkdir(parents=True)

@@ -14,6 +14,7 @@ export TORCH_EXTENSIONS_DIR="$BASE/cache/torch-extensions" TORCHINDUCTOR_CACHE_D
 export HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 export OMP_NUM_THREADS=8 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONUNBUFFERED=1 NCCL_NVLS_ENABLE=0
 export TOKENIZERS_PARALLELISM=false RAYON_NUM_THREADS=1
+export RAY_num_server_call_thread=2 RAY_gcs_server_rpc_server_thread_num=2 RAY_gcs_server_rpc_client_thread_num=2
 unset PYTHONHOME RAY_ADDRESS HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy
 cd "$QPROBE_SOURCE"
 case "$PHASE" in

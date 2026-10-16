@@ -43,6 +43,46 @@ def namespace(path, *, target=False):
     return path
 
 
+def validate_unsaved_updates(source, request, receipt):
+    """A complete older pair is not authority to discard later real Adam writes."""
+    outer = receipt['step']
+    checkpoint_writes = receipt.get('attempt_progress', {}).get('cumulative_writes')
+    need(type(checkpoint_writes) is int and checkpoint_writes >= 0,
+         'CHECKPOINT_UPDATE_COUNTER_MISSING')
+    latest_outer = outer
+    updates = source/'logs/actual-updates.jsonl'
+    need(updates.is_file() and not updates.is_symlink() and updates.stat().st_uid == os.getuid(),
+         'SOURCE_ACTUAL_UPDATES_MISSING')
+    for line in updates.read_text().splitlines():
+        row = json.loads(line)
+        if row.get('update_status') == 'complete' and row.get('full_budget_complete') is True:
+            latest_outer = max(latest_outer, row['step'])
+    counts = []
+    for rank in range(4):
+        path = source/'logs'/('optimizer-rank-'+str(rank)+'.jsonl')
+        need(path.is_file() and not path.is_symlink() and path.stat().st_uid == os.getuid(),
+             'SOURCE_RANK_UPDATES_MISSING')
+        writes = [row for row in map(json.loads, path.read_text().splitlines())
+                  if row.get('kind') == 'OPTIMIZER_WRITE']
+        need(writes and writes[-1].get('rank') == rank and
+             writes[-1].get('run_id') == request['source_run_id'] and
+             type(writes[-1].get('write_count')) is int and
+             writes[-1]['write_count'] >= checkpoint_writes, 'SOURCE_RANK_UPDATE_BINDING')
+        counts.append(writes[-1]['write_count'])
+    if latest_outer == outer and counts == [checkpoint_writes]*4:
+        return
+    approval = request.get('unsaved_suffix_authorization') or {}
+    need(approval.get('approved_by') == 'user' and
+         type(approval.get('approved_unix')) in (int, float) and approval['approved_unix'] > 0 and
+         isinstance(approval.get('human_instruction'), str) and bool(approval['human_instruction'].strip()) and
+         approval.get('source_job') == request['source_job'] and
+         approval.get('checkpoint_outer') == outer and
+         approval.get('source_completed_outer') == latest_outer and
+         approval.get('source_optimizer_writes_per_rank') == counts and
+         approval.get('recompute_complete_outers') == list(range(outer+1, latest_outer+1)) and
+         approval.get('lossless_resume') is False, 'UNSAVED_UPDATES_REQUIRE_EXPLICIT_USER_APPROVAL')
+
+
 def validate_request(base, commit):
     """Metadata only: deliberately never import torch or load Adam tensors."""
     base = namespace(base, target=True)
@@ -83,8 +123,22 @@ def validate_request(base, commit):
     need(cleanup.get('run_id') == request['source_run_id'] and cleanup.get('cleaned') is True,
          'SOURCE_OWNED_CLEANUP_INCOMPLETE')
     status = read(source/'logs/pipeline-status.json')
-    need(status.get('run_id') == request['source_run_id'] and status.get('stage') == 'FAILED',
+    need(status.get('run_id') == request['source_run_id'] and
+         status.get('stage') in ('FAILED', 'OWNED_CLEANUP_FAILED'),
          'SOURCE_NOT_FAILED')
+    if status['stage'] == 'OWNED_CLEANUP_FAILED':
+        # A terminal Slurm job may have killed the remaining descendants after
+        # the old kernel refused pidfds. Only the original-node reconciler can
+        # prove this; never reinterpret a login-node PID or a terminal flag as
+        # evidence that the owned compute sessions and CUDA contexts are gone.
+        need(cleanup.get('failed_job') == request['source_job'] and
+             cleanup.get('original_allocation_hostname_verified') is True and
+             cleanup.get('all_owned_sessions_absent') is True and
+             cleanup.get('recorded_cuda_contexts_absent') is True and
+             cleanup.get('execution_hostname') == admission.get('node') and
+             str(cleanup.get('cleanup_job_id', '')).isdecimal() and
+             cleanup['cleanup_job_id'] != request['source_job'],
+             'SOURCE_ORIGINAL_NODE_CLEANUP_UNPROVEN')
     rows = subprocess.check_output(['sacct', '-nP', '-X', '-j', request['source_job'],
         '--format=JobID,State,ExitCode,User'], text=True).strip().splitlines()
     need(len(rows) == 1, 'SOURCE_TERMINAL_UNAVAILABLE')
@@ -94,6 +148,7 @@ def validate_request(base, commit):
          fields[3] == pwd.getpwuid(os.getuid()).pw_name, 'SOURCE_NOT_OWNED_TERMINAL')
     active = subprocess.check_output(['squeue', '-h', '-u', str(os.getuid()), '-o', '%i'], text=True).split()
     need(request['source_job'] not in active, 'SOURCE_STILL_ACTIVE')
+    validate_unsaved_updates(source, request, receipt)
     return request, receipt
 
 

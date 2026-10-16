@@ -6,6 +6,8 @@ import time
 
 
 def main():
+    from reproduction.hpc3_dynrpo_periodic.ray_threads import init_options
+    thread_options=init_options()
     import ray
     from reproduction.hpc3_dynrpo_periodic.ray_driver import driver_import_smoke
     from reproduction.a800.owned_processes import publish
@@ -16,7 +18,7 @@ def main():
     assert allocation['slurm_job_id']==os.environ['SLURM_JOB_ID']
     root=Path('/tmp')/('g1d-'+run['run_id'][:12]);root.mkdir(mode=0o700,exist_ok=False)
     ray.init(address='local',num_cpus=16,num_gpus=4,object_store_memory=8*1024**3,
-             include_dashboard=False,_temp_dir=str(root))
+             include_dashboard=False,_temp_dir=str(root),**thread_options)
     try:
         proof=ray.get(driver_import_smoke.remote(allocation['actual_cuda_runtime_uuids'][0]))
         publish(b/'logs/periodic-driver-import-smoke.json',dict(accepted=True,
