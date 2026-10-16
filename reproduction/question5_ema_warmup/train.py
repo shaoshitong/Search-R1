@@ -33,6 +33,7 @@ from .training import (TrainCounters, actual_adam_step, build_epoch_plan,
 
 COMMON_MANIFEST = "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24"
 DEFAULT_PATTERN = [51, 51, 51, 51, 52]
+GLOBAL1024_PATTERN = [204, 204, 204, 204, 208]
 _stop_requested = False
 
 
@@ -104,7 +105,8 @@ def validate_config(value):
     config.setdefault("attention_implementation", "sdpa")
     config.setdefault("resume", None)
     if (config["prefix_tokens"] != 5 or config["epochs"] != 200 or config["world_size"] != 4
-            or config["global_group_pattern"] != DEFAULT_PATTERN or config["micro_groups"] not in (6, 13)
+            or config["global_group_pattern"] not in (DEFAULT_PATTERN, GLOBAL1024_PATTERN)
+            or config["micro_groups"] not in (6, 13, 52)
             or config["lr_start"] != 3e-5 or config["lr_end"] != 3e-6
             or config["ema_decay"] != .99 or config["save_every_epochs"] != 10):
         raise ValueError("Require the bound question5/joint1:1/200epoch/world4/EMA.99/cosine recipe")
@@ -113,6 +115,17 @@ def validate_config(value):
             raise ValueError("Invalid integer " + key)
     if config["eval_micro_groups"] not in (6, 13, 64):
         raise ValueError("Require one explicitly supported whole-G5 evaluation micro batch")
+    batch_transition = config.get("batch_transition")
+    if config["global_group_pattern"] == GLOBAL1024_PATTERN:
+        if (config["micro_groups"] != 52 or config["eval_micro_groups"] != 64
+                or not isinstance(batch_transition, dict)
+                or set(batch_transition) != {"legacy_through_epoch"}
+                or type(batch_transition["legacy_through_epoch"]) is not int
+                or not 1 <= batch_transition["legacy_through_epoch"] < config["epochs"]
+                or config["resume"] is None):
+            raise ValueError("Global1024 requires a sealed legacy epoch boundary and full-state continuation")
+    elif config["micro_groups"] == 52 or batch_transition is not None:
+        raise ValueError("The new global batch and its explicit epoch transition must be declared together")
     if config["attention_implementation"] not in ("sdpa", "eager", "flash_attention_2"):
         raise ValueError("Use a native supported Qwen attention backend")
     for key in ("expected_train_groups", "expected_test_groups"):
@@ -130,7 +143,7 @@ def validate_config(value):
             raise ValueError("Resume requires one explicit same-run checkpoint")
         _hex(resume["sha256"], 64, "resume checkpoint SHA")
         if resume.get("kind") is not None:
-            if resume["kind"] != "authenticated_infrastructure_transition":
+            if resume["kind"] not in ("authenticated_infrastructure_transition", "authenticated_global_batch_transition"):
                 raise ValueError("Unknown checkpoint continuation kind")
             _hex(resume["parent_execution_id"], 32, "parent execution")
             _hex(resume["parent_binding_sha256"], 64, "parent binding SHA")
@@ -141,6 +154,46 @@ def validate_config(value):
                     or not Path(resume["qualification_receipt"]).is_absolute()):
                 raise ValueError("Require the exact authenticated parent binding and qualification")
     return config
+
+
+def epoch_group_pattern(config, epoch):
+    transition = config.get("batch_transition")
+    return (DEFAULT_PATTERN if transition is not None and epoch <= transition["legacy_through_epoch"]
+            else config["global_group_pattern"])
+
+
+def pattern_update_count(groups, pattern):
+    """Count actual whole-G5 updates, including a genuine nonempty final tail."""
+    cycles, remaining = divmod(groups, sum(pattern))
+    count = cycles * len(pattern)
+    for width in pattern:
+        if remaining <= 0:
+            break
+        count += 1
+        remaining -= width
+    return count
+
+
+def updates_through_epoch(config, groups, completed_epochs):
+    transition = config.get("batch_transition")
+    if transition is None:
+        return completed_epochs * pattern_update_count(groups, config["global_group_pattern"])
+    legacy = min(completed_epochs, transition["legacy_through_epoch"])
+    return (legacy * pattern_update_count(groups, DEFAULT_PATTERN)
+            + (completed_epochs - legacy) * pattern_update_count(groups, GLOBAL1024_PATTERN))
+
+
+def virtual_lr_index(config, groups, actual_update_index):
+    """Preserve the original data/epoch cosine phase across the declared 4x batch."""
+    transition = config.get("batch_transition")
+    if transition is None:
+        return actual_update_index
+    total_actual = updates_through_epoch(config, groups, config["epochs"])
+    if actual_update_index == total_actual - 1:
+        return config["epochs"] * pattern_update_count(groups, DEFAULT_PATTERN) - 1
+    boundary = transition["legacy_through_epoch"] * pattern_update_count(groups, DEFAULT_PATTERN)
+    return (actual_update_index if actual_update_index <= boundary
+            else boundary + 4 * (actual_update_index - boundary))
 
 
 def authenticated_resume_transition(config, binding):
@@ -155,15 +208,36 @@ It never makes a missing raw/EMA/Adam/RNG state compatible by substitution.
     if resume is None or resume.get("kind") is None:
         return None
     parent = resume["parent_binding"]
-    if set(parent) != set(binding):
-        raise ValueError("Infrastructure continuation binding keys differ")
-    differences = {key for key in binding if parent[key] != binding[key]}
-    if (differences != {"source_commit", "micro_groups"}
-            or parent["run_id"] != config["run_id"]
-            or parent["micro_groups"] != 6 or binding["micro_groups"] != 13
-            or config["eval_micro_groups"] != 64
+    kind = resume["kind"]
+    if kind == "authenticated_infrastructure_transition":
+        if set(parent) != set(binding):
+            raise ValueError("Infrastructure continuation binding keys differ")
+        differences = {key for key in binding if parent[key] != binding[key]}
+        if (differences != {"source_commit", "micro_groups"}
+                or parent["micro_groups"] != 6 or binding["micro_groups"] != 13
+                or config.get("batch_transition") is not None):
+            raise ValueError("Infrastructure continuation may change only source and micro6 to micro13")
+        qualification_role = "question5_native_stopped_full_state_resume_v1"
+    else:
+        added = {"epoch_batch_schedule", "learning_rate_virtual_total_updates", "learning_rate_final_endpoint_exact"}
+        allowed = {"source_commit", "micro_groups", "global_group_pattern", "updates_per_epoch",
+                   "total_actual_adam_updates", "learning_rate_clock"}
+        if set(binding) != set(parent) | added or set(parent) & added:
+            raise ValueError("Global-batch continuation has undeclared binding keys")
+        differences = {key for key in parent if parent[key] != binding[key]}
+        if (differences != allowed or parent["micro_groups"] != 13 or binding["micro_groups"] != 52
+                or parent["global_group_pattern"] != DEFAULT_PATTERN
+                or binding["global_group_pattern"] != GLOBAL1024_PATTERN
+                or parent["updates_per_epoch"] != 8700 or binding["updates_per_epoch"] != 2175
+                or parent["total_actual_adam_updates"] != 1740000
+                or parent["learning_rate_clock"] != "successful_actual_Adam"
+                or binding["learning_rate_clock"] != "successful_actual_Adam_virtual_data_phase"):
+            raise ValueError("Global-batch continuation differs from the explicit 256 to 1024 contract")
+        differences |= added
+        qualification_role = "question5_native_stopped_global_batch_resume_v1"
+    if (parent["run_id"] != config["run_id"] or config["eval_micro_groups"] != 64
             or resume["parent_execution_id"] == config["execution_id"]):
-        raise ValueError("Continuation may change only published source and micro6 to micro13/eval64")
+        raise ValueError("Continuation requires a distinct execution of the same run")
     checkpoint = Path(resume["checkpoint"])
     qualification = Path(resume["qualification_receipt"])
     for path in (checkpoint, qualification):
@@ -176,13 +250,18 @@ It never makes a missing raw/EMA/Adam/RNG state compatible by substitution.
     if qualification.stat().st_size > 1024 * 1024 or sha(qualification) != resume["qualification_receipt_sha256"]:
         raise ValueError("Stopped-state qualification SHA or metadata bound differs")
     proof = json.loads(qualification.read_bytes())
-    expected = dict(schema_version=1, role="question5_native_stopped_full_state_resume_v1",
+    expected = dict(schema_version=1, role=qualification_role,
                     run_id=config["run_id"], parent_execution_id=resume["parent_execution_id"],
                     parent_source_commit=parent["source_commit"], target_execution_id=config["execution_id"],
                     target_source_commit=config["source_commit"], target_output_dir=config["output_dir"],
                     parent_binding_sha256=resume["parent_binding_sha256"],
                     all_owned_training_processes_gone=True, checkpoint_writer_gone=True,
                     old_output_preserved=True)
+    if kind == "authenticated_global_batch_transition":
+        expected["legacy_through_epoch"] = config["batch_transition"]["legacy_through_epoch"]
+        expected["target_global_group_pattern"] = GLOBAL1024_PATTERN
+        expected["target_updates_per_epoch"] = binding["updates_per_epoch"]
+        expected["target_total_actual_adam_updates"] = binding["total_actual_adam_updates"]
     if (any(proof.get(key) != value for key, value in expected.items())
             or proof.get("checkpoint", {}).get("path") != str(checkpoint)
             or proof.get("checkpoint", {}).get("sha256") != resume["sha256"]):
@@ -195,6 +274,9 @@ It never makes a missing raw/EMA/Adam/RNG state compatible by substitution.
                 qualification_receipt_sha256=resume["qualification_receipt_sha256"],
                 changed_binding_fields=sorted(differences),
                 execution_micro_groups=config["micro_groups"], evaluation_micro_groups=config["eval_micro_groups"],
+                epoch_batch_schedule=binding.get("epoch_batch_schedule"),
+                expected_total_actual_adam_updates=binding["total_actual_adam_updates"],
+                learning_rate_virtual_total_updates=binding.get("learning_rate_virtual_total_updates"),
                 full_state_resume=True, fresh_initialization=False, partial_updates_discarded=False)
 
 
@@ -394,7 +476,8 @@ def _save_boundary(config, model, optimizer, ema, counters, binding, epoch, next
         saved = make_checkpoint(model, optimizer, ema, counters, binding=binding, epoch=epoch,
                                 next_update_in_epoch=next_step, epoch_plan_sha256=plan_sha,
                                 rank_rng=rank_rng, completed_epoch=completed_epoch)
-        if (config.get("resume") or {}).get("kind") == "authenticated_infrastructure_transition":
+        if (config.get("resume") or {}).get("kind") in (
+                "authenticated_infrastructure_transition", "authenticated_global_batch_transition"):
             continuation = config["resume"]
             saved["state_continuation"] = dict(kind=continuation["kind"],
                 parent_execution_id=continuation["parent_execution_id"],
@@ -403,6 +486,8 @@ def _save_boundary(config, model, optimizer, ema, counters, binding, epoch, next
                 qualification_receipt=continuation["qualification_receipt"],
                 qualification_receipt_sha256=continuation["qualification_receipt_sha256"],
                 raw_ema_adam_rng_cursor_preserved=True)
+            if config.get("batch_transition") is not None:
+                saved["state_continuation"]["epoch_batch_schedule"] = binding["epoch_batch_schedule"]
         if completed_epoch:
             if epoch_metrics is None:
                 raise ValueError("A committed epoch requires its same-EMA train/test metrics")
@@ -413,6 +498,11 @@ def _save_boundary(config, model, optimizer, ema, counters, binding, epoch, next
                        source_commit=config["source_commit"], binding_sha256=digest(binding),
                        counters=counters.state_dict(), next_update_in_epoch=next_step,
                        epoch_plan_sha256=plan_sha, observed_unix=time.time())
+        if config.get("batch_transition") is not None:
+            receipt.update(epoch_batch_schedule=binding["epoch_batch_schedule"],
+                epoch_global_group_pattern=epoch_group_pattern(config, epoch),
+                epoch_updates_per_epoch=pattern_update_count(config["expected_train_groups"], epoch_group_pattern(config, epoch)),
+                expected_total_actual_adam_updates=binding["total_actual_adam_updates"])
         if completed_epoch:
             receipt["epoch_metrics_sha256"] = digest(epoch_metrics)
         if completed_epoch and (epoch % config["save_every_epochs"] == 0 or epoch == config["epochs"]):
@@ -542,9 +632,10 @@ def main(argv=None):
         ema = ParameterEMA(model, config["ema_decay"])
         counters = TrainCounters()
         initial_plan = build_epoch_plan(len(train.groups), epoch=1, seed=config["seed"], world=world,
-                                        global_group_pattern=config["global_group_pattern"])
-        updates_per_epoch = len(initial_plan)
-        total_updates = updates_per_epoch * config["epochs"]
+                                        global_group_pattern=epoch_group_pattern(config, 1))
+        updates_per_epoch = pattern_update_count(len(train.groups), config["global_group_pattern"])
+        total_updates = updates_through_epoch(config, len(train.groups), config["epochs"])
+        virtual_total_updates = config["epochs"] * pattern_update_count(len(train.groups), DEFAULT_PATTERN)
         binding = dict(schema_version=1, role="fresh_question5_joint200_ema099", run_id=config["run_id"],
                        source_commit=config["source_commit"], official_revision=config["official_revision"],
                        common_manifest_sha256=config["common_manifest_sha256"],
@@ -559,6 +650,14 @@ def main(argv=None):
                        ema_decay=.99, lr_start=config["lr_start"], lr_end=config["lr_end"],
                        learning_rate_clock="successful_actual_Adam", old_probe_imported=False,
                        old_optimizer_imported=False, actor_updates=0)
+        if config.get("batch_transition") is not None:
+            binding.update(epoch_batch_schedule=dict(
+                legacy_through_epoch=config["batch_transition"]["legacy_through_epoch"],
+                legacy_global_group_pattern=DEFAULT_PATTERN,
+                legacy_updates_per_epoch=pattern_update_count(len(train.groups), DEFAULT_PATTERN),
+                new_global_group_pattern=GLOBAL1024_PATTERN, new_updates_per_epoch=updates_per_epoch),
+                learning_rate_clock="successful_actual_Adam_virtual_data_phase",
+                learning_rate_virtual_total_updates=virtual_total_updates, learning_rate_final_endpoint_exact=True)
         _agree(digest(binding), world, "run/science/feature/batch binding")
         _agree((actual_adam_step(optimizer), ema.updates), world, "fresh Adam/EMA boundary")
         transition = _rank0_action(lambda: authenticated_resume_transition(config, binding), rank)
@@ -596,24 +695,30 @@ def main(argv=None):
                                           expected_binding=expected_saved_binding, device=device)
             if len(saved["rank_rng"]) != world:
                 raise ValueError("Saved RNG rank count differs")
+            saved_epoch_updates = pattern_update_count(len(train.groups), epoch_group_pattern(config, saved["epoch"]))
+            if (transition is not None and transition["kind"] == "authenticated_global_batch_transition"
+                    and config["batch_transition"]["legacy_through_epoch"] != (
+                        counters.complete_epochs if saved["completed_epoch"] else saved["epoch"])):
+                raise ValueError("Legacy batch boundary must preserve every update of the sealed partial epoch")
             if saved["completed_epoch"]:
                 if counters.complete_epochs != saved["epoch"] or saved["next_update_in_epoch"] != 0:
                     raise ValueError("Saved complete-epoch marker/counters differ")
                 first_epoch, resume_step = saved["epoch"] + 1, 0
             else:
                 first_epoch, resume_step = saved["epoch"], saved["next_update_in_epoch"]
-                if counters.complete_epochs != first_epoch - 1 or not 0 <= resume_step <= updates_per_epoch:
+                if counters.complete_epochs != first_epoch - 1 or not 0 <= resume_step <= saved_epoch_updates:
                     raise ValueError("Saved partial epoch cursor differs")
-            expected_steps = counters.complete_epochs * updates_per_epoch + resume_step
+            expected_steps = updates_through_epoch(config, len(train.groups), counters.complete_epochs) + resume_step
             if counters.optimizer_steps != expected_steps:
                 raise ValueError("Saved Adam count differs from full-data epoch/cursor")
             if counters.optimizer_steps:
-                previous_lr = cosine_learning_rate(counters.optimizer_steps - 1, total_updates,
+                previous_lr = cosine_learning_rate(virtual_lr_index(config, len(train.groups), counters.optimizer_steps - 1),
+                                                    virtual_total_updates,
                                                     start=config["lr_start"], end=config["lr_end"])
                 if any(float(group["lr"]) != previous_lr for group in optimizer.param_groups):
                     raise ValueError("Restored optimizer LR differs from the successful-Adam cosine clock")
             expected_plan = build_epoch_plan(len(train.groups), epoch=saved["epoch"], seed=config["seed"],
-                                              world=world, global_group_pattern=config["global_group_pattern"])
+                                              world=world, global_group_pattern=epoch_group_pattern(config, saved["epoch"]))
             if digest([step.state_dict() for step in expected_plan]) != saved["epoch_plan_sha256"]:
                 raise ValueError("Saved exact-once sampler plan SHA differs")
             expected_groups = counters.complete_epochs * len(train.groups)
@@ -647,6 +752,11 @@ def main(argv=None):
                 full_raw_ema_adam_restored=True, fresh_initialization=False,
                 partial_updates_discarded=False, execution_micro_groups=config["micro_groups"],
                 evaluation_micro_groups=config["eval_micro_groups"],
+                epoch_batch_schedule=binding.get("epoch_batch_schedule"),
+                expected_total_actual_adam_updates=total_updates,
+                current_epoch_global_group_pattern=epoch_group_pattern(config, first_epoch),
+                current_epoch_updates_per_epoch=pattern_update_count(len(train.groups), epoch_group_pattern(config, first_epoch)),
+                learning_rate_virtual_total_updates=virtual_total_updates,
                 state_continuation=transition)
             resume_rng = saved["rank_rng"][rank]
             del saved
@@ -674,7 +784,10 @@ def main(argv=None):
         torch.cuda.reset_peak_memory_stats(device)
         for epoch in range(first_epoch, config["epochs"] + 1):
             plan = initial_plan if epoch == 1 else build_epoch_plan(len(train.groups), epoch=epoch,
-                seed=config["seed"], world=world, global_group_pattern=config["global_group_pattern"])
+                seed=config["seed"], world=world, global_group_pattern=epoch_group_pattern(config, epoch))
+            updates_per_epoch = len(plan)
+            if updates_per_epoch != pattern_update_count(len(train.groups), epoch_group_pattern(config, epoch)):
+                raise RuntimeError("Actual exact-once epoch plan differs from the declared batch-phase budget")
             plan_sha = digest([step.state_dict() for step in plan])
             _agree(plan_sha, world, "exact-once complete-data epoch plan")
             start_step = resume_step if epoch == first_epoch else 0
@@ -685,7 +798,8 @@ def main(argv=None):
             online = [0., 0., 0]
             for index in range(start_step, len(plan)):
                 next_step = index
-                lr = cosine_learning_rate(counters.optimizer_steps, total_updates,
+                lr_virtual_update = virtual_lr_index(config, len(train.groups), counters.optimizer_steps)
+                lr = cosine_learning_rate(lr_virtual_update, virtual_total_updates,
                                           start=config["lr_start"], end=config["lr_end"])
                 for group in optimizer.param_groups:
                     group["lr"] = lr
@@ -695,6 +809,12 @@ def main(argv=None):
                 record.update(epoch=epoch, epoch_update=next_step, updates_per_epoch=updates_per_epoch,
                               plan_sha256=plan_sha, run_id=config["run_id"], execution_id=config["execution_id"],
                               rank=rank, source_commit=config["source_commit"], observed_unix=time.time())
+                if config.get("batch_transition") is not None:
+                    record.update(epoch_global_group_pattern=epoch_group_pattern(config, epoch),
+                        epoch_batch_schedule=binding["epoch_batch_schedule"],
+                        learning_rate_virtual_update_index=lr_virtual_update,
+                        learning_rate_virtual_total_updates=virtual_total_updates,
+                        expected_total_actual_adam_updates=total_updates)
                 ledger.write(canonical(record).decode() + "\n")
                 if next_step % config["ledger_flush_updates"] == 0:
                     ledger.flush()
@@ -719,7 +839,7 @@ def main(argv=None):
                     atomic_json(execution / ("stopped-rank-%d.json" % rank),
                                 dict(identity=owner, counters=counters.state_dict(), checkpoint=receipt), exclusive=True)
                     return 0
-            if (counters.optimizer_steps != epoch * updates_per_epoch
+            if (counters.optimizer_steps != updates_through_epoch(config, len(train.groups), epoch)
                     or counters.global_groups_seen != epoch * len(train.groups)):
                 raise RuntimeError("Full merged epoch actual update/exposure count differs")
             counters.complete_epochs = epoch
@@ -748,6 +868,10 @@ def main(argv=None):
                            execution_seconds=time.monotonic() - started, actor_updates=0,
                            execution_micro_groups=config["micro_groups"],
                            evaluation_micro_groups=config["eval_micro_groups"],
+                           epoch_global_group_pattern=epoch_group_pattern(config, epoch),
+                           updates_per_epoch=updates_per_epoch, epoch_batch_schedule=binding.get("epoch_batch_schedule"),
+                           expected_total_actual_adam_updates=total_updates,
+                           learning_rate_virtual_total_updates=virtual_total_updates,
                            execution_cuda_peaks_per_rank=peaks)
             ledger.flush()
             os.fsync(ledger.fileno())
