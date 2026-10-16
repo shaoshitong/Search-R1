@@ -1,0 +1,45 @@
+{
+  "protocol": "recursive_ablation_closed_log_tree_archive_report_v1",
+  "group": "C1-root-only",
+  "scientific_source_commit": "233b0dc95de3f7b797d5b424d3b7dcaafca5328f",
+  "implementation_commit": "c8b5aeec873e9c226e575cd37e602f7bce750232",
+  "config_sha256": "b2a47bdbd8d721579e983062eb3ee942cc1e4b6aa021e7c49861e3763cdb10de",
+  "status": "COMPLETE",
+  "canonical_archive": {
+    "members": 95,
+    "member_bytes": 251924102410,
+    "scope": "Prior accepted full SHA of milestone HF/model-Adam-RNG-driver states plus closure; not rehashed by this supplement"
+  },
+  "supplement": {
+    "members": 43960,
+    "member_bytes": 4507864666,
+    "complete_receipt_sha256": "685d68d474a60606f67d2f6d7f5fa5393f8a9ac4f667554d6edfaa16f2d19206",
+    "inventory_sha256": "c674bfd7561346c74dadf7c9354fd90e93a8049338ce93ca8c27cb938b03888d",
+    "tree_training_questions": {
+      "100": 512,
+      "150": 512,
+      "5": 512,
+      "50": 512
+    },
+    "actual_child_wait_rc": 0,
+    "elapsed_seconds": 220.54622721672058,
+    "source_before_after_verified": true,
+    "destination_full_sha_verified": true,
+    "all9runtime_SHA_bound": true
+  },
+  "scope": [
+    "Native logs and closure originals",
+    "TRAIN tree event/root/child/snapshot JSON at5/50/100/150",
+    "Sparse all-leaf gzip text and unchanged manifests",
+    "Existing accepted tree summaries/provenance"
+  ],
+  "excluded": [
+    "Actor input tensors",
+    "Model/optimizer payload duplication",
+    "New evaluations or per-question dev predictions"
+  ],
+  "server_retention_until": null,
+  "training_modified": false,
+  "whole_goal_complete": false,
+  "supplement_source_originals_retained": true
+}
