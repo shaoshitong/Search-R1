@@ -1,5 +1,5 @@
 {
-  "observed_report_at_cst": "2026-10-17T01:09:36.309000+08:00",
+  "observed_report_at_cst": "2026-10-17T01:13:24.850514+08:00",
   "sessions_requested": [
     "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
     "01a0fcbb-863f-7450-926d-db537f648265",
@@ -14233,7 +14233,7 @@
         ]
       },
       "audit_refreshed_20261016": true,
-      "observed_at_cst": "2026-10-17T00:56:50.468460+08:00"
+      "observed_at_cst": "2026-10-17T01:12:10.229208+08:00"
     },
     {
       "name": "GiGPO safety fresh200 3347",
@@ -17101,6 +17101,7 @@
           "f1": 0.2432425845642178,
           "correct": 94,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -17132,6 +17133,7 @@
           "f1": 0.44534195188492065,
           "correct": 185,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -17163,6 +17165,7 @@
           "f1": 0.4865459263724429,
           "correct": 206,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -17194,6 +17197,7 @@
           "f1": 0.501726810515873,
           "correct": 216,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -17225,6 +17229,7 @@
           "f1": 0.5023282490079365,
           "correct": 215,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -17301,7 +17306,7 @@
           "sha256": "5de070af8a17015b4c35eff28ec1ce49cbb90f0054e2984acfb727247dbe8d97"
         },
         "canonical_dataset_readback": {
-          "path": "outputs/session-refresh-20261017-pinned/sigma-canonical-data-readback.json",
+          "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/sigma-canonical-data-readback.json",
           "sha256": "a5ac53d942b35462626d57c573a16504a4202c71041f53acc5a5c79c107a56bc"
         }
       },
@@ -20533,7 +20538,7 @@
         }
       ],
       "train_recent10_n": 10,
-      "observed_at_cst": "2026-10-17T01:01:08.111377+08:00"
+      "observed_at_cst": "2026-10-17T01:12:10.913084+08:00"
     },
     {
       "name": "TOP-D alpha0.1",
@@ -23644,7 +23649,7 @@
         }
       },
       "target_iter": 150,
-      "completed_iter": 103,
+      "completed_iter": 104,
       "train_series": [
         {
           "iter": 1,
@@ -24366,6 +24371,13 @@
           "line": 1611939,
           "sha256": "162463c1170412b0a2d8d07908030440ae8c71d0383c2dfec033c0a91cae8b45",
           "em": 0.4625000059604645
+        },
+        {
+          "iter": 104,
+          "path": "/dataset/shaoshitong/recursive-ablation150-20261014/C2-random-final/logs/training.log",
+          "line": 1629790,
+          "sha256": "fa07c17558ed689101c79aa53e49593c584e003c65d63c15dc8a69df989e3863",
+          "em": 0.48046875
         }
       ],
       "fixed512": [
@@ -24400,13 +24412,13 @@
           "correct": 223
         }
       ],
-      "train_latest_em": 0.4625000059604645,
-      "train_recent10_mean": 0.47781249284744265,
+      "train_latest_em": 0.48046875,
+      "train_recent10_mean": 0.4741406202316284,
       "train_recent10_n": 10,
       "status": "training_running",
       "note": "Independent random-final ablation, target150; missing first scalar is a gap. New fixed50/100 taken from actual complete native scalar lines.",
       "reader_started_epoch": 1792127971.115739,
-      "observed_at_cst": "2026-10-17T00:56:56.116026+08:00",
+      "observed_at_cst": "2026-10-17T01:12:47.000796+08:00",
       "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/a-current.json",
       "log_evidence": [
         {
@@ -24435,7 +24447,7 @@
         "reason": "Fresh Prefix variant has not completed200."
       },
       "training_metric": "strict EM on actual selected512x5 actor trajectories",
-      "completed_iter": 6,
+      "completed_iter": 8,
       "train_series": [
         {
           "iter": 1,
@@ -24610,6 +24622,64 @@
             0,
             0
           ]
+        },
+        {
+          "iter": 7,
+          "correct": 1486,
+          "n": 2560,
+          "em": 0.58046875,
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000007/complete.json",
+          "sha256": "7e6f28eac74a1d489e66b1b99c6f3d234d651344f7d1762692d8c7c88d1a7322",
+          "run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+          "actor_adam": [
+            140,
+            140,
+            140,
+            140,
+            140,
+            140,
+            140,
+            140
+          ],
+          "probe_adam": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "iter": 8,
+          "correct": 1573,
+          "n": 2560,
+          "em": 0.614453125,
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000008/complete.json",
+          "sha256": "5cfd3d122af0d7ce7efbd57eb55e23b7b126d0555e5a9f187d26c85804094f4e",
+          "run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+          "actor_adam": [
+            160,
+            160,
+            160,
+            160,
+            160,
+            160,
+            160,
+            160
+          ],
+          "probe_adam": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
         }
       ],
       "fixed512": [
@@ -24647,11 +24717,11 @@
           "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb"
         }
       ],
-      "train_latest_em": 0.598828125,
-      "train_recent10_mean": 0.5494791666666666,
-      "train_recent10_n": 6,
+      "train_latest_em": 0.614453125,
+      "train_recent10_mean": 0.561474609375,
+      "train_recent10_n": 8,
       "status": "training_running",
-      "observed_at_cst": "2026-10-17T00:58:52.202489+08:00",
+      "observed_at_cst": "2026-10-17T01:12:20.061655+08:00",
       "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/h100-8-current.json",
       "note": "Independent Prefix variant. Actual complete joint receipts only, own strict EM. Legacy async FP32 QA evaluation; inference contract differs from some historical settings. Current fresh setting; not appended to historical GiGPO or Tree-Nested."
     },
@@ -25320,7 +25390,7 @@
       "train_recent10_mean": 0.1728515625,
       "train_recent10_n": 10,
       "status": "historical_stopped21",
-      "observed_at_cst": "2026-10-17T00:58:52.202489+08:00",
+      "observed_at_cst": "2026-10-17T01:12:20.061655+08:00",
       "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/h100-8-current.json",
       "note": "Independent Prefix variant. Actual complete joint receipts only, own strict EM. Legacy async FP32 QA evaluation; inference contract differs from some historical settings. Historical stopped setting, not the current actor-hidden run."
     },
@@ -25338,7 +25408,7 @@
         "reason": "Fresh Prefix variant has not completed200."
       },
       "training_metric": "strict EM on actual selected512x5 actor trajectories",
-      "completed_iter": 30,
+      "completed_iter": 32,
       "train_series": [
         {
           "iter": 1,
@@ -26209,6 +26279,64 @@
             600,
             600
           ]
+        },
+        {
+          "iter": 31,
+          "correct": 1700,
+          "n": 2560,
+          "em": 0.6640625,
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/outers/outer-000031/complete.json",
+          "sha256": "8105c23f8d6e1f8d469459faefc46e311f5937f24483375131f56cf5b1d04ad2",
+          "run_id": "f3ee1435e5014ba1969387c91878893a",
+          "actor_adam": [
+            620,
+            620,
+            620,
+            620,
+            620,
+            620,
+            620,
+            620
+          ],
+          "probe_adam": [
+            620,
+            620,
+            620,
+            620,
+            620,
+            620,
+            620,
+            620
+          ]
+        },
+        {
+          "iter": 32,
+          "correct": 1688,
+          "n": 2560,
+          "em": 0.659375,
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/outers/outer-000032/complete.json",
+          "sha256": "1bdcfd709236fbdff08f3cbd6aec9c050f0c3b8a239cae7fc5d6797855b97093",
+          "run_id": "f3ee1435e5014ba1969387c91878893a",
+          "actor_adam": [
+            640,
+            640,
+            640,
+            640,
+            640,
+            640,
+            640,
+            640
+          ],
+          "probe_adam": [
+            640,
+            640,
+            640,
+            640,
+            640,
+            640,
+            640,
+            640
+          ]
         }
       ],
       "fixed512": [
@@ -26246,11 +26374,11 @@
           "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb"
         }
       ],
-      "train_latest_em": 0.631640625,
-      "train_recent10_mean": 0.6274609375,
+      "train_latest_em": 0.659375,
+      "train_recent10_mean": 0.638515625,
       "train_recent10_n": 10,
       "status": "training_running",
-      "observed_at_cst": "2026-10-17T00:58:50.091902+08:00",
+      "observed_at_cst": "2026-10-17T01:12:19.864509+08:00",
       "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/h100-10-current.json",
       "note": "Independent Prefix variant. Actual complete joint receipts only, own strict EM. Legacy async FP32 QA evaluation; inference contract differs from some historical settings. Current fresh setting; not appended to historical GiGPO or Tree-Nested."
     },
@@ -26266,7 +26394,7 @@
         "em": null,
         "f1": null
       },
-      "completed_iter": 67,
+      "completed_iter": 68,
       "train_series": [
         {
           "iter": 1,
@@ -26850,6 +26978,15 @@
           "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16/artifacts/question-probe/attempts/c8f6080d860a487b80ed69342f799e5b/rollout-audit.json",
           "sha256": "061e80687eaab91e5abc352add4c2b72d88b242fdda519690a1798dca2eb2266",
           "metric": "strict EM of selected512x5 generated trajectories"
+        },
+        {
+          "iter": 68,
+          "em": 0.458984375,
+          "correct": 1175,
+          "n": 2560,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r16/artifacts/question-probe/attempts/36d19b4d160f4a17b1b9811350f5a46a/rollout-audit.json",
+          "sha256": "3dc0b3443f47dd08cd41d9be5e456442c9e305bfd0f066be47e27f23204f1f3d",
+          "metric": "strict EM of selected512x5 generated trajectories"
         }
       ],
       "fixed512": [
@@ -26879,6 +27016,7 @@
           "f1": 0.44610400703942926,
           "correct": 189,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -26899,11 +27037,11 @@
           "row_sha256": "31e0649223aa62286fbca5604df534551f6deb5d6da34a581f4f8e1e8d87a5c7"
         }
       ],
-      "train_latest_em": 0.49296875,
-      "train_recent10_mean": 0.4529296875,
+      "train_latest_em": 0.458984375,
+      "train_recent10_mean": 0.4521875,
       "train_recent10_n": 10,
       "status": "training_running",
-      "observed_at_cst": "2026-10-17T01:01:08.056607+08:00",
+      "observed_at_cst": "2026-10-17T01:12:10.826721+08:00",
       "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/mou176-current.json",
       "note": "Periodic25 question probe setting in TOP-D session, not TOP-D distillation. Strict selected G5 trajectory EM, ancestors1–5/r13,6–10/r15 and11 onward/r16; partial next rollout excluded."
     },
@@ -26932,6 +27070,7 @@
           "f1": 0.33372393265019046,
           "correct": 130.0,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -26959,7 +27098,7 @@
       "train_recent10_mean": null,
       "train_recent10_n": 0,
       "status": "initializing_no_completed_outer",
-      "observed_at_cst": "2026-10-17T01:01:08.111377+08:00",
+      "observed_at_cst": "2026-10-17T01:12:10.913084+08:00",
       "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/jxu957-current.json",
       "note": "New four-GPU Prefix20 joint run; only iter0 fixed512 exists. No completed actor outer at source freeze. Initial evaluation does not enter iter5 ranking."
     }
@@ -27036,7 +27175,7 @@
     "queue": "721542|RUNNING|1:10:28|ACD1-19\n",
     "latest_observed_at": "2026-10-15T17:06:29.581197+08:00"
   },
-  "plot_stamp": "Pinned-session refresh · 2026-10-17 01:09 CST",
+  "plot_stamp": "Pinned-session refresh · 2026-10-17 01:13 CST",
   "viewer_subtitle": "10月17日置顶训练会话只读更新：B/C2、σ3及新Prefix/周期探针设置；历史实验保留原日期。探针分类准确率不混入QA EM。",
   "base_audit": {
     "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/base-all-seven-results.json",
@@ -27080,27 +27219,27 @@
   "source_snapshot_files": [
     {
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/a-current.json",
-      "sha256": "98359580f809d3a250a14daa7dcdb10c3b6ba0057802cc283c9daabda7bba08f"
+      "sha256": "31fe21dd3a3c1baefb415e0b6d00030ca0395509eaeae4b471778f4d98f1fb55"
     },
     {
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/b-current.json",
-      "sha256": "249c84093582523d5a70b4721dc41fd6bb54416b7c4528db7e53bbec9773653f"
+      "sha256": "cb8ddda27d4746fbbbdd839844ea1aab672b398ac981a3d2c9d7338c64049cb8"
     },
     {
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/jxu957-current.json",
-      "sha256": "89ef3618a44bef55f15598d205841353d6eb5364ba79542a5b5982e69348b335"
+      "sha256": "9f97764ddfbfdeb009d683830c2402fa9536a46d00377bffa20ecdd7c8047841"
     },
     {
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/mou176-current.json",
-      "sha256": "d4c7e884e678a775af9ee1cfac5e08b5759493f697a72396400b702de1a3640f"
+      "sha256": "0c9dfda6c73807f06caa65d7fdff7be915daafe26f419dce6c6356f2694aa63b"
     },
     {
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/h100-8-current.json",
-      "sha256": "e53a37c9eb140241343738930cef638c62685ecb5020c4af9fc5a8a7a90530bd"
+      "sha256": "f7a45d05b28d0cb0f3ff54e48c37b37a38a87c119cef277b0bebad924c198cd9"
     },
     {
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/h100-10-current.json",
-      "sha256": "b6617ab78ef8826f01967494c8e6b8faa2bba6822a18caacf2b5a78523e8ad64"
+      "sha256": "485ce6f12fb72943401c9bf293cee917acad023dc16d24d1695d0a4a441da091"
     },
     {
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/topd-ancestors.json",

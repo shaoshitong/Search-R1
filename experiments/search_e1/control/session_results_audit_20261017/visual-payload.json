@@ -1,5 +1,5 @@
 {
-  "stamp": "Pinned-session refresh · 2026-10-17 01:09 CST",
+  "stamp": "Pinned-session refresh · 2026-10-17 01:13 CST",
   "models": [
     {
       "id": "0",
@@ -7138,6 +7138,10 @@
         [
           103,
           0.4625000059604645
+        ],
+        [
+          104,
+          0.48046875
         ]
       ],
       "fixed512": [
@@ -7172,7 +7176,7 @@
           "correct": 223
         }
       ],
-      "completed": 103,
+      "completed": 104,
       "target": 150,
       "status": "training_running",
       "note": "Independent random-final ablation, target150; missing first scalar is a gap. New fixed50/100 taken from actual complete native scalar lines.",
@@ -10904,6 +10908,7 @@
           "f1": 0.2432425845642178,
           "correct": 94,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -10935,6 +10940,7 @@
           "f1": 0.44534195188492065,
           "correct": 185,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -10966,6 +10972,7 @@
           "f1": 0.4865459263724429,
           "correct": 206,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -10997,6 +11004,7 @@
           "f1": 0.501726810515873,
           "correct": 216,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -11028,6 +11036,7 @@
           "f1": 0.5023282490079365,
           "correct": 215,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -12872,6 +12881,14 @@
         [
           6,
           0.598828125
+        ],
+        [
+          7,
+          0.58046875
+        ],
+        [
+          8,
+          0.614453125
         ]
       ],
       "fixed512": [
@@ -12909,7 +12926,7 @@
           "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb"
         }
       ],
-      "completed": 6,
+      "completed": 8,
       "target": 200,
       "status": "training_running",
       "note": "Independent Prefix variant. Actual complete joint receipts only, own strict EM. Legacy async FP32 QA evaluation; inference contract differs from some historical settings. Current fresh setting; not appended to historical GiGPO or Tree-Nested.",
@@ -13174,6 +13191,14 @@
         [
           30,
           0.631640625
+        ],
+        [
+          31,
+          0.6640625
+        ],
+        [
+          32,
+          0.659375
         ]
       ],
       "fixed512": [
@@ -13211,7 +13236,7 @@
           "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb"
         }
       ],
-      "completed": 30,
+      "completed": 32,
       "target": 200,
       "status": "training_running",
       "note": "Independent Prefix variant. Actual complete joint receipts only, own strict EM. Legacy async FP32 QA evaluation; inference contract differs from some historical settings. Current fresh setting; not appended to historical GiGPO or Tree-Nested.",
@@ -13491,6 +13516,10 @@
         [
           67,
           0.49296875
+        ],
+        [
+          68,
+          0.458984375
         ]
       ],
       "fixed512": [
@@ -13520,6 +13549,7 @@
           "f1": 0.44610400703942926,
           "correct": 189,
           "unique": 512,
+          "unique_source_scoped": 512,
           "counts": {
             "nq": 256,
             "hotpotqa": 256
@@ -13540,7 +13570,7 @@
           "row_sha256": "31e0649223aa62286fbca5604df534551f6deb5d6da34a581f4f8e1e8d87a5c7"
         }
       ],
-      "completed": 67,
+      "completed": 68,
       "target": 200,
       "status": "training_running",
       "note": "Periodic25 question probe setting in TOP-D session, not TOP-D distillation. Strict selected G5 trajectory EM, ancestors1–5/r13,6–10/r15 and11 onward/r16; partial next rollout excluded.",
@@ -16420,6 +16450,7 @@
             "f1": 0.2432425845642178,
             "correct": 94,
             "unique": 512,
+            "unique_source_scoped": 512,
             "counts": {
               "nq": 256,
               "hotpotqa": 256
@@ -16855,6 +16886,7 @@
             "f1": 0.44610400703942926,
             "correct": 189,
             "unique": 512,
+            "unique_source_scoped": 512,
             "counts": {
               "nq": 256,
               "hotpotqa": 256
@@ -16894,6 +16926,7 @@
             "f1": 0.44534195188492065,
             "correct": 185,
             "unique": 512,
+            "unique_source_scoped": 512,
             "counts": {
               "nq": 256,
               "hotpotqa": 256
@@ -17321,6 +17354,7 @@
             "f1": 0.4865459263724429,
             "correct": 206,
             "unique": 512,
+            "unique_source_scoped": 512,
             "counts": {
               "nq": 256,
               "hotpotqa": 256
@@ -17678,6 +17712,7 @@
             "f1": 0.501726810515873,
             "correct": 216,
             "unique": 512,
+            "unique_source_scoped": 512,
             "counts": {
               "nq": 256,
               "hotpotqa": 256
@@ -17969,6 +18004,7 @@
             "f1": 0.5023282490079365,
             "correct": 215,
             "unique": 512,
+            "unique_source_scoped": 512,
             "counts": {
               "nq": 256,
               "hotpotqa": 256
@@ -18090,7 +18126,7 @@
     }
   ],
   "final": {
-    "created_cst": "2026-10-17T01:09:36.309000+08:00",
+    "created_cst": "2026-10-17T01:13:24.850514+08:00",
     "observed_window_cst": "Tree final200 products updated: 2026-10-16T20:03:10.553631+08:00; other rows retain prior source dates",
     "datasets": [
       "nq",
@@ -19137,7 +19173,7 @@
         "kind": "ours",
         "evidence": {
           "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/jxu957-current.json",
-          "sha256": "89ef3618a44bef55f15598d205841353d6eb5364ba79542a5b5982e69348b335"
+          "sha256": "9f97764ddfbfdeb009d683830c2402fa9536a46d00377bffa20ecdd7c8047841"
         },
         "final_identity_current": {
           "complete": true,
@@ -19193,6 +19229,10 @@
           "identity_readback": {
             "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/sigma-final-identity-readback.json",
             "sha256": "5de070af8a17015b4c35eff28ec1ce49cbb90f0054e2984acfb727247dbe8d97"
+          },
+          "canonical_dataset_readback": {
+            "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/sigma-canonical-data-readback.json",
+            "sha256": "a5ac53d942b35462626d57c573a16504a4202c71041f53acc5a5c79c107a56bc"
           }
         },
         "final_acceptance_complete": false
@@ -20460,7 +20500,7 @@
         "kind": "ours",
         "evidence": {
           "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/jxu957-current.json",
-          "sha256": "89ef3618a44bef55f15598d205841353d6eb5364ba79542a5b5982e69348b335"
+          "sha256": "9f97764ddfbfdeb009d683830c2402fa9536a46d00377bffa20ecdd7c8047841"
         },
         "final_identity_current": {
           "complete": true,
@@ -20516,6 +20556,10 @@
           "identity_readback": {
             "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/sigma-final-identity-readback.json",
             "sha256": "5de070af8a17015b4c35eff28ec1ce49cbb90f0054e2984acfb727247dbe8d97"
+          },
+          "canonical_dataset_readback": {
+            "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/sigma-canonical-data-readback.json",
+            "sha256": "a5ac53d942b35462626d57c573a16504a4202c71041f53acc5a5c79c107a56bc"
           }
         },
         "final_acceptance_complete": false

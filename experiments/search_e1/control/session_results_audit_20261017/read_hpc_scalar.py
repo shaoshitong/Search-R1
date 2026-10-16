@@ -25,6 +25,10 @@ for name,root in roots:
   for d,h in lines(p):
    ids=d.get('question_ids',[]);labels=d.get('em',[]);sources=d.get('data_sources',[]);n=len(ids);counts=d.get('counts',{});
    if labels and n==len(labels):o['fixed'].append(dict(iter=d.get('step'),run_id=d.get('run_id'),split=d.get('split'),final=d.get('final'),checked_unix=d.get('checked_unix'),validation_sha256=d.get('validation_sha256'),n=n,em=d.get('weighted_em'),f1=d.get('weighted_f1'),correct=sum(labels),unique=len(set(ids)),unique_source_scoped=len(set(zip(sources,ids))),counts=counts,source_metrics={s:dict(count=c,em=sum(e for e,t in zip(labels,sources) if t==s)/c,f1=sum(e for e,t in zip(d.get('f1',[]),sources) if t==s)/c) for s,c in counts.items()},path=str(p),row_sha256=h))
+ o['probe_commits']=[]
+ for p in b.glob('artifacts/question-probe/completed/*.json'):
+  v=small(p)
+  if v:o['probe_commits'].append(dict(path=str(p),sha256=v['sha256'],outer=v['data'].get('outer'),stage=v['data'].get('stage')))
  for p in b.glob('logs/actual-updates.jsonl'):
   for d,h in lines(p):
    if d.get('full_budget_complete'):o['native_updates'].append(dict(iter=d.get('step'),writes=d.get('actual_optimizer_writes'),path=str(p),row_sha256=h))
