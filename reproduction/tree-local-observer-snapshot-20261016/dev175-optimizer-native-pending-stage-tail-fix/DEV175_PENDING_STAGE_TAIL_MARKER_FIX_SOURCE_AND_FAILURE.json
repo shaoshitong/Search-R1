@@ -1,0 +1,35 @@
+{
+  "schema": "dev175_pending_stage_tail_marker_fix_source_and_failure_v1",
+  "scope": "Local source preservation and minimal observer gate correction only; not an execution or success receipt.",
+  "original_published_source_commit": "2847a44",
+  "preserved_original_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/DEV175_ACTUAL_OPTIMIZER_NATIVE_DEV_PENDING.before_stage_tail_fix.py",
+    "bytes": 35133,
+    "sha256": "10821906c5d496919eda590d533ac7c8c94a98c757161aac6eca3bbb374c5af9"
+  },
+  "failed_execution_reported_by_root": {
+    "source_bytes": 35133,
+    "source_sha256": "10821906c5d496919eda590d533ac7c8c94a98c757161aac6eca3bbb374c5af9",
+    "exit_code": 2,
+    "status": "DEV175_PENDING_STAGE_NO_SUCCESS_RECEIPT",
+    "error": "Original saved175 stage log marker absent",
+    "execution_pins": {
+      "file": "DEV175_PENDING_STAGE_EXECUTION_PINS_POLL2225.json",
+      "bytes": 4583,
+      "sha256": "34da7ed503ca6eaf3fee570905b51f4885b41904a2fae62640bf9b2ffd467b6e"
+    },
+    "failure_classification": "Local observer predicate rejected rotated second-poll stage-log tail; not a training failure.",
+    "evidence_basis": "Root report: fixed actual2219 retains the native175 save line; selected actual2225 evaluation tail had rotated that earlier line out."
+  },
+  "minimal_correction": "Require the original saved175 stage-log marker once in byte/SHA-pinned first poll2219. Keep native175 writer/manifest/archive pins and all existing later same-instance, rank3500, guard/skip, identity, finite/nonzero, watcher, pending-FULL/dev and no-live176 gates unchanged.",
+  "new_frozen_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/DEV175_ACTUAL_OPTIMIZER_NATIVE_DEV_PENDING.template.py",
+    "bytes": 35230,
+    "sha256": "69936d89afb9b49cf33ee3018af2c41150757ac51a1b12f49ea9fa18915c2bf8"
+  },
+  "root_execution_requirement": "Publish commit/push first, then decide from actual current state. If FULL175/dev175 is complete or live176 has entered, skip this old pending-stage publication. Root must supply new actual source/input pins.",
+  "original_source_bytes_preserved": true,
+  "template_executed_compiled_tested_or_reviewed_by_preparer": false,
+  "remote_collector_training_or_canonical_actions_by_preparer": false,
+  "new_success_receipt_generated": false
+}
