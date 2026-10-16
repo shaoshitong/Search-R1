@@ -1,5 +1,6 @@
 """Small CPU checks of authentic PPO inputs, full budgets and retry identity."""
 import copy
+import io
 import json
 from pathlib import Path
 import tempfile
@@ -168,6 +169,34 @@ class ActorTests(unittest.TestCase):
             result = collect_oom_retry(output, root / 'config.json', 1, rollout, attempt, phase_exit_code=1)
             self.assertEqual(result['status'], 'NON_OOM_FAILURE')
             self.assertFalse(result['retry'])
+
+    def test_actual_fp32_adam_scheduler_roundtrip_preserves_next_update(self):
+        # Real Torch CPU updates/serialization, not a GPU or full HF/FSDP claim.
+        import torch
+        torch.manual_seed(8)
+        model = torch.nn.Linear(3, 2).float()
+        optimizer = torch.optim.AdamW(model.parameters(), lr=1e-6)
+        scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lambda completed: min(completed / 57, 1.))
+        x, target = torch.randn(4, 3), torch.randn(4, 2)
+        for outer in range(2):
+            for _step in range(20):
+                optimizer.zero_grad(); torch.nn.functional.mse_loss(model(x), target).backward(); optimizer.step()
+            scheduler.step()
+        stream = io.BytesIO()
+        torch.save(dict(model=model.state_dict(), optimizer=optimizer.state_dict(), scheduler=scheduler.state_dict()), stream)
+        stream.seek(0); saved = torch.load(stream, weights_only=False)
+        restored = torch.nn.Linear(3, 2).float(); restored.load_state_dict(saved['model'])
+        new_optimizer = torch.optim.AdamW(restored.parameters(), lr=1e-6)
+        new_scheduler = torch.optim.lr_scheduler.LambdaLR(new_optimizer, lambda completed: min(completed / 57, 1.))
+        new_optimizer.load_state_dict(saved['optimizer']); new_scheduler.load_state_dict(saved['scheduler'])
+        self.assertEqual(new_scheduler.last_epoch, 2)
+        self.assertEqual(new_optimizer.param_groups[0]['lr'], learning_rate(2))
+        self.assertTrue(all(torch.equal(a, b) for a, b in zip(model.parameters(), restored.parameters())))
+        self.assertTrue(any(not torch.equal(p, p.bfloat16().float()) for p in restored.parameters()))
+        for network, adam in ((model, optimizer), (restored, new_optimizer)):
+            adam.zero_grad(); torch.nn.functional.mse_loss(network(x), target).backward(); adam.step()
+        self.assertTrue(all(torch.equal(a, b) for a, b in zip(model.parameters(), restored.parameters())))
+        self.assertEqual({int(state['step']) for state in new_optimizer.state.values()}, {41})
 
 
 if __name__ == '__main__': unittest.main()

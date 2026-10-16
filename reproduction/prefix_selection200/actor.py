@@ -425,6 +425,7 @@ def _state_binding(config):
     # Micro is intentionally mutable after a real OOM; the scientific budget is not.
     return dict(run_id=config['run_id'], model_revision=REVISION,
         official_model_dir=str(remote(config['official_model_dir'])), world_size=8,
+        seed=int(config.get('seed', 1729)),
         global_mini=128, ppo_epochs=1, trajectories=2560, updates_per_outer=20,
         learning_rate=1e-6, outer_warmup=57, clip_ratio=.2, dual_clip=3., grad_clip=1.,
         loss_reduction='mean_of_eight_rank_local_minibatch_policy_token_means',
@@ -439,6 +440,22 @@ def restore_metadata(config, latest, outer):
             or latest['actual_adam_steps_per_rank'] != [20 * expected] * WORLD
             or latest['scheduler_completed_outer'] != expected):
         raise ValueError('Restore only the immediately previous complete actor/Adam/scheduler boundary')
+
+
+def optimizer_layout(optimizer):
+    """Rank-local FP32 flat-parameter ordering needed by ordinary Adam load_state_dict."""
+    return [[dict(shape=list(parameter.shape), numel=parameter.numel(), dtype=str(parameter.dtype))
+             for parameter in group['params']] for group in optimizer.param_groups]
+
+
+def linked_probe_receipt(value):
+    """Capture the actual source probe version now, rather than a mutable latest path."""
+    if value is None: return None
+    if isinstance(value, str):
+        path = remote(value)
+        return dict(path=str(path), sha256=sha(path), value=read(path))
+    if isinstance(value, dict): return value
+    raise ValueError('Prefix probe receipt must be an actual small JSON path or proof')
 
 
 def _build_actor(model_dir, budget, device):
@@ -486,6 +503,7 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
     state = dict(schema_version=1, run_id=config['run_id'], completed_outer=outer, rank=rank,
         actual_adam_steps=20 * outer, scheduler_completed_outer=outer,
         binding=_state_binding(config), optimizer=cpu_tree(optimizer.state_dict()),
+        optimizer_parameter_layout=optimizer_layout(optimizer),
         scheduler=cpu_tree(scheduler.state_dict()), rng=_rng(),
         model_master_dtype='torch.float32', optimizer_layout='FSDP_FULL_SHARD_same_Qwen2DecoderLayer_wrap_world8',
         original_rollout_path=str(rollout_path), original_rollout_sha256=sha(rollout_path))
@@ -507,7 +525,8 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
         driver_proof = atomic_save(attempt_dir / 'driver.pt', dict(run_id=config['run_id'],
             completed_outer=outer, actor_version=actor_version, driver_state=driver_state,
             grounding_probe_version=config['grounding_probe_version'], rng=_rng(),
-            candidate_pool_state=pool_proof, prefix_probe_receipt=config.get('prefix_probe_receipt')))
+            rng_scope='actor_phase_rank0; controller candidate RNG/order lives in candidate_pool_state',
+            candidate_pool_state=pool_proof, prefix_probe_receipt=linked_probe_receipt(config.get('prefix_probe_receipt'))))
         receipt = dict(schema_version=1, role='prefix_selection200_actor_complete', run_id=config['run_id'],
             source_commit=config.get('source_commit'), completed_outer=outer, actor_version=actor_version,
             model_dir=str(hfdir), actor_model_dir=str(hfdir), hf_model_dir=str(hfdir), model_master_dtype='torch.float32',
@@ -575,6 +594,8 @@ def train(config_path, outer, rollout_path, output_path):
         saved = torch.load(path, map_location='cpu', weights_only=False)
         if saved['rank'] != rank or saved['binding'] != _state_binding(config) or saved['actual_adam_steps'] != 20 * (outer - 1):
             raise ValueError('Rank-local actor restore binding/count differs')
+        if saved['optimizer_parameter_layout'] != optimizer_layout(optimizer):
+            raise ValueError('FSDP rank-local parameter shard ordering/shape differs from the complete state')
         optimizer.load_state_dict(saved['optimizer']); scheduler.load_state_dict(saved['scheduler']); _set_rng(saved['rng'])
     actual_steps = {int(value['step'].item()) for value in optimizer.state.values() if 'step' in value}
     expected_steps = {20 * (outer - 1)} if outer > 1 else set()
