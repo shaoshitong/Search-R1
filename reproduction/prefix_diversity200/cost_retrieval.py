@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import tempfile
 import time
 
 
@@ -160,10 +161,15 @@ def collect(bases, run_id, maximum_new_outers=2):
             proofs[str(outer)] = proof
         elif len(created) < maximum_new_outers:
             proof = summarize(base, outer, run_id)
-            with destination.open('x') as stream:
-                json.dump(proof, stream, sort_keys=True, allow_nan=False)
-                stream.flush()
-                os.fsync(stream.fileno())
+            descriptor, staging = tempfile.mkstemp(prefix='.cost-proof-', dir=output)
+            try:
+                with os.fdopen(descriptor, 'w') as stream:
+                    json.dump(proof, stream, sort_keys=True, allow_nan=False)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                os.link(staging, destination)
+            finally:
+                os.unlink(staging)
             proofs[str(outer)] = proof
             created.append(outer)
     return dict(run_id=run_id, observed_unix=time.time(), output_directory=str(output),

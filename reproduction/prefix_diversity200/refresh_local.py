@@ -115,12 +115,13 @@ def refresh(root):
         latest_actual_observed_unix=value['observed_unix'],latest_actual_evidence=str(evidence),last_complete_joint_sha256=joint['sha256'],
         latest_actor512_mixed_fraction=selection['actor512']['mixed_fraction'],latest_continued1024_mixed_fraction=selection['continued1024']['mixed_fraction'],
         latest_probe_diagnostic_accuracy=metrics['test']['accuracy'],latest_probe_diagnostic_balanced_accuracy=metrics['test']['balanced_accuracy'],
-        all_complete_outers_metric_rows=list(range(1,n+1)),recent_actual_whole_outer_seconds=intervals,
+        all_complete_outers_metric_rows=list(range(1,n+1)),current_metric_rows=list(range(1,n+1)),recent_actual_whole_outer_seconds=intervals,
         recent_actual_whole_outer_mean_seconds=statistics.mean(intervals)if intervals else None,
         config_sha256=value['config_sha256'],updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),goal_complete=False)
     if latest_qa:
         result=latest_qa['result'];s.update(latest_qa_outer=latest_qa['outer'],latest_qa_count=result['qa_count'],latest_qa_em=result['em'],latest_qa_f1=result['f1'])
-    if resource:s.update(resource_sampler_samples_verified=resource['samples'],resource_sampler_cpu_accounting_complete=False)
+    if resource:s.update(resource_sampler_samples_verified=resource['samples'],resource_sampler_cpu_accounting_complete=False,
+        resource_sampler_last_observed_unix=resource['last_observed_unix'])
     save(state_path,s);save(output/'STATUS.json',s)
     last=selection['actor512'];qa_text=('outer%d,512questions EM%.4f%% / F1%.4f%%'%(latest_qa['outer'],100*latest_qa['result']['em'],100*latest_qa['result']['f1']))if latest_qa else 'none verified'
     lines=['# Search-G1 predictedTop1024 / actualEM-varianceTop512','',
