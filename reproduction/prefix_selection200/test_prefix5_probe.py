@@ -43,6 +43,17 @@ def tiny_complete_source():
 
 
 class Prefix5Contracts(unittest.TestCase):
+    def test_actual_transformers446_dual_native_rope_buffers_are_preserved(self):
+        source, shapes = tiny_complete_source()
+        for state in (source['raw_nonpersistent_buffers'], source['ema']['nonpersistent_buffers']):
+            state['block.self_attn.rotary_emb.inv_freq'] = torch.ones(64)
+        with patch.dict(model_code.PARAMETER_SHAPES, shapes, clear=True):
+            _, buffers, proof = model_code.warmup_model_weights(source, epoch=3)
+        self.assertEqual(set(buffers), {'rotary.inv_freq', 'block.self_attn.rotary_emb.inv_freq'})
+        self.assertEqual(proof['nonpersistent_buffer_names'], sorted(buffers))
+        with self.assertRaises(ValueError):
+            model_code.validate_native_buffers({'rotary.inv_freq': torch.ones(64), 'invented': torch.ones(64)})
+
     def test_complete_pool_covers_all_own_g5_and_matches_true_global_ddp_mean(self):
         plan = complete_pool_plan(1729, 20)
         self.assertEqual(len(plan), 100)

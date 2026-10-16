@@ -313,7 +313,8 @@ def process_projection(value):
 v=dict(base=str(b),run_id=h['run_id'],execution_id=h['execution_id'],source_commit=h['source_commit'],
  observed_unix=time.time(),metadata_only=True,models_or_tensors_read=False)
 for name,key in (('preparation/source-receipt.json','source'),('preparation/prepare-launch.json','prepare_launch'),
- ('preparation/prepare-exit.json','prepare_exit'),('preparation/source-qualification.json','source_qualification'),
+ ('preparation/prepare-exit.json','prepare_exit'),('preparation/source-cpu-prepare-exit.json','source_cpu_prepare_exit'),
+ ('preparation/source-qualification.json','source_qualification'),
  ('preparation/warmup-stop-delivered.json','old_stop'),('preparation/old-warmup-terminal.json','old_terminal'),
  ('preparation/submit-receipt.json','submit'),('logs/pipeline-status.json','stage'),
  ('logs/cleanup-status.json','cleanup'),('logs/qa-pending.json','qa_pending')):

@@ -35,6 +35,11 @@ PARAMETER_SHAPES = {
     'output.bias': (1,),
 }
 BUFFER_SHAPES = {'rotary.inv_freq': (64,)}
+NATIVE_BUFFER_LAYOUTS = (
+    {'rotary.inv_freq': (64,)},
+    # Transformers4.46.3 retains both native attention RoPE and explicit RoPE.
+    {'rotary.inv_freq': (64,), 'block.self_attn.rotary_emb.inv_freq': (64,)},
+)
 
 
 def _canonical(value):
@@ -53,9 +58,11 @@ def validate_model_state(state):
 
 
 def validate_native_buffers(state):
-    if not isinstance(state, dict) or set(state) != set(BUFFER_SHAPES):
+    layout = next((item for item in NATIVE_BUFFER_LAYOUTS
+                   if isinstance(state, dict) and set(state) == set(item)), None)
+    if layout is None:
         raise ValueError('Require all native nonpersistent RoPE buffers explicitly')
-    for name, shape in BUFFER_SHAPES.items():
+    for name, shape in layout.items():
         value = state[name]
         if (not isinstance(value, torch.Tensor) or tuple(value.shape) != shape
                 or value.dtype != torch.float32 or value.device.type != 'cpu'
