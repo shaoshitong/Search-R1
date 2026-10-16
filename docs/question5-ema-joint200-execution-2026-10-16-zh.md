@@ -54,7 +54,7 @@ torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.tr
 
 父流水线使用 `reproduction/operations/a800_question5_hf_direct_warmup_control.py`：HF直接下载的原八part完整验收→A800 CPU解包、裁成prefix5并准备完整数据→现场准入四张空闲训练卡（排除辅助5/6及任何被占卡）→四encoder worker→CPU缓存合并。source-plan使用 `reference_archive.parts`，不使用旧 `prepared_reference_archive` 中转输入。缓存已完成，随后probe启动入口因Git archive兼容性错误退出；父handle一次launch intent已消费，**禁止重新launch父handle**。
 
-当前独立入口为 `reproduction/operations/a800_question5_cached_train_control.py`，已在新的procguard namespace一次启动fresh probe，22:01:55确认真实Adam与EMA推进；具体身份及计数见下节。仅从只读的完整父缓存训练，不重复编码、rollout或EM评分。上面的阶段命令仅说明调用关系，不能手动补启动另一条流水线。实际已准入训练卡0/1/2/3及对应UUID；选中UUID后固定，父wrapper持同UUID lease，child通过继承FD校验，不相互抢锁。没有retriever/actor，不用5/6，不停止他人，不改SSH/VPN/auth/knownhosts。SSH超时不能当作退出或重启依据；所有被取代的旧handle均禁止launch。
+当前独立入口为 `reproduction/operations/a800_question5_cached_train_control.py`，已在新的procguard namespace一次启动fresh probe，22:39:08确认首个完整epoch提交且同进程继续epoch2；具体身份及计数见下节。仅从只读的完整父缓存训练，不重复编码、rollout或EM评分。上面的阶段命令仅说明调用关系，不能手动补启动另一条流水线。实际已准入训练卡0/1/2/3及对应UUID；选中UUID后固定，父wrapper持同UUID lease，child通过继承FD校验，不相互抢锁。没有retriever/actor，不用5/6，不停止他人，不改SSH/VPN/auth/knownhosts。SSH超时不能当作退出或重启依据；所有被取代的旧handle均禁止launch。
 
 全量数据、特征、模型、Adam、checkpoint和预测留A800远端。Mac仅代码/配置/文档/小型审计。源码Git提交push、GitHub文件SHA独立核对、A800完整Git archive文件SHA对齐后才允许启动。stage和launch回执不等于训练推进；必须检查两次真实进展及首完整epoch。
 
@@ -66,7 +66,26 @@ torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.tr
 
 只有200个完整合并epoch、最终EMA train/test指标、完整finite/SHA状态及仅自有资源收尾实际通过，才能宣称本warmup完成；原actor200 goal保持独立，不由本次probe完成而标记完成。
 
-## 2026-10-16 22:01:55（上海）当前实际训练
+## 2026-10-16 22:39:08（上海）首个完整epoch及继续训练
+
+同run `8af926a49630428097b94027864da68b`／execution `091f3979549347d190065387c2214af6`／runtime `98b5ec2af9a5b45cd535e67408980c72a75d7746` 已实际完整提交**1/200 epoch**。首轮四rank均完成8700次Adam，EMA8700，全局副本只计一次；445440个G5／2227200条训练轨迹完整遍历，无nonfinite拒绝。原生首轮metrics、checkpoint与complete记录一致，primary确认 `fully_committed=true`。
+
+截至该回执，同一pipeline、torchrun和四rank身份连续，已在epoch2完成150次更新，累计**8850次Adam／EMA**，无记录错误或退出。不是重新启动，也没有重编码父缓存。首轮的同一EMA0.99全量指标为：
+
+| 指标 | 完整训练集 | 固定测试512组 |
+| --- | ---: | ---: |
+| G5混合balanced accuracy | 67.7370% | 54.3517% |
+| 逐轨迹BCE | 0.474310 | 0.567329 |
+| G5混合BCE | 0.602849 | 0.753820 |
+| 两项总loss | 1.077160 | 1.321149 |
+
+测试混合balanced accuracy仅略高于50%，训练与测试相差13.3854个百分点，当前泛化表现仍弱。测试逐轨迹普通accuracy为77.3047%，低于全判错误78.1641%的基线；不能把普通accuracy当作混合balanced accuracy或忽略类别比例。首轮结果不能单独证明严重过拟合；按既定200完整epoch继续记录。
+
+原生首轮耗时2499.441秒（约41.66分钟），包含训练与完整EMA训练／测试评测，计时在checkpoint保存前结束，不是单独optimizer训练时间。首轮完整state保存在远端 `train/latest.pt`，1242422752字节，SHA256 `a3a4959f14413948f88c9a7add54eb670746fa63005972390c0ab907d30a5f8c`。latest会在后续完整epoch更新，不是不可变epoch1权重；每10epoch及最终200不可变保存计划不变。
+
+实际只读回执为 `preparation/question5-slim-progress-observation-1792161548860011000.json`。公开产物仅为[首轮标量报告](../reproduction/reports/question5-ema-joint200-epoch001-2026-10-16.md)及[JSON标量／哈希](../reproduction/reports/question5-ema-joint200-epoch001-2026-10-16.json)，不包含模型、原题、token、轨迹或逐样本预测。本次不改变活跃runtime、不追加测试／review／评测；原暂停actor goal保持独立。
+
+## 2026-10-16 22:01:55（上海）历史启动进展
 
 当前唯一run为 `8af926a49630428097b94027864da68b`／execution `091f3979549347d190065387c2214af6`，handle `preparation/question5-cached-sourcefix-procguard-deployment-20261016.json`，远端base `/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b`。runtime源码为 `98b5ec2af9a5b45cd535e67408980c72a75d7746`，925个源码文件已核验。
 
@@ -82,7 +101,7 @@ torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.tr
 python -m reproduction.operations.a800_question5_slim_progress_observer --handle preparation/question5-cached-sourcefix-procguard-deployment-20261016.json
 ```
 
-本节是当前时间点的实测记录；后续以同run/execution实际回执、四rank ledger、epoch指标及错误/退出状态更新。旧 `d7dd61bb`、`4347d238` 和更早等待流水线的源码、日志、缓存与故障记录保留，禁止重启旧handle。
+本节保留22:01:55的启动实测历史；22:39:08首轮完整记录已更新于上一节。后续以同run/execution实际回执、四rank ledger、epoch指标及错误/退出状态更新。旧 `d7dd61bb`、`4347d238` 和更早等待流水线的源码、日志、缓存与故障记录保留，禁止重启旧handle。
 
 ## 2026-10-16 21:32／21:35（上海）历史缓存完成与启动修复准备
 

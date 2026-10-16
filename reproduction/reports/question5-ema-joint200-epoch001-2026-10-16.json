@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "report_kind": "question5_joint200_first_fully_committed_epoch_scalar_hash",
+  "date": "2026-10-16",
+  "observed_timezone": "Asia/Shanghai",
+  "observed_local": "2026-10-16 22:39:08",
+  "checked_unix": 1792161548.9502788,
+  "run_id": "8af926a49630428097b94027864da68b",
+  "execution_id": "091f3979549347d190065387c2214af6",
+  "runtime_source_commit": "98b5ec2af9a5b45cd535e67408980c72a75d7746",
+  "receipt": {
+    "path": "preparation/question5-slim-progress-observation-1792161548860011000.json",
+    "sha256": "a52dee1eb00a66778f5ee64f6c3b68979b7c0b337dcd16826b06658f33661e34",
+    "outer_exit_code": 0,
+    "read_only": true
+  },
+  "scope": {
+    "probe_only": true,
+    "actor_updates": 0,
+    "target_complete_epochs": 200,
+    "same_train_test_weight_kind": "ema0.99",
+    "ema_decay": 0.99,
+    "prefix_tokens": 5,
+    "joint_loss_weights": {
+      "trajectory_bce": 1,
+      "same_event_g5_mixed_bce": 1
+    },
+    "true_mixed": "0<K<5",
+    "threshold": 0.5
+  },
+  "first_epoch": {
+    "fully_committed": true,
+    "epoch": 1,
+    "counters": {
+      "complete_epochs": 1,
+      "ema_updates": 8700,
+      "global_groups_seen": 445440,
+      "global_trajectories_seen": 2227200,
+      "optimizer_steps": 8700,
+      "rejected_nonfinite_updates": 0
+    },
+    "actual_adam_steps_per_rank": [
+      8700,
+      8700,
+      8700,
+      8700
+    ],
+    "global_updates_counted_once": 8700,
+    "train_ema": {
+      "weight_kind": "ema0.99",
+      "metric_semantics": "same_fixed_head_eval_no_grad",
+      "groups": 445440,
+      "trajectories": 2227200,
+      "trajectory_bce": 0.4743102552562426,
+      "group_bce": 0.6028493325060418,
+      "total_loss": 1.0771595877622844,
+      "mixed_group": {
+        "accuracy": 0.7052375179597701,
+        "balanced_accuracy": 0.6773703097999505,
+        "fn": 68124,
+        "fp": 63175,
+        "negative": 284454,
+        "positive": 160986,
+        "tn": 221279,
+        "tp": 92862
+      },
+      "trajectory_correctness": {
+        "accuracy": 0.7965369073275862,
+        "balanced_accuracy": 0.5656847137114116,
+        "fn": 397113,
+        "fp": 56040,
+        "negative": 1752556,
+        "positive": 474644,
+        "tn": 1696516,
+        "tp": 77531
+      },
+      "true_mixed": "0<K<5",
+      "threshold": 0.5
+    },
+    "test_ema": {
+      "weight_kind": "ema0.99",
+      "metric_semantics": "same_fixed_head_eval_no_grad",
+      "groups": 512,
+      "trajectories": 2560,
+      "trajectory_bce": 0.5673292045830749,
+      "group_bce": 0.7538202387513593,
+      "total_loss": 1.3211494433344342,
+      "mixed_group": {
+        "accuracy": 0.580078125,
+        "balanced_accuracy": 0.5435165346222199,
+        "fn": 107,
+        "fp": 108,
+        "negative": 329,
+        "positive": 183,
+        "tn": 221,
+        "tp": 76
+      },
+      "trajectory_correctness": {
+        "accuracy": 0.773046875,
+        "balanced_accuracy": 0.5222196594010687,
+        "fn": 516,
+        "fp": 65,
+        "negative": 2001,
+        "positive": 559,
+        "tn": 1936,
+        "tp": 43
+      },
+      "true_mixed": "0<K<5",
+      "threshold": 0.5
+    },
+    "raw_online_window": {
+      "group_bce": 0.8208463505428337,
+      "groups": 445440,
+      "resumed_epoch_suffix": false,
+      "trajectory_bce": 0.6164929727500327
+    },
+    "epoch_seconds": 2499.4410843830556,
+    "epoch_minutes": 41.65735140638426,
+    "epoch_time_semantics": "Native epoch wall time includes training and prescribed full EMA train/test evaluation; measured before checkpoint save, not isolated optimizer throughput.",
+    "execution_seconds": 2743.434107848443
+  },
+  "same_process_continuation": {
+    "complete_epochs": 1,
+    "epoch": 2,
+    "epoch_update": 150,
+    "global_actual_adam_steps_counted_once": 8850,
+    "ema_updates": 8850,
+    "rank_actual_adam_steps": [
+      8850,
+      8850,
+      8850,
+      8850
+    ],
+    "rank_ema_updates": [
+      8850,
+      8850,
+      8850,
+      8850
+    ],
+    "rejected_nonfinite_updates": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pipeline_pid": 1466441,
+    "pipeline_birth": 623835762,
+    "rank_pids": [
+      1466719,
+      1466720,
+      1466721,
+      1466722
+    ],
+    "rank_births": [
+      623836205,
+      623836205,
+      623836205,
+      623836205
+    ],
+    "recorded_error_count": 0,
+    "recorded_rank_exit_count": 0
+  },
+  "derived_comparison": {
+    "mixed_balanced_accuracy_train_minus_test_percentage_points": 13.385377517773057,
+    "test_all_wrong_trajectory_accuracy_baseline": 0.781640625,
+    "test_all_unmixed_group_accuracy_baseline": 0.642578125,
+    "mixed_balanced_accuracy_constant_classifier_baseline": 0.5,
+    "interpretation": "First-epoch heldout mixed balanced accuracy is only slightly above 0.5. Train/test gap is material; no claim of strong generalization or proof of overfitting. Actual test trajectory ordinary accuracy is below the all-wrong baseline. Training continues under the existing 200-epoch authorization."
+  },
+  "proof": {
+    "metrics_metadata": {
+      "path": "train/epochs/epoch-0001/metrics.json",
+      "bytes": 2409,
+      "sha256": "667c446eb39c0dd8488778e967cd176d56a2d0537eae2312a58e39688cb819ec"
+    },
+    "checkpoint_metadata": {
+      "path": "train/epochs/epoch-0001/checkpoint.json",
+      "bytes": 979,
+      "sha256": "b04a7bfde161dea9351f36766ca1e7a6d407aafe3ddc1dc85b8506d091b99675"
+    },
+    "complete_metadata": {
+      "path": "train/epochs/epoch-0001/complete.json",
+      "bytes": 3451,
+      "sha256": "13fbf538256ef7dc748192764cbf925b13a3af3e6b5dfc6874bcd6a13d648c31"
+    },
+    "native_epoch_metrics_canonical_sha256": "0a819c1d3c6f2537719817e674b63d1b2ee59ba549142d16b4466cc522e60621",
+    "binding_sha256": "80c0abea4462b1bfb6852b0f33a79258ad61f8a17a89fe47a8ff2e0e830580c6",
+    "state": {
+      "remote_path": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b/train/latest.pt",
+      "bytes": 1242422752,
+      "sha256": "a3a4959f14413948f88c9a7add54eb670746fa63005972390c0ab907d30a5f8c",
+      "kind": "latest_complete_epoch_state",
+      "immutable": false,
+      "note": "Latest state may be replaced after the next fully committed epoch; immutable state checkpoints are prescribed at epochs 10,20,...,200."
+    },
+    "source_binding_aggregate_sha256": "17c1c52e557ab6b6a7ef9ae9ffa8ca5d0e5b5e76e1879202c9f7366615b5510d",
+    "source_files_verified_per_rank": [
+      925,
+      925,
+      925,
+      925
+    ]
+  },
+  "privacy": {
+    "scalars_and_hashes_only": true,
+    "raw_qa_tokens_rollouts_predictions_credentials_included": false,
+    "new_tensor_or_model_readback": false,
+    "new_evaluation": false
+  }
+}
