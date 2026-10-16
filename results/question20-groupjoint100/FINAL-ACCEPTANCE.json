@@ -1,0 +1,426 @@
+{
+  "schema_version": 1,
+  "role": "question20_groupjoint100_final_acceptance",
+  "status": "ALL100_WARMUP_FINAL_ACCEPTANCE_PASS",
+  "observed_utc": "2026-10-16T11:01:59.042225+00:00",
+  "runtime_source_commit": "2fd5c19fa0d9c5d6c4eb514a7e9a308eb6bc6479",
+  "final_audit_control_commit": "e7490eeafeb15814ffb31e58f29969da0c432295",
+  "base": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd",
+  "run_id": "cee20bcd24194b79a9a8a88809bd5886",
+  "native_job_id": 3412,
+  "node": "h100-8",
+  "complete_epochs": 100,
+  "actual_adam_steps_per_rank": [
+    10000,
+    10000,
+    10000,
+    10000,
+    10000,
+    10000,
+    10000,
+    10000
+  ],
+  "final_learning_rate": 3e-06,
+  "native_terminal": {
+    "allocation_file": {
+      "bytes": 1946,
+      "dev": 64768,
+      "inode": 178670694,
+      "path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/logs/native-allocation.json",
+      "sha256": "251afcded5d515e577c719f4b53d29adf7c23bb0ecf5afc8cb4c526972f974ff",
+      "stable_original_inode": true
+    },
+    "completion_basis": "WEXITSTATUS0 plus subsequent _job_complete done; no cancellation/signal/failure events",
+    "controller_files": [
+      {
+        "dev": 64769,
+        "initial_bytes": 31514,
+        "inode": 15733488,
+        "inspected_until_initial_eof": true,
+        "path": "/var/log/slurm/slurmctld.log"
+      }
+    ],
+    "exit_code": "0:0",
+    "expected_start_unix": 1792141919.0,
+    "matching_original_events": [
+      {
+        "bytes": 95,
+        "offset": 31204,
+        "path": "/var/log/slurm/slurmctld.log",
+        "raw": "[2026-10-16T17:11:59.421] _slurm_rpc_submit_batch_job: JobId=3412 InitPrio=4294898654 usec=568",
+        "sha256": "b96f58b3a6ad5c663254c3293097f2764715c989f0aac4c176bfe33129241824",
+        "unix": 1792141919.421
+      },
+      {
+        "bytes": 92,
+        "offset": 31299,
+        "path": "/var/log/slurm/slurmctld.log",
+        "raw": "[2026-10-16T17:11:59.953] sched: Allocate JobId=3412 NodeList=h100-8 #CPUs=96 Partition=gpu",
+        "sha256": "431617e5385e4ff6118b6f1c90a063a720651bb5ae5634aee28bad464dd6e506",
+        "unix": 1792141919.953
+      },
+      {
+        "bytes": 66,
+        "offset": 31391,
+        "path": "/var/log/slurm/slurmctld.log",
+        "raw": "[2026-10-16T18:37:59.870] _job_complete: JobId=3412 WEXITSTATUS 0",
+        "sha256": "293a5dc24fce908967105ad506e98a397e6d596bb39ecd2a9944707573e4cffb",
+        "unix": 1792147079.87
+      },
+      {
+        "bytes": 57,
+        "offset": 31457,
+        "path": "/var/log/slurm/slurmctld.log",
+        "raw": "[2026-10-16T18:37:59.870] _job_complete: JobId=3412 done",
+        "sha256": "868ac8aee0a4a6695c158e054e3f4587ea2bd04f4aa9c06e334982e142eb0b8a",
+        "unix": 1792147079.87
+      }
+    ],
+    "original_running_native_record": "JobId=3412 JobName=g1-q20-joint100-cee20bcd2419 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898654 Nice=0 Account=(null) QOS=(null) JobState=RUNNING Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:01 TimeLimit=UNLIMITED TimeMin=N/A SubmitTime=2026-10-16T17:11:59 EligibleTime=2026-10-16T17:11:59 AccrueTime=2026-10-16T17:11:59 StartTime=2026-10-16T17:11:59 EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T17:11:59 Scheduler=Main Partition=gpu AllocNode:Sid=h100-8:2811828 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=96 NumTasks=1 CPUs/Task=96 ReqB:S:C:T=0:0:*:* TRES=cpu=96,mem=512G,node=1,billing=96 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=96 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/native-launch.sh WorkDir=/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd Comment=g1-q20-joint100:cee20bcd24194b79a9a8a88809bd5886  StdErr=/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/logs/native-3412.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/logs/native-3412.log Power= TresPerNode=gres:gpu:8 \n",
+    "source": "original_slurmctld_completion_records",
+    "state": "COMPLETED",
+    "unavailable_native_accounting_records": [
+      {
+        "arguments": [
+          "scontrol",
+          "show",
+          "job",
+          "3412",
+          "-o"
+        ],
+        "returncode": 1,
+        "stderr": "slurm_load_jobs error: Invalid job id specified\n",
+        "stdout": ""
+      },
+      {
+        "arguments": [
+          "sacct",
+          "-n",
+          "-P",
+          "-j",
+          "3412",
+          "--format=JobIDRaw,JobName%80,State,ExitCode,NodeList"
+        ],
+        "returncode": 1,
+        "stderr": "Slurm accounting storage is disabled\n",
+        "stdout": ""
+      }
+    ],
+    "verified": true
+  },
+  "remote_final_proof": {
+    "path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/final100-log-exit-retention-once-v1.json",
+    "bytes": 543848,
+    "sha256": "5de9c9aeca9de2e2a8f38ae7a97340077aa783cbcad0b62ce73caceeef5034cb"
+  },
+  "root_small_proof_readback": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/groupjoint100-final-rootread-actual-20261016T110100042530Z.json",
+    "sha256": "b975b371b9397f958c116ce32ef37351db775463a908b1f10b52c1d8c5309110"
+  },
+  "metrics_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/groupjoint100-finalcheck-actual-20261016T105110039235Z.json",
+    "sha256": "b3bfa5abedae7730fe562a8fc2aad316de94e1003d6711d5b5d344ee66483359"
+  },
+  "final_metrics": {
+    "epoch": 100,
+    "source_data_epoch": 30,
+    "observed_utc": "2026-10-16T10:37:50.426941+00:00",
+    "actual_adam_steps_per_rank": [
+      10000,
+      10000,
+      10000,
+      10000,
+      10000,
+      10000,
+      10000,
+      10000
+    ],
+    "actual_lr": 3e-06,
+    "train": {
+      "accuracy": 0.740625,
+      "balanced_accuracy": 0.7391424973998278,
+      "count": 5120,
+      "fn": 488,
+      "formula": "1-prod(p_j)-prod(1-p_j)",
+      "fp": 840,
+      "group_bce": 0.5371765240856495,
+      "group_weight": 1.0,
+      "mean_q": 0.4631136824870234,
+      "mixed_count": 1834,
+      "mixed_recall": 0.7339149400218102,
+      "nonmixed_count": 3286,
+      "nonmixed_recall": 0.7443700547778455,
+      "threshold": 0.5,
+      "tn": 2446,
+      "total_loss": 0.9609574527707383,
+      "tp": 1346,
+      "trajectory_bce": 0.4237809286850887,
+      "true_mixed": "0<sum(own_strict_em)<5"
+    },
+    "test": {
+      "accuracy": 0.615234375,
+      "balanced_accuracy": 0.598759280482336,
+      "count": 512,
+      "fn": 84,
+      "formula": "1-prod(p_j)-prod(1-p_j)",
+      "fp": 113,
+      "group_bce": 0.6710414595253416,
+      "group_weight": 1.0,
+      "mean_q": 0.45667280255849246,
+      "mixed_count": 183,
+      "mixed_recall": 0.5409836065573771,
+      "nonmixed_count": 329,
+      "nonmixed_recall": 0.6565349544072948,
+      "threshold": 0.5,
+      "tn": 216,
+      "total_loss": 1.1773980716205807,
+      "tp": 99,
+      "trajectory_bce": 0.5063566120952392,
+      "true_mixed": "0<sum(own_strict_em)<5"
+    },
+    "online_trajectory_bce": 0.45686623040310226,
+    "online_group_bce": 0.5696234842544072,
+    "train_loop_seconds_including_inline_encoder": 14.780987929552794,
+    "train_diagnostic_seconds": 1.2902125008404255,
+    "test_diagnostic_seconds": 0.47277554869651794,
+    "complete_utc": "2026-10-16T10:37:53.092383+00:00",
+    "metrics_sha256": "0fecd972c328ba2dfafe7a94d89c6ee052e69941f1c53d2634378950e9f9fc36"
+  },
+  "best_actual_retained_checkpoint": {
+    "checkpoint_paths": [
+      "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0100.pt"
+    ],
+    "checkpoint_sha256": [
+      "8df6bd445945ffbbf6a94171f24934495f0ce3ff17a3d2577bbd53d4b8fefd56"
+    ],
+    "epochs": [
+      100
+    ],
+    "value": 0.598759280482336
+  },
+  "best_all_epoch_metric": {
+    "epochs": [
+      45
+    ],
+    "note": "Epoch45 is the best recorded diagnostic, not an audited retained checkpoint and not available for loading.",
+    "value": 0.629619479462521,
+    "weights_retained_at_best_epoch": false
+  },
+  "immutable_checkpoint_proofs": [
+    {
+      "epoch": 10,
+      "checkpoint_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0010.pt",
+      "checkpoint_sha256": "8ae8ee2c206dc12bdd830a97cd4d715682b95f16aa5e470e1b7d26ae403c7269",
+      "proof_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/checkpoint0010-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "c8895c23741a011ec723e721b30daef48b70e5da2976a2e2a4cb587364f09b72",
+      "actual_adam_steps_per_rank": [
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000
+      ],
+      "actual_learning_rate": 2.934044210332718e-05,
+      "cpu_load_performed": true,
+      "independent_full_file_sha_performed": true
+    },
+    {
+      "epoch": 20,
+      "checkpoint_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0020.pt",
+      "checkpoint_sha256": "cf1f7fb7ce0b0df156786b5d0c1738f39257298c8ce75b48f62f021ad7b19e85",
+      "proof_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/checkpoint0020-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "840a7fbd746bf7a6e0c042ee87d936f88953d85d05d8d39f98867b6388275391",
+      "actual_adam_steps_per_rank": [
+        2000,
+        2000,
+        2000,
+        2000,
+        2000,
+        2000,
+        2000,
+        2000
+      ],
+      "actual_learning_rate": 2.7423723586861427e-05,
+      "cpu_load_performed": true,
+      "independent_full_file_sha_performed": true
+    },
+    {
+      "epoch": 30,
+      "checkpoint_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0030.pt",
+      "checkpoint_sha256": "b9c27f90c5c465429daf7f79af261e76af63483e17c71f0e0cc6721d5d69ec22",
+      "proof_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/checkpoint0030-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "86e4fbc9e5f12aaee85eb39b2e36c603371ed9f984408a8a59904d606660cd25",
+      "actual_adam_steps_per_rank": [
+        3000,
+        3000,
+        3000,
+        3000,
+        3000,
+        3000,
+        3000,
+        3000
+      ],
+      "actual_learning_rate": 2.4437502767965705e-05,
+      "cpu_load_performed": true,
+      "independent_full_file_sha_performed": true
+    },
+    {
+      "epoch": 40,
+      "checkpoint_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0040.pt",
+      "checkpoint_sha256": "7eb400da43ad517630847b0d5ea277103bc59e0ab9492ff007afbcdce4a82df5",
+      "proof_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/checkpoint0040-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "35c3833f0eb4737aaa11a9ef517c22275b2d917602c944978a93b495ee1e5553",
+      "actual_adam_steps_per_rank": [
+        4000,
+        4000,
+        4000,
+        4000,
+        4000,
+        4000,
+        4000,
+        4000
+      ],
+      "actual_learning_rate": 2.0674149736012705e-05,
+      "cpu_load_performed": true,
+      "independent_full_file_sha_performed": true
+    },
+    {
+      "epoch": 50,
+      "checkpoint_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0050.pt",
+      "checkpoint_sha256": "f94e6d0d27235773a25cb6f976599595a2ef21e64aacaa67e1be4deeb103dd5a",
+      "proof_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/checkpoint0050-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "c1890c9fe4d6a49be224a51e668b3d9b46b32e59574ac5875aae6c1160d97d85",
+      "actual_adam_steps_per_rank": [
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000
+      ],
+      "actual_learning_rate": 1.650212078711116e-05,
+      "cpu_load_performed": true,
+      "independent_full_file_sha_performed": true
+    },
+    {
+      "epoch": 60,
+      "checkpoint_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0060.pt",
+      "checkpoint_sha256": "c2e165ee09ce294162e25584b70402b3f157a661a169e45a699d97750d3be0bd",
+      "proof_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/checkpoint0060-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "e77449236261e89082bd5c698dd9fb9208830bcd8ee2243b58f5c782f8d62251",
+      "actual_adam_steps_per_rank": [
+        6000,
+        6000,
+        6000,
+        6000,
+        6000,
+        6000,
+        6000,
+        6000
+      ],
+      "actual_learning_rate": 1.2329884199607239e-05,
+      "cpu_load_performed": true,
+      "independent_full_file_sha_performed": true
+    },
+    {
+      "epoch": 70,
+      "checkpoint_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0070.pt",
+      "checkpoint_sha256": "2677cf14fbca72c7785e44b65f162d830c16f8c9aabfc8a84b37cd5efacd6853",
+      "proof_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/checkpoint0070-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "10e4fddad0b90f698658830e62d0c8e6372f2d03e57c37722beb42d627ec35d6",
+      "actual_adam_steps_per_rank": [
+        7000,
+        7000,
+        7000,
+        7000,
+        7000,
+        7000,
+        7000,
+        7000
+      ],
+      "actual_learning_rate": 8.565928580992337e-06,
+      "cpu_load_performed": true,
+      "independent_full_file_sha_performed": true
+    },
+    {
+      "epoch": 80,
+      "checkpoint_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0080.pt",
+      "checkpoint_sha256": "33a5d74133db72abe2a02855792d3bac885baf4bec7dcb4156278c6b7b9f6c96",
+      "proof_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/checkpoint0080-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "dfc555d8e5d0eeaf81745bfc631c32e538dbea9b438d59c6c49fe004f92850a8",
+      "actual_adam_steps_per_rank": [
+        8000,
+        8000,
+        8000,
+        8000,
+        8000,
+        8000,
+        8000,
+        8000
+      ],
+      "actual_learning_rate": 5.578769224457753e-06,
+      "cpu_load_performed": true,
+      "independent_full_file_sha_performed": true
+    },
+    {
+      "epoch": 90,
+      "checkpoint_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0090.pt",
+      "checkpoint_sha256": "069cb443f8e021decb4e067aebdfc7d2c2e3e930bee2d31d8c80f41f306b8d3a",
+      "proof_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/checkpoint0090-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "ad938c40c286f572183f7c27b14ba0b68d7e0f8cc0c37586d6ed6991fea9708a",
+      "actual_adam_steps_per_rank": [
+        9000,
+        9000,
+        9000,
+        9000,
+        9000,
+        9000,
+        9000,
+        9000
+      ],
+      "actual_learning_rate": 3.6608681082048955e-06,
+      "cpu_load_performed": true,
+      "independent_full_file_sha_performed": true
+    },
+    {
+      "epoch": 100,
+      "checkpoint_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/train/head-epoch-0100.pt",
+      "checkpoint_sha256": "8df6bd445945ffbbf6a94171f24934495f0ce3ff17a3d2577bbd53d4b8fefd56",
+      "proof_path": "/mnt/data/shaoshitong/search-g1-question20-groupjoint100-20261016-cee20bcd/preparation/checkpoint0100-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "922e5b6dfead0ed755a99a280650443821966305e2176715221c452271e13008",
+      "actual_adam_steps_per_rank": [
+        10000,
+        10000,
+        10000,
+        10000,
+        10000,
+        10000,
+        10000,
+        10000
+      ],
+      "actual_learning_rate": 3e-06,
+      "cpu_load_performed": true,
+      "independent_full_file_sha_performed": true
+    }
+  ],
+  "terminal_original_inode_log_count": 1006,
+  "terminal_original_inode_log_bytes": 49969292,
+  "owned_birth_count": 1000,
+  "owned_births_present": 0,
+  "native_cgroups_present": 0,
+  "owned_gpu_births_present": 0,
+  "source_70_batches_retained_stat_rechecked": true,
+  "source_trajectory_contents_rehashed": false,
+  "large_payload_transferred_to_Mac": false,
+  "independent_checkpoint_backup_performed": false,
+  "checkpoint_semantic_scope": "actual CPU reload of saved head/Adam/eight rank RNG/cosine/sampler/source bindings; no GPU forward or CUDA RNG application",
+  "epoch101_exists": false,
+  "formal_actor_training_started": false,
+  "formal_actor_training_execution_authorized": false,
+  "next_formal_goal_status": "DRAFT_AWAITING_HUMAN_REVIEW"
+}

@@ -4,7 +4,7 @@ import curveMetrics from "./curve-metrics.json";
 type MetricName = "accuracy" | "balanced_accuracy" | "trajectory_bce" | "group_bce" | "total_loss" | "mixed_recall" | "nonmixed_recall";
 type Metrics = Partial<Record<MetricName, number | null>> & { count?: number; mixed_count?: number; nonmixed_count?: number };
 type Row = { epoch: number; source_data_epoch?: number; observed_utc?: string; actual_lr?: number; train: Metrics; test: Metrics };
-type Snapshot = { run_id?: string; job?: string | number; node?: string; snapshot_utc?: string; complete_epoch?: number; target_epochs?: number; rows: Row[] };
+type Snapshot = { status?: string; run_id?: string; job?: string | number; node?: string; snapshot_utc?: string; complete_epoch?: number; target_epochs?: number; rows: Row[] };
 type Point = { epoch: number; value: number | null };
 type Series = { label: string; color: string; split: "train" | "test"; metric: MetricName };
 type PlotSpec = { key: string; title: string; description: string; percentage: boolean; series: Series[]; reference?: { value: number; label: string }; note?: string };
@@ -24,7 +24,7 @@ const PLOTS: PlotSpec[] = [
     series: trainTest("balanced_accuracy"), reference: { value: .5, label: "50% 均衡参考" } },
   { key: "accuracy", title: "混合判别 · ordinary accuracy", description: "正确分类的问题数 / 完整 G5 问题数", percentage: true,
     series: trainTest("accuracy"), reference: { value: TEST_MAJORITY, label: "固定测试多数类 64.2578%" },
-    note: "虚线只代表固定测试集。每轮训练批的类别比例不同。" },
+    note: "虚线只代表固定测试集。各轮训练批的类别比例不同。" },
   { key: "trajectory", title: "Trajectory BCE", description: "单条轨迹自身严格 EM 的二分类损失", percentage: false, series: trainTest("trajectory_bce") },
   { key: "group", title: "G5 mixed BCE", description: "同题五条轨迹是否混合正确的二分类损失", percentage: false, series: trainTest("group_bce") },
   { key: "total", title: "Total loss", description: "Trajectory BCE + 1 × G5 mixed BCE", percentage: false, series: trainTest("total_loss") },
@@ -252,8 +252,8 @@ export default function TrainingTestCurves() {
     <header className="qjc-heading">
       <span className="qjc-eyebrow">SEARCH-G1 · QUESTION + 20 TOKENS · JOINT BCE</span>
       <h1>混合判别：训练与固定测试</h1>
-      <p className="qjc-subtitle">训练是每轮对应的 5,120 题 × G5，在本轮更新后的完整复测；测试始终是固定 512 题 × G5。统一以 q ≥ 0.5 判为混合，真实标签为 0 &lt; ΣEM &lt; 5。</p>
-      <div className="qjc-metadata"><span>已完成 <strong>{rows.length} / {DATA.target_epochs || 100}</strong> epoch</span>
+      <p className="qjc-subtitle">训练是每轮对应的 5,120 题 × G5，在本轮更新后的完整复测；缓存数据按 E1–70，再 E1–30 重放。测试始终是固定 512 题 × G5。统一以 q ≥ 0.5 判为混合，真实标签为 0 &lt; ΣEM &lt; 5。</p>
+      <div className="qjc-metadata"><span>{lastEpoch === (DATA.target_epochs || 100) ? "最终完整" : "已完成"} <strong>{rows.length} / {DATA.target_epochs || 100}</strong> epoch</span>
         <span>横轴截止 <strong>E{lastEpoch}</strong></span><span>作业 <strong>{String(DATA.job ?? "—")}</strong> · {DATA.node || "h100-8"}</span>
         {DATA.snapshot_utc && <span>快照 {DATA.snapshot_utc.replace("T", " ").replace(/\.\d+(?:Z|\+00:00)$/, " UTC").replace(/Z$/, " UTC")}</span>}
       </div>
@@ -267,7 +267,7 @@ export default function TrainingTestCurves() {
     </section>
     <main className="qjc-grid">{PLOTS.map(spec => <Plot key={spec.key} spec={spec} rows={rows} activeEpoch={activeEpoch} pinned={hoverEpoch === null} onHover={setHoverEpoch} onPin={pin} onMove={move}/>)}</main>
     <footer className="qjc-footnote"><p>粗线只使用截至该轮的完整 10 轮：E1–E9 没有平滑值；缺轮或缺指标时断开，不补值、不外推。原始点始终保留。</p>
-      <p>ordinary accuracy 的固定测试多数类基线为 329/512 = 64.2578%；balanced accuracy 的类别均衡参考为 50%。训练批每轮不同，不能把固定测试基线当作训练基线。</p>
+      <p>ordinary accuracy 的固定测试多数类基线为 329/512 = 64.2578%；balanced accuracy 的类别均衡参考为 50%。训练批随轮次变化，不能把固定测试基线当作训练基线。</p>
       <p>图中训练与测试均来自相同的更新后 head；损失为自然对数。此文件静态读取同目录指标摘要，不自动联网或操作训练。</p>
     </footer>
   </div>;
