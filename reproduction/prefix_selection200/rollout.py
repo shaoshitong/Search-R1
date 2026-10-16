@@ -41,6 +41,21 @@ def root_dir(config, outer):
     return Path(config['base']) / 'outers' / ('outer-%06d' % outer)
 
 
+def question_count(config, phase):
+    n=int(config.get('rollout_candidate_questions',5120) if phase=='prefix'
+          else config.get('rollout_continuation_questions',512))
+    if n not in (512,5120):
+        raise ValueError('Native phase covers512 or5120 complete authentic G5s')
+    return n
+
+
+def phase_output(config,outer,phase):
+    name='prefix' if phase=='prefix' else config.get('rollout_full_subdirectory','full')
+    if name not in ('prefix','full','full-pool'):
+        raise ValueError('Unknown native artifact scope')
+    return root_dir(config,outer)/name
+
+
 def binding(config, outer):
     value = dict(config)
     path = root_dir(config, outer) / 'actor-binding.json'
@@ -111,7 +126,8 @@ def initial_state(config, outer, group, response_index, tokenizer):
     if not prompt:
         raise ValueError('Actual official initial request is empty')
     ordinal = int(group['candidate_ordinal'])
-    tid = '%s-outer%06d-c%04d-g%d' % (config['run_id'], outer, ordinal, response_index)
+    tid = '%s%s-outer%06d-c%04d-g%d' % (config['run_id'],
+        '-diagnostic' if config.get('diagnostic_only') else '',outer,ordinal,response_index)
     return dict(schema_version=1, run_id=config['run_id'], outer=outer,
                 actor_version=config['actor_version'], trajectory_id=tid,
                 candidate_ordinal=ordinal, response_index=response_index,
@@ -295,7 +311,7 @@ def validate_rank_receipt(config_path, config, outer, phase, rank, path):
     """
     path=Path(path);saved=read(path);current_sha=digest(config_path)
     expected=dict(run_id=config['run_id'],outer=outer,phase=phase,rank=rank,
-                  actor_version=config['actor_version'],trajectories=3200 if phase=='prefix' else 320)
+                  actor_version=config['actor_version'],trajectories=question_count(config,phase)*5//8)
     if any(saved.get(key)!=value for key,value in expected.items()):
         raise ValueError('Existing rank receipt has a different actual run/actor/outer/phase/rank')
     reuse=None
@@ -339,10 +355,10 @@ def _states(config, outer, rank, phase, tokenizer, selection_path):
         if bundle.get('outer', outer) != outer:
             raise ValueError('Questions belong to another outer')
         groups = [dict(row) for row in bundle['rows']]
-        if len(groups) != 5120 or len({r['qid'] for r in groups}) != 5120:
+        if len(groups) != question_count(config,phase) or len({r['qid'] for r in groups}) != question_count(config,phase):
             raise ValueError('Candidates must be5120 distinct original questions')
         normalized = [r.get('normalized_question_hash', r['question_hash']) for r in groups]
-        if len(set(normalized)) != 5120:
+        if len(set(normalized)) != question_count(config,phase):
             raise ValueError('Candidate question contents repeat')
         for i, group in enumerate(groups):
             group.setdefault('candidate_ordinal', i)
@@ -350,9 +366,9 @@ def _states(config, outer, rank, phase, tokenizer, selection_path):
                 raise ValueError('Candidate ordinal must preserve input order')
         return [initial_state(config, outer, row, j, tokenizer) for row in groups[rank::WORLD] for j in range(G)]
     receipt = read(root / 'prefix' / 'complete.json')
-    groups = validate_selection(read(selection_path), receipt)
+    groups = validate_selection(read(selection_path), receipt,question_count(config,phase))
     assigned = groups[rank::WORLD]
-    if len(assigned) != 64:
+    if len(assigned) != question_count(config,phase)//8:
         raise ValueError('Continuation uses64 selected completeG5 groups per realGPU')
     wanted = {tid: group for group in assigned for tid in group['trajectory_ids']}
     states = {}
@@ -463,8 +479,8 @@ def _build_llm(config, model, seed, free, total):
             llm = LLM(model=model, tokenizer=model, trust_remote_code=False, dtype='bfloat16',
                       tensor_parallel_size=1, max_model_len=4096, seed=seed,
                       gpu_memory_utilization=utilization, swap_space=0,
-                      enforce_eager=bool(config.get('rollout_enforce_eager', False)),
-                      enable_chunked_prefill=True, enable_prefix_caching=True,
+                      enforce_eager=bool(config.get('_capture_actor_hidden') or config.get('rollout_enforce_eager', False)),
+                      enable_chunked_prefill=True, enable_prefix_caching=not config.get('_capture_actor_hidden', False),
                       disable_async_output_proc=True,
                       disable_log_stats=True, **limits)
             return llm, utilization, limits, attempts
@@ -484,7 +500,7 @@ def _build_llm(config, model, seed, free, total):
 def worker(config_path, outer, phase, rank, selection_path=None):
     config = binding(read(config_path), outer)
     root = root_dir(config, outer)
-    output = root / ('prefix' if phase == 'prefix' else 'full')
+    output = phase_output(config,outer,phase)
     output.mkdir(parents=True, exist_ok=True)
     receipt_path = output / ('rank-%d-complete.json' % rank)
     if receipt_path.exists():
@@ -502,8 +518,15 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     states = _states(config, outer, rank, phase, tokenizer, selection_path)
     free, total = torch.cuda.mem_get_info()
     seed = seed_for(config['run_id'], outer, 'engine', 0, rank, config.get('seed', 1729))
-    llm, utilization, limits, oom_attempts = _build_llm(config, model, seed, free, total)
+    capture_hidden = phase == 'prefix' and config.get('actor_hidden_native', False)
+    llm, utilization, limits, oom_attempts = _build_llm(dict(config, _capture_actor_hidden=capture_hidden), model, seed, free, total)
     engine = llm.llm_engine
+    hidden_capture = hidden_writer = None
+    if capture_hidden:
+        from .actor_hidden import ActorHiddenCapture, NativeFeatureWriter
+        hidden_capture = ActorHiddenCapture(engine, config['actor_version'])
+        hidden_writer = NativeFeatureWriter(output, rank, [row['trajectory_id'] for row in states])
+    hidden_flushes = {}
     generation_path = Path(model) / 'generation_config.json'
     generation = read(generation_path) if generation_path.exists() else {}
     stop = generation.get('eos_token_id', tokenizer.eos_token_id)
@@ -540,6 +563,9 @@ def worker(config_path, outer, phase, rank, selection_path=None):
         nonlocal completed, active
         if phase == 'prefix':
             row = prefix_record(state)
+            if hidden_capture is not None:
+                native_features = hidden_capture.finish(row)
+                row.update(hidden_writer.write(row, native_features), feature_rank=rank)
             state['prefix_sha256'] = row['prefix_sha256']
             first_stream.write(canonical(state).decode() + '\n')
             second_stream.write(canonical(row).decode() + '\n')
@@ -591,10 +617,12 @@ def worker(config_path, outer, phase, rank, selection_path=None):
                     if request is None:
                         raise ValueError('Unfinished logical action has no available native quota')
                     params = SamplingParams(n=1, temperature=1.0, top_p=1.0, top_k=-1,
-                        max_tokens=request['max_tokens'], stop=[], stop_token_ids=stop, ignore_eos=False,
+                        max_tokens=request['max_tokens'] + int(capture_hidden), stop=[], stop_token_ids=stop, ignore_eos=False,
                         logprobs=1, detokenize=False, seed=request['seed'])
                     engine.add_request(request['request_id'], {'prompt_token_ids': request['actual_request_token_ids']}, params)
                     sampling = registered_sampling(engine, request, params)
+                    if hidden_capture is not None:
+                        hidden_capture.register(state, request)
                     pending[request['request_id']] = state, request, sampling
                     requests += 1
                 if engine.has_unfinished_requests():
@@ -608,13 +636,30 @@ def worker(config_path, outer, phase, rank, selection_path=None):
                         native = result.outputs[0]; raw = list(native.token_ids)
                         cumulative = state['action']['raw_generated_token_ids'] + raw
                         seen_action = stream_action_present(cumulative, decode)
-                        aborted = bool(seen_action and not result.finished)
-                        if not result.finished and not seen_action:
+                        # Processing the final retained token requires one more
+                        # native forward than sampling it. Freeze the boundary
+                        # snapshot, run one decode step, and discard its sampled
+                        # lookahead. That token never enters the state or head.
+                        flushing = rid in hidden_flushes
+                        if capture_hidden and not flushing and not result.finished and (
+                                seen_action or len(raw) >= request['max_tokens']):
+                            hidden_flushes[rid] = native_snapshot(native)
                             continue
-                        snapshot = native_snapshot(native)
+                        aborted = bool(not result.finished and (seen_action or flushing))
+                        if not flushing and not result.finished and not seen_action:
+                            continue
+                        actual_snapshot = native_snapshot(native)
+                        snapshot = hidden_flushes.pop(rid) if flushing else actual_snapshot
+                        if flushing:
+                            sampling = dict(sampling, actor_hidden_flush=dict(
+                                captured_after_last_retained_token=True,
+                                discarded_sampled_lookahead_tokens=len(raw)-len(snapshot['raw_generated_token_ids']),
+                                lookahead_hidden_not_passed_to_probe=True))
                         if aborted:
                             engine.abort_request(rid)
-                        pending.pop(rid); sampled += len(snapshot['raw_generated_token_ids'])
+                        if hidden_capture is not None:
+                            hidden_capture.forget_request(rid)
+                        pending.pop(rid); sampled += len(actual_snapshot['raw_generated_token_ids'])
                         cut = append_chunk(state, request, snapshot['raw_generated_token_ids'], snapshot['selected_logprobs'], sampling,
                             finish_reason=snapshot['finish_reason'],
                             stop_reason=snapshot['stop_reason'], terminal_ids=terminal_ids, decode=decode,
@@ -639,6 +684,9 @@ def worker(config_path, outer, phase, rank, selection_path=None):
                 raise ValueError('Completed native phase leaves incomplete own trajectories')
     finally:
         pool.shutdown(wait=True, cancel_futures=True)
+        if hidden_capture is not None:
+            hidden_capture.close()
+    feature_path = hidden_writer.finish() if hidden_writer is not None else None
     result = dict(schema_version=1, phase=phase, outer=outer, rank=rank, run_id=config['run_id'],
         actor_version=config['actor_version'], actor_model_dir=model, config_sha256=digest(config_path),
         sampling_contract=CONTRACT, action_boundary=BOUNDARY, old_full500_evaluation_sampler_changed=False,
@@ -651,6 +699,12 @@ def worker(config_path, outer, phase, rank, selection_path=None):
         elapsed_seconds=time.monotonic()-started, completed_utc=utc())
     for key, path in zip(('states', 'prefix') if phase == 'prefix' else ('full', 'own_em'), paths):
         result[key] = file_item(path, completed)
+    if feature_path is not None:
+        result.update(actor_hidden=file_item(feature_path, completed),
+            actor_hidden_layer=27, actor_hidden_boundary='post_block_hidden_plus_residual',
+            actor_hidden_forward_calls=hidden_capture.calls, actor_hidden_captured_rows=hidden_capture.captured_rows,
+            actor_hidden_forward_and_capture_seconds=hidden_capture.elapsed_seconds,
+            independent_encoder_forward=False, native_hidden_flush=True)
     if phase == 'continue':
         result.update(selection_sha256=digest(selection_path), prefix_scan_sha256=read(root/'prefix'/'complete.json')['scan_sha256'])
     immutable(receipt_path, result); progress('NATIVE_RANK_PHASE_COMPLETE')
@@ -689,10 +743,13 @@ def pack_prefix(config, outer, ranks):
                 segment_bounds=[{key:s[key] for key in ('turn_index','policy_start','policy_length','position_start')} for s in segments],
                 outer=outer, policy_prefix_sha256=hashlib.sha256(canonical(ids)).hexdigest(),
                 position_ids_sha256=hashlib.sha256(canonical(pos)).hexdigest())
+            if config.get('actor_hidden_native'):
+                row.update({key:original[key] for key in ('feature_rank','feature_row','feature_file',
+                    'feature_actor_version','feature_layer','feature_boundary','feature_dtype')})
             if 'normalized_question_hash' in original:
                 row['normalized_question_hash'] = original['normalized_question_hash']
             rows.append(row); policies.extend(ids); positions.extend(pos); offsets.append(len(policies))
-    if len(rows) != 25600 or len(groups) != 5120:
+    if len(rows) != question_count(config,'prefix')*5 or len(groups) != question_count(config,'prefix'):
         raise ValueError('Prefix scan requires all5120 completeG5 candidate groups')
     for siblings in groups.values():
         if len(siblings) != G or {r['response_index'] for r in siblings} != set(range(G)) or len({r['question_hash'] for r in siblings}) != 1:
@@ -711,13 +768,17 @@ def pack_prefix(config, outer, ranks):
     qmax = max(r['initial_context']['request_length'] for r in rows)
     proof = dict(schema_version=3, role='prefix_selection200_score_safe_actual_token_scan',
         representation='initial_request_and_retained_policy20_layer27_postblock_v1',
-        encoder_revision=REVISION, run_id=config['run_id'], outer=outer, actor_version=config['actor_version'],
+        encoder_revision=REVISION, actor_hidden_native=bool(config.get('actor_hidden_native')),
+        actor_hidden_shards=[r['actor_hidden'] for r in ranks] if config.get('actor_hidden_native') else None,
+        hidden_feature_actor_version=config['actor_version'] if config.get('actor_hidden_native') else None,
+        independent_encoder_forward=not config.get('actor_hidden_native', False),
+        run_id=config['run_id'], outer=outer, actor_version=config['actor_version'],
         actor_model_dir=config['actor_model_dir'], policy_actor_model_dir=config['actor_model_dir'],
         policy_actor_files_sha256=config.get('actor_model_files_sha256'),
-        model_dir=config.get('encoder_model_dir',config.get('model_dir')),
+        model_dir=config['actor_model_dir'] if config.get('actor_hidden_native') else config.get('encoder_model_dir',config.get('model_dir')),
         model_files_sha256=config.get('model_files_sha256'), count=len(rows), split_counts=dict(train=len(rows),test=0),
-        encoder_files_sha256=config.get('model_files_sha256'),
-        pad_token_id=ranks[0]['pad_token_id'], question_max_tokens=qmax, head_max_tokens=20, max_policy_prefix_tokens=20,
+        encoder_files_sha256=config.get('actor_model_files_sha256') if config.get('actor_hidden_native') else config.get('model_files_sha256'),
+        pad_token_id=ranks[0]['pad_token_id'], question_max_tokens=qmax, head_max_tokens=293 if config.get('actor_hidden_native') else 20, max_policy_prefix_tokens=20,
         encoder_global_max_tokens=max([qmax]+[s['context_length'] for row in rows for s in row['segments']]),
         sources_sha256=source_sha, prefix_window='multi_turn_actual_kept_policy_tokens',
         prefix_source='same_trajectory_native_prefix_then_continue', labels_present=False,
@@ -730,7 +791,7 @@ def pack_prefix(config, outer, ranks):
 
 def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=None):
     config = binding(read(config_path), outer); root=root_dir(config,outer)
-    output=root/('prefix' if phase=='prefix' else 'full')
+    output=phase_output(config,outer,phase)
     target=output/'complete.json'
     if target.exists():
         value=read(target)
@@ -740,7 +801,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
     checked=[validate_rank_receipt(config_path,config,outer,phase,rank,output/('rank-%d-complete.json'%rank))
              for rank in range(WORLD)]
     ranks=[item[0] for item in checked]
-    expected=3200 if phase=='prefix' else 320
+    expected=question_count(config,phase)*5//8
     for rank,value in enumerate(ranks):
         if value['rank']!=rank or value['phase']!=phase or value['outer']!=outer or value['trajectories']!=expected or value['actor_version']!=config['actor_version']:
             raise ValueError('Native phase rank completion identity/count differs')
@@ -766,7 +827,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
     else:
         selection_path=Path(selection_path or root/'probe-score'/'selection.json')
         prefix=read(root/'prefix'/'complete.json')
-        groups=validate_selection(read(selection_path),prefix)
+        groups=validate_selection(read(selection_path),prefix,question_count(config,phase))
         wanted={tid:group['qid'] for group in groups for tid in group['trajectory_ids']}
         seen=set(); all_labels=[]
         for rank in ranks:
@@ -786,8 +847,8 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
         mixed=sum(0<sum(labels[t] for t in group['trajectory_ids'])<G for group in groups)
         value.update(own_em=file_item(own,len(all_labels)),shards=[r['full'] for r in ranks],
             selection_sha256=digest(selection_path),prefix_scan_sha256=prefix['scan_sha256'],
-            actual_selected_mixed_questions=mixed,actual_selected_mixed_fraction=mixed/512,
-            all_candidate_mixed_accuracy_available=False,
+            actual_selected_mixed_questions=mixed,actual_selected_mixed_fraction=mixed/question_count(config,phase),
+            all_candidate_mixed_accuracy_available=question_count(config,phase)==5120,
             selected_strict_correct=sum(row['strict_em'] for row in all_labels))
     immutable(target,value)
     return value
@@ -795,7 +856,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
 
 def launch_phase(config_path, outer, phase, selection_path=None):
     """Own exactly8 native workers; phase completion includes their actual exit."""
-    config=binding(read(config_path),outer);output=root_dir(config,outer)/('prefix' if phase=='prefix' else 'full')
+    config=binding(read(config_path),outer);output=phase_output(config,outer,phase)
     output.mkdir(parents=True,exist_ok=True)
     if (output/'complete.json').exists():
         return aggregate(config_path,outer,phase,selection_path)

@@ -20,8 +20,8 @@ def validate_config(c, base):
         raise ValueError('Use the isolated remote prefix-selection namespace')
     required = dict(outers=200, candidate_questions=5120, selected_questions=512,
                     responses_per_question=5, prefix_policy_tokens=20, exploration_questions=0,
-                    probe_learning_rate=1e-6, probe_epochs_per_outer=1,
-                    probe_updates_per_outer=10, probe_global_batch_average=256,
+                    probe_learning_rate=1e-6, probe_epochs_per_update=1, probe_update_period=20,
+                    probe_updates_per_period=100, actor_hidden_native=True, probe_global_batch_average=256,
                     actor_global_mini_batch=128, actor_ppo_epochs=1, world_size=8)
     if any(c.get(k) != v for k, v in required.items()):
         raise ValueError('The approved prefix selection or training budget differs')
@@ -250,7 +250,9 @@ def run(base):
             actor = read(base / 'actor/latest.json') if outer > 1 else None
             actor_binding = dict(run_id=c['run_id'], outer=outer,
                 actor_model_dir=actor['hf_model_dir'] if actor else c['official_model_dir'],
-                actor_version=actor['actor_version'] if actor else c['run_id'] + '-official0')
+                actor_version=actor['actor_version'] if actor else c['run_id'] + '-official0',
+                actor_model_files_sha256={name:item['sha256'] for name,item in actor['hf_files'].items()}
+                    if actor else c['model_files_sha256'])
             actor_binding_path = root / 'actor-binding.json'
             if actor_binding_path.exists():
                 if not c.get('resume_import') or read(actor_binding_path) != actor_binding:
@@ -265,7 +267,18 @@ def run(base):
                     ['score', '--state-dir', str(base / 'probe'), '--prefix-inputs', str(root / 'prefix/scan'),
                      '--output', str(root / 'probe-score'), '--outer', str(outer), '--model-dir', c['official_model_dir'],
                      '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256))]))
-            if not reused_phase(base, root, 'full', c):
+            from .periodic import is_probe_update,probe_boundary
+            periodic_update=is_probe_update(outer)
+            if periodic_update:
+                # Selection is already immutable. Generate the full candidate
+                # G5 pool once, then project EXACT Top512 rows for PPO.
+                phase('outer-%06d-complete-unselected-pool'%outer,
+                    [python,'-m','reproduction.prefix_selection200.periodic_data','complete-pool',
+                     '--config',conf,'--outer',str(outer)])
+                phase('outer-%06d-current-actor-diagnostic'%outer,
+                    [python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic',
+                     '--config',conf,'--outer',str(outer)])
+            else:
                 phase('outer-%06d-continue' % outer, [python, '-m', 'reproduction.prefix_selection200.rollout',
                     '--config', conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(root / 'probe-score/selection.json')])
             # Retry only an actual typed CUDA OOM, after all failed owned workers
@@ -292,14 +305,23 @@ def run(base):
                     raise RuntimeError('Actual actor failure requires repair: '+json.dumps(retry))
                 actor_micro = retry['actor_global_micro_batch_size']
                 attempt_id = retry['new_attempt_id']
-            phase('outer-%06d-probe-update' % outer, distributed('reproduction.prefix_selection200.probe',
-                ['update', '--state-dir', str(base / 'probe'), '--scored-features', str(root / 'probe-score'),
-                 '--own-em', str(root / 'full/own-em.jsonl'), '--output', str(root / 'probe-update'),
-                 '--own-em-sha256', read(root / 'full/complete.json')['own_em']['sha256'],
-                 '--outer', str(outer), '--model-dir', c['official_model_dir'],
-                 '--test-cache', c['fixed_test_features'], '--test-manifest-sha', c['fixed_test_manifest_sha256']]))
+            if periodic_update:
+                diagnostic_receipt=read(root/'diagnostic-complete.json')
+                phase('outer-%06d-probe-update' % outer, distributed('reproduction.prefix_selection200.probe',
+                    ['update','--state-dir',str(base/'probe'),'--scored-features',str(root/'probe-score'),
+                     '--own-em',str(root/'full-pool/own-em.jsonl'),'--output',str(root/'probe-update'),
+                     '--own-em-sha256',read(root/'full-pool/complete.json')['own_em']['sha256'],
+                     '--outer',str(outer),'--model-dir',c['official_model_dir'],
+                     '--test-cache',diagnostic_receipt['scan_path'],
+                     '--test-manifest-sha',diagnostic_receipt['scan_sha256']]))
+                probe_metrics=read(root/'probe-update/metrics.json')
+            else:
+                probe_metrics=dict(status='PROBE_FROZEN_NO_OPTIMIZER_UPDATE',outer=outer,
+                    new_adam_steps_per_rank=0,actual_adam_steps_per_rank=[probe_boundary(outer)['actual_adam_per_rank']]*8,
+                    last_update_outer=probe_boundary(outer)['last_update_outer'])
+                once(root/'probe-frozen.json',probe_metrics)
             actor, probe = read(base / 'actor/latest.json'), read(base / 'probe/latest.json')
-            if actor['actual_adam_steps_per_rank'] != [20 * outer] * 8 or probe['actual_adam_steps_per_rank'] != [10 * outer] * 8:
+            if actor['actual_adam_steps_per_rank'] != [20 * outer] * 8 or probe['actual_adam_steps_per_rank'] != [probe_boundary(outer)['actual_adam_per_rank']] * 8:
                 raise RuntimeError('Actual actor/probe Adam boundaries differ from the completed outer')
             snapshot = root / 'pool-state-at-completion.json'
             once(snapshot, read(base / 'question-pool/state.json'))
@@ -308,11 +330,13 @@ def run(base):
             complete = dict(run_id=c['run_id'], outer=outer, actor=actor, probe=probe,
                 probe_snapshot=str(probe_snapshot), pool_snapshot=str(snapshot), pool_sha256=sha(snapshot),
                 selection_sha256=sha(root / 'probe-score/selection.json'), rollout=read(root / 'full/complete.json'),
-                probe_metrics=read(root / 'probe-update/metrics.json'), source_commit=c['source_commit'], observed_unix=time.time())
+                probe_metrics=probe_metrics, periodic_probe_update=periodic_update,
+                probe_boundary=probe_boundary(outer), source_commit=c['source_commit'], observed_unix=time.time())
             complete['phase_timings'] = {key: value for key,value in timings.items() if key.startswith('outer-%06d-' % outer)}
             once(root / 'complete.json', complete)
             publish(base / 'latest-joint.json', complete)
-            stage('OUTER_JOINT_COMPLETE', complete_outer=outer, actor_adam_per_rank=20 * outer, probe_adam_per_rank=10 * outer)
+            stage('OUTER_JOINT_COMPLETE', complete_outer=outer, actor_adam_per_rank=20 * outer,
+                  probe_adam_per_rank=probe_boundary(outer)['actual_adam_per_rank'])
             # The evaluation module retains the earlier confirmed legacy QA protocol.
             if outer in (5, 50, 100, 150, 200):
                 evaluation_config = root / 'evaluation-config.json'

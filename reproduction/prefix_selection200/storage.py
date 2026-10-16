@@ -84,19 +84,27 @@ def current_boundary(base, config, outer):
     latest_joint = read(owned(base, base/'latest-joint.json'))
     actor = read(owned(base, base/'actor/latest.json'))
     probe = read(owned(base, base/'probe/latest.json'))
-    update = read(owned(base, root/'probe-update/complete.json'))
+    native=config.get('actor_hidden_native',False)
+    if native:
+        from .periodic import is_probe_update,probe_boundary
+        periodic=is_probe_update(outer);boundary=probe_boundary(outer)
+    else:
+        periodic=True;boundary=dict(last_update_outer=outer,actual_adam_per_rank=10*outer)
+    update=read(owned(base,root/('probe-update/complete.json' if periodic else 'probe-frozen.json')))
     if (joint != latest_joint or joint['run_id'] != config['run_id'] or joint['outer'] != outer
             or joint['source_commit'] != config['source_commit']
             or joint['actor'] != actor or joint['probe'] != probe
             or actor['run_id'] != config['run_id'] or probe['run_id'] != config['run_id']
-            or actor['completed_outer'] != outer or probe['completed_outer'] != outer
+            or actor['completed_outer'] != outer or probe['completed_outer'] != boundary['last_update_outer']
             or actor['actual_adam_steps_per_rank'] != [20*outer]*8
-            or probe['actual_adam_steps_per_rank'] != [10*outer]*8
+            or probe['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*8
             or actor['scheduler_completed_outer'] != outer
-            or update['status'] != 'SELECTED512G5_ONLINE_PROBE_10_ADAM_COMPLETE'
-            or update['run_id'] != config['run_id'] or update['outer'] != outer
-            or update['checkpoint'] != probe or update['new_adam_steps_per_rank'] != 10
-            or update['actual_adam_steps_per_rank'] != [10*outer]*8):
+            or update['status'] != ('UNSELECTED5120G5_PERIODIC_PROBE_100_ADAM_COMPLETE' if native and periodic
+                else 'PROBE_FROZEN_NO_OPTIMIZER_UPDATE' if native else 'SELECTED512G5_ONLINE_PROBE_10_ADAM_COMPLETE')
+            or (periodic and update['run_id'] != config['run_id']) or update['outer'] != outer
+            or (periodic and update['checkpoint'] != probe)
+            or update['new_adam_steps_per_rank'] != (100 if native and periodic else 0 if native else 10)
+            or update['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*8):
         raise ValueError('Actor20N/probe10N and this outer joint commit must actually agree')
     ledger = read(owned(base, base/'logs/process-ledger.json'))
     if ledger['run_id'] != config['run_id']:
@@ -144,19 +152,32 @@ def planned_assets(base, config, outer, root, joint, update, references):
     score = root/'probe-score'
     manifest_path = owned(base, score/'manifest.json')
     manifest = read(manifest_path)
-    if (manifest['role'] != 'selected_actual_prefix_official_encoder_features'
-            or manifest['run_id'] != config['run_id'] or manifest['outer'] != outer
-            or manifest['count'] != 2560
-            or update['scored_features_manifest_sha256'] != small_sha(manifest_path)
-            or update['selection_sha256'] != manifest['selection_sha256']
-            or {row['rank'] for row in manifest['shards']} != set(range(8))
-            or sum(row['count'] for row in manifest['shards']) != 2560):
-        raise ValueError('Current feature shards are not bound to the completed online update')
-    for row in manifest['shards']:
-        if row['file'] != 'selected-features-rank-%d.pt'%row['rank']:
-            raise ValueError('Only declared selected-prefix feature tensors may be pruned')
-        add(score/row['file'], row, 'consumed_selected_official_encoder_features')
-
+    if config.get('actor_hidden_native'):
+        if (manifest['role']!='current_actor_native_hidden_features' or manifest['run_id']!=config['run_id']
+                or manifest['outer']!=outer or manifest['count']!=25600 or manifest['independent_encoder_forward']):
+            raise ValueError('Consumed native features do not belong to this completed outer')
+        scans=[root/'prefix/scan/scan-complete.json']
+        diag=root/'diagnostic-complete.json'
+        if diag.exists():scans.append(Path(read(diag)['scan_path'])/'scan-complete.json')
+        for scan in scans:
+            proof=read(owned(base,scan))
+            if not proof['actor_hidden_native'] or proof['run_id']!=config['run_id']:
+                raise ValueError('Do not delete another run feature shard')
+            for item in proof['actor_hidden_shards']:
+                add(item['path'],item,'consumed_current_actor_native_hidden')
+    else:
+        if (manifest['role'] != 'selected_actual_prefix_official_encoder_features'
+                or manifest['run_id'] != config['run_id'] or manifest['outer'] != outer
+                or manifest['count'] != 2560
+                or update['scored_features_manifest_sha256'] != small_sha(manifest_path)
+                or update['selection_sha256'] != manifest['selection_sha256']
+                or {row['rank'] for row in manifest['shards']} != set(range(8))
+                or sum(row['count'] for row in manifest['shards']) != 2560):
+            raise ValueError('Current feature shards are not bound to the completed online update')
+        for row in manifest['shards']:
+            if row['file'] != 'selected-features-rank-%d.pt'%row['rank']:
+                raise ValueError('Only declared selected-prefix feature tensors may be pruned')
+            add(score/row['file'], row, 'consumed_selected_official_encoder_features')
     previous = outer-1
     if previous > 0 and previous not in MILESTONES:
         old_root = base/'outers'/('outer-%06d'%previous)
@@ -167,7 +188,8 @@ def planned_assets(base, config, outer, root, joint, update, references):
                 expected = old_root/'probe-state-at-completion.pt'
                 if saved['probe_snapshot'] != str(expected):
                     raise ValueError('Previous probe snapshot path differs from its owned outer')
-                if saved['probe']['actual_adam_steps_per_rank'] != [10*previous]*8:
+                expected_steps=(previous//20*100 if config.get('actor_hidden_native') else 10*previous)
+                if saved['probe']['actual_adam_steps_per_rank'] != [expected_steps]*8:
                     raise ValueError('Previous probe producer is not a complete actual boundary')
                 add(expected, saved['probe'], 'previous_nonmilestone_probe_snapshot')
 

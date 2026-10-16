@@ -71,14 +71,14 @@ def online_plan(seed, outer):
 
 
 def summarize_loss_curve(curve):
-    if len(curve) != 10 or [row['step'] for row in curve] != list(range(1, 11)):
-        raise ValueError('A complete online outer has ten actual global loss observations')
+    if len(curve) != 100 or [row['step'] for row in curve] != list(range(1, 101)):
+        raise ValueError('A periodic full-pool epoch has100 actual global loss observations')
     return dict(points=curve, first=curve[0], last=curve[-1],
                 delta_end_minus_start={key: curve[-1][key]-curve[0][key]
                                       for key in ('trajectory_bce', 'group_bce', 'total_loss')},
                 loss_semantics='each_step_global_true_group_weighted_mean_before_its_own_update',
                 batches_differ_between_steps=True, monotonic_decrease_required=False,
-                actual_adam_updates_per_rank=10, world_size=8, replica_updates_are_not_summed=True)
+                actual_adam_updates_per_rank=100, world_size=8, replica_updates_are_not_summed=True)
 
 
 def candidate_groups(index, expected_questions=5120):
@@ -391,7 +391,7 @@ def atomic_checkpoint(directory, saved, completed_outer):
                    learning_rate=LR, sha256=sha(path), bytes=path.stat().st_size,
                    binding_sha256=saved['binding_sha256'], observed_utc=utc())
     publish(directory / 'latest.json', receipt)
-    if completed_outer in (0, 5, 50, 100, 150, 200):
+    if completed_outer == 0 or completed_outer % 20 == 0:
         os.link(path, directory / ('head-outer-%04d.pt' % completed_outer))
     return receipt
 
@@ -424,14 +424,16 @@ def initialize(args):
         raise ValueError('Approved warmup CP100 bytes differ')
     saved = torch.load(source, map_location='cpu', weights_only=False)
     test = FeatureCache(args.test_cache, args.test_manifest_sha)
-    binding = dict(role='prefix_selection200_online_correctness_probe', run_id=args.run_id,
+    binding = dict(role='prefix_selection200_actorhidden_period20_correctness_probe',
+        representation_source='current_sampling_actor_native_layer27_postblock',
+        independent_encoder_forward=False, probe_update_period=20, updates_per_period=100, run_id=args.run_id,
         encoder_revision=REVISION, encoder_files_sha256=test.spec['encoder_files_sha256'],
         question_max_tokens=QMAX, head_max_tokens=WIDTH, feature_layer=27, feature_boundary='post_block',
         prefix_tokens=20, source_probe_sha256=SOURCE_SHA, warmup_model_weights_only=True,
         warmup_optimizer_imported=False, online_initial_adam_steps=0, learning_rate=LR,
         group_weight=1.0, loss='mean_trajectory_BCE_plus_mean_G5_mixed_BCE',
-        updates_per_outer=10, global_batch_average=256, actual_global_batches=[255, 260],
-        world_size=8, accumulation=1, rank_questions_per_outer=64, rank_trajectories_per_outer=320,
+        updates_per_outer=0, global_batch_average=256, actual_global_batches=[255, 260],
+        world_size=8, accumulation=1, rank_questions_per_period=640, rank_trajectories_per_period=3200,
         diagnostic_manifest_sha256=TEST_SHA, diagnostic_questions=512,
         selected_questions=512, candidate_questions=5120, exploration=0,
         selection='q_descending_then_original_candidate_ordinal', zero_policy_eos='authentic_question_only_no_fake_token')
@@ -456,8 +458,11 @@ def setup_ddp():
 def load_online(args, device):
     directory = remote(args.state_dir)
     receipt = read(directory / 'latest.json')
-    if receipt['completed_outer'] != args.outer - 1 or receipt['actual_adam_steps_per_rank'] != [10*(args.outer-1)]*8:
-        raise ValueError('Probe phase requires the immediately preceding complete online boundary')
+    from .periodic import probe_boundary
+    expected = probe_boundary(args.outer-1)
+    if (receipt['completed_outer'] != expected['last_update_outer'] or
+            receipt['actual_adam_steps_per_rank'] != [expected['actual_adam_per_rank']]*8):
+        raise ValueError('Probe must be the last completed20-outer periodic state')
     path = directory / 'latest.pt'
     with path.open('rb') as handle:
         before = os.fstat(handle.fileno())
@@ -469,7 +474,7 @@ def load_online(args, device):
             after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns):
         raise ValueError('Online checkpoint changed while loading its committed boundary')
     if (saved['binding_sha256'] != digest(saved['binding']) or saved['binding_sha256'] != receipt['binding_sha256']
-            or saved['completed_outer'] != args.outer-1 or saved['actual_adam_steps_per_rank'] != receipt['actual_adam_steps_per_rank']
+            or saved['completed_outer'] != expected['last_update_outer'] or saved['actual_adam_steps_per_rank'] != receipt['actual_adam_steps_per_rank']
             or saved['binding']['learning_rate'] != LR):
         raise ValueError('Online probe binding or actual Adam boundary differs')
     model = OnlineQuestionProbe(remote(args.model_dir), QMAX).to(device=device, dtype=torch.float32)
@@ -478,100 +483,71 @@ def load_online(args, device):
 
 
 def score(args):
+    from .native_features import NativeFeatures
     rank, local, device = setup_ddp()
-    encoder = None
+    features = None
     try:
         model, saved, receipt = load_online(args, device)
-        encoder = PrefixEncoder(args.prefix_inputs, args.model_dir, question_max_tokens=QMAX,
-                                micro_batch_size=args.encoder_micro_batch_size, device=device)
-        manifest = encoder.manifest
+        features = NativeFeatures(args.prefix_inputs)
+        manifest = features.manifest
         actor_version = manifest['actor_version']
-        if (manifest['outer'] != args.outer or manifest['run_id'] != saved['run_id']
-                or encoder.spec['encoder_files_sha256'] != saved['binding']['encoder_files_sha256']):
-            raise ValueError('Candidate prefix scan belongs to another outer/run/frozen encoder')
-        if any(row.get('actor_version') != actor_version for row in encoder.index.values()):
-            raise ValueError('A candidate prefix belongs to a different frozen actor version')
-        groups = candidate_groups(encoder.index)
+        if manifest['outer'] != args.outer or manifest['run_id'] != saved['run_id']:
+            raise ValueError('Native features belong to another actual actor/outer/run')
+        groups = candidate_groups(features.index)
         own_groups = groups[rank::8]
         out = remote(args.output)
-        if rank == 0:
-            out.mkdir(parents=True, exist_ok=False)
+        if rank == 0: out.mkdir(parents=True, exist_ok=False)
         dist.barrier()
-        local_logits, cached, head_fallbacks = [], [], []
-        group_batch = max(1, args.encoder_micro_batch_size // 5)
-        model.eval()
-        started = time.monotonic()
+        local_logits, fallbacks = [], []
+        model.eval(); started=time.monotonic()
+        group_batch=max(1,args.encoder_micro_batch_size//5)
         with torch.no_grad():
-            for offset in range(0, len(own_groups), group_batch):
-                ids = [tid for group in own_groups[offset:offset+group_batch] for tid in group['trajectory_ids']]
-                batch = encoder.get_batch(ids, device)
-                # Scoring has no outcome labels and never calls a supervised loss.
-                logits = inference_logits(model, batch, args.encoder_micro_batch_size, head_fallbacks)
-                local_logits.extend(zip(ids, logits.cpu().tolist()))
-                cached.append(batch_to_device(batch, 'cpu'))
-                publish(out / ('score-progress-rank-%d.json' % rank),
-                        dict(outer=args.outer, scored_trajectories=len(local_logits), stage='OFFICIAL_ENCODER_PREFIX_SCORING'))
-        gathered = [None]*8
-        dist.all_gather_object(gathered, local_logits)
-        merged = [pair for rows in gathered for pair in rows]
-        if len(merged) != 25600 or len({tid for tid, _ in merged}) != 25600:
-            raise ValueError('All eight scoring ranks must produce25600 unique own-prefix scores')
-        selected, all_scores = stable_top512(groups, dict(merged))
-        selection = dict(schema_version=1, run_id=saved['run_id'], outer=args.outer,
-            actor_version=actor_version, prefix_scan_sha256=encoder.manifest_sha,
-            probe_before_checkpoint_sha256=receipt['sha256'], selected=selected,
-            candidate_questions=5120, selected_questions=512, trajectories_per_question=5,
-            exploration=0, tie_break='original_candidate_ordinal_ascending',
-            formula='1-prod(p_j)-prod(1-p_j)', outcome_labels_used=False)
-        selection_sha = digest(selection)
-        wanted = {tid for row in selected for tid in row['trajectory_ids']}
-        kept = []
-        for batch in cached:
-            positions = [j for j, tid in enumerate(batch['trajectory_ids']) if tid in wanted]
-            if positions:
-                kept.append(batch_subset(batch, positions))
-        del cached
-        local_features = concatenate(kept)
-        file = out / ('selected-features-rank-%d.pt' % rank)
-        torch.save(local_features, file)
-        shard = dict(rank=rank, file=file.name, count=0 if local_features is None else len(local_features['trajectory_ids']),
-                     sha256=sha(file), bytes=file.stat().st_size,
-                     actual_encoder_batches=encoder.actual_encoder_batches, actual_oom_fallbacks=encoder.oom_fallbacks,
-                     actual_head_inference_oom_fallbacks=head_fallbacks)
-        local_index = [dict(encoder.index[tid], feature_rank=rank, feature_row=j)
-                       for j, tid in enumerate(local_features['trajectory_ids'] if local_features else [])]
-        gathered_shards, gathered_index = [None]*8, [None]*8
-        dist.all_gather_object(gathered_shards, shard)
-        dist.all_gather_object(gathered_index, local_index)
-        if rank == 0:
-            once(out / 'selection.json', selection)
-            actual_selection_sha = sha(out / 'selection.json')
-            with (out / 'candidate-scores.jsonl').open('x') as handle:
-                for row in all_scores:
-                    handle.write(canonical(row).decode()+'\n')
-            index = [row for rows in gathered_index for row in rows]
-            if len(index) != 2560 or {row['trajectory_id'] for row in index} != wanted:
-                raise ValueError('Saved features must retain exactly the selected own prefixes')
-            once(out / 'index.json', index)
-            result = dict(schema_version=1, role='selected_actual_prefix_official_encoder_features',
-                run_id=saved['run_id'], outer=args.outer, count=2560, question_max_tokens=QMAX, head_max_tokens=WIDTH,
-                encoder_revision=REVISION, encoder_files_sha256=encoder.spec['encoder_files_sha256'],
-                actor_version=actor_version, prefix_scan_sha256=encoder.manifest_sha,
-                probe_before_checkpoint_sha256=receipt['sha256'], selection_sha256=actual_selection_sha,
-                selection_canonical_sha256=selection_sha, index_sha256=sha(out / 'index.json'),
-                candidate_scores_sha256=sha(out / 'candidate-scores.jsonl'),
-                shards=gathered_shards, no_outcome_labels=True, encoder_forward='official_frozen_layer27_postblock',
-                selected_features_reused_for_online_training=True, elapsed_seconds=time.monotonic()-started)
-            once(out / 'manifest.json', result)
-            once(out / 'complete.json', dict(status='PREFIX5120G5_STABLE_TOP512_SCORE_COMPLETE', outer=args.outer,
-                run_id=saved['run_id'], manifest_sha256=sha(out / 'manifest.json'), selection_sha256=actual_selection_sha,
-                selected_questions=512, selected_trajectories=2560, actor_version=actor_version, observed_utc=utc()))
+            for offset in range(0,len(own_groups),group_batch):
+                ids=[tid for g in own_groups[offset:offset+group_batch] for tid in g['trajectory_ids']]
+                batch=features.get_batch(ids,device)
+                logits=inference_logits(model,batch,args.encoder_micro_batch_size,fallbacks)
+                local_logits.extend(zip(ids,logits.cpu().tolist()))
+                publish(out/('score-progress-rank-%d.json'%rank),dict(outer=args.outer,
+                    scored_trajectories=len(local_logits),stage='CURRENT_ACTOR_NATIVE_HIDDEN_HEAD_SCORING'))
+        gathered=[None]*8;dist.all_gather_object(gathered,local_logits)
+        merged=[pair for rows in gathered for pair in rows]
+        if len(merged)!=25600 or len({tid for tid,_ in merged})!=25600:
+            raise ValueError('Score all5120G5 authentic native features exactly once')
+        selected,all_scores=stable_top512(groups,dict(merged))
+        if rank==0:
+            common=dict(schema_version=2,run_id=saved['run_id'],outer=args.outer,actor_version=actor_version,
+                prefix_scan_sha256=features.manifest_sha,probe_before_checkpoint_sha256=receipt['sha256'],
+                candidate_questions=5120,trajectories_per_question=5,exploration=0,
+                formula='1-prod(p_j)-prod(1-p_j)',outcome_labels_used=False,
+                representation_source='same_sampling_actor_native_layer27_postblock')
+            selection=dict(common,selected=selected,selected_questions=512,
+                tie_break='original_candidate_ordinal_ascending',continuation_scope='top512')
+            once(out/'selection.json',selection)
+            from .periodic import is_probe_update
+            if is_probe_update(args.outer):
+                once(out/'pool-selection.json',dict(common,selected=sorted(all_scores,key=lambda r:r['candidate_ordinal']),
+                     selected_questions=5120,continuation_scope='all_candidates'))
+            with (out/'candidate-scores.jsonl').open('x') as f:
+                for row in all_scores:f.write(canonical(row).decode()+'\n')
+            once(out/'index.json',list(features.index.values()))
+            result=dict(role='current_actor_native_hidden_features',run_id=saved['run_id'],outer=args.outer,
+                count=25600,selected_count=2560,question_max_tokens=QMAX,head_max_tokens=WIDTH,
+                actor_version=actor_version,prefix_scan_sha256=features.manifest_sha,
+                probe_before_checkpoint_sha256=receipt['sha256'],selection_sha256=sha(out/'selection.json'),
+                native_hidden_scan=str(features.path),native_hidden_shards=manifest['actor_hidden_shards'],
+                index_sha256=sha(out/'index.json'),candidate_scores_sha256=sha(out/'candidate-scores.jsonl'),
+                no_outcome_labels=True,independent_encoder_forward=False,
+                representation_source='same_sampling_actor_native_layer27_postblock',
+                elapsed_seconds=time.monotonic()-started)
+            once(out/'manifest.json',result)
+            once(out/'complete.json',dict(status='PREFIX5120G5_STABLE_TOP512_SCORE_COMPLETE',outer=args.outer,
+                run_id=saved['run_id'],manifest_sha256=sha(out/'manifest.json'),
+                selection_sha256=sha(out/'selection.json'),selected_questions=512,selected_trajectories=2560,
+                actor_version=actor_version,observed_utc=utc()))
         dist.barrier()
     finally:
-        if encoder is not None:
-            encoder.close()
-        if dist.is_initialized():
-            dist.destroy_process_group()
+        if features is not None:features.close()
+        if dist.is_initialized():dist.destroy_process_group()
 
 
 def update(args):
@@ -579,27 +555,58 @@ def update(args):
     rank, local, device = setup_ddp()
     try:
         model, saved, receipt = load_online(args, device)
-        features = SelectedFeatures(args.scored_features)
-        m = features.manifest
-        if (m['run_id'] != saved['run_id'] or m['outer'] != args.outer
-                or m['probe_before_checkpoint_sha256'] != receipt['sha256']
-                or m['encoder_files_sha256'] != saved['binding']['encoder_files_sha256']):
-            raise ValueError('Online update is not bound to its own scored prefix/features/probe')
-        own_path = remote(args.own_em)
-        if args.own_em_sha256 and sha(own_path) != args.own_em_sha256:
-            raise ValueError('Own-EM result differs from its completion receipt')
-        records = [json.loads(line) for line in own_path.read_text().splitlines()]
-        index = join_own_em(features.index, records, m['actor_version'], m['prefix_scan_sha256'], m['selection_sha256'])
-        groups = candidate_groups(index, 512)
-        test = FeatureCache(args.test_cache, args.test_manifest_sha)
-        if args.test_manifest_sha != TEST_SHA or test.spec['encoder_files_sha256'] != m['encoder_files_sha256']:
-            raise ValueError('Fixed diagnostic or official encoder identity changed')
+        from .native_features import NativeFeatures
+        from .periodic import is_probe_update, probe_boundary, complete_pool_plan
+        if not is_probe_update(args.outer):
+            raise ValueError('No probe optimization outside20,40,...200')
+        m=read(remote(args.scored_features)/'manifest.json')
+        features=NativeFeatures(m['native_hidden_scan'])
+        if (m['run_id']!=saved['run_id'] or m['outer']!=args.outer
+                or m['probe_before_checkpoint_sha256']!=receipt['sha256']
+                or features.manifest['actor_version']!=m['actor_version']):
+            raise ValueError('Periodic pool hidden/actor/probe provenance differs')
+        own_path=remote(args.own_em)
+        if args.own_em_sha256 and sha(own_path)!=args.own_em_sha256:
+            raise ValueError('Complete unselected pool outcomes differ from receipt')
+        records=[json.loads(line) for line in own_path.open()]
+        index=join_own_em(features.index,records,m['actor_version'],m['prefix_scan_sha256'],m['selection_sha256'])
+        groups=candidate_groups(index,5120)
+        test=NativeFeatures(args.test_cache)
+        if test.manifest_sha!=args.test_manifest_sha or test.manifest['actor_version']!=m['actor_version']:
+            raise ValueError('Diagnostic hidden must come from this exact sampling actor')
+        test_outcomes=Path(args.test_cache).parent.parent/'full/own-em.jsonl'
+        test_index=join_own_em(test.index,[json.loads(line) for line in test_outcomes.open()],
+            m['actor_version'],test.manifest_sha,'diagnostic')
+        test.index=test_index
         if ({str(row['qid']) for row in index.values()} & {str(row['qid']) for row in test.index.values()}
                 or {row['question_hash'] for row in index.values()} & {row['question_hash'] for row in test.index.values()}):
-            raise ValueError('Selected training questions overlap the fixed diagnostic')
+            raise ValueError('Periodic5120 training pool overlaps fixed512 diagnostic')
+        def evaluate(head):
+            head.eval();result={}
+            with torch.no_grad():
+                for split,data,rows in (('train',features,groups),('test',test,candidate_groups(test.index,512))):
+                    local_predictions=[]
+                    own_groups=rows[rank::8]
+                    for start in range(0,len(own_groups),6):
+                        ids=[tid for group in own_groups[start:start+6] for tid in group['trajectory_ids']]
+                        batch=data.get_batch(ids,device)
+                        with torch.autocast(device_type='cuda',dtype=torch.bfloat16):
+                            logits=head.module(batch) if isinstance(head,DistributedDataParallel) else head(batch)
+                        labels_index=index if split=='train' else test.index
+                        local_predictions.extend((tid,float(z),int(labels_index[tid]['strict_em']))
+                            for tid,z in zip(ids,logits.cpu().tolist()))
+                    gathered=[None]*8;dist.all_gather_object(gathered,local_predictions)
+                    result[split]=[row for rows in gathered for row in rows]
+            return result
+        before_predictions=evaluate(model)
+        before_metrics={}
+        if rank==0:
+            before_metrics={split:evaluate_predictions(before_predictions[split],
+                index if split=='train' else test.index,5120 if split=='train' else 512)[0]
+                for split in ('train','test')}
         optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=0)
-        expected_before = 10*(args.outer-1)
-        if args.outer > 1:
+        expected_before = probe_boundary(args.outer-1)['actual_adam_per_rank']
+        if expected_before:
             optimizer.load_state_dict(saved['optimizer'])
             for state in optimizer.state.values():
                 for key, value in list(state.items()):
@@ -613,7 +620,7 @@ def update(args):
             torch.manual_seed(args.seed+rank); torch.cuda.manual_seed_all(args.seed+rank)
         if actual_adam_steps(optimizer) != expected_before or any(rate != LR for rate in optimizer_learning_rates(optimizer)):
             raise ValueError('Online Adam state or constant LR changed')
-        plan = online_plan(args.seed, args.outer)
+        plan = complete_pool_plan(args.seed, args.outer)
         binding_values = [None]*8
         dist.all_gather_object(binding_values, (features.manifest_sha, sha(own_path), digest(plan), receipt['sha256']))
         if len(set(binding_values)) != 1:
@@ -681,36 +688,19 @@ def update(args):
             append(out / ('rank-%d-updates.jsonl' % rank), row)
             publish(out / ('progress-rank-%d.json' % rank), dict(row, stage='ONLINE_PROBE_ADAM_WRITE_COMPLETE'))
         train_loop_seconds = time.monotonic()-started
-        if totals[3:] != [64, 320]:
-            raise RuntimeError('Online probe rank must naturally visit64 own groups/320 trajectories once')
+        if totals[3:] != [640, 3200]:
+            raise RuntimeError('Periodic rank must visit640 own groups/3200 trajectories once')
         stats = torch.tensor(totals, dtype=torch.float64, device=device)
         dist.all_reduce(stats)
-        if stats[3:].tolist() != [512, 2560]:
-            raise RuntimeError('Online natural pass did not cover exactly the selected512G5')
-        model.eval()
-        predictions = {}
-        with torch.no_grad():
-            for split, data, rows in (('train', features, groups),
-                                      ('test', test, candidate_groups(test.index, 512))):
-                local_predictions = []
-                own_groups = rows[rank::8]
-                for start in range(0, len(own_groups), 6):
-                    ids = [tid for group in own_groups[start:start+6] for tid in group['trajectory_ids']]
-                    batch = data.get_batch(ids, device)
-                    with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
-                        logits = model.module(batch)
-                    labels_index = index if split == 'train' else test.index
-                    local_predictions.extend((tid, float(z), int(labels_index[tid]['strict_em']))
-                                             for tid, z in zip(ids, logits.cpu().tolist()))
-                gathered = [None]*8
-                dist.all_gather_object(gathered, local_predictions)
-                predictions[split] = [row for rows in gathered for row in rows]
+        if stats[3:].tolist() != [5120, 25600]:
+            raise RuntimeError('Periodic natural pass must cover exactly the unselected5120G5')
+        predictions = evaluate(model)
         rng = dict(rank=rank, actual_adam_steps=actual_adam_steps(optimizer), python=random.getstate(),
                    numpy=np.random.get_state(), torch_cpu=torch.get_rng_state(), torch_cuda=torch.cuda.get_rng_state(device))
         all_rng = [None]*8
         dist.all_gather_object(all_rng, rng)
         if rank == 0:
-            train_metrics, train_rows = evaluate_predictions(predictions['train'], index, 512)
+            train_metrics, train_rows = evaluate_predictions(predictions['train'], index, 5120)
             test_metrics, test_rows = evaluate_predictions(predictions['test'], test.index, 512)
             saved_model = {name: value.detach().cpu() for name, value in model.module.state_dict().items()}
             optimizer_state = optimizer.state_dict()
@@ -720,15 +710,16 @@ def update(args):
                         state[key] = value.detach().cpu()
             checkpoint = dict(schema_version=1, run_id=saved['run_id'], binding=saved['binding'],
                 binding_sha256=saved['binding_sha256'], completed_outer=args.outer, model=saved_model,
-                optimizer=optimizer_state, rank_rng=all_rng, actual_adam_steps_per_rank=[10*args.outer]*8,
+                optimizer=optimizer_state, rank_rng=all_rng, actual_adam_steps_per_rank=[probe_boundary(args.outer)['actual_adam_per_rank']]*8,
                 learning_rate=LR, scored_features_manifest_sha256=features.manifest_sha,
                 own_em_sha256=sha(own_path), actor_version=m['actor_version'])
             result = atomic_checkpoint(args.state_dir, checkpoint, args.outer)
-            metrics = dict(run_id=saved['run_id'], outer=args.outer, actual_adam_steps_per_rank=[10*args.outer]*8,
-                new_adam_steps_per_rank=10, actual_learning_rate=LR, train=train_metrics, test=test_metrics,
-                train_online_trajectory_bce=float(stats[0]/512), train_online_group_bce=float(stats[1]/512),
-                train_online_total_loss=float(stats[2]/512), train_loop_seconds=train_loop_seconds,
-                diagnostic_semantics='same_post_update_head_complete_selected512G5_and_fixed512G5',
+            metrics = dict(run_id=saved['run_id'], outer=args.outer, actual_adam_steps_per_rank=[probe_boundary(args.outer)['actual_adam_per_rank']]*8,
+                new_adam_steps_per_rank=100, actual_learning_rate=LR, train=train_metrics, test=test_metrics,
+                before_update=before_metrics, unselected_training_questions=5120, actor_hidden_native=True,
+                train_online_trajectory_bce=float(stats[0]/5120), train_online_group_bce=float(stats[1]/5120),
+                train_online_total_loss=float(stats[2]/5120), train_loop_seconds=train_loop_seconds,
+                diagnostic_semantics='same_head_pre_and_post_update_full5120G5_and_current_actor_fixed512G5',
                 step_loss_semantics='different_natural_batches_before_their_own_update_no_monotonic_claim',
                 global_step_loss_curve=summarize_loss_curve(global_curve),
                 selected_features_reencoded=False, actor_version=m['actor_version'], checkpoint=result,
@@ -739,7 +730,7 @@ def update(args):
                 with (out / (split+'-group-predictions.jsonl')).open('x') as handle:
                     for row in rows:
                         handle.write(canonical(row).decode()+'\n')
-            once(out / 'complete.json', dict(status='SELECTED512G5_ONLINE_PROBE_10_ADAM_COMPLETE', **metrics,
+            once(out / 'complete.json', dict(status='UNSELECTED5120G5_PERIODIC_PROBE_100_ADAM_COMPLETE', **metrics,
                                             metrics_sha256=sha(out / 'metrics.json'), observed_utc=utc()))
         dist.barrier()
     finally:
