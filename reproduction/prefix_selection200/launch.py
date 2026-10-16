@@ -74,6 +74,9 @@ def _json_request(url):
 
 def reused_phase(base, root, phase, c):
     """Only explicitly imported complete source phases may bypass execution."""
+    if c.get('resume_joint', {}).get('adapter') == 'native_a800_joint_v1':
+        from .native_joint_resume import inherited_phase
+        return inherited_phase(base, root, phase, c)
     path = root / phase / 'complete.json'
     if not path.exists():
         return False
@@ -135,6 +138,15 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
             inherited_complete_through=parent['completed_joint_outer'],
             repaired_pending_outer=parent['pending_outer'],
             qualification_proof_sha256=parent['qualification_proof_sha256'])
+    elif c.get('resume_joint', {}).get('adapter') == 'native_a800_joint_v1':
+        parent = c['resume_joint']
+        complete['source_lineage'] = dict(parent_source_commit=parent['source_commit'],
+            parent_execution_id=parent['source_execution_id'], parent_base=parent['source_base'],
+            inherited_complete_through=parent['completed_outer'],
+            inherited_prefix_outer=parent['inherited_prefix_outer'],
+            qualification_proof_sha256=parent['checkpoint_cpu_proof_sha256'],
+            parent_source_lineage=read(Path(parent['source_base'])/'latest-joint.json').get('source_lineage'),
+            imported_history_receipt=str(base/'preparation/resume-joint-receipt.json'))
     if recovery is not None:
         complete['pending_probe_recovery'] = dict(recovery,
             imported_actor_updates_reexecuted=0, native_rollouts_reexecuted=0,
@@ -162,7 +174,10 @@ def run(base):
         from .pending_probe_resume import validate_imported_pending
         outer = validate_imported_pending(base, c)
     elif outer:
-        from .resume import validate_imported_boundary
+        if c['resume_joint'].get('adapter') == 'native_a800_joint_v1':
+            from .native_joint_resume import validate_imported_boundary
+        else:
+            from .resume import validate_imported_boundary
         validate_imported_boundary(base, c)
     lease = UUIDLocks(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])
     try:
@@ -282,7 +297,7 @@ def run(base):
                   actor_adam_per_rank=20*outer,
                   probe_adam_per_rank=read(base/'probe/latest.json')['actual_adam_steps_per_rank'][0],
                   inherited_actor_updates_not_reexecuted=20)
-        else:
+        elif not outer:
             phase('probe-initialize-model-only', [python, '-m', 'reproduction.prefix_selection200.probe', 'initialize',
                 '--state-dir', str(base / 'probe'), '--source-checkpoint', c['probe_source_checkpoint'],
                 '--source-sha256', c['probe_source_sha256'], '--source-epoch', str(c['probe_source_epoch']),
@@ -328,7 +343,12 @@ def run(base):
                     if actor else c['model_files_sha256'])
             actor_binding_path = root / 'actor-binding.json'
             if actor_binding_path.exists():
-                if not c.get('resume_import') or read(actor_binding_path) != actor_binding:
+                inherited_binding = False
+                if c.get('resume_joint', {}).get('adapter') == 'native_a800_joint_v1':
+                    from .native_joint_resume import inherited_actor_binding
+                    inherited_binding = inherited_actor_binding(base, root, c, actor_binding)
+                if ((not c.get('resume_import') and not inherited_binding)
+                        or read(actor_binding_path) != actor_binding):
                     raise ValueError('Inherited actual actor binding differs')
             else:
                 once(actor_binding_path, actor_binding)
