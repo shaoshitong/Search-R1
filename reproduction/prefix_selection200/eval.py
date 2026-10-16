@@ -73,12 +73,64 @@ def load_questions(path, expected_count):
     return rows
 
 
+def _cleanup_failed_initialization():
+    """Release only this TP1 process's failed constructor, never another task."""
+    import gc
+    import torch
+    from vllm.distributed import parallel_state
+    parallel_state.destroy_model_parallel()
+    if hasattr(parallel_state, 'destroy_distributed_environment'):
+        parallel_state.destroy_distributed_environment()
+    gc.collect(); torch.cuda.empty_cache()
+
+
+def build_evaluation_engine(config, model, seed, free, total, *, factory=None, cleanup=None):
+    """Fill available VRAM; lower cache/concurrency only after actual constructor OOM."""
+    import torch
+    if factory is None:
+        from vllm import LLM
+        factory = LLM
+    if cleanup is None: cleanup = _cleanup_failed_initialization
+    reserve = float(config.get('evaluation_free_reserve_gib', 2)) * 1024 ** 3
+    cap = float(config.get('evaluation_utilization_cap', .95))
+    requested = config.get('evaluation_memory_utilization', 'auto')
+    utilization = min(cap, (free - reserve) / total) if requested == 'auto' else float(requested)
+    if not 0 < utilization <= 1:
+        raise ValueError('Actual available VRAM cannot supply the configured evaluation reservation')
+    limits = dict(max_num_seqs=int(config.get('evaluation_max_num_seqs', 1024)),
+                  max_num_batched_tokens=int(config.get('evaluation_max_batched_tokens', 32768)))
+    attempts = []
+    while True:
+        try:
+            llm = factory(model=str(model), tokenizer=str(model), trust_remote_code=False,
+                dtype='float32', tensor_parallel_size=1, max_model_len=4596, seed=seed,
+                gpu_memory_utilization=utilization, swap_space=0,
+                enforce_eager=bool(config.get('evaluation_enforce_eager', False)),
+                enable_chunked_prefill=True, enable_prefix_caching=True, disable_log_stats=True, **limits)
+            return llm, utilization, limits, attempts
+        except Exception as error:
+            message = str(error)
+            actual_oom = isinstance(error, torch.cuda.OutOfMemoryError) or (
+                isinstance(error, RuntimeError) and ('CUDA out of memory' in message or 'CUDA error: out of memory' in message))
+            attempts.append(dict(gpu_memory_utilization=utilization, limits=dict(limits),
+                error_type=type(error).__name__, actual_cuda_oom=actual_oom))
+            if not actual_oom or len(attempts) >= 4:
+                raise
+            # The exception traceback otherwise retains its failed LLM/model
+            # constructor frames and GPU tensors through the following retry.
+            error.__traceback__ = None
+            cleanup()
+            utilization *= .85
+            limits['max_num_seqs'] = max(32, limits['max_num_seqs'] // 2)
+            limits['max_num_batched_tokens'] = max(4096, limits['max_num_batched_tokens'] // 2)
+
+
 def worker(config_path, model_dir, output_dir, questions_path, expected_count, rank):
     from reproduction.prefix20_online.rollout import _configure_one_visible_gpu, prompt_tokens
     config = read(remote(config_path)); device = _configure_one_visible_gpu(rank)
     import torch
     from transformers import AutoTokenizer
-    from vllm import LLM, SamplingParams
+    from vllm import SamplingParams
     from reproduction.common8.behavior_trace import raw_prefix_to_first_closing_tag
     from search_g1.async_rollout_runtime import AsyncRolloutConfig, BoundedRetriever, execute_one_action
     from search_r1.llm_agent.generation import GenerationConfig, LLMGenerationManager
@@ -87,14 +139,9 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
     tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True, trust_remote_code=False)
     questions = load_questions(questions_path, expected_count)[rank::8]
     free, total = torch.cuda.mem_get_info()
-    utilization = min(.85, (free - 8 * 1024 ** 3) / total)
-    limits = dict(max_num_seqs=int(config.get('evaluation_max_num_seqs', 512)),
-                  max_num_batched_tokens=int(config.get('evaluation_max_batched_tokens', 32768)))
     seed = int(config.get('seed', 1729)) + rank * 104729
-    llm = LLM(model=str(model_dir), tokenizer=str(model_dir), trust_remote_code=False,
-        dtype='float32', tensor_parallel_size=1, max_model_len=4596, seed=seed,
-        gpu_memory_utilization=utilization, swap_space=0, enforce_eager=False,
-        enable_chunked_prefill=True, enable_prefix_caching=True, disable_log_stats=True, **limits)
+    llm, utilization, limits, initialization_oom_attempts = build_evaluation_engine(
+        config, model_dir, seed, free, total)
     engine = llm.llm_engine
     generation = read(model_dir / 'generation_config.json')
     stop = generation.get('eos_token_id', tokenizer.eos_token_id)
@@ -198,6 +245,7 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
         full_output=dict(path=str(full), bytes=full.stat().st_size, sha256=sha(full)),
         device_binding=device, actual_compute_dtype=str(engine.model_config.dtype),
         actual_generation_requests=requests, seed=seed, gpu_memory_utilization=utilization,
+        actual_scheduler_limits=limits, initialization_oom_attempts=initialization_oom_attempts,
         elapsed_seconds=time.monotonic() - started, completed_utc=utc())
     atomic_json(output / ('rank-%d-complete.json' % rank), receipt)
     return receipt

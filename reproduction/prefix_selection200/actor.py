@@ -17,6 +17,7 @@ import math
 import os
 from pathlib import Path
 import random
+import re
 import shutil
 import uuid
 
@@ -128,6 +129,87 @@ def oom_retry_plan(*, outer, failed_micro, latest_complete_outer, rollout_actor_
         rollout_actor_version=rollout_actor_version, bitwise_continuation_claimed=False)
 
 
+def collect_oom_retry(output, config_path, outer, rollout_path, attempt_id, *, phase_exit_code):
+    """Parent CPU API after torchrun and all its owned ranks have actually exited.
+
+    Supply the exact32hex ID set in that launch's config.actor_attempt_id. Only
+    that attempt's files are read; stale failures from prior retries are ignored.
+    A peer NCCL error does not hide another rank's typed actual CUDA OOM. The
+    result distinguishes ledger-confirmed writes from uncommitted optimizer work.
+    It performs no process signalling, deployment, GPU call or state mutation.
+    """
+    output, config_path, rollout_path = map(Path, (output, config_path, rollout_path))
+    config, rollout = read(config_path), read(rollout_path)
+    if (not isinstance(attempt_id, str) or not re.fullmatch('[0-9a-f]{32}', attempt_id)
+            or config.get('actor_attempt_id') != attempt_id or not isinstance(phase_exit_code, int)
+            or phase_exit_code == 0 or rollout['run_id'] != config['run_id'] or rollout['outer'] != outer):
+        raise ValueError('Require the actual failed phase exit and its exact launch attempt ID')
+    directory = output / 'outers' / ('outer-%04d-attempt-%s' % (outer, attempt_id))
+    latest = read(output / 'latest.json') if (output / 'latest.json').exists() else None
+    if latest is None:
+        if outer != 1: raise ValueError('Missing preceding complete actor for OOM recovery')
+        completed, version = 0, config['run_id'] + '-official0'
+    else:
+        if latest['completed_outer'] == outer:
+            # A launcher failure after state publication must not run the20 steps again.
+            if (latest.get('run_id') != config['run_id'] or latest.get('binding') != _state_binding(config)
+                    or latest.get('actual_adam_steps_per_rank') != [20 * outer] * WORLD
+                    or latest.get('scheduler_completed_outer') != outer
+                    or latest.get('original_rollout_sha256') != sha(rollout_path)):
+                raise ValueError('Published actor completion does not match this failed launch input')
+            return dict(status='ACTOR_ALREADY_COMMITTED', retry=False,
+                        completed_outer=outer, actor_version=latest['actor_version'])
+        restore_metadata(config, latest, outer)
+        completed, version = latest['completed_outer'], latest['actor_version']
+    failures, ledgers, counts, missing = [], [], [], []
+    for rank in range(WORLD):
+        ledger = directory / ('rank-%d-updates.jsonl' % rank)
+        records = []
+        if ledger.exists():
+            lines = ledger.read_text().splitlines()
+            for line_index, line in enumerate(lines):
+                try: records.append(json.loads(line))
+                except json.JSONDecodeError:
+                    # A killed process can leave only its final uncommitted line incomplete.
+                    if line_index != len(lines) - 1: raise
+            for row in records:
+                if row.get('rank') != rank or row.get('outer') != outer:
+                    raise ValueError('Failed-attempt ledger belongs to another rank or outer')
+            writes = [row for row in records if row['event'] == 'ACTUAL_ADAM_WRITE']
+            for index, row in enumerate(writes):
+                if (row['rank'] != rank or row['outer'] != outer or row['opportunity'] != index
+                        or row['writes_this_attempt'] != index + 1
+                        or row['actual_adam_steps'] != 20 * completed + index + 1):
+                    raise ValueError('Failed-attempt ledger counters are not sequential actual writes')
+            count = len(writes)
+            ledgers.append(dict(rank=rank, path=str(ledger), sha256=sha(ledger), confirmed_writes=count))
+        else:
+            count = 0; missing.append(rank)
+        counts.append(count)
+        paths = [directory / ('rank-%d-failure.json' % rank),
+                 output / ('native-failure-outer-%04d-attempt-%s-rank-%d.json' % (outer, attempt_id, rank))]
+        for path in paths:
+            if not path.exists(): continue
+            failure = read(path)
+            if (failure.get('rank') != rank or failure.get('outer') != outer
+                    or failure.get('attempt_id') != attempt_id or failure.get('run_id') != config['run_id']
+                    or Path(failure['cached_rollout_path']).resolve() != rollout_path.resolve()):
+                raise ValueError('Failed native actor evidence belongs to another launch')
+            failures.append(dict(path=str(path), sha256=sha(path), value=failure))
+    actual_oom = any(item['value'].get('actual_cuda_oom') is True for item in failures)
+    if not actual_oom:
+        return dict(status='NON_OOM_FAILURE', retry=False, failures=failures, ledgers=ledgers,
+                    observed_committed_partial_writes=counts, ranks_without_ledger=missing)
+    plan = oom_retry_plan(outer=outer, failed_micro=int(config.get('actor_global_micro_batch_size', 128)),
+        latest_complete_outer=completed, rollout_actor_version=rollout['actor_version'],
+        latest_actor_version=version, partial_writes=counts)
+    plan.update(attempt_id=attempt_id, failed_attempt_dir=str(directory), failures=failures,
+        ledgers=ledgers, ranks_without_ledger=missing, observed_committed_partial_writes=counts,
+        uncommitted_or_interrupted_optimizer_work_count_unknown=True,
+        cached_rollout_sha256=sha(rollout_path), latest_completed_outer=completed)
+    return plan
+
+
 def _tokens(value, field):
     if not isinstance(value, list) or any(type(token) is not int or token < 0 for token in value):
         raise ValueError('Invalid actual token IDs: ' + field)
@@ -143,9 +225,9 @@ def validate_record(row, actor_version):
     prompt = _tokens(row['initial_prompt_token_ids'], 'initial_prompt')
     response = _tokens(row['response_token_ids'], 'response')
     mask, probabilities = row['response_info_mask'], row['response_log_probs']
-    if (not prompt or not response or len(response) != len(mask) or len(response) != len(probabilities)
+    if (not prompt or len(response) != len(mask) or len(response) != len(probabilities)
             or any(type(v) is not int or v not in (0, 1) for v in mask)
-            or not any(mask) or row.get('strict_em') not in (0, 1)
+            or row.get('strict_em') not in (0, 1)
             or type(row.get('strict_em')) is not int):
         raise ValueError('Incomplete actual response, policy mask, probabilities or own strictEM')
     if any(not isinstance(p, (int, float)) or not math.isfinite(p) for p in probabilities):
@@ -233,7 +315,9 @@ def tensor_batch(rows, pad_token_id):
     """No text round-trip: native prompts/policy/observations form the PPO inputs."""
     import torch
     pwidth = max(len(row['initial_prompt_token_ids']) for row in rows)
-    rwidth = max(len(row['response_token_ids']) for row in rows)
+    # A real first-token EOS has zero retained policy tokens. Keep its G5 row;
+    # the single storage pad below has attention/lossmask0 and is never authored.
+    rwidth = max(1, max(len(row['response_token_ids']) for row in rows))
     prompts = torch.full((len(rows), pwidth), pad_token_id, dtype=torch.long)
     responses = torch.full((len(rows), rwidth), pad_token_id, dtype=torch.long)
     pa, ra, policy = torch.zeros_like(prompts), torch.zeros_like(responses), torch.zeros_like(responses)
@@ -307,6 +391,22 @@ def rank_plan(seed, outer, world=WORLD):
              for step in range(20)] for rank in range(world)]
 
 
+def masked_policy_objective(old, current, advantages, mask, *, loss_fn):
+    """A legal all-empty policy micro contributes zero, while joining backward."""
+    if not bool(mask.bool().any()):
+        zero = current.masked_fill(~mask.bool(), 0.).sum() * 0.
+        return zero, zero.detach(), zero.detach()
+    return loss_fn(old, current, advantages, mask, cliprange=.2, dual_clip=3.)
+
+
+def micro_loss_weight(micro_policy_tokens, local_minibatch_policy_tokens):
+    """Changing micro must preserve the authorized local16 token-mean objective."""
+    if (type(micro_policy_tokens) is not int or type(local_minibatch_policy_tokens) is not int
+            or not 0 <= micro_policy_tokens <= local_minibatch_policy_tokens):
+        raise ValueError('Actual authored-token mass differs from its parent minibatch')
+    return micro_policy_tokens / local_minibatch_policy_tokens if local_minibatch_policy_tokens else 0.
+
+
 def _rng():
     import numpy as np
     import torch
@@ -327,6 +427,7 @@ def _state_binding(config):
         official_model_dir=str(remote(config['official_model_dir'])), world_size=8,
         global_mini=128, ppo_epochs=1, trajectories=2560, updates_per_outer=20,
         learning_rate=1e-6, outer_warmup=57, clip_ratio=.2, dual_clip=3., grad_clip=1.,
+        loss_reduction='mean_of_eight_rank_local_minibatch_policy_token_means',
         entropy_coefficient=0., reference_kl_coefficient=0., reference_kl_type='low_var_kl',
         grounding_probe_version=config['grounding_probe_version'], reward_environment=REWARD_ENV)
 
@@ -450,6 +551,21 @@ def train(config_path, outer, rollout_path, output_path):
         if latest is None: raise ValueError('Missing this run latest complete actor state')
         restore_metadata(config, latest, outer)
         model_dir = str(remote(latest['model_dir'])); old_version = latest['actor_version']
+    supplied_attempt = config.get('actor_attempt_id')
+    if supplied_attempt is not None and (not isinstance(supplied_attempt, str)
+            or re.fullmatch('[0-9a-f]{32}', supplied_attempt) is None):
+        raise ValueError('actor_attempt_id must be a new32hex native launch identity')
+    attempt = [(supplied_attempt or uuid.uuid4().hex) if rank == 0 else None]
+    dist.broadcast_object_list(attempt, src=0)
+    attempt_dir = output / 'outers' / ('outer-%04d-attempt-%s' % (outer, attempt[0]))
+    if rank == 0:
+        attempt_dir.mkdir(parents=True, exist_ok=False)
+        atomic_json(attempt_dir / 'attempt.json', dict(run_id=config['run_id'], outer=outer,
+            attempt_id=attempt[0], cached_rollout_path=str(rollout_path), actor_version=old_version,
+            config_path=str(config_path), config_sha256=sha(config_path),
+            actor_global_micro_batch_size=budget.global_micro, created_utc=utc()))
+    dist.barrier()
+    # Attempt identity exists even if loading/initializing the model encounters OOM.
     rows, rollout = load_rollout(rollout_path, config, outer, old_version)
     actor, wrapped, optimizer, scheduler, tokenizer = _build_actor(model_dir, budget, local)
     if latest:
@@ -468,10 +584,6 @@ def train(config_path, outer, rollout_path, output_path):
         raise ValueError('Actual FP32 master/Adam state or restored step differs')
     if scheduler.last_epoch != outer - 1 or any(group['lr'] != learning_rate(outer - 1) for group in optimizer.param_groups):
         raise ValueError('Actual outer scheduler did not restore its true completed clock')
-    attempt = [uuid.uuid4().hex if rank == 0 else None]; dist.broadcast_object_list(attempt, src=0)
-    attempt_dir = output / 'outers' / ('outer-%04d-attempt-%s' % (outer, attempt[0]))
-    if rank == 0: attempt_dir.mkdir(parents=True, exist_ok=False)
-    dist.barrier()
     ledger = attempt_dir / ('rank-%d-updates.jsonl' % rank)
     append(ledger, dict(event='ACTUAL_RESTORE', rank=rank, outer=outer, restored_completed_outer=outer - 1,
         actual_adam_before=20 * (outer - 1), restored_scheduler=scheduler.last_epoch,
@@ -497,6 +609,7 @@ def train(config_path, outer, rollout_path, output_path):
         wrapped.train()
         for step, ids in enumerate(plan):
             optimizer.zero_grad(set_to_none=True); metrics = []
+            mini_mass = sum(sum(rows[i]['response_info_mask']) for i in ids)
             for offset in range(0, len(ids), budget.local_micro):
                 micro_ids = ids[offset:offset + budget.local_micro]
                 batch = tensor_batch([rows[i] for i in micro_ids], tokenizer.pad_token_id)
@@ -504,14 +617,18 @@ def train(config_path, outer, rollout_path, output_path):
                 batch['advantages'] = torch.tensor([advantages[i] for i in micro_ids], dtype=torch.float32)[:, None].expand(-1, response_width)
                 batch = {key: value.to(local) for key, value in batch.items()}
                 _, current = actor._forward_micro_batch(batch, temperature=1., compute_entropy=False)
-                loss, clipfrac, kl = compute_policy_loss(batch['old_log_probs'], current,
-                    batch['advantages'], batch['loss_mask'], cliprange=.2, dual_clip=3.)
+                loss, clipfrac, kl = masked_policy_objective(batch['old_log_probs'], current,
+                    batch['advantages'], batch['loss_mask'], loss_fn=compute_policy_loss)
                 # Only true nonfinite loss/gradient is invalid; magnitude/ratio diagnostics never stop this run.
                 finite = torch.tensor(int(torch.isfinite(loss)), dtype=torch.int32, device=local)
                 dist.all_reduce(finite, op=dist.ReduceOp.MIN)
                 if not finite.item(): raise FloatingPointError('Nonfinite actual actor loss')
-                (loss / budget.accumulation).backward()
-                metrics.append(dict(loss=float(loss.detach()), clip_fraction=float(clipfrac.detach()), old_policy_kl=float(kl.detach())))
+                micro_mass = sum(sum(rows[i]['response_info_mask']) for i in micro_ids)
+                weight = micro_loss_weight(micro_mass, mini_mass)
+                (loss * weight).backward()
+                metrics.append(dict(loss=float(loss.detach()), clip_fraction=float(clipfrac.detach()),
+                    old_policy_kl=float(kl.detach()), actual_policy_token_mass=micro_mass,
+                    local_minibatch_policy_token_mass=mini_mass, gradient_weight=weight))
             norm = clip_global_l2(wrapped, 1., diagnostic=False)
             optimizer.step(); writes += 1
             steps = {int(value['step'].item()) for value in optimizer.state.values() if 'step' in value}
@@ -520,7 +637,8 @@ def train(config_path, outer, rollout_path, output_path):
                 actual_adam_steps=20 * (outer - 1) + writes, writes_this_attempt=writes,
                 actual_learning_rate=optimizer.param_groups[0]['lr'], grad_norm=float(norm),
                 local_trajectories=len(ids), global_mini=128, local_micro=budget.local_micro,
-                gradient_accumulation=budget.accumulation, metrics=metrics, utc=utc()))
+                gradient_accumulation=budget.accumulation,
+                objective='mean_of_eight_rank_local_minibatch_policy_token_means', metrics=metrics, utc=utc()))
         if writes != 20: raise ValueError('Incomplete outer budget cannot advance scheduler/save latest')
         scheduler.step()
         rank_receipt = dict(rank=rank, outer=outer, new_adam_steps=writes, actual_adam_steps=20 * outer,
@@ -535,6 +653,7 @@ def train(config_path, outer, rollout_path, output_path):
         # A true OOM is a failed attempt, never a numeric skip or a completed outer.
         is_oom = isinstance(error, torch.cuda.OutOfMemoryError)
         atomic_json(attempt_dir / ('rank-%d-failure.json' % rank), dict(rank=rank, outer=outer,
+            run_id=config['run_id'], attempt_id=attempt[0],
             error_type=type(error).__name__, actual_cuda_oom=is_oom, writes_this_attempt=writes,
             restore_completed_outer=outer - 1, abandoned_unsaved_partial_writes=writes,
             cached_rollout_path=str(rollout_path), actor_version=old_version,
@@ -580,13 +699,16 @@ def main():
         import torch
         # Also record real initialization OOMs, before a synchronized attempt
         # directory/ledger exists. The controller may retry after this group exits.
+        config = read(remote(args.config))
+        attempt_id = config.get('actor_attempt_id', 'unspecified-' + uuid.uuid4().hex)
         failure = dict(event='NATIVE_ACTOR_PHASE_FAILURE', outer=args.outer,
+            run_id=config['run_id'], attempt_id=attempt_id,
             rank=int(os.environ.get('RANK', '-1')), error_type=type(error).__name__,
             actual_cuda_oom=isinstance(error, torch.cuda.OutOfMemoryError),
             cached_rollout_path=str(args.rollout), complete_outer=False, utc=utc())
         output = remote(args.output); output.mkdir(parents=True, exist_ok=True)
-        atomic_json(output / ('native-failure-outer-%04d-rank-%s-%s.json' %
-            (args.outer, failure['rank'], uuid.uuid4().hex)), failure)
+        atomic_json(output / ('native-failure-outer-%04d-attempt-%s-rank-%s.json' %
+            (args.outer, attempt_id, failure['rank'])), failure)
         print('SEARCH_G1_NATIVE_ACTOR_FAILURE=' + json.dumps(failure), flush=True)
         raise
 

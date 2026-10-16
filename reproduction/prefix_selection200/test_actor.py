@@ -1,9 +1,13 @@
 """Small CPU checks of authentic PPO inputs, full budgets and retry identity."""
 import copy
+import json
+from pathlib import Path
+import tempfile
 import unittest
 
-from .actor import (ActorBudget, SAMPLING_CONTRACT, _state_binding, group_advantages, learning_rate,
-                    oom_retry_plan, rank_plan, restore_metadata, tensor_batch, validate_record)
+from .actor import (ActorBudget, SAMPLING_CONTRACT, _state_binding, collect_oom_retry, group_advantages,
+                    learning_rate, masked_policy_objective, oom_retry_plan, rank_plan,
+                    micro_loss_weight, restore_metadata, tensor_batch, validate_record)
 
 
 def fixture():
@@ -32,6 +36,47 @@ def fixture():
 
 
 class ActorTests(unittest.TestCase):
+    def test_real_first_eos_is_retained_g5_outcome_not_a_fake_policy_token(self):
+        import torch
+        row = fixture(); row.update(response_token_ids=[], response_info_mask=[],
+            response_log_probs=[], strict_em=0, terminal_reason='natural_eos')
+        chunk = dict(request_id='eos', actual_request_token_ids=[11, 12], raw_generated_token_ids=[0],
+            selected_logprobs=[-.01], sampling=dict(temperature=1., top_p=1., top_k=-1, max_tokens=20, n=1))
+        row['behavior_turns'] = [dict(turn_index=0, actual_request_token_ids=[11, 12],
+            actual_sampling_chunks=[chunk], raw_generated_token_ids=[0], selected_logprobs=[-.01],
+            kept_token_count=0, prefix_cut=dict(kept_token_ids=[]),
+            observation_token_ids=[], correction_token_ids=[])]
+        row['sampling_journal'] = [chunk]
+        validate_record(row, 'v0')
+        batch = tensor_batch([row], 0)
+        self.assertEqual(batch['responses'].shape, (1, 1))
+        self.assertEqual(int(batch['loss_mask'].sum()), 0)
+        self.assertEqual(int(batch['attention_mask'].sum()), 2)
+        current = torch.tensor([[7.]], requires_grad=True)
+        def forbidden(*args, **kwargs): raise AssertionError('Zero-mass loss must not divide by zero')
+        loss, clip, kl = masked_policy_objective(current.detach(), current, current.detach(),
+                                                batch['loss_mask'], loss_fn=forbidden)
+        loss.backward()
+        self.assertEqual(current.grad.tolist(), [[0.]])
+        self.assertEqual((float(loss.detach()), float(clip), float(kl)), (0., 0., 0.))
+
+    def test_micro_fallback_preserves_unequal_length_token_mean_and_gradient(self):
+        import torch
+        mask = torch.tensor([[1, 1, 1], [1, 0, 0], [0, 0, 0], [1, 1, 0]])
+        values = torch.tensor([[1., 2., 3.], [4., 99., 99.], [99., 99., 99.], [5., 6., 99.]], requires_grad=True)
+        full = (values * mask).sum() / mask.sum()
+        full.backward(); expected_gradient = values.grad.clone(); values.grad = None
+        micro_losses = []
+        for start in (0, 2):
+            micro_mask = mask[start:start+2]; micro_value = values[start:start+2]
+            mass = int(micro_mask.sum())
+            micro_losses.append((micro_value * micro_mask).sum() / mass * micro_loss_weight(mass, int(mask.sum())))
+        reduced = sum(micro_losses); reduced.backward()
+        self.assertEqual(float(full.detach()), 3.5)
+        self.assertTrue(torch.equal(expected_gradient, values.grad))
+        self.assertEqual(float(reduced.detach()), float(full.detach()))
+        self.assertEqual(micro_loss_weight(0, 0), 0.)
+
     def test_native_prefix_context_and_probability_identity(self):
         row = fixture(); self.assertIs(validate_record(row, 'v0'), row)
         changed = copy.deepcopy(row)
@@ -92,6 +137,37 @@ class ActorTests(unittest.TestCase):
             restore_metadata(config, receipt, 4)
         changed = copy.deepcopy(receipt); changed['actual_adam_steps_per_rank'][7] = 39
         with self.assertRaises(ValueError): restore_metadata(config, changed, 3)
+
+    def test_parent_oom_collector_ignores_old_attempt_and_preserves_observed_writes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); attempt = 'a' * 32
+            config = dict(run_id='run', actor_attempt_id=attempt, official_model_dir='/mnt/model',
+                          grounding_probe_version='fixed0', actor_global_micro_batch_size=128)
+            (root / 'config.json').write_text(json.dumps(config))
+            rollout = root / 'rollout.json'
+            rollout.write_text(json.dumps(dict(run_id='run', outer=1, actor_version='run-official0')))
+            output = root / 'actor'; directory = output / 'outers' / ('outer-0001-attempt-' + attempt)
+            directory.mkdir(parents=True)
+            for rank in range(8):
+                rows = [dict(event='ACTUAL_RESTORE', rank=rank, outer=1)]
+                rows += [dict(event='ACTUAL_ADAM_WRITE', rank=rank, outer=1, opportunity=i,
+                    writes_this_attempt=i + 1, actual_adam_steps=i + 1) for i in range(3)]
+                (directory / ('rank-%d-updates.jsonl' % rank)).write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            (directory / 'rank-4-failure.json').write_text(json.dumps(dict(rank=4, outer=1,
+                run_id='run', attempt_id=attempt, cached_rollout_path=str(rollout), actual_cuda_oom=True)))
+            # An unrelated stale non-OOM failure is neither selected nor overwritten.
+            (output / 'native-failure-outer-0001-attempt-old-rank-0.json').write_text('{}')
+            result = collect_oom_retry(output, root / 'config.json', 1, rollout, attempt, phase_exit_code=1)
+            self.assertTrue(result['retry'])
+            self.assertEqual(result['observed_committed_partial_writes'], [3] * 8)
+            self.assertEqual(result['actor_global_micro_batch_size'], 64)
+            self.assertEqual(len(result['failures']), 1)
+            self.assertTrue((output / 'native-failure-outer-0001-attempt-old-rank-0.json').exists())
+            self.assertFalse((output / 'latest.json').exists())
+            (directory / 'rank-4-failure.json').unlink()
+            result = collect_oom_retry(output, root / 'config.json', 1, rollout, attempt, phase_exit_code=1)
+            self.assertEqual(result['status'], 'NON_OOM_FAILURE')
+            self.assertFalse(result['retry'])
 
 
 if __name__ == '__main__': unittest.main()
