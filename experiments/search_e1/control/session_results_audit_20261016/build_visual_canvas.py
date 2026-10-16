@@ -36,10 +36,10 @@ for name,tab in [('interactive.html','train'),('ranking.html','test'),('final-se
 # Keep established in-app URLs useful, preserving the previous served pages.
 served=D.parent/'training-and-fixed512-em-20261012-2245'
 if served.exists():
- backup=served/'backups'/'before-20261016-tree-ablation-refresh';backup.mkdir(parents=True,exist_ok=True)
+ backup=served/'backups'/'before-20261016-tree-final-refresh';backup.mkdir(parents=True,exist_ok=True)
  for name in ['interactive.html','ranking.html','final-seven.html']:
   dest=served/name
   if dest.exists() and not (backup/name).exists():shutil.copy2(dest,backup/name)
   shutil.copy2(D/name,dest)
-audit={'created_at_cst':datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).isoformat(),'canvas':str(p),'canvas_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'tabs':[v['key'] for v in figures],'self_contained':True,'raster_images':0,'remote_assets':0,'old_browser_pages_backed_up':str(served/'backups/before-20261016-tree-ablation-refresh'),'png_artifacts':[str(x) for x in O.glob('*.png')],'scope':'output figures and owned result viewer only; paper drawio not modified'}
+audit={'created_at_cst':datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).isoformat(),'canvas':str(p),'canvas_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'tabs':[v['key'] for v in figures],'self_contained':True,'raster_images':0,'remote_assets':0,'old_browser_pages_backed_up':str(served/'backups/before-20261016-tree-final-refresh'),'png_artifacts':[str(x) for x in O.glob('*.png')],'scope':'output figures and owned result viewer only; paper drawio not modified'}
 (D/'canvas-verification.json').write_text(json.dumps(audit,indent=2));print(json.dumps(audit))

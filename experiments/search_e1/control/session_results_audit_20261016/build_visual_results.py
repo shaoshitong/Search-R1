@@ -100,7 +100,7 @@ fig.suptitle('Training rollout EM',x=.065,y=.975,ha='left',fontsize=26,color=INK
 fig.text(.065,.931,STAMP+'  |  Native rollout EM; settings and recovery lineages kept separate.',color=MUTED,fontsize=12)
 fig.text(.065,.052,'Faint = each completed outer; bold = trailing5-outer mean. Missing data are gaps. Selected-question / tree-rollout EMs use different sampling distributions.',color=MUTED,fontsize=10.5)
 fig.text(.065,.027,'GiGPO51–200 includes source-bound historical scalars (12 points rechecked). BAPO / OPSD / E1 Archive use the labeled10/14 historical snapshot.',color=MUTED,fontsize=10.5)
-fig.text(.975,.931,'A / Tree / B / Co refreshed; other dates retained.',ha='right',color=MUTED,fontsize=10)
+fig.text(.975,.931,'Tree-Nested final200 refreshed; other dates retained.',ha='right',color=MUTED,fontsize=10)
 fig.savefig(OUT/'training-em-curves.png',dpi=165);fig.savefig(OUT/'training-em-curves.svg');plt.close(fig)
 
 panels=[]

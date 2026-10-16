@@ -54,8 +54,8 @@ for r in base['runs']:
         assert report['runs'][by_name[r['name']]] == r
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
 report['observed_report_at_cst'] = now.isoformat()
-report['plot_stamp'] = '4-session refresh · 2026-10-16 '+now.strftime('%H:%M')+' CST'
-report['viewer_subtitle'] = 'A/C1/C2与Tree-Nested于本次更新，B与CoSearch为今天12:54–12:57核查；其他setting保留原核查日期。训练rollout、固定512验证和51,713题终评分开。'
+report['plot_stamp'] = 'Tree final200 refresh · 2026-10-16 '+now.strftime('%H:%M')+' CST'
+report['viewer_subtitle'] = '本次更新Tree-Nested完整200轮及终评；A/C1/C2、B与CoSearch保留今天较早的核查数据；其他setting保留原日期。训练rollout、固定512验证和51,713题终评分开。'
 report['base_audit'] = evidence(D/'base-all-seven-results.json')
 report['updated_names'] = sorted(updated_names)
 report['addition_sources'] = sources
@@ -66,7 +66,7 @@ report['remote_jobs_changed'] = False
 # Keep the already validated final rows; add only complete, seven-source scores.
 final = read(D/'base-final-seven-table-data.json')
 final['created_cst'] = now.isoformat()
-final['observed_window_cst'] = 'Four sessions updated: '+report['observed_report_at_cst']+'; other rows retain prior source dates'
+final['observed_window_cst'] = 'Tree final200 products updated: '+report['observed_report_at_cst']+'; other rows retain prior source dates'
 added_finals = []
 for r in updates:
     f = r.get('final51713',{})
@@ -130,8 +130,8 @@ for r in updates:
         final['pending_display'].append({'label':f"Q-probe σ3 · Co会话 · {r['completed_iter']}/200",'status':'待终评'})
     if r['name'] == 'Tree nested branching fresh200' and not r.get('final51713',{}).get('complete'):
         final['pending_display'].append({'label':f"Tree-Nested · {r['completed_iter']}/200",'status':'待终评'})
-final['plot_footer'] = '本次追加Tree与A会话；B/CoSearch为今天稍早核查。其他终评保留原日期。'+co_note
-final['comparison_note'] = 'CoSearch双模型：检索top50后重排取5；检索计算预算与其他setting不同，排名不等于同预算算法优劣。'
+final['plot_footer'] = '本次新增Tree-Nested iter200终评；其余实验保留各自核查日期。'+co_note
+final['comparison_note'] = 'CoSearch双模型：top50重排取5，检索预算不同。Tree-Nested终评采用8个常驻TP1 worker；batch/kernel形状变化不保证逐位一致。'
 final['pending'] = [x for x in final.get('pending',[]) if not (co['final51713'].get('complete') and x['experiment'].startswith('CoSearch'))]
 for r in final['ours']:
     assert r['source_counts'] == COUNTS
@@ -142,7 +142,7 @@ final['checks'] = [{'experiment':r['experiment'],'dataset_counts_sum':51713,
                    'macro_recomputed_from_unrounded_dataset_em':True} for r in final['ours']]
 (D/'final-seven-table-data.json').write_text(json.dumps(final,ensure_ascii=False,indent=2)+'\n')
 def pct(v):return '—' if v is None else f'{v*100:.2f}%'
-lines = ['完整51,713题终评；七集平均为等权macro。A/Tree/B/CoSearch于10月16日更新，其他行保留原核查日期。','',
+lines = ['完整51,713题终评；七集平均为等权macro。本次新增Tree-Nested iter200，其他行保留原核查日期。','',
          '| 实验／checkpoint | '+' | '.join(final['dataset_labels'])+' | 七集平均 |',
          '|---|'+'---:|'*8]
 for r in final['rows']:
@@ -157,3 +157,9 @@ receipt = {'updated_names':sorted(updated_names),'new_final_rows':added_finals,
            'created_cst':now.isoformat(),'read_only':True}
 (D/'merge-verification.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\n')
 print(json.dumps(receipt,ensure_ascii=False))
+# Keep the compact status table bound to the same figure inputs.
+summary={'read_only':True,'created_cst':now.isoformat(),'observed_times_by_input':{p.name:read(p).get('observed_at_cst') for p in source_by_run.values()},'updated_runs':[],'other_settings_not_refreshed_this_turn':True}
+for r in updates:
+    scored=[x for x in r['fixed512'] if x.get('em') is not None]
+    summary['updated_runs'].append({**{k:r.get(k) for k in ['name','session','completed_iter','target_iter','train_latest_em','train_recent10_mean','status','observed_at_cst']},'latest_fixed512':max(scored,key=lambda x:x['iter']) if scored else None,'final51713':r.get('final51713')})
+(D/'updated-session-summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2)+'\n')

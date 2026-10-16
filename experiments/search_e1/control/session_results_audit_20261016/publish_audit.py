@@ -30,7 +30,7 @@ with tempfile.TemporaryDirectory(prefix='session-audit-index-') as tmp:
   blob=run(['hash-object','-w','--stdin'],input=raw).decode().strip()
   run(['update-index','--add','--cacheinfo','100644',blob,prefix+name],env=env)
  tree=run(['write-tree'],env=env).decode().strip()
- commit=run(['commit-tree',tree,'-p',parent],input=b'Refresh Recursive B and CoSearch experiment result figures\n').decode().strip()
+ commit=run(['commit-tree',tree,'-p',parent],input=b'Add Tree-Nested final200 training, dev512 and seven-dataset results\n').decode().strip()
 run(['push','origin',commit+':refs/heads/'+branch])
 remote=run(['ls-remote','origin','refs/heads/'+branch]).decode().split()[0];assert remote==commit
 run(['fetch','origin',branch]);assert run(['rev-parse','FETCH_HEAD']).decode().strip()==commit
