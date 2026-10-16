@@ -353,6 +353,10 @@ def _build_actor(model_dir, budget, device):
     tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True, trust_remote_code=False)
     policy = AutoModelForCausalLM.from_pretrained(model_dir, local_files_only=True, torch_dtype=torch.float32,
         attn_implementation='flash_attention_2', trust_remote_code=False)
+    # Explicitly pass reset RoPE positions into HF's varlen dispatch. Relying on
+    # a version-specific default attention forward could join packed examples.
+    from verl.models.transformers.monkey_patch import apply_monkey_patch
+    apply_monkey_patch(policy.config, verbose=False)
     cast_preserving_qwen_rope(policy, torch.float32)
     policy.config.use_cache = False
     policy.gradient_checkpointing_enable(gradient_checkpointing_kwargs={'use_reentrant': False})
