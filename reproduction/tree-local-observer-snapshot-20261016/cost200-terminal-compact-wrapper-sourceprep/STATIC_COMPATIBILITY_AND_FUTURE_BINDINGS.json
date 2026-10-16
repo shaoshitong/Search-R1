@@ -1,0 +1,162 @@
+{
+  "schema": "terminal200_cost_wrapper_static_sourceprep_v1",
+  "scope": "Static source preparation only; no experiment outputs or future input hashes generated.",
+  "parent_source_commit": "79051ec0da112d9bd52fef7aead793af0a0cb5d1",
+  "parent_template_file": "work/tree-speed-repair-20261008/nested-local-observer-snapshot-source/reproduction/tree-local-observer-snapshot-20261016/cost-receipt-compact-wrapper/FUTURE_COST_RECEIPT_COMPACT_WRAPPER.template.command.txt",
+  "parent_template_bytes": 10753,
+  "parent_template_sha256": "9f1d1f3aef762d0aa43aa49ef8b853d780e5a91018e26721e6ddfc7b58200d78",
+  "terminal_template_file": "work/tree-speed-repair-20261008/cost200-terminal-compact-wrapper-sourceprep/COST200_TERMINAL_COMPACT_WRAPPER.template.command.txt",
+  "terminal_template_bytes": 10971,
+  "terminal_template_sha256": "b47da233604d78cc7590c987cae977657519ceb81792fa1de54f0c036f1554cb",
+  "minimal_changes": [
+    "Restrict this isolated template to actual completed/target200, predecessor199 and the metrics-complete core200 terminal status.",
+    "Replace candidate200_detail_separately_available_for_CUM201 with candidate200_detail_separately_available_for_terminal_supplement and training201_entry_claimed=false."
+  ],
+  "unchanged": [
+    "All17 parameter placeholders",
+    "finite allow_nan=False encoding",
+    "compact separators and final newline",
+    "100000-byte receipt limit",
+    "immutable writes",
+    "dynamic CUM field-part decoding",
+    "candidate199 joined once and candidate200 excluded from original CUM200",
+    "all accounting/scalars/unknown values",
+    "two mirror byte/SHA readback logic"
+  ],
+  "actual_placeholder_count": 17,
+  "explicit_parameter_placeholders": [
+    {
+      "placeholder": "__OUTER__",
+      "historical168_value": "168",
+      "meaning": "Actual new completed outer; numeric substitution at n only."
+    },
+    {
+      "placeholder": "__PREVIOUS_OUTER__",
+      "historical168_value": "167",
+      "meaning": "Actual immutable predecessor; numeric substitution at prev only."
+    },
+    {
+      "placeholder": "__PREVIOUS_CUM_FILE__",
+      "historical168_value": "CUMULATIVE_COST_THROUGH167.json",
+      "meaning": "Original predecessor CUM filename relative to BASE."
+    },
+    {
+      "placeholder": "__PREVIOUS_CUM_SHA256__",
+      "historical168_value": "27e668df5f7d9744a1e0974807629beab3e1e17a81a514a8914414374bfc7861",
+      "meaning": "Actual predecessor CUM raw-byte SHA256."
+    },
+    {
+      "placeholder": "__PREVIOUS_CANDIDATE_FILE__",
+      "historical168_value": "candidate_cost_backfill/CANDIDATE_OUTER0167.json",
+      "meaning": "Actual predecessor candidate file relative to BASE."
+    },
+    {
+      "placeholder": "__PREVIOUS_CANDIDATE_SHA256__",
+      "historical168_value": "926c34a240a9c73111497b6bb18532c7fb689e6834bc67821448d4936aedd984",
+      "meaning": "Actual predecessor candidate raw-byte SHA256."
+    },
+    {
+      "placeholder": "__CURRENT_CUM_FILE__",
+      "historical168_value": "CUMULATIVE_COST_THROUGH168.json",
+      "meaning": "Actual current CUM filename relative to BASE."
+    },
+    {
+      "placeholder": "__CURRENT_CUM_SHA256__",
+      "historical168_value": "d79e8ce33b102527175687646d98b4358341136c6e1d9683313cc7109c16676c",
+      "meaning": "Actual current CUM raw-byte SHA256."
+    },
+    {
+      "placeholder": "__FIRST_FULL_POLL_SHA256__",
+      "historical168_value": "32a16f9ff86f798f47b53305be9e85ca3a43cdf9ea5d2e4bbefed41314124bdf",
+      "meaning": "Original first FULL-bound poll SHA256; do not invent or substitute a later poll."
+    },
+    {
+      "placeholder": "__CURRENT_NATIVE_READBACK_SHA256__",
+      "historical168_value": "ab7a76ecec83bb38584088ad07fe444bad2545f2ff371d8f811c7e086a911447",
+      "meaning": "Actual current native metadata readback SHA256 bound by FULL."
+    },
+    {
+      "placeholder": "__FIRST_MIRROR_READBACK_JSON__",
+      "historical168_value": "/tmp/cost168-mirror-readback1.json",
+      "meaning": "Existing actual first mirror-readback JSON path; the original read and unlink operations are retained."
+    },
+    {
+      "placeholder": "__PREVIOUS_COST_FILE__",
+      "historical168_value": "COST_OUTER167_LOCAL_RECEIPT.json",
+      "meaning": "Actual immutable predecessor COST receipt filename relative to BASE."
+    },
+    {
+      "placeholder": "__PREVIOUS_COST_SHA256__",
+      "historical168_value": "79dd18ff3036a08002f6b63a26e8c86fa01e106da3890e201b879d7d2ebd03ca",
+      "meaning": "Actual immutable predecessor COST receipt raw-byte SHA256."
+    },
+    {
+      "placeholder": "__PUBLISHED_STATUS__",
+      "historical168_value": "COST168_PUBLISHED_SECOND_REAL_BYTES_SHA_MIRROR_READBACK_COMPLETE",
+      "meaning": "Original progress-output label with the actual selected new boundary."
+    },
+    {
+      "placeholder": "__PREVIOUS_CANDIDATE_JOINED_KEY__",
+      "historical168_value": "candidate167_joined_once",
+      "meaning": "Use candidate<prev>_joined_once for both output label and existing receipt lookup."
+    },
+    {
+      "placeholder": "__CURRENT_CANDIDATE_FOR_NEXT_KEY__",
+      "historical168_value": "candidate168_for169",
+      "meaning": "Terminal progress-output label candidate200_for_terminal_supplement; does not claim CUM201 or actual training201."
+    },
+    {
+      "placeholder": "__CURRENT_DEV_NULL_KEY__",
+      "historical168_value": "no_dev168",
+      "meaning": "Progress-output label no_dev<n>; the actual dev-is-None expression remains unchanged."
+    }
+  ],
+  "terminal_future_binding_rules": {
+    "__OUTER__": "200",
+    "__PREVIOUS_OUTER__": "199",
+    "__PREVIOUS_CUM_FILE__": "CUMULATIVE_COST_THROUGH199.json",
+    "__PREVIOUS_CANDIDATE_FILE__": "candidate_cost_backfill/CANDIDATE_OUTER0199.json",
+    "__CURRENT_CUM_FILE__": "CUMULATIVE_COST_THROUGH200.json",
+    "__PREVIOUS_COST_FILE__": "COST_OUTER199_LOCAL_RECEIPT.json",
+    "__PUBLISHED_STATUS__": "COST200_PUBLISHED_SECOND_REAL_BYTES_SHA_MIRROR_READBACK_COMPLETE",
+    "__PREVIOUS_CANDIDATE_JOINED_KEY__": "candidate199_joined_once",
+    "__CURRENT_CANDIDATE_FOR_NEXT_KEY__": "candidate200_for_terminal_supplement",
+    "__CURRENT_DEV_NULL_KEY__": "no_dev200",
+    "all_SHA256_values": "Take actual raw-file SHA256 only when inputs exist. No future SHA256 values are provided.",
+    "__FIRST_MIRROR_READBACK_JSON__": "Actual first dynamic-ref mirror bytes/SHA readback manifest, unique to the authorized200 run."
+  },
+  "static_compatibility": {
+    "appender_file": "work/tree-speed-repair-20261008/nested-local-cost-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/append_nested_local_costs.py",
+    "appender_accepts_terminal_without_actual201": true,
+    "appender_reason": "actual_inputs applies actual_next_outer_entered requirement only when step<target; driver.next_step200+1 is saved native cursor.",
+    "candidate_collector_file": "work/tree-speed-repair-20261008/nested-local-cost-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/backfill_nested_candidate_costs.py",
+    "candidate_collector_range": "20<=first_outer<=last_outer<=200; completed_pin uses actual_inputs.",
+    "requires_ROOT_FULL200": false,
+    "requires_actual_training201": false,
+    "requires_final51713_completion": false
+  },
+  "future_actual_input_requirements": [
+    "Existing immutable CUM199, COST199 and candidate199, with actual SHA256 bindings and unchanged original bytes.",
+    "Actual FULL200 target/completed200 with status ACTUAL_FULL_OUTER200_NATIVE200_COMPLETE_FINAL_PHASE_OBSERVED, full metric step200 and finite timing_s/step; original bound first-FULL poll/native/resource bytes and SHA256.",
+    "Actual native COMPLETE eight-rank finite metadata, actual scheduler200 and saved driver cursor201; rank/Adam/writes must come from actual FULL/native inputs.",
+    "Completed matching Controller/audit/config source identity for one authorized candidate200 scalar aggregation; original H10018 control path only.",
+    "Published appender200 creates original immutable CUM200 with rows1..200 and candidate199 joined once, candidate200 not joined.",
+    "Existing backfill collector200 publishes independent candidate200/index/registry; rates200 cumulative-boundary wording must say terminal supplement instead of future CUM201.",
+    "Actual rates200 and dynamic complete CUM/index/part refs read from the outputs; first real primary/two-mirror bytes manifest; bind all17 placeholders with actual values then execute this isolated terminal template only after separate authorization.",
+    "Existing final candidate entry3e05dfd then uses original immutable CUM200 and actual registry including200; it writes separate FINAL supplement and preserves CUM200."
+  ],
+  "future_CLI": {
+    "append200": "python3 -B work/tree-speed-repair-20261008/nested-local-cost-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/append_nested_local_costs.py --base outputs/tree-nested-branch-handoff-20261013 --receipt FULL_OUTER200_PROGRESS_RECEIPT.json",
+    "candidate200": "env TREE_MGMT_CONTROL_PATH=/tmp/tree-mgmt-3fw9a1ab/control python3 -B work/tree-speed-repair-20261008/nested-local-cost-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/backfill_nested_candidate_costs.py --base outputs/tree-nested-branch-handoff-20261013 --ssh-helper work/tree-speed-repair-20261008/ssh_retained18.py --first-outer 200 --last-outer 200",
+    "terminal_wrapper": "Bind the exact17 placeholders in COST200_TERMINAL_COMPACT_WRAPPER.template.command.txt to actual values, then execute the rendered command from the workspace root with /bin/zsh -f -c.",
+    "separate_final_candidate200": "python3 -B work/tree-speed-repair-20261008/nested-final-candidate-cost-fix-source/reproduction/tree-eval-resume-20261013/local-control-backup/finalize_nested_candidate_costs.py --base outputs/tree-nested-branch-handoff-20261013 --cumulative-sha256 ACTUAL_CUM200_RAW_FILE_SHA256 --registry-sha256 ACTUAL_REGISTRY_WITH_CANDIDATE200_SHA256"
+  },
+  "executed": false,
+  "ssh_called": false,
+  "tests_or_reviews_performed": false,
+  "runtime_sources_modified": false,
+  "existing178_or_other_cost_outputs_modified": false,
+  "final_candidate_entry_modified": false,
+  "future200_pins_invented": false,
+  "publication_status": "LOCAL_ISOLATED_SOURCE_PREP_AWAITING_PARENT_PERSISTENT_GIT_PUBLICATION"
+}
