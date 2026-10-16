@@ -55,3 +55,13 @@ CPU准备成功后，仅向旧owned pipeline精确PID/birth发一次pidfd SIGTER
 首轮selected实际混合405/512=.791015625，soft reward均值.6579550221154932。正常actor实际统计全对43组、全错64组、混合405组：虚拟0统计组正好43，synthetic_actor_trajectories0、rawreward未改；全对组平均advantage=.4041532957276633，全错/混合平均advantage仅浮点误差量级约0，证明新归一化已接入真实生产。统计JSON SHA388bf7b28f8e7585ff5177f6e0b1c6e2b40900368b7fabb44643cf74d065c6a7。
 
 首两个实际推进及首完整正常outer已验证；总目标仍200，正常继续同pipeline，探针首次更新待第10轮，更新轮actualEM筛选尚未实际到达，不能用首普通轮冒充周期验收。
+
+## 连续五轮、dev512与下一轮实际推进（2026-10-17 03:38:55 Shanghai）
+
+同一run387d/ex90ae/source31f、pipeline1736370/birth625571803实际完整1..5，4rank各100次成功返回actor Adam计一次100、scheduler5；第5轮joint SHA c1d312a59b82f614d1602194b0ecd36c4d35b3d5116d5bf2c7e7ea6380eafae5。当前同一pipeline已进入outer6 actor：12800条prefix与2560条continuation均四rank完整，捕获时第6轮返回Adam为[0,0,0,0]、inflight未知，不将第6轮提前算完整。连续五轮与下一轮真实流程推进已满足，继续同进程至200。
+
+第5轮既定dev512完整结果为strict EM118/512＝23.046875%，F1 .2888516865079365；NQ63/256＝24.609375%、F1 .3357018849206349，HotpotQA55/256＝21.484375%、F1 .24200148809523808。QA metadata SHA05520a85768d35ced42ef730d9789af31c1195e128c055f1923596b1d3245aa6。此处仅读取原定QA已产生的scalar/hash，没有追加评测或模型读取。
+
+前五轮选中训练题真实混合数分别405、414、400、400、396，总计2015/2560＝78.7109375%；soft reward窗口均值.6722150369687006，逐轮均值范围[.6579550221154932,.7060223342923564]。全对零锚点统计累计260组，原reward不改、synthetic actor trajectory为0。逐轮结果见reproduction/reports/a800-prefix5-p10-first-five-2026-10-17.json及同名.md。
+
+这些轮均为预测Top512普通轮；在线探针仍0 Adam，首次周期更新在outer10，才会使用真实混合优先选题并对全部2560题G5训练50次Adam/LR5e-6。不能将首五轮生产结果当作第10轮周期逻辑已实际验收。只读原件a800-actorhidden-prefix5-p10-native-observation-1792179535254008000.json，SHAe706405405621a0121d6f65120e40d329e49fc5091da0bc39c373dcf95df5da4。
