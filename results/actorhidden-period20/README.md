@@ -30,3 +30,12 @@ The pipeline then FAILED1:0 in storage.validate_base because a legacy10-probe-wr
 Full checkpoint1 independently read/CPU loaded: proofSHA79c15230ac8881294ae6620fa8408448ad3218aae0cc6ce14ea5d7bbaabc2217, actor20/rank, probe0. All356 original process births/cgroup/ownedGPU gone;31 originalinode logsfullSHA retained, terminalproofSHAda37e96e9c4250e0c14831182c109241159a73307147eb60862503b80e1379e2. Native job was later purged; the original actualFAILED observation is retained separately from the new unavailablequery.
 
 Recovery namespace resume1 imports the complete joint1/HF/Adam/scheduler/RNG/probe0 and poolcursor5120/next2, same logicalrun; no officialreset or rerunning1. Actual GPU restore and resumed2–6+7 acceptance remain pending until observed. Runtime source before the failure remains immutable1f25965f.
+
+
+## Imported-history retention correction
+
+3424 actually restored joint1 and completed joint2/actor40 per rank/probe0. It then failed in the legacy previous-snapshot cleanup rule, because authentic imported snapshots retain their source absolute paths. Full joint2 independently read/CPU loaded (proofSHAd17a55b176cda932bf75618598bb92f6c64cd08cafc894a72c3daaa4bbaf091a); all342 owned births/cgroup/GPUgone and31 originalinode logsfullSHA retained, terminalproofSHA24dd4d41974c4e8705c637e3c5448abbc9acb1b5950473ab55441add2a2a50bf. Neither failure wasOOM or a human stop, and neither valid outer is rerun.
+
+Imported history is now excluded from local snapshot pruning. The stopped source2 dry plan passed, selecting only8 current-namespace consumed hidden shards/30723277824B and deleting nothing. After a valid scientific joint commit, housekeeping failures now record a warning and preserve assets instead of cancelling training. Core restore/actualupdates/lossgrad/save checks still run. Recovery resume2 imports complete2 and continues3; actualGPU/five-round3–7+8 acceptance pending until observed.
+
+The separate native checkpoint backup worker/control support actor20N/probe100floor(N/20), immutable snapshot tensors, sourceCPU fullSHA proof and independently read destination SHA. Consumed native-hidden mmap caches are excluded; original token/label/prefix/PPO records stay in the backup.20MiB/s/128GiB ordinary reserve/h100-10 independent ext4/no Macmodel transit. Backup is pending until an actual milestone proof and full copy result exist. This does not alter the stopped old5cba backup worker or the frozen training runtime.

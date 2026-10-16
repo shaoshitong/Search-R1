@@ -345,7 +345,17 @@ def run(base):
                            'outer-%06d-validation' % outer)
             # Only completed run-owned derived features are removable; retain tokens/labels.
             from .storage import prune_completed
-            prune_completed(base, outer)
+            try:
+                prune_completed(base, outer)
+            except Exception as error:
+                # The scientific joint checkpoint is already committed. A
+                # housekeeping/ownership mismatch preserves files and reports
+                # a warning; it must not cancel valid actor/probe training.
+                import traceback
+                once(root/'storage-warning.json',dict(run_id=c['run_id'],outer=outer,
+                    error=repr(error),traceback=traceback.format_exc(),
+                    scientific_joint_complete=True,training_continues=True,
+                    source_assets_preserved=True))
         for ordinal, pending in list(pending_qa.items()):
             validation(int(ordinal), pending['model'], pending['evaluation_config'],
                 base/'validation-retries'/('outer-%06d-%s'%(int(ordinal),uuid.uuid4().hex)),

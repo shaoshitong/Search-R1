@@ -182,6 +182,10 @@ def planned_assets(base, config, outer, root, joint, update, references):
                 raise ValueError('Only declared selected-prefix feature tensors may be pruned')
             add(score/row['file'], row, 'consumed_selected_official_encoder_features')
     previous = outer-1
+    # Imported history keeps authentic SOURCE absolute paths. It is outside
+    # this execution namespace and must never be pruned as a local snapshot.
+    if previous <= config.get('resume_joint',{}).get('completed_outer',0):
+        previous=0
     if previous > 0 and previous not in MILESTONES:
         old_root = base/'outers'/('outer-%06d'%previous)
         old_complete = old_root/'complete.json'
