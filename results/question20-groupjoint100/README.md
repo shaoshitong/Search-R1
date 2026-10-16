@@ -1,0 +1,15 @@
+# Fresh question+20 trajectory and G5 mixed joint probe
+
+Authorized2026-10-16. Start a new probe from official copiedQwen block35 plus a fresh standard Linear, with fresh Adam/RNG/update0. No earlier learned probe checkpoint or optimizer is imported. The official actor/encoder remains frozen Qwen2.5-3B-Instruct revisionaa8e72537993ba99e69dfaafa59ed015b17504d1.
+
+Train100epochs. Each epoch uses one original saved5120-question G5 batch: data sources1..70, then1..30. No new rollout or retrieval. Actual question/context token IDs plus the same trajectory first20 retained policy tokens enter the frozen encoder inside each training batch. Capture index27 post-block and detach; the head reads question pluspolicy representations, Qmax273/S293, copiedblock35 and maskedflatten to one logit. Do not pre-encode a whole epoch. Consumed features stay in rank-local CPU RAM until the post-update training-set evaluation, then are released; no disk feature cache is written.
+
+For each original ownG5, train both mean per-trajectory BCEWithLogits(z,c) and mean group BCE with weight1. The mixed event is0<sum(ownstrictEM)<5, includingK1. The group score is1-prod(p)-prod(1-p). Stable32-pattern log-event algebra preserves the gradient without probability clipping. See [mathematical derivation](../../DERIVATION_PACKAGE.md).
+
+Eight ranks, no gradient accumulation. One update contains51 or52 whole questions (255 or260 trajectories);80 and20 such updates give5120G5 and the average global trajectory batch256. Each rank receives6 or7 whole G5 per update,640questions/3200trajectories per epoch. Scale each local mean by8*local_questions/global_questions before DDP mean reduction. There are100 real Adam updates/rank/epoch and10000 in total. Learning rate applied at actualupdate t=0..9999 is3e-6+(3e-5-3e-6)/2*(1+cos(pi*t/9999)), with exact first3e-5/last3e-6 and no warmup.
+
+After each epoch, the same post-update head evaluates the full own5120G5 batch and unchanged fixed512G5 diagnostic. Report separate trajectory/group/total losses, group ordinary and balanced accuracy, and both class recalls at unchangedthreshold0.5. The test feature manifest remainsa125fc5af90e34fcd728c82077d9d62070a78d5ef703ac11f3748687d088e64f. Train batches differ, so their metrics are not a fixed-training-set learning curve. Mathematical consistency and CPU tests do not establish improved quality.
+
+All checkpoints, inputs, tensors, full predictions and original trajectories remain remote. Epochlatest includes head/Adam/eight-rank RNG/actual cosine clock/source schedule. Immutable complete checkpoints are retained every10epochs through100. Original source batches and completed replay70 artifacts remain read-only. NoGPUforward gate, new baseline, calibration or foreign-process termination is added.
+
+Implementation phase: meaningful loss/gradient, group sampler/DDP scaling, inline context/mask and controller CPU checks passed. Native execution and first actual complete epoch are pending; do not treat this document or deployment as training completion.
