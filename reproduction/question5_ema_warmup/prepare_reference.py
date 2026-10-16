@@ -23,7 +23,7 @@ PART_BYTES = 128 * 1024**2
 
 
 def progress(output, stage, **values):
-    result = dict(stage=stage, checked_unix=time.time(), **values)
+    result = dict(values, stage=stage, checked_unix=time.time())
     temporary = Path(output) / 'PROGRESS.json.partial'
     with temporary.open('wb') as handle:
         handle.write(canonical(result) + b'\n')
