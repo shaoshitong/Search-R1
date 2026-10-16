@@ -26,7 +26,7 @@ for name,value in p['files'].items():
 publication=dict(source_commit=p['source_commit'],remote_source_files=files,checked_unix=time.time())
 with (root/'source-publication.json').open('x') as f:json.dump(publication,f,indent=2)
 with (root/'launch-claim.json').open('x') as f:json.dump(dict(source_commit=p['source_commit'],created_unix=time.time()),f)
-argv=['/usr/bin/python3',str(root/'assets.py'),'--root',str(root),'--plan',str(root/'probe-asset-plan.json'),'--proxy','http://127.0.0.1:17898']
+argv=['/usr/bin/python3',str(root/p['entry']),'--root',str(root),'--plan',str(root/p['plan_name']),'--proxy','http://127.0.0.1:17898']
 with (root/'download.log').open('ab') as out:
  child=subprocess.Popen(argv,stdin=subprocess.PIPE,stdout=out,stderr=out,start_new_session=True)
  child.stdin.write((token+'\n').encode());child.stdin.close()
@@ -39,6 +39,7 @@ print(json.dumps(receipt))
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--source-commit',required=True)
+    p.add_argument('--kind',choices=('probe','canonical'),default='probe')
     p.add_argument('--receipt',required=True);a=p.parse_args()
     here=Path(__file__).resolve().parent
     head=subprocess.check_output(['git','-C',str(here),'rev-parse','HEAD'],text=True).strip()
@@ -47,9 +48,13 @@ def main():
         'refs/heads/codex/qprobe-prefix20-hpc3-4gpu-20261016'],text=True).split()[0]
     if head!=a.source_commit or remote!=head:raise ValueError('LATEST_SOURCE_NOT_PUBLISHED')
     token=Path.home().joinpath('.cache/huggingface/token').read_text().strip()
-    payload=dict(token=token,root=ROOT,source_commit=head,
+    entry='assets.py' if a.kind=='probe' else 'canonical_assets.py'
+    plan_name='probe-asset-plan.json' if a.kind=='probe' else 'canonical-asset-plan.json'
+    names=('assets.py',plan_name) if a.kind=='probe' else ('assets.py','canonical_assets.py',plan_name)
+    payload=dict(token=token,root=ROOT if a.kind=='probe' else ROOT.rsplit('/',1)[0]+'/canonical-data',source_commit=head,
+                 entry=entry,plan_name=plan_name,
                  files={name:base64.b64encode((here/name).read_bytes()).decode()
-                        for name in ('assets.py','probe-asset-plan.json')})
+                        for name in names})
     result=subprocess.run(['ssh','-T','-o','BatchMode=yes','-o','ConnectTimeout=10',
         'hkust2','python3 -c '+shlex.quote(REMOTE)],input=json.dumps(payload),
         text=True,capture_output=True,timeout=40)
