@@ -10,31 +10,46 @@ import time
 import urllib.request
 import uuid
 
-from reproduction.prefix20_online.launch import read, sha, once, publish, query, native_allocation
+from reproduction.prefix20_online.launch import read, sha, once, publish
+from .contract import WORLD, PREFIX_TOKENS, HIDDEN_CAPTURE_CONTRACT
+from .a800_runtime import query, native_allocation, UUIDLocks
+from . import a800_runtime
 
-PREFIX = '/mnt/data/shaoshitong/search-g1-prefix-selection200-'
+PREFIX = a800_runtime.PREFIX
 
 
 def validate_config(c, base):
     if c['base'] != str(base) or not str(base).startswith(PREFIX):
         raise ValueError('Use the isolated remote prefix-selection namespace')
     required = dict(outers=200, candidate_questions=5120, selected_questions=512,
-                    responses_per_question=5, prefix_policy_tokens=20, exploration_questions=0,
+                    responses_per_question=5, prefix_policy_tokens=PREFIX_TOKENS, exploration_questions=0,
                     probe_learning_rate=1e-6, probe_epochs_per_update=1, probe_update_period=20,
                     probe_updates_per_period=100, actor_hidden_native=True, probe_global_batch_average=256,
-                    actor_global_mini_batch=128, actor_ppo_epochs=1, world_size=8)
+                    actor_global_mini_batch=128, actor_ppo_epochs=1, world_size=WORLD)
     if any(c.get(k) != v for k, v in required.items()):
         raise ValueError('The approved prefix selection or training budget differs')
-    if c['probe_source_sha256'] != '8df6bd445945ffbbf6a94171f24934495f0ce3ff17a3d2577bbd53d4b8fefd56':
-        raise ValueError('Initialize from the best retained warmup CP100')
+    import re
+    if (not re.fullmatch('[0-9a-f]{64}', c['probe_source_sha256'])
+            or type(c.get('probe_source_epoch')) is not int or c['probe_source_epoch'] < 1
+            or c.get('probe_source_model_kind') != 'ema'
+            or c.get('hidden_capture_contract') != HIDDEN_CAPTURE_CONTRACT
+            or c.get('independent_encoder_forward') is not False):
+        raise ValueError('Bind an explicitly retained complete EMA source and native question5 capture')
     if c['model_revision'] != 'aa8e72537993ba99e69dfaafa59ed015b17504d1':
         raise ValueError('Official actor/ref/encoder revision differs')
-    if len(set(c['physical_gpu_uuids'])) != 8:
-        raise ValueError('Eight actual physical GPUs are required')
+    if len(set(c['physical_gpu_uuids'])) != WORLD:
+        raise ValueError('Four actual physical training GPUs are required')
+    if (len(c.get('physical_gpu_indices', [])) != WORLD
+            or c.get('auxiliary_gpu_indices') != [5, 6]
+            or len(c.get('auxiliary_gpu_uuids') or []) != 2
+            or set(c['physical_gpu_indices']) & {5, 6}
+            or len(set(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])) != 6
+            or c.get('probe_source_run') != '8af926a49630428097b94027864da68b'):
+        raise ValueError('Bind actual four training/two auxiliary UUIDs and the approved warmup source')
     for key in ('environment_root', 'model_dir', 'official_model_dir', 'encoder_model_dir',
                 'canonical_train', 'source_question_pool', 'probe_source_checkpoint',
                 'fixed_test_features', 'retrieval_index', 'retrieval_corpus', 'grounding_manifest'):
-        if not str(c[key]).startswith(('/mnt/', '/dataset/')):
+        if not str(c[key]).startswith(('/data/',)):
             raise ValueError('All large inputs and outputs must stay remote: ' + key)
     return c
 
@@ -45,49 +60,7 @@ def config(base):
 
 
 def submit(base):
-    import fcntl
-    base = Path(base).resolve()
-    prep = base / 'preparation'
-    with (prep / 'submit-control.lock').open('a') as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        if (prep / 'submit-intent.json').exists():
-            return query(base)
-        c = config(base)
-        launcher = prep / 'native-launch.sh'
-        if launcher.exists() or (prep / 'submit-receipt.json').exists():
-            raise RuntimeError('Partial submission requires reconciliation, never blind replay')
-        python = str(Path(c['environment_root']) / 'bin/python')
-        lines = ['#!/bin/bash', 'set -euo pipefail',
-                 'export PATH=' + shlex.quote(str(Path(python).parent) + ':/usr/local/bin:/usr/bin:/bin'),
-                 'export PYTHONPATH=' + shlex.quote(str(base / 'repo')),
-                 'export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7',
-                 'unset PYTHONHOME RAY_ADDRESS HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy',
-                 'exec ' + shlex.join([python, '-m', 'reproduction.prefix_selection200.launch', 'run', '--base', str(base)])]
-        with launcher.open('x') as handle:
-            handle.write('\n'.join(lines) + '\n'); handle.flush(); os.fsync(handle.fileno())
-        launcher.chmod(0o700)
-        command = ['sbatch', '--parsable', '--partition=gpu', '--oversubscribe', '--nodelist=h100-8',
-            '--nodes=1', '--ntasks=1', '--cpus-per-task=96', '--mem=512G', '--gres=gpu:8',
-            '--time=0', '--signal=B:TERM@60', '--export=NONE',
-            '--job-name=g1-prefix200-' + c['run_id'][:12], '--comment=g1-prefix200:' + c['run_id'],
-            '--chdir=' + str(base), '--output=' + str(base / 'logs/native-%j.log'),
-            '--error=' + str(base / 'logs/native-%j.log'), str(launcher)]
-        once(prep / 'submit-intent.json', dict(run_id=c['run_id'], source_commit=c['source_commit'],
-            config_sha256=sha(prep / 'launch-config.json'), command=command,
-            job_name='g1-prefix200-' + c['run_id'][:12], comment='g1-prefix200:' + c['run_id'], created_unix=time.time()))
-        try:
-            result = subprocess.run(command, text=True, capture_output=True, timeout=30)
-            receipt = dict(returncode=result.returncode, stdout=result.stdout, stderr=result.stderr,
-                status='REJECTED_NO_REPLAY', intent_sha256=sha(prep / 'submit-intent.json'))
-            if result.returncode == 0:
-                job = result.stdout.strip().split(';')[0]
-                receipt.update(status='SUBMITTED' if job.isdecimal() else 'UNKNOWN_NO_REPLAY')
-                if job.isdecimal():
-                    receipt['job_id'] = job
-        except (OSError, subprocess.TimeoutExpired) as error:
-            receipt = dict(status='UNKNOWN_NO_REPLAY', error=repr(error), intent_sha256=sha(prep / 'submit-intent.json'))
-        once(prep / 'submit-receipt.json', receipt)
-        return receipt
+    return a800_runtime.submit(base, validate_config)
 
 
 def _json_request(url):
@@ -113,23 +86,27 @@ def reused_phase(base, root, phase, c):
 
 def run(base):
     from reproduction.prefix_only_correctness_ab.launch import torchrun_owned_class, DeferredInterrupt, birth_states
-    from reproduction.h1008_qprobe.pipeline import UUIDLocks
     from .pool import prepare
     base = Path(base).resolve(); c = config(base)
     if sha(base / 'preparation/launch-config.json') != read(base / 'preparation/submit-intent.json')['config_sha256']:
         raise ValueError('Submitted configuration changed')
     if (base / 'logs/process-ledger.json').exists():
         raise RuntimeError('Existing execution needs explicit recovery; do not replay its launch')
-    native_allocation(base, c)
-    lease = UUIDLocks(c['physical_gpu_uuids'])
+    lease = UUIDLocks(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])
+    try:
+        native_allocation(base, c)
+    except BaseException:
+        lease.close()
+        raise
     owned = torchrun_owned_class()(base / 'logs/process-ledger.json', c['run_id'])
     interrupt = DeferredInterrupt(); handlers = {s: signal.getsignal(s) for s in (signal.SIGTERM, signal.SIGINT)}
     for sig in handlers:
         signal.signal(sig, interrupt.handler)
-    env = dict(os.environ, PYTHONPATH=str(base / 'repo'), CUDA_VISIBLE_DEVICES='0,1,2,3,4,5,6,7',
+    env = dict(os.environ, PYTHONPATH=str(base / 'repo'), CUDA_VISIBLE_DEVICES=','.join(map(str, c['physical_gpu_indices'])),
         SEARCH_G1_BASE=str(base), OMP_NUM_THREADS='4', TOKENIZERS_PARALLELISM='false',
         HF_HUB_OFFLINE='1', HF_DATASETS_OFFLINE='1', NCCL_NVLS_ENABLE='0',
         HF_HOME=str(base / 'cache/hf'), XDG_CACHE_HOME=str(base / 'cache'),
+        PYTHONDONTWRITEBYTECODE='1',
         TRITON_CACHE_DIR=str(base / 'cache/triton'), TORCHINDUCTOR_CACHE_DIR=str(base / 'cache/inductor'),
         TMPDIR=str(base / 'tmp'), PYTHONUNBUFFERED='1', NO_PROXY='127.0.0.1,localhost')
     for key in ('PYTHONHOME', 'RAY_ADDRESS', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'http_proxy', 'https_proxy', 'all_proxy'):
@@ -152,7 +129,7 @@ def run(base):
 
     def start(name, command, child_env=None):
         interrupt.check()
-        p = owned.start(name, command, child_env or env, str(base / 'logs' / (name + '.log')), str(base / 'repo'))
+        p = owned.start(name, command, child_env or env, str(base / 'logs' / (name + '.log')), str(base / 'repo'), pass_fds=tuple(lease.fds))
         owned.observe(name)
         return p
 
@@ -175,7 +152,7 @@ def run(base):
         return p.returncode
 
     def distributed(module, args):
-        return [python, '-m', 'torch.distributed.run', '--standalone', '--nproc_per_node=8', '-m', module] + args
+        return [python, '-m', 'torch.distributed.run', '--standalone', '--nproc_per_node=%d' % WORLD, '-m', module] + args
 
     def await_service(name, url, expected):
         deadline = time.monotonic() + 1800
@@ -213,10 +190,11 @@ def run(base):
     try:
         phase('probe-initialize-model-only', [python, '-m', 'reproduction.prefix_selection200.probe', 'initialize',
             '--state-dir', str(base / 'probe'), '--source-checkpoint', c['probe_source_checkpoint'],
-            '--source-sha256', c['probe_source_sha256'], '--run-id', c['run_id'],
+            '--source-sha256', c['probe_source_sha256'], '--source-epoch', str(c['probe_source_epoch']),
+            '--source-model-kind', c['probe_source_model_kind'], '--run-id', c['run_id'],
             '--test-cache', c['fixed_test_features'], '--test-manifest-sha', c['fixed_test_manifest_sha256']],
             dict(env, CUDA_VISIBLE_DEVICES=''))
-        stage('STARTING_RETRIEVER_AND_EIGHT_GROUNDING_REPLICAS')
+        stage('STARTING_AUX_TWO_SHARD_RETRIEVER_AND_FOUR_GROUNDING_REPLICAS')
         env_root = Path(c['environment_root'])
         libs = list((env_root / 'lib/python3.10/site-packages/nvidia').glob('*/lib'))
         libs += [env_root / 'lib/python3.10/site-packages/torch/lib']
@@ -224,15 +202,15 @@ def run(base):
             '--index', c['retrieval_index'], '--corpus', c['retrieval_corpus'], '--encoder', c['retrieval_encoder'],
             '--cache', str(base / 'retrieval-cache'), '--run-id', c['run_id'], '--port', str(c['retrieval_port']),
             '--data-cache', c.get('retrieval_data_cache', str(base / 'retrieval-cache')),
-            '--batch-queries', str(c.get('retrieval_batch_queries', 1024))],
-            dict(env, PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
-        for rank in range(8):
+            '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', '2'],
+            dict(env, CUDA_VISIBLE_DEVICES=','.join(map(str,c['auxiliary_gpu_indices'])), PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
+        for rank in range(WORLD):
             name = 'grounding-rank-%d' % rank
             services[name] = start(name, [python, 'probe_server.py', '--manifest', c['grounding_manifest'],
                 '--port', str(c['grounding_probe_base_port'] + rank)],
-                dict(env, CUDA_VISIBLE_DEVICES=str(rank), SEARCH_G1_BASE=str(base / 'grounding' / ('rank-%d' % rank)), OMP_NUM_THREADS='2'))
-        await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=8))
-        for rank in range(8):
+                dict(env, CUDA_VISIBLE_DEVICES=str(c['grounding_physical_gpu']), SEARCH_G1_BASE=str(base / 'grounding' / ('rank-%d' % rank)), OMP_NUM_THREADS='2'))
+        await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=2))
+        for rank in range(WORLD):
             await_service('grounding-rank-%d' % rank, 'http://127.0.0.1:%d/health' % (c['grounding_probe_base_port'] + rank),
                 dict(version=c['grounding_probe_version']))
         # Retry the interrupted milestone QA with its saved actor, then continue
@@ -317,11 +295,11 @@ def run(base):
                 probe_metrics=read(root/'probe-update/metrics.json')
             else:
                 probe_metrics=dict(status='PROBE_FROZEN_NO_OPTIMIZER_UPDATE',outer=outer,
-                    new_adam_steps_per_rank=0,actual_adam_steps_per_rank=[probe_boundary(outer)['actual_adam_per_rank']]*8,
+                    new_adam_steps_per_rank=0,actual_adam_steps_per_rank=[probe_boundary(outer)['actual_adam_per_rank']]*WORLD,
                     last_update_outer=probe_boundary(outer)['last_update_outer'])
                 once(root/'probe-frozen.json',probe_metrics)
             actor, probe = read(base / 'actor/latest.json'), read(base / 'probe/latest.json')
-            if actor['actual_adam_steps_per_rank'] != [20 * outer] * 8 or probe['actual_adam_steps_per_rank'] != [probe_boundary(outer)['actual_adam_per_rank']] * 8:
+            if actor['actual_adam_steps_per_rank'] != [20 * outer] * WORLD or probe['actual_adam_steps_per_rank'] != [probe_boundary(outer)['actual_adam_per_rank']] * WORLD:
                 raise RuntimeError('Actual actor/probe Adam boundaries differ from the completed outer')
             snapshot = root / 'pool-state-at-completion.json'
             once(snapshot, read(base / 'question-pool/state.json'))
@@ -392,18 +370,16 @@ def observe(base):
         probe=small(base / 'probe/latest.json'), cleanup=small(base / 'logs/cleanup-status.json'),
         pipeline_complete=small(base / 'logs/pipeline-complete.json'))
     receipt = small(base / 'preparation/submit-receipt.json')
-    if receipt and receipt.get('job_id'):
-        from reproduction.common8.native_allocation import fields
-        result = subprocess.run(['scontrol', 'show', 'job', str(receipt['job_id']), '-o'], capture_output=True, text=True, timeout=30)
-        value['native'] = fields(result.stdout) if result.returncode == 0 else dict(unavailable=result.stderr)
+    if receipt:
+        value['native'] = query(base)
     gpu = subprocess.run(['nvidia-smi', '--query-gpu=index,uuid,memory.used,memory.free,utilization.gpu',
         '--format=csv,noheader,nounits'], capture_output=True, text=True, timeout=15)
     value['gpu_actual'] = dict(returncode=gpu.returncode, stdout=gpu.stdout, stderr=gpu.stderr)
     current = (value['stage'] or {}).get('outer', 0)
     if current:
         root = base / 'outers' / ('outer-%06d' % current)
-        value['current_prefix'] = [small(root / 'prefix' / ('rank-%d-progress.json' % rank)) for rank in range(8)]
-        value['current_continuation'] = [small(root / 'full' / ('rank-%d-progress.json' % rank)) for rank in range(8)]
+        value['current_prefix'] = [small(root / 'prefix' / ('rank-%d-progress.json' % rank)) for rank in range(WORLD)]
+        value['current_continuation'] = [small(root / 'full' / ('rank-%d-progress.json' % rank)) for rank in range(WORLD)]
     return value
 
 

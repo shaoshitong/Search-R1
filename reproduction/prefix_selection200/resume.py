@@ -10,6 +10,7 @@ from pathlib import Path
 import time
 
 from .actor import read, sha, restore_metadata
+from .contract import WORLD
 from reproduction.prefix20_online.launch import once
 
 
@@ -21,7 +22,7 @@ def boundary(config, joint, actor, probe, pool):
     if (not 0 < outer <= 200 or joint['run_id'] != config['run_id'] or joint['outer'] != outer
             or joint['actor'] != actor or joint['probe'] != probe
             or probe['run_id'] != config['run_id'] or probe['completed_outer'] != expected['last_update_outer']
-            or probe['actual_adam_steps_per_rank'] != [expected['actual_adam_per_rank']] * 8
+            or probe['actual_adam_steps_per_rank'] != [expected['actual_adam_per_rank']] * WORLD
             or pool['next_outer'] != outer + 1 or pool['consumed_candidates'] != 5120 * outer
             or pool['cycle'] * len(pool['order']) + pool['cursor'] != 5120 * outer):
         raise ValueError('Restore only the complete joint actor/probe/candidate boundary')

@@ -149,6 +149,7 @@ def main():
     parser.add_argument('--run-id', required=True)
     parser.add_argument('--port', type=int, default=18010)
     parser.add_argument('--batch-queries', type=int, default=512)
+    parser.add_argument('--gpu-shards', type=int, choices=(2,8), default=8)
     args = parser.parse_args()
     if args.batch_queries < 1 or not 1 <= args.port <= 65535:
         parser.error('Positive query batch and valid port required')
@@ -158,8 +159,8 @@ def main():
     import uvicorn
     from fastapi import FastAPI, HTTPException
     from search_r1.search import retrieval_server as upstream
-    if torch.cuda.device_count() != 8 or faiss.get_num_gpus() != 8:
-        raise ValueError('Probe rollout retrieval requires its assigned eight GPUs')
+    if torch.cuda.device_count() != args.gpu_shards or faiss.get_num_gpus() != args.gpu_shards:
+        raise ValueError('Retrieval requires exactly its assigned auxiliary GPU count')
     cache = Path(args.cache)
     data_cache = Path(args.data_cache) if args.data_cache else cache
     cache.mkdir(parents=True, exist_ok=True)
@@ -177,12 +178,12 @@ def main():
     # IndexShards; do not retain an extra copy of the 64 GB CPU index.
     retriever = upstream.DenseRetriever(config)
     gc.collect()
-    if retriever.index.count() != 8 or retriever.index.d != 768:
-        raise ValueError('Original Flat index did not initialize all eight shards')
+    if retriever.index.count() != args.gpu_shards or retriever.index.d != 768:
+        raise ValueError('Original Flat index did not initialize every assigned shard')
     if retriever.index.ntotal != len(retriever.corpus):
         raise ValueError('Original index and corpus document counts differ')
     ready = dict(run_id=args.run_id, pid=os.getpid(), ready=True,
-        gpu_shards=8, dimension=int(retriever.index.d), documents=int(retriever.index.ntotal),
+        gpu_shards=args.gpu_shards, dimension=int(retriever.index.d), documents=int(retriever.index.ntotal),
         index=str(Path(args.index).resolve()), corpus_archive=str(Path(args.corpus).resolve()),
         encoder=str(Path(args.encoder).resolve()), corpus=extraction,
         encoder_dtype='float16', index_dtype='float16', pooling='mean',

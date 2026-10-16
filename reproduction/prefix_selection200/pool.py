@@ -8,6 +8,32 @@ from pathlib import Path
 from reproduction.prefix20_online.pool import atomic, canonical, digest, identity, immutable, read
 
 
+def fixed_test_identities(config):
+    """Read only the explicit512-G5 identity manifest, never cached features."""
+    path, expected_sha = config.get('fixed_test_identity_path'), config.get('fixed_test_identity_sha256')
+    if path is None and expected_sha is None:
+        return None
+    if (not isinstance(path, str) or not path.startswith(('/data/', '/mnt/'))
+            or not isinstance(expected_sha, str) or len(expected_sha) != 64
+            or digest(path) != expected_sha):
+        raise ValueError('Fixed diagnostic identity path or exact file SHA differs')
+    manifest = read(path)
+    rows = manifest.get('records')
+    if (manifest.get('schema_version') != 1 or manifest.get('questions') != 512
+            or manifest.get('trajectories') != 2560 or not isinstance(rows, list) or len(rows) != 512):
+        raise ValueError('Fixed diagnostic identity manifest must describe exactly512 original G5s')
+    qids, texts = set(), set()
+    for row in rows:
+        if (not isinstance(row, dict) or not isinstance(row.get('qid'), str)
+                or not row['qid'] or row['qid'] in qids
+                or any(not isinstance(row.get(key), str) or len(row[key]) != 64
+                       for key in ('question_hash', 'normalized_question_hash'))
+                or row['normalized_question_hash'] in texts):
+            raise ValueError('Fixed diagnostic question identity is missing or duplicated')
+        qids.add(row['qid']); texts.add(row['normalized_question_hash'])
+    return rows
+
+
 def initial_state(size, seed=1729):
     order = list(range(size))
     random.Random(seed).shuffle(order)
@@ -48,7 +74,9 @@ def state_sha(state):
 def prepare(config, outer):
     """Reserve once, then retain original question/gold and real candidate order."""
     base = Path(config['base'])
-    if not str(base).startswith('/mnt/data/shaoshitong/search-g1-prefix-selection200-'):
+    if not str(base).startswith(('/mnt/data/shaoshitong/search-g1-prefix-selection200-',
+                                  '/data/shaoshitong/search-g1-prefix-selection200-',
+                                  '/data/shaoshitong/Search-G1-prefix-selection200-')):
         raise ValueError('Candidate artifacts must stay in the remote experiment')
     root = base / 'question-pool'
     target = base / 'outers' / ('outer-%06d' % outer)
@@ -57,6 +85,9 @@ def prepare(config, outer):
     with (root / 'writer.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         source = Path(config['source_question_pool'])
+        fixed = fixed_test_identities(config)
+        fixed_qids = {row['qid'] for row in fixed} if fixed is not None else None
+        fixed_texts = {row['normalized_question_hash'] for row in fixed} if fixed is not None else None
         binding_path = root / 'binding.json'
         if not binding_path.exists():
             pool_sha = digest(source)
@@ -66,14 +97,21 @@ def prepare(config, outer):
                     or pool['excluded_diagnostic_questions'] != 512
                     or pool['eligible_unique_questions'] != len(pool['records'])):
                 raise ValueError('Original diagnostic-excluded question pool differs')
+            if fixed is not None and any(row['qid'] in fixed_qids or
+                    row['normalized_question_hash'] in fixed_texts for row in pool['records']):
+                raise ValueError('Candidate source overlaps the explicit fixed512 question identities')
             immutable(binding_path, dict(source=str(source), sha256=pool_sha,
                 eligible_questions=len(pool['records']),
                 fixed_test_qids_sha256=pool['fixed_test_qids_sha256'],
                 fixed_test_normalized_text_sha256=pool['fixed_test_normalized_text_sha256'],
-                fixed_test_features_manifest=config['fixed_test_manifest_sha256']))
+                fixed_test_features_manifest=config.get('fixed_test_manifest_sha256'),
+                fixed_test_identity_path=config.get('fixed_test_identity_path'),
+                fixed_test_identity_sha256=config.get('fixed_test_identity_sha256')))
             atomic(root / 'state.json', initial_state(len(pool['records']), config.get('seed', 1729)))
         binding = read(binding_path)
-        if binding['source'] != str(source):
+        if (binding['source'] != str(source)
+                or binding.get('fixed_test_identity_path') != config.get('fixed_test_identity_path')
+                or binding.get('fixed_test_identity_sha256') != config.get('fixed_test_identity_sha256')):
             raise ValueError('Candidate source changed')
         pool, state = read(source), read(root / 'state.json')
         reservation = target / 'pool-reservation.json'
@@ -95,6 +133,9 @@ def prepare(config, outer):
         rows = [dict(pool['records'][index], pool_index=index, pool_cycle=cycle,
                      candidate_ordinal=ordinal)
                 for ordinal, (index, cycle) in enumerate(zip(indices, cycles))]
+        if fixed is not None and any(row['qid'] in fixed_qids or
+                row['normalized_question_hash'] in fixed_texts for row in rows):
+            raise ValueError('Reserved candidates overlap the explicit fixed512 diagnostic')
         selection = dict(run_id=config['run_id'], outer=outer, questions=5120,
             trajectory_group_size=5, trajectories=25600, source='fresh_prefix_sampling',
             pool_sha256=binding['sha256'], canonical_train_sha256=config['canonical_train_sha256'],

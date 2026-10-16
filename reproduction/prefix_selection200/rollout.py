@@ -1,8 +1,8 @@
-"""Native 8 x TP1 prefix screening and continuation of the SAME G5 samples.
+"""Native 4 x TP1 prefix screening and continuation of the SAME G5 samples.
 
 This is a new training sampling contract, not an alias for the historical
 full-500-then-cut evaluation sampler. A logical action has a 500-token budget;
-native calls can pause it at the twentieth retained policy token. The first
+native calls can pause it at the fifth retained policy token. The first
 complete action actually observed in the cumulative native stream is executed.
 Length quota is a pause, never an invented EOS or environment correction.
 
@@ -25,16 +25,52 @@ import sys
 import time
 
 from reproduction.prefix20_online.pool import atomic, canonical, digest, immutable, read
-from reproduction.prefix20_online.rollout import _configure_one_visible_gpu, prompt_tokens, strict_label, utc
+from reproduction.prefix20_online.rollout import prompt_tokens, strict_label, utc
+from .contract import G, PREFIX_TOKENS, QMAX, SAMPLING_CONTRACT, WIDTH, WORLD
 
 
 REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
-CONTRACT = 'chunked_native_action500_prefix20_v1'
+CONTRACT = SAMPLING_CONTRACT
 BOUNDARY = 'first_complete_action_seen_in_actual_chunk_stream'
 ACTION = re.compile(r'<(search|answer)>(.*?)</\1>', re.DOTALL)
-PREFIX_TOKENS = 20
-WORLD = 8
-G = 5
+
+
+def _configure_one_visible_gpu(rank):
+    """Resolve the four admitted GPU identities before importing CUDA libraries."""
+    visible = [value for value in os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',') if value]
+    if len(visible) != WORLD or len(set(visible)) != WORLD or not 0 <= rank < WORLD:
+        raise ValueError('Prefix5 rollout needs exactly four actually assigned visible GPUs')
+    import csv
+    import io
+    inventory = list(csv.reader(io.StringIO(subprocess.check_output(
+        ['nvidia-smi', '--query-gpu=index,uuid', '--format=csv,noheader,nounits'],
+        text=True, timeout=30))))
+    by_uuid, by_index = {}, {}
+    for row in inventory:
+        if len(row) != 2 or not row[0].strip().isdigit() or not row[1].strip().startswith('GPU-'):
+            raise ValueError('Cannot resolve assigned GPU UUIDs from actual NVML inventory')
+        index, gpu_uuid = int(row[0].strip()), row[1].strip()
+        if gpu_uuid in by_uuid or index in by_index:
+            raise ValueError('Actual GPU inventory identity repeats')
+        by_uuid[gpu_uuid], by_index[index] = index, gpu_uuid
+    assigned = []
+    for value in visible:
+        if value.isdigit() and int(value) in by_index:
+            assigned.append((int(value), by_index[int(value)]))
+        elif value in by_uuid:
+            assigned.append((by_uuid[value], value))
+        else:
+            raise ValueError('An assigned visible GPU is absent from actual NVML inventory')
+    if len({value[1] for value in assigned}) != WORLD:
+        raise ValueError('Assigned visible devices resolve to duplicate physical GPUs')
+    physical_index, gpu_uuid = assigned[rank]
+    os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
+    os.environ['CUDA_VISIBLE_DEVICES'] = str(physical_index)
+    for key in ('RANK', 'LOCAL_RANK', 'WORLD_SIZE', 'LOCAL_WORLD_SIZE', 'GROUP_RANK',
+                'ROLE_RANK', 'ROLE_WORLD_SIZE', 'MASTER_ADDR', 'MASTER_PORT'):
+        os.environ.pop(key, None)
+    return dict(physical_gpu_index=physical_index, gpu_uuid=gpu_uuid,
+                originally_assigned_device=visible[rank], cuda_device_order='PCI_BUS_ID')
 
 
 def root_dir(config, outer):
@@ -58,6 +94,9 @@ def phase_output(config,outer,phase):
 
 def binding(config, outer):
     value = dict(config)
+    if (value.get('world_size', WORLD) != WORLD or
+            value.get('prefix_policy_tokens', PREFIX_TOKENS) != PREFIX_TOKENS):
+        raise ValueError('Native rollout requires the bound four-rank prefix5 recipe')
     path = root_dir(config, outer) / 'actor-binding.json'
     if path.exists():
         value.update(read(path))
@@ -241,7 +280,7 @@ def finish_action(state, cut, environment, tokenizer, budget):
 
 
 def prefix_record(state):
-    """Actual initial request and first20 kept positions, including tool turns."""
+    """Actual initial request and first5 kept positions, including tool turns."""
     segments, ids, positions = [], [], []
     turns = list(state['turns'])
     if state['action'] is not None:
@@ -259,7 +298,7 @@ def prefix_record(state):
         ids.extend(policy)
         positions.extend(range(len(request), len(request) + take))
     if len(ids) != PREFIX_TOKENS and not state['terminal']:
-        raise ValueError('Prefix phase ended before20 retained tokens without a natural terminal')
+        raise ValueError('Prefix phase ended before5 retained tokens without a natural terminal')
     group = state['group']
     row = dict(schema_version=1, run_id=state['run_id'], outer=state['outer'], split='train',
                trajectory_id=state['trajectory_id'], qid=group['qid'],
@@ -311,7 +350,7 @@ def validate_rank_receipt(config_path, config, outer, phase, rank, path):
     """
     path=Path(path);saved=read(path);current_sha=digest(config_path)
     expected=dict(run_id=config['run_id'],outer=outer,phase=phase,rank=rank,
-                  actor_version=config['actor_version'],trajectories=question_count(config,phase)*5//8)
+                  actor_version=config['actor_version'],trajectories=question_count(config,phase)*G//WORLD)
     if any(saved.get(key)!=value for key,value in expected.items()):
         raise ValueError('Existing rank receipt has a different actual run/actor/outer/phase/rank')
     reuse=None
@@ -368,8 +407,8 @@ def _states(config, outer, rank, phase, tokenizer, selection_path):
     receipt = read(root / 'prefix' / 'complete.json')
     groups = validate_selection(read(selection_path), receipt,question_count(config,phase))
     assigned = groups[rank::WORLD]
-    if len(assigned) != question_count(config,phase)//8:
-        raise ValueError('Continuation uses64 selected completeG5 groups per realGPU')
+    if len(assigned) != question_count(config,phase)//WORLD:
+        raise ValueError('Continuation requires equal completeG5 question shards across four GPUs')
     wanted = {tid: group for group in assigned for tid in group['trajectory_ids']}
     states = {}
     owners = {int(group['candidate_ordinal']) % WORLD for group in assigned}
@@ -460,6 +499,20 @@ def native_snapshot(native):
                 finish_reason=native.finish_reason,stop_reason=native.stop_reason)
 
 
+def discard_hidden_lookahead(retained, actual):
+    """Retain the pre-flush snapshot, never the sixth sampled token or its LP."""
+    ids, lps = retained['raw_generated_token_ids'], retained['selected_logprobs']
+    raw, values = actual['raw_generated_token_ids'], actual['selected_logprobs']
+    extra = len(raw) - len(ids)
+    if (not 0 <= extra <= 1 or raw[:len(ids)] != ids or values[:len(lps)] != lps
+            or len(ids) != len(lps) or len(raw) != len(values)):
+        raise ValueError('Native hidden flush changed its retained prefix snapshot')
+    snapshot = dict(retained, raw_generated_token_ids=list(ids), selected_logprobs=list(lps))
+    return snapshot, dict(captured_after_last_retained_token=True,
+        discarded_sampled_lookahead_tokens=extra, lookahead_hidden_not_passed_to_probe=True,
+        lookahead_token_not_passed_to_ppo_or_continuation=True)
+
+
 def _build_llm(config, model, seed, free, total):
     """Use actual available VRAM; retry only an actual initialization OOM."""
     from vllm import LLM
@@ -533,7 +586,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     stop = [stop] if isinstance(stop, int) else list(stop)
     terminal_ids = sorted(set(stop + [tokenizer.eos_token_id]))
     recipe = GenerationConfig(max_turns=4, max_start_length=2048, max_prompt_length=4096,
-                              max_response_length=500, max_obs_length=500, num_gpus=8,
+                              max_response_length=500, max_obs_length=500, num_gpus=WORLD,
                               search_url=config['search_url'], topk=3)
     manager = LLMGenerationManager(tokenizer, None, recipe)
     retriever = BoundedRetriever(manager, AsyncRolloutConfig(agent_workers=limits['max_num_seqs'],
@@ -649,12 +702,10 @@ def worker(config_path, outer, phase, rank, selection_path=None):
                         if not flushing and not result.finished and not seen_action:
                             continue
                         actual_snapshot = native_snapshot(native)
-                        snapshot = hidden_flushes.pop(rid) if flushing else actual_snapshot
+                        snapshot = actual_snapshot
                         if flushing:
-                            sampling = dict(sampling, actor_hidden_flush=dict(
-                                captured_after_last_retained_token=True,
-                                discarded_sampled_lookahead_tokens=len(raw)-len(snapshot['raw_generated_token_ids']),
-                                lookahead_hidden_not_passed_to_probe=True))
+                            snapshot, flush_receipt = discard_hidden_lookahead(hidden_flushes.pop(rid), actual_snapshot)
+                            sampling = dict(sampling, actor_hidden_flush=flush_receipt)
                         if aborted:
                             engine.abort_request(rid)
                         if hidden_capture is not None:
@@ -714,6 +765,8 @@ def worker(config_path, outer, phase, rank, selection_path=None):
 def pack_prefix(config, outer, ranks):
     """CPU pack true score inputs, never cached labels or future suffix states."""
     import numpy as np
+    if len(ranks) != WORLD or [row['rank'] for row in ranks] != list(range(WORLD)):
+        raise ValueError('Prefix scan requires exactly four ordered native rank receipts')
     root = root_dir(config, outer); out = root/'prefix'/'scan'
     out.mkdir(parents=True, exist_ok=False)
     rows, contexts, policies, positions, offsets = [], [], [], [], [0]
@@ -727,6 +780,8 @@ def pack_prefix(config, outer, ranks):
                 raise ValueError('Score-safe prefix input contains forbidden future labels/gold')
             seen.add(tid); groups.setdefault(qid, []).append(original)
             prompt = original['initial_prompt_token_ids']
+            if not 1 <= len(prompt) <= QMAX:
+                raise ValueError('Native question must fit the unchanged273-token head layout')
             initial = dict(context_offset=len(contexts), context_length=len(prompt), request_length=len(prompt))
             contexts.extend(prompt)
             segments = []
@@ -736,6 +791,9 @@ def pack_prefix(config, outer, ranks):
                                context_sha256=hashlib.sha256(canonical(tokens)).hexdigest())
                 contexts.extend(tokens); segments.append(segment)
             ids, pos = original['policy_token_ids'], original['policy_position_ids']
+            if (len(ids) != len(pos) or not 0 <= len(ids) <= PREFIX_TOKENS
+                    or (len(ids) != PREFIX_TOKENS and not original['terminal'])):
+                raise ValueError('Prefix scan includes a future token or an unfinished short prefix')
             row = {key: original[key] for key in ('trajectory_id', 'qid', 'question_hash', 'candidate_ordinal',
                 'response_index', 'actor_version', 'prefix_sha256', 'terminal', 'terminal_reason')}
             row.update(row=len(rows), split='train', length=len(ids), prefix_length=len(ids),
@@ -767,7 +825,7 @@ def pack_prefix(config, outer, ranks):
     source_sha = hashlib.sha256(canonical([rank['prefix'] for rank in ranks])).hexdigest()
     qmax = max(r['initial_context']['request_length'] for r in rows)
     proof = dict(schema_version=3, role='prefix_selection200_score_safe_actual_token_scan',
-        representation='initial_request_and_retained_policy20_layer27_postblock_v1',
+        representation='initial_request_and_retained_policy5_layer27_postblock_v1',
         encoder_revision=REVISION, actor_hidden_native=bool(config.get('actor_hidden_native')),
         actor_hidden_shards=[r['actor_hidden'] for r in ranks] if config.get('actor_hidden_native') else None,
         hidden_feature_actor_version=config['actor_version'] if config.get('actor_hidden_native') else None,
@@ -778,7 +836,9 @@ def pack_prefix(config, outer, ranks):
         model_dir=config['actor_model_dir'] if config.get('actor_hidden_native') else config.get('encoder_model_dir',config.get('model_dir')),
         model_files_sha256=config.get('model_files_sha256'), count=len(rows), split_counts=dict(train=len(rows),test=0),
         encoder_files_sha256=config.get('actor_model_files_sha256') if config.get('actor_hidden_native') else config.get('model_files_sha256'),
-        pad_token_id=ranks[0]['pad_token_id'], question_max_tokens=qmax, head_max_tokens=293 if config.get('actor_hidden_native') else 20, max_policy_prefix_tokens=20,
+        pad_token_id=ranks[0]['pad_token_id'], question_max_tokens=qmax,
+        head_max_tokens=WIDTH if config.get('actor_hidden_native') else PREFIX_TOKENS,
+        max_policy_prefix_tokens=PREFIX_TOKENS,
         encoder_global_max_tokens=max([qmax]+[s['context_length'] for row in rows for s in row['segments']]),
         sources_sha256=source_sha, prefix_window='multi_turn_actual_kept_policy_tokens',
         prefix_source='same_trajectory_native_prefix_then_continue', labels_present=False,
@@ -801,7 +861,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
     checked=[validate_rank_receipt(config_path,config,outer,phase,rank,output/('rank-%d-complete.json'%rank))
              for rank in range(WORLD)]
     ranks=[item[0] for item in checked]
-    expected=question_count(config,phase)*5//8
+    expected=question_count(config,phase)*G//WORLD
     for rank,value in enumerate(ranks):
         if value['rank']!=rank or value['phase']!=phase or value['outer']!=outer or value['trajectories']!=expected or value['actor_version']!=config['actor_version']:
             raise ValueError('Native phase rank completion identity/count differs')
@@ -855,7 +915,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
 
 
 def launch_phase(config_path, outer, phase, selection_path=None):
-    """Own exactly8 native workers; phase completion includes their actual exit."""
+    """Own exactly4 native workers; phase completion includes their actual exit."""
     config=binding(read(config_path),outer);output=phase_output(config,outer,phase)
     output.mkdir(parents=True,exist_ok=True)
     if (output/'complete.json').exists():

@@ -24,11 +24,39 @@ def same(record):
     except (FileNotFoundError,ProcessLookupError):return False
 
 
+
+def _pidfd_open(pid):
+    if hasattr(os, 'pidfd_open'):
+        return os.pidfd_open(pid)
+    return _linux_syscall(434, pid, 0)
+
+
+def _pidfd_send(fd, sig):
+    if hasattr(signal, 'pidfd_send_signal'):
+        return signal.pidfd_send_signal(fd, sig)
+    return _linux_syscall(424, fd, sig, 0, 0)
+
+
+def _linux_syscall(number, *args):
+    import ctypes, platform
+    if platform.system() != 'Linux' or platform.machine() not in ('x86_64', 'aarch64'):
+        raise RuntimeError('Native Linux pidfd support required; never substitute kill(PID)')
+    library = ctypes.CDLL(None, use_errno=True)
+    library.syscall.restype = ctypes.c_long
+    value = library.syscall(ctypes.c_long(number), *[ctypes.c_long(x) for x in args])
+    if value < 0:
+        error = ctypes.get_errno()
+        if error == 3:
+            raise ProcessLookupError(error, os.strerror(error))
+        raise OSError(error, os.strerror(error))
+    return value
+
+
 def signal_owned(record, sig):
-    fd=os.pidfd_open(record['pid'])
+    fd=_pidfd_open(record['pid'])
     try:
         assert same(record), 'Owned identity changed before signal'
-        signal.pidfd_send_signal(fd,sig)
+        _pidfd_send(fd,sig)
     finally:os.close(fd)
 
 
@@ -51,11 +79,11 @@ class OwnedProcesses:
         else:
             self.recovery_only=False;self.save()
     def save(self):publish(self.path,dict(run_id=self.run_id,jobs=self.jobs))
-    def start(self,name,args,env,log,cwd):
+    def start(self,name,args,env,log,cwd,*,pass_fds=()):
         assert not self.recovery_only, 'Recovered ledger permits cleanup only, never duplicate launch'
         assert name not in self.jobs
         with Path(log).open('a') as output:
-            process=subprocess.Popen(args,env=env,cwd=cwd,stdout=output,stderr=subprocess.STDOUT,start_new_session=True)
+            process=subprocess.Popen(args,env=env,cwd=cwd,stdout=output,stderr=subprocess.STDOUT,start_new_session=True,pass_fds=tuple(pass_fds))
         # Popen returns after exec; bind before poll/wait can reap a fast-exit leader.
         leader=identity(process.pid);assert leader['sid']==leader['pid'] and leader['uid']==os.getuid()
         self.jobs[name]=dict(leader=leader,ledger={str(leader['pid']):leader},log=str(log),state='STARTED',arguments=args)

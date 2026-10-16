@@ -13,8 +13,11 @@ import re
 import stat
 import time
 
+from .contract import WORLD
+
 
 REMOTE_PARENT = Path('/mnt/data/shaoshitong')
+A800_REMOTE_PARENT = Path('/data/shaoshitong')
 PREFIX = 'search-g1-prefix-selection200-'
 MILESTONES = {0, 5, 50, 100, 150, 200}
 
@@ -51,7 +54,7 @@ def owned(base, path):
 
 def validate_base(base):
     base = Path(base)
-    if (not base.is_absolute() or '..' in base.parts or base.parent != REMOTE_PARENT
+    if (not base.is_absolute() or '..' in base.parts or base.parent not in (REMOTE_PARENT, A800_REMOTE_PARENT)
             or not base.name.startswith(PREFIX) or base.resolve(strict=True) != base):
         raise ValueError('Pruning is restricted to a canonical new prefix-selection200 namespace')
     config = read(owned(base, base/'preparation/launch-config.json'))
@@ -59,7 +62,7 @@ def validate_base(base):
     clock_ok=(config.get('probe_update_period')==20 and config.get('probe_updates_per_period')==100
               and config.get('probe_updates_per_outer')==0) if native else config.get('probe_updates_per_outer')==10
     if (config['base'] != str(base) or not config['run_id'] or config['outers'] != 200
-            or config['world_size'] != 8 or not clock_ok):
+            or config['world_size'] != WORLD or not clock_ok):
         raise ValueError('Current namespace does not have the approved actor/probe run binding')
     return base, config
 
@@ -99,15 +102,15 @@ def current_boundary(base, config, outer):
             or joint['actor'] != actor or joint['probe'] != probe
             or actor['run_id'] != config['run_id'] or probe['run_id'] != config['run_id']
             or actor['completed_outer'] != outer or probe['completed_outer'] != boundary['last_update_outer']
-            or actor['actual_adam_steps_per_rank'] != [20*outer]*8
-            or probe['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*8
+            or actor['actual_adam_steps_per_rank'] != [20*outer]*WORLD
+            or probe['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD
             or actor['scheduler_completed_outer'] != outer
             or update['status'] != ('UNSELECTED5120G5_PERIODIC_PROBE_100_ADAM_COMPLETE' if native and periodic
                 else 'PROBE_FROZEN_NO_OPTIMIZER_UPDATE' if native else 'SELECTED512G5_ONLINE_PROBE_10_ADAM_COMPLETE')
             or (periodic and update['run_id'] != config['run_id']) or update['outer'] != outer
             or (periodic and update['checkpoint'] != probe)
             or update['new_adam_steps_per_rank'] != (100 if native and periodic else 0 if native else 10)
-            or update['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*8):
+            or update['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD):
         raise ValueError('Actor20N/probe10N and this outer joint commit must actually agree')
     ledger = read(owned(base, base/'logs/process-ledger.json'))
     if ledger['run_id'] != config['run_id']:
@@ -174,7 +177,7 @@ def planned_assets(base, config, outer, root, joint, update, references):
                 or manifest['count'] != 2560
                 or update['scored_features_manifest_sha256'] != small_sha(manifest_path)
                 or update['selection_sha256'] != manifest['selection_sha256']
-                or {row['rank'] for row in manifest['shards']} != set(range(8))
+                or {row['rank'] for row in manifest['shards']} != set(range(WORLD))
                 or sum(row['count'] for row in manifest['shards']) != 2560):
             raise ValueError('Current feature shards are not bound to the completed online update')
         for row in manifest['shards']:
@@ -196,7 +199,7 @@ def planned_assets(base, config, outer, root, joint, update, references):
                 if saved['probe_snapshot'] != str(expected):
                     raise ValueError('Previous probe snapshot path differs from its owned outer')
                 expected_steps=(previous//20*100 if config.get('actor_hidden_native') else 10*previous)
-                if saved['probe']['actual_adam_steps_per_rank'] != [expected_steps]*8:
+                if saved['probe']['actual_adam_steps_per_rank'] != [expected_steps]*WORLD:
                     raise ValueError('Previous probe producer is not a complete actual boundary')
                 add(expected, saved['probe'], 'previous_nonmilestone_probe_snapshot')
 
@@ -216,7 +219,7 @@ def planned_assets(base, config, outer, root, joint, update, references):
                     or proof.get('milestone') or related(attempt, references)):
                 continue
             if (proof['role'] != 'prefix_selection200_actor_complete' or proof['completed_outer'] != n
-                    or proof['actual_adam_steps_per_rank'] != [20*n]*8
+                    or proof['actual_adam_steps_per_rank'] != [20*n]*WORLD
                     or proof['scheduler_completed_outer'] != n
                     or proof['state_path'] != str(attempt) or proof['state_dir'] != str(attempt)):
                 raise ValueError('Rotating actor checkpoint does not match its own complete producer')
@@ -227,8 +230,8 @@ def planned_assets(base, config, outer, root, joint, update, references):
                 if re.fullmatch(r'(model(?:-\d+-of-\d+)?\.safetensors|pytorch_model(?:-\d+-of-\d+)?\.bin)', name):
                     add(hfdir/name, producer, 'unreferenced_nonmilestone_actor_hf_weight')
             states = proof['rank_states']
-            if len(states) != 8 or {Path(row['path']).name for row in states} != {'rank-%d.pt'%r for r in range(8)}:
-                raise ValueError('Actor producer must describe all eight rank optimizer/RNG states')
+            if len(states) != WORLD or {Path(row['path']).name for row in states} != {'rank-%d.pt'%r for r in range(WORLD)}:
+                raise ValueError('Actor producer must describe all four rank optimizer/RNG states')
             for producer in states:
                 path = owned(base, producer['path'])
                 if path.parent != attempt:

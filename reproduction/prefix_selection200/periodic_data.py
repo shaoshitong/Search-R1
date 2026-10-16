@@ -4,8 +4,9 @@ import gzip
 import json
 from pathlib import Path
 
-from .pool import identity, immutable, read, digest
+from .pool import fixed_test_identities, identity, immutable, read, digest
 from .rollout import binding, root_dir, launch_phase, iter_rows, file_item, validate_selection
+from .contract import WORLD
 
 
 def project_top512(config_path, outer):
@@ -24,8 +25,8 @@ def project_top512(config_path, outer):
         raise ValueError('Projection requires every original Top512 trajectory from this same pool rollout')
     out=root/'full';out.mkdir(exist_ok=False)
     ranks=[];labels=[]
-    for rank in range(8):
-        selected=[rows[tid] for group in groups[rank::8] for tid in group['trajectory_ids']]
+    for rank in range(WORLD):
+        selected=[rows[tid] for group in groups[rank::WORLD] for tid in group['trajectory_ids']]
         full=out/('rank-%d-full.jsonl.gz'%rank);own=out/('rank-%d-own-em.jsonl'%rank)
         with gzip.open(full,'xt',encoding='utf8',compresslevel=1) as f,own.open('x') as g:
             for original in selected:
@@ -74,12 +75,18 @@ def diagnostic(config_path,outer):
     """Fixed heldout question identities, fresh G5 from exactly this actor."""
     import pyarrow.parquet as pq
     c=binding(read(config_path),outer);root=root_dir(c,outer)
-    original=Path(c['fixed_test_features'])
-    manifest=read(original/'manifest.json')
-    # FeatureCache owns the immutable original question/trajectory identity.
-    from reproduction.prefix20_question_replay.features import FeatureCache
-    fixed=FeatureCache(original,c['fixed_test_manifest_sha256'])
-    wanted={str(row['qid']):row['question_hash'] for row in fixed.index.values()}
+    fixed_rows=fixed_test_identities(c)
+    if fixed_rows is not None:
+        wanted={row['qid']:row['question_hash'] for row in fixed_rows}
+        normalized={row['qid']:row['normalized_question_hash'] for row in fixed_rows}
+        identity_sha=c['fixed_test_identity_sha256']
+    else:
+        # LegacyH100 inputs remain compatible; A800 supplies explicit identities.
+        from reproduction.prefix20_question_replay.features import FeatureCache
+        fixed=FeatureCache(Path(c['fixed_test_features']),c['fixed_test_manifest_sha256'])
+        wanted={str(row['qid']):row['question_hash'] for row in fixed.index.values()}
+        normalized=None
+        identity_sha=c['fixed_test_manifest_sha256']
     if len(wanted)!=512:raise ValueError('Fixed diagnostic question identities changed')
     table=pq.read_table(c['canonical_train'],columns=['prompt','reward_model','data_source','extra_info'])
     rows=[]
@@ -87,6 +94,8 @@ def diagnostic(config_path,outer):
         key=identity(original_row)
         if key['qid'] in wanted:
             if key['question_hash']!=wanted[key['qid']]:raise ValueError('Diagnostic question content changed')
+            if normalized is not None and key['normalized_question_hash']!=normalized[key['qid']]:
+                raise ValueError('Diagnostic normalized question content changed')
             rows.append(dict(original_row,**key,source_index=source_index,candidate_ordinal=len(rows)))
     if len(rows)!=512:raise ValueError('Fixed diagnostic is not fully represented in canonical questions')
     base=root/'diagnostic';r=root_dir(dict(base=str(base)),outer);r.mkdir(parents=True,exist_ok=False)
@@ -108,7 +117,9 @@ def diagnostic(config_path,outer):
     receipt=dict(run_id=c['run_id'],outer=outer,actor_version=c['actor_version'],questions=512,
         trajectories=2560,scan_path=prefix['scan_path'],scan_sha256=prefix['scan_sha256'],
         full_complete=str(r/'full/complete.json'),full_complete_sha256=digest(r/'full/complete.json'),
-        original_fixed_identity_manifest_sha256=c['fixed_test_manifest_sha256'],
+        original_fixed_identity_manifest_sha256=identity_sha,
+        fixed_test_identity_path=c.get('fixed_test_identity_path'),
+        fixed_test_identity_sha256=c.get('fixed_test_identity_sha256'),
         training_questions_used=False,independent_encoder_forward=False)
     immutable(root/'diagnostic-complete.json',receipt)
     return receipt

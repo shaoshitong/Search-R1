@@ -8,14 +8,13 @@ ModelRunner prepared input, including chunked prefill and scheduler reordering.
 Capture uses eager native execution and no prefix-cache hits: a KV cache alone
 does not contain question hidden states. Continuation engines need neither
 restriction. The producer must run a one-step hidden flush before pausing a
-prefix: sampling token20 only processes token19. The sampled lookahead token
+prefix: sampling token5 only processes token4. The sampled lookahead token
 is discarded, never added to retained policy or passed to this classifier.
 """
 from pathlib import Path
 import types
 
-QMAX, PREFIX, DIM = 273, 20, 2048
-WIDTH = QMAX + PREFIX
+from .contract import DIM, PREFIX_TOKENS as PREFIX, QMAX, WIDTH
 
 
 def query_mapping(metadata, query_lens, tokens, positions):
@@ -138,10 +137,12 @@ class ActorHiddenCapture:
         self.native_hidden, self.query_rows = None, None
 
     def finish(self, prefix):
-        """Only retained20/short-EOS tokens; no sampled lookahead can enter head."""
+        """Only retained5/short-EOS tokens; no sampled lookahead can enter head."""
         torch = self.torch
         tid = prefix['trajectory_id']; data = self.trajectories.pop(tid)
         qlen, plen = data['question_length'], prefix['retained_policy_length']
+        if not 0 <= plen <= PREFIX:
+            raise ValueError('Native prefix includes tokens beyond the retained first5')
         slots = list(range(qlen)) + list(range(QMAX,QMAX+plen))
         tokens = prefix['initial_prompt_token_ids'] + prefix['policy_token_ids']
         positions = list(range(qlen)) + prefix['policy_position_ids']

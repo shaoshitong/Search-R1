@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from .actor_hidden import QMAX, PREFIX, WIDTH, DIM
+from .contract import WORLD
 
 
 class NativeFeatures:
@@ -16,7 +17,9 @@ class NativeFeatures:
         self.manifest_sha = hashlib.sha256(p.read_bytes()).hexdigest()
         m = self.manifest
         if (not m.get('actor_hidden_native') or m.get('independent_encoder_forward') is not False
-                or m['hidden_feature_actor_version'] != m['actor_version']):
+                or m['hidden_feature_actor_version'] != m['actor_version']
+                or m['head_max_tokens'] != WIDTH or m['max_policy_prefix_tokens'] != PREFIX
+                or len(m['actor_hidden_shards']) != WORLD):
             raise ValueError('Scoring must read actual current-actor native hidden')
         rows = [json.loads(line) for line in (self.path/'index.jsonl').open()]
         self.index = {r['trajectory_id']:prefix_row(r) for r in rows}
@@ -26,14 +29,18 @@ class NativeFeatures:
         self.loaded = {}
         for rank, item in enumerate(m['actor_hidden_shards']):
             path = Path(item['path'])
-            if not str(path).startswith('/mnt/') or path.stat().st_size != item['bytes']:
+            if (not str(path).startswith(('/mnt/', '/data/'))
+                    or path.stat().st_size != item['bytes']):
                 raise ValueError('Native hidden shard path/size differs')
             self.loaded[rank] = np.load(path,mmap_mode='r')
             if self.loaded[rank].shape != (item['count'],WIDTH,DIM) or self.loaded[rank].dtype != np.uint16:
                 raise ValueError('Native BF16-bit shard shape differs')
         for row in self.index.values():
             if (row['feature_actor_version'] != m['actor_version'] or row['feature_layer'] != 27
-                    or row['feature_boundary'] != 'post_block_hidden_plus_residual'):
+                    or row['feature_boundary'] != 'post_block_hidden_plus_residual'
+                    or not 0 <= row['feature_rank'] < WORLD
+                    or not 0 <= row['feature_row'] < self.loaded[row['feature_rank']].shape[0]
+                    or not 0 <= row['policy_length'] <= PREFIX):
                 raise ValueError('Captured row belongs to another actor or layer')
 
     def get_batch(self, ids, device):

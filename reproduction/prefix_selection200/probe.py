@@ -1,9 +1,8 @@
-"""Fixed official-encoder prefix scoring and whole-G5 online probe updates.
+"""Four-rank current-actor question+policy5 scoring and periodic G5 probe updates.
 
-The scoring scan has no outcome labels. Only selected official-encoder features
-are retained remotely; their own EM labels are joined after the same prefixes
-have actually completed. Warmup CP100 supplies model weights only. Online Adam
-starts at zero and continues for ten real synchronized writes per actor outer.
+The scoring scan has no outcome labels. A qualified, explicit warmup checkpoint
+supplies model weights only. Online Adam starts at zero; at outer20,40,...200
+it makes100 synchronized writes over all5120 authentic, unselected own G5 groups.
 """
 import argparse
 from collections import defaultdict
@@ -23,21 +22,24 @@ from torch.nn.parallel import DistributedDataParallel
 from reproduction.prefix20_group_joint100.inline_encoder import InlineEncoder, normalized_row
 from reproduction.prefix20_group_joint100.loss import joint_loss
 from reproduction.prefix20_group_joint100.train_epoch import (
-    batch_to_device, ddp_mean_scale, evaluate_predictions, rank_question_slice,
+    batch_to_device, evaluate_predictions,
 )
 from reproduction.prefix20_online.features import REVISION, canonical, once, read, remote, sha
 from reproduction.prefix20_online.launch import publish
 from reproduction.prefix20_online.model import expected_policy_positions, validate_prefix_positions
 from reproduction.prefix20_online.train_epoch import append, optimizer_learning_rates
 from reproduction.prefix20_question_replay.features import FeatureCache, _source_scan
-from reproduction.prefix20_question_replay.model import QuestionPrefixCorrectnessProbe, masked_flatten
+from .contract import WORLD, QMAX, WIDTH, DIM, PREFIX_TOKENS
+from .probe_plan import online_plan, complete_pool_plan, rank_question_slice, ddp_mean_scale
+from .prefix5_model import (OnlineQuestionProbe, validate_online_layout, warmup_model_weights,
+    restore_native_buffers, nonpersistent_buffers, validate_model_state, validate_native_buffers,
+    EPOCH3_SHA, WARMUP_RUN)
 from reproduction.prefix_only_correctness_ab.train_ddp import actual_adam_steps
 
 
-SOURCE_SHA = '8df6bd445945ffbbf6a94171f24934495f0ce3ff17a3d2577bbd53d4b8fefd56'
-SOURCE_RUN = 'cee20bcd24194b79a9a8a88809bd5886'
-TEST_SHA = 'a125fc5af90e34fcd728c82077d9d62070a78d5ef703ac11f3748687d088e64f'
-QMAX, WIDTH, DIM, LR = 273, 293, 2048, 1e-6
+SOURCE_SHA = EPOCH3_SHA
+SOURCE_RUN = WARMUP_RUN
+LR = 1e-6
 TENSOR_FIELDS = ('features', 'attention_mask', 'position_ids', 'question_mask',
                  'policy_mask', 'question_lengths', 'policy_lengths')
 
@@ -50,26 +52,6 @@ def digest(value):
     return hashlib.sha256(canonical(value)).hexdigest()
 
 
-def online_plan(seed, outer):
-    """Exactly512 questions, ten writes, eight equal natural rank workloads."""
-    if type(outer) is not int or not 1 <= outer <= 200:
-        raise ValueError('Online probe outer must be1..200')
-    shuffled = list(range(512))
-    random.Random(seed + outer).shuffle(shuffled)
-    plan, offset, extras_start = [], 0, 0
-    for step in range(10):
-        n = 52 if (step + 1) % 5 == 0 else 51
-        counts = [6] * 8
-        for j in range(n - 48):
-            counts[(extras_start + j) % 8] += 1
-        plan.append(dict(question_indices=shuffled[offset:offset + n], global_questions=n,
-                         rank_questions=counts, extras_start=extras_start))
-        offset += n
-        extras_start = (extras_start + n - 48) % 8
-    assert offset == 512 and all(sum(row['rank_questions'][r] for row in plan) == 64 for r in range(8))
-    return plan
-
-
 def summarize_loss_curve(curve):
     if len(curve) != 100 or [row['step'] for row in curve] != list(range(1, 101)):
         raise ValueError('A periodic full-pool epoch has100 actual global loss observations')
@@ -78,7 +60,7 @@ def summarize_loss_curve(curve):
                                       for key in ('trajectory_bce', 'group_bce', 'total_loss')},
                 loss_semantics='each_step_global_true_group_weighted_mean_before_its_own_update',
                 batches_differ_between_steps=True, monotonic_decrease_required=False,
-                actual_adam_updates_per_rank=100, world_size=8, replica_updates_are_not_summed=True)
+                actual_adam_updates_per_rank=100, world_size=WORLD, replica_updates_are_not_summed=True)
 
 
 def candidate_groups(index, expected_questions=5120):
@@ -164,7 +146,10 @@ def join_own_em(index, records, actor_version, prefix_scan_sha, selection_sha):
 def prefix_row(original):
     """A real initial EOS may leave no kept policy tokens; keep its question."""
     if original.get('length', original.get('prefix_length')) != 0:
-        return normalized_row(original, QMAX)
+        row = normalized_row(original, QMAX)
+        if not 1 <= row['policy_length'] <= PREFIX_TOKENS:
+            raise ValueError('Only the authentic first five policy tokens may enter this probe')
+        return row
     initial = original.get('initial_context', {})
     length = initial.get('request_length', original.get('question_length'))
     offset = initial.get('context_offset', original.get('question_context_offset'))
@@ -173,42 +158,6 @@ def prefix_row(original):
         raise ValueError('Actual zero-policy EOS requires its authentic initial prompt context')
     return dict(original, question_length=length, question_context_offset=offset,
                 length=0, policy_length=0, prefix_length=0, segments=[], segment_bounds=[])
-
-
-def validate_online_layout(batch, max_positions):
-    features, mask, positions = batch['features'], batch['attention_mask'], batch['position_ids']
-    lengths, question, policy = batch['question_lengths'], batch['question_mask'], batch['policy_mask']
-    if (features.ndim != 3 or features.shape[1:] != (WIDTH, DIM) or mask.shape != features.shape[:2]
-            or positions.shape != mask.shape or positions.dtype != torch.long or mask.dtype != torch.bool
-            or question.shape != mask.shape or policy.shape != mask.shape
-            or question.dtype != torch.bool or policy.dtype != torch.bool
-            or lengths.shape != (features.shape[0],) or lengths.dtype != torch.long):
-        raise ValueError('Question+20 head requires the fixed authentic feature layout')
-    slots = torch.arange(WIDTH, device=mask.device).unsqueeze(0)
-    if (bool(((lengths < 1) | (lengths > QMAX)).any()) or not torch.equal(question, slots < lengths[:, None])
-            or bool(policy[:, :QMAX].any()) or not torch.equal(mask, question | policy)
-            or not torch.equal(positions[question], slots.expand_as(mask)[question])):
-        raise ValueError('Question slots, masks, or original RoPE positions differ')
-    for i, bounds in enumerate(batch['policy_segments']):
-        if bool(policy[i, QMAX:].any()):
-            validate_prefix_positions(policy[i:i+1, QMAX:], positions[i:i+1, QMAX:], [bounds], max_positions)
-        elif bounds:
-            raise ValueError('Actual zero-token prefix cannot have synthetic policy segments')
-
-
-class OnlineQuestionProbe(QuestionPrefixCorrectnessProbe):
-    """Identical learned tensors; permit authentic initial-EOS question-only rows."""
-    def forward(self, batch):
-        validate_online_layout(batch, self.max_positions)
-        features, mask, positions = batch['features'].detach(), batch['attention_mask'], batch['position_ids']
-        kwargs = dict(attention_mask=mask, position_ids=positions,
-                      position_embeddings=self.rotary(features, positions), use_cache=False, output_attentions=False)
-        if self._cache_position:
-            kwargs['cache_position'] = torch.arange(WIDTH, device=features.device)
-        hidden = self.block(features, **kwargs)
-        if isinstance(hidden, tuple):
-            hidden = hidden[0]
-        return self.output(masked_flatten(hidden, mask)).squeeze(-1).float()
 
 
 class PrefixEncoder(InlineEncoder):
@@ -396,60 +345,88 @@ def atomic_checkpoint(directory, saved, completed_outer):
     return receipt
 
 
-def initial_online_state(source, binding):
-    """Deliberately import only learned weights, no warmup optimizer/RNG clock."""
-    if (source['run_id'] != SOURCE_RUN or source['epoch'] != 100
-            or source['binding']['question_max_tokens'] != QMAX or source['binding']['head_max_tokens'] != WIDTH
-            or source['test_manifest_sha256'] != TEST_SHA or len(source['model']) != 14
-            or source['model']['output.weight'].shape != (1, WIDTH*DIM)
-            or any(value.dtype != torch.float32 for value in source['model'].values())):
-        raise ValueError('Warmup100 model weights or official question20 architecture differs')
+def initial_online_state(source, binding, *, source_epoch=3, source_model_kind='ema', source_run=SOURCE_RUN):
+    """Import qualified learned model/buffers only; online Adam/RNG begin afresh."""
+    model, buffers, proof = warmup_model_weights(source, epoch=source_epoch,
+        model_kind=source_model_kind, source_run=source_run)
     return dict(schema_version=1, run_id=binding['run_id'], binding=binding, binding_sha256=digest(binding),
-                completed_outer=0, model=source['model'], optimizer=None, rank_rng=None,
-                actual_adam_steps_per_rank=[0]*8, learning_rate=LR)
+                completed_outer=0, model=model, model_nonpersistent_buffers=buffers,
+                warmup_model_import=proof, optimizer=None, rank_rng=None,
+                actual_adam_steps_per_rank=[0]*WORLD, learning_rate=LR)
 
 
 def initialize(args):
     directory, source = remote(args.state_dir), remote(args.source_checkpoint)
+    source_epoch, model_kind = args.source_epoch, args.source_model_kind
+    expected_sha = args.source_sha256
+    if (type(source_epoch) is not int or not 1 <= source_epoch <= 200 or model_kind not in ('ema', 'raw')
+            or len(expected_sha) != 64 or any(c not in '0123456789abcdef' for c in expected_sha)
+            or (source_epoch == 3 and expected_sha != EPOCH3_SHA)):
+        raise ValueError('Require the explicit qualified source epoch/SHA/model kind; CP3 has its own exact SHA')
     if (directory / 'initialization-complete.json').exists():
         existing = read(directory / 'initialization-complete.json')
-        if existing['run_id'] != args.run_id or existing['source_sha256'] != args.source_sha256:
-            raise ValueError('Existing online probe belongs to another initialization')
+        if (existing['run_id'] != args.run_id or existing['source_sha256'] != expected_sha
+                or existing['source_epoch'] != source_epoch or existing['source_model_kind'] != model_kind):
+            raise ValueError('Existing online probe belongs to another source/model initialization')
         return dict(status='EXISTING_PROBE_INITIALIZATION_NO_REPLAY', receipt=existing)
-    if args.source_sha256 != SOURCE_SHA or args.test_manifest_sha != TEST_SHA:
-        raise ValueError('This formal run starts from the approved warmup100/fixed diagnostic')
-    directory.mkdir(parents=True, exist_ok=True)
-    once(directory / 'initialization-intent.json', dict(run_id=args.run_id, source=str(source), source_sha256=SOURCE_SHA))
-    if sha(source) != SOURCE_SHA:
-        raise ValueError('Approved warmup CP100 bytes differ')
-    saved = torch.load(source, map_location='cpu', weights_only=False)
-    test = FeatureCache(args.test_cache, args.test_manifest_sha)
-    binding = dict(role='prefix_selection200_actorhidden_period20_correctness_probe',
+    if not source.is_file() or source.is_symlink():
+        raise FileNotFoundError('The requested complete warmup checkpoint must actually exist; historical metadata is insufficient')
+    before = source.stat()
+    if sha(source) != expected_sha:
+        raise ValueError('Requested complete warmup checkpoint bytes differ; another epoch cannot be substituted')
+    with source.open('rb') as handle:
+        opened = os.fstat(handle.fileno())
+        if (opened.st_dev, opened.st_ino, opened.st_size, opened.st_mtime_ns) != (
+                before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns):
+            raise ValueError('Warmup checkpoint changed after its SHA qualification')
+        saved = torch.load(handle, map_location='cpu', weights_only=False)
+        after = os.fstat(handle.fileno())
+    current = source.stat()
+    if (opened.st_dev, opened.st_ino, opened.st_size, opened.st_mtime_ns) != (
+            after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns) or (
+            opened.st_dev, opened.st_ino, opened.st_size, opened.st_mtime_ns) != (
+            current.st_dev, current.st_ino, current.st_size, current.st_mtime_ns):
+        raise ValueError('Warmup checkpoint changed while loading')
+    model, buffers, proof = warmup_model_weights(saved, epoch=source_epoch,
+        model_kind=model_kind, source_run=args.source_run)
+    source_binding = saved['binding']
+    if source_binding['feature_manifest_sha256'] != args.test_manifest_sha:
+        raise ValueError('Initial fixed diagnostic source must bind the accepted complete warmup feature manifest')
+    binding = dict(role='prefix_selection200_actorhidden_period20_question5_correctness_probe',
         representation_source='current_sampling_actor_native_layer27_postblock',
         independent_encoder_forward=False, probe_update_period=20, updates_per_period=100, run_id=args.run_id,
-        encoder_revision=REVISION, encoder_files_sha256=test.spec['encoder_files_sha256'],
+        encoder_revision=REVISION, source_feature_manifest_sha256=source_binding['feature_manifest_sha256'],
+        source_feature_spec_sha256=source_binding['feature_spec_sha256'],
         question_max_tokens=QMAX, head_max_tokens=WIDTH, feature_layer=27, feature_boundary='post_block',
-        prefix_tokens=20, source_probe_sha256=SOURCE_SHA, warmup_model_weights_only=True,
-        warmup_optimizer_imported=False, online_initial_adam_steps=0, learning_rate=LR,
+        prefix_tokens=PREFIX_TOKENS, source_probe_sha256=expected_sha, source_epoch=source_epoch,
+        source_model_kind=model_kind, source_warmup_run=args.source_run,
+        warmup_model_weights_only=True, warmup_optimizer_imported=False,
+        online_initial_adam_steps=0, learning_rate=LR,
         group_weight=1.0, loss='mean_trajectory_BCE_plus_mean_G5_mixed_BCE',
         updates_per_outer=0, global_batch_average=256, actual_global_batches=[255, 260],
-        world_size=8, accumulation=1, rank_questions_per_period=640, rank_trajectories_per_period=3200,
-        diagnostic_manifest_sha256=TEST_SHA, diagnostic_questions=512,
+        world_size=WORLD, accumulation=1, rank_questions_per_period=1280, rank_trajectories_per_period=6400,
+        diagnostic_manifest_sha256=args.test_manifest_sha, diagnostic_questions=512,
         selected_questions=512, candidate_questions=5120, exploration=0,
         selection='q_descending_then_original_candidate_ordinal', zero_policy_eos='authentic_question_only_no_fake_token')
-    initial = initial_online_state(saved, binding)
+    initial = dict(schema_version=1, run_id=binding['run_id'], binding=binding, binding_sha256=digest(binding),
+        completed_outer=0, model=model, model_nonpersistent_buffers=buffers, warmup_model_import=proof,
+        optimizer=None, rank_rng=None, actual_adam_steps_per_rank=[0]*WORLD, learning_rate=LR)
+    directory.mkdir(parents=True, exist_ok=True)
+    once(directory / 'initialization-intent.json', dict(run_id=args.run_id, source=str(source),
+        source_sha256=expected_sha, source_epoch=source_epoch, source_model_kind=model_kind))
     receipt = atomic_checkpoint(directory, initial, 0)
-    result = dict(status='WARMUP100_MODEL_ONLY_ONLINE_ADAM0_INITIALIZED', run_id=args.run_id,
-        source_sha256=SOURCE_SHA, source_model_tensors=14, warmup_optimizer_imported=False,
-        warmup_rng_imported=False, warmup_updates_reexecuted=0, receipt=receipt)
+    result = dict(status='QUALIFIED_QUESTION5_WARMUP_MODEL_ONLY_ONLINE_ADAM0_INITIALIZED', run_id=args.run_id,
+        source_sha256=expected_sha, source_epoch=source_epoch, source_model_kind=model_kind,
+        source_model_tensors=14, native_buffers_preserved=True, warmup_optimizer_imported=False,
+        warmup_rng_imported=False, warmup_updates_reexecuted=0, source_import=proof, receipt=receipt)
     once(directory / 'initialization-complete.json', result)
     return result
 
 
 def setup_ddp():
     rank, local, world = (int(os.environ[key]) for key in ('RANK', 'LOCAL_RANK', 'WORLD_SIZE'))
-    if world != 8 or torch.cuda.device_count() != 8:
-        raise ValueError('Probe phases require the actual eight CUDA ranks')
+    if world != WORLD or torch.cuda.device_count() != WORLD:
+        raise ValueError('Probe phases require the actual four CUDA ranks')
     torch.cuda.set_device(local)
     dist.init_process_group('nccl', timeout=datetime.timedelta(minutes=30))
     return rank, local, torch.device('cuda', local)
@@ -461,7 +438,7 @@ def load_online(args, device):
     from .periodic import probe_boundary
     expected = probe_boundary(args.outer-1)
     if (receipt['completed_outer'] != expected['last_update_outer'] or
-            receipt['actual_adam_steps_per_rank'] != [expected['actual_adam_per_rank']]*8):
+            receipt['actual_adam_steps_per_rank'] != [expected['actual_adam_per_rank']]*WORLD):
         raise ValueError('Probe must be the last completed20-outer periodic state')
     path = directory / 'latest.pt'
     with path.open('rb') as handle:
@@ -478,7 +455,13 @@ def load_online(args, device):
             or saved['binding']['learning_rate'] != LR):
         raise ValueError('Online probe binding or actual Adam boundary differs')
     model = OnlineQuestionProbe(remote(args.model_dir), QMAX).to(device=device, dtype=torch.float32)
+    validate_model_state(saved['model'])
+    validate_native_buffers(saved['model_nonpersistent_buffers'])
     model.load_state_dict(saved['model'], strict=True)
+    restore_native_buffers(model, saved['model_nonpersistent_buffers'])
+    if (saved['binding'].get('world_size') != WORLD or saved['binding'].get('prefix_tokens') != PREFIX_TOKENS
+            or saved['binding'].get('question_max_tokens') != QMAX or saved['binding'].get('head_max_tokens') != WIDTH):
+        raise ValueError('Online probe source architecture or four-rank contract differs')
     return model, saved, receipt
 
 
@@ -494,7 +477,7 @@ def score(args):
         if manifest['outer'] != args.outer or manifest['run_id'] != saved['run_id']:
             raise ValueError('Native features belong to another actual actor/outer/run')
         groups = candidate_groups(features.index)
-        own_groups = groups[rank::8]
+        own_groups = groups[rank::WORLD]
         out = remote(args.output)
         if rank == 0: out.mkdir(parents=True, exist_ok=False)
         dist.barrier()
@@ -509,7 +492,7 @@ def score(args):
                 local_logits.extend(zip(ids,logits.cpu().tolist()))
                 publish(out/('score-progress-rank-%d.json'%rank),dict(outer=args.outer,
                     scored_trajectories=len(local_logits),stage='CURRENT_ACTOR_NATIVE_HIDDEN_HEAD_SCORING'))
-        gathered=[None]*8;dist.all_gather_object(gathered,local_logits)
+        gathered=[None]*WORLD;dist.all_gather_object(gathered,local_logits)
         merged=[pair for rows in gathered for pair in rows]
         if len(merged)!=25600 or len({tid for tid,_ in merged})!=25600:
             raise ValueError('Score all5120G5 authentic native features exactly once')
@@ -556,7 +539,7 @@ def update(args):
     try:
         model, saved, receipt = load_online(args, device)
         from .native_features import NativeFeatures
-        from .periodic import is_probe_update, probe_boundary, complete_pool_plan
+        from .periodic import is_probe_update, probe_boundary
         if not is_probe_update(args.outer):
             raise ValueError('No probe optimization outside20,40,...200')
         m=read(remote(args.scored_features)/'manifest.json')
@@ -586,7 +569,7 @@ def update(args):
             with torch.no_grad():
                 for split,data,rows in (('train',features,groups),('test',test,candidate_groups(test.index,512))):
                     local_predictions=[]
-                    own_groups=rows[rank::8]
+                    own_groups=rows[rank::WORLD]
                     for start in range(0,len(own_groups),6):
                         ids=[tid for group in own_groups[start:start+6] for tid in group['trajectory_ids']]
                         batch=data.get_batch(ids,device)
@@ -595,7 +578,7 @@ def update(args):
                         labels_index=index if split=='train' else test.index
                         local_predictions.extend((tid,float(z),int(labels_index[tid]['strict_em']))
                             for tid,z in zip(ids,logits.cpu().tolist()))
-                    gathered=[None]*8;dist.all_gather_object(gathered,local_predictions)
+                    gathered=[None]*WORLD;dist.all_gather_object(gathered,local_predictions)
                     result[split]=[row for rows in gathered for row in rows]
             return result
         before_predictions=evaluate(model)
@@ -621,10 +604,10 @@ def update(args):
         if actual_adam_steps(optimizer) != expected_before or any(rate != LR for rate in optimizer_learning_rates(optimizer)):
             raise ValueError('Online Adam state or constant LR changed')
         plan = complete_pool_plan(args.seed, args.outer)
-        binding_values = [None]*8
+        binding_values = [None]*WORLD
         dist.all_gather_object(binding_values, (features.manifest_sha, sha(own_path), digest(plan), receipt['sha256']))
         if len(set(binding_values)) != 1:
-            raise ValueError('Eight ranks differ in selected features, outcomes, plan, or prior probe')
+            raise ValueError('Four ranks differ in features, outcomes, plan, or prior probe')
         out = remote(args.output)
         if rank == 0:
             out.mkdir(parents=True, exist_ok=False)
@@ -688,8 +671,8 @@ def update(args):
             append(out / ('rank-%d-updates.jsonl' % rank), row)
             publish(out / ('progress-rank-%d.json' % rank), dict(row, stage='ONLINE_PROBE_ADAM_WRITE_COMPLETE'))
         train_loop_seconds = time.monotonic()-started
-        if totals[3:] != [640, 3200]:
-            raise RuntimeError('Periodic rank must visit640 own groups/3200 trajectories once')
+        if totals[3:] != [1280, 6400]:
+            raise RuntimeError('Periodic rank must visit1280 own groups/6400 trajectories once')
         stats = torch.tensor(totals, dtype=torch.float64, device=device)
         dist.all_reduce(stats)
         if stats[3:].tolist() != [5120, 25600]:
@@ -697,7 +680,7 @@ def update(args):
         predictions = evaluate(model)
         rng = dict(rank=rank, actual_adam_steps=actual_adam_steps(optimizer), python=random.getstate(),
                    numpy=np.random.get_state(), torch_cpu=torch.get_rng_state(), torch_cuda=torch.cuda.get_rng_state(device))
-        all_rng = [None]*8
+        all_rng = [None]*WORLD
         dist.all_gather_object(all_rng, rng)
         if rank == 0:
             train_metrics, train_rows = evaluate_predictions(predictions['train'], index, 5120)
@@ -710,11 +693,12 @@ def update(args):
                         state[key] = value.detach().cpu()
             checkpoint = dict(schema_version=1, run_id=saved['run_id'], binding=saved['binding'],
                 binding_sha256=saved['binding_sha256'], completed_outer=args.outer, model=saved_model,
-                optimizer=optimizer_state, rank_rng=all_rng, actual_adam_steps_per_rank=[probe_boundary(args.outer)['actual_adam_per_rank']]*8,
+                model_nonpersistent_buffers=nonpersistent_buffers(model.module),
+                warmup_model_import=saved.get('warmup_model_import'), optimizer=optimizer_state, rank_rng=all_rng, actual_adam_steps_per_rank=[probe_boundary(args.outer)['actual_adam_per_rank']]*WORLD,
                 learning_rate=LR, scored_features_manifest_sha256=features.manifest_sha,
                 own_em_sha256=sha(own_path), actor_version=m['actor_version'])
             result = atomic_checkpoint(args.state_dir, checkpoint, args.outer)
-            metrics = dict(run_id=saved['run_id'], outer=args.outer, actual_adam_steps_per_rank=[probe_boundary(args.outer)['actual_adam_per_rank']]*8,
+            metrics = dict(run_id=saved['run_id'], outer=args.outer, actual_adam_steps_per_rank=[probe_boundary(args.outer)['actual_adam_per_rank']]*WORLD,
                 new_adam_steps_per_rank=100, actual_learning_rate=LR, train=train_metrics, test=test_metrics,
                 before_update=before_metrics, unselected_training_questions=5120, actor_hidden_native=True,
                 train_online_trajectory_bce=float(stats[0]/5120), train_online_group_bce=float(stats[1]/5120),
@@ -742,7 +726,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('phase', choices=('initialize', 'score', 'update'))
     parser.add_argument('--state-dir', required=True)
-    parser.add_argument('--source-checkpoint'); parser.add_argument('--source-sha256')
+    parser.add_argument('--source-checkpoint'); parser.add_argument('--source-sha256', default=EPOCH3_SHA)
+    parser.add_argument('--source-epoch', type=int, default=3)
+    parser.add_argument('--source-model-kind', choices=('ema', 'raw'), default='ema')
+    parser.add_argument('--source-run', default=SOURCE_RUN)
     parser.add_argument('--run-id'); parser.add_argument('--prefix-inputs'); parser.add_argument('--scored-features')
     parser.add_argument('--own-em'); parser.add_argument('--own-em-sha256'); parser.add_argument('--output')
     parser.add_argument('--outer', type=int); parser.add_argument('--model-dir')

@@ -149,8 +149,8 @@ def torchrun_owned_class():
         def __init__(self,*args):
             self.handles={}
             super().__init__(*args)
-        def start(self,name,*args):
-            process=super().start(name,*args);self.handles[name]=process;return process
+        def start(self,name,*args,**kwargs):
+            process=super().start(name,*args,**kwargs);self.handles[name]=process;return process
         def reap(self):
             for process in self.handles.values():
                 if process.poll() is not None:process.wait()

@@ -1,5 +1,6 @@
 """The actor-hidden experiment's clocks and complete, unselected G5 epoch."""
 import random
+from .contract import WORLD
 
 PERIOD = 20
 UPDATES = 100
@@ -27,14 +28,14 @@ def complete_pool_plan(seed, outer):
     plan, offset, extras_start = [], 0, 0
     for step in range(UPDATES):
         n = 52 if (step + 1) % 5 == 0 else 51
-        counts = [6] * 8
-        for j in range(n - 48):
-            counts[(extras_start + j) % 8] += 1
+        counts = [12] * WORLD
+        for j in range(n - 12 * WORLD):
+            counts[(extras_start + j) % WORLD] += 1
         plan.append(dict(question_indices=shuffled[offset:offset+n],
                          global_questions=n, rank_questions=counts))
         offset += n
-        extras_start = (extras_start + n - 48) % 8
+        extras_start = (extras_start + n - 12 * WORLD) % WORLD
     assert offset == 5120
     assert sorted(i for batch in plan for i in batch['question_indices']) == list(range(5120))
-    assert all(sum(batch['rank_questions'][r] for batch in plan) == 640 for r in range(8))
+    assert all(sum(batch['rank_questions'][r] for batch in plan) == 1280 for r in range(WORLD))
     return plan

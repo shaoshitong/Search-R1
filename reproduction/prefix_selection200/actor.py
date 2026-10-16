@@ -1,4 +1,4 @@
-"""Eight-rank, phase-local Search-G1 actor updates on the selected *same* G5.
+"""Four physical ranks preserve the reference eight-rank actor objective.
 
 The native sampling journal supplies old policy probabilities, including the
 scored prefixes. Grounding flip/boundary supplies the unchanged soft reward;
@@ -21,10 +21,14 @@ import re
 import shutil
 import uuid
 
+from .contract import SAMPLING_CONTRACT, WORLD
+
 REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
-WORLD = 8
 MILESTONES = (5, 50, 100, 150, 200)
-SAMPLING_CONTRACT = 'chunked_native_action500_prefix20_v1'
+VIRTUAL_WORLD = 8
+VIRTUAL_MINI = 16
+VIRTUAL_PER_RANK = VIRTUAL_WORLD // WORLD
+OBJECTIVE = 'mean_of_eight_virtual_rank_local16_policy_token_means'
 GROUNDING_ARCHIVE = ('/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/'
     'artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/version-manifest.json')
 GROUNDING_ARCHIVE_SHA256 = '924e5487d19cf667dee56ae0a76eba7143cd6eb6325f1024989bac5d05efbb61'
@@ -52,7 +56,7 @@ def utc():
 
 def remote(path):
     path = Path(path).resolve()
-    if not path.is_absolute() or not str(path).startswith(('/mnt/', '/dataset/')):
+    if not path.is_absolute() or not str(path).startswith(('/mnt/', '/dataset/', '/data/')):
         raise ValueError('Actor weights, optimizer, logs and trajectories must remain remote')
     return path
 
@@ -76,10 +80,12 @@ def append(path, value):
 
 @dataclass(frozen=True)
 class ActorBudget:
-    global_micro: int = 128
+    # Explicitly requested global micro; a local forward never crosses a
+    # reference virtual-rank16 boundary. Receipts expose any effective cap.
+    global_micro: int = 16
     global_mini: int = 128
     global_trajectories: int = 2560
-    world: int = 8
+    world: int = WORLD
     ppo_epochs: int = 1
 
     def __post_init__(self):
@@ -87,15 +93,19 @@ class ActorBudget:
                 or self.ppo_epochs != 1 or type(self.global_micro) is not int
                 or self.global_micro < WORLD or self.global_mini % self.global_micro
                 or self.global_micro % WORLD):
-            raise ValueError('Keep8ranks, mini128, one pass,20writes; micro must divide mini128')
+            raise ValueError('Keep4physical/8virtual ranks, mini128, one pass,20writes; micro must divide mini128')
+
+    @property
+    def effective_global_micro(self):
+        return min(self.global_micro, WORLD * VIRTUAL_MINI)
 
     @property
     def local_micro(self):
-        return self.global_micro // self.world
+        return self.effective_global_micro // self.world
 
     @property
     def accumulation(self):
-        return self.global_mini // self.global_micro
+        return self.global_mini // self.effective_global_micro
 
 
 def learning_rate(completed_outer):
@@ -106,11 +116,12 @@ def learning_rate(completed_outer):
 
 def oom_retry_plan(*, outer, failed_micro, latest_complete_outer, rollout_actor_version,
                    latest_actor_version, partial_writes):
-    """Actual OOM controller input; abandoned partial writes are never stitched in.
+    """Actual OOM controller input; unsaved partial writes are never stitched in.
 
     Call only after the failed native process group has exited. Retain its rank
-    ledgers, mark partial writes abandoned, and retry this exact cached rollout
-    from this run's immediately preceding committed actor state under a NEW ID.
+    ledgers and explicitly account for discarded *unsaved* writes. Reload the
+    preceding complete state under a NEW ID; this is recovery with lost updates,
+    never a claim that the failed process's real Adam writes were rolled back.
     """
     budget = ActorBudget(failed_micro)
     if (type(outer) is not int or not 1 <= outer <= 200 or latest_complete_outer != outer - 1
@@ -118,14 +129,20 @@ def oom_retry_plan(*, outer, failed_micro, latest_complete_outer, rollout_actor_
             or any(type(n) is not int or not 0 <= n <= 20 for n in partial_writes)):
         raise ValueError('OOM recovery must use the same rollout and latest complete actor boundary')
     if budget.local_micro == 1:
-        return dict(status='OOM_AT_MINIMUM_MICRO', retry=False, abandoned_partial_writes=partial_writes)
-    next_budget = ActorBudget(failed_micro // 2)
+        return dict(status='OOM_AT_MINIMUM_MICRO', retry=False,
+            observed_unsaved_partial_writes=partial_writes, abandoned_partial_writes=partial_writes,
+            partial_updates_occurred=any(partial_writes), automatic_rollback_performed=False)
+    next_budget = ActorBudget(budget.effective_global_micro // 2)
     return dict(status='RETRY_SAME_CACHED_OUTER_FROM_LAST_COMPLETE', retry=True,
         restore_completed_outer=latest_complete_outer, new_attempt_id=uuid.uuid4().hex,
         actor_global_micro_batch_size=next_budget.global_micro,
         actor_local_micro_batch_size=next_budget.local_micro,
         gradient_accumulation=next_budget.accumulation,
         abandoned_partial_writes=partial_writes, stitch_partial_writes=False,
+        observed_unsaved_partial_writes=partial_writes,
+        partial_updates_occurred=any(partial_writes), lost_unsaved_updates_on_reload=partial_writes,
+        automatic_rollback_performed=False, failed_requested_global_micro=failed_micro,
+        failed_effective_global_micro=budget.effective_global_micro,
         rollout_actor_version=rollout_actor_version, bitwise_continuation_claimed=False)
 
 
@@ -200,7 +217,7 @@ def collect_oom_retry(output, config_path, outer, rollout_path, attempt_id, *, p
     if not actual_oom:
         return dict(status='NON_OOM_FAILURE', retry=False, failures=failures, ledgers=ledgers,
                     observed_committed_partial_writes=counts, ranks_without_ledger=missing)
-    plan = oom_retry_plan(outer=outer, failed_micro=int(config.get('actor_global_micro_batch_size', 128)),
+    plan = oom_retry_plan(outer=outer, failed_micro=int(config.get('actor_global_micro_batch_size', 16)),
         latest_complete_outer=completed, rollout_actor_version=rollout['actor_version'],
         latest_actor_version=version, partial_writes=counts)
     plan.update(attempt_id=attempt_id, failed_attempt_dir=str(directory), failures=failures,
@@ -384,11 +401,18 @@ def compute_soft_rewards(rows, tokenizer, config, rank=0):
 
 
 def rank_plan(seed, outer, world=WORLD):
-    """One natural randomized2560 trajectory pass, exactly20x16 rows/rank."""
-    if world != WORLD or not 1 <= outer <= 200: raise ValueError('Require eight ranks and outer1..200')
+    """Each physical rank owns two adjacent original virtual16 minibatches."""
+    if world != WORLD or not 1 <= outer <= 200: raise ValueError('Require four ranks and outer1..200')
     order = list(range(2560)); random.Random(seed + outer).shuffle(order)
-    return [[order[step * 128 + rank * 16:step * 128 + (rank + 1) * 16]
+    return [[order[step * 128 + rank * 32:step * 128 + (rank + 1) * 32]
              for step in range(20)] for rank in range(world)]
+
+
+def virtual_minibatches(ids):
+    """Never replace two reference token means with one combined token mean."""
+    if len(ids) != VIRTUAL_MINI * VIRTUAL_PER_RANK:
+        raise ValueError('A physical minibatch must contain two complete virtual16 groups')
+    return [ids[start:start + VIRTUAL_MINI] for start in range(0, len(ids), VIRTUAL_MINI)]
 
 
 def masked_policy_objective(old, current, advantages, mask, *, loss_fn):
@@ -424,11 +448,12 @@ def _set_rng(state):
 def _state_binding(config):
     # Micro is intentionally mutable after a real OOM; the scientific budget is not.
     return dict(run_id=config['run_id'], model_revision=REVISION,
-        official_model_dir=str(remote(config['official_model_dir'])), world_size=8,
+        official_model_dir=str(remote(config['official_model_dir'])), world_size=WORLD,
         seed=int(config.get('seed', 1729)),
         global_mini=128, ppo_epochs=1, trajectories=2560, updates_per_outer=20,
         learning_rate=1e-6, outer_warmup=57, clip_ratio=.2, dual_clip=3., grad_clip=1.,
-        loss_reduction='mean_of_eight_rank_local_minibatch_policy_token_means',
+        loss_reduction=OBJECTIVE, reference_virtual_world=VIRTUAL_WORLD,
+        reference_virtual_local_mini=VIRTUAL_MINI, virtual_blocks_per_physical_rank=VIRTUAL_PER_RANK,
         entropy_coefficient=0., reference_kl_coefficient=0., reference_kl_type='low_var_kl',
         grounding_probe_version=config['grounding_probe_version'], reward_environment=REWARD_ENV)
 
@@ -505,7 +530,7 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
         binding=_state_binding(config), optimizer=cpu_tree(optimizer.state_dict()),
         optimizer_parameter_layout=optimizer_layout(optimizer),
         scheduler=cpu_tree(scheduler.state_dict()), rng=_rng(),
-        model_master_dtype='torch.float32', optimizer_layout='FSDP_FULL_SHARD_same_Qwen2DecoderLayer_wrap_world8',
+        model_master_dtype='torch.float32', optimizer_layout='FSDP_FULL_SHARD_same_Qwen2DecoderLayer_wrap_world4',
         original_rollout_path=str(rollout_path), original_rollout_sha256=sha(rollout_path))
     state_proof = atomic_save(attempt_dir / ('rank-%d.pt' % rank), state)
     proofs = [None] * WORLD; dist.all_gather_object(proofs, state_proof)
@@ -534,7 +559,8 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
             hf_files=hf, driver_state=driver_proof, actual_adam_steps_per_rank=[20 * outer] * WORLD,
             new_adam_steps_per_rank=[20] * WORLD, scheduler_completed_outer=outer,
             learning_rate_used=learning_rate(outer - 1), next_learning_rate=learning_rate(outer),
-            actual_global_micro=budget.global_micro, actual_local_micro=budget.local_micro,
+            requested_global_micro=budget.global_micro,
+            actual_global_micro=budget.effective_global_micro, actual_local_micro=budget.local_micro,
             gradient_accumulation=budget.accumulation, global_mini=128, ppo_epochs=1,
             original_rollout_path=str(rollout_path), original_rollout_sha256=sha(rollout_path),
             sampling_actor_version=read(rollout_path)['actor_version'], reward=reward_proof,
@@ -555,10 +581,10 @@ def train(config_path, outer, rollout_path, output_path):
     if config['model_revision'] != REVISION or not 1 <= outer <= 200:
         raise ValueError('Fresh official actor200 revision/budget differs')
     rank, local, world = (int(os.environ[k]) for k in ('RANK', 'LOCAL_RANK', 'WORLD_SIZE'))
-    if world != WORLD: raise ValueError('Actor phase requires exactly8 ranks')
+    if world != WORLD: raise ValueError('Actor phase requires exactly4 physical ranks')
     torch.cuda.set_device(local); dist.init_process_group('nccl')
     torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = False
-    budget = ActorBudget(int(config.get('actor_global_micro_batch_size', 128)))
+    budget = ActorBudget(int(config.get('actor_global_micro_batch_size', 16)))
     seed = int(config.get('seed', 1729))
     random.seed(seed + rank); np.random.seed(seed + rank); torch.manual_seed(seed + rank)
     output.mkdir(parents=True, exist_ok=True)
@@ -582,7 +608,10 @@ def train(config_path, outer, rollout_path, output_path):
         atomic_json(attempt_dir / 'attempt.json', dict(run_id=config['run_id'], outer=outer,
             attempt_id=attempt[0], cached_rollout_path=str(rollout_path), actor_version=old_version,
             config_path=str(config_path), config_sha256=sha(config_path),
-            actor_global_micro_batch_size=budget.global_micro, created_utc=utc()))
+            requested_actor_global_micro_batch_size=budget.global_micro,
+            actor_global_micro_batch_size=budget.effective_global_micro,
+            virtual_local_mini=VIRTUAL_MINI, virtual_blocks_per_physical_rank=VIRTUAL_PER_RANK,
+            created_utc=utc()))
     dist.barrier()
     # Attempt identity exists even if loading/initializing the model encounters OOM.
     rows, rollout = load_rollout(rollout_path, config, outer, old_version)
@@ -610,7 +639,8 @@ def train(config_path, outer, rollout_path, output_path):
         actual_adam_before=20 * (outer - 1), restored_scheduler=scheduler.last_epoch,
         actual_learning_rates=[part['lr'] for part in optimizer.param_groups],
         actual_model_master_dtypes=sorted({str(p.dtype) for p in wrapped.parameters()}),
-        actor_version=old_version, actual_global_micro=budget.global_micro, utc=utc()))
+        actor_version=old_version, requested_global_micro=budget.global_micro,
+        actual_global_micro=budget.effective_global_micro, utc=utc()))
     reward_ids = list(range(rank, len(rows), WORLD))
     local_scores, local_reward_proof = compute_soft_rewards([rows[i] for i in reward_ids], tokenizer, config, rank)
     reward_parts = [None] * WORLD
@@ -619,7 +649,7 @@ def train(config_path, outer, rollout_path, output_path):
     for part in reward_parts:
         for i, score in zip(part['ids'], part['scores']): scores[i] = score
     if any(score is None for score in scores): raise ValueError('Distributed grounding reward omitted an own trajectory')
-    # Original group normalization happens after the8 reward shards are reunited.
+    # Original group normalization happens after the four reward shards reunite.
     advantages = group_advantages(rows, scores).tolist()
     reward_proof = dict(version=config['grounding_probe_version'], ranks=[part['proof'] for part in reward_parts],
         trajectories=len(rows), score_mean=math.fsum(scores) / len(scores),
@@ -630,26 +660,31 @@ def train(config_path, outer, rollout_path, output_path):
         wrapped.train()
         for step, ids in enumerate(plan):
             optimizer.zero_grad(set_to_none=True); metrics = []
-            mini_mass = sum(sum(rows[i]['response_info_mask']) for i in ids)
-            for offset in range(0, len(ids), budget.local_micro):
-                micro_ids = ids[offset:offset + budget.local_micro]
-                batch = tensor_batch([rows[i] for i in micro_ids], tokenizer.pad_token_id)
-                response_width = batch['responses'].shape[1]
-                batch['advantages'] = torch.tensor([advantages[i] for i in micro_ids], dtype=torch.float32)[:, None].expand(-1, response_width)
-                batch = {key: value.to(local) for key, value in batch.items()}
-                _, current = actor._forward_micro_batch(batch, temperature=1., compute_entropy=False)
-                loss, clipfrac, kl = masked_policy_objective(batch['old_log_probs'], current,
-                    batch['advantages'], batch['loss_mask'], loss_fn=compute_policy_loss)
-                # Only true nonfinite loss/gradient is invalid; magnitude/ratio diagnostics never stop this run.
-                finite = torch.tensor(int(torch.isfinite(loss)), dtype=torch.int32, device=local)
-                dist.all_reduce(finite, op=dist.ReduceOp.MIN)
-                if not finite.item(): raise FloatingPointError('Nonfinite actual actor loss')
-                micro_mass = sum(sum(rows[i]['response_info_mask']) for i in micro_ids)
-                weight = micro_loss_weight(micro_mass, mini_mass)
-                (loss * weight).backward()
-                metrics.append(dict(loss=float(loss.detach()), clip_fraction=float(clipfrac.detach()),
-                    old_policy_kl=float(kl.detach()), actual_policy_token_mass=micro_mass,
-                    local_minibatch_policy_token_mass=mini_mass, gradient_weight=weight))
+            for block, virtual_ids in enumerate(virtual_minibatches(ids)):
+                mini_mass = sum(sum(rows[i]['response_info_mask']) for i in virtual_ids)
+                for offset in range(0, len(virtual_ids), budget.local_micro):
+                    micro_ids = virtual_ids[offset:offset + budget.local_micro]
+                    batch = tensor_batch([rows[i] for i in micro_ids], tokenizer.pad_token_id)
+                    response_width = batch['responses'].shape[1]
+                    batch['advantages'] = torch.tensor([advantages[i] for i in micro_ids], dtype=torch.float32)[:, None].expand(-1, response_width)
+                    batch = {key: value.to(local) for key, value in batch.items()}
+                    _, current = actor._forward_micro_batch(batch, temperature=1., compute_entropy=False)
+                    loss, clipfrac, kl = masked_policy_objective(batch['old_log_probs'], current,
+                        batch['advantages'], batch['loss_mask'], loss_fn=compute_policy_loss)
+                    # Keep reference guards exactly: true nonfinite is invalid;
+                    # magnitude/ratio diagnostics do not stop this actor path.
+                    finite = torch.tensor(int(torch.isfinite(loss)), dtype=torch.int32, device=local)
+                    dist.all_reduce(finite, op=dist.ReduceOp.MIN)
+                    if not finite.item(): raise FloatingPointError('Nonfinite actual actor loss')
+                    micro_mass = sum(sum(rows[i]['response_info_mask']) for i in micro_ids)
+                    # FSDP averages physical ranks. Each rank contributes half
+                    # of each virtual16 token mean, giving the original1/8 sum.
+                    weight = micro_loss_weight(micro_mass, mini_mass) / VIRTUAL_PER_RANK
+                    (loss * weight).backward()
+                    metrics.append(dict(loss=float(loss.detach()), clip_fraction=float(clipfrac.detach()),
+                        old_policy_kl=float(kl.detach()), actual_policy_token_mass=micro_mass,
+                        virtual_rank=rank * VIRTUAL_PER_RANK + block,
+                        virtual_minibatch_policy_token_mass=mini_mass, gradient_weight=weight))
             norm = clip_global_l2(wrapped, 1., diagnostic=False)
             optimizer.step(); writes += 1
             steps = {int(value['step'].item()) for value in optimizer.state.values() if 'step' in value}
@@ -658,8 +693,9 @@ def train(config_path, outer, rollout_path, output_path):
                 actual_adam_steps=20 * (outer - 1) + writes, writes_this_attempt=writes,
                 actual_learning_rate=optimizer.param_groups[0]['lr'], grad_norm=float(norm),
                 local_trajectories=len(ids), global_mini=128, local_micro=budget.local_micro,
+                requested_global_micro=budget.global_micro, actual_global_micro=budget.effective_global_micro,
                 gradient_accumulation=budget.accumulation,
-                objective='mean_of_eight_rank_local_minibatch_policy_token_means', metrics=metrics, utc=utc()))
+                objective=OBJECTIVE, metrics=metrics, utc=utc()))
         if writes != 20: raise ValueError('Incomplete outer budget cannot advance scheduler/save latest')
         scheduler.step()
         rank_receipt = dict(rank=rank, outer=outer, new_adam_steps=writes, actual_adam_steps=20 * outer,
@@ -667,7 +703,7 @@ def train(config_path, outer, rollout_path, output_path):
             next_learning_rate=optimizer.param_groups[0]['lr'], ledger_path=str(ledger), ledger_sha256=sha(ledger))
         ranks = [None] * WORLD; dist.all_gather_object(ranks, rank_receipt)
         if any(row['new_adam_steps'] != 20 or row['scheduler_completed_outer'] != outer for row in ranks):
-            raise ValueError('All eight ranks must complete20 writes before actor completion')
+            raise ValueError('All four ranks must complete20 writes before actor completion')
         _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, scheduler, tokenizer,
             rollout_path, config['run_id'] + '-actor%04d' % outer, budget, reward_proof, ranks)
     except BaseException as error:
@@ -676,9 +712,12 @@ def train(config_path, outer, rollout_path, output_path):
         atomic_json(attempt_dir / ('rank-%d-failure.json' % rank), dict(rank=rank, outer=outer,
             run_id=config['run_id'], attempt_id=attempt[0],
             error_type=type(error).__name__, actual_cuda_oom=is_oom, writes_this_attempt=writes,
-            restore_completed_outer=outer - 1, abandoned_unsaved_partial_writes=writes,
+            restore_completed_outer=outer - 1, observed_unsaved_partial_writes=writes,
+            abandoned_unsaved_partial_writes=writes, partial_updates_occurred=bool(writes),
+            automatic_rollback_performed=False, complete_outer_count_advanced=False,
             cached_rollout_path=str(rollout_path), actor_version=old_version,
-            actor_global_micro_batch_size=budget.global_micro, complete_outer=False, utc=utc()))
+            requested_actor_global_micro_batch_size=budget.global_micro,
+            actor_global_micro_batch_size=budget.effective_global_micro, complete_outer=False, utc=utc()))
         raise
     finally:
         dist.destroy_process_group()

@@ -1,4 +1,4 @@
-"""Async eight-TP1 evaluation with the explicitly requested pre-d00 contract.
+"""Async four-TP1 evaluation with the explicitly requested pre-d00 contract.
 
 Greedy full500 actions, FP32 inference, raw first500 observation tokens, four
 search-capable actions followed by the original final action. There is no answer
@@ -19,6 +19,7 @@ import sys
 import time
 
 from .actor import atomic_json, canonical, read, remote, sha, utc
+from .contract import WORLD
 
 CONTRACT = dict(kind='legacy_pre_d00_async_fp32', compute_dtype='float32', temperature=0.,
     top_p=1., top_k=-1, n=1, max_action_tokens=500, max_start_tokens=2048,
@@ -106,9 +107,8 @@ def build_evaluation_engine(config, model, seed, free, total, *, factory=None, c
                 dtype='float32', tensor_parallel_size=1, max_model_len=4596, seed=seed,
                 gpu_memory_utilization=utilization, swap_space=0,
                 enforce_eager=bool(config.get('evaluation_enforce_eager', False)),
-                # The installed H100 Triton prefix kernel aborts compiling FP32
-                # MMA layouts. The legacy full-prefill XFormers path supports
-                # FP32; retain identical prompts/sampling/precision and8TP1.
+                # Preserve the reference FP32 full-prefill evaluation path.
+                # Only physical TP1 worker count changes for the A800 variant.
                 enable_chunked_prefill=False, enable_prefix_caching=False, disable_log_stats=True, **limits)
             return llm, utilization, limits, attempts
         except Exception as error:
@@ -129,7 +129,7 @@ def build_evaluation_engine(config, model, seed, free, total, *, factory=None, c
 
 
 def worker(config_path, model_dir, output_dir, questions_path, expected_count, rank):
-    from reproduction.prefix20_online.rollout import _configure_one_visible_gpu, prompt_tokens
+    from .rollout import _configure_one_visible_gpu, prompt_tokens
     config = read(remote(config_path)); device = _configure_one_visible_gpu(rank)
     import torch
     from transformers import AutoTokenizer
@@ -140,7 +140,9 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
     model_dir, output = remote(model_dir), remote(output_dir)
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True, trust_remote_code=False)
-    questions = load_questions(questions_path, expected_count)[rank::8]
+    if type(rank) is not int or not 0 <= rank < WORLD:
+        raise ValueError('Evaluation rank must be one of the four bound physical workers')
+    questions = load_questions(questions_path, expected_count)[rank::WORLD]
     free, total = torch.cuda.mem_get_info()
     seed = int(config.get('seed', 1729)) + rank * 104729
     llm, utilization, limits, initialization_oom_attempts = build_evaluation_engine(
@@ -152,7 +154,7 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
     params = SamplingParams(n=1, temperature=0., top_p=1., top_k=-1, max_tokens=500,
         stop_token_ids=stop, ignore_eos=False, logprobs=None, detokenize=False)
     recipe = GenerationConfig(max_turns=4, max_start_length=2048, max_prompt_length=4096,
-        max_response_length=500, max_obs_length=500, num_gpus=8, search_url=config['search_url'], topk=3)
+        max_response_length=500, max_obs_length=500, num_gpus=WORLD, search_url=config['search_url'], topk=3)
     manager = LLMGenerationManager(tokenizer, None, recipe, is_validation=True)
     retriever = BoundedRetriever(manager, AsyncRolloutConfig(agent_workers=limits['max_num_seqs'],
         max_inflight_trajectories=limits['max_num_seqs'],
@@ -265,7 +267,7 @@ def launch(config_path, model_dir, output, questions_path, expected_count=512):
         return existing
     output.mkdir(parents=True, exist_ok=True); processes, streams = [], []
     try:
-        for rank in range(8):
+        for rank in range(WORLD):
             if (output / ('rank-%d-complete.json' % rank)).exists(): continue
             stream = (output / ('rank-%d.log' % rank)).open('ab'); streams.append(stream)
             process = subprocess.Popen([sys.executable, '-m', 'reproduction.prefix_selection200.eval',
@@ -287,7 +289,7 @@ def launch(config_path, model_dir, output, questions_path, expected_count=512):
                 try: process.wait(timeout=max(.01, deadline - time.monotonic()))
                 except subprocess.TimeoutExpired: process.kill(); process.wait()
         for stream in streams: stream.close()
-    receipts = [read(output / ('rank-%d-complete.json' % rank)) for rank in range(8)]
+    receipts = [read(output / ('rank-%d-complete.json' % rank)) for rank in range(WORLD)]
     rows = sorted([row for item in receipts for row in item['rows']], key=lambda row: row['evaluation_ordinal'])
     if ([row['evaluation_ordinal'] for row in rows] != list(range(expected_count))
             or len({row['qid'] for row in rows}) != expected_count
@@ -308,7 +310,7 @@ def launch(config_path, model_dir, output, questions_path, expected_count=512):
         f1=sum(row['f1'] for row in rows) / len(rows), per_source=source_metrics,
         output_shards=[item['full_output'] for item in receipts],
         rank_receipts=[dict(path=str(output / ('rank-%d-complete.json' % r)),
-                            sha256=sha(output / ('rank-%d-complete.json' % r))) for r in range(8)],
+                            sha256=sha(output / ('rank-%d-complete.json' % r))) for r in range(WORLD)],
         completed_utc=utc(), actual_worker_exit_codes={str(r): p.returncode for r, p in processes})
     atomic_json(target, result); return result
 
