@@ -1,6 +1,6 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Actual complete50/200; job3422 RUNNING on h100-10/10.33.0.18, stage outer-000051-prefix. Saved actor/probe Adam per8rank: [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000] / [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]. Completed joint counters: [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000] / [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
+Actual complete50/200; job3422 RUNNING on h100-10/10.33.0.18, stage outer-000051-continue. Saved actor/probe Adam per8rank: [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000] / [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]. Completed joint counters: [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000] / [1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
 Latest QA: outer50,512questions EM28.3203% / F134.4268%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.
 Recent actual same3422 completejoint intervals[424.45679473876953, 418.3964400291443, 430.45647978782654, 423.27118396759033]; mean424.145s=7.069min. Startup,QA,failure/repair are separate.
@@ -72,7 +72,7 @@ Cost: COST_SNAPSHOT.json contains existing native token/request metadata and pha
 
 Completion remains unproven: actual200, normal50/100/150/200checkpoint/QA, fullseven51713, HF/tokenizer/nativefinite/nonzeroupdate/source/split identity, cost/ownedcleanup and finalpublication. GoalACTIVE; no stop/restart is performed by this reader.
 
-Latest passive telemetry2988 samples, last observed1792178592.9162948; errors[], wholecard maxused81065MiB/minfree17MiB (coverage above).
+Latest passive telemetry3003 samples, last observed1792178706.9202726; errors[], wholecard maxused81065MiB/minfree17MiB (coverage above).
 
 ## Original reward and scoped costs
 
@@ -80,4 +80,4 @@ Original saved actor grounding reward outer50 selected512G5/2560 mean0.98049984,
 
 Committed generation/retrieval through50/50: 44343656 sampled tokens, 265906 logical searches; backlog[]. Inherited prefix searches not doubled; actor512 subset not added. Failed attempts, QA, HTTP retries/cache misses and physical FAISS calls separately scoped.
 
-Historical terminal reservations 6.004444 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total49.897778 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
+Historical terminal reservations 6.004444 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total50.151111 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
