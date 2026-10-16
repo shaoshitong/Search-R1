@@ -27,4 +27,12 @@
 
 ## 当前状态
 
-源码与兼容恢复入口正在准备，原run `8af926a49630428097b94027864da68b`／execution `091f3979549347d190065387c2214af6`继续运行。部署、停止、完整状态封存、恢复及吞吐均以之后的实际回执更新；本文件本身不是执行成功证明。
+源码 `ed2a997e5162cd3a6e1dff0bd1d91fcc659caf2a` 已发布，四个关键文件从GitHub独立下载与本地SHA一致；A800实际931个源码文件完整对齐。第一次停止入口因远端Python缺少标准库pidfd接口，在发送信号前拒绝；该namespace／日志／intent保留。兼容修复采用Linux原生pidfd系统调用，仍保持出生身份校验和descriptor信号，不改SSH或运行环境。
+
+23:01:51向原rank0精确发送一次原生停止请求；四rank在第2轮游标7337共同保存完整状态，累计16037次Adam／EMA、完整epoch1、已处理821094个G5。所有旧writer和训练进程均自然exit0。1242420704字节checkpoint的完整SHA为 `32d6b8453774b0ccccb96404750fdcda7804a14e8229000a5c47f200002b4f2b`，没有丢弃第2轮更新。
+
+23:02:36一次启动同run `8af926a49630428097b94027864da68b`／新execution `141a9ada1d464f0d9925d8397a194944`。远端独立base为 `/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-141a9ada1d464f0d9925d8397a194944`，wrapper PID1529509／birth624254768。实际handle为 `preparation/question5-largebatch-pidfd-resume-deployment-20261016.json`。
+
+stage／stop／seal／launch回执分别为 `question5-largebatch-resume-stage-1792162882258401000.json`、`question5-largebatch-resume-stop-1792162911202882000.json`、`question5-largebatch-resume-seal-1792162940224021000.json`、`question5-largebatch-resume-launch-1792162956214725000.json`。这些证明完整状态保存、SHA和一次派发；**CUDA恢复、实际新增Adam／EMA及优化后的吞吐仍待原生回执**，不以启动成功冒称提速成功。
+
+当前唯一只读入口为 `python -m reproduction.operations.a800_question5_largebatch_resume_observer --handle preparation/question5-largebatch-pidfd-resume-deployment-20261016.json`。该入口严格分开继承epoch与新执行更新；正常每30分钟一次有界读取，不增加测试或评测。
