@@ -1,0 +1,119 @@
+"""Fresh candidate permutations over the existing diagnostic-excluded pool."""
+import fcntl
+import hashlib
+import json
+import random
+from pathlib import Path
+
+from reproduction.prefix20_online.pool import atomic, canonical, digest, identity, immutable, read
+
+
+def initial_state(size, seed=1729):
+    order = list(range(size))
+    random.Random(seed).shuffle(order)
+    return dict(seed=seed, cycle=0, order=order, cursor=0, next_outer=1,
+                consumed_candidates=0, candidate_questions=5120)
+
+
+def reserve_indices(state, outer, count=5120):
+    """Cross-cycle reordering prevents a duplicate in the boundary batch."""
+    if state['next_outer'] != outer or len(state['order']) < count:
+        raise ValueError('Candidate pool order or size differs')
+    out = dict(state, order=list(state['order']))
+    selected, cycles = [], []
+    size = len(out['order'])
+    while len(selected) < count:
+        if out['cursor'] == size:
+            out['cycle'] += 1
+            order = list(range(size))
+            random.Random(out['seed'] + out['cycle']).shuffle(order)
+            already = set(selected)
+            out['order'] = [i for i in order if i not in already] + [i for i in order if i in already]
+            out['cursor'] = 0
+        n = min(count - len(selected), size - out['cursor'])
+        part = out['order'][out['cursor']:out['cursor'] + n]
+        if set(part) & set(selected):
+            raise ValueError('Candidate repeats within one outer')
+        selected.extend(part)
+        cycles.extend([out['cycle']] * n)
+        out['cursor'] += n
+    out.update(next_outer=outer + 1, consumed_candidates=state['consumed_candidates'] + count)
+    return selected, cycles, out
+
+
+def state_sha(state):
+    return hashlib.sha256(canonical(state)).hexdigest()
+
+
+def prepare(config, outer):
+    """Reserve once, then retain original question/gold and real candidate order."""
+    base = Path(config['base'])
+    if not str(base).startswith('/mnt/data/shaoshitong/search-g1-prefix-diversity200-'):
+        raise ValueError('Candidate artifacts must stay in the remote experiment')
+    root = base / 'question-pool'
+    target = base / 'outers' / ('outer-%06d' % outer)
+    root.mkdir(parents=True, exist_ok=True)
+    target.mkdir(parents=True, exist_ok=True)
+    with (root / 'writer.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        source = Path(config['source_question_pool'])
+        binding_path = root / 'binding.json'
+        if not binding_path.exists():
+            pool_sha = digest(source)
+            pool = read(source)
+            if (pool['canonical_train_sha256'] != config['canonical_train_sha256']
+                    or pool['canonical_rows'] != 169028
+                    or pool['excluded_diagnostic_questions'] != 512
+                    or pool['eligible_unique_questions'] != len(pool['records'])):
+                raise ValueError('Original diagnostic-excluded question pool differs')
+            immutable(binding_path, dict(source=str(source), sha256=pool_sha,
+                eligible_questions=len(pool['records']),
+                fixed_test_qids_sha256=pool['fixed_test_qids_sha256'],
+                fixed_test_normalized_text_sha256=pool['fixed_test_normalized_text_sha256'],
+                fixed_test_features_manifest=config['fixed_test_manifest_sha256']))
+            atomic(root / 'state.json', initial_state(len(pool['records']), config.get('seed', 1729)))
+        binding = read(binding_path)
+        if binding['source'] != str(source):
+            raise ValueError('Candidate source changed')
+        pool, state = read(source), read(root / 'state.json')
+        reservation = target / 'pool-reservation.json'
+        if reservation.exists():
+            saved = read(reservation)
+            if saved['outer'] != outer or saved['pool_sha256'] != binding['sha256']:
+                raise ValueError('Existing candidate reservation differs')
+            if state_sha(state) == saved['before_sha256']:
+                atomic(root / 'state.json', saved['after'])
+            elif state_sha(state) != saved['after_sha256']:
+                raise ValueError('Pool moved beyond this uncompleted outer; inspect before replay')
+            indices, cycles = saved['indices'], saved['cycles']
+        else:
+            indices, cycles, after = reserve_indices(state, outer)
+            immutable(reservation, dict(outer=outer, pool_sha256=binding['sha256'],
+                before_sha256=state_sha(state), after_sha256=state_sha(after), after=after,
+                indices=indices, cycles=cycles))
+            atomic(root / 'state.json', after)
+        rows = [dict(pool['records'][index], pool_index=index, pool_cycle=cycle,
+                     candidate_ordinal=ordinal)
+                for ordinal, (index, cycle) in enumerate(zip(indices, cycles))]
+        selection = dict(run_id=config['run_id'], outer=outer, questions=5120,
+            trajectory_group_size=5, trajectories=25600, source='fresh_prefix_sampling',
+            pool_sha256=binding['sha256'], canonical_train_sha256=config['canonical_train_sha256'],
+            fixed_test_qids_sha256=binding['fixed_test_qids_sha256'],
+            fixed_test_normalized_text_sha256=binding['fixed_test_normalized_text_sha256'], rows=rows)
+        immutable(target / 'selection.json', selection)
+        question_path = target / 'questions.json'
+        if not question_path.exists():
+            import pyarrow.parquet as pq
+            table = pq.read_table(config['canonical_train'], columns=['prompt', 'reward_model', 'data_source', 'extra_info'])
+            originals = table.take([row['source_index'] for row in rows]).to_pylist()
+            questions = []
+            for record, original in zip(rows, originals):
+                actual = identity(original)
+                if any(actual[key] != record[key] for key in actual):
+                    raise ValueError('Actual candidate question/gold identity changed')
+                questions.append(dict(record, **original))
+            immutable(question_path, dict(run_id=config['run_id'], outer=outer,
+                selection_sha256=digest(target / 'selection.json'), questions=5120, rows=questions))
+        if read(question_path)['selection_sha256'] != digest(target / 'selection.json'):
+            raise ValueError('Question bundle is not bound to this reservation')
+        return question_path
