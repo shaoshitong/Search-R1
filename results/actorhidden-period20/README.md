@@ -1,3 +1,13 @@
+## Actual resumed6–10 plus11 acceptance
+
+Same3426 h100-8 completed6–10 after the retained5 import: all40 original actor rank ledgers independently read,20 writes each, cumulative200/rank at10, no abandoned partial stitching. First6 actually restoredAdam100/scheduler5 on all8 ranks; all40 prefix rank receipts capture current samplingactor native layer27 with no independentencoder forward. Probe remains0 as required before20. All5 selected G5 sets used the new serialized probe0 binding with LR1e-5;14 tensor values are unchanged from source5. Actual optimizer updates at1e-5 are due at20, not claimed already.
+
+Following11 actually generated native prefixes; root observer23657 naturallyexit0 after acceptance. The same training process continues200/no201. Runtime remainsdcc8715d; these later result commits do not hotchange training. Source5 QA512 was reused rather than rerun. Actual consecutive complete boundaries6→7→8→9→10 give319.145s mean,315.630–324.591s range (about5m19/outer), excluding initial recovery and scheduledQA.
+
+Selected actual mixed fractions6–10:67.77%,62.30%,62.89%,59.38%,64.65%, versus mean predictedq around89%. These precede the first newprobe update20 and cannot be attributed to the LR increase. Unselected4608 on ordinary rounds have no full labels, so no fullpool accuracy is reported. The full200, laterQA/final51713/count, future savepoints and newbranch retention remain incomplete.
+
+---
+
 ## Human-authorized retained5 restart with probe LR1e-5
 
 The user stopped3425 and, after actual20 actor/Adam assets were found already rotated, explicitly selected retained complete5 and confirmed that only the probe learning rate changes. Source3425's7754 original process births/cgroup/ownedGPU are gone;518 original log inodes were read in full. Slurm had already purged its record, so no native terminal exit code is invented. The successful scoped scancel receipt plus absence from queue and actual resource release are recorded. Latest old complete25 and all6–25 traces remain historical and are not counted on the new execution.
