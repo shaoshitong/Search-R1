@@ -10,4 +10,10 @@
 
 当前父执行为run `8af926a49630428097b94027864da68b`／execution `141a9ada1d464f0d9925d8397a194944`／source `ed2a997e5162cd3a6e1dff0bd1d91fcc659caf2a`。新入口为 `a800_question5_global1024_resume_control.py`，调用顺序 `stage → stop → seal → launch`；只读入口为 `a800_question5_global1024_resume_observer.py`。旧入口、源码、日志和状态保持可追溯，不热改活跃源码，不恢复旧actor目标。
 
-本文件先记录新配方及恢复约束，实际部署、封存边界、CUDA恢复、真实更新和吞吐待对应回执补齐。启动回执不等于训练或提速成功。不新增rollout、编码、评分、GPU验收、额外评测或review。
+实际源码 `ddf36cca14ac7aafb0b5395ffa88d57ed8c35e74` 已推送并独立核对四个关键文件；A800实际934个源码文件完整SHA一致。23:23:19原生停止请求精确发送一次，四rank退出和完整状态封存通过。恢复点累计17403次Adam／EMA，前2轮完整，第3轮已做3次更新；状态1242421600字节，SHA `7de3176b54f3f72b3bdf259c15eb7dc6bdb31ce8238929d5d32b3a58a5476803`。
+
+因此真实N为3：第3轮余下部分沿旧batch收尾，第4轮起全局1024；实际总预算454575次Adam／EMA。23:27:42一次启动run `8af926a49630428097b94027864da68b`／新execution `bcfa1de0a90a4fcda70263a75153fcee`，wrapper1551397／birth624405375。handle为 `preparation/question5-global1024-resume-deployment-20261016.json`，base为 `/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-bcfa1de0a90a4fcda70263a75153fcee`。
+
+实际stage／stop／seal／launch回执分别为 `question5-global1024-resume-stage-1792164146335709000.json`、`question5-global1024-resume-stop-1792164198951087000.json`、`question5-global1024-resume-seal-1792164357776413000.json`、`question5-global1024-resume-launch-1792164462378931000.json`。CUDA恢复、新增更新与真实吞吐继续核对；启动回执不等于训练或提速成功。旧执行的实际epoch2指标按恢复链读取，不以新执行指标冒充。
+
+不新增rollout、编码、评分、GPU验收、额外评测或review；当前probe目标继续200完整epoch，旧actor目标保持暂停。
