@@ -683,10 +683,68 @@ def consume(archive,allow_active_archive_child=False):
                 jxu_result=du_proof,owner=owner,complete_partition_coverage=True,exact_usage_or_hardquota_claimed=False)
 
 
+def inspect_storage(step,commit):
+    """JXU read-only action selection; foreign process visibility is never used."""
+    _,source=code_guard(commit,JXU)
+    need(type(step) is int and step in (150,200),'inspection is scoped to150/200')
+    from reproduction.hpc3_qprobe import final_control as ctl
+    archive=ROOT/'final-control'/RUN/('archive-'+str(step))
+    value=dict(step=step,source=source,protocol=PROTOCOL,checked_unix=time.time(),
+               training_actions=0,permission_changes=0,goal_complete=False)
+    if not archive.exists():return dict(value,action='WAIT_FOR_ARCHIVE_CLAIM')
+    need(not archive.is_symlink(),'archive control is a symlink')
+    if not (archive/'submit-claim.json').exists():return dict(value,action='UNKNOWN_ARCHIVE_ADMISSION')
+    claim,_=document(archive/'submit-claim.json',(JXU,))
+    need(claim['source']==source and claim['step']==step and claim['storage_wait_protocol']==PROTOCOL and
+         claim['role']=='detached_cpu_pair_archive' and claim['producer']['run_id']==RUN and
+         claim['producer']['producer_job']=='721485' and claim['training_permitted'] is False,
+         'inspected archive claim source/scope differs')
+    state=ctl.controller_state(archive);value['archive_state']=state
+    code=state['actual_task_exit_code']
+    if code is not None:
+        need(type(code) is int,'archive actual wait is not an integer')
+        return dict(value,action='ARCHIVE_COMPLETED' if code==0 and
+            state['status']=='ACTUAL_CPU_ARCHIVE_CHILD_COMPLETED0' else 'ARCHIVE_FAILED')
+    active=archive/'owner-storage-active.json'
+    if not active.exists():return dict(value,action='WAIT_FOR_STORAGE_REQUEST')
+    pointer,_=document(active,(JXU,),protected=True)
+    path=Path(pointer['request_path']);request,proof=request_guard(path,commit,active=False)
+    need(pointer['request_sha256']==proof['sha256'] and pointer['attempt']==request['attempt'] and
+         pointer['archive_child']==request['archive_child'],'inspected active request identity differs')
+    value.update(request=proof,attempt=request['attempt'])
+    directory=path.parent/'mou-control'
+    if directory.exists():
+        need(not directory.is_symlink(),'owner control is a symlink')
+        if not (directory/'claim.json').exists():return dict(value,action='UNKNOWN_OWNER_ADMISSION')
+        owner,_=document(directory/'claim.json',(MOU,),protected=True)
+        need(owner['source']==source and owner['request']==proof and owner['role']=='read_only_MOU_partition_du' and
+             owner['training_actions']==owner['permission_changes']==0,'inspected owner claim differs')
+        authorization_guard(path,request,proof,claim=owner)
+        if not (directory/'terminal-confirmation.json').exists():return dict(value,action='CONFIRM_OWNER')
+        actual=consume_owner(path,request,proof,current=False,require_usage=False)
+        need(actual is not None,'owner confirmation without original held evidence')
+        return dict(value,action='OWNER_CONFIRMED',owner_status=actual['status'])
+    if (path.parent/'request-closed.json').exists():return dict(value,action='WAIT_FOR_NEXT_REQUEST')
+    need(state.get('task_alive') is True and state.get('actual_task')==request['archive_child'],
+         'own archive child not live; original outcome unknown')
+    if not request['roots']:return dict(value,action='WAIT_FOR_JXU_ONLY_SCAN')
+    if not (path.parent/'authorization-active.json').exists():return dict(value,action='AUTHORIZE_OWNER')
+    try:authorization_guard(path,request,proof)
+    except ValueError as error:
+        if str(error).endswith('owner authorization was expired at first claim'):
+            return dict(value,action='AUTHORIZE_OWNER')
+        raise
+    return dict(value,action='START_OWNER')
+
+
 if __name__=='__main__':
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('mode',choices=('authorize-owner','owner-start','owner-supervise','owner-worker','owner-confirm'))
-    parser.add_argument('--request',type=Path,required=True);parser.add_argument('--commit',required=True);parser.add_argument('--token')
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('mode',choices=('authorize-owner','owner-start','owner-supervise','owner-worker','owner-confirm','inspect-storage'))
+    parser.add_argument('--request',type=Path);parser.add_argument('--step',type=int,choices=(150,200));parser.add_argument('--commit',required=True);parser.add_argument('--token')
     args=parser.parse_args()
+    if args.mode=='inspect-storage':
+        need(args.step is not None and args.request is None and args.token is None,'explicit read-only step required')
+        print(json.dumps(inspect_storage(args.step,args.commit),allow_nan=False),flush=True);sys.exit(0)
+    need(args.request is not None and args.step is None,'explicit owner request required')
     if args.mode=='owner-worker':sys.exit(owner_worker(args.request,args.commit,args.token))
     if args.mode=='owner-supervise':sys.exit(owner_supervise(args.request,args.commit,args.token))
     action={'authorize-owner':authorize_owner,'owner-confirm':owner_confirm,'owner-start':owner_start}[args.mode]

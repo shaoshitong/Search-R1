@@ -24,7 +24,8 @@ MODULES=('test_owner_partition_storage','test_recover_sigma3_archive150_first',
     'test_recovery_lineage_stage','test_archive_storage_wait','test_followthrough_sigma3',
     'test_sigma3_archive_binding','test_sigma3_archive100_route','test_independent_goal_control_sigma3',
     'test_independent_goal_acceptance_sigma3','test_sigma3_archive150_route',
-    'test_archive150_visibility_failure','test_owner_partition_storage_v2')
+    'test_archive150_visibility_failure','test_owner_partition_storage_v2',
+    'test_recover_sigma3_archive150_second','test_local_owner_partition_driver')
 RELATIVE='reproduction/hpc3_qprobe/protocol_tests_v2.py'
 
 

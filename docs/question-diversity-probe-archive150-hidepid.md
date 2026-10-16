@@ -119,3 +119,31 @@ and a separate six-test real shared-FS storage/child/lock suite. Its explicit
 JXU/MOU lock probes also verify the actual second account can open the exact
 JXU0640 file and acquire O_RDONLY exclusive flock on the shared mount. No
 production v2 archive is admitted until all of these actual gates pass.
+
+## Typed second150 recovery and dual-account driver
+
+`recover_sigma3_archive150_second.py` consumes the exact original S failure,
+the full28-file byte/inode/owner evidence and the separate W1 active-retirement
+graph. Its historical grant/retirement timestamps are checked at their actual
+creation times. The original real runner wait-15 is explicitly an active CPU
+helper retirement; it is never described as a spontaneous training failure.
+Only the failed14-file canonical150 directory is atomically renamed. Original
+S follower7 and mixed-owner W1 evidence7 remain in place. Consumption after
+the rename reads the preserved directory even when a new canonical150 exists.
+Original successful100 keeps its5f source and controller560250. Fresh full
+source/archive/target reads of5/50/100 precede new150/200 V2 claims.
+
+`local_owner_partition_driver.py` uses the existing RAM credential bridge and
+the exact observed login kernel. JXU authorizes a source/request-bound grant;
+MOU launches its own bounded DU once and confirms its own original helpers.
+Every owner-start has a durable local intent before transport. A timeout or
+missing claim cannot authorize another launch. JXU inspection never guesses
+MOU process terminality from hidden `/proc`. The driver has an exclusive local
+claim/lock, retains small observations and stops on actual failed/unknown
+admission. It does not submit archives or training. Completion of its150/200
+storage duties does not accept the training goal or replace full archive SHA.
+
+The final independent reader must explicitly pin this new recovery source and
+V2 module, preserving prior S and5f lineage and every existing final gate.
+No training command, science file, private directory mode or GPU allocation
+is changed by this recovery.
