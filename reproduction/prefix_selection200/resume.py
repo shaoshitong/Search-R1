@@ -13,6 +13,44 @@ from .actor import read, sha, restore_metadata
 from reproduction.prefix20_online.launch import once
 
 
+def pending_reservation(source, committed_pool, outer, run_id):
+    """Keep a failed next outer's original questions without consuming twice."""
+    from .pool import reserve_indices, state_sha
+    source = Path(source)
+    live = read(source / 'question-pool/state.json')
+    if live == committed_pool:
+        return None
+    following = source / 'outers' / ('outer-%06d' % (outer + 1))
+    if (following / 'complete.json').exists():
+        raise ValueError('A newer complete outer must be recovered instead')
+    saved = read(following / 'pool-reservation.json')
+    indices, cycles, after = reserve_indices(committed_pool, outer + 1)
+    binding = read(source / 'question-pool/binding.json')
+    selection = read(following / 'selection.json')
+    questions = read(following / 'questions.json')
+    if (saved['outer'] != outer + 1 or saved['pool_sha256'] != binding['sha256']
+            or saved['before_sha256'] != state_sha(committed_pool)
+            or saved['after_sha256'] != state_sha(after) or saved['after'] != after
+            or saved['indices'] != indices or saved['cycles'] != cycles or live != after
+            or selection['run_id'] != run_id or selection['outer'] != outer + 1
+            or selection['questions'] != 5120 or len(selection['rows']) != 5120
+            or questions['run_id'] != run_id or questions['outer'] != outer + 1
+            or questions['questions'] != 5120 or len(questions['rows']) != 5120
+            or questions['selection_sha256'] != sha(following / 'selection.json')):
+        raise ValueError('Uncommitted next reservation differs from its saved complete boundary')
+    for ordinal, (selected, question, index, cycle) in enumerate(
+            zip(selection['rows'], questions['rows'], indices, cycles)):
+        if (selected['pool_index'] != index or selected['pool_cycle'] != cycle
+                or selected['candidate_ordinal'] != ordinal
+                or any(question[key] != value for key, value in selected.items())):
+            raise ValueError('Reserved question order/content differs')
+    return dict(outer=outer + 1, source_root=str(following), questions=5120,
+                files={name: sha(following / name) for name in
+                       ('pool-reservation.json', 'selection.json', 'questions.json')},
+                restore_committed_pool_before_reservation=True,
+                no_second_candidate_consumption=True)
+
+
 def boundary(config, joint, actor, probe, pool):
     outer = config['resume_joint']['completed_outer']
     from .periodic import probe_boundary
@@ -89,8 +127,8 @@ def import_complete(base):
     joint = read(source / 'latest-joint.json'); actor = read(source / 'actor/latest.json')
     probe = read(source / 'probe/latest.json'); pool = read(joint['pool_snapshot'])
     outer = boundary(config, joint, actor, probe, pool)
+    reservation = pending_reservation(source, pool, outer, config['run_id'])
     if (sha(source / 'outers' / ('outer-%06d' % outer) / 'complete.json') != (ended['joint_complete_sha256'] if native else checked['joint_complete_sha256'])
-            or read(source / 'question-pool/state.json') != pool
             or (source / 'probe/latest.pt').stat().st_ino != Path(joint['probe_snapshot']).stat().st_ino):
         raise ValueError('Latest complete checkpoint/pool differs from its independent readback')
     once(intent, dict(run_id=config['run_id'], completed_outer=outer, source_base=str(source),
@@ -114,13 +152,19 @@ def import_complete(base):
         for name in ('complete.json', 'probe-update/metrics.json', 'probe-frozen.json'):
             path = src / name
             if path.is_file(): link(path, base / 'outers' / src.name / name)
+    if reservation:
+        following = Path(reservation['source_root'])
+        for name, digest in reservation['files'].items():
+            if sha(following / name) != digest:
+                raise ValueError('Reserved question bundle changed before import')
+            link(following / name, base / 'outers' / following.name / name)
     result = dict(status='COMPLETE_JOINT_STATE_IMPORTED_NO_RESET', run_id=config['run_id'],
         source_base=str(source), completed_outer=outer, next_outer=outer + 1,
         joint_sha256=sha(base / 'latest-joint.json'), probe_inode=(base / 'probe/latest.pt').stat().st_ino,
         actor_adam_per_rank=actor['actual_adam_steps_per_rank'], probe_adam_per_rank=probe['actual_adam_steps_per_rank'],
         scheduler_completed_outer=actor['scheduler_completed_outer'], candidate_cursor=pool['cursor'],
         candidate_cycle=pool['cycle'], assets=assets, source_modified=False, optimizer_reset=False,
-        large_assets_transferred_to_Mac=False)
+        large_assets_transferred_to_Mac=False, pending_reservation=reservation)
     once(receipt, result)
     validate_imported_boundary(base, config)
     return result

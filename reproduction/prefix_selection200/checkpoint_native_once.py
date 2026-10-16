@@ -16,6 +16,42 @@ from .checkpoint_cpu_once import (
 )
 
 
+def actual_selection_binding(base, outer, joint, driver):
+    """Use immutable scoring receipts; report stale legacy driver auxiliaries."""
+    base = Path(base)
+    root = base / 'outers' / ('outer-%06d' % outer)
+    before = probe_boundary(outer - 1)
+    if before['last_update_outer']:
+        previous = base / 'outers' / ('outer-%06d' % before['last_update_outer'])
+        expected = read(previous / 'probe-update/metrics.json')['checkpoint']
+    else:
+        expected = read(base / 'probe/initialization-complete.json')['receipt']
+    selection = read(root / 'probe-score/selection.json')
+    manifest = read(root / 'probe-score/manifest.json')
+    complete = read(root / 'probe-score/complete.json')
+    selection_sha = hash_file(root / 'probe-score/selection.json')['sha256']
+    manifest_sha = hash_file(root / 'probe-score/manifest.json')['sha256']
+    need(expected['completed_outer'] == before['last_update_outer']
+         and expected['actual_adam_steps_per_rank'] == [before['actual_adam_per_rank']] * 8,
+         'Original selected probe clock differs')
+    need(selection_sha == complete['selection_sha256'] == manifest['selection_sha256']
+         == joint['selection_sha256'] == joint['rollout']['selection_sha256']
+         and manifest_sha == complete['manifest_sha256']
+         and selection['run_id'] == manifest['run_id'] == complete['run_id'] == joint['run_id']
+         and selection['outer'] == manifest['outer'] == complete['outer'] == outer
+         and selection['actor_version'] == manifest['actor_version'] == complete['actor_version']
+         == joint['actor']['sampling_actor_version']
+         and selection['probe_before_checkpoint_sha256'] == manifest['probe_before_checkpoint_sha256']
+         == expected['sha256'] and selection['outcome_labels_used'] is False,
+         'Actual pre-update selection/probe/actor binding differs')
+    auxiliary = driver['prefix_probe_receipt']['value']
+    return dict(actual_probe=expected, selection_sha256=selection_sha, manifest_sha256=manifest_sha,
+                driver_auxiliary_probe_matches_selection=auxiliary == expected,
+                driver_auxiliary_probe_record=driver['prefix_probe_receipt'],
+                actual_binding_source='original_immutable_selection_manifest_complete_and_probe_receipt',
+                original_driver_modified=False)
+
+
 def inspect(base,outer):
     import torch
     base=Path(base);config=read(base/'preparation/launch-config.json')
@@ -39,10 +75,7 @@ def inspect(base,outer):
         ranks.append(validate_actor_state(state,actor,config,outer,rank));files.append(meta)
         del state;gc.collect()
     driver,meta=load_torch_cpu(owned(base,actor['driver_state']['path']),actor['driver_state']);files.append(meta)
-    selected_probe=driver['prefix_probe_receipt']['value'];before=probe_boundary(outer-1)
-    need(selected_probe['completed_outer']==before['last_update_outer']
-         and selected_probe['actual_adam_steps_per_rank']==[before['actual_adam_per_rank']]*8,
-         'Actor must retain the probe actually used before this outer update')
+    selection_binding=actual_selection_binding(base,outer,joint,driver)
     del driver;gc.collect()
     head,meta=load_torch_cpu(owned(base,joint['probe_snapshot']),probe);files.append(meta)
     need(head['run_id']==config['run_id'] and head['completed_outer']==boundary['last_update_outer']
@@ -75,6 +108,7 @@ def inspect(base,outer):
         probe_last_update_outer=boundary['last_update_outer'],actor_rank_cpu_states=ranks,
         probe_fp32_tensors=14,probe_fp32_adam_states=adam,files=files,
         pool_next_outer=pool['next_outer'],pool_consumed_candidates=pool['consumed_candidates'],
+        actual_selection_binding=selection_binding,
         gpu_forward_performed=False,cuda_rng_applied=False,independent_backup_performed=False)
     with proof.open('x') as f:json.dump(result,f,sort_keys=True);f.flush();os.fsync(f.fileno())
     return dict(status=result['status'],proof=str(proof),sha256=hash_file(proof)['sha256'],outer=outer,

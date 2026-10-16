@@ -288,7 +288,9 @@ def run(base):
             attempt_id = uuid.uuid4().hex
             while True:
                 attempt_config = dict(c, actor_attempt_id=attempt_id,
-                    actor_global_micro_batch_size=actor_micro)
+                    actor_global_micro_batch_size=actor_micro,
+                    pool_state_path=str(base / 'question-pool/state.json'),
+                    prefix_probe_receipt=str(base / 'probe/latest.json'))
                 attempt_path = root / ('actor-attempt-%s-config.json' % attempt_id)
                 once(attempt_path, attempt_config)
                 code = phase('outer-%06d-actor-%s' % (outer, attempt_id), distributed('reproduction.prefix_selection200.actor',
