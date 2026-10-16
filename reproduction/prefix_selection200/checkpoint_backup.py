@@ -102,6 +102,7 @@ def inventory(intent):
          and joint['probe']['actual_adam_steps_per_rank'] == [10*outer]*8
          and joint['actor']['scheduler_completed_outer'] == outer, 'Actual saved joint clocks differ')
     expected = {}; collect_hashes(proof['details'], expected)
+    independently_read_source_paths = set(expected)
     collect_hashes(joint, expected)
     collect_hashes(read(exported(point/'prefix/complete.json')), expected)
     scan = point/'prefix/scan'
@@ -136,7 +137,10 @@ def inventory(intent):
         relative = (original.relative_to(source) if source in original.parents else
                     Path('external') / original.relative_to('/'))
         assets.append(dict(original_path=name, source_path=str(actual), relative_path=str(relative),
-            bytes=info.st_size, expected_sha256=independent['sha256'] if independent else None))
+            bytes=info.st_size, expected_sha256=independent['sha256'] if independent else None,
+            expected_sha_origin=('independent_source_CPU_full_file_readback' if name in independently_read_source_paths else
+                'native_source_producer_receipt_not_independent_readback' if independent else
+                'no_prior_digest_actual_copy_and_target_full_reads_required')))
     need(len({row['relative_path'] for row in assets}) == len(assets), 'Backup destination paths collide')
     return assets, proof
 
@@ -184,6 +188,8 @@ def run(root):
             original_absolute_paths_preserved_in_receipts=True,
             mapping={row['original_path']:row['relative_path'] for row in copied},
             note='Restore helpers must resolve recorded source paths through this mapping; original receipts are unchanged.'))
+        mapping_proof=dict(relative_path='RESTORE_MAPPING.json',bytes=(staging/'RESTORE_MAPPING.json').stat().st_size,
+            sha256=sha(staging/'RESTORE_MAPPING.json'),actual_full_target_read=True)
         for directory in sorted([staging]+[p for p in staging.rglob('*') if p.is_dir()],key=lambda p:len(p.parts),reverse=True):
             fd=os.open(directory,os.O_RDONLY)
             try:os.fsync(fd)
@@ -191,6 +197,7 @@ def run(root):
         final=root/'checkpoint';need(not final.exists(),'Never replace an existing final copy');os.rename(staging,final)
         result.update(status='INDEPENDENT_PREFIX200_JOINT_BACKUP_FULL_SHA_PASS',completed_utc=utc(),
             files=copied,bytes=total,destination=str(final),independent_destination_mount='h100-10 local ext4')
+        result['generated_restore_mapping']=mapping_proof
         record(root,'RESULT.json',result);return result
     except BaseException as error:
         result.update(status='FAILED_PRESERVE_SOURCE_AND_PARTIAL',error=repr(error),completed_utc=utc())
