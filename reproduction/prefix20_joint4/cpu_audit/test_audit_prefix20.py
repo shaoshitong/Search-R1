@@ -42,6 +42,18 @@ def tearDownModule():sys.meta_path.remove(_guard)
 
 
 class EarlyGateTests(unittest.TestCase):
+    def test_actual_actor_checkpoint_layout_is_read_before_tensor_decoding(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory).resolve()
+            checkpoint=root/'checkpoints/search-g1-common8/actor/global_step_5'
+            (checkpoint/'training_state').mkdir(parents=True)
+            (checkpoint/'complete.json').write_text(json.dumps(dict(run_id='foreign',step=5,
+                finite_all_saved_tensors=True)))
+            (checkpoint/'training_state/manifest.json').write_text(json.dumps(dict(completed_outer=5)))
+            with patch.object(consumer,'Archive',side_effect=AssertionError('PT touched before identity')):
+                with self.assertRaisesRegex(Rejected,'ACTUAL_COMPLETED_CHECKPOINT_BINDING_DIFFERS'):
+                    consumer.checkpoints(Reads(root),dict(run_id='own'))
+
     def test_missing200_cli_writes_immutable_rejected_receipt(self):
         from contextlib import redirect_stdout
         with tempfile.TemporaryDirectory() as directory:

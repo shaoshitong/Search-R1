@@ -648,7 +648,7 @@ def validations(reads,run,frames,manifest):
 def checkpoints(reads, run):
     result=[]
     for outer in STEPS:
-        rel='checkpoints/actor/global_step_%d/'%outer
+        rel='checkpoints/search-g1-common8/actor/global_step_%d/'%outer
         complete=reads.json(rel+'complete.json');manifest=reads.json(rel+'training_state/manifest.json')
         need(complete['run_id']==run['run_id'] and complete['step']==outer and complete['finite_all_saved_tensors'] is True and
              manifest['completed_outer']==outer, 'ACTUAL_COMPLETED_CHECKPOINT_BINDING_DIFFERS')
@@ -700,7 +700,7 @@ def checkpoints(reads, run):
         result.append(dict(outer=outer,actor_ranks=4,probe_ranks=4,probe_actual_adam_steps_per_rank=outer*10,
                            full_recorded_checkpoint_sha_checked=True))
     actual_steps=[]
-    for path in (reads.base/'checkpoints/actor').glob('global_step_*'):
+    for path in (reads.base/'checkpoints/search-g1-common8/actor').glob('global_step_*'):
         need(path.name[len('global_step_'):].isdigit(), 'UNKNOWN_CHECKPOINT_STEP_NAME')
         actual_steps.append(int(path.name[len('global_step_'):]))
     need(set(actual_steps)==set(STEPS), 'EXTRA_MISSING_CHECKPOINT_OR_UPDATE201')
