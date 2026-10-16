@@ -35,6 +35,7 @@ class LegacyEvaluationTests(unittest.TestCase):
         self.assertEqual(limits['max_num_batched_tokens'], 16384)
         self.assertTrue(failed[0]['actual_cuda_oom'])
         self.assertTrue(all(call['dtype'] == 'float32' and call['max_model_len'] == 4596 for call in calls))
+        self.assertTrue(all(call['enable_chunked_prefill'] is False and call['enable_prefix_caching'] is False for call in calls))
         def unknown(**kwargs): raise RuntimeError('unknown CUDA collective failure')
         with self.assertRaisesRegex(RuntimeError, 'unknown CUDA'):
             build_evaluation_engine({}, '/mnt/model', 1, 79 * 2**30, 80 * 2**30,

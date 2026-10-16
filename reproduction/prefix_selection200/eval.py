@@ -106,7 +106,10 @@ def build_evaluation_engine(config, model, seed, free, total, *, factory=None, c
                 dtype='float32', tensor_parallel_size=1, max_model_len=4596, seed=seed,
                 gpu_memory_utilization=utilization, swap_space=0,
                 enforce_eager=bool(config.get('evaluation_enforce_eager', False)),
-                enable_chunked_prefill=True, enable_prefix_caching=True, disable_log_stats=True, **limits)
+                # The installed H100 Triton prefix kernel aborts compiling FP32
+                # MMA layouts. The legacy full-prefill XFormers path supports
+                # FP32; retain identical prompts/sampling/precision and8TP1.
+                enable_chunked_prefill=False, enable_prefix_caching=False, disable_log_stats=True, **limits)
             return llm, utilization, limits, attempts
         except Exception as error:
             message = str(error)

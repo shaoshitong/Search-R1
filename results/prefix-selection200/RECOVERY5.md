@@ -9,3 +9,5 @@ Complete joint5 underwent independent full SHA and CPU model/Adam/scheduler/RNG/
 The isolated recovery preserves the same run and all five completed updates, retries interrupted QA5 against its saved actor, then starts6. Actor/probe optimizer and RNG states, scheduler and candidate permutation/cursor are preserved. Previous raw outputs stay remote; no models or rollouts move to Mac.
 
 Validation: seven existing legacy-evaluation/pool CPU tests and a recovery-boundary regression test passed. New GPU restore, successful QA5 retry and resumed6 remain pending until actually observed.
+
+The real QA retry3419 passed the missing-header stage but exposed an installed Triton H100 FP32 MMA-layout compiler assertion (abort,0 new training Adam). QA now uses legacy full-prefill XFormers with chunked prefill and prefix caching disabled; FP32 and all sampling/data parameters remain fixed. Failed milestone QA is recorded as pending and retried before final evaluation; it does not cancel otherwise valid actor/probe training and cannot satisfy completion until it actually succeeds.

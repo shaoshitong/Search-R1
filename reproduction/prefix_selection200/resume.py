@@ -15,7 +15,7 @@ from reproduction.prefix20_online.launch import once
 
 def boundary(config, joint, actor, probe, pool):
     outer = config['resume_joint']['completed_outer']
-    if (not 0 < outer < 200 or joint['run_id'] != config['run_id'] or joint['outer'] != outer
+    if (not 0 < outer <= 200 or joint['run_id'] != config['run_id'] or joint['outer'] != outer
             or joint['actor'] != actor or joint['probe'] != probe
             or probe['run_id'] != config['run_id'] or probe['completed_outer'] != outer
             or probe['actual_adam_steps_per_rank'] != [10 * outer] * 8

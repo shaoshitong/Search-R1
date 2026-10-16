@@ -193,6 +193,23 @@ def run(base):
                 raise TimeoutError('Own service did not become ready: ' + name)
             time.sleep(3)
 
+    previous_qa = Path(c.get('resume_joint', {}).get('source_base', str(base))) / 'logs/qa-pending.json'
+    pending_qa = read(previous_qa) if previous_qa.is_file() else {}
+
+    def validation(ordinal, model, evaluation_config, output, name):
+        code = phase(name, [python, '-m', 'reproduction.prefix_selection200.eval',
+            '--config', str(evaluation_config), '--model', model,
+            '--questions', c['validation_questions'], '--expected-count', '512', '--output', str(output)],
+            allow_failed=True)
+        if code:
+            pending_qa[str(ordinal)] = dict(outer=ordinal, model=model, evaluation_config=str(evaluation_config),
+                actual_exit_code=code, original_output=str(output), original_log=str(base/'logs'/(name+'.log')),
+                status='QA_PENDING_ACTUAL_WORKER_FAILURE_TRAINING_CONTINUES')
+        else:
+            pending_qa.pop(str(ordinal), None)
+        publish(base / 'logs/qa-pending.json', pending_qa)
+        return code
+
     try:
         phase('probe-initialize-model-only', [python, '-m', 'reproduction.prefix_selection200.probe', 'initialize',
             '--state-dir', str(base / 'probe'), '--source-checkpoint', c['probe_source_checkpoint'],
@@ -224,10 +241,8 @@ def run(base):
             actor = read(base / 'actor/latest.json')
             recovery_config = base / 'preparation/recovered-evaluation-config.json'
             once(recovery_config, dict(c, actor_version=actor['actor_version']))
-            phase('recovered-outer-%06d-validation' % outer,
-                [python, '-m', 'reproduction.prefix_selection200.eval', '--config', str(recovery_config),
-                 '--model', actor['hf_model_dir'], '--questions', c['validation_questions'],
-                 '--expected-count', '512', '--output', str(base / 'recovered-validation')])
+            validation(outer, actor['hf_model_dir'], recovery_config, base/'recovered-validation',
+                       'recovered-outer-%06d-validation' % outer)
         for outer in range(outer + 1, 201):
             root = base / 'outers' / ('outer-%06d' % outer)
             stage('CANDIDATE_POOL_RESERVATION')
@@ -302,13 +317,20 @@ def run(base):
             if outer in (5, 50, 100, 150, 200):
                 evaluation_config = root / 'evaluation-config.json'
                 once(evaluation_config, dict(c, actor_version=actor['actor_version']))
-                phase('outer-%06d-validation' % outer, [python, '-m', 'reproduction.prefix_selection200.eval',
-                    '--config', str(evaluation_config), '--model', actor['hf_model_dir'],
-                    '--questions', c['validation_questions'], '--expected-count', '512', '--output', str(root / 'validation')])
+                validation(outer, actor['hf_model_dir'], evaluation_config, root/'validation',
+                           'outer-%06d-validation' % outer)
             # Only completed run-owned derived features are removable; retain tokens/labels.
             from .storage import prune_completed
             prune_completed(base, outer)
-        phase('final51713', [python, '-m', 'reproduction.prefix_selection200.eval', '--config', str(root / 'evaluation-config.json'),
+        for ordinal, pending in list(pending_qa.items()):
+            validation(int(ordinal), pending['model'], pending['evaluation_config'],
+                base/'validation-retries'/('outer-%06d-%s'%(int(ordinal),uuid.uuid4().hex)),
+                'retry-outer-%06d-validation'%int(ordinal))
+        if pending_qa:
+            raise RuntimeError('Actor/probe200 complete; actual QA failures remain pending: '+json.dumps(pending_qa))
+        final_config = base / 'preparation/final-evaluation-config.json'
+        once(final_config, dict(c, actor_version=read(base / 'actor/latest.json')['actor_version']))
+        phase('final51713', [python, '-m', 'reproduction.prefix_selection200.eval', '--config', str(final_config),
             '--model', read(base / 'actor/latest.json')['hf_model_dir'], '--questions', c['final_questions'],
             '--expected-count', '51713', '--output', str(base / 'final-evaluation')])
         once(base / 'logs/pipeline-complete.json', dict(run_id=c['run_id'], complete_outers=200,
