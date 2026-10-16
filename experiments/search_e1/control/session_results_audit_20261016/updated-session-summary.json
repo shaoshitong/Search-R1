@@ -1,0 +1,226 @@
+{
+  "read_only": true,
+  "observed_window_cst": "2026-10-16 12:54–12:57",
+  "updated_runs": [
+    {
+      "name": "Recursive B four GPU",
+      "session": "01a12e27-764b-7432-a5f2-74d88ee4a8d4",
+      "completed_iter": 169,
+      "target_iter": 200,
+      "train_latest_em": 0.5121093988418579,
+      "train_recent10_mean": 0.4973828196525574,
+      "gpu": null,
+      "status": "training_running",
+      "latest_fixed512": {
+        "iter": 150,
+        "em": 0.494140625,
+        "f1": 0.5700489831349208,
+        "n": 512,
+        "correct": 253,
+        "path": "/home/shaoshitong/rbb5-context2-ray/ray/session_latest/logs/worker-11344cfc20371f65c7cab4989b78e523fe63b02ac0ee8493b64d8895-01000000-1111494.out",
+        "line": 1630471,
+        "sha256": "26d32950375da552a44da00b3a45649182ce929dd47bdf2f700d5da8747d6590",
+        "source_hashed_prefix_bytes": 824003663,
+        "sha256_scope": "log prefix of exact source_hashed_prefix_bytes",
+        "datasets": {
+          "nq": {
+            "n": 256,
+            "em": 0.4375,
+            "f1": 0.5426649305555556
+          },
+          "hotpotqa": {
+            "n": 256,
+            "em": 0.55078125,
+            "f1": 0.5974330357142859
+          }
+        }
+      },
+      "final51713": {
+        "complete": false,
+        "em": null,
+        "f1": null,
+        "n": 0,
+        "path": null,
+        "reason": "Training has not reached200; no completed final51713 result."
+      }
+    },
+    {
+      "name": "CoSearch common-em-v4 dual-model 713379",
+      "session": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+      "completed_iter": 200,
+      "target_iter": 200,
+      "train_latest_em": 0.50234375,
+      "train_recent10_mean": 0.5192187500000001,
+      "gpu": "final evaluation721542 ACD1-19, 4 H100, COMPLETED; allocation released",
+      "status": "TRAINING_AND_FINAL51713_INDEPENDENTLY_ACCEPTED",
+      "latest_fixed512": {
+        "iter": 200,
+        "em": 0.513671875,
+        "f1": 0.6073676215277779,
+        "n": 512,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-validation/200.receipt.json",
+        "sha256": "c3edebddea3fe07d157f1743c5077a709dab35bab0f8336e7ef3c1a1e61b6067"
+      },
+      "final51713": {
+        "complete": true,
+        "iter": 200,
+        "n": 51713,
+        "correct": 25234,
+        "em": 0.4879624079051689,
+        "f1": 0.5630729533879519,
+        "macro_em": 0.4474974643615691,
+        "macro_f1": 0.5335946202628082,
+        "source_metrics": {
+          "2wikimultihopqa": {
+            "count": 12576,
+            "correct": 5650,
+            "em": 0.44926844783715014,
+            "f1": 0.518099790336217
+          },
+          "bamboogle": {
+            "count": 125,
+            "correct": 56,
+            "em": 0.448,
+            "f1": 0.5607619047619047
+          },
+          "hotpotqa": {
+            "count": 7405,
+            "correct": 3299,
+            "em": 0.44550979068197166,
+            "f1": 0.5696869729744086
+          },
+          "musique": {
+            "count": 2417,
+            "correct": 492,
+            "em": 0.20355812991311542,
+            "f1": 0.2851071417364522
+          },
+          "nq": {
+            "count": 3610,
+            "correct": 1690,
+            "em": 0.46814404432132967,
+            "f1": 0.5568716478784922
+          },
+          "popqa": {
+            "count": 14267,
+            "correct": 6757,
+            "em": 0.4736104296628583,
+            "f1": 0.5192878630602072
+          },
+          "triviaqa": {
+            "count": 11313,
+            "correct": 7290,
+            "em": 0.6443914081145584,
+            "f1": 0.7253470210919756
+          }
+        },
+        "datasets": {
+          "2wikimultihopqa": {
+            "correct": 5650,
+            "em": 0.44926844783715014,
+            "f1": 0.518099790336217,
+            "questions": 12576,
+            "trajectories": 12576
+          },
+          "bamboogle": {
+            "correct": 56,
+            "em": 0.448,
+            "f1": 0.5607619047619047,
+            "questions": 125,
+            "trajectories": 125
+          },
+          "hotpotqa": {
+            "correct": 3299,
+            "em": 0.44550979068197166,
+            "f1": 0.5696869729744086,
+            "questions": 7405,
+            "trajectories": 7405
+          },
+          "musique": {
+            "correct": 492,
+            "em": 0.20355812991311542,
+            "f1": 0.2851071417364522,
+            "questions": 2417,
+            "trajectories": 2417
+          },
+          "nq": {
+            "correct": 1690,
+            "em": 0.46814404432132967,
+            "f1": 0.5568716478784922,
+            "questions": 3610,
+            "trajectories": 3610
+          },
+          "popqa": {
+            "correct": 6757,
+            "em": 0.4736104296628583,
+            "f1": 0.5192878630602072,
+            "questions": 14267,
+            "trajectories": 14267
+          },
+          "triviaqa": {
+            "correct": 7290,
+            "em": 0.6443914081145584,
+            "f1": 0.7253470210919756,
+            "questions": 11313,
+            "trajectories": 11313
+          }
+        },
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/complete.json",
+        "sha256": "523198910d73336f6e633c3e02ce1691c75ec9a156023ed6bb1ce1d7741254a8",
+        "acceptance_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/acceptance.json",
+        "acceptance_sha256": "ce7cf8e85e01ea685ead57657fbdf3189d68590d5c73d0b392bb0f781e8db549",
+        "scorer_version": "common-em-v4-final-model-action",
+        "completed_epoch": 1792065686.714123,
+        "independent_acceptance": true
+      }
+    },
+    {
+      "name": "HPC3 Q-probe sigma3 new loss 721485",
+      "session": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+      "completed_iter": 177,
+      "target_iter": 200,
+      "train_latest_em": 0.43242187499999996,
+      "train_recent10_mean": 0.4692578125,
+      "gpu": "ACD1-21,4 H100",
+      "status": "RUNNING_ACTUAL_FORWARD_PROGRESS",
+      "latest_fixed512": {
+        "iter": 150,
+        "split": "validation",
+        "final": false,
+        "n": 512,
+        "correct": 216.0,
+        "em": 0.421875,
+        "f1": 0.501726810515873,
+        "counts": {
+          "nq": 256,
+          "hotpotqa": 256
+        },
+        "source_em": {
+          "nq": 0.41796875,
+          "hotpotqa": 0.42578125
+        },
+        "source_f1": {
+          "nq": 0.5287822420634921,
+          "hotpotqa": 0.474671378968254
+        },
+        "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/logs/validation-identities.jsonl",
+        "line_index": 6,
+        "row_sha256": "5fa48611aaf82ce9e618934c8d9b2a9da64d3848f8e707af9f3a2c6f01f97935",
+        "checked_unix": 1792115877.3268425,
+        "run_id": "70827e85fe584f0c84453aae907918a4",
+        "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "scalar_readback_correct": true,
+        "unique_question_ids": 512,
+        "sha256": "34deaf618773636adc4fa89522257b77b555f93e9164ac50109657aa47379759"
+      },
+      "final51713": {
+        "complete": false,
+        "n": null,
+        "em": null,
+        "f1": null,
+        "path": null,
+        "reason": "current run177of200, final not due"
+      }
+    }
+  ]
+}
