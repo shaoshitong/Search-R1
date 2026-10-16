@@ -1,0 +1,174 @@
+{
+  "unit": "g1-resource5s-f3ee1435e501-3422",
+  "directory": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/preparation/resource5s-v1",
+  "sampler_source_commit": "9f3cf693c91aad312d0badaa0fd0d7451eee36fd",
+  "reader_sha256": "80e0e3383b1455abfa6f0c908192b12e471d865cf4edc60f3bf651ca386fefee",
+  "observations": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/resource5s-query-1792162228040402000-result.json",
+      "sha256": "66dcf36f07e64dc852d48b58d010ece97fb302aa8d7675a927514868bd694ace",
+      "samples": 9,
+      "stream_bytes": 14038,
+      "observed_unix": 1792162239.7498899
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/resource5s-query-1792162348108469000-result.json",
+      "sha256": "0d3a74c4539744600836579f557342b7c25c96ea33250deda6d96680e751d84f",
+      "samples": 32,
+      "stream_bytes": 50163,
+      "observed_unix": 1792162355.147763
+    }
+  ],
+  "actual_progress_verified": true,
+  "training_changed": false,
+  "model_forward": false,
+  "cpu_accounting_complete": false,
+  "summary": {
+    "actual_last_sample_seconds": 1.4595708176493645,
+    "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3",
+    "coverage": "starts at this telemetry creation; no retrospective GPU peak claim",
+    "cpu_accounting_complete": false,
+    "cpu_scope": "lower bound over actually observed owned birth utime+stime; stopped/unobserved processes and final intersample CPU may be missing",
+    "gpu_scope": "whole physical card including any other users; sampled peak is not an exact continuous peak",
+    "job": "3422",
+    "last_observed_unix": 1792162355.147763,
+    "latest": {
+      "cards": [
+        {
+          "free_mib": 61177,
+          "index": 0,
+          "total_mib": 81559,
+          "used_mib": 19905,
+          "utilization_percent": 9,
+          "uuid": "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b"
+        },
+        {
+          "free_mib": 59235,
+          "index": 1,
+          "total_mib": 81559,
+          "used_mib": 21847,
+          "utilization_percent": 7,
+          "uuid": "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5"
+        },
+        {
+          "free_mib": 60759,
+          "index": 2,
+          "total_mib": 81559,
+          "used_mib": 20323,
+          "utilization_percent": 8,
+          "uuid": "GPU-db94211b-42d5-88d0-f626-60e777af3be6"
+        },
+        {
+          "free_mib": 60745,
+          "index": 3,
+          "total_mib": 81559,
+          "used_mib": 20337,
+          "utilization_percent": 25,
+          "uuid": "GPU-308b13c1-44ea-47b7-7b33-01a928099618"
+        },
+        {
+          "free_mib": 62739,
+          "index": 4,
+          "total_mib": 81559,
+          "used_mib": 18343,
+          "utilization_percent": 7,
+          "uuid": "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8"
+        },
+        {
+          "free_mib": 60855,
+          "index": 5,
+          "total_mib": 81559,
+          "used_mib": 20227,
+          "utilization_percent": 24,
+          "uuid": "GPU-d61d94cd-3d24-fa07-8761-33961a14d995"
+        },
+        {
+          "free_mib": 60413,
+          "index": 6,
+          "total_mib": 81559,
+          "used_mib": 20669,
+          "utilization_percent": 19,
+          "uuid": "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b"
+        },
+        {
+          "free_mib": 63067,
+          "index": 7,
+          "total_mib": 81559,
+          "used_mib": 18015,
+          "utilization_percent": 27,
+          "uuid": "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"
+        }
+      ],
+      "errors": [],
+      "job": "3422",
+      "known_owned_process_births": 2574,
+      "native_state": "RUNNING",
+      "observed_owned_process_births": 28,
+      "observed_unix": 1792162355.147763,
+      "owned_cpu_core_seconds_lower_bound": 3738.12,
+      "stage": {
+        "checked_unix": 1792162337.21161,
+        "outer": 13,
+        "run_id": "f3ee1435e5014ba1969387c91878893a",
+        "stage": "outer-000013-actor-92b3eb4f830241e58a107b82a1e8def6"
+      }
+    },
+    "model_tensors_read": false,
+    "native": {
+      "observed_unix": 1792162320.0236316,
+      "returncode": 0,
+      "state": "RUNNING",
+      "stderr": "",
+      "stdout": "JobId=3422 JobName=g1-prefix200-f3ee1435e501 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898644 Nice=0 Account=(null) QOS=(null) JobState=RUNNING Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:57:52 TimeLimit=UNLIMITED TimeMin=N/A SubmitTime=2026-10-16T21:54:08 EligibleTime=2026-10-16T21:54:08 AccrueTime=2026-10-16T21:54:08 StartTime=2026-10-16T21:54:08 EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T21:54:08 Scheduler=Main Partition=gpu AllocNode:Sid=h100-10:3643502 ReqNodeList=h100-10 ExcNodeList=(null) NodeList=h100-10 BatchHost=h100-10 NumNodes=1 NumCPUs=96 NumTasks=1 CPUs/Task=96 ReqB:S:C:T=0:0:*:* TRES=cpu=96,mem=512G,node=1,billing=96 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=96 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/preparation/native-launch.sh WorkDir=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3 Comment=g1-prefix200:f3ee1435e5014ba1969387c91878893a  StdErr=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/logs/native-3422.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/logs/native-3422.log Power= TresPerNode=gres:gpu:8 \n"
+    },
+    "new_model_forward": false,
+    "requested_interval_seconds": 5.0,
+    "run_id": "f3ee1435e5014ba1969387c91878893a",
+    "sampler_finished": false,
+    "samples": 32,
+    "started_unix": 1792162199.6091492,
+    "training_changed": false,
+    "whole_card_peaks": {
+      "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b": {
+        "max_used_mib": 77000,
+        "max_utilization_percent": 85,
+        "min_free_mib": 4081
+      },
+      "GPU-308b13c1-44ea-47b7-7b33-01a928099618": {
+        "max_used_mib": 76999,
+        "max_utilization_percent": 85,
+        "min_free_mib": 4083
+      },
+      "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8": {
+        "max_used_mib": 77368,
+        "max_utilization_percent": 80,
+        "min_free_mib": 3713
+      },
+      "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5": {
+        "max_used_mib": 77345,
+        "max_utilization_percent": 81,
+        "min_free_mib": 3737
+      },
+      "GPU-d61d94cd-3d24-fa07-8761-33961a14d995": {
+        "max_used_mib": 77029,
+        "max_utilization_percent": 82,
+        "min_free_mib": 4053
+      },
+      "GPU-db94211b-42d5-88d0-f626-60e777af3be6": {
+        "max_used_mib": 77342,
+        "max_utilization_percent": 100,
+        "min_free_mib": 3739
+      },
+      "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b": {
+        "max_used_mib": 76954,
+        "max_utilization_percent": 73,
+        "min_free_mib": 4127
+      },
+      "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5": {
+        "max_used_mib": 76967,
+        "max_utilization_percent": 74,
+        "min_free_mib": 4115
+      }
+    }
+  }
+}
