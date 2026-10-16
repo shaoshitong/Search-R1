@@ -163,7 +163,8 @@ class Prefix20GenerationTests(unittest.TestCase):
         # gates. Only the native filesystem/identity boundary is a CPU adapter;
         # token/position/mask/trace/selected-LP verification executes unchanged.
         from reproduction.common8 import behavior_runtime as behavior
-        from reproduction.common8.behavior_trace import document_sha256,BehaviorTraceError
+        from reproduction.common8.behavior_trace import document_sha256
+        from reproduction.common8.behavior_probability import BehaviorProbabilityError
         from reproduction.common8.precision_contract import NATIVE4_BF16_PROFILE,SAMPLING_JOURNAL_POLICY
         run=dict(profile='common8',run_id=identity['run_id'],source_sha256=identity['source_sha256'],
             execution_site='hpc3',execution_backend='slurm',training_world_size=4,actor_micro_batch_per_rank=4,
@@ -181,7 +182,7 @@ class Prefix20GenerationTests(unittest.TestCase):
                 torch.testing.assert_close(output.batch['old_log_probs'],output.batch['sampling_log_probs'])
                 self.assertFalse(proof['hf_recomputation_performed'])
                 bad=copy.deepcopy(output);bad.batch['sampling_log_probs'][0,0]-=1.
-                with self.assertRaises(BehaviorTraceError):behavior.freeze_after_probability_gate(bad,context,None)
+                with self.assertRaises(BehaviorProbabilityError):behavior.freeze_after_probability_gate(bad,context,None)
 
 
 if __name__=='__main__':unittest.main()

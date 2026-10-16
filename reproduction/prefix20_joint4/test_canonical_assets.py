@@ -23,7 +23,7 @@ class CanonicalAssetsTests(unittest.TestCase):
                 member=tarfile.TarInfo(name);member.size=len(raw);archive.addfile(member,io.BytesIO(raw))
         raw=stream.getvalue()
         with tempfile.TemporaryDirectory() as directory,patch('reproduction.prefix20_joint4.canonical_assets.SELECTED',selected):
-            root=Path(directory);(root/'part000').write_bytes(raw)
+            root=Path(directory).resolve();(root/'part000').write_bytes(raw)
             archive=dict(parts=[{'name':'part000'}],concatenated_sha256=hashlib.sha256(raw).hexdigest())
             proof=unpack_selected(root,archive,manifest)
             self.assertEqual(len(proof['files']),2);self.assertTrue(proof['full_compressed_archive_verified'])
