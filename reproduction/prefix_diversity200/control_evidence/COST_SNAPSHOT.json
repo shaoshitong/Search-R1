@@ -1,6 +1,6 @@
 {
   "run_id": "f3ee1435e5014ba1969387c91878893a",
-  "observed_unix": 1792167779.9609544,
+  "observed_unix": 1792168232.9325058,
   "complete_outer_rows": {
     "1": {
       "outer": 1,
@@ -1081,15 +1081,58 @@
         "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/outers/outer-000025/prefix/complete.json": "6267e896262db6f0fe6f6f966b2dafdcbde175afa658c4a4b21d53ae466ef043",
         "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/outers/outer-000025/full/complete.json": "a3f4ac053d365595425eaca6d70dfd3c06df0c2d753f98a36f3628c741c757ce"
       }
+    },
+    "26": {
+      "outer": 26,
+      "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3",
+      "prefix_sampled_tokens": 511987,
+      "continuation_new_sampled_tokens": 347640,
+      "combined_actual_sampled_tokens": 859627,
+      "prefix_native_generation_requests": 25600,
+      "continuation_native_generation_requests": 10390,
+      "actor_synchronized_adam_per_rank": 20,
+      "probe_synchronized_adam_per_rank": 20,
+      "rank_replicas_not_summed_as_global_steps": true,
+      "phase_timings": {
+        "outer-000026-actor-d521c28301ab4cdcbe0885edf91f2e30": {
+          "elapsed_seconds": 107.96483473479748,
+          "exit_code": 0
+        },
+        "outer-000026-continue": {
+          "elapsed_seconds": 144.1767397597432,
+          "exit_code": 0
+        },
+        "outer-000026-diversity-selection": {
+          "elapsed_seconds": 15.05460274592042,
+          "exit_code": 0
+        },
+        "outer-000026-prefix": {
+          "elapsed_seconds": 87.22974244505167,
+          "exit_code": 0
+        },
+        "outer-000026-probe-update": {
+          "elapsed_seconds": 33.75709180161357,
+          "exit_code": 0
+        },
+        "outer-000026-score": {
+          "elapsed_seconds": 37.637197095900774,
+          "exit_code": 0
+        }
+      },
+      "receipt_sha256": {
+        "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/outers/outer-000026/complete.json": "11c0fb4e217e0b586f22dc7985305eff93f6fbbcc6a8dd2e4aaab57c3b14198d",
+        "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/outers/outer-000026/prefix/complete.json": "ec06f6464d663081043e77431742b57463e9c693b2769f587f821ec2f2560f8e",
+        "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/outers/outer-000026/full/complete.json": "831c6856230ff88e9f91efd3f62066788bd5f332d9f893b981ed3eca0d2d98eb"
+      }
     }
   },
-  "total_completed_outer_sampled_tokens": 23689983,
+  "total_completed_outer_sampled_tokens": 24549610,
   "cost_scope": "successful committed outer generation only; failed attempts and native reservation wall are separate",
   "retrieval_counts_pending_separate_remote_streaming_aggregation": true,
   "model_tensors_read": false,
   "new_model_forward": false,
   "training_modified": false,
   "source": "existing native rank producer counts with independently read metadata SHA; raw tokens not re-read",
-  "reader_commit": "f3d2095302352431aa3698fbcdfd33c209addea0",
+  "reader_commit": "17c06bf7fffbe79f32fbafaa32d19ef01c6ed01c",
   "reader_sha256": "82226d9d5570f91b4aea15c50752a8eff40a557eb2fc2636af0fb0a27ca729ad"
 }
