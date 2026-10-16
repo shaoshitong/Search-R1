@@ -1,0 +1,73 @@
+{
+  "schema": "milestone200_metadata_source_preparation_note_v1",
+  "status": "FUTURE_SOURCE_PREPARED_NOT_EXECUTED",
+  "source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/milestone200_metadata_readback.py",
+    "bytes": 21407,
+    "sha256": "03839a35437307cb36fa5ff8c53c940af34d38e0b98bc20006eb1f5b0581ccf1"
+  },
+  "reference_sources": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/MILESTONE150_HF_NATIVE_METADATA.json",
+      "bytes": 39115,
+      "sha256": "cdefa3df073c919e03ec092caa34fd9eb7de0de0b57ef568e30706a2ed5336dc"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-final-hf-native5-source/reproduction/tree-nested-final-hf-20261014/verify_final_hf.py",
+      "bytes": 18648,
+      "sha256": "47d93636a82cb756ae0967b31fb31421006cad162d27dfde82739d645491289d"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-final-hf-native5-source/reproduction/tree-nested-final-hf-20261014/chain_contract.py",
+      "bytes": 21802,
+      "sha256": "bda8bffa2689256d582277512ad70e390b5af1a438eb04d62757518a2f90f474"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/ssh_retained18.py",
+      "bytes": 4411,
+      "sha256": "8065815f4452923bcb96fbdc12b96b246b7834f85f1bc2a9f75623912c157021"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/variance200_record_coverage.py",
+      "bytes": 29073,
+      "sha256": "bf44ce6316fa976fffba96db218d2f193f82be70877bc8729e1b7cef51ac0885"
+    }
+  ],
+  "reuse_decision": "Milestone150 preserves a one-off query with fixed150/3000 assertions, not a reusable generic entry. Published caac340 verifier reads native/HF weight payloads and cold-loads models, so its main is not suitable here. New independent entry reuses only proven permanent200 paths and metadata contracts.",
+  "future_cli": "env TREE_MGMT_CONTROL_PATH=/tmp/tree-mgmt-3fw9a1ab/control python3 -B work/tree-speed-repair-20261008/milestone200_metadata_readback.py --coverage <actual METRIC_RECORD_COVERAGE_THROUGH200_LOCAL.json> --coverage-bytes <actual bytes> --coverage-sha256 <actual SHA>",
+  "pre_remote_gate": "Actual SHA/byte-bound variance200 PASS coverage and its two-pass three-copy publication receipt, all15 exact original1..200 fields, original200 poll and periodic512 control plus native metadata. Missing gate prevents any remote call.",
+  "remote_call": "Exactly one existing SHA-pinned retained18 helper run to h100-10; same TREE_MGMT_CONTROL_PATH. Two stable JSON/stat observations inside that single query; no automatic retry.",
+  "actual_paths": {
+    "run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+    "native": "checkpoints/training_state/global_step_200/manifest.json",
+    "HF": "checkpoints/actor/global_step_200",
+    "training_config": "resolved.yaml",
+    "rule_source": "Published caac340 chain_contract.py:12-23,184-218"
+  },
+  "future_checks": [
+    "Permanent native200 COMPLETE_SAME_WORLD_STATE_SAVED with frozen778/config/model/data/job identity.",
+    "Eight actual native ranks, positive same-run PT/driver/manifest stat, writer finite metadata and actual dynamic Adam identical to original200 coverage/poll; scheduler200/cursor201. No4000/all20/zero-skip assumption.",
+    "Recorded native HF identity/map digest, exact dynamic HF file inventory, all positive ordinary-file bytes and resolved same-run paths; no fixed12/three-shard assumption.",
+    "Actual hashes only for ordinary small HF metadata JSON and resolved training config; shard-index coverage, config identity, tokenizer config/backend metadata. No tokenizer runtime/model load.",
+    "Two unchanged remote JSON/stat passes and two local product/mirror/gate readbacks; only new small metadata products."
+  ],
+  "evidence_limits": [
+    "Native PT and HF weight payloads are never read or hashed; their file hashes remain writer-recorded descriptors.",
+    "Positive file stat proves capture-time availability only. Writer finite flags are not independently recomputed.",
+    "No cold reload, GPU use, CPU model load/forward, native-HF parameter equivalence, final51713 score acceptance, or actual training201 entry claim."
+  ],
+  "future_outputs": [
+    "MILESTONE200_HF_NATIVE_METADATA.json",
+    "MILESTONE200_HF_NATIVE_METADATA_READBACKS.json"
+  ],
+  "output_budget_bytes": 131072,
+  "preparation_actions": {
+    "SSH_or_remote_calls": 0,
+    "actual200_executed": false,
+    "tests_compile_review": false,
+    "training_or_frozen_runtime_changed": false,
+    "variance200_source_modified": false,
+    "canonical_changed": false
+  },
+  "publication": "Root/publisher performs normal independent source snapshot commit/push before any separately authorized future actual invocation."
+}
