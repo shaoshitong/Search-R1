@@ -60,3 +60,23 @@ Across completed3–7, the sum of all main phases averages320.163s. Actual conse
 Selected512 own-label mixed fractions at3–7 were70.117%,71.680%,68.750%,68.555%,67.578%. There are no full labels for unselected4608 on ordinary rounds; these values are not full-pool classifier accuracy or a QA improvement claim. Paired full-pool and fresh-heldout classifier statistics remain due at the first probe update20.
 
 All five current-run storage rotations completed without warnings. Source ordinary available bytes observed0; this does not by itself establish a write failure or this job's exclusive physical capacity. No reserved-block policy change or old-source deletion was made. Actual source capacity and writes continue to be observed while healthy training proceeds.
+
+
+## Selected-group label distribution through10
+
+The CPU-only selection_metrics.py reporter joins the original pre-update Top512 IDs with each trajectory's own strictEM and records K=0..5, selected mean predictedq and actual mixed fraction. It follows original immutable paths for imported history1–2. Actual collection completed all10 rounds with no missing records;2560 unique trajectories/512 G5 per round and mixed/correct counts match the producer receipts. It reads only small metadata, is staged under a separate preparation/selection-metrics-control directory, and never loads models or modifies the frozen runtime.
+
+|Outer|All wrong|Mixed|All correct|Actual mixed|Mean predicted q|
+|---:|---:|---:|---:|---:|---:|
+|1|74|362|76|70.70%|88.41%|
+|2|63|359|90|70.12%|88.45%|
+|3|57|359|96|70.12%|88.22%|
+|4|71|367|74|71.68%|88.04%|
+|5|76|352|84|68.75%|88.42%|
+|6|46|351|115|68.55%|89.01%|
+|7|64|346|102|67.58%|88.75%|
+|8|63|313|136|61.13%|88.49%|
+|9|43|309|160|60.35%|88.82%|
+|10|48|321|143|62.70%|89.46%|
+
+The score overpredicts the realized selected mixing rate in these early rounds. This is observed selection/calibration behavior, not evidence establishing its cause or a reason to stop the authorized healthy run. Probe weights are intentionally unchanged until20. Full-pool and fresh-heldout paired diagnostics after the first periodic update remain pending. These selected-group statistics do not measure candidate-pool classifier accuracy or QA quality.

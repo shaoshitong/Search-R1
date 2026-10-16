@@ -1,0 +1,797 @@
+{
+  "original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden-selection-metrics-20261016T171823604949Z-actual.json",
+  "sha256": "048f7fe4565061d7c7b81d578c06d694b38fc2e1a376693efe47d7d98a454173",
+  "code_sha256": "72d8ff66da1b0dca9d1ff024494a75cd3c85d69f2a68007a35358b44cc2a3d14",
+  "staged_code": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/preparation/selection-metrics-control/72d8ff66da1b0dca9d1ff024494a75cd3c85d69f2a68007a35358b44cc2a3d14/selection_metrics.py",
+  "result": {
+    "status": "COMPLETE_SELECTION_METRICS",
+    "actual_complete_outer": 10,
+    "rows": 10,
+    "missing": [],
+    "output": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/preparation/selection-metrics-control/selection-summary.json",
+    "sha256": "c0e2c5a30a96d58f58cb12f10fde8c537142ab7ada267ecbb639f9d1c32cc408",
+    "training_modified": false
+  },
+  "report": {
+    "actual_complete_outer": 10,
+    "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2",
+    "missing": [],
+    "observed_unix": 1792171113.1147096,
+    "rows": [
+      {
+        "actor_actual_adam_per_rank": [
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "actual_mixed_fraction": 0.70703125,
+        "all_correct_questions": 76,
+        "all_wrong_questions": 74,
+        "completed_unix": 1792165944.4651642,
+        "correct_count_histogram": {
+          "0": 74,
+          "1": 77,
+          "2": 77,
+          "3": 101,
+          "4": 107,
+          "5": 76
+        },
+        "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000001/complete.json",
+        "joint_sha256": "2751bf2505d38cbc8c705554615e15ec2774f08ac2426349c0adbe7525248c14",
+        "mean_predicted_mixed_probability": 0.8840797963111213,
+        "mixed_questions": 362,
+        "native_capture_seconds_per_rank": [
+          15.162136375904083,
+          14.485646575689316,
+          14.612742736935616,
+          15.046602971851826,
+          14.835270941257477,
+          14.946809832006693,
+          15.561993341892958,
+          14.599661443382502
+        ],
+        "outer": 1,
+        "periodic_probe_metrics": null,
+        "phase_timings": {
+          "outer-000001-actor-351aa7fb2c544f2cbe5bad2a4d96cb87": {
+            "elapsed_seconds": 111.07311465963721,
+            "exit_code": 0
+          },
+          "outer-000001-continue": {
+            "elapsed_seconds": 93.95309777185321,
+            "exit_code": 0
+          },
+          "outer-000001-prefix": {
+            "elapsed_seconds": 65.76908166706562,
+            "exit_code": 0
+          },
+          "outer-000001-score": {
+            "elapsed_seconds": 21.10907766595483,
+            "exit_code": 0
+          }
+        },
+        "probe_actual_adam_per_rank": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "probe_used_to_select_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+        "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-official0",
+        "selected_questions": 512,
+        "selected_trajectories": 2560,
+        "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833/outers/outer-000001/probe-score/selection.json",
+        "selection_sha256": "0eae27e05dbeba7c13acb6aed6e5442c7b6e3a4c53d242b5b91e4662172ea112",
+        "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833/outers/outer-000001/full/own-em.jsonl",
+        "strict_em_sha256": "43b7c3261f56eadd3d0ea12013dc3a7e71e2bc60c1c46628257ea5bc83db6f3c",
+        "unselected_outcome_labels_available": false
+      },
+      {
+        "actor_actual_adam_per_rank": [
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40,
+          40
+        ],
+        "actual_mixed_fraction": 0.701171875,
+        "all_correct_questions": 90,
+        "all_wrong_questions": 63,
+        "completed_unix": 1792167416.93884,
+        "correct_count_histogram": {
+          "0": 63,
+          "1": 57,
+          "2": 92,
+          "3": 101,
+          "4": 109,
+          "5": 90
+        },
+        "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000002/complete.json",
+        "joint_sha256": "b5ac38af4f0220b3c5b4d790d9db667164431db90018fdba5ea81db29225b757",
+        "mean_predicted_mixed_probability": 0.8844760975040065,
+        "mixed_questions": 359,
+        "native_capture_seconds_per_rank": [
+          15.110761750489473,
+          14.43720705807209,
+          15.045140016824007,
+          14.693394389003515,
+          14.977012552320957,
+          14.699101191014051,
+          15.468794591724873,
+          14.8583601154387
+        ],
+        "outer": 2,
+        "periodic_probe_metrics": null,
+        "phase_timings": {
+          "outer-000002-actor-2f42dc9fedcc419382c52a37bc386b19": {
+            "elapsed_seconds": 133.09932070970535,
+            "exit_code": 0
+          },
+          "outer-000002-continue": {
+            "elapsed_seconds": 102.35092780739069,
+            "exit_code": 0
+          },
+          "outer-000002-prefix": {
+            "elapsed_seconds": 70.77880359441042,
+            "exit_code": 0
+          },
+          "outer-000002-score": {
+            "elapsed_seconds": 20.83532625436783,
+            "exit_code": 0
+          }
+        },
+        "probe_actual_adam_per_rank": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "probe_used_to_select_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+        "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0001",
+        "selected_questions": 512,
+        "selected_trajectories": 2560,
+        "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume1/outers/outer-000002/probe-score/selection.json",
+        "selection_sha256": "556a4f11a3055a3a6e77648bb7c3b40e5bb8d992c7d061735b69d62d8bf07435",
+        "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume1/outers/outer-000002/full/own-em.jsonl",
+        "strict_em_sha256": "3e714d7f0d39a15170f1aae468c16f5af4519bdda294291cf8ed6309d8d3cbaa",
+        "unselected_outcome_labels_available": false
+      },
+      {
+        "actor_actual_adam_per_rank": [
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60,
+          60
+        ],
+        "actual_mixed_fraction": 0.701171875,
+        "all_correct_questions": 96,
+        "all_wrong_questions": 57,
+        "completed_unix": 1792168701.6403959,
+        "correct_count_histogram": {
+          "0": 57,
+          "1": 71,
+          "2": 78,
+          "3": 94,
+          "4": 116,
+          "5": 96
+        },
+        "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000003/complete.json",
+        "joint_sha256": "776dfac4478172f260762688b3d419faac329f002d54e1ac184e70a5f5e0cf20",
+        "mean_predicted_mixed_probability": 0.8821835923651383,
+        "mixed_questions": 359,
+        "native_capture_seconds_per_rank": [
+          15.537761442363262,
+          14.858906108886003,
+          14.863765809684992,
+          14.944814689457417,
+          14.558060381561518,
+          14.545468132942915,
+          15.325654804706573,
+          14.380972392857075
+        ],
+        "outer": 3,
+        "periodic_probe_metrics": null,
+        "phase_timings": {
+          "outer-000003-actor-bacfa076800e4714abb5c4399e755dd2": {
+            "elapsed_seconds": 131.10057671368122,
+            "exit_code": 0
+          },
+          "outer-000003-continue": {
+            "elapsed_seconds": 101.72834463045001,
+            "exit_code": 0
+          },
+          "outer-000003-prefix": {
+            "elapsed_seconds": 73.90872426331043,
+            "exit_code": 0
+          },
+          "outer-000003-score": {
+            "elapsed_seconds": 21.016129340976477,
+            "exit_code": 0
+          }
+        },
+        "probe_actual_adam_per_rank": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "probe_used_to_select_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+        "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0002",
+        "selected_questions": 512,
+        "selected_trajectories": 2560,
+        "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000003/probe-score/selection.json",
+        "selection_sha256": "edd32f1c70597abca7b9dbc1ff552c4c2e487d9e44e33de39a701845c8af95bb",
+        "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000003/full/own-em.jsonl",
+        "strict_em_sha256": "b16f3bc9db0fb3a64d00f1d92d26045e803b4996e0ef53b6a3b1662ec2fb56f0",
+        "unselected_outcome_labels_available": false
+      },
+      {
+        "actor_actual_adam_per_rank": [
+          80,
+          80,
+          80,
+          80,
+          80,
+          80,
+          80,
+          80
+        ],
+        "actual_mixed_fraction": 0.716796875,
+        "all_correct_questions": 74,
+        "all_wrong_questions": 71,
+        "completed_unix": 1792169032.4165773,
+        "correct_count_histogram": {
+          "0": 71,
+          "1": 73,
+          "2": 87,
+          "3": 103,
+          "4": 104,
+          "5": 74
+        },
+        "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000004/complete.json",
+        "joint_sha256": "6c967247cad5206aac20cbd55e410951a0b9e96ceaf31221f1249c9e5a8caf1c",
+        "mean_predicted_mixed_probability": 0.8803901090202276,
+        "mixed_questions": 367,
+        "native_capture_seconds_per_rank": [
+          14.553562931716442,
+          15.475154928863049,
+          15.469221092760563,
+          15.440842982381582,
+          15.252966411411762,
+          15.759425524622202,
+          15.324440956115723,
+          16.003541994839907
+        ],
+        "outer": 4,
+        "periodic_probe_metrics": null,
+        "phase_timings": {
+          "outer-000004-actor-34d6c24ca75c41c0b90738316ae0276c": {
+            "elapsed_seconds": 129.7326605655253,
+            "exit_code": 0
+          },
+          "outer-000004-continue": {
+            "elapsed_seconds": 99.28403921425343,
+            "exit_code": 0
+          },
+          "outer-000004-prefix": {
+            "elapsed_seconds": 71.92732353508472,
+            "exit_code": 0
+          },
+          "outer-000004-score": {
+            "elapsed_seconds": 24.96140168607235,
+            "exit_code": 0
+          }
+        },
+        "probe_actual_adam_per_rank": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "probe_used_to_select_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+        "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0003",
+        "selected_questions": 512,
+        "selected_trajectories": 2560,
+        "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000004/probe-score/selection.json",
+        "selection_sha256": "a859896b70d277eeede994d21fe74e11f5cd1223675c5f092f8aa8819e8f547a",
+        "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000004/full/own-em.jsonl",
+        "strict_em_sha256": "d1ca708d085cf1b0b7b14e51494defe313641b9d395ab94fb007073bed3df88a",
+        "unselected_outcome_labels_available": false
+      },
+      {
+        "actor_actual_adam_per_rank": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ],
+        "actual_mixed_fraction": 0.6875,
+        "all_correct_questions": 84,
+        "all_wrong_questions": 76,
+        "completed_unix": 1792169349.3708167,
+        "correct_count_histogram": {
+          "0": 76,
+          "1": 73,
+          "2": 87,
+          "3": 95,
+          "4": 97,
+          "5": 84
+        },
+        "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000005/complete.json",
+        "joint_sha256": "fe7bc4a3592914134f9918b5c69692d65ee0127ed275e2e5113cf84f3b1a3e73",
+        "mean_predicted_mixed_probability": 0.8841858018699248,
+        "mixed_questions": 352,
+        "native_capture_seconds_per_rank": [
+          15.636188734322786,
+          14.825464691966772,
+          14.917295135557652,
+          15.150213245302439,
+          15.114172294735909,
+          15.020907044410706,
+          15.148309342563152,
+          14.931163795292377
+        ],
+        "outer": 5,
+        "periodic_probe_metrics": null,
+        "phase_timings": {
+          "outer-000005-actor-c70eb666fc794cf786ebac2f8006a640": {
+            "elapsed_seconds": 126.80154662579298,
+            "exit_code": 0
+          },
+          "outer-000005-continue": {
+            "elapsed_seconds": 93.57248895987868,
+            "exit_code": 0
+          },
+          "outer-000005-prefix": {
+            "elapsed_seconds": 69.86231611669064,
+            "exit_code": 0
+          },
+          "outer-000005-score": {
+            "elapsed_seconds": 21.764585092663765,
+            "exit_code": 0
+          }
+        },
+        "probe_actual_adam_per_rank": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "probe_used_to_select_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+        "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0004",
+        "selected_questions": 512,
+        "selected_trajectories": 2560,
+        "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000005/probe-score/selection.json",
+        "selection_sha256": "8a9b69ac3bd0dbfa98994b11daec810ee10d10e320726914a0a8bd5f9e6b0ca3",
+        "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000005/full/own-em.jsonl",
+        "strict_em_sha256": "bf36623385848332cb5a6dbe294abf0f301b2d7b04b137c536f4ba1b62dc994f",
+        "unselected_outcome_labels_available": false
+      },
+      {
+        "actor_actual_adam_per_rank": [
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120,
+          120
+        ],
+        "actual_mixed_fraction": 0.685546875,
+        "all_correct_questions": 115,
+        "all_wrong_questions": 46,
+        "completed_unix": 1792169794.0627563,
+        "correct_count_histogram": {
+          "0": 46,
+          "1": 66,
+          "2": 77,
+          "3": 94,
+          "4": 114,
+          "5": 115
+        },
+        "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000006/complete.json",
+        "joint_sha256": "a4e5d17eef671d05681ac3a8b8a1ffbd58ce524da4aa6b28f6bbc746d9d0fb8b",
+        "mean_predicted_mixed_probability": 0.8900839557874083,
+        "mixed_questions": 351,
+        "native_capture_seconds_per_rank": [
+          15.077320158481598,
+          14.851684123277664,
+          15.157730430364609,
+          14.978494953364134,
+          15.01225496828556,
+          15.206444215029478,
+          15.122027933597565,
+          15.0311768501997
+        ],
+        "outer": 6,
+        "periodic_probe_metrics": null,
+        "phase_timings": {
+          "outer-000006-actor-d78a1d72c86c4f48b3c8ff02696e152f": {
+            "elapsed_seconds": 124.10929558798671,
+            "exit_code": 0
+          },
+          "outer-000006-continue": {
+            "elapsed_seconds": 98.92287618294358,
+            "exit_code": 0
+          },
+          "outer-000006-prefix": {
+            "elapsed_seconds": 71.01097260415554,
+            "exit_code": 0
+          },
+          "outer-000006-score": {
+            "elapsed_seconds": 21.796490136533976,
+            "exit_code": 0
+          }
+        },
+        "probe_actual_adam_per_rank": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "probe_used_to_select_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+        "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0005",
+        "selected_questions": 512,
+        "selected_trajectories": 2560,
+        "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000006/probe-score/selection.json",
+        "selection_sha256": "b2b7067014ec6771d653efc98af413013e5aee4e46a14964101d03b95a8c7bc6",
+        "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000006/full/own-em.jsonl",
+        "strict_em_sha256": "d5d42b47f18fd6008dedf5b4f1bf393c37b3ae575f27058eca7604be92b92d45",
+        "unselected_outcome_labels_available": false
+      },
+      {
+        "actor_actual_adam_per_rank": [
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140,
+          140
+        ],
+        "actual_mixed_fraction": 0.67578125,
+        "all_correct_questions": 102,
+        "all_wrong_questions": 64,
+        "completed_unix": 1792170124.6657264,
+        "correct_count_histogram": {
+          "0": 64,
+          "1": 62,
+          "2": 63,
+          "3": 96,
+          "4": 125,
+          "5": 102
+        },
+        "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000007/complete.json",
+        "joint_sha256": "7e6f28eac74a1d489e66b1b99c6f3d234d651344f7d1762692d8c7c88d1a7322",
+        "mean_predicted_mixed_probability": 0.8874554323955766,
+        "mixed_questions": 346,
+        "native_capture_seconds_per_rank": [
+          15.318657521158457,
+          15.178112350404263,
+          14.811417825520039,
+          15.395253892987967,
+          15.46305625885725,
+          15.178542505949736,
+          14.746118512004614,
+          14.945429775863886
+        ],
+        "outer": 7,
+        "periodic_probe_metrics": null,
+        "phase_timings": {
+          "outer-000007-actor-a87af039c35b444cb515bc53a01e189f": {
+            "elapsed_seconds": 129.3745995797217,
+            "exit_code": 0
+          },
+          "outer-000007-continue": {
+            "elapsed_seconds": 95.58888286724687,
+            "exit_code": 0
+          },
+          "outer-000007-prefix": {
+            "elapsed_seconds": 71.68948612734675,
+            "exit_code": 0
+          },
+          "outer-000007-score": {
+            "elapsed_seconds": 22.66349383816123,
+            "exit_code": 0
+          }
+        },
+        "probe_actual_adam_per_rank": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "probe_used_to_select_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+        "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0006",
+        "selected_questions": 512,
+        "selected_trajectories": 2560,
+        "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000007/probe-score/selection.json",
+        "selection_sha256": "3387a718e713801b2da616d5853508e4111d12024568d9265704dad8e1b507b6",
+        "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000007/full/own-em.jsonl",
+        "strict_em_sha256": "405ab60d6d1b7676d302ac364ae0d2562cc1fae72bfe65c9db623622c638ab9f",
+        "unselected_outcome_labels_available": false
+      },
+      {
+        "actor_actual_adam_per_rank": [
+          160,
+          160,
+          160,
+          160,
+          160,
+          160,
+          160,
+          160
+        ],
+        "actual_mixed_fraction": 0.611328125,
+        "all_correct_questions": 136,
+        "all_wrong_questions": 63,
+        "completed_unix": 1792170446.4967947,
+        "correct_count_histogram": {
+          "0": 63,
+          "1": 44,
+          "2": 73,
+          "3": 81,
+          "4": 115,
+          "5": 136
+        },
+        "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000008/complete.json",
+        "joint_sha256": "5cfd3d122af0d7ce7efbd57eb55e23b7b126d0555e5a9f187d26c85804094f4e",
+        "mean_predicted_mixed_probability": 0.8848972863921725,
+        "mixed_questions": 313,
+        "native_capture_seconds_per_rank": [
+          15.089623276144266,
+          15.399563610553741,
+          14.938459247350693,
+          15.363272000104189,
+          15.305119182914495,
+          15.481633193790913,
+          14.660310663282871,
+          15.263086274266243
+        ],
+        "outer": 8,
+        "periodic_probe_metrics": null,
+        "phase_timings": {
+          "outer-000008-actor-95bc5b3899724a5cbc4a953b3e75bc3b": {
+            "elapsed_seconds": 127.36521014943719,
+            "exit_code": 0
+          },
+          "outer-000008-continue": {
+            "elapsed_seconds": 92.66453341767192,
+            "exit_code": 0
+          },
+          "outer-000008-prefix": {
+            "elapsed_seconds": 72.63125312700868,
+            "exit_code": 0
+          },
+          "outer-000008-score": {
+            "elapsed_seconds": 22.95520193502307,
+            "exit_code": 0
+          }
+        },
+        "probe_actual_adam_per_rank": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "probe_used_to_select_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+        "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0007",
+        "selected_questions": 512,
+        "selected_trajectories": 2560,
+        "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000008/probe-score/selection.json",
+        "selection_sha256": "eeef5a2ce735afc6ef27ec09008055b86d053c5b6d2e4a3a7b4439ec7b90e7d3",
+        "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000008/full/own-em.jsonl",
+        "strict_em_sha256": "b4cb61ed826c74b8a4946eba35c029d3a1ee828d75e547fd7128005099795ff8",
+        "unselected_outcome_labels_available": false
+      },
+      {
+        "actor_actual_adam_per_rank": [
+          180,
+          180,
+          180,
+          180,
+          180,
+          180,
+          180,
+          180
+        ],
+        "actual_mixed_fraction": 0.603515625,
+        "all_correct_questions": 160,
+        "all_wrong_questions": 43,
+        "completed_unix": 1792170770.854199,
+        "correct_count_histogram": {
+          "0": 43,
+          "1": 45,
+          "2": 70,
+          "3": 85,
+          "4": 109,
+          "5": 160
+        },
+        "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000009/complete.json",
+        "joint_sha256": "3a10583f3c76ecbe775bfef51845d6b2b2d8b9561a9c44b2c92a149f5c291952",
+        "mean_predicted_mixed_probability": 0.8881706769382202,
+        "mixed_questions": 309,
+        "native_capture_seconds_per_rank": [
+          15.123752597719431,
+          15.242261562496424,
+          15.10919127240777,
+          14.932862225919962,
+          15.426901698112488,
+          15.571622151881456,
+          15.252291977405548,
+          15.61840645968914
+        ],
+        "outer": 9,
+        "periodic_probe_metrics": null,
+        "phase_timings": {
+          "outer-000009-actor-5a11d8e5599e49ee890863fe690075a8": {
+            "elapsed_seconds": 127.43158565834165,
+            "exit_code": 0
+          },
+          "outer-000009-continue": {
+            "elapsed_seconds": 89.55475915968418,
+            "exit_code": 0
+          },
+          "outer-000009-prefix": {
+            "elapsed_seconds": 74.61824319139123,
+            "exit_code": 0
+          },
+          "outer-000009-score": {
+            "elapsed_seconds": 22.98457073047757,
+            "exit_code": 0
+          }
+        },
+        "probe_actual_adam_per_rank": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "probe_used_to_select_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+        "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0008",
+        "selected_questions": 512,
+        "selected_trajectories": 2560,
+        "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000009/probe-score/selection.json",
+        "selection_sha256": "2e2df7a1d9266526415a43bcf7ab3625ee506a1839496ce06299bd3b29bf0f5f",
+        "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000009/full/own-em.jsonl",
+        "strict_em_sha256": "af50aa272f88e44bfe837173e2502f9802c96643081d977df22564cd9f48203b",
+        "unselected_outcome_labels_available": false
+      },
+      {
+        "actor_actual_adam_per_rank": [
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200,
+          200
+        ],
+        "actual_mixed_fraction": 0.626953125,
+        "all_correct_questions": 143,
+        "all_wrong_questions": 48,
+        "completed_unix": 1792171093.2258468,
+        "correct_count_histogram": {
+          "0": 48,
+          "1": 50,
+          "2": 60,
+          "3": 85,
+          "4": 126,
+          "5": 143
+        },
+        "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000010/complete.json",
+        "joint_sha256": "eb5dd97f67a9f4ac86c5a6d93ad0f3dc8673ee03726f5b73a620a5ebe695ab88",
+        "mean_predicted_mixed_probability": 0.8946062432957611,
+        "mixed_questions": 321,
+        "native_capture_seconds_per_rank": [
+          14.943884901702404,
+          15.3761072345078,
+          15.197256229817867,
+          15.144992053508759,
+          15.246866900473833,
+          15.757437910884619,
+          15.417474262416363,
+          15.338860642164946
+        ],
+        "outer": 10,
+        "periodic_probe_metrics": null,
+        "phase_timings": {
+          "outer-000010-actor-1427a0fa57b64c02b3cd9dc40aa13b02": {
+            "elapsed_seconds": 124.90782438963652,
+            "exit_code": 0
+          },
+          "outer-000010-continue": {
+            "elapsed_seconds": 95.26647628098726,
+            "exit_code": 0
+          },
+          "outer-000010-prefix": {
+            "elapsed_seconds": 69.46181275323033,
+            "exit_code": 0
+          },
+          "outer-000010-score": {
+            "elapsed_seconds": 23.4564699716866,
+            "exit_code": 0
+          }
+        },
+        "probe_actual_adam_per_rank": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "probe_used_to_select_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+        "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0009",
+        "selected_questions": 512,
+        "selected_trajectories": 2560,
+        "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000010/probe-score/selection.json",
+        "selection_sha256": "19948563054dd7b79271b2315c5483eb389cb58fa9a8289abdacbd1525ad4201",
+        "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000010/full/own-em.jsonl",
+        "strict_em_sha256": "0010e6fab99460d0a490741049048e71d0dac739d99e679a67d9779ef68e60a7",
+        "unselected_outcome_labels_available": false
+      }
+    ],
+    "run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+    "status": "COMPLETE_SELECTION_METRICS",
+    "tensor_or_rollout_payload_loaded": false,
+    "training_modified": false
+  }
+}
