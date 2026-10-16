@@ -65,7 +65,9 @@ def main():
 
     try:
         call('jxu957',STATE+"os.umask(0o007)\nstage.mkdir(mode=0o770)\n(stage/'preparation').mkdir(mode=0o770)\nassert stage.stat().st_gid==21919\nprint(json.dumps(dict(stage=str(stage),state=state())))",'stage')
-        root=call('mou176',STATE+"from reproduction.prefix20_joint4.storage_observe import observe\nobserve(stage,commit)",'root',1790)
+        # Slurm hides jxu957's jobs from mou176. Only the owner checks queue
+        # state; this separate account only measures the isolated CPU stage.
+        root=call('mou176',"from reproduction.prefix20_joint4.storage_observe import observe\nobserve(stage,commit)",'root',1790)
         if not root['measurement_complete']:
             assert root['returncode']==1 and not root['timed_out']
             result=Path(root['stdout_file']).parent/'result.json'
