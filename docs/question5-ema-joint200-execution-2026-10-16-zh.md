@@ -10,7 +10,7 @@
 
 - 参考HF epoch68归档：348160组／1740800条；包含原teacher5120组／25600条。
 - A800 scale20：102400题／512000条，其中原teacher同一事件已经包含在参考数据中，只计一次；新增97280组／486400条保留。
-- 预计合并445440个G5事件／2227200条训练轨迹，固定随机测试512组／2560条。最终必须经过真实source转换、SHA、完整G5和测试题隔离检查，不能仅凭预计数启动。
+- 已完成合并445440个G5事件／2227200条训练轨迹，固定随机测试512组／2560条；合计445952组／2229760条特征。真实source转换、完整G5、测试题隔离及缓存验收已完成，验收记录见下节21:32／21:35实际执行记录。
 - 同题不同rollout属于不同事件，不能按qid或文本去掉；每组必须是同次采样的原五条EM，不能拼为G10。
 - 固定测试原回答不重新采样，题ID与规范化文本均隔离。参考canonical共同train169028保持原划分与字节身份。
 
@@ -52,7 +52,9 @@ python -m reproduction.question5_ema_warmup.cache --action finalize-cache --outp
 torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.train --config BASE/preparation/fit-config.json
 ```
 
-当前实际使用 `reproduction/operations/a800_question5_hf_direct_warmup_control.py` 独立一次性pipeline：等待HF直接下载的原八part完整验收→A800 CPU解包、裁成prefix5并准备完整数据→现场准入四张空闲训练卡（排除辅助5/6及任何被占卡）→四encoder worker→CPU缓存合并→200epoch训练。source-plan使用 `reference_archive.parts`，不使用旧 `prepared_reference_archive` 中转输入。选中UUID后固定，父wrapper持同UUID lease贯穿缓存与训练，child通过继承FD校验，不相互抢锁。没有retriever/actor，不用5/6，不停止他人，不改SSH/VPN/auth/knownhosts。当前一次launch intent已消费；上面的阶段命令仅说明调用关系，不能再手动启动第二条流水线。后续只观察下节当前handle，SSH超时不能当作退出或重启依据。
+父流水线使用 `reproduction/operations/a800_question5_hf_direct_warmup_control.py`：HF直接下载的原八part完整验收→A800 CPU解包、裁成prefix5并准备完整数据→现场准入四张空闲训练卡（排除辅助5/6及任何被占卡）→四encoder worker→CPU缓存合并。source-plan使用 `reference_archive.parts`，不使用旧 `prepared_reference_archive` 中转输入。缓存已完成，随后probe启动入口因Git archive兼容性错误退出；父handle一次launch intent已消费，**禁止重新launch父handle**。
+
+修复后的独立入口计划为 `reproduction/operations/a800_question5_cached_train_control.py`，仅从只读的完整父缓存启动fresh probe，不重复编码、rollout或EM评分；截至21:35尚未发布闭合或启动。上面的阶段命令仅说明调用关系，不能手动补启动另一条流水线。实际启动仍须现场准入四张空闲训练卡；选中UUID后固定，父wrapper持同UUID lease，child通过继承FD校验，不相互抢锁。没有retriever/actor，不用5/6，不停止他人，不改SSH/VPN/auth/knownhosts。SSH超时不能当作退出或重启依据。
 
 全量数据、特征、模型、Adam、checkpoint和预测留A800远端。Mac仅代码/配置/文档/小型审计。源码Git提交push、GitHub文件SHA独立核对、A800完整Git archive文件SHA对齐后才允许启动。stage和launch回执不等于训练推进；必须检查两次真实进展及首完整epoch。
 
@@ -64,19 +66,25 @@ torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.tr
 
 只有200个完整合并epoch、最终EMA train/test指标、完整finite/SHA状态及仅自有资源收尾实际通过，才能宣称本warmup完成；原actor200 goal保持独立，不由本次probe完成而标记完成。
 
-## 2026-10-16 20:10（上海）当前实际执行
+## 2026-10-16 21:32／21:35（上海）缓存完成、启动故障与待发布修复
 
-当前唯一pipeline handle为 `preparation/question5-hf-direct-deployment-20261016.json`，run `d7dd61bb36454e1e80c2306b5fb7d23a`／execution `694d67a5f1a04849b9f254c4a6408a03`，源码commit `0fde8e8bb59fc3bac0c6247704b2fd1bd063abf6`，924个源码文件。远端base为 `/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-d7dd61bb36454e1e80c2306b5fb7d23a`；pipeline PID1374205／birth623197341。
+父run `d7dd61bb36454e1e80c2306b5fb7d23a`／execution `694d67a5f1a04849b9f254c4a6408a03`／runtime `0fde8e8bb59fc3bac0c6247704b2fd1bd063abf6` 的完整缓存已为 `COMPLETE`：445952个G5事件／2229760条特征，其中1715200条为本次新编码，514560条精确复用。四个encoder与finalizer实际均exit0。完整feature manifest SHA为 `e9ed944ed244513ab55bdd1b13aae745c5b7902228294fd62ef70ea349b6f246`。
+
+实际回执为 `preparation/question5-slim-progress-observation-1792157601516614000.json` 和 `preparation/question5-startup-failure-actual-1792157717156804000.json`。probe于21:14在NCCL、Head、Adam、EMA初始化之前失败：`train.py:315` 强制执行 `git rev-parse`，而部署为完整Git archive、目录没有 `.git`，Git实际exit128。CUDA UUID绑定已接受；没有run claim、模型初始化或更新记录。所有父流水线自有进程已确认退出。本次是启动入口兼容性错误，没有已开始的optimizer状态或训练更新丢失，不能归为模型训练数值故障。
+
+父runtime、日志和已完成缓存保持不可变，不能重试已消费的 `preparation/question5-hf-direct-deployment-20261016.json`。修复正在接入严格的已认证archive身份与完整文件清单SHA核验，同时保留真实Git checkout核验路径。新 `a800_question5_cached_train_control.py` 只读父缓存后启动全新probe；这不是state resume，不继承旧Head或optimizer，也不重编码、生成轨迹或改写EM。
+
+预备新run为 `4347d238b1d64b3f95ed22fb59d1f00f`／execution `2ec56fe5c3194c16bbc45c2ea4c52d8a`，远端base计划为 `/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-4347d238b1d64b3f95ed22fb59d1f00f`；handle为 `preparation/question5-cached-sourcefix-deployment-20261016.json`，intent为 `preparation/question5-cached-sourcefix-intent-20261016.json`。**截至本记录尚未启动，源码发布与实际启动证明待补，不将预备身份视为运行事实。**
+
+修复部署闭合后仍使用primary `reproduction.operations.a800_question5_slim_progress_observer`，沿新handle读取typed archive资格、父缓存绑定与实际进度回执；不得用旧handle重启。科学配置保持question+prefix5、两个BCE权重1:1、EMA0.99和200个完整合并数据epoch。
+
+## 2026-10-16 20:10（上海）历史启动阶段记录
+
+当时pipeline handle为 `preparation/question5-hf-direct-deployment-20261016.json`，run `d7dd61bb36454e1e80c2306b5fb7d23a`／execution `694d67a5f1a04849b9f254c4a6408a03`，源码commit `0fde8e8bb59fc3bac0c6247704b2fd1bd063abf6`，924个源码文件。远端base为 `/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-d7dd61bb36454e1e80c2306b5fb7d23a`；pipeline PID1374205／birth623197341。
 
 下载完整验收记录在 `preparation/question5-ema-joint200-slim-deployment-20261016-hf-direct-observe-1792152603445590000.json`；20:10实际流水线元数据在 `preparation/question5-slim-progress-observation-1792152604107462000.json`。当次CPU prepare PID1375129／birth623203356真实存活，未记录错误；Head更新数尚未知，未确认开始训练，不能把CPU准备或下载完成当作已完成epoch或已有成绩。
 
-当前primary仅沿同handle有界只读观察，不重新launch：
-
-```
-python -m reproduction.operations.a800_question5_slim_progress_observer --handle preparation/question5-hf-direct-deployment-20261016.json
-```
-
-本节是该时间点的实测记录；后续进度以同run/execution最新实际回执、CPU准备产物、四rank ledger和错误/退出状态为准。
+本节仅保留20:10的实测历史，不代表当前进程仍存活。后续21:32／21:35记录已确认缓存完成、probe启动失败及父自有进程退出；不得根据本节旧存活记录重新启动该handle。
 
 ## 历史部署与源端封存记录（已被HF直下流程取代）
 

@@ -11,10 +11,11 @@ import hashlib
 import json
 import math
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import random
 import re
 import signal
+import stat
 import subprocess
 import sys
 import time
@@ -72,6 +73,10 @@ def validate_config(value):
             raise ValueError("Require an explicit absolute remote " + key)
         if config[key].startswith("/Users/"):
             raise ValueError("Large experiment assets cannot use Mac storage: " + key)
+    deployment = config.get("deployment_handle_path")
+    if deployment is not None and (not isinstance(deployment, str)
+            or not Path(deployment).is_absolute() or deployment.startswith("/Users/")):
+        raise ValueError("Require an explicit absolute remote deployment_handle_path")
     if config.get("official_revision", OFFICIAL_REVISION) != OFFICIAL_REVISION:
         raise ValueError("Official model revision differs")
     if config.get("common_manifest_sha256", COMMON_MANIFEST) != COMMON_MANIFEST:
@@ -121,6 +126,104 @@ def validate_config(value):
             raise ValueError("Resume requires one explicit same-run checkpoint")
         _hex(resume["sha256"], 64, "resume checkpoint SHA")
     return config
+
+
+def verify_runtime_source(config, repo):
+    """Verify a real Git checkout or an explicitly bound staged source archive."""
+    repo = Path(repo)
+    if config.get("deployment_handle_path") is None:
+        actual_source = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
+        tracked_changes = subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"],
+                                                  cwd=repo, text=True).strip()
+        if actual_source != config["source_commit"] or tracked_changes:
+            raise ValueError("Runtime source is not the exact clean published commit")
+        return dict(source_kind="genuine_git_checkout", source_commit=actual_source, tracked_clean=True)
+
+    base = repo.parent
+    if (repo.resolve() != repo or base.resolve() != base or repo.name != "repo"
+            or (repo / ".git").exists()):
+        raise ValueError("Archive mode requires its canonical isolated repo without Git metadata")
+    limit = 64 * 1024**2
+
+    def owned_file(path):
+        path = Path(path)
+        info = path.lstat()
+        if (path.resolve() != path or not stat.S_ISREG(info.st_mode)
+                or info.st_uid != os.getuid() or info.st_size > limit):
+            raise ValueError("Unsafe, foreign or oversized source file: " + str(path))
+        return info
+
+    def metadata(path):
+        owned_file(path)
+        with Path(path).open("rb") as handle:
+            raw = handle.read(limit + 1)
+        if len(raw) > limit:
+            raise ValueError("Oversized source metadata")
+        value = json.loads(raw)
+        if not isinstance(value, dict):
+            raise ValueError("Source metadata must be an object")
+        return value, hashlib.sha256(raw).hexdigest()
+
+    handle_path = Path(config["deployment_handle_path"])
+    if handle_path != base / "preparation/deployment.json":
+        raise ValueError("Deployment handle must belong to this source archive base")
+    handle, handle_sha = metadata(handle_path)
+    if handle.get("base") != str(base) or any(handle.get(key) != config[key]
+            for key in ("run_id", "execution_id", "source_commit")):
+        raise ValueError("Archive deployment run/execution/source identity differs")
+    _hex(handle.get("source_tree"), 40, "archive source tree")
+    _hex(handle.get("source_archive_sha256"), 64, "source archive SHA")
+    _hex(handle.get("source_plan_sha256"), 64, "source plan SHA")
+    files = handle.get("source_files")
+    if not isinstance(files, dict) or not files or len(files) > 10000:
+        raise ValueError("Require a bounded full declared source inventory")
+    receipt, receipt_sha = metadata(base / "preparation/source-receipt.json")
+    expected = dict(stage="QUESTION5_EXACT_SOURCE_ARCHIVE_STAGED", base=str(base),
+                    source_commit=config["source_commit"], source_tree=handle["source_tree"],
+                    source_archive_sha256=handle["source_archive_sha256"], source_files_verified=len(files),
+                    teacher_or_actor_started=False, training_started=False)
+    if any(receipt.get(key) != value for key, value in expected.items()):
+        raise ValueError("Archive staging source receipt differs from the exact deployment")
+    source_plan = base / "preparation/source-plan.json"
+    owned_file(source_plan)
+    if sha(source_plan) != handle["source_plan_sha256"]:
+        raise ValueError("Archive source plan differs from the authenticated deployment")
+    actual, total_bytes = {}, 0
+    for name, expected_sha in files.items():
+        if not isinstance(name, str):
+            raise ValueError("Source inventory paths must be strings")
+        relative = PurePosixPath(name)
+        if (not name or relative.is_absolute() or str(relative) != name
+                or any(part in (".", "..", ".git") for part in relative.parts)):
+            raise ValueError("Unsafe declared source-relative path")
+        _hex(expected_sha, 64, "declared source file SHA")
+        path = repo / relative
+        before = owned_file(path)
+        actual[name] = sha(path)
+        after = owned_file(path)
+        if (actual[name] != expected_sha or
+                (before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns) !=
+                (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
+            raise ValueError("Archive runtime file differs or changed during verification: " + name)
+        total_bytes += after.st_size
+    inventory = set()
+    for path in repo.rglob("*"):
+        info = path.lstat()
+        if path.resolve() != path or info.st_uid != os.getuid():
+            raise ValueError("Unsafe or foreign archive inventory entry")
+        if stat.S_ISREG(info.st_mode):
+            inventory.add(path.relative_to(repo).as_posix())
+        elif not stat.S_ISDIR(info.st_mode):
+            raise ValueError("Archive inventory contains a nonregular entry")
+    if inventory != set(files) or "reproduction/question5_ema_warmup/train.py" not in actual:
+        raise ValueError("Actual archive inventory differs from the full declared source map")
+    return dict(source_kind="authenticated_staged_archive", source_commit=config["source_commit"],
+                source_tree=handle["source_tree"], source_archive_sha256=handle["source_archive_sha256"],
+                deployment_handle_path=str(handle_path), deployment_handle_sha256=handle_sha,
+                source_receipt_sha256=receipt_sha, source_plan_sha256=handle["source_plan_sha256"],
+                source_files_verified=len(actual), source_bytes_verified=total_bytes,
+                actual_source_file_digests_sha256=digest(actual), exact_inventory_verified=True,
+                train_source_sha256=actual["reproduction/question5_ema_warmup/train.py"])
 
 
 def _bound_cuda_uuid(config, local):
@@ -312,11 +415,12 @@ def main(argv=None):
                     dict(identity=owner, binding=cuda_binding, parent_physical_gpu_uuids=config["physical_gpu_uuids"]),
                     exclusive=True)
         repo = Path(__file__).resolve().parents[2]
-        actual_source = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo, text=True).strip()
-        tracked_changes = subprocess.check_output(["git", "status", "--porcelain", "--untracked-files=no"],
-                                                  cwd=repo, text=True).strip()
-        if actual_source != config["source_commit"] or tracked_changes:
-            raise ValueError("Runtime source is not the exact clean published commit")
+        source_binding = verify_runtime_source(config, repo)
+        source_record = dict(stage="EXACT_RUNTIME_SOURCE_VERIFIED_BEFORE_NCCL", identity=owner,
+                             binding=source_binding, observed_unix=time.time())
+        if len(canonical(source_record)) > 16 * 1024:
+            raise ValueError("Source binding receipt exceeds its scalar/hash bound")
+        atomic_json(execution / ("source-binding-rank-%d.json" % rank), source_record, exclusive=True)
         if sha(config["feature_manifest"]) != config["feature_manifest_sha256"]:
             raise ValueError("Pinned feature manifest SHA differs")
         dist.init_process_group("nccl", timeout=datetime.timedelta(minutes=30))

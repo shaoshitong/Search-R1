@@ -161,12 +161,73 @@ if cache is not None:
   'feature_dim','prefix_tokens','feature_dtype','groups_by_split','trajectories_by_split','reused_trajectories',
   'newly_encoded_trajectories','padding_stored','encoder_optimizer_updates','checked_unix')))
 
+parent_acceptance,parent_acceptance_proof=document('logs/cached-parent-acceptance.json')
+parent_cache_summary=None
+if parent_acceptance is not None:
+ same(parent_acceptance)
+ assert parent_acceptance['stage']=='QUESTION5_PARENT_CACHE_ACCEPTED_FOR_FRESH_STARTUP_REPAIR'
+ parent=h['parent_handle'];parent_base=pathlib.Path(h['parent_cache_base'])
+ assert str(parent_base)==parent['base'] and parent_base!=b and parent_base.is_absolute()
+ expected_parent=dict(parent_cache_base=str(parent_base),parent_run_id=parent['run_id'],
+  parent_execution_id=parent['execution_id'],parent_source_commit=parent['source_commit'],
+  parent_handle_sha256=h['parent_handle_sha256'],parent_source_plan_sha256=parent['source_plan_sha256'],
+  parent_data_manifest_path=str(parent_base/'data/composite-manifest.json'),
+  parent_data_manifest_sha256=h['parent_data_manifest_sha256'],
+  parent_feature_manifest_path=str(parent_base/'features/manifest.json'),parent_feature_manifest_sha256=h['parent_manifest_sha256'],
+  parent_prepare_complete_sha256=h['parent_prepare_complete_sha256'],
+  parent_terminal_receipt_sha256=h['parent_terminal_receipt_sha256'],
+  parent_acceptance_receipt_sha256=h['parent_acceptance_receipt_sha256'])
+ assert all(parent_acceptance.get(key)==value for key,value in expected_parent.items())
+ assert parent_acceptance['parent_exit_code']==1 and parent_acceptance['parent_epoch']==0
+ assert parent_acceptance['parent_counters'] is None and parent_acceptance['parent_owned_processes']==[]
+ assert parent_acceptance['parent_adam_updates']==parent_acceptance['parent_ema_updates']==0
+ assert parent_acceptance['groups_by_split']==dict(train=445440,test=512)
+ assert parent_acceptance['trajectories_by_split']==dict(train=2227200,test=2560)
+ assert parent_acceptance['packed_features_reused']==2229760
+ assert parent_acceptance['newly_encoded_in_parent']+parent_acceptance['reused_by_parent']==2229760
+ assert parent_acceptance['cache_finalizer_exit_code']==0 and parent_acceptance['encoder_optimizer_updates']==0
+ for key in ('data_or_features_copied','parent_modified','feature_tensors_read','model_tensors_read','state_resume'):
+  assert parent_acceptance[key] is False
+ for key in ('startup_repair','fresh_head','fresh_adam','fresh_rng'):assert parent_acceptance[key] is True
+ workers=parent_acceptance['cache_workers'];assert len(workers)==4 and {worker['worker_index'] for worker in workers}==set(range(4))
+ for worker in workers:
+  assert worker['exit_code']==0 and re.fullmatch(r'[0-9a-f]{64}',worker['complete_sha256'])
+ parent_cache_summary=dict(parent_acceptance_proof,value=project(parent_acceptance,tuple(expected_parent)+(
+  'stage','checked_unix','run_id','execution_id','source_commit','parent_exit_code','parent_epoch','parent_counters',
+  'parent_adam_updates','parent_ema_updates','parent_owned_processes','cache_workers','cache_finalizer_exit_code',
+  'groups_by_split','trajectories_by_split','packed_features_reused','newly_encoded_in_parent','reused_by_parent',
+  'data_or_features_copied','parent_modified','feature_tensors_read','model_tensors_read','startup_repair','state_resume',
+  'fresh_head','fresh_adam','fresh_rng','encoder_optimizer_updates')))
+
 execution='train/executions/'+h['execution_id']+'/'
 ranks=[];typed_errors=[];typed_exits=[]
+deployment,_deployment_proof=document('preparation/deployment.json')
+staged_source,_staged_source_proof=document('preparation/source-receipt.json')
 for rank in range(4):
- row=dict(rank=rank,identity=None,initialization=None,progress=None)
+ row=dict(rank=rank,identity=None,source_binding=None,initialization=None,progress=None)
  value,proof=document(execution+'identity-rank-%d.json'%rank)
  if value is not None:row['identity']=dict(proof,value=identity(value,rank))
+ value,proof=document(execution+'source-binding-rank-%d.json'%rank)
+ if value is not None:
+  assert value['stage']=='EXACT_RUNTIME_SOURCE_VERIFIED_BEFORE_NCCL'
+  who=identity(value['identity'],rank);binding=value['binding']
+  assert binding['source_commit']==h['source_commit']
+  if binding['source_kind']=='authenticated_staged_archive':
+   assert binding['source_tree']==h['source_tree'] and binding['source_archive_sha256']==h['source_archive_sha256']
+   assert binding['deployment_handle_path']==str(b/'preparation/deployment.json') and deployment==h
+   assert binding['deployment_handle_sha256']==_deployment_proof['sha256']
+   assert binding['source_receipt_sha256']==_staged_source_proof['sha256']
+   assert binding['source_plan_sha256']==h['source_plan_sha256'] and binding['exact_inventory_verified'] is True
+   assert binding['source_files_verified']==len(h['source_files'])
+   assert type(binding['source_bytes_verified']) is int and binding['source_bytes_verified']>0
+   assert binding['actual_source_file_digests_sha256']==hashlib.sha256(canonical(h['source_files'])).hexdigest()
+   assert binding['train_source_sha256']==h['source_files']['reproduction/question5_ema_warmup/train.py']
+  else:
+   assert binding['source_kind']=='genuine_git_checkout' and binding['tracked_clean'] is True
+  row['source_binding']=dict(proof,identity=who,stage=value['stage'],observed_unix=value['observed_unix'],
+   binding=project(binding,('source_kind','source_commit','source_tree','source_archive_sha256','tracked_clean',
+    'deployment_handle_path','deployment_handle_sha256','source_receipt_sha256','source_plan_sha256',
+    'source_files_verified','source_bytes_verified','actual_source_file_digests_sha256','exact_inventory_verified','train_source_sha256')))
  value,proof=document(execution+'initialization-rank-%d.json'%rank)
  if value is not None:
   row['initialization']=dict(proof,identity=identity(value,rank),value=project(value,('stage','first_epoch','next_update_in_epoch','fresh','total_updates')),
@@ -236,7 +297,8 @@ if complete is not None:
 # Retain the original guarded controller observation, but replace its cross-
 # execution glob with the exact current execution's four typed rank records.
 v.update(stage='QUESTION5_SLIM_ACTUAL_PROGRESS_METADATA_OBSERVATION',base=str(b),cpu_prepare=cpu_prepare,cache_workers=cache_workers,
- cache_manifest=cache_summary,rank_progress=ranks,rank_errors=typed_errors,rank_exits=typed_exits,first_epoch=first_epoch,
+ cache_manifest=cache_summary,cached_parent_acceptance=parent_cache_summary,
+ rank_progress=ranks,rank_errors=typed_errors,rank_exits=typed_exits,first_epoch=first_epoch,
  observer_source_sha256=p['observer_source_sha256'],controller_source_sha256=p['controller_source_sha256'],
  missing_metadata_semantics='unknown_not_zero',checkpoint_tensors_read=False,feature_tensors_read=False,
  probability_arrays_read=False,new_evaluation=False,checked_unix=time.time())
