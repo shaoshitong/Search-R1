@@ -1,22 +1,22 @@
 {
-  "schema": "tree_final200_original_cost_source_preparation_v1",
+  "schema": "tree_final200_original_cost_source_preparation_v2",
   "status": "SOURCE_FROZEN_NOT_EXECUTED",
-  "prepared_utc": "2026-10-16T08:41:03.915947+00:00",
+  "prepared_utc": "2026-10-16T09:51:36.308488+00:00",
   "base_snapshot_commit": "5f21afcd19dcbb17ed70ac18133e9d82133fa9f7",
   "branch": "codex/tree-final-original-costs200-20261016",
   "source_files": {
     "final_original_costs200.py": {
-      "path": "work/tree-speed-repair-20261008/final_original_costs200.py",
-      "bytes": 37016,
-      "sha256": "6139c840ca996a381933b7397c71d1f0441b1404cc30c587f32a6eaebf4ce55a"
+      "path": "final_original_costs200.py",
+      "bytes": 51229,
+      "sha256": "a1fd0a3d05f00336c08e7d0875cd943d5968d2869a3c6713d245aa5ae7ae371e"
     },
     "final_original_costs200_remote.py": {
-      "path": "work/tree-speed-repair-20261008/final_original_costs200_remote.py",
-      "bytes": 22868,
-      "sha256": "3aed85c88a3b8cdbc31de261f117937f223cea8aaa82b113d565fe80df2e3438"
+      "path": "final_original_costs200_remote.py",
+      "bytes": 31870,
+      "sha256": "16433eb3a9ab97eb3ea82e695a43964205ecb3a206f538a6f1ed6e28a1493466"
     },
     "variance200_original_record_coverage.py": {
-      "path": "work/tree-speed-repair-20261008/variance200_original_record_coverage.py",
+      "path": "variance200_original_record_coverage.py",
       "bytes": 33932,
       "sha256": "7648b529a61dae49c2846b2d59976d4ec3bf2e2708ddfd78bf3b1f30651d5706"
     }
@@ -41,8 +41,10 @@
     }
   },
   "scope_narrowing": "No compatibility CUM200/BOOK/source1ed8/owner/canonical chain. Old7/7 protected; final new collector counts separate. Reuse38 original controls, newly read195+200 only.",
-  "static_checks": "AST parsing of the three source files and exact assembled remote function fragment only; no import/main/runtime/compilation/test/review.",
+  "static_checks": "AST parsing of all three sources and assembled remote fragments; small extracted pure-helper assertions for original dev5 phase, partial known sums, O_EXCL exclusive acquisition, exact framed-response roundtrip and local mirror recovery. No import/main/H100/runtime/compilation/training tests or new review.",
   "runtime_calls": {
+    "prepare_pins_main": 0,
+    "prepare_remote_helper": 0,
     "new_collector_main": 0,
     "new_remote_helper": 0,
     "source1ed": 0,
@@ -51,5 +53,11 @@
   },
   "actual200_input_manifest_created": false,
   "future200_success_claimed": false,
-  "original190_sources_or_results_modified": false
+  "original190_sources_or_results_modified": false,
+  "repair_of_commit": "e7539e39cb9ddaae0234acd6244713b745581b0a",
+  "input_contract": {
+    "path": "nested-final-original-costs200-source/reproduction/tree-final-original-costs200-20261016/INPUT_CONTRACT.md",
+    "bytes": 14395,
+    "sha256": "cb57a90dabe41694aa9ce2c116f4f703098812e7deae446220665cdbf5923ad2"
+  }
 }

@@ -1,18 +1,40 @@
 # Final original200 cost and scalar sources
 
-Source only. No new entry, SSH, collector, training, evaluation, compilation or test has run. The final target200 + actual51713/HF/tokenizer/finite/nonzero/independent acceptance/cleanup is unchanged. Old190 artifacts and source1ed7/7 remain protected. This package creates no future manifest or success pin.
+Source only. No new entry, H100 SSH, collector, training, evaluation or compilation has run. Local AST parsing and small pure-function assertions checked the repair; these do not establish actual200 runtime success. The final target200 + actual51713/HF/tokenizer/finite/nonzero/independent acceptance/cleanup is unchanged. Old190 artifacts and source1ed7/7 remain protected. This package creates no future manifest or success pin.
 
 ## Runtime entry
 
 Deploy the three identical source files beside the existing workspace control scripts. Execute only after root supplies actual200 original inputs and authorizes the original-file read.
 
 ```sh
+# First bind an actual small local preparation request (schema below).
+env TREE_MGMT_CONTROL_PATH=/tmp/tree-mgmt-3fw9a1ab/control python3 -B work/tree-speed-repair-20261008/final_original_costs200.py prepare-pins --workspace "$WS" --pins "$ACTUAL_REQUEST" --pins-bytes "$REQUEST_BYTES" --pins-sha256 "$REQUEST_SHA"
+# Use the actual emitted FINAL200_ORIGINAL_COSTS_INPUT_PINS.json descriptor.
 env TREE_MGMT_CONTROL_PATH=/tmp/tree-mgmt-3fw9a1ab/control python3 -B work/tree-speed-repair-20261008/final_original_costs200.py collect --workspace "$WS" --pins "$ACTUAL_PINS" --pins-bytes "$ACTUAL_BYTES" --pins-sha256 "$ACTUAL_SHA"
 python3 -B work/tree-speed-repair-20261008/final_original_costs200.py aggregate --workspace "$WS" --pins "$ACTUAL_PINS" --pins-bytes "$ACTUAL_BYTES" --pins-sha256 "$ACTUAL_SHA" --capture-bytes "$ACTUAL_CAPTURE_BYTES" --capture-sha256 "$ACTUAL_CAPTURE_SHA"
 python3 -B work/tree-speed-repair-20261008/variance200_original_record_coverage.py --input-manifest "$ACTUAL_VARIANCE_PINS" --input-manifest-bytes "$ACTUAL_VARIANCE_BYTES" --input-manifest-sha256 "$ACTUAL_VARIANCE_SHA"
 ```
 
-collect has one retained18 helper call, nice19, empty CUDA_VISIBLE_DEVICES, a compressed program and actual argv size gates. An immutable ATTEMPT is published before submission. Unknown/failure results retain READ_ERROR and must not be blindly replayed. aggregate uses only the SHA-bound actual capture and has no SSH path. Neither phase invokes source1ed or any legacy owner/canonical/BOOK/CUM200 producer. Collector main/remote1 and local aggregation1 are reported separately only after actual success; old source1ed remains7/7.
+`prepare-pins` has one separately counted retained18 helper call and produces the complete actual manifest. `collect` has one additional helper call. Both run nice19 with empty CUDA_VISIBLE_DEVICES. The compressed target command must be <=32768 bytes, management command <=65536 and complete local argv <=80000, checked before atomic submission. This is prep1 + collect1, not one SSH for the entire workflow. Each has a separate authoritative primary ATTEMPT acquired with O_CREAT|O_EXCL; a losing invocation reads the marker and cannot call the helper. Unknown results must not be blindly retried. No phase invokes source1ed or any legacy owner/canonical/BOOK/CUM200 producer. Old source1ed remains7/7; new entry counts are separate actual observations.
+
+Immediately after each helper returns, its exact stdout/stderr and actual exit/UTC/source/transport/input bindings are durably saved in a framed response before parsing or rendering dependent products. The primary response is fsynced before mirror publication; complete split/publish/readback work is inside the retained READ_ERROR boundary. No partial family is reported successful. If local rendering fails after a complete response was saved, bind its actual entire file bytes/SHA and recover locally:
+
+```sh
+python3 -B work/tree-speed-repair-20261008/final_original_costs200.py recover-prepare --workspace "$WS" --pins "$ACTUAL_REQUEST" --pins-bytes "$REQUEST_BYTES" --pins-sha256 "$REQUEST_SHA" --response-bytes "$SAVED_PREPARE_RESPONSE_BYTES" --response-sha256 "$SAVED_PREPARE_RESPONSE_SHA"
+python3 -B work/tree-speed-repair-20261008/final_original_costs200.py recover-collect --workspace "$WS" --pins "$ACTUAL_PINS" --pins-bytes "$ACTUAL_BYTES" --pins-sha256 "$ACTUAL_SHA" --response-bytes "$SAVED_COLLECT_RESPONSE_BYTES" --response-sha256 "$SAVED_COLLECT_RESPONSE_SHA"
+```
+
+The files are `BASE/FINAL200_ORIGINAL_COSTS_PREPARE_RESPONSE.txt` and `BASE/FINAL200_ORIGINAL_COSTS_REMOTE_RESPONSE.txt`. A compact JSON header plus newline precedes exact stdout then exact stderr bytes; its lengths/SHA and the whole bound file are verified. Recovery uses no helper or SSH and does not acquire another remote submission. If no durable response exists or the helper result is unknown, retain actual failure evidence and stop rather than resubmit. Physical filesystem failure can prevent a durable write; no code can claim a lost response was saved.
+
+Preparation stdout is capped at4MiB; collection stdout at32MiB, stderr32768 bytes, framed header32768 bytes. Each framed local response is bounded by32MiB+65536 bytes. These are budgets, not measured sizes. All generated primary metadata bytes and three-copy bytes are reported from actual products in the two readbacks. Output scalar parts/descriptors each retain the complete-field100000-byte cap; nothing is trimmed to fit. No asset content is returned.
+
+## Executable input preparation
+
+The small local actual request has `schema=tree_final200_original_prepare_request_v1` and `status=ACTUAL200_ORIGINAL_PREPARATION_INPUTS_READY`. It contains the exact identity fields and values checked in the frozen source (`source_commit`, `config_sha256`, `model_identity`, `data_identity`, `unit`, `run`, `actual_training_pid`, `actual_training_invocation_id`), actual `source_command` and adjacent `remote_source` path/bytes/SHA descriptors, and `actual200={native_metadata,progress_poll,resource,full_receipt?}` actual local descriptors. It contains no remote rows or predicted future hashes. The code supplies the fixed protected190/dependency pins and derives historical audit3..190 descriptors from those exact old original records. Root binds this small request only after actual200 is available; source preparation creates no request.
+
+The request must pass the actual native/core/rank/source/restore gates and contain original complete metric200 and COMPLETE dev200 before any preparation helper call. Rolling200 alone is insufficient. No ROOTFULL200 or training201 entry is required. Native cursor201 is a saved boundary, never actual201 training. The executable remote `prepare()` safely discovers the exact200 accepted source rows,1600 rank record paths, accepted child attempt mapping, Controller paths, noncredited records, stage complete-line prefix ends, all current own admitted native JSON manifests, and new COMPLETE195/200 control names. It rejects ambiguous/conflicting selection. Historical audit3..190 byte/SHA are mandatory; rank paths/stat descriptors omit unnecessary randomSHA payloads to keep the compressed argv within its enforced limit. A preparation call is not a cost capture.
+
+Rolling and permanent native JSON are inventoried independently. Rolling200 has null HF identity because the original trainer saves it before dev200. Permanent native/HF is saved by the original trainer after dev200. Cost uses rolling200 only to verify optimizer counts and does not claim HF/tokenizer/permanent-native acceptance; root performs that separate original-asset acceptance.
 
 ## Actual cost manifest
 
@@ -31,46 +53,15 @@ Remote file refs admit only the named own run and exact role directories/filenam
 
 `periodic_controls` contains exactly two actual refs ordered195,200, each with `outer,path,bytes?,sha256?`. Code reuses all38 original local source1ed190 controls/row parts with their original SHA/capture metadata and does not remotely reread them. Newly read raw195+200 controls must be COMPLETE512=NQ256+Hot256, periodic, source/config/model/data correct, and match their exact original training metric. Source200 inner ledger must also match the actual poll. Full original UTF8 control bytes are saved under the new output family, separately from the inner ledger SHA. No guessed validation filename/digest, future success, or 1ed invocation credit.
 
-## Input capture fragments (not executed)
+## Bounded acquisition scope
 
-Use only the existing retained18 helper after actual200 authorization. These fragments describe the necessary read-only operations; they do not contain future pins. All paths come from the own final poll/native inventory and immutable lineage, not another task.
-
-```python
-# One run's original stage prefix: actual metric lines only; retain byte offsets.
-end = 0
-selected = []
-with stage_path.open('rb') as stream:
-    for raw in stream:
-        start = end; end += len(raw)
-        if b'timing_s/step:' in raw:
-            fields = dict((k, float(v)) for k,v in TOKEN.findall(raw.decode('utf-8')))
-            if fields.get('step') in accepted_outers:
-                selected.append((int(fields['step']), start, end, sha256(raw).hexdigest()))
-# Require the exact accepted set and no conflicting duplicate metric before
-# choosing the last complete accepted-line byte end as stage.bytes. Never label
-# this later capture as a historical live observer. Do not return the full log.
-
-# Own admitted files only: get stat/realpath; supply exact paths to the manifest.
-# Controller: output/training-rollout-cost/attempt-<actual attempt>.json
-# Child credited attempt: checkpoints/training_state/attempt-results/attempt-*.json
-# Physical SHA refs are taken from all_rank_result.ranks[].direct_rank_record,
-# never guessed; the collector verifies them and the unchanged20-row guard ledger.
-# Rank audit: output/tree-rank-audit/step-<outer>[-attempt-<attempt>]-rank-<rank>.json
-# Audit: output/tree-audit/step_<outer>_rollout_<actual sequence>.json
-# Native JSON: exact patterns above, inventory every available admitted JSON.
-# Dev: actual COMPLETE validation-cost control filenames for195 and200.
-# Read JSON/stat before+after for small records; large audit rows are aggregated
-# by the collector only. Ambiguous audit/rank/attempt selection must reject, not
-# pick the newest filename or infer attempts from an outer number.
-```
-
-The frozen `final_original_costs200_remote.py` is the complete read-only executable fragment used for the one actual collection, not an instruction to run it now. Only the two new controls are newly read; the old38 controls come from their original local byte-bound cache.
+The frozen remote source implements both preparation and collection. It reads only exact own run paths under the fixed lineage, never a machine-wide inventory. Preparation records exact path/stat selections and stable stage prefixes. Collection reads/aggregates the selected large audit rows remotely and returns only scalar/controller/attempt/rank metadata, original selected metric-line UTF8/SHA/offsets, small native manifest JSON and the two small original dev controls. It does not return audit question_groups/leaves, tokens/actions/logprobs/text, tensors/PT/model/checkpoint payloads, embeddings/FAISS or full stage logs. Original assets remain on their existing remote/shared storage. Old38 controls are reused from their byte-bound local originals, not read again remotely. Command and response budgets above reject rather than truncate.
 
 ## Outputs and final use
 
 `FINAL200_ORIGINAL_COSTS_CAPTURE.json` plus complete dynamically bounded100k parts retains all200 selected original metrics/line bindings, Controller/audit/attempt/rank/native metadata and40 control sources. New `final_original_costs200/SCALARS_OUTER####.json` are explicitly RETROSPECTIVE_SOURCE_READBACK, with null historical observation epoch. `ROLLOUT_METADATA_OUTER####.json` can feed unchanged trace200. New raw `DEV_OUTER0195_ORIGINAL.json`/`DEV_OUTER0200_ORIGINAL.json` retain original control UTF8.
 
-The pure aggregate phase produces `FINAL200_ORIGINAL_COSTS_COST_TOTALS.json` + dynamic parts and one `FINAL200_ORIGINAL_COSTS.json` descriptor. It writes no compatibilityCUM200, intermediateCUM/COST, BOOK, registry, STATUS/REPORT, canonical, alias or helper state. No final effect acceptance is claimed. Whole Controller/scoring totals and unique per-outer rank deltas are kept apart from candidate/branch/prefix/dev/CPU subsets. Fallback overlaps accepted. Missing values retain null+known_sum+coverage. Shared8GPU wall capacity is only an upper bound; own-active/billed/energy remain null. Historical failures/observer overhead and final51713 are separate scopes. Actual service CPU endpoint is labelled as-of with its invocation, not inferred training-only total.
+The pure aggregate phase produces `FINAL200_ORIGINAL_COSTS_COST_TOTALS.json` + dynamic parts and one `FINAL200_ORIGINAL_COSTS.json` descriptor. It writes no compatibilityCUM200, intermediateCUM/COST, BOOK, registry, STATUS/REPORT, canonical, alias or helper state. No final effect acceptance is claimed. Whole Controller/scoring totals and unique per-outer rank deltas are kept apart from candidate/branch/prefix/dev/CPU subsets. Fallback overlaps accepted. Missing values retain null+known_sum+coverage. Branch and outcome known_sum uses the explicit remote partial known sums and per-field record counts even when an outer complete total is null. Original dev phase is preserved (dev5 acceptance); coverage40 does not rewrite phase. Whole sampling scoring stays separate from branch subsets. Shared8GPU wall capacity is only an upper bound; own-active/billed/energy remain null. Historical failures/observer overhead and final51713 are separate scopes. Actual service CPU endpoint is labelled as-of with its invocation, not inferred training-only total.
 
 The variance adapter uses new manifest schema `tree_nested_variance200_original_record_input_manifest_v1`, otherwise preserves the original actual200 boundary and all15+12+3 numerical gates. Every172..200 `scalar_records` row declares `source_kind=ORIGINAL_POLL` with a true original poll, or `RETROSPECTIVE_ORIGINAL_FILE` with the new exact scalar source descriptor. The adapter verifies raw line SHA/offset/UTF8 parsing, complete capture rows and producer source SHA, and records actual later collection time. It never relabels an extraction as an original poll. Output is `METRIC_RECORD_COVERAGE_THROUGH200_ORIGINAL_RECORDS.json` and its readbacks, keeping prior171 original bindings unchanged.
 

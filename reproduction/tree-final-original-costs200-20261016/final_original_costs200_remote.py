@@ -205,10 +205,140 @@ def candidates(value):
     return dict(candidate_outcomes=grouping(rows), stages=stages, candidate_round_controller_ledger=sums,
                 candidate_round_ledger_known_sums=known, candidate_round_ledger_field_record_counts=counts,
                 duplicate_round_ids_excluded=duplicate, rounds_missing_ids=missing,
+                unique_round_count=len(unique),
                 generation_candidate_round_elapsed_seconds=elapsed(unique, 'generation_wall_seconds') if not missing else None,
                 scoring_candidate_round_elapsed_seconds=elapsed(unique, 'scoring_wall_seconds') if not missing else None,
                 padding_cost_by_candidate_outcome=None, independent_outcome_wall_seconds=None,
                 question_count=len(value['question_groups']), training_leaf_count=len(value['leaves']))
+
+
+def native_inventory(run, commit, outers):
+    available=[];archive=Path(run)/'output/native-manifest-history'
+    if archive.exists():
+        for p in archive.glob('source-'+commit+'-outer-*.manifest.json'):
+            match=re.fullmatch('source-'+commit+r'-outer-(\d{6})\.manifest\.json',p.name)
+            if match and int(match[1]) in outers:available.append((p,int(match[1])))
+    states=Path(run)/'checkpoints/training_state'
+    for prefix in (states,states/'rolling-completed'):
+        if prefix.exists():
+            for p in prefix.glob('global_step_*/manifest.json'):
+                match=re.fullmatch(r'global_step_(\d+)',p.parent.name)
+                if match and int(match[1]) in outers:available.append((p,int(match[1])))
+    return sorted(available,key=lambda item:(item[1],str(item[0])))
+
+
+def prepare(seed):
+    """One separate own-file discovery call. No audit payload or PT returned."""
+    start,cpu=time.time(),time.process_time();os.nice(19)
+    need(seed['schema']=='tree_final200_original_prepare_seed_v1','Prepare seed schema')
+    result=dict(schema='tree_final200_original_remote_pins_v1',runs=[],periodic_controls=[])
+    for index,commit in enumerate(COMMITS):
+        run='/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:'+commit
+        outers=[1] if index==0 else list(range(2,6)) if index==1 else list(range(6,201))
+        original(dict(path=run+'/resolved.yaml',sha256=CONFIGS[index]),run,1000000)
+        stage=Path(run)/'stage.log';need(stage.is_file() and stage.stat().st_size<=256000000,'Own original log budget')
+        found={};offset=0;digest=hashlib.sha256();prefix_end=0;prefix_sha=None
+        with stage.open('rb') as stream:
+            for raw in stream:
+                offset+=len(raw);digest.update(raw)
+                if b'timing_s/step:' not in raw:continue
+                metric={k:float(v) for k,v in TOKEN.findall(raw.decode('utf-8'))}
+                step=metric.get('step')
+                if step not in outers:continue
+                need(raw.endswith(b'\n') and (step not in found or found[step]==metric),'Ambiguous/incomplete original metric')
+                found[step]=metric;prefix_end=offset;prefix_sha=digest.copy().hexdigest()
+        need(set(found)==set(outers),'Prepare requires complete original accepted metrics1..200')
+        stage_ref=dict(path=str(stage),bytes=prefix_end,sha256=prefix_sha)
+        original(stage_ref,run,256000000,prefix=True)
+        attempts={};attempt_refs={};noncredited=[]
+        directory=Path(run)/'checkpoints/training_state/attempt-results'
+        if index==2:
+            need(directory.is_dir(),'Own child credited attempt directory')
+            for p in sorted(directory.glob('attempt-*.json')):
+                if not re.fullmatch(r'attempt-\d{6}\.json',p.name):continue
+                raw,meta=original(dict(path=str(p)),run,1000000);value=strict(raw)
+                n=value.get('accepted_outer')
+                if value.get('status')=='COMPLETED_OPPORTUNITIES_OUTER_CREDITED' and n in outers:
+                    need(n not in attempts,'Ambiguous credited attempt for one outer')
+                    attempts[n]=value['attempt_id'];attempt_refs[n]=dict(path=str(p))
+                else:noncredited.append(dict(path=str(p)))
+            need(set(attempts)==set(outers),'Prepare child accepted attempt coverage')
+        controllers={};rankmap={}
+        for p in sorted((Path(run)/'output/training-rollout-cost').glob('attempt-*.json')):
+            if not re.fullmatch(r'attempt-\d{6}\.json',p.name):continue
+            raw,meta=original(dict(path=str(p)),run,262144);value=strict(raw);n=value.get('candidate_outer')
+            if (n in outers and value.get('status')=='TRAINING_ROLLOUT_COST_COMPLETE' and
+                    (index!=2 or value.get('attempt_id')==attempts[n])):
+                need(n not in controllers,'Ambiguous original Controller')
+                controllers[n]=(p,value)
+                if index!=2:attempts[n]=value.get('attempt_id')
+            else:noncredited.append(dict(path=str(p)))
+        for p in sorted((Path(run)/'output/tree-rank-audit').glob('*.json')):
+            match=re.fullmatch(r'step-(\d{6})(?:-attempt-(\d{6}))?-rank-(\d{2})\.json',p.name)
+            if not match:continue
+            raw,meta=original(dict(path=str(p)),run,262144);value=strict(raw)
+            need(value.get('kind')=='tree_actor_rank' and value.get('code_commit')==commit,'Own admitted rank identity')
+            n,rank=int(match[1]),int(match[3]);calls=value.get('successful_optimizer_calls')
+            selected=n in outers and type(calls) is int and calls>0 and (index!=2 or value.get('attempt_id')==attempts[n])
+            if selected:
+                need((n,rank) not in rankmap,'Ambiguous positive-write original rank')
+                rankmap[(n,rank)]=dict(path=str(p))
+            else:noncredited.append(dict(path=str(p)))
+        rows=[]
+        for n in outers:
+            need(n in controllers and all((n,r) in rankmap for r in range(8)),'Prepare Controller/all-rank coverage')
+            captured=seed['captured_audits'].get(str(n),seed['captured_audits'].get(n))
+            if captured:
+                audit=Path(run)/'output/tree-audit'/captured['audit_file']
+                need(audit.is_file() and audit.stat().st_size==captured['bytes'],'Preserved audit stat')
+                audit_ref=dict(path=str(audit),bytes=captured['bytes'],sha256=captured['sha256'])
+            else:
+                options=list((Path(run)/'output/tree-audit').glob(f'step_{n}_rollout_*.json'))
+                if len(options)>1:
+                    selected=[]
+                    for p in options:
+                        header={}
+                        with p.open('rb') as stream:
+                            for line in stream:
+                                if stream.tell()>262144:break
+                                match=re.match(rb'  "(attempt_id|global_step)":\s*([^,]+),?',line)
+                                if match:
+                                    header[match[1].decode()]=json.loads(match[2].rstrip(b',\r\n'))
+                                if len(header)==2:break
+                        if header.get('global_step')==n and header.get('attempt_id')==attempts.get(n):selected.append(p)
+                    options=selected
+                need(len(options)==1,'Ambiguous/missing audit; no newest-file guess')
+                audit_ref=dict(path=str(options[0]),bytes=options[0].stat().st_size,historical_capture_sha256=None)
+            row=dict(outer=n,audit=audit_ref,controller=dict(path=str(controllers[n][0])),
+                     ranks=[rankmap[(n,r)] for r in range(8)])
+            if type(attempts.get(n)) is int:row['attempt_id']=attempts[n]
+            if index==2:row['attempt_result']=attempt_refs[n]
+            rows.append(row)
+        if index==2:
+            accepted=set(attempts.values())
+            for p in sorted((Path(run)/'output/fresh-state').glob('outer-*-attempt-*-rank*.json')):
+                match=re.fullmatch(r'outer-\d{6}-attempt-(\d{6})-rank\d{2}\.json',p.name)
+                if match and int(match[1]) not in accepted:noncredited.append(dict(path=str(p)))
+        terminal=Path(run)/'run-result.json'
+        if terminal.is_file():noncredited.append(dict(path=str(terminal)))
+        native=[dict(path=str(p),outer=n,bytes=p.stat().st_size) for p,n in native_inventory(run,commit,outers)]
+        result['runs'].append(dict(source_commit=commit,config_sha256=CONFIGS[index],run=run,
+                                  rank_writer_sha256=seed['rank_writer_sha256'],stage=stage_ref,rows=rows,
+                                  native_metadata=native,noncredited_records=noncredited))
+    run=result['runs'][-1]['run'];controls={}
+    for p in sorted((Path(run)/'output/validation-cost').glob('*.json')):
+        if not re.fullmatch(r'validation-\d+-\d+\.json',p.name):continue
+        if p.name in seed['old_control_names']:continue
+        raw,meta=original(dict(path=str(p)),run,262144);value=strict(raw);n=value.get('actual_completed_outer')
+        if n in (195,200) and value.get('status')=='VALIDATION_COST_COMPLETE' and value.get('phase')=='periodic':
+            need(n not in controls,'Ambiguous new original dev control')
+            controls[n]=dict(outer=n,path=str(p),bytes=len(raw),sha256=sha(raw))
+    need(set(controls)=={195,200},'Prepare exact completed195+200 control sources')
+    result['periodic_controls']=[controls[n] for n in (195,200)]
+    return dict(schema='tree_final200_original_prepare_readback_v1',status='ORIGINAL200_PATHS_PREPARED_NOT_COST_ACCEPTANCE',
+                remote_pins=result,remote_calls_this_preparation=1,collector_remote_calls_this_preparation=0,
+                observer_wall_seconds=time.time()-start,observer_process_cpu_seconds=time.process_time()-cpu,
+                remote_files_written=False,raw_audit_or_asset_returned=False)
 
 
 def collect(pins):

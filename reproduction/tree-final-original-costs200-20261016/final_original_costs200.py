@@ -5,17 +5,21 @@ Source preparation is not actual200 evidence. Neither phase trains/evaluates,
 recaptures native state, invokes source1ed, writes canonical state, or creates
 historical polls/FULLs/intermediate CUM snapshots. Old190 is byte protected.
 
-Future CLI (each phase once, actual byte/SHA-bound manifest only):
+Future CLI (actual byte/SHA-bound request/manifest only):
+  python3 -B work/tree-speed-repair-20261008/final_original_costs200.py prepare-pins \
+    --workspace "$WS" --pins "$ACTUAL_REQUEST" --pins-bytes "$BYTES" --pins-sha256 "$SHA"
   python3 -B work/tree-speed-repair-20261008/final_original_costs200.py collect \
     --workspace "$WS" --pins "$ACTUAL_PINS" --pins-bytes "$BYTES" --pins-sha256 "$SHA"
   python3 -B work/tree-speed-repair-20261008/final_original_costs200.py aggregate \
     --workspace "$WS" --pins "$ACTUAL_PINS" --pins-bytes "$BYTES" --pins-sha256 "$SHA" \
     --capture-bytes "$ACTUAL_CAPTURE_BYTES" --capture-sha256 "$ACTUAL_CAPTURE_SHA"
 
-collect uses one readonly existing retained18 helper call. An immutable attempt
-marker forbids blind replay after an unknown result. aggregate uses only saved
-SHA-bound scalar parts and cannot call SSH. See INPUT_CONTRACT.md for actual
-original file refs, optional preexisting capture hashes and source preparation.
+prepare-pins and collect each use one separately counted read-only helper call.
+O_EXCL acquisition forbids duplicate submissions. The complete bounded response
+is durably framed before dependent output rendering. recover-prepare and
+recover-collect accept --response-bytes/--response-sha256, read only that saved
+response and never call SSH. aggregate uses saved SHA-bound scalar parts only.
+See INPUT_CONTRACT.md. Rolling native200 is count evidence, not HF acceptance.
 """
 import argparse
 import ast
@@ -30,6 +34,7 @@ import os
 from pathlib import Path
 import re
 import shlex
+import uuid
 import zlib
 
 
@@ -63,6 +68,40 @@ PROTECTED = {
  'DEV5_190_NATIVE_COST_SUPPLEMENT.json': (7131, '818265f0703c9b44b8aeb2d57bb42aa8d2a3ff80a1119e531a4b9bf2f1046cb2'),
  'DEV5_190_NATIVE_COST_LOCAL_RECEIPT.json': (81037, '236e318fa205a3746ebc9eac6fbef5097b221f2e0bb072cb47c91236538256e4')}
 LOCAL, RAW, GENERATED = {}, {}, {}
+
+
+class AttemptAlreadyClaimed(ValueError):
+    pass
+
+
+def aggregate_values(outers, values, scope, known_values=None, record_counts=None, required_counts=None):
+    """Complete totals and partial known record sums have different coverage."""
+    need(len(outers)==len(values),'Aggregate outer/value coverage')
+    known_values=values if known_values is None else known_values
+    need(len(known_values)==len(outers),'Partial known-value coverage')
+    known=math.fsum(v for v in known_values if number(v))
+    if known.is_integer():known=int(known)
+    complete=all(number(v) for v in values)
+    value=math.fsum(values) if complete else None
+    if isinstance(value,float) and value.is_integer():value=int(value)
+    result=dict(total=value,known_sum=known,known_outers=[n for n,v in zip(outers,values) if number(v)],
+                missing_outers=[n for n,v in zip(outers,values) if not number(v)],complete=complete,scope=scope,
+                partial_known_outers=[n for n,v,k in zip(outers,values,known_values) if not number(v) and number(k)])
+    if record_counts is not None:
+        need(len(record_counts)==len(outers) and len(required_counts)==len(outers),'Record-level coverage')
+        result.update(field_record_counts_by_outer=dict(zip(map(str,outers),record_counts)),
+                      required_record_counts_by_outer=dict(zip(map(str,outers),required_counts)),
+                      known_record_count=sum(v for v in record_counts if type(v) is int),
+                      required_record_count=sum(v for v in required_counts) if all(type(v) is int for v in required_counts) else None)
+    return result
+
+
+def development_record(row,metric):
+    value=row['value']
+    return dict(outer=row['outer'],source_commit=row['source_commit'],ledger=Path(row['source']['path']).name,
+                ledger_sha256=value['ledger_sha256'],rows=512,phase=value['phase'],
+                testing_phase_wall_seconds=metric.get('timing_s/testing'),F1=value['metrics']['val/f1/all'],
+                EM=value['metrics']['val/em/all'],original_control_source=row['source'])
 
 
 def need(value, message):
@@ -143,10 +182,66 @@ def publish(name, raw):
     for root in [B]+M:
         p=root/name;p.parent.mkdir(parents=True, exist_ok=True)
         if not p.exists():
-            tmp=p.with_name(p.name+'.tmp');tmp.write_bytes(raw);os.replace(tmp,p)
+            tmp=p.with_name(p.name+'.tmp.'+uuid.uuid4().hex)
+            with tmp.open('xb') as stream:
+                stream.write(raw);stream.flush();os.fsync(stream.fileno())
+            try:
+                os.link(tmp,p)
+            except FileExistsError:
+                need(p.read_bytes()==raw,'Concurrent immutable publication differs: '+name)
+            finally:
+                tmp.unlink()
         need(p.read_bytes()==raw, 'Published byte readback differs')
     GENERATED[name]=raw
     return ref(B/name)
+
+
+def claim_attempt(name, value):
+    """Authoritative primary O_EXCL wins before any helper submission."""
+    path=B/name;path.parent.mkdir(parents=True,exist_ok=True);raw=enc(value)
+    try:
+        fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+    except FileExistsError:
+        existing=path.read_bytes()
+        raise AttemptAlreadyClaimed('Attempt already claimed; no helper call. Existing bytes/SHA '+str(len(existing))+'/'+sha(existing))
+    with os.fdopen(fd,'wb') as stream:
+        stream.write(raw);stream.flush();os.fsync(stream.fileno())
+    GENERATED[name]=raw
+    # Mirror failure also leaves the primary claim; never release or retry it.
+    return publish(name,raw)
+
+
+def persist_response(name, header, stdout, stderr):
+    payload=stdout.encode('utf-8');errors=stderr.encode('utf-8')
+    need(len(payload)<=32*1024*1024 and len(errors)<=32768,'Bounded audit response; no raw assets')
+    header=dict(header,stdout_bytes=len(payload),stdout_sha256=sha(payload),
+                stderr_bytes=len(errors),stderr_sha256=sha(errors))
+    first=enc(header);need(len(first)<=32768,'Response framing header budget')
+    raw=first+payload+errors
+    # Primary is durable before mirrors and before parsing/rendering any outputs.
+    return publish(name,raw)
+
+
+def saved_response(name,size,digest):
+    path=B/name;raw=path.read_bytes()
+    need(0<len(raw)<=32*1024*1024+65536 and (len(raw),sha(raw))==(size,digest),'Saved actual response byte/SHA')
+    first,body=raw.split(b'\n',1);header=strict(first);length=header['stdout_bytes']
+    stdout,stderr=body[:length],body[length:]
+    need((len(stdout),sha(stdout))==(length,header['stdout_sha256']) and
+         (len(stderr),sha(stderr))==(header['stderr_bytes'],header['stderr_sha256']),'Saved response framing')
+    return header,stdout.decode('utf-8'),stderr.decode('utf-8')
+
+
+def retain_error(phase,exc,response_name=None):
+    path=B/response_name if response_name else None
+    durable=ref(path) if path and path.exists() else None
+    value=dict(schema='tree_final200_original_cost_read_error_v2',phase=phase,
+               observed_utc=datetime.now(timezone.utc).isoformat(),error_type=type(exc).__name__,error=str(exc)[:2000],
+               durable_response=durable,local_recovery_available=durable is not None,
+               automatic_retry=False,training_fault_inferred=False,remote_replay_allowed=False)
+    name=STEM+'_READ_ERROR.json'
+    if (B/name).exists():name=STEM+'_READ_ERROR_'+uuid.uuid4().hex+'.json'
+    publish(name,enc(value))
 
 
 def checks():
@@ -162,7 +257,9 @@ def checks():
                 need((root/name).read_bytes()==raw, 'Generated scalar output changed')
         observations.append(dict(pass_number=i+1, observed_utc=datetime.now(timezone.utc).isoformat(),
                                  files=len(LOCAL), mirrored_files=sum(q['mirror_checked'] for q in LOCAL.values()),
-                                 generated_three_copy_files=len(GENERATED)))
+                                 generated_three_copy_files=len(GENERATED),
+                                 generated_metadata_primary_bytes=sum(len(raw) for raw in GENERATED.values()),
+                                 generated_metadata_three_copy_bytes=3*sum(len(raw) for raw in GENERATED.values())))
     return observations
 
 
@@ -215,8 +312,10 @@ def split_product(value, prefix):
 
 def inputs(args):
     manifest=bound(dict(path=str(args.pins),bytes=args.pins_bytes,sha256=args.pins_sha256))
-    need(manifest['schema']=='tree_final200_original_cost_input_manifest_v1' and
-         manifest['status']=='ACTUAL200_ORIGINAL_FILE_INPUTS_FROZEN', 'Actual200 manifest required')
+    preparing=args.phase in ('prepare-pins','recover-prepare')
+    need(manifest['schema']==('tree_final200_original_prepare_request_v1' if preparing else 'tree_final200_original_cost_input_manifest_v1') and
+         manifest['status']==('ACTUAL200_ORIGINAL_PREPARATION_INPUTS_READY' if preparing else 'ACTUAL200_ORIGINAL_FILE_INPUTS_FROZEN'),
+         'Actual200 preparation request or complete frozen manifest required')
     for key,value in dict(source_commit=CHILD,config_sha256=CONFIG,model_identity=MODEL,data_identity=DATA,
                           unit=UNIT,run=RUN,actual_training_pid=503255,actual_training_invocation_id=INV).items():
         need(manifest.get(key)==value, 'Actual200 manifest identity: '+key)
@@ -243,6 +342,7 @@ def inputs(args):
     core.validate_restore(poll)
     record,guard,completed,totals=core.validate_native(native,poll['progress'],200)
     metric=core.validate_metric(poll,200);core.validate_ranks(poll,metric,200)
+    need(metric is not None,'Wait for original complete metric200 before preparation/collection; native rolling200 alone is insufficient')
     need(record['driver']['next_step']==201, 'Native200 saved cursor')
     state=resource.get('training_systemd') or resource.get('systemd') or (resource.get('state') or {}).get('training_unit_observation')
     state=state if isinstance(state,dict) else dict(line.split('=',1) for line in state.splitlines() if '=' in line)
@@ -251,25 +351,42 @@ def inputs(args):
         full=bound(manifest['actual200']['full_receipt'],True)
         need(full['completed_outer']==200 and full['source_commit']==CHILD and full['native_manifest_sha256']==native['manifest_sha256']
              and full.get('actual_next_outer_entered') is None, 'Actual terminal FULL200 only; no actual201')
-    need(manifest['remote_pins']['schema']=='tree_final200_original_remote_pins_v1', 'Explicit own remote inputs')
-    need([q.get('outer') for q in manifest['remote_pins']['periodic_controls']]==[195,200],
-         'Only original195+200 controls are newly read; reuse protected38')
-    remote_rows=[row for run in manifest['remote_pins']['runs'] for row in run['rows']]
-    need(all(run['rank_writer_sha256']==STATIC[RANK_WRITER][1] for run in manifest['remote_pins']['runs']),
-         'All three frozen source commits have the same actual rank writerSHA')
-    need([row.get('outer') for row in remote_rows]==list(range(1,201)), 'Freeze every original effective outer path once')
-    captured={q['outer']:(q['audit_file_bytes'],q['audit_file_sha256']) for q in prior['candidate_cost_backfill_join']['inputs']}
+    captured={}
+    for q in prior['candidate_cost_backfill_join']['inputs']:
+        part=bound(dict(path=str(B/q['file']),bytes=(B/q['file']).stat().st_size,sha256=q['sha256']),True)
+        row=part['rollouts'][0]
+        captured[q['outer']]=dict(bytes=q['audit_file_bytes'],sha256=q['audit_file_sha256'],
+                                  audit_file=Path(row['audit_file']).name)
     oldcost=bound(dict(path=str(B/'COST_OUTER190_LOCAL_RECEIPT.json'),bytes=PROTECTED['COST_OUTER190_LOCAL_RECEIPT.json'][0],
                        sha256=PROTECTED['COST_OUTER190_LOCAL_RECEIPT.json'][1]),True)
-    oldcandidate=bound(oldcost['actual_candidate190'],True)
-    audit=oldcandidate['source_files']['audit'];captured[190]=(audit['bytes'],audit['sha256'])
-    for row in remote_rows:
-        if 3<=row['outer']<=190:
-            need((row['audit'].get('bytes'),row['audit'].get('sha256'))==captured[row['outer']],
-                 'Keep prior3..190 original audit capture SHA/bytes exactly')
-        if row['outer'] in (1,2):
-            need(row['audit'].get('historical_capture_sha256') is None,
-                 'No invented historical capture-time auditSHA for1/2')
+    oldcandidate=bound(oldcost['actual_candidate190'],True);audit=oldcandidate['source_files']['audit']
+    captured[190]=dict(bytes=audit['bytes'],sha256=audit['sha256'],audit_file=Path(audit['path']).name)
+    if not preparing:
+        need(manifest['remote_pins']['schema']=='tree_final200_original_remote_pins_v1','Explicit own remote inputs')
+        need([q.get('outer') for q in manifest['remote_pins']['periodic_controls']]==[195,200],
+             'Only original195+200 controls are newly read; reuse protected38')
+        remote_rows=[row for run in manifest['remote_pins']['runs'] for row in run['rows']]
+        need(all(run['rank_writer_sha256']==STATIC[RANK_WRITER][1] for run in manifest['remote_pins']['runs']),
+             'All three frozen source commits have the same actual rank writerSHA')
+        need([row.get('outer') for row in remote_rows]==list(range(1,201)),'Freeze each original accepted outer once')
+        for row in remote_rows:
+            if 3<=row['outer']<=190:
+                q=captured[row['outer']]
+                need((row['audit'].get('bytes'),row['audit'].get('sha256'))==(q['bytes'],q['sha256']),
+                     'Keep prior3..190 original audit capture SHA/bytes exactly')
+            if row['outer'] in (1,2):
+                need(row['audit'].get('historical_capture_sha256') is None,'No invented historical auditSHA for1/2')
+        if manifest.get('preparation_response') is not None:
+            q=manifest['preparation_response'];name=STEM+'_PREPARE_RESPONSE.txt'
+            need(locate(q['path'])==B/name,'Actual preparation response filename')
+            header,_,_=saved_response(name,q['bytes'],q['sha256'])
+            need(header['phase']=='prepare-pins' and header['exit_code']==0 and header['actual_remote_calls']==1 and
+                 manifest.get('preparation_remote_calls')==1,'Preparation is one actual separate helper invocation')
+        else:
+            need(manifest.get('preparation_remote_calls',0)==0,'Do not infer a preparation call without its response')
+    cross=B/'ORIGINAL_POLL_TRAINING_METRICS191_196_READBACK_20261016.json'
+    if cross.exists():
+        bound(dict(path=str(cross),bytes=61377,sha256='e3f2ae25a3f2b4cd1bd5b378bf446add723ed6b49c8c76941cc8f1d43ae84415'))
     owner=bound(dict(path=str(B/'DEV5_190_NATIVE_COST_LOCAL_RECEIPT.json'),
                      bytes=PROTECTED['DEV5_190_NATIVE_COST_LOCAL_RECEIPT.json'][0],
                      sha256=PROTECTED['DEV5_190_NATIVE_COST_LOCAL_RECEIPT.json'][1]),True)
@@ -287,82 +404,78 @@ def inputs(args):
              value['ledger_sha256']==row['ledger_sha256'], 'Protected original38 source/capture mismatch')
         cached_controls.append(dict(outer=row['outer'],source_commit=row['code_commit'],source=meta,
                                     raw_summary_utf8=raw.decode(),value=value,reused_original_control=True))
-    return manifest,prior,native,poll,resource,guard,completed,totals,state,cached_controls
+    return manifest,prior,native,poll,resource,guard,completed,totals,state,cached_controls,captured
 
 
-def collect(args, values):
-    manifest,prior,native,poll,resource,guard,completed,totals,state,cached_controls=values
-    marker=B/(STEM+'_ATTEMPT.json')
-    need(all(not (root/marker.name).exists() for root in [B]+M), 'Original read attempted already; inspect saved result, never blind retry')
-    need(os.environ.get('TREE_MGMT_CONTROL_PATH')==CONTROL_PATH,'Explicit original task ControlPath required')
-    tree=ast.parse(RAW[BACK].decode())
-    literal=next(ast.literal_eval(node.value) for node in tree.body if isinstance(node,ast.Assign) and
-                 any(isinstance(name,ast.Name) and name.id=='REMOTE' for name in node.targets))
-    functions=literal[literal.index('fields='):literal.index("run=Path(pin['run'])")]
-    need('def grouping(' in functions and 'def ledger(' in functions and 'def raw_meta(' in functions, 'Published candidate pure functions')
-    guard_source=RAW[GUARD].decode();guard_tree=ast.parse(guard_source)
-    functions+='\n'+ast.get_source_segment(guard_source,next(node for node in guard_tree.body
-                               if isinstance(node,ast.FunctionDef) and node.name=='validate_ledger'))+'\n'
-    remote_raw=read(manifest['remote_source'])
-    program=functions+'\n'+remote_raw.decode()+'\nPINS='+repr(manifest['remote_pins'])+"\nprint(json.dumps(collect(PINS),ensure_ascii=False,separators=(',',':'),allow_nan=False))\n"
+def remote_fragment(raw,mode):
+    """Keep exact source segments needed for this mode, reducing inline argv."""
+    source=raw.decode();tree=ast.parse(source)
+    omit={'prepare'} if mode=='collect' else {'collect','candidates','rank_record','physical_attempt','metric_lines'}
+    return '\n\n'.join(ast.get_source_segment(source,node) for node in tree.body
+                       if not isinstance(node,ast.FunctionDef) or node.name not in omit)+'\n'
+
+
+def transport_program(program):
     packed=base64.b64encode(zlib.compress(program.encode(),9)).decode()
     command='env CUDA_VISIBLE_DEVICES= python3 -B -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))')
-    helper=module(W/HELPER,'final200_original_existing_route')
-    argv=helper.route(command,'h100-10')
+    helper=module(W/HELPER,'final200_original_existing_route');argv=helper.route(command,'h100-10')
     transport=dict(program_bytes=len(program.encode()),target_command_bytes=len(command.encode()),
                    management_command_bytes=len(argv[-1].encode()),all_local_argv_bytes=sum(len(x.encode())+1 for x in argv))
     need(transport['target_command_bytes']<=32768 and transport['management_command_bytes']<=65536 and
          transport['all_local_argv_bytes']<=80000,'Short compressed own-route budget; no SSH attempted')
-    checks()
-    publish(marker.name,enc(dict(schema='tree_final200_original_cost_once_attempt_v1',started_utc=datetime.now(timezone.utc).isoformat(),
-                                input_manifest=ref(args.pins),transport=transport,remote_program_sha256=sha(program.encode()),
-                                authorized_remote_calls=1,automatic_retry=False,training_operations=False)))
-    try:
-        response=helper.run(command,target='h100-10',timeout=900)
-        need(response.returncode==0,'Read-only original-file helper failed: '+response.stderr[-1500:])
-        need(len(response.stdout.encode())<=32*1024*1024,'Complete scalar response budget; no truncation')
-        result=strict(response.stdout)
-        need(result['status']=='ORIGINAL200_RECORDS_READ' and result['remote_files_written'] is False and
-             result['historical_live_poll_or_FULL_created'] is False,'Original response identity')
-        rows=result['rows'];need([row['outer'] for row in rows]==list(range(1,201)),'Original200 rows')
-        need([row['outer'] for row in result['controls']]==[195,200], 'Only two new original periodic controls')
-        result['newly_read_original_control_outers']=[195,200]
-        result['reused_original_control_outers']=[row['outer'] for row in cached_controls]
-        result['controls']=cached_controls+result['controls']
-        need([row['outer'] for row in result['controls']]==list(range(5,201,5)), 'Actual complete40 control sources')
-        for row in result['controls']:
-            for key in ('val/f1/all','val/em/all','val/qa_count/all','val/qa_count/nq','val/qa_count/hotpotqa'):
-                need(row['value']['metrics'][key]==rows[row['outer']-1]['metric'].get(key),
-                     'Original dev raw control and fresh original step scalar disagree')
-        direct={str(rank):sum(row['rank_records'][rank]['successful_optimizer_calls'] for row in rows) for rank in range(8)}
-        need(direct==completed,'All original per-outer rank sums versus actualnative200 credited totals')
-        child_attempts={row['attempt_id'] for row in rows if row['source_commit']==CHILD}
-        extras={row['value'].get('attempt_id') for row in result['noncredited_records'] if row['source_commit']==CHILD}
-        extras.discard(None)
-        need(not child_attempts.intersection(extras),'Credited attempt included again as noncredited')
-        need(child_attempts|extras==set(range(6,guard['training_attempts']+1)),
-             'Original child credited/refused/partial attempt inventory incomplete')
-        need(rows[-1]['metric']==core_metric(poll),'Original metric200 differs from actual poll')
-        native200=[row for row in result['native_metadata'] if row['outer']==200]
-        need(native200 and any(row['source']['sha256']==native['manifest_sha256'] for row in native200),
-             'Fresh original native200 manifest differs from successful metadata capture')
-        actualdev=[d for d in poll['development'] if d.get('outer')==200 and d.get('status')=='VALIDATION_COST_COMPLETE']
-        need(len(actualdev)==1 and actualdev[0]['rows']==512 and
-             actualdev[0]['ledger_sha256']==result['controls'][-1]['value']['ledger_sha256'] and
-             actualdev[0]['metrics']==result['controls'][-1]['value']['metrics'],
-             'Original COMPLETE control200 differs from actual source-bound poll')
-    except Exception as exc:
-        publish(STEM+'_READ_ERROR.json',enc(dict(schema='tree_final200_original_cost_read_error_v1',
-                 observed_utc=datetime.now(timezone.utc).isoformat(),error_type=type(exc).__name__,error=str(exc)[:2000],
-                 automatic_retry=False,training_fault_inferred=False,main_replay_allowed=False)))
-        raise
+    return helper,command,transport
+
+
+def finish_collect(args,values,header,stdout,stderr,response_name):
+    manifest,prior,native,poll,resource,guard,completed,totals,state,cached_controls,captured=values
+    need(header['phase']=='collect' and header['exit_code']==0 and header['actual_remote_calls']==1 and header['input_manifest']==ref(args.pins),
+         'Bound successful original collector response required')
+    need(header['source_command']==manifest['source_command'] and header['remote_source']==manifest['remote_source'],
+         'Saved response source differs from actual frozen inputs')
+    result=strict(stdout)
+    need(result['status']=='ORIGINAL200_RECORDS_READ' and result['remote_files_written'] is False and
+         result['historical_live_poll_or_FULL_created'] is False,'Original response identity')
+    rows=result['rows'];need([row['outer'] for row in rows]==list(range(1,201)),'Original200 rows')
+    cross=str((B/'ORIGINAL_POLL_TRAINING_METRICS191_196_READBACK_20261016.json').relative_to(W))
+    if cross in RAW:
+        original=strict(RAW[cross]);need(original['schema']=='tree_original_poll_metric_scalar_crosscheck_v1','Original local crosscheck schema')
+        for row in original['rows']:
+            source=bound(row['source_poll'])
+            need(row['metric'] in source['iteration_metrics'] and rows[row['outer']-1]['metric']==row['metric'],
+                 'Fresh original191..196 line differs from original poll scalar')
+    need([row['outer'] for row in result['controls']]==[195,200], 'Only two new original periodic controls')
+    result['newly_read_original_control_outers']=[195,200]
+    result['reused_original_control_outers']=[row['outer'] for row in cached_controls]
+    result['controls']=cached_controls+result['controls']
+    need([row['outer'] for row in result['controls']]==list(range(5,201,5)), 'Actual complete40 control sources')
+    for row in result['controls']:
+        for key in ('val/f1/all','val/em/all','val/qa_count/all','val/qa_count/nq','val/qa_count/hotpotqa'):
+            need(row['value']['metrics'][key]==rows[row['outer']-1]['metric'].get(key),
+                 'Original dev raw control and fresh original step scalar disagree')
+    direct={str(rank):sum(row['rank_records'][rank]['successful_optimizer_calls'] for row in rows) for rank in range(8)}
+    need(direct==completed,'All original per-outer rank sums versus actualnative200 credited totals')
+    child_attempts={row['attempt_id'] for row in rows if row['source_commit']==CHILD}
+    extras={row['value'].get('attempt_id') for row in result['noncredited_records'] if row['source_commit']==CHILD}
+    extras.discard(None)
+    need(not child_attempts.intersection(extras),'Credited attempt included again as noncredited')
+    need(child_attempts|extras==set(range(6,guard['training_attempts']+1)),
+         'Original child credited/refused/partial attempt inventory incomplete')
+    need(rows[-1]['metric']==core_metric(poll),'Original metric200 differs from actual poll')
+    native200=[row for row in result['native_metadata'] if row['outer']==200]
+    need(native200 and any(row['source']['sha256']==native['manifest_sha256'] for row in native200),
+         'Fresh original native200 manifest differs from successful metadata capture')
+    actualdev=[d for d in poll['development'] if d.get('outer')==200 and d.get('status')=='VALIDATION_COST_COMPLETE']
+    need(len(actualdev)==1 and actualdev[0]['rows']==512 and
+         actualdev[0]['ledger_sha256']==result['controls'][-1]['value']['ledger_sha256'] and
+         actualdev[0]['metrics']==result['controls'][-1]['value']['metrics'],
+         'Original COMPLETE control200 differs from actual source-bound poll')
     result.update(input_manifest=ref(args.pins),generator=ref(Path(__file__)),remote_generator=manifest['remote_source'],
                   published_candidate_function_source=dict(path=BACK,bytes=STATIC[BACK][0],sha256=STATIC[BACK][1]),
                   original_read_only_helper=dict(path=HELPER,bytes=STATIC[HELPER][0],sha256=STATIC[HELPER][1]),
-                  remote_program_sha256=sha(program.encode()),remote_calls=1,remote_exit_code=response.returncode,
-                  stdout_bytes=len(response.stdout.encode()),stdout_sha256=sha(response.stdout.encode()),
-                  stderr_bytes=len(response.stderr.encode()),stderr_sha256=sha(response.stderr.encode()),
-                  transport=transport,observer_cost_added_to_training=False)
+                  remote_program_sha256=header['remote_program_sha256'],remote_calls=1,remote_exit_code=header['exit_code'],
+                  stdout_bytes=len(stdout.encode()),stdout_sha256=sha(stdout.encode()),
+                  stderr_bytes=len(stderr.encode()),stderr_sha256=sha(stderr.encode()),
+                  transport=header['transport'],durable_response=ref(B/response_name),preparation_remote_calls_separate=manifest.get('preparation_remote_calls',0),observer_cost_added_to_training=False)
     parts,descriptor=split_product(result,'CAPTURE')
     for name,raw in parts.items():publish(name,raw)
     product=publish(STEM+'_CAPTURE.json',enc(descriptor))
@@ -386,12 +499,106 @@ def collect(args, values):
                       capture_product=product,evidence_mode='RETROSPECTIVE_SOURCE_READBACK')
         publish(f'final_original_costs200/ROLLOUT_METADATA_OUTER{n:04d}.json',enc(metadata))
     readbacks=checks()
-    publish(STEM+'_CAPTURE_READBACK.json',enc(dict(product=product,input_manifest=ref(args.pins),
-            source_inputs=list(LOCAL.values()),protected_original_readbacks=readbacks,remote_calls=1,
-            training_or_evaluation_operations=False,full_native_recapture=False)))
+    readback=B/(STEM+'_CAPTURE_READBACK.json')
+    if not readback.exists():
+        publish(readback.name,enc(dict(product=product,input_manifest=ref(args.pins),
+                source_inputs=list(LOCAL.values()),protected_original_readbacks=readbacks,remote_calls=1,
+                training_or_evaluation_operations=False,full_native_recapture=False)))
+    else:
+        previous=strict(readback.read_bytes());need(previous['product']==product,'Existing completed capture readback differs')
     checks()
     print(json.dumps(dict(status='ORIGINAL200_CAPTURED_NOT_FINAL_ACCEPTANCE',product=product,remote_calls=1,
                           source1ed_calls=0,actual_training201_claimed=False)))
+
+
+def collect(args, values):
+    manifest,prior,native,poll,resource,guard,completed,totals,state,cached_controls,captured=values
+    need(os.environ.get('TREE_MGMT_CONTROL_PATH')==CONTROL_PATH,'Explicit original task ControlPath required')
+    tree=ast.parse(RAW[BACK].decode())
+    literal=next(ast.literal_eval(node.value) for node in tree.body if isinstance(node,ast.Assign) and
+                 any(isinstance(name,ast.Name) and name.id=='REMOTE' for name in node.targets))
+    functions=literal[literal.index('fields='):literal.index("run=Path(pin['run'])")]
+    guard_source=RAW[GUARD].decode();guard_tree=ast.parse(guard_source)
+    functions+='\n'+ast.get_source_segment(guard_source,next(node for node in guard_tree.body
+                               if isinstance(node,ast.FunctionDef) and node.name=='validate_ledger'))+'\n'
+    program=functions+'\n'+remote_fragment(read(manifest['remote_source']),'collect')+'\nPINS='+repr(manifest['remote_pins'])+"\n_RESULT=collect(PINS)\n_ENCODED=json.dumps(_RESULT,ensure_ascii=False,separators=(',',':'),allow_nan=False)\nneed(len(_ENCODED.encode())<=32*1024*1024,'Complete scalar output exceeds32MiB; no raw output emitted')\nprint(_ENCODED)\n"
+    helper,command,transport=transport_program(program);checks()
+    response_name=STEM+'_REMOTE_RESPONSE.txt'
+    try:
+        claim_attempt(STEM+'_ATTEMPT.json',dict(schema='tree_final200_original_cost_once_attempt_v2',
+            started_utc=datetime.now(timezone.utc).isoformat(),input_manifest=ref(args.pins),transport=transport,
+            remote_program_sha256=sha(program.encode()),authorized_remote_calls=1,phase='collect',automatic_retry=False))
+    except AttemptAlreadyClaimed:
+        raise
+    except Exception as exc:
+        retain_error('collect-claim-no-helper',exc);raise
+    try:
+        started=datetime.now(timezone.utc).isoformat();response=helper.run(command,target='h100-10',timeout=900)
+        header=dict(schema='tree_final200_original_actual_response_v1',phase='collect',exit_code=response.returncode,
+                    started_utc=started,finished_utc=datetime.now(timezone.utc).isoformat(),input_manifest=ref(args.pins),
+                    source_command=manifest['source_command'],remote_source=manifest['remote_source'],
+                    remote_program_sha256=sha(program.encode()),transport=transport,actual_remote_calls=1)
+        saved=persist_response(response_name,header,response.stdout,response.stderr)
+        header,stdout,stderr=saved_response(response_name,saved['bytes'],saved['sha256'])
+        finish_collect(args,values,header,stdout,stderr,response_name)
+    except Exception as exc:
+        retain_error('collect',exc,response_name);raise
+
+
+def finish_prepare(args,values,header,stdout,stderr,response_name):
+    manifest,prior,native,poll,resource,guard,completed,totals,state,cached_controls,captured=values
+    need(header['phase']=='prepare-pins' and header['exit_code']==0 and header['actual_remote_calls']==1 and header['input_manifest']==ref(args.pins),
+         'Actual successful separate preparation response required')
+    need(header['source_command']==manifest['source_command'] and header['remote_source']==manifest['remote_source'],
+         'Saved preparation source differs')
+    prepared=strict(stdout)
+    need(prepared['status']=='ORIGINAL200_PATHS_PREPARED_NOT_COST_ACCEPTANCE' and prepared['remote_files_written'] is False,
+         'Prepare response status')
+    result=copy.deepcopy(manifest);result.update(schema='tree_final200_original_cost_input_manifest_v1',
+        status='ACTUAL200_ORIGINAL_FILE_INPUTS_FROZEN',remote_pins=prepared['remote_pins'],
+        preparation_response=ref(B/response_name),preparation_remote_calls=1,collector_remote_calls_before_collection=0)
+    raw=enc(result);need(len(raw)<=4*1024*1024,'Complete prepared manifest budget; no truncated paths')
+    output=publish(STEM+'_INPUT_PINS.json',raw);checks()
+    print(json.dumps(dict(status='ORIGINAL200_INPUT_PINS_PREPARED_NOT_COLLECTED',input_manifest=output,
+          prepare_remote_calls=1,collect_remote_calls=0,source1ed_calls=0)))
+
+
+def prepare_pins(args,values):
+    manifest,prior,native,poll,resource,guard,completed,totals,state,cached_controls,captured=values
+    need(os.environ.get('TREE_MGMT_CONTROL_PATH')==CONTROL_PATH,'Explicit original task ControlPath required')
+    seed=dict(schema='tree_final200_original_prepare_seed_v1',captured_audits=captured,
+              rank_writer_sha256=STATIC[RANK_WRITER][1],old_control_names=[Path(q['source']['path']).name for q in cached_controls])
+    program=remote_fragment(read(manifest['remote_source']),'prepare-pins')+'\nSEED='+repr(seed)+"\n_RESULT=prepare(SEED)\n_ENCODED=json.dumps(_RESULT,ensure_ascii=False,separators=(',',':'),allow_nan=False)\nneed(len(_ENCODED.encode())<=4*1024*1024,'Complete preparation output budget; no paths truncated')\nprint(_ENCODED)\n"
+    helper,command,transport=transport_program(program);checks();response_name=STEM+'_PREPARE_RESPONSE.txt'
+    claim_attempt(STEM+'_PREPARE_ATTEMPT.json',dict(schema='tree_final200_original_prepare_once_attempt_v1',
+        started_utc=datetime.now(timezone.utc).isoformat(),input_manifest=ref(args.pins),transport=transport,
+        remote_program_sha256=sha(program.encode()),authorized_remote_calls=1,phase='prepare-pins',automatic_retry=False))
+    try:
+        started=datetime.now(timezone.utc).isoformat();response=helper.run(command,target='h100-10',timeout=900)
+        header=dict(schema='tree_final200_original_actual_response_v1',phase='prepare-pins',exit_code=response.returncode,
+                    started_utc=started,finished_utc=datetime.now(timezone.utc).isoformat(),input_manifest=ref(args.pins),
+                    source_command=manifest['source_command'],remote_source=manifest['remote_source'],
+                    remote_program_sha256=sha(program.encode()),transport=transport,actual_remote_calls=1)
+        saved=persist_response(response_name,header,response.stdout,response.stderr)
+        header,stdout,stderr=saved_response(response_name,saved['bytes'],saved['sha256'])
+        finish_prepare(args,values,header,stdout,stderr,response_name)
+    except Exception as exc:
+        retain_error('prepare-pins',exc,response_name);raise
+
+
+def recover(args,values):
+    need(args.response_bytes is not None and args.response_sha256 is not None,'Bind the actual durable saved response')
+    preparing=args.phase=='recover-prepare';name=STEM+('_PREPARE_RESPONSE.txt' if preparing else '_REMOTE_RESPONSE.txt')
+    try:
+        header,stdout,stderr=saved_response(name,args.response_bytes,args.response_sha256)
+        publish(name,(B/name).read_bytes())
+        if preparing:finish_prepare(args,values,header,stdout,stderr,name)
+        else:finish_collect(args,values,header,stdout,stderr,name)
+        publish(STEM+'_LOCAL_RECOVERY_'+uuid.uuid4().hex+'.json',enc(dict(observed_utc=datetime.now(timezone.utc).isoformat(),
+            phase=args.phase,response=ref(B/name),actual_remote_calls_this_recovery=0,source1ed_calls=0)))
+        checks()
+    except Exception as exc:
+        retain_error(args.phase,exc,name);raise
 
 
 def core_metric(poll):
@@ -401,7 +608,7 @@ def core_metric(poll):
 
 
 def aggregate(args, values):
-    manifest,prior,native,poll,resource,guard,completed,totals,state,cached_controls=values
+    manifest,prior,native,poll,resource,guard,completed,totals,state,cached_controls,captured=values
     capture_path=B/(STEM+'_CAPTURE.json')
     need(args.capture_bytes is not None and args.capture_sha256 is not None,'Bind the actual collect result before aggregation')
     capture=bound(dict(path=str(capture_path),bytes=args.capture_bytes,sha256=args.capture_sha256),True)
@@ -409,13 +616,8 @@ def aggregate(args, values):
     need(capture['input_manifest']==ref(args.pins) and capture['remote_calls']==1 and capture['remote_exit_code']==0,
          'Actual frozen original capture required')
     rows=capture['rows'];need([r['outer'] for r in rows]==list(range(1,201)),'Unique original200 rows')
-    def total(values, scope):
-        known=[(r['outer'],v) for r,v in zip(rows,values) if number(v)]
-        missing=[r['outer'] for r,v in zip(rows,values) if not number(v)]
-        value=math.fsum(v for _,v in known)
-        if value.is_integer():value=int(value)
-        return dict(total=value if not missing else None,known_sum=value,known_outers=[n for n,_ in known],
-                    missing_outers=missing,complete=not missing,scope=scope)
+    def total(values, scope, **coverage):
+        return aggregate_values([r['outer'] for r in rows],values,scope,**coverage)
     sampling={}
     def cost_value(row,key):
         value=row['controller'].get('costs',{}).get(key)
@@ -436,7 +638,10 @@ def aggregate(args, values):
                  math.isclose(math.fsum(values),old['total'],rel_tol=1e-12,abs_tol=1e-9),
                  'Fresh original1..190 costs disagree with preservedCUM190: '+key)
     branch={key:total([r['branch']['candidate_round_controller_ledger'].get(key) for r in rows],
-                     'Unique original branch round ledger; subset of whole Controller; missing fields remain null.')
+                     'Unique original branch round ledger; subset of whole Controller; partial known records retained.',
+                     known_values=[r['branch']['candidate_round_ledger_known_sums'].get(key) for r in rows],
+                     record_counts=[r['branch']['candidate_round_ledger_field_record_counts'].get(key) for r in rows],
+                     required_counts=[r['branch']['unique_round_count'] for r in rows])
             for key in ['generated_tokens','prefill_tokens','retrieval_calls','scoring_calls','scoring_wall_seconds']}
     candidate={key:total([r['branch']['candidate_outcomes'][key]['candidate_count'] for r in rows],
                          'Original outcome count; fallback overlaps accepted, never a third additive bucket.')
@@ -445,7 +650,10 @@ def aggregate(args, values):
     for key in ['all','accepted','discarded','fallback']:
         fields=sorted({name for r in rows for name in r['branch']['candidate_outcomes'][key]['field_sums']})
         outcomes[key]=dict(field_sums={name:total([r['branch']['candidate_outcomes'][key]['field_sums'].get(name) for r in rows],
-                         'Original candidate event/amortized scalar; inherited prefix is not new generation.') for name in fields})
+                         'Original candidate event/amortized scalar; partial known records retained; prefix not new generation.',
+                         known_values=[r['branch']['candidate_outcomes'][key]['field_known_sums'].get(name) for r in rows],
+                         record_counts=[r['branch']['candidate_outcomes'][key]['field_record_counts'].get(name) for r in rows],
+                         required_counts=[r['branch']['candidate_outcomes'][key]['candidate_count'] for r in rows]) for name in fields})
     timings={key:total([r['metric'].get('timing_s/'+key) for r in rows],
                        'Original step phase. Dev/gen/ref/update/save are included in step wall, not added again.')
              for key in ['step','gen','ref','adv','update_actor','testing','stage_testing','save_checkpoint']}
@@ -453,12 +661,8 @@ def aggregate(args, values):
     need(writes==completed,'Original rank versus native200 credited totals')
     devs=[]
     for row in capture['controls']:
-        n=row['outer'];v=row['value'];m=rows[n-1]['metric']
-        devs.append(dict(outer=n,source_commit=row['source_commit'],ledger=Path(row['source']['path']).name,
-                         ledger_sha256=v['ledger_sha256'],rows=512,phase='periodic',
-                         testing_phase_wall_seconds=m.get('timing_s/testing'),F1=v['metrics']['val/f1/all'],
-                         EM=v['metrics']['val/em/all'],original_control_source=row['source']))
-    need([row['outer'] for row in devs]==list(range(5,201,5)),'Original40 periodic dev records')
+        devs.append(development_record(row,rows[row['outer']-1]['metric']))
+    need([row['outer'] for row in devs]==list(range(5,201,5)),'Original40 dev records; retain acceptance/periodic phases')
     wall=timings['step']['total']
     cumulative=dict(summary_schema='tree_final200_original_cumulative_cost_v1',created_utc=datetime.now(timezone.utc).isoformat(),
         through_effective_outer=200,target_outer=200,origin='fresh',evidence_mode='RETROSPECTIVE_SOURCE_READBACK',
@@ -503,6 +707,8 @@ def aggregate(args, values):
                  final_original_collector_main_calls=1,final_original_collector_remote_calls=1,
                  local_aggregation_main_calls=1,local_aggregation_remote_calls=0,
                  source1ed_prior190_actual_main_remote_preserved=[7,7],source1ed_new_calls=0,
+                 prepare_pins_remote_calls=manifest.get('preparation_remote_calls',0),
+                 native200_rolling_is_optimizer_count_evidence_only=True,HF_tokenizer_or_permanent_native_acceptance_claimed=False,
                  historical_live_FULL_or_poll_created=False,canonical_or_BOOK_modified=False,
                  actual_next_training201_claimed=False,independent_final_acceptance_pending=True,
                  protected_original_readbacks=checks())
@@ -517,19 +723,23 @@ def aggregate(args, values):
 def main():
     global W,B,M
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase',choices=['collect','aggregate'])
+    parser.add_argument('phase',choices=['prepare-pins','collect','recover-prepare','recover-collect','aggregate'])
     parser.add_argument('--workspace',required=True,type=Path)
     parser.add_argument('--pins',required=True,type=Path)
     parser.add_argument('--pins-bytes',required=True,type=int)
     parser.add_argument('--pins-sha256',required=True)
     parser.add_argument('--capture-bytes',type=int)
     parser.add_argument('--capture-sha256')
+    parser.add_argument('--response-bytes',type=int)
+    parser.add_argument('--response-sha256')
     args=parser.parse_args();need(__debug__,'Do not disable actual evidence gates with -O')
     W=args.workspace.resolve(strict=True);B=W/BASE_NAME
     M=[W/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',
        Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
     values=inputs(args)
-    if args.phase=='collect':collect(args,values)
+    if args.phase=='prepare-pins':prepare_pins(args,values)
+    elif args.phase=='collect':collect(args,values)
+    elif args.phase.startswith('recover-'):recover(args,values)
     else:aggregate(args,values)
 
 

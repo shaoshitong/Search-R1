@@ -1,0 +1,46 @@
+# Independent static review — frozen original-costs200 source
+
+Result: **CHANGES_REQUIRED**. Reviewed only the initially supplied frozen revision. No new entry, import of its modules, test, compilation, collector, SSH, training operation, or remote read was performed. No writer source was changed. This report is the only review output.
+
+Source directory: `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-final-original-costs200-source/reproduction/tree-final-original-costs200-20261016/`.
+
+The three source hashes and contract were read twice and remained identical:
+
+| File | Bytes | SHA256 |
+|---|---:|---|
+| final_original_costs200.py | 37016 | 6139c840ca996a381933b7397c71d1f0441b1404cc30c587f32a6eaebf4ce55a |
+| final_original_costs200_remote.py | 22868 | 3aed85c88a3b8cdbc31de261f117937f223cea8aaa82b113d565fe80df2e3438 |
+| variance200_original_record_coverage.py | 33932 | 7648b529a61dae49c2846b2d59976d4ec3bf2e2708ddfd78bf3b1f30651d5706 |
+| INPUT_CONTRACT.md | 10494 | 98cff830c59ea9495d79ca4c4162c4d381b8830da59956780781173456e4570e |
+
+## Findings, by severity
+
+1. **[P1] Once-only collector claim is not acquired atomically.** `final_original_costs200.py:295–296`, `:138–147`, `:316–321`. The first existence check and the checks inside `publish()` are separated from publication. Publication writes a fixed `.tmp` and uses `os.replace`, which can replace an ATTEMPT another process has just published. Two overlapping invocations can both check all paths before either publication, then publish in sequence and each enter `helper.run`. Depending on interleaving, the fixed temporary path can instead cause a failure; neither outcome establishes exclusive ownership. This violates the stated once-only collection/count boundary even though the operation is read-only. Acquire the authoritative ATTEMPT with atomic exclusive creation before submission; a caller that loses the acquisition must not call the helper. Preserve the existing fail-closed rule for unknown outcomes.
+
+2. **[P2] Old acceptance dev5 is rewritten as periodic in the new totals.** `final_original_costs200.py:457–458`. Every reused dev is emitted with `phase='periodic'`. The actual bound `outputs/tree-nested-branch-handoff-20261013/dev_native_cost_summaries/DEV_OUTER0005_SUMMARY.json` and `DEV5_190_ROWS_PART000.json.value[0]` explicitly have `phase='acceptance'`. The existing CUM190 dev part and preserved curve dev5 also retain acceptance. With unchanged actual inputs, aggregate therefore changes source semantics while claiming 40 periodic records. Carry each original control's actual phase into the new row, retaining the 5..200/40-control coverage check separately. Only the two newly read controls require periodic phase.
+
+3. **[P2] Partial per-round known costs are lost from aggregate known_sum.** `final_original_costs200.py:438–448`; `final_original_costs200_remote.py:197–206`. The remote functions correctly retain complete-or-null `candidate_round_controller_ledger` alongside `candidate_round_ledger_known_sums` and per-field record counts; candidate outcomes likewise have `field_sums`, `field_known_sums`, and record counts. Aggregate consumes only complete-or-null fields, then its `total()` excludes a null outer altogether. If one candidate/round field is missing while other records in that outer have known values, the overall total correctly remains null but known_sum omits those known records. Example: one outer has round costs 7 and missing; its remote complete total is null and known sum is 7; the final aggregate contributes zero from that outer. Sum the explicit per-outer known sums and preserve the lower-level record coverage while keeping the complete total null. The same issue applies to candidate outcome fields. It must not be fixed by replacing missing fields with zero.
+
+4. **[P2] Post-read publication failures are outside the retained error/recovery boundary.** `final_original_costs200.py:354–358`, `:366–392`. The READ_ERROR handler ends before splitting the result and publishing parts, the capture descriptor, raw controls, per-outer artifacts, and readbacks. A split budget failure, disk failure, or mirror publication/readback failure in that later block leaves ATTEMPT and possibly partial outputs without READ_ERROR. In particular, a failure before the complete capture descriptor is durable loses the successful remote response from memory, while ATTEMPT prevents another collector invocation. Extend the retained error boundary through the publication phase and preserve a recoverable complete metadata read result before rendering the dependent files. Recovery must use that saved result and must not silently replay the remote call. Do not mark a partially published family successful.
+
+## Input preparation dependency and invocation scope
+
+`INPUT_CONTRACT.md:34–65` provides a stage-prefix fragment and descriptive comments, not an executable manifest-preparation command. `main()` consumes an existing byte/SHA-bound manifest and neither entry discovers/builds that manifest. The actual 200 row refs, 1600 rank refs, accepted audit/controller/attempt mapping, complete-line stage prefix ends, admitted native JSON inventory, noncredited evidence, and dev195/200 filenames still require real read-only input preparation. The future variance manifest must also bind the actual generated scalar sources/capture and original control source.
+
+This is an explicitly external dependency of the package as contracted, not a hidden success output and not a reason to manufacture pins. It means the prepared source is not yet an end-to-end executable acquisition workflow. The collector's one helper call is specifically the collection phase; any actual SSH/helper calls used for input preparation must be recorded separately, as must pure local aggregation and variance. Old source1ed remains exactly 7/7 and receives no new invocation credit.
+
+## Static checks that did not reveal another blocker
+
+The published candidate function slice starts at `fields=` and includes the required grouping/ledger/elapsed functions. The extracted `validate_ledger` uses only builtins. Required math/JSON/path imports occur before those functions are called in the assembled remote program; no missing global was identified by source inspection. No new entry was executed to establish runtime reachability.
+
+The intended effective lineage is explicitly 0bef outer1, ba9 outer2..5, 778 outer6..200. Parent rows are not forced through the child attempt-result schema. Direct positive optimizer counts are summed per rank and checked against actual native200 credited totals; no 4000/all20-write assumption was found. Controller whole costs, branch/candidate subsets, step/dev timing, service CPU as-of, and shared 8-GPU capacity have separate scopes. Failed parent2, failed ba9/Ray6, and bootstrap costs are copied into separate historical scopes. Final51713 completion is not claimed.
+
+The remote return contains selected metric lines, aggregate candidate statistics, rank numeric summaries, Controller/attempt/native JSON metadata and path/SHA descriptors, and the two small dev control JSON originals. It does not return audit question_groups/leaves, token/action/logprob/text payloads, PT/tensors, or FAISS. Accordingly, Mac mirror paths alone are not reported as an asset-placement defect: the root confirmed these bounded audit metadata outputs fall within the allowed local necessary-document/small-summary exception. Actual transport bytes and generated metadata bytes still need reporting on real execution; the response has a 32MiB cap, which is a budget, not a measured size. Large source audits and model/data assets remain remote in this static path.
+
+Retrospective scalar sources preserve raw original metric-line UTF8, SHA, byte offsets, stage prefix descriptor, later collection time, and null historical observation epoch. The variance adapter checks those bindings, the complete capture row set, and producer descriptors. It does not create a missing historical poll/FULL, CUM, BOOK, or canonical artifact. Old 171 bindings are read through their existing source catalog; raw195/200 controls retain full UTF8 separately from the inner ledger digest.
+
+The six protected190 files locally match the source's bytes/SHA constants on final readback, including the 208230-byte CSV and the 1194660-byte JSON curve. The review did not modify them. Existing CUM190 candidate join parts were inspected as local metadata; expanding the top-level complete-field descriptor does expose its actual inputs3..189, with candidate190 supplied separately as intended.
+
+## Limits
+
+The task supplied actual195/dev195 completed and training still continuing. This review did not independently measure remote progress and does not claim actual200, final variance coverage, completed collector calls, successful aggregate publication, HF/tokenizer acceptance, final51713 acceptance, or cleanup. No actual200 input manifest was created, no runtime validation was performed, and source preparation is not completion evidence. Fixes require a separate review of their changed bytes; this report applies only to the frozen hashes above.
