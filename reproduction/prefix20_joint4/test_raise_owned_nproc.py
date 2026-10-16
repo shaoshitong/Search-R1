@@ -6,7 +6,7 @@ import resource
 import tempfile
 import unittest
 
-import raise_owned_nproc as core
+from reproduction.prefix20_joint4 import raise_owned_nproc as core
 
 
 def plan():
