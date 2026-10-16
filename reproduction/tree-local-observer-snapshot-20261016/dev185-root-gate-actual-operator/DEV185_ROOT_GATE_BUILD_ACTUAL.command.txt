@@ -1,0 +1,21 @@
+python3 -B - <<'PY'
+from pathlib import Path
+import json,hashlib,datetime,subprocess
+w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013'
+def pin(p):
+ r=p.read_bytes();return {'path':str(p.resolve()),'bytes':len(r),'sha256':hashlib.sha256(r).hexdigest()}
+source=w/'work/tree-speed-repair-20261008/build_dev185_root_owner_gate.py';sr=source.read_bytes()
+assert len(sr)==19552 and hashlib.sha256(sr).hexdigest()=='e7d1dbc828052d3f2f8486c35c52386a7186aff99b6d742bc1a6b2cc3e057132'
+names=['FULL_OUTER185_PROGRESS_RECEIPT.json','NATIVE_HISTORY_185_METADATA_READBACK.json','CUMULATIVE_COST_THROUGH185.json','COST_OUTER185_LOCAL_RECEIPT.json']
+expected=[(32049,'100aa0fbb74873e12399eefd338b16b423b65da2e30e8963096696f28dcf2a11'),(8353,'0d8d4dd2553c24c98557bbea76ae55edad87804561c2fe4dc53498db86b563fe'),(82578,'d5310c272bf5e26e4d18def8bfd8526842e8deb691fb02e4d107d88bc85f6ec8'),(69231,'3c3692f7d9bf62d86562d753752cc181b62721e6ea357c45d3b72db0f54ce2f2')]
+refs={n:pin(b/n) for n in names}
+for n,e in zip(names,expected):assert (refs[n]['bytes'],refs[n]['sha256'])==e
+executor='/root/cost166_actual_append';now=datetime.datetime.now(datetime.timezone.utc).isoformat()
+d={'schema':'dev185_root_gate_build_request_v1','collector_source_commit':'1edaf50bb8e14de51db936e0859e369792011233','collector_source_sha256':'545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0','collector_executor_agent':executor,'authorized_main_invocations':1,'authorized_remote_incremental_invocations':1,'sole_executor_attestation':{'executor_agent':executor,'sole_executor_authorized':True,'observed_utc':now,'main_invocations_this_outer':0,'remote_incremental_invocations_this_outer':0,'preceding_local_pending_invocations':0,'preceding_pending_remote_operations':False,'scope':'Source1ed185 collector entry only, as attested by its root-authorized sole executor and absence of actual185 execution products; metadata pending producer attempts are separate.'},'source_pins':refs}
+out=b/'DEV185_ROOT_GATE_BUILD_ACTUAL_REQUEST.json';assert not out.exists()
+raw=(json.dumps(d,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode();out.write_bytes(raw)
+print(json.dumps({'actual_root_request':pin(out)},ensure_ascii=False),flush=True)
+r=subprocess.run(['python3','-B',str(source),'--workspace',str(w),'--request',str(out),'--request-bytes',str(len(raw)),'--request-sha256',hashlib.sha256(raw).hexdigest(),'--source-bytes','19552','--source-sha256','e7d1dbc828052d3f2f8486c35c52386a7186aff99b6d742bc1a6b2cc3e057132'])
+raise SystemExit(r.returncode)
+PY
+
