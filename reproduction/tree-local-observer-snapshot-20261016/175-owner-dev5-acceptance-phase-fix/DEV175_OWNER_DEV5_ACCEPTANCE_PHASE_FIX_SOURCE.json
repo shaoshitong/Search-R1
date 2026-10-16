@@ -1,0 +1,289 @@
+{
+  "schema": "dev175_owner_original_dev5_acceptance_phase_fix_source_v1",
+  "observed_utc": "2026-10-16T01:13:28.760299+00:00",
+  "status": "FROZEN_LOCAL_SOURCE_READY_FOR_INDEPENDENT_PUBLICATION",
+  "source": {
+    "path": "work/tree-speed-repair-20261008/dev175_owner_local_receipt.py",
+    "bytes": 38640,
+    "sha256": "fdafbf7f76589854beb8355b7b3751e0e8555022ab2335f5a64832b27b9c488a"
+  },
+  "preserved_preceding_source": {
+    "path": "work/tree-speed-repair-20261008/dev175_owner_local_receipt_before_acceptance_phase_fix.py",
+    "bytes": 38610,
+    "sha256": "ce07062ab9aaafec670d6596bce52c7cf04731dd8e8954d798433b7140710634"
+  },
+  "preserved_original_source": {
+    "path": "work/tree-speed-repair-20261008/dev175_owner_local_receipt_before_retained18_resolved_path_fix.py",
+    "bytes": 38453,
+    "sha256": "ac4419d6f9c5752cdcccc53cc5063f877df7fdd43a3d9150d39c13cebc41aa64"
+  },
+  "actual_failed_preflight": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_OWNER_PREFLIGHT_ACTUAL_PHASE_FAILURE.json",
+    "bytes": 1610,
+    "sha256": "20addd1d92b6d72ee247cc386822c088669fade47a0356099692dd122281a2c8"
+  },
+  "root_gate_preserved": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_ROOT_OWNER_GATE_PINS.json",
+    "bytes": 6580,
+    "sha256": "772ce02ea6edec157bd41f44bf2f0ce35c6ad18f6db604268b6a33e284f849f5"
+  },
+  "pending_evidence_preserved": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_SOURCE_BOUND_PENDING_READBACK.json",
+    "bytes": 2762,
+    "sha256": "bea3243090f08a02c87f4bc863ecc7f4cf4848cb3d783ed02c24243726b6f7da"
+  },
+  "fix": "Keep rows=512 and require the historical ba9 outer5 phase to equal acceptance; every outer10..175 remains periodic. Existing identity/count/ledger/metric gates retain their strict conditions.",
+  "authorization": "Root explicit instruction approved the exact actual dev5 acceptance / dev10..175 periodic schema correction and required source backup/publication before unique actual collector execution.",
+  "historical_schema_scope": "Static actual historical metadata/schema reconciliation only, no collector main, remote read, review or test execution. Original dev5..170 controls and CUM175 completed-dev entries retain actual phase, source/config/model/data/count/ledger/metrics.",
+  "original34_schema_observations": [
+    {
+      "outer": 5,
+      "source_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+      "phase": "acceptance",
+      "rows": 512,
+      "original_control_sha256": "db34a9083f52b1341e71d2f1286226086a0d2c863b9c432408cdd5c9d4cf1ca9"
+    },
+    {
+      "outer": 10,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "5334239e6777c814f9225b9ba2ac019ad1624f673d1728a8a4b36e49b61ef0e1"
+    },
+    {
+      "outer": 15,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "c3335f73a6db8feb1140971857a5484db0f07f8090040ea58ffa4b64b32a97b8"
+    },
+    {
+      "outer": 20,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "2b0865f294833d794e8eeeacbe8f0105be12ffed5a28a4e646336a7caa67e76e"
+    },
+    {
+      "outer": 25,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "3221a51a3cd2e24520191e6f9af18484c09b748347859175c675ceb880a44b19"
+    },
+    {
+      "outer": 30,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "47d778458bddaa0211b86de294fdbb5f5894e74b200e22489ae03e2671f80283"
+    },
+    {
+      "outer": 35,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "730f9b4ab83bb7f1c8ec923ffae18cb3e40e86073394d433005ea3c78f554911"
+    },
+    {
+      "outer": 40,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "072bba7ed47da2226479185b572885d737b7467a6585fa542bc4e91b46ee24bf"
+    },
+    {
+      "outer": 45,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "75bb6e1ecc85805b30547f3dc5d40ecb65bfffa75f87363930bc5f20ea9dc209"
+    },
+    {
+      "outer": 50,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "0f77e4814b8d0de230af264783ffa29990d3915f49ec8cbfaebade6a52ac1b16"
+    },
+    {
+      "outer": 55,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "36cee0127feaf07a0e44c4412ce8182b3e4b09744c3c5eeee92c58c9b3ef5365"
+    },
+    {
+      "outer": 60,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "186708991b392ce4be3fac5dfcc560c2ad421e289ba2976821d89bc3c37c6b0f"
+    },
+    {
+      "outer": 65,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "b1947ee74dfff4d1674b110e68582fd44be8a16184a36c2703a595d928237858"
+    },
+    {
+      "outer": 70,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "c0db11b87c6c33722a52bcf01e87b358ec58c972abb770950df0639a32d2cef6"
+    },
+    {
+      "outer": 75,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "8a5f33dd56b3a1a0f8a90a6fc8774742c9105bc49db5f0a82cbc83ade0c2df19"
+    },
+    {
+      "outer": 80,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "31111cf8722997cd2040cd163763b3fed8f8c112e7120110b8dc2f52623a4ded"
+    },
+    {
+      "outer": 85,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "214845311a36c26cf18d626169340c87d0ba1210a1cf3a52563c1eae8d3c343e"
+    },
+    {
+      "outer": 90,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "3b244166db6b3ae4c0186b8d3ca2020b7d6e366d5e1d2d1459c8e9915f9f667a"
+    },
+    {
+      "outer": 95,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "51db3dee770eeb634a0513994f7fa3be24fd0becb3e679180a944f40ada422e6"
+    },
+    {
+      "outer": 100,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "230b65ff08b4a3d00fa21fe23430b474216b09da26f3271b1cfed8b812692101"
+    },
+    {
+      "outer": 105,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "43583b82539779fc4f2ce612a1191ffba716cab0525dd9f557920327e83582ff"
+    },
+    {
+      "outer": 110,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "b35ec73d7663526602afd6af2111748843301bf925baa60f920160a17dad9a8e"
+    },
+    {
+      "outer": 115,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "59d48c8f46069b5c35670881cbbb1c27a357b3fe76b1ee47952975003173c69c"
+    },
+    {
+      "outer": 120,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "ef2a24c94714562e1a3e14f300b59edf14bbdd83cd8145ca32c4a57aa2d628b4"
+    },
+    {
+      "outer": 125,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "859103958cb7e39dddec41ab34b4d8ab20c385a6a73dfadc722436f60dac2ea4"
+    },
+    {
+      "outer": 130,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "4672400690b07f55f824d65c576d05bd1147233892f90b5bbdbebbf98e220dcf"
+    },
+    {
+      "outer": 135,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "0f199ab53fe899e6bf3bd2e17ccfe9aa45589069d06b68cacc935df9d42093eb"
+    },
+    {
+      "outer": 140,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "c8030dc54e49835793de67d9f318fe9ccd6b622ab942586ae6c22c45c597d4a8"
+    },
+    {
+      "outer": 145,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "aa834a26c1824074868d0d1bf601da249528bc54004433d8dfa63a86065bc798"
+    },
+    {
+      "outer": 150,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "c0cdde162743905c69410658dfe19b80d4ba82fdc1660b08ab4713ca5bb1eac2"
+    },
+    {
+      "outer": 155,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "0cd2e9fee4a2822a9181e3b10cfc9713ce638df6f15aec986e6aec2aa193ada3"
+    },
+    {
+      "outer": 160,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "e8b60b7804e881db4a7ed7f3194e10c593ea3a7acb65dfcb1a800d5384ee2ef3"
+    },
+    {
+      "outer": 165,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "fdf1b30cda18face7d50b15d1fb5b0f23e8c3a5f2a291fc4394f9b6149f5d5cf"
+    },
+    {
+      "outer": 170,
+      "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "phase": "periodic",
+      "rows": 512,
+      "original_control_sha256": "17998fd4d10e221ddc095f2d8251c6890c5cb810dad7a19fef388301954cd94a"
+    }
+  ],
+  "old170_owner_behavior": "Existing dev170 owner constructs each prior pin with phase=dev[phase], preserving original acceptance5 rather than requiring all historical phases to be periodic.",
+  "collector_source_commit": "1edaf50bb8e14de51db936e0859e369792011233",
+  "collector_source_sha256": "545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0",
+  "new_entry_main_invocations_this_task": 0,
+  "actual_remote_incremental_collection_invocations": 0,
+  "preceding_local_pending_invocations": 0,
+  "preceding_pending_remote_operations": false,
+  "source_frozen": true,
+  "tests_or_review_performed": false,
+  "training_or_runtime_modified": false,
+  "canonical_or_curve_modified": false
+}

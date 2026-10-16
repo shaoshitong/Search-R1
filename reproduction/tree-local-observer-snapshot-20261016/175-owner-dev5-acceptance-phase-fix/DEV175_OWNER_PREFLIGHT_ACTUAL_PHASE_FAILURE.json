@@ -1,0 +1,39 @@
+{
+  "schema": "dev175_actual_owner_preflight_phase_failure_v1",
+  "observed_utc": "2026-10-16T01:12:22.143727+00:00",
+  "status": "PREFLIGHT_FAILED_BEFORE_COLLECTOR_INVOCATION",
+  "executor_agent": "/root/dev175_actual_collector_owner",
+  "owner_builder": {
+    "path": "work/tree-speed-repair-20261008/dev175_owner_local_receipt.py",
+    "bytes": 38610,
+    "sha256": "ce07062ab9aaafec670d6596bce52c7cf04731dd8e8954d798433b7140710634"
+  },
+  "root_gate_input_pins": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_ROOT_OWNER_GATE_PINS.json",
+    "bytes": 6580,
+    "sha256": "772ce02ea6edec157bd41f44bf2f0ce35c6ad18f6db604268b6a33e284f849f5"
+  },
+  "preflight_exit_code": 1,
+  "failed_source_line": 248,
+  "error": "assert dev['rows'] == 512 and dev['phase'] == 'periodic' raised AssertionError for original ba9 outer5 acceptance",
+  "actual_prior_outer5": {
+    "outer": 5,
+    "phase": "acceptance",
+    "rows": 512,
+    "source_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+    "ledger": "validation-388927-1.json",
+    "original_control": {
+      "path": "dev_native_cost_summaries/DEV_OUTER0005_SUMMARY.json",
+      "bytes": 3595,
+      "sha256": "db34a9083f52b1341e71d2f1286226086a0d2c863b9c432408cdd5c9d4cf1ca9"
+    }
+  },
+  "actual_outer10_through175_phase": "periodic",
+  "new_entry_main_invocations_this_task": 0,
+  "actual_remote_incremental_collection_invocations": 0,
+  "preceding_local_pending_invocations": 0,
+  "preceding_pending_remote_operations": false,
+  "training_operations": false,
+  "canonical_or_curve_modified": false,
+  "tests_or_review_performed": false
+}
