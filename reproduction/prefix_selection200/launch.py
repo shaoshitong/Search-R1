@@ -200,6 +200,7 @@ def run(base):
         services['retriever'] = start('retriever', [python, '-m', 'reproduction.prefix20_online.retriever',
             '--index', c['retrieval_index'], '--corpus', c['retrieval_corpus'], '--encoder', c['retrieval_encoder'],
             '--cache', str(base / 'retrieval-cache'), '--run-id', c['run_id'], '--port', str(c['retrieval_port']),
+            '--data-cache', c.get('retrieval_data_cache', str(base / 'retrieval-cache')),
             '--batch-queries', str(c.get('retrieval_batch_queries', 1024))],
             dict(env, PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
         for rank in range(8):
@@ -233,8 +234,9 @@ def run(base):
                     ['score', '--state-dir', str(base / 'probe'), '--prefix-inputs', str(root / 'prefix/scan'),
                      '--output', str(root / 'probe-score'), '--outer', str(outer), '--model-dir', c['official_model_dir'],
                      '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256))]))
-            phase('outer-%06d-continue' % outer, [python, '-m', 'reproduction.prefix_selection200.rollout',
-                '--config', conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(root / 'probe-score/selection.json')])
+            if not reused_phase(base, root, 'full', c):
+                phase('outer-%06d-continue' % outer, [python, '-m', 'reproduction.prefix_selection200.rollout',
+                    '--config', conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(root / 'probe-score/selection.json')])
             # Retry only an actual typed CUDA OOM, after all failed owned workers
             # have exited. Restore the previous committed state and SAME rollout;
             # never combine an abandoned partial Adam prefix with the retry.

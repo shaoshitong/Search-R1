@@ -57,10 +57,13 @@ for name in ('binding.json','state.json'):link_file(source/'question-pool'/name,
 src=source/'outers/outer-000001';dst=b/'outers/outer-000001'
 for name in ('pool-reservation.json','selection.json','questions.json','actor-binding.json'):link_file(src/name,dst/name)
 for phase in ('prefix','probe-score'):link_tree(src/phase,dst/phase)
+if 'full' in spec['phase_hashes']:
+ link_tree(src/'full',dst/'full')
 # A source rank receipt is reused only if it was actually complete; incomplete
 # gzip/native logs stay at source. New workers continue those same original G5s.
 for rank,digest in c['continue_reuse']['imported_receipts_sha256'].items():
- p=src/'full'/('rank-%s-complete.json'%rank);assert sha(p)==digest;link_file(p,dst/'full'/p.name)
+ p=src/'full'/('rank-%s-complete.json'%rank);assert sha(p)==digest
+ if not(dst/'full'/p.name).exists():link_file(p,dst/'full'/p.name)
 value=dict(status='EXACT_COMPLETE_PREFIX_SCORE_AND_PROBE0_IMPORTED',run_id=c['run_id'],outer=1,source_base=str(source),phase_hashes=spec['phase_hashes'],source_config_sha256=spec['source_config_sha256'],imported_full_rank_receipts=c['continue_reuse']['imported_receipts_sha256'],assets=assets,independent_active_asset_full_sha_readback=verified,model_or_data_via_Mac=False,head_reset=False,new_prefixes_generated=0,source_originals_modified=False)
 once(receipt,value);print(json.dumps(dict(status=value['status'],run_id=c['run_id'],outer=1,phase_hashes=value['phase_hashes'],imported_full_rank_receipts=value['imported_full_rank_receipts'],assets_count=len(assets),source_originals_modified=False)))
 '''.replace('BASE', repr(base))

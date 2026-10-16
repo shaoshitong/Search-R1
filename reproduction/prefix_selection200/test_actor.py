@@ -37,6 +37,12 @@ def fixture():
 
 
 class ActorTests(unittest.TestCase):
+    def test_remote_official_dataset_mount_is_accepted(self):
+        from .actor import remote
+        self.assertEqual(str(remote('/dataset/shaoshitong/official-model')), '/dataset/shaoshitong/official-model')
+        with self.assertRaises(ValueError):
+            remote('/Users/shaoshitong/local-model')
+
     def test_real_first_eos_is_retained_g5_outcome_not_a_fake_policy_token(self):
         import torch
         row = fixture(); row.update(response_token_ids=[], response_info_mask=[],

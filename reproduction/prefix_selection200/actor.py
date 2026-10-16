@@ -52,7 +52,7 @@ def utc():
 
 def remote(path):
     path = Path(path).resolve()
-    if not path.is_absolute() or not str(path).startswith('/mnt/'):
+    if not path.is_absolute() or not str(path).startswith(('/mnt/', '/dataset/')):
         raise ValueError('Actor weights, optimizer, logs and trajectories must remain remote')
     return path
 

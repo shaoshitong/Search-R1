@@ -145,6 +145,7 @@ def main():
     parser.add_argument('--corpus', required=True)
     parser.add_argument('--encoder', required=True)
     parser.add_argument('--cache', required=True)
+    parser.add_argument('--data-cache', help='Reuse this run\'s already complete corpus/Arrow cache')
     parser.add_argument('--run-id', required=True)
     parser.add_argument('--port', type=int, default=18010)
     parser.add_argument('--batch-queries', type=int, default=512)
@@ -160,10 +161,12 @@ def main():
     if torch.cuda.device_count() != 8 or faiss.get_num_gpus() != 8:
         raise ValueError('Probe rollout retrieval requires its assigned eight GPUs')
     cache = Path(args.cache)
-    corpus_path, extraction = prepare_corpus(args.corpus, cache)
+    data_cache = Path(args.data_cache) if args.data_cache else cache
+    cache.mkdir(parents=True, exist_ok=True)
+    corpus_path, extraction = prepare_corpus(args.corpus, data_cache)
     upstream.load_corpus = lambda _: datasets.load_dataset(
         'json', data_files=str(corpus_path), split='train', num_proc=4,
-        cache_dir=str(cache/'arrow'))
+        cache_dir=str(data_cache/'arrow'))
     config = upstream.Config(retrieval_method='e5', retrieval_topk=3,
         index_path=args.index, corpus_path=args.corpus, faiss_gpu=True,
         retrieval_model_path=args.encoder, retrieval_pooling_method='mean',
