@@ -138,7 +138,13 @@ def run(base):
         (base / name).mkdir(parents=True, exist_ok=True)
     python = str(Path(c['environment_root']) / 'bin/python')
     conf = str(base / 'preparation/launch-config.json')
-    outer = 0; services = {}; success = False; timings = {}; actor_micro = c['actor_global_micro_batch_size']
+    outer = int(c.get('resume_joint', {}).get('completed_outer', 0))
+    services = {}; success = False; timings = {}; actor_micro = c['actor_global_micro_batch_size']
+    if outer:
+        from .resume import validate_imported_boundary
+        validate_imported_boundary(base, c)
+    if c.get('python_header_cpath'):
+        env['CPATH'] = c['python_header_cpath']
 
     def stage(name, **extra):
         publish(base / 'logs/pipeline-status.json', dict(run_id=c['run_id'], stage=name,
@@ -212,7 +218,17 @@ def run(base):
         for rank in range(8):
             await_service('grounding-rank-%d' % rank, 'http://127.0.0.1:%d/health' % (c['grounding_probe_base_port'] + rank),
                 dict(version=c['grounding_probe_version']))
-        for outer in range(1, 201):
+        # Retry the interrupted milestone QA with its saved actor, then continue
+        # from the joint actor/probe/pool boundary without redoing any updates.
+        if outer in (5, 50, 100, 150, 200):
+            actor = read(base / 'actor/latest.json')
+            recovery_config = base / 'preparation/recovered-evaluation-config.json'
+            once(recovery_config, dict(c, actor_version=actor['actor_version']))
+            phase('recovered-outer-%06d-validation' % outer,
+                [python, '-m', 'reproduction.prefix_selection200.eval', '--config', str(recovery_config),
+                 '--model', actor['hf_model_dir'], '--questions', c['validation_questions'],
+                 '--expected-count', '512', '--output', str(base / 'recovered-validation')])
+        for outer in range(outer + 1, 201):
             root = base / 'outers' / ('outer-%06d' % outer)
             stage('CANDIDATE_POOL_RESERVATION')
             prepare(c, outer)
