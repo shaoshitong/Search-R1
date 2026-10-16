@@ -1,0 +1,75 @@
+{
+  "updated_utc": "2026-10-16T19:49:10.283371+00:00",
+  "run_id": "f3ee1435e5014ba1969387c91878893a",
+  "old_job": "3422",
+  "old_base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3",
+  "new_base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4",
+  "source_commit": "e3463cfddca71a22ac684d75c875dbe123e8bc43",
+  "configuration": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/RESUME4_PLANNED_CONFIG.json",
+  "status": "PREPARED_NOT_DEPLOYED_OR_SUBMITTED",
+  "prerequisites": [
+    "Read or idempotently capture original terminal3422 proof and verify source cleanup, queue, identity",
+    "Replace PENDING_REMOTE_TERMINAL_PROOF with actual SHA; verify old latest joint52, pool52 snapshot and unsampled53 reservation",
+    "Confirm new namespace/deploy/import/submit intents and receipts before any repeat"
+  ],
+  "commands": [
+    [
+      "python3",
+      "-m",
+      "reproduction.prefix_diversity200.control",
+      "deploy",
+      "--target",
+      "h100-10",
+      "--base",
+      "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4",
+      "--commit",
+      "e3463cfddca71a22ac684d75c875dbe123e8bc43",
+      "--config",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/RESUME4_PLANNED_CONFIG.json",
+      "--receipts",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016",
+      "--reuse-source-commit",
+      "2c1219defaebaf69467fce18efad331ce68cd6ec",
+      "--reuse-source-repo",
+      "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/repo"
+    ],
+    [
+      "python3",
+      "-m",
+      "reproduction.prefix_diversity200.control",
+      "import-joint",
+      "--target",
+      "h100-10",
+      "--base",
+      "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4",
+      "--receipts",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016"
+    ],
+    [
+      "python3",
+      "-m",
+      "reproduction.prefix_diversity200.control",
+      "submit",
+      "--target",
+      "h100-10",
+      "--base",
+      "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4",
+      "--receipts",
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016"
+    ]
+  ],
+  "post_submission": [
+    "Read actual submit receipt and native queue: never duplicate on unknown outcome",
+    "Only after known submission set CURRENT_CONFIG to exact remote bytes and update STATUS job/base/frozen source/config SHA and historical terminal3422",
+    "Read eight actual optimizer/scheduler52 restores then complete53\u201357 and actual58generation; no extra baseline or short-run stop",
+    "Preserve QA5/50 history, failed52/53 costs; setup a new task-owned passive sampler only after original sampler terminal verified"
+  ],
+  "connection": {
+    "original": "mgmt-host alias -> retained18 -> h100-10",
+    "optional_environment": "G1_MGMT_SOURCE_IP must equal current ipconfig getifaddr en0",
+    "observed_source_ip": "10.4.166.96",
+    "source_bound_attempt": "SSH closed before authentication; not a proven repair",
+    "configuration_or_credentials_changed": false
+  },
+  "goal_complete": false
+}
