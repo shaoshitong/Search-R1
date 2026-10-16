@@ -15,10 +15,13 @@ from reproduction.prefix20_online.launch import once
 
 def boundary(config, joint, actor, probe, pool):
     outer = config['resume_joint']['completed_outer']
+    from .periodic import probe_boundary
+    native=config.get('actor_hidden_native',False)
+    expected=probe_boundary(outer) if native else dict(last_update_outer=outer,actual_adam_per_rank=10*outer)
     if (not 0 < outer <= 200 or joint['run_id'] != config['run_id'] or joint['outer'] != outer
             or joint['actor'] != actor or joint['probe'] != probe
-            or probe['run_id'] != config['run_id'] or probe['completed_outer'] != outer
-            or probe['actual_adam_steps_per_rank'] != [10 * outer] * 8
+            or probe['run_id'] != config['run_id'] or probe['completed_outer'] != expected['last_update_outer']
+            or probe['actual_adam_steps_per_rank'] != [expected['actual_adam_per_rank']] * 8
             or pool['next_outer'] != outer + 1 or pool['consumed_candidates'] != 5120 * outer
             or pool['cycle'] * len(pool['order']) + pool['cursor'] != 5120 * outer):
         raise ValueError('Restore only the complete joint actor/probe/candidate boundary')
@@ -58,8 +61,11 @@ def import_complete(base):
     if sha(terminal) != spec['terminal_proof_sha256'] or sha(proof) != spec['checkpoint_cpu_proof_sha256']:
         raise ValueError('Actual terminal or independent checkpoint proof changed')
     ended, checked = read(terminal), read(proof)
-    if (ended['actual_births_present'] or ended['native_job_cgroup_paths'] or ended['gpu']['stdout'].strip()
-            or checked['status'] != 'PREFIX_SELECTION200_JOINT_MILESTONE_FULL_SHA_CPU_PASS'
+    native=config.get('actor_hidden_native',False)
+    actual_gpu=ended.get('owned_gpu',[]) if native else ended['gpu']['stdout'].strip()
+    expected_status='NATIVE_ACTOR_PERIODIC_PROBE_JOINT_FULL_SHA_CPU_PASS' if native else 'PREFIX_SELECTION200_JOINT_MILESTONE_FULL_SHA_CPU_PASS'
+    if (ended['actual_births_present'] or ended['native_job_cgroup_paths'] or actual_gpu
+            or checked['status'] != expected_status
             or checked['run_id'] != config['run_id'] or checked['outer'] != spec['completed_outer']):
         raise ValueError('Recovery requires real exit/resource release and actual complete checkpoint readback')
     science = ('model_revision', 'model_files_sha256', 'candidate_questions', 'selected_questions',
@@ -67,6 +73,7 @@ def import_complete(base):
         'probe_epochs_per_outer', 'probe_updates_per_outer', 'probe_global_batch_average',
         'actor_global_mini_batch', 'actor_ppo_epochs', 'seed', 'official_model_dir',
         'encoder_model_dir', 'canonical_train_sha256', 'fixed_test_manifest_sha256', 'grounding_probe_version')
+    if native:science+=('actor_hidden_native','hidden_capture_contract','probe_update_period','probe_updates_per_period','probe_epochs_per_update')
     if any(config[k] != original[k] for k in science):
         raise ValueError('Recovery cannot change the scientific training contract')
     def checked_stats(value):
@@ -78,11 +85,11 @@ def import_complete(base):
             for item in value.values(): checked_stats(item)
         elif isinstance(value, list):
             for item in value: checked_stats(item)
-    checked_stats(checked['details'])
+    checked_stats(checked['files'] if native else checked['details'])
     joint = read(source / 'latest-joint.json'); actor = read(source / 'actor/latest.json')
     probe = read(source / 'probe/latest.json'); pool = read(joint['pool_snapshot'])
     outer = boundary(config, joint, actor, probe, pool)
-    if (sha(source / 'outers' / ('outer-%06d' % outer) / 'complete.json') != checked['joint_complete_sha256']
+    if (sha(source / 'outers' / ('outer-%06d' % outer) / 'complete.json') != (ended['joint_complete_sha256'] if native else checked['joint_complete_sha256'])
             or read(source / 'question-pool/state.json') != pool
             or (source / 'probe/latest.pt').stat().st_ino != Path(joint['probe_snapshot']).stat().st_ino):
         raise ValueError('Latest complete checkpoint/pool differs from its independent readback')
@@ -104,7 +111,7 @@ def import_complete(base):
     # trajectories/checkpoints remain at their recorded immutable source paths.
     for n in range(1, outer + 1):
         src = source / 'outers' / ('outer-%06d' % n)
-        for name in ('complete.json', 'probe-update/metrics.json'):
+        for name in ('complete.json', 'probe-update/metrics.json', 'probe-frozen.json'):
             path = src / name
             if path.is_file(): link(path, base / 'outers' / src.name / name)
     result = dict(status='COMPLETE_JOINT_STATE_IMPORTED_NO_RESET', run_id=config['run_id'],

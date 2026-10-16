@@ -34,6 +34,23 @@ class PeriodicProtocolTests(unittest.TestCase):
         with self.assertRaises(ValueError):query_mapping(m,[3,1],[4,5,6],[0,1,2])
 
 
+class NativeRetentionClockTests(unittest.TestCase):
+    def test_native_periodic_config_does_not_require_legacy_ten_writes_every_outer(self):
+        import json,tempfile
+        from pathlib import Path
+        from unittest.mock import patch
+        from .storage import validate_base
+        with tempfile.TemporaryDirectory() as directory:
+            parent=Path(directory).resolve();b=parent/'search-g1-prefix-selection200-native-test'
+            (b/'preparation').mkdir(parents=True)
+            c=dict(base=str(b),run_id='test',outers=200,world_size=8,actor_hidden_native=True,
+                probe_updates_per_outer=0,probe_update_period=20,probe_updates_per_period=100)
+            (b/'preparation/launch-config.json').write_text(json.dumps(c))
+            with patch('reproduction.prefix_selection200.storage.REMOTE_PARENT',parent):
+                self.assertEqual(validate_base(b)[1],c)
+
+
+
 @unittest.skipUnless(importlib.util.find_spec('torch'), 'Run tensor tests in existing remote CPU environment')
 class NativeHiddenTensorTests(unittest.TestCase):
     def make_capture(self):

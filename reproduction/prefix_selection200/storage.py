@@ -55,8 +55,11 @@ def validate_base(base):
             or not base.name.startswith(PREFIX) or base.resolve(strict=True) != base):
         raise ValueError('Pruning is restricted to a canonical new prefix-selection200 namespace')
     config = read(owned(base, base/'preparation/launch-config.json'))
+    native=config.get('actor_hidden_native',False)
+    clock_ok=(config.get('probe_update_period')==20 and config.get('probe_updates_per_period')==100
+              and config.get('probe_updates_per_outer')==0) if native else config.get('probe_updates_per_outer')==10
     if (config['base'] != str(base) or not config['run_id'] or config['outers'] != 200
-            or config['world_size'] != 8 or config['probe_updates_per_outer'] != 10):
+            or config['world_size'] != 8 or not clock_ok):
         raise ValueError('Current namespace does not have the approved actor/probe run binding')
     return base, config
 

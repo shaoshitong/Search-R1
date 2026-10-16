@@ -19,3 +19,14 @@ At a periodic outer, fix Top512 before any full labels, complete the full5120G5 
 Targeted CPU tests cover native residual aliasing, authentic query ordering, off-by-one20th token, future-token masking, whole-pool natural schedules and exact no-generation subset projection. Actual native GPU capture, correct actor writes and iteration timings remain unverified until the new production job advances. Normal checkpoint readback uses checkpoint_native_once.py; it handles actor20N and probe100*floor(N/20), including the zero-optimizer probe before outer20. No standalone GPU gate or extra baseline is added.
 
 Model/Adam/hidden/trajectories/full predictions stay remote. Rotate only consumed current-run hidden buffers and unreferenced nonmilestone actor states after joint commit; retain original questions/tokens/labels and checkpoint metadata. No old data is deleted. Native exit0,200/no201, scheduled512QA and final51713/count, all normal checkpoints/final state and resource cleanup remain required; this README is not completion evidence.
+
+
+## First actual native run and necessary recovery
+
+Job3423 completed actor outer1 with20 real Adam/rank and probe0, all8 native captures/25600 prefixes and all2560 selected continuations. Selectedmixed362/512=.70703125. Prefix phase65.769s/head score21.109s/continuation93.953s; no independent encoder forward. Native BF16 shard each3840409728B/3200 rows.
+
+The pipeline then FAILED1:0 in storage.validate_base because a legacy10-probe-writes-per-outer guard was missed. This is an implementation error after a valid joint save, notOOM, a model failure or human stop. The guard now explicitly accepts the native period20/100-write clock; regression tests and a dry metadata deletion plan on the actual stopped source passed. No source tensors were deleted.
+
+Full checkpoint1 independently read/CPU loaded: proofSHA79c15230ac8881294ae6620fa8408448ad3218aae0cc6ce14ea5d7bbaabc2217, actor20/rank, probe0. All356 original process births/cgroup/ownedGPU gone;31 originalinode logsfullSHA retained, terminalproofSHAda37e96e9c4250e0c14831182c109241159a73307147eb60862503b80e1379e2. Native job was later purged; the original actualFAILED observation is retained separately from the new unavailablequery.
+
+Recovery namespace resume1 imports the complete joint1/HF/Adam/scheduler/RNG/probe0 and poolcursor5120/next2, same logicalrun; no officialreset or rerunning1. Actual GPU restore and resumed2–6+7 acceptance remain pending until observed. Runtime source before the failure remains immutable1f25965f.
