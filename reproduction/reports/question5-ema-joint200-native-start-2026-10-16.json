@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "recorded_stage": "actual_native_probe_training_started_first_epoch_pending",
+  "actual_checked_unix": 1792159315.7576745,
+  "run_id": "8af926a49630428097b94027864da68b",
+  "execution_id": "091f3979549347d190065387c2214af6",
+  "runtime_source_commit": "98b5ec2af9a5b45cd535e67408980c72a75d7746",
+  "observer_source_sha256": "e6f821a8852823fcf91d9a9460e1cba8c2c5829007a6f23ed2dbd43caf689e88",
+  "source_receipt_sha256": "e6587e6f777700a282bb1efb1b50d74eda9a6dd8e1e1e9f540c40cca5c2a63c1",
+  "expected_epochs": 200,
+  "expected_groups_per_epoch": 445440,
+  "expected_train_trajectories_per_epoch": 2227200,
+  "fixed_test_groups": 512,
+  "fixed_test_trajectories": 2560,
+  "expected_Adam_per_epoch": 8700,
+  "expected_total_Adam": 1740000,
+  "counters_global_counted_once": {
+    "optimizer_steps": 1500,
+    "ema_updates": 1500,
+    "complete_epochs": 0,
+    "global_groups_seen": 76800,
+    "global_trajectories_seen": 384000,
+    "rejected_nonfinite_updates": 0
+  },
+  "returned_Adam_per_rank": [
+    1500,
+    1500,
+    1500,
+    1500
+  ],
+  "EMA_updates_per_rank": [
+    1500,
+    1500,
+    1500,
+    1500
+  ],
+  "all_rank_counters_agree": true,
+  "fresh_native_head_Adam_RNG_initialized": true,
+  "four_native_archive_source_bindings_verified": true,
+  "parent_packed_feature_manifest_sha256": "e9ed944ed244513ab55bdd1b13aae745c5b7902228294fd62ef70ea349b6f246",
+  "accepted_features_reused_readonly": 2229760,
+  "new_encoding_after_repair": 0,
+  "new_rollouts_after_repair": 0,
+  "new_EM_scores_after_repair": 0,
+  "loss_weights": {
+    "trajectory_BCE": 1,
+    "mixed_G5_BCE": 1
+  },
+  "EMA_decay": 0.99,
+  "latest_online_RAW_single_update": {
+    "actual_adam_step": 1500,
+    "ema_updates": 1500,
+    "global_groups": 52,
+    "global_trajectories": 260,
+    "local_groups": 13,
+    "local_trajectories": 65,
+    "online_raw_trajectory_bce": 0.4349025850936484,
+    "online_raw_group_bce": 0.7282177748588415,
+    "online_raw_total_loss": 1.16312035995249,
+    "metric_semantics": "raw_pre_own_update_complete_G5_actual_group_weighted",
+    "actual_optimizer_learning_rates": [
+      2.999995055657793e-05
+    ],
+    "skipped_adam": false,
+    "epoch": 1,
+    "epoch_update": 1500,
+    "updates_per_epoch": 8700,
+    "observed_unix": 1792159312.6017277
+  },
+  "online_values_are_not_epoch_means_or_EMA_scores": true,
+  "EMA_train_metrics": null,
+  "EMA_test_metrics": null,
+  "first_complete_epoch_verified": false,
+  "errors_recorded": [],
+  "GPU_snapshot_owned_indices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "GPU_snapshot_used_MiB": [
+    4999,
+    5095,
+    4917,
+    4999
+  ],
+  "GPU_snapshot_util_percent": [
+    49,
+    44,
+    45,
+    54
+  ],
+  "GPU_execution_cumulative_peak": null,
+  "GPU_complete_epoch_window_peak": null,
+  "unknown_peak_reason": "No completed-epoch peak metadata emitted yet; encoder parent execution peaks excluded",
+  "dated_execution_doc_sha256": "a965cddf8a923d91625eb4ffb3cdd98cddbb02bb7612d42043a2a7d9b5e484ce",
+  "goal_complete": false
+}

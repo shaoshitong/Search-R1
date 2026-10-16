@@ -54,7 +54,7 @@ torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.tr
 
 父流水线使用 `reproduction/operations/a800_question5_hf_direct_warmup_control.py`：HF直接下载的原八part完整验收→A800 CPU解包、裁成prefix5并准备完整数据→现场准入四张空闲训练卡（排除辅助5/6及任何被占卡）→四encoder worker→CPU缓存合并。source-plan使用 `reference_archive.parts`，不使用旧 `prepared_reference_archive` 中转输入。缓存已完成，随后probe启动入口因Git archive兼容性错误退出；父handle一次launch intent已消费，**禁止重新launch父handle**。
 
-修复后的独立入口计划为 `reproduction/operations/a800_question5_cached_train_control.py`，仅从只读的完整父缓存启动fresh probe，不重复编码、rollout或EM评分；截至21:35尚未发布闭合或启动。上面的阶段命令仅说明调用关系，不能手动补启动另一条流水线。实际启动仍须现场准入四张空闲训练卡；选中UUID后固定，父wrapper持同UUID lease，child通过继承FD校验，不相互抢锁。没有retriever/actor，不用5/6，不停止他人，不改SSH/VPN/auth/knownhosts。SSH超时不能当作退出或重启依据。
+当前独立入口为 `reproduction/operations/a800_question5_cached_train_control.py`，已在新的procguard namespace一次启动fresh probe，22:01:55确认真实Adam与EMA推进；具体身份及计数见下节。仅从只读的完整父缓存训练，不重复编码、rollout或EM评分。上面的阶段命令仅说明调用关系，不能手动补启动另一条流水线。实际已准入训练卡0/1/2/3及对应UUID；选中UUID后固定，父wrapper持同UUID lease，child通过继承FD校验，不相互抢锁。没有retriever/actor，不用5/6，不停止他人，不改SSH/VPN/auth/knownhosts。SSH超时不能当作退出或重启依据；所有被取代的旧handle均禁止launch。
 
 全量数据、特征、模型、Adam、checkpoint和预测留A800远端。Mac仅代码/配置/文档/小型审计。源码Git提交push、GitHub文件SHA独立核对、A800完整Git archive文件SHA对齐后才允许启动。stage和launch回执不等于训练推进；必须检查两次真实进展及首完整epoch。
 
@@ -66,17 +66,35 @@ torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.tr
 
 只有200个完整合并epoch、最终EMA train/test指标、完整finite/SHA状态及仅自有资源收尾实际通过，才能宣称本warmup完成；原actor200 goal保持独立，不由本次probe完成而标记完成。
 
-## 2026-10-16 21:32／21:35（上海）缓存完成、启动故障与待发布修复
+## 2026-10-16 22:01:55（上海）当前实际训练
+
+当前唯一run为 `8af926a49630428097b94027864da68b`／execution `091f3979549347d190065387c2214af6`，handle `preparation/question5-cached-sourcefix-procguard-deployment-20261016.json`，远端base `/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b`。runtime源码为 `98b5ec2af9a5b45cd535e67408980c72a75d7746`，925个源码文件已核验。
+
+一次实际launch时间戳为 `1792158766.310588`；pipeline PID1466441／birth623835762，torchrun PID1466607／birth623836078，四rank PID1466719、1466720、1466721、1466722／birth均623836205。实际primary回执为 `preparation/question5-slim-progress-observation-1792159315645400000.json`。四rank均通过925文件的authenticated archive与运行绑定核验；Head、Adam、RNG从更新0全新初始化。
+
+截至22:01:55，四rank分别记录 `RETURNED_ADAM_AND_EMA=1500`，全局只计1500次，不加总为6000次；已遍历76800个G5事件／384000条轨迹，`complete_epochs=0`、`rejected_nonfinite=0`，未记录错误或退出。实际绑定训练卡0/1/2/3及各自UUID。父缓存全部2229760条特征只读复用，本次新encoder、rollout、EM评分均为0。
+
+最后一个raw在线单次更新的trajectory BCE为 `0.4349025850936484`、group BCE为 `0.7282177748588415`、total为 `1.16312035995249`。这些是单次raw训练loss，不是epoch均值、EMA评测指标或准确率。首个完整epoch仍须达到8700次更新，并完成同一EMA版本的完整train/test指标和checkpoint；这些当前仍待生成，200完整epoch预算不变。
+
+当前primary仅沿新handle有界只读观察，不重新launch：
+
+```
+python -m reproduction.operations.a800_question5_slim_progress_observer --handle preparation/question5-cached-sourcefix-procguard-deployment-20261016.json
+```
+
+本节是当前时间点的实测记录；后续以同run/execution实际回执、四rank ledger、epoch指标及错误/退出状态更新。旧 `d7dd61bb`、`4347d238` 和更早等待流水线的源码、日志、缓存与故障记录保留，禁止重启旧handle。
+
+## 2026-10-16 21:32／21:35（上海）历史缓存完成与启动修复准备
 
 父run `d7dd61bb36454e1e80c2306b5fb7d23a`／execution `694d67a5f1a04849b9f254c4a6408a03`／runtime `0fde8e8bb59fc3bac0c6247704b2fd1bd063abf6` 的完整缓存已为 `COMPLETE`：445952个G5事件／2229760条特征，其中1715200条为本次新编码，514560条精确复用。四个encoder与finalizer实际均exit0。完整feature manifest SHA为 `e9ed944ed244513ab55bdd1b13aae745c5b7902228294fd62ef70ea349b6f246`。
 
 实际回执为 `preparation/question5-slim-progress-observation-1792157601516614000.json` 和 `preparation/question5-startup-failure-actual-1792157717156804000.json`。probe于21:14在NCCL、Head、Adam、EMA初始化之前失败：`train.py:315` 强制执行 `git rev-parse`，而部署为完整Git archive、目录没有 `.git`，Git实际exit128。CUDA UUID绑定已接受；没有run claim、模型初始化或更新记录。所有父流水线自有进程已确认退出。本次是启动入口兼容性错误，没有已开始的optimizer状态或训练更新丢失，不能归为模型训练数值故障。
 
-父runtime、日志和已完成缓存保持不可变，不能重试已消费的 `preparation/question5-hf-direct-deployment-20261016.json`。修复正在接入严格的已认证archive身份与完整文件清单SHA核验，同时保留真实Git checkout核验路径。新 `a800_question5_cached_train_control.py` 只读父缓存后启动全新probe；这不是state resume，不继承旧Head或optimizer，也不重编码、生成轨迹或改写EM。
+父runtime、日志和已完成缓存保持不可变，不能重试已消费的 `preparation/question5-hf-direct-deployment-20261016.json`。修复接入严格的已认证archive身份与完整文件清单SHA核验，同时保留真实Git checkout核验路径。新 `a800_question5_cached_train_control.py` 只读父缓存后启动全新probe；这不是state resume，不继承旧Head或optimizer，也不重编码、生成轨迹或改写EM。
 
-预备新run为 `4347d238b1d64b3f95ed22fb59d1f00f`／execution `2ec56fe5c3194c16bbc45c2ea4c52d8a`，远端base计划为 `/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-4347d238b1d64b3f95ed22fb59d1f00f`；handle为 `preparation/question5-cached-sourcefix-deployment-20261016.json`，intent为 `preparation/question5-cached-sourcefix-intent-20261016.json`。**截至本记录尚未启动，源码发布与实际启动证明待补，不将预备身份视为运行事实。**
+当时预备run为 `4347d238b1d64b3f95ed22fb59d1f00f`／execution `2ec56fe5c3194c16bbc45c2ea4c52d8a`，远端base `/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-4347d238b1d64b3f95ed22fb59d1f00f`；handle为 `preparation/question5-cached-sourcefix-deployment-20261016.json`，intent为 `preparation/question5-cached-sourcefix-intent-20261016.json`。21:35尚未启动；随后该namespace的CPU preflight因非本任务进程权限问题失败，被当前 `8af926a4` 流水线取代。此处保留准备历史，禁止重启该旧handle。
 
-修复部署闭合后仍使用primary `reproduction.operations.a800_question5_slim_progress_observer`，沿新handle读取typed archive资格、父缓存绑定与实际进度回执；不得用旧handle重启。科学配置保持question+prefix5、两个BCE权重1:1、EMA0.99和200个完整合并数据epoch。
+修复后primary仍为 `reproduction.operations.a800_question5_slim_progress_observer`，沿当前procguard handle读取typed archive资格、父缓存绑定与实际进度回执；不得用旧handle重启。科学配置保持question+prefix5、两个BCE权重1:1、EMA0.99和200个完整合并数据epoch。
 
 ## 2026-10-16 20:10（上海）历史启动阶段记录
 
@@ -101,6 +119,8 @@ torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.tr
 2026-10-16必要CPU检查通过：联合损失/梯度数学一致、EMA、完整G5分组预算、两rank不等micro与末空rank归约、policy5布局、checkpoint恢复；真实compact与reference20截5的合成转换、part/concat/member哈希及安全解压；BF16 packed-cache/orderedID/位置/mask/标签/segments/尾padding往返和已验收复用路径零复制。未进行额外GPU验收、LLM概率扫描、新rollout或独立评测。真实数据/缓存/训练仍以远端原件与回执为准。
 
 
-## 2026-10-16 CPU preflight process-permission repair
+## 2026-10-16 CPU preflight非本任务进程权限故障历史
 
-The first archive-source startup repair namespace4347d238b1d64b3f95ed22fb59d1f00f/ex2ec56fe5c3194c16bbc45c2ea4c52d8a/sourcef6d5ccb8 staged925 sourcefiles, but its launch preflight stopped on PermissionError reading an unrelated /proc PID cwd. This occurred before the once-launch claim, GPU admission, or any child/model/Adam/EMA. Preserve that source, stage and failure receipt; do not repeat the old launch. The controller now filters UID and handles inaccessible/disappearing argv/cwd independently while preserving exact owned birth guards. The independent replacement planned run 8af926a49630428097b94027864da68b/execution 091f3979549347d190065387c2214af6 uses handle preparation/question5-cached-sourcefix-procguard-deployment-20261016.json; actual launch is still unproven in this document revision. It reuses the same accepted parent data/features readonly with zero new encoding/rollout/EM and unchanged complete200 science. Dynamic authority and actual receipts determine the current execution.
+第一次archive-source修复namespace `4347d238b1d64b3f95ed22fb59d1f00f`／execution `2ec56fe5c3194c16bbc45c2ea4c52d8a`／source `f6d5ccb8` 已stage925个源码文件，但launch preflight读取非本任务 `/proc` PID的cwd时遇到PermissionError。故障发生在一次launch claim、GPU准入及任何child、模型、Adam、EMA之前。原源码、stage与故障回执保留，禁止重复旧launch。
+
+controller修复为先筛UID，分别处理不可访问或消失的argv/cwd，同时保留精确owned PID birth守卫。独立替代run `8af926a49630428097b94027864da68b`／execution `091f3979549347d190065387c2214af6` 已实际启动并推进，见22:01:55当前记录。其父数据和特征保持只读，零新增编码、rollout或EM评分；200完整epoch科学配置不变。
