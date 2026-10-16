@@ -1,12 +1,12 @@
 {
-  "actual_last_sample_seconds": 5.591423362493515,
+  "actual_last_sample_seconds": 6.385326363146305,
   "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3",
   "coverage": "starts at this telemetry creation; no retrospective GPU peak claim",
   "cpu_accounting_complete": false,
   "cpu_scope": "lower bound over actually observed owned birth utime+stime; stopped/unobserved processes and final intersample CPU may be missing",
   "gpu_scope": "whole physical card including any other users; sampled peak is not an exact continuous peak",
   "job": "3422",
-  "last_observed_unix": 1792173820.4128697,
+  "last_observed_unix": 1792174307.1164665,
   "latest": {
     "cards": [
       {
@@ -76,31 +76,31 @@
     ],
     "errors": [],
     "job": "3422",
-    "known_owned_process_births": 11884,
+    "known_owned_process_births": 12237,
     "native_state": "RUNNING",
-    "observed_owned_process_births": 8397,
-    "observed_unix": 1792173820.4128697,
-    "owned_cpu_core_seconds_lower_bound": 84464.33,
+    "observed_owned_process_births": 8716,
+    "observed_unix": 1792174307.1164665,
+    "owned_cpu_core_seconds_lower_bound": 87600.2,
     "stage": {
-      "checked_unix": 1792173746.9184666,
-      "outer": 40,
+      "checked_unix": 1792174312.2012534,
+      "outer": 41,
       "run_id": "f3ee1435e5014ba1969387c91878893a",
-      "stage": "outer-000040-prefix"
+      "stage": "outer-000041-continue"
     }
   },
   "model_tensors_read": false,
   "native": {
-    "observed_unix": 1792173779.9181378,
+    "observed_unix": 1792174289.3131633,
     "returncode": 0,
     "state": "RUNNING",
     "stderr": "",
-    "stdout": "JobId=3422 JobName=g1-prefix200-f3ee1435e501 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898644 Nice=0 Account=(null) QOS=(null) JobState=RUNNING Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=04:08:52 TimeLimit=UNLIMITED TimeMin=N/A SubmitTime=2026-10-16T21:54:08 EligibleTime=2026-10-16T21:54:08 AccrueTime=2026-10-16T21:54:08 StartTime=2026-10-16T21:54:08 EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T21:54:08 Scheduler=Main Partition=gpu AllocNode:Sid=h100-10:3643502 ReqNodeList=h100-10 ExcNodeList=(null) NodeList=h100-10 BatchHost=h100-10 NumNodes=1 NumCPUs=96 NumTasks=1 CPUs/Task=96 ReqB:S:C:T=0:0:*:* TRES=cpu=96,mem=512G,node=1,billing=96 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=96 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/preparation/native-launch.sh WorkDir=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3 Comment=g1-prefix200:f3ee1435e5014ba1969387c91878893a  StdErr=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/logs/native-3422.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/logs/native-3422.log Power= TresPerNode=gres:gpu:8 \n"
+    "stdout": "JobId=3422 JobName=g1-prefix200-f3ee1435e501 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898644 Nice=0 Account=(null) QOS=(null) JobState=RUNNING Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=04:17:21 TimeLimit=UNLIMITED TimeMin=N/A SubmitTime=2026-10-16T21:54:08 EligibleTime=2026-10-16T21:54:08 AccrueTime=2026-10-16T21:54:08 StartTime=2026-10-16T21:54:08 EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T21:54:08 Scheduler=Main Partition=gpu AllocNode:Sid=h100-10:3643502 ReqNodeList=h100-10 ExcNodeList=(null) NodeList=h100-10 BatchHost=h100-10 NumNodes=1 NumCPUs=96 NumTasks=1 CPUs/Task=96 ReqB:S:C:T=0:0:*:* TRES=cpu=96,mem=512G,node=1,billing=96 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=96 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/preparation/native-launch.sh WorkDir=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3 Comment=g1-prefix200:f3ee1435e5014ba1969387c91878893a  StdErr=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/logs/native-3422.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/logs/native-3422.log Power= TresPerNode=gres:gpu:8 \n"
   },
   "new_model_forward": false,
   "requested_interval_seconds": 5.0,
   "run_id": "f3ee1435e5014ba1969387c91878893a",
   "sampler_finished": false,
-  "samples": 2281,
+  "samples": 2362,
   "started_unix": 1792162199.6091492,
   "training_changed": false,
   "whole_card_peaks": {
