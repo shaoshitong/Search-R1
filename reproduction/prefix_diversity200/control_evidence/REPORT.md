@@ -1,11 +1,11 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Actual complete26/200; job3422 RUNNING on h100-10/10.33.0.18, stage outer-000027-continue. Saved actor/probe Adam per8rank: [520, 520, 520, 520, 520, 520, 520, 520] / [520, 520, 520, 520, 520, 520, 520, 520]. Completed joint counters: [520, 520, 520, 520, 520, 520, 520, 520] / [520, 520, 520, 520, 520, 520, 520, 520]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
+Actual complete27/200; job3422 RUNNING on h100-10/10.33.0.18, stage outer-000028-continue. Saved actor/probe Adam per8rank: [540, 540, 540, 540, 540, 540, 540, 540] / [540, 540, 540, 540, 540, 540, 540, 540]. Completed joint counters: [540, 540, 540, 540, 540, 540, 540, 540] / [540, 540, 540, 540, 540, 540, 540, 540]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
 Latest QA: outer5,512questions EM24.6094% / F130.6097%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.
-Recent actual same3422 completejoint intervals[426.0576865673065, 433.3234586715698, 435.53052711486816, 432.6748833656311]; mean431.897s=7.198min. Startup,QA,failure/repair are separate.
+Recent actual same3422 completejoint intervals[433.3234586715698, 435.53052711486816, 432.6748833656311, 429.9025390148163]; mean432.858s=7.214min. Startup,QA,failure/repair are separate.
 
-Latest actor512 mixed70.7031%, meanEMvariance0.13578125, selected frozen meanpredictedmixed0.80392512. Continued1024 mixed35.3516%; uncontinued4096 have no outcome labels.
+Latest actor512 mixed73.2422%, meanEMvariance0.14156250, selected frozen meanpredictedmixed0.77782712. Continued1024 mixed36.6211%; uncontinued4096 have no outcome labels.
 
 |Complete outer|Continued1024 mixed|Actor512 mixed|Actor512 variance|Probe train ordinary / balanced|Probe fixed512 ordinary / balanced|
 |---|---:|---:|---:|---:|---:|
@@ -35,6 +35,7 @@ Latest actor512 mixed70.7031%, meanEMvariance0.13578125, selected frozen meanpre
 |24|39.06%|78.12%|0.150469|39.06% / 50.00%|63.87% / 57.09%|
 |25|39.16%|78.32%|0.154688|39.26% / 50.08%|63.09% / 55.64%|
 |26|35.35%|70.70%|0.135781|36.43% / 50.83%|63.48% / 54.73%|
+|27|36.62%|73.24%|0.141563|39.55% / 51.80%|63.67% / 54.52%|
 
 20-point probe losses and all6stagewall durations are in COMPLETED_ITERATION_SCALAR_EVIDENCE.json and ITERATION_METRICS.csv. Different natural batches mean first/last loss is not a monotonic same-batch fitting claim. Actor-selected allpositive balancedaccuracy is undefined when there is no negativeclass.
 
@@ -48,20 +49,10 @@ Cost: COST_SNAPSHOT.json contains existing native token/request metadata and pha
 
 Completion remains unproven: actual200, normal50/100/150/200checkpoint/QA, fullseven51713, HF/tokenizer/nativefinite/nonzeroupdate/source/split identity, cost/ownedcleanup and finalpublication. GoalACTIVE; no stop/restart is performed by this reader.
 
-Latest passive telemetry1238 samples, last observed1792168398.5709763; errors[], wholecard maxused81065MiB/minfree17MiB (coverage above).
+Latest passive telemetry1316 samples, last observed1792168789.2039602; errors[], wholecard maxused81065MiB/minfree17MiB (coverage above).
 
-## Actual cost coverage
+## Native reward and cost evidence
 
-Committed native generation through outer26: 24549610 sampled tokens; prefix native requests 665603, continuation native requests 275729.
-Remote SHA-verified logical retrieval costs cover outers1–26: 142552 logical search actions; committed backlog[]. Inherited prefix searches are subtracted. Actor512 is a subset, not an extra generation budget. HTTP retries, unique cache misses, physical FAISS queries, failed attempts and QA are separate.
-
-|Native job|State|Actual reserved wall|Reserved GPU-hours|Final for job|
-|---|---|---:|---:|---|
-|3416|FAILED|00:00:06|0.013333|True|
-|3417|FAILED|00:09:39|1.286667|True|
-|3418|FAILED|00:10:18|1.373333|True|
-|3421|FAILED|00:24:59|3.331111|True|
-|3422|RUNNING|02:39:16|21.235556|False|
-
-Historical four terminal reservations total 6.004444 GPU-hours, including useful committed updates and failed/setup/QA overhead. Observed total including current3422: 27.240000 reserved GPU-hours; current running value is a lower bound at its native observation. Do not label the entire historical reservation wasted compute or add phase wall again.
-Reserved CPU-core-hours are allocation, not measured CPU usage. sacct disabled and sstat invalid remain documented. CPU process-tree snapshot and observed-birth lower bounds do not establish full CPU usage. Whole-card sampled memory peaks are near capacity; coverage starts22:49:59CST, not before. Final cost and completion remain unproven.
+Original saved actor grounding soft reward on selected512G5: outer1 mean0.72182053; outer27 mean0.94058778, min-0.10000000, max1.59700072. Version15bb15365346401da1d919e9cde8f813:0:a72f2e62b8674787bee00266a8eef79e. All eight rank statistics finite,2560 trajectories per outer, prefix correctness head not used as reward. This is selected training-distribution reward, not heldout QA and not proof of probe-selection benefit. TRAINING_REWARD_HISTORY.json binds each row to its original joint receipt SHA256; no additional forward was run.
+Committed generation through outer27: 25398999 sampled tokens; logical retrieval through outer27: 147805 calls, backlog[]. Inherited prefix searches subtracted; actor512 subset not added. Failed attempts, QA, HTTP retries/cache misses and physical FAISS calls remain separately scoped.
+Native reservation wall: historical terminal3416/3417/3418/3421 total6.004444 GPU-hours, including useful completed updates and failures/setup/QA; current running3422 brings observed reserved total to28.108889 GPU-hours, lower bound at native observation. Do not add phase wall again or label whole failed jobs wasted. Reserved CPU-core-hours are capacity, not CPU usage. sacct disabled/sstat invalid; actual CPU process-tree/birth snapshots remain partial. Full cost report and goal completion remain outstanding.
