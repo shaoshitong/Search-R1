@@ -1,0 +1,123 @@
+# Future source preparation only; do not execute until actual inputs exist.
+# Replace __OUTER__/__FIRST__/__SECOND__ with one actual boundary185..189 and
+# the two original poll indices. Supply ACTUAL_THROUGH185_PINS, _BYTES and
+# _SHA256 for the exact role-specific manifest; no future artifact SHA is frozen.
+# Actual185 owner -> ROOTDEV -> curve/ROOTcurve -> finalizer ->90c -> canonical185
+# -> original native5 metadata helper LAST -> ROOT FULL. Nondev186..189 current
+# dev is null; latest dev/curve remains actual185. Saved next-step is not entered.
+# role=finalizer: immutable actual185 owner/ROOTDEV/curve/ROOTcurve are inputs;
+# canonical185, helper-LAST, ROOT FULL and the finalizer's own progress output
+# are intentionally later in the publication order and absent from this manifest.
+python3 -B - <<'PYINNER'
+import pathlib,json,hashlib,subprocess,sys,time
+n=__OUTER__;a=__FIRST__;z=__SECOND__;ROLE="finalizer"
+w=pathlib.Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013';ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',pathlib.Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+STABLE={};MIRRORED=set()
+def h(raw):return hashlib.sha256(raw).hexdigest()
+def read(p):
+ raw=p.read_bytes();assert p not in STABLE or STABLE[p]==raw;STABLE[p]=raw;return json.loads(raw)
+def pin(p,sha=None,size=None,mirror=True):
+ raw=p.read_bytes();assert p not in STABLE or STABLE[p]==raw;STABLE[p]=raw
+ if sha is not None:assert h(raw)==sha,p
+ if size is not None:assert len(raw)==size,p
+ if mirror:
+  MIRRORED.add(p)
+  for m in ms:assert (m/p.relative_to(b)).read_bytes()==raw,p
+ return dict(path=str(p),bytes=len(raw),sha256=h(raw))
+
+# This manifest binds actual local artifacts. Its outer is identity, not success.
+import os,re,math
+manifest_path=pathlib.Path(os.environ['ACTUAL_THROUGH185_PINS']).resolve(strict=True)
+assert manifest_path.is_relative_to(w) and manifest_path.suffix=='.json'
+manifest_raw=manifest_path.read_bytes()
+assert len(manifest_raw)==int(os.environ['ACTUAL_THROUGH185_PINS_BYTES']) and h(manifest_raw)==os.environ['ACTUAL_THROUGH185_PINS_SHA256']
+assert len(manifest_raw)<=100000
+manifest=read(manifest_path);manifest_pin=pin(manifest_path,mirror=False)
+assert manifest['schema']=='tree_through185_actual_publication_input_manifest_v1'
+assert manifest['role']==ROLE and manifest['outer']==n and 185<=n<=189 and manifest['latest_completed_dev_outer']==185
+assert manifest['first_poll_index']==a and manifest['second_poll_index']==z and a!=z
+assert pathlib.Path(manifest['workspace_root']).resolve()==w.resolve() and pathlib.Path(manifest['base']).resolve()==b.resolve()
+assert [pathlib.Path(x).resolve() for x in manifest['mirrors']]==[m.resolve() for m in ms]
+def locate(value):
+ assert isinstance(value,str) and value and '://' not in value
+ p=pathlib.Path(value)
+ if not p.is_absolute():p=w/p if p.parts[0] in ('outputs','work') else b/p
+ p=p.resolve(strict=True)
+ assert p.is_relative_to(w.resolve()) or any(p.is_relative_to(m.resolve()) for m in ms)
+ assert p.is_file() and p.suffix in ('.json','.csv','.md','.py','.txt','.yaml','.yml','.sh')
+ return p
+def exact(ref,expected=None,mirror=True):
+ assert isinstance(ref,dict) and type(ref.get('bytes')) is int and ref['bytes']>0 and re.fullmatch('[0-9a-f]{64}',ref.get('sha256',''))
+ p=locate(ref.get('path',ref.get('file')))
+ if expected is not None:assert p==expected.resolve(strict=True)
+ actual=pin(p,ref['sha256'],ref['bytes'],mirror=mirror)
+ return p,actual
+def contains_ref(value,ref):
+ if isinstance(value,dict):
+  if ('path' in value or 'file' in value) and value.get('bytes')==ref['bytes'] and value.get('sha256')==ref['sha256']:
+   try:
+    if locate(value.get('path',value.get('file')))==locate(ref['path']):return True
+   except (AssertionError,FileNotFoundError):pass
+  return any(contains_ref(x,ref) for x in value.values())
+ if isinstance(value,list):return any(contains_ref(x,ref) for x in value)
+ return False
+names=dict(full=f'FULL_OUTER{n}_PROGRESS_RECEIPT.json',cost=f'COST_OUTER{n}_LOCAL_RECEIPT.json',cumulative=f'CUMULATIVE_COST_THROUGH{n}.json',native=f'NATIVE_HISTORY_{n}_METADATA_READBACK.json',first_poll=f'NATIVE5_CONTINUE_POLL_{a}.json',second_poll=f'NATIVE5_CONTINUE_POLL_{z}.json',first_resource=f'NATIVE5_CONTINUE_RESOURCE_{a}.json',second_resource=f'NATIVE5_CONTINUE_RESOURCE_{z}.json',curve185='LEARNING_CURVE_COMPLETE_THROUGH185.json',curve_csv185='LEARNING_CURVE_COMPLETE_THROUGH185.csv',dev185='DEV5_185_NATIVE_COST_SUPPLEMENT.json',owner185='DEV5_185_NATIVE_COST_LOCAL_RECEIPT.json',execution185='DEV5_185_NATIVE_COST_COLLECTOR_EXECUTION.json',pre_execution185='DEV5_185_NATIVE_COST_PRE_EXECUTION_INPUT_PINS.json',rootdev185='ROOT_DEV185_NATIVE_COST_ACTUAL_READBACK.json',rootcurve185='ROOT_CURVE_DEV_COST_THROUGH185_ACTUAL_READBACK.json',curve_binding185='LEARNING_CURVE_THROUGH185_COST_SUPPLEMENT_BINDING.json',curve_publication185='LEARNING_CURVE_THROUGH185_LOCAL_PUBLICATION.json')
+if ROLE=='finalizer':names.update(candidate=f'CANDIDATE_COST_EXTENSION_OUTER{n:04d}.json',rates=f'BRANCH_FALLBACK_RATES_OUTER{n:04d}.json',registry='CANDIDATE_COST_EXTENSION_INPUTS.json',initial_supplement='LEARNING_CURVE_INITIAL1_10_SUPPLEMENT.json',gzip_receipt='LOCAL_OLD_INSTRUCT300_FOUR_RAW_GZIP_ARCHIVE_20261014.json')
+else:names.update(progress=f'OUTER{n}_FULL_NEXT{n+1}_ACTUAL_PROGRESS.json',alias=f'CURRENT_ALIAS_RECONCILIATION_OUTER{n}.json',metadata_scope=f'CURRENT_METADATA_SCOPE_RECONCILIATION_OUTER{n}.json',canonical185='OUTER185_CURVE_DEVCOST_CURRENT_ALIAS_CLOSURE.json',milestone150='MILESTONE150_HF_NATIVE_METADATA.json',metadata_scope_publication='METADATA_SCOPE_PUBLISHER_PUBLICATION.json')
+if ROLE=='root_verified_wait':names['verified_wait']=f'VERIFIED_WAIT_NATIVE5_CONTINUE_POLL_{a}_NATIVE5_CONTINUE_POLL_{z}.json'
+assert set(manifest['references'])==set(names)
+refs={};ref_paths={}
+for key,name in names.items():
+ ref_paths[key],refs[key]=exact(manifest['references'][key],b/name,mirror=key not in ('first_poll','second_poll','first_resource','second_resource'))
+source_names=dict(root_full='tree_through185_full_root_readback.template.command.txt',root_verified_wait='tree_through185_verified_wait_readback.template.command.txt',finalizer='tree_through185_finalize.template.command.txt')
+_,template_source=exact(manifest['template_source'],w/'work/tree-speed-repair-20261008'/source_names[ROLE],mirror=False)
+owner185=read(ref_paths['owner185']);rootdev185=read(ref_paths['rootdev185']);rootcurve185=read(ref_paths['rootcurve185']);execution185=read(ref_paths['execution185'])
+assert owner185['outer']==185 and owner185['status']=='ACTUAL_DEV185_COST_COLLECTED_AND_LOCAL_MIRRORS_READ_BACK'
+assert owner185['collector_source_commit']=='1edaf50bb8e14de51db936e0859e369792011233' and owner185['collector_source_sha256']=='545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0'
+assert owner185['new_entry_main_invocations_this_task']==owner185['actual_remote_incremental_collection_invocations']==1
+assert owner185['preceding_local_pending_invocations']==0 and owner185['preceding_pending_remote_operations'] is False and owner185['remote_collector_exit_code']==0
+assert execution185['exit_code']==0 and execution185['new_entry_main_invocations_this_task']==execution185['actual_remote_incremental_collection_invocations']==1 and execution185['preceding_local_pending_invocations']==0
+assert execution185['source_commit']==owner185['collector_source_commit'] and execution185['source_sha256']==owner185['collector_source_sha256']
+assert owner185['same_entry_prior_confirmed_main_invocations']==owner185['same_entry_prior_confirmed_remote_incremental_invocations']==5
+assert owner185['same_entry_executor_attested_cumulative_main_invocations']==owner185['same_entry_executor_attested_cumulative_remote_incremental_invocations']==6
+assert rootdev185['status']=='PASS_ACTUAL_DEV185_LOCAL_ARTIFACT_READBACK' and rootdev185['outer']==185 and rootdev185['inconsistencies']==[]
+assert rootdev185['actual_ref_counts']['new_dev_rows']==rootdev185['actual_ref_counts']['all_original_control_summaries']==37
+assert rootdev185['actual_ref_counts']['old_dev_rows']==rootdev185['actual_ref_counts']['preserved_old_control_summaries']==36 and rootdev185['actual_ref_counts']['new_remote_control_summaries']==1
+for key in ('owner185','execution185','pre_execution185','dev185'):assert contains_ref(rootdev185,refs[key])
+assert rootcurve185['status']=='PASS_ACTUAL_CURVE185_LOCAL_ARTIFACT_READBACK' and rootcurve185['outer']==185 and rootcurve185['counts']==dict(training=185,actual_completed_dev512=37,csv_data_rows=222)
+assert rootcurve185['same_entry_executor_attested_cumulative_main_invocations']==rootcurve185['same_entry_executor_attested_cumulative_remote_incremental_invocations']==6
+for key in ('rootdev185','owner185','dev185','curve185','curve_csv185','curve_binding185','curve_publication185'):assert contains_ref(rootcurve185,refs[key])
+assert rootcurve185['ROOT_FULL185_used_as_input'] is False
+for key in ('supplement','execution_record','pre_execution_input_pins'):assert contains_ref(owner185,refs[dict(supplement='dev185',execution_record='execution185',pre_execution_input_pins='pre_execution185')[key]])
+controls185=owner185['local_original_control_refs'];assert len(controls185)==37 and [x['outer'] for x in controls185]==list(range(5,186,5))
+for ref in controls185:
+ p,_=exact(ref);d=read(p)
+ assert d['status']=='VALIDATION_COST_COMPLETE' and d['actual_completed_outer']==ref['outer'] and d['phase']==('acceptance' if ref['outer']==5 else 'periodic')
+ assert d['dataset_rows']==d['evaluated_rows']==512 and re.fullmatch('[0-9a-f]{64}',d['ledger_sha256'])
+protected_dev_parts=[]
+for key in ('rows_part_refs','prior_rows_part_refs','source_CUM_all_complete_field_parts'):
+ assert isinstance(owner185[key],list)
+ for ref in owner185[key]:protected_dev_parts.append(exact(ref)[1])
+if ROLE!='finalizer':
+ closure185=read(ref_paths['canonical185'])
+ assert closure185['completed_outer']==closure185['latest_dev_outer']==closure185['curve_actual_through']==closure185['dev_native_cost_actual_through']==185 and closure185['active_outer']==186
+ assert closure185['ROOT_FULL185_used_as_input'] is False and closure185['cold_load5_helper_to_be_run_LAST_by_root_after_this_binding'] is True
+ for key in ('curve185','curve_csv185','dev185','owner185','execution185','rootdev185','rootcurve185'):assert contains_ref(closure185,refs[key])
+
+entry=w/'work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/finalize_nested_progress.py'
+assert h(entry.read_bytes())=='61385504e4bb389cdba508c1b74f84fe6464e1d4f8ec11989e8cfe0c230dc541'
+core=entry.with_name('sync_nested_native_progress.py');assert h(core.read_bytes())=='676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1'
+full=read(ref_paths['full']);assert full['completed_outer']==n and full['latest_dev512_outer']==185 and full['full_iteration_metric_pending'] is False
+for key,boundkey in [('poll','first_poll'),('resource','first_resource'),('native_readback','native')]:assert contains_ref(full['input_bindings'][key],refs[boundkey])
+# The original entry retains its pure-metadata validators, dynamic complete
+# cost-field reconstruction and immutable progress proof. No alternate publisher.
+for number in range(2):
+ for p,raw in tuple(STABLE.items()):
+  assert p.read_bytes()==raw,p
+  if p in MIRRORED:
+   for m in ms:assert (m/p.relative_to(b)).read_bytes()==raw,p
+ if number==0:time.sleep(1)
+command=[sys.executable,'-B',str(entry),'--outer',str(n),'--second-poll',str(ref_paths['second_poll']),'--second-resource',str(ref_paths['second_resource']),'--curve',str(ref_paths['curve185']),'--initial-supplement',str(ref_paths['initial_supplement']),'--gzip-receipt',str(ref_paths['gzip_receipt']),'--full',str(ref_paths['full']),'--cost-through',str(ref_paths['cumulative']),'--candidate',str(ref_paths['candidate']),'--rates',str(ref_paths['rates']),'--registry',str(ref_paths['registry']),'--workspace',str(w)]
+result=subprocess.run(command,check=False)
+raise SystemExit(result.returncode)
+PYINNER
