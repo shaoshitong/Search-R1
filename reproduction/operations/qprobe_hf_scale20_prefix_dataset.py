@@ -481,19 +481,37 @@ def upload_memory(args):
     print(json.dumps(receipt),flush=True)
 
 
+def supervise_build(args):
+    out=remote_path(args.output_dir)
+    assert str(out).startswith('/data/shaoshitong/Search-G1-hf-scale20-prefix5-') and not out.exists()
+    assert out.parent.is_dir() and not (out.parent/'build-exit.json').exists()
+    command=[sys.executable,str(Path(__file__).resolve()),'--action','build',
+        '--runtime-repo',args.runtime_repo,'--dataset-dir',args.dataset_dir,'--output-dir',str(out)]
+    env=dict(os.environ,CUDA_VISIBLE_DEVICES='',PYTHONDONTWRITEBYTECODE='1',TOKENIZERS_PARALLELISM='false')
+    result=subprocess.run(command,env=env)
+    once(out.parent/'build-exit.json',dict(stage='HF_PREFIX5_CPU_EXPORT_EXIT',exit_code=result.returncode,
+        completed=(out/'build-complete.json').exists(),exporter_sha256=sha(__file__),checked_unix=time.time()))
+    raise SystemExit(result.returncode)
+
+
 def main():
     parser=argparse.ArgumentParser()
-    parser.add_argument('--action',choices=('build','upload-memory'),required=True)
+    parser.add_argument('--action',choices=('build','supervise-build','upload-memory'),required=True)
     parser.add_argument('--runtime-repo',required=True)
     parser.add_argument('--dataset-dir',required=True)
     parser.add_argument('--output-dir',required=True)
     args=parser.parse_args()
+    if args.action=='supervise-build':
+        supervise_build(args)
+        return
     try:
         if args.action=='build':build(args)
         else:upload_memory(args)
     except BaseException as error:
         # Error class only: library exception text can contain signed URLs or source text.
-        print(json.dumps(dict(stage='HF_PREFIX5_ACTION_FAILED',error_class=type(error).__name__,checked_unix=time.time())),flush=True)
+        import traceback
+        locations=[dict(file=Path(v.filename).name,line=v.lineno,function=v.name) for v in traceback.extract_tb(error.__traceback__)[-4:]]
+        print(json.dumps(dict(stage='HF_PREFIX5_ACTION_FAILED',error_class=type(error).__name__,locations=locations,checked_unix=time.time())),flush=True)
         raise SystemExit(1)
 
 
