@@ -71,7 +71,13 @@ for outer in (25,50,75,100,125,150,175,200):
 o['refits'] = {}
 for p in sorted((b/'artifacts/question-probe/periodic-refits').glob('*/latest-state.json')):
     r = read(p)
-    if r: o['refits'][p.parent.name] = r
+    if r:
+        chunks = [read(f) for f in p.parent.glob('chunk-*/real-rollout-audit.json')]
+        valid = [c for c in chunks if c and c.get('outer') == int(p.parent.name)
+                 and c.get('questions') == 512 and c.get('trajectories') == 2560]
+        r = dict(r, completed_label_chunks=len(valid), collected_questions=512*len(valid),
+                 collected_trajectories=2560*len(valid))
+        o['refits'][p.parent.name] = r
 o['errors'] = []
 for name in ('formal-'+str(JOB)+'.log','search-g1-common8-training.log'):
     p = b/'logs'/name

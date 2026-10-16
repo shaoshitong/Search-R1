@@ -60,7 +60,11 @@ def inspect(base, outer, include_minibatches=False):
             assert p['start_steps'] == start_steps
             expected = start_steps+20*p['epoch']+p['batch']
             assert saved['head']['update_count'] == pointer['head_adam_steps'] == expected
-            assert len(saved['indices']) == len(saved['labels']) == 5120
+            assert len(saved['indices']) == 5120
+            label_count = len(saved['labels'])
+            assert 0 <= label_count <= 5120 and label_count % 512 == 0
+            if label_count < 5120:
+                assert p['epoch'] == p['batch'] == 0 and saved['feature_hashes'] is None
             assert len(p['summaries']) == p['epoch']
             assert len(p['minibatches']) == 20*p['epoch']+p['batch']
             ranks = [{k:r[k] for k in ('rank','parameter_sha256','local_parameter_count',
@@ -73,7 +77,8 @@ def inspect(base, outer, include_minibatches=False):
             out = dict(checked_unix=time.time(), status='SHA_BOUND_SCALAR_METADATA_VERIFIED', outer=outer,
                 snapshot_sha256=actual_sha, pre_receipt_sha256=pre_sha, source_pointer=pointer,
                 epoch=p['epoch'], batch=p['batch'], head_adam_steps=expected, start_adam_steps=start_steps,
-                saved_questions=5120, saved_labels=5120, completed_minibatches=len(p['minibatches']),
+                saved_questions=5120, saved_labels=label_count, labels_complete=label_count == 5120,
+                completed_minibatches=len(p['minibatches']),
                 summaries=p['summaries'], frozen_student_before=ranks,
                 feature_hashes_present=saved['feature_hashes'] is not None,
                 dynamic_tensor_fields_present=False, cuda_initialized=torch.cuda.is_initialized(),
