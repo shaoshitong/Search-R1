@@ -206,7 +206,14 @@ def launch_command(base,commit):
 
 
 def submit(base,commit):
-    base=own_base(base);bootstrap(base,commit)
+    base=own_base(base)
+    # Preparation already binds this private runtime and its CPU environment.
+    # Reuse it instead of hashing/refitting the entire vendor environment again
+    # immediately before sbatch. A source promotion still checks its own files.
+    if (base/'preparation/run-source.json').is_file() and (base/'env/bin/python').is_file():
+        bind_repo(base,commit)
+    else:
+        bootstrap(base,commit)
     intent=base/'preparation/training-submit-claim.json';receipt=base/'preparation/training-submission.json'
     if intent.exists() or receipt.exists() or (base/'job.id').exists():
         raise ValueError('PREFIX20_SUBMISSION_ALREADY_ATTEMPTED_INSPECT_ACTUAL_JOB')
