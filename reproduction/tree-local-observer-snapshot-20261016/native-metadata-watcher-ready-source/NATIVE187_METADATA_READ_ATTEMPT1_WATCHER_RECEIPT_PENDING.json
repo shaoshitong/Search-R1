@@ -1,0 +1,18 @@
+{
+  "schema": "native_metadata_read_attempt_known_failure_v1",
+  "observed_utc": "2026-10-16T05:17:55.138829+00:00",
+  "outer": 187,
+  "poll": 2376,
+  "source": "published generic native history JSON readback command",
+  "exit_code": 1,
+  "remote_query_executed": true,
+  "remote_error_type": "FileNotFoundError",
+  "remote_missing_path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/native-manifest-history/source-778b2b43dad90fc0c1c5d95d77c2326286011b73-outer-000187.receipt.json",
+  "evidence": "poll2376 original FULL187/native187 path and actual188 stage observed; resource2376 watcher last186 before receipt187 existed",
+  "cause_scope": "Root selected a writer-ready poll before watcher receipt readiness; not a demonstrated training failure or SSH connectivity failure",
+  "local_success_readback_created": false,
+  "tensor_or_model_bytes_read": false,
+  "training_operations": false,
+  "retry_policy": "Known failure; wait for a newer actual resource confirming original watcher187 receipt before one source-identical read. No unknown-outcome blind retry.",
+  "goal_status": "active"
+}
