@@ -1,0 +1,86 @@
+{
+  "status": "ACTUAL_LEGACY_FP32_QA512_COMPLETE",
+  "job_id": "3420",
+  "source_commit": "144126615b09184b4f066d3565be027b44a2c954",
+  "outer": 5,
+  "qa": {
+    "actor_model_dir": "/mnt/data/shaoshitong/search-g1-prefix-selection200-20261016-5cba22ca409a-resume2/actor/outers/outer-0005-attempt-38d19fe5dd3344c590af53514d519b09/huggingface",
+    "actor_version": "5cba22ca409a4571a1e6b87d89c86b09-actor0005",
+    "actual_worker_exit_codes": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    },
+    "completed_utc": "2026-10-16T13:14:24.867335+00:00",
+    "em": 0.2421875,
+    "evaluation_contract": {
+      "answer_reserve_tokens": 0,
+      "asynchronous_generation": true,
+      "compute_dtype": "float32",
+      "early_final": false,
+      "kind": "legacy_pre_d00_async_fp32",
+      "max_action_tokens": 500,
+      "max_model_tokens": 4596,
+      "max_observation_tokens": 500,
+      "max_request_tokens": 4096,
+      "max_search_turns": 4,
+      "max_start_tokens": 2048,
+      "n": 1,
+      "observation_truncation": "raw_token_ids_first500_without_wrapper_repair",
+      "retain_async_commit": "1f75a18",
+      "rollback_commits": [
+        "d00e4f8",
+        "a8c3116"
+      ],
+      "temperature": 0.0,
+      "top_k": -1,
+      "top_p": 1.0
+    },
+    "f1": 0.30340246775793644,
+    "per_source": {
+      "hotpotqa": {
+        "em": 0.21875,
+        "f1": 0.24960937499999997,
+        "qa_count": 256
+      },
+      "nq": {
+        "em": 0.265625,
+        "f1": 0.35719556051587303,
+        "qa_count": 256
+      }
+    },
+    "qa_count": 512,
+    "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "run_id": "5cba22ca409a4571a1e6b87d89c86b09",
+    "schema_version": 1
+  },
+  "actor_adam_per_rank": [
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100
+  ],
+  "probe_adam_per_rank": [
+    50,
+    50,
+    50,
+    50,
+    50,
+    50,
+    50,
+    50
+  ],
+  "actor_probe_from_independently_validated_complete5": true,
+  "qa_prefill": "full_prefill_XFormers_no_chunked_prefill_no_prefix_cache",
+  "restored_from": "resume2_joint5_via_resume3",
+  "no_weights_or_rollouts_transferred_to_Mac": true
+}

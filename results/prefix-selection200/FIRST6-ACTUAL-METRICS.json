@@ -1,0 +1,549 @@
+{
+  "run_id": "5cba22ca409a4571a1e6b87d89c86b09",
+  "complete_outers": 6,
+  "rows": [
+    {
+      "outer": 1,
+      "actor_adam_per_rank": [
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "probe_adam_per_rank": [
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "selected_true_mixed_ratio": 0.71484375,
+      "selected_mean_predicted_q_at_selection": 0.8890317428934817,
+      "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-20261016-5cba22ca409a-resume2/outers/outer-000001/probe-score/selection.json",
+      "selection_sha256": "5a088eb5a243e9daea5936b4c375c43ea518746e273f60b2048c9ad82717d4f3",
+      "postupdate_train_mixed": {
+        "accuracy": 0.71484375,
+        "balanced_accuracy": 0.5,
+        "count": 512,
+        "fn": 0,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 146,
+        "group_bce": 0.6883445937955844,
+        "group_weight": 1.0,
+        "mean_q": 0.8873620055097745,
+        "mixed_count": 366,
+        "mixed_recall": 1.0,
+        "nonmixed_count": 146,
+        "nonmixed_recall": 0.0,
+        "threshold": 0.5,
+        "tn": 0,
+        "total_loss": 1.4135725474664513,
+        "tp": 366,
+        "trajectory_bce": 0.7252279536708669,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "postupdate_fixedtest_mixed": {
+        "accuracy": 0.62109375,
+        "balanced_accuracy": 0.6033185509990533,
+        "count": 512,
+        "fn": 84,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 110,
+        "group_bce": 0.6709716126731191,
+        "group_weight": 1.0,
+        "mean_q": 0.45583172513855524,
+        "mixed_count": 183,
+        "mixed_recall": 0.5409836065573771,
+        "nonmixed_count": 329,
+        "nonmixed_recall": 0.6656534954407295,
+        "threshold": 0.5,
+        "tn": 219,
+        "total_loss": 1.178583682641508,
+        "tp": 99,
+        "trajectory_bce": 0.5076120699683889,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "phase_timings": {
+        "outer-000001-actor-f549e347bef547e6811046cb5a503edb": {
+          "elapsed_seconds": 108.34448189660907,
+          "exit_code": 0
+        },
+        "outer-000001-probe-update": {
+          "elapsed_seconds": 25.641786981374025,
+          "exit_code": 0
+        }
+      },
+      "phase_seconds_sum": 133.9862688779831
+    },
+    {
+      "outer": 2,
+      "actor_adam_per_rank": [
+        40,
+        40,
+        40,
+        40,
+        40,
+        40,
+        40,
+        40
+      ],
+      "probe_adam_per_rank": [
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20,
+        20
+      ],
+      "selected_true_mixed_ratio": 0.716796875,
+      "selected_mean_predicted_q_at_selection": 0.88801620494332,
+      "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-20261016-5cba22ca409a-resume2/outers/outer-000002/probe-score/selection.json",
+      "selection_sha256": "f592acd7fb52df89efae837ac01ee891eaa9997c61405791e43081c122a74b95",
+      "postupdate_train_mixed": {
+        "accuracy": 0.716796875,
+        "balanced_accuracy": 0.5,
+        "count": 512,
+        "fn": 0,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 145,
+        "group_bce": 0.7037233286118763,
+        "group_weight": 1.0,
+        "mean_q": 0.8934112401510466,
+        "mixed_count": 367,
+        "mixed_recall": 1.0,
+        "nonmixed_count": 145,
+        "nonmixed_recall": 0.0,
+        "threshold": 0.5,
+        "tn": 0,
+        "total_loss": 1.4244495239514632,
+        "tp": 367,
+        "trajectory_bce": 0.7207261953395869,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "postupdate_fixedtest_mixed": {
+        "accuracy": 0.599609375,
+        "balanced_accuracy": 0.5926636437623531,
+        "count": 512,
+        "fn": 79,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 126,
+        "group_bce": 0.6792146520096247,
+        "group_weight": 1.0,
+        "mean_q": 0.4731295756679533,
+        "mixed_count": 183,
+        "mixed_recall": 0.5683060109289617,
+        "nonmixed_count": 329,
+        "nonmixed_recall": 0.6170212765957447,
+        "threshold": 0.5,
+        "tn": 203,
+        "total_loss": 1.1824720443687429,
+        "tp": 104,
+        "trajectory_bce": 0.5032573923591181,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "phase_timings": {
+        "outer-000002-actor-124e5a40ab7c4f399bed46bac0861c49": {
+          "elapsed_seconds": 114.81982054561377,
+          "exit_code": 0
+        },
+        "outer-000002-continue": {
+          "elapsed_seconds": 99.47753813117743,
+          "exit_code": 0
+        },
+        "outer-000002-prefix": {
+          "elapsed_seconds": 82.98516358062625,
+          "exit_code": 0
+        },
+        "outer-000002-probe-update": {
+          "elapsed_seconds": 26.394455656409264,
+          "exit_code": 0
+        },
+        "outer-000002-score": {
+          "elapsed_seconds": 32.86614374816418,
+          "exit_code": 0
+        }
+      },
+      "phase_seconds_sum": 356.5431216619909
+    },
+    {
+      "outer": 3,
+      "actor_adam_per_rank": [
+        60,
+        60,
+        60,
+        60,
+        60,
+        60,
+        60,
+        60
+      ],
+      "probe_adam_per_rank": [
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30,
+        30
+      ],
+      "selected_true_mixed_ratio": 0.73046875,
+      "selected_mean_predicted_q_at_selection": 0.893395412070284,
+      "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-20261016-5cba22ca409a-resume2/outers/outer-000003/probe-score/selection.json",
+      "selection_sha256": "054acdaf5067dc6a517fe5bfa3b0582e96d330364bb5d75ca64fa795bfa810fe",
+      "postupdate_train_mixed": {
+        "accuracy": 0.73046875,
+        "balanced_accuracy": 0.5,
+        "count": 512,
+        "fn": 0,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 138,
+        "group_bce": 0.6672565222956088,
+        "group_weight": 1.0,
+        "mean_q": 0.8765785741110167,
+        "mixed_count": 374,
+        "mixed_recall": 1.0,
+        "nonmixed_count": 138,
+        "nonmixed_recall": 0.0,
+        "threshold": 0.5,
+        "tn": 0,
+        "total_loss": 1.415977500309673,
+        "tp": 374,
+        "trajectory_bce": 0.7487209780140642,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "postupdate_fixedtest_mixed": {
+        "accuracy": 0.630859375,
+        "balanced_accuracy": 0.6000049828093079,
+        "count": 512,
+        "fn": 93,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 96,
+        "group_bce": 0.662063596065299,
+        "group_weight": 1.0,
+        "mean_q": 0.4372391710288604,
+        "mixed_count": 183,
+        "mixed_recall": 0.4918032786885246,
+        "nonmixed_count": 329,
+        "nonmixed_recall": 0.7082066869300911,
+        "threshold": 0.5,
+        "tn": 233,
+        "total_loss": 1.1775832441522796,
+        "tp": 90,
+        "trajectory_bce": 0.5155196480869806,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "phase_timings": {
+        "outer-000003-actor-7195df48da314f74842c18d6f1d61442": {
+          "elapsed_seconds": 114.80284112691879,
+          "exit_code": 0
+        },
+        "outer-000003-continue": {
+          "elapsed_seconds": 100.5488714389503,
+          "exit_code": 0
+        },
+        "outer-000003-prefix": {
+          "elapsed_seconds": 84.06611755117774,
+          "exit_code": 0
+        },
+        "outer-000003-probe-update": {
+          "elapsed_seconds": 22.828826989978552,
+          "exit_code": 0
+        },
+        "outer-000003-score": {
+          "elapsed_seconds": 32.94382696226239,
+          "exit_code": 0
+        }
+      },
+      "phase_seconds_sum": 355.1904840692878
+    },
+    {
+      "outer": 4,
+      "actor_adam_per_rank": [
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80,
+        80
+      ],
+      "probe_adam_per_rank": [
+        40,
+        40,
+        40,
+        40,
+        40,
+        40,
+        40,
+        40
+      ],
+      "selected_true_mixed_ratio": 0.70703125,
+      "selected_mean_predicted_q_at_selection": 0.8764210267807879,
+      "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-20261016-5cba22ca409a-resume2/outers/outer-000004/probe-score/selection.json",
+      "selection_sha256": "f48cff2aaf9b7cdfde4203a15e78e04823102c2658f7a67322d849276034e53d",
+      "postupdate_train_mixed": {
+        "accuracy": 0.70703125,
+        "balanced_accuracy": 0.5,
+        "count": 512,
+        "fn": 0,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 150,
+        "group_bce": 0.7071484271329275,
+        "group_weight": 1.0,
+        "mean_q": 0.8863277319637026,
+        "mixed_count": 362,
+        "mixed_recall": 1.0,
+        "nonmixed_count": 150,
+        "nonmixed_recall": 0.0,
+        "threshold": 0.5,
+        "tn": 0,
+        "total_loss": 1.4375039107881533,
+        "tp": 362,
+        "trajectory_bce": 0.7303554836552257,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "postupdate_fixedtest_mixed": {
+        "accuracy": 0.615234375,
+        "balanced_accuracy": 0.6036092148753467,
+        "count": 512,
+        "fn": 80,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 117,
+        "group_bce": 0.6739851636989858,
+        "group_weight": 1.0,
+        "mean_q": 0.46415207405012365,
+        "mixed_count": 183,
+        "mixed_recall": 0.5628415300546448,
+        "nonmixed_count": 329,
+        "nonmixed_recall": 0.6443768996960486,
+        "threshold": 0.5,
+        "tn": 212,
+        "total_loss": 1.181322471979148,
+        "tp": 103,
+        "trajectory_bce": 0.5073373082801622,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "phase_timings": {
+        "outer-000004-actor-9f4e530ecadd41abb935fbec2aa439ec": {
+          "elapsed_seconds": 111.70883766189218,
+          "exit_code": 0
+        },
+        "outer-000004-continue": {
+          "elapsed_seconds": 101.98094879090786,
+          "exit_code": 0
+        },
+        "outer-000004-prefix": {
+          "elapsed_seconds": 81.61806239560246,
+          "exit_code": 0
+        },
+        "outer-000004-probe-update": {
+          "elapsed_seconds": 24.03490449115634,
+          "exit_code": 0
+        },
+        "outer-000004-score": {
+          "elapsed_seconds": 33.745442632585764,
+          "exit_code": 0
+        }
+      },
+      "phase_seconds_sum": 353.0881959721446
+    },
+    {
+      "outer": 5,
+      "actor_adam_per_rank": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "probe_adam_per_rank": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "selected_true_mixed_ratio": 0.67578125,
+      "selected_mean_predicted_q_at_selection": 0.8926839714636148,
+      "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-20261016-5cba22ca409a-resume2/outers/outer-000005/probe-score/selection.json",
+      "selection_sha256": "350b86f92639cfb2fe342ac54afa11c5f6d6b9279260594422412ee07e53a33a",
+      "postupdate_train_mixed": {
+        "accuracy": 0.67578125,
+        "balanced_accuracy": 0.5,
+        "count": 512,
+        "fn": 0,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 166,
+        "group_bce": 0.6318004811136568,
+        "group_weight": 1.0,
+        "mean_q": 0.7516489671192654,
+        "mixed_count": 346,
+        "mixed_recall": 1.0,
+        "nonmixed_count": 166,
+        "nonmixed_recall": 0.0,
+        "threshold": 0.5,
+        "tn": 0,
+        "total_loss": 1.5080885303186915,
+        "tp": 346,
+        "trajectory_bce": 0.8762880492050348,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "postupdate_fixedtest_mixed": {
+        "accuracy": 0.646484375,
+        "balanced_accuracy": 0.5418389888218978,
+        "count": 512,
+        "fn": 151,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 30,
+        "group_bce": 0.6615804204374008,
+        "group_weight": 1.0,
+        "mean_q": 0.2951127771573256,
+        "mixed_count": 183,
+        "mixed_recall": 0.17486338797814208,
+        "nonmixed_count": 329,
+        "nonmixed_recall": 0.9088145896656535,
+        "threshold": 0.5,
+        "tn": 299,
+        "total_loss": 1.248040412323273,
+        "tp": 32,
+        "trajectory_bce": 0.5864599918858721,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "phase_timings": {
+        "outer-000005-actor-38d19fe5dd3344c590af53514d519b09": {
+          "elapsed_seconds": 112.39555541053414,
+          "exit_code": 0
+        },
+        "outer-000005-continue": {
+          "elapsed_seconds": 90.58323133736849,
+          "exit_code": 0
+        },
+        "outer-000005-prefix": {
+          "elapsed_seconds": 82.74365371465683,
+          "exit_code": 0
+        },
+        "outer-000005-probe-update": {
+          "elapsed_seconds": 23.727577541023493,
+          "exit_code": 0
+        },
+        "outer-000005-score": {
+          "elapsed_seconds": 34.266337893903255,
+          "exit_code": 0
+        }
+      },
+      "phase_seconds_sum": 343.7163558974862
+    },
+    {
+      "outer": 6,
+      "actor_adam_per_rank": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120
+      ],
+      "probe_adam_per_rank": [
+        60,
+        60,
+        60,
+        60,
+        60,
+        60,
+        60,
+        60
+      ],
+      "selected_true_mixed_ratio": 0.67578125,
+      "selected_mean_predicted_q_at_selection": 0.7755148088422055,
+      "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-20261016-5cba22ca409a-resume4/outers/outer-000006/probe-score/selection.json",
+      "selection_sha256": "42c0934d619f8c62e9b66bf263c0d411bb74c9c3d8002b915a0e6bd7b66db488",
+      "postupdate_train_mixed": {
+        "accuracy": 0.6796875,
+        "balanced_accuracy": 0.5248276342363675,
+        "count": 512,
+        "fn": 12,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 152,
+        "group_bce": 0.835802687471038,
+        "group_weight": 1.0,
+        "mean_q": 0.8583882638617866,
+        "mixed_count": 346,
+        "mixed_recall": 0.9653179190751445,
+        "nonmixed_count": 166,
+        "nonmixed_recall": 0.08433734939759036,
+        "threshold": 0.5,
+        "tn": 14,
+        "total_loss": 1.5697180057843458,
+        "tp": 334,
+        "trajectory_bce": 0.7339153183133078,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "postupdate_fixedtest_mixed": {
+        "accuracy": 0.53515625,
+        "balanced_accuracy": 0.5982859135980866,
+        "count": 512,
+        "fn": 33,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 205,
+        "group_bce": 0.7943211561459158,
+        "group_weight": 1.0,
+        "mean_q": 0.5994328799802375,
+        "mixed_count": 183,
+        "mixed_recall": 0.819672131147541,
+        "nonmixed_count": 329,
+        "nonmixed_recall": 0.3768996960486322,
+        "threshold": 0.5,
+        "tn": 124,
+        "total_loss": 1.2796149421099294,
+        "tp": 150,
+        "trajectory_bce": 0.4852937859640137,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "phase_timings": {
+        "outer-000006-actor-c8925475ab1c4d849f586e2062a66095": {
+          "elapsed_seconds": 113.56445536762476,
+          "exit_code": 0
+        },
+        "outer-000006-continue": {
+          "elapsed_seconds": 97.4508657567203,
+          "exit_code": 0
+        },
+        "outer-000006-prefix": {
+          "elapsed_seconds": 81.94770155474544,
+          "exit_code": 0
+        },
+        "outer-000006-probe-update": {
+          "elapsed_seconds": 25.525904789566994,
+          "exit_code": 0
+        },
+        "outer-000006-score": {
+          "elapsed_seconds": 32.41263169422746,
+          "exit_code": 0
+        }
+      },
+      "phase_seconds_sum": 350.90155916288495
+    }
+  ],
+  "source_large_files_read": false,
+  "timing_semantics": "Recorded successful phase sums only; outer1 reused imported prefix/score/full phases, so its sum is incomplete. Whole contiguous outer6 measured352.15seconds, prefix6-start to prefix7-start.",
+  "contiguous_outer6_wall_seconds": 352.147869348526
+}
