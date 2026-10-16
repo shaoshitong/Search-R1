@@ -1,3 +1,23 @@
+## Current LR1e-5 execution: actual periodic40 and continued42
+
+At UTC2026-10-16T22:48:55.105035+00:00, same3426/h100-8 completed42/200: actor840/probe200 actual Adam per each8rank;43 continuation has started. All32 original actor ledgers39-42 have20 writes each. Periodic40 independently read all8 probe ledgers:100 new writes/rank at1e-5,640 groups/3200 trajectories per rank,80 global255 and20 global260 batches. Fullpool5120G5 was completed once, with preselected512 projected without new generation. Heldout512G5 uses the same samplingactor0039 and has zero qid/content overlap with training. Actual41 selected with the newly committed probe33c7e662857511b34d041d0b9a483896ba0358c1145b5333d04d120f18c5fe3c. Frozen runtimeDCC is unchanged; readonly observer15920 naturally exited0 after this proof.
+
+|Same-actor paired metric at40|Train before|Train after|Heldout before|Heldout after|
+|---|---:|---:|---:|---:|
+|Mixed accuracy|46.88%|71.25%|43.55%|62.50%|
+|Balanced mixed accuracy|55.38%|64.86%|54.59%|51.20%|
+|Mixed recall|71.62%|52.67%|74.34%|30.97%|
+|Nonmixed recall|39.14%|77.06%|34.84%|71.43%|
+|Trajectory BCE|0.618179|0.749956|0.671492|0.881458|
+|Group BCE|0.951811|0.568302|1.001965|0.678385|
+|Total BCE|1.569991|1.318258|1.673458|1.559843|
+
+Trainpool mixed1219/5120=23.81%; heldout113/512=22.07%, nonmixed-majority399/512=77.93%. Selected512 contains166/512 mixed=32.42%, fixed before outcomes. After this update, train balanced accuracy improved while heldout balanced accuracy declined54.59% to51.20%. Heldout ordinary accuracy rose43.55% to62.50% by shifting toward nonmixed, still below the majority baseline. Heldout mixed recall fell74.34% to30.97%; group BCE improved but trajectory BCE worsened. This update does not demonstrate heldout mixed-discrimination improvement, stable selection benefit or QA gains. Periodic20 and40 use fresh trajectories from different actor snapshots, so their heldout values are not a fixed-label learning curve.
+
+Recorded periodic40 main phases total846.576s: prefix80.237,score27.116,fullpool447.792,diagnostic123.086,actor127.464,probe phase40.880. The100-Adam loop alone takes8.089s; neither it nor the phase sum is a directly measured complete-to-complete wall-time interval. Model checkpoint SHA is producer-recorded; this metadata readback did not independently hash or reload the932251350B probe tensor file. Latest restore candidate is42 or later actual complete state, not archived20/source5 for convenience. QA50/future checkpoints/independent backups/final51713/native exit0 remain pending. Small full readback: lr1e5-periodic40-readback.json. No weights or full trajectories moved to Mac/Git.
+
+---
+
 ## Current LR1e-5 execution: first actual periodic update
 
 Same3426 on h100-8 completed20/200, actor400 and probe100 actualAdam per each8rank. The new probe performed100 writes/rank at1e-5, visiting all5120 groups/25600 trajectories once with80 global255 and20 global260 batches. All8 original ledgers and fullpool/heldout token-index/strictEM bindings were independently read as CPU metadata. The512 heldout questions and normalized contents have zero overlap with the training pool. Frozen runtime remainsdcc8715d; only the human-authorized probeLR changed from the earlier execution.
