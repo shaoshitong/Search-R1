@@ -18,6 +18,8 @@ for name in ['final-seven-table-data.json','plot-chain-audit.json','visual-paylo
 for p in D.glob('*.json'):
  if p.name!='publication-verified.json' and p.stat().st_size < 3000000:files[p.name]=p.read_bytes()
 for p in (D/'figures').glob('*.svg'):files['figures/'+p.name]=p.read_bytes()
+pdf=D.parent.parent/'output/pdf/tree-experiments-ablation-review-20261016.pdf'
+if pdf.exists():files['documents/'+pdf.name]=pdf.read_bytes()
 for name,raw in files.items():assert not re.search(rb'hf_[A-Za-z0-9]{20,}|-----BEGIN (?:OPENSSH|RSA|EC) PRIVATE KEY-----',raw),name
 target=branch if run(['ls-remote','origin','refs/heads/'+branch]).strip() else 'codex/session-results-audit-20261015'
 run(['fetch','origin',target]);parent=run(['rev-parse','FETCH_HEAD']).decode().strip()
