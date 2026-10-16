@@ -1,41 +1,47 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Actual joint training complete13/200. Same3422 RUNNING on h100-10 /10.33.0.18 at outer-000014-continue. Saved actor/probe260 per each8rank; physicalprobe280/rank includes historical20unsaved writes. Original11–13 direct8rank actor/probe ledgers each20newwrites verified; no completedouter recomputation/reset. Prior restored6–10+actual11generation acceptance remains valid. Healthy training continues200.
+Actual complete18/200; job3422 RUNNING on h100-10/10.33.0.18, stage outer-000019-prefix. Saved actor/probe Adam per8rank: [360, 360, 360, 360, 360, 360, 360, 360] / [360, 360, 360, 360, 360, 360, 360, 360]. Completed joint counters: [360, 360, 360, 360, 360, 360, 360, 360] / [360, 360, 360, 360, 360, 360, 360, 360]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
-QA5 complete512: EM24.60937500%, F130.60965402%; all8 actual worker exit0. Exact fixed validation SHA3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb. NQ256 and Hotpot256,8TP1 FP32 greedy/full500 action/raw500 observation/four search turns, no answer reserve or early final. This is the current experiment first measured QA; no final-effect claim. Full outputs stay remote; scalar proof QA5_SUMMARY.json.
+Latest QA: outer5,512questions EM24.6094% / F130.6097%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.
+Recent actual same3422 completejoint intervals[441.612713098526, 441.2780020236969, 445.81118178367615, 438.8169014453888]; mean441.880s=7.365min. Startup,QA,failure/repair are separate.
 
-| Complete outer | Continued1024 mixed | Actor512 mixed | Actor512 meanEM variance | Probe fixed512 ordinary / balanced |
-|---|---:|---:|---:|---:|
-|1|66.60%|100.00%|0.216875|61.52% / 60.24%|
-|2|66.70%|100.00%|0.213438|58.79% / 58.96%|
-|3|67.09%|100.00%|0.216250|61.52% / 60.24%|
-|4|65.33%|100.00%|0.212500|62.70% / 56.67%|
-|5|65.53%|100.00%|0.214375|62.30% / 60.36%|
-|6|62.99%|100.00%|0.212188|60.74% / 59.75%|
-|7|61.23%|100.00%|0.207656|56.25% / 59.65%|
-|8|59.08%|100.00%|0.203125|62.30% / 57.57%|
-|9|57.32%|100.00%|0.203437|62.11% / 56.82%|
-|10|59.77%|100.00%|0.205156|60.55% / 60.09%|
-|11|56.35%|100.00%|0.203125|59.57% / 60.42%|
-|12|54.20%|100.00%|0.198437|62.89% / 55.85%|
-|13|55.96%|100.00%|0.199375|62.30% / 57.09%|
+Latest actor512 mixed91.6016%, meanEMvariance0.17875000, selected frozen meanpredictedmixed0.73965986. Continued1024 mixed45.8008%; uncontinued4096 have no outcome labels.
 
-Probe diagnostics classify group mixing and are distinct from QA EM/F1. Actor512 allmixed makes its balanced classification accuracy undefined; no artificial positive claim from trivial ordinaryaccuracy1. Full1024 online train has both classes, but postupdate allpredictedmixed at threshold.5, balancedaccuracy50%. Uncontinued4096 have no outcome labels.
+|Complete outer|Continued1024 mixed|Actor512 mixed|Actor512 variance|Probe train ordinary / balanced|Probe fixed512 ordinary / balanced|
+|---|---:|---:|---:|---:|---:|
+|1|66.60%|100.00%|0.216875|66.60% / 50.00%|61.52% / 60.24%|
+|2|66.70%|100.00%|0.213438|66.70% / 50.00%|58.79% / 58.96%|
+|3|67.09%|100.00%|0.216250|67.09% / 50.00%|61.52% / 60.24%|
+|4|65.33%|100.00%|0.212500|65.33% / 50.00%|62.70% / 56.67%|
+|5|65.53%|100.00%|0.214375|65.53% / 50.00%|62.30% / 60.36%|
+|6|62.99%|100.00%|0.212188|62.99% / 50.00%|60.74% / 59.75%|
+|7|61.23%|100.00%|0.207656|61.23% / 50.00%|56.25% / 59.65%|
+|8|59.08%|100.00%|0.203125|59.08% / 50.00%|62.30% / 57.57%|
+|9|57.32%|100.00%|0.203437|57.32% / 50.00%|62.11% / 56.82%|
+|10|59.77%|100.00%|0.205156|59.77% / 50.00%|60.55% / 60.09%|
+|11|56.35%|100.00%|0.203125|56.35% / 50.00%|59.57% / 60.42%|
+|12|54.20%|100.00%|0.198437|54.20% / 50.00%|62.89% / 55.85%|
+|13|55.96%|100.00%|0.199375|55.96% / 50.00%|62.30% / 57.09%|
+|14|52.93%|100.00%|0.200469|52.93% / 50.00%|63.09% / 59.15%|
+|15|50.29%|100.00%|0.195937|50.29% / 50.00%|62.30% / 57.33%|
+|16|50.59%|100.00%|0.197656|50.59% / 50.00%|63.48% / 59.21%|
+|17|48.54%|97.07%|0.189531|49.12% / 50.57%|64.06% / 55.30%|
+|18|45.80%|91.60%|0.178750|47.27% / 51.22%|60.16% / 58.45%|
 
-Normal six-phase totals outer2/3/4/5:417.91/419.49/416.20/412.37s (~6.9–7.0min), excluding setup, QA, failure and engineering delay. True consecutive outer intervals will be recorded from resumed6 onward. Per-outer20globalAdam loss points are retained; differing natural minibatches do not imply monotonic fitting.
+20-point probe losses and all6stagewall durations are in COMPLETED_ITERATION_SCALAR_EVIDENCE.json and ITERATION_METRICS.csv. Different natural batches mean first/last loss is not a monotonic same-batch fitting claim. Actor-selected allpositive balancedaccuracy is undefined when there is no negativeclass.
 
-Protocol:5120 diagnostic-excluded candidate questions ×5 original20-policy-token prefixes, frozen actor/probe while selecting stable predictedmixedTop1024. Continue those original5120 trajectories, keep authentic token/context/sampling records. StrictEM varianceK(5-K)/25 selects512 intactG5, ties by frozenh then originalordinal. Actor uses original Search-G1 grounding softreward PPO, mini128/epochs1/globalmicro128 local16/noaccum; only actualtypedOOM permits budget-preservingmicro fallback. ActorBF16compute/FP32master andAdam, LR1e-6 with57completeouterwarmup. Probe uses ALL1024/5120 naturally once,20synchronousAdam/rank, globalbatch255/260 average256, LR1e-6, trajectorymeanBCE+ownG5mixedmeanBCE weights1/1. Best actualretainedwarmupCP100 model-only initialization, no rewarmup. OfficialQwen2.5-3B-Instruct revisionaa8e72537993ba99e69dfaafa59ed015b17504d1.
+Protocol: officialQwen2.5-3B-Instruct aa8e72537993ba99e69dfaafa59ed015b17504d1; best actuallyretainedwarmupCP100 model-only probe initialization, no rewarmup.5120distinct diagnostic-excluded questions/G5prefix20, frozenactor/probe stable predictedmixedTop1024, continue authentic same5prefixes, population strictEMvarianceK(5-K)/25 selects512 intactG5 with frozenh/originalordinal ties. No extra sampling to force mixing. Actor originalSearch-G1 groundingsoftreward PPO20Adam/mini128/epoch1/globalmicro128 local16/noaccum, BF16compute/FP32masterAdam, LR1e-6/warm57outer. ProbeALL1024/5120 naturallyonce,20synchronousAdam/rank/globalbatch255/260avg256, LR1e-6, trajectorymeanBCE+ownG5mixedmeanBCE weights1/1. Fixeddiagnostic512 stays excluded. Only realtypedOOM permits preserving-budget micro fallback.
 
-Current frozen runtime2c1219defaebaf69467fce18efad331ce68cd6ec,1246files allremoteSHA matched. Actual configSHA2973c362cf039cb60d844e1be8d9e4332cdcf5f9d756ea6d4976adea463948e6. Local read-only watcher is latercontrolcommit e068855a and does not hotchange runtime. All weights/optimizer/feature/rollout/fullresults stay sameH100cluster remote.
+Frozen runtime2c1219defaebaf69467fce18efad331ce68cd6ec/actualconfigSHA2973c362cf039cb60d844e1be8d9e4332cdcf5f9d756ea6d4976adea463948e6. Later controls/results do not hotchange training. All models/native/optimizer/raw/fulloutputs stay sameH100cluster remote; local artifacts are small scalar/code summaries.
 
-Failurehistory:3416 preAdam diagnostic path failure;3417 actor20saved but probe20unsaved diagnostic1024failure (only probe20 recomputed/accounted);3418 joint2saved then imported-history prunerfailure;3421 actuallycompleted3–5 thenQA5hit H100 FP32 Triton MMA compilerassert. Source5 is independently fullSHA/CPU accepted (proofbe541a6076e1c2e0f2c022ba7eb2f31a10341bb0dc8d19e0e758904e61409159):435FP32HFtensors,8rankmodel/Adam/scheduler/RNG,driver,probe,cursor25600/next6. CPU acceptance is not executor/CUDA exactresume. Original38terminal logs/fullSHA and1089births/cgroup/GPU release preserved in terminalproof f805e7d897ac3dee8863e804a2c7809b214c4958ca3d59853cf4198b00904d1a.
+History:3416 preAdam pathfailure;3417 actor20saved/probe20unsaved diagnosticfailure (onlyprobe20recomputed/accounted);3418 savedjoint2 then imported-history prunerfailure;3421 savedjoint5 thenFP32H100TritonMMAcompilerassert inQA.3422 imported5 unchanged, compatiblefullprefillXFormers/CPATH fixedQA. Source5 independentfullSHA/CPU PASS:435FP32HFtensors,8nativeAdam/scheduler/RNG/driver/probe/pool; proofbe541a6076e1c2e0f2c022ba7eb2f31a10341bb0dc8d19e0e758904e61409159, acceptance5/. CPUload is not exactCUDAexecutorresume. Restored6–10+actual11generation accepted; failednative/log/birth/cost evidence retained. OldTree200/51713 is complete separately, not thisrun score.
 
-3422 imported joint5 unchanged, nowactualQA5success after switching only incompatible prefix/chunkedFP32kernel to fullprefillXFormers and adding PythonheaderCPATH. PendingQA is explicitly retained/retried before finalacceptance, rather than cancelling valid training. No completedtrainingrecomputed. Restored6–10 and actual11generation verified in RESUMED_FIVE_ACCEPTANCE.json; reader25091 exited0, training3422 remainsrunning.
+Cost: COST_SNAPSHOT.json contains existing native token/request metadata and phasewall with explicit coverage; failed attempts/QA/setup/idle separate. Passive resource5s unit runs outside frozenrepo (CPU10%,Memory128M,Nice19), noGPUforward or trainingcontrol. Wholecard sampledpeaks cover only since22:49:59CST, not historical/continuouspeaks or amplecapacity. CPU observedbirth utime+stime is an incomplete lowerbound (freezeronly, past/shortlived CPU may be missing), never fullCPUcost. Raw telemetry staysremote. Fullretrieval and combinedGPU/CPU accounting remain outstanding.
 
-Goal remains ACTIVE/incomplete: actual200, milestone50/100/150/200, completefinalseven51713QA, native/HF/tokenizer state verification, finite/nonzeroupdate/cost/source/split identity and ownresourcecleanup remain. OldTree200/51713 finalF1 53.8154%/EM46.9398% is completed separately and is not thisrun’s score.
+Completion remains unproven: actual200, normal50/100/150/200checkpoint/QA, fullseven51713, HF/tokenizer/nativefinite/nonzeroupdate/source/split identity, cost/ownedcleanup and finalpublication. GoalACTIVE; no stop/restart is performed by this reader.
 
-Additional cost evidence: completed1–12 actualsampledtokens11,982,868; native prefix/newcontinuation requests and6phasewall perouter retained in COST_SNAPSHOT.json. Failed attempts/QA/nativeidle/setup remain separate. Recent fulljoint intervals[418.8847117424011, 418.30745673179626, 421.82969784736633, 419.43331837654114], mean419.614s (~6.994min).
+Latest passive telemetry515 samples, last observed1792164777.029278; errors[], wholecard maxused80663MiB/minfree419MiB (coverage above).
 
-Passive resource sampler g1-resource5s-f3ee1435e501-3422 is independently staged outside frozenrepo, source9f3cf693c91aad312d0badaa0fd0d7451eee36fd/readerSHA80e0e3383b1455abfa6f0c908192b12e471d865cf4edc60f3bf651ca386fefee, CPUQuota10%/Memory128M/Nice19, noGPU allocation/forward or trainingconfig change. Two actualobservations prove9->32samples and14038->50163bytes, noerrors; full5sJSONL staysremote. GPUpeak scope is whole physicalcards only since telemetry creation, not continuous/historical peaks; already-observed earlier80GB-nearcapacity snapshots remain valid. CPU is an explicitly incomplete lowerbound over observedownedbirth utime+stime because Slurm exposes onlyfreezer, nojobCPUaccounting. Short-lived/earlierexited processes may be missing; never report this as fullCPUcost. RESOURCE5S_ACCEPTANCE.json andlatestsummary record coverage. Fullretrieval/costaccounting remains outstanding.
+At completeouter18, only469/1024 continuedgroups are strictEMmixed. All469 are selected plus43zeroEMvariance groups to keep512G5; actualactormixed469/512=91.6015625%. Outer17 had497mixed/512=97.0703125%. No extra sampling/drop/relabel/epsilon was used to force100%mixing. This measures EMdiversity, not equality of continuousSearch-G1softrewards or a heldoutQA gain.
 
-Latest13 joint verified, actual14continuation live. Recentcompletejoint10–13 intervals[418.30745673179626, 421.82969784736633, 419.43331837654114, 434.39841389656067], mean423.492s. Passive telemetry now89samples/140112bytes, noerrors; sampledwholecardmaximum79695MiB/minfree1387MiB onlysince22:49:59CST coverage. No claimofamplecapacity or retrospectivecontinuouspeak. QA5 unchanged; all200/final51713 stillpending.
+CPU accounting evidence remainsexplicit: sacctdisabled; sstatNTasks0/overflow-likeAveCPUinvalid andunused. Actualjobfreezer stable11PID own+waitedCPU42156.72coresec @1792164092.3334658 is an observedcumulativeprocess-tree snapshot, not final/completeCPUcost. SeeCPU_ACCOUNTING_EVIDENCE.json;5sownedbirthlowerbound andwholecardpeaks stayseparate.

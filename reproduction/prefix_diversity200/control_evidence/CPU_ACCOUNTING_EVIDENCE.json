@@ -1,0 +1,124 @@
+{
+  "observed_unix": 1792164092.3334658,
+  "accounting": [
+    {
+      "command": [
+        "sstat",
+        "-j",
+        "3422.batch",
+        "--noheader",
+        "--parsable2",
+        "--format=JobID,NTasks,AveCPU,AveRSS,MaxRSS"
+      ],
+      "returncode": 0,
+      "stdout": "3422.batch|0|213503982334-14:25:51||\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "sacct",
+        "-j",
+        "3422",
+        "--parsable2",
+        "--noheader",
+        "--format=JobIDRaw,State,ElapsedRaw,AllocCPUS,TotalCPU,UserCPU,SystemCPU,AllocTRES"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Slurm accounting storage is disabled\n"
+    }
+  ],
+  "cgroup": "/sys/fs/cgroup/freezer/slurm_h100-10/uid_0/job_3422",
+  "membership_stable": true,
+  "task_pid_count": 11,
+  "process_rows": [
+    {
+      "pid": 3643523,
+      "ppid": 3643519,
+      "start_ticks": 1921940312,
+      "own_ticks": 233057,
+      "waited_child_ticks": 3612848
+    },
+    {
+      "pid": 3643556,
+      "ppid": 3643523,
+      "start_ticks": 1921940638,
+      "own_ticks": 277010,
+      "waited_child_ticks": 0
+    },
+    {
+      "pid": 3643562,
+      "ppid": 3643523,
+      "start_ticks": 1921940658,
+      "own_ticks": 11385,
+      "waited_child_ticks": 0
+    },
+    {
+      "pid": 3643566,
+      "ppid": 3643523,
+      "start_ticks": 1921940678,
+      "own_ticks": 11538,
+      "waited_child_ticks": 0
+    },
+    {
+      "pid": 3643615,
+      "ppid": 3643523,
+      "start_ticks": 1921940698,
+      "own_ticks": 11585,
+      "waited_child_ticks": 0
+    },
+    {
+      "pid": 3643617,
+      "ppid": 3643523,
+      "start_ticks": 1921940718,
+      "own_ticks": 11521,
+      "waited_child_ticks": 0
+    },
+    {
+      "pid": 3643619,
+      "ppid": 3643523,
+      "start_ticks": 1921940739,
+      "own_ticks": 11570,
+      "waited_child_ticks": 0
+    },
+    {
+      "pid": 3643669,
+      "ppid": 3643523,
+      "start_ticks": 1921940764,
+      "own_ticks": 11648,
+      "waited_child_ticks": 0
+    },
+    {
+      "pid": 3643671,
+      "ppid": 3643523,
+      "start_ticks": 1921940785,
+      "own_ticks": 11699,
+      "waited_child_ticks": 0
+    },
+    {
+      "pid": 3643673,
+      "ppid": 3643523,
+      "start_ticks": 1921940805,
+      "own_ticks": 11362,
+      "waited_child_ticks": 0
+    },
+    {
+      "pid": 3774431,
+      "ppid": 3643523,
+      "start_ticks": 1922464211,
+      "own_ticks": 449,
+      "waited_child_ticks": 0
+    }
+  ],
+  "clock_ticks_per_second": 100,
+  "own_cpu_core_seconds": 6028.24,
+  "own_plus_waited_child_core_seconds": 42156.72,
+  "scope": "actual task-freezer process snapshot including waited-child counters, not yet final CPU accounting",
+  "training_changed": false,
+  "job_id": "3422",
+  "run_id": "f3ee1435e5014ba1969387c91878893a",
+  "source_base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3",
+  "sstat_valid_for_cpu_cost": false,
+  "slurm_accounting_storage_disabled": true,
+  "full_cpu_accounting_claimed": false
+}
