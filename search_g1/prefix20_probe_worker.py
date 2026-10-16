@@ -68,7 +68,10 @@ def validate_rows(rows, *, labels_required):
             if (request!=s['position_start'] or len(context)!=request+n or
                     context[request:]!=tokens[start:start+n]):
                 raise ValueError('PREFIX20_TOKENS_DIFFER_FROM_OWN_CAUSAL_REQUEST')
-        if segments[0]['context_tokens'][:segments[0]['request_length']]!=row['initial_prompt_token_ids']:
+        first_request=segments[0]['context_tokens'][:segments[0]['request_length']]
+        prompt=row['initial_prompt_token_ids']
+        if (not prompt or first_request[:len(prompt)]!=prompt or
+                segments[0]['turn_index']==0 and first_request!=prompt):
             raise ValueError('PREFIX20_INITIAL_QUESTION_CONTEXT_CHANGED')
     return rows
 

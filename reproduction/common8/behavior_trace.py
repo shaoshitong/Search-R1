@@ -352,6 +352,9 @@ def make_turn(sampling_record=None, *, trajectory_id, turn_index, kept_token_cou
 
 
 def _verify_turn(turn):
+    if isinstance(turn,dict) and turn.get('role')=='prefix20_composite_logical_action_v1':
+        from search_g1.prefix20_split import verify_turn
+        return verify_turn(turn)
     _require(type(turn) is dict and set(turn) in (_TURN_FIELDS, _TURN_STOP_FIELDS), 'turn_schema_changed')
     _name(turn['trajectory_id'], 'trajectory_id'); _name(turn['rollout_call_id'], 'rollout_call_id')
     _name(turn['policy_snapshot_id'], 'policy_snapshot_id')
@@ -501,8 +504,10 @@ def _audit_trajectory(turns, row, sampling, snapshot):
         _require(turn['trajectory_id'] == row['trajectory_id'] and turn['turn_index'] == index and
                  turn['policy_snapshot_id'] == snapshot and canonical_bytes(turn['sampling']) == canonical_bytes(sampling),
                  'turn_identity_sampling_or_policy_changed')
-        _require(turn['rollout_call_id'] not in calls, 'duplicate_trajectory_rollout_call')
-        calls.add(turn['rollout_call_id'])
+        from search_g1.prefix20_split import provenance_records
+        current_calls=[record['rollout_call_id'] for record in provenance_records(turn)]
+        _require(not calls.intersection(current_calls), 'duplicate_trajectory_rollout_call')
+        calls.update(current_calls)
         _require(not turn['final_turn'] or index == len(turns) - 1, 'turn_after_final_rollout')
         # Equality at the start of each turn plus exact raw prefix equality
         # implies equality for every included autoregressive token in that turn.
@@ -579,12 +584,14 @@ def _outer(trace, *, expected_run_id, expected_source_sha256, expected_slurm_job
         _require(type(trajectory['turns']) is list and bool(trajectory['turns']), 'missing_actual_turns')
         for turn in trajectory['turns']:
             _require(type(turn) is dict, 'turn_schema_changed')
-            if 'effective_stop_provenance' in turn:
-                provenance = turn['effective_stop_provenance']['generation_config']
-                _require(provenance['run_id'] == expected_run_id and
-                         provenance['slurm_job_id'] == expected_slurm_job_id and
-                         provenance['source_map_sha256'] == document_sha256(expected_source_sha256),
-                         'effective_stop_run_source_binding_changed')
+            from search_g1.prefix20_split import provenance_records
+            for record in provenance_records(turn):
+                if 'effective_stop_provenance' in record:
+                    provenance = record['effective_stop_provenance']['generation_config']
+                    _require(provenance['run_id'] == expected_run_id and
+                             provenance['slurm_job_id'] == expected_slurm_job_id and
+                             provenance['source_map_sha256'] == document_sha256(expected_source_sha256),
+                             'effective_stop_run_source_binding_changed')
             current = dict(eos_token_id=turn['eos_token_id'], pad_token_id=turn['pad_token_id'],
                            special_token_ids=sorted(set(_tokens(turn['special_token_ids'], 'special_token_ids'))))
             if token_metadata is None:
@@ -680,7 +687,10 @@ def write_private_evidence(base, trace, *, attempt_id=None):
     and explicitly prevents treating its byte hash as an accepted trace hash.
     """
     base = Path(base)
-    run = json.loads((base / 'logs/run-manifest.json').read_text())
+    try:
+        run = json.loads((base / 'logs/run-manifest.json').read_text())
+    except (OSError,ValueError) as error:
+        raise BehaviorTraceError('missing_or_invalid_run_manifest') from error
     from reproduction.common8.topology import execution_job_id, validate_base
     validate_base(base,run)
     _require(type(trace) is dict and type(trace.get('logical_update')) is int and trace['logical_update'] >= 1 and
