@@ -1,0 +1,12 @@
+# Actual fixed28 public GRPO refresh bound execution source backup
+
+Root provided these frozen actual execution sources and bindings from the176-context local public GRPO fixed28 refresh completed at012447UTC. This is source backup only; no refresh or qualification assessment is rerun by the backup agent. The actual long source filenames are retained as recorded in ACTUAL_EXECUTION_BINDINGS.json, rather than the abbreviated pass1.bound.py/publish.bound.py labels used in the task message.
+
+The published c06676dd1911be82c1951ca84e72ac596cab3c37 refresh logic was actually bound to concrete scope,prior receipt,context,temporary path and executing agent values. These saved bound sources are not claimed to be an unchanged/original-byte execution of the generic c066 source. Exact execution bindings are preserved in ACTUAL_EXECUTION_BINDINGS.json. The fixed28 scope was not expanded, and root reports no training,CUM or canonical modification.
+
+Original actual source pins:
+- `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/public-grpo-fixed28-refresh-176-context-20261016/public_grpo_control_refresh_pass1.bound.py`: 2745 bytes, SHA256 `783b5c55eaf4860bd1a93f11b0e154183c5fb51dca3e24e6f2f0c83c28a32ecc`.
+- `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/public-grpo-fixed28-refresh-176-context-20261016/public_grpo_control_refresh_publish.bound.py`: 7154 bytes, SHA256 `3348e011b6349bc5fafa0fb8853f1c744e5a660e4aea6c8389ab157db9283e74`.
+- `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/public-grpo-fixed28-refresh-176-context-20261016/ACTUAL_EXECUTION_BINDINGS.json`: 4257 bytes, SHA256 `86ec1151d5b489c1677af1cc929e48744b23bf67bc28076245242e72b05dd202`.
+
+All files are copied exactly, including binding metadata. Only these sources plus this README and small publication metadata are added. Earlier generic logic,snapshots and history remain intact. This backup does not execute,compile,test or review code; read public scope documents; perform filename discovery in public results; access remote runtime; SSH; message another task; collect; evaluate; train; or modify canonical/curve/CUM. No global GRPO absence or effect comparison is claimed by this source backup.
