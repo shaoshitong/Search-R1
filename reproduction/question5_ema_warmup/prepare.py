@@ -157,6 +157,142 @@ def extract_reference(descriptor, output):
     return output
 
 
+def extract_prepared_reference(descriptor, output):
+    """Verify a derived prefix5 package without fetching the original8.4GB."""
+    if 'manifest_path' in descriptor:
+        manifest_path = Path(descriptor['manifest_path']).resolve(strict=True)
+        if sha(manifest_path) != descriptor['manifest_sha256']:
+            raise ValueError('Pinned slim transfer manifest SHA differs')
+        transfer = read(manifest_path)
+    else:
+        transfer = dict(descriptor)
+    if (transfer.get('role') != 'PREPARED_REFERENCE_PREFIX5_ARCHIVE' or transfer.get('prefix_tokens') != 5
+            or transfer.get('encoder_revision') != REVISION or transfer.get('train_trajectories') != 1740800
+            or transfer.get('test_trajectories') != 2560 or transfer.get('sources') != 68
+            or transfer.get('canonical_train_sha256') != CANONICAL_SHA
+            or transfer.get('canonical_questions', 169028) != 169028):
+        raise ValueError('Wrong prepared reference dataset identity or count')
+    parts = [dict(item) for item in transfer['parts']]
+    if descriptor.get('parts_dir'):
+        for item in parts:
+            item['path'] = str(Path(descriptor['parts_dir']) / Path(item['path']).name)
+    output = Path(output).resolve()
+    if output.exists():
+        complete = read(output / 'EXTRACTION-COMPLETE.json')
+        if complete['archive_sha256'] != transfer['concatenated_sha256']:
+            raise ValueError('Existing prepared extraction belongs to another archive')
+        for item in transfer['files']:
+            _verified(output / item['path'], item)
+        return output
+    output.mkdir(parents=True)
+    stream = _PartStream(parts, transfer['concatenated_sha256'])
+    expected = {item['path']: item for item in transfer['files']}
+    actual = {}
+    with tarfile.open(fileobj=stream, mode='r|gz') as archive:
+        for member in archive:
+            relative = PurePosixPath(member.name)
+            if relative.is_absolute() or '..' in relative.parts or not member.isfile() or member.name in actual:
+                raise ValueError('Unsafe or duplicate slim archive member')
+            if member.name != 'MANIFEST.json' and member.name not in expected:
+                raise ValueError('Slim archive contains an unbound member')
+            destination = output / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            source = archive.extractfile(member)
+            digest, count = hashlib.sha256(), 0
+            with destination.open('xb') as target:
+                for block in iter(lambda: source.read(8 * 1024**2), b''):
+                    digest.update(block)
+                    count += len(block)
+                    target.write(block)
+                target.flush()
+                os.fsync(target.fileno())
+            source.close()
+            actual[member.name] = dict(path=member.name, bytes=count, sha256=digest.hexdigest())
+            if count != member.size:
+                raise ValueError('Truncated slim reference member')
+    stream.finish()
+    if set(actual) != set(expected) | {'MANIFEST.json'}:
+        raise ValueError('Slim reference member inventory differs')
+    for name, proof in expected.items():
+        if any(actual[name][key] != proof[key] for key in ('bytes', 'sha256')):
+            raise ValueError('Slim reference member actual content SHA differs')
+    if actual['MANIFEST.json']['sha256'] != transfer['internal_manifest_sha256']:
+        raise ValueError('Slim internal manifest differs from the pinned transfer receipt')
+    reference = read(output / 'reference-manifest.json')
+    if (reference.get('source_archive_sha256') != transfer['source_archive_sha256']
+            or sha(output / 'reference-manifest.json') != transfer['reference_manifest_sha256']
+            or reference.get('train_trajectories') != transfer['train_trajectories']
+            or reference.get('test_trajectories') != transfer['test_trajectories']
+            or reference.get('expected_train_groups') != transfer['train_groups']
+            or reference.get('expected_test_groups') != transfer['test_groups']
+            or sum(item['split'] == 'train' for item in reference['sources']) != 68):
+        raise ValueError('Derived reference lost its original archive identity')
+    once(output / 'EXTRACTION-COMPLETE.json', dict(archive_sha256=transfer['concatenated_sha256'],
+         source_archive_sha256=transfer['source_archive_sha256'], parts=parts, files_verified=len(expected),
+         train_trajectories=1740800, test_trajectories=2560, no_original_large_archive_transfer=True))
+    return output
+
+
+def adopt_prepared_reference(reference, output, identities_path, cache_lookup=None, acceptance=None):
+    """Relocate metadata into new derived scans; token array bytes stay exact."""
+    reference, output = Path(reference), Path(output)
+    manifest = read(reference / 'reference-manifest.json')
+    identity_source = reference / manifest['question_identity_relative_path']
+    if sha(identity_source) != manifest['question_identity_sha256']:
+        raise ValueError('Prepared canonical question identity mapping changed')
+    os.link(identity_source, identities_path)
+    from .data import _read_identities
+    identities = _read_identities(Path(identities_path), manifest['question_identity_sha256'])
+    if len(identities) != manifest.get('canonical_questions', 169028):
+        raise ValueError('Prepared canonical identity coverage differs')
+    sources = []
+    for descriptor in manifest['sources']:
+        relative = PurePosixPath(descriptor['relative_inputs_dir'])
+        if relative.is_absolute() or '..' in relative.parts:
+            raise ValueError('Unsafe prepared source-relative path')
+        original = reference / relative
+        if sha(original / 'scan-complete.json') != descriptor['scan_sha256']:
+            raise ValueError('Prepared original source scan SHA differs')
+        proof = read(original / 'scan-complete.json')
+        target = output / 'sources' / descriptor['source_id']
+        target.mkdir(parents=True, exist_ok=False)
+        for name in ARRAY_NAMES:
+            _verified(original / name, proof['files'][name])
+            os.link(original / name, target / name)
+        count = 0
+        with (original / 'index.jsonl').open() as source, (target / 'index.jsonl').open('xb') as destination:
+            for line in source:
+                row = json.loads(line)
+                if cache_lookup and descriptor['source_id'] in ('h100-epoch-0001', 'fixed-test'):
+                    link = cache_lookup.get(str(row['trajectory_id']))
+                    if link:
+                        expected = tuple(link['_original_identity'])
+                        actual = (row.get('source_raw_sha256'), row.get('source_raw_row'),
+                                  row['qid'], row['question_hash'], row['strict_em'])
+                        if actual != expected:
+                            raise ValueError('Prepared reference and old A800 cache event identity differ')
+                        row.update({key: value for key, value in link.items() if key != '_original_identity'})
+                destination.write(canonical(row) + b'\n')
+                count += 1
+            destination.flush()
+            os.fsync(destination.fileno())
+        if count != descriptor['expected_trajectories']:
+            raise ValueError('Relocated source event count differs')
+        proof = dict(proof, files={name: dict(path=str(target / name), bytes=(target / name).stat().st_size,
+                                             sha256=sha(target / name)) for name in ARRAY_NAMES + ('index.jsonl',)},
+                     source_inputs_dir=str(target), prepared_reference_source_scan_sha256=descriptor['scan_sha256'],
+                     prepared_reference_source_archive_sha256=manifest['source_archive_sha256'],
+                     relocated_from_original_directory=descriptor['inputs_dir'])
+        if acceptance and descriptor['source_id'] in ('h100-epoch-0001', 'fixed-test'):
+            proof.update(source_cache_acceptance_path=acceptance['path'], source_cache_acceptance_sha256=acceptance['sha256'])
+        once(target / 'scan-complete.json', proof)
+        sources.append(dict(descriptor, inputs_dir=str(target), scan_sha256=sha(target / 'scan-complete.json')))
+    if (sum(item['expected_trajectories'] for item in sources if item['split'] == 'train') != manifest['train_trajectories']
+            or sum(item['expected_trajectories'] for item in sources if item['split'] == 'test') != manifest['test_trajectories']):
+        raise ValueError('Prepared reference does not preserve its bound train/test events')
+    return identities, sources, manifest['model_files_sha256']
+
+
 def canonical_identities(path, expected_sha, output):
     import pyarrow.parquet as pq
     path = Path(path)
@@ -460,23 +596,30 @@ def build(config_path, output):
     if config.get('schema_version') != 1 or config.get('prefix_tokens') != 5:
         raise ValueError('Require the explicit newly authorized prefix5 source plan')
     output.mkdir(parents=True, exist_ok=False)
-    reference = extract_reference(config['reference_archive'], output.parent / 'reference')
-    canonical_path = Path(config.get('canonical_train', {}).get('path', reference / 'canonical/train.parquet'))
     identities_path = output / 'question-identities.jsonl'
-    identities = canonical_identities(canonical_path, config.get('canonical_train', {}).get('sha256', CANONICAL_SHA), identities_path)
-    initial = reference / 'epoch1-and-fixed-test/inputs'
-    model_files = read(initial / 'scan-complete.json')['model_files_sha256']
     acceptance = config.get('cache_acceptance')
     if acceptance and sha(acceptance['path']) != acceptance['sha256']:
         raise ValueError('Actual source-cache acceptance receipt SHA differs')
     reuse_lookup = _reuse_cache_links(config['reuse_cache'], acceptance) if config.get('reuse_cache') else None
-    sources = [_scan_source(initial, output / 'sources/h100-epoch-0001', 'train', 'h100-epoch-0001',
-                            'official-original-teacher5120-G5', identities, reuse_lookup, acceptance)]
-    sources.append(_scan_source(initial, output / 'sources/fixed-test', 'test', 'fixed-test',
-                                'official-fixed-random512-G5', identities, reuse_lookup, acceptance))
-    for epoch in range(2, 69):
-        sources.append(_rollout_source(reference, epoch, output / ('sources/h100-epoch-%04d' % epoch), identities))
-        print(json.dumps(dict(stage='REFERENCE_SOURCE_CONVERTED', source_epoch=epoch, new_rollouts=0)), flush=True)
+    if config.get('prepared_reference_archive'):
+        if config.get('reference_archive'):
+            raise ValueError('Choose one prepared slim reference or the original archive, never both')
+        reference = extract_prepared_reference(config['prepared_reference_archive'], output.parent / 'reference5')
+        identities, sources, model_files = adopt_prepared_reference(reference, output, identities_path,
+                                                                    reuse_lookup, acceptance)
+    else:
+        reference = extract_reference(config['reference_archive'], output.parent / 'reference')
+        canonical_path = Path(config.get('canonical_train', {}).get('path', reference / 'canonical/train.parquet'))
+        identities = canonical_identities(canonical_path, config.get('canonical_train', {}).get('sha256', CANONICAL_SHA), identities_path)
+        initial = reference / 'epoch1-and-fixed-test/inputs'
+        model_files = read(initial / 'scan-complete.json')['model_files_sha256']
+        sources = [_scan_source(initial, output / 'sources/h100-epoch-0001', 'train', 'h100-epoch-0001',
+                                'official-original-teacher5120-G5', identities, reuse_lookup, acceptance)]
+        sources.append(_scan_source(initial, output / 'sources/fixed-test', 'test', 'fixed-test',
+                                    'official-fixed-random512-G5', identities, reuse_lookup, acceptance))
+        for epoch in range(2, 69):
+            sources.append(_rollout_source(reference, epoch, output / ('sources/h100-epoch-%04d' % epoch), identities))
+            print(json.dumps(dict(stage='REFERENCE_SOURCE_CONVERTED', source_epoch=epoch, new_rollouts=0)), flush=True)
     a800 = config['a800_dataset']
     a800_root = Path(a800['dataset_dir']).resolve(strict=True)
     if sha(a800_root / 'compact-manifest.json') != a800['compact_manifest_sha256']:
