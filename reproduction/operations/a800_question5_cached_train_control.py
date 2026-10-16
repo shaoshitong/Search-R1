@@ -87,13 +87,21 @@ def bound_processes(base,exclude=()):
  for q in pathlib.Path('/proc').iterdir():
   if not q.name.isdigit() or int(q.name) in exclude:continue
   try:
+   if q.stat().st_uid!=os.getuid():continue
    s=(q/'stat').read_text()
    if s[s.rfind(')')+2:].split()[0] in ('Z','X'):continue
+  except (PermissionError,FileNotFoundError,ProcessLookupError):continue
+  args=[];cwd=None
+  try:
    args=(q/'cmdline').read_bytes().decode(errors='replace').split('\0')
+  except (PermissionError,FileNotFoundError,ProcessLookupError):pass
+  try:
    cwd=str((q/'cwd').resolve())
-   matched=cwd==root or cwd.startswith(root+'/') or any(a==root or a.startswith(root+'/') or ('='+root+'/') in a for a in args)
+  except (PermissionError,FileNotFoundError,ProcessLookupError):pass
+  matched=(cwd is not None and (cwd==root or cwd.startswith(root+'/'))) or any(a==root or a.startswith(root+'/') or ('='+root+'/') in a for a in args)
+  try:
    if matched:found.append(birth(int(q.name)))
-  except (FileNotFoundError,ProcessLookupError):continue
+  except (PermissionError,FileNotFoundError,ProcessLookupError):continue
  return found
 def source():
  assert read(b/'preparation/deployment.json')==h

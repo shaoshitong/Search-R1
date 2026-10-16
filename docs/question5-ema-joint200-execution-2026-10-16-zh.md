@@ -99,3 +99,8 @@ torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.tr
 ## 已完成的小型验证
 
 2026-10-16必要CPU检查通过：联合损失/梯度数学一致、EMA、完整G5分组预算、两rank不等micro与末空rank归约、policy5布局、checkpoint恢复；真实compact与reference20截5的合成转换、part/concat/member哈希及安全解压；BF16 packed-cache/orderedID/位置/mask/标签/segments/尾padding往返和已验收复用路径零复制。未进行额外GPU验收、LLM概率扫描、新rollout或独立评测。真实数据/缓存/训练仍以远端原件与回执为准。
+
+
+## 2026-10-16 CPU preflight process-permission repair
+
+The first archive-source startup repair namespace4347d238b1d64b3f95ed22fb59d1f00f/ex2ec56fe5c3194c16bbc45c2ea4c52d8a/sourcef6d5ccb8 staged925 sourcefiles, but its launch preflight stopped on PermissionError reading an unrelated /proc PID cwd. This occurred before the once-launch claim, GPU admission, or any child/model/Adam/EMA. Preserve that source, stage and failure receipt; do not repeat the old launch. The controller now filters UID and handles inaccessible/disappearing argv/cwd independently while preserving exact owned birth guards. The independent replacement planned run 8af926a49630428097b94027864da68b/execution 091f3979549347d190065387c2214af6 uses handle preparation/question5-cached-sourcefix-procguard-deployment-20261016.json; actual launch is still unproven in this document revision. It reuses the same accepted parent data/features readonly with zero new encoding/rollout/EM and unchanged complete200 science. Dynamic authority and actual receipts determine the current execution.
