@@ -1,0 +1,50 @@
+{
+  "schema": "controller_transition_local_precondition_rejection_v1",
+  "created_at_utc": "2026-10-16T06:51:25.864453+00:00",
+  "actual_exit_code": 1,
+  "selected_original_polls": [
+    2431,
+    2432,
+    2433
+  ],
+  "actual_Controller191_complete": true,
+  "actual_optimizer190_complete": true,
+  "source": "unchanged published generic transition source12",
+  "failure": "Closed14 canonical stage assertion rejected before snapshots/receipt/publication; source requires every canonical alias already completed190 and active191. Normal190 finalizer/alias/curve/helper/ROOT closure is still pending.",
+  "canonical_observations": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/STATUS.json",
+      "completed_outer": 190,
+      "active_outer": 191,
+      "goal_status": "active",
+      "last_actual_poll_epoch": 1792131120.5069995
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch/STATUS.json",
+      "completed_outer": 190,
+      "active_outer": 191,
+      "goal_status": "active",
+      "last_actual_poll_epoch": 1792131120.5069995
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/CURRENT_NATIVE_RECOVERY_FOLLOWUP.json",
+      "completed_outer": 190,
+      "active_outer": 190,
+      "goal_status": "active",
+      "last_actual_poll_epoch": 1792131120.5069995
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/CURRENT_OBSERVER_CONNECTION_STATE.json",
+      "completed_outer": 189,
+      "active_outer": 190,
+      "goal_status": "active",
+      "last_actual_poll_epoch": 1792131120.5069995
+    }
+  ],
+  "failed_output_created": false,
+  "canonical_modified": false,
+  "training_modified": false,
+  "remote_calls": 0,
+  "training_fault": false,
+  "decision": "Defer generic transition until normal190 closure; skip if191 optimizer/FULL has advanced. No immediate retry and no training restart. Raw Controller191 samples retained."
+}

@@ -1,0 +1,64 @@
+{
+  "schema": "dev190_actual_collector_execution_attestation_v1",
+  "actual_command": "env TREE_MGMT_CONTROL_PATH=/tmp/tree-mgmt-3fw9a1ab/control python3 -B work/tree-speed-repair-20261008/nested-dev-cumulative-parts-source/reproduction/tree-eval-resume-20261013/local-control-backup/collect_nested_dev_costs.py --base outputs/tree-nested-branch-handoff-20261013 --ssh-helper work/tree-speed-repair-20261008/ssh_retained18.py --through-outer 190",
+  "actual_working_directory": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2",
+  "resolved_base": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013",
+  "resolved_ssh_helper": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/ssh_retained18.py",
+  "started_utc": "2026-10-16T06:52:23.589720+00:00",
+  "finished_utc": "2026-10-16T06:52:27.510750+00:00",
+  "exit_code": 0,
+  "new_entry_main_invocations_this_task": 1,
+  "actual_remote_incremental_collection_invocations": 1,
+  "preceding_local_pending_invocations": 0,
+  "preceding_pending_remote_operations": false,
+  "executor_agent": "/root/cost166_actual_append",
+  "source_commit": "1edaf50bb8e14de51db936e0859e369792011233",
+  "source_sha256": "545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0",
+  "helper_sha256": "8065815f4452923bcb96fbdc12b96b246b7834f85f1bc2a9f75623912c157021",
+  "root_gate_input_pins": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV190_ROOT_OWNER_GATE_PINS.json",
+    "bytes": 11720,
+    "sha256": "86d4a187920bb0589f02426059cc34b301bd33c8e7d021d0e1839a95d74facfc"
+  },
+  "pre_execution_input_pins": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV5_190_NATIVE_COST_PRE_EXECUTION_INPUT_PINS.json",
+    "bytes": 52742,
+    "sha256": "0637991837725dde35ae00aca0732f3143cd8c181b20609a06877c371750600d"
+  },
+  "preceding_pending_evidence": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV190_SOURCE_BOUND_PENDING_READBACK.json",
+    "bytes": 10293,
+    "sha256": "2341a79088840d4e8ba1ec941323f365c877149e378c31292ec67a24d8c3f1e9"
+  },
+  "root_build_request": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV190_ROOT_GATE_ACTUAL_BUILD_REQUEST.json",
+    "bytes": 7170,
+    "sha256": "ab6867d0d6e6da4e59ceaa59f36f6b097be25e4dbb26fd6932c42d82885fda85"
+  },
+  "owner_source_publication_commit": "11a659d701c296a43ebe382a53edee2e237b2c33",
+  "owner_source": {
+    "path": "work/tree-speed-repair-20261008/dev190_owner_local_receipt.py",
+    "bytes": 54173,
+    "sha256": "96f4765d2b54cd7b26d8ee9e7f5b1d5d995d3a5e4806d937eb7f002d012b8e50"
+  },
+  "preceding_owner_preflight_attempts_this_task": 1,
+  "preceding_owner_preflight_failures": 0,
+  "preceding_owner_preflight_failures_are_not_collector_calls": true,
+  "actual_owner_preflight_exit_code": 0,
+  "separate_original_control_ready_remote_stable_read_calls": 1,
+  "separate_original_control_ready_scope": "Actual root gate builder evidence records one independent original-control helper stable double read; this sole collector executor did not repeat that gate read.",
+  "stdout": "{\"supplement\": {\"path\": \"DEV5_190_NATIVE_COST_SUPPLEMENT.json\", \"bytes\": 7131, \"sha256\": \"818265f0703c9b44b8aeb2d57bb42aa8d2a3ff80a1119e531a4b9bf2f1046cb2\", \"both_mirrors_byte_equal\": true}, \"markdown\": {\"path\": \"DEV5_190_NATIVE_COST_SUPPLEMENT.md\", \"bytes\": 594, \"sha256\": \"5110ca4112362882b0eb0ba9cc9d1855fa294b3ba9acf1469601678eb01c8960\", \"both_mirrors_byte_equal\": true}, \"controls\": 38, \"reused_original_control_outers\": [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185], \"newly_read_remote_control_outers\": [190], \"native_counter_totals\": {\"active_row_events\": {\"total\": 51934, \"known_sum\": 51934, \"missing_outers\": []}, \"generation_attempts\": {\"total\": 2240, \"known_sum\": 2240, \"missing_outers\": []}, \"generation_completed\": {\"total\": 2240, \"known_sum\": 2240, \"missing_outers\": []}, \"generation_failed\": {\"total\": 0, \"known_sum\": 0, \"missing_outers\": []}, \"http_attempts\": {\"total\": 2240, \"known_sum\": 2240, \"missing_outers\": []}, \"http_completed\": {\"total\": 2240, \"known_sum\": 2240, \"missing_outers\": []}, \"http_failed\": {\"total\": 0, \"known_sum\": 0, \"missing_outers\": []}, \"http_query_events\": {\"total\": 31932, \"known_sum\": 31932, \"missing_outers\": []}, \"http_returned_query_rows\": {\"total\": 31932, \"known_sum\": 31932, \"missing_outers\": []}, \"real_sample_rows\": {\"total\": 19456, \"known_sum\": 19456, \"missing_outers\": []}, \"returned_nonpad_model_token_events\": {\"total\": 8011755, \"known_sum\": 8011755, \"missing_outers\": []}, \"returned_rows\": {\"total\": 55520, \"known_sum\": 55520, \"missing_outers\": []}, \"submitted_padding_row_events\": {\"total\": 3586, \"known_sum\": 3586, \"missing_outers\": []}, \"submitted_prefill_token_events\": {\"total\": 38537536, \"known_sum\": 38537536, \"missing_outers\": []}, \"submitted_rows\": {\"total\": 55520, \"known_sum\": 55520, \"missing_outers\": []}}, \"original_cumulative_unchanged\": true, \"remote_files_written\": false}\n",
+  "stderr": "",
+  "stdout_bytes": 1964,
+  "stdout_sha256": "b69c49403e7b9458afef56d59b9e56874b614412dd23558189e30b5b192671c0",
+  "stderr_bytes": 0,
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "merged_tool_output": false,
+  "failure_or_unknown_result": null,
+  "execution_start_evidence": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV5_190_NATIVE_COST_COLLECTOR_EXECUTION_START.json",
+    "bytes": 2057,
+    "sha256": "28afb202b7e69780107e0482df90d71122951adb71ca146e3049abb7377242c0"
+  },
+  "evidence_scope": "The uniquely root-authorized executor invoked the published source1ed190 collector main exactly once after actual owner preflight exit0. Remote1 is this executor attestation corroborated only by actual output and SHA-bound products;not an independent global process audit. Prior160/165/170/175/180/185 actualmain6/remote6 remains immutable;only actual190 exit0/newly_read190/38 controls and successful owner verification can confirm cumulative7/7. Preceding collector PENDING0. Original dev190 scoring was already COMPLETE;metadata pending producer and original-control gate capture are separate. No automatic retry."
+}
