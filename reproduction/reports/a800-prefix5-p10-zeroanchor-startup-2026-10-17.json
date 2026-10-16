@@ -1,6 +1,6 @@
 {
   "role": "A800_fresh_actor200_p10_half_pool_zero_anchor_actual_deployment",
-  "asof_unix": 1792176505.788322,
+  "asof_unix": 1792176883.9233274,
   "run_id": "387d3f6e228a488f90c418e2ba47e28e",
   "execution_id": "90aea944c40d41eab4cf84efac02b22a",
   "runtime_source": "31f616264ceeb4f0e4d33b39bd85df1214afc15d",
@@ -72,9 +72,9 @@
     "actor_Adam_per_outer": 20,
     "formal_outer_budget": 200
   },
-  "initial_training_acceptance": "PENDING_ACTUAL_NATIVE_PROGRESS_AND_FIRST_COMPLETE_OUTER",
-  "complete_outers": 0,
-  "actor_Adam": 0,
+  "initial_training_acceptance": "TWO_POSITIVE_FLOWS_AND_FIRST_COMPLETE_OUTER_VERIFIED",
+  "complete_outers": 1,
+  "actor_Adam": 20,
   "probe_Adam": 0,
   "actual_receipts": [
     {
@@ -101,5 +101,162 @@
     "probe_initialize_exit0": true,
     "observed_unix": 1792176505.788322,
     "receipt_sha256": "545b94d94a09757d1a33767f10d7447b6e2e345ba75e65133df8ba9e2853fa5d"
-  }
+  },
+  "first_complete_joint_sha256": "8caf30634d90479e633b524086658b2b33d9b651e84f150026470033a298c33e",
+  "first_complete_outer": {
+    "actor": {
+      "completed_outer": 1,
+      "actual_adam_steps_per_rank": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "scheduler_completed_outer": 1,
+      "learning_rate_used": 0.0,
+      "next_learning_rate": 1.7543859649122805e-08,
+      "actual_global_micro": 16,
+      "actual_local_micro": 4,
+      "gradient_accumulation": 8
+    },
+    "phase_timings": {
+      "outer-000001-actor-6dc6618bf320410f908b96264c6156d8": {
+        "elapsed_seconds": 338.29568980354816,
+        "exit_code": 0
+      },
+      "outer-000001-continue": {
+        "elapsed_seconds": 118.47648535575718,
+        "exit_code": 0
+      },
+      "outer-000001-prefix": {
+        "elapsed_seconds": 58.033215888775885,
+        "exit_code": 0
+      },
+      "outer-000001-score": {
+        "elapsed_seconds": 15.78100764285773,
+        "exit_code": 0
+      }
+    },
+    "reward_mean": 0.6579550221154932,
+    "selected": {
+      "actual_selected_mixed_fraction": 0.791015625,
+      "questions": 512,
+      "trajectories": 2560
+    },
+    "advantage_contract": {
+      "all_wrong_and_mixed": "original_G5_normalization",
+      "anchor_in_statistics_only": true,
+      "anchor_value": 0.0,
+      "anchored_group": "all_five_correct",
+      "classification": "actual_native_strict_em_G5",
+      "epsilon": 1e-06,
+      "mode": "zero_anchor_all_correct_only",
+      "raw_grounding_rewards_modified": false,
+      "standard_deviation_correction": 1,
+      "synthetic_actor_trajectory": false
+    },
+    "advantage_summary": {
+      "actual_group_counts": {
+        "all_correct": 43,
+        "all_wrong": 64,
+        "mixed": 405,
+        "original_g5": 0
+      },
+      "actual_groups": 512,
+      "actual_trajectories": 2560,
+      "epsilon": 1e-06,
+      "mode": "zero_anchor_all_correct_only",
+      "per_type_statistics": {
+        "all_correct": {
+          "advantage_mean": {
+            "max": 0.40824612975120544,
+            "mean": 0.4041532957276633,
+            "min": 0.3765556812286377
+          },
+          "normalization_mean": {
+            "max": 1.3248579502105713,
+            "mean": 1.1526819051698196,
+            "min": 0.8643605709075928
+          },
+          "normalization_sample_std": {
+            "max": 0.6490476727485657,
+            "mean": 0.5701170307259227,
+            "min": 0.423504501581192
+          },
+          "raw_reward_mean": {
+            "max": 1.5898295640945435,
+            "mean": 1.3832182856493218,
+            "min": 1.037232756614685
+          },
+          "raw_reward_sample_std": {
+            "max": 0.22609418630599976,
+            "mean": 0.06113799963536304,
+            "min": 0.0019922880455851555
+          }
+        },
+        "all_wrong": {
+          "advantage_mean": {
+            "max": 2.3841858265427618e-08,
+            "mean": -1.862645232497684e-09,
+            "min": -3.5762788286319847e-08
+          },
+          "normalization_mean": {
+            "max": 0.05000000074505806,
+            "mean": 0.02609375028987415,
+            "min": -0.07000000029802322
+          },
+          "normalization_sample_std": {
+            "max": 0.08215838670730591,
+            "mean": 0.039276737719774246,
+            "min": 0.0
+          },
+          "raw_reward_mean": {
+            "max": 0.05000000074505806,
+            "mean": 0.02609375028987415,
+            "min": -0.07000000029802322
+          },
+          "raw_reward_sample_std": {
+            "max": 0.08215838670730591,
+            "mean": 0.039276737719774246,
+            "min": 0.0
+          }
+        },
+        "mixed": {
+          "advantage_mean": {
+            "max": 2.1457671550706436e-07,
+            "mean": 1.080150223092207e-08,
+            "min": -2.3245812030836532e-07
+          },
+          "normalization_mean": {
+            "max": 1.2836477756500244,
+            "mean": 0.6808014384390395,
+            "min": 0.15082745254039764
+          },
+          "normalization_sample_std": {
+            "max": 0.9247667193412781,
+            "mean": 0.6681645664903852,
+            "min": 0.4176836609840393
+          },
+          "raw_reward_mean": {
+            "max": 1.2836477756500244,
+            "mean": 0.6808014384390395,
+            "min": 0.15082745254039764
+          },
+          "raw_reward_sample_std": {
+            "max": 0.9247667193412781,
+            "mean": 0.6681645664903852,
+            "min": 0.4176836609840393
+          }
+        }
+      },
+      "raw_rewards_modified": false,
+      "standard_deviation_correction": 1,
+      "synthetic_actor_trajectories": 0,
+      "virtual_zero_statistics_groups": 43
+    },
+    "advantage_statistics_sha256": "388bf7b28f8e7585ff5177f6e0b1c6e2b40900368b7fabb44643cf74d065c6a7"
+  },
+  "samepipeline_next_outer": 2,
+  "next_stage": "outer-000002-continue",
+  "latest_receipt_sha256": "aeea853014615ed78be3edd8d99fc7aa1e1fe4c8090bf67d192b3ddbda97854f"
 }
