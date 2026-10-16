@@ -48,14 +48,15 @@ def inspect(base,outer):
     need(head['run_id']==config['run_id'] and head['completed_outer']==boundary['last_update_outer']
          and head['binding_sha256']==digest(head['binding'])==probe['binding_sha256'],
          'Probe checkpoint version/binding differs')
+    rate=config['probe_learning_rate']
     b=head['binding'];need(b['representation_source']=='current_sampling_actor_native_layer27_postblock'
          and b['independent_encoder_forward'] is False and b['probe_update_period']==20
-         and b['updates_per_period']==100 and b['learning_rate']==1e-6,'Wrong periodic native probe recipe')
+         and b['updates_per_period']==100 and b['learning_rate']==rate,'Wrong periodic native probe recipe')
     model=head['model'];shapes=head_shapes();need(set(model)==set(shapes),'Missing original probe tensors')
     for name,value in model.items():tensor_cpu(value,dtype=torch.float32,shape=shapes[name],finite=True)
     steps=boundary['actual_adam_per_rank']
     if steps:
-        adam=validate_adam(head['optimizer'],[v.shape for v in model.values()],steps,1e-6,weight_decay=0.)
+        adam=validate_adam(head['optimizer'],[v.shape for v in model.values()],steps,rate,weight_decay=0.)
         need(len(head['rank_rng'])==8,'Missing periodic probe rank RNG')
         for rank,rng in enumerate(head['rank_rng']):
             need(rng['rank']==rank and rng['actual_adam_steps']==steps,'Wrong periodic RNG clock');validate_rng(rng)

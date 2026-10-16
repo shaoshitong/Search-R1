@@ -20,7 +20,7 @@ def validate_config(c, base):
         raise ValueError('Use the isolated remote prefix-selection namespace')
     required = dict(outers=200, candidate_questions=5120, selected_questions=512,
                     responses_per_question=5, prefix_policy_tokens=20, exploration_questions=0,
-                    probe_learning_rate=1e-6, probe_epochs_per_update=1, probe_update_period=20,
+                    probe_learning_rate=1e-5, probe_epochs_per_update=1, probe_update_period=20,
                     probe_updates_per_period=100, actor_hidden_native=True, probe_global_batch_average=256,
                     actor_global_mini_batch=128, actor_ppo_epochs=1, world_size=8)
     if any(c.get(k) != v for k, v in required.items()):

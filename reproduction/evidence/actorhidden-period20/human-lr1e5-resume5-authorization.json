@@ -1,0 +1,58 @@
+{
+  "authorization": {
+    "resume_from5": true,
+    "probe_learning_rate": 1e-05,
+    "other_settings_unchanged": true,
+    "human_messages": [
+      "从完整第5轮重走至20",
+      "其他不变，就是探针的一个学习率给它增大。对。"
+    ],
+    "recorded_utc": "2026-10-16T19:02:07.120205+00:00",
+    "source_job": "3425",
+    "old6_to25_retained_but_not_counted": true
+  },
+  "source5": {
+    "joint_sha256": "fe7bc4a3592914134f9918b5c69692d65ee0127ed275e2e5113cf84f3b1a3e73",
+    "probe_snapshot": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000005/probe-state-at-completion.pt",
+    "probe_exists": true,
+    "probe_inode": 178990815,
+    "pool_snapshot": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000005/pool-state-at-completion.json",
+    "pool_state": {
+      "candidate_questions": 5120,
+      "consumed_candidates": 25600,
+      "cursor": 25600,
+      "cycle": 0,
+      "next_outer": 6,
+      "seed": 1729
+    },
+    "cpu_proof": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/preparation/joint-native-0005-independent-full-sha-cpu.json",
+    "cpu_proof_sha256": "2231cbf9ecca7e934ba34e924fb8705962fa1b0dcce2a2bd848b1812ccf160da",
+    "qa5": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/outers/outer-000005/validation/complete.json",
+    "qa5_sha256": "c73c6206c2af948a54baa7d14ccc6a1dccdb94a9de19591d74c3398ff35e2f64"
+  },
+  "terminal": {
+    "original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden-stop-terminal-final-20261016T190022623029Z-actual.json",
+    "sha256": "c53275229a6b9b0469eae8f9457a3bb6e903fd643d36c2008a74982f039a1d9b",
+    "result": {
+      "status": "HUMAN_STOP_ORIGINAL_INODE_FULL_SHA_OWNED_RELEASED",
+      "proof": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/preparation/terminal3425-human-lr1e5-original-inode-full-sha.json",
+      "sha256": "1a4cd044a52c80b8689e5128af83d0b2ac14efb04965dfb7b2329d629ae2b31d",
+      "native": {
+        "unavailable": "slurm_load_jobs error: Invalid job id specified\n"
+      },
+      "latest_complete_outer": 25,
+      "original_logs": 518,
+      "original_births": 7754,
+      "actual_births_present": [],
+      "native_job_cgroup_paths": [],
+      "owned_gpu": []
+    },
+    "code_sha256": "3bdb0d887a2e0d0798cbecc9ecf61f43ee86a5d6ce04692e43ee175251d37916"
+  },
+  "cpu_tests": {
+    "command": "python3 -m unittest reproduction.prefix_selection200.test_recover_lr5 reproduction.prefix_selection200.test_resume reproduction.prefix_selection200.test_actor_hidden_periodic",
+    "tests": 11,
+    "exit_code": 0
+  },
+  "new_base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume5"
+}

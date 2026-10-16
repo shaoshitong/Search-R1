@@ -1,3 +1,13 @@
+## Human-authorized retained5 restart with probe LR1e-5
+
+The user stopped3425 and, after actual20 actor/Adam assets were found already rotated, explicitly selected retained complete5 and confirmed that only the probe learning rate changes. Source3425's7754 original process births/cgroup/ownedGPU are gone;518 original log inodes were read in full. Slurm had already purged its record, so no native terminal exit code is invented. The successful scoped scancel receipt plus absence from queue and actual resource release are recorded. Latest old complete25 and all6–25 traces remain historical and are not counted on the new execution.
+
+The source5 independent fullSHA/CPU proof is reused without rehashing38GB. The new importer preserves actor Adam100/rank, scheduler5, all8 RNG and question cursor25600/next6. The genuine online-Adam0 probe retains all14 tensor values; only its future LR metadata is rebound1e-6→1e-5. No warmup optimizer is imported, no actor reset and no new warmup occurs. Existing exact-actor5 QA512 is reused, rather than rerun as an extra baseline. Periodic probe schedule20/40/...200 and100updates/rank, actor recipe and all other budgets remain unchanged.
+
+Focused CPU tests:11 passed. Deployment/GPU restore/resumed6–10 plus11 actual generation remain pending until real observations; source CPU validation and submission are not substitutes for runtime acceptance. The preserved5 backup remains complete, but all future checkpoints/QA/final51713/retention and final exit remain outstanding.
+
+---
+
 ## Latest actual result: first periodic update complete
 
 At 2026-10-16T18:30:40.664064+00:00, same job3425 on h100-8 has completed21/200: actor420 and probe100 actual Adam/rank on all8 ranks;22 is in actor training. Frozen runtime700a0b3d is unchanged. Initial3–7+8 acceptance and the periodic20 observer both ended normally; no observer is active. Later QA and final retention remain unfinished.

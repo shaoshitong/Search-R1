@@ -37,7 +37,7 @@ from reproduction.prefix_only_correctness_ab.train_ddp import actual_adam_steps
 SOURCE_SHA = '8df6bd445945ffbbf6a94171f24934495f0ce3ff17a3d2577bbd53d4b8fefd56'
 SOURCE_RUN = 'cee20bcd24194b79a9a8a88809bd5886'
 TEST_SHA = 'a125fc5af90e34fcd728c82077d9d62070a78d5ef703ac11f3748687d088e64f'
-QMAX, WIDTH, DIM, LR = 273, 293, 2048, 1e-6
+QMAX, WIDTH, DIM, LR = 273, 293, 2048, 1e-5
 TENSOR_FIELDS = ('features', 'attention_mask', 'position_ids', 'question_mask',
                  'policy_mask', 'question_lengths', 'policy_lengths')
 

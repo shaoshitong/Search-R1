@@ -51,13 +51,14 @@ def inspect(base, outer):
     if not (root / 'complete.json').exists():
         return dict(status='PENDING_JOINT_COMPLETION', outer=outer, training_modified=False)
     joint = read(root / 'complete.json')
+    rate = read(base / 'preparation/launch-config.json')['probe_learning_rate']
     metrics_path = root / 'probe-update/metrics.json'
     metrics = read(metrics_path)
     complete = read(root / 'probe-update/complete.json')
     assert sha(metrics_path) == complete['metrics_sha256']
     expected_before = 100 * (outer // 20 - 1)
     assert metrics['actual_adam_steps_per_rank'] == [expected_before + 100] * 8
-    assert metrics['new_adam_steps_per_rank'] == 100 and metrics['actual_learning_rate'] == 1e-6
+    assert metrics['new_adam_steps_per_rank'] == 100 and metrics['actual_learning_rate'] == rate
     ledger_facts, ledgers = [], []
     for rank in range(8):
         path = root / 'probe-update' / ('rank-%d-updates.jsonl' % rank)
@@ -66,7 +67,7 @@ def inspect(base, outer):
         assert [row['step'] for row in values] == list(range(1, 101))
         assert [row['actual_adam_steps'] for row in values] == list(range(expected_before + 1, expected_before + 101))
         assert all(row['outer'] == outer and row['rank'] == rank
-                   and row['actual_learning_rate'] == 1e-6 for row in values)
+                   and row['actual_learning_rate'] == rate for row in values)
         assert sum(row['local_questions'] for row in values) == 640
         assert sum(row['local_trajectories'] for row in values) == 3200
         ledger_facts.append(dict(rank=rank, actual_writes=100, last_actual_adam=expected_before + 100,
