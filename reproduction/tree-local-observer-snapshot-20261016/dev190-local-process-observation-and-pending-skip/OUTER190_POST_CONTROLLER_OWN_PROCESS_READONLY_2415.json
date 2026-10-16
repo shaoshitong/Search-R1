@@ -1,0 +1,296 @@
+{
+  "schema": "own_training_cgroup_readonly_two_process_samples_v1",
+  "started_at_utc": "2026-10-16T06:18:39.589240+00:00",
+  "ended_at_utc": "2026-10-16T06:18:45.258287+00:00",
+  "inputs": {
+    "poll": 2415,
+    "source": "778b2b43dad90fc0c1c5d95d77c2326286011b73"
+  },
+  "remote_command": "from pathlib import Path\nimport subprocess,json,time,os\nstart=time.time();cpu=time.process_time();unit='sst-tree-nested-branch-fresh200-778b2b43.service'\nv=dict(x.split('=',1) for x in subprocess.check_output(['systemctl','show',unit,'--property=MainPID,InvocationID,ActiveState,ControlGroup'],text=True).splitlines())\nassert v['MainPID']=='503255' and v['InvocationID']=='a313bda919834d24b4c5d491698d39ce' and v['ActiveState']=='active'\ncg=Path('/sys/fs/cgroup'+v['ControlGroup']);hz=os.sysconf('SC_CLK_TCK')\ndef snap():\n out={}\n for pid in (cg/'cgroup.procs').read_text().split():\n  p=Path('/proc')/pid\n  try:\n   st=(p/'stat').read_text();tail=st[st.rindex(')')+2:].split();io=dict(x.split(':',1) for x in (p/'io').read_text().splitlines());out[pid]={'comm':st[st.index('(')+1:st.rindex(')')],'state':tail[0],'cpu_ticks':int(tail[11])+int(tail[12]),'wchan':(p/'wchan').read_text().strip(),'read_bytes':int(io['read_bytes']),'write_bytes':int(io['write_bytes']),'rchar':int(io['rchar']),'wchar':int(io['wchar'])}\n  except (FileNotFoundError,ProcessLookupError):pass\n return out\na=snap();t1=time.time();time.sleep(2);b=snap();t2=time.time();rows=[]\nfor pid,x in b.items():\n if pid in a:\n  y=a[pid];rows.append(dict(pid=int(pid),comm=x['comm'],state=x['state'],wchan=x['wchan'],cpu_delta_seconds=(x['cpu_ticks']-y['cpu_ticks'])/hz,read_delta_bytes=x['read_bytes']-y['read_bytes'],write_delta_bytes=x['write_bytes']-y['write_bytes'],rchar_delta=x['rchar']-y['rchar'],wchar_delta=x['wchar']-y['wchar']))\nrows.sort(key=lambda x:x['cpu_delta_seconds'],reverse=True)\nprint(json.dumps(dict(unit=v,first_epoch=t1,second_epoch=t2,process_count=len(b),top_own_processes=rows[:24],observer_cpu_seconds=time.process_time()-cpu,observer_wall_seconds=time.time()-start,read_only=True,signals_sent=False)))\n",
+  "remote_command_sha256": "6b5f2613577a58531d7d30c107620b34b6a9ca386e3a3f4a496f1bad0382631f",
+  "returncode": 0,
+  "stderr": "",
+  "actual": {
+    "unit": {
+      "MainPID": "503255",
+      "ControlGroup": "/system.slice/sst-tree-nested-branch-fresh200-778b2b43.service",
+      "ActiveState": "active",
+      "InvocationID": "a313bda919834d24b4c5d491698d39ce"
+    },
+    "first_epoch": 1792131523.1467428,
+    "second_epoch": 1792131525.2001188,
+    "process_count": 301,
+    "top_own_processes": [
+      {
+        "pid": 507209,
+        "comm": "ray::WorkerDict",
+        "state": "S",
+        "wchan": "futex_wait_queue_me",
+        "cpu_delta_seconds": 2.08,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 8192,
+        "rchar_delta": 676476,
+        "wchar_delta": 6049
+      },
+      {
+        "pid": 507787,
+        "comm": "ray::WorkerDict",
+        "state": "S",
+        "wchan": "futex_wait_queue_me",
+        "cpu_delta_seconds": 2.08,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 8192,
+        "rchar_delta": 676476,
+        "wchar_delta": 6053
+      },
+      {
+        "pid": 507788,
+        "comm": "ray::WorkerDict",
+        "state": "S",
+        "wchan": "futex_wait_queue_me",
+        "cpu_delta_seconds": 2.08,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 8192,
+        "rchar_delta": 676476,
+        "wchar_delta": 6053
+      },
+      {
+        "pid": 507791,
+        "comm": "ray::WorkerDict",
+        "state": "S",
+        "wchan": "futex_wait_queue_me",
+        "cpu_delta_seconds": 2.08,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 8192,
+        "rchar_delta": 676476,
+        "wchar_delta": 6043
+      },
+      {
+        "pid": 507786,
+        "comm": "ray::WorkerDict",
+        "state": "S",
+        "wchan": "futex_wait_queue_me",
+        "cpu_delta_seconds": 2.07,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 8192,
+        "rchar_delta": 676476,
+        "wchar_delta": 6041
+      },
+      {
+        "pid": 507789,
+        "comm": "ray::WorkerDict",
+        "state": "S",
+        "wchan": "futex_wait_queue_me",
+        "cpu_delta_seconds": 2.07,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 8192,
+        "rchar_delta": 676476,
+        "wchar_delta": 6043
+      },
+      {
+        "pid": 507790,
+        "comm": "ray::WorkerDict",
+        "state": "S",
+        "wchan": "futex_wait_queue_me",
+        "cpu_delta_seconds": 2.07,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 8192,
+        "rchar_delta": 676484,
+        "wchar_delta": 6051
+      },
+      {
+        "pid": 507792,
+        "comm": "ray::WorkerDict",
+        "state": "S",
+        "wchan": "futex_wait_queue_me",
+        "cpu_delta_seconds": 2.07,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 8192,
+        "rchar_delta": 676476,
+        "wchar_delta": 6035
+      },
+      {
+        "pid": 503399,
+        "comm": "pt_main_thread",
+        "state": "S",
+        "wchan": "do_select",
+        "cpu_delta_seconds": 0.05,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 4096,
+        "rchar_delta": 700974,
+        "wchar_delta": 4882
+      },
+      {
+        "pid": 505143,
+        "comm": "pt_main_thread",
+        "state": "S",
+        "wchan": "do_select",
+        "cpu_delta_seconds": 0.05,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      },
+      {
+        "pid": 504618,
+        "comm": "gcs_server",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.04,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      },
+      {
+        "pid": 505141,
+        "comm": "raylet",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.02,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 32768,
+        "rchar_delta": 11544,
+        "wchar_delta": 31922
+      },
+      {
+        "pid": 505569,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.02,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      },
+      {
+        "pid": 505578,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.02,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 8,
+        "wchar_delta": 8
+      },
+      {
+        "pid": 505586,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.02,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      },
+      {
+        "pid": 504597,
+        "comm": "pt_main_thread",
+        "state": "S",
+        "wchan": "do_select",
+        "cpu_delta_seconds": 0.01,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      },
+      {
+        "pid": 505571,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.01,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      },
+      {
+        "pid": 505572,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.01,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 8,
+        "wchar_delta": 8
+      },
+      {
+        "pid": 505574,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.01,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 8,
+        "wchar_delta": 8
+      },
+      {
+        "pid": 505575,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.01,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      },
+      {
+        "pid": 505576,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.01,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      },
+      {
+        "pid": 505577,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.01,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      },
+      {
+        "pid": 505580,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.01,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      },
+      {
+        "pid": 505581,
+        "comm": "ray::IDLE",
+        "state": "S",
+        "wchan": "ep_poll",
+        "cpu_delta_seconds": 0.01,
+        "read_delta_bytes": 0,
+        "write_delta_bytes": 0,
+        "rchar_delta": 0,
+        "wchar_delta": 0
+      }
+    ],
+    "observer_cpu_seconds": 0.106205492,
+    "observer_wall_seconds": 2.119636058807373,
+    "read_only": true,
+    "signals_sent": false
+  },
+  "does_not_prove_specific_python_stack_or_optimizer_progress": true,
+  "training_modified": false
+}
