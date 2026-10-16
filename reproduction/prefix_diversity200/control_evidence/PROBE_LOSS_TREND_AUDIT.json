@@ -1,9 +1,9 @@
 {
-  "created_utc": "2026-10-16T23:10:53.033131+00:00",
+  "created_utc": "2026-10-16T23:46:46.572315+00:00",
   "run_id": "f3ee1435e5014ba1969387c91878893a",
-  "through_outer": 80,
+  "through_outer": 85,
   "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/COMPLETED_ITERATION_SCALAR_EVIDENCE.json",
-  "source_sha256": "42772d55437e51786b1203cf9da4d46eb1e6ac15d394bea32baada418497d9d9",
+  "source_sha256": "1e9f984065a0b0bd61742c5f3ce244c3664d2939adfb61aa8322ae39b4c3ecbf",
   "threshold": 0.5,
   "loss_definition": "trajectory_mean_BCE + group_mean_BCE; weights1/1; train ALL1024/5120,20 synchronous Adam/rank,one natural epoch",
   "rows": [
@@ -1926,24 +1926,144 @@
         2.0056931247898175,
         2.485109983706007
       ]
+    },
+    {
+      "outer": 81,
+      "train1024_after_update": {
+        "total_loss": 2.1788425894323455,
+        "trajectory_bce": 0.9566514464219805,
+        "group_bce": 1.2221911430103651,
+        "balanced_accuracy": 0.5002465729298148,
+        "mixed_recall": 0.9808612440191388,
+        "nonmixed_recall": 0.0196319018404908
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.2650307810965762,
+        "trajectory_bce": 0.5848590163281985,
+        "group_bce": 0.6801717647683776,
+        "balanced_accuracy": 0.5639377481023802,
+        "mixed_recall": 0.3224043715846995,
+        "nonmixed_recall": 0.8054711246200608
+      },
+      "online20_step_loss_weighted_mean": 2.197347091510892,
+      "online20_step_loss_range": [
+        1.9349720524806602,
+        2.480150391073788
+      ]
+    },
+    {
+      "outer": 82,
+      "train1024_after_update": {
+        "total_loss": 2.221983102951093,
+        "trajectory_bce": 1.07991897973359,
+        "group_bce": 1.142064123217503,
+        "balanced_accuracy": 0.5030339805825242,
+        "mixed_recall": 1.0,
+        "nonmixed_recall": 0.006067961165048544
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.2814080624220678,
+        "trajectory_bce": 0.5987576009053899,
+        "group_bce": 0.682650461516678,
+        "balanced_accuracy": 0.5496786087996413,
+        "mixed_recall": 0.2786885245901639,
+        "nonmixed_recall": 0.8206686930091185
+      },
+      "online20_step_loss_weighted_mean": 2.265762762632221,
+      "online20_step_loss_range": [
+        2.043346269457948,
+        2.500987838296329
+      ]
+    },
+    {
+      "outer": 83,
+      "train1024_after_update": {
+        "total_loss": 2.204669792376733,
+        "trajectory_bce": 1.275789682799576,
+        "group_bce": 0.9288801095771569,
+        "balanced_accuracy": 0.5570913461538461,
+        "mixed_recall": 0.671875,
+        "nonmixed_recall": 0.4423076923076923
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.3819292323971788,
+        "trajectory_bce": 0.656229824218571,
+        "group_bce": 0.7256994081786079,
+        "balanced_accuracy": 0.5339495407510755,
+        "mixed_recall": 0.15300546448087432,
+        "nonmixed_recall": 0.9148936170212766
+      },
+      "online20_step_loss_weighted_mean": 2.22673165705055,
+      "online20_step_loss_range": [
+        1.8295474893906536,
+        2.40742164850235
+      ]
+    },
+    {
+      "outer": 84,
+      "train1024_after_update": {
+        "total_loss": 2.198692312968954,
+        "trajectory_bce": 1.1616103729016145,
+        "group_bce": 1.0370819400673397,
+        "balanced_accuracy": 0.5302414535022711,
+        "mixed_recall": 0.8370786516853933,
+        "nonmixed_recall": 0.22340425531914893
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.3297371857558407,
+        "trajectory_bce": 0.6292974816553848,
+        "group_bce": 0.7004397041004558,
+        "balanced_accuracy": 0.5503263740096667,
+        "mixed_recall": 0.21311475409836064,
+        "nonmixed_recall": 0.8875379939209727
+      },
+      "online20_step_loss_weighted_mean": 2.23220063210465,
+      "online20_step_loss_range": [
+        2.0071501077390184,
+        2.451597979435554
+      ]
+    },
+    {
+      "outer": 85,
+      "train1024_after_update": {
+        "total_loss": 2.150017659063421,
+        "trajectory_bce": 1.083596533339532,
+        "group_bce": 1.0664211257238887,
+        "balanced_accuracy": 0.5082660076672053,
+        "mixed_recall": 0.8835978835978836,
+        "nonmixed_recall": 0.13293413173652693
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.3003331523268111,
+        "trajectory_bce": 0.6129314252014062,
+        "group_bce": 0.6874017271254049,
+        "balanced_accuracy": 0.561545999634594,
+        "mixed_recall": 0.2568306010928962,
+        "nonmixed_recall": 0.8662613981762918
+      },
+      "online20_step_loss_weighted_mean": 2.1882777735590935,
+      "online20_step_loss_range": [
+        2.0102816282534133,
+        2.3419950101889815
+      ]
     }
   ],
   "first_to_latest_delta": {
     "train1024_after_update": {
-      "total_loss": 0.7394683631608676,
-      "trajectory_bce": 0.37876051979158154,
-      "group_bce": 0.36070784336928585,
-      "balanced_accuracy": 0.013343863343863394,
-      "mixed_recall": -0.10476190476190472,
-      "nonmixed_recall": 0.13144963144963145
+      "total_loss": 0.7158749821854786,
+      "trajectory_bce": 0.3481408299188391,
+      "group_bce": 0.3677341522666395,
+      "balanced_accuracy": 0.00826600766720531,
+      "mixed_recall": -0.1164021164021164,
+      "nonmixed_recall": 0.13293413173652693
     },
     "fixed_diagnostic512_after_update": {
-      "total_loss": 0.12385580954115682,
-      "trajectory_bce": 0.10878829252212152,
-      "group_bce": 0.015067517019035304,
-      "balanced_accuracy": -0.05087448303353426,
-      "mixed_recall": -0.31147540983606553,
-      "nonmixed_recall": 0.20972644376899696
+      "total_loss": 0.12111647437254636,
+      "trajectory_bce": 0.10795124163556746,
+      "group_bce": 0.013165232736978894,
+      "balanced_accuracy": -0.04085073164249997,
+      "mixed_recall": -0.30054644808743164,
+      "nonmixed_recall": 0.21884498480243164
     }
   },
   "interpretation": [
