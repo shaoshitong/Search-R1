@@ -1,0 +1,30 @@
+python3 -B - <<'PY'
+from pathlib import Path
+import json,hashlib,datetime,subprocess
+w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013'
+ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+def pin(p,field):
+ r=p.read_bytes();return {field:str(p) if field=='path' else p.name,'bytes':len(r),'sha256':hashlib.sha256(r).hexdigest()}
+source=w/'work/tree-speed-repair-20261008/dev185-optimizer-native-pending-sourceprep/DEV185_ACTUAL_OPTIMIZER_NATIVE_DEV_PENDING.template.py'
+sr=source.read_bytes();assert len(sr)==41206 and hashlib.sha256(sr).hexdigest()=='6d88175a977821f23da6bf07a09e838ca0a491020fe6912e9f61bb9df518e379'
+assert not (b/'FULL_OUTER185_PROGRESS_RECEIPT.json').exists()
+names={'first_poll':'NATIVE5_CONTINUE_POLL_2335.json','first_resource':'NATIVE5_CONTINUE_RESOURCE_2335.json','second_poll':'NATIVE5_CONTINUE_POLL_2337.json','second_resource':'NATIVE5_CONTINUE_RESOURCE_2337.json','native185':'NATIVE_HISTORY_185_METADATA_READBACK.json','prior_full':'FULL_OUTER184_PROGRESS_RECEIPT.json','prior_root_full':'ROOT_FULL184_PUBLICATION_READBACK_2322_2323.json'}
+d={'schema':'dev185_pending_stage_execution_pins_v1','created_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+for k,n in names.items():d[k]=pin(b/n,'file')
+assert (d['prior_full']['bytes'],d['prior_full']['sha256'])==(29790,'b5827dda548e7daf0ab4fa77a1814b33c5f5ee43da834b21206552a8838da410')
+assert (d['prior_root_full']['bytes'],d['prior_root_full']['sha256'])==(33518,'0c60d69f8717a23fd5b820490a3761173b2fe55614d7bf89a4158c77b1dc3fd6')
+assert (d['native185']['bytes'],d['native185']['sha256'])==(8353,'0d8d4dd2553c24c98557bbea76ae55edad87804561c2fe4dc53498db86b563fe')
+nd=json.loads((b/names['native185']).read_bytes());d['native_manifest_sha256']=nd['manifest_sha256'];d['native_receipt_sha256']=nd['receipt_sha256']
+paths=[w/'outputs/STATUS.json',w/'outputs/tree-nested-branch/STATUS.json',b/'CURRENT_NATIVE_RECOVERY_FOLLOWUP.json',b/'CURRENT_OBSERVER_CONNECTION_STATE.json']
+reports=[w/'outputs/REPORT.md',w/'outputs/tree-nested-branch/REPORT.md',*[m/'REPORT.md' for m in ms]]
+allp=paths+[m/p.name for m in ms for p in paths[1:]]+reports
+assert len(allp)==len(set(allp))==14
+d['canonical_before']=[pin(p,'path') for p in allp]
+out=b/'DEV185_PENDING_STAGE_ACTUAL_INPUT_PINS_2335_2337.json';assert not out.exists()
+raw=(json.dumps(d,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode();out.write_bytes(raw)
+for m in ms:(m/out.name).write_bytes(raw)
+print(json.dumps({'actual_input_manifest':pin(out,'path')},ensure_ascii=False),flush=True)
+r=subprocess.run(['python3','-B',str(source),'--workspace',str(w),'--pins',str(out),'--pins-bytes',str(len(raw)),'--pins-sha256',hashlib.sha256(raw).hexdigest(),'--source-bytes','41206','--source-sha256','6d88175a977821f23da6bf07a09e838ca0a491020fe6912e9f61bb9df518e379'])
+raise SystemExit(r.returncode)
+PY
+
