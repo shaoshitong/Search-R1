@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import stat
+import socket
 import subprocess
 import time
 
@@ -114,6 +115,52 @@ def guard(base, proof_path):
     return dict(path=str(proof_path), sha256=sha(proof_path), **d)
 
 
+def process_observation(base, compute=False):
+    """Run on the original compute node through Slurm, or as each login UID."""
+    base=own_base(base);host=socket.gethostname()
+    if os.getuid() not in (14090,21930) or (compute and (host.lower()!='acd1-21' or os.getuid()!=14090)):
+        raise ValueError('RETIRE_WRONG_PROCESS_OBSERVER')
+    excluded={os.getpid()};pid=os.getppid()
+    while pid>1 and pid not in excluded:
+        excluded.add(pid)
+        try:pid=int((Path('/proc')/str(pid)/'stat').read_text().rsplit(')',1)[1].split()[1])
+        except FileNotFoundError:break
+    prefixes=(str(OLD),str(TRANSIT/RUN));readers=[]
+    for path in Path('/proc').glob('[0-9]*'):
+        try:
+            if int(path.name) in excluded or path.stat().st_uid!=os.getuid():continue
+            command=(path/'cmdline').read_bytes().replace(b'\0',b' ').decode(errors='replace')
+            cwd=os.readlink(path/'cwd');open_paths=[]
+            for fd in (path/'fd').iterdir():
+                try:
+                    value=os.readlink(fd)
+                    if value.startswith(prefixes):open_paths.append(value)
+                except FileNotFoundError:pass
+            if any(p in command for p in prefixes) or cwd.startswith(prefixes) or open_paths:
+                readers.append(dict(pid=int(path.name),command=command[:1000],cwd=cwd,open_paths=open_paths))
+        except (FileNotFoundError,ProcessLookupError):pass
+    live=[];total=0
+    if compute:
+        ledger=json.loads((OLD/'logs/process-ledger.json').read_text())
+        for job in ledger['jobs'].values():
+            for rec in job.get('ledger',{}).values():
+                total+=1
+                try:
+                    tail=(Path('/proc')/str(rec['pid'])/'stat').read_text().rsplit(')',1)[1].split()
+                    if int(tail[19])==rec['start_ticks'] and tail[0]!='Z':
+                        live.append(dict(pid=rec['pid'],start_ticks=rec['start_ticks'],state=tail[0]))
+                except (FileNotFoundError,ProcessLookupError):pass
+    value=dict(role='old_sigma3_checkpoint_process_observation',hostname=host,observer_uid=os.getuid(),
+        boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
+        checkpoint_readers=readers,compute_ledger_checked=compute,recorded_compute_births=total,
+        live_original_compute_births=live,source_sha256=sha(Path(__file__)),checked_unix=time.time())
+    if readers or live:raise ValueError('RETIRE_ORIGINAL_PROCESS_OR_CHECKPOINT_READER_STILL_LIVE')
+    if compute:
+        value['slurm_job_id']=os.environ['SLURM_JOB_ID']
+        publish(base/'preparation/retire-original-compute-quiescence.json',value)
+    return value
+
+
 def plan(base, proof_path):
     base = own_base(base)
     queue = no_active_jobs(); final = final_proof(); quiescent = guard(base, proof_path)
@@ -169,10 +216,11 @@ def retire(base, plan_path, expected_sha, proof_path):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('mode',choices=('plan','retire'))
-    p.add_argument('--base',required=True);p.add_argument('--quiescence',required=True)
+    p=argparse.ArgumentParser();p.add_argument('mode',choices=('plan','retire','observe-login','observe-compute'))
+    p.add_argument('--base',required=True);p.add_argument('--quiescence')
     p.add_argument('--plan');p.add_argument('--plan-sha');a=p.parse_args()
-    value=plan(a.base,a.quiescence) if a.mode=='plan' else retire(a.base,a.plan,a.plan_sha,a.quiescence)
+    if a.mode.startswith('observe-'):value=process_observation(a.base,a.mode=='observe-compute')
+    else:value=plan(a.base,a.quiescence) if a.mode=='plan' else retire(a.base,a.plan,a.plan_sha,a.quiescence)
     print(json.dumps(value))
 
 
