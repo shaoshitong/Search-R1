@@ -1,0 +1,81 @@
+{
+  "scope": "Completed Recursive A200 versus current Recursive B; excludes C1/C2 and Tree-Nested",
+  "parent_selection": {
+    "A": "uniform over expandable accepted trajectories",
+    "B": "weight=1/(generation+1), normalized over eligible parents",
+    "generation": "root0, child1, grandchild2; trajectory genealogy, not model action index",
+    "example_generations": [
+      0,
+      1,
+      2
+    ],
+    "A_probabilities": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "B_probabilities": [
+      0.5454545454545454,
+      0.2727272727272727,
+      0.18181818181818182
+    ]
+  },
+  "common_mechanism": {
+    "roots": 1,
+    "selected_target": 5,
+    "continuation_attempt_budget": 10,
+    "different_reward_accepts": "both0to1and1to0",
+    "same_reward": "backoff on same parent then failure-pool fill",
+    "advantage": "2*(reward-question_mean)/(sample_std+1e-6)",
+    "parent_weight_is_loss_weight": false,
+    "ppo_clip": 0.2,
+    "shared_prefix_loss": "retained per final trajectory"
+  },
+  "observed_implementation_difference": "B filters None/done/nonrestorable snapshots; completed A legal_positions does not explicitly filter these",
+  "scientific_inference": "Shallow-parent preference may redistribute exploration; improvement is not established by these single-seed differences",
+  "comparison_limits": {
+    "fixed_validation_ordered_ids_match": true,
+    "full_test_ordered_ids_match": true,
+    "training_ordered_ids_match": false,
+    "full_training_set_equality_verified": false,
+    "A_hardware": "8H100",
+    "B_hardware": "4RTX4090",
+    "execution_pipelines_differ": true
+  },
+  "source_files": {
+    "A_parent": "work/recursive-bran-experiment-a-20261011/search_r1/baselines/recursive_branch.py:139",
+    "B_parent": "work/recursive-bran-experiment-b-20261011/search_r1/baselines/recursive_branch.py:47",
+    "B_snapshot_filter": "work/recursive-bran-experiment-b-20261011/search_r1/baselines/recursive_branch.py:36",
+    "A_actual_data": "work/recursive-bran-experiment-a-20261011/release/recursive_bran_a/h100_migration/prepare_train.py:10"
+  },
+  "fixed512_comparison": [
+    {
+      "iter": 5,
+      "A_correct": 96,
+      "B_correct": 88,
+      "A_em": 0.1875,
+      "B_em": 0.171875
+    },
+    {
+      "iter": 50,
+      "A_correct": 199,
+      "B_correct": 205,
+      "A_em": 0.388671875,
+      "B_em": 0.400390625
+    },
+    {
+      "iter": 100,
+      "A_correct": 236,
+      "B_correct": 233,
+      "A_em": 0.4609375,
+      "B_em": 0.455078125
+    },
+    {
+      "iter": 150,
+      "A_correct": 246,
+      "B_correct": 253,
+      "A_em": 0.48046875,
+      "B_em": 0.494140625
+    }
+  ]
+}

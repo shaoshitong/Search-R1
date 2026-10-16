@@ -23,6 +23,7 @@ spec=[
 ('Tree nested branching fresh200','Tree-Nested','#D04A53','Tree & recursion'),
 ('Recursive A','Recursive A','#168D7B','Tree & recursion'),
 ('C1 root-only ablation150','C1 root-only','#AC72A6','Tree & recursion'),
+('C2 random-final ablation150','C2 random-final','#506B95','Tree & recursion'),
 ('Recursive B four GPU','Recursive B','#E38927','Tree & recursion'),
 ('GiGPO safety fresh200 3347','GiGPO','#A6577F','Other baselines'),
 ('Three-block Q-probe stdloss 3399 → CP5 recovery3400','Q-probe 3-block','#9A69AF','Q-probe'),
@@ -92,14 +93,14 @@ for j,(ax,family,title) in enumerate(zip(axes.flat,families,titles)):
  for m in mm:series(ax,m,200)
  style(ax,200,70 if j in [1,2,3] else 85)
  ax.set_title(title,loc='left',fontsize=15,color=INK,pad=58)
- ax.legend(loc='lower left',bbox_to_anchor=(-.01,1.015),ncol=2 if j!=1 else 3,frameon=False,fontsize=10.6,handlelength=2.1,columnspacing=1.3)
+ ax.legend(loc='lower left',bbox_to_anchor=(-.01,1.015),ncol=2 if j!=1 else 4,frameon=False,fontsize=10.6,handlelength=2.1,columnspacing=1.3)
  if j==3:
   ax.text(.02,.96,'G1 σ3 (10/15): outer1 rollout28.98%;\nAdam update unfinished.\nNo completed-iteration point.',transform=ax.transAxes,va='top',color=MUTED,fontsize=10.5)
 fig.suptitle('Training rollout EM',x=.065,y=.975,ha='left',fontsize=26,color=INK,fontweight='bold')
 fig.text(.065,.931,STAMP+'  |  Native rollout EM; settings and recovery lineages kept separate.',color=MUTED,fontsize=12)
 fig.text(.065,.052,'Faint = each completed outer; bold = trailing5-outer mean. Missing data are gaps. Selected-question / tree-rollout EMs use different sampling distributions.',color=MUTED,fontsize=10.5)
 fig.text(.065,.027,'GiGPO51–200 includes source-bound historical scalars (12 points rechecked). BAPO / OPSD / E1 Archive use the labeled10/14 historical snapshot.',color=MUTED,fontsize=10.5)
-fig.text(.975,.931,'B / CoSearch refreshed; other runs retain10/15 audit.',ha='right',color=MUTED,fontsize=10)
+fig.text(.975,.931,'A / Tree / B / Co refreshed; other dates retained.',ha='right',color=MUTED,fontsize=10)
 fig.savefig(OUT/'training-em-curves.png',dpi=165);fig.savefig(OUT/'training-em-curves.svg');plt.close(fig)
 
 panels=[]

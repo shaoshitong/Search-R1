@@ -1,4 +1,4 @@
-"""Merge two read-only session audits into the previous checked figure data.
+"""Merge the requested read-only session audits into the checked figure data.
 
 Only scalar summaries live locally. Prior settings keep their source dates.
 """
@@ -15,19 +15,27 @@ base = read(D/'base-all-seven-results.json')
 report = copy.deepcopy(base)
 updates = []
 sources = []
-for name in ['b-updated-runs.json','co-updated-runs.json']:
+source_by_run = {}
+for name in ['b-updated-runs.json','co-updated-runs.json','a-updated-runs.json','tree-updated-runs.json']:
     p = D/name
+    if not p.exists():continue
     doc = read(p)
     sources.append(evidence(p))
     updates.extend(doc['runs'])
+    source_by_run.update({r['name']:p for r in doc['runs']})
 by_name = {r['name']:i for i,r in enumerate(report['runs'])}
 updated_names = set()
 for r in updates:
     name = r['name']
-    assert name in by_name, 'Unknown setting requires an explicit new plot specification: '+name
-    old = report['runs'][by_name[name]]
-    assert r['session'] == old['session']
-    assert r['completed_iter'] >= old['completed_iter']
+    if name in by_name:
+        old = report['runs'][by_name[name]]
+        assert r['session'] == old['session']
+        assert r['completed_iter'] >= old['completed_iter']
+    else:
+        assert name == 'C2 random-final ablation150', 'Unknown new setting: '+name
+        assert r['session'] == '01a1028b-b626-7f91-93db-0099ff1623c5'
+        by_name[name] = len(report['runs'])
+        report['runs'].append(None)
     points = r.get('train_series',r.get('training_series',[]))
     steps = [int(v.get('iter',v.get('iteration'))) for v in points]
     assert len(steps) == len(set(steps)), 'Duplicate completed outer in '+name
@@ -38,7 +46,7 @@ for r in updates:
             assert e['n'] == 512
             assert abs(e['em']*512-round(e['em']*512)) < 1e-7
     r['audit_refreshed_20261016'] = True
-    r['audit_file'] = str(D/('b-updated-runs.json' if name.startswith('Recursive B') else 'co-updated-runs.json'))
+    r['audit_file'] = str(source_by_run[name])
     report['runs'][by_name[name]] = r
     updated_names.add(name)
 for r in base['runs']:
@@ -46,8 +54,8 @@ for r in base['runs']:
         assert report['runs'][by_name[r['name']]] == r
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8)))
 report['observed_report_at_cst'] = now.isoformat()
-report['plot_stamp'] = 'B / Co update · 2026-10-16 '+now.strftime('%H:%M')+' CST'
-report['viewer_subtitle'] = 'B与CoSearch于10月16日更新；其余setting沿用10月15日审计，BAPO/OPSD/E1历史线沿用10月14日。训练rollout、固定512验证和51,713题终评分开。'
+report['plot_stamp'] = '4-session refresh · 2026-10-16 '+now.strftime('%H:%M')+' CST'
+report['viewer_subtitle'] = 'A/C1/C2与Tree-Nested于本次更新，B与CoSearch为今天12:54–12:57核查；其他setting保留原核查日期。训练rollout、固定512验证和51,713题终评分开。'
 report['base_audit'] = evidence(D/'base-all-seven-results.json')
 report['updated_names'] = sorted(updated_names)
 report['addition_sources'] = sources
@@ -58,7 +66,7 @@ report['remote_jobs_changed'] = False
 # Keep the already validated final rows; add only complete, seven-source scores.
 final = read(D/'base-final-seven-table-data.json')
 final['created_cst'] = now.isoformat()
-final['observed_window_cst'] = 'B / CoSearch: '+report['observed_report_at_cst']+'; other rows retain prior source dates'
+final['observed_window_cst'] = 'Four sessions updated: '+report['observed_report_at_cst']+'; other rows retain prior source dates'
 added_finals = []
 for r in updates:
     f = r.get('final51713',{})
@@ -70,8 +78,26 @@ for r in updates:
         label = '递归Tree B'
     elif r['name'].startswith('HPC3 Q-probe sigma3'):
         label = 'Q-probe σ3（CoSearch会话）'
+    elif r['name'] == 'Recursive A':
+        label = '递归Tree A'
+    elif r['name'] == 'Tree nested branching fresh200':
+        label = 'Tree 嵌套分叉'
+    elif r['name'] == 'Tree-GRPO original guarded200':
+        label = 'Tree-GRPO'
+    elif r['name'] == 'Tree BRANPO fresh200 3360':
+        label = 'Tree-BRANPO 3360'
     else:continue
+    if not f.get('source_metrics'):
+        prior = next((x for x in final['ours'] if x['experiment']==label),None)
+        assert prior is not None and abs(prior['micro_em']-f['em'])<1e-12
+        prior['final_identity_current'] = f
+        prior['sources'].append(evidence(Path(r['audit_file'])))
+        continue
     metrics = f['source_metrics']
+    if 'val/em/nq' in metrics:
+        metrics = {k:{'count':int(metrics['val/qa_count/'+k]),
+                      'em':float(metrics['val/em/'+k]),
+                      'f1':float(metrics['val/f1/'+k])} for k in DATASETS}
     assert set(metrics) == set(DATASETS)
     assert {k:int(metrics[k]['count']) for k in DATASETS} == COUNTS
     em = {k:float(metrics[k]['em']) for k in DATASETS}
@@ -85,8 +111,9 @@ for r in updates:
            'scope':'full_test_dataset_breakdown_rechecked_2026-10-16',
            'evidence':{'path':f.get('path'),'sha256':f.get('sha256')},
            'sources':[evidence(Path(r['audit_file']))],'final_identity_current':f}
+    is_new = not any(x['experiment'] == label for x in final['ours'])
     final['ours'] = [x for x in final['ours'] if x['experiment'] != label]+[row]
-    added_finals.append(label)
+    if is_new:added_finals.append(label)
 final['ours'].sort(key=lambda r:-r['macro_em'])
 final['rows'] = sorted(final['ours']+final['paper_references'],key=lambda r:r['macro_em'] if r['macro_em'] is not None else -1,reverse=True)
 final['pending_display'] = []
@@ -101,16 +128,21 @@ for r in updates:
         final['pending_display'].append({'label':f"递归Tree B · {r['completed_iter']}/200",'status':'待终评'})
     if r['name'].startswith('HPC3 Q-probe sigma3') and not r.get('final51713',{}).get('complete'):
         final['pending_display'].append({'label':f"Q-probe σ3 · Co会话 · {r['completed_iter']}/200",'status':'待终评'})
-final['plot_footer'] = '本次更新B与CoSearch；其余终评保留原核查日期。BAPO/OPSD为10月14日摘要。'+co_note
+    if r['name'] == 'Tree nested branching fresh200' and not r.get('final51713',{}).get('complete'):
+        final['pending_display'].append({'label':f"Tree-Nested · {r['completed_iter']}/200",'status':'待终评'})
+final['plot_footer'] = '本次追加Tree与A会话；B/CoSearch为今天稍早核查。其他终评保留原日期。'+co_note
 final['comparison_note'] = 'CoSearch双模型：检索top50后重排取5；检索计算预算与其他setting不同，排名不等于同预算算法优劣。'
 final['pending'] = [x for x in final.get('pending',[]) if not (co['final51713'].get('complete') and x['experiment'].startswith('CoSearch'))]
 for r in final['ours']:
     assert r['source_counts'] == COUNTS
     assert abs(sum(r['dataset_em'].values())/7-r['macro_em']) < 1e-14
     assert abs(sum(r['dataset_correct'].values())/51713-r['micro_em']) < 1e-12
+final['checks'] = [{'experiment':r['experiment'],'dataset_counts_sum':51713,
+                   'pooled_em_matches':True,'integer_correct_counts_verified':True,
+                   'macro_recomputed_from_unrounded_dataset_em':True} for r in final['ours']]
 (D/'final-seven-table-data.json').write_text(json.dumps(final,ensure_ascii=False,indent=2)+'\n')
 def pct(v):return '—' if v is None else f'{v*100:.2f}%'
-lines = ['完整51,713题终评；七集平均为等权macro。B/CoSearch于10月16日更新，其他行保留原核查日期。','',
+lines = ['完整51,713题终评；七集平均为等权macro。A/Tree/B/CoSearch于10月16日更新，其他行保留原核查日期。','',
          '| 实验／checkpoint | '+' | '.join(final['dataset_labels'])+' | 七集平均 |',
          '|---|'+'---:|'*8]
 for r in final['rows']:

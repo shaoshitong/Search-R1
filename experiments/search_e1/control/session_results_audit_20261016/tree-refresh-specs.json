@@ -1,0 +1,71 @@
+{
+  "local_poll": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/NATIVE5_CONTINUE_POLL_2377.json",
+  "specs": [
+    {
+      "name": "Tree nested current",
+      "root": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "logs": [
+        "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/stage.log"
+      ],
+      "unit": "sst-tree-nested-branch-fresh200-778b2b43.service",
+      "receipts": [
+        "output/validation-cost/validation-*.json",
+        "run-result.json",
+        "checkpoints/training_state/attempt-results/attempt-*.json",
+        "output/eval*/scores/*.json"
+      ]
+    },
+    {
+      "name": "Tree nested ancestor 1-1",
+      "root": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb",
+      "logs": [
+        "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb/stage.log"
+      ],
+      "receipts": [
+        "output/validation-cost/validation-*.json"
+      ],
+      "first": 1,
+      "last": 1
+    },
+    {
+      "name": "Tree nested ancestor 2-5",
+      "root": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+      "logs": [
+        "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/stage.log"
+      ],
+      "receipts": [
+        "output/validation-cost/validation-*.json"
+      ],
+      "first": 2,
+      "last": 5
+    },
+    {
+      "name": "Tree BRANPO fresh200 3360",
+      "root": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360",
+      "logs": [
+        "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/stage.log"
+      ],
+      "receipts": [
+        "output/validation-cost/validation-*.json",
+        "run-result.json",
+        "stage512-step*.json",
+        "output/eval*/scores/*.json",
+        "output/*final*.json"
+      ]
+    },
+    {
+      "name": "Tree-GRPO original guarded200",
+      "root": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3341",
+      "logs": [
+        "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3341/stage.log"
+      ],
+      "receipts": [
+        "output/validation-cost/validation-*.json",
+        "run-result.json",
+        "stage512-step*.json",
+        "output/eval*/scores/*.json",
+        "output/*final*.json"
+      ]
+    }
+  ]
+}

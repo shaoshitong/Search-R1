@@ -1,6 +1,6 @@
 {
-  "created_cst": "2026-10-16T12:58:33.128502+08:00",
-  "observed_window_cst": "B / CoSearch: 2026-10-16T12:58:33.128502+08:00; other rows retain prior source dates",
+  "created_cst": "2026-10-16T13:23:15.603191+08:00",
+  "observed_window_cst": "Four sessions updated: 2026-10-16T13:23:15.603191+08:00; other rows retain prior source dates",
   "datasets": [
     "nq",
     "triviaqa",
@@ -309,10 +309,16 @@
         "musique": 0.18287132809267687,
         "bamboogle": 0.368
       },
-      "macro_em": 0.4312484118268601,
-      "micro_em": 0.4828186336124379,
-      "f1": 0.5510407509251146,
-      "count": 51713,
+      "dataset_correct": {
+        "nq": 1738,
+        "triviaqa": 7157,
+        "popqa": 6843,
+        "hotpotqa": 3224,
+        "2wikimultihopqa": 5518,
+        "musique": 442,
+        "bamboogle": 46
+      },
+      "correct": 24968,
       "source_counts": {
         "nq": 3610,
         "triviaqa": 11313,
@@ -322,25 +328,22 @@
         "musique": 2417,
         "bamboogle": 125
       },
+      "count": 51713,
+      "micro_em": 0.4828186336124379,
+      "macro_em": 0.43124841182685997,
+      "f1": 0.5510407509251146,
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-16",
       "evidence": {
         "path": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/recovery-from100-20261013/final51713/84d95ec7600843efb00a5e16b9f13134/summary.json",
-        "sha256": "57dcae3ecff517a8250522f796a47641450ba8958c4990e36b0bc01f61b4a725",
-        "bytes": 2911,
-        "observed_utc": "2026-10-14T12:29:47.503660+00:00"
+        "sha256": "57dcae3ecff517a8250522f796a47641450ba8958c4990e36b0bc01f61b4a725"
       },
-      "kind": "ours",
       "sources": [
         {
-          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
-          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
-        },
-        {
-          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
-          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
-          "json_pointer": "/runs/name=Recursive A/final51713"
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/a-updated-runs.json",
+          "local_sha256": "029e105539e51ced66b64b9551db6298df2d28accae24d2af9446e27314e11df"
         }
       ],
-      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
       "final_identity_current": {
         "complete": true,
         "em": 0.4828186336124379,
@@ -351,18 +354,67 @@
         "mtime": 1791979236.0726624,
         "status": "COMPLETE",
         "evaluated_rows": 51713,
-        "correct": 24968
-      },
-      "dataset_correct": {
-        "nq": 1738,
-        "triviaqa": 7157,
-        "popqa": 6843,
-        "hotpotqa": 3224,
-        "2wikimultihopqa": 5518,
-        "musique": 442,
-        "bamboogle": 46
-      },
-      "correct": 24968
+        "correct": 24968,
+        "source_metrics": {
+          "val/qa_count/nq": 3610,
+          "val/f1/nq": 0.5613744482483288,
+          "val/em/nq": 0.4814404432132964,
+          "val/answer_format/nq": 0.9969529085872576,
+          "val/format_rate/nq": 0.7121883656509695,
+          "val/generated_tokens/nq": 140.81523545706372,
+          "val/search_calls/nq": 2.0490304709141274,
+          "val/qa_count/triviaqa": 11313,
+          "val/f1/triviaqa": 0.7067315071046308,
+          "val/em/triviaqa": 0.6326350216565013,
+          "val/answer_format/triviaqa": 0.997524971271988,
+          "val/format_rate/triviaqa": 0.7039688853531335,
+          "val/generated_tokens/triviaqa": 167.2309732166534,
+          "val/search_calls/triviaqa": 2.1659153186599487,
+          "val/qa_count/popqa": 14267,
+          "val/f1/popqa": 0.5224554418813919,
+          "val/em/popqa": 0.4796383262073316,
+          "val/answer_format/popqa": 0.9977570617508936,
+          "val/format_rate/popqa": 0.5500806055933273,
+          "val/generated_tokens/popqa": 141.08747459171514,
+          "val/search_calls/popqa": 2.136889325015771,
+          "val/qa_count/hotpotqa": 7405,
+          "val/f1/hotpotqa": 0.5507858589200658,
+          "val/em/hotpotqa": 0.4353814989871708,
+          "val/answer_format/hotpotqa": 0.9910871033085753,
+          "val/format_rate/hotpotqa": 0.4710330857528697,
+          "val/generated_tokens/hotpotqa": 213.37231600270087,
+          "val/search_calls/hotpotqa": 2.302093180283592,
+          "val/qa_count/2wikimultihopqa": 12576,
+          "val/f1/2wikimultihopqa": 0.49542329621765674,
+          "val/em/2wikimultihopqa": 0.43877226463104324,
+          "val/answer_format/2wikimultihopqa": 0.9841762086513995,
+          "val/format_rate/2wikimultihopqa": 0.23361959287531806,
+          "val/generated_tokens/2wikimultihopqa": 239.77870547073792,
+          "val/search_calls/2wikimultihopqa": 2.4807569974554706,
+          "val/qa_count/musique": 2417,
+          "val/f1/musique": 0.2691782954134187,
+          "val/em/musique": 0.18287132809267687,
+          "val/answer_format/musique": 0.9424906909391808,
+          "val/format_rate/musique": 0.49896565990897807,
+          "val/generated_tokens/musique": 252.74968969797268,
+          "val/search_calls/musique": 2.7753413322300373,
+          "val/qa_count/bamboogle": 125,
+          "val/f1/bamboogle": 0.48533333333333334,
+          "val/em/bamboogle": 0.368,
+          "val/answer_format/bamboogle": 0.984,
+          "val/format_rate/bamboogle": 0.576,
+          "val/generated_tokens/bamboogle": 186.608,
+          "val/search_calls/bamboogle": 2.416,
+          "val/qa_count/all": 51713,
+          "val/f1/all": 0.5510407509251146,
+          "val/em/all": 0.4828186336124379,
+          "val/answer_format/all": 0.9907760137682982,
+          "val/format_rate/all": 0.5044572931371222,
+          "val/generated_tokens/all": 186.46806412314118,
+          "val/search_calls/all": 2.274901862200994
+        },
+        "verified_at_cst": "2026-10-16T13:19:42.084835+08:00"
+      }
     },
     {
       "experiment": "Tree-GRPO",
@@ -404,6 +456,10 @@
           "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
           "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
           "json_pointer": "/runs/name=Tree-GRPO original guarded200/final51713"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/tree-updated-runs.json",
+          "local_sha256": "024621b7531d77746f45ddb3d1331b51edd00cbedf2d6bfc31175ac2783ec6e8"
         }
       ],
       "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
@@ -548,6 +604,10 @@
           "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
           "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
           "json_pointer": "/runs/name=Tree BRANPO fresh200 3360/final51713"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/tree-updated-runs.json",
+          "local_sha256": "024621b7531d77746f45ddb3d1331b51edd00cbedf2d6bfc31175ac2783ec6e8"
         }
       ],
       "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
@@ -1354,10 +1414,16 @@
         "musique": 0.18287132809267687,
         "bamboogle": 0.368
       },
-      "macro_em": 0.4312484118268601,
-      "micro_em": 0.4828186336124379,
-      "f1": 0.5510407509251146,
-      "count": 51713,
+      "dataset_correct": {
+        "nq": 1738,
+        "triviaqa": 7157,
+        "popqa": 6843,
+        "hotpotqa": 3224,
+        "2wikimultihopqa": 5518,
+        "musique": 442,
+        "bamboogle": 46
+      },
+      "correct": 24968,
       "source_counts": {
         "nq": 3610,
         "triviaqa": 11313,
@@ -1367,25 +1433,22 @@
         "musique": 2417,
         "bamboogle": 125
       },
+      "count": 51713,
+      "micro_em": 0.4828186336124379,
+      "macro_em": 0.43124841182685997,
+      "f1": 0.5510407509251146,
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-16",
       "evidence": {
         "path": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/recovery-from100-20261013/final51713/84d95ec7600843efb00a5e16b9f13134/summary.json",
-        "sha256": "57dcae3ecff517a8250522f796a47641450ba8958c4990e36b0bc01f61b4a725",
-        "bytes": 2911,
-        "observed_utc": "2026-10-14T12:29:47.503660+00:00"
+        "sha256": "57dcae3ecff517a8250522f796a47641450ba8958c4990e36b0bc01f61b4a725"
       },
-      "kind": "ours",
       "sources": [
         {
-          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
-          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
-        },
-        {
-          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
-          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
-          "json_pointer": "/runs/name=Recursive A/final51713"
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/a-updated-runs.json",
+          "local_sha256": "029e105539e51ced66b64b9551db6298df2d28accae24d2af9446e27314e11df"
         }
       ],
-      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
       "final_identity_current": {
         "complete": true,
         "em": 0.4828186336124379,
@@ -1396,18 +1459,67 @@
         "mtime": 1791979236.0726624,
         "status": "COMPLETE",
         "evaluated_rows": 51713,
-        "correct": 24968
-      },
-      "dataset_correct": {
-        "nq": 1738,
-        "triviaqa": 7157,
-        "popqa": 6843,
-        "hotpotqa": 3224,
-        "2wikimultihopqa": 5518,
-        "musique": 442,
-        "bamboogle": 46
-      },
-      "correct": 24968
+        "correct": 24968,
+        "source_metrics": {
+          "val/qa_count/nq": 3610,
+          "val/f1/nq": 0.5613744482483288,
+          "val/em/nq": 0.4814404432132964,
+          "val/answer_format/nq": 0.9969529085872576,
+          "val/format_rate/nq": 0.7121883656509695,
+          "val/generated_tokens/nq": 140.81523545706372,
+          "val/search_calls/nq": 2.0490304709141274,
+          "val/qa_count/triviaqa": 11313,
+          "val/f1/triviaqa": 0.7067315071046308,
+          "val/em/triviaqa": 0.6326350216565013,
+          "val/answer_format/triviaqa": 0.997524971271988,
+          "val/format_rate/triviaqa": 0.7039688853531335,
+          "val/generated_tokens/triviaqa": 167.2309732166534,
+          "val/search_calls/triviaqa": 2.1659153186599487,
+          "val/qa_count/popqa": 14267,
+          "val/f1/popqa": 0.5224554418813919,
+          "val/em/popqa": 0.4796383262073316,
+          "val/answer_format/popqa": 0.9977570617508936,
+          "val/format_rate/popqa": 0.5500806055933273,
+          "val/generated_tokens/popqa": 141.08747459171514,
+          "val/search_calls/popqa": 2.136889325015771,
+          "val/qa_count/hotpotqa": 7405,
+          "val/f1/hotpotqa": 0.5507858589200658,
+          "val/em/hotpotqa": 0.4353814989871708,
+          "val/answer_format/hotpotqa": 0.9910871033085753,
+          "val/format_rate/hotpotqa": 0.4710330857528697,
+          "val/generated_tokens/hotpotqa": 213.37231600270087,
+          "val/search_calls/hotpotqa": 2.302093180283592,
+          "val/qa_count/2wikimultihopqa": 12576,
+          "val/f1/2wikimultihopqa": 0.49542329621765674,
+          "val/em/2wikimultihopqa": 0.43877226463104324,
+          "val/answer_format/2wikimultihopqa": 0.9841762086513995,
+          "val/format_rate/2wikimultihopqa": 0.23361959287531806,
+          "val/generated_tokens/2wikimultihopqa": 239.77870547073792,
+          "val/search_calls/2wikimultihopqa": 2.4807569974554706,
+          "val/qa_count/musique": 2417,
+          "val/f1/musique": 0.2691782954134187,
+          "val/em/musique": 0.18287132809267687,
+          "val/answer_format/musique": 0.9424906909391808,
+          "val/format_rate/musique": 0.49896565990897807,
+          "val/generated_tokens/musique": 252.74968969797268,
+          "val/search_calls/musique": 2.7753413322300373,
+          "val/qa_count/bamboogle": 125,
+          "val/f1/bamboogle": 0.48533333333333334,
+          "val/em/bamboogle": 0.368,
+          "val/answer_format/bamboogle": 0.984,
+          "val/format_rate/bamboogle": 0.576,
+          "val/generated_tokens/bamboogle": 186.608,
+          "val/search_calls/bamboogle": 2.416,
+          "val/qa_count/all": 51713,
+          "val/f1/all": 0.5510407509251146,
+          "val/em/all": 0.4828186336124379,
+          "val/answer_format/all": 0.9907760137682982,
+          "val/format_rate/all": 0.5044572931371222,
+          "val/generated_tokens/all": 186.46806412314118,
+          "val/search_calls/all": 2.274901862200994
+        },
+        "verified_at_cst": "2026-10-16T13:19:42.084835+08:00"
+      }
     },
     {
       "experiment": "Tree-GRPO",
@@ -1449,6 +1561,10 @@
           "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
           "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
           "json_pointer": "/runs/name=Tree-GRPO original guarded200/final51713"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/tree-updated-runs.json",
+          "local_sha256": "024621b7531d77746f45ddb3d1331b51edd00cbedf2d6bfc31175ac2783ec6e8"
         }
       ],
       "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
@@ -1593,6 +1709,10 @@
           "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
           "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
           "json_pointer": "/runs/name=Tree BRANPO fresh200 3360/final51713"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/tree-updated-runs.json",
+          "local_sha256": "024621b7531d77746f45ddb3d1331b51edd00cbedf2d6bfc31175ac2783ec6e8"
         }
       ],
       "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
@@ -2060,6 +2180,20 @@
   ],
   "checks": [
     {
+      "experiment": "CoSearch 双模型",
+      "dataset_counts_sum": 51713,
+      "pooled_em_matches": true,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "Easy Selection+Soft Reward",
+      "dataset_counts_sum": 51713,
+      "pooled_em_matches": true,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
       "experiment": "递归Tree A",
       "dataset_counts_sum": 51713,
       "pooled_em_matches": true,
@@ -2116,21 +2250,14 @@
       "macro_recomputed_from_unrounded_dataset_em": true
     },
     {
-      "experiment": "OPSD 3304",
-      "dataset_counts_sum": 51713,
-      "pooled_em_matches": true,
-      "integer_correct_counts_verified": true,
-      "macro_recomputed_from_unrounded_dataset_em": true
-    },
-    {
-      "experiment": "Easy Selection+Soft Reward",
-      "dataset_counts_sum": 51713,
-      "pooled_em_matches": true,
-      "integer_correct_counts_verified": true,
-      "macro_recomputed_from_unrounded_dataset_em": true
-    },
-    {
       "experiment": "TOP-D α=1",
+      "dataset_counts_sum": 51713,
+      "pooled_em_matches": true,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "OPSD 3304",
       "dataset_counts_sum": 51713,
       "pooled_em_matches": true,
       "integer_correct_counts_verified": true,
@@ -2155,8 +2282,12 @@
     {
       "label": "Q-probe σ3 · Co会话 · 177/200",
       "status": "待终评"
+    },
+    {
+      "label": "Tree-Nested · 187/200",
+      "status": "待终评"
     }
   ],
-  "plot_footer": "本次更新B与CoSearch；其余终评保留原核查日期。BAPO/OPSD为10月14日摘要。CoSearch双模型完整终评已加入。",
+  "plot_footer": "本次追加Tree与A会话；B/CoSearch为今天稍早核查。其他终评保留原日期。CoSearch双模型完整终评已加入。",
   "comparison_note": "CoSearch双模型：检索top50后重排取5；检索计算预算与其他setting不同，排名不等于同预算算法优劣。"
 }
