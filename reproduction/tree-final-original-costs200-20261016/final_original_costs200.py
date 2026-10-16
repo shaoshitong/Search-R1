@@ -395,6 +395,17 @@ def inputs(args):
                  manifest.get('preparation_remote_calls')==1+int(failed is not None),'Successful preparation and preserved failed calls are separate actual invocations')
         else:
             need(manifest.get('preparation_remote_calls',0)==0,'Do not infer a preparation call without its response')
+    failed_remote=manifest.get('prior_failed_collection_response')
+    if failed_remote is not None:
+        need(locate(failed_remote['path'])==B/(STEM+'_REMOTE_RESPONSE.txt'),'Exact preserved failed collection response')
+        read(failed_remote,True)
+        prior_header,_,_=saved_response(STEM+'_REMOTE_RESPONSE.txt',failed_remote['bytes'],failed_remote['sha256'])
+        need(prior_header['phase']=='collect' and prior_header['exit_code']!=0 and prior_header['actual_remote_calls']==1,
+             'Explicit known failed remote collection, never unknown replay')
+    if args.phase in ('collect','recover-collect'):
+        tag=manifest.get('collection_attempt_tag','')
+        need(args.collect_attempt_tag==tag and tag in ('','REPAIR001'),'Bound authorized collection attempt tag')
+        need(not tag or failed_remote is not None,'Repair collection requires preserved known failed response')
     failed_main=manifest.get('prior_failed_collection_main_execution')
     if failed_main is not None:
         old=bound(failed_main,True)
@@ -493,7 +504,9 @@ def finish_collect(args,values,header,stdout,stderr,response_name):
                   remote_program_sha256=header['remote_program_sha256'],remote_calls=1,remote_exit_code=header['exit_code'],
                   stdout_bytes=len(stdout.encode()),stdout_sha256=sha(stdout.encode()),
                   stderr_bytes=len(stderr.encode()),stderr_sha256=sha(stderr.encode()),
-                  transport=header['transport'],durable_response=ref(B/response_name),preparation_remote_calls_separate=manifest.get('preparation_remote_calls',0),observer_cost_added_to_training=False)
+                  transport=header['transport'],durable_response=ref(B/response_name),preparation_remote_calls_separate=manifest.get('preparation_remote_calls',0),
+                  collection_prior_failed_remote_calls=int(manifest.get('prior_failed_collection_response') is not None),
+                  collection_total_remote_calls=1+int(manifest.get('prior_failed_collection_response') is not None),observer_cost_added_to_training=False)
     parts,descriptor=split_product(result,'CAPTURE')
     for name,raw in parts.items():publish(name,raw)
     product=publish(STEM+'_CAPTURE.json',enc(descriptor))
@@ -543,9 +556,10 @@ def collect(args, values):
                                if isinstance(node,ast.FunctionDef) and node.name=='validate_ledger'))+'\n'
     program=functions+'\n'+remote_fragment(read(manifest['remote_source']),'collect')+'\nPINS='+repr(manifest['remote_pins'])+"\n_RESULT=collect(PINS)\n_ENCODED=json.dumps(_RESULT,ensure_ascii=False,separators=(',',':'),allow_nan=False)\nneed(len(_ENCODED.encode())<=32*1024*1024,'Complete scalar output exceeds32MiB; no raw output emitted')\nprint(_ENCODED)\n"
     helper,command,transport=transport_program(program);checks()
-    response_name=STEM+'_REMOTE_RESPONSE.txt'
+    collect_stem=STEM+('_COLLECT_'+args.collect_attempt_tag if args.collect_attempt_tag else '')
+    response_name=collect_stem+'_REMOTE_RESPONSE.txt'
     try:
-        claim_attempt(STEM+'_ATTEMPT.json',dict(schema='tree_final200_original_cost_once_attempt_v2',
+        claim_attempt(collect_stem+'_ATTEMPT.json',dict(schema='tree_final200_original_cost_once_attempt_v2',
             started_utc=datetime.now(timezone.utc).isoformat(),input_manifest=ref(args.pins),transport=transport,
             remote_program_sha256=sha(program.encode()),authorized_remote_calls=1,phase='collect',automatic_retry=False))
     except AttemptAlreadyClaimed:
@@ -612,7 +626,7 @@ def prepare_pins(args,values):
 def recover(args,values):
     need(args.response_bytes is not None and args.response_sha256 is not None,'Bind the actual durable saved response')
     preparing=args.phase=='recover-prepare'
-    name=(STEM+'_PREPARE'+('_'+args.prepare_attempt_tag if args.prepare_attempt_tag else '')+'_RESPONSE.txt') if preparing else STEM+'_REMOTE_RESPONSE.txt'
+    name=(STEM+'_PREPARE'+('_'+args.prepare_attempt_tag if args.prepare_attempt_tag else '')+'_RESPONSE.txt') if preparing else STEM+('_COLLECT_'+args.collect_attempt_tag if args.collect_attempt_tag else '')+'_REMOTE_RESPONSE.txt'
     try:
         header,stdout,stderr=saved_response(name,args.response_bytes,args.response_sha256)
         publish(name,(B/name).read_bytes())
@@ -728,8 +742,9 @@ def aggregate(args, values):
                  source_inputs=list(LOCAL.values()),source1ed_main_calls=0,source1ed_remote_calls=0,
                  all200_original_effective_rows=200,original_native_metadata_records=len(capture['native_metadata']),
                  original_rank_records=1600,complete_field_parts=len(products),
-                 final_original_collector_main_calls=1+int(manifest.get('prior_failed_collection_main_execution') is not None),
-                 final_original_collector_successful_main_calls=1,final_original_collector_remote_calls=1,
+                 final_original_collector_main_calls=1+int(manifest.get('prior_failed_collection_main_execution') is not None)+int(manifest.get('prior_failed_collection_response') is not None),
+                 final_original_collector_successful_main_calls=1,final_original_collector_remote_calls=1+int(manifest.get('prior_failed_collection_response') is not None),
+                 final_original_collector_successful_remote_calls=1,
                  local_aggregation_main_calls=1,local_aggregation_remote_calls=0,
                  source1ed_prior190_actual_main_remote_preserved=[7,7],source1ed_new_calls=0,
                  prepare_pins_remote_calls=manifest.get('preparation_remote_calls',0),
@@ -756,6 +771,7 @@ def main():
     parser.add_argument('--capture-bytes',type=int)
     parser.add_argument('--capture-sha256')
     parser.add_argument('--prepare-attempt-tag',default='')
+    parser.add_argument('--collect-attempt-tag',default='')
     parser.add_argument('--response-bytes',type=int)
     parser.add_argument('--response-sha256')
     args=parser.parse_args();need(__debug__,'Do not disable actual evidence gates with -O')

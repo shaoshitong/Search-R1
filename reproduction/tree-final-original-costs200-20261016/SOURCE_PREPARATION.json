@@ -7,13 +7,13 @@
   "source_files": {
     "final_original_costs200.py": {
       "path": "work/tree-speed-repair-20261008/final_original_costs200.py",
-      "bytes": 53423,
-      "sha256": "331ec92dda2597a57d48ea1d56972d0bd7409d704e5b33c818dc3d2d60e1ca41"
+      "bytes": 55016,
+      "sha256": "2e2059415e957e861481ae90fc4c28b8f72ce1f91422b250dae76fd6e9cf1136"
     },
     "final_original_costs200_remote.py": {
       "path": "work/tree-speed-repair-20261008/final_original_costs200_remote.py",
-      "bytes": 31964,
-      "sha256": "b592dcaa95a27ee74cad96c8f541c998307eec8018e72a8a507aaa6b7597d8bb"
+      "bytes": 32184,
+      "sha256": "dd140e73092bce3caa3c1ba547b253ee4015014259afcac996a7dc1f897a111f"
     },
     "variance200_original_record_coverage.py": {
       "path": "variance200_original_record_coverage.py",
@@ -47,9 +47,10 @@
     "prepare_remote_helper": 2,
     "prepare_exit1": 1,
     "prepare_exit0": 1,
-    "new_collector_main": 1,
-    "new_remote_helper": 0,
+    "new_collector_main": 2,
+    "new_remote_helper": 1,
     "collector_pre_ssh_budget_exit1": 1,
+    "collector_remote_sample_exit1": 1,
     "source1ed": 0,
     "variance_entry": 0,
     "training_or_evaluation": 0
@@ -66,5 +67,6 @@
   "additional_repair_of_commit": "516aceadb27e77d02eaefdf2b17d356edfc286bc",
   "runtime_correction": "Exclude policy_batch via same exact audit basename regex as collect; REPAIR001 has independent O_EXCL qualification and requires SHA-bound known failed original response. No deletion/overwrite of first ATTEMPT/response.",
   "transport_correction": "Lossless stdlib lzma instead of zlib; same compressed target<=32768, management<=65536, argv<=80000 caps and all fields/SHA preserved. Actual program586828B: base64 zlib40544B failed before claim/SSH; base64 lzma29000B. No new remote preparation required.",
-  "actual_invocation_count_correction": "A SHA-bound known pre-SSH failed collect execution contributes one prior local main and zero remote calls; final summary records total main2, successful main1, remote1 only after actual successful collection."
+  "actual_invocation_count_correction": "A SHA-bound known pre-SSH failed collect execution contributes one prior local main and zero remote calls; final summary records total main2, successful main1, remote1 only after actual successful collection.",
+  "historical_sample_correction": "Original outer1 eight8192-value finite sample deltas have nonzero0/min=max0, preserved as recorded and no nonzero-change proof. Historical sample admits0..count; actual200 sample still requires nonzero>0; finite/nonzero gradients and Adam conditions unchanged. Known failed remote response permits separately bound COLLECT_REPAIR001 O_EXCL once, no overwrite of prior qualification."
 }

@@ -120,7 +120,8 @@ def rank_record(ref, run, commit, config, outer, rank, attempt, writer_sha):
     need(value.get('finite_grad_norms') == calls and 1 <= value.get('nonzero_grad_norms', 0) <= calls,
          'Original rank finite/nonzero gradients')
     need(type(sample.get('count')) is int and sample['count'] > 0 and sample.get('finite') == sample['count']
-         and 1 <= sample.get('nonzero', 0) <= sample['count'], 'Original finite/nonzero shard sample')
+         and type(sample.get('nonzero')) is int and 0 <= sample['nonzero'] <= sample['count']
+         and (outer != 200 or sample['nonzero'] > 0), 'Original finite sample and actual200 nonzero sample')
     processed = value.get('opportunities_processed')
     skipped = value.get('opportunities_skipped', value.get('skipped_optimizer_calls'))
     need(processed is None or type(processed) is int and processed == 20, 'Explicit rank opportunities')
@@ -130,7 +131,8 @@ def rank_record(ref, run, commit, config, outer, rank, attempt, writer_sha):
                 skipped_empty_minibatches=value.get('skipped_empty_minibatches'),
                 opportunities_processed=processed, opportunities_skipped=skipped,
                 finite_grad_norms=value['finite_grad_norms'], nonzero_grad_norms=value['nonzero_grad_norms'],
-                local_shard_sample_delta=sample, source=source)
+                local_shard_sample_delta=sample, sampled_parameter_change_nonzero_proven=sample['nonzero']>0,
+                historical_zero_sample_not_rewritten=True, source=source)
 
 
 def physical_attempt(ref, run, commit, config, outer, attempt, expected_ranks):
