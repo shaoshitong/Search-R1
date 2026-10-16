@@ -109,12 +109,14 @@ def main():
  rowparts={}
  for q in capture['rows']['parts']:
   for i,row in enumerate(bound(q)['value']):rowparts[row['outer']]=(q,i)
- cumulative={str(r):0 for r in range(8)};new=[];devs=[]
+ cumulative={str(r):0 for r in range(8)};new=[];devs=[];historical_point_field_absence=[]
  for row in rows:
   n=row['outer'];m=row['metric'];ranks=row['rank_records'];assert [r['rank'] for r in ranks]==list(range(8))
   for rank,r in enumerate(ranks):cumulative[str(rank)]+=r['successful_optimizer_calls']
   if n<=190:
-   for key,field in FIELDS.items():assert old['training_points'][n-1][key]==m[field]
+   for key,field in FIELDS.items():
+    if key in old['training_points'][n-1] and old['training_points'][n-1][key] is not None:assert old['training_points'][n-1][key]==m[field]
+    else:historical_point_field_absence.append(dict(outer=n,field=key,original_point_not_rewritten=True))
    continue
   scalar=ref(B/f'final_original_costs200/SCALARS_OUTER{n:04d}.json');s=bound(scalar);assert s['iteration_metrics']==[m] and s['outer']==n
   assert s['evidence_mode']=='RETROSPECTIVE_SOURCE_READBACK' and s['historical_live_poll_created'] is False
@@ -155,6 +157,8 @@ def main():
   prior_curve=ref(B/'LEARNING_CURVE_COMPLETE_THROUGH190.json'),prior_csv=ref(B/'LEARNING_CURVE_COMPLETE_THROUGH190.csv'),
   original_capture=manifest['capture'],original_costs=manifest['cost_totals'],original_variance=manifest['variance'],actual_input_manifest=ref(args.pins),
   source1ed_actual_prior_preserved=[7,7],source1ed_new_calls=0,remote_operations=False,STATUS_REPORT_alias_canonical_modified=False,
+  historical_point_field_absence=historical_point_field_absence,
+  complete_original_training_series200={key:[row['metric'][field] for row in rows] for key,field in FIELDS.items()},
   original_final51713_completion_claimed=False,independent_final_acceptance_pending=True,
   limits=['Historical outer1 eight finite parameter samples have zero delta and prove no sampled nonzero change; original nonzero gradients and successful calls are separate.',
           'Whole-run cost200 is bound only as whole-run cost; no per-round CUM191..199 is fabricated.',
