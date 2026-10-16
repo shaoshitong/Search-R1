@@ -1,8 +1,10 @@
 {
   "run_id": "f3ee1435e5014ba1969387c91878893a",
-  "observed_unix": 1792182672.8950927,
+  "observed_unix": 1792182941.7005749,
   "output_directory": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/retrieval-cost-v1",
-  "new_complete_outer_proofs": [],
+  "new_complete_outer_proofs": [
+    58
+  ],
   "complete_outer_rows": {
     "1": {
       "actor512_is_subset_not_additive": true,
@@ -1656,6 +1658,35 @@
       },
       "total_distinct_logical_retrieval_calls": 5120,
       "training_modified": false
+    },
+    "58": {
+      "schema_version": 1,
+      "run_id": "f3ee1435e5014ba1969387c91878893a",
+      "outer": 58,
+      "execution_base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4",
+      "observed_unix": 1792182941.6931536,
+      "prefix_all25600_logical_retrieval_calls": 0,
+      "selected5120_inherited_prefix_retrieval_calls": 0,
+      "selected5120_full_trajectory_retrieval_calls": 5121,
+      "continuation_new_logical_retrieval_calls": 5121,
+      "total_distinct_logical_retrieval_calls": 5121,
+      "actual_prefix_trajectories": 25600,
+      "actual_continued_trajectories": 5120,
+      "receipt_sha256": {
+        "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/outers/outer-000058/complete.json": "d3e88d8fb2f35e4d8478091b49babfbc579f28fb71cc590f2bc89077e23852d8",
+        "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/outers/outer-000058/prefix/complete.json": "943767163ab4a69277b49a5ab8921221dca243db367b29e1e08e76dbe85c90d8",
+        "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/outers/outer-000058/full/complete.json": "e95fce1e235a247a379c194c03617950139efb4b3df2e4a788debf6d072e12a1"
+      },
+      "source_namespace_config_sha256": {
+        "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/launch-config.json": "384cf0f516e7bf9ce3623bdf48e87a078f8eceaa5af5e03f238e04e86ae59ad8"
+      },
+      "shard_sha256_verified_in_same_stream": true,
+      "scope": "committed outer logical search actions only; HTTP retries, cache hits, failed attempts and QA are separate",
+      "actor512_is_subset_not_additive": true,
+      "raw_trajectory_output_returned": false,
+      "model_tensors_read": false,
+      "new_model_forward": false,
+      "training_modified": false
     }
   },
   "verified_proof_cache_paths": {
@@ -1715,13 +1746,14 @@
     "54": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/retrieval-cost-v1/outer-000054.json",
     "55": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/retrieval-cost-v1/outer-000055.json",
     "56": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/retrieval-cost-v1/outer-000056.json",
-    "57": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/retrieval-cost-v1/outer-000057.json"
+    "57": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/retrieval-cost-v1/outer-000057.json",
+    "58": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/retrieval-cost-v1/outer-000058.json"
   },
   "pending_complete_outers": [],
-  "total_distinct_logical_retrieval_calls": 301740,
+  "total_distinct_logical_retrieval_calls": 306861,
   "model_tensors_read": false,
   "new_model_forward": false,
   "training_modified": false,
-  "reader_commit": "e124801ff8959dd8ff5f2c71dad82c5770e1d6a3",
+  "reader_commit": "c19d594dd04ae4c18b2d5088d817bdef276f9346",
   "reader_sha256": "1c40c2e37eb5870014650b9bb82902282ea47513e753781827119d42ee74918a"
 }
