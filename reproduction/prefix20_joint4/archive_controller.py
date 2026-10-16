@@ -137,8 +137,12 @@ class Controller:
         self.started=time.time();self.unknown_observations=0
 
     def event(self,stage,**fields):
-        value=dict(stage=stage,source_job=self.config['source_job'],run_id=self.run_id,
-            completed_steps=self.completed,checked_unix=time.time(),**fields)
+        # Transport callbacks already carry their actual observation timestamp.
+        # Merge once; the controller owns its routing and completion bindings.
+        value=dict(fields)
+        value.setdefault('checked_unix',time.time())
+        value.update(stage=stage,source_job=self.config['source_job'],run_id=self.run_id,
+            completed_steps=list(self.completed))
         held.atomic(self.root/'progress.json',value)
         with self.events.open('a') as stream:
             stream.write(json.dumps(value,allow_nan=False)+'\n');stream.flush();os.fsync(stream.fileno())

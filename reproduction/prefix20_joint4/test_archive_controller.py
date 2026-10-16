@@ -170,6 +170,88 @@ class ControllerTests(unittest.TestCase):
         held.atomic(root/'controller-exit.json',exited);new['recovery_of']['old_exit_sha256']=core.sha(root/'controller-exit.json')
         with self.assertRaisesRegex(ValueError,'NONZERO_EXIT'):held.recovery_admission(new,'RAM')
 
+    def timestamp_collision_fixture(self):
+        spec=importlib.util.spec_from_file_location('collision_archive_fixture',Path(__file__).with_name('test_checkpoint_archive.py'))
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);module.archive=core
+        pair=module.Fixture(self.f.root/'collision',step=5);self.addCleanup(pair.close)
+        old=dict(self.f.config,base=str(pair.base),training_commit=pair.commit)
+        root=Path(old['controller_root']);born=dict(self.f.born(),host='xielab3')
+        supervisor=dict(born,pid=born['pid']+1,start_ticks=2)
+        core.publish(root/'config.json',old);core.publish(root/'controller-launch-claim.json',dict(config_sha256=core.document_sha(old)))
+        for name,value in (('controller-birth.json',born),('controller-supervisor-birth.json',supervisor),
+                           ('launcher-observed-birth.json',supervisor)):
+            core.publish(root/name,value)
+        (root/'controller.log').write_text("TypeError: type object got multiple values for keyword argument 'checked_unix'\n")
+        core.publish(root/'controller-exit.json',dict(config_sha256=core.document_sha(old),controller=born,
+            returncode=1,stdout_sha256=core.sha(root/'controller.log')))
+        core.publish(root/'controller-result.json',dict(status='ARCHIVE_CONTROLLER_INCOMPLETE',error_type='TypeError',
+            error="type object got multiple values for keyword argument 'checked_unix'",completed_steps=[],
+            run_id=pair.run_id,source_job=old['source_job'],training_job_changed=False))
+        core.publish(root/'run-binding.json',dict(base=str(pair.base),training_commit=pair.commit,run_id=pair.run_id,
+            source_job=old['source_job'],actual_prepared_sha256='e'*64))
+        wrapped=core.snapshot(pair.base,5,commit=pair.commit,run_id=pair.run_id)
+        output=dict(kind='snapshot',step=5,run_id=pair.run_id,result=wrapped,checked_unix=time.time())
+        plan=held.operation_plan(old,pair.run_id,5,'snapshot')
+        result=dict(worker_returncode=0,accepted_output=True,plan_sha256=core.document_sha(plan),
+            worker_output_sha256=core.document_sha(output),worker_output_bytes=len(core.document_bytes(output)))
+        observed=dict(status='COMPLETED',kind='snapshot',step=5,run_id=pair.run_id,source_complete_present=False,
+            operation_root=str(held.operation_root(plan)),operation_result=result,output=output,
+            operation_result_sha256=core.document_sha(result))
+        core.publish(root/'step-5-snapshot-operation.json',observed)
+        directory=core.ARCHIVES/pair.run_id/'global_step_5';directory.mkdir(parents=True);(directory/'transport').mkdir()
+        (directory/'source-snapshot.json').write_bytes(Path(wrapped['snapshot_file']).read_bytes())
+        core.publish(directory/'archive-claim.json',dict(run_id=pair.run_id,step=5,code_commit=old['code_commit'],
+            source_snapshot_sha256=wrapped['snapshot_sha256']))
+        core.publish(directory/'storage-admission.json',dict(constructed=True))
+        (directory/'transport/0000.partial').write_bytes(b'actual failed first payload prefix')
+        core.publish(directory/'transport/0000.transport-result.json',dict(status='INCOMPLETE_STREAM_PRESERVED',error_type='TypeError'))
+        (directory/'transport/0000.ssh-stderr').write_bytes(b'')
+        recovery=dict(reason='terminal_archive_progress_timestamp_collision',old_code_commit=old['code_commit'],
+            old_config_sha256=core.sha(root/'config.json'),old_exit_sha256=core.sha(root/'controller-exit.json'),
+            old_result_sha256=core.sha(root/'controller-result.json'),source_snapshot_sha256=wrapped['snapshot_sha256'],run_id=pair.run_id)
+        new=dict(old,code_commit='d'*40,recovery_of=recovery,controller_root=str(root/('recovery-'+old['code_commit'])))
+        return new,old,root,directory,observed,pair
+
+    def test_terminal_timestamp_collision_preserves_partial_and_adopts_existing_snapshot(self):
+        new,old,root,directory,observed,pair=self.timestamp_collision_fixture()
+        before={str(p.relative_to(directory)):p.read_bytes() for p in directory.rglob('*') if p.is_file()}
+        observer=lambda config,password:observed
+        with patch.object(held,'same_birth',return_value=False),patch.object(held,'_rename_no_replace',side_effect=os.rename):
+            accepted=held.recovery_admission(new,'RAM',source_observer=observer)
+        self.assertEqual(accepted['status'],'TERMINAL_TIMESTAMP_COLLISION_ARCHIVE_RECOVERY_ADMITTED')
+        self.assertFalse(accepted['training_job_changed']);self.assertFalse(directory.exists())
+        preserved=root/'failed-step5-transport'
+        self.assertEqual({str(p.relative_to(preserved)):p.read_bytes() for p in preserved.rglob('*') if p.is_file()},before)
+        self.assertEqual(core.sha(preserved/'source-snapshot.json'),new['recovery_of']['source_snapshot_sha256'])
+        self.assertTrue((root/'timestamp-collision-recovery-claim.json').exists())
+        with patch.object(held,'same_birth',return_value=False),self.assertRaisesRegex(ValueError,'ALREADY_ATTEMPTED'):
+            held.recovery_admission(new,'RAM',source_observer=observer)
+        plan=held.operation_plan(new,pair.run_id,5,'snapshot');operation=held.operation_root(plan);operation.mkdir(parents=True)
+        core.publish(operation/'plan.json',plan)
+        with patch.object(held,'verify_bundle',return_value={}),patch.object(core,'snapshot',side_effect=AssertionError('never repeat full source snapshot')):
+            adopted=held.operation_worker(operation)
+        self.assertTrue(adopted['result']['adopted_existing_snapshot'])
+        self.assertEqual(adopted['result']['snapshot_sha256'],new['recovery_of']['source_snapshot_sha256'])
+
+    def test_timestamp_collision_live_birth_rejected_before_source_read_or_rename(self):
+        new,old,root,directory,observed,pair=self.timestamp_collision_fixture()
+        with patch.object(held,'same_birth',return_value=True),\
+             patch.object(held,'completed_snapshot_observation',side_effect=AssertionError('no remote read')):
+            with self.assertRaisesRegex(ValueError,'STILL_ALIVE'):held.recovery_admission(new,'RAM')
+        self.assertTrue(directory.exists());self.assertFalse((root/'failed-step5-transport').exists())
+        self.assertFalse((root/'timestamp-collision-recovery-claim.json').exists())
+
+    def test_timestamp_collision_rejects_unknown_source_or_changed_snapshot_without_mutation(self):
+        new,old,root,directory,observed,pair=self.timestamp_collision_fixture()
+        for field,value in (('status','UNKNOWN_OPERATION_OUTCOME'),('source_complete_present',True)):
+            wrong=dict(observed,**{field:value})
+            with patch.object(held,'same_birth',return_value=False),self.assertRaises(ValueError):
+                held.recovery_admission(new,'RAM',source_observer=lambda c,p:wrong)
+        changed=copy.deepcopy(new);changed['recovery_of']['source_snapshot_sha256']='e'*64
+        with patch.object(held,'same_birth',return_value=False),self.assertRaises(ValueError):
+            held.recovery_admission(changed,'RAM',source_observer=lambda c,p:observed)
+        self.assertTrue(directory.exists());self.assertFalse((root/'timestamp-collision-recovery-claim.json').exists())
+
     def test_source_no_operations_observation_requires_fresh_identity_and_exit_zero(self):
         new,root=self.recovery_fixture();paths=[str(self.f.base/p) for p in ('preparation/archive-control/operations','preparation/checkpoint-archives')]
         proof=dict(status='FRESH_SOURCE_NO_ARCHIVE_OPERATIONS_PASS',base=str(self.f.base),source_job=self.f.job,
@@ -452,9 +534,18 @@ class ControllerTests(unittest.TestCase):
                     return [sys.executable,'-B','-c',program]
                 c.wait_operation=wait
                 with patch.object(held,'ssh_argv',side_effect=local_stream),patch.object(held,'identity',side_effect=self.f.born),\
-                     patch.object(control.socket,'gethostname',return_value='xielab3'),patch.object(c,'event',return_value=None):
+                     patch.object(control.socket,'gethostname',return_value='xielab3'):
                     c.archive_step(5)
                 self.assertEqual(calls,['snapshot','accept']);self.assertEqual(c.completed,[5])
+                events=[json.loads(line) for line in c.events.read_text().splitlines()]
+                received=[row for row in events if row['stage']=='RECEIVING_EXACT_SNAPSHOT_FILE']
+                # Real stream_download progress carries checked_unix at both
+                # byte growth and exit0; the old event merge raised TypeError.
+                self.assertTrue(received)
+                self.assertTrue(any(row.get('status')=='ACTUAL_TRANSPORT_EXIT0_BYTES_SHA_PASS' for row in received))
+                self.assertTrue(all(row['checked_unix']>0 and row['run_id']==pair.run_id and
+                    row['source_job']==config['source_job'] and row['completed_steps']==[] for row in received))
+                self.assertEqual(events[-1]['completed_steps'],[5])
                 archive_dir=core.ARCHIVES/pair.run_id/'global_step_5'
                 transport=core._read_json(archive_dir/'transport-complete.json')
                 self.assertTrue(transport['all_actual_stream_exit_codes_zero'])
