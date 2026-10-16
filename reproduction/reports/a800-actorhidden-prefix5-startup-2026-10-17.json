@@ -1,0 +1,393 @@
+{
+  "schema_version": 1,
+  "role": "a800_actorhidden_prefix5_first_two_actual_flow_scalar_hash_report",
+  "date": "2026-10-17",
+  "base": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa",
+  "run_id": "411c44aad7ba4e8c90f5fbec9e5ecbaa",
+  "execution_id": "9074575c76e3484baa5fd0f920e7ff91",
+  "source_commit": "2c0b5fbfe5a61d8bb1c0d407b0109c4012a2d286",
+  "checked_unix": 1792174412.5905623,
+  "checked_at_Shanghai": "2026-10-17T02:13:32.590562+08:00",
+  "runtime_source_unchanged_between_actual_observations": true,
+  "reference_runtime_source": "700a0b3d991853573d5d50d4eae6239a356a9f87",
+  "qualified_initialization": {
+    "epoch": 5,
+    "weight_kind": "EMA0.99_model_only",
+    "checkpoint_path": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/preparation/warmup-source-epoch-0005.pt",
+    "checkpoint_sha256": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594",
+    "checkpoint_bytes": 1242424352,
+    "full_sha_verified": true,
+    "cpu_load_verified": true,
+    "finite": true,
+    "warmup_optimizer_imported": false,
+    "warmup_rng_imported": false,
+    "online_initial_adam_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "actor_initialization": "fresh_official_Qwen2.5-3B-Instruct_aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "later_old_epoch6_does_not_replace_bound_epoch5": true
+  },
+  "old_warmup_terminal": {
+    "complete_epochs": 6,
+    "actual_Adam_EMA": 32625,
+    "all_owned_processes_gone": true,
+    "wrapper_exit_code": 0,
+    "rank_terminal_kinds": [
+      "STOPPED_AT_COMPLETE_EPOCH_BOUNDARY",
+      "STOPPED_AT_COMPLETE_EPOCH_BOUNDARY",
+      "STOPPED_AT_COMPLETE_EPOCH_BOUNDARY",
+      "STOPPED_AT_COMPLETE_EPOCH_BOUNDARY"
+    ],
+    "original_outputs_preserved": true
+  },
+  "once_launch": {
+    "launched_unix": 1792173291.0145736,
+    "pipeline_leader": {
+      "pid": 1689394,
+      "start_ticks": 625288232,
+      "sid": 1689394,
+      "uid": 0,
+      "state": "R",
+      "command": "/data/search-g1/env/bin/python -m reproduction.prefix_selection200.launch run --base /data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa "
+    },
+    "launch_alone_is_not_training_acceptance": true
+  },
+  "first_actual_flow": {
+    "observed_unix": 1792173646.054778,
+    "observed_at_Shanghai": "2026-10-17T02:00:46.054778+08:00",
+    "prefix_completed_trajectories": 25600,
+    "prefix_questions": 5120,
+    "prefix_ranks": [
+      {
+        "rank": 0,
+        "outer": 1,
+        "phase": "prefix",
+        "stage": "NATIVE_RANK_PHASE_COMPLETE",
+        "actor_version": "411c44aad7ba4e8c90f5fbec9e5ecbaa-official0",
+        "completed_trajectories": 6400,
+        "expected_trajectories": 6400,
+        "generation_requests": 6400,
+        "actual_sampled_tokens": 38400,
+        "elapsed_seconds": 68.35749146342278
+      },
+      {
+        "rank": 1,
+        "outer": 1,
+        "phase": "prefix",
+        "stage": "NATIVE_RANK_PHASE_COMPLETE",
+        "actor_version": "411c44aad7ba4e8c90f5fbec9e5ecbaa-official0",
+        "completed_trajectories": 6400,
+        "expected_trajectories": 6400,
+        "generation_requests": 6400,
+        "actual_sampled_tokens": 38400,
+        "elapsed_seconds": 66.67495001479983
+      },
+      {
+        "rank": 2,
+        "outer": 1,
+        "phase": "prefix",
+        "stage": "NATIVE_RANK_PHASE_COMPLETE",
+        "actor_version": "411c44aad7ba4e8c90f5fbec9e5ecbaa-official0",
+        "completed_trajectories": 6400,
+        "expected_trajectories": 6400,
+        "generation_requests": 6400,
+        "actual_sampled_tokens": 38400,
+        "elapsed_seconds": 72.57554889749736
+      },
+      {
+        "rank": 3,
+        "outer": 1,
+        "phase": "prefix",
+        "stage": "NATIVE_RANK_PHASE_COMPLETE",
+        "actor_version": "411c44aad7ba4e8c90f5fbec9e5ecbaa-official0",
+        "completed_trajectories": 6400,
+        "expected_trajectories": 6400,
+        "generation_requests": 6400,
+        "actual_sampled_tokens": 38400,
+        "elapsed_seconds": 71.59813079517335
+      }
+    ],
+    "prefix_actual_exit_code": 0,
+    "score_actual_exit_code": 0,
+    "continuation_completed_trajectories": 0,
+    "continuation_engine_ready_per_rank": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "actual_online_probe_Adam_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "actor_Adam_observed": false
+  },
+  "second_actual_flow": {
+    "observed_unix": 1792174026.6726968,
+    "observed_at_Shanghai": "2026-10-17T02:07:06.672697+08:00",
+    "continuation_completed_trajectories": 2560,
+    "selected_questions": 512,
+    "continuation_ranks": [
+      {
+        "rank": 0,
+        "outer": 1,
+        "phase": "continue",
+        "stage": "NATIVE_RANK_PHASE_COMPLETE",
+        "actor_version": "411c44aad7ba4e8c90f5fbec9e5ecbaa-official0",
+        "completed_trajectories": 640,
+        "expected_trajectories": 640,
+        "generation_requests": 1315,
+        "actual_sampled_tokens": 81121,
+        "elapsed_seconds": 52.731684663333
+      },
+      {
+        "rank": 1,
+        "outer": 1,
+        "phase": "continue",
+        "stage": "NATIVE_RANK_PHASE_COMPLETE",
+        "actor_version": "411c44aad7ba4e8c90f5fbec9e5ecbaa-official0",
+        "completed_trajectories": 640,
+        "expected_trajectories": 640,
+        "generation_requests": 1312,
+        "actual_sampled_tokens": 78900,
+        "elapsed_seconds": 56.2125042937696
+      },
+      {
+        "rank": 2,
+        "outer": 1,
+        "phase": "continue",
+        "stage": "NATIVE_RANK_PHASE_COMPLETE",
+        "actor_version": "411c44aad7ba4e8c90f5fbec9e5ecbaa-official0",
+        "completed_trajectories": 640,
+        "expected_trajectories": 640,
+        "generation_requests": 1289,
+        "actual_sampled_tokens": 76439,
+        "elapsed_seconds": 55.320062931627035
+      },
+      {
+        "rank": 3,
+        "outer": 1,
+        "phase": "continue",
+        "stage": "NATIVE_RANK_PHASE_COMPLETE",
+        "actor_version": "411c44aad7ba4e8c90f5fbec9e5ecbaa-official0",
+        "completed_trajectories": 640,
+        "expected_trajectories": 640,
+        "generation_requests": 1313,
+        "actual_sampled_tokens": 81982,
+        "elapsed_seconds": 49.46654270682484
+      }
+    ],
+    "continuation_actual_exit_code": 0,
+    "actor_attempt_dir": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/actor/outers/outer-0001-attempt-e4f322cd0f284de2983ddb224249e8ca",
+    "actor_actual_returned_Adam_per_rank": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "actor_actual_returned_Adam_counted_once": 20,
+    "rank_replicas_not_summed": true,
+    "actor_four_rank_counts_agree": true,
+    "actor_rank_ledger_evidence": [
+      {
+        "rank": 0,
+        "confirmed_returned_adam": 20,
+        "last_actual_adam": 20,
+        "incomplete_final_line": false,
+        "ledger_sha256": "6c0070ea1fc9e7c4b5f12dd2ed4936c4716d77df99fbcc01728dc306c18650c0",
+        "failure": null
+      },
+      {
+        "rank": 1,
+        "confirmed_returned_adam": 20,
+        "last_actual_adam": 20,
+        "incomplete_final_line": false,
+        "ledger_sha256": "be2f20211e4a5e1ca3bb48786a4e615bf1058db2125570fe4457fb74c1bf221e",
+        "failure": null
+      },
+      {
+        "rank": 2,
+        "confirmed_returned_adam": 20,
+        "last_actual_adam": 20,
+        "incomplete_final_line": false,
+        "ledger_sha256": "05fbeb10ca1378dc11028ac9d5c9c04f6ef630529c05fa50627901c094996e21",
+        "failure": null
+      },
+      {
+        "rank": 3,
+        "confirmed_returned_adam": 20,
+        "last_actual_adam": 20,
+        "incomplete_final_line": false,
+        "ledger_sha256": "e823ec93c25a98758514bbfaa1e9d98e06d3fea48348f1501bb5d1b8bcf0c48b",
+        "failure": null
+      }
+    ],
+    "actor_job_state": "STARTED",
+    "actor_job_leader": {
+      "pid": 1697486,
+      "start_ticks": 625329657,
+      "sid": 1697486,
+      "uid": 0,
+      "alive": true
+    },
+    "actor_latest_present": false,
+    "latest_joint_present": false,
+    "online_probe_actual_Adam_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "current_stage": {
+      "checked_unix": 1792173705.256581,
+      "outer": 1,
+      "run_id": "411c44aad7ba4e8c90f5fbec9e5ecbaa",
+      "stage": "outer-000001-actor-e4f322cd0f284de2983ddb224249e8ca"
+    },
+    "full_outer_commit_pending": true,
+    "full_outer_complete_verified": false,
+    "semantics": "All four ranks returned20 actual actor Adam writes, but no actor_latest/latest_joint was captured while the actor phase remains active. Saving and full outer acceptance must be verified later.",
+    "historical_snapshot_only": true
+  },
+  "complete_outers_verified": 1,
+  "first_full_outer_acceptance_pending": false,
+  "two_positive_actual_flow_advances_observed": true,
+  "training_goal_200_not_complete": true,
+  "no_new_evaluation_or_QA_score_for_this_report": true,
+  "source_receipts": [
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-old-warmup-terminal-reconcile-1792173224681789000.json",
+      "sha256": "0435fd50cd76d95d77c6240f45c45bf4cc4326b00e26a9d27aa6ee3cc28f3b05"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-actorhidden-prefix5-launch-1792173291027103000.json",
+      "sha256": "ce29ba2b2ae20e612061eebac82f5056a76a8015edf6d827c5deca68eaffabba"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-actorhidden-prefix5-observe-1792173646101991000.json",
+      "sha256": "b72b7246f1ebd326308e839df8b5c2e2945a00bf1ce9282e16f743fe203356a1"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-actorhidden-prefix5-observe-1792174026816183000.json",
+      "sha256": "48f6b55170c9d83b2318aff40ccb55aa06499893c19b5252db0207997a14f412"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-actorhidden-prefix5-observe-1792174412714733000.json",
+      "sha256": "24b937d3568361de2f89dc27eabecb6deb7b80c0cc690be9165094a9490c5f78"
+    }
+  ],
+  "models_or_tensors_read_for_this_report": false,
+  "remote_calls_for_this_report": 0,
+  "raw_QA_tokens_rollouts_models_or_credentials_included": false,
+  "first_full_outer_acceptance_satisfied": true,
+  "startup_followthrough_satisfied": true,
+  "normal_monitoring_policy": "Initial two actual advances plus first full normal outer are satisfied. Same process continues1..200; no further startup trial polling.",
+  "first_committed_outer": {
+    "outer": 1,
+    "complete_outers_verified": 1,
+    "proof_path": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/latest-joint.json",
+    "proof_sha256": "a0d15f26f70749646aca0501f204b47f85eee03335283637683740872c862d31",
+    "actor_latest_and_joint_counts_agree": true,
+    "actor_version": "411c44aad7ba4e8c90f5fbec9e5ecbaa-actor0001",
+    "actual_returned_Adam_per_rank": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "actual_returned_Adam_counted_once": 20,
+    "rank_replicas_not_summed": true,
+    "new_returned_Adam_per_rank": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "scheduler_completed_outer": 1,
+    "learning_rate_used": 0.0,
+    "next_learning_rate": 1.7543859649122805e-08,
+    "actual_global_micro": 16,
+    "actual_local_micro": 4,
+    "gradient_accumulation": 8,
+    "actor_phase_exit_code": 0,
+    "selected_questions": 512,
+    "selected_trajectories": 2560,
+    "actual_selected_mixed_questions": 413,
+    "actual_selected_mixed_fraction": 0.806640625,
+    "mixed_fraction_semantics": "The actually continued selected512 ownG5 have0<K<5; this is not fixed-test probe accuracy or QA512 evaluation.",
+    "reward_mean": 0.6432589696370996,
+    "reward_version": "6de29bcb7be741cfa1bfacdf9e34efc9:0:0dcad8285ebe4547b5999a21e6b4e8b9",
+    "correctness_probe_used_for_reward": false,
+    "online_probe_actual_Adam_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "probe_frozen_status": "PROBE_FROZEN_NO_OPTIMIZER_UPDATE",
+    "phase_timings": {
+      "outer-000001-actor-e4f322cd0f284de2983ddb224249e8ca": {
+        "elapsed_seconds": 330.42471078503877,
+        "exit_code": 0
+      },
+      "outer-000001-continue": {
+        "elapsed_seconds": 122.62753512710333,
+        "exit_code": 0
+      },
+      "outer-000001-prefix": {
+        "elapsed_seconds": 95.87741905264556,
+        "exit_code": 0
+      },
+      "outer-000001-score": {
+        "elapsed_seconds": 22.393275938928127,
+        "exit_code": 0
+      }
+    },
+    "observed_unix": 1792174412.5905623
+  },
+  "same_process_continuation": {
+    "current_outer": 2,
+    "current_stage": {
+      "checked_unix": 1792174277.3090448,
+      "outer": 2,
+      "run_id": "411c44aad7ba4e8c90f5fbec9e5ecbaa",
+      "stage": "outer-000002-actor-f4f4df648e664f96aa684449fbb977e7"
+    },
+    "same_run_execution_source": true,
+    "new_launches": 0,
+    "prefix_completed_per_rank": [
+      6400,
+      6400,
+      6400,
+      6400
+    ],
+    "prefix_total_completed": 25600,
+    "continuation_completed_per_rank": [
+      640,
+      640,
+      640,
+      640
+    ],
+    "continuation_total_completed": 2560,
+    "prefix_exit_code": 0,
+    "score_exit_code": 0,
+    "continuation_exit_code": 0,
+    "sampling_actor_version": "411c44aad7ba4e8c90f5fbec9e5ecbaa-actor0001",
+    "actor2_attempt_dir": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/actor/outers/outer-0002-attempt-f4f4df648e664f96aa684449fbb977e7",
+    "actor2_new_returned_Adam_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "actor2_no_recorded_failures": true,
+    "outer2_complete_not_claimed": true,
+    "recorded_zero_is_captured_ledger_prefix_not_current_liveness_or_inflight_claim": true,
+    "goal_complete": false
+  }
+}
