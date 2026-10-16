@@ -94,3 +94,41 @@ cross-boundary closing tags, exact row/group identity, masks and original LP.
 Checkpoints, original trajectories and tensors remain remote. Local storage is
 limited to code, configuration, manifests and small audit summaries. Existing
 healthy experiments are not restarted or edited. Formal update201 is forbidden.
+
+## 实测运行记录：2026-10-17 04:46 CST
+
+HPC3 作业 `727586` 使用四张 GPU 运行，训练源码为
+`478f46315147ebb0d4d1c556fcdd356c658e117e`，run ID 为
+`e4cf46d47ae24434a177931df5530751`。正式目标仍为 200 个 outer，禁止
+update201。直接加载导出的 epoch68 探针权重，重新初始化探针 Adam，不增加
+warmup 或 replay。每轮从 5120 道候选题取得各五条真实 20-token 前缀，按
+`1 - product(p_correct) - product(1-p_correct)` 选择 Top512，无随机探索；
+续跑同一批 2560 条轨迹，先更新 actor，再用这些新轨迹的逐轨迹 strict-EM
+标签训练探针。探针使用 mean BCEWithLogits、LR1e-6、global batch256、
+每卡 batch64，单遍十次 Adam 更新。Actor 沿用原 Search G1 设置，仅 strict-EM
+全对组使用加入虚拟零后的 soft-reward 均值和样本标准差计算五条真实优势。
+
+截至该次实测，已完整完成 15 轮 actor＋探针联合更新，第 16 轮开始；每卡
+累计 actor Adam300 步、scheduler15 次、探针 Adam150 步，未发现新的流程
+错误。第 15 轮选中题目的真实混合比例为 205/512＝40.0391%；同轮新
+2560 条轨迹的探针 BCE 为训练前 0.710061、训练后 0.701158，二分类准确率
+为 52.0703%→53.5156%。混合比例描述选中题目五条真实轨迹的标签组成；
+BCE 和二分类准确率描述逐轨迹 EM 预测。训练前预测尚未拟合本批标签，
+训练后指标属于同批数据拟合，二者均不能代替独立评测的泛化结果。
+
+第 5 轮固定评测已完成，其中独立 dev512 的 EM 为
+134/512＝26.171875%，F1 为 0.350591。初始评测按用户要求跳过，记录中
+`before=null`、`changes={}`，因此没有相对初始评测的改善结论。固定
+50/100/150/200 轮评测，以及最终七源 native51713 的 EM/F1 macro 与
+weighted 结果，尚待实际完成。
+
+第 5 轮完整检查点已完成 HPC3 源文件→HKUST3 归档→HPC3 源文件的全文件
+SHA 读回验收，含依赖与边界记录共 56 个文件、48,560,081,233 字节；原始
+源文件保留。这不等于实际 CUDA 恢复验收。最终仍须完成 200 轮、其余四个
+里程碑归档和实际四卡 model/Adam/scheduler/RNG/probe/dataequal 恢复验收。
+
+本条记录依据操作目录中的 `handoff.json`、
+`727586-goal-actual-outer15-completion-1792183563.json`、
+`727586-actual-first-five-summary41-1792176988.json` 及
+`checkpoint5-archive-acceptance-summary.json`；这些是已保存的实际观测，
+运行进度以其后带时间的观测为准。
