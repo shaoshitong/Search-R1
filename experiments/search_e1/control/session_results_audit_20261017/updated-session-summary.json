@@ -1,0 +1,281 @@
+{
+  "created_cst": "2026-10-17T01:09:36.309000+08:00",
+  "updated_runs": [
+    {
+      "name": "Recursive B four GPU",
+      "session": "01a12e27-764b-7432-a5f2-74d88ee4a8d4",
+      "complete": 193,
+      "train_em": 0.522656261920929,
+      "recent10": 0.5193359315395355,
+      "fixed512": [
+        {
+          "iter": 5,
+          "em": 0.171875,
+          "correct": 88
+        },
+        {
+          "iter": 50,
+          "em": 0.400390625,
+          "correct": 205
+        },
+        {
+          "iter": 100,
+          "em": 0.455078125,
+          "correct": 233
+        },
+        {
+          "iter": 150,
+          "em": 0.494140625,
+          "correct": 253
+        }
+      ],
+      "status": "training_running",
+      "observed_at_cst": "2026-10-17T00:56:50.468460+08:00"
+    },
+    {
+      "name": "HPC3 Q-probe sigma3 new loss 721485",
+      "session": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+      "complete": 200,
+      "train_em": 0.48203125,
+      "recent10": 0.4755078125,
+      "fixed512": [
+        {
+          "iter": 5,
+          "em": 0.18359375,
+          "correct": 94
+        },
+        {
+          "iter": 50,
+          "em": 0.361328125,
+          "correct": 185
+        },
+        {
+          "iter": 100,
+          "em": 0.40234375,
+          "correct": 206
+        },
+        {
+          "iter": 150,
+          "em": 0.421875,
+          "correct": 216
+        },
+        {
+          "iter": 200,
+          "em": 0.419921875,
+          "correct": 215
+        }
+      ],
+      "status": "scoring_complete_cleanup_failed",
+      "observed_at_cst": "2026-10-17T01:01:08.111377+08:00"
+    },
+    {
+      "name": "C2 random-final ablation150",
+      "session": "01a1028b-b626-7f91-93db-0099ff1623c5",
+      "complete": 103,
+      "train_em": 0.4625000059604645,
+      "recent10": 0.47781249284744265,
+      "fixed512": [
+        {
+          "iter": 5,
+          "em": 0.1953125,
+          "correct": 100
+        },
+        {
+          "iter": 50,
+          "em": 0.396484375,
+          "correct": 203
+        },
+        {
+          "iter": 100,
+          "em": 0.435546875,
+          "correct": 223
+        }
+      ],
+      "status": "training_running",
+      "observed_at_cst": "2026-10-17T00:56:56.116026+08:00"
+    },
+    {
+      "name": "Prefix20 actor-hidden period20",
+      "session": "01a0fcbb-863f-7450-926d-db537f648265",
+      "complete": 6,
+      "train_em": 0.598828125,
+      "recent10": 0.5494791666666666,
+      "fixed512": [
+        {
+          "iter": 5,
+          "em": 0.236328125,
+          "correct": 121
+        }
+      ],
+      "status": "training_running",
+      "observed_at_cst": "2026-10-17T00:58:52.202489+08:00"
+    },
+    {
+      "name": "Prefix20 frozen encoder every-outer",
+      "session": "01a0fcbb-863f-7450-926d-db537f648265",
+      "complete": 21,
+      "train_em": 0.0734375,
+      "recent10": 0.1728515625,
+      "fixed512": [
+        {
+          "iter": 5,
+          "em": 0.2421875,
+          "correct": 124
+        }
+      ],
+      "status": "historical_stopped21",
+      "observed_at_cst": "2026-10-17T00:58:52.202489+08:00"
+    },
+    {
+      "name": "Prefix1024 diversity512",
+      "session": "01a0fcbc-0b46-7502-8b66-d8b21a0e032d",
+      "complete": 30,
+      "train_em": 0.631640625,
+      "recent10": 0.6274609375,
+      "fixed512": [
+        {
+          "iter": 5,
+          "em": 0.24609375,
+          "correct": 126
+        }
+      ],
+      "status": "training_running",
+      "observed_at_cst": "2026-10-17T00:58:50.091902+08:00"
+    },
+    {
+      "name": "Periodic25 Q-probe 725286",
+      "session": "01a0fcbe-15f8-7600-ae84-9487d924560a",
+      "complete": 67,
+      "train_em": 0.49296875,
+      "recent10": 0.4529296875,
+      "fixed512": [
+        {
+          "iter": 5,
+          "em": 0.25390625,
+          "correct": 130
+        },
+        {
+          "iter": 50,
+          "em": 0.369140625,
+          "correct": 189
+        }
+      ],
+      "status": "training_running",
+      "observed_at_cst": "2026-10-17T01:01:08.056607+08:00"
+    },
+    {
+      "name": "Prefix20 joint4 727414",
+      "session": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+      "complete": 0,
+      "train_em": null,
+      "recent10": null,
+      "fixed512": [],
+      "status": "initializing_no_completed_outer",
+      "observed_at_cst": "2026-10-17T01:01:08.111377+08:00"
+    }
+  ],
+  "new_final": {
+    "experiment": "Q-probe σ3 · Co会话†",
+    "checkpoint_iter": 200,
+    "dataset_em": {
+      "nq": 0.43961218836565097,
+      "triviaqa": 0.61645894104128,
+      "popqa": 0.41480339244410175,
+      "hotpotqa": 0.3323430114787306,
+      "2wikimultihopqa": 0.3031965648854962,
+      "musique": 0.07447248655357881,
+      "bamboogle": 0.128
+    },
+    "dataset_correct": {
+      "nq": 1587,
+      "triviaqa": 6974,
+      "popqa": 5918,
+      "hotpotqa": 2461,
+      "2wikimultihopqa": 3813,
+      "musique": 180,
+      "bamboogle": 16
+    },
+    "source_counts": {
+      "nq": 3610,
+      "triviaqa": 11313,
+      "popqa": 14267,
+      "hotpotqa": 7405,
+      "2wikimultihopqa": 12576,
+      "musique": 2417,
+      "bamboogle": 125
+    },
+    "count": 51713,
+    "correct": 20949,
+    "micro_em": 0.40510123179858065,
+    "macro_em": 0.3298409406812626,
+    "f1": 0.47406081490651897,
+    "kind": "ours",
+    "evidence": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/jxu957-current.json",
+      "sha256": "89ef3618a44bef55f15598d205841353d6eb5364ba79542a5b5982e69348b335"
+    },
+    "final_identity_current": {
+      "complete": true,
+      "scoring_complete": true,
+      "final_acceptance_complete": false,
+      "n": 51713,
+      "correct": 20949,
+      "em": 0.40510123179858065,
+      "f1": 0.47406081490651897,
+      "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/logs/validation-identities.jsonl",
+      "sha256": "8da79702a31a6e36a811e71fce737aaf5a399d56140229a8e8cd527149c8fa8d",
+      "sha256_scope": "exact final identity ledger row",
+      "source_metrics": {
+        "nq": {
+          "count": 3610,
+          "em": 0.43961218836565097,
+          "f1": 0.5276348656042279
+        },
+        "triviaqa": {
+          "count": 11313,
+          "em": 0.61645894104128,
+          "f1": 0.691141399328166
+        },
+        "popqa": {
+          "count": 14267,
+          "em": 0.41480339244410175,
+          "f1": 0.46346183974977845
+        },
+        "hotpotqa": {
+          "count": 7405,
+          "em": 0.3323430114787306,
+          "f1": 0.43712171908781133
+        },
+        "2wikimultihopqa": {
+          "count": 12576,
+          "em": 0.3031965648854962,
+          "f1": 0.36107041388910255
+        },
+        "musique": {
+          "count": 2417,
+          "em": 0.07447248655357881,
+          "f1": 0.15353972783054762
+        },
+        "bamboogle": {
+          "count": 125,
+          "em": 0.128,
+          "f1": 0.24351168831168826
+        }
+      },
+      "dataset_sha256": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+      "run_id": "70827e85fe584f0c84453aae907918a4",
+      "cleanup_error": "trainer left owned subprocesses",
+      "identity_readback": {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/sigma-final-identity-readback.json",
+        "sha256": "5de070af8a17015b4c35eff28ec1ce49cbb90f0054e2984acfb727247dbe8d97"
+      },
+      "canonical_dataset_readback": {
+        "path": "outputs/session-refresh-20261017-pinned/sigma-canonical-data-readback.json",
+        "sha256": "a5ac53d942b35462626d57c573a16504a4202c71041f53acc5a5c79c107a56bc"
+      }
+    },
+    "final_acceptance_complete": false
+  },
+  "read_only": true,
+  "probe_classifier_not_QA": true
+}

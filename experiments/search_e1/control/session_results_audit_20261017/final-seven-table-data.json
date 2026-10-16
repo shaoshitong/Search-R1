@@ -1,0 +1,2725 @@
+{
+  "created_cst": "2026-10-17T01:09:36.309000+08:00",
+  "observed_window_cst": "Tree final200 products updated: 2026-10-16T20:03:10.553631+08:00; other rows retain prior source dates",
+  "datasets": [
+    "nq",
+    "triviaqa",
+    "popqa",
+    "hotpotqa",
+    "2wikimultihopqa",
+    "musique",
+    "bamboogle"
+  ],
+  "dataset_labels": [
+    "NQ",
+    "TriviaQA",
+    "PopQA",
+    "HotpotQA",
+    "2Wiki",
+    "MuSiQue",
+    "Bamboogle"
+  ],
+  "source_counts": {
+    "nq": 3610,
+    "triviaqa": 11313,
+    "popqa": 14267,
+    "hotpotqa": 7405,
+    "2wikimultihopqa": 12576,
+    "musique": 2417,
+    "bamboogle": 125
+  },
+  "full_test_questions": 51713,
+  "macro_definition": "unweighted arithmetic mean of the seven dataset EM values; each dataset has equal weight",
+  "micro_definition": "total correct / 51,713; dataset-size-weighted pooled EM, not the seven-dataset average",
+  "paper_reference_note": "Paper rows supplied by the user and previous comparison; not independently reverified from papers in this refresh.",
+  "ours": [
+    {
+      "experiment": "CoSearch 双模型",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.46814404432132967,
+        "triviaqa": 0.6443914081145584,
+        "popqa": 0.4736104296628583,
+        "hotpotqa": 0.44550979068197166,
+        "2wikimultihopqa": 0.44926844783715014,
+        "musique": 0.20355812991311542,
+        "bamboogle": 0.448
+      },
+      "dataset_correct": {
+        "nq": 1690,
+        "triviaqa": 7290,
+        "popqa": 6757,
+        "hotpotqa": 3299,
+        "2wikimultihopqa": 5650,
+        "musique": 492,
+        "bamboogle": 56
+      },
+      "correct": 25234,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "count": 51713,
+      "micro_em": 0.4879624079051689,
+      "macro_em": 0.44749746436156906,
+      "f1": 0.5630729533879519,
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-16",
+      "evidence": {
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/complete.json",
+        "sha256": "523198910d73336f6e633c3e02ce1691c75ec9a156023ed6bb1ce1d7741254a8"
+      },
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/co-updated-runs.json",
+          "local_sha256": "879f4cc48464ab24a6e614ab1463b14c4581284ec9e5ccc99ac52892a7417a38"
+        }
+      ],
+      "final_identity_current": {
+        "complete": true,
+        "iter": 200,
+        "n": 51713,
+        "correct": 25234,
+        "em": 0.4879624079051689,
+        "f1": 0.5630729533879519,
+        "macro_em": 0.4474974643615691,
+        "macro_f1": 0.5335946202628082,
+        "source_metrics": {
+          "2wikimultihopqa": {
+            "count": 12576,
+            "correct": 5650,
+            "em": 0.44926844783715014,
+            "f1": 0.518099790336217
+          },
+          "bamboogle": {
+            "count": 125,
+            "correct": 56,
+            "em": 0.448,
+            "f1": 0.5607619047619047
+          },
+          "hotpotqa": {
+            "count": 7405,
+            "correct": 3299,
+            "em": 0.44550979068197166,
+            "f1": 0.5696869729744086
+          },
+          "musique": {
+            "count": 2417,
+            "correct": 492,
+            "em": 0.20355812991311542,
+            "f1": 0.2851071417364522
+          },
+          "nq": {
+            "count": 3610,
+            "correct": 1690,
+            "em": 0.46814404432132967,
+            "f1": 0.5568716478784922
+          },
+          "popqa": {
+            "count": 14267,
+            "correct": 6757,
+            "em": 0.4736104296628583,
+            "f1": 0.5192878630602072
+          },
+          "triviaqa": {
+            "count": 11313,
+            "correct": 7290,
+            "em": 0.6443914081145584,
+            "f1": 0.7253470210919756
+          }
+        },
+        "datasets": {
+          "2wikimultihopqa": {
+            "correct": 5650,
+            "em": 0.44926844783715014,
+            "f1": 0.518099790336217,
+            "questions": 12576,
+            "trajectories": 12576
+          },
+          "bamboogle": {
+            "correct": 56,
+            "em": 0.448,
+            "f1": 0.5607619047619047,
+            "questions": 125,
+            "trajectories": 125
+          },
+          "hotpotqa": {
+            "correct": 3299,
+            "em": 0.44550979068197166,
+            "f1": 0.5696869729744086,
+            "questions": 7405,
+            "trajectories": 7405
+          },
+          "musique": {
+            "correct": 492,
+            "em": 0.20355812991311542,
+            "f1": 0.2851071417364522,
+            "questions": 2417,
+            "trajectories": 2417
+          },
+          "nq": {
+            "correct": 1690,
+            "em": 0.46814404432132967,
+            "f1": 0.5568716478784922,
+            "questions": 3610,
+            "trajectories": 3610
+          },
+          "popqa": {
+            "correct": 6757,
+            "em": 0.4736104296628583,
+            "f1": 0.5192878630602072,
+            "questions": 14267,
+            "trajectories": 14267
+          },
+          "triviaqa": {
+            "correct": 7290,
+            "em": 0.6443914081145584,
+            "f1": 0.7253470210919756,
+            "questions": 11313,
+            "trajectories": 11313
+          }
+        },
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/complete.json",
+        "sha256": "523198910d73336f6e633c3e02ce1691c75ec9a156023ed6bb1ce1d7741254a8",
+        "acceptance_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/acceptance.json",
+        "acceptance_sha256": "ce7cf8e85e01ea685ead57657fbdf3189d68590d5c73d0b392bb0f781e8db549",
+        "scorer_version": "common-em-v4-final-model-action",
+        "completed_epoch": 1792065686.714123,
+        "independent_acceptance": true
+      }
+    },
+    {
+      "experiment": "Easy Selection+Soft Reward",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.4761772853185596,
+        "triviaqa": 0.6380270485282419,
+        "popqa": 0.47928786710590876,
+        "hotpotqa": 0.45820391627278867,
+        "2wikimultihopqa": 0.4431456743002545,
+        "musique": 0.20521307405875053,
+        "bamboogle": 0.376
+      },
+      "micro_em": 0.48892928277222364,
+      "f1": 0.5604277258548636,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": {
+          "path": "/mnt/data/shaoshitong/search-g1-final200-bs256-20261014-v2/journal/final-result.json",
+          "bytes": 23503014,
+          "sha256": "bfaf6cfcc4f13bc2cc8d500dd5231dde0fb419d61fca53d0fadb8879610ff3c5",
+          "mtime": 1792006140.3038497
+        },
+        "sha256": "bfaf6cfcc4f13bc2cc8d500dd5231dde0fb419d61fca53d0fadb8879610ff3c5"
+      },
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/g1-mixed-final-scores-second.json",
+          "local_sha256": "e838fc6210dd636174ba8ef766a22c3011d7142f11c98fed6380c5bce2d011e8",
+          "json_pointer": "/source_metrics"
+        }
+      ],
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-15",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.48892928277222364,
+        "f1": 0.5604277258548636,
+        "n": 51713,
+        "correct": 25284,
+        "path": "/mnt/data/shaoshitong/search-g1-final200-bs256-20261014-v2/journal/final-result.json",
+        "sha256": "bfaf6cfcc4f13bc2cc8d500dd5231dde0fb419d61fca53d0fadb8879610ff3c5",
+        "row_sums_verified": true,
+        "batch_chain_verified": true,
+        "formal_acceptance": false,
+        "source_metrics": {
+          "nq": {
+            "count": 3610,
+            "em": 0.4761772853185596,
+            "f1": 0.5589346789668608
+          },
+          "triviaqa": {
+            "count": 11313,
+            "em": 0.6380270485282419,
+            "f1": 0.7126761035957674
+          },
+          "popqa": {
+            "count": 14267,
+            "em": 0.47928786710590876,
+            "f1": 0.5203397301280528
+          },
+          "hotpotqa": {
+            "count": 7405,
+            "em": 0.45820391627278867,
+            "f1": 0.5776417222302951
+          },
+          "2wikimultihopqa": {
+            "count": 12576,
+            "em": 0.4431456743002545,
+            "f1": 0.5111263723106197
+          },
+          "musique": {
+            "count": 2417,
+            "em": 0.20521307405875053,
+            "f1": 0.2939399254507921
+          },
+          "bamboogle": {
+            "count": 125,
+            "em": 0.376,
+            "f1": 0.49310476190476193
+          }
+        }
+      },
+      "note": "203 complete scoring batches and full 51,713 rows verified; scoring complete, formal job cleanup acceptance pending.",
+      "macro_em": 0.4394364093692148,
+      "dataset_correct": {
+        "nq": 1719,
+        "triviaqa": 7218,
+        "popqa": 6838,
+        "hotpotqa": 3393,
+        "2wikimultihopqa": 5573,
+        "musique": 496,
+        "bamboogle": 47
+      },
+      "correct": 25284
+    },
+    {
+      "experiment": "递归Tree A",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.4814404432132964,
+        "triviaqa": 0.6326350216565013,
+        "popqa": 0.4796383262073316,
+        "hotpotqa": 0.4353814989871708,
+        "2wikimultihopqa": 0.43877226463104324,
+        "musique": 0.18287132809267687,
+        "bamboogle": 0.368
+      },
+      "dataset_correct": {
+        "nq": 1738,
+        "triviaqa": 7157,
+        "popqa": 6843,
+        "hotpotqa": 3224,
+        "2wikimultihopqa": 5518,
+        "musique": 442,
+        "bamboogle": 46
+      },
+      "correct": 24968,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "count": 51713,
+      "micro_em": 0.4828186336124379,
+      "macro_em": 0.43124841182685997,
+      "f1": 0.5510407509251146,
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-16",
+      "evidence": {
+        "path": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/recovery-from100-20261013/final51713/84d95ec7600843efb00a5e16b9f13134/summary.json",
+        "sha256": "57dcae3ecff517a8250522f796a47641450ba8958c4990e36b0bc01f61b4a725"
+      },
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/a-updated-runs.json",
+          "local_sha256": "029e105539e51ced66b64b9551db6298df2d28accae24d2af9446e27314e11df"
+        }
+      ],
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.4828186336124379,
+        "f1": 0.5510407509251146,
+        "n": 51713,
+        "path": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/recovery-from100-20261013/final51713/84d95ec7600843efb00a5e16b9f13134/summary.json",
+        "sha256": "57dcae3ecff517a8250522f796a47641450ba8958c4990e36b0bc01f61b4a725",
+        "mtime": 1791979236.0726624,
+        "status": "COMPLETE",
+        "evaluated_rows": 51713,
+        "correct": 24968,
+        "source_metrics": {
+          "val/qa_count/nq": 3610,
+          "val/f1/nq": 0.5613744482483288,
+          "val/em/nq": 0.4814404432132964,
+          "val/answer_format/nq": 0.9969529085872576,
+          "val/format_rate/nq": 0.7121883656509695,
+          "val/generated_tokens/nq": 140.81523545706372,
+          "val/search_calls/nq": 2.0490304709141274,
+          "val/qa_count/triviaqa": 11313,
+          "val/f1/triviaqa": 0.7067315071046308,
+          "val/em/triviaqa": 0.6326350216565013,
+          "val/answer_format/triviaqa": 0.997524971271988,
+          "val/format_rate/triviaqa": 0.7039688853531335,
+          "val/generated_tokens/triviaqa": 167.2309732166534,
+          "val/search_calls/triviaqa": 2.1659153186599487,
+          "val/qa_count/popqa": 14267,
+          "val/f1/popqa": 0.5224554418813919,
+          "val/em/popqa": 0.4796383262073316,
+          "val/answer_format/popqa": 0.9977570617508936,
+          "val/format_rate/popqa": 0.5500806055933273,
+          "val/generated_tokens/popqa": 141.08747459171514,
+          "val/search_calls/popqa": 2.136889325015771,
+          "val/qa_count/hotpotqa": 7405,
+          "val/f1/hotpotqa": 0.5507858589200658,
+          "val/em/hotpotqa": 0.4353814989871708,
+          "val/answer_format/hotpotqa": 0.9910871033085753,
+          "val/format_rate/hotpotqa": 0.4710330857528697,
+          "val/generated_tokens/hotpotqa": 213.37231600270087,
+          "val/search_calls/hotpotqa": 2.302093180283592,
+          "val/qa_count/2wikimultihopqa": 12576,
+          "val/f1/2wikimultihopqa": 0.49542329621765674,
+          "val/em/2wikimultihopqa": 0.43877226463104324,
+          "val/answer_format/2wikimultihopqa": 0.9841762086513995,
+          "val/format_rate/2wikimultihopqa": 0.23361959287531806,
+          "val/generated_tokens/2wikimultihopqa": 239.77870547073792,
+          "val/search_calls/2wikimultihopqa": 2.4807569974554706,
+          "val/qa_count/musique": 2417,
+          "val/f1/musique": 0.2691782954134187,
+          "val/em/musique": 0.18287132809267687,
+          "val/answer_format/musique": 0.9424906909391808,
+          "val/format_rate/musique": 0.49896565990897807,
+          "val/generated_tokens/musique": 252.74968969797268,
+          "val/search_calls/musique": 2.7753413322300373,
+          "val/qa_count/bamboogle": 125,
+          "val/f1/bamboogle": 0.48533333333333334,
+          "val/em/bamboogle": 0.368,
+          "val/answer_format/bamboogle": 0.984,
+          "val/format_rate/bamboogle": 0.576,
+          "val/generated_tokens/bamboogle": 186.608,
+          "val/search_calls/bamboogle": 2.416,
+          "val/qa_count/all": 51713,
+          "val/f1/all": 0.5510407509251146,
+          "val/em/all": 0.4828186336124379,
+          "val/answer_format/all": 0.9907760137682982,
+          "val/format_rate/all": 0.5044572931371222,
+          "val/generated_tokens/all": 186.46806412314118,
+          "val/search_calls/all": 2.274901862200994
+        },
+        "verified_at_cst": "2026-10-16T13:19:42.084835+08:00"
+      }
+    },
+    {
+      "experiment": "Tree-GRPO",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.4745152354570637,
+        "triviaqa": 0.6252983293556086,
+        "popqa": 0.44312048783906915,
+        "hotpotqa": 0.42565833896016203,
+        "2wikimultihopqa": 0.3970260814249364,
+        "musique": 0.1981795614398014,
+        "bamboogle": 0.376
+      },
+      "macro_em": 0.4199711477823773,
+      "micro_em": 0.45984568677121807,
+      "f1": 0.5295794609225355,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3341/stage.log",
+        "observed_utc": "2026-10-14T12:29:36.398024+00:00",
+        "kind": "native full-precision scalar log"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=Tree-GRPO original guarded200/final51713"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/tree-updated-runs.json",
+          "local_sha256": "1eebd7db93145bdaf943df7122bd2bef1495b4b8d9afbc20deff0be79cee357b"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.45984568677121807,
+        "f1": 0.5295794609225355,
+        "n": 51713,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3341/output/validation-cost/validation-361807-40.json",
+        "sha256": "8c27f847417f65c19edc8ec17376711145f9e09ad05be5056e86e2ec855942fa",
+        "mtime": 1791640809.4748592,
+        "status": "VALIDATION_COST_COMPLETE",
+        "evaluated_rows": 51713,
+        "correct": 23780
+      },
+      "dataset_correct": {
+        "nq": 1713,
+        "triviaqa": 7074,
+        "popqa": 6322,
+        "hotpotqa": 3152,
+        "2wikimultihopqa": 4993,
+        "musique": 479,
+        "bamboogle": 47
+      },
+      "correct": 23780
+    },
+    {
+      "experiment": "Tree 嵌套分叉",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.46204986149584487,
+        "triviaqa": 0.6248563599398922,
+        "popqa": 0.4722085932571669,
+        "hotpotqa": 0.4313301823092505,
+        "2wikimultihopqa": 0.40736323155216286,
+        "musique": 0.18163011998345055,
+        "bamboogle": 0.352
+      },
+      "dataset_correct": {
+        "nq": 1668,
+        "triviaqa": 7069,
+        "popqa": 6737,
+        "hotpotqa": 3194,
+        "2wikimultihopqa": 5123,
+        "musique": 439,
+        "bamboogle": 44
+      },
+      "correct": 24274,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "count": 51713,
+      "micro_em": 0.4693984104577186,
+      "macro_em": 0.4187769069339668,
+      "f1": 0.538153839337549,
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-16",
+      "evidence": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-eval-fast/scores/final-metrics.json",
+        "sha256": "775c209ff0c88d37543c6e7437fa160a611559ca3f095695bc66e85506ec2a20"
+      },
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/tree-updated-runs.json",
+          "local_sha256": "1eebd7db93145bdaf943df7122bd2bef1495b4b8d9afbc20deff0be79cee357b"
+        }
+      ],
+      "final_identity_current": {
+        "complete": true,
+        "n": 51713,
+        "correct": 24274,
+        "em": 0.4693984104577186,
+        "f1": 0.538153839337549,
+        "source_metrics": {
+          "nq": {
+            "count": 3610,
+            "em": 0.46204986149584487,
+            "f1": 0.5471241419822942
+          },
+          "triviaqa": {
+            "count": 11313,
+            "em": 0.6248563599398922,
+            "f1": 0.7012704682017888
+          },
+          "popqa": {
+            "count": 14267,
+            "em": 0.4722085932571669,
+            "f1": 0.5144659402807591
+          },
+          "hotpotqa": {
+            "count": 7405,
+            "em": 0.4313301823092505,
+            "f1": 0.5469334013587973
+          },
+          "2wikimultihopqa": {
+            "count": 12576,
+            "em": 0.40736323155216286,
+            "f1": 0.46406808306062214
+          },
+          "musique": {
+            "count": 2417,
+            "em": 0.18163011998345055,
+            "f1": 0.26204078667287495
+          },
+          "bamboogle": {
+            "count": 125,
+            "em": 0.352,
+            "f1": 0.49246666666666666
+          }
+        },
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-eval-fast/scores/final-metrics.json",
+        "sha256": "775c209ff0c88d37543c6e7437fa160a611559ca3f095695bc66e85506ec2a20",
+        "local_semantic_copy": {
+          "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/FINAL200_FULL51713_METRICS.json",
+          "bytes": 4555,
+          "sha256": "a7efd1721d61eaea20bd52f20f182a38aaa30b691056bc00c425dbdc8533bdfb"
+        },
+        "identity": {
+          "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+          "dataset_sha256": "2598a00883d70ace097e4d0dc10056066b4f6d0d99d9d6034d902dd09da732fa",
+          "model_sha256": "c0360891166e7bc7e1a10af023f9762ede122976f5c10873ccf5725035d8d416"
+        },
+        "execution_changes": [
+          "8 resident TP1 ranks",
+          "local batch 64 (global scheduling width 512)",
+          "no FSDP/reload/cache teardown",
+          "no eight-GPU rollout padding",
+          "explicit shared systemd memory_headroom_shared_v1 execution",
+          "physical GPUs 8; Slurm reserved GPUs 0; no exclusive allocation claim",
+          "resident vLLM GPU memory/cache fraction 20%"
+        ],
+        "numerical_caveat": "HF weights unchanged; altered greedy batching/kernel shapes are not guaranteed bit-identical.",
+        "worker_exit_code": 0,
+        "terminal_proof": {
+          "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/FINAL200_ROOT_FULL51713_DOUBLE_TERMINAL_PROOF.json",
+          "bytes": 11602,
+          "sha256": "7ec84f3f526be3ff375a3471d9f112a3511e67c113f8a69c203c2e315280ae8a"
+        }
+      }
+    },
+    {
+      "experiment": "TOP-D α=0.1",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.45373961218836567,
+        "triviaqa": 0.6083267037920976,
+        "popqa": 0.42805074647788605,
+        "hotpotqa": 0.4209318028359217,
+        "2wikimultihopqa": 0.37571564885496184,
+        "musique": 0.18038891187422423,
+        "bamboogle": 0.448
+      },
+      "macro_em": 0.4164504894319224,
+      "micro_em": 0.444008276448862,
+      "f1": 0.5047508537547575,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-final51713-recovery-707690/complete.json",
+        "sha256": "94d8cfb313a8ec542ab7e159799244a4d70e0ed73ee658668200a0aaaba46939",
+        "bytes": 3167,
+        "observed_utc": "2026-10-14T12:29:47.783304+00:00"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=TOP-D alpha0.1/final51713"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "rows": 51713,
+        "correct": 22961,
+        "em": 0.444008276448862,
+        "f1": 0.5047508537547575,
+        "acceptance_source": {
+          "path": "/data/user/jxu957/experiments/topd-20261008/outputs/training-preparation/topd200-final-acceptance.json",
+          "sha256": "f226dd1318ddbb73e55c303789bc9fc48515327be0449cc0be4151c0c3488af1",
+          "bytes": 2156,
+          "mtime": 1791858054.564057
+        },
+        "complete_source": {
+          "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-final51713-recovery-707690/complete.json",
+          "sha256": "94d8cfb313a8ec542ab7e159799244a4d70e0ed73ee658668200a0aaaba46939",
+          "bytes": 3167,
+          "mtime": 1791857978.177763
+        },
+        "completion_hash_binding_verified": true,
+        "original_independent_rescoring_pass": true,
+        "n": 51713
+      },
+      "dataset_correct": {
+        "nq": 1638,
+        "triviaqa": 6882,
+        "popqa": 6107,
+        "hotpotqa": 3117,
+        "2wikimultihopqa": 4725,
+        "musique": 436,
+        "bamboogle": 56
+      },
+      "correct": 22961
+    },
+    {
+      "experiment": "Tree-BRANPO 3360",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.46094182825484764,
+        "triviaqa": 0.6171660921064263,
+        "popqa": 0.4380037849582954,
+        "hotpotqa": 0.4176907494935854,
+        "2wikimultihopqa": 0.3571087786259542,
+        "musique": 0.16549441456350847,
+        "bamboogle": 0.408
+      },
+      "macro_em": 0.40920080685751675,
+      "micro_em": 0.44340881403128807,
+      "f1": 0.510726647820571,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/output/eval-resume/scores/final-metrics.json",
+        "sha256": "1df91b8d4302fa305ceddba65cffbf505db1d1ad4c339d5dd4f9665d1ccc17a4",
+        "bytes": 3897,
+        "observed_utc": "2026-10-14T12:29:35.747719+00:00"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=Tree BRANPO fresh200 3360/final51713"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/tree-updated-runs.json",
+          "local_sha256": "1eebd7db93145bdaf943df7122bd2bef1495b4b8d9afbc20deff0be79cee357b"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.44340881403128807,
+        "f1": 0.510726647820571,
+        "n": 51713,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/output/eval-resume/scores/final-metrics.json",
+        "sha256": "1df91b8d4302fa305ceddba65cffbf505db1d1ad4c339d5dd4f9665d1ccc17a4",
+        "mtime": 1791902918.495709,
+        "status": null,
+        "evaluated_rows": 51713,
+        "correct": 22930
+      },
+      "dataset_correct": {
+        "nq": 1664,
+        "triviaqa": 6982,
+        "popqa": 6249,
+        "hotpotqa": 3093,
+        "2wikimultihopqa": 4491,
+        "musique": 400,
+        "bamboogle": 51
+      },
+      "correct": 22930
+    },
+    {
+      "experiment": "BAPO 3359",
+      "checkpoint_iter": 150,
+      "dataset_em": {
+        "nq": 0.4260387811634349,
+        "triviaqa": 0.614602669495271,
+        "popqa": 0.4387747949814257,
+        "hotpotqa": 0.3900067521944632,
+        "2wikimultihopqa": 0.37340966921119595,
+        "musique": 0.19031857674803476,
+        "bamboogle": 0.384
+      },
+      "macro_em": 0.4024501776848322,
+      "micro_em": 0.4417264517626129,
+      "f1": 0.5086335023739258,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/eval150-final51713-8d419bf98d4646ae8cf5f3d44da19656-3378/final51713.json",
+        "sha256": "76354fe294556d4f4455b4aff07618008cd52ef42ceafc8f801714b180c36e0c",
+        "bytes": 5988,
+        "observed_utc": "2026-10-14T12:29:50.150841+00:00"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        }
+      ],
+      "scope": "historical_full_test_summary_observed_2026-10-14",
+      "dataset_correct": {
+        "nq": 1538,
+        "triviaqa": 6953,
+        "popqa": 6260,
+        "hotpotqa": 2888,
+        "2wikimultihopqa": 4696,
+        "musique": 460,
+        "bamboogle": 48
+      },
+      "correct": 22843
+    },
+    {
+      "experiment": "GiGPO",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.4581717451523546,
+        "triviaqa": 0.6155750022098471,
+        "popqa": 0.44122800869138573,
+        "hotpotqa": 0.40594193112761645,
+        "2wikimultihopqa": 0.3782601781170484,
+        "musique": 0.17170045510964005,
+        "bamboogle": 0.32
+      },
+      "macro_em": 0.3986967600582703,
+      "micro_em": 0.447295650996848,
+      "f1": 0.5142595344505805,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3347-1791494104474180576/calibration.log",
+        "observed_utc": "2026-10-14T12:30:46.210423+00:00",
+        "kind": "native full-precision scalar log"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=GiGPO safety fresh200 3347/final51713"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.447295650996848,
+        "f1": 0.5142595344505805,
+        "n": 51713,
+        "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3347-1791494104474180576/calibration.log",
+        "sha256": "425c47b58064abec515b041c093aad9272ea23767f4724243b1e8c321cc16e8a",
+        "datasets": {
+          "2wikimultihopqa": 0.3782601781170484,
+          "all": 0.447295650996848,
+          "bamboogle": 0.32,
+          "hotpotqa": 0.40594193112761645,
+          "musique": 0.17170045510964005,
+          "nq": 0.4581717451523546,
+          "popqa": 0.44122800869138573,
+          "triviaqa": 0.6155750022098471
+        }
+      },
+      "dataset_correct": {
+        "nq": 1654,
+        "triviaqa": 6964,
+        "popqa": 6295,
+        "hotpotqa": 3006,
+        "2wikimultihopqa": 4757,
+        "musique": 415,
+        "bamboogle": 40
+      },
+      "correct": 23131
+    },
+    {
+      "experiment": "Soft Reward → Hard Reward",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.46565096952908586,
+        "triviaqa": 0.6222929373287368,
+        "popqa": 0.4657601457909862,
+        "hotpotqa": 0.32653612424037814,
+        "2wikimultihopqa": 0.30852417302798985,
+        "musique": 0.06702523789822093,
+        "bamboogle": 0.152
+      },
+      "macro_em": 0.34396994111648543,
+      "micro_em": 0.42242762941620093,
+      "f1": 0.48704778769330365,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/full-run-acceptance.json",
+        "sha256": "8b8d679665145fcdcbea7ee641835b7334b83ed1078e44c045b4a7170d075b67",
+        "bytes": 5358553,
+        "observed_utc": "2026-10-14T12:30:34.686076+00:00"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=Soft Reward -> Hard Reward/final51713"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.42242762941620093,
+        "f1": 0.48704778769330365,
+        "n": 51713,
+        "correct": 21845.0,
+        "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/final-identity.json",
+        "sha256": "f720b2944c9ab3c666171be359a8ba3154eda5336a32653f00035427bb806925",
+        "row_sums_verified": true,
+        "formal_acceptance": true
+      },
+      "dataset_correct": {
+        "nq": 1681,
+        "triviaqa": 7040,
+        "popqa": 6645,
+        "hotpotqa": 2418,
+        "2wikimultihopqa": 3880,
+        "musique": 162,
+        "bamboogle": 19
+      },
+      "correct": 21845
+    },
+    {
+      "experiment": "Soft Reward（旧 Search-G1）",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.4470914127423823,
+        "triviaqa": 0.5963051356846106,
+        "popqa": 0.45447536272517,
+        "hotpotqa": 0.3223497636731938,
+        "2wikimultihopqa": 0.3077290076335878,
+        "musique": 0.06909391808026479,
+        "bamboogle": 0.144
+      },
+      "macro_em": 0.33443494293417275,
+      "micro_em": 0.41161796840252934,
+      "f1": 0.47832536451188556,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/full-run-acceptance.json",
+        "sha256": "9aad55bcd23345eacb57acfbbc03d88a4fb19b666d8cd37ee534717070a251bc",
+        "bytes": 5359105,
+        "observed_utc": "2026-10-14T12:30:34.781565+00:00"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=Soft Reward (Search-G1)/final51713"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.41161796840252934,
+        "f1": 0.47832536451188556,
+        "n": 51713,
+        "correct": 21286.0,
+        "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/final-identity.json",
+        "sha256": "f8e83197c040bb493a806b2a988a4efd8add27a24b02c63fa67d12cc09d0ce2d",
+        "row_sums_verified": true,
+        "formal_acceptance": true
+      },
+      "dataset_correct": {
+        "nq": 1614,
+        "triviaqa": 6746,
+        "popqa": 6484,
+        "hotpotqa": 2387,
+        "2wikimultihopqa": 3870,
+        "musique": 167,
+        "bamboogle": 18
+      },
+      "correct": 21286
+    },
+    {
+      "experiment": "Q-probe σ3 · Co会话†",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.43961218836565097,
+        "triviaqa": 0.61645894104128,
+        "popqa": 0.41480339244410175,
+        "hotpotqa": 0.3323430114787306,
+        "2wikimultihopqa": 0.3031965648854962,
+        "musique": 0.07447248655357881,
+        "bamboogle": 0.128
+      },
+      "dataset_correct": {
+        "nq": 1587,
+        "triviaqa": 6974,
+        "popqa": 5918,
+        "hotpotqa": 2461,
+        "2wikimultihopqa": 3813,
+        "musique": 180,
+        "bamboogle": 16
+      },
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "count": 51713,
+      "correct": 20949,
+      "micro_em": 0.40510123179858065,
+      "macro_em": 0.3298409406812626,
+      "f1": 0.47406081490651897,
+      "kind": "ours",
+      "evidence": {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/jxu957-current.json",
+        "sha256": "89ef3618a44bef55f15598d205841353d6eb5364ba79542a5b5982e69348b335"
+      },
+      "final_identity_current": {
+        "complete": true,
+        "scoring_complete": true,
+        "final_acceptance_complete": false,
+        "n": 51713,
+        "correct": 20949,
+        "em": 0.40510123179858065,
+        "f1": 0.47406081490651897,
+        "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/logs/validation-identities.jsonl",
+        "sha256": "8da79702a31a6e36a811e71fce737aaf5a399d56140229a8e8cd527149c8fa8d",
+        "sha256_scope": "exact final identity ledger row",
+        "source_metrics": {
+          "nq": {
+            "count": 3610,
+            "em": 0.43961218836565097,
+            "f1": 0.5276348656042279
+          },
+          "triviaqa": {
+            "count": 11313,
+            "em": 0.61645894104128,
+            "f1": 0.691141399328166
+          },
+          "popqa": {
+            "count": 14267,
+            "em": 0.41480339244410175,
+            "f1": 0.46346183974977845
+          },
+          "hotpotqa": {
+            "count": 7405,
+            "em": 0.3323430114787306,
+            "f1": 0.43712171908781133
+          },
+          "2wikimultihopqa": {
+            "count": 12576,
+            "em": 0.3031965648854962,
+            "f1": 0.36107041388910255
+          },
+          "musique": {
+            "count": 2417,
+            "em": 0.07447248655357881,
+            "f1": 0.15353972783054762
+          },
+          "bamboogle": {
+            "count": 125,
+            "em": 0.128,
+            "f1": 0.24351168831168826
+          }
+        },
+        "dataset_sha256": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+        "run_id": "70827e85fe584f0c84453aae907918a4",
+        "cleanup_error": "trainer left owned subprocesses",
+        "identity_readback": {
+          "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/sigma-final-identity-readback.json",
+          "sha256": "5de070af8a17015b4c35eff28ec1ce49cbb90f0054e2984acfb727247dbe8d97"
+        },
+        "canonical_dataset_readback": {
+          "path": "outputs/session-refresh-20261017-pinned/sigma-canonical-data-readback.json",
+          "sha256": "a5ac53d942b35462626d57c573a16504a4202c71041f53acc5a5c79c107a56bc"
+        }
+      },
+      "final_acceptance_complete": false
+    },
+    {
+      "experiment": "TOP-D α=1",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.30886426592797783,
+        "triviaqa": 0.41615840183859276,
+        "popqa": 0.30202565360622413,
+        "hotpotqa": 0.2114787305874409,
+        "2wikimultihopqa": 0.13676844783715011,
+        "musique": 0.063301613570542,
+        "bamboogle": 0.216
+      },
+      "micro_em": 0.2629512888441978,
+      "f1": 0.28950107978698203,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-alpha1-final51713-recovery-713717/complete.json",
+        "sha256": "cfa8070914763cd69020d9d64c8d5706ae3b6e3f0c6e7967488420ed51848be5",
+        "bytes": 3245,
+        "mtime": 1792031719.865346
+      },
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/topd-latest.json",
+          "local_sha256": "fc472188b7c0a925f9f6d7800a62e26c8a23b9c1f9428dbe01892dfa98ba0a60",
+          "json_pointer": "/runs/1/complete/data/metrics"
+        }
+      ],
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-15",
+      "final_identity_current": {
+        "complete": true,
+        "rows": 51713,
+        "correct": 13598,
+        "em": 0.2629512888441978,
+        "f1": 0.28950107978698203,
+        "acceptance_source": {
+          "path": "/data/user/jxu957/experiments/topd-20261008/outputs/training-preparation/topd-alpha1-final-acceptance.json",
+          "sha256": "d9c1da566bff38cd86218564903435a0fde27c2dbbde38f12b2290c1b328c179",
+          "bytes": 2294,
+          "mtime": 1792035308.206882
+        },
+        "complete_source": {
+          "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-alpha1-final51713-recovery-713717/complete.json",
+          "sha256": "cfa8070914763cd69020d9d64c8d5706ae3b6e3f0c6e7967488420ed51848be5",
+          "bytes": 3245,
+          "mtime": 1792031719.865346
+        },
+        "completion_hash_binding_verified": true,
+        "original_independent_rescoring_pass": true,
+        "n": 51713
+      },
+      "macro_em": 0.23637101619541825,
+      "dataset_correct": {
+        "nq": 1115,
+        "triviaqa": 4708,
+        "popqa": 4309,
+        "hotpotqa": 1566,
+        "2wikimultihopqa": 1720,
+        "musique": 153,
+        "bamboogle": 27
+      },
+      "correct": 13598
+    },
+    {
+      "experiment": "OPSD 3304",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.2966759002770083,
+        "triviaqa": 0.4370193582604084,
+        "popqa": 0.2756010373589402,
+        "hotpotqa": 0.1636731937879811,
+        "2wikimultihopqa": 0.09915712468193384,
+        "musique": 0.046338436077782375,
+        "bamboogle": 0.2
+      },
+      "macro_em": 0.2169235786348649,
+      "micro_em": 0.2425502291493435,
+      "f1": 0.28587797918399066,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/formal-wrapper.log",
+        "observed_utc": "2026-10-14T12:30:42.859155+00:00",
+        "kind": "native full-precision scalar log"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        }
+      ],
+      "scope": "historical_full_test_summary_observed_2026-10-14",
+      "dataset_correct": {
+        "nq": 1071,
+        "triviaqa": 4944,
+        "popqa": 3932,
+        "hotpotqa": 1212,
+        "2wikimultihopqa": 1247,
+        "musique": 112,
+        "bamboogle": 25
+      },
+      "correct": 12543
+    }
+  ],
+  "paper_references": [
+    {
+      "experiment": "Search-E1原论文",
+      "checkpoint_iter": null,
+      "dataset_em": {
+        "nq": 0.474,
+        "triviaqa": 0.626,
+        "popqa": 0.461,
+        "hotpotqa": 0.42700000000000005,
+        "2wikimultihopqa": 0.436,
+        "musique": 0.193,
+        "bamboogle": 0.46399999999999997
+      },
+      "macro_em": 0.44,
+      "kind": "paper_reference_user_supplied",
+      "evidence": "User supplied previous paper comparison; not rerun or same-budget proof.",
+      "paper_reported_macro_em": 0.44,
+      "macro_recomputed_from_displayed_dataset_values": 0.4401428571428571,
+      "micro_em": null,
+      "scope": "user_supplied_paper_reference_not_reaudited_in_this_collection",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "source": "latest user-provided table",
+          "verification": "not independently reread from paper this turn"
+        }
+      ],
+      "note": "Use paper-reported average; rounded per-dataset entries may give a different recomputed last digit. Different paper settings are not a matched-budget comparison."
+    },
+    {
+      "experiment": "Search-R1原论文",
+      "checkpoint_iter": null,
+      "dataset_em": {
+        "nq": 0.341,
+        "triviaqa": 0.545,
+        "popqa": 0.37799999999999995,
+        "hotpotqa": 0.324,
+        "2wikimultihopqa": 0.319,
+        "musique": 0.10300000000000001,
+        "bamboogle": 0.264
+      },
+      "macro_em": 0.325,
+      "kind": "paper_reference_user_supplied",
+      "evidence": "User supplied previous paper comparison; not rerun or same-budget proof.",
+      "paper_reported_macro_em": 0.325,
+      "macro_recomputed_from_displayed_dataset_values": 0.32485714285714284,
+      "micro_em": null,
+      "scope": "user_supplied_paper_reference_not_reaudited_in_this_collection",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "source": "latest user-provided table",
+          "verification": "not independently reread from paper this turn"
+        }
+      ],
+      "note": "Use paper-reported average; rounded per-dataset entries may give a different recomputed last digit. Different paper settings are not a matched-budget comparison."
+    },
+    {
+      "experiment": "Search-G1原论文",
+      "checkpoint_iter": null,
+      "dataset_em": {
+        "nq": 0.45299999999999996,
+        "triviaqa": null,
+        "popqa": null,
+        "hotpotqa": 0.306,
+        "2wikimultihopqa": 0.368,
+        "musique": 0.14300000000000002,
+        "bamboogle": null
+      },
+      "macro_em": null,
+      "kind": "paper_reference_user_supplied",
+      "evidence": "User supplied previous paper comparison; not rerun or same-budget proof.",
+      "paper_reported_macro_em": null,
+      "macro_recomputed_from_displayed_dataset_values": null,
+      "micro_em": null,
+      "scope": "user_supplied_paper_reference_not_reaudited_in_this_collection",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "source": "latest user-provided table",
+          "verification": "not independently reread from paper this turn"
+        }
+      ],
+      "note": "Use paper-reported average; rounded per-dataset entries may give a different recomputed last digit. Different paper settings are not a matched-budget comparison."
+    }
+  ],
+  "rows": [
+    {
+      "experiment": "CoSearch 双模型",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.46814404432132967,
+        "triviaqa": 0.6443914081145584,
+        "popqa": 0.4736104296628583,
+        "hotpotqa": 0.44550979068197166,
+        "2wikimultihopqa": 0.44926844783715014,
+        "musique": 0.20355812991311542,
+        "bamboogle": 0.448
+      },
+      "dataset_correct": {
+        "nq": 1690,
+        "triviaqa": 7290,
+        "popqa": 6757,
+        "hotpotqa": 3299,
+        "2wikimultihopqa": 5650,
+        "musique": 492,
+        "bamboogle": 56
+      },
+      "correct": 25234,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "count": 51713,
+      "micro_em": 0.4879624079051689,
+      "macro_em": 0.44749746436156906,
+      "f1": 0.5630729533879519,
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-16",
+      "evidence": {
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/complete.json",
+        "sha256": "523198910d73336f6e633c3e02ce1691c75ec9a156023ed6bb1ce1d7741254a8"
+      },
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/co-updated-runs.json",
+          "local_sha256": "879f4cc48464ab24a6e614ab1463b14c4581284ec9e5ccc99ac52892a7417a38"
+        }
+      ],
+      "final_identity_current": {
+        "complete": true,
+        "iter": 200,
+        "n": 51713,
+        "correct": 25234,
+        "em": 0.4879624079051689,
+        "f1": 0.5630729533879519,
+        "macro_em": 0.4474974643615691,
+        "macro_f1": 0.5335946202628082,
+        "source_metrics": {
+          "2wikimultihopqa": {
+            "count": 12576,
+            "correct": 5650,
+            "em": 0.44926844783715014,
+            "f1": 0.518099790336217
+          },
+          "bamboogle": {
+            "count": 125,
+            "correct": 56,
+            "em": 0.448,
+            "f1": 0.5607619047619047
+          },
+          "hotpotqa": {
+            "count": 7405,
+            "correct": 3299,
+            "em": 0.44550979068197166,
+            "f1": 0.5696869729744086
+          },
+          "musique": {
+            "count": 2417,
+            "correct": 492,
+            "em": 0.20355812991311542,
+            "f1": 0.2851071417364522
+          },
+          "nq": {
+            "count": 3610,
+            "correct": 1690,
+            "em": 0.46814404432132967,
+            "f1": 0.5568716478784922
+          },
+          "popqa": {
+            "count": 14267,
+            "correct": 6757,
+            "em": 0.4736104296628583,
+            "f1": 0.5192878630602072
+          },
+          "triviaqa": {
+            "count": 11313,
+            "correct": 7290,
+            "em": 0.6443914081145584,
+            "f1": 0.7253470210919756
+          }
+        },
+        "datasets": {
+          "2wikimultihopqa": {
+            "correct": 5650,
+            "em": 0.44926844783715014,
+            "f1": 0.518099790336217,
+            "questions": 12576,
+            "trajectories": 12576
+          },
+          "bamboogle": {
+            "correct": 56,
+            "em": 0.448,
+            "f1": 0.5607619047619047,
+            "questions": 125,
+            "trajectories": 125
+          },
+          "hotpotqa": {
+            "correct": 3299,
+            "em": 0.44550979068197166,
+            "f1": 0.5696869729744086,
+            "questions": 7405,
+            "trajectories": 7405
+          },
+          "musique": {
+            "correct": 492,
+            "em": 0.20355812991311542,
+            "f1": 0.2851071417364522,
+            "questions": 2417,
+            "trajectories": 2417
+          },
+          "nq": {
+            "correct": 1690,
+            "em": 0.46814404432132967,
+            "f1": 0.5568716478784922,
+            "questions": 3610,
+            "trajectories": 3610
+          },
+          "popqa": {
+            "correct": 6757,
+            "em": 0.4736104296628583,
+            "f1": 0.5192878630602072,
+            "questions": 14267,
+            "trajectories": 14267
+          },
+          "triviaqa": {
+            "correct": 7290,
+            "em": 0.6443914081145584,
+            "f1": 0.7253470210919756,
+            "questions": 11313,
+            "trajectories": 11313
+          }
+        },
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/complete.json",
+        "sha256": "523198910d73336f6e633c3e02ce1691c75ec9a156023ed6bb1ce1d7741254a8",
+        "acceptance_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/acceptance.json",
+        "acceptance_sha256": "ce7cf8e85e01ea685ead57657fbdf3189d68590d5c73d0b392bb0f781e8db549",
+        "scorer_version": "common-em-v4-final-model-action",
+        "completed_epoch": 1792065686.714123,
+        "independent_acceptance": true
+      }
+    },
+    {
+      "experiment": "Search-E1原论文",
+      "checkpoint_iter": null,
+      "dataset_em": {
+        "nq": 0.474,
+        "triviaqa": 0.626,
+        "popqa": 0.461,
+        "hotpotqa": 0.42700000000000005,
+        "2wikimultihopqa": 0.436,
+        "musique": 0.193,
+        "bamboogle": 0.46399999999999997
+      },
+      "macro_em": 0.44,
+      "kind": "paper_reference_user_supplied",
+      "evidence": "User supplied previous paper comparison; not rerun or same-budget proof.",
+      "paper_reported_macro_em": 0.44,
+      "macro_recomputed_from_displayed_dataset_values": 0.4401428571428571,
+      "micro_em": null,
+      "scope": "user_supplied_paper_reference_not_reaudited_in_this_collection",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "source": "latest user-provided table",
+          "verification": "not independently reread from paper this turn"
+        }
+      ],
+      "note": "Use paper-reported average; rounded per-dataset entries may give a different recomputed last digit. Different paper settings are not a matched-budget comparison."
+    },
+    {
+      "experiment": "Easy Selection+Soft Reward",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.4761772853185596,
+        "triviaqa": 0.6380270485282419,
+        "popqa": 0.47928786710590876,
+        "hotpotqa": 0.45820391627278867,
+        "2wikimultihopqa": 0.4431456743002545,
+        "musique": 0.20521307405875053,
+        "bamboogle": 0.376
+      },
+      "micro_em": 0.48892928277222364,
+      "f1": 0.5604277258548636,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": {
+          "path": "/mnt/data/shaoshitong/search-g1-final200-bs256-20261014-v2/journal/final-result.json",
+          "bytes": 23503014,
+          "sha256": "bfaf6cfcc4f13bc2cc8d500dd5231dde0fb419d61fca53d0fadb8879610ff3c5",
+          "mtime": 1792006140.3038497
+        },
+        "sha256": "bfaf6cfcc4f13bc2cc8d500dd5231dde0fb419d61fca53d0fadb8879610ff3c5"
+      },
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/g1-mixed-final-scores-second.json",
+          "local_sha256": "e838fc6210dd636174ba8ef766a22c3011d7142f11c98fed6380c5bce2d011e8",
+          "json_pointer": "/source_metrics"
+        }
+      ],
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-15",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.48892928277222364,
+        "f1": 0.5604277258548636,
+        "n": 51713,
+        "correct": 25284,
+        "path": "/mnt/data/shaoshitong/search-g1-final200-bs256-20261014-v2/journal/final-result.json",
+        "sha256": "bfaf6cfcc4f13bc2cc8d500dd5231dde0fb419d61fca53d0fadb8879610ff3c5",
+        "row_sums_verified": true,
+        "batch_chain_verified": true,
+        "formal_acceptance": false,
+        "source_metrics": {
+          "nq": {
+            "count": 3610,
+            "em": 0.4761772853185596,
+            "f1": 0.5589346789668608
+          },
+          "triviaqa": {
+            "count": 11313,
+            "em": 0.6380270485282419,
+            "f1": 0.7126761035957674
+          },
+          "popqa": {
+            "count": 14267,
+            "em": 0.47928786710590876,
+            "f1": 0.5203397301280528
+          },
+          "hotpotqa": {
+            "count": 7405,
+            "em": 0.45820391627278867,
+            "f1": 0.5776417222302951
+          },
+          "2wikimultihopqa": {
+            "count": 12576,
+            "em": 0.4431456743002545,
+            "f1": 0.5111263723106197
+          },
+          "musique": {
+            "count": 2417,
+            "em": 0.20521307405875053,
+            "f1": 0.2939399254507921
+          },
+          "bamboogle": {
+            "count": 125,
+            "em": 0.376,
+            "f1": 0.49310476190476193
+          }
+        }
+      },
+      "note": "203 complete scoring batches and full 51,713 rows verified; scoring complete, formal job cleanup acceptance pending.",
+      "macro_em": 0.4394364093692148,
+      "dataset_correct": {
+        "nq": 1719,
+        "triviaqa": 7218,
+        "popqa": 6838,
+        "hotpotqa": 3393,
+        "2wikimultihopqa": 5573,
+        "musique": 496,
+        "bamboogle": 47
+      },
+      "correct": 25284
+    },
+    {
+      "experiment": "递归Tree A",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.4814404432132964,
+        "triviaqa": 0.6326350216565013,
+        "popqa": 0.4796383262073316,
+        "hotpotqa": 0.4353814989871708,
+        "2wikimultihopqa": 0.43877226463104324,
+        "musique": 0.18287132809267687,
+        "bamboogle": 0.368
+      },
+      "dataset_correct": {
+        "nq": 1738,
+        "triviaqa": 7157,
+        "popqa": 6843,
+        "hotpotqa": 3224,
+        "2wikimultihopqa": 5518,
+        "musique": 442,
+        "bamboogle": 46
+      },
+      "correct": 24968,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "count": 51713,
+      "micro_em": 0.4828186336124379,
+      "macro_em": 0.43124841182685997,
+      "f1": 0.5510407509251146,
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-16",
+      "evidence": {
+        "path": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/recovery-from100-20261013/final51713/84d95ec7600843efb00a5e16b9f13134/summary.json",
+        "sha256": "57dcae3ecff517a8250522f796a47641450ba8958c4990e36b0bc01f61b4a725"
+      },
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/a-updated-runs.json",
+          "local_sha256": "029e105539e51ced66b64b9551db6298df2d28accae24d2af9446e27314e11df"
+        }
+      ],
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.4828186336124379,
+        "f1": 0.5510407509251146,
+        "n": 51713,
+        "path": "/dataset/shaoshitong/recursive-bran-a-h100-20261012/recovery-from100-20261013/final51713/84d95ec7600843efb00a5e16b9f13134/summary.json",
+        "sha256": "57dcae3ecff517a8250522f796a47641450ba8958c4990e36b0bc01f61b4a725",
+        "mtime": 1791979236.0726624,
+        "status": "COMPLETE",
+        "evaluated_rows": 51713,
+        "correct": 24968,
+        "source_metrics": {
+          "val/qa_count/nq": 3610,
+          "val/f1/nq": 0.5613744482483288,
+          "val/em/nq": 0.4814404432132964,
+          "val/answer_format/nq": 0.9969529085872576,
+          "val/format_rate/nq": 0.7121883656509695,
+          "val/generated_tokens/nq": 140.81523545706372,
+          "val/search_calls/nq": 2.0490304709141274,
+          "val/qa_count/triviaqa": 11313,
+          "val/f1/triviaqa": 0.7067315071046308,
+          "val/em/triviaqa": 0.6326350216565013,
+          "val/answer_format/triviaqa": 0.997524971271988,
+          "val/format_rate/triviaqa": 0.7039688853531335,
+          "val/generated_tokens/triviaqa": 167.2309732166534,
+          "val/search_calls/triviaqa": 2.1659153186599487,
+          "val/qa_count/popqa": 14267,
+          "val/f1/popqa": 0.5224554418813919,
+          "val/em/popqa": 0.4796383262073316,
+          "val/answer_format/popqa": 0.9977570617508936,
+          "val/format_rate/popqa": 0.5500806055933273,
+          "val/generated_tokens/popqa": 141.08747459171514,
+          "val/search_calls/popqa": 2.136889325015771,
+          "val/qa_count/hotpotqa": 7405,
+          "val/f1/hotpotqa": 0.5507858589200658,
+          "val/em/hotpotqa": 0.4353814989871708,
+          "val/answer_format/hotpotqa": 0.9910871033085753,
+          "val/format_rate/hotpotqa": 0.4710330857528697,
+          "val/generated_tokens/hotpotqa": 213.37231600270087,
+          "val/search_calls/hotpotqa": 2.302093180283592,
+          "val/qa_count/2wikimultihopqa": 12576,
+          "val/f1/2wikimultihopqa": 0.49542329621765674,
+          "val/em/2wikimultihopqa": 0.43877226463104324,
+          "val/answer_format/2wikimultihopqa": 0.9841762086513995,
+          "val/format_rate/2wikimultihopqa": 0.23361959287531806,
+          "val/generated_tokens/2wikimultihopqa": 239.77870547073792,
+          "val/search_calls/2wikimultihopqa": 2.4807569974554706,
+          "val/qa_count/musique": 2417,
+          "val/f1/musique": 0.2691782954134187,
+          "val/em/musique": 0.18287132809267687,
+          "val/answer_format/musique": 0.9424906909391808,
+          "val/format_rate/musique": 0.49896565990897807,
+          "val/generated_tokens/musique": 252.74968969797268,
+          "val/search_calls/musique": 2.7753413322300373,
+          "val/qa_count/bamboogle": 125,
+          "val/f1/bamboogle": 0.48533333333333334,
+          "val/em/bamboogle": 0.368,
+          "val/answer_format/bamboogle": 0.984,
+          "val/format_rate/bamboogle": 0.576,
+          "val/generated_tokens/bamboogle": 186.608,
+          "val/search_calls/bamboogle": 2.416,
+          "val/qa_count/all": 51713,
+          "val/f1/all": 0.5510407509251146,
+          "val/em/all": 0.4828186336124379,
+          "val/answer_format/all": 0.9907760137682982,
+          "val/format_rate/all": 0.5044572931371222,
+          "val/generated_tokens/all": 186.46806412314118,
+          "val/search_calls/all": 2.274901862200994
+        },
+        "verified_at_cst": "2026-10-16T13:19:42.084835+08:00"
+      }
+    },
+    {
+      "experiment": "Tree-GRPO",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.4745152354570637,
+        "triviaqa": 0.6252983293556086,
+        "popqa": 0.44312048783906915,
+        "hotpotqa": 0.42565833896016203,
+        "2wikimultihopqa": 0.3970260814249364,
+        "musique": 0.1981795614398014,
+        "bamboogle": 0.376
+      },
+      "macro_em": 0.4199711477823773,
+      "micro_em": 0.45984568677121807,
+      "f1": 0.5295794609225355,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3341/stage.log",
+        "observed_utc": "2026-10-14T12:29:36.398024+00:00",
+        "kind": "native full-precision scalar log"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=Tree-GRPO original guarded200/final51713"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/tree-updated-runs.json",
+          "local_sha256": "1eebd7db93145bdaf943df7122bd2bef1495b4b8d9afbc20deff0be79cee357b"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.45984568677121807,
+        "f1": 0.5295794609225355,
+        "n": 51713,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-current200-continue-3341/output/validation-cost/validation-361807-40.json",
+        "sha256": "8c27f847417f65c19edc8ec17376711145f9e09ad05be5056e86e2ec855942fa",
+        "mtime": 1791640809.4748592,
+        "status": "VALIDATION_COST_COMPLETE",
+        "evaluated_rows": 51713,
+        "correct": 23780
+      },
+      "dataset_correct": {
+        "nq": 1713,
+        "triviaqa": 7074,
+        "popqa": 6322,
+        "hotpotqa": 3152,
+        "2wikimultihopqa": 4993,
+        "musique": 479,
+        "bamboogle": 47
+      },
+      "correct": 23780
+    },
+    {
+      "experiment": "Tree 嵌套分叉",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.46204986149584487,
+        "triviaqa": 0.6248563599398922,
+        "popqa": 0.4722085932571669,
+        "hotpotqa": 0.4313301823092505,
+        "2wikimultihopqa": 0.40736323155216286,
+        "musique": 0.18163011998345055,
+        "bamboogle": 0.352
+      },
+      "dataset_correct": {
+        "nq": 1668,
+        "triviaqa": 7069,
+        "popqa": 6737,
+        "hotpotqa": 3194,
+        "2wikimultihopqa": 5123,
+        "musique": 439,
+        "bamboogle": 44
+      },
+      "correct": 24274,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "count": 51713,
+      "micro_em": 0.4693984104577186,
+      "macro_em": 0.4187769069339668,
+      "f1": 0.538153839337549,
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-16",
+      "evidence": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-eval-fast/scores/final-metrics.json",
+        "sha256": "775c209ff0c88d37543c6e7437fa160a611559ca3f095695bc66e85506ec2a20"
+      },
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/tree-updated-runs.json",
+          "local_sha256": "1eebd7db93145bdaf943df7122bd2bef1495b4b8d9afbc20deff0be79cee357b"
+        }
+      ],
+      "final_identity_current": {
+        "complete": true,
+        "n": 51713,
+        "correct": 24274,
+        "em": 0.4693984104577186,
+        "f1": 0.538153839337549,
+        "source_metrics": {
+          "nq": {
+            "count": 3610,
+            "em": 0.46204986149584487,
+            "f1": 0.5471241419822942
+          },
+          "triviaqa": {
+            "count": 11313,
+            "em": 0.6248563599398922,
+            "f1": 0.7012704682017888
+          },
+          "popqa": {
+            "count": 14267,
+            "em": 0.4722085932571669,
+            "f1": 0.5144659402807591
+          },
+          "hotpotqa": {
+            "count": 7405,
+            "em": 0.4313301823092505,
+            "f1": 0.5469334013587973
+          },
+          "2wikimultihopqa": {
+            "count": 12576,
+            "em": 0.40736323155216286,
+            "f1": 0.46406808306062214
+          },
+          "musique": {
+            "count": 2417,
+            "em": 0.18163011998345055,
+            "f1": 0.26204078667287495
+          },
+          "bamboogle": {
+            "count": 125,
+            "em": 0.352,
+            "f1": 0.49246666666666666
+          }
+        },
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-eval-fast/scores/final-metrics.json",
+        "sha256": "775c209ff0c88d37543c6e7437fa160a611559ca3f095695bc66e85506ec2a20",
+        "local_semantic_copy": {
+          "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/FINAL200_FULL51713_METRICS.json",
+          "bytes": 4555,
+          "sha256": "a7efd1721d61eaea20bd52f20f182a38aaa30b691056bc00c425dbdc8533bdfb"
+        },
+        "identity": {
+          "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+          "dataset_sha256": "2598a00883d70ace097e4d0dc10056066b4f6d0d99d9d6034d902dd09da732fa",
+          "model_sha256": "c0360891166e7bc7e1a10af023f9762ede122976f5c10873ccf5725035d8d416"
+        },
+        "execution_changes": [
+          "8 resident TP1 ranks",
+          "local batch 64 (global scheduling width 512)",
+          "no FSDP/reload/cache teardown",
+          "no eight-GPU rollout padding",
+          "explicit shared systemd memory_headroom_shared_v1 execution",
+          "physical GPUs 8; Slurm reserved GPUs 0; no exclusive allocation claim",
+          "resident vLLM GPU memory/cache fraction 20%"
+        ],
+        "numerical_caveat": "HF weights unchanged; altered greedy batching/kernel shapes are not guaranteed bit-identical.",
+        "worker_exit_code": 0,
+        "terminal_proof": {
+          "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/FINAL200_ROOT_FULL51713_DOUBLE_TERMINAL_PROOF.json",
+          "bytes": 11602,
+          "sha256": "7ec84f3f526be3ff375a3471d9f112a3511e67c113f8a69c203c2e315280ae8a"
+        }
+      }
+    },
+    {
+      "experiment": "TOP-D α=0.1",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.45373961218836567,
+        "triviaqa": 0.6083267037920976,
+        "popqa": 0.42805074647788605,
+        "hotpotqa": 0.4209318028359217,
+        "2wikimultihopqa": 0.37571564885496184,
+        "musique": 0.18038891187422423,
+        "bamboogle": 0.448
+      },
+      "macro_em": 0.4164504894319224,
+      "micro_em": 0.444008276448862,
+      "f1": 0.5047508537547575,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-final51713-recovery-707690/complete.json",
+        "sha256": "94d8cfb313a8ec542ab7e159799244a4d70e0ed73ee658668200a0aaaba46939",
+        "bytes": 3167,
+        "observed_utc": "2026-10-14T12:29:47.783304+00:00"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=TOP-D alpha0.1/final51713"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "rows": 51713,
+        "correct": 22961,
+        "em": 0.444008276448862,
+        "f1": 0.5047508537547575,
+        "acceptance_source": {
+          "path": "/data/user/jxu957/experiments/topd-20261008/outputs/training-preparation/topd200-final-acceptance.json",
+          "sha256": "f226dd1318ddbb73e55c303789bc9fc48515327be0449cc0be4151c0c3488af1",
+          "bytes": 2156,
+          "mtime": 1791858054.564057
+        },
+        "complete_source": {
+          "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-final51713-recovery-707690/complete.json",
+          "sha256": "94d8cfb313a8ec542ab7e159799244a4d70e0ed73ee658668200a0aaaba46939",
+          "bytes": 3167,
+          "mtime": 1791857978.177763
+        },
+        "completion_hash_binding_verified": true,
+        "original_independent_rescoring_pass": true,
+        "n": 51713
+      },
+      "dataset_correct": {
+        "nq": 1638,
+        "triviaqa": 6882,
+        "popqa": 6107,
+        "hotpotqa": 3117,
+        "2wikimultihopqa": 4725,
+        "musique": 436,
+        "bamboogle": 56
+      },
+      "correct": 22961
+    },
+    {
+      "experiment": "Tree-BRANPO 3360",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.46094182825484764,
+        "triviaqa": 0.6171660921064263,
+        "popqa": 0.4380037849582954,
+        "hotpotqa": 0.4176907494935854,
+        "2wikimultihopqa": 0.3571087786259542,
+        "musique": 0.16549441456350847,
+        "bamboogle": 0.408
+      },
+      "macro_em": 0.40920080685751675,
+      "micro_em": 0.44340881403128807,
+      "f1": 0.510726647820571,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/output/eval-resume/scores/final-metrics.json",
+        "sha256": "1df91b8d4302fa305ceddba65cffbf505db1d1ad4c339d5dd4f9665d1ccc17a4",
+        "bytes": 3897,
+        "observed_utc": "2026-10-14T12:29:35.747719+00:00"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=Tree BRANPO fresh200 3360/final51713"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/tree-updated-runs.json",
+          "local_sha256": "1eebd7db93145bdaf943df7122bd2bef1495b4b8d9afbc20deff0be79cee357b"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.44340881403128807,
+        "f1": 0.510726647820571,
+        "n": 51713,
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-branpo-fresh200-3360/output/eval-resume/scores/final-metrics.json",
+        "sha256": "1df91b8d4302fa305ceddba65cffbf505db1d1ad4c339d5dd4f9665d1ccc17a4",
+        "mtime": 1791902918.495709,
+        "status": null,
+        "evaluated_rows": 51713,
+        "correct": 22930
+      },
+      "dataset_correct": {
+        "nq": 1664,
+        "triviaqa": 6982,
+        "popqa": 6249,
+        "hotpotqa": 3093,
+        "2wikimultihopqa": 4491,
+        "musique": 400,
+        "bamboogle": 51
+      },
+      "correct": 22930
+    },
+    {
+      "experiment": "BAPO 3359",
+      "checkpoint_iter": 150,
+      "dataset_em": {
+        "nq": 0.4260387811634349,
+        "triviaqa": 0.614602669495271,
+        "popqa": 0.4387747949814257,
+        "hotpotqa": 0.3900067521944632,
+        "2wikimultihopqa": 0.37340966921119595,
+        "musique": 0.19031857674803476,
+        "bamboogle": 0.384
+      },
+      "macro_em": 0.4024501776848322,
+      "micro_em": 0.4417264517626129,
+      "f1": 0.5086335023739258,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009/runs/eval150-final51713-8d419bf98d4646ae8cf5f3d44da19656-3378/final51713.json",
+        "sha256": "76354fe294556d4f4455b4aff07618008cd52ef42ceafc8f801714b180c36e0c",
+        "bytes": 5988,
+        "observed_utc": "2026-10-14T12:29:50.150841+00:00"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        }
+      ],
+      "scope": "historical_full_test_summary_observed_2026-10-14",
+      "dataset_correct": {
+        "nq": 1538,
+        "triviaqa": 6953,
+        "popqa": 6260,
+        "hotpotqa": 2888,
+        "2wikimultihopqa": 4696,
+        "musique": 460,
+        "bamboogle": 48
+      },
+      "correct": 22843
+    },
+    {
+      "experiment": "GiGPO",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.4581717451523546,
+        "triviaqa": 0.6155750022098471,
+        "popqa": 0.44122800869138573,
+        "hotpotqa": 0.40594193112761645,
+        "2wikimultihopqa": 0.3782601781170484,
+        "musique": 0.17170045510964005,
+        "bamboogle": 0.32
+      },
+      "macro_em": 0.3986967600582703,
+      "micro_em": 0.447295650996848,
+      "f1": 0.5142595344505805,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3347-1791494104474180576/calibration.log",
+        "observed_utc": "2026-10-14T12:30:46.210423+00:00",
+        "kind": "native full-precision scalar log"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=GiGPO safety fresh200 3347/final51713"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.447295650996848,
+        "f1": 0.5142595344505805,
+        "n": 51713,
+        "path": "/mnt/data/shaoshitong/search-r1-rl/gigpo-e1-instruct200-safety-20261006/runs/gigpo-e1-fresh200-live-job3347-1791494104474180576/calibration.log",
+        "sha256": "425c47b58064abec515b041c093aad9272ea23767f4724243b1e8c321cc16e8a",
+        "datasets": {
+          "2wikimultihopqa": 0.3782601781170484,
+          "all": 0.447295650996848,
+          "bamboogle": 0.32,
+          "hotpotqa": 0.40594193112761645,
+          "musique": 0.17170045510964005,
+          "nq": 0.4581717451523546,
+          "popqa": 0.44122800869138573,
+          "triviaqa": 0.6155750022098471
+        }
+      },
+      "dataset_correct": {
+        "nq": 1654,
+        "triviaqa": 6964,
+        "popqa": 6295,
+        "hotpotqa": 3006,
+        "2wikimultihopqa": 4757,
+        "musique": 415,
+        "bamboogle": 40
+      },
+      "correct": 23131
+    },
+    {
+      "experiment": "Soft Reward → Hard Reward",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.46565096952908586,
+        "triviaqa": 0.6222929373287368,
+        "popqa": 0.4657601457909862,
+        "hotpotqa": 0.32653612424037814,
+        "2wikimultihopqa": 0.30852417302798985,
+        "musique": 0.06702523789822093,
+        "bamboogle": 0.152
+      },
+      "macro_em": 0.34396994111648543,
+      "micro_em": 0.42242762941620093,
+      "f1": 0.48704778769330365,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/full-run-acceptance.json",
+        "sha256": "8b8d679665145fcdcbea7ee641835b7334b83ed1078e44c045b4a7170d075b67",
+        "bytes": 5358553,
+        "observed_utc": "2026-10-14T12:30:34.686076+00:00"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=Soft Reward -> Hard Reward/final51713"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.42242762941620093,
+        "f1": 0.48704778769330365,
+        "n": 51713,
+        "correct": 21845.0,
+        "path": "/data/shaoshitong/Search-G1-a800-fresh200-5e1f65d8e7d44363b02938c8d19852ab/logs/final-identity.json",
+        "sha256": "f720b2944c9ab3c666171be359a8ba3154eda5336a32653f00035427bb806925",
+        "row_sums_verified": true,
+        "formal_acceptance": true
+      },
+      "dataset_correct": {
+        "nq": 1681,
+        "triviaqa": 7040,
+        "popqa": 6645,
+        "hotpotqa": 2418,
+        "2wikimultihopqa": 3880,
+        "musique": 162,
+        "bamboogle": 19
+      },
+      "correct": 21845
+    },
+    {
+      "experiment": "Soft Reward（旧 Search-G1）",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.4470914127423823,
+        "triviaqa": 0.5963051356846106,
+        "popqa": 0.45447536272517,
+        "hotpotqa": 0.3223497636731938,
+        "2wikimultihopqa": 0.3077290076335878,
+        "musique": 0.06909391808026479,
+        "bamboogle": 0.144
+      },
+      "macro_em": 0.33443494293417275,
+      "micro_em": 0.41161796840252934,
+      "f1": 0.47832536451188556,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/full-run-acceptance.json",
+        "sha256": "9aad55bcd23345eacb57acfbbc03d88a4fb19b666d8cd37ee534717070a251bc",
+        "bytes": 5359105,
+        "observed_utc": "2026-10-14T12:30:34.781565+00:00"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+          "local_sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401",
+          "json_pointer": "/runs/name=Soft Reward (Search-G1)/final51713"
+        }
+      ],
+      "scope": "full_test_identity_rechecked_2026-10-15_dataset_breakdown_previously_verified",
+      "final_identity_current": {
+        "complete": true,
+        "em": 0.41161796840252934,
+        "f1": 0.47832536451188556,
+        "n": 51713,
+        "correct": 21286.0,
+        "path": "/data/shaoshitong/Search-G1-a800-fresh200-a20f0475ec824c69ba1554f39e9ff512/logs/final-identity.json",
+        "sha256": "f8e83197c040bb493a806b2a988a4efd8add27a24b02c63fa67d12cc09d0ce2d",
+        "row_sums_verified": true,
+        "formal_acceptance": true
+      },
+      "dataset_correct": {
+        "nq": 1614,
+        "triviaqa": 6746,
+        "popqa": 6484,
+        "hotpotqa": 2387,
+        "2wikimultihopqa": 3870,
+        "musique": 167,
+        "bamboogle": 18
+      },
+      "correct": 21286
+    },
+    {
+      "experiment": "Q-probe σ3 · Co会话†",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.43961218836565097,
+        "triviaqa": 0.61645894104128,
+        "popqa": 0.41480339244410175,
+        "hotpotqa": 0.3323430114787306,
+        "2wikimultihopqa": 0.3031965648854962,
+        "musique": 0.07447248655357881,
+        "bamboogle": 0.128
+      },
+      "dataset_correct": {
+        "nq": 1587,
+        "triviaqa": 6974,
+        "popqa": 5918,
+        "hotpotqa": 2461,
+        "2wikimultihopqa": 3813,
+        "musique": 180,
+        "bamboogle": 16
+      },
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "count": 51713,
+      "correct": 20949,
+      "micro_em": 0.40510123179858065,
+      "macro_em": 0.3298409406812626,
+      "f1": 0.47406081490651897,
+      "kind": "ours",
+      "evidence": {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/jxu957-current.json",
+        "sha256": "89ef3618a44bef55f15598d205841353d6eb5364ba79542a5b5982e69348b335"
+      },
+      "final_identity_current": {
+        "complete": true,
+        "scoring_complete": true,
+        "final_acceptance_complete": false,
+        "n": 51713,
+        "correct": 20949,
+        "em": 0.40510123179858065,
+        "f1": 0.47406081490651897,
+        "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/logs/validation-identities.jsonl",
+        "sha256": "8da79702a31a6e36a811e71fce737aaf5a399d56140229a8e8cd527149c8fa8d",
+        "sha256_scope": "exact final identity ledger row",
+        "source_metrics": {
+          "nq": {
+            "count": 3610,
+            "em": 0.43961218836565097,
+            "f1": 0.5276348656042279
+          },
+          "triviaqa": {
+            "count": 11313,
+            "em": 0.61645894104128,
+            "f1": 0.691141399328166
+          },
+          "popqa": {
+            "count": 14267,
+            "em": 0.41480339244410175,
+            "f1": 0.46346183974977845
+          },
+          "hotpotqa": {
+            "count": 7405,
+            "em": 0.3323430114787306,
+            "f1": 0.43712171908781133
+          },
+          "2wikimultihopqa": {
+            "count": 12576,
+            "em": 0.3031965648854962,
+            "f1": 0.36107041388910255
+          },
+          "musique": {
+            "count": 2417,
+            "em": 0.07447248655357881,
+            "f1": 0.15353972783054762
+          },
+          "bamboogle": {
+            "count": 125,
+            "em": 0.128,
+            "f1": 0.24351168831168826
+          }
+        },
+        "dataset_sha256": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+        "run_id": "70827e85fe584f0c84453aae907918a4",
+        "cleanup_error": "trainer left owned subprocesses",
+        "identity_readback": {
+          "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/sigma-final-identity-readback.json",
+          "sha256": "5de070af8a17015b4c35eff28ec1ce49cbb90f0054e2984acfb727247dbe8d97"
+        },
+        "canonical_dataset_readback": {
+          "path": "outputs/session-refresh-20261017-pinned/sigma-canonical-data-readback.json",
+          "sha256": "a5ac53d942b35462626d57c573a16504a4202c71041f53acc5a5c79c107a56bc"
+        }
+      },
+      "final_acceptance_complete": false
+    },
+    {
+      "experiment": "Search-R1原论文",
+      "checkpoint_iter": null,
+      "dataset_em": {
+        "nq": 0.341,
+        "triviaqa": 0.545,
+        "popqa": 0.37799999999999995,
+        "hotpotqa": 0.324,
+        "2wikimultihopqa": 0.319,
+        "musique": 0.10300000000000001,
+        "bamboogle": 0.264
+      },
+      "macro_em": 0.325,
+      "kind": "paper_reference_user_supplied",
+      "evidence": "User supplied previous paper comparison; not rerun or same-budget proof.",
+      "paper_reported_macro_em": 0.325,
+      "macro_recomputed_from_displayed_dataset_values": 0.32485714285714284,
+      "micro_em": null,
+      "scope": "user_supplied_paper_reference_not_reaudited_in_this_collection",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "source": "latest user-provided table",
+          "verification": "not independently reread from paper this turn"
+        }
+      ],
+      "note": "Use paper-reported average; rounded per-dataset entries may give a different recomputed last digit. Different paper settings are not a matched-budget comparison."
+    },
+    {
+      "experiment": "TOP-D α=1",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.30886426592797783,
+        "triviaqa": 0.41615840183859276,
+        "popqa": 0.30202565360622413,
+        "hotpotqa": 0.2114787305874409,
+        "2wikimultihopqa": 0.13676844783715011,
+        "musique": 0.063301613570542,
+        "bamboogle": 0.216
+      },
+      "micro_em": 0.2629512888441978,
+      "f1": 0.28950107978698203,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-alpha1-final51713-recovery-713717/complete.json",
+        "sha256": "cfa8070914763cd69020d9d64c8d5706ae3b6e3f0c6e7967488420ed51848be5",
+        "bytes": 3245,
+        "mtime": 1792031719.865346
+      },
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/topd-latest.json",
+          "local_sha256": "fc472188b7c0a925f9f6d7800a62e26c8a23b9c1f9428dbe01892dfa98ba0a60",
+          "json_pointer": "/runs/1/complete/data/metrics"
+        }
+      ],
+      "kind": "ours",
+      "scope": "full_test_dataset_breakdown_rechecked_2026-10-15",
+      "final_identity_current": {
+        "complete": true,
+        "rows": 51713,
+        "correct": 13598,
+        "em": 0.2629512888441978,
+        "f1": 0.28950107978698203,
+        "acceptance_source": {
+          "path": "/data/user/jxu957/experiments/topd-20261008/outputs/training-preparation/topd-alpha1-final-acceptance.json",
+          "sha256": "d9c1da566bff38cd86218564903435a0fde27c2dbbde38f12b2290c1b328c179",
+          "bytes": 2294,
+          "mtime": 1792035308.206882
+        },
+        "complete_source": {
+          "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-alpha1-final51713-recovery-713717/complete.json",
+          "sha256": "cfa8070914763cd69020d9d64c8d5706ae3b6e3f0c6e7967488420ed51848be5",
+          "bytes": 3245,
+          "mtime": 1792031719.865346
+        },
+        "completion_hash_binding_verified": true,
+        "original_independent_rescoring_pass": true,
+        "n": 51713
+      },
+      "macro_em": 0.23637101619541825,
+      "dataset_correct": {
+        "nq": 1115,
+        "triviaqa": 4708,
+        "popqa": 4309,
+        "hotpotqa": 1566,
+        "2wikimultihopqa": 1720,
+        "musique": 153,
+        "bamboogle": 27
+      },
+      "correct": 13598
+    },
+    {
+      "experiment": "OPSD 3304",
+      "checkpoint_iter": 200,
+      "dataset_em": {
+        "nq": 0.2966759002770083,
+        "triviaqa": 0.4370193582604084,
+        "popqa": 0.2756010373589402,
+        "hotpotqa": 0.1636731937879811,
+        "2wikimultihopqa": 0.09915712468193384,
+        "musique": 0.046338436077782375,
+        "bamboogle": 0.2
+      },
+      "macro_em": 0.2169235786348649,
+      "micro_em": 0.2425502291493435,
+      "f1": 0.28587797918399066,
+      "count": 51713,
+      "source_counts": {
+        "nq": 3610,
+        "triviaqa": 11313,
+        "popqa": 14267,
+        "hotpotqa": 7405,
+        "2wikimultihopqa": 12576,
+        "musique": 2417,
+        "bamboogle": 125
+      },
+      "evidence": {
+        "path": "/mnt/data/shaoshitong/search-r1-rl/opsd-e1-unclipped-multitraj200-20261006/runs/formal-3304/formal-wrapper.log",
+        "observed_utc": "2026-10-14T12:30:42.859155+00:00",
+        "kind": "native full-precision scalar log"
+      },
+      "kind": "ours",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        }
+      ],
+      "scope": "historical_full_test_summary_observed_2026-10-14",
+      "dataset_correct": {
+        "nq": 1071,
+        "triviaqa": 4944,
+        "popqa": 3932,
+        "hotpotqa": 1212,
+        "2wikimultihopqa": 1247,
+        "musique": 112,
+        "bamboogle": 25
+      },
+      "correct": 12543
+    },
+    {
+      "experiment": "Search-G1原论文",
+      "checkpoint_iter": null,
+      "dataset_em": {
+        "nq": 0.45299999999999996,
+        "triviaqa": null,
+        "popqa": null,
+        "hotpotqa": 0.306,
+        "2wikimultihopqa": 0.368,
+        "musique": 0.14300000000000002,
+        "bamboogle": null
+      },
+      "macro_em": null,
+      "kind": "paper_reference_user_supplied",
+      "evidence": "User supplied previous paper comparison; not rerun or same-budget proof.",
+      "paper_reported_macro_em": null,
+      "macro_recomputed_from_displayed_dataset_values": null,
+      "micro_em": null,
+      "scope": "user_supplied_paper_reference_not_reaudited_in_this_collection",
+      "sources": [
+        {
+          "local_audit": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/final-seven-datasets.json",
+          "local_sha256": "3793500fc68418410793f22dd97ed0eb836a738a350f97a052c509f4d6677fd5"
+        },
+        {
+          "source": "latest user-provided table",
+          "verification": "not independently reread from paper this turn"
+        }
+      ],
+      "note": "Use paper-reported average; rounded per-dataset entries may give a different recomputed last digit. Different paper settings are not a matched-budget comparison."
+    }
+  ],
+  "checks": [
+    {
+      "experiment": "CoSearch 双模型",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "Easy Selection+Soft Reward",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "递归Tree A",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "Tree-GRPO",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "Tree 嵌套分叉",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "TOP-D α=0.1",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "Tree-BRANPO 3360",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "BAPO 3359",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "GiGPO",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "Soft Reward → Hard Reward",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "Soft Reward（旧 Search-G1）",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "Q-probe σ3 · Co会话†",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "TOP-D α=1",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    },
+    {
+      "experiment": "OPSD 3304",
+      "counts_sum": 51713,
+      "integer_correct_counts_verified": true,
+      "macro_recomputed_from_unrounded_dataset_em": true
+    }
+  ],
+  "pending": [
+    {
+      "label": "递归Tree B · 193/200",
+      "status": "待终评"
+    }
+  ],
+  "pending_display": [
+    {
+      "label": "递归Tree B · 193/200",
+      "status": "待终评"
+    }
+  ],
+  "plot_footer": "† σ3完整评分已发布；包装清理报错，最终验收未完成。其余已完成终评保留原核查日期。",
+  "comparison_note": "七集平均为等权macro。不同选题/检索/推理设置需分别比较；新Prefix/Periodic25尚无完整终评。"
+}
