@@ -1,0 +1,72 @@
+{
+  "status": "ACTUAL_COMMITTED_BATCHES_ADVANCING",
+  "node": "h100-10",
+  "ip": "10.33.0.18",
+  "unit": "sst-tree-nested-final-eval-tp1-778b2b43-20261016.service",
+  "invocation_id": "abd6a826997945da932cf09047806431",
+  "main_pid": 3409502,
+  "observed_epoch": 1792148009.8803308,
+  "evaluated_rows": 1472,
+  "total_rows": 51713,
+  "batches": 23,
+  "all_eight_ranks_with_committed_batches": true,
+  "execution": {
+    "allocation_kind": "shared_systemd",
+    "backend": "XFORMERS",
+    "dtype": "bfloat16",
+    "free_cache_engine": false,
+    "gpu_memory_utilization": 0.2,
+    "local_batch_size": 64,
+    "native_emission": true,
+    "physical_gpus": 8,
+    "resident_weights": true,
+    "resource_protocol": "memory_headroom_shared_v1",
+    "rollout_padding_divisor": 1,
+    "slurm_reserved_gpus": 0,
+    "tensor_parallel_size": 1,
+    "world_size": 8
+  },
+  "identity": {
+    "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+    "dataset_sha256": "2598a00883d70ace097e4d0dc10056066b4f6d0d99d9d6034d902dd09da732fa",
+    "model_sha256": "c0360891166e7bc7e1a10af023f9762ede122976f5c10873ccf5725035d8d416"
+  },
+  "raw_batch_sha_and_counts_verified": true,
+  "observations": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/FINAL200_FAST_TP1_ACTUAL_OBSERVATION_1.json",
+      "bytes": 33535,
+      "sha256": "61f97bf60c99440b25e2622bad193b1d5c8fc4c41dd41cf9ce17c769fca36a74"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/FINAL200_FAST_TP1_ACTUAL_OBSERVATION_2.json",
+      "bytes": 48828,
+      "sha256": "ecd9709e27a9bc83c670bfa267fbb4e7a934c538c11515b76c3fd7a94504191c"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/FINAL200_FAST_TP1_ACTUAL_OBSERVATION_3.json",
+      "bytes": 89425,
+      "sha256": "65635eaaf8c4e352e89024eae609afb4e60c18dde85450bdfe044ab3371da204"
+    }
+  ],
+  "observed_row_sequence": [
+    0,
+    960,
+    1472
+  ],
+  "restart_or_training_constructed": false,
+  "final_metrics_complete": false,
+  "latest_dev512_not_final51713": true,
+  "whole_card_utilization_single_sample_percent": [
+    52,
+    66,
+    55,
+    63,
+    58,
+    50,
+    53,
+    56
+  ],
+  "resource_sample_scope": "one whole-card sample, not sustained utilization or exclusive billing",
+  "batch_wall_seconds_mean": 27.111681156346332
+}

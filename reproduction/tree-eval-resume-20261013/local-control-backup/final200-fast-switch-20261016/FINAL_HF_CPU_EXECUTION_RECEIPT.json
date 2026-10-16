@@ -1,0 +1,78 @@
+{
+  "summary": {
+    "status": "CPU_NATIVE200_HF_TOKENIZER_EXECUTION_PASS",
+    "scope": "execution_worker_evidence_only_not_independent_final_goal_acceptance",
+    "observed_epoch": 1792146405.7325382,
+    "unit": "sst-tree-nativehf200-cpu-caac340-778b2b43.service",
+    "systemd": {
+      "MainPID": "0",
+      "Result": "success",
+      "ExecMainStartTimestampMonotonic": "19206638844453",
+      "ExecMainExitTimestampMonotonic": "19206867070201",
+      "ExecMainCode": "1",
+      "ExecMainStatus": "0",
+      "CPUUsageNSec": "340749652000",
+      "IOReadBytes": "3083657216",
+      "IOWriteBytes": "131072",
+      "SubState": "exited",
+      "InvocationID": "510e864008f548fcbefcc7143d7f5976"
+    },
+    "files": {
+      "native200-cpu-state.json": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-hf-native5-acceptance/native200-cpu-state.json",
+        "bytes": 6518,
+        "sha256": "3dd200454332d670b10211403607e611e4e96d523e6bc2c88c6e4a4da0f0f91d"
+      },
+      "full-HF-cold-reload.json": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-hf-native5-acceptance/full-HF-cold-reload.json",
+        "bytes": 2158,
+        "sha256": "2c60f80558a06f9b809f5df19b0b00271f4f4820b70a1e466e2d86b41fcf527c"
+      },
+      "tokenizer-cold-reload.json": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-hf-native5-acceptance/tokenizer-cold-reload.json",
+        "bytes": 429,
+        "sha256": "4df8e9972c757ebd675f727ebd694f62c1ecbed60ae7b7e20470d09f24a7739b"
+      },
+      "identity-bound-final-hf.json": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-hf-native5-acceptance/identity-bound-final-hf.json",
+        "bytes": 13025,
+        "sha256": "0da0a599ad4ef582f6afba92a7c2bf70bcd8937c52158df3f02111afd86e2789"
+      },
+      "verifier.log": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-hf-native5-acceptance/verifier.log",
+        "bytes": 2297,
+        "sha256": "838cd1819514c8dd3c4865f069644488581c7bc1b675aa56fea9cdac97470c4a"
+      }
+    },
+    "native_manifest_sha256": "e54b808ad2b3c8c20e64bc0bdc6e91cadb5cd50968b194842a000be051963f5a",
+    "wrapper_wall_seconds": 227.74343729019165,
+    "service_elapsed_seconds": 228.225748,
+    "service_cpu_seconds": 340.749652,
+    "systemd_io_read_bytes": 3083657216,
+    "systemd_io_write_bytes": 131072,
+    "wrapper_peak_self_rss_bytes": 6705016832,
+    "hf_checker_peak_self_rss_bytes": 15557419008,
+    "cgroup_exact_peak_memory_unavailable": true,
+    "changed_parameters": 3085698985,
+    "total_parameters": 3085938688,
+    "changed_tensors": 434,
+    "max_abs_parameter_delta": 0.0003904514014720917,
+    "native_workers_verified": 8,
+    "native_driver_verified": true,
+    "native_gpu_cold_world_restore_performed": false,
+    "native_hf_parameter_equivalence_checked": false,
+    "exact_executor_resume": false,
+    "training_signals_sent": false,
+    "independent_final_acceptance": false,
+    "final51713_scores_accepted": false,
+    "weights_or_tensor_transferred_to_mac": false,
+    "verifier_code_modified": false,
+    "reload_attempts": 1,
+    "full_outer200_receipt_sha256": "8629bdc0c9b9639e5d7ef46fbb02185b16d80164afe752a47142c7526c6311e3"
+  },
+  "remote_execution_receipt": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-hf-native5-cpu-runtime/execution-receipt.json",
+    "bytes": 3563,
+    "sha256": "7c1d50e35e23d34a91032209c36927fe142f40f09825c235612aab293e8b478e"
+  }
+}

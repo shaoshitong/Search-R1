@@ -1,0 +1,17 @@
+{
+  "CPU_HF_identity_report_sha256": "0da0a599ad4ef582f6afba92a7c2bf70bcd8937c52158df3f02111afd86e2789",
+  "answer": "切换8路TP1并行评测（推荐）",
+  "archive_sha256": "b1001f522cb317138471458946c8ec9a3106d42579eeb2f2a643690cc0e3dbf6",
+  "goal_paused": false,
+  "human_message_id": "01a1443f-7dd2-7bd2-9a4d-2a986c2e2c18",
+  "observed_utc": "2026-10-16T10:26:37Z",
+  "old3360_stop_authority_reused": false,
+  "original_instruction_time": "2026-10-16T10:26:14.098Z",
+  "question": "200轮训练和最终权重已保存。是否允许仅停止当前778的最终评测流程，保留已有评测证据和成本，改用已部署的8路TP1并行方式重新评完同一51713题，不重训？此前停止换评测的授权对应旧3360，不能直接用于当前778，因此需要确认本次切换。",
+  "question_id": "call_3b0ba479db6c48568b41c80a90069a3a",
+  "schema": "tree_current778_explicit_final_only_authority_v1",
+  "scope": "Only current778 final evaluation after actual training200 and durable checkpoint, preserve existing evidence/cost; no retraining",
+  "time_source": "UUIDv7 timestamp of actual user message ID returned by read_thread",
+  "training_source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+  "unit": "sst-tree-nested-branch-fresh200-778b2b43.service"
+}

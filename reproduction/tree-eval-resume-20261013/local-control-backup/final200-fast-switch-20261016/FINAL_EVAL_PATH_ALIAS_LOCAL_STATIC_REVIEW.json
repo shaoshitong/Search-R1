@@ -1,0 +1,24 @@
+{
+  "status": "LOCAL_ONE_LINE_STATIC_REVIEW_PASS",
+  "review_scope": "independent_local_static_review_of_path_alias_fix_only",
+  "base_commit": "5830f11efd6690bc894d1d07faad6f6c9fb372fa",
+  "reviewed_commit": "a8ab17f36f1bcf64f19193522aaed84fb2749863",
+  "branch": "codex/tree-final-eval-path-alias-20261016",
+  "reviewed_at_epoch": 1792147329.845697,
+  "reviewed_file": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-final-eval-path-alias-source/reproduction/tree-nested-final-eval-20261014/contract.py",
+  "reviewed_line": 102,
+  "reviewed_file_sha256": "02a51940e7b95b556a40e2187ca7955dcc308635ad69296a63a9f6ef436440a1",
+  "diff_sha256": "10bfdccba44dbd04c328816b8a74fc3c04024cc0c9f5fb20fa785eca356d489c",
+  "diff": "diff --git a/reproduction/tree-nested-final-eval-20261014/contract.py b/reproduction/tree-nested-final-eval-20261014/contract.py\nindex e26928e..6598657 100644\n--- a/reproduction/tree-nested-final-eval-20261014/contract.py\n+++ b/reproduction/tree-nested-final-eval-20261014/contract.py\n@@ -99,7 +99,7 @@ def verify_code_manifest(tools, manifest, expected):\n     require(socket.gethostname().split('.')[0]=='h100-10', 'only retained H10018 is permitted')\n     commit = value['eval_wrapper_source_commit']\n     require(re.fullmatch('[0-9a-f]{40}',commit) is not None and commit != TRAIN_SOURCE\n-            and tools == ROOT/'instruct300'/('eval-nested-'+commit), 'distinct committed wrapper identity required')\n+            and tools == (ROOT/'instruct300'/('eval-nested-'+commit)).resolve(), 'distinct committed wrapper identity required')\n     external={str(ROOT/'tools/tree_shared_owned_runtime_fixed.py'):'4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0',\n               str(ROOT/'repo/reproduction/h20/retriever_local.py'):'a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459'}\n     require(value['external_files']==external and all(sha(name)==expected for name,expected in external.items()),\n",
+  "changed_files": [
+    "reproduction/tree-nested-final-eval-20261014/contract.py"
+  ],
+  "added_lines": 1,
+  "removed_lines": 1,
+  "findings": [],
+  "conclusion": "Both sides now resolve filesystem aliases before exact expected commit-directory equality. The expected directory remains constructed from fixed ROOT, instruct300, eval-nested prefix, and the validated distinct 40-hex wrapper commit. Existing host, source/config/package/native5 chain, inventory, external helper SHA, wrapper per-file SHA, and reused-worker SHA checks are unchanged; lease and dispatch code are unchanged.",
+  "ssh_performed": false,
+  "models_or_pt_loaded": false,
+  "tests_run": false,
+  "cpu_acceptance_reports_modified": false
+}
