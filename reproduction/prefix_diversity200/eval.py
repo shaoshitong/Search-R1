@@ -106,7 +106,9 @@ def build_evaluation_engine(config, model, seed, free, total, *, factory=None, c
                 dtype='float32', tensor_parallel_size=1, max_model_len=4596, seed=seed,
                 gpu_memory_utilization=utilization, swap_space=0,
                 enforce_eager=bool(config.get('evaluation_enforce_eager', False)),
-                enable_chunked_prefill=True, enable_prefix_caching=True, disable_log_stats=True, **limits)
+                # FP32 H100 prefix-attention Triton kernels in this environment abort
+                # compilation; full-prefill XFormers retains the same QA contract.
+                enable_chunked_prefill=False, enable_prefix_caching=False, disable_log_stats=True, **limits)
             return llm, utilization, limits, attempts
         except Exception as error:
             message = str(error)

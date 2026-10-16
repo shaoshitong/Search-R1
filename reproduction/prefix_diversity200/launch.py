@@ -165,6 +165,8 @@ def run(base):
         env.pop(key, None)
     for name in ('tmp', 'cache/hf', 'cache/triton', 'cache/inductor'):
         (base / name).mkdir(parents=True, exist_ok=True)
+    if c.get('python_header_cpath'):
+        env['CPATH'] = c['python_header_cpath']
     python = str(Path(c['environment_root']) / 'bin/python')
     conf = str(base / 'preparation/launch-config.json')
     outer = 0; services = {}; success = False; actor_micro = c['actor_global_micro_batch_size']
@@ -218,6 +220,23 @@ def run(base):
                 raise TimeoutError('Own service did not become ready: ' + name)
             time.sleep(3)
 
+    previous_qa = Path(c.get('resume_joint', {}).get('source_base', str(base))) / 'logs/qa-pending.json'
+    pending_qa = read(previous_qa) if previous_qa.is_file() else {}
+
+    def validation(ordinal, model, evaluation_config, output, name):
+        code = phase(name, [python, '-m', 'reproduction.prefix_diversity200.eval',
+            '--config', str(evaluation_config), '--model', model,
+            '--questions', c['validation_questions'], '--expected-count', '512', '--output', str(output)],
+            allow_failed=True)
+        if code:
+            pending_qa[str(ordinal)] = dict(outer=ordinal, model=model, evaluation_config=str(evaluation_config),
+                actual_exit_code=code, original_output=str(output), original_log=str(base/'logs'/(name+'.log')),
+                status='QA_PENDING_ACTUAL_WORKER_FAILURE_TRAINING_CONTINUES')
+        else:
+            pending_qa.pop(str(ordinal), None)
+        publish(base / 'logs/qa-pending.json', pending_qa)
+        return code
+
     try:
         phase('probe-initialize-model-only', [python, '-m', 'reproduction.prefix_diversity200.probe', 'initialize',
             '--state-dir', str(base / 'probe'), '--source-checkpoint', c['probe_source_checkpoint'],
@@ -253,6 +272,13 @@ def run(base):
                     or inherited['actor']['actual_adam_steps_per_rank'] != [20*(start_outer-1)]*8
                     or inherited['probe']['actual_adam_steps_per_rank'] != [20*(start_outer-1)]*8):
                 raise ValueError('Joint recovery must preserve the actual completed clock')
+        if start_outer - 1 in (5, 50, 100, 150, 200):
+            outer = start_outer - 1
+            actor = read(base / 'actor/latest.json')
+            recovered_config = base / 'preparation/recovered-evaluation-config.json'
+            once(recovered_config, dict(c, actor_version=actor['actor_version']))
+            validation(outer, actor['hf_model_dir'], recovered_config, base/'recovered-validation',
+                       'recovered-outer-%06d-validation' % outer)
         for outer in range(start_outer, 201):
             root = base / 'outers' / ('outer-%06d' % outer)
             stage('CANDIDATE_POOL_RESERVATION')
@@ -342,13 +368,20 @@ def run(base):
             if outer in (5, 50, 100, 150, 200):
                 evaluation_config = root / 'evaluation-config.json'
                 once(evaluation_config, dict(c, actor_version=actor['actor_version']))
-                phase('outer-%06d-validation' % outer, [python, '-m', 'reproduction.prefix_diversity200.eval',
-                    '--config', str(evaluation_config), '--model', actor['hf_model_dir'],
-                    '--questions', c['validation_questions'], '--expected-count', '512', '--output', str(root / 'validation')])
+                validation(outer, actor['hf_model_dir'], evaluation_config, root/'validation',
+                           'outer-%06d-validation' % outer)
             # Only completed run-owned derived features are removable; retain tokens/labels.
             from .storage import prune_completed
             prune_completed(base, outer)
-        phase('final51713', [python, '-m', 'reproduction.prefix_diversity200.eval', '--config', str(root / 'evaluation-config.json'),
+        for ordinal, pending in list(pending_qa.items()):
+            validation(int(ordinal), pending['model'], pending['evaluation_config'],
+                base/'validation-retries'/('outer-%06d-%s' % (int(ordinal), uuid.uuid4().hex)),
+                'retry-outer-%06d-validation' % int(ordinal))
+        if pending_qa:
+            raise RuntimeError('Actor/probe200 complete but milestone QA remains pending: '+json.dumps(pending_qa))
+        final_config = base / 'preparation/final-evaluation-config.json'
+        once(final_config, dict(c, actor_version=read(base / 'actor/latest.json')['actor_version']))
+        phase('final51713', [python, '-m', 'reproduction.prefix_diversity200.eval', '--config', str(final_config),
             '--model', read(base / 'actor/latest.json')['hf_model_dir'], '--questions', c['final_questions'],
             '--expected-count', '51713', '--output', str(base / 'final-evaluation')])
         once(base / 'logs/pipeline-complete.json', dict(run_id=c['run_id'], complete_outers=200,
