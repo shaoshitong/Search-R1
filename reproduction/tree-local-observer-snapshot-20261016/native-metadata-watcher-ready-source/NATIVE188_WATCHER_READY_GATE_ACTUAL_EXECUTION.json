@@ -1,0 +1,42 @@
+{
+  "schema": "native_watch_ready_gate_actual_execution_v1",
+  "recorded_utc": "2026-10-16T05:41:32.299439+00:00",
+  "executor": "/root",
+  "outer": 188,
+  "poll": 2393,
+  "command": "python3 -B work/tree-speed-repair-20261008/capture_native_metadata_when_watcher_ready.py --outer 188 --poll 2393",
+  "actual_main_invocations": 1,
+  "actual_native_remote_readback_invocations": 1,
+  "exit_code": 0,
+  "automatic_retry": false,
+  "failed_attempts_this_outer": 0,
+  "execution_start_utc": null,
+  "execution_end_utc": null,
+  "precise_execution_UTC_scope": "Exact start/end not separately recorded; tool exec/write_stdin returned the real source output and exit0. recorded_utc is this local evidence freeze time.",
+  "source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/capture_native_metadata_when_watcher_ready.py",
+    "bytes": 3483,
+    "sha256": "3b85c486cf2a68df94c4f5f620e742fa42c78286de4dea4e428f46aef30949d2"
+  },
+  "poll_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/NATIVE5_CONTINUE_POLL_2393.json",
+    "bytes": 690322,
+    "sha256": "29cdf5f004c145bb9a1a266652e6602a26bdb7741cefffcceac2d50909c0eb29"
+  },
+  "resource_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/NATIVE5_CONTINUE_RESOURCE_2393.json",
+    "bytes": 20463,
+    "sha256": "9e269a29a5782e9b27f5567dcfe7fc3dbaa0b223411052b3396f0d13ed46ba40"
+  },
+  "actual_watcher_ready_epoch": 1792129149.6852946,
+  "original_receipt_name": "source-778b2b43dad90fc0c1c5d95d77c2326286011b73-outer-000188.receipt.json",
+  "readback": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/NATIVE_HISTORY_188_METADATA_READBACK.json",
+    "bytes": 8356,
+    "sha256": "3db15e169317d085c70b780a9aa40166996b1b88b8fc3cb5ffd6500f52fe2c59"
+  },
+  "training_or_watcher_modified": false,
+  "tensor_or_model_bytes_read": false,
+  "already_saved188_read_again": false,
+  "scope": "First actual use of the published local readiness gate. The firstFULL2392 watcher lag was inspected locally; only readiness2393 triggered a single original source-bound JSON readback."
+}
