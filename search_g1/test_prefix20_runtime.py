@@ -16,7 +16,8 @@ from search_g1.training_state import cpu_tree
 
 def settings(base):
     return validate_config(dict(model_dir=str(base/'official'),head_safetensors=str(base/'head.safetensors'),
-        probe_config=str(base/'probe-config.json'),output_dir=str(base/'artifacts/question-probe')))
+        probe_config=str(base/'probe-config.json'),output_dir=str(base/'artifacts/question-probe'),
+        eligible_pool_path=str(base/'eligible-question-pool.json')))
 
 
 def rows():

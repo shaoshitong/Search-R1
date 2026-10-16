@@ -407,7 +407,7 @@ def bind_restore(run, receipt_path):
         _need(run.get(key)==parent.get(key),'TARGET_MODEL_DATA_OR_BUDGET_MISMATCH_'+key)
     from search_g1.qprobe_runtime import validate_config
     ignore={'cache_dir','output_dir','initial_head_checkpoint','snapshot_path','restore_state'}
-    if prefix20:ignore|={'model_dir','head_safetensors','probe_config'}
+    if prefix20:ignore|={'model_dir','head_safetensors','probe_config','eligible_pool_path'}
     new={k:v for k,v in validate_config(run['question_probe']).items() if k not in ignore}
     old={k:v for k,v in validate_config(parent['question_probe']).items() if k not in ignore}
     _need(new==old,'TARGET_HEAD_CONFIGURATION_MISMATCH')

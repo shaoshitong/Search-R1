@@ -11,7 +11,7 @@ import torch
 
 from search_g1.prefix20_contract import top_questions
 from search_g1.prefix20_generation import PrefixCollector,PrefixState
-from search_g1.qprobe_runtime import _collect_pool,_complete_generation,_contracts,_write_json
+from search_g1.qprobe_runtime import _complete_generation,_contracts,_write_json
 from search_g1.training_state import atomic_save,compact_stream_state,driver_rng
 
 
@@ -59,7 +59,7 @@ def collect(trainer,manager,stream,attempt_identity):
     atomic_save(directory/'before-selection.pt',dict(stream=compact_stream_state(stream.state()),
         driver_rng=driver_rng(),selection_rng=copy.deepcopy(runtime.selection_rng.bit_generator.state),head_version=runtime.version))
     try:
-        candidates,questions=_collect_pool(stream,5120)
+        candidates,questions=stream.collect_pool(5120)
         parents=stream.materialize(candidates,list(range(5120)))
         identity=prepare_identity(parents,outer,repeats=5,candidate_prefix=True,
                                   **{k:attempt_identity[k] for k in ('attempt_id','attempt_index')})
@@ -92,6 +92,9 @@ def collect(trainer,manager,stream,attempt_identity):
             policy_snapshot_id=identity['policy_snapshot_id'],head_version=prediction_version,
             candidate_questions=5120,selected_questions=512,exploration_questions=0,
             questions=[dict(ordinal=i,qid=q.qid,content_sha256=q.content_hash,
+                pool_index=int(parents.batch['pool_index'][i]),
+                canonical_source_index=int(parents.batch['canonical_source_index'][i]),
+                pool_cycle=int(parents.batch['pool_cycle'][i]),
                 trajectory_ids=wire[i]['trajectory_ids'],em_probabilities=wire[i]['em_probabilities'],
                 selected=i in chosen) for i,q in enumerate(questions)],selected=selected,
             prefix_freeze=prefix_freeze,prediction_freeze=prediction_freeze)

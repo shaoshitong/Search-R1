@@ -888,8 +888,13 @@ class RayPPOTrainer(object):
                 stream_cls = QProbeCandidateStream
             else:
                 stream_cls = CandidateStream
-            mixed_stream = stream_cls(self.train_dataloader,
-                restored_state=getattr(self,'_restored_candidate_state',None))
+            if selection_mode=='prefix20_probe':
+                from search_g1.prefix20_data import Prefix20CandidateStream
+                mixed_stream=Prefix20CandidateStream(self.train_dataloader,self.config.prefix20_probe.eligible_pool_path,
+                    restored_state=getattr(self,'_restored_candidate_state',None))
+            else:
+                mixed_stream = stream_cls(self.train_dataloader,
+                    restored_state=getattr(self,'_restored_candidate_state',None))
             self.mixed_stream = mixed_stream
             assert inline_attempts is not None and self.config.do_search
             if selection_mode in ("question_probe","prefix20_probe"):

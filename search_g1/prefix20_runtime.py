@@ -26,8 +26,9 @@ def validate_config(config):
     config=dict(config)
     expected=dict(probe_architecture=ARCHITECTURE,candidate_questions=5120,selected_questions=512,
         exploration_questions=0,responses_per_question=5,head_learning_rate=1e-6,
-        head_batch_size=256,head_epochs_per_outer=1,replay_window_outer=0)
-    fields=set(expected)|{'model_dir','head_safetensors','probe_config','output_dir','snapshot_path','seed'}
+        head_batch_size=256,head_epochs_per_outer=1,replay_window_outer=0,
+        eligible_pool_sha256='ae13710254e7ae77cf5531b62a755ec2000bc3fba20051bbafaff1f6714aa8fc')
+    fields=set(expected)|{'model_dir','head_safetensors','probe_config','output_dir','snapshot_path','seed','eligible_pool_path'}
     if set(config)-fields:raise ValueError('PREFIX20_UNKNOWN_CONFIGURATION_FIELDS')
     for key,value in expected.items():
         if config.get(key,value)!=value or isinstance(config.get(key,value),bool):
@@ -35,7 +36,7 @@ def validate_config(config):
         if type(value) is int and type(config.get(key,value)) is not int:
             raise ValueError('PREFIX20_INTEGER_BUDGET_REQUIRED: '+key)
         config[key]=value
-    for key in ('model_dir','head_safetensors','probe_config','output_dir'):
+    for key in ('model_dir','head_safetensors','probe_config','output_dir','eligible_pool_path'):
         if not isinstance(config.get(key),str) or not Path(config[key]).is_absolute():
             raise ValueError('PREFIX20_EXPLICIT_REMOTE_PATH_REQUIRED: '+key)
     if type(config.get('seed',1729)) is not int:raise ValueError('PREFIX20_INTEGER_SEED_REQUIRED')
@@ -198,7 +199,7 @@ class Prefix20Runtime:
         if self.pending is not None:raise ValueError('PREFIX20_RESTORE_DURING_PENDING_OUTER')
         state=torch.load(path,map_location='cpu',weights_only=False)
         validate_saved_state(state,path,expected_actor_snapshot_id)
-        ignore={'model_dir','head_safetensors','probe_config','output_dir','snapshot_path'}
+        ignore={'model_dir','head_safetensors','probe_config','output_dir','snapshot_path','eligible_pool_path'}
         if {k:v for k,v in state['config'].items() if k not in ignore}!={k:v for k,v in self.config.items() if k not in ignore}:
             raise ValueError('PREFIX20_RECOVERY_SCIENTIFIC_SETTINGS_CHANGED')
         states=[torch.load(Path(path).parent/Path(r['path']).name,map_location='cpu',weights_only=False) for r in state['rank_files']]
