@@ -129,8 +129,18 @@ def main():
         probe=root/'write-probe'
         with probe.open('xb') as f:f.write(b'probe');f.flush();os.fsync(f.fileno())
         probe.unlink()
-        info=session.post(api+'/paths-info/'+plan['revision'],json={'paths':[p['name'] for p in parts]},timeout=(10,30))
-        info.raise_for_status();inventory={r['path']:r for r in info.json()}
+        for attempt in range(8):
+            try:
+                info=session.post(api+'/paths-info/'+plan['revision'],json={'paths':[p['name'] for p in parts]},timeout=(10,30))
+                info.raise_for_status();inventory={r['path']:r for r in info.json()}
+                break
+            except requests.RequestException as error:
+                status=getattr(getattr(error,'response',None),'status_code',None)
+                atomic(root/'inventory-error.json',dict(attempt=attempt+1,error_type=type(error).__name__,
+                    http_status=status,observed_unix=time.time()))
+                if status in (401,403,404):raise RuntimeError('HF_ACCESS_REJECTED') from None
+                if attempt==7:raise RuntimeError('BOUNDED_INVENTORY_RETRIES_EXHAUSTED') from None
+                time.sleep(min(10,2+attempt))
         for part in parts:
             entry=inventory[part['name']]
             if entry['size']!=part['bytes'] or entry['lfs']['oid']!=part['sha256']:
