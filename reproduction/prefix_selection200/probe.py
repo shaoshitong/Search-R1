@@ -1,8 +1,9 @@
 """Four-rank current-actor question+policy5 scoring and periodic G5 probe updates.
 
 The scoring scan has no outcome labels. A qualified, explicit warmup checkpoint
-supplies model weights only. Online Adam starts at zero; at outer20,40,...200
-it makes100 synchronized writes over all5120 authentic, unselected own G5 groups.
+supplies model weights only. Online Adam starts at zero; at outer10,20,...190
+it makes50 synchronized writes over all2560 authentic, unselected own G5 groups.
+Outer200 deliberately keeps the probe frozen.
 """
 import argparse
 from collections import defaultdict
@@ -29,7 +30,8 @@ from reproduction.prefix20_online.launch import publish
 from reproduction.prefix20_online.model import expected_policy_positions, validate_prefix_positions
 from reproduction.prefix20_online.train_epoch import append, optimizer_learning_rates
 from reproduction.prefix20_question_replay.features import FeatureCache, _source_scan
-from .contract import WORLD, QMAX, WIDTH, DIM, PREFIX_TOKENS
+from .contract import (WORLD, QMAX, WIDTH, DIM, PREFIX_TOKENS, G, CANDIDATE_QUESTIONS,
+    SELECTED_QUESTIONS, FINAL_OUTER, PROBE_PERIOD, PROBE_UPDATES, PROBE_LR)
 from .probe_plan import online_plan, complete_pool_plan, rank_question_slice, ddp_mean_scale
 from .prefix5_model import (OnlineQuestionProbe, validate_online_layout, warmup_model_weights,
     restore_native_buffers, nonpersistent_buffers, validate_model_state, validate_native_buffers,
@@ -39,7 +41,7 @@ from reproduction.prefix_only_correctness_ab.train_ddp import actual_adam_steps
 
 SOURCE_SHA = EPOCH3_SHA
 SOURCE_RUN = WARMUP_RUN
-LR = 1e-6
+LR = PROBE_LR
 TENSOR_FIELDS = ('features', 'attention_mask', 'position_ids', 'question_mask',
                  'policy_mask', 'question_lengths', 'policy_lengths')
 
@@ -53,17 +55,17 @@ def digest(value):
 
 
 def summarize_loss_curve(curve):
-    if len(curve) != 100 or [row['step'] for row in curve] != list(range(1, 101)):
-        raise ValueError('A periodic full-pool epoch has100 actual global loss observations')
+    if len(curve) != PROBE_UPDATES or [row['step'] for row in curve] != list(range(1, PROBE_UPDATES+1)):
+        raise ValueError('A periodic2560-G5 epoch has50 actual global loss observations')
     return dict(points=curve, first=curve[0], last=curve[-1],
                 delta_end_minus_start={key: curve[-1][key]-curve[0][key]
                                       for key in ('trajectory_bce', 'group_bce', 'total_loss')},
                 loss_semantics='each_step_global_true_group_weighted_mean_before_its_own_update',
                 batches_differ_between_steps=True, monotonic_decrease_required=False,
-                actual_adam_updates_per_rank=100, world_size=WORLD, replica_updates_are_not_summed=True)
+                actual_adam_updates_per_rank=PROBE_UPDATES, world_size=WORLD, replica_updates_are_not_summed=True)
 
 
-def candidate_groups(index, expected_questions=5120):
+def candidate_groups(index, expected_questions=CANDIDATE_QUESTIONS):
     """Group by authentic question identity, never by consecutive five rows."""
     groups = {}
     for ordinal, (tid, row) in enumerate(index.items()):
@@ -139,7 +141,7 @@ def join_own_em(index, records, actor_version, prefix_scan_sha, selection_sha):
             raise ValueError('Own outcome replaced the scored trajectory prefix')
         labels[tid] = row['strict_em']
     if set(labels) != set(index):
-        raise ValueError('Require exactly all2560 selected own trajectory outcomes')
+        raise ValueError('Require every own-G5 trajectory outcome exactly once')
     return {tid: dict(row, strict_em=labels[tid]) for tid, row in index.items()}
 
 
@@ -340,7 +342,8 @@ def atomic_checkpoint(directory, saved, completed_outer):
                    learning_rate=LR, sha256=sha(path), bytes=path.stat().st_size,
                    binding_sha256=saved['binding_sha256'], observed_utc=utc())
     publish(directory / 'latest.json', receipt)
-    if completed_outer == 0 or completed_outer % 20 == 0:
+    from .periodic import is_probe_update
+    if completed_outer == 0 or is_probe_update(completed_outer):
         os.link(path, directory / ('head-outer-%04d.pt' % completed_outer))
     return receipt
 
@@ -392,9 +395,9 @@ def initialize(args):
     source_binding = saved['binding']
     if source_binding['feature_manifest_sha256'] != args.test_manifest_sha:
         raise ValueError('Initial fixed diagnostic source must bind the accepted complete warmup feature manifest')
-    binding = dict(role='prefix_selection200_actorhidden_period20_question5_correctness_probe',
+    binding = dict(role='prefix_selection200_actorhidden_period10_question5_correctness_probe',
         representation_source='current_sampling_actor_native_layer27_postblock',
-        independent_encoder_forward=False, probe_update_period=20, updates_per_period=100, run_id=args.run_id,
+        independent_encoder_forward=False, probe_update_period=PROBE_PERIOD, updates_per_period=PROBE_UPDATES, run_id=args.run_id,
         encoder_revision=REVISION, source_feature_manifest_sha256=source_binding['feature_manifest_sha256'],
         source_feature_spec_sha256=source_binding['feature_spec_sha256'],
         question_max_tokens=QMAX, head_max_tokens=WIDTH, feature_layer=27, feature_boundary='post_block',
@@ -404,9 +407,11 @@ def initialize(args):
         online_initial_adam_steps=0, learning_rate=LR,
         group_weight=1.0, loss='mean_trajectory_BCE_plus_mean_G5_mixed_BCE',
         updates_per_outer=0, global_batch_average=256, actual_global_batches=[255, 260],
-        world_size=WORLD, accumulation=1, rank_questions_per_period=1280, rank_trajectories_per_period=6400,
+        world_size=WORLD, accumulation=1, rank_questions_per_period=CANDIDATE_QUESTIONS//WORLD, rank_trajectories_per_period=CANDIDATE_QUESTIONS*G//WORLD,
         diagnostic_manifest_sha256=args.test_manifest_sha, diagnostic_questions=512,
-        selected_questions=512, candidate_questions=5120, exploration=0,
+        selected_questions=SELECTED_QUESTIONS, candidate_questions=CANDIDATE_QUESTIONS, exploration=0,
+        final_outer_probe_update=False,
+        probe_total_actual_adam_per_rank=((FINAL_OUTER-1)//PROBE_PERIOD)*PROBE_UPDATES,
         selection='q_descending_then_original_candidate_ordinal', zero_policy_eos='authentic_question_only_no_fake_token')
     initial = dict(schema_version=1, run_id=binding['run_id'], binding=binding, binding_sha256=digest(binding),
         completed_outer=0, model=model, model_nonpersistent_buffers=buffers, warmup_model_import=proof,
@@ -439,7 +444,7 @@ def load_online(args, device):
     expected = probe_boundary(args.outer-1)
     if (receipt['completed_outer'] != expected['last_update_outer'] or
             receipt['actual_adam_steps_per_rank'] != [expected['actual_adam_per_rank']]*WORLD):
-        raise ValueError('Probe must be the last completed20-outer periodic state')
+        raise ValueError('Probe must be the last completed10-outer state (outer200 retains190)')
     path = directory / 'latest.pt'
     with path.open('rb') as handle:
         before = os.fstat(handle.fileno())
@@ -494,27 +499,30 @@ def score(args):
                     scored_trajectories=len(local_logits),stage='CURRENT_ACTOR_NATIVE_HIDDEN_HEAD_SCORING'))
         gathered=[None]*WORLD;dist.all_gather_object(gathered,local_logits)
         merged=[pair for rows in gathered for pair in rows]
-        if len(merged)!=25600 or len({tid for tid,_ in merged})!=25600:
-            raise ValueError('Score all5120G5 authentic native features exactly once')
+        if len(merged)!=CANDIDATE_QUESTIONS*G or len({tid for tid,_ in merged})!=CANDIDATE_QUESTIONS*G:
+            raise ValueError('Score all2560G5 authentic native features exactly once')
         selected,all_scores=stable_top512(groups,dict(merged))
         if rank==0:
             common=dict(schema_version=2,run_id=saved['run_id'],outer=args.outer,actor_version=actor_version,
                 prefix_scan_sha256=features.manifest_sha,probe_before_checkpoint_sha256=receipt['sha256'],
-                candidate_questions=5120,trajectories_per_question=5,exploration=0,
+                candidate_questions=CANDIDATE_QUESTIONS,trajectories_per_question=G,exploration=0,
                 formula='1-prod(p_j)-prod(1-p_j)',outcome_labels_used=False,
                 representation_source='same_sampling_actor_native_layer27_postblock')
-            selection=dict(common,selected=selected,selected_questions=512,
-                tie_break='original_candidate_ordinal_ascending',continuation_scope='top512')
+            from .periodic import is_probe_update
+            selection=dict(common,selected=selected,selected_questions=SELECTED_QUESTIONS,
+                tie_break='original_candidate_ordinal_ascending',continuation_scope='top512',
+                provisional_for_actor=is_probe_update(args.outer),
+                selection_semantics='predicted_mixed_probability_top512_before_any_outcome')
             once(out/'selection.json',selection)
             from .periodic import is_probe_update
             if is_probe_update(args.outer):
                 once(out/'pool-selection.json',dict(common,selected=sorted(all_scores,key=lambda r:r['candidate_ordinal']),
-                     selected_questions=5120,continuation_scope='all_candidates'))
+                     selected_questions=CANDIDATE_QUESTIONS,continuation_scope='all_candidates'))
             with (out/'candidate-scores.jsonl').open('x') as f:
                 for row in all_scores:f.write(canonical(row).decode()+'\n')
             once(out/'index.json',list(features.index.values()))
             result=dict(role='current_actor_native_hidden_features',run_id=saved['run_id'],outer=args.outer,
-                count=25600,selected_count=2560,question_max_tokens=QMAX,head_max_tokens=WIDTH,
+                count=CANDIDATE_QUESTIONS*G,selected_count=SELECTED_QUESTIONS*G,question_max_tokens=QMAX,head_max_tokens=WIDTH,
                 actor_version=actor_version,prefix_scan_sha256=features.manifest_sha,
                 probe_before_checkpoint_sha256=receipt['sha256'],selection_sha256=sha(out/'selection.json'),
                 native_hidden_scan=str(features.path),native_hidden_shards=manifest['actor_hidden_shards'],
@@ -523,7 +531,7 @@ def score(args):
                 representation_source='same_sampling_actor_native_layer27_postblock',
                 elapsed_seconds=time.monotonic()-started)
             once(out/'manifest.json',result)
-            once(out/'complete.json',dict(status='PREFIX5120G5_STABLE_TOP512_SCORE_COMPLETE',outer=args.outer,
+            once(out/'complete.json',dict(status='PREFIX2560G5_STABLE_TOP512_SCORE_COMPLETE',outer=args.outer,
                 run_id=saved['run_id'],manifest_sha256=sha(out/'manifest.json'),
                 selection_sha256=sha(out/'selection.json'),selected_questions=512,selected_trajectories=2560,
                 actor_version=actor_version,observed_utc=utc()))
@@ -541,7 +549,7 @@ def update(args):
         from .native_features import NativeFeatures
         from .periodic import is_probe_update, probe_boundary
         if not is_probe_update(args.outer):
-            raise ValueError('No probe optimization outside20,40,...200')
+            raise ValueError('Probe optimization only at10,20,...190; outer200 is frozen')
         m=read(remote(args.scored_features)/'manifest.json')
         features=NativeFeatures(m['native_hidden_scan'])
         if (m['run_id']!=saved['run_id'] or m['outer']!=args.outer
@@ -553,7 +561,7 @@ def update(args):
             raise ValueError('Complete unselected pool outcomes differ from receipt')
         records=[json.loads(line) for line in own_path.open()]
         index=join_own_em(features.index,records,m['actor_version'],m['prefix_scan_sha256'],m['selection_sha256'])
-        groups=candidate_groups(index,5120)
+        groups=candidate_groups(index,CANDIDATE_QUESTIONS)
         test=NativeFeatures(args.test_cache)
         if test.manifest_sha!=args.test_manifest_sha or test.manifest['actor_version']!=m['actor_version']:
             raise ValueError('Diagnostic hidden must come from this exact sampling actor')
@@ -563,7 +571,7 @@ def update(args):
         test.index=test_index
         if ({str(row['qid']) for row in index.values()} & {str(row['qid']) for row in test.index.values()}
                 or {row['question_hash'] for row in index.values()} & {row['question_hash'] for row in test.index.values()}):
-            raise ValueError('Periodic5120 training pool overlaps fixed512 diagnostic')
+            raise ValueError('Periodic2560 training pool overlaps fixed512 diagnostic')
         def evaluate(head):
             head.eval();result={}
             with torch.no_grad():
@@ -585,7 +593,7 @@ def update(args):
         before_metrics={}
         if rank==0:
             before_metrics={split:evaluate_predictions(before_predictions[split],
-                index if split=='train' else test.index,5120 if split=='train' else 512)[0]
+                index if split=='train' else test.index,CANDIDATE_QUESTIONS if split=='train' else SELECTED_QUESTIONS)[0]
                 for split in ('train','test')}
         optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=0)
         expected_before = probe_boundary(args.outer-1)['actual_adam_per_rank']
@@ -671,19 +679,19 @@ def update(args):
             append(out / ('rank-%d-updates.jsonl' % rank), row)
             publish(out / ('progress-rank-%d.json' % rank), dict(row, stage='ONLINE_PROBE_ADAM_WRITE_COMPLETE'))
         train_loop_seconds = time.monotonic()-started
-        if totals[3:] != [1280, 6400]:
-            raise RuntimeError('Periodic rank must visit1280 own groups/6400 trajectories once')
+        if totals[3:] != [CANDIDATE_QUESTIONS//WORLD, CANDIDATE_QUESTIONS*G//WORLD]:
+            raise RuntimeError('Periodic rank must visit640 own groups/3200 trajectories once')
         stats = torch.tensor(totals, dtype=torch.float64, device=device)
         dist.all_reduce(stats)
-        if stats[3:].tolist() != [5120, 25600]:
-            raise RuntimeError('Periodic natural pass must cover exactly the unselected5120G5')
+        if stats[3:].tolist() != [CANDIDATE_QUESTIONS, CANDIDATE_QUESTIONS*G]:
+            raise RuntimeError('Periodic natural pass must cover exactly the unselected2560G5')
         predictions = evaluate(model)
         rng = dict(rank=rank, actual_adam_steps=actual_adam_steps(optimizer), python=random.getstate(),
                    numpy=np.random.get_state(), torch_cpu=torch.get_rng_state(), torch_cuda=torch.cuda.get_rng_state(device))
         all_rng = [None]*WORLD
         dist.all_gather_object(all_rng, rng)
         if rank == 0:
-            train_metrics, train_rows = evaluate_predictions(predictions['train'], index, 5120)
+            train_metrics, train_rows = evaluate_predictions(predictions['train'], index, CANDIDATE_QUESTIONS)
             test_metrics, test_rows = evaluate_predictions(predictions['test'], test.index, 512)
             saved_model = {name: value.detach().cpu() for name, value in model.module.state_dict().items()}
             optimizer_state = optimizer.state_dict()
@@ -699,11 +707,11 @@ def update(args):
                 own_em_sha256=sha(own_path), actor_version=m['actor_version'])
             result = atomic_checkpoint(args.state_dir, checkpoint, args.outer)
             metrics = dict(run_id=saved['run_id'], outer=args.outer, actual_adam_steps_per_rank=[probe_boundary(args.outer)['actual_adam_per_rank']]*WORLD,
-                new_adam_steps_per_rank=100, actual_learning_rate=LR, train=train_metrics, test=test_metrics,
-                before_update=before_metrics, unselected_training_questions=5120, actor_hidden_native=True,
-                train_online_trajectory_bce=float(stats[0]/5120), train_online_group_bce=float(stats[1]/5120),
-                train_online_total_loss=float(stats[2]/5120), train_loop_seconds=train_loop_seconds,
-                diagnostic_semantics='same_head_pre_and_post_update_full5120G5_and_current_actor_fixed512G5',
+                new_adam_steps_per_rank=PROBE_UPDATES, actual_learning_rate=LR, train=train_metrics, test=test_metrics,
+                before_update=before_metrics, unselected_training_questions=CANDIDATE_QUESTIONS, actor_hidden_native=True,
+                train_online_trajectory_bce=float(stats[0]/CANDIDATE_QUESTIONS), train_online_group_bce=float(stats[1]/CANDIDATE_QUESTIONS),
+                train_online_total_loss=float(stats[2]/CANDIDATE_QUESTIONS), train_loop_seconds=train_loop_seconds,
+                diagnostic_semantics='same_head_pre_and_post_update_full2560G5_and_current_actor_fixed512G5',
                 step_loss_semantics='different_natural_batches_before_their_own_update_no_monotonic_claim',
                 global_step_loss_curve=summarize_loss_curve(global_curve),
                 selected_features_reencoded=False, actor_version=m['actor_version'], checkpoint=result,
@@ -714,7 +722,7 @@ def update(args):
                 with (out / (split+'-group-predictions.jsonl')).open('x') as handle:
                     for row in rows:
                         handle.write(canonical(row).decode()+'\n')
-            once(out / 'complete.json', dict(status='UNSELECTED5120G5_PERIODIC_PROBE_100_ADAM_COMPLETE', **metrics,
+            once(out / 'complete.json', dict(status='UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE', **metrics,
                                             metrics_sha256=sha(out / 'metrics.json'), observed_utc=utc()))
         dist.barrier()
     finally:

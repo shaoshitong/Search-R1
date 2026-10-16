@@ -13,7 +13,7 @@ import re
 import stat
 import time
 
-from .contract import WORLD
+from .contract import WORLD, PROBE_PERIOD, PROBE_UPDATES, CANDIDATE_QUESTIONS, G
 
 
 REMOTE_PARENT = Path('/mnt/data/shaoshitong')
@@ -59,8 +59,8 @@ def validate_base(base):
         raise ValueError('Pruning is restricted to a canonical new prefix-selection200 namespace')
     config = read(owned(base, base/'preparation/launch-config.json'))
     native=config.get('actor_hidden_native',False)
-    clock_ok=(config.get('probe_update_period')==20 and config.get('probe_updates_per_period')==100
-              and config.get('probe_updates_per_outer')==0) if native else config.get('probe_updates_per_outer')==10
+    clock_ok=(config.get('probe_update_period')==PROBE_PERIOD and config.get('probe_updates_per_period')==PROBE_UPDATES
+              and config.get('probe_updates_per_outer')==0 and config.get('probe_update_at_final') is False) if native else config.get('probe_updates_per_outer')==10
     if (config['base'] != str(base) or not config['run_id'] or config['outers'] != 200
             or config['world_size'] != WORLD or not clock_ok):
         raise ValueError('Current namespace does not have the approved actor/probe run binding')
@@ -105,11 +105,11 @@ def current_boundary(base, config, outer):
             or actor['actual_adam_steps_per_rank'] != [20*outer]*WORLD
             or probe['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD
             or actor['scheduler_completed_outer'] != outer
-            or update['status'] != ('UNSELECTED5120G5_PERIODIC_PROBE_100_ADAM_COMPLETE' if native and periodic
+            or update['status'] != ('UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE' if native and periodic
                 else 'PROBE_FROZEN_NO_OPTIMIZER_UPDATE' if native else 'SELECTED512G5_ONLINE_PROBE_10_ADAM_COMPLETE')
             or (periodic and update['run_id'] != config['run_id']) or update['outer'] != outer
             or (periodic and update['checkpoint'] != probe)
-            or update['new_adam_steps_per_rank'] != (100 if native and periodic else 0 if native else 10)
+            or update['new_adam_steps_per_rank'] != (PROBE_UPDATES if native and periodic else 0 if native else 10)
             or update['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD):
         raise ValueError('Actor20N/probe10N and this outer joint commit must actually agree')
     ledger = read(owned(base, base/'logs/process-ledger.json'))
@@ -160,7 +160,7 @@ def planned_assets(base, config, outer, root, joint, update, references):
     manifest = read(manifest_path)
     if config.get('actor_hidden_native'):
         if (manifest['role']!='current_actor_native_hidden_features' or manifest['run_id']!=config['run_id']
-                or manifest['outer']!=outer or manifest['count']!=25600 or manifest['independent_encoder_forward']):
+                or manifest['outer']!=outer or manifest['count']!=CANDIDATE_QUESTIONS*G or manifest['independent_encoder_forward']):
             raise ValueError('Consumed native features do not belong to this completed outer')
         scans=[root/'prefix/scan/scan-complete.json']
         diag=root/'diagnostic-complete.json'
@@ -198,7 +198,8 @@ def planned_assets(base, config, outer, root, joint, update, references):
                 expected = old_root/'probe-state-at-completion.pt'
                 if saved['probe_snapshot'] != str(expected):
                     raise ValueError('Previous probe snapshot path differs from its owned outer')
-                expected_steps=(previous//20*100 if config.get('actor_hidden_native') else 10*previous)
+                from .periodic import probe_boundary
+                expected_steps=(probe_boundary(previous)['actual_adam_per_rank'] if config.get('actor_hidden_native') else 10*previous)
                 if saved['probe']['actual_adam_steps_per_rank'] != [expected_steps]*WORLD:
                     raise ValueError('Previous probe producer is not a complete actual boundary')
                 add(expected, saved['probe'], 'previous_nonmilestone_probe_snapshot')

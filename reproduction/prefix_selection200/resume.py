@@ -10,7 +10,7 @@ from pathlib import Path
 import time
 
 from .actor import read, sha, restore_metadata
-from .contract import WORLD
+from .contract import WORLD, CANDIDATE_QUESTIONS
 from reproduction.prefix20_online.launch import once
 
 
@@ -23,8 +23,8 @@ def boundary(config, joint, actor, probe, pool):
             or joint['actor'] != actor or joint['probe'] != probe
             or probe['run_id'] != config['run_id'] or probe['completed_outer'] != expected['last_update_outer']
             or probe['actual_adam_steps_per_rank'] != [expected['actual_adam_per_rank']] * WORLD
-            or pool['next_outer'] != outer + 1 or pool['consumed_candidates'] != 5120 * outer
-            or pool['cycle'] * len(pool['order']) + pool['cursor'] != 5120 * outer):
+            or pool['next_outer'] != outer + 1 or pool['consumed_candidates'] != CANDIDATE_QUESTIONS * outer
+            or pool['cycle'] * len(pool['order']) + pool['cursor'] != CANDIDATE_QUESTIONS * outer):
         raise ValueError('Restore only the complete joint actor/probe/candidate boundary')
     restore_metadata(config, actor, outer + 1)
     return outer
@@ -74,7 +74,8 @@ def import_complete(base):
         'probe_epochs_per_outer', 'probe_updates_per_outer', 'probe_global_batch_average',
         'actor_global_mini_batch', 'actor_ppo_epochs', 'seed', 'official_model_dir',
         'encoder_model_dir', 'canonical_train_sha256', 'fixed_test_manifest_sha256', 'grounding_probe_version')
-    if native:science+=('actor_hidden_native','hidden_capture_contract','probe_update_period','probe_updates_per_period','probe_epochs_per_update')
+    if native:science+=('actor_hidden_native','hidden_capture_contract','probe_update_period','probe_updates_per_period','probe_epochs_per_update',
+                        'probe_update_at_final','nonmixed_advantage_mode','actual_em_selection_fallback')
     if any(config[k] != original[k] for k in science):
         raise ValueError('Recovery cannot change the scientific training contract')
     def checked_stats(value):

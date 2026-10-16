@@ -34,9 +34,9 @@ class Prefix5CapturePlanTest(unittest.TestCase):
     def test_complete_pool_visits_all_g5_once_with_four_equal_rank_totals(self):
         plan = complete_pool_plan(1729, 20)
         self.assertEqual((WORLD, PREFIX_TOKENS, QMAX, WIDTH, DIM, G), (4, 5, 273, 278, 2048, 5))
-        self.assertEqual(len(plan), 100)
-        self.assertEqual([row['global_questions'] for row in plan].count(51), 80)
-        self.assertEqual([row['global_questions'] for row in plan].count(52), 20)
+        self.assertEqual(len(plan), 50)
+        self.assertEqual([row['global_questions'] for row in plan].count(51), 40)
+        self.assertEqual([row['global_questions'] for row in plan].count(52), 10)
         assigned = [[] for _ in range(WORLD)]
         for row in plan:
             self.assertEqual(len(row['rank_questions']), WORLD)
@@ -46,13 +46,13 @@ class Prefix5CapturePlanTest(unittest.TestCase):
             for rank, count in enumerate(row['rank_questions']):
                 assigned[rank].extend(row['question_indices'][offset:offset+count])
                 offset += count
-        self.assertEqual([len(ids) for ids in assigned], [1280] * WORLD)
-        self.assertEqual(sorted(index for ids in assigned for index in ids), list(range(5120)))
+        self.assertEqual([len(ids) for ids in assigned], [640] * WORLD)
+        self.assertEqual(sorted(index for ids in assigned for index in ids), list(range(2560)))
         self.assertNotEqual(plan, complete_pool_plan(1729, 40))
         self.assertFalse(is_probe_update(19))
         self.assertTrue(is_probe_update(20))
-        self.assertEqual(probe_boundary(19), dict(last_update_outer=0, actual_adam_per_rank=0))
-        self.assertEqual(probe_boundary(200), dict(last_update_outer=200, actual_adam_per_rank=1000))
+        self.assertEqual(probe_boundary(19), dict(last_update_outer=10, actual_adam_per_rank=50))
+        self.assertEqual(probe_boundary(200), dict(last_update_outer=190, actual_adam_per_rank=950))
 
     def test_sixth_native_token_and_lp_do_not_enter_prefix_or_continuation(self):
         state = trajectory_state()

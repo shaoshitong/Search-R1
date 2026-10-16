@@ -79,12 +79,12 @@ class FourRankActorTests(unittest.TestCase):
         self.assertGreater(abs(float(naive.detach() - reference.detach())), 1e-4)
 
     def test_four_rank_restore_and_partial_oom_loss_are_explicit(self):
-        config = dict(run_id='new4', official_model_dir='/data/models/official', grounding_probe_version='fixed0',
+        config = dict(nonmixed_advantage_mode='zero_anchor_all_correct_only',actor_hidden_native=True,run_id='new4', official_model_dir='/data/models/official', grounding_probe_version='fixed0',
                       resume_joint=dict(completed_outer=3))
         actor = dict(run_id='new4', completed_outer=3, binding=_state_binding(config),
                      actual_adam_steps_per_rank=[60] * 4, scheduler_completed_outer=3)
-        probe = dict(run_id='new4', completed_outer=3, actual_adam_steps_per_rank=[30] * 4)
-        pool = dict(next_outer=4, consumed_candidates=15360, cycle=0, cursor=15360, order=list(range(169028)))
+        probe = dict(run_id='new4', completed_outer=0, actual_adam_steps_per_rank=[0] * 4)
+        pool = dict(next_outer=4, consumed_candidates=7680, cycle=0, cursor=7680, order=list(range(169028)))
         joint = dict(run_id='new4', outer=3, actor=actor, probe=probe)
         self.assertEqual(boundary(config, joint, actor, probe, pool), 3)
         self.assertEqual(actor['binding']['loss_reduction'], OBJECTIVE)
@@ -106,7 +106,7 @@ class FourRankActorTests(unittest.TestCase):
             (base / 'preparation').mkdir(parents=True)
             (base / 'preparation/launch-config.json').write_text(json.dumps(dict(base=str(base), run_id='owned',
                 outers=200, world_size=4, probe_updates_per_outer=0, actor_hidden_native=True,
-                probe_update_period=20, probe_updates_per_period=100)))
+                probe_update_period=10, probe_updates_per_period=50,probe_update_at_final=False)))
             with patch.object(storage, 'A800_REMOTE_PARENT', parent):
                 self.assertEqual(storage.validate_base(base)[0], base)
                 with self.assertRaises(ValueError): storage.validate_base(parent)

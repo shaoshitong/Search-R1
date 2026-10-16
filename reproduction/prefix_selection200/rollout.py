@@ -26,7 +26,8 @@ import time
 
 from reproduction.prefix20_online.pool import atomic, canonical, digest, immutable, read
 from reproduction.prefix20_online.rollout import prompt_tokens, strict_label, utc
-from .contract import G, PREFIX_TOKENS, QMAX, SAMPLING_CONTRACT, WIDTH, WORLD
+from .contract import (G, PREFIX_TOKENS, QMAX, SAMPLING_CONTRACT, WIDTH, WORLD,
+    CANDIDATE_QUESTIONS, SELECTED_QUESTIONS)
 
 
 REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
@@ -78,10 +79,10 @@ def root_dir(config, outer):
 
 
 def question_count(config, phase):
-    n=int(config.get('rollout_candidate_questions',5120) if phase=='prefix'
-          else config.get('rollout_continuation_questions',512))
-    if n not in (512,5120):
-        raise ValueError('Native phase covers512 or5120 complete authentic G5s')
+    n=int(config.get('rollout_candidate_questions',CANDIDATE_QUESTIONS) if phase=='prefix'
+          else config.get('rollout_continuation_questions',SELECTED_QUESTIONS))
+    if n not in (SELECTED_QUESTIONS,CANDIDATE_QUESTIONS):
+        raise ValueError('Native phase covers512 diagnostic/selected or2560 candidate questions, each complete G5')
     return n
 
 
@@ -395,7 +396,7 @@ def _states(config, outer, rank, phase, tokenizer, selection_path):
             raise ValueError('Questions belong to another outer')
         groups = [dict(row) for row in bundle['rows']]
         if len(groups) != question_count(config,phase) or len({r['qid'] for r in groups}) != question_count(config,phase):
-            raise ValueError('Candidates must be5120 distinct original questions')
+            raise ValueError('Candidates must cover every distinct question in the current2560-question pool')
         normalized = [r.get('normalized_question_hash', r['question_hash']) for r in groups]
         if len(set(normalized)) != question_count(config,phase):
             raise ValueError('Candidate question contents repeat')
@@ -808,7 +809,7 @@ def pack_prefix(config, outer, ranks):
                 row['normalized_question_hash'] = original['normalized_question_hash']
             rows.append(row); policies.extend(ids); positions.extend(pos); offsets.append(len(policies))
     if len(rows) != question_count(config,'prefix')*5 or len(groups) != question_count(config,'prefix'):
-        raise ValueError('Prefix scan requires all5120 completeG5 candidate groups')
+        raise ValueError('Prefix scan requires all current candidate completeG5 groups')
     for siblings in groups.values():
         if len(siblings) != G or {r['response_index'] for r in siblings} != set(range(G)) or len({r['question_hash'] for r in siblings}) != 1:
             raise ValueError('Prefix scan group membership differs')
@@ -907,8 +908,9 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
         mixed=sum(0<sum(labels[t] for t in group['trajectory_ids'])<G for group in groups)
         value.update(own_em=file_item(own,len(all_labels)),shards=[r['full'] for r in ranks],
             selection_sha256=digest(selection_path),prefix_scan_sha256=prefix['scan_sha256'],
+            actor_selection_path=str(selection_path.resolve()),actor_selection_sha256=digest(selection_path),
             actual_selected_mixed_questions=mixed,actual_selected_mixed_fraction=mixed/question_count(config,phase),
-            all_candidate_mixed_accuracy_available=question_count(config,phase)==5120,
+            all_candidate_mixed_accuracy_available=question_count(config,phase)==CANDIDATE_QUESTIONS,
             selected_strict_correct=sum(row['strict_em'] for row in all_labels))
     immutable(target,value)
     return value

@@ -1,11 +1,11 @@
 """Four-rank whole-G5 partitions with the reference's unchanged global batches."""
 import random
 
-from .contract import WORLD
+from .contract import WORLD, FINAL_OUTER, CANDIDATE_QUESTIONS, PROBE_PERIOD, PROBE_UPDATES
 
 
 def _natural_plan(seed, outer, questions, updates):
-    if type(outer) is not int or not 1 <= outer <= 200 or WORLD != 4:
+    if type(outer) is not int or not 1 <= outer <= FINAL_OUTER or WORLD != 4:
         raise ValueError('Require an actual four-rank actor outer1..200')
     shuffled = list(range(questions))
     random.Random(seed + outer).shuffle(shuffled)
@@ -32,9 +32,9 @@ def online_plan(seed, outer):
 
 
 def complete_pool_plan(seed, outer):
-    if type(outer) is not int or outer % 20:
-        raise ValueError('No probe writes outside20,40,...200')
-    return _natural_plan(seed, outer, 5120, 100)
+    if type(outer) is not int or not 1 <= outer < FINAL_OUTER or outer % PROBE_PERIOD:
+        raise ValueError('Probe writes only at10,20,...190; never at200')
+    return _natural_plan(seed, outer, CANDIDATE_QUESTIONS, PROBE_UPDATES)
 
 
 def rank_question_slice(batch, rank):

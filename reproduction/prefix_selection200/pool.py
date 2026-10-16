@@ -6,6 +6,7 @@ import random
 from pathlib import Path
 
 from reproduction.prefix20_online.pool import atomic, canonical, digest, identity, immutable, read
+from .contract import CANDIDATE_QUESTIONS, SELECTED_QUESTIONS, G
 
 
 def fixed_test_identities(config):
@@ -38,10 +39,10 @@ def initial_state(size, seed=1729):
     order = list(range(size))
     random.Random(seed).shuffle(order)
     return dict(seed=seed, cycle=0, order=order, cursor=0, next_outer=1,
-                consumed_candidates=0, candidate_questions=5120)
+                consumed_candidates=0, candidate_questions=CANDIDATE_QUESTIONS)
 
 
-def reserve_indices(state, outer, count=5120):
+def reserve_indices(state, outer, count=CANDIDATE_QUESTIONS):
     """Cross-cycle reordering prevents a duplicate in the boundary batch."""
     if state['next_outer'] != outer or len(state['order']) < count:
         raise ValueError('Candidate pool order or size differs')
@@ -73,6 +74,9 @@ def state_sha(state):
 
 def prepare(config, outer):
     """Reserve once, then retain original question/gold and real candidate order."""
+    if (config.get('candidate_questions') != CANDIDATE_QUESTIONS
+            or config.get('selected_questions') != SELECTED_QUESTIONS):
+        raise ValueError('This independent experiment requires2560 candidate questions and512 selected questions')
     base = Path(config['base'])
     if not str(base).startswith(('/mnt/data/shaoshitong/search-g1-prefix-selection200-',
                                   '/data/shaoshitong/search-g1-prefix-selection200-',
@@ -101,6 +105,7 @@ def prepare(config, outer):
                     row['normalized_question_hash'] in fixed_texts for row in pool['records']):
                 raise ValueError('Candidate source overlaps the explicit fixed512 question identities')
             immutable(binding_path, dict(source=str(source), sha256=pool_sha,
+                candidate_questions=CANDIDATE_QUESTIONS, responses_per_question=G,
                 eligible_questions=len(pool['records']),
                 fixed_test_qids_sha256=pool['fixed_test_qids_sha256'],
                 fixed_test_normalized_text_sha256=pool['fixed_test_normalized_text_sha256'],
@@ -110,10 +115,14 @@ def prepare(config, outer):
             atomic(root / 'state.json', initial_state(len(pool['records']), config.get('seed', 1729)))
         binding = read(binding_path)
         if (binding['source'] != str(source)
+                or binding.get('candidate_questions') != CANDIDATE_QUESTIONS
+                or binding.get('responses_per_question') != G
                 or binding.get('fixed_test_identity_path') != config.get('fixed_test_identity_path')
                 or binding.get('fixed_test_identity_sha256') != config.get('fixed_test_identity_sha256')):
             raise ValueError('Candidate source changed')
         pool, state = read(source), read(root / 'state.json')
+        if state.get('candidate_questions') != CANDIDATE_QUESTIONS:
+            raise ValueError('Pool state belongs to another candidate budget')
         reservation = target / 'pool-reservation.json'
         if reservation.exists():
             saved = read(reservation)
@@ -130,14 +139,17 @@ def prepare(config, outer):
                 before_sha256=state_sha(state), after_sha256=state_sha(after), after=after,
                 indices=indices, cycles=cycles))
             atomic(root / 'state.json', after)
+        if (len(indices) != CANDIDATE_QUESTIONS or len(cycles) != CANDIDATE_QUESTIONS
+                or len(set(indices)) != CANDIDATE_QUESTIONS):
+            raise ValueError('Reservation must contain2560 distinct original question indices')
         rows = [dict(pool['records'][index], pool_index=index, pool_cycle=cycle,
                      candidate_ordinal=ordinal)
                 for ordinal, (index, cycle) in enumerate(zip(indices, cycles))]
         if fixed is not None and any(row['qid'] in fixed_qids or
                 row['normalized_question_hash'] in fixed_texts for row in rows):
             raise ValueError('Reserved candidates overlap the explicit fixed512 diagnostic')
-        selection = dict(run_id=config['run_id'], outer=outer, questions=5120,
-            trajectory_group_size=5, trajectories=25600, source='fresh_prefix_sampling',
+        selection = dict(run_id=config['run_id'], outer=outer, questions=CANDIDATE_QUESTIONS,
+            trajectory_group_size=G, trajectories=CANDIDATE_QUESTIONS*G, source='fresh_prefix_sampling',
             pool_sha256=binding['sha256'], canonical_train_sha256=config['canonical_train_sha256'],
             fixed_test_qids_sha256=binding['fixed_test_qids_sha256'],
             fixed_test_normalized_text_sha256=binding['fixed_test_normalized_text_sha256'], rows=rows)
@@ -154,7 +166,7 @@ def prepare(config, outer):
                     raise ValueError('Actual candidate question/gold identity changed')
                 questions.append(dict(record, **original))
             immutable(question_path, dict(run_id=config['run_id'], outer=outer,
-                selection_sha256=digest(target / 'selection.json'), questions=5120, rows=questions))
+                selection_sha256=digest(target / 'selection.json'), questions=CANDIDATE_QUESTIONS, rows=questions))
         if read(question_path)['selection_sha256'] != digest(target / 'selection.json'):
             raise ValueError('Question bundle is not bound to this reservation')
         return question_path

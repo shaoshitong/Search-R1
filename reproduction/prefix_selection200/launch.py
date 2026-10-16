@@ -11,7 +11,8 @@ import urllib.request
 import uuid
 
 from reproduction.prefix20_online.launch import read, sha, once, publish
-from .contract import WORLD, PREFIX_TOKENS, HIDDEN_CAPTURE_CONTRACT
+from .contract import (CANDIDATE_QUESTIONS, PROBE_LR, PROBE_PERIOD, PROBE_UPDATES,
+                       WORLD, PREFIX_TOKENS, HIDDEN_CAPTURE_CONTRACT)
 from .a800_runtime import query, native_allocation, UUIDLocks
 from . import a800_runtime
 
@@ -21,13 +22,16 @@ PREFIX = a800_runtime.PREFIX
 def validate_config(c, base):
     if c['base'] != str(base) or not str(base).startswith(PREFIX):
         raise ValueError('Use the isolated remote prefix-selection namespace')
-    required = dict(outers=200, candidate_questions=5120, selected_questions=512,
+    required = dict(outers=200, candidate_questions=CANDIDATE_QUESTIONS, selected_questions=512,
                     responses_per_question=5, prefix_policy_tokens=PREFIX_TOKENS, exploration_questions=0,
-                    probe_learning_rate=1e-6, probe_epochs_per_update=1, probe_update_period=20,
-                    probe_updates_per_period=100, actor_hidden_native=True, probe_global_batch_average=256,
-                    actor_global_mini_batch=128, actor_ppo_epochs=1, world_size=WORLD)
+                    probe_learning_rate=PROBE_LR, probe_epochs_per_update=1, probe_update_period=PROBE_PERIOD,
+                    probe_updates_per_period=PROBE_UPDATES, actor_hidden_native=True, probe_global_batch_average=256,
+                    actor_global_mini_batch=128, actor_ppo_epochs=1, world_size=WORLD,
+                    probe_update_at_final=False, nonmixed_advantage_mode='zero_anchor_all_correct_only')
     if any(c.get(k) != v for k, v in required.items()):
         raise ValueError('The approved prefix selection or training budget differs')
+    if c.get('actual_em_selection_fallback') not in ('probe_score_fill', 'require_512_mixed'):
+        raise ValueError('Bind an explicit fallback for periodic pools with fewer than512 actual mixed groups')
     import re
     if (not re.fullmatch('[0-9a-f]{64}', c['probe_source_sha256'])
             or type(c.get('probe_source_epoch')) is not int or c['probe_source_epoch'] < 1
@@ -247,18 +251,25 @@ def run(base):
                      '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256))]))
             from .periodic import is_probe_update,probe_boundary
             periodic_update=is_probe_update(outer)
+            actor_selection_path=root/'probe-score/selection.json'
             if periodic_update:
-                # Selection is already immutable. Generate the full candidate
-                # G5 pool once, then project EXACT Top512 rows for PPO.
+                # The label-free predicted selection remains immutable. Complete
+                # every candidate once, then separately bind actual-mixed actor
+                # selection to those exact native outcomes and project its G5s.
                 phase('outer-%06d-complete-unselected-pool'%outer,
                     [python,'-m','reproduction.prefix_selection200.periodic_data','complete-pool',
                      '--config',conf,'--outer',str(outer)])
+                actor_selection_path=root/'probe-score/actual-em-selection.json'
+                actual_selection=read(actor_selection_path)
+                if (actual_selection.get('outcome_labels_used') is not True
+                        or actual_selection.get('fallback_mode') != c['actual_em_selection_fallback']):
+                    raise ValueError('Periodic actual-EM actor selection is missing its bound fallback policy')
                 phase('outer-%06d-current-actor-diagnostic'%outer,
                     [python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic',
                      '--config',conf,'--outer',str(outer)])
             else:
                 phase('outer-%06d-continue' % outer, [python, '-m', 'reproduction.prefix_selection200.rollout',
-                    '--config', conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(root / 'probe-score/selection.json')])
+                    '--config', conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(actor_selection_path)])
             # Retry only an actual typed CUDA OOM, after all failed owned workers
             # have exited. Restore the previous committed state and SAME rollout;
             # never combine an abandoned partial Adam prefix with the retry.
@@ -307,7 +318,10 @@ def run(base):
             os.link(base / 'probe/latest.pt', probe_snapshot)
             complete = dict(run_id=c['run_id'], outer=outer, actor=actor, probe=probe,
                 probe_snapshot=str(probe_snapshot), pool_snapshot=str(snapshot), pool_sha256=sha(snapshot),
-                selection_sha256=sha(root / 'probe-score/selection.json'), rollout=read(root / 'full/complete.json'),
+                selection_sha256=sha(actor_selection_path),
+                actor_selection_path=str(actor_selection_path),actor_selection_sha256=sha(actor_selection_path),
+                predicted_selection_sha256=sha(root / 'probe-score/selection.json'),
+                actor_selection_outcome_labels_used=periodic_update,rollout=read(root / 'full/complete.json'),
                 probe_metrics=probe_metrics, periodic_probe_update=periodic_update,
                 probe_boundary=probe_boundary(outer), source_commit=c['source_commit'], observed_unix=time.time())
             complete['phase_timings'] = {key: value for key,value in timings.items() if key.startswith('outer-%06d-' % outer)}

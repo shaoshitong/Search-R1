@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from .actor_hidden import QMAX, PREFIX, WIDTH, DIM
+from .contract import CANDIDATE_QUESTIONS, SELECTED_QUESTIONS, G
 from .contract import WORLD
 
 
@@ -23,7 +24,7 @@ class NativeFeatures:
             raise ValueError('Scoring must read actual current-actor native hidden')
         rows = [json.loads(line) for line in (self.path/'index.jsonl').open()]
         self.index = {r['trajectory_id']:prefix_row(r) for r in rows}
-        if len(self.index) != m['count'] or m['count'] not in (2560,25600):
+        if len(self.index) != m['count'] or m['count'] not in (SELECTED_QUESTIONS*G,CANDIDATE_QUESTIONS*G):
             raise ValueError('Native features require all complete unique G5 identities')
         self.positions = np.load(self.path/'packed_policy_positions.npy',mmap_mode='r')
         self.loaded = {}

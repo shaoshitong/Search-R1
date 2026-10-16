@@ -7,10 +7,10 @@ class CandidatePoolTest(unittest.TestCase):
     def test_fresh_first_outer_does_not_inherit_teacher_cursor(self):
         before = initial_state(168510, 1729)
         indices, cycles, after = reserve_indices(before, 1)
-        self.assertEqual(len(set(indices)), 5120)
-        self.assertEqual(after['consumed_candidates'], 5120)
+        self.assertEqual(len(set(indices)), 2560)
+        self.assertEqual(after['consumed_candidates'], 2560)
         self.assertEqual(after['next_outer'], 2)
-        self.assertEqual(cycles, [0] * 5120)
+        self.assertEqual(cycles, [0] * 2560)
         self.assertEqual(before['cursor'], 0)
 
     def test_no_cross_outer_repeat_before_cycle_exhaustion(self):

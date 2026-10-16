@@ -29,6 +29,8 @@ VIRTUAL_WORLD = 8
 VIRTUAL_MINI = 16
 VIRTUAL_PER_RANK = VIRTUAL_WORLD // WORLD
 OBJECTIVE = 'mean_of_eight_virtual_rank_local16_policy_token_means'
+ZERO_ANCHOR_MODE = 'zero_anchor_all_correct_only'
+ADVANTAGE_EPSILON = 1e-6
 GROUNDING_ARCHIVE = ('/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/'
     'artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/version-manifest.json')
 GROUNDING_ARCHIVE_SHA256 = '924e5487d19cf667dee56ae0a76eba7143cd6eb6325f1024989bac5d05efbb61'
@@ -324,8 +326,48 @@ def load_rollout(path, config, outer, actor_version):
             raise ValueError('Original selected G5 identity changed')
     if len({row['candidate_ordinal'] for row in rows}) != 512:
         raise ValueError('Selected question candidate ordinals repeat')
+    selection_path = remote(complete['actor_selection_path'])
+    selection_sha = complete['actor_selection_sha256']
+    if (re.fullmatch('[0-9a-f]{64}', selection_sha) is None
+            or selection_sha != complete['selection_sha256'] or sha(selection_path) != selection_sha):
+        raise ValueError('Actual actor selection path/SHA differs from the completed own rollout')
+    validate_actor_selection(complete, rows, read(selection_path))
     rows.sort(key=lambda row: (row['candidate_ordinal'], row['response_index']))
     return rows, complete
+
+
+def validate_actor_selection(complete, rows, selection):
+    """Bind PPO to the actual final512 G5, including EM-selected update rounds."""
+    if (any(selection.get(key) != complete[key] for key in ('run_id', 'outer', 'actor_version'))
+            or selection.get('prefix_scan_sha256') != complete['prefix_scan_sha256']
+            or selection.get('selected_questions') != 512 or len(selection.get('selected', [])) != 512):
+        raise ValueError('Actual actor selection is not this completed actor/prefix512 boundary')
+    chosen = {}
+    qids, ordinals = set(), set()
+    for group in selection['selected']:
+        if (group['qid'] in qids or group['candidate_ordinal'] in ordinals
+                or len(group['trajectory_ids']) != 5 or len(set(group['trajectory_ids'])) != 5
+                or any(tid in chosen for tid in group['trajectory_ids'])):
+            raise ValueError('Actual actor selection repeats or omits an original own G5 identity')
+        qids.add(group['qid']); ordinals.add(group['candidate_ordinal'])
+        chosen.update({tid: (str(group['qid']), group['candidate_ordinal']) for tid in group['trajectory_ids']})
+    lineage = ('full_pool_origin_selection_sha256', 'full_pool_complete_sha256',
+               'full_pool_own_em_sha256', 'predicted_selection_sha256') if complete.get('projected_from_full_pool') else ()
+    if any(not isinstance(complete.get(key), str) or re.fullmatch('[0-9a-f]{64}', complete[key]) is None
+           for key in lineage):
+        raise ValueError('Projected actor selection must retain the truthful full-pool and predicted-selection lineage')
+    observed = set()
+    for row in rows:
+        if (row['trajectory_id'] in observed
+                or chosen.get(row['trajectory_id']) != (str(row['qid']), row['candidate_ordinal'])
+                or row.get('selection_sha256') != complete['actor_selection_sha256']
+                or row.get('prefix_scan_sha256') != complete['prefix_scan_sha256']
+                or any(row.get(key) != complete[key] for key in lineage)):
+            raise ValueError('Actor row does not belong to the actual final selection and native prefix')
+        observed.add(row['trajectory_id'])
+    if observed != set(chosen):
+        raise ValueError('Actual final actor selection does not have exactly its own complete512G5')
+    return True
 
 
 def tensor_batch(rows, pad_token_id):
@@ -369,17 +411,89 @@ REWARD_ENV = dict(ECO_TRUST_VARIANT='balanced', ECO_TRUST_SIGNAL='probe', ECO_PR
     ECO_PROBE_ALPHA_COST='0', ECO_USE_CF='0', ECO_NO_SELF='1', ECO_PROBE_MAX_WAIT='300')
 
 
-def group_advantages(rows, scores):
+def advantage_contract(config):
+    """The human-selected zero anchor is a new, explicit scientific contract."""
+    if config.get('nonmixed_advantage_mode') != ZERO_ANCHOR_MODE:
+        raise ValueError('Explicit zero_anchor_all_correct_only advantage contract is required')
+    return dict(mode=ZERO_ANCHOR_MODE, classification='actual_native_strict_em_G5',
+        anchored_group='all_five_correct', all_wrong_and_mixed='original_G5_normalization',
+        anchor_value=0., anchor_in_statistics_only=True, synthetic_actor_trajectory=False,
+        standard_deviation_correction=1, epsilon=ADVANTAGE_EPSILON,
+        raw_grounding_rewards_modified=False)
+
+
+def normalize_reward_group(rewards, *, zero_anchor=False):
+    """Return only real advantages; an optional0 affects statistics, not data.
+
+    This small formula helper also accepts the user's three-reward illustration.
+    The actor caller below still requires the actual complete five trajectories.
+    """
+    import torch
+    values = torch.as_tensor(rewards, dtype=torch.float32)
+    if values.ndim != 1 or values.numel() < 2 or not bool(torch.isfinite(values).all()):
+        raise ValueError('Group rewards must be a finite one-dimensional sample with at least two values')
+    if type(zero_anchor) is not bool:
+        raise ValueError('Zero-anchor selection must be an explicit Boolean')
+    raw_mean, raw_std = values.mean(), values.std(correction=1)
+    statistics = torch.cat((values.new_zeros(1), values)) if zero_anchor else values
+    mean, std = statistics.mean(), statistics.std(correction=1)
+    if not bool(torch.isfinite(torch.stack((raw_mean, raw_std, mean, std))).all()):
+        raise FloatingPointError('Actual reward-group normalization statistics are nonfinite')
+    advantages = (values - mean) / (std + ADVANTAGE_EPSILON)
+    return advantages, dict(raw_reward_count=values.numel(), raw_reward_mean=float(raw_mean),
+        raw_reward_sample_std=float(raw_std), normalization_count=statistics.numel(),
+        normalization_mean=float(mean), normalization_sample_std=float(std),
+        virtual_zero_in_statistics=zero_anchor, virtual_zero_in_actor_batch=False,
+        advantage_count=values.numel(), advantage_mean=float(advantages.mean()),
+        advantage_min=float(advantages.min()), advantage_max=float(advantages.max()))
+
+
+def group_advantages(rows, scores, *, mode='original_g5', return_diagnostics=False):
     import torch
     scores = torch.as_tensor(scores, dtype=torch.float32)
+    if scores.ndim != 1 or len(rows) != scores.numel() or not bool(torch.isfinite(scores).all()):
+        raise ValueError('Actual rows and finite scalar grounding rewards must align')
+    if mode not in ('original_g5', ZERO_ANCHOR_MODE):
+        raise ValueError('Unknown GRPO advantage normalization mode')
     advantages = torch.empty_like(scores)
     grouped = defaultdict(list)
     for i, row in enumerate(rows): grouped[str(row['qid'])].append(i)
-    for ids in grouped.values():
+    diagnostics = []
+    for qid, ids in grouped.items():
         if len(ids) != 5: raise ValueError('GRPO advantages require own completeG5 rewards')
-        values = scores[ids]
-        advantages[ids] = (values - values.mean()) / (values.std(correction=1) + 1e-6)
-    return advantages
+        if mode == ZERO_ANCHOR_MODE:
+            own_em = [rows[i].get('strict_em') for i in ids]
+            if (any(type(value) is not int or value not in (0, 1) for value in own_em)
+                    or any(type(rows[i].get('response_index')) is not int for i in ids)
+                    or {rows[i].get('response_index') for i in ids} != set(range(5))):
+                raise ValueError('Zero-anchor classification requires the actual complete native G5 strictEM labels')
+            correct = sum(own_em)
+            kind = 'all_correct' if correct == 5 else 'all_wrong' if correct == 0 else 'mixed'
+        else:
+            correct, kind = None, 'original_g5'
+        local, statistics = normalize_reward_group(scores[ids], zero_anchor=(kind == 'all_correct'))
+        advantages[ids] = local
+        diagnostics.append(dict(qid_sha256=hashlib.sha256(qid.encode()).hexdigest(),
+            actual_correct_count=correct, group_kind=kind, **statistics))
+    if not return_diagnostics:
+        return advantages
+    counts = {kind: sum(row['group_kind'] == kind for row in diagnostics)
+              for kind in ('all_correct', 'all_wrong', 'mixed', 'original_g5')}
+    summary = dict(mode=mode, actual_groups=len(grouped), actual_trajectories=len(rows),
+        actual_group_counts=counts,
+        virtual_zero_statistics_groups=sum(row['virtual_zero_in_statistics'] for row in diagnostics),
+        synthetic_actor_trajectories=0, standard_deviation_correction=1, epsilon=ADVANTAGE_EPSILON,
+        raw_rewards_modified=False, per_type_statistics={})
+    for kind, count in counts.items():
+        if not count: continue
+        selected = [row for row in diagnostics if row['group_kind'] == kind]
+        summary['per_type_statistics'][kind] = {}
+        for key in ('raw_reward_mean', 'raw_reward_sample_std', 'normalization_mean',
+                    'normalization_sample_std', 'advantage_mean'):
+            values = [row[key] for row in selected]
+            summary['per_type_statistics'][kind][key] = dict(min=min(values),
+                mean=math.fsum(values) / len(values), max=max(values))
+    return advantages, dict(summary=summary, groups=diagnostics)
 
 
 def compute_soft_rewards(rows, tokenizer, config, rank=0):
@@ -455,6 +569,7 @@ def _state_binding(config):
         loss_reduction=OBJECTIVE, reference_virtual_world=VIRTUAL_WORLD,
         reference_virtual_local_mini=VIRTUAL_MINI, virtual_blocks_per_physical_rank=VIRTUAL_PER_RANK,
         entropy_coefficient=0., reference_kl_coefficient=0., reference_kl_type='low_var_kl',
+        advantage_normalization=advantage_contract(config),
         grounding_probe_version=config['grounding_probe_version'], reward_environment=REWARD_ENV)
 
 
@@ -578,6 +693,7 @@ def train(config_path, outer, rollout_path, output_path):
     from verl.trainer.ppo.core_algos import compute_policy_loss
     from search_g1.gradient_clipping import clip_global_l2
     config = read(remote(config_path)); output = remote(output_path); rollout_path = remote(rollout_path)
+    normalization_contract = advantage_contract(config)
     if config['model_revision'] != REVISION or not 1 <= outer <= 200:
         raise ValueError('Fresh official actor200 revision/budget differs')
     rank, local, world = (int(os.environ[k]) for k in ('RANK', 'LOCAL_RANK', 'WORLD_SIZE'))
@@ -649,11 +765,25 @@ def train(config_path, outer, rollout_path, output_path):
     for part in reward_parts:
         for i, score in zip(part['ids'], part['scores']): scores[i] = score
     if any(score is None for score in scores): raise ValueError('Distributed grounding reward omitted an own trajectory')
-    # Original group normalization happens after the four reward shards reunite.
-    advantages = group_advantages(rows, scores).tolist()
+    # Classify with the real ownEM from this exact retained rollout, never the
+    # grounding soft reward. The artificial0 exists only in all-correct stats.
+    advantage_values, normalization = group_advantages(rows, scores,
+        mode=normalization_contract['mode'], return_diagnostics=True)
+    normalization.update(run_id=config['run_id'], outer=outer, actor_version=old_version,
+        contract=normalization_contract, original_rollout_sha256=sha(rollout_path),
+        unmodified_raw_rewards_sha256=hashlib.sha256(canonical(scores)).hexdigest())
+    normalization_path = attempt_dir / 'advantage-statistics.json'
+    normalization_bytes = canonical(normalization) + b'\n'
+    if rank == 0:
+        atomic_json(normalization_path, normalization)
+    advantages = advantage_values.tolist()
     reward_proof = dict(version=config['grounding_probe_version'], ranks=[part['proof'] for part in reward_parts],
         trajectories=len(rows), score_mean=math.fsum(scores) / len(scores),
-        prefix_correctness_head_used_for_reward=False, actual_reward_world_size=WORLD)
+        prefix_correctness_head_used_for_reward=False, actual_reward_world_size=WORLD,
+        advantage_contract=normalization_contract, advantage_summary=normalization['summary'],
+        advantage_statistics=dict(path=str(normalization_path), bytes=len(normalization_bytes),
+            sha256=hashlib.sha256(normalization_bytes).hexdigest()),
+        unmodified_raw_rewards_sha256=normalization['unmodified_raw_rewards_sha256'])
     plan = rank_plan(seed, outer)[rank]
     writes = 0
     try:

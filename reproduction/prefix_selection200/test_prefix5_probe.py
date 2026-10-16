@@ -56,10 +56,10 @@ class Prefix5Contracts(unittest.TestCase):
 
     def test_complete_pool_covers_all_own_g5_and_matches_true_global_ddp_mean(self):
         plan = complete_pool_plan(1729, 20)
-        self.assertEqual(len(plan), 100)
-        self.assertEqual(sorted(i for row in plan for i in row['question_indices']), list(range(5120)))
+        self.assertEqual(len(plan), 50)
+        self.assertEqual(sorted(i for row in plan for i in row['question_indices']), list(range(2560)))
         self.assertEqual([sum(len(rank_question_slice(row, rank)) for row in plan)
-                          for rank in range(WORLD)], [1280]*4)
+                          for rank in range(WORLD)], [640]*4)
         for row in plan:
             parts = [rank_question_slice(row, rank) for rank in range(WORLD)]
             self.assertTrue(all(len(part) in (12, 13) for part in parts))
