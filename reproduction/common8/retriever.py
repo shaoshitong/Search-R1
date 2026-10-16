@@ -2,7 +2,7 @@
 
 No retrieval mathematics or document order changes. The CPU index is retained
 only for the initial independent comparison, then released before training.
-Native execution uses eight shards; local A800 uses its two assigned auxiliaries.
+Native execution uses its bound four/eight shards; local A800 uses two auxiliaries.
 """
 import hashlib
 import importlib.util
@@ -52,6 +52,16 @@ def compare_search(queries, cpu_scores, cpu_ids, gpu_scores, gpu_ids, cpu_vector
                 selected_score_gap_max=float(gap.max()), score_bound=0.02, recall_bound=0.95)
 
 
+def native_gpu_binding(run,job,allocation):
+    from reproduction.common8.native_allocation import cuda_uuids
+    from reproduction.common8.topology import world_size
+    assert memory_bytes(job['TRES'])>=512*2**30
+    assert os.environ['CUDA_VISIBLE_DEVICES'].split(',')==allocation['visible_devices']
+    count=world_size(run);actual=cuda_uuids(count)
+    assert actual==allocation['actual_cuda_runtime_uuids']
+    return count,actual
+
+
 def main(base):
     import datasets
     import faiss
@@ -72,12 +82,8 @@ def main(base):
         gpu_lib=Path(run['retriever_gpu_lib']);encoder=Path(run['retrieval_encoder'])
         create,extract=local_create,local_extract
     else:
-        assert memory_bytes(job['TRES']) >= 512 * 2**30
-        assert os.environ['CUDA_VISIBLE_DEVICES'].split(',') == allocation['visible_devices']
-        actual_gpu_uuids=cuda_uuids()
-        assert actual_gpu_uuids == allocation['actual_cuda_runtime_uuids']
-        from reproduction.common8.topology import world_size
-        shard_count=world_size(run);job_id=job['JobId'];gpu_lib=base/'retriever-gpu-lib';encoder=base/'assets/e5-base-v2'
+        shard_count,actual_gpu_uuids=native_gpu_binding(run,job,allocation)
+        job_id=job['JobId'];gpu_lib=base/'retriever-gpu-lib';encoder=base/'assets/e5-base-v2'
         create,extract=create_cache,extract_corpus
     assert faiss.get_num_gpus() == torch.cuda.device_count() == shard_count
     assert Path(faiss.__file__).resolve().is_relative_to(gpu_lib.resolve())

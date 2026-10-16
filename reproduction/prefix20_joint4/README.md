@@ -59,10 +59,30 @@ global masked-mean monitor mass8, while historical eight-rank/micro2 has16.
 Both ordinary and transactional attempt readers check this without changing
 worker losses, rewards or safety thresholds.
 
-The prospective run binding and four-GPU launcher are still being integrated.
-This directory is not yet a training launcher.
-The old upstream eight-GPU frozen-actor script cannot launch this experiment.
-No new joint training job has been submitted at this implementation milestone.
+`control.py bootstrap` prepares read-only environment/data links and copies all
+published source into a real `base/repo` directory with fresh file SHA checks.
+`control.py submit` is the once-only launcher: four GPUs, 48 CPUs, 512GiB,
+`emergency_acd` partition, `jxu957` account and `formal-user` QoS. It consumes
+fresh selected-asset SHA verification and a complete personal-storage observation
+before writing an exclusive submission intent. A submission timeout must be
+resolved by inspecting this intent and Slurm; it must never be blindly replayed.
+
+The worker entry is `train.sh` → `prepare_training.py` → the existing common8
+pipeline. It verifies the actual submitted Slurm identity, resources, command
+and working directory. No feature job or extra teacher warmup is launched.
+The original reward probe calibration and retriever still execute. Native
+retriever UUID queries use the actual four/eight device count.
+
+Storage layout is explicit: five complete actor/probe sources on HPC3, five
+complete archives on HKUST3, and only one simultaneous full recovery target on
+HPC3. The reservation includes FP32 actor weights plus both Adam moments,
+four complete probe replicas, reward-encoder dependencies, and a separately
+identified 96GiB estimate for raw/log artifacts. That estimate must be checked
+against this run's measured artifact growth. Existing checkpoints are retained;
+this layout does not authorize deletion of other experiments.
+
+No new joint training job has yet been submitted. CPU tests and prospective
+launch preparation do not prove physical four-GPU memory or training acceptance.
 
 Never treat the artificial20-token pause as an invalid action or insert an
 environment correction at that boundary. Preserve actual20/remaining-budget
