@@ -70,6 +70,17 @@ def online_plan(seed, outer):
     return plan
 
 
+def summarize_loss_curve(curve):
+    if len(curve) != 10 or [row['step'] for row in curve] != list(range(1, 11)):
+        raise ValueError('A complete online outer has ten actual global loss observations')
+    return dict(points=curve, first=curve[0], last=curve[-1],
+                delta_end_minus_start={key: curve[-1][key]-curve[0][key]
+                                      for key in ('trajectory_bce', 'group_bce', 'total_loss')},
+                loss_semantics='each_step_global_true_group_weighted_mean_before_its_own_update',
+                batches_differ_between_steps=True, monotonic_decrease_required=False,
+                actual_adam_updates_per_rank=10, world_size=8, replica_updates_are_not_summed=True)
+
+
 def candidate_groups(index, expected_questions=5120):
     """Group by authentic question identity, never by consecutive five rows."""
     groups = {}
@@ -614,6 +625,7 @@ def update(args):
         model = DistributedDataParallel(model, device_ids=[local], broadcast_buffers=False)
         model.train()
         totals = [0.0, 0.0, 0.0, 0, 0]
+        global_curve = []
         started = time.monotonic()
         for step, planned in enumerate(plan, start=1):
             local_groups = [groups[j] for j in rank_question_slice(planned, rank)]
@@ -644,6 +656,22 @@ def update(args):
             totals[1] += float(losses['group_bce'].detach())*n
             totals[2] += float(losses['loss'].detach())*n
             totals[3] += n; totals[4] += len(ids)
+            step_stats = torch.tensor([float(losses['trajectory_bce'].detach())*n,
+                float(losses['group_bce'].detach())*n, float(losses['loss'].detach())*n,
+                n, len(ids)], dtype=torch.float64, device=device)
+            dist.all_reduce(step_stats)
+            global_groups, global_trajectories = int(step_stats[3]), int(step_stats[4])
+            if (global_groups != planned['global_questions'] or global_trajectories != global_groups*5):
+                raise RuntimeError('Global step diagnostics differ from their real whole-G5 batch')
+            global_row = dict(outer=args.outer, step=step, actual_adam_steps_per_rank=actual,
+                actual_learning_rate=LR, global_questions=global_groups,
+                global_trajectories=global_trajectories,
+                trajectory_bce=float(step_stats[0]/global_groups),
+                group_bce=float(step_stats[1]/global_groups), total_loss=float(step_stats[2]/global_groups),
+                loss_prediction_clock='before_this_step_adam_update', observed_utc=utc())
+            global_curve.append(global_row)
+            if rank == 0:
+                append(out / 'global-loss-updates.jsonl', global_row)
             row = dict(outer=args.outer, rank=rank, step=step, actual_adam_steps=actual,
                 actual_learning_rate=LR, local_questions=n, local_trajectories=len(ids),
                 global_questions=planned['global_questions'], global_trajectories=planned['global_questions']*5,
@@ -702,6 +730,7 @@ def update(args):
                 train_online_total_loss=float(stats[2]/512), train_loop_seconds=train_loop_seconds,
                 diagnostic_semantics='same_post_update_head_complete_selected512G5_and_fixed512G5',
                 step_loss_semantics='different_natural_batches_before_their_own_update_no_monotonic_claim',
+                global_step_loss_curve=summarize_loss_curve(global_curve),
                 selected_features_reencoded=False, actor_version=m['actor_version'], checkpoint=result)
             once(out / 'metrics.json', metrics)
             for split, rows in (('train', train_rows), ('test', test_rows)):
