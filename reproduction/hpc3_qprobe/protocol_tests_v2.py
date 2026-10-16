@@ -2,7 +2,7 @@
 
 Historical recovery fixtures deliberately remap the actual experiment root.
 Their scratch directories must therefore remain outside that root. Only the
-six real storage/child/lock tests run under the actual shared experiment FS.
+real storage/child/lock tests run under the actual shared experiment FS.
 No producer, checkpoint, RAW, archive claim or training job is modified.
 """
 import argparse
@@ -25,7 +25,8 @@ MODULES=('test_owner_partition_storage','test_recover_sigma3_archive150_first',
     'test_sigma3_archive_binding','test_sigma3_archive100_route','test_independent_goal_control_sigma3',
     'test_independent_goal_acceptance_sigma3','test_sigma3_archive150_route',
     'test_archive150_visibility_failure','test_owner_partition_storage_v2',
-    'test_recover_sigma3_archive150_second','test_local_owner_partition_driver','test_sigma3_archive150_second_route')
+    'test_recover_sigma3_archive150_second','test_local_owner_partition_driver','test_sigma3_archive150_second_route',
+    'test_owner_partition_serial_admission')
 RELATIVE='reproduction/hpc3_qprobe/protocol_tests_v2.py'
 
 
@@ -42,6 +43,7 @@ def run(commit,shared=False):
         folder.mkdir(mode=0o770,exist_ok=True);tempfile.tempdir=str(folder)
         names=['reproduction.hpc3_qprobe.test_owner_partition_storage_v2.'+name
                for name in ('ActualGNU','ActualChildren','ActualLaunchAndLock')]
+        names.append('reproduction.hpc3_qprobe.test_owner_partition_serial_admission.ActualHeldComplement')
     else:
         tempfile.tempdir='/tmp';folder=Path(tempfile.gettempdir()).resolve()
         storage.need(storage.ROOT!=folder and storage.ROOT not in folder.parents,

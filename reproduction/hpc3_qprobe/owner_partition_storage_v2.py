@@ -149,12 +149,16 @@ def authorize_owner(path,commit):
         request,proof=request_guard(path,commit)
         need(request['roots'] and not (Path(path).parent/'mou-control').exists() and
              not (Path(path).parent/'request-closed.json').exists(),'owner request is closed or already claimed')
+        complement=complement_ready_for_owner(path,request)
+        if complement is None:
+            return dict(status='ACTUAL_OWNER_COMPLEMENT_NOT_READY',source=source,request=proof,
+                        owner_claim_created=False,training_actions=0,permission_changes=0)
         directory=Path(path).parent/'authorizations';directory.mkdir(mode=0o770,exist_ok=True)
         nonce=uuid.uuid4().hex;grant_path=directory/(nonce+'.json')
         grant=dict(protocol=PROTOCOL,source=source,request=proof,archive_child=request['archive_child'],
             archive_claim_sha256=request['archive_claim_sha256'],archive_token=request['archive_token'],
             host=host_binding(),nonce=nonce,authorized_by=birth(process(os.getpid())),created_unix=time.time(),
-            ttl_seconds=AUTHORIZATION_TTL,training_actions=0,permission_changes=0)
+            ttl_seconds=AUTHORIZATION_TTL,completed_complement=complement,training_actions=0,permission_changes=0)
         publish(grant_path,grant);_,grant_proof=document(grant_path,(JXU,),protected=True)
         replace_state(Path(path).parent/'authorization-active.json',grant_proof)
         return grant_proof
@@ -177,7 +181,33 @@ def authorization_guard(path,request,proof,*,claim=None):
     if claim is None:
         need(not (Path(path).parent/'request-closed.json').exists(),'owner request already closed')
     else:need(claim['authorization_nonce']==grant['nonce'],'owner claim authorization nonce differs')
+    grant_complement_guard(path,request,grant)
     return grant,grant_proof
+
+
+def grant_complement_guard(path,request,grant):
+    """Re-read JXU's protected real-wait proof, without foreign /proc guesses."""
+    directory=Path(path).parent
+    value,proof=document(directory/'jxu-du-result.json',(JXU,),protected=True)
+    bound,bp=document(directory/'jxu-du-binding.json',(JXU,),protected=True)
+    launch,lp=document(directory/'jxu-du-launch-intent.json',(JXU,),protected=True)
+    need(grant.get('completed_complement')==dict(proof,binding=bp,launch_intent=lp),
+         'owner grant completed complement proof differs')
+    command=du_command([MEASURE],request['excluded_paths'])
+    need(value['command']==bound['command']==launch['command']==command and value['uid']==JXU and
+         value['actual_parent']==bound['actual_parent']==launch['actual_parent']==request['archive_child'] and
+         value['actual_du']==bound['actual_du'] and value['actual_du']['uid']==JXU and
+         value['actual_du']['sid']==request['archive_child']['sid'] and
+         type(value['actual_du_wait_exit_code']) is int and value['actual_du_wait_exit_code']==0 and value['stderr']=='' and
+         value['training_actions']==value['permission_changes']==0 and
+         value['started_unix']==bound['started_unix']==launch['started_unix'] and
+         request['created_unix']<=value['started_unix']<=value['completed_unix']<=grant['created_unix'],
+         'owner grant must follow its complete successful JXU wait')
+    for stream in ('stdout','stderr'):
+        raw=read_bytes(directory/('jxu-du-'+stream),(JXU,),2**20)
+        need(len(raw)==value[stream+'_bytes'] and hashlib.sha256(raw).hexdigest()==value[stream+'_sha256'] and
+             raw.decode()==value[stream],'owner grant retained complement streams differ')
+    parse_du(value['stdout'],[MEASURE])
 
 
 def publication(commit):
@@ -565,6 +595,26 @@ def initial_frontier():
     return roots,proof
 
 
+def close_stale_request(path,request,proof):
+    """Close admission before retry; retain/reap any already claimed MOU work."""
+    directory=Path(path).parent
+    with admission_lock(path):
+        owner_directory=directory/'mou-control'
+        need(not owner_directory.is_symlink(),'stale owner control is a symlink')
+        claimed=owner_directory.exists()
+        publish(directory/'request-closed.json',dict(status='ACTUAL_STALE_COMPLEMENT_REQUEST_CLOSED',
+            source=request['source'],request=proof,owner_claim_present=claimed,closed_unix=time.time(),
+            training_actions=0,permission_changes=0))
+    owner=None
+    if claimed:
+        while owner is None:
+            owner=consume_owner(path,request,proof,current=False,require_usage=False)
+            if owner is None:time.sleep(5)
+    publish(directory/'stale.json',dict(status='ACTUAL_COMPLETE_PARTITIONS_STALE_NO_USAGE_ACCEPTED',
+        request=proof,jxu_result_sha256=digest(directory/'jxu-du-result.json'),owner=owner,
+        usage_accepted=False,checked_unix=time.time()))
+
+
 def measure(claim_path,token,run_id,step):
     """Called only by the already-held archive child inside archive-storage.lock."""
     from reproduction.hpc3_qprobe import final_control as ctl
@@ -612,18 +662,25 @@ def measure(claim_path,token,run_id,step):
             if new:known=list(set(known+new))
             else:enoent+=1;need(missing and enoent<3,'pure ENOENT complete retry exhausted')
             continue
+        if not fresh(request,complement,None,time.time()):
+            close_stale_request(request_path,request,request_proof);continue
+        stale=False
         if roots:
             while owner is None:
+                # The driver never grants an already-stale complement. The
+                # archive owns closure and bounded remeasurement so that a
+                # slow DU or delayed owner cannot deadlock both parties.
+                if not fresh(request,complement,None,time.time()):
+                    close_stale_request(request_path,request,request_proof);stale=True;break
                 need(live(own) and digest(claim_path)==claim_proof['sha256'],'archive parent/claim changed')
                 owner=consume_owner(request_path,request,request_proof)
                 if owner is None:time.sleep(5)
+        if stale:continue
         validate_roots(roots)
         for path in absent:need(not Path(path).exists() and not Path(path).is_symlink(),'absent reported root reappeared')
         parsed=parse_du(complement['stdout'],[MEASURE])
         if not fresh(request,complement,owner,time.time()):
-            publish(directory/'stale.json',dict(status='ACTUAL_COMPLETE_PARTITIONS_STALE_NO_USAGE_ACCEPTED',
-                request=request_proof,jxu_result_sha256=digest(directory/'jxu-du-result.json'),owner=owner,
-                usage_accepted=False,checked_unix=time.time()))
+            close_stale_request(request_path,request,request_proof)
             continue  # Both original children are terminal; a new numbered full transaction is required.
         upper=parsed[str(MEASURE)]+(0 if owner is None else owner['allocated_bytes'])
         complete=dict(status='ACTUAL_FULL_OWNER_PARTITION_DU_UPPER_BOUND',protocol=PROTOCOL,source=source,
@@ -636,16 +693,30 @@ def measure(claim_path,token,run_id,step):
         publish(directory/'complete.json',complete)
         pointer=dict(path=str(directory/'complete.json'),sha256=digest(directory/'complete.json'),
                      allocated_upper_bound_bytes=upper,protocol=PROTOCOL)
+        # A candidate is not accepted usage. The full graph traversal can
+        # itself cross a freshness boundary; retain it and retry, rather than
+        # publishing an accepted pointer and then exiting on stale evidence.
+        try:
+            checked=consume_partition(archive,pointer,allow_active_archive_child=True)
+        except ValueError as error:
+            if str(error)!='OWNER_PARTITION_STORAGE: complete measurement became stale before copy admission':raise
+            close_stale_request(request_path,request,request_proof);continue
+        need(checked['allocated_upper_bound_bytes']==upper,'fresh complete partition consumption differs')
+        if not fresh(request,complement,owner,time.time()):
+            close_stale_request(request_path,request,request_proof);continue
         publish(archive/'storage-owner-partition-accepted.json',pointer)
-        # Reconsume actual complete child waits and bytes before copy admission.
-        need(consume(archive,allow_active_archive_child=True)['allocated_upper_bound_bytes']==upper,
-             'fresh complete partition consumption differs')
         return upper
     raise ValueError('OWNER_PARTITION_STORAGE: sixteen complete attempts exhausted; no usage accepted')
 
 
 def consume(archive,allow_active_archive_child=False):
     archive=Path(archive);pointer,_=document(archive/'storage-owner-partition-accepted.json',(JXU,))
+    return consume_partition(archive,pointer,allow_active_archive_child=allow_active_archive_child)
+
+
+def consume_partition(archive,pointer,allow_active_archive_child=False):
+    """Same complete graph for a pre-admission candidate or accepted pointer."""
+    archive=Path(archive)
     complete,proof=document(pointer['path'],(JXU,))
     request,request_proof=request_guard(complete['request']['path'],complete['source']['commit'],active=allow_active_archive_child)
     claim,claim_proof=document(archive/'submit-claim.json',(JXU,))
@@ -702,7 +773,7 @@ def unclaimed_admission_refusal(path,commit):
     closed=path.parent/'request-closed.json';closed_proof=None
     if closed.exists():
         value,closed_proof=document(closed,(JXU,),protected=True)
-        need(value['status']=='ACTUAL_FAILED_COMPLEMENT_REQUEST_CLOSED' and value['source']==request['source'] and
+        need(value['status'] in ('ACTUAL_FAILED_COMPLEMENT_REQUEST_CLOSED','ACTUAL_STALE_COMPLEMENT_REQUEST_CLOSED') and value['source']==request['source'] and
              value['request']==proof and value['owner_claim_present'] is False,
              'closed request is not a proven zero-owner-claim refusal')
     if active_path==path and closed_proof is None:return None
@@ -731,7 +802,7 @@ def complement_ready_for_owner(path,request):
          'owner admission complement belongs to another request/child')
     if value['actual_du_wait_exit_code']!=0 or value['stderr']!='':return None
     parse_du(value['stdout'],[MEASURE])
-    need(fresh(request,value,None,time.time()),'complement stale before owner admission')
+    if not fresh(request,value,None,time.time()):return None
     return proof
 
 

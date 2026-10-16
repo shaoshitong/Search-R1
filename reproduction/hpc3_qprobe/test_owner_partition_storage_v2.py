@@ -1,6 +1,7 @@
 """Owner visibility, nonce/TTL, terminal-proof and failed-scan ordering attacks."""
 from contextlib import ExitStack
 import copy
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -53,7 +54,7 @@ class OwnerProof(unittest.TestCase):
         self.stack.enter_context(patch.object(storage,'host_binding',return_value=self.host))
         self.stack.enter_context(patch.object(storage,'code_guard',return_value=(self.root,self.source)))
         self.request.update(archive_child=dict(pid=2147481000,start_ticks=1,sid=2147481000,uid=os.getuid()),
-            archive_claim_sha256='e'*64,archive_token='f'*32)
+            archive_claim_sha256='e'*64,archive_token='f'*32,created_unix=0)
         self.request_path.write_text(json.dumps(self.request));self.request_path.chmod(0o640)
         self.proof=dict(path=str(self.request_path),sha256=storage.digest(self.request_path),bytes=self.request_path.stat().st_size)
         self.grant_dir=self.root/'authorizations';self.grant_dir.mkdir();self.nonce='a'*32
@@ -62,6 +63,19 @@ class OwnerProof(unittest.TestCase):
             archive_claim_sha256=self.request['archive_claim_sha256'],archive_token=self.request['archive_token'],
             host=self.host,nonce=self.nonce,authorized_by=self.request['archive_child'],created_unix=9,
             ttl_seconds=storage.AUTHORIZATION_TTL,training_actions=0,permission_changes=0)
+        jxu=dict(actual_parent=self.request['archive_child'],actual_du=dict(pid=2147481001,start_ticks=2,
+            sid=2147481000,uid=os.getuid()),command=storage.du_command([storage.MEASURE],self.request['excluded_paths']),
+            actual_du_wait_exit_code=0,uid=os.getuid(),started_unix=1,completed_unix=8,training_actions=0,permission_changes=0)
+        for stream,raw in [('stdout',('4096\t'+str(storage.MEASURE)+'\n').encode()),('stderr',b'')]:
+            (self.root/('jxu-du-'+stream)).write_bytes(raw)
+            jxu.update({stream:raw.decode(),stream+'_bytes':len(raw),stream+'_sha256':hashlib.sha256(raw).hexdigest()})
+        storage.publish(self.root/'jxu-du-result.json',jxu)
+        storage.publish(self.root/'jxu-du-binding.json',{k:jxu[k] for k in ('actual_parent','actual_du','command','started_unix')})
+        storage.publish(self.root/'jxu-du-launch-intent.json',{k:jxu[k] for k in ('actual_parent','command','started_unix')})
+        _,jp=storage.document(self.root/'jxu-du-result.json',(os.getuid(),),protected=True)
+        _,jb=storage.document(self.root/'jxu-du-binding.json',(os.getuid(),),protected=True)
+        _,jl=storage.document(self.root/'jxu-du-launch-intent.json',(os.getuid(),),protected=True)
+        self.grant['completed_complement']=dict(jp,binding=jb,launch_intent=jl)
         storage.publish(self.grant_path,self.grant);_,grant_proof=storage.document(self.grant_path,(os.getuid(),),protected=True)
         storage.publish(self.root/'authorization-active.json',grant_proof)
         for name in ('claim.json','process.json','child.json','worker-result.json','complete.json'):
@@ -118,6 +132,24 @@ class OwnerProof(unittest.TestCase):
             self.grant_path.write_bytes(original)
         self.grant_path.chmod(0o660)
         with self.assertRaisesRegex(ValueError,'protected owner mode'):self.confirm()
+
+    def test_new_owner_claim_cannot_use_grant_missing_completed_complement(self):
+        value=dict(self.grant);value.pop('completed_complement')
+        self.grant_path.write_text(json.dumps(value))
+        _,proof=storage.document(self.grant_path,(os.getuid(),),protected=True)
+        (self.root/'authorization-active.json').write_text(json.dumps(proof))
+        with patch.object(storage.time,'time',return_value=12):
+            with self.assertRaisesRegex(ValueError,'completed complement proof differs'):
+                storage.authorization_guard(self.request_path,self.request,self.proof)
+
+    def test_owner_grant_rejects_modified_complement_sha_nonzero_wait_and_streams(self):
+        self.confirm()
+        path=self.root/'jxu-du-result.json';original=path.read_bytes()
+        value=json.loads(original);value['actual_du_wait_exit_code']=1;path.write_text(json.dumps(value))
+        with self.assertRaisesRegex(ValueError,'complement proof differs'):self.consume()
+        path.write_bytes(original)
+        (self.root/'jxu-du-stdout').write_bytes(b'corrupt')
+        with self.assertRaisesRegex(ValueError,'complement streams differ'):self.consume()
 
     def test_confirmed_report_cannot_replace_modified_original_held_bytes(self):
         self.confirm();self.alter('worker-result.json','actual_task_wait_exit_code',1)
