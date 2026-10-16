@@ -118,7 +118,7 @@ def measured_owner_storage(run_id, step):
     raise AssertionError('unreachable storage admission')
 
 
-def archive(receipt_path,*,storage_measurement=None):
+def archive(receipt_path,*,storage_measurement=None,storage_semantics='complete_single_owner_allocated_measurement'):
     if os.getuid()!=14090:raise ValueError('Actual jxu957 archive owner required')
     from search_g1.qprobe_checkpoint import read_source
     original,receipt,_,origin,parent=read_source(receipt_path)
@@ -136,12 +136,16 @@ def archive(receipt_path,*,storage_measurement=None):
         rows[path]=row
     measure=measured_owner_storage if storage_measurement is None else storage_measurement
     allocated=measure(receipt['run_id'],receipt['step'])
+    if type(allocated) is not int or allocated<0 or storage_semantics not in (
+            'complete_single_owner_allocated_measurement','complete_two_owner_allocated_upper_bound'):
+        raise ValueError('Invalid complete storage measurement or semantics')
     required=2*sum(row['bytes'] for row in rows.values())+2**30
     if allocated+required>2*10**12:raise ValueError('Explicit own2TB archive/target allowance exceeded')
     os.umask(0o007);directory.mkdir(parents=True,mode=0o770)
     claim=dict(source_receipt=dict(path=str(original),sha256=sha_file(original)),run_id=receipt['run_id'],
         step=receipt['step'],world_size=4,uid=os.getuid(),pid=os.getpid(),
-        measured_allocated_bytes=allocated,required_copy_bytes=required,
+        measured_allocated_bytes=allocated,required_copy_bytes=required,storage_semantics=storage_semantics,
+        allocated_upper_bound_bytes=allocated if storage_semantics=='complete_two_owner_allocated_upper_bound' else None,
         started_unix=time.time(),actual_cuda_restore_accepted=False)
     publish(directory/'claim.json',claim)
     archive_base=directory/'archive';target_base=directory/'target'

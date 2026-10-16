@@ -22,6 +22,7 @@ RECOVERIES={
     '4194ad2c21c5e10ae5ee3b0212fb6fbf3e02f41b':'recover_sigma3_archive100',
     '23ab8b0c8af403ec830644ff4fa04eeef7f55927':'recover_sigma3_archive100_second',
     'f8a332a72257f54bf0c01a01fce592e2515d7937':'recover_sigma3_archive100_third',
+    '5f0065b98d1239c994addc19fd0b7e32f506d7fd':'recover_sigma3_archive100_fourth',
 }
 
 
