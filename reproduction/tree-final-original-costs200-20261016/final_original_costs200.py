@@ -361,6 +361,17 @@ def inputs(args):
                        sha256=PROTECTED['COST_OUTER190_LOCAL_RECEIPT.json'][1]),True)
     oldcandidate=bound(oldcost['actual_candidate190'],True);audit=oldcandidate['source_files']['audit']
     captured[190]=dict(bytes=audit['bytes'],sha256=audit['sha256'],audit_file=Path(audit['path']).name)
+    failed=manifest.get('prior_failed_preparation_response')
+    if failed is not None:
+        need(locate(failed['path'])==B/(STEM+'_PREPARE_RESPONSE.txt'),'Exact preserved failed preparation response')
+        read(failed,True)
+        failed_header,_,_=saved_response(STEM+'_PREPARE_RESPONSE.txt',failed['bytes'],failed['sha256'])
+        need(failed_header['phase']=='prepare-pins' and failed_header['exit_code']!=0 and
+             failed_header['actual_remote_calls']==1,'Explicit known failed preparation, never unknown replay')
+    if preparing:
+        tag=manifest.get('preparation_attempt_tag','')
+        need(args.prepare_attempt_tag==tag and tag in ('','REPAIR001'),'Bound authorized preparation attempt tag')
+        need(not tag or failed is not None,'Repair qualification requires preserved known failed response')
     if not preparing:
         need(manifest['remote_pins']['schema']=='tree_final200_original_remote_pins_v1','Explicit own remote inputs')
         need([q.get('outer') for q in manifest['remote_pins']['periodic_controls']]==[195,200],
@@ -377,11 +388,11 @@ def inputs(args):
             if row['outer'] in (1,2):
                 need(row['audit'].get('historical_capture_sha256') is None,'No invented historical auditSHA for1/2')
         if manifest.get('preparation_response') is not None:
-            q=manifest['preparation_response'];name=STEM+'_PREPARE_RESPONSE.txt'
-            need(locate(q['path'])==B/name,'Actual preparation response filename')
+            q=manifest['preparation_response'];name=Path(q['path']).name
+            need(re.fullmatch(STEM+r'_PREPARE(?:_REPAIR001)?_RESPONSE\.txt',name) and locate(q['path'])==B/name,'Actual preparation response filename')
             header,_,_=saved_response(name,q['bytes'],q['sha256'])
             need(header['phase']=='prepare-pins' and header['exit_code']==0 and header['actual_remote_calls']==1 and
-                 manifest.get('preparation_remote_calls')==1,'Preparation is one actual separate helper invocation')
+                 manifest.get('preparation_remote_calls')==1+int(failed is not None),'Successful preparation and preserved failed calls are separate actual invocations')
         else:
             need(manifest.get('preparation_remote_calls',0)==0,'Do not infer a preparation call without its response')
     cross=B/'ORIGINAL_POLL_TRAINING_METRICS191_196_READBACK_20261016.json'
@@ -558,11 +569,12 @@ def finish_prepare(args,values,header,stdout,stderr,response_name):
          'Prepare response status')
     result=copy.deepcopy(manifest);result.update(schema='tree_final200_original_cost_input_manifest_v1',
         status='ACTUAL200_ORIGINAL_FILE_INPUTS_FROZEN',remote_pins=prepared['remote_pins'],
-        preparation_response=ref(B/response_name),preparation_remote_calls=1,collector_remote_calls_before_collection=0)
+        preparation_response=ref(B/response_name),preparation_remote_calls=1+int(manifest.get('prior_failed_preparation_response') is not None),
+        preparation_current_remote_calls=1,preparation_prior_failed_remote_calls=int(manifest.get('prior_failed_preparation_response') is not None),collector_remote_calls_before_collection=0)
     raw=enc(result);need(len(raw)<=4*1024*1024,'Complete prepared manifest budget; no truncated paths')
     output=publish(STEM+'_INPUT_PINS.json',raw);checks()
     print(json.dumps(dict(status='ORIGINAL200_INPUT_PINS_PREPARED_NOT_COLLECTED',input_manifest=output,
-          prepare_remote_calls=1,collect_remote_calls=0,source1ed_calls=0)))
+          prepare_current_remote_calls=1,prepare_total_remote_calls=result['preparation_remote_calls'],collect_remote_calls=0,source1ed_calls=0)))
 
 
 def prepare_pins(args,values):
@@ -571,8 +583,10 @@ def prepare_pins(args,values):
     seed=dict(schema='tree_final200_original_prepare_seed_v1',captured_audits=captured,
               rank_writer_sha256=STATIC[RANK_WRITER][1],old_control_names=[Path(q['source']['path']).name for q in cached_controls])
     program=remote_fragment(read(manifest['remote_source']),'prepare-pins')+'\nSEED='+repr(seed)+"\n_RESULT=prepare(SEED)\n_ENCODED=json.dumps(_RESULT,ensure_ascii=False,separators=(',',':'),allow_nan=False)\nneed(len(_ENCODED.encode())<=4*1024*1024,'Complete preparation output budget; no paths truncated')\nprint(_ENCODED)\n"
-    helper,command,transport=transport_program(program);checks();response_name=STEM+'_PREPARE_RESPONSE.txt'
-    claim_attempt(STEM+'_PREPARE_ATTEMPT.json',dict(schema='tree_final200_original_prepare_once_attempt_v1',
+    helper,command,transport=transport_program(program);checks()
+    prepare_stem=STEM+'_PREPARE'+('_'+args.prepare_attempt_tag if args.prepare_attempt_tag else '')
+    response_name=prepare_stem+'_RESPONSE.txt'
+    claim_attempt(prepare_stem+'_ATTEMPT.json',dict(schema='tree_final200_original_prepare_once_attempt_v1',
         started_utc=datetime.now(timezone.utc).isoformat(),input_manifest=ref(args.pins),transport=transport,
         remote_program_sha256=sha(program.encode()),authorized_remote_calls=1,phase='prepare-pins',automatic_retry=False))
     try:
@@ -590,7 +604,8 @@ def prepare_pins(args,values):
 
 def recover(args,values):
     need(args.response_bytes is not None and args.response_sha256 is not None,'Bind the actual durable saved response')
-    preparing=args.phase=='recover-prepare';name=STEM+('_PREPARE_RESPONSE.txt' if preparing else '_REMOTE_RESPONSE.txt')
+    preparing=args.phase=='recover-prepare'
+    name=(STEM+'_PREPARE'+('_'+args.prepare_attempt_tag if args.prepare_attempt_tag else '')+'_RESPONSE.txt') if preparing else STEM+'_REMOTE_RESPONSE.txt'
     try:
         header,stdout,stderr=saved_response(name,args.response_bytes,args.response_sha256)
         publish(name,(B/name).read_bytes())
@@ -732,6 +747,7 @@ def main():
     parser.add_argument('--pins-sha256',required=True)
     parser.add_argument('--capture-bytes',type=int)
     parser.add_argument('--capture-sha256')
+    parser.add_argument('--prepare-attempt-tag',default='')
     parser.add_argument('--response-bytes',type=int)
     parser.add_argument('--response-sha256')
     args=parser.parse_args();need(__debug__,'Do not disable actual evidence gates with -O')

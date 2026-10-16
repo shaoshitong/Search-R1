@@ -293,7 +293,8 @@ def prepare(seed):
                 need(audit.is_file() and audit.stat().st_size==captured['bytes'],'Preserved audit stat')
                 audit_ref=dict(path=str(audit),bytes=captured['bytes'],sha256=captured['sha256'])
             else:
-                options=list((Path(run)/'output/tree-audit').glob(f'step_{n}_rollout_*.json'))
+                options=[p for p in (Path(run)/'output/tree-audit').glob(f'step_{n}_rollout_*.json')
+                         if re.fullmatch(r'step_'+str(n)+r'_rollout_\d+\.json',p.name)]
                 if len(options)>1:
                     selected=[]
                     for p in options:

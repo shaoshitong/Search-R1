@@ -1,19 +1,19 @@
 {
   "schema": "tree_final200_original_cost_source_preparation_v2",
   "status": "SOURCE_FROZEN_NOT_EXECUTED",
-  "prepared_utc": "2026-10-16T09:53:06.596496+00:00",
+  "prepared_utc": "2026-10-16T10:24:56.095606+00:00",
   "base_snapshot_commit": "5f21afcd19dcbb17ed70ac18133e9d82133fa9f7",
   "branch": "codex/tree-final-original-costs200-20261016",
   "source_files": {
     "final_original_costs200.py": {
-      "path": "final_original_costs200.py",
-      "bytes": 51307,
-      "sha256": "2dc7f95b417204862b1207e1e1bca0b4db7f9f08533d5b688dad763ed95d875a"
+      "path": "work/tree-speed-repair-20261008/final_original_costs200.py",
+      "bytes": 52783,
+      "sha256": "cdbd9cb955e897db0b7f912baa6236c29855048f2248c761644767e76b185ee1"
     },
     "final_original_costs200_remote.py": {
-      "path": "final_original_costs200_remote.py",
-      "bytes": 31870,
-      "sha256": "16433eb3a9ab97eb3ea82e695a43964205ecb3a206f538a6f1ed6e28a1493466"
+      "path": "work/tree-speed-repair-20261008/final_original_costs200_remote.py",
+      "bytes": 31964,
+      "sha256": "b592dcaa95a27ee74cad96c8f541c998307eec8018e72a8a507aaa6b7597d8bb"
     },
     "variance200_original_record_coverage.py": {
       "path": "variance200_original_record_coverage.py",
@@ -43,8 +43,9 @@
   "scope_narrowing": "No compatibility CUM200/BOOK/source1ed8/owner/canonical chain. Old7/7 protected; final new collector counts separate. Reuse38 original controls, newly read195+200 only.",
   "static_checks": "AST parsing of all three sources and assembled remote fragments; small extracted pure-helper assertions for original dev5 phase, partial known sums, O_EXCL exclusive acquisition, exact framed-response roundtrip and local mirror recovery. No import/main/H100/runtime/compilation/training tests or new review.",
   "runtime_calls": {
-    "prepare_pins_main": 0,
-    "prepare_remote_helper": 0,
+    "prepare_pins_main": 1,
+    "prepare_remote_helper": 1,
+    "prepare_exit1": 1,
     "new_collector_main": 0,
     "new_remote_helper": 0,
     "source1ed": 0,
@@ -60,5 +61,6 @@
     "bytes": 14395,
     "sha256": "cb57a90dabe41694aa9ce2c116f4f703098812e7deae446220665cdbf5923ad2"
   },
-  "additional_repair_of_commit": "516aceadb27e77d02eaefdf2b17d356edfc286bc"
+  "additional_repair_of_commit": "516aceadb27e77d02eaefdf2b17d356edfc286bc",
+  "runtime_correction": "Exclude policy_batch via same exact audit basename regex as collect; REPAIR001 has independent O_EXCL qualification and requires SHA-bound known failed original response. No deletion/overwrite of first ATTEMPT/response."
 }

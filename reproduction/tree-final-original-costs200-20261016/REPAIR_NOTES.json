@@ -38,14 +38,14 @@
   ],
   "current_sources": {
     "final_original_costs200.py": {
-      "path": "final_original_costs200.py",
-      "bytes": 51307,
-      "sha256": "2dc7f95b417204862b1207e1e1bca0b4db7f9f08533d5b688dad763ed95d875a"
+      "path": "work/tree-speed-repair-20261008/final_original_costs200.py",
+      "bytes": 52783,
+      "sha256": "cdbd9cb955e897db0b7f912baa6236c29855048f2248c761644767e76b185ee1"
     },
     "final_original_costs200_remote.py": {
-      "path": "final_original_costs200_remote.py",
-      "bytes": 31870,
-      "sha256": "16433eb3a9ab97eb3ea82e695a43964205ecb3a206f538a6f1ed6e28a1493466"
+      "path": "work/tree-speed-repair-20261008/final_original_costs200_remote.py",
+      "bytes": 31964,
+      "sha256": "b592dcaa95a27ee74cad96c8f541c998307eec8018e72a8a507aaa6b7597d8bb"
     },
     "variance200_original_record_coverage.py": {
       "path": "variance200_original_record_coverage.py",
@@ -62,8 +62,9 @@
   "actual200_request_or_manifest_created": false,
   "actual200_success_claimed": false,
   "runtime_calls": {
-    "prepare_pins_main": 0,
-    "prepare_remote_helper": 0,
+    "prepare_pins_main": 1,
+    "prepare_remote_helper": 1,
+    "prepare_exit1": 1,
     "new_collector_main": 0,
     "new_remote_helper": 0,
     "source1ed": 0,
@@ -79,5 +80,11 @@
   "verification": "AST parsing of all three sources and assembled remote fragments; small extracted pure-helper assertions for original dev5 phase, partial known sums, O_EXCL exclusive acquisition, exact framed-response roundtrip and local mirror recovery. No import/main/H100/runtime/compilation/training tests or new review.",
   "verification_fixture_note": "First isolated temporary O_EXCL assertion fixture used macOS /var alias rather than resolved /private/var; corrected only temporary fixture root resolution, then remaining checks passed. No production artifact was involved.",
   "additional_repair_of_commit": "516aceadb27e77d02eaefdf2b17d356edfc286bc",
-  "additional_repair": "When primary CAPTURE_READBACK already exists, verify its product then publish its exact existing bytes to all three copies and register it in GENERATED before checks; preserve original timestamps and no SSH."
+  "additional_repair": "When primary CAPTURE_READBACK already exists, verify its product then publish its exact existing bytes to all three copies and register it in GENERATED before checks; preserve original timestamps and no SSH.",
+  "runtime_known_failure_response": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/FINAL200_ORIGINAL_COSTS_PREPARE_RESPONSE.txt",
+    "bytes": 1450,
+    "sha256": "f9f613bd9d4863da5481167604f2ebd80f6d6946696933abc58062153bd388b8"
+  },
+  "runtime_correction": "Exclude policy_batch via same exact audit basename regex as collect; REPAIR001 has independent O_EXCL qualification and requires SHA-bound known failed original response. No deletion/overwrite of first ATTEMPT/response."
 }
