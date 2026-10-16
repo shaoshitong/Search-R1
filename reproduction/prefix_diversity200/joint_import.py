@@ -28,10 +28,16 @@ def import_joint(base):
     if native.returncode:
         queue=subprocess.check_output(['squeue','-h','-o','%i|%j'],text=True,timeout=15)
         name=read(source/'preparation/submit-intent.json')['job_name']
+        terminal_path = source/'preparation'/('terminal%s-original-inode-full-sha.json' % job)
+        terminal = read(terminal_path) if terminal_path.is_file() else {}
+        verified_terminal = (spec.get('terminal_proof_sha256') == sha(terminal_path)
+            if terminal_path.is_file() else False)
         if ('Invalid job id specified' not in native.stderr
                 or any(line.split('|')[-1]==name for line in queue.splitlines())
-                or 'Rotating actor checkpoint does not match its own complete producer'
-                    not in (source/'logs'/('native-'+job+'.log')).read_text()):
+                or not verified_terminal or terminal.get('job_id') != job
+                or terminal.get('base') != str(source) or terminal.get('native_terminal_state') != 'FAILED'
+                or terminal.get('actual_births_present') or terminal.get('native_job_cgroup_paths')
+                or not terminal.get('owned_gpu_processes_gone')):
             raise ValueError('No authoritative terminal evidence for the source')
     elif 'JobState=FAILED' not in native.stdout or 'WorkDir='+str(source) not in native.stdout:
         raise ValueError('Source native allocation is not terminal')

@@ -7,7 +7,7 @@ import subprocess
 import time
 
 
-def capture(base, job):
+def capture(base, job, prior_failed_observation=None):
     from reproduction.prefix_only_correctness_ab.launch import birth_states
     from .actor import read, atomic_json
     base = Path(base)
@@ -15,7 +15,15 @@ def capture(base, job):
     if target.exists():
         return read(target)
     native = subprocess.run(['scontrol', 'show', 'job', str(job), '-o'], capture_output=True, text=True, timeout=30)
-    if native.returncode or 'JobState=FAILED' not in native.stdout or 'WorkDir=' + str(base) not in native.stdout:
+    if native.returncode:
+        prior = prior_failed_observation or {}
+        state = prior.get('native', {})
+        if ('Invalid job id specified' not in native.stderr or state.get('JobId') != str(job)
+                or state.get('JobState') != 'FAILED' or state.get('WorkDir') != str(base)
+                or not prior.get('evidence_sha256') or not prior.get('observed_unix')
+                or 'Actual phase failed:' not in (base/'logs'/('native-'+str(job)+'.log')).read_text()):
+            raise ValueError('Missing handle needs prior actual FAILED identity and original native failure')
+    elif 'JobState=FAILED' not in native.stdout or 'WorkDir=' + str(base) not in native.stdout:
         raise ValueError('Require the actual failed native allocation identity')
     queue = subprocess.check_output(['squeue', '-h', '-o', '%i|%j|%N'], text=True, timeout=30)
     name = read(base / 'preparation/submit-intent.json')['job_name']
@@ -50,6 +58,7 @@ def capture(base, job):
     joint = read(base / 'latest-joint.json')
     result = dict(job_id=str(job), base=str(base), run_id=ledger['run_id'], observed_unix=time.time(),
         native=dict(returncode=native.returncode, stdout=native.stdout, stderr=native.stderr),
+        prior_actual_failed_observation=prior_failed_observation, native_terminal_state='FAILED',
         queue=queue, actual_births_present=present, original_birth_count=len(births),
         native_job_cgroup_paths=cgroups, cleanup=cleanup, gpu_compute_processes=gpu,
         owned_gpu_processes_gone=True, original_logs=logs, complete_outer=joint['outer'],
