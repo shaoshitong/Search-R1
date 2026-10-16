@@ -817,7 +817,8 @@ def launch_phase(config_path, outer, phase, selection_path=None):
             if selection_path:command.extend(['--selection',str(selection_path)])
             processes.append((rank,start(rank,stream,command)))
         while True:
-            failed={rank:p.returncode for rank,p in processes if p.poll() not in (None,0)}
+            statuses={rank:p.poll() for rank,p in processes}
+            failed={rank:code for rank,code in statuses.items() if code not in (None,0)}
             for rank,code in list(failed.items()):
                 attempt=launches[rank]
                 with (output/('rank-%d.log'%rank)).open('rb') as log:
@@ -838,9 +839,10 @@ def launch_phase(config_path, outer, phase, selection_path=None):
                                    trajectories_sampled=0,observed_utc=utc()))
                     replacement=start(rank,attempt['stream'],attempt['command'])
                     processes=[(r,replacement if r==rank else p) for r,p in processes]
+                    statuses[rank]=None
                     del failed[rank]
             if failed:raise RuntimeError('Native phase worker failure: '+json.dumps(failed))
-            if all(p.poll() is not None for _,p in processes):break
+            if all(code is not None for code in statuses.values()):break
             time.sleep(1)
         codes={rank:p.returncode for rank,p in processes}
         if any(code!=0 for code in codes.values()):raise RuntimeError('Native phase worker failure: '+json.dumps(codes))
