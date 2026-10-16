@@ -39,11 +39,22 @@ Actor仍从官方Qwen2.5-3B-Instruct revision `aa8e72537993ba99e69dfaafa59ed015b
 
 必要纯CPU检查覆盖：四卡virtual8目标及梯度等价、完整20更新计划、native lookahead身份/未来token排除、100步完整G5计划、EMA/raw严格区别、缺权重failclosed、合法zero-EOS；不新增GPU测试。实际部署、CPU prepare、actor Adam和首完整outer的事实应追加执行回执，代码完成或launch成功本身不是训练验收。
 
-## 本次实际部署记录（截至优雅切换阶段）
+## 本次实际部署记录（截至2026-10-17 02:00:46 Shanghai）
 
 - 已发布运行源码`2c0b5fbfe5a61d8bb1c0d407b0109c4012a2d286`，新run `411c44aad7ba4e8c90f5fbec9e5ecbaa`、execution `9074575c76e3484baa5fd0f920e7ff91`；A800逐文件校验1267项一致。
 - 原v1只在CPU资格检查退出：实际Transformers4.46.3同时保留`block.self_attn.rotary_emb.inv_freq`与`rotary.inv_freq`。修复后两者都严格保存/加载，v1原source/log/claim/CP5封存候选完整保留，无GPU启动或旧训练停止。
 - v2首次源码传输Broken pipe；实际只读reconcile证明目标目录不存在，原stage未开始。随后同一源码stage成功，不涉及重复训练启动。
 - v2 CPU prepare实际exit0，完整第5轮EMA状态1242424352B，SHA `b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594`。14个learned张量、两套nativeRoPE buffer及完整metrics/checkpoint/complete闭合，CPU资格SHA `133b8e4bf5212b54feaea24cd2c09630b5e3a015e9f8c2c7375e7a8a3f004fb7`；这不是CUDA训练验收。
 - 固定512题身份与canonical169028一致，排除同qid/规范化文本并去重后候选池168510题；未重新生成teacher或编码旧feature。
-- 旧warmup精确rank0在Unix1792172611.6539757收到一次pidfd SIGTERM，进入保存/退出过程；首个停止后实测仍有6个旧ownedbirth存活，新actor尚未launch。旧状态保存和所有ownedwriter退出闭合后才准入新trainer。
+- 旧warmup精确rank0在Unix1792172611.6539757收到一次pidfd SIGTERM。后续实际终态证明四rank均在完整第6轮边界正常退出，实际Adam＝EMA32,625，wrapper exit0，所有旧ownedbirth已消失；原source、日志、进程ledger及checkpoint保留。这次是授权算法切换，不是旧任务故障退出。
+- 初始化仍使用之前已封存、CPU验收通过的**第5轮EMA**，SHA `b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594`。旧任务随后完成第6轮不会自动替换新run已绑定的源权重。第6轮完整终态已确认，其指标未在本次读取，不虚构评分。
+- 旧任务终态闭合后，新run `411c44aad7ba4e8c90f5fbec9e5ecbaa`／execution `9074575c76e3484baa5fd0f920e7ff91`于Unix1792173291.0145736（2026-10-17 01:54:51 Shanghai）一次launch，pipeline PID1689394／birth625288232。运行源码仍为`2c0b5fbfe5a61d8bb1c0d407b0109c4012a2d286`，没有热改或重复启动。launch本身不代表训练更新验收。
+- 首次真实流程推进已观察到：第1轮四个prefix worker分别完成6,400条，共25,600条（5,120题×G5），各卡采样38,400个token，符合每条实际采样6、只保留5的边界；四rank进度均为`NATIVE_RANK_PHASE_COMPLETE`，prefix作业实际exit0。actor版本统一为该run的`official0`。
+- 随后的选题score作业实际exit0，当前阶段进入`outer-000001-continue`；Top512对应原G5续写的四个engine均实际ready，各期待640条、合计2,560条。这个快照中续写完成数仍为0，不能把engine ready当作完整轨迹完成。
+- 在线probe已从封存EMA模型初始化，实际在线Adam四rank均0，completed outer0；没有继承warmup Adam30,450。当前尚未观察到actor Adam更新或完整outer回执，首个完整outer仍须后续实测验收，不能把prefix完成或score exit0记为完整训练轮。
+
+上述实际事实分别来自以下小型scalar/hash原件；本次文档更新没有新增远端查询、评测或模型读取：
+
+- `preparation/a800-prefix5-old-warmup-terminal-reconcile-1792173224681789000.json`：旧第6轮完整终态及所有owned进程退出。
+- `preparation/a800-actorhidden-prefix5-launch-1792173291027103000.json`：once launch及pipeline birth。
+- `preparation/a800-actorhidden-prefix5-observe-1792173646101991000.json`：prefix完整、score exit0、原Top512续写engine ready；文件SHA256 `b72b7246f1ebd326308e839df8b5c2e2945a00bf1ce9282e16f743fe203356a1`。
