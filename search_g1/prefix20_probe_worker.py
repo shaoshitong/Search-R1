@@ -259,6 +259,9 @@ def worker_operation(worker,operation,payload):
             model=cpu_tree(head.model.state_dict()),optimizer=cpu_tree(head.optimizer.state_dict()),
             rng=cpu_tree(head.rng))
     if operation=='load_state_dict':
+        from search_g1.full_state_restore import equal_tree
+        from search_g1.training_state import cpu_tree
+        actor_rng=rng_state(head.device)
         saved=payload['state']
         if saved['rank']!=dist.get_rank() or not 0<=saved['completed_outer']<=200 or saved['actual_steps']!=10*saved['completed_outer']:
             raise ValueError('PREFIX20_RECOVERY_RANK_OR_OUTER_MISMATCH')
@@ -267,6 +270,11 @@ def worker_operation(worker,operation,payload):
         if any(float(group['lr'])!=1e-6 for group in head.optimizer.param_groups):
             raise ValueError('PREFIX20_RECOVERY_LEARNING_RATE_CHANGED')
         head.rng=copy.deepcopy(saved['rng']);head.completed_outer=saved['completed_outer'];head.actual_steps=saved['actual_steps'];head.pending_outer=None
+        equal_tree(saved['model'],cpu_tree(head.model.state_dict()))
+        equal_tree(saved['optimizer'],cpu_tree(head.optimizer.state_dict()))
+        with probe_rng(head):equal_tree(saved['rng'],rng_state(head.device))
+        equal_tree(saved['rng'],head.rng)
+        equal_tree(actor_rng,rng_state(head.device))
         return dict(rank=dist.get_rank(),completed_outer=head.completed_outer,actual_steps=head.actual_steps,
-                    model_optimizer_rng_restored=True)
+                    model_optimizer_rng_restored=True,actual_readback_equal=True,actor_rng_unchanged=True)
     raise ValueError('PREFIX20_UNKNOWN_PROBE_OPERATION')

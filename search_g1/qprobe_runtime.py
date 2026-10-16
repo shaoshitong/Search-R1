@@ -81,6 +81,9 @@ def _plain_config(config):
 
 def validate_config(config):
     config = _plain_config(config)
+    if config.get('probe_architecture') == 'qwen2_prefix20_trajectory_em_v1':
+        from search_g1.prefix20_runtime import validate_config as validate_prefix20
+        return validate_prefix20(config)
     if any(name in config for name in ('mean_loss_weight','std_loss_weight','count_aux_loss_weight')):
         raise ValueError('QPROBE_OLD_COUNT_LOSS_CONFIG_NOT_ACCEPTED')
     if config.get('loss_version','binary_mix_variance_v1') != 'binary_mix_variance_v1' or config.get('variance_loss_weight',.1) != .1:

@@ -80,6 +80,11 @@ def validate_rank_state(saved, rank, world_size, outer, *, expected_writes=None)
 def _validate_qstate(checkpoint, outer, actor_snapshot_id):
     directory=Path(checkpoint)/'training_state';path=directory/'question-probe-state.pt'
     state=torch.load(path,map_location='cpu',weights_only=False)
+    if state.get('schema_version')==3 and state.get('kind')=='prefix20_trajectory_probe':
+        from search_g1.prefix20_runtime import validate_saved_state
+        validate_saved_state(state,path,actor_snapshot_id)
+        _need(state['completed_outer']==outer,'PREFIX20_HEAD_OUTER_MISMATCH')
+        return state,path,directory/state['head_file']
     _need(state.get('schema_version')==2,'BINARY_HEAD_RUNTIME_SCHEMA_REQUIRED')
     from search_g1.qprobe_runtime import validate_config
     validate_config(state['config'])
@@ -335,7 +340,9 @@ def read_source(receipt_path):
     for row in receipt['files']:
         _need(Path(row['path']).resolve()==checkpoint/row['relative_path'],'SOURCE_RELATIVE_PATH_MISMATCH')
     key=(str(path),digest(path),identity)
-    if key not in _SOURCE_CACHE:
+    prefix20=_read_json(receipt['source_run_manifest']['path']).get('question_probe',{}).get(
+        'probe_architecture')=='qwen2_prefix20_trajectory_em_v1'
+    if key not in _SOURCE_CACHE or prefix20:
         # Large immutable HF files were fully read by publisher and retain their
         # inode/size/mtime binding. Hash and parse actual small state/head files;
         # each worker additionally fully hashes its own Adam state before load.
@@ -387,17 +394,20 @@ def bind_restore(run, receipt_path):
         run['question_probe']=copy.deepcopy(parent['question_probe'])
         # The restored pair is authoritative; never initialize from a later
         # bootstrap head or retain the old task's writable output directory.
-        run['question_probe']['initial_head_checkpoint']=None
+        if run['question_probe'].get('probe_architecture')!='qwen2_prefix20_trajectory_em_v1':
+            run['question_probe']['initial_head_checkpoint']=None
         run['question_probe']['snapshot_path']=None
         if run.get('checkpoint_dir'):
             target_base=Path(run['checkpoint_dir']).resolve().parents[1]
             run['question_probe']['output_dir']=str(target_base/'artifacts/question-probe')
     run['mixed_first_selection']=False
-    run['data_selection_mode']='question_probe'
+    prefix20=run['question_probe'].get('probe_architecture')=='qwen2_prefix20_trajectory_em_v1'
+    run['data_selection_mode']='prefix20_probe' if prefix20 else 'question_probe'
     for key in ('budget','input_sha256','initial_model_sha256','training_world_size','actor_micro_batch_per_rank'):
         _need(run.get(key)==parent.get(key),'TARGET_MODEL_DATA_OR_BUDGET_MISMATCH_'+key)
     from search_g1.qprobe_runtime import validate_config
     ignore={'cache_dir','output_dir','initial_head_checkpoint','snapshot_path','restore_state'}
+    if prefix20:ignore|={'model_dir','head_safetensors','probe_config'}
     new={k:v for k,v in validate_config(run['question_probe']).items() if k not in ignore}
     old={k:v for k,v in validate_config(parent['question_probe']).items() if k not in ignore}
     _need(new==old,'TARGET_HEAD_CONFIGURATION_MISMATCH')
@@ -459,6 +469,7 @@ def restore_driver(trainer, receipt_path):
     torch.set_rng_state(saved['rng']['torch_cpu']);np.random.set_state(saved['rng']['numpy']);random.setstate(saved['rng']['python'])
     equal_tree(driver_rng(),saved['rng'])
     trainer._restored_candidate_state=compact_stream_state(saved['candidate_stream'])
+    trainer._restored_driver_rng=copy.deepcopy(saved['rng'])
     trainer._restored_attempt_progress=copy.deepcopy(saved['attempt_progress'])
     trainer._restored_qprobe_state=dict(path=receipt['question_probe_state_path'],
         actor_snapshot_id=receipt['actor_snapshot_id'],head_version=receipt['head_version'],

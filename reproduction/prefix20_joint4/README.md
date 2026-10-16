@@ -43,8 +43,20 @@ advantages are implemented and CPU tested. The remote-only asset downloader
 verifies official HF LFS metadata, both complete part hashes, concatenated
 archive SHA, every extracted member, and fresh full reads.
 
-The native prefix pause/selection/continuation integration and four-rank probe
-worker are under construction. This directory is not yet a training launcher.
+The native trainer now has an independent `prefix20_probe` selection branch.
+It closes the candidate-prefix phase, predicts and durably seals Top512 before
+continuation, then completes exactly the selected original trajectories. It
+reads actual actor Adam/scheduler counters at each boundary and checks actor RNG
+equality across probe prediction. Both native phases report their real four
+rank receipts; the acquisition pause never masquerades as one native500 call.
+
+Checkpoint schema3 contains four complete probe model/Adam/private-RNG states,
+the selection RNG and source stream, bound to the actor snapshot. The existing
+actor paired-checkpoint framework validates all four files and compares actual
+restored worker state. CPU fixtures do not establish physical GPU acceptance.
+
+The prospective run binding and four-GPU launcher are still being integrated.
+This directory is not yet a training launcher.
 The old upstream eight-GPU frozen-actor script cannot launch this experiment.
 No new joint training job has been submitted at this implementation milestone.
 

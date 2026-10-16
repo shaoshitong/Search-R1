@@ -16,6 +16,23 @@ data:
   shuffle_train_dataloader: True
   selection_mode: legacy # legacy preserves the existing mixed_first_selection flag
 
+prefix20_probe:
+  probe_architecture: qwen2_prefix20_trajectory_em_v1
+  candidate_questions: 5120
+  selected_questions: 512
+  responses_per_question: 5
+  exploration_questions: 0
+  seed: 1729
+  model_dir: null
+  head_safetensors: null
+  probe_config: null
+  output_dir: null
+  snapshot_path: null
+  head_learning_rate: 0.000001
+  head_batch_size: 256
+  head_epochs_per_outer: 1
+  replay_window_outer: 0
+
 question_probe:
   candidate_questions: 5120
   selected_questions: 512

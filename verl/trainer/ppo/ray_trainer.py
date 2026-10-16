@@ -874,16 +874,16 @@ class RayPPOTrainer(object):
 
         mixed_stream = None
         selection_mode = self.config.data.get("selection_mode", "legacy")
-        if selection_mode not in ("legacy", "uniform", "mixed_first", "question_probe"):
+        if selection_mode not in ("legacy", "uniform", "mixed_first", "question_probe", "prefix20_probe"):
             raise ValueError("Unknown training question selection mode: " + selection_mode)
-        if selection_mode == "question_probe" and self.config.data.get("mixed_first_selection", False):
+        if selection_mode in ("question_probe","prefix20_probe") and self.config.data.get("mixed_first_selection", False):
             raise ValueError("Question-probe and post-rollout mixed-first are mutually exclusive")
         self.inline_attempt_progress = inline_attempts
         self.qprobe_runtime = None
-        if selection_mode in ("mixed_first", "question_probe") or (
+        if selection_mode in ("mixed_first", "question_probe", "prefix20_probe") or (
                 selection_mode == "legacy" and self.config.data.get("mixed_first_selection", False)):
             from search_g1.mixed_runtime import CandidateStream
-            if selection_mode == 'question_probe':
+            if selection_mode in ('question_probe','prefix20_probe'):
                 from search_g1.qprobe_runtime import QProbeCandidateStream
                 stream_cls = QProbeCandidateStream
             else:
@@ -892,20 +892,34 @@ class RayPPOTrainer(object):
                 restored_state=getattr(self,'_restored_candidate_state',None))
             self.mixed_stream = mixed_stream
             assert inline_attempts is not None and self.config.do_search
-            if selection_mode == "question_probe":
+            if selection_mode in ("question_probe","prefix20_probe"):
                 from pathlib import Path
                 from search_g1.qprobe_runtime import QProbeRuntime
                 run = __import__('json').loads((Path(os.environ['SEARCH_G1_BASE'])/
                                                'logs/run-manifest.json').read_text())
-                self.qprobe_runtime = QProbeRuntime(self.config.question_probe,
-                                                    os.environ['SEARCH_G1_BASE'], self.tokenizer, worker_group=self.actor_rollout_wg)
+                if selection_mode == 'prefix20_probe':
+                    from search_g1.prefix20_runtime import Prefix20Runtime
+                    probe_config=self.config.prefix20_probe
+                    self.qprobe_runtime=Prefix20Runtime(probe_config,os.environ['SEARCH_G1_BASE'],self.actor_rollout_wg)
+                else:
+                    probe_config=self.config.question_probe
+                    self.qprobe_runtime = QProbeRuntime(probe_config,
+                                                        os.environ['SEARCH_G1_BASE'], self.tokenizer, worker_group=self.actor_rollout_wg)
                 restored = getattr(self, '_restored_qprobe_state', None)
-                snapshot = restored['path'] if restored else self.config.question_probe.get("snapshot_path")
+                snapshot = restored['path'] if restored else probe_config.get("snapshot_path")
                 if snapshot:
-                    self.qprobe_runtime.restore(snapshot, run['run_id']+':'+str(continuation_k))
+                    restored_state=self.qprobe_runtime.restore(snapshot, run['run_id']+':'+str(continuation_k))
+                    if selection_mode=='prefix20_probe':
+                        from search_g1.full_state_restore import equal_tree,publish
+                        from search_g1.training_state import compact_stream_state,driver_rng
+                        equal_tree(restored_state['candidate_state'],compact_stream_state(mixed_stream.state()))
+                        equal_tree(self._restored_driver_rng,driver_rng())
+                        publish(Path(os.environ['SEARCH_G1_BASE'])/'logs/prefix20-restored-pair.json',dict(
+                            completed_outer=continuation_k,actual_probe_rank_readbacks=self.qprobe_runtime.restore_receipts,
+                            actual_selector_rng_equal=True,actual_candidate_stream_equal=True,actual_driver_rng_equal=True))
                 if self.qprobe_runtime.completed_outer != continuation_k:
                     raise ValueError("Actor and question-probe successful outer counters differ")
-                if continuation_k == 0 and self.config.question_probe.get('teacher_warmup_cache'):
+                if selection_mode=='question_probe' and continuation_k == 0 and probe_config.get('teacher_warmup_cache'):
                     from search_g1.qprobe_warmup import run as teacher_warmup
                     teacher_warmup(self, generation_manager, self.qprobe_runtime, mixed_stream)
 
@@ -920,7 +934,9 @@ class RayPPOTrainer(object):
                 attempt_identity=inline_attempts.begin() if inline_attempts is not None else None
 
                 if mixed_stream is not None:
-                    if self.qprobe_runtime is not None:
+                    if selection_mode=='prefix20_probe':
+                        from search_g1.prefix20_collection import collect
+                    elif self.qprobe_runtime is not None:
                         from search_g1.qprobe_runtime import collect
                     else:
                         from search_g1.mixed_runtime import collect
@@ -931,7 +947,10 @@ class RayPPOTrainer(object):
                     metrics.update({"selection/"+k: mixed_audit[k] for k in
                         ("attempted_candidates","selected_mixed","selected_all_correct_fallback","raw_generated_trajectories", "raw_generated_policy_tokens",
                          "raw_actual_retrieval_calls", "candidate_fill_seconds")})
-                    if self.qprobe_runtime is not None:
+                    if selection_mode=='prefix20_probe':
+                        metrics['selection/selected_mixed_fraction']=mixed_audit['selected_mixed_fraction']
+                        metrics['selection/completed_selected_trajectories']=mixed_audit['completed_selected_trajectories']
+                    elif self.qprobe_runtime is not None:
                         from search_g1.qprobe_driver_metrics import selection_diagnostics
                         metrics.update(selection_diagnostics(mixed_audit))
                 else:
@@ -1104,7 +1123,8 @@ class RayPPOTrainer(object):
                         response_mask = (batch.batch['loss_mask'] if 'loss_mask' in batch.batch
                             else batch.batch['attention_mask'][:, -response_width:]).bool()
                         rewards = batch.batch['token_level_rewards'].sum(-1)
-                        selection_sources = ('random_exploration','predicted_mixed') if selection_mode == 'question_probe' else ('mixed','all_correct_fallback')
+                        selection_sources = (('predicted_mixed',) if selection_mode=='prefix20_probe' else
+                            ('random_exploration','predicted_mixed') if selection_mode=='question_probe' else ('mixed','all_correct_fallback'))
                         for source in selection_sources:
                             rows = torch.as_tensor(sources == source, device=rewards.device)
                             metrics['selection/'+source+'/trajectories'] = int(rows.sum())

@@ -64,11 +64,17 @@ def _native_run():
     return base, run, job
 
 
-def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,attempt_id=None,attempt_index=None,candidate_offset=0,teacher_warmup=False):
+def prepare_identity(parent_batch, logical_update, *, repeats, validation=False,attempt_id=None,attempt_index=None,candidate_offset=0,teacher_warmup=False,candidate_prefix=False):
     base, run, job = _native_run()
     count = len(parent_batch)
     assert type(logical_update) is int and logical_update >= 0
-    assert repeats == (1 if validation else 5) and (validation or count == 512)
+    assert type(candidate_prefix) is bool
+    if candidate_prefix:
+        assert not validation and not teacher_warmup and count == 5120 and repeats == 5
+        assert world_size(run) == 4 and run.get('data_selection_mode') == 'prefix20_probe'
+        assert run.get('question_probe',{}).get('probe_architecture') == 'qwen2_prefix20_trajectory_em_v1'
+    else:
+        assert repeats == (1 if validation else 5) and (validation or count == 512)
     assert type(teacher_warmup) is bool
     if teacher_warmup:
         assert not validation and logical_update == 0 and run.get('question_probe', {}).get('teacher_warmup_cache')

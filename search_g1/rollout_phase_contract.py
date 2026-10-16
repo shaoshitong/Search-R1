@@ -71,6 +71,25 @@ def scalar_metrics(output):
         if type(value) not in (int,float):
             raise ValueError('Invalid rollout scalar: '+key)
         result['infra/rollout/'+key]=value
+    if phase.get('role')=='prefix20_pause_select_continue':
+        phases=phase['phases']
+        if len(phases)!=2 or [row['phase'] for row in phases]!=['candidate_prefix','selected_continuation']:
+            raise ValueError('Prefix20 requires two actual closed sampling phases')
+        if len({row['phase_id'] for row in phases})!=2:
+            raise ValueError('Prefix20 sampling phase IDs must differ')
+        ranks=[]
+        for event in phases:
+            receipts=event['phase_metrics']
+            if not isinstance(receipts,list) or len(receipts)!=4:
+                raise ValueError('Prefix20 actual four-rank phase receipts missing')
+            if any(type(row.get('weight_syncs')) is not int or row['weight_syncs']!=1 for row in receipts):
+                raise ValueError('Prefix20 phase did not synchronize once per rank')
+            ranks.extend(receipts)
+        result['infra/rollout/weight_syncs_per_rank']=2
+        for key in ('engine_steps','completed_requests'):
+            if all(type(row.get(key)) is int for row in ranks):
+                result['infra/rollout/'+key+'_sum']=sum(row[key] for row in ranks)
+        return result
     ranks=phase['phase_metrics']
     if not isinstance(ranks,list) or not ranks:
         raise ValueError('Missing actual worker phase-close receipts')

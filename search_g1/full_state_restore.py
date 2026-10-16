@@ -94,7 +94,8 @@ def from_config(config):
         from reproduction.common8.topology import world_size
         assert world_size(parent)==r['world_size']
         assert config.actor_rollout_ref.actor.ppo_micro_batch_size==parent['actor_micro_batch_per_rank']*r['world_size']
-        assert config.data.get('selection_mode',None)=='question_probe'
+        prefix20=parent['question_probe'].get('probe_architecture')=='qwen2_prefix20_trajectory_em_v1'
+        assert config.data.get('selection_mode',None)==('prefix20_probe' if prefix20 else 'question_probe')
     else:assert config.actor_rollout_ref.actor.ppo_micro_batch_size==16
     return r
 

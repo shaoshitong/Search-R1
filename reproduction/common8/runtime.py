@@ -55,11 +55,18 @@ def checkpoint_complete(step, checkpoint):
     if qprobe is not None:
         assert qprobe['completed_outer'] == step
         assert qprobe['actor_snapshot_id'] == run['run_id']+':'+str(step)
-        for proof in (qprobe, qprobe['head']):
+        proofs=([qprobe]+qprobe['rank_files'] if qprobe.get('kind')=='prefix20_trajectory_probe'
+                else [qprobe,qprobe['head']])
+        for proof in proofs:
             path = Path(proof['path'])
             assert path.resolve().is_relative_to(state_dir.resolve())
             assert path.stat().st_size == proof['bytes'] and digest(path) == proof['sha256']
             result['files_sha256'][str(path.relative_to(checkpoint))] = proof['sha256']
+        if qprobe.get('kind')=='prefix20_trajectory_probe':
+            from search_g1.prefix20_runtime import validate_saved_state
+            state=torch.load(qprobe['path'],map_location='cpu',weights_only=False)
+            validate_saved_state(state,qprobe['path'],qprobe['actor_snapshot_id'])
+            assert state['completed_outer']==step and world_size(run)==4
         result['question_probe'] = dict(completed_outer=step, head_version=qprobe['head_version'],
             actor_snapshot_id=qprobe['actor_snapshot_id'], feature_spec_sha=qprobe['feature_spec_sha'])
     result.update(actual_optimizer_writes_per_rank=writes[0],

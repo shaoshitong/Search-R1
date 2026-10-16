@@ -57,7 +57,7 @@ class PrefixCollector:
         retriever=BoundedRetriever(manager,self.options)
         self.tool_runner=tool_runner or (lambda text,search:execute_one_action(manager,text,search,retriever))
         self.special=sorted(set(int(x) for x in manager.tokenizer.all_special_ids))
-        self.meta={};self.sampling=None;self.phase_events=[]
+        self.meta={};self.sampling=None;self.phase_events=[];self.captured_records=[]
 
     def prefix_rows(self,states=None):
         rows=[]
@@ -76,7 +76,7 @@ class PrefixCollector:
                     tokens.extend(policy[:take]);positions.extend(range(length,length+take))
                 if len(tokens)==20:break
             if not tokens:raise RuntimeError('PREFIX20_NO_RETAINED_POLICY_TOKEN_AFTER_COMPLETE_ACTION_BUDGET')
-            rows.append(dict(trajectory_id=state.trajectory_id,qid=state.qid,
+            rows.append(dict(trajectory_id=state.trajectory_id,qid=state.qid,response_index=state.response_index,
                 initial_prompt_token_ids=state.prompt,policy_token_ids=tokens,
                 policy_position_ids=positions,prefix_segments=segments))
         return rows
@@ -87,7 +87,7 @@ class PrefixCollector:
         phase_id=uuid.uuid4().hex
         service=self.service_factory();opened=False
         unstarted=deque(s for s in states if s.status!='complete');ready=deque();pending={};tools={}
-        remaining=len(unstarted);active=0;calls=0;peak=0
+        remaining=len(unstarted);active=0;calls=0;peak=0;environment_actions=0
         limits=min(self.options.agent_workers,self.options.max_inflight_trajectories)
         pool=ThreadPoolExecutor(max_workers=self.options.retrieval_concurrency,thread_name_prefix='prefix20-retrieval')
         started=time.monotonic()
@@ -119,6 +119,8 @@ class PrefixCollector:
             service.submit(payload,state.index%4);calls+=1
 
         def complete_action(state,environment):
+            nonlocal environment_actions
+            environment_actions+=1
             text,done,valid,is_search=environment
             kept=state.cut['kept_token_ids'];request=state.chunks[0]['actual_request_token_ids']
             room=observation_room(len(request),len(kept),budget)
@@ -155,6 +157,7 @@ class PrefixCollector:
                     _require(len(output)==1 and len(output.non_tensor_batch['sampling_behavior'])==1,
                              'prefix20_native_single_row_return_changed')
                     record=output.non_tensor_batch['sampling_behavior'][0]
+                    self.captured_records.append(copy.deepcopy(record))
                     _require(record['request_id']==value['request_id'] and record['row_id']==state.trajectory_id,
                              'prefix20_native_request_identity_changed')
                     validated_raw_turn(manager,output,0,record,request_tokens=state.request['prompt_token_ids'],
@@ -189,6 +192,7 @@ class PrefixCollector:
         finally:pool.shutdown(wait=False,cancel_futures=True)
         event=dict(phase='candidate_prefix' if prefix_only else 'selected_continuation',phase_id=phase_id,
             trajectories=len(states),generation_requests=calls,peak_inflight_trajectories=peak,
+            environment_actions=environment_actions,retrieval_concurrency=self.options.retrieval_concurrency,
             phase_elapsed_seconds=time.monotonic()-started,phase_metrics=metrics,actor_updates_during_phase=0)
         self.phase_events.append(event)
         return event
@@ -197,7 +201,12 @@ class PrefixCollector:
         _require(len(states)==2560 and all(s.status=='complete' for s in states),'prefix20_selected_trajectories_incomplete')
         padded=_left_pad([s.prompt for s in states],self.manager.tokenizer.pad_token_id)
         meta=dict(self.meta,async_rollout=dict(role='prefix20_pause_select_continue',
-            completed_trajectories=len(states),phases=self.phase_events,actor_updates_during_generation=0))
+            completed_trajectories=len(states),phases=self.phase_events,actor_updates_during_generation=0,
+            generation_requests=sum(e['generation_requests'] for e in self.phase_events),
+            environment_actions=sum(e['environment_actions'] for e in self.phase_events),
+            peak_inflight_trajectories=max(e['peak_inflight_trajectories'] for e in self.phase_events),
+            retrieval_concurrency=self.options.retrieval_concurrency,
+            phase_elapsed_seconds=sum(e['phase_elapsed_seconds'] for e in self.phase_events)))
         return assemble_output(row_ids=[s.trajectory_id for s in states],identity=identity,budget=self.budget,
             left=padded['input_ids'],attention=padded['attention_mask'],pad=self.manager.tokenizer.pad_token_id,
             responses=[s.response for s in states],probabilities=[s.probabilities for s in states],

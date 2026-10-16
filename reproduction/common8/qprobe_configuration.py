@@ -19,6 +19,15 @@ def arguments(run, base):
     settings = run.get("question_probe")
     if settings is None:
         return []
+    if isinstance(settings,dict) and settings.get('probe_architecture') == 'qwen2_prefix20_trajectory_em_v1':
+        from search_g1.prefix20_runtime import validate_config
+        values=validate_config(settings)
+        if run.get('training_world_size') != 4:
+            raise ValueError('PREFIX20_REQUIRES_BOUND_FOUR_RANKS')
+        if not Path(values['output_dir']).resolve().is_relative_to(Path(base).resolve()):
+            raise ValueError('PREFIX20_OUTPUT_OUTSIDE_RUN')
+        return ['data.selection_mode=prefix20_probe','+algorithm.all_correct_virtual_zero=true'] + [
+            'prefix20_probe.'+key+'='+json.dumps(value,allow_nan=False) for key,value in sorted(values.items())]
     if not isinstance(settings, dict) or set(settings) - FIELDS:
         raise ValueError("Unknown question_probe manifest fields")
     base = Path(base).resolve()
@@ -50,8 +59,21 @@ def arguments(run, base):
 def validate(config, run, base):
     expected = arguments(run, base)
     if not expected:
-        if config.data.get("selection_mode", "legacy") == "question_probe":
+        if config.data.get("selection_mode", "legacy") in ("question_probe","prefix20_probe"):
             raise ValueError("Unbound question probe cannot be admitted")
+        return
+    if expected[0] == 'data.selection_mode=prefix20_probe':
+        from search_g1.prefix20_runtime import validate_config
+        if config.data.selection_mode != 'prefix20_probe' or config.data.get('mixed_first_selection',False):
+            raise ValueError('PREFIX20_AND_MIXED_FIRST_ARE_EXCLUSIVE')
+        if config.algorithm.get('all_correct_virtual_zero') is not True:
+            raise ValueError('PREFIX20_ALL_CORRECT_VIRTUAL_ZERO_REQUIRED')
+        actual=validate_config(config.prefix20_probe)
+        if actual != validate_config(run['question_probe']):
+            raise ValueError('PREFIX20_RESOLVED_CONFIGURATION_DIFFERS')
+        if (config.trainer.n_gpus_per_node,config.trainer.nnodes,config.data.train_batch_size,
+                config.actor_rollout_ref.rollout.n_agent)!=(4,1,512,5):
+            raise ValueError('PREFIX20_ACTUAL_FOUR_RANK_512_G5_REQUIRED')
         return
     if config.data.selection_mode != "question_probe" or config.data.get("mixed_first_selection", False):
         raise ValueError("Question-probe and post-rollout mixed-first modes are mutually exclusive")

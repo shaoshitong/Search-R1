@@ -80,6 +80,10 @@ def capture_worker(worker,directory,checkpoint=False):
                last_attempt_index=getattr(worker.actor,'_last_attempt_index',0),
                used_attempt_ids=sorted(getattr(worker.actor,'_used_attempt_ids',set())),
                policy_rejections=getattr(worker.actor,'_policy_rejections',0))
+    if run.get('data_selection_mode')=='prefix20_probe':
+        state['actual_adam_steps']=[float(value['step']) for value in worker.actor_optimizer.state.values()
+                                    if 'step' in value]
+        state['actual_scheduler_last_epoch']=worker.actor_lr_scheduler.last_epoch
     if checkpoint:
         state.update(optimizer=cpu_tree(worker.actor_optimizer.state_dict()),
                      scheduler=cpu_tree(worker.actor_lr_scheduler.state_dict()),
