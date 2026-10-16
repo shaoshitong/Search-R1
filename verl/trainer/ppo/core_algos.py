@@ -111,7 +111,8 @@ def compute_gae_advantage_return(token_level_rewards: torch.Tensor, values: torc
 def compute_grpo_outcome_advantage(token_level_rewards: torch.Tensor,
                                    eos_mask: torch.Tensor,
                                    index: torch.Tensor,
-                                   epsilon: float = 1e-6):
+                                   epsilon: float = 1e-6,
+                                   *, strict_em=None, all_correct_virtual_zero=False):
     """
     Compute advantage for GRPO, operating only on Outcome reward
     (with only one scalar reward for each response).
@@ -127,6 +128,11 @@ def compute_grpo_outcome_advantage(token_level_rewards: torch.Tensor,
         Returns: `(torch.Tensor)`
             shape: (bs, response_length)
     """
+    if all_correct_virtual_zero:
+        if strict_em is None:
+            raise ValueError('PREFIX20_VIRTUAL_ZERO_REQUIRES_STRICT_EM')
+        from search_g1.prefix20_advantage import anchored_grpo
+        return anchored_grpo(token_level_rewards, eos_mask, index, strict_em, epsilon)
     response_length = token_level_rewards.shape[-1]
     non_zero_mask = (token_level_rewards != 0)
     scores = (token_level_rewards * non_zero_mask).sum(dim=-1)

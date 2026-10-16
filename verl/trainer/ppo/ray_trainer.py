@@ -121,7 +121,8 @@ def apply_kl_penalty(data: DataProto, kl_ctrl: core_algos.AdaptiveKLController, 
     return data, metrics
 
 
-def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_repeat=1):
+def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_repeat=1,
+                      *, all_correct_virtual_zero=False):
     # prepare response group
     # TODO: add other ways to estimate advantages
     if adv_estimator == 'gae':
@@ -147,7 +148,9 @@ def compute_advantage(data: DataProto, adv_estimator, gamma=1.0, lam=1.0, num_re
         response_mask = attention_mask[:, -response_length:]
         advantages, returns = core_algos.compute_grpo_outcome_advantage(token_level_rewards=token_level_rewards,
                                                                         eos_mask=response_mask,
-                                                                        index=index)
+                                                                        index=index,
+                                                                        strict_em=data.non_tensor_batch.get('prefix20_strict_em'),
+                                                                        all_correct_virtual_zero=all_correct_virtual_zero)
         data.batch['advantages'] = advantages
         data.batch['returns'] = returns
     else:
@@ -1067,6 +1070,17 @@ class RayPPOTrainer(object):
                             metrics['train/'+key] = value
                         batch.batch['token_level_scores'] = reward_tensor
 
+                        virtual_zero = self.config.algorithm.get('all_correct_virtual_zero', False)
+                        if type(virtual_zero) is not bool:
+                            raise ValueError('PREFIX20_VIRTUAL_ZERO_FLAG_MUST_BE_BOOLEAN')
+                        if virtual_zero:
+                            if self.config.algorithm.adv_estimator != 'grpo':
+                                raise ValueError('PREFIX20_VIRTUAL_ZERO_REQUIRES_GRPO')
+                            from search_g1.prefix20_advantage import strict_em_from_batch
+                            # Compute at the balanced row order, independently of soft reward.
+                            batch.non_tensor_batch['prefix20_strict_em'] = np.asarray(
+                                strict_em_from_batch(batch, self.tokenizer), dtype=np.int8)
+
                         # compute rewards. apply_kl_penalty if available
                         if not self.config.actor_rollout_ref.actor.use_kl_loss:
                             batch, kl_metrics = apply_kl_penalty(batch,
@@ -1081,7 +1095,8 @@ class RayPPOTrainer(object):
                                                   adv_estimator=self.config.algorithm.adv_estimator,
                                                   gamma=self.config.algorithm.gamma,
                                                   lam=self.config.algorithm.lam,
-                                                  num_repeat=self.config.actor_rollout_ref.rollout.n)
+                                                  num_repeat=self.config.actor_rollout_ref.rollout.n,
+                                                  all_correct_virtual_zero=virtual_zero)
 
                     if mixed_stream is not None:
                         sources = batch.non_tensor_batch['selection_source']
