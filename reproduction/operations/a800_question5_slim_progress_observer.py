@@ -1,0 +1,221 @@
+"""Read existing question5 cache/Adam/EMA/epoch metadata over one bounded SSH.
+
+The deployed slim controller and training source remain unchanged. Missing
+producer records are unknown; this reader never loads features or checkpoints.
+"""
+
+import argparse
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import re
+import subprocess
+import time
+
+
+ROOT = Path('/Users/shaoshitong/Documents/Search-G1')
+CONTROL = Path(__file__).with_name('a800_question5_slim_warmup_control.py')
+CONTROL_REL = 'reproduction/operations/a800_question5_slim_warmup_control.py'
+EMIT = 'raw=json.dumps(v,allow_nan=False);assert len(raw.encode())<=128*1024;print(raw)'
+
+EXTRA = r'''
+MAX_METADATA=64*1024**2
+def canonical(value):
+ return json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()
+def project(value,keys):return {key:value[key] for key in keys if key in value}
+def document(name):
+ q=b/name
+ assert q.resolve()==q and q.is_relative_to(b) and q.suffix=='.json','Unsafe metadata path'
+ if not q.exists():return None,None
+ stat=q.stat();assert q.is_file() and stat.st_uid==os.getuid() and stat.st_size<=MAX_METADATA
+ with q.open('rb') as f:raw=f.read(MAX_METADATA+1)
+ assert len(raw)<=MAX_METADATA
+ value=json.loads(raw);assert isinstance(value,dict)
+ return value,dict(path=name,bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+def same(value):
+ assert all(value.get(key)==h[key] for key in ('run_id','execution_id','source_commit')),'Metadata execution mismatch'
+def counter(value):
+ keys=('optimizer_steps','ema_updates','complete_epochs','global_groups_seen','global_trajectories_seen','rejected_nonfinite_updates')
+ assert isinstance(value,dict) and all(type(value.get(key)) is int and value[key]>=0 for key in keys)
+ assert value['global_trajectories_seen']==5*value['global_groups_seen']
+ return project(value,keys)
+def identity(value,rank):
+ same(value);assert value['rank']==rank and value['local_rank']==rank and value['world_size']==4
+ result=project(value,('pid','parent_pid','birth','sid','uid','rank','local_rank','world_size','run_id','execution_id',
+                      'source_commit','config_sha256','physical_gpu_uuid','observed_unix'))
+ result['alive']=alive(dict(pid=value['pid'],start_ticks=value['birth'],sid=value['sid'],uid=value['uid'])) if type(value.get('birth')) is int else None
+ return result
+
+# Cache records bind to this deployment's generated data manifest and exact
+# published cache/data/encoder source, rather than carrying fabricated run IDs.
+data_path=b/'data/composite-manifest.json'
+data_sha=None
+if data_path.exists():
+ assert data_path.resolve()==data_path and data_path.stat().st_size<=MAX_METADATA
+ data_sha=sha(data_path)
+expected_cache_source={name:h['source_files']['reproduction/question5_ema_warmup/'+name] for name in ('cache.py','data.py','encoder.py')}
+def cache_binding(value):
+ assert value['source_manifest_path']==str(data_path) and value['source_manifest_sha256']==data_sha
+ assert value['source_sha256']==expected_cache_source and value['role']=='question5_packed_bf16_features_v1'
+
+cache_workers=[]
+for rank in range(4):
+ prefix='features/worker-%03d/'%rank
+ claim,claim_proof=document(prefix+'claim.json')
+ row=dict(worker_index=rank,claim=claim_proof,latest_progress=None,complete=None,producer_alive=None)
+ if claim is not None:
+  cache_binding(claim);assert claim['worker_index']==rank and claim['world_size']==4
+  row.update(assigned_groups=claim['assigned_groups'],total_groups=claim['total_groups'],producer_alive=alive(claim['producer_identity']))
+  paths=sorted(q for q in (b/prefix).glob('progress-*.json') if re.fullmatch(r'progress-\d{6}\.json',q.name))
+  if paths:
+   progress_value,proof=document(str(paths[-1].relative_to(b)))
+   for key in ('completed_groups','reused_trajectories','newly_encoded_trajectories'):
+    assert type(progress_value[key]) is int and progress_value[key]>=0
+   assert progress_value['completed_groups']<=claim['assigned_groups']
+   assert progress_value['completed_groups']*5==progress_value['reused_trajectories']+progress_value['newly_encoded_trajectories']
+   row['latest_progress']=dict(proof,value=project(progress_value,('completed_groups','reused_trajectories','newly_encoded_trajectories','checked_unix')))
+  complete,proof=document(prefix+'complete.json')
+  if complete is not None:
+   cache_binding(complete);assert complete['worker_index']==rank and complete['world_size']==4
+   assert complete['stage']=='QUESTION5_PACKED_CACHE_WORKER_COMPLETE'
+   row['complete']=dict(proof,value=project(complete,('stage','assigned_groups','reused_trajectories','newly_encoded_trajectories',
+                                                     'encoder_optimizer_updates','encoded_padding_tokens','completed_unix')))
+ cache_workers.append(row)
+cache,cache_proof=document('features/manifest.json')
+cache_summary=None
+if cache is not None:
+ cache_binding(cache);assert cache['stage']=='QUESTION5_PACKED_FEATURE_CACHE_COMPLETE'
+ assert cache['groups_by_split']==dict(train=445440,test=512)
+ assert cache['trajectories_by_split']==dict(train=2227200,test=2560)
+ cache_summary=dict(cache_proof,value=project(cache,('stage','source_manifest_sha256','source_sha256','question_max_tokens','max_tokens',
+  'feature_dim','prefix_tokens','feature_dtype','groups_by_split','trajectories_by_split','reused_trajectories',
+  'newly_encoded_trajectories','padding_stored','encoder_optimizer_updates','checked_unix')))
+
+execution='train/executions/'+h['execution_id']+'/'
+ranks=[];typed_errors=[];typed_exits=[]
+for rank in range(4):
+ row=dict(rank=rank,identity=None,initialization=None,progress=None)
+ value,proof=document(execution+'identity-rank-%d.json'%rank)
+ if value is not None:row['identity']=dict(proof,value=identity(value,rank))
+ value,proof=document(execution+'initialization-rank-%d.json'%rank)
+ if value is not None:
+  row['initialization']=dict(proof,identity=identity(value,rank),value=project(value,('stage','first_epoch','next_update_in_epoch','fresh','total_updates')),
+                            counters=counter(value['counters']))
+ value,proof=document(execution+'progress-rank-%d.json'%rank)
+ if value is not None:
+  who=identity(value['identity'],rank);counts=counter(value['counters'])
+  assert value['stage'] in ('RETURNED_ADAM_AND_EMA','SAME_EMA_TRAIN_TEST_DIAGNOSTICS')
+  assert counts['optimizer_steps']==counts['ema_updates']
+  progress_value=project(value,('stage','epoch','epoch_update','observed_unix'));progress_value['counters']=counts
+  if 'latest_online_raw' in value:
+   raw=value['latest_online_raw'];same(raw);assert raw['rank']==rank
+   assert raw['actual_adam_step']==raw['ema_updates']==counts['optimizer_steps']
+   progress_value['latest_online_raw']=project(raw,('actual_adam_step','ema_updates','global_groups','global_trajectories',
+    'local_groups','local_trajectories','online_raw_trajectory_bce','online_raw_group_bce','online_raw_total_loss',
+    'metric_semantics','actual_optimizer_learning_rates','skipped_adam','epoch','epoch_update','updates_per_epoch','observed_unix'))
+  row['progress']=dict(proof,identity=who,value=progress_value)
+ ranks.append(row)
+ value,proof=document(execution+'error-rank-%d.json'%rank)
+ if value is not None:
+  who=identity(value['identity'],rank)
+  kind=value['error_type'];assert isinstance(kind,str) and re.fullmatch(r'[A-Za-z_]\w*(?:Error|Exception)?',kind)
+  typed_errors.append(dict(proof,rank=rank,identity=who,error_type=kind,
+   error_message_sha256=hashlib.sha256(str(value.get('error','')).encode()).hexdigest(),
+   value=project(value,('epoch','next_update_in_epoch','partial_writes_not_rolled_back','observed_unix')),
+   counters=counter(value['counters']) if value.get('counters') is not None else None))
+ value,proof=document(execution+'exit-rank-%d.json'%rank)
+ if value is not None:
+  who=identity(value['identity'],rank)
+  assert value['terminal'] in ('FAILED','STOPPED_AT_COMPLETE_ADAM_BOUNDARY','STOPPED_AT_COMPLETE_EPOCH_BOUNDARY','WARMUP_200_COMPLETE')
+  typed_exits.append(dict(proof,rank=rank,identity=who,value=project(value,('terminal','epoch','elapsed_seconds','observed_unix')),
+   counters=counter(value['counters']) if value.get('counters') is not None else None))
+
+def metrics_projection(value):
+ same(value);counter(value['counters']);assert value['epoch']==1 and value['same_train_test_weight_kind']=='ema0.99'
+ result=project(value,('epoch','run_id','execution_id','source_commit','observed_unix','ema_updates','counters',
+  'train_mixed_group_balanced_accuracy','test_mixed_group_balanced_accuracy','same_train_test_weight_kind',
+  'raw_online_window','epoch_seconds','execution_seconds','actor_updates','execution_cuda_peaks_per_rank'))
+ for split in ('train','test'):
+  metric=value[split+'_ema'];assert metric['weight_kind']=='ema0.99'
+  result[split+'_ema']=project(metric,('weight_kind','metric_semantics','groups','trajectories','trajectory_bce','group_bce',
+   'total_loss','mixed_group','trajectory_correctness','true_mixed','threshold'))
+ return result
+
+metrics,metrics_proof=document('train/epochs/epoch-0001/metrics.json')
+checkpoint,checkpoint_proof=document('train/epochs/epoch-0001/checkpoint.json')
+complete,complete_proof=document('train/epochs/epoch-0001/complete.json')
+first_epoch=dict(metrics=None,checkpoint=None,complete=complete_proof,fully_committed=None)
+if metrics is not None:first_epoch['metrics']=dict(metrics_proof,value=metrics_projection(metrics))
+if checkpoint is not None:
+ same(checkpoint);counter(checkpoint['counters'])
+ assert checkpoint['epoch']==1 and checkpoint['completed_epoch'] is True
+ assert checkpoint['path']==str(b/'train/latest.pt')
+ first_epoch['checkpoint']=dict(checkpoint_proof,value=project(checkpoint,('path','bytes','sha256','actual_adam_steps_per_rank','ema_updates',
+  'epoch','completed_epoch','run_id','execution_id','source_commit','binding_sha256','counters','epoch_metrics_sha256','observed_unix')))
+if complete is not None:
+ assert complete['status']=='FULL_MERGED_EPOCH_COMPLETE'
+ assert metrics is not None and checkpoint is not None and complete['metrics']==metrics and complete['checkpoint']==checkpoint
+ assert hashlib.sha256(canonical(metrics)).hexdigest()==checkpoint['epoch_metrics_sha256']
+ assert metrics['counters']==checkpoint['counters']
+ assert checkpoint['actual_adam_steps_per_rank']==[8700]*4 and checkpoint['ema_updates']==8700
+ assert metrics['ema_updates']==8700 and metrics['counters']['optimizer_steps']==metrics['counters']['ema_updates']==8700
+ assert metrics['counters']['complete_epochs']==1 and metrics['counters']['global_groups_seen']==445440
+ assert metrics['train_ema']['groups']==445440 and metrics['test_ema']['groups']==512
+ first_epoch['fully_committed']=True
+
+# Retain the original guarded controller observation, but replace its cross-
+# execution glob with the exact current execution's four typed rank records.
+v.update(stage='QUESTION5_SLIM_ACTUAL_PROGRESS_METADATA_OBSERVATION',base=str(b),cache_workers=cache_workers,
+ cache_manifest=cache_summary,rank_progress=ranks,rank_errors=typed_errors,rank_exits=typed_exits,first_epoch=first_epoch,
+ observer_source_sha256=p['observer_source_sha256'],controller_source_sha256=p['controller_source_sha256'],
+ missing_metadata_semantics='unknown_not_zero',checkpoint_tensors_read=False,feature_tensors_read=False,
+ probability_arrays_read=False,new_evaluation=False,checked_unix=time.time())
+'''
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--handle', type=Path, required=True)
+    args = parser.parse_args()
+    if args.handle.stat().st_size > 64 * 1024**2:
+        raise ValueError('Oversized deployment handle')
+    handle = json.loads(args.handle.read_bytes())
+    for key, size in (('run_id', 32), ('execution_id', 32), ('source_commit', 40)):
+        if re.fullmatch('[0-9a-f]{%d}' % size, handle[key]) is None:
+            raise ValueError('Invalid handle ' + key)
+    if (not re.fullmatch(r'/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-[0-9a-f]{32}', handle['base'])
+            or handle['fit_config']['world_size'] != 4):
+        raise ValueError('Require the bound slim question5 four-rank deployment')
+    controller_sha = hashlib.sha256(CONTROL.read_bytes()).hexdigest()
+    if controller_sha != handle['source_files'][CONTROL_REL]:
+        raise ValueError('Local inherited controller differs from this deployed handle')
+    spec = importlib.util.spec_from_file_location('published_question5_slim_control', CONTROL)
+    control = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(control)
+    if control.OBSERVE.count(EMIT) != 1:
+        raise ValueError('Published observation emission contract changed')
+    code = control.OBSERVE.replace(EMIT, EXTRA + '\n' + EMIT)
+    observer_sha = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    payload = dict(handle=handle, observer_source_sha256=observer_sha, controller_source_sha256=controller_sha)
+    started = time.time()
+    result = subprocess.run(control.route(code), input=json.dumps(payload).encode(),
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=65)
+    if len(result.stdout) > 128 * 1024:
+        raise ValueError('Observer output exceeds 128KiB')
+    record = dict(role='question5_slim_actual_progress_observer', checked_unix=time.time(),
+                  elapsed_seconds=time.time() - started, exit_code=result.returncode,
+                  run_id=handle['run_id'], execution_id=handle['execution_id'], source_commit=handle['source_commit'],
+                  base=handle['base'], observer_source_sha256=observer_sha, controller_source_sha256=controller_sha,
+                  stdout=result.stdout.decode(), stderr=result.stderr[-16384:].decode(errors='replace'))
+    output = ROOT / 'preparation' / ('question5-slim-progress-observation-%d.json' % time.time_ns())
+    with output.open('x') as stream:
+        json.dump(record, stream, indent=2, allow_nan=False)
+        stream.write('\n')
+    if result.returncode:
+        raise RuntimeError('Read-only metadata observation failed; retained receipt ' + str(output))
+    print(json.dumps(dict(receipt=str(output), result=json.loads(result.stdout)), allow_nan=False))
+
+
+if __name__ == '__main__':
+    main()
