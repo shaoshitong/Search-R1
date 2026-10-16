@@ -157,7 +157,7 @@ def worker(base):
             raise ValueError('Owned partial file exceeds expected bytes')
         update(name, stage='DIRECT_CDN_DOWNLOADING', resume_offset=offset, expected_bytes=part['bytes'])
         if offset < part['bytes']:
-            command = ['curl', '--config', '-', '--proto', '=https', '--proto-redir', '=https',
+            command = ['curl', '--disable', '--config', '-', '--proto', '=https', '--proto-redir', '=https',
                        '--fail', '--location', '--silent', '--show-error', '--connect-timeout', '15',
                        '--speed-time', '60', '--speed-limit', '1', '--retry', '0',
                        '--continue-at', str(offset), '--output', str(partial), '--write-out', '%{http_code}']
