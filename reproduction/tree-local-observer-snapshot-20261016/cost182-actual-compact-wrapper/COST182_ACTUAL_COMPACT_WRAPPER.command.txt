@@ -1,0 +1,57 @@
+python3 -B - <<'PY'
+import copy,hashlib,importlib.util,json
+from datetime import datetime,timezone
+from pathlib import Path
+n=182;prev=181;b=Path('outputs/tree-nested-branch-handoff-20261013').resolve();s=Path('work/tree-speed-repair-20261008/nested-local-cost-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/append_nested_local_costs.py')
+spec=importlib.util.spec_from_file_location('cost168_existing_publisher',s);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+old=json.loads((b/f'COST_OUTER{prev}_LOCAL_RECEIPT.json').read_bytes());f=json.loads((b/f'FULL_OUTER{n}_PROGRESS_RECEIPT.json').read_bytes());c=json.loads((b/f'CUMULATIVE_COST_THROUGH{n}.json').read_bytes());p=json.loads((b/f'candidate_cost_backfill/CANDIDATE_OUTER{n:04d}.json').read_bytes());r=p['rollouts'][0];rates=json.loads((b/f'BRANCH_FALLBACK_RATES_OUTER{n:04d}.json').read_bytes());mirrors=[Path(x) for x in c['mirrors']]
+def pin(name):
+ raw=(b/name).read_bytes();return {'path':name,'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}
+def expand(v):
+ if not isinstance(v,dict) or v.get('storage')!='complete_original_field_parts':return v
+ out={} if v['container_type']=='mapping' else []
+ for q in v['parts']:
+  raw=(b/q['file']).read_bytes();assert len(raw)==q['bytes'] and hashlib.sha256(raw).hexdigest()==q['sha256'];part=json.loads(raw);value=part['value'];assert part['original_field']
+  if isinstance(out,dict):assert not set(out).intersection(value);out.update(value)
+  else:out.extend(value)
+ assert len(out)==v['original_entries'];return out
+join=expand(c['candidate_cost_backfill_join']);rows=expand(c['rows_counted_once']);outcomes=expand(c['candidate_outcome_costs_partial']);assert len(rows)==n and len({q['row_id'] for q in rows})==n
+assert join['applied_outers'].count(prev)==1 and n not in join['applied_outers'];assert len({q['outer'] for q in join['inputs']})==len(join['inputs'])
+assert pin('CUMULATIVE_COST_THROUGH181.json')['sha256']=='8d8b545bcb99c2642d0ccf679719519abb0091a5a752e0815ef1a4c645be7cd3';assert pin('candidate_cost_backfill/CANDIDATE_OUTER0181.json')['sha256']=='0eb58096f78dbba6af528cb140c7ee247ca0866429b86954636a00593b2fa766'
+assert pin('CUMULATIVE_COST_THROUGH182.json')['sha256']=='ee96851882b95bf6a01ba8146dc780a5e71cb3ab6eadacc0cc6a1f049adb01ec';assert f['source_poll_sha256']=='ca5975946ceb32bb0c1d6b5d98470b896dc53fbdfe28463cea4863c09c7e439e' and f['native_metadata_readback_sha256']=='2a0fdee38d5c422c3eeed4bc3a36be0a0cebd47bb594a3e2b55583ff1e336ae1'
+pass1=json.loads(Path('/tmp/cost182-mirror-readback1.json').read_text());observed={}
+for name,q in pass1['artifacts'].items():
+ raw=(b/name).read_bytes();z=pin(name);assert z['bytes']==q['bytes'] and z['sha256']==q['sha256'];z['mirror_observations']=[]
+ for root in mirrors:
+  x=(root/name).read_bytes();assert x==raw;z['mirror_observations'].append({'root':str(root),'bytes':len(x),'sha256':hashlib.sha256(x).hexdigest()})
+ z['both_mirrors_byte_equal']=True;observed[name]=z
+pass2={'observed_utc':datetime.now(timezone.utc).isoformat(),'artifacts':observed,'dynamic_ref_count':len(observed),'cumulative_part_count':pass1['cumulative_part_count']}
+receipt=copy.deepcopy(old)
+for key in [f'prior_CUM{prev-1}',f'prior_CUM{prev-1}_bytes_unchanged',f'prior_COST{prev-1}',f'actual_candidate{prev}',f'rates{prev}',f'candidate{prev-1}_joined_once',f'candidate{prev}_detail_separately_available_for_CUM{n}',f'candidate_outcome_missing_outers_in_immutable_CUM{prev}',f'actual_outer{prev}_wall_seconds',f'actual_outer{prev}_dev_wall_seconds',f'native{prev}_readback_not_requeried_or_overwritten',f'preserved_immutable{prev-1}_artifacts']:receipt.pop(key,None)
+receipt.update(schema=f'nested_cost_outer{n}_local_receipt_v1',observed_utc=datetime.now(timezone.utc).isoformat(),status=f'ACTUAL_OUTER{n}_COST_ARCHIVED',outer=n,source_commit=f['source_commit'],config_sha256=f['config_sha256'],unit=f['unit'],run=f['run'],actual_training_pid=f['actual_training_pid'],actual_training_invocation_id=f['actual_training_invocation_id'],effective_source_segments=c['effective_source_segments'])
+receipt['source_inputs']={'FULL':pin(f'FULL_OUTER{n}_PROGRESS_RECEIPT.json'),'poll':pin(Path(f['source_poll']).name),'native_metadata':pin(Path(f['native_metadata_readback']).name),'resource':pin(Path(f['input_bindings']['resource']['path']).name)}
+receipt.update(cumulative_snapshot=pin(f'CUMULATIVE_COST_THROUGH{n}.json'),registry=pin('CANDIDATE_COST_EXTENSION_INPUTS.json'))
+receipt.update({f'prior_CUM{prev}':pin(f'CUMULATIVE_COST_THROUGH{prev}.json'),f'prior_CUM{prev}_bytes_unchanged':True,f'prior_COST{prev}':pin(f'COST_OUTER{prev}_LOCAL_RECEIPT.json'),f'actual_candidate{n}':pin(f'candidate_cost_backfill/CANDIDATE_OUTER{n:04d}.json'),f'rates{n}':pin(f'BRANCH_FALLBACK_RATES_OUTER{n:04d}.json')})
+receipt['mirrored_artifacts']={key:{a:v for a,v in q.items() if a!='mirror_observations'} for key,q in observed.items()}
+receipt.update(mirrored_artifact_count=len(observed),all_cumulative_part_count=pass1['cumulative_part_count'],mirror_bytes_sha256_real_readbacks=[pass1,pass2],two_mirror_bytes_sha256_readbacks_complete=True,derived_book_index_observed=pin('PER_OUTER_METRICS_COMPACT.json'),aggregate_candidate_supplement_added_again=False)
+receipt.update({f'candidate{prev}_joined_once':join['applied_outers'].count(prev)==1,f'candidate{n}_detail_separately_available_for_CUM{n+1}':True,f'candidate_outcome_missing_outers_in_immutable_CUM{n}':{key:v['missing_outers'] for key,v in outcomes.items()}})
+receipt.update(cumulative_sampling=c['effective_training_sampling'],complete_outer_wall_seconds=c['complete_outer_wall_seconds'],actual_training_variances=f['current_training_variances'],full_metric_timing_seconds={key:v for key,v in f['iteration_metrics'].items() if key.startswith('timing_s/')},actual_rank_successful_total_adam=f['per_rank_actual_total_adam'],actual_outer_successful_writes_per_rank=f['actual_outer_successful_writes_per_rank'],independent_rank_processed_opportunities=f['actual_outer_processed_opportunities_per_rank'],independent_rank_skipped_opportunities=f['actual_outer_skipped_opportunities_per_rank'],full_metric_processed_opportunities=f['full_metric_processed_opportunities'],full_metric_skipped_opportunities=f['full_metric_skipped_opportunities'],all_skipped_attempts=f['all_skipped_attempts'],actual_dev512=f['actual_dev512'],latest_actual_dev512=f['latest_actual_dev512'],latest_actual_dev512_scores=f['latest_actual_dev512_scores'],actual_candidate_counts={key:v['candidate_count'] for key,v in r['candidate_outcomes'].items()},fallback_rates=rates,candidate_field_sums=r['candidate_outcomes']['all']['field_sums'],sampling_shape={key:r[key] for key in ['question_count','training_leaf_count','accepted_branch_count','original_root_leaf_count']})
+receipt.update({f'actual_outer{n}_wall_seconds':f['full_outer_wall_seconds'],f'actual_outer{n}_dev_wall_seconds':f['normal_dev512_wall_seconds'],f'native{n}_readback_not_requeried_or_overwritten':True})
+receipt.update(management_control_path='/tmp/tree-mgmt-3fw9a1ab/control',remote_candidate_read_only=True,collector_remote_files_written=p['remote_files_written'],raw_audit_bytes_retained_remote=True,STATUS_REPORT_FUP_training_or_source_modified=False,tests_or_review_performed=False,dev_collector_called=False,final200_entry_called=False,native_manifest_sha256=f['native_manifest_sha256'],native_history_receipt_sha256=f['native_history_receipt_sha256'],candidate_source_files=p['source_files'],actual_controller_rollout_cost=r['rollout_controller_cost'],actual_branch_controller_cost=r['candidate_round_controller_ledger'],cumulative_controller_trainer_process_cpu_seconds=c['controller_trainer_process_cpu_seconds'],physical8gpu_shared_capacity_upper_bound=c['physical8gpu_shared_capacity_upper_bound'],retrieval_calls_raw_history_key_unit='valid per-trajectory query events;not HTTP requests',prefix_candidate_and_CPU_subsets_not_added_again=True,watcher_metadata_lag_is_not_training_failure=True)
+receipt['question_count_units']={'actual_training_questions':r['question_count'],'FULL_raw_tree_variance_question_count':f['iteration_metrics'].get('tree_variance/question_count'),'Controller_raw_question_rows':r['rollout_controller_cost']['question_rows'],'interpretation':'Controller question_rows=1024 is two original root input rows for each of512 training questions;not1024 independent questions. Original raw keys are preserved.'}
+assert r['question_count']==512 and r['rollout_controller_cost']['question_rows']==1024 and f['iteration_metrics'].get('tree_variance/question_count')==512
+receipt['scoring_source_evidence']={'whole_rollout_recorded_metric_scoring_calls':f['iteration_metrics']['rollout/scoring_calls'],'whole_source_fields':f'FULL_OUTER{n}_PROGRESS_RECEIPT.json /iteration_metrics/rollout~1scoring_calls','branch_recorded_scoring_calls':r['candidate_round_controller_ledger']['scoring_calls'],'candidate_field_record_count':r['candidate_outcomes']['all']['field_record_counts']['scoring_calls'],'branch_source_fields':f'candidate_cost_backfill/CANDIDATE_OUTER{n:04d}.json /rollouts/0/candidate_round_controller_ledger/scoring_calls and candidate_outcomes/all/(field_sums,field_record_counts)/scoring_calls','whole_independent_raw_scoring_event_readback':None,'scoring_not_inferred_from_trajectories':True}
+receipt[f'preserved_immutable{prev}_artifacts']={}
+for name,q in old['mirrored_artifacts'].items():
+ if name=='CANDIDATE_COST_EXTENSION_INPUTS.json':continue
+ z=pin(name);assert z['bytes']==q['bytes'] and z['sha256']==q['sha256'];raw=(b/name).read_bytes()
+ for root in mirrors:assert (root/name).read_bytes()==raw
+ z['both_mirrors_byte_equal']=True;receipt[f'preserved_immutable{prev}_artifacts'][name]=z
+for key in [key for key in old if key.startswith('preserved_phase')]:
+ for name,q in old[key].items():
+  z=pin(name);assert z['bytes']==q['bytes'] and z['sha256']==q['sha256']
+assert pin('COST_OUTER181_LOCAL_RECEIPT.json')['sha256']=='84948d82758f3899c1c222032d7a809894dda7737577598804e0bdce0a66e5ec'
+raw=(json.dumps(receipt,ensure_ascii=False,separators=(',',':'),allow_nan=False)+'\n').encode();assert len(raw)<=100000;m.atomic_copy(b,mirrors,f'COST_OUTER{n}_LOCAL_RECEIPT.json',raw,immutable=True)
+Path('/tmp/cost182-mirror-readback1.json').unlink()
+print(json.dumps({'status':'COST182_PUBLISHED_SECOND_REAL_BYTES_SHA_MIRROR_READBACK_COMPLETE','receipt':pin(f'COST_OUTER{n}_LOCAL_RECEIPT.json'),'dynamic_ref_count':len(observed),'all_cumulative_part_count':pass1['cumulative_part_count'],'candidate181_joined_once':receipt['candidate181_joined_once'],'candidate182_for183':True,'candidate_outcome_missing_outers':receipt[f'candidate_outcome_missing_outers_in_immutable_CUM{n}'],'actual_rank_successful_total_adam':receipt['actual_rank_successful_total_adam'],'next_outer':f['actual_next_outer_entered'],'no_dev182':f['actual_dev512'] is None,'latest_actual_dev512_scores':f['latest_actual_dev512_scores'],'question_count_units':receipt['question_count_units']},ensure_ascii=False))
+PY

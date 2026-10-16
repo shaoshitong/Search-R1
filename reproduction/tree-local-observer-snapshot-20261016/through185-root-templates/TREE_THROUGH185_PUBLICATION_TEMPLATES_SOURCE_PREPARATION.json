@@ -1,0 +1,227 @@
+{
+  "schema": "tree_through185_publication_templates_source_preparation_v1",
+  "prepared_at_utc": "2026-10-16T03:30:30.431659+00:00",
+  "status": "SOURCE_PREPARATION_ONLY_NOT_EXECUTED",
+  "workspace_root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2",
+  "base": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013",
+  "target_boundaries": [
+    185,
+    186,
+    187,
+    188,
+    189
+  ],
+  "new_template_sources": {
+    "root_full": {
+      "bytes": 30613,
+      "sha256": "9de64ac13275275d8f330b57d205637f3a7731ab8f49f1903f46f253bb867e64",
+      "file": "tree_through185_full_root_readback.template.command.txt"
+    },
+    "root_verified_wait": {
+      "bytes": 22688,
+      "sha256": "6d0f70fcfebe694bcce4b12b3557093caa9a8ec4530f361b345bfee8a3bc7931",
+      "file": "tree_through185_verified_wait_readback.template.command.txt"
+    },
+    "finalizer": {
+      "bytes": 12183,
+      "sha256": "3f2c192bc73eb66d3ab512bcf9412edbf68cbcc7d263008b8c2a833286380fe5",
+      "file": "tree_through185_finalize.template.command.txt"
+    }
+  },
+  "preserved180_sources": [
+    {
+      "bytes": 30422,
+      "sha256": "23348b3e04550fe5a832b6f55cd68b1343746ebaa00a5aca0278cf192c014e80",
+      "file": "tree_through180_full_root_readback.template.command.txt"
+    },
+    {
+      "bytes": 22301,
+      "sha256": "63c78f4d1a1633428e85359d79c2f97205dfd94333a4b1246dd1794aa878daa2",
+      "file": "tree_through180_verified_wait_readback.template.command.txt"
+    },
+    {
+      "bytes": 12183,
+      "sha256": "665e0b793b8980bb7691aa1577edc924cdc3b1579645b9eecfc65c8bea5174ea",
+      "file": "tree_through180_finalize.template.command.txt"
+    },
+    {
+      "bytes": 5580,
+      "sha256": "0db9e7badb87d8491038b84a70ff91e67ea42a99f0fdc751a445a208377cc370",
+      "file": "run_through180_published_template.py"
+    },
+    {
+      "bytes": 12611,
+      "sha256": "0156f8094bb27146a80b3413db886d80f77589f8353d8364705deeb6567a816b",
+      "file": "TREE_THROUGH180_PUBLICATION_TEMPLATES_SOURCE_PREPARATION.json"
+    }
+  ],
+  "future_manifest_interface": {
+    "environment": [
+      "ACTUAL_THROUGH185_PINS",
+      "ACTUAL_THROUGH185_PINS_BYTES",
+      "ACTUAL_THROUGH185_PINS_SHA256"
+    ],
+    "schema": "tree_through185_actual_publication_input_manifest_v1",
+    "required_top_level": [
+      "schema",
+      "role",
+      "outer",
+      "latest_completed_dev_outer",
+      "first_poll_index",
+      "second_poll_index",
+      "workspace_root",
+      "base",
+      "mirrors",
+      "template_source",
+      "references"
+    ],
+    "role_values": [
+      "finalizer",
+      "root_full",
+      "root_verified_wait"
+    ],
+    "outer": "actual completed boundary185..189; requested outer alone gives no credit",
+    "latest_completed_dev_outer": 185,
+    "first_poll_index": "__FIRST__ replaced with actual original poll index; finalizer/root_full must be the FULL-bound first poll",
+    "second_poll_index": "__SECOND__ replaced with actual later original observation; verified_wait indices are its own two original observations",
+    "template_source": "exact frozen source preparation template {path,bytes,sha256}; instantiate placeholders in memory without editing source",
+    "every_reference": "actual local {path,bytes,sha256}; no future SHA and no prior180 SHA presented as185",
+    "common_exact_reference_keys": [
+      "full",
+      "cost",
+      "cumulative",
+      "native",
+      "first_poll",
+      "second_poll",
+      "first_resource",
+      "second_resource",
+      "curve185",
+      "curve_csv185",
+      "dev185",
+      "owner185",
+      "execution185",
+      "pre_execution185",
+      "rootdev185",
+      "rootcurve185",
+      "curve_binding185",
+      "curve_publication185"
+    ],
+    "role_specific_exact_reference_keys": {
+      "finalizer": [
+        "candidate",
+        "rates",
+        "registry",
+        "initial_supplement",
+        "gzip_receipt"
+      ],
+      "root_full": [
+        "progress",
+        "alias",
+        "metadata_scope",
+        "canonical185",
+        "milestone150",
+        "metadata_scope_publication"
+      ],
+      "root_verified_wait": [
+        "progress",
+        "alias",
+        "metadata_scope",
+        "canonical185",
+        "milestone150",
+        "metadata_scope_publication",
+        "verified_wait"
+      ]
+    },
+    "fixed_reference_filenames": {
+      "curve185": "LEARNING_CURVE_COMPLETE_THROUGH185.json",
+      "curve_csv185": "LEARNING_CURVE_COMPLETE_THROUGH185.csv",
+      "dev185": "DEV5_185_NATIVE_COST_SUPPLEMENT.json",
+      "owner185": "DEV5_185_NATIVE_COST_LOCAL_RECEIPT.json",
+      "execution185": "DEV5_185_NATIVE_COST_COLLECTOR_EXECUTION.json",
+      "pre_execution185": "DEV5_185_NATIVE_COST_PRE_EXECUTION_INPUT_PINS.json",
+      "rootdev185": "ROOT_DEV185_NATIVE_COST_ACTUAL_READBACK.json",
+      "rootcurve185": "ROOT_CURVE_DEV_COST_THROUGH185_ACTUAL_READBACK.json",
+      "curve_binding185": "LEARNING_CURVE_THROUGH185_COST_SUPPLEMENT_BINDING.json",
+      "curve_publication185": "LEARNING_CURVE_THROUGH185_LOCAL_PUBLICATION.json",
+      "canonical185": "OUTER185_CURVE_DEVCOST_CURRENT_ALIAS_CLOSURE.json",
+      "milestone150": "MILESTONE150_HF_NATIVE_METADATA.json",
+      "metadata_scope_publication": "METADATA_SCOPE_PUBLISHER_PUBLICATION.json",
+      "registry": "CANDIDATE_COST_EXTENSION_INPUTS.json",
+      "initial_supplement": "LEARNING_CURVE_INITIAL1_10_SUPPLEMENT.json",
+      "gzip_receipt": "LOCAL_OLD_INSTRUCT300_FOUR_RAW_GZIP_ARCHIVE_20261014.json"
+    },
+    "per_boundary_reference_filenames": {
+      "full": "FULL_OUTER{n}_PROGRESS_RECEIPT.json",
+      "cost": "COST_OUTER{n}_LOCAL_RECEIPT.json",
+      "cumulative": "CUMULATIVE_COST_THROUGH{n}.json",
+      "native": "NATIVE_HISTORY_{n}_METADATA_READBACK.json",
+      "candidate": "CANDIDATE_COST_EXTENSION_OUTER{n:04d}.json",
+      "rates": "BRANCH_FALLBACK_RATES_OUTER{n:04d}.json",
+      "progress": "OUTER{n}_FULL_NEXT{n+1}_ACTUAL_PROGRESS.json",
+      "alias": "CURRENT_ALIAS_RECONCILIATION_OUTER{n}.json",
+      "metadata_scope": "CURRENT_METADATA_SCOPE_RECONCILIATION_OUTER{n}.json",
+      "first_poll": "NATIVE5_CONTINUE_POLL_{a}.json",
+      "second_poll": "NATIVE5_CONTINUE_POLL_{z}.json",
+      "first_resource": "NATIVE5_CONTINUE_RESOURCE_{a}.json",
+      "second_resource": "NATIVE5_CONTINUE_RESOURCE_{z}.json",
+      "verified_wait": "VERIFIED_WAIT_NATIVE5_CONTINUE_POLL_{a}_NATIVE5_CONTINUE_POLL_{z}.json"
+    },
+    "mirrors": [
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch",
+      "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch"
+    ],
+    "raw_poll_resource_scope": "BASE-only pin; no mirror or new remote capture claim"
+  },
+  "future_order": {
+    "actual185": "actual FULL/native/CUM/COST185 -> sole source1ed CLI exit0+owner185 -> independent ROOTDEV185 -> curve185/ROOTcurve185 -> original finalizer185 ->90c alias185 -> canonical185 (actual pending185 live fields reconciled) -> original native5 metadata helper LAST -> ROOTFULL185",
+    "actual186_189": "own actual FULL/native/CUM/COST + frozen latest185 dev/curve closure -> original finalizer ->90c alias -> original helper LAST -> ROOTFULL; no nondev collector",
+    "verified_wait": "published ca32 sampling-only wait -> independent two-observation ROOT verified-wait; no completion/optimizer/cost credit",
+    "no_cycle": "finalizer inputs omit canonical/helper/ROOTFULL. FULL/wait use post-canonical closure and current alias/helper receipts. No ROOTFULL input, no through180 repair dependency."
+  },
+  "actual_guards": {
+    "source1ed": "prior actual160/165/170/175/180 confirms5; only future actual185 CLI0+owner+ROOTDEV+products, delta1/1/PENDING0, confirms6/next190. SHA-bound executor attestations/products; no global process audit.",
+    "current_dev": "185 requires original complete512 NQ256+Hot256. At186..189 current_dev512 and testing timer are null/absent; immutable latest dev185 persists.",
+    "ranks": "8 actual ranks, dynamic native/FULL totals and actual successful/skipped calls. No3700, n*20, twenty successful writes, or zero-skip assumption. Missing raw rank opportunity fields stay null. Finite gradients and finite/nonzero sampled shard deltas required.",
+    "entry": "saved native next_step n+1 is a cursor only; actual next186+ requires original raw stage epoch/step marker and unchanged active PID503255/Invocation.",
+    "parts": "enumerate all COST mirrored_artifacts; reconstruct every complete_original_field_parts field, preserve exact entries, disjoint mapping keys, list lengths and full part set. Enumerate all owner current/prior DEV and CUM parts; no fixed part count.",
+    "originals": "37 controls5..185 (36 preserved+one actual185), all DEV/CUMparts, alias14gzip and helper14gzip original/intended files protected. BASE+two mirrors, two held-byte observations; gzip members also held for both passes.",
+    "canonical": "expected OUTER185_CURVE_DEVCOST_CURRENT_ALIAS_CLOSURE.json, completed185/active186, curve/dev through185; no ROOTFULL185 input. At root-full readback the actual pending185 live fields must already be reconciled by canonical185; do not bypass assertions.",
+    "historical": "historical native5 cold load and milestone1503000 are preserved facts, never future185 totals or fresh reload claims."
+  },
+  "runner": {
+    "budget_bytes": 6000,
+    "CLI": "--role finalizer|root_full|root_verified_wait --outer185..189 --second ACTUAL_POLL [--first ACTUAL_POLL]",
+    "scope": "Pins note/templates; builds actual role manifest; replaces only three numeric placeholders in memory; subprocess bash executes frozen template.",
+    "first": "finalizer/root_full default first is exact FULL-bound original poll; verified_wait requires explicit actual first.",
+    "protection": "Reject prior success output in all3 roots and different existing manifests. Frozen template bytes unchanged. Runner SHA supplied externally (avoids hash cycle).",
+    "path": "run_through185_published_template.py"
+  },
+  "source_execution_policy": "SOURCE_PREPARATION_ONLY; no new source execution, SSH, collector, evaluation, training, test, compile, formal review, canonical execution, or prior source edits.",
+  "source_freeze_readback": "All five new files and all five preserved180 sources read twice for exact bytes/SHA before handoff. No prepared source execution.",
+  "source_dir": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008",
+  "existing_published_local_dependencies": {
+    "directory": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup",
+    "files": [
+      {
+        "file": "finalize_nested_progress.py",
+        "bytes": 32911,
+        "sha256": "61385504e4bb389cdba508c1b74f84fe6464e1d4f8ec11989e8cfe0c230dc541"
+      },
+      {
+        "file": "sync_nested_native_progress.py",
+        "bytes": 39098,
+        "sha256": "676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1"
+      },
+      {
+        "file": "publish_nested_verified_wait.py",
+        "bytes": 18678,
+        "sha256": "0db3bd8dfd228dea80873c383d313666ad59e0175cc7f9abf6b40f7feaff1785"
+      },
+      {
+        "file": "publish_nested_metadata_scope.py",
+        "bytes": 24931,
+        "sha256": "fc2f3f70b562eebbbd6c6607aa75846b4a59da5c91dca1271de1bfb92851f29c"
+      }
+    ]
+  }
+}
