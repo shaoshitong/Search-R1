@@ -18,32 +18,36 @@ p=json.load(sys.stdin);plan=p['plan'];base=Path(plan['base']);commit=plan['opera
 assert plan['job']=='727251' and plan['training_commit']=='78074b669a0d47648ad7c5b2a687159af00cd090'
 root=base/'preparation/nproc-rescue-code'/commit
 assert root.resolve()==root
-root.mkdir(parents=True,exist_ok=False)
 raw=base64.b64decode(p['code'],validate=True)
 assert hashlib.sha256(raw).hexdigest()==plan['operator_sha256']
 def save(path,value):
  with path.open('x') as f:json.dump(value,f,indent=2);f.flush();os.fsync(f.fileno())
 def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
-code=root/'raise_owned_nproc.py'
-with code.open('xb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
+code=root/'raise_owned_nproc.py';path=root/'public-plan.json'
+if root.exists():
+ assert not root.is_symlink() and digest(code)==plan['operator_sha256'] and json.loads(path.read_text())==plan
+else:
+ root.mkdir(parents=True,exist_ok=False)
+ with code.open('xb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
+ save(path,plan)
 assert digest(code)==plan['operator_sha256']
-path=root/'public-plan.json';save(path,plan)
+invocation=root/('apply' if p['apply'] else 'preflight');invocation.mkdir(exist_ok=False)
 command=['srun','--jobid=727251','--overlap','--immediate=10','--ntasks=1','--cpus-per-task=1','--mem=0','--gres=none','--time=00:05:00',
  'env','CUDA_VISIBLE_DEVICES=',str(base/'env/bin/python'),'-B',str(code),'--plan',str(path)]
 if p['apply']:command.append('--apply')
-save(root/'launch-claim.json',dict(command=command,operator_sha256=plan['operator_sha256'],
+save(invocation/'launch-claim.json',dict(command=command,operator_sha256=plan['operator_sha256'],
  source_commit=commit,apply=p['apply'],started_unix=time.time(),retry_allowed=False,credentials_persisted=False))
-out=root/'child.stdout';err=root/'child.stderr'
+out=invocation/'child.stdout';err=invocation/'child.stderr'
 with out.open('xb') as stdout,err.open('xb') as stderr:
  child=subprocess.Popen(command,stdin=subprocess.DEVNULL,stdout=stdout,stderr=stderr,start_new_session=True)
  stat=Path('/proc/%d/stat'%child.pid).read_text().rsplit(')',1)[1].split()
- save(root/'child-birth.json',dict(pid=child.pid,start_ticks=int(stat[19]),sid=int(stat[3]),
+ save(invocation/'child-birth.json',dict(pid=child.pid,start_ticks=int(stat[19]),sid=int(stat[3]),
   boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip(),uid=os.getuid()))
  result=child.wait()
  stdout.flush();stderr.flush();os.fsync(stdout.fileno());os.fsync(stderr.fileno())
 value=dict(actual_parent_wait=True,actual_child_exit_code=result,command=command,apply=p['apply'],
  stdout_file=str(out),stderr_file=str(err),stdout_sha256=digest(out),stderr_sha256=digest(err),checked_unix=time.time())
-save(root/'actual-wait.json',value)
+save(invocation/'actual-wait.json',value)
 print(json.dumps(dict(value,stdout=out.read_text(),stderr=err.read_text())),flush=True)
 sys.exit(result)
 '''
