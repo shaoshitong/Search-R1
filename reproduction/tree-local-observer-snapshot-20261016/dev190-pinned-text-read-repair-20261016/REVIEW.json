@@ -1,0 +1,38 @@
+{
+  "schema": "dev190_pinned_text_reader_static_review_v1",
+  "verdict": "PASS",
+  "findings": [],
+  "scope": "Static review of the complete before/after three-file repair only; no formal training or evaluation acceptance.",
+  "checks": {
+    "diff_exactly_four_txt_suffix_additions_and_two_owner_pin_updates": true,
+    "before_after_and_top_bytes_sha_match_repair_scope": true,
+    "owner_pin": {
+      "bytes": 54173,
+      "sha256": "96f4765d2b54cd7b26d8ee9e7f5b1d5d995d3a5e4806d937eb7f002d012b8e50"
+    },
+    "reader_pin": {
+      "bytes": 63048,
+      "sha256": "94567a3e09b6133afb9e4994990cd3b76efc4fdb27116fac3916d638903348d5"
+    },
+    "builder_pin": {
+      "bytes": 20087,
+      "sha256": "2c64817e258ef9e399d2125d1cd55e6224481f0b912a36be46eede410908423c"
+    },
+    "actual185_assembly_source_matches_publication_pin": {
+      "bytes": 38522,
+      "sha256": "7122c8a3a67ff0f00cdd40251d29886fe748f5c2a35d8c4660725b1e50655e47"
+    },
+    "workspace_resolve_path_and_bound_bytes_sha_checks_unchanged": true,
+    "mirror_policy_and_two_pass_readback_unchanged": true,
+    "historical_registry_asof_exception_scope_unchanged": true,
+    "full_native_dev_identity_rank_count_and_cost_gates_unchanged": true
+  },
+  "interpretation": "New local .txt provenance references flow through the existing bound/read checks. BASE product references retain both-mirror checks; workspace source references retain the existing source-file policy. The .txt bytes are read, not executed by the changed code.",
+  "limitations": "Runtime gates were inspected, not executed. No claim is made about live PID status, successful collector execution, final200 completion or training/evaluation acceptance.",
+  "actions": {
+    "main_collector_test_training_ssh_calls": 0,
+    "training_source_or_state_changes": 0,
+    "reviewed_source_changes": 0,
+    "only_written_file": "REVIEW.json"
+  }
+}

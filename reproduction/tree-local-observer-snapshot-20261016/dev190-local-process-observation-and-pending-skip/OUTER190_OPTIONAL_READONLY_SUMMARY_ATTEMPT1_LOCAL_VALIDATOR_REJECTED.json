@@ -1,0 +1,16 @@
+{
+  "schema": "local_optional_readonly_summary_rejection_v1",
+  "created_at_utc": "2026-10-16T06:28:39.715974+00:00",
+  "actual_exit_code": 1,
+  "failed_call": "published core.validate_ranks(poll,None,190)",
+  "reason": "This generic validator intentionally permits metric=None only at TARGET200. Root supplied None for periodic190; rejection occurred before any output file or canonical write.",
+  "error": "All actual200 rank returns must identify the same credited attempt",
+  "failed_output_created": false,
+  "canonical_modified": false,
+  "remote_calls": 0,
+  "training_modified": false,
+  "training_fault": false,
+  "native190_capture_repeated": false,
+  "decision": "Do not rerun this optional summary. Existing native190 and actual post-save original polls already retain authoritative optimizer/writer evidence. Wait for FULL190 and use the normal metric-bound190 pipeline.",
+  "goal_status": "active"
+}
