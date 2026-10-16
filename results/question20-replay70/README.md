@@ -17,6 +17,12 @@ Train accuracy is a full post-update evaluation on the particular5120-question b
 
 [All70 iteration accuracies](ALL-ITERATIONS.md) and [the exact small remote accuracy report](FINAL-ACCURACY-SUMMARY.json) include every completed iteration. The report crosschecks saved aggregate confusion counts against completion receipts; it does not independently reload full prediction tensors.
 
+## Balanced accuracy
+
+Giving mixed and nonmixed recall equal weight, `balanced accuracy=0.5*(TP/(TP+FN)+TN/(TN+FP))`. The final replay70 head scores **73.9199% on its training batch and60.9107% on the fixed test**. The highest fixed-test balanced accuracy is **64.9410% at replay30**. Always predicting nonmixed scores50% on this metric. Final test mixed recall is51.9126% and nonmixed recall69.9088%.
+
+This posthoc calculation uses the original confusion counts with the unchanged `q>=0.5` threshold; no training, model inference, or sampling was changed. Equal class recall weights are not balanced training sampling. The ordinary-accuracy comparison against the majority class does not imply absence of discrimination: the balanced test results show some discrimination on this fixed diagnostic. They do not establish downstream policy or QA gains. [All70 balanced accuracies](BALANCED-ACCURACY.md) and [their small source summary](BALANCED-ACCURACY-SUMMARY.json) preserve the missing train values for iterations1..6 and the different-training-batch interpretation.
+
 ## Recipe and retained state
 
 The encoder is frozen official Qwen2.5-3B-Instruct revision `aa8e72537993ba99e69dfaafa59ed015b17504d1`. Its layer27 post-block representation contains the actual initial request plus the same trajectory's first20 retained policy tokens. Original token IDs, causal contexts, masks and per-turn positions are preserved. Qmax is273, head sequence width is293, and the flattened dimension is600064. The probe trains the copied complete block35 and Linear output with per-trajectory BCE.
