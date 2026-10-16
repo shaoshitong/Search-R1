@@ -33,3 +33,9 @@ epoch3同一EMA0.99权重的全量训练／测试混合balanced accuracy为80.10
 epoch3记录2293.261938秒只覆盖本执行恢复后的8697/8700次Adam与全量EMA评测，不包含恢复前3次更新、构造／恢复及checkpoint写入；该轮仍属旧global256配方。全局1024的稳定同阶段速度窗口尚未形成，不能将这段耗时解释为完整1024轮耗时或报告固定倍数提速。
 
 epoch3最新完整状态1242424288字节，SHA256`4fccd80f9c0761e0b613f8fbf45f0b562c08ec9d007fa868aa746bc49b4f4437`；`latest.pt`会被后续完整轮替换，不是epoch3不可变权重副本。每10轮／200轮的不可变保存策略不变。详见[2026-10-17实际里程碑报告](../reproduction/reports/question5-global1024-epoch003-phase-start-2026-10-17.md)及[标量／哈希JSON](../reproduction/reports/question5-global1024-epoch003-phase-start-2026-10-17.json)。
+
+## 2026-10-17 00:41：第4轮训练窗口实测
+
+第4轮四rank全部2175次Adam／EMA已返回，累计28275次，进入既定同EMA训练／测试评测。第4轮metrics／checkpoint／complete仍缺失，`fully_committed`未知；即使原生进度中的`complete_epochs`已写4，**正式完整进度仍只计3/200**。身份连续、无记录错误或退出，保持同进程推进。
+
+同epoch4两份已有原生进度的游标75→2175，`observed_unix`相差1336.247471秒，真实新增2150400条轨迹／2100次Adam，得到**1609.28条轨迹/秒**。计算没有使用observer墙钟间隔；它不含全量EMA评测和checkpoint保存，也不是完整1024轮端到端耗时，不能据此宣称4倍提速。此次没有新EMA评分，最近混合balanced accuracy80.1052%／56.3273%仍属epoch3。详细证据见[第4轮训练窗口报告](../reproduction/reports/question5-global1024-epoch004-training-window-2026-10-17.md)及[标量／哈希JSON](../reproduction/reports/question5-global1024-epoch004-training-window-2026-10-17.json)。

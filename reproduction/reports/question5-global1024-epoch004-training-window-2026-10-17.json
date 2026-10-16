@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-17",
+  "role": "question5_global1024_epoch4_native_training_window_not_committed_epoch",
+  "checked_unix": 1792168899.5435958,
+  "checked_at_Shanghai": "2026-10-17T00:41:39.543596+08:00",
+  "run_id": "8af926a49630428097b94027864da68b",
+  "execution_id": "bcfa1de0a90a4fcda70263a75153fcee",
+  "runtime_source_commit": "ddf36cca14ac7aafb0b5395ffa88d57ed8c35e74",
+  "receipts": [
+    {
+      "path": "preparation/question5-global1024-resume-observation-1792167064807867000.json",
+      "sha256": "d19612af6c810d7bb944b78eade1a44307afb6a73b1ba0bc8344753aa22450d4",
+      "observer_checked_unix": 1792167064.8709977
+    },
+    {
+      "path": "preparation/question5-global1024-resume-observation-1792168899737590000.json",
+      "sha256": "5acab111bc93d93628775168a8649e2ba2cf1d5c90c324cfd148bde22acd2dd7",
+      "observer_checked_unix": 1792168899.5435958
+    }
+  ],
+  "native_training_window": {
+    "same_epoch": 4,
+    "same_runtime_execution_phase": true,
+    "timestamp_source": "rank0 native progress observed_unix, not observer wallclock",
+    "start_stage": "RETURNED_ADAM_AND_EMA",
+    "end_stage": "SAME_EMA_TRAIN_TEST_DIAGNOSTICS",
+    "start_observed_unix": 1792167055.635361,
+    "end_observed_unix": 1792168391.8828316,
+    "elapsed_seconds": 1336.2474706172943,
+    "start_epoch_cursor": 75,
+    "end_epoch_cursor": 2175,
+    "start_total_actual_Adam": 26175,
+    "end_total_actual_Adam": 28275,
+    "returned_Adam_delta_counted_once": 2100,
+    "returned_EMA_delta_counted_once": 2100,
+    "start_global_trajectory_exposures": 6758400,
+    "end_global_trajectory_exposures": 8908800,
+    "global_trajectory_exposures_delta": 2150400,
+    "global_G5_exposures_delta": 430080,
+    "trajectory_exposures_per_second": 1609.2827468602047,
+    "G5_exposures_per_second": 321.85654937204094,
+    "returned_Adam_per_second": 1.5715651824806687,
+    "actual_global_G5_pattern": [
+      204,
+      204,
+      204,
+      204,
+      208
+    ],
+    "mean_trajectory_batch": 1024,
+    "epoch_updates_per_epoch": 2175,
+    "includes_full_epoch_EMA_evaluation_or_checkpoint": false,
+    "semantics": "Only native epoch4 training cursor75 to2175. End progress is emitted at entry into scheduled same-EMA evaluation; no full epoch end-to-end duration or speedup factor is established."
+  },
+  "actual_current_status": {
+    "stage": "SAME_EMA_TRAIN_TEST_DIAGNOSTICS",
+    "four_rank_counters_agree": true,
+    "all_four_native_identities_alive": true,
+    "identities_continuous_from_window_start": true,
+    "epoch4_training_Adam_returned": 2175,
+    "epoch4_expected_Adam": 2175,
+    "total_returned_Adam_counted_once": 28275,
+    "total_returned_EMA_counted_once": 28275,
+    "native_precommit_complete_epochs_counter": 4,
+    "formally_committed_complete_epochs": 3,
+    "target_complete_epochs": 200,
+    "epoch4_fully_committed": null,
+    "epoch4_metrics": null,
+    "epoch4_checkpoint_metadata": null,
+    "epoch4_complete_metadata": null,
+    "no_new_epoch4_EMA_scores": true,
+    "rejected_nonfinite_updates": 0,
+    "recorded_errors": [],
+    "recorded_exits": [],
+    "full_global1024_epoch_end_to_end_seconds": null,
+    "controlled_speedup_factor": null
+  },
+  "latest_available_EMA_scores": {
+    "epoch": 3,
+    "weight_kind": "ema0.99",
+    "new_scores_at_this_observation": false,
+    "train_mixed_balanced_accuracy": 0.8010515778262539,
+    "test_mixed_balanced_accuracy": 0.5632733735279951,
+    "metrics_file_sha256": "1e47331c2d0b4ef67c20b03319e526101515592ee4a79750092e00e3adbaa71e"
+  },
+  "no_network_GPU_tests_or_new_evaluations_run_for_this_report": true,
+  "raw_QA_tokens_data_models_or_credentials_included": false,
+  "current_probe_goal_status": "ACTIVE",
+  "old_actor_goal_status": "PAUSED"
+}
