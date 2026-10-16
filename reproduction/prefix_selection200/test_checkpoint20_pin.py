@@ -31,6 +31,7 @@ class Checkpoint20PinTests(unittest.TestCase):
                      probe=dict(head, completed_outer=20, actual_adam_steps_per_rank=[100]*8,learning_rate=1e-5),
                      probe_snapshot=head['path'], pool_snapshot=pool['path'])
         file('outers/outer-000020/complete.json', json.dumps(joint).encode())
+        file('latest-joint.json', json.dumps(joint).encode())
         return joint
 
     def test_retained_model_and_full_clock_survive_normal_source_unlink(self):
@@ -62,6 +63,14 @@ class Checkpoint20PinTests(unittest.TestCase):
     def test_missing_joint_is_pending_without_a_pin_intent(self):
         with tempfile.TemporaryDirectory() as directory:
             base=Path(directory).resolve();root=base/'preparation/pin';root.mkdir(parents=True)
+            self.assertEqual(pin(base,root)['status'],'PENDING_REAL_JOINT20_COMMIT')
+            self.assertFalse((root/'PIN-INTENT.json').exists())
+
+    def test_file_creation_before_atomic_joint_publication_remains_pending(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory).resolve();self.fixture(base)
+            (base/'latest-joint.json').write_text(json.dumps(dict(outer=19)))
+            root=base/'preparation/pin';root.mkdir()
             self.assertEqual(pin(base,root)['status'],'PENDING_REAL_JOINT20_COMMIT')
             self.assertFalse((root/'PIN-INTENT.json').exists())
 

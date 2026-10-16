@@ -89,7 +89,15 @@ def pin(base, root):
     if result.exists():
         return read(result)
     joint_path = base / 'outers/outer-000020/complete.json'
-    if not joint_path.exists():
+    latest = base / 'latest-joint.json'
+    if not joint_path.exists() or not latest.exists():
+        return dict(status='PENDING_REAL_JOINT20_COMMIT', training_modified=False)
+    # complete.json is written once, whereas latest-joint is atomically
+    # published afterwards. Wait for that publication, not mere file creation.
+    try:
+        if read(latest)['outer'] < 20:
+            return dict(status='PENDING_REAL_JOINT20_COMMIT', training_modified=False)
+    except json.JSONDecodeError:
         return dict(status='PENDING_REAL_JOINT20_COMMIT', training_modified=False)
     config, joint = read(base / 'preparation/launch-config.json'), read(joint_path)
     if (joint['run_id'] != config['run_id'] or config['probe_learning_rate'] != 1e-5
@@ -157,7 +165,7 @@ def worker(base, root):
             value = pin(base, root)
             if value['status'] != 'PENDING_REAL_JOINT20_COMMIT':
                 return value
-            time.sleep(2)
+            time.sleep(10)
         value = dict(status='WAIT_EXPIRED_NO_TRAINING_CHANGE', training_modified=False)
         record(root / 'RESULT.json', value)
         return value
