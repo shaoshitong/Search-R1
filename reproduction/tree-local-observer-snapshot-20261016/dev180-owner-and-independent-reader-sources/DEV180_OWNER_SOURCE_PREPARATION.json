@@ -1,0 +1,99 @@
+{
+  "schema": "dev180_owner_source_preparation_v1",
+  "observed_utc": "2026-10-16T01:41:34.857113+00:00",
+  "status": "SOURCE_PREPARED_NOT_EXECUTED_NO_ACTUAL_DEV180_SUCCESS_CLAIMED",
+  "preparing_agent": "/root/dev175_actual_collector_owner",
+  "source": {
+    "path": "work/tree-speed-repair-20261008/dev180_owner_local_receipt.py",
+    "bytes": 44417,
+    "sha256": "16c02d34b66a54b259f221552cd8be2a48b73255f4c876fddd86572e0e5832e0"
+  },
+  "adapted_from_actual_successful_owner": {
+    "path": "work/tree-speed-repair-20261008/dev175_owner_local_receipt.py",
+    "bytes": 38640,
+    "sha256": "fdafbf7f76589854beb8355b7b3751e0e8555022ab2335f5a64832b27b9c488a"
+  },
+  "prior_actual175_pins": {
+    "DEV5_175_NATIVE_COST_SUPPLEMENT.json": {
+      "path": "outputs/tree-nested-branch-handoff-20261013/DEV5_175_NATIVE_COST_SUPPLEMENT.json",
+      "bytes": 7077,
+      "sha256": "3d4553f6bf764d9c90301c95656568f73fb4e20867611914dbea663b2fd9da89"
+    },
+    "DEV5_175_NATIVE_COST_LOCAL_RECEIPT.json": {
+      "path": "outputs/tree-nested-branch-handoff-20261013/DEV5_175_NATIVE_COST_LOCAL_RECEIPT.json",
+      "bytes": 45913,
+      "sha256": "0a4d8efde8ec9ee513704e5bca6e34fd2d50ebc589657a5ed1497fa13f2768d6"
+    },
+    "ROOT_DEV175_NATIVE_COST_ACTUAL_READBACK.json": {
+      "path": "outputs/tree-nested-branch-handoff-20261013/ROOT_DEV175_NATIVE_COST_ACTUAL_READBACK.json",
+      "bytes": 46477,
+      "sha256": "92c97e5afee3a5e3c66d5ef9d1b87b802c5f55160ca61340658bddb2d2333d7d"
+    },
+    "dev_native_cost_summaries/DEV_OUTER0175_SUMMARY.json": {
+      "path": "outputs/tree-nested-branch-handoff-20261013/dev_native_cost_summaries/DEV_OUTER0175_SUMMARY.json",
+      "bytes": 3609,
+      "sha256": "62ca2da315b29d282b3eed71e87c6bb6d9e8297dc4481d8a8b2f69544ed946c7"
+    }
+  },
+  "prior_actual175_controls": 35,
+  "prior_actual175_row_parts": [
+    {
+      "path": "outputs/tree-nested-branch-handoff-20261013/dev_native_cost_summaries/DEV5_175_ROWS_PART000.json",
+      "bytes": 89417,
+      "sha256": "a89e14106e929f9f790f2fce90e6d66a806d9889b28b8d79c913b4df43a4687b"
+    },
+    {
+      "path": "outputs/tree-nested-branch-handoff-20261013/dev_native_cost_summaries/DEV5_175_ROWS_PART001.json",
+      "bytes": 18532,
+      "sha256": "28b65e1b4d471fafbd2d4ad09e7853aaaf66a16a6fe000bfe95f26b5768213a7"
+    }
+  ],
+  "prior_actual_source1ed_successful_outers": [
+    160,
+    165,
+    170,
+    175
+  ],
+  "prior_actual_source1ed_executor_attested_main_invocations": 4,
+  "prior_actual_source1ed_executor_attested_remote_incremental_invocations": 4,
+  "collector_source_commit": "1edaf50bb8e14de51db936e0859e369792011233",
+  "collector_source_sha256": "545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0",
+  "published_fullmetric_core": {
+    "path": "work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/sync_nested_native_progress.py",
+    "bytes": 39098,
+    "sha256": "676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1"
+  },
+  "future_root_gate_schema": {
+    "schema": "dev180_root_owner_gate_pins_v1",
+    "status": "ACTUAL_DEV180_FULL_NATIVE_CUM_COST_CONTROL_READY",
+    "outer": 180,
+    "collector_source_commit": "1edaf50bb8e14de51db936e0859e369792011233",
+    "collector_source_sha256": "545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0",
+    "collector_executor_agent": "Required actual uniquely root-authorized /root/... executor identity",
+    "authorized_main_invocations": 1,
+    "authorized_remote_incremental_invocations": 1,
+    "source_pins_required_exact_names": [
+      "FULL_OUTER180_PROGRESS_RECEIPT.json",
+      "NATIVE_HISTORY_180_METADATA_READBACK.json",
+      "CUMULATIVE_COST_THROUGH180.json",
+      "COST_OUTER180_LOCAL_RECEIPT.json"
+    ],
+    "source_pin_values": "Each exact actual {path,bytes,sha256}; all future hashes and byte sizes must come from real completed180 readback.",
+    "pending_evidence": "Exact actual {path,bytes,sha256} of dev180_source_bound_pending_readback_v1 evidence; outer/source_commit/source_sha256/executor_agent/observed_utc/nonempty observations/evidence_scope, preceding_local_pending_invocations0 and preceding_pending_remote_operations false.",
+    "control_ready": "outer180, raw_summary_utf8 original COMPLETE remote JSON decoded without byte changes, and source{path,resolved_path,bytes,sha256,stable_read:true}. Original source must match the source1ed actual dev180 ledger identity; true retained18 alias mapping is exact."
+  },
+  "future_complete_gate": "FULL.status ACTUAL_FULL_OUTER180_NATIVE180_COMPLETE_NEXT181_ENTERED, complete metric and dev180512 actual COMPLETE, native identity180 with8 workers, CUM through180 and COST180. FULL-bound original poll/log supplies actual181 stage entry and active original instance; native driver.next_step181 supplies saved boundary only.",
+  "future_optimizer_semantics": "Reuse only SHA-bound existing core676d metadata validators at future invocation: complete20 actual opportunities, eachrank1..20 real writes, guarded skips, finite/nonzero samples, original native guard cumulative/partial counters and observed Adam steps. FULL/native/COST/CUM actual counters cross-bind; no unconditional3600 or all20 writes/zero skip assertion. Missing explicit independent-rank opportunities remain null.",
+  "future_dynamic_artifact_semantics": "Old175 row parts are compared to actual old owner.rows_part_refs without a fixed part count. NewDEV rows and all CUM complete-field parts are dynamically decoded; COST artifact set equals its fixed scalar artifacts plus every decoded part and count equals actual mapping length. Old35 original control bytes and rows are protected; successful future180 adds exactly onecontrol and produces36rows.",
+  "future_invocation_scope": "Prior source1ed SHA-bound executor attestations160/165/170/175 total4. Only a future unique actual collector main1/remote1 exit0 with source-bound preceding PENDING0 can produce actual180 owner receipt and cumulative5. PENDING0 and invocation totals are sole-executor attestations corroborated by artifacts, never an independent complete global process audit.",
+  "future_cli": "python3 -B work/tree-speed-repair-20261008/dev180_owner_local_receipt.py preflight|receipt --root-pins ACTUAL --root-pins-bytes ACTUAL --root-pins-sha256 ACTUAL; receipt also requires actual --execution-bytes/--execution-sha256.",
+  "source_frozen": true,
+  "source_executed": false,
+  "actual180_gate_or_execution_or_owner_receipt_generated": false,
+  "collector_invocations_this_dev180_source_preparation": 0,
+  "remote_operations_this_dev180_source_preparation": false,
+  "tests_review_or_compile_performed": false,
+  "canonical_curve_or_training_modified": false,
+  "prior175_owner_source_preserved": true,
+  "snapshot_push": "Root to arrange normal independent source snapshot publication after this preparation; no push is claimed by the preparing agent."
+}
