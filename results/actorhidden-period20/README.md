@@ -1,10 +1,26 @@
-## Current LR1e-5 execution and evidence boundaries
+## Current LR1e-5 execution: first actual periodic update
 
-The current execution is3426 on h100-8, frozen runtime dcc8715d1b64bd5c5d64d96e29b97e23f053ae22. The user explicitly chose retained complete5 after the former20 actor/Adam assets had been rotated, and confirmed only probeLR changes1e-6→1e-5. This overrides older LR text below; historical3425 results are not current-branch measurements. All other scientific settings and the total200 budget remain unchanged.
+Same3426 on h100-8 completed20/200, actor400 and probe100 actualAdam per each8rank. The new probe performed100 writes/rank at1e-5, visiting all5120 groups/25600 trajectories once with80 global255 and20 global260 batches. All8 original ledgers and fullpool/heldout token-index/strictEM bindings were independently read as CPU metadata. The512 heldout questions and normalized contents have zero overlap with the training pool. Frozen runtime remainsdcc8715d; only the human-authorized probeLR changed from the earlier execution.
 
-Actual UTC2026-10-16T20:08:18:3426 has completed16/200, actor320/probe0 actualAdam per each8rank;17 is continuing selected prefixes. Original16 rank ledgers were separately verified20writes/rank. Zero probe writes before20 are intentional. Its first100 real probe updates at1e-5 and corresponding same-actor paired metrics remain pending; no LR benefit is claimed before those observations. The original source5 QA512 receipt is reused for the identical restoredactor5; this is not new QA10/20 or final51713.
+|Same-actor paired metric|Train before|Train after|Heldout before|Heldout after|
+|---|---:|---:|---:|---:|
+|Mixed accuracy|61.80%|62.91%|56.25%|52.54%|
+|Balanced mixed accuracy|61.26%|69.19%|54.60%|58.80%|
+|Mixed recall|59.95%|84.53%|50.00%|76.22%|
+|Nonmixed recall|62.57%|53.84%|59.20%|41.38%|
+|Trajectory BCE|0.628780|0.521055|0.706191|0.619924|
+|Group BCE|0.707169|0.710282|0.743348|0.876770|
+|Total BCE|1.335949|1.231336|1.449539|1.496694|
 
-The complete20 retention worker was actually armed once outside the frozen repo, codeSHA91569d4d656334dc5586ad2932268db57fbfeb82d8ab27d30a0e41c96f97b3a4. Two actual reads confirmed the same PID3579355/startticks2312533698 waiting for realjoint20. No archive result exists yet. Arming is complete, while actual20 state preservation, independent backup and semantic reload are different events and remain unproven. Never replay its consumed start controller.
+The training pool contains1513/5120 mixed groups(29.55%); fresh heldout contains164/512(32.03%), with nonmixed-majority baseline348/512=67.97%. Top512 fixed before labels contains251/512 mixed(49.02%). The update improved balanced accuracy and mixed recall while reducing heldout ordinary accuracy and worsening group/total BCE. This is a tradeoff in one paired update, not stable quality success or isolated evidence that the LR change is better than historical1e-6. Historical3425 uses different actual rollouts and remains separately labelled below.
+
+Actual21 selection used new probeSHA9445d314f95d51d28d74f73e28467b4780c41a5232a083c851d5bef72257ad3d with actor0020. Its generated selected-group receipt reports233/512=45.51% mixed versus mean predictedq93.07%; these are selected samples, not fullpool/QA accuracy, and do not establish a causal before/after selection benefit.
+
+Actual19-to20 complete boundaries span836.506s(13m56.5). Recorded main phases sum825.472s. Probe update phase42.503s includes paired evaluation and persistence; the100-Adam loop alone takes8.163s. Ordinary resumed6-10 boundaries averaged319.145s. The100-step scalar curve is an online pre-update series across different batches; its first/last windows cannot replace the full same-head postupdate paired evaluation.
+
+The requested complete20 state was retained before normal rotation:28 declared assets/39226733741B in preparation/retained-joint20-once-v1/checkpoint. A separate read verified all target device/inode/size/mtime identities, relocatedJOINT/mapping and committed pool consumed102400/next21; original retention-worker birth is gone. This is same-disk preservation, not an independent backup or large-file SHA/semantic reload. Source5 independent backup remains complete; future50/100/150/200 and final retention/QA51713/exitcleanup remain outstanding. The readonly periodic observer ended normally after20, preservation and actual21 newprobe use; the same native training continues200/no201.
+
+Small records: lr1e5-periodic20-readback.json, lr1e5-periodic20-loss-curve.json and lr1e5-periodic20-retention-summary.json. No weights, optimizer tensors, features or full predictions were moved to Mac or Git.
 
 ## Requested complete20 retention control
 
