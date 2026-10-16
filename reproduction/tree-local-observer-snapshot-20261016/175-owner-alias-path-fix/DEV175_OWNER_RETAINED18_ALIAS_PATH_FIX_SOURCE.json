@@ -1,0 +1,49 @@
+{
+  "schema": "dev175_owner_retained18_alias_path_fix_source_v1",
+  "observed_utc": "2026-10-16T01:09:59.300495+00:00",
+  "status": "FROZEN_LOCAL_SOURCE_READY_FOR_INDEPENDENT_PUBLICATION",
+  "source": {
+    "path": "work/tree-speed-repair-20261008/dev175_owner_local_receipt.py",
+    "bytes": 38610,
+    "sha256": "ce07062ab9aaafec670d6596bce52c7cf04731dd8e8954d798433b7140710634"
+  },
+  "preserved_original_source": {
+    "path": "work/tree-speed-repair-20261008/dev175_owner_local_receipt_before_retained18_resolved_path_fix.py",
+    "bytes": 38453,
+    "sha256": "ac4419d6f9c5752cdcccc53cc5063f877df7fdd43a3d9150d39c13cebc41aa64"
+  },
+  "actual_failed_preflight": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_OWNER_PREFLIGHT_ACTUAL_PATH_FAILURE.json",
+    "bytes": 1941,
+    "sha256": "c81ac73455de0833ae327bf519f4248466296a21fc8a4799a4a125e75488760b"
+  },
+  "root_gate_preserved": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_ROOT_OWNER_GATE_PINS.json",
+    "bytes": 6580,
+    "sha256": "772ce02ea6edec157bd41f44bf2f0ce35c6ad18f6db604268b6a33e284f849f5"
+  },
+  "pending_evidence_preserved": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_SOURCE_BOUND_PENDING_READBACK.json",
+    "bytes": 2762,
+    "sha256": "bea3243090f08a02c87f4bc863ecc7f4cf4848cb3d783ed02c24243726b6f7da"
+  },
+  "fix": "Replace the erroneous resolved_path /dataset prefix assertion with exact mapping of this task /dataset/shaoshitong/search-r1-rl/tree-grpo/ alias to the existing retained18 /mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/ root. The original control path must have the exact source alias and the resolved path must equal the mapped path, retaining every suffix byte.",
+  "authorization": "Root explicit instruction approved the minimal strict known-alias mapping after actual preflight failure; old source and actual failure evidence must remain unchanged. Publish independently before actual collector execution.",
+  "independent_reader_static_observation": {
+    "path": "work/tree-speed-repair-20261008/dev175_independent_actual_readback.py",
+    "line": 259,
+    "current_assertion": "meta['resolved_path'].startswith(('/dataset/', '/mnt/'))",
+    "same_dataset_only_guard_present": false,
+    "changed": false
+  },
+  "collector_source_commit": "1edaf50bb8e14de51db936e0859e369792011233",
+  "collector_source_sha256": "545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0",
+  "new_entry_main_invocations_this_task": 0,
+  "actual_remote_incremental_collection_invocations": 0,
+  "preceding_local_pending_invocations": 0,
+  "preceding_pending_remote_operations": false,
+  "source_frozen": true,
+  "tests_or_review_performed": false,
+  "training_or_runtime_modified": false,
+  "canonical_or_curve_modified": false
+}

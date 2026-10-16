@@ -1,0 +1,36 @@
+{
+  "schema": "dev175_actual_owner_preflight_path_failure_v1",
+  "observed_utc": "2026-10-16T01:09:33.622872+00:00",
+  "status": "PREFLIGHT_FAILED_BEFORE_COLLECTOR_INVOCATION",
+  "executor_agent": "/root/dev175_actual_collector_owner",
+  "owner_builder": {
+    "path": "work/tree-speed-repair-20261008/dev175_owner_local_receipt.py",
+    "bytes": 38453,
+    "sha256": "ac4419d6f9c5752cdcccc53cc5063f877df7fdd43a3d9150d39c13cebc41aa64"
+  },
+  "root_gate_input_pins": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_ROOT_OWNER_GATE_PINS.json",
+    "bytes": 6580,
+    "sha256": "772ce02ea6edec157bd41f44bf2f0ce35c6ad18f6db604268b6a33e284f849f5"
+  },
+  "preflight_exit_code": 1,
+  "failed_source_line": 348,
+  "error": "assert isinstance(meta[resolved_path], str) and meta[resolved_path].startswith(/dataset/) raised AssertionError; original retained18 alias resolves to /mnt/data/",
+  "actual_original_control": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/validation-cost/validation-506917-34.json",
+    "resolved_path": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/validation-cost/validation-506917-34.json",
+    "bytes": 3609,
+    "sha256": "62ca2da315b29d282b3eed71e87c6bb6d9e8297dc4481d8a8b2f69544ed946c7",
+    "mtime_ns": 1792112369459085132,
+    "stable_read": true
+  },
+  "same_original_retained18_alias_seen_in_prior170": true,
+  "new_entry_main_invocations_this_task": 0,
+  "actual_remote_incremental_collection_invocations": 0,
+  "preceding_local_pending_invocations": 0,
+  "preceding_pending_remote_operations": false,
+  "separate_original_control_ready_read_calls": 1,
+  "training_operations": false,
+  "canonical_or_curve_modified": false,
+  "tests_or_review_performed": false
+}
