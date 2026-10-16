@@ -36,9 +36,54 @@ BUDGET = dict(total_tokens=4096, action_tokens=500, answer_reserve_tokens=500)
 
 def record(s, request, tokens, finish_reason='length', aborted=False):
     return append_chunk(s, request, tokens, [-.125] * len(tokens),
-                        dict(max_tokens=request['max_tokens'], seed=request['seed'], logprobs=1),
+                        dict(max_tokens=request['max_tokens'], seed=request['seed'], logprobs=1,
+                             temperature=1.,top_p=1.,top_k=-1,n=1),
                         finish_reason=finish_reason, stop_reason=None, terminal_ids=[0],
                         decode=decode, action_boundary_abort=aborted)
+
+
+def full_record_fixture(s):
+    """The actual persisted actor fields from a completed native state fixture."""
+    return dict(actor_version=s['actor_version'],policy_snapshot_id=s['actor_version'],
+        sampling_contract=CONTRACT,initial_prompt_token_ids=s['prompt'],
+        response_token_ids=s['response'],response_info_mask=s['info_mask'],
+        response_log_probs=s['log_probs'],strict_em=1,behavior_turns=s['turns'],
+        sampling_journal=[chunk for turn in s['turns'] for chunk in turn['actual_sampling_chunks']],
+        reward_model={'ground_truth':{'target':['ok']},'style':'rule'},data_source='nq')
+
+
+def assert_actor_fields(test, row):
+    """Always check causal assembly; use real actor adapter when integrated.
+
+    This rollout-only branch intentionally does not own actor.py. Cherry-pick
+    into the integration branch automatically adds its real CPU validator to
+    these exact same native-state fixtures, with no absolute external path.
+    """
+    try:
+        from reproduction.prefix_selection200.actor import validate_record
+    except ModuleNotFoundError as error:
+        if error.name != 'reproduction.prefix_selection200.actor':
+            raise
+    else:
+        test.assertIs(validate_record(row,row['actor_version']),row)
+    response,mask,lp,journal=[],[],[],[]
+    for turn in row['behavior_turns']:
+        request=turn['actual_request_token_ids']
+        test.assertEqual(request,row['initial_prompt_token_ids']+response)
+        raw,rawlp=[],[]
+        for chunk in turn['actual_sampling_chunks']:
+            test.assertEqual(chunk['actual_request_token_ids'],request+raw)
+            raw.extend(chunk['raw_generated_token_ids']);rawlp.extend(chunk['selected_logprobs'])
+            journal.append(chunk)
+        n=turn['kept_token_count']
+        observation=turn['observation_token_ids']+turn['correction_token_ids']
+        test.assertEqual(raw,turn['raw_generated_token_ids'])
+        response.extend(raw[:n]+observation);mask.extend([1]*n+[0]*len(observation))
+        lp.extend(rawlp[:n]+[0.]*len(observation))
+    test.assertEqual(response,row['response_token_ids'])
+    test.assertEqual(mask,row['response_info_mask'])
+    test.assertEqual(lp,row['response_log_probs'])
+    test.assertEqual(journal,row['sampling_journal'])
 
 
 class NativePrefixContinuityTest(unittest.TestCase):
@@ -66,6 +111,30 @@ class NativePrefixContinuityTest(unittest.TestCase):
         self.assertEqual([c['sampling']['max_tokens'] for c in chunks],[20,480])
         self.assertEqual(chunks[1]['finish_reason'],None)
         self.assertTrue(chunks[1]['native_action_boundary_abort'])
+        assert_actor_fields(self,full_record_fixture(resumed))
+
+    def test_same_prefix_cross_tool18_plus2_then_native498_actor_packet(self):
+        s=state();start_action(s,BUDGET)
+        first=next_request(s,'prefix',{})
+        cut=record(s,first,[ord(c) for c in '<search>x</search>'],None,True)
+        finish_action(s,cut,('<information>tool</information>',False,1,1),CharacterTokenizer(),BUDGET)
+        start_action(s,BUDGET)
+        second=next_request(s,'prefix',{})
+        self.assertEqual(second['max_tokens'],2)
+        self.assertIsNone(record(s,second,[97,98]))
+        scored=prefix_record(s)
+        continued=copy.deepcopy(s)
+        third=next_request(continued,'continue',{})
+        self.assertEqual(third['max_tokens'],498)
+        self.assertEqual(third['actual_request_token_ids'],second['actual_request_token_ids']+[97,98])
+        cut=record(continued,third,[ord(c) for c in '<answer>ok</answer>'],None,True)
+        finish_action(continued,cut,('',True,1,0),CharacterTokenizer(),BUDGET)
+        after=prefix_record(continued)
+        self.assertEqual(after['policy_token_ids'],scored['policy_token_ids'])
+        self.assertEqual(after['policy_position_ids'],scored['policy_position_ids'])
+        self.assertEqual([c['sampling']['max_tokens'] for t in continued['turns']
+                          for c in t['actual_sampling_chunks']],[20,2,498])
+        assert_actor_fields(self,full_record_fixture(continued))
 
     def test_first_action_is_first_regex_match_not_future_search_priority(self):
         tokens=[ord(c) for c in '<answer>A</answer><search>future</search>']
