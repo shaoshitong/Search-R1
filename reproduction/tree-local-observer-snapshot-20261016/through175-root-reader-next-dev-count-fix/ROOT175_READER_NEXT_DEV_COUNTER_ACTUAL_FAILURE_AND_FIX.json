@@ -1,0 +1,35 @@
+{
+  "schema": "root175_local_reader_next_dev_counter_fix_v1",
+  "created_utc": "2026-10-16T01:29:51.376700+00:00",
+  "actual_failed_reader_exit_code": 1,
+  "failed_line": 116,
+  "failed_assertion": "selected_next_completed_dev_outer==175",
+  "actual_bound_canonical_next_dev": 180,
+  "actual_bound_cumulative_source1ed_main": 4,
+  "actual_bound_cumulative_source1ed_remote": 4,
+  "failure_evidence_scope": "Root actual tool exit1 and separately observed canonical fields; no fabricated raw process log.",
+  "changes": [
+    "Read-only assertion nexteligible dev175->180",
+    "Read-only cumulative same-source actual calls3->4"
+  ],
+  "previous_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/tree_through175_full_root_readback.before_next_dev_count_fix.command.txt",
+    "bytes": 19132,
+    "sha256": "0e2de3cc3f9c3a4e4fb7ace2eeb1ba235a0ba860663ec2ea94c38158b84f0983"
+  },
+  "corrected_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/tree_through175_full_root_readback.template.command.txt",
+    "bytes": 19132,
+    "sha256": "f18f8460e4192e3d575154544da9d308f5ca813f9fe01464c949f0c25e05720c"
+  },
+  "actual_successful_root_receipt": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/ROOT_FULL175_PUBLICATION_READBACK_2228_2233.json",
+    "bytes": 19344,
+    "sha256": "134be331abbb2396278d6ce272b0b3cd73373862c3c73503f26944d80413b0b2"
+  },
+  "root_reader_failure_wrote_success_receipt": false,
+  "training_action": false,
+  "canonical_mutation_by_reader": false,
+  "reviews_tests_or_compile": false,
+  "publication_pending": true
+}
