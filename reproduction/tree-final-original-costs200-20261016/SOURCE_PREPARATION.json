@@ -1,14 +1,14 @@
 {
   "schema": "tree_final200_original_cost_source_preparation_v2",
   "status": "SOURCE_FROZEN_NOT_EXECUTED",
-  "prepared_utc": "2026-10-16T10:24:56.095606+00:00",
+  "prepared_utc": "2026-10-16T10:32:04.485378+00:00",
   "base_snapshot_commit": "5f21afcd19dcbb17ed70ac18133e9d82133fa9f7",
   "branch": "codex/tree-final-original-costs200-20261016",
   "source_files": {
     "final_original_costs200.py": {
       "path": "work/tree-speed-repair-20261008/final_original_costs200.py",
-      "bytes": 52783,
-      "sha256": "cdbd9cb955e897db0b7f912baa6236c29855048f2248c761644767e76b185ee1"
+      "bytes": 52790,
+      "sha256": "c694b96ae4afba7115414e92e0c8ddf6b3dd8b3d0f72fa94ac73ba0869cc855d"
     },
     "final_original_costs200_remote.py": {
       "path": "work/tree-speed-repair-20261008/final_original_costs200_remote.py",
@@ -43,11 +43,13 @@
   "scope_narrowing": "No compatibility CUM200/BOOK/source1ed8/owner/canonical chain. Old7/7 protected; final new collector counts separate. Reuse38 original controls, newly read195+200 only.",
   "static_checks": "AST parsing of all three sources and assembled remote fragments; small extracted pure-helper assertions for original dev5 phase, partial known sums, O_EXCL exclusive acquisition, exact framed-response roundtrip and local mirror recovery. No import/main/H100/runtime/compilation/training tests or new review.",
   "runtime_calls": {
-    "prepare_pins_main": 1,
-    "prepare_remote_helper": 1,
+    "prepare_pins_main": 2,
+    "prepare_remote_helper": 2,
     "prepare_exit1": 1,
-    "new_collector_main": 0,
+    "prepare_exit0": 1,
+    "new_collector_main": 1,
     "new_remote_helper": 0,
+    "collector_pre_ssh_budget_exit1": 1,
     "source1ed": 0,
     "variance_entry": 0,
     "training_or_evaluation": 0
@@ -62,5 +64,6 @@
     "sha256": "cb57a90dabe41694aa9ce2c116f4f703098812e7deae446220665cdbf5923ad2"
   },
   "additional_repair_of_commit": "516aceadb27e77d02eaefdf2b17d356edfc286bc",
-  "runtime_correction": "Exclude policy_batch via same exact audit basename regex as collect; REPAIR001 has independent O_EXCL qualification and requires SHA-bound known failed original response. No deletion/overwrite of first ATTEMPT/response."
+  "runtime_correction": "Exclude policy_batch via same exact audit basename regex as collect; REPAIR001 has independent O_EXCL qualification and requires SHA-bound known failed original response. No deletion/overwrite of first ATTEMPT/response.",
+  "transport_correction": "Lossless stdlib lzma instead of zlib; same compressed target<=32768, management<=65536, argv<=80000 caps and all fields/SHA preserved. Actual program586828B: base64 zlib40544B failed before claim/SSH; base64 lzma29000B. No new remote preparation required."
 }

@@ -39,8 +39,8 @@
   "current_sources": {
     "final_original_costs200.py": {
       "path": "work/tree-speed-repair-20261008/final_original_costs200.py",
-      "bytes": 52783,
-      "sha256": "cdbd9cb955e897db0b7f912baa6236c29855048f2248c761644767e76b185ee1"
+      "bytes": 52790,
+      "sha256": "c694b96ae4afba7115414e92e0c8ddf6b3dd8b3d0f72fa94ac73ba0869cc855d"
     },
     "final_original_costs200_remote.py": {
       "path": "work/tree-speed-repair-20261008/final_original_costs200_remote.py",
@@ -62,11 +62,13 @@
   "actual200_request_or_manifest_created": false,
   "actual200_success_claimed": false,
   "runtime_calls": {
-    "prepare_pins_main": 1,
-    "prepare_remote_helper": 1,
+    "prepare_pins_main": 2,
+    "prepare_remote_helper": 2,
     "prepare_exit1": 1,
-    "new_collector_main": 0,
+    "prepare_exit0": 1,
+    "new_collector_main": 1,
     "new_remote_helper": 0,
+    "collector_pre_ssh_budget_exit1": 1,
     "source1ed": 0,
     "variance_entry": 0,
     "training_or_evaluation": 0
@@ -86,5 +88,6 @@
     "bytes": 1450,
     "sha256": "f9f613bd9d4863da5481167604f2ebd80f6d6946696933abc58062153bd388b8"
   },
-  "runtime_correction": "Exclude policy_batch via same exact audit basename regex as collect; REPAIR001 has independent O_EXCL qualification and requires SHA-bound known failed original response. No deletion/overwrite of first ATTEMPT/response."
+  "runtime_correction": "Exclude policy_batch via same exact audit basename regex as collect; REPAIR001 has independent O_EXCL qualification and requires SHA-bound known failed original response. No deletion/overwrite of first ATTEMPT/response.",
+  "transport_correction": "Lossless stdlib lzma instead of zlib; same compressed target<=32768, management<=65536, argv<=80000 caps and all fields/SHA preserved. Actual program586828B: base64 zlib40544B failed before claim/SSH; base64 lzma29000B. No new remote preparation required."
 }

@@ -35,7 +35,7 @@ from pathlib import Path
 import re
 import shlex
 import uuid
-import zlib
+import lzma
 
 
 CHILD = '778b2b43dad90fc0c1c5d95d77c2326286011b73'
@@ -427,8 +427,8 @@ def remote_fragment(raw,mode):
 
 
 def transport_program(program):
-    packed=base64.b64encode(zlib.compress(program.encode(),9)).decode()
-    command='env CUDA_VISIBLE_DEVICES= python3 -B -c '+shlex.quote('import base64,zlib;exec(zlib.decompress(base64.b64decode('+repr(packed)+')))')
+    packed=base64.b64encode(lzma.compress(program.encode(),preset=9)).decode()
+    command='env CUDA_VISIBLE_DEVICES= python3 -B -c '+shlex.quote('import base64,lzma;exec(lzma.decompress(base64.b64decode('+repr(packed)+')))')
     helper=module(W/HELPER,'final200_original_existing_route');argv=helper.route(command,'h100-10')
     transport=dict(program_bytes=len(program.encode()),target_command_bytes=len(command.encode()),
                    management_command_bytes=len(argv[-1].encode()),all_local_argv_bytes=sum(len(x.encode())+1 for x in argv))
