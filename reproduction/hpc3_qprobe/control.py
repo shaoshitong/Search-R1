@@ -67,8 +67,17 @@ def prepare(base):
     link(base/'assets/e5-base-v2',REUSED/'source/assets-root/assets/e5-base-v2')
     link(base/'retriever-gpu-lib',REUSED/'runtime/gpu-faiss-alignment-candidate')
     headers(base,binary)
+    from reproduction.hpc3_qprobe.probe_cpu_runtime import verify as verify_probe_cpu,fit_gate
+    cpu_site,cpu_proof=verify_probe_cpu()
+    actual_cpu_fit=fit_gate()
+    cpu_binding=dict(root=str(cpu_site),status=cpu_proof['status'],
+        wheels=cpu_proof['wheels'],file_count=len(cpu_proof['files']),actual_fit=actual_cpu_fit)
+    cpu_receipt=base/'preparation/probe-cpu-runtime.json'
+    if cpu_receipt.exists():
+        if json.loads(cpu_receipt.read_text())!=cpu_binding:raise ValueError('CPU runtime binding changed')
+    else:publish(cpu_receipt,cpu_binding)
     wrapper='#!/usr/bin/env bash\nset -euo pipefail\n'
-    wrapper+='export PYTHONPATH="${QPROBE_SOURCE:-'+str(base/'repo')+'}:'+str(REUSED/'runtime/gpu-faiss-alignment-candidate')+':'+str(site)+'${PYTHONPATH:+:$PYTHONPATH}"\n'
+    wrapper+='export PYTHONPATH="${QPROBE_SOURCE:-'+str(base/'repo')+'}:'+str(cpu_site)+':'+str(REUSED/'runtime/gpu-faiss-alignment-candidate')+':'+str(site)+'${PYTHONPATH:+:$PYTHONPATH}"\n'
     wrapper+='export LD_LIBRARY_PATH="'+str(REUSED/'runtime/retriever-python310-candidate/lib')+'${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"\n'
     wrapper+='unset PYTHONHOME\nexec '+shlex.quote(str(binary))+' "$@"\n'
     python=base/'env/bin/python'

@@ -70,7 +70,7 @@ def pristine_failure():
         original_training_log_sha256=sha(FAILED/('logs/training-'+JOB+'.log')),checked_unix=time.time())
 
 
-def relocate_global_storage(original_base,target):
+def relocate_global_storage(original_base,target,additional_prelaunch_reserve_bytes=2*2**30):
     """Copy actual global observation bytes; preserve its original timestamps.
 
     No new walk or fresher measurement is claimed. Reserve another 2GiB for
@@ -96,10 +96,12 @@ def relocate_global_storage(original_base,target):
     for key in ('stdout_file','stderr_file'):proof[key]=root[key]
     proof['original_root_receipt_file']=str(root_path);proof['original_root_receipt_sha256']=sha(root_path)
     proof['permission_subtree_complements']=[raw(row,'part-'+str(i)) for i,row in enumerate(original['permission_subtree_complements'])]
-    proof['additional_prelaunch_reserve_bytes']=2*2**30
+    if additional_prelaunch_reserve_bytes not in (2*2**30,4*2**30):
+        raise ValueError('PREFIX20_RECOVERY_CUMULATIVE_RESERVE_INVALID')
+    proof['additional_prelaunch_reserve_bytes']=additional_prelaunch_reserve_bytes
     proof['relocation_provenance']=dict(original_aggregate_path=str(source),original_aggregate_sha256=sha(source),
         original_observation_timestamps_preserved=True,new_root_du_performed=False,copied_unix=time.time(),
-        semantics='same still-fresh global account measurement; absolute evidence paths only relocated; extra2GiB target allowance')
+        semantics='same still-fresh global account measurement; absolute evidence paths relocated; explicitly bounded cumulative recovery allowance')
     validate_upper_bound(proof,target)
     publish(target/'preparation/personal-storage-observation.json',proof)
     return dict(original_checked_unix=proof['checked_unix'],allocated_bytes_upper_bound=proof['allocated_bytes_upper_bound'],

@@ -137,7 +137,7 @@ def storage_plan(observation,checkpoint,budget,*,now=None):
     source_copies=len(checkpoint['save_steps']);restore_copies=1
     encoder_dependency=checkpoint['per_save_allowance_bytes']
     recovery_extra=observation.get('additional_prelaunch_reserve_bytes',0)
-    if type(recovery_extra) is not int or recovery_extra not in (0,2*2**30):
+    if type(recovery_extra) is not int or recovery_extra not in (0,2*2**30,4*2**30):
         raise ValueError('PREFIX20_RECOVERY_PRELAUNCH_RESERVE_DIFFERS')
     reserve=(source_copies+restore_copies)*per_pair+encoder_dependency+96*2**30+recovery_extra
     if type(budget) is not int or budget not in (2*10**12,25*10**11):

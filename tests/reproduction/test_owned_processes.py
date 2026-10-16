@@ -10,6 +10,8 @@ from unittest.mock import patch
 from reproduction.a800 import owned_processes as m
 from reproduction.a800 import run_pipeline as pipeline
 
+@unittest.skipUnless(Path('/proc/self/stat').exists() and hasattr(os,'pidfd_open') and hasattr(signal,'pidfd_send_signal'),
+                     'Modern Linux pidfd tests; the separate legacy suite tests missing-pidfd execution')
 class OwnedProcessTests(unittest.TestCase):
     def test_actual_owned_cleanup_preserves_foreign_session(self):
         with tempfile.TemporaryDirectory() as d:
