@@ -1,6 +1,7 @@
 """Read only per-complete-outer native generation counts, never model tensors."""
 import hashlib
 import json
+import math
 from pathlib import Path
 import time
 
@@ -30,6 +31,17 @@ def collect(bases, run_id):
                     raise ValueError('Sampled token rank accounting differs')
                 if value['native_generation_requests'] != sum(x['generation_requests'] for x in value['ranks']):
                     raise ValueError('Native request rank accounting differs')
+            reward = joint['actor']['reward']
+            if (reward['version'] != config['grounding_probe_version']
+                    or reward['trajectories'] != 2560 or reward['actual_reward_world_size'] != 8
+                    or reward['prefix_correctness_head_used_for_reward']
+                    or len(reward['ranks']) != 8
+                    or {r['rank'] for r in reward['ranks']} != set(range(8))):
+                raise ValueError('Actual grounding reward identity or scope differs')
+            numbers = [reward['score_mean']] + [r[k] for r in reward['ranks']
+                for k in ('score_mean', 'score_min', 'score_max')]
+            if not all(math.isfinite(v) for v in numbers):
+                raise ValueError('Nonfinite committed grounding reward statistics')
             rows[str(outer)] = dict(outer=outer, base=str(base),
                 prefix_sampled_tokens=prefix['actual_sampled_tokens'],
                 continuation_new_sampled_tokens=continuation['actual_sampled_tokens'],
@@ -38,6 +50,11 @@ def collect(bases, run_id):
                 continuation_native_generation_requests=continuation['native_generation_requests'],
                 actor_synchronized_adam_per_rank=20, probe_synchronized_adam_per_rank=20,
                 rank_replicas_not_summed_as_global_steps=True, phase_timings=joint['phase_timings'],
+                actor_grounding_reward_summary=dict(version=reward['version'], trajectories=2560,
+                    score_mean=reward['score_mean'], score_min=min(r['score_min'] for r in reward['ranks']),
+                    score_max=max(r['score_max'] for r in reward['ranks']),
+                    rank_count=8, all_rank_statistics_finite=True,
+                    prefix_correctness_head_used_for_reward=False, source='original saved actor reward receipt'),
                 receipt_sha256={str(p):hashlib.sha256(p.read_bytes()).hexdigest()
                     for p in (path,prefix_path,continuation_path)})
     return dict(run_id=run_id, observed_unix=time.time(), complete_outer_rows=rows,
