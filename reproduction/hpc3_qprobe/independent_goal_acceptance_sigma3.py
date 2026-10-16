@@ -99,6 +99,13 @@ ARCHIVE100_SECOND_RECOVERY_SOURCE='23ab8b0c8af403ec830644ff4fa04eeef7f55927'
 ARCHIVE100_THIRD_RECOVERY_SOURCE='f8a332a72257f54bf0c01a01fce592e2515d7937'
 ARCHIVE100_FOURTH_RECOVERY_SOURCE='5f0065b98d1239c994addc19fd0b7e32f506d7fd'
 ARCHIVE150_FIRST_RECOVERY_SOURCE='dc98dff19f64b3fc655ecf22d6be6991e16a1f3a'
+ARCHIVE150_SECOND_RECOVERY_SOURCE='8c27351b20fd4221d6e2c15284527af796773eac'
+ARCHIVE150_ROUTES={
+    ARCHIVE150_FIRST_RECOVERY_SOURCE:('recover_sigma3_archive150_first',ROOT/'followthrough/721485-archive150-recovery-first-20261016',
+        'owner_partition_storage','actual-full-owner-partition-du-v1'),
+    ARCHIVE150_SECOND_RECOVERY_SOURCE:('recover_sigma3_archive150_second',ROOT/'followthrough/721485-archive150-recovery-second-20261016',
+        'owner_partition_storage_v2','actual-full-owner-partition-du-v2'),
+}
 ARCHIVE100_ROUTES={
     ARCHIVE100_FOURTH_RECOVERY_SOURCE:('recover_sigma3_archive100_fourth',ROOT/'followthrough/721485-archive100-recovery-fourth-20261016'),
     ARCHIVE100_RECOVERY_SOURCE:('recover_sigma3_archive100',ROOT/'followthrough/721485-archive100-recovery-20261016'),
@@ -109,12 +116,12 @@ ARCHIVE100_ROUTES={
 
 def followthrough_route(followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None,archive150_recovery_commit=None):
     if archive150_recovery_commit is not None:
-        need(archive150_recovery_commit==followthrough_commit==ARCHIVE150_FIRST_RECOVERY_SOURCE and
+        need(archive150_recovery_commit in ARCHIVE150_ROUTES and archive150_recovery_commit==followthrough_commit and
              archive100_recovery_commit==ARCHIVE100_FOURTH_RECOVERY_SOURCE,
              'explicit registered150 follower and separately retained original5f100 required')
         followthrough_route(archive100_recovery_commit,recovery_commit,observer_recovery_commit,
                             archive_recovery_commit,archive100_recovery_commit)
-        return 'recover_sigma3_archive150_first',ROOT/'followthrough/721485-archive150-recovery-first-20261016'
+        return ARCHIVE150_ROUTES[archive150_recovery_commit][:2]
     if archive100_recovery_commit is not None:
         need(archive100_recovery_commit in ARCHIVE100_ROUTES and
              followthrough_commit==archive100_recovery_commit and
@@ -231,13 +238,24 @@ def archive50_recovery_evidence(recovery,archive_recovery_commit,archive100_reco
 
 def prior_archive150_evidence(recovery,archive150_recovery_commit,archive100_recovery_commit):
     if archive150_recovery_commit is None:return recovery
-    need(archive150_recovery_commit==ARCHIVE150_FIRST_RECOVERY_SOURCE and
+    need(archive150_recovery_commit in ARCHIVE150_ROUTES and
          archive100_recovery_commit==ARCHIVE100_FOURTH_RECOVERY_SOURCE and isinstance(recovery,dict) and
          recovery.get('source',{}).get('commit')==archive150_recovery_commit and
-         recovery.get('storage_protocol')=='actual-full-owner-partition-du-v1',
+         recovery.get('storage_protocol')==ARCHIVE150_ROUTES[archive150_recovery_commit][3],
          'registered150 handoff/source/storage protocol differs')
     from reproduction.hpc3_qprobe.recovery_lineage_stage import consume
     original=consume(archive100_recovery_commit,'recover_sigma3_archive100_fourth')
+    if archive150_recovery_commit==ARCHIVE150_SECOND_RECOVERY_SOURCE:
+        first=consume(ARCHIVE150_FIRST_RECOVERY_SOURCE,'recover_sigma3_archive150_first')
+        retired=recovery.get('active_CPU_retirement') or {}
+        need(recovery.get('prior_archive150_first_recovery')==first and
+             first.get('prior_archive100_fourth_recovery')==original and
+             retired.get('source',{}).get('commit')=='5e519ad272660c97578447f06b0190e30b22517b' and
+             retired.get('complete',{}).get('sha256')=='6a28843d779c5feb69d286ad19f22a5a75a12b93ac469b71bd880841a056be38' and
+             retired.get('active_retirement') is True and retired.get('spontaneous_failure') is False and
+             retired.get('actual_archive_child_wait_exit_code')==-15 and retired.get('original_follower_exit_code')==1 and
+             recovery.get('original_archive_child_exit')==-15,
+             'second150 lost its original S recovery or actual CPU retirement')
     need(recovery.get('prior_archive100_fourth_recovery')==original and all(recovery.get(key)==original.get(key)
          for key in ('observer_recovery','prior_archive50_second_recovery','inherited_archive50',
                      'prior_archive100_recovery','prior_archive100_second_recovery','prior_archive100_third_recovery',
@@ -586,7 +604,7 @@ def held_archive_evidence(run, producer, followthrough, follow_source, follow_pr
              set(inherited_reads.get('transports',{}))==set(inherited_reads.get('readbacks',{}))=={'5','50','100'} and
              inherited_reads.get('training_actions')==inherited_reads.get('permission_changes')==0 and
              finite(inherited_reads.get('checked_unix')),'new150 follower original prefix readback missing')
-        partition,_=load_fixed(archive150_recovery_commit,'owner_partition_storage','ctl')
+        partition,_=load_fixed(archive150_recovery_commit,ARCHIVE150_ROUTES[archive150_recovery_commit][2],'ctl')
     for step in (5,50,100,150,200,None):
         folder = components/('audit-controller' if step is None else 'archive-'+str(step))
         values = []
@@ -849,7 +867,7 @@ def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recov
         need(follow.consume(recovery_commit) == follow_proof['archive5_recovery'],'archive5 recovery changed during final conjunction')
     after_accounting, after_producer = producer_acceptance()
     if archive150_recovery_commit is not None:
-        partition,_=load_fixed(archive150_recovery_commit,'owner_partition_storage','ctl')
+        partition,_=load_fixed(archive150_recovery_commit,ARCHIVE150_ROUTES[archive150_recovery_commit][2],'ctl')
         for step in (150,200):
             actual=partition.consume(ROOT/'final-control'/RUN/('archive-'+str(step)))
             need(actual==held[str(step)]['owner_partition_storage'],

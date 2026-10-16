@@ -25,7 +25,8 @@ def scope(recovery_commit=None,observer_recovery_commit=None,archive_recovery_co
     if archive150_recovery_commit is not None:
         reader.followthrough_route(archive150_recovery_commit,recovery_commit,observer_recovery_commit,
                                    archive_recovery_commit,archive100_recovery_commit,archive150_recovery_commit)
-        return DIRECTORY.with_name(DIRECTORY.name+'-archive150-recovery-first')
+        suffix='second' if archive150_recovery_commit==reader.ARCHIVE150_SECOND_RECOVERY_SOURCE else 'first'
+        return DIRECTORY.with_name(DIRECTORY.name+'-archive150-recovery-'+suffix)
     if archive100_recovery_commit is not None:
         reader.followthrough_route(archive100_recovery_commit,recovery_commit,observer_recovery_commit,
                                    archive_recovery_commit,archive100_recovery_commit,archive150_recovery_commit)
@@ -160,9 +161,19 @@ def accept_output(proof,commit,followthrough_commit,admission,recovery_commit=No
             (latest.get('inherited_archive100') or {}).get('source')==original.get('source'),
             '150 stdout lost its separately authenticated original5f100 inheritance')
         held=proof.get('actual_archive_and_submit_held_children') or {}
+        if archive150_recovery_commit==reader.ARCHIVE150_SECOND_RECOVERY_SOURCE:
+            first=latest.get('prior_archive150_first_recovery') or {};retired=latest.get('active_CPU_retirement') or {}
+            ctl.need(first.get('source',{}).get('commit')==reader.ARCHIVE150_FIRST_RECOVERY_SOURCE and
+                first.get('prior_archive100_fourth_recovery')==original and
+                retired.get('source',{}).get('commit')=='5e519ad272660c97578447f06b0190e30b22517b' and
+                retired.get('complete',{}).get('sha256')=='6a28843d779c5feb69d286ad19f22a5a75a12b93ac469b71bd880841a056be38' and
+                retired.get('active_retirement') is True and retired.get('spontaneous_failure') is False and
+                retired.get('actual_archive_child_wait_exit_code')==-15 and retired.get('original_follower_exit_code')==1 and
+                latest.get('original_archive_child_exit')==-15,
+                'second150 stdout lost original S recovery or actual CPU retirement')
         for step in ('150','200'):
             storage=(held.get(step) or {}).get('owner_partition_storage') or {}
-            ctl.need(storage.get('protocol')=='actual-full-owner-partition-du-v1' and
+            ctl.need(storage.get('protocol')==reader.ARCHIVE150_ROUTES[archive150_recovery_commit][3] and
                 storage.get('complete_partition_coverage') is True and storage.get('exact_usage_or_hardquota_claimed') is False and
                 type(storage.get('allocated_upper_bound_bytes')) is int and storage['allocated_upper_bound_bytes']>=0,
                 '150/200 stdout lacks complete owner partition consumption')

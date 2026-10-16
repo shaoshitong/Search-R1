@@ -155,3 +155,14 @@ Only a source-bound closed/superseded request with no MOU claim receives a
 typed zero-admission result. The local driver keeps its original durable
 intent and follows the next request. Existing claims and transport timeouts
 remain unknown and never authorize an owner-start replay.
+
+The independent second150 route explicitly pins runtime
+`8c27351b20fd4221d6e2c15284527af796773eac`, separately retains S and5f, and
+loads its `owner_partition_storage_v2.py` for150/200. The independent CPU
+holder uses a separate `archive150-recovery-second` control directory. Missing
+200 fails before source traversal, directory creation or process launch.
+Final acceptance still requires all five full checkpoint transports, actual
+held0 CPU results, every normal-return RAW audit, fixed200, exactnative51713,
+seven-source EM/F1, twice-consumed actual native4 full-state/dataequal recovery,
+unchanged scientific code, and no201. Neither V2 storage nor typed retirement
+alone is a goal acceptance.
