@@ -1,12 +1,18 @@
 """CPU contracts for real native chunk continuity, not a substitute GPU gate."""
 import copy
+from pathlib import Path
+import sys
+import tempfile
 import unittest
 from types import SimpleNamespace
+from unittest.mock import patch
 
 from reproduction.prefix_selection200.rollout import (
     BOUNDARY, CONTRACT, append_chunk, finish_action, first_action_cut,
-    next_request, prefix_record, registered_sampling, seed_for, start_action, stream_action_present, validate_selection,
+    _build_llm, file_item, native_snapshot, next_request, prefix_record, registered_sampling,
+    seed_for, start_action, stream_action_present, validate_rank_receipt, validate_selection,
 )
+from reproduction.prefix20_online.pool import canonical,digest
 
 
 class CharacterTokenizer:
@@ -166,6 +172,60 @@ class NativePrefixContinuityTest(unittest.TestCase):
         self.assertEqual(evidence['stop_token_ids'],[1,2])
         self.assertEqual(evidence['caller_sampling']['stop_token_ids'],[1])
         self.assertEqual(evidence['effective_all_stop_token_ids'],[1,2,3])
+
+    def test_intermediate_native_snapshot_precedes_abort_mutation(self):
+        native=SimpleNamespace(token_ids=[7,8],logprobs=[{7:SimpleNamespace(logprob=-.2)},
+            {8:SimpleNamespace(logprob=-.3)}],finish_reason=None,stop_reason=None)
+        captured=native_snapshot(native)
+        # External abort/next output may release or mutate live seq structures.
+        native.token_ids.clear();native.logprobs.clear();native.finish_reason='abort'
+        self.assertEqual(captured['raw_generated_token_ids'],[7,8])
+        self.assertEqual(captured['selected_logprobs'],[-.2,-.3])
+        self.assertIsNone(captured['finish_reason'])
+
+    def test_partial_native_logprob_commit_cannot_be_filled_or_truncated(self):
+        native=SimpleNamespace(token_ids=[7,8],logprobs=[{7:-.2}],finish_reason=None,stop_reason=None)
+        with self.assertRaisesRegex(ValueError,'token_count=2 logprob_count=1'):
+            native_snapshot(native)
+
+    def test_vllm_synchronous_output_commit_keeps_continuous_large_scheduler(self):
+        calls=[]
+        def fake_llm(**kwargs):
+            calls.append(kwargs);return object()
+        with patch.dict(sys.modules,{'vllm':SimpleNamespace(LLM=fake_llm)}):
+            _build_llm({},'official',13,80*1024**3,80*1024**3)
+        self.assertTrue(calls[0]['disable_async_output_proc'])
+        self.assertTrue(calls[0]['enable_chunked_prefill'])
+        self.assertTrue(calls[0]['enable_prefix_caching'])
+        self.assertEqual(calls[0]['max_num_seqs'],1024)
+        self.assertEqual(calls[0]['max_num_batched_tokens'],32768)
+
+    def test_imported_same_run_receipt_needs_exact_source_config_and_raw_sha(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary);source=root/'old';target=root/'new'
+            for p in (source/'preparation',target/'preparation',source/'outers/outer-000001/full',target/'outers/outer-000001/full'):
+                p.mkdir(parents=True)
+            source_config=source/'preparation/launch-config.json'
+            source_config.write_bytes(canonical({'run_id':'run','source_commit':'old'})+b'\n')
+            full=source/'outers/outer-000001/full/rank-3-full.jsonl.gz';full.write_bytes(b'original producer bytes')
+            own=source/'outers/outer-000001/full/rank-3-own-em.jsonl';own.write_bytes(b'own EM')
+            receipt=source/'outers/outer-000001/full/rank-3-complete.json'
+            saved=dict(run_id='run',outer=1,rank=3,phase='continue',actor_version='actor',
+                       trajectories=320,config_sha256=digest(source_config),full=file_item(full,320),own_em=file_item(own,320))
+            receipt.write_bytes(canonical(saved)+b'\n')
+            imported=target/'outers/outer-000001/full/rank-3-complete.json';imported.write_bytes(receipt.read_bytes())
+            config=dict(run_id='run',actor_version='actor',continue_reuse=dict(outer=1,source_base=str(source),
+                source_config_sha256=digest(source_config),imported_receipts_sha256={'3':digest(receipt)}))
+            config_path=target/'preparation/launch-config.json';config_path.write_bytes(canonical(config)+b'\n')
+            validated,reuse=validate_rank_receipt(config_path,config,1,'continue',3,imported)
+            self.assertEqual(validated['config_sha256'],digest(source_config))
+            self.assertNotEqual(validated['config_sha256'],digest(config_path))
+            self.assertEqual(reuse['full_receipt_sha256'],digest(receipt))
+            with self.assertRaisesRegex(ValueError,'authorization'):
+                validate_rank_receipt(config_path,dict(run_id='run',actor_version='actor'),1,'continue',3,imported)
+            own.write_bytes(b'changed original ownEM')
+            with self.assertRaisesRegex(ValueError,'output changed'):
+                validate_rank_receipt(config_path,config,1,'continue',3,imported)
 
     def test_tool_context_not_counted_as_policy_and_positions_are_original(self):
         s=state();start_action(s,BUDGET)

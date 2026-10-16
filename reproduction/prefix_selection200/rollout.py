@@ -285,6 +285,46 @@ def file_item(path, count=None):
     return result
 
 
+def validate_rank_receipt(config_path, config, outer, phase, rank, path):
+    """Admit current receipts or explicitly imported same-run continuation.
+
+    An old config digest never becomes the new digest. The recovery whitelist
+    must bind the original source config and the complete original receipt;
+    both original and imported bytes, actor identity and all raw outputs are
+    independently read here. Partial/failed artifacts are never accepted.
+    """
+    path=Path(path);saved=read(path);current_sha=digest(config_path)
+    expected=dict(run_id=config['run_id'],outer=outer,phase=phase,rank=rank,
+                  actor_version=config['actor_version'],trajectories=3200 if phase=='prefix' else 320)
+    if any(saved.get(key)!=value for key,value in expected.items()):
+        raise ValueError('Existing rank receipt has a different actual run/actor/outer/phase/rank')
+    reuse=None
+    if saved.get('config_sha256')!=current_sha:
+        allowed=config.get('continue_reuse')
+        if phase!='continue' or not isinstance(allowed,dict) or allowed.get('outer')!=outer:
+            raise ValueError('Old-config rank receipt has no exact continuation reuse authorization')
+        source_base=Path(allowed['source_base'])
+        if not source_base.is_absolute():
+            raise ValueError('Continuation receipt source must be an absolute isolated base')
+        source_config=source_base/'preparation'/'launch-config.json'
+        source_sha=allowed['source_config_sha256']
+        if (saved.get('config_sha256')!=source_sha or digest(source_config)!=source_sha
+                or read(source_config).get('run_id')!=config['run_id']):
+            raise ValueError('Continuation source config differs from the exact approved source')
+        expected_sha=allowed['imported_receipts_sha256'].get(str(rank))
+        source_receipt=root_dir(dict(base=str(source_base)),outer)/'full'/('rank-%d-complete.json'%rank)
+        if not expected_sha or digest(path)!=expected_sha or digest(source_receipt)!=expected_sha:
+            raise ValueError('Imported/original continuation receipt differs from its full SHA whitelist')
+        reuse=dict(rank=rank,source_base=str(source_base),source_config_sha256=source_sha,
+                   original_receipt_path=str(source_receipt),imported_receipt_path=str(path),
+                   full_receipt_sha256=expected_sha,current_config_sha256=current_sha)
+    for key in ('states','prefix') if phase=='prefix' else ('full','own_em'):
+        item=saved[key];raw=Path(item['path'])
+        if raw.stat().st_size!=item['bytes'] or digest(raw)!=item['sha256']:
+            raise ValueError('Committed original native rank output changed: '+key)
+    return saved,reuse
+
+
 def iter_rows(path):
     opener = gzip.open if str(path).endswith('.gz') else open
     with opener(path, 'rt', encoding='utf8') as stream:
@@ -380,16 +420,28 @@ def registered_sampling(engine, request, caller):
     raise ValueError('New native request is missing from the actual vLLM scheduler queues')
 
 
-def _actual_logprobs(native):
-    if native.logprobs is None or len(native.logprobs) != len(native.token_ids):
-        raise ValueError('Native vLLM did not return every selected-token behavior probability')
+def native_snapshot(native):
+    """Copy matched native IDs/LP before external abort releases its sequence.
+
+    vLLM0.6.3 intermediate outputs freeze token IDs but expose the live
+    sequence LP list. Async stepping can advance that shared list after the
+    token snapshot, mixing commit clocks. This engine therefore uses
+    synchronous output commit (not serial generation).
+    Neither missing probabilities nor future tokens are fabricated or fitted.
+    """
+    tokens=list(native.token_ids)
+    rows=None if native.logprobs is None else list(native.logprobs)
+    if rows is None or len(rows) != len(tokens):
+        raise ValueError('Native vLLM selected-token behavior probability mismatch: token_count=%d logprob_count=%s finish_reason=%r' %
+                         (len(tokens),None if rows is None else len(rows),native.finish_reason))
     values = []
-    for token, row in zip(native.token_ids, native.logprobs):
+    for token, row in zip(tokens, rows):
         selected = row.get(token)
         if selected is None:
             raise ValueError('Actual selected native token is absent from logprob row')
         values.append(float(selected.logprob if hasattr(selected, 'logprob') else selected))
-    return values
+    return dict(raw_generated_token_ids=tokens,selected_logprobs=values,
+                finish_reason=native.finish_reason,stop_reason=native.stop_reason)
 
 
 def _build_llm(config, model, seed, free, total):
@@ -413,6 +465,7 @@ def _build_llm(config, model, seed, free, total):
                       gpu_memory_utilization=utilization, swap_space=0,
                       enforce_eager=bool(config.get('rollout_enforce_eager', False)),
                       enable_chunked_prefill=True, enable_prefix_caching=True,
+                      disable_async_output_proc=True,
                       disable_log_stats=True, **limits)
             return llm, utilization, limits, attempts
         except Exception as error:
@@ -435,12 +488,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     output.mkdir(parents=True, exist_ok=True)
     receipt_path = output / ('rank-%d-complete.json' % rank)
     if receipt_path.exists():
-        saved = read(receipt_path)
-        if saved['actor_version'] != config['actor_version'] or saved['config_sha256'] != digest(config_path):
-            raise ValueError('Existing rank receipt has a different actor/config')
-        for key in ('states', 'prefix') if phase == 'prefix' else ('full', 'own_em'):
-            if digest(saved[key]['path']) != saved[key]['sha256']:
-                raise ValueError('Committed rank output changed')
+        saved,_reuse=validate_rank_receipt(config_path,config,outer,phase,rank,receipt_path)
         return saved
     device_binding = _configure_one_visible_gpu(rank)
     import torch
@@ -563,12 +611,13 @@ def worker(config_path, outer, phase, rank, selection_path=None):
                         aborted = bool(seen_action and not result.finished)
                         if not result.finished and not seen_action:
                             continue
+                        snapshot = native_snapshot(native)
                         if aborted:
                             engine.abort_request(rid)
-                        pending.pop(rid); sampled += len(raw)
-                        cut = append_chunk(state, request, raw, _actual_logprobs(native), sampling,
-                            finish_reason=native.finish_reason,
-                            stop_reason=native.stop_reason, terminal_ids=terminal_ids, decode=decode,
+                        pending.pop(rid); sampled += len(snapshot['raw_generated_token_ids'])
+                        cut = append_chunk(state, request, snapshot['raw_generated_token_ids'], snapshot['selected_logprobs'], sampling,
+                            finish_reason=snapshot['finish_reason'],
+                            stop_reason=snapshot['stop_reason'], terminal_ids=terminal_ids, decode=decode,
                             action_boundary_abort=aborted)
                         if cut is None:
                             schedule(state, streams)
@@ -593,6 +642,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     result = dict(schema_version=1, phase=phase, outer=outer, rank=rank, run_id=config['run_id'],
         actor_version=config['actor_version'], actor_model_dir=model, config_sha256=digest(config_path),
         sampling_contract=CONTRACT, action_boundary=BOUNDARY, old_full500_evaluation_sampler_changed=False,
+        native_output_commit='synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort',
         trajectories=completed, questions=completed//G, device_binding=device_binding,
         pad_token_id=int(tokenizer.pad_token_id), eos_token_id=int(tokenizer.eos_token_id),
         native_terminal_ids=terminal_ids, gpu_memory_utilization=utilization,
@@ -687,7 +737,9 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
         if value['actor_version']!=config['actor_version'] or value['config_sha256']!=digest(config_path):
             raise ValueError('Existing phase receipt belongs to a different actor/config')
         return value
-    ranks=[read(output/('rank-%d-complete.json'%rank)) for rank in range(WORLD)]
+    checked=[validate_rank_receipt(config_path,config,outer,phase,rank,output/('rank-%d-complete.json'%rank))
+             for rank in range(WORLD)]
+    ranks=[item[0] for item in checked]
     expected=3200 if phase=='prefix' else 320
     for rank,value in enumerate(ranks):
         if value['rank']!=rank or value['phase']!=phase or value['outer']!=outer or value['trajectories']!=expected or value['actor_version']!=config['actor_version']:
@@ -704,6 +756,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
         sampling_contract=CONTRACT,action_boundary=BOUNDARY,old_full500_evaluation_sampler_changed=False,
         actual_sampled_tokens=sum(r['actual_sampled_tokens'] for r in ranks),
         native_generation_requests=sum(r['generation_requests'] for r in ranks),completed_utc=utc())
+    value['reused_original_rank_receipts']=[item[1] for item in checked if item[1] is not None]
     if worker_exit_codes is not None:
         value['owned_native_worker_exit_codes']=worker_exit_codes
     if phase=='prefix':
@@ -749,7 +802,10 @@ def launch_phase(config_path, outer, phase, selection_path=None):
     processes=[];streams=[]
     try:
         for rank in range(WORLD):
-            if (output/('rank-%d-complete.json'%rank)).exists():continue
+            existing=output/('rank-%d-complete.json'%rank)
+            if existing.exists():
+                validate_rank_receipt(config_path,config,outer,phase,rank,existing)
+                continue
             stream=(output/('rank-%d.log'%rank)).open('ab');streams.append(stream)
             command=[sys.executable,'-m','reproduction.prefix_selection200.rollout','--config',str(config_path),
                      '--outer',str(outer),'--phase',phase,'--rank',str(rank)]
