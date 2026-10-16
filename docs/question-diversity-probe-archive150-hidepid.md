@@ -99,3 +99,23 @@ complete the goal: a typed second150 preservation/handoff, automated two-owner
 driver and explicitly source-pinned final independent reader are still needed
 before production use. Final acceptance must keep all original science,
 archive, recovery, RAW and no201 gates.
+
+## Shared filesystem test isolation
+
+The first complete199-test run under the shared production-root scratch
+directory failed (22 assertions and19 fixture errors), and its full output is
+retained. Historical recovery tests intentionally remap the production root;
+placing their own temporary directories beneath that root causes their test
+fixtures to be remapped twice. Those regression fixtures remain in `/tmp`.
+This does not change any production path or acceptance condition.
+
+The actual shared filesystem also allocates the full blocks of a truncated
+64MiB file. GNU du tests now compare measured allocated bytes with actual
+`st_blocks*512`, rather than assuming holes consume no storage. Full partition
+coverage and conservative hardlink arithmetic remain unchanged.
+
+The published `protocol_tests_v2.py` runs the full isolated regression suite
+and a separate six-test real shared-FS storage/child/lock suite. Its explicit
+JXU/MOU lock probes also verify the actual second account can open the exact
+JXU0640 file and acquire O_RDONLY exclusive flock on the shared mount. No
+production v2 archive is admitted until all of these actual gates pass.

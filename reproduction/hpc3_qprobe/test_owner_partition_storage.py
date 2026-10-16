@@ -194,7 +194,11 @@ class ActualGNUPartitions(unittest.TestCase):
         complement=self.du([self.tree],roots)[str(self.tree)]
         owner=self.du(roots)
         self.assertEqual(complement+sum(owner.values()),full)
-        self.assertLess(full,64*2**20)  # Sparse allocation, not apparent length.
+        # Some shared filesystems materialize a truncated sparse file. Compare
+        # actual allocated blocks, rather than assuming support for holes.
+        sparse=self.tree/'sparse'
+        self.assertEqual(self.du([sparse])[str(sparse)],sparse.stat().st_blocks*512)
+        self.assertGreaterEqual(full,sparse.stat().st_blocks*512)
         self.assertEqual({p:stat.S_IMODE(p.stat().st_mode) for p in roots},before)
         self.assertEqual(set(owner),set(map(str,roots)))
 
@@ -229,7 +233,7 @@ class ActualHeldChildren(unittest.TestCase):
             accepted,proof=storage.consume_du(output,'actual',command,os.getuid())
             self.assertEqual(result,accepted);self.assertEqual(accepted['actual_du_wait_exit_code'],0)
             stream=output/'actual-stdout';raw=stream.read_bytes();stream.write_bytes(b'9'+raw[1:])
-            with self.assertRaisesRegex(ValueError,'bytes differ'):storage.consume_du(output,'actual',command,os.getuid())
+            with self.assertRaisesRegex(ValueError,'bytes differ|bytes changed'):storage.consume_du(output,'actual',command,os.getuid())
 
 
 if __name__=='__main__':unittest.main()
