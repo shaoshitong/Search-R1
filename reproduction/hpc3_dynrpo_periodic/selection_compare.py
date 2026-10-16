@@ -118,13 +118,15 @@ def compare(base, outer):
     require(all(isinstance(p, (float, int)) and math.isfinite(p) and 0 <= p <= 1
                 for p in predictions), 'Invalid predicted probabilities')
     output.update(status='OBSERVED_RANDOM_AND_POST_FIT_SELECTED_G5_COMPARISON',
-        selected=summary(actual), selected_unseen_by_id_and_exact_text_sha=summary(novel),
+        selected=summary(actual), selected_outside_current_refit_pool_by_id_and_exact_text_sha=summary(novel),
         excluded_seen_questions=512-len(novel), mean_selected_predicted_mixed=sum(predictions)/512,
         difference_mixed_percentage_points=100*(summary(actual)['mixed_fraction']-
             output['random_refit_sample']['mixed_fraction']),
         refit_complete_sha256=hashlib.sha256(complete_path.read_bytes()).hexdigest(),
         selected_audit_sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
-        scope='Same recorded student boundary; distinct question samples. No extra rollouts, held-out QA EM, '
+        scope='Same recorded student boundary; distinct question samples. Only the current refit pool is '
+              'excluded from the outside-pool subset; earlier probe training pools are not excluded. '
+              'No extra rollouts, held-out QA EM, '
               'all-candidate AUC, paired causal claim, or independently excluded canonical text variants.')
     return output
 
