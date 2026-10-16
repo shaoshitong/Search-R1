@@ -98,6 +98,7 @@ ARCHIVE100_RECOVERY_SOURCE='4194ad2c21c5e10ae5ee3b0212fb6fbf3e02f41b'
 ARCHIVE100_SECOND_RECOVERY_SOURCE='23ab8b0c8af403ec830644ff4fa04eeef7f55927'
 ARCHIVE100_THIRD_RECOVERY_SOURCE='f8a332a72257f54bf0c01a01fce592e2515d7937'
 ARCHIVE100_FOURTH_RECOVERY_SOURCE='5f0065b98d1239c994addc19fd0b7e32f506d7fd'
+ARCHIVE150_FIRST_RECOVERY_SOURCE='dc98dff19f64b3fc655ecf22d6be6991e16a1f3a'
 ARCHIVE100_ROUTES={
     ARCHIVE100_FOURTH_RECOVERY_SOURCE:('recover_sigma3_archive100_fourth',ROOT/'followthrough/721485-archive100-recovery-fourth-20261016'),
     ARCHIVE100_RECOVERY_SOURCE:('recover_sigma3_archive100',ROOT/'followthrough/721485-archive100-recovery-20261016'),
@@ -106,7 +107,14 @@ ARCHIVE100_ROUTES={
 }
 
 
-def followthrough_route(followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None):
+def followthrough_route(followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None,archive150_recovery_commit=None):
+    if archive150_recovery_commit is not None:
+        need(archive150_recovery_commit==followthrough_commit==ARCHIVE150_FIRST_RECOVERY_SOURCE and
+             archive100_recovery_commit==ARCHIVE100_FOURTH_RECOVERY_SOURCE,
+             'explicit registered150 follower and separately retained original5f100 required')
+        followthrough_route(archive100_recovery_commit,recovery_commit,observer_recovery_commit,
+                            archive_recovery_commit,archive100_recovery_commit)
+        return 'recover_sigma3_archive150_first',ROOT/'followthrough/721485-archive150-recovery-first-20261016'
     if archive100_recovery_commit is not None:
         need(archive100_recovery_commit in ARCHIVE100_ROUTES and
              followthrough_commit==archive100_recovery_commit and
@@ -221,8 +229,30 @@ def archive50_recovery_evidence(recovery,archive_recovery_commit,archive100_reco
     return (fifty,prior100) if with_prior100 else fifty
 
 
-def followthrough_evidence(follow, publication_proof, followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None):
-    _, expected_directory = followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit)
+def prior_archive150_evidence(recovery,archive150_recovery_commit,archive100_recovery_commit):
+    if archive150_recovery_commit is None:return recovery
+    need(archive150_recovery_commit==ARCHIVE150_FIRST_RECOVERY_SOURCE and
+         archive100_recovery_commit==ARCHIVE100_FOURTH_RECOVERY_SOURCE and isinstance(recovery,dict) and
+         recovery.get('source',{}).get('commit')==archive150_recovery_commit and
+         recovery.get('storage_protocol')=='actual-full-owner-partition-du-v1',
+         'registered150 handoff/source/storage protocol differs')
+    from reproduction.hpc3_qprobe.recovery_lineage_stage import consume
+    original=consume(archive100_recovery_commit,'recover_sigma3_archive100_fourth')
+    need(recovery.get('prior_archive100_fourth_recovery')==original and all(recovery.get(key)==original.get(key)
+         for key in ('observer_recovery','prior_archive50_second_recovery','inherited_archive50',
+                     'prior_archive100_recovery','prior_archive100_second_recovery','prior_archive100_third_recovery',
+                     'legacy_archive5_recovery')),'original5f100 lineage changed beneath150 handoff')
+    inherited=recovery.get('inherited_archive100') or {}
+    need(inherited.get('source')==original['source'] and inherited.get('controller')==
+         dict(pid=560250,start_ticks=81264116,sid=560250,uid=OWNER) and
+         inherited.get('sha256')=='06e7a3a265ef3a6184ba6f71eabab69ab12b40a29701137dccfc1287395a6d39' and
+         inherited.get('transport_sha256')=='5f113a12cd245201e7a842d9d59035909e3ed6f92c7793b04c19088ee49b528e',
+         '150 handoff retagged the successful original5f100')
+    return original
+
+
+def followthrough_evidence(follow, publication_proof, followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None,archive150_recovery_commit=None):
+    _, expected_directory = followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit,archive150_recovery_commit)
     need(follow.BASE == BASE and follow.RUN == RUN and follow.JOB == JOB and follow.PRODUCER == PRODUCER and
          follow.DIRECTORY == expected_directory, 'followthrough scope differs')
     observed = follow.inspect()
@@ -247,7 +277,8 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit, reco
          'followthrough original once source/birth/intent differs')
     recovery = follow.consume(followthrough_commit) if recovery_commit is not None else None
     need(claim.get('recovery') == recovery,'followthrough archive5 recovery proof differs')
-    fifty,prior100=archive50_recovery_evidence(recovery,archive_recovery_commit,archive100_recovery_commit,with_prior100=True)
+    hundred=prior_archive150_evidence(recovery,archive150_recovery_commit,archive100_recovery_commit)
+    fifty,prior100=archive50_recovery_evidence(hundred,archive_recovery_commit,archive100_recovery_commit,with_prior100=True)
     returned = result.get('result') or {}
     goal_path = BASE/'logs/qprobe-final-goal-acceptance.json'
     goal, goal_file = document(goal_path)
@@ -267,7 +298,8 @@ def followthrough_evidence(follow, publication_proof, followthrough_commit, reco
         result=result_file, process_file=process_file, process=process,
         archive5_recovery=recovery['legacy_archive5_recovery'] if observer_recovery_commit else recovery,
         observer_recovery=(recovery['observer_recovery'] if archive_recovery_commit else recovery) if observer_recovery_commit else None,
-        archive50_recovery=fifty,archive100_recovery=recovery if archive100_recovery_commit else None,
+        archive50_recovery=fifty,archive100_recovery=hundred if archive100_recovery_commit else None,
+        archive150_recovery=recovery if archive150_recovery_commit else None,
         archive100_prior_recovery=prior100,
         archive100_second_prior_recovery=recovery['prior_archive100_second_recovery'] if archive100_recovery_commit in (ARCHIVE100_THIRD_RECOVERY_SOURCE,ARCHIVE100_FOURTH_RECOVERY_SOURCE) else None,
         archive100_third_prior_recovery=recovery['prior_archive100_third_recovery'] if archive100_recovery_commit==ARCHIVE100_FOURTH_RECOVERY_SOURCE else None,
@@ -353,7 +385,7 @@ def fresh_attempt(task, output, shared_reads=None):
                 fresh_original_files=len(proofs), original_file_proofs_sha256=canonical_sha(proofs),
                 raw_sha256=output['raw_file']['sha256'], private_trace_sha256=output['private_trace_file']['sha256'])
 
-def raw_evidence(raw, *, raw_commit=RAW, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None):
+def raw_evidence(raw, *, raw_commit=RAW, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None,archive150_recovery_commit=None):
     expected=SERVICE_RECOVERY_DIRECTORY/'raw-control' if observer_recovery_commit else RAW_DIRECTORY
     need(raw.BASE == BASE and raw.DIRECTORY == expected and
          raw_commit==(observer_recovery_commit or RAW), 'raw scope/source differs')
@@ -529,17 +561,32 @@ def validate_archive_documents(claim, runner, task_binding, result, task, *,
         task_result_sha256=result['task_result_sha256'], actual_runner=parent, actual_child=child)
 
 
-def held_archive_evidence(run, producer, followthrough, follow_source, follow_process, *, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None):
+def held_archive_evidence(run, producer, followthrough, follow_source, follow_process, *, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None,archive150_recovery_commit=None):
     """Consume existing held children; never create or replay an intent."""
     retained = SharedReads(); results = {}
     components = ROOT/'final-control'/RUN
-    inherited=dict(followthrough.service().inherited()['existing_archive_claims']) if observer_recovery_commit else {}
+    if archive150_recovery_commit is not None:
+        old,_=load_fixed(archive100_recovery_commit,'recover_sigma3_archive100_fourth','control')
+        inherited=dict(old.service().inherited()['existing_archive_claims'])
+    else:inherited=dict(followthrough.service().inherited()['existing_archive_claims']) if observer_recovery_commit else {}
     if archive100_recovery_commit is not None:
-        recovery=followthrough.consume(archive100_recovery_commit)
-        archive50_recovery_evidence(recovery,archive_recovery_commit,archive100_recovery_commit)
-        need(set(inherited)=={'5'} and isinstance(recovery.get('inherited_archive50'),dict),
+        recovery=followthrough.consume(archive150_recovery_commit or archive100_recovery_commit)
+        hundred=prior_archive150_evidence(recovery,archive150_recovery_commit,archive100_recovery_commit)
+        archive50_recovery_evidence(hundred,archive_recovery_commit,archive100_recovery_commit)
+        need(set(inherited)=={'5'} and isinstance(hundred.get('inherited_archive50'),dict),
              'archive100 inherited namespace must be exactly original5/50')
-        inherited['50']=recovery['inherited_archive50']
+        inherited['50']=hundred['inherited_archive50']
+    inherited_reads=None;partition=None
+    if archive150_recovery_commit is not None:
+        inherited['100']=recovery['inherited_archive100']
+        need(set(inherited)=={'5','50','100'},'150 inheritance must be exactly original5/50/100')
+        inherited_reads,initial_proof=document(followthrough.DIRECTORY/'inherited-archives-full-sha.json')
+        retained.remember(initial_proof)
+        need(inherited_reads.get('source_commit')==archive150_recovery_commit and inherited_reads.get('run_id')==RUN and
+             set(inherited_reads.get('transports',{}))==set(inherited_reads.get('readbacks',{}))=={'5','50','100'} and
+             inherited_reads.get('training_actions')==inherited_reads.get('permission_changes')==0 and
+             finite(inherited_reads.get('checked_unix')),'new150 follower original prefix readback missing')
+        partition,_=load_fixed(archive150_recovery_commit,'owner_partition_storage','ctl')
     for step in (5,50,100,150,200,None):
         folder = components/('audit-controller' if step is None else 'archive-'+str(step))
         values = []
@@ -547,9 +594,14 @@ def held_archive_evidence(run, producer, followthrough, follow_source, follow_pr
             value, proof = document(folder/name)
             retained.remember(proof); values.append(value)
         claim, runner, child, result, task = values
-        if archive100_recovery_commit==ARCHIVE100_FOURTH_RECOVERY_SOURCE and step in (100,150,200):
+        if archive100_recovery_commit==ARCHIVE100_FOURTH_RECOVERY_SOURCE and (
+                step==100 or archive150_recovery_commit is None and step in (150,200)):
             need(claim.get('storage_wait_protocol')=='actual-full-du-repair-v1',
                  'fourth archive lacks its explicit actual storage wait protocol')
+        if archive150_recovery_commit is not None and step in (150,200):
+            need(claim.get('storage_wait_protocol')==partition.PROTOCOL and
+                 claim['created_unix']>=inherited_reads['checked_unix'],
+                 'new150/200 copy lacks complete owner partition protocol or inherited readback')
         publication_for_claim=follow_source;controllers=[follow_process]
         if str(step) in inherited:
             previous=inherited[str(step)]
@@ -564,11 +616,12 @@ def held_archive_evidence(run, producer, followthrough, follow_source, follow_pr
             binding=producer,publication=publication_for_claim,allowed_controllers=controllers,
             alive=ctl.live,final_submit=step is None)
         need(measured['ready'] is True,'held archive/submit supervisor has not actually finished')
-        if archive100_recovery_commit is not None and step==50:
-            previous=inherited['50']
+        if ((archive100_recovery_commit is not None and step==50) or
+                (archive150_recovery_commit is not None and step==100)):
+            previous=inherited[str(step)]
             need(measured['worker_result_sha256']==previous['worker_result_sha256'] and
                  measured['task_result_sha256']==previous['task_result_sha256'],
-                 'original50 held0 result changed during archive100 recovery')
+                 'original inherited held0 result changed during later archive recovery')
         if step is not None:
             _, pair = followthrough.control.pair(BASE,run,step)
             need(claim.get('pair') == pair,'held archive pair differs')
@@ -578,9 +631,38 @@ def held_archive_evidence(run, producer, followthrough, follow_source, follow_pr
                  task['archive']['sha256'] == proof['sha256'] and transport['run_id'] == RUN and
                  transport['step'] == step and transport['world_size'] == 4,
                  'held archive transport bytes/identity differ')
-            if archive100_recovery_commit is not None and step==50:
-                need(proof['sha256']==inherited['50']['transport_sha256'],
-                     'original50 transport changed during archive100 recovery')
+            if ((archive100_recovery_commit is not None and step==50) or
+                    (archive150_recovery_commit is not None and step==100)):
+                need(proof['sha256']==inherited[str(step)]['transport_sha256'],
+                     'original inherited transport changed during later archive recovery')
+            if inherited_reads is not None and step in (5,50,100):
+                first=inherited_reads['readbacks'][str(step)]
+                need(inherited_reads['transports'][str(step)]==proof['sha256'] and first['sha256']==proof['sha256'] and
+                     first['path']==str(transport_path) and first['step']==step and
+                     first['full_read_file_count']==len(transport['files']) and
+                     first['full_read_bytes']==sum(row['bytes'] for row in transport['files']) and
+                     first['source_receipt']==transport['source_receipt'] and
+                     first['archive_receipt']==transport['archive_receipt'] and first['target_receipt']==transport['target_receipt'] and
+                     first['verified_by_uid']==OWNER and
+                     first['checked_unix']<=inherited_reads['checked_unix'],'initial full three-way inherited readback differs')
+            if partition is not None and step in (150,200):
+                storage=partition.consume(folder);payload=ROOT/'archives'/RUN/('global_step_'+str(step))/'claim.json'
+                budget,budget_proof=document(payload);retained.remember(budget_proof)
+                scan,scan_proof=document(storage['complete']['path']);retained.remember(scan_proof)
+                required=2*sum(row['bytes'] for row in transport['files'])+2**30
+                upper=storage['allocated_upper_bound_bytes']
+                need(storage['complete_partition_coverage'] is True and storage['exact_usage_or_hardquota_claimed'] is False and
+                     budget['source_receipt']==transport['source_receipt'] and
+                     budget['storage_semantics']=='complete_two_owner_allocated_upper_bound' and
+                     all(scan_proof[key]==storage['complete'][key] for key in ('path','sha256','bytes')) and
+                     budget['run_id']==RUN and budget['step']==step and
+                     budget['world_size']==4 and budget['uid']==OWNER and budget['pid']==child['actual_process']['pid'] and
+                     budget['started_unix']>=scan['completed_unix'] and all(type(budget[key]) is int for key in
+                         ('allocated_upper_bound_bytes','measured_allocated_bytes','required_copy_bytes')) and
+                     budget['allocated_upper_bound_bytes']==budget['measured_allocated_bytes']==upper and
+                     budget['required_copy_bytes']==required and upper+required<=2*10**12,
+                     'complete owner partition admission/budget differs')
+                measured['owner_partition_storage']=storage
             measured['transport'] = proof
         else:
             need((task.get('submission') or {}).get('status') != 'SUBMIT_FAILED_DO_NOT_REPLAY',
@@ -652,8 +734,8 @@ def initial_head_evidence(run):
                 fresh_actor_outer=0,loss=LOSS,actor_model_weights_loaded=False,head_checkpoint_loaded=True)
 
 
-def native_source_gate(run, native, audit_run, source_document, followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None):
-    followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit)
+def native_source_gate(run, native, audit_run, source_document, followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None,archive150_recovery_commit=None):
+    followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit,archive150_recovery_commit)
     need(
          native['audit_commit'] == audit_run['source_commit'] == followthrough_commit and
          audit_run['run_id'] == RUN and audit_run['final_restore_audit']['audit_id'] == native['audit_id'],
@@ -675,19 +757,19 @@ def fresh_goal_gate(fresh):
          fresh['actual_training_parts'][0]['source_commit'] == PRODUCER,'fresh complete sigma3 history differs')
 
 
-def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None):
+def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recovery_commit=None,archive_recovery_commit=None,archive100_recovery_commit=None,archive150_recovery_commit=None):
     need(os.getuid() == OWNER and os.environ.get('CUDA_VISIBLE_DEVICES') == '' and
          os.environ.get('PYTHONDONTWRITEBYTECODE') == '1' and sys.dont_write_bytecode and
          all(os.environ.get(k) == '1' for k in CAPS),'actual CPU owner/caps/no-bytecode required')
     run, early = early_history()  # Before Torch/NumPy, publication or large I/O.
-    filename, _ = followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit)
+    filename, _ = followthrough_route(followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit,archive150_recovery_commit)
     producer_accounting, producer = producer_acceptance()
     repository, own_source = publication(commit)
     need(Path(__file__).resolve() == repository/'reproduction/hpc3_qprobe/independent_goal_acceptance_sigma3.py' and
          os.environ.get('QPROBE_SOURCE') == str(repository),'loaded independent immutable source differs')
     follow, follow_source = load_fixed(followthrough_commit,filename,'control')
-    audit_base, native, follow_proof = followthrough_evidence(follow,follow_source,followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit)
-    held, held_anchors = held_archive_evidence(run,producer,follow,follow_source,follow_proof['process'],observer_recovery_commit=observer_recovery_commit,archive_recovery_commit=archive_recovery_commit,archive100_recovery_commit=archive100_recovery_commit)
+    audit_base, native, follow_proof = followthrough_evidence(follow,follow_source,followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit,archive150_recovery_commit)
+    held, held_anchors = held_archive_evidence(run,producer,follow,follow_source,follow_proof['process'],observer_recovery_commit=observer_recovery_commit,archive_recovery_commit=archive_recovery_commit,archive100_recovery_commit=archive100_recovery_commit,archive150_recovery_commit=archive150_recovery_commit)
     submitted = held['native_submit']['actual_native_submission']
     need(submitted['job'] == native['slurm_job_id'] and submitted['audit_base'] == str(audit_base),
          'actual native submit/restore identity differs')
@@ -698,7 +780,7 @@ def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recov
     allocation, _ = document(audit_base/'logs/native-allocation-admission.json')
     audit_run, audit_manifest = document(audit_base/'logs/run-manifest.json')
     source_document, _ = document(Path(follow_source['publication_path']))
-    native_source_gate(run,native,audit_run,source_document,followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit)
+    native_source_gate(run,native,audit_run,source_document,followthrough_commit,recovery_commit,observer_recovery_commit,archive_recovery_commit,archive100_recovery_commit,archive150_recovery_commit)
     own_document, _ = document(Path(own_source['publication_path']))
     for name, sha in run['source_sha256'].items():
         if name.startswith(('verl/','search_g1/','search_r1/','reproduction/common8/')) and not Path(name).name.startswith('test_'):
@@ -729,7 +811,7 @@ def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recov
         features.append(read_file(feature_root/name,expected_sha=item['sha256'],expected_bytes=item['bytes'])[1])
     raw_commit=observer_recovery_commit or RAW
     raw, raw_source = load_fixed(raw_commit,'recover_sigma3_raw49' if observer_recovery_commit else 'raw_audit_followthrough_sigma3','ctl')
-    raw_proof, tasks = raw_evidence(raw,raw_commit=raw_commit,observer_recovery_commit=observer_recovery_commit,archive_recovery_commit=archive_recovery_commit,archive100_recovery_commit=archive100_recovery_commit)
+    raw_proof, tasks = raw_evidence(raw,raw_commit=raw_commit,observer_recovery_commit=observer_recovery_commit,archive_recovery_commit=archive_recovery_commit,archive100_recovery_commit=archive100_recovery_commit,archive150_recovery_commit=archive150_recovery_commit)
     need(raw_proof['source'] == raw_source and len(tasks) == fresh['actual_attempts'],'raw source/all normal-return attempt count differs')
     copy = teacher_copy_evidence(run)
     teacher = teacher_evidence(repository,run)
@@ -741,7 +823,10 @@ def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recov
     if observer_recovery_commit is not None:
         if archive_recovery_commit is not None:
             if archive100_recovery_commit is not None:
-                latest=follow.consume(archive100_recovery_commit)
+                latest=follow.consume(archive150_recovery_commit or archive100_recovery_commit)
+                if archive150_recovery_commit is not None:
+                    need(latest==follow_proof['archive150_recovery'],'archive150 handoff changed during conjunction')
+                    latest=prior_archive150_evidence(latest,archive150_recovery_commit,archive100_recovery_commit)
                 need(latest==follow_proof['archive100_recovery'],'archive100 handoff changed during conjunction')
                 fifty,prior100=archive50_recovery_evidence(latest,archive_recovery_commit,archive100_recovery_commit,with_prior100=True)
                 need(fifty==follow_proof['archive50_recovery'] and prior100==follow_proof['archive100_prior_recovery'],
@@ -763,12 +848,18 @@ def verify(commit, *, followthrough_commit, recovery_commit=None, observer_recov
     elif recovery_commit is not None:
         need(follow.consume(recovery_commit) == follow_proof['archive5_recovery'],'archive5 recovery changed during final conjunction')
     after_accounting, after_producer = producer_acceptance()
+    if archive150_recovery_commit is not None:
+        partition,_=load_fixed(archive150_recovery_commit,'owner_partition_storage','ctl')
+        for step in (150,200):
+            actual=partition.consume(ROOT/'final-control'/RUN/('archive-'+str(step)))
+            need(actual==held[str(step)]['owner_partition_storage'],
+                 'complete owner partition admission evidence changed during final conjunction')
     need(after_producer == producer,'producer recovery chain changed during final conjunction')
     completed(native['slurm_job_id'])
     return dict(status=STATUS,run_id=RUN,producer_job=JOB,producer_commit=PRODUCER,
         current_history=dict(first=1,last=200,fresh_official_actor=True),completed_outer=200,world_size=4,
         source=own_source,followthrough_commit=followthrough_commit,recovery_commit=recovery_commit,
-        observer_recovery_commit=observer_recovery_commit,archive_recovery_commit=archive_recovery_commit,archive100_recovery_commit=archive100_recovery_commit,producer_accounting=after_accounting,
+        observer_recovery_commit=observer_recovery_commit,archive_recovery_commit=archive_recovery_commit,archive100_recovery_commit=archive100_recovery_commit,archive150_recovery_commit=archive150_recovery_commit,producer_accounting=after_accounting,
         producer_binding=producer,actual_followthrough_full_CPU_consumer=follow_proof,
         independent_all_normal_return_raw=raw_proof,authentic_teacher=teacher,independent_teacher_copy=copy,
         fresh_head=initial,fresh_full_goal=fresh,actual_archive_and_submit_held_children=held,
@@ -782,10 +873,10 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--commit',required=True);parser.add_argument('--followthrough-commit',required=True)
     parser.add_argument('--recovery-commit')
-    parser.add_argument('--observer-recovery-commit');parser.add_argument('--archive-recovery-commit');parser.add_argument('--archive100-recovery-commit')
+    parser.add_argument('--observer-recovery-commit');parser.add_argument('--archive-recovery-commit');parser.add_argument('--archive100-recovery-commit');parser.add_argument('--archive150-recovery-commit')
     args=parser.parse_args()
     print(__import__('json').dumps(verify(args.commit,followthrough_commit=args.followthrough_commit,
-        recovery_commit=args.recovery_commit,observer_recovery_commit=args.observer_recovery_commit,archive_recovery_commit=args.archive_recovery_commit,archive100_recovery_commit=args.archive100_recovery_commit),allow_nan=False),flush=True)
+        recovery_commit=args.recovery_commit,observer_recovery_commit=args.observer_recovery_commit,archive_recovery_commit=args.archive_recovery_commit,archive100_recovery_commit=args.archive100_recovery_commit,archive150_recovery_commit=args.archive150_recovery_commit),allow_nan=False),flush=True)
 
 
 if __name__ == '__main__':main()

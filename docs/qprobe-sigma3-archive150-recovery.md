@@ -58,10 +58,27 @@ two-owner protocol. The same five milestone checks, native4 restore-only
 final audit, independent RAW consumption, exact native51713/seven-source
 EM/F1 and no-update201 requirements remain mandatory.
 
-The independent final consumer needs a separate explicit archive150 recovery
-source registration, retaining the original archive100 source pin. Publishing
-this runtime alone does not prove final acceptance or authorize claiming the
-goal complete.
+The independent final consumer has a separate explicit archive150 recovery
+source registration, retaining the original archive100 source pin:
+
+```
+--followthrough-commit dc98dff19f64b3fc655ecf22d6be6991e16a1f3a
+--recovery-commit 09ccff26c5b764cc4c6a285c1e8f57a8e9b07726
+--observer-recovery-commit f979d53cdb0d348e87c5877d84403252e85cd784
+--archive-recovery-commit b89495c8ec1f2a7fb0d5cd70d89974c16c801cff
+--archive100-recovery-commit 5f0065b98d1239c994addc19fd0b7e32f506d7fd
+--archive150-recovery-commit dc98dff19f64b3fc655ecf22d6be6991e16a1f3a
+```
+
+Its own `--commit` is the independently published reader commit. The new
+observer scope is distinct from all original100 attempts. Final consumption
+requires exact inherited5/50/100 source/controller/held receipts, the new
+follower's initial three-way SHA readbacks, complete owner-partition admission
+and exact dynamic two-copy budgets for150/200, then reconsumes both partition
+proofs at the final boundary. Native source is the new150 follower. The200
+history gate still runs before source traversal, model imports or scope writes.
+Publishing either source alone does not prove final acceptance or authorize
+claiming the goal complete.
 
 ## Validation
 
