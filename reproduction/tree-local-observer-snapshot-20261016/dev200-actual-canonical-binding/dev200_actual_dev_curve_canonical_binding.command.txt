@@ -1,0 +1,558 @@
+# SOURCE PREPARATION ONLY; do not execute without actual future manifest pins.
+# Order: actual FULL200/CUM/COST/terminal candidate -> sole DEV200/ROOTDEV200 ->
+# curve200/ROOTcurve200 -> original finalizer200 -> 6607 final alias200 -> THIS
+# post-alias pointer binding. No90c/5helper/actual201/ROOTFULL200 dependency.
+# Curve preparation is independent of6607; this entry never invokes alias helpers.
+# Future env ACTUAL_CANONICAL200_PINS, ACTUAL_CANONICAL200_PINS_BYTES,
+# ACTUAL_CANONICAL200_PINS_SHA256 must describe actual local manifest bytes.
+python3 -B - \
+  --input-pins "${ACTUAL_CANONICAL200_PINS:?actual input manifest required}" \
+  --input-pins-bytes "${ACTUAL_CANONICAL200_PINS_BYTES:?actual manifest bytes required}" \
+  --input-pins-sha256 "${ACTUAL_CANONICAL200_PINS_SHA256:?actual manifest SHA required}" <<'PY'
+from pathlib import Path
+from datetime import datetime, timezone
+import argparse, csv, gzip, hashlib, io, json, math, os, re, time
+ap = argparse.ArgumentParser(description='Future200 post6607 canonical dev/curve/cost provenance binding')
+ap.add_argument('--input-pins', required=True)
+ap.add_argument('--input-pins-bytes', required=True, type=int)
+ap.add_argument('--input-pins-sha256', required=True)
+a = ap.parse_args()
+W = Path.cwd().resolve()
+B = W / 'outputs/tree-nested-branch-handoff-20261013'
+M = [W / 'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch', Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+SOURCE = W / 'work/tree-speed-repair-20261008/dev200_actual_dev_curve_canonical_binding.command.txt'
+OLD_SOURCE = W / 'work/tree-speed-repair-20261008/dev180_actual_dev_curve_canonical_binding.command.txt'
+ALIAS_SOURCE = W / 'work/tree-speed-repair-20261008/nested-final200-alias-terminal-fix-source/reproduction/tree-eval-resume-20261013/local-control-backup/publish_nested_final200_aliases.py'
+ALIAS_COMMIT = '6607aef2ea7711a58dfb37be1fc778dc072d0074'
+ENTRY = '1edaf50bb8e14de51db936e0859e369792011233'
+ENTRY_SHA = '545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0'
+FROZEN_CURVE_SOURCES = [('work/tree-speed-repair-20261008/dev200_actual_curve_build.command.txt', 52619, '412e60e8568cd84402e102e568f17853268be67d859a9c2d69991643a2b22fd0'), ('work/tree-speed-repair-20261008/root_curve200_actual_readback.py', 36539, '1cb49f5fda3fd08cc33fc4f4c0d95a373a80764cd5c92f4e70aa2287ef072191')]
+P = [W / 'outputs/STATUS.json', W / 'outputs/tree-nested-branch/STATUS.json', B / 'CURRENT_NATIVE_RECOVERY_FOLLOWUP.json', B / 'CURRENT_OBSERVER_CONNECTION_STATE.json']
+REPORTS = [W / 'outputs/REPORT.md', W / 'outputs/tree-nested-branch/REPORT.md', *[m / 'REPORT.md' for m in M]]
+ALL = P + [m / p.name for m in M for p in P[1:]] + REPORTS
+assert len(ALL) == len(set(ALL)) == 14
+NAMES = dict(dev_native='DEV5_200_NATIVE_COST_SUPPLEMENT.json',dev_readback='ROOT_DEV200_NATIVE_COST_ACTUAL_READBACK.json',dev_executor='DEV5_200_NATIVE_COST_LOCAL_RECEIPT.json',execution='DEV5_200_NATIVE_COST_COLLECTOR_EXECUTION.json',pre_execution='DEV5_200_NATIVE_COST_PRE_EXECUTION_INPUT_PINS.json',curve='LEARNING_CURVE_COMPLETE_THROUGH200.json',curve_csv='LEARNING_CURVE_COMPLETE_THROUGH200.csv',curve_binding='LEARNING_CURVE_THROUGH200_COST_SUPPLEMENT_BINDING.json',curve_publication='LEARNING_CURVE_THROUGH200_LOCAL_PUBLICATION.json',root_curve_readback='ROOT_CURVE_DEV_COST_THROUGH200_ACTUAL_READBACK.json',cumulative='CUMULATIVE_COST_THROUGH200.json',cost='COST_OUTER200_LOCAL_RECEIPT.json',native='NATIVE_HISTORY_200_METADATA_READBACK.json',full='FULL_OUTER200_PROGRESS_RECEIPT.json',progress='OUTER200_TRAINING_COMPLETE_FINAL_PHASE_ACTUAL_PROGRESS.json',final_alias='CURRENT_FINAL200_ALIAS_RECONCILIATION.json',terminal_candidate='FINAL_CANDIDATE_COST_THROUGH200_LOCAL_RECEIPT.json')
+F, RAW, OLD, REMOTE, MIRRORED = {}, {}, {}, [], set()
+HISTORICAL_ASOF_EXCLUSIONS, ASOF_RULES, ASOF_COUNTS = [], {}, {}
+REGISTRY_PATH = B / 'CANDIDATE_COST_EXTENSION_INPUTS.json'
+def sha(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+def digest_ok(value):
+    return isinstance(value, str) and re.fullmatch('[0-9a-f]{64}', value) is not None
+
+def encode(value):
+    return (json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + '\n').encode()
+
+def locate(name):
+    assert isinstance(name, str) and name and '://' not in name, 'local path required'
+    p = Path(name)
+    if not p.is_absolute():
+        p = W / p if p.parts[0] in ('outputs', 'work') else B / p
+    p = p.resolve(strict=True)
+    assert p.is_relative_to(W) or any(p.is_relative_to(m) for m in M), 'outside local workspace/mirrors: ' + str(p)
+    assert p.is_file() and not p.name.startswith('ROOT_FULL200'), 'ROOT_FULL200 must not be an input'
+    assert p.suffix.lower() in ('.json', '.csv', '.md', '.py', '.txt', '.sh', '.yaml', '.yml', '.patch'), 'nonmetadata input rejected: ' + str(p)
+    return p
+
+def rawpin(p):
+    raw = p.read_bytes()
+    return dict(path=str(p), bytes=len(raw), sha256=sha(raw))
+
+def bound(ref, hint=None, protect=False, mirror=None):
+    assert isinstance(ref, dict) and digest_ok(ref.get('sha256')), 'SHA-bound local reference required'
+    assert type(ref.get('bytes')) is int and 0 < ref['bytes'] < 16000000, 'small local metadata bytes required'
+    name = ref.get('path', ref.get('file', hint))
+    p = locate(name)
+    raw = p.read_bytes()
+    assert len(raw) == ref['bytes'] and sha(raw) == ref['sha256'], 'immutable pin differs: ' + str(p)
+    observed = dict(path=str(p), bytes=len(raw), sha256=sha(raw))
+    assert p not in F or F[p] == observed, 'input changed: ' + str(p)
+    F[p], RAW[p] = observed, raw
+    if protect:
+        assert p not in OLD or OLD[p] == raw
+        OLD[p] = raw
+    if mirror is None:
+        mirror = p.is_relative_to(B) and not p.name.startswith(('NATIVE5_CONTINUE_POLL_', 'NATIVE5_CONTINUE_RESOURCE_'))
+    if mirror:
+        assert p.is_relative_to(B)
+        MIRRORED.add(p)
+        for m in M:
+            assert (m / p.relative_to(B)).read_bytes() == raw, 'input mirror differs: ' + str(p)
+    return json.loads(raw) if p.suffix == '.json' else raw
+
+def ref_for(p):
+    p = locate(str(p))
+    assert p in F, 'input lacks actual pin: ' + str(p)
+    return F[p]
+
+def exact(ref, p, protect=False, mirror=None):
+    assert locate(ref.get('path', ref.get('file', ''))) == locate(str(p)), str(p)
+    return bound(ref, protect=protect, mirror=mirror)
+
+def same_ref(left, right):
+    assert locate(left.get('path', left.get('file', ''))) == locate(right.get('path', right.get('file', '')))
+    assert left['bytes'] == right['bytes'] and left['sha256'] == right['sha256']
+
+def pin_nodes(value):
+    if isinstance(value, list):
+        for v in value:
+            yield from pin_nodes(v)
+    elif isinstance(value, dict):
+        if digest_ok(value.get('sha256')) and type(value.get('bytes')) is int and (value.get('path') or value.get('file')):
+            yield value
+        else:
+            for key, v in value.items():
+                if isinstance(v, dict) and digest_ok(v.get('sha256')) and type(v.get('bytes')) is int and Path(key).suffix in ('.json', '.csv', '.md', '.py', '.txt', '.sh', '.yaml', '.yml', '.patch') and not (v.get('path') or v.get('file')):
+                    yield dict(path=key, **v)
+                else:
+                    yield from pin_nodes(v)
+
+def asof_key(document, ref):
+    return (locate(document['path']), locate(ref.get('path', ref.get('file'))), ref['bytes'], ref['sha256'])
+
+def verify_asof(document, ref, count=False):
+    key = asof_key(document, ref)
+    assert key in ASOF_RULES, 'unlisted historical registry scope'
+    same_ref(document, ref_for(document['path']))
+    assert locate(document['path']) in OLD
+    if count:
+        ASOF_COUNTS[key] = ASOF_COUNTS.get(key, 0) + 1
+        HISTORICAL_ASOF_EXCLUSIONS.append(dict(source_document=document,
+            historical_asof_descriptor=dict(ref), source_document_original_bytes_verified=True,
+            historical_registry_original_bytes_currently_verified=False,
+            excluded_from_current_immutable_file_readback=True))
+
+def bind_local_tree(value, protect=False, historical_document=None):
+    if isinstance(value, list):
+        for item in value:
+            bind_local_tree(item, protect, historical_document)
+        return
+    if not isinstance(value, dict):
+        return
+    # A provenance pair may be repeated inside a new receipt. It is permitted
+    # only when its exact old source document was independently SHA-bound and
+    # the exact registry descriptor actually occurs in that old raw document.
+    scoped = value.get('source_document')
+    paired = set()
+    if historical_document is None and isinstance(scoped, dict) and scoped.get('path'):
+        for key, item in value.items():
+            if isinstance(item, dict) and digest_ok(item.get('sha256')) and type(item.get('bytes')) is int and (item.get('path') or item.get('file')):
+                name = item.get('path', item.get('file'))
+                if not name.startswith(('/dataset/', '/mnt/')) and locate(name) == REGISTRY_PATH and asof_key(scoped, item) in ASOF_RULES:
+                    verify_asof(scoped, item)
+                    paired.add(key)
+    if digest_ok(value.get('sha256')) and type(value.get('bytes')) is int and (value.get('path') or value.get('file')):
+        name = value.get('path', value.get('file'))
+        if name.startswith(('/dataset/', '/mnt/')):
+            REMOTE.append(value)
+        elif historical_document is not None and locate(name) == REGISTRY_PATH and asof_key(historical_document, value) in ASOF_RULES:
+            assert protect
+            verify_asof(historical_document, value, True)
+        else:
+            bound(value, protect=protect)
+        return
+    for key, item in value.items():
+        if key in paired:
+            continue
+        if isinstance(item, dict) and digest_ok(item.get('sha256')) and type(item.get('bytes')) is int and Path(key).suffix in ('.json', '.csv', '.md', '.py', '.txt', '.sh', '.yaml', '.yml', '.patch') and not (item.get('path') or item.get('file')):
+            item = dict(path=key, **item)
+        bind_local_tree(item, protect, historical_document)
+
+def contains_ref(value, expected):
+    ep = locate(expected['path'])
+    for r in pin_nodes(value):
+        name = r.get('path', r.get('file'))
+        if name.startswith(('/dataset/', '/mnt/')):
+            continue
+        if locate(name) == ep and r['bytes'] == expected['bytes'] and r['sha256'] == expected['sha256']:
+            return True
+    return False
+
+def must_bind(document, keys):
+    for key in keys:
+        assert contains_ref(document, REFS[key]), 'actual document missing reference: ' + key
+
+def numeric(value):
+    return type(value) in (int, float) and math.isfinite(value) and value >= 0
+
+def decode_rows(summary, protect=False):
+    rows = summary['rows']
+    if isinstance(rows, list):
+        return rows, []
+    assert rows['storage'] == 'complete_original_field_parts' and rows['container_type'] == 'list'
+    assembled, parts, seen = [], [], set()
+    for ref in rows['parts']:
+        assert ref.get('json_selector') == 'value'
+        p = locate(ref.get('path', ref.get('file')))
+        assert p not in seen, 'duplicate DEV row part'
+        seen.add(p)
+        part = bound(ref, protect=protect)
+        assert isinstance(part['value'], list)
+        assembled.extend(part['value'])
+        parts.append(ref_for(ref.get('path', ref.get('file'))))
+    assert len(assembled) == rows['original_entries']
+    return assembled, parts
+
+def expand(value, field, parts, fields, protect=False):
+    if isinstance(value, dict) and value.get('storage') == 'complete_original_field_parts':
+        kind = value['container_type']
+        assert kind in ('list', 'mapping') and value['parts']
+        result, seen = ([] if kind == 'list' else {}), set()
+        for ref in value['parts']:
+            assert ref.get('json_selector') == 'value'
+            p = locate(ref.get('path', ref.get('file')))
+            assert p not in seen, 'duplicate CUM part'
+            seen.add(p)
+            part = bound(ref, protect=protect)
+            assert part['schema'] == 'cumulative_scalar_field_part_v1' and part['original_field'] == field
+            chunk = part['value']
+            assert isinstance(chunk, list if kind == 'list' else dict)
+            if kind == 'list':
+                result.extend(chunk)
+            else:
+                assert not set(result).intersection(chunk)
+                result.update(chunk)
+            parts.append(dict(original_field=field, **ref_for(p), json_selector='value'))
+        assert len(result) == value['original_entries']
+        fields[field] = dict(container_type=kind, entries=len(result), parts=len(value['parts']))
+        return expand(result, field, parts, fields, protect)
+    if isinstance(value, dict):
+        return {k: expand(v, k, parts, fields, protect) for k, v in value.items()}
+    if isinstance(value, list):
+        return [expand(v, field, parts, fields, protect) for v in value]
+    return value
+
+def raw_root_values(raw):
+    text, decoder, result, i = raw.decode(), json.JSONDecoder(), {}, 1
+    assert text.startswith('{')
+    while True:
+        while text[i].isspace() or text[i] == ',':
+            i += 1
+        if text[i] == '}':
+            return result
+        key, i = decoder.raw_decode(text, i)
+        assert key not in result
+        while text[i].isspace():
+            i += 1
+        assert text[i] == ':'
+        i += 1
+        while text[i].isspace():
+            i += 1
+        start = i
+        _, i = decoder.raw_decode(text, i)
+        result[key] = text[start:i]
+
+def fragments(text):
+    decoder, result, i = json.JSONDecoder(), [], 1
+    assert text.startswith('[')
+    while True:
+        while text[i].isspace() or text[i] == ',':
+            i += 1
+        if text[i] == ']':
+            return result
+        start = i
+        _, i = decoder.raw_decode(text, i)
+        result.append(text[start:i])
+
+def check_unchanged():
+    for p, raw in RAW.items():
+        assert p.read_bytes() == raw, 'bound input changed: ' + str(p)
+        if p in MIRRORED:
+            for m in M:
+                assert (m / p.relative_to(B)).read_bytes() == raw, 'bound input mirror changed: ' + str(p)
+    for p, raw in OLD.items():
+        assert p.read_bytes() == raw, 'immutable195 changed: ' + str(p)
+
+def atomic(p, raw):
+    q = p.with_name(p.name + '.200-closure.tmp')
+    assert not q.exists(), 'stale temporary file: ' + str(q)
+    with q.open('xb') as stream:
+        stream.write(raw)
+        stream.flush()
+        os.fsync(stream.fileno())
+    os.replace(q, p)
+
+assert __debug__, 'actual-byte conditions cannot be disabled'
+assert a.input_pins_bytes > 0 and digest_ok(a.input_pins_sha256)
+manifest_path = locate(a.input_pins)
+manifest_raw = manifest_path.read_bytes()
+assert len(manifest_raw) == a.input_pins_bytes and sha(manifest_raw) == a.input_pins_sha256
+manifest = json.loads(manifest_raw)
+assert manifest['schema'] == 'dev200_actual_dev_curve_canonical_binding_input_pins_v1' and manifest['outer'] == 200
+assert manifest['order'] == 'POST_6607_FINAL200_ALIAS_NO_90C_OR_NATIVE5_HELPER'
+assert Path(manifest['workspace_root']).resolve() == W and Path(manifest['base']).resolve() == B
+assert [Path(value).resolve() for value in manifest['mirrors']] == M
+manifest_ref = dict(path=str(manifest_path), bytes=len(manifest_raw), sha256=sha(manifest_raw))
+bound(manifest_ref, mirror=False)
+exact(manifest['source_command'], SOURCE, mirror=False)
+source_ref = ref_for(SOURCE)
+exact(dict(path=str(OLD_SOURCE), bytes=47708, sha256='a2415a1e1218e5fc568d056ce8a5428e4b568ea77ac097f67bc5cdfab99b55ea'), OLD_SOURCE, protect=True, mirror=False)
+exact(dict(path=str(ALIAS_SOURCE), bytes=66595, sha256='30d3c124d95af042747a04e0bc7efdedba5185131805b684cba01cec675dc6a0'), ALIAS_SOURCE, protect=True, mirror=False)
+assert FROZEN_CURVE_SOURCES is not None, 'freeze actual curve/ROOTcurve source pins before publication'
+for path, size, expected in FROZEN_CURVE_SOURCES:
+    exact(dict(path=str(W / path), bytes=size, sha256=expected), W / path, protect=True, mirror=False)
+assert set(manifest['references']) == set(NAMES) | {'original_poll', 'original_resource'}
+REFS, DOCS = {}, {}
+for key, name in NAMES.items():
+    DOCS[key] = exact(manifest['references'][key], B / name)
+    REFS[key] = ref_for(B / name)
+for key in ('original_poll', 'original_resource'):
+    path = locate(manifest['references'][key]['path'])
+    assert path.is_relative_to(B) and path.name.startswith('NATIVE5_CONTINUE_' + ('POLL_' if key == 'original_poll' else 'RESOURCE_'))
+    DOCS[key] = bound(manifest['references'][key], mirror=False)
+    REFS[key] = ref_for(path)
+
+full, owner, rootdev, curve, rootcurve = [DOCS[key] for key in ('full', 'dev_executor', 'dev_readback', 'curve', 'root_curve_readback')]
+assert full['status'] == 'ACTUAL_FULL_OUTER200_NATIVE200_COMPLETE_FINAL_PHASE_OBSERVED'
+assert full['completed_outer'] == 200 and full['full_iteration_metric_pending'] is False
+assert full['actual_next_outer_entered'] is None and full['native_driver_next_step'] == 201
+assert owner['status'] == 'ACTUAL_DEV200_COST_COLLECTED_AND_LOCAL_MIRRORS_READ_BACK' and owner['outer'] == 200
+assert owner['collector_source_commit'] == ENTRY and owner['collector_source_sha256'] == ENTRY_SHA
+assert owner['new_entry_main_invocations_this_task'] == owner['actual_remote_incremental_collection_invocations'] == 1
+assert owner['preceding_local_pending_invocations'] == owner['remote_collector_exit_code'] == 0 and owner['preceding_pending_remote_operations'] is False
+prior_count = owner['same_entry_prior_confirmed_main_invocations']
+assert type(prior_count) is int and prior_count > 0 and owner['same_entry_prior_confirmed_remote_incremental_invocations'] == prior_count
+actual_count = owner['same_entry_executor_attested_cumulative_main_invocations']
+assert actual_count == owner['same_entry_executor_attested_cumulative_remote_incremental_invocations'] == prior_count + 1
+assert rootdev['status'] == 'PASS_ACTUAL_DEV200_LOCAL_ARTIFACT_READBACK' and rootdev['outer'] == 200 and rootdev['inconsistencies'] == []
+assert rootdev['executor'] != owner['collector_executor_agent'] and rootdev['executor'] != owner['local_readback_executor_agent']
+assert rootdev['actual_ref_counts']['new_dev_rows'] == rootdev['actual_ref_counts']['all_original_control_summaries'] == 40
+assert rootdev['actual_ref_counts']['old_dev_rows'] == rootdev['actual_ref_counts']['preserved_old_control_summaries'] == 39
+assert rootdev['actual_ref_counts']['new_remote_control_summaries'] == 1
+assert rootcurve['status'] == 'PASS_ACTUAL_CURVE200_LOCAL_ARTIFACT_READBACK' and rootcurve['outer'] == 200
+assert isinstance(rootcurve['executor'], str) and rootcurve['executor'] != owner['collector_executor_agent']
+assert rootcurve['counts'] == dict(training=200, actual_completed_dev512=40, csv_data_rows=240)
+assert rootcurve['same_entry_executor_attested_cumulative_main_invocations'] == rootcurve['same_entry_executor_attested_cumulative_remote_incremental_invocations'] == actual_count
+
+prior_inputs = manifest['prior_inputs']
+assert prior_inputs == owner['prior_inputs'] and prior_inputs['outer'] == 195
+assert set(prior_inputs) == {'outer', 'supplement', 'owner_receipt', 'root_actual_readback', 'original_control', 'curve'}
+old_names = dict(supplement='DEV5_195_NATIVE_COST_SUPPLEMENT.json', owner_receipt='DEV5_195_NATIVE_COST_LOCAL_RECEIPT.json', root_actual_readback='ROOT_DEV195_NATIVE_COST_ACTUAL_READBACK.json', original_control='dev_native_cost_summaries/DEV_OUTER0195_SUMMARY.json')
+old_docs = {key: exact(prior_inputs[key], B / name, protect=True) for key, name in old_names.items()}
+old_curve_names = dict(json='LEARNING_CURVE_COMPLETE_THROUGH195.json', csv='LEARNING_CURVE_COMPLETE_THROUGH195.csv', publication='LEARNING_CURVE_THROUGH195_LOCAL_PUBLICATION.json', binding='LEARNING_CURVE_THROUGH195_COST_SUPPLEMENT_BINDING.json', root_readback='ROOT_CURVE_DEV_COST_THROUGH195_ACTUAL_READBACK.json')
+assert set(prior_inputs['curve']) == set(old_curve_names)
+old_curve_docs = {key: exact(prior_inputs['curve'][key], B / name, protect=True) for key, name in old_curve_names.items()}
+assert old_docs['root_actual_readback']['status'] == 'PASS_ACTUAL_DEV195_LOCAL_ARTIFACT_READBACK'
+assert old_docs['root_actual_readback']['outer'] == old_curve_docs['root_readback']['outer'] == 195
+old_rows, old_dev_parts = decode_rows(old_docs['supplement'], protect=True)
+assert [row['outer'] for row in old_rows] == list(range(5, 196, 5))
+for ref in manifest['historical_files']:
+    path = locate(ref.get('path', ref.get('file')))
+    assert path != REGISTRY_PATH and not re.search(r'(?:OUTER0?200|THROUGH200|DEV5_200)', path.name)
+    bound(ref, protect=True)
+for ref in rootdev['all_prior_DEV_row_part_refs'] + rootdev['all_prior_recorded_CUM_part_refs']:
+    bound(ref, protect=True)
+for entry in rootdev['all_prior_actual_source1ed_receipts']:
+    bound(entry['receipt'], protect=True);bound(entry['supplement'], protect=True)
+assert len(rootdev['all_prior_actual_source1ed_receipts']) == prior_count
+
+# Current registry authority is uniquely the actual COST200 descriptor.
+registry_candidates = [ref for ref in DOCS['cost']['mirrored_artifacts'].values() if locate(ref.get('path', ref.get('file'))) == REGISTRY_PATH]
+assert len(registry_candidates) == 1
+bound(registry_candidates[0], mirror=True)
+current_registry_ref = ref_for(REGISTRY_PATH)
+for rule in manifest['historical_asof_registry_descriptors']:
+    document, descriptor, count = rule['source_document'], rule['descriptor'], rule['occurrences']
+    path = locate(document['path'])
+    assert path in OLD and path.suffix == '.json' and path.is_relative_to(B)
+    same_ref(document, ref_for(path))
+    assert locate(descriptor.get('path', descriptor.get('file'))) == REGISTRY_PATH
+    assert type(count) is int and count > 0 and digest_ok(descriptor['sha256']) and type(descriptor['bytes']) is int and descriptor['bytes'] > 0
+    key = asof_key(ref_for(path), descriptor)
+    assert key not in ASOF_RULES
+    matches = [ref for ref in pin_nodes(json.loads(OLD[path])) if not ref.get('path', ref.get('file')).startswith(('/dataset/', '/mnt/')) and locate(ref.get('path', ref.get('file'))) == REGISTRY_PATH and ref['bytes'] == descriptor['bytes'] and ref['sha256'] == descriptor['sha256']]
+    assert len(matches) == count, 'asof descriptor/count must come from exact old raw bytes'
+    ASOF_RULES[key] = count
+historical_json = [(path, raw) for path, raw in OLD.items() if path.suffix == '.json' and path.is_relative_to(B)]
+for path, raw in historical_json:
+    bind_local_tree(json.loads(raw), protect=True, historical_document=ref_for(path))
+assert ASOF_COUNTS == ASOF_RULES
+for key in ('dev_executor', 'dev_readback', 'curve_binding', 'curve_publication', 'root_curve_readback', 'terminal_candidate'):
+    bind_local_tree(DOCS[key])
+must_bind(owner, ('full', 'native', 'cumulative', 'cost', 'dev_native', 'execution', 'pre_execution'))
+must_bind(rootdev, ('full', 'native', 'cumulative', 'cost', 'dev_native', 'dev_executor', 'execution', 'pre_execution'))
+must_bind(rootcurve, ('full', 'native', 'cumulative', 'cost', 'dev_native', 'dev_executor', 'dev_readback', 'curve', 'curve_csv', 'curve_binding', 'curve_publication', 'terminal_candidate'))
+must_bind(DOCS['curve_binding'], ('full', 'native', 'cumulative', 'cost', 'dev_native', 'dev_executor', 'dev_readback', 'curve', 'curve_csv', 'curve_publication', 'terminal_candidate'))
+assert DOCS['curve_binding']['through_outer'] == 200 and DOCS['curve_binding']['actual_completed_dev_controls'] == 40
+must_bind(DOCS['progress'], ('full', 'curve'))
+must_bind(DOCS['final_alias'], ('full', 'progress'))
+alias = DOCS['final_alias']
+assert alias['schema'] == 'nested_final200_alias_publication_v1' and alias['status'] == 'ACTUAL_FINAL200_LOCAL_METADATA_ALIASES_PUBLISHED'
+assert alias['bindings']['metadata_source']['commit'] == ALIAS_COMMIT
+assert alias['completed_outer'] == 200 and alias['active_outer'] is None and alias['actual_next_outer_entered'] is None
+assert alias['actual_training201_claimed'] is False and alias['current_metric_pending'] is False and alias['goal_status'] == 'active' and alias['goal_complete'] is False
+assert alias['final51713_HF_resource_CPU_acceptance_claimed'] is False
+assert DOCS['terminal_candidate']['schema'] == 'final_candidate_cost_local_receipt_v1'
+assert DOCS['terminal_candidate']['terminal200_counted_once'] is True and DOCS['terminal_candidate']['original_CUM200_rewritten'] is False
+same_ref(DOCS['terminal_candidate']['source_CUM200'], REFS['cumulative'])
+same_ref(DOCS['terminal_candidate']['source_registry'], current_registry_ref)
+
+rows, dev_parts = decode_rows(DOCS['dev_native'])
+assert len(rows) == 40 and rows[:39] == old_rows and [row['outer'] for row in rows] == list(range(5, 201, 5))
+controls = []
+for row in rows:
+    value = bound(row['local_original_summary'], protect=row['outer'] <= 195)
+    assert value['actual_completed_outer'] == row['outer'] and value['ledger_sha256'] == row['ledger_sha256']
+    assert value['phase'] == ('acceptance' if row['outer'] == 5 else 'periodic')
+    assert value['evaluated_rows'] == value['dataset_rows'] == 512
+    assert row['local_original_summary']['bytes'] == row['source_control_summary']['bytes'] and row['local_original_summary']['sha256'] == row['source_control_summary']['sha256']
+    controls.append(dict(outer=row['outer'], local_original_summary=ref_for(row['local_original_summary']['path']), inner_ledger_sha256=row['ledger_sha256']))
+parts, fields = [], {}
+cum = expand(DOCS['cumulative'], '', parts, fields)
+assert cum['through_effective_outer'] == 200 and cum['pending_full_metric_outers'] == []
+assert [item['outer'] for item in cum['rows_counted_once']] == list(range(1, 201))
+assert [item['outer'] for item in cum['completed_dev_evaluations']] == list(range(5, 201, 5))
+assert cum['dev_phase_already_in_outer_wall'] is True
+assert rootdev['actual_ref_counts']['cum_parts'] == len(parts) and rootdev['actual_ref_counts']['cum_complete_fields'] == len(fields)
+assert rootdev['actual_ref_counts']['new_dev_row_parts'] == len(dev_parts)
+cost = DOCS['cost']
+assert cost['outer'] == 200 and cost['status'] == 'ACTUAL_OUTER200_COST_ARCHIVED'
+same_ref(cost['cumulative_snapshot'], REFS['cumulative'])
+cost_refs = []
+for reference in cost['mirrored_artifacts'].values():
+    bound(reference);cost_refs.append(ref_for(reference.get('path', reference.get('file'))))
+assert len(cost_refs) == cost['mirrored_artifact_count'] == rootdev['actual_ref_counts']['cost_mirrored_artifacts']
+same_ref(next(ref for ref in cost_refs if ref['path'] == str(REGISTRY_PATH)), current_registry_ref)
+
+old_curve = old_curve_docs['json']
+old_json_path, old_csv_path = B / old_curve_names['json'], B / old_curve_names['csv']
+old_json_raw, new_json_raw = OLD[old_json_path], RAW[B / NAMES['curve']]
+old_csv, new_csv = OLD[old_csv_path], RAW[B / NAMES['curve_csv']]
+assert [point['outer'] for point in old_curve['training_points']] == list(range(1, 196))
+assert [point['outer'] for point in old_curve['completed_dev512_points']] == list(range(5, 196, 5))
+assert curve['training_point_count'] == len(curve['training_points']) == 200
+assert curve['completed_dev512_point_count'] == len(curve['completed_dev512_points']) == 40
+assert curve['training_points'][:195] == old_curve['training_points'] and curve['completed_dev512_points'][:39] == old_curve['completed_dev512_points']
+assert [point['outer'] for point in curve['training_points']] == list(range(1, 201))
+assert [point['outer'] for point in curve['completed_dev512_points']] == list(range(5, 201, 5))
+old_spans, new_spans = raw_root_values(old_json_raw), raw_root_values(new_json_raw)
+assert fragments(new_spans['training_points'])[:195] == fragments(old_spans['training_points'])
+assert fragments(new_spans['completed_dev512_points'])[:39] == fragments(old_spans['completed_dev512_points'])
+permitted_updates = {'summary_schema', 'created_at_utc', 'scope', 'training_outer_range', 'training_point_count', 'completed_dev512_point_count', 'fresh_chain', 'training_points', 'completed_dev512_points'}
+for key, span in old_spans.items():
+    if key not in permitted_updates:
+        assert new_spans[key] == span, 'old195 raw metadata changed: ' + key
+assert new_csv.startswith(old_csv)
+csv_rows = list(csv.DictReader(io.StringIO(new_csv.decode())))
+counts = dict(training=200, actual_completed_dev512=40, csv_data_rows=240)
+assert len(csv_rows) == 240 and sum(row['row_type'] == 'training' for row in csv_rows) == 200 and sum(row['row_type'] == 'dev512' for row in csv_rows) == 40
+assert DOCS['curve_publication']['counts'] == rootcurve['counts'] == counts
+actual, metrics = full['actual_dev512'], full['actual_dev512']['metrics']
+assert actual['outer'] == 200 and actual['phase'] == 'periodic' and actual['status'] == 'VALIDATION_COST_COMPLETE' and actual['rows'] == 512
+assert actual == next(item for item in DOCS['original_poll']['development'] if item['outer'] == 200 and item['phase'] == 'periodic')
+assert metrics['val/qa_count/nq'] == metrics['val/qa_count/hotpotqa'] == 256
+same_ref(full['input_bindings']['poll'], REFS['original_poll']);same_ref(full['input_bindings']['resource'], REFS['original_resource'])
+assert full['iteration_metrics'] == next(item for item in DOCS['original_poll']['iteration_metrics'] if item['step'] == 200)
+assert rootdev['actual200_identity']['original200_scalar_fields'] == {field:full['iteration_metrics'][field] for field in rootdev['actual200_identity']['original200_scalar_fields']}
+assert len(rootdev['actual200_identity']['original200_scalar_fields']) == 15
+assert rootdev['actual200_identity']['actual_total_adam_per_rank'] == full['per_rank_actual_total_adam'] == alias['actual_adam_per_rank']
+devpoint, trainpoint, last = curve['completed_dev512_points'][-1], curve['training_points'][-1], rows[-1]
+assert devpoint['outer'] == trainpoint['outer'] == 200 and devpoint['f1'] == metrics['val/f1/all'] and devpoint['em'] == metrics['val/em/all']
+assert devpoint['ledger_sha256'] == actual['ledger_sha256'] == last['ledger_sha256']
+assert last['source_control_summary']['sha256'] != last['ledger_sha256']
+assert devpoint['source_receipt_sha256'] == trainpoint['source_receipt_sha256'] == REFS['full']['sha256']
+assert trainpoint['source_poll_sha256'] == REFS['original_poll']['sha256']
+assert trainpoint['step_wall_seconds'] == full['full_outer_wall_seconds']
+assert trainpoint['normal_dev_testing_seconds'] == devpoint['normal_dev_testing_wall_seconds'] == full['normal_dev512_wall_seconds']
+assert math.isclose(full['full_outer_wall_seconds'], full['normal_dev512_wall_seconds'] + full['training_archive_wall_seconds_excluding_current_dev'], rel_tol=1e-12, abs_tol=1e-6)
+
+pre_refs = {locate(ref['path']): ref for ref in manifest['canonical_prestate']}
+assert set(pre_refs) == set(ALL)
+alias_outputs = {locate(ref.get('path', ref.get('file'))): ref for ref in pin_nodes(alias['outputs'])}
+assert set(alias_outputs) == set(ALL), 'all14 prestate files must be actual6607 outputs'
+prior = {}
+for path in ALL:
+    same_ref(pre_refs[path], alias_outputs[path])
+    raw = path.read_bytes();assert len(raw) == pre_refs[path]['bytes'] and sha(raw) == pre_refs[path]['sha256']
+    prior[path] = raw
+assert prior[P[0]] == prior[P[1]] and len({prior[path] for path in REPORTS}) == 1
+for mirror in M:
+    for path in P[1:]:
+        assert prior[mirror / path.name] == prior[path]
+
+# Only provenance pointers change. All final active/terminal phase identity,
+# PID/Invocation/metrics/native/cold-load/goal/final-acceptance fields stay exact.
+updates = dict(current_dev_native_cost_supplement=REFS['dev_native'], current_dev_native_cost_publication=REFS['dev_readback'],
+    dev_native_cost_actual_last_collected_outer=200, learning_curve_complete_outer=200, learning_curve_complete_through_outer=200,
+    learning_curve_complete=REFS['curve'], learning_curve_complete_sha256=REFS['curve']['sha256'],
+    current_learning_curve_cost_supplement_binding=REFS['curve_binding'], current_curve_and_dev_cost_actual_readback=REFS['root_curve_readback'],
+    current_final_candidate_cost_supplement=REFS['terminal_candidate'], current_final200_alias_phase_provenance=REFS['final_alias'],
+    dev_native_cost_collector_source_commit=ENTRY, dev_native_cost_collector_latest_actual_executor_receipt=REFS['dev_executor'],
+    dev_native_cost_collector_new_entry_actual_main_invocations=actual_count,
+    dev_native_cost_collector_actual_remote_incremental_invocations=actual_count,
+    dev_native_cost_collector_latest_actual_main_invocations_delta=1, dev_native_cost_collector_latest_actual_remote_incremental_invocations_delta=1,
+    dev_native_cost_collector_selected_next_completed_dev_outer=None,
+    dev_native_cost_collector_actual_scope='Actual SHA-bound source1ed prior receipt chain plus successful200 delta1/1/PENDING0, independently corroborated by original controls/parts. No independent global process audit.',
+    dev_curve_cost_post6607_order='6607 final phase publication followed by this pointer-only binding; no90c/native5helper/actual201/ROOTFULL200 dependency')
+new_bytes, preserved_final_states = {}, {}
+for path in P:
+    state = json.loads(prior[path])
+    assert state['completed_outer'] == 200 and state['active_outer'] is None and state['latest_dev512_outer'] == 200 and state['goal_status'] == 'active'
+    assert state['per_rank_actual_total_adam'] == full['per_rank_actual_total_adam']
+    preserved_final_states[str(path)] = {key:value for key,value in state.items() if key not in updates}
+    state.update(updates)
+    assert {key:value for key,value in state.items() if key not in updates} == preserved_final_states[str(path)]
+    raw = encode(state);new_bytes[path] = raw
+    if path != P[0]:
+        for mirror in M:new_bytes[mirror / path.name] = raw
+append = ('\nActual200 periodic512 dev/curve/candidate metadata pointers are now bound after the original6607 final phase publication. '
+          + str(len(controls)) + ' original controls, dynamic DEVparts=' + str(len(dev_parts)) + ', CUMparts=' + str(len(parts))
+          + ', COSTrefs=' + str(len(cost_refs)) + '; exact original195 objects/raw spans and CSV prefix bytes=' + str(len(old_csv))
+          + ' are preserved. Original200 dev F1=' + str(metrics['val/f1/all']) + ', EM=' + str(metrics['val/em/all'])
+          + ', inner-ledger SHA=' + actual['ledger_sha256'] + '. Actual source1ed cumulative main/remote=' + str(actual_count)
+          + ', this binding invokes neither collector nor SSH. Final active/terminal phase and saved native201 boundary semantics remain exactly those of6607; '
+          + 'no training201, slow final completion, final51713/HF cold reload, terminal service CPU, cleanup or whole-goal acceptance is claimed.\n')
+for path in REPORTS:new_bytes[path] = prior[path] + append.encode()
+assert set(new_bytes) == set(ALL)
+receipt_name = 'OUTER200_CURVE_DEVCOST_POST_FINAL_ALIAS_CLOSURE.json'
+receipt_targets = [B / receipt_name, *[mirror / receipt_name for mirror in M]]
+assert all(not path.exists() for path in receipt_targets)
+check_unchanged();assert all(path.read_bytes() == raw for path,raw in prior.items())
+now = datetime.now(timezone.utc)
+snapshot = B / ('outer200_post_final_alias_prior_' + now.strftime('%Y%m%dT%H%M%S%fZ'));snapshot.mkdir()
+members = []
+for i,(path,raw) in enumerate(prior.items()):
+    target = snapshot / (f'{i:02d}-' + path.name + '.gz')
+    with target.open('xb') as stream:stream.write(gzip.compress(raw, mtime=0))
+    stored = target.read_bytes();assert gzip.decompress(stored) == raw
+    members.append(dict(original_path=str(path),original_bytes=len(raw),original_sha256=sha(raw),stored_gzip_path=str(target),stored_bytes=len(stored),stored_sha256=sha(stored)))
+snapshot_manifest = snapshot / 'SNAPSHOT_MANIFEST.json'
+with snapshot_manifest.open('xb') as stream:stream.write(encode(dict(schema='outer200_post6607_canonical14_original_snapshot_v1',files=members,actual_input_manifest=manifest_ref)))
+check_unchanged();assert all(path.read_bytes() == raw for path,raw in prior.items())
+for path,raw in new_bytes.items():
+    assert path.read_bytes() == prior[path]
+    atomic(path, raw)
+observations = []
+for n in range(2):
+    check_unchanged();assert all(path.read_bytes() == raw for path,raw in new_bytes.items())
+    for path in P:
+        state = json.loads(path.read_bytes())
+        assert {key:value for key,value in state.items() if key not in updates} == preserved_final_states[str(path)]
+        assert all(state[key] == value for key,value in updates.items())
+    observations.append(dict(pass_number=n+1,observed_utc=datetime.now(timezone.utc).isoformat(),canonical_and_report_files=14,two_mirrors_equal=True,old195_bytes_preserved=True,final_phase_fields_preserved=True))
+    if n == 0:time.sleep(1)
+receipt = dict(schema='outer200_curve_dev_cost_post_final_alias_closure_v1',created_at_utc=now.isoformat(),completed_outer=200,active_outer=None,
+    order='POST_6607_FINAL200_ALIAS_NO_90C_OR_NATIVE5_HELPER',references=REFS,actual_input_manifest=manifest_ref,source=source_ref,
+    final_alias_source=ref_for(ALIAS_SOURCE),adapted_from_source=ref_for(OLD_SOURCE),snapshot=rawpin(snapshot_manifest),
+    prior195_curve_json=ref_for(old_json_path),prior195_CSV_prefix=ref_for(old_csv_path),prior195_raw_objects_values_CSV_prefix_preserved=True,
+    prior39_original_rows_and_controls_preserved=True,original40_control_bindings=controls,prior_parts_and_receipts_protected=True,
+    dynamic_CUM_fields=fields,dynamic_CUM_parts=parts,dynamic_DEV_parts=dev_parts,dynamic_COST_refs=cost_refs,current200_registry=current_registry_ref,
+    historical_registry_asof_exclusions=HISTORICAL_ASOF_EXCLUSIONS,historical_registry_original_bytes_currently_verified=False,
+    final_phase_evidence=alias['final_phase_evidence'],final_phase_nonpointer_state_sha256={path:sha(encode(state)) for path,state in preserved_final_states.items()},
+    protected_old_files=[rawpin(path) for path in sorted(OLD)],
+    source1ed_executor_attested_cumulative_main=actual_count,source1ed_executor_attested_cumulative_remote=actual_count,
+    actual_readbacks=observations,before=[pre_refs[path] for path in ALL],after=[rawpin(path) for path in ALL],
+    collector_SSH_or_helper_invocations=0,training_modified=False,immutable_CUM_rewritten=False,remote_actions=False,new_eval_test_code_review=False,
+    actual_training201_claimed=False,ROOTFULL200_required_or_used=False,original_slow_final_completion_required=False,
+    final51713_HF_terminal_CPU_cleanup_or_goal_completion_claimed=False,goal_status='active',goal_complete=False,global_atomic_transaction=False)
+receipt_raw = encode(receipt)
+for path in receipt_targets:
+    with path.open('xb') as stream:stream.write(receipt_raw)
+for n in range(2):
+    check_unchanged();assert all(path.read_bytes() == receipt_raw for path in receipt_targets)
+    assert all(path.read_bytes() == raw for path,raw in new_bytes.items())
+    print(json.dumps(dict(receipt_readback_pass=n+1,copies=3,canonical14_and_old195_and_final_phase_preserved=True)))
+    if n == 0:time.sleep(1)
+print(json.dumps(rawpin(receipt_targets[0])))
+PY
