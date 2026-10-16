@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 import sys
 
 from .actor import sha, atomic_json
@@ -29,7 +30,7 @@ def prepare(template, run_id):
     ready = root / 'ready.json'
     if ready.exists():
         return json.loads(ready.read_text())
-    root.mkdir(exist_ok=False)
+    root.mkdir(exist_ok=True)
     c = dict(template)
     for key, value in c.items():
         if isinstance(value, str) and value.startswith('/mnt/data/'):
@@ -61,7 +62,12 @@ def prepare(template, run_id):
     for name, key in [('commit_probe.pkl','commit'), ('boundary_probe.pkl','boundary')]:
         if sha(mapped[key]) != original['head_sha256'][name]:
             raise ValueError('Original grounding soft reward head changed')
-    atomic_json(root/'grounding-manifest.json', mapped)
+    manifest_path = root/'grounding-manifest.json'
+    if manifest_path.exists():
+        if json.loads(manifest_path.read_text()) != mapped:
+            raise ValueError('Existing own grounding path mapping differs')
+    else:
+        atomic_json(manifest_path, mapped)
     c.update(grounding_manifest=str(root/'grounding-manifest.json'),
         grounding_manifest_sha256=sha(root/'grounding-manifest.json'),
         original_grounding_manifest=str(source), original_grounding_manifest_sha256=sha(source),
@@ -77,20 +83,26 @@ def prepare(template, run_id):
     if len(gpu) != 8 or any(int(row[2]) < 40000 for row in gpu):
         raise ValueError('Actual eight H100 memory headroom is insufficient; no foreign cleanup')
     c['physical_gpu_uuids'] = [row[1].strip() for row in sorted(gpu,key=lambda row:int(row[0]))]
-    deps = Path(c['runtime_extra_packages']); deps.mkdir()
-    # The retained CUDA venv was created without pip. Use the host pip only
-    # after proving its Python ABI matches, and install solely into own target.
-    version = subprocess.check_output([str(TREE/'env/bin/python'), '-c',
-        'import sys; print("%d.%d"%sys.version_info[:2])'], text=True).strip()
-    if version != '%d.%d' % sys.version_info[:2]:
-        raise ValueError('Host pip and retained CUDA runtime have different Python ABIs')
-    command = [sys.executable, '-m', 'pip', 'install', '--no-deps', '--no-cache-dir',
-        '--target', str(deps), 'joblib==1.4.2', 'scikit-learn==1.5.2', 'scipy==1.13.1', 'threadpoolctl==3.6.0']
-    env = dict(os.environ, PIP_DISABLE_PIP_VERSION_CHECK='1')
-    with (root/'cpu-reward-packages-install.log').open('x') as log:
-        result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, env=env, timeout=180)
-    if result.returncode:
-        raise RuntimeError('Isolated CPU reward dependencies failed; preserve install log')
+    stage = Path(SHARED8 + 'shaoshitong/search-g1-prefix-diversity-cpu-package-stage-' + run_id)
+    package_manifest_path = stage/'package-manifest.json'
+    package_manifest = json.loads(package_manifest_path.read_text())
+    if package_manifest['versions'] != {'joblib':'1.4.2','scikit-learn':'1.5.2','scipy':'1.13.1','threadpoolctl':'3.5.0'}:
+        raise ValueError('Existing Search-G1 CPU dependency versions differ')
+    c['runtime_extra_packages'] = str(root/'cpu-reward-packages-from-shared')
+    deps = Path(c['runtime_extra_packages']); deps.mkdir(exist_ok=False)
+    for name, item in package_manifest['files'].items():
+        rel = Path(name)
+        if rel.is_absolute() or '..' in rel.parts:
+            raise ValueError('CPU package snapshot traversal')
+        source, target = stage/rel, deps/rel
+        target.parent.mkdir(parents=True, exist_ok=True); shutil.copyfile(source, target)
+        if target.stat().st_size != item['bytes'] or sha(target) != item['sha256']:
+            raise ValueError('Shared CPU package copy differs: '+name)
+    atomic_json(root/'cpu-reward-packages-readback.json', dict(
+        manifest_path=str(package_manifest_path), manifest_sha256=sha(package_manifest_path),
+        file_count=len(package_manifest['files']), bytes=package_manifest['bytes'],
+        versions=package_manifest['versions'], all_file_sha_match=True,
+        source_environment_modified=False, via_Mac=False))
     atomic_json(root/'launch-config-template.json', c)
     result = dict(status='RETAINED18_INPUTS_AND_ISOLATED_CPU_REWARD_RUNTIME_READY',
         config=c, template_path=str(root/'launch-config-template.json'),
