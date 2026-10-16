@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 
 from .actor import sha, atomic_json
 
@@ -77,7 +78,13 @@ def prepare(template, run_id):
         raise ValueError('Actual eight H100 memory headroom is insufficient; no foreign cleanup')
     c['physical_gpu_uuids'] = [row[1].strip() for row in sorted(gpu,key=lambda row:int(row[0]))]
     deps = Path(c['runtime_extra_packages']); deps.mkdir()
-    command = [str(TREE/'env/bin/python'), '-m', 'pip', 'install', '--no-deps', '--no-cache-dir',
+    # The retained CUDA venv was created without pip. Use the host pip only
+    # after proving its Python ABI matches, and install solely into own target.
+    version = subprocess.check_output([str(TREE/'env/bin/python'), '-c',
+        'import sys; print("%d.%d"%sys.version_info[:2])'], text=True).strip()
+    if version != '%d.%d' % sys.version_info[:2]:
+        raise ValueError('Host pip and retained CUDA runtime have different Python ABIs')
+    command = [sys.executable, '-m', 'pip', 'install', '--no-deps', '--no-cache-dir',
         '--target', str(deps), 'joblib==1.4.2', 'scikit-learn==1.5.2', 'scipy==1.13.1', 'threadpoolctl==3.6.0']
     env = dict(os.environ, PIP_DISABLE_PIP_VERSION_CHECK='1')
     with (root/'cpu-reward-packages-install.log').open('x') as log:
