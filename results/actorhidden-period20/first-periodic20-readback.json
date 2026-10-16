@@ -1,0 +1,286 @@
+{
+  "original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden-first-period20-readback-20261016T182732043825Z-actual.json",
+  "sha256": "12ed7946948f6df500e375140b64064a96089f33b732e1a86ee206294cb63cfc",
+  "code_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/preparation/periodic-readback-control/36f5138299b04f77078880d620977e1b01f29384146ced0591880c564f1d39fe/periodic_readback.py",
+  "code_sha256": "36f5138299b04f77078880d620977e1b01f29384146ced0591880c564f1d39fe",
+  "source_proof_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/preparation/periodic-readback-control/36f5138299b04f77078880d620977e1b01f29384146ced0591880c564f1d39fe/periodic-0020-proof.json",
+  "source_proof_sha256": "95e185a8ad932e9d675db1bfe002711d09238a8adbd5b6ceb939c33d21ac8ddb",
+  "proof": {
+    "actor_actual_adam_per_rank": [
+      400,
+      400,
+      400,
+      400,
+      400,
+      400,
+      400,
+      400
+    ],
+    "after_update": {
+      "test": {
+        "accuracy": 0.572265625,
+        "balanced_accuracy": 0.5744771326911395,
+        "count": 512,
+        "fn": 70,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 149,
+        "group_bce": 0.7244168600157335,
+        "group_weight": 1.0,
+        "mean_q": 0.4939346569970075,
+        "mixed_count": 167,
+        "mixed_recall": 0.5808383233532934,
+        "nonmixed_count": 345,
+        "nonmixed_recall": 0.5681159420289855,
+        "threshold": 0.5,
+        "tn": 196,
+        "total_loss": 1.4175792578637765,
+        "tp": 97,
+        "trajectory_bce": 0.693162397848043,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "train": {
+        "accuracy": 0.6328125,
+        "balanced_accuracy": 0.6418817568989708,
+        "count": 5120,
+        "fn": 534,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 1346,
+        "group_bce": 0.6815001831206077,
+        "group_weight": 1.0,
+        "mean_q": 0.48721532466472545,
+        "mixed_count": 1599,
+        "mixed_recall": 0.6660412757973734,
+        "nonmixed_count": 3521,
+        "nonmixed_recall": 0.617722238000568,
+        "threshold": 0.5,
+        "tn": 2175,
+        "total_loss": 1.2846890054410318,
+        "tp": 1065,
+        "trajectory_bce": 0.6031888223204243,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      }
+    },
+    "before_update": {
+      "test": {
+        "accuracy": 0.568359375,
+        "balanced_accuracy": 0.5561312158292111,
+        "count": 512,
+        "fn": 80,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 141,
+        "group_bce": 0.7147422431561301,
+        "group_weight": 1.0,
+        "mean_q": 0.47534787554199426,
+        "mixed_count": 167,
+        "mixed_recall": 0.5209580838323353,
+        "nonmixed_count": 345,
+        "nonmixed_recall": 0.591304347826087,
+        "threshold": 0.5,
+        "tn": 204,
+        "total_loss": 1.4223702157964295,
+        "tp": 87,
+        "trajectory_bce": 0.7076279726402995,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      },
+      "train": {
+        "accuracy": 0.6265625,
+        "balanced_accuracy": 0.6235116771896096,
+        "count": 5120,
+        "fn": 615,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 1297,
+        "group_bce": 0.6990620919118947,
+        "group_weight": 1.0,
+        "mean_q": 0.47281834347440005,
+        "mixed_count": 1599,
+        "mixed_recall": 0.6153846153846154,
+        "nonmixed_count": 3521,
+        "nonmixed_recall": 0.6316387389946038,
+        "threshold": 0.5,
+        "tn": 2224,
+        "total_loss": 1.3224499183697294,
+        "tp": 984,
+        "trajectory_bce": 0.6233878264578347,
+        "true_mixed": "0<sum(own_strict_em)<5"
+      }
+    },
+    "checkpoint_semantic_reload_performed": false,
+    "global_batch_counts": {
+      "255": 80,
+      "260": 20
+    },
+    "global_loss_ledger_sha256": "3182b3fac714a8cd6d2723a57bc88f0f4361f7fb763832a566b656a34980d14c",
+    "gpu_forward_performed": false,
+    "independent_model_sha_readback": false,
+    "joint_sha256": "c0fc6135ec3e539cd85238bd8555f4b0e65ed6a87dc6c0fdb3e94a86a2b987a5",
+    "metrics_sha256": "25c428886297dca86a2650936f2e9e3023483ecae79474053f6f0bc3b5f3454f",
+    "next_probe_use": {
+      "actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0020",
+      "outer": 21,
+      "probe_sha256": "250cc5875154c6eca92220ce45b0d279700f51cdd9a03db3a92a27d589daaaee",
+      "selection_sha256": "db655f42c88681c5568cdc60654ca34b0bb572c89092456cda27fe028ef8fe1b"
+    },
+    "outer": 20,
+    "phase_timings": {
+      "outer-000020-actor-7d8e0d45297242d78370db6cbf557b05": {
+        "elapsed_seconds": 124.72786415368319,
+        "exit_code": 0
+      },
+      "outer-000020-complete-unselected-pool": {
+        "elapsed_seconds": 431.2788453325629,
+        "exit_code": 0
+      },
+      "outer-000020-current-actor-diagnostic": {
+        "elapsed_seconds": 122.03060379624367,
+        "exit_code": 0
+      },
+      "outer-000020-prefix": {
+        "elapsed_seconds": 74.27531373500824,
+        "exit_code": 0
+      },
+      "outer-000020-probe-update": {
+        "elapsed_seconds": 43.44172536581755,
+        "exit_code": 0
+      },
+      "outer-000020-score": {
+        "elapsed_seconds": 22.09530793502927,
+        "exit_code": 0
+      }
+    },
+    "preselection_probe_sha256": "7132551460fec71810b5efeae5a3b7c60ccdd3d52a07fabb241368578beae910",
+    "probe_actual_adam_per_rank": [
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100
+    ],
+    "producer_checkpoint": {
+      "actual_adam_steps_per_rank": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "binding_sha256": "848abb302d7440e3824f07401abde6a0e111c7c61f427ccc33ad0c9dc5748a82",
+      "bytes": 932251350,
+      "completed_outer": 20,
+      "learning_rate": 1e-06,
+      "observed_utc": "2026-10-16T18:21:17.307298+00:00",
+      "run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+      "sha256": "250cc5875154c6eca92220ce45b0d279700f51cdd9a03db3a92a27d589daaaee"
+    },
+    "question_hash_overlap": 0,
+    "question_id_overlap": 0,
+    "rank_ledgers": [
+      {
+        "actual_writes": 100,
+        "last_actual_adam": 100,
+        "local_questions": 640,
+        "local_trajectories": 3200,
+        "rank": 0,
+        "sha256": "330b1ee0b378b901832bd857d686f5f3f7c27e1de4d6dfc4bbd454812d6cb3c2"
+      },
+      {
+        "actual_writes": 100,
+        "last_actual_adam": 100,
+        "local_questions": 640,
+        "local_trajectories": 3200,
+        "rank": 1,
+        "sha256": "69fedf2208bef0559aef6725fe2589eaa4ad789fe173382d4d4fdae3f887d5b4"
+      },
+      {
+        "actual_writes": 100,
+        "last_actual_adam": 100,
+        "local_questions": 640,
+        "local_trajectories": 3200,
+        "rank": 2,
+        "sha256": "423de2801d151f3afd7dafad4766e0810b3408244bb8d32aecc6ccacb3f1c83f"
+      },
+      {
+        "actual_writes": 100,
+        "last_actual_adam": 100,
+        "local_questions": 640,
+        "local_trajectories": 3200,
+        "rank": 3,
+        "sha256": "2bd86a00af2df45ba873efcf67dc148a31ca0cac0f730d3b0bdb587edf850aeb"
+      },
+      {
+        "actual_writes": 100,
+        "last_actual_adam": 100,
+        "local_questions": 640,
+        "local_trajectories": 3200,
+        "rank": 4,
+        "sha256": "abbdb8cf82bf78f863cbbd1ea1b5b918556739df7efa2fa17f892e91f0ec568a"
+      },
+      {
+        "actual_writes": 100,
+        "last_actual_adam": 100,
+        "local_questions": 640,
+        "local_trajectories": 3200,
+        "rank": 5,
+        "sha256": "eff0ca643965e56fdb7498ea012be9241db0450974a59101318d3c9243375fbc"
+      },
+      {
+        "actual_writes": 100,
+        "last_actual_adam": 100,
+        "local_questions": 640,
+        "local_trajectories": 3200,
+        "rank": 6,
+        "sha256": "edde0e70c30046382824b735820f6c3472c8691ac7900b73990e58c98127ca8d"
+      },
+      {
+        "actual_writes": 100,
+        "last_actual_adam": 100,
+        "local_questions": 640,
+        "local_trajectories": 3200,
+        "rank": 7,
+        "sha256": "b78e00ea1faa11572fa0667b0e275bec5c14a1d2a9e034921e50ef94af34235a"
+      }
+    ],
+    "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0019",
+    "selected_mixed_fraction": 0.509765625,
+    "status": "PERIODIC_NATIVE_INPUTS_ADAM_METRICS_READBACK",
+    "tensor_loaded": false,
+    "test_inputs": {
+      "correct_count_histogram": {
+        "0": 261,
+        "1": 45,
+        "2": 36,
+        "3": 38,
+        "4": 48,
+        "5": 84
+      },
+      "index_sha256": "5e52afe8d3a295d5505832ad197bd49adb7827881c6594b2688a889bcc6b61c8",
+      "mixed_questions": 167,
+      "outcome_sha256": "a04d7527b73f2b2a04f09ac891bfdd0da950a2aadd08de4873649ef5f535d031",
+      "questions": 512,
+      "trajectories": 2560
+    },
+    "train_inputs": {
+      "correct_count_histogram": {
+        "0": 2689,
+        "1": 450,
+        "2": 334,
+        "3": 346,
+        "4": 469,
+        "5": 832
+      },
+      "index_sha256": "b60e2f69d4007236e5013ac9d67e3e8cf2fdb7d2a4dfcae8c787dae4a22a5759",
+      "mixed_questions": 1599,
+      "outcome_sha256": "4d7e17a6199137dbefdd8f15f94b56532bfa5289105c3626f28372fe2880ab84",
+      "questions": 5120,
+      "trajectories": 25600
+    },
+    "train_loop_seconds": 8.38106231763959,
+    "training_modified": false
+  },
+  "frozen_runtime_modified": false
+}

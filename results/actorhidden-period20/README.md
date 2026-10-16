@@ -1,3 +1,27 @@
+## Latest actual result: first periodic update complete
+
+At 2026-10-16T18:30:40.664064+00:00, same job3425 on h100-8 has completed21/200: actor420 and probe100 actual Adam/rank on all8 ranks;22 is in actor training. Frozen runtime700a0b3d is unchanged. Initial3–7+8 acceptance and the periodic20 observer both ended normally; no observer is active. Later QA and final retention remain unfinished.
+
+Outer20 continued all5120 original G5 groups once (25600 trajectories). The preselected512 were projected from that same complete pool, with0 additional generation requests. Train/heldout question IDs and normalized contents have zero overlap. All8 original probe ledgers have100 writes/640 groups/3200 trajectories, LR1e-6; global batches80×255+20×260. Outer21 actually selected using the new probe250cc5875154c6eca92220ce45b0d279700f51cdd9a03db3a92a27d589daaaee.
+
+|Same-actor paired metric|Train before|Train after|Heldout before|Heldout after|
+|---|---:|---:|---:|---:|
+|Mixed accuracy|62.66%|63.28%|56.84%|57.23%|
+|Balanced mixed accuracy|62.35%|64.19%|55.61%|57.45%|
+|Trajectory BCE|0.623388|0.603189|0.707628|0.693162|
+|Group BCE|0.699062|0.681500|0.714742|0.724417|
+|Total BCE|1.322450|1.284689|1.422370|1.417579|
+
+Full-pool mixed1599/5120=31.23%; heldout freshG5 mixed167/512=32.62%. Top512 fixed before outcomes has261/512=50.98% mixed. This single paired update increased heldout balanced accuracy while group BCE worsened; it does not establish stable QA or selection benefit. Ordinary heldout accuracy remains below its nonmixed-majority baseline345/512=67.38%. Full confusion matrices, recalls and K=0..5 counts are in first-periodic20-readback.json.
+
+Actual19→20 complete-to-complete wall time is 829.122s (13.82min), including periodic full-pool generation, fresh diagnostic and persistence. Recorded main phases sum to 817.850s. Probe update phase43.442s includes paired evaluation/persistence; the100-Adam training loop alone is8.381s. Earlier ordinary complete-to-complete rounds averaged326.078s. These scopes must not be conflated. Checkpoint20 metadata/producer SHA were checked; independent large-file readback and semantic reload were not performed for20.
+
+CP5 independent backup is complete:152 source/destination fullSHA matches, final files/bytes checked, worker gone and staging absent; see checkpoint5-independent-backup-complete.json. Future50/100/150/200 and final experiment retention remain pending. Source ordinary available0; physical free including reserved590308528128B is shared. No actual IO failure or reserved-policy change was observed.
+
+Control-only periodic_readback.py was executed under a separate preparation path, SHA36f5138299b04f77078880d620977e1b01f29384146ced0591880c564f1d39fe. It reads completed metadata/ledgers, without tensor loading, model forward, a training gate or runtime changes.
+
+---
+
 # Current actor hidden + periodic probe, fresh200
 
 User goal updated1792163508 supersedes the stopped3420 experiment. This new run starts the official actor from0 and imports only the best retained warmupCP100 probe weights (SHA8df6bd445945ffbbf6a94171f24934495f0ce3ff17a3d2577bbd53d4b8fefd56). Probe Adam starts0. Old run/source tensors remain unchanged.
@@ -80,3 +104,10 @@ The CPU-only selection_metrics.py reporter joins the original pre-update Top512 
 |10|48|321|143|62.70%|89.46%|
 
 The score overpredicts the realized selected mixing rate in these early rounds. This is observed selection/calibration behavior, not evidence establishing its cause or a reason to stop the authorized healthy run. Probe weights are intentionally unchanged until20. Full-pool and fresh-heldout paired diagnostics after the first periodic update remain pending. These selected-group statistics do not measure candidate-pool classifier accuracy or QA quality.
+
+
+## Independent checkpoint5 backup complete
+
+Newa008 CP5 finished at2026-10-16T17:56:45.270947UTC on h100-10 localext4. All152 source files/38806477095B were actually copied and independently read from the destination; every source/destination fullSHA matches. A separate final read confirmed all152 files at expected sizes, final directory present, staging absent and originalPID3908795 gone. The generated restore mapping's small targetSHA also matches. Source RESULT.json120285B was independently read in full, actualSHA47ba491466974e8cd4323d1d60de48594d06f33c53f65d0763eeb45bde44a99a. Earlier progress snapshots are historical.
+
+Destination: /mnt/data/shaoshitong/search-g1-prefix-selection200-independent-backup-20261016/a008d7ce9833-outer-0005-once-v1/checkpoint. SourceCPU proof2231cbf9ecca7e934ba34e924fb8705962fa1b0dcce2a2bd848b1812ccf160da and frozen copier700a/72870be9c54337dea86a45d4440e6693bce05afed82dee21a90d6595ade9b008 remain pinned. No model bytes transitedMac and no training changes were made. Semantic reload=false/all_experiment_backup_complete=false; future50/100/150/200 and final retention are outstanding. Do not replay the consumed backup start or rehash these completed large files.
