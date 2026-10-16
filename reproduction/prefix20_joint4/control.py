@@ -26,6 +26,9 @@ def publish(path,value):
     try:
         with temporary.open('x') as out:json.dump(value,out,indent=2);out.flush();os.fsync(out.fileno())
         os.link(temporary,path)
+        descriptor=os.open(path.parent,os.O_RDONLY)
+        try:os.fsync(descriptor)
+        finally:os.close(descriptor)
     finally:
         if temporary.exists():temporary.unlink()
 
@@ -58,6 +61,24 @@ def bind_repo(base,commit):
     source,proof=verify_source(base,commit);repo=base/'repo'
     receipt=base/'preparation/run-source.json'
     if repo.is_symlink():raise ValueError('PREFIX20_RUNTIME_REPO_CANNOT_BE_SYMLINK')
+    if repo.exists() and receipt.exists():
+        old=json.loads(receipt.read_text())
+        if old['source_commit']!=commit:
+            forbidden=[base/'job.id',base/'preparation/training-submit-claim.json',
+                base/'preparation/training-submission.json',base/'logs/run-manifest.json',
+                base/'logs/training-launch-claim.json',base/'logs/process-ledger.json',base/'gpu-job.lock']
+            if any(p.exists() for p in forbidden):raise ValueError('PREFIX20_CANNOT_PROMOTE_CLAIMED_RUNTIME_SOURCE')
+            for name,record in old['files'].items():
+                path=repo/name
+                if path.is_symlink() or path.stat().st_size!=record['bytes'] or sha(path)!=record['sha256']:
+                    raise ValueError('PREFIX20_UNSTARTED_OLD_RUNTIME_SOURCE_CHANGED')
+            retired=base/('repo.prelaunch-retired-'+old['source_commit'])
+            if retired.exists():raise ValueError('PREFIX20_OLD_SOURCE_RETIREMENT_ALREADY_EXISTS_INSPECT')
+            repo.rename(retired)
+            receipt.rename(receipt.with_name('run-source-retired-'+old['source_commit']+'.json'))
+            publish(base/'preparation'/('source-promotion-'+commit+'.json'),dict(
+                old_source_commit=old['source_commit'],new_source_commit=commit,retired_repo=str(retired),
+                no_job_or_training_claim=True,old_all_files_sha_verified=True,checked_unix=time.time()))
     if not repo.exists():
         stage=base/('repo.partial-'+commit);stage.mkdir(exist_ok=False)
         for name,record in proof['files'].items():
@@ -105,6 +126,9 @@ def storage_plan(observation,checkpoint,budget,*,now=None):
         raise ValueError('PREFIX20_PERSONAL_STORAGE_MEASUREMENT_INVALID')
     measured=int(raw[0]);complete=bool(observation.get('measurement_complete') and
         observation['returncode']==0 and not observation['stderr'].strip())
+    if observation.get('measurement_kind')=='permission_partition_allocated_byte_upper_bound':
+        measured=observation['allocated_bytes_upper_bound']
+        complete=observation['measurement_complete'] and observation['returncode']==1
     # Full actor export plus FSDP Adam/RNG at all five checkpoints, with a
     # separate conservative allowance for four-rank probe and original traces.
     actor_complete=3*checkpoint['per_save_allowance_bytes']
@@ -143,6 +167,9 @@ def storage_admission(base):
         raise ValueError('PREFIX20_STORAGE_OBSERVER_IDENTITY_DIFFERS')
     if observed.get('observer_source_sha256')!=sha(Path(__file__).with_name('storage_observe.py')):
         raise ValueError('PREFIX20_STORAGE_OBSERVER_SOURCE_DIFFERS')
+    if observed.get('measurement_kind'):
+        from reproduction.prefix20_joint4.storage_complete import validate_upper_bound
+        validate_upper_bound(observed,base)
     for key in ('stdout','stderr'):
         path=Path(observed[key+'_file'])
         if not path.is_relative_to(base/'preparation') or path.is_symlink() or sha(path)!=observed[key+'_sha256']:
