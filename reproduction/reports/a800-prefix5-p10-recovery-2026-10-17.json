@@ -1,0 +1,360 @@
+{
+  "actual_observation_unix": 1792184762.8681636,
+  "as_of_shanghai": "2026-10-17T05:06:02.868164+08:00",
+  "base": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-387d3f6e228a488f90c418e2ba47e28e-resume-cb12bf6ab10b46b0a72f1f0c2e753d78",
+  "checkpoints": {
+    "actor10_adam_state_and_rng": "full_saved_parent_state_reused_not_reset; CPUqualified; actor11 CUDA restore must be established separately",
+    "actor10_source_commit": "31f616264ceeb4f0e4d33b39bd85df1214afc15d",
+    "joint10_sha256": "3d6e2c3d0fb5f91c382e7350b373c0c0cbe81893116b1d1d75cee779ea7f1434",
+    "probe10": {
+      "actual_adam_steps_per_rank": [
+        50,
+        50,
+        50,
+        50
+      ],
+      "binding_sha256": "5f49e57e0fbe4d8aeb1dbcdc4d0d4f0a6bc531185bc3788c0b08161f0b4d372c",
+      "bytes": 931830044,
+      "completed_outer": 10,
+      "sha256": "2579b5ec44ff079ce1a9ec22c54bd03824c50136dc9ad63a14a28fc74b682eaa"
+    }
+  },
+  "complete_outers": 10,
+  "counting": {
+    "actor_saved_before_recovery": {
+      "completed_outer": 10,
+      "scheduler_completed_outer": 10,
+      "successful_adam_counted_once": 200
+    },
+    "actor_successful_adam_total_counted_once": 200,
+    "actual_processed_opportunities": "unknown_not_explicitly_projected",
+    "actual_skipped_opportunities": "unknown_not_explicitly_projected",
+    "complete_joint_outer_now": 10,
+    "four_rank_replicas_counted_once": true,
+    "last_parent_complete_joint_outer": 9,
+    "new_execution_actor_successful_adam_counted_once_at_capture": 0,
+    "new_execution_probe_successful_adam_counted_once": 50,
+    "parent_hour_anchor_to_current_joint_window": {
+      "actor_successful_adam_in_new_execution": 0,
+      "actor_successful_adam_in_parent_execution": 20,
+      "actor_successful_adam_total_increment": 20,
+      "anchor_complete_outer_excluded": 9,
+      "last_complete_outer": 10,
+      "new_complete_joint_outers": 1,
+      "note": "Actor10 was already saved in parent90ae; completing probe10 in cb12 closed joint10 without repeating those20 actor writes.",
+      "probe_successful_adam_in_new_execution": 50,
+      "reward_outer_mean": 0.7714604159598821,
+      "reward_outer_mean_range": [
+        0.7714604159598821,
+        0.7714604159598821
+      ],
+      "selected_mixed_count": 512,
+      "selected_questions": 512
+    },
+    "probe_successful_adam_total_counted_once": 50,
+    "proven_inflight_optimizer_call": "unknown",
+    "uncommitted_actor11_returned_adam_at_capture_counted_once": 0,
+    "unknown_is_not_zero": true
+  },
+  "cpu_qualification": {
+    "actual_cpu_prepare_exit_code": 0,
+    "cpu_qualified_not_cuda_restored": true,
+    "full_state_import": true,
+    "import_receipt_sha256": "c5a52d1dcf63927a5fce7f4e558b2db150f1de3c7becdf2200a0c4e0b2bd170a",
+    "launch_config_sha256": "3c11e74d379b7a95163aacf86bd9554b7165aa8dd8bafb3bc2fc013f337e0e17",
+    "optimizer_reset": false,
+    "qualification_sha256": "bfbb0da038bbf5877bd0838ffeb515c5d8b60c33514075c3e7e10355b85aded4",
+    "status": "NATIVE_PENDING_PROBE_CPU_PREPARE_COMPLETE"
+  },
+  "current_stage": {
+    "actor11_cuda_full_state_restore_verified_by_this_receipt": false,
+    "capture_limit": "Actor11 active with0 returned Adam at capture; its completion and full CUDA actor restore are not established by this receipt.",
+    "complete": false,
+    "confirmed_returned_actor_adam_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "continuation_complete_trajectories": 2560,
+    "four_ranks_agree": true,
+    "kind": "actor_update_active",
+    "outer": 11,
+    "prefix_complete_trajectories": 12800
+  },
+  "date": "2026-10-17",
+  "evidence": {
+    "actual_primary": {
+      "file": "a800-prefix5-p10-pending-probe-observe-1792184762958916000.json",
+      "sha256": "bfbe832c13e719571398e8b3c79bd35c817d956e3626a4bf95ab7a1a140588f1"
+    },
+    "cpu_prepare_observation": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-p10-pending-probe-observe-1792184371425159000.json",
+      "sha256": "844393755e02fb363b2e86809541005cd0668273472fc5d655d78fdc9cbb357c"
+    },
+    "once_launch": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-p10-pending-probe-launch-1792184379755628000.json",
+      "sha256": "5793102cbfe71d44aa83fa4d4b7e21f9c70cd846562ed06e07542247080f3792"
+    },
+    "parent_fault": {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-p10-actual-probe-failure-1792183223419379000.json",
+      "sha256": "2167d1d9e15906f16e33d68a55b619d429504bc2dc515cc05370ae26e1dddd1a"
+    },
+    "prior_cpu_launch_draft": {
+      "file": "a800-prefix5-p10-recovery-v2-scalar-draft-20261017.json",
+      "sha256": "058ae7403917587e5dc1189df51fe4b39d642777ad5956d7b3c163a220e3050d"
+    }
+  },
+  "execution_id": "cb12bf6ab10b46b0a72f1f0c2e753d78",
+  "experiment_complete": false,
+  "gpu": {
+    "coverage": "unknown",
+    "current_sample": "not_projected_in_this_receipt",
+    "execution_cumulative_peak": "unknown",
+    "execution_window_peak": "unknown",
+    "parent_peaks_not_reused": true
+  },
+  "hourly_anchor": {
+    "changed_by_report_generation": false,
+    "parent_actor_adam": 180,
+    "parent_anchor_sha256": "55417675947ce69e8cc38a39d982e887dc2a6657ef460f9a0ca779977189f63e",
+    "parent_complete_outers": 9,
+    "parent_delivered_unix": 1792181513.155756,
+    "parent_execution_id": "90aea944c40d41eab4cf84efac02b22a",
+    "parent_probe_adam": 0,
+    "report_kind": "recovery_milestone_not_200_completion",
+    "switch_anchor_must_be_set_only_after_publication_and_actual_user_delivery": true
+  },
+  "outer10_reward": {
+    "advantage_statistics_sha256": "15e4971cfd06a5f9b49084d1a38c7f239d8aaf3fe195657dff61e4a5da9bfcc7",
+    "all_correct_groups": 0,
+    "all_wrong_groups": 0,
+    "max": 1.5986549854278564,
+    "mean": 0.7714604159598821,
+    "min": -0.10000000149011612,
+    "mixed_groups": 512,
+    "raw_rewards_modified": false,
+    "source_execution_id": "90aea944c40d41eab4cf84efac02b22a",
+    "virtual_zero_groups": 0
+  },
+  "outer10_selection": {
+    "actual_candidate_mixed_fraction": 0.355859375,
+    "actual_candidate_mixed_questions": 911,
+    "actual_em_selection": true,
+    "actual_selected_mixed_fraction": 1.0,
+    "actual_selected_mixed_questions": 512,
+    "candidate_questions": 2560,
+    "fallback_questions": 0,
+    "interpretation": "The100% selected mixed fraction is actual-EM-prioritized selection, not probe prediction accuracy or ordinary-round predicted Top512 performance.",
+    "responses_per_question": 5,
+    "selected_questions": 512
+  },
+  "parent_chain": {
+    "original_probe_failure": {
+      "error_message": "Require the complete512 test or5120 train G5 identity index",
+      "error_type": "ValueError",
+      "failed_phase_exit_code": 1,
+      "log_sha256": "75ccfac23d6df1e331a272fdd7ccd4a057f148d314caea04aaca032513c40a84",
+      "outer": 10,
+      "recorded_probe_update_files": [],
+      "stage": "before_update_metrics_before_optimizer_writes"
+    },
+    "parent_base": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-387d3f6e228a488f90c418e2ba47e28e",
+    "parent_cleanup": {
+      "cleaned": true,
+      "owned_births_all_gone": true,
+      "remaining_owned_births": []
+    },
+    "parent_complete_actor_adam_counted_once": 200,
+    "parent_complete_actor_outer": 10,
+    "parent_execution_id": "90aea944c40d41eab4cf84efac02b22a",
+    "parent_joint_sha256": "c4cdb54ef2325f1a2b7c1f84a9f84066c48a3867c4631dd598ee809cfc897802",
+    "parent_last_complete_joint_outer": 9,
+    "parent_owned_births_checked_at_launch": 1755,
+    "parent_probe_adam_counted_once": 0,
+    "parent_probe_complete_outer": 0,
+    "parent_scheduler_completed_outer": 10,
+    "parent_source_commit": "31f616264ceeb4f0e4d33b39bd85df1214afc15d",
+    "parent_terminal_proof_sha256": "2167d1d9e15906f16e33d68a55b619d429504bc2dc515cc05370ae26e1dddd1a"
+  },
+  "pipeline": {
+    "alive": true,
+    "pid": 1861870,
+    "sid": 1861870,
+    "start_ticks": 626397110,
+    "uid": 0
+  },
+  "probe10_update": {
+    "actual_learning_rate": 5e-06,
+    "after": {
+      "test": {
+        "accuracy": 0.57421875,
+        "balanced_accuracy": 0.5817430682450146,
+        "count": 512,
+        "fn": 78,
+        "fp": 140,
+        "group_bce": 0.8731736366087268,
+        "mean_q": 0.5169808953267437,
+        "mixed_count": 205,
+        "nonmixed_count": 307,
+        "tn": 167,
+        "total_loss": 1.5793784399599922,
+        "tp": 127,
+        "trajectory_bce": 0.7062048033512652
+      },
+      "train": {
+        "accuracy": 0.80078125,
+        "balanced_accuracy": 0.7959885211341204,
+        "count": 2560,
+        "fn": 201,
+        "fp": 309,
+        "group_bce": 0.4390249934344258,
+        "mean_q": 0.4159757245051704,
+        "mixed_count": 911,
+        "nonmixed_count": 1649,
+        "tn": 1340,
+        "total_loss": 0.7996106309744015,
+        "tp": 710,
+        "trajectory_bce": 0.3605856375399758
+      }
+    },
+    "after_minus_before": {
+      "test": {
+        "group_bce": 0.04548532827449514,
+        "mixed_group_accuracy_percentage_point": -1.171875,
+        "mixed_group_balanced_accuracy_percentage_point": 2.1021689044251946,
+        "total_loss": -0.037265413479182996,
+        "trajectory_bce": -0.08275074175367814
+      },
+      "train": {
+        "group_bce": -0.1374512621326751,
+        "mixed_group_accuracy_percentage_point": 5.781250000000004,
+        "mixed_group_balanced_accuracy_percentage_point": 7.361478433192059,
+        "total_loss": -0.20607022554488208,
+        "trajectory_bce": -0.06861896341220697
+      }
+    },
+    "before": {
+      "test": {
+        "accuracy": 0.5859375,
+        "balanced_accuracy": 0.5607213792007627,
+        "count": 512,
+        "fn": 116,
+        "fp": 96,
+        "group_bce": 0.8276883083342317,
+        "mean_q": 0.40843035114339665,
+        "mixed_count": 205,
+        "nonmixed_count": 307,
+        "tn": 211,
+        "total_loss": 1.6166438534391752,
+        "tp": 89,
+        "trajectory_bce": 0.7889555451049434
+      },
+      "train": {
+        "accuracy": 0.74296875,
+        "balanced_accuracy": 0.7223737368021999,
+        "count": 2560,
+        "fn": 318,
+        "fp": 340,
+        "group_bce": 0.5764762555671009,
+        "mean_q": 0.38153748365613616,
+        "mixed_count": 911,
+        "nonmixed_count": 1649,
+        "tn": 1309,
+        "total_loss": 1.0056808565192836,
+        "tp": 593,
+        "trajectory_bce": 0.42920460095218277
+      }
+    },
+    "cumulative_successful_adam_per_rank": [
+      50,
+      50,
+      50,
+      50
+    ],
+    "full_probe_phase_seconds": 32.86506826989353,
+    "generalization_interpretation": "Train ordinary and balanced accuracy rose. Test balanced accuracy rose while ordinary accuracy fell; held-out group BCE rose. No broad generalization or200outer completion claim.",
+    "learning_model_kind": "raw_online_probe_ema_only_used_for_original_import",
+    "loss": "mean_trajectory_BCE_plus_mean_same_event_G5_mixed_BCE",
+    "loss_weights": [
+      1.0,
+      1.0
+    ],
+    "metric_semantics": {
+      "accuracy": "ordinary G5 mixed/nonmixed classification accuracy, not trajectory correctness accuracy",
+      "balanced_accuracy": "mean mixed sensitivity and nonmixed specificity",
+      "comparison": "same sampling actor hidden, identical native train/test trajectories and own EM before/after this update",
+      "prediction_threshold": 0.5
+    },
+    "mixed_label": "0<K<5, including K=1",
+    "new_successful_adam_counted_once": 50,
+    "online_different_batch_losses": {
+      "group_bce": 0.5695666143845302,
+      "not_fixed_set_before_after_loss": true,
+      "total_loss": 0.9712333721923643,
+      "trajectory_bce": 0.4016667591436999
+    },
+    "test_questions": 512,
+    "test_trajectories": 2560,
+    "timing_scope": "7.57s is only50 training writes;32.87s phase includes native loading/evaluation/checkpoint and is not a full actor outer.",
+    "training_loop_seconds": 7.570990094915032,
+    "training_trajectories": 12800,
+    "unselected_training_questions": 2560
+  },
+  "publication_scope": "sanitized_scalar_hash_only_no_credentials_models_env_QA_tokens_rollouts_or_full_jobs",
+  "qa": {
+    "correct_count": 118,
+    "latest": {
+      "em": 0.23046875,
+      "f1": 0.2888516865079365,
+      "metadata_sha256": "05520a85768d35ced42ef730d9789af31c1195e128c055f1923596b1d3245aa6",
+      "outer": 5,
+      "per_source": {
+        "hotpotqa": {
+          "em": 0.21484375,
+          "f1": 0.24200148809523808,
+          "qa_count": 256
+        },
+        "nq": {
+          "em": 0.24609375,
+          "f1": 0.3357018849206349,
+          "qa_count": 256
+        }
+      },
+      "qa_count": 512,
+      "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "status": "EXISTING_NATIVE_QA_COMPLETE"
+    },
+    "new_probe_fixed512_diagnostic_is_not_QA5": true,
+    "new_qa_scores_generated_by_recovery": false,
+    "unchanged_existing_parent_QA5": true
+  },
+  "recovery_actions": {
+    "actor10_reexecuted": false,
+    "candidate10_resampled": false,
+    "diagnostic10_regenerated": false,
+    "first_new_complete_actor_outer_pending": 11,
+    "joint10_committed_after_actual_probe_complete": true,
+    "new_cuda_probe_adam_counted_once": 50,
+    "new_execution_only_finished_pending_probe10": true,
+    "optimizer_reset": false,
+    "probe0_reinitialized": false,
+    "two_real_flow_advances": [
+      "probe10 returned50Adam and committed joint10",
+      "same pipeline11 prefix12800 and continuation2560 completed"
+    ]
+  },
+  "report_generation_scope": {
+    "git_actions": 0,
+    "local_only": true,
+    "model_or_tensor_readbacks": 0,
+    "new_evaluations": 0,
+    "new_reviews": 0,
+    "runtime_source_edits": 0,
+    "ssh_calls": 0
+  },
+  "role": "A800_PREFIX5_P10_PENDING_PROBE_RECOVERY_MILESTONE",
+  "run_id": "387d3f6e228a488f90c418e2ba47e28e",
+  "source_commit": "858381986d3332898c4e8aa8e5c31e966363ceea",
+  "target_complete_outers": 200
+}
