@@ -385,7 +385,7 @@ def prepare(base):
         native_birth=native_birth(allocation), actual_optimizer_writes_at_freeze=0,
         created_unix=time.time(), **FORMAL_SAFEGUARDS,
         optimizer_counting=FORMAL_COUNTING,
-        monitoring_scope='four frozen trajectories per rank; 32 global; not full rollout',
+        monitoring_scope=monitor_scope(run),
         semantics='prospective candidates; real first1..5 acceptance precedes6 in same process; no diagnostic state inherited')
     verify_plan(base, artifact, run); _unstarted(base, run)
     write_once(base / PLAN, artifact)

@@ -436,10 +436,13 @@ def _archived_segment(base,artifact,descriptor,plan,segment):
 
 
 def _verify_parent_probability(base,run,probability,receipts):
+    from reproduction.common8.topology import world_size
+    from reproduction.common8.precision_contract import sampling_journal_only
+    size=world_size(run);journal_only=sampling_journal_only(run)
     for phase in ('initial','coexistence'):
         proof=_receipt(base,probability[phase+'_proof'],probability[phase+'_proof_sha256'])
         _need(proof['accepted'] is True and proof['run_id']==run['run_id'] and proof['phase']==phase and
-              len(proof['ranks'])==8 and type(proof['actual_grpo_updates']) is int and proof['actual_grpo_updates']==0,
+              len(proof['ranks'])==size and type(proof['actual_grpo_updates']) is int and proof['actual_grpo_updates']==0,
               'Parent original actual probability receipt differs')
         from reproduction.common8.model_smoke import aggregate as model_aggregate
         rows=[]
@@ -451,11 +454,11 @@ def _verify_parent_probability(base,run,probability,receipts):
             rows.append(original)
             _need(type(row['rank']) is int and row['rank']==rank and type(row['actual_optimizer_writes']) is int and
                   row['actual_optimizer_writes']==0 and row['initial_parameters_finite'] is True and
-                  row['parity']['tolerance']==.05 and all(type(row['parity'][key]) in (int,float) and
-                  math.isfinite(row['parity'][key]) and 0<=row['parity'][key]<=.05 for key in
+                  row['parity']['tolerance']==(None if journal_only else .05) and all(type(row['parity'][key]) in (int,float) and
+                  math.isfinite(row['parity'][key]) and 0<=row['parity'][key] and (journal_only or row['parity'][key]<=.05) for key in
                   ('actor_reference_max_abs','actor_vllm_max_abs')),'Parent original rank parity/freshness differs')
         _need(model_aggregate(rows,run['run_id'],probability['slurm_job_id'],phase,
-              probability['question_ids'],probability['actual_cuda_runtime_uuids'])==probability['resolved_config_sha256'],
+              probability['question_ids'],probability['actual_cuda_runtime_uuids'],run=run)==probability['resolved_config_sha256'],
               'Parent actual probability/config/precision receipt differs')
 
 

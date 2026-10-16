@@ -1,12 +1,14 @@
-"""Actual eight-rank Qwen/FSDP/reference/vLLM smoke, with zero optimizer writes.
+"""Actual manifest-bound four/eight-rank Qwen/FSDP/reference/vLLM smoke, with zero optimizer writes.
 
 Run only inside the full native allocation, first alone and later with the owned
 retriever/probe resident. This does not perform an agent benchmark or prove a
 complete 2560-trajectory training memory peak.
 """
 import argparse
+from contextlib import contextmanager
 import hashlib
 import json
+import math
 import os
 import time
 from pathlib import Path
@@ -22,9 +24,129 @@ from reproduction.common8.verify_data import digest
 from reproduction.common8.precision_evidence import PrecisionObservation, verify_precision
 
 LOGPROB_ATOL = 0.05  # Original unchanged backend parity bound, not a training hyperparameter.
+LOGPROB_INPUTS = ('input_ids', 'attention_mask', 'position_ids', 'responses')
+LOGPROB_META = ('micro_batch_size', 'temperature', 'use_dynamic_bsz', 'max_token_len',
+               'do_sample', 'recompute_log_prob', 'common8_model_smoke')
 
 
-def compare(old, reference, mask, raw_tokens, raw_logprobs, responses):
+def tensor_fingerprint(value):
+    """Observe exact values and layout without publishing any token/tensor data."""
+    cpu = value.detach().cpu().contiguous()
+    raw = memoryview(cpu.view(torch.uint8).numpy()).cast('B')
+    return dict(sha256=hashlib.sha256(raw).hexdigest(), shape=list(value.shape),
+                stride=list(value.stride()), dtype=str(value.dtype), device=str(value.device),
+                storage_offset=value.storage_offset())
+
+
+def logprob_entry_snapshot(data, module):
+    meta = {}
+    for key in LOGPROB_META:
+        if key not in data.meta_info:
+            continue
+        value = data.meta_info[key]
+        if type(value) not in (str, bool, int, float, type(None)):
+            raise TypeError('Unsupported diagnostic logprob metadata: ' + key)
+        meta[key] = (dict(nonfinite=str(value)) if type(value) is float and not math.isfinite(value)
+                     else value)
+    return dict(inputs={key: tensor_fingerprint(data.batch[key]) for key in LOGPROB_INPUTS},
+                meta=meta, module_training=bool(module.training),
+                parameter_dtypes=sorted({str(p.dtype) for p in module.parameters()}),
+                parameter_devices=sorted({str(p.device) for p in module.parameters()}),
+                autocast_cuda_enabled=bool(torch.is_autocast_enabled()),
+                matmul_allow_tf32=bool(torch.backends.cuda.matmul.allow_tf32),
+                cudnn_allow_tf32=bool(torch.backends.cudnn.allow_tf32),
+                float32_matmul_precision=torch.get_float32_matmul_precision())
+
+
+@contextmanager
+def observe_logprob_entrypoints(actor, observations):
+    """Observe the two real calls; no extra forward, tensor edits or RNG changes."""
+    original = actor.compute_log_prob
+
+    def observed(data):
+        row = dict(call_index=len(observations), forward_completed=False)
+        observations.append(row)
+        try:
+            row['entry'] = logprob_entry_snapshot(data, actor.actor_module)
+        except Exception as error:
+            row['observation_error'] = repr(error)
+        try:
+            result = original(data=data)  # Exactly one invocation of the unchanged entrypoint.
+        except BaseException as error:
+            row['forward_error'] = type(error).__name__
+            raise
+        row.update(forward_completed=True, module_training_after_forward=bool(actor.actor_module.training))
+        return result
+
+    actor.compute_log_prob = observed
+    try:
+        yield
+    finally:
+        actor.compute_log_prob = original
+
+
+def internal_logprob_diagnostic(internal, independent, valid, question_ids, observations):
+    """The original 0.05 valid-token decision, with bounded JSON-safe evidence."""
+    internal, independent, valid = internal.detach().cpu(), independent.detach().cpu(), valid.cpu().bool()
+    assert internal.ndim == 2 and internal.shape == independent.shape == valid.shape
+    assert len(question_ids) == internal.shape[0]
+    error = (internal[valid].float() - independent[valid].float()).abs()
+    finite = torch.isfinite(error)
+    count = error.numel()
+    local_accepted = count > 0 and bool(finite.all()) and error.max().item() <= LOGPROB_ATOL
+    reason = ('EMPTY_VALID_TOKENS' if not count else 'NONFINITE_VALID_TOKEN_DIFFERENCE'
+              if not bool(finite.all()) else 'EXCEEDS_LOGPROB_ATOL' if not local_accepted else 'PASS')
+    positions = valid.nonzero(as_tuple=False)
+    # Invalid values sort first; disclose no raw LP values or source tokens.
+    order = torch.argsort(torch.where(finite, error, torch.full_like(error, float('inf'))),
+                          descending=True)[:8]
+    top = []
+    for offset in order.tolist():
+        row, token = positions[offset].tolist()
+        top.append(dict(row=row, response_token_offset=token, question_id=question_ids[row],
+                        abs_error=float(error[offset]) if bool(finite[offset]) else None,
+                        internal_finite=bool(torch.isfinite(internal[row, token])),
+                        independent_finite=bool(torch.isfinite(independent[row, token]))))
+    complete = (len(observations) == 2 and all(row.get('forward_completed') is True and
+                'entry' in row and 'observation_error' not in row for row in observations))
+    inputs_equal = None
+    if complete:
+        inputs_equal = all(all(observations[0]['entry']['inputs'][key][field] ==
+                              observations[1]['entry']['inputs'][key][field]
+                              for field in ('sha256', 'shape', 'dtype')) for key in LOGPROB_INPUTS)
+    return dict(schema_version=1, role='actual_internal_separate_actor_logprob_diagnostic',
+                local_accepted=bool(local_accepted), reason=reason, tolerance=LOGPROB_ATOL,
+                valid_tokens=count, nonfinite_differences=int((~finite).sum()),
+                max_abs=float(error.max()) if count and bool(finite.all()) else None,
+                mean_abs=float(error.mean()) if count and bool(finite.all()) else None,
+                finite_max_abs=float(error[finite].max()) if bool(finite.any()) else None,
+                internal=tensor_fingerprint(internal), independent=tensor_fingerprint(independent),
+                top_errors=top, entry_observations=observations, observation_complete=complete,
+                input_values_equal=inputs_equal,
+                semantics='Observed actual calls and the unchanged valid-token LP gate; no raw tokens, '
+                          'tensor values, extra model forward or optimizer writes; observations may synchronize device copies')
+
+
+def publish_logprob_diagnostic(path, value):
+    """Never overwrite evidence; publication failure is a collective rejection."""
+    try:
+        raw = json.dumps(value, sort_keys=True, allow_nan=False).encode() + b'\n'
+        assert len(raw) <= 64 * 1024, 'Model-smoke diagnostic exceeds its small evidence budget'
+        with Path(path).open('xb') as stream:
+            stream.write(raw); stream.flush(); os.fsync(stream.fileno())
+        directory = os.open(Path(path).parent, os.O_RDONLY)
+        try:
+            os.fsync(directory)
+        finally:
+            os.close(directory)
+        return True
+    except Exception as error:
+        print('COMMON8_MODEL_INTERNAL_LOGPROB_DIAGNOSTIC_PUBLISH_FAILED=' +
+              json.dumps(dict(error=repr(error), diagnostic=value), sort_keys=True, allow_nan=False), flush=True)
+        return False
+
+
+def compare(old, reference, mask, raw_tokens, raw_logprobs, responses,run=None):
     old, reference, mask = old.cpu(), reference.cpu(), mask.cpu()
     raw_tokens, raw_logprobs, responses = raw_tokens.cpu(), raw_logprobs.cpu(), responses.cpu()
     assert old.shape == reference.shape == mask.shape == responses.shape
@@ -41,15 +163,28 @@ def compare(old, reference, mask, raw_tokens, raw_logprobs, responses):
         assert torch.isfinite(value).all(), 'Nonfinite valid-token log probability'
     actor_ref = (old[valid].float() - reference[valid].float()).abs()
     actor_rollout = (old[:, :width][raw_valid].float() - raw_logprobs[raw_valid].float()).abs()
+    from reproduction.common8.precision_contract import sampling_journal_only
+    journal_only=run is not None and sampling_journal_only(run)
     result = dict(actor_reference_max_abs=float(actor_ref.max()),
-                  actor_vllm_max_abs=float(actor_rollout.max()), tolerance=LOGPROB_ATOL,
+                  actor_vllm_max_abs=float(actor_rollout.max()), tolerance=None if journal_only else LOGPROB_ATOL,
                   valid_tokens_per_question=mask.sum(-1).tolist())
-    assert result['actor_reference_max_abs'] <= LOGPROB_ATOL, result
-    assert result['actor_vllm_max_abs'] <= LOGPROB_ATOL, result
+    if journal_only:
+        # The bound BF16 production policy audits the real sampled token/LP
+        # journal instead of imposing the legacy cross-backend FP32 .05 gate.
+        # Retain these measured backend differences as diagnostics. Internal
+        # worker-entrypoint parity, finite LP, masks/tokens, weight sync and
+        # precision/state checks remain required in this actual model smoke.
+        result.update(comparison_policy=run['behavior_probability_policy'],
+            cross_backend_drift_is_diagnostic=True,legacy_fp32_tolerance=LOGPROB_ATOL)
+    else:
+        assert result['actor_reference_max_abs'] <= LOGPROB_ATOL, result
+        assert result['actor_vllm_max_abs'] <= LOGPROB_ATOL, result
     return result
 
 
 def aggregate(proofs, run_id, job_id, phase, ids, uuids, run=None):
+    from reproduction.common8.precision_contract import sampling_journal_only
+    journal_only=run is not None and sampling_journal_only(run)
     size=len(uuids)
     assert size in (4,8) and len(proofs) == size
     per_rank=64//size
@@ -65,11 +200,17 @@ def aggregate(proofs, run_id, job_id, phase, ids, uuids, run=None):
         assert proof['sync_load_format'] == 'dtensor'
         verify_precision(proof['runtime_precision'],run)
         assert len(proof['question_ids']) == per_rank
-        assert proof['parity']['tolerance'] == LOGPROB_ATOL
+        if journal_only:
+            assert proof['parity']['tolerance'] is None
+            assert proof['parity']['comparison_policy']==run['behavior_probability_policy']
+            assert proof['parity']['cross_backend_drift_is_diagnostic'] is True
+        else:assert proof['parity']['tolerance'] == LOGPROB_ATOL
         assert len(proof['parity']['valid_tokens_per_question']) == per_rank
         assert all(n > 0 for n in proof['parity']['valid_tokens_per_question'])
-        assert all(0 <= proof['parity'][k] <= LOGPROB_ATOL for k in
-                   ('actor_reference_max_abs', 'actor_vllm_max_abs'))
+        for key in ('actor_reference_max_abs','actor_vllm_max_abs'):
+            value=proof['parity'][key]
+            assert type(value) in (int,float) and math.isfinite(value) and value>=0
+            if not journal_only:assert value<=LOGPROB_ATOL
         all_ids.extend(proof['question_ids']); config_hashes.add(proof['resolved_config_sha256'])
     assert all_ids == ids and len(ids) == len(set(ids)) == 64
     assert len(config_hashes) == 1
@@ -179,19 +320,29 @@ def main(base, phase):
             return original_sync(*args, **kwargs)
         # Observation hooks on this disposable smoke worker; no active trainer is modified.
         engine.generate, engine.sync_model_weights = generate, sync
-        try:
-            output = actor.generate_sequences(prompts)
-        finally:
-            engine.generate, engine.sync_model_weights = original_generate, original_sync
-        # Exercise the actual agent trainer's separate worker recomputation too.
-        internal = output.pop(batch_keys=['old_log_probs']).batch['old_log_probs']
-        independent = actor.compute_log_prob(output)
+        entry_observations = []
+        with observe_logprob_entrypoints(actor.actor, entry_observations):
+            try:
+                output = actor.generate_sequences(prompts)
+            finally:
+                engine.generate, engine.sync_model_weights = original_generate, original_sync
+            # Exercise the actual agent trainer's separate worker recomputation too.
+            internal = output.pop(batch_keys=['old_log_probs']).batch['old_log_probs']
+            independent = actor.compute_log_prob(output)
         # Direct calls mutate the input DataProto's device; Ray serialization
         # would isolate that mutation in the production controller.
         output = output.to('cpu').union(independent)
         width = output.batch['responses'].shape[-1]
         valid = output.batch['attention_mask'][:, -width:].bool()
         api_error = (internal[valid].float() - output.batch['old_log_probs'][valid].float()).abs()
+        diagnostic = internal_logprob_diagnostic(internal, output.batch['old_log_probs'], valid,
+                                                ids[rank*per_rank:(rank+1)*per_rank], entry_observations)
+        diagnostic.update(run_id=run['run_id'], slurm_job_id=job['JobId'], phase=phase, rank=rank,
+                          cuda_uuid=allocation['actual_cuda_runtime_uuids'][rank], checked_unix=time.time())
+        diagnostic_path = root / f'internal-separate-logprob-rank-{rank}.json'
+        diagnostic_saved = publish_logprob_diagnostic(diagnostic_path, diagnostic)
+        collective(diagnostic_saved and diagnostic['observation_complete'],
+                   'Actual actor logprob entrypoint diagnostic incomplete or not durable')
         collective(api_error.numel() > 0 and torch.isfinite(api_error).all()
                    and api_error.max().item() <= LOGPROB_ATOL,
                    'Internal and actual separate actor logprob entrypoints disagree')
@@ -202,7 +353,7 @@ def main(base, phase):
         parity, error = None, None
         try:
             parity = compare(output.batch['old_log_probs'], ref.batch['ref_log_prob'],
-                             output.batch['attention_mask'][:, -response_width:], *capture[0], output.batch['responses'])
+                             output.batch['attention_mask'][:, -response_width:], *capture[0], output.batch['responses'],run=run)
         except AssertionError as failure:
             error = str(failure)
             print('COMMON8_MODEL_PARITY_REJECTED=' + json.dumps(dict(rank=rank, error=error)), flush=True)
@@ -226,6 +377,7 @@ def main(base, phase):
                      actual_grpo_updates=0, sync_calls=len(sync_calls), sync_load_format=sync_calls[0],
                      separate_actor_logprob_entrypoint=True,
                      internal_separate_logprob_max_abs=float(api_error.max()),
+                     internal_separate_logprob_diagnostic_sha256=digest(diagnostic_path),
                      runtime_precision=runtime_precision,
                      parity=parity, resident_services_before_generation=services,
                      initial_parameters_finite=True, checked_unix=time.time(),
