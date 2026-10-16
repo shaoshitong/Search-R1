@@ -157,11 +157,23 @@ def parent_native(rank,name):
  return value,dict(path=str(path),sha256=sha(path))
 def graceful_signal(identity):
  assert identity['uid']==os.getuid() and identity['sid']==identity['pid'] and alive(identity)
- assert hasattr(os,'pidfd_open') and hasattr(signal,'pidfd_send_signal'),'Require exact pidfd signalling support'
- descriptor=os.pidfd_open(identity['pid'])
+ # The deployed Python can predate the standard-library pidfd wrappers.
+ # Linux x86_64/aarch64 expose the same stable pidfd syscall numbers; keep
+ # descriptor-based signalling and the post-open birth check in that case.
+ import ctypes
+ libc=ctypes.CDLL(None,use_errno=True)
+ def pidfd_syscall(number,*arguments):
+  assert sys.platform.startswith('linux') and os.uname().machine in ('x86_64','aarch64')
+  result=libc.syscall(ctypes.c_long(number),*arguments)
+  if result<0:
+   error=ctypes.get_errno();raise OSError(error,os.strerror(error))
+  return result
+ descriptor=(os.pidfd_open(identity['pid']) if hasattr(os,'pidfd_open') else
+  pidfd_syscall(434,ctypes.c_int(identity['pid']),ctypes.c_uint(0)))
  try:
   assert alive(identity),'Rank0 birth changed before signal'
-  signal.pidfd_send_signal(descriptor,signal.SIGTERM)
+  if hasattr(signal,'pidfd_send_signal'):signal.pidfd_send_signal(descriptor,signal.SIGTERM)
+  else:pidfd_syscall(424,ctypes.c_int(descriptor),ctypes.c_int(signal.SIGTERM),ctypes.c_void_p(),ctypes.c_uint(0))
  finally:os.close(descriptor)
 def qualification():
  path=b/'preparation/resume-qualification.json';q=read(path)
