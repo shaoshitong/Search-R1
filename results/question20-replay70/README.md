@@ -8,4 +8,6 @@ Frozen official encoder layer27 post-block emits actual initial request and same
 
 No new rollout or retrieval server. One fixed512G5 test feature cache is encoded; each train batch is encoded then trained and its derived features pruned only after durable head completion. All tensors/checkpoints/raw data and full predictions remain remote. Only fixed-test G5 mixed accuracy is reported: q=1-prod(p)-prod(1-p),true label0<sum(strictEM)<5,threshold0.5.
 
-Implementation compiled and13 focused CPU tests passed. New native training has not yet been submitted.
+Implementation compiled and13 focused CPU tests passed. Native3410 is RUNNING on h100-8 and has completed replay iteration1/70; all eight ranks made100 new Adam updates to7200 at actual LR3e-6. Iteration2 has started input preparation. Fixed Qmax is273, S is293, and the flattened dimension is600064. The fixed512-question G5 mixed-classification accuracy after iteration1 is56.4453125% (289/512). The training update loop took9.8364 seconds; this excludes feature encoding, preparation, and checkpoint saving and is not the full iteration runtime. Full70 iterations remain incomplete.
+
+Training runtime is frozen at5534d253d9d1a94a17838b6f9f9c861536d0cdfb. Later control669097fe only adds an optional delta deployment path and does not hot-change runtime. The original gzip deployment was recovered through its completed remote receipt; the delta fallback was not executed. FIRST-ITERATION-SUMMARY.json is an exact copy of the small actual observation summary; model states and full predictions remain remote.
