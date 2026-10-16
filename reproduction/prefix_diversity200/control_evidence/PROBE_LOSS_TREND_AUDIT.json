@@ -1,9 +1,9 @@
 {
-  "created_utc": "2026-10-16T20:30:36.806523+00:00",
+  "created_utc": "2026-10-16T21:25:38.330335+00:00",
   "run_id": "f3ee1435e5014ba1969387c91878893a",
-  "through_outer": 57,
+  "through_outer": 65,
   "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/COMPLETED_ITERATION_SCALAR_EVIDENCE.json",
-  "source_sha256": "8a20fba5214a0efcf8f87ce942ce50c325e3f3fbe5527e31dbea1be146345dc6",
+  "source_sha256": "778408adef9d64030f914f646a18975715f19f3b4a6461af4c0ddf0587defeaf",
   "threshold": 0.5,
   "loss_definition": "trajectory_mean_BCE + group_mean_BCE; weights1/1; train ALL1024/5120,20 synchronous Adam/rank,one natural epoch",
   "rows": [
@@ -1374,24 +1374,216 @@
         2.0021036512711468,
         2.3857003221145043
       ]
+    },
+    {
+      "outer": 58,
+      "train1024_after_update": {
+        "total_loss": 2.1218403171842883,
+        "trajectory_bce": 1.1519254133045682,
+        "group_bce": 0.9699149038797203,
+        "balanced_accuracy": 0.5224107142857143,
+        "mixed_recall": 0.7723214285714286,
+        "nonmixed_recall": 0.2725
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.3171234062462365,
+        "trajectory_bce": 0.624179904111877,
+        "group_bce": 0.6929435021343595,
+        "balanced_accuracy": 0.534547477868022,
+        "mixed_recall": 0.16939890710382513,
+        "nonmixed_recall": 0.8996960486322189
+      },
+      "online20_step_loss_weighted_mean": 2.154429293004796,
+      "online20_step_loss_range": [
+        1.93254643795537,
+        2.413985197360699
+      ]
+    },
+    {
+      "outer": 59,
+      "train1024_after_update": {
+        "total_loss": 2.1548932134135157,
+        "trajectory_bce": 1.0763196464043638,
+        "group_bce": 1.078573567009152,
+        "balanced_accuracy": 0.5101825634387726,
+        "mixed_recall": 0.9531914893617022,
+        "nonmixed_recall": 0.06717363751584284
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.2718851695486435,
+        "trajectory_bce": 0.5958580586755569,
+        "group_bce": 0.6760271108730866,
+        "balanced_accuracy": 0.559411696314382,
+        "mixed_recall": 0.2677595628415301,
+        "nonmixed_recall": 0.851063829787234
+      },
+      "online20_step_loss_weighted_mean": 2.1913754290435463,
+      "online20_step_loss_range": [
+        2.003229671833562,
+        2.37816868576349
+      ]
+    },
+    {
+      "outer": 60,
+      "train1024_after_update": {
+        "total_loss": 2.151038599606502,
+        "trajectory_bce": 1.1869444526599504,
+        "group_bce": 0.9640941469465516,
+        "balanced_accuracy": 0.506878447885297,
+        "mixed_recall": 0.702928870292887,
+        "nonmixed_recall": 0.310828025477707
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.3259779445302493,
+        "trajectory_bce": 0.627778559580503,
+        "group_bce": 0.6981993849497463,
+        "balanced_accuracy": 0.5348547511086751,
+        "mixed_recall": 0.16393442622950818,
+        "nonmixed_recall": 0.9057750759878419
+      },
+      "online20_step_loss_weighted_mean": 2.1771890370873734,
+      "online20_step_loss_range": [
+        1.9940652961914358,
+        2.3662439654855167
+      ]
+    },
+    {
+      "outer": 61,
+      "train1024_after_update": {
+        "total_loss": 2.13265920682469,
+        "trajectory_bce": 1.0803355124259664,
+        "group_bce": 1.0523236943987238,
+        "balanced_accuracy": 0.5274067706955832,
+        "mixed_recall": 0.9342105263157895,
+        "nonmixed_recall": 0.12060301507537688
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.2768747675299927,
+        "trajectory_bce": 0.5977271015424215,
+        "group_bce": 0.6791476659875714,
+        "balanced_accuracy": 0.5542544886807181,
+        "mixed_recall": 0.25136612021857924,
+        "nonmixed_recall": 0.8571428571428571
+      },
+      "online20_step_loss_weighted_mean": 2.1743322274414822,
+      "online20_step_loss_range": [
+        1.9728483405767703,
+        2.363226979386573
+      ]
+    },
+    {
+      "outer": 62,
+      "train1024_after_update": {
+        "total_loss": 2.184470169932172,
+        "trajectory_bce": 1.0898919593528047,
+        "group_bce": 1.0945782105793673,
+        "balanced_accuracy": 0.5264794549813658,
+        "mixed_recall": 0.9466019417475728,
+        "nonmixed_recall": 0.10635696821515893
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.2912245513359433,
+        "trajectory_bce": 0.6055554842222896,
+        "group_bce": 0.6856690671136536,
+        "balanced_accuracy": 0.5466723138505489,
+        "mixed_recall": 0.22404371584699453,
+        "nonmixed_recall": 0.8693009118541033
+      },
+      "online20_step_loss_weighted_mean": 2.232294312445447,
+      "online20_step_loss_range": [
+        1.9885909276850082,
+        2.4020100831985474
+      ]
+    },
+    {
+      "outer": 63,
+      "train1024_after_update": {
+        "total_loss": 2.1196925438781067,
+        "trajectory_bce": 1.0022760302964056,
+        "group_bce": 1.1174165135817011,
+        "balanced_accuracy": 0.5089824907896237,
+        "mixed_recall": 0.9914163090128756,
+        "nonmixed_recall": 0.02654867256637168
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.2744302984317328,
+        "trajectory_bce": 0.5940478226281151,
+        "group_bce": 0.6803824758036177,
+        "balanced_accuracy": 0.5502931552809474,
+        "mixed_recall": 0.2677595628415301,
+        "nonmixed_recall": 0.8328267477203647
+      },
+      "online20_step_loss_weighted_mean": 2.148837193264626,
+      "online20_step_loss_range": [
+        1.8014287387623507,
+        2.3378984647638656
+      ]
+    },
+    {
+      "outer": 64,
+      "train1024_after_update": {
+        "total_loss": 2.195957647986953,
+        "trajectory_bce": 1.0368360515140491,
+        "group_bce": 1.1591215964729038,
+        "balanced_accuracy": 0.5048252731797036,
+        "mixed_recall": 0.9957264957264957,
+        "nonmixed_recall": 0.013924050632911392
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.2565292585069114,
+        "trajectory_bce": 0.5817558320195395,
+        "group_bce": 0.6747734264873718,
+        "balanced_accuracy": 0.5606075705482751,
+        "mixed_recall": 0.3005464480874317,
+        "nonmixed_recall": 0.8206686930091185
+      },
+      "online20_step_loss_weighted_mean": 2.2235421236837283,
+      "online20_step_loss_range": [
+        1.94038174702571,
+        2.4089088720433853
+      ]
+    },
+    {
+      "outer": 65,
+      "train1024_after_update": {
+        "total_loss": 2.1794403360149444,
+        "trajectory_bce": 1.1117708478458261,
+        "group_bce": 1.0676694881691184,
+        "balanced_accuracy": 0.5296353986385139,
+        "mixed_recall": 0.9345794392523364,
+        "nonmixed_recall": 0.12469135802469136
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.2823391051695872,
+        "trajectory_bce": 0.6009012235301919,
+        "group_bce": 0.6814378816393951,
+        "balanced_accuracy": 0.5630657564734998,
+        "mixed_recall": 0.2568306010928962,
+        "nonmixed_recall": 0.8693009118541033
+      },
+      "online20_step_loss_weighted_mean": 2.2147373979678378,
+      "online20_step_loss_range": [
+        2.0069092371884514,
+        2.392821293251187
+      ]
     }
   ],
   "first_to_latest_delta": {
     "train1024_after_update": {
-      "total_loss": 0.7700704169667314,
-      "trajectory_bce": 0.532977747938338,
-      "group_bce": 0.23709266902839343,
-      "balanced_accuracy": 0.0619168080029896,
-      "mixed_recall": -0.29767441860465116,
-      "nonmixed_recall": 0.4215080346106304
+      "total_loss": 0.7452976591370022,
+      "trajectory_bce": 0.37631514442513314,
+      "group_bce": 0.36898251471186927,
+      "balanced_accuracy": 0.029635398638513943,
+      "mixed_recall": -0.06542056074766356,
+      "nonmixed_recall": 0.12469135802469136
     },
     "fixed_diagnostic512_after_update": {
-      "total_loss": 0.15873545826593483,
-      "trajectory_bce": 0.13028974368003665,
-      "group_bce": 0.028445714585898285,
-      "balanced_accuracy": -0.06996694736492426,
-      "mixed_recall": -0.4043715846994535,
-      "nonmixed_recall": 0.2644376899696049
+      "total_loss": 0.10312242721532239,
+      "trajectory_bce": 0.0959210399643532,
+      "group_bce": 0.007201387250969082,
+      "balanced_accuracy": -0.039330974803594154,
+      "mixed_recall": -0.30054644808743164,
+      "nonmixed_recall": 0.22188449848024316
     }
   },
   "interpretation": [
@@ -1401,5 +1593,5 @@
     "No uncontinued-candidate accuracy inferred; no new forward, extra fitting, reinitialization, loss or sampling changes.",
     "Natural step batches differ. First/last or weighted average across20 steps are descriptive online losses, not a paired before/after fit comparison."
   ],
-  "training_action": "none; job3427 continues; goal200/final51713 incomplete"
+  "training_action": "none; original job3427 continues; goal200/final51713 incomplete"
 }
