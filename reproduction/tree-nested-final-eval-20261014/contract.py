@@ -99,7 +99,7 @@ def verify_code_manifest(tools, manifest, expected):
     require(socket.gethostname().split('.')[0]=='h100-10', 'only retained H10018 is permitted')
     commit = value['eval_wrapper_source_commit']
     require(re.fullmatch('[0-9a-f]{40}',commit) is not None and commit != TRAIN_SOURCE
-            and tools == ROOT/'instruct300'/('eval-nested-'+commit), 'distinct committed wrapper identity required')
+            and tools == (ROOT/'instruct300'/('eval-nested-'+commit)).resolve(), 'distinct committed wrapper identity required')
     external={str(ROOT/'tools/tree_shared_owned_runtime_fixed.py'):'4288a4dcfa923df4d8d74f009bf4c56c8446d04fa8ef4202c5e55d3371539ba0',
               str(ROOT/'repo/reproduction/h20/retriever_local.py'):'a78f0b493c538dddc6619e0e462995fd9945c25a187c2165e99d4c10622ce459'}
     require(value['external_files']==external and all(sha(name)==expected for name,expected in external.items()),
