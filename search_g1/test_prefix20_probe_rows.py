@@ -1,6 +1,6 @@
 import copy
 import unittest
-from search_g1.prefix20_probe_worker import validate_rows
+from search_g1.prefix20_probe_worker import validate_rows,validate_global_partition
 
 
 class ProbeRowsTest(unittest.TestCase):
@@ -24,6 +24,12 @@ class ProbeRowsTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'INITIAL_QUESTION_CONTEXT_CHANGED'):validate_rows([row],labels_required=False)
         row=self.row();row['policy_position_ids']=[4,5]
         with self.assertRaisesRegex(ValueError,'ROPE_POSITION'):validate_rows([row],labels_required=False)
+
+    def test_broadcast_same640_to_four_ranks_is_rejected(self):
+        shards=[[f'{rank}:{i}' for i in range(640)] for rank in range(4)]
+        self.assertEqual(len(validate_global_partition(shards)),2560)
+        with self.assertRaisesRegex(ValueError,'REPEATS_OR_OMITS'):
+            validate_global_partition([shards[0]]*4)
 
 
 if __name__=='__main__':unittest.main()

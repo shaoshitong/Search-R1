@@ -73,8 +73,17 @@ def validate_rows(rows, *, labels_required):
     return rows
 
 
+def validate_global_partition(shards):
+    if len(shards)!=4 or any(len(ids)!=640 for ids in shards):
+        raise ValueError('PREFIX20_FOUR_LOCAL640_SHARDS_REQUIRED')
+    ids=[tid for shard in shards for tid in shard]
+    if len(set(ids))!=2560:
+        raise ValueError('PREFIX20_GLOBAL_PASS_REPEATS_OR_OMITS_TRAJECTORIES')
+    return ids
+
+
 class RankProbe:
-    def __init__(self,payload):
+    def __init__(self,payload,control_group):
         if dist.get_world_size()!=4 or not torch.cuda.is_available():
             raise ValueError('PREFIX20_PROBE_REQUIRES_FOUR_ALLOCATED_RANKS')
         from transformers import AutoModel
@@ -93,7 +102,11 @@ class RankProbe:
         head=PrefixCorrectnessProbe(payload['model_dir'],max_tokens=20)
         head.load_state_dict(load_file(str(checkpoint),device='cpu'),strict=True)
         head=head.to(self.device,dtype=torch.float32)
-        self.model=torch.nn.parallel.DistributedDataParallel(head,device_ids=[self.device.index],broadcast_buffers=False)
+        self.model=head
+        # A CPU control group lets all ranks report validation/encoding/OOM
+        # failures before any gradient collective. Gradients are then averaged
+        # explicitly over the four equal local64 losses (global256 BCE).
+        self.control_group=control_group
         self.optimizer=torch.optim.Adam(self.model.parameters(),lr=1e-6,weight_decay=0)
         self.encoder=AutoModel.from_pretrained(payload['model_dir'],torch_dtype=torch.bfloat16,
             attn_implementation='sdpa',local_files_only=True,trust_remote_code=False,low_cpu_mem_usage=True)
@@ -109,6 +122,16 @@ class RankProbe:
     def capture_hook(self,module,inputs,value):
         self.captured.append(value[0] if isinstance(value,tuple) else value)
         raise CapturedLayer()
+
+    def local_phase(self,function):
+        result=None;failure=None
+        try:result=function()
+        except Exception as error:failure=type(error).__name__
+        failures=[None]*4
+        dist.all_gather_object(failures,failure,group=self.control_group)
+        if any(value is not None for value in failures):
+            raise RuntimeError('PREFIX20_COLLECTIVE_LOCAL_PHASE_FAILED: '+str(failures))
+        return result
 
     def encode(self,rows):
         features=torch.zeros((len(rows),20,2048),dtype=torch.bfloat16,device=self.device)
@@ -148,39 +171,51 @@ class RankProbe:
             with torch.no_grad(),torch.autocast('cuda',dtype=torch.bfloat16):
                 for start in range(0,len(rows),64):
                     batch=rows[start:start+64]
-                    probabilities=torch.sigmoid(self.model.module(self.encode(batch))).cpu().tolist()
+                    probabilities=torch.sigmoid(self.model(self.encode(batch))).cpu().tolist()
                     result.extend(dict(trajectory_id=row['trajectory_id'],em_probability=p) for row,p in zip(batch,probabilities))
         finally:self.encoder.to('cpu');torch.cuda.empty_cache()
         return dict(rank=dist.get_rank(),completed_outer=self.completed_outer,actual_steps=self.actual_steps,predictions=result)
 
     def update(self,payload):
-        outer=payload['outer'];batches=payload['batches']
-        if outer!=self.completed_outer+1 or not 1<=outer<=200 or self.pending_outer is not None:
-            raise ValueError('PREFIX20_PROBE_OUTER_BOUNDARY_INVALID')
-        if len(batches)!=10 or any(len(batch)!=64 for batch in batches):
-            raise ValueError('PREFIX20_REQUIRES_TEN_LOCAL64_BATCHES')
-        rows=[r for batch in batches for r in batch];validate_rows(rows,labels_required=True)
-        self.pending_outer=outer;self.encoder.to(self.device);self.model.train()
+        outer=payload.get('outer');batches=payload.get('batches',[])
+        def precheck():
+            if type(outer) is not int or outer!=self.completed_outer+1 or not 1<=outer<=200 or self.pending_outer is not None:
+                raise ValueError('PREFIX20_PROBE_OUTER_BOUNDARY_INVALID')
+            if len(batches)!=10 or any(len(batch)!=64 for batch in batches):
+                raise ValueError('PREFIX20_REQUIRES_TEN_LOCAL64_BATCHES')
+            return validate_rows([r for batch in batches for r in batch],labels_required=True)
+        rows=self.local_phase(precheck)
+        shards=[None]*4
+        dist.all_gather_object(shards,[r['trajectory_id'] for r in rows],group=self.control_group)
+        validate_global_partition(shards)
+        self.pending_outer=outer
+        self.local_phase(lambda:self.encoder.to(self.device));self.model.train()
         loss_sum=correct=total=0
         try:
             for batch in batches:
                 self.optimizer.zero_grad(set_to_none=True)
-                labels=torch.tensor([r['strict_em'] for r in batch],dtype=torch.float32,device=self.device)
-                with torch.autocast('cuda',dtype=torch.bfloat16):
-                    logits=self.model(self.encode(batch))
-                    loss=torch.nn.functional.binary_cross_entropy_with_logits(logits,labels)
-                finite=torch.isfinite(loss).to(torch.int32)
-                dist.all_reduce(finite,op=dist.ReduceOp.MIN)
-                if not bool(finite):raise FloatingPointError('PREFIX20_NONFINITE_PROBE_LOSS')
-                loss.backward()
-                finite=torch.stack([torch.isfinite(p.grad).all() for p in self.model.parameters() if p.grad is not None]).all().to(torch.int32)
-                dist.all_reduce(finite,op=dist.ReduceOp.MIN)
-                if not bool(finite):raise FloatingPointError('PREFIX20_NONFINITE_PROBE_GRADIENT')
-                self.optimizer.step();self.actual_steps+=1
+                def backward():
+                    labels=torch.tensor([r['strict_em'] for r in batch],dtype=torch.float32,device=self.device)
+                    with torch.autocast('cuda',dtype=torch.bfloat16):
+                        logits=self.model(self.encode(batch))
+                        loss=torch.nn.functional.binary_cross_entropy_with_logits(logits,labels)
+                    if not bool(torch.isfinite(loss)):raise FloatingPointError('PREFIX20_NONFINITE_PROBE_LOSS')
+                    loss.backward()
+                    if any(p.grad is None or not bool(torch.isfinite(p.grad).all()) for p in self.model.parameters()):
+                        raise FloatingPointError('PREFIX20_NONFINITE_OR_MISSING_PROBE_GRADIENT')
+                    return loss.detach(),logits.detach(),labels
+                loss,logits,labels=self.local_phase(backward)
+                for parameter in self.model.parameters():
+                    parameter.grad.div_(4)
+                    dist.all_reduce(parameter.grad,op=dist.ReduceOp.SUM)
+                def gradient_check():
+                    if any(not bool(torch.isfinite(p.grad).all()) for p in self.model.parameters()):
+                        raise FloatingPointError('PREFIX20_NONFINITE_REDUCED_PROBE_GRADIENT')
+                self.local_phase(gradient_check)
+                self.local_phase(self.optimizer.step);self.actual_steps+=1
                 loss_sum+=float(loss.detach())*64;correct+=int(((logits.detach()>=0)==labels.bool()).sum());total+=64
-            steps=torch.tensor([self.actual_steps],device=self.device,dtype=torch.long)
-            counts=[torch.zeros_like(steps) for _ in range(4)];dist.all_gather(counts,steps)
-            if [int(x.item()) for x in counts]!=[outer*10]*4:
+            counts=[None]*4;dist.all_gather_object(counts,self.actual_steps,group=self.control_group)
+            if counts!=[outer*10]*4:
                 raise RuntimeError('PREFIX20_PROBE_RANK_STEP_BOUNDARIES_DIVERGED')
             self.completed_outer=outer;self.pending_outer=None
             return dict(rank=dist.get_rank(),completed_outer=outer,actual_steps=self.actual_steps,
@@ -195,10 +230,16 @@ def worker_operation(worker,operation,payload):
     if operation=='init':
         if getattr(worker,'_prefix20_probe',None) is not None:raise ValueError('PREFIX20_PROBE_ALREADY_INITIALIZED')
         device=torch.device('cuda',torch.cuda.current_device());actor_rng=rng_state(device)
+        control_group=dist.new_group(backend='gloo');head=None;failure=None
         try:
             import random,numpy as np
             seed=1729+dist.get_rank();random.seed(seed);np.random.seed(seed);torch.manual_seed(seed)
-            worker._prefix20_probe=RankProbe(payload)
+            try:head=RankProbe(payload,control_group)
+            except Exception as error:failure=type(error).__name__
+            failures=[None]*4;dist.all_gather_object(failures,failure,group=control_group)
+            if any(value is not None for value in failures):
+                raise RuntimeError('PREFIX20_COLLECTIVE_INITIALIZATION_FAILED: '+str(failures))
+            worker._prefix20_probe=head
         finally:restore_rng(actor_rng,device)
         return dict(rank=dist.get_rank(),world_size=4,completed_outer=0,actual_steps=0,
                     pretrained_head_loaded=True,extra_warmup_updates=0)
@@ -212,13 +253,13 @@ def worker_operation(worker,operation,payload):
         from search_g1.training_state import cpu_tree
         if head.pending_outer is not None:raise ValueError('PREFIX20_CANNOT_CHECKPOINT_PARTIAL_PROBE_OUTER')
         return dict(rank=dist.get_rank(),completed_outer=head.completed_outer,actual_steps=head.actual_steps,
-            model=cpu_tree(head.model.module.state_dict()),optimizer=cpu_tree(head.optimizer.state_dict()),
+            model=cpu_tree(head.model.state_dict()),optimizer=cpu_tree(head.optimizer.state_dict()),
             rng=cpu_tree(head.rng))
     if operation=='load_state_dict':
         saved=payload['state']
         if saved['rank']!=dist.get_rank() or not 0<=saved['completed_outer']<=200 or saved['actual_steps']!=10*saved['completed_outer']:
             raise ValueError('PREFIX20_RECOVERY_RANK_OR_OUTER_MISMATCH')
-        head.model.module.load_state_dict(saved['model'],strict=True)
+        head.model.load_state_dict(saved['model'],strict=True)
         head.optimizer.load_state_dict(saved['optimizer'])
         if any(float(group['lr'])!=1e-6 for group in head.optimizer.param_groups):
             raise ValueError('PREFIX20_RECOVERY_LEARNING_RATE_CHANGED')
