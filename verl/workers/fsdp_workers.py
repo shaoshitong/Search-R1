@@ -301,6 +301,11 @@ class ActorRolloutRefWorker(Worker):
         return rollout, rollout_sharding_manager
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def prefix20_probe_operation(self, operation, payload):
+        from search_g1.prefix20_probe_worker import worker_operation
+        return worker_operation(self, operation, payload)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def qprobe_operation(self, operation, payload):
         # Driver calls the original allocated rank7 handle directly, so this
         # registered endpoint requires no extra GPU actor or collective call.
