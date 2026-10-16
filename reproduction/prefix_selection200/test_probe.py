@@ -8,11 +8,22 @@ from reproduction.prefix20_group_joint100.train_epoch import ddp_mean_scale, ran
 from reproduction.prefix_selection200.probe import (
     DIM, LR, QMAX, SOURCE_RUN, TEST_SHA, WIDTH, candidate_groups,
     initial_online_state, join_own_em, mixed_probabilities, online_plan,
-    prefix_row, stable_top512, validate_online_layout,
+    prefix_row, stable_top512, summarize_loss_curve, validate_online_layout,
 )
 
 
 class ProbeContracts(unittest.TestCase):
+    def test_loss_curve_reports_global_first_last_without_monotonic_claim(self):
+        rows = [dict(step=j, trajectory_bce=.1*j, group_bce=.2*j, total_loss=.3*j)
+                for j in range(1, 11)]
+        result = summarize_loss_curve(rows)
+        self.assertAlmostEqual(result['delta_end_minus_start']['total_loss'], 2.7)
+        self.assertTrue(result['batches_differ_between_steps'])
+        self.assertFalse(result['monotonic_decrease_required'])
+        self.assertEqual(result['actual_adam_updates_per_rank'], 10)
+        with self.assertRaises(ValueError):
+            summarize_loss_curve(rows[:-1])
+
     def test_complete_g5_average256_without_accumulation(self):
         plan = online_plan(1729, 1)
         self.assertEqual([x['global_questions'] for x in plan].count(51), 8)
