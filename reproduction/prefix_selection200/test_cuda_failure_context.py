@@ -1,10 +1,12 @@
 import json
 from pathlib import Path
 import tempfile
+import types
+from unittest import mock
 import unittest
 
 from .actor_hidden import ActorHiddenCapture
-from .rollout import phase_worker_environment
+from .rollout import phase_worker_environment, _build_llm
 
 
 class FailureContextTests(unittest.TestCase):
@@ -20,6 +22,28 @@ class FailureContextTests(unittest.TestCase):
     def test_no_diagnostic_keeps_original_cuda_setting(self):
         original = dict(CUDA_LAUNCH_BLOCKING='0')
         self.assertEqual(phase_worker_environment({}, 44, 'prefix', 4, original), original)
+
+    def test_attention_recovery_changes_backend_without_batch_or_sampling_budget(self):
+        config = dict(rollout_attention_backend='XFORMERS', rollout_enable_chunked_prefill=False,
+                      rollout_max_num_seqs=1024, rollout_max_batched_tokens=32768,
+                      rollout_memory_utilization=.8, _capture_actor_hidden=True)
+        original = dict(CUDA_LAUNCH_BLOCKING='0')
+        for phase in ('prefix', 'continue'):
+            env = phase_worker_environment(config, 44, phase, 4, original)
+            self.assertEqual(env['VLLM_ATTENTION_BACKEND'], 'XFORMERS')
+            self.assertEqual(env['CUDA_LAUNCH_BLOCKING'], '0')
+        self.assertNotIn('VLLM_ATTENTION_BACKEND', original)
+        constructor = mock.Mock(return_value=object())
+        with mock.patch.dict('sys.modules', vllm=types.SimpleNamespace(LLM=constructor)):
+            _build_llm(config, '/remote/model', 123, 10 * 1024 ** 3, 16 * 1024 ** 3)
+        kwargs = constructor.call_args.kwargs
+        self.assertEqual(kwargs['max_num_seqs'], 1024)
+        self.assertEqual(kwargs['max_num_batched_tokens'], 32768)
+        self.assertEqual(kwargs['dtype'], 'bfloat16')
+        self.assertEqual(kwargs['seed'], 123)
+        self.assertFalse(kwargs['enable_chunked_prefill'])
+        self.assertTrue(kwargs['enforce_eager'])
+        self.assertFalse(kwargs['enable_prefix_caching'])
 
     def test_failure_preserves_only_existing_cpu_tokens_and_positions(self):
         with tempfile.TemporaryDirectory() as directory:

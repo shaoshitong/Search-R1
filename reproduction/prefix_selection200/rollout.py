@@ -480,7 +480,8 @@ def _build_llm(config, model, seed, free, total):
                       tensor_parallel_size=1, max_model_len=4096, seed=seed,
                       gpu_memory_utilization=utilization, swap_space=0,
                       enforce_eager=bool(config.get('_capture_actor_hidden') or config.get('rollout_enforce_eager', False)),
-                      enable_chunked_prefill=True, enable_prefix_caching=not config.get('_capture_actor_hidden', False),
+                      enable_chunked_prefill=bool(config.get('rollout_enable_chunked_prefill', True)),
+                      enable_prefix_caching=not config.get('_capture_actor_hidden', False),
                       disable_async_output_proc=True,
                       disable_log_stats=True, **limits)
             return llm, utilization, limits, attempts
@@ -525,7 +526,8 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     if capture_hidden:
         from .actor_hidden import ActorHiddenCapture, NativeFeatureWriter
         hidden_capture = ActorHiddenCapture(engine, config['actor_version'],
-            failure_context_path=output / ('rank-%d-failed-native-cpu-input.json' % rank))
+            failure_context_path=output / ('rank-%d-failed-native-cpu-input.json' % rank),
+            attention_context=config.get('record_native_attention_context') == dict(outer=outer, rank=rank))
         hidden_writer = NativeFeatureWriter(output, rank, [row['trajectory_id'] for row in states])
     hidden_flushes = {}
     generation_path = Path(model) / 'generation_config.json'
@@ -858,6 +860,11 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
 def phase_worker_environment(config, outer, phase, rank, environment):
     """Scope synchronization diagnostics to an actually failed worker/outer."""
     result = dict(environment)
+    backend = config.get('rollout_attention_backend')
+    if backend is not None:
+        if backend != 'XFORMERS':
+            raise ValueError('Use only the recorded compatible native attention recovery backend')
+        result['VLLM_ATTENTION_BACKEND'] = backend
     diagnostic = config.get('cuda_failure_diagnostic')
     if (diagnostic and diagnostic['outer'] == outer and diagnostic['phase'] == phase
             and diagnostic['rank'] == rank and diagnostic.get('launch_blocking')):

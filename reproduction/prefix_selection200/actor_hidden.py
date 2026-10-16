@@ -37,11 +37,13 @@ def query_mapping(metadata, query_lens, tokens, positions):
 
 class ActorHiddenCapture:
     """Per-worker CPU buffers; GPU tensors live only for one native model call."""
-    def __init__(self, engine, actor_version, failure_context_path=None):
+    def __init__(self, engine, actor_version, failure_context_path=None, attention_context=False):
         import torch
         self.torch = torch
         self.actor_version = actor_version
         self.failure_context_path = failure_context_path
+        self.record_attention_context = attention_context
+        self.attention_context = None
         self.requests, self.trajectories = {}, {}
         self.calls, self.captured_rows, self.elapsed_seconds = 0, 0, 0.0
         self.query_rows, self.native_hidden = None, None
@@ -62,6 +64,12 @@ class ActorHiddenCapture:
             tokens = value.input_tokens.detach().cpu().tolist()
             positions = value.input_positions.detach().cpu().tolist()
             capture.query_rows = query_mapping(metadata, value.query_lens, tokens, positions)
+            if capture.record_attention_context:
+                capture.attention_context = [dict(request_id=str(group.request_id),
+                    is_prompt=bool(group.is_prompt),
+                    block_tables={str(key): list(table) if table is not None else None
+                                  for key, table in (group.block_tables or {}).items()})
+                    for group in metadata]
             return value
 
         def execute(_runner, *args, **kwargs):
@@ -97,6 +105,7 @@ class ActorHiddenCapture:
         value = dict(actor_version=self.actor_version, completed_native_calls=self.calls,
             failed_native_call=self.calls + 1, error=repr(error), checked_unix=time.time(),
             query_rows=self.query_rows,
+            attention_context=getattr(self, 'attention_context', None),
             request_bindings={row['request_id']: self.requests.get(row['request_id'])
                               for row in self.query_rows or []},
             gpu_tensor_read_attempted=False, training_modified=False)

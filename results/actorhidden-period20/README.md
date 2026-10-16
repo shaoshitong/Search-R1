@@ -1,3 +1,13 @@
+## Localized native44 decode-kernel failure and attention-backend recovery
+
+Actual3428 reproduced3426's CUDA illegal memory access on44 prefix rank4, with0 new Adam. A scoped real-continuation3429 used CUDA_LAUNCH_BLOCKING1 only for44/rank4, without a standalone test job or changed batch. Its synchronous stack identified vLLM FlashAttention unified_flash_attention -> flash_attn_with_kvcache -> fwd_kvcache as the first failing operation. The earlier sampler.cpu frame merely reported the asynchronous fault. Failure occurred on nativecall76 with128 decode queries/maxposition178, after3000/3200 rank trajectories; the existing CPU input snapshot148358B stays remote, with no poisoned-GPU read. This localizes the operation, not the internal CUDA defect. All3429 original20 log inodes fullSHA and37 births/cgroup/ownedGPU gone were recorded, terminalproof5f3ce5738f4fb468104e247e9e9edfa42d8fd08f458a72ac906aa40dda3680e0.
+
+The necessary rollout recovery uses XFORMERS/PagedAttention decode and full prefill, avoiding this failing FA KV-cache kernel. Temporary blocking is removed. BF16 sampling, nativeactor27 capture, actualIDs/mask/positions, sampling seeds/temperature/top-p,1024seq/32768tokens, VRAM reserve/cap,8GPU actor/probe budgets, own-label loss and probeLR1e-5 remain. Actor training attention and legacyFP32 QA are unchanged. Backend batching can change floating-point draws, so no bitwise continuation is claimed. Only actual44/rank4 also retains existing CPU scheduler block-table metadata if another real error occurs; no new stop threshold or GPU forward check is added.
+
+21 focused CPU tests pass, including unchanged seed/dtype/batch and exact diagnostic worker scoping. Recovery uses the same independently read complete43 model/Adam/RNG/head files; no redundant40GB hash/load. Actual GPU completion and44-48 plus49 acceptance remain pending until observed, and backend repair is not declared successful from source/config alone. All failed sources are preserved;200/QA51713/retention remain incomplete.
+
+---
+
 ## Actual3426 exit after43 and latest-complete recovery preparation
 
 At22:52:36UTC, uncommitted44 prefix worker rank4 failed with CUDA illegal memory access, reported during vLLM sampling. The asynchronous stack does not establish which kernel caused it; this is not OOM and no kernel fix is claimed. Controller WEXITSTATUS1 at22:53:22, native record subsequently purged/accounting disabled. All12639 owned births were checked gone twice, cgroup/ownedGPU empty;818 original terminal log inodes independently fullSHA preserved. Terminal proofec5caf211d431d37d2a842e689ad15090dc31d30ccc7cdb32bd60b4886dae092. Latest43 retained actor860/probe200 Adam/rank;44 has no committed actor update and is not stitched.
