@@ -29,7 +29,7 @@ from reproduction.prefix20_online.features import REVISION, canonical, once, rea
 from reproduction.prefix20_online.launch import publish
 from reproduction.prefix20_online.model import expected_policy_positions, validate_prefix_positions
 from reproduction.prefix20_online.train_epoch import append, optimizer_learning_rates
-from reproduction.prefix20_question_replay.features import FeatureCache, _source_scan
+from reproduction.prefix20_question_replay.features import FeatureCache as OriginalFeatureCache, _source_scan
 from reproduction.prefix20_question_replay.model import QuestionPrefixCorrectnessProbe, masked_flatten
 from reproduction.prefix_only_correctness_ab.train_ddp import actual_adam_steps
 
@@ -40,6 +40,17 @@ TEST_SHA = 'a125fc5af90e34fcd728c82077d9d62070a78d5ef703ac11f3748687d088e64f'
 QMAX, WIDTH, DIM, LR = 273, 293, 2048, 1e-6
 TENSOR_FIELDS = ('features', 'attention_mask', 'position_ids', 'question_mask',
                  'policy_mask', 'question_lengths', 'policy_lengths')
+
+
+def FeatureCache(path, expected_manifest_sha):
+    """Read the unchanged diagnostic through its explicit same-cluster alias."""
+    shared = '/mnt/shared/workspace/training_data_node_8/'
+    manifest = read(Path(path)/'manifest.json')
+    original = manifest['source_inputs_dir']
+    override = None
+    if str(path).startswith(shared) and original.startswith('/mnt/data/'):
+        override = shared + original[len('/mnt/data/'):]
+    return OriginalFeatureCache(path, expected_manifest_sha, source_inputs_override=override)
 
 
 def utc():

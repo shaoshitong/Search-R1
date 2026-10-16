@@ -472,7 +472,7 @@ def assemble_batch(rows, shards, position_ids, question_max_tokens, device='cpu'
 
 
 class FeatureCache:
-    def __init__(self, path, expected_manifest_sha=None):
+    def __init__(self, path, expected_manifest_sha=None, source_inputs_override=None):
         import numpy as np
         self.path = remote(path)
         self.manifest_sha = sha(self.path / 'manifest.json')
@@ -515,7 +515,10 @@ class FeatureCache:
         self.ids = list(self.index)
         if len(self.ids) != self.manifest['count'] or {k: len(v) for k, v in self.ids_by_split.items()} != self.manifest['split_counts']:
             raise ValueError('Incomplete feature cache split')
-        arrays = remote(self.manifest['source_inputs_dir'])
+        arrays = remote(source_inputs_override if source_inputs_override is not None
+                        else self.manifest['source_inputs_dir'])
+        self.source_inputs_original = self.manifest['source_inputs_dir']
+        self.source_inputs_actual = str(arrays)
         self.position_ids = np.load(arrays / 'packed_policy_positions.npy', allow_pickle=False, mmap_mode='r')
         self.input_ids = np.load(arrays / 'packed_policy_ids.npy', allow_pickle=False, mmap_mode='r')
 
