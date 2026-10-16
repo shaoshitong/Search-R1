@@ -1,0 +1,193 @@
+# Future source preparation only; do not execute until actual inputs exist.
+# Replace __OUTER__/__FIRST__/__SECOND__ with one actual boundary180..184 and
+# the two original poll indices. Supply ACTUAL_THROUGH180_PINS, _BYTES and
+# _SHA256 for the exact role-specific manifest; no future artifact SHA is frozen.
+# Actual180 owner -> ROOTDEV -> curve/ROOTcurve -> finalizer ->90c -> canonical180
+# -> original native5 metadata helper LAST -> ROOT FULL. Nondev181..184 current
+# dev is null; latest dev/curve remains actual180. Saved next-step is not entered.
+python3 -B - <<'PY'
+from pathlib import Path
+import pathlib
+import json,hashlib,datetime,gzip,ast,time,math,re
+n=__OUTER__;a=__FIRST__;z=__SECOND__;ROLE="root_verified_wait";w=Path.cwd();b=w/'outputs/tree-nested-branch-handoff-20261013';ms=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+STABLE={};MIRRORED=set()
+def read(p):
+ raw=p.read_bytes();assert p not in STABLE or STABLE[p]==raw;STABLE[p]=raw;return json.loads(raw)
+def h(raw):return hashlib.sha256(raw).hexdigest()
+def pin(p,sha=None,size=None,mirror=True):
+ raw=p.read_bytes();assert p not in STABLE or STABLE[p]==raw;STABLE[p]=raw
+ if sha is not None:assert h(raw)==sha,p
+ if size is not None:assert len(raw)==size,p
+ if mirror:
+  MIRRORED.add(p)
+  for m in ms:assert(m/p.relative_to(b)).read_bytes()==raw,p
+ return dict(path=str(p),bytes=len(raw),sha256=h(raw))
+
+# This manifest binds actual local artifacts. Its outer is identity, not success.
+import os,re,math
+manifest_path=pathlib.Path(os.environ['ACTUAL_THROUGH180_PINS']).resolve(strict=True)
+assert manifest_path.is_relative_to(w) and manifest_path.suffix=='.json'
+manifest_raw=manifest_path.read_bytes()
+assert len(manifest_raw)==int(os.environ['ACTUAL_THROUGH180_PINS_BYTES']) and h(manifest_raw)==os.environ['ACTUAL_THROUGH180_PINS_SHA256']
+assert len(manifest_raw)<=100000
+manifest=read(manifest_path);manifest_pin=pin(manifest_path,mirror=False)
+assert manifest['schema']=='tree_through180_actual_publication_input_manifest_v1'
+assert manifest['role']==ROLE and manifest['outer']==n and 180<=n<=184 and manifest['latest_completed_dev_outer']==180
+assert manifest['first_poll_index']==a and manifest['second_poll_index']==z and a!=z
+assert pathlib.Path(manifest['workspace_root']).resolve()==w.resolve() and pathlib.Path(manifest['base']).resolve()==b.resolve()
+assert [pathlib.Path(x).resolve() for x in manifest['mirrors']]==[m.resolve() for m in ms]
+def locate(value):
+ assert isinstance(value,str) and value and '://' not in value
+ p=pathlib.Path(value)
+ if not p.is_absolute():p=w/p if p.parts[0] in ('outputs','work') else b/p
+ p=p.resolve(strict=True)
+ assert p.is_relative_to(w.resolve()) or any(p.is_relative_to(m.resolve()) for m in ms)
+ assert p.is_file() and p.suffix in ('.json','.csv','.md','.py','.txt','.yaml','.yml','.sh')
+ return p
+def exact(ref,expected=None,mirror=True):
+ assert isinstance(ref,dict) and type(ref.get('bytes')) is int and ref['bytes']>0 and re.fullmatch('[0-9a-f]{64}',ref.get('sha256',''))
+ p=locate(ref.get('path',ref.get('file')))
+ if expected is not None:assert p==expected.resolve(strict=True)
+ actual=pin(p,ref['sha256'],ref['bytes'],mirror=mirror)
+ return p,actual
+def contains_ref(value,ref):
+ if isinstance(value,dict):
+  if ('path' in value or 'file' in value) and value.get('bytes')==ref['bytes'] and value.get('sha256')==ref['sha256']:
+   try:
+    if locate(value.get('path',value.get('file')))==locate(ref['path']):return True
+   except (AssertionError,FileNotFoundError):pass
+  return any(contains_ref(x,ref) for x in value.values())
+ if isinstance(value,list):return any(contains_ref(x,ref) for x in value)
+ return False
+names=dict(full=f'FULL_OUTER{n}_PROGRESS_RECEIPT.json',cost=f'COST_OUTER{n}_LOCAL_RECEIPT.json',cumulative=f'CUMULATIVE_COST_THROUGH{n}.json',native=f'NATIVE_HISTORY_{n}_METADATA_READBACK.json',first_poll=f'NATIVE5_CONTINUE_POLL_{a}.json',second_poll=f'NATIVE5_CONTINUE_POLL_{z}.json',first_resource=f'NATIVE5_CONTINUE_RESOURCE_{a}.json',second_resource=f'NATIVE5_CONTINUE_RESOURCE_{z}.json',curve180='LEARNING_CURVE_COMPLETE_THROUGH180.json',curve_csv180='LEARNING_CURVE_COMPLETE_THROUGH180.csv',dev180='DEV5_180_NATIVE_COST_SUPPLEMENT.json',owner180='DEV5_180_NATIVE_COST_LOCAL_RECEIPT.json',execution180='DEV5_180_NATIVE_COST_COLLECTOR_EXECUTION.json',pre_execution180='DEV5_180_NATIVE_COST_PRE_EXECUTION_INPUT_PINS.json',rootdev180='ROOT_DEV180_NATIVE_COST_ACTUAL_READBACK.json',rootcurve180='ROOT_CURVE_DEV_COST_THROUGH180_ACTUAL_READBACK.json',curve_binding180='LEARNING_CURVE_THROUGH180_COST_SUPPLEMENT_BINDING.json',curve_publication180='LEARNING_CURVE_THROUGH180_LOCAL_PUBLICATION.json')
+if ROLE=='finalizer':names.update(candidate=f'CANDIDATE_COST_EXTENSION_OUTER{n:04d}.json',rates=f'BRANCH_FALLBACK_RATES_OUTER{n:04d}.json',registry='CANDIDATE_COST_EXTENSION_INPUTS.json',initial_supplement='LEARNING_CURVE_INITIAL1_10_SUPPLEMENT.json',gzip_receipt='LOCAL_OLD_INSTRUCT300_FOUR_RAW_GZIP_ARCHIVE_20261014.json')
+else:names.update(progress=f'OUTER{n}_FULL_NEXT{n+1}_ACTUAL_PROGRESS.json',alias=f'CURRENT_ALIAS_RECONCILIATION_OUTER{n}.json',metadata_scope=f'CURRENT_METADATA_SCOPE_RECONCILIATION_OUTER{n}.json',canonical180='OUTER180_CURVE_DEVCOST_CURRENT_ALIAS_CLOSURE.json',milestone150='MILESTONE150_HF_NATIVE_METADATA.json',metadata_scope_publication='METADATA_SCOPE_PUBLISHER_PUBLICATION.json')
+if ROLE=='root_verified_wait':names['verified_wait']=f'VERIFIED_WAIT_NATIVE5_CONTINUE_POLL_{a}_NATIVE5_CONTINUE_POLL_{z}.json'
+assert set(manifest['references'])==set(names)
+refs={};ref_paths={}
+for key,name in names.items():
+ ref_paths[key],refs[key]=exact(manifest['references'][key],b/name,mirror=key not in ('first_poll','second_poll','first_resource','second_resource'))
+source_names=dict(root_full='tree_through180_full_root_readback.template.command.txt',root_verified_wait='tree_through180_verified_wait_readback.template.command.txt',finalizer='tree_through180_finalize.template.command.txt')
+_,template_source=exact(manifest['template_source'],w/'work/tree-speed-repair-20261008'/source_names[ROLE],mirror=False)
+owner180=read(ref_paths['owner180']);rootdev180=read(ref_paths['rootdev180']);rootcurve180=read(ref_paths['rootcurve180']);execution180=read(ref_paths['execution180'])
+assert owner180['outer']==180 and owner180['status']=='ACTUAL_DEV180_COST_COLLECTED_AND_LOCAL_MIRRORS_READ_BACK'
+assert owner180['collector_source_commit']=='1edaf50bb8e14de51db936e0859e369792011233' and owner180['collector_source_sha256']=='545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0'
+assert owner180['new_entry_main_invocations_this_task']==owner180['actual_remote_incremental_collection_invocations']==1
+assert owner180['preceding_local_pending_invocations']==0 and owner180['preceding_pending_remote_operations'] is False and owner180['remote_collector_exit_code']==0
+assert execution180['exit_code']==0 and execution180['new_entry_main_invocations_this_task']==execution180['actual_remote_incremental_collection_invocations']==1 and execution180['preceding_local_pending_invocations']==0
+assert execution180['source_commit']==owner180['collector_source_commit'] and execution180['source_sha256']==owner180['collector_source_sha256']
+assert owner180['same_entry_prior_confirmed_main_invocations']==owner180['same_entry_prior_confirmed_remote_incremental_invocations']==4
+assert owner180['same_entry_executor_attested_cumulative_main_invocations']==owner180['same_entry_executor_attested_cumulative_remote_incremental_invocations']==5
+assert rootdev180['status']=='PASS_ACTUAL_DEV180_LOCAL_ARTIFACT_READBACK' and rootdev180['outer']==180 and rootdev180['inconsistencies']==[]
+assert rootdev180['actual_ref_counts']['new_dev_rows']==rootdev180['actual_ref_counts']['all_original_control_summaries']==36
+assert rootdev180['actual_ref_counts']['old_dev_rows']==rootdev180['actual_ref_counts']['preserved_old_control_summaries']==35 and rootdev180['actual_ref_counts']['new_remote_control_summaries']==1
+for key in ('owner180','execution180','pre_execution180','dev180'):assert contains_ref(rootdev180,refs[key])
+assert rootcurve180['status']=='PASS_ACTUAL_CURVE180_LOCAL_ARTIFACT_READBACK' and rootcurve180['outer']==180 and rootcurve180['counts']==dict(training=180,actual_completed_dev512=36,csv_data_rows=216)
+assert rootcurve180['same_entry_executor_attested_cumulative_main_invocations']==rootcurve180['same_entry_executor_attested_cumulative_remote_incremental_invocations']==5
+for key in ('rootdev180','owner180','dev180','curve180','curve_csv180','curve_binding180','curve_publication180'):assert contains_ref(rootcurve180,refs[key])
+assert rootcurve180['ROOT_FULL180_used_as_input'] is False
+for key in ('supplement','execution_record','pre_execution_input_pins'):assert contains_ref(owner180,refs[dict(supplement='dev180',execution_record='execution180',pre_execution_input_pins='pre_execution180')[key]])
+controls180=owner180['local_original_control_refs'];assert len(controls180)==36 and [x['outer'] for x in controls180]==list(range(5,181,5))
+for ref in controls180:
+ p,_=exact(ref);d=read(p)
+ assert d['status']=='VALIDATION_COST_COMPLETE' and d['actual_completed_outer']==ref['outer'] and d['phase']==('acceptance' if ref['outer']==5 else 'periodic')
+ assert d['dataset_rows']==d['evaluated_rows']==512 and re.fullmatch('[0-9a-f]{64}',d['ledger_sha256'])
+protected_dev_parts=[]
+for key in ('rows_part_refs','prior_rows_part_refs','source_CUM_all_complete_field_parts'):
+ assert isinstance(owner180[key],list)
+ for ref in owner180[key]:protected_dev_parts.append(exact(ref)[1])
+if ROLE!='finalizer':
+ closure180=read(ref_paths['canonical180'])
+ assert closure180['completed_outer']==closure180['latest_dev_outer']==closure180['curve_actual_through']==closure180['dev_native_cost_actual_through']==180 and closure180['active_outer']==181
+ assert closure180['ROOT_FULL180_used_as_input'] is False and closure180['cold_load5_helper_to_be_run_LAST_by_root_after_this_binding'] is True
+ for key in ('curve180','curve_csv180','dev180','owner180','execution180','rootdev180','rootcurve180'):assert contains_ref(closure180,refs[key])
+
+rp=b/f'VERIFIED_WAIT_NATIVE5_CONTINUE_POLL_{a}_NATIVE5_CONTINUE_POLL_{z}.json';r=read(rp);receipt=pin(rp)
+assert r['completed_outer']==n and r['active_outer']==n+1 and r['goal_status']=='active' and r['goal_turn_classification']=='verified_wait' and r['consecutive_blocked_goal_turns']==0
+assert r['source_commit']=='778b2b43dad90fc0c1c5d95d77c2326286011b73' and r['source_script_sha256']=='0db3bd8dfd228dea80873c383d313666ad59e0175cc7f9abf6b40f7feaff1785'
+assert r['alias_dependency_sha256']=='f8775e2673d2844125a6683622880066cf870a3e6070a1ac847f5bb62ed8aafc' and r['core_dependency_sha256']=='676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1'
+assert not r['next_outer_Controller_complete_observed'] and not r['next_outer_credit_observed'] and all(r[k] is None for k in ['next_outer_partial_Adam','next_outer_sampling_complete','next_outer_variance','next_outer_scoring'])
+sp=w/'work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/publish_nested_verified_wait.py';assert h(sp.read_bytes())==r['source_script_sha256']
+nodes=[x for x in ast.walk(ast.parse(sp.read_text())) if isinstance(x,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='common' for t in x.targets)];assert len(nodes)==1 and isinstance(nodes[0].value,ast.Call)
+allowed={k.arg for k in nodes[0].value.keywords};assert None not in allowed
+full=read(b/f'FULL_OUTER{n}_PROGRESS_RECEIPT.json');p1=read(b/f'NATIVE5_CONTINUE_POLL_{a}.json');p2=read(b/f'NATIVE5_CONTINUE_POLL_{z}.json');R1=read(b/f'NATIVE5_CONTINUE_RESOURCE_{a}.json');R2=read(b/f'NATIVE5_CONTINUE_RESOURCE_{z}.json')
+assert p1['epoch']<p2['epoch'] and r['observed_epochs']==[p1['epoch'],p2['epoch']]
+for i,p,R,facts in [(a,p1,R1,r['actual_observations'][0]),(z,p2,R2,r['actual_observations'][1])]:
+ assert re.search(r'epoch\s+\d+,\s*step\s+'+str(n+1)+r'\b',(p.get('logs') or {}).get('stage.log','')), 'Saved next-step alone is not entered'
+ assert p['source_commit']==r['source_commit'] and p['progress']['actual_completed_outer_from_attempt_results']==n and p['progress']['errors']==[] and p['run_result'] is None
+ assert p['progress']['completed_actual_optimizer_calls_per_rank']==full['per_rank_successful_adam']==facts['completed_adam_per_rank']
+ assert full['per_rank_actual_total_adam']==facts['actual_adam_per_rank']
+ assert facts['all_skipped_attempts']==p['progress']['all_skipped_attempts'] and not any(x['candidate_outer']>n for x in p['rollout_cost'])
+ assert 'MainPID=503255\n' in R['training_systemd'] and 'InvocationID=a313bda919834d24b4c5d491698d39ce\n' in R['training_systemd'] and 'ActiveState=active\n' in R['training_systemd']
+ assert facts['actual_next_stage']==n+1 and facts['latest_original_Controller_outer']==n and facts['next_Controller_result_present'] is False
+ rows=[x for x in p['last_rank_summaries'] if x.get('outer_step')==n];assert len(rows)==8 and {x['rank'] for x in rows}==set(range(8))
+ assert sum(x['successful_optimizer_calls'] for x in rows)/8==full['iteration_metrics']['actor/optimizer_steps']
+ for row in rows:
+  assert type(row['successful_optimizer_calls']) is int and row['successful_optimizer_calls']>0 and row['finite_grad_norms']==row['successful_optimizer_calls'] and row['nonzero_grad_norms']>0
+  sample=row['local_shard_sample_delta'];assert sample['count']>0 and sample['finite']==sample['count'] and sample['nonzero']>0
+  actual=next(x for x in full['last_rank_summaries'] if x['rank']==row['rank']);assert actual['successful_optimizer_calls']==row['successful_optimizer_calls']
+  for key,value in [('actual_opportunities_processed',row.get('opportunities_processed')),('actual_opportunities_skipped',row.get('opportunities_skipped',row.get('skipped_optimizer_calls')))]:assert actual[key]==value
+if n==180:assert full['actual_dev512']['outer']==180 and full['actual_dev512']['rows']==512
+else:assert full['actual_dev512'] is None and 'timing_s/testing' not in full['iteration_metrics'] and full['normal_dev512_wall_seconds'] is None
+assert full['latest_dev512_outer']==180 and all(type(v) in (int,float) and math.isfinite(v) for v in full['iteration_metrics'].values())
+native=read(ref_paths['native']);guard=native['identity']['guard_continue_accounting'];workers=native['receipt']['workers']
+assert guard['completed_optimizer_calls_per_rank']==full['per_rank_successful_adam'] and guard['total_optimizer_calls_per_rank']==full['per_rank_actual_total_adam']
+assert native['outer']==n and native['manifest_sha256']==full['native_manifest_sha256'] and native['receipt']['driver']['next_step']==n+1
+assert len(workers)==8 and {x['rank'] for x in workers}==set(range(8))
+for worker in workers:
+ actual=full['per_rank_actual_total_adam'][str(worker['rank'])]
+ assert worker['full_worker_state_finite'] is True and worker['actual_total_optimizer_calls']==actual and worker['observed_adam_steps']==[actual] and worker['scheduler_last_epoch']==n
+assert all(r['log_byte_growth'][k]==p2['own_output_files'][k]-p1['own_output_files'][k]>0 for k in ['stage.log','retriever.log'])
+assert r['actual_observations'][1]['CPUUsageNSec']>r['actual_observations'][0]['CPUUsageNSec']
+cost=read(ref_paths['cost']);assert cost['outer']==n and cost['actual_rank_successful_total_adam']==full['per_rank_actual_total_adam']
+costfiles=[pin(b/rel,x['sha256'],x['bytes']) for rel,x in cost['mirrored_artifacts'].items()]
+assert len(costfiles)>=7 and f'CUMULATIVE_COST_THROUGH{n}.json' in cost['mirrored_artifacts']
+cum=read(b/f'CUMULATIVE_COST_THROUGH{n}.json');complete_fields={};part_names=[]
+for field,value in cum.items():
+ if not isinstance(value,dict) or value.get('storage')!='complete_original_field_parts':continue
+ assert value['container_type'] in ['mapping','list']
+ decoded={} if value['container_type']=='mapping' else []
+ for ref in value['parts']:
+  name=ref['file'];assert ref['json_selector']=='value' and name in cost['mirrored_artifacts']
+  pr=pin(b/name,ref['sha256'],ref['bytes']);assert pr['bytes']<=100000
+  piece=read(b/name);assert piece['original_field']==field
+  if isinstance(decoded,dict):
+   assert isinstance(piece['value'],dict) and not(set(decoded)&set(piece['value']));decoded.update(piece['value'])
+  else:assert isinstance(piece['value'],list);decoded.extend(piece['value'])
+  part_names.append(name)
+ assert len(decoded)==value['original_entries'];complete_fields[field]=dict(container_type=value['container_type'],actual_entries=len(decoded),parts=len(value['parts']))
+assert len(set(part_names))==len(part_names) and set(part_names)=={name for name in cost['mirrored_artifacts'] if name.startswith('cumulative_cost_blocks/')}
+
+snapshot=Path(r['prior_snapshot_manifest']);man=read(snapshot);assert len(man['files'])==14;json_count=report_count=0;changes=[];stable={}
+for row in man['files']:
+ g=Path(row['stored_gzip_path']).read_bytes();assert len(g)==row['stored_bytes'] and h(g)==row['stored_sha256'] and int.from_bytes(g[4:8],'little')==0
+ oldraw=gzip.decompress(g);assert len(oldraw)==row['original_bytes'] and h(oldraw)==row['original_sha256']
+ p=Path(row['source']);newraw=p.read_bytes();stable[p]=newraw
+ if p.suffix=='.json':
+  old=json.loads(oldraw);new=json.loads(newraw);assert {k:v for k,v in old.items() if k not in allowed}=={k:v for k,v in new.items() if k not in allowed}
+  for k in ['completed_outer','active_outer','per_rank_actual_total_adam','actual_total_adam_per_rank','latest_dev512_outer','current_training_variances','learning_curve_complete_outer','dev_native_cost_actual_last_collected_outer','current_milestone150_metadata','current_dev_native_cost_supplement']:
+   if k in old:assert old[k]==new[k],k
+  assert new['completed_outer']==n and new['active_outer']==n+1 and new['latest_dev512_outer']==180 and new['goal_status']=='active' and new['whole_goal_turn_classification']=='verified_wait'
+  assert new['learning_curve_complete_outer']==new['dev_native_cost_actual_last_collected_outer']==180 and new['active_outer_actual_partial_Adam_calls'] is None
+  changes.append(dict(path=str(p),actual_changed_fields=[k for k in set(old)|set(new) if old.get(k)!=new.get(k)]));json_count+=1
+ else:assert newraw.endswith(oldraw);report_count+=1
+assert json_count==10 and report_count==4
+paths=[w/'outputs/STATUS.json',w/'outputs/tree-nested-branch/STATUS.json',b/'CURRENT_NATIVE_RECOVERY_FOLLOWUP.json',b/'CURRENT_OBSERVER_CONNECTION_STATE.json'];assert paths[0].read_bytes()==paths[1].read_bytes()
+for m in ms:
+ for p in paths[1:]:assert(m/p.name).read_bytes()==p.read_bytes()
+ assert(m/'REPORT.md').read_bytes()==(w/'outputs/REPORT.md').read_bytes()==(w/'outputs/tree-nested-branch/REPORT.md').read_bytes()
+references=dict(full=pin(b/f'FULL_OUTER{n}_PROGRESS_RECEIPT.json'),cost=pin(b/f'CUMULATIVE_COST_THROUGH{n}.json'),latest_curve=pin(b/'LEARNING_CURVE_COMPLETE_THROUGH180.json'),latest_dev_native_cost=pin(b/'DEV5_180_NATIVE_COST_SUPPLEMENT.json'),milestone150=pin(b/'MILESTONE150_HF_NATIVE_METADATA.json'),first_poll=pin(b/f'NATIVE5_CONTINUE_POLL_{a}.json',mirror=False),second_poll=pin(b/f'NATIVE5_CONTINUE_POLL_{z}.json',mirror=False),first_resource=pin(b/f'NATIVE5_CONTINUE_RESOURCE_{a}.json',mirror=False),second_resource=pin(b/f'NATIVE5_CONTINUE_RESOURCE_{z}.json',mirror=False))
+for p in [rp,snapshot,*[Path(x['path']) for x in references.values()]]:stable[p]=p.read_bytes()
+time.sleep(1)
+for p,raw in stable.items():assert p.read_bytes()==raw
+for p,raw in tuple(STABLE.items()):
+ assert p.read_bytes()==raw,p
+ if p in MIRRORED:
+  for m in ms:assert (m/p.relative_to(b)).read_bytes()==raw,p
+proof=dict(schema='root_verified_wait_actual_readback_v2',created_at_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),executor='/root',status='ACTUAL_CA32_WAIT_ENTRY_TWO_POLLS_AND_MIRRORS_VERIFIED',receipt=receipt,producer_source_commit='ca32b384987bb8fce3acbd17aad592f55ab7c248',actual_entry_sha256=r['source_script_sha256'],completed_outer=n,active_outer=n+1,actual_observations=r['actual_observations'],log_byte_growth=r['log_byte_growth'],all_skipped_counter_matches_original_progress=True,previous14_gzip_original_bytes_SHA_verified=True,snapshot_manifest=pin(snapshot,mirror=False),actual_metadata_changes_limited_to_published_producer_fields=changes,current_canonical_protected_counters_cost_curve_dev_milestone_unchanged=True,canonical_after_actual=[pin(p,mirror=False) for p in paths],references=references,raw_poll_resource_mirror_scope='BASE-only pins, not claimed mirrored',latest_dev=full['latest_actual_dev512'],current_dev=full['actual_dev512'],actual_two_readbacks_preserved=True,counter_or_cost_credit_added=False,remote_actions=False,new_training=False,source778_modified=False,goal_status='active',whole_goal_turn_classification='verified_wait',consecutive_blocked_goal_turns=0)
+proof.update(actual_input_manifest=manifest_pin,template_source=template_source,latest180_references={k:refs[k] for k in ('curve180','curve_csv180','dev180','owner180','execution180','pre_execution180','rootdev180','rootcurve180','curve_binding180','curve_publication180','canonical180')},source1ed_confirmed_actual_main_invocations_cumulative=owner180['same_entry_executor_attested_cumulative_main_invocations'],source1ed_confirmed_actual_remote_incremental_invocations_cumulative=owner180['same_entry_executor_attested_cumulative_remote_incremental_invocations'],selected_next_completed_dev_outer=185,invocation_count_scope='Actual source1ed executor attestations/products through180; no global process audit.',dynamic_cost_artifact_references=costfiles,cumulative_complete_original_fields=complete_fields,dynamic_all_original_DEV_parts_and_controls_protected=protected_dev_parts,direct_eight_rank_finite_gradients_and_sampled_nonzero_parameter_deltas=True,missing_rank_opportunity_fields_not_fabricated=True)
+out=b/f'ROOT_VERIFIED_WAIT_READBACK_{a}_{z}.json';assert not out.exists();raw=(json.dumps(proof,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode()
+for p in [out,*[m/out.name for m in ms]]:p.write_bytes(raw)
+one=pin(out);time.sleep(1);assert pin(out)==one
+print(json.dumps(one))
+PY

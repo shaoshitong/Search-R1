@@ -1,0 +1,221 @@
+{
+  "schema": "tree_through180_publication_templates_source_preparation_v1",
+  "prepared_at_utc": "2026-10-16T02:53:39.755975+00:00",
+  "status": "SOURCE_PREPARATION_ONLY_NOT_EXECUTED",
+  "workspace_root": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2",
+  "base": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013",
+  "target_boundaries": [
+    180,
+    181,
+    182,
+    183,
+    184
+  ],
+  "new_sources": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/tree_through180_full_root_readback.template.command.txt",
+      "bytes": 30422,
+      "sha256": "23348b3e04550fe5a832b6f55cd68b1343746ebaa00a5aca0278cf192c014e80"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/tree_through180_verified_wait_readback.template.command.txt",
+      "bytes": 22301,
+      "sha256": "63c78f4d1a1633428e85359d79c2f97205dfd94333a4b1246dd1794aa878daa2"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/tree_through180_finalize.template.command.txt",
+      "bytes": 12183,
+      "sha256": "665e0b793b8980bb7691aa1577edc924cdc3b1579645b9eecfc65c8bea5174ea"
+    }
+  ],
+  "preserved_old_sources": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/tree_through175_full_root_readback.template.command.txt",
+      "bytes": 19132,
+      "sha256": "f18f8460e4192e3d575154544da9d308f5ca813f9fe01464c949f0c25e05720c"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/tree_through175_verified_wait_readback.template.command.txt",
+      "bytes": 7694,
+      "sha256": "e297c5696bdf05826a75a6a8f948c522eb13ed26e5e4e5b0a84ca23ae781c51a"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/tree_through175_finalize.template.command.txt",
+      "bytes": 806,
+      "sha256": "5d4461d0a011e8787eae22d82dbec73d3f152c134babec9aa28f2ce5b1ff92aa"
+    }
+  ],
+  "existing_published_local_dependencies": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/finalize_nested_progress.py",
+      "bytes": 32911,
+      "sha256": "61385504e4bb389cdba508c1b74f84fe6464e1d4f8ec11989e8cfe0c230dc541"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/sync_nested_native_progress.py",
+      "bytes": 39098,
+      "sha256": "676dca88489fb4d3c84891603990fc96256a14fb7da8ac2bc5c2def053e016c1"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/publish_nested_verified_wait.py",
+      "bytes": 18678,
+      "sha256": "0db3bd8dfd228dea80873c383d313666ad59e0175cc7f9abf6b40f7feaff1785"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-controls-source/reproduction/tree-eval-resume-20261013/local-control-backup/publish_nested_metadata_scope.py",
+      "bytes": 24931,
+      "sha256": "fc2f3f70b562eebbbd6c6607aa75846b4a59da5c91dca1271de1bfb92851f29c"
+    }
+  ],
+  "source_execution_policy": {
+    "source_preparation_only": true,
+    "SSH": false,
+    "collector": false,
+    "evaluation": false,
+    "training_operations": false,
+    "test_compile_review": false,
+    "canonical_execution": false,
+    "future_command_execution": false,
+    "previous_frozen_sources_modified": false
+  },
+  "future_manifest_interface": {
+    "environment": [
+      "ACTUAL_THROUGH180_PINS",
+      "ACTUAL_THROUGH180_PINS_BYTES",
+      "ACTUAL_THROUGH180_PINS_SHA256"
+    ],
+    "schema": "tree_through180_actual_publication_input_manifest_v1",
+    "required_top_level": [
+      "schema",
+      "role",
+      "outer",
+      "latest_completed_dev_outer",
+      "first_poll_index",
+      "second_poll_index",
+      "workspace_root",
+      "base",
+      "mirrors",
+      "template_source",
+      "references"
+    ],
+    "role_values": [
+      "finalizer",
+      "root_full",
+      "root_verified_wait"
+    ],
+    "outer": "actual completed boundary, integer180..184; no success inferred from requested outer",
+    "latest_completed_dev_outer": 180,
+    "first_poll_index": "__FIRST__ replaced with actual original poll index; finalizer/root_full must be the FULL-bound first poll",
+    "second_poll_index": "__SECOND__ replaced with actual later original observation; verified_wait indices are its own two original observations",
+    "template_source": "exact frozen source preparation template {path,bytes,sha256}; instantiate placeholders in memory without editing source",
+    "every_reference": "actual local {path,bytes,sha256}, never a future placeholder digest or prior175 digest presented as180",
+    "common_exact_reference_keys": [
+      "full",
+      "cost",
+      "cumulative",
+      "native",
+      "first_poll",
+      "second_poll",
+      "first_resource",
+      "second_resource",
+      "curve180",
+      "curve_csv180",
+      "dev180",
+      "owner180",
+      "execution180",
+      "pre_execution180",
+      "rootdev180",
+      "rootcurve180",
+      "curve_binding180",
+      "curve_publication180"
+    ],
+    "role_specific_exact_reference_keys": {
+      "finalizer": [
+        "candidate",
+        "rates",
+        "registry",
+        "initial_supplement",
+        "gzip_receipt"
+      ],
+      "root_full": [
+        "progress",
+        "alias",
+        "metadata_scope",
+        "canonical180",
+        "milestone150",
+        "metadata_scope_publication"
+      ],
+      "root_verified_wait": [
+        "progress",
+        "alias",
+        "metadata_scope",
+        "canonical180",
+        "milestone150",
+        "metadata_scope_publication",
+        "verified_wait"
+      ]
+    },
+    "fixed_reference_filenames": {
+      "curve180": "LEARNING_CURVE_COMPLETE_THROUGH180.json",
+      "curve_csv180": "LEARNING_CURVE_COMPLETE_THROUGH180.csv",
+      "dev180": "DEV5_180_NATIVE_COST_SUPPLEMENT.json",
+      "owner180": "DEV5_180_NATIVE_COST_LOCAL_RECEIPT.json",
+      "execution180": "DEV5_180_NATIVE_COST_COLLECTOR_EXECUTION.json",
+      "pre_execution180": "DEV5_180_NATIVE_COST_PRE_EXECUTION_INPUT_PINS.json",
+      "rootdev180": "ROOT_DEV180_NATIVE_COST_ACTUAL_READBACK.json",
+      "rootcurve180": "ROOT_CURVE_DEV_COST_THROUGH180_ACTUAL_READBACK.json",
+      "curve_binding180": "LEARNING_CURVE_THROUGH180_COST_SUPPLEMENT_BINDING.json",
+      "curve_publication180": "LEARNING_CURVE_THROUGH180_LOCAL_PUBLICATION.json",
+      "canonical180": "OUTER180_CURVE_DEVCOST_CURRENT_ALIAS_CLOSURE.json",
+      "milestone150": "MILESTONE150_HF_NATIVE_METADATA.json",
+      "metadata_scope_publication": "METADATA_SCOPE_PUBLISHER_PUBLICATION.json",
+      "registry": "CANDIDATE_COST_EXTENSION_INPUTS.json",
+      "initial_supplement": "LEARNING_CURVE_INITIAL1_10_SUPPLEMENT.json",
+      "gzip_receipt": "LOCAL_OLD_INSTRUCT300_FOUR_RAW_GZIP_ARCHIVE_20261014.json"
+    },
+    "per_boundary_reference_filenames": {
+      "full": "FULL_OUTER{n}_PROGRESS_RECEIPT.json",
+      "cost": "COST_OUTER{n}_LOCAL_RECEIPT.json",
+      "cumulative": "CUMULATIVE_COST_THROUGH{n}.json",
+      "native": "NATIVE_HISTORY_{n}_METADATA_READBACK.json",
+      "candidate": "CANDIDATE_COST_EXTENSION_OUTER{n:04d}.json",
+      "rates": "BRANCH_FALLBACK_RATES_OUTER{n:04d}.json",
+      "progress": "OUTER{n}_FULL_NEXT{n+1}_ACTUAL_PROGRESS.json",
+      "alias": "CURRENT_ALIAS_RECONCILIATION_OUTER{n}.json",
+      "metadata_scope": "CURRENT_METADATA_SCOPE_RECONCILIATION_OUTER{n}.json",
+      "first_poll": "NATIVE5_CONTINUE_POLL_{a}.json",
+      "second_poll": "NATIVE5_CONTINUE_POLL_{z}.json",
+      "first_resource": "NATIVE5_CONTINUE_RESOURCE_{a}.json",
+      "second_resource": "NATIVE5_CONTINUE_RESOURCE_{z}.json",
+      "verified_wait": "VERIFIED_WAIT_NATIVE5_CONTINUE_POLL_{a}_NATIVE5_CONTINUE_POLL_{z}.json"
+    },
+    "mirrors": [
+      "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch",
+      "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch"
+    ],
+    "raw_poll_resource_scope": "BASE-only pin; no mirror or new remote capture claim"
+  },
+  "future_order": {
+    "actual180": "actual FULL/native/CUM/COST180 -> sole actual source1ed collector+owner180 -> independent ROOT_DEV180 -> curve180+ROOTcurve180 -> original finalizer180 ->90c actual alias180 -> canonical180 binding -> original native5 metadata helper LAST -> independent ROOT_FULL180",
+    "actual181_184": "actual own FULL/native/CUM/COST boundary plus immutable latest180 dev/curve closure -> original finalizer ->90c alias -> original native5 metadata helper LAST -> independent ROOT FULL; no new dev collector at nondev boundaries",
+    "verified_wait": "published ca32 actual sampling-only wait -> independent root verified-wait readback, requiring two real same-boundary observations; no counter/cost/optimizer completion credit",
+    "no_cycle": "finalizer requires latest180 immutable owner/ROOTDEV/curve/ROOTcurve but has no canonical180/helper/ROOTFULL input. FULL/wait require post-publication canonical180 and current alias/metadata-scope receipts; ROOTFULL output is never a manifest input."
+  },
+  "dynamic_actual_accounting": {
+    "Adam": "read exact actual FULL/native8rank totals and credited totals; no __ADAM__, no3600 for future steps, no n*20 calculation",
+    "rank_writes_skips": "actual per-rank successful calls, finite/nonzero gradients and finite/nonzero sampled parameter deltas; rank opportunity fields remain null if absent; no zero skip assumption",
+    "full_metric": "actual processed/steps/skipped scalar relation; original frozen publisher protocol validators are unchanged. Twenty configured opportunities is not a claim of twenty successful writes.",
+    "native_cursor": "scheduler n and saved next_step n+1 are saved boundary only; whole phase n+1 requires original raw stage.log epoch/step marker and active same PID503255/Invocation",
+    "current_dev": "actual180 complete original512 NQ256+Hot256; current dev at181..184 null, absent testing timer remains null and is never measured zero",
+    "source1ed": "prior actual160/165/170/175 receipts confirm4. Only actual180 CLI exit0+owner/independent ROOTDEV+products confirms delta1/1/PENDING0 and cumulative5/next185; executor attestations and artifact corroboration, not global process audit",
+    "cost_parts": "enumerate every actual COST mirrored_artifacts ref; dynamically reconstruct all complete_original_field_parts and check original entry counts, disjoint mapping keys, list lengths and exact part-set equality. No fixed CUM/DEV part number.",
+    "originals": "latest180 controls36 and current/prior DEV parts plus owner CUM parts exact bytes/SHA; alias14gzip snapshots and metadata-scope14gzip originals/intended documents retained; two mirrors checked twice",
+    "historical_scope": "milestone150 existing real metadata pin/cold-load5 boundary remain historical facts. No future HF180 reload, training restart or goal completion claimed."
+  },
+  "future_outputs": {
+    "root_full": "ROOT_FULL{n}_PUBLICATION_READBACK_{a}_{z}.json in BASE+two mirrors, two byte readbacks",
+    "root_verified_wait": "ROOT_VERIFIED_WAIT_READBACK_{a}_{z}.json in BASE+two mirrors, two byte readbacks",
+    "finalizer": "unchanged original finalizer outputs only; preserves original immutable FULL and validators"
+  },
+  "source_freeze_readback": "new and old template files will be read twice for exact bytes/SHA before handoff; no future template execution"
+}
