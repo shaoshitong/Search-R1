@@ -47,7 +47,20 @@ if ps:
     p = ps[-1]; o['latest_attempt'] = p.name; o['attempt_files'] = [x.name for x in p.iterdir() if x.is_file()]
     for name in ('selection.json','rollout-audit.json'):
         r = read(p/name)
-        if r: o[name] = {k:r[k] for k in ('step','selected_groups','raw_generated_trajectories','candidate_fill_seconds','online_features','head_version','question_probe_version') if k in r}
+        if r:
+            o[name] = {k:r[k] for k in ('step','selected_groups','raw_generated_trajectories','candidate_fill_seconds','online_features','head_version','question_probe_version') if k in r}
+            if name == 'rollout-audit.json':
+                groups = r['groups']
+                valid = len(groups) == 512 and all(len(g['strict_correctness']) == 5 and
+                    all(type(v) is int and v in (0,1) for v in g['strict_correctness']) for g in groups)
+                if not valid:
+                    o['read_warnings'].append(dict(path=str(p/name), status='INCOMPLETE_STRICT_G5_LABELS'))
+                else:
+                    counts = [sum(g['strict_correctness']) for g in groups]
+                    mixed = sum(0 < n < 5 for n in counts)
+                    o[name].update(selected_mixed=mixed, selected_mixed_fraction=mixed/512,
+                        selected_all_wrong=counts.count(0), selected_all_correct=counts.count(5),
+                        quality_scope='actual selected strict-EM G5 labels; not held-out QA EM')
 ps = sorted((b/'artifacts/question-probe/completed').glob('*.json'), key=lambda p:p.stat().st_mtime)
 o['probe_commits'] = [{k:r.get(k) for k in ('stage','outer','head_update')} for p in ps[-3:] if (r := read(p))]
 o['pairs'] = {}
