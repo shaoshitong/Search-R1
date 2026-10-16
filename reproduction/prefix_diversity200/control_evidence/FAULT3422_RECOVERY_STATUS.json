@@ -1,0 +1,62 @@
+{
+  "created_utc": "2026-10-16T19:44:46.237607+00:00",
+  "run_id": "f3ee1435e5014ba1969387c91878893a",
+  "failed_job": "3422",
+  "failed_base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3",
+  "native_terminal_state": "FAILED",
+  "complete_outer": 52,
+  "actor_adam_per_rank": [
+    1040,
+    1040,
+    1040,
+    1040,
+    1040,
+    1040,
+    1040,
+    1040
+  ],
+  "probe_adam_per_rank": [
+    1040,
+    1040,
+    1040,
+    1040,
+    1040,
+    1040,
+    1040,
+    1040
+  ],
+  "failed_phase": "outer-000053-prefix",
+  "cause": "vLLM TCPStore initialization EADDRINUSE rank3, before model loading or sampling",
+  "native_failed_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/refresh-1792179484132318000-actual.json",
+  "fault_diagnostic": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/FAULT3422_DIAGNOSTIC.json",
+  "published_repair_commit": "1363513e0e4abdbd95e85c8969971a00596bd4db",
+  "independent_context_free_review": {
+    "agent": "/root/prefix_port_repair_review",
+    "result": "PASS after single-poll race correction",
+    "cpu_cases": [
+      "same rank and command, siblings only once",
+      "two replacements maximum including immediate nonzero exits",
+      "reject nonTCP/continue/old-attempt/model-loaded/errors",
+      "reject existing progress, shard, rank completion",
+      "restore completed52 pool snapshot; same53 indices; source bytes unchanged"
+    ]
+  },
+  "recovery": {
+    "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4",
+    "from_complete_outer": 52,
+    "next_outer": 53,
+    "recompute": "same unoptimized candidate53 prefix only; no actor/probe update rollback",
+    "terminal_proof": "pending successful remote readback",
+    "deployment": "NOT_ATTEMPTED",
+    "submission": "NOT_ATTEMPTED",
+    "reason": "management SSH handshake timeout/closed; unknown terminal capture creation outcome, query same canonical proof path before further mutation"
+  },
+  "cost": {
+    "last_generation_and_retrieval_verified_outer": 51,
+    "outer52_cost_pending": true,
+    "terminal_reservation_cost_pending": true,
+    "original_remote_logs_and_resource5s_retained": true
+  },
+  "goal_complete": false,
+  "goal_status": "active_fault_repair_not_user_pause"
+}
