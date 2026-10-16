@@ -127,7 +127,9 @@ def format_report(record, anchor, receipt_sha, anchor_sha):
             "Observer failed or timed out; preserve unknown")
     require(record.get("remote_mutations") is False, "Receipt is not read-only")
     actual = json.loads(record["stdout"])
-    require(actual.get("operator_contract") == "a800_actorhidden_prefix5_p10_bounded_scalar_observer_v1",
+    require(actual.get("operator_contract") in (
+                "a800_actorhidden_prefix5_p10_bounded_scalar_observer_v1",
+                "a800_p10_pending_probe_bounded_metadata_v1"),
             "Receipt is not the current P10 scalar observer")
     require(actual.get("metadata_only") is True and actual.get("models_or_tensors_read") is False,
             "Receipt is not metadata-only")

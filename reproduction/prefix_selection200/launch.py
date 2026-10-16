@@ -88,6 +88,62 @@ def reused_phase(base, root, phase, c):
     return True
 
 
+def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=None):
+    """Publish only an actual actor/probe/pool boundary, including repaired10."""
+    from .periodic import is_probe_update, probe_boundary
+    periodic_update = is_probe_update(outer)
+    if periodic_update:
+        probe_metrics = read(root/'probe-update/metrics.json')
+        updated = read(root/'probe-update/complete.json')
+        if (updated['status'] != 'UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE'
+                or updated['outer'] != outer or updated['run_id'] != c['run_id']
+                or updated['new_adam_steps_per_rank'] != PROBE_UPDATES
+                or updated['metrics_sha256'] != sha(root/'probe-update/metrics.json')):
+            raise RuntimeError('Periodic probe must actually finish its complete pass before joint commit')
+    else:
+        probe_metrics = read(root/'probe-frozen.json')
+    actor, probe = read(base/'actor/latest.json'), read(base/'probe/latest.json')
+    boundary = probe_boundary(outer)
+    if (actor['completed_outer'] != outer or actor['scheduler_completed_outer'] != outer
+            or actor['actual_adam_steps_per_rank'] != [20*outer]*WORLD
+            or probe['completed_outer'] != boundary['last_update_outer']
+            or probe['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD
+            or (periodic_update and updated['checkpoint'] != probe)):
+        raise RuntimeError('Actual actor/probe Adam boundaries differ from the completed outer')
+    pool = read(base/'question-pool/state.json')
+    if (pool['next_outer'] != outer+1 or pool['consumed_candidates'] != CANDIDATE_QUESTIONS*outer
+            or pool['cycle']*len(pool['order'])+pool['cursor'] != CANDIDATE_QUESTIONS*outer):
+        raise RuntimeError('Joint commit cannot advance beyond its actual reserved candidate pool')
+    snapshot = root/'pool-state-at-completion.json'
+    once(snapshot, pool)
+    probe_snapshot = root/'probe-state-at-completion.pt'
+    os.link(base/'probe/latest.pt', probe_snapshot)
+    complete = dict(run_id=c['run_id'], execution_id=c.get('execution_id'), outer=outer, actor=actor, probe=probe,
+        probe_snapshot=str(probe_snapshot), pool_snapshot=str(snapshot), pool_sha256=sha(snapshot),
+        selection_sha256=sha(actor_selection_path),
+        actor_selection_path=str(actor_selection_path), actor_selection_sha256=sha(actor_selection_path),
+        predicted_selection_sha256=sha(root/'probe-score/selection.json'),
+        actor_selection_outcome_labels_used=periodic_update, rollout=read(root/'full/complete.json'),
+        probe_metrics=probe_metrics, periodic_probe_update=periodic_update,
+        probe_boundary=boundary, source_commit=c['source_commit'], observed_unix=time.time())
+    complete['phase_timings'] = {key:value for key,value in timings.items()
+                                if key.startswith('outer-%06d-'%outer)}
+    if c.get('resume_pending_probe'):
+        parent = c['resume_pending_probe']
+        complete['source_lineage'] = dict(parent_source_commit=parent['source_commit'],
+            parent_execution_id=parent['source_execution_id'], parent_base=parent['source_base'],
+            inherited_complete_through=parent['completed_joint_outer'],
+            repaired_pending_outer=parent['pending_outer'],
+            qualification_proof_sha256=parent['qualification_proof_sha256'])
+    if recovery is not None:
+        complete['pending_probe_recovery'] = dict(recovery,
+            imported_actor_updates_reexecuted=0, native_rollouts_reexecuted=0,
+            joint_was_incomplete_before_this_probe=True, probe_update_reexecuted_before_writes_only=True)
+    once(root/'complete.json', complete)
+    publish(base/'latest-joint.json', complete)
+    return complete
+
+
 def run(base):
     from reproduction.prefix_only_correctness_ab.launch import torchrun_owned_class, DeferredInterrupt, birth_states
     from .pool import prepare
@@ -96,6 +152,18 @@ def run(base):
         raise ValueError('Submitted configuration changed')
     if (base / 'logs/process-ledger.json').exists():
         raise RuntimeError('Existing execution needs explicit recovery; do not replay its launch')
+    pending_recovery = c.get('resume_pending_probe')
+    if pending_recovery and c.get('resume_joint'):
+        raise ValueError('Complete-joint and committed-actor/pending-probe recovery are distinct boundaries')
+    outer = int(c.get('resume_joint', {}).get('completed_outer', 0))
+    # All CPU seals are checked before acquiring leases or admitting CUDA.  A
+    # failed import cannot leave a new allocation or a started child behind.
+    if pending_recovery:
+        from .pending_probe_resume import validate_imported_pending
+        outer = validate_imported_pending(base, c)
+    elif outer:
+        from .resume import validate_imported_boundary
+        validate_imported_boundary(base, c)
     lease = UUIDLocks(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])
     try:
         native_allocation(base, c)
@@ -119,11 +187,7 @@ def run(base):
         (base / name).mkdir(parents=True, exist_ok=True)
     python = str(Path(c['environment_root']) / 'bin/python')
     conf = str(base / 'preparation/launch-config.json')
-    outer = int(c.get('resume_joint', {}).get('completed_outer', 0))
     services = {}; success = False; timings = {}; actor_micro = c['actor_global_micro_batch_size']
-    if outer:
-        from .resume import validate_imported_boundary
-        validate_imported_boundary(base, c)
     if c.get('python_header_cpath'):
         env['CPATH'] = c['python_header_cpath']
 
@@ -174,7 +238,7 @@ def run(base):
                 raise TimeoutError('Own service did not become ready: ' + name)
             time.sleep(3)
 
-    previous_qa = Path(c.get('resume_joint', {}).get('source_base', str(base))) / 'logs/qa-pending.json'
+    previous_qa = Path((pending_recovery or c.get('resume_joint', {})).get('source_base', str(base))) / 'logs/qa-pending.json'
     pending_qa = read(previous_qa) if previous_qa.is_file() else {}
 
     def validation(ordinal, model, evaluation_config, output, name):
@@ -192,12 +256,39 @@ def run(base):
         return code
 
     try:
-        phase('probe-initialize-model-only', [python, '-m', 'reproduction.prefix_selection200.probe', 'initialize',
-            '--state-dir', str(base / 'probe'), '--source-checkpoint', c['probe_source_checkpoint'],
-            '--source-sha256', c['probe_source_sha256'], '--source-epoch', str(c['probe_source_epoch']),
-            '--source-model-kind', c['probe_source_model_kind'], '--run-id', c['run_id'],
-            '--test-cache', c['fixed_test_features'], '--test-manifest-sha', c['fixed_test_manifest_sha256']],
-            dict(env, CUDA_VISIBLE_DEVICES=''))
+        if pending_recovery:
+            # Actor10 has already returned all20 Adam writes and committed its
+            # complete optimizer/scheduler/four-rank RNG.  The failed probe
+            # wrote zero updates; reuse its exact sampling actor hidden/EM and
+            # diagnostic.  Do not reserve, generate, score, or run actor10 again.
+            outer = pending_recovery['pending_outer']
+            root = base/'outers'/('outer-%06d'%outer)
+            source_root = Path(pending_recovery['source_base'])/'outers'/root.name
+            diagnostic = read(source_root/'diagnostic-complete.json')
+            phase('outer-%06d-probe-update'%outer,
+                distributed('reproduction.prefix_selection200.probe', [
+                    'update', '--state-dir', str(base/'probe'),
+                    '--scored-features', str(source_root/'probe-score'),
+                    '--own-em', str(source_root/'full-pool/own-em.jsonl'),
+                    '--output', str(root/'probe-update'),
+                    '--own-em-sha256', read(source_root/'full-pool/complete.json')['own_em']['sha256'],
+                    '--outer', str(outer), '--model-dir', c['official_model_dir'],
+                    '--test-cache', diagnostic['scan_path'],
+                    '--test-manifest-sha', diagnostic['scan_sha256']]))
+            recovery = read(base/'preparation/resume-pending-probe-receipt.json')
+            commit_outer(base, c, outer, root, root/'probe-score/actual-em-selection.json',
+                         timings, recovery=recovery)
+            stage('RECOVERED_ACTOR_PROBE_POOL_JOINT_COMPLETE', complete_outer=outer,
+                  actor_adam_per_rank=20*outer,
+                  probe_adam_per_rank=read(base/'probe/latest.json')['actual_adam_steps_per_rank'][0],
+                  inherited_actor_updates_not_reexecuted=20)
+        else:
+            phase('probe-initialize-model-only', [python, '-m', 'reproduction.prefix_selection200.probe', 'initialize',
+                '--state-dir', str(base / 'probe'), '--source-checkpoint', c['probe_source_checkpoint'],
+                '--source-sha256', c['probe_source_sha256'], '--source-epoch', str(c['probe_source_epoch']),
+                '--source-model-kind', c['probe_source_model_kind'], '--run-id', c['run_id'],
+                '--test-cache', c['fixed_test_features'], '--test-manifest-sha', c['fixed_test_manifest_sha256']],
+                dict(env, CUDA_VISIBLE_DEVICES=''))
         stage('STARTING_AUX_TWO_SHARD_RETRIEVER_AND_FOUR_GROUNDING_REPLICAS')
         env_root = Path(c['environment_root'])
         libs = list((env_root / 'lib/python3.10/site-packages/nvidia').glob('*/lib'))
@@ -309,24 +400,8 @@ def run(base):
                     new_adam_steps_per_rank=0,actual_adam_steps_per_rank=[probe_boundary(outer)['actual_adam_per_rank']]*WORLD,
                     last_update_outer=probe_boundary(outer)['last_update_outer'])
                 once(root/'probe-frozen.json',probe_metrics)
-            actor, probe = read(base / 'actor/latest.json'), read(base / 'probe/latest.json')
-            if actor['actual_adam_steps_per_rank'] != [20 * outer] * WORLD or probe['actual_adam_steps_per_rank'] != [probe_boundary(outer)['actual_adam_per_rank']] * WORLD:
-                raise RuntimeError('Actual actor/probe Adam boundaries differ from the completed outer')
-            snapshot = root / 'pool-state-at-completion.json'
-            once(snapshot, read(base / 'question-pool/state.json'))
-            probe_snapshot = root / 'probe-state-at-completion.pt'
-            os.link(base / 'probe/latest.pt', probe_snapshot)
-            complete = dict(run_id=c['run_id'], outer=outer, actor=actor, probe=probe,
-                probe_snapshot=str(probe_snapshot), pool_snapshot=str(snapshot), pool_sha256=sha(snapshot),
-                selection_sha256=sha(actor_selection_path),
-                actor_selection_path=str(actor_selection_path),actor_selection_sha256=sha(actor_selection_path),
-                predicted_selection_sha256=sha(root / 'probe-score/selection.json'),
-                actor_selection_outcome_labels_used=periodic_update,rollout=read(root / 'full/complete.json'),
-                probe_metrics=probe_metrics, periodic_probe_update=periodic_update,
-                probe_boundary=probe_boundary(outer), source_commit=c['source_commit'], observed_unix=time.time())
-            complete['phase_timings'] = {key: value for key,value in timings.items() if key.startswith('outer-%06d-' % outer)}
-            once(root / 'complete.json', complete)
-            publish(base / 'latest-joint.json', complete)
+            complete = commit_outer(base, c, outer, root, actor_selection_path, timings)
+            actor, probe = complete['actor'], complete['probe']
             stage('OUTER_JOINT_COMPLETE', complete_outer=outer, actor_adam_per_rank=20 * outer,
                   probe_adam_per_rank=probe_boundary(outer)['actual_adam_per_rank'])
             # The evaluation module retains the earlier confirmed legacy QA protocol.

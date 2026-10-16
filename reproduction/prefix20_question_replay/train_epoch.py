@@ -105,9 +105,9 @@ def validate_replay_checkpoint(saved, receipt, binding, iteration, source_steps)
 
 
 def group_predictions(predictions, index, expected_questions):
-    """Preserve own-G5 identity for either a complete train or fixed test pass."""
-    if expected_questions not in (512, 5120) or len(index) != expected_questions * 5:
-        raise ValueError('Require the complete512 test or5120 train G5 identity index')
+    """Preserve own-G5 identity for a complete diagnostic or candidate-pool pass."""
+    if expected_questions not in (512, 2560, 5120) or len(index) != expected_questions * 5:
+        raise ValueError('Require the complete512 diagnostic,2560 candidate, or5120 retained-train G5 identity index')
     if (len(predictions) != len(index) or len({r[0] for r in predictions}) != len(index)
             or {r[0] for r in predictions} != set(index)):
         raise ValueError('Duplicate, missing, or unexpected diagnostic trajectory IDs')
