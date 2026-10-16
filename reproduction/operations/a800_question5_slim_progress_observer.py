@@ -47,6 +47,75 @@ def identity(value,rank):
  result['alive']=alive(dict(pid=value['pid'],start_ticks=value['birth'],sid=value['sid'],uid=value['uid'])) if type(value.get('birth')) is int else None
  return result
 
+# CPU preparation seals contain no feature tensors. Aggregate source scans;
+# the final verification's large per-source array inventory stays on the host.
+plan,_plan_proof=document('preparation/source-plan.json')
+archive_plan=plan.get('reference_archive',plan.get('prepared_reference_archive',{}))
+extractions=[]
+for directory in ('reference','reference5'):
+ value,proof=document(directory+'/EXTRACTION-COMPLETE.json')
+ if value is not None:
+  if archive_plan.get('concatenated_sha256') is not None:
+   assert value['archive_sha256']==archive_plan['concatenated_sha256']
+  safe={key:value.get(key) for key in ('archive_sha256','source_archive_sha256','internal_manifest_sha256',
+   'all_members_verified','files_verified','train_trajectories','test_trajectories','full_responses_extracted',
+   'weights_extracted','no_original_large_archive_transfer')}
+  extractions.append(dict(proof,value=safe))
+sources=b/'data/sources'
+scan_summary=None
+if sources.exists():
+ assert sources.resolve()==sources and sources.is_dir() and sources.stat().st_uid==os.getuid()
+ directories=sorted(q for q in sources.iterdir() if q.is_dir())
+ assert len(directories)<=512,'Unexpected source directory inventory'
+ seals=[];unsealed=[];split_counts={'train':0,'test':0};by_kind={};last=[]
+ for directory in directories:
+  name=directory.name
+  assert re.fullmatch(r'(?:h100-epoch-\d{4}|a800-chunk-\d{4}|fixed-test)',name),'Unknown source directory'
+  assert directory.resolve()==directory and directory.stat().st_uid==os.getuid()
+  scan,proof=document(str((directory/'scan-complete.json').relative_to(b)))
+  if scan is None:unsealed.append(name);continue
+  count=scan['count'];counts=scan['split_counts']
+  assert type(count) is int and count>=0 and count%5==0
+  assert set(counts)=={'train','test'} and all(type(n) is int and n>=0 and n%5==0 for n in counts.values())
+  assert sum(counts.values())==count
+  for split in split_counts:split_counts[split]+=counts[split]
+  kind='reference_train' if name.startswith('h100-') else ('a800_train' if name.startswith('a800-') else 'fixed_test')
+  summary=by_kind.setdefault(kind,dict(sealed_sources=0,trajectories=0))
+  summary['sealed_sources']+=1;summary['trajectories']+=count
+  seals.append(dict(source=name,sha256=proof['sha256']))
+  last.append((directory.joinpath('scan-complete.json').stat().st_mtime_ns,name))
+ scan_summary=dict(source_directories=len(directories),sealed_source_directories=len(seals),
+  unsealed_source_directories=len(unsealed),latest_sealed_source_names=[name for _mtime,name in sorted(last)[-6:]],
+  unsealed_source_names=unsealed[-6:],sealed_trajectory_counts_by_split=split_counts if seals else None,
+  sealed_group_counts_by_split={key:n//5 for key,n in split_counts.items()} if seals else None,
+  sealed_trajectories=sum(split_counts.values()) if seals else None,
+  sealed_groups=sum(split_counts.values())//5 if seals else None,sealed_counts_by_source_kind=by_kind if seals else None,
+  source_scan_seals_sha256=hashlib.sha256(canonical(seals)).hexdigest() if seals else None,
+  latest_seal_mtime_ns=max(mtime for mtime,_name in last) if last else None)
+composite,composite_proof=document('data/composite-manifest.json')
+composite_summary=None
+if composite is not None:
+ assert composite['source_plan_path']==str(b/'preparation/source-plan.json') and composite['source_plan_sha256']==h['source_plan_sha256']
+ assert composite['role']=='unified_question_policy5_complete_event_dataset' and composite['prefix_tokens']==5
+ composite_summary=dict(composite_proof,value=project(composite,('role','prefix_tokens','encoder_revision','question_max_tokens',
+  'expected_train_groups','expected_test_groups','total_trajectory_events','source_plan_sha256',
+  'identical_original_teacher_in_both_archives_counted_once','original_g5_sampling_events_preserved','new_rollouts','new_em_scoring')),
+  source_count=len(composite['sources']))
+prepared,prepared_proof=document('data/PREPARE-COMPLETE.json')
+prepared_summary=None
+if prepared is not None:
+ assert prepared['stage']=='PINNED_PREFIX5_COMPOSITE_PREPARED'
+ assert composite_proof is not None and prepared['composite_manifest_sha256']==composite_proof['sha256']
+ verification=prepared['verification'];assert verification['manifest_sha256']==composite_proof['sha256']
+ prepared_summary=dict(prepared_proof,value=project(prepared,('stage','composite_manifest_sha256','train_groups','train_trajectories',
+  'test_groups','test_trajectories','new_rollouts','new_em_scoring','gpu_used','finished_unix')),
+  verification=project(verification,('manifest_sha256','split','accepted_event_groups','exact_duplicate_trajectories_removed',
+   'fixed_test_qid_and_normalized_text_disjoint','prefix_tokens','prefix_window_unified_to_five','full_file_sha_verified',
+   'retained_row_payloads_verified')),verified_source_count=len(verification['source_summaries']))
+ v['metadata']['data/PREPARE-COMPLETE.json']=prepared_summary
+cpu_prepare=dict(extractions=extractions if extractions else None,source_scans=scan_summary,
+ composite_manifest=composite_summary,complete=prepared_summary)
+
 # Cache records bind to this deployment's generated data manifest and exact
 # published cache/data/encoder source, rather than carrying fabricated run IDs.
 data_path=b/'data/composite-manifest.json'
@@ -166,7 +235,7 @@ if complete is not None:
 
 # Retain the original guarded controller observation, but replace its cross-
 # execution glob with the exact current execution's four typed rank records.
-v.update(stage='QUESTION5_SLIM_ACTUAL_PROGRESS_METADATA_OBSERVATION',base=str(b),cache_workers=cache_workers,
+v.update(stage='QUESTION5_SLIM_ACTUAL_PROGRESS_METADATA_OBSERVATION',base=str(b),cpu_prepare=cpu_prepare,cache_workers=cache_workers,
  cache_manifest=cache_summary,rank_progress=ranks,rank_errors=typed_errors,rank_exits=typed_exits,first_epoch=first_epoch,
  observer_source_sha256=p['observer_source_sha256'],controller_source_sha256=p['controller_source_sha256'],
  missing_metadata_semantics='unknown_not_zero',checkpoint_tensors_read=False,feature_tensors_read=False,
@@ -195,7 +264,10 @@ def main():
     spec.loader.exec_module(control)
     if control.OBSERVE.count(EMIT) != 1:
         raise ValueError('Published observation emission contract changed')
-    code = control.OBSERVE.replace(EMIT, EXTRA + '\n' + EMIT)
+    # Its complete proof grows with259 sources; project it under the explicit
+    # 64MiB metadata cap instead of inheriting the old256KiB/full-output read.
+    inherited = control.OBSERVE.replace("'data/PREPARE-COMPLETE.json',", '', 1)
+    code = inherited.replace(EMIT, EXTRA + '\n' + EMIT)
     observer_sha = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     payload = dict(handle=handle, observer_source_sha256=observer_sha, controller_source_sha256=controller_sha)
     started = time.time()
