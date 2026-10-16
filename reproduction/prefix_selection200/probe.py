@@ -731,7 +731,9 @@ def update(args):
                 diagnostic_semantics='same_post_update_head_complete_selected512G5_and_fixed512G5',
                 step_loss_semantics='different_natural_batches_before_their_own_update_no_monotonic_claim',
                 global_step_loss_curve=summarize_loss_curve(global_curve),
-                selected_features_reencoded=False, actor_version=m['actor_version'], checkpoint=result)
+                selected_features_reencoded=False, actor_version=m['actor_version'], checkpoint=result,
+                scored_features_manifest_sha256=features.manifest_sha,
+                own_em_sha256=sha(own_path), selection_sha256=m['selection_sha256'])
             once(out / 'metrics.json', metrics)
             for split, rows in (('train', train_rows), ('test', test_rows)):
                 with (out / (split+'-group-predictions.jsonl')).open('x') as handle:
