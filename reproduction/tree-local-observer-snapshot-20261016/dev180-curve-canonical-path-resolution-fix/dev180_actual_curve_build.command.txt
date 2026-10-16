@@ -1,0 +1,236 @@
+# Future source template only. Do not invoke before actual180 FULL/native/CUM/COST,
+# unique source1ed collector/owner and ROOT_DEV180 success are SHA/byte bound.
+# Adapted from dev175_actual_curve_build.command.txt, 38075B,
+# SHA256 04d783b1057595743cc118d5d623d952df70d341e109805b34630a66ff37c800.
+# Run from the original workspace; all three variables are future actual readbacks.
+# Input JSON: schema=dev180_actual_curve_build_input_pins_v1, through_outer=180,
+# source_pins mapping exactly ROOT_DEV180_NATIVE_COST_ACTUAL_READBACK.json and
+# FULL_OUTER{176..180}_PROGRESS_RECEIPT.json, NATIVE_HISTORY_{176..180}_METADATA_READBACK.json,
+# CUMULATIVE_COST_THROUGH{176..180}.json to {path,bytes,sha256}.
+# Each FULL is the original first qualifying immutable receipt for its own outer.
+# The input manifest itself is local, below this workspace, and SHA/byte pinned.
+# The script imports only fixed published decoding functions; no collector main,
+# SSH, training, evaluation, test, review, canonical writes or ROOT_FULL180 input.
+# Future outputs: curve JSON/CSV/publication/immutable cost binding only.
+# After this command, invoke root_curve180_actual_readback.py with its separate
+# actual manifest; then root runs original finalizer180, alias180, canonical180,
+# original cold-load5 helper LAST, and only then ROOT_FULL180.
+python3 -B - "${ACTUAL_CURVE180_BUILD_PINS:?future actual build pins required}" "${ACTUAL_CURVE180_BUILD_PINS_BYTES:?future actual pin bytes required}" "${ACTUAL_CURVE180_BUILD_PINS_SHA256:?future actual pin SHA256 required}" <<'PY'
+from pathlib import Path
+from datetime import datetime,timezone
+import copy,csv,hashlib,importlib.util,io,json,sys,time
+b=Path('outputs/tree-nested-branch-handoff-20261013').resolve();previous=175;through=180
+names=[f'LEARNING_CURVE_COMPLETE_THROUGH{through}.json',f'LEARNING_CURVE_COMPLETE_THROUGH{through}.csv',f'LEARNING_CURVE_THROUGH{through}_LOCAL_PUBLICATION.json',f'LEARNING_CURVE_THROUGH{through}_COST_SUPPLEMENT_BINDING.json']
+def digest(raw):return hashlib.sha256(raw).hexdigest()
+def encode(value):return (json.dumps(value,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode()
+w=Path.cwd().resolve();inputs={}
+if not __debug__:raise RuntimeError('Required actual input gates cannot be disabled with -O')
+def pin(path):
+ p=locate(path)
+ if not (p.is_relative_to(w) or any(p.is_relative_to(m) for m in expected_mirrors)) or p.suffix not in ('.json','.csv','.md','.py','.txt','.yaml','.yml','.sh','.patch'):raise ValueError('Local metadata source path differs: '+str(p))
+ raw=p.read_bytes()
+ if not 0<len(raw)<4000000:raise ValueError('Small metadata source budget differs')
+ ref=dict(path=str(p),bytes=len(raw),sha256=digest(raw));mirrored=p.is_relative_to(b) and not p.name.startswith(('NATIVE5_CONTINUE_POLL_','NATIVE5_CONTINUE_RESOURCE_'))
+ if str(p) in inputs and inputs[str(p)][0]!=raw:raise ValueError('Immutable input changed: '+str(p))
+ if mirrored:
+  for m in expected_mirrors:
+   if (m/p.relative_to(b)).read_bytes()!=raw:raise ValueError('Actual source mirror bytes differ: '+str(p))
+ inputs[str(p)]=(raw,ref,mirrored)
+ return ref
+def bound(path,expected):
+ actual=pin(path)
+ if type(expected.get('bytes')) is not int or not isinstance(expected.get('sha256'),str) or not re_sha(expected['sha256']):raise ValueError('Actual SHA/byte pin required')
+ if any(actual[k]!=expected[k] for k in ['bytes','sha256']):raise ValueError('Actual immutable pin differs: '+str(path))
+ if expected.get('path') is not None:
+  original=locate(expected['path']);observed=Path(actual['path'])
+  if original!=observed and not (original.is_relative_to(b) and any(observed==m/original.relative_to(b) for m in expected_mirrors)):raise ValueError('Explicit input pin path differs: '+str(path))
+ return actual
+def re_sha(value):return len(value)==64 and all(c in '0123456789abcdef' for c in value)
+def locate(name):
+ p=Path(name)
+ if not p.parts or '..' in p.parts:raise ValueError('Local input reference required')
+ return (p if p.is_absolute() else w/p if p.parts[0] in ('outputs','work') else b/p).resolve(strict=True)
+expected_mirrors=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+manifest_path=locate(sys.argv[1]);manifest_ref=bound(manifest_path,dict(bytes=int(sys.argv[2]),sha256=sys.argv[3]));manifest=json.loads(manifest_path.read_bytes())
+if manifest.get('schema')!='dev180_actual_curve_build_input_pins_v1' or manifest.get('through_outer')!=180:raise ValueError('Future actual180 build input manifest differs')
+required={'ROOT_DEV180_NATIVE_COST_ACTUAL_READBACK.json'}|{f'FULL_OUTER{o}_PROGRESS_RECEIPT.json' for o in range(176,181)}|{f'NATIVE_HISTORY_{o}_METADATA_READBACK.json' for o in range(176,181)}|{f'CUMULATIVE_COST_THROUGH{o}.json' for o in range(176,181)}
+future_pins=manifest['source_pins']
+if set(future_pins)!=required:raise ValueError('Every original176..180 FULL/native/CUM pin is required')
+for n,ref in future_pins.items():bound(n,ref)
+
+gate_name=f'ROOT_DEV{through}_NATIVE_COST_ACTUAL_READBACK.json';gate_ref=bound(gate_name,future_pins[gate_name]);gate=json.loads((b/gate_name).read_bytes())
+if gate['status']!='PASS_ACTUAL_DEV180_LOCAL_ARTIFACT_READBACK' or gate['outer']!=through or gate['inconsistencies']:raise ValueError('Actual ROOT_DEV180 gate differs')
+for n,reference in gate['source_pins'].items():bound(n,reference)
+old_name=f'LEARNING_CURVE_COMPLETE_THROUGH{previous}.json';old_raw=(b/old_name).read_bytes();old_text=old_raw.decode();old=json.loads(old_raw)
+old_csv_name=f'LEARNING_CURVE_COMPLETE_THROUGH{previous}.csv';old_csv=(b/old_csv_name).read_bytes()
+if len(old_raw)!=1042499 or digest(old_raw)!='614a920247038d147f499ecb83dfac9c47c6dd8b4ccf90ed6eb315cb51e66bd4' or len(old_csv)!=188250 or digest(old_csv)!='5e6cf3a9094d2f57f02ef474041d496bd8218527ecbb95b5440ab17ab11706f5':raise ValueError('Prior175 curve/prefix pin differs')
+cum_name=f'CUMULATIVE_COST_THROUGH{through}.json';cum=json.loads((b/cum_name).read_bytes());mirrors=[Path(p) for p in cum['mirrors']];roots=[b]+mirrors
+if cum['through_effective_outer']!=through or mirrors!=expected_mirrors:raise ValueError('Actual boundary or mirror roots differ')
+for root in roots:
+ for name in names:
+  if (root/name).exists():raise ValueError('New immutable product already exists: '+str(root/name))
+prior_names=[old_name,old_csv_name,f'LEARNING_CURVE_THROUGH{previous}_LOCAL_PUBLICATION.json',f'LEARNING_CURVE_THROUGH{previous}_COST_SUPPLEMENT_BINDING.json',f'ROOT_CURVE_DEV_COST_THROUGH{previous}_ACTUAL_READBACK.json',f'CUMULATIVE_COST_THROUGH{previous}.json',f'DEV5_{previous}_NATIVE_COST_SUPPLEMENT.json']
+known175={
+ f'LEARNING_CURVE_COMPLETE_THROUGH{previous}.json':(1042499,'614a920247038d147f499ecb83dfac9c47c6dd8b4ccf90ed6eb315cb51e66bd4'),
+ f'LEARNING_CURVE_COMPLETE_THROUGH{previous}.csv':(188250,'5e6cf3a9094d2f57f02ef474041d496bd8218527ecbb95b5440ab17ab11706f5'),
+ f'LEARNING_CURVE_THROUGH{previous}_LOCAL_PUBLICATION.json':(30588,'e5da080a4cfc35e2f0995b13b6e716b7ae1b88f26e32fe2de2b87b010c9e4578'),
+ f'LEARNING_CURVE_THROUGH{previous}_COST_SUPPLEMENT_BINDING.json':(29169,'6ecedca934d45e2d511fac04aad9ceba84a2aaaba36caea7bfac0760953fa463'),
+ f'ROOT_CURVE_DEV_COST_THROUGH{previous}_ACTUAL_READBACK.json':(27002,'917a60a217a5db71a614f575e8309a4dd319049af9795a9c7e46af97068db0a7'),
+ f'CUMULATIVE_COST_THROUGH{previous}.json':(78855,'4c5c51c838d88b1465bff159e2317b35300fcfd26c9c084fa3c7797df4f47cd5'),
+ f'DEV5_{previous}_NATIVE_COST_SUPPLEMENT.json':(7077,'3d4553f6bf764d9c90301c95656568f73fb4e20867611914dbea663b2fd9da89')}
+prior_pins={n:bound(n,dict(bytes=known175[n][0],sha256=known175[n][1])) for n in prior_names}
+for n in prior_names+[gate_name]:
+ raw=(b/n).read_bytes()
+ if any((m/n).read_bytes()!=raw for m in mirrors):raise ValueError('Main prior/gate result mirror differs: '+n)
+executor_name=f'DEV5_{through}_NATIVE_COST_LOCAL_RECEIPT.json';executor=json.loads((b/executor_name).read_bytes());
+if executor['outer']!=180 or executor['remote_collector_exit_code']!=0 or executor['new_entry_main_invocations_this_task']!=1 or executor['actual_remote_incremental_collection_invocations']!=1 or executor['preceding_local_pending_invocations']!=0 or executor['preceding_pending_remote_operations'] is not False or executor['same_entry_executor_attested_cumulative_main_invocations']!=5 or executor['same_entry_executor_attested_cumulative_remote_incremental_invocations']!=5 or executor['same_entry_prior_confirmed_main_invocations']!=4 or executor['same_entry_prior_confirmed_remote_incremental_invocations']!=4:raise ValueError('Actual unique180 collector execution / source-bound cumulative5 differs')
+helper_path=Path(executor['collector_source']['path']);helper_ref=bound(helper_path,dict(bytes=27911,sha256='545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0'));helper_ref['source_commit']=executor['collector_source_commit']
+spec=importlib.util.spec_from_file_location('curve180_existing_published_decoder',helper_path);decoder=importlib.util.module_from_spec(spec);spec.loader.exec_module(decoder)
+old_dev_name=f'DEV5_{previous}_NATIVE_COST_SUPPLEMENT.json';new_dev_name=f'DEV5_{through}_NATIVE_COST_SUPPLEMENT.json'
+old_dev=json.loads(decoder.read_bound(b,mirrors,dict(path=old_dev_name,bytes=prior_pins[old_dev_name]['bytes'],sha256=prior_pins[old_dev_name]['sha256'])));new_dev=json.loads(decoder.read_bound(b,mirrors,dict(gate['source_pins'][new_dev_name],path=new_dev_name)))
+old_rows=decoder.rows_from_summary(b,mirrors,old_dev);rows=decoder.rows_from_summary(b,mirrors,new_dev)
+prior_dev_parts=[bound(r['file'],r) for r in old_dev['rows']['parts']]
+prior_owner_ref=bound(f'DEV5_{previous}_NATIVE_COST_LOCAL_RECEIPT.json',dict(bytes=45913,sha256='0a4d8efde8ec9ee513704e5bca6e34fd2d50ebc589657a5ed1497fa13f2768d6'))
+prior_owner=json.loads(Path(prior_owner_ref['path']).read_bytes())
+if prior_dev_parts!=[bound(r['path'],r) for r in prior_owner['rows_part_refs']]:raise ValueError('Every original immutable175 DEV row part must be preserved')
+if len(old_rows)!=35 or len(rows)!=36 or rows[:len(old_rows)]!=old_rows or [r['outer'] for r in rows]!=list(range(5,through+1,5)):raise ValueError('Actual complete DEV180 coverage or prior35 rows differ')
+controls=[]
+for row in rows:
+ saved=row['local_original_summary'];raw=decoder.read_bound(b,mirrors,saved);value=json.loads(raw)
+ if digest(raw)!=row['source_control_summary']['sha256'] or len(raw)!=row['source_control_summary']['bytes'] or value['ledger_sha256']!=row['ledger_sha256'] or value['actual_completed_outer']!=row['outer']:raise ValueError('Actual original control file/ledger identity differs')
+ controls.append(pin(saved['path']))
+parts=[];part_counts={}
+def complete_field(value,field):
+ if isinstance(value,dict) and value.get('storage')=='complete_original_field_parts':
+  kind=value['container_type']
+  if kind not in ('list','mapping') or not value['parts']:raise ValueError('CUM descriptor container/parts differ')
+  assembled=[] if kind=='list' else {};seen=set()
+  for reference in value['parts']:
+   if reference['file'] in seen:raise ValueError('Duplicate complete CUM part')
+   seen.add(reference['file']);raw=decoder.read_bound(b,mirrors,reference);item=json.loads(raw)
+   if reference.get('json_selector')!='value' or item.get('schema')!='cumulative_scalar_field_part_v1' or item.get('original_field')!=field or not isinstance(item['value'],list if kind=='list' else dict):raise ValueError('CUM selector/schema/field/type differs')
+   if isinstance(assembled,list):assembled.extend(item['value'])
+   else:
+    if set(assembled)&set(item['value']):raise ValueError('Duplicate CUM mapping entry')
+    assembled.update(item['value'])
+   parts.append(dict(field=field,**pin(reference['file']),json_selector='value'))
+  if len(assembled)!=value['original_entries']:raise ValueError('Complete original CUM field count differs')
+  part_counts[field]=dict(entries=len(assembled),parts=len(value['parts']),container_type=kind)
+  return complete_field(assembled,field)
+ if isinstance(value,dict):return {k:complete_field(v,field+'.'+k) for k,v in value.items()}
+ if isinstance(value,list):return [complete_field(v,field+'['+str(i)+']') for i,v in enumerate(value)]
+ return value
+expanded_cum={field:complete_field(value,field) for field,value in cum.items()}
+if [r['outer'] for r in expanded_cum['rows_counted_once']]!=list(range(1,181)) or len({r['row_id'] for r in expanded_cum['rows_counted_once']})!=180 or expanded_cum['dev_phase_already_in_outer_wall'] is not True:raise ValueError('Actual cumulative counted-once180 boundary differs')
+cum_dev=decoder.cumulative_dev_evaluations(b,mirrors,cum)
+if [x['outer'] for x in cum_dev]!=list(range(5,through+1,5)):raise ValueError('Actual CUM completed-dev coverage differs')
+dev_parts=[dict(**pin(r['file']),json_selector=r['json_selector']) for r in new_dev['rows'].get('parts',[])] if isinstance(new_dev['rows'],dict) else []
+cost_name=f'COST_OUTER{through}_LOCAL_RECEIPT.json';cost=json.loads((b/cost_name).read_bytes());cost_refs=[]
+for reference in cost['mirrored_artifacts'].values():decoder.read_bound(b,mirrors,reference);cost_refs.append(pin(reference['path']))
+if len(cost_refs)!=cost['mirrored_artifact_count'] or len(cost_refs)!=gate['actual_ref_counts']['cost_mirrored_artifacts'] or len(parts)!=gate['actual_ref_counts']['cum_parts']:raise ValueError('Actual COST artifact reference count differs')
+source='778b2b43dad90fc0c1c5d95d77c2326286011b73';config='355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3'
+variance_fields=dict(raw_within_tree_reward_population_variance='tree_variance/within_root_raw_reward_population_variance',raw_group_reward_population_variance='tree_variance/group_raw_reward_population_variance',pure_intra_adv_population_variance='tree_variance/intra_adv_population_variance',total_actual_adv_population_variance='tree_variance/group_actual_adv_population_variance')
+scalar_fields=dict(variance_fields,training_reward_mean='critic/rewards/mean',training_score_mean='critic/score/mean',mixed_reward_question_fraction='tree_variance/mixed_reward_question_fraction',same_reward_question_fraction='tree_variance/same_reward_question_fraction',mixed_reward_tree_fraction='tree_variance/mixed_reward_tree_fraction',same_reward_tree_fraction='tree_variance/same_reward_tree_fraction',generation_wall_seconds='timing_s/gen')
+points=[];observations=[];fulls={};polls={}
+for outer in range(previous+1,through+1):
+ full_name=f'FULL_OUTER{outer}_PROGRESS_RECEIPT.json';full=json.loads((b/full_name).read_bytes());fulls[outer]=full;full_ref=pin(full_name)
+ poll_binding=full['input_bindings']['poll'];poll_path=locate(poll_binding['path']);poll_name=poll_path.name
+ if poll_path.parent!=b or not poll_name.startswith('NATIVE5_CONTINUE_POLL_') or locate(full['source_poll'])!=poll_path:raise ValueError('Each outer requires its own first FULL input_bindings actual poll')
+ poll_ref=bound(poll_path,poll_binding);poll=json.loads(poll_path.read_bytes());polls[outer]=poll
+ native_name=f'NATIVE_HISTORY_{outer}_METADATA_READBACK.json';native=json.loads((b/native_name).read_bytes());native_ref=pin(native_name)
+ if full['completed_outer']!=outer or full['source_commit']!=source or full['config_sha256']!=config or full['actual_training_pid']!=503255 or full['actual_training_invocation_id']!='a313bda919834d24b4c5d491698d39ce' or full['actual_next_outer_entered']<outer+1:raise ValueError('Actual immutable FULL identity/progress differs')
+ bound(native_name,full['input_bindings']['native_readback'])
+ if len([m for m in poll['iteration_metrics'] if m['step']==outer])!=1:raise ValueError('Actual own-outer metric must occur once in its original poll')
+ if full['source_poll_sha256']!=poll_ref['sha256'] or full['native_metadata_readback_sha256']!=native_ref['sha256'] or native['outer']!=outer or not native['archive_matches_original_manifest'] or poll['progress'].get('errors'):raise ValueError('Actual FULL source binding differs')
+ metric=next(m for m in poll['iteration_metrics'] if m['step']==outer)
+ if metric!=full['iteration_metrics']:raise ValueError('Actual original source metric differs')
+ ranks=[r for r in poll['last_rank_summaries'] if r['outer_step']==outer]
+ if sorted(r['rank'] for r in ranks)!=list(range(8)):raise ValueError('Actual rank metric coverage differs')
+ point={k:None for k in old['training_points'][-1]};point.update(outer=outer,source_commit=source,config_sha256=config,run_directory=full['run'])
+ for k,selector in scalar_fields.items():point[k]=metric.get(selector)
+ point.update(actual_outer_adam_calls_per_rank=copy.deepcopy(full['actual_outer_successful_writes_per_rank']),actual_cumulative_adam_calls_per_rank=copy.deepcopy(full['per_rank_actual_total_adam']),actual_outer_skipped_opportunities_per_rank=copy.deepcopy(full['actual_outer_skipped_opportunities_per_rank']),actual_outer_processed_opportunities_per_rank=copy.deepcopy(full['actual_outer_processed_opportunities_per_rank']),guard_skip=full.get('guard_skip'),recorded_finite_grad_norm_counts_per_rank={str(r['rank']):r.get('finite_grad_norms') for r in ranks},recorded_nonzero_grad_norm_counts_per_rank={str(r['rank']):r.get('nonzero_grad_norms') for r in ranks},recorded_local_shard_delta_counts_per_rank={str(r['rank']):{k:r['local_shard_sample_delta'].get(k) for k in ['count','finite','nonzero']} for r in ranks},step_wall_seconds=full['full_outer_wall_seconds'],normal_dev_testing_seconds=full['normal_dev512_wall_seconds'],training_archive_wall_seconds_excluding_current_dev=full['training_archive_wall_seconds_excluding_current_dev'],archive_time_origin='source_receipt',source_receipt=full_name,source_receipt_sha256=full_ref['sha256'],source_poll=full['source_poll'],source_poll_sha256=poll_ref['sha256'],input_summary=full_name,input_summary_sha256=full_ref['sha256'],cumulative_cost_source=pin(f'CUMULATIVE_COST_THROUGH{outer}.json'),source_metric_file=full['source_poll'],source_metric_file_sha256=poll_ref['sha256'],source_metric_selector=f'iteration_metrics[step={outer}]',source_rank_summary_file=full['source_poll'],source_rank_summary_file_sha256=poll_ref['sha256'],source_rank_summary_selector='last_rank_summaries',evidence_mode='ORIGINAL_LIVE_POLL',original_metric_line_sha256=None)
+ dev=full['actual_dev512']
+ if dev is not None:
+  if outer!=through:raise ValueError('Unexpected current DEV on nonboundary point')
+  point['current_outer_completed_dev512']=dict(rows=dev['rows'],f1=dev['metrics']['val/f1/all'],em=dev['metrics']['val/em/all'],ledger_sha256=dev['ledger_sha256'])
+ points.append(point);observations.append(dict(outer=outer,source_receipt=full_ref,source_poll=poll_ref,source_native_metadata=native_ref,source_cumulative_cost=point['cumulative_cost_source'],actual_poll_observed_epoch=poll['epoch'],metric_selector=f'iteration_metrics[step={outer}]',source_poll_storage_scope='BASE original actual raw source only; no raw poll mirror claim.',scope='Original scalar in this actual source snapshot; no continuous coverage or manufactured earlier poll claimed.'))
+full=fulls[through];actual=full['actual_dev512'];metrics=actual['metrics'];last=rows[-1];full_ref=pin(f'FULL_OUTER{through}_PROGRESS_RECEIPT.json')
+if actual!=next(x for x in polls[through]['development'] if x['outer']==through) or actual['status']!='VALIDATION_COST_COMPLETE' or actual['rows']!=512 or metrics['val/qa_count/nq']!=256 or metrics['val/qa_count/hotpotqa']!=256 or cum_dev[-1]['F1']!=metrics['val/f1/all'] or cum_dev[-1]['EM']!=metrics['val/em/all'] or cum_dev[-1]['ledger_sha256']!=actual['ledger_sha256'] or last['ledger_sha256']!=actual['ledger_sha256']:raise ValueError('Actual current DEV/CUM/control identity differs')
+dev_point={k:None for k in old['completed_dev512_points'][-1]};dev_point.update(outer=through,source_commit=source,run_directory=full['run'],source_receipt=f'FULL_OUTER{through}_PROGRESS_RECEIPT.json',source_receipt_sha256=full_ref['sha256'],source_original_dev_summary=full['source_poll'],source_original_dev_summary_sha256=full['source_poll_sha256'],status=actual['status'],rows=actual['rows'],phase=actual['phase'],f1=metrics['val/f1/all'],em=metrics['val/em/all'],nq_f1=metrics['val/f1/nq'],nq_em=metrics['val/em/nq'],hotpotqa_f1=metrics['val/f1/hotpotqa'],hotpotqa_em=metrics['val/em/hotpotqa'],ledger_path=actual['path'],ledger_sha256=actual['ledger_sha256'],normal_dev_testing_wall_seconds=full['normal_dev512_wall_seconds'],source_original_dev_selector=f'development[outer={through}]',evidence_mode='ORIGINAL_LIVE_POLL')
+control=dict(outer=through,ledger_path=actual['path'],ledger_sha256=actual['ledger_sha256'],source_control_summary=last['source_control_summary'],local_original_summary=pin(last['local_original_summary']['path']),control_summary_SHA_and_inner_ledger_SHA_are_separate=True,actual_completed_dev_controls=len(rows),prior35_control_rows_preserved=True,scope='Metadata provenance binding only; no supplemental wall/CPU/counter totals added.')
+dev_refs={n:pin(n) for n in [new_dev_name,f'dev_native_cost_summaries/DEV_OUTER{through:04d}_SUMMARY.json',executor_name,gate_name]}
+json_decoder=json.JSONDecoder()
+def root_values(text):
+ result={};i=1
+ while True:
+  while text[i].isspace() or text[i]==',':i+=1
+  if text[i]=='}':return result
+  key,i=json_decoder.raw_decode(text,i)
+  while text[i].isspace():i+=1
+  if text[i]!=':':raise ValueError('Original root JSON separator differs')
+  i+=1
+  while text[i].isspace():i+=1
+  start=i;_,i=json_decoder.raw_decode(text,i);result[key]=text[start:i]
+def append_raw_array(value,additions):
+ if value[-1]!=']':raise ValueError('Original JSON array span differs')
+ return value[:-1].rstrip()+',\n'+',\n'.join('    '+json.dumps(x,ensure_ascii=False,indent=2,allow_nan=False).replace('\n','\n    ') for x in additions)+'\n  ]'
+def fragments(value):
+ i=1;result=[]
+ while True:
+  while value[i].isspace() or value[i]==',':i+=1
+  if value[i]==']':return result
+  start=i;_,i=json_decoder.raw_decode(value,i);result.append(value[start:i])
+raw_old=root_values(old_text);raw_new=dict(raw_old);chain=copy.deepcopy(old['fresh_chain'])
+for segment in chain['effective_source_segments']:
+ if segment['source_commit']==source:segment['actual_outers']=list(range(6,through+1))
+now=datetime.now(timezone.utc).isoformat();counts=dict(training=through,actual_completed_dev512=len(rows),csv_data_rows=through+len(rows))
+updates=dict(summary_schema='tree_nested_learning_curve_complete_through180_v1',created_at_utc=now,scope='Immutable local extension through175 + actual FULL176..180 and actual dev180; original1..175/35dev raw object text unchanged. Original reward/scoped variance/time/cost scalars bind actual receipt/source poll snapshots. Completed paged DEV180 metadata and actual ROOT_DEV180 PASS gate are bound. No continuous monitoring coverage or pending scalar inferred. Local data-only curve assembly.',training_outer_range=[1,through],training_point_count=through,completed_dev512_point_count=len(rows),fresh_chain=chain)
+for key,value in updates.items():raw_new[key]=json.dumps(value,ensure_ascii=False,indent=2,allow_nan=False)
+raw_new['training_points']=append_raw_array(raw_old['training_points'],points);raw_new['completed_dev512_points']=append_raw_array(raw_old['completed_dev512_points'],[dev_point])
+source_poll_numbers=[Path(fulls[o]['source_poll']).stem.rsplit('_',1)[-1] for o in range(previous+1,through+1)]
+semantics=dict(values='Original per-outer reward/score, raw within-root/group reward population variance, pure intra/total actual advantage population variance, fractions and times bind each actual FULL receipt and original source poll. All original1..175/35dev object text retained.',missing='JSON null/CSV blank; actual dev176..179 are null and no latest dev175 score is assigned to them. Independent rank processed/skipped opportunities and guard_skip remain null where unobserved; aggregate optimizer metrics remain separate. No180 scalar is assigned to active181.',finite_scope='Recorded gradient norm/local<=8192 shard sample counts only. Writer180 native/archive metadata is not an independent cold reload; original cold-loaded native5/Adam100 remains unchanged. Current PT availability unknown.',time=f'Per-outer full/gen/current dev/nondev actual values. Full180 {full["full_outer_wall_seconds"]}/dev {full["normal_dev512_wall_seconds"]}/nondev {full["training_archive_wall_seconds_excluding_current_dev"]} seconds; nondev includes archival and other phases.',cost=f'Actual immutable CUM176..180 snapshots, all {len(parts)} CUM180 parts, COST180 and its {len(cost_refs)} actual artifact references, completed paged DEV5_180 main/{len(dev_parts)} row parts/control180, actual collector executor receipt and ROOT_DEV180 PASS readback are bound. Prior175 artifacts remain untouched. Supplementary observer wall/CPU/native counter totals are not added to outer/service totals or recomputed from means.',lineage='0bef1/ba9 2..5/778 6..180; failed repeats not duplicate credit. Target200 and final51713/HF tokenizer cold-reload acceptance remain incomplete; existing HF150 boundary not advanced.',provenance='Original actual polls'+('/'.join(source_poll_numbers))+' and observed epochs from each original FULL receipt; no continuous realtime coverage claimed. Raw polls/resources are original BASE sources only, without mirror claim. ROOT_FULL180 is not an input. Historical semantics and earlier bindings retained as prior-version metadata.',paged_rows='Used published collect_nested_dev_costs.read_bound/rows_from_summary to dynamically decode main/parts and complete36 control rows; prior35 rows exactly match immutable175. CUM completed-dev descriptor dynamically decoded without rewriting source. Control-summary SHA binds original control bytes; inner ledger SHA binds original validation ledger identity.')
+extras={f'previous_learning_curve{previous}_reference':prior_pins[old_name],f'previous_learning_curve{previous}_csv_reference':prior_pins[old_csv_name],f'previous_learning_curve{previous}_publication_reference':prior_pins[f'LEARNING_CURVE_THROUGH{previous}_LOCAL_PUBLICATION.json'],f'previous_learning_curve{previous}_cost_supplement_binding_reference':prior_pins[f'LEARNING_CURVE_THROUGH{previous}_COST_SUPPLEMENT_BINDING.json'],f'previous_root_curve_dev_cost{previous}_actual_readback_reference':prior_pins[f'ROOT_CURVE_DEV_COST_THROUGH{previous}_ACTUAL_READBACK.json'],f'cumulative_cost_through{through}_reference':pin(cum_name),f'cumulative_cost_through{through}_part_references':parts,f'cost_outer{through}_local_receipt_reference':pin(cost_name),f'cost_outer{through}_actual_artifact_references':cost_refs,f'native{through}_metadata_reference':pin(f'NATIVE_HISTORY_{through}_METADATA_READBACK.json'),f'appended176_180_source_observations':observations,f'extension176_180_semantics':semantics,f'dev_native_cost{through}_supplement_references_at_freeze':dev_refs,f'dev_native_cost{through}_rows_part_references':dev_parts,f'dev_native_cost{through}_rows_readback_helper':helper_ref,f'dev_native_cost{through}_rows_readback_function':'published collect_nested_dev_costs.read_bound/rows_from_summary',f'dev_native_cost{through}_control_binding':control,f'root_dev{through}_actual_pass_gate':gate_ref,f'dev_native_cost{through}_binding_policy':'Any later provenance attaches through an independent immutable sidecar; frozen curve JSON/CSV/publication are never rewritten.'}
+for key,value in extras.items():
+ if key in raw_new:raise ValueError('Extension key already exists')
+ raw_new[key]=json.dumps(value,ensure_ascii=False,indent=2,allow_nan=False)
+curve_raw=('{\n  '+',\n  '.join(json.dumps(key)+': '+value for key,value in raw_new.items())+'\n}\n').encode();curve=json.loads(curve_raw)
+for key,count in [('training_points',previous),('completed_dev512_points',len(old_rows))]:
+ if curve[key][:count]!=old[key] or fragments(raw_new[key])[:count]!=fragments(raw_old[key]):raise ValueError('Prior175 raw object spans differ')
+for key in raw_old:
+ if key not in updates and key not in ['training_points','completed_dev512_points'] and raw_old[key]!=raw_new[key]:raise ValueError('Prior historical metadata changed')
+header=next(csv.reader(io.StringIO(old_csv.decode())));stream=io.StringIO(newline='');writer=csv.DictWriter(stream,fieldnames=header,lineterminator='\n')
+def cell(value):return '' if value is None else json.dumps(value,ensure_ascii=False,separators=(',',':'),allow_nan=False) if isinstance(value,(list,dict)) else value
+for point in points:
+ row={k:cell(point.get(k)) for k in header};row['row_type']='training';row['ledger_sha256']='';current=point['current_outer_completed_dev512']
+ for field,key in [('dev_rows','rows'),('dev_f1','f1'),('dev_em','em')]:row[field]=cell(current.get(key) if current else None)
+ row['cumulative_cost_source_path']=point['cumulative_cost_source']['path'];row['cumulative_cost_source_sha256']=point['cumulative_cost_source']['sha256'];writer.writerow(row)
+row={k:'' for k in header};row.update(row_type='dev512',outer=through,normal_dev_testing_seconds=dev_point['normal_dev_testing_wall_seconds'],dev_rows=dev_point['rows'],dev_f1=dev_point['f1'],dev_em=dev_point['em'],source_commit=source,source_metric_file=dev_point['source_original_dev_summary'],source_metric_file_sha256=dev_point['source_original_dev_summary_sha256'],source_receipt=dev_point['source_receipt'],source_receipt_sha256=dev_point['source_receipt_sha256'],ledger_sha256=dev_point['ledger_sha256']);writer.writerow(row)
+csv_raw=old_csv+stream.getvalue().encode()
+if curve['training_point_count']!=180 or len(curve['training_points'])!=180 or len(curve['completed_dev512_points'])!=36 or csv_raw[:188250]!=old_csv or len(list(csv.DictReader(io.StringIO(csv_raw.decode()))))!=216:raise ValueError('Actual180 output counts/prefix differ')
+products={names[0]:curve_raw,names[1]:csv_raw}
+def outpin(name):return dict(path=str(b/name),bytes=len(products[name]),sha256=digest(products[name]))
+publication=dict(build_input_manifest=manifest_ref,assembly_source=pin(w/'work/tree-speed-repair-20261008/dev180_actual_curve_build.command.txt'),schema='tree_learning_curve_through180_local_publication_v1',published_at_utc=now,outputs=[outpin(n) for n in names[:2]],prior_curve=[prior_pins[old_name],prior_pins[old_csv_name]],prior_publication=prior_pins[f'LEARNING_CURVE_THROUGH{previous}_LOCAL_PUBLICATION.json'],prior_cost_binding=prior_pins[f'LEARNING_CURVE_THROUGH{previous}_COST_SUPPLEMENT_BINDING.json'],counts=counts,old175_training_and35_dev_raw_object_text_preserved=True,old_csv_prefix_bytes_preserved=True,old_csv_prefix_bytes=len(old_csv),old_csv_prefix_sha256=digest(old_csv),historical_metadata_objects_and_bindings_retained=True,appended_actual_source_observations=observations,variance_source_fields=variance_fields,source_cumulative=pin(cum_name),source_cumulative_parts=parts,source_cumulative_field_part_counts=part_counts,source_cost180_receipt=pin(cost_name),source_cost180_artifact_references=cost_refs,source_cost180_actual_artifact_reference_count=len(cost_refs),source_native180_metadata=pin(f'NATIVE_HISTORY_{through}_METADATA_READBACK.json'),latest_dev180=dev_point,actual_source_segment778=[6,through],actual_cold_loaded_native_outer=5,actual_cold_loaded_adam_each=100,exact_executor_equivalence_claim=False,continuous_realtime_observation_coverage_claim=False,copies=[str(p) for p in roots],curve_json_csv_byte_readbacks=2,all_three_copies_byte_equal=True,old175_curve_cost_binding_preserved=True,prior175_pins=prior_pins,remote_operations=False,running_source_modified=False,root_mutable_STATUS_REPORT_FUP_observer_modified=False,reviews_or_tests_performed=False,helper_created=False,assembly_method='Authorized existing inline JSON raw value span append and exact CSV byte prefix retention; existing175 object structure retained. Published read_bound/rows_from_summary used for complete paged dev metadata and cumulative_dev_evaluations for CUM completed-dev descriptor.',dev_native_cost180_supplement_references_at_freeze=dev_refs,dev_native_cost180_rows_part_references=dev_parts,dev_native_cost180_rows_readback_helper=helper_ref,dev_native_cost180_rows_readback_function='published collect_nested_dev_costs.read_bound/rows_from_summary',dev_native_cost180_control_binding=control,all36_original_control_summaries_byte_bound=True,prior35_dev_control_rows_unchanged=True,ROOT_FULL180_used_as_input=False,root_dev180_actual_pass_gate=gate_ref,later_dev180_cost_binding='Later provenance attaches through independent immutable binding. No frozen curve/CSV/publication rewrite or supplemental wall/CPU/counter totals addition.',raw_observation_sources_scope='Original actual raw polls/resources are BASE-only SHA-bound source snapshots. Main results and newly assembled curve products are mirrored and byte read back; no raw poll/resource mirror claim.',HF150_boundary_advanced=False)
+products[names[2]]=encode(publication)
+references=dict(curve=outpin(names[0]),csv=outpin(names[1]),curve_publication=outpin(names[2]),cumulative_cost=pin(cum_name),cost_receipt=pin(cost_name),dev_native_cost=pin(new_dev_name),dev_native_cost_executor_receipt=pin(executor_name),root_dev_native_cost_readback=gate_ref,dev180_original_control_summary=pin(f'dev_native_cost_summaries/DEV_OUTER{through:04d}_SUMMARY.json'),full180=full_ref,source_poll_first_full180=pin(Path(full['source_poll']).name),native180_metadata=pin(f'NATIVE_HISTORY_{through}_METADATA_READBACK.json'),prior175_cost_binding=prior_pins[f'LEARNING_CURVE_THROUGH{previous}_COST_SUPPLEMENT_BINDING.json'],prior175_root_curve_dev_cost_readback=prior_pins[f'ROOT_CURVE_DEV_COST_THROUGH{previous}_ACTUAL_READBACK.json'],published_dev_rows_helper=helper_ref)
+attestations={k:v for k,v in executor.items() if k.startswith('same_entry_') or k in ['new_entry_main_invocations_this_task','actual_remote_incremental_collection_invocations','preceding_local_pending_invocations','preceding_pending_remote_operations','invocation_count_scope']}
+binding=dict(build_input_manifest=manifest_ref,schema='tree_learning_curve_through180_actual_paged_dev_cost_immutable_binding_v1',created_at_utc=now,through_outer=through,references=references,cumulative_cost_part_references=parts,cost_outer_actual_artifact_references=cost_refs,cost_outer_actual_artifact_reference_count=len(cost_refs),dev_native_cost_rows_storage=new_dev['rows'].get('storage','inline_list') if isinstance(new_dev['rows'],dict) else 'inline_list',dev_native_cost_rows_part_references=dev_parts,all_original_control_summary_references=controls,scope='Independent immutable binding of actual completed DEV180 main/all descriptor parts/all36 control rows, actual cost-owner executor receipt, ROOT_DEV180 PASS readback and control180 original file SHA versus inner ledger SHA. Frozen curve180 and prior175 artifacts remain untouched; no supplemental cost totals added. ROOT_FULL180 is not an input.',counts=counts,actual_completed_dev_controls=len(rows),prior35_dev_control_rows_unchanged=True,all36_original_control_summaries_byte_bound=True,dev180_control=control,remote_dev_collector_executor=executor['collector_executor_agent'],cost_executor_local_readback_executor=executor['local_readback_executor_agent'],root_readback_executor=gate['executor'],binding_author_executor='/root',actual_remote_incremental_collection_invocations=executor['actual_remote_incremental_collection_invocations'],new_entry_main_invocations_this_task_by_collector_executor=executor['new_entry_main_invocations_this_task'],preceding_local_pending_invocations=executor['preceding_local_pending_invocations'],preceding_pending_remote_operations=executor['preceding_pending_remote_operations'],collector_invocation_attestations=attestations,invocation_count_scope='SHA-bound cost-owner executor receipt attestations; curve author performed no collector or SSH invocation.',binding_remote_operations=False,evaluation_rerun=False,original_wall_CPU_double_added=False,supplemental_totals_added_to_curve_or_CUM=False,training_mutation=False,canonical_modified=False,reviews_or_tests_performed=False,frozen_curve_csv_publication_rewritten=False,old175_curve_cost_binding_rewritten=False,ROOT_FULL180_used_as_input=False,rows_readback_function='published collect_nested_dev_costs.read_bound/rows_from_summary',root_dev180_actual_pass_gate=gate_ref,raw_observation_sources_scope=publication['raw_observation_sources_scope'],HF150_boundary_advanced=False)
+products[names[3]]=encode(binding)
+for root in roots:
+ for name,raw in products.items():
+  destination=root/name
+  with destination.open('xb') as stream:stream.write(raw)
+for number in range(2):
+ for path,(original,ref,mirrored) in inputs.items():
+  if Path(path).read_bytes()!=original:raise ValueError('Original SHA-bound source changed during publication')
+  if mirrored:
+   for m in mirrors:
+    if (m/Path(path).relative_to(b)).read_bytes()!=original:raise ValueError('Original source mirror changed during publication')
+ for root in roots:
+  for name,raw in products.items():
+   if (root/name).read_bytes()!=raw:raise ValueError('Actual new curve product byte readback differs')
+  for name,reference in prior_pins.items():bound(root/name,reference)
+ for name,reference in gate['source_pins'].items():bound(name,reference)
+ bound(gate_name,gate_ref)
+ if number==0:time.sleep(1)
+print(json.dumps(dict(status='CURVE180_EXISTING_INLINE_ARTIFACT_ASSEMBLY_COMPLETE',outputs=[outpin(n) for n in names],counts=counts,first_FULL_poll_map={str(o):Path(fulls[o]['source_poll']).name for o in range(previous+1,through+1)},old175_training_raw_objects_preserved=175,old175_dev_raw_objects_preserved=35,old_CSV_prefix_bytes=len(old_csv),old_CSV_prefix_sha256=digest(old_csv),actual_COST_refs=len(cost_refs),dynamic_CUM_fields=len(part_counts),dynamic_CUM_parts=len(parts),dynamic_DEV_rows=len(rows),dynamic_DEV_parts=len(dev_parts),all_controls=len(controls),product_byte_readback_passes=2,mirror_roots=list(map(str,mirrors)),root_gate=gate_ref,new_DEV180_control_file_SHA=control['local_original_summary']['sha256'],new_DEV180_inner_ledger_SHA=dev_point['ledger_sha256'],binding_reference_keys=list(references),canonical_modified=False,remote_operations=False,new_collector_invocations=0,new_tests_or_reviews=False,ROOT_FULL180_used_as_input=False,HF150_boundary_advanced=False),ensure_ascii=False,indent=2))
+PY
