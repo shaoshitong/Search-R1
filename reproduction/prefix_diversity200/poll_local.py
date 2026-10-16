@@ -39,7 +39,8 @@ if outer:
  paths+=list((root/'probe-update').glob('rank-*-updates.jsonl')) if (root/'probe-update').exists() else []
  for p in paths:
   rows=[json.loads(x) for x in p.read_text().splitlines()]
-  value['actual_rank_update_ledgers'].append({'path':str(p),'records':len(rows),'last':rows[-1] if rows else None})
+  value['actual_rank_update_ledgers'].append({'path':str(p),'records':len(rows),
+   'first':rows[0] if rows else None,'last':rows[-1] if rows else None})
 print(json.dumps(value,allow_nan=False))
 '''
 
