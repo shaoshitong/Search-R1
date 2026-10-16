@@ -1,0 +1,179 @@
+{
+  "schema": "variance200_source_preparation_note_v1",
+  "status": "FUTURE_SOURCE_PREPARED_NOT_EXECUTED",
+  "source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+  "coverage_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/variance200_record_coverage.py",
+    "bytes": 29073,
+    "sha256": "bf44ce6316fa976fffba96db218d2f193f82be70877bc8729e1b7cef51ac0885"
+  },
+  "prior_generator": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/variance171_record_coverage.py",
+    "bytes": 23741,
+    "sha256": "b0b1d374ce85915bb7b8e82f2ad0475f1ce1c3ab2e8325cf19b6b4a38394165e"
+  },
+  "prior_coverage": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/METRIC_RECORD_COVERAGE_THROUGH171_LOCAL.json",
+    "bytes": 152283,
+    "sha256": "7b9eea902588edb97c4d76887e666697c0099bef217148bf5c6cf73f71fc4b90"
+  },
+  "frozen_implementation_sources": [
+    {
+      "repository_path": "search_r1/baselines/advantages.py",
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-recovery-source/search_r1/baselines/advantages.py",
+      "bytes": 10150,
+      "sha256": "470b84aba5dcb675eb5cadb04e755e4cb6c8a43d916b1bb66d7846cac1a03509"
+    },
+    {
+      "repository_path": "search_r1/baselines/controller.py",
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-recovery-source/search_r1/baselines/controller.py",
+      "bytes": 30282,
+      "sha256": "f78d55d98450614a1a8dac99535277f5cf8a3153f980d8c6f047fea5173b42d1"
+    },
+    {
+      "repository_path": "search_r1/baselines/tree_audit.py",
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-recovery-source/search_r1/baselines/tree_audit.py",
+      "bytes": 15243,
+      "sha256": "50e7fc4860661b4bd66b7c7acade6c8ec057c499dd6b036ffe0ae240be7fd93d"
+    },
+    {
+      "repository_path": "verl/trainer/ppo/ray_trainer.py",
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-recovery-source/verl/trainer/ppo/ray_trainer.py",
+      "bytes": 67989,
+      "sha256": "92227516ae5e53171afacbd2f64f4201add03413f4cc6f1d5fa9851dfd2953a0"
+    },
+    {
+      "repository_path": "search_r1/baselines/holdout.py",
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-recovery-source/search_r1/baselines/holdout.py",
+      "bytes": 24342,
+      "sha256": "4535f4f6da49fb497a4a52f1b89b7da1adf340d4226b0adae87280986a49f44b"
+    },
+    {
+      "repository_path": "search_r1/baselines/tree_fresh200.py",
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-recovery-source/search_r1/baselines/tree_fresh200.py",
+      "bytes": 6958,
+      "sha256": "ad084ffce52543bfe3b3d5f746a497dedb058e575b79a73b03bb09f7b5b7ca06"
+    },
+    {
+      "repository_path": "reproduction/tree-nested-branch-runtime-20261012/validation_cost_hooks_instruct300.py",
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/nested-native5-recovery-source/reproduction/tree-nested-branch-runtime-20261012/validation_cost_hooks_instruct300.py",
+      "bytes": 13374,
+      "sha256": "1008f0b9ca472603dafc52f8327c3b871a192cc6cfb4b682ea821ca4c9c823e2"
+    }
+  ],
+  "original_loop_sequence": [
+    {
+      "order": 1,
+      "evidence": "ray_trainer.py:1161-1165;tree_fresh200.py:75-77",
+      "meaning": "At global_steps200, test_freq5 runs the unchanged validation512 before the terminal dataset switch."
+    },
+    {
+      "order": 2,
+      "evidence": "ray_trainer.py:1175-1183,757-773",
+      "meaning": "Save updated checkpoint/HF/native200; early rolling native200 may exist even before periodic validation and does not prove the metric line."
+    },
+    {
+      "order": 3,
+      "evidence": "ray_trainer.py:1185-1190",
+      "meaning": "compute_data_metrics and timing metrics join the existing tree variance fields, then logger.log(data=metrics,step200) emits the original200 training scalars."
+    },
+    {
+      "order": 4,
+      "evidence": "ray_trainer.py:1192-1202,526-543",
+      "meaning": "Increment to201, then _prepare_final_validation switches to full51713 and calls the original slow final evaluation. This is a final-validation counter, not a training201 entry."
+    }
+  ],
+  "no_is_last_step_branch_in_frozen778": true,
+  "persistent_scalar_source": {
+    "location": "original stage.log metric line parsed in SHA-bound original poll.iteration_metrics[step=200]",
+    "already_observed177_example": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/NATIVE5_CONTINUE_POLL_2253.json",
+      "bytes": 656325,
+      "sha256": "fdea4e39b55da7dd437f216c4e7a188fc101975163cd7bbd85bac675627713fd"
+    },
+    "original177_all15_fields_present": true,
+    "future200_presence_not_yet_observed": true
+  },
+  "audit_payload_limit": {
+    "tree_audit": "Leaves record hashes, root ordinal/quotas/mass, mask/length counts and branch metadata; no original leaf rewards, raw outcome or scalar advantages. Policy JSON records effective tokens/weight mass and aggregate shared-prefix credit only.",
+    "controller_state": "method/global_step/bapo/base_commit/algorithm_source_commit/teacher_path/resume_supported only; no15 scalar metrics.",
+    "consequence": "Cannot recover absent original15 scalars from these artifacts. Intra and actual advantage also depend on original estimator dtype, sample std+1e-6 and empty-loss handling. Do not label a recomputed scalar as originally recorded."
+  },
+  "dev512_vs_final51713": {
+    "manifest_source": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/NATIVE5_CONTINUE_POLL_1460.json",
+      "bytes": 525319,
+      "sha256": "a78e270bf4f40816338aecef41355b4f2a5f9a44826e37b2e4ae196dc69c34dc"
+    },
+    "manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "overlap_ids": 0,
+    "overlap_normalized_questions": 0,
+    "validation": "nq/train256+hotpotqa/train256",
+    "final": "held-out test/dev seven datasets,51713 rows",
+    "holdout_evidence_lines": [
+      270,
+      276,
+      280,
+      311,
+      317,
+      380,
+      385,
+      398,
+      399
+    ],
+    "strict_subset_derivation_possible": false,
+    "final_subset_cannot_replace_periodic_source1ed_control": true
+  },
+  "authorized_stop_preservation_gate": [
+    "Before stopping only this task original slow final evaluation, actually read and preserve all15 original200 scalar fields plus raw-group variance/denominator/alias records from a SHA/byte-bound original poll or original log extraction.",
+    "Actually preserve original periodic dev200512 VALIDATION_COST_COMPLETE control,512/256/256 counts,original outer/phase/config/model/data/run,control-file SHA and distinct inner-ledger SHA; do not substitute final51713 or a derived subset.",
+    "Actually verify and preserve original200 eight-rank/native metadata and saved HF200/checkpoint identity; Adam and guarded skips must use their actual per-rank records, never a4000 expectation.",
+    "Require two actual readbacks and byte preservation before the authorized scoped stop. Native rolling save or process liveness alone is insufficient.",
+    "If the200 logger record is absent, wait for the already-running original loop to finish periodic512,checkpoint save and logger; do not hot-edit running code,kill before capture,or invent zero/derived fields. This wait precedes the slow full51713 call in frozen778."
+  ],
+  "future_manifest_interface": {
+    "cli": [
+      "--input-manifest",
+      "--input-manifest-bytes",
+      "--input-manifest-sha256"
+    ],
+    "schema": "tree_nested_variance200_actual_input_manifest_v1",
+    "status": "ACTUAL_OUTER200_ORIGINAL_SCALAR_INPUTS_FROZEN",
+    "required_identity": [
+      "source_commit",
+      "config_sha256",
+      "model_identity",
+      "data_identity",
+      "unit",
+      "run",
+      "actual_training_pid",
+      "actual_training_invocation_id"
+    ],
+    "prior_coverage": "actual pinned171 descriptor",
+    "scalar_records": "exactly172..200 in order; each{outer,source:{path,bytes,sha256}},source selects its own exact original iteration_metrics step",
+    "actual200": [
+      "native_metadata",
+      "progress_poll",
+      "resource",
+      "dev200_periodic_control",
+      "original_control_source"
+    ],
+    "original_control_source": "actual remote metadata descriptor path/resolved_path/bytes/sha256/stable_read;never followed remotely",
+    "all_future_values": "required from actual future bytes; none supplied in this note"
+  },
+  "future_output_names": [
+    "METRIC_RECORD_COVERAGE_THROUGH200_LOCAL.json",
+    "METRIC_RECORD_COVERAGE_THROUGH200_LOCAL_READBACKS.json"
+  ],
+  "source_budget_bytes": 524288,
+  "source_preparation_actions": {
+    "new_source_executed": false,
+    "actual200_claimed": false,
+    "remote_operations": 0,
+    "tests_compile_review": false,
+    "training_source_or_job_modified": false,
+    "owner_reader180_modified": false,
+    "canonical_modified": false
+  },
+  "next_step": "Root independently snapshots and pushes this source and preparation note. Actual200 invocation remains unauthorized by this source-preparation handoff alone."
+}
