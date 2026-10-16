@@ -1,0 +1,106 @@
+{
+  "schema": "dev180_root_owner_gate_builder_sourceprep_v1",
+  "scope": "Only source and this note are prepared. The builder, SSH helper, collector, owner preflight, core CLI and evaluation have not been executed.",
+  "frozen_builder": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/dev180-root-owner-gate-builder-sourceprep/build_dev180_root_owner_gate.py",
+    "bytes": 19429,
+    "sha256": "012900716f85f5991216601ef883fec70e26aa5de8e9129f21d5c9b29d56d04e"
+  },
+  "contract_and_prior_actual_input_sources": {
+    "work/tree-speed-repair-20261008/dev180_owner_local_receipt.py": {
+      "bytes": 44417,
+      "sha256": "16c02d34b66a54b259f221552cd8be2a48b73255f4c876fddd86572e0e5832e0"
+    },
+    "outputs/tree-nested-branch-handoff-20261013/DEV175_ROOT_OWNER_GATE_PINS.json": {
+      "bytes": 6580,
+      "sha256": "772ce02ea6edec157bd41f44bf2f0ce35c6ad18f6db604268b6a33e284f849f5"
+    },
+    "outputs/tree-nested-branch-handoff-20261013/DEV175_SOURCE_BOUND_PENDING_READBACK.json": {
+      "bytes": 2762,
+      "sha256": "bea3243090f08a02c87f4bc863ecc7f4cf4848cb3d783ed02c24243726b6f7da"
+    }
+  },
+  "owner_contract": {
+    "function": "verify_gate_inputs",
+    "schema": "dev180_root_owner_gate_pins_v1",
+    "status": "ACTUAL_DEV180_FULL_NATIVE_CUM_COST_CONTROL_READY",
+    "pending_schema": "dev180_source_bound_pending_readback_v1",
+    "completed_FULL_status": "ACTUAL_FULL_OUTER180_NATIVE180_COMPLETE_NEXT181_ENTERED",
+    "completed_COST_status": "ACTUAL_OUTER180_COST_ARCHIVED",
+    "normal_next181_entry_required": true,
+    "ROOT_FULL180_required": false
+  },
+  "contract_reuse": "After fixed owner source bytes/SHA verification, the future builder extracts the exact verify_gate_inputs function prefix up to its pending_evidence read, gives that isolated pure local function a prospective in-memory gate, and verifies every original four-input/cost-part/core/next181 condition before any helper call. It then runs the original complete verify_gate_inputs against in-memory and finally published real gate/pending bytes. Owner source files are not changed; owner.main and collector.main are never called.",
+  "future_outputs": [
+    "DEV180_ROOT_OWNER_GATE_PINS.json",
+    "DEV180_SOURCE_BOUND_PENDING_READBACK.json"
+  ],
+  "optional_recovery_capture": "DEV180_ORIGINAL_CONTROL_READY_CAPTURE.json: a successful original small control capture is saved immutably and mirrored before later gate checks, so a failure can reuse the exact bytes and original stable-read metadata instead of retrying SSH.",
+  "future_request_schema": {
+    "schema": "dev180_root_gate_build_request_v1",
+    "collector_source_commit": "1edaf50bb8e14de51db936e0859e369792011233",
+    "collector_source_sha256": "545bc2cb668da2b672ee3a859c031171927f3b2b6a2aaa3d368bee7d09b732d0",
+    "collector_executor_agent": "Actual root-authorized sole /root/... executor; no default agent invented.",
+    "authorized_main_invocations": 1,
+    "authorized_remote_incremental_invocations": 1,
+    "source_pins": {
+      "FULL_OUTER180_PROGRESS_RECEIPT.json": {
+        "path": "Actual existing local file path",
+        "bytes": "Actual raw byte length",
+        "sha256": "Actual raw-file digest, never a predicted value"
+      },
+      "NATIVE_HISTORY_180_METADATA_READBACK.json": {
+        "path": "Actual existing local file path",
+        "bytes": "Actual raw byte length",
+        "sha256": "Actual raw-file digest, never a predicted value"
+      },
+      "CUMULATIVE_COST_THROUGH180.json": {
+        "path": "Actual existing local file path",
+        "bytes": "Actual raw byte length",
+        "sha256": "Actual raw-file digest, never a predicted value"
+      },
+      "COST_OUTER180_LOCAL_RECEIPT.json": {
+        "path": "Actual existing local file path",
+        "bytes": "Actual raw byte length",
+        "sha256": "Actual raw-file digest, never a predicted value"
+      }
+    },
+    "sole_executor_attestation": {
+      "executor_agent": "Must equal actual authorized executor above",
+      "sole_executor_authorized": true,
+      "observed_utc": "Actual root/executor observation UTC",
+      "main_invocations_this_outer": 0,
+      "remote_incremental_invocations_this_outer": 0,
+      "preceding_local_pending_invocations": 0,
+      "preceding_pending_remote_operations": false
+    },
+    "control_capture": "Optional descriptor {path,bytes,sha256} of already captured original control-ready JSON; required for --control-capture or an existing recovery capture. Missing requested cache refuses SSH fallback."
+  },
+  "control_capture_shape": {
+    "outer": 180,
+    "raw_summary_utf8": "Exact original file UTF8 decoded once and re-encoded byte-for-byte; never reserialized original JSON. Alternatively an envelope may hold this shape in control_ready.",
+    "source": {
+      "path": "Exact fixed own alias validation-cost/<actual original dev180 filename>",
+      "resolved_path": "Exact corresponding /mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/... path",
+      "bytes": "Actual original file raw length",
+      "sha256": "SHA256 of actual raw file bytes; distinct from its internal ledger_sha256",
+      "mtime_ns": "Actual positive integer from original stable read",
+      "stable_read": true
+    }
+  },
+  "future_single_remote_read_scope": "Only after all four source descriptors and the full local owner-contract prefix pass. Existing4411B/8065815 helper, targeth100-10, literal /tmp/tree-mgmt-3fw9a1ab/control. One helper invocation, two actual original file reads checking same bytes, inode, size, mtime and retained18 resolved path. Remote SSH server must be original10.33.0.18 or loopback127.0.0.1; shared systemd allocation/source/config/model/data/run and complete dev180512=NQ256+Hot256 checked. No remote files written and no collector main/PENDING called.",
+  "collector_pending_scope": "PENDING0 records the source1ed collector has not been called for180. It does not say dev scoring is pending: raw dev180 control must already be VALIDATION_COST_COMPLETE. The current180 main0/remote0/PENDING0 counts are explicit root/sole-executor attestations corroborated by product absence, not a global process-log audit. Prior same-source175 cumulative main4/remote4 remains bound.",
+  "future_CLI": "env TREE_MGMT_CONTROL_PATH=/tmp/tree-mgmt-3fw9a1ab/control python3 -B work/tree-speed-repair-20261008/dev180-root-owner-gate-builder-sourceprep/build_dev180_root_owner_gate.py --workspace ACTUAL_WORKSPACE --request ACTUAL_ROOT_REQUEST_JSON --request-bytes ACTUAL_BYTES --request-sha256 ACTUAL_REQUEST_SHA256 --source-bytes ACTUAL_BUILDER_BYTES --source-sha256 ACTUAL_BUILDER_SHA256",
+  "reuse_CLI_suffix": "--control-capture ACTUAL_EXISTING_CAPTURE_JSON (request.control_capture must bind its actual bytes/SHA; this branch never calls SSH)",
+  "failure_policy": "Missing/changed/unknown inputs or existing collector/preflight/gate products reject without a new success. No automatic retries. If outputs already exist, verify and reuse them through the existing owner gates rather than rerunning this builder.",
+  "preserved": [
+    "All175 gate/pending and owner sources remain byte-identical",
+    "Training/canonical/curve remain unchanged",
+    "No future180 pins or scores are generated by this preparation"
+  ],
+  "executed_compiled_tested_or_reviewed": false,
+  "ssh_called": false,
+  "collector_called": false,
+  "canonical_modified": false,
+  "publication_status": "LOCAL_FROZEN_SOURCE_AND_NOTE_FOR_PARENT_ISOLATED_GIT_PUSH"
+}
