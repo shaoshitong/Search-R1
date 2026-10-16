@@ -1,0 +1,90 @@
+{
+  "schema": "own_unit_observer_pid_scope_fix_sourceprep_v2",
+  "status": "FROZEN_UNEXECUTED_RUNTIME_CANCELLED_AS_DIAGNOSTIC_OBSOLETE",
+  "source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/outer181-own-observer-fixed-scope-sourceprep/outer181_own_scope_observer.remote.py",
+    "bytes": 8189,
+    "sha256": "548f7dd5325dc7c42ebb3f081792a73498d1966d845e854c59440d5aedec2a0c"
+  },
+  "preserved_original_failed_source": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/outer181-own-observer-fixed-scope-sourceprep/before/OUTER181_OWN_CGROUP_CPU_IO_DIAGNOSTIC.remote.py",
+    "bytes": 5787,
+    "sha256": "024691b5dccece0e6678b7671cd6a657da7ff29e5e28f446d1af320e01d3ea0c"
+  },
+  "original_failed_source_in_place": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/OUTER181_OWN_CGROUP_CPU_IO_DIAGNOSTIC.remote.py",
+    "bytes": 5787,
+    "sha256": "024691b5dccece0e6678b7671cd6a657da7ff29e5e28f446d1af320e01d3ea0c"
+  },
+  "two_actual_local_byte_observations": [
+    {
+      "pass": 1,
+      "observed_utc": "2026-10-16T03:09:27.142937+00:00",
+      "frozen_source": {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/outer181-own-observer-fixed-scope-sourceprep/outer181_own_scope_observer.remote.py",
+        "bytes": 8189,
+        "sha256": "548f7dd5325dc7c42ebb3f081792a73498d1966d845e854c59440d5aedec2a0c"
+      },
+      "old_original_bytes_equal_before": true
+    },
+    {
+      "pass": 2,
+      "observed_utc": "2026-10-16T03:09:27.143097+00:00",
+      "frozen_source": {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/outer181-own-observer-fixed-scope-sourceprep/outer181_own_scope_observer.remote.py",
+        "bytes": 8189,
+        "sha256": "548f7dd5325dc7c42ebb3f081792a73498d1966d845e854c59440d5aedec2a0c"
+      },
+      "old_original_bytes_equal_before": true
+    }
+  ],
+  "original_failure_evidence": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/OUTER181_OWN_CGROUP_CPU_IO_DIAGNOSTIC_ACTUAL.json",
+    "bytes": 1109,
+    "sha256": "ea3570dc2ec141952e6f5f1f417657037c94e61d6f18b74e0b4b826024c7ce99",
+    "original_failed_helper_read_calls": 1,
+    "failure_scope": "Observer PID-set predicate rejected; no CPU/I/O double frames returned. This is not original training failure evidence."
+  },
+  "prepared_scope_changes": [
+    "Exact original unit,MainPID503255 and Invocationa313bda919834d24b4c5d491698d39ce remain required.",
+    "Read /proc503255/cgroup to independently prove exact unit membership; do not require MainPID inside a prematurely filtered direct-cgroup ps subset.",
+    "Recursively enumerate only this unit cgroup.procs and deduplicate actual PIDs; actual4096 task limit bounds unique PIDs, with task/thread count reported separately. Removed256 process cap.",
+    "Select MainPID, originalController506917 only with own membership evidence, and top20 own processes by actual /proc cumulative CPU ticks. No all-machine ps and no argv/environment.",
+    "Prepare two frames15s apart of actual CPUticks,IO bytes,wchan,own cgroup memory/IO pressure,scoped file mtime/size and original stage tail. Large resource and rank files remain stat-only."
+  ],
+  "root_later_steering": {
+    "basis": "Root supplied actual progress update; not an independent read by this preparer.",
+    "reported_polls": [
+      2300,
+      2301
+    ],
+    "reported_actual_full_native_outer": 181,
+    "reported_per_rank_actual_adam": 3620,
+    "reported_next_sampling_outer": 182,
+    "reported_errors": [],
+    "reported_OOM": 0,
+    "reported_stage_retriever_CPU_growth": true,
+    "reported_GPU2301": [
+      87,
+      29,
+      86,
+      47,
+      57,
+      91,
+      79,
+      97
+    ],
+    "instruction": "Cancel the not-yet-invoked new observer runtime. Preserve and publish source preparation only. Do not stop training/goal or treat the old observer rejection as training fault."
+  },
+  "actual_new_observer_main_invocations": 0,
+  "actual_new_helper_calls": 0,
+  "actual_new_frames": 0,
+  "actual_prior_failed_query_helper_calls": 1,
+  "source_executed_compiled_tested_or_reviewed": false,
+  "SSH_called_by_this_sourceprep": false,
+  "training_or_canonical_modified": false,
+  "registry_CUM_BOOK_modified": false,
+  "future_success_or_181_input_hashes_invented": false,
+  "runtime_authorization": "Withdrawn by root before any new call; do not invoke without a new explicit current diagnosis scope.",
+  "publication_status": "FROZEN_SOURCE_BEFORE_AND_NOTE_FOR_PARENT_PUBLISHER_ISOLATED_PUSH"
+}
