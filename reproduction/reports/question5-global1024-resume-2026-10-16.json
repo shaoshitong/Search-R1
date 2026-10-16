@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-16",
+  "role": "question5_global1024_actual_fullstate_resume_and_inherited_epoch2",
+  "checked_unix": 1792164860.1522646,
+  "run_id": "8af926a49630428097b94027864da68b",
+  "execution_id": "bcfa1de0a90a4fcda70263a75153fcee",
+  "runtime_source_commit": "ddf36cca14ac7aafb0b5395ffa88d57ed8c35e74",
+  "receipt": {
+    "path": "preparation/question5-global1024-resume-observation-1792164860126803000.json",
+    "sha256": "8e1f2252484c1419917f9b213eac1b2bd3358b63ec50f5bdb5757e8829fb7e9c"
+  },
+  "new_execution_actual": {
+    "all_four_CUDA_full_state_restores_verified": true,
+    "actual_successful_adam_counted_once": 18225,
+    "EMA_updates": 18225,
+    "new_updates_from_parent": 822,
+    "complete_epochs": 2,
+    "current_epoch": 3,
+    "current_epoch_update": 825,
+    "effective_phase": "legacyglobal256_until_completeepoch3",
+    "global1024_first_epoch": 4,
+    "new_global_pattern": [
+      204,
+      204,
+      204,
+      204,
+      208
+    ],
+    "suffix_updates_per_epoch": 2175,
+    "target_total_actual_Adam": 454575,
+    "EMA_decay_per_actual_step": 0.99,
+    "no_partial_updates_discarded": true,
+    "errors": []
+  },
+  "inherited_epoch2": {
+    "epoch": 2,
+    "inherited_prefix": true,
+    "metrics": {
+      "path": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-141a9ada1d464f0d9925d8397a194944/train/epochs/epoch-0002/metrics.json",
+      "bytes": 2466,
+      "sha256": "d1884da3e4535d35259d0790f12fc45b9993fa70a12d4105298e75d7084f6512",
+      "value": {
+        "epoch": 2,
+        "run_id": "8af926a49630428097b94027864da68b",
+        "execution_id": "141a9ada1d464f0d9925d8397a194944",
+        "source_commit": "ed2a997e5162cd3a6e1dff0bd1d91fcc659caf2a",
+        "observed_unix": 1792164194.61442,
+        "ema_updates": 17400,
+        "counters": {
+          "complete_epochs": 2,
+          "ema_updates": 17400,
+          "global_groups_seen": 890880,
+          "global_trajectories_seen": 4454400,
+          "optimizer_steps": 17400,
+          "rejected_nonfinite_updates": 0
+        },
+        "train_mixed_group_balanced_accuracy": 0.7619666946911174,
+        "test_mixed_group_balanced_accuracy": 0.5733137342833889,
+        "same_train_test_weight_kind": "ema0.99",
+        "raw_online_window": {
+          "group_bce": 0.6411853196880427,
+          "groups": 69786,
+          "resumed_epoch_suffix": true,
+          "trajectory_bce": 0.4837859603270619
+        },
+        "epoch_seconds": 985.7820791555569,
+        "execution_seconds": 1229.9484317237511,
+        "actor_updates": 0,
+        "execution_cuda_peaks_per_rank": [
+          {
+            "allocated_bytes": 9311922688,
+            "rank": 0,
+            "reserved_bytes": 12937330688
+          },
+          {
+            "allocated_bytes": 9313870848,
+            "rank": 1,
+            "reserved_bytes": 15051259904
+          },
+          {
+            "allocated_bytes": 9311922688,
+            "rank": 2,
+            "reserved_bytes": 12937330688
+          },
+          {
+            "allocated_bytes": 9311845376,
+            "rank": 3,
+            "reserved_bytes": 12952010752
+          }
+        ],
+        "execution_micro_groups": 13,
+        "evaluation_micro_groups": 64,
+        "train_ema": {
+          "weight_kind": "ema0.99",
+          "metric_semantics": "same_fixed_head_eval_no_grad",
+          "groups": 445440,
+          "trajectories": 2227200,
+          "trajectory_bce": 0.4165592199041583,
+          "group_bce": 0.4848826497985885,
+          "total_loss": 0.9014418697027469,
+          "mixed_group": {
+            "accuracy": 0.7854413613505747,
+            "balanced_accuracy": 0.7619666946911174,
+            "fn": 51954,
+            "fp": 43619,
+            "negative": 284454,
+            "positive": 160986,
+            "tn": 240835,
+            "tp": 109032
+          },
+          "trajectory_correctness": {
+            "accuracy": 0.8084132543103448,
+            "balanced_accuracy": 0.6088536157516427,
+            "fn": 350737,
+            "fp": 75965,
+            "negative": 1752556,
+            "positive": 474644,
+            "tn": 1676591,
+            "tp": 123907
+          },
+          "true_mixed": "0<K<5",
+          "threshold": 0.5
+        },
+        "test_ema": {
+          "weight_kind": "ema0.99",
+          "metric_semantics": "same_fixed_head_eval_no_grad",
+          "groups": 512,
+          "trajectories": 2560,
+          "trajectory_bce": 0.5926353149116039,
+          "group_bce": 0.7797910273075104,
+          "total_loss": 1.3724263422191143,
+          "mixed_group": {
+            "accuracy": 0.623046875,
+            "balanced_accuracy": 0.5733137342833889,
+            "fn": 110,
+            "fp": 83,
+            "negative": 329,
+            "positive": 183,
+            "tn": 246,
+            "tp": 73
+          },
+          "trajectory_correctness": {
+            "accuracy": 0.7734375,
+            "balanced_accuracy": 0.5192466378617488,
+            "fn": 521,
+            "fp": 59,
+            "negative": 2001,
+            "positive": 559,
+            "tn": 1942,
+            "tp": 38
+          },
+          "true_mixed": "0<K<5",
+          "threshold": 0.5
+        }
+      }
+    },
+    "checkpoint": {
+      "path": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-141a9ada1d464f0d9925d8397a194944/train/epochs/epoch-0002/checkpoint.json",
+      "bytes": 1026,
+      "sha256": "8f7cc815005d00f0e2eb8a4c6a2340a4a2ff42fc65e8c1d3ea389e65d012b861",
+      "value": {
+        "path": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-141a9ada1d464f0d9925d8397a194944/train/latest.pt",
+        "bytes": 1242423712,
+        "sha256": "b59d75f190e99a8f7d1f2a577b36d39260bf557cc3f99a3f32796aa7bde459aa",
+        "actual_adam_steps_per_rank": [
+          17400,
+          17400,
+          17400,
+          17400
+        ],
+        "ema_updates": 17400,
+        "epoch": 2,
+        "completed_epoch": true,
+        "run_id": "8af926a49630428097b94027864da68b",
+        "execution_id": "141a9ada1d464f0d9925d8397a194944",
+        "source_commit": "ed2a997e5162cd3a6e1dff0bd1d91fcc659caf2a",
+        "binding_sha256": "1c5d35aa00de7f2f0d226566122beeb4f81a3b9fa13893f3a26b2a33e6ef0045",
+        "counters": {
+          "complete_epochs": 2,
+          "ema_updates": 17400,
+          "global_groups_seen": 890880,
+          "global_trajectories_seen": 4454400,
+          "optimizer_steps": 17400,
+          "rejected_nonfinite_updates": 0
+        },
+        "epoch_metrics_sha256": "e632754be438b847c37f068a86c8b6334cf1ff17fe7078bcb4009076a7156cf0",
+        "observed_unix": 1792164197.9791126
+      }
+    },
+    "complete": {
+      "path": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-141a9ada1d464f0d9925d8397a194944/train/epochs/epoch-0002/complete.json",
+      "bytes": 3555,
+      "sha256": "a686b8d62689123a6632bae2a079637b6d6c8e974e9aa8e69c4e745514f008b6"
+    },
+    "fully_committed": true
+  },
+  "epoch2_timing_semantics": "985.782s is only resumed suffix1363Adam plus full EMA train/test evaluation, NOT a full epoch or comparable speedup versus epoch1.",
+  "global1024_speed_measured": false,
+  "raw_QA_tokens_model_or_credentials_included": false
+}

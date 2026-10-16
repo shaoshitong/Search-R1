@@ -16,4 +16,8 @@
 
 实际stage／stop／seal／launch回执分别为 `question5-global1024-resume-stage-1792164146335709000.json`、`question5-global1024-resume-stop-1792164198951087000.json`、`question5-global1024-resume-seal-1792164357776413000.json`、`question5-global1024-resume-launch-1792164462378931000.json`。CUDA恢复、新增更新与真实吞吐继续核对；启动回执不等于训练或提速成功。旧执行的实际epoch2指标按恢复链读取，不以新执行指标冒充。
 
+23:34:20实际回执 `question5-global1024-resume-observation-1792164860126803000.json` 已确认四rank完整CUDA恢复并新增822次Adam／EMA，累计18225，当前第3轮游标825、仍为旧batch阶段。未记录错误、退出或nonfinite拒绝；新全局1024阶段尚未开始，不能报告其吞吐。恢复链完整核验了epoch1与epoch2原生metrics／checkpoint／complete记录。
+
+继承epoch2的EMA混合balanced accuracy为训练76.1967%、测试57.3314%；逐轨迹BCE为0.416559／0.592635，G5 BCE为0.484883／0.779791。测试BCE较首轮变差，不能仅凭balanced accuracy上升宣称泛化改善。epoch2记录的985.782秒只覆盖恢复后的1363次Adam和全量EMA评测，**不是完整epoch耗时，也不能与首轮41.66分钟直接比较提速**。完整标量／哈希见[实际续接报告](../reproduction/reports/question5-global1024-resume-2026-10-16.json)。
+
 不新增rollout、编码、评分、GPU验收、额外评测或review；当前probe目标继续200完整epoch，旧actor目标保持暂停。
