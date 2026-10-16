@@ -1,17 +1,102 @@
 """Eight-GPU cached question+20 continuation; no rollout or retrieval service."""
-import argparse,fcntl,json,os,shlex,signal,socket,subprocess,time
+import argparse,fcntl,json,os,shlex,shutil,signal,socket,subprocess,time
 from pathlib import Path
 from reproduction.prefix20_online.launch import read,sha,once,publish
 ROLE='question_plus20_cached_replay70'
+REPLAY_NAMESPACE_PREFIX='/mnt/data/shaoshitong/search-g1-question20-replay70-'
+
+def replay_start_iteration(c):
+ resume=c.get('resume_replay')
+ if resume is None:
+  if c.get('start_iteration',1)!=1:raise ValueError('Fresh replay starts at iteration one')
+  return 1
+ completed=resume['completed_iteration']
+ if type(completed)is not int or not 1<=completed<70:
+  raise ValueError('Resume requires an actual complete replay boundary before iteration seventy')
+ if c.get('start_iteration')!=completed+1:
+  raise ValueError('Resume must begin immediately after the completed replay iteration')
+ return completed+1
+
+def prepare_resume_state(base,c):
+ """Copy one frozen complete replay state; keep the scientific origin and test binding."""
+ resume=c['resume_replay'];start=replay_start_iteration(c);base=Path(base)
+ source_base=Path(resume['source_base'])
+ if (source_base==base or not str(source_base).startswith(REPLAY_NAMESPACE_PREFIX)
+     or '..'in source_base.parts):raise ValueError('Separate original replay namespace required')
+ proof_path=Path(resume['proof_path'])
+ if sha(proof_path)!=resume['proof_sha256']:raise ValueError('Frozen replay source proof bytes differ')
+ proof=read(proof_path)
+ expected_steps=[v+100*resume['completed_iteration']for v in c['source_adam_steps_per_rank']]
+ if (proof['source_base']!=str(source_base)or proof['source_run_id']!=c['run_id']
+     or proof['completed_iteration']!=resume['completed_iteration']
+     or proof['checkpoint_sha256']!=resume['checkpoint_sha256']
+     or proof['actual_adam_steps_per_rank']!=expected_steps
+     or proof['actual_learning_rate']!=3e-6
+     or proof['owned_births_present']!=0 or proof['native_cgroup_exists']is not False
+     or proof['native_state']not in ('COMPLETED','FAILED','CANCELLED','TIMEOUT','OUT_OF_MEMORY','NODE_FAIL','PREEMPTED','BOOT_FAIL')):
+  raise ValueError('Frozen source must be terminal at the exact complete replay and Adam boundary')
+ def original_path(key):
+  path=Path(proof[key])
+  if source_base not in path.parents or path.is_symlink()or path.resolve(strict=True)!=path:
+   raise ValueError('Resume source file must remain inside the original frozen namespace: '+key)
+  return path
+ checkpoint=original_path('checkpoint_path')
+ receipt_path=original_path('latest_receipt_path');claim_path=original_path('run_claim_path')
+ qmax_path=original_path('question_max_proof_path')
+ for path,key in((receipt_path,'latest_receipt_sha256'),(claim_path,'run_claim_sha256'),
+                 (qmax_path,'question_max_proof_sha256')):
+  if sha(path)!=proof[key]:raise ValueError('Frozen replay metadata bytes differ: '+key)
+ receipt,claim,qmax=read(receipt_path),read(claim_path),read(qmax_path)
+ test_path=Path(resume['fixed_test_features_path'])
+ if (test_path!=Path(proof['fixed_test_features_path'])or source_base not in test_path.parents
+     or test_path.resolve(strict=True)!=test_path
+     or sha(test_path/'manifest.json')!=resume['fixed_test_manifest_sha256']
+     or proof['fixed_test_manifest_sha256']!=resume['fixed_test_manifest_sha256']):
+  raise ValueError('Resume must reuse the byte-identical fixed diagnostic feature manifest')
+ binding=claim['binding']
+ if (receipt['replay_iteration']!=resume['completed_iteration']
+     or receipt['sha256']!=resume['checkpoint_sha256']
+     or receipt['actual_adam_steps_per_rank']!=expected_steps
+     or receipt['actual_learning_rate']!=3e-6
+     or receipt['binding_sha256']!=claim['binding_sha256']
+     or binding['test_manifest_sha256']!=resume['fixed_test_manifest_sha256']
+     or binding['question_max_tokens']!=273 or qmax['question_max_tokens']!=273
+     or proof['question_max_tokens']!=273 or binding['head_max_tokens']!=293
+     or binding['source_epoch']!=c['source_epoch']
+     or binding['source_checkpoint_sha256']!=c['source_checkpoint_sha256']
+     or binding['source_adam_steps_per_rank']!=c['source_adam_steps_per_rank']
+     or binding['learning_rate']!=c['learning_rate']):
+  raise ValueError('Resume cannot change the learned architecture, source origin, or fixed test binding')
+ if checkpoint.stat().st_size!=proof['checkpoint_bytes']:
+  raise ValueError('Frozen complete replay checkpoint size differs')
+ out=base/'train';out.mkdir()
+ shutil.copyfile(checkpoint,out/'latest.pt')
+ if sha(out/'latest.pt')!=resume['checkpoint_sha256']:
+  raise ValueError('Copied complete replay checkpoint does not match the frozen source')
+ for src,dest in((receipt_path,out/'latest.json'),(claim_path,out/'run-claim.json'),
+                  (qmax_path,base/'preparation/question-max.json'),
+                  (source_base/'preparation/replay-sources.json',base/'preparation/replay-sources.json')):
+  shutil.copyfile(src,dest)
+ result=dict(status='COMPLETE_REPLAY_STATE_IMPORTED_NO_ADAM_RESET',source_base=str(source_base),
+             source_run_id=proof['source_run_id'],completed_iteration=resume['completed_iteration'],
+             start_iteration=start,checkpoint_sha256=resume['checkpoint_sha256'],
+             actual_adam_steps_per_rank=expected_steps,actual_learning_rate=3e-6,
+             fixed_test_features_path=str(test_path),fixed_test_manifest_sha256=resume['fixed_test_manifest_sha256'],
+             question_max_tokens=273,head_max_tokens=293,question_max_proof_sha256=proof['question_max_proof_sha256'],
+             source_replay_inventory_sha256=sha(source_base/'preparation/replay-sources.json'),
+             model_optimizer_rng_copied_without_change=True,new_rollouts=0,checked_unix=time.time())
+ once(base/'preparation/resume-import-receipt.json',result)
+ return result
 
 def config(base):
  base=Path(base).resolve();c=read(base/'preparation/launch-config.json')
- if c['base']!=str(base) or not str(base).startswith('/mnt/data/shaoshitong/search-g1-question20-replay70-'):
+ if c['base']!=str(base) or not str(base).startswith(REPLAY_NAMESPACE_PREFIX):
   raise ValueError('Separate remote replay namespace required')
  if c['iterations']!=70 or c['global_batch']!=256 or c['learning_rate']!=3e-6:
   raise ValueError('Latest authorized replay70/BS256/LR3e-6 contract differs')
  if len(c['physical_gpu_uuids'])!=8 or len(set(c['physical_gpu_uuids']))!=8:
   raise ValueError('Eight actual GPU UUIDs required')
+ replay_start_iteration(c)
  return c
 
 def sbatch_command(base, c):
@@ -152,7 +237,8 @@ def run(base):
         TMPDIR=str(base/'tmp'),PYTHONUNBUFFERED='1')
     for k in('PYTHONHOME','RAY_ADDRESS','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):env.pop(k,None)
     for name in('tmp','cache/hf','cache/triton','cache/inductor'):(base/name).mkdir(parents=True,exist_ok=True)
-    python=str(Path(c['environment_root'])/'bin/python');iteration=0;success=False
+    start_iteration=replay_start_iteration(c)
+    python=str(Path(c['environment_root'])/'bin/python');iteration=start_iteration-1;success=False
     def stage(name,**extra):
         value=dict(run_id=c['run_id'],stage=name,replay_iteration=iteration,checked_unix=time.time(),**extra)
         publish(base/'logs/pipeline-status.json',value)
@@ -169,21 +255,38 @@ def run(base):
         return [python,'-m','torch.distributed.run','--standalone','--nproc_per_node=8','-m',module]+args
     module='reproduction.prefix20_question_replay.features'
     try:
-        phase('FIXED_QUESTION_LENGTH_SCAN',[python,'-m',module,'--question-max-sources',str(prep/'replay-sources.json'),
-            '--output',str(prep/'question-max.json')])
-        qmax=read(prep/'question-max.json')['question_max_tokens']
+        resume=c.get('resume_replay')
+        if resume:
+            imported=read(prep/'resume-import-receipt.json')
+            if (imported['completed_iteration']!=start_iteration-1
+                    or imported['checkpoint_sha256']!=resume['checkpoint_sha256']
+                    or imported['fixed_test_manifest_sha256']!=resume['fixed_test_manifest_sha256']):
+                raise ValueError('Imported replay state differs from the submitted resume configuration')
+            qmax=read(prep/'question-max.json')['question_max_tokens']
+            test_features=Path(resume['fixed_test_features_path'])
+            test_sha=sha(test_features/'manifest.json')
+            if qmax!=273 or test_sha!=resume['fixed_test_manifest_sha256']:
+                raise ValueError('Resumed fixed question width or test manifest changed')
+            stage('FIXED_TEST_FEATURES_REUSED',question_max_tokens=qmax,head_max_tokens=qmax+20,
+                  fixed_test_features_path=str(test_features),test_manifest_sha256=test_sha)
+        else:
+            phase('FIXED_QUESTION_LENGTH_SCAN',[python,'-m',module,'--question-max-sources',str(prep/'replay-sources.json'),
+                '--output',str(prep/'question-max.json')])
+            qmax=read(prep/'question-max.json')['question_max_tokens']
+            test=base/'fixed-test';test.mkdir()
+            phase('FIXED_TEST_INPUTS',[python,'-m',module,'--prepare-inputs',c['cached_inputs'],
+                '--split','test','--output',str(test/'inputs')])
+            test_features=test/'features'
         stage('QUESTION_WIDTH_FIXED',question_max_tokens=qmax,head_max_tokens=qmax+20)
-        test=base/'fixed-test';test.mkdir()
-        phase('FIXED_TEST_INPUTS',[python,'-m',module,'--prepare-inputs',c['cached_inputs'],
-            '--split','test','--output',str(test/'inputs')])
         encode=['--model',c['model_dir'],'--question-max-tokens',str(qmax),
             '--micro-batch-size',str(c.get('encoder_micro_batch',32))]
-        phase('FIXED_TEST_FEATURES',torchrun(module,['--inputs',str(test/'inputs'),'--output',str(test/'features')]+encode))
-        test_sha=sha(test/'features/manifest.json')
+        if not resume:
+            phase('FIXED_TEST_FEATURES',torchrun(module,['--inputs',str(test/'inputs'),'--output',str(test_features)]+encode))
+            test_sha=sha(test_features/'manifest.json')
         sources=read(prep/'replay-sources.json')['sources']
         train_sources={int(x['epoch']):x for x in sources if x['split']=='train'}
         if set(train_sources)!=set(range(1,71)):raise ValueError('Exactly the saved seventy data batches required')
-        for iteration in range(1,71):
+        for iteration in range(start_iteration,71):
             root=base/'iterations'/('iteration-%04d'%iteration);root.mkdir(parents=True)
             source=train_sources[iteration]
             if 'inputs' in source:
@@ -193,7 +296,7 @@ def run(base):
             phase('i%04d-features'%iteration,torchrun(module,['--inputs',str(root/'inputs'),
                 '--output',str(root/'features')]+encode))
             phase('i%04d-train'%iteration,torchrun('reproduction.prefix20_question_replay.train_epoch',[
-                '--train-cache',str(root/'features'),'--test-cache',str(test/'features'),
+                '--train-cache',str(root/'features'),'--test-cache',str(test_features),
                 '--test-manifest-sha',test_sha,'--model-dir',c['model_dir'],'--output',str(base/'train'),
                 '--replay-iteration',str(iteration),'--source-data-epoch',str(iteration),
                 '--source-epoch',str(c['source_epoch']),'--source-checkpoint',c['source_checkpoint'],

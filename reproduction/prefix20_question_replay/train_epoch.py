@@ -5,7 +5,7 @@ The old source epoch and the new replay iteration are separate coordinates.
 It does not generate trajectories or update the frozen actor/encoder.
 """
 import argparse
-from collections import Counter
+from collections import Counter, defaultdict
 import datetime
 import hashlib
 import json
@@ -20,7 +20,7 @@ from reproduction.prefix20_online.train_epoch import (
     append, natural_plan, optimizer_learning_rates, rank_slice,
 )
 from reproduction.prefix_only_correctness_ab.train_ddp import actual_adam_steps
-from reproduction.prefix20_online.mixed_diagnostic import group_predictions
+from reproduction.prefix20_online.mixed_diagnostic import mixed_probability
 
 SOURCE_LEARNING_RATE = .00003
 TARGET_LEARNING_RATE = .000003
@@ -104,9 +104,40 @@ def validate_replay_checkpoint(saved, receipt, binding, iteration, source_steps)
     return expected
 
 
-def mixed_metrics(predictions, fixed_index):
-    """Only the requested fixed512 G5 mixing decision is a reported quality metric."""
-    groups = group_predictions(predictions, fixed_index)
+def group_predictions(predictions, index, expected_questions):
+    """Preserve own-G5 identity for either a complete train or fixed test pass."""
+    if expected_questions not in (512, 5120) or len(index) != expected_questions * 5:
+        raise ValueError('Require the complete512 test or5120 train G5 identity index')
+    if (len(predictions) != len(index) or len({r[0] for r in predictions}) != len(index)
+            or {r[0] for r in predictions} != set(index)):
+        raise ValueError('Duplicate, missing, or unexpected diagnostic trajectory IDs')
+    groups = defaultdict(list)
+    for tid, logit, label in predictions:
+        row = index[tid]
+        if type(label) is not int or label not in (0, 1) or label != row['strict_em']:
+            raise ValueError('Prediction label differs from its own trajectory EM')
+        if not math.isfinite(float(logit)):
+            raise ValueError('Actual nonfinite diagnostic logit')
+        groups[str(row['qid'])].append((str(tid), float(logit), label, row['question_hash']))
+    if len(groups) != expected_questions:
+        raise ValueError('Diagnostic question coverage differs from the requested complete split')
+    result = []
+    for qid, rows in sorted(groups.items()):
+        rows.sort(key=lambda row: row[0])
+        if len(rows) != 5 or len({r[3] for r in rows}) != 1:
+            raise ValueError('Incomplete own-G5 group or conflicting question identity')
+        q, probabilities = mixed_probability([r[1] for r in rows])
+        correct = sum(r[2] for r in rows)
+        result.append(dict(qid=qid, question_hash=rows[0][3], trajectory_ids=[r[0] for r in rows],
+                           probabilities=probabilities, strict_em=[r[2] for r in rows], correct_count=correct,
+                           mixed_label=int(0 < correct < 5), mixed_probability=q,
+                           predicted_mixed=int(q >= .5)))
+    return result
+
+
+def mixed_metrics(predictions, fixed_index, expected_questions=512):
+    """Compute the requested G5 mixing decision at the unchanged probability threshold."""
+    groups = group_predictions(predictions, fixed_index, expected_questions)
     tp = sum(r['mixed_label'] == 1 and r['predicted_mixed'] == 1 for r in groups)
     fp = sum(r['mixed_label'] == 0 and r['predicted_mixed'] == 1 for r in groups)
     fn = sum(r['mixed_label'] == 1 and r['predicted_mixed'] == 0 for r in groups)
@@ -338,24 +369,33 @@ def main():
         train_seconds = time.monotonic() - started
         model.eval()
         diagnostic_started = time.monotonic()
-        predictions = []
-        assigned = test_ids[rank::world]
+        split_predictions, split_diagnostic_seconds = {}, {}
+        # Both complete passes use the same frozen, post-100th-update head.
+        # These are not the online predictions made before each batch update.
         with torch.no_grad():
-            for start in range(0, len(assigned), 32):
-                ids = assigned[start:start + 32]
-                batch = test.get_batch(ids, device=device)
-                with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
-                    logits = model.module(batch)
-                predictions.extend((tid, float(z), test.index[tid]['strict_em'])
-                                   for tid, z in zip(ids, logits.cpu().tolist()))
-        parts, counts = [None] * world, [None] * world
-        dist.all_gather_object(parts, predictions)
+            for split, cache, all_ids in (('train', train, train_ids), ('test', test, test_ids)):
+                split_started = time.monotonic()
+                predictions = []
+                assigned = all_ids[rank::world]
+                for start in range(0, len(assigned), 32):
+                    ids = assigned[start:start + 32]
+                    batch = cache.get_batch(ids, device=device)
+                    with torch.autocast(device_type='cuda', dtype=torch.bfloat16):
+                        logits = model.module(batch)
+                    predictions.extend((tid, float(z), cache.index[tid]['strict_em'])
+                                       for tid, z in zip(ids, logits.cpu().tolist()))
+                parts = [None] * world
+                dist.all_gather_object(parts, predictions)
+                combined = [item for part in parts for item in part]
+                if (len(combined) != len(all_ids) or len({v[0] for v in combined}) != len(all_ids)
+                        or {v[0] for v in combined} != set(all_ids)):
+                    raise RuntimeError('Complete post-update ' + split + ' trajectory coverage differs')
+                split_predictions[split] = combined
+                split_diagnostic_seconds[split] = time.monotonic() - split_started
+        counts = [None] * world
         dist.all_gather_object(counts, actual_adam_steps(optimizer))
         if counts != expected_adam_steps(source_steps, iteration):
             raise RuntimeError('Actual eight-rank Adam replay boundaries differ')
-        all_predictions = [item for part in parts for item in part]
-        if len(all_predictions) != 2560 or {v[0] for v in all_predictions} != set(test_ids):
-            raise RuntimeError('Fixed diagnostic trajectory coverage differs')
         diagnostic_seconds = time.monotonic() - diagnostic_started
         rank_rng = dict(rank=rank, python=random.getstate(), numpy=np.random.get_state(),
                         torch_cpu=torch.get_rng_state(), torch_cuda=torch.cuda.get_rng_state(device),
@@ -363,14 +403,22 @@ def main():
         all_rng = [None] * world
         dist.all_gather_object(all_rng, rank_rng)
         if rank == 0:
-            fixed_index = {tid: test.index[tid] for tid in test_ids}
-            mixed, groups = mixed_metrics(all_predictions, fixed_index)
+            train_mixed, train_groups = mixed_metrics(split_predictions['train'],
+                {tid: train.index[tid] for tid in train_ids}, expected_questions=5120)
+            test_mixed, test_groups = mixed_metrics(split_predictions['test'],
+                {tid: test.index[tid] for tid in test_ids}, expected_questions=512)
             metrics = dict(replay_iteration=iteration, source_epoch=args.source_epoch,
                            source_data_epoch=args.source_data_epoch, observed_utc=utc(),
-                           mixed_group=mixed, mixed_group_accuracy=mixed['accuracy'],
+                           train_mixed_group=train_mixed, test_mixed_group=test_mixed,
+                           train_mixed_group_accuracy=train_mixed['accuracy'],
+                           test_mixed_group_accuracy=test_mixed['accuracy'],
+                           mixed_group=test_mixed, mixed_group_accuracy=test_mixed['accuracy'],
+                           mixed_metric_semantics='complete train and fixed test eval/no_grad passes of the same post-update head',
                            actual_adam_steps_per_rank=counts, new_adam_steps_per_rank=100,
                            train_trajectories=25600, train_unique_trajectories=25600,
                            train_seconds=train_seconds, diagnostic_seconds=diagnostic_seconds,
+                           train_post_update_diagnostic_seconds=split_diagnostic_seconds['train'],
+                           test_diagnostic_seconds=split_diagnostic_seconds['test'],
                            train_manifest_sha256=train.manifest_sha, test_manifest_sha256=test.manifest_sha,
                            sampler_plan_sha256=plan_sha, sampling='natural_no_replacement',
                            global_batch=256, local_batch=32, accumulation=1,
@@ -380,14 +428,19 @@ def main():
                            cuda_peak_allocated_bytes=int(torch.cuda.max_memory_allocated(device)),
                            cuda_peak_reserved_bytes=int(torch.cuda.max_memory_reserved(device)))
             once(iteration_dir / 'metrics.json', metrics)
-            torch.save(dict(replay_iteration=iteration, source_epoch=args.source_epoch,
-                            predictions=all_predictions, binding_sha256=binding_sha),
-                       iteration_dir / 'diagnostic-predictions.pt')
-            with (iteration_dir / 'mixed-question-predictions.jsonl').open('x', encoding='utf-8') as handle:
-                for row in groups:
-                    handle.write(canonical(dict(replay_iteration=iteration, **row)).decode() + '\n')
-                handle.flush()
-                os.fsync(handle.fileno())
+            for split, groups in (('train', train_groups), ('test', test_groups)):
+                prefix = 'train-' if split == 'train' else ''
+                path = iteration_dir / (prefix + 'diagnostic-predictions.pt')
+                torch.save(dict(replay_iteration=iteration, source_epoch=args.source_epoch,
+                                split=split, predictions=split_predictions[split], binding_sha256=binding_sha,
+                                metric_semantics='complete_post_update_eval_no_grad'), path)
+                with path.open('rb') as handle:
+                    os.fsync(handle.fileno())
+                with (iteration_dir / (prefix + 'mixed-question-predictions.jsonl')).open('x', encoding='utf-8') as handle:
+                    for row in groups:
+                        handle.write(canonical(dict(replay_iteration=iteration, split=split, **row)).decode() + '\n')
+                    handle.flush()
+                    os.fsync(handle.fileno())
             checkpoint = dict(schema_version=1, replay_iteration=iteration, source_epoch=args.source_epoch,
                               source_data_epoch=args.source_data_epoch, binding=binding, binding_sha256=binding_sha,
                               source_adam_steps_per_rank=source_steps,
@@ -400,10 +453,14 @@ def main():
             receipt = write_checkpoint(out, checkpoint, iteration, args.iterations, args.save_every)
             once(iteration_dir / 'complete.json', dict(status='QUESTION_PLUS20_REPLAY_ITERATION_COMPLETE',
                  **receipt, train_trajectories=25600, test_trajectories=2560,
-                 mixed_group_accuracy=mixed['accuracy'], actor_updates=0, new_rollouts=0))
+                 train_mixed_group_accuracy=train_mixed['accuracy'],
+                 test_mixed_group_accuracy=test_mixed['accuracy'],
+                 mixed_group_accuracy=test_mixed['accuracy'], actor_updates=0, new_rollouts=0))
             append(out / 'metrics.jsonl', metrics)
             append(out / 'progress.jsonl', dict(stage='REPLAY_ITERATION_COMPLETE', **receipt,
-                   mixed_group_accuracy=mixed['accuracy'], train_seconds=train_seconds,
+                   train_mixed_group_accuracy=train_mixed['accuracy'],
+                   test_mixed_group_accuracy=test_mixed['accuracy'],
+                   mixed_group_accuracy=test_mixed['accuracy'], train_seconds=train_seconds,
                    diagnostic_seconds=diagnostic_seconds))
             print(json.dumps(metrics, allow_nan=False), flush=True)
         dist.barrier()

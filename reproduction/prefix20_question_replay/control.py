@@ -40,6 +40,7 @@ def main():
         built=build_deploy_archive(a.commit,a.reuse_source_commit)
         archive,files=built['archive'],built['files']
         c=json.loads(Path(a.config).read_text());c.update(base=a.base,source_commit=a.commit)
+        if c.get('resume_replay'):c['start_iteration']=c['resume_replay']['completed_iteration']+1
         payload=dict(base=a.base,config=c,commit=a.commit,files=files,modes=built['modes'],
                      archive=base64.b64encode(archive).decode(),reuse_files=built['reuse_files'],
                      reuse_source_commit=a.reuse_source_commit,reuse_source_repo=a.reuse_source_repo)
@@ -79,16 +80,22 @@ with tarfile.open(fileobj=io.BytesIO(base64.b64decode(p['archive'])))as t:
   elif x.isfile():
    q=b/'repo'/x.name;q.parent.mkdir(parents=True,exist_ok=True);q.write_bytes(t.extractfile(x).read());q.chmod(x.mode)
 for name,digest in p['files'].items():assert sha(b/'repo'/name)==digest,name
-sources=[]
-for item in source['replay_sources']:
- d=dict(split='train',epoch=item['source_data_epoch'])
- if item['kind']=='cached_inputs':d['inputs']=item['inputs']
- else:d.update(rollout_complete=item['rollout_complete'],sha256=item['sha256'])
- sources.append(d)
-sources.append(dict(inputs=c['cached_inputs'],split='test'))
-once(prep/'replay-sources.json',dict(sources=sources))
+resume_import=None
+if c.get('resume_replay'):
+ sys.path.insert(0,str(b/'repo'))
+ from reproduction.prefix20_question_replay.launch import prepare_resume_state
+ resume_import=prepare_resume_state(b,c)
+else:
+ sources=[]
+ for item in source['replay_sources']:
+  d=dict(split='train',epoch=item['source_data_epoch'])
+  if item['kind']=='cached_inputs':d['inputs']=item['inputs']
+  else:d.update(rollout_complete=item['rollout_complete'],sha256=item['sha256'])
+  sources.append(d)
+ sources.append(dict(inputs=c['cached_inputs'],split='test'))
+ once(prep/'replay-sources.json',dict(sources=sources))
 once(prep/'launch-config.json',c);once(prep/'source-files.json',p['files'])
-result=dict(status='QUESTION20_REPLAY70_CODE_DEPLOYED_NOT_SUBMITTED',base=str(b),run_id=c['run_id'],source_commit=p['commit'],target_code_files=len(p['files']),all_target_code_full_sha_match=True,config_sha256=sha(prep/'launch-config.json'),source_epoch=c['source_epoch'],source_checkpoint_sha256=c['source_checkpoint_sha256'],source_adam_steps_per_rank=c['source_adam_steps_per_rank'],learning_rate=c['learning_rate'],new_rollouts=0,large_payload_transferred_from_Mac=False,reused_code_files=len(p['reuse_files']),transferred_code_files=len(p['files'])-len(p['reuse_files']),code_archive_bytes=len(base64.b64decode(p['archive'])))
+result=dict(status='QUESTION20_REPLAY70_CODE_DEPLOYED_NOT_SUBMITTED',base=str(b),run_id=c['run_id'],source_commit=p['commit'],target_code_files=len(p['files']),all_target_code_full_sha_match=True,config_sha256=sha(prep/'launch-config.json'),source_epoch=c['source_epoch'],source_checkpoint_sha256=c['source_checkpoint_sha256'],source_adam_steps_per_rank=c['source_adam_steps_per_rank'],learning_rate=c['learning_rate'],new_rollouts=0,large_payload_transferred_from_Mac=False,reused_code_files=len(p['reuse_files']),transferred_code_files=len(p['files'])-len(p['reuse_files']),code_archive_bytes=len(base64.b64decode(p['archive'])),start_iteration=c.get('start_iteration',1),resume_import=resume_import)
 once(prep/'deploy-receipt.json',result);print(json.dumps(result))
 '''.replace('PAYLOAD',repr(payload))
     else:

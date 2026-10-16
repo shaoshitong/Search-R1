@@ -68,6 +68,28 @@ class ReplayTrainingTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             mixed_metrics(broken, fixed_index)
 
+    def test_complete_train_g5_grouping_uses5120_questions_and_inclusive_threshold(self):
+        train_index, predictions = {}, []
+        for question in range(5120):
+            for sibling in range(5):
+                tid = 'train-q%d-t%d' % (question, sibling)
+                label = int(question % 2 == 0 and sibling == 0)
+                train_index[tid] = dict(qid=str(question), question_hash=str(question), strict_em=label)
+                # p=.5 for the sole correct sibling and exact float64 p=0
+                # for the others produces q=.5, exercising q>=.5 unchanged.
+                predictions.append((tid, 0.0 if label else -1000.0, label))
+        gathered = [row for rank in range(8) for row in predictions[rank::8]]
+        metrics, groups = mixed_metrics(gathered, train_index, expected_questions=5120)
+        self.assertEqual(metrics['count'], 5120)
+        self.assertEqual(metrics['accuracy'], 1.0)
+        self.assertEqual((metrics['tp'], metrics['tn'], metrics['fp'], metrics['fn']), (2560, 2560, 0, 0))
+        self.assertTrue(all(row['mixed_probability'] == .5 and row['predicted_mixed'] == 1
+                            for row in groups if row['mixed_label']))
+        with self.assertRaises(ValueError):
+            mixed_metrics(gathered, train_index, expected_questions=512)
+        with self.assertRaises(ValueError):
+            mixed_metrics(gathered[:-1], train_index, expected_questions=5120)
+
 
 if __name__ == '__main__':
     unittest.main()
