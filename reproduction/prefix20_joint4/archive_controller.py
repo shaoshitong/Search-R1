@@ -147,7 +147,7 @@ class Controller:
 
     def remote(self,mode,payload,*,extra=None,timeout=40):
         script=held.code_root(self.config,source=True)/'archive_supervisor.py'
-        command=shlex.join(['python3','-B',str(script),mode]+(extra or []))
+        command=shlex.join(held.source_argv(self.config,str(script),mode,*(extra or [])))
         try:
             result=subprocess.run(held.ssh_argv(command),input=core.document_bytes(payload),env=self.environment,
                 capture_output=True,timeout=timeout)
@@ -166,7 +166,7 @@ class Controller:
     def deploy_source_sidecar(self):
         root=held.code_root(self.config);held.verify_bundle(root,self.config)
         packet=dict(config=self.config,contents={name:base64.b64encode((root/name).read_bytes()).decode() for name in held.BUNDLE_NAMES})
-        command='python3 -B -c '+shlex.quote(INSTALL_SOURCE)
+        command=shlex.join(held.source_argv(self.config,'-c',INSTALL_SOURCE))
         try:
             result=subprocess.run(held.ssh_argv(command),input=core.document_bytes(packet),env=self.environment,capture_output=True,timeout=45)
         except subprocess.TimeoutExpired:
@@ -272,8 +272,8 @@ class Controller:
                 core.publish(staging/('%04d-reused.json'%index),receipt)
             else:
                 destination=staging/('%04d-verified-source-bytes'%index)
-                command=shlex.join(['python3','-B',str(held.code_root(self.config,source=True)/'archive_supervisor.py'),
-                    'stream','--index',str(index),'--snapshot-sha',digest])
+                command=shlex.join(held.source_argv(self.config,str(held.code_root(self.config,source=True)/'archive_supervisor.py'),
+                    'stream','--index',str(index),'--snapshot-sha',digest))
                 def progress(value):
                     self.event('RECEIVING_EXACT_SNAPSHOT_FILE',step=plan['step'],file_index=index,
                         files_total=len(snapshot['files']),source_path=row['source_path'],accepted_new_transport_bytes=new_bytes,**value)

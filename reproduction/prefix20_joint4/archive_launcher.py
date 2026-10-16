@@ -92,6 +92,8 @@ def password_from_private_memory(path):
 def run(args):
     output=Path(args.output).resolve();core.safe_components(output.parent)
     claim=output.with_name(output.name+'.launch-claim.json');mode=args.mode
+    recovery_path=getattr(args,'recovery_from',None)
+    recovery=core._read_json(recovery_path) if recovery_path else None
     new_claim=not claim.exists()
     if not new_claim:
         old=core._read_json(claim);config=held.validate_config(old['config'])
@@ -99,6 +101,7 @@ def run(args):
             source_job=args.source_job,code_commit=args.code_commit)
         core.need(old['config_sha256']==core.document_sha(config) and all(config[k]==v for k,v in expected.items()),
             'LOCAL_ONCE_LAUNCH_BINDING_DIFFERS')
+        core.need(config.get('recovery_of')==recovery,'LOCAL_ONCE_RECOVERY_BINDING_DIFFERS')
         contents={};mode='status'  # Read existing work even when current checkout later advances.
     else:
         core.need(mode=='launch','LOCAL_LAUNCH_CLAIM_REQUIRED_FOR_STATUS')
@@ -107,6 +110,10 @@ def run(args):
             source_job=args.source_job,code_commit=args.code_commit,code_manifest=manifest,
             controller_root=str(held.HK_ROOT/'archive-controller'/('job-'+args.source_job)),hpc_identity=held.HPC_IDENTITY,
             known_hosts=held.KNOWN_HOSTS,ssh_peer=held.PEER,poll_seconds=60,source_wait_deadline_seconds=10*86400,transport_stall_seconds=300)
+        if recovery is not None:
+            config['recovery_of']=recovery
+            core.need(isinstance(recovery,dict) and isinstance(recovery.get('old_code_commit'),str),'RECOVERY_METADATA_INVALID')
+            config['controller_root']=str(Path(config['controller_root'])/('recovery-'+recovery['old_code_commit']))
         held.validate_config(config)
     bridge_path=Path(args.bridge_source);core.checked_file(bridge_path,MODERN_BRIDGE_SHA)
     spec=importlib.util.spec_from_file_location('existing_modern_account_bridge',bridge_path)
@@ -140,6 +147,7 @@ def main():
     parser.add_argument('--code-commit',required=True);parser.add_argument('--training-commit',required=True)
     parser.add_argument('--base',required=True);parser.add_argument('--source-job',required=True);parser.add_argument('--output',required=True)
     parser.add_argument('--credentials-file',default='/Users/shaoshitong/Documents/remote_codex_control/memories/hpc3-credentials.private.md')
+    parser.add_argument('--recovery-from',help='Small public JSON pinning the specific failed old controller and no-source-operations proof; use a new --output')
     args=parser.parse_args();raise SystemExit(run(args))
 
 

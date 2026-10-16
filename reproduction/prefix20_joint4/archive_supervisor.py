@@ -64,7 +64,7 @@ def bound_command(command):
         " print(json.dumps(dict(status='UNKNOWN_HOST_IDENTITY_MISMATCH',actual=actual,expected=expected)),file=sys.stderr)\n"
         ' sys.exit(86)\n'
         "os.execv('/bin/bash',['bash','-c'," + repr(command) + '])\n')
-    return 'python3 -c ' + shlex.quote(code)
+    return 'python3 -B -c ' + shlex.quote(code)
 
 
 def ssh_argv(command):
@@ -87,12 +87,26 @@ def validate_config(value):
     required = {'schema_version', 'base', 'training_commit', 'source_job', 'code_commit', 'code_manifest',
         'controller_root', 'hpc_identity', 'known_hosts', 'ssh_peer', 'poll_seconds',
         'source_wait_deadline_seconds', 'transport_stall_seconds'}
-    core.need(isinstance(value, dict) and set(value) == required and value['schema_version'] == 1, 'CONTROLLER_CONFIG_SCHEMA_DIFFERS')
+    core.need(isinstance(value, dict) and set(value) in (required,required|{'recovery_of'}) and value['schema_version'] == 1, 'CONTROLLER_CONFIG_SCHEMA_DIFFERS')
     core.own_base(value['base'])
     for key in ('training_commit', 'code_commit'):
         core.need(isinstance(value[key], str) and re.fullmatch('[0-9a-f]{40}', value[key]) is not None, 'CONTROLLER_FULL_COMMIT_REQUIRED')
     core.need(isinstance(value['source_job'], str) and value['source_job'].isdecimal(), 'CONTROLLER_SOURCE_JOB_REQUIRED')
-    core.need(value['controller_root'] == str(HK_ROOT/'archive-controller'/('job-'+value['source_job'])) and
+    expected_root=HK_ROOT/'archive-controller'/('job-'+value['source_job'])
+    recovery=value.get('recovery_of')
+    if recovery is not None:
+        fields={'reason','old_code_commit','old_config_sha256','old_exit_sha256','old_stop_request_sha256',
+                'source_no_operations_proof_path','source_no_operations_proof_sha256'}
+        core.need(isinstance(recovery,dict) and set(recovery)==fields and
+            recovery['reason']=='source_system_python36_capture_output_rejected' and
+            isinstance(recovery['old_code_commit'],str) and re.fullmatch('[0-9a-f]{40}',recovery['old_code_commit']) is not None and
+            recovery['old_code_commit']!=value['code_commit'],'CONTROLLER_RECOVERY_BINDING_INVALID')
+        for name in ('old_config_sha256','old_exit_sha256','old_stop_request_sha256','source_no_operations_proof_sha256'):
+            core.digest_text(recovery[name])
+        proof=core.absolute(recovery['source_no_operations_proof_path'])
+        core.need(core.under(proof,Path(value['base'])/'preparation/archive-control'),'CONTROLLER_RECOVERY_SOURCE_PROOF_OUTSIDE_BASE')
+        expected_root=expected_root/('recovery-'+recovery['old_code_commit'])
+    core.need(value['controller_root'] == str(expected_root) and
         value['hpc_identity'] == HPC_IDENTITY and value['known_hosts'] == KNOWN_HOSTS and value['ssh_peer'] == PEER,
         'CONTROLLER_ROUTING_BINDING_DIFFERS')
     core.need(type(value['poll_seconds']) is int and 10 <= value['poll_seconds'] <= 300 and
@@ -106,6 +120,16 @@ def validate_config(value):
             'CONTROLLER_CODE_FILE_RECORD_INVALID')
         core.digest_text(row['sha256'])
     return value
+
+
+def source_python(config):
+    validate_config(config)
+    return str(Path(config['base'])/'env/bin/python')
+
+
+def source_argv(config,*arguments):
+    """Every HPC3 sidecar operation uses the bound training Python, never system3.6."""
+    return [source_python(config),'-B']+list(arguments)
 
 
 def code_root(config, source=False):
@@ -242,7 +266,7 @@ def launch_operation(plan):
     core.publish(root/'claim.json', dict(plan_sha256=core.document_sha(plan), launcher=identity(), created_unix=time.time()))
     script = code_root(plan['config'], source=True)/'archive_supervisor.py'
     with (root/'supervisor.log').open('xb') as log:
-        child = subprocess.Popen([sys.executable, '-B', str(script), 'supervise', '--root', str(root)],
+        child = subprocess.Popen(source_argv(plan['config'],str(script),'supervise','--root',str(root)),
             stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT, start_new_session=True, close_fds=True)
     born = identity(child.pid)  # Bind before poll/wait can reap a rapid failure.
     core.publish(root/'launcher-observed-birth.json', born)
@@ -259,8 +283,8 @@ def supervise(root, *, observe=identity, worker_command=None):
     with (root/'supervisor.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         core.publish(root/'supervisor-birth.json', observe())
-        command = worker_command or [sys.executable, '-B', str(code_root(plan['config'], source=True)/'archive_supervisor.py'),
-                                     'operation-worker', '--root', str(root)]
+        command = worker_command or source_argv(plan['config'],str(code_root(plan['config'], source=True)/'archive_supervisor.py'),
+                                     'operation-worker','--root',str(root))
         started=time.time()
         with (root/'worker.stdout').open('xb') as out, (root/'worker.stderr').open('xb') as error:
             child=subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=out, stderr=error, close_fds=True)
@@ -302,6 +326,13 @@ def operation_worker(root):
         # A complete receipt with no held-worker exit receipt is an unknown
         # interrupted operation. It requires inspection, never another accept.
         core.need(not (source_snapshot.parent/'complete.json').exists(), 'EXISTING_COMPLETE_NO_REPLAY')
+        snapshot_value=core.load_snapshot(source_snapshot,plan['snapshot_sha256'],base=base,commit=commit,run_id=run,step=step)
+        core.validate_archive_proof(plan['archive_wrapper'],snapshot_value,plan['snapshot_sha256'])
+        imported=source_snapshot.parent/'archive-receipt-import.json'
+        if imported.exists():
+            core.need(core._read_json(imported)==plan['archive_wrapper'] and core.sha(imported)==core.document_sha(plan['archive_wrapper']),
+                'EXISTING_IMPORTED_ARCHIVE_WRAPPER_DIFFERS')
+        else:core.publish(imported,plan['archive_wrapper'])
         original=core.checked_file;checked_bytes=0;checked_files=0
         with (root/'source-readback-progress.jsonl').open('x') as progress:
             def measured(*args,**kwargs):
@@ -431,11 +462,133 @@ def controller_result_accepted(config,value):
     return all(value.get(k)==v and type(value.get(k)) is type(v) for k,v in expected.items())
 
 
+NO_OPERATIONS_PROGRAM = r'''
+import hashlib,json,os,re,socket,sys,time
+from pathlib import Path
+sys.dont_write_bytecode=True
+c=json.load(sys.stdin);b=Path(c['base']);r=c['recovery_of']
+assert os.getuid()==14090 and str(b)==str(b.resolve())
+assert b.parent==Path('/data/user/jxu957/experiments')
+assert re.fullmatch(r'qprobe-teacher-warmup200-prefix20-[A-Za-z0-9._-]+',b.name)
+def safe(p):
+ assert p.is_absolute() and not any(x.is_symlink() for x in (p,*p.parents))
+def read(p):
+ safe(p)
+ with p.open() as f:return json.load(f)
+safe(b)
+safe(b/'job.id');assert (b/'job.id').is_file() and (b/'job.id').read_text().strip()==c['source_job']
+s=read(b/'preparation/training-submission.json')
+assert s['job']==c['source_job'] and s['source_commit']==c['training_commit'] and s['returncode']==0
+p=Path(r['source_no_operations_proof_path']);safe(p)
+assert p.is_file() and b/'preparation/archive-control' in p.parents
+assert hashlib.sha256(p.read_bytes()).hexdigest()==r['source_no_operations_proof_sha256']
+roots=[]
+for p in (b/'preparation/archive-control/operations',b/'preparation/checkpoint-archives'):
+ safe(p);exists=p.exists()
+ assert not exists or (p.is_dir() and next(p.iterdir(),None) is None)
+ roots.append(dict(path=str(p),exists=exists,empty=True))
+with open('/proc/sys/kernel/random/boot_id') as f:boot=f.read().strip()
+actual=dict(hostname=socket.gethostname(),boot_id=boot,pid_namespace=os.readlink('/proc/self/ns/pid'))
+assert actual==c['hpc_identity']
+print(json.dumps(dict(status='FRESH_SOURCE_NO_ARCHIVE_OPERATIONS_PASS',base=str(b),source_job=c['source_job'],
+ training_commit=c['training_commit'],observer_uid=os.getuid(),identity=actual,roots=roots,
+ prior_proof_sha256=r['source_no_operations_proof_sha256'],checked_unix=time.time(),run_manifest_may_exist=True)),flush=True)
+'''
+
+
+def fresh_no_source_operations(config, password):
+    """Read-only fresh source check. Unknown observation never admits recovery."""
+    validate_config(config)
+    core.need(config.get('recovery_of') is not None,'RECOVERY_METADATA_REQUIRED')
+    core.need(isinstance(password,str) and password and '\n' not in password,'RAM_PASSWORD_REQUIRED')
+    environment=dict(os.environ,SSHPASS=password,PYTHONDONTWRITEBYTECODE='1')
+    try:
+        command=shlex.join(source_argv(config,'-c',NO_OPERATIONS_PROGRAM))
+        try:
+            result=subprocess.run(ssh_argv(command),input=core.document_bytes(config),env=environment,capture_output=True,timeout=45)
+        except subprocess.TimeoutExpired:
+            raise ValueError('RECOVERY_SOURCE_OBSERVATION_UNKNOWN_NO_LAUNCH') from None
+    finally:environment.pop('SSHPASS',None)
+    core.need(result.returncode==0,'RECOVERY_SOURCE_NO_OPERATIONS_OBSERVATION_FAILED_NO_LAUNCH')
+    try:proof=json.loads(result.stdout)
+    except (ValueError,UnicodeDecodeError):raise ValueError('RECOVERY_SOURCE_PROOF_INVALID') from None
+    roots=[str(Path(config['base'])/p) for p in ('preparation/archive-control/operations','preparation/checkpoint-archives')]
+    expected=dict(status='FRESH_SOURCE_NO_ARCHIVE_OPERATIONS_PASS',base=config['base'],source_job=config['source_job'],
+        training_commit=config['training_commit'],observer_uid=14090,identity=HPC_IDENTITY,
+        prior_proof_sha256=config['recovery_of']['source_no_operations_proof_sha256'],run_manifest_may_exist=True)
+    core.need(isinstance(proof,dict) and all(proof.get(k)==v and type(proof.get(k)) is type(v) for k,v in expected.items()),
+        'RECOVERY_FRESH_SOURCE_BINDING_DIFFERS')
+    rows=proof.get('roots');now=time.time()
+    core.need(isinstance(rows,list) and len(rows)==2 and all(isinstance(row,dict) and set(row)=={'path','exists','empty'} and
+        row['path']==path and type(row['exists']) is bool and row['empty'] is True for row,path in zip(rows,roots)) and
+        type(proof.get('checked_unix')) in (int,float) and abs(now-proof['checked_unix'])<=60,'RECOVERY_FRESH_SOURCE_PROOF_DIFFERS')
+    return dict(returncode=result.returncode,stdout_sha256=hashlib.sha256(result.stdout).hexdigest(),
+        stderr_sha256=hashlib.sha256(result.stderr).hexdigest(),proof=proof)
+
+
+def recovery_admission(config, password, *, source_observer=None):
+    """Admit only the proved Python3.6 failure, after its two own births died.
+
+    No signal or source mutation occurs here. The run manifest may now exist;
+    only archive operation/snapshot namespaces must still be genuinely empty.
+    """
+    validate_config(config);recovery=config.get('recovery_of')
+    if recovery is None:return None
+    old_root=HK_ROOT/'archive-controller'/('job-'+config['source_job'])
+    core.safe_components(old_root)
+    core.checked_file(old_root/'config.json',recovery['old_config_sha256'])
+    old=validate_config(core._read_json(old_root/'config.json'))
+    core.need(old.get('recovery_of') is None and old['code_commit']==recovery['old_code_commit'] and
+        old['controller_root']==str(old_root) and all(old[k]==config[k] for k in ('base','source_job','training_commit')),
+        'RECOVERY_OLD_CONFIG_BINDING_DIFFERS')
+    verify_bundle(code_root(old),old)
+    claim=core._read_json(old_root/'controller-launch-claim.json')
+    core.need(claim['config_sha256']==core.document_sha(old),'RECOVERY_OLD_CLAIM_DIFFERS')
+    core.checked_file(old_root/'controller-exit.json',recovery['old_exit_sha256'])
+    exited=core._read_json(old_root/'controller-exit.json')
+    core.need(exited['config_sha256']==core.document_sha(old) and type(exited['returncode']) is int and exited['returncode']!=0,
+        'RECOVERY_REQUIRES_BOUND_ACTUAL_NONZERO_EXIT')
+    born=core._read_json(old_root/'controller-birth.json')
+    supervisor=core._read_json(old_root/'controller-supervisor-birth.json')
+    observed=core._read_json(old_root/'launcher-observed-birth.json')
+    fields=('host','boot_id','pid_namespace','pid','start_ticks','sid','uid')
+    core.need(all(exited['controller'][k]==born[k] and supervisor[k]==observed[k] for k in fields) and
+        born['host']==supervisor['host']=='xielab3' and born['uid']==supervisor['uid']==os.getuid(),
+        'RECOVERY_OLD_PROCESS_BIRTH_BINDING_DIFFERS')
+    core.need(not same_birth(born) and not same_birth(supervisor),'RECOVERY_OLD_PROCESS_STILL_ALIVE')
+    core.checked_file(old_root/'controller.log',exited['stdout_sha256'])
+    core.checked_file(old_root/'failed-controller-stop-request.json',recovery['old_stop_request_sha256'])
+    core.need(not (old_root/'run-binding.json').exists() and not list(old_root.glob('step-*-operation.json')),
+        'RECOVERY_OLD_CONTROLLER_HAS_RUN_OR_OPERATIONS')
+    progress=core._read_json(old_root/'progress.json')
+    core.need(progress.get('run_id') is None and progress.get('completed_steps')==[], 'RECOVERY_OLD_PROGRESS_NOT_EMPTY')
+    errors=old_root/'observation-errors.jsonl';core.regular(errors)
+    with errors.open('rb') as stream:
+        stream.seek(0,os.SEEK_END);end=stream.tell();stream.seek(max(0,end-65536));tail=stream.read()
+    known=False
+    for line in tail.splitlines():
+        try:error=json.loads(line)
+        except (ValueError,UnicodeDecodeError):continue
+        if (isinstance(error,dict) and error.get('mode')=='probe' and type(error.get('returncode')) is int and
+            error['returncode']!=0 and isinstance(error.get('stderr'),str) and 'TypeError' in error['stderr'] and
+            'capture_output' in error['stderr']):known=True
+    core.need(known,'RECOVERY_KNOWN_PYTHON36_FAILURE_NOT_PROVED')
+    source=(source_observer or fresh_no_source_operations)(config,password)
+    return dict(status='FAILED_PYTHON36_CPU_CONTROLLER_RECOVERY_ADMITTED',old_controller_root=str(old_root),
+        old_code_commit=old['code_commit'],old_config_sha256=recovery['old_config_sha256'],
+        old_exit_sha256=recovery['old_exit_sha256'],old_stop_request_sha256=recovery['old_stop_request_sha256'],
+        old_actual_exit=exited,old_controller_birth=born,old_supervisor_birth=supervisor,old_births_dead=True,
+        fresh_source_no_operations=source,new_controller_root=config['controller_root'],
+        training_job_changed=False,checked_unix=time.time())
+
+
 def launch_controller(config, password):
     core.need(socket.gethostname()=='xielab3','CONTROLLER_HKUST3_REQUIRED');validate_config(config)
     root=Path(config['controller_root']);verify_bundle(code_root(config),config)
     if (root/'controller-launch-claim.json').exists():return controller_status(config)
+    admitted=recovery_admission(config,password)
     core.safe_components(root.parent,require_exists=False);root.parent.mkdir(parents=True,exist_ok=True);root.mkdir(exist_ok=False)
+    if admitted is not None:core.publish(root/'recovery-admission.json',admitted)
     core.publish(root/'config.json',config)
     core.publish(root/'controller-launch-claim.json',dict(config_sha256=core.document_sha(config),launcher=identity(),created_unix=time.time()))
     core.need(isinstance(password,str) and password and '\n' not in password,'RAM_PASSWORD_REQUIRED')

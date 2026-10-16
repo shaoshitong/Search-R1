@@ -1,10 +1,10 @@
 # Prefix20 native4 checkpoint archive controller
 
-This controller is independently versioned and deployed beside the immutable training runtime. CPU tests use constructed byte files and subprocesses; they do not establish actual checkpoint transport, GPU recovery, native51713 acceptance, or full experiment completion. Actual launch/progress/exit receipts are separate from this implementation document.
+This is an isolated implementation handoff. No code here has been deployed, pushed, launched, or used against a remote checkpoint. All tests use local constructed byte files and CPU subprocesses. No actual GPU recovery, native51713 acceptance, or full experiment completion is claimed.
 
 ## Current binding supplied by the parent
 
-The latest planned training is job **727148**, base **`/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727050-20261016`**, runtime commit **`f6e2f268128a888a6abbc7489a02871fe28c0178`**. At handoff it is pending resources and has no run ID. The controller has no hard-coded training job/base/commit defaults. It waits for the actual prepared native4 binding and records its run ID once. Missing run ID or queued resources cannot produce completion.
+Job **727148** is now a preserved failed training run (parent reported actual exit at 2026-10-16 22:26:18). **Do not launch another archive controller for727148.** The next fresh training base, full training SHA and actual job ID must be supplied by the parent. The controller has no hard-coded job/base/commit defaults. It waits for the actual prepared native4 binding and records its run ID once. Missing run ID or queued resources cannot produce completion.
 
 The training commit and archive implementation commit are separate. Publish the archive implementation in a **new** full Git commit; do not hot-edit the healthy training repo/source. The launcher deploys only an independent small sidecar under `base/preparation/archive-control/code/<archive-code-commit>`.
 
@@ -23,17 +23,17 @@ Also include `test_checkpoint_archive.py` and `test_archive_controller.py`; they
 python3 -B -m unittest test_archive_controller test_checkpoint_archive -v
 ```
 
-After the integration is committed and pushed, launch once with the following explicit arguments. Replace `FULL_PUSHED_ARCHIVE_CODE_SHA` with the exact new 40-character implementation commit. The runtime commit stays the original training SHA below. This example has **not** been executed:
+After the integration is committed and pushed, launch once with the following explicit arguments. Replace all `NEXT_*` placeholders with the actual next fresh training binding and `FULL_PUSHED_ARCHIVE_CODE_SHA` with the exact new 40-character operator commit. This example has **not** been executed:
 
 ```bash
 python3 -B /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/work/qprobe-prefix20-hpc3-4gpu-20261016/reproduction/prefix20_joint4/archive_launcher.py launch \
   --repo /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/work/qprobe-prefix20-hpc3-4gpu-20261016 \
   --bridge-source /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/work/qprobe-sigma3-loss-20261015/reproduction/hpc3_qprobe/local_account_bridge.py \
   --code-commit FULL_PUSHED_ARCHIVE_CODE_SHA \
-  --training-commit f6e2f268128a888a6abbc7489a02871fe28c0178 \
-  --base /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727050-20261016 \
-  --source-job 727148 \
-  --output /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/qprobe-prefix20-hpc3-4gpu-20261016/archive727148-launch.json
+  --training-commit NEXT_FULL_TRAINING_SHA \
+  --base /data/user/jxu957/experiments/NEXT_ACTUAL_PREFIX20_BASE \
+  --source-job NEXT_ACTUAL_JOB_ID \
+  --output /Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/qprobe-prefix20-hpc3-4gpu-20261016/NEXT_JOB_archive-launch.json
 ```
 
 Query with the identical arguments and `status` in place of `launch`. A repeated `launch` with an existing local claim automatically sends **status only**, even if the current source checkout has since advanced. It does not reread the HPC3 password or dispatch another controller. Each local observation is preserved in an immutable timestamped JSON receipt, with a separate latest-status file.
@@ -43,7 +43,7 @@ The launcher checks the exact current Git HEAD, a clean tree, the remote branch 
 ## Actual execution chain
 
 1. Local entry installs only small committed code on actual HKUST3 `xielab3`, then dispatches a held controller supervisor. One persistent job-scoped claim and independent locks prevent duplicates. Linux host/boot/PID/start ticks/session/UID births identify the controller and supervisors. The supervisor calls actual `Popen.wait()` and records `controller-exit.json`; a self-written success marker without an actual zero exit and all five steps is insufficient.
-2. HKUST3 installs the same small sidecar on pinned HPC3 `ACD-Login-1`, IP `10.120.48.31`, boot `a27512a3-24a0-4ca3-aa92-98d2a5256d9a`, PID namespace `pid:[4026531836]`. Every SSH call uses strict existing host keys and the same kernel guard as the modern account bridge. Host identity changes fail closed; no gateway fallback or silent pin update.
+2. HKUST3 installs the same small sidecar on pinned HPC3 `ACD-Login-1`, IP `10.120.48.31`, boot `a27512a3-24a0-4ca3-aa92-98d2a5256d9a`, PID namespace `pid:[4026531836]`. Every SSH call uses strict existing host keys and the same kernel guard as the modern account bridge, with `-B` additionally disabling bytecode. The guard's minimal Python3.6-compatible code then execs **`<config.base>/env/bin/python -B`** for every source bootstrap/probe/stream/held-supervisor/worker. The system Python3.6 is never used to import or run sidecar modules. Host identity changes fail closed; no gateway fallback or silent pin update.
 3. The controller observes only small prepared/run/submission metadata plus Slurm accounting/queue. It binds the actual same-job jxu957 native4/48CPU/512GiB/emergency_acd/formal-user proof and full training commit. Source absence or failed observations stay unknown. A proven terminal job without a required completed pair records incomplete, never complete.
 4. At each fixed step 5/50/100/150/200, a source-side held supervisor runs the long CPU snapshot. It persists a public plan, once claim, supervisor/worker births, stdout/stderr, actual worker exit code and SHA-bound result. SSH observation timeout triggers **queries of the existing claim/process/progress**, never another snapshot. Existing incomplete source claims or unknown dead supervisors require inspection.
 5. Only the snapshot's exact file graph is transferred directly HPC3 → HKUST3. Each source reader validates its snapshot SHA, selected file index, safe path and actual file identity, emits raw bytes and exits zero only after full source SHA. The receiver counts bytes actually read/written, hashes and fsyncs them, checks exact length and actual SSH exit zero, then publishes hardlinks. No sparse stat-size progress and no Mac asset staging.
@@ -58,6 +58,7 @@ The launcher checks the exact current Git HEAD, a clean tree, the remote branch 
 - HKUST3 shared immutable dependencies: the run's `immutable-dependencies/<sha256>` directory.
 - HPC3 held operations: `<base>/preparation/archive-control/operations/<archive-code-commit>/<actual-run-id>/step-<S>-snapshot|accept/`.
 - HPC3 final byte receipts: `<base>/preparation/checkpoint-archives/global_step_<S>/complete.json`.
+- HPC3 original immutable archive wrapper: `<base>/preparation/checkpoint-archives/global_step_<S>/archive-receipt-import.json`, with the exact three keys `archive_receipt_file`, `archive_receipt_sha256`, `archive_receipt`. The worker validates the snapshot and archive proof before importing it, then performs source readback. Its hash is `document_sha(wrapper)`; the receipt SHA inside it is the original HKUST3 `archive-receipt.json` SHA. It must never be reconstructed from `complete.json`, which has a later `checked_unix`. The held accept operation's `plan.json/archive_wrapper` also retains the original wrapper.
 
 Read `progress.json`, `events.jsonl`, `controller-birth.json`, `controller-supervisor-birth.json`, `controller-exit.json`, per-step operation receipts and each archive's `transport/progress.json` / `archive-progress.jsonl`. Source operations expose actual `source-progress.jsonl` or `source-readback-progress.jsonl`. A live PID or RUNNING status is not acceptance. Verify at least two measured byte/file increments and terminal exit receipts. Unchanged waiting state produces no repeated progress event; SSH observation failures have a separate durable journal.
 
@@ -66,3 +67,13 @@ Read `progress.json`, `events.jsonl`, `controller-birth.json`, `controller-super
 Transport stall/oversize/short read/nonzero SSH exit preserves its partial file and exit receipt and cannot publish a payload. The code only terminates its own local SSH reader on a measured transport stall; source snapshots and accept workers are never cancelled due to observation timeouts. This version deliberately has no generic automatic retry of terminal/unknown controller claims. A later recovery must first inspect exact births, actual exits, source operation claims and retained partials; use an explicit reviewed recovery path, never delete claims or blindly replay a source snapshot. A source-side code-install timeout is also unknown and requires inspection of the existing sidecar directory.
 
 The core creates no HPC3 archive or restore target. A separate actual native4 restore controller must enforce at most one HPC3 target, include newly materialized data/encoder bytes in the 2TB budget, and map original serialized absolute paths to verified target copies so retained original sources cannot mask a broken restore. Final200 CUDA acceptance requires actual actor model/Adam/scheduler/RNG, four probe model/Adam/private RNG states at2000 steps, selector/eligible mapping/candidate pending cursor/driver RNG/data equality, two readbacks, and no update201. None is inferred from this archive's SHA status.
+
+## Narrow failed-CPU-controller recovery interface (optional, not for failed727148 training)
+
+The normal next fresh training job uses the normal new job root and **no** recovery argument. The optional `--recovery-from SMALL_PUBLIC_JSON` interface only admits a previously failed CPU controller for the **same base/training SHA/job**. It never terminates processes. The parent must separately stop the exact own birth and preserve its actual supervisor exit first. No generic retry or SSH-timeout inference is admitted.
+
+The JSON requires exactly `reason`, `old_code_commit`, `old_config_sha256`, `old_exit_sha256`, `old_stop_request_sha256`, `source_no_operations_proof_path`, `source_no_operations_proof_sha256`. Reason must be `source_system_python36_capture_output_rejected`. The old operator SHA must differ from the new full SHA. The controller checks pinned original config/exit/stop bytes, old exact code bundle, the launch config claim, bound actual nonzero child wait, matching own controller and supervisor births, both births currently dead, old output SHA, no old run binding/step operations, empty old progress, and an actual failed probe journal containing the TypeError/capture_output error.
+
+It then uses the bound training interpreter over pinned SSH to **freshly** verify both source `preparation/archive-control/operations` and `preparation/checkpoint-archives` are absent or genuinely empty. It also verifies the prior pinned no-operations proof SHA and training submission. A current healthy run manifest is allowed. Failed/timeout/invalid observations refuse launch; no source file is written by admission. A successful admission writes a new immutable `recovery-admission.json` and once launch claim under `job-<samejob>/recovery-<full-old-operator-SHA>`. Old code/config/claims/logs remain unchanged. Use a new local `--output`; retrying that output queries status only.
+
+Historical d9 proof pins supplied by the parent are in `recovery-d9-evidence-historical.json`. They are retained for review only;727148 training has since failed for an independent reason and must not be restarted through this interface.

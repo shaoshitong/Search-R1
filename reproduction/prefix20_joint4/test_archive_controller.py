@@ -3,6 +3,7 @@ import base64
 import copy
 import hashlib
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -10,6 +11,7 @@ import subprocess
 import shlex
 import sys
 import tempfile
+import time
 import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
@@ -71,6 +73,168 @@ class ControllerTests(unittest.TestCase):
         argv=held.ssh_argv('true')
         self.assertIn('-oStrictHostKeyChecking=yes',argv);self.assertIn('-oUserKnownHostsFile='+held.KNOWN_HOSTS,argv)
         self.assertIn(held.PEER,argv);self.assertIn(held.HPC_IDENTITY['boot_id'],argv[-1])
+
+    def recovery_fixture(self):
+        f=self.f;old=f.config;root=Path(old['controller_root']);born=dict(f.born(),host='xielab3')
+        supervisor=dict(born,pid=born['pid']+1,start_ticks=2)
+        core.publish(root/'config.json',old)
+        core.publish(root/'controller-launch-claim.json',dict(config_sha256=core.document_sha(old)))
+        core.publish(root/'controller-birth.json',born)
+        core.publish(root/'controller-supervisor-birth.json',supervisor)
+        core.publish(root/'launcher-observed-birth.json',supervisor)
+        (root/'controller.log').write_text('constructed controller output\n')
+        core.publish(root/'controller-exit.json',dict(config_sha256=core.document_sha(old),controller=born,
+            returncode=-15,stdout_sha256=core.sha(root/'controller.log')))
+        core.publish(root/'failed-controller-stop-request.json',dict(reason='constructed exact own birth TERM'))
+        core.publish(root/'progress.json',dict(run_id=None,completed_steps=[]))
+        (root/'observation-errors.jsonl').write_text(json.dumps(dict(mode='probe',returncode=1,
+            stderr="TypeError: __init__() got an unexpected keyword argument 'capture_output'"))+'\n')
+        prior=f.base/'preparation/archive-control/d9-controller-failure-no-operations.json';prior.parent.mkdir(parents=True,exist_ok=True)
+        core.publish(prior,dict(status='constructed earlier no operations proof'))
+        recovery=dict(reason='source_system_python36_capture_output_rejected',old_code_commit=old['code_commit'],
+            old_config_sha256=core.sha(root/'config.json'),old_exit_sha256=core.sha(root/'controller-exit.json'),
+            old_stop_request_sha256=core.sha(root/'failed-controller-stop-request.json'),
+            source_no_operations_proof_path=str(prior),source_no_operations_proof_sha256=core.sha(prior))
+        new=dict(old,code_commit='d'*40,recovery_of=recovery,controller_root=str(root/('recovery-'+old['code_commit'])))
+        directory=held.code_root(new);directory.mkdir(parents=True)
+        for name in held.BUNDLE_NAMES:(directory/name).write_bytes((held.code_root(old)/name).read_bytes())
+        core.publish(directory/'code-publication.json',dict(code_commit=new['code_commit'],files=new['code_manifest']))
+        return new,root
+
+    def test_all_source_commands_use_bound_environment_python_and_no_pyc(self):
+        f=self.f;c=control.Controller(f.config,'RAM only');commands=[]
+        def run(argv,**kwargs):
+            commands.append(shlex.split(argv[-1]));return subprocess.CompletedProcess(argv,0,b'{}',b'')
+        with patch.object(held,'ssh_argv',side_effect=lambda command:['constructed',command]),patch.object(control.subprocess,'run',side_effect=run):
+            c.remote('probe',f.config)
+        self.assertEqual(commands[0][:2],[str(f.base/'env/bin/python'),'-B'])
+        self.assertEqual(held.source_argv(f.config,'a.py','stream')[:2],commands[0][:2])
+        self.assertTrue(held.bound_command('true').startswith('python3 -B -c '))
+        with patch.object(held,'ssh_argv',side_effect=lambda command:['constructed',command]),\
+             patch.object(control.subprocess,'run',return_value=subprocess.CompletedProcess([],0,core.document_bytes(
+                 dict(status='SIDECAR_FULL_SHA_PASS',code_root=str(held.code_root(f.config,source=True)))),b'')) as invoke:
+            c.deploy_source_sidecar()
+        self.assertEqual(shlex.split(invoke.call_args[0][0][-1])[:3],[str(f.base/'env/bin/python'),'-B','-c'])
+
+    def test_recovery_config_pins_new_revision_and_rejects_reusing_old_code(self):
+        new,root=self.recovery_fixture();held.validate_config(new)
+        for changed in (dict(controller_root=str(root)),dict(code_commit=new['recovery_of']['old_code_commit'])):
+            with self.subTest(changed=changed),self.assertRaises(ValueError):held.validate_config(dict(new,**changed))
+        changed=copy.deepcopy(new);changed['recovery_of']['reason']='generic retry'
+        with self.assertRaises(ValueError):held.validate_config(changed)
+
+    def test_source_launch_and_default_held_worker_use_training_environment_python(self):
+        f=self.f;invocations=[]
+        def spawn(argv,**kwargs):
+            invocations.append(argv);return SimpleNamespace(pid=os.getpid(),wait=lambda:7)
+        with patch.object(held.subprocess,'Popen',side_effect=spawn),patch.object(held,'identity',side_effect=f.born):
+            held.launch_operation(f.plan)
+        self.assertEqual(invocations[0][:2],[str(f.base/'env/bin/python'),'-B'])
+        self.assertIn('supervise',invocations[0])
+        with patch.object(held.subprocess,'Popen',side_effect=spawn):
+            result=held.supervise(held.operation_root(f.plan),observe=f.born)
+        self.assertEqual(invocations[1][:2],[str(f.base/'env/bin/python'),'-B'])
+        self.assertIn('operation-worker',invocations[1]);self.assertEqual(result['worker_returncode'],7)
+
+    def test_recovery_launch_persists_admission_then_claims_new_revision_only_once(self):
+        new,old=self.recovery_fixture();root=Path(new['controller_root']);admitted=dict(status='constructed admission')
+        invocations=[]
+        def spawn(argv,**kwargs):
+            self.assertTrue((root/'recovery-admission.json').exists());self.assertTrue((root/'controller-launch-claim.json').exists())
+            invocations.append(argv);return SimpleNamespace(pid=os.getpid(),stdin=io.BytesIO())
+        with patch.object(held.socket,'gethostname',return_value='xielab3'),patch.object(held,'identity',side_effect=self.f.born),\
+             patch.object(held,'recovery_admission',return_value=admitted) as admission,patch.object(held.subprocess,'Popen',side_effect=spawn):
+            self.assertEqual(held.launch_controller(new,'RAM')['status'],'DISPATCHED_CONTROLLER_SUPERVISOR')
+            self.assertEqual(held.launch_controller(new,'RAM')['status'],'CLAIMED_BIRTH_PENDING_OR_UNKNOWN')
+        self.assertEqual(len(invocations),1);self.assertEqual(admission.call_count,1)
+        self.assertEqual(core._read_json(root/'recovery-admission.json'),admitted)
+        self.assertNotIn('RAM',''.join(p.read_text() for p in root.iterdir() if p.is_file()))
+
+    def test_recovery_admits_only_actual_nonzero_exit_and_dead_bound_births(self):
+        new,root=self.recovery_fixture();observer=lambda config,password:dict(proof='constructed fresh empty namespaces')
+        with patch.object(held,'same_birth',return_value=False):value=held.recovery_admission(new,'RAM',source_observer=observer)
+        self.assertEqual(value['old_actual_exit']['returncode'],-15);self.assertTrue(value['old_births_dead'])
+        self.assertFalse(value['training_job_changed']);self.assertFalse(Path(new['controller_root']).exists())
+        with patch.object(held,'same_birth',return_value=True),self.assertRaisesRegex(ValueError,'STILL_ALIVE'):
+            held.recovery_admission(new,'RAM',source_observer=observer)
+
+    def test_recovery_refuses_wrong_exit_hash_and_previous_run_or_source_operations(self):
+        new,root=self.recovery_fixture();wrong=copy.deepcopy(new);wrong['recovery_of']['old_exit_sha256']='e'*64
+        with self.assertRaises(ValueError):held.recovery_admission(wrong,'RAM')
+        core.publish(root/'run-binding.json',dict(run_id=self.f.run_id))
+        with patch.object(held,'same_birth',return_value=False),self.assertRaisesRegex(ValueError,'HAS_RUN_OR_OPERATIONS'):
+            held.recovery_admission(new,'RAM')
+
+    def test_recovery_zero_exit_is_never_retry_authorization(self):
+        new,root=self.recovery_fixture();exited=core._read_json(root/'controller-exit.json');exited['returncode']=0
+        held.atomic(root/'controller-exit.json',exited);new['recovery_of']['old_exit_sha256']=core.sha(root/'controller-exit.json')
+        with self.assertRaisesRegex(ValueError,'NONZERO_EXIT'):held.recovery_admission(new,'RAM')
+
+    def test_source_no_operations_observation_requires_fresh_identity_and_exit_zero(self):
+        new,root=self.recovery_fixture();paths=[str(self.f.base/p) for p in ('preparation/archive-control/operations','preparation/checkpoint-archives')]
+        proof=dict(status='FRESH_SOURCE_NO_ARCHIVE_OPERATIONS_PASS',base=str(self.f.base),source_job=self.f.job,
+            training_commit=self.f.commit,observer_uid=14090,identity=held.HPC_IDENTITY,run_manifest_may_exist=True,
+            prior_proof_sha256=new['recovery_of']['source_no_operations_proof_sha256'],checked_unix=time.time(),
+            roots=[dict(path=p,exists=False,empty=True) for p in paths])
+        result=subprocess.CompletedProcess([],0,core.document_bytes(proof),b'')
+        with patch.object(held.subprocess,'run',return_value=result) as invoke:value=held.fresh_no_source_operations(new,'do not persist')
+        self.assertEqual(value['returncode'],0);self.assertNotIn('do not persist',json.dumps(value))
+        # The secret is removed from the very environment passed to subprocess.
+        self.assertNotIn('SSHPASS',invoke.call_args.kwargs['env'])
+        for bad in (dict(proof,checked_unix=time.time()-120),dict(proof,observer_uid=0)):
+            with patch.object(held.subprocess,'run',return_value=subprocess.CompletedProcess([],0,core.document_bytes(bad),b'')),self.assertRaises(ValueError):
+                held.fresh_no_source_operations(new,'RAM')
+        with patch.object(held.subprocess,'run',side_effect=subprocess.TimeoutExpired([],45)),self.assertRaisesRegex(ValueError,'UNKNOWN_NO_LAUNCH'):
+            held.fresh_no_source_operations(new,'RAM')
+        with patch.object(held.subprocess,'run',return_value=subprocess.CompletedProcess([],1,b'',b'failure')),self.assertRaisesRegex(ValueError,'FAILED_NO_LAUNCH'):
+            held.fresh_no_source_operations(new,'RAM')
+
+    def test_fresh_source_empty_namespaces_allow_existing_run_manifest_and_reject_operations(self):
+        new,root=self.recovery_fixture();f=self.f
+        (f.base/'job.id').write_text(f.job+'\n');core.publish(f.base/'preparation/training-submission.json',
+            dict(job=f.job,source_commit=f.commit,returncode=0))
+        (f.base/'logs').mkdir();core.publish(f.base/'logs/run-manifest.json',dict(run_id=f.run_id))
+        program=held.NO_OPERATIONS_PROGRAM.replace("Path('/data/user/jxu957/experiments')",'Path('+repr(str(f.personal))+')')
+        builtin_open=open;real_readlink=os.readlink
+        def local_open(path,*args,**kwargs):
+            if str(path)=='/proc/sys/kernel/random/boot_id':return io.StringIO(held.HPC_IDENTITY['boot_id'])
+            return builtin_open(path,*args,**kwargs)
+        def check():
+            with patch.object(sys,'stdin',io.StringIO(json.dumps(new))),patch.object(sys,'stdout',io.StringIO()) as stdout,\
+                 patch.object(os,'getuid',return_value=14090),patch.object(socket_module,'gethostname',return_value=held.HPC_IDENTITY['hostname']),\
+                 patch.object(os,'readlink',side_effect=lambda p,*a,**kw:held.HPC_IDENTITY['pid_namespace'] if str(p)=='/proc/self/ns/pid' else real_readlink(p,*a,**kw)),\
+                 patch('builtins.open',side_effect=local_open):
+                exec(program,{})
+                return json.loads(stdout.getvalue())
+        import socket as socket_module
+        self.assertTrue(check()['run_manifest_may_exist'])
+        operations=f.base/'preparation/archive-control/operations';operations.mkdir();core.publish(operations/'some-claim.json',{})
+        with self.assertRaises(AssertionError):check()
+
+    def test_existing_recovery_once_claim_only_queries_and_never_spawns(self):
+        new,old=self.recovery_fixture();root=Path(new['controller_root']);root.mkdir()
+        core.publish(root/'config.json',new);core.publish(root/'controller-launch-claim.json',dict(config_sha256=core.document_sha(new)))
+        with patch.object(held.socket,'gethostname',return_value='xielab3'),patch.object(held.subprocess,'Popen',side_effect=AssertionError('no replay')),\
+             patch.object(held,'recovery_admission',side_effect=AssertionError('no re-admission')):
+            self.assertEqual(held.launch_controller(new,'RAM')['status'],'CLAIMED_BIRTH_PENDING_OR_UNKNOWN')
+
+    def test_accept_persists_exact_original_archive_wrapper_and_never_overwrites_it(self):
+        f=self.f;wrapper=dict(archive_receipt_file='/constructed/archive/archive-receipt.json',
+            archive_receipt_sha256='e'*64,archive_receipt=dict(checked_unix=123,constructed=True))
+        plan=held.operation_plan(f.config,f.run_id,5,'accept',snapshot_sha='f'*64,archive_wrapper=wrapper)
+        root=held.operation_root(plan);root.mkdir(parents=True);core.publish(root/'plan.json',plan)
+        source=f.base/'preparation/checkpoint-archives/global_step_5';source.mkdir(parents=True)
+        core.publish(source/'source-snapshot.json',{})
+        with patch.object(core,'load_snapshot',return_value={}),patch.object(core,'validate_archive_proof',return_value={}),\
+             patch.object(core,'accept_archive',return_value={'constructed':'accepted'}):held.operation_worker(root)
+        imported=source/'archive-receipt-import.json';original_bytes=imported.read_bytes()
+        self.assertEqual(core._read_json(imported),wrapper);self.assertEqual(core.sha(imported),core.document_sha(wrapper))
+        changed=copy.deepcopy(plan);changed['archive_wrapper']['archive_receipt']['checked_unix']=124
+        held.atomic(root/'plan.json',changed)
+        with patch.object(core,'load_snapshot',return_value={}),patch.object(core,'validate_archive_proof',return_value={}),\
+             patch.object(core,'accept_archive',side_effect=AssertionError('must refuse changed import')),\
+             self.assertRaisesRegex(ValueError,'IMPORTED_ARCHIVE_WRAPPER_DIFFERS'):held.operation_worker(root)
+        self.assertEqual(imported.read_bytes(),original_bytes)
 
     def test_partial_source_snapshot_claim_never_spawns_another_worker(self):
         f=self.f;source=f.base/'preparation/checkpoint-archives/global_step_5';source.mkdir(parents=True)
@@ -272,14 +436,18 @@ class ControllerTests(unittest.TestCase):
             try:
                 config=dict(self.f.config,base=str(pair.base),training_commit=pair.commit)
                 c=control.Controller(config,'constructed RAM secret');c.run_id=pair.run_id;current={};calls=[]
+                code=held.code_root(config,source=True);code.mkdir(parents=True)
+                for name in held.BUNDLE_NAMES:(code/name).write_bytes(Path(__file__).with_name(name).read_bytes())
+                core.publish(code/'code-publication.json',dict(code_commit=config['code_commit'],files=config['code_manifest']))
                 def wait(plan):
                     calls.append(plan['kind'])
                     if plan['kind']=='snapshot':
                         value=core.snapshot(pair.base,5,commit=pair.commit,run_id=pair.run_id);current.update(value);return value
-                    return core.accept_archive(pair.base,current['snapshot_file'],current['snapshot_sha256'],plan['archive_wrapper'],
-                        commit=pair.commit,run_id=pair.run_id,step=5)
+                    root=held.operation_root(plan);root.mkdir(parents=True);core.publish(root/'plan.json',plan)
+                    return held.operation_worker(root)['result']
                 def local_stream(command):
-                    args=shlex.split(command);index=int(args[args.index('--index')+1]);row=current['snapshot']['files'][index]
+                    args=shlex.split(command);self.assertEqual(args[:2],[str(pair.base/'env/bin/python'),'-B'])
+                    index=int(args[args.index('--index')+1]);row=current['snapshot']['files'][index]
                     program='import pathlib,sys;sys.stdin.buffer.read();sys.stdout.buffer.write(pathlib.Path('+repr(row['source_path'])+').read_bytes());sys.stdout.buffer.flush()'
                     return [sys.executable,'-B','-c',program]
                 c.wait_operation=wait
@@ -292,6 +460,11 @@ class ControllerTests(unittest.TestCase):
                 self.assertTrue(transport['all_actual_stream_exit_codes_zero'])
                 self.assertEqual(transport['accepted_payload_bytes'],current['snapshot']['bytes'])
                 source=core._read_json(Path(current['snapshot_file']).parent/'complete.json')
+                imported=core._read_json(Path(current['snapshot_file']).parent/'archive-receipt-import.json')
+                archived=core._read_json(archive_dir/'archive-receipt.json')
+                self.assertEqual(imported['archive_receipt'],archived)
+                self.assertEqual(imported['archive_receipt_sha256'],core.sha(archive_dir/'archive-receipt.json'))
+                self.assertNotEqual(imported['archive_receipt']['checked_unix'],source['checked_unix'])
                 self.assertTrue(source['source_readback']['all_source_files_fresh_sha_pass'])
                 self.assertTrue(source['original_sources_retained']);self.assertFalse(source['actual_cuda_restore_accepted'])
                 for name in pair.model_shas:

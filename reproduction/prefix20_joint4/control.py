@@ -192,12 +192,17 @@ def bootstrap(base,commit):
 
 
 def launch_command(base,commit):
-    return ['sbatch','--parsable','--partition=emergency_acd','--qos=formal-user','--account=jxu957',
+    command=['sbatch','--parsable','--partition=emergency_acd','--qos=formal-user','--account=jxu957',
         '--nodes=1','--ntasks=1','--gres=gpu:4','--cpus-per-task=48','--mem=512G','--time=7-00:00:00',
         '--job-name=qprobe-prefix20-joint200','--export=NONE',
         '--chdir='+str(base/'repo'),
-        '--output='+str(base/'logs/training-%j.log'),'--error='+str(base/'logs/training-%j.log'),
-        str(base/'source'/commit/'reproduction/prefix20_joint4/train.sh'),str(base),commit]
+        '--output='+str(base/'logs/training-%j.log'),'--error='+str(base/'logs/training-%j.log')]
+    if base==Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727148-20261016'):
+        permit=json.loads((base/'preparation/failed727148-deferred-node-cleanup.json').read_text())
+        if permit.get('source_commit')!=commit or permit.get('node')!='ACD1-25' or permit.get('before_any_cuda') is not True:
+            raise ValueError('PREFIX20_RECOVERY727148_BOUND_NODE_CLEANUP_PERMIT_REQUIRED')
+        command.append('--nodelist=ACD1-25')
+    return command+[str(base/'source'/commit/'reproduction/prefix20_joint4/train.sh'),str(base),commit]
 
 
 def submit(base,commit):

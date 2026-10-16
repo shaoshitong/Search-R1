@@ -16,4 +16,7 @@ unset SEARCH_G1_SLURM_SHARED_AUTHORIZATION
 mkdir -p "$BASE/cache/triton" "$BASE/cache/torch-extensions" "$BASE/cache/inductor" "$BASE/artifacts"
 cd "$BASE/repo"
 python -m reproduction.prefix20_joint4.prepare_training --base "$BASE" --commit "$COMMIT"
+if [[ "$BASE" == /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727148-20261016 ]]; then
+  python -B -m reproduction.prefix20_joint4.recovery727148_node_cleanup --recovery-base "$BASE" --commit "$COMMIT"
+fi
 exec python -m reproduction.common8.run_pipeline --base "$BASE" --export-port 18016
