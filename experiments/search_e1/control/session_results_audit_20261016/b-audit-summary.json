@@ -1,0 +1,201 @@
+{
+  "observed_at_cst": "2026-10-16T12:54:43.513640+08:00",
+  "session": "01a12e27-764b-7432-a5f2-74d88ee4a8d4",
+  "read_only": true,
+  "training_agent_messages_sent": false,
+  "remote_mutations": false,
+  "canonical_segments": [
+    {
+      "first": 1,
+      "last": 3,
+      "path": "/home/shaoshitong/search-e1-migration-20261011/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/logs/train-r2-3da9045.log"
+    },
+    {
+      "first": 4,
+      "last": 8,
+      "path": "/home/shaoshitong/search-e1-migration-20261011/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/logs/isolated-resume-bc666df-a177507c.log"
+    },
+    {
+      "first": 9,
+      "last": 169,
+      "path": "/home/shaoshitong/rbb5-context2-ray/ray/session_latest/logs/worker-11344cfc20371f65c7cab4989b78e523fe63b02ac0ee8493b64d8895-01000000-1111494.out"
+    }
+  ],
+  "old_train_overlap_matched": 130,
+  "old_train_overlap_exact": true,
+  "series_count": 169,
+  "missing_outer": [],
+  "completed_outer": 169,
+  "target_outer": 200,
+  "train_latest_em": 0.5121093988418579,
+  "train_recent10_mean": 0.4973828196525574,
+  "fixed512": [
+    {
+      "iter": 5,
+      "em": 0.171875,
+      "f1": 0.2380297221665891,
+      "n": 512,
+      "correct": 88,
+      "path": "/home/shaoshitong/search-e1-migration-20261011/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/logs/isolated-resume-bc666df-a177507c.log",
+      "line": 22971,
+      "sha256": "cd097b2d32770471de2acf2fc5fd6d695fb3cdb3048799ba067510cff96aab64",
+      "source_hashed_prefix_bytes": 28801339,
+      "sha256_scope": "log prefix of exact source_hashed_prefix_bytes",
+      "datasets": {
+        "nq": {
+          "n": 256,
+          "em": 0.19921875,
+          "f1": 0.2922347142774738
+        },
+        "hotpotqa": {
+          "n": 256,
+          "em": 0.14453125,
+          "f1": 0.18382473005570424
+        }
+      }
+    },
+    {
+      "iter": 50,
+      "em": 0.400390625,
+      "f1": 0.474950819579726,
+      "n": 512,
+      "correct": 205,
+      "path": "/home/shaoshitong/rbb5-context2-ray/ray/session_latest/logs/worker-11344cfc20371f65c7cab4989b78e523fe63b02ac0ee8493b64d8895-01000000-1111494.out",
+      "line": 430362,
+      "sha256": "26d32950375da552a44da00b3a45649182ce929dd47bdf2f700d5da8747d6590",
+      "source_hashed_prefix_bytes": 824003663,
+      "sha256_scope": "log prefix of exact source_hashed_prefix_bytes",
+      "datasets": {
+        "nq": {
+          "n": 256,
+          "em": 0.41015625,
+          "f1": 0.5162985885642137
+        },
+        "hotpotqa": {
+          "n": 256,
+          "em": 0.390625,
+          "f1": 0.43360305059523807
+        }
+      }
+    },
+    {
+      "iter": 100,
+      "em": 0.455078125,
+      "f1": 0.5305450293004801,
+      "n": 512,
+      "correct": 233,
+      "path": "/home/shaoshitong/rbb5-context2-ray/ray/session_latest/logs/worker-11344cfc20371f65c7cab4989b78e523fe63b02ac0ee8493b64d8895-01000000-1111494.out",
+      "line": 977416,
+      "sha256": "26d32950375da552a44da00b3a45649182ce929dd47bdf2f700d5da8747d6590",
+      "source_hashed_prefix_bytes": 824003663,
+      "sha256_scope": "log prefix of exact source_hashed_prefix_bytes",
+      "datasets": {
+        "nq": {
+          "n": 256,
+          "em": 0.4140625,
+          "f1": 0.5255518353174604
+        },
+        "hotpotqa": {
+          "n": 256,
+          "em": 0.49609375,
+          "f1": 0.5355382232834994
+        }
+      }
+    },
+    {
+      "iter": 150,
+      "em": 0.494140625,
+      "f1": 0.5700489831349208,
+      "n": 512,
+      "correct": 253,
+      "path": "/home/shaoshitong/rbb5-context2-ray/ray/session_latest/logs/worker-11344cfc20371f65c7cab4989b78e523fe63b02ac0ee8493b64d8895-01000000-1111494.out",
+      "line": 1630471,
+      "sha256": "26d32950375da552a44da00b3a45649182ce929dd47bdf2f700d5da8747d6590",
+      "source_hashed_prefix_bytes": 824003663,
+      "sha256_scope": "log prefix of exact source_hashed_prefix_bytes",
+      "datasets": {
+        "nq": {
+          "n": 256,
+          "em": 0.4375,
+          "f1": 0.5426649305555556
+        },
+        "hotpotqa": {
+          "n": 256,
+          "em": 0.55078125,
+          "f1": 0.5974330357142859
+        }
+      }
+    }
+  ],
+  "final51713_complete": false,
+  "runtime_progress": {
+    "observed_seconds": 41.49908709526062,
+    "outer": 170,
+    "generated_tokens_before": 160682,
+    "generated_tokens_after": 220136,
+    "generated_tokens_delta": 59454,
+    "generation_calls_before": 7,
+    "generation_calls_after": 9,
+    "log_bytes_delta": 461368,
+    "recent_errors": []
+  },
+  "checkpoint_manifest": {
+    "path": "/home/shaoshitong/search-e1-migration-20261011/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/output-speed-resume3-2e3a9029051d4771bc61c95b28b60e21/checkpoints/training_state/global_step_169/manifest.json",
+    "sha256": "a5da9da85124bd15f9e4d096650108bfa6d2a3ef3ebc473a648b38b9e5881216",
+    "status": "COMPLETE_SAME_WORLD_STATE_SAVED",
+    "completed": 169,
+    "next_step": 170,
+    "workers": [
+      {
+        "rank": 0,
+        "adam": 3380,
+        "scheduler": 169,
+        "finite": true
+      },
+      {
+        "rank": 1,
+        "adam": 3380,
+        "scheduler": 169,
+        "finite": true
+      },
+      {
+        "rank": 2,
+        "adam": 3380,
+        "scheduler": 169,
+        "finite": true
+      },
+      {
+        "rank": 3,
+        "adam": 3380,
+        "scheduler": 169,
+        "finite": true
+      }
+    ]
+  },
+  "source_hashes": [
+    {
+      "path": "/home/shaoshitong/search-e1-migration-20261011/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/logs/train-r2-3da9045.log",
+      "hashed_prefix_bytes": 84843,
+      "sha256": "7308edd75955e3e332ece17c4007c0db9adf7d645b8cc1d8a5f6991c24791ec0",
+      "size_after": 84843
+    },
+    {
+      "path": "/home/shaoshitong/search-e1-migration-20261011/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/logs/isolated-resume-bc666df-a177507c.log",
+      "hashed_prefix_bytes": 28801339,
+      "sha256": "cd097b2d32770471de2acf2fc5fd6d695fb3cdb3048799ba067510cff96aab64",
+      "size_after": 28801339
+    },
+    {
+      "path": "/home/shaoshitong/rbb5-context2-ray/ray/session_latest/logs/worker-11344cfc20371f65c7cab4989b78e523fe63b02ac0ee8493b64d8895-01000000-1111494.out",
+      "hashed_prefix_bytes": 824003663,
+      "sha256": "26d32950375da552a44da00b3a45649182ce929dd47bdf2f700d5da8747d6590",
+      "size_after": 824003663
+    }
+  ],
+  "observation_files": [
+    "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/b-observation-1.json",
+    "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/b-runtime-1.json",
+    "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/b-runtime-2.json",
+    "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/b-source-hashes.json"
+  ]
+}

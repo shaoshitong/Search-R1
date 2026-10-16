@@ -1,0 +1,3901 @@
+{
+  "observed_at_cst": "2026-10-16T12:57:06.366812+08:00",
+  "read_only": true,
+  "remote_state_changed": false,
+  "training_agent_messages_sent": false,
+  "runs": [
+    {
+      "name": "CoSearch common-em-v4 dual-model 713379",
+      "session": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+      "output_dir": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011",
+      "completed_iter": 200,
+      "train_latest_em": 0.50234375,
+      "train_recent10_mean": 0.5192187500000001,
+      "train_recent_mean_n": 10,
+      "fixed512": [
+        {
+          "iter": 5,
+          "em": 0.3203125,
+          "f1": 0.4137524884414796,
+          "n": 512,
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-validation/5.receipt.json",
+          "sha256": "0d76ec29009c1c867c71eecf9a5720c4dd42719f2f1ee0f26cfab8eb1c43933a"
+        },
+        {
+          "iter": 50,
+          "em": 0.421875,
+          "f1": 0.5113536311778502,
+          "n": 512,
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-validation/50.receipt.json",
+          "sha256": "edda9b18fbd385a92922757bd18b18945be67188acd7483feb3a26fcc8e64739"
+        },
+        {
+          "iter": 100,
+          "em": 0.4765625,
+          "f1": 0.566675967261905,
+          "n": 512,
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-validation/100.receipt.json",
+          "sha256": "f69e843fcc2704bb2eff150aced99de08983380a5ab030923c6398806d57d296"
+        },
+        {
+          "iter": 150,
+          "em": 0.505859375,
+          "f1": 0.5933591365231992,
+          "n": 512,
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-validation/150.receipt.json",
+          "sha256": "1bf3b3bcc9af7df7fb7996a84858cfef59beb7d26028b48cb519c6d6bb850b52"
+        },
+        {
+          "iter": 200,
+          "em": 0.513671875,
+          "f1": 0.6073676215277779,
+          "n": 512,
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-validation/200.receipt.json",
+          "sha256": "c3edebddea3fe07d157f1743c5077a709dab35bab0f8336e7ef3c1a1e61b6067"
+        }
+      ],
+      "final51713": {
+        "complete": true,
+        "iter": 200,
+        "n": 51713,
+        "correct": 25234,
+        "em": 0.4879624079051689,
+        "f1": 0.5630729533879519,
+        "macro_em": 0.4474974643615691,
+        "macro_f1": 0.5335946202628082,
+        "source_metrics": {
+          "2wikimultihopqa": {
+            "count": 12576,
+            "correct": 5650,
+            "em": 0.44926844783715014,
+            "f1": 0.518099790336217
+          },
+          "bamboogle": {
+            "count": 125,
+            "correct": 56,
+            "em": 0.448,
+            "f1": 0.5607619047619047
+          },
+          "hotpotqa": {
+            "count": 7405,
+            "correct": 3299,
+            "em": 0.44550979068197166,
+            "f1": 0.5696869729744086
+          },
+          "musique": {
+            "count": 2417,
+            "correct": 492,
+            "em": 0.20355812991311542,
+            "f1": 0.2851071417364522
+          },
+          "nq": {
+            "count": 3610,
+            "correct": 1690,
+            "em": 0.46814404432132967,
+            "f1": 0.5568716478784922
+          },
+          "popqa": {
+            "count": 14267,
+            "correct": 6757,
+            "em": 0.4736104296628583,
+            "f1": 0.5192878630602072
+          },
+          "triviaqa": {
+            "count": 11313,
+            "correct": 7290,
+            "em": 0.6443914081145584,
+            "f1": 0.7253470210919756
+          }
+        },
+        "datasets": {
+          "2wikimultihopqa": {
+            "correct": 5650,
+            "em": 0.44926844783715014,
+            "f1": 0.518099790336217,
+            "questions": 12576,
+            "trajectories": 12576
+          },
+          "bamboogle": {
+            "correct": 56,
+            "em": 0.448,
+            "f1": 0.5607619047619047,
+            "questions": 125,
+            "trajectories": 125
+          },
+          "hotpotqa": {
+            "correct": 3299,
+            "em": 0.44550979068197166,
+            "f1": 0.5696869729744086,
+            "questions": 7405,
+            "trajectories": 7405
+          },
+          "musique": {
+            "correct": 492,
+            "em": 0.20355812991311542,
+            "f1": 0.2851071417364522,
+            "questions": 2417,
+            "trajectories": 2417
+          },
+          "nq": {
+            "correct": 1690,
+            "em": 0.46814404432132967,
+            "f1": 0.5568716478784922,
+            "questions": 3610,
+            "trajectories": 3610
+          },
+          "popqa": {
+            "correct": 6757,
+            "em": 0.4736104296628583,
+            "f1": 0.5192878630602072,
+            "questions": 14267,
+            "trajectories": 14267
+          },
+          "triviaqa": {
+            "correct": 7290,
+            "em": 0.6443914081145584,
+            "f1": 0.7253470210919756,
+            "questions": 11313,
+            "trajectories": 11313
+          }
+        },
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/complete.json",
+        "sha256": "523198910d73336f6e633c3e02ce1691c75ec9a156023ed6bb1ce1d7741254a8",
+        "acceptance_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-final200-four-gpu-20261015/acceptance.json",
+        "acceptance_sha256": "ce7cf8e85e01ea685ead57657fbdf3189d68590d5c73d0b392bb0f781e8db549",
+        "scorer_version": "common-em-v4-final-model-action",
+        "completed_epoch": 1792065686.714123,
+        "independent_acceptance": true
+      },
+      "status": "TRAINING_AND_FINAL51713_INDEPENDENTLY_ACCEPTED",
+      "note": "Native双模型CoSearch：主actor和单独训练reranker均来自iter200；检索top50再rerank top5，greedy。与单模型方法推理计算预算不同。200outer canonical按7092651–5/7099236–100/713379101–200，当前245收据中45条旧失败后缀不入训练曲线。完整终评51713、模型导出SHA、独立重评分及作业退出0已核验。",
+      "training_series": [
+        {
+          "iter": 1,
+          "em": 0.26796875,
+          "correct": 686,
+          "job": "709265",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-1.json",
+          "sha256": "3780951474d69430188997028fc0f0172db50c88229ba45f8942108745f4b86a"
+        },
+        {
+          "iter": 2,
+          "em": 0.278125,
+          "correct": 712,
+          "job": "709265",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-2.json",
+          "sha256": "f0afdb7ed2dd766efc2732c6239b956f955961f443a4822c800933d64d8ace33"
+        },
+        {
+          "iter": 3,
+          "em": 0.259375,
+          "correct": 664,
+          "job": "709265",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-3.json",
+          "sha256": "63405eef4d1e2f3430a3321ec9bfe4e628d354bcdf025d30d96ccb4c7897a655"
+        },
+        {
+          "iter": 4,
+          "em": 0.256640625,
+          "correct": 657,
+          "job": "709265",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-4.json",
+          "sha256": "a88716b6d33c3b8a8f181ec20c5c7f8786f9e9298d9ae27bdc0c6f09171c15ca"
+        },
+        {
+          "iter": 5,
+          "em": 0.278515625,
+          "correct": 713,
+          "job": "709265",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-5.json",
+          "sha256": "5de4ab837d15070af70412576f8ae9a5a1b6b0440cae1073a51f43330f1f18ab"
+        },
+        {
+          "iter": 6,
+          "em": 0.30078125,
+          "correct": 770,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-6.json",
+          "sha256": "4ec68431aed120fe1952a4e8a142b42ec403d36a2871a871141d5b166070501c"
+        },
+        {
+          "iter": 7,
+          "em": 0.269921875,
+          "correct": 691,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-7.json",
+          "sha256": "df51ed0f7d600780d340fc33df45e591bf024b1084476f23cd6913e6c6f222d7"
+        },
+        {
+          "iter": 8,
+          "em": 0.2640625,
+          "correct": 676,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-8.json",
+          "sha256": "6ee4925c97a1ead8d460e8f97e7b3d1c88192dcbaba57a2b67b021c6f793a3a8"
+        },
+        {
+          "iter": 9,
+          "em": 0.269140625,
+          "correct": 689,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-9.json",
+          "sha256": "66332230ce272ff55c10ba4b0cf234ae8c02478171281861f29c95732a152791"
+        },
+        {
+          "iter": 10,
+          "em": 0.26484375,
+          "correct": 678,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-10.json",
+          "sha256": "835e0e8c3fac3fcecddcb675cfdd10f39ffb3d559ecb8a7f5aad77540014d464"
+        },
+        {
+          "iter": 11,
+          "em": 0.30234375,
+          "correct": 774,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-11.json",
+          "sha256": "92e041ba7ccfff3d1648e0871c7b64734a3b9aee992650d33461d90be84ba261"
+        },
+        {
+          "iter": 12,
+          "em": 0.303125,
+          "correct": 776,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-12.json",
+          "sha256": "ca25680575602a12793834a37b45ec308626560812bf6b18368a75074d2d1465"
+        },
+        {
+          "iter": 13,
+          "em": 0.32734375,
+          "correct": 838,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-13.json",
+          "sha256": "350191297fff5e6d5cd71f3250c0d3bdeb25b46ea95a98e0914404f189234dc3"
+        },
+        {
+          "iter": 14,
+          "em": 0.30703125,
+          "correct": 786,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-14.json",
+          "sha256": "cb01d06c801b3c6c0eeeaa38a67113df5e3e49546e17b9b4a0d7c06359defeb4"
+        },
+        {
+          "iter": 15,
+          "em": 0.33203125,
+          "correct": 850,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-15.json",
+          "sha256": "99b54e782bddd0dbda2d7d2316ca208d19c1771fe017ed4d4b67e84bc93ec345"
+        },
+        {
+          "iter": 16,
+          "em": 0.333984375,
+          "correct": 855,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-16.json",
+          "sha256": "4603abc5aba91cd3fb6af95fa24eed482f7182ef84b909847e914a6e9c06ed74"
+        },
+        {
+          "iter": 17,
+          "em": 0.324609375,
+          "correct": 831,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-17.json",
+          "sha256": "20186a12e6423ece6d131d006249e11fec8be0a15c0abcb8139d34ab088cd9c3"
+        },
+        {
+          "iter": 18,
+          "em": 0.337890625,
+          "correct": 865,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-18.json",
+          "sha256": "2641280e354981fa96eed2704a3fdbec2d13d9616f03647bc7d8f578a05558a4"
+        },
+        {
+          "iter": 19,
+          "em": 0.363671875,
+          "correct": 931,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-19.json",
+          "sha256": "fc62861bdcbb2f51451aa51c74d33ce059ae5a2bc6ffd30de2f21a4f4b7f0329"
+        },
+        {
+          "iter": 20,
+          "em": 0.3578125,
+          "correct": 916,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-20.json",
+          "sha256": "3fd56d5ea609d63d9f68b8a4b0527d6a6ec6e08b7d46b52886feefc8755449b6"
+        },
+        {
+          "iter": 21,
+          "em": 0.3625,
+          "correct": 928,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-21.json",
+          "sha256": "4ce1e28d003831b7f66e7fd4fcabbfd7294a1ebb773ec44c94ba94644d9f5794"
+        },
+        {
+          "iter": 22,
+          "em": 0.362890625,
+          "correct": 929,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-22.json",
+          "sha256": "87916420134d0ed644567e0848361e76c1bf26d8d45ace0141c63ed065ab124f"
+        },
+        {
+          "iter": 23,
+          "em": 0.304296875,
+          "correct": 779,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-23.json",
+          "sha256": "1d68308232e926d9546d1de3933c98d49f42c608278a4179f070089fb3b32d23"
+        },
+        {
+          "iter": 24,
+          "em": 0.334375,
+          "correct": 856,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-24.json",
+          "sha256": "33770d9333e42337c2ca0cab73483e624514c4ad613c7d8dadabb27062e73e2d"
+        },
+        {
+          "iter": 25,
+          "em": 0.366015625,
+          "correct": 937,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-25.json",
+          "sha256": "dec698947cefe4a8282e18f8ce67cf9faa257f5dd60cf13feabc665f9dc32f52"
+        },
+        {
+          "iter": 26,
+          "em": 0.3546875,
+          "correct": 908,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-26.json",
+          "sha256": "5ccb5d003defecd9066622dc185384577c6e99b6d0cbd00c560a1c8432b7719f"
+        },
+        {
+          "iter": 27,
+          "em": 0.3546875,
+          "correct": 908,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-27.json",
+          "sha256": "77994caabaca0c0d9711cf088181b9b954ff0996a77324a6dcf36ee65c54b5d2"
+        },
+        {
+          "iter": 28,
+          "em": 0.322265625,
+          "correct": 825,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-28.json",
+          "sha256": "67d5feea450b1c6aad3518a177ac92e9bc0b01ced9e46ce623857515bdaa1619"
+        },
+        {
+          "iter": 29,
+          "em": 0.358203125,
+          "correct": 917,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-29.json",
+          "sha256": "10e136a5c584736909e262963aa51431973da1ecaa651e272a4a2f124a433662"
+        },
+        {
+          "iter": 30,
+          "em": 0.34453125,
+          "correct": 882,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-30.json",
+          "sha256": "75c09b4d1c31b75d179da3642e736934a3ca5ec0687d4cf65e609ca620ca6c8b"
+        },
+        {
+          "iter": 31,
+          "em": 0.3484375,
+          "correct": 892,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-31.json",
+          "sha256": "227846b075f9227b0281304643381b4c5af0a4eb626edd661d87e14bcff9a957"
+        },
+        {
+          "iter": 32,
+          "em": 0.37109375,
+          "correct": 950,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-32.json",
+          "sha256": "2d615936ac6d3e494a177b10a7536953622effb4e61a9015cedc3f269af12fe7"
+        },
+        {
+          "iter": 33,
+          "em": 0.363671875,
+          "correct": 931,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-33.json",
+          "sha256": "2c3e976aeef69f7b341d5c94feaaa045a84ec8b7784292913fdc884a7822ff7e"
+        },
+        {
+          "iter": 34,
+          "em": 0.35390625,
+          "correct": 906,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-34.json",
+          "sha256": "369886a44ef3db7eb1bd7bd6be73e02edde38c2677dbc7c6f67498ccfd5dec05"
+        },
+        {
+          "iter": 35,
+          "em": 0.394140625,
+          "correct": 1009,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-35.json",
+          "sha256": "e0071001a14238f203b1f6437a03a5552e0ec9a3a34aee70f503db1fee6b7930"
+        },
+        {
+          "iter": 36,
+          "em": 0.358203125,
+          "correct": 917,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-36.json",
+          "sha256": "6c51f05e48da6791871c3dbc79f6d3faf83e83aee535b9408c63e77867cffc26"
+        },
+        {
+          "iter": 37,
+          "em": 0.3796875,
+          "correct": 972,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-37.json",
+          "sha256": "fa4ef14f4aca76deae44a89484b8e30178384ad50d08e2c0d2bac65a7ba3d399"
+        },
+        {
+          "iter": 38,
+          "em": 0.3515625,
+          "correct": 900,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-38.json",
+          "sha256": "40eb6160f392022dc0fe4d14d5fab85098cf0784bd44afd89e74db94222205db"
+        },
+        {
+          "iter": 39,
+          "em": 0.3578125,
+          "correct": 916,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-39.json",
+          "sha256": "0df900c00db08fb04ff57aa2a4d803f9e210f61bed022ad48caaf1f6b7132f96"
+        },
+        {
+          "iter": 40,
+          "em": 0.389453125,
+          "correct": 997,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-40.json",
+          "sha256": "78e32cfa4fa648955a1f9332158268c29c8e3e65a753a1e3ab45b3988b74e213"
+        },
+        {
+          "iter": 41,
+          "em": 0.396484375,
+          "correct": 1015,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-41.json",
+          "sha256": "8b55993ddfe3b30baeda7692d1753a2dfdf0855dca8be8f6fb3cd0b37b5ed266"
+        },
+        {
+          "iter": 42,
+          "em": 0.365625,
+          "correct": 936,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-42.json",
+          "sha256": "aeacd22912c3514b1293e7b25a83f9fd04cbbee2c0a2fa2804ef1d135e440066"
+        },
+        {
+          "iter": 43,
+          "em": 0.41875,
+          "correct": 1072,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-43.json",
+          "sha256": "f259987a8f447b78d1e548aa1eb58fb87a6108af7b3cd207b45a33997a7a24a2"
+        },
+        {
+          "iter": 44,
+          "em": 0.378125,
+          "correct": 968,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-44.json",
+          "sha256": "a2fbe92518a86fc6596d7f1ac74b0dd81507f331345ab99bd66849aeffa31a99"
+        },
+        {
+          "iter": 45,
+          "em": 0.427734375,
+          "correct": 1095,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-45.json",
+          "sha256": "4894f22a5dfbea3275f4eef48b761689ffbeab19b7fdeda773e4e0770da318de"
+        },
+        {
+          "iter": 46,
+          "em": 0.381640625,
+          "correct": 977,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-46.json",
+          "sha256": "a85e7590f4e52fc2ffb4d557b33eff603566165b8b27d9b0661ecc485fe8f3b0"
+        },
+        {
+          "iter": 47,
+          "em": 0.42734375,
+          "correct": 1094,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-47.json",
+          "sha256": "e3367103993d4bd65220f39c4d092faf2b635fcf08d0c9b6547544972567d2f4"
+        },
+        {
+          "iter": 48,
+          "em": 0.415234375,
+          "correct": 1063,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-48.json",
+          "sha256": "abdb95fdc2628d7145adb8be3110e5499bb97fb237d6c948c2947ea70003a08b"
+        },
+        {
+          "iter": 49,
+          "em": 0.37109375,
+          "correct": 950,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-49.json",
+          "sha256": "996d22a92f8b26f1677a349fd36985c5c5df753f64cd7ec19840a1ea29d4dcda"
+        },
+        {
+          "iter": 50,
+          "em": 0.40078125,
+          "correct": 1026,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-50.json",
+          "sha256": "4b70d7c5c7da1bdd56949b20a5e722df1534e9c8860eee4aef9c285dbbbf30b1"
+        },
+        {
+          "iter": 51,
+          "em": 0.42578125,
+          "correct": 1090,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-51.json",
+          "sha256": "05af6b9453098955166507fce954c8fc0a364a2a92c25b0c0a46f0e309da42f1"
+        },
+        {
+          "iter": 52,
+          "em": 0.3984375,
+          "correct": 1020,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-52.json",
+          "sha256": "e02de79ff2c78c8554903fa6e0da3cae2d62b463d21a1dfbf623320befdbe1f1"
+        },
+        {
+          "iter": 53,
+          "em": 0.460546875,
+          "correct": 1179,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-53.json",
+          "sha256": "5f5dffbfbb9625e39bff1c31e9058c10427922c9a60ef246ee0154836d9a2d91"
+        },
+        {
+          "iter": 54,
+          "em": 0.405078125,
+          "correct": 1037,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-54.json",
+          "sha256": "2fcd69d4f8ac5350369f4b906791d84d3da9591b4be63cd75dc10721ef919f5f"
+        },
+        {
+          "iter": 55,
+          "em": 0.42421875,
+          "correct": 1086,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-55.json",
+          "sha256": "d893ce3d00547811e143b0c0b9f9c40ca5c29cc3a2411b2ed346c3997c06e602"
+        },
+        {
+          "iter": 56,
+          "em": 0.4359375,
+          "correct": 1116,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-56.json",
+          "sha256": "2e6f320386e8542545b66c415ba9e56c1e96a81ffb1b8c1b210dc90fc65c0816"
+        },
+        {
+          "iter": 57,
+          "em": 0.426953125,
+          "correct": 1093,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-57.json",
+          "sha256": "b4ed21b6de19ce933c3abda0f8ccbad15cf52f91787608ae7d577942d17b6c4b"
+        },
+        {
+          "iter": 58,
+          "em": 0.444140625,
+          "correct": 1137,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-58.json",
+          "sha256": "ebe93a127af823eb6afa2467c27b6500aa9c11a26715cc4b8883448a3c9557ff"
+        },
+        {
+          "iter": 59,
+          "em": 0.457421875,
+          "correct": 1171,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-59.json",
+          "sha256": "714e59b8f20a407ebcf280c8703621193df803a0da0612f50d5d7ed36676a349"
+        },
+        {
+          "iter": 60,
+          "em": 0.4390625,
+          "correct": 1124,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-60.json",
+          "sha256": "3ffcee5375a1c2dc40a6b6660fb460d00d6281b173ba455a37ed3086a9441b33"
+        },
+        {
+          "iter": 61,
+          "em": 0.48828125,
+          "correct": 1250,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-61.json",
+          "sha256": "c71126f5b15099b277f0004b75f856bc86cf3fda08d58a7a82edabc8130e3598"
+        },
+        {
+          "iter": 62,
+          "em": 0.442578125,
+          "correct": 1133,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-62.json",
+          "sha256": "2f5e25d1ffce552def981a9df07b8ed5177d443a996305dc80298483b6ac9db4"
+        },
+        {
+          "iter": 63,
+          "em": 0.45546875,
+          "correct": 1166,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-63.json",
+          "sha256": "acbdcdc6d9d1c5267711507393937b496af7813e85e0a40d6fbe5350616500b7"
+        },
+        {
+          "iter": 64,
+          "em": 0.465234375,
+          "correct": 1191,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-64.json",
+          "sha256": "7bd2f21368762c4d3cf4ac61b86bd354398974a47a4b74ff6f3a6d074b2b55da"
+        },
+        {
+          "iter": 65,
+          "em": 0.4515625,
+          "correct": 1156,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-65.json",
+          "sha256": "17c5fd01cdac0c35651caa93c12175cdce60e3d7e53ac7bd1133309e5e36bc7c"
+        },
+        {
+          "iter": 66,
+          "em": 0.49140625,
+          "correct": 1258,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-66.json",
+          "sha256": "02590ad46174df6666916755fea3a55a01048acdb0658baf3f8bb119a674960f"
+        },
+        {
+          "iter": 67,
+          "em": 0.429296875,
+          "correct": 1099,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-67.json",
+          "sha256": "ab49b05832fc3f5ba4deb6a355a96e3807debe1e456271cf90dce639f41b9b92"
+        },
+        {
+          "iter": 68,
+          "em": 0.46015625,
+          "correct": 1178,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-68.json",
+          "sha256": "97251759b101cef8c55bcb40e0afd2a73a49606af212bfbd34d2f901701b7f4e"
+        },
+        {
+          "iter": 69,
+          "em": 0.434765625,
+          "correct": 1113,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-69.json",
+          "sha256": "6aa151f95d2024e8f72554936984399a6d7cb433b6ccc5f1b032b87cfb4ee356"
+        },
+        {
+          "iter": 70,
+          "em": 0.481640625,
+          "correct": 1233,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-70.json",
+          "sha256": "0b4af4f09d555d7f9f5258bab566477134b7012374a29e90d5761676324cf118"
+        },
+        {
+          "iter": 71,
+          "em": 0.49375,
+          "correct": 1264,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-71.json",
+          "sha256": "4ef2449130c7a72156d808043606f26d9c1c919b733c384987bb9df383d47aa8"
+        },
+        {
+          "iter": 72,
+          "em": 0.479296875,
+          "correct": 1227,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-72.json",
+          "sha256": "6953dc6a036c7cfac5f469181562766034a7a964f1b4b4f12de06ecdd4ace7e2"
+        },
+        {
+          "iter": 73,
+          "em": 0.474609375,
+          "correct": 1215,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-73.json",
+          "sha256": "42254d6db8601fecc50e0653003fc411d0ea53f9d766f822142164ca8e1d5fd9"
+        },
+        {
+          "iter": 74,
+          "em": 0.466796875,
+          "correct": 1195,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-74.json",
+          "sha256": "988acb6b85aaf78afc7040e48d8fc79dd360806ce5e17a91e0d6f424e74d4226"
+        },
+        {
+          "iter": 75,
+          "em": 0.45078125,
+          "correct": 1154,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-75.json",
+          "sha256": "3b13726a8ba3a52d6985c9d975d65cbfd1049d7b5e1e9dfd57771e0e4686d501"
+        },
+        {
+          "iter": 76,
+          "em": 0.4609375,
+          "correct": 1180,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-76.json",
+          "sha256": "5dfbb919872d599fd78d812bd1d26332a7c12980fb505e73957ee5641920c12a"
+        },
+        {
+          "iter": 77,
+          "em": 0.49296875,
+          "correct": 1262,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-77.json",
+          "sha256": "484b08b7ed7d12f350529d35e2bf1ec28b7bdbf030effd0962b87b93ec66a5a9"
+        },
+        {
+          "iter": 78,
+          "em": 0.48671875,
+          "correct": 1246,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-78.json",
+          "sha256": "011ea2a5f06dfd6194c85ad19dd9bddac4cc9940e76b677d35e2dbd40db2eb14"
+        },
+        {
+          "iter": 79,
+          "em": 0.47890625,
+          "correct": 1226,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-79.json",
+          "sha256": "b370a402711e6db9b43947db8714d09568df318d9a4ffac85ca8f13c891869d8"
+        },
+        {
+          "iter": 80,
+          "em": 0.46015625,
+          "correct": 1178,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-80.json",
+          "sha256": "8a5e81fbfa16f6eeb0cde072602421ab9be43d919558727568817869da83f83f"
+        },
+        {
+          "iter": 81,
+          "em": 0.4640625,
+          "correct": 1188,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-81.json",
+          "sha256": "11521c5743b23b2835c47efda3757973200e7f301d747cd26906ef87683f63a3"
+        },
+        {
+          "iter": 82,
+          "em": 0.5078125,
+          "correct": 1300,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-82.json",
+          "sha256": "b41c65dde141ec85bf0816d4aaa4706e7cdd7cf0642390bafcf39e0b594fe250"
+        },
+        {
+          "iter": 83,
+          "em": 0.492578125,
+          "correct": 1261,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-83.json",
+          "sha256": "aebf72ee131da6d60ebd66bfed351c385cfa91218390d0c17f130e037fbf52c2"
+        },
+        {
+          "iter": 84,
+          "em": 0.516015625,
+          "correct": 1321,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-84.json",
+          "sha256": "6cebddbbdc607afa5b7fc7fc6a22a6ddd8bb8ed043c04f16311d5443f62f8a13"
+        },
+        {
+          "iter": 85,
+          "em": 0.508984375,
+          "correct": 1303,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-85.json",
+          "sha256": "12dd795996c9ef2ecaf39b5348d4689ff6a6bbf1e8e8ea4a3a70539fa23b98fe"
+        },
+        {
+          "iter": 86,
+          "em": 0.494140625,
+          "correct": 1265,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-86.json",
+          "sha256": "8a74c0089e137b162a62285e5d43d10297a39b67b9323597d1d47a34ab373fbb"
+        },
+        {
+          "iter": 87,
+          "em": 0.48671875,
+          "correct": 1246,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-87.json",
+          "sha256": "2b4e6d3271e52548cc5c01c05c2c20bf6d5365fa5c4ce9a624af2c54c18c053b"
+        },
+        {
+          "iter": 88,
+          "em": 0.485546875,
+          "correct": 1243,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-88.json",
+          "sha256": "d0c2083611f5a3a20666e1d89364670f13dda4cb3b803c7d4742431c18c1a97b"
+        },
+        {
+          "iter": 89,
+          "em": 0.492578125,
+          "correct": 1261,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-89.json",
+          "sha256": "0071f57743f3ade7cba5865247c1f65074c98eb3fbb4e7446f0086827a0d425d"
+        },
+        {
+          "iter": 90,
+          "em": 0.5046875,
+          "correct": 1292,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-90.json",
+          "sha256": "9fd87b4a7fecdde72ae0fae0171f4fdfff7707525782bb12305ab6477fe54a94"
+        },
+        {
+          "iter": 91,
+          "em": 0.509375,
+          "correct": 1304,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-91.json",
+          "sha256": "9bc9b3db145081836b2fd7d5852ce249b74cec0d86423c72cbae34e32fe1f116"
+        },
+        {
+          "iter": 92,
+          "em": 0.515234375,
+          "correct": 1319,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-92.json",
+          "sha256": "807c460799eed225b3fb708422c5140ee73feb6e1471f937df54be3aa536c179"
+        },
+        {
+          "iter": 93,
+          "em": 0.48515625,
+          "correct": 1242,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-93.json",
+          "sha256": "0b6631e95634e97536bb5dbc369b9511f65cbd40b1c39ce7e5da1c7c98156e4c"
+        },
+        {
+          "iter": 94,
+          "em": 0.511328125,
+          "correct": 1309,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-94.json",
+          "sha256": "c8bb46665f8223851f13915a10770f770595de5941583641b7e378bb962ef82b"
+        },
+        {
+          "iter": 95,
+          "em": 0.482421875,
+          "correct": 1235,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-95.json",
+          "sha256": "86b69a54f83f23aae3ed7778764ed237e3746bc9a7cbe3ce9fa458eda4fefab2"
+        },
+        {
+          "iter": 96,
+          "em": 0.549609375,
+          "correct": 1407,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-96.json",
+          "sha256": "39e6362adefc67750408cd8476f1a97bb5e7abb816981d6028404d13abd6a9d1"
+        },
+        {
+          "iter": 97,
+          "em": 0.490625,
+          "correct": 1256,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-97.json",
+          "sha256": "605e4324660eaa704787dba31b4baf9dd1c22f49f669f4e44a99d3765572b26f"
+        },
+        {
+          "iter": 98,
+          "em": 0.492578125,
+          "correct": 1261,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-98.json",
+          "sha256": "28b701cde2b5c8877b595d2cb8dc261d78aff0da019197f692eac13ee1f0ced5"
+        },
+        {
+          "iter": 99,
+          "em": 0.530859375,
+          "correct": 1359,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-99.json",
+          "sha256": "88512e7aa4111606122e6b4520a492ab62f71878bd2945eec8638ab0f80f7f96"
+        },
+        {
+          "iter": 100,
+          "em": 0.475390625,
+          "correct": 1217,
+          "job": "709923",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-100.json",
+          "sha256": "81c6777545709693783187a246aadf47fc6e2cae2b9c8d1fbc9f7d9c4ef0b2d0"
+        },
+        {
+          "iter": 101,
+          "em": 0.49296875,
+          "correct": 1262,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-101.json",
+          "sha256": "608a256b5b253577b2d7128883a602a5f64841c493c360c37b5906ea7c665586"
+        },
+        {
+          "iter": 102,
+          "em": 0.4828125,
+          "correct": 1236,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-102.json",
+          "sha256": "b779827cff83726bcf3f3a2543f9f4e39228a08c8c11e6c95cc8c0caab184169"
+        },
+        {
+          "iter": 103,
+          "em": 0.481640625,
+          "correct": 1233,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-103.json",
+          "sha256": "26107cc913cae6ecf2c8f3691ca13a08a9b80be28b61fc0a15ecdc13b4696fa9"
+        },
+        {
+          "iter": 104,
+          "em": 0.50390625,
+          "correct": 1290,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-104.json",
+          "sha256": "6aad0d5f69937b2ad2d03deda14f2769fdd046c13e3069c6c3c578c18eda8a30"
+        },
+        {
+          "iter": 105,
+          "em": 0.50703125,
+          "correct": 1298,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-105.json",
+          "sha256": "1367934a1f31fb14a3ac971070ae7cf4a330c4582a7928a7feb437bdaf91db95"
+        },
+        {
+          "iter": 106,
+          "em": 0.50625,
+          "correct": 1296,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-106.json",
+          "sha256": "911d3c9996335e6a1b8fb2d66bd1d2005e0c53a95999cf0a346a14de46931525"
+        },
+        {
+          "iter": 107,
+          "em": 0.47421875,
+          "correct": 1214,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-107.json",
+          "sha256": "a991f1fc951369bab6baf663a0d1ead37914aa9ce4fd16dabbbdb3e8085e16e8"
+        },
+        {
+          "iter": 108,
+          "em": 0.513671875,
+          "correct": 1315,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-108.json",
+          "sha256": "082b63ea2f19941540ec68c58b3d03205b3d20b28ca7f3ffa0c8695d65ad59ae"
+        },
+        {
+          "iter": 109,
+          "em": 0.51484375,
+          "correct": 1318,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-109.json",
+          "sha256": "5407971b137455775d5c7f29bdc46516819b0d0afcf8631a813febe2a24336ea"
+        },
+        {
+          "iter": 110,
+          "em": 0.50390625,
+          "correct": 1290,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-110.json",
+          "sha256": "b524628bf91cc562b7214d90a5afea5c1aab3ccebb95dc7eed25bbc7d17f873b"
+        },
+        {
+          "iter": 111,
+          "em": 0.497265625,
+          "correct": 1273,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-111.json",
+          "sha256": "954ca5f5aa62026e9961c152a47e8e9c8fca8a624f3065ef53f2f362bb73d394"
+        },
+        {
+          "iter": 112,
+          "em": 0.503125,
+          "correct": 1288,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-112.json",
+          "sha256": "fe1d501a414fc17ec07d95fab92c1c05a3c613e54ae878fe02a969d2ef8fd435"
+        },
+        {
+          "iter": 113,
+          "em": 0.51015625,
+          "correct": 1306,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-113.json",
+          "sha256": "48eccc51a0a0069aaa861af529f87646f77c24ec6607d265a5eb69e9f3f7f27c"
+        },
+        {
+          "iter": 114,
+          "em": 0.506640625,
+          "correct": 1297,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-114.json",
+          "sha256": "a610290b607b3930e162bc8b09120213b13a0ac2609dc8451a644a3d8aecab79"
+        },
+        {
+          "iter": 115,
+          "em": 0.515625,
+          "correct": 1320,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-115.json",
+          "sha256": "3eb6dd4f8dcc9cefc8360d4b3afca8d8a1346cab586face773c3c23e675cf9ef"
+        },
+        {
+          "iter": 116,
+          "em": 0.51015625,
+          "correct": 1306,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-116.json",
+          "sha256": "e008aeda2d9e850bb57fc04db95767a4b2491bda6e793463caff3cd94421068b"
+        },
+        {
+          "iter": 117,
+          "em": 0.503515625,
+          "correct": 1289,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-117.json",
+          "sha256": "d23935be5782b95544047ea7b1b45a2e28eae6c66f9e9f169cb9b77dfed06a5e"
+        },
+        {
+          "iter": 118,
+          "em": 0.48515625,
+          "correct": 1242,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-118.json",
+          "sha256": "8a0a5e5ae0f98bcaad2862f46196de8ed301d7cda8240ac16663f88231a8bea5"
+        },
+        {
+          "iter": 119,
+          "em": 0.523828125,
+          "correct": 1341,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-119.json",
+          "sha256": "08e9c02c8030f3f1a24514785849d19b9c30104d96d67bb32ce5af8ad42af7f8"
+        },
+        {
+          "iter": 120,
+          "em": 0.49296875,
+          "correct": 1262,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-120.json",
+          "sha256": "8a469d991cebcd55df753a929f15baabcb746b0541183b6f18f2071ef8dde8f0"
+        },
+        {
+          "iter": 121,
+          "em": 0.525,
+          "correct": 1344,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-121.json",
+          "sha256": "004da74082366f447b2bee1e339d330f982e585ca7a07adc2f7325f43981decb"
+        },
+        {
+          "iter": 122,
+          "em": 0.527734375,
+          "correct": 1351,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-122.json",
+          "sha256": "e6abc2fddcfdf58abc6c24e2113a37a6bd30c0c160780cd1f36e67c0856ebcef"
+        },
+        {
+          "iter": 123,
+          "em": 0.500390625,
+          "correct": 1281,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-123.json",
+          "sha256": "071e7eedaacee6e5b44b9ea6c78d51d7658937c6e5722faab3dba80c496b80a0"
+        },
+        {
+          "iter": 124,
+          "em": 0.491015625,
+          "correct": 1257,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-124.json",
+          "sha256": "265348e96476f622eb709456114318bdb0c38f26352b280ae4b20303e9d90fe4"
+        },
+        {
+          "iter": 125,
+          "em": 0.520703125,
+          "correct": 1333,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-125.json",
+          "sha256": "143ab41e28752af12cedbc6c68c3b0e71fae362637ef23b6ef0c4872ee37e121"
+        },
+        {
+          "iter": 126,
+          "em": 0.5125,
+          "correct": 1312,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-126.json",
+          "sha256": "b36c30ebe1feddfa46df4b9052415fa21e532800574ee5a6ca18cdab6d136c26"
+        },
+        {
+          "iter": 127,
+          "em": 0.5203125,
+          "correct": 1332,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-127.json",
+          "sha256": "77b24af2b07bbdb466e02ff961d0901e5bde6c7d6bf415182fbde20f46f15e1b"
+        },
+        {
+          "iter": 128,
+          "em": 0.495703125,
+          "correct": 1269,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-128.json",
+          "sha256": "e90802707090624b0afd3ab72426e1ae5eaaf08e9df780f26cc65ff026005f6b"
+        },
+        {
+          "iter": 129,
+          "em": 0.5296875,
+          "correct": 1356,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-129.json",
+          "sha256": "8db95341a018c418aeaee8daf4391ee1cf01ae920a8c72ac12933b15fd202418"
+        },
+        {
+          "iter": 130,
+          "em": 0.48828125,
+          "correct": 1250,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-130.json",
+          "sha256": "1c979de248856e72f93d51912ccb581e5fb2c8786b8add1b000d0274a44c9b3a"
+        },
+        {
+          "iter": 131,
+          "em": 0.5,
+          "correct": 1280,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-131.json",
+          "sha256": "53cf8066ef011dddd9b52c98071ed0e7696b7c484e862f89366dadafb8abe632"
+        },
+        {
+          "iter": 132,
+          "em": 0.51875,
+          "correct": 1328,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-132.json",
+          "sha256": "3e6d1b63a52f98484f2799651e82b7ca3a8aaf8668269c64b0f50e644d403d13"
+        },
+        {
+          "iter": 133,
+          "em": 0.512890625,
+          "correct": 1313,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-133.json",
+          "sha256": "09e03ee0e1c542d5295ddf24f1b62a1616aab3c2fd375c9a47cdb9b8fbe49dec"
+        },
+        {
+          "iter": 134,
+          "em": 0.519921875,
+          "correct": 1331,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-134.json",
+          "sha256": "ecb9881555ac1616dd16629157a95314341a28b1655637f650c0c4c332733b66"
+        },
+        {
+          "iter": 135,
+          "em": 0.505078125,
+          "correct": 1293,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-135.json",
+          "sha256": "8ebb4e7600b672312007498c0dc292ca90b274cf77d9c778d02488c363c2ede0"
+        },
+        {
+          "iter": 136,
+          "em": 0.51015625,
+          "correct": 1306,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-136.json",
+          "sha256": "aef5b9efee42c4c52ed70af6725f2175f8b2da8a880adcab22af23504853fe36"
+        },
+        {
+          "iter": 137,
+          "em": 0.5015625,
+          "correct": 1284,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-137.json",
+          "sha256": "5c283edd3d8309362ee9dc90b57ea0bdf972f34a9fd92b9bdcaa5b6774721358"
+        },
+        {
+          "iter": 138,
+          "em": 0.548828125,
+          "correct": 1405,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-138.json",
+          "sha256": "97ff146a8b3b8be3a16f13b9c55ebb36bd74fd37767c98a2f78606bb55bbebbe"
+        },
+        {
+          "iter": 139,
+          "em": 0.556640625,
+          "correct": 1425,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-139.json",
+          "sha256": "1ea6285df776e946baea187faef5ac43a09dceadc3e1d44269cefab8471c056f"
+        },
+        {
+          "iter": 140,
+          "em": 0.528125,
+          "correct": 1352,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-140.json",
+          "sha256": "0550d4b131d2fbc78de870cf0a2c6a3d27540a374c46f7cf7c9408022d530eba"
+        },
+        {
+          "iter": 141,
+          "em": 0.546484375,
+          "correct": 1399,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-141.json",
+          "sha256": "f3b1ed488c5f03e7ee04922211c50490582f55ed16350a0d0e48b578e0a2affe"
+        },
+        {
+          "iter": 142,
+          "em": 0.55234375,
+          "correct": 1414,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-142.json",
+          "sha256": "d70c33a66bec9ff2616fd0543727c0c42127c0a2d15fb23644e1ad81681bc2aa"
+        },
+        {
+          "iter": 143,
+          "em": 0.50390625,
+          "correct": 1290,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-143.json",
+          "sha256": "539b0d25b81ab48e0b425a0237a3261489efc4c5b14bdb7b1b35afaf35e115e3"
+        },
+        {
+          "iter": 144,
+          "em": 0.515625,
+          "correct": 1320,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-144.json",
+          "sha256": "3867ddd89d0745bb17de380411bbb8d58025e2c5b24ad1e3e8ee8024e622777d"
+        },
+        {
+          "iter": 145,
+          "em": 0.496484375,
+          "correct": 1271,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-145.json",
+          "sha256": "f94ee9471965c6f35f4c05450d02c03003e24bd85f27ee082142ab458e32c864"
+        },
+        {
+          "iter": 146,
+          "em": 0.555078125,
+          "correct": 1421,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-146.json",
+          "sha256": "731e64d76693ce07362d5db2589e05839122da4681e63821deade11e0ce479af"
+        },
+        {
+          "iter": 147,
+          "em": 0.51328125,
+          "correct": 1314,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-147.json",
+          "sha256": "61184e42f4609265c7f159ec6d525a9733fae91a2c30d600001494266b0b5fc5"
+        },
+        {
+          "iter": 148,
+          "em": 0.50546875,
+          "correct": 1294,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-148.json",
+          "sha256": "ded74133d3c2523aa53f95bb91632c841b93e8790e419811165946e14c9585bd"
+        },
+        {
+          "iter": 149,
+          "em": 0.509375,
+          "correct": 1304,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-149.json",
+          "sha256": "79577cfdaf69fb5c1f16f7a757abdb49f3398e5fd3fb5a15524ca42f50f58e02"
+        },
+        {
+          "iter": 150,
+          "em": 0.51953125,
+          "correct": 1330,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-150.json",
+          "sha256": "aed7217d6d5f257de0305b60e0f990df24557259eec437b05b55dd519aebfba8"
+        },
+        {
+          "iter": 151,
+          "em": 0.5140625,
+          "correct": 1316,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-151.json",
+          "sha256": "ef45b93a5bc5e0a9424fe7fcbbb56e2efa337306eb9e733f65950da7132c0f54"
+        },
+        {
+          "iter": 152,
+          "em": 0.5078125,
+          "correct": 1300,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-152.json",
+          "sha256": "01b4cb14aef54fc4cc671255c86cfe06507249808a1549b50892e34f32495fcd"
+        },
+        {
+          "iter": 153,
+          "em": 0.509375,
+          "correct": 1304,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-153.json",
+          "sha256": "f75fff46621eff1cd5167a5ed3e3dec9347f8b44d230f1794accb3b5e9d3f778"
+        },
+        {
+          "iter": 154,
+          "em": 0.508203125,
+          "correct": 1301,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-154.json",
+          "sha256": "286801c911db687c8ea41f192f1bf633388449b9f4385408e9accdabeb6fee2c"
+        },
+        {
+          "iter": 155,
+          "em": 0.519140625,
+          "correct": 1329,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-155.json",
+          "sha256": "56ee0cf18b6a295d7d8d7822be6c1940b1138bee89970f255f7c1012f93fc0da"
+        },
+        {
+          "iter": 156,
+          "em": 0.554296875,
+          "correct": 1419,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-156.json",
+          "sha256": "8f29a5cfaa82a8f9c673c98136534155cc326b2b77362d48338f8836f35782b9"
+        },
+        {
+          "iter": 157,
+          "em": 0.480859375,
+          "correct": 1231,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-157.json",
+          "sha256": "7efd69333cfbb609fe8e4f369effc7e6d4fce97ae3041c6a9df9bd79b57787a3"
+        },
+        {
+          "iter": 158,
+          "em": 0.495703125,
+          "correct": 1269,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-158.json",
+          "sha256": "93a6a67c7d236fd04f19a973d4dceeccb4ede4714e4f8efac52528d878ce4a1b"
+        },
+        {
+          "iter": 159,
+          "em": 0.527734375,
+          "correct": 1351,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-159.json",
+          "sha256": "ff3705745249c2943af9fa903e8d8cb0ef54a777931bfde5cbdf8f9026993f7d"
+        },
+        {
+          "iter": 160,
+          "em": 0.539453125,
+          "correct": 1381,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-160.json",
+          "sha256": "bbee8dd72bcd708e4204de910d5d077c877ee7df3f84b1347e2680ec21962e5c"
+        },
+        {
+          "iter": 161,
+          "em": 0.515625,
+          "correct": 1320,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-161.json",
+          "sha256": "12ec153af918023b52ca37a6159d881e6fe809d50b51bf38b65686fe3931f9ad"
+        },
+        {
+          "iter": 162,
+          "em": 0.51875,
+          "correct": 1328,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-162.json",
+          "sha256": "9208910ffc1a7043f080adc80a901021cc8e42146d510c3c4e07853d67a4c26b"
+        },
+        {
+          "iter": 163,
+          "em": 0.528515625,
+          "correct": 1353,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-163.json",
+          "sha256": "d99dfb48e1a0ddfd549a2b47cd479893a17bd0d50098edd371eee59ee270d418"
+        },
+        {
+          "iter": 164,
+          "em": 0.563671875,
+          "correct": 1443,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-164.json",
+          "sha256": "aade2028fb52f79a1f765eb4615cd230bf783a3ffc13508449a30f587f7ad6c0"
+        },
+        {
+          "iter": 165,
+          "em": 0.484765625,
+          "correct": 1241,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-165.json",
+          "sha256": "34a696984337945da0b712c7f01cbf952dcfc280980f83a6411c97747534f74b"
+        },
+        {
+          "iter": 166,
+          "em": 0.5296875,
+          "correct": 1356,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-166.json",
+          "sha256": "8ff65e2913d28c8f8d6db77766d1cfa08604d6a1c09f5c23a72b13db540e600c"
+        },
+        {
+          "iter": 167,
+          "em": 0.499609375,
+          "correct": 1279,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-167.json",
+          "sha256": "620354bc57fe6991dbcc9f34067ccc7286f780c2d0de72c237323f6a410469c2"
+        },
+        {
+          "iter": 168,
+          "em": 0.492578125,
+          "correct": 1261,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-168.json",
+          "sha256": "4dfd87877e16a908dd02c4b3847a17e376927e1a3baa753d8c995818c083deeb"
+        },
+        {
+          "iter": 169,
+          "em": 0.54375,
+          "correct": 1392,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-169.json",
+          "sha256": "f6938d90967b5186e684ab80f0e0d9486730b52ea5d780e9b1fcc8ae5c924110"
+        },
+        {
+          "iter": 170,
+          "em": 0.523828125,
+          "correct": 1341,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-170.json",
+          "sha256": "8d7f25dbf05058905c1492d75e9e3b9c73d1f9b801e083d34da4b7dd69d191c1"
+        },
+        {
+          "iter": 171,
+          "em": 0.513671875,
+          "correct": 1315,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-171.json",
+          "sha256": "1d81d2e6708b1d023c1554032a63cc3f96f747930108cc66dc24304d6a3f8bb0"
+        },
+        {
+          "iter": 172,
+          "em": 0.53046875,
+          "correct": 1358,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-172.json",
+          "sha256": "7439a396254404b96e17497db0cf908e3402c9c34f589f26d43f7da9997dc641"
+        },
+        {
+          "iter": 173,
+          "em": 0.548046875,
+          "correct": 1403,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-173.json",
+          "sha256": "81558d8fcc49e628475c08b5da5afa416036adaae9f50c1b32f65c5a46d708da"
+        },
+        {
+          "iter": 174,
+          "em": 0.546484375,
+          "correct": 1399,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-174.json",
+          "sha256": "f4798e94387bf298119ec6652c964bd9811583b3a8b51cbcce72a6fddf657d04"
+        },
+        {
+          "iter": 175,
+          "em": 0.511328125,
+          "correct": 1309,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-175.json",
+          "sha256": "0f8f814ea4c9e6d6216d2173a2b2197718418eabb06991ef4e759ecc49198023"
+        },
+        {
+          "iter": 176,
+          "em": 0.535546875,
+          "correct": 1371,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-176.json",
+          "sha256": "06b3ff324b6cb9545a70abab115ee814ed6bac925ea665b160a90e54e01c4892"
+        },
+        {
+          "iter": 177,
+          "em": 0.540234375,
+          "correct": 1383,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-177.json",
+          "sha256": "de04bc57f9d68b535fa20c3e0a891853c0ada2817e861bb8bd03a7ecebc4af0d"
+        },
+        {
+          "iter": 178,
+          "em": 0.503125,
+          "correct": 1288,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-178.json",
+          "sha256": "25abd73a81eecde7c3bcbbb7da7cf231dffcac340e800cbc29f3b747a21b2cf0"
+        },
+        {
+          "iter": 179,
+          "em": 0.53046875,
+          "correct": 1358,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-179.json",
+          "sha256": "f850f71cfd432e150e03d42a5a1c19277c767a048139d929b63e28890f291aef"
+        },
+        {
+          "iter": 180,
+          "em": 0.536328125,
+          "correct": 1373,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-180.json",
+          "sha256": "66dd566f82df599fb6d58dd71f7f729cb6af4fe89ece46bba6a2ae6035f411bc"
+        },
+        {
+          "iter": 181,
+          "em": 0.53515625,
+          "correct": 1370,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-181.json",
+          "sha256": "4340526beb2b075db2789d37cc42a5a5ddff880042ddc87d7495f12da23688f8"
+        },
+        {
+          "iter": 182,
+          "em": 0.5203125,
+          "correct": 1332,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-182.json",
+          "sha256": "447d344f647756732171fa33c735b52517d71f757a12ba96268f45f68199bcd1"
+        },
+        {
+          "iter": 183,
+          "em": 0.543359375,
+          "correct": 1391,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-183.json",
+          "sha256": "3f15c94465429f254f9f6b6e44bea38b996605f9c1be73bbefab1f19d6694b66"
+        },
+        {
+          "iter": 184,
+          "em": 0.554296875,
+          "correct": 1419,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-184.json",
+          "sha256": "e6216b167b9cbd007b6e20694b01038b1ffcb6bf86bdd9441610a5a5e2bf5fb0"
+        },
+        {
+          "iter": 185,
+          "em": 0.514453125,
+          "correct": 1317,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-185.json",
+          "sha256": "849ff9cc2b26fbc1dc716897cf09f45acac1de2c93d558ec336ef5f8a4e0d421"
+        },
+        {
+          "iter": 186,
+          "em": 0.5171875,
+          "correct": 1324,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-186.json",
+          "sha256": "87e793d67c29f6e47e8636239972338163cdbadf37b8c9b032813fbfad1975f1"
+        },
+        {
+          "iter": 187,
+          "em": 0.49140625,
+          "correct": 1258,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-187.json",
+          "sha256": "73c9e7896f125da0bf00d3bdf73b06ade7e3123a2874fbf8b1d21e132da2edaa"
+        },
+        {
+          "iter": 188,
+          "em": 0.540234375,
+          "correct": 1383,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-188.json",
+          "sha256": "53e88f161cc8e348124c0aee7152a47268fa62afe000a945f8a5948843df139b"
+        },
+        {
+          "iter": 189,
+          "em": 0.509375,
+          "correct": 1304,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-189.json",
+          "sha256": "e28f52f456e97c21cd54ca40047ad700a7b2d4a16c6f9751c577d3adc34120fe"
+        },
+        {
+          "iter": 190,
+          "em": 0.530078125,
+          "correct": 1357,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-190.json",
+          "sha256": "bcf6b561ecf15884e6a5751bcc548bcfe50a25c54b18074f46a17714195a03cc"
+        },
+        {
+          "iter": 191,
+          "em": 0.520703125,
+          "correct": 1333,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-191.json",
+          "sha256": "fb8ae8384149fb12b63c3eef9137a0f2e712ffe97b21b5c053daef5cf4c112ce"
+        },
+        {
+          "iter": 192,
+          "em": 0.505859375,
+          "correct": 1295,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-192.json",
+          "sha256": "c5603d248a76ee35a74eca8e8f83e6668d0f4a22c9c42a24cde9b852b63f4880"
+        },
+        {
+          "iter": 193,
+          "em": 0.55234375,
+          "correct": 1414,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-193.json",
+          "sha256": "c828da72bff415a4f4bce38e241d203ff4b492373a0494aebaef1f6ad13d1c7a"
+        },
+        {
+          "iter": 194,
+          "em": 0.53671875,
+          "correct": 1374,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-194.json",
+          "sha256": "7c6a80acb3f3dfcc0ef7c59d0461832b54f703bb4afa755f3394f01391c9ae89"
+        },
+        {
+          "iter": 195,
+          "em": 0.536328125,
+          "correct": 1373,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-195.json",
+          "sha256": "fa53a10cafc2e866853bedf46b60f24e0ac11ef5a4635a21dd0f649abee58892"
+        },
+        {
+          "iter": 196,
+          "em": 0.508203125,
+          "correct": 1301,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-196.json",
+          "sha256": "1805407e2643cb1668a1850bbd9200d030c1153191aa9f14a14ad6b8eeb335ed"
+        },
+        {
+          "iter": 197,
+          "em": 0.5171875,
+          "correct": 1324,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-197.json",
+          "sha256": "ffb3813732a20a09192d7604652f38af6295f5e3772baefb7b728092fc01fadc"
+        },
+        {
+          "iter": 198,
+          "em": 0.5328125,
+          "correct": 1364,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-198.json",
+          "sha256": "f95aa1410215e5984a5c82e686472698f0b01a63e15671e4a1d5163246e4a510"
+        },
+        {
+          "iter": 199,
+          "em": 0.4796875,
+          "correct": 1228,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-199.json",
+          "sha256": "7c51cb1e547599787f6404f95ad52f484622d442bea04fb87fb6970252e408d6"
+        },
+        {
+          "iter": 200,
+          "em": 0.50234375,
+          "correct": 1286,
+          "job": "713379",
+          "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-200.json",
+          "sha256": "38c85b8ff3afe25903683329a572c5b195d95a083c3f86c99bad8209878bb38e"
+        }
+      ],
+      "gpu": "final evaluation721542 ACD1-19, 4 H100, COMPLETED; allocation released",
+      "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/co-updated-runs.json",
+      "target_iter": 200
+    },
+    {
+      "name": "HPC3 Q-probe sigma3 new loss 721485",
+      "session": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+      "output_dir": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015",
+      "completed_iter": 177,
+      "train_latest_em": 0.43242187499999996,
+      "train_recent10_mean": 0.4692578125,
+      "train_recent_mean_n": 10,
+      "fixed512": [
+        {
+          "iter": 0,
+          "split": "validation",
+          "final": false,
+          "n": 512,
+          "correct": 92.0,
+          "em": 0.1796875,
+          "f1": 0.2373414468187826,
+          "counts": {
+            "nq": 256,
+            "hotpotqa": 256
+          },
+          "source_em": {
+            "nq": 0.19921875,
+            "hotpotqa": 0.16015625
+          },
+          "source_f1": {
+            "nq": 0.27937100682147786,
+            "hotpotqa": 0.1953118868160872
+          },
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/logs/validation-identities.jsonl",
+          "line_index": 1,
+          "row_sha256": "b4c9777a0fee6c9bbab5aba0b33a3c379aa4d2393408744d1d4ea679f2e8787d",
+          "checked_unix": 1792048726.0886364,
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+          "scalar_readback_correct": true,
+          "unique_question_ids": 512,
+          "sha256": "34deaf618773636adc4fa89522257b77b555f93e9164ac50109657aa47379759"
+        },
+        {
+          "iter": 5,
+          "split": "validation",
+          "final": false,
+          "n": 512,
+          "correct": 94.0,
+          "em": 0.18359375,
+          "f1": 0.2432425845642178,
+          "counts": {
+            "nq": 256,
+            "hotpotqa": 256
+          },
+          "source_em": {
+            "nq": 0.21484375,
+            "hotpotqa": 0.15234375
+          },
+          "source_f1": {
+            "nq": 0.3005166251721789,
+            "hotpotqa": 0.1859685439562566
+          },
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/logs/validation-identities.jsonl",
+          "line_index": 3,
+          "row_sha256": "9bd9ae7954d12532e2397125013b7154065b30c6a1c203fe7cacdc7273a27adb",
+          "checked_unix": 1792052376.7906551,
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+          "scalar_readback_correct": true,
+          "unique_question_ids": 512,
+          "sha256": "34deaf618773636adc4fa89522257b77b555f93e9164ac50109657aa47379759"
+        },
+        {
+          "iter": 50,
+          "split": "validation",
+          "final": false,
+          "n": 512,
+          "correct": 185.0,
+          "em": 0.361328125,
+          "f1": 0.44534195188492065,
+          "counts": {
+            "nq": 256,
+            "hotpotqa": 256
+          },
+          "source_em": {
+            "nq": 0.375,
+            "hotpotqa": 0.34765625
+          },
+          "source_f1": {
+            "nq": 0.4844990079365081,
+            "hotpotqa": 0.40618489583333334
+          },
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/logs/validation-identities.jsonl",
+          "line_index": 4,
+          "row_sha256": "39bc1081f80f4450a762d884618b43f4394b0128bf0c16c27e9a9a1c622eaa63",
+          "checked_unix": 1792075918.9413903,
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+          "scalar_readback_correct": true,
+          "unique_question_ids": 512,
+          "sha256": "34deaf618773636adc4fa89522257b77b555f93e9164ac50109657aa47379759"
+        },
+        {
+          "iter": 100,
+          "split": "validation",
+          "final": false,
+          "n": 512,
+          "correct": 206.0,
+          "em": 0.40234375,
+          "f1": 0.4865459263724429,
+          "counts": {
+            "nq": 256,
+            "hotpotqa": 256
+          },
+          "source_em": {
+            "nq": 0.3984375,
+            "hotpotqa": 0.40625
+          },
+          "source_f1": {
+            "nq": 0.513117784992785,
+            "hotpotqa": 0.45997406775210087
+          },
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/logs/validation-identities.jsonl",
+          "line_index": 5,
+          "row_sha256": "aadf64a14020926d33164420b90836e57d0c5f50f96e2b9a684edffefb345022",
+          "checked_unix": 1792096090.3875217,
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+          "scalar_readback_correct": true,
+          "unique_question_ids": 512,
+          "sha256": "34deaf618773636adc4fa89522257b77b555f93e9164ac50109657aa47379759"
+        },
+        {
+          "iter": 150,
+          "split": "validation",
+          "final": false,
+          "n": 512,
+          "correct": 216.0,
+          "em": 0.421875,
+          "f1": 0.501726810515873,
+          "counts": {
+            "nq": 256,
+            "hotpotqa": 256
+          },
+          "source_em": {
+            "nq": 0.41796875,
+            "hotpotqa": 0.42578125
+          },
+          "source_f1": {
+            "nq": 0.5287822420634921,
+            "hotpotqa": 0.474671378968254
+          },
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/logs/validation-identities.jsonl",
+          "line_index": 6,
+          "row_sha256": "5fa48611aaf82ce9e618934c8d9b2a9da64d3848f8e707af9f3a2c6f01f97935",
+          "checked_unix": 1792115877.3268425,
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+          "scalar_readback_correct": true,
+          "unique_question_ids": 512,
+          "sha256": "34deaf618773636adc4fa89522257b77b555f93e9164ac50109657aa47379759"
+        }
+      ],
+      "final51713": {
+        "complete": false,
+        "n": null,
+        "em": null,
+        "f1": null,
+        "path": null,
+        "reason": "current run177of200, final not due"
+      },
+      "status": "RUNNING_ACTUAL_FORWARD_PROGRESS",
+      "note": "Q-probe sigma3三分类损失新setting，与旧MLP及CoSearch dual分开。完整训练outer1..177以actual-updates正式attempt绑定rollout-audit；178候选采集不计已完成。fixed512直接从validation-identities.jsonl在远端逐题标量重算正确数/EM/F1，读取0/5/50/100/150；未下载预测文本或逐题数组。当前训练日志未见新致命错误；training721449错误属于历史预启动，不误计当前721485失败。 两次观测间iter178各rank真实Adam3536→3553，日志/optimizer字节均增长；178未完整发布，曲线仍止于177。",
+      "training_series": [
+        {
+          "iter": 1,
+          "em": 0.258203125,
+          "n": 512,
+          "reward": 0.3135210871696472,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/0785bce24c53483184bfc4f01140648a/rollout-audit.json",
+          "sha256": "b46fd1b460208b586c65736813c2d086d851bf01217099dd4fffae64c0a677c8"
+        },
+        {
+          "iter": 2,
+          "em": 0.25390625,
+          "n": 512,
+          "reward": 0.2999683916568756,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/81d64a8c6dd8465e9fe5c506b0fb2c72/rollout-audit.json",
+          "sha256": "6eee4b2bcd3c8affc7a7a13d228cf5cc0116496ff8d859997a261fd112e11f53"
+        },
+        {
+          "iter": 3,
+          "em": 0.257421875,
+          "n": 512,
+          "reward": 0.30665573477745056,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/14de3109ea564815bc336a811ab8b178/rollout-audit.json",
+          "sha256": "75ef223d1db417e50752a47bec6195d9712cc23df455114b88a0ebbabafdf2c1"
+        },
+        {
+          "iter": 4,
+          "em": 0.281640625,
+          "n": 512,
+          "reward": 0.3457753658294678,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/5bd2bfc5e54a4cffa5175f0794329320/rollout-audit.json",
+          "sha256": "974326164b0382eed8cca1e9619f97dee2466851e3cf49065f7ee5a305e6dc38"
+        },
+        {
+          "iter": 5,
+          "em": 0.2796875,
+          "n": 512,
+          "reward": 0.35009682178497314,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/e4c5459ac62d417695441a93d0abf367/rollout-audit.json",
+          "sha256": "70ad432b6ee706688a36b4eb4bebae3a29708093764563428489d741e177153b"
+        },
+        {
+          "iter": 6,
+          "em": 0.28046875,
+          "n": 512,
+          "reward": 0.35284945368766785,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/3fb62a24f71d427db05272a5a0f345a7/rollout-audit.json",
+          "sha256": "4c2e652254064c81d0464f297ea96fc20ab4594b6cd43fb405062a8a9938d8a9"
+        },
+        {
+          "iter": 7,
+          "em": 0.290625,
+          "n": 512,
+          "reward": 0.3633589446544647,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/f85c2852b3464ed8b95dd395187e6b09/rollout-audit.json",
+          "sha256": "9ed79407331b674a71bce0e22e110b824580e2ba172dea6a384120af95eab989"
+        },
+        {
+          "iter": 8,
+          "em": 0.319140625,
+          "n": 512,
+          "reward": 0.40431079268455505,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/f268c5492fbe4c1988283fcd7fd989c8/rollout-audit.json",
+          "sha256": "0c6e3deaf0e4900db9f25fb7267d6b7c02778d413ba46fb9ca33640e570ea3ea"
+        },
+        {
+          "iter": 9,
+          "em": 0.32421875,
+          "n": 512,
+          "reward": 0.4065428376197815,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/45ab4e21fffb4baa9838f51958b1d531/rollout-audit.json",
+          "sha256": "1e1d5cd5bc844be21de9391f358e0c43132eade55344711dfb18b965aa6f1798"
+        },
+        {
+          "iter": 10,
+          "em": 0.30859375,
+          "n": 512,
+          "reward": 0.38731274008750916,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/6cd7ed2f3888474d9879846480e9702f/rollout-audit.json",
+          "sha256": "b1cbc0dc7ddaefc9dc5a37ddeb60e75733f4930c456c0fa1335674b245cbe38b"
+        },
+        {
+          "iter": 11,
+          "em": 0.349609375,
+          "n": 512,
+          "reward": 0.44576936960220337,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/4ac72cc05d124330be6d94b4ebad68ac/rollout-audit.json",
+          "sha256": "2febbba47bd600909c230c9b365adb0be991e01cc5839b3ab39d923b43b2af5e"
+        },
+        {
+          "iter": 12,
+          "em": 0.330859375,
+          "n": 512,
+          "reward": 0.4184359014034271,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/8272cc809da24f16a90be60c775589e0/rollout-audit.json",
+          "sha256": "3a90c198a7937fae5694deb559c1797154736d6dd796b51cd9f8f86c69962929"
+        },
+        {
+          "iter": 13,
+          "em": 0.341796875,
+          "n": 512,
+          "reward": 0.43324774503707886,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/cb038a076dd54257a5069f05e38286ad/rollout-audit.json",
+          "sha256": "959a46a1de09b5d3897b30f55dfa0795ac6781a8c74d0c9edaceaec6a7179833"
+        },
+        {
+          "iter": 14,
+          "em": 0.35703125,
+          "n": 512,
+          "reward": 0.4586687684059143,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/bc5848fa69d54bd0b20a20657422442c/rollout-audit.json",
+          "sha256": "91ddb1e07fc6c2904536e98ff7352dfe3bf3e499c75b35a4073d7412e06bbfb3"
+        },
+        {
+          "iter": 15,
+          "em": 0.36835937500000004,
+          "n": 512,
+          "reward": 0.48056259751319885,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/3b71365c15f14c97a1fa92428b208ca8/rollout-audit.json",
+          "sha256": "a819eb9cdaf831b2d8ec833f45321b1be76bd706dd82985402adc5e552cff18b"
+        },
+        {
+          "iter": 16,
+          "em": 0.37421875,
+          "n": 512,
+          "reward": 0.5026620626449585,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/76e916830d334708a978b855a896a27f/rollout-audit.json",
+          "sha256": "4f35904d0dda38dd7761d5eec87d2b08cc2f99534f2cb9225b371ce62247c9aa"
+        },
+        {
+          "iter": 17,
+          "em": 0.37773437500000007,
+          "n": 512,
+          "reward": 0.48900023102760315,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/0ac0a27d923f43068fd686346c89d5c1/rollout-audit.json",
+          "sha256": "70413933c41c84c1354c8c2b70d79f64fcd30cda9767f652fc90c6be85c9f0bc"
+        },
+        {
+          "iter": 18,
+          "em": 0.380859375,
+          "n": 512,
+          "reward": 0.5078302621841431,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/54a5b400df5049a4a65d19623bc07449/rollout-audit.json",
+          "sha256": "549d5649fb2f955947cb3baaebd8af57cc7896249188d5f533826637aea7911a"
+        },
+        {
+          "iter": 19,
+          "em": 0.39101562500000003,
+          "n": 512,
+          "reward": 0.5269494652748108,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/cf4508fc085d4d999e3ca784f236b584/rollout-audit.json",
+          "sha256": "e8fdf5db3aae3e9f2ece85fa5473d68269eb5ec2012a55cc2e84e9f8edec48a7"
+        },
+        {
+          "iter": 20,
+          "em": 0.3765625,
+          "n": 512,
+          "reward": 0.49247875809669495,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/5e3845153bc44befaa734f1b2238d5c9/rollout-audit.json",
+          "sha256": "8fb6ef4ed1cb3592779e33f81faf3fd7d4f969f6eb24c5d66a749c3dd20a3bb7"
+        },
+        {
+          "iter": 21,
+          "em": 0.413671875,
+          "n": 512,
+          "reward": 0.549262523651123,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/a6156723a31b4fe2bdc1e5d79a25d54c/rollout-audit.json",
+          "sha256": "abcc02640112551ccd2bc77aac4ab689880c5af1ca189c350e2bba59055febc4"
+        },
+        {
+          "iter": 22,
+          "em": 0.37578125,
+          "n": 512,
+          "reward": 0.4982760548591614,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/c556b2d79f124a4699026334e85c27e0/rollout-audit.json",
+          "sha256": "831bcac631b83aa2a64f1e8712f1ce744941683cde4e776b82741f53e0f59742"
+        },
+        {
+          "iter": 23,
+          "em": 0.376171875,
+          "n": 512,
+          "reward": 0.5038386583328247,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/3f313674e51a42c89fb19350c2123ce8/rollout-audit.json",
+          "sha256": "09443d2a6289ecb89c1425c8d2a64a8d79027ad874164a10753fd61476c80da9"
+        },
+        {
+          "iter": 24,
+          "em": 0.404296875,
+          "n": 512,
+          "reward": 0.5481486916542053,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/ccac24cf39b94996b1c27aed1877ad8b/rollout-audit.json",
+          "sha256": "f174225627928971d4db230c06d1a60fe975044534e6fbc95519ee07efa8225a"
+        },
+        {
+          "iter": 25,
+          "em": 0.425390625,
+          "n": 512,
+          "reward": 0.5749194025993347,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/57972783305a45029a1651e408032d94/rollout-audit.json",
+          "sha256": "0588f8da946ee0bc25685d75dbf5a0f14d4ae8e4fdc3885c8dd3463ea101d56a"
+        },
+        {
+          "iter": 26,
+          "em": 0.408984375,
+          "n": 512,
+          "reward": 0.5506742000579834,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/d6e13a0b5c7c4c0989494e9911724091/rollout-audit.json",
+          "sha256": "6bed239ecde271ea9fd4a1e97d2c372aaff008fea8cbbbbec31ad6c531de22c5"
+        },
+        {
+          "iter": 27,
+          "em": 0.418359375,
+          "n": 512,
+          "reward": 0.5672352910041809,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/957367d358214af18bb055a2e5473cac/rollout-audit.json",
+          "sha256": "3261275bc17b7594dee2620c41af205715b38758519587c867a5ce0b131676b8"
+        },
+        {
+          "iter": 28,
+          "em": 0.390625,
+          "n": 512,
+          "reward": 0.5390356779098511,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/4a7e0ab533e44d36902728647165b6d3/rollout-audit.json",
+          "sha256": "94e8bad9588bdc0745702d7094a03e078bec97562115591d8c1ebfe5279684ab"
+        },
+        {
+          "iter": 29,
+          "em": 0.426953125,
+          "n": 512,
+          "reward": 0.5859209299087524,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/3bcbea051322485e8dbc953080d48313/rollout-audit.json",
+          "sha256": "60a5a2e28080a108c121a093be5c9098dbdef061838f33b3f5195008320a166e"
+        },
+        {
+          "iter": 30,
+          "em": 0.4609375,
+          "n": 512,
+          "reward": 0.6404117345809937,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/6ed330a7cf4143cebe17042ed99da929/rollout-audit.json",
+          "sha256": "cf0f73c41ac3ce69d8cf03db86161d16af94183ba2e9d5def4fa0a5d2f1f80a1"
+        },
+        {
+          "iter": 31,
+          "em": 0.52890625,
+          "n": 512,
+          "reward": 0.7438494563102722,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/e35e03a2720f4e738f35aec18df39752/rollout-audit.json",
+          "sha256": "eadf1258169563bb214d2869704287f76ec1edcc785debbcaacb7a84f4bff522"
+        },
+        {
+          "iter": 32,
+          "em": 0.571875,
+          "n": 512,
+          "reward": 0.8079836964607239,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/fbd88d33fe03408da4d3afd1a7b1b251/rollout-audit.json",
+          "sha256": "ca86ef9ae680f27733f8a51b382efc57d8291d83422f37e7745192d7a2dc8039"
+        },
+        {
+          "iter": 33,
+          "em": 0.53515625,
+          "n": 512,
+          "reward": 0.7534227967262268,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/9c7ff55187fd40fdb9060152a5a188b2/rollout-audit.json",
+          "sha256": "82fc26778a71d35636233a3d796452af39852363e213e97fda5d06cb973e5421"
+        },
+        {
+          "iter": 34,
+          "em": 0.548046875,
+          "n": 512,
+          "reward": 0.780571460723877,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/9ae0c997f9254eebbfd77e2fe8505085/rollout-audit.json",
+          "sha256": "a2be2917428d28855439721b76c5a6c6eb998f632511bd5cc3e8f0d5481d1492"
+        },
+        {
+          "iter": 35,
+          "em": 0.540234375,
+          "n": 512,
+          "reward": 0.7718362212181091,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/869bd04ffe4245e8b25c24c4531e05cf/rollout-audit.json",
+          "sha256": "98750b1e35bc836b39bf8c486e21ac34e4d7da0a59cddb17dbceaceb51d42143"
+        },
+        {
+          "iter": 36,
+          "em": 0.522265625,
+          "n": 512,
+          "reward": 0.7557481527328491,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/8d78f122628a4269968999d6c75a9f11/rollout-audit.json",
+          "sha256": "02bc646739cd874ba543a9587b50d6d6702adfe172d62662843fdf137fdc45d1"
+        },
+        {
+          "iter": 37,
+          "em": 0.533203125,
+          "n": 512,
+          "reward": 0.771712064743042,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/4913aa0e9cf240e8b1db84081bdd070e/rollout-audit.json",
+          "sha256": "a0c6e82021e117f86687fd75fe5d5db62d0055be102afd0b67eee5fe7ac8d820"
+        },
+        {
+          "iter": 38,
+          "em": 0.5132812500000001,
+          "n": 512,
+          "reward": 0.752644419670105,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/3d744a5519c5476399cbe8f6435e53e3/rollout-audit.json",
+          "sha256": "54c7eb813ff7c82f7e7b629ba87dfa0cabee4185089259beefa8e8518a51b175"
+        },
+        {
+          "iter": 39,
+          "em": 0.499609375,
+          "n": 512,
+          "reward": 0.7312182784080505,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/f1905738dd6e4823b81ea1590574d027/rollout-audit.json",
+          "sha256": "b8b58bab49b0321b879a1d031a8c2b770c1bd05af9b141eb2baaac7e8a3c285f"
+        },
+        {
+          "iter": 40,
+          "em": 0.50703125,
+          "n": 512,
+          "reward": 0.7372620701789856,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/31eba95c5a654e5b9d9e85cbddcf35d9/rollout-audit.json",
+          "sha256": "e4d95cd656b94f5705d704e93e5fe4a2671715e9e4ec5c84652b76c79eebcf5f"
+        },
+        {
+          "iter": 41,
+          "em": 0.510546875,
+          "n": 512,
+          "reward": 0.747954249382019,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/d09bf1d4812b4cfa9fa1ab663a52b9e1/rollout-audit.json",
+          "sha256": "306fe97c1beffb7b2c9b62aa3841fec78f52421b3ece5ec8c7359b2e0356a972"
+        },
+        {
+          "iter": 42,
+          "em": 0.5183593750000001,
+          "n": 512,
+          "reward": 0.7556779980659485,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/22d077d2fd4f46bca550d9510a4931a7/rollout-audit.json",
+          "sha256": "0bb20254129cb15c3c2ccac08dd21d77a96dc1a8766316f90d1d778d74fea657"
+        },
+        {
+          "iter": 43,
+          "em": 0.537109375,
+          "n": 512,
+          "reward": 0.7853056788444519,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/c50b36f5ed5b4ebb9dc6f448945ffd25/rollout-audit.json",
+          "sha256": "53f2fb56c91d775c2250f571f1d5c3c52db1c3b48b23ceaf3ec467e9bb7d46c8"
+        },
+        {
+          "iter": 44,
+          "em": 0.5257812500000001,
+          "n": 512,
+          "reward": 0.7758523225784302,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/ad3d84c78cda408d90edc792ed7aa6f6/rollout-audit.json",
+          "sha256": "2e34250d6e495bc82a7c7be4b31ebdc74e7dc8fb3d9e4a44626b2a677bece96a"
+        },
+        {
+          "iter": 45,
+          "em": 0.48945312500000004,
+          "n": 512,
+          "reward": 0.719775915145874,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/d1028d4c49f14365a976e9cce2f660a9/rollout-audit.json",
+          "sha256": "83395c436222b3b4bf561d242223d14e161fdc041114b4c81945ae1505016dec"
+        },
+        {
+          "iter": 46,
+          "em": 0.503125,
+          "n": 512,
+          "reward": 0.7440768480300903,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/614d575045f546e58d2d01ba8009a554/rollout-audit.json",
+          "sha256": "be409e1523e98d9841a9fc8f91a5850047c6f02e2ec24e4a0e0f8eb8c4bf327d"
+        },
+        {
+          "iter": 47,
+          "em": 0.516796875,
+          "n": 512,
+          "reward": 0.7589094042778015,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/119ca84b74f9498e8d2aa2cc510f9a38/rollout-audit.json",
+          "sha256": "c722efa8905afbc7798e92fca781ef81d7dc9d1198c6f371a127372772356854"
+        },
+        {
+          "iter": 48,
+          "em": 0.49140625,
+          "n": 512,
+          "reward": 0.7294573187828064,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/feb555c941ac403692d8ace0f483627c/rollout-audit.json",
+          "sha256": "02d516112ec881aab520c86f4a217e2a3396c5c70fcc3c93ecc18c60d86af758"
+        },
+        {
+          "iter": 49,
+          "em": 0.526953125,
+          "n": 512,
+          "reward": 0.7741943597793579,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/73f8a9a4b7904dfdbbee95c658359e93/rollout-audit.json",
+          "sha256": "8baa95c8c3509c30b85529fe83c2b4dac6ca636d2b6368528c7d2f3e40364bb8"
+        },
+        {
+          "iter": 50,
+          "em": 0.494921875,
+          "n": 512,
+          "reward": 0.7322196364402771,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/cea7b9f6cd8c4891aa45f079dc975350/rollout-audit.json",
+          "sha256": "c6d097c8e8928433785a76f2cbe39ae9b6e080c7960a741b2133718c49142bf7"
+        },
+        {
+          "iter": 51,
+          "em": 0.505078125,
+          "n": 512,
+          "reward": 0.6991233229637146,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/0ed541a1620448e3924ea7fd36711192/rollout-audit.json",
+          "sha256": "86fc1859a0af8c42f4a26b1accdc7bfe6908ff479ab9272f25034f10cd79125c"
+        },
+        {
+          "iter": 52,
+          "em": 0.517578125,
+          "n": 512,
+          "reward": 0.7159978747367859,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/7bffbba390b4405db397f177177b3245/rollout-audit.json",
+          "sha256": "fcd840ee33e7baf2d89b2ca14b13e5f04c971157067f9155568568962dab877c"
+        },
+        {
+          "iter": 53,
+          "em": 0.48359375,
+          "n": 512,
+          "reward": 0.6697378754615784,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/7944fd27cb77413198fb717da8dbff17/rollout-audit.json",
+          "sha256": "c38cb799b50c51b27e293b2b8b554500a8910bfc00330683003c12bac1cf8beb"
+        },
+        {
+          "iter": 54,
+          "em": 0.526953125,
+          "n": 512,
+          "reward": 0.7257285118103027,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/1994c3a8ffdb4a5c874a2cbe76ce7493/rollout-audit.json",
+          "sha256": "9a05542f5ec1dc87b8bd60d3f411bbe83b1b6b39bd25e0a688a758d7a9d31a47"
+        },
+        {
+          "iter": 55,
+          "em": 0.53046875,
+          "n": 512,
+          "reward": 0.72395259141922,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/72220d9cd73a45c0b836b5e0ae1a0d32/rollout-audit.json",
+          "sha256": "11ad389fbfd08025eaedf5550b5cdd10f9c5d6a0247ae1d62416e9f5774b6ebf"
+        },
+        {
+          "iter": 56,
+          "em": 0.5015624999999999,
+          "n": 512,
+          "reward": 0.694410502910614,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/6838f5a4c3204ec9abb47e35ef663430/rollout-audit.json",
+          "sha256": "cbf6974003b77dec7ca867918acfe095da7606a336656df154b664e411a7be05"
+        },
+        {
+          "iter": 57,
+          "em": 0.487890625,
+          "n": 512,
+          "reward": 0.6819742918014526,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/b0952cd01e0240949659b743811b7043/rollout-audit.json",
+          "sha256": "65a88f6d7b763fc8310de694655ca3338da4195c4e51e9574c2c6bf4937bc0c4"
+        },
+        {
+          "iter": 58,
+          "em": 0.5218750000000001,
+          "n": 512,
+          "reward": 0.7176146507263184,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/85c481a699b84c5890178d515debbc9c/rollout-audit.json",
+          "sha256": "5e33054a35dbba00ff5f7af981cedf0834f6264e44dbc5044b24fc10240e1201"
+        },
+        {
+          "iter": 59,
+          "em": 0.465234375,
+          "n": 512,
+          "reward": 0.6732094883918762,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/69608f299dcb44ec847b3568f9a8eab5/rollout-audit.json",
+          "sha256": "322df644a827f889347a68aeb3db55212d4516bad33a231c7caa8411757bf07b"
+        },
+        {
+          "iter": 60,
+          "em": 0.507421875,
+          "n": 512,
+          "reward": 0.7212375402450562,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/b5ca89c024b545e2afdb6b78de79ec6d/rollout-audit.json",
+          "sha256": "b94c4b9940fa2ac5ab30699d863597ca712e018e53c2ad142d5517ac1d4075d8"
+        },
+        {
+          "iter": 61,
+          "em": 0.53828125,
+          "n": 512,
+          "reward": 0.7476373910903931,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/e6215edf972140e9a96758735553ce6b/rollout-audit.json",
+          "sha256": "a64a8807fe87951d068fa721a23e5d1bf2b8b3912d942fef3ebe5b9da7a817ad"
+        },
+        {
+          "iter": 62,
+          "em": 0.501953125,
+          "n": 512,
+          "reward": 0.7114059925079346,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/846d79ac96d947a2aa14df3a98b492b8/rollout-audit.json",
+          "sha256": "112843eb764023b4ec82def1b701741dd3f23fc568d85fddda229d3313879125"
+        },
+        {
+          "iter": 63,
+          "em": 0.509765625,
+          "n": 512,
+          "reward": 0.7207874059677124,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/96a9b7de8b664447bbf65a1d75e0de48/rollout-audit.json",
+          "sha256": "356a518d6b55df158cd6366b3d66ce325a9c23b2edff53f94d26df6be7131bf8"
+        },
+        {
+          "iter": 64,
+          "em": 0.478515625,
+          "n": 512,
+          "reward": 0.6720412969589233,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/c80d6623c8a0450da2a7e5434f9f1224/rollout-audit.json",
+          "sha256": "05e9dd0220d0e3104cfbcb5f35b294ecd27d9fa8d46b580c61e240494321b611"
+        },
+        {
+          "iter": 65,
+          "em": 0.4859375,
+          "n": 512,
+          "reward": 0.6984115839004517,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/407c0c8903204d2bbfd97a2fdebf0834/rollout-audit.json",
+          "sha256": "6a90b87fa0f7168ff65fbba1031566ef77da8d208f9ea41f099512f953020845"
+        },
+        {
+          "iter": 66,
+          "em": 0.505859375,
+          "n": 512,
+          "reward": 0.7211580872535706,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/72cc4ee60f59441291ebbe247e4ea9d7/rollout-audit.json",
+          "sha256": "a5884fd7e8630d1e7c8d418a5e19ab896942af46191fb9893e75ab732126a310"
+        },
+        {
+          "iter": 67,
+          "em": 0.50078125,
+          "n": 512,
+          "reward": 0.7102959156036377,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/449fde5d96c44fedae52a38b258e08e4/rollout-audit.json",
+          "sha256": "d0f179e3bc33256f625e231a351c39011466d6de6930395b1380d8aed68dea52"
+        },
+        {
+          "iter": 68,
+          "em": 0.537109375,
+          "n": 512,
+          "reward": 0.7669818997383118,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/2aae878fd1134e6aaab656d6d45114df/rollout-audit.json",
+          "sha256": "21822b0341862adf827e1e41b320fe5e0a865f495976bb1ef5d76e08bd9b7492"
+        },
+        {
+          "iter": 69,
+          "em": 0.528125,
+          "n": 512,
+          "reward": 0.7609575390815735,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/9fceaac92f9e4b93a19adb025ed45648/rollout-audit.json",
+          "sha256": "24f0f22dcd1e2350271856f6959cdf3587ceb9b4736fe5c7f58f694740717b0a"
+        },
+        {
+          "iter": 70,
+          "em": 0.5093749999999999,
+          "n": 512,
+          "reward": 0.7229492664337158,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/05def73177d7444b81868ba16eff8945/rollout-audit.json",
+          "sha256": "7e75e7b2268f5b78bd5a93080c3e2018b79190e6077fa7bc83b11019b5f17667"
+        },
+        {
+          "iter": 71,
+          "em": 0.45625000000000004,
+          "n": 512,
+          "reward": 0.6744763255119324,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/216f3fb7bf794bfba57b7e953ca7b1d2/rollout-audit.json",
+          "sha256": "79dcee9734f1b81954d36b4789d2a727abd74e4c5463016d36aa4c8b375b931c"
+        },
+        {
+          "iter": 72,
+          "em": 0.51796875,
+          "n": 512,
+          "reward": 0.7450557947158813,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/6809b1c523da470ab59c469b02bc5c6e/rollout-audit.json",
+          "sha256": "a70b72269a273996996bd836542ddea64ef9e8091e11cb816cfa43d50fc9daed"
+        },
+        {
+          "iter": 73,
+          "em": 0.46601562500000004,
+          "n": 512,
+          "reward": 0.6745315194129944,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/33a0deaeae8a4caba544a4fbd92fd219/rollout-audit.json",
+          "sha256": "aa10f080161c7556d96fb4168e6a53096041ef5b2dbb852e2b9f80a293a484ab"
+        },
+        {
+          "iter": 74,
+          "em": 0.5078125,
+          "n": 512,
+          "reward": 0.7284082174301147,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/399581af9c614cf99ba239be60ad2811/rollout-audit.json",
+          "sha256": "9b00f60ea04f734d301f4ec9a0cfa4f28b07a9f62c70bc4b4522ac047e9ce988"
+        },
+        {
+          "iter": 75,
+          "em": 0.519921875,
+          "n": 512,
+          "reward": 0.7320531010627747,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/e9bc647c3ce64af0b2d24ad8da258b0f/rollout-audit.json",
+          "sha256": "572fb926216712620539d59684af339fcdc8081a0087e37d947af8f6102a0bc8"
+        },
+        {
+          "iter": 76,
+          "em": 0.5246093749999999,
+          "n": 512,
+          "reward": 0.7488706707954407,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/f736ad99f19242ee96e2b16af939ce74/rollout-audit.json",
+          "sha256": "87502ba3048be1ff6793bac4e4bf485b3304b8af681f7bd3b4c3f03d3cd4d781"
+        },
+        {
+          "iter": 77,
+          "em": 0.484375,
+          "n": 512,
+          "reward": 0.7002589702606201,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/081b50a44e13482689ddf8d72b05a66b/rollout-audit.json",
+          "sha256": "2d00cc57e555646990b14f03a2213e4b5ae8a8e894698622ea55eca97fd499c8"
+        },
+        {
+          "iter": 78,
+          "em": 0.4390625,
+          "n": 512,
+          "reward": 0.6512305736541748,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/31ffa555a149429f82780c5666a3d887/rollout-audit.json",
+          "sha256": "a9df4f2f924c4e3854c885d206b903bf9ce4a423d063434811d1cc33784e0e1c"
+        },
+        {
+          "iter": 79,
+          "em": 0.475,
+          "n": 512,
+          "reward": 0.7009053826332092,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/84e092457c5d4b77835abb4af718f569/rollout-audit.json",
+          "sha256": "a2106bdd14fc756b98b0d1aec7c00618cc8738f76fc3696441ff773c8740be51"
+        },
+        {
+          "iter": 80,
+          "em": 0.447265625,
+          "n": 512,
+          "reward": 0.6575846076011658,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/19816c0619844c89883557791628df0d/rollout-audit.json",
+          "sha256": "8794f4d2a562cfb5206bbde61058bf985b86ff8aab0b28b38cd7630a0ac08ff3"
+        },
+        {
+          "iter": 81,
+          "em": 0.503125,
+          "n": 512,
+          "reward": 0.7254632711410522,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/a30cba3242ac46258c5b3eaa4133c127/rollout-audit.json",
+          "sha256": "fa5eaf8efcbfdcbc3dd8e3a02664d8f84f8dddcfcedd866c4fb63e40ef5284e4"
+        },
+        {
+          "iter": 82,
+          "em": 0.564453125,
+          "n": 512,
+          "reward": 0.794926106929779,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/2d6f7d7858374328bd4e860e2dd41118/rollout-audit.json",
+          "sha256": "9b5eb3b54b96bb18c3ecb74cd35ece59ddba556d01efd407d661b75f68048bb3"
+        },
+        {
+          "iter": 83,
+          "em": 0.485546875,
+          "n": 512,
+          "reward": 0.6923874616622925,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/be1034b83e9b417d8bff5db6b7185551/rollout-audit.json",
+          "sha256": "39f56562e8e5a4b11a5bbdaa60e8049e345729d9c67115edd67039bad4dc4ba4"
+        },
+        {
+          "iter": 84,
+          "em": 0.43867187500000004,
+          "n": 512,
+          "reward": 0.6434454321861267,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/c56252631a7f47ad8dfc6750bc09b830/rollout-audit.json",
+          "sha256": "25963230aef1e1af38df904bfe7a02393ca171e35534cb8c074751dbb1355310"
+        },
+        {
+          "iter": 85,
+          "em": 0.527734375,
+          "n": 512,
+          "reward": 0.7478798627853394,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/45b0c6ce909b4c4cba50e0235f299662/rollout-audit.json",
+          "sha256": "0efd3b05fe1d3bbcc0a70bc464cb65138f33467f22e31183f4b10500ba909322"
+        },
+        {
+          "iter": 86,
+          "em": 0.508203125,
+          "n": 512,
+          "reward": 0.7344194650650024,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/e9047f196f33453f8dd9dacdc36af587/rollout-audit.json",
+          "sha256": "4fe94c94d7839156734b243770fffe07503669defa5b065d54633f9761d7d988"
+        },
+        {
+          "iter": 87,
+          "em": 0.494921875,
+          "n": 512,
+          "reward": 0.6982461810112,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/56106e7739c34bd7b4b9d44fe80cf4fd/rollout-audit.json",
+          "sha256": "89e5209d52c87c514873e6615b226e49f8b628e9517b92303065b18acbdd025d"
+        },
+        {
+          "iter": 88,
+          "em": 0.48945312500000004,
+          "n": 512,
+          "reward": 0.7132564783096313,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/30ec3054dcf1402e9a840b87a33206fe/rollout-audit.json",
+          "sha256": "11d0716ac71cae4536818bc7c75cdf952ee6ef4144c9b0d69acfbb33a4cf9884"
+        },
+        {
+          "iter": 89,
+          "em": 0.460546875,
+          "n": 512,
+          "reward": 0.6702955961227417,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/b3a9d8cf18f84f9491105cf005241828/rollout-audit.json",
+          "sha256": "93fc97a7b0f34de234fda05945209b8e2ba33df33e38b28f0c33023619fa1647"
+        },
+        {
+          "iter": 90,
+          "em": 0.44921875,
+          "n": 512,
+          "reward": 0.6594411730766296,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/a2cfbdd5895444e6b121c36f582dea80/rollout-audit.json",
+          "sha256": "41ebcf2d2e08d02838104ff8e9b7ff1525b07f023157105fd468e721ddbb97bd"
+        },
+        {
+          "iter": 91,
+          "em": 0.47695312500000003,
+          "n": 512,
+          "reward": 0.6874615550041199,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/04030059d2cd48088d7fb3b18721ee18/rollout-audit.json",
+          "sha256": "aa17489be000381ce26340c7de66044911d5ce07b19387688bac8f112bcc62d6"
+        },
+        {
+          "iter": 92,
+          "em": 0.41093749999999996,
+          "n": 512,
+          "reward": 0.6104752421379089,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/b41ef2e4b02f4599a5dc6b87854de377/rollout-audit.json",
+          "sha256": "1df8044f45b8a730beb7da05770bf62bf9874e57ad8a491554265f01cefd13b3"
+        },
+        {
+          "iter": 93,
+          "em": 0.464453125,
+          "n": 512,
+          "reward": 0.6648671627044678,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/96ef94fb3f064d4f8beeb8a47011c1c8/rollout-audit.json",
+          "sha256": "e224108d7469df5646032e88771dfd55ddca7fe9d369bb4567560b57e0d78082"
+        },
+        {
+          "iter": 94,
+          "em": 0.48984375,
+          "n": 512,
+          "reward": 0.700367271900177,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/35b67a472961487da16af7d918e1a2ab/rollout-audit.json",
+          "sha256": "7bde847a9a852013805f3c649a215f1e38b887454630c5c8c16bcd629dd15b63"
+        },
+        {
+          "iter": 95,
+          "em": 0.476953125,
+          "n": 512,
+          "reward": 0.6911871433258057,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/6804cac5887d4d14b48faf4e9330aef4/rollout-audit.json",
+          "sha256": "6c2989b3ffafcf871d8fbd18602e59af794ee6172aac7b95bf075d707bb5437c"
+        },
+        {
+          "iter": 96,
+          "em": 0.50234375,
+          "n": 512,
+          "reward": 0.7199000120162964,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/a881f74f67a948f48176857b62a7a907/rollout-audit.json",
+          "sha256": "a509bb9425a2909f40b726725861724538b84770ca908b04fa49130eba538983"
+        },
+        {
+          "iter": 97,
+          "em": 0.4875,
+          "n": 512,
+          "reward": 0.6914865970611572,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/39cccf3fd3654510baaf3f46946d6419/rollout-audit.json",
+          "sha256": "fb93881297958ec93bfa4eba9072647357736e2f8b4b762c65f5c854625e2b98"
+        },
+        {
+          "iter": 98,
+          "em": 0.465234375,
+          "n": 512,
+          "reward": 0.6568540334701538,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/40c5946f55454ebfb4143636106d07b5/rollout-audit.json",
+          "sha256": "dbc057c6a0f3b3c436e303fb616a586ee61c627bd6ecef3514d91bee4b5b5990"
+        },
+        {
+          "iter": 99,
+          "em": 0.445703125,
+          "n": 512,
+          "reward": 0.6633045673370361,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/70aa3ae0f6094f8c943121c7abef9bf2/rollout-audit.json",
+          "sha256": "4a5a5488d6d2669467d210cf0acd0fbb36085206372847dbd277d53b2690a6c0"
+        },
+        {
+          "iter": 100,
+          "em": 0.5015625,
+          "n": 512,
+          "reward": 0.7195917367935181,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/a4811c77a8aa421f8a5d5b1f6dd4c481/rollout-audit.json",
+          "sha256": "d0170da2f1bc05c615e1552657512b96a88615eaa5d1a2e0e2f02191c4f1cb35"
+        },
+        {
+          "iter": 101,
+          "em": 0.5296875000000001,
+          "n": 512,
+          "reward": 0.7703334093093872,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/ad0885a69ce64cb284f6f3573799d03f/rollout-audit.json",
+          "sha256": "57cbceeabee1706fb07dfe13ad764da2a55d6268e9c968238285d94d09183d8e"
+        },
+        {
+          "iter": 102,
+          "em": 0.48046875,
+          "n": 512,
+          "reward": 0.7308882474899292,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/407e490f119045f69137268a52239d34/rollout-audit.json",
+          "sha256": "987c021aa2e2fca27485cdef69bb0c902e7f169be11f9c7ab6a89dd1e12f2794"
+        },
+        {
+          "iter": 103,
+          "em": 0.53828125,
+          "n": 512,
+          "reward": 0.8053627014160156,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/0a50a50b7dc6442aa9461cba328e68b7/rollout-audit.json",
+          "sha256": "8c257167a47c0a83399defcd0a3fae8cb70513a5fa028ac1139eff45b43757a4"
+        },
+        {
+          "iter": 104,
+          "em": 0.5203125,
+          "n": 512,
+          "reward": 0.7848990559577942,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/1eaae86fbc6341d0b2b6ad607de63d60/rollout-audit.json",
+          "sha256": "23ec719e0d1c17707cd209e5da0e12f28ba2b99293f2fbebd0c084d9d7981e2f"
+        },
+        {
+          "iter": 105,
+          "em": 0.49375,
+          "n": 512,
+          "reward": 0.737422525882721,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/9f134e985ed24c26874c7e7f92640fff/rollout-audit.json",
+          "sha256": "90221eddc2bb10dc1e8c9a1fc0449517ca28e48c275cca69c37ef2f3334505cc"
+        },
+        {
+          "iter": 106,
+          "em": 0.47695312500000003,
+          "n": 512,
+          "reward": 0.7139296531677246,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/b5cd6c0c41e04c10b1d04e4337c128d5/rollout-audit.json",
+          "sha256": "b0ec6cb010933e353a77ad8c189c6230a65ade0e2a830c4262df49acf666ec14"
+        },
+        {
+          "iter": 107,
+          "em": 0.5031249999999999,
+          "n": 512,
+          "reward": 0.747077465057373,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/1ac06d0a6516445684841aa2ba6e35fa/rollout-audit.json",
+          "sha256": "9a7dd65d056d8d465fd67a09908d2f04107437a43527739804cc5c611fd312b5"
+        },
+        {
+          "iter": 108,
+          "em": 0.47890625,
+          "n": 512,
+          "reward": 0.7236813306808472,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/0663f7bda29144fd89ac4d5ec3ad5b7d/rollout-audit.json",
+          "sha256": "8f1ecf741b3bdbf131d71408c54aa4c53ab62148703733186ec8344447791bad"
+        },
+        {
+          "iter": 109,
+          "em": 0.5171875,
+          "n": 512,
+          "reward": 0.7819783687591553,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/2642122dd5114cf19e31b53f903ff07b/rollout-audit.json",
+          "sha256": "e0b2182bb0be3758f347833bf313dd3c39abbc9778223e1150a3ce749dc153f5"
+        },
+        {
+          "iter": 110,
+          "em": 0.480859375,
+          "n": 512,
+          "reward": 0.724374532699585,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/d23ebc72808d43feaf6da98a172f6468/rollout-audit.json",
+          "sha256": "1313bd187cd56a3e6e6319feba319e8c15e9dcfb0c6ba2830d4db2e67016b7b4"
+        },
+        {
+          "iter": 111,
+          "em": 0.5042968750000001,
+          "n": 512,
+          "reward": 0.7670961022377014,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/234a079a7e2947a08fe497c8527931f5/rollout-audit.json",
+          "sha256": "ed5c7c9cc5a3e50b92b5943466e98e8902f2764158ca7655097d58fa41b07423"
+        },
+        {
+          "iter": 112,
+          "em": 0.47812499999999997,
+          "n": 512,
+          "reward": 0.7188270688056946,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/161c0494da704a5583fed8b9b9dfa3d0/rollout-audit.json",
+          "sha256": "7f358c341d1feb41c73947fb2ed001debecf509cd9331d27c60b3e79d3bf7349"
+        },
+        {
+          "iter": 113,
+          "em": 0.48359375000000004,
+          "n": 512,
+          "reward": 0.7277969121932983,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/51d66cd46a98439995186cc2eb6b618b/rollout-audit.json",
+          "sha256": "0eebe35d2a436b3e88a0e31302ac53eca688199cdd467095af3a02f95a75d262"
+        },
+        {
+          "iter": 114,
+          "em": 0.46992187500000004,
+          "n": 512,
+          "reward": 0.7035704851150513,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/88c0443f08734a83ab51bdb10e0d801d/rollout-audit.json",
+          "sha256": "d27090ea563753a3a3b12223b6c74adb3906390c3b0b7e6b74bfd1106195be49"
+        },
+        {
+          "iter": 115,
+          "em": 0.47031249999999997,
+          "n": 512,
+          "reward": 0.7133438587188721,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/8601c69aee894eafb4cc0f979374b544/rollout-audit.json",
+          "sha256": "26770795b1c6d6ac62efa4dfc7d2b881740c3bebd0a5bd07ce8c846e6f900d43"
+        },
+        {
+          "iter": 116,
+          "em": 0.5140625,
+          "n": 512,
+          "reward": 0.7713668346405029,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/3c782689942d42b1aae2f70a7d54604d/rollout-audit.json",
+          "sha256": "1f904346bff335b60f04ed8f5abb30f6e159d09e4e67c6dc6b552d9d127da639"
+        },
+        {
+          "iter": 117,
+          "em": 0.417578125,
+          "n": 512,
+          "reward": 0.6519768834114075,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/2d442503da3e444fb4e4295f4e00ec5a/rollout-audit.json",
+          "sha256": "96b8358c8f17302ffbc76130e515e73d33b442906d57a5c531fa6337ca1b0f6c"
+        },
+        {
+          "iter": 118,
+          "em": 0.47734375,
+          "n": 512,
+          "reward": 0.7195864319801331,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/18d326fe003b4279a4e3df722928cf67/rollout-audit.json",
+          "sha256": "4f69062e1e47fc89f48dc61b2b56c2a5300e6b57f81d8c725bca77f5b87cbf88"
+        },
+        {
+          "iter": 119,
+          "em": 0.451171875,
+          "n": 512,
+          "reward": 0.6926783323287964,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/c74c6ed71d9842228270da253b019748/rollout-audit.json",
+          "sha256": "dd91068ff6db2c1f36c3c0532eb3abc465bf4cac402ec5a3b97008fd1615c99b"
+        },
+        {
+          "iter": 120,
+          "em": 0.505859375,
+          "n": 512,
+          "reward": 0.7654820084571838,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/aab556cc6b7a44e9808d8a485d94ee5b/rollout-audit.json",
+          "sha256": "2cd0027a83d4941eddc18451e484029cbb26550c6856da3f9b4c2f9af0c15567"
+        },
+        {
+          "iter": 121,
+          "em": 0.49296874999999996,
+          "n": 512,
+          "reward": 0.7426337599754333,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/d7424989239d4d13b265ead0372fca3d/rollout-audit.json",
+          "sha256": "4b5f845cd92b16f320a0d32158bd2bd14782a616a2137f4f57348c79c213c1cc"
+        },
+        {
+          "iter": 122,
+          "em": 0.472265625,
+          "n": 512,
+          "reward": 0.72812420129776,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/e1b9347e96f74c3aa294345b0064a6a9/rollout-audit.json",
+          "sha256": "1c188a01d96232cf47d0124f1979a72ae038939b484bade509aacf245e9a118b"
+        },
+        {
+          "iter": 123,
+          "em": 0.405859375,
+          "n": 512,
+          "reward": 0.6379467844963074,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/c3f5a392037242ab914c6af74f302cb9/rollout-audit.json",
+          "sha256": "a9920b11c61b74d570bfbd6174b860c53a27c97af92522634302785d64d1d69d"
+        },
+        {
+          "iter": 124,
+          "em": 0.51328125,
+          "n": 512,
+          "reward": 0.7852923274040222,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/85753a7fb22f48f587a8c2ff4bf653fe/rollout-audit.json",
+          "sha256": "3c7aa288a9e696ef674da36db943280078aa39e2125362b39ae692022d517994"
+        },
+        {
+          "iter": 125,
+          "em": 0.42499999999999993,
+          "n": 512,
+          "reward": 0.6564990878105164,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/c84e7f34af0d49869ebb603ab326d5d7/rollout-audit.json",
+          "sha256": "9928ca0208843683156f79da41e460bb4799c70ef270f51c26d4c4efe2b49aff"
+        },
+        {
+          "iter": 126,
+          "em": 0.449609375,
+          "n": 512,
+          "reward": 0.6933220624923706,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/7eba71beb53643f588d15a2a08fa48cf/rollout-audit.json",
+          "sha256": "6a5ecd9790c114793c79c5184a9bd2b0fb62f97ec2d2aa15cc7c06946dc4991a"
+        },
+        {
+          "iter": 127,
+          "em": 0.44375,
+          "n": 512,
+          "reward": 0.6909693479537964,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/1898fada31cb40ff9c605a33508d960b/rollout-audit.json",
+          "sha256": "42ba4bea86d0c673ebbdb29d3388bd9ea7ee9c5869b0da8df8f0b999b2f81373"
+        },
+        {
+          "iter": 128,
+          "em": 0.4515625,
+          "n": 512,
+          "reward": 0.6974612474441528,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/b11c980eefb54208b8b955bda4898e32/rollout-audit.json",
+          "sha256": "b62f0c0b21a180572a729ebe79512aab5361d65e25fe02a27164fee7fd289ce3"
+        },
+        {
+          "iter": 129,
+          "em": 0.47226562499999997,
+          "n": 512,
+          "reward": 0.7270175814628601,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/8516c59c5a064204a47f6dafeed5a965/rollout-audit.json",
+          "sha256": "36a4fc68f671a22798561ef144d4e901e4d98c58ed83af2d1db778fe6a53bcdb"
+        },
+        {
+          "iter": 130,
+          "em": 0.489453125,
+          "n": 512,
+          "reward": 0.7619239687919617,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/c5c5fa2051aa4d9db26fb5e5e2830123/rollout-audit.json",
+          "sha256": "e940d70727e153b43b50c9abfc644736a6d11de46b153cb18754b23119c79b91"
+        },
+        {
+          "iter": 131,
+          "em": 0.480078125,
+          "n": 512,
+          "reward": 0.7345415353775024,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/c7cc841b594149178800ef0fe9dddee9/rollout-audit.json",
+          "sha256": "3d59cf5ffb8d2ca2b9cda5e69647f029bc68ee631e298b772279cf9a0934b98b"
+        },
+        {
+          "iter": 132,
+          "em": 0.41015625,
+          "n": 512,
+          "reward": 0.6373836994171143,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/15f4d58b89fa4a288c1f80d0fca7b83c/rollout-audit.json",
+          "sha256": "b7e67815401024f687198b568ea3540f0ef2ae3a75aa3ab3369ce87c49689136"
+        },
+        {
+          "iter": 133,
+          "em": 0.42421875,
+          "n": 512,
+          "reward": 0.6675435304641724,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/030c8ee91f9c466d8dcf03ea3e31f1ee/rollout-audit.json",
+          "sha256": "ef38c264233191784cf06450a9ad49e55b13675f06a306480abb78a63a4ad208"
+        },
+        {
+          "iter": 134,
+          "em": 0.485546875,
+          "n": 512,
+          "reward": 0.7463864088058472,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/d6631361e02e4374b094bc6d94591e5b/rollout-audit.json",
+          "sha256": "65dcd1668671091c3e9786d91d5cbd3bf6ac5faf4571d8411114499101f69669"
+        },
+        {
+          "iter": 135,
+          "em": 0.421484375,
+          "n": 512,
+          "reward": 0.6583903431892395,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/24b97a3da09c4672a81d2e71d208d9bd/rollout-audit.json",
+          "sha256": "eb4cdc94cfc7bb0ab0409caefaab380afa891c6fa44d43cb927dda1ba3b672d8"
+        },
+        {
+          "iter": 136,
+          "em": 0.532421875,
+          "n": 512,
+          "reward": 0.8157063722610474,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/09a4796f406346abbe40cd6fcc2dbb10/rollout-audit.json",
+          "sha256": "4cf28a3fe56dbdd7f4f1399400109598c128f5d0ed30080dd4f1fc23602a1c02"
+        },
+        {
+          "iter": 137,
+          "em": 0.48984375,
+          "n": 512,
+          "reward": 0.7512624859809875,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/c8b6bd138c3f4438ae6bd8be9b3fe910/rollout-audit.json",
+          "sha256": "2f66e6f73ec26858c1e34afd72219324abfa179688057544e30bc810a48037b6"
+        },
+        {
+          "iter": 138,
+          "em": 0.49296875,
+          "n": 512,
+          "reward": 0.7603315114974976,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/dfeb9b5d86a34b9a940c569b6d251362/rollout-audit.json",
+          "sha256": "88cf34e25b71b65c6996b7c63266129ddc39cd0dcd77c466b6b174f2c4a9b324"
+        },
+        {
+          "iter": 139,
+          "em": 0.435546875,
+          "n": 512,
+          "reward": 0.6650656461715698,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/ff384574f9434a9eb7d1d0872b6c4437/rollout-audit.json",
+          "sha256": "f1cecd31ed03fc350694829821be152a395ce28a31678f3b02a694a9e162da88"
+        },
+        {
+          "iter": 140,
+          "em": 0.458984375,
+          "n": 512,
+          "reward": 0.7071431875228882,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/ca3b3d7c67d040d59602ac236c374f56/rollout-audit.json",
+          "sha256": "96f8c8f1f293f0b433a7152c73b07c161c732922bb1d841da2341e84333d433d"
+        },
+        {
+          "iter": 141,
+          "em": 0.450390625,
+          "n": 512,
+          "reward": 0.6962469816207886,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/8b3e6c324d93499aa94e7b9ec63fbb66/rollout-audit.json",
+          "sha256": "1df9413b0ff952d523c39fb7c3d5593bfc5be96422759a57c06fb177e1254fa7"
+        },
+        {
+          "iter": 142,
+          "em": 0.499609375,
+          "n": 512,
+          "reward": 0.7592942118644714,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/fc469135fc7747ca8ae7ebc2b23c2ddf/rollout-audit.json",
+          "sha256": "afb17ebf8886adc782dba0cc7c200c4c0aca44675145a9df63556215bfc05640"
+        },
+        {
+          "iter": 143,
+          "em": 0.46875,
+          "n": 512,
+          "reward": 0.7115873098373413,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/adf7819f67de4d8491fe9c0a0079d8c9/rollout-audit.json",
+          "sha256": "f15838f20c3d453bfbc1408df527c00f20ec0d88e7f830f46c6207aa0d54ec42"
+        },
+        {
+          "iter": 144,
+          "em": 0.398828125,
+          "n": 512,
+          "reward": 0.619194507598877,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/eb286f75fb6c48a8836deb6aa1d9cbcd/rollout-audit.json",
+          "sha256": "9d549916453d25ac2bfeef59edc97dfb4d0e034d8388bcd208090ecf9383108e"
+        },
+        {
+          "iter": 145,
+          "em": 0.478515625,
+          "n": 512,
+          "reward": 0.7332311868667603,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/8c89f6548e8c4050b2fbdeb28c3c9d81/rollout-audit.json",
+          "sha256": "66d9e9897daff9cd2ffde02c4252033ee4c70395c68ac1d3b9a176096f6813de"
+        },
+        {
+          "iter": 146,
+          "em": 0.45976562499999996,
+          "n": 512,
+          "reward": 0.6990023255348206,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/abea93e10bbc4d2999773e4c0cce1f61/rollout-audit.json",
+          "sha256": "e670b413efc5385ad5824902cd3b41a4cc9e19e852e998374b7951ae96ff5c88"
+        },
+        {
+          "iter": 147,
+          "em": 0.48320312500000007,
+          "n": 512,
+          "reward": 0.7405658960342407,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/09d109deaa5d41c2ba4d31f8b1f84d4a/rollout-audit.json",
+          "sha256": "6772ead2b44323878e2f14d6ff1fa91c4a9412f014e959f096f153e8284c98ea"
+        },
+        {
+          "iter": 148,
+          "em": 0.4234375,
+          "n": 512,
+          "reward": 0.6601343750953674,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/3ffb97191ffe4cbcba05aba1ec79be28/rollout-audit.json",
+          "sha256": "e87af8a604a2903a5c6a325d31869d7f1f9414929321357a00a328a4169e2646"
+        },
+        {
+          "iter": 149,
+          "em": 0.528125,
+          "n": 512,
+          "reward": 0.7931870222091675,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/abfffab5e03840d8aee5f6ce0896afb4/rollout-audit.json",
+          "sha256": "5f9b6aab05a307b03ccd711a98b920fd5edfc922c2562db73bb05a68ee55f1e6"
+        },
+        {
+          "iter": 150,
+          "em": 0.43984375,
+          "n": 512,
+          "reward": 0.6696158647537231,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/64d50a5b79e040339f2b0e8466ddf3bc/rollout-audit.json",
+          "sha256": "564d6a430dcf1417790df81849348d6e2b5fe6b3bcc3f7cb7b9a575f5674ab13"
+        },
+        {
+          "iter": 151,
+          "em": 0.49609375,
+          "n": 512,
+          "reward": 0.6959101557731628,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/f213a4013e1348eab3348c412af52ca7/rollout-audit.json",
+          "sha256": "253f65fdc7a9dba464091bc094ec34791abde10f5b78bdbfacf7813383087005"
+        },
+        {
+          "iter": 152,
+          "em": 0.46875,
+          "n": 512,
+          "reward": 0.6548754572868347,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/1d9c0445fe3346a8b6c411494f30e9f3/rollout-audit.json",
+          "sha256": "cf3f0578bec66146e7ce687b92f420d7d8f12edbc5fe5debfe8d9691d61e0b6c"
+        },
+        {
+          "iter": 153,
+          "em": 0.4734375,
+          "n": 512,
+          "reward": 0.6571969389915466,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/7ea329c4106f41b99b2b4d916208e587/rollout-audit.json",
+          "sha256": "d6bf5dbdbb0abd8c65bd75779b90fe242b882050a62285e78fec3112c5f37848"
+        },
+        {
+          "iter": 154,
+          "em": 0.47187500000000004,
+          "n": 512,
+          "reward": 0.6574869155883789,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/6ee5096deacf41e09201f256371435df/rollout-audit.json",
+          "sha256": "a30ff12ba2be37b2cdbb4ef5a63917c5c29c4e60d2f6a1519c36c0a0d2530387"
+        },
+        {
+          "iter": 155,
+          "em": 0.4125,
+          "n": 512,
+          "reward": 0.5904701948165894,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/617703e9032d459fa16a4341f7a89a8c/rollout-audit.json",
+          "sha256": "f8952a207233bac629560874963935ecf6b550e008b7fdd77155867aa107b89f"
+        },
+        {
+          "iter": 156,
+          "em": 0.42890625,
+          "n": 512,
+          "reward": 0.5957421064376831,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/7e9289310d7345b092b7b748fea4c558/rollout-audit.json",
+          "sha256": "20205e66fcf45d2d91c33d0ed70d8c665fff386c69c94453ca7dee805d38273e"
+        },
+        {
+          "iter": 157,
+          "em": 0.433984375,
+          "n": 512,
+          "reward": 0.6234877705574036,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/0f4feb3ca32544619028004f80ae2688/rollout-audit.json",
+          "sha256": "0495c693fa36611b8d4dd2d5df5219dccf15c855c27f2ab4bf7fa4cbbca6018d"
+        },
+        {
+          "iter": 158,
+          "em": 0.45781249999999996,
+          "n": 512,
+          "reward": 0.6448907256126404,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/f0d98ba1b78648a787d9b0cf06abecf2/rollout-audit.json",
+          "sha256": "b410f101d68385c6f9cde6fe2a7047369a18a74d4af5a9f752e2e7f9f36679c9"
+        },
+        {
+          "iter": 159,
+          "em": 0.47890625,
+          "n": 512,
+          "reward": 0.6764606833457947,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/aab7019601ee4d628d4a46bccc7d29df/rollout-audit.json",
+          "sha256": "a2d56d1386fd1ae0ef8fec7ea21c02c391ca1606f07460ab0dc630f5f537bab1"
+        },
+        {
+          "iter": 160,
+          "em": 0.444140625,
+          "n": 512,
+          "reward": 0.6257997751235962,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/ef50040dd9964281bb35f399274a9e0e/rollout-audit.json",
+          "sha256": "e7d45aa5f48e47ee08a854318bb798405de7ac36bed3206d170c254234c86542"
+        },
+        {
+          "iter": 161,
+          "em": 0.46562499999999996,
+          "n": 512,
+          "reward": 0.667866587638855,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/a3e3752410cb469fa80234fab07a29e5/rollout-audit.json",
+          "sha256": "9cc359d850e9f038c793f31e1351625f988b37b4fe32f4d747d7c0ccf3a64bec"
+        },
+        {
+          "iter": 162,
+          "em": 0.43242187499999996,
+          "n": 512,
+          "reward": 0.6194256544113159,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/e2b0ae0669d64590b6be077f41f3295b/rollout-audit.json",
+          "sha256": "c2b649e4886461ad41defb34d48fc1a3c47450ec90eb207d3b4999c0d53a6bf8"
+        },
+        {
+          "iter": 163,
+          "em": 0.49609375,
+          "n": 512,
+          "reward": 0.7047876119613647,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/859029af8349478ab3aeb03360708717/rollout-audit.json",
+          "sha256": "12a3846c3837c4087a5548a720b0187034e42c6ab33e879620268e0069400b58"
+        },
+        {
+          "iter": 164,
+          "em": 0.490625,
+          "n": 512,
+          "reward": 0.6886221766471863,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/0951717fa1164f90a87918fb341faa1b/rollout-audit.json",
+          "sha256": "0bf0bec3ec3219beed4b000d8acc3bb61b437d53039d7eb729caa4065c3884b3"
+        },
+        {
+          "iter": 165,
+          "em": 0.4671875,
+          "n": 512,
+          "reward": 0.6699749231338501,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/9d9d0d985ee9467ba36aa4a3646a065a/rollout-audit.json",
+          "sha256": "53b5e48ab83eff11ecd6ffd99440223e594adceca2cd068ff3ec0dd37d1bd607"
+        },
+        {
+          "iter": 166,
+          "em": 0.485546875,
+          "n": 512,
+          "reward": 0.7025420069694519,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/325a3c7e9b8448fa8cf5ea599f76ebb5/rollout-audit.json",
+          "sha256": "fb0fe01176be1a2606bd3a2e86d2560739999e58109faf279c6cf48ae5ad9f07"
+        },
+        {
+          "iter": 167,
+          "em": 0.469140625,
+          "n": 512,
+          "reward": 0.6791480779647827,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/3179c453f1e2400d9ecceedd674f6935/rollout-audit.json",
+          "sha256": "1543debc0dcaf3f0a2c461800a4708fc4a13051531d996d5f14d8819636a394f"
+        },
+        {
+          "iter": 168,
+          "em": 0.533984375,
+          "n": 512,
+          "reward": 0.7383472323417664,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/4bae6f4e25ea45d79cd2f5b5c439448b/rollout-audit.json",
+          "sha256": "67f5244fdf4155bf5ed33d0f131accc66ec9c41c262fcc912b0a862b8fb674d4"
+        },
+        {
+          "iter": 169,
+          "em": 0.48828125,
+          "n": 512,
+          "reward": 0.6916829347610474,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/7264145553c649a48fd8fdbd5a016395/rollout-audit.json",
+          "sha256": "bc3912627eb9769b806edbdf53dde55806cf91806c6cce6193ef452b13054045"
+        },
+        {
+          "iter": 170,
+          "em": 0.46367187500000007,
+          "n": 512,
+          "reward": 0.6636266112327576,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/e105b7aa03b347a79d147e194c93c298/rollout-audit.json",
+          "sha256": "88e4ff05ddfa24b70d7ea9869f5024e31a5f35589534b953e56f96841b14c31c"
+        },
+        {
+          "iter": 171,
+          "em": 0.48203125,
+          "n": 512,
+          "reward": 0.6720976829528809,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/6bf4366f13314e1ba4f6dc8257aec0cc/rollout-audit.json",
+          "sha256": "1daaf376d63a74a26645ceef4fe6b6448f3bd83707996b749e6841628f8076ad"
+        },
+        {
+          "iter": 172,
+          "em": 0.48554687500000004,
+          "n": 512,
+          "reward": 0.6978827118873596,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/68479072eb104fc4a68d4c04dbde5768/rollout-audit.json",
+          "sha256": "83882e6feb2c435ac2c40d8d3639b57b7efef6216ebc17a53aa8b1c5a9dcfb86"
+        },
+        {
+          "iter": 173,
+          "em": 0.44023437499999996,
+          "n": 512,
+          "reward": 0.6287423968315125,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/1cdb855253c94d909eeb2066f61bc7e2/rollout-audit.json",
+          "sha256": "1e7a64f60fee9c121f27da54109d70b24381deaffa9b2a633126124f8ed34177"
+        },
+        {
+          "iter": 174,
+          "em": 0.459765625,
+          "n": 512,
+          "reward": 0.6661413908004761,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/f0ec65cc2c9a4e1d9a4eda592c9b0a97/rollout-audit.json",
+          "sha256": "ea820cf795b4a14629893a5485513e1bc03f290aa9a5b6f366b2bac4dbb215f6"
+        },
+        {
+          "iter": 175,
+          "em": 0.4375,
+          "n": 512,
+          "reward": 0.6320317983627319,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/b038703c4a71459f876b79068a3b0c50/rollout-audit.json",
+          "sha256": "5a0c68e4d3176014e71c5a9b2fcb38b7aca73ec8ced0cca0831b07bc6d3355c9"
+        },
+        {
+          "iter": 176,
+          "em": 0.469140625,
+          "n": 512,
+          "reward": 0.6712342500686646,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/56036714ccaa493d920f356046acaeb3/rollout-audit.json",
+          "sha256": "e30e73ff1d9a0dcb91420f77d4d2ab7866bc6c9f156c15ac1b78722c653f69f9"
+        },
+        {
+          "iter": 177,
+          "em": 0.43242187499999996,
+          "n": 512,
+          "reward": 0.6215442419052124,
+          "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-sigma3-20261015/artifacts/question-probe/attempts/90ef7df30936477e906c89349c515b7b/rollout-audit.json",
+          "sha256": "c7a32a3aee111fee8b42bd853de0c460894c1e64bcae6f8f9c6e18aa8e7a7c7b"
+        }
+      ],
+      "gpu": "ACD1-21,4 H100",
+      "optimizer_per_rank": 3536,
+      "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/co-updated-runs.json",
+      "target_iter": 200
+    }
+  ],
+  "observations": [
+    {
+      "utc": "2026-10-16T04:54:27.595596+00:00",
+      "completed_iter": 177,
+      "actor_optimizer_after": 3536,
+      "trainer_bytes": 9510599,
+      "rank_last": [
+        {
+          "kind": "OUTER_BUDGET",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "rank": 0,
+          "logical_update": 177,
+          "local_trajectories": 640,
+          "local_mini": 32,
+          "local_micro": 4,
+          "optimizer_writes": 20,
+          "cumulative_writes": 3536,
+          "attempt_id": "90ef7df30936477e906c89349c515b7b",
+          "attempt_index": 177,
+          "opportunities_processed": 20,
+          "optimizer_writes_before": 3516,
+          "optimizer_writes_after": 3536
+        },
+        {
+          "kind": "OUTER_BUDGET",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "rank": 1,
+          "logical_update": 177,
+          "local_trajectories": 640,
+          "local_mini": 32,
+          "local_micro": 4,
+          "optimizer_writes": 20,
+          "cumulative_writes": 3536,
+          "attempt_id": "90ef7df30936477e906c89349c515b7b",
+          "attempt_index": 177,
+          "opportunities_processed": 20,
+          "optimizer_writes_before": 3516,
+          "optimizer_writes_after": 3536
+        },
+        {
+          "kind": "OUTER_BUDGET",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "rank": 2,
+          "logical_update": 177,
+          "local_trajectories": 640,
+          "local_mini": 32,
+          "local_micro": 4,
+          "optimizer_writes": 20,
+          "cumulative_writes": 3536,
+          "attempt_id": "90ef7df30936477e906c89349c515b7b",
+          "attempt_index": 177,
+          "opportunities_processed": 20,
+          "optimizer_writes_before": 3516,
+          "optimizer_writes_after": 3536
+        },
+        {
+          "kind": "OUTER_BUDGET",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "rank": 3,
+          "logical_update": 177,
+          "local_trajectories": 640,
+          "local_mini": 32,
+          "local_micro": 4,
+          "optimizer_writes": 20,
+          "cumulative_writes": 3536,
+          "attempt_id": "90ef7df30936477e906c89349c515b7b",
+          "attempt_index": 177,
+          "opportunities_processed": 20,
+          "optimizer_writes_before": 3516,
+          "optimizer_writes_after": 3536
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-16T04:55:21.440108+00:00",
+      "completed_iter": 177,
+      "actor_optimizer_after": 3536,
+      "trainer_bytes": 9510599,
+      "rank_last": [
+        {
+          "kind": "OUTER_BUDGET",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "rank": 0,
+          "logical_update": 177,
+          "local_trajectories": 640,
+          "local_mini": 32,
+          "local_micro": 4,
+          "optimizer_writes": 20,
+          "cumulative_writes": 3536,
+          "attempt_id": "90ef7df30936477e906c89349c515b7b",
+          "attempt_index": 177,
+          "opportunities_processed": 20,
+          "optimizer_writes_before": 3516,
+          "optimizer_writes_after": 3536
+        },
+        {
+          "kind": "OUTER_BUDGET",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "rank": 1,
+          "logical_update": 177,
+          "local_trajectories": 640,
+          "local_mini": 32,
+          "local_micro": 4,
+          "optimizer_writes": 20,
+          "cumulative_writes": 3536,
+          "attempt_id": "90ef7df30936477e906c89349c515b7b",
+          "attempt_index": 177,
+          "opportunities_processed": 20,
+          "optimizer_writes_before": 3516,
+          "optimizer_writes_after": 3536
+        },
+        {
+          "kind": "OUTER_BUDGET",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "rank": 2,
+          "logical_update": 177,
+          "local_trajectories": 640,
+          "local_mini": 32,
+          "local_micro": 4,
+          "optimizer_writes": 20,
+          "cumulative_writes": 3536,
+          "attempt_id": "90ef7df30936477e906c89349c515b7b",
+          "attempt_index": 177,
+          "opportunities_processed": 20,
+          "optimizer_writes_before": 3516,
+          "optimizer_writes_after": 3536
+        },
+        {
+          "kind": "OUTER_BUDGET",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "rank": 3,
+          "logical_update": 177,
+          "local_trajectories": 640,
+          "local_mini": 32,
+          "local_micro": 4,
+          "optimizer_writes": 20,
+          "cumulative_writes": 3536,
+          "attempt_id": "90ef7df30936477e906c89349c515b7b",
+          "attempt_index": 177,
+          "opportunities_processed": 20,
+          "optimizer_writes_before": 3516,
+          "optimizer_writes_after": 3536
+        }
+      ]
+    },
+    {
+      "utc": "2026-10-16T04:55:59.669482+00:00",
+      "completed_iter": 177,
+      "actor_optimizer_after": 3536,
+      "trainer_bytes": 9510930,
+      "rank_last": [
+        {
+          "kind": "POLICY_MONITOR",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "execution_role": "production",
+          "enforcement": {
+            "negative_tail": "enforced",
+            "old_policy_kl": "enforced",
+            "numerical_finite": "enforced",
+            "dual_clip": "enforced"
+          },
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 0.0004884090023707987,
+          "kl_estimate_complete": true,
+          "effective_weight_mass": 8.0,
+          "weighted_k3_numerator": 0.00390727201896639,
+          "negative_effective_weight_mass": 3.161414853276255,
+          "tail_effective_weight_mass": 0.0,
+          "effective_token_count": 3394,
+          "negative_token_count": 1331,
+          "negative_tail_count": 0,
+          "negative_tail_count_fraction": 0.0,
+          "negative_tail_weight_fraction": 0.0,
+          "dual_clip_saturated_objective_weight_fraction": 0.0,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "quantile_method": "exact global nearest-order statistic",
+          "negative_log_ratio_p95": 0.005447544157505035,
+          "negative_log_ratio_p99": 0.07609188556671143,
+          "negative_log_ratio_max": 0.21055889129638672,
+          "rank": 0,
+          "stage": "before_minibatch",
+          "context": {
+            "logical_update": 178,
+            "minibatch_index": 0,
+            "prior_optimizer_writes": 3536,
+            "attempt_id": "2c0eb19c828b47e0a96ec8e71ba99d68",
+            "attempt_index": 178,
+            "behavior_probability_gate_sha256": "b914db76cc8e929c2df1b161f691cd35089583c1cf85735a59af3919e0bde4bc"
+          },
+          "optimizer_writes": 3536,
+          "calibration_sha256": "feca3359fb8853d04e6150352ad44e886cba82f43d26b0bf4ad894e6f8fd6b34",
+          "monitor_identity": {
+            "selection_indices": [
+              361,
+              14,
+              167,
+              207,
+              89,
+              43,
+              245,
+              624
+            ],
+            "actor_token_lengths": [
+              54,
+              68,
+              72,
+              77,
+              83,
+              92,
+              106,
+              280
+            ],
+            "tensor_sha256": {
+              "responses": "d0c1b8ea0c4df87bc30a01bad9a0533db6cb2f2da50a7024e5d89a664c12ba9e",
+              "input_ids": "270c12ca791dcb892ed34662f359e61d3ea001deae173f43b9d74229000db517",
+              "attention_mask": "ca7341c0b1dc4000c9daad425acd5cff3bf0de59258100874055cf3b0eb92d26",
+              "position_ids": "e2b13208374cf19078f99f2e7b6d5712dfd91a6f997354451993bfb7f581b86f",
+              "old_log_probs": "468cfcc7c56862e351aa5a12306c008f2011d09c62a534c192a7531b1c2ab60a",
+              "advantages": "a68ac9b6e78b46fe6bd4ec80abaff4d51eec7dc820c3487f7da3f487f1bc0114",
+              "loss_mask": "167ab440b383d73f1d35340b06e13664783037cb12571d5fb4b19ce40881bd0a",
+              "ref_log_prob": "d03ad334ca5439798ece60c745921c7485413213266f140460d06fbf7cba57c3"
+            }
+          },
+          "objective_weight_definition": "equal two-row micro masked_mean; weighted global numerator/denominator",
+          "monitoring_scope": "fixed eight trajectories per rank across length strata; not full rollout",
+          "rejection_count": 9
+        },
+        {
+          "kind": "POLICY_MONITOR",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "execution_role": "production",
+          "enforcement": {
+            "negative_tail": "enforced",
+            "old_policy_kl": "enforced",
+            "numerical_finite": "enforced",
+            "dual_clip": "enforced"
+          },
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 0.0004884090023707987,
+          "kl_estimate_complete": true,
+          "effective_weight_mass": 8.0,
+          "weighted_k3_numerator": 0.00390727201896639,
+          "negative_effective_weight_mass": 3.161414853276255,
+          "tail_effective_weight_mass": 0.0,
+          "effective_token_count": 3394,
+          "negative_token_count": 1331,
+          "negative_tail_count": 0,
+          "negative_tail_count_fraction": 0.0,
+          "negative_tail_weight_fraction": 0.0,
+          "dual_clip_saturated_objective_weight_fraction": 0.0,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "quantile_method": "exact global nearest-order statistic",
+          "negative_log_ratio_p95": 0.005447544157505035,
+          "negative_log_ratio_p99": 0.07609188556671143,
+          "negative_log_ratio_max": 0.21055889129638672,
+          "rank": 1,
+          "stage": "before_minibatch",
+          "context": {
+            "logical_update": 178,
+            "minibatch_index": 0,
+            "prior_optimizer_writes": 3536,
+            "attempt_id": "2c0eb19c828b47e0a96ec8e71ba99d68",
+            "attempt_index": 178,
+            "behavior_probability_gate_sha256": "b914db76cc8e929c2df1b161f691cd35089583c1cf85735a59af3919e0bde4bc"
+          },
+          "optimizer_writes": 3536,
+          "calibration_sha256": "feca3359fb8853d04e6150352ad44e886cba82f43d26b0bf4ad894e6f8fd6b34",
+          "monitor_identity": {
+            "selection_indices": [
+              5,
+              400,
+              367,
+              460,
+              429,
+              495,
+              478,
+              364
+            ],
+            "actor_token_lengths": [
+              48,
+              66,
+              71,
+              76,
+              83,
+              90,
+              105,
+              323
+            ],
+            "tensor_sha256": {
+              "responses": "62b55659b02d3bf9a0c7348d564cbc697dbeaf140a601c7bd2f0f57290f6afe5",
+              "input_ids": "ec106ada3c176338e095a73e9437b3245891ccc74db59075477805a8675be44f",
+              "attention_mask": "00c4c97a57ed957b77465c789a1f7191b0317108aedaa26dd78aa8042869a1aa",
+              "position_ids": "fe04f5751d11666ca9655d45439950b679e033ed038c30de816a1adb2e360534",
+              "old_log_probs": "252a3caac07d352e4543814d8a9cbcc88703f86ffa33d632ac78dc0262cafb4d",
+              "advantages": "d7f0d465a1cb19336354d0f884432fe53c79bd82fe3a75b3fe3c8244894df2a8",
+              "loss_mask": "fbf23318f03446e305933360ff731b3fa10887f6f4f5f090156e962dd8f08d7b",
+              "ref_log_prob": "01734524e1693339cc14d6551a1f348dd9508e221683758518e92c80f9d9b089"
+            }
+          },
+          "objective_weight_definition": "equal two-row micro masked_mean; weighted global numerator/denominator",
+          "monitoring_scope": "fixed eight trajectories per rank across length strata; not full rollout",
+          "rejection_count": 9
+        },
+        {
+          "kind": "POLICY_MONITOR",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "execution_role": "production",
+          "enforcement": {
+            "negative_tail": "enforced",
+            "old_policy_kl": "enforced",
+            "numerical_finite": "enforced",
+            "dual_clip": "enforced"
+          },
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 0.0004884090023707987,
+          "kl_estimate_complete": true,
+          "effective_weight_mass": 8.0,
+          "weighted_k3_numerator": 0.00390727201896639,
+          "negative_effective_weight_mass": 3.161414853276255,
+          "tail_effective_weight_mass": 0.0,
+          "effective_token_count": 3394,
+          "negative_token_count": 1331,
+          "negative_tail_count": 0,
+          "negative_tail_count_fraction": 0.0,
+          "negative_tail_weight_fraction": 0.0,
+          "dual_clip_saturated_objective_weight_fraction": 0.0,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "quantile_method": "exact global nearest-order statistic",
+          "negative_log_ratio_p95": 0.005447544157505035,
+          "negative_log_ratio_p99": 0.07609188556671143,
+          "negative_log_ratio_max": 0.21055889129638672,
+          "rank": 2,
+          "stage": "before_minibatch",
+          "context": {
+            "logical_update": 178,
+            "minibatch_index": 0,
+            "prior_optimizer_writes": 3536,
+            "attempt_id": "2c0eb19c828b47e0a96ec8e71ba99d68",
+            "attempt_index": 178,
+            "behavior_probability_gate_sha256": "b914db76cc8e929c2df1b161f691cd35089583c1cf85735a59af3919e0bde4bc"
+          },
+          "optimizer_writes": 3536,
+          "calibration_sha256": "feca3359fb8853d04e6150352ad44e886cba82f43d26b0bf4ad894e6f8fd6b34",
+          "monitor_identity": {
+            "selection_indices": [
+              273,
+              197,
+              156,
+              143,
+              68,
+              444,
+              436,
+              618
+            ],
+            "actor_token_lengths": [
+              54,
+              67,
+              72,
+              77,
+              83,
+              92,
+              106,
+              276
+            ],
+            "tensor_sha256": {
+              "responses": "4703616767bdbc156e14d0070bbd753168f916ddc4572dd3a30f0f8c676a82d6",
+              "input_ids": "39fc723da3adc9d94cd35695c612e541e397b6466ca6133b1d9c19d8699dc622",
+              "attention_mask": "7a91fc462f7956bd524913ba48a549ab1987a22b90487e9e11db6095d50dc65a",
+              "position_ids": "ef99c228e5b805e92840fdd44be51e1a0e7ceabbf5d2537df95935ae2f041201",
+              "old_log_probs": "f65448a4512b8ab3c1d5655c4c3931ede63f8e0d6df1cdd8c85961609e2cf708",
+              "advantages": "8794f6b9a413972c93e444af05236d1d8bfe6245f5946995a8b9ff6cd314493f",
+              "loss_mask": "64a728b79f693a3ef1c89e2bdba25734fc73dcb75cd5c22195c606932dd706a3",
+              "ref_log_prob": "f30167b12ae6737cc9e7f93204e5eb8eba2141c79a35832a07b2a92db879e777"
+            }
+          },
+          "objective_weight_definition": "equal two-row micro masked_mean; weighted global numerator/denominator",
+          "monitoring_scope": "fixed eight trajectories per rank across length strata; not full rollout",
+          "rejection_count": 9
+        },
+        {
+          "kind": "POLICY_MONITOR",
+          "run_id": "70827e85fe584f0c84453aae907918a4",
+          "execution_role": "production",
+          "enforcement": {
+            "negative_tail": "enforced",
+            "old_policy_kl": "enforced",
+            "numerical_finite": "enforced",
+            "dual_clip": "enforced"
+          },
+          "allowed": true,
+          "reasons": [],
+          "sampled_old_policy_kl": 0.0004884090023707987,
+          "kl_estimate_complete": true,
+          "effective_weight_mass": 8.0,
+          "weighted_k3_numerator": 0.00390727201896639,
+          "negative_effective_weight_mass": 3.161414853276255,
+          "tail_effective_weight_mass": 0.0,
+          "effective_token_count": 3394,
+          "negative_token_count": 1331,
+          "negative_tail_count": 0,
+          "negative_tail_count_fraction": 0.0,
+          "negative_tail_weight_fraction": 0.0,
+          "dual_clip_saturated_objective_weight_fraction": 0.0,
+          "invalid_count": 0,
+          "overflow_count": 0,
+          "quantile_method": "exact global nearest-order statistic",
+          "negative_log_ratio_p95": 0.005447544157505035,
+          "negative_log_ratio_p99": 0.07609188556671143,
+          "negative_log_ratio_max": 0.21055889129638672,
+          "rank": 3,
+          "stage": "before_minibatch",
+          "context": {
+            "logical_update": 178,
+            "minibatch_index": 0,
+            "prior_optimizer_writes": 3536,
+            "attempt_id": "2c0eb19c828b47e0a96ec8e71ba99d68",
+            "attempt_index": 178,
+            "behavior_probability_gate_sha256": "b914db76cc8e929c2df1b161f691cd35089583c1cf85735a59af3919e0bde4bc"
+          },
+          "optimizer_writes": 3536,
+          "calibration_sha256": "feca3359fb8853d04e6150352ad44e886cba82f43d26b0bf4ad894e6f8fd6b34",
+          "monitor_identity": {
+            "selection_indices": [
+              23,
+              357,
+              118,
+              302,
+              374,
+              575,
+              349,
+              386
+            ],
+            "actor_token_lengths": [
+              48,
+              66,
+              72,
+              77,
+              82,
+              91,
+              103,
+              334
+            ],
+            "tensor_sha256": {
+              "responses": "f8a71fc489cd1553810e7333b553d3894423a27246b06180960dc9392377f1a0",
+              "input_ids": "a2f7462c1bc7aa312d4a5a4d4a1c2ed64d69947bb6c1797d192bd17a06e9ebe1",
+              "attention_mask": "d9500505bd1298996762fc58f73ee477414078b12cb50b3bfe9d49afa4516368",
+              "position_ids": "d505e534ce67b17100d6d28fc32ec2a79454facfc1b5060eb7916fba3da86a4a",
+              "old_log_probs": "70dd97e75c3734fd3579b60aa98c3f36850b1c882a9666c26e1e73c9a24d4705",
+              "advantages": "76c58fb825f71f61865c9c33f3c01aa9bdf77f412b3e8b27c5dc2e15c005bd12",
+              "loss_mask": "fb3e64ed514d9f3ea741bc8fe300d3d4e6c9a24bc8d034aa27a14c4ce54a822a",
+              "ref_log_prob": "dbddd2ca7d5abee621a6ea64cb418c8812dd32100d33445278ca68caf10bde99"
+            }
+          },
+          "objective_weight_definition": "equal two-row micro masked_mean; weighted global numerator/denominator",
+          "monitoring_scope": "fixed eight trajectories per rank across length strata; not full rollout",
+          "rejection_count": 9
+        }
+      ]
+    }
+  ],
+  "canonical_co_lineage_proof": {
+    "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/recovery-plan.json",
+    "sha256": "e85f73b9337f62fb7f1d9a2ba70a701b5c4cb5a059d567647123097a844828cb",
+    "data": {
+      "step": 100,
+      "source_job": "709923",
+      "receipt_sha256": "e4d364ddf9c0248c922487dabad6bb2bc207581309a30ee6f77653a9a12c8816",
+      "prior_history": {
+        "prior_job": "709265",
+        "prior_through": 5,
+        "prior_history": {}
+      },
+      "failure_history": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/failed-job-709923",
+      "recomputed_failed_interval": [
+        101,
+        140
+      ]
+    },
+    "total_raw_rows": 245,
+    "canonical_rows": 200,
+    "superseded_rows_excluded": 45
+  },
+  "sources": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/co-observation-1.json",
+      "sha256": "ed9eb90b064a697f109d3db78b4e7ea3c67601bf6f51dc890a430d8c1d8b7106"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/co-observation-2.json",
+      "sha256": "86f05c7c8bde996072d1df8b4487f6e3a79993b98c3eb55bbf1afdfbd6048224"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261016-additions/co-observation-3.json",
+      "sha256": "06d45fbbc043849e161ce9ac532816320c2f2722a37b831924464ac30e139ce8"
+    },
+    {
+      "path": "outputs/session-refresh-20261016-additions/co-observation-4.json",
+      "sha256": "7f4ea0822bf09b9a30e6d9ac070edf6a5b2c487d7cd9ff6a958079e635be65a2"
+    }
+  ],
+  "latest_progress_proof": {
+    "observed_at_cst": "2026-10-16T12:57:06.366812+08:00",
+    "first_completed": 177,
+    "latest_completed": 177,
+    "first_optimizer": 3536,
+    "latest_optimizer_per_rank": [
+      3553,
+      3553,
+      3553,
+      3553
+    ],
+    "rank_bytes_delta": [
+      97881,
+      97914,
+      97947,
+      97947
+    ],
+    "trainer_bytes_delta": 37678,
+    "actual_forward_progress": true,
+    "current_outer": 178,
+    "partial_outer_excluded_from_curve": true,
+    "fatal_errors_current": [],
+    "source": "outputs/session-refresh-20261016-additions/co-observation-4.json"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "at": 1792126442.0145533,
+  "checkpoint": {
+    "path": "/home/shaoshitong/search-e1-migration-20261011/weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/output-speed-resume3-2e3a9029051d4771bc61c95b28b60e21/checkpoints/training_state/global_step_169/manifest.json",
+    "sha256": "a5da9da85124bd15f9e4d096650108bfa6d2a3ef3ebc473a648b38b9e5881216",
+    "status": "COMPLETE_SAME_WORLD_STATE_SAVED",
+    "completed": 169,
+    "next_step": 170,
+    "workers": [
+      {
+        "rank": 0,
+        "adam": 3380,
+        "scheduler": 169,
+        "finite": true
+      },
+      {
+        "rank": 1,
+        "adam": 3380,
+        "scheduler": 169,
+        "finite": true
+      },
+      {
+        "rank": 2,
+        "adam": 3380,
+        "scheduler": 169,
+        "finite": true
+      },
+      {
+        "rank": 3,
+        "adam": 3380,
+        "scheduler": 169,
+        "finite": true
+      }
+    ]
+  },
+  "log": {
+    "path": "/home/shaoshitong/rbb5-context2-ray/ray/session_latest/logs/worker-11344cfc20371f65c7cab4989b78e523fe63b02ac0ee8493b64d8895-01000000-1111494.out",
+    "bytes": 823542295,
+    "mtime": 1792126419.457023
+  },
+  "phase": {
+    "outer": 170,
+    "generated_tokens": 160682,
+    "generation_calls": 7,
+    "stages": [
+      {
+        "event": "start",
+        "stage": "reward_advantages",
+        "outer": 169,
+        "unix_time": 1792125586.9982755,
+        "pid": 1111494
+      },
+      {
+        "event": "complete",
+        "stage": "reward_advantages",
+        "outer": 169,
+        "unix_time": 1792125601.5562336,
+        "pid": 1111494,
+        "successful": true,
+        "wall_seconds": 14.558019067160785,
+        "cpu_seconds": 13.853566974998103
+      },
+      {
+        "event": "start",
+        "stage": "pre_actor_mu_validate",
+        "outer": 169,
+        "unix_time": 1792125601.560309,
+        "pid": 1111494
+      },
+      {
+        "event": "complete",
+        "stage": "pre_actor_mu_validate",
+        "outer": 169,
+        "unix_time": 1792125619.6320703,
+        "pid": 1111494,
+        "successful": true,
+        "wall_seconds": 18.071822431869805,
+        "cpu_seconds": 18.142789402001654
+      },
+      {
+        "event": "start",
+        "stage": "actor_batch_audit",
+        "outer": 169,
+        "unix_time": 1792125619.6322565,
+        "pid": 1111494
+      },
+      {
+        "event": "complete",
+        "stage": "actor_batch_audit",
+        "outer": 169,
+        "unix_time": 1792125632.4012187,
+        "pid": 1111494,
+        "successful": true,
+        "wall_seconds": 12.768983502872288,
+        "cpu_seconds": 12.813206973994966
+      }
+    ]
+  },
+  "errors": [],
+  "processes": [
+    {
+      "pid": 1109195,
+      "live": true,
+      "command": "/home/shaoshitong/search-e1-config-study-20261004/env/bin/python -B /weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/source-context-stop-65e96b3/release/recursive_bran_b/resume_hkust5.py --record /weka_3/shaoshitong/recursive-bran-b-4gpu-hkust5-20261011/receipts/speed-resume3-2e3a9029051d4771bc61c95b28b60e21/record.json --record-sha256 5c1bdbee10f2a4621dd8d56316975cdadaf45f2dab44a7b3e7e41237a914539c "
+    },
+    {
+      "pid": 1111494,
+      "live": true,
+      "command": "ray::main_task                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      "
+    },
+    {
+      "pid": 3807560,
+      "live": true,
+      "command": "/home/shaoshitong/search-e1-config-study-20261004/env/bin/python -B -m release.recursive_bran_b.coordinate_archives --controller 1109195 --starttick 660269958 "
+    }
+  ],
+  "gpu": "0, NVIDIA GeForce RTX 4090, 0 %, 20857 MiB\n1, NVIDIA GeForce RTX 4090, 14 %, 20931 MiB\n2, NVIDIA GeForce RTX 4090, 0 %, 20877 MiB\n3, NVIDIA GeForce RTX 4090, 3 %, 20877 MiB\n4, NVIDIA GeForce RTX 4090, [N/A], 7315 MiB\n5, NVIDIA GeForce RTX 4090, 100 %, 46711 MiB\n6, NVIDIA GeForce RTX 4090, 0 %, 15 MiB\n7, NVIDIA GeForce RTX 4090, 100 %, 46631 MiB\n"
+}
