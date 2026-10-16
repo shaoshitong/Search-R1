@@ -20,6 +20,16 @@ def remote(script, evidence, control_path=None, compat_handshake=False, target='
           '-o','ConnectTimeout=30','-o','ServerAliveInterval=15','-o','ServerAliveCountMax=4']
     if compat_handshake:
         args+=['-o','IPQoS=none','-o','KexAlgorithms=curve25519-sha256']
+    source_ip=os.environ.get('G1_MGMT_SOURCE_IP')
+    if source_ip:
+        import ipaddress
+        ipaddress.IPv4Address(source_ip)
+        actual=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],text=True).strip()
+        if source_ip != actual:
+            raise ValueError('Source IP must match the currently observed en0 address')
+        proxy=Path(__file__).resolve().with_name('source_bound_proxy.py')
+        args+=['-o','ProxyCommand='+shlex.join([sys.executable,str(proxy),'--source',source_ip,
+                '--host','%h','--port','%p']),'-o','IPQoS=none','-o','KexAlgorithms=curve25519-sha256']
     if control_path:
         socket=Path(control_path);parent=socket.parent
         if not parent.name.startswith('qprobe3-mgmt-'):
