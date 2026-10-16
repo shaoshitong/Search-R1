@@ -1,0 +1,28 @@
+python3 -B - <<'PY'
+from pathlib import Path
+from datetime import datetime,timezone
+import hashlib,json,subprocess,os
+w=Path.cwd().resolve();b=w/'outputs/tree-nested-branch-handoff-20261013';s=w/'work/tree-speed-repair-20261008'
+m=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+def pin(p):
+ p=p.resolve(strict=True);raw=p.read_bytes();assert 0<len(raw)<4000000
+ return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+source=pin(s/'dev185_actual_dev_curve_canonical_binding.command.txt');assert source['bytes']==51903 and source['sha256']=='e291f95b149329ba13d2038f877237c5e7d0b14f5ab32041776810392fd2bef1'
+names=dict(dev_native='DEV5_185_NATIVE_COST_SUPPLEMENT.json',dev_readback='ROOT_DEV185_NATIVE_COST_ACTUAL_READBACK.json',dev_executor='DEV5_185_NATIVE_COST_LOCAL_RECEIPT.json',execution='DEV5_185_NATIVE_COST_COLLECTOR_EXECUTION.json',pre_execution='DEV5_185_NATIVE_COST_PRE_EXECUTION_INPUT_PINS.json',curve='LEARNING_CURVE_COMPLETE_THROUGH185.json',curve_csv='LEARNING_CURVE_COMPLETE_THROUGH185.csv',curve_binding='LEARNING_CURVE_THROUGH185_COST_SUPPLEMENT_BINDING.json',curve_publication='LEARNING_CURVE_THROUGH185_LOCAL_PUBLICATION.json',root_curve_readback='ROOT_CURVE_DEV_COST_THROUGH185_ACTUAL_READBACK.json',cumulative='CUMULATIVE_COST_THROUGH185.json',cost='COST_OUTER185_LOCAL_RECEIPT.json',native='NATIVE_HISTORY_185_METADATA_READBACK.json',full='FULL_OUTER185_PROGRESS_RECEIPT.json',progress='OUTER185_FULL_NEXT186_ACTUAL_PROGRESS.json',generic_alias='CURRENT_ALIAS_RECONCILIATION_OUTER185.json',milestone='MILESTONE150_HF_NATIVE_METADATA.json',pending170='OUTER170_UPDATES_NATIVE_DEV_PENDING_ACTUAL_2102_2103.json')
+refs={k:pin(b/n) for k,n in names.items()};full=json.loads((b/names['full']).read_text())
+for k,key in [('original_poll','poll'),('original_resource','resource')]:
+ expected=full['input_bindings'][key];observed=pin(Path(expected['path']));assert observed==expected;refs[k]=observed
+pending=pin(b/'OUTER185_UPDATES_NATIVE_DEV_PENDING_ACTUAL_2335_2337.json');assert pending['bytes']==16784 and pending['sha256']=='48b6d584731911fed78047177b5e3ce80d3545c27f9ec94f27d10b7e1062952f'
+p=[w/'outputs/STATUS.json',w/'outputs/tree-nested-branch/STATUS.json',b/'CURRENT_NATIVE_RECOVERY_FOLLOWUP.json',b/'CURRENT_OBSERVER_CONNECTION_STATE.json']
+reports=[w/'outputs/REPORT.md',w/'outputs/tree-nested-branch/REPORT.md',*[root/'REPORT.md' for root in m]]
+allpaths=p+[root/q.name for root in m for q in p[1:]]+reports;assert len(allpaths)==14
+obj=dict(schema='dev185_actual_dev_curve_canonical_binding_input_pins_v1',outer=185,workspace_root=str(w),base=str(b),mirrors=[str(x) for x in m],source_command=source,references=refs,canonical_prestate=[pin(q) for q in allpaths],pending_phase_evidence=pending)
+raw=(json.dumps(obj,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode();name='DEV185_ACTUAL_CANONICAL_BINDING_INPUT_PINS.json'
+for root in [b,*m]:
+ q=root/name;assert not q.exists(),'Existing immutable input retained; inspect before any repeat';q.write_bytes(raw)
+for unused in range(2):
+ for root in [b,*m]:assert (root/name).read_bytes()==raw
+r=pin(b/name);e=os.environ.copy();e.update(ACTUAL_CANONICAL185_PINS=r['path'],ACTUAL_CANONICAL185_PINS_BYTES=str(r['bytes']),ACTUAL_CANONICAL185_PINS_SHA256=r['sha256'])
+print(json.dumps(dict(actual_manifest=r,source=source,observed_utc=datetime.now(timezone.utc).isoformat())),flush=True)
+subprocess.run(['bash',source['path']],env=e,check=True)
+PY

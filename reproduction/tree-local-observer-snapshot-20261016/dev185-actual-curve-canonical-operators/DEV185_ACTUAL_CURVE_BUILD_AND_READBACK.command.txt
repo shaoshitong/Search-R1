@@ -1,0 +1,31 @@
+python3 -B - <<'PY'
+from pathlib import Path
+from datetime import datetime,timezone
+import hashlib,json,subprocess,os
+w=Path.cwd().resolve();b=w/'outputs/tree-nested-branch-handoff-20261013';s=w/'work/tree-speed-repair-20261008'
+m=[w/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch')]
+def pin(p):
+ p=p.resolve(strict=True);raw=p.read_bytes();assert 0<len(raw)<4000000
+ return dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+def fixed(name,n,h):
+ r=pin(s/name);assert r['bytes']==n and r['sha256']==h;return r
+build=fixed('dev185_actual_curve_build.command.txt',38522,'7122c8a3a67ff0f00cdd40251d29886fe748f5c2a35d8c4660725b1e50655e47')
+reader=fixed('root_curve185_actual_readback.py',22477,'1949d63959fbbe9768cdb727ec65445e2129e11b5c7219387a17a9007d08cb78')
+def manifest(name,obj):
+ raw=(json.dumps(obj,ensure_ascii=False,indent=2,allow_nan=False)+'\n').encode();p=b/name
+ assert not p.exists(),'Actual immutable manifest already exists; inspect outcome before any repeat'
+ for root in [b,*m]:
+  q=root/name;assert not q.exists();q.write_bytes(raw)
+ for unused in range(2):
+  for root in [b,*m]:assert (root/name).read_bytes()==raw
+ return pin(p)
+required={'ROOT_DEV185_NATIVE_COST_ACTUAL_READBACK.json'}|{f'FULL_OUTER{o}_PROGRESS_RECEIPT.json' for o in range(181,186)}|{f'NATIVE_HISTORY_{o}_METADATA_READBACK.json' for o in range(181,186)}|{f'CUMULATIVE_COST_THROUGH{o}.json' for o in range(181,186)}
+r=manifest('DEV185_ACTUAL_CURVE_BUILD_INPUT_PINS.json',dict(schema='dev185_actual_curve_build_input_pins_v1',through_outer=185,source_pins={n:pin(b/n) for n in sorted(required)}))
+e=os.environ.copy();e.update(ACTUAL_CURVE185_BUILD_PINS=r['path'],ACTUAL_CURVE185_BUILD_PINS_BYTES=str(r['bytes']),ACTUAL_CURVE185_BUILD_PINS_SHA256=r['sha256'])
+print(json.dumps(dict(actual_build_manifest=r,source=build,observed_utc=datetime.now(timezone.utc).isoformat())),flush=True)
+subprocess.run(['bash',build['path']],env=e,check=True)
+required={'LEARNING_CURVE_COMPLETE_THROUGH185.json','LEARNING_CURVE_COMPLETE_THROUGH185.csv','LEARNING_CURVE_THROUGH185_LOCAL_PUBLICATION.json','LEARNING_CURVE_THROUGH185_COST_SUPPLEMENT_BINDING.json','ROOT_DEV185_NATIVE_COST_ACTUAL_READBACK.json'}
+r=manifest('DEV185_ROOT_CURVE_ACTUAL_INPUT_PINS.json',dict(schema='dev185_root_curve_actual_readback_input_pins_v1',through_outer=185,source_pins={n:pin(b/n) for n in sorted(required)}))
+print(json.dumps(dict(actual_root_manifest=r,source=reader)),flush=True)
+subprocess.run(['python3','-B',reader['path'],'--pins',r['path'],'--pins-bytes',str(r['bytes']),'--pins-sha256',r['sha256']],check=True)
+PY
