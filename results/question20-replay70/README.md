@@ -1,21 +1,32 @@
-# Question plus20-token replay70
+# Question plus20-token replay70: completed
 
-Latest human instruction replaces fresh-rollout1000 with 70 cached batches in original E1..70 order. Each batch has5120 G5 questions,25600 own-EM trajectories,globalBS256/local32/world8/noaccum,100 actual Adam updates per rank.
+All70 replay iterations completed on h100-8. Native job3411 ended `COMPLETED0:0`; owned process births, native cgroups and owned GPU processes were gone. Each rank made7000 new Adam updates, continuing the source head from7100 to14100 at LR3e-6. No iteration71 or new rollout was run in this replay.
 
-Source native3409 was explicitly stopped at completed E71,7100 Adam/rank. The source complete head/Adam/eight-rank RNG was independently SHA checked and CPU loaded. The learned block and20-token Linear coefficients/moments are preserved; new question coefficients/moments start at zero. Authorized target LR is3e-6 from source3e-5. New replay coordinates1..70 are separate from source epoch71; expected final Adam14100/rank.
+## Mixed-decision accuracy
 
-Frozen official encoder layer27 post-block emits actual initial request and same-trajectory retained20 policy positions. The probe uses copied block35 and masked flatten[S*2048] to1 correctness logit. Fixed Qmax is scanned over all70 saved batches plus the fixed test actual prompts; no question truncation or retokenization.
+The score is `q=1-prod(p_j)-prod(1-p_j)`. Prediction is mixed when `q>=0.5`; the true G5 label is mixed when `0<sum(own strict EM)<5`. These are question-group classification accuracies, not QA EM/F1.
 
-No new rollout or retrieval server. One fixed512G5 test feature cache is encoded; each train batch is encoded then trained and its derived features pruned only after durable head completion. All tensors/checkpoints/raw data and full predictions remain remote. Only fixed-test G5 mixed accuracy is reported: q=1-prod(p)-prod(1-p),true label0<sum(strictEM)<5,threshold0.5.
+| Post-update head | Own-batch train5120G5 | Fixed-test512G5 |
+|---|---:|---:|
+| Final replay70 | 3871/5120 =75.60546875% | 325/512 =63.4765625% |
+| Best fixed-test, replay63 | 3651/5120 =71.30859375% | 327/512 =63.8671875% |
 
-Implementation compiled and13 focused CPU tests passed. Native3410 is RUNNING on h100-8 and has completed replay iteration1/70; all eight ranks made100 new Adam updates to7200 at actual LR3e-6. Iteration2 has started input preparation. Fixed Qmax is273, S is293, and the flattened dimension is600064. The fixed512-question G5 mixed-classification accuracy after iteration1 is56.4453125% (289/512). The training update loop took9.8364 seconds; this excludes feature encoding, preparation, and checkpoint saving and is not the full iteration runtime. Full70 iterations remain incomplete.
+The unchanged fixed test has183 mixed and329 nonmixed questions. Always predicting nonmixed gives329/512=64.2578125%; the best observed test accuracy remained two questions below this baseline, and the final head remained four questions below it. The completed training and savepoint checks do not establish quality success or an algorithm benefit.
 
-Training runtime is frozen at5534d253d9d1a94a17838b6f9f9c861536d0cdfb. Later control669097fe only adds an optional delta deployment path and does not hot-change runtime. The original gzip deployment was recovered through its completed remote receipt; the delta fallback was not executed. FIRST-ITERATION-SUMMARY.json is an exact copy of the small actual observation summary; model states and full predictions remain remote.
+Train accuracy is a full post-update evaluation on the particular5120-question batch just trained, using the same head as that iteration's test evaluation. Those training batches differ between iterations; their scores are not a fixed-training-set learning curve. Test uses the same original512G5 cached trajectories every time. Iterations1..6 originally recorded only test accuracy; their train values remain missing. Iterations7..70 have paired train and test results.
 
-## Later requested paired train and test mixed accuracy
+[All70 iteration accuracies](ALL-ITERATIONS.md) and [the exact small remote accuracy report](FINAL-ACCURACY-SUMMARY.json) include every completed iteration. The report crosschecks saved aggregate confusion counts against completion receipts; it does not independently reload full prediction tensors.
 
-The human requested both train and test mixed-group accuracy. Source3410 was cleanly stopped at the actual complete replay6 boundary,7700 Adam/rank,LR3e-6. The latest complete question-aware head/Adam/eight-rank RNG was independently SHA read and CPU loaded. Resume starts at replay7 and continues through70 with the same logical run,test feature manifest,sourceE71 origin and optimizer counts.
+## Recipe and retained state
 
-Each new complete iteration performs one full25600-trajectory training-set inference after its final update,then the fixed2560-trajectory test inference,using the same frozen evaluation head. Report train5120-group and test512-group mixing accuracy at unchanged threshold0.5. The old test-only mixed_group_accuracy field remains a test alias. Full predictions remain remote. The first6 iterations did not record post-epoch train mixed accuracy; do not fabricate historical values. No new rollout,loss,LR,batch or selection change.
+The encoder is frozen official Qwen2.5-3B-Instruct revision `aa8e72537993ba99e69dfaafa59ed015b17504d1`. Its layer27 post-block representation contains the actual initial request plus the same trajectory's first20 retained policy tokens. Original token IDs, causal contexts, masks and per-turn positions are preserved. Qmax is273, head sequence width is293, and the flattened dimension is600064. The probe trains the copied complete block35 and Linear output with per-trajectory BCE.
 
-Native3411 has restored completed replay6 at7700 Adam/rank and completed replay7 at7800 Adam/rank with actual LR3e-6; iteration8 has actually entered training. The same post-update head was evaluated on the full5120-question training G5 groups and fixed512-question test G5 groups: train mixed accuracy3415/5120=66.69921875%, test312/512=60.9375%. The separate full-train evaluation took3.8457 seconds and fixed-test evaluation0.4103 seconds. These are post-update evaluations, not online minibatch predictions; 70 replay iterations remain incomplete. Runtime is frozen at5fa565b576811a5ddec7bdc3edcb384bd05f608c. FIRST-PAIRED-TRAIN-TEST-SUMMARY.json is the exact small actual summary.
+The replay processes the previously saved E1..70 batches in their original order. Each has5120 G5 questions and25600 own-EM trajectories. Training uses globalBS256/local32/world8/no accumulation and100 real Adam updates per rank per iteration. The actor and encoder receive no updates. This is a continuation of the complete sourceE71 probe, not a fresh probe trained from official random head weights.
+
+Replay1..6 ran in job3410. After the requested paired training-set evaluation was added, job3411 restored the complete replay6 head, Adam and eight-rank RNG and continued7..70 without replaying the earlier updates. Frozen final training runtime is `5fa565b576811a5ddec7bdc3edcb384bd05f608c`. Later report/audit code `3f24079a` runs separately on CPU and does not change training.
+
+The seven immutable checkpoints at10/20/30/40/50/60/70 passed independent complete-file SHA and actual CPU state loading. Each has14 FP32 model tensors,14 Adam states and eight saved rank RNG records, with the expected Adam counters. The audit also hashed198 original log files and confirmed retention of all70 source batches.
+
+[Final acceptance summary](FINAL-ACCEPTANCE-SUMMARY.json) records exact remote proof paths, SHA values, checkpoint results and native resource evidence. CPU state loading is not an independent GPU semantic reload, CUDA RNG application, or an independent durable backup; those operations were not performed by this final audit. Retained source trajectory payloads were inspected by metadata and were not independently rehashed in this audit.
+
+Final artifacts remain remote under `/mnt/data/shaoshitong/search-g1-question20-replay70-train-test-20261016-5fa565b`. The final checkpoint is `train/head-replay-0070.pt`, SHA `26b71d1018d8246bdb90dbd49570d8ce441e3b453b5f24896cb7cff9c9354125`,932252310 bytes. Original cached data, full predictions, model/Adam states and tensors stay remote; this directory contains only code-linked documentation and small audit summaries.
