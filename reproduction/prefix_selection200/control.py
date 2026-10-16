@@ -9,6 +9,63 @@ import time
 from reproduction.prefix20_group_joint100.control import archive_for_commit
 
 
+def import_resume_script(base):
+    return r'''
+import hashlib,json,os,pathlib,sys,time
+b=pathlib.Path(BASE);c=json.loads((b/'preparation/launch-config.json').read_text());spec=c['resume_import'];source=pathlib.Path(spec['source_base'])
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def once(p,value):
+ with p.open('x')as f:json.dump(value,f,sort_keys=True);f.flush();os.fsync(f.fileno())
+prep=b/'preparation';receipt=prep/'resume-import-receipt.json';intent=prep/'resume-import-intent.json'
+if receipt.exists():print(json.dumps(dict(status='EXISTING_RESUME_IMPORT_NO_REPLAY',receipt=read(receipt))));raise SystemExit
+if intent.exists():print(json.dumps(dict(status='RESUME_IMPORT_INTENT_RECONCILE_REQUIRED')));raise SystemExit
+assert b!=source and b.parent==source.parent and b.name.startswith('search-g1-prefix-selection200-') and source.resolve()==source
+terminal=pathlib.Path(spec['terminal_proof']);assert sha(terminal)==spec['terminal_proof_sha256'];t=read(terminal)
+assert not t['actual_births_present'] and not t['native_job_cgroup_paths'] and not t['gpu']['stdout'].strip()
+original=read(source/'preparation/launch-config.json');assert sha(source/'preparation/launch-config.json')==spec['source_config_sha256']
+assert original['run_id']==c['run_id'] and not(source/'actor/latest.json').exists()
+assert read(source/'probe/latest.json')['completed_outer']==0
+science=('model_revision','model_files_sha256','candidate_questions','selected_questions','responses_per_question','prefix_policy_tokens','exploration_questions','probe_learning_rate','probe_epochs_per_outer','probe_updates_per_outer','probe_global_batch_average','actor_global_mini_batch','actor_ppo_epochs','seed','official_model_dir','encoder_model_dir','canonical_train_sha256','fixed_test_manifest_sha256','grounding_probe_version')
+assert all(c[key]==original[key] for key in science)
+for phase,digest in spec['phase_hashes'].items():assert sha(source/'outers/outer-000001'/phase/'complete.json')==digest
+prefix=read(source/'outers/outer-000001/prefix/complete.json');score=read(source/'outers/outer-000001/probe-score/manifest.json')
+assert prefix['actor_version']==score['actor_version']==c['run_id']+'-official0'
+assert prefix['trajectories']==25600 and score['count']==2560
+verified=[]
+def verify(p,producer):
+ assert p.stat().st_size==producer['bytes'] and sha(p)==producer['sha256']
+ verified.append(dict(path=str(p),bytes=producer['bytes'],sha256=producer['sha256']))
+for row in prefix['ranks']:
+ for key in ('states','prefix'):verify(pathlib.Path(row[key]['path']),row[key])
+scan=source/'outers/outer-000001/prefix/scan'
+for name,producer in read(scan/'scan-complete.json')['files'].items():verify(scan/name,producer)
+for producer in score['shards']:verify(source/'outers/outer-000001/probe-score'/producer['file'],producer)
+verify(source/'probe/latest.pt',read(source/'probe/latest.json'))
+once(intent,dict(run_id=c['run_id'],source_base=str(source),created_unix=time.time(),terminal_proof_sha256=spec['terminal_proof_sha256']))
+assets=[]
+def link_file(s,d):
+ assert s.is_file() and not s.is_symlink() and s.resolve()==s
+ d.parent.mkdir(parents=True,exist_ok=True);assert not d.exists();os.link(s,d)
+ info=s.stat();assets.append(dict(source=str(s),target=str(d),bytes=info.st_size,inode=info.st_ino))
+def link_tree(s,d):
+ for p in sorted(s.rglob('*')):
+  assert not p.is_symlink()
+  if p.is_file():link_file(p,d/p.relative_to(s))
+link_tree(source/'probe',b/'probe')
+for name in ('binding.json','state.json'):link_file(source/'question-pool'/name,b/'question-pool'/name)
+src=source/'outers/outer-000001';dst=b/'outers/outer-000001'
+for name in ('pool-reservation.json','selection.json','questions.json','actor-binding.json'):link_file(src/name,dst/name)
+for phase in ('prefix','probe-score'):link_tree(src/phase,dst/phase)
+# A source rank receipt is reused only if it was actually complete; incomplete
+# gzip/native logs stay at source. New workers continue those same original G5s.
+for rank,digest in c['continue_reuse']['imported_receipts_sha256'].items():
+ p=src/'full'/('rank-%s-complete.json'%rank);assert sha(p)==digest;link_file(p,dst/'full'/p.name)
+value=dict(status='EXACT_COMPLETE_PREFIX_SCORE_AND_PROBE0_IMPORTED',run_id=c['run_id'],outer=1,source_base=str(source),phase_hashes=spec['phase_hashes'],source_config_sha256=spec['source_config_sha256'],imported_full_rank_receipts=c['continue_reuse']['imported_receipts_sha256'],assets=assets,independent_active_asset_full_sha_readback=verified,model_or_data_via_Mac=False,head_reset=False,new_prefixes_generated=0,source_originals_modified=False)
+once(receipt,value);print(json.dumps(dict(status=value['status'],run_id=c['run_id'],outer=1,phase_hashes=value['phase_hashes'],imported_full_rank_receipts=value['imported_full_rank_receipts'],assets_count=len(assets),source_originals_modified=False)))
+'''.replace('BASE', repr(base))
+
+
 def deployment_script(base, commit, config, built, reuse_commit=None, reuse_repo=None):
     payload = dict(base=base, commit=commit, config=dict(config, base=base, source_commit=commit),
         files=built['files'], modes=built['modes'], archive=base64.b64encode(built['archive']).decode(),
@@ -61,7 +118,7 @@ once(prep/'deploy-receipt.json',result);print(json.dumps(result))
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase', choices=('deploy', 'submit', 'query', 'observe'))
+    parser.add_argument('phase', choices=('deploy', 'import-resume', 'submit', 'query', 'observe'))
     parser.add_argument('--base', required=True); parser.add_argument('--commit'); parser.add_argument('--config')
     parser.add_argument('--receipts', required=True); parser.add_argument('--reuse-source-commit'); parser.add_argument('--reuse-source-repo')
     args = parser.parse_args()
@@ -72,6 +129,8 @@ def main():
         built = archive_for_commit(args.commit, args.reuse_source_commit)
         code = deployment_script(args.base, args.commit, json.loads(Path(args.config).read_text()), built,
                                  args.reuse_source_commit, args.reuse_source_repo)
+    elif args.phase == 'import-resume':
+        code = import_resume_script(args.base)
     else:
         code = 'import sys,json;sys.path.insert(0,'+repr(args.base+'/repo')+');from reproduction.prefix_selection200.launch import '+args.phase+';print(json.dumps('+args.phase+'('+repr(args.base)+'),allow_nan=False))'
     from reproduction.h1008_qprobe.management_transport import remote

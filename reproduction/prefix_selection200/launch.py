@@ -95,6 +95,22 @@ def _json_request(url):
         return json.load(response)
 
 
+def reused_phase(base, root, phase, c):
+    """Only explicitly imported complete source phases may bypass execution."""
+    path = root / phase / 'complete.json'
+    if not path.exists():
+        return False
+    imported = read(base / 'preparation/resume-import-receipt.json')
+    if (c.get('resume_import', {}).get('source_base') != imported['source_base']
+            or imported['run_id'] != c['run_id'] or imported['outer'] != 1
+            or imported['phase_hashes'][phase] != sha(path)):
+        raise ValueError('Existing phase is not the explicitly inherited complete source')
+    value = read(path)
+    if value['run_id'] != c['run_id'] or value['outer'] != 1:
+        raise ValueError('Inherited phase belongs to another logical run/outer')
+    return True
+
+
 def run(base):
     from reproduction.prefix_only_correctness_ab.launch import torchrun_owned_class, DeferredInterrupt, birth_states
     from reproduction.h1008_qprobe.pipeline import UUIDLocks
@@ -203,13 +219,20 @@ def run(base):
             actor_binding = dict(run_id=c['run_id'], outer=outer,
                 actor_model_dir=actor['hf_model_dir'] if actor else c['official_model_dir'],
                 actor_version=actor['actor_version'] if actor else c['run_id'] + '-official0')
-            once(root / 'actor-binding.json', actor_binding)
-            phase('outer-%06d-prefix' % outer, [python, '-m', 'reproduction.prefix_selection200.rollout',
-                '--config', conf, '--outer', str(outer), '--phase', 'prefix'])
-            phase('outer-%06d-score' % outer, distributed('reproduction.prefix_selection200.probe',
-                ['score', '--state-dir', str(base / 'probe'), '--prefix-inputs', str(root / 'prefix/scan'),
-                 '--output', str(root / 'probe-score'), '--outer', str(outer), '--model-dir', c['official_model_dir'],
-                 '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256))]))
+            actor_binding_path = root / 'actor-binding.json'
+            if actor_binding_path.exists():
+                if not c.get('resume_import') or read(actor_binding_path) != actor_binding:
+                    raise ValueError('Inherited actual actor binding differs')
+            else:
+                once(actor_binding_path, actor_binding)
+            if not reused_phase(base, root, 'prefix', c):
+                phase('outer-%06d-prefix' % outer, [python, '-m', 'reproduction.prefix_selection200.rollout',
+                    '--config', conf, '--outer', str(outer), '--phase', 'prefix'])
+            if not reused_phase(base, root, 'probe-score', c):
+                phase('outer-%06d-score' % outer, distributed('reproduction.prefix_selection200.probe',
+                    ['score', '--state-dir', str(base / 'probe'), '--prefix-inputs', str(root / 'prefix/scan'),
+                     '--output', str(root / 'probe-score'), '--outer', str(outer), '--model-dir', c['official_model_dir'],
+                     '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256))]))
             phase('outer-%06d-continue' % outer, [python, '-m', 'reproduction.prefix_selection200.rollout',
                 '--config', conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(root / 'probe-score/selection.json')])
             # Retry only an actual typed CUDA OOM, after all failed owned workers

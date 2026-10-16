@@ -69,3 +69,23 @@ continuity across tool turns, native LP identity, exact group math/DDP weighting
 zero-retained responses, OOM recovery, legacy evaluation and owned storage pruning.
 These do not claim actual GPU restore/forward success; production progress is
 verified separately after launch. No extra GPU test or pretraining baseline gate.
+
+## First production correction
+
+3413 exited1 before any actor/probe update at outer1 continuation. All25600
+prefixes and stable Top512 features were complete; no full continuation rank
+committed before the parent stopped the failed phase. Installed vLLM0.6.3 exposes
+a token tuple alongside a live `output_logprobs` list. Async output submission
+could advance that list after the token snapshot. The corrected entry disables
+async CPU output submission and snapshots actual IDs/LP before action abort.
+Eight independent continuous engines,1024 concurrent requests and asynchronous
+retrieval remain; native probabilities are neither fabricated nor recomputed.
+
+Recovery imports the exact complete prefix/selection/features and probe0 state
+into the isolated `-resume1` remote root after independent active-asset SHA reads.
+It continues the same scored prefixes; it does not regenerate candidates, select
+a different G5, reset the head, or combine any unsaved Adam updates. Original
+failed logs and raw partial trajectories remain at source.67 recorded owned
+births, native cgroups and GPU processes were actually absent in the subsequent
+terminal readback. The earlier transient retriever zombie is retained in its
+original cleanup receipt, rather than rewritten as all-gone.
