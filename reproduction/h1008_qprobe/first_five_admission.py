@@ -5,9 +5,16 @@ from pathlib import Path
 
 
 def selected(run):
-    return (run.get('execution_site')=='h1008' and run.get('startup_admission_mode')=='actual_first_five'
+    original=(run.get('execution_site')=='h1008' and run.get('startup_admission_mode')=='actual_first_five'
         and run.get('question_probe',{}).get('probe_architecture')in ('qwen2_decoder3_count6','qwen2_decoder3_binary_mix_v1')
         and run.get('training_world_size')==8)
+    prefix20=(run.get('profile')=='common8' and run.get('execution_site')=='hpc3'
+        and run.get('execution_backend','slurm')=='slurm' and run.get('training_world_size')==4
+        and run.get('startup_admission_mode')=='actual_first_five'
+        and run.get('data_selection_mode')=='prefix20_probe'
+        and run.get('question_probe',{}).get('probe_architecture')=='qwen2_prefix20_trajectory_em_v1'
+        and not run.get('full_state_restore'))
+    return original or prefix20
 
 
 def verify_probability(base,run,probability,receipts):
@@ -23,6 +30,12 @@ def verify_probability(base,run,probability,receipts):
     assert probability['actual_model_initialization_required_before_first_write'] is True
     assert probability['standalone_synthetic_gpu_smoke_performed'] is False
     assert probability['behavior_probability_policy']==run['behavior_probability_policy']
+    if run.get('question_probe',{}).get('probe_architecture')=='qwen2_prefix20_trajectory_em_v1':
+        assert len(allocation['actual_cuda_runtime_uuids'])==len(set(allocation['actual_cuda_runtime_uuids']))==4
+        assert probability['training_world_size']==4
+        assert probability['actual_model_initialization_accepted'] is False
+        assert probability['actual_first_outer_accepted'] is False
+        assert probability['post_start_evidence_mode']=='actual_completed_outer_log_audit'
     resolved=Path(base)/'logs/resolved-training-config.json'
     if resolved.exists():assert probability['resolved_config_sha256']==read(resolved)['resolved_config_sha256']
     return True
@@ -44,6 +57,10 @@ def prepare(base,run,document,method,initial,receipts):
         actual_model_initialization_required_before_first_write=True,standalone_synthetic_gpu_smoke_performed=False,
         behavior_probability_policy=run['behavior_probability_policy'],trajectory_count=2560,
         semantics='actual resource binding; real initialized workers and first five full outers required; not model or quality acceptance')
+    if run.get('question_probe',{}).get('probe_architecture')=='qwen2_prefix20_trajectory_em_v1':
+        probability.update(training_world_size=4,actual_model_initialization_accepted=False,
+            actual_first_outer_accepted=False,post_start_evidence_mode='actual_completed_outer_log_audit',
+            semantics='prospective native4 resource/source binding; real worker initialization, full-rollout probability gate and completed-outer log audit remain pending; no standalone GPU smoke acceptance')
     for relative in ('logs/native-allocation-admission.json','preparation/formal-inline-method.json',
             'logs/retrieval-admission.json','logs/retrieval-http-admission.json','logs/evaluator-release-admission.json','logs/probe-coexistence-admission.json'):
         receipts[relative]=digest(safety.owned_path(base,relative))

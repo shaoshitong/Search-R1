@@ -19,4 +19,4 @@ python -m reproduction.prefix20_joint4.prepare_training --base "$BASE" --commit 
 if [[ "$BASE" == /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727148-20261016 ]]; then
   python -B -m reproduction.prefix20_joint4.recovery727148_node_cleanup --recovery-base "$BASE" --commit "$COMMIT"
 fi
-exec python -m reproduction.common8.run_pipeline --base "$BASE" --export-port 18016
+exec python -B -m reproduction.prefix20_joint4.native_ray_resources --base "$BASE" --role train

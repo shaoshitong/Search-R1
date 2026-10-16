@@ -197,9 +197,11 @@ def execute(base):
     import ray
     if ray.is_initialized():
         raise ValueError('RESTORE_ONLY_PRIVATE_FRESH_RAY_REQUIRED')
+    from reproduction.prefix20_joint4.native_ray_resources import configure as configure_ray_resources
+    ray_resources=configure_ray_resources(base,run,role='restore',phase='ray')
     try:
         ray.init(address='local', num_gpus=4, _temp_dir=str(private_ray),
-                 runtime_env={'env_vars':{'TOKENIZERS_PARALLELISM':'true', 'NCCL_DEBUG':'WARN'}})
+                 runtime_env={'env_vars':{'TOKENIZERS_PARALLELISM':'true', 'NCCL_DEBUG':'WARN'}},**ray_resources)
         result = ray.get(ray.remote(num_cpus=1)(driver_task).remote(config))
     finally:
         ray.shutdown()

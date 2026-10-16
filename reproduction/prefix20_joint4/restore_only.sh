@@ -12,4 +12,4 @@ unset PYTHONHOME RAY_ADDRESS SEARCH_G1_SLURM_SHARED_AUTHORIZATION
 unset HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy
 cd "$BASE/repo"
 python -m reproduction.prefix20_joint4.restore_controller check-execute --base "$BASE"
-exec python -m reproduction.prefix20_joint4.restore_only execute --base "$BASE"
+exec python -B -m reproduction.prefix20_joint4.native_ray_resources --base "$BASE" --role restore

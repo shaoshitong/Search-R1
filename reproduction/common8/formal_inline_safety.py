@@ -269,6 +269,7 @@ def archive_initial_probe(base, run):
 
 def verify_plan(base, artifact, run):
     """Historical reader: no liveness claims and no writes after training starts."""
+    from reproduction.h1008_qprobe.first_five_admission import selected as selected_native_startup
     base = Path(base).resolve(); assert_formal_run(run)
     assert run['policy_safety_mode'] == SAFETY_MODE
     assert artifact['schema_version'] == 4 and artifact['role'] == ROLE
@@ -323,7 +324,7 @@ def verify_plan(base, artifact, run):
     elif run.get('full_state_restore'):
         from search_g1.full_state_restore import verify_guarded_restore
         verify_guarded_restore(base,run,artifact['probability'])
-    elif run.get('execution_site')=='h1008' and run.get('startup_admission_mode')=='actual_first_five':
+    elif selected_native_startup(run):
         from reproduction.h1008_qprobe.first_five_admission import verify_probability
         verify_probability(base,run,artifact['probability'],receipts)
     else:
