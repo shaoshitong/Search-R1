@@ -64,6 +64,16 @@ torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.tr
 
 只有200个完整合并epoch、最终EMA train/test指标、完整finite/SHA状态及仅自有资源收尾实际通过，才能宣称本warmup完成；原actor200 goal保持独立，不由本次probe完成而标记完成。
 
+## 2026-10-16 实际部署与源端封存记录
+
+源端138cf9bc实际完成68批参考数据的question+5裁剪：训练1,740,800条、固定测试2,560条。派生归档4分片、490,027,548字节；原8,389,298,946字节归档保持原样。原producer在写完不可变完成记录后，最后一次进度打印因重复`checked_unix`报TypeError/exit1。这是已确认的记录错误，不能改写为原producer exit0。
+
+修复与独立CPU finalizer发布于`10ce6b98e0479bebf8632be424e0d501e1f0e653`。finalizer实际返回0，核对69个scan、所有分片完整SHA及拼接SHA，保留原失败日志与完成记录，不重复转换。拼接SHA为`21e6e49a0864ccf3f0b8383c521eccbbe188248cf375e7c1029d14091f257595`，资格记录SHA为`0fee6fbf90eade07545f4865c0ed6d4693acc0df076b09ff71ca7adfe862a20c`。
+
+新A800 slim流水线绑定run `f4aab3c7ec084f908ecce3f49c6b552b`／execution `449b362dafac40c69de61a68e7766f83`，runtime138cf9bc共920个源码文件已逐文件校验；source端finalizer属于独立操作源码，不热改这个runtime。只搬运较小派生包，接收全部分片并校验后才进入合并、缓存和训练。旧db413等待整包的wrapper从未编码或训练，已技术替换并确认退出，旧目录和partial保留，禁止重启旧handle。
+
+这些记录只证明数据封存与部署；不证明已有探针Adam、完整epoch或训练/测试成绩。实际进度以当前handle和远端ledger为准。
+
 ## 已完成的小型验证
 
 2026-10-16必要CPU检查通过：联合损失/梯度数学一致、EMA、完整G5分组预算、两rank不等micro与末空rank归约、policy5布局、checkpoint恢复；真实compact与reference20截5的合成转换、part/concat/member哈希及安全解压；BF16 packed-cache/orderedID/位置/mask/标签/segments/尾padding往返和已验收复用路径零复制。未进行额外GPU验收、LLM概率扫描、新rollout或独立评测。真实数据/缓存/训练仍以远端原件与回执为准。
