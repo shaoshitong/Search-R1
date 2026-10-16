@@ -41,3 +41,9 @@ s＝[0,r1,r2,r3,r4,r5]，a_j＝(r_j−mean(s))/(std(s,correction=1)＋1e-6)。
 CPU准备成功后，仅向旧owned pipeline精确PID/birth发一次pidfd SIGTERM；实际确认全部本项目children退出、完整/partial记录保留，再一次启动新版。四训练卡及aux5/6实际idle准入，不能停或用外国任务。沿原control.py路由，不改SSH/VPN/auth/knownhosts。
 
 新控制入口 reproduction/operations/a800_actorhidden_prefix5_p10_control.py，动作stage/prepare/stop-actor/reconcile-old/launch/observe均有独立once记录。元数据观察有界65秒SSH，不读模型/tensor，不重复launch。启动后两次实际增量及首完整outer必须实核，同pipeline继续200；既定5/50/100/150/200保存和QA、最终51713完整验收及only-owned清理保持。大资产全远端，Git只代码/config/docs/scalar/hash。
+
+## 本次实际部署（启动提交阶段）
+
+运行源码31f616264ceeb4f0e4d33b39bd85df1214afc15d，remote1277文件SHA一致。CPUprepare实际exit0，复用相同CP5完整SHA与原资格链，0次checkpoint tensor load；最终configSHA0f9fd64fbc28a1d849f7716030dd4f960e990ed9d50fd9f2b0ffe0241e3d2011。旧run411c已完整4轮/80Adam，所有707记录ownedbirth实际gone，第5轮续写期间中止、无该轮actorattempt；原checkpoint/日志/轨迹保留。
+
+新版run387d3f6e228a488f90c418e2ba47e28e/ex90aea944c40d41eab4cf84efac02b22a，一次启动Unix1792176126.7192712，pipeline1736370/birth625571803。这仅证明launch提交；实际数据流/actor更新/首完整outer须继续核实，不能将旧run进度加到新run。小型scalar/hash原件汇总于reproduction/reports/a800-prefix5-p10-zeroanchor-startup-2026-10-17.json。

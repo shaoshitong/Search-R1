@@ -1,0 +1,105 @@
+{
+  "role": "A800_fresh_actor200_p10_half_pool_zero_anchor_actual_deployment",
+  "asof_unix": 1792176505.788322,
+  "run_id": "387d3f6e228a488f90c418e2ba47e28e",
+  "execution_id": "90aea944c40d41eab4cf84efac02b22a",
+  "runtime_source": "31f616264ceeb4f0e4d33b39bd85df1214afc15d",
+  "source_files_verified": 1277,
+  "pipeline_identity": {
+    "pid": 1736370,
+    "birth": 625571803,
+    "uid": 0,
+    "sid": 1736370
+  },
+  "launch_unix": 1792176126.7192712,
+  "config_sha256": "0f9fd64fbc28a1d849f7716030dd4f960e990ed9d50fd9f2b0ffe0241e3d2011",
+  "source_qualification_sha256": "3a4711caa933db52fcc16c343553d34f5660764185997669e38beed7e8d04fff",
+  "old_experiment": {
+    "run_id": "411c44aad7ba4e8c90f5fbec9e5ecbaa",
+    "complete_outers": 4,
+    "actual_actor_Adam_per_rank": [
+      80,
+      80,
+      80,
+      80
+    ],
+    "recorded_owned_births_all_gone": 707,
+    "unfinished_actor_attempts": [],
+    "interrupted_stage": "outer5continue",
+    "joint_sha256": "7a0e40119121059e8613d3a232a74e24310615e63a5a5823d2da8d6805f4aae2"
+  },
+  "new_initialization": {
+    "actor": "fresh_official",
+    "probe": "previously_qualified_epoch5_EMA_model_only",
+    "probe_source_sha256": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594",
+    "old_actor_state_imported": false,
+    "warmup_optimizer_imported": false,
+    "CPU_qualification_reused_after_full_SHA": true,
+    "tensor_deserializations_in_CPU_prepare": 0
+  },
+  "science": {
+    "candidate_questions": 2560,
+    "G": 5,
+    "selected_questions": 512,
+    "probe_update_outers": [
+      10,
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90,
+      100,
+      110,
+      120,
+      130,
+      140,
+      150,
+      160,
+      170,
+      180,
+      190
+    ],
+    "probe_Adam_per_update": 50,
+    "probe_LR": 5e-06,
+    "update_actor_selection": "actual_mixed_first_then_pMixed_fill",
+    "ordinary_actor_selection": "predicted_pMixed_top512",
+    "advantage": "virtual_zero_in_statistics_only_for_allcorrect_EM5",
+    "allwrong_mixed_advantage": "original_own_G5",
+    "global_actor_mini": 128,
+    "actor_Adam_per_outer": 20,
+    "formal_outer_budget": 200
+  },
+  "initial_training_acceptance": "PENDING_ACTUAL_NATIVE_PROGRESS_AND_FIRST_COMPLETE_OUTER",
+  "complete_outers": 0,
+  "actor_Adam": 0,
+  "probe_Adam": 0,
+  "actual_receipts": [
+    {
+      "local_receipt_name": "a800-prefix5-p10-stage-1792175916835326000.json",
+      "sha256": "43b06dd08e161ff4558fed5dba419a52264c731acc080c7683c5d896a2901b60"
+    },
+    {
+      "local_receipt_name": "a800-prefix5-p10-observe-1792175994424446000.json",
+      "sha256": "fea2691436f744f28983047df716e62af97f601a3eddf505ec8a388437735086"
+    },
+    {
+      "local_receipt_name": "a800-prefix5-p10-reconcile-old-1792176115285813000.json",
+      "sha256": "72a36ec527f837b2ed794a413e94f2a83d6de3a134af82ef4f37175e0404d85c"
+    },
+    {
+      "local_receipt_name": "a800-prefix5-p10-launch-1792176126673595000.json",
+      "sha256": "b0a1bf16b6f9df1a08498260fb6a391688f9c002d72100a364099ec8917ba098"
+    }
+  ],
+  "first_actual_positive_flow": {
+    "prefix_trajectories": 12800,
+    "continuation_trajectories": 2560,
+    "prefix_score_continue_exit0": true,
+    "probe_initialize_exit0": true,
+    "observed_unix": 1792176505.788322,
+    "receipt_sha256": "545b94d94a09757d1a33767f10d7447b6e2e345ba75e65133df8ba9e2853fa5d"
+  }
+}
