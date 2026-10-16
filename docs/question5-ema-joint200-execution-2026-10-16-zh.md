@@ -14,7 +14,7 @@
 - 同题不同rollout属于不同事件，不能按qid或文本去掉；每组必须是同次采样的原五条EM，不能拼为G10。
 - 固定测试原回答不重新采样，题ID与规范化文本均隔离。参考canonical共同train169028保持原划分与字节身份。
 
-八个参考数据归档part共8389298946字节。通过既有H100→Mac内存→A800 SSH路径进行有界传输，Mac不保存数据；目的part支持按真实字节offset续传，完整SHA后才rename并出具验收回执。并发限制4、每流1MiB缓冲；失败保留partial与原来源。仅搬dataset归档，禁止混入原probe权重归档。解压只取canonical、原token scan和必要prefix/label文件，不提取完整回答或旧模型。
+原参考归档八part共8389298946字节，保留H100原件。本次实际改为在H100独立CPU namespace（nice19、OMP2、CUDA禁用）读取原归档并逐SHA核验，裁成完整question+前5policy的68批＋固定test，保留原事件、EM和positions；仅派生数据gzip6封装128MiB分片，再经既有H100→Mac内存→A800路径有界单流续传。Mac不保存数据，完整part SHA后rename，A800导入还核对内部成员/完整archive SHA并重定位metadata。slim实际字节数由producer完成原件记录，不假定压缩率。早期整包传输与4并发实测慢已在任何encoder/Head启动前技术替换，旧源、日志和已传partial保留；不得误称训练被重启。禁止搬原probe权重/原feature20/完整回答，禁止重新生成或评分。
 
 ## 模型与损失
 
@@ -52,7 +52,7 @@ python -m reproduction.question5_ema_warmup.cache --action finalize-cache --outp
 torchrun --standalone --nproc_per_node=4 -m reproduction.question5_ema_warmup.train --config BASE/preparation/fit-config.json
 ```
 
-实际使用 `reproduction/operations/a800_question5_warmup_control.py` 独立一次性pipeline：等待八part验收→CPU准备完整数据→现场准入四张空闲训练卡（排除辅助5/6及任何被占卡）→四encoder worker→CPU缓存合并→200epoch训练。选中UUID后固定，父wrapper持同UUID lease贯穿缓存与训练，child通过继承FD校验，不相互抢锁。没有retriever/actor，不用5/6，不停止他人，不改SSH/VPN/auth/knownhosts。一次launch intent已消费时只能观察同handle，SSH超时不能当作退出或重启依据。
+实际使用 `reproduction/operations/h100_question5_reference_prepare.py` 一次CPU源端转换与 `reproduction/operations/a800_question5_slim_warmup_control.py` 独立一次性pipeline：等待slim分片验收→CPU准备完整数据→现场准入四张空闲训练卡（排除辅助5/6及任何被占卡）→四encoder worker→CPU缓存合并→200epoch训练。选中UUID后固定，父wrapper持同UUID lease贯穿缓存与训练，child通过继承FD校验，不相互抢锁。没有retriever/actor，不用5/6，不停止他人，不改SSH/VPN/auth/knownhosts。一次launch intent已消费时只能观察同handle，SSH超时不能当作退出或重启依据。
 
 全量数据、特征、模型、Adam、checkpoint和预测留A800远端。Mac仅代码/配置/文档/小型审计。源码Git提交push、GitHub文件SHA独立核对、A800完整Git archive文件SHA对齐后才允许启动。stage和launch回执不等于训练推进；必须检查两次真实进展及首完整epoch。
 
