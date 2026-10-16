@@ -1,3 +1,11 @@
+# Latest13/200 complete, actual14 continuation healthy,3422
+
+Latestactualepoch1792162641.5951893, same3422 h100-10/10.33.0.18, frozen2c/config2973 unchanged. CurrentSTATUS/actualreadback authoritative. Actualcomplete13, savedactor/probe260eachrank, physicalprobe280inclhistorical20unsaved. Original11–13 direct8rank20writes eachverified;POST12_DIRECT_LEDGER_LATEST.json contains13;POST10 contains11/12. Actual14continueRUNNING, no restart/hotchange. Recent10–13fullintervalmean423.492s. QA5still512 EM24.609375%F130.609654%; nextnormal50. GoalACTIVE200+full51713incomplete.
+
+Passiveunitg1-resource5s-f3ee1435e501-3422 active89samples/bytesgrowth/noerror;stagedsource9f3cf693reader80e0e338... outsidefrozenrepo. Querystandardresource_control, do NOT deploy/replay unit. CPUlowerboundincomplete/freezeronly;5swholecardpeaks coveragefrom22:49:59CST only,max79695MiB/minfree1387MiB atlatest;noretrospective/nocontinuouspeakclaim. Allmodel/raw/tensors/JSONLstaysremote. Latestcosttokenmetadata through12=11,982,868, notthrough13. Noactive localtrainingwatcher, previous25091 exited0. Mainpollsame3422 continuouslyviaactivegoal.
+
+--- Prior detailed metadata and constraints (latestSTATUS supersedes progress coordinates) ---
+
 # Latest3422 healthy complete12/200; actual13 actor, passive resource sampler verified
 
 As ofactualepoch1792162357.7266603, same3422 h100-10/10.33.0.18, BASE=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3, frozenruntime2c1219defaebaf69467fce18efad331ce68cd6ec/configSHA2973c362cf039cb60d844e1be8d9e4332cdcf5f9d756ea6d4976adea463948e6. Samegoal5120G5prefix20->Top1024->sameprefix5120continuation->EMvariance512actor/probeALL1024naturallyonce20Adam LR1e-6.200complete + originalQA milestones/final51713, no rewarmup/restart/reset. CurrentSTATUS/latestactual override snapshot.

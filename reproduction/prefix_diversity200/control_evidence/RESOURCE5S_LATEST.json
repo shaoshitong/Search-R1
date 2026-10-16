@@ -43,155 +43,155 @@
     "stderr": ""
   },
   "summary": {
-    "actual_last_sample_seconds": 1.4595708176493645,
+    "actual_last_sample_seconds": 1.5357798524200916,
     "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3",
     "coverage": "starts at this telemetry creation; no retrospective GPU peak claim",
     "cpu_accounting_complete": false,
     "cpu_scope": "lower bound over actually observed owned birth utime+stime; stopped/unobserved processes and final intersample CPU may be missing",
     "gpu_scope": "whole physical card including any other users; sampled peak is not an exact continuous peak",
     "job": "3422",
-    "last_observed_unix": 1792162355.147763,
+    "last_observed_unix": 1792162641.071412,
     "latest": {
       "cards": [
         {
-          "free_mib": 61177,
+          "free_mib": 8415,
           "index": 0,
           "total_mib": 81559,
-          "used_mib": 19905,
-          "utilization_percent": 9,
+          "used_mib": 72666,
+          "utilization_percent": 0,
           "uuid": "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b"
         },
         {
-          "free_mib": 59235,
+          "free_mib": 8445,
           "index": 1,
           "total_mib": 81559,
-          "used_mib": 21847,
-          "utilization_percent": 7,
+          "used_mib": 72636,
+          "utilization_percent": 20,
           "uuid": "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5"
         },
         {
-          "free_mib": 60759,
+          "free_mib": 8461,
           "index": 2,
           "total_mib": 81559,
-          "used_mib": 20323,
-          "utilization_percent": 8,
+          "used_mib": 72620,
+          "utilization_percent": 20,
           "uuid": "GPU-db94211b-42d5-88d0-f626-60e777af3be6"
         },
         {
-          "free_mib": 60745,
+          "free_mib": 8485,
           "index": 3,
           "total_mib": 81559,
-          "used_mib": 20337,
-          "utilization_percent": 25,
+          "used_mib": 72597,
+          "utilization_percent": 0,
           "uuid": "GPU-308b13c1-44ea-47b7-7b33-01a928099618"
         },
         {
-          "free_mib": 62739,
+          "free_mib": 8489,
           "index": 4,
           "total_mib": 81559,
-          "used_mib": 18343,
-          "utilization_percent": 7,
+          "used_mib": 72593,
+          "utilization_percent": 20,
           "uuid": "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8"
         },
         {
-          "free_mib": 60855,
+          "free_mib": 8471,
           "index": 5,
           "total_mib": 81559,
-          "used_mib": 20227,
-          "utilization_percent": 24,
+          "used_mib": 72611,
+          "utilization_percent": 0,
           "uuid": "GPU-d61d94cd-3d24-fa07-8761-33961a14d995"
         },
         {
-          "free_mib": 60413,
+          "free_mib": 8517,
           "index": 6,
           "total_mib": 81559,
-          "used_mib": 20669,
-          "utilization_percent": 19,
+          "used_mib": 72565,
+          "utilization_percent": 21,
           "uuid": "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b"
         },
         {
-          "free_mib": 63067,
+          "free_mib": 8517,
           "index": 7,
           "total_mib": 81559,
-          "used_mib": 18015,
-          "utilization_percent": 27,
+          "used_mib": 72564,
+          "utilization_percent": 0,
           "uuid": "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5"
         }
       ],
       "errors": [],
       "job": "3422",
-      "known_owned_process_births": 2574,
+      "known_owned_process_births": 2910,
       "native_state": "RUNNING",
-      "observed_owned_process_births": 28,
-      "observed_unix": 1792162355.147763,
-      "owned_cpu_core_seconds_lower_bound": 3738.12,
+      "observed_owned_process_births": 336,
+      "observed_unix": 1792162641.071412,
+      "owned_cpu_core_seconds_lower_bound": 5782.8,
       "stage": {
-        "checked_unix": 1792162337.21161,
-        "outer": 13,
+        "checked_unix": 1792162609.2115607,
+        "outer": 14,
         "run_id": "f3ee1435e5014ba1969387c91878893a",
-        "stage": "outer-000013-actor-92b3eb4f830241e58a107b82a1e8def6"
+        "stage": "outer-000014-continue"
       }
     },
     "model_tensors_read": false,
     "native": {
-      "observed_unix": 1792162320.0236316,
+      "observed_unix": 1792162621.0038974,
       "returncode": 0,
       "state": "RUNNING",
       "stderr": "",
-      "stdout": "JobId=3422 JobName=g1-prefix200-f3ee1435e501 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898644 Nice=0 Account=(null) QOS=(null) JobState=RUNNING Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:57:52 TimeLimit=UNLIMITED TimeMin=N/A SubmitTime=2026-10-16T21:54:08 EligibleTime=2026-10-16T21:54:08 AccrueTime=2026-10-16T21:54:08 StartTime=2026-10-16T21:54:08 EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T21:54:08 Scheduler=Main Partition=gpu AllocNode:Sid=h100-10:3643502 ReqNodeList=h100-10 ExcNodeList=(null) NodeList=h100-10 BatchHost=h100-10 NumNodes=1 NumCPUs=96 NumTasks=1 CPUs/Task=96 ReqB:S:C:T=0:0:*:* TRES=cpu=96,mem=512G,node=1,billing=96 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=96 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/preparation/native-launch.sh WorkDir=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3 Comment=g1-prefix200:f3ee1435e5014ba1969387c91878893a  StdErr=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/logs/native-3422.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/logs/native-3422.log Power= TresPerNode=gres:gpu:8 \n"
+      "stdout": "JobId=3422 JobName=g1-prefix200-f3ee1435e501 UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898644 Nice=0 Account=(null) QOS=(null) JobState=RUNNING Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=01:02:53 TimeLimit=UNLIMITED TimeMin=N/A SubmitTime=2026-10-16T21:54:08 EligibleTime=2026-10-16T21:54:08 AccrueTime=2026-10-16T21:54:08 StartTime=2026-10-16T21:54:08 EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T21:54:08 Scheduler=Main Partition=gpu AllocNode:Sid=h100-10:3643502 ReqNodeList=h100-10 ExcNodeList=(null) NodeList=h100-10 BatchHost=h100-10 NumNodes=1 NumCPUs=96 NumTasks=1 CPUs/Task=96 ReqB:S:C:T=0:0:*:* TRES=cpu=96,mem=512G,node=1,billing=96 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=96 MinMemoryNode=512G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/preparation/native-launch.sh WorkDir=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3 Comment=g1-prefix200:f3ee1435e5014ba1969387c91878893a  StdErr=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/logs/native-3422.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/logs/native-3422.log Power= TresPerNode=gres:gpu:8 \n"
     },
     "new_model_forward": false,
     "requested_interval_seconds": 5.0,
     "run_id": "f3ee1435e5014ba1969387c91878893a",
     "sampler_finished": false,
-    "samples": 32,
+    "samples": 89,
     "started_unix": 1792162199.6091492,
     "training_changed": false,
     "whole_card_peaks": {
       "GPU-2c3bdc08-b976-0fb5-79bd-04def458046b": {
-        "max_used_mib": 77000,
-        "max_utilization_percent": 85,
-        "min_free_mib": 4081
+        "max_used_mib": 79695,
+        "max_utilization_percent": 100,
+        "min_free_mib": 1387
       },
       "GPU-308b13c1-44ea-47b7-7b33-01a928099618": {
-        "max_used_mib": 76999,
-        "max_utilization_percent": 85,
-        "min_free_mib": 4083
+        "max_used_mib": 79646,
+        "max_utilization_percent": 100,
+        "min_free_mib": 1435
       },
       "GPU-525a9efc-446e-333d-11ff-e1f2213d15c8": {
-        "max_used_mib": 77368,
-        "max_utilization_percent": 80,
-        "min_free_mib": 3713
+        "max_used_mib": 79651,
+        "max_utilization_percent": 100,
+        "min_free_mib": 1431
       },
       "GPU-6e00764e-3916-65f2-436e-568aa0c70fc5": {
-        "max_used_mib": 77345,
-        "max_utilization_percent": 81,
-        "min_free_mib": 3737
+        "max_used_mib": 79623,
+        "max_utilization_percent": 100,
+        "min_free_mib": 1459
       },
       "GPU-d61d94cd-3d24-fa07-8761-33961a14d995": {
-        "max_used_mib": 77029,
-        "max_utilization_percent": 82,
-        "min_free_mib": 4053
+        "max_used_mib": 79674,
+        "max_utilization_percent": 100,
+        "min_free_mib": 1407
       },
       "GPU-db94211b-42d5-88d0-f626-60e777af3be6": {
-        "max_used_mib": 77342,
+        "max_used_mib": 79595,
         "max_utilization_percent": 100,
-        "min_free_mib": 3739
+        "min_free_mib": 1487
       },
       "GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b": {
-        "max_used_mib": 76954,
-        "max_utilization_percent": 73,
-        "min_free_mib": 4127
+        "max_used_mib": 79582,
+        "max_utilization_percent": 100,
+        "min_free_mib": 1499
       },
       "GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5": {
-        "max_used_mib": 76967,
-        "max_utilization_percent": 74,
-        "min_free_mib": 4115
+        "max_used_mib": 79595,
+        "max_utilization_percent": 100,
+        "min_free_mib": 1487
       }
     }
   },
   "log_tail": "",
-  "stream_bytes": 50163,
-  "observed_unix": 1792162360.9161851,
+  "stream_bytes": 140112,
+  "observed_unix": 1792162643.2074714,
   "training_modified": false
 }

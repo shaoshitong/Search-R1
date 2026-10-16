@@ -5907,5 +5907,472 @@
       }
     },
     "independent_direct_8rank_ledger_facts": true
+  },
+  "13": {
+    "observed_unix": 1792162641.5951893,
+    "joint": {
+      "run_id": "f3ee1435e5014ba1969387c91878893a",
+      "outer": 13,
+      "source_commit": "2c1219defaebaf69467fce18efad331ce68cd6ec",
+      "observed_unix": 1792162481.2718508,
+      "phase_timings": {
+        "outer-000013-actor-92b3eb4f830241e58a107b82a1e8def6": {
+          "elapsed_seconds": 113.07039409130812,
+          "exit_code": 0
+        },
+        "outer-000013-continue": {
+          "elapsed_seconds": 147.48356690257788,
+          "exit_code": 0
+        },
+        "outer-000013-diversity-selection": {
+          "elapsed_seconds": 15.630766782909632,
+          "exit_code": 0
+        },
+        "outer-000013-prefix": {
+          "elapsed_seconds": 82.54712951928377,
+          "exit_code": 0
+        },
+        "outer-000013-probe-update": {
+          "elapsed_seconds": 30.92050378397107,
+          "exit_code": 0
+        },
+        "outer-000013-score": {
+          "elapsed_seconds": 37.291545048356056,
+          "exit_code": 0
+        }
+      },
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/latest-joint.json",
+      "sha256": "d5ddb94b44ec63c73294c5577c2317f04a82cd5c962676c0559ff42cbec1c4db",
+      "actor_adam": [
+        260,
+        260,
+        260,
+        260,
+        260,
+        260,
+        260,
+        260
+      ],
+      "probe_adam": [
+        260,
+        260,
+        260,
+        260,
+        260,
+        260,
+        260,
+        260
+      ],
+      "probe_metrics": {
+        "actor_selected_train": {
+          "accuracy": 1.0,
+          "balanced_accuracy": null,
+          "count": 512,
+          "fn": 0,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 0,
+          "group_bce": 0.20253412241876761,
+          "group_weight": 1.0,
+          "mean_q": 0.8218218517195349,
+          "mixed_count": 512,
+          "mixed_recall": 1.0,
+          "nonmixed_count": 0,
+          "nonmixed_recall": null,
+          "threshold": 0.5,
+          "tn": 0,
+          "total_loss": 1.008244014623938,
+          "tp": 512,
+          "trajectory_bce": 0.8057098922051704,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        },
+        "global_step_loss_curve": {
+          "actual_adam_updates_per_rank": 20,
+          "batches_differ_between_steps": true,
+          "delta_end_minus_start": {
+            "group_bce": 0.2353421619125441,
+            "total_loss": 0.24775747844716212,
+            "trajectory_bce": 0.012415304128221116
+          },
+          "first": {
+            "actual_adam_steps_per_rank": 241,
+            "actual_learning_rate": 1e-06,
+            "global_questions": 51,
+            "global_trajectories": 255,
+            "group_bce": 0.8082718381694719,
+            "loss_prediction_clock": "before_this_step_adam_update",
+            "observed_utc": "2026-10-16T14:54:27.196102+00:00",
+            "outer": 13,
+            "step": 1,
+            "total_loss": 1.7377363420000262,
+            "trajectory_bce": 0.9294644933120877
+          },
+          "last": {
+            "actual_adam_steps_per_rank": 260,
+            "actual_learning_rate": 1e-06,
+            "global_questions": 52,
+            "global_trajectories": 260,
+            "group_bce": 1.043614000082016,
+            "loss_prediction_clock": "before_this_step_adam_update",
+            "observed_utc": "2026-10-16T14:54:31.667438+00:00",
+            "outer": 13,
+            "step": 20,
+            "total_loss": 1.9854938204471884,
+            "trajectory_bce": 0.9418797974403088
+          },
+          "loss_semantics": "each_step_global_true_group_weighted_mean_before_its_own_update",
+          "monotonic_decrease_required": false,
+          "points": [
+            {
+              "actual_adam_steps_per_rank": 241,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.8082718381694719,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:27.196102+00:00",
+              "outer": 13,
+              "step": 1,
+              "total_loss": 1.7377363420000262,
+              "trajectory_bce": 0.9294644933120877
+            },
+            {
+              "actual_adam_steps_per_rank": 242,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.9788567400446125,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:28.089438+00:00",
+              "outer": 13,
+              "step": 2,
+              "total_loss": 1.7996230335796581,
+              "trajectory_bce": 0.820766292366327
+            },
+            {
+              "actual_adam_steps_per_rank": 243,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.9350506657478856,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:28.858853+00:00",
+              "outer": 13,
+              "step": 3,
+              "total_loss": 1.7558332471286549,
+              "trajectory_bce": 0.8207825667717877
+            },
+            {
+              "actual_adam_steps_per_rank": 244,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.8931880347868976,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:29.349968+00:00",
+              "outer": 13,
+              "step": 4,
+              "total_loss": 1.653969874569014,
+              "trajectory_bce": 0.7607818725062352
+            },
+            {
+              "actual_adam_steps_per_rank": 245,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 52,
+              "global_trajectories": 260,
+              "group_bce": 0.9997794020634432,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:30.176192+00:00",
+              "outer": 13,
+              "step": 5,
+              "total_loss": 1.8193176480439994,
+              "trajectory_bce": 0.8195382551505016
+            },
+            {
+              "actual_adam_steps_per_rank": 246,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.7827654112787807,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:30.253522+00:00",
+              "outer": 13,
+              "step": 6,
+              "total_loss": 1.6585923830668132,
+              "trajectory_bce": 0.8758269770472658
+            },
+            {
+              "actual_adam_steps_per_rank": 247,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.954718879624909,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:30.331208+00:00",
+              "outer": 13,
+              "step": 7,
+              "total_loss": 1.7665532289766797,
+              "trajectory_bce": 0.81183436571383
+            },
+            {
+              "actual_adam_steps_per_rank": 248,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.8441500576103435,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:30.749104+00:00",
+              "outer": 13,
+              "step": 8,
+              "total_loss": 1.6409678763034297,
+              "trajectory_bce": 0.7968178414830974
+            },
+            {
+              "actual_adam_steps_per_rank": 249,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.9683394280134463,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:30.821836+00:00",
+              "outer": 13,
+              "step": 9,
+              "total_loss": 1.7176641366061043,
+              "trajectory_bce": 0.7493246945680356
+            },
+            {
+              "actual_adam_steps_per_rank": 250,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 52,
+              "global_trajectories": 260,
+              "group_bce": 0.5660662811536056,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:30.899600+00:00",
+              "outer": 13,
+              "step": 10,
+              "total_loss": 1.4600071494395916,
+              "trajectory_bce": 0.8939408453611227
+            },
+            {
+              "actual_adam_steps_per_rank": 251,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 1.072570126430661,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:30.976594+00:00",
+              "outer": 13,
+              "step": 11,
+              "total_loss": 1.9304998715718586,
+              "trajectory_bce": 0.8579297813714719
+            },
+            {
+              "actual_adam_steps_per_rank": 252,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 1.1867352455270057,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:31.049303+00:00",
+              "outer": 13,
+              "step": 12,
+              "total_loss": 2.0424273995792164,
+              "trajectory_bce": 0.8556922230066037
+            },
+            {
+              "actual_adam_steps_per_rank": 253,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.9376152403214398,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:31.130677+00:00",
+              "outer": 13,
+              "step": 13,
+              "total_loss": 1.820685536253686,
+              "trajectory_bce": 0.8830703274876464
+            },
+            {
+              "actual_adam_steps_per_rank": 254,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.7704611987459893,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:31.205310+00:00",
+              "outer": 13,
+              "step": 14,
+              "total_loss": 1.6569447190153832,
+              "trajectory_bce": 0.8864835220224717
+            },
+            {
+              "actual_adam_steps_per_rank": 255,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 52,
+              "global_trajectories": 260,
+              "group_bce": 0.9842772483825684,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:31.287704+00:00",
+              "outer": 13,
+              "step": 15,
+              "total_loss": 1.890276413697463,
+              "trajectory_bce": 0.9059991481212469
+            },
+            {
+              "actual_adam_steps_per_rank": 256,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.7987273764960906,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:31.363851+00:00",
+              "outer": 13,
+              "step": 16,
+              "total_loss": 1.6030077864142025,
+              "trajectory_bce": 0.8042803956013099
+            },
+            {
+              "actual_adam_steps_per_rank": 257,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.7608110443049786,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:31.440889+00:00",
+              "outer": 13,
+              "step": 17,
+              "total_loss": 1.506182217130474,
+              "trajectory_bce": 0.7453711769160102
+            },
+            {
+              "actual_adam_steps_per_rank": 258,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.8436288629092422,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:31.516380+00:00",
+              "outer": 13,
+              "step": 18,
+              "total_loss": 1.5630573361527687,
+              "trajectory_bce": 0.7194284785027597
+            },
+            {
+              "actual_adam_steps_per_rank": 259,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 51,
+              "global_trajectories": 255,
+              "group_bce": 0.7979933122793833,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:31.591879+00:00",
+              "outer": 13,
+              "step": 19,
+              "total_loss": 1.6701603473401536,
+              "trajectory_bce": 0.8721670239579443
+            },
+            {
+              "actual_adam_steps_per_rank": 260,
+              "actual_learning_rate": 1e-06,
+              "global_questions": 52,
+              "global_trajectories": 260,
+              "group_bce": 1.043614000082016,
+              "loss_prediction_clock": "before_this_step_adam_update",
+              "observed_utc": "2026-10-16T14:54:31.667438+00:00",
+              "outer": 13,
+              "step": 20,
+              "total_loss": 1.9854938204471884,
+              "trajectory_bce": 0.9418797974403088
+            }
+          ],
+          "replica_updates_are_not_summed": true,
+          "world_size": 8
+        },
+        "test": {
+          "accuracy": 0.623046875,
+          "balanced_accuracy": 0.5708887670868836,
+          "count": 512,
+          "fn": 112,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 81,
+          "group_bce": 0.656199497799472,
+          "group_weight": 1.0,
+          "mean_q": 0.39103194539107783,
+          "mixed_count": 183,
+          "mixed_recall": 0.3879781420765027,
+          "nonmixed_count": 329,
+          "nonmixed_recall": 0.7537993920972644,
+          "threshold": 0.5,
+          "tn": 248,
+          "total_loss": 1.2000903701099808,
+          "tp": 71,
+          "trajectory_bce": 0.5438908723105088,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        },
+        "train": {
+          "accuracy": 0.5595703125,
+          "balanced_accuracy": 0.5,
+          "count": 1024,
+          "fn": 0,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 451,
+          "group_bce": 0.8369199856871925,
+          "group_weight": 1.0,
+          "mean_q": 0.791295424851482,
+          "mixed_count": 573,
+          "mixed_recall": 1.0,
+          "nonmixed_count": 451,
+          "nonmixed_recall": 0.0,
+          "threshold": 0.5,
+          "tn": 0,
+          "total_loss": 1.6996679584474301,
+          "tp": 573,
+          "trajectory_bce": 0.8627479727602376,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        },
+        "train_loop_seconds": 8.092271964997053
+      },
+      "actor_selection": {
+        "actor512": {
+          "correct_count_histogram": {
+            "1": 81,
+            "2": 113,
+            "3": 139,
+            "4": 179
+          },
+          "mean_population_em_variance": 0.199375,
+          "mean_predicted_mixed_probability": 0.788569796674231,
+          "mixed_fraction": 1.0,
+          "mixed_questions": 512,
+          "questions": 512,
+          "trajectories": 2560
+        },
+        "actor_version": "f3ee1435e5014ba1969387c91878893a-actor0012",
+        "all_candidate_accuracy_available": false,
+        "continued1024": {
+          "correct_count_histogram": {
+            "0": 144,
+            "1": 101,
+            "2": 113,
+            "3": 139,
+            "4": 220,
+            "5": 307
+          },
+          "mean_population_em_variance": 0.10921875,
+          "mean_predicted_mixed_probability": 0.7623137060228272,
+          "mixed_fraction": 0.5595703125,
+          "mixed_questions": 573,
+          "questions": 1024,
+          "trajectories": 5120
+        },
+        "full_rollout_sha256": "5fb93644ae4dc0f96a4c2e483953e22997566b7b4efdaf3c49878df02627896b",
+        "outcome_selection": "population_strict_EM_variance_K_times_5minusK_over25",
+        "outer": 13,
+        "prefix_selection_sha256": "2eb6079d6554ea53cbaa51cba3c4b29d024fb0fcf1e38ad622548e10a2669d76",
+        "probe_uses_all_continued1024": true,
+        "run_id": "f3ee1435e5014ba1969387c91878893a",
+        "tie_break": "frozen_prefix_q_descending_then_original_candidate_ordinal",
+        "uncontinued_candidate_questions": 4096
+      }
+    },
+    "independent_direct_8rank_ledger_facts": true
   }
 }
