@@ -32,8 +32,23 @@ def import_partial(base):
     if any(c[k]!=original[k] for k in science):
         raise ValueError('Scientific configuration changed across phase recovery')
     receipt=read(source/'preparation/submit-receipt.json');job=receipt['job_id']
-    raw=subprocess.check_output(['scontrol','show','job',job,'-o'],text=True,timeout=15)
-    if 'JobState=FAILED' not in raw or ('WorkDir='+str(source)) not in raw:
+    native=subprocess.run(['scontrol','show','job',job,'-o'],capture_output=True,text=True,timeout=15)
+    raw=native.stdout
+    handle_purged=False
+    if native.returncode:
+        # Slurm may garbage-collect a completed handle within minutes. This
+        # is admitted only with the missing-handle error, no matching queued
+        # identity, actual original failure log, and independent birth cleanup.
+        intent=read(source/'preparation/submit-intent.json')
+        queue=subprocess.check_output(['squeue','-h','-o','%i|%j'],text=True,timeout=15)
+        failure=(source/'logs'/('native-'+job+'.log')).read_text()
+        if ('Invalid job id specified' not in native.stderr
+                or any(line.split('|')[-1]==intent['job_name'] for line in queue.splitlines())
+                or 'Actual phase failed: outer-000001-probe-update' not in failure):
+            raise ValueError('No authoritative stopped-source evidence after handle collection')
+        handle_purged=True
+        raw='PURGED_HANDLE; no matching queue identity; original native log has probe-update failure'
+    elif 'JobState=FAILED' not in raw or ('WorkDir='+str(source)) not in raw:
         raise ValueError('Source native instance is not actually terminal')
     ledger=read(source/'logs/process-ledger.json')
     births=[b for part in ledger['jobs'].values() for b in part['ledger'].values()]
@@ -60,7 +75,8 @@ def import_partial(base):
         actor_ledgers.append(dict(rank=rank,actual_writes=20,path=str(p),sha256=sha(p)))
     phases={name:sha(root/name/'complete.json') for name in ('prefix','probe-score','full','actor-selection')}
     logs={p.name:dict(path=str(p),bytes=p.stat().st_size,sha256=sha(p)) for p in (source/'logs').glob('*.log')}
-    proof=dict(source_base=str(source),job_id=job,native=raw,source_config_sha256=sha(source/'preparation/launch-config.json'),
+    proof=dict(source_base=str(source),job_id=job,native=raw,native_handle_collected=handle_purged,
+        native_query_stderr=native.stderr,source_config_sha256=sha(source/'preparation/launch-config.json'),
         actor_receipt_sha256=sha(source/'actor/latest.json'),probe_receipt_sha256=sha(source/'probe/latest.json'),
         phase_hashes=phases,actor_direct_ledgers=actor_ledgers,failed_probe_direct_ledgers=physical_probe,
         failed_probe_physical_writes_per_rank=[20]*8,failed_probe_saved_state_steps_per_rank=[0]*8,
