@@ -67,6 +67,39 @@ def supported_execution_role(run,base=None):
     return role
 
 
+def validate_pipeline_entry(run):
+    """A fresh run has no probe version; a paired restore pins its old version."""
+    assert run['profile']=='common8' and run['completed_updates']==0
+    restore=run.get('full_state_restore')
+    if not restore:
+        assert run['initial_probe_version'] is None, 'Fresh execution cannot inherit an unbound reward probe'
+        return
+    if restore.get('kind') in ('question_probe_pair','question_probe_saved_checkpoint'):
+        # Metadata only here. Actual full state/CUDA/FSDP checks still run before
+        # Adam; this entry guard must not load learner tensors a second time.
+        path=Path(restore['source_receipt'])
+        assert path.is_file() and not path.is_symlink() and path.resolve()==path
+        assert digest(path)==restore['source_receipt_sha256'], 'Restore source receipt changed'
+        receipt=json.loads(path.read_text())
+        expected_status={'question_probe_pair':'QPROBE_COMPLETED_PAIR_FULL_SHA_CPU_STATES_PASS',
+            'question_probe_saved_checkpoint':'QPROBE_SAVED_CHECKPOINT_FULL_SHA_CPU_STATES_PASS'}
+        assert receipt['kind']==restore['kind'] and receipt['status']==expected_status[restore['kind']]
+        assert receipt['checkpoint']==restore['source_checkpoint'] and receipt['source_base']==restore['source_base']
+        assert receipt['step']==restore['completed_outer'], 'Restore boundary changed'
+        record=receipt['source_run_manifest'];manifest=Path(record['path'])
+        assert manifest==Path(restore['source_base'])/'logs/run-manifest.json' and not manifest.is_symlink()
+        assert digest(manifest)==record['full_read_sha256']==restore['source_run_manifest_sha256']
+        parent=json.loads(manifest.read_text())
+        assert run['run_id']==receipt['run_id']==parent['run_id'], 'Restore learner identity changed'
+        expected=receipt['reward_probe_version']
+        assert expected and run['initial_probe_version']==restore['reward_probe_version']==expected, \
+            'Restore initial reward probe must match the authenticated source pair'
+    else:
+        # The original legacy CP5 entry did not bind an initial version here;
+        # its existing authenticated restoration/adoption remains unchanged.
+        assert run['initial_probe_version'] is None
+
+
 def request_interrupt(sig,frame):
     # Never raise asynchronously between Popen and durable ownership registration.
     global _interrupt_requested
@@ -464,7 +497,7 @@ def main():
     for name in ('logs','tmp','ray','cache/triton','cache/inductor','cache/hf','artifacts'):(base/name).mkdir(parents=True,exist_ok=True)
     lock=(base/'gpu-job.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     signal.signal(signal.SIGTERM,request_interrupt);signal.signal(signal.SIGINT,request_interrupt)
-    assert run['profile']=='common8' and run['completed_updates']==0 and run['initial_probe_version'] is None
+    validate_pipeline_entry(run)
     assert not (base/'logs/process-ledger.json').exists(), 'Inspect/clean previous attempt; never duplicate launch'
     for name,sha in run['source_sha256'].items():assert digest(base/'repo'/name)==sha
     for port in (18010,18012):
