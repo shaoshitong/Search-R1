@@ -39,3 +39,9 @@ epoch3最新完整状态1242424288字节，SHA256`4fccd80f9c0761e0b613f8fbf45f0b
 第4轮四rank全部2175次Adam／EMA已返回，累计28275次，进入既定同EMA训练／测试评测。第4轮metrics／checkpoint／complete仍缺失，`fully_committed`未知；即使原生进度中的`complete_epochs`已写4，**正式完整进度仍只计3/200**。身份连续、无记录错误或退出，保持同进程推进。
 
 同epoch4两份已有原生进度的游标75→2175，`observed_unix`相差1336.247471秒，真实新增2150400条轨迹／2100次Adam，得到**1609.28条轨迹/秒**。计算没有使用observer墙钟间隔；它不含全量EMA评测和checkpoint保存，也不是完整1024轮端到端耗时，不能据此宣称4倍提速。此次没有新EMA评分，最近混合balanced accuracy80.1052%／56.3273%仍属epoch3。详细证据见[第4轮训练窗口报告](../reproduction/reports/question5-global1024-epoch004-training-window-2026-10-17.md)及[标量／哈希JSON](../reproduction/reports/question5-global1024-epoch004-training-window-2026-10-17.json)。
+
+## 2026-10-17 00:51：epoch4完整提交与逐轮指标
+
+最新回执`question5-global1024-resume-observation-1792169472089409000.json`已闭合第4轮metrics／checkpoint／complete，正式进度4/200；同一进程第5轮已完成700/2175次Adam／EMA，累计28975次。第4轮完成状态1242424352字节，SHA256`f5b7c900bca27a62c1215a482f1697ea8090c279d1b17fa093e06a5226d5231a`，仍为可变latest。
+
+第4轮同EMA0.99训练／测试混合balanced accuracy84.7472%／56.5715%，联合loss0.651842／1.367130。训练持续改善，但测试混合balanced accuracy前四轮仅54.35%→57.33%→56.33%→56.57%，测试联合loss未较首轮改善，不能称泛化良好。首个完整global1024轮的训练与既定EMA全量评测耗时2014.141419秒（33.5690分钟），不含checkpoint写入，也不证明相较首轮的受控倍速。每轮普通／balanced accuracy、两项BCE、混淆矩阵、计数与哈希已统一归档：[epoch1–4指标报告](../reproduction/reports/question5-ema-epoch001-004-2026-10-17.md)／[JSON](../reproduction/reports/question5-ema-epoch001-004-2026-10-17.json)。
