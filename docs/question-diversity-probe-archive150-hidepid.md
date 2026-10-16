@@ -54,3 +54,48 @@ confirmation protocol are still required. All five full milestone archives,
 exact native51713 scoring, seven-source EM/F1, actual native4 twice recovery,
 every normal-return RAW audit and independent final CPU acceptance remain
 mandatory before marking the original goal complete.
+
+## Verified precise retirement and replacement storage protocol
+
+Retirement source `5e519ad272660c97578447f06b0190e30b22517b` was pushed and
+published with1124 full file SHA checks. All170 remote tests passed with zero
+skips, including all three real Linux lifecycle tests. Actual retirement then
+completed once: the original runner really waited for child-15, the original
+S follower naturally returned1, and payload/accepted storage remained absent.
+The terminal retirement receipt SHA is
+`6a28843d779c5feb69d286ad19f22a5a75a12b93ac469b71bd880841a056be38`.
+All28 original small failure files (387309B) were captured after terminality.
+This is an explicitly active CPU-helper retirement, never a model restart or
+spontaneous failure claim.
+
+`owner_partition_storage_v2.py` provides the replacement protocol:
+
+- JXU observes its own exact live archive child and publishes a protected0640
+  authorization binding request/source/claim/token/nonce/host/boot/namespace.
+  The120s TTL and current pointer admit only the first exclusive MOU claim;
+  historical consumption checks validity at that original claim time.
+- Owner admission and failed-request closure use the same0640 file opened
+  O_RDONLY with exclusive flock. A failed JXU full scan closes the request
+  before any new MOU admission. With no owner claim it immediately records the
+  failure and advances to a new complete transaction; an existing owner must
+  provide actual terminal evidence first.
+- A separate actual MOU CLI checks all its original helper births terminal
+  after the real worker and DU waits. Its protected0640 confirmation includes
+  full stable-FD proofs of claim/process/child/worker wait, DU launch intent,
+  DU binding/result, complete output and authorization. JXU reconsumes that
+  exact graph and never infers a foreign process state from `/proc`.
+- A durable DU launch intent precedes streams and Popen. Missing real wait
+  plus any intent/binding/stream residue means UNKNOWN, even if an unbound
+  child later exits. No incomplete or failed scan contributes allocated bytes.
+- The actually denied eight-hex `ray-thread-smoke-*` root is added to the
+  existing strict MOU-owned directory scope. Canonical inode/UID/GID/mode
+  checks, disjoint exact exclusions, complete two-owner coverage, conservative
+  hardlink overcount, freshness and the same2e12 allocated-byte budget remain.
+
+The v2 launch flag is mutually exclusive with both legacy storage protocols
+and is allowed only for150/200. The immutable S runtime remains unchanged.
+The replacement module and entry point alone do not restart the archive or
+complete the goal: a typed second150 preservation/handoff, automated two-owner
+driver and explicitly source-pinned final independent reader are still needed
+before production use. Final acceptance must keep all original science,
+archive, recovery, RAW and no201 gates.
