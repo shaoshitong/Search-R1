@@ -1,0 +1,822 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-17",
+  "role": "question5_same_EMA_epoch001_through005_before_actor_switch_scalar_hash_report",
+  "checked_unix": 1792173291.015924,
+  "checked_at_Shanghai": "2026-10-17T01:54:51.015924+08:00",
+  "run_id": "8af926a49630428097b94027864da68b",
+  "current_execution_id": "bcfa1de0a90a4fcda70263a75153fcee",
+  "current_runtime_source_commit": "ddf36cca14ac7aafb0b5395ffa88d57ed8c35e74",
+  "source_receipts": [
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/reports/question5-ema-epoch001-004-2026-10-17.json",
+      "sha256": "069fa13ac43c0e5f0cfafaa4157d782c1e5303d54c4e5019869dadd8040e2c6b"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-old-warmup-terminal-reconcile-1792173020482486000.json",
+      "sha256": "e5165c528ba8c5bb75b5cecfe9c77ea4e2703109045309bf6d27e828030705d0"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-actorhidden-prefix5-observe-1792172570065361000.json",
+      "sha256": "7b5bdafc8e633c5acbc387c10bd5c54417358316a7ce230385c92c9045a81177"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-old-warmup-terminal-reconcile-1792173224681789000.json",
+      "sha256": "0435fd50cd76d95d77c6240f45c45bf4cc4326b00e26a9d27aa6ee3cc28f3b05"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-actorhidden-prefix5-launch-1792173291027103000.json",
+      "sha256": "ce29ba2b2ae20e612061eebac82f5056a76a8015edf6d827c5deca68eaffabba"
+    }
+  ],
+  "prior_source_receipts": [
+    {
+      "path": "preparation/question5-global1024-resume-observation-1792169472089409000.json",
+      "sha256": "f04e518003fad67a1a35f6118b8604caf824a5553d26cbf18f7d83aa364f2259"
+    },
+    {
+      "path": "preparation/question5-global1024-resume-observation-1792167064807867000.json",
+      "sha256": "d19612af6c810d7bb944b78eade1a44307afb6a73b1ba0bc8344753aa22450d4"
+    }
+  ],
+  "metric_contract": {
+    "train_G5_groups_per_epoch": 445440,
+    "train_trajectories_per_epoch": 2227200,
+    "test_G5_groups": 512,
+    "test_trajectories": 2560,
+    "same_fixed_EMA_per_epoch_for_train_and_test": true,
+    "EMA_decay": 0.99,
+    "binary_threshold": 0.5,
+    "mixed_definition": "0<K<5 includingK1",
+    "loss": "mean trajectory BCEWithLogits plus mean same-event G5 mixed BCE",
+    "loss_weights": [
+      1,
+      1
+    ],
+    "trajectory_accuracy_and_mixed_group_accuracy_are_different_metrics": true,
+    "balanced_accuracy_constant_prediction_baseline": 0.5,
+    "test_all_wrong_trajectory_accuracy_baseline": 0.781640625,
+    "test_all_unmixed_group_accuracy_baseline": 0.642578125
+  },
+  "epochs": [
+    {
+      "epoch": 1,
+      "fully_committed": true,
+      "inherited_prefix": true,
+      "execution_id": "091f3979549347d190065387c2214af6",
+      "runtime_source_commit": "98b5ec2af9a5b45cd535e67408980c72a75d7746",
+      "metrics_observed_unix": 1792161516.1407616,
+      "weight_kind": "ema0.99",
+      "actual_Adam_at_complete_epoch": 8700,
+      "EMA_clock_at_complete_epoch": 8700,
+      "actual_Adam_steps_per_rank_at_save": [
+        8700,
+        8700,
+        8700,
+        8700
+      ],
+      "actor_updates": 0,
+      "rejected_nonfinite_updates": 0,
+      "epoch_Adam_budget": 8700,
+      "global_G5_pattern": [
+        51,
+        51,
+        51,
+        51,
+        52
+      ],
+      "train_ema": {
+        "weight_kind": "ema0.99",
+        "metric_semantics": "same_fixed_head_eval_no_grad",
+        "groups": 445440,
+        "trajectories": 2227200,
+        "trajectory_bce": 0.4743102552562426,
+        "group_bce": 0.6028493325060418,
+        "total_loss": 1.0771595877622844,
+        "mixed_group": {
+          "accuracy": 0.7052375179597701,
+          "balanced_accuracy": 0.6773703097999505,
+          "fn": 68124,
+          "fp": 63175,
+          "negative": 284454,
+          "positive": 160986,
+          "tn": 221279,
+          "tp": 92862
+        },
+        "trajectory_correctness": {
+          "accuracy": 0.7965369073275862,
+          "balanced_accuracy": 0.5656847137114116,
+          "fn": 397113,
+          "fp": 56040,
+          "negative": 1752556,
+          "positive": 474644,
+          "tn": 1696516,
+          "tp": 77531
+        },
+        "true_mixed": "0<K<5",
+        "threshold": 0.5
+      },
+      "test_ema": {
+        "weight_kind": "ema0.99",
+        "metric_semantics": "same_fixed_head_eval_no_grad",
+        "groups": 512,
+        "trajectories": 2560,
+        "trajectory_bce": 0.5673292045830749,
+        "group_bce": 0.7538202387513593,
+        "total_loss": 1.3211494433344342,
+        "mixed_group": {
+          "accuracy": 0.580078125,
+          "balanced_accuracy": 0.5435165346222199,
+          "fn": 107,
+          "fp": 108,
+          "negative": 329,
+          "positive": 183,
+          "tn": 221,
+          "tp": 76
+        },
+        "trajectory_correctness": {
+          "accuracy": 0.773046875,
+          "balanced_accuracy": 0.5222196594010687,
+          "fn": 516,
+          "fp": 65,
+          "negative": 2001,
+          "positive": 559,
+          "tn": 1936,
+          "tp": 43
+        },
+        "true_mixed": "0<K<5",
+        "threshold": 0.5
+      },
+      "raw_online_window": {
+        "group_bce": 0.8208463505428337,
+        "groups": 445440,
+        "resumed_epoch_suffix": false,
+        "trajectory_bce": 0.6164929727500327
+      },
+      "recorded_epoch_seconds": 2499.4410843830556,
+      "recorded_timing_semantics": "Full epoch1 training and prescribed full EMA train/test evaluation, excluding checkpoint write.",
+      "hashes": {
+        "metrics_file_sha256": "667c446eb39c0dd8488778e967cd176d56a2d0537eae2312a58e39688cb819ec",
+        "epoch_metrics_canonical_sha256": "0a819c1d3c6f2537719817e674b63d1b2ee59ba549142d16b4466cc522e60621",
+        "checkpoint_metadata_sha256": "b04a7bfde161dea9351f36766ca1e7a6d407aafe3ddc1dc85b8506d091b99675",
+        "complete_metadata_sha256": "13fbf538256ef7dc748192764cbf925b13a3af3e6b5dfc6874bcd6a13d648c31",
+        "checkpoint_state_sha256_at_save": "a3a4959f14413948f88c9a7add54eb670746fa63005972390c0ab907d30a5f8c",
+        "binding_sha256": "80c0abea4462b1bfb6852b0f33a79258ad61f8a17a89fe47a8ff2e0e830580c6"
+      },
+      "checkpoint_state_bytes_at_save": 1242422752,
+      "checkpoint_state_is_mutable_latest": true,
+      "historical_state_hash_does_not_prove_separate_immutable_copy": true
+    },
+    {
+      "epoch": 2,
+      "fully_committed": true,
+      "inherited_prefix": true,
+      "execution_id": "141a9ada1d464f0d9925d8397a194944",
+      "runtime_source_commit": "ed2a997e5162cd3a6e1dff0bd1d91fcc659caf2a",
+      "metrics_observed_unix": 1792164194.61442,
+      "weight_kind": "ema0.99",
+      "actual_Adam_at_complete_epoch": 17400,
+      "EMA_clock_at_complete_epoch": 17400,
+      "actual_Adam_steps_per_rank_at_save": [
+        17400,
+        17400,
+        17400,
+        17400
+      ],
+      "actor_updates": 0,
+      "rejected_nonfinite_updates": 0,
+      "epoch_Adam_budget": 8700,
+      "global_G5_pattern": [
+        51,
+        51,
+        51,
+        51,
+        52
+      ],
+      "train_ema": {
+        "weight_kind": "ema0.99",
+        "metric_semantics": "same_fixed_head_eval_no_grad",
+        "groups": 445440,
+        "trajectories": 2227200,
+        "trajectory_bce": 0.4165592199041583,
+        "group_bce": 0.4848826497985885,
+        "total_loss": 0.9014418697027469,
+        "mixed_group": {
+          "accuracy": 0.7854413613505747,
+          "balanced_accuracy": 0.7619666946911174,
+          "fn": 51954,
+          "fp": 43619,
+          "negative": 284454,
+          "positive": 160986,
+          "tn": 240835,
+          "tp": 109032
+        },
+        "trajectory_correctness": {
+          "accuracy": 0.8084132543103448,
+          "balanced_accuracy": 0.6088536157516427,
+          "fn": 350737,
+          "fp": 75965,
+          "negative": 1752556,
+          "positive": 474644,
+          "tn": 1676591,
+          "tp": 123907
+        },
+        "true_mixed": "0<K<5",
+        "threshold": 0.5
+      },
+      "test_ema": {
+        "weight_kind": "ema0.99",
+        "metric_semantics": "same_fixed_head_eval_no_grad",
+        "groups": 512,
+        "trajectories": 2560,
+        "trajectory_bce": 0.5926353149116039,
+        "group_bce": 0.7797910273075104,
+        "total_loss": 1.3724263422191143,
+        "mixed_group": {
+          "accuracy": 0.623046875,
+          "balanced_accuracy": 0.5733137342833889,
+          "fn": 110,
+          "fp": 83,
+          "negative": 329,
+          "positive": 183,
+          "tn": 246,
+          "tp": 73
+        },
+        "trajectory_correctness": {
+          "accuracy": 0.7734375,
+          "balanced_accuracy": 0.5192466378617488,
+          "fn": 521,
+          "fp": 59,
+          "negative": 2001,
+          "positive": 559,
+          "tn": 1942,
+          "tp": 38
+        },
+        "true_mixed": "0<K<5",
+        "threshold": 0.5
+      },
+      "raw_online_window": {
+        "group_bce": 0.6411853196880427,
+        "groups": 69786,
+        "resumed_epoch_suffix": true,
+        "trajectory_bce": 0.4837859603270619
+      },
+      "recorded_epoch_seconds": 985.7820791555569,
+      "recorded_timing_semantics": "Resumed suffix1363/8700 Adam updates plus prescribed full EMA train/test evaluation; not full epoch walltime.",
+      "hashes": {
+        "metrics_file_sha256": "d1884da3e4535d35259d0790f12fc45b9993fa70a12d4105298e75d7084f6512",
+        "epoch_metrics_canonical_sha256": "e632754be438b847c37f068a86c8b6334cf1ff17fe7078bcb4009076a7156cf0",
+        "checkpoint_metadata_sha256": "8f7cc815005d00f0e2eb8a4c6a2340a4a2ff42fc65e8c1d3ea389e65d012b861",
+        "complete_metadata_sha256": "a686b8d62689123a6632bae2a079637b6d6c8e974e9aa8e69c4e745514f008b6",
+        "checkpoint_state_sha256_at_save": "b59d75f190e99a8f7d1f2a577b36d39260bf557cc3f99a3f32796aa7bde459aa",
+        "binding_sha256": "1c5d35aa00de7f2f0d226566122beeb4f81a3b9fa13893f3a26b2a33e6ef0045"
+      },
+      "checkpoint_state_bytes_at_save": 1242423712,
+      "checkpoint_state_is_mutable_latest": true,
+      "historical_state_hash_does_not_prove_separate_immutable_copy": true
+    },
+    {
+      "epoch": 3,
+      "fully_committed": true,
+      "inherited_prefix": false,
+      "execution_id": "bcfa1de0a90a4fcda70263a75153fcee",
+      "runtime_source_commit": "ddf36cca14ac7aafb0b5395ffa88d57ed8c35e74",
+      "metrics_observed_unix": 1792167006.2590697,
+      "weight_kind": "ema0.99",
+      "actual_Adam_at_complete_epoch": 26100,
+      "EMA_clock_at_complete_epoch": 26100,
+      "actual_Adam_steps_per_rank_at_save": [
+        26100,
+        26100,
+        26100,
+        26100
+      ],
+      "actor_updates": 0,
+      "rejected_nonfinite_updates": 0,
+      "epoch_Adam_budget": 8700,
+      "global_G5_pattern": [
+        51,
+        51,
+        51,
+        51,
+        52
+      ],
+      "train_ema": {
+        "weight_kind": "ema0.99",
+        "metric_semantics": "same_fixed_head_eval_no_grad",
+        "groups": 445440,
+        "trajectories": 2227200,
+        "trajectory_bce": 0.381938701810251,
+        "group_bce": 0.4330384257688433,
+        "total_loss": 0.8149771275790944,
+        "mixed_group": {
+          "accuracy": 0.8174344468390805,
+          "balanced_accuracy": 0.8010515778262539,
+          "fn": 41543,
+          "fp": 39779,
+          "negative": 284454,
+          "positive": 160986,
+          "tn": 244675,
+          "tp": 119443
+        },
+        "trajectory_correctness": {
+          "accuracy": 0.8182300646551725,
+          "balanced_accuracy": 0.6622372465336362,
+          "fn": 289359,
+          "fp": 115479,
+          "negative": 1752556,
+          "positive": 474644,
+          "tn": 1637077,
+          "tp": 185285
+        },
+        "true_mixed": "0<K<5",
+        "threshold": 0.5
+      },
+      "test_ema": {
+        "weight_kind": "ema0.99",
+        "metric_semantics": "same_fixed_head_eval_no_grad",
+        "groups": 512,
+        "trajectories": 2560,
+        "trajectory_bce": 0.5708805657923222,
+        "group_bce": 0.7775959521532059,
+        "total_loss": 1.348476517945528,
+        "mixed_group": {
+          "accuracy": 0.60546875,
+          "balanced_accuracy": 0.5632733735279951,
+          "fn": 107,
+          "fp": 95,
+          "negative": 329,
+          "positive": 183,
+          "tn": 234,
+          "tp": 76
+        },
+        "trajectory_correctness": {
+          "accuracy": 0.782421875,
+          "balanced_accuracy": 0.5404636679871155,
+          "fn": 497,
+          "fp": 60,
+          "negative": 2001,
+          "positive": 559,
+          "tn": 1941,
+          "tp": 62
+        },
+        "true_mixed": "0<K<5",
+        "threshold": 0.5
+      },
+      "raw_online_window": {
+        "group_bce": 0.5608797241234103,
+        "groups": 445287,
+        "resumed_epoch_suffix": true,
+        "trajectory_bce": 0.4461030625370083
+      },
+      "recorded_epoch_seconds": 2293.2619380969554,
+      "recorded_timing_semantics": "Resumed suffix8697/8700 Adam updates plus prescribed full EMA train/test evaluation; excludes first3 updates and restore/constructor/checkpoint write.",
+      "hashes": {
+        "metrics_file_sha256": "1e47331c2d0b4ef67c20b03319e526101515592ee4a79750092e00e3adbaa71e",
+        "epoch_metrics_canonical_sha256": "7e1ec9f0c20aa297244f2c878a11041cfb674a06d647ba22ea73266043ca1173",
+        "checkpoint_metadata_sha256": "9207011e7b70f143405991682f905bbafe3a4a5534e4f0dfff481167e827e152",
+        "complete_metadata_sha256": "6b61fdbb8d0dea7fea418dbc54bed205bc9df6fea4657c2a1b7dbff5a958221d",
+        "checkpoint_state_sha256_at_save": "4fccd80f9c0761e0b613f8fbf45f0b562c08ec9d007fa868aa746bc49b4f4437",
+        "binding_sha256": "f82e64dd66f442e3d6595694d26f735f3d7a6d3dc8996e1de435f8f7c38ace02"
+      },
+      "checkpoint_state_bytes_at_save": 1242424288,
+      "checkpoint_state_is_mutable_latest": true,
+      "historical_state_hash_does_not_prove_separate_immutable_copy": true
+    },
+    {
+      "epoch": 4,
+      "fully_committed": true,
+      "inherited_prefix": false,
+      "execution_id": "bcfa1de0a90a4fcda70263a75153fcee",
+      "runtime_source_commit": "ddf36cca14ac7aafb0b5395ffa88d57ed8c35e74",
+      "metrics_observed_unix": 1792169024.1995347,
+      "weight_kind": "ema0.99",
+      "actual_Adam_at_complete_epoch": 28275,
+      "EMA_clock_at_complete_epoch": 28275,
+      "actual_Adam_steps_per_rank_at_save": [
+        28275,
+        28275,
+        28275,
+        28275
+      ],
+      "actor_updates": 0,
+      "rejected_nonfinite_updates": 0,
+      "epoch_Adam_budget": 2175,
+      "global_G5_pattern": [
+        204,
+        204,
+        204,
+        204,
+        208
+      ],
+      "train_ema": {
+        "weight_kind": "ema0.99",
+        "metric_semantics": "same_fixed_head_eval_no_grad",
+        "groups": 445440,
+        "trajectories": 2227200,
+        "trajectory_bce": 0.32569302173181514,
+        "group_bce": 0.32614860946590873,
+        "total_loss": 0.6518416311977239,
+        "mixed_group": {
+          "accuracy": 0.8589327406609195,
+          "balanced_accuracy": 0.847472288642452,
+          "fn": 31211,
+          "fp": 31626,
+          "negative": 284454,
+          "positive": 160986,
+          "tn": 252828,
+          "tp": 129775
+        },
+        "trajectory_correctness": {
+          "accuracy": 0.8349546515804598,
+          "balanced_accuracy": 0.6958688271619389,
+          "fn": 259410,
+          "fp": 108179,
+          "negative": 1752556,
+          "positive": 474644,
+          "tn": 1644377,
+          "tp": 215234
+        },
+        "true_mixed": "0<K<5",
+        "threshold": 0.5
+      },
+      "test_ema": {
+        "weight_kind": "ema0.99",
+        "metric_semantics": "same_fixed_head_eval_no_grad",
+        "groups": 512,
+        "trajectories": 2560,
+        "trajectory_bce": 0.5926084741950035,
+        "group_bce": 0.7745220065116882,
+        "total_loss": 1.3671304807066917,
+        "mixed_group": {
+          "accuracy": 0.61328125,
+          "balanced_accuracy": 0.5657149500888601,
+          "fn": 110,
+          "fp": 88,
+          "negative": 329,
+          "positive": 183,
+          "tn": 241,
+          "tp": 73
+        },
+        "trajectory_correctness": {
+          "accuracy": 0.7703125,
+          "balanced_accuracy": 0.5236934305655758,
+          "fn": 511,
+          "fp": 77,
+          "negative": 2001,
+          "positive": 559,
+          "tn": 1924,
+          "tp": 48
+        },
+        "true_mixed": "0<K<5",
+        "threshold": 0.5
+      },
+      "raw_online_window": {
+        "group_bce": 0.4125178476160288,
+        "groups": 445440,
+        "resumed_epoch_suffix": false,
+        "trajectory_bce": 0.36332361068895713
+      },
+      "recorded_epoch_seconds": 2014.1414187606424,
+      "recorded_timing_semantics": "First complete global1024 epoch: all2175 Adam updates plus prescribed full EMA train/test evaluation, excluding checkpoint write.",
+      "hashes": {
+        "metrics_file_sha256": "bb615cea90fa041566cb24f2df1148867bacb0573f0a2c69f323a82f61a22f90",
+        "epoch_metrics_canonical_sha256": "d0e06ba0c5ce4db0a7edb385d5baf91225fdb7fbe3edbc7f322c858d7efa7f40",
+        "checkpoint_metadata_sha256": "3851f106b7c8b9f96958522ecb3125964b010baf41deabd62edb4f30ec7a2298",
+        "complete_metadata_sha256": "3a9b215c16170ffb14251e88943f8d82a727c1ec7fd9df4f0d7137b0682cc82a",
+        "checkpoint_state_sha256_at_save": "f5b7c900bca27a62c1215a482f1697ea8090c279d1b17fa093e06a5226d5231a",
+        "binding_sha256": "f82e64dd66f442e3d6595694d26f735f3d7a6d3dc8996e1de435f8f7c38ace02"
+      },
+      "checkpoint_state_bytes_at_save": 1242424352,
+      "checkpoint_state_is_mutable_latest": true,
+      "historical_state_hash_does_not_prove_separate_immutable_copy": true
+    },
+    {
+      "epoch": 5,
+      "fully_committed": true,
+      "inherited_prefix": false,
+      "execution_id": "bcfa1de0a90a4fcda70263a75153fcee",
+      "runtime_source_commit": "ddf36cca14ac7aafb0b5395ffa88d57ed8c35e74",
+      "metrics_observed_unix": 1792171032.3998547,
+      "weight_kind": "ema0.99",
+      "actual_Adam_at_complete_epoch": 30450,
+      "EMA_clock_at_complete_epoch": 30450,
+      "actual_Adam_steps_per_rank_at_save": [
+        30450,
+        30450,
+        30450,
+        30450
+      ],
+      "actor_updates": 0,
+      "rejected_nonfinite_updates": 0,
+      "epoch_Adam_budget": 2175,
+      "global_G5_pattern": [
+        204,
+        204,
+        204,
+        204,
+        208
+      ],
+      "train_ema": {
+        "group_bce": 0.3173098403510862,
+        "groups": 445440,
+        "mean_mixed_probability": 0.37263258089521795,
+        "metric_semantics": "same_fixed_head_eval_no_grad",
+        "mixed_formula": "1-prod(p_j)-prod(1-p_j)",
+        "mixed_group": {
+          "accuracy": 0.8625359195402299,
+          "balanced_accuracy": 0.8503352742377359,
+          "fn": 31180,
+          "fp": 30052,
+          "negative": 284454,
+          "positive": 160986,
+          "tn": 254402,
+          "tp": 129806
+        },
+        "threshold": 0.5,
+        "total_loss": 0.6385139506160357,
+        "trajectories": 2227200,
+        "trajectory_bce": 0.32120411026494944,
+        "trajectory_correctness": {
+          "accuracy": 0.838402029454023,
+          "balanced_accuracy": 0.7046828710030232,
+          "fn": 250787,
+          "fp": 109124,
+          "negative": 1752556,
+          "positive": 474644,
+          "tn": 1643432,
+          "tp": 223857
+        },
+        "true_mixed": "0<K<5",
+        "weight_kind": "ema0.99"
+      },
+      "test_ema": {
+        "group_bce": 0.7751417979598045,
+        "groups": 512,
+        "mean_mixed_probability": 0.3764354069771798,
+        "metric_semantics": "same_fixed_head_eval_no_grad",
+        "mixed_formula": "1-prod(p_j)-prod(1-p_j)",
+        "mixed_group": {
+          "accuracy": 0.615234375,
+          "balanced_accuracy": 0.570872157722524,
+          "fn": 107,
+          "fp": 90,
+          "negative": 329,
+          "positive": 183,
+          "tn": 239,
+          "tp": 76
+        },
+        "threshold": 0.5,
+        "total_loss": 1.369222093373537,
+        "trajectories": 2560,
+        "trajectory_bce": 0.5940802954137325,
+        "trajectory_correctness": {
+          "accuracy": 0.770703125,
+          "balanced_accuracy": 0.5232987263076869,
+          "fn": 512,
+          "fp": 75,
+          "negative": 2001,
+          "positive": 559,
+          "tn": 1926,
+          "tp": 47
+        },
+        "true_mixed": "0<K<5",
+        "weight_kind": "ema0.99"
+      },
+      "raw_online_window": null,
+      "raw_online_window_missing_semantics": "Not included in the existing bounded metrics projection; unknown, not zero.",
+      "recorded_epoch_seconds": 2003.9135925425217,
+      "recorded_timing_semantics": "Full epoch5 training plus prescribed same-EMA full train/test evaluation, excluding checkpoint write.",
+      "hashes": {
+        "metrics_file_sha256": "5bb62d02384a75c7bc1ac8d2cc177684d243ed0340364dff8831d716685ddd28",
+        "epoch_metrics_canonical_sha256": "8282175d05183b91bb4c7a8a8263a4282a133e448057dec799586c29bbaab42d",
+        "checkpoint_metadata_sha256": "78a6694412c988d117ed6b48f55296b246c8dc67138bf69d5030f01d28c13557",
+        "complete_metadata_sha256": "53b4a64deb9fa5dcc0fa26a1b0e1d4038640ad85a526bad7624b8e18e9711802",
+        "checkpoint_state_sha256_at_save": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594",
+        "binding_sha256": "f82e64dd66f442e3d6595694d26f735f3d7a6d3dc8996e1de435f8f7c38ace02"
+      },
+      "checkpoint_state_bytes_at_save": 1242424352,
+      "checkpoint_state_is_mutable_latest": true,
+      "historical_state_hash_does_not_prove_separate_immutable_copy": true,
+      "separately_retained_hardlink_qualified_for_new_run": true,
+      "retained_checkpoint_path": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/preparation/warmup-source-epoch-0005.pt",
+      "retained_checkpoint_sha256": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594",
+      "retained_checkpoint_inode": 7526615178,
+      "retained_checkpoint_device": 2097361,
+      "full_native_epoch_metrics_projected_only": true,
+      "fully_committed_evidence": "CPU source qualification independently bound full checkpoint and its metrics/checkpoint/complete metadata; this report reads saved scalar projections only."
+    }
+  ],
+  "latest_fully_committed_metric_epoch": 5,
+  "epoch6": {
+    "completed_epoch_terminal_verified": true,
+    "completed_epoch": true,
+    "terminal_kind": "STOPPED_AT_COMPLETE_EPOCH_BOUNDARY",
+    "actual_Adam_at_terminal": 32625,
+    "EMA_clock_at_terminal": 32625,
+    "final_counters": {
+      "complete_epochs": 6,
+      "ema_updates": 32625,
+      "global_groups_seen": 2672640,
+      "global_trajectories_seen": 13363200,
+      "optimizer_steps": 32625,
+      "rejected_nonfinite_updates": 0
+    },
+    "all_four_rank_terminal_and_counters_agree": true,
+    "all_old_owned_processes_gone": true,
+    "wrapper_exit_code": 0,
+    "retained_checkpoint_producer": {
+      "path": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-bcfa1de0a90a4fcda70263a75153fcee/train/latest.pt",
+      "sha256": "9466b8611c7cf809b2f410f002aca9f34309c184c281028a575daa4d76245459",
+      "bytes": 1242424352,
+      "epoch": 6,
+      "next_update_in_epoch": 0,
+      "completed_epoch": true,
+      "counters": {
+        "complete_epochs": 6,
+        "ema_updates": 32625,
+        "global_groups_seen": 2672640,
+        "global_trajectories_seen": 13363200,
+        "optimizer_steps": 32625,
+        "rejected_nonfinite_updates": 0
+      }
+    },
+    "metrics_have_been_read": false,
+    "metrics_values": null,
+    "full_metrics_checkpoint_complete_tuple_read_for_epoch6": false,
+    "typed_rank_terminal_evidence": [
+      {
+        "rank": 0,
+        "identity": {
+          "pid": 1551676,
+          "start_ticks": 624406036,
+          "sid": 1551676,
+          "uid": 0
+        },
+        "exit": {
+          "path": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-bcfa1de0a90a4fcda70263a75153fcee/train/executions/bcfa1de0a90a4fcda70263a75153fcee/exit-rank-0.json",
+          "sha256": "8af1906b122eec128cf1d901d14bf03bde6767b2a9afa40418742cdc84a7b037"
+        },
+        "terminal": "STOPPED_AT_COMPLETE_EPOCH_BOUNDARY",
+        "counters": {
+          "complete_epochs": 6,
+          "ema_updates": 32625,
+          "global_groups_seen": 2672640,
+          "global_trajectories_seen": 13363200,
+          "optimizer_steps": 32625,
+          "rejected_nonfinite_updates": 0
+        }
+      },
+      {
+        "rank": 1,
+        "identity": {
+          "pid": 1551677,
+          "start_ticks": 624406036,
+          "sid": 1551677,
+          "uid": 0
+        },
+        "exit": {
+          "path": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-bcfa1de0a90a4fcda70263a75153fcee/train/executions/bcfa1de0a90a4fcda70263a75153fcee/exit-rank-1.json",
+          "sha256": "001e78dbdd7334da8d3cfe882aa32cd7a254e8281de93d35f5f3e325adb5c3b0"
+        },
+        "terminal": "STOPPED_AT_COMPLETE_EPOCH_BOUNDARY",
+        "counters": {
+          "complete_epochs": 6,
+          "ema_updates": 32625,
+          "global_groups_seen": 2672640,
+          "global_trajectories_seen": 13363200,
+          "optimizer_steps": 32625,
+          "rejected_nonfinite_updates": 0
+        }
+      },
+      {
+        "rank": 2,
+        "identity": {
+          "pid": 1551678,
+          "start_ticks": 624406036,
+          "sid": 1551678,
+          "uid": 0
+        },
+        "exit": {
+          "path": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-bcfa1de0a90a4fcda70263a75153fcee/train/executions/bcfa1de0a90a4fcda70263a75153fcee/exit-rank-2.json",
+          "sha256": "c76e915ab27543e715a84a606c35001978ef7871823edf8ccfd115fc4f5864f3"
+        },
+        "terminal": "STOPPED_AT_COMPLETE_EPOCH_BOUNDARY",
+        "counters": {
+          "complete_epochs": 6,
+          "ema_updates": 32625,
+          "global_groups_seen": 2672640,
+          "global_trajectories_seen": 13363200,
+          "optimizer_steps": 32625,
+          "rejected_nonfinite_updates": 0
+        }
+      },
+      {
+        "rank": 3,
+        "identity": {
+          "pid": 1551679,
+          "start_ticks": 624406036,
+          "sid": 1551679,
+          "uid": 0
+        },
+        "exit": {
+          "path": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-bcfa1de0a90a4fcda70263a75153fcee/train/executions/bcfa1de0a90a4fcda70263a75153fcee/exit-rank-3.json",
+          "sha256": "fe7887652a510a8ba8dd0be0d1cc1bb57e6e9fc6bc5e7c3cf6118cf2c6ecf604"
+        },
+        "terminal": "STOPPED_AT_COMPLETE_EPOCH_BOUNDARY",
+        "counters": {
+          "complete_epochs": 6,
+          "ema_updates": 32625,
+          "global_groups_seen": 2672640,
+          "global_trajectories_seen": 13363200,
+          "optimizer_steps": 32625,
+          "rejected_nonfinite_updates": 0
+        }
+      }
+    ],
+    "terminal_receipt_checked_unix": 1792173224.073924,
+    "semantics": "Old warmup actually stopped after completing epoch6 with32625 Adam/EMA and allowned processes gone. Existing epoch6 metric values were not read; this five-epoch score table does not invent them or mark training6 pending."
+  },
+  "interpretation": {
+    "train_mixed_balanced_accuracy_series": [
+      0.6773703097999505,
+      0.7619666946911174,
+      0.8010515778262539,
+      0.847472288642452,
+      0.8503352742377359
+    ],
+    "test_mixed_balanced_accuracy_series": [
+      0.5435165346222199,
+      0.5733137342833889,
+      0.5632733735279951,
+      0.5657149500888601,
+      0.570872157722524
+    ],
+    "train_joint_loss_series": [
+      1.0771595877622844,
+      0.9014418697027469,
+      0.8149771275790944,
+      0.6518416311977239,
+      0.6385139506160357
+    ],
+    "test_joint_loss_series": [
+      1.3211494433344342,
+      1.3724263422191143,
+      1.348476517945528,
+      1.3671304807066917,
+      1.369222093373537
+    ],
+    "epoch5_train_test_mixed_balanced_gap_pp": 27.946311651521192,
+    "best_test_mixed_balanced_epoch": 2,
+    "best_test_mixed_balanced_accuracy": 0.5733137342833889,
+    "test_generalization_improvement_proven": false,
+    "description": "Training improves; heldout mixed balanced accuracy remains approximately54–57percent. Epoch5 train/test85.0335/57.0872percent does not demonstrate useful generalization or a benefit to actor training."
+  },
+  "actor_switch": {
+    "new_run_id": "411c44aad7ba4e8c90f5fbec9e5ecbaa",
+    "new_source_commit": "2c0b5fbfe5a61d8bb1c0d407b0109c4012a2d286",
+    "preparation_status": "CPU_PREPARED_SEALED_EPOCH5_EMA_OLD_TERMINAL_VERIFIED_NEW_PIPELINE_ONCE_LAUNCHED",
+    "retained_warmup_epoch": 5,
+    "source_checkpoint": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/preparation/warmup-source-epoch-0005.pt",
+    "source_checkpoint_sha256": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594",
+    "source_checkpoint_bytes": 1242424352,
+    "source_qualification_path": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/preparation/source-qualification.json",
+    "source_qualification_sha256": "133b8e4bf5212b54feaea24cd2c09630b5e3a015e9f8c2c7375e7a8a3f004fb7",
+    "source_full_sha_verified": true,
+    "source_cpu_load_finite_verified": true,
+    "cuda_reload_verified": false,
+    "imported_weight_kind": "EMA0.99 model parameters and native RoPE buffers only",
+    "warmup_optimizer_imported": false,
+    "warmup_rng_imported": false,
+    "online_probe_Adam_initialization": "fresh Adam0; not a continuation of warmup Adam30450",
+    "actor_initialization": "fresh official Qwen/Qwen2.5-3B-Instruct revision aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "formal_architecture": "four GPUs; current sampling actor native layer27 question+first5 retained policy representations; native block35+maskedflatten+singlelogit",
+    "probe_update_schedule": "frozen except every20 actor outer; complete unselected5120G5, one epoch/100 Adam at1e-6",
+    "old_terminal_verified_at_reconcile": true,
+    "new_execution_id": "9074575c76e3484baa5fd0f920e7ff91",
+    "old_completed_epochs_at_terminal": 6,
+    "old_Adam_EMA_at_terminal": 32625,
+    "new_pipeline_launch_verified": true,
+    "new_pipeline_leader": {
+      "pid": 1689394,
+      "start_ticks": 625288232,
+      "sid": 1689394,
+      "uid": 0,
+      "state": "R",
+      "command": "/data/search-g1/env/bin/python -m reproduction.prefix_selection200.launch run --base /data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa "
+    },
+    "new_pipeline_launched_unix": 1792173291.0145736,
+    "new_launch_receipt_sha256": "ce29ba2b2ae20e612061eebac82f5056a76a8015edf6d827c5deca68eaffabba",
+    "new_launch_status": "ACTORHIDDEN_NATIVE_SUBMIT_RETURNED_NOT_TRAINING_ACCEPTANCE",
+    "new_training_progress_verified": false,
+    "new_training_started_at_launch_acceptance": false,
+    "launch_is_not_training_acceptance": true,
+    "old_training_stopped_at_complete_epoch_boundary": true,
+    "source_epoch5_preserved_despite_later_old_epoch6_completion": true,
+    "source_choice_semantics": "The new run remains bound to the already sealed qualified complete epoch5 EMA. Completing old epoch6 before graceful exit does not replace the explicitly bound initialization."
+  },
+  "checkpoint_policy": "Original per-epoch latest.pt is mutable; the source qualification separately froze epoch5 through a verified hardlink. Historical hashes for1–4 do not prove those tensors remain retained.",
+  "no_new_network_tests_review_model_readback_or_evaluation": true,
+  "raw_QA_tokens_data_models_or_credentials_included": false,
+  "old_warmup_completed_epochs_at_terminal": 6
+}
