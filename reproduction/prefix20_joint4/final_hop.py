@@ -16,7 +16,7 @@ from reproduction.prefix20_joint4.deploy_source import IDENTITY
 SOURCE='/backup/shaoshitong/qprobe-prefix20-hpc3-4gpu-20261016'
 SOURCE_FILES={
     'head.safetensors':'assets/probe/head.safetensors',
-    'probe-config.json':'assets/probe/config.json',
+    'probe-config.json':'assets/probe/probe-config.json',
     'eligible-question-pool.json':'canonical-data/selected/canonical/eligible-question-pool.json',
 }
 
@@ -38,14 +38,14 @@ def remote(command):
  return json.loads(a.stdout)
 with (root/'final-hop.lock').open('a') as lock:
  fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
- stage=root/('final-hop-selected-'+p['commit']);stage.mkdir(exist_ok=False)
  files=[]
  for name,rel in p['source_files'].items():
   path=root/rel;size,expected=p['assets'][name]
   assert path.is_file() and not any(x.is_symlink() for x in (path,*path.parents))
   assert path.stat().st_size==size and digest(path)==expected
-  os.link(path,stage/name)
   files.append(dict(name=name,bytes=size,sha256=expected))
+ stage=root/('final-hop-selected-'+p['commit']);stage.mkdir(exist_ok=False)
+ for name,rel in p['source_files'].items():os.link(root/rel,stage/name)
  save(stage/'claim.json',dict(source_commit=p['commit'],files=files,pid=os.getpid(),started_unix=time.time()))
  env=os.environ.copy();env['SSHPASS']=password;password=None
  admitted=remote(p['preflight_command']);save(stage/'target-admitted.json',admitted)
