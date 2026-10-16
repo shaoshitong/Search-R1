@@ -7,6 +7,7 @@ This operation deliberately ends the old sigma3 checkpoint recovery chain.
 import argparse
 import fcntl
 import json
+import math
 import os
 from pathlib import Path
 import stat
@@ -51,13 +52,23 @@ def final_proof():
     if (d['run_id'] != RUN or d['step'] != 200 or d['split'] != 'final' or
             d['final'] is not True or d['counts'] != counts or
             any(len(d[k]) != 51713 for k in ('question_ids', 'data_sources', 'em', 'f1')) or
-            len(set(d['question_ids'])) != 51713 or
             sum(d['em']) != d['correct'] or abs(d['weighted_em'] - sum(d['em'])/51713) > 1e-12):
         raise ValueError('RETIRE_NATIVE51713_FINAL_IDENTITY_INVALID')
     from collections import Counter
     if Counter(d['data_sources']) != counts or any(x not in (0, 1) for x in d['em']):
         raise ValueError('RETIRE_FINAL_POPULATION_OR_EM_INVALID')
     manifest = json.loads((OLD / 'logs/run-manifest.json').read_text())
+    from reproduction.common8.validation_identity import expected
+    record, frame, ids=expected(OLD,'final')
+    if (d['validation_sha256']!=record['sha256'] or d['question_ids']!=ids or
+            d['data_sources']!=frame['data_source'].tolist() or
+            any(not math.isfinite(x) or not 0<=x<=1 for x in d['f1']) or
+            any(em>f1 for em,f1 in zip(d['em'],d['f1'])) or
+            abs(d['weighted_f1']-math.fsum(d['f1'])/51713)>1e-12):
+        raise ValueError('RETIRE_CANONICAL_ORDERED_FINAL_POPULATION_OR_F1_DIFFERS')
+    for name,value in manifest['input_sha256'].items():
+        if Path(name).name=='final.parquet' and value!=record['sha256']:
+            raise ValueError('RETIRE_ORIGINAL_MANIFEST_FINAL_SHA_DIFFERS')
     pair = OLD / 'artifacts/question-probe/completed-pairs/global_step_200/source-receipt.json'
     p = json.loads(pair.read_text())
     if manifest['run_id'] != RUN or p['run_id'] != RUN or p['step'] != 200:
@@ -107,11 +118,44 @@ def guard(base, proof_path):
     if not proof_path.is_relative_to(base/'preparation'):
         raise ValueError('RETIRE_QUIESCENCE_PROOF_OUTSIDE_OWN_PREPARATION')
     d = json.loads(proof_path.read_text())
+    termination=d.get('original_compute_termination',{})
+    slurm_closed=(termination.get('method')=='authenticated_slurm_original_node_job_absent' and
+        termination.get('job_id')=='721485' and termination.get('node')=='ACD1-21' and
+        termination.get('listpids_stdout')=='PID      JOBID    STEPID   LOCALID GLOBALID\n' and
+        termination.get('listpids_stderr')=='JobId=721485 does not exist on node ACD1-21.\n' and
+        termination.get('terminal_job_state')=='FAILED' and termination.get('extern_state')=='COMPLETED')
     if (d['scope'] != 'obsolete_sigma3_checkpoint_retirement' or
             time.time()-d['checked_unix'] > 900 or d['checked_unix'] > time.time()+30 or
             not d['jxulogin_no_checkpoint_reader'] or not d['moulogin_no_checkpoint_reader'] or
-            not d['hkust3_no_qprobe_process'] or not d['actual_compute_ledger_births_absent']):
+            not d['hkust3_no_qprobe_process'] or
+            not (d.get('actual_compute_ledger_births_absent',False) or slurm_closed)):
         raise ValueError('RETIRE_FRESH_CROSS_OWNER_QUIESCENCE_REQUIRED')
+    raw={}
+    if set(d.get('raw_receipts',{}))!={'jxu','mou','hkust3','slurm','terminal'}:
+        raise ValueError('RETIRE_ALL_RAW_QUIESCENCE_RECEIPTS_REQUIRED')
+    for key,entry in d['raw_receipts'].items():
+        path=Path(entry['path'])
+        if not path.is_relative_to(base/'preparation') or path.is_symlink() or sha(path)!=entry['sha256']:
+            raise ValueError('RETIRE_QUIESCENCE_RAW_RECEIPT_CHANGED')
+        raw[key]=json.loads(path.read_text())
+        if time.time()-raw[key]['checked_unix']>900:
+            raise ValueError('RETIRE_RAW_OBSERVATION_STALE')
+    observer_source=base/'source'/d['observation_source_commit']/'reproduction/prefix20_joint4/retire_old_checkpoints.py'
+    for key,uid in (('jxu',14090),('mou',21930)):
+        item=raw[key]
+        if (item['hostname']!='ACD-Login-1' or item['observer_uid']!=uid or
+                item['boot_id']!='a27512a3-24a0-4ca3-aa92-98d2a5256d9a' or
+                item['source_sha256']!=sha(observer_source) or item['checkpoint_readers']):
+            raise ValueError('RETIRE_LOGIN_OWNER_HOST_OR_SOURCE_DIFFERS')
+    if raw['hkust3']['hostname']!='xielab3' or raw['hkust3']['qprobe_processes']:
+        raise ValueError('RETIRE_HKUST3_CONTROLLER_STILL_ACTIVE')
+    if slurm_closed:
+        if (raw['slurm']['returncode']!=1 or raw['slurm']['stdout']!=termination['listpids_stdout'] or
+                raw['slurm']['stderr']!=termination['listpids_stderr'] or
+                raw['terminal']['returncode']!=0 or
+                '721485|FAILED|ACD1-21' not in raw['terminal']['stdout'].splitlines() or
+                '721485.extern|COMPLETED|ACD1-21' not in raw['terminal']['stdout'].splitlines()):
+            raise ValueError('RETIRE_ORIGINAL_SLURM_NODE_NOT_TERMINATED')
     return dict(path=str(proof_path), sha256=sha(proof_path), **d)
 
 
