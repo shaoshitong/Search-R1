@@ -1,0 +1,3500 @@
+{
+  "returncode": 0,
+  "stderr": "",
+  "wall_seconds": 5.4071431159973145,
+  "local_epoch": 1792148708.509679,
+  "remote": {
+    "epoch": 1792148706.909371,
+    "trace_program_sha256": "2320407b13f405fa855ce976c422fc01c83481fa1f62f0228f0652873c7e75e4",
+    "trace_process_observations": [
+      {
+        "epoch": 1792148706.934762,
+        "matches": []
+      },
+      {
+        "epoch": 1792148707.2545793,
+        "matches": []
+      }
+    ],
+    "checkpoints": [
+      {
+        "outer": 5,
+        "native_manifest": {
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/manifest.json",
+          "exists": true,
+          "bytes": 16415,
+          "mtime_ns": 1791913792704657100,
+          "sha256": "b112caffda6514c34a07f2f6b6ecc62096c0717eb09ebae46aac71c6b9dfe09a",
+          "value": {
+            "driver": {
+              "exact_reload_verified": true,
+              "logical_state_sha256": "71f633df9834131a4ec5b8730cc6f6725adf102a36be0fdb7f809d14c89b6404",
+              "next_step": 6,
+              "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/driver.pt",
+              "sha256": "8b2a1fb3614cd309034a1775ad834de8bf95f9e48b3b45365e0c1437ee87f908"
+            },
+            "hf_checkpoint": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5",
+            "hf_identity": {
+              "files": {
+                "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+                "config.json": "879f8585cd1807a067222aa146212f59537cc498f8f9e9d3adc8c791739a7fd0",
+                "generation_config.json": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96",
+                "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+                "model-00001-of-00003.safetensors": "c66acf674ca78832952c028933b2d5567a87058f0c7839fc1970e845048b414b",
+                "model-00002-of-00003.safetensors": "1bf9f352c294a2f8eaecb617916ee9509f99e2818b93d808294de4545eecfb6b",
+                "model-00003-of-00003.safetensors": "5c4fda6ba0352a07a2af7096799db903de3318e6b9de70e0c7211fbab67712ab",
+                "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+                "special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+                "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+                "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6",
+                "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+              },
+              "sha256": "f66e521f7bc20f66500d6453f061d5a04298f7f9fe3d60393ac8a533f03af5fd"
+            },
+            "identity": {
+              "actual_update_limit": 200,
+              "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+              "completed_step": 5,
+              "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+              "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+              "guard_continue_accounting": {
+                "completed_optimizer_calls_per_rank": {
+                  "0": 100,
+                  "1": 100,
+                  "2": 100,
+                  "3": 100,
+                  "4": 100,
+                  "5": 100,
+                  "6": 100,
+                  "7": 100
+                },
+                "completed_outer_updates": 5,
+                "guard_refused_attempts": 0,
+                "partial_evidence": [],
+                "partial_optimizer_calls_per_rank": {},
+                "protocol": "tree_guard_continue_fresh_rollout_v1",
+                "refused_attempts": 0,
+                "total_optimizer_calls_per_rank": {
+                  "0": 100,
+                  "1": 100,
+                  "2": 100,
+                  "3": 100,
+                  "4": 100,
+                  "5": 100,
+                  "6": 100,
+                  "7": 100
+                },
+                "training_attempts": 5
+              },
+              "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+              "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0"
+            },
+            "limits": "Same-world boundary snapshot and live continuation; no arbitrary executor/vLLM restart equivalence",
+            "status": "COMPLETE_SAME_WORLD_STATE_SAVED",
+            "worker_states": [
+              {
+                "actual_total_optimizer_calls": 100,
+                "bytes": 6171974630,
+                "checkpoint_and_reload_seconds": 64.01534098759294,
+                "exact_same_world_reload_verified": true,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "completed_step": 5,
+                  "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+                  "cuda_visible_devices": "0",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "completed_outer_updates": 5,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "training_attempts": 5
+                  },
+                  "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 0,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "2f4397a8cf1b841356b20dc4f28af10aae9b147ab12c9ceea2dd35f09be0c4aa",
+                "observed_adam_steps": [
+                  100
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-08
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-00.pt",
+                "scheduler_last_epoch": 5,
+                "sha256": "f8950106e06b66aebdc9a07d08770a8ba9b9dc39550958736d41080cff8162e2"
+              },
+              {
+                "actual_total_optimizer_calls": 100,
+                "bytes": 6171974630,
+                "checkpoint_and_reload_seconds": 70.40691831335425,
+                "exact_same_world_reload_verified": true,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "completed_step": 5,
+                  "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+                  "cuda_visible_devices": "1",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "completed_outer_updates": 5,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "training_attempts": 5
+                  },
+                  "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 1,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "d9ec98c9e9b95145fae966ac83af96a14a33c0337644b83a107e567374af1330",
+                "observed_adam_steps": [
+                  100
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-08
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-01.pt",
+                "scheduler_last_epoch": 5,
+                "sha256": "b6fb9470e2b34b0fb4d06c4693887e731c04568ed25c0b850e56f47314a9f405"
+              },
+              {
+                "actual_total_optimizer_calls": 100,
+                "bytes": 6171974630,
+                "checkpoint_and_reload_seconds": 66.43193842098117,
+                "exact_same_world_reload_verified": true,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "completed_step": 5,
+                  "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+                  "cuda_visible_devices": "2",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "completed_outer_updates": 5,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "training_attempts": 5
+                  },
+                  "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 2,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "e45a120a682c5225aead397e99bc892266beaa93a5050361a9c5aae77dfc2d39",
+                "observed_adam_steps": [
+                  100
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-08
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-02.pt",
+                "scheduler_last_epoch": 5,
+                "sha256": "d69f9d5586cf2226289bc533d060b8ae2d29af2cfa0d75b1502f74f47768f266"
+              },
+              {
+                "actual_total_optimizer_calls": 100,
+                "bytes": 6171974630,
+                "checkpoint_and_reload_seconds": 72.47240807116032,
+                "exact_same_world_reload_verified": true,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "completed_step": 5,
+                  "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+                  "cuda_visible_devices": "3",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "completed_outer_updates": 5,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "training_attempts": 5
+                  },
+                  "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 3,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "7a61601e7eaf3770b23e466366f549775e8bb22b387dc4b281da43746eea09d6",
+                "observed_adam_steps": [
+                  100
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-08
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-03.pt",
+                "scheduler_last_epoch": 5,
+                "sha256": "2712f748b218b7956b602bff1ceaf5d36144d80913fd2a54800cff8d4a44b951"
+              },
+              {
+                "actual_total_optimizer_calls": 100,
+                "bytes": 6171974630,
+                "checkpoint_and_reload_seconds": 73.01860220730305,
+                "exact_same_world_reload_verified": true,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "completed_step": 5,
+                  "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+                  "cuda_visible_devices": "4",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "completed_outer_updates": 5,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "training_attempts": 5
+                  },
+                  "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 4,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "35aab6c576678d32e91127ab8f1eb520efb05d3fc43e911593c6a401ebeda4fc",
+                "observed_adam_steps": [
+                  100
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-08
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-04.pt",
+                "scheduler_last_epoch": 5,
+                "sha256": "bac8973f6fc86854b08b90498b4ca5555f0890764d64a782cd5e435ea60062bb"
+              },
+              {
+                "actual_total_optimizer_calls": 100,
+                "bytes": 6171974630,
+                "checkpoint_and_reload_seconds": 66.72275603935122,
+                "exact_same_world_reload_verified": true,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "completed_step": 5,
+                  "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+                  "cuda_visible_devices": "5",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "completed_outer_updates": 5,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "training_attempts": 5
+                  },
+                  "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 5,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "d20b31da62c53a9598037f3531f6433cf5f4acb130f08090e896ac2494362e6d",
+                "observed_adam_steps": [
+                  100
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-08
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-05.pt",
+                "scheduler_last_epoch": 5,
+                "sha256": "c7473fc73a4614237fd4c5e09234c14b37446366c4712af211dd823b156cb438"
+              },
+              {
+                "actual_total_optimizer_calls": 100,
+                "bytes": 6171974630,
+                "checkpoint_and_reload_seconds": 71.0081334374845,
+                "exact_same_world_reload_verified": true,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "completed_step": 5,
+                  "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+                  "cuda_visible_devices": "6",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "completed_outer_updates": 5,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "training_attempts": 5
+                  },
+                  "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 6,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "0a1c33491b53558e4bc99b66ae11bac74be518412cd7bf873970ae63056a5c6e",
+                "observed_adam_steps": [
+                  100
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-08
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-06.pt",
+                "scheduler_last_epoch": 5,
+                "sha256": "eb615b2b348ab451ffb7bc2a3dbca36cb4af93fb8861ce758595a7d2a8a00c0e"
+              },
+              {
+                "actual_total_optimizer_calls": 100,
+                "bytes": 6171974630,
+                "checkpoint_and_reload_seconds": 70.16401555016637,
+                "exact_same_world_reload_verified": true,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "completed_step": 5,
+                  "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+                  "cuda_visible_devices": "7",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "completed_outer_updates": 5,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 100,
+                      "1": 100,
+                      "2": 100,
+                      "3": 100,
+                      "4": 100,
+                      "5": 100,
+                      "6": 100,
+                      "7": 100
+                    },
+                    "training_attempts": 5
+                  },
+                  "job_id": "not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 7,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "c1a3490c7f29f510f8faa5e714ce6e36dfbabd481253f3bb10b2c1f763c10443",
+                "observed_adam_steps": [
+                  100
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-08
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-07.pt",
+                "scheduler_last_epoch": 5,
+                "sha256": "9683ee8a12319d71c5479b2ef9659d508ef48444b048e349151a4dfe4e75510c"
+              }
+            ]
+          }
+        },
+        "native_files": [
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/driver.pt",
+            "exists": true,
+            "bytes": 743576,
+            "mtime_ns": 1791913776713189126
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/manifest.json",
+            "exists": true,
+            "bytes": 16415,
+            "mtime_ns": 1791913792704657100
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-00.pt",
+            "exists": true,
+            "bytes": 6171974630,
+            "mtime_ns": 1791913730206747090
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-01.pt",
+            "exists": true,
+            "bytes": 6171974630,
+            "mtime_ns": 1791913731078717879
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-02.pt",
+            "exists": true,
+            "bytes": 6171974630,
+            "mtime_ns": 1791913731258711849
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-03.pt",
+            "exists": true,
+            "bytes": 6171974630,
+            "mtime_ns": 1791913730834726053
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-04.pt",
+            "exists": true,
+            "bytes": 6171974630,
+            "mtime_ns": 1791913731570701398
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-05.pt",
+            "exists": true,
+            "bytes": 6171974630,
+            "mtime_ns": 1791913731162715065
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-06.pt",
+            "exists": true,
+            "bytes": 6171974630,
+            "mtime_ns": 1791913730686731010
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/training_state/global_step_5/rank-07.pt",
+            "exists": true,
+            "bytes": 6171974630,
+            "mtime_ns": 1791913731590700727
+          }
+        ],
+        "HF_files": [
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/added_tokens.json",
+            "exists": true,
+            "bytes": 605,
+            "mtime_ns": 1791913702463674788
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/config.json",
+            "exists": true,
+            "bytes": 796,
+            "mtime_ns": 1791913695819894119
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/generation_config.json",
+            "exists": true,
+            "bytes": 243,
+            "mtime_ns": 1791913695823893987
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/merges.txt",
+            "exists": true,
+            "bytes": 1671853,
+            "mtime_ns": 1791913702531672543
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/model-00001-of-00003.safetensors",
+            "exists": true,
+            "bytes": 4982131536,
+            "mtime_ns": 1791913698423808156
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/model-00002-of-00003.safetensors",
+            "exists": true,
+            "bytes": 4932949336,
+            "mtime_ns": 1791913700663734209
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/model-00003-of-00003.safetensors",
+            "exists": true,
+            "bytes": 3673383040,
+            "mtime_ns": 1791913702463674788
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/model.safetensors.index.json",
+            "exists": true,
+            "bytes": 35640,
+            "mtime_ns": 1791913702463674788
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/special_tokens_map.json",
+            "exists": true,
+            "bytes": 613,
+            "mtime_ns": 1791913702463674788
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/tokenizer.json",
+            "exists": true,
+            "bytes": 11421896,
+            "mtime_ns": 1791913702603670166
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/tokenizer_config.json",
+            "exists": true,
+            "bytes": 7306,
+            "mtime_ns": 1791913702463674788
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4/checkpoints/actor/global_step_5/vocab.json",
+            "exists": true,
+            "bytes": 2776833,
+            "mtime_ns": 1791913702491673863
+          }
+        ]
+      },
+      {
+        "outer": 50,
+        "native_manifest": {
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/manifest.json",
+          "exists": true,
+          "bytes": 16633,
+          "mtime_ns": 1791961041250983555,
+          "sha256": "516642ffc3f9a84129bf0d6d98f2ce7b046cd3002a75abb5b3aad50c814b665f",
+          "value": {
+            "driver": {
+              "exact_reload_verified": false,
+              "logical_state_sha256": "89f5ed4e115514f63241c69053b62107a39e4c2cd2960ee83e340f27e905810d",
+              "next_step": 51,
+              "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/driver.pt",
+              "sha256": "a078ea4f722fc2478ef8951f6f6c0f62774fac615dfd867adf8b7678f33e9c36"
+            },
+            "hf_checkpoint": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50",
+            "hf_identity": {
+              "files": {
+                "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+                "config.json": "879f8585cd1807a067222aa146212f59537cc498f8f9e9d3adc8c791739a7fd0",
+                "generation_config.json": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96",
+                "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+                "model-00001-of-00003.safetensors": "c7659366a1d43b38ff580bdedf6721bb57fbe481096cb98dfecc979fe353c293",
+                "model-00002-of-00003.safetensors": "9829c301f07016b648b66abdb9725bf71ce6e5c01b9f46d7be95d5159e186d18",
+                "model-00003-of-00003.safetensors": "e1d8c0c5746d4fdd772dabbfc36e276b2f2647624f0abf3714d994add765dee3",
+                "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+                "special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+                "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+                "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6",
+                "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+              },
+              "sha256": "950d23a1c02953333c39ce5715c3f7faa7eb3ecac92c404b23bbf0696c6e695f"
+            },
+            "identity": {
+              "actual_update_limit": 200,
+              "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+              "completed_step": 50,
+              "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+              "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+              "guard_continue_accounting": {
+                "completed_optimizer_calls_per_rank": {
+                  "0": 1000,
+                  "1": 1000,
+                  "2": 1000,
+                  "3": 1000,
+                  "4": 1000,
+                  "5": 1000,
+                  "6": 1000,
+                  "7": 1000
+                },
+                "completed_outer_updates": 50,
+                "guard_refused_attempts": 0,
+                "partial_evidence": [],
+                "partial_optimizer_calls_per_rank": {},
+                "protocol": "tree_guard_continue_fresh_rollout_v1",
+                "refused_attempts": 0,
+                "total_optimizer_calls_per_rank": {
+                  "0": 1000,
+                  "1": 1000,
+                  "2": 1000,
+                  "3": 1000,
+                  "4": 1000,
+                  "5": 1000,
+                  "6": 1000,
+                  "7": 1000
+                },
+                "training_attempts": 50
+              },
+              "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+              "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0"
+            },
+            "limits": "Same-world boundary snapshot and live continuation; no arbitrary executor/vLLM restart equivalence",
+            "status": "COMPLETE_SAME_WORLD_STATE_SAVED",
+            "worker_states": [
+              {
+                "actual_total_optimizer_calls": 1000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 37.32894318178296,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 50,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "0",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "completed_outer_updates": 50,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "training_attempts": 50
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 0,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "ab2987fd6bdd58e5d7aced888debe3792476e9242d409a2c795ad845180d10e0",
+                "observed_adam_steps": [
+                  1000
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-07
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-00.pt",
+                "scheduler_last_epoch": 50,
+                "sha256": "31bbaaf4bc6e8db046e639c16d1a355cf2522e068d6cbfe846b3926e915f0eb0"
+              },
+              {
+                "actual_total_optimizer_calls": 1000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 34.64472163841128,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 50,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "1",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "completed_outer_updates": 50,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "training_attempts": 50
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 1,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "c5afe7694ab2eaee687f9c84141234c89e78457f816bc5822059e32407c7f6e2",
+                "observed_adam_steps": [
+                  1000
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-07
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-01.pt",
+                "scheduler_last_epoch": 50,
+                "sha256": "ac5d2990684f8315aa9d322bc3149f13f9467ed0b37ee71d5ff5b7fec319d04b"
+              },
+              {
+                "actual_total_optimizer_calls": 1000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 37.756548792123795,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 50,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "2",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "completed_outer_updates": 50,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "training_attempts": 50
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 2,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "c8377bf45c9d374cdecd0bb90bb91154c99d7e0ed30842ce6f9531dc82cf698d",
+                "observed_adam_steps": [
+                  1000
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-07
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-02.pt",
+                "scheduler_last_epoch": 50,
+                "sha256": "ce26364ac6359c72191d5e00e5f65934d3f2a48dfe28f55249936a9cf6bfa6e5"
+              },
+              {
+                "actual_total_optimizer_calls": 1000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.90342794731259,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 50,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "3",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "completed_outer_updates": 50,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "training_attempts": 50
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 3,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "1a6292f0c5b52c08b319a139c55201fe7393c11af039fff1f1f55464391f738f",
+                "observed_adam_steps": [
+                  1000
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-07
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-03.pt",
+                "scheduler_last_epoch": 50,
+                "sha256": "26f1537f5785a25a47cf56346261f7c3c48164fe5aa899d9e9f7f0627e21a5e6"
+              },
+              {
+                "actual_total_optimizer_calls": 1000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 40.00369195267558,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 50,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "4",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "completed_outer_updates": 50,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "training_attempts": 50
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 4,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "b05c105423726b4339d93708ce8e4a348a83873fb6d62993170e0f3634219f0c",
+                "observed_adam_steps": [
+                  1000
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-07
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-04.pt",
+                "scheduler_last_epoch": 50,
+                "sha256": "d8fecce10ac95393090b680541fdc8b787763af17f7776d6d31b7f1cc6c1dc6f"
+              },
+              {
+                "actual_total_optimizer_calls": 1000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 35.355488903820515,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 50,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "5",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "completed_outer_updates": 50,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "training_attempts": 50
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 5,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "c6c51751dd3490efeff487722278bd344bc006a8f6e759eff9597a37e3c97364",
+                "observed_adam_steps": [
+                  1000
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-07
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-05.pt",
+                "scheduler_last_epoch": 50,
+                "sha256": "be53e74b87686a1178671d3fe5ff73aab62d8b7a4289977e731e63112d3fd51e"
+              },
+              {
+                "actual_total_optimizer_calls": 1000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 39.45096795633435,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 50,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "6",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "completed_outer_updates": 50,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "training_attempts": 50
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 6,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "bc8a6312597c73fed3b26a972f0fdea823b999ea87307045e55b881c9aaca1d3",
+                "observed_adam_steps": [
+                  1000
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-07
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-06.pt",
+                "scheduler_last_epoch": 50,
+                "sha256": "9e642179ab9fcf7631bf497b17b60dd942d02b3d9b7b1ad0ca76fd7fa6474903"
+              },
+              {
+                "actual_total_optimizer_calls": 1000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 39.28721350803971,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 50,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "7",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "completed_outer_updates": 50,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 1000,
+                      "1": 1000,
+                      "2": 1000,
+                      "3": 1000,
+                      "4": 1000,
+                      "5": 1000,
+                      "6": 1000,
+                      "7": 1000
+                    },
+                    "training_attempts": 50
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 7,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "16eeaa9d955b8fc81bc9508b63ddfa58ab6e57bfed49960ffbda68681aea3efe",
+                "observed_adam_steps": [
+                  1000
+                ],
+                "optimizer_lrs": [
+                  8.771929824561403e-07
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-07.pt",
+                "scheduler_last_epoch": 50,
+                "sha256": "56e843a8f1dcf9d01f7f5bca05860444839861e8f71f0c1cc05b822ebe817b0b"
+              }
+            ]
+          }
+        },
+        "native_files": [
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/driver.pt",
+            "exists": true,
+            "bytes": 752664,
+            "mtime_ns": 1791961029067411658
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/manifest.json",
+            "exists": true,
+            "bytes": 16633,
+            "mtime_ns": 1791961041250983555
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-00.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1791961016287861790
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-01.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1791961015431891940
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-02.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1791961017327825160
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-03.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1791961017035835444
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-04.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1791961018975767115
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-05.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1791961015723881655
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-06.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1791961016967837840
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_50/rank-07.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1791961017627814593
+          }
+        ],
+        "HF_files": [
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/added_tokens.json",
+            "exists": true,
+            "bytes": 605,
+            "mtime_ns": 1791960987524874904
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/config.json",
+            "exists": true,
+            "bytes": 796,
+            "mtime_ns": 1791960981041103281
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/generation_config.json",
+            "exists": true,
+            "bytes": 243,
+            "mtime_ns": 1791960981041103281
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/merges.txt",
+            "exists": true,
+            "bytes": 1671853,
+            "mtime_ns": 1791960987588872650
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/model-00001-of-00003.safetensors",
+            "exists": true,
+            "bytes": 4982131536,
+            "mtime_ns": 1791960983385020721
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/model-00002-of-00003.safetensors",
+            "exists": true,
+            "bytes": 4932949336,
+            "mtime_ns": 1791960985696939289
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/model-00003-of-00003.safetensors",
+            "exists": true,
+            "bytes": 3673383040,
+            "mtime_ns": 1791960987524874904
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/model.safetensors.index.json",
+            "exists": true,
+            "bytes": 35640,
+            "mtime_ns": 1791960987524874904
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/special_tokens_map.json",
+            "exists": true,
+            "bytes": 613,
+            "mtime_ns": 1791960987524874904
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/tokenizer.json",
+            "exists": true,
+            "bytes": 11421896,
+            "mtime_ns": 1791960987664869973
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/tokenizer_config.json",
+            "exists": true,
+            "bytes": 7306,
+            "mtime_ns": 1791960987524874904
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_50/vocab.json",
+            "exists": true,
+            "bytes": 2776833,
+            "mtime_ns": 1791960987552873918
+          }
+        ]
+      },
+      {
+        "outer": 100,
+        "native_manifest": {
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/manifest.json",
+          "exists": true,
+          "bytes": 16550,
+          "mtime_ns": 1792011643587052843,
+          "sha256": "1c5ac1160b6d344d695563dd9cde057d6c967c59dcf8fa5354042d9b5c9a0937",
+          "value": {
+            "driver": {
+              "exact_reload_verified": false,
+              "logical_state_sha256": "1e99ad2377082d087945a9e7d867b4f32f1c5c8b46e38418ddb7943a0edf2b76",
+              "next_step": 101,
+              "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/driver.pt",
+              "sha256": "665e101887cc10d93d6902056724bd9c436c158e4e79d648285776b8ded42783"
+            },
+            "hf_checkpoint": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100",
+            "hf_identity": {
+              "files": {
+                "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+                "config.json": "879f8585cd1807a067222aa146212f59537cc498f8f9e9d3adc8c791739a7fd0",
+                "generation_config.json": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96",
+                "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+                "model-00001-of-00003.safetensors": "2c245448742e12eaeea52104e80b7447bb619ea2b4e112cefdc076bf13f62334",
+                "model-00002-of-00003.safetensors": "8421af1f970ba79f76ee8048dda567807fc08926de94aad15dd41c098f891b32",
+                "model-00003-of-00003.safetensors": "4fd1fa6f21d53323dbc49cd856e1447d86ed0c709af82092a1b958769c77816f",
+                "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+                "special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+                "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+                "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6",
+                "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+              },
+              "sha256": "069aae37b95e02a1605a433ffc57aa3d5976510a319a090ee693cfb64046a98f"
+            },
+            "identity": {
+              "actual_update_limit": 200,
+              "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+              "completed_step": 100,
+              "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+              "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+              "guard_continue_accounting": {
+                "completed_optimizer_calls_per_rank": {
+                  "0": 2000,
+                  "1": 2000,
+                  "2": 2000,
+                  "3": 2000,
+                  "4": 2000,
+                  "5": 2000,
+                  "6": 2000,
+                  "7": 2000
+                },
+                "completed_outer_updates": 100,
+                "guard_refused_attempts": 0,
+                "partial_evidence": [],
+                "partial_optimizer_calls_per_rank": {},
+                "protocol": "tree_guard_continue_fresh_rollout_v1",
+                "refused_attempts": 0,
+                "total_optimizer_calls_per_rank": {
+                  "0": 2000,
+                  "1": 2000,
+                  "2": 2000,
+                  "3": 2000,
+                  "4": 2000,
+                  "5": 2000,
+                  "6": 2000,
+                  "7": 2000
+                },
+                "training_attempts": 100
+              },
+              "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+              "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0"
+            },
+            "limits": "Same-world boundary snapshot and live continuation; no arbitrary executor/vLLM restart equivalence",
+            "status": "COMPLETE_SAME_WORLD_STATE_SAVED",
+            "worker_states": [
+              {
+                "actual_total_optimizer_calls": 2000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 33.81513558700681,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 100,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "0",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "completed_outer_updates": 100,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "training_attempts": 100
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 0,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "6c16eb9c450df3facb71ec8aafe9e1b6e0254e212a8c2d359b7bfeb32229265c",
+                "observed_adam_steps": [
+                  2000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-00.pt",
+                "scheduler_last_epoch": 100,
+                "sha256": "ad9f691c01a2769ac938f8abf3573b890ed8823814d2c4f255e081a96400e613"
+              },
+              {
+                "actual_total_optimizer_calls": 2000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 37.59432838857174,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 100,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "1",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "completed_outer_updates": 100,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "training_attempts": 100
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 1,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "d0f18d57617bef683d60f97a17d2a7ed024f3a9c869b12262578c5209f810244",
+                "observed_adam_steps": [
+                  2000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-01.pt",
+                "scheduler_last_epoch": 100,
+                "sha256": "0f906bea1a7779f5174d13f946fcd851690610259f461917cc36d271fa496c68"
+              },
+              {
+                "actual_total_optimizer_calls": 2000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 35.90245818346739,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 100,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "2",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "completed_outer_updates": 100,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "training_attempts": 100
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 2,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "3c26ebad9275cdc207021792857f7e0509eaa6608bc45f778100c2bcb3c10b03",
+                "observed_adam_steps": [
+                  2000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-02.pt",
+                "scheduler_last_epoch": 100,
+                "sha256": "1bd40406fbfb8edfd51417b13ebf98b604671c08b66c84c109aefeac6a1d5d03"
+              },
+              {
+                "actual_total_optimizer_calls": 2000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 37.50544296205044,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 100,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "3",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "completed_outer_updates": 100,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "training_attempts": 100
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 3,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "fe5b8b8236672836f5a6fbc4a39af5bae4d0491ddcc953ba524e0c1234a587bd",
+                "observed_adam_steps": [
+                  2000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-03.pt",
+                "scheduler_last_epoch": 100,
+                "sha256": "d894fefc9d44c2439ff5a6f1a23aee26ca40f2fd31683702deab7a974dd68056"
+              },
+              {
+                "actual_total_optimizer_calls": 2000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.42333593592048,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 100,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "4",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "completed_outer_updates": 100,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "training_attempts": 100
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 4,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "77523a9c39352a253d03f236e1f254d429e39895090d8b42effc6fffbffa3ac2",
+                "observed_adam_steps": [
+                  2000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-04.pt",
+                "scheduler_last_epoch": 100,
+                "sha256": "b2a1838897cd8b39476c78464c7f74bae949281cd30e7baff553628f1392b5e1"
+              },
+              {
+                "actual_total_optimizer_calls": 2000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.04851434379816,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 100,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "5",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "completed_outer_updates": 100,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "training_attempts": 100
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 5,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "2b3e95ab2444103c7907d6a4cd5f7706e28737f855ffb33e2813ed6879ca64cc",
+                "observed_adam_steps": [
+                  2000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-05.pt",
+                "scheduler_last_epoch": 100,
+                "sha256": "f04cd23ac52927c47fc34274f63f881bce84d6eca9a51149fa225500f2bc61cf"
+              },
+              {
+                "actual_total_optimizer_calls": 2000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.349474251270294,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 100,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "6",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "completed_outer_updates": 100,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "training_attempts": 100
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 6,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "febd7b0165105ab007d381652651138a46455072969360cb78cea3cb413320e6",
+                "observed_adam_steps": [
+                  2000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-06.pt",
+                "scheduler_last_epoch": 100,
+                "sha256": "a2bfedfbcf61e31a9cccbabd7c833425de172b69d81f4ccf97cb068ebb337b58"
+              },
+              {
+                "actual_total_optimizer_calls": 2000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.19667709991336,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 100,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "7",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "completed_outer_updates": 100,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 2000,
+                      "1": 2000,
+                      "2": 2000,
+                      "3": 2000,
+                      "4": 2000,
+                      "5": 2000,
+                      "6": 2000,
+                      "7": 2000
+                    },
+                    "training_attempts": 100
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 7,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "d2121f015f615b3701bdafe4eed6f6e3d1efb37241ffe8ef2100f07624ca7659",
+                "observed_adam_steps": [
+                  2000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-07.pt",
+                "scheduler_last_epoch": 100,
+                "sha256": "c1fec9071e403fbf5c3d4e8b925d92dc4f389496d815c0dbf216ca039a3dbaeb"
+              }
+            ]
+          }
+        },
+        "native_files": [
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/driver.pt",
+            "exists": true,
+            "bytes": 752664,
+            "mtime_ns": 1792011629223557623
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/manifest.json",
+            "exists": true,
+            "bytes": 16550,
+            "mtime_ns": 1792011643587052843
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-00.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792011617267977782
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-01.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792011618503934347
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-02.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792011617867956697
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-03.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792011618219944327
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-04.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792011618627929988
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-05.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792011618711927037
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-06.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792011618811923523
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_100/rank-07.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792011618823923101
+          }
+        ],
+        "HF_files": [
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/added_tokens.json",
+            "exists": true,
+            "bytes": 605,
+            "mtime_ns": 1792011589304959470
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/config.json",
+            "exists": true,
+            "bytes": 796,
+            "mtime_ns": 1792011582985180799
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/generation_config.json",
+            "exists": true,
+            "bytes": 243,
+            "mtime_ns": 1792011582985180799
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/merges.txt",
+            "exists": true,
+            "bytes": 1671853,
+            "mtime_ns": 1792011589368957229
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/model-00001-of-00003.safetensors",
+            "exists": true,
+            "bytes": 4982131536,
+            "mtime_ns": 1792011585333098571
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/model-00002-of-00003.safetensors",
+            "exists": true,
+            "bytes": 4932949336,
+            "mtime_ns": 1792011587589019565
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/model-00003-of-00003.safetensors",
+            "exists": true,
+            "bytes": 3673383040,
+            "mtime_ns": 1792011589304959470
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/model.safetensors.index.json",
+            "exists": true,
+            "bytes": 35640,
+            "mtime_ns": 1792011589304959470
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/special_tokens_map.json",
+            "exists": true,
+            "bytes": 613,
+            "mtime_ns": 1792011589304959470
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/tokenizer.json",
+            "exists": true,
+            "bytes": 11421896,
+            "mtime_ns": 1792011589444954567
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/tokenizer_config.json",
+            "exists": true,
+            "bytes": 7306,
+            "mtime_ns": 1792011589304959470
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_100/vocab.json",
+            "exists": true,
+            "bytes": 2776833,
+            "mtime_ns": 1792011589332958489
+          }
+        ]
+      },
+      {
+        "outer": 150,
+        "native_manifest": {
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/manifest.json",
+          "exists": true,
+          "bytes": 16554,
+          "mtime_ns": 1792076710709599588,
+          "sha256": "b62da8a8e0993940c334046fad2703a144071f0c85f022eaad165bb00c98c51f",
+          "value": {
+            "driver": {
+              "exact_reload_verified": false,
+              "logical_state_sha256": "abf59bd6d1f6f566b80ae2db9cfe3b944e183b53ab01e160d1e2a9ee990c5bb4",
+              "next_step": 151,
+              "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/driver.pt",
+              "sha256": "2594cc9c07e1864b77b6f58679fc41542e64f5c627a3be5e1f4887be758ce682"
+            },
+            "hf_checkpoint": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150",
+            "hf_identity": {
+              "files": {
+                "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+                "config.json": "879f8585cd1807a067222aa146212f59537cc498f8f9e9d3adc8c791739a7fd0",
+                "generation_config.json": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96",
+                "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+                "model-00001-of-00003.safetensors": "203e3750048db14f001ea7ad4b067ba3c069208fd00b1ef39dfa08497d2dfda4",
+                "model-00002-of-00003.safetensors": "c4a63de177602c427b4cfd1c7fc77c9166f00b162baa58ec9f96de1761ac1d7b",
+                "model-00003-of-00003.safetensors": "2921b95ed5753d49a032002a673b56e7b80228f02e6a6edf799a56daa65f8faf",
+                "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+                "special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+                "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+                "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6",
+                "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+              },
+              "sha256": "a01ef857b955bcd57c09b21915029116e76d393080b67299f7e53dde75644210"
+            },
+            "identity": {
+              "actual_update_limit": 200,
+              "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+              "completed_step": 150,
+              "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+              "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+              "guard_continue_accounting": {
+                "completed_optimizer_calls_per_rank": {
+                  "0": 3000,
+                  "1": 3000,
+                  "2": 3000,
+                  "3": 3000,
+                  "4": 3000,
+                  "5": 3000,
+                  "6": 3000,
+                  "7": 3000
+                },
+                "completed_outer_updates": 150,
+                "guard_refused_attempts": 0,
+                "partial_evidence": [],
+                "partial_optimizer_calls_per_rank": {},
+                "protocol": "tree_guard_continue_fresh_rollout_v1",
+                "refused_attempts": 0,
+                "total_optimizer_calls_per_rank": {
+                  "0": 3000,
+                  "1": 3000,
+                  "2": 3000,
+                  "3": 3000,
+                  "4": 3000,
+                  "5": 3000,
+                  "6": 3000,
+                  "7": 3000
+                },
+                "training_attempts": 150
+              },
+              "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+              "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0"
+            },
+            "limits": "Same-world boundary snapshot and live continuation; no arbitrary executor/vLLM restart equivalence",
+            "status": "COMPLETE_SAME_WORLD_STATE_SAVED",
+            "worker_states": [
+              {
+                "actual_total_optimizer_calls": 3000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 34.597143556922674,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 150,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "0",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "completed_outer_updates": 150,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "training_attempts": 150
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 0,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "dd8084ca12d663d65b51b38d5eec2631658cad6f3f320d5c37f752e7f8d20df4",
+                "observed_adam_steps": [
+                  3000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-00.pt",
+                "scheduler_last_epoch": 150,
+                "sha256": "6f8491b6e4c87a0abf2b510512b7cd1b64c41c56e02f64aec99031c8e1c2c462"
+              },
+              {
+                "actual_total_optimizer_calls": 3000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 37.683323077857494,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 150,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "1",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "completed_outer_updates": 150,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "training_attempts": 150
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 1,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "cb1220addefd4ed0ebc2dd6ce1eebc0a22a6c4c6f0778c2a7abf4750b1bf109b",
+                "observed_adam_steps": [
+                  3000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-01.pt",
+                "scheduler_last_epoch": 150,
+                "sha256": "642969b76854cac9ca9d152cabe89c4e6f83a4e67f165982d3e8cc8792a5c42f"
+              },
+              {
+                "actual_total_optimizer_calls": 3000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 39.27555422484875,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 150,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "2",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "completed_outer_updates": 150,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "training_attempts": 150
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 2,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "96bb5a0027d3c5fd8067e1167555596deaacfcc26ad1389db8093abe41f3fba5",
+                "observed_adam_steps": [
+                  3000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-02.pt",
+                "scheduler_last_epoch": 150,
+                "sha256": "ec7aa96ff878379aa33f5f8bc9a5442d47f8c7edcee117349a5fbcdeafeb6182"
+              },
+              {
+                "actual_total_optimizer_calls": 3000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.88627680018544,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 150,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "3",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "completed_outer_updates": 150,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "training_attempts": 150
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 3,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "060257d0dc2fdc91dd0f6e464029c1ed982284fd47372e53d4ddd483ef6a3591",
+                "observed_adam_steps": [
+                  3000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-03.pt",
+                "scheduler_last_epoch": 150,
+                "sha256": "44eb12fe295aabf67dbf0b135c5afe472d98263bade4d40468fee00c89306f2b"
+              },
+              {
+                "actual_total_optimizer_calls": 3000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 39.40840598195791,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 150,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "4",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "completed_outer_updates": 150,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "training_attempts": 150
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 4,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "f9b043234121871c4316d15dcf229a49ae35b39f5d8578d1d16dbbbb016e7c50",
+                "observed_adam_steps": [
+                  3000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-04.pt",
+                "scheduler_last_epoch": 150,
+                "sha256": "328fada6955594eb6779aebaa0a7f57d29d42362f0753770063b24e2ac6f05d2"
+              },
+              {
+                "actual_total_optimizer_calls": 3000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 34.120338916778564,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 150,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "5",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "completed_outer_updates": 150,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "training_attempts": 150
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 5,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "aafd260da7a565d7085cd79e723d11f8f883b96ede8627ed5b7ececfaf468f74",
+                "observed_adam_steps": [
+                  3000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-05.pt",
+                "scheduler_last_epoch": 150,
+                "sha256": "c9057370e5a18a89df13691c34118e6139bb10c8b4fc78eb17fa5a23d1d0a45a"
+              },
+              {
+                "actual_total_optimizer_calls": 3000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 40.051397275179625,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 150,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "6",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "completed_outer_updates": 150,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "training_attempts": 150
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 6,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "519a7364f7771f053597753b14ead5f49ff7cff045b7c61fde854e65be80423f",
+                "observed_adam_steps": [
+                  3000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-06.pt",
+                "scheduler_last_epoch": 150,
+                "sha256": "00384a23f6b48e0d3684a11d39c6f1d425eab5ef32fa66ce74cfb9b18224cc12"
+              },
+              {
+                "actual_total_optimizer_calls": 3000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 40.117842476814985,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 150,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "7",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "completed_outer_updates": 150,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 3000,
+                      "1": 3000,
+                      "2": 3000,
+                      "3": 3000,
+                      "4": 3000,
+                      "5": 3000,
+                      "6": 3000,
+                      "7": 3000
+                    },
+                    "training_attempts": 150
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 7,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "7d56e2c777bf1598a3f01b4352cbeef9a1719de6e8a88bee6fe3555f79e38123",
+                "observed_adam_steps": [
+                  3000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-07.pt",
+                "scheduler_last_epoch": 150,
+                "sha256": "188a8587f1f9fd45168b85b2ea5e343e3809f17c08de4e8dcd95310547c2bbc5"
+              }
+            ]
+          }
+        },
+        "native_files": [
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/driver.pt",
+            "exists": true,
+            "bytes": 752728,
+            "mtime_ns": 1792076695426104299
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/manifest.json",
+            "exists": true,
+            "bytes": 16554,
+            "mtime_ns": 1792076710709599588
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-00.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792076680306603594
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-01.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792076682410534116
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-02.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792076682746523020
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-03.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792076683518497527
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-04.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792076683086511792
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-05.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792076681538562911
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-06.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792076683726490658
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_150/rank-07.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792076682930516944
+          }
+        ],
+        "HF_files": [
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/added_tokens.json",
+            "exists": true,
+            "bytes": 605,
+            "mtime_ns": 1792076653975474207
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/config.json",
+            "exists": true,
+            "bytes": 796,
+            "mtime_ns": 1792076647075702431
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/generation_config.json",
+            "exists": true,
+            "bytes": 243,
+            "mtime_ns": 1792076647075702431
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/merges.txt",
+            "exists": true,
+            "bytes": 1671853,
+            "mtime_ns": 1792076654047471825
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/model-00001-of-00003.safetensors",
+            "exists": true,
+            "bytes": 4982131536,
+            "mtime_ns": 1792076649435624371
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/model-00002-of-00003.safetensors",
+            "exists": true,
+            "bytes": 4932949336,
+            "mtime_ns": 1792076651879543534
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/model-00003-of-00003.safetensors",
+            "exists": true,
+            "bytes": 3673383040,
+            "mtime_ns": 1792076653975474207
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/model.safetensors.index.json",
+            "exists": true,
+            "bytes": 35640,
+            "mtime_ns": 1792076653975474207
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/special_tokens_map.json",
+            "exists": true,
+            "bytes": 613,
+            "mtime_ns": 1792076653975474207
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/tokenizer.json",
+            "exists": true,
+            "bytes": 11421896,
+            "mtime_ns": 1792076654127469179
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/tokenizer_config.json",
+            "exists": true,
+            "bytes": 7306,
+            "mtime_ns": 1792076653975474207
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_150/vocab.json",
+            "exists": true,
+            "bytes": 2776833,
+            "mtime_ns": 1792076654007473148
+          }
+        ]
+      },
+      {
+        "outer": 200,
+        "native_manifest": {
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/manifest.json",
+          "exists": true,
+          "bytes": 16551,
+          "mtime_ns": 1792145928221219552,
+          "sha256": "e54b808ad2b3c8c20e64bc0bdc6e91cadb5cd50968b194842a000be051963f5a",
+          "value": {
+            "driver": {
+              "exact_reload_verified": false,
+              "logical_state_sha256": "c160e9602869151876d5e524afd42027525069186046cd1e03f6d73bb0624c36",
+              "next_step": 201,
+              "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/driver.pt",
+              "sha256": "26aacb21cc9c8a5c41aaeaa06f0ba653fa18428e231f9af6661ad633a86049c2"
+            },
+            "hf_checkpoint": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200",
+            "hf_identity": {
+              "files": {
+                "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+                "config.json": "879f8585cd1807a067222aa146212f59537cc498f8f9e9d3adc8c791739a7fd0",
+                "generation_config.json": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96",
+                "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+                "model-00001-of-00003.safetensors": "da1a50f55a57b637bdb53db01c5b903351f0d1c51486d6a7f685a0a47c5c5503",
+                "model-00002-of-00003.safetensors": "9af268c573619fb69087a62d541f8739fe0d4957d2f766cef4378fefb69f9429",
+                "model-00003-of-00003.safetensors": "476721ca2d9d8fddd3465f3130df6744449b3de39b5d0ad0b5219eba4f0056c1",
+                "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+                "special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+                "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+                "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6",
+                "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+              },
+              "sha256": "c22e851981a4f88bce17d6d691ddec6a28eef0628f50eb3c3b2bd91208f7437d"
+            },
+            "identity": {
+              "actual_update_limit": 200,
+              "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+              "completed_step": 200,
+              "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+              "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+              "guard_continue_accounting": {
+                "completed_optimizer_calls_per_rank": {
+                  "0": 4000,
+                  "1": 4000,
+                  "2": 4000,
+                  "3": 4000,
+                  "4": 4000,
+                  "5": 4000,
+                  "6": 4000,
+                  "7": 4000
+                },
+                "completed_outer_updates": 200,
+                "guard_refused_attempts": 0,
+                "partial_evidence": [],
+                "partial_optimizer_calls_per_rank": {},
+                "protocol": "tree_guard_continue_fresh_rollout_v1",
+                "refused_attempts": 0,
+                "total_optimizer_calls_per_rank": {
+                  "0": 4000,
+                  "1": 4000,
+                  "2": 4000,
+                  "3": 4000,
+                  "4": 4000,
+                  "5": 4000,
+                  "6": 4000,
+                  "7": 4000
+                },
+                "training_attempts": 200
+              },
+              "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+              "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0"
+            },
+            "limits": "Same-world boundary snapshot and live continuation; no arbitrary executor/vLLM restart equivalence",
+            "status": "COMPLETE_SAME_WORLD_STATE_SAVED",
+            "worker_states": [
+              {
+                "actual_total_optimizer_calls": 4000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 39.049824465066195,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 200,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "0",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "completed_outer_updates": 200,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "training_attempts": 200
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 0,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "a037e64dbf609a5a902a9a86348f75e9e58b6e697ef2b304806a96b4a77a036b",
+                "observed_adam_steps": [
+                  4000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-00.pt",
+                "scheduler_last_epoch": 200,
+                "sha256": "3b139f596385e18853f06617069512576a78f19d694358e2858a0a8784a0f81b"
+              },
+              {
+                "actual_total_optimizer_calls": 4000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.764853205531836,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 200,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "1",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "completed_outer_updates": 200,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "training_attempts": 200
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 1,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "32e222b2fe6e82746ecd7882da57df91e0367b167a36c6435019fa4d11407d62",
+                "observed_adam_steps": [
+                  4000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-01.pt",
+                "scheduler_last_epoch": 200,
+                "sha256": "8a8d6523e5e1ebda91d249d56e5957a8e7ef13bdd8517b7dffb78ef140f34211"
+              },
+              {
+                "actual_total_optimizer_calls": 4000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.81482196599245,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 200,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "2",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "completed_outer_updates": 200,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "training_attempts": 200
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 2,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "6b5f35350c172f33840d53c5ae663314d60b03b5d6327adcdde9e3b5692c718b",
+                "observed_adam_steps": [
+                  4000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-02.pt",
+                "scheduler_last_epoch": 200,
+                "sha256": "7148eb6030f37df46bef56e3e84b4abc2967685a1e22c0bc61e9a44c0dcb18f6"
+              },
+              {
+                "actual_total_optimizer_calls": 4000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.56195756047964,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 200,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "3",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "completed_outer_updates": 200,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "training_attempts": 200
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 3,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "37688a70316461209b293b726721a0d40044ac3018c1697fc9c7dab8cfdb94d4",
+                "observed_adam_steps": [
+                  4000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-03.pt",
+                "scheduler_last_epoch": 200,
+                "sha256": "ece3741b8592b3bddd357ab8b8659044cc1635725673aaafc9190b45f540d587"
+              },
+              {
+                "actual_total_optimizer_calls": 4000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.4920933060348,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 200,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "4",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "completed_outer_updates": 200,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "training_attempts": 200
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 4,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "9689273bf323d42796120db51e8deae4e1cffbc09d0c39eb7695cdd76dfb8820",
+                "observed_adam_steps": [
+                  4000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-04.pt",
+                "scheduler_last_epoch": 200,
+                "sha256": "cd36661b0294e5adb909b0d9d850189c9cee09d5206de49d67ab42b847965031"
+              },
+              {
+                "actual_total_optimizer_calls": 4000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 37.463022373616695,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 200,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "5",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "completed_outer_updates": 200,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "training_attempts": 200
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 5,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "dbfd4c3b26ae3c76f8a0e5324aed0fac2c82ab6f16e68ba23854dd3aada880bc",
+                "observed_adam_steps": [
+                  4000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-05.pt",
+                "scheduler_last_epoch": 200,
+                "sha256": "79c7bce0624f054e95678b2494c18e4d2ca99dea21869cd16c50aaca6ed75ee3"
+              },
+              {
+                "actual_total_optimizer_calls": 4000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 38.84588906168938,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 200,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "6",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "completed_outer_updates": 200,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "training_attempts": 200
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 6,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "c46fa42fc2e2e4a60ce0051720692dee0ab13c7372ad9cac31cfc6745b3b8b31",
+                "observed_adam_steps": [
+                  4000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-06.pt",
+                "scheduler_last_epoch": 200,
+                "sha256": "307a8796010f2f335b85214887d0c7a92c06bfb96b96bfabef2ae82251023bcd"
+              },
+              {
+                "actual_total_optimizer_calls": 4000,
+                "bytes": 6171974694,
+                "checkpoint_and_reload_seconds": 39.45764762163162,
+                "exact_same_world_reload_verified": false,
+                "full_worker_state_finite": true,
+                "identity": {
+                  "actual_update_limit": 200,
+                  "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "completed_step": 200,
+                  "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+                  "cuda_visible_devices": "7",
+                  "data_identity": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+                  "guard_continue_accounting": {
+                    "completed_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "completed_outer_updates": 200,
+                    "guard_refused_attempts": 0,
+                    "partial_evidence": [],
+                    "partial_optimizer_calls_per_rank": {},
+                    "protocol": "tree_guard_continue_fresh_rollout_v1",
+                    "refused_attempts": 0,
+                    "total_optimizer_calls_per_rank": {
+                      "0": 4000,
+                      "1": 4000,
+                      "2": 4000,
+                      "3": 4000,
+                      "4": 4000,
+                      "5": 4000,
+                      "6": 4000,
+                      "7": 4000
+                    },
+                    "training_attempts": 200
+                  },
+                  "job_id": "not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+                  "model_identity": "744d9f616373b3890cf815412560e34041e21cd4915c026967d8cc13a423aea0",
+                  "rank": 7,
+                  "world_size": 8
+                },
+                "logical_state_sha256": "f2b9a1283781b988d0f915725a84ea0f1fa4a7673aad10514ed4aad726d517bd",
+                "observed_adam_steps": [
+                  4000
+                ],
+                "optimizer_lrs": [
+                  1e-06
+                ],
+                "optimizer_state_entries": 37,
+                "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-07.pt",
+                "scheduler_last_epoch": 200,
+                "sha256": "caea152c4c3bace804ffc28f30d0939146a95bb473015847f1a1424f5a447262"
+              }
+            ]
+          }
+        },
+        "native_files": [
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/driver.pt",
+            "exists": true,
+            "bytes": 752664,
+            "mtime_ns": 1792145912105784818
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/manifest.json",
+            "exists": true,
+            "bytes": 16551,
+            "mtime_ns": 1792145928221219552
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-00.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792145900446192584
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-01.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792145900114204182
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-02.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792145899950209911
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-03.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792145900030207117
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-04.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792145900562188531
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-05.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792145899662219973
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-06.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792145900010207815
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/training_state/global_step_200/rank-07.pt",
+            "exists": true,
+            "bytes": 6171974694,
+            "mtime_ns": 1792145900334196496
+          }
+        ],
+        "HF_files": [
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/added_tokens.json",
+            "exists": true,
+            "bytes": 605,
+            "mtime_ns": 1792145871123217044
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/config.json",
+            "exists": true,
+            "bytes": 796,
+            "mtime_ns": 1792145864071463412
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/generation_config.json",
+            "exists": true,
+            "bytes": 243,
+            "mtime_ns": 1792145864071463412
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/merges.txt",
+            "exists": true,
+            "bytes": 1671853,
+            "mtime_ns": 1792145871187214809
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/model-00001-of-00003.safetensors",
+            "exists": true,
+            "bytes": 4982131536,
+            "mtime_ns": 1792145866959362517
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/model-00002-of-00003.safetensors",
+            "exists": true,
+            "bytes": 4932949336,
+            "mtime_ns": 1792145869387277693
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/model-00003-of-00003.safetensors",
+            "exists": true,
+            "bytes": 3673383040,
+            "mtime_ns": 1792145871119217184
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/model.safetensors.index.json",
+            "exists": true,
+            "bytes": 35640,
+            "mtime_ns": 1792145871123217044
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/special_tokens_map.json",
+            "exists": true,
+            "bytes": 613,
+            "mtime_ns": 1792145871123217044
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/tokenizer.json",
+            "exists": true,
+            "bytes": 11421896,
+            "mtime_ns": 1792145871271211874
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/tokenizer_config.json",
+            "exists": true,
+            "bytes": 7306,
+            "mtime_ns": 1792145871123217044
+          },
+          {
+            "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints/actor/global_step_200/vocab.json",
+            "exists": true,
+            "bytes": 2776833,
+            "mtime_ns": 1792145871151216066
+          }
+        ]
+      }
+    ],
+    "resolved_config": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/resolved.yaml",
+      "bytes": 8644,
+      "sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+      "raw": "data:\n  tokenizer: null\n  train_files: /mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/train.parquet\n  val_files: /mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/validation.parquet\n  train_data_num: null\n  val_data_num: null\n  prompt_key: prompt\n  max_prompt_length: 4096\n  max_response_length: 500\n  max_start_length: 2048\n  max_obs_length: 500\n  train_batch_size: 512\n  val_batch_size: 32\n  return_raw_input_ids: false\n  return_raw_chat: false\n  shuffle_train_dataloader: true\n  final_val_files: /mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/final.parquet\nactor_rollout_ref:\n  hybrid_engine: true\n  model:\n    path: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725\n    external_lib: null\n    override_config: {}\n    enable_gradient_checkpointing: true\n    use_remove_padding: true\n  actor:\n    strategy: fsdp\n    ppo_mini_batch_size: 128\n    ppo_micro_batch_size: 16\n    use_dynamic_bsz: false\n    ppo_max_token_len_per_gpu: 16384\n    grad_clip: 1.0\n    state_masking: true\n    clip_ratio: 0.2\n    entropy_coeff: 0.0\n    use_kl_loss: true\n    kl_loss_coef: 0.0\n    kl_loss_type: low_var_kl\n    ppo_epochs: 1\n    shuffle: false\n    ulysses_sequence_parallel_size: 1\n    optim:\n      lr: 1.0e-06\n      lr_warmup_steps_ratio: 0.0\n      min_lr_ratio: null\n      warmup_style: constant\n      total_training_steps: 200\n      lr_warmup_steps: 57\n    fsdp_config:\n      wrap_policy:\n        min_num_params: 0\n      param_offload: true\n      grad_offload: true\n      optimizer_offload: true\n      fsdp_size: -1\n    baseline_method: tree_grpo\n    training_state_enabled: true\n    distillation:\n      teacher_path: null\n      privileged_answers: false\n      beta: 0.0\n      temperature: 1.0\n      component_clip: 0.05\n      chunk_size: 16\n      max_student_logits_gib: 4.0\n    fresh200_protocol: tree_fresh200_five_leaf_v1\n    guard_continue_protocol: tree_guard_continue_fresh_rollout_v1\n    policy_safety:\n      enabled: true\n      dual_clip: 3.0\n      kl_log_bound: 30.0\n      monitor_rows_per_rank: 32\n      target_old_policy_kl: 0.2\n      negative_tail_limit: 0.01\n      initial_old_logprob_max_abs_delta: 0.01\n      sampling_probability_correction:\n        enabled: true\n        protocol: tree_behavior_mu_centered_ppo_v1\n        initial_actor_repeat_max_abs_delta: 0.0\n  ref:\n    fsdp_config:\n      param_offload: true\n      wrap_policy:\n        min_num_params: 0\n      fsdp_size: -1\n    log_prob_micro_batch_size: 32\n    log_prob_use_dynamic_bsz: false\n    log_prob_max_token_len_per_gpu: 16384\n    ulysses_sequence_parallel_size: 1\n    model_path: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725\n  rollout:\n    name: vllm\n    temperature: 1.0\n    top_k: -1\n    top_p: 1.0\n    prompt_length: 4096\n    response_length: 500\n    dtype: bfloat16\n    gpu_memory_utilization: 0.4\n    ignore_eos: false\n    enforce_eager: true\n    free_cache_engine: true\n    load_format: dummy_dtensor\n    tensor_model_parallel_size: 1\n    max_num_batched_tokens: 8192\n    max_num_seqs: 1024\n    log_prob_micro_batch_size: 32\n    log_prob_use_dynamic_bsz: false\n    log_prob_max_token_len_per_gpu: 16384\n    do_sample: true\n    'n': 1\n    n_agent: 2\n    best_of: 1\n    tree_raw_emission: true\n    sampling_consistency:\n      enabled: false\n      enforce: true\n      max_abs_delta: 0.01\ncritic:\n  strategy: fsdp\n  optim:\n    lr: 1.0e-05\n    lr_warmup_steps_ratio: 0.0\n    min_lr_ratio: null\n    warmup_style: constant\n    total_training_steps: -1\n  model:\n    path: ~/models/deepseek-llm-7b-chat\n    tokenizer_path: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725\n    override_config: {}\n    external_lib: null\n    enable_gradient_checkpointing: false\n    use_remove_padding: false\n    fsdp_config:\n      param_offload: false\n      grad_offload: false\n      optimizer_offload: false\n      wrap_policy:\n        min_num_params: 0\n      fsdp_size: -1\n  ppo_mini_batch_size: 128\n  ppo_micro_batch_size: 64\n  forward_micro_batch_size: 64\n  use_dynamic_bsz: false\n  ppo_max_token_len_per_gpu: 32768\n  forward_max_token_len_per_gpu: 32768\n  ulysses_sequence_parallel_size: 1\n  ppo_epochs: 1\n  shuffle: false\n  grad_clip: 1.0\n  cliprange_value: 0.5\nreward_model:\n  enable: false\n  strategy: fsdp\n  model:\n    input_tokenizer: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725\n    path: ~/models/FsfairX-LLaMA3-RM-v0.1\n    external_lib: null\n    use_remove_padding: false\n    fsdp_config:\n      min_num_params: 0\n      param_offload: false\n  micro_batch_size: 64\n  max_length: null\n  ulysses_sequence_parallel_size: 1\n  use_dynamic_bsz: false\n  forward_max_token_len_per_gpu: 32768\n  structure_format_score: 0\n  final_format_score: 0\n  retrieval_score: 0\nretriever:\n  url: http://127.0.0.1:18082/retrieve\n  topk: 3\nalgorithm:\n  gamma: 1.0\n  lam: 1.0\n  adv_estimator: grpo\n  no_think_rl: false\n  kl_penalty: kl\n  kl_ctrl:\n    type: fixed\n    kl_coef: 0.0\n  state_masking:\n    start_state_marker: <information>\n    end_state_marker: </information>\ntrainer:\n  total_epochs: 15\n  total_training_steps: 201\n  project_name: Search-R1-RL-Baselines\n  experiment_name: tree-nested-branch-officialfresh200\n  logger:\n  - console\n  nnodes: 1\n  n_gpus_per_node: 8\n  save_freq: 50\n  test_freq: 5\n  critic_warmup: 0\n  default_hdfs_dir: null\n  default_local_dir: /dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints\n  actual_update_limit: 200\n  acceptance_step: 5\n  training_state_enabled: true\n  acceptance_gate_enabled: true\n  acceptance_gate_timeout_seconds: 43200\n  smoke_only: false\n  val_before_train: false\nmax_turns: 4\ndo_search: true\nforce_final_answer: false\nbaselines:\n  method: tree_grpo\n  local_runtime_only: true\n  local_runtime_host: h100-10\n  base_commit: 9ab694499ad3913b67499f7a4ea13da6b544d459\n  algorithm_source_commit: 68184965c532fe30fef0d89c3ea19f976ac3bd63\n  seed: 42\n  context_alignment: error\n  holdout_eval_only: false\n  holdout_record_path: null\n  holdout:\n    enabled: true\n    fraction: 0.02\n    seed: 42\n    output_dir: /dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/common-data\n    input_mode: prebuilt_manifest\n    manifest_path: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/manifest.json\n    manifest_sha256: 0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24\n    data_root: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data\n  gigpo:\n    anchor_mode: observation\n    gamma: 0.95\n    omega: 1.0\n    normalize: false\n  tree:\n    roots: 2\n    rounds: 1\n    expansions: 2\n    leaves: 3\n    leaf_quotas:\n    - 2\n    - 3\n    token_preservation:\n      enabled: true\n      protocol: tree_sampled_prefix_legacy_semantics_v1\n      tokenizer_sha256: c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539\n    behavior_mu:\n      enabled: true\n      protocol: tree_behavior_mu_centered_ppo_v1\n    branch_sampling: random_nested_backtrack_v1\n    sampling_objective: reward_selected_nested_tree_grpo_surrogate_v1\n    continuation_budget_per_question: 3\n    action_positions: valid_action_start\n    exclude_initial_from_backtrack: true\n    fallback: initial_fresh_once_unconditional\n    remaining_budget: inherit_parent\n    reward_comparison: absolute_tolerance\n    reward_difference_tolerance: 0.0\n  bapo:\n    stage_validation_files: /mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/stage.parquet\n    stage_validation_num: 64\n    stage_validation_freq: 1\n    patience: 5\n    alpha: 0.05\n    bonus: 0.5\n    resample_attempts: 2\n    stage_validation_size: 64\n  distillation:\n    teacher_path: null\n    privileged_answers: false\n    beta: 0.0\n    temperature: 1.0\n    component_clip: 0.05\n    chunk_size: 16\n    max_student_logits_gib: 4.0\n  topd:\n    alpha: 0.1\n  ranker:\n    model_path: null\n    device: cpu\n    candidates: 50\n    keep: 3\n    max_new_tokens: 256\n    temperature: 1.0\n    lr: 1.0e-06\n    clip_ratio: 0.2\n    grad_clip: 1.0\n    epochs: 1\n    batch_size: 8\n    similarity: 0.8\n    min_group_size: 3\n    threshold: 0.5\n    split_availability: false\n  training_protocol: tree_fresh200_five_leaf_v1\n  model_repository: Qwen/Qwen2.5-3B-Instruct\n  model_revision: aa8e72537993ba99e69dfaafa59ed015b17504d1\n  experiment_variant: Random nested reward-selected Tree-GRPO surrogate\n"
+    },
+    "actual_parquet_metadata": {
+      "train_files": [
+        {
+          "path": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/train.parquet",
+          "metadata_rows": 169028,
+          "bytes": 17823593
+        }
+      ],
+      "val_files": [
+        {
+          "path": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/validation.parquet",
+          "metadata_rows": 512,
+          "bytes": 62981
+        }
+      ],
+      "final_val_files": [
+        {
+          "path": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/final.parquet",
+          "metadata_rows": 51713,
+          "bytes": 6445844
+        }
+      ]
+    },
+    "official_model_small_metadata": [
+      {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725/config.json",
+        "bytes": 661,
+        "sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+        "raw": "{\n  \"architectures\": [\n    \"Qwen2ForCausalLM\"\n  ],\n  \"attention_dropout\": 0.0,\n  \"bos_token_id\": 151643,\n  \"eos_token_id\": 151645,\n  \"hidden_act\": \"silu\",\n  \"hidden_size\": 2048,\n  \"initializer_range\": 0.02,\n  \"intermediate_size\": 11008,\n  \"max_position_embeddings\": 32768,\n  \"max_window_layers\": 70,\n  \"model_type\": \"qwen2\",\n  \"num_attention_heads\": 16,\n  \"num_hidden_layers\": 36,\n  \"num_key_value_heads\": 2,\n  \"rms_norm_eps\": 1e-06,\n  \"rope_theta\": 1000000.0,\n  \"sliding_window\": 32768,\n  \"tie_word_embeddings\": true,\n  \"torch_dtype\": \"bfloat16\",\n  \"transformers_version\": \"4.43.1\",\n  \"use_cache\": true,\n  \"use_sliding_window\": false,\n  \"vocab_size\": 151936\n}\n"
+      },
+      {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725/tokenizer_config.json",
+        "bytes": 7305,
+        "sha256": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583",
+        "raw": "{\n  \"add_bos_token\": false,\n  \"add_prefix_space\": false,\n  \"added_tokens_decoder\": {\n    \"151643\": {\n      \"content\": \"<|endoftext|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151644\": {\n      \"content\": \"<|im_start|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151645\": {\n      \"content\": \"<|im_end|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151646\": {\n      \"content\": \"<|object_ref_start|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151647\": {\n      \"content\": \"<|object_ref_end|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151648\": {\n      \"content\": \"<|box_start|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151649\": {\n      \"content\": \"<|box_end|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151650\": {\n      \"content\": \"<|quad_start|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151651\": {\n      \"content\": \"<|quad_end|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151652\": {\n      \"content\": \"<|vision_start|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151653\": {\n      \"content\": \"<|vision_end|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151654\": {\n      \"content\": \"<|vision_pad|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151655\": {\n      \"content\": \"<|image_pad|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151656\": {\n      \"content\": \"<|video_pad|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": true\n    },\n    \"151657\": {\n      \"content\": \"<tool_call>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": false\n    },\n    \"151658\": {\n      \"content\": \"</tool_call>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": false\n    },\n    \"151659\": {\n      \"content\": \"<|fim_prefix|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": false\n    },\n    \"151660\": {\n      \"content\": \"<|fim_middle|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": false\n    },\n    \"151661\": {\n      \"content\": \"<|fim_suffix|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": false\n    },\n    \"151662\": {\n      \"content\": \"<|fim_pad|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": false\n    },\n    \"151663\": {\n      \"content\": \"<|repo_name|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": false\n    },\n    \"151664\": {\n      \"content\": \"<|file_sep|>\",\n      \"lstrip\": false,\n      \"normalized\": false,\n      \"rstrip\": false,\n      \"single_word\": false,\n      \"special\": false\n    }\n  },\n  \"additional_special_tokens\": [\n    \"<|im_start|>\",\n    \"<|im_end|>\",\n    \"<|object_ref_start|>\",\n    \"<|object_ref_end|>\",\n    \"<|box_start|>\",\n    \"<|box_end|>\",\n    \"<|quad_start|>\",\n    \"<|quad_end|>\",\n    \"<|vision_start|>\",\n    \"<|vision_end|>\",\n    \"<|vision_pad|>\",\n    \"<|image_pad|>\",\n    \"<|video_pad|>\"\n  ],\n  \"bos_token\": null,\n  \"chat_template\": \"{%- if tools %}\\n    {{- '<|im_start|>system\\\\n' }}\\n    {%- if messages[0]['role'] == 'system' %}\\n        {{- messages[0]['content'] }}\\n    {%- else %}\\n        {{- 'You are Qwen, created by Alibaba Cloud. You are a helpful assistant.' }}\\n    {%- endif %}\\n    {{- \\\"\\\\n\\\\n# Tools\\\\n\\\\nYou may call one or more functions to assist with the user query.\\\\n\\\\nYou are provided with function signatures within <tools></tools> XML tags:\\\\n<tools>\\\" }}\\n    {%- for tool in tools %}\\n        {{- \\\"\\\\n\\\" }}\\n        {{- tool | tojson }}\\n    {%- endfor %}\\n    {{- \\\"\\\\n</tools>\\\\n\\\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\\\n<tool_call>\\\\n{\\\\\\\"name\\\\\\\": <function-name>, \\\\\\\"arguments\\\\\\\": <args-json-object>}\\\\n</tool_call><|im_end|>\\\\n\\\" }}\\n{%- else %}\\n    {%- if messages[0]['role'] == 'system' %}\\n        {{- '<|im_start|>system\\\\n' + messages[0]['content'] + '<|im_end|>\\\\n' }}\\n    {%- else %}\\n        {{- '<|im_start|>system\\\\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\\\\n' }}\\n    {%- endif %}\\n{%- endif %}\\n{%- for message in messages %}\\n    {%- if (message.role == \\\"user\\\") or (message.role == \\\"system\\\" and not loop.first) or (message.role == \\\"assistant\\\" and not message.tool_calls) %}\\n        {{- '<|im_start|>' + message.role + '\\\\n' + message.content + '<|im_end|>' + '\\\\n' }}\\n    {%- elif message.role == \\\"assistant\\\" %}\\n        {{- '<|im_start|>' + message.role }}\\n        {%- if message.content %}\\n            {{- '\\\\n' + message.content }}\\n        {%- endif %}\\n        {%- for tool_call in message.tool_calls %}\\n            {%- if tool_call.function is defined %}\\n                {%- set tool_call = tool_call.function %}\\n            {%- endif %}\\n            {{- '\\\\n<tool_call>\\\\n{\\\"name\\\": \\\"' }}\\n            {{- tool_call.name }}\\n            {{- '\\\", \\\"arguments\\\": ' }}\\n            {{- tool_call.arguments | tojson }}\\n            {{- '}\\\\n</tool_call>' }}\\n        {%- endfor %}\\n        {{- '<|im_end|>\\\\n' }}\\n    {%- elif message.role == \\\"tool\\\" %}\\n        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \\\"tool\\\") %}\\n            {{- '<|im_start|>user' }}\\n        {%- endif %}\\n        {{- '\\\\n<tool_response>\\\\n' }}\\n        {{- message.content }}\\n        {{- '\\\\n</tool_response>' }}\\n        {%- if loop.last or (messages[loop.index0 + 1].role != \\\"tool\\\") %}\\n            {{- '<|im_end|>\\\\n' }}\\n        {%- endif %}\\n    {%- endif %}\\n{%- endfor %}\\n{%- if add_generation_prompt %}\\n    {{- '<|im_start|>assistant\\\\n' }}\\n{%- endif %}\\n\",\n  \"clean_up_tokenization_spaces\": false,\n  \"eos_token\": \"<|im_end|>\",\n  \"errors\": \"replace\",\n  \"model_max_length\": 131072,\n  \"pad_token\": \"<|endoftext|>\",\n  \"split_special_tokens\": false,\n  \"tokenizer_class\": \"Qwen2Tokenizer\",\n  \"unk_token\": null\n}"
+      }
+    ]
+  }
+}

@@ -1,0 +1,296 @@
+data:
+  tokenizer: null
+  train_files: /mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/train.parquet
+  val_files: /mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/validation.parquet
+  train_data_num: null
+  val_data_num: null
+  prompt_key: prompt
+  max_prompt_length: 4096
+  max_response_length: 500
+  max_start_length: 2048
+  max_obs_length: 500
+  train_batch_size: 512
+  val_batch_size: 32
+  return_raw_input_ids: false
+  return_raw_chat: false
+  shuffle_train_dataloader: true
+  final_val_files: /mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/final.parquet
+actor_rollout_ref:
+  hybrid_engine: true
+  model:
+    path: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725
+    external_lib: null
+    override_config: {}
+    enable_gradient_checkpointing: true
+    use_remove_padding: true
+  actor:
+    strategy: fsdp
+    ppo_mini_batch_size: 128
+    ppo_micro_batch_size: 16
+    use_dynamic_bsz: false
+    ppo_max_token_len_per_gpu: 16384
+    grad_clip: 1.0
+    state_masking: true
+    clip_ratio: 0.2
+    entropy_coeff: 0.0
+    use_kl_loss: true
+    kl_loss_coef: 0.0
+    kl_loss_type: low_var_kl
+    ppo_epochs: 1
+    shuffle: false
+    ulysses_sequence_parallel_size: 1
+    optim:
+      lr: 1.0e-06
+      lr_warmup_steps_ratio: 0.0
+      min_lr_ratio: null
+      warmup_style: constant
+      total_training_steps: 200
+      lr_warmup_steps: 57
+    fsdp_config:
+      wrap_policy:
+        min_num_params: 0
+      param_offload: true
+      grad_offload: true
+      optimizer_offload: true
+      fsdp_size: -1
+    baseline_method: tree_grpo
+    training_state_enabled: true
+    distillation:
+      teacher_path: null
+      privileged_answers: false
+      beta: 0.0
+      temperature: 1.0
+      component_clip: 0.05
+      chunk_size: 16
+      max_student_logits_gib: 4.0
+    fresh200_protocol: tree_fresh200_five_leaf_v1
+    guard_continue_protocol: tree_guard_continue_fresh_rollout_v1
+    policy_safety:
+      enabled: true
+      dual_clip: 3.0
+      kl_log_bound: 30.0
+      monitor_rows_per_rank: 32
+      target_old_policy_kl: 0.2
+      negative_tail_limit: 0.01
+      initial_old_logprob_max_abs_delta: 0.01
+      sampling_probability_correction:
+        enabled: true
+        protocol: tree_behavior_mu_centered_ppo_v1
+        initial_actor_repeat_max_abs_delta: 0.0
+  ref:
+    fsdp_config:
+      param_offload: true
+      wrap_policy:
+        min_num_params: 0
+      fsdp_size: -1
+    log_prob_micro_batch_size: 32
+    log_prob_use_dynamic_bsz: false
+    log_prob_max_token_len_per_gpu: 16384
+    ulysses_sequence_parallel_size: 1
+    model_path: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725
+  rollout:
+    name: vllm
+    temperature: 1.0
+    top_k: -1
+    top_p: 1.0
+    prompt_length: 4096
+    response_length: 500
+    dtype: bfloat16
+    gpu_memory_utilization: 0.4
+    ignore_eos: false
+    enforce_eager: true
+    free_cache_engine: true
+    load_format: dummy_dtensor
+    tensor_model_parallel_size: 1
+    max_num_batched_tokens: 8192
+    max_num_seqs: 1024
+    log_prob_micro_batch_size: 32
+    log_prob_use_dynamic_bsz: false
+    log_prob_max_token_len_per_gpu: 16384
+    do_sample: true
+    'n': 1
+    n_agent: 2
+    best_of: 1
+    tree_raw_emission: true
+    sampling_consistency:
+      enabled: false
+      enforce: true
+      max_abs_delta: 0.01
+critic:
+  strategy: fsdp
+  optim:
+    lr: 1.0e-05
+    lr_warmup_steps_ratio: 0.0
+    min_lr_ratio: null
+    warmup_style: constant
+    total_training_steps: -1
+  model:
+    path: ~/models/deepseek-llm-7b-chat
+    tokenizer_path: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725
+    override_config: {}
+    external_lib: null
+    enable_gradient_checkpointing: false
+    use_remove_padding: false
+    fsdp_config:
+      param_offload: false
+      grad_offload: false
+      optimizer_offload: false
+      wrap_policy:
+        min_num_params: 0
+      fsdp_size: -1
+  ppo_mini_batch_size: 128
+  ppo_micro_batch_size: 64
+  forward_micro_batch_size: 64
+  use_dynamic_bsz: false
+  ppo_max_token_len_per_gpu: 32768
+  forward_max_token_len_per_gpu: 32768
+  ulysses_sequence_parallel_size: 1
+  ppo_epochs: 1
+  shuffle: false
+  grad_clip: 1.0
+  cliprange_value: 0.5
+reward_model:
+  enable: false
+  strategy: fsdp
+  model:
+    input_tokenizer: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/assets/qwen2.5-3b-instruct-aa8e725
+    path: ~/models/FsfairX-LLaMA3-RM-v0.1
+    external_lib: null
+    use_remove_padding: false
+    fsdp_config:
+      min_num_params: 0
+      param_offload: false
+  micro_batch_size: 64
+  max_length: null
+  ulysses_sequence_parallel_size: 1
+  use_dynamic_bsz: false
+  forward_max_token_len_per_gpu: 32768
+  structure_format_score: 0
+  final_format_score: 0
+  retrieval_score: 0
+retriever:
+  url: http://127.0.0.1:18082/retrieve
+  topk: 3
+algorithm:
+  gamma: 1.0
+  lam: 1.0
+  adv_estimator: grpo
+  no_think_rl: false
+  kl_penalty: kl
+  kl_ctrl:
+    type: fixed
+    kl_coef: 0.0
+  state_masking:
+    start_state_marker: <information>
+    end_state_marker: </information>
+trainer:
+  total_epochs: 15
+  total_training_steps: 201
+  project_name: Search-R1-RL-Baselines
+  experiment_name: tree-nested-branch-officialfresh200
+  logger:
+  - console
+  nnodes: 1
+  n_gpus_per_node: 8
+  save_freq: 50
+  test_freq: 5
+  critic_warmup: 0
+  default_hdfs_dir: null
+  default_local_dir: /dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/checkpoints
+  actual_update_limit: 200
+  acceptance_step: 5
+  training_state_enabled: true
+  acceptance_gate_enabled: true
+  acceptance_gate_timeout_seconds: 43200
+  smoke_only: false
+  val_before_train: false
+max_turns: 4
+do_search: true
+force_final_answer: false
+baselines:
+  method: tree_grpo
+  local_runtime_only: true
+  local_runtime_host: h100-10
+  base_commit: 9ab694499ad3913b67499f7a4ea13da6b544d459
+  algorithm_source_commit: 68184965c532fe30fef0d89c3ea19f976ac3bd63
+  seed: 42
+  context_alignment: error
+  holdout_eval_only: false
+  holdout_record_path: null
+  holdout:
+    enabled: true
+    fraction: 0.02
+    seed: 42
+    output_dir: /dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/common-data
+    input_mode: prebuilt_manifest
+    manifest_path: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data/manifest.json
+    manifest_sha256: 0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24
+    data_root: /dataset/shaoshitong/search-r1-rl/tree-grpo/instruct300/common-data
+  gigpo:
+    anchor_mode: observation
+    gamma: 0.95
+    omega: 1.0
+    normalize: false
+  tree:
+    roots: 2
+    rounds: 1
+    expansions: 2
+    leaves: 3
+    leaf_quotas:
+    - 2
+    - 3
+    token_preservation:
+      enabled: true
+      protocol: tree_sampled_prefix_legacy_semantics_v1
+      tokenizer_sha256: c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539
+    behavior_mu:
+      enabled: true
+      protocol: tree_behavior_mu_centered_ppo_v1
+    branch_sampling: random_nested_backtrack_v1
+    sampling_objective: reward_selected_nested_tree_grpo_surrogate_v1
+    continuation_budget_per_question: 3
+    action_positions: valid_action_start
+    exclude_initial_from_backtrack: true
+    fallback: initial_fresh_once_unconditional
+    remaining_budget: inherit_parent
+    reward_comparison: absolute_tolerance
+    reward_difference_tolerance: 0.0
+  bapo:
+    stage_validation_files: /mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/common-data/stage.parquet
+    stage_validation_num: 64
+    stage_validation_freq: 1
+    patience: 5
+    alpha: 0.05
+    bonus: 0.5
+    resample_attempts: 2
+    stage_validation_size: 64
+  distillation:
+    teacher_path: null
+    privileged_answers: false
+    beta: 0.0
+    temperature: 1.0
+    component_clip: 0.05
+    chunk_size: 16
+    max_student_logits_gib: 4.0
+  topd:
+    alpha: 0.1
+  ranker:
+    model_path: null
+    device: cpu
+    candidates: 50
+    keep: 3
+    max_new_tokens: 256
+    temperature: 1.0
+    lr: 1.0e-06
+    clip_ratio: 0.2
+    grad_clip: 1.0
+    epochs: 1
+    batch_size: 8
+    similarity: 0.8
+    min_group_size: 3
+    threshold: 0.5
+    split_availability: false
+  training_protocol: tree_fresh200_five_leaf_v1
+  model_repository: Qwen/Qwen2.5-3B-Instruct
+  model_revision: aa8e72537993ba99e69dfaafa59ed015b17504d1
+  experiment_variant: Random nested reward-selected Tree-GRPO surrogate

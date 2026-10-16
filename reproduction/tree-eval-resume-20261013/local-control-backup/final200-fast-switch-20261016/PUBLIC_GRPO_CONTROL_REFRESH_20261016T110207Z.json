@@ -1,0 +1,759 @@
+{
+  "schema": "bounded_public_plain_grpo_refresh_two_actual_readbacks_v1",
+  "created_utc": "2026-10-16T11:02:07.922815+00:00",
+  "executing_agent": "/root",
+  "status": "UNCHANGED_FIXED_SCOPE_NO_MATCHED_COMPLETED_GRPO_CONTROL",
+  "qualified_control_established": false,
+  "matching_control_job_id": null,
+  "effect_comparison_performed": false,
+  "required_protocol": {
+    "method": "plain GRPO",
+    "model_repository": "Qwen/Qwen2.5-3B-Instruct",
+    "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+    "split_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+    "training_dataset_rows": 169028,
+    "periodic_dev_rows": 512,
+    "final_test_rows": 51713,
+    "hardware_backend": "Same authorized H100 runtime, same-node E5 GPU / complete FP16 FAISS backend; no H20/A800/CPU substitute",
+    "training_questions_per_outer": 512,
+    "independent_paths_per_question": 5,
+    "training_rows_per_outer": 2560,
+    "ppo_mini_batch_size": 128,
+    "actor_micro_batch_size": 16,
+    "old_reference_logprob_micro_batch_size": 32,
+    "actual_completed_outer_target": 200,
+    "BF16_FP32_policy_must_match_current_run": true,
+    "current_PPO_numeric_protections_must_match": true,
+    "current_tree_training_source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+    "current_tree_config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+    "precision_or_guard_equivalence_not_inferred_from_historical_names": true
+  },
+  "current_tree_context": {
+    "training_source": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+    "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+    "node": "h100-10/10.33.0.18",
+    "actual_training200": true,
+    "root_leaf_quotas": [
+      2,
+      3
+    ],
+    "final_evaluation": "current8TP1 pending51713",
+    "reference_KL": 0,
+    "selected_surrogate": true
+  },
+  "prior_refresh_receipt": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/PUBLIC_GRPO_CONTROL_REFRESH_20261016T060652Z.json",
+    "bytes": 51172,
+    "sha256": "51dc9b77fde9d48a8fdcc3762c8f95a681e618bccccbb2c7eea591ab4dd832d2"
+  },
+  "fixed_input_pins": {
+    "GRPO_CONTROL_INVENTORY.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/GRPO_CONTROL_INVENTORY.json",
+      "bytes": 18996,
+      "sha256": "9c31658a7756b17f65d5b36861fabbbb34e9f1ee7202cc56763ec9ec3b32ff1b"
+    },
+    "COMPARATOR_AVAILABILITY_20261015.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/COMPARATOR_AVAILABILITY_20261015.json",
+      "bytes": 14808,
+      "sha256": "68e1736972a7b4dcee931a911f437eb545a98a3d3643b021b8196b45658a1cb6"
+    }
+  },
+  "explicit_scope": {
+    "file": "PUBLIC_GRPO_CONTROL_REFRESH_SCOPE_20261015T203602Z.json",
+    "bytes": 9088,
+    "sha256": "e6992e5b58215c42bbfbc8fc1a1ea8c48c7cd28b3cfaa2d41ca1b8e1c3f78217",
+    "path_count": 28,
+    "original_bytes_preserved": true
+  },
+  "filename_discovery": {
+    "scope": "Current direct public method directory names only",
+    "names": [
+      "bapo",
+      "cosearch",
+      "gigpo",
+      "opsd",
+      "topd",
+      "tree-grpo"
+    ]
+  },
+  "historical_40_pathset_not_reconstructed": true,
+  "prior_1921_tool_only_refresh_scope_equivalence_claimed": false,
+  "actual_readbacks": [
+    {
+      "started_utc": "2026-10-16T11:02:07.908986+00:00",
+      "ended_utc": "2026-10-16T11:02:07.921539+00:00",
+      "rows": [
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/bapo/REPORT.md",
+          "bytes": 286484,
+          "mtime_ns": "1791781936298634363",
+          "read_at_utc": "2026-10-16T11:02:07.909880+00:00",
+          "sha256": "2b34b5d55d71c10fc9712e7c1623f5ffd6e3966b7bc3df377bf19f922e12aedc",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/bapo/STATUS.json",
+          "bytes": 1164011,
+          "mtime_ns": "1791781936298328111",
+          "read_at_utc": "2026-10-16T11:02:07.910983+00:00",
+          "sha256": null,
+          "content_read": false,
+          "read_mode": "STAT_ONLY_ORIGINAL_SCOPE_POLICY",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/bapo/bapo-fp32-comparison-independent-recomputed.json",
+          "bytes": 610763,
+          "mtime_ns": "1790978560880075032",
+          "read_at_utc": "2026-10-16T11:02:07.911010+00:00",
+          "sha256": null,
+          "content_read": false,
+          "read_mode": "STAT_ONLY_ORIGINAL_SCOPE_POLICY",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/cosearch/REPORT.md",
+          "bytes": 215299,
+          "mtime_ns": "1791572390642004566",
+          "read_at_utc": "2026-10-16T11:02:07.911030+00:00",
+          "sha256": "aa6a10eb53912b06384178d09e96b835c5f427d777ab401d7cba0cdc0a03ad24",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/gigpo/REPORT.md",
+          "bytes": 35560,
+          "mtime_ns": "1791098898568397127",
+          "read_at_utc": "2026-10-16T11:02:07.911368+00:00",
+          "sha256": "90f537325ba1538a9f4f4e33ffe811103ebcaac5f4938132f86693067ac04b2e",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/opsd/REPORT.md",
+          "bytes": 95807,
+          "mtime_ns": "1791549942012658796",
+          "read_at_utc": "2026-10-16T11:02:07.911560+00:00",
+          "sha256": "4d50ebe20e578bad05f9130924280a915044b10ea67ec0c3b4010b71fa265988",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/opsd/STATUS.json",
+          "bytes": 576883,
+          "mtime_ns": "1791550203429248629",
+          "read_at_utc": "2026-10-16T11:02:07.911822+00:00",
+          "sha256": null,
+          "content_read": false,
+          "read_mode": "STAT_ONLY_ORIGINAL_SCOPE_POLICY",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/REPORT.md",
+          "bytes": 202658,
+          "mtime_ns": "1791542122124252565",
+          "read_at_utc": "2026-10-16T11:02:07.912172+00:00",
+          "sha256": "a76b575a4c7aa79abaa1e27e95189aad9e225fb3b43aa5129d2b4da14bc413e8",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/STATE.json",
+          "bytes": 268132,
+          "mtime_ns": "1791542122123927778",
+          "read_at_utc": "2026-10-16T11:02:07.912802+00:00",
+          "sha256": "3ac4d696aef038d752e7b10f11b809e9d31169c623a7d181491bb730114cdfcd",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/remote-evidence/common-data-manifest.json",
+          "bytes": 1932,
+          "mtime_ns": "1790974186355187193",
+          "read_at_utc": "2026-10-16T11:02:07.913577+00:00",
+          "sha256": "f44943df65f90d88afe5e2651c1c23263b2fb713b39ff8add9190ee3aca002ea",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/search-r1-h20-performance-comparison.md",
+          "bytes": 7257,
+          "mtime_ns": "1791013601121909579",
+          "read_at_utc": "2026-10-16T11:02:07.913962+00:00",
+          "sha256": "925f260111fa06ee41c42a2be7516106fcd65376b849455cde48aeee7c76c908",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/search-r1-standard32b-grpo100-initial-source-review.md",
+          "bytes": 4011,
+          "mtime_ns": "1791094162143056717",
+          "read_at_utc": "2026-10-16T11:02:07.914914+00:00",
+          "sha256": "996452035f3a92a292beb8739828ac40b4dbda1f9bfe49c8df143b90195b65a8",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/standard-search-r1-teacher-identity-v3-freeze.json",
+          "bytes": 1284,
+          "mtime_ns": "1791099259707663928",
+          "read_at_utc": "2026-10-16T11:02:07.915098+00:00",
+          "sha256": "06439931214167b37208fcc2f41e89fe6b7ed07aa39f28ccd5cc740dcced70d0",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/topd-32b-grpo100-memory-static-review.md",
+          "bytes": 6318,
+          "mtime_ns": "1791030379592363754",
+          "read_at_utc": "2026-10-16T11:02:07.915509+00:00",
+          "sha256": "29b1a36c1e4702021e2200ad5cd458c79a410868368b8d2a29c868c99320faed",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/FAIR_CONTROL_PRECHECK.md",
+          "bytes": 5441,
+          "mtime_ns": "1791008706785404586",
+          "read_at_utc": "2026-10-16T11:02:07.916862+00:00",
+          "sha256": "74ebe1f595df03c2420735a1b4b795cb948bae95da5536c0217bb44ba212a652",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/REPORT.md",
+          "bytes": 5460,
+          "mtime_ns": "1791814802996565429",
+          "read_at_utc": "2026-10-16T11:02:07.917238+00:00",
+          "sha256": "473c330c32fdb2606a0b257d03382f0969539016a0feb85ee4e6cf294f0e2045",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/STATUS.json",
+          "bytes": 10414,
+          "mtime_ns": "1791814802987454631",
+          "read_at_utc": "2026-10-16T11:02:07.917390+00:00",
+          "sha256": "0e268a30b7f75388a00746a4812a6f807d5d95a96f0038de804c54bc47155ffd",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/manifest.json",
+          "bytes": 12199,
+          "mtime_ns": "1790996595102534464",
+          "read_at_utc": "2026-10-16T11:02:07.917734+00:00",
+          "sha256": "dfa782d7ccd0efc3b598f568bd496c5a9f102e0109bb0dfe13ba48576bf19e72",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/GRPO_COMPARISON_AVAILABILITY.json",
+          "bytes": 1220,
+          "mtime_ns": "1791356410291260243",
+          "read_at_utc": "2026-10-16T11:02:07.918261+00:00",
+          "sha256": "5b340ff28d808f6ed1de74bb035e1e2b8aa5124a13775db4cda8d3fd8791b96c",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/LATEST_GRPO_CONTROL_READONLY.json",
+          "bytes": 15390,
+          "mtime_ns": "1791372073346674406",
+          "read_at_utc": "2026-10-16T11:02:07.919038+00:00",
+          "sha256": "4b2c69002bff5f609a7bc5ad17bf946ae3d1efb5b80ec69c00b19891d9c9fc03",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/PLAN.md",
+          "bytes": 22744,
+          "mtime_ns": "1790946297765396594",
+          "read_at_utc": "2026-10-16T11:02:07.919496+00:00",
+          "sha256": "5655a6b2428107418a5308a1d7bafee85be5bc115d6018dba944bf2e8a716beb",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/REVIEW.md",
+          "bytes": 1093,
+          "mtime_ns": "1790946343633123048",
+          "read_at_utc": "2026-10-16T11:02:07.919671+00:00",
+          "sha256": "2f76ceff3e083bf62436e73b0809395ee8991aef59b1ed8a19ca06c03d95a91d",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/allocations.json",
+          "bytes": 2048,
+          "mtime_ns": "1790946154977309167",
+          "read_at_utc": "2026-10-16T11:02:07.919910+00:00",
+          "sha256": "fdb016de072d00eb807729b7757e351ee49e0b3d42f274f4ee5c6c93eca70635",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/common-setup-state.json",
+          "bytes": 464,
+          "mtime_ns": "1790947731226484378",
+          "read_at_utc": "2026-10-16T11:02:07.920339+00:00",
+          "sha256": "819096d2668722b1ad08f419c2318d7bdb55c70fa3a9800a66d5577078f7d70d",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/extra-h100-resources.json",
+          "bytes": 2643,
+          "mtime_ns": "1790946207741100897",
+          "read_at_utc": "2026-10-16T11:02:07.920485+00:00",
+          "sha256": "376504e242d95519f2b19bdae1c8a503ae00e9b1ec3169467b1288f5b4512d2d",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/gpu-snapshot.json",
+          "bytes": 41539,
+          "mtime_ns": "1790946154977453334",
+          "read_at_utc": "2026-10-16T11:02:07.920889+00:00",
+          "sha256": "900ef6c1b02c6aac82d428764e3eefc6e6fa76e29d5a20d610bd71d3d79b9758",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/handoff-state.json",
+          "bytes": 676,
+          "mtime_ns": "1790946397383911022",
+          "read_at_utc": "2026-10-16T11:02:07.921096+00:00",
+          "sha256": "50c5473d5cc6a04f6640d1b0708a027d603cfec5ddda8a3ffc512f3321ec3ea5",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/resources.json",
+          "bytes": 12744,
+          "mtime_ns": "1790946154977905333",
+          "read_at_utc": "2026-10-16T11:02:07.921322+00:00",
+          "sha256": "133e757ba1545493d29f314b56010e3cbfbac3d2f57494a6c16885a090d792ea",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        }
+      ]
+    },
+    {
+      "started_utc": "2026-10-16T11:02:07.921541+00:00",
+      "ended_utc": "2026-10-16T11:02:07.922797+00:00",
+      "rows": [
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/bapo/REPORT.md",
+          "bytes": 286484,
+          "mtime_ns": "1791781936298634363",
+          "read_at_utc": "2026-10-16T11:02:07.921550+00:00",
+          "sha256": "2b34b5d55d71c10fc9712e7c1623f5ffd6e3966b7bc3df377bf19f922e12aedc",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/bapo/STATUS.json",
+          "bytes": 1164011,
+          "mtime_ns": "1791781936298328111",
+          "read_at_utc": "2026-10-16T11:02:07.921700+00:00",
+          "sha256": null,
+          "content_read": false,
+          "read_mode": "STAT_ONLY_ORIGINAL_SCOPE_POLICY",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/bapo/bapo-fp32-comparison-independent-recomputed.json",
+          "bytes": 610763,
+          "mtime_ns": "1790978560880075032",
+          "read_at_utc": "2026-10-16T11:02:07.921711+00:00",
+          "sha256": null,
+          "content_read": false,
+          "read_mode": "STAT_ONLY_ORIGINAL_SCOPE_POLICY",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/cosearch/REPORT.md",
+          "bytes": 215299,
+          "mtime_ns": "1791572390642004566",
+          "read_at_utc": "2026-10-16T11:02:07.921721+00:00",
+          "sha256": "aa6a10eb53912b06384178d09e96b835c5f427d777ab401d7cba0cdc0a03ad24",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/gigpo/REPORT.md",
+          "bytes": 35560,
+          "mtime_ns": "1791098898568397127",
+          "read_at_utc": "2026-10-16T11:02:07.921839+00:00",
+          "sha256": "90f537325ba1538a9f4f4e33ffe811103ebcaac5f4938132f86693067ac04b2e",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/opsd/REPORT.md",
+          "bytes": 95807,
+          "mtime_ns": "1791549942012658796",
+          "read_at_utc": "2026-10-16T11:02:07.921901+00:00",
+          "sha256": "4d50ebe20e578bad05f9130924280a915044b10ea67ec0c3b4010b71fa265988",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/opsd/STATUS.json",
+          "bytes": 576883,
+          "mtime_ns": "1791550203429248629",
+          "read_at_utc": "2026-10-16T11:02:07.921984+00:00",
+          "sha256": null,
+          "content_read": false,
+          "read_mode": "STAT_ONLY_ORIGINAL_SCOPE_POLICY",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/REPORT.md",
+          "bytes": 202658,
+          "mtime_ns": "1791542122124252565",
+          "read_at_utc": "2026-10-16T11:02:07.921994+00:00",
+          "sha256": "a76b575a4c7aa79abaa1e27e95189aad9e225fb3b43aa5129d2b4da14bc413e8",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/STATE.json",
+          "bytes": 268132,
+          "mtime_ns": "1791542122123927778",
+          "read_at_utc": "2026-10-16T11:02:07.922154+00:00",
+          "sha256": "3ac4d696aef038d752e7b10f11b809e9d31169c623a7d181491bb730114cdfcd",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/remote-evidence/common-data-manifest.json",
+          "bytes": 1932,
+          "mtime_ns": "1790974186355187193",
+          "read_at_utc": "2026-10-16T11:02:07.922286+00:00",
+          "sha256": "f44943df65f90d88afe5e2651c1c23263b2fb713b39ff8add9190ee3aca002ea",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/search-r1-h20-performance-comparison.md",
+          "bytes": 7257,
+          "mtime_ns": "1791013601121909579",
+          "read_at_utc": "2026-10-16T11:02:07.922313+00:00",
+          "sha256": "925f260111fa06ee41c42a2be7516106fcd65376b849455cde48aeee7c76c908",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/search-r1-standard32b-grpo100-initial-source-review.md",
+          "bytes": 4011,
+          "mtime_ns": "1791094162143056717",
+          "read_at_utc": "2026-10-16T11:02:07.922340+00:00",
+          "sha256": "996452035f3a92a292beb8739828ac40b4dbda1f9bfe49c8df143b90195b65a8",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/standard-search-r1-teacher-identity-v3-freeze.json",
+          "bytes": 1284,
+          "mtime_ns": "1791099259707663928",
+          "read_at_utc": "2026-10-16T11:02:07.922365+00:00",
+          "sha256": "06439931214167b37208fcc2f41e89fe6b7ed07aa39f28ccd5cc740dcced70d0",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/topd/topd-32b-grpo100-memory-static-review.md",
+          "bytes": 6318,
+          "mtime_ns": "1791030379592363754",
+          "read_at_utc": "2026-10-16T11:02:07.922389+00:00",
+          "sha256": "29b1a36c1e4702021e2200ad5cd458c79a410868368b8d2a29c868c99320faed",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/FAIR_CONTROL_PRECHECK.md",
+          "bytes": 5441,
+          "mtime_ns": "1791008706785404586",
+          "read_at_utc": "2026-10-16T11:02:07.922417+00:00",
+          "sha256": "74ebe1f595df03c2420735a1b4b795cb948bae95da5536c0217bb44ba212a652",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/REPORT.md",
+          "bytes": 5460,
+          "mtime_ns": "1791814802996565429",
+          "read_at_utc": "2026-10-16T11:02:07.922447+00:00",
+          "sha256": "473c330c32fdb2606a0b257d03382f0969539016a0feb85ee4e6cf294f0e2045",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/STATUS.json",
+          "bytes": 10414,
+          "mtime_ns": "1791814802987454631",
+          "read_at_utc": "2026-10-16T11:02:07.922471+00:00",
+          "sha256": "0e268a30b7f75388a00746a4812a6f807d5d95a96f0038de804c54bc47155ffd",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/manifest.json",
+          "bytes": 12199,
+          "mtime_ns": "1790996595102534464",
+          "read_at_utc": "2026-10-16T11:02:07.922498+00:00",
+          "sha256": "dfa782d7ccd0efc3b598f568bd496c5a9f102e0109bb0dfe13ba48576bf19e72",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/GRPO_COMPARISON_AVAILABILITY.json",
+          "bytes": 1220,
+          "mtime_ns": "1791356410291260243",
+          "read_at_utc": "2026-10-16T11:02:07.922527+00:00",
+          "sha256": "5b340ff28d808f6ed1de74bb035e1e2b8aa5124a13775db4cda8d3fd8791b96c",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-fresh200/LATEST_GRPO_CONTROL_READONLY.json",
+          "bytes": 15390,
+          "mtime_ns": "1791372073346674406",
+          "read_at_utc": "2026-10-16T11:02:07.922551+00:00",
+          "sha256": "4b2c69002bff5f609a7bc5ad17bf946ae3d1efb5b80ec69c00b19891d9c9fc03",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/PLAN.md",
+          "bytes": 22744,
+          "mtime_ns": "1790946297765396594",
+          "read_at_utc": "2026-10-16T11:02:07.922581+00:00",
+          "sha256": "5655a6b2428107418a5308a1d7bafee85be5bc115d6018dba944bf2e8a716beb",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/REVIEW.md",
+          "bytes": 1093,
+          "mtime_ns": "1790946343633123048",
+          "read_at_utc": "2026-10-16T11:02:07.922617+00:00",
+          "sha256": "2f76ceff3e083bf62436e73b0809395ee8991aef59b1ed8a19ca06c03d95a91d",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/allocations.json",
+          "bytes": 2048,
+          "mtime_ns": "1790946154977309167",
+          "read_at_utc": "2026-10-16T11:02:07.922640+00:00",
+          "sha256": "fdb016de072d00eb807729b7757e351ee49e0b3d42f274f4ee5c6c93eca70635",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/common-setup-state.json",
+          "bytes": 464,
+          "mtime_ns": "1790947731226484378",
+          "read_at_utc": "2026-10-16T11:02:07.922663+00:00",
+          "sha256": "819096d2668722b1ad08f419c2318d7bdb55c70fa3a9800a66d5577078f7d70d",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/extra-h100-resources.json",
+          "bytes": 2643,
+          "mtime_ns": "1790946207741100897",
+          "read_at_utc": "2026-10-16T11:02:07.922686+00:00",
+          "sha256": "376504e242d95519f2b19bdae1c8a503ae00e9b1ec3169467b1288f5b4512d2d",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/gpu-snapshot.json",
+          "bytes": 41539,
+          "mtime_ns": "1790946154977453334",
+          "read_at_utc": "2026-10-16T11:02:07.922709+00:00",
+          "sha256": "900ef6c1b02c6aac82d428764e3eefc6e6fa76e29d5a20d610bd71d3d79b9758",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/handoff-state.json",
+          "bytes": 676,
+          "mtime_ns": "1790946397383911022",
+          "read_at_utc": "2026-10-16T11:02:07.922753+00:00",
+          "sha256": "50c5473d5cc6a04f6640d1b0708a027d603cfec5ddda8a3ffc512f3321ec3ea5",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        },
+        {
+          "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/six-agent-plan-20261002/resources.json",
+          "bytes": 12744,
+          "mtime_ns": "1790946154977905333",
+          "read_at_utc": "2026-10-16T11:02:07.922775+00:00",
+          "sha256": "133e757ba1545493d29f314b56010e3cbfbac3d2f57494a6c16885a090d792ea",
+          "content_read": true,
+          "read_mode": "SMALL_METADATA_SHA_READBACK",
+          "stable_observation": true,
+          "new_or_changed_since_prior_readback": false
+        }
+      ]
+    }
+  ],
+  "between_readbacks_seconds": null,
+  "all_selected_size_mtime_ns_and_small_file_SHA_equal": true,
+  "readable_document_count": 25,
+  "readable_document_total_bytes_per_pass": 1258817,
+  "stat_only_document_count": 3,
+  "stat_only_paths": [
+    "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/bapo/STATUS.json",
+    "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/bapo/bapo-fp32-comparison-independent-recomputed.json",
+    "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/opsd/STATUS.json"
+  ],
+  "stat_only_fresh_content_SHA_unknown": true,
+  "changed_readable_fixed_reference_files": [],
+  "newly_included_document_names": [],
+  "findings": {
+    "actual_control2979": "Historical five-update plain GRPO /64-row short result; no matched200+51713.",
+    "actual_control2985": "Historical stopped24/500 /3B Base /mini256 micro64 /old split; no matched Instruct200+51713.",
+    "actual_teacher3228": "Historical standard32B Base teacher89/100, HF85; no complete51713 and wrong model/budget.",
+    "newly_scoped_documents": "Top-level32B GRPO/source-memory notes and oldH20 comparison are historical preparation/performance notes, not a matching completed run. Tree REPORT is another algorithm. Six-agent PLAN explicitly describes historical3B Base protocol/micro8; common resource snapshots do not establish completed matching GRPO.",
+    "all_required_matching_evidence_jointly_established": false,
+    "old_H20_GiGPO_BAPO_TOPD_Tree_substituted": false,
+    "current_refresh_change": "All28 paths retain prior size/mtime and all25 readable documents retain prior SHA;no new matching-control evidence appeared within this saved scope."
+  },
+  "remaining_required_evidence": [
+    "Actual same official3B-Instruct aa8e +split0b002b +current H100/backend/precision/PPO/config bound plain GRPO run",
+    "200 actually credited updates",
+    "Complete source/config-bound51713 final rows and F1/EM"
+  ],
+  "interpretation_limit": "In the explicitly saved28 local public metadata paths, no jointly source/config-bound plain GRPO official3B-Instruct matching H100/backend/split512x5 mini128 micro16 plus actual200 completed outers and51713 final rows is established. Three large files remain stat-only. No global absence or fairness/effect conclusion is claimed;metadata mtime does not newly observe remote training.",
+  "operations": {
+    "remote": false,
+    "SSH": false,
+    "other_task_messages": false,
+    "job_actions": false,
+    "training_actions": false,
+    "canonical_STATUS_REPORT_FUP_observer_modified": false,
+    "public_owner_files_modified": false,
+    "code_modified": true,
+    "tests_or_new_reviews": false,
+    "refresh_execution_source_persisted": true,
+    "training_source_modified": false,
+    "new_source_implementation_created": false
+  },
+  "mirrors": [
+    "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch",
+    "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch"
+  ],
+  "both_mirrors_byte_readback_passes": 2,
+  "fixed_input_pins_freshly_reread_in_this_refresh": false
+}
