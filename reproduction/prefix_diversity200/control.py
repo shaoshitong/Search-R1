@@ -118,7 +118,7 @@ once(prep/'deploy-receipt.json',result);print(json.dumps(result))
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase', choices=('deploy', 'import-resume', 'submit', 'query', 'observe'))
+    parser.add_argument('phase', choices=('deploy', 'import-resume', 'import-partial', 'submit', 'query', 'observe'))
     parser.add_argument('--target', choices=('h100-8','h100-10'), default='h100-10'); parser.add_argument('--base', required=True); parser.add_argument('--commit'); parser.add_argument('--config')
     parser.add_argument('--receipts', required=True); parser.add_argument('--reuse-source-commit'); parser.add_argument('--reuse-source-repo')
     args = parser.parse_args()
@@ -129,6 +129,8 @@ def main():
         built = archive_for_commit(args.commit, args.reuse_source_commit)
         code = deployment_script(args.base, args.commit, json.loads(Path(args.config).read_text()), built,
                                  args.reuse_source_commit, args.reuse_source_repo)
+    elif args.phase == 'import-partial':
+        code = 'import sys,json;sys.path.insert(0,'+repr(args.base+'/repo')+');from reproduction.prefix_diversity200.partial_import import import_partial;print(json.dumps(import_partial('+repr(args.base)+'),allow_nan=False))'
     elif args.phase == 'import-resume':
         code = import_resume_script(args.base)
     else:

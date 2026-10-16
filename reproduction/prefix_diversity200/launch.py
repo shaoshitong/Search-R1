@@ -129,7 +129,7 @@ def reused_phase(base, root, phase, c):
     if not path.exists():
         return False
     imported = read(base / 'preparation/resume-import-receipt.json')
-    if (c.get('resume_import', {}).get('source_base') != imported['source_base']
+    if ((c.get('resume_import') or c.get('partial_outer_resume') or {}).get('source_base') != imported['source_base']
             or imported['run_id'] != c['run_id'] or imported['outer'] != 1
             or imported['phase_hashes'][phase] != sha(path)):
         raise ValueError('Existing phase is not the explicitly inherited complete source')
@@ -167,7 +167,9 @@ def run(base):
         (base / name).mkdir(parents=True, exist_ok=True)
     python = str(Path(c['environment_root']) / 'bin/python')
     conf = str(base / 'preparation/launch-config.json')
-    outer = 0; services = {}; success = False; timings = {}; actor_micro = c['actor_global_micro_batch_size']
+    outer = 0; services = {}; success = False; actor_micro = c['actor_global_micro_batch_size']
+    imported_path = base/'preparation/resume-import-receipt.json'
+    timings = read(imported_path).get('inherited_successful_phase_timings', {}) if imported_path.exists() else {}
 
     def stage(name, **extra):
         publish(base / 'logs/pipeline-status.json', dict(run_id=c['run_id'], stage=name,
@@ -250,7 +252,7 @@ def run(base):
                 actor_version=actor['actor_version'] if actor else c['run_id'] + '-official0')
             actor_binding_path = root / 'actor-binding.json'
             if actor_binding_path.exists():
-                if not c.get('resume_import') or read(actor_binding_path) != actor_binding:
+                if not (c.get('resume_import') or c.get('partial_outer_resume')) or read(actor_binding_path) != actor_binding:
                     raise ValueError('Inherited actual actor binding differs')
             else:
                 once(actor_binding_path, actor_binding)
@@ -262,34 +264,46 @@ def run(base):
                     ['score', '--state-dir', str(base / 'probe'), '--prefix-inputs', str(root / 'prefix/scan'),
                      '--output', str(root / 'probe-score'), '--outer', str(outer), '--model-dir', c['official_model_dir'],
                      '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256))]))
-            phase('outer-%06d-continue' % outer, [python, '-m', 'reproduction.prefix_diversity200.rollout',
-                '--config', conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(root / 'probe-score/selection.json')])
-            phase('outer-%06d-diversity-selection' % outer, [python, '-m', 'reproduction.prefix_diversity200.diversity',
-                '--config', conf, '--outer', str(outer)])
+            if not reused_phase(base, root, 'full', c):
+                phase('outer-%06d-continue' % outer, [python, '-m', 'reproduction.prefix_diversity200.rollout',
+                    '--config', conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(root / 'probe-score/selection.json')])
+            if not reused_phase(base, root, 'actor-selection', c):
+                phase('outer-%06d-diversity-selection' % outer, [python, '-m', 'reproduction.prefix_diversity200.diversity',
+                    '--config', conf, '--outer', str(outer)])
             # Retry only an actual typed CUDA OOM, after all failed owned workers
             # have exited. Restore the previous committed state and SAME rollout;
             # never combine an abandoned partial Adam prefix with the retry.
-            from .actor import collect_oom_retry
-            attempt_id = uuid.uuid4().hex
-            while True:
-                attempt_config = dict(c, actor_attempt_id=attempt_id,
-                    actor_global_micro_batch_size=actor_micro)
-                attempt_path = root / ('actor-attempt-%s-config.json' % attempt_id)
-                once(attempt_path, attempt_config)
-                code = phase('outer-%06d-actor-%s' % (outer, attempt_id), distributed('reproduction.prefix_diversity200.actor',
-                    ['--config', str(attempt_path), '--outer', str(outer), '--rollout', str(root / 'actor-selection/complete.json'),
-                     '--output', str(base / 'actor')]), allow_failed=True)
-                if code == 0:
-                    break
-                retry = collect_oom_retry(base / 'actor', attempt_path, outer, root / 'actor-selection/complete.json',
-                    attempt_id, phase_exit_code=code)
-                once(root / ('actor-attempt-%s-recovery.json' % attempt_id), retry)
-                if retry['status'] == 'ACTOR_ALREADY_COMMITTED':
-                    break
-                if not retry.get('retry'):
-                    raise RuntimeError('Actual actor failure requires repair: '+json.dumps(retry))
-                actor_micro = retry['actor_global_micro_batch_size']
-                attempt_id = retry['new_attempt_id']
+            inherited_actor = read(base/'actor/latest.json') if (base/'actor/latest.json').exists() else None
+            actor_already_complete = inherited_actor and inherited_actor['completed_outer'] == outer
+            if actor_already_complete:
+                imported = read(base/'preparation/resume-import-receipt.json')
+                if (not c.get('partial_outer_resume') or imported['outer'] != outer
+                        or imported['inherited_actor_receipt_sha256'] != sha(base/'actor/latest.json')
+                        or inherited_actor['actual_adam_steps_per_rank'] != [20*outer]*8
+                        or inherited_actor['original_rollout_sha256'] != sha(root/'actor-selection/complete.json')):
+                    raise ValueError('Previously committed actor cannot be silently rerun or replaced')
+            if not actor_already_complete:
+                from .actor import collect_oom_retry
+                attempt_id = uuid.uuid4().hex
+                while True:
+                    attempt_config = dict(c, actor_attempt_id=attempt_id,
+                        actor_global_micro_batch_size=actor_micro)
+                    attempt_path = root / ('actor-attempt-%s-config.json' % attempt_id)
+                    once(attempt_path, attempt_config)
+                    code = phase('outer-%06d-actor-%s' % (outer, attempt_id), distributed('reproduction.prefix_diversity200.actor',
+                        ['--config', str(attempt_path), '--outer', str(outer), '--rollout', str(root / 'actor-selection/complete.json'),
+                         '--output', str(base / 'actor')]), allow_failed=True)
+                    if code == 0:
+                        break
+                    retry = collect_oom_retry(base / 'actor', attempt_path, outer, root / 'actor-selection/complete.json',
+                        attempt_id, phase_exit_code=code)
+                    once(root / ('actor-attempt-%s-recovery.json' % attempt_id), retry)
+                    if retry['status'] == 'ACTOR_ALREADY_COMMITTED':
+                        break
+                    if not retry.get('retry'):
+                        raise RuntimeError('Actual actor failure requires repair: '+json.dumps(retry))
+                    actor_micro = retry['actor_global_micro_batch_size']
+                    attempt_id = retry['new_attempt_id']
             phase('outer-%06d-probe-update' % outer, distributed('reproduction.prefix_diversity200.probe',
                 ['update', '--state-dir', str(base / 'probe'), '--scored-features', str(root / 'probe-score'),
                  '--own-em', str(root / 'full/own-em.jsonl'), '--output', str(root / 'probe-update'),
