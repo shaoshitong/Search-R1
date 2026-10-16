@@ -38,3 +38,12 @@ Actor仍从官方Qwen2.5-3B-Instruct revision `aa8e72537993ba99e69dfaafa59ed015b
 固定512身份与候选池仅做必要CPU元数据准备，不读大型feature tensor、不重新编码或生成teacher。模型、状态、轨迹、检索缓存及最终输出全部留远端；Git只包含代码、配置、文档与小型scalar/hash。
 
 必要纯CPU检查覆盖：四卡virtual8目标及梯度等价、完整20更新计划、native lookahead身份/未来token排除、100步完整G5计划、EMA/raw严格区别、缺权重failclosed、合法zero-EOS；不新增GPU测试。实际部署、CPU prepare、actor Adam和首完整outer的事实应追加执行回执，代码完成或launch成功本身不是训练验收。
+
+## 本次实际部署记录（截至优雅切换阶段）
+
+- 已发布运行源码`2c0b5fbfe5a61d8bb1c0d407b0109c4012a2d286`，新run `411c44aad7ba4e8c90f5fbec9e5ecbaa`、execution `9074575c76e3484baa5fd0f920e7ff91`；A800逐文件校验1267项一致。
+- 原v1只在CPU资格检查退出：实际Transformers4.46.3同时保留`block.self_attn.rotary_emb.inv_freq`与`rotary.inv_freq`。修复后两者都严格保存/加载，v1原source/log/claim/CP5封存候选完整保留，无GPU启动或旧训练停止。
+- v2首次源码传输Broken pipe；实际只读reconcile证明目标目录不存在，原stage未开始。随后同一源码stage成功，不涉及重复训练启动。
+- v2 CPU prepare实际exit0，完整第5轮EMA状态1242424352B，SHA `b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594`。14个learned张量、两套nativeRoPE buffer及完整metrics/checkpoint/complete闭合，CPU资格SHA `133b8e4bf5212b54feaea24cd2c09630b5e3a015e9f8c2c7375e7a8a3f004fb7`；这不是CUDA训练验收。
+- 固定512题身份与canonical169028一致，排除同qid/规范化文本并去重后候选池168510题；未重新生成teacher或编码旧feature。
+- 旧warmup精确rank0在Unix1792172611.6539757收到一次pidfd SIGTERM，进入保存/退出过程；首个停止后实测仍有6个旧ownedbirth存活，新actor尚未launch。旧状态保存和所有ownedwriter退出闭合后才准入新trainer。
