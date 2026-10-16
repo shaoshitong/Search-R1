@@ -84,7 +84,9 @@ print(json.dumps(out,allow_nan=False))
             for k,r in cost['complete_outer_rows'].items()},
         scope='original saved selected512G5 actor grounding reward; distinct from EM/prefix probe and heldout QA; no new forward')
     actual = read(work/'LATEST_ACTUAL.json')
-    job_ids = list(dict.fromkeys(['3416','3417','3418','3421',str(state['job_id'])]))
+    previous_reservation = read(work/'RESERVATION_COST_EVIDENCE.json')
+    job_ids = list(dict.fromkeys(['3416','3417','3418','3421'] +
+        list(previous_reservation.get('jobs',{})) + [str(state['job_id'])]))
     reservation = reservation_cost(work, config['run_id'], job_ids)
     reservation.update(reader_commit=commit,
         reader_sha256=hashlib.sha256((repo/'reproduction/prefix_diversity200/cost_reservation.py').read_bytes()).hexdigest())
