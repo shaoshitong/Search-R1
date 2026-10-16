@@ -148,17 +148,22 @@ def collect(bases, run_id, maximum_new_outers=2):
     output = canonical[-1]/'preparation/retrieval-cost-v1'
     output.mkdir(exist_ok=True)
     proofs = {}
+    cache_paths = {}
     created = []
     for outer, (base, path) in sorted(complete.items()):
         destination = output/('outer-%06d.json' % outer)
-        if destination.exists():
-            proof = read(destination)
+        cached = next((candidate/'preparation/retrieval-cost-v1'/destination.name
+                       for candidate in reversed(canonical)
+                       if (candidate/'preparation/retrieval-cost-v1'/destination.name).is_file()), None)
+        if cached is not None:
+            proof = read(cached)
             if (proof['run_id'] != run_id or proof['outer'] != outer
                     or proof['execution_base'] != str(base)
                     or any(digest(p) != expected for p, expected in
                         dict(proof['receipt_sha256'], **proof['source_namespace_config_sha256']).items())):
                 raise ValueError('Existing cost proof no longer binds the original receipts')
             proofs[str(outer)] = proof
+            cache_paths[str(outer)] = str(cached)
         elif len(created) < maximum_new_outers:
             proof = summarize(base, outer, run_id)
             descriptor, staging = tempfile.mkstemp(prefix='.cost-proof-', dir=output)
@@ -171,9 +176,11 @@ def collect(bases, run_id, maximum_new_outers=2):
             finally:
                 os.unlink(staging)
             proofs[str(outer)] = proof
+            cache_paths[str(outer)] = str(destination)
             created.append(outer)
     return dict(run_id=run_id, observed_unix=time.time(), output_directory=str(output),
         new_complete_outer_proofs=created, complete_outer_rows=proofs,
+        verified_proof_cache_paths=cache_paths,
         pending_complete_outers=sorted(set(complete)-set(map(int, proofs))),
         total_distinct_logical_retrieval_calls=sum(p['total_distinct_logical_retrieval_calls'] for p in proofs.values()),
         model_tensors_read=False, new_model_forward=False, training_modified=False)
