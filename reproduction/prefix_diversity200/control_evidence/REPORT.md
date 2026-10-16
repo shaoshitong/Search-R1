@@ -1,11 +1,11 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Actual complete37/200; job3422 RUNNING on h100-10/10.33.0.18, stage outer-000038-prefix. Saved actor/probe Adam per8rank: [740, 740, 740, 740, 740, 740, 740, 740] / [740, 740, 740, 740, 740, 740, 740, 740]. Completed joint counters: [740, 740, 740, 740, 740, 740, 740, 740] / [740, 740, 740, 740, 740, 740, 740, 740]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
+Actual complete38/200; job3422 RUNNING on h100-10/10.33.0.18, stage outer-000039-prefix. Saved actor/probe Adam per8rank: [760, 760, 760, 760, 760, 760, 760, 760] / [760, 760, 760, 760, 760, 760, 760, 760]. Completed joint counters: [760, 760, 760, 760, 760, 760, 760, 760] / [760, 760, 760, 760, 760, 760, 760, 760]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
 Latest QA: outer5,512questions EM24.6094% / F130.6097%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.
-Recent actual same3422 completejoint intervals[430.61194467544556, 430.32000207901, 430.14314103126526, 432.75792241096497]; mean430.958s=7.183min. Startup,QA,failure/repair are separate.
+Recent actual same3422 completejoint intervals[430.32000207901, 430.14314103126526, 432.75792241096497, 436.874564409256]; mean432.524s=7.209min. Startup,QA,failure/repair are separate.
 
-Latest actor512 mixed65.2344%, meanEMvariance0.12500000, selected frozen meanpredictedmixed0.72476836. Continued1024 mixed32.6172%; uncontinued4096 have no outcome labels.
+Latest actor512 mixed60.1562%, meanEMvariance0.11671875, selected frozen meanpredictedmixed0.75161261. Continued1024 mixed30.0781%; uncontinued4096 have no outcome labels.
 
 |Complete outer|Continued1024 mixed|Actor512 mixed|Actor512 variance|Probe train ordinary / balanced|Probe fixed512 ordinary / balanced|
 |---|---:|---:|---:|---:|---:|
@@ -46,6 +46,7 @@ Latest actor512 mixed65.2344%, meanEMvariance0.12500000, selected frozen meanpre
 |35|31.64%|63.28%|0.123281|40.62% / 54.00%|64.06% / 54.46%|
 |36|30.86%|61.72%|0.122188|44.63% / 54.96%|64.45% / 54.15%|
 |37|32.62%|65.23%|0.125000|41.60% / 52.57%|63.67% / 53.79%|
+|38|30.08%|60.16%|0.116719|36.62% / 52.37%|63.87% / 54.79%|
 
 20-point probe losses and all6stagewall durations are in COMPLETED_ITERATION_SCALAR_EVIDENCE.json and ITERATION_METRICS.csv. Different natural batches mean first/last loss is not a monotonic same-batch fitting claim. Actor-selected allpositive balancedaccuracy is undefined when there is no negativeclass.
 
@@ -59,12 +60,12 @@ Cost: COST_SNAPSHOT.json contains existing native token/request metadata and pha
 
 Completion remains unproven: actual200, normal50/100/150/200checkpoint/QA, fullseven51713, HF/tokenizer/nativefinite/nonzeroupdate/source/split identity, cost/ownedcleanup and finalpublication. GoalACTIVE; no stop/restart is performed by this reader.
 
-Latest passive telemetry2123 samples, last observed1792172919.3137019; errors[], wholecard maxused81065MiB/minfree17MiB (coverage above).
+Latest passive telemetry2203 samples, last observed1792173369.012993; errors[], wholecard maxused81065MiB/minfree17MiB (coverage above).
 
 ## Original reward and scoped costs
 
-Original saved actor grounding reward outer37 selected512G5/2560 mean0.96998820, min-0.10000000, max1.59958780. All8rank statistics finite; prefix correctness head not used as reward. Original joint receipt hashes bind history1–37; no new forward. Selected training reward is distinct from heldout QA or proof of selection benefit.
+Original saved actor grounding reward outer38 selected512G5/2560 mean0.96587449, min-0.10000000, max1.59294236. All8rank statistics finite; prefix correctness head not used as reward. Original joint receipt hashes bind history1–38; no new forward. Selected training reward is distinct from heldout QA or proof of selection benefit.
 
-Committed generation/retrieval through37/37: 33706739 sampled tokens, 199318 logical searches; backlog[]. Inherited prefix searches not doubled; actor512 subset not added. Failed attempts, QA, HTTP retries/cache misses and physical FAISS calls separately scoped.
+Committed generation/retrieval through38/38: 34536910 sampled tokens, 204459 logical searches; backlog[]. Inherited prefix searches not doubled; actor512 subset not added. Failed attempts, QA, HTTP retries/cache misses and physical FAISS calls separately scoped.
 
-Historical terminal reservations 6.004444 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total37.293333 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
+Historical terminal reservations 6.004444 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total38.288889 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
