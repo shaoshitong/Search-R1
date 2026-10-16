@@ -39,8 +39,8 @@
   "current_sources": {
     "final_original_costs200.py": {
       "path": "final_original_costs200.py",
-      "bytes": 51229,
-      "sha256": "a1fd0a3d05f00336c08e7d0875cd943d5968d2869a3c6713d245aa5ae7ae371e"
+      "bytes": 51307,
+      "sha256": "2dc7f95b417204862b1207e1e1bca0b4db7f9f08533d5b688dad763ed95d875a"
     },
     "final_original_costs200_remote.py": {
       "path": "final_original_costs200_remote.py",
@@ -77,5 +77,7 @@
   "source1ed_new_calls": 0,
   "old190_results_modified": false,
   "verification": "AST parsing of all three sources and assembled remote fragments; small extracted pure-helper assertions for original dev5 phase, partial known sums, O_EXCL exclusive acquisition, exact framed-response roundtrip and local mirror recovery. No import/main/H100/runtime/compilation/training tests or new review.",
-  "verification_fixture_note": "First isolated temporary O_EXCL assertion fixture used macOS /var alias rather than resolved /private/var; corrected only temporary fixture root resolution, then remaining checks passed. No production artifact was involved."
+  "verification_fixture_note": "First isolated temporary O_EXCL assertion fixture used macOS /var alias rather than resolved /private/var; corrected only temporary fixture root resolution, then remaining checks passed. No production artifact was involved.",
+  "additional_repair_of_commit": "516aceadb27e77d02eaefdf2b17d356edfc286bc",
+  "additional_repair": "When primary CAPTURE_READBACK already exists, verify its product then publish its exact existing bytes to all three copies and register it in GENERATED before checks; preserve original timestamps and no SSH."
 }

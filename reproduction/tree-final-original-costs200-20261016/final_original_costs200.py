@@ -505,7 +505,9 @@ def finish_collect(args,values,header,stdout,stderr,response_name):
                 source_inputs=list(LOCAL.values()),protected_original_readbacks=readbacks,remote_calls=1,
                 training_or_evaluation_operations=False,full_native_recapture=False)))
     else:
-        previous=strict(readback.read_bytes());need(previous['product']==product,'Existing completed capture readback differs')
+        previous_raw=readback.read_bytes();previous=strict(previous_raw)
+        need(previous['product']==product,'Existing completed capture readback differs')
+        publish(readback.name,previous_raw)
     checks()
     print(json.dumps(dict(status='ORIGINAL200_CAPTURED_NOT_FINAL_ACCEPTANCE',product=product,remote_calls=1,
                           source1ed_calls=0,actual_training201_claimed=False)))
