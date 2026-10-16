@@ -1,3 +1,13 @@
+## Requested complete20 retention control
+
+A separate CPU-only worker waits for the real joint20 completion and hardlinks its declared actor HF files, all8 Adam/RNG states, driver, complete probe100/Adam/RNG state, committed pool snapshot, config and source identity into preparation/retained-joint20-once-v1/checkpoint. JOINT.json relocates resumable paths and RESTORE-MAPPING.json records source→retained names. This preserves actual inodes if normal rotation later unlinks their original names. It does not alter frozen training code, budgets, loss or optimizer; no tensors are forwarded/deserialized or large model files rehashed during pinning. Same-disk retention is explicitly not an independent backup or a full SHA/semantic validation claim.
+
+The start controller owns exclusive INTENT/RECEIPT and never launches a second worker on replay. The worker polls only a local commit file, uses noGPU and finishes after20 or a bounded6hour wait. Missing/changed assets produce a retention error while preserving the source; training is never signalled. Three CPU tests passed: hardlinks survive source unlink with all fixture bytes intact, partial actor clocks/missing ranks cannot be pinned, and absent joint20 stays pending without a pin intent. Deployment/arming and actual20 preservation remain pending until separately observed.
+
+A subsequent direct alias read recovered actual3426 RUNNING complete13/actor260 per rank/probe0 and14 actor training; earlier first-hop failures did not establish a native exit. No global SSH/auth/network changes were made and no training restarted.
+
+---
+
 ## Actual resumed6–10 plus11 acceptance
 
 Same3426 h100-8 completed6–10 after the retained5 import: all40 original actor rank ledgers independently read,20 writes each, cumulative200/rank at10, no abandoned partial stitching. First6 actually restoredAdam100/scheduler5 on all8 ranks; all40 prefix rank receipts capture current samplingactor native layer27 with no independentencoder forward. Probe remains0 as required before20. All5 selected G5 sets used the new serialized probe0 binding with LR1e-5;14 tensor values are unchanged from source5. Actual optimizer updates at1e-5 are due at20, not claimed already.
