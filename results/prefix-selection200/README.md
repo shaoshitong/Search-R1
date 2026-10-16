@@ -89,3 +89,14 @@ failed logs and raw partial trajectories remain at source.67 recorded owned
 births, native cgroups and GPU processes were actually absent in the subsequent
 terminal readback. The earlier transient retriever zombie is retained in its
 original cleanup receipt, rather than rewritten as all-gone.
+
+
+## Human stop at outer21 (2026-10-16 UTC14:47)
+
+The user explicitly stopped this experiment. Job3420 CANCELLED0:2; complete21 actor420/probe210 Adam per rank; outer22 prefix incomplete. Automatic training supervision was deleted; do not restart. Results and the existing independent CP5 backup remain remote.
+
+The correctness representation is from a separate frozen official Qwen encoder index27, using actual question+20 actor-generated policy tokens. It is not an updated actor hidden state.
+
+At outer21 after its ten probe updates, the selected512 training groups have TP78/FN0 and TN0/FP434 (ordinary15.23%, balanced50%). The fixed cached512 diagnostic groups have TP4/FN179 and TN288/FP41 (ordinary57.03%, balanced44.86%). Training nonmixed groups comprise423 allwrong and11 allcorrect, all misclassified as mixed after the update. Before updating, selected mean predicted q=.649594, actualmixed78/512=.152344. These are selection-distribution and cached-diagnostic metrics, not current actor fixedQA EM/F1. Selection bias and distribution mismatch require a revised design; no single causal attribution is established.
+
+Small original metrics and exact scoped stop authorization are under reproduction/evidence/prefix-selection200/human-stop21-*.json. No weights, raw trajectories or full predictions were copied to Mac.
