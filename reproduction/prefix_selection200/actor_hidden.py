@@ -37,10 +37,11 @@ def query_mapping(metadata, query_lens, tokens, positions):
 
 class ActorHiddenCapture:
     """Per-worker CPU buffers; GPU tensors live only for one native model call."""
-    def __init__(self, engine, actor_version):
+    def __init__(self, engine, actor_version, failure_context_path=None):
         import torch
         self.torch = torch
         self.actor_version = actor_version
+        self.failure_context_path = failure_context_path
         self.requests, self.trajectories = {}, {}
         self.calls, self.captured_rows, self.elapsed_seconds = 0, 0, 0.0
         self.query_rows, self.native_hidden = None, None
@@ -67,13 +68,40 @@ class ActorHiddenCapture:
             import time
             start = time.monotonic()
             capture.native_hidden = None
-            value = capture.original_execute(*args, **kwargs)
+            try:
+                value = capture.original_execute(*args, **kwargs)
+            except Exception as error:
+                try:
+                    capture.preserve_failed_input(error)
+                except Exception as preservation_error:
+                    import warnings
+                    warnings.warn('Could not preserve CPU execution context: ' + repr(preservation_error))
+                raise
             capture._consume_native()
             capture.elapsed_seconds += time.monotonic()-start
             return value
 
         runner.prepare_model_input = types.MethodType(prepare, runner)
         runner.execute_model = types.MethodType(execute, runner)
+
+    def preserve_failed_input(self, error):
+        """Retain already-CPU inputs; never touch a poisoned CUDA context."""
+        if self.failure_context_path is None:
+            return
+        import json
+        import os
+        import time
+        path = Path(self.failure_context_path)
+        if path.exists():
+            return
+        value = dict(actor_version=self.actor_version, completed_native_calls=self.calls,
+            failed_native_call=self.calls + 1, error=repr(error), checked_unix=time.time(),
+            query_rows=self.query_rows,
+            request_bindings={row['request_id']: self.requests.get(row['request_id'])
+                              for row in self.query_rows or []},
+            gpu_tensor_read_attempted=False, training_modified=False)
+        with path.open('x') as handle:
+            json.dump(value, handle, sort_keys=True); handle.flush(); os.fsync(handle.fileno())
 
     def register(self, state, request):
         """Bind positions before add_request; only actual causal inputs qualify."""

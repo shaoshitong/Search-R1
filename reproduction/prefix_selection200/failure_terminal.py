@@ -48,7 +48,7 @@ def inspect(base, job):
     known_failure = native.get('JobState') in ('FAILED', 'OUT_OF_MEMORY', 'TIMEOUT', 'NODE_FAIL')
     purged_failure = (query.returncode != 0 and queue.returncode == 0 and job not in queue.stdout.split()
                       and bool(exits) and exits[-1] != 0)
-    if (not (known_failure or purged_failure) or not cleanup.get('owned_births_all_gone')
+    if (not (known_failure or purged_failure)
             or any(check['actual_births_present'] for check in release_checks)
             or cgroups or owned_gpu or gpu.returncode):
         return dict(status='PENDING_ACTUAL_FAILURE_RELEASE', native=native, release_checks=release_checks,
@@ -72,6 +72,7 @@ def inspect(base, job):
         run_id=ledger['run_id'], native=native, controller_lines=controller_lines,
         controller_observed_exit_status=exits[-1] if exits else None,
         actual_births_present=[], native_job_cgroup_paths=[], owned_gpu=[], release_checks=release_checks,
+        original_cleanup_receipt=cleanup,
         original_births=len(births), original_logs=records, checked_unix=time.time(),
         latest_complete_outer=json.loads(joint.read_text())['outer'],
         joint_complete_sha256=hashlib.sha256(joint.read_bytes()).hexdigest(),

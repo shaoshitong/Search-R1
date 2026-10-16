@@ -524,7 +524,8 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     hidden_capture = hidden_writer = None
     if capture_hidden:
         from .actor_hidden import ActorHiddenCapture, NativeFeatureWriter
-        hidden_capture = ActorHiddenCapture(engine, config['actor_version'])
+        hidden_capture = ActorHiddenCapture(engine, config['actor_version'],
+            failure_context_path=output / ('rank-%d-failed-native-cpu-input.json' % rank))
         hidden_writer = NativeFeatureWriter(output, rank, [row['trajectory_id'] for row in states])
     hidden_flushes = {}
     generation_path = Path(model) / 'generation_config.json'
@@ -854,6 +855,16 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
     return value
 
 
+def phase_worker_environment(config, outer, phase, rank, environment):
+    """Scope synchronization diagnostics to an actually failed worker/outer."""
+    result = dict(environment)
+    diagnostic = config.get('cuda_failure_diagnostic')
+    if (diagnostic and diagnostic['outer'] == outer and diagnostic['phase'] == phase
+            and diagnostic['rank'] == rank and diagnostic.get('launch_blocking')):
+        result['CUDA_LAUNCH_BLOCKING'] = '1'
+    return result
+
+
 def launch_phase(config_path, outer, phase, selection_path=None):
     """Own exactly8 native workers; phase completion includes their actual exit."""
     config=binding(read(config_path),outer);output=phase_output(config,outer,phase)
@@ -871,7 +882,9 @@ def launch_phase(config_path, outer, phase, selection_path=None):
             command=[sys.executable,'-m','reproduction.prefix_selection200.rollout','--config',str(config_path),
                      '--outer',str(outer),'--phase',phase,'--rank',str(rank)]
             if selection_path:command.extend(['--selection',str(selection_path)])
-            processes.append((rank,subprocess.Popen(command,stdout=stream,stderr=subprocess.STDOUT)))
+            environment = phase_worker_environment(config, outer, phase, rank, os.environ)
+            processes.append((rank,subprocess.Popen(command,stdout=stream,stderr=subprocess.STDOUT,
+                                                   env=environment)))
         while any(p.poll() is None for _,p in processes):
             failed={rank:p.returncode for rank,p in processes if p.poll() not in (None,0)}
             if failed:raise RuntimeError('Native phase worker failure: '+json.dumps(failed))
