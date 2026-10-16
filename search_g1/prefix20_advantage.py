@@ -1,5 +1,6 @@
 """Strict-EM gated virtual-zero baseline; no virtual policy training row."""
 from collections import defaultdict
+import numpy as np
 import torch
 
 
@@ -8,7 +9,10 @@ def anchored_grpo(token_level_rewards, eos_mask, index, strict_em, epsilon=1e-6)
         raise ValueError('PREFIX20_REWARD_MASK_SHAPE_MISMATCH')
     if len(index) != token_level_rewards.shape[0] or len(strict_em) != len(index):
         raise ValueError('PREFIX20_STRICT_EM_MUST_BE_ROW_ALIGNED_AFTER_BALANCING')
-    labels = torch.as_tensor(strict_em, device=token_level_rewards.device)
+    # DataProto non-tensor wire columns use object arrays. Convert their actual
+    # values to a numeric tensor without casting/truncating binary EM labels.
+    values = strict_em.tolist() if isinstance(strict_em, np.ndarray) and strict_em.dtype == object else strict_em
+    labels = torch.as_tensor(values, device=token_level_rewards.device)
     if labels.ndim != 1 or not bool(((labels == 0) | (labels == 1)).all()):
         raise ValueError('PREFIX20_REQUIRES_BINARY_STRICT_EM_NOT_SOFT_REWARD')
     if not bool(torch.isfinite(token_level_rewards).all()):
@@ -45,4 +49,5 @@ def strict_em_from_batch(data, tokenizer):
         answer = contexts('', text, ranges)
         ground_truth = item.non_tensor_batch['reward_model']['ground_truth']
         labels.append(int(answer is not None and em_check(answer['answer'], ground_truth['target'])))
-    return labels
+    # This column travels with the balanced row order through DataProto.chunk.
+    return np.asarray(labels, dtype=object)

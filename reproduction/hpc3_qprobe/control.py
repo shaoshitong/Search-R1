@@ -67,15 +67,31 @@ def prepare(base):
     link(base/'assets/e5-base-v2',REUSED/'source/assets-root/assets/e5-base-v2')
     link(base/'retriever-gpu-lib',REUSED/'runtime/gpu-faiss-alignment-candidate')
     headers(base,binary)
-    from reproduction.hpc3_qprobe.probe_cpu_runtime import verify as verify_probe_cpu,fit_gate
-    cpu_site,cpu_proof=verify_probe_cpu()
-    actual_cpu_fit=fit_gate()
-    cpu_binding=dict(root=str(cpu_site),status=cpu_proof['status'],
-        wheels=cpu_proof['wheels'],file_count=len(cpu_proof['files']),actual_fit=actual_cpu_fit)
+    from reproduction.hpc3_qprobe.probe_cpu_runtime import verify as verify_probe_cpu,fit_gate,root,lock
     cpu_receipt=base/'preparation/probe-cpu-runtime.json'
     if cpu_receipt.exists():
-        if json.loads(cpu_receipt.read_text())!=cpu_binding:raise ValueError('CPU runtime binding changed')
-    else:publish(cpu_receipt,cpu_binding)
+        # A copied, already verified receipt reuses this exact immutable private
+        # runtime. Check current pinned metadata, without rereading every vendor
+        # file or repeating the historical fitted-runtime gate on each bootstrap.
+        cpu_site=root()/'site-packages'
+        cpu_proof=json.loads((root()/'manifest.json').read_text())
+        actual_cpu_fit=json.loads((root()/'actual-fit.json').read_text())
+        cpu_binding=json.loads(cpu_receipt.read_text())
+        expected_versions=dict(joblib='1.4.2',sklearn='1.5.2',scipy='1.13.1',threadpoolctl='3.5.0',numpy='1.26.4')
+        if (cpu_receipt.is_symlink() or not cpu_site.is_dir() or cpu_site.is_symlink() or
+                cpu_proof['status']!='CPU_PROBE_WHEELS_FULL_SHA_PASS' or cpu_proof['wheels']!=lock() or
+                cpu_binding!=dict(root=str(cpu_site),status=cpu_proof['status'],wheels=cpu_proof['wheels'],
+                    file_count=len(cpu_proof['files']),actual_fit=actual_cpu_fit) or
+                actual_cpu_fit['status']!='CPU_PROBE_ACTUAL_FIT_AND_ROUNDTRIP_PASS' or
+                actual_cpu_fit['versions']!=expected_versions or actual_cpu_fit['site']!=str(cpu_site) or
+                actual_cpu_fit['actual_gpu_allocation'] is not False or actual_cpu_fit['actual_training_updates']!=0):
+            raise ValueError('CPU runtime binding changed')
+    else:
+        cpu_site,cpu_proof=verify_probe_cpu()
+        actual_cpu_fit=fit_gate()
+        cpu_binding=dict(root=str(cpu_site),status=cpu_proof['status'],
+            wheels=cpu_proof['wheels'],file_count=len(cpu_proof['files']),actual_fit=actual_cpu_fit)
+        publish(cpu_receipt,cpu_binding)
     wrapper='#!/usr/bin/env bash\nset -euo pipefail\n'
     wrapper+='export PYTHONPATH="${QPROBE_SOURCE:-'+str(base/'repo')+'}:'+str(cpu_site)+':'+str(REUSED/'runtime/gpu-faiss-alignment-candidate')+':'+str(site)+'${PYTHONPATH:+:$PYTHONPATH}"\n'
     wrapper+='export LD_LIBRARY_PATH="'+str(REUSED/'runtime/retriever-python310-candidate/lib')+'${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"\n'

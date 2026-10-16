@@ -1104,8 +1104,7 @@ class RayPPOTrainer(object):
                                 raise ValueError('PREFIX20_VIRTUAL_ZERO_REQUIRES_GRPO')
                             from search_g1.prefix20_advantage import strict_em_from_batch
                             # Compute at the balanced row order, independently of soft reward.
-                            batch.non_tensor_batch['prefix20_strict_em'] = np.asarray(
-                                strict_em_from_batch(batch, self.tokenizer), dtype=np.int8)
+                            batch.non_tensor_batch['prefix20_strict_em'] = strict_em_from_batch(batch, self.tokenizer)
 
                         # compute rewards. apply_kl_penalty if available
                         if not self.config.actor_rollout_ref.actor.use_kl_loss:

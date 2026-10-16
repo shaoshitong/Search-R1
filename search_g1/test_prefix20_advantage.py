@@ -1,4 +1,5 @@
 import unittest
+import numpy as np
 import torch
 from search_g1.prefix20_advantage import anchored_grpo
 
@@ -36,6 +37,19 @@ class VirtualZeroTest(unittest.TestCase):
             anchored_grpo(torch.ones(5, 1), torch.ones(5, 1), ['q']*5, [])
         with self.assertRaisesRegex(ValueError, 'COMPLETE_G5'):
             anchored_grpo(torch.ones(4, 1), torch.ones(4, 1), ['q']*4, [1]*4)
+
+    def test_object_wire_labels_preserve_numeric_advantages_exactly(self):
+        rewards=torch.arange(15,dtype=torch.float32).reshape(15,1)/13
+        mask=torch.ones_like(rewards);groups=['all']*5+['none']*5+['mixed']*5
+        labels=np.asarray([1]*5+[0]*5+[1,0,1,0,0],dtype=np.int8)
+        before=anchored_grpo(rewards,mask,groups,labels)
+        after=anchored_grpo(rewards,mask,groups,np.asarray(labels.tolist(),dtype=object))
+        for left,right in zip(before,after):torch.testing.assert_close(left,right,rtol=0,atol=0)
+
+    def test_object_wire_invalid_label_is_rejected_without_integer_truncation(self):
+        for values in ([1,1,1,1,.25],[1,1,1,1,float('nan')],[1,1,1,1,2],[[1],[1],[1],[1],[1]]):
+            with self.subTest(values=values),self.assertRaisesRegex(ValueError,'BINARY_STRICT_EM'):
+                anchored_grpo(torch.ones(5,1),torch.ones(5,1),['q']*5,np.asarray(values,dtype=object))
 
 
 if __name__ == '__main__': unittest.main()

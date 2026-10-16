@@ -7,7 +7,7 @@ import time
 from pathlib import Path
 
 from reproduction.common8.batch_contract import check_global
-from reproduction.common8.formal_contract import assert_formal_run, verify_formal_config, formal_mathematics
+from reproduction.common8.formal_contract import assert_formal_run, verify_formal_config, formal_mathematics, val_before_train
 from reproduction.common8.topology import world_size, actor_global_micro, monitor_trajectories_per_rank, execution_job_id
 from reproduction.common8.precision_contract import overrides as precision_overrides, verify as verify_precision_config
 
@@ -43,8 +43,8 @@ def arguments(base):
             raw=str(world_size(run))
         elif key=='actor_rollout_ref.rollout.gpu_memory_utilization':
             raw=str(run.get('vllm_gpu_memory_utilization',0.4))
-        elif key=='+trainer.val_before_train' and run.get('pretraining_baseline_policy')=='reuse_historical':
-            raw='false'
+        elif key=='+trainer.val_before_train':
+            raw=str(val_before_train(run)).lower()
         elif key=='+data.mixed_first_selection' and run.get('question_probe') is not None:
             raw='false'
         assert key not in [x.split('=', 1)[0] for x in overrides], 'Duplicate recipe override'

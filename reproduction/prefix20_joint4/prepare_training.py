@@ -34,9 +34,11 @@ def prepare(base,commit):
         execution_site='hpc3')
     from search_g1.prefix20_runtime import validate_config
     from search_g1.rollout_phase_contract import DEFAULT_ROLLOUT_PHASE,validate
+    from reproduction.common8.formal_contract import SKIP_INITIAL_EVALUATION_POLICY
     root=base/'assets/prefix20'
     run.update(data_selection_mode='prefix20_probe',mixed_first_selection=False,
         startup_admission_mode='actual_first_five',
+        pretraining_baseline_policy=SKIP_INITIAL_EVALUATION_POLICY,
         question_probe=validate_config(dict(model_dir=MODEL,head_safetensors=str(root/'head.safetensors'),
             probe_config=str(root/'probe-config.json'),eligible_pool_path=str(root/'eligible-question-pool.json'),
             output_dir=str(base/'artifacts/question-probe'),seed=1729)),

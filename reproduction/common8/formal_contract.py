@@ -13,6 +13,7 @@ WARMUP_STEPS = 57
 SAVE_STEPS = (5, 50, 100, 150, 200)
 PROBE_ROUNDS = (0, 50, 100, 150)
 SAFETY_MODE = 'inline_first_five'
+SKIP_INITIAL_EVALUATION_POLICY = 'skip_initial_evaluation_start_training'
 FORMAL_COUNTING = 'all20_opportunities_processed_and_at_least_one_write'
 FORMAL_SAFEGUARDS = dict(dual_clip=3.0,epsilon=0.2,target_old_policy_kl=0.2,
                          kl_log_bound=30.0,negative_tail_limit=0.01)
@@ -56,6 +57,23 @@ def has_formal_markers(run):
             run.get('lr_warmup_steps')==WARMUP_STEPS or budget.get('lr_warmup_steps')==WARMUP_STEPS)
 
 
+def skip_initial_evaluation(run):
+    """An explicit fresh native4 Prefix20 policy, without a historical baseline."""
+    if run.get('pretraining_baseline_policy') != SKIP_INITIAL_EVALUATION_POLICY:
+        return False
+    assert (run.get('profile') == 'common8' and run.get('execution_site') == 'hpc3'
+        and run.get('execution_backend', 'slurm') == 'slurm' and run.get('training_world_size') == 4
+        and run.get('startup_admission_mode') == 'actual_first_five'
+        and run.get('data_selection_mode') == 'prefix20_probe'
+        and run.get('question_probe', {}).get('probe_architecture') == 'qwen2_prefix20_trajectory_em_v1'
+        and not run.get('full_state_restore')), 'Initial evaluation skip requires fresh native4 Prefix20'
+    return True
+
+
+def val_before_train(run):
+    return run.get('pretraining_baseline_policy') != 'reuse_historical' and not skip_initial_evaluation(run)
+
+
 def assert_formal_run(run):
     assert run['profile'] == 'common8' and run['contract_kind'] == CONTRACT_KIND
     assert run.get('policy_calibration_role', 'production') == 'production'
@@ -65,6 +83,7 @@ def assert_formal_run(run):
     assert type(run['acceptance_update']) is int and run['acceptance_update'] == 5
     assert run['initial_model'] == run['reference_model']
     assert run['model_revision'] == 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
+    skip_initial_evaluation(run)
     size = world_size(run)
     if run.get('execution_backend', 'slurm') == 'ssh_local':
         assert size == 4 and run['training_world_size'] == 4
@@ -126,7 +145,7 @@ def verify_formal_config(document, run, base):
     exact(document['trainer'], dict(n_gpus_per_node=world_size(run), nnodes=1,
         total_training_steps=TARGET_UPDATES + 1, total_epochs=15, save_freq=50,
         test_freq=50, acceptance_step=5, val_only=False,
-        val_before_train=run.get('pretraining_baseline_policy')!='reuse_historical'), 'Training horizon')
+        val_before_train=val_before_train(run)), 'Training horizon')
     assert document['trainer']['default_local_dir'] == run['checkpoint_dir']
     if run.get('full_state_restore'):
         restore=run['full_state_restore']
