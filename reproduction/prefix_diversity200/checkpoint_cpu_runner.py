@@ -17,7 +17,10 @@ def once(path, value):
 def main():
     root = Path(__file__).resolve().parents[2]
     deploy = json.loads((root/'deploy-receipt.json').read_text()); c = deploy['config']
-    assert os.environ.get('CUDA_VISIBLE_DEVICES') == '' and c['outer'] == 5
+    assert os.environ.get('CUDA_VISIBLE_DEVICES') == '' and c['outer'] in (5,50,100,150,200)
+    config_path = Path(c['base'])/'preparation/launch-config.json'
+    config_sha = hashlib.sha256(config_path.read_bytes()).hexdigest()
+    assert not c.get('runtime_config_sha256') or config_sha == c['runtime_config_sha256']
     once(root/'reader-start.json', dict(pid=os.getpid(), proc_stat=Path('/proc/self/stat').read_text(),
          started_unix=time.time(), helper_commit=deploy['helper_commit'], CUDA_VISIBLE_DEVICES=''))
     started = time.monotonic()
@@ -25,9 +28,11 @@ def main():
         process = subprocess.run([sys.executable, '-u', '-m', 'reproduction.prefix_diversity200.checkpoint_cpu_once',
             '--base', c['base'], '--outer', str(c['outer'])], cwd=root, stdout=log, stderr=subprocess.STDOUT)
         log.flush(); os.fsync(log.fileno())
-    proof_path = Path(c['base'])/'preparation/joint-milestone-0005-independent-full-sha-cpu-once-v1.json'
+    proof_path = Path(c['base'])/'preparation'/('joint-milestone-%04d-independent-full-sha-cpu-once-v1.json'%c['outer'])
     proof = json.loads(proof_path.read_text()) if proof_path.exists() else {}
-    passed = process.returncode == 0 and proof.get('status') == 'PREFIX_SELECTION200_JOINT_MILESTONE_FULL_SHA_CPU_PASS'
+    passed = (process.returncode == 0 and proof.get('status') == 'PREFIX_SELECTION200_JOINT_MILESTONE_FULL_SHA_CPU_PASS'
+              and proof.get('config_sha256') == config_sha
+              and hashlib.sha256(config_path.read_bytes()).hexdigest() == config_sha)
     usage = resource.getrusage(resource.RUSAGE_CHILDREN)
     once(root/'reader-exit.json', dict(status='CPU_ACCEPTANCE_PASS' if passed else 'CPU_ACCEPTANCE_FAILED_NO_REPLAY',
         subprocess_exit=process.returncode, exit_code=0 if passed else 1, finished_unix=time.time(),

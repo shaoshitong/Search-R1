@@ -1,4 +1,4 @@
-"""Publish-first, code-only owned systemd deployment for the actual milestone5 reader."""
+"""Publish-first, code-only owned systemd deployment for an actual milestone reader."""
 import argparse
 import base64
 import hashlib
@@ -12,7 +12,6 @@ FILES = ('reproduction/prefix_diversity200/__init__.py',
          'reproduction/prefix_diversity200/actor.py', 'reproduction/prefix_diversity200/diversity.py',
          'reproduction/prefix_diversity200/checkpoint_cpu_once.py',
          'reproduction/prefix_diversity200/checkpoint_cpu_runner.py',
-         'reproduction/prefix_diversity200/checkpoint5_cpu_control.json',
          'reproduction/prefix20_online/pool.py')
 
 
@@ -25,11 +24,13 @@ def once(path,value):
  with path.open('x')as f:json.dump(value,f,sort_keys=True);f.flush();os.fsync(f.fileno())
 actual=read(b/'preparation/launch-config.json')
 assert actual['run_id']==c['run_id'] and actual['source_commit']==c['runtime_source_commit']
-assert b.parent==pathlib.Path('/mnt/data/shaoshitong') and c['outer']==5
+assert b.parent==pathlib.Path('/mnt/data/shaoshitong') and c['outer'] in (5,50,100,150,200)
+if c.get('runtime_config_sha256'):assert hashlib.sha256((b/'preparation/launch-config.json').read_bytes()).hexdigest()==c['runtime_config_sha256']
+proof_name='joint-milestone-%04d-independent-full-sha-cpu-once-v1'%c['outer']
 if PHASE=='deploy':
- assert (b/'outers/outer-000005/complete.json').is_file()
+ assert (b/'outers'/('outer-%06d'%c['outer'])/'complete.json').is_file()
  assert not root.exists(),'Existing owned control namespace requires observation, not replay'
- assert not list((b/'preparation').glob('joint-milestone-0005-independent-full-sha-cpu-once-v1*.json')),'Prior audit intent/proof must be reconciled'
+ assert not list((b/'preparation').glob(proof_name+'*.json')),'Prior audit intent/proof must be reconciled'
  root.mkdir(mode=0o700)
  for name,row in p['files'].items():
   rel=pathlib.PurePosixPath(name);assert not rel.is_absolute()and'..'not in rel.parts
@@ -49,7 +50,7 @@ if log.exists():
  r['log_bytes']=log.stat().st_size;r['log_tail']=log.read_bytes()[-6000:].decode(errors='replace')
 fields=['ActiveState','SubState','Result','ExecMainPID','ExecMainStatus','MemoryCurrent','MemoryPeak','CPUUsageNSec','IOReadBytes','MemoryMax','CPUQuotaPerSecUSec']
 r['systemd']=subprocess.run(['systemctl','--user','show',c['unit']]+['--property='+x for x in fields],capture_output=True,text=True).stdout
-proof=b/'preparation/joint-milestone-0005-independent-full-sha-cpu-once-v1.json'
+proof=b/'preparation'/(proof_name+'.json')
 if proof.exists():
  v=read(proof);r['proof_sha256']=hashlib.sha256(proof.read_bytes()).hexdigest();r['proof']=v
 print(json.dumps(r))
@@ -59,6 +60,7 @@ print(json.dumps(r))
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('phase', choices=('deploy', 'observe')); parser.add_argument('--receipts', required=True)
+    parser.add_argument('--config', default='reproduction/prefix_diversity200/checkpoint5_cpu_control.json')
     args = parser.parse_args()
     source = Path(__file__).resolve().parents[2]
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source, text=True).strip()
@@ -66,13 +68,13 @@ def main():
     remote_sha = subprocess.check_output(['git', 'ls-remote', 'origin', 'refs/heads/'+branch], cwd=source, text=True).split()[0]
     assert remote_sha == commit, 'Helper source must be normally pushed before execution'
     files = {}
-    for name in FILES:
+    for name in (*FILES, args.config):
         raw = subprocess.check_output(['git', 'show', commit+':'+name], cwd=source)
         files[name] = dict(data=base64.b64encode(raw).decode(), sha256=hashlib.sha256(raw).hexdigest(), bytes=len(raw))
-    config = json.loads(base64.b64decode(files['reproduction/prefix_diversity200/checkpoint5_cpu_control.json']['data']))
+    config = json.loads(base64.b64decode(files[args.config]['data']))
     from reproduction.h1008_qprobe.management_transport import remote
     receipts = Path(args.receipts); receipts.mkdir(parents=True, exist_ok=True)
-    path = receipts/('checkpoint5-cpu-'+args.phase+'-'+str(time.time_ns())+'.json')
+    path = receipts/('checkpoint%d-cpu-'%config['outer']+args.phase+'-'+str(time.time_ns())+'.json')
     result = json.loads(remote(script(args.phase, config, commit, files), path, target=config['target']))
     output = path.with_name(path.stem+'-result.json'); output.write_text(json.dumps(result, indent=2)+'\n')
     small = {k:v for k,v in result.items() if k != 'proof'}
