@@ -24,7 +24,9 @@
 4. 仅复用第10轮的完整原始prefix、scored features、全候选own-EM、固定诊断缓存、真实EM选题和已保存actor10。只执行probe10的50次真实Adam，随后提交joint10。
 5. 同一pipeline从第11轮继续到总200；不重复第10轮actor、rollout或诊断事件。恢复后跟进连续五个完整正常iteration及下一轮真实推进。
 
-新execution为 `7d297c0c9828411b9c10565cbe9fdd7b`，远端base为 `/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-387d3f6e228a488f90c418e2ba47e28e-resume-7d297c0c9828411b9c10565cbe9fdd7b`。部署/CPU资格/一次启动/实际推进必须分别以回执证明；本说明本身不是启动或恢复成功证明。
+首个恢复候选execution `7d297c0c9828411b9c10565cbe9fdd7b` 在CPU资格阶段被拒绝，未启动GPU或导入状态。原因是资格检查将Python整数直方图键与持久JSON字符串键直接比较；这不是父选题或训练状态错误。该目录、源码、日志和失败回执保留，禁止重复其一次性prepare/launch。
+
+修正后显式按持久JSON schema核对六个bin，仍严格比较全部512条有序选择、分数、版本和来源SHA；先完成小型语义检查，再读取大型状态。新的独立execution为 `cb12bf6ab10b46b0a72f1f0c2e753d78`，远端base为 `/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-387d3f6e228a488f90c418e2ba47e28e-resume-cb12bf6ab10b46b0a72f1f0c2e753d78`，仍只从原父execution `90aea944c40d41eab4cf84efac02b22a` 导入。部署/CPU资格/一次启动/实际推进必须分别以回执证明；本说明本身不是启动或恢复成功证明。
 
 ## 科学配置保持
 

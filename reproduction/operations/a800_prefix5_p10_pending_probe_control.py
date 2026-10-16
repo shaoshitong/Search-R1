@@ -189,9 +189,13 @@ OBSERVE = COMMON + _OBSERVE_BODY + r'''
 v['pending_probe_qualification']=document(b,'preparation/native-pending-probe-qualified.json')
 if v['pending_probe_qualification'] is not None:
  q=v['pending_probe_qualification']
- v['pending_probe_qualification']={key:q[key] for key in ('status','run_id','source_base','source_execution_id',
-  'source_commit','completed_joint_outer','pending_outer','actor_completed_outer','actor_adam_per_rank',
-  'probe_completed_outer','probe_adam_per_rank','probe_update_new_adam_per_rank','owned_births_all_gone') if key in q}
+ if q.get('status')=='QUALIFIED_NATIVE_PENDING_PROBE':
+  keys=('status','run_id','source_base','source_execution_id','source_commit','completed_joint_outer',
+   'pending_outer','actor_completed_outer','actor_adam_per_rank','probe_completed_outer',
+   'probe_adam_per_rank','probe_update_new_adam_per_rank','owned_births_all_gone')
+ else:
+  keys=('status','run_id','error_type','error','elapsed_seconds','checked_unix','failed_unix')
+ v['pending_probe_qualification']={key:q[key] for key in keys if key in q}
 v['prepare_progress']=document(b,'preparation/prepare-progress.json')
 v['resume_pending_probe_import']=document(b,'preparation/resume-pending-probe-receipt.json')
 if v['resume_pending_probe_import'] is not None:
@@ -219,9 +223,14 @@ parent_history_seals={}
 qpath=b/'preparation/native-pending-probe-qualified.json'
 if qpath.exists():
  q=read(qpath)
- assert q['run_id']==h['run_id'] and q['source_base']==str(parent) and q['source_commit']==parent_h['source_commit']
- parent_history_seals={row['path']:row['sha256'] for row in q['verified_files']}
+ if q.get('status')=='QUALIFIED_NATIVE_PENDING_PROBE':
+  assert q['run_id']==h['run_id'] and q['source_base']==str(parent) and q['source_commit']==parent_h['source_commit']
+  parent_history_seals={row['path']:row['sha256'] for row in q['verified_files']}
 ''' + _EXTRA + r'''
+if qpath.exists() and q.get('status')!='QUALIFIED_NATIVE_PENDING_PROBE' and joint is None:
+ v['complete_outer']=None
+ v['probe_clock_contract']=None
+ v['recovery_boundary_status']='UNQUALIFIED_OR_FAILED_CPU_PROOF_BOUNDARY_UNKNOWN'
 v['operator_contract']='a800_p10_pending_probe_bounded_metadata_v1'
 emit(v)
 '''

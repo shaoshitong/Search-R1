@@ -9,7 +9,6 @@ The sealed continuation inputs are reused; no generation or evaluation occurs.
 import argparse
 import fcntl
 import gc
-import hashlib
 import json
 import math
 import os
@@ -17,8 +16,8 @@ from pathlib import Path
 import time
 
 from .actor import REVISION, _state_binding, learning_rate
-from .checkpoint_cpu_once import (canonical, digest, hash_file, need, qwen_shapes,
-    read, signature, tensor_cpu, validate_adam, validate_rng)
+from .checkpoint_cpu_once import (digest, hash_file, need, qwen_shapes,
+    read, tensor_cpu, validate_adam, validate_rng)
 from .contract import CANDIDATE_QUESTIONS, DIM, G, PREFIX_TOKENS, QMAX, WIDTH, WORLD
 from .prefix5_model import NATIVE_BUFFER_LAYOUTS, PARAMETER_SHAPES
 
@@ -293,6 +292,38 @@ def _probe0(seals, probe, config):
         rank_rng_absent_before_first_optimizer=True, source_probe_sha256=config['probe_source_sha256'])
 
 
+def validate_actual_selection_record(actual, selected, statistics, *, run_id, actor_version,
+                                     prefix_sha, pool_selection_sha, predicted_sha,
+                                     own_em_sha, full_pool_sha):
+    """Compare the exact producer result using its persisted JSON field types.
+
+    The producer's in-memory histogram has int keys0..5.  JSON object keys are
+    strings; this conversion is part of that explicit storage schema, not a
+    tolerance for different labels, groups, ranking, values, or provenance.
+    """
+    need(actual.get('selected') == selected,
+         'Actual-EM selection changed its exact ordered512 question/G5/score records')
+    expected_histogram = statistics['actual_candidate_correct_count_histogram']
+    histogram = actual.get('actual_candidate_correct_count_histogram')
+    need(isinstance(histogram, dict) and set(histogram) == {str(i) for i in range(6)}
+         and all(type(value) is int and value >= 0 for value in histogram.values())
+         and sum(histogram.values()) == CANDIDATE_QUESTIONS
+         and histogram == {str(i): expected_histogram[i] for i in range(6)},
+         'Actual-EM JSON histogram must retain all exact0..5 counts with string object keys')
+    for key, value in statistics.items():
+        if key != 'actual_candidate_correct_count_histogram':
+            need(actual.get(key) == value, 'Actual-EM selection statistic differs: ' + key)
+    expected = dict(run_id=run_id, outer=10, actor_version=actor_version,
+        prefix_scan_sha256=prefix_sha, outcome_labels_used=True,
+        selected_questions=512, candidate_questions=2560, trajectories_per_question=5, exploration=0,
+        selection_scope='actor_only_periodic_full_pool_actual_EM',
+        original_pool_selection_sha256=pool_selection_sha, predicted_selection_sha256=predicted_sha,
+        full_pool_own_em_sha256=own_em_sha, full_pool_complete_sha256=full_pool_sha,
+        actual_em_used_only_after_full_pool_complete=True)
+    for key, value in expected.items():
+        need(actual.get(key) == value, 'Actual-EM selection identity/provenance differs: ' + key)
+
+
 def _pool_and_data(seals, config, joint, actor, probe):
     from .pool import reserve_indices
     from .periodic_data import select_actual_mixed_groups
@@ -307,15 +338,11 @@ def _pool_and_data(seals, config, joint, actor, probe):
         full_pool=root / 'full-pool/complete.json', full=root / 'full/complete.json',
         diagnostic=root / 'diagnostic-complete.json', actor_binding=root / 'actor-binding.json')
     data = {key: seals.json(path) for key, path in paths.items()}
-    for name in ('prefix', 'probe-score', 'full-pool', 'full', 'diagnostic'):
-        seals.tree(root / name)
     # Actual actor attempt configuration is a required resume input; retain all
     # small top-level phase configurations without loading any prompt into proof.
     for path in root.iterdir():
         if path.is_file():
             seals.file(path)
-    for key in ('prefix', 'score', 'full_pool', 'full', 'diagnostic'):
-        seals.verify_producer_references(data[key])
     pool, binding, reservation, source = (data[k] for k in ('pool_state', 'pool_binding', 'reservation', 'source_pool'))
     size = binding['eligible_questions']
     need(size == 168510 == source['eligible_unique_questions'] == len(source['records'])
@@ -366,11 +393,12 @@ def _pool_and_data(seals, config, joint, actor, probe):
          and scan['hidden_feature_actor_version'] == actor_version and scan['head_max_tokens'] == 278
          and scan['actor_hidden_native'] is True and scan['independent_encoder_forward'] is False
          and len(scan['actor_hidden_shards']) == 4, 'Pending train native hidden dimensions/version differ')
-    seals.verify_producer_references(scan)
     index = data['score_index']
     need(len(index) == 12800 and len({row['trajectory_id'] for row in index}) == 12800,
          'Native score identity index is not unique complete2560G5')
-    own = seals.path(full_pool['own_em']['path']); labels = [json.loads(line) for line in own.open()]
+    own = seals.path(full_pool['own_em']['path'])
+    seals.file(own, full_pool['own_em'])
+    labels = [json.loads(line) for line in own.open()]
     need(full_pool['questions'] == 2560 and full_pool['trajectories'] == 12800
          and full_pool['actor_version'] == actor_version and full_pool['prefix_scan_sha256'] == prefix['scan_sha256']
          and full_pool['selection_sha256'] == seals.file(paths['pool_selection'])['sha256'],
@@ -381,10 +409,11 @@ def _pool_and_data(seals, config, joint, actor, probe):
         provenance=dict(actor_version=actor_version, prefix_scan_sha256=prefix['scan_sha256'],
             pool_selection_sha256=seals.file(paths['pool_selection'])['sha256']),
         expected_prefixes={row['trajectory_id']: row['prefix_sha256'] for row in index})
-    need(actual['selected'] == selected and all(actual.get(key) == value for key, value in selection_stats.items())
-         and actual['outcome_labels_used'] is True and actual['full_pool_own_em_sha256'] == full_pool['own_em']['sha256']
-         and actual['full_pool_complete_sha256'] == seals.file(paths['full_pool'])['sha256'],
-         'Actual-EM mixed-first actor selection is not its recorded deterministic512 result')
+    validate_actual_selection_record(actual, selected, selection_stats,
+        run_id=config['run_id'], actor_version=actor_version, prefix_sha=prefix['scan_sha256'],
+        pool_selection_sha=seals.file(paths['pool_selection'])['sha256'],
+        predicted_sha=seals.file(paths['predicted'])['sha256'], own_em_sha=full_pool['own_em']['sha256'],
+        full_pool_sha=seals.file(paths['full_pool'])['sha256'])
     need(full['questions'] == 512 and full['trajectories'] == 2560 and full['projected_from_full_pool'] is True
          and full['projected_generation_requests'] == 0
          and full['selection_sha256'] == seals.file(paths['actual_selection'])['sha256']
@@ -403,8 +432,15 @@ def _pool_and_data(seals, config, joint, actor, probe):
          and diagnostic['scan_sha256'] == seals.file(test_path / 'scan-complete.json')['sha256']
          and test['actor_version'] == actor_version and test['count'] == 2560,
          'Existing fixed512 diagnostic is incomplete or uses another sampling actor')
-    seals.verify_producer_references(test)
     need(not (root / 'complete.json').exists(), 'Pending outer10 cannot already be a completed joint boundary')
+    # Close every inexpensive semantic/provenance check above before reading
+    # multi-GB native hidden/continuation payloads.  Hash each required file once.
+    for name in ('prefix', 'probe-score', 'full-pool', 'full', 'diagnostic'):
+        seals.tree(root / name)
+    for key in ('prefix', 'score', 'full_pool', 'full', 'diagnostic'):
+        seals.verify_producer_references(data[key])
+    seals.verify_producer_references(scan)
+    seals.verify_producer_references(test)
     return dict(pool_next_outer=pool['next_outer'], pool_consumed_candidates=pool['consumed_candidates'],
         pool_cursor=pool['cursor'], pool_cycle=pool['cycle'], eligible_questions=size,
         actual_mixed_candidates=selection_stats['actual_mixed_candidate_count'],
@@ -485,7 +521,7 @@ def _qualify(args):
     driver, driver_file = seals.mmap_torch(actor['driver_state']['path'], actor['driver_state'])
     need(driver['run_id'] == config['run_id'] and driver['completed_outer'] == 10
          and driver['actor_version'] == actor['actor_version'] and driver['candidate_pool_state']['value'] == pool
-         and driver['candidate_pool_state']['sha256'] == hashlib.sha256(canonical(pool) + b'\n').hexdigest()
+         and driver['candidate_pool_state']['sha256'] == seals.file(base / 'question-pool/state.json')['sha256']
          and driver['prefix_probe_receipt']['value'] == probe
          and driver['prefix_probe_receipt']['sha256'] == seals.file(base / 'probe/latest.json')['sha256'],
          'Actual driver did not save the reserved candidate10 cursor and selection-time probe0')
