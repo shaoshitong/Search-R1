@@ -97,7 +97,8 @@ def import_partial(base):
         for p in sorted(s.rglob('*')):
             if p.is_symlink():raise ValueError('No symlink tree imports')
             if p.is_file():link_file(p,d/p.relative_to(s))
-    for name in ('actor','probe','question-pool'):link_tree(source/name,base/name)
+    link_file(source/'actor/latest.json',base/'actor/latest.json')
+    for name in ('probe','question-pool'):link_tree(source/name,base/name)
     dst=base/'outers'/('outer-%06d'%outer)
     for name in ('pool-reservation.json','selection.json','questions.json','actor-binding.json'):link_file(root/name,dst/name)
     for name in phases:link_tree(root/name,dst/name)

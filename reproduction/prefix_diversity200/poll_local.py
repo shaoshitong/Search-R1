@@ -11,6 +11,18 @@ import pathlib,sys,json
 base=pathlib.Path(BASE);sys.path.insert(0,str(base/'repo'))
 from reproduction.prefix_diversity200.launch import observe
 value=observe(str(base))
+joint_path=base/'latest-joint.json'
+if joint_path.exists():
+ import hashlib
+ joint=json.loads(joint_path.read_text())
+ value['latest_joint']={k:joint[k] for k in ('run_id','outer','source_commit','observed_unix','phase_timings')}
+ value['latest_joint']['path']=str(joint_path)
+ value['latest_joint']['sha256']=hashlib.sha256(joint_path.read_bytes()).hexdigest()
+ value['latest_joint']['actor_adam']=joint['actor']['actual_adam_steps_per_rank']
+ value['latest_joint']['probe_adam']=joint['probe']['actual_adam_steps_per_rank']
+ value['latest_joint']['probe_metrics']={k:v for k,v in joint['probe_metrics'].items()
+  if k in ('train','test','actor_selected_train','global_step_loss_curve','train_loop_seconds')}
+ value['latest_joint']['actor_selection']={k:v for k,v in joint['actor_selection'].items() if k!='selected'}
 value['log_tails']=[{'file':p.name,'tail':p.read_text(errors='replace')[-2200:]}
  for p in sorted((base/'logs').glob('*.log'),key=lambda p:p.stat().st_mtime)[-5:]]
 outer=(value.get('stage') or {}).get('outer',0)

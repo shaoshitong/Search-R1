@@ -242,7 +242,18 @@ def run(base):
         for rank in range(8):
             await_service('grounding-rank-%d' % rank, 'http://127.0.0.1:%d/health' % (c['grounding_probe_base_port'] + rank),
                 dict(version=c['grounding_probe_version']))
-        for outer in range(1, 201):
+        start_outer = 1
+        if (base/'latest-joint.json').exists():
+            inherited = read(base/'latest-joint.json')
+            receipt = read(base/'preparation/joint-resume-receipt.json')
+            start_outer = inherited['outer'] + 1
+            if (not c.get('resume_joint') or receipt['completed_outer'] != inherited['outer']
+                    or inherited['actor'] != read(base/'actor/latest.json')
+                    or inherited['probe'] != read(base/'probe/latest.json')
+                    or inherited['actor']['actual_adam_steps_per_rank'] != [20*(start_outer-1)]*8
+                    or inherited['probe']['actual_adam_steps_per_rank'] != [20*(start_outer-1)]*8):
+                raise ValueError('Joint recovery must preserve the actual completed clock')
+        for outer in range(start_outer, 201):
             root = base / 'outers' / ('outer-%06d' % outer)
             stage('CANDIDATE_POOL_RESERVATION')
             prepare(c, outer)
