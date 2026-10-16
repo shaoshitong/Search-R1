@@ -1,0 +1,106 @@
+{
+  "protocol": "recursive_ablation150_C2_A_closed_prefix_cost_context_v1",
+  "outer": 100,
+  "goal_complete": false,
+  "inputs": {
+    "A": {
+      "path": "reports/recursive-ablation-A-retained-cost-first150-20261015/summary.json",
+      "sha256": "c5931796f9ad0aecfdb0540eef1d6a96a24d0252986cd6cf32b7dd30689b32e6"
+    },
+    "C2": {
+      "path": "reports/recursive-ablation-closed-comparison-C2-outer100-20261017/tree-summary100.json",
+      "sha256": "db2ca162337921af4ddf86af80f6399723641ea87aa1674bbd0b2a5292f1239c"
+    },
+    "combined": {
+      "path": "reports/recursive-ablation-closed-comparison-C2-outer100-20261017/aggregate.json",
+      "sha256": "9e6548aee6bf153dd62f5ca4770d18ecb30af5fe9f0cb0f842da79f1559551b5"
+    }
+  },
+  "records": {
+    "A-original": {
+      "outer": 100,
+      "complete_scalar_prefix": true,
+      "complete_recorded_emitted_token_prefix": true,
+      "actual_adam_each_rank": 2000,
+      "recorded_prefix_sums": {
+        "rollout/raw_emitted_tokens": 73528992,
+        "rollout/prefill_tokens": 582119777,
+        "rollout/generation_rpc_calls": 3290,
+        "rollout/retrieval_calls": 447386,
+        "rollout/semantic_prefix_scan_wall_seconds": 3307.4112920193,
+        "timing_s/gen": 41493.12363758683,
+        "timing_s/ref": 1256.5276040313765,
+        "timing_s/update_actor": 17780.20743634738,
+        "timing_s/testing": 2124.004829518497,
+        "timing_s/step": 69411.14569764864
+      },
+      "allocated_gpu_hours_from_recorded_outer_wall": 154.2469904392192,
+      "dev512": {
+        "all": {
+          "count": 512,
+          "hits": 236,
+          "em": 0.4609375,
+          "f1": 0.5466424851190478
+        },
+        "nq": {
+          "count": 256,
+          "hits": 101,
+          "em": 0.39453125,
+          "f1": null
+        },
+        "hotpotqa": {
+          "count": 256,
+          "hits": 135,
+          "em": 0.52734375,
+          "f1": null
+        }
+      }
+    },
+    "C2-random-final": {
+      "outer": 100,
+      "complete_scalar_prefix": true,
+      "complete_recorded_emitted_token_prefix": true,
+      "actual_adam_each_rank": 2000,
+      "recorded_prefix_sums": {
+        "rollout/raw_emitted_tokens": 72497982.0,
+        "rollout/prefill_tokens": 580496949.0,
+        "rollout/generation_rpc_calls": 3292.0,
+        "rollout/retrieval_calls": 447140.0,
+        "rollout/semantic_prefix_scan_wall_seconds": 3334.651245351881,
+        "timing_s/gen": 41860.42328536697,
+        "timing_s/ref": 1070.2401728779078,
+        "timing_s/update_actor": 16389.943736258894,
+        "timing_s/testing": 2199.750368689187,
+        "timing_s/step": 68314.9163195258
+      },
+      "allocated_gpu_hours_from_recorded_outer_wall": 151.81092515450177,
+      "dev512": {
+        "all": {
+          "count": 512,
+          "hits": 223,
+          "em": 0.435546875,
+          "f1": 0.514408172123016
+        },
+        "nq": {
+          "count": 256,
+          "hits": 98,
+          "em": 0.3828125,
+          "f1": 0.4923952132936508
+        },
+        "hotpotqa": {
+          "count": 256,
+          "hits": 125,
+          "em": 0.48828125,
+          "f1": 0.536421130952381
+        }
+      }
+    }
+  },
+  "comparison": {
+    "emitted_token_difference": -1031010,
+    "emitted_token_change_percent": -1.4021816047743454,
+    "same_outer_aggregate_em_difference_pp": -2.5390625
+  },
+  "scope": "Existing accepted native prefix scalars only. Historical A runtime differs; timing observations are not causal algorithm speedup. Native stages overlap and omit some rolling/startup/failure work. GPU-hour proxy is not measured busy time or billing.",
+  "original_boundary_reference_cost_flags_modified": false
+}
