@@ -89,6 +89,8 @@ def validate_config(value):
     config.setdefault("seed", 1729)
     config.setdefault("global_group_pattern", DEFAULT_PATTERN)
     config.setdefault("micro_groups", 6)
+    # Execution batch sizes do not change the bound global complete-G5 update.
+    config.setdefault("eval_micro_groups", config["micro_groups"])
     config.setdefault("lr_start", 3e-5)
     config.setdefault("lr_end", 3e-6)
     config.setdefault("ema_decay", .99)
@@ -102,13 +104,15 @@ def validate_config(value):
     config.setdefault("attention_implementation", "sdpa")
     config.setdefault("resume", None)
     if (config["prefix_tokens"] != 5 or config["epochs"] != 200 or config["world_size"] != 4
-            or config["global_group_pattern"] != DEFAULT_PATTERN or config["micro_groups"] != 6
+            or config["global_group_pattern"] != DEFAULT_PATTERN or config["micro_groups"] not in (6, 13)
             or config["lr_start"] != 3e-5 or config["lr_end"] != 3e-6
             or config["ema_decay"] != .99 or config["save_every_epochs"] != 10):
-        raise ValueError("Require the bound question5/joint1:1/200epoch/world4/micro6/EMA.99/cosine recipe")
-    for key in ("seed", "ledger_flush_updates", "progress_every_updates"):
+        raise ValueError("Require the bound question5/joint1:1/200epoch/world4/EMA.99/cosine recipe")
+    for key in ("seed", "ledger_flush_updates", "progress_every_updates", "micro_groups", "eval_micro_groups"):
         if type(config[key]) is not int or config[key] < (0 if key == "seed" else 1):
             raise ValueError("Invalid integer " + key)
+    if config["eval_micro_groups"] not in (6, 13, 64):
+        raise ValueError("Require one explicitly supported whole-G5 evaluation micro batch")
     if config["attention_implementation"] not in ("sdpa", "eager", "flash_attention_2"):
         raise ValueError("Use a native supported Qwen attention backend")
     for key in ("expected_train_groups", "expected_test_groups"):
@@ -125,7 +129,73 @@ def validate_config(value):
         if not isinstance(resume, dict) or not Path(resume["checkpoint"]).is_absolute():
             raise ValueError("Resume requires one explicit same-run checkpoint")
         _hex(resume["sha256"], 64, "resume checkpoint SHA")
+        if resume.get("kind") is not None:
+            if resume["kind"] != "authenticated_infrastructure_transition":
+                raise ValueError("Unknown checkpoint continuation kind")
+            _hex(resume["parent_execution_id"], 32, "parent execution")
+            _hex(resume["parent_binding_sha256"], 64, "parent binding SHA")
+            _hex(resume["qualification_receipt_sha256"], 64, "resume qualification SHA")
+            if (not isinstance(resume.get("parent_binding"), dict)
+                    or digest(resume["parent_binding"]) != resume["parent_binding_sha256"]
+                    or not isinstance(resume.get("qualification_receipt"), str)
+                    or not Path(resume["qualification_receipt"]).is_absolute()):
+                raise ValueError("Require the exact authenticated parent binding and qualification")
     return config
+
+
+def authenticated_resume_transition(config, binding):
+    """Accept only a stopped same-run full state with an explicit micro/source change.
+
+The controller seals the existing checkpoint after every owned writer has
+exited. This function authenticates that scalar qualification and every
+scientific binding field before the ordinary full-state loader is called.
+It never makes a missing raw/EMA/Adam/RNG state compatible by substitution.
+"""
+    resume = config.get("resume")
+    if resume is None or resume.get("kind") is None:
+        return None
+    parent = resume["parent_binding"]
+    if set(parent) != set(binding):
+        raise ValueError("Infrastructure continuation binding keys differ")
+    differences = {key for key in binding if parent[key] != binding[key]}
+    if (differences != {"source_commit", "micro_groups"}
+            or parent["run_id"] != config["run_id"]
+            or parent["micro_groups"] != 6 or binding["micro_groups"] != 13
+            or config["eval_micro_groups"] != 64
+            or resume["parent_execution_id"] == config["execution_id"]):
+        raise ValueError("Continuation may change only published source and micro6 to micro13/eval64")
+    checkpoint = Path(resume["checkpoint"])
+    qualification = Path(resume["qualification_receipt"])
+    for path in (checkpoint, qualification):
+        info = path.stat()
+        if (path.is_symlink() or path.resolve() != path or not path.is_file()
+                or info.st_uid != os.getuid() or not str(path).startswith(("/data/", "/mnt/", "/backup/"))):
+            raise ValueError("Continuation inputs require canonical owned remote files")
+    if checkpoint.parent.resolve() == Path(config["output_dir"]).resolve():
+        raise ValueError("Infrastructure continuation requires an independent output namespace")
+    if qualification.stat().st_size > 1024 * 1024 or sha(qualification) != resume["qualification_receipt_sha256"]:
+        raise ValueError("Stopped-state qualification SHA or metadata bound differs")
+    proof = json.loads(qualification.read_bytes())
+    expected = dict(schema_version=1, role="question5_native_stopped_full_state_resume_v1",
+                    run_id=config["run_id"], parent_execution_id=resume["parent_execution_id"],
+                    parent_source_commit=parent["source_commit"], target_execution_id=config["execution_id"],
+                    target_source_commit=config["source_commit"], target_output_dir=config["output_dir"],
+                    parent_binding_sha256=resume["parent_binding_sha256"],
+                    all_owned_training_processes_gone=True, checkpoint_writer_gone=True,
+                    old_output_preserved=True)
+    if (any(proof.get(key) != value for key, value in expected.items())
+            or proof.get("checkpoint", {}).get("path") != str(checkpoint)
+            or proof.get("checkpoint", {}).get("sha256") != resume["sha256"]):
+        raise ValueError("Stopped-state qualification identity or full checkpoint seal differs")
+    return dict(kind=resume["kind"], parent_execution_id=resume["parent_execution_id"],
+                parent_source_commit=parent["source_commit"], parent_binding=parent,
+                parent_binding_sha256=resume["parent_binding_sha256"],
+                checkpoint=str(checkpoint), checkpoint_sha256=resume["sha256"],
+                qualification_receipt=str(qualification),
+                qualification_receipt_sha256=resume["qualification_receipt_sha256"],
+                changed_binding_fields=sorted(differences),
+                execution_micro_groups=config["micro_groups"], evaluation_micro_groups=config["eval_micro_groups"],
+                full_state_resume=True, fresh_initialization=False, partial_updates_discarded=False)
 
 
 def verify_runtime_source(config, repo):
@@ -324,6 +394,15 @@ def _save_boundary(config, model, optimizer, ema, counters, binding, epoch, next
         saved = make_checkpoint(model, optimizer, ema, counters, binding=binding, epoch=epoch,
                                 next_update_in_epoch=next_step, epoch_plan_sha256=plan_sha,
                                 rank_rng=rank_rng, completed_epoch=completed_epoch)
+        if (config.get("resume") or {}).get("kind") == "authenticated_infrastructure_transition":
+            continuation = config["resume"]
+            saved["state_continuation"] = dict(kind=continuation["kind"],
+                parent_execution_id=continuation["parent_execution_id"],
+                parent_binding_sha256=continuation["parent_binding_sha256"],
+                parent_checkpoint=continuation["checkpoint"], parent_checkpoint_sha256=continuation["sha256"],
+                qualification_receipt=continuation["qualification_receipt"],
+                qualification_receipt_sha256=continuation["qualification_receipt_sha256"],
+                raw_ema_adam_rng_cursor_preserved=True)
         if completed_epoch:
             if epoch_metrics is None:
                 raise ValueError("A committed epoch requires its same-EMA train/test metrics")
@@ -482,31 +561,39 @@ def main(argv=None):
                        old_optimizer_imported=False, actor_updates=0)
         _agree(digest(binding), world, "run/science/feature/batch binding")
         _agree((actual_adam_step(optimizer), ema.updates), world, "fresh Adam/EMA boundary")
+        transition = _rank0_action(lambda: authenticated_resume_transition(config, binding), rank)
 
         def claim_run():
             claim_path = output / "run-claim.json"
-            if config["resume"] is None:
+            if config["resume"] is None or transition is not None:
                 if any((output / name).exists() for name in ("latest.pt", "latest.json", "run-claim.json")):
-                    raise FileExistsError("Fresh initialization cannot overwrite a previous run; explicit same-run resume required")
+                    raise FileExistsError("A fresh execution namespace cannot overwrite a previous state or claim")
                 atomic_json(claim_path, dict(binding=binding, binding_sha256=digest(binding),
-                                            first_execution_id=config["execution_id"], owner=owner), exclusive=True)
+                                            first_execution_id=config["execution_id"], owner=owner,
+                                            state_continuation=transition), exclusive=True)
             else:
                 claim = json.loads(claim_path.read_text())
                 if claim.get("binding") != binding or claim.get("binding_sha256") != digest(binding):
                     raise ValueError("Resume claim is not this exact new experiment")
             atomic_json(execution / "binding.json", dict(binding=binding, binding_sha256=digest(binding),
-                                                        config=config, actual_config_file_sha256=sha(config_path)), exclusive=True)
+                                                        config=config, actual_config_file_sha256=sha(config_path),
+                                                        state_continuation=transition), exclusive=True)
             return dict(claimed=True)
 
         _rank0_action(claim_run, rank)
         first_epoch, resume_step = 1, 0
         resume_rng = None
+        restored_state = None
         if config["resume"] is not None:
             resume = config["resume"]
             _rank0_action(lambda: True if sha(resume["checkpoint"]) == resume["sha256"] else
                           (_ for _ in ()).throw(ValueError("Same-run checkpoint SHA differs")), rank)
             saved = torch.load(resume["checkpoint"], map_location="cpu", weights_only=False)
-            counters = restore_checkpoint(saved, model, optimizer, ema, expected_binding=binding, device=device)
+            # The loader still requires exact equality. Only the authenticated
+            # same-run transition chooses the exact sealed *parent* binding.
+            expected_saved_binding = transition["parent_binding"] if transition is not None else binding
+            counters = restore_checkpoint(saved, model, optimizer, ema,
+                                          expected_binding=expected_saved_binding, device=device)
             if len(saved["rank_rng"]) != world:
                 raise ValueError("Saved RNG rank count differs")
             if saved["completed_epoch"]:
@@ -546,14 +633,39 @@ def main(argv=None):
                     epoch=saved["epoch"], completed_epoch=True, actor_updates=0,
                     binding_sha256=digest(binding), epoch_metrics_sha256=digest(stored_metrics),
                     marker_recovered_from_full_checkpoint=True)
-                _rank0_action(lambda: _publish_epoch_commit(output, stored_metrics, repair_receipt), rank)
+                if transition is None:
+                    _rank0_action(lambda: _publish_epoch_commit(output, stored_metrics, repair_receipt), rank)
+            restored_state = dict(parent_checkpoint=resume["checkpoint"], parent_checkpoint_sha256=resume["sha256"],
+                parent_source_commit=expected_saved_binding["source_commit"],
+                parent_binding_sha256=digest(expected_saved_binding),
+                parent_execution_id=resume.get("parent_execution_id"),
+                saved_epoch=saved["epoch"], saved_completed_epoch=saved["completed_epoch"],
+                saved_next_update_in_epoch=saved["next_update_in_epoch"],
+                saved_epoch_plan_sha256=saved["epoch_plan_sha256"],
+                counters=counters.state_dict(), actual_adam_step=actual_adam_step(optimizer), ema_updates=ema.updates,
+                restored_learning_rates=[float(group["lr"]) for group in optimizer.param_groups],
+                full_raw_ema_adam_restored=True, fresh_initialization=False,
+                partial_updates_discarded=False, execution_micro_groups=config["micro_groups"],
+                evaluation_micro_groups=config["eval_micro_groups"],
+                state_continuation=transition)
             resume_rng = saved["rank_rng"][rank]
             del saved
         elif optimizer.state or counters.optimizer_steps or ema.updates:
             raise RuntimeError("Fresh probe must have empty Adam/zero EMA updates")
         # Constructor, DDP, official copy and restore have finished before RNG restore.
         if resume_rng is not None:
-            restore_rng(resume_rng, rank=rank, device=device)
+            sampler_state = restore_rng(resume_rng, rank=rank, device=device)
+            if sampler_state != dict(epoch=restored_state["saved_epoch"],
+                    next_update_in_epoch=restored_state["saved_next_update_in_epoch"],
+                    epoch_plan_sha256=restored_state["saved_epoch_plan_sha256"]):
+                raise ValueError("Saved rank sampler RNG/cursor binding differs")
+            _agree((actual_adam_step(optimizer), ema.updates, counters.state_dict()), world,
+                   "restored complete Adam/EMA/cursor state")
+            atomic_json(execution / ("restore-rank-%d.json" % rank),
+                dict(identity=owner, stage="FULL_STATE_RESTORED_BEFORE_NEXT_UPDATE", **restored_state,
+                     rng_restored=dict(python=True, numpy=True, torch_cpu=True, torch_cuda=True, sampler=True),
+                     restored_sampler_state=sampler_state, current_binding_sha256=digest(binding),
+                     current_source_binding=source_binding, observed_unix=time.time()), exclusive=True)
         atomic_json(execution / ("initialization-rank-%d.json" % rank),
                     dict(owner, stage="READY_FOR_COMPLETE_DATASET_EPOCHS", counters=counters.state_dict(),
                          first_epoch=first_epoch, next_update_in_epoch=resume_step,
@@ -617,9 +729,9 @@ def main(argv=None):
                         dict(stage="SAME_EMA_TRAIN_TEST_DIAGNOSTICS", epoch=epoch,
                              counters=counters.state_dict(), identity=owner, observed_unix=time.time()))
             train_metrics = evaluate_groups(ema.model, train.groups, rank=rank, world=world, reader=train,
-                                            micro_groups=config["micro_groups"], device=device)
+                                            micro_groups=config["eval_micro_groups"], device=device)
             test_metrics = evaluate_groups(ema.model, test.groups, rank=rank, world=world, reader=test,
-                                           micro_groups=config["micro_groups"], device=device)
+                                           micro_groups=config["eval_micro_groups"], device=device)
             peaks = [None] * world
             dist.all_gather_object(peaks, dict(rank=rank, allocated_bytes=int(torch.cuda.max_memory_allocated(device)),
                                               reserved_bytes=int(torch.cuda.max_memory_reserved(device))))
@@ -634,6 +746,8 @@ def main(argv=None):
                               group_bce=online[1] / online[2] if online[2] else None),
                            epoch_seconds=time.monotonic() - epoch_started,
                            execution_seconds=time.monotonic() - started, actor_updates=0,
+                           execution_micro_groups=config["micro_groups"],
+                           evaluation_micro_groups=config["eval_micro_groups"],
                            execution_cuda_peaks_per_rank=peaks)
             ledger.flush()
             os.fsync(ledger.fileno())
