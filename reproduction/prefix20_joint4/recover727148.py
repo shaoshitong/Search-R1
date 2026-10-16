@@ -121,6 +121,12 @@ def prepare(commit):
         with new.open('rb') as stream:os.fsync(stream.fileno())
         if new.stat().st_size!=size or sha(new)!=digest:raise ValueError('PREFIX20_RECOVERY727148_COPIED_INPUT_DIFFERS')
     observation=relocate_global_storage(FAILED,TARGET,additional_prelaunch_reserve_bytes=4*2**30)
+    cleanup_files={name:sha(FAILED/'logs'/name) for name in
+        ('run-manifest.json','process-ledger.json','retrieval-staging-claim.json','corpus-cache-claim.json')}
+    if cleanup_files['process-ledger.json']!=EVIDENCE['process-ledger.json']:
+        raise ValueError('PREFIX20_RECOVERY727148_CLEANUP_LEDGER_CHANGED')
+    publish(TARGET/'preparation/failed727148-cleanup-evidence-sha.json',dict(failed_base=str(FAILED),
+        failed_run=RUN,source_commit=commit,files=cleanup_files))
     publish(TARGET/'preparation/failed727148-deferred-node-cleanup.json',dict(failed_base=str(FAILED),failed_job=JOB,failed_run=RUN,node='ACD1-25',recovery_base=str(TARGET),source_commit=commit,before_any_cuda=True))
     value=dict(status='PREFIX20_CPU_PROBE_RUNTIME_FAILURE_FRESH_TARGET_PREPARED',target=str(TARGET),
         source_commit=commit,recovery_of=JOB,original=actual,assets=assets_ready(TARGET),

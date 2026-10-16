@@ -45,6 +45,10 @@ def execute(recovery_base,commit):
             line.startswith(JOB+'.extern|COMPLETED|0:0|') for line in terminal.stdout.splitlines()):
         raise ValueError('PREFIX20_CLEANUP727148_ORIGINAL_TERMINAL_DIFFERS')
     ledger_file=BASE/'logs/process-ledger.json';ledger=json.loads(ledger_file.read_text())
+    sealed=json.loads((target/'preparation/failed727148-cleanup-evidence-sha.json').read_text())
+    if (sealed.get('failed_base')!=str(BASE) or sealed.get('failed_run')!=RUN or sealed.get('source_commit')!=commit or
+            hashlib.sha256(ledger_file.read_bytes()).hexdigest()!='e9ac9218e43227759f56a7f75f3e67a3f20bcc3aed6c7040850afd74d2d01980'):
+        raise ValueError('PREFIX20_CLEANUP727148_SEALED_ORIGINAL_LEDGER_DIFFERS')
     if ledger['run_id']!=RUN:raise ValueError('PREFIX20_CLEANUP727148_LEDGER_RUN_DIFFERS')
     records={r['pid']:r for job in ledger['jobs'].values() for r in job['ledger'].values()}
     observations=[]
@@ -76,6 +80,8 @@ def execute(recovery_base,commit):
             if name=='corpus-cache-claim.json':continue
             raise ValueError('PREFIX20_CLEANUP727148_ORIGINAL_CLAIM_MISSING')
         raw=original.read_bytes();copies[name]=hashlib.sha256(raw).hexdigest()
+        if sealed['files'].get(name)!=copies[name]:
+            raise ValueError('PREFIX20_CLEANUP727148_ORIGINAL_DIFFERS_FROM_QUEUED_BINDING')
         with (shadow/'logs'/name).open('xb') as stream:
             stream.write(raw);stream.flush();os.fsync(stream.fileno())
     from reproduction.common8.temporary_cache import cleanup as cleanup_cache
