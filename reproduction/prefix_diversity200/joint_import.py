@@ -52,17 +52,41 @@ def import_joint(base):
             or probe['completed_outer']!=n or actor['actual_adam_steps_per_rank']!=[20*n]*8
             or probe['actual_adam_steps_per_rank']!=[20*n]*8 or actor['scheduler_completed_outer']!=n):
         raise ValueError('Actual actor/probe/scheduler are not the same complete joint boundary')
-    pool=read(source/'question-pool/state.json')
+    snapshot=root/'pool-state-at-completion.json'
+    pool=read(source/'question-pool/state.json');completed_pool=read(snapshot)
+    replay=None
+    if pool!=completed_pool and spec.get('replay_uncommitted_prefix_outer')==n+1:
+        from .pool import reserve_indices,state_sha
+        failed_root=source/'outers'/('outer-%06d'%(n+1))
+        reservation=read(failed_root/'pool-reservation.json')
+        indices,cycles,after=reserve_indices(completed_pool,n+1)
+        stage=read(source/'logs/pipeline-status.json')
+        prefix=failed_root/'prefix'
+        if (stage.get('outer')!=n+1 or stage.get('stage')!='outer-%06d-prefix'%(n+1)
+                or reservation['outer']!=n+1 or reservation['before_sha256']!=state_sha(completed_pool)
+                or reservation['after_sha256']!=state_sha(after) or reservation['after']!=after
+                or reservation['indices']!=indices or reservation['cycles']!=cycles or pool!=after
+                or (failed_root/'complete.json').exists() or (prefix/'complete.json').exists()
+                or any(prefix.glob('rank-*-progress.json')) or any(prefix.glob('rank-*-complete.json'))
+                or any(prefix.glob('rank-*.jsonl*'))
+                or any((source/'actor/outers').glob('outer-%04d-*'%(n+1)))
+                or (source/'probe'/('head-outer-%04d.pt'%(n+1))).exists()):
+            raise ValueError('Cannot prove exactly one unsampled, unoptimized prefix reservation')
+        replay=dict(outer=n+1,original_reservation_sha256=sha(failed_root/'pool-reservation.json'),
+                    source_active_pool_sha256=sha(source/'question-pool/state.json'),
+                    restored_pool_snapshot_sha256=sha(snapshot),actor_or_probe_updates_discarded=0,
+                    prefix_sampling_recomputed=True,same_candidate_indices_verified=True)
+        pool=completed_pool
     if (pool['next_outer']!=n+1 or pool['consumed_candidates']!=5120*n
-            or sha(root/'pool-state-at-completion.json')!=joint['pool_sha256']
-            or pool!=read(root/'pool-state-at-completion.json')):
+            or sha(snapshot)!=joint['pool_sha256'] or pool!=completed_pool):
         raise ValueError('Actual candidate cursor is not exactly the completed boundary')
     proof=dict(source_base=str(source),source_job=job,completed_outer=n,
         source_config_sha256=sha(source/'preparation/launch-config.json'),joint_sha256=sha(root/'complete.json'),
         native_query=dict(returncode=native.returncode,stdout=native.stdout,stderr=native.stderr),
         original_logs={p.name:dict(bytes=p.stat().st_size,sha256=sha(p)) for p in (source/'logs').glob('*.log')},
         actor_steps=[20*n]*8,probe_steps=[20*n]*8,scheduler_completed_outer=n,
-        candidate_cursor=pool['consumed_candidates'],owned_births_present=[],checked_unix=time.time())
+        candidate_cursor=pool['consumed_candidates'],uncommitted_prefix_replay=replay,
+        owned_births_present=[],checked_unix=time.time())
     atomic_json(base/'preparation/joint-source-terminal-proof.json',proof)
     atomic_json(base/'preparation/joint-resume-intent.json',dict(source_base=str(source),completed_outer=n,run_id=c['run_id']))
     assets=[]
@@ -77,7 +101,10 @@ def import_joint(base):
     for directory in ('probe','question-pool'):
         for p in sorted((source/directory).rglob('*')):
             if p.is_symlink():raise ValueError('No source tree symlinks')
-            if p.is_file():link(p,base/directory/p.relative_to(source/directory))
+            if p.is_file():
+                if directory=='question-pool' and p.name=='state.json' and replay:
+                    link(snapshot,base/directory/'state.json')
+                else:link(p,base/directory/p.relative_to(source/directory))
     link(source/'latest-joint.json',base/'latest-joint.json')
     result=dict(status='COMPLETE_JOINT_BOUNDARY_IMPORTED_NO_RECOMPUTATION',run_id=c['run_id'],
         source_base=str(source),completed_outer=n,next_outer=n+1,actor_steps=[20*n]*8,probe_steps=[20*n]*8,
@@ -85,6 +112,7 @@ def import_joint(base):
         source_actor_files_referenced_by_original_receipt=True,rotating_history_directories_not_aliased=True,
         future_actor8rank_full_optimizer_scheduler_rng_readback_required=True,
         native_executor_exact_resume_claimed=False,large_assets_via_Mac=False,
+        uncommitted_prefix_replay=replay,
         terminal_proof_sha256=sha(base/'preparation/joint-source-terminal-proof.json'))
     atomic_json(destination,result)
     return {k:v for k,v in result.items() if k!='assets'}

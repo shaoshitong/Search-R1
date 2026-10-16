@@ -799,7 +799,12 @@ def launch_phase(config_path, outer, phase, selection_path=None):
     output.mkdir(parents=True,exist_ok=True)
     if (output/'complete.json').exists():
         return aggregate(config_path,outer,phase,selection_path)
-    processes=[];streams=[]
+    processes=[];streams=[];launches={}
+    def start(rank, stream, command):
+        offset=os.fstat(stream.fileno()).st_size
+        launches[rank]=dict(stream=stream,command=command,offset=offset,
+                            retries=launches.get(rank,{}).get('retries',0))
+        return subprocess.Popen(command,stdout=stream,stderr=subprocess.STDOUT)
     try:
         for rank in range(WORLD):
             existing=output/('rank-%d-complete.json'%rank)
@@ -810,10 +815,32 @@ def launch_phase(config_path, outer, phase, selection_path=None):
             command=[sys.executable,'-m','reproduction.prefix_diversity200.rollout','--config',str(config_path),
                      '--outer',str(outer),'--phase',phase,'--rank',str(rank)]
             if selection_path:command.extend(['--selection',str(selection_path)])
-            processes.append((rank,subprocess.Popen(command,stdout=stream,stderr=subprocess.STDOUT)))
-        while any(p.poll() is None for _,p in processes):
+            processes.append((rank,start(rank,stream,command)))
+        while True:
             failed={rank:p.returncode for rank,p in processes if p.poll() not in (None,0)}
+            for rank,code in list(failed.items()):
+                attempt=launches[rank]
+                with (output/('rank-%d.log'%rank)).open('rb') as log:
+                    log.seek(attempt['offset']);error=log.read().decode(errors='replace')
+                artifacts=[p for p in output.glob('rank-%d-*'%rank)
+                           if p.name.endswith(('.jsonl','.jsonl.gz','-progress.json','-complete.json'))]
+                # This exact TCPStore failure precedes model loading/sampling.
+                # Restart only the exited owned process, with the identical seed
+                # and command. Partial trajectory outputs are never replayed.
+                if (phase=='prefix' and attempt['retries']<2 and not artifacts
+                        and all(token in error for token in ('EADDRINUSE','TCPStore','init_process_group'))
+                        and 'Starting to load model' not in error):
+                    attempt['retries']+=1
+                    immutable(output/('rank-%d-init-port-retry-%d.json'%(rank,attempt['retries'])),
+                              dict(rank=rank,outer=outer,phase=phase,exit_code=code,
+                                   reason='pre_sampling_TCPStore_EADDRINUSE',
+                                   attempt_log_offset=attempt['offset'],same_command=True,
+                                   trajectories_sampled=0,observed_utc=utc()))
+                    replacement=start(rank,attempt['stream'],attempt['command'])
+                    processes=[(r,replacement if r==rank else p) for r,p in processes]
+                    del failed[rank]
             if failed:raise RuntimeError('Native phase worker failure: '+json.dumps(failed))
+            if all(p.poll() is not None for _,p in processes):break
             time.sleep(1)
         codes={rank:p.returncode for rank,p in processes}
         if any(code!=0 for code in codes.values()):raise RuntimeError('Native phase worker failure: '+json.dumps(codes))
