@@ -474,10 +474,21 @@ def main():
     assert prior['actual_local_relations']['relation_failures'] == prior['actual_local_relations']['FULL_original_and_compact_or_curve_mismatches'] == []
     old_catalog = prior['source_catalog']
     assert isinstance(old_catalog, dict) and old_catalog
-    for ref in old_catalog.values():
-        # Prior171 records were already validated; preserve every original
-        # catalogued source exactly without substituting current mutable aliases.
-        bound(ref)
+    alias_asof=[]
+    for source_id,ref in old_catalog.items():
+        if source_id=='s002':
+            expected=dict(path='PER_OUTER_METRICS_COMPACT.json',bytes=101394,
+                          sha256='c5f201b38087718b17f7a8434e84b0814a0e1aaef94ec364b2c1efbeea6247f0')
+            assert ref==expected
+            declaration=manifest['prior_mutable_alias_asof']
+            assert declaration['catalog_id']==source_id and declaration['historical_descriptor']==expected
+            current=declaration['current_observation'];assert local(current['path'])==B/expected['path']
+            bound(current,True)
+            alias_asof.append(dict(catalog_id=source_id,historical_descriptor=expected,current_observation=current,
+                original_old_alias_bytes_available=False,old_alias_not_reconstructed=True,
+                scope='Only this exact mutable legacy index is as-of; all361 immutable sources and original171 values/bindings remain strict.'))
+        else:
+            bound(ref)
     prior_source = read_bytes(PRIOR_SOURCE, 23741, 'b0b1d374ce85915bb7b8e82f2ad0475f1ce1c3ab2e8325cf19b6b4a38394165e')
     implementation = []
     for name, (size, expected) in SOURCE_PINS.items():
@@ -495,6 +506,28 @@ def main():
         bindings.append(dict(outer=n, source_commit=C, **origin,
                              selector='iteration_metrics[step=' + str(n) + ']',
                              value_origin='direct_original_recorded_scalar', derived_replacement=False))
+    fresh_capture=bound(source['capture_product'],True);fresh_rows=fresh_capture['rows']
+    if isinstance(fresh_rows,dict):
+        descriptor=fresh_rows;fresh_rows=[]
+        for ref in descriptor['parts']:
+            part=bound(ref,True);assert part['schema']=='cumulative_scalar_field_part_v1' and part['original_field']=='rows'
+            fresh_rows.extend(part['value'])
+        assert len(fresh_rows)==descriptor['original_entries']
+    assert [r['outer'] for r in fresh_rows]==list(range(1,201))
+    crosscheck_fields=list(FIELDS.values())+['tree_variance/'+key for key in SERIES]+EXTRA
+    for binding in prior['per_outer_source_bindings']:
+        n=binding['outer'];old_source=bound(old_catalog[binding['metric_source']])
+        if n==1:
+            candidates=[item['metrics'] for item in old_source['stage_log']['outer1_complete_metric_lines'] if item['metrics'].get('step')==1]
+            assert candidates and all(item==candidates[0] for item in candidates);old_metric=candidates[0]
+        else:old_metric=metric(old_source,n)
+        fresh=fresh_rows[n-1]['metric']
+        assert all(number(old_metric.get(key)) and old_metric[key]==fresh.get(key) for key in crosscheck_fields), ('prior171 original metric mismatch',n)
+        for label,field in FIELDS.items():assert prior['coverage'][label]['values_in_outer1_to171_order'][n-1]==fresh[field]
+        for key in SERIES:assert prior['original_denominator_and_count_series'][key][n-1]==fresh['tree_variance/'+key]
+        if binding.get('original_metric_line_sha256') is not None:
+            assert binding['original_metric_line_sha256']==fresh_rows[n-1]['metric_line']['line_sha256']
+    for row in fresh_rows:check_relations(row['metric'],row['outer'])
     actual = actual200(manifest['actual200'], records[200])
     coverage = {}
     for label, field in FIELDS.items():
@@ -515,13 +548,18 @@ def main():
     value = dict(schema='tree_nested_metric_record_coverage_through200_original_records_v1',
                  status='PASS_ACTUAL_ORIGINAL_SCALAR_COVERAGE_THROUGH200', observed_utc=datetime.now(timezone.utc).isoformat(),
                  actual_input_manifest=reference(str(args.input_manifest)), prior_coverage=reference(PRIOR_NAME),
-                 prior1_to171_original_catalogued_sources_preserved=len(old_catalog),
+                 prior1_to171_original_catalogued_sources_preserved=len(old_catalog)-len(alias_asof),
+                 prior1_to171_catalogued_descriptors_retained=len(old_catalog),
+                 prior_mutable_alias_asof=alias_asof,
+                 original1_to171_crosscheck_against_preserved_metric_sources=dict(fields=30,values=5130,mismatches=0,
+                    original_capture=reference(source['capture_product']['path']),all15_required_plus12_counts_plus3_extra=True),
                  prior1_to171_values_and_bindings_preserved_exactly=True,
                  prior_per_outer_source_bindings=prior['per_outer_source_bindings'],
                  prior_binding_source_ids_resolve_in='prior_coverage.source_catalog',
                  new_per_outer_source_bindings=bindings, coverage=coverage,
                  original_denominator_and_count_series=counts,
                  additional_original_recorded_fields_172_to200={field:[records[n][field] for n in range(172, 201)] for field in EXTRA},
+                 additional_original_recorded_fields_1_to200={field:[row['metric'][field] for row in fresh_rows] for field in EXTRA},
                  actual200_boundary=actual, frozen778_implementation_sources=implementation,
                  definitions=prior['definitions'], historical_gap_scope=prior['historical_gap_scope'],
                  field_origin_policy='All15 required values and extra fields are original recorded scalars. No derived scalar replaces an absent original. Population variance and original sample-std normalization/epsilon/dtype roles stay distinct.',
