@@ -1,0 +1,66 @@
+{
+  "schema": "dev175_canonical_exact_historical_registry_asof_fix_source_v1",
+  "observed_utc": "2026-10-16T01:24:59.787283+00:00",
+  "status": "FROZEN_LOCAL_SOURCE_READY_FOR_INDEPENDENT_PUBLICATION",
+  "fixing_agent": "/root/dev175_actual_collector_owner",
+  "source": {
+    "path": "work/tree-speed-repair-20261008/dev175_actual_dev_curve_canonical_binding.command.txt",
+    "bytes": 46684,
+    "sha256": "861bdc91d21724464d0043d8c531d87ef7424b3b71e65c9d335387e980440a48"
+  },
+  "preserved_original_source": {
+    "path": "work/tree-speed-repair-20261008/dev175_actual_dev_curve_canonical_binding_before_historical_registry_asof_fix.command.txt",
+    "bytes": 43926,
+    "sha256": "96a92fdc625e6153a2738744934b16b286fa25422b23171245772f6a7123e510"
+  },
+  "actual_failure_evidence": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_CANONICAL_HISTORICAL_REGISTRY_ACTUAL_FAILURE.json",
+    "bytes": 7193,
+    "sha256": "e37f79d62e61c3bd766eceabfc16218f7d7adc88c422f5a56d76afee999ee0f9"
+  },
+  "preserved_first_input_manifest": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_ACTUAL_DEV_CURVE_CANONICAL_BINDING_INPUT_PINS.json",
+    "bytes": 11874,
+    "sha256": "3c3c83857b49a092403db73cb720496cf6218a8aa386c8fa8927a473aeb03378"
+  },
+  "authorization": "Root explicitly authorized this necessary local canonical source fix, required old source/failure preservation and normal snapshot push, and prohibited this fixing agent from running canonical, collector, training, review, test or compile.",
+  "exact_historical_asof_documents": [
+    {
+      "path": "outputs/tree-nested-branch-handoff-20261013/LEARNING_CURVE_THROUGH170_COST_SUPPLEMENT_BINDING.json",
+      "bytes": 28387,
+      "sha256": "533545b6c7661cf2ecf5f50c2f990b5eacf756ef596d2d4e4bbc0ff8053e2150"
+    },
+    {
+      "path": "outputs/tree-nested-branch-handoff-20261013/LEARNING_CURVE_THROUGH170_LOCAL_PUBLICATION.json",
+      "bytes": 29846,
+      "sha256": "996450f698bff2feb82b82897e0b1c0dd8ce810a293edbb1772d97a37a9a113b"
+    }
+  ],
+  "historical_registry_asof_descriptor": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/CANDIDATE_COST_EXTENSION_INPUTS.json",
+    "bytes": 23117,
+    "sha256": "d8ec26a057b5844b815bcd520c5eccf0935203eaeeffc7e62498ae32faa10558"
+  },
+  "historical_registry_original_bytes_currently_verified": false,
+  "current175_registry": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/CANDIDATE_COST_EXTENSION_INPUTS.json",
+    "bytes": 23877,
+    "sha256": "3d572d51e6fac06730d8ce173b7f5266e9c2d2d45f92b0dcb9e6f85a5f03b958"
+  },
+  "implementation": [
+    "bind_local_tree defaults historical_asof=False. Only the existing old170 historical-doc loop enables it and passes the exact SHA-bound source-document ref.",
+    "Exclusion requires the exact canonical BASE registry path, exact old23117 bytes and d8ec SHA, protect=True, and one of the two actual old170 source documents. Any other path/bytes/SHA goes through strict bound(). Exactly two exclusions and the exact two source docs are required.",
+    "The actual current17523877-byte registry uses the fixed real3d572 SHA and bound(..., mirror=True), enters RAW/MIRRORED unchanged checks, and must exactly match the unique COST175 registry reference. It is not added to the protected170_originals set.",
+    "Every current175 bind_local_tree call retains default historical_asof=False. Other old170 references and all old34 controls, immutable parts, historical curve raw object/value spans and original CSV181572 prefix keep their strict checks.",
+    "Final canonical closure receipt explicitly records both historical asof exclusions, false for historical registry original-byte verification, and the independently bound real current175 registry ref."
+  ],
+  "source_frozen": true,
+  "source_executed_by_fixing_agent": false,
+  "canonical_invocations_by_fixing_agent_this_fix": 0,
+  "collector_invocations_by_fixing_agent_this_fix": 0,
+  "remote_operations_by_fixing_agent_this_fix": false,
+  "tests_review_or_compile_performed": false,
+  "canonical14_mutations_by_fixing_agent_this_fix": 0,
+  "original170_documents_modified": false,
+  "training_or_runtime_modified": false
+}

@@ -1,0 +1,15 @@
+# Frozen precise historical registry asof canonical fix
+
+Sole owner `/root/dev175_actual_collector_owner` confirmed all four files complete and frozen. Root authorized this isolated backup after the original175 canonical source failed on the one old170 mutable registry reference. This publication copies exact raw bytes and does not execute canonical code or add review.
+
+Owner-reported exact scope: only the precise BASE registry23117-byte historical descriptor in two SHA-bound old170 documents is excluded asof; historical registry bytes are explicitly not currently verified. This is a historical document descriptor, not a claim that old registry bytes still exist unchanged. The current175 registry23877-byte real reference remains independently byte/SHA bound with both mirrors, raw-byte unchanged protection and required COST175 matching. All other historical/current refs, including current175 documents by default, stay strict. The future receipt explicitly records the two exclusions,false historical byte verification and current real reference. Full descriptor pins and exact documents are preserved in the copied source provenance; none are guessed here.
+
+Actual first failure evidence and old43926-byte source are preserved. Owner reports the14 prestate records were read twice against the original manifest and remained unchanged. The backup does not repeat that canonical audit. At freeze this repair had not executed canonical/collector/SSH/training/review/test/compile. Root retains the authorized future new-input-manifest execution preserving first-failure evidence; no175 closure or future PASS is claimed by this backup.
+
+Original frozen file pins:
+- `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/dev175_actual_dev_curve_canonical_binding.command.txt`: 46684 bytes, SHA256 `861bdc91d21724464d0043d8c531d87ef7424b3b71e65c9d335387e980440a48`.
+- `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/dev175_actual_dev_curve_canonical_binding_before_historical_registry_asof_fix.command.txt`: 43926 bytes, SHA256 `96a92fdc625e6153a2738744934b16b286fa25422b23171245772f6a7123e510`.
+- `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/DEV175_CANONICAL_HISTORICAL_REGISTRY_ACTUAL_FAILURE.json`: 7193 bytes, SHA256 `e37f79d62e61c3bd766eceabfc16218f7d7adc88c422f5a56d76afee999ee0f9`.
+- `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-speed-repair-20261008/DEV175_CANONICAL_HISTORICAL_REGISTRY_ASOF_FIX_SOURCE.json`: 4375 bytes, SHA256 `858399791079976c3b4b045155b3e434565469cc98422fdcf3c1f55c71351fb5`.
+
+Only this independent new source/failure/provenance snapshot plus README is added. All original snapshots and commit history remain intact. No old snapshot full rehash, source execution, compile, tests, review, SSH, collector, training, canonical or curve writes occur.

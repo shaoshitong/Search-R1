@@ -1,0 +1,126 @@
+{
+  "schema": "dev175_actual_canonical_historical_registry_pin_failure_v1",
+  "observed_utc": "2026-10-16T01:23:20.148688+00:00",
+  "status": "CANONICAL_BINDING_FAILED_BEFORE_CANONICAL_WRITE",
+  "actual_root_executor": "/root",
+  "fixing_agent": "/root/dev175_actual_collector_owner",
+  "execution_evidence_scope": "Root task dispatch reports actual canonical source assertion failure at inline Python line266 while binding old170 documents; this fixing agent did not execute canonical. Root had already confirmed all14 prestate files unchanged. This artifact independently rereads the exact original manifest and all14 canonical prestate files twice.",
+  "failed_source": {
+    "path": "work/tree-speed-repair-20261008/dev175_actual_dev_curve_canonical_binding.command.txt",
+    "bytes": 43926,
+    "sha256": "96a92fdc625e6153a2738744934b16b286fa25422b23171245772f6a7123e510"
+  },
+  "preserved_source": {
+    "path": "work/tree-speed-repair-20261008/dev175_actual_dev_curve_canonical_binding_before_historical_registry_asof_fix.command.txt",
+    "bytes": 43926,
+    "sha256": "96a92fdc625e6153a2738744934b16b286fa25422b23171245772f6a7123e510"
+  },
+  "actual_failed_input_manifest": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/DEV175_ACTUAL_DEV_CURVE_CANONICAL_BINDING_INPUT_PINS.json",
+    "bytes": 11874,
+    "sha256": "3c3c83857b49a092403db73cb720496cf6218a8aa386c8fa8927a473aeb03378"
+  },
+  "reported_error": "bind_local_tree(old_docs[key], protect=True) treated the historical170 candidate registry asof descriptor as a currently immutable file; original old descriptor differs from the actual current175 registry.",
+  "historical_registry_asof_descriptor": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/CANDIDATE_COST_EXTENSION_INPUTS.json",
+    "bytes": 23117,
+    "sha256": "d8ec26a057b5844b815bcd520c5eccf0935203eaeeffc7e62498ae32faa10558"
+  },
+  "historical_registry_original_bytes_currently_verified": false,
+  "current175_registry": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/CANDIDATE_COST_EXTENSION_INPUTS.json",
+    "bytes": 23877,
+    "sha256": "3d572d51e6fac06730d8ce173b7f5266e9c2d2d45f92b0dcb9e6f85a5f03b958",
+    "both_mirrors_actual_byte_equal": true
+  },
+  "canonical_prestate": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/STATUS.json",
+      "bytes": 1527765,
+      "sha256": "d31c403ab4686da80db525fdc438086d66c4bc1f20a052ae2fb3f9fcbe1606bc"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch/STATUS.json",
+      "bytes": 1527765,
+      "sha256": "d31c403ab4686da80db525fdc438086d66c4bc1f20a052ae2fb3f9fcbe1606bc"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/CURRENT_NATIVE_RECOVERY_FOLLOWUP.json",
+      "bytes": 1309101,
+      "sha256": "9bbedf19288c28bc9a44759c9e3e99c16ba93a6f61b847e1c90abd5e1dad5cd7"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch-handoff-20261013/CURRENT_OBSERVER_CONNECTION_STATE.json",
+      "bytes": 2977404,
+      "sha256": "b8265075e6920b3900630ce888e47075e1ba5f024d1376bde5d78e8e31a79672"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch/STATUS.json",
+      "bytes": 1527765,
+      "sha256": "d31c403ab4686da80db525fdc438086d66c4bc1f20a052ae2fb3f9fcbe1606bc"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch/CURRENT_NATIVE_RECOVERY_FOLLOWUP.json",
+      "bytes": 1309101,
+      "sha256": "9bbedf19288c28bc9a44759c9e3e99c16ba93a6f61b847e1c90abd5e1dad5cd7"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch/CURRENT_OBSERVER_CONNECTION_STATE.json",
+      "bytes": 2977404,
+      "sha256": "b8265075e6920b3900630ce888e47075e1ba5f024d1376bde5d78e8e31a79672"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch/STATUS.json",
+      "bytes": 1527765,
+      "sha256": "d31c403ab4686da80db525fdc438086d66c4bc1f20a052ae2fb3f9fcbe1606bc"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch/CURRENT_NATIVE_RECOVERY_FOLLOWUP.json",
+      "bytes": 1309101,
+      "sha256": "9bbedf19288c28bc9a44759c9e3e99c16ba93a6f61b847e1c90abd5e1dad5cd7"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch/CURRENT_OBSERVER_CONNECTION_STATE.json",
+      "bytes": 2977404,
+      "sha256": "b8265075e6920b3900630ce888e47075e1ba5f024d1376bde5d78e8e31a79672"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/REPORT.md",
+      "bytes": 1879,
+      "sha256": "e5087df6e67d602e17a0474625bffa40873bcc6db3e4c4806fdc027e976d6ebc"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/tree-nested-branch/REPORT.md",
+      "bytes": 1879,
+      "sha256": "e5087df6e67d602e17a0474625bffa40873bcc6db3e4c4806fdc027e976d6ebc"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/tree-grpo/reproduction/baselines/tree-validation-20261002/tree-nested-branch/REPORT.md",
+      "bytes": 1879,
+      "sha256": "e5087df6e67d602e17a0474625bffa40873bcc6db3e4c4806fdc027e976d6ebc"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/tree-nested-branch/REPORT.md",
+      "bytes": 1879,
+      "sha256": "e5087df6e67d602e17a0474625bffa40873bcc6db3e4c4806fdc027e976d6ebc"
+    }
+  ],
+  "actual_local_readback_observations": [
+    {
+      "pass_number": 1,
+      "observed_utc": "2026-10-16T01:23:19.135749+00:00",
+      "canonical_prestate_files": 14,
+      "all_actual_bytes_SHA_unchanged": true
+    },
+    {
+      "pass_number": 2,
+      "observed_utc": "2026-10-16T01:23:20.147707+00:00",
+      "canonical_prestate_files": 14,
+      "all_actual_bytes_SHA_unchanged": true
+    }
+  ],
+  "canonical_mutations_by_fixing_agent": 0,
+  "collector_invocations_by_fixing_agent_this_fix": 0,
+  "remote_operations_by_fixing_agent_this_fix": false,
+  "tests_review_or_compile_performed": false
+}
