@@ -1,0 +1,1140 @@
+[
+  {
+    "id": "D01",
+    "owner": "design",
+    "session_id": "01a11c5d-303b-7441-8db7-c645df252713",
+    "name": "Question-only QDP 原始设计与探索比例消融",
+    "kind": "方案／CPU实现",
+    "method": "冻结官方模型第27层末有效question-token表示；LN→MLP64→K=0..5六分类；CE6+0.1均值MSE+0.1归一化样本std MSE；按期望样本std选题。E=0/64/128/256四档，入训均512×5。",
+    "progress": "已形成方案、实现与CPU检查；不能把四档都称为已跑完的RL对照。",
+    "result": "已运行的E=64和E=0分支分别见下；没有找到E=128/256独立正式训练结果。",
+    "identity": "原实现734f05ead727430e96178f7aa23ddd0c57d38226；branch codex/search-g1-question-diversity-probe",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-teacher-warmup-a800/docs/question-diversity-probe.md",
+        "exists": true,
+        "bytes": 13447,
+        "sha256": "ad700ed3459b313dd01fc9ff345841e99fbc504261ca647eb3a1dd57e5faf33b"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/question-diversity-probing-inventory-20261017/01a11c5d-303b-7441-8db7-c645df252713-chronology.json",
+        "exists": true,
+        "bytes": 57360,
+        "sha256": "103eb5d30f7369ada12fe3ff09e39b02c29e1a876fd12392a518ae1978f9086f"
+      }
+    ]
+  },
+  {
+    "id": "D02",
+    "owner": "Co",
+    "session_id": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+    "name": "Pairwise ranking／RankNet 增补建议",
+    "kind": "未执行方案",
+    "method": "若std拟合改善而Top命中率未改善，再加入同policy高std题应排在低std题之前的排序loss。",
+    "progress": "找到建议文本；未找到独立run或实际loss启用凭证。",
+    "result": "不能当作已做过的消融。",
+    "identity": "",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/question-diversity-probing-inventory-20261017/01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef-chronology.json",
+        "exists": true,
+        "bytes": 235413,
+        "sha256": "6eb2d7d8da2630c31ba54c9899923b0cbe4ce75d7242658103d4783df2dc896d"
+      }
+    ]
+  },
+  {
+    "id": "C01",
+    "owner": "Co",
+    "session_id": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+    "name": "HPC3 小MLP 原始预热",
+    "kind": "warmup",
+    "method": "5120题×5 frozen-teacher；MLP64，135622参数；原六分类＋均值/std辅助；2epoch，batch256。",
+    "progress": "40次HeadAdam完成；actor更新0。",
+    "result": "同一缓存可复用，但不同loss的head不能冒称同一warmup。",
+    "identity": "run c3856315d3f345d7920ebf5725a083b4；恢复后主job719225",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/qprobe-warmup-hpc3/handoff.json",
+        "exists": true,
+        "bytes": 422637,
+        "sha256": "ed3c34d4fa2128d5406460696fd9d2abce987b3eb1e7b63797e694e25aed70ea"
+      }
+    ]
+  },
+  {
+    "id": "C02",
+    "owner": "Co",
+    "session_id": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+    "name": "HPC3 原始MLP QDP 正式RL",
+    "kind": "RL",
+    "method": "Top448＋随机64；每outer入训512×5；在线recent16 replay，head每outer2epoch。",
+    "progress": "完成117/200后按人工新loss指令停止。",
+    "result": "固定512：iter50 35.9375%（184）；iter100 41.2109375%（211）。",
+    "identity": "job719225；run c3856315d3f345d7920ebf5725a083b4",
+    "caveat": "人工更换设置，不标为数值崩溃；早期启动失败见附录。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/qprobe-warmup-hpc3/handoff.json",
+        "exists": true,
+        "bytes": 422637,
+        "sha256": "ed3c34d4fa2128d5406460696fd9d2abce987b3eb1e7b63797e694e25aed70ea"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/question-diversity-probing-inventory-20261017/01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef-chronology.json",
+        "exists": true,
+        "bytes": 235413,
+        "sha256": "6eb2d7d8da2630c31ba54c9899923b0cbe4ce75d7242658103d4783df2dc896d"
+      }
+    ]
+  },
+  {
+    "id": "C03",
+    "owner": "Co",
+    "session_id": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+    "name": "HPC3 σ3-loss 预热",
+    "kind": "warmup",
+    "method": "相同MLP64；CE3＋1×normalized σ MSE＋0.1 CE6，取消mean MSE；5120×5，2epoch。",
+    "progress": "40次HeadAdam完成。",
+    "result": "warmup总loss1.1206166；不是QA EM。",
+    "identity": "job721485；run70827e85fe584f0c84453aae907918a4",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/qprobe-sigma3-loss-20261015/handoff.json",
+        "exists": true,
+        "bytes": 156871,
+        "sha256": "f61da423c2e99cf0f80a396882dc5436c03b8ae2442051d6784f4b63c8afdbd5"
+      }
+    ]
+  },
+  {
+    "id": "C04",
+    "owner": "Co",
+    "session_id": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+    "name": "HPC3 σ3-loss 正式RL",
+    "kind": "RL",
+    "method": "λσ=1，Top448＋随机64；recent16×512组，2epoch，head batch256；其余保留Search-G1 shaped reward。",
+    "progress": "200/200训练与51713题评分完成；清理／归档验收尚未全部通过。",
+    "result": "固定512 iter200 41.9921875%（215）；终评20949/51713＝40.5101%，七集等权32.9841%。",
+    "identity": "job721485；run70827e85fe584f0c84453aae907918a4",
+    "caveat": "包装器报trainer left owned subprocesses；评分完成不等于全部收尾验收。handoff旧进度已由实际终评读回覆盖。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/qprobe-sigma3-loss-20261015/handoff.json",
+        "exists": true,
+        "bytes": 156871,
+        "sha256": "f61da423c2e99cf0f80a396882dc5436c03b8ae2442051d6784f4b63c8afdbd5"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/jxu957-current.json",
+        "exists": true,
+        "bytes": 1138400,
+        "sha256": "9f97764ddfbfdeb009d683830c2402fa9536a46d00377bffa20ecdd7c8047841"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/all-seven-results.json",
+        "exists": true,
+        "bytes": 1233162,
+        "sha256": "41bc4d966a6c9cfe38457fc931e03235b90e6ef716a5c88c2a89f96a8b01403f"
+      }
+    ]
+  },
+  {
+    "id": "A01",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "A800 原始teacher warmup",
+    "kind": "warmup",
+    "method": "冻结teacher5120×5；question-only MLP六分类＋均值/std；2epoch／40HeadAdam。",
+    "progress": "首次采样快照契约失败；修复与缓存复用后的实际warmup完成。",
+    "result": "用于后续micro2／micro4／async分支；warmup不算actor outer。",
+    "identity": "",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-deployment.json",
+        "exists": true,
+        "bytes": 55246,
+        "sha256": "83d099d07d97b616fbc717961fd59d7f666a3d5ee8035e672b6fdca437e6a0eb"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-micro4-superseded00028-terminal.json",
+        "exists": true,
+        "bytes": 22788,
+        "sha256": "9de2b6141d1d26fe983ae52edb88dbb63f9d63ebab6954c56a155ee231523bcb"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-async-top512-terminal-authority-before-fullouter-restore.json",
+        "exists": true,
+        "bytes": 23987,
+        "sha256": "a70e38ccaced0688e2a334a2e1f7dd657bba054fcbdcd41a778032ef4ddd1a40"
+      }
+    ]
+  },
+  {
+    "id": "A02",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "A800 question-only QDP micro2",
+    "kind": "RL／已停止",
+    "method": "四卡actor micro2版本；原六分类QDP；不是后来micro4正式新run。",
+    "progress": "1完整outer；第二轮6次部分Adam；合计26次／rank，人工换micro4。",
+    "result": "首轮reward0.2495036；无可冒称的200轮结果。",
+    "identity": "run00028e46b70b40a2ba6980b1c988f92c",
+    "caveat": "人工改micro配置；不把部分outer算完整。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-micro4-superseded00028-terminal.json",
+        "exists": true,
+        "bytes": 22788,
+        "sha256": "9de2b6141d1d26fe983ae52edb88dbb63f9d63ebab6954c56a155ee231523bcb"
+      }
+    ]
+  },
+  {
+    "id": "A03",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "A800 question-only QDP micro4",
+    "kind": "RL／故障退出",
+    "method": "四卡micro4／global16；保持mini128及20Adam/outer；原六分类head。",
+    "progress": "完成4个outer，随后故障；旧run保留。",
+    "result": "未找到该run可用的固定512里程碑成绩。",
+    "identity": "run34fffb9fe8ad4d75b54b9c9747c256fb；base d8569124…",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-micro4-terminal-authority-before-async-top512.json",
+        "exists": true,
+        "bytes": 17259,
+        "sha256": "dbb83d1737439f201d2c7c73579152d9f85e9683e4b67792ac5de6f174ed8ff8"
+      }
+    ]
+  },
+  {
+    "id": "A04",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "A800 async Top512 原始MLP",
+    "kind": "RL／恢复后已停止",
+    "method": "候选5120→Top512，无随机64；整outer采样权重同步、逐轨迹状态机；保留原六分类loss。",
+    "progress": "首执行完成5后native校准identity故障；同run恢复链后达到38完整outer，再按人工换loss。",
+    "result": "固定512 iter5 EM24.609375%；32个普通outer计时曾被独立分析。",
+    "identity": "run1f34290a70454871aea9d368dc8a0b36；a365→0065（被替代修复）→af113恢复",
+    "caveat": "恢复与目标回放不是新算法；原5轮checkpoint、继承计数与新写入分开。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-async-top512-terminal-authority-before-fullouter-restore.json",
+        "exists": true,
+        "bytes": 23987,
+        "sha256": "a70e38ccaced0688e2a334a2e1f7dd657bba054fcbdcd41a778032ef4ddd1a40"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-async-restore5-terminal-metadata.json",
+        "exists": true,
+        "bytes": 78087,
+        "sha256": "9737331beda55953b34994c543644dfd26ae4e624e2c7aa04a11d9f9fd3b2383"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/question-diversity-probing-inventory-20261017/01a0fb1b-d3ff-74b3-aa13-49ca57871f92-chronology.json",
+        "exists": true,
+        "bytes": 446195,
+        "sha256": "755473edfc79771c6ccacf3ade7f2ac5feb24795616d42835c83dfdfd6476883"
+      }
+    ]
+  },
+  {
+    "id": "A05",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "A800 σ3-loss λσ=3 预热",
+    "kind": "warmup",
+    "method": "CE3＋3×normalized σ MSE＋0.1 CE6；相同小MLP；5120×5，2epoch40更新。",
+    "progress": "真实warmup完成。",
+    "result": "总loss约1.6003；不能与Co的λσ=1直接称同设置。",
+    "identity": "",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-warmup10-oldf847-terminal-cleanup-accepted-archive.json",
+        "exists": true,
+        "bytes": 58703,
+        "sha256": "fd199aea7406f141763e15bf1830ae5b7160ff9c23eb587d5d26b9d291510d21"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/reports/qprobe-sigma3-f847-hour01.json",
+        "exists": true,
+        "bytes": 7045,
+        "sha256": "45eff0d162c75311152e8123a1529cee0f5b3203985bb17de2311083d2b4f8c7"
+      }
+    ]
+  },
+  {
+    "id": "A06",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "A800 σ3-loss λσ=3 正式RL",
+    "kind": "RL／已停止",
+    "method": "Top512，无探索；teacher-v4修复后正式训练。",
+    "progress": "至少3完整outer，下一outer有部分更新；后续人工切10epoch warmup。",
+    "result": "无完整固定512里程碑可据此排名。",
+    "identity": "runf84749ca43be42bd91f2bc63d73347dd；base86cf…",
+    "caveat": "前两个失败namespace/c528与1573单列为执行失败。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-warmup10-oldf847-terminal-cleanup-accepted-archive.json",
+        "exists": true,
+        "bytes": 58703,
+        "sha256": "fd199aea7406f141763e15bf1830ae5b7160ff9c23eb587d5d26b9d291510d21"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/question-diversity-probing-inventory-20261017/01a0fb1b-d3ff-74b3-aa13-49ca57871f92-chronology.json",
+        "exists": true,
+        "bytes": 446195,
+        "sha256": "755473edfc79771c6ccacf3ade7f2ac5feb24795616d42835c83dfdfd6476883"
+      }
+    ]
+  },
+  {
+    "id": "A07",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "A800 σ3-loss warmup10",
+    "kind": "warmup",
+    "method": "沿用小MLP／σ3监督，把同5120题预热延长到10epoch／200HeadAdam。",
+    "progress": "10/10完成。",
+    "result": "训练题二分类accuracy69.86%；不能当QA准确率。",
+    "identity": "runf4fb19b1fede4dffaac823b8937f35cf",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-warmup10-f4fb-terminal-cleanup-accepted-archive.json",
+        "exists": true,
+        "bytes": 64808,
+        "sha256": "055d466f4998fbb686e590aac1d184429ea6570664a968af8f7d48b3b02513bd"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/reports/qprobe-token-binary-warmup10-fulltoken-results.md",
+        "exists": true,
+        "bytes": 4710,
+        "sha256": "25573cc4c331aed618251d74e30e89a3dea5179dba9fb5a35cff0d181593420f"
+      }
+    ]
+  },
+  {
+    "id": "A08",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "A800 σ3 warmup10 后正式RL",
+    "kind": "RL／已停止",
+    "method": "与A07同run，预热后从官方actor开始。",
+    "progress": "2完整outer、40成功Adam／rank、0skip；人工换架构，资源清理验收通过。",
+    "result": "无该分支固定512里程碑。",
+    "identity": "runf4fb19b1fede4dffaac823b8937f35cf",
+    "caveat": "不是训练故障，不能误报未启动或仍运行。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-warmup10-f4fb-terminal-cleanup-accepted-archive.json",
+        "exists": true,
+        "bytes": 64808,
+        "sha256": "055d466f4998fbb686e590aac1d184429ea6570664a968af8f7d48b3b02513bd"
+      }
+    ]
+  },
+  {
+    "id": "A09",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "全question-token MLP128＋4-head attention warmup10",
+    "kind": "warmup",
+    "method": "全部有效question token→MLP128→单层4-head attention→补到244后flatten；BCE(mixed)+0.3 normalized std MSE。",
+    "progress": "10epoch／200更新，exit0；没有正式actor训练。",
+    "result": "loss0.765503→0.587306；训练accuracy41.54→72.23%；Top512真实混合39.26→79.69%，epoch8曾84.38%。",
+    "identity": "完成base494eafd18b004cb980121e46b188db44",
+    "caveat": "不是完整Qwen block。epoch8权重没单独保存；两次失败/缓存复用在附录。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/reports/qprobe-token-binary-warmup10-fulltoken-results.md",
+        "exists": true,
+        "bytes": 4710,
+        "sha256": "25573cc4c331aed618251d74e30e89a3dea5179dba9fb5a35cff0d181593420f"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/reports/qprobe-token-binary-warmup10-fulltoken-results.json",
+        "exists": true,
+        "bytes": 130718,
+        "sha256": "c0d8b9f17fde105fbbe6d2da2b615685e1a75dabd180f7fcb6c31f1e1d841349"
+      }
+    ]
+  },
+  {
+    "id": "A10",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "完整原生Qwen最后block question-only warmup10",
+    "kind": "warmup",
+    "method": "冻结encoder layer27所有question hidden→完整复制原生layer35→masked flatten244→Linear2；BCE mixed+0.3 normalized std MSE。",
+    "progress": "10epoch／200HeadAdam完成。",
+    "result": "训练accuracy99.8828125%（5114/5120），BCE0.0366394；Top512全mixed。",
+    "identity": "warmupbase096c8297cba74f8089063e763686671e；Head SHA9b32f40e…",
+    "caveat": "这是同一训练题拟合，不是泛化；目标文件名有warmup20，不得覆盖实际10epoch/200计数。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/reports/qprobe-native-qwen-warmup10-096c-training-scalars.json",
+        "exists": true,
+        "bytes": 124832,
+        "sha256": "6ae4191fb2ca6bb35b79c1d7c8fdee405d69463e046dfec1f9923e231692d971"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-progress-handoff.json",
+        "exists": true,
+        "bytes": 376994,
+        "sha256": "a93d39bff2098b3e068f6a747242792d1c3e0b07c645bfcfc46194ccf00e88a4"
+      }
+    ]
+  },
+  {
+    "id": "A11",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "原生Qwen question-only 正式RL",
+    "kind": "RL／已停止",
+    "method": "Top512；每outer head2epoch／recent8 replay、指数年龄权；只导入独立探针，不改actor初始官方权重。",
+    "progress": "1完整outer＋第二轮10部分Adam，总30／rank；人工停止后新512诊断。",
+    "result": "单轮主流程约21分30秒；无5轮QA EM可报。",
+    "identity": "run509c391b7e5c4174bfb55f724f41a3d6；execution60fca3cc2edd4dedb3773230b91f34ea",
+    "caveat": "多个启动修复只复用同一已完成warmup，不能每次算新10epoch实验。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-progress-handoff.json",
+        "exists": true,
+        "bytes": 376994,
+        "sha256": "a93d39bff2098b3e068f6a747242792d1c3e0b07c645bfcfc46194ccf00e88a4"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-native-human-stop-new512-diagnostic-20261016.json",
+        "exists": true,
+        "bytes": 1050,
+        "sha256": "edefae2c912d6773bdb4cfa3d00fbe65f83be8af241dd8ff2b655ed564877374"
+      }
+    ]
+  },
+  {
+    "id": "A12",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "Head200 CPU复现＋全新512题G5泛化诊断",
+    "kind": "诊断",
+    "method": "独立复现旧Head200训练集表现、比对formal初始权重、同题G5标签审计；新512题不与预热/正式候选重叠；不训练actor/head。",
+    "progress": "新512×5真实轨迹全部完成。",
+    "result": "旧训练99.88%；新题mixed分类58.7891%（301/512），低于总预测非mixed基线64.2578%。",
+    "identity": "新512base16034e59031e4f21a323ebb2556bef7f",
+    "caveat": "分类目标是G5是否混合，不是单轨迹QA EM；std输出全0的诊断亦保留。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-native-new512-cpu-weight-compare-20261016.json",
+        "exists": true,
+        "bytes": 904,
+        "sha256": "163c9a47a47c2a488e1f11a6fc9c4a79aee003e87798b9818f27bed7c357f899"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-progress-handoff.json",
+        "exists": true,
+        "bytes": 376994,
+        "sha256": "a93d39bff2098b3e068f6a747242792d1c3e0b07c645bfcfc46194ccf00e88a4"
+      }
+    ]
+  },
+  {
+    "id": "A13",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "A800 question＋Prefix5 单轨迹BCE，balanced warmup20",
+    "kind": "warmup／未跑满",
+    "method": "原生Qwen block＋flattenLinear1；每条轨迹自己最终EM；batch256强制128对128错有放回，lr3e-4；20epoch目标2000Adam。",
+    "progress": "实际6完整epoch＋第7轮91次，合计691Adam后人工停止；旧不平衡fit从未启动。",
+    "result": "新题轨迹判别balanced accuracy最好epoch4 58.4280%，epoch6 51.7827%。",
+    "identity": "baseaa4a9ebd63ac4683985bf74a748dcfb2",
+    "caveat": "文件旧名prefix20，但实际policy prefix是5；训练分类指标不是QA EM。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-prefix-correctness-balanced-warmup20-human-intent-20261016.json",
+        "exists": true,
+        "bytes": 17030,
+        "sha256": "30e61fa011929431bfe0948a17fa61e47f4834ad1079a9e5a32a34aaec9d8dd4"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-prefix-correctness-balanced20-deployment-20261016.json",
+        "exists": true,
+        "bytes": 2141,
+        "sha256": "4bc2019b01f0152db205e820476adc49bc7223f37cc3e90267c548443a1fc20e"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-progress-handoff.json",
+        "exists": true,
+        "bytes": 376994,
+        "sha256": "a93d39bff2098b3e068f6a747242792d1c3e0b07c645bfcfc46194ccf00e88a4"
+      }
+    ]
+  },
+  {
+    "id": "H01",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "H100 三个原生Qwen block，σ3 warmup2",
+    "kind": "warmup",
+    "method": "question全token表示；3个完整Qwen decoder block；CE3+1 normalized σ MSE+0.1 CE6；5120×5；2epoch40HeadAdam。",
+    "progress": "真实warmup完成，仅保存最终统计，没有逐mini曲线。",
+    "result": "总loss1.23408，对照常数1.23985；CE3 .90922，std RMSE .23872，改善很小。",
+    "identity": "jobs3399/3400；后者runc025948ebc0947f69d86af84871a9237",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qprobe-state-pre-binary-normalization-20261015.json",
+        "exists": true,
+        "bytes": 56867,
+        "sha256": "e97711f3784540cb1ac69dba1663b2135c146448ef153e278880bc6aceed4951"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qprobe-stdloss3399-terminal-archive-v1.json",
+        "exists": true,
+        "bytes": 2300,
+        "sha256": "9468765038a9ad50fbc33b40e3d8e3d16abd1ef4aa39723c72ad498747500dfe"
+      }
+    ]
+  },
+  {
+    "id": "H02",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "H100 三block σ3 正式RL",
+    "kind": "RL／故障链后改设置",
+    "method": "Top448＋随机64；actor8H100，probe单GPU7更新；frozen官方question编码。",
+    "progress": "该阶段完成首5轮及dev5；3399/3400均留有故障终态。",
+    "result": "固定512 dev5 EM26.3671875%（135/512）。",
+    "identity": "3396/3397等初始启动→3399→3400",
+    "caveat": "初始六分类计划后来被σ3替代；未把仅计划的配置冒称独立完成。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qprobe-state-pre-binary-normalization-20261015.json",
+        "exists": true,
+        "bytes": 56867,
+        "sha256": "e97711f3784540cb1ac69dba1663b2135c146448ef153e278880bc6aceed4951"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qprobe3400-terminal-and-warmup10-fresh-submit-v2.json",
+        "exists": true,
+        "bytes": 1313,
+        "sha256": "7cb1230bd0c83bac0d75caf9a8e149d89cf21de1d7191b7971f96127a87b9517"
+      }
+    ]
+  },
+  {
+    "id": "H03",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "H100 三block mixed-BCE warmup10",
+    "kind": "warmup",
+    "method": "BCE(mixed)+0.1 normalized sample-variance MSE；注意辅助项为variance，不是A800的0.3 std；5120固定题。",
+    "progress": "10epoch200HeadAdam完成，teacher mixed1893/5120。",
+    "result": "最终BCE约.5146、总loss.5267、训练accuracy77.13%、Top448混合92.41%。",
+    "identity": "job3402；runf77c3245dcfe49a88a5a99b1dec161e6",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qprobe3402-warmup10-training-curve-summary-v1.json",
+        "exists": true,
+        "bytes": 8540,
+        "sha256": "6deece8dc6a06e5f665092ef26acbfbc52db4052d15dd7541c69cae590bde6d5"
+      }
+    ]
+  },
+  {
+    "id": "H04",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "H100 三block mixed-BCE 正式RL",
+    "kind": "RL／已停止",
+    "method": "actor八卡，probe GPU7单卡FP32/micro4；replay每outer2epoch；第14轮96HeadAdam，6144串行micro反传。",
+    "progress": "停止前账本口径不齐：18轮完整耦合已严证、19轮console、actor更新达20而probe19；不计为20完整耦合outer。",
+    "result": "探针更新普通轮平均约6分29秒；第14轮外层523.5秒。",
+    "identity": "job3402；runf77c3245dcfe49a88a5a99b1dec161e6",
+    "caveat": "更换前缀设置后人工停止；未把摘要的19/20口径混为完成轮数。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qprobe-h1008-transformer3-state.json",
+        "exists": true,
+        "bytes": 145690,
+        "sha256": "6b77804c64ddf9405c8116a7dd947f88db9d6dab8ce3414a599729682d205443"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qprobe3402-prefix5-stop-summary-20261015T174356636271Z.json",
+        "exists": true,
+        "bytes": 4861,
+        "sha256": "f3a9e4fbe9e2bf840dd65d8d0ffee3d05a2da2c2ad8f17b416d082013d69d613"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/h100-qprobe-vs-mixed-latency-20261016/REPORT.md",
+        "exists": true,
+        "bytes": 5290,
+        "sha256": "7a01f0f0324a50df5cbdc6a964d1ac924b036f9ef5e8eeb49a65afa3fa3d9367"
+      }
+    ]
+  },
+  {
+    "id": "H05",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Question-only vs Question＋Prefix5 原拟议AB",
+    "kind": "未执行方案",
+    "method": "两臂比较问题表征与问题＋5生成token；原拟10epoch。",
+    "progress": "随后人工改为Question＋10/20两臂；未发现该AB的完整GPU训练产物。",
+    "result": "不能补造两臂准确率。",
+    "identity": "",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qprobe3402-prefix5-stop-summary-20261015T174356636271Z.json",
+        "exists": true,
+        "bytes": 4861,
+        "sha256": "f3a9e4fbe9e2bf840dd65d8d0ffee3d05a2da2c2ad8f17b416d082013d69d613"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/question-diversity-probing-inventory-20261017/01a0fcbb-863f-7450-926d-db537f648265-chronology.json",
+        "exists": true,
+        "bytes": 159716,
+        "sha256": "85b1b2a665c8e30e693d8effd4efce608a902724e4fb9cacbde9242387f82726"
+      }
+    ]
+  },
+  {
+    "id": "P01",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Question＋Prefix10 balanced warmup20",
+    "kind": "warmup／消融臂",
+    "method": "question＋本轨迹前10个policy token；冻结encoder27→原生block35＋flattenLinear1；单轨迹BCE，exact1:1采样；每臂4H100/global256。",
+    "progress": "20epoch／每rank2000HeadAdam；actor0；exit0。",
+    "result": "epoch20原始train accuracy96.2148%；原始test balanced accuracy53.6135%；test BCE2.3099。",
+    "identity": "job3405；base94cc1d4",
+    "caveat": "raw与prior-corrected指标分开，不报告成QA EM。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix10-20-h1008-20261016/results/prefix10-20-h1008-20261016/FINAL.json",
+        "exists": true,
+        "bytes": 12877,
+        "sha256": "c96f2aa1c7f9132d6c43b224931bf433727221b147aca7bf402653a0cdb6b31b"
+      }
+    ]
+  },
+  {
+    "id": "P02",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Question＋Prefix20 balanced warmup20",
+    "kind": "warmup／消融臂",
+    "method": "question＋本轨迹前20个policy token；冻结encoder27→原生block35＋flattenLinear1；单轨迹BCE，exact1:1采样；每臂4H100/global256。",
+    "progress": "20epoch／每rank2000HeadAdam；actor0；exit0。",
+    "result": "epoch20原始train accuracy95.6797%；原始test balanced accuracy54.0187%；test BCE2.8186。",
+    "identity": "job3405；base94cc1d4",
+    "caveat": "raw与prior-corrected指标分开，不报告成QA EM。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix10-20-h1008-20261016/results/prefix10-20-h1008-20261016/FINAL.json",
+        "exists": true,
+        "bytes": 12877,
+        "sha256": "c96f2aa1c7f9132d6c43b224931bf433727221b147aca7bf402653a0cdb6b31b"
+      }
+    ]
+  },
+  {
+    "id": "P03",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Prefix-only10 balanced warmup20",
+    "kind": "warmup／消融臂",
+    "method": "encoder仍看到完整question上下文，但probe只收到前10个生成位置hidden；原生block＋flattenLinear1；每臂2H100/global256；单轨迹BCE。",
+    "progress": "20epoch／每rank2000HeadAdam；actor0；exit0。",
+    "result": "epoch20原始test balanced accuracy54.2696%，AUROC0.5997。",
+    "identity": "job3406；base58d687c",
+    "caveat": "不能把prefix-only说成无问题信息；其hidden已条件于question。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix-only-four-h1008-20261016/results/prefix-only-four-h1008-20261016/FINAL.json",
+        "exists": true,
+        "bytes": 29995,
+        "sha256": "c5414541d41a23a46bb20220c1d7ccbd79426b2dd8cb8bdeb62cdc2271e9b068"
+      }
+    ]
+  },
+  {
+    "id": "P04",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Prefix-only20 balanced warmup20",
+    "kind": "warmup／消融臂",
+    "method": "encoder仍看到完整question上下文，但probe只收到前20个生成位置hidden；原生block＋flattenLinear1；每臂2H100/global256；单轨迹BCE。",
+    "progress": "20epoch／每rank2000HeadAdam；actor0；exit0。",
+    "result": "epoch20原始test balanced accuracy53.0330%，AUROC0.5833。",
+    "identity": "job3406；base58d687c",
+    "caveat": "不能把prefix-only说成无问题信息；其hidden已条件于question。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix-only-four-h1008-20261016/results/prefix-only-four-h1008-20261016/FINAL.json",
+        "exists": true,
+        "bytes": 29995,
+        "sha256": "c5414541d41a23a46bb20220c1d7ccbd79426b2dd8cb8bdeb62cdc2271e9b068"
+      }
+    ]
+  },
+  {
+    "id": "P05",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Prefix-only40 balanced warmup20",
+    "kind": "warmup／消融臂",
+    "method": "encoder仍看到完整question上下文，但probe只收到前40个生成位置hidden；原生block＋flattenLinear1；每臂2H100/global256；单轨迹BCE。",
+    "progress": "20epoch／每rank2000HeadAdam；actor0；exit0。",
+    "result": "epoch20原始test balanced accuracy52.4446%，AUROC0.5786。",
+    "identity": "job3406；base58d687c",
+    "caveat": "不能把prefix-only说成无问题信息；其hidden已条件于question。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix-only-four-h1008-20261016/results/prefix-only-four-h1008-20261016/FINAL.json",
+        "exists": true,
+        "bytes": 29995,
+        "sha256": "c5414541d41a23a46bb20220c1d7ccbd79426b2dd8cb8bdeb62cdc2271e9b068"
+      }
+    ]
+  },
+  {
+    "id": "P06",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Prefix-only80 balanced warmup20",
+    "kind": "warmup／消融臂",
+    "method": "encoder仍看到完整question上下文，但probe只收到前80个生成位置hidden；原生block＋flattenLinear1；每臂2H100/global256；单轨迹BCE。",
+    "progress": "20epoch／每rank2000HeadAdam；actor0；exit0。",
+    "result": "epoch20原始test balanced accuracy56.7286%，AUROC0.7042。",
+    "identity": "job3406；base58d687c",
+    "caveat": "不能把prefix-only说成无问题信息；其hidden已条件于question。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix-only-four-h1008-20261016/results/prefix-only-four-h1008-20261016/FINAL.json",
+        "exists": true,
+        "bytes": 29995,
+        "sha256": "c5414541d41a23a46bb20220c1d7ccbd79426b2dd8cb8bdeb62cdc2271e9b068"
+      }
+    ]
+  },
+  {
+    "id": "P07",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Prefix-only20 在线换题 warmup1000",
+    "kind": "warmup／提前换协议",
+    "method": "冻结actor，每epoch5120×5新真实轨迹、仅训probe；全pool轮转；实际global256/local32、100Adam/epoch。LR从3e-4在CP7后改3e-5。",
+    "progress": "账本停在71epoch／7100Adam每rank；第70轮已有独立不可变CP与全SHA核验；不是1000轮完成。",
+    "result": "epoch70派生G5 mixed test balanced accuracy58.5987%、普通accuracy59.5703%；epoch68权重被导出给Co。",
+    "identity": "run8a6b24dc19664cb3a3fb97101f21c54e；jobs3407→3408→3409",
+    "caveat": "实际batch不是原计划25600；CP7实际LR3e-4→3e-5，不是3e-5→3e-6。70与停训时71口径分开。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix20-online1000-state.json",
+        "exists": true,
+        "bytes": 78024,
+        "sha256": "1244c22426147ebb7335c8bcb6a1191fff5dce1c7edd474e27bb986d4f858cfd"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix20-online1000-h1008-20261016/results/prefix20-online1000-lr3e5/MIXED-G5-THROUGH70-SUMMARY.json",
+        "exists": true,
+        "bytes": 153736,
+        "sha256": "bb4a7275f4bd56419cfd00393fcdee2eec7b02e9dab28c075d1911e9f5687e8a"
+      }
+    ]
+  },
+  {
+    "id": "P08",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Question＋Prefix20 replay70",
+    "kind": "warmup／数据协议消融",
+    "method": "从旧71轮Head/Adam状态转入question＋20表示，lr3e-6，回放70份已有G5数据；每iteration100HeadAdam。",
+    "progress": "70/70完成；前6轮只有test，后64轮有配对train/test；14100累计Adam／rank；exit0及CP验收通过。",
+    "result": "最终train mixed balanced73.9199%、test60.9107%；最好test64.9410%在iteration30。",
+    "identity": "run80cb2d8592304bc197614be9b04911c9；jobs3410→3411",
+    "caveat": "这不是fresh actor RL，也不是70个新outer。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix20-online1000-h1008-20261016/results/question20-replay70/FINAL-ACCEPTANCE-SUMMARY.json",
+        "exists": true,
+        "bytes": 9473,
+        "sha256": "1776baac39ccff1a68346d0794a43c34175d0b9e54acfe05b22b4c1bcc1c3a99"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix20-online1000-h1008-20261016/results/question20-replay70/BALANCED-ACCURACY-SUMMARY.json",
+        "exists": true,
+        "bytes": 67128,
+        "sha256": "e9be6761005a6a14b7ac0d035f3c9670647d7c6ebe153323f29769b9fc661bc7"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix20-question-replay70-state.json",
+        "exists": true,
+        "bytes": 74405,
+        "sha256": "7b5201c2d6fce1cb7a8cd84ae69360b154db7e6c67d55d6c1925defbb828afa7"
+      }
+    ]
+  },
+  {
+    "id": "P09",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Question＋Prefix20 joint BCE100",
+    "kind": "warmup／监督消融",
+    "method": "fresh probe；逐轨迹EM BCE＋同题G5 mixed BCE，权重1:1；h=1−∏p−∏(1−p)；lr3e-5 cosine→3e-6。",
+    "progress": "100/100epoch，每rank10000HeadAdam，actor0；10/20/…/100保存；最终验收通过。",
+    "result": "最好观测test mixed balanced62.9619%在epoch45，但无该权重；最好实际保留CP是epoch100，59.8759%。",
+    "identity": "job3412；runcee20bcd24194b79a9a8a88809bd5886；HeadSHA8df6bd44…",
+    "caveat": "epoch68 HF权重来自P07，不是本实验；这个区别会影响后续初始化对比。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix20-online1000-h1008-20261016/results/question20-groupjoint100/FINAL-ACCEPTANCE.json",
+        "exists": true,
+        "bytes": 17286,
+        "sha256": "6f55ad4c2da3bf048c5799fce9d50b67921ff7510f45687287932cbf1f345714"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/qprobe-prefix20-online1000-h1008-20261016/results/question20-groupjoint100/FINAL-METRICS-100.json",
+        "exists": true,
+        "bytes": 240524,
+        "sha256": "f528cb28d5fc44059df60e56b8ca772ad0f0204a8d50551f4c0c8bcb3d5a11ef"
+      }
+    ]
+  },
+  {
+    "id": "L01",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "Question＋Prefix20 冻结encoder Top512 RL",
+    "kind": "RL／已停止",
+    "method": "P09实际保留CP100初始化head；officialactor fresh；5120×5前缀→预测Top512→续写原前缀；选中2560轨迹jointBCE训head1epoch/lr1e-6，每outer10HeadAdam。",
+    "progress": "21完整outer后人工停止；无偏随机候选未进入head训练引发选择偏差担忧。",
+    "result": "最后selected trainEM7.34375%；固定512 iter5 EM24.21875%（124）。",
+    "identity": "run5cba22ca409a4571a1e6b87d89c86b09；jobs3413/3414/3415/3419/3420恢复链",
+    "caveat": "输入是独立冻结官方encoder hidden，不能说成当时actor hidden；QA曾有Triton布局编译失败。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/h100-8-current.json",
+        "exists": true,
+        "bytes": 285298,
+        "sha256": "f7a45d05b28d0cb0f3ff54e48c37b37a38a87c119cef277b0bebad924c198cd9"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix-selection200-resumed6-10-runtime-summary.json",
+        "exists": true,
+        "bytes": 1155,
+        "sha256": "646dd6e96e75c79a7d55376a5e3485ef6cebe07e910fecd41cc8c244a0a62676"
+      }
+    ]
+  },
+  {
+    "id": "L02",
+    "owner": "Gi",
+    "session_id": "01a0fcbb-863f-7450-926d-db537f648265",
+    "name": "当前actor-hidden Prefix20＋period20 RL",
+    "kind": "RL／进行中",
+    "method": "当前actor layer27捕获question＋20 hidden，采样21丢第21以对齐；5120候选Top512；每20outer才用全5120×5训probe1epoch（100HeadAdam），其余冻结。",
+    "progress": "本次本地实际状态记录18完整outer；head更新账本[0, 0, 0, 0, 0, 0, 0, 0]；早前远端冻结审计严证8。",
+    "result": "固定512 iter5 EM23.6328125%（121）。",
+    "identity": "runa008d7ce983347bbb6e81051b25a7c4e；3423→3424→3425",
+    "caveat": "前两次分别存到1/2轮后storage校验失败，恢复属于同run，不是三个科学实验。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/search-g1-actorhidden-period20-state.json",
+        "exists": true,
+        "bytes": 12825,
+        "sha256": "88359d5dfebbd86abcbfb6fcfaf1e73dd27485a6601e1e6905c22df046b30699"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden-period20-first-five-actual-facts.json",
+        "exists": true,
+        "bytes": 55739,
+        "sha256": "1abce27d9817b1404f65e78a5969e2799f50d7bf5c242c96b151ad24ff59d745"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/h100-8-current.json",
+        "exists": true,
+        "bytes": 285298,
+        "sha256": "f7a45d05b28d0cb0f3ff54e48c37b37a38a87c119cef277b0bebad924c198cd9"
+      }
+    ]
+  },
+  {
+    "id": "L03",
+    "owner": "Tree",
+    "session_id": "01a0fcbc-0b46-7502-8b66-d8b21a0e032d",
+    "name": "Prefix Top1024→真实diversity Top512 RL",
+    "kind": "RL／进行中",
+    "method": "P09 CP100 head；先预测Top1024并完整续写，再按实际hard-EM population variance挑512入训actor；head用全部1024×5标签，20更新/outer。",
+    "progress": "本次本地原始reward回执已到39；早前冻结远端审计严证32。",
+    "result": "固定512 iter5 EM24.609375%（126）；训练EM因真实diversity二次筛选而不可当测试EM。",
+    "identity": "runf3ee1435e5014ba1969387c91878893a；job3422；之前3421存到5",
+    "caveat": "与Gi单纯预测Top512不同；已发生恢复/评测Triton故障，保留原失败证据。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/CURRENT_CONFIG.json",
+        "exists": true,
+        "bytes": 7127,
+        "sha256": "2973c362cf039cb60d844e1be8d9e4332cdcf5f9d756ea6d4976adea463948e6"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/TRAINING_REWARD_HISTORY.json",
+        "exists": true,
+        "bytes": 21675,
+        "sha256": "0af6f047b2f9dc1ac863b032aca20169a549a248facc516dfd8df21e3ced464b"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/STATUS.json",
+        "exists": true,
+        "bytes": 10055,
+        "sha256": "3112635a4ec7d9a737fcf40009bd11203958190374986eb0d53cd43e7c08f184"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/TERMINAL3421_SMALL.json",
+        "exists": true,
+        "bytes": 17499,
+        "sha256": "5e2ca90a5fd48863a785750d1df8290348c145d4696e9d49db2afda755d0f856"
+      }
+    ]
+  },
+  {
+    "id": "L04",
+    "owner": "TOPD",
+    "session_id": "01a0fcbe-15f8-7600-ae84-9487d924560a",
+    "name": "HPC3 独立原生Qwen QDP warmup10／每outer刷新原方案",
+    "kind": "warmup／被新协议替代",
+    "method": "独立head/Adam；question-only原生Qwen最后block，BCE mixed+std；原计划warmup10后每outer2epoch/replay8，Top512。",
+    "progress": "新5120特征准备/初始warmup有执行；旧正式job723510零actor更新时被后续period25设置替代。",
+    "result": "不能报成一个已完成200轮的TOP-D蒸馏实验。",
+    "identity": "723434准备；723510旧正式取消；base native-thread5-20261015",
+    "caveat": "这是TOP-D会话承载的Search-G1 QDP，名称不代表使用TOP-D loss；原方案与正式period25分开。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/dynrpo-independent-20261015/deployment-plan.json",
+        "exists": true,
+        "bytes": 1035,
+        "sha256": "37ba45be3a6d36a4d86655a3bac5d7a5dc613a2a308d8445c9c9b4b8f845e196"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/dynrpo-independent-20261015/hpc3-native-submission.json",
+        "exists": true,
+        "bytes": 435,
+        "sha256": "f2fa51ca5817c69933178da1d1cbf15e987400c2fa67cbc912ddd4b1e555da99"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/dynrpo-independent-20261015/periodic25-change.json",
+        "exists": true,
+        "bytes": 1409,
+        "sha256": "59222f17499f855a87db7f136838d9c53dc6aad9d99475db55fcf000e0668f44"
+      }
+    ]
+  },
+  {
+    "id": "L05",
+    "owner": "TOPD",
+    "session_id": "01a0fcbe-15f8-7600-ae84-9487d924560a",
+    "name": "Periodic25 原生Qwen QDP 初始及周期warmup",
+    "kind": "warmup／周期refit",
+    "method": "0/25/50/75/100/125/150/175边界用当前student5120×5重新标注，head20epoch；不重置block/readout/Adam；200只存评测不refit。",
+    "progress": "边界0/25/50完成；每次400HeadAdam，累计1200。",
+    "result": "后续新边界是同一RL的refit阶段，不是独立fresh模型实验。",
+    "identity": "run1cd20aedc5e94511be8ea8b7db76933c；currentjob725286",
+    "caveat": "",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/dynrpo-independent-20261015/periodic25-change.json",
+        "exists": true,
+        "bytes": 1409,
+        "sha256": "59222f17499f855a87db7f136838d9c53dc6aad9d99475db55fcf000e0668f44"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/dynrpo-periodic25-20261016-r16/refit25-latest-sample.json",
+        "exists": true,
+        "bytes": 7020,
+        "sha256": "a152776031ebbe3ab43ec928846e077f1d642acc9b2e1b17681ed00d4349c840"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/STATE.json",
+        "exists": true,
+        "bytes": 329205,
+        "sha256": "09e620c56f9fbfaf94f1b873cff923fb2af252b388c9510a95b2b876733838b5"
+      }
+    ]
+  },
+  {
+    "id": "L06",
+    "owner": "TOPD",
+    "session_id": "01a0fcbe-15f8-7600-ae84-9487d924560a",
+    "name": "Periodic25 原生Qwen QDP 正式RL",
+    "kind": "RL／恢复中继续",
+    "method": "Top512/no random；fourGPU；question-only head只按period25刷新，actor每outer20Adam。",
+    "progress": "本地STATE最近记录72完整outer；此前原始远端冻结读回68。",
+    "result": "固定512 iter5 EM25.390625%（130）；iter50 36.9140625%（189）。",
+    "identity": "canonical1–5来自r13，6–10来自r15，11+来自r16；currentjob725286",
+    "caveat": "r15曾完成但未保存的outer11被放弃，从CP10重做；不累计两次11。17个部署目录不是17种算法。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/STATE.json",
+        "exists": true,
+        "bytes": 329205,
+        "sha256": "09e620c56f9fbfaf94f1b873cff923fb2af252b388c9510a95b2b876733838b5"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/dynrpo-periodic25-20261016-r16/latest-sample.json",
+        "exists": true,
+        "bytes": 5673,
+        "sha256": "61f4355b4fd8f8ad6eb3855154e659105d103b68be6b77e0aab1e71888e123fa"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-pinned/mou176-current.json",
+        "exists": true,
+        "bytes": 476941,
+        "sha256": "0c9dfda6c73807f06caa65d7fdff7be915daafe26f419dce6c6356f2694aa63b"
+      }
+    ]
+  },
+  {
+    "id": "L07",
+    "owner": "Co",
+    "session_id": "01a0fcbe-65a4-7fb1-9cc8-8a74046bf8ef",
+    "name": "HPC3 Prefix-only20＋全对组虚拟0 RL",
+    "kind": "RL／多次启动失败后新提交",
+    "method": "导入P07 epoch68，而非P09 CP100；head只接20生成位置；逐轨迹BCE，不含group joint BCE；selected512×5每outer训head1epoch/lr1e-6；只EM全对组加虚拟0。",
+    "progress": "当前727586仅有提交凭证，完整outer0；此前727414真实payload失败，不能算训练已完成。",
+    "result": "没有该新run可报告的固定5轮EM；旧dev0不是训练后成绩。",
+    "identity": "727586；base qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017",
+    "caveat": "名称含joint4，但实际不是逐轨迹BCE＋groupBCE联合监督；虚拟0是另一算法改变。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/qprobe-prefix20-hpc3-4gpu-20261016/handoff.json",
+        "exists": true,
+        "bytes": 7879,
+        "sha256": "56ab72bf72d00d87cd5e3e1e937af2c181d6385d263c82518632ad7da82200d9"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/qprobe-prefix20-hpc3-4gpu-20261016/727414-actual-payload-failure-and-zero-write-evidence-1792170376.json",
+        "exists": true,
+        "bytes": 24540,
+        "sha256": "dfe8e8b508a248a65d85070da480dd484383d78961aa24edec9d36855a8adbbe"
+      }
+    ]
+  },
+  {
+    "id": "N01",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "Prefix5 scale20 teacher数据／特征构建",
+    "kind": "数据构建",
+    "method": "frozen官方teacher；20×5120题／102400题／512000条轨迹；第一份旧5120复用，额外97280题；保存prefix5与各自最终EM，不更新actor/head。",
+    "progress": "200chunk完成；最终数据CPU审计和HF追加验收通过。",
+    "result": "此数据阶段不是200outer RL，也不是200epoch probe拟合。",
+    "identity": "datasetbuildbase0850db2977bd4801b9ced300b0ab387f；run62407ad0ed404586998439ca1f55b902",
+    "caveat": "前期c6缓存scope adapter失败与修复单列；历史prefix20数据追加后统一裁到5。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-progress-handoff.json",
+        "exists": true,
+        "bytes": 376994,
+        "sha256": "a93d39bff2098b3e068f6a747242792d1c3e0b07c645bfcfc46194ccf00e88a4"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-prefix-scale20-final-audit-1792141000881306000.json",
+        "exists": true,
+        "bytes": 3926,
+        "sha256": "d70a925b67eeb00d29a977612fa5d88d955d3455c4236b1396b7afc2db5b21b2"
+      }
+    ]
+  },
+  {
+    "id": "N02",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "Question＋Prefix20 EMA joint200 原方案",
+    "kind": "已实现CPU／未GPU执行方案",
+    "method": "question＋20；轨迹BCE＋groupBCE 1:1；EMA0.99评估；目标200epoch。",
+    "progress": "CPU核心已实现和发布；合并数据只有新prefix5，后由人工改为全部Prefix5；无该20-token独立GPU训练run。",
+    "result": "无完成epoch／测试准确率。",
+    "identity": "current_question20_ema_joint_warmup",
+    "caveat": "不能用后续5-token成绩填到20-token方案下。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-progress-handoff.json",
+        "exists": true,
+        "bytes": 376994,
+        "sha256": "a93d39bff2098b3e068f6a747242792d1c3e0b07c645bfcfc46194ccf00e88a4"
+      }
+    ]
+  },
+  {
+    "id": "N03",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "Question＋Prefix5 EMA0.99 joint200 全量warmup",
+    "kind": "warmup／进行中",
+    "method": "合并去重后445440个G5事件组／2227200轨迹；全部prefix5；nativeblock＋flattenLinear1；轨迹BCE＋mixed-groupBCE权重1:1，EMA0.99；每epoch全数据一遍。",
+    "progress": "4完整epoch，epoch5活动；global256改1024时从CP2完整状态恢复；actor更新0。",
+    "result": "epoch4 EMA：train mixed balanced约84.75%，test约56.57%；单轨迹train/test accuracy约83.50/77.03%；泛化gap明显。",
+    "identity": "run8af926a49630428097b94027864da68b；executionbcfa1de0a90a4fcda70263a75153fcee",
+    "caveat": "445440是采样事件组，不等于445440个唯一问题；离线probe分类指标不进QA榜。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-progress-handoff.json",
+        "exists": true,
+        "bytes": 376994,
+        "sha256": "a93d39bff2098b3e068f6a747242792d1c3e0b07c645bfcfc46194ccf00e88a4"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/question5-global1024-resume-deployment-20261016.json",
+        "exists": true,
+        "bytes": 752553,
+        "sha256": "495b17a684e8c83ea21ae3ed77c891173eca1f1851759540ba0dc33c533e7790"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/question5-global1024-epoch4-training-window-publication-20261017.json",
+        "exists": true,
+        "bytes": 1300,
+        "sha256": "2c61be76e31acd5d3dd2ac74ea1995c53d17ab2b601a87679b32327583aeafaa"
+      }
+    ]
+  },
+  {
+    "id": "N04",
+    "owner": "G1",
+    "session_id": "01a0fb1b-d3ff-74b3-aa13-49ca57871f92",
+    "name": "A800 actor-hidden Prefix5＋period20 新正式RL",
+    "kind": "准备／尚未开始训练",
+    "method": "参考Gi actorhidden20；改question＋5；四卡5120→Top512；导入切换时实际已完成EMA head、fresh在线Adam与officialactor。",
+    "progress": "截至本次本地记录，新v2源码已stage、CPU prepare待完成；completeouter0；旧EMA warmup尚未停止。",
+    "result": "无新actor训练／dev5成绩。",
+    "identity": "原准备run8e6ced4e…因rotary buffer loader假设失败；新v2 run411c44aad7ba4e8c90f5fbec9e5ecbaa",
+    "caveat": "实际current_authoritative以新v2为准；只是prepare尝试，不把它叫新RL已经跑起来。",
+    "sources": [
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-actorhidden-prefix5-human-intent-20261017.json",
+        "exists": true,
+        "bytes": 955,
+        "sha256": "ab9b5667c298474d4c674bc83f6a338ad91a8fad9d86201b1abb95a3b24dfafd"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Search-G1/preparation/qprobe-teacher-warmup-a800-progress-handoff.json",
+        "exists": true,
+        "bytes": 376994,
+        "sha256": "a93d39bff2098b3e068f6a747242792d1c3e0b07c645bfcfc46194ccf00e88a4"
+      }
+    ]
+  }
+]
