@@ -12,7 +12,7 @@ from pathlib import Path
 from reproduction.common8.formal_contract import FORMAL_SAFEGUARDS, consumed_lr
 from reproduction.common8.policy_calibration_plan import _strict_json, document_sha256
 from reproduction.common8.topology import (
-    actor_local_mini, actor_local_micro, local_trajectories, monitor_scope, monitor_trajectories_per_rank, ranks, world_size,
+    actor_local_mini, actor_local_micro, formal_monitor_geometry, local_trajectories, monitor_scope, monitor_trajectories_per_rank, ranks, world_size,
 )
 from search_g1.monitor_forward_reuse import summarize_monitor_execution
 from reproduction.common8.safety_calibration_evidence import (
@@ -246,6 +246,11 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
     _require(all(value==decisions_by_rank[0] for value in decisions_by_rank), 'Transaction rank dispositions differ')
     _require(len(set(final_rejections))==1, 'Transaction rank rejection counts differ')
     _require(all(value==executions[0] for value in executions), 'Rank monitor execution/reuse counts differ')
+    for observation in observations.values():
+        if observation['kl_estimate_complete']:
+            _same_arithmetic(observation['effective_weight_mass'],
+                formal_monitor_geometry(run)['expected_complete_effective_weight_mass'],
+                'transaction global masked-mean weight mass')
     return dict(global_monitor_count=len(observations), rejection_count=final_rejections[0],
                 actual_monitor_forward_count=executions[0]['actual_monitor_forward_count'],
                 reused_monitor_forward_count=executions[0]['reused_monitor_forward_count'],
@@ -393,7 +398,9 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run
     for (mini, stage), observation in observations.items():
         _require(observation['effective_token_count'] == token_count, 'Actual global32 token count differs')
         if observation['kl_estimate_complete']:
-            _same_arithmetic(observation['effective_weight_mass'], 16., 'actual global masked-mean weight mass')
+            _same_arithmetic(observation['effective_weight_mass'],
+                formal_monitor_geometry(run)['expected_complete_effective_weight_mass'],
+                'actual global masked-mean weight mass')
         if mini and stage == 'before_minibatch':
             _adjacent(observations[(mini - 1, 'after_minibatch')], observation)
     return dict(global_monitor_count=len(observations), rejection_count=final_rejections[0],
@@ -406,7 +413,7 @@ def verify_attempt_history(base, run, complete_records, scheduler_receipts, *, l
         return _verify_attempt_history(base, run, complete_records, scheduler_receipts, last=last, plan_sha256=plan_sha256)
     except EvidenceError:
         raise
-    except (KeyError, TypeError, OverflowError, ValueError, OSError) as failure:
+    except (AssertionError, KeyError, TypeError, OverflowError, ValueError, OSError) as failure:
         raise EvidenceError('Malformed actual formal attempt history: ' + str(failure)) from failure
 
 

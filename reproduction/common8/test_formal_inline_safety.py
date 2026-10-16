@@ -14,19 +14,28 @@ from reproduction.common8.policy_calibration_plan import document_sha256
 from search_g1.policy_safety import monitor
 
 
-def guarded_opportunity_fixture():
-    """Actual CPU statistics, with fabricated eight-rank records for pure checking."""
+def guarded_opportunity_fixture(world_size=8, actor_micro=2):
+    """Actual CPU masked-mean statistics; rank records are synthetic provenance."""
     import hashlib
-    from reproduction.common8.safety_calibration_evidence import MONITOR_TENSORS, MONITORING_SCOPE, OBJECTIVE_WEIGHT_DEFINITION
+    from reproduction.common8.safety_calibration_evidence import MONITOR_TENSORS, OBJECTIVE_WEIGHT_DEFINITION
+    from reproduction.common8.topology import monitor_scope
     def sha(value): return hashlib.sha256(value.encode()).hexdigest()
     attempt_id = 'a' * 32; gate = sha('gate'); plan = sha('plan')
     mask = torch.zeros((32, 5), dtype=torch.float64); weights = torch.zeros_like(mask)
     advantages = torch.ones_like(mask)
+    monitor_count = 32 // world_size
+    local_lengths = sorted([2, 3, 4, 5] * (monitor_count // 4))
     for row in range(32):
-        length = [2, 3, 4, 5][row % 4]; mask[row, :length] = 1
-        pair_length = 5 if row % 4 < 2 else 9
-        weights[row, :length] = 1. / pair_length
+        length = local_lengths[row % monitor_count]; mask[row, :length] = 1
         if row % 4 in (0, 2): advantages[row] = -1
+    # Match the worker's per-micro denominator, independently of the reader's
+    # expected mass. Do not turn a desired8/16 into synthetic input statistics.
+    for rank in range(world_size):
+        local = mask[rank * monitor_count:(rank + 1) * monitor_count]
+        for offset in range(0, monitor_count, actor_micro):
+            micro = local[offset:offset + actor_micro]
+            begin = rank * monitor_count + offset
+            weights[begin:begin + len(micro)] = micro / micro.sum().clamp_min(1)
     reports = [monitor(torch.full_like(mask, delta), advantages, mask, weights,
         c=3., kl_log_bound=30., target_kl=.2, negative_tail_limit=.01) for delta in (0., 1.)]
     actual = dict(step=1, run_id='component', attempt_id=attempt_id, attempt_index=1,
@@ -35,11 +44,16 @@ def guarded_opportunity_fixture():
     binding = dict(schema_version=1, role='production', policy_safety_mode=SAFETY_MODE,
         run_id='component', calibration_sha256=plan, outer_count=1, initial_optimizer_writes=0,
         candidate_thresholds=FORMAL_SAFEGUARDS, complete_attempts=[actual])
+    geometry = dict(profile='common8', training_world_size=world_size,
+                    actor_micro_batch_per_rank=actor_micro)
+    if world_size != 8 or actor_micro != 2:
+        binding.update(training_world_size=world_size, actor_micro_batch_per_rank=actor_micro)
     ranks = {}
-    for rank in range(8):
+    for rank in range(world_size):
         rows = []; count = 0
-        identity = dict(selection_indices=[rank, 106 + rank, 213 + rank, 312 + rank],
-            actor_token_lengths=[2, 3, 4, 5], tensor_sha256={name: sha(name + str(rank)) for name in MONITOR_TENSORS})
+        identity = dict(selection_indices=list(range(monitor_count)),
+            actor_token_lengths=local_lengths,
+            tensor_sha256={name: sha(name + str(rank)) for name in MONITOR_TENSORS})
         for mini in range(20):
             prior = count; written = mini == 0
             context = dict(logical_update=1, attempt_id=attempt_id, attempt_index=1,
@@ -54,7 +68,7 @@ def guarded_opportunity_fixture():
                 rows.append(dict(kind='POLICY_MONITOR', run_id='component', rank=rank, context=copy.deepcopy(context),
                     stage=stage, optimizer_writes=writes, calibration_sha256=plan,
                     monitor_identity=copy.deepcopy(identity), rejection_count=mini + int(not stats['allowed']),
-                    objective_weight_definition=OBJECTIVE_WEIGHT_DEFINITION, monitoring_scope=MONITORING_SCOPE,
+                    objective_weight_definition=OBJECTIVE_WEIGHT_DEFINITION, monitoring_scope=monitor_scope(geometry),
                     **copy.deepcopy(stats)))
                 if not stats['allowed']: events.append(dict(stage=stage, reasons=stats['reasons']))
             count += int(written)
@@ -64,7 +78,8 @@ def guarded_opportunity_fixture():
                 optimizer_write_succeeded=written, optimizer_writes_before=prior, optimizer_writes_after=count,
                 guard_stage=events[0]['stage'], guard_reasons=events[0]['reasons'], guard_events=copy.deepcopy(events)))
         rows.append(dict(kind='OUTER_BUDGET', run_id='component', rank=rank, logical_update=1,
-            attempt_id=attempt_id, attempt_index=1, local_trajectories=320, local_mini=16, local_micro=2,
+            attempt_id=attempt_id, attempt_index=1, local_trajectories=2560 // world_size,
+            local_mini=128 // world_size, local_micro=actor_micro,
             opportunities_processed=20, optimizer_writes=1, optimizer_writes_before=0, optimizer_writes_after=1,
             cumulative_writes=1))
         ranks[rank] = rows
@@ -173,7 +188,7 @@ class FormalOpportunityEvidenceTests(unittest.TestCase):
                 verify_formal_segment(rows, binding)
 
 
-def attempt_history_fixture(base, last=5, skipped_before=(1, 3)):
+def attempt_history_fixture(base, last=5, skipped_before=(1, 3), world_size=8, actor_micro=2):
     """CPU monitor statistics and fabricated owned receipts for the pure reader.
 
     The full2560 native sampling gate is isolated here, not replaced with a
@@ -181,9 +196,11 @@ def attempt_history_fixture(base, last=5, skipped_before=(1, 3)):
     required. No receipt in this fixture is native training evidence.
     """
     from reproduction.common8.policy_calibration_plan import document_sha256
-    templates, binding = guarded_opportunity_fixture()
-    run = dict(profile='common8', training_world_size=8,
+    templates, binding = guarded_opportunity_fixture(world_size, actor_micro)
+    run = dict(profile='common8', training_world_size=world_size,
                run_id=binding['run_id'], policy_safety_mode=SAFETY_MODE)
+    if world_size != 8 or actor_micro != 2:
+        run['actor_micro_batch_per_rank'] = actor_micro
     plan = binding['calibration_sha256']; (base / 'logs').mkdir(exist_ok=True)
     attempts = []; records = []; physical = 0; skipped = 0
     for outer in range(1, last + 1):
@@ -196,7 +213,7 @@ def attempt_history_fixture(base, last=5, skipped_before=(1, 3)):
                 optimizer_writes_this_attempt=count, opportunities_processed=20,
                 opportunity_statuses=['written' if complete else 'skipped_guard'] * 20,
                 complete_outer=complete, status='complete' if complete else 'recoverable_guard',
-                all_ranks_agreed=True, real_rank_count=8, scheduler_advances=int(complete),
+                all_ranks_agreed=True, real_rank_count=world_size, scheduler_advances=int(complete),
                 completed_outer=outer if complete else outer - 1,
                 guard_stage=None if complete else 'all_update_opportunities_skipped',
                 guard_reasons=[] if complete else ['no_successful_adam_write'],
@@ -216,7 +233,7 @@ def attempt_history_fixture(base, last=5, skipped_before=(1, 3)):
         path.write_text(''.join(json.dumps(row, separators=(',', ':'), allow_nan=False) + '\n' for row in rows))
     write(base / 'logs/actual-attempts.jsonl', attempts)
     scheduler_receipts = {}
-    for rank in range(8):
+    for rank in range(world_size):
         workers = []; schedulers = []
         for attempt in attempts:
             outer = attempt['logical_update']; ordinal = attempt['attempt_index']; complete = attempt['complete_outer']
@@ -251,7 +268,7 @@ def attempt_history_fixture(base, last=5, skipped_before=(1, 3)):
                 attempt_id=attempt['attempt_id'], attempt_index=ordinal, opportunities_processed=20,
                 optimizer_writes=attempt['optimizer_writes_this_attempt'], cumulative_writes=attempt['optimizer_writes_after'])
             if complete:
-                terminal.update(local_trajectories=320, local_mini=16, local_micro=2,
+                terminal.update(local_trajectories=2560 // world_size, local_mini=128 // world_size, local_micro=actor_micro,
                     optimizer_writes_before=before, optimizer_writes_after=attempt['optimizer_writes_after'])
             else:
                 terminal.update(context=copy.deepcopy(context), writes_before=before,

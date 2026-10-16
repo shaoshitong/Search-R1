@@ -211,7 +211,14 @@ def verify_formal_segment(rows_by_rank, binding):
     from reproduction.common8.formal_contract import FORMAL_SAFEGUARDS, SAFETY_MODE, consumed_lr
     size = binding.get('training_world_size', 8)
     _require(type(size) is int and size in (4, 8), 'Unsupported formal evidence topology')
-    monitor_count = 32 // size
+    from reproduction.common8.topology import formal_monitor_geometry
+    run=dict(profile='common8',training_world_size=size)
+    if 'actor_micro_batch_per_rank' in binding:
+        run['actor_micro_batch_per_rank']=binding['actor_micro_batch_per_rank']
+    try:geometry=formal_monitor_geometry(run)
+    except (AssertionError,KeyError,TypeError) as failure:
+        raise EvidenceError('Invalid bound formal monitor geometry: '+str(failure)) from failure
+    monitor_count=geometry['monitor_trajectories_per_rank'];micro=geometry['actor_micro_batch_per_rank']
     scope = ('fixed four trajectories per rank across length strata; not full rollout' if size == 8 else
              'fixed eight trajectories per rank across length strata; not full rollout')
     _require(binding['schema_version'] == 1 and binding['role'] == 'production' and
@@ -345,7 +352,7 @@ def verify_formal_segment(rows_by_rank, binding):
             _require(cursor < len(rows), 'Missing completed opportunity budget')
             budget = rows[cursor]; cursor += 1; _row(budget, rank, binding, 'OUTER_BUDGET')
             for name, value in dict(logical_update=outer, attempt_id=attempt['attempt_id'], attempt_index=attempt['attempt_index'],
-                local_trajectories=2560 // size, local_mini=128 // size, local_micro=2, opportunities_processed=20,
+                local_trajectories=2560 // size, local_mini=128 // size, local_micro=micro, opportunities_processed=20,
                 optimizer_writes=attempt['optimizer_writes_after'] - attempt['optimizer_writes_before'],
                 optimizer_writes_before=attempt['optimizer_writes_before'], optimizer_writes_after=counter,
                 cumulative_writes=counter).items():
@@ -356,7 +363,8 @@ def verify_formal_segment(rows_by_rank, binding):
         count = sum(sum(identities[(outer, rank)]['actor_token_lengths']) for rank in range(size))
         _require(observation['effective_token_count'] == count, 'Formal global token count differs')
         if observation['kl_estimate_complete']:
-            _same_arithmetic(observation['effective_weight_mass'], 16., 'formal global masked-mean weight mass')
+            _same_arithmetic(observation['effective_weight_mass'],geometry['expected_complete_effective_weight_mass'],
+                             'formal global masked-mean weight mass')
         if mini and stage == 'before_minibatch':
             _adjacent(observations[(outer, mini - 1, 'after_minibatch')], observation)
     return dict(role='formal_completed_opportunity_monitor_audit', run_id=binding['run_id'],
@@ -365,6 +373,7 @@ def verify_formal_segment(rows_by_rank, binding):
         actual_cumulative_optimizer_writes_per_rank=attempts[-1]['optimizer_writes_after'],
         guard_triggered_monitor_count=sum(not r['allowed'] for r in observations.values()),
         global_monitors=list(observations.values()), opportunity_dispositions=list(dispositions.values()),
+        monitor_weight_binding=geometry,
         production_admission=False, scope='pure structural validation; physical execution separately authenticated')
 
 

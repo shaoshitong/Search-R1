@@ -68,6 +68,19 @@ def monitor_trajectories_per_rank(run=None):
     return 32 // world_size(run)
 
 
+def formal_monitor_geometry(run):
+    """Bound masked-mean monitor mass, with no change to worker normalization."""
+    assert isinstance(run,dict), 'Formal monitor geometry requires a bound run'
+    size=world_size(run)
+    if size==4:
+        assert 'actor_micro_batch_per_rank' in run, 'Native4 requires an explicit actor micro binding'
+    micro=actor_local_micro(run);count=monitor_trajectories_per_rank(run)
+    assert count%micro==0, 'Monitor rows must form complete actor micros'
+    return dict(training_world_size=size,actor_micro_batch_per_rank=micro,
+                monitor_trajectories_per_rank=count,
+                expected_complete_effective_weight_mass=float(size*(count//micro)))
+
+
 def monitor_scope(run=None):
     count = monitor_trajectories_per_rank(run)
     word = 'four' if count == 4 else 'eight'

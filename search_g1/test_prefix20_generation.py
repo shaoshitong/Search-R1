@@ -1,7 +1,10 @@
 """Real controller / DataProto CPU tests with simulated native sampling only."""
 import copy
 import re
+from pathlib import Path
+import tempfile
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 import torch
@@ -138,7 +141,10 @@ class Prefix20GenerationTests(unittest.TestCase):
         self.assertEqual(services[0].end_calls,[True]);self.assertEqual(len(collector.captured_records),1)
 
     def test_exact_selected_2560_only_after_out_of_order_candidate_prefixes(self):
-        collector,states,identity,services,tools=fixture(lambda request,rank:([23,24,99],'stop'),count=2570)
+        def script(request,rank):
+            if int(request['row_id'].split('-')[1])%2:return [23,24,99],'stop'
+            return ([40]*19+[50],'length') if request['max_tokens']==20 else ([51,99],'stop')
+        collector,states,identity,services,tools=fixture(script,count=2570)
         collector.phase(states,identity,prefix_only=True)
         selected=states[5:2565];chosen=copy.deepcopy(identity)
         chosen['trajectory_ids']=[s.trajectory_id for s in selected]
@@ -152,7 +158,30 @@ class Prefix20GenerationTests(unittest.TestCase):
         metrics=scalar_metrics(output)
         self.assertEqual(metrics['infra/rollout/weight_syncs_per_rank'],2)
         self.assertEqual(metrics['infra/rollout/completed_trajectories'],2560)
-        self.assertEqual(metrics['infra/rollout/completed_requests_sum'],2570)
+        self.assertEqual(metrics['infra/rollout/completed_requests_sum'],3850)
+        # Compose the actual controller output with both trainer denominator
+        # gates. Only the native filesystem/identity boundary is a CPU adapter;
+        # token/position/mask/trace/selected-LP verification executes unchanged.
+        from reproduction.common8 import behavior_runtime as behavior
+        from reproduction.common8.behavior_trace import document_sha256,BehaviorTraceError
+        from reproduction.common8.precision_contract import NATIVE4_BF16_PROFILE,SAMPLING_JOURNAL_POLICY
+        run=dict(profile='common8',run_id=identity['run_id'],source_sha256=identity['source_sha256'],
+            execution_site='hpc3',execution_backend='slurm',training_world_size=4,actor_micro_batch_per_rank=4,
+            precision_profile=NATIVE4_BF16_PROFILE,vllm_gpu_memory_utilization=.1,
+            behavior_probability_policy=SAMPLING_JOURNAL_POLICY)
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory);(base/'logs').mkdir()
+            def private(_base,trace,attempt_id=None):
+                return dict(serialization_transformed=False,private_trace_sha256=document_sha256(trace),
+                    private_trace_path=str(base/'constructed-cpu-trace.json'),physical_execution_authenticated=False)
+            with patch.object(behavior,'_native_run',return_value=(base,run,'12345')), \
+                    patch.object(behavior,'write_private_evidence',side_effect=private):
+                context=behavior.context_before_forward(output)
+                proof=behavior.freeze_after_probability_gate(output,context,None)
+                torch.testing.assert_close(output.batch['old_log_probs'],output.batch['sampling_log_probs'])
+                self.assertFalse(proof['hf_recomputation_performed'])
+                bad=copy.deepcopy(output);bad.batch['sampling_log_probs'][0,0]-=1.
+                with self.assertRaises(BehaviorTraceError):behavior.freeze_after_probability_gate(bad,context,None)
 
 
 if __name__=='__main__':unittest.main()

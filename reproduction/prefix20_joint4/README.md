@@ -54,6 +54,10 @@ Checkpoint schema3 contains four complete probe model/Adam/private-RNG states,
 the selection RNG and source stream, bound to the actor snapshot. The existing
 actor paired-checkpoint framework validates all four files and compares actual
 restored worker state. CPU fixtures do not establish physical GPU acceptance.
+The formal monitor readers bind the actual actor micro: four-rank/micro4 has
+global masked-mean monitor mass8, while historical eight-rank/micro2 has16.
+Both ordinary and transactional attempt readers check this without changing
+worker losses, rewards or safety thresholds.
 
 The prospective run binding and four-GPU launcher are still being integrated.
 This directory is not yet a training launcher.
