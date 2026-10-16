@@ -8,6 +8,8 @@ from reproduction.common8.topology import execution_job_id, validate_base
 
 
 def claim(base):
+    from search_g1.prefix20_restore_only import deny_training
+    deny_training()
     base=Path(base)
     run=json.loads((base/'logs/run-manifest.json').read_text())
     validate_base(base,run)

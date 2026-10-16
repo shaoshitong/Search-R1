@@ -788,6 +788,8 @@ class RayPPOTrainer(object):
         The driver process only need to call the compute functions of the worker group through RPC to construct the PPO dataflow.
         The light-weight advantage computation is done on the driver process.
         """
+        from search_g1.prefix20_restore_only import deny_training
+        deny_training()
 
         logger = self.logger
         from verl.utils.weight_continuation import completed_updates

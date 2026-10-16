@@ -228,6 +228,8 @@ class RankProbe:
 
 
 def worker_operation(worker,operation,payload):
+    from search_g1.prefix20_restore_only import guard_probe_operation,guard_probe_optimizer,readback_probe
+    guard_probe_operation(worker,operation)
     worker._assert_generation_phase_inactive()
     if not worker._is_actor or dist.get_world_size()!=4:raise ValueError('PREFIX20_OWN_FOUR_ACTOR_WORKERS_REQUIRED')
     if operation=='init':
@@ -243,11 +245,13 @@ def worker_operation(worker,operation,payload):
             if any(value is not None for value in failures):
                 raise RuntimeError('PREFIX20_COLLECTIVE_INITIALIZATION_FAILED: '+str(failures))
             worker._prefix20_probe=head
+            guard_probe_optimizer(worker,head)
         finally:restore_rng(actor_rng,device)
         return dict(rank=dist.get_rank(),world_size=4,completed_outer=0,actual_steps=0,
                     pretrained_head_loaded=True,extra_warmup_updates=0)
     head=getattr(worker,'_prefix20_probe',None)
     if head is None:raise ValueError('PREFIX20_PROBE_NOT_INITIALIZED')
+    if operation=='readback':return readback_probe(worker,head)
     if operation=='predict':
         with probe_rng(head):return head.predict(payload['rows'])
     if operation=='update':

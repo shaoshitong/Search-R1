@@ -385,10 +385,14 @@ class ActorRolloutRefWorker(Worker):
         if self._is_actor:
             self.flops_counter = FlopsCounter(self.actor_model_config)
 
+        from search_g1.prefix20_restore_only import install_mutation_guards
+        install_mutation_guards(self)
         torch.cuda.empty_cache()
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def update_actor(self, data: DataProto):
+        from search_g1.prefix20_restore_only import deny_training
+        deny_training()
         self._assert_generation_phase_inactive()
         data = data.to(torch.device('cuda', torch.cuda.current_device()))
 
@@ -525,6 +529,8 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def compute_log_prob(self, data: DataProto) -> DataProto:
+        from search_g1.prefix20_restore_only import deny_training
+        deny_training()
         self._assert_generation_phase_inactive()
         """mostly copying from generate_sequences"""
         independent_meta = {}
@@ -579,6 +585,8 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def begin_generation_phase(self, snapshot_meta):
+        from search_g1.prefix20_restore_only import deny_training
+        deny_training()
         import copy
         import hashlib
         import json
@@ -641,6 +649,8 @@ class ActorRolloutRefWorker(Worker):
     @register(dispatch_mode=Dispatch.DP_COMPUTE, blocking=False)
     @torch.no_grad()
     def advance_generation_phase(self, handle, new_requests, max_steps=8):
+        from search_g1.prefix20_restore_only import deny_training
+        deny_training()
         phase = getattr(self, '_resident_generation_phase', None)
         if phase is None or handle != {key: phase[key] for key in ('phase_id', 'policy_snapshot_id')}:
             raise ValueError('Rank-local requests do not belong to the active phase')
@@ -649,6 +659,8 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def end_generation_phase(self, handle, abort=False):
+        from search_g1.prefix20_restore_only import deny_training
+        deny_training()
         phase = getattr(self, '_resident_generation_phase', None)
         error = None
         try:
@@ -679,6 +691,8 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.DP_COMPUTE_PROTO)
     def generate_sequences(self, prompts: DataProto):
+        from search_g1.prefix20_restore_only import deny_training
+        deny_training()
         if os.environ.get('SEARCH_G1_PROFILE') == 'common8':
             smoke = prompts.meta_info.get('common8_model_smoke') is True
             if smoke and prompts.meta_info.get('do_sample') is not False:
@@ -764,6 +778,8 @@ class ActorRolloutRefWorker(Worker):
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def capture_mixed_state(self, directory, checkpoint=False):
+        from search_g1.prefix20_restore_only import deny_training
+        deny_training()
         self._assert_generation_phase_inactive()
         assert self._is_actor and self._is_rollout
         from search_g1.training_state import capture_worker
@@ -786,10 +802,19 @@ class ActorRolloutRefWorker(Worker):
     def restore_mixed_full_state(self, receipt_path):
         assert self._is_actor and self._is_rollout
         from search_g1.full_state_restore import restore_worker
+        from search_g1.prefix20_restore_only import active, assert_target_receipt
+        if active():assert_target_receipt(receipt_path)
         return restore_worker(self, receipt_path)
 
     @register(dispatch_mode=Dispatch.ONE_TO_ALL)
+    def readback_mixed_full_state(self, receipt_path, phase):
+        from search_g1.prefix20_restore_only import readback_actor
+        return readback_actor(self, receipt_path, phase)
+
+    @register(dispatch_mode=Dispatch.ONE_TO_ALL)
     def save_checkpoint(self, local_path, hdfs_path=None):
+        from search_g1.prefix20_restore_only import deny_training
+        deny_training()
         self._assert_generation_phase_inactive()
         assert self._is_actor
         import torch
