@@ -1,6 +1,6 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Actual complete52/200; job3422 FAILED on h100-10/10.33.0.18, stage outer-000053-prefix. Saved actor/probe Adam per8rank: [1040, 1040, 1040, 1040, 1040, 1040, 1040, 1040] / [1040, 1040, 1040, 1040, 1040, 1040, 1040, 1040]. Completed joint counters: [1040, 1040, 1040, 1040, 1040, 1040, 1040, 1040] / [1040, 1040, 1040, 1040, 1040, 1040, 1040, 1040]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
+Actual complete52/200; job3427 RUNNING on h100-10/10.33.0.18, stage STARTING_RETRIEVER_AND_EIGHT_GROUNDING_REPLICAS. Saved actor/probe Adam per8rank: [1040, 1040, 1040, 1040, 1040, 1040, 1040, 1040] / [1040, 1040, 1040, 1040, 1040, 1040, 1040, 1040]. Completed joint counters: [1040, 1040, 1040, 1040, 1040, 1040, 1040, 1040] / [1040, 1040, 1040, 1040, 1040, 1040, 1040, 1040]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
 Latest QA: outer50,512questions EM28.3203% / F134.4268%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.
 Recent actual same3422 completejoint intervals[430.45647978782654, 423.27118396759033, 534.5656840801239, 430.6604480743408]; mean454.738s=7.579min. These wall intervals include any preceding milestoneQA and scheduling overhead; pure per-outer phase durations are recorded separately. Startup and terminal failure/repair costs are separate.
@@ -66,7 +66,7 @@ Latest actor512 mixed45.5078%, meanEMvariance0.08812500, selected frozen meanpre
 
 Protocol: officialQwen2.5-3B-Instruct aa8e72537993ba99e69dfaafa59ed015b17504d1; best actuallyretainedwarmupCP100 model-only probe initialization, no rewarmup.5120distinct diagnostic-excluded questions/G5prefix20, frozenactor/probe stable predictedmixedTop1024, continue authentic same5prefixes, population strictEMvarianceK(5-K)/25 selects512 intactG5 with frozenh/originalordinal ties. No extra sampling to force mixing. Actor originalSearch-G1 groundingsoftreward PPO20Adam/mini128/epoch1/globalmicro128 local16/noaccum, BF16compute/FP32masterAdam, LR1e-6/warm57outer. ProbeALL1024/5120 naturallyonce,20synchronousAdam/rank/globalbatch255/260avg256, LR1e-6, trajectorymeanBCE+ownG5mixedmeanBCE weights1/1. Fixeddiagnostic512 stays excluded. Only realtypedOOM permits preserving-budget micro fallback.
 
-Frozen runtime2c1219defaebaf69467fce18efad331ce68cd6ec/actualconfigSHA2973c362cf039cb60d844e1be8d9e4332cdcf5f9d756ea6d4976adea463948e6. Later controls/results do not hotchange training. All models/native/optimizer/raw/fulloutputs stay sameH100cluster remote; local artifacts are small scalar/code summaries.
+Frozen runtimee3463cfddca71a22ac684d75c875dbe123e8bc43/actualconfigSHA384cf0f516e7bf9ce3623bdf48e87a078f8eceaa5af5e03f238e04e86ae59ad8. Later controls/results do not hotchange training. All models/native/optimizer/raw/fulloutputs stay sameH100cluster remote; local artifacts are small scalar/code summaries.
 
 History:3416 preAdam pathfailure;3417 actor20saved/probe20unsaved diagnosticfailure (onlyprobe20recomputed/accounted);3418 savedjoint2 then imported-history prunerfailure;3421 savedjoint5 thenFP32H100TritonMMAcompilerassert inQA.3422 imported5 unchanged, compatiblefullprefillXFormers/CPATH fixedQA. Source5 independentfullSHA/CPU PASS:435FP32HFtensors,8nativeAdam/scheduler/RNG/driver/probe/pool; proofbe541a6076e1c2e0f2c022ba7eb2f31a10341bb0dc8d19e0e758904e61409159, acceptance5/. CPUload is not exactCUDAexecutorresume. Restored6–10+actual11generation accepted; failednative/log/birth/cost evidence retained. OldTree200/51713 is complete separately, not thisrun score.
 
@@ -74,6 +74,12 @@ Cost: COST_SNAPSHOT.json contains existing native token/request metadata and pha
 
 Completion remains unproven: actual200, normal50/100/150/200checkpoint/QA, fullseven51713, HF/tokenizer/nativefinite/nonzeroupdate/source/split identity, cost/ownedcleanup and finalpublication. GoalACTIVE; no stop/restart is performed by this reader.
 
-Latest passive telemetry3102 samples, last observed1792179482.816379; errors[], wholecard maxused81065MiB/minfree17MiB (coverage above).
+Latest passive telemetry2 samples, last observed1792180309.32422; errors[], wholecard maxused6667MiB/minfree74414MiB (coverage above).
 
-Fault3422: actual52 complete/actor1040+probe1040 per8rank preserved; native FAILED at53prefix before sampling (TCPStore EADDRINUSE rank3). Published repair 1363513e0e4abdbd95e85c8969971a00596bd4db passed one independent CPU review. No deployment/submission attempted; same management SSH capture/query currently unknown due handshake failures. Recover in isolated resume4 from complete52 pool snapshot, replay same unoptimized53 candidates, preserve source originals, verify terminal/cleanup/cursor before submitting. Costs currently through51;52/terminal cost pending. Goal ACTIVE, not paused. See FAULT3422_RECOVERY_STATUS.json.
+## Original reward and scoped costs
+
+Original saved actor grounding reward outer52 selected512G5/2560 mean0.99093190, min-0.10000000, max1.59554124. All8rank statistics finite; prefix correctness head not used as reward. Original joint receipt hashes bind history1–52; no new forward. Selected training reward is distinct from heldout QA or proof of selection benefit.
+
+Committed generation/retrieval through52/4: 45951648 sampled tokens, 21582 logical searches; backlog[5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52]. Inherited prefix searches not doubled; actor512 subset not added. Failed attempts, QA, HTTP retries/cache misses and physical FAISS calls separately scoped.
+
+Historical terminal reservations 51.802222 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total51.933333 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
