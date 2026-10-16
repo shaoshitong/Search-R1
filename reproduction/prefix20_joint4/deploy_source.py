@@ -34,6 +34,7 @@ print(json.dumps(dict(source_commit=p['commit'],source_root=str(root),verified_f
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--bridge-source',required=True)
     parser.add_argument('--control-work',required=True);parser.add_argument('--output',required=True)
+    parser.add_argument('--base',default=BASE)
     args=parser.parse_args();repo=Path(__file__).resolve().parents[2]
     commit=subprocess.check_output(['git','-C',str(repo),'rev-parse','HEAD'],text=True).strip()
     if subprocess.check_output(['git','-C',str(repo),'status','--porcelain'],text=True):
@@ -47,7 +48,8 @@ def main():
     raw=subprocess.check_output(['git','-C',str(repo),'archive','--format=tar.gz','HEAD'])
     spec=importlib.util.spec_from_file_location('bound_account_bridge',args.bridge_source)
     bridge=importlib.util.module_from_spec(spec);spec.loader.exec_module(bridge)
-    payload=json.dumps(dict(base=BASE,commit=commit,manifest=manifest,tar_gz=base64.b64encode(raw).decode()))
+    from reproduction.prefix20_joint4.control import own_base
+    payload=json.dumps(dict(base=str(own_base(args.base)),commit=commit,manifest=manifest,tar_gz=base64.b64encode(raw).decode()))
     a=bridge.run('jxu957',PYTHON+' -c '+shlex.quote(REMOTE),payload,args.control_work,
         login_host='10.120.48.31',observation_timeout=90,expected_host_identity=IDENTITY)
     result=dict(returncode=a.returncode,stdout=a.stdout,stderr=a.stderr,checked_unix=time.time())

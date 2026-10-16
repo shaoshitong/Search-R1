@@ -136,7 +136,10 @@ def storage_plan(observation,checkpoint,budget,*,now=None):
     per_pair=actor_complete+probe_complete
     source_copies=len(checkpoint['save_steps']);restore_copies=1
     encoder_dependency=checkpoint['per_save_allowance_bytes']
-    reserve=(source_copies+restore_copies)*per_pair+encoder_dependency+96*2**30
+    recovery_extra=observation.get('additional_prelaunch_reserve_bytes',0)
+    if type(recovery_extra) is not int or recovery_extra not in (0,2*2**30):
+        raise ValueError('PREFIX20_RECOVERY_PRELAUNCH_RESERVE_DIFFERS')
+    reserve=(source_copies+restore_copies)*per_pair+encoder_dependency+96*2**30+recovery_extra
     if type(budget) is not int or budget not in (2*10**12,25*10**11):
         raise ValueError('PREFIX20_EXPLICIT_PERSONAL_BUDGET_REQUIRED')
     return dict(account_experiment_root=PERSONAL_ROOT,measured_allocated_bytes=measured,
@@ -149,6 +152,7 @@ def storage_plan(observation,checkpoint,budget,*,now=None):
         hkust3_archive_encoder_dependency_allowance_bytes=2*encoder_dependency,
         hkust3_archive_allowance_bytes=source_copies*per_pair+2*encoder_dependency,
         other_run_allowance_bytes=96*2**30,other_run_allowance_measured=False,
+        recovery_prelaunch_extra_allowance_bytes=recovery_extra,
         placement_policy='five_HPC3_sources_five_HKUST3_archives_one_simultaneous_HPC3_restore_target',
         projected_bytes=measured+reserve,actual_filesystem_hard_quota_verified=False,
         accepted=complete and measured+reserve<=budget,checked_unix=now)

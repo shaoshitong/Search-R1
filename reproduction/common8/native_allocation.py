@@ -20,6 +20,7 @@ import socket
 import subprocess
 import sys
 import time
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
@@ -43,6 +44,19 @@ def allocated_indices(detail, node, count=8):
         else:indices.append(int(item))
     assert len(indices)==count and len(set(indices))==count, 'Invalid actual Slurm GPU indices'
     return indices
+
+
+def add_gpu_minor_numbers(rows,xml):
+    """Selective CSV omits minor_number; authenticate XML minors by UUID."""
+    minor_by_uuid={}
+    for gpu in ET.fromstring(xml).findall('gpu'):
+        uuid=(gpu.findtext('uuid') or '').strip()
+        minor=(gpu.findtext('minor_number') or '').strip()
+        assert uuid.startswith('GPU-') and minor.isdecimal() and uuid not in minor_by_uuid, 'Incomplete or duplicate GPU XML identity'
+        minor_by_uuid[uuid]=int(minor)
+    assert set(minor_by_uuid)=={row[1].strip() for row in rows}, 'CSV and XML actual GPU inventories differ'
+    assert len(set(minor_by_uuid.values()))==len(minor_by_uuid), 'Duplicate actual physical minor number'
+    return [row+[str(minor_by_uuid[row[1].strip()])] for row in rows]
 
 
 def cuda_uuids(count=8):
@@ -136,9 +150,13 @@ def admit(base):
     assert job['JobId']==job_id
     visible=os.environ.get('CUDA_VISIBLE_DEVICES','').split(',')
     active=subprocess.check_output(['squeue','-h','-w',node,'-t','RUNNING,COMPLETING','-o','%i'],text=True).split()
-    query='index,uuid,memory.total,minor_number' if size==4 and not sharing else 'index,uuid,memory.total'
-    raw=subprocess.check_output(['nvidia-smi','--query-gpu='+query,'--format=csv,noheader,nounits'],text=True)
+    raw=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.total','--format=csv,noheader,nounits'],text=True)
     rows=[[x.strip() for x in r] for r in csv.reader(io.StringIO(raw))]
+    if size==4 and not sharing:
+        xml=subprocess.check_output(['nvidia-smi','-q','-x'],text=True,timeout=30)
+        with (base/'logs/native-gpu-inventory.xml').open('x') as f:
+            f.write(xml);f.flush();os.fsync(f.fileno())
+        rows=add_gpu_minor_numbers(rows,xml)
     raw_apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True)
     applications=[r for r in csv.reader(io.StringIO(raw_apps)) if r]
     assert torch.cuda.device_count()==size
