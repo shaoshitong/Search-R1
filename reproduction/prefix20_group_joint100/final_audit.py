@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import time
 
@@ -44,6 +45,52 @@ def command(args):
     return dict(arguments=args, returncode=result.returncode, stdout=result.stdout, stderr=result.stderr)
 
 
+def controller_terminal(base):
+    """Recover the original completion when native memory/accounting are absent."""
+    allocation = read(base / 'logs/native-allocation.json')
+    fields = dict(item.split('=', 1) for item in allocation['native'].split() if '=' in item)
+    assert fields['JobId'] == '3412' and fields['Command'] == str(base / 'preparation/native-launch.sh')
+    assert fields['JobName'] == 'g1-q20-joint100-' + RUN[:12]
+    started = datetime.datetime.fromisoformat(fields['StartTime']).timestamp()
+    events, files = [], []
+    pattern = re.compile(r'\bJobId[= ]3412\b')
+    for path in (Path('/var/log/slurm/slurmctld.log.1'), Path('/var/log/slurm/slurmctld.log')):
+        if not path.is_file():
+            continue
+        with path.open('rb') as handle:
+            before = os.fstat(handle.fileno())
+            while handle.tell() < before.st_size:
+                offset = handle.tell()
+                raw = handle.readline()
+                text = raw.decode(errors='replace').rstrip('\n')
+                if not pattern.search(text):
+                    continue
+                stamp = re.match(r'\[([^]]+)\]', text)
+                if not stamp:
+                    continue
+                when = datetime.datetime.fromisoformat(stamp[1]).timestamp()
+                if when >= started:
+                    events.append(dict(path=str(path), offset=offset, bytes=len(raw),
+                                       sha256=hashlib.sha256(raw).hexdigest(), unix=when, raw=text))
+            after = os.fstat(handle.fileno())
+        assert (before.st_dev, before.st_ino) == (after.st_dev, after.st_ino)
+        files.append(dict(path=str(path), dev=before.st_dev, inode=before.st_ino,
+                          initial_bytes=before.st_size, inspected_until_initial_eof=True))
+    events.sort(key=lambda row: row['unix'])
+    exits = [row for row in events if '_job_complete:' in row['raw'] and 'WEXITSTATUS' in row['raw']]
+    done = [row for row in events if '_job_complete:' in row['raw'] and re.search(r'\bdone\b', row['raw'])]
+    adverse = [row for row in events if re.search(r'REQUEST_KILL_JOB|CANCELLED|FAILED|WTERMSIG|WCOREDUMP|requeue', row['raw'], re.I)]
+    verified = bool(exits and done and not adverse and
+                    re.search(r'\bWEXITSTATUS[ =]+0\b', exits[-1]['raw']) and
+                    done[-1]['unix'] >= exits[-1]['unix'])
+    return dict(verified=verified, state='COMPLETED' if verified else None,
+                exit_code='0:0' if verified else None, source='original_slurmctld_completion_records',
+                allocation_file=stable_sha(base / 'logs/native-allocation.json'),
+                original_running_native_record=allocation['native'], expected_start_unix=started,
+                controller_files=files, matching_original_events=events,
+                completion_basis='WEXITSTATUS0 plus subsequent _job_complete done; no cancellation/signal/failure events')
+
+
 def terminal(base):
     """Use actual native records, never infer exit0 from Python completion."""
     receipt = read(base / 'preparation/submit-receipt.json')
@@ -67,8 +114,9 @@ def terminal(base):
             assert row[1] == expected_name and row[4] == 'h100-8'
             return dict(verified=row[2] == 'COMPLETED' and row[3] == '0:0', state=row[2],
                         exit_code=row[3], source='actual_sacct', records=records)
-    return dict(verified=False, state=None, exit_code=None,
-                source='native_terminal_record_unavailable', records=records)
+    controller = controller_terminal(base)
+    controller['unavailable_native_accounting_records'] = records
+    return controller
 
 
 def identity(record):
@@ -141,6 +189,7 @@ def audit(base):
     if not native['verified']:
         return dict(status='FINAL100_NATIVE_EXIT0_NOT_YET_VERIFIED_NO_AUDIT_INTENT',
                     run_id=RUN, latest=latest, native=native, training_modified=False)
+    retained_sources = source_retention(base, config)
     intent = base / 'preparation/final100-log-exit-retention-once-v1-intent.json'
     if intent.exists():
         return dict(status='EXISTING_FINAL100_AUDIT_INTENT_NO_BLIND_REPLAY', intent=str(intent))
@@ -198,7 +247,7 @@ def audit(base):
                  all_100_complete_epochs=epochs, cpu_proofs_reused_not_reexecuted=cpu,
                  terminal_original_inode_logs=hashed_logs, owned_birth_count=len(births),
                  owned_births_present=0, native_cgroups_present=0, owned_gpu_births_present=0,
-                 last_epoch_rank_ledgers=last_rank, source_70_batches=source_retention(base, config),
+                 last_epoch_rank_ledgers=last_rank, source_70_batches=retained_sources,
                  epoch101_exists=False, checkpoint_sha_repeated=False, checkpoint_cpu_load_repeated=False,
                  source_trajectory_contents_rehashed=False, gpu_forward_performed=False,
                  training_modified=False, formal_actor_training_started=False, backup_performed=False,
@@ -210,8 +259,10 @@ def audit(base):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', required=True)
+    parser.add_argument('--native-only', action='store_true')
     args = parser.parse_args()
-    print(json.dumps(audit(args.base), sort_keys=True, allow_nan=False))
+    print(json.dumps(terminal(Path(args.base)) if args.native_only else audit(args.base),
+                     sort_keys=True, allow_nan=False))
 
 
 if __name__ == '__main__':
