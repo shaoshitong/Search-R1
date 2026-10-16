@@ -1,8 +1,16 @@
+## Current LR1e-5 execution and evidence boundaries
+
+The current execution is3426 on h100-8, frozen runtime dcc8715d1b64bd5c5d64d96e29b97e23f053ae22. The user explicitly chose retained complete5 after the former20 actor/Adam assets had been rotated, and confirmed only probeLR changes1e-6→1e-5. This overrides older LR text below; historical3425 results are not current-branch measurements. All other scientific settings and the total200 budget remain unchanged.
+
+Actual UTC2026-10-16T20:08:18:3426 has completed16/200, actor320/probe0 actualAdam per each8rank;17 is continuing selected prefixes. Original16 rank ledgers were separately verified20writes/rank. Zero probe writes before20 are intentional. Its first100 real probe updates at1e-5 and corresponding same-actor paired metrics remain pending; no LR benefit is claimed before those observations. The original source5 QA512 receipt is reused for the identical restoredactor5; this is not new QA10/20 or final51713.
+
+The complete20 retention worker was actually armed once outside the frozen repo, codeSHA91569d4d656334dc5586ad2932268db57fbfeb82d8ab27d30a0e41c96f97b3a4. Two actual reads confirmed the same PID3579355/startticks2312533698 waiting for realjoint20. No archive result exists yet. Arming is complete, while actual20 state preservation, independent backup and semantic reload are different events and remain unproven. Never replay its consumed start controller.
+
 ## Requested complete20 retention control
 
 A separate CPU-only worker waits for the real joint20 completion and hardlinks its declared actor HF files, all8 Adam/RNG states, driver, complete probe100/Adam/RNG state, committed pool snapshot, config and source identity into preparation/retained-joint20-once-v1/checkpoint. JOINT.json relocates resumable paths and RESTORE-MAPPING.json records source→retained names. This preserves actual inodes if normal rotation later unlinks their original names. It does not alter frozen training code, budgets, loss or optimizer; no tensors are forwarded/deserialized or large model files rehashed during pinning. Same-disk retention is explicitly not an independent backup or a full SHA/semantic validation claim.
 
-The start controller owns exclusive INTENT/RECEIPT and never launches a second worker on replay. The worker polls only a local commit file, uses noGPU and finishes after20 or a bounded6hour wait. Missing/changed assets produce a retention error while preserving the source; training is never signalled. Four CPU tests passed: hardlinks survive source unlink with all fixture bytes intact; partial clocks/missing ranks are rejected; absent joint20 stays pending without an intent; mere complete-file creation before atomic latest-joint publication also remains pending. Deployment/arming and actual20 preservation remain pending until separately observed.
+The start controller owns exclusive INTENT/RECEIPT and never launches a second worker on replay. The worker polls only a local commit file, uses noGPU and finishes after20 or a bounded6hour wait. Missing/changed assets produce a retention error while preserving the source; training is never signalled. Four CPU tests passed: hardlinks survive source unlink with all fixture bytes intact; partial clocks/missing ranks are rejected; absent joint20 stays pending without an intent; mere complete-file creation before atomic latest-joint publication also remains pending. Deployment/arming was subsequently observed as recorded above; actual20 preservation remains pending until real joint20 and the archive result exist.
 
 A subsequent direct alias read recovered actual3426 RUNNING complete13/actor260 per rank/probe0 and14 actor training; earlier first-hop failures did not establish a native exit. No global SSH/auth/network changes were made and no training restarted.
 
@@ -28,7 +36,7 @@ Focused CPU tests:11 passed. Deployment/GPU restore/resumed6–10 plus11 actual 
 
 ---
 
-## Latest actual result: first periodic update complete
+## Historical3425 / LR1e-6: first periodic update complete
 
 At 2026-10-16T18:30:40.664064+00:00, same job3425 on h100-8 has completed21/200: actor420 and probe100 actual Adam/rank on all8 ranks;22 is in actor training. Frozen runtime700a0b3d is unchanged. Initial3–7+8 acceptance and the periodic20 observer both ended normally; no observer is active. Later QA and final retention remain unfinished.
 
@@ -64,7 +72,7 @@ The user explicitly approved sampling21 and keeping20. A paused native request p
 
 ## Clocks and labels
 
-Each outer samples5120 distinct diagnostic-excluded questionsG5, scores Top512 with the pre-update probe, continues the same prefixes and performs20 actor Adam writes per rank. Actor/reward/PPO budget and legacy FP32 QA remain unchanged. Probe is frozen on other rounds; only20,40,...200 fit all5120 original candidate groups once,100 Adam per rank at1e-6, ending1000 probe Adam per rank. The original owntrajectoryBCE + ownG5mixedBCE loss weights1/1 remain, with mixed0<K<5 includingK1. WholeG5 stays on one rank/step;80 steps255 trajectories and20 steps260 average256 and visit all25600 once.
+Each outer samples5120 distinct diagnostic-excluded questionsG5, scores Top512 with the pre-update probe, continues the same prefixes and performs20 actor Adam writes per rank. Actor/reward/PPO budget and legacy FP32 QA remain unchanged. Probe is frozen on other rounds; only20,40,...200 fit all5120 original candidate groups once,100 Adam per rank at the current LR1e-5 (historical3425 used1e-6), ending1000 probe Adam per rank. The original owntrajectoryBCE + ownG5mixedBCE loss weights1/1 remain, with mixed0<K<5 includingK1. WholeG5 stays on one rank/step;80 steps255 trajectories and20 steps260 average256 and visit all25600 once.
 
 At a periodic outer, fix Top512 before any full labels, complete the full5120G5 pool once, and project the exact preselected2560 rows/oldLP for actor PPO. No selected trajectory is generated twice. Heldout512 question identities stay fixed, but G5 outcomes/native hidden are fresh from the exact same actor snapshot as the training pool. Report paired pre/post train and heldout mixed accuracy/BA/recalls/confusion/loss, with class counts; these are not fixed QA EM/F1.
 
