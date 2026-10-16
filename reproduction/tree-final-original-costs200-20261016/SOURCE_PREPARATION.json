@@ -7,8 +7,8 @@
   "source_files": {
     "final_original_costs200.py": {
       "path": "work/tree-speed-repair-20261008/final_original_costs200.py",
-      "bytes": 52790,
-      "sha256": "c694b96ae4afba7115414e92e0c8ddf6b3dd8b3d0f72fa94ac73ba0869cc855d"
+      "bytes": 53423,
+      "sha256": "331ec92dda2597a57d48ea1d56972d0bd7409d704e5b33c818dc3d2d60e1ca41"
     },
     "final_original_costs200_remote.py": {
       "path": "work/tree-speed-repair-20261008/final_original_costs200_remote.py",
@@ -65,5 +65,6 @@
   },
   "additional_repair_of_commit": "516aceadb27e77d02eaefdf2b17d356edfc286bc",
   "runtime_correction": "Exclude policy_batch via same exact audit basename regex as collect; REPAIR001 has independent O_EXCL qualification and requires SHA-bound known failed original response. No deletion/overwrite of first ATTEMPT/response.",
-  "transport_correction": "Lossless stdlib lzma instead of zlib; same compressed target<=32768, management<=65536, argv<=80000 caps and all fields/SHA preserved. Actual program586828B: base64 zlib40544B failed before claim/SSH; base64 lzma29000B. No new remote preparation required."
+  "transport_correction": "Lossless stdlib lzma instead of zlib; same compressed target<=32768, management<=65536, argv<=80000 caps and all fields/SHA preserved. Actual program586828B: base64 zlib40544B failed before claim/SSH; base64 lzma29000B. No new remote preparation required.",
+  "actual_invocation_count_correction": "A SHA-bound known pre-SSH failed collect execution contributes one prior local main and zero remote calls; final summary records total main2, successful main1, remote1 only after actual successful collection."
 }

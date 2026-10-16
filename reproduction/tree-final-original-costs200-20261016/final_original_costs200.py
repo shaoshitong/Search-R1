@@ -395,6 +395,13 @@ def inputs(args):
                  manifest.get('preparation_remote_calls')==1+int(failed is not None),'Successful preparation and preserved failed calls are separate actual invocations')
         else:
             need(manifest.get('preparation_remote_calls',0)==0,'Do not infer a preparation call without its response')
+    failed_main=manifest.get('prior_failed_collection_main_execution')
+    if failed_main is not None:
+        old=bound(failed_main,True)
+        need(old['phase']=='collect' and old['exit_code']!=0 and old['status']=='ACTUAL_MAIN_EXIT_RECORDED',
+             'Preserved failed local collection main required')
+        need('no SSH attempted' in read(old['stderr'],True).decode() and old['stdout']['bytes']==0,
+             'Previous collection failure must prove the pre-SSH transport gate')
     cross=B/'ORIGINAL_POLL_TRAINING_METRICS191_196_READBACK_20261016.json'
     if cross.exists():
         bound(dict(path=str(cross),bytes=61377,sha256='e3f2ae25a3f2b4cd1bd5b378bf446add723ed6b49c8c76941cc8f1d43ae84415'))
@@ -721,7 +728,8 @@ def aggregate(args, values):
                  source_inputs=list(LOCAL.values()),source1ed_main_calls=0,source1ed_remote_calls=0,
                  all200_original_effective_rows=200,original_native_metadata_records=len(capture['native_metadata']),
                  original_rank_records=1600,complete_field_parts=len(products),
-                 final_original_collector_main_calls=1,final_original_collector_remote_calls=1,
+                 final_original_collector_main_calls=1+int(manifest.get('prior_failed_collection_main_execution') is not None),
+                 final_original_collector_successful_main_calls=1,final_original_collector_remote_calls=1,
                  local_aggregation_main_calls=1,local_aggregation_remote_calls=0,
                  source1ed_prior190_actual_main_remote_preserved=[7,7],source1ed_new_calls=0,
                  prepare_pins_remote_calls=manifest.get('preparation_remote_calls',0),
