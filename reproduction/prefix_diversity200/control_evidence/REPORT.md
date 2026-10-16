@@ -1,11 +1,11 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Actual complete18/200; job3422 RUNNING on h100-10/10.33.0.18, stage outer-000019-prefix. Saved actor/probe Adam per8rank: [360, 360, 360, 360, 360, 360, 360, 360] / [360, 360, 360, 360, 360, 360, 360, 360]. Completed joint counters: [360, 360, 360, 360, 360, 360, 360, 360] / [360, 360, 360, 360, 360, 360, 360, 360]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
+Actual complete25/200; job3422 RUNNING on h100-10/10.33.0.18, stage outer-000026-actor-d521c28301ab4cdcbe0885edf91f2e30. Saved actor/probe Adam per8rank: [500, 500, 500, 500, 500, 500, 500, 500] / [500, 500, 500, 500, 500, 500, 500, 500]. Completed joint counters: [500, 500, 500, 500, 500, 500, 500, 500] / [500, 500, 500, 500, 500, 500, 500, 500]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
 Latest QA: outer5,512questions EM24.6094% / F130.6097%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.
-Recent actual same3422 completejoint intervals[441.612713098526, 441.2780020236969, 445.81118178367615, 438.8169014453888]; mean441.880s=7.365min. Startup,QA,failure/repair are separate.
+Recent actual same3422 completejoint intervals[433.68443989753723, 426.0576865673065, 433.3234586715698, 435.53052711486816]; mean432.149s=7.202min. Startup,QA,failure/repair are separate.
 
-Latest actor512 mixed91.6016%, meanEMvariance0.17875000, selected frozen meanpredictedmixed0.73965986. Continued1024 mixed45.8008%; uncontinued4096 have no outcome labels.
+Latest actor512 mixed78.3203%, meanEMvariance0.15468750, selected frozen meanpredictedmixed0.81195807. Continued1024 mixed39.1602%; uncontinued4096 have no outcome labels.
 
 |Complete outer|Continued1024 mixed|Actor512 mixed|Actor512 variance|Probe train ordinary / balanced|Probe fixed512 ordinary / balanced|
 |---|---:|---:|---:|---:|---:|
@@ -27,6 +27,13 @@ Latest actor512 mixed91.6016%, meanEMvariance0.17875000, selected frozen meanpre
 |16|50.59%|100.00%|0.197656|50.59% / 50.00%|63.48% / 59.21%|
 |17|48.54%|97.07%|0.189531|49.12% / 50.57%|64.06% / 55.30%|
 |18|45.80%|91.60%|0.178750|47.27% / 51.22%|60.16% / 58.45%|
+|19|45.21%|90.43%|0.176719|45.21% / 50.00%|62.30% / 55.76%|
+|20|46.00%|91.99%|0.180469|46.19% / 50.17%|62.50% / 58.45%|
+|21|45.02%|90.04%|0.172813|45.02% / 50.00%|62.30% / 57.09%|
+|22|41.31%|82.62%|0.161250|43.85% / 52.06%|63.48% / 54.97%|
+|23|41.11%|82.23%|0.158594|42.19% / 50.55%|62.11% / 57.42%|
+|24|39.06%|78.12%|0.150469|39.06% / 50.00%|63.87% / 57.09%|
+|25|39.16%|78.32%|0.154688|39.26% / 50.08%|63.09% / 55.64%|
 
 20-point probe losses and all6stagewall durations are in COMPLETED_ITERATION_SCALAR_EVIDENCE.json and ITERATION_METRICS.csv. Different natural batches mean first/last loss is not a monotonic same-batch fitting claim. Actor-selected allpositive balancedaccuracy is undefined when there is no negativeclass.
 
@@ -40,8 +47,10 @@ Cost: COST_SNAPSHOT.json contains existing native token/request metadata and pha
 
 Completion remains unproven: actual200, normal50/100/150/200checkpoint/QA, fullseven51713, HF/tokenizer/nativefinite/nonzeroupdate/source/split identity, cost/ownedcleanup and finalpublication. GoalACTIVE; no stop/restart is performed by this reader.
 
-Latest passive telemetry515 samples, last observed1792164777.029278; errors[], wholecard maxused80663MiB/minfree419MiB (coverage above).
+Latest passive telemetry1166 samples, last observed1792168038.1284142; errors[], wholecard maxused81065MiB/minfree17MiB (coverage above).
 
-At completeouter18, only469/1024 continuedgroups are strictEMmixed. All469 are selected plus43zeroEMvariance groups to keep512G5; actualactormixed469/512=91.6015625%. Outer17 had497mixed/512=97.0703125%. No extra sampling/drop/relabel/epsilon was used to force100%mixing. This measures EMdiversity, not equality of continuousSearch-G1softrewards or a heldoutQA gain.
+## Updated cost coverage
 
-CPU accounting evidence remainsexplicit: sacctdisabled; sstatNTasks0/overflow-likeAveCPUinvalid andunused. Actualjobfreezer stable11PID own+waitedCPU42156.72coresec @1792164092.3334658 is an observedcumulativeprocess-tree snapshot, not final/completeCPUcost. SeeCPU_ACCOUNTING_EVIDENCE.json;5sownedbirthlowerbound andwholecardpeaks stayseparate.
+Committed generation through outer25: 23689983 actual sampled tokens. Prefix native requests 640003; continuation native requests 265339.
+Remote streaming SHA-verified logical retrieval counts cover outers 1–25: 137283 logical search actions. Full-trajectory inherited prefix searches are subtracted; actor512 is a subset and not added again. Current committed-outer backlog []. No raw trajectory contents or model tensors were returned locally.
+Logical search actions do not establish HTTP retry, cache-miss or physical FAISS query counts. Failed generation attempts, QA, setup/idle reservation and full GPU/CPU accounting remain separate and incomplete. Native accounting is disabled; the CPU snapshot remains partial. Training remains active and unchanged.
