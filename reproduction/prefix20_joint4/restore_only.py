@@ -112,7 +112,15 @@ def driver_task(config):
         if (trainer.global_steps != 200 or progress.pending is not None or
                 runtime.completed_outer != 200 or runtime.pending is not None or runtime.completed_attempts != set(state['completed_attempts'])):
             raise ValueError('RESTORE_ONLY_DRIVER_PROBE_COUNTERS_DIFFER')
+        equal_tree(saved_driver['candidate_stream']['prefix20_pool_binding'], stream.binding)
         membership = check_pending_membership(stream)
+        saved_candidate = compact_stream_state(saved_driver['candidate_stream'])
+        verified_saved_membership = dict(
+            pending_rows_verified=(0 if saved_candidate['pending_source'] is None else len(saved_candidate['pending_source'])),
+            pending_offset=saved_candidate['pending_offset'], consumed_source_rows=saved_candidate['consumed_source_rows'],
+            candidate_cursor=saved_candidate['candidate_cursor'], epoch=saved_candidate['epoch'],
+            ordered_membership_sha256=saved_candidate['prefix20_pool_binding']['ordered_membership_sha256'])
+        equal_tree(membership, verified_saved_membership)
         equal_tree(saved_driver['rng'], driver_rng())
         actual = dict(actors=[invariant_actor(row) for row in rows], candidate=copy.deepcopy(compact_stream_state(stream.state())),
                       selection_rng=copy.deepcopy(runtime.selection_rng.bit_generator.state),
@@ -128,8 +136,8 @@ def driver_task(config):
             actual_probe_readbacks=[{key:value for key,value in row.items() if key != 'state'} | {
                 'completed_outer':row['state']['completed_outer'], 'actual_steps':row['state']['actual_steps'],
                 'model_optimizer_rng_exact_equal':True} for row in probes],
-            candidate_dataequal=True, selector_rng_equal=True, driver_rng_equal=True,
-            partial_pending_membership=membership, source_attempt_progress=saved_driver['attempt_progress'],
+            candidate_dataequal=True, selector_rng_equal=True, driver_rng_equal=True, eligible_mapping_equal=True,
+            partial_pending_membership=membership, verified_saved_candidate_membership=verified_saved_membership, source_attempt_progress=saved_driver['attempt_progress'],
             optimizer_write_increment=0, scheduler_advance_increment=0, probe_update_increment=0,
             candidate_consumption_increment=0, generation_calls=0, training_checkpoint_save_calls=0,
             independent_second_readback_equal=(phase == 'B'), checked_unix=time.time())
@@ -152,6 +160,9 @@ def execute(base):
     base = own_base(base)
     if os.environ.get('SEARCH_G1_BASE') != str(base) or os.environ.get('SEARCH_G1_TRAINING_WORLD_SIZE') != '4':
         raise ValueError('RESTORE_ONLY_EXPLICIT_REMOTE_NATIVE4_ENV_REQUIRED')
+    run = json.loads((base / 'logs/run-manifest.json').read_text())
+    from reproduction.prefix20_joint4.restore_controller import validate_execute_permit
+    validate_execute_permit(base, run['source_commit'])
     proof = verify_target_copy(base, base / 'preparation/restore-copy-complete.json')
     run = json.loads((base / 'logs/run-manifest.json').read_text())
     bind_repo(base, run['source_commit'])
@@ -170,7 +181,10 @@ def execute(base):
     from reproduction.common8.stage_retrieval import memory_bytes
     job = fields(allocation['actual_allocation_detail'])
     expected = dict(UserId='jxu957(14090)', Account='jxu957', QOS='formal-user',
-                    Partition='emergency_acd', JobState='RUNNING', NumCPUs='48')
+                    Partition='emergency_acd', JobState='RUNNING', NumCPUs='48', NumNodes='1',
+                    JobId=os.environ['SLURM_JOB_ID'], JobName='prefix20-restore200-only',
+                    Command=str(base / 'source' / run['source_commit'] / 'reproduction/prefix20_joint4/restore_only.sh'),
+                    WorkDir=str(base / 'repo'))
     if (os.getuid() != 14090 or any(job.get(key) != value for key,value in expected.items()) or
             memory_bytes(job['TRES']) < 512 * 2**30):
         raise ValueError('RESTORE_ONLY_ACTUAL_OWNER_ACCOUNT_CPU_MEMORY_DIFFERS')

@@ -81,8 +81,9 @@ identified 96GiB estimate for raw/log artifacts. That estimate must be checked
 against this run's measured artifact growth. Existing checkpoints are retained;
 this layout does not authorize deletion of other experiments.
 
-No new joint training job has yet been submitted. CPU tests and prospective
-launch preparation do not prove physical four-GPU memory or training acceptance.
+Actual deployment and job state are recorded separately in the operator's
+durable handoff and measured observations. CPU tests, preparation, submission,
+and a Slurm RUNNING state do not prove a complete four-GPU training iteration.
 
 Never treat the artificial20-token pause as an invalid action or insert an
 environment correction at that boundary. Preserve actual20/remaining-budget

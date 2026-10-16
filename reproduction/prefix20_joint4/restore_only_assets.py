@@ -167,13 +167,15 @@ def prepare(base, source_receipt, commit):
     No source model/checkpoint/receipt is edited, linked, or deleted.
     """
     from reproduction.prefix20_joint4.control import own_base, bind_repo, ASSETS
-    from search_g1.qprobe_checkpoint import read_source
     from reproduction.common8.source_files import runtime_files
     base = own_base(base)
     if not base.name.startswith('qprobe-teacher-warmup200-prefix20-restore200-'):
         raise ValueError('RESTORE_ONLY_DEDICATED_TARGET_REQUIRED')
     if (base / 'logs/run-manifest.json').exists() or (base / 'preparation/restore-copy-claim.json').exists():
         raise ValueError('RESTORE_ONLY_TARGET_ALREADY_ATTEMPTED_INSPECT')
+    from reproduction.prefix20_joint4.restore_controller import validate_copy_permit
+    validate_copy_permit(base, source_receipt, commit)
+    from search_g1.qprobe_checkpoint import read_source
     bind_repo(base, commit)
     path, original, checkpoint, origin, parent = read_source(source_receipt)
     if original['step'] != 200 or original['world_size'] != 4 or origin == base:

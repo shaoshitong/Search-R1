@@ -1,7 +1,4 @@
-FINAL200 RESTORE-ONLY — CPU-TESTED IMPLEMENTATION, NO CUDA ACCEPTANCE
-
-Delivery: restore-only.patch, files/, BASE.json, delivery-manifest.json,
-cpu-tests.txt, cpu-test-result.json.
+FINAL200 RESTORE-ONLY — INTEGRATED CONTROLLER, NO CUDA ACCEPTANCE
 
 The minimal patch preserves the mainline JIT cache repair. Existing step<200 training binder is deliberately untouched. Current training allocations/source snapshots remain immutable; this operator requires an independent final200 restore-only target.
 
@@ -49,30 +46,43 @@ Existing-file minimal hunks:
   ray_trainer.py: restore-only fit rejection at entry.
   claim_training.py: restore-only training claim rejection.
 
-Preparation/execution sequence (prospective only; not executed):
-  1. Admit exactly one additional restore target under the unchanged 2TB budget,
-     using the REAL total copy plan bytes, including encoder dependencies. The
-     copy module intentionally does not submit or invent storage admission.
-  2. Create a published/bootstrap-only target namespace:
-     /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-restore200-ID
-     Deploy reviewed committed source and bootstrap its real repo/env. It must
-     contain no run manifest or restore-copy claim. Bootstrap data symlinks are
-     replaced only in this new target by verified regular data copies.
-  3. Under the target's reviewed source, invoke:
-     python -m reproduction.prefix20_joint4.restore_only copy --base TARGET
-       --source-receipt VERIFIED_CP200_PAIR_RECEIPT --commit FULL_PUSHED_SHA
-     This is a CPU file-copy operation. It accepts ONLY final200/native4/schema3.
-     Source receipt must be the verified source or archive intended for recovery;
-     the later GPU process loads target copies only. Inspect any failed claim/
-     partial copy; never replay blindly or delete original evidence.
-  4. Submit once, native gpu:4 / cpu48 / mem512G / jxu957 / formal-user /
-     emergency_acd / export NONE, running restore_only.sh TARGET from TARGET/repo.
-     This draft does not implement a scheduler submit/claim controller; reuse
-     the mainline once-submit discipline and verify exact actual command/target.
-  5. Required actual outputs: native-allocation-admission, copied file seal,
+Preparation/execution sequence (requires actual final200; not executed):
+  1. Preserve the five original source/archive/source full-SHA acceptances and
+     their exact archive-receipt-import.json wrappers. Run the independent CPU
+     final audit on completed1..200, fixed5/50/100/150/200 and native51713.
+     Its RECORDED_EVIDENCE_PASS may have goal_complete=false; actual recovery
+     is a separate required gate. Source Slurm must be COMPLETED0:0 and its
+     owned cleanup accepted. Extra201 history or artifacts reject preparation.
+  2. Deploy the reviewed, pushed restore commit to source-base/source/FULL_SHA
+     as an additional immutable operator source; never replace the training
+     repo or its source snapshot. Obtain a fresh complete personal-storage
+     permission-partition observation, with its original measurement time.
+  3. Invoke the CPU controller under the bound Python environment:
+     python -B -m reproduction.prefix20_joint4.restore_controller prepare
+       --source-base SOURCE --source-commit TRAINING_SHA --run-id RUN_ID
+       --restore-commit RESTORE_SHA --base TARGET
+       --cpu-final-audit CPU_JSON --cpu-final-audit-sha CPU_SHA256
+     TARGET must be a fresh, globally unique namespace under
+     /data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-restore200-ID.
+     A real storage upper bound younger than6h plus conservative target/source
+     copies and8GiB concurrent growth must fit2,000,000,000,000 bytes. The
+     controller exclusively registers the one target, bootstraps its repo/env,
+     and issues the copy permit before copying regular files with fresh SHA.
+  4. Run restore_controller submit --base TARGET exactly once. It rechecks the
+     actual final source, budget and copied bytes, then submits only
+     gpu:4 / cpu48 / mem512G / jxu957 / formal-user / emergency_acd / export NONE,
+     running restore_only.sh TARGET. A rejected or unknown sbatch result keeps
+     its exclusive claim and has no retry API. Inspect it without resubmitting.
+     The actual job checks its registered execution permit before CUDA/model
+     construction, then independently validates allocation and exact command.
+  5. Use restore_controller observe --base TARGET for measured read-only
+     progress, and accept --base TARGET only after actual COMPLETED0:0.
+     Required actual outputs: native-allocation-admission, copied file seal,
      full-state-restored-rank0..3/workers/driver, restore-only-readback-A/B,
      restore-only-owned-release, restore-only-complete. The coordinator checks
      real owner/account/queue/CPU/memory and four distinct process births/UUIDs.
+     The accepted adapter is logs/actual-recovery-for-cpu-consumer.json; pass
+     its exact path/SHA to the independent CPU consumer for final closure.
 
 Acceptance semantics:
   - Actor writes equal receipt's actual cumulative writes, NOT assumed4000.
@@ -94,12 +104,12 @@ and preservation of real CPU Adam/scheduler loading. It does not prove actual
 FSDP/Ray/vLLM/encoder coexistence, GPU model equality, CUDA/private RNG restore,
 or final200 archival completeness. Those remain mandatory real HPC3 tests.
 
-Known integration work/limits before invoking:
+Required real execution checks:
   - Deploy the exact reviewed/published operator source into an independent target; current training source is unchanged.
   - Source CP200 and native51713 evaluation must actually exist and be accepted;
     this component alone does not verify the whole final evaluation result.
-  - External scheduler/controller must own job submission and CPU copy process,
-    durable failure evidence and the existing one-target storage reservation.
+  - All five external archive transport receipts must be authentic and accepted;
+    controller receipt validation alone cannot establish a transport or CUDA run.
   - Validate rebound receipt with real final200 file layout and current installed
     Ray/vLLM/FSDP versions. Real collective/OOM failure handling must be observed;
     local tests cannot establish it. No live training source has been edited.
