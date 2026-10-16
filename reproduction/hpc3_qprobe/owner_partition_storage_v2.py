@@ -713,6 +713,28 @@ def unclaimed_admission_refusal(path,commit):
         training_actions=0,permission_changes=0,checked_unix=time.time())
 
 
+def complement_ready_for_owner(path,request):
+    """Admit the short owner scan after the long complement has really returned.
+
+    Running both partitions immediately made a valid MOU result almost600s
+    old when JXU finished. A second full graph read then crossed the unchanged
+    freshness bound. This is a JXU-only decision: consume its own actual wait
+    and retained streams, rather than guessing a foreign process state.
+    """
+    need(os.getuid()==JXU,'only JXU can admit its completed complement')
+    directory=Path(path).parent
+    if not (directory/'jxu-du-result.json').exists():return None
+    command=du_command([MEASURE],request['excluded_paths'])
+    value,proof=consume_du(directory,'jxu-du',command,JXU)
+    need(value['actual_parent']==request['archive_child'] and
+         request['created_unix']<=value['started_unix']<=value['completed_unix'],
+         'owner admission complement belongs to another request/child')
+    if value['actual_du_wait_exit_code']!=0 or value['stderr']!='':return None
+    parse_du(value['stdout'],[MEASURE])
+    need(fresh(request,value,None,time.time()),'complement stale before owner admission')
+    return proof
+
+
 def inspect_storage(step,commit):
     """JXU read-only action selection; foreign process visibility is never used."""
     _,source=code_guard(commit,JXU)
@@ -758,6 +780,9 @@ def inspect_storage(step,commit):
     need(state.get('task_alive') is True and state.get('actual_task')==request['archive_child'],
          'own archive child not live; original outcome unknown')
     if not request['roots']:return dict(value,action='WAIT_FOR_JXU_ONLY_SCAN')
+    complement=complement_ready_for_owner(path,request)
+    if complement is None:return dict(value,action='WAIT_FOR_JXU_PARTITION')
+    value['completed_complement']=complement
     if not (path.parent/'authorization-active.json').exists():return dict(value,action='AUTHORIZE_OWNER')
     try:authorization_guard(path,request,proof)
     except ValueError as error:

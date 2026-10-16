@@ -76,6 +76,28 @@ class DriverOnce(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'source/scope'):self.driver.act(150,state)
             call.assert_not_called()
 
+    def test_long_complement_wait_cannot_authorize_or_start_owner(self):
+        with patch.object(self.driver,'call') as call:
+            self.assertFalse(self.driver.act(150,self.state('WAIT_FOR_JXU_PARTITION')))
+            call.assert_not_called()
+        self.assertFalse(list(self.root.glob('owner-start-*.json')))
+
+    def test_explicit200_scope_does_not_inspect_or_replay_old150(self):
+        folder=self.root/'new200-driver';seen=[]
+        driver=local.Driver(COMMIT,self.root,folder)
+        def inspect(account,mode,**kwargs):
+            seen.append((account,mode,kwargs))
+            return dict(self.state('ARCHIVE_COMPLETED'),step=200)
+        with patch.object(local,'source_guard'),patch.object(driver,'call',side_effect=inspect):
+            self.assertEqual(driver.run(steps=(200,)),0)
+        self.assertEqual(seen,[('jxu957','inspect-storage',{'step':200})])
+        self.assertEqual(json.loads((folder/'claim.json').read_text())['steps'],[200])
+        self.assertEqual(json.loads((folder/'result.json').read_text())['steps'],[200])
+        with patch.object(local,'source_guard'):
+            for steps in ((150,),(200,150),(100,200),()):
+                with self.subTest(steps=steps),self.assertRaisesRegex(ValueError,'explicit new200'):
+                    driver.run(steps=steps)
+
 
 class InspectionDecisions(unittest.TestCase):
     def setUp(self):
@@ -97,7 +119,8 @@ class InspectionDecisions(unittest.TestCase):
                       patch.object(ctl,'controller_state',return_value=self.state),
                       patch.object(storage,'document',side_effect=lambda path,*a,**k:(self.files[str(path)],{})),
                       patch.object(storage,'request_guard',return_value=(self.request,self.proof)),
-                      patch.object(storage,'live',side_effect=AssertionError('inspection must never use foreign /proc'))]
+                      patch.object(storage,'live',side_effect=AssertionError('inspection must never use foreign /proc')),
+                      patch.object(storage,'complement_ready_for_owner',return_value={'sha256':'c'*64})]
         for p in self.patches:p.start();self.addCleanup(p.stop)
 
     def test_unclaimed_request_needs_explicit_jxu_grant(self):
@@ -109,6 +132,14 @@ class InspectionDecisions(unittest.TestCase):
             self.assertEqual(storage.inspect_storage(150,COMMIT)['action'],'AUTHORIZE_OWNER')
         with patch.object(storage,'authorization_guard',side_effect=ValueError('tampered grant')):
             with self.assertRaisesRegex(ValueError,'tampered'):storage.inspect_storage(150,COMMIT)
+
+    def test_pending_or_failed_complement_never_grants_owner(self):
+        with patch.object(storage,'complement_ready_for_owner',return_value=None),\
+             patch.object(storage,'authorization_guard') as grant:
+            self.assertEqual(storage.inspect_storage(150,COMMIT)['action'],'WAIT_FOR_JXU_PARTITION')
+            (self.request_path.parent/'authorization-active.json').write_text('{}')
+            self.assertEqual(storage.inspect_storage(150,COMMIT)['action'],'WAIT_FOR_JXU_PARTITION')
+            grant.assert_not_called()
 
     def test_owner_confirmation_uses_original_protected_graph(self):
         directory=self.request_path.parent/'mou-control';directory.mkdir();path=directory/'claim.json';path.write_text('{}')

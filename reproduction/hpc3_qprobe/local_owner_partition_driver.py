@@ -110,21 +110,22 @@ class Driver:
                      result.get('training_actions')==result.get('permission_changes')==0,
                      'unproven benign refusal; no replay')
         else:need(action in ('WAIT_FOR_ARCHIVE_CLAIM','WAIT_FOR_STORAGE_REQUEST','WAIT_FOR_NEXT_REQUEST',
-                            'WAIT_FOR_JXU_ONLY_SCAN','OWNER_CONFIRMED'),'unrecognized remote action')
+                            'WAIT_FOR_JXU_ONLY_SCAN','WAIT_FOR_JXU_PARTITION','OWNER_CONFIRMED'),'unrecognized remote action')
         return False
 
-    def run(self,poll_seconds=20):
+    def run(self,poll_seconds=20,steps=(150,200)):
         source_guard(self.commit);need(5<=poll_seconds<=60,'bounded polling interval required')
+        steps=tuple(steps);need(steps in ((150,200),(200,)),'only full150/200 or explicit new200 storage scope')
         need(self.directory.is_absolute() and self.control_work.is_dir(),'explicit local small-audit paths required')
         self.directory.mkdir(mode=0o700)
         with (self.directory/'driver.lock').open('x') as lock:
             os.fchmod(lock.fileno(),0o600);fcntl.flock(lock.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
             publish(self.directory/'claim.json',dict(source_commit=self.commit,actual_local_pid=os.getpid(),
                 command_role='local_dual_account_storage_only',host=HOST,expected_host_identity=IDENTITY,
-                created_unix=time.time(),steps=[150,200],training_actions=0,permission_changes=0,goal_complete=False))
+                created_unix=time.time(),steps=list(steps),training_actions=0,permission_changes=0,goal_complete=False))
             last=None
             try:
-                for step in (150,200):
+                for step in steps:
                     while True:
                         state=self.call('jxu957','inspect-storage',step=step)
                         marker=(step,state['action'],state.get('request',{}).get('sha256'))
@@ -134,7 +135,7 @@ class Driver:
                         if self.act(step,state):break
                         time.sleep(poll_seconds)
                 publish(self.directory/'result.json',dict(status='ACTUAL_STORAGE_DRIVER_DUTIES_COMPLETED',
-                    exit_code=0,completed_unix=time.time(),steps=[150,200],goal_complete=False));return 0
+                    exit_code=0,completed_unix=time.time(),steps=list(steps),goal_complete=False));return 0
             except BaseException as error:
                 publish(self.directory/'result.json',dict(status='LOCAL_DRIVER_STOPPED_PRESERVED_NO_REPLAY',
                     exit_code=1,error=repr(error),completed_unix=time.time(),goal_complete=False));raise
@@ -143,5 +144,6 @@ class Driver:
 if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--commit',required=True)
     p.add_argument('--control-work',type=Path,required=True);p.add_argument('--directory',type=Path,required=True)
-    p.add_argument('--poll-seconds',type=int,default=20);a=p.parse_args()
-    raise SystemExit(Driver(a.commit,a.control_work,a.directory).run(a.poll_seconds))
+    p.add_argument('--poll-seconds',type=int,default=20)
+    p.add_argument('--steps',type=int,nargs='+',default=[150,200]);a=p.parse_args()
+    raise SystemExit(Driver(a.commit,a.control_work,a.directory).run(a.poll_seconds,steps=a.steps))
