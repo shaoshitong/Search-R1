@@ -1,0 +1,106 @@
+{
+  "schema": "tree_fast_final_terminal_delta_root_ready_v1",
+  "status": "ACTUAL_COMPLETE_ROOT_AUTHORIZED_READ_READY",
+  "created_utc": "2026-10-16T11:51:42.095044+00:00",
+  "unique_executor": "/root/cost166_actual_append",
+  "terminal_observation_source": {
+    "path": "outputs/tree-nested-branch-handoff-20261013/FINAL200_FAST_TP1_ACTUAL_OBSERVATION_14.json",
+    "bytes": 1649265,
+    "sha256": "20c4ca439035fe1462f07dc1c4c8d0c3f37a8dd6e45509f591677d16d0fd93a0"
+  },
+  "run_result_original_metadata": {
+    "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/sst-tree-nested-final-eval-tp1-778b2b43-20261016/run-result.json",
+    "bytes": 3432,
+    "sha256": "0097ca8581c4b4d87ee09ee0080b6ddab3d3391eabdf7a6381e8809f3c56c139",
+    "value": {
+      "actual_completed_training_outer": 200,
+      "archive_proof": {
+        "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-eval-fast/archive-proof.json",
+        "sha256": "b1001f522cb317138471458946c8ec9a3106d42579eeb2f2a643690cc0e3dbf6"
+      },
+      "code_manifest_sha256": "439a58113f8e12e557121ef3b7b241ebd740376c240e1cd40b27be2083c5e9b4",
+      "effective_training_segments": [
+        {
+          "code_commit": "0befbaf99fc44942105831b3fbec94e4bf1b8ccb",
+          "config_sha256": "2a317628c497bba932698bf6d7bf64ca3503233d32080a389a36e1f69b362243",
+          "first_outer": 1,
+          "last_outer": 1,
+          "run_id": "tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb",
+          "source_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb"
+        },
+        {
+          "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+          "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+          "first_outer": 2,
+          "last_outer": 5,
+          "run_id": "tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+          "source_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4"
+        },
+        {
+          "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+          "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+          "first_outer": 6,
+          "last_outer": 200,
+          "run_id": "tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+          "source_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73"
+        }
+      ],
+      "end_epoch": 1792151306.804851,
+      "evaluated_count": 51713,
+      "evaluation_only": true,
+      "evaluation_wrapper_source_commit": "a8ab17f36f1bcf64f19193522aaed84fb2749863",
+      "final_gpu": {
+        "gpus": [
+          "0, GPU-2c3bdc08-b976-0fb5-79bd-04def458046b, 0, 81559, 0",
+          "1, GPU-6e00764e-3916-65f2-436e-568aa0c70fc5, 0, 81559, 0",
+          "2, GPU-db94211b-42d5-88d0-f626-60e777af3be6, 0, 81559, 0",
+          "3, GPU-308b13c1-44ea-47b7-7b33-01a928099618, 0, 81559, 0",
+          "4, GPU-525a9efc-446e-333d-11ff-e1f2213d15c8, 0, 81559, 0",
+          "5, GPU-d61d94cd-3d24-fa07-8761-33961a14d995, 0, 81559, 0",
+          "6, GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 0, 81559, 0",
+          "7, GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 0, 81559, 0"
+        ],
+        "processes": []
+      },
+      "final_metrics_done_sha256": "2b2860d331dba7bcc61cd99a04159e81b4fdc9d4fb86c9ad1ad5dadb33dcc7ad",
+      "final_metrics_sha256": "775c209ff0c88d37543c6e7437fa160a611559ca3f095695bc66e85506ec2a20",
+      "handoff_sha256": "1abe649280d6348906dd69b338d9efcde65230dc0b83baea0ee28de6883ffc65",
+      "independent_final_acceptance": false,
+      "optimizer_constructed": false,
+      "original_training_normal_exit_claimed": false,
+      "own_cleanup_residual": {},
+      "physical_gpus": 8,
+      "score_output": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-eval-fast/scores",
+      "slurm_reserved_gpus": 0,
+      "start_epoch": 1792147670.047004,
+      "status": "COMPLETE",
+      "training_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "training_signals_sent": false,
+      "training_source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+      "unit": "sst-tree-nested-final-eval-tp1-778b2b43-20261016.service",
+      "wall_seconds": 3636.757847547531,
+      "worker_exit_code": 0
+    }
+  },
+  "terminal_systemd_raw": "MainPID=0\nResult=success\nExecMainStatus=0\nControlGroup=\nMemoryCurrent=[not set]\nCPUUsageNSec=[not set]\nLoadState=not-found\nActiveState=inactive\nSubState=dead\nInvocationID=\n",
+  "terminal_CPUUsageNSec": null,
+  "terminal_exec_monotonic": null,
+  "terminal_counter_reason": "Transient systemd unit was GC/not-found; neither obs13 live CPU nor journal rounded CPU is CPUUsageNSec.",
+  "live_asof_observation": {
+    "source": {
+      "path": "outputs/tree-nested-branch-handoff-20261013/FINAL200_FAST_TP1_ACTUAL_OBSERVATION_13.json",
+      "bytes": 1388348,
+      "sha256": "5775ea25b4af17cf0052066312b83b4a99c34d455e2e861c2bac5cc42c537b6c"
+    },
+    "epoch": 1792150678.1822972,
+    "systemd_raw": "MainPID=3409502\nResult=success\nExecMainStatus=0\nControlGroup=/system.slice/sst-tree-nested-final-eval-tp1-778b2b43-20261016.service\nMemoryCurrent=147492909056\nCPUUsageNSec=23399169021000\nLoadState=loaded\nActiveState=active\nSubState=running\nInvocationID=abd6a826997945da932cf09047806431\n",
+    "is_terminal": false,
+    "scope": "Live CPU asof only; never a terminal total."
+  },
+  "authorization": {
+    "actual_collector_main": 1,
+    "maximum_read_only_helper_calls": 1,
+    "evaluation_calls": 0,
+    "cleanup_operations": 0
+  }
+}

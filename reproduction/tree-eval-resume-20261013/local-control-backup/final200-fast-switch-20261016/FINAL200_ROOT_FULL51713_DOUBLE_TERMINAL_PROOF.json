@@ -1,0 +1,219 @@
+{
+  "schema": "root_full51713_double_terminal_proof_v1",
+  "original_byte_descriptors": {
+    "final-metrics.json": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-eval-fast/scores/final-metrics.json",
+      "bytes": 3923,
+      "sha256": "775c209ff0c88d37543c6e7437fa160a611559ca3f095695bc66e85506ec2a20",
+      "value": {
+        "evaluated_count": 51713,
+        "execution_changes": [
+          "8 resident TP1 ranks",
+          "local batch 64 (global scheduling width 512)",
+          "no FSDP/reload/cache teardown",
+          "no eight-GPU rollout padding",
+          "explicit shared systemd memory_headroom_shared_v1 execution",
+          "physical GPUs 8; Slurm reserved GPUs 0; no exclusive allocation claim",
+          "resident vLLM GPU memory/cache fraction 20%"
+        ],
+        "execution_records": [
+          {
+            "allocation_kind": "shared_systemd",
+            "backend": "XFORMERS",
+            "dtype": "bfloat16",
+            "free_cache_engine": false,
+            "gpu_memory_utilization": 0.2,
+            "local_batch_size": 64,
+            "native_emission": true,
+            "physical_gpus": 8,
+            "resident_weights": true,
+            "resource_protocol": "memory_headroom_shared_v1",
+            "rollout_padding_divisor": 1,
+            "slurm_reserved_gpus": 0,
+            "tensor_parallel_size": 1,
+            "world_size": 8
+          }
+        ],
+        "identity": {
+          "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+          "dataset_sha256": "2598a00883d70ace097e4d0dc10056066b4f6d0d99d9d6034d902dd09da732fa",
+          "model_sha256": "c0360891166e7bc7e1a10af023f9762ede122976f5c10873ccf5725035d8d416"
+        },
+        "metrics": {
+          "val/answer_format/2wikimultihopqa": 0.9375,
+          "val/answer_format/all": 0.9730048537118327,
+          "val/answer_format/bamboogle": 0.984,
+          "val/answer_format/hotpotqa": 0.9793382849426063,
+          "val/answer_format/musique": 0.9325610260653703,
+          "val/answer_format/nq": 0.9939058171745152,
+          "val/answer_format/popqa": 0.9857012686619472,
+          "val/answer_format/triviaqa": 0.994166003712543,
+          "val/em/2wikimultihopqa": 0.40736323155216286,
+          "val/em/all": 0.4693984104577186,
+          "val/em/bamboogle": 0.352,
+          "val/em/hotpotqa": 0.4313301823092505,
+          "val/em/musique": 0.18163011998345055,
+          "val/em/nq": 0.46204986149584487,
+          "val/em/popqa": 0.4722085932571669,
+          "val/em/triviaqa": 0.6248563599398922,
+          "val/evaluated_count/2wikimultihopqa": 12576,
+          "val/evaluated_count/bamboogle": 125,
+          "val/evaluated_count/hotpotqa": 7405,
+          "val/evaluated_count/musique": 2417,
+          "val/evaluated_count/nq": 3610,
+          "val/evaluated_count/popqa": 14267,
+          "val/evaluated_count/triviaqa": 11313,
+          "val/f1/2wikimultihopqa": 0.46406808306062214,
+          "val/f1/all": 0.538153839337549,
+          "val/f1/bamboogle": 0.49246666666666666,
+          "val/f1/hotpotqa": 0.5469334013587973,
+          "val/f1/musique": 0.26204078667287495,
+          "val/f1/nq": 0.5471241419822942,
+          "val/f1/popqa": 0.5144659402807591,
+          "val/f1/triviaqa": 0.7012704682017888,
+          "val/format_rate/2wikimultihopqa": 0.21270674300254452,
+          "val/format_rate/all": 0.514899541701313,
+          "val/format_rate/bamboogle": 0.576,
+          "val/format_rate/hotpotqa": 0.47319378798109385,
+          "val/format_rate/musique": 0.5043442283822921,
+          "val/format_rate/nq": 0.7443213296398892,
+          "val/format_rate/popqa": 0.5870189948832971,
+          "val/format_rate/triviaqa": 0.7155484840449041,
+          "val/generated_tokens/2wikimultihopqa": 299.68304707379133,
+          "val/generated_tokens/all": 221.48326339605129,
+          "val/generated_tokens/bamboogle": 198.96,
+          "val/generated_tokens/hotpotqa": 231.17839297771775,
+          "val/generated_tokens/musique": 253.76665287546544,
+          "val/generated_tokens/nq": 169.75872576177287,
+          "val/generated_tokens/popqa": 182.297539777108,
+          "val/generated_tokens/triviaqa": 187.48183505701405,
+          "val/qa_count/2wikimultihopqa": 12576,
+          "val/qa_count/all": 51713,
+          "val/qa_count/bamboogle": 125,
+          "val/qa_count/hotpotqa": 7405,
+          "val/qa_count/musique": 2417,
+          "val/qa_count/nq": 3610,
+          "val/qa_count/popqa": 14267,
+          "val/qa_count/triviaqa": 11313,
+          "val/search_calls/2wikimultihopqa": 2.560830152671756,
+          "val/search_calls/all": 2.302457795912053,
+          "val/search_calls/bamboogle": 2.344,
+          "val/search_calls/hotpotqa": 2.3006076975016883,
+          "val/search_calls/musique": 2.681836988001655,
+          "val/search_calls/nq": 2.0822714681440444,
+          "val/search_calls/popqa": 2.2010934323964393,
+          "val/search_calls/triviaqa": 2.133032794130646,
+          "val/test_score/2wikimultihopqa": 0.40736323155216286,
+          "val/test_score/bamboogle": 0.352,
+          "val/test_score/hotpotqa": 0.4313301823092505,
+          "val/test_score/musique": 0.18163011998345055,
+          "val/test_score/nq": 0.46204986149584487,
+          "val/test_score/popqa": 0.4722085932571669,
+          "val/test_score/triviaqa": 0.6248563599398922
+        },
+        "numerical_caveat": "HF weights unchanged; altered greedy batching/kernel shapes are not guaranteed bit-identical."
+      }
+    },
+    "final-metrics.done.json": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-eval-fast/scores/final-metrics.done.json",
+      "bytes": 78,
+      "sha256": "2b2860d331dba7bcc61cd99a04159e81b4fdc9d4fb86c9ad1ad5dadb33dcc7ad",
+      "value": {
+        "sha256": "775c209ff0c88d37543c6e7437fa160a611559ca3f095695bc66e85506ec2a20"
+      }
+    },
+    "run-result.json": {
+      "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/sst-tree-nested-final-eval-tp1-778b2b43-20261016/run-result.json",
+      "bytes": 3432,
+      "sha256": "0097ca8581c4b4d87ee09ee0080b6ddab3d3391eabdf7a6381e8809f3c56c139",
+      "value": {
+        "actual_completed_training_outer": 200,
+        "archive_proof": {
+          "path": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-eval-fast/archive-proof.json",
+          "sha256": "b1001f522cb317138471458946c8ec9a3106d42579eeb2f2a643690cc0e3dbf6"
+        },
+        "code_manifest_sha256": "439a58113f8e12e557121ef3b7b241ebd740376c240e1cd40b27be2083c5e9b4",
+        "effective_training_segments": [
+          {
+            "code_commit": "0befbaf99fc44942105831b3fbec94e4bf1b8ccb",
+            "config_sha256": "2a317628c497bba932698bf6d7bf64ca3503233d32080a389a36e1f69b362243",
+            "first_outer": 1,
+            "last_outer": 1,
+            "run_id": "tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb",
+            "source_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:0befbaf99fc44942105831b3fbec94e4bf1b8ccb"
+          },
+          {
+            "code_commit": "ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+            "config_sha256": "22beaec8aa2b449b496754aacfd9b1e7c89009c9c27a8eff3aef92b768b28b59",
+            "first_outer": 2,
+            "last_outer": 5,
+            "run_id": "tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4",
+            "source_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:ba9f6627ec9a4e9749830d7b6acca53f6feec6b4"
+          },
+          {
+            "code_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+            "config_sha256": "355edf5232dc963deb526281f7e1e61b98eaaa73b0bffc5e7855ef3d262799b3",
+            "first_outer": 6,
+            "last_outer": 200,
+            "run_id": "tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+            "source_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73"
+          }
+        ],
+        "end_epoch": 1792151306.804851,
+        "evaluated_count": 51713,
+        "evaluation_only": true,
+        "evaluation_wrapper_source_commit": "a8ab17f36f1bcf64f19193522aaed84fb2749863",
+        "final_gpu": {
+          "gpus": [
+            "0, GPU-2c3bdc08-b976-0fb5-79bd-04def458046b, 0, 81559, 0",
+            "1, GPU-6e00764e-3916-65f2-436e-568aa0c70fc5, 0, 81559, 0",
+            "2, GPU-db94211b-42d5-88d0-f626-60e777af3be6, 0, 81559, 0",
+            "3, GPU-308b13c1-44ea-47b7-7b33-01a928099618, 0, 81559, 0",
+            "4, GPU-525a9efc-446e-333d-11ff-e1f2213d15c8, 0, 81559, 0",
+            "5, GPU-d61d94cd-3d24-fa07-8761-33961a14d995, 0, 81559, 0",
+            "6, GPU-f3a967b0-0b4a-4d13-0917-0a4f70aa740b, 0, 81559, 0",
+            "7, GPU-fca5fcba-4036-0e79-4cb6-ceb9ed121ad5, 0, 81559, 0"
+          ],
+          "processes": []
+        },
+        "final_metrics_done_sha256": "2b2860d331dba7bcc61cd99a04159e81b4fdc9d4fb86c9ad1ad5dadb33dcc7ad",
+        "final_metrics_sha256": "775c209ff0c88d37543c6e7437fa160a611559ca3f095695bc66e85506ec2a20",
+        "handoff_sha256": "1abe649280d6348906dd69b338d9efcde65230dc0b83baea0ee28de6883ffc65",
+        "independent_final_acceptance": false,
+        "optimizer_constructed": false,
+        "original_training_normal_exit_claimed": false,
+        "own_cleanup_residual": {},
+        "physical_gpus": 8,
+        "score_output": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73/output/final-eval-fast/scores",
+        "slurm_reserved_gpus": 0,
+        "start_epoch": 1792147670.047004,
+        "status": "COMPLETE",
+        "training_run": "/dataset/shaoshitong/search-r1-rl/tree-grpo/runs/tree-nested-branch-fresh200-not-slurm;systemd:778b2b43dad90fc0c1c5d95d77c2326286011b73",
+        "training_signals_sent": false,
+        "training_source_commit": "778b2b43dad90fc0c1c5d95d77c2326286011b73",
+        "unit": "sst-tree-nested-final-eval-tp1-778b2b43-20261016.service",
+        "wall_seconds": 3636.757847547531,
+        "worker_exit_code": 0
+      }
+    }
+  },
+  "observations": [
+    {
+      "epoch": 1792151412.878295,
+      "systemd": "MainPID=0\nResult=success\nExecMainStatus=0\nControlGroup=\nMemoryCurrent=[not set]\nCPUUsageNSec=[not set]\nLoadState=not-found\nActiveState=inactive\nSubState=dead\nInvocationID=\n",
+      "chunks": 809,
+      "rows": 51713
+    },
+    {
+      "epoch": 1792151433.0197694,
+      "systemd": "MainPID=0\nResult=success\nExecMainStatus=0\nControlGroup=\nMemoryCurrent=[not set]\nCPUUsageNSec=[not set]\nLoadState=not-found\nActiveState=inactive\nSubState=dead\nInvocationID=\n",
+      "chunks": 809,
+      "rows": 51713
+    }
+  ],
+  "copied_files_are_parsed_semantic_copies": true,
+  "journal_terminal_CPU_seconds_ms_precision": 28190.25,
+  "journal_terminal_source": "2026-10-16T19:48:26+0800 h100-10 systemd[1]: sst-tree-nested-final-eval-tp1-778b2b43-20261016.service: Consumed 7h 49min 50.250s CPU time.",
+  "exact_systemd_CPUUsageNSec_unavailable_after_GC": true,
+  "independent_final_acceptance_pending": true
+}
