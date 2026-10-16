@@ -51,7 +51,8 @@ def sync(root, publish=False):
     bases = sorted(earliest, key=earliest.get)
     if config['base'] not in bases:
         bases.append(config['base'])
-    sources = {name: git(repo, 'show', commit+':reproduction/prefix_diversity200/'+name+'.py')+'\n'
+    sources = {name: subprocess.check_output(['git','show',
+               commit+':reproduction/prefix_diversity200/'+name+'.py'],cwd=repo,text=True)
                for name in ('cost_snapshot', 'cost_retrieval')}
     payload = dict(commit=commit, run_id=config['run_id'], bases=bases, sources=sources)
     script = '''import os,json,time,hashlib
@@ -139,8 +140,12 @@ print(json.dumps(out,allow_nan=False))
     if publish:
         subprocess.run(['git','diff','--check'],cwd=repo,check=True)
         paths=[str((evidence/name).relative_to(repo)) for name in names+['CURRENT_HANDOFF.md']]
+        if not set(git(repo,'diff','--cached','--name-only').splitlines()).issubset(paths):
+            raise ValueError('Preserve unrelated staged work; results publication not attempted')
         subprocess.run(['git','add','--',*paths],cwd=repo,check=True)
-        if subprocess.run(['git','diff','--cached','--quiet'],cwd=repo).returncode:
+        changed=subprocess.run(['git','diff','--cached','--quiet'],cwd=repo).returncode
+        if changed not in (0,1):raise ValueError('Unable to inspect staged audit files')
+        if changed:
             subprocess.run(['git','commit','-m',f'Preserve complete{n} actual progression and scoped evidence'],cwd=repo,check=True,stdout=subprocess.PIPE)
             subprocess.run(['git','push','origin','HEAD'],cwd=repo,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         published=git(repo,'rev-parse','HEAD')
