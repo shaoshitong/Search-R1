@@ -27,7 +27,9 @@ case "$PHASE" in
     exec 9>"$BASE/preparation/formal.lock"
     flock -n 9
     python -m reproduction.hpc3_dynrpo_periodic.environment_overlay --check
-    if [[ -f "$BASE/logs/run-manifest.json" ]]; then
+    if [[ -e "$BASE/preparation/restore-request.json" || -L "$BASE/preparation/restore-request.json" ]]; then
+      python -u -m reproduction.hpc3_dynrpo_periodic.restore_request --base "$BASE" --commit "$COMMIT"
+    elif [[ -f "$BASE/logs/run-manifest.json" ]]; then
       python -c 'import json,os; from pathlib import Path; r=json.loads((Path(os.environ["SEARCH_G1_BASE"])/"logs/run-manifest.json").read_text()); assert r.get("full_state_restore"), "Existing fresh run cannot be launched twice"'
     else
       python -u -m reproduction.hpc3_dynrpo_periodic.bind

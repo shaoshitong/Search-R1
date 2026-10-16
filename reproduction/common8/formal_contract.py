@@ -156,13 +156,17 @@ def monitor_reference_contract(base, run):
     """Bind the seven-key schema to the actual zero-reference launch contract.
 
     No missing tensor or nominal zero budget can select this schema. Legacy
-    producers and nonlocal calibration retain their exact eight-key identity.
+    producers and calibration retain their exact eight-key identity. The same
+    bound producer also skips reference tensors in the four-rank HPC3 job.
     """
     from reproduction.common8.policy_calibration_plan import _strict_json, document_sha256
     from reproduction.common8.safety_calibration_evidence import ZERO_REFERENCE_MONITOR_PRODUCER_SHA256S
     producer = 'verl/workers/actor/dp_actor.py'
     producer_sha = run.get('source_sha256', {}).get(producer)
-    if (run.get('execution_backend') != 'ssh_local' or
+    backend = run.get('execution_backend', 'slurm')
+    hpc3 = (backend == 'slurm' and run.get('execution_site') == 'hpc3' and
+            run.get('training_world_size') == 4)
+    if ((backend != 'ssh_local' and not hpc3) or
             producer_sha not in ZERO_REFERENCE_MONITOR_PRODUCER_SHA256S):
         return None
     assert_formal_run(run)
@@ -177,7 +181,17 @@ def monitor_reference_contract(base, run):
     launch = owned_document('logs/resolved-training-config.json')
     plan = owned_document('logs/policy-safety-calibration.json')
     assert launch['run_id'] == plan['run_id'] == run['run_id']
-    assert launch['execution_id'] == run['execution_id'] and launch['execution_backend'] == 'ssh_local'
+    if hpc3:
+        allocation = owned_document('logs/native-allocation-admission.json')
+        job = launch['slurm_job_id']
+        assert isinstance(job, str) and job.isdecimal() and int(job) > 0
+        if 'slurm_job_id' in run:
+            assert run['slurm_job_id'] == job
+        assert allocation['accepted'] is True and allocation['run_id'] == run['run_id']
+        assert plan['slurm_job_id'] == allocation['slurm_job_id'] == job
+        assert plan['probability']['slurm_job_id'] == job
+    else:
+        assert launch['execution_id'] == run['execution_id'] and launch['execution_backend'] == 'ssh_local'
     document = launch['resolved_config']
     proof = verify_formal_config(document, run, base)
     probability = plan['probability']

@@ -1,5 +1,6 @@
 """Prepare an explicit, authenticated actor/probe restart, never reset a learner."""
 import argparse
+import copy
 import json
 import os
 from pathlib import Path
@@ -7,6 +8,23 @@ import re
 import shutil
 
 from .common import DEFAULT_BASE, MODEL, REUSED, sha
+
+
+def inherit_periodic_recipe(run, parent):
+    """Keep the explicit periodic schedule when relocating a paired learner."""
+    expected = dict(question_probe_refit_outers=list(range(0,200,25)),
+                    extra_checkpoint_steps=list(range(25,201,25)))
+    if (run.get('run_id') != parent.get('run_id') or
+            run.get('target_updates') != parent.get('target_updates') or run.get('target_updates') != 200 or
+            not run.get('full_state_restore') or
+            run.get('question_probe',{}).get('head_kind') != 'qwen_native_periodic_lastblock_binary_v1' or
+            parent.get('question_probe',{}).get('head_kind') != 'qwen_native_periodic_lastblock_binary_v1'):
+        raise ValueError('Restart must retain the actual paired periodic learner and 200-outer target')
+    for key,value in expected.items():
+        if parent.get(key) != value or (key in run and run[key] != value):
+            raise ValueError('Restart periodic schedule changed: '+key)
+        run[key] = copy.deepcopy(parent[key])
+    return run
 
 
 def main():
@@ -37,6 +55,9 @@ def main():
     run=prepare(base,MODEL,manifest,args.commit,rollout_memory_utilization=.1,
         local_retrieval_assets=str(REUSED/'source/assets-root/assets/wiki'),
         restore_receipt=args.source_receipt,execution_site='hpc3')
+    inherit_periodic_recipe(run,parent)
+    from reproduction.a800.owned_processes import publish
+    publish(base/'logs/run-manifest.json',run)
     from reproduction.common8.configuration import resolved
     resolved(base)
     print(json.dumps(dict(run_id=run['run_id'],completed_outer=receipt['step'],
