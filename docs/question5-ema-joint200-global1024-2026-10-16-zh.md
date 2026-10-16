@@ -23,3 +23,13 @@
 继承epoch2的EMA混合balanced accuracy为训练76.1967%、测试57.3314%；逐轨迹BCE为0.416559／0.592635，G5 BCE为0.484883／0.779791。测试BCE较首轮变差，不能仅凭balanced accuracy上升宣称泛化改善。epoch2记录的985.782秒只覆盖恢复后的1363次Adam和全量EMA评测，**不是完整epoch耗时，也不能与首轮41.66分钟直接比较提速**。完整标量／哈希见[实际续接报告](../reproduction/reports/question5-global1024-resume-2026-10-16.json)。
 
 不新增rollout、编码、评分、GPU验收、额外评测或review；当前probe目标继续200完整epoch，旧actor目标保持暂停。
+
+## 2026-10-17实际进展：第4轮全局1024已生效
+
+00:11:04实际回执`question5-global1024-resume-observation-1792167064807867000.json`确认epoch3的metrics／checkpoint／complete全部闭合，完整进度3/200；四rank累计26175次真实Adam／EMA，当前第4轮75/2175次更新。第4轮实际global G5 pattern为204/204/204/204/208，平均1024条轨迹；最近一次每卡52个G5／260条。仍为同一run／execution／runtime源码与连续进程，无记录错误、退出或nonfinite拒绝。
+
+epoch3同一EMA0.99权重的全量训练／测试混合balanced accuracy为80.1052%／56.3273%；逐轨迹BCE为0.381939／0.570881，G5 BCE为0.433038／0.777596，联合loss为0.814977／1.348477。训练／测试混合balanced accuracy差23.7778个百分点，测试较epoch2下降1.0040个百分点。固定测试逐轨迹accuracy78.2422%，仅比全判错误78.1641%多判对2条，当前泛化仍弱。
+
+epoch3记录2293.261938秒只覆盖本执行恢复后的8697/8700次Adam与全量EMA评测，不包含恢复前3次更新、构造／恢复及checkpoint写入；该轮仍属旧global256配方。全局1024的稳定同阶段速度窗口尚未形成，不能将这段耗时解释为完整1024轮耗时或报告固定倍数提速。
+
+epoch3最新完整状态1242424288字节，SHA256`4fccd80f9c0761e0b613f8fbf45f0b562c08ec9d007fa868aa746bc49b4f4437`；`latest.pt`会被后续完整轮替换，不是epoch3不可变权重副本。每10轮／200轮的不可变保存策略不变。详见[2026-10-17实际里程碑报告](../reproduction/reports/question5-global1024-epoch003-phase-start-2026-10-17.md)及[标量／哈希JSON](../reproduction/reports/question5-global1024-epoch003-phase-start-2026-10-17.json)。

@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-17",
+  "role": "question5_global1024_epoch3_committed_and_actual_epoch4_phase_start",
+  "checked_unix": 1792167064.8709977,
+  "checked_at_Shanghai": "2026-10-17T00:11:04.870998+08:00",
+  "run_id": "8af926a49630428097b94027864da68b",
+  "execution_id": "bcfa1de0a90a4fcda70263a75153fcee",
+  "runtime_source_commit": "ddf36cca14ac7aafb0b5395ffa88d57ed8c35e74",
+  "receipt": {
+    "path": "preparation/question5-global1024-resume-observation-1792167064807867000.json",
+    "sha256": "d19612af6c810d7bb944b78eade1a44307afb6a73b1ba0bc8344753aa22450d4"
+  },
+  "actual_progress": {
+    "all_four_native_CUDA_full_state_restores_verified": true,
+    "all_four_native_identities_alive": true,
+    "four_rank_counters_agree": true,
+    "complete_epochs": 3,
+    "target_complete_epochs": 200,
+    "actual_returned_Adam_counted_once": 26175,
+    "EMA_updates_counted_once": 26175,
+    "rank_optimizer_steps": [
+      26175,
+      26175,
+      26175,
+      26175
+    ],
+    "current_epoch": 4,
+    "current_epoch_actual_Adam": 75,
+    "current_epoch_updates_per_epoch": 2175,
+    "global1024_phase_started": true,
+    "actual_global_G5_pattern": [
+      204,
+      204,
+      204,
+      204,
+      208
+    ],
+    "mean_global_trajectories_per_Adam": 1024.0,
+    "actual_last_update_global_G5": 208,
+    "actual_last_update_global_trajectories": 1040,
+    "actual_last_update_local_G5": 52,
+    "actual_last_update_local_trajectories": 260,
+    "rejected_nonfinite_updates": 0,
+    "new_current_execution_Adam_and_EMA": 8772,
+    "no_recorded_errors_or_exits": true,
+    "global_groups_seen": 1351680,
+    "global_trajectories_seen": 6758400,
+    "target_actual_total_Adam": 454575
+  },
+  "committed_epoch3": {
+    "fully_committed": true,
+    "complete_epoch": 3,
+    "same_train_test_weight_kind": "ema0.99",
+    "Adam_and_EMA_counted_once": 26100,
+    "epoch_global_G5_pattern": [
+      51,
+      51,
+      51,
+      51,
+      52
+    ],
+    "epoch_updates_per_epoch": 8700,
+    "train_ema": {
+      "weight_kind": "ema0.99",
+      "metric_semantics": "same_fixed_head_eval_no_grad",
+      "groups": 445440,
+      "trajectories": 2227200,
+      "trajectory_bce": 0.381938701810251,
+      "group_bce": 0.4330384257688433,
+      "total_loss": 0.8149771275790944,
+      "mixed_group": {
+        "accuracy": 0.8174344468390805,
+        "balanced_accuracy": 0.8010515778262539,
+        "fn": 41543,
+        "fp": 39779,
+        "negative": 284454,
+        "positive": 160986,
+        "tn": 244675,
+        "tp": 119443
+      },
+      "trajectory_correctness": {
+        "accuracy": 0.8182300646551725,
+        "balanced_accuracy": 0.6622372465336362,
+        "fn": 289359,
+        "fp": 115479,
+        "negative": 1752556,
+        "positive": 474644,
+        "tn": 1637077,
+        "tp": 185285
+      },
+      "true_mixed": "0<K<5",
+      "threshold": 0.5
+    },
+    "test_ema": {
+      "weight_kind": "ema0.99",
+      "metric_semantics": "same_fixed_head_eval_no_grad",
+      "groups": 512,
+      "trajectories": 2560,
+      "trajectory_bce": 0.5708805657923222,
+      "group_bce": 0.7775959521532059,
+      "total_loss": 1.348476517945528,
+      "mixed_group": {
+        "accuracy": 0.60546875,
+        "balanced_accuracy": 0.5632733735279951,
+        "fn": 107,
+        "fp": 95,
+        "negative": 329,
+        "positive": 183,
+        "tn": 234,
+        "tp": 76
+      },
+      "trajectory_correctness": {
+        "accuracy": 0.782421875,
+        "balanced_accuracy": 0.5404636679871155,
+        "fn": 497,
+        "fp": 60,
+        "negative": 2001,
+        "positive": 559,
+        "tn": 1941,
+        "tp": 62
+      },
+      "true_mixed": "0<K<5",
+      "threshold": 0.5
+    },
+    "raw_online_window": {
+      "group_bce": 0.5608797241234103,
+      "groups": 445287,
+      "resumed_epoch_suffix": true,
+      "trajectory_bce": 0.4461030625370083
+    },
+    "recorded_epoch_seconds": 2293.2619380969554,
+    "timing_semantics": "2293.261938s covers this execution resumed epoch3 suffix8697/8700 Adam updates and full EMA train/test evaluation; excludes first3 updates, constructor/restore and checkpoint write; NOT a full global1024 epoch.",
+    "recorded_execution_seconds": 2535.055650054477,
+    "metrics_file_sha256": "1e47331c2d0b4ef67c20b03319e526101515592ee4a79750092e00e3adbaa71e",
+    "checkpoint_metadata_sha256": "9207011e7b70f143405991682f905bbafe3a4a5534e4f0dfff481167e827e152",
+    "epoch_metrics_canonical_sha256": "7e1ec9f0c20aa297244f2c878a11041cfb674a06d647ba22ea73266043ca1173",
+    "complete_metadata_sha256": "6b61fdbb8d0dea7fea418dbc54bed205bc9df6fea4657c2a1b7dbff5a958221d",
+    "checkpoint_state_sha256": "4fccd80f9c0761e0b613f8fbf45f0b562c08ec9d007fa868aa746bc49b4f4437",
+    "checkpoint_state_bytes": 1242424288,
+    "checkpoint_state_mutable_latest": true,
+    "immutable_checkpoint_epochs": "every10_and200",
+    "checkpoint_state_binding_sha256": "f82e64dd66f442e3d6595694d26f735f3d7a6d3dc8996e1de435f8f7c38ace02",
+    "checkpoint_tensors_read_for_this_observation": false
+  },
+  "metric_interpretation": {
+    "epoch2_train_mixed_balanced_accuracy": 0.7619666946911174,
+    "epoch2_test_mixed_balanced_accuracy": 0.5733137342833889,
+    "epoch3_train_test_mixed_balanced_accuracy_gap_pp": 23.77782042982588,
+    "epoch3_vs_epoch2_test_mixed_balanced_accuracy_delta_pp": -1.004036075539383,
+    "test_all_wrong_trajectory_accuracy_baseline": 0.781640625,
+    "test_trajectory_correct_predictions_above_all_wrong": 2,
+    "test_all_unmixed_group_accuracy_baseline": 0.642578125,
+    "test_balanced_accuracy_constant_prediction_baseline": 0.5,
+    "test_generalization_improvement_proven": false,
+    "interpretation": "Train mixed balanced accuracy rises while heldout mixed balanced accuracy falls versus epoch2. Heldout trajectory accuracy is only2 correct predictions above all-wrong baseline. Current evidence does not show good generalization."
+  },
+  "global1024_speed": {
+    "stable_same_phase_window_measured": false,
+    "trajectories_per_second": null,
+    "full_epoch_seconds": null,
+    "speedup_factor": null,
+    "semantics": "Actual epoch4 phase has started, but a stable same-phase speed window is not yet available."
+  },
+  "GPU_instant": {
+    "sampling_kind": "single_current_NVML_sample_not_peak",
+    "owned_training_devices": [
+      {
+        "index": 0,
+        "uuid": "GPU-9b8498ae-93e5-dee7-545a-25669080cf83",
+        "memory_MiB": 24535,
+        "utilization_percent": 87
+      },
+      {
+        "index": 1,
+        "uuid": "GPU-34c7ae67-d246-50d7-6ef6-2d7f64a86e40",
+        "memory_MiB": 24119,
+        "utilization_percent": 67
+      },
+      {
+        "index": 2,
+        "uuid": "GPU-19f588c3-3f42-a910-5f9a-21687befed5b",
+        "memory_MiB": 24133,
+        "utilization_percent": 51
+      },
+      {
+        "index": 3,
+        "uuid": "GPU-ef98537d-a371-e4f0-56f9-53ce0084a7b9",
+        "memory_MiB": 24023,
+        "utilization_percent": 94
+      }
+    ],
+    "window_peak_MiB": null,
+    "execution_NVML_peak_MiB": null
+  },
+  "no_new_rollouts_or_evaluations": true,
+  "actor_updates": 0,
+  "raw_QA_tokens_models_or_credentials_included": false,
+  "old_actor_goal_status": "PAUSED",
+  "current_probe_goal_status": "ACTIVE"
+}
