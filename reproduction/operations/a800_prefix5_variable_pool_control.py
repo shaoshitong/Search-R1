@@ -16,7 +16,14 @@ import traceback
 from . import a800_i1_i6_fresh_control as fresh
 
 ROOT, PYTHON, MAX_OUTPUT = fresh.ROOT, fresh.PYTHON, fresh.MAX_OUTPUT
-route = fresh.route
+def route(code):
+    # The physical SSH route starts system Python, whose AST schema can differ
+    # from the training environment used to publish/verify source proofs.
+    # Re-exec before reading stdin so JSON transport and proof semantics stay
+    # exact, without changing SSH routing or the immutable deployed runtime.
+    trampoline = 'import os; os.execv(%r, [%r, "-c", %r])' % (PYTHON, PYTHON, code)
+    return fresh.route(trampoline)
+
 _prefix = fresh._prefix.replace("str(b)==PREFIX+h['run_id']", "str(b)==PREFIX+h['run_id']+'-resume-'+h['execution_id']")
 COMMON = ("import json,pathlib,sys\nsys.dont_write_bytecode=True\np=json.load(sys.stdin);h=p['handle'];b=pathlib.Path(h['base']);repo=b/'repo'\n"
           + _prefix + fresh._helpers + r'''
