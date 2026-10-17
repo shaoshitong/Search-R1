@@ -5,14 +5,17 @@ from .control import BASE,OUTPUT,PYTHON
 QUERY=r'''
 import pathlib,json,subprocess,time
 b=pathlib.Path('/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017')
-def read(p):
+def read(p,limit=1024**2):
  if not p.exists():return None
- if p.stat().st_size>1024**2:raise ValueError('Oversized scalar receipt')
- return json.loads(p.read_text())
+ with p.open('rb') as handle:raw=handle.read(limit+1)
+ if len(raw)>limit:raise ValueError('Oversized metadata receipt: '+str(p))
+ return json.loads(raw)
 s=read(b/'preparation/slurm-submission.json');job=s['job'];status=read(b/'logs/pipeline-status.json');a=read(b/'actor/latest.json');probe=read(b/'probe/latest.json');joint=read(b/'latest-joint.json')
 queue=subprocess.run(['squeue','-h','-j',job,'-o','%i|%T|%P|%R|%S'],capture_output=True,text=True)
 result=dict(epoch=time.time(),job=job,queue=queue.stdout.strip(),queue_returncode=queue.returncode,queue_stderr=queue.stderr.strip(),accounting=subprocess.check_output(['sacct','-nP','-j',job,'--format=JobID,User,State,ExitCode,NodeList'],text=True).strip(),source_publication=read(b/'preparation/source-publication.json')['commit'],status=status,complete_outer=joint['outer'] if joint else 0,actor={k:a.get(k) for k in ['completed_outer','actual_adam_steps_per_rank','new_adam_steps_per_rank','scheduler_completed_outer','skipped_update_opportunities']} if a else None,probe={k:probe.get(k) for k in ['completed_outer','actual_adam_steps_per_rank']} if probe else None,allocation=read(b/'logs/slurm-allocation.json'),cleanup=read(b/'logs/cleanup-status.json'),pipeline_complete=bool((b/'logs/pipeline-complete.json').exists()),failed_jobs=[])
-ledger=read(b/'logs/process-ledger.json')
+# The cumulative process history grows throughout200 outers. Only its filtered
+# failure summary is returned; individual scalar receipts retain their1MiB cap.
+ledger=read(b/'logs/process-ledger.json',limit=64*1024**2)
 if ledger:
  result['failed_jobs']=[dict(name=k,state=v.get('state'),exit_code=v.get('exit_code'),error=v.get('cleanup_error')) for k,v in ledger['jobs'].items() if v.get('exit_code') not in (None,0) or v.get('state')=='CLEANUP_FAILED']
 if status and status.get('outer'):
