@@ -72,6 +72,24 @@ class PreserveFailedTests(unittest.TestCase):
             op.preserve(self.base, self.execute)
         self.assertFalse((self.base / 'failed-job-730226').exists())
 
+    def test_purged_queue_requires_fresh_exact_terminal_accounting(self):
+        def purged(argv):
+            v = self.execute(argv)
+            if argv[0] == 'squeue':
+                v.update(returncode=1, stderr='slurm_load_jobs error: Invalid job id specified\n')
+            return v
+        self.assertEqual(op.preserve(self.base, purged)['completed_outer'], 5)
+
+    def test_unknown_queue_error_is_not_absence(self):
+        def unavailable(argv):
+            v = self.execute(argv)
+            if argv[0] == 'squeue':
+                v.update(returncode=1, stderr='slurm controller connection failed\n')
+            return v
+        with self.assertRaisesRegex(ValueError, 'terminal failed'):
+            op.preserve(self.base, unavailable)
+        self.assertFalse((self.base / 'failed-job-730226').exists())
+
     def test_partial_or_corrupt_copy_is_never_overwritten(self):
         target = self.base / 'failed-job-730226'
         target.mkdir()

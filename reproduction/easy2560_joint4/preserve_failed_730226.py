@@ -60,7 +60,12 @@ def observe(base, execute=command):
     rows = {r[0]: r[1:] for r in (s.strip().split('|') for s in accounting['stdout'].splitlines()) if len(r) >= 5}
     expected = {JOB: ('FAILED', '1:0'), JOB + '.batch': ('FAILED', '1:0'),
                 JOB + '.extern': ('COMPLETED', '0:0')}
-    if (accounting['returncode'] or queue['returncode'] or queue['stdout'].strip() or
+    # Slurm returns this exact negative answer after purging a terminal job.
+    # It is absence only alongside the fresh, exact accounting terminal proof.
+    queue_absent = not queue['stdout'].strip() and (queue['returncode'] == 0 or
+        (queue['returncode'] == 1 and
+         queue['stderr'].strip() == 'slurm_load_jobs error: Invalid job id specified'))
+    if (accounting['returncode'] or not queue_absent or
             any(tuple(rows.get(k, ())[:2]) != v or rows[k][2] != NODE for k, v in expected.items())):
         raise ValueError('730226 is not the confirmed terminal failed and released job')
     cleanup = document(base / 'logs/cleanup-status.json')
