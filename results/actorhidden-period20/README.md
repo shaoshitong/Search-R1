@@ -385,3 +385,8 @@ Launch is admitted only on10 localext4 after all five genuine normal checkpoint 
 ### Selected512 classification and probe fitting curves (through outer92)
 
 See [the audited report](selected512-accuracy-loss-report.md), [all92 per-outer metrics](curves-through92/selected512-all-outers.csv), and [the curves](curves-through92/selected512-accuracy.png). Selection-time selected512 balanced accuracy is50% at every completed outer (all selected q>=0.5). Paired full-pool training totals decrease at each update, but held-out behavior fluctuates. Runtime remains frozen c22dbf86.
+
+
+### Actual periodic held-out provenance
+
+The fixed512 **question identities** are reused, while G5 trajectories, native actor27 hidden and own strict-EM labels are regenerated at each period using the same actor snapshot as that period's full5120 training pool (outer20/40/60/80 use actor19/39/59/79). [The actual metadata readback](periodic-heldout-current-actor-provenance.json) verifies all four versions and distinct input/outcome SHA references. No old teacher feature or trajectory cache is used to evaluate these periodic losses. Before/after evaluations within one period share actual data; evaluations across periods change generated trajectories and labels. Actor drift between probe updates remains a possible distribution change, not a demonstrated cause of quality results.
