@@ -28,7 +28,7 @@ from reproduction.prefix_selection200.i1_i6_checkpoint_cpu import selection_prob
 s=pathlib.Path(SOURCE);j=json.loads((s/'latest-joint.json').read_text());c=json.loads((s/'preparation/launch-config.json').read_text());d=torch.load(j['actor']['driver_state']['path'],map_location='cpu',mmap=True,weights_only=False);m=json.loads((s/'outers/outer-000009/probe-score/manifest.json').read_text());selection_probe_state(d['prefix_probe_receipt'],m,c,9)
 v=torch.load(s/'probe/latest.pt',map_location='cpu',mmap=True,weights_only=False);proof=probe_state(v,j['probe'],c,9,{})
 print(json.dumps(dict(driver_selection_metadata_actual_passed=True,probe_state_actual=proof)))
-""".replace('SOURCE',repr(SOURCE))
+"""
 env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1')
 r=subprocess.run([str(b/'env/bin/python'),'-c',program],capture_output=True,text=True,env=env,timeout=30);print(r.stdout);assert r.returncode==0,r.stderr
 '''.replace('TARGET',repr(BASE+'-r2')).replace('SOURCE',repr(BASE)).replace('COMMIT',repr(commit))
