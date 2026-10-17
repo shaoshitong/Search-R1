@@ -1,0 +1,493 @@
+{
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5",
+  "job_id": "3472",
+  "native": "JobId=3472 JobName=g1-probe20k-fit-0bdddc20840b UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898581 Nice=0 Account=(null) QOS=(null) JobState=COMPLETED Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:22:14 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-18T00:50:41 EligibleTime=2026-10-18T00:50:41 AccrueTime=2026-10-18T00:50:41 StartTime=2026-10-18T00:50:41 EndTime=2026-10-18T01:12:55 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-18T00:50:41 Scheduler=Backfill Partition=gpu AllocNode:Sid=h100-8:873059 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=48 NumTasks=1 CPUs/Task=48 ReqB:S:C:T=0:0:*:* TRES=cpu=48,mem=256G,node=1,billing=48 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=48 MinMemoryNode=256G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/preparation/native-probe20k-fit.sh WorkDir=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5 Comment=g1-probe20k-fit:0bdddc20840b4fd7ac744703d560b1f3  StdErr=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/logs/native-3472.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/logs/native-3472.log Power= \n",
+  "original_birth_count": 18,
+  "original_births_all_gone": true,
+  "no_live_own_gpu": true,
+  "release": [
+    {
+      "remaining_original_births": [],
+      "owned_gpu": [],
+      "cgroups": [],
+      "checked_unix": 1792257281.181415
+    },
+    {
+      "remaining_original_births": [],
+      "owned_gpu": [],
+      "cgroups": [],
+      "checked_unix": 1792257282.3494804
+    }
+  ],
+  "original_inode_logs": [
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/logs/data_ema_mixup.log",
+      "inode": 179251040,
+      "bytes": 8040,
+      "sha256": "4c2977b9ef0accca244a95b542ecd230e4910891b0f6ff4b092a8a886f78e785"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/logs/data_ema_group2.log",
+      "inode": 179251041,
+      "bytes": 8040,
+      "sha256": "4c2977b9ef0accca244a95b542ecd230e4910891b0f6ff4b092a8a886f78e785"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/logs/native-3472.log",
+      "inode": 179251021,
+      "bytes": 5,
+      "sha256": "38e0b9de817f645c4bec37c0d4a3e58baecccb040f5718dc069a72c7385a0bed"
+    }
+  ],
+  "arms": {
+    "data_ema_group2": {
+      "final_checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_group2/head-epoch-05.pt",
+      "bytes": 1242961982,
+      "independent_full_sha256": "067af601e8529538f8d69735816416b50d010b861e02070be5f96d37ec50f2c6",
+      "cpu_state_load": true,
+      "model_and_ema_tensors": 14,
+      "optimizer_states": 14,
+      "eight_rng_present": true,
+      "actual_adam_per_rank": [
+        2200,
+        2200,
+        2200,
+        2200,
+        2200,
+        2200,
+        2200,
+        2200
+      ],
+      "ema_updates": 2000,
+      "rank_update_journals": [
+        {
+          "rank": 0,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 0,
+            "actual_adam": 2200,
+            "local_trajectories": 30,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 1,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 1,
+            "actual_adam": 2200,
+            "local_trajectories": 30,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 2,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 2,
+            "actual_adam": 2200,
+            "local_trajectories": 30,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 3,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 3,
+            "actual_adam": 2200,
+            "local_trajectories": 30,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 4,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 4,
+            "actual_adam": 2200,
+            "local_trajectories": 35,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 5,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 5,
+            "actual_adam": 2200,
+            "local_trajectories": 35,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 6,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 6,
+            "actual_adam": 2200,
+            "local_trajectories": 35,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 7,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 7,
+            "actual_adam": 2200,
+            "local_trajectories": 35,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        }
+      ],
+      "normal_savepoints": [
+        {
+          "actual_adam_per_rank": [
+            600,
+            600,
+            600,
+            600,
+            600,
+            600,
+            600,
+            600
+          ],
+          "arm": "data_ema_group2",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_group2/head-epoch-01.pt",
+          "checkpoint_bytes": 1242961982,
+          "checkpoint_sha256": "b6afd44431f0efc983bd56b8cc91648893c822a11aab7065ee968cb953be2e98",
+          "epoch": 1,
+          "metrics_sha256": "c02c81a63394c694a429572c7931283e2a902fe62722dcebeebfed3095beb37d",
+          "train_loop_seconds": 92.94732330739498
+        },
+        {
+          "actual_adam_per_rank": [
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000
+          ],
+          "arm": "data_ema_group2",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_group2/head-epoch-02.pt",
+          "checkpoint_bytes": 1242961982,
+          "checkpoint_sha256": "d4b9848fb2992106ea97e8effda127b1f501f6e82847d61d5b97aa63dfb10289",
+          "epoch": 2,
+          "metrics_sha256": "619c02ea5900c00b2758fb8ef2761b2a35bc98e192ff424840c5ea83b47d7e01",
+          "train_loop_seconds": 91.57595337927341
+        },
+        {
+          "actual_adam_per_rank": [
+            1400,
+            1400,
+            1400,
+            1400,
+            1400,
+            1400,
+            1400,
+            1400
+          ],
+          "arm": "data_ema_group2",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_group2/head-epoch-03.pt",
+          "checkpoint_bytes": 1242961982,
+          "checkpoint_sha256": "e7e49cd56c839ce9a7cb3743e24218a284985e5fa56690b0fabf7da9b780376f",
+          "epoch": 3,
+          "metrics_sha256": "698f063a6c1f2888139f1392c635510c884244563ce1295df5b015f1039398d5",
+          "train_loop_seconds": 90.86586831510067
+        },
+        {
+          "actual_adam_per_rank": [
+            1800,
+            1800,
+            1800,
+            1800,
+            1800,
+            1800,
+            1800,
+            1800
+          ],
+          "arm": "data_ema_group2",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_group2/head-epoch-04.pt",
+          "checkpoint_bytes": 1242961982,
+          "checkpoint_sha256": "4e3accc693f29a21e81e7cf789cbb00e6482887d24bdda9ed46232ede863e439",
+          "epoch": 4,
+          "metrics_sha256": "4792e8495164b11db053ee362fab445d15cf4a2ffaa98c74a229797276e047ff",
+          "train_loop_seconds": 88.03795886784792
+        },
+        {
+          "actual_adam_per_rank": [
+            2200,
+            2200,
+            2200,
+            2200,
+            2200,
+            2200,
+            2200,
+            2200
+          ],
+          "arm": "data_ema_group2",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_group2/head-epoch-05.pt",
+          "checkpoint_bytes": 1242961982,
+          "checkpoint_sha256": "067af601e8529538f8d69735816416b50d010b861e02070be5f96d37ec50f2c6",
+          "epoch": 5,
+          "metrics_sha256": "51a30b45c107ff6c69c019225bf69eb60f1058f6915366ff2ea24008fbfd3267",
+          "train_loop_seconds": 92.21173290908337
+        }
+      ]
+    },
+    "data_ema_mixup": {
+      "final_checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_mixup/head-epoch-05.pt",
+      "bytes": 1242962174,
+      "independent_full_sha256": "96284f6e57807f8b17b397be482d0bb44be8980fe7804ed8398492148c7f531b",
+      "cpu_state_load": true,
+      "model_and_ema_tensors": 14,
+      "optimizer_states": 14,
+      "eight_rng_present": true,
+      "actual_adam_per_rank": [
+        2200,
+        2200,
+        2200,
+        2200,
+        2200,
+        2200,
+        2200,
+        2200
+      ],
+      "ema_updates": 2000,
+      "rank_update_journals": [
+        {
+          "rank": 0,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 0,
+            "actual_adam": 2200,
+            "local_trajectories": 30,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 1,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 1,
+            "actual_adam": 2200,
+            "local_trajectories": 30,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 2,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 2,
+            "actual_adam": 2200,
+            "local_trajectories": 30,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 3,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 3,
+            "actual_adam": 2200,
+            "local_trajectories": 30,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 4,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 4,
+            "actual_adam": 2200,
+            "local_trajectories": 35,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 5,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 5,
+            "actual_adam": 2200,
+            "local_trajectories": 35,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 6,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 6,
+            "actual_adam": 2200,
+            "local_trajectories": 35,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        },
+        {
+          "rank": 7,
+          "actual_logged_updates": 2000,
+          "last": {
+            "epoch": 5,
+            "step": 400,
+            "rank": 7,
+            "actual_adam": 2200,
+            "local_trajectories": 35,
+            "learning_rate": 1e-05,
+            "ema_updates": 2000
+          }
+        }
+      ],
+      "normal_savepoints": [
+        {
+          "actual_adam_per_rank": [
+            600,
+            600,
+            600,
+            600,
+            600,
+            600,
+            600,
+            600
+          ],
+          "arm": "data_ema_mixup",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_mixup/head-epoch-01.pt",
+          "checkpoint_bytes": 1242962174,
+          "checkpoint_sha256": "7d5569d9d8089a22a578323e6ede963f46be7625e6f0a32ef4394eff9038fc6b",
+          "epoch": 1,
+          "metrics_sha256": "0477d6ca10bc67705a0e862b2e1473406b8deb030c4ef3aa83599f4860216bc5",
+          "train_loop_seconds": 92.23416310921311
+        },
+        {
+          "actual_adam_per_rank": [
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000
+          ],
+          "arm": "data_ema_mixup",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_mixup/head-epoch-02.pt",
+          "checkpoint_bytes": 1242962174,
+          "checkpoint_sha256": "8da9336d781b7b0f2eeb7247c64be08374e29e939f363acf5e0b545a5c059b1b",
+          "epoch": 2,
+          "metrics_sha256": "c11a708ab691039e5ba665884839c03f2e2077d84aa126b61d0684ba77863770",
+          "train_loop_seconds": 90.86303652450442
+        },
+        {
+          "actual_adam_per_rank": [
+            1400,
+            1400,
+            1400,
+            1400,
+            1400,
+            1400,
+            1400,
+            1400
+          ],
+          "arm": "data_ema_mixup",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_mixup/head-epoch-03.pt",
+          "checkpoint_bytes": 1242962174,
+          "checkpoint_sha256": "438b4b5ec3d74400efb300e065dbc3a7bc622c851a76d22884ab34f8c6f2eecd",
+          "epoch": 3,
+          "metrics_sha256": "191669fc938325b98d44354f19911c66a8ef82f10ef9c79d390c8b5780031885",
+          "train_loop_seconds": 91.70161465927958
+        },
+        {
+          "actual_adam_per_rank": [
+            1800,
+            1800,
+            1800,
+            1800,
+            1800,
+            1800,
+            1800,
+            1800
+          ],
+          "arm": "data_ema_mixup",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_mixup/head-epoch-04.pt",
+          "checkpoint_bytes": 1242962174,
+          "checkpoint_sha256": "e13450d24c829acc397ded531b011b36756cae6d28148be81df7d262ac7455ff",
+          "epoch": 4,
+          "metrics_sha256": "2bfda467155412165e190207ce8ebfd79d74356e8b76304b8abfaeea9ab6f87e",
+          "train_loop_seconds": 90.85594747588038
+        },
+        {
+          "actual_adam_per_rank": [
+            2200,
+            2200,
+            2200,
+            2200,
+            2200,
+            2200,
+            2200,
+            2200
+          ],
+          "arm": "data_ema_mixup",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5/arms/data_ema_mixup/head-epoch-05.pt",
+          "checkpoint_bytes": 1242962174,
+          "checkpoint_sha256": "96284f6e57807f8b17b397be482d0bb44be8980fe7804ed8398492148c7f531b",
+          "epoch": 5,
+          "metrics_sha256": "0b7c03a4b9d1f2bd1343257eae699a4418a0e78682fc141516eabcfd063afd42",
+          "train_loop_seconds": 88.7809585146606
+        }
+      ]
+    }
+  },
+  "all_requested_BC5_complete": true,
+  "formal_actor_resumed": false,
+  "checked_unix": 1792257288.2918916
+}

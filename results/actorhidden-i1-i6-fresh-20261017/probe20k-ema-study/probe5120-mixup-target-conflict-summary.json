@@ -1,0 +1,62 @@
+{
+  "train_questions": 5120,
+  "group_weight": 5,
+  "mixup_alpha": 0.2,
+  "actual_saved_plans_used": true,
+  "actual_own_EM_used": true,
+  "random_lambda_seed_reconstructed_from_frozen_training_code": true,
+  "extra_model_forward": false,
+  "records": [
+    {
+      "epoch": 1,
+      "actual_planned_pairs": 2400,
+      "allcorrect_allwrong_pairs": 640,
+      "allcorrect_allwrong_fraction": 0.26666666666666666,
+      "lambda_between_02_08": 136,
+      "implied_q_above_05": 182,
+      "mean_implied_q_if_ownEM_soft_targets_fitted": 0.29376612593593765,
+      "mean_weighted_group_BCE_at_ownEM_optimum": 2.841239955389446
+    },
+    {
+      "epoch": 2,
+      "actual_planned_pairs": 2400,
+      "allcorrect_allwrong_pairs": 650,
+      "allcorrect_allwrong_fraction": 0.2708333333333333,
+      "lambda_between_02_08": 154,
+      "implied_q_above_05": 198,
+      "mean_implied_q_if_ownEM_soft_targets_fitted": 0.30599776712596694,
+      "mean_weighted_group_BCE_at_ownEM_optimum": 3.0063749420497414
+    },
+    {
+      "epoch": 3,
+      "actual_planned_pairs": 2400,
+      "allcorrect_allwrong_pairs": 654,
+      "allcorrect_allwrong_fraction": 0.2725,
+      "lambda_between_02_08": 128,
+      "implied_q_above_05": 176,
+      "mean_implied_q_if_ownEM_soft_targets_fitted": 0.27813288838591016,
+      "mean_weighted_group_BCE_at_ownEM_optimum": 2.684940827960977
+    },
+    {
+      "epoch": 4,
+      "actual_planned_pairs": 2400,
+      "allcorrect_allwrong_pairs": 661,
+      "allcorrect_allwrong_fraction": 0.27541666666666664,
+      "lambda_between_02_08": 117,
+      "implied_q_above_05": 162,
+      "mean_implied_q_if_ownEM_soft_targets_fitted": 0.2684454317172728,
+      "mean_weighted_group_BCE_at_ownEM_optimum": 2.5799340787314557
+    },
+    {
+      "epoch": 5,
+      "actual_planned_pairs": 2400,
+      "allcorrect_allwrong_pairs": 624,
+      "allcorrect_allwrong_fraction": 0.26,
+      "lambda_between_02_08": 121,
+      "implied_q_above_05": 182,
+      "mean_implied_q_if_ownEM_soft_targets_fitted": 0.28524152350371945,
+      "mean_weighted_group_BCE_at_ownEM_optimum": 2.762326043115357
+    }
+  ],
+  "explanation": "For an all-correct/all-wrong pair, both true mixed labels are0, so their convex mixed target is0. OwnEM soft targets are lambda for each of5 trajectories; fitting them gives q=1-lambda^5-(1-lambda)^5>0. Thus tied group and trajectory mixup targets cannot both reach their individual optima. This is a structural conflict, not proof of its sole causal role in observed quality."
+}

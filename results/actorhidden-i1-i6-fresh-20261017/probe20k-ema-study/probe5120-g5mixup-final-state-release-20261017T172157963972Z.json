@@ -1,0 +1,264 @@
+{
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5",
+  "job_id": "3473",
+  "native": "JobId=3473 JobName=g1-probe20k-fit-0bdddc20840b UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898580 Nice=0 Account=(null) QOS=(null) JobState=COMPLETED Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:03:12 TimeLimit=00:30:00 TimeMin=N/A SubmitTime=2026-10-18T01:17:24 EligibleTime=2026-10-18T01:17:24 AccrueTime=2026-10-18T01:17:24 StartTime=2026-10-18T01:17:42 EndTime=2026-10-18T01:20:54 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-18T01:17:42 Scheduler=Backfill Partition=gpu AllocNode:Sid=h100-8:901016 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=48 NumTasks=1 CPUs/Task=48 ReqB:S:C:T=0:0:*:* TRES=cpu=48,mem=256G,node=1,billing=48 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=48 MinMemoryNode=256G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/preparation/native-probe20k-fit.sh WorkDir=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5 Comment=g1-probe20k-fit:0bdddc20840b4fd7ac744703d560b1f3  StdErr=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/logs/native-3473.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/logs/native-3473.log Power= \n",
+  "original_birth_count": 9,
+  "original_births_all_gone": true,
+  "no_live_own_gpu": true,
+  "release": [
+    {
+      "remaining_original_births": [],
+      "owned_gpu": [],
+      "cgroups": [],
+      "checked_unix": 1792257728.6510005
+    },
+    {
+      "remaining_original_births": [],
+      "owned_gpu": [],
+      "cgroups": [],
+      "checked_unix": 1792257729.8369584
+    }
+  ],
+  "original_inode_logs": [
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/logs/q5120_ema_group5_mixup_lr5e5.log",
+      "inode": 179252831,
+      "bytes": 8040,
+      "sha256": "4c2977b9ef0accca244a95b542ecd230e4910891b0f6ff4b092a8a886f78e785"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/logs/native-3473.log",
+      "inode": 179252811,
+      "bytes": 5,
+      "sha256": "38e0b9de817f645c4bec37c0d4a3e58baecccb040f5718dc069a72c7385a0bed"
+    }
+  ],
+  "arms": {
+    "q5120_ema_group5_mixup_lr5e5": {
+      "final_checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/arms/q5120_ema_group5_mixup_lr5e5/head-epoch-05.pt",
+      "bytes": 1242962302,
+      "independent_full_sha256": "669454a0af8c0d2587bddabc20fd5125c4147412bf68c9d93ca2b6571898e16d",
+      "cpu_state_load": true,
+      "model_and_ema_tensors": 14,
+      "optimizer_states": 14,
+      "eight_rng_present": true,
+      "actual_adam_per_rank": [
+        700,
+        700,
+        700,
+        700,
+        700,
+        700,
+        700,
+        700
+      ],
+      "ema_updates": 500,
+      "rank_update_journals": [
+        {
+          "rank": 0,
+          "actual_logged_updates": 500,
+          "last": {
+            "epoch": 5,
+            "step": 100,
+            "rank": 0,
+            "actual_adam": 700,
+            "local_trajectories": 30,
+            "learning_rate": 5e-05,
+            "ema_updates": 500
+          }
+        },
+        {
+          "rank": 1,
+          "actual_logged_updates": 500,
+          "last": {
+            "epoch": 5,
+            "step": 100,
+            "rank": 1,
+            "actual_adam": 700,
+            "local_trajectories": 30,
+            "learning_rate": 5e-05,
+            "ema_updates": 500
+          }
+        },
+        {
+          "rank": 2,
+          "actual_logged_updates": 500,
+          "last": {
+            "epoch": 5,
+            "step": 100,
+            "rank": 2,
+            "actual_adam": 700,
+            "local_trajectories": 30,
+            "learning_rate": 5e-05,
+            "ema_updates": 500
+          }
+        },
+        {
+          "rank": 3,
+          "actual_logged_updates": 500,
+          "last": {
+            "epoch": 5,
+            "step": 100,
+            "rank": 3,
+            "actual_adam": 700,
+            "local_trajectories": 30,
+            "learning_rate": 5e-05,
+            "ema_updates": 500
+          }
+        },
+        {
+          "rank": 4,
+          "actual_logged_updates": 500,
+          "last": {
+            "epoch": 5,
+            "step": 100,
+            "rank": 4,
+            "actual_adam": 700,
+            "local_trajectories": 35,
+            "learning_rate": 5e-05,
+            "ema_updates": 500
+          }
+        },
+        {
+          "rank": 5,
+          "actual_logged_updates": 500,
+          "last": {
+            "epoch": 5,
+            "step": 100,
+            "rank": 5,
+            "actual_adam": 700,
+            "local_trajectories": 35,
+            "learning_rate": 5e-05,
+            "ema_updates": 500
+          }
+        },
+        {
+          "rank": 6,
+          "actual_logged_updates": 500,
+          "last": {
+            "epoch": 5,
+            "step": 100,
+            "rank": 6,
+            "actual_adam": 700,
+            "local_trajectories": 35,
+            "learning_rate": 5e-05,
+            "ema_updates": 500
+          }
+        },
+        {
+          "rank": 7,
+          "actual_logged_updates": 500,
+          "last": {
+            "epoch": 5,
+            "step": 100,
+            "rank": 7,
+            "actual_adam": 700,
+            "local_trajectories": 35,
+            "learning_rate": 5e-05,
+            "ema_updates": 500
+          }
+        }
+      ],
+      "normal_savepoints": [
+        {
+          "actual_adam_per_rank": [
+            300,
+            300,
+            300,
+            300,
+            300,
+            300,
+            300,
+            300
+          ],
+          "arm": "q5120_ema_group5_mixup_lr5e5",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/arms/q5120_ema_group5_mixup_lr5e5/head-epoch-01.pt",
+          "checkpoint_bytes": 1242962302,
+          "checkpoint_sha256": "db85fe91e5810699e0af8caf438d6ef269c68742147ec66aed378ccc4d2b8fc0",
+          "epoch": 1,
+          "metrics_sha256": "5af93712bf6d22f40f7be0363498fa6130c968416451b649dabbd7dcb7a54a09",
+          "train_loop_seconds": 20.397133577615023
+        },
+        {
+          "actual_adam_per_rank": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "arm": "q5120_ema_group5_mixup_lr5e5",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/arms/q5120_ema_group5_mixup_lr5e5/head-epoch-02.pt",
+          "checkpoint_bytes": 1242962302,
+          "checkpoint_sha256": "a827a861c389caac887adc7fd4d3fdfb8bbb78ebe051d4f5d02e9ce813703624",
+          "epoch": 2,
+          "metrics_sha256": "1bd5cada0159d9258a954d7ea3b6d7e7d17b1cb403e1f5f7565f07db17bf3a71",
+          "train_loop_seconds": 20.447097077965736
+        },
+        {
+          "actual_adam_per_rank": [
+            500,
+            500,
+            500,
+            500,
+            500,
+            500,
+            500,
+            500
+          ],
+          "arm": "q5120_ema_group5_mixup_lr5e5",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/arms/q5120_ema_group5_mixup_lr5e5/head-epoch-03.pt",
+          "checkpoint_bytes": 1242962302,
+          "checkpoint_sha256": "9015d27ff4558e2491e0c482fc2094677a69ab628f968018d29305bc0dbdffca",
+          "epoch": 3,
+          "metrics_sha256": "5ccf1ac4ad001edf4984401d896de7a48dabbbaf482bae13f2f2aee8fdebf17b",
+          "train_loop_seconds": 20.5738094560802
+        },
+        {
+          "actual_adam_per_rank": [
+            600,
+            600,
+            600,
+            600,
+            600,
+            600,
+            600,
+            600
+          ],
+          "arm": "q5120_ema_group5_mixup_lr5e5",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/arms/q5120_ema_group5_mixup_lr5e5/head-epoch-04.pt",
+          "checkpoint_bytes": 1242962302,
+          "checkpoint_sha256": "efa86e92f147882b0aa2806c196fb1e5e6b6b41b2f70aa06df5bb318626a9085",
+          "epoch": 4,
+          "metrics_sha256": "13bed66cf6a7ddfa2b8dea20981c65b8f4881090322a28beafc3451db0d098d8",
+          "train_loop_seconds": 20.096841521561146
+        },
+        {
+          "actual_adam_per_rank": [
+            700,
+            700,
+            700,
+            700,
+            700,
+            700,
+            700,
+            700
+          ],
+          "arm": "q5120_ema_group5_mixup_lr5e5",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-g5-mixup-lr5e5/arms/q5120_ema_group5_mixup_lr5e5/head-epoch-05.pt",
+          "checkpoint_bytes": 1242962302,
+          "checkpoint_sha256": "669454a0af8c0d2587bddabc20fd5125c4147412bf68c9d93ca2b6571898e16d",
+          "epoch": 5,
+          "metrics_sha256": "8803de537b430060a60b9581b2d49deffe8124f37628be5c2e93420035ca3ac3",
+          "train_loop_seconds": 20.62140879034996
+        }
+      ]
+    }
+  },
+  "all_requested_g5mixup5_complete": true,
+  "formal_actor_resumed": false,
+  "checked_unix": 1792257733.9129832
+}
