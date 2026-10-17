@@ -1,6 +1,6 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Current connection recheck 2026-10-17T04:46:41.895371+00:00: both default published reader and literal ssh mgmt-host returned management timeout255. Current remote state UNKNOWN; last actual read remains125 complete /126 score on3427. This does not establish training exit; no stop/restart/resubmit/runtime edit. Fresh outage audit2/3, goal remains active.
+Current connection recheck 2026-10-17T04:49:58.297823+00:00: management observation failed for3 consecutive fresh goal turns. Default alias reader timed out; task-local current-en0 fallback closed. Goal tool returned BLOCKED at1792212584 because actual remote progression/acceptance cannot be verified. Remote training has NOT been stopped, restarted or resubmitted; current remote state UNKNOWN. Last actual observation remains125 complete /126 score on3427; last known RUNNING is historical, not current proof.
 
 Actual complete125/200; job3427 RUNNING on h100-10/10.33.0.18, stage outer-000126-score. Saved actor/probe Adam per8rank: [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500] / [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]. Completed joint counters: [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500] / [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
@@ -162,3 +162,5 @@ Original saved actor grounding reward outer125 selected512G5/2560 mean1.08719361
 Committed generation/retrieval through125/125: 107018378 sampled tokens, 649911 logical searches; backlog[]. Inherited prefix searches not doubled; actor512 subset not added. Failed attempts, QA, HTTP retries/cache misses and physical FAISS calls separately scoped.
 
 Historical terminal reservations 51.802222 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total121.604444 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
+
+Future150/200 independent joint-component CPU entry is prepared/published224612d7eda4452af6ae3ac8c215a3753c249671, source files independently read back; NOT executed. See MILESTONE150_200_CPU_PREPARATION.json and independent CHECKPOINT150_200_CPU.md. Once connection and real milestone exist, use check/deploy-once/observe actual results. No repeat5/50/100, GPU test or frozen runtime edit.

@@ -1,0 +1,64 @@
+{
+  "status": "STATIC_PREPARATION_ONLY_NOT_EXECUTED",
+  "supported_outers": [
+    150,
+    200
+  ],
+  "syntax_only_checks": true,
+  "unit_or_heavy_tests_run": false,
+  "h100_ssh_attempted": false,
+  "remote_scan_performed": false,
+  "cpu_audit_submitted": false,
+  "gpu_calls": false,
+  "training_or_running_source_modified": false,
+  "old_milestone5_50_100_audits_replayed": false,
+  "entry": "reproduction.prefix_diversity200.checkpoint_joint_components_control",
+  "phases": [
+    "check",
+    "deploy",
+    "observe"
+  ],
+  "runtime_pins": {
+    "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4",
+    "run_id": "f3ee1435e5014ba1969387c91878893a",
+    "runtime_source_commit": "e3463cfddca71a22ac684d75c875dbe123e8bc43",
+    "runtime_config_sha256": "384cf0f516e7bf9ce3623bdf48e87a078f8eceaa5af5e03f238e04e86ae59ad8"
+  },
+  "files": [
+    {
+      "path": "reproduction/prefix_diversity200/checkpoint_cpu_once.py",
+      "bytes": 44860,
+      "sha256": "1b5d0dd730528a0b6ac3c2e200d2607b1dba1e035b32949c434f9162036c72b0"
+    },
+    {
+      "path": "reproduction/prefix_diversity200/checkpoint_joint_components_cpu.py",
+      "bytes": 12311,
+      "sha256": "2ec128bdd1d019e332a9f2e130be9375040b9324f8b4f2e61b34e58d3dfccd80"
+    },
+    {
+      "path": "reproduction/prefix_diversity200/checkpoint_joint_components_control.py",
+      "bytes": 6904,
+      "sha256": "a8c3ee811cb94fab8954ef1ff96fc44381654e0d42dcc1885a7b499b27692010"
+    },
+    {
+      "path": "reproduction/prefix_diversity200/checkpoint150_joint_components_control.json",
+      "bytes": 1570,
+      "sha256": "832dfe798ba2eccc97dc4b430e184249ea6400ee444141384858faaf3d352e96"
+    },
+    {
+      "path": "reproduction/prefix_diversity200/checkpoint200_joint_components_control.json",
+      "bytes": 1570,
+      "sha256": "7538f707385531762c99a2d1e84642c3aa536c22267c7321c4ed24935fff83fe"
+    },
+    {
+      "path": "reproduction/prefix_diversity200/CHECKPOINT150_200_CPU.md",
+      "bytes": 4541,
+      "sha256": "ca4ec312872d933cef818206f97008a210b61183f25243187dd6caaceb6a3b96"
+    }
+  ],
+  "limitations": [
+    "Syntax/static preparation only; future150/200 execution is unverified until actual immutable artifacts and later authorized invocation.",
+    "Known standalone resume3 driver descriptors remain unreliable and are reported separately; no old checkpoint was rewritten.",
+    "No CUDA executor exact restore or independent backup is claimed."
+  ]
+}

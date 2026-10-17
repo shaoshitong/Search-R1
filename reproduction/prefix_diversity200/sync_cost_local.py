@@ -100,6 +100,7 @@ print(json.dumps(out,allow_nan=False))
         retrieval_cost_verified_complete_outers=sorted(map(int,retrieval['complete_outer_rows'])),
         retrieval_cost_verified_logical_search_actions=retrieval['total_distinct_logical_retrieval_calls'],
         retrieval_cost_pending_complete_outers=retrieval['pending_complete_outers'],
+        historical_terminal_jobs_reserved_gpu_hours=reservation['terminal_jobs_gpu_hours'],
         observed_total_reserved_gpu_hours=reservation['observed_total_reserved_gpu_hours'],
         latest_actor_grounding_soft_reward_outer=reward_outer,
         latest_actor_grounding_soft_reward_mean=reward['score_mean'],

@@ -1,0 +1,64 @@
+{
+  "recorded_utc": "2026-10-17T04:49:38.299453+00:00",
+  "run_id": "f3ee1435e5014ba1969387c91878893a",
+  "job": "3427",
+  "same_blocker": "SSH management authentication/transport unavailable; no current remote observation",
+  "fresh_outage_consecutive_goal_turns": 3,
+  "prior_turn_audit": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/GOAL_CONTINUATION_CONNECTION_AUDIT_20261017_0446.json",
+  "current_attempts": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/refresh-1792212456138265000-transport.json",
+      "sha256": "18d5fae2e39f412d23a7bf78bfdc8f1dd533bc006d0b2e5aaa08ab5573d5d790",
+      "utc": "2026-10-17T04:48:36.671889+00:00",
+      "returncode": 255,
+      "stderr": "Connection to 52.6.216.152 port 22 timed out\r\n"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/refresh-1792212524395688000-transport.json",
+      "sha256": "6ea58a8b52dea199df1fd21039220e81064dc1d2f013e6af95a113bb0f349d99",
+      "utc": "2026-10-17T04:48:45.302506+00:00",
+      "returncode": 255,
+      "stderr": "TCP_MAXSEG override unsupported; using source-bound system TCP\nConnection closed by UNKNOWN port 65535\r\n"
+    }
+  ],
+  "last_verified_outer": 125,
+  "last_verified_stage": "outer-000126-score",
+  "last_verified_native": "RUNNING",
+  "last_verified_observed_unix": 1792211665.9525359,
+  "current_remote_state": "UNKNOWN_CONNECTION_FAILED",
+  "terminal_training_failure_proven": false,
+  "blocked_audit_passed": true,
+  "reason": "Normal alias/default reader, literalSSH and existing command-local compatibility/source-bound modes failed. Safe local milestone preparation complete; actual progression/recovery/acceptance requires remote access or external connection change.",
+  "goal_scope_unchanged": true,
+  "remaining": [
+    "actual200 completed joint outers",
+    "QA150/200 and final seven datasets51713",
+    "actual150/200 CPU HF/native/probe/tokenizer/finite/update/source/config/split/RNG acceptance",
+    "legacy1\u20135 direct small-ledger readback",
+    "final token/retrieval/GPU/CPU costs and owned cleanup/publication"
+  ],
+  "prepared_cpu_entry": {
+    "commit": "224612d7eda4452af6ae3ac8c215a3753c249671",
+    "remote_sha": "224612d7eda4452af6ae3ac8c215a3753c249671",
+    "files": {
+      "reproduction/prefix_diversity200/CHECKPOINT150_200_CPU.md": "ca4ec312872d933cef818206f97008a210b61183f25243187dd6caaceb6a3b96",
+      "reproduction/prefix_diversity200/checkpoint150_joint_components_control.json": "832dfe798ba2eccc97dc4b430e184249ea6400ee444141384858faaf3d352e96",
+      "reproduction/prefix_diversity200/checkpoint200_joint_components_control.json": "7538f707385531762c99a2d1e84642c3aa536c22267c7321c4ed24935fff83fe",
+      "reproduction/prefix_diversity200/checkpoint_cpu_once.py": "1b5d0dd730528a0b6ac3c2e200d2607b1dba1e035b32949c434f9162036c72b0",
+      "reproduction/prefix_diversity200/checkpoint_joint_components_control.py": "a8c3ee811cb94fab8954ef1ff96fc44381654e0d42dcc1885a7b499b27692010",
+      "reproduction/prefix_diversity200/checkpoint_joint_components_cpu.py": "2ec128bdd1d019e332a9f2e130be9375040b9324f8b4f2e61b34e58d3dfccd80",
+      "reproduction/prefix_diversity200/control_evidence/MILESTONE150_200_CPU_PREPARATION.json": "ec066c738fd0f0419addb36cccb6b200c7eb8bd65715896b604be6147d49b679"
+    },
+    "ready": true,
+    "executed": false
+  },
+  "local_cost_projection_corrected": {
+    "previous_stale_terminal_gpu_hours": 6.004444444444444,
+    "authoritative_terminal_gpu_hours": 51.80222222222222,
+    "observed_total_lower_bound": 121.60444444444445,
+    "scope": "saved native observations, not new current resource measurements"
+  },
+  "training_actions": [],
+  "automation_changed": false,
+  "global_ssh_changed": false
+}
