@@ -1,0 +1,30 @@
+{
+  "status": "STATIC_AB_RESTORE_ROUTING_PRESENT_NOT_AN_EXECUTED_RESTORE",
+  "runtime_commit": "2e3976230ac9425d66d8553afa9962821e964932",
+  "adapter": "i1_i6_joint_v1",
+  "files": [
+    {
+      "path": "reproduction/prefix_selection200/i1_i6_joint_resume.py",
+      "sha256": "ff52ac5cc6f47252c11702484016d4fd770e5b51e8faebf5304efc03b2dfbbcb",
+      "unchanged_from_deployed_runtime": true
+    },
+    {
+      "path": "reproduction/prefix_selection200/i1_i6_checkpoint_cpu.py",
+      "sha256": "e441d1631f13626909ac8d3c36dde8c696c508634006bb08137e9bc8c31ef493",
+      "unchanged_from_deployed_runtime": true
+    },
+    {
+      "path": "reproduction/prefix_selection200/ab_checkpoint_once.py",
+      "sha256": "83e95346dc3ea2a78cfa2f00ac03a333b3d7f1e0c14b31c68185db1049c13248",
+      "unchanged_from_deployed_runtime": true
+    }
+  ],
+  "notes": [
+    "joint boundary delegates to ab_policy.validate_receipt",
+    "probe CPU validator delegates to ab_checkpoint_once.validate_probe_state",
+    "frozen optimizer is None; trained raw/EMA/RNG/actual counters retained",
+    "legacy resume.py and native_a800_joint_v1 are not the AB recovery entry",
+    "no tensor read or model forward performed",
+    "no live process or configuration changed"
+  ]
+}

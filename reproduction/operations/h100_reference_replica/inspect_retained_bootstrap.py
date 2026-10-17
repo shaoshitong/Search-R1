@@ -49,7 +49,25 @@ for arm,entry in ARMS.items():
  for key in ['boundary','commit']:
   path=Path(g[key]);assert path.is_file();assert mount_for(path)['source'].split(':',1)[0]in ['h100-10','10.32.0.18']
 retention=ROOT/'cache2-RESULT.json'
-proof={'status':'RETAINED_FIXED_PATHS_CPU_ONLY_PASS','checked_unix':time.time(),'wrapper_sha256':__WRAPPER_SHA__,'retention_proof_sha256':sha_small(retention),'canonical_paths':rows,'training_handoff_performed':False,'live_runs_source_independent':False,'live_uuid_lock_paths_unchanged':True,'model_forward_performed':False,'new_large_file_hashes_performed':False,'model_bytes_via_Mac':False}
+record=json.loads(retention.read_text());counts={};retained_bytes=0
+old_prefix='/mnt/shared/workspace/training_data_node_10'
+new_prefix='/mnt/data/sihe-share5/workspace/training_data_node_10'
+def retained_path(value):
+ assert value.startswith(old_prefix+'/')
+ return Path(new_prefix+value[len(old_prefix):])
+for row in record['files']:
+ path=retained_path(row['target']);assert path.is_file() and not path.is_symlink()
+ kind=row['kind'];counts[kind]=counts.get(kind,0)+1
+ if kind=='NEW_COPY_SOURCE_TARGET_FULL_SHA_PASS':
+  assert row['source_sha256']==row['destination_sha256'] and len(row['destination_sha256'])==64
+  size=row['bytes'];assert path.stat().st_size==size
+ else:
+  assert kind=='HARDLINK_TO_EXISTING_IMMUTABLE_FULL_SHA_BACKUP'
+  original=retained_path(row['retained_payload']);a,b=path.stat(),original.stat()
+  assert (a.st_dev,a.st_ino)==(b.st_dev,b.st_ino)
+  size=row['identity'][2];assert a.st_size==size and len(row['proven_sha256'])==64
+ retained_bytes+=size
+proof={'retention_rows_verified':len(record['files']),'retention_kind_counts':counts,'retained_payload_bytes':retained_bytes,'status':'RETAINED_FIXED_PATHS_CPU_ONLY_PASS','checked_unix':time.time(),'wrapper_sha256':__WRAPPER_SHA__,'retention_proof_sha256':sha_small(retention),'canonical_paths':rows,'training_handoff_performed':False,'live_runs_source_independent':False,'live_uuid_lock_paths_unchanged':True,'model_forward_performed':False,'new_large_file_hashes_performed':False,'model_bytes_via_Mac':False}
 with PROOF.open('x')as f:json.dump(proof,f,indent=2)
 raw=PROOF.read_bytes();print(json.dumps({'proof':proof,'path':str(PROOF),'sha256':hashlib.sha256(raw).hexdigest()}))
 '''.replace('__ARMS__', repr(arms)).replace('__WRAPPER_SHA__', repr(wrapper_sha))

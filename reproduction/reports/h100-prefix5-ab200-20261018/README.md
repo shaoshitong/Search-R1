@@ -174,3 +174,17 @@ training handoff must preserve the actual latest complete joint state and releas
 old owned processes/locks first. Current live jobs still use the original private
 namespace; do not claim they are already independent of h100-8. Inspection is
 recovery readiness work, never a gate that stops healthy training.
+
+The retained-path CPU inspection also reads the complete small copy result and
+checks every final payload size and source/target digest equality recorded by the
+copy worker. Existing sealed hardlinks must still share an inode with their
+retained backup payloads. Paths are rebased onto the new direct NAS18 mount, so
+inspection does not need h100-8's ancestor directories. This is metadata
+acceptance of completed full-SHA copying, not a repeated large payload hash.
+
+Static recovery routing inspection is saved in `restore-entry-static-support.json`:
+the deployed `i1_i6_joint_v1` full-joint adapter delegates A/B receipts and probe
+state validation to the dedicated A/B implementation. Frozen A has no online
+optimizer/EMA; B preserves raw/EMA/Adam/4-rank RNG and balancing state. The legacy
+`resume.py` and `native_a800_joint_v1` fixed-clock adapters are not the A/B entry.
+This identifies the existing supported code path; no recovery was executed.
