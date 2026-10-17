@@ -97,6 +97,8 @@ value['qa_pending']={k:v for k,v in (value.get('qa_pending')or{}).items()if k no
     n = joint.get('outer', 0)
     assert sorted(map(int, series)) == list(range(1, n + 1))
     save(series_path, series)
+    from .fresh_metrics_local import summarize
+    summarize(root)
     state = json.loads((output / 'STATUS.json').read_text())
     state.update(base=c['base'],initial_official_fresh_run_source=c.get('initial_official_fresh_run_source',c['base']),
         stage=stage.get('stage'), outer_in_progress=stage.get('outer'),
