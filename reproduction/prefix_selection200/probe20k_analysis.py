@@ -61,7 +61,7 @@ def aggregate(base):
         arms.append(dict(arm=arm,epochs=epochs,update_curve_summary=summaries,
                          complete=json.loads((root/'complete.json').read_text())if(root/'complete.json').exists()else None))
     return dict(actor_version=config['actor_version'],dataset_base=config['probe20k_study']['dataset_base'],
-        questions=20480,trajectories=102400,test_questions=512,learning_rate=1e-5,ema_decay=.99,
+        questions=spec['questions'],trajectories=spec['trajectories'],test_questions=512,learning_rate=spec['learning_rate'],ema_decay=spec['ema_decay'],
         arms=arms,formal_actor_updated=False,raw_predictions_exported=False,
         same_data_source_and_head_initialization=True,post_update_real_unaugmented_evaluation=True)
 
@@ -71,7 +71,13 @@ def render(summary,output):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     output=Path(output);output.mkdir(parents=True,exist_ok=True)
-    colors=['#1763a4','#d45b20','#218657'];titles=['20k + EMA','20k + EMA + group weight2','20k + EMA + hidden mixup']
+    colors=['#1763a4','#d45b20','#218657','#8b4d9d']
+    titles=[]
+    for arm in summary['arms']:
+        setting=arm['arm'];label=str(summary['questions'])+' + EMA'
+        if setting['group_weight']!=1:label+=' + group weight'+str(setting['group_weight'])
+        if setting['mixup']:label+=' + hidden mixup'
+        titles.append(label)
     plt.rcParams.update({'font.size':10,'axes.spines.top':False,'axes.spines.right':False})
     specs=[('balanced_accuracy','Mixed balanced accuracy',100),('trajectory_bce','Trajectory BCE',1),('group_bce','Mixed-group BCE',1)]
     fig,axes=plt.subplots(2,3,figsize=(15,8),layout='constrained')
@@ -85,7 +91,7 @@ def render(summary,output):
             if key=='balanced_accuracy':ax.axhline(50,color='grey',linestyle=':',linewidth=1)
             ax.set(title=split.upper()+': '+title,xlabel='Epoch (0 = common initialization)',ylabel='Percent'if scale==100 else'Loss')
             ax.grid(alpha=.2);ax.legend(fontsize=7)
-    fig.suptitle('Frozen actor50 | identical 20480 G5 train / 512 G5 test | full question+20 readout\nSolid = EMA(0.99), dashed = raw; LR 1e-5; true post-update evaluation')
+    fig.suptitle('Frozen actor50 | '+str(summary['questions'])+' G5 train / 512 G5 test | full question+20 readout\nSolid = EMA('+str(summary['ema_decay'])+'), dashed = raw; LR '+str(summary['learning_rate'])+'; true post-update evaluation')
     fig.savefig(output/'matched20k-ema-curves.png',dpi=160);fig.savefig(output/'matched20k-ema-curves.pdf');plt.close(fig)
     for i,arm in enumerate(summary['arms']):
         fig,axes=plt.subplots(2,3,figsize=(14,8),layout='constrained');epochs=arm['epochs'];x=[r['epoch']for r in epochs]

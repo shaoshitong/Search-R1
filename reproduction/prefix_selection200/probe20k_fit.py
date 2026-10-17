@@ -49,24 +49,25 @@ def train(base,arm_name):
     base=Path(base);c=read(base/'preparation/launch-config.json');s=c['probe20k_study']
     arm=next(v for v in s['arms']if v['name']==arm_name);rank,local,device=setup_ddp()
     out=base/'arms'/arm_name;out.mkdir(parents=True,exist_ok=True)
-    data=CombinedFeatures(Path(s['dataset_base'])/'dataset-complete.json')
+    data=CombinedFeatures(Path(s['dataset_base'])/'dataset-complete.json',s.get('selected_data_blocks'))
+    questions=len(data.index)//5;updates_per_epoch=questions*100//5120
     assert data.manifest['actor_version']==c['actor_version']
     diagnostic=data.manifest['diagnostic'];test=NativeFeatures(diagnostic['scan_path'],validate_reads=False)
     assert test.manifest['actor_version']==c['actor_version']
     own=Path(diagnostic['scan_path']).parent.parent/'full/own-em.jsonl'
     test.index=join_own_em(test.index,[json.loads(line)for line in own.open()],c['actor_version'],test.manifest_sha,'diagnostic')
-    groups=candidate_groups(data.index,20480);testgroups=candidate_groups(test.index,512)
+    groups=candidate_groups(data.index,questions);testgroups=candidate_groups(test.index,512)
     assert not {g['qid']for g in groups}&{g['qid']for g in testgroups}
     assert not {g['question_hash']for g in groups}&{g['question_hash']for g in testgroups}
     keys=[layout_key(g,data.index)for g in groups]
     assert Path(s['source_probe_checkpoint']).stat().st_size==s['source_probe_bytes']
     previous=read(out/'latest.json')if(out/'latest.json').exists()else None
     saved=torch.load(previous['checkpoint']if previous else s['source_probe_checkpoint'],map_location='cpu',weights_only=False)
-    completed=previous['epoch']if previous else 0;expected=200+400*completed
+    completed=previous['epoch']if previous else 0;expected=200+updates_per_epoch*completed
     if previous:
         assert saved['epoch']==completed and saved['actual_adam_per_rank']==[expected]*8 and saved['run_id']==c['run_id']
         assert saved['arm']==arm and saved['dataset_manifest_sha256']==data.manifest_sha and saved['test_manifest_sha256']==test.manifest_sha
-        assert saved['ema_updates']==400*completed and saved['ema_decay']==s['ema_decay']
+        assert saved['ema_updates']==updates_per_epoch*completed and saved.get('selected_data_blocks',list(range(4)))==data.selected_blocks and saved['ema_decay']==s['ema_decay']
     else:assert saved['actual_adam_steps_per_rank']==[200]*8 and saved['run_id']==s['source_probe_run_id']
     class PrevalidatedStudyProbe(OnlineQuestionProbe):
         def forward(self,batch):
@@ -133,9 +134,9 @@ def train(base,arm_name):
         all_fallbacks=[None]*8;dist.all_gather_object(all_fallbacks,fallbacks)
         if rank==0:
             result.update(epoch=epoch,arm=arm,actor_version=c['actor_version'],actual_adam_per_rank=[actual_adam_steps(optimizer)]*8,
-                new_ema_updates=epoch*400,ema_decay=s['ema_decay'],learning_rate=s['learning_rate'],
+                new_ema_updates=epoch*updates_per_epoch,ema_decay=s['ema_decay'],learning_rate=s['learning_rate'],
                 dataset_manifest_sha256=data.manifest_sha,test_manifest_sha256=test.manifest_sha,
-                evaluation_seconds=time.monotonic()-began,readout='question_plus20',inference_actual_oom_fallbacks=all_fallbacks,
+                evaluation_seconds=time.monotonic()-began,train_questions=questions,train_trajectories=questions*5,selected_data_blocks=data.selected_blocks,readout='question_plus20',inference_actual_oom_fallbacks=all_fallbacks,
                 train_eval_initial_local_trajectories=s.get('train_eval_micro_questions',25)*5,
                 test_eval_initial_local_trajectories=s.get('test_eval_micro_questions',6)*5)
             once(out/('epoch-%02d-metrics.json'%epoch),result);publish(out/'latest-metrics.json',result)
@@ -144,7 +145,7 @@ def train(base,arm_name):
         if rank==0 and not(out/'initialization.json').exists():once(out/'initialization.json',dict(source_probe=s['source_probe_checkpoint'],source_sha256=s['source_probe_sha256'],
             source_actual_adam=200,source_model_and_moments_restored=True,ema_initialized_from_same_raw_weights=True,
             actor_updated=False,encoder_forward_repeated=False,arm=arm,readout='question_plus20'))
-        if previous and rank==0:once(out/('resume-after-epoch-%02d.json'%completed),dict(source_checkpoint=previous['checkpoint'],actual_adam_per_rank=[expected]*8,ema_updates=completed*400,model_optimizer_ema_and_eight_rng_restored=True))
+        if previous and rank==0:once(out/('resume-after-epoch-%02d.json'%completed),dict(source_checkpoint=previous['checkpoint'],actual_adam_per_rank=[expected]*8,ema_updates=completed*updates_per_epoch,model_optimizer_ema_and_eight_rng_restored=True))
         if not previous:evaluate(0)
         for epoch in range(completed+1,s['epochs']+1):
             plan=plan_epoch(keys,s['dataset_seed'],epoch)
@@ -177,7 +178,7 @@ def train(base,arm_name):
                         online_loss_on_augmented_inputs=arm['mixup'])
                     with(out/'global-loss-updates.jsonl').open('a')as f:f.write(json.dumps(row)+'\n')
                     publish(out/'progress.json',dict(epoch=epoch,step=step,actual_adam=actual,ema_updates=actual-200))
-            assert len(seen)==len(set(seen))==12800
+            assert len(seen)==len(set(seen))==questions*5//8
             seconds=time.monotonic()-began;evaluate(epoch)
             rng=dict(rank=rank,python=random.getstate(),numpy=np.random.get_state(),torch_cpu=torch.get_rng_state(),torch_cuda=torch.cuda.get_rng_state(device))
             all_rng=[None]*8;dist.all_gather_object(all_rng,rng)
@@ -186,7 +187,8 @@ def train(base,arm_name):
                     model={k:v.detach().cpu()for k,v in model.module.state_dict().items()},
                     ema_model={k:v.detach().cpu()for k,v in ema.state_dict().items()},optimizer=copy.deepcopy(optimizer.state_dict()),
                     rank_rng=all_rng,actual_adam_per_rank=[actual]*8,ema_updates=actual-200,ema_decay=s['ema_decay'],
-                    dataset_manifest_sha256=data.manifest_sha,test_manifest_sha256=test.manifest_sha,learning_rate=s['learning_rate'])
+                    dataset_manifest_sha256=data.manifest_sha,test_manifest_sha256=test.manifest_sha,learning_rate=s['learning_rate'],
+                    selected_data_blocks=data.selected_blocks,train_questions=questions,updates_per_epoch=updates_per_epoch)
                 for values in saved['optimizer']['state'].values():
                     for key,value in list(values.items()):
                         if isinstance(value,torch.Tensor):values[key]=value.detach().cpu()
@@ -197,8 +199,8 @@ def train(base,arm_name):
                     metrics_sha256=sha(out/('epoch-%02d-metrics.json'%epoch)),train_loop_seconds=seconds)
                 once(out/('epoch-%02d-complete.json'%epoch),complete);publish(out/'latest.json',complete)
             dist.barrier()
-        if rank==0:once(out/'complete.json',dict(status='ACTUAL_20K_PROBE_ARM_COMPLETE',arm=arm_name,epochs=s['epochs'],
-            new_adam_per_rank=400*s['epochs'],actual_adam_per_rank=[200+400*s['epochs']]*8,ema_updates=400*s['epochs'],actor_updates=0,latest=read(out/'latest.json')))
+        if rank==0:once(out/'complete.json',dict(status='ACTUAL_FIXED_DATA_PROBE_ARM_COMPLETE',arm=arm_name,epochs=s['epochs'],
+            new_adam_per_rank=updates_per_epoch*s['epochs'],actual_adam_per_rank=[200+updates_per_epoch*s['epochs']]*8,ema_updates=updates_per_epoch*s['epochs'],actor_updates=0,latest=read(out/'latest.json')))
     finally:
         data.close();test.close()
         if dist.is_initialized():dist.destroy_process_group()
@@ -230,8 +232,8 @@ def run(base):
             while p.poll()is None:owned.observe(name);interrupt.check();time.sleep(1)
             owned.observe(name);owned.jobs[name]['exit_code']=p.returncode;owned.save();owned.stop(name)
             if p.returncode:raise RuntimeError('Actual20k probe arm failed: '+name)
-            assert read(base/'arms'/name/'complete.json')['actual_adam_per_rank']==[200+400*s['epochs']]*8
-        once(base/'logs/pipeline-complete.json',dict(status='MATCHED_20K_EMA_PROBE_ARMS_COMPLETE',arms=[v['name']for v in s['arms']],epochs_per_arm=s['epochs'],actor_updates=0,formal200_resumed=False))
+            assert read(base/'arms'/name/'complete.json')['actual_adam_per_rank']==[200+s['planned_updates_per_epoch']*s['epochs']]*8
+        once(base/'logs/pipeline-complete.json',dict(status='FIXED_DATA_EMA_PROBE_ARMS_COMPLETE',arms=[v['name']for v in s['arms']],epochs_per_arm=s['epochs'],actor_updates=0,formal200_resumed=False))
     finally:
         try:
             owned.stop_all();owned.reap();births=[v for j in owned.jobs.values()for v in j['ledger'].values()];present=birth_states(births)

@@ -33,10 +33,10 @@ assert native['JobState']in('FAILED','CANCELLED','OUT_OF_MEMORY','COMPLETED')and
         before=r'''
 import pathlib,json,subprocess
 s=SPEC;source=pathlib.Path(s['prior_stopped_fit_base'])
-p=json.loads((source/'preparation/human-stop-A-run-BC5-terminal-once.json').read_text())
+p=json.loads((source/s.get('prior_stopped_fit_proof_name','preparation/human-stop-A-run-BC5-terminal-once.json')).read_text())
 assert p['original_births_all_gone']and p['no_live_own_gpu']and p['base']==str(source)
 r=subprocess.run(['scontrol','show','job',s['prior_stopped_fit_job'],'-o'],capture_output=True,text=True,timeout=20)
-assert r.returncode==0 and 'JobState=CANCELLED'in r.stdout and str(source/'preparation/native-probe20k-fit.sh')in r.stdout
+assert r.returncode==0 and any('JobState='+state in r.stdout for state in ('CANCELLED','COMPLETED'))and str(source/'preparation/native-probe20k-fit.sh')in r.stdout
 '''.replace('SPEC',repr(config['probe20k_study']))
     if old:
         before=r'''
@@ -110,7 +110,8 @@ def read(p):return json.loads(p.read_text())if p.exists()else None
 receipt=read(b/'preparation/submit-receipt.json');job=receipt['job_id']
 r=subprocess.run(['scontrol','show','job',job,'-o'],capture_output=True,text=True,timeout=30)
 arms={}
-for name in ('data_ema','data_ema_group2','data_ema_mixup'):
+config=read(b/'preparation/launch-config.json')
+for name in [a['name']for a in config['probe20k_study']['arms']]:
  root=b/'arms'/name;last=[]
  for rank in range(8):
   p=root/('rank-%d-updates.jsonl'%rank)
