@@ -77,6 +77,7 @@ value['final_qa']=json.loads(p.read_text()) if p.exists() else None
         latest_actual_observed_unix=value['observed_unix'], latest_actual_evidence=str(evidence),
         config_sha256=value['config_sha256'], source_commit=c['source_commit'],
         latest_joint_source_commit=joint.get('source_commit'),resume_joint=c.get('resume_joint'),
+        qa_pending=value.get('qa_pending'),
         updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(), goal_complete=False)
     if n:
         state['latest_actor_selection'] = joint['actor_selection']
@@ -95,6 +96,8 @@ value['final_qa']=json.loads(p.read_text()) if p.exists() else None
         'Saved actor/probe Adam per rank: %s / %s.' %
         (state['actor_adam_per_rank'], state['probe_adam_per_rank']),
         'Latest QA: ' + json.dumps(state.get('latest_qa', 'not yet produced under the new protocol')),
+        'Actual milestone QA pending: '+json.dumps(state.get('qa_pending') or {}),
+        'Checkpoint5 CPU acceptance: '+json.dumps(state.get('checkpoint5_cpu_acceptance','not yet available')),
         'Frozen source: ' + c['source_commit'] + '; actual config SHA: ' + value['config_sha256'],
         '5120G5 prefix20 -> Top1024 same-prefix continuation -> actual EM variance Top512 actor; probe ALL1024/5120 one natural epoch20Adam atLR1e-6.',
         'Shared BF16 train/QA interaction4096/action500/reserve500, early final and protected observation wrapper; strict scorer unchanged. Original logical two-row objective and fixed before/after monitor restored; finite thresholds diagnostic-only. Actual reward-grounding refits50/100/150.',
