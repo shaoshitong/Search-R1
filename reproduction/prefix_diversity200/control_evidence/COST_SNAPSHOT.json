@@ -1,6 +1,6 @@
 {
   "run_id": "f3ee1435e5014ba1969387c91878893a",
-  "observed_unix": 1792197291.860879,
+  "observed_unix": 1792197712.9289758,
   "complete_outer_rows": {
     "1": {
       "outer": 1,
@@ -4974,15 +4974,69 @@
         "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/outers/outer-000092/prefix/complete.json": "1164151944d8e75ed55efc4bc86e915e5818bb3ec215eb7cf0fd8c0e8a24a971",
         "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/outers/outer-000092/full/complete.json": "27ed25c7b8c961c807796c43f6bb6d81e79e781723d074c397e322d3e18f9413"
       }
+    },
+    "93": {
+      "outer": 93,
+      "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4",
+      "prefix_sampled_tokens": 512000,
+      "continuation_new_sampled_tokens": 317330,
+      "combined_actual_sampled_tokens": 829330,
+      "prefix_native_generation_requests": 25600,
+      "continuation_native_generation_requests": 10240,
+      "actor_synchronized_adam_per_rank": 20,
+      "probe_synchronized_adam_per_rank": 20,
+      "rank_replicas_not_summed_as_global_steps": true,
+      "phase_timings": {
+        "outer-000093-actor-fb0f4a1dc51a457cb4c2f1d2c16faab0": {
+          "elapsed_seconds": 106.81508174911141,
+          "exit_code": 0
+        },
+        "outer-000093-continue": {
+          "elapsed_seconds": 137.6755190268159,
+          "exit_code": 0
+        },
+        "outer-000093-diversity-selection": {
+          "elapsed_seconds": 14.216422580182552,
+          "exit_code": 0
+        },
+        "outer-000093-prefix": {
+          "elapsed_seconds": 87.54330837726593,
+          "exit_code": 0
+        },
+        "outer-000093-probe-update": {
+          "elapsed_seconds": 32.16013640165329,
+          "exit_code": 0
+        },
+        "outer-000093-score": {
+          "elapsed_seconds": 36.824970453977585,
+          "exit_code": 0
+        }
+      },
+      "actor_grounding_reward_summary": {
+        "version": "15bb15365346401da1d919e9cde8f813:0:a72f2e62b8674787bee00266a8eef79e",
+        "trajectories": 2560,
+        "score_mean": 1.01989092103031,
+        "score_min": -0.10000000149011612,
+        "score_max": 1.5992450714111328,
+        "rank_count": 8,
+        "all_rank_statistics_finite": true,
+        "prefix_correctness_head_used_for_reward": false,
+        "source": "original saved actor reward receipt"
+      },
+      "receipt_sha256": {
+        "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/outers/outer-000093/complete.json": "ed4726bfbd726459debeee86aeffff5b8a0f143f384972566af91163f1787c2f",
+        "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/outers/outer-000093/prefix/complete.json": "3d5314a74f71601c262c87712502f1256cfd31cb84c41d21d2e73a689674fb8a",
+        "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/outers/outer-000093/full/complete.json": "df161286a98d31d2b3a60ea7d328ebf91fd81e3fc480b83ba6a97f8a6582be44"
+      }
     }
   },
-  "total_completed_outer_sampled_tokens": 79057874,
+  "total_completed_outer_sampled_tokens": 79887204,
   "cost_scope": "successful committed outer generation only; failed attempts and native reservation wall are separate",
   "retrieval_counts_pending_separate_remote_streaming_aggregation": true,
   "model_tensors_read": false,
   "new_model_forward": false,
   "training_modified": false,
   "source": "existing native rank producer counts with independently read metadata SHA; raw tokens not re-read",
-  "reader_commit": "bc93dbdc6af2c172a3b346766ad3534ac50272d8",
+  "reader_commit": "f47489be4d05705108651a889feefb9a2dd80046",
   "reader_sha256": "44b02db772712c20610422f43c5363855a3a811108d584e4821d3ece0de20377"
 }
