@@ -15,6 +15,8 @@ import zipfile
 
 from reproduction.easy2560_joint4 import checkpoint_evidence as core
 
+PUBLISHED_MICRO16_COMMIT = '8a5bac94b8230a99b81977f5290589e3d3708dfe'
+
 
 class EvidenceTests(unittest.TestCase):
     def test_actual_shared_root_schema_accepts_mou_directory_with_jxu_execution(self):
@@ -65,8 +67,9 @@ class EvidenceTests(unittest.TestCase):
     def lines(self, relative, values, suffix=b''):
         return self.write(relative, b''.join(core.canonical(r)+b'\n' for r in values)+suffix)
 
-    def fixture(self, folder, step=5, *, abort_first=False, fixed5=False):
+    def fixture(self, folder, step=5, *, abort_first=False, fixed5=False, training_commit=None, physical=32):
         self.base = Path(folder).resolve(); self.step = step
+        self.commit = training_commit or core.REVIEWED_COMMIT
         self.run_id = 'a'*32; self.job = '730080'
         self.cp = self.base/f'checkpoints/search-g1-common8/actor/global_step_{step}'
         self.code = self.write('repo/reviewed.py', b'fixture source only\n')
@@ -84,15 +87,22 @@ class EvidenceTests(unittest.TestCase):
             commit=str(probe_dir/'heads/commit_probe.pkl'), boundary=str(probe_dir/'heads/boundary_probe.pkl'),
             head_sha256=heads, calibration_report_sha256=core.digest(report.read_bytes()))
         self.probe_path = self.write(str((probe_dir/'version-manifest.json').relative_to(self.base)), self.probe)
-        self.run = dict(profile='common8', source_commit=core.REVIEWED_COMMIT, run_id=self.run_id,
+        self.run = dict(profile='common8', source_commit=self.commit, run_id=self.run_id,
             execution_site='hpc3', execution_backend='slurm',
             easy2560_selection=True, training_world_size=4, data_selection_mode='mixed_first',
-            actor_micro_batch_per_rank=32, actor_logical_micro_batch_per_rank=4,
+            actor_micro_batch_per_rank=physical, actor_logical_micro_batch_per_rank=4,
             selection_candidate_questions=2560, selection_selected_questions=512, selection_fixed_candidate_budget=True,
             all_correct_virtual_zero=False, selection_eligible_pool_path=str(self.pool),
             source_sha256={'reviewed.py': core.digest(self.code.read_bytes())},
             input_sha256={'manifest.json': core.digest(self.data.read_bytes())})
         run_path = self.write('logs/run-manifest.json', self.run)
+        if self.commit != core.REVIEWED_COMMIT:
+            published = dict(source_commit=self.commit, fresh_source_all_files_sha_verified=True,
+                files={'reviewed.py':dict(bytes=self.code.stat().st_size,
+                                          sha256=core.digest(self.code.read_bytes()))})
+            self.write('source/'+self.commit+'/source-publication.json', published)
+            self.write('preparation/run-source.json', dict(source_commit=self.commit,
+                files=published['files'], runtime_repo=str(self.base/'repo')))
         self.write('logs/native-allocation-admission.json', dict(accepted=True, run_id=self.run_id, slurm_job_id=self.job))
         cfg = dict(data=dict(selection_mode='mixed_first'), algorithm=dict(all_correct_virtual_zero=False),
                    actor_rollout_ref=dict(actor=dict(ppo_logical_micro_batch_size=4)))
@@ -125,7 +135,7 @@ class EvidenceTests(unittest.TestCase):
                     behavior_trace_sha256=core.digest(raw_trace))
                 updates.append(update)
                 self.write('artifacts/mixed-selection/'+aid+'.json', dict(
-                    step=completed, source_commit=core.REVIEWED_COMMIT,
+                    step=completed, source_commit=self.commit,
                     policy_snapshot_id=f'{self.run_id}:{completed}:policy-{aid}',
                     fixed_candidate_budget=True, attempted_candidates=2560, selected_groups=512))
             for rank in range(4):
@@ -151,7 +161,7 @@ class EvidenceTests(unittest.TestCase):
         if fixed5: validation.append(dict(step=5, split='validation'))
         self.lines('logs/validation-identities.jsonl', validation, b'{later partial')
         self.driver = dict(schema_version=1, completed_outer=step, run_id=self.run_id,
-            source_commit=core.REVIEWED_COMMIT, question_probe=None, selection_mode='mixed_first',
+            source_commit=self.commit, question_probe=None, selection_mode='mixed_first',
             easy2560_selection=True, probe_version=self.probe['version'], probe_round=round_,
             reward_refresh_pending=step in (50,100,150), rng=dict(torch_cpu=b'fixture RNG'),
             candidate_stream=dict(candidate_order=[2,0,1], candidate_cursor=3, epoch=1,
@@ -182,7 +192,7 @@ class EvidenceTests(unittest.TestCase):
         for p in probe_dir.rglob('*'):
             if p.is_file(): add('grounding/'+probe_dir.name+'/'+str(p.relative_to(probe_dir)), p)
         self.snapshot = dict(schema_version=1, role='easy2560_full_checkpoint_source_snapshot', base=str(self.base),
-            source_commit=core.REVIEWED_COMMIT, run_id=self.run_id, step=step, training_world_size=4,
+            source_commit=self.commit, run_id=self.run_id, step=step, training_world_size=4,
             files=snapshot_files, completed_update=updates[-1], total_bytes=sum(r['bytes'] for r in snapshot_files.values()))
         self.archive_root = f'preparation/checkpoint-archives/global_step_{step}'
         self.snapshot_path = self.write(self.archive_root+'/source-snapshot.json', self.snapshot)
@@ -200,7 +210,7 @@ class EvidenceTests(unittest.TestCase):
 
     def seal(self):
         with patch.object(core, 'owned_base', side_effect=lambda p: Path(p).resolve()):
-            return core.seal(self.base, core.REVIEWED_COMMIT, self.run_id, self.job, self.step)
+            return core.seal(self.base, self.commit, self.run_id, self.job, self.step)
 
     def test_exact_prefixes_and_refs_are_sealed_without_old_receipt_mutation(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -233,6 +243,72 @@ class EvidenceTests(unittest.TestCase):
                 self.assertEqual(phase['grounding_refresh_pending_at_checkpoint'], step in (50,100,150))
                 self.assertEqual(phase['final51713_pending_at_checkpoint'], step == 200)
                 self.assertFalse(phase['post_callback_rng_captured'])
+
+    def test_explicit_published_micro16_source_seals_with_independent_verification(self):
+        with tempfile.TemporaryDirectory() as folder:
+            self.fixture(folder, training_commit=PUBLISHED_MICRO16_COMMIT, physical=16)
+            result = self.seal()
+            binding = result['source_publication_binding']
+            self.assertEqual(result['source_commit'], self.commit)
+            self.assertEqual(binding['requested_training_commit'], self.commit)
+            self.assertEqual(binding['policy'], 'explicit_caller_commit_publication_runtime_run_map')
+            self.assertFalse(binding['automatic_head_or_ancestor_allow'])
+            self.assertFalse(binding['git_ancestry_verified_here'])
+            self.assertTrue(result['single_original_job_prefix'])
+            self.assertFalse(result['inherited_history_assembled'])
+            self.assertFalse(result['actual_cuda_restore_accepted'])
+            target = Path(result['directory'])
+            self.assertTrue((target/'identity/source-publication.json').is_file())
+            self.assertTrue((target/'identity/run-source.json').is_file())
+            # Verification authenticates sealed small evidence even after the
+            # original published tree and tensor bytes have been retired.
+            (self.base/'source'/self.commit/'source-publication.json').unlink()
+            (self.base/'preparation/run-source.json').unlink()
+            for path in self.cp.glob('training_state/*.pt'): path.unlink()
+            self.assertEqual(core.verify(target), result)
+
+    def test_non93_source_needs_explicit_publication_runtime_and_archived_map(self):
+        for broken in ('missing_publication', 'not_fresh', 'wrong_commit', 'runtime_files',
+                       'runtime_repo', 'run_map', 'archive_map', 'archive_bytes'):
+            with self.subTest(broken=broken), tempfile.TemporaryDirectory() as folder:
+                self.fixture(folder, training_commit=PUBLISHED_MICRO16_COMMIT, physical=16)
+                publication_path = self.base/'source'/self.commit/'source-publication.json'
+                publication = json.loads(publication_path.read_bytes())
+                runtime_path = self.base/'preparation/run-source.json'
+                runtime = json.loads(runtime_path.read_bytes())
+                if broken == 'missing_publication': publication_path.unlink()
+                elif broken == 'not_fresh':
+                    publication['fresh_source_all_files_sha_verified'] = False
+                    publication_path.write_bytes(core.encoded(publication))
+                elif broken == 'wrong_commit':
+                    publication['source_commit'] = core.REVIEWED_COMMIT
+                    publication_path.write_bytes(core.encoded(publication))
+                elif broken in ('runtime_files', 'runtime_repo'):
+                    if broken == 'runtime_files': runtime['files']['reviewed.py']['sha256'] = '0'*64
+                    else: runtime['runtime_repo'] = '/another-run/repo'
+                    runtime_path.write_bytes(core.encoded(runtime))
+                elif broken == 'run_map':
+                    run = copy.deepcopy(self.run); run['source_sha256']['reviewed.py'] = '0'*64
+                    self.write('logs/run-manifest.json', run)
+                    self.snapshot['files']['metadata/run-manifest.json']['sha256'] = core.digest(
+                        (self.base/'logs/run-manifest.json').read_bytes())
+                elif broken == 'archive_map': self.snapshot['files']['source/reviewed.py']['sha256'] = '0'*64
+                else: self.snapshot['files']['source/reviewed.py']['bytes'] += 1
+                if broken in ('run_map', 'archive_map', 'archive_bytes'):
+                    self.snapshot_path.write_bytes(core.encoded(self.snapshot))
+                    self.accepted['snapshot_sha256'] = core.digest(self.snapshot_path.read_bytes())
+                    self.accepted_path.write_bytes(core.encoded(self.accepted))
+                with self.assertRaises((ValueError, FileNotFoundError)):
+                    self.seal()
+                self.assertFalse((self.base/'preparation/checkpoint-evidence/global_step_5').exists())
+
+    def test_requested_commit_is_not_inferred_from_run_or_current_git_head(self):
+        with tempfile.TemporaryDirectory() as folder:
+            self.fixture(folder, training_commit=PUBLISHED_MICRO16_COMMIT, physical=16)
+            with patch.object(core, 'owned_base', side_effect=lambda p: Path(p).resolve()):
+                for requested in (core.REVIEWED_COMMIT, self.commit[:7], 'a'*40):
+                    with self.subTest(requested=requested), self.assertRaises(ValueError):
+                        core.seal(self.base, requested, self.run_id, self.job, self.step)
 
     def test_failed_seal_publishes_no_partial_canonical_bundle(self):
         for broken in ('missing_rank', 'changed_driver', 'cross_job', 'missing_completed', 'wrong_step', 'bad_trace', 'wrong_pool'):

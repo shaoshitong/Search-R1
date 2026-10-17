@@ -20,6 +20,7 @@ class RetirementTests(unittest.TestCase):
             source_sha256={'actual-source.py': 'b'*64}, easy2560_selection=True, profile='common8',
             training_world_size=4, execution_site='hpc3', execution_backend='slurm',
             data_selection_mode='mixed_first', actor_logical_micro_batch_per_rank=4,
+            actor_micro_batch_per_rank=32, all_correct_virtual_zero=False,
             selection_candidate_questions=2560, selection_selected_questions=512,
             selection_fixed_candidate_budget=True, slurm_job_id=self.job)
         self.write('logs/run-manifest.json', self.run)
@@ -43,6 +44,22 @@ class RetirementTests(unittest.TestCase):
     def ledger(self, suffix=b''):
         self.write('logs/actual-updates.jsonl',
             b''.join(json.dumps(row, sort_keys=True).encode()+b'\n' for row in self.rows)+suffix)
+
+    def use_published_source(self, commit='8a5bac94b8230a99b81977f5290589e3d3708dfe',
+                             run_id='b'*32, job='731234'):
+        self.run_id = run_id; self.job = job
+        self.run.update(source_commit=commit, run_id=run_id, slurm_job_id=job, actor_micro_batch_per_rank=16)
+        self.write('logs/run-manifest.json', self.run)
+        self.write('logs/native-allocation-admission.json', dict(accepted=True, run_id=run_id, slurm_job_id=job))
+        files = {'actual-source.py': dict(bytes=12, sha256='b'*64)}
+        self.publication = dict(source_commit=commit, fresh_source_all_files_sha_verified=True, files=files)
+        self.runtime = dict(source_commit=commit, files=files, runtime_repo=str(self.base/'repo'))
+        self.write('source/'+commit+'/source-publication.json', self.publication)
+        self.write('preparation/run-source.json', self.runtime)
+        self.rows = []
+        for step in range(1, 5): self.add_outer(step)
+        self.ledger()
+        return dict(run_id=run_id, training_commit=commit, source_job=job)
 
     def add_outer(self, step, *, full=True):
         attempt = format(step, '032x'); snapshot = self.run_id+':'+str(step)+':policy-'+attempt
@@ -79,10 +96,10 @@ class RetirementTests(unittest.TestCase):
         self.rows.append(row)
 
     def plan(self):
-        return core.build_plan(self.base, self.run_id, core.REVIEWED_TRAINING_COMMIT, self.job)
+        return core.build_plan(self.base, self.run_id, self.run['source_commit'], self.job)
     def apply(self, plan):
         path = core.save_plan(plan)
-        return core.apply_plan(path, self.run_id, core.REVIEWED_TRAINING_COMMIT, self.job), path
+        return core.apply_plan(path, self.run_id, self.run['source_commit'], self.job), path
 
     def test_only_five_files_in_older_successes_retired_and_all_recovery_evidence_retained(self):
         before = {str(p.relative_to(self.base)): p.read_bytes() for p in self.base.rglob('*') if p.is_file()}
@@ -130,7 +147,7 @@ class RetirementTests(unittest.TestCase):
         plan = self.plan()
         self.assertEqual(plan['pools'], [])
         self.assertEqual(target.read_bytes(), b'never-delete-checkpoint')
-        with self.assertRaisesRegex(ValueError, 'SOURCE_DEPENDENCY_REVIEW_REQUIRED'):
+        with self.assertRaisesRegex(ValueError, 'EXPLICIT_RUN_OR_SOURCE_DIFFERS'):
             core.build_plan(self.base, self.run_id, 'c'*40, self.job)
         with self.assertRaisesRegex(ValueError, 'EXPLICIT_RUN_OR_SOURCE_DIFFERS'):
             core.build_plan(self.base, 'other', core.REVIEWED_TRAINING_COMMIT, self.job)
@@ -197,6 +214,75 @@ class RetirementTests(unittest.TestCase):
         self.assertIn('PARTIAL_RAW_SET_PRESERVED', plan['skipped'][0]['reason'])
         for name in ('0.pt', '1024.pt', '1536.pt', '2048.pt'):
             self.assertTrue((self.base/self.pools[1]/name).exists())
+
+    def test_explicit_new_commit_micro16_closes_published_runtime_run_binding_without_source_scan(self):
+        bound = self.use_published_source()
+        original = core.read_file
+        def receipts_and_pool_evidence_only(base, relative, **kwargs):
+            self.assertNotEqual(str(relative), 'actual-source.py')
+            self.assertNotEqual(str(relative), 'repo/actual-source.py')
+            return original(base, relative, **kwargs)
+        with patch.object(core, 'read_file', side_effect=receipts_and_pool_evidence_only):
+            plan = core.build_plan(self.base, **bound)
+            result, path = self.apply(plan)
+        self.assertEqual(plan['training_commit'], bound['training_commit'])
+        self.assertEqual(len(plan['binding_files']), 4)
+        self.assertEqual(result['source_job'], bound['source_job'])
+        self.assertEqual(len(result['actions']), 10)
+        self.assertTrue((self.base/self.pools[3]/'0.pt').exists())
+
+    def test_new_source_requires_exact_fresh_publication_runtime_and_every_run_map_sha(self):
+        bound = self.use_published_source(); commit = bound['training_commit']
+        original_publication = copy.deepcopy(self.publication); original_runtime = copy.deepcopy(self.runtime)
+        failures = (
+            ('publication', 'source_commit', 'c'*40, 'EXPLICIT_PUBLISHED_SOURCE_REQUIRED'),
+            ('publication', 'fresh_source_all_files_sha_verified', False, 'EXPLICIT_PUBLISHED_SOURCE_REQUIRED'),
+            ('runtime', 'source_commit', 'c'*40, 'PUBLISHED_RUNTIME_SOURCE_DIFFERS'),
+            ('runtime', 'runtime_repo', '/foreign/repo', 'PUBLISHED_RUNTIME_SOURCE_DIFFERS'),
+            ('runtime', 'files', {}, 'PUBLISHED_RUNTIME_SOURCE_DIFFERS'))
+        for target, key, value, expected in failures:
+            publication = copy.deepcopy(original_publication); runtime = copy.deepcopy(original_runtime)
+            (publication if target == 'publication' else runtime)[key] = value
+            self.write('source/'+commit+'/source-publication.json', publication)
+            self.write('preparation/run-source.json', runtime)
+            with self.subTest(target=target, key=key), self.assertRaisesRegex(ValueError, expected):
+                core.build_plan(self.base, **bound)
+            self.assertTrue((self.base/self.pools[1]/'0.pt').exists())
+        self.write('source/'+commit+'/source-publication.json', original_publication)
+        self.write('preparation/run-source.json', original_runtime)
+        self.run['source_sha256']['actual-source.py'] = 'c'*64
+        self.write('logs/run-manifest.json', self.run)
+        with self.assertRaisesRegex(ValueError, 'PUBLISHED_RUNTIME_SOURCE_SHA_DIFFERS'):
+            core.build_plan(self.base, **bound)
+        with self.assertRaisesRegex(ValueError, 'EXPLICIT_FULL_TRAINING_COMMIT_REQUIRED'):
+            core.build_plan(self.base, self.run_id, 'HEAD', self.job)
+
+    def test_publication_binding_mutation_after_plan_or_wrong_recipe_blocks_all_unlinks(self):
+        bound = self.use_published_source(); plan = self.plan(); path = core.save_plan(plan)
+        self.publication['checked_unix'] = 1
+        self.write('source/'+bound['training_commit']+'/source-publication.json', self.publication)
+        with self.assertRaisesRegex(ValueError, 'RUN_BINDING_FILES_CHANGED'):
+            core.apply_plan(path, **bound)
+        for physical, virtual in ((2, False), (True, False), (16, True)):
+            self.run.update(actor_micro_batch_per_rank=physical, all_correct_virtual_zero=virtual)
+            self.write('logs/run-manifest.json', self.run)
+            with self.subTest(physical=physical, virtual=virtual), self.assertRaisesRegex(ValueError, 'FRESH_NATIVE4'):
+                self.plan()
+        self.assertTrue((self.base/self.pools[1]/'0.pt').exists())
+
+    def test_published_source_map_rejects_empty_or_escape_path_and_malformed_bytes(self):
+        bound = self.use_published_source()
+        for name, size in (('', 12), ('../actual-source.py', 12), ('actual-source.py', -1),
+                           ('actual-source.py', True), ('actual-source.py', '12')):
+            files = {name: dict(bytes=size, sha256='b'*64)}
+            self.run['source_sha256'] = {name: 'b'*64}
+            self.publication['files'] = files; self.runtime['files'] = files
+            self.write('logs/run-manifest.json', self.run)
+            self.write('source/'+bound['training_commit']+'/source-publication.json', self.publication)
+            self.write('preparation/run-source.json', self.runtime)
+            with self.subTest(name=name, size=size), self.assertRaisesRegex(ValueError, 'PUBLISHED_RUNTIME_SOURCE_SHA_DIFFERS'):
+                core.build_plan(self.base, **bound)
+        self.assertTrue((self.base/self.pools[1]/'0.pt').exists())
 
 
 if __name__ == '__main__': unittest.main()

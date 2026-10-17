@@ -33,14 +33,28 @@ def require(condition, message):
 
 
 def scope(base, run_id, training_commit, source_job):
-    require((str(base), run_id, training_commit, source_job) ==
-            (BASE, RUN_ID, TRAINING_COMMIT, SOURCE_JOB), 'EXPLICIT_RUN_SCOPE_DIFFERS')
+    binding(run_id, training_commit, source_job)
     path = Path(base)
-    require(path.resolve() == path and os.getuid() == 14090, 'CANONICAL_JXU957_SCOPE_REQUIRED')
+    require(path.is_absolute() and path.resolve() == path and re.fullmatch(
+        r'/data/user/jxu957/experiments/easy2560-corollout-joint4-[A-Za-z0-9._-]+', str(path)) and
+        os.getuid() == 14090, 'CANONICAL_JXU957_SCOPE_REQUIRED')
     return path
 
 
-def load_helper(base, helper_commit, helper_sha256):
+def binding(run_id=None, training_commit=None, source_job=None):
+    """Keep legacy defaults while threading explicit caller identity everywhere."""
+    run_id = RUN_ID if run_id is None else run_id
+    training_commit = TRAINING_COMMIT if training_commit is None else training_commit
+    source_job = SOURCE_JOB if source_job is None else source_job
+    require(isinstance(run_id, str) and re.fullmatch('[0-9a-f]{32}', run_id) and
+        isinstance(training_commit, str) and re.fullmatch('[0-9a-f]{40}', training_commit) and
+        isinstance(source_job, str) and re.fullmatch('[1-9][0-9]*', source_job),
+        'EXPLICIT_RUN_SOURCE_JOB_REQUIRED')
+    return dict(run_id=run_id, training_commit=training_commit, source_job=source_job)
+
+
+def load_helper(base, helper_commit, helper_sha256, *, run_id=None, training_commit=None, source_job=None):
+    bound = binding(run_id, training_commit, source_job)
     require(re.fullmatch('[0-9a-f]{40}', helper_commit) and
             re.fullmatch('[0-9a-f]{64}', helper_sha256), 'EXPLICIT_HELPER_COMMIT_AND_SHA_REQUIRED')
     root = base/'preparation/candidate-raw-maintenance-code'/helper_commit
@@ -48,8 +62,8 @@ def load_helper(base, helper_commit, helper_sha256):
     manifest_path = root/'source-manifest.json'; script = root/'retire_candidate_raw.py'
     require(manifest_path.resolve() == manifest_path and script.resolve() == script, 'HELPER_SYMLINK')
     manifest = json.loads(manifest_path.read_text()); raw = script.read_bytes()
-    require(manifest['operator_commit'] == helper_commit and manifest['training_commit'] == TRAINING_COMMIT and
-        manifest['run_id'] == RUN_ID and manifest['source_job'] == SOURCE_JOB and manifest['base'] == str(base),
+    require(manifest['operator_commit'] == helper_commit and
+        all(manifest.get(key) == value for key, value in bound.items()) and manifest['base'] == str(base),
         'HELPER_MANIFEST_RUN_BINDING_DIFFERS')
     require(manifest['files']['retire_candidate_raw.py'] ==
         dict(bytes=len(raw), sha256=helper_sha256) and hashlib.sha256(raw).hexdigest() == helper_sha256,
@@ -62,9 +76,10 @@ def load_helper(base, helper_commit, helper_sha256):
     return module
 
 
-def observe_job(job, run_command=subprocess.run):
+def observe_job(job, run_command=subprocess.run, *, expected_job=None):
     """squeue proves current presence; only exact main-job sacct proves terminal."""
-    require(job == SOURCE_JOB, 'CANNOT_OBSERVE_ANOTHER_JOB')
+    require(job == (SOURCE_JOB if expected_job is None else expected_job) and
+            isinstance(job, str) and re.fullmatch('[1-9][0-9]*', job), 'CANNOT_OBSERVE_ANOTHER_JOB')
     commands = [(['squeue', '--noheader', '--jobs', job, '--format=%i|%T'], 'squeue'),
                 (['sacct', '--noheader', '--parsable2', '--jobs', job,
                   '--format=JobIDRaw,State,ExitCode,End'], 'sacct')]
@@ -112,8 +127,10 @@ def initial_state():
         filesystem_quota_free_bytes_measured=False, operations=[])
 
 
-def cycle(base, helper, state, observation, *, dry_observe=False):
-    require(observation['source_job'] == SOURCE_JOB, 'OBSERVATION_JOB_DIFFERS')
+def cycle(base, helper, state, observation, *, dry_observe=False,
+          run_id=None, training_commit=None, source_job=None):
+    bound = binding(run_id, training_commit, source_job)
+    require(observation['source_job'] == bound['source_job'], 'OBSERVATION_JOB_DIFFERS')
     state['polls'] += 1
     state['source_job_observation'] = observation
     if observation['observation'] == 'UNKNOWN':
@@ -123,12 +140,12 @@ def cycle(base, helper, state, observation, *, dry_observe=False):
                 'UNCONFIRMED_TERMINAL_OBSERVATION')
         if observation['state'] != 'COMPLETED' or observation['exit_code'] != '0:0':
             state['phase'] = 'SOURCE_JOB_TERMINAL_FAILURE'; return True
-    helper.bind(base, RUN_ID, TRAINING_COMMIT, SOURCE_JOB)
+    helper.bind(base, **bound)
     ledger = base/'logs/actual-updates.jsonl'
     try: ledger.lstat()
     except FileNotFoundError: rows = []
     else: rows, _ = helper.completed_updates(base)
-    require(all(row['run_id'] == RUN_ID for row in rows), 'FOREIGN_COMPLETED_LEDGER')
+    require(all(row['run_id'] == bound['run_id'] for row in rows), 'FOREIGN_COMPLETED_LEDGER')
     frontier = len(rows); state['last_observed_completed_outer'] = frontier
     state['full_success_outer_count'] = sum(helper.is_full_success(row) for row in rows)
     eligible = [row['step'] for row in rows[:-2] if helper.is_full_success(row)]
@@ -138,7 +155,7 @@ def cycle(base, helper, state, observation, *, dry_observe=False):
         state['phase'] = 'DRY_OBSERVE_ONLY'; return terminal
     if state['full_success_outer_count'] >= 3 and eligible and frontier > state['last_planned_frontier']:
         state['last_planned_frontier'] = frontier
-        plan = helper.build_plan(base, RUN_ID, TRAINING_COMMIT, SOURCE_JOB, keep_completed=2)
+        plan = helper.build_plan(base, **bound, keep_completed=2)
         path = helper.save_plan(plan)
         operation = dict(frontier=frontier, plan_path=str(path), pool_count=len(plan['pools']),
                          phase='PLAN_SAVED', checked_unix=time.time())
@@ -154,7 +171,7 @@ def cycle(base, helper, state, observation, *, dry_observe=False):
                         all(helper.identity(actual)[key] == record[key] for key in helper.identity(actual)),
                         'PRE_APPLY_RAW_IDENTITY_DIFFERS')
                     allocation[record['relative_path']] = int(actual.st_blocks)*512
-            result = helper.apply_plan(path, RUN_ID, TRAINING_COMMIT, SOURCE_JOB)
+            result = helper.apply_plan(path, **bound)
             require(result['status'] == helper.STATUS, 'HELPER_DID_NOT_CONFIRM_RETIREMENT')
             actions = result['actions']; unlinked = [row for row in actions if row['stage'] == 'UNLINKED']
             require(len({row['relative_path'] for row in actions}) == len(actions) and
@@ -196,8 +213,10 @@ def durable_json(path, value, *, replace=False):
 
 
 def persistent(base, helper, *, helper_commit, helper_sha256, poll_seconds=180,
-               observer=observe_job, sleeper=time.sleep):
-    helper.bind(base, RUN_ID, TRAINING_COMMIT, SOURCE_JOB)
+               observer=None, sleeper=time.sleep, run_id=None, training_commit=None, source_job=None):
+    bound = binding(run_id, training_commit, source_job)
+    helper.bind(base, **bound)
+    if observer is None: observer = lambda job: observe_job(job, expected_job=bound['source_job'])
     root = base/'preparation/candidate-raw-maintenance-runner'
     require(root.resolve() == root, 'RUNNER_DIRECTORY_SYMLINK')
     root.mkdir(parents=True, mode=0o700, exist_ok=True)
@@ -207,15 +226,14 @@ def persistent(base, helper, *, helper_commit, helper_sha256, poll_seconds=180,
         claim_path = root/'launch-claim.json'
         require(not claim_path.exists(), 'EXISTING_LAUNCH_CLAIM_INSPECT_BIRTH_AND_RESULT_NO_AUTOMATIC_RESTART')
         birth = process_identity()
-        claim = dict(role='easy2560_candidate_raw_maintenance_runner', base=str(base), run_id=RUN_ID,
-            training_commit=TRAINING_COMMIT, source_job=SOURCE_JOB, process_identity=birth,
+        claim = dict(role='easy2560_candidate_raw_maintenance_runner', base=str(base), **bound, process_identity=birth,
             helper_commit=helper_commit, helper_sha256=helper_sha256, poll_seconds=poll_seconds,
             operator_source_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), checked_unix=time.time())
         durable_json(claim_path, claim)
         state = dict(initial_state(), **claim)
         try:
             while True:
-                done = cycle(base, helper, state, observer(SOURCE_JOB))
+                done = cycle(base, helper, state, observer(bound['source_job']), **bound)
                 state['checked_unix'] = time.time()
                 durable_json(root/'progress.json', state, replace=True)
                 if done:
@@ -238,13 +256,15 @@ def main():
     parser.add_argument('--poll-seconds', type=int, default=180)
     args = parser.parse_args(); require(30 <= args.poll_seconds <= 3600, 'BOUNDED_POLL_INTERVAL_REQUIRED')
     base = scope(args.base, args.run_id, args.training_commit, args.source_job)
-    helper = load_helper(base, args.helper_commit, args.helper_sha256)
+    bound = binding(args.run_id, args.training_commit, args.source_job)
+    helper = load_helper(base, args.helper_commit, args.helper_sha256, **bound)
     if args.dry_observe:
-        helper.bind(base, RUN_ID, TRAINING_COMMIT, SOURCE_JOB)
-        state = initial_state(); cycle(base, helper, state, observe_job(SOURCE_JOB), dry_observe=True)
+        helper.bind(base, **bound)
+        state = dict(initial_state(), base=str(base), **bound)
+        cycle(base, helper, state, observe_job(args.source_job, expected_job=args.source_job), dry_observe=True, **bound)
         print(json.dumps(state, sort_keys=True), flush=True); return
     result = persistent(base, helper, helper_commit=args.helper_commit,
-                        helper_sha256=args.helper_sha256, poll_seconds=args.poll_seconds)
+                        helper_sha256=args.helper_sha256, poll_seconds=args.poll_seconds, **bound)
     print(json.dumps(result, sort_keys=True), flush=True)
     if result['phase'] != 'SOURCE_JOB_COMPLETED': raise SystemExit(2)
 

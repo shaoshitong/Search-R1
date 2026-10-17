@@ -1,4 +1,4 @@
-"""CPU scalar/receipt fixtures use the93 producer schema, never model loading."""
+"""CPU scalar/receipt fixtures use published producer schemas, never model loading."""
 import builtins
 import copy
 import json
@@ -11,6 +11,8 @@ from unittest.mock import patch
 
 from reproduction.easy2560_joint4 import final_cpu_acceptance as core
 
+PUBLISHED_MICRO16_COMMIT = '8a5bac94b8230a99b81977f5290589e3d3708dfe'
+
 
 class FinalAcceptanceTests(unittest.TestCase):
     def put(self, relative, value):
@@ -21,12 +23,21 @@ class FinalAcceptanceTests(unittest.TestCase):
     def ledger(self, relative, rows, suffix=b''):
         return self.put(relative, b''.join(json.dumps(r, allow_nan=False).encode()+b'\n' for r in rows)+suffix)
 
-    def fixture(self, directory):
+    def fixture(self, directory, *, training_commit=None, physical=32):
         self.base = Path(directory).resolve(); self.run_id = 'a'*32; self.job = '730080'
-        self.run = dict(run_id=self.run_id, source_commit=core.REVIEWED_COMMIT,
+        self.commit = training_commit or core.REVIEWED_COMMIT
+        self.run = dict(run_id=self.run_id, source_commit=self.commit,
             easy2560_selection=True, training_world_size=4, data_selection_mode='mixed_first',
-            actor_micro_batch_per_rank=32, actor_logical_micro_batch_per_rank=4,
+            actor_micro_batch_per_rank=physical, actor_logical_micro_batch_per_rank=4,
             all_correct_virtual_zero=False, checkpoint_dir=str(self.base/'checkpoints/search-g1-common8'))
+        if self.commit != core.REVIEWED_COMMIT:
+            code = self.put('repo/reviewed.py', b'fixture published source')
+            self.run['source_sha256'] = {'reviewed.py':core.digest(code.read_bytes())}
+            published = dict(source_commit=self.commit, fresh_source_all_files_sha_verified=True,
+                files={'reviewed.py':dict(bytes=code.stat().st_size, sha256=core.digest(code.read_bytes()))})
+            self.put('source/'+self.commit+'/source-publication.json', published)
+            self.put('preparation/run-source.json', dict(source_commit=self.commit,
+                files=published['files'], runtime_repo=str(self.base/'repo')))
         self.run_path = self.put('logs/run-manifest.json', self.run)
         self.put('logs/native-allocation-admission.json', dict(run_id=self.run_id, accepted=True, slurm_job_id=self.job))
         self.identities = {}
@@ -116,7 +127,10 @@ class FinalAcceptanceTests(unittest.TestCase):
                  for p in cp.rglob('*') if p.is_file()}
         files['metadata/run-manifest.json'] = dict(bytes=self.run_path.stat().st_size,
             sha256=core.digest(self.run_path.read_bytes()), path=str(self.run_path))
-        snapshot = dict(base=str(self.base), source_commit=core.REVIEWED_COMMIT, run_id=self.run_id,
+        for name, sha in self.run.get('source_sha256', {}).items():
+            p = self.base/'repo'/name
+            files['source/'+name] = dict(path=str(p), bytes=p.stat().st_size, sha256=sha)
+        snapshot = dict(base=str(self.base), source_commit=self.run['source_commit'], run_id=self.run_id,
             step=step, training_world_size=4, question_probe_saved=False, files=files,
             completed_update=self.updates[step-1], total_bytes=sum(row['bytes'] for row in files.values()))
         folder = f'preparation/checkpoint-archives/global_step_{step}'
@@ -150,6 +164,68 @@ class FinalAcceptanceTests(unittest.TestCase):
             self.assertTrue(result['progress']['no_update201'])
             self.assertFalse(result['actual_cuda_restore_accepted']); self.assertFalse(result['overall_goal_complete'])
             self.assertEqual(result['gpu_allocations'], 0); self.assertEqual(result['model_reloads'], 0)
+
+    def test_micro16_source_requires_explicit_commit_and_published_closed_maps(self):
+        with tempfile.TemporaryDirectory() as td:
+            self.fixture(td, training_commit=PUBLISHED_MICRO16_COMMIT, physical=16)
+            for requested in (None, self.commit[:7], 'f'*40):
+                with self.subTest(requested=requested), self.assertRaises(ValueError):
+                    self.verify(**({} if requested is None else dict(training_commit=requested)))
+            result = self.verify(training_commit=self.commit)
+            self.assertTrue(result['cpu_final_accepted'])
+            self.assertEqual(result['source_commit'], self.commit)
+            binding = result['source_publication_binding']
+            self.assertEqual(binding['policy'], 'explicit_caller_commit_publication_runtime_run_map')
+            self.assertEqual(binding['requested_training_commit'], self.commit)
+            self.assertFalse(binding['automatic_head_or_ancestor_allow'])
+            self.assertFalse(binding['git_ancestry_verified_here'])
+            self.assertFalse(result['actual_restore_performed'])
+            self.assertFalse(result['actual_cuda_restore_accepted'])
+
+    def test_explicit_source_binding_rejects_missing_or_different_publication_and_maps(self):
+        for broken in ('missing_publication', 'not_fresh', 'wrong_commit', 'runtime_files',
+                       'runtime_repo', 'run_map', 'archive_map'):
+            with self.subTest(broken=broken), tempfile.TemporaryDirectory() as td:
+                self.fixture(td, training_commit=PUBLISHED_MICRO16_COMMIT, physical=16)
+                publication_path = self.base/'source'/self.commit/'source-publication.json'
+                publication = json.loads(publication_path.read_bytes())
+                runtime_path = self.base/'preparation/run-source.json'
+                runtime = json.loads(runtime_path.read_bytes())
+                if broken == 'missing_publication': publication_path.unlink()
+                elif broken in ('not_fresh', 'wrong_commit'):
+                    if broken == 'not_fresh': publication['fresh_source_all_files_sha_verified'] = False
+                    else: publication['source_commit'] = core.REVIEWED_COMMIT
+                    publication_path.write_bytes(core.encoded(publication))
+                elif broken in ('runtime_files', 'runtime_repo'):
+                    if broken == 'runtime_files': runtime['files']['reviewed.py']['sha256'] = '0'*64
+                    else: runtime['runtime_repo'] = '/another-run/repo'
+                    runtime_path.write_bytes(core.encoded(runtime))
+                elif broken == 'run_map':
+                    self.run['source_sha256']['reviewed.py'] = '0'*64
+                    self.put('logs/run-manifest.json', self.run)
+                else:
+                    path = self.base/'preparation/checkpoint-archives/global_step_50/source-snapshot.json'
+                    snapshot = json.loads(path.read_bytes())
+                    snapshot['files']['source/reviewed.py']['sha256'] = '0'*64
+                    path.write_bytes(core.encoded(snapshot))
+                    receipt_path = path.parent/'complete.json'
+                    receipt = json.loads(receipt_path.read_bytes())
+                    receipt['snapshot_sha256'] = core.digest(path.read_bytes())
+                    receipt_path.write_bytes(core.encoded(receipt))
+                with self.assertRaises((ValueError, FileNotFoundError)):
+                    self.verify(training_commit=self.commit)
+
+    def test_new_source_retains_early_missing200_and_fresh_only_checks(self):
+        with tempfile.TemporaryDirectory() as td:
+            self.fixture(td, training_commit=PUBLISHED_MICRO16_COMMIT, physical=16)
+            self.ledger('logs/actual-updates.jsonl', self.updates[:-1])
+            with patch.object(core, 'published_source_binding', side_effect=AssertionError('must fail early')):
+                with self.assertRaisesRegex(ValueError, 'MISSING200'):
+                    self.verify(training_commit=self.commit)
+            self.run['full_state_restore'] = {'completed_outer': 5, 'old_job': '730080'}
+            self.put('logs/run-manifest.json', self.run)
+            with self.assertRaisesRegex(ValueError, 'CROSS_JOB_AUTHENTICATED_CHAIN_NOT_IMPLEMENTED'):
+                self.verify(training_commit=self.commit)
 
     def test_missing200_is_rejected_before_any_evaluation_or_checkpoint_reader(self):
         with tempfile.TemporaryDirectory() as td:
@@ -326,6 +402,52 @@ class FinalAcceptanceTests(unittest.TestCase):
             self.assertTrue(result['cpu_final_accepted'])
             self.assertTrue(all(row['sealed_supplement']['single_original_job_prefix'] for row in result['checkpoints'].values()))
             self.assertFalse(result['actual_restore_performed'])
+
+    def test_explicit_published_source_survives_retirement_via_verified_sealed_evidence(self):
+        from reproduction.easy2560_joint4 import checkpoint_evidence as evidence
+        with tempfile.TemporaryDirectory() as td:
+            self.fixture(td, training_commit=PUBLISHED_MICRO16_COMMIT, physical=16)
+            publication = self.base/'source'/self.commit/'source-publication.json'
+            runtime = self.base/'preparation/run-source.json'
+            for step in core.STEPS:
+                cp = self.base/f'checkpoints/search-g1-common8/actor/global_step_{step}'
+                source = self.base/f'preparation/checkpoint-archives/global_step_{step}'
+                folder = f'preparation/checkpoint-evidence/global_step_{step}'
+                copies = {'identity/source-snapshot.json': source/'source-snapshot.json',
+                          'identity/accepted-archive.json': source/'complete.json',
+                          'identity/checkpoint-complete.json': cp/'complete.json',
+                          'identity/training-state-manifest.json': cp/'training_state/manifest.json',
+                          'identity/run-manifest.json': self.run_path,
+                          'identity/source-publication.json': publication,
+                          'identity/run-source.json': runtime}
+                files = {}
+                for name, path in copies.items():
+                    target = self.put(folder+'/'+name, path.read_bytes())
+                    files[name] = dict(bytes=target.stat().st_size, sha256=core.digest(target.read_bytes()))
+                source_binding = evidence.published_source_binding(self.base, self.run, self.commit,
+                    json.loads(publication.read_bytes()), json.loads(runtime.read_bytes()),
+                    json.loads((source/'source-snapshot.json').read_bytes()))
+                core_archive = dict(status=core.ARCHIVE_STATUS,
+                    source_snapshot=dict(relative_path='identity/source-snapshot.json', sha256=files['identity/source-snapshot.json']['sha256']),
+                    source_acceptance=dict(relative_path='identity/accepted-archive.json', sha256=files['identity/accepted-archive.json']['sha256']))
+                identity = dict(source_commit=self.commit, run_id=self.run_id, source_job=self.job, step=step)
+                manifest = dict(identity, role='easy2560_checkpoint_evidence_supplement',
+                    actual_cuda_restore_accepted=False, post_callback_rng_captured=False, single_original_job_prefix=True,
+                    inherited_history_assembled=False, source_base=str(self.base), source_checkpoint=str(cp),
+                    source_publication_binding=source_binding, files=files, core_archive=core_archive,
+                    scope='synthetic sealed published source fixture, no recovery claim')
+                path = self.put(folder+'/supplement.json', manifest)
+                self.put(folder+'/complete.json', dict(identity, status=evidence.STATUS,
+                    supplement_sha256=core.digest(path.read_bytes()), actual_cuda_restore_accepted=False, post_callback_rng_captured=False))
+                shutil.rmtree(cp); shutil.rmtree(source)
+            publication.unlink(); runtime.unlink()
+            result = self.verify(training_commit=self.commit)
+            self.assertTrue(result['cpu_final_accepted'])
+            self.assertIn('/checkpoint-evidence/global_step_200/identity/',
+                          result['source_publication_binding']['publication']['path'])
+            self.assertTrue(all(row['sealed_supplement']['source_commit'] == self.commit
+                                for row in result['checkpoints'].values()))
+            self.assertFalse(result['actual_cuda_restore_accepted'])
 
     def test_archive_completed_update_must_match_the_actual_attempt_not_only_step(self):
         with tempfile.TemporaryDirectory() as td:

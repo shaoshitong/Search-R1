@@ -291,6 +291,38 @@ def _validation_observation(base, step, bundle):
                 final51713_seen_at_observation=any(r['step'] == step and r['split'] == 'final' for r in rows))
 
 
+def published_source_binding(base, run, requested, publication=None, runtime=None, snapshot=None):
+    """Bind a caller-selected commit; never infer an allowed source from HEAD."""
+    need(isinstance(requested, str) and re.fullmatch('[0-9a-f]{40}', requested) and
+         run.get('source_commit') == requested, 'EXPLICIT_TRAINING_COMMIT_DIFFERS')
+    if requested == REVIEWED_COMMIT:
+        return dict(policy='fixed_reviewed_commit', requested_training_commit=requested)
+    need(isinstance(publication, dict) and publication.get('source_commit') == requested and
+         publication.get('fresh_source_all_files_sha_verified') is True and
+         isinstance(publication.get('files'), dict) and publication['files'],
+         'EXPLICIT_PUBLISHED_SOURCE_REQUIRED')
+    need(isinstance(runtime, dict) and runtime.get('source_commit') == requested and
+         runtime.get('files') == publication['files'] and runtime.get('runtime_repo') == str(Path(base)/'repo'),
+         'PUBLISHED_RUNTIME_SOURCE_DIFFERS')
+    source_map = run.get('source_sha256')
+    need(isinstance(source_map, dict) and source_map, 'BOUND_RUNTIME_SOURCE_MAP_REQUIRED')
+    for name, sha in source_map.items():
+        entry = publication['files'].get(name)
+        need(isinstance(name, str) and name not in ('', '.') and not Path(name).is_absolute() and
+             '..' not in Path(name).parts and isinstance(sha, str) and re.fullmatch('[0-9a-f]{64}', sha) and
+             isinstance(entry, dict) and entry.get('sha256') == sha and
+             type(entry.get('bytes')) is int and entry['bytes'] >= 0,
+             'PUBLISHED_RUNTIME_SOURCE_SHA_DIFFERS')
+        if snapshot is not None:
+            archived = snapshot['files'].get('source/' + name, {})
+            need(archived.get('sha256') == sha and
+                 archived.get('bytes') == publication['files'][name].get('bytes'),
+                 'PUBLISHED_ARCHIVED_SOURCE_DIFFERS')
+    return dict(policy='explicit_caller_commit_publication_runtime_run_map',
+                requested_training_commit=requested, source_map_sha256=digest(canonical(source_map)),
+                automatic_head_or_ancestor_allow=False, git_ancestry_verified_here=False)
+
+
 def verify(directory):
     directory = Path(directory).resolve()
     marker, _, marker_record = json_small(directory/'complete.json')
@@ -320,6 +352,13 @@ def verify(directory):
          archive['base'] == manifest['source_base'] and archive['run_id'] == manifest['run_id'] and
          archive['source_commit'] == manifest['source_commit'] and archive['step'] == manifest['step'] and
          archive['actual_cuda_restore_accepted'] is False, 'SEALED_CORE_ARCHIVE_IDENTITY_DIFFERS')
+    if manifest['source_commit'] != REVIEWED_COMMIT:
+        run, _, _ = json_small(directory/'identity/run-manifest.json')
+        publication, _, _ = json_small(directory/'identity/source-publication.json')
+        runtime, _, _ = json_small(directory/'identity/run-source.json')
+        need(manifest.get('source_publication_binding') == published_source_binding(
+            manifest['source_base'], run, manifest['source_commit'], publication, runtime, snapshot),
+            'SEALED_SOURCE_PUBLICATION_BINDING_DIFFERS')
     files = dict(manifest['files'])
     for name in ('supplement.json', 'complete.json'):
         raw, record = read_small(directory/name); files[name] = dict(bytes=len(raw), sha256=record['sha256'])
@@ -327,6 +366,8 @@ def verify(directory):
                 core_archive=manifest['core_archive'], single_original_job_prefix=True,
                 inherited_history_assembled=False, selected_trace_bytes_copied=0,
                 checkpoint_large_files_rehashed_by_this_operator=False,
+                source_publication_binding=manifest.get('source_publication_binding', dict(
+                    policy='fixed_reviewed_commit', requested_training_commit=REVIEWED_COMMIT)),
                 scope=manifest['scope'], directory=str(directory), files_to_archive=[dict(
         relative_path=name, path=str(directory/name), **record) for name, record in sorted(files.items())])
 
@@ -344,7 +385,8 @@ def recheck_sources(records):
 
 def seal(base, training_commit, run_id, source_job, step):
     base = owned_base(base)
-    need(training_commit == REVIEWED_COMMIT and step in STEPS, 'REVIEWED_COMMIT_AND_FIXED_CP_REQUIRED')
+    need(isinstance(training_commit, str) and re.fullmatch('[0-9a-f]{40}', training_commit) and
+         step in STEPS, 'FULL_COMMIT_AND_FIXED_CP_REQUIRED')
     root = base/'preparation/checkpoint-evidence'; root.mkdir(parents=True, exist_ok=True)
     need(root.resolve() == root, 'EVIDENCE_ROOT_SYMLINK')
     fsync_directory(root.parent)
@@ -397,6 +439,12 @@ def seal(base, training_commit, run_id, source_job, step):
                  bundle.files['identity/checkpoint-complete.json']['sha256'] and
                  snap['files']['metadata/run-manifest.json']['sha256'] ==
                  bundle.files['identity/run-manifest.json']['sha256'], 'ARCHIVED_METADATA_DIFFERS')
+            publication = runtime = None
+            if training_commit != REVIEWED_COMMIT:
+                publication = bundle.copy('identity/source-publication.json',
+                    base/'source'/training_commit/'source-publication.json')
+                runtime = bundle.copy('identity/run-source.json', base/'preparation/run-source.json')
+            source_binding = published_source_binding(base, run, training_commit, publication, runtime, snap)
             state = bundle.copy('identity/training-state-manifest.json', cp/'training_state/manifest.json',
                                 expected=complete['files_sha256']['training_state/manifest.json'])
             need(state['completed_outer'] == step and state['question_probe'] is None and
@@ -480,6 +528,7 @@ def seal(base, training_commit, run_id, source_job, step):
                 files=bundle.files, source_reads=bundle.source_reads,
                 selected_large_trace_references=len(refs), copied_selected_trace_bytes=0,
                 checkpoint_large_files_rehashed_by_this_operator=False,
+                source_publication_binding=source_binding,
                 core_archive=dict(status=ARCHIVE_STATUS, training_world_size=4,
                     source_snapshot=dict(relative_path='identity/source-snapshot.json',
                         sha256=bundle.files['identity/source-snapshot.json']['sha256']),

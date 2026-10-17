@@ -1,6 +1,8 @@
 """CPU file/receipt lifecycle and exact-job observation tests; no live Slurm."""
 import ast
+from contextlib import redirect_stdout
 import hashlib
+import io
 import json
 from pathlib import Path
 import subprocess
@@ -24,11 +26,11 @@ def terminal(state='COMPLETED', exit_code='0:0'):
 
 
 class JobObservationTests(unittest.TestCase):
-    def command(self, responses):
+    def command(self, responses, job='730080'):
         calls = []
         def execute(argv, **kwargs):
             calls.append(argv)
-            self.assertIn('730080', argv); self.assertNotIn('--allusers', argv)
+            self.assertIn(job, argv); self.assertNotIn('--allusers', argv)
             response = responses[len(calls)-1]
             if isinstance(response, Exception): raise response
             return NS(returncode=response[0], stdout=response[1], stderr=response[2])
@@ -72,6 +74,16 @@ class JobObservationTests(unittest.TestCase):
             observed = runner.observe_job('730080', command)
             self.assertEqual(observed['observation'], expected)
             self.assertEqual(len(calls), 2)
+
+    def test_explicit_new_job_only_queries_exact_same_handle(self):
+        command, calls = self.command([(1, '', 'invalid job id'),
+            (0, '731234|COMPLETED|0:0|2026-10-18T01:00:00\n', '')], job='731234')
+        observed = runner.observe_job('731234', command, expected_job='731234')
+        self.assertEqual(observed['source_job'], '731234'); self.assertTrue(observed['terminal_confirmed'])
+        self.assertEqual(len(calls), 2)
+        with self.assertRaisesRegex(ValueError, 'CANNOT_OBSERVE_ANOTHER_JOB'):
+            runner.observe_job('730080', command, expected_job='731234')
+        self.assertEqual(len(calls), 2)
 
 
 class MaintenanceTests(unittest.TestCase):
@@ -163,7 +175,7 @@ class MaintenanceTests(unittest.TestCase):
 
     def test_apply_failure_is_preserved_and_not_retried(self):
         calls = []
-        def failed(*args): calls.append(args); raise OSError('constructed apply failure')
+        def failed(*args, **kwargs): calls.append((args, kwargs)); raise OSError('constructed apply failure')
         with patch.object(runner, 'process_identity', return_value={'pid': 1, 'start_ticks': 2, 'boot_id': 'fixture'}), \
                 patch.object(helper, 'apply_plan', side_effect=failed):
             with self.assertRaisesRegex(OSError, 'constructed apply failure'):
@@ -196,6 +208,65 @@ class MaintenanceTests(unittest.TestCase):
         (root/'retire_candidate_raw.py').write_bytes(body+b'\n')
         with self.assertRaisesRegex(ValueError, 'HELPER_SOURCE_SHA_DIFFERS'):
             runner.load_helper(self.base, commit, sha)
+
+    def deploy_fixture_helper(self, bound):
+        commit = 'c'*40; root = self.base/'preparation/candidate-raw-maintenance-code'/commit
+        root.mkdir(parents=True); body = Path(helper.__file__).read_bytes(); sha = hashlib.sha256(body).hexdigest()
+        (root/'retire_candidate_raw.py').write_bytes(body)
+        manifest = dict(operator_commit=commit, base=str(self.base), **bound,
+                        files={'retire_candidate_raw.py': dict(bytes=len(body), sha256=sha)})
+        (root/'source-manifest.json').write_text(json.dumps(manifest))
+        return commit, sha
+
+    def test_new_binding_reaches_helper_plan_apply_persistent_claim_and_observer(self):
+        bound = self.fixture.use_published_source(); observed_jobs = []
+        def observe(job):
+            observed_jobs.append(job)
+            return dict(terminal(), source_job=bound['source_job'])
+        birth = dict(pid=123, start_ticks=456, uid=14090, boot_id='fixture', pid_namespace='pid:[fixture]')
+        with patch.object(runner, 'process_identity', return_value=birth):
+            result = runner.persistent(self.base, helper, helper_commit='c'*40, helper_sha256='d'*64,
+                                       observer=observe, **bound)
+        root = self.base/'preparation/candidate-raw-maintenance-runner'
+        claim = json.loads((root/'launch-claim.json').read_text())
+        self.assertEqual(observed_jobs, [bound['source_job']]); self.assertEqual(result['phase'], 'SOURCE_JOB_COMPLETED')
+        self.assertTrue(all(claim[key] == value for key, value in bound.items()))
+        self.assertEqual(result['retired_logical_bytes'], sum(len(('raw-'+str(s)+'-'+n).encode())
+                         for s in (1, 2) for n in helper.RAW_NAMES))
+        self.assertTrue((self.base/self.fixture.pools[3]/'0.pt').exists())
+        self.assertFalse((self.base/self.fixture.pools[1]/'0.pt').exists())
+
+    def test_explicit_cli_dry_observe_uses_new_manifest_scope_and_job_without_claim_or_plan(self):
+        bound = self.fixture.use_published_source(); commit, sha = self.deploy_fixture_helper(bound)
+        loaded = runner.load_helper(self.base, commit, sha, **bound)
+        self.assertEqual(loaded.REVIEWED_TRAINING_COMMIT, helper.REVIEWED_TRAINING_COMMIT)
+        with self.assertRaisesRegex(ValueError, 'HELPER_MANIFEST_RUN_BINDING_DIFFERS'):
+            runner.load_helper(self.base, commit, sha)
+        argv = ['candidate_raw_maintenance.py', '--dry-observe', '--base', str(self.base),
+                '--run-id', bound['run_id'], '--source-job', bound['source_job'],
+                '--training-commit', bound['training_commit'], '--helper-commit', commit, '--helper-sha256', sha]
+        output = io.StringIO()
+        with patch('sys.argv', argv), patch.object(runner, 'scope', return_value=self.base), \
+             patch.object(runner, 'observe_job', return_value=dict(live(), source_job=bound['source_job'])) as observe, \
+             redirect_stdout(output): runner.main()
+        observe.assert_called_once_with(bound['source_job'], expected_job=bound['source_job'])
+        result = json.loads(output.getvalue())
+        self.assertEqual(result['phase'], 'DRY_OBSERVE_ONLY'); self.assertEqual(result['run_id'], bound['run_id'])
+        self.assertFalse((self.base/'preparation/candidate-raw-maintenance-runner').exists())
+        self.assertFalse((self.base/'preparation/candidate-raw-retirement').exists())
+
+    def test_new_namespace_requires_full_explicit_identity_and_jxu_scope(self):
+        path = '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018'
+        bound = dict(run_id='b'*32, training_commit='8a5bac94b8230a99b81977f5290589e3d3708dfe', source_job='731234')
+        with patch.object(runner.os, 'getuid', return_value=14090):
+            self.assertEqual(runner.scope(path, **bound), Path(path))
+            with self.assertRaisesRegex(ValueError, 'CANONICAL_JXU957_SCOPE_REQUIRED'):
+                runner.scope('/data/user/jxu957/experiments/unrelated', **bound)
+            with self.assertRaisesRegex(ValueError, 'EXPLICIT_RUN_SOURCE_JOB_REQUIRED'):
+                runner.scope(path, **dict(bound, training_commit='HEAD'))
+        state = runner.initial_state()
+        with self.assertRaisesRegex(ValueError, 'OBSERVATION_JOB_DIFFERS'):
+            runner.cycle(self.base, helper, state, live(), **bound)
 
 
 if __name__ == '__main__': unittest.main()

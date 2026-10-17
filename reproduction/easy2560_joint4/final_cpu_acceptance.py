@@ -1,4 +1,4 @@
-"""Read-only Easy2560 final CPU consumer for the immutable 93eda66 producer.
+"""Read-only Easy2560 final CPU consumer with explicit published-source binding.
 
 This consumes existing scores and durable scalar/byte-preservation evidence.
 It neither imports Torch nor generates answers, trains, allocates a GPU or
@@ -77,6 +77,37 @@ def lines(path):
          (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns) ==
          (path.stat().st_dev, path.stat().st_ino, path.stat().st_size, path.stat().st_mtime_ns),
          'FINAL_LEDGER_CHANGED_DURING_READ')
+
+
+def published_source_binding(base, run, training_commit):
+    """Default93 stays fixed; a different source must be explicitly requested."""
+    need(isinstance(training_commit, str) and re.fullmatch('[0-9a-f]{40}', training_commit) and
+         run.get('source_commit') == training_commit, 'EXPLICIT_TRAINING_COMMIT_DIFFERS')
+    if training_commit == REVIEWED_COMMIT:
+        return dict(policy='fixed_reviewed_commit', requested_training_commit=training_commit)
+    original = base/'source'/training_commit/'source-publication.json'
+    runtime_path = base/'preparation/run-source.json'
+    sidecar = base/'preparation/checkpoint-evidence/global_step_200/identity'
+    publication, publication_record = small(original if original.is_file() else sidecar/'source-publication.json')
+    runtime, runtime_record = small(runtime_path if runtime_path.is_file() else sidecar/'run-source.json')
+    need(publication.get('source_commit') == training_commit and
+         publication.get('fresh_source_all_files_sha_verified') is True and
+         isinstance(publication.get('files'), dict) and publication['files'], 'PUBLISHED_SOURCE_REQUIRED')
+    need(runtime.get('source_commit') == training_commit and runtime.get('files') == publication['files'] and
+         runtime.get('runtime_repo') == str(base/'repo'), 'PUBLISHED_RUNTIME_SOURCE_DIFFERS')
+    source_map = run.get('source_sha256')
+    need(isinstance(source_map, dict) and source_map, 'BOUND_RUNTIME_SOURCE_MAP_REQUIRED')
+    for name, sha in source_map.items():
+        entry = publication['files'].get(name)
+        need(isinstance(name, str) and name not in ('', '.') and not Path(name).is_absolute() and
+             '..' not in Path(name).parts and isinstance(sha, str) and re.fullmatch('[0-9a-f]{64}', sha) and
+             isinstance(entry, dict) and entry.get('sha256') == sha and
+             type(entry.get('bytes')) is int and entry['bytes'] >= 0,
+             'PUBLISHED_RUNTIME_SOURCE_SHA_DIFFERS')
+    return dict(policy='explicit_caller_commit_publication_runtime_run_map',
+                requested_training_commit=training_commit, publication=publication_record,
+                runtime_source=runtime_record, automatic_head_or_ancestor_allow=False,
+                git_ancestry_verified_here=False)
 
 
 def canonical(base, split):
@@ -288,6 +319,10 @@ def checkpoint_evidence(base, run, step, *, archive_root=None):
          snapshot.get('training_world_size') == 4 and snapshot.get('question_probe_saved') is False,
          'CHECKPOINT_ARCHIVE_IDENTITY_DIFFERS')
     files = snapshot['files']; total = sum(row['bytes'] for row in files.values())
+    if run['source_commit'] != REVIEWED_COMMIT:
+        for name, sha in run['source_sha256'].items():
+            need(files.get('source/' + name, {}).get('sha256') == sha,
+                 'ARCHIVED_PUBLISHED_SOURCE_MAP_DIFFERS')
     need(accepted.get('status') == ARCHIVE_STATUS and accepted.get('fresh_destination_sha_verified') is True and
          accepted.get('destination_fsynced') is True and accepted.get('fresh_source_after_archive_sha_verified') is True and
          accepted.get('actual_cuda_restore_accepted') is False and accepted.get('snapshot_sha256') == snapshot_record['sha256'] and
@@ -320,9 +355,9 @@ def checkpoint_evidence(base, run, step, *, archive_root=None):
                 sealed_supplement=supplement)
 
 
-def verify_final(base, *, archive_root=None, load_canonical=canonical):
+def verify_final(base, *, archive_root=None, load_canonical=canonical, training_commit=REVIEWED_COMMIT):
     base = Path(base).resolve(); run, run_record = small(base/'logs/run-manifest.json')
-    need(run.get('source_commit') == REVIEWED_COMMIT and run.get('easy2560_selection') is True and
+    need(run.get('source_commit') == training_commit and run.get('easy2560_selection') is True and
          run.get('training_world_size') == 4 and run.get('data_selection_mode') == 'mixed_first' and
          run.get('question_probe') is None and run.get('actor_logical_micro_batch_per_rank') == 4 and
          run.get('actor_micro_batch_per_rank') in (32, 16, 8, 4) and run.get('all_correct_virtual_zero') is False,
@@ -331,10 +366,12 @@ def verify_final(base, *, archive_root=None, load_canonical=canonical):
     # Check actual completion first. Missing200 cannot be hidden by optional
     # metadata or a final score copied from a different run.
     progress = no201(base, run)
+    source_binding = published_source_binding(base, run, training_commit)
     evaluation = evaluations(base, run, load_canonical)
     checkpoints = {str(step): checkpoint_evidence(base, run, step, archive_root=archive_root) for step in STEPS}
     return dict(schema_version=1, status=STATUS, cpu_final_accepted=True, base=str(base),
                 run_id=run['run_id'], source_commit=run['source_commit'], run_manifest=run_record,
+                source_publication_binding=source_binding,
                 progress=progress, evaluations=evaluation, checkpoints=checkpoints,
                 new_training_updates=0, gpu_allocations=0, model_reloads=0, actual_restore_performed=False,
                 actual_cuda_restore_accepted=False, overall_goal_complete=False, checked_unix=time.time(),
@@ -345,9 +382,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', required=True)
     parser.add_argument('--archive-root', help='optional remote directory containing global_step_N archives')
+    parser.add_argument('--training-commit', default=REVIEWED_COMMIT,
+                        help='explicit full40 training source; a non93 commit requires publication/run-source/run-map binding')
     parser.add_argument('--output', help='new small JSON report; existing reports are never overwritten')
     args = parser.parse_args()
-    result = verify_final(args.base, archive_root=args.archive_root)
+    result = verify_final(args.base, archive_root=args.archive_root, training_commit=args.training_commit)
     raw = encoded(result)
     if args.output:
         with Path(args.output).open('xb') as stream:

@@ -5,8 +5,8 @@ It preserves selected-token evidence, all-group selection JSON, before/after RNG
 active/failed pools, and at least two latest completed outers. The retired raw
 tensors can no longer reconstruct unselected candidates' full token outputs.
 Checkpoint/optimizer/RNG recovery does not consume these diagnostic tensors in
-the explicitly reviewed training source below. Adding a new source requires a
-fresh dependency review, not an automatic allowlist expansion.
+the reviewed Easy recipe. A caller-selected source must carry matching published
+source, runtime-copy and run-manifest bindings; HEAD is never inferred here.
 """
 import argparse
 import fcntl
@@ -81,14 +81,20 @@ def completed_updates(base):
 
 
 def bind(base, run_id, training_commit, source_job):
-    require(training_commit == REVIEWED_TRAINING_COMMIT, 'SOURCE_DEPENDENCY_REVIEW_REQUIRED')
+    require(isinstance(training_commit, str) and re.fullmatch('[0-9a-f]{40}', training_commit),
+            'EXPLICIT_FULL_TRAINING_COMMIT_REQUIRED')
+    require(isinstance(run_id, str) and re.fullmatch('[0-9a-f]{32}', run_id) and
+        isinstance(source_job, str) and re.fullmatch('[1-9][0-9]*', source_job),
+        'EXPLICIT_RUN_OR_SOURCE_DIFFERS')
     manifest_record, run = read_file(base, 'logs/run-manifest.json', parse_json=True)
     require(run.get('run_id') == run_id and run.get('source_commit') == training_commit,
             'EXPLICIT_RUN_OR_SOURCE_DIFFERS')
     require(run.get('easy2560_selection') is True and run.get('profile') == 'common8' and
         run.get('training_world_size') == 4 and run.get('execution_site') == 'hpc3' and
         run.get('execution_backend', 'slurm') == 'slurm' and run.get('data_selection_mode') == 'mixed_first' and
-        run.get('actor_logical_micro_batch_per_rank') == 4 and not run.get('question_probe') and
+        type(run.get('actor_logical_micro_batch_per_rank')) is int and run['actor_logical_micro_batch_per_rank'] == 4 and
+        type(run.get('actor_micro_batch_per_rank')) is int and run['actor_micro_batch_per_rank'] in (32, 16, 8, 4) and
+        run.get('all_correct_virtual_zero') is False and not run.get('question_probe') and
         run.get('selection_candidate_questions') == 2560 and run.get('selection_selected_questions') == 512 and
         run.get('selection_fixed_candidate_budget') is True and not run.get('full_state_restore'),
         'EXPLICIT_FRESH_NATIVE4_EASY_SCOPE_REQUIRED')
@@ -96,7 +102,32 @@ def bind(base, run_id, training_commit, source_job):
     require(allocation.get('accepted') is True and allocation.get('run_id') == run_id and
         allocation.get('slurm_job_id') == source_job, 'SOURCE_JOB_DIFFERS')
     if 'slurm_job_id' in run: require(run['slurm_job_id'] == source_job, 'RUN_JOB_DIFFERS')
-    return run, [manifest_record, allocation_record]
+    bindings = [manifest_record, allocation_record]
+    if training_commit != REVIEWED_TRAINING_COMMIT:
+        # The launcher already SHA-verified all published source bytes before
+        # copying the runtime repo. Authenticate those small immutable receipts,
+        # not 1301 source files again on each maintenance poll.
+        publication_record, publication = read_file(base,
+            'source/' + training_commit + '/source-publication.json', parse_json=True)
+        runtime_record, runtime = read_file(base, 'preparation/run-source.json', parse_json=True)
+        require(publication.get('source_commit') == training_commit and
+            publication.get('fresh_source_all_files_sha_verified') is True and
+            isinstance(publication.get('files'), dict) and publication['files'],
+            'EXPLICIT_PUBLISHED_SOURCE_REQUIRED')
+        require(runtime.get('source_commit') == training_commit and
+            runtime.get('files') == publication['files'] and runtime.get('runtime_repo') == str(base/'repo'),
+            'PUBLISHED_RUNTIME_SOURCE_DIFFERS')
+        source_map = run.get('source_sha256')
+        require(isinstance(source_map, dict) and source_map, 'BOUND_RUNTIME_SOURCE_MAP_REQUIRED')
+        for name, sha in source_map.items():
+            record = publication['files'].get(name)
+            require(isinstance(name, str) and name and not Path(name).is_absolute() and '..' not in Path(name).parts and
+                isinstance(sha, str) and re.fullmatch('[0-9a-f]{64}', sha) and
+                isinstance(record, dict) and record.get('sha256') == sha and
+                type(record.get('bytes')) is int and record['bytes'] >= 0,
+                'PUBLISHED_RUNTIME_SOURCE_SHA_DIFFERS')
+        bindings.extend((publication_record, runtime_record))
+    return run, bindings
 
 
 def selection_pool(base, run, update):

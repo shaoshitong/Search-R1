@@ -84,8 +84,11 @@ progress points, one completed outer, error/exit status and four-rank update cou
 
 ## Independent CPU maintenance and final reports
 
-`candidate_raw_maintenance.py` observes only job730080 and the reviewed fresh
-93eda66 training run. Its published helper retains the latest two completed
+`candidate_raw_maintenance.py` binds one explicit `--base`, `--run-id`,
+`--source-job` and full40 `--training-commit`; its legacy defaults identify
+job730080/source93eda66. A different published source requires matching source
+publication, runtime-copy and run-manifest SHA maps. It never infers HEAD or
+combines a failed job's history with a fresh retry. Its helper retains the latest two completed
 outers, every failed/partial pool, selected token/probability traces, selection
 JSON, RNG and checkpoints. Only the five raw tensors of older full-success
 pools may be retired. Retired unselected candidates cannot be replayed in full.
@@ -100,12 +103,14 @@ before the extra fixed512 callback; CP50/100/150 were saved after fixed512 and
 before grounding refresh; CP200 precedes final51713 and has no further refit.
 No sidecar claims post-callback RNG capture or an actual CUDA restore.
 
-`final_cpu_acceptance --base BASE --output NEW_REPORT.json` consumes the five
+`final_cpu_acceptance --base BASE --training-commit FULL40 --output NEW_REPORT.json` consumes the five
 fixed512 points and exact ordered native51713 scores, preserving repeated
 canonical questions, and reports per-source, macro and weighted EM/F1. It rejects
 missing200, incomplete final ledgers and any update201. It also authenticates
 existing complete checkpoint archive receipts, including through sealed small
 metadata after an explicitly authorized source retirement. It performs no
-training, answer generation, model reload or GPU allocation. The original93
+training, answer generation, model reload or GPU allocation. Non93 sources require
+the same explicit published-source binding; sealed evidence retains the small
+publication records when source retirement was separately authorized. The original93
 pipeline still uses its original verifier; this independent report does not
 rewrite that pipeline's marker or claim whole-goal/recovery acceptance.
