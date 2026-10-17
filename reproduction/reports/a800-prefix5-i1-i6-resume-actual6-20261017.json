@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-17",
+  "role": "actual_I1_I6_restoration_and_variable_candidate_schedule_scalar_report",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "a4a0c2a18cca40bc8c3850d40eed8554",
+  "runtime_source_commit": "75d536575593891876df339467da73b3c4cbdc7c",
+  "operator_commit": "c511f0ae9d5bcc12d129431ff214279b4ade1551",
+  "observed_unix": 1792223148.2623177,
+  "actual_receipt_sha256": "2415b641a62cdbd3143d0cd42bde55b0233624165e753c4d1dfbedaba0b64025",
+  "complete_outers": 6,
+  "total_outers": 200,
+  "actual_actor_Adam_per_rank": [
+    120,
+    120,
+    120,
+    120
+  ],
+  "four_rank_replicas_count_once": 120,
+  "restored_parent_complete_outers": 4,
+  "restored_parent_Adam": 80,
+  "new_complete_outers": [
+    5,
+    6
+  ],
+  "new_successful_Adam": 40,
+  "optimizer_reset": false,
+  "pending5_prefix_and_scores_reused": true,
+  "actual_probe_Adam_per_rank": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "existing_probe_initialization_retained": true,
+  "new_warmup_performed": false,
+  "candidate_schedule_effective_outer": 6,
+  "ordinary6_actual_counts": {
+    "selection.json": {
+      "outer": 6,
+      "questions": 5120,
+      "trajectories": 25600,
+      "scheduled_candidate_questions": 5120
+    },
+    "prefix/complete.json": {
+      "outer": 6,
+      "questions": 5120,
+      "trajectories": 25600,
+      "scheduled_candidate_questions": 5120
+    },
+    "probe-score/selection.json": {
+      "outer": 6,
+      "candidate_questions": 5120,
+      "scheduled_candidate_questions": 5120,
+      "selected_questions": 512
+    },
+    "full/complete.json": {
+      "outer": 6,
+      "questions": 512,
+      "trajectories": 2560,
+      "scheduled_candidate_questions": 5120,
+      "actual_selected_mixed_fraction": 0.7734375
+    }
+  },
+  "ordinary6_selected_mixed": {
+    "count": 396,
+    "groups": 512,
+    "fraction": 0.7734375
+  },
+  "ordinary6_actor_opportunities": 20,
+  "ordinary6_actor_returned_Adam": 20,
+  "ordinary6_actor_skip": 0,
+  "existing_QA5": {
+    "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0005",
+    "qa_count": 512,
+    "em": 0.265625,
+    "f1": 0.36065851672240307,
+    "per_source": {
+      "hotpotqa": {
+        "em": 0.28125,
+        "f1": 0.342541094519571,
+        "qa_count": 256
+      },
+      "nq": {
+        "em": 0.25,
+        "f1": 0.37877593892523514,
+        "qa_count": 256
+      }
+    },
+    "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "interaction_protocol": {
+      "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+      "actor_loss_dtype": "float32",
+      "actor_master_dtype": "float32",
+      "answer_reserve_tokens": 500,
+      "asynchronous_generation": true,
+      "compute_dtype": "bfloat16",
+      "early_final": true,
+      "kind": "shared_new_context_stream_bf16",
+      "max_action_tokens": 500,
+      "max_context_tokens": 4096,
+      "max_model_tokens": 4096,
+      "max_observation_tokens": 500,
+      "max_request_tokens": 3596,
+      "max_search_turns": 4,
+      "max_start_tokens": 2048,
+      "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+      "natural_eos": "terminal_without_environment_correction",
+      "observation_truncation": "clip_before_input_preserve_information_wrapper",
+      "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+      "train_compute_dtype": "bfloat16"
+    },
+    "actual_compute_dtype": "torch.bfloat16",
+    "metadata_sha256": "6e8a41fc0a41cfaf970f81a9fcb3ccb934562c19f9babe3ffc059e957e1a01db"
+  },
+  "latest_joint_proof": {
+    "path": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/latest-joint.json",
+    "sha256": "d63c777324491bc03e95d953b270aac4198df5608ec8b8c6a292b83e949913c9"
+  },
+  "policy_safety": "original authorized old-policy/ratio-tail/finite/clip path retained",
+  "I1_I5_I6": "shared train/QA BF16 protected information wrapper/context budget/stream first action; strict scorer unchanged",
+  "I2": "original64 equal micro2 masked-token means retained with4physical ranks",
+  "I3": "round0 actual reuse/adopt;50,100,150 refit/adopt code present; future actual refresh NOT yet reached",
+  "I4": "actual opportunity and returnedAdam bookkeeping; complete ordinary6 20write/0skip",
+  "periodic10_actual_status": "NOT_YET_REACHED_EXPECTED_2560G5_FULL_LABELS_50_PROBE_ADAM_NO_EXTRA_UPDATE_INSERTED",
+  "score_interpretation": "QA5 is this new run current shared protocol; no claim all QA gaps are fixed or selection efficacy established",
+  "metrics_are_existing_native_metadata": true,
+  "new_evaluation_added": false,
+  "models_or_tensor_data_published": false
+}
