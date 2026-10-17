@@ -202,7 +202,7 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
                 if run.get('easy2560_selection') is True:
                     _require(row['objective_weight_definition'] == objective_weight_definition(run),
                              'Transaction logical objective weighting differs')
-                _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run))
+                _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run), run=run)
                 if identity is None: identity = row['monitor_identity']
                 _require(identity==row['monitor_identity'], 'Transaction frozen sample changed')
                 statistics = _monitor_statistics(row,run.get('finite_thresholds_diagnostic_only',False))
@@ -331,7 +331,7 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run
                          'Actual monitor prospective plan or enforced role differs')
                 _require(row['objective_weight_definition'] == objective_weight_definition(run) and
                          row['monitoring_scope'] == monitor_scope(run), 'Actual monitor weight/scope differs')
-                _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run))
+                _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run), run=run)
                 if identity is None:
                     identity = copy.deepcopy(row['monitor_identity']); identities[rank] = identity
                 _require(identity == row['monitor_identity'], 'Actual frozen monitor identity changed')

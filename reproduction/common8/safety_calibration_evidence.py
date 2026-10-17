@@ -112,7 +112,7 @@ def _adjacent(previous, current):
             _require(left == right, 'Adjacent unchanged-policy exact field differs: ' + name)
 
 
-def _identity(value, monitor_count=4):
+def _identity(value, monitor_count=4, *, run=None):
     _require(type(monitor_count) is int and monitor_count in (4, 8), 'Unsupported local monitor count')
     _require(isinstance(value, Mapping), 'Missing local monitor identity')
     _require(set(value) == {'selection_indices', 'actor_token_lengths', 'tensor_sha256'},
@@ -132,9 +132,17 @@ def _identity(value, monitor_count=4):
     # Production actor batches omit reference probabilities when ref-KL is
     # disabled. The sampled-old-policy monitor still authenticates all seven
     # actual input tensors; calibration batches may additionally carry ref.
+    # The Easy producer freezes every actual selected batch tensor, including
+    # the mixed/fallback diagnostic label. It is not a substitute for an input
+    # hash and must remain frozen across the same pre/post monitor sequence.
+    # Historical calibration/common8 scopes keep their original exact schema.
+    from reproduction.common8.precision_contract import easy2560_native4
+    selection = {'selection_fallback'} if run is not None and easy2560_native4(run) else set()
     _require(isinstance(hashes, Mapping) and
-             MONITOR_TENSORS - {'ref_log_prob'} <= set(hashes) <= MONITOR_TENSORS,
+             (MONITOR_TENSORS - {'ref_log_prob'}) | selection <= set(hashes),
              'Missing actual common8 monitor tensor hashes')
+    _require(set(hashes) <= MONITOR_TENSORS | selection,
+             'Unexpected actual common8 monitor tensor hashes')
     for name, digest in hashes.items():
         _hash(digest, name)
 
@@ -315,7 +323,7 @@ def verify_formal_segment(rows_by_rank, binding):
                     _require(row['objective_weight_definition'] == objective_weight_definition(run) and
                              row['monitoring_scope'] == scope, 'Formal monitor weighting/scope differs')
                     _integer(row['rejection_count'], 'actual cumulative rejection_count')
-                    _identity(row['monitor_identity'], monitor_count=monitor_count)
+                    _identity(row['monitor_identity'], monitor_count=monitor_count, run=run)
                     if identity is None:
                         identity = copy.deepcopy(row['monitor_identity']); identities[(outer, rank)] = identity
                     _require(identity == row['monitor_identity'], 'Frozen formal monitor inputs changed')
