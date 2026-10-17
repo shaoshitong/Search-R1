@@ -1,0 +1,100 @@
+{
+  "checked_unix": 1792277796.151809,
+  "job": "731063",
+  "training_source_commit": "a61b48139386b346e4fef12511ece1ac0d09a8e3",
+  "HK_archive_controller": {
+    "birth": {
+      "pid": 2866887,
+      "start_ticks": 1006206646,
+      "state": "R",
+      "uid": 1002,
+      "boot_id": "34b77aa6-ff04-435f-88be-ff4b0cc3d0ae"
+    },
+    "same_birth": true,
+    "progress": {
+      "phase": "WAITING_CHECKPOINT",
+      "source_job": "731063",
+      "step": 50,
+      "actual_job_state": "RUNNING",
+      "completed_steps": [],
+      "checked_unix": 1792277710.9393198
+    },
+    "failure_present": false,
+    "source_publication_sha256": "88954f35c2715241754af92d65d66550f1cc8416c06790a1dd6018e1f2ba685f"
+  },
+  "raw_maintenance": {
+    "birth": {
+      "pid": 3164925,
+      "start_ticks": 98036620,
+      "uid": 14090,
+      "state": "S",
+      "boot_id": "a27512a3-24a0-4ca3-aa92-98d2a5256d9a",
+      "pid_namespace": "pid:[4026531836]"
+    },
+    "same_birth": true,
+    "progress": {
+      "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018",
+      "checked_unix": 1792277636.4842505,
+      "confirmed_unlinked_allocated_bytes": 6932291584,
+      "eligible_old_success_outer_count": 2,
+      "filesystem_quota_free_bytes_measured": false,
+      "full_success_outer_count": 4,
+      "helper_commit": "2044beb53dac70436c33b3e18be8d27d40218939",
+      "helper_sha256": "e0d60242a89d1e6b2dd63805970840d5aa7b7324a439b7af923069e4a5cf9fe1",
+      "last_observed_completed_outer": 9,
+      "last_planned_frontier": 9,
+      "operations": [
+        {
+          "checked_unix": 1792275094.3732674,
+          "confirmed_unlinked_allocated_bytes": 3518119936,
+          "frontier": 8,
+          "helper_result_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018/preparation/candidate-raw-retirement/8afd7b8974e84e8da8fc5c90b1df9804/result.json",
+          "helper_result_sha256": "b731f3fa58bb42646f3f4e7cb044f031a82f0b75408cf2d9b84e41702a720fa5",
+          "phase": "APPLIED",
+          "plan_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018/preparation/candidate-raw-retirement/8afd7b8974e84e8da8fc5c90b1df9804/plan.json",
+          "pool_count": 1,
+          "retired_logical_bytes": 3518108973,
+          "unconfirmed_prior_unlink_bytes": 0
+        },
+        {
+          "checked_unix": 1792276369.4909332,
+          "confirmed_unlinked_allocated_bytes": 3414171648,
+          "frontier": 9,
+          "helper_result_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018/preparation/candidate-raw-retirement/8e65acf284044dd6ab803e294bcad9a7/result.json",
+          "helper_result_sha256": "3f50aa97719d04e34748c2c4171696f83261c3e5f75e971d599ccbc49d1349eb",
+          "phase": "APPLIED",
+          "plan_path": "/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018/preparation/candidate-raw-retirement/8e65acf284044dd6ab803e294bcad9a7/plan.json",
+          "pool_count": 1,
+          "retired_logical_bytes": 3414160749,
+          "unconfirmed_prior_unlink_bytes": 0
+        }
+      ],
+      "operator_source_sha256": "5b60d982c5527e4d44bc8e1976a10b3a201bcd7d8e81ed64de89ed90867cc528",
+      "phase": "WAITING_NEXT_COMPLETED_FRONTIER",
+      "poll_seconds": 180,
+      "polls": 39,
+      "process_identity": {
+        "boot_id": "a27512a3-24a0-4ca3-aa92-98d2a5256d9a",
+        "pid": 3164925,
+        "pid_namespace": "pid:[4026531836]",
+        "start_ticks": 98036620,
+        "uid": 14090
+      },
+      "retired_logical_bytes": 6932269722,
+      "role": "easy2560_candidate_raw_maintenance_runner",
+      "run_id": "dfe9c94084bb48b2a9bb7b60f9d882da",
+      "source_job": "731063",
+      "source_job_observation": {
+        "authority": "squeue",
+        "observation": "LIVE",
+        "source_job": "731063",
+        "state": "RUNNING",
+        "terminal_confirmed": false
+      },
+      "training_commit": "a61b48139386b346e4fef12511ece1ac0d09a8e3"
+    }
+  },
+  "training_modified": false,
+  "controllers_launched": 0,
+  "job_submissions": 0
+}
