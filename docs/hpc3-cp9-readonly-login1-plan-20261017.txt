@@ -11,6 +11,7 @@ from reproduction.hpc3_prefix5.direct_control import run
 
 # Keep the executable program separate from SSH quoting and credential handling.
 program=r'''import pathlib,json,socket,time,os
+os.environ.update(CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2')
 from reproduction.prefix_selection200.i1_i6_joint_resume import plan,read,sha,qualified_file_stat,_once
 from reproduction.prefix_selection200.i1_i6_checkpoint_cpu import qualify
 b=pathlib.Path(TARGET);c=read(b/'preparation/resume-config-template.json');s=c['resume_joint'];qpath=pathlib.Path(s['qualification_proof'])
