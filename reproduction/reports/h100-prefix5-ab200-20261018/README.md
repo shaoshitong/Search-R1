@@ -157,3 +157,20 @@ Actual outer8 pipeline has started. Fresh paired probe heldout diagnosis is at10
 there is no scheduled QA10. Same runtime2e397623, no deployment or restart.
 The complete small original-group paired metrics and all four rank journals for
 each finished outer are in `through7-small-actual-comparison.json`.
+
+### Recovery path preparation independent of h100-8 storage
+
+`h10011_retained_paths.sh` creates a **new private** mount namespace and mounts
+`h100-10:/mnt/data` directly, without traversing h100-8's NFS ancestors. It then
+maps the completed retained input mirror and the retained common8 runtime to the
+same canonical paths. It requires the actual `cache2-RESULT.json` completion,
+not a launch receipt. `inspect_retained_bootstrap.py stage` only stores this tiny
+wrapper on h100-11; `inspect` performs a CPU metadata-only path/mount inspection
+once, after copying completes. No model forward or large rehash is involved.
+
+Staging or inspecting this wrapper does **not** activate it in either live run,
+change their scientific configuration, or transfer their UUID leases. Any later
+training handoff must preserve the actual latest complete joint state and release
+old owned processes/locks first. Current live jobs still use the original private
+namespace; do not claim they are already independent of h100-8. Inspection is
+recovery readiness work, never a gate that stops healthy training.
