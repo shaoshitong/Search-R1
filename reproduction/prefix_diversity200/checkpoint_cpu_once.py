@@ -1,20 +1,24 @@
 """Once-only CPU/full-file readback of this run's actual joint milestones.
 
-This reads no old actor/probe weight file, invokes no model forward or CUDA API,
+This reads no historical training checkpoint, invokes no model forward or CUDA API,
 and never changes training state. CPU deserialization is not a GPU restore or an
-independent backup. Missing joint completion is pending without an audit intent.
+independent backup. I1-I6 compares only selected small official initial tensors.
+Missing joint completion is pending without an audit intent.
 """
 import argparse
 import fcntl
 import gc
+import gzip
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import random
 import time
 
 from .actor import MILESTONES, REVISION, _state_binding, learning_rate
+from .diversity import select_groups, summarize
 
 STATUS = 'PREFIX_SELECTION200_JOINT_MILESTONE_FULL_SHA_CPU_PASS'
 SOURCE_PROBE_SHA = '8df6bd445945ffbbf6a94171f24934495f0ce3ff17a3d2577bbd53d4b8fefd56'
@@ -73,6 +77,7 @@ def hash_file(path, expected=None):
 def load_torch_cpu(path, producer):
     import torch
     path = Path(path)
+    print(json.dumps(dict(stage='TORCH_FULL_SHA_CPU_BEGIN', path=str(path), unix=time.time())), flush=True)
     with path.open('rb') as handle:
         before = os.fstat(handle.fileno()); h = hashlib.sha256()
         for chunk in iter(lambda: handle.read(8 * 1024 ** 2), b''): h.update(chunk)
@@ -85,7 +90,108 @@ def load_torch_cpu(path, producer):
     proof = dict(path=str(path), bytes=before.st_size, sha256=h.hexdigest(), dev=before.st_dev,
                  inode=before.st_ino, mtime_ns=before.st_mtime_ns,
                  independent_full_sha=True, actual_cpu_deserialization=True)
+    print(json.dumps(dict(stage='TORCH_FULL_SHA_CPU_COMPLETE', path=str(path), bytes=before.st_size,
+                         unix=time.time())), flush=True)
     return saved, proof
+
+
+def validate_selection(selection, labels, selected, rollout, actor_rollout, joint, hashes):
+    """Recompute the actual EM-based whole-G5 subset, without any model call."""
+    chosen, all_groups = select_groups(selection, {row['trajectory_id']: row for row in labels})
+    need(selected['selected'] == chosen and joint['actor_selection'] == selected
+         and selected['continued1024'] == summarize(all_groups) and selected['actor512'] == summarize(chosen)
+         and selected['prefix_selection_sha256'] == hashes['selection']['sha256']
+         and selected['full_rollout_sha256'] == hashes['rollout']['sha256']
+         and selected['outcome_selection'] == 'population_strict_EM_variance_K_times_5minusK_over25'
+         and selected['tie_break'] == 'frozen_prefix_q_descending_then_original_candidate_ordinal'
+         and selected['probe_uses_all_continued1024'] is True
+         and selected['uncontinued_candidate_questions'] == 4096
+         and selected['all_candidate_accuracy_available'] is False,
+         'Actual actor subset is not the deterministic strict-EM population variance Top512')
+    need(actor_rollout['actor_selection_metrics'] == selected
+         and actor_rollout['actor_selection_sha256'] == hashes['actor_selection']['sha256']
+         and actor_rollout['source_full_rollout_sha256'] == hashes['rollout']['sha256']
+         and actor_rollout['questions'] == 512 and actor_rollout['trajectories'] == 2560
+         and actor_rollout['actor_version'] == rollout['actor_version']
+         and actor_rollout['raw_native_records_preserved'] is True,
+         'Selected actor rollout is not bound to the complete original1024 continuation')
+    return dict(deterministic_population_variance_top512_recomputed=True,
+                continued1024=summarize(all_groups), actor512=summarize(chosen))
+
+
+def validate_actor_rollout_binding(saved, path, proof):
+    need(saved['original_rollout_sha256'] == proof['sha256']
+         and saved['original_rollout_path'] == str(path),
+         'Actor state belongs to another selected512 actor rollout')
+
+
+def validate_probe_clock(metrics, rank_rows, global_rows, outer):
+    """Verify original rank writes and global true-mean loss denominators."""
+    need(metrics['global_step_loss_curve']['points'] == global_rows and len(global_rows) == 20
+         and metrics['diagnostic_semantics'] == 'same_post_update_head_complete_selected1024G5_and_fixed512G5',
+         'Probe metric prediction clock or original global loss series differs')
+    need(len(rank_rows) == 8, 'Probe original write logs must cover all8 ranks')
+    for rank, rows in enumerate(rank_rows):
+        need(len(rows) == 20 and sum(r['local_questions'] for r in rows) == 128
+             and sum(r['local_trajectories'] for r in rows) == 640,
+             'Original probe rank did not consume128 unique whole-G5 groups in20 writes')
+        for step, row in enumerate(rows, 1):
+            from .checkpoint_i1i6_cpu import finite_numbers
+            need(finite_numbers(row), 'Original probe rank write contains nonfinite loss/gradient diagnostics')
+            need(row['rank'] == rank and row['outer'] == outer and row['step'] == step
+                 and row['actual_adam_steps'] == 20*(outer-1)+step and row['actual_learning_rate'] == 1e-6
+                 and row['global_questions'] == (52 if step % 5 == 0 else 51)
+                 and row['local_trajectories'] == 5*row['local_questions']
+                 and math.isclose(row['backward_loss'], row['total_loss']*8*row['local_questions']/row['global_questions'], rel_tol=2e-6, abs_tol=2e-6),
+                 'Original probe actual rank Adam/DDP true-mean scale differs')
+    for step, global_row in enumerate(global_rows, 1):
+        n = 52 if step % 5 == 0 else 51
+        need(global_row['outer'] == outer and global_row['step'] == step
+             and global_row['actual_adam_steps_per_rank'] == 20*(outer-1)+step
+             and global_row['actual_learning_rate'] == 1e-6
+             and global_row['global_questions'] == n and global_row['global_trajectories'] == n*5
+             and global_row['loss_prediction_clock'] == 'before_this_step_adam_update',
+             'Probe global diagnostics do not follow the actual synchronous20-write clock')
+        for key in ('trajectory_bce', 'group_bce', 'total_loss'):
+            value = math.fsum(rows[step-1][key]*rows[step-1]['local_questions'] for rows in rank_rows)/n
+            need(math.isfinite(value) and math.isclose(value, global_row[key], rel_tol=1e-12, abs_tol=1e-12),
+                 'Probe reported global BCE is not the original rank-weighted true mean')
+    for key in ('trajectory_bce', 'group_bce', 'total_loss'):
+        expected = math.fsum(row[key]*row['global_questions'] for row in global_rows)/1024
+        need(math.isclose(metrics['train_online_'+key], expected, rel_tol=1e-12, abs_tol=1e-12),
+             'Probe mean BCE denominator must be1024 groups/5120 trajectories')
+    return dict(original_rank_write_logs=8, writes_per_rank=20, group_denominator=1024,
+                trajectory_denominator=5120, pre_step_prediction_clock_verified=True)
+
+
+def audit_rollout_records(base, rollout, actor_rollout, selected, labels, *, i1i6=False):
+    """Full SHA/read original native records; compare actor subset byte semantics."""
+    from .actor import validate_record
+    wanted = {tid for row in selected['selected'] for tid in row['trajectory_ids']}
+    by_id = {row['trajectory_id']: row for row in labels}
+    originals, proofs, policy_counts = {}, [], {}
+    for role, receipt in (('full1024', rollout), ('actor512', actor_rollout)):
+        seen = set()
+        for item in receipt['shards']:
+            path = owned(base, item['path']); proofs.append(dict(role=role, **hash_file(path, item)))
+            before = path.stat(); count = 0
+            with (gzip.open(path, 'rt') if path.suffix == '.gz' else path.open()) as handle:
+                for line in handle:
+                    row = json.loads(line); tid = row['trajectory_id']; count += 1
+                    need(tid not in seen and tid in by_id, 'Duplicate or foreign completed native trajectory')
+                    seen.add(tid); validate_record(row, receipt['actor_version'])
+                    if i1i6:
+                        from .checkpoint_i1i6_cpu import native_budget
+                        native_budget(row)
+                        if role == 'actor512': policy_counts[(row['candidate_ordinal'],row['response_index'])] = sum(row['response_info_mask'])
+                    need(row['qid'] == by_id[tid]['qid'] and row['prefix_sha256'] == by_id[tid]['prefix_sha256']
+                         and row['selection_sha256'] == by_id[tid]['selection_sha256'], 'Native trajectory lost original prefix/outcome binding')
+                    if role == 'full1024' and tid in wanted: originals[tid] = digest(row)
+                    if role == 'actor512': need(tid in wanted and digest(row) == originals[tid], 'Actor changed an original same-G5 native record')
+            need(count == item['count'] and signature(before) == signature(path.stat()), 'Native trajectory shard changed or has wrong count')
+        need(seen == (set(by_id) if role == 'full1024' else wanted), 'Completed native trajectory set differs')
+    return dict(files=proofs, original_full_trajectories=5120, actor_selected_trajectories=2560,
+                original_native_records_equal=True, actor_policy_counts=[v for k,v in sorted(policy_counts.items())])
 
 
 def tensor_cpu(value, *, dtype=None, shape=None, finite=False):
@@ -250,9 +356,24 @@ def audit_hf(base, actor, config):
     directory = owned(base, actor['hf_model_dir'])
     need(actor['model_master_dtype'] == 'torch.float32' and actor['rollout_compute_dtype'] == 'bfloat16', 'Unsupported actor master/export precision')
     need(set(path.name for path in directory.iterdir() if path.is_file()) == set(actor['hf_files']), 'Actual HF file set differs from producer')
+    from tokenizers import Tokenizer
+    original_dir = Path(config['official_model_dir'])
+    original_tokenizer = hash_file(original_dir / 'tokenizer.json')
+    need(original_tokenizer['sha256'] == config['model_files_sha256']['tokenizer.json']
+         and Tokenizer.from_file(str(directory/'tokenizer.json')).to_str()
+         == Tokenizer.from_file(str(original_dir/'tokenizer.json')).to_str(),
+         'Saved tokenizer semantics differ from the pinned official tokenizer')
+    need(hash_file(original_dir/'tokenizer_config.json')['sha256'] == config['model_files_sha256']['tokenizer_config.json']
+         and hash_file(original_dir/'config.json')['sha256'] == config['model_files_sha256']['config.json'],
+         'Official tokenizer/architecture configuration differs from pinned initial files')
+    original_tokens, saved_tokens = read(original_dir/'tokenizer_config.json'), read(directory/'tokenizer_config.json')
+    need(all(original_tokens.get(key) == saved_tokens.get(key)
+             for key in ('chat_template', 'bos_token', 'eos_token', 'pad_token', 'model_max_length')),
+         'Saved tokenizer chat template/special token semantics differ')
+    print(json.dumps(dict(stage='HF_FULL_SHA_CPU_BEGIN', path=str(directory), unix=time.time())), flush=True)
     files = [hash_file(owned(base, directory / name), producer) for name, producer in actor['hf_files'].items()]
     saved_config = read(directory / 'config.json')
-    # Original architecture JSON is small; no old weight file is opened.
+    # Architecture JSON is small; official weight access below is limited to selected small tensors.
     original = read(Path(config['official_model_dir']) / 'config.json')
     for key in ('model_type', 'hidden_size', 'num_hidden_layers', 'intermediate_size', 'vocab_size',
                 'num_attention_heads', 'num_key_value_heads', 'tie_word_embeddings'):
@@ -265,18 +386,51 @@ def audit_hf(base, actor, config):
         # FP32 values are then exactly the retained shared embedding parameter.
         shapes.pop('lm_head.weight'); tied_alias_omitted = True
     need(set(index) == set(shapes), 'HF shard index does not describe the complete official actor')
+    change_rows, official_index = [], None
+    if config.get('interaction_contract'):
+        from .checkpoint_i1i6_cpu import INITIAL_CHANGE_TENSORS, CHANGE_FALLBACK, compare_official_small_tensor
+        official_index_path = original_dir/'model.safetensors.index.json'
+        official_index_file = hash_file(official_index_path)
+        need(official_index_file['sha256'] == config['model_files_sha256']['model.safetensors.index.json'],
+             'Official small-tensor index differs from the pinned initial model')
+        official_index = read(official_index_path)['weight_map']
+        need(INITIAL_CHANGE_TENSORS.issubset(index) and INITIAL_CHANGE_TENSORS.issubset(official_index),
+             'Deterministic initial parameter-change probes missing from learned/official actor')
     seen, elements = set(), 0
     for name in sorted(set(index.values())):
         path = owned(base, directory / name); before = path.stat()
         with safe_open(str(path), framework='pt', device='cpu') as handle:
-            for key in handle.keys():
+            for key in sorted(handle.keys()):
                 need(key not in seen and index.get(key) == name, 'Duplicate or misplaced HF tensor')
                 tensor = handle.get_tensor(key)
                 tensor_cpu(tensor, dtype=torch.float32, shape=shapes[key], finite=True)
+                if official_index is not None:
+                    primary_done = INITIAL_CHANGE_TENSORS.issubset({row['tensor'] for row in change_rows})
+                    fallback = (key == CHANGE_FALLBACK and primary_done
+                                and not any(row['nonzero_difference_elements'] for row in change_rows))
+                    if key in INITIAL_CHANGE_TENSORS or fallback:
+                        change_rows.append(compare_official_small_tensor(tensor, key, original_dir, official_index, config))
                 seen.add(key); elements += tensor.numel(); del tensor
         need(signature(before) == signature(path.stat()), 'HF tensor file changed during actual CPU read')
     need(seen == set(shapes), 'Actor HF CPU read omitted a learned tensor')
+    parameter_change = None
+    if official_index is not None:
+        need(INITIAL_CHANGE_TENSORS.issubset({row['tensor'] for row in change_rows}),
+             'Same HF CPU traversal omitted a deterministic parameter-change probe')
+        changed = sum(row['nonzero_difference_elements'] for row in change_rows)
+        need(changed > 0, 'Selected official-initial tensor comparison proves no learned parameter change')
+        parameter_change = dict(status='ACTUAL_PARAMETER_CHANGE_OBSERVED' if changed else 'SELECTED_TENSORS_EQUAL_INITIAL_NO_PARAMETER_CHANGE_PROVEN',
+            compared_tensors=change_rows, compared_elements=sum(row['elements'] for row in change_rows),
+            nonzero_difference_elements=changed, max_absolute_difference=max(row['max_absolute_difference'] for row in change_rows),
+            fallback_used=any(row['tensor'] == CHANGE_FALLBACK for row in change_rows),
+            official_index_small_file=official_index_file, official_full_weight_hash_repeated=False,
+            learned_hf_second_read_performed=False, all_model_parameters_compared=False,
+            first_outer_lr_zero_is_intentional=True, positive_lr_completed_outers=list(range(2,actor['completed_outer']+1)))
+        print(json.dumps(dict(stage='HF_INITIAL_PARAMETER_CHANGE_COMPARISON_COMPLETE', result=parameter_change, unix=time.time())), flush=True)
+    print(json.dumps(dict(stage='HF_FULL_SHA_CPU_COMPLETE', tensors=len(seen), unix=time.time())), flush=True)
     return dict(files=files, actual_cpu_tensor_reads=len(seen), actual_fp32_elements=elements,
+                official_initial_parameter_change=parameter_change,
+                tokenizer_semantics_equal=True, original_tokenizer_small_file=original_tokenizer,
                 tied_lm_head_alias_omitted=tied_alias_omitted,
                 master_low_bits_preserved_in_hf=True, forward_performed=False)
 
@@ -285,17 +439,28 @@ def _audit_complete(base, config, joint, outer):
     import torch
     torch.set_num_threads(1)
     root = base / 'outers' / ('outer-%06d' % outer)
+    i1i6 = bool(config.get('interaction_contract'))
     actor, probe = joint['actor'], joint['probe']
     need(joint['run_id'] == config['run_id'] and joint['outer'] == outer
          and joint['source_commit'] == config['source_commit'], 'Joint savepoint belongs to another experiment')
     need(actor['completed_outer'] == outer and probe['completed_outer'] == outer
          and actor['run_id'] == probe['run_id'] == config['run_id']
+         and actor['source_commit'] == config['source_commit']
          and actor['actual_adam_steps_per_rank'] == [20 * outer] * 8
          and probe['actual_adam_steps_per_rank'] == [20 * outer] * 8
          and actor['scheduler_completed_outer'] == outer and actor['milestone'] is True,
          'Actor/probe counters do not share a complete milestone')
+    contract_proof = None
+    if i1i6:
+        from .checkpoint_i1i6_cpu import audit_contract
+        contract_proof = audit_contract(base, config, actor, root)
+    grounding_proof, attempt_config = None, config
+    if i1i6:
+        from .checkpoint_i1i6_cpu import audit_attempt_grounding
+        grounding_proof, attempt_config = audit_attempt_grounding(base, config, actor, root, outer)
     metadata = {}
     paths = {'joint': root / 'complete.json', 'rollout': root / 'full/complete.json', 'actor_rollout': root / 'actor-selection/complete.json',
+        'actor_selection': root / 'actor-selection/selection.json',
         'prefix': root / 'prefix/complete.json',
         'own_em': root / 'full/own-em.jsonl', 'score_manifest': root / 'probe-score/manifest.json',
         'selection': root / 'probe-score/selection.json', 'update': root / 'probe-update/complete.json',
@@ -304,10 +469,11 @@ def _audit_complete(base, config, joint, outer):
         'candidate_selection': root / 'selection.json', 'questions': root / 'questions.json'}
     for name, path in paths.items(): metadata[name] = hash_file(owned(base, path))
     rollout = read(paths['rollout']); prefix = read(paths['prefix'])
+    actor_rollout, actor_selection = read(paths['actor_rollout']), read(paths['actor_selection'])
     manifest = read(paths['score_manifest']); update = read(paths['update'])
     selection, candidates, questions = read(paths['selection']), read(paths['candidate_selection']), read(paths['questions'])
-    need(joint['rollout'] == rollout and actor['original_rollout_sha256'] == metadata['actor_rollout']['sha256']
-         and actor['original_rollout_path'] == str(paths['actor_rollout'])
+    validate_actor_rollout_binding(actor, paths['actor_rollout'], metadata['actor_rollout'])
+    need(joint['rollout'] == rollout
          and rollout['actor_version'] == actor['sampling_actor_version']
          and rollout['questions'] == 1024 and rollout['trajectories'] == 5120,
          'Actual actor savepoint is not bound to its own same-prefix completed rollout')
@@ -332,6 +498,20 @@ def _audit_complete(base, config, joint, outer):
     selected_ids = {tid: str(row['qid']) for row in selection['selected'] for tid in row['trajectory_ids']}
     need(len(selected_ids) == 5120 and len({str(row['qid']) for row in selection['selected']}) == 1024,
          'Milestone selection is not complete unique512G5')
+    score_path = owned(base, root/'probe-score/candidate-scores.jsonl')
+    metadata['candidate_scores'] = hash_file(score_path)
+    scores = [json.loads(line) for line in score_path.read_text().splitlines()]
+    need(metadata['candidate_scores']['sha256'] == manifest['candidate_scores_sha256'] and len(scores) == 5120
+         and sorted(row['candidate_ordinal'] for row in scores) == list(range(5120))
+         and sorted(scores, key=lambda row: (-row['q'], row['candidate_ordinal']))[:1024] == selection['selected'],
+         'Actual prefix selection is not stable Top1024 of all5120 original scores')
+    for row in scores:
+        z = row['trajectory_logits']
+        need(len(z) == 5 and all(math.isfinite(value) for value in z), 'Invalid original prefix logits')
+        p = [1/(1+math.exp(-value)) if value >= 0 else math.exp(value)/(1+math.exp(value)) for value in z]
+        q = 1-math.prod(p)-math.prod(1-value for value in p)
+        need(all(math.isclose(a,b,rel_tol=1e-12,abs_tol=1e-12) for a,b in zip(p,row['trajectory_probabilities']))
+             and math.isclose(q,row['q'],rel_tol=1e-12,abs_tol=1e-12), 'Original score does not implement1-prod(p)-prod(1-p)')
     labels = [json.loads(line) for line in paths['own_em'].read_text().splitlines()]
     need(len(labels) == 5120 and len({row['trajectory_id'] for row in labels}) == 5120
          and all(selected_ids.get(row['trajectory_id']) == str(row['qid'])
@@ -340,6 +520,18 @@ def _audit_complete(base, config, joint, outer):
                  and row['prefix_scan_sha256'] == manifest['prefix_scan_sha256']
                  and row['selection_sha256'] == metadata['selection']['sha256'] for row in labels),
          'Actual own-trajectory outcomes do not cover the selected sameG5')
+    diversity = validate_selection(selection, labels, actor_selection, rollout, actor_rollout, joint, metadata)
+    native_records = audit_rollout_records(base, rollout, actor_rollout, actor_selection, labels, i1i6=i1i6)
+    actor_policy_counts = native_records.pop('actor_policy_counts')
+    rank_rows = []
+    for rank in range(8):
+        path = owned(base, root / 'probe-update' / ('rank-%d-updates.jsonl' % rank))
+        metadata['probe_rank_updates_%d' % rank] = hash_file(path)
+        rank_rows.append([json.loads(line) for line in path.read_text().splitlines()])
+    path = owned(base, root / 'probe-update/global-loss-updates.jsonl')
+    metadata['probe_global_updates'] = hash_file(path)
+    probe_clock = validate_probe_clock(read(paths['metrics']), rank_rows,
+                                      [json.loads(line) for line in path.read_text().splitlines()], outer)
     binding = read(paths['pool_binding']); source_path = Path(config['source_question_pool'])
     source_proof = hash_file(source_path)
     need(source_proof['sha256'] == binding['sha256'] and binding['source'] == str(source_path)
@@ -368,26 +560,32 @@ def _audit_complete(base, config, joint, outer):
              and all(actual_identity[key] == original[key] for key in actual_identity),
              'Actual persisted prompt/gold question identity differs from the reserved canonical source')
     state_dir = owned(base, actor['state_path'])
-    need(read(state_dir / 'complete.json') == actor, 'Actor producer receipt differs from the joint milestone')
+    need(read(state_dir / 'complete.json') == actor and actor['learning_rate_used'] == learning_rate(outer-1)
+         and actor['next_learning_rate'] == learning_rate(outer), 'Actor producer receipt or original scheduler clock differs')
     hf = audit_hf(base, actor, config)
-    need(len(actor['rank_states']) == 8, 'Actor milestone must contain8 rank-local full states')
+    need(len(actor['rank_states']) == len(actor['rank_receipts']) == 8, 'Actor milestone must contain8 rank-local full states')
     ranks = []
     for rank, item in enumerate(actor['rank_states']):
         path = owned(base, item['path']); need(path == state_dir / ('rank-%d.pt' % rank), 'Rank state escapes its actual actor attempt')
         saved, file_proof = load_torch_cpu(path, item)
         summary = validate_actor_state(saved, actor, config, outer, rank)
-        need(saved['original_rollout_sha256'] == metadata['rollout']['sha256'], 'Rank state belongs to another actual rollout')
+        validate_actor_rollout_binding(saved, paths['actor_rollout'], metadata['actor_rollout'])
         receipt = actor['rank_receipts'][rank]
         ledger = owned(base, receipt['ledger_path']); ledger_proof = hash_file(ledger)
         need(receipt['rank'] == rank and receipt['outer'] == outer and receipt['new_adam_steps'] == 20
              and receipt['actual_adam_steps'] == 20 * outer and receipt['opportunities'] == 20
+             and receipt['scheduler_completed_outer'] == outer and receipt['next_learning_rate'] == learning_rate(outer)
              and ledger_proof['sha256'] == receipt['ledger_sha256'], 'Actor milestone rank receipt differs from its original update ledger')
-        writes = [json.loads(line) for line in ledger.read_text().splitlines()]
-        writes = [row for row in writes if row['event'] == 'ACTUAL_ADAM_WRITE']
+        all_records = [json.loads(line) for line in ledger.read_text().splitlines()]
+        writes = [row for row in all_records if row['event'] == 'ACTUAL_ADAM_WRITE']
         need(len(writes) == 20 and all(row['rank'] == rank and row['outer'] == outer
              and row['opportunity'] == j and row['writes_this_attempt'] == j + 1
-             and row['actual_adam_steps'] == 20 * (outer - 1) + j + 1 for j, row in enumerate(writes)),
+             and row['actual_adam_steps'] == 20 * (outer - 1) + j + 1
+             and row['actual_learning_rate'] == learning_rate(outer-1) for j, row in enumerate(writes)),
              'Original actor ledger does not prove20 actual rank-local writes')
+        if i1i6:
+            from .checkpoint_i1i6_cpu import validate_pair_writes
+            summary['logical_pair_objective'] = validate_pair_writes(writes, all_records, actor_policy_counts, config['seed'], outer, rank)
         summary.update(file=file_proof, actual_update_ledger=ledger_proof)
         ranks.append(summary); del saved; gc.collect()
     driver_path = owned(base, actor['driver_state']['path'])
@@ -397,6 +595,9 @@ def _audit_complete(base, config, joint, outer):
          and driver['candidate_pool_state']['value'] == pool
          and driver['candidate_pool_state']['sha256'] == hashlib.sha256(canonical(pool)+b'\n').hexdigest(),
          'Actual actor driver state did not preserve the real candidate boundary')
+    if i1i6:
+        from .checkpoint_i1i6_cpu import validate_driver_binding
+        validate_driver_binding(driver, base, config, attempt_config, outer, metadata['score_manifest']['sha256'])
     previous_probe = driver['prefix_probe_receipt']['value']
     need(previous_probe['run_id'] == config['run_id'] and previous_probe['completed_outer'] == outer - 1
          and previous_probe['actual_adam_steps_per_rank'] == [20 * (outer - 1)] * 8
@@ -426,8 +627,10 @@ def _audit_complete(base, config, joint, outer):
          and source['epoch'] == 100 and source['checkpoint_sha256'] == SOURCE_PROBE_SHA
          and source['independent_full_file_sha_performed'] is True and source['cpu_load_performed'] is True,
          'Unsupported source warmup CPU proof; never infer PASS from a producer SHA alone')
-    return dict(actor_hf=hf, actor_rank_states=ranks, actor_driver_file=driver_file,
+    return dict(i1i6_contract=contract_proof, actor_hf=hf, actor_rank_states=ranks, actor_driver_file=driver_file,
+        actual_grounding_binding=grounding_proof,
         probe=dict(file=probe_file, summary=probe_summary), pool=pool_summary,
+        strict_em_diversity=diversity, original_native_records=native_records, probe_clock=probe_clock,
         source_pool_file=source_proof, reused_prior_warmup_small_proof=prior_file,
         fixed_test_manifest_file=fixed_test_proof, own_selected_trajectory_count=len(labels), metadata=metadata)
 
@@ -462,13 +665,17 @@ def audit(base, outer):
             return dict(status='EXISTING_CPU_MILESTONE_INTENT_NO_BLIND_REPLAY', outer=outer, intent_path=str(intent), training_modified=False)
         if not joint_path.is_file():
             return dict(status='PENDING_ACTUAL_JOINT_MILESTONE_NO_INTENT', outer=outer, missing=str(joint_path), once_intent_created=False)
-        joint = read(joint_path); joint_proof = hash_file(joint_path)
-        _once(intent, dict(run_id=config['run_id'], outer=outer, joint_complete_sha256=joint_proof['sha256'], started_unix=time.time()))
+        joint = read(joint_path); joint_proof = hash_file(joint_path); config_proof = hash_file(config_path)
+        _once(intent, dict(run_id=config['run_id'], outer=outer, joint_complete_sha256=joint_proof['sha256'],
+            config_sha256=config_proof['sha256'], source_commit=config['source_commit'], started_unix=time.time()))
         started = time.monotonic()
         try:
             result = _audit_complete(base, config, joint, outer)
+            need(hash_file(config_path)['sha256'] == config_proof['sha256']
+                 and hash_file(joint_path)['sha256'] == joint_proof['sha256'],
+                 'Pinned launch configuration or immutable joint changed during CPU acceptance')
             proof = dict(status=STATUS, run_id=config['run_id'], outer=outer, source_commit=config['source_commit'],
-                joint_complete_sha256=joint_proof['sha256'], config_sha256=hash_file(config_path)['sha256'],
+                joint_complete_sha256=joint_proof['sha256'], config_sha256=config_proof['sha256'],
                 actor_actual_adam_steps_per_rank=[20 * outer] * 8, probe_actual_adam_steps_per_rank=[20 * outer] * 8,
                 independent_full_file_sha_performed=True, actual_cpu_deserialization_performed=True,
                 details=result)
@@ -478,7 +685,10 @@ def audit(base, outer):
                 error_type=type(error).__name__, error=str(error),
                 independent_full_file_sha_performed=False, actual_cpu_deserialization_performed=False)
         proof.update(gpu_forward_performed=False, cuda_rng_applied=False, independent_backup_performed=False,
-            training_modified=False, old_weight_files_read=False, large_payload_transferred_to_Mac=False,
+            training_modified=False, old_weight_files_read=bool(config.get('interaction_contract')),
+            historical_training_checkpoint_weight_files_read=False,
+            official_initial_small_tensor_reads_performed=bool(config.get('interaction_contract')),
+            large_payload_transferred_to_Mac=False,
             reader_source_sha256=hash_file(__file__)['sha256'], elapsed_seconds=time.monotonic() - started)
         _once(proof_path, proof)
         return dict(status=proof['status'], outer=outer, proof=hash_file(proof_path),
@@ -490,7 +700,10 @@ def audit(base, outer):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', required=True); parser.add_argument('--outer', required=True, type=int)
-    args = parser.parse_args(); print(json.dumps(audit(args.base, args.outer), sort_keys=True, allow_nan=False))
+    args = parser.parse_args(); result = audit(args.base, args.outer)
+    print(json.dumps(result, sort_keys=True, allow_nan=False))
+    if 'FAILED' in result['status'] or ('proof_status' in result and result['proof_status'] != STATUS):
+        raise SystemExit(1)
 
 
 if __name__ == '__main__': main()
