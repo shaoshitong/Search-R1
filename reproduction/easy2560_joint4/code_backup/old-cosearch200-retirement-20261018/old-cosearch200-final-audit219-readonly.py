@@ -1,0 +1,12 @@
+import hashlib,json,os,time
+from pathlib import Path
+root=Path('/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/preparation/cp200-tensor-retirement/19ec0e1bc6224d8e85bbcba0b8ba9eb8');module=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/old-cosearch200-retirement-code/219686d225feb9ba3c94e776c1294384a14d809a')/'retire_old_cosearch200.py';raw=module.read_bytes();assert hashlib.sha256(raw).hexdigest()=='fbeec1fba246222622b07c681ede4dec3d0c04992581ec2f35e5c269ffb15b42'
+scope={'__name__':'final_read_only','__file__':str(module)};exec(compile(raw,str(module),'exec'),scope)
+complete=json.loads((root/'complete.json').read_text());result=json.loads((root/'deletion-result.json').read_text());rows=[json.loads(x) for x in (root/'actions.jsonl').read_text().splitlines()]
+assert complete['status']=='AUTHORIZED_EXACT25_HPC_PT_RETIRED_FULL_HK33_RETAINED' and len(rows)==50 and [r['stage'] for r in rows]==['PREPARED','UNLINKED']*25
+assert [r['relative_path'] for r in rows if r['stage']=='UNLINKED']==list(scope['TARGET_NAMES']);assert not (root/'deletion-failure.json').exists()
+cp=scope['CP'];assert all(not os.path.lexists(cp/name) for name in scope['TARGET_NAMES']);tree=scope['checkpoint_tree']();scope['verify_kept'](result['preserved_checkpoint_tree'],tree)
+assert not os.path.lexists(scope['BASE']/'archive-delete-safe-200')
+failed=root/'failed-source-attempt-d45-pid110273-start96708929';preserved=json.loads((failed/'preserved.json').read_text())
+for name in preserved['confirmed_moved_names']:assert hashlib.sha256((failed/name).read_bytes()).hexdigest()==preserved['files'][name]['sha256']
+print(json.dumps({'checked_unix':time.time(),'uid':os.getuid(),'complete_status':complete['status'],'journal_records':len(rows),'prepared':sum(r['stage']=='PREPARED' for r in rows),'unlinked':sum(r['stage']=='UNLINKED' for r in rows),'actual_allocated_delta':result['confirmed_unlinked_allocated_bytes'],'actual_logical_bytes':result['confirmed_unlinked_logical_bytes'],'checkpoint_tree_allocated_now_bytes':tree['allocated_bytes'],'all25_still_absent':True,'all_other_checkpoint_metadata_identity_preserved':True,'all8_recovery_json_retained':all((cp/n).is_file() for n in scope['RECOVERY_NAMES']),'large_tokenizers_retained':{name:r['bytes'] for name,r in tree['files'].items() if r.get('content_sha256_read') is False},'failed6_audit_sha_unchanged':True,'archive_delete_safe_marker_absent':True,'quota_free_not_measured':True},sort_keys=True))
