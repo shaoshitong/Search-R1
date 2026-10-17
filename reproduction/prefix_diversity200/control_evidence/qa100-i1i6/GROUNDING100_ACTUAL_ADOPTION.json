@@ -1,0 +1,167 @@
+{
+  "status": "ACTUAL_REWARD_ROUND100_FIT_ADOPTED_ALL8_AND_USED_IN_COMPLETE_ACTOR101",
+  "observed_unix": 1792260217.087719,
+  "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+  "round": 100,
+  "version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815",
+  "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0100",
+  "manifest": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/grounding/round-100-attempt-ea65510cf5b143dba641a14b83a47f16/version-manifest.json",
+  "manifest_sha256": "4074016fcb83ecbf6fa40e3d54a777f1e298534d7799a15ee0ea0d2f9b493f50",
+  "head_sha256": {
+    "commit_probe.pkl": "65a66c1fefcf9b23f6acea6a1410b14b6a4642347d6118b836262ddf7fb71626",
+    "boundary_probe.pkl": "6004add05281ce4dee186d2f6c8ad6064e125706e3d1ee90a58992e2f41c77b6"
+  },
+  "calibration_data_sha256": "fa7089e21bfd56326a4fd10874362b5fda1a1b70f969a14e4bcbb581daad4be1",
+  "calibration_interaction_config_sha256": "be931d1fb8e2d8f4f44467d9da8ec282637760a47807c5856573acd0174a67b0",
+  "question_count": 300,
+  "commit_fitted_trajectory_count": 1497,
+  "calibration_report": {
+    "commit_cv_auc": 0.8284673675047135,
+    "boundary_cv_auc": 0.6983432251710553,
+    "commit_position": "Xa",
+    "commit_label": "flip",
+    "unique_question_count": 300,
+    "commit_trajectory_count": 1497,
+    "boundary_class_counts": [
+      261,
+      39
+    ],
+    "commit_class_counts": [
+      401,
+      1096
+    ],
+    "question_grouped_cv": true,
+    "boundary_unique_question_weighting": true,
+    "require_all_cv_folds": true,
+    "configured_cv_folds": 2
+  },
+  "label_proof_scalars": {
+    "generation_allocated_before_release": 19476540928,
+    "generation_allocated_after_release": 41943040,
+    "model": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0100-attempt-880486cd5f144c9c81fb784ff6bf50ab/huggingface",
+    "question_count": 300,
+    "searched_valid_trajectory_count": 1497,
+    "closed_book_label": "exact_match_no_retrieval",
+    "reliance_label": "normalized_answer_change_after_evidence_deletion",
+    "commit_position": "Xa",
+    "model_authored_answer_spans": true,
+    "group_size": 5,
+    "counterfactual_invalid_count": 0,
+    "counterfactual_strict_invalid_count": 0,
+    "invalid_counterfactual_policy": "no_usable_answer_counts_as_flip_source_operational_proxy",
+    "malformed_calibration_action_policy": "correction_within_four_turn_budget",
+    "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction",
+    "boundary_all_reserved_questions": true,
+    "observation_token_cap": 500,
+    "hidden_truncation_side": "left",
+    "interaction_contract": "prefix_selection_shared_bf16_context4096_action500_reserve500_stream_boundary_v2",
+    "interaction_config_sha256": "be931d1fb8e2d8f4f44467d9da8ec282637760a47807c5856573acd0174a67b0",
+    "shared_native_state_machine": "reproduction.prefix_diversity200.rollout"
+  },
+  "adoption": {
+    "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+    "round": 100,
+    "version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815",
+    "manifest": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/grounding/round-100-attempt-ea65510cf5b143dba641a14b83a47f16/version-manifest.json",
+    "manifest_sha256": "4074016fcb83ecbf6fa40e3d54a777f1e298534d7799a15ee0ea0d2f9b493f50",
+    "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0100",
+    "actual_both_heads_fitted": true
+  },
+  "replica_health": [
+    {
+      "rank": 0,
+      "ok": true,
+      "round": 100,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0100-attempt-880486cd5f144c9c81fb784ff6bf50ab/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815"
+    },
+    {
+      "rank": 1,
+      "ok": true,
+      "round": 100,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0100-attempt-880486cd5f144c9c81fb784ff6bf50ab/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815"
+    },
+    {
+      "rank": 2,
+      "ok": true,
+      "round": 100,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0100-attempt-880486cd5f144c9c81fb784ff6bf50ab/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815"
+    },
+    {
+      "rank": 3,
+      "ok": true,
+      "round": 100,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0100-attempt-880486cd5f144c9c81fb784ff6bf50ab/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815"
+    },
+    {
+      "rank": 4,
+      "ok": true,
+      "round": 100,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0100-attempt-880486cd5f144c9c81fb784ff6bf50ab/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815"
+    },
+    {
+      "rank": 5,
+      "ok": true,
+      "round": 100,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0100-attempt-880486cd5f144c9c81fb784ff6bf50ab/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815"
+    },
+    {
+      "rank": 6,
+      "ok": true,
+      "round": 100,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0100-attempt-880486cd5f144c9c81fb784ff6bf50ab/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815"
+    },
+    {
+      "rank": 7,
+      "ok": true,
+      "round": 100,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0100-attempt-880486cd5f144c9c81fb784ff6bf50ab/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815"
+    }
+  ],
+  "actual_actor101_update_use_pending": false,
+  "first_future_actor_boundary": 101,
+  "selection_probe_is_separate": true,
+  "runtime_hot_modified": false,
+  "raw_evidence": "GROUNDING100_FIT_ADOPTION_READBACK.json",
+  "raw_calibration_trajectory_count": 1500,
+  "searched_valid_trajectory_count": 1497,
+  "actual_retrieval_count_histogram": {
+    "1": 1310,
+    "2": 112,
+    "3": 61,
+    "4": 17
+  },
+  "fit_count_scope": "Canonical300 questions xG5=1500 raw trajectories;1497 pass existing contexts()/searched-valid filter and fit commit head. All1500 retrieved, so three exclusions are invalid commit/answer contexts, not no-search trajectories. Boundary uses reserved300 questions. No extra fitting or changed filter.",
+  "valid_filter_source": {
+    "path": "ts_probe_dump.py",
+    "commit": "33ef232e605f7864086d1685d9a4d8ea0d67f4ab",
+    "sha256": "4ee5445c9c5a5b51bdde9636ef019dcc3bbb935a9f0392b3f4740c1e772f63af"
+  },
+  "actual_first_complete_actor_use": {
+    "outer": 101,
+    "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0101",
+    "actor_adam_per_rank": [
+      2020,
+      2020,
+      2020,
+      2020,
+      2020,
+      2020,
+      2020,
+      2020
+    ],
+    "joint_sha256": "769580c5589d07f8674dc66b16e5372fa05f34991fd331870fee57b79a7ecab4",
+    "actor_receipt_sha256": "b9d50d9bd7a7f77c5372f375279560a381dcedfbc3af5d51278ba58f5666ae57",
+    "actual_reward_world_size": 8,
+    "trajectories": 2560,
+    "reward_version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815"
+  },
+  "actual_use_evidence": "GROUNDING100_ACTOR101_ACTUAL_USE.json"
+}

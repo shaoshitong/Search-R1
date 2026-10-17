@@ -1,0 +1,62 @@
+{
+  "observed_unix": 1792260434.234755,
+  "components": [
+    {
+      "evidence": "QA5_STANDALONE_FAILURE1.json",
+      "evidence_sha256": "11c75beb9e60d7406f7482721f184e5da86535642c1300e16be79a0cca601748",
+      "unit": "g1-qa-4a1cc2d5-o5-ed580171.service",
+      "outer": 5,
+      "success": false,
+      "started_unix": 1792219918.815406,
+      "ended_unix": 1792220051.866966,
+      "wall_seconds": 133.05155992507935,
+      "physical8_wall_opportunity_gpu_hours": 0.2956701315773858,
+      "cpu_seconds_self_and_reaped_children": 92.467278,
+      "slurm_reserved_gpu_hours": 0
+    },
+    {
+      "evidence": "QA5_STANDALONE_LATEST.json",
+      "evidence_sha256": "f3ecd096c53a688110fd33a4bf92b3a7fd84358dc84feb3d14bc6835767900ff",
+      "unit": "g1-qa-4a1cc2d5-o5-6d487ce7-bind2.service",
+      "outer": 5,
+      "success": true,
+      "started_unix": 1792220223.0963764,
+      "ended_unix": 1792220335.8908596,
+      "wall_seconds": 112.79448318481445,
+      "physical8_wall_opportunity_gpu_hours": 0.2506544049580892,
+      "cpu_seconds_self_and_reaped_children": 392.808603,
+      "slurm_reserved_gpu_hours": 0
+    },
+    {
+      "evidence": "QA50_STANDALONE_LATEST.json",
+      "evidence_sha256": "ddec93598d8cfd349073a76e24e78672471a6c961ec972e227ac4c879a95f961",
+      "unit": "g1-qa-4a1cc2d5-o50-9cb782fb.service",
+      "outer": 50,
+      "success": true,
+      "started_unix": 1792237443.434203,
+      "ended_unix": 1792237621.61116,
+      "wall_seconds": 178.17695713043213,
+      "physical8_wall_opportunity_gpu_hours": 0.3959487877951728,
+      "cpu_seconds_self_and_reaped_children": 462.13503099999997,
+      "slurm_reserved_gpu_hours": 0
+    },
+    {
+      "evidence": "QA100_STANDALONE_LATEST.json",
+      "evidence_sha256": "dae302fefe57efeaa44f535900087bc75b2efccfbafe62d45d9887f5cbec01c8",
+      "unit": "g1-qa-4a1cc2d5-o100-c8e0a715.service",
+      "outer": 100,
+      "success": true,
+      "started_unix": 1792260090.1341975,
+      "ended_unix": 1792260234.3126948,
+      "wall_seconds": 144.17849731445312,
+      "physical8_wall_opportunity_gpu_hours": 0.320396654870775,
+      "cpu_seconds_self_and_reaped_children": 502.582737,
+      "slurm_reserved_gpu_hours": 0
+    }
+  ],
+  "known_components": 4,
+  "known_physical8_wall_opportunity_gpu_hours": 1.2626699792014229,
+  "known_cpu_seconds_self_and_reaped_children": 1449.993649,
+  "slurm_reserved_gpu_hours": 0,
+  "scope": "Known isolated QA controller terminals only, including preserved failed shared initialization if available. Physical8 wall opportunity is not billed/exclusive or utilization-adjusted GPU consumption. Do not add it to native exclusive reservation as one cost measure. Native failed milestone QA already lies inside3433 reservation. CPU checkpoint readers, missing earlier initialization, history and future QA remain separate; not total end-to-end cost."
+}

@@ -1,0 +1,42 @@
+{
+  "status": "QA100_INDEPENDENT_CPU_COST_RECORDED",
+  "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+  "outer": 100,
+  "node": "h100-11",
+  "cpu_acceptance": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "cpu_affinity": [
+      0
+    ],
+    "cpu_system_seconds": 0.930504,
+    "cpu_user_seconds": 7.665587,
+    "elapsed_seconds": 9.562957238405943,
+    "ended_unix": 1792260499.3547976,
+    "gpu_forward_performed": false,
+    "max_rss_kib": 712512,
+    "model_weights_loaded": false,
+    "new_generation": false,
+    "nice": 19,
+    "started_unix": 1792260489.7918437,
+    "status": "CPU_SAVED_OUTPUT_ACCEPTANCE_PASS"
+  },
+  "remote_cpu_cost_sha256": "d1ec15134bc538cbf084d716870e18f872358d2524af3c4617a779b76a1c8329",
+  "cpu_command_exit": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "wall_seconds": 10.243113822303712,
+    "observed_unix": 1792260499.9683425
+  },
+  "remote_cpu_command_exit_sha256": "d9eff5d2a3e28a3ebf48feee6a7136abf2b7897009bfd5d5996753bd1f282c86",
+  "qa_generation_historical_terminal_cost": {
+    "started_unix": 1792260090.1341975,
+    "ended_unix": 1792260234.3126948,
+    "cpu_seconds_self_and_reaped_children": 502.582737,
+    "wall_gpu8_hours": 0.320396654870775,
+    "slurm_reserved_gpus": 0
+  },
+  "additional_gpu_hours_for_cpu_acceptance": 0,
+  "scope": "New CPU saved-output verification measured separately from already completed QA generation; no new generation or GPU work.",
+  "observed_unix": 1792260536.4151592
+}
