@@ -1,4 +1,4 @@
-"""Task-only SSH byte transport with explicit source IP and bounded TCP segments."""
+"""Task-only SSH transport with explicit source IP and optional interface binding."""
 import argparse
 import os
 import selectors
@@ -11,9 +11,19 @@ p.add_argument('--source', required=True)
 p.add_argument('--host', required=True)
 p.add_argument('--port', type=int, default=22)
 p.add_argument('--mss', type=int, default=1200)
+p.add_argument('--bind-interface')
 a = p.parse_args()
 assert 536 <= a.mss <= 1400
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+if a.bind_interface:
+    if sys.platform != 'darwin':
+        raise RuntimeError('Explicit IP_BOUND_IF mode is supported only on macOS')
+    index = socket.if_nametoindex(a.bind_interface)
+    # Darwin netinet/in.h defines IP_BOUND_IF=25; Python may omit the constant.
+    option = getattr(socket, 'IP_BOUND_IF', 25)
+    s.setsockopt(socket.IPPROTO_IP, option, index)
+    if s.getsockopt(socket.IPPROTO_IP, option) != index:
+        raise RuntimeError('The requested socket interface binding was not applied')
 try:
     s.setsockopt(socket.IPPROTO_TCP, socket.TCP_MAXSEG, a.mss)
 except OSError as e:
