@@ -115,3 +115,11 @@ before launching a worker. Copy completion does not itself change a live mount,
 UUID lock lease, launcher, scientific configuration, or deployed runtime. A future
 source-independent bootstrap and any necessary complete-boundary handoff remain
 separate work; do not claim the live jobs are already independent of h100-8.
+
+The first retention worker finished all 19 reference bundle files and linked the
+2 already-sealed retrieval payloads, then exited before copying the cache because
+a mutable datasets `.lock` mtime changed. No training was stopped or changed.
+The cache retry excludes process lock files and adopts the completed small
+manifest without re-copying/re-hashing those 21 entries. It uses a distinct
+`cache2-` intent/receipt/progress namespace and requires the original worker gone.
+Only immutable cache payloads are in this retry.

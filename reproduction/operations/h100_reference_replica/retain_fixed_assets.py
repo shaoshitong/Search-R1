@@ -33,21 +33,37 @@ def run(spec_path):
     spec = json.loads(raw)
     root = Path(spec['destination'])
     root.mkdir(parents=True, exist_ok=True)
-    if (root / 'RESULT.json').exists():
-        print((root / 'RESULT.json').read_text(), flush=True)
+    prefix = spec.get('record_prefix', '')
+    assert not prefix or prefix.replace('-', '').isalnum()
+    def record(name):
+        return root / (prefix + name)
+    if record('RESULT.json').exists():
+        print(record('RESULT.json').read_text(), flush=True)
         return
-    with (root / 'INTENT.json').open('x') as f:
+    with record('INTENT.json').open('x') as f:
         json.dump({'spec_sha256': hashlib.sha256(raw).hexdigest(),
                    'started_unix': time.time(), 'pid': os.getpid()}, f)
         f.flush()
         os.fsync(f.fileno())
     rows = []
+    if spec.get('prior_completed_manifest'):
+        prior = spec['prior_completed_manifest']
+        data = Path(prior['path']).read_bytes()
+        assert hashlib.sha256(data).hexdigest() == prior['sha256']
+        rows = json.loads(data)
+        for row in rows:
+            dest = Path(row['target'])
+            assert dest.is_file() and not dest.is_symlink()
+            if row['kind'] == 'NEW_COPY_SOURCE_TARGET_FULL_SHA_PASS':
+                assert dest.stat().st_size == row['bytes']
+            else:
+                assert identity(dest) == row['identity']
     copied = 0
     rate = spec['bytes_per_second']
     start = time.monotonic()
 
     def progress(stage, row=None, done=0):
-        atomic(root / 'PROGRESS.json', dict(stage=stage, current=row,
+        atomic(record('PROGRESS.json'), dict(stage=stage, current=row,
             current_bytes=done, copied_bytes=copied, complete_files=len(rows),
             checked_unix=time.time(), pid=os.getpid()))
 
@@ -76,6 +92,7 @@ def run(spec_path):
     for r in spec['files']:
         source = Path(r['source'])
         assert source.is_file() and not source.is_symlink()
+        assert not source.name.endswith('.lock'), 'Process lock files are not retained data'
         before = identity(source)
         assert before == r['identity'], (str(source), before, r['identity'])
         dest = root / r['target_relative']
@@ -119,9 +136,9 @@ def run(spec_path):
             source=str(source), target=str(dest), bytes=done,
             source_identity=before, source_sha256=h.hexdigest(),
             destination_sha256=target.hexdigest()))
-        atomic(root / 'completed-files.json', rows)
+        atomic(record('completed-files.json'), rows)
         progress('FILE_COMPLETE', r['target_relative'], done)
-    atomic(root / 'RESULT.json', dict(status='FIXED_INPUT_RETENTION_COMPLETE',
+    atomic(record('RESULT.json'), dict(status='FIXED_INPUT_RETENTION_COMPLETE',
         finished_unix=time.time(), files=rows, source_files=len(spec['files']),
         copied_bytes=copied, reused_payloads=len(spec['reused_backup_payloads']),
         live_training_changed=False, live_mounts_changed=False,
