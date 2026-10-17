@@ -125,12 +125,25 @@ def _scan_fd(fd, rel, owner, device, result):
             raise ValueError('Foreign owner or filesystem inside deletion scope: ' + item)
         signature = _signature(s)
         if signature['kind'] == 'directory':
-            if name.lower() in DENIED_NAMES:
+            diagnostic_config = bool(re.fullmatch(r'outers/outer-\d{6}/diagnostic/preparation', item))
+            if name.lower() in DENIED_NAMES and not diagnostic_config:
                 raise ValueError('Protected directory name inside output scope: ' + item)
             child = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
             try:
                 if os.fstat(child).st_ino != s.st_ino:
                     raise ValueError('Directory changed while planning')
+                if diagnostic_config:
+                    # This is generated per-outer diagnostic configuration,
+                    # not the experiment's protected top-level preparation.
+                    # Only its exact native single config is in the allowlist.
+                    directory = Path(os.readlink('/proc/self/fd/%d' % child))
+                    if sorted(os.listdir(child)) != ['launch-config.json']:
+                        raise ValueError('Unexpected asset in generated diagnostic preparation')
+                    config = _read(directory/'launch-config.json')
+                    if (config.get('run_id') not in (RUN, OLD_RUN) or
+                            config.get('diagnostic_only') is not True or
+                            config.get('base') != str(directory.parent)):
+                        raise ValueError('Diagnostic configuration is not the exact owned output')
                 _scan_fd(child, item, owner, device, result)
             finally:
                 os.close(child)
