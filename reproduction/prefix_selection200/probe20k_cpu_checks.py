@@ -37,6 +37,15 @@ def run():
     wanted_soft=torch.nn.functional.binary_cross_entropy_with_logits(z,target.double())+torch.nn.functional.binary_cross_entropy(q,event.double())
     torch.testing.assert_close(augmented['loss'],wanted_soft)
     augmented['loss'].backward();assert torch.isfinite(z.grad).all()and torch.count_nonzero(z.grad)>0
+    from reproduction.prefix20_group_joint100.train_epoch import evaluate_predictions
+    index={};predictions=[]
+    for i in range(20480):
+        for j in range(5):
+            tid=str(i)+'-'+str(j);label=int(j==0)
+            index[tid]=dict(qid=str(i),question_hash='question-'+str(i),strict_em=label)
+            predictions.append((tid,2. if label else -2.,label))
+    metrics,rows=evaluate_predictions(predictions,index,20480)
+    assert metrics['count']==20480 and metrics['mixed_count']==20480 and len(rows)==20480
     fixtures=[]
     for name,keys in [('all_same',[0]*20480),('177_layouts',[i%177 for i in range(20480)]),('all_distinct',list(range(20480)))]:
         plan=plan_epoch(keys,20261017,1);again=plan_epoch(keys,20261017,2)
@@ -52,6 +61,6 @@ def run():
         fixtures.append(dict(layout=name,questions=20480,updates_per_rank=400,paired_question_fraction=paired/20480))
     return dict(status='CPU_EMA_MIXUP_JOINT_G5_FIXTURES_PASS',ema_orientation=True,
         ownEM_soft_labels=True,separate_soft_mixed_event=True,default_joint_objective_unchanged=True,
-        differentiable_group=True,whole_G5_plans=fixtures,gpu_forward_performed=False)
+        differentiable_group=True,complete_20480_question_evaluation=True,whole_G5_plans=fixtures,gpu_forward_performed=False)
 
 if __name__=='__main__':print(json.dumps(run()))
