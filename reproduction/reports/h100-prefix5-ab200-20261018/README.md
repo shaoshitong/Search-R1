@@ -221,3 +221,7 @@ fresh fixed-question diagnostic under `diagnostic/outers/outer-N`. A null ordina
 and small completion/metric headers, with a fresh local evidence tag. It does not
 load tensors, start a second observer, mutate training, or repeat generation.
 The original single observer still verifies complete joints and actual score11.
+
+### Both ten complete: first fresh paired periodic result
+
+See [period10 paired results](period10-paired-results.md) and the small JSONs for all4-rank actual clocks, original-group metrics,50 globally reduced loss updates, sampling multiplicities summary, and full wall times. Both actor200/rank, Aprobe0, Bprobe/EMA140. Same runtime2e397623; no restart or scientific change. Actual outer11 score adoption is checked separately by the sole existing observer. Full200 and final QA obligations remain incomplete.
