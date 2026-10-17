@@ -140,6 +140,22 @@ def seal_pending_sampling(seals,base,pending):
         path=root/'probe-score'/name;seals.file(path,dict(bytes=path.stat().st_size,sha256=score[key]))
 
 
+def validate_driver_probe_receipt(selected,score,before):
+    """The saved receipt JSON hash and its model payload hash are distinct."""
+    value=selected['value']
+    # probe.atomic_checkpoint publishes via prefix20_online.launch.publish,
+    # whose native JSON serialization is sorted default json.dump, no newline.
+    raw=json.dumps(value,sort_keys=True,allow_nan=False).encode()
+    need(selected['sha256']==hashlib.sha256(raw).hexdigest(),
+         'Actual driver head receipt JSON hash differs from its saved snapshot')
+    need(value['completed_outer']==before['last_update_outer'] and
+         value['actual_adam_steps_per_rank']==[before['actual_adam_per_rank']]*WORLD and
+         value['sha256']==score['probe_before_checkpoint_sha256'],
+         'Actual driver selection head payload/boundary differs from scored features')
+    return dict(saved_receipt_json_sha256=selected['sha256'],
+                saved_model_payload_sha256=value['sha256'],distinct_hash_roles_verified=True)
+
+
 def qualify(base,outer,terminal_proof,terminal_sha,output):
     from .checkpoint_native_pending_probe import Seals,_hf
     base=canonical_path(base);output=canonical_path(output,exists=False);config=read(base/'preparation/launch-config.json')
@@ -175,7 +191,11 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
     for n in range(1,outer+1):
         item=read(base/'outers'/('outer-%06d'%n)/'complete.json');history[n]=item
         value=item['grounding'];allowed.extend(Path(value[key]) for key in ('manifest_path','commit','boundary','adoption_receipt'))
-        allowed.extend((Path(item['grounding_snapshot']),Path(item['pool_snapshot']),Path(item['probe_snapshot'])))
+        # Nonmilestone historical probe hardlinks are deliberately pruned by
+        # storage.py. They are lineage receipts, not the current resumable state.
+        # Run-owned files never need the external-asset allowlist; only qualify
+        # the latest joint probe payload below, which must still exist/agree.
+        allowed.extend((Path(item['grounding_snapshot']),Path(item['pool_snapshot'])))
     due=base/'grounding/rounds'/('round-%06d'%outer)/'fit-complete.json'
     if due.exists():
         value=read(due);allowed.extend(Path(value[key]) for key in ('manifest_path','commit','boundary'))
@@ -222,10 +242,9 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
     need(captured['sha256']==hashlib.sha256(pool_canonical(pool)+b'\n').hexdigest(),'Actual driver captured pool bytes differ from producer serialization')
     selected=driver['prefix_probe_receipt'];score=seals.json(base/'outers'/('outer-%06d'%outer)/'probe-score/manifest.json')
     before=probe_boundary(outer-1)
-    need(selected['value']['completed_outer']==before['last_update_outer'] and
-         selected['value']['actual_adam_steps_per_rank']==[before['actual_adam_per_rank']]*WORLD and
-         selected['sha256']==score['probe_before_checkpoint_sha256'],'Actual driver selection head snapshot differs')
-    driver_proof=dict(file=file,rng=validate_rng(driver['rng']),candidate_pool_state_exact=True,prefix_probe_receipt=selected)
+    selected_proof=validate_driver_probe_receipt(selected,score,before)
+    driver_proof=dict(file=file,rng=validate_rng(driver['rng']),candidate_pool_state_exact=True,
+                      prefix_probe_receipt=selected,probe_receipt_hash_roles=selected_proof)
     del driver;gc.collect()
     saved,file=seals.mmap_torch(base/'probe/latest.pt',joint['probe'])
     probe=dict(probe_state(saved,joint['probe'],config,outer,history),file=file);del saved;gc.collect()

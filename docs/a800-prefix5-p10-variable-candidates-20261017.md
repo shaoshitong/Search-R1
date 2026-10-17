@@ -37,3 +37,13 @@
 - 保存5/50/100/150/200、最终51713评测及only-owned资源收尾要求不变。未完成200或最终验收不得标记目标完成。
 
 大产物全部留在远端。Git仅源码、配置、执行文档及去敏scalar/hash；不得加入权重、优化器、原始题目、token、rollout、环境或凭据。
+
+## 2026-10-17：保留pending5与已清理历史快照的恢复修正
+
+最新人工再次确认：只修正式训练I1–I6，保留当前探针初始化，不重新开启200epoch warmup；Prefix5与trajectory BCE＋G5 mixed BCE的1:1损失不变。I1–I6的代码对应关系见[a800-prefix5-i1-i6-fresh200-20261017.md](a800-prefix5-i1-i6-fresh200-20261017.md)。
+
+同run54ac原执行在第5轮continuation初始化因TCPStore端口冲突真实退出。已完整完成4轮，四rank各80次返回Adam（副本只计一次80），scheduler4；第5轮已完成2560题／12800条前缀和Top512评分，但没有actor/probe更新。恢复保留这些真实产物和已预留题池，因此第5轮沿原2560配置完成，新的普通轮5120规则从第6轮生效，P10更新轮仍2560。生效前历史与生效后曲线分段，不能把待验证计数写成已经运行。
+
+CPU恢复入口原来把被正常存储清理的第1至3轮probe快照当成必要外部资产，导致在加载当前状态之前退出。现在历史轮只核对保留的JSON lineage，当前完整joint4的probe payload、快照同inode、完整SHA、finite、actor/Adam/scheduler/RNG与题池仍严格验收，缺失当前状态继续拒绝。另修复driver里“probe回执JSON的SHA”与“回执value中的权重payload SHA”误比较：分别校验原JSON序列化SHA及模型SHA，不放宽两种身份检查。
+
+这些修正只涉及恢复元数据；actor数学、探针模型与损失、grounding和交互实现不改变。失败的CPU准备namespace保留且不重放onceclaim；新版使用独立执行namespace。CPU证明不等于CUDA加载或训练推进；实际普通轮5120／25600、actor512／2560以及自然更新轮50次探针Adam，均须以随后真实日志验证。

@@ -281,6 +281,26 @@ class RecoveryMetadataTests(unittest.TestCase):
 
 
 class GenuineQualifierSmallStateTests(unittest.TestCase):
+    def test_native_driver_receipt_keeps_json_and_model_hash_roles_distinct(self):
+        from . import actor
+        from reproduction.prefix20_online.launch import publish
+        with tempfile.TemporaryDirectory() as temporary:
+            path=Path(temporary)/'latest.json'
+            model_sha='a'*64
+            publish(path,dict(completed_outer=0,actual_adam_steps_per_rank=[0]*4,
+                sha256=model_sha,path='/data/probe/latest.pt',bytes=12))
+            with patch.object(actor,'remote',side_effect=Path):
+                selected=actor.linked_probe_receipt(str(path))
+            before=dict(last_update_outer=0,actual_adam_per_rank=0)
+            score=dict(probe_before_checkpoint_sha256=model_sha)
+            self.assertNotEqual(selected['sha256'],model_sha)
+            proof=qualify.validate_driver_probe_receipt(selected,score,before)
+            self.assertTrue(proof['distinct_hash_roles_verified'])
+            with self.assertRaises(ValueError):
+                qualify.validate_driver_probe_receipt(selected,dict(probe_before_checkpoint_sha256='b'*64),before)
+            changed=copy.deepcopy(selected);changed['sha256']='c'*64
+            with self.assertRaises(ValueError):qualify.validate_driver_probe_receipt(changed,score,before)
+
     def test_actual_probe_producer_recipe_initial_and_periodic_rng_boundary(self):
         import numpy as np
         import torch
