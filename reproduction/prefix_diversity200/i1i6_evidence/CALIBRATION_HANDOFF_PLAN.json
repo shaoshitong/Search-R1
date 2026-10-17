@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+  "source_job": "3432",
+  "source_base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe",
+  "source_commit": "68d2d131aee91d194c487f54a0204f53397d87ea",
+  "source_config_sha256": "359e637a5130c0273ecde4927b093495ea2aeacbea7a932dbb8085122ec44d2a",
+  "successor_base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1",
+  "target_complete_outer": 6,
+  "authority": {
+    "scope": "Current active user goal requires I1-I6 correction and continuous200 actual outers; this handoff corrects the scheduled reward calibration contract without resetting completed updates.",
+    "goal_status_observed": "active",
+    "goal_updated_at_observed": 1792216685,
+    "goal_objective": "**初始化**\n\n不再重新 warm-up。从本次 warm-up **实际保留、可加载的 checkpoint** 中，按固定512题的混合判别**平衡准确率**选择最佳探针(作为初始化)。Actor 按此前约定，从官方 Qwen2.5-3B-Instruct 开始，正式训练预算暂沿用 **200个 outer**。\n\n1. **每轮先筛选5120道候选题**\n\n固定本轮 actor 和探针版本，每题独立生成5条轨迹的前20个 policy token。使用当前相同的 **question＋20-token 表征和探针结构**，预测各条轨迹最终正确的概率：\n\n\\\\[ p\\_{ij}=\\sigma(z\\_{ij}),\\qquad \\widehat h_i=1-\\prod\\_{j=1}^{5}p\\_{ij}-\\prod\\_{j=1}^{5}(1-p\\_{ij}). \\\\]\n\n按 \\\\(\\widehat h_i\\\\) 选择 **Top1024题**，随机探索为0，固定诊断题不进入候选池。\n\n2. **续写被选中的同一组前缀**\n\n将这1024题对应的**原5条前缀继续补齐**，得到5120条完整轨迹。保留真实 token、工具上下文、生成预算和采样概率，前20个 token 也保留在正常训练轨迹中，然后根据1024\\*5的针对每个question的轨迹最终的EM的方差，选择方差大diversity大的512条用于训练。\n\n3. **计算真实混合比例，并更新 actor**\n\n用各条完整轨迹自己的严格 EM 得到 \\\\(c\\_{ij}\\\\)，令\n\n\\\\[ K_i=\\sum\\_{j=1}^{5}c\\_{ij},\\qquad m_i=\\mathbf1[0\\<K_i<5]. \\\\]\n\n每轮报告选中512题的真实混合比例：\n\n\\\\[ r\\_{\\mathrm{mixed}}=\\frac1{512}\\sum\\_{i=1}^{512}m_i. \\\\]\n\nActor 使用这些完整轨迹，按此前确认的 Search-G1 奖励与 PPO/GRPO 配方更新。\n\n4. **这些新轨迹只训练探针一个 epoch**\n\n探针学习率固定 **\\\\(1\\times 10^{-6}\\\\)**，损失保持当前形式：\n\n\\\\[ \\mathcal L\\_{\\mathrm{probe}} = \\frac1{512\\times5}\\sum\\_{i,j}\\operatorname{BCEWithLogits}(z\\_{ij},c\\_{ij}) + \\frac1{512}\\sum_i\\operatorname{BCE}(\\widehat h_i,m_i). \\\\]\n\n两项权重均为1。5120**条轨迹自然遍历一次，不额外重复拟合。** 保持8卡、平均总 batch256、完整G5同批，每轮共 2**0次同步 Adam 更新**。更新后的探针用于下一轮选题。\n\n5. **每轮重点记录**&#x20;\n\n-\n\n* Top512的真实混合比例，以及选择时的平均预测混合概率；\n* 更新后的训练集、固定512题诊断集混合判别普通／平衡准确率；\n* 前缀生成、评分、续写、actor更新和探针更新各阶段耗时。\n* 训练探针的10次adam更新的损失下降情况。 未续写的4608题没有真实标签，因此不报告整个5120候选集的判别准确率。\n\n6. **保存与完成标准**\n\n保存 actor、探针及各自优化器和恢复状态；模型、轨迹和完整输出留远端。正式训练及QA评测沿用此前确认的协议。本方案采用**前缀筛选后的训练分布**，实际收益看选中组的混合比例和最终QA效果。\n\n核心循环就是：\n\n**5120题生成前缀 → 探针选Top1024 → 同前缀续写 → 选择实际512个混合方差大的question（对应512\\*5轨迹）-> actor更新＋探针仅训练一遍 → 下一轮。**\n\n\n\n根据：/Users/shaoshitong/Documents/Search-G1/actorhidden-period20-20261016/results/actorhidden-period20/CONSOLIDATED-INCIDENT-REPORT-20261017.md 去修正l1-l6",
+    "old_3427_stop_message_is_not_current_stop_authority": true,
+    "planned_current_action": "One own3432 source handoff after actual complete6, before actor/probe7 optimization; successor preserves model/Adam/scheduler/RNG/candidate state and continues7..200.",
+    "not_a_pause_or_new_fresh_run": true
+  },
+  "reason": "Scheduled50/100/150 reward calibration must use shared4096/action500/reserve500/earlyfinal/protected-wrapper/native-stream contract, preserving existing closedbook24/counterfactual32 label rules.",
+  "expected_preserved_actor_adam_per_rank": [
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120
+  ],
+  "expected_preserved_probe_adam_per_rank": [
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120
+  ],
+  "expected_preserved_scheduler_outer": 6,
+  "reexecute_completed_outers": 0,
+  "actor_or_probe_updates_discarded": 0,
+  "native_executor_exact_resume_claimed": false,
+  "normal_checkpoint5_and_QA_run_in_successor": false,
+  "uncommitted_prefix7_may_be_recomputed_with_same_candidate_indices": true,
+  "normal_checkpoint5_and_QA_continue_in_source": true,
+  "freeze_protocol": "pidfd-bound single source controller SIGSTOP; verify all threads T/no tracer and safe boundary; reversible failure SIGCONT; after persisted intent pidfd SIGKILL controller, native owned cleanup, terminal proof before successor import"
+}

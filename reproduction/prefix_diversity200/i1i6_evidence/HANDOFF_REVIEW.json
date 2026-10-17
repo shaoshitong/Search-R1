@@ -1,0 +1,138 @@
+{
+  "schema_version": 2,
+  "reviewed_utc": "2026-10-17T06:04:03.700751+00:00",
+  "reviewer": "i1i6_context_free_review",
+  "scope": "Limited static planned calibration handoff guard/import/submit review; no calibration implementation audit",
+  "status": "NO_UNRESOLVED_BLOCKER_FOUND_IN_REVIEWED_LOCAL_DIFF",
+  "source_job_expected": "3432",
+  "source_frozen_commit": "68d2d131aee91d194c487f54a0204f53397d87ea",
+  "target_complete_outer": 6,
+  "next_outer": 7,
+  "expected_preserved_adam_per_rank": 120,
+  "source_sha256": {
+    "calibration_handoff_guard.py": "ebcc01a3b86f15f642b74fd0d26e1455a3d06d3e5076a5f817670683ff1d3d09",
+    "joint_import.py": "82fd9b290a7a8f5e7fe62cb97c89c9662aaa57fc54727e7f2ffea80cce26275c",
+    "launch.py": "cf9e6c08bf7b85db7700b3c4d88936e78f188b5aec138a46eece8c61d2fdeac3",
+    "i1i6_evidence/CALIBRATION_HANDOFF_PLAN.json": "435d03ac489c2a8ab148339a714a50f5c45777a997cdf3757acd08e1bc1dc27e",
+    "handoff_control.py": "251ca16914baf0b0d8e1bbc90cf0a4c07f5149c1120e60b005d8655bdbca403f"
+  },
+  "findings": [
+    {
+      "id": "HANDOFF-1",
+      "priority": "P1",
+      "status": "FIXED_AND_REVIEWED",
+      "problem": "Controller stage-to-cancel race",
+      "resolution": "Exact pidfd controller identity, all-thread SIGSTOP confirmation and frozen boundary checks now precede persisted intent and controller SIGKILL. Controller death is confirmed before native cancellation; reversible failures resume via SIGCONT."
+    },
+    {
+      "id": "HANDOFF-2",
+      "priority": "P2",
+      "status": "FIXED_AND_REVIEWED",
+      "problem": "Dependency substring identity",
+      "resolution": "exact_dependency now uses fullmatch on complete afterany job IDs."
+    },
+    {
+      "id": "HANDOFF-3",
+      "priority": "P2",
+      "status": "FIXED_AND_REVIEWED",
+      "problem": "Terminal publication deadline mismatch",
+      "resolution": "native_import now waits300 seconds, covering the guard180-second terminal verification period plus its preverification work."
+    },
+    {
+      "id": "HANDOFF-4",
+      "priority": "P2",
+      "status": "FIXED_AND_REVIEWED",
+      "problem": "Prefix completion during frozen controller interval",
+      "resolution": "Planned import now permits a completed next-prefix receipt while proving no actor/probe optimization and replaying the same candidate reservation."
+    },
+    {
+      "id": "HANDOFF-5",
+      "priority": "P1",
+      "status": "FIXED_AND_REVIEWED",
+      "problem": "Terminal proof file visible before complete JSON",
+      "resolution": "once now fsyncs a unique temporary file and publishes via atomic no-clobber hardlink, fsyncing parent and removing temporary file."
+    },
+    {
+      "id": "HANDOFF-6",
+      "priority": "P2",
+      "status": "FIXED_AND_REVIEWED",
+      "problem": "Guard/import disagree on COMPLETED state",
+      "resolution": "Planned live-native reader now uses exact structured JobId/WorkDir and consistently accepts FAILED/CANCELLED/COMPLETED."
+    }
+  ],
+  "cpu_metadata_fixtures_executed": [
+    {
+      "name": "exact_dependency",
+      "result": "PASS",
+      "detail": "Actual helper accepts3 valid forms and rejects4 wrong-job/kind/suffix forms including34320 versus3432."
+    },
+    {
+      "name": "stopped_boundary",
+      "result": "PASS",
+      "detail": "Actual helper with tiny local JSON accepts complete6/prefix7, rejects next actor7 attempt and latest joint already complete7."
+    },
+    {
+      "name": "atomic_terminal_publication",
+      "result": "PASS",
+      "detail": "Actual once helper publishes readable complete JSON, rejects overwrite without changing bytes and removes temporary file."
+    },
+    {
+      "name": "final_AST",
+      "result": "PASS",
+      "detail": "Final guard, joint_import and launch modules parse."
+    }
+  ],
+  "positive_observations": [
+    "Frozen68d launch.run is the sole serial phase scheduler; rollout prefix children manage only prefix workers and aggregation and cannot launch actor.",
+    "Exact source config SHA, run identity, source commit, WorkDir, native job ID, Comment, node and8-GPU request are checked.",
+    "Pending afterany successor is not a concurrent training instance and invokes native import before launch.run.",
+    "Unique controller is checked after pidfd_open using original birth, exact argv, job environment, UID and source batch cgroup; all threads must beT and untraced.",
+    "Frozen boundary must remain target6 with120 actor/probe Adam writes per rank, no next actor attempt/config and no next probe update; passed targets are rejected.",
+    "Guard never resumes the controller after successful intentional kill; native job termination and independent ledger/freezer-cgroup emptiness precede atomically published terminal proof.",
+    "Import independently requires latest joint/actor/probe/pool boundary, preserves original checkpoint/optimizer/scheduler references and records any unoptimized prefix replay.",
+    "Plan preserves normal checkpoint5/QA in source and specifies no completed outer reexecution and no discarded optimizer updates.",
+    "Source stop3427 instruction is not used as authority to stop3432."
+  ],
+  "limits": {
+    "static_review_and_tiny_local_metadata_only": true,
+    "gpu_used": false,
+    "remote_access_used": false,
+    "running3432_inspected": false,
+    "signals_sent": false,
+    "source_modified_by_reviewer": false,
+    "large_tests_run": false,
+    "handoff_or_import_executed": false
+  },
+  "not_validated_live": [
+    "Linux pidfd API availability and permissions",
+    "Exact live controller identity and freezer cgroup layout",
+    "Actual Slurm dependency, cancellation and cleanup timing",
+    "Actual source checkpoint/QA completion and successor readiness"
+  ],
+  "conclusion_limit": "This is a local code-review conclusion, not proof of a performed or successful handoff. Runtime eligibility must still be established by the guard; if target6 has passed it must leave the source running.",
+  "entrypoint_followup": {
+    "reviewed_utc": "2026-10-17T06:05:10.362824+00:00",
+    "scope": "Only complete new handoff_control.py prepare_guard/arm_guard entrypoints",
+    "status": "NO_UNRESOLVED_BLOCKER_FOUND_IN_REVIEWED_ENTRYPOINT",
+    "review_type": "static only; no new tests or remote calls",
+    "binding_checks": [
+      "prepare binds spec/plan source job, source/successor bases, target completed outer, plan SHA, original config SHA, run identity and frozen source commit",
+      "guard source bytes are checked against deployed source-files manifest and staged SHA is recorded",
+      "arm binds preparation/spec/plan source job and run identity, pending successor native ownership and exact afterany dependency, original source native ownership, plan SHA, staged guard SHA and prepared successor config SHA",
+      "target-passed source boundary refuses arming"
+    ],
+    "repetition_and_unknown_outcome": [
+      "Existing preparation namespace refuses overwrite",
+      "Atomic once-only arm.json and unit-intent.json are committed before systemd dispatch",
+      "A timeout or unknown systemd-run result leaves once-only intent/arm receipts and prevents blind replay",
+      "Successor submission is handled by the previously reviewed once-only launch submit path"
+    ],
+    "scope_safety": [
+      "Writes only a new source/preparation/calibration-handoff-v1 namespace and systemd guard artifacts",
+      "Does not rewrite frozen source repo or original launch config",
+      "Independent systemd unit is limited to CPUQuota20%, MemoryMax128M, Nice19, TasksMax32 and empty CUDA_VISIBLE_DEVICES"
+    ],
+    "previous_entrypoint_gap": "Missing early spec/plan/source job, run and source commit equality checks were added before final review",
+    "runtime_not_performed_by_reviewer": true
+  }
+}

@@ -34,6 +34,10 @@ def refit(config_path, outer, model):
                 or sha(live['manifest'])!=live['manifest_sha256']
                 or Path(manifest['encoder'])!=model):
             raise ValueError('Existing reward fit belongs to a different actual milestone')
+        if (manifest.get('label_proof',{}).get('interaction_contract')!=c['interaction_contract']
+                or sha(manifest['calibration_interaction_config'])!=manifest['calibration_interaction_config_sha256']
+                or manifest['label_proof']['interaction_config_sha256']!=manifest['calibration_interaction_config_sha256']):
+            raise ValueError('Existing reward fit does not prove the shared calibration interaction')
         for name,key in (('commit_probe.pkl','commit'),('boundary_probe.pkl','boundary')):
             if sha(manifest[key])!=manifest['head_sha256'][name]:
                 raise ValueError('Existing fitted reward head changed')
@@ -50,17 +54,24 @@ def refit(config_path, outer, model):
     env=dict(os.environ,RETRIEVER_URL=c['search_url'],NO_PROXY='127.0.0.1,localhost')
     for k in ('HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):env.pop(k,None)
     repo=base/'repo';dump=target/'dumps';heads=target/'heads'
+    interaction=target/'interaction-config.json'
+    interaction.write_text(json.dumps(dict(c,actor_version=actor['actor_version'],
+        actor_model_dir=str(model),calibration_outer=outer),indent=2)+'\n')
     with (target/'calibration.log').open('x')as stream:
         subprocess.run([sys.executable,str(repo/'ts_probe_dump.py'),'--model',str(model),
             '--data',str(data),'--tag','nq-hotpot-common','--cap','300','--G','5',
             '--layers','21,24,27','--gpu_mem','0.25','--rollout_max_new','500',
-            '--correction_feedback','--out',str(dump)],env=env,stdout=stream,stderr=subprocess.STDOUT,check=True)
+            '--correction_feedback','--interaction-config',str(interaction),
+            '--out',str(dump)],env=env,stdout=stream,stderr=subprocess.STDOUT,check=True)
         subprocess.run([sys.executable,str(repo/'ts_probe_train.py'),'--dumps',str(dump),
             '--layers','21,24,27','--commit-position','Xa','--commit-label','flip',
             '--save',str(heads),'--require-all-cv-folds'],env=env,stdout=stream,stderr=subprocess.STDOUT,check=True)
     report=read(heads/'calibration-report.json');proof=read(dump/'calibration-label-proof.json')
     if proof['question_count']!=300 or report['unique_question_count']!=300:
         raise ValueError('Reward grounding must refit the canonical300 questions')
+    if (proof.get('interaction_contract')!=c['interaction_contract']
+            or proof.get('interaction_config_sha256')!=sha(interaction)):
+        raise ValueError('Actual reward calibration did not use the shared train/QA interaction')
     if not report['require_all_cv_folds']or report['configured_cv_folds']!=2:
         raise ValueError('Original reward fitting CV contract changed')
     initial=read(c['grounding_manifest'])
@@ -79,6 +90,7 @@ def refit(config_path, outer, model):
         commit=str(heads/'commit_probe.pkl'),boundary=str(heads/'boundary_probe.pkl'),
         encoder_sha256=files,head_sha256={name:sha(heads/name)for name in ('commit_probe.pkl','boundary_probe.pkl')},
         calibration_report=report,label_proof=proof,calibration_report_sha256=sha(heads/'calibration-report.json'),
+        calibration_interaction_config=str(interaction),calibration_interaction_config_sha256=sha(interaction),
         calibration_data_sha256=sha(data),published_unix=time.time(),actor_version=actor['actor_version'])
     path=target/'version-manifest.json';path.write_text(json.dumps(manifest,indent=2)+'\n')
     live=dict(run_id=c['run_id'],round=outer,version=version,manifest=str(path),manifest_sha256=sha(path),

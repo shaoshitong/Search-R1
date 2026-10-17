@@ -89,8 +89,10 @@ def submit(base):
                  'export PATH=' + shlex.quote(str(Path(python).parent) + ':/usr/local/bin:/usr/bin:/bin'),
                  'export PYTHONPATH=' + shlex.quote(str(base / 'repo') + ':' + c['runtime_extra_packages']),
                  'export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7',
-                 'unset PYTHONHOME RAY_ADDRESS HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy',
-                 'exec ' + shlex.join([python, '-m', 'reproduction.prefix_diversity200.launch', 'run', '--base', str(base)])]
+                 'unset PYTHONHOME RAY_ADDRESS HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy']
+        if c.get('resume_joint',{}).get('planned_calibration_handoff'):
+            lines.append(shlex.join([python,'-m','reproduction.prefix_diversity200.joint_import','--base',str(base)]))
+        lines.append('exec ' + shlex.join([python, '-m', 'reproduction.prefix_diversity200.launch', 'run', '--base', str(base)]))
         with launcher.open('x') as handle:
             handle.write('\n'.join(lines) + '\n'); handle.flush(); os.fsync(handle.fileno())
         launcher.chmod(0o700)
@@ -100,6 +102,10 @@ def submit(base):
             '--job-name=g1-prefix200-' + c['run_id'][:12], '--comment=g1-prefix200:' + c['run_id'],
             '--chdir=' + str(base), '--output=' + str(base / 'logs/native-%j.log'),
             '--error=' + str(base / 'logs/native-%j.log'), str(launcher)]
+        if c.get('resume_joint',{}).get('planned_calibration_handoff'):
+            source_job=str(c['resume_joint']['source_job'])
+            if not source_job.isdecimal():raise ValueError('Exact source native job is required')
+            command.insert(2,'--dependency=afterany:'+source_job)
         once(prep / 'submit-intent.json', dict(run_id=c['run_id'], source_commit=c['source_commit'],
             config_sha256=sha(prep / 'launch-config.json'), command=command,
             job_name='g1-prefix200-' + c['run_id'][:12], comment='g1-prefix200:' + c['run_id'], created_unix=time.time()))

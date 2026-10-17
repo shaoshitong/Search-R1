@@ -108,7 +108,13 @@ def stream_action_present(token_ids, decode):
 
 def initial_state(config, outer, group, response_index, tokenizer):
     prompt = prompt_tokens(tokenizer, group['prompt'], 2048)
-    if not prompt:
+    return initial_state_from_tokens(config, outer, group, response_index, prompt)
+
+
+def initial_state_from_tokens(config, outer, group, response_index, prompt):
+    """Same state for already-rendered native IDs; never template text twice."""
+    prompt = list(prompt)
+    if not prompt or len(prompt) > 2048 or any(type(token) is not int or token < 0 for token in prompt):
         raise ValueError('Actual official initial request is empty')
     ordinal = int(group['candidate_ordinal'])
     tid = '%s-outer%06d-c%04d-g%d' % (config['run_id'], outer, ordinal, response_index)

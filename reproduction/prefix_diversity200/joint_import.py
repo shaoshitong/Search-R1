@@ -17,6 +17,20 @@ def import_joint(base):
     if (base/'preparation/joint-resume-intent.json').exists():
         raise RuntimeError('Reconcile the existing import intent, never replay blindly')
     previous=read(source/'preparation/launch-config.json')
+    planned=None
+    if spec.get('planned_calibration_handoff'):
+        planned=read(source/'preparation/calibration-handoff-v1/terminal.json')
+        plan=read(source/'preparation/calibration-handoff-v1/plan.json')
+        if (sha(source/'preparation/calibration-handoff-v1/plan.json')!=spec['planned_handoff_plan_sha256']
+                or planned['status']!='PLANNED_CALIBRATION_HANDOFF_COMPLETE'
+                or planned['plan_sha256']!=spec['planned_handoff_plan_sha256']
+                or planned['run_id']!=c['run_id'] or planned['job_id']!=str(spec['source_job'])
+                or planned['completed_outer']!=n or planned['owned_births_present']
+                or planned.get('native_job_cgroup_members') or not planned.get('controller_dead')
+                or planned['successor_job']!=os.environ.get('SLURM_JOB_ID')
+                or plan['source_base']!=str(source) or plan['target_complete_outer']!=n
+                or plan['source_config_sha256']!=sha(source/'preparation/launch-config.json')):
+            raise ValueError('Planned source handoff terminal proof differs')
     science=('run_id','model_revision','model_files_sha256','candidate_questions','selected_questions',
         'actor_selected_questions','responses_per_question','prefix_policy_tokens','probe_updates_per_outer',
         'probe_learning_rate','probe_epochs_per_outer','probe_global_batch_average','actor_global_mini_batch',
@@ -32,18 +46,26 @@ def import_joint(base):
         terminal = read(terminal_path) if terminal_path.is_file() else {}
         verified_terminal = (spec.get('terminal_proof_sha256') == sha(terminal_path)
             if terminal_path.is_file() else False)
+        planned_native=planned['native'] if planned else {}
+        planned_terminal=(planned_native.get('JobId')==job and planned_native.get('WorkDir')==str(source)
+            and planned_native.get('JobState') in ('CANCELLED','FAILED','COMPLETED'))
         if ('Invalid job id specified' not in native.stderr
                 or any(line.split('|')[-1]==name for line in queue.splitlines())
-                or not verified_terminal or terminal.get('job_id') != job
-                or terminal.get('base') != str(source) or terminal.get('native_terminal_state') != 'FAILED'
-                or terminal.get('actual_births_present') or terminal.get('native_job_cgroup_paths')
-                or not terminal.get('owned_gpu_processes_gone')):
+                or (not planned_terminal and (not verified_terminal or terminal.get('job_id') != job
+                    or terminal.get('base') != str(source) or terminal.get('native_terminal_state') != 'FAILED'
+                    or terminal.get('actual_births_present') or terminal.get('native_job_cgroup_paths')
+                    or not terminal.get('owned_gpu_processes_gone')))):
             raise ValueError('No authoritative terminal evidence for the source')
-    elif 'JobState=FAILED' not in native.stdout or 'WorkDir='+str(source) not in native.stdout:
-        raise ValueError('Source native allocation is not terminal')
+    else:
+        fields=dict(part.split('=',1) for part in native.stdout.split() if '=' in part)
+        allowed_states=('FAILED','CANCELLED','COMPLETED') if planned else ('FAILED',)
+        if (fields.get('JobId')!=job or fields.get('JobState') not in allowed_states
+                or fields.get('WorkDir')!=str(source)):
+            raise ValueError('Source native allocation is not terminal')
     ledger=read(source/'logs/process-ledger.json')
     births=[b for part in ledger['jobs'].values() for b in part['ledger'].values()]
-    if birth_states(births) or not read(source/'logs/cleanup-status.json')['owned_births_all_gone']:
+    cleanup=source/'logs/cleanup-status.json'
+    if birth_states(births) or not ((cleanup.exists() and read(cleanup)['owned_births_all_gone']) or planned):
         raise ValueError('Source task processes have not exited')
     joint=read(source/'latest-joint.json');actor=read(source/'actor/latest.json');probe=read(source/'probe/latest.json')
     root=source/'outers'/('outer-%06d'%n)
@@ -62,20 +84,28 @@ def import_joint(base):
         indices,cycles,after=reserve_indices(completed_pool,n+1)
         stage=read(source/'logs/pipeline-status.json')
         prefix=failed_root/'prefix'
-        if (stage.get('outer')!=n+1 or stage.get('stage')!='outer-%06d-prefix'%(n+1)
+        replay_stage=stage.get('stage')
+        allowed_stage=('outer-%06d-prefix'%(n+1),'CANDIDATE_POOL_RESERVATION') if planned else ('outer-%06d-prefix'%(n+1),)
+        no_optimization=(not any((source/'actor/outers').glob('outer-%04d-*'%(n+1)))
+            and not any((failed_root/'probe-update').glob('rank-*-updates.jsonl')))
+        sampled_prefix=any(prefix.glob('rank-*-progress.json')) or any(prefix.glob('rank-*.jsonl*'))
+        if (stage.get('outer')!=n+1 or replay_stage not in allowed_stage
                 or reservation['outer']!=n+1 or reservation['before_sha256']!=state_sha(completed_pool)
                 or reservation['after_sha256']!=state_sha(after) or reservation['after']!=after
                 or reservation['indices']!=indices or reservation['cycles']!=cycles or pool!=after
-                or (failed_root/'complete.json').exists() or (prefix/'complete.json').exists()
-                or any(prefix.glob('rank-*-progress.json')) or any(prefix.glob('rank-*-complete.json'))
-                or any(prefix.glob('rank-*.jsonl*'))
+                or (failed_root/'complete.json').exists()
+                or (not planned and (prefix/'complete.json').exists())
+                or (not planned and (sampled_prefix or any(prefix.glob('rank-*-complete.json'))))
+                or not no_optimization
                 or any((source/'actor/outers').glob('outer-%04d-*'%(n+1)))
                 or (source/'probe'/('head-outer-%04d.pt'%(n+1))).exists()):
-            raise ValueError('Cannot prove exactly one unsampled, unoptimized prefix reservation')
+            raise ValueError('Cannot prove one original candidate reservation with zero actor/probe updates')
         replay=dict(outer=n+1,original_reservation_sha256=sha(failed_root/'pool-reservation.json'),
                     source_active_pool_sha256=sha(source/'question-pool/state.json'),
                     restored_pool_snapshot_sha256=sha(snapshot),actor_or_probe_updates_discarded=0,
-                    prefix_sampling_recomputed=True,same_candidate_indices_verified=True)
+                    prefix_sampling_recomputed=True,same_candidate_indices_verified=True,
+                    original_prefix_sampling_started=bool(sampled_prefix),
+                    original_prefix_directory_preserved=str(prefix))
         pool=completed_pool
     if (pool['next_outer']!=n+1 or pool['consumed_candidates']!=5120*n
             or sha(snapshot)!=joint['pool_sha256'] or pool!=completed_pool):
@@ -132,6 +162,14 @@ def import_joint(base):
                     link(snapshot,base/directory/'state.json')
                 else:link(p,base/directory/p.relative_to(source/directory))
     link(source/'latest-joint.json',base/'latest-joint.json')
+    cached=source/'retrieval-cache';corpus=read(cached/'corpus.json') if (cached/'corpus.json').exists() else None
+    if corpus is not None:
+        archive=Path(c['retrieval_corpus']);info=archive.stat();content=cached/'wiki_dump.jsonl'
+        if (corpus['source']!=str(archive.resolve()) or corpus['source_size']!=info.st_size
+                or corpus['source_mtime_ns']!=info.st_mtime_ns or content.stat().st_size!=corpus['content_bytes']):
+            raise ValueError('Reusable corpus cache no longer matches original same-node archive')
+        link(content,base/'retrieval-cache/wiki_dump.jsonl')
+        link(cached/'corpus.json',base/'retrieval-cache/corpus.json')
     if next_reward is not None:
         grounding=base/'grounding';grounding.mkdir()
         initial_adoption=source/'grounding/adopted-round-000.json'
@@ -157,3 +195,24 @@ def import_joint(base):
         terminal_proof_sha256=sha(base/'preparation/joint-source-terminal-proof.json'))
     atomic_json(destination,result)
     return {k:v for k,v in result.items() if k!='assets'}
+
+
+def native_import(base):
+    """One pending native job imports only after its exact source is terminal."""
+    from .launch import config
+    base=Path(base);c=config(base);spec=c['resume_joint']
+    if not os.environ.get('SLURM_JOB_ID'):
+        raise ValueError('Native resume import requires its actual Slurm allocation')
+    path=Path(spec['source_base'])/'preparation/calibration-handoff-v1/terminal.json'
+    deadline=time.monotonic()+300
+    while not path.exists():
+        if time.monotonic()>deadline:
+            raise TimeoutError('Original handoff terminal proof not yet present; no training launched')
+        time.sleep(1)
+    return import_joint(base)
+
+
+if __name__=='__main__':
+    import argparse,json
+    p=argparse.ArgumentParser();p.add_argument('--base',required=True);a=p.parse_args()
+    print(json.dumps(native_import(a.base),allow_nan=False))

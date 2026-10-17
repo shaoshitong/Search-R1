@@ -32,6 +32,9 @@ def grounding_binding(base, config, round_number, require_adoption=True):
             or (round_number and (manifest['run_id'] != config['run_id']
                 or manifest['actor_version'] != config['run_id']+'-actor%04d' % round_number))):
         raise ValueError('Committed reward manifest identity or SHA differs')
+    if round_number and config.get('grounding_refit_rounds'):
+        if manifest.get('label_proof',{}).get('interaction_contract') != config['interaction_contract']:
+            raise ValueError('Reward fit used an incompatible calibration interaction')
     adopted_path = base/'grounding'/('adopted-round-%03d.json' % round_number)
     if require_adoption and config.get('grounding_refit_rounds'):
         adopted = json.loads(adopted_path.read_text())

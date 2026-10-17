@@ -1,0 +1,130 @@
+{
+  "reviewed_at_utc": "2026-10-17T05:54:28.959123+00:00",
+  "scope": "Independent local static/minimal CPU review of calibration interaction and opt-in binding only",
+  "repository": "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016",
+  "source_sha256": {
+    "reproduction/prefix_diversity200/calibration_interaction.py": "b254686c663a0d45988d715d99dfa7359ebfbc1badaa285ac87765aa954c4295",
+    "ts_probe_dump.py": "4ee5445c9c5a5b51bdde9636ef019dcc3bbb935a9f0392b3f4740c1e772f63af",
+    "reproduction/prefix_diversity200/grounding.py": "aa583c9671377b150cbba1294b4af3746c9506e9094e522cbec17523081d7101",
+    "reproduction/prefix_diversity200/rollout.py": "a8e3cea447fbad5abfda07f25b1bb6b3a8a33b96eb983b5ed33f6702f590052f",
+    "reproduction/prefix_diversity200/cost_snapshot.py": "4c8ac261ab3cbdcb5f8ed404b49c1110da3e43dd45e5f09a520d277724092b93"
+  },
+  "verdict": "PASS_STATIC_AND_MINIMAL_CPU_NO_OPEN_FINDINGS",
+  "findings": [
+    {
+      "id": "CAL-1",
+      "priority": "P1",
+      "blocking": false,
+      "file": "reproduction/prefix_diversity200/calibration_interaction.py",
+      "line": 61,
+      "issue": "Already rendered calibration prompt strings are sent to initial_state as chat messages; prompt_tokens applies chat_template a second time and expects message dictionaries.",
+      "call_chain": "ts_probe_dump.parse_row:255-258 -> flat_prompts:344 -> unified_rollouts:348-349 -> calibration_interaction:61-62 -> rollout.initial_state -> prefix20_online.rollout.prompt_tokens",
+      "minimal_cpu_reproduction": "Strict fake tokenizer accepts list[dict] with initial_state but raises TypeError: chat template requires list[dict], got str for the exact rendered-string input shape.",
+      "required_resolution": "Preserve original chat inputs for the shared state machine or explicitly preserve already-rendered original prompt token IDs without double templating; align downstream representation/counterfactual contexts with the actual initial 2048-token prompt.",
+      "status": "RESOLVED_AND_CPU_VERIFIED",
+      "resolution": "Shared initial_state_from_tokens preserves native IDs without templating. Legacy initial_state still calls original prompt_tokens then the same state initializer. Opt-in dump encodes already-rendered prompts once, retains IDs[-2048:], and uses their decoded text for feature/intervention contexts; lengths and original-ID hashes enter proof."
+    },
+    {
+      "id": "CAL-2",
+      "priority": "P2",
+      "blocking": false,
+      "file": "reproduction/prefix_diversity200/grounding.py",
+      "line": 30,
+      "issue": "Existing completed-refit early return checks actor and file hashes but never checks manifest label_proof interaction_contract or interaction-config binding, bypassing new fresh-fit validation.",
+      "required_resolution": "Validate equivalent shared-interaction provenance before reusing completed fits, or explicitly ensure no legacy completed refit is imported. Handoff before outer50 makes this dormant.",
+      "status": "RESOLVED_AND_CPU_VERIFIED",
+      "resolution": "Existing completed fit now requires matching interaction contract plus actual saved interaction-config file SHA and proof SHA binding; new manifests retain the file path and hash. Cost binding also requires shared contract on later fitted rounds."
+    }
+  ],
+  "checks": {
+    "shared_state_machine": "Uses shared initial_state_from_tokens/start_action/next_request/append_chunk/finish_action/native_snapshot/registered_sampling; original train/QA initial_state behavior remains equal on fake tokenizer.",
+    "native_token_id_logprob_cpu_check": {
+      "original_snapshot_ids": true,
+      "selected_logprobs": true,
+      "retained_ids_not_reencoded": true,
+      "native_eos_removed_from_kept_policy": true
+    },
+    "typed_provenance_cpu_check": {
+      "partition_chars": 110,
+      "model_ranges": [
+        [
+          0,
+          18
+        ],
+        [
+          69,
+          78
+        ],
+        [
+          92,
+          110
+        ]
+      ],
+      "evidence_ranges": [
+        [
+          18,
+          69
+        ]
+      ],
+      "correction_ranges": [
+        [
+          78,
+          92
+        ]
+      ],
+      "exact_retained_text": true,
+      "typed_evidence_deleted": true,
+      "correction_preserved": true
+    },
+    "same300G5": "grounding command remains --cap300 --G5; question-major expansion remains nq*G (1500 with canonical300); original question identity-set and 2-fold checks remain.",
+    "context_budget_cpu_check": {
+      "closedbook": {
+        "prompt_limit": 4072,
+        "max_new": 24,
+        "total": 4096
+      },
+      "counterfactual": {
+        "prompt_limit": 4064,
+        "max_new": 32,
+        "total": 4096
+      },
+      "5000_token_inputs_left_truncated": true
+    },
+    "unchanged_ast_functions": [
+      "counterfactual_answer",
+      "counterfactual_labels",
+      "parse_row",
+      "rollouts_batched"
+    ],
+    "labels": "Closedbook exact-match24; evidence deletion32; invalid/no usable answer counts as normalized-answer change; no gold enters rollout or intervention generation.",
+    "legacy_default": "No --interaction-config retains old rollouts_batched path and engine context selection; opt-in only sets total-context override.",
+    "syntax": "ast.parse all five reviewed files passed",
+    "diff_check": "git diff --check passed after fixes",
+    "prompt_fix_cpu_check": {
+      "old_and_refactored_initial_state_equal": true,
+      "full_fake_native_rollouts": 10,
+      "groups": 2,
+      "G": 5,
+      "native_requests": 20,
+      "search_then_answer_each": true,
+      "original_prompt_ids_preserved": true,
+      "max_initial_prompt_tokens": 2048,
+      "calibration_chat_template_calls": 0,
+      "typed_evidence_deleted": true
+    },
+    "completed_fit_guard_cpu_check": {
+      "valid_accepted": true,
+      "legacy_rejected": true,
+      "actual_config_hash_tamper_rejected": true,
+      "proof_hash_tamper_rejected": true
+    }
+  },
+  "runtime_integration_limitations": [
+    "No GPU, remote SSH, service calls, weights, large assets or live training state inspected; passing CPU checks is not a live vLLM calibration acceptance.",
+    "Frozen training3432 source68d2d131 cannot acquire these changes through local edits; no claim that current process uses new calibration code.",
+    "Controlled complete-state handoff requires isolated published source and verified actor/probe/Adam/cursor state without resets or replaying completed outers; this review did not perform or authorize a handoff.",
+    "New source contains no proof of actual300xG5 completed calibration; final milestone/runtime acceptance still required."
+  ],
+  "mutations": "Only this small review JSON; no source or training changes.",
+  "previous_review_verdict": "BLOCKED_BEFORE_DEPLOYMENT"
+}

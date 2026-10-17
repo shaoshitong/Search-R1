@@ -128,6 +128,8 @@ def counterfactual_labels(outputs, original_answers):
 
 def gen_batch(llm, prompts, max_tokens, sample, stop):
     limit = getattr(llm, '_g1_calibration_prompt_limit', None)
+    if getattr(llm, '_g1_calibration_total_context', None) is not None:
+        limit = llm._g1_calibration_total_context - max_tokens
     if limit is not None:
         capacity = llm.llm_engine.model_config.max_model_len
         if limit + max_tokens > capacity:
@@ -268,6 +270,7 @@ def main():
     ap.add_argument("--max_turns", type=int, default=4)
     ap.add_argument("--rollout_max_new", type=int, default=256)
     ap.add_argument("--correction_feedback", action="store_true")
+    ap.add_argument('--interaction-config', help='Opt-in shared prefix-diversity train/QA calibration contract')
     ap.add_argument("--gpu_mem", type=float, default=0.45)
     ap.add_argument("--out", default="dumps/run")
     args = ap.parse_args()
@@ -300,10 +303,26 @@ def main():
           flush=True)
 
     # vLLM engine for generation
-    engine_context = 4608 if args.rollout_max_new == 500 else 4096
+    interaction = None
+    if args.interaction_config:
+        from reproduction.prefix_diversity200.interaction import ROLE
+        interaction = json.loads(Path(args.interaction_config).read_text())
+        if interaction['interaction_contract'] != ROLE or args.rollout_max_new != 500 or not args.correction_feedback:
+            raise ValueError('Unified calibration requires the pinned500-token corrected-action contract')
+        interaction.update(calibration_model=args.model, calibration_responses_per_question=args.G)
+        prompt_ids = [list(tok.encode(text, add_special_tokens=False))[-2048:] for text in prompts]
+        interaction['calibration_prompt_token_ids'] = prompt_ids
+        # Feature and intervention contexts use the same retained initial
+        # prompt text, while native generation keeps the original IDs directly.
+        prompts = [tok.decode(ids) for ids in prompt_ids]
+    engine_context = 4096 if interaction is not None else (4608 if args.rollout_max_new == 500 else 4096)
+    options = {} if interaction is None else dict(enable_chunked_prefill=True,
+        enable_prefix_caching=True, disable_async_output_proc=True)
     llm = LLM(model=args.model, dtype="bfloat16", gpu_memory_utilization=args.gpu_mem,
-              max_model_len=engine_context, enforce_eager=True, disable_log_stats=True)
+              max_model_len=engine_context, enforce_eager=True, disable_log_stats=True, **options)
     llm._g1_calibration_context_stats = []
+    if interaction is not None:
+        llm._g1_calibration_total_context = 4096
     if args.rollout_max_new == 500:
         llm._g1_calibration_prompt_limit = 4096
         llm._g1_calibration_tokenizer = tok
@@ -329,7 +348,12 @@ def main():
     # ---- G rollouts per question (flat) ----
     flat_prompts = [prompts[i] for i in range(nq) for _ in range(args.G)]
     flat_qi = [i for i in range(nq) for _ in range(args.G)]
-    gens, generated_ranges, actual_calls, evidence_ranges, correction_ranges = rollouts_batched(
+    if interaction is not None:
+        from reproduction.prefix_diversity200.calibration_interaction import rollouts as unified_rollouts
+        gens, generated_ranges, actual_calls, evidence_ranges, correction_ranges = unified_rollouts(
+            llm, flat_prompts, tok, args.G > 1, interaction)
+    else:
+        gens, generated_ranges, actual_calls, evidence_ranges, correction_ranges = rollouts_batched(
                             llm, flat_prompts, sample=(args.G > 1), max_turns=args.max_turns,
                             max_new=args.rollout_max_new, tokenizer=tok,
                             correction_feedback=args.correction_feedback, return_provenance=True)
@@ -437,6 +461,13 @@ def main():
            "model_ranges":generated_ranges,"rollout_character_lengths":[len(g) for g in gens],
            "generation_context_policy":{"engine_max_tokens":engine_context,"prompt_max_tokens":4096 if args.rollout_max_new==500 else None,"truncation_side":"left","batches":calibration_context_stats},
            "boundary_all_reserved_questions":True,"observation_token_cap":500,"hidden_truncation_side":"left"}
+    if interaction is not None:
+        proof['interaction_contract'] = ROLE
+        proof['interaction_config_sha256'] = hashlib.sha256(Path(args.interaction_config).read_bytes()).hexdigest()
+        proof['shared_native_state_machine'] = 'reproduction.prefix_diversity200.rollout'
+        proof['retained_initial_prompt_tokens'] = [len(ids) for ids in interaction['calibration_prompt_token_ids']]
+        proof['retained_initial_prompt_ids_sha256'] = [hashlib.sha256(json.dumps(ids,separators=(',',':')).encode()).hexdigest()
+            for ids in interaction['calibration_prompt_token_ids']]
     with open(os.path.join(args.out,"calibration-label-proof.json"),"w") as f:json.dump(proof,f,indent=2)
     print(f"[dump] SAVED {out_npz} n={len(y_em)} EM={np.mean(y_em):.3f} "
           f"flip={np.mean(y_flip):.3f} cb={np.mean(q_cb_r):.3f} "
