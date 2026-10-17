@@ -1,9 +1,9 @@
 {
-  "created_utc": "2026-10-16T23:46:46.572315+00:00",
+  "created_utc": "2026-10-17T00:22:46.739145+00:00",
   "run_id": "f3ee1435e5014ba1969387c91878893a",
-  "through_outer": 85,
+  "through_outer": 90,
   "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/COMPLETED_ITERATION_SCALAR_EVIDENCE.json",
-  "source_sha256": "1e9f984065a0b0bd61742c5f3ce244c3664d2939adfb61aa8322ae39b4c3ecbf",
+  "source_sha256": "bc6f84d6e1d94f5d0f6386d4acf3491bafa762c1a728252485ce786d5f13aae6",
   "threshold": 0.5,
   "loss_definition": "trajectory_mean_BCE + group_mean_BCE; weights1/1; train ALL1024/5120,20 synchronous Adam/rank,one natural epoch",
   "rows": [
@@ -2046,24 +2046,144 @@
         2.0102816282534133,
         2.3419950101889815
       ]
+    },
+    {
+      "outer": 86,
+      "train1024_after_update": {
+        "total_loss": 2.183615032040012,
+        "trajectory_bce": 1.1152416216846675,
+        "group_bce": 1.0683734103553446,
+        "balanced_accuracy": 0.5092147435897436,
+        "mixed_recall": 0.9114583333333334,
+        "nonmixed_recall": 0.10697115384615384
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.2935194941955839,
+        "trajectory_bce": 0.6089597283599318,
+        "group_bce": 0.6845597658356519,
+        "balanced_accuracy": 0.5521201853605062,
+        "mixed_recall": 0.26229508196721313,
+        "nonmixed_recall": 0.8419452887537994
+      },
+      "online20_step_loss_weighted_mean": 2.2182442594785243,
+      "online20_step_loss_range": [
+        1.9539018518784466,
+        2.4253826829103327
+      ]
+    },
+    {
+      "outer": 87,
+      "train1024_after_update": {
+        "total_loss": 2.1746523920179914,
+        "trajectory_bce": 1.1044754464540618,
+        "group_bce": 1.0701769455639296,
+        "balanced_accuracy": 0.5405611899932387,
+        "mixed_recall": 0.9022988505747126,
+        "nonmixed_recall": 0.17882352941176471
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.3105869366279965,
+        "trajectory_bce": 0.6199210947339469,
+        "group_bce": 0.6906658418940497,
+        "balanced_accuracy": 0.5521367947248659,
+        "mixed_recall": 0.23497267759562843,
+        "nonmixed_recall": 0.8693009118541033
+      },
+      "online20_step_loss_weighted_mean": 2.2122500989353284,
+      "online20_step_loss_range": [
+        2.049472790138394,
+        2.431500098284553
+      ]
+    },
+    {
+      "outer": 88,
+      "train1024_after_update": {
+        "total_loss": 2.2151025239865803,
+        "trajectory_bce": 1.1878529851589632,
+        "group_bce": 1.027249538827617,
+        "balanced_accuracy": 0.5193278502552467,
+        "mixed_recall": 0.7560975609756098,
+        "nonmixed_recall": 0.28255813953488373
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.3453449943765687,
+        "trajectory_bce": 0.6395425685712929,
+        "group_bce": 0.7058024258052759,
+        "balanced_accuracy": 0.5479014068131612,
+        "mixed_recall": 0.20218579234972678,
+        "nonmixed_recall": 0.8936170212765957
+      },
+      "online20_step_loss_weighted_mean": 2.254317554878071,
+      "online20_step_loss_range": [
+        1.9909298980937284,
+        2.4792077915341246
+      ]
+    },
+    {
+      "outer": 89,
+      "train1024_after_update": {
+        "total_loss": 2.1561956004608547,
+        "trajectory_bce": 1.1684226845247108,
+        "group_bce": 0.9877729159361441,
+        "balanced_accuracy": 0.5464830901880627,
+        "mixed_recall": 0.7453416149068323,
+        "nonmixed_recall": 0.34762456546929316
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.3658441609195737,
+        "trajectory_bce": 0.6509457962012009,
+        "group_bce": 0.7148983647183728,
+        "balanced_accuracy": 0.5387994751440862,
+        "mixed_recall": 0.17486338797814208,
+        "nonmixed_recall": 0.9027355623100304
+      },
+      "online20_step_loss_weighted_mean": 2.18762946058996,
+      "online20_step_loss_range": [
+        1.9233539174584782,
+        2.394852409175798
+      ]
+    },
+    {
+      "outer": 90,
+      "train1024_after_update": {
+        "total_loss": 2.1569691572088807,
+        "trajectory_bce": 1.189656804330387,
+        "group_bce": 0.9673123528784937,
+        "balanced_accuracy": 0.562297371439972,
+        "mixed_recall": 0.7668711656441718,
+        "nonmixed_recall": 0.35772357723577236
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.36378021757608,
+        "trajectory_bce": 0.6498773213682856,
+        "group_bce": 0.7139028962077946,
+        "balanced_accuracy": 0.540319231982992,
+        "mixed_recall": 0.17486338797814208,
+        "nonmixed_recall": 0.9057750759878419
+      },
+      "online20_step_loss_weighted_mean": 2.1939943528268486,
+      "online20_step_loss_range": [
+        2.034810822743636,
+        2.438744818463045
+      ]
     }
   ],
   "first_to_latest_delta": {
     "train1024_after_update": {
-      "total_loss": 0.7158749821854786,
-      "trajectory_bce": 0.3481408299188391,
-      "group_bce": 0.3677341522666395,
-      "balanced_accuracy": 0.00826600766720531,
-      "mixed_recall": -0.1164021164021164,
-      "nonmixed_recall": 0.13293413173652693
+      "total_loss": 0.7228264803309385,
+      "trajectory_bce": 0.454201100909694,
+      "group_bce": 0.26862537942124454,
+      "balanced_accuracy": 0.06229737143997205,
+      "mixed_recall": -0.2331288343558282,
+      "nonmixed_recall": 0.35772357723577236
     },
     "fixed_diagnostic512_after_update": {
-      "total_loss": 0.12111647437254636,
-      "trajectory_bce": 0.10795124163556746,
-      "group_bce": 0.013165232736978894,
-      "balanced_accuracy": -0.04085073164249997,
-      "mixed_recall": -0.30054644808743164,
-      "nonmixed_recall": 0.21884498480243164
+      "total_loss": 0.18456353962181526,
+      "trajectory_bce": 0.14489713780244684,
+      "group_bce": 0.039666401819368535,
+      "balanced_accuracy": -0.06207749929410189,
+      "mixed_recall": -0.3825136612021858,
+      "nonmixed_recall": 0.25835866261398177
     }
   },
   "interpretation": [
