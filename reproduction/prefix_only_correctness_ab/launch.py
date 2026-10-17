@@ -187,8 +187,8 @@ def torchrun_owned_class():
             try:
                 job['state']='CLEANUP_PENDING';self.save()
                 for sig,seconds in ((signal.SIGINT,15),(signal.SIGTERM,3),(signal.SIGKILL,3)):
-                    for record in self.observe(name):
-                        try:signal_owned(record,sig)
+                    for record in sorted(self.observe(name),key=lambda row:row['pid']!=job['leader']['pid']):
+                        try:signal_owned(record,sig,process=self.handles.get(name) if record['pid']==job['leader']['pid'] else None)
                         except ProcessLookupError:pass
                     deadline=time.monotonic()+seconds
                     while self.observe(name) and time.monotonic()<deadline:time.sleep(.2)

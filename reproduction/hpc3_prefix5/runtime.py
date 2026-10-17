@@ -21,7 +21,14 @@ def once(path,value):
 def prepare():
  a=BASE/'reference-assets';p=BASE/'preparation';p.mkdir(exist_ok=True)
  done=p/'assets-ready.json'
- if done.exists():return json.loads(done.read_text())
+ if done.exists():
+  prior=json.loads(done.read_text());publication=json.loads((p/'source-publication.json').read_text())
+  if prior['commit']!=publication['commit']:
+   if (p/'submit-intent.json').exists():raise ValueError('Cannot rebind a claimed runtime')
+   template=json.loads((p/'launch-config-template.json').read_text());template['source_commit']=publication['commit']
+   (p/'launch-config-template.json').write_text(json.dumps(template,sort_keys=True))
+   prior.update(commit=publication['commit'],code_rebind_before_launch_unix=time.time(),verified_scientific_inputs_unchanged=True);done.write_text(json.dumps(prior,sort_keys=True))
+  return prior
  accepted=json.loads((BASE/'receive-complete.json').read_text())
  if accepted['status']!='REFERENCE_ASSETS_ALL_TARGET_SHA_VERIFIED':raise ValueError('Target assets have not passed SHA')
  publication=json.loads((p/'source-publication.json').read_text());template=json.loads((a/'reference-launch-config.json').read_text())
