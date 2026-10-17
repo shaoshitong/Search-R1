@@ -120,6 +120,31 @@ class Fixture:
 
 
 class EasyRestoreTests(unittest.TestCase):
+    def test_login_node_mount_device_is_not_a_cross_node_file_identity(self):
+        with tempfile.TemporaryDirectory() as folder:
+            f=Fixture(folder);f.create();receipt=module._json(f.output)
+            def other_mount(value):
+                if isinstance(value,dict):
+                    if 'device' in value:value['device']+=1
+                    for item in value.values():other_mount(item)
+                elif isinstance(value,list):
+                    for item in value:other_mount(item)
+            other_mount(receipt);write(f.output,receipt)
+            # The unchanged shared files still have the pinned inode/owner,
+            # size/mtime and SHA; a different mount number must not block them.
+            module.source(f.output)
+            record=receipt['files'][0]
+            for field in ('inode','uid'):
+                altered=dict(record);altered[field]+=1
+                with self.assertRaisesRegex(ValueError,'SOURCE_FILE_IDENTITY_CHANGED'):
+                    module._identity(altered)
+            qa=f.base/'logs/formal-inline-development-after.json'
+            raw=qa.read_bytes();before=qa.stat()
+            qa.write_bytes(raw.replace(b'142',b'143') if b'142' in raw else raw[:-2]+b' \n')
+            os.utime(qa,ns=(before.st_atime_ns,before.st_mtime_ns))
+            with self.assertRaisesRegex(ValueError,'SOURCE_SMALL_SHA_CHANGED'):
+                module._identity(receipt['historical_artifacts']['development']['after5'],rehash=True)
+
     def test_full_file_SHA_native4_boundary_history_and_no_invented_before(self):
         with tempfile.TemporaryDirectory() as folder:
             f=Fixture(folder); proof=f.create(); _,r,cp,base,parent=module.source(f.output)

@@ -83,8 +83,14 @@ def _record(path, *, relative_path=None, expected=None, prefix=None):
 
 def _identity(record, *, rehash=False):
     path = _regular(record['path']); st = path.stat()
-    _need((st.st_dev, st.st_ino, st.st_uid) == (record['device'], record['inode'], record['uid']),
-          'SOURCE_FILE_IDENTITY_CHANGED')
+    # Receipts are published on the login node and consumed on GPU nodes.
+    # st_dev identifies the client-local mount, not the shared file's content.
+    # Keep it as a publisher observation; it is valid only in same-host
+    # before/after checks (_stat), never as a cross-node admission condition.
+    _need((st.st_ino, st.st_uid) == (record['inode'], record['uid']),
+          'SOURCE_FILE_IDENTITY_CHANGED path=' + str(path) +
+          ' expected_inode_uid=' + str((record['inode'], record['uid'])) +
+          ' actual_inode_uid=' + str((st.st_ino, st.st_uid)))
     if record.get('prefix_only'):
         _need(st.st_size >= record['bytes'], 'SOURCE_PREFIX_TRUNCATED')
     else:
