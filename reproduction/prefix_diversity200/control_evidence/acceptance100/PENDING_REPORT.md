@@ -1,3 +1,5 @@
+Historical outage snapshot; superseded after connectivity recovery by REPORT.md and SUMMARY.json (actual CPU100 FAIL).
+
 Milestone100 CPU acceptance is PENDING; no audit was executed and no PASS or intent was created.
 
 Prepared only the control config for BASE /mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4, run f3ee1435e5014ba1969387c91878893a, job3427, frozen runtime e3463cfddca71a22ac684d75c875dbe123e8bc43, config SHA384cf0f516e7bf9ce3623bdf48e87a078f8eceaa5af5e03f238e04e86ae59ad8. The config was normally committed/pushed as155206e38c356cd1f28e44ee6c34004c20fa3b40, with remote SHA and fetched content verified. checkpoint_cpu_once.py remains byte-identical to the50-passing helper SHA5ebc33355a6b6516bfe06cf04cb970887a95ec93e86eb0be4e3d7614865d8211; no extra review, repeated unit tests or old milestone audit was run.
