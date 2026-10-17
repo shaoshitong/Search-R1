@@ -13,7 +13,8 @@ import re
 import stat
 import time
 
-from .contract import WORLD, PROBE_PERIOD, PROBE_UPDATES, CANDIDATE_QUESTIONS, G
+from .contract import WORLD, PROBE_PERIOD, PROBE_UPDATES, G
+from .candidate_schedule import candidate_count
 
 
 REMOTE_PARENT = Path('/mnt/data/shaoshitong')
@@ -197,7 +198,7 @@ def planned_assets(base, config, outer, root, joint, update, references):
     manifest = read(manifest_path)
     if config.get('actor_hidden_native'):
         if (manifest['role']!='current_actor_native_hidden_features' or manifest['run_id']!=config['run_id']
-                or manifest['outer']!=outer or manifest['count']!=CANDIDATE_QUESTIONS*G or manifest['independent_encoder_forward']):
+                or manifest['outer']!=outer or manifest['count']!=candidate_count(config,outer)*G or manifest['independent_encoder_forward']):
             raise ValueError('Consumed native features do not belong to this completed outer')
         scans=[root/'prefix/scan/scan-complete.json']
         diag=root/'diagnostic-complete.json'

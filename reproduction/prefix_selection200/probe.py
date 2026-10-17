@@ -33,6 +33,7 @@ from reproduction.prefix20_question_replay.features import FeatureCache, _source
 from .contract import (WORLD, QMAX, WIDTH, DIM, PREFIX_TOKENS, G, CANDIDATE_QUESTIONS,
     SELECTED_QUESTIONS, FINAL_OUTER, PROBE_PERIOD, PROBE_UPDATES, PROBE_LR)
 from .probe_plan import online_plan, complete_pool_plan, rank_question_slice, ddp_mean_scale
+from .candidate_schedule import scoring_candidate_count
 from .prefix5_model import (OnlineQuestionProbe, validate_online_layout, warmup_model_weights,
     restore_native_buffers, nonpersistent_buffers, validate_model_state, validate_native_buffers,
     EPOCH3_SHA, WARMUP_RUN)
@@ -65,8 +66,12 @@ def summarize_loss_curve(curve):
                 actual_adam_updates_per_rank=PROBE_UPDATES, world_size=WORLD, replica_updates_are_not_summed=True)
 
 
-def candidate_groups(index, expected_questions=CANDIDATE_QUESTIONS):
+def candidate_groups(index, expected_questions=None):
     """Group by authentic question identity, never by consecutive five rows."""
+    if expected_questions is None:
+        expected_questions = len(index) // G
+    if type(expected_questions) is not int or expected_questions < 1:
+        raise ValueError('Require a positive declared authentic G5 question count')
     groups = {}
     for ordinal, (tid, row) in enumerate(index.items()):
         qid = str(row['qid'])
@@ -481,7 +486,8 @@ def score(args):
         actor_version = manifest['actor_version']
         if manifest['outer'] != args.outer or manifest['run_id'] != saved['run_id']:
             raise ValueError('Native features belong to another actual actor/outer/run')
-        groups = candidate_groups(features.index)
+        questions = scoring_candidate_count(manifest)
+        groups = candidate_groups(features.index, questions)
         own_groups = groups[rank::WORLD]
         out = remote(args.output)
         if rank == 0: out.mkdir(parents=True, exist_ok=False)
@@ -499,15 +505,16 @@ def score(args):
                     scored_trajectories=len(local_logits),stage='CURRENT_ACTOR_NATIVE_HIDDEN_HEAD_SCORING'))
         gathered=[None]*WORLD;dist.all_gather_object(gathered,local_logits)
         merged=[pair for rows in gathered for pair in rows]
-        if len(merged)!=CANDIDATE_QUESTIONS*G or len({tid for tid,_ in merged})!=CANDIDATE_QUESTIONS*G:
-            raise ValueError('Score all2560G5 authentic native features exactly once')
+        if len(merged)!=questions*G or len({tid for tid,_ in merged})!=questions*G:
+            raise ValueError('Score every scheduled authentic native G5 exactly once')
         selected,all_scores=stable_top512(groups,dict(merged))
         if rank==0:
             common=dict(schema_version=2,run_id=saved['run_id'],outer=args.outer,actor_version=actor_version,
                 prefix_scan_sha256=features.manifest_sha,probe_before_checkpoint_sha256=receipt['sha256'],
-                candidate_questions=CANDIDATE_QUESTIONS,trajectories_per_question=G,exploration=0,
+                candidate_questions=questions,trajectories_per_question=G,exploration=0,
                 formula='1-prod(p_j)-prod(1-p_j)',outcome_labels_used=False,
-                representation_source='same_sampling_actor_native_layer27_postblock')
+                representation_source='same_sampling_actor_native_layer27_postblock',
+                **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions') if key in manifest})
             from .periodic import is_probe_update
             selection=dict(common,selected=selected,selected_questions=SELECTED_QUESTIONS,
                 tie_break='original_candidate_ordinal_ascending',continuation_scope='top512',
@@ -517,23 +524,26 @@ def score(args):
             from .periodic import is_probe_update
             if is_probe_update(args.outer):
                 once(out/'pool-selection.json',dict(common,selected=sorted(all_scores,key=lambda r:r['candidate_ordinal']),
-                     selected_questions=CANDIDATE_QUESTIONS,continuation_scope='all_candidates'))
+                     selected_questions=questions,continuation_scope='all_candidates'))
             with (out/'candidate-scores.jsonl').open('x') as f:
                 for row in all_scores:f.write(canonical(row).decode()+'\n')
             once(out/'index.json',list(features.index.values()))
             result=dict(role='current_actor_native_hidden_features',run_id=saved['run_id'],outer=args.outer,
-                count=CANDIDATE_QUESTIONS*G,selected_count=SELECTED_QUESTIONS*G,question_max_tokens=QMAX,head_max_tokens=WIDTH,
+                count=questions*G,selected_count=SELECTED_QUESTIONS*G,question_max_tokens=QMAX,head_max_tokens=WIDTH,
                 actor_version=actor_version,prefix_scan_sha256=features.manifest_sha,
                 probe_before_checkpoint_sha256=receipt['sha256'],selection_sha256=sha(out/'selection.json'),
                 native_hidden_scan=str(features.path),native_hidden_shards=manifest['actor_hidden_shards'],
                 index_sha256=sha(out/'index.json'),candidate_scores_sha256=sha(out/'candidate-scores.jsonl'),
                 no_outcome_labels=True,independent_encoder_forward=False,
                 representation_source='same_sampling_actor_native_layer27_postblock',
+                candidate_questions=questions,
+                **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions') if key in manifest},
                 elapsed_seconds=time.monotonic()-started)
             once(out/'manifest.json',result)
-            once(out/'complete.json',dict(status='PREFIX2560G5_STABLE_TOP512_SCORE_COMPLETE',outer=args.outer,
+            once(out/'complete.json',dict(status='PREFIX%dG5_STABLE_TOP512_SCORE_COMPLETE' % questions,outer=args.outer,
                 run_id=saved['run_id'],manifest_sha256=sha(out/'manifest.json'),
                 selection_sha256=sha(out/'selection.json'),selected_questions=512,selected_trajectories=2560,
+                candidate_questions=questions,
                 actor_version=actor_version,observed_utc=utc()))
         dist.barrier()
     finally:

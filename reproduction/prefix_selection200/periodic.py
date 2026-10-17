@@ -1,5 +1,6 @@
 """Ten-outer probe clocks; outer200 deliberately has no probe update."""
 from .contract import FINAL_OUTER, PROBE_PERIOD, PROBE_UPDATES
+from .candidate_schedule import candidate_count, consumed_candidates_through
 
 PERIOD = PROBE_PERIOD
 UPDATES = PROBE_UPDATES
