@@ -1,9 +1,9 @@
 {
-  "created_utc": "2026-10-17T00:57:13.050852+00:00",
+  "created_utc": "2026-10-17T01:29:59.180339+00:00",
   "run_id": "f3ee1435e5014ba1969387c91878893a",
-  "through_outer": 95,
+  "through_outer": 99,
   "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/COMPLETED_ITERATION_SCALAR_EVIDENCE.json",
-  "source_sha256": "75e70bd51710df1c582a96d9289f7e7c8eaca7f16de73fac9b2d55a5274977de",
+  "source_sha256": "eb3276bc18efc34e22d7cccb3a8bf06fb3b65e380e6fcc0da948318d65fb7024",
   "threshold": 0.5,
   "loss_definition": "trajectory_mean_BCE + group_mean_BCE; weights1/1; train ALL1024/5120,20 synchronous Adam/rank,one natural epoch",
   "rows": [
@@ -2286,24 +2286,120 @@
         1.8242603750789868,
         2.4392518584544844
       ]
+    },
+    {
+      "outer": 96,
+      "train1024_after_update": {
+        "total_loss": 2.190486195548748,
+        "trajectory_bce": 1.100409466659997,
+        "group_bce": 1.0900767288887505,
+        "balanced_accuracy": 0.515396061155403,
+        "mixed_recall": 0.8797814207650273,
+        "nonmixed_recall": 0.15101070154577884
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.316866100473977,
+        "trajectory_bce": 0.6240215495655044,
+        "group_bce": 0.6928445509084726,
+        "balanced_accuracy": 0.5421130433338316,
+        "mixed_recall": 0.22404371584699453,
+        "nonmixed_recall": 0.8601823708206687
+      },
+      "online20_step_loss_weighted_mean": 2.2244641088182107,
+      "online20_step_loss_range": [
+        1.9144568351598887,
+        2.4101063784431007
+      ]
+    },
+    {
+      "outer": 97,
+      "train1024_after_update": {
+        "total_loss": 2.2508072440404208,
+        "trajectory_bce": 1.286928024755557,
+        "group_bce": 0.9638792192848635,
+        "balanced_accuracy": 0.5822703739213806,
+        "mixed_recall": 0.738255033557047,
+        "nonmixed_recall": 0.42628571428571427
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.4091985165168983,
+        "trajectory_bce": 0.6729466239543208,
+        "group_bce": 0.7362518925625775,
+        "balanced_accuracy": 0.5409337784642981,
+        "mixed_recall": 0.16393442622950818,
+        "nonmixed_recall": 0.9179331306990881
+      },
+      "online20_step_loss_weighted_mean": 2.27447852876503,
+      "online20_step_loss_range": [
+        2.1217566074109544,
+        2.532735430277311
+      ]
+    },
+    {
+      "outer": 98,
+      "train1024_after_update": {
+        "total_loss": 2.187509875916862,
+        "trajectory_bce": 1.02949034817101,
+        "group_bce": 1.1580195277458518,
+        "balanced_accuracy": 0.4782192835541303,
+        "mixed_recall": 0.8531468531468531,
+        "nonmixed_recall": 0.10329171396140749
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.316074368593154,
+        "trajectory_bce": 0.6232632453068996,
+        "group_bce": 0.6928111232862544,
+        "balanced_accuracy": 0.5348215323799558,
+        "mixed_recall": 0.2185792349726776,
+        "nonmixed_recall": 0.851063829787234
+      },
+      "online20_step_loss_weighted_mean": 2.211130370735191,
+      "online20_step_loss_range": [
+        1.8657693769417556,
+        2.388747112423766
+      ]
+    },
+    {
+      "outer": 99,
+      "train1024_after_update": {
+        "total_loss": 2.2023138185627724,
+        "trajectory_bce": 1.0832112896857766,
+        "group_bce": 1.1191025288769958,
+        "balanced_accuracy": 0.5165369946605645,
+        "mixed_recall": 0.9266666666666666,
+        "nonmixed_recall": 0.10640732265446225
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.3084422783841863,
+        "trajectory_bce": 0.6189919901701689,
+        "group_bce": 0.6894502882140172,
+        "balanced_accuracy": 0.5430182536914312,
+        "mixed_recall": 0.23497267759562843,
+        "nonmixed_recall": 0.851063829787234
+      },
+      "online20_step_loss_weighted_mean": 2.2472325558774173,
+      "online20_step_loss_range": [
+        1.9700437340081907,
+        2.511286815007528
+      ]
     }
   ],
   "first_to_latest_delta": {
     "train1024_after_update": {
-      "total_loss": 0.7493878253668549,
-      "trajectory_bce": 0.3906657895850467,
-      "group_bce": 0.3587220357818084,
-      "balanced_accuracy": 0.059796942381298734,
-      "mixed_recall": -0.08917197452229297,
-      "nonmixed_recall": 0.20876585928489041
+      "total_loss": 0.7681711416848302,
+      "trajectory_bce": 0.3477555862650836,
+      "group_bce": 0.4204155554197466,
+      "balanced_accuracy": 0.016536994660564464,
+      "mixed_recall": -0.07333333333333336,
+      "nonmixed_recall": 0.10640732265446225
     },
     "fixed_diagnostic512_after_update": {
-      "total_loss": 0.15529468591524753,
-      "trajectory_bce": 0.12941984876146795,
-      "group_bce": 0.025874837153779473,
-      "balanced_accuracy": -0.06178683541780838,
-      "mixed_recall": -0.360655737704918,
-      "nonmixed_recall": 0.237082066869301
+      "total_loss": 0.12922560042992148,
+      "trajectory_bce": 0.11401180660433019,
+      "group_bce": 0.015213793825591182,
+      "balanced_accuracy": -0.059378477585662726,
+      "mixed_recall": -0.32240437158469937,
+      "nonmixed_recall": 0.20364741641337392
     }
   },
   "interpretation": [
@@ -2313,5 +2409,5 @@
     "No uncontinued-candidate accuracy inferred; no new forward, extra fitting, reinitialization, loss or sampling changes.",
     "Natural step batches differ. First/last or weighted average across20 steps are descriptive online losses, not a paired before/after fit comparison."
   ],
-  "training_action": "none; original job3427 continues; goal200/final51713 incomplete"
+  "training_action": "none; original3427 continues; goal200/final51713 incomplete; live connection observation separately recorded"
 }
