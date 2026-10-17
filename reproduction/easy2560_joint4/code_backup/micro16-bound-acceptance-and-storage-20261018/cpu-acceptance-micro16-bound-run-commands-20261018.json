@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "status": "BOUND_PUBLISHED_COMMANDS_NOT_EXECUTED",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018",
+  "training_commit": "8a5bac94b8230a99b81977f5290589e3d3708dfe",
+  "operator_commit": "0f93e5fd4502478e1a6ab3e7a0e728229adba5ac",
+  "source_job": "730226",
+  "run_id": "dfe9c94084bb48b2a9bb7b60f9d882da",
+  "execute_as": "HPC3 jxu957 uid14090, not on HK host",
+  "code_directory": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac",
+  "run_identity_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-co-rollout-hpc3-4gpu-20261017/candidate-raw-runner-micro16-inspect-1792256694.json",
+  "import_resolution_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-co-rollout-hpc3-4gpu-20261017/cpu-acceptance-micro16-real-import-cli-1792254990833810000.json",
+  "steps": {
+    "5": {
+      "seal": {
+        "argv": [
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "seal",
+          "--base",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018",
+          "--training-commit",
+          "8a5bac94b8230a99b81977f5290589e3d3708dfe",
+          "--run-id",
+          "dfe9c94084bb48b2a9bb7b60f9d882da",
+          "--source-job",
+          "730226",
+          "--step",
+          "5"
+        ],
+        "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' seal --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018 --training-commit 8a5bac94b8230a99b81977f5290589e3d3708dfe --run-id dfe9c94084bb48b2a9bb7b60f9d882da --source-job 730226 --step 5"
+      },
+      "verify": {
+        "argv": [
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "verify",
+          "--directory",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-evidence/global_step_5"
+        ],
+        "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' verify --directory /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-evidence/global_step_5"
+      },
+      "accepted_core_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-archives/global_step_5/complete.json",
+      "existing_HK_core_archive": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/dfe9c94084bb48b2a9bb7b60f9d882da/global_step_5",
+      "proposed_independent_HK_sidecar_destination": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoint-evidence/dfe9c94084bb48b2a9bb7b60f9d882da/global_step_5",
+      "sidecar_destination_transfer_implemented_or_executed": false
+    },
+    "50": {
+      "seal": {
+        "argv": [
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "seal",
+          "--base",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018",
+          "--training-commit",
+          "8a5bac94b8230a99b81977f5290589e3d3708dfe",
+          "--run-id",
+          "dfe9c94084bb48b2a9bb7b60f9d882da",
+          "--source-job",
+          "730226",
+          "--step",
+          "50"
+        ],
+        "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' seal --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018 --training-commit 8a5bac94b8230a99b81977f5290589e3d3708dfe --run-id dfe9c94084bb48b2a9bb7b60f9d882da --source-job 730226 --step 50"
+      },
+      "verify": {
+        "argv": [
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "verify",
+          "--directory",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-evidence/global_step_50"
+        ],
+        "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' verify --directory /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-evidence/global_step_50"
+      },
+      "accepted_core_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-archives/global_step_50/complete.json",
+      "existing_HK_core_archive": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/dfe9c94084bb48b2a9bb7b60f9d882da/global_step_50",
+      "proposed_independent_HK_sidecar_destination": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoint-evidence/dfe9c94084bb48b2a9bb7b60f9d882da/global_step_50",
+      "sidecar_destination_transfer_implemented_or_executed": false
+    },
+    "100": {
+      "seal": {
+        "argv": [
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "seal",
+          "--base",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018",
+          "--training-commit",
+          "8a5bac94b8230a99b81977f5290589e3d3708dfe",
+          "--run-id",
+          "dfe9c94084bb48b2a9bb7b60f9d882da",
+          "--source-job",
+          "730226",
+          "--step",
+          "100"
+        ],
+        "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' seal --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018 --training-commit 8a5bac94b8230a99b81977f5290589e3d3708dfe --run-id dfe9c94084bb48b2a9bb7b60f9d882da --source-job 730226 --step 100"
+      },
+      "verify": {
+        "argv": [
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "verify",
+          "--directory",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-evidence/global_step_100"
+        ],
+        "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' verify --directory /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-evidence/global_step_100"
+      },
+      "accepted_core_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-archives/global_step_100/complete.json",
+      "existing_HK_core_archive": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/dfe9c94084bb48b2a9bb7b60f9d882da/global_step_100",
+      "proposed_independent_HK_sidecar_destination": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoint-evidence/dfe9c94084bb48b2a9bb7b60f9d882da/global_step_100",
+      "sidecar_destination_transfer_implemented_or_executed": false
+    },
+    "150": {
+      "seal": {
+        "argv": [
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "seal",
+          "--base",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018",
+          "--training-commit",
+          "8a5bac94b8230a99b81977f5290589e3d3708dfe",
+          "--run-id",
+          "dfe9c94084bb48b2a9bb7b60f9d882da",
+          "--source-job",
+          "730226",
+          "--step",
+          "150"
+        ],
+        "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' seal --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018 --training-commit 8a5bac94b8230a99b81977f5290589e3d3708dfe --run-id dfe9c94084bb48b2a9bb7b60f9d882da --source-job 730226 --step 150"
+      },
+      "verify": {
+        "argv": [
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "verify",
+          "--directory",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-evidence/global_step_150"
+        ],
+        "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' verify --directory /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-evidence/global_step_150"
+      },
+      "accepted_core_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-archives/global_step_150/complete.json",
+      "existing_HK_core_archive": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/dfe9c94084bb48b2a9bb7b60f9d882da/global_step_150",
+      "proposed_independent_HK_sidecar_destination": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoint-evidence/dfe9c94084bb48b2a9bb7b60f9d882da/global_step_150",
+      "sidecar_destination_transfer_implemented_or_executed": false
+    },
+    "200": {
+      "seal": {
+        "argv": [
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "seal",
+          "--base",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018",
+          "--training-commit",
+          "8a5bac94b8230a99b81977f5290589e3d3708dfe",
+          "--run-id",
+          "dfe9c94084bb48b2a9bb7b60f9d882da",
+          "--source-job",
+          "730226",
+          "--step",
+          "200"
+        ],
+        "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' seal --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018 --training-commit 8a5bac94b8230a99b81977f5290589e3d3708dfe --run-id dfe9c94084bb48b2a9bb7b60f9d882da --source-job 730226 --step 200"
+      },
+      "verify": {
+        "argv": [
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "verify",
+          "--directory",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-evidence/global_step_200"
+        ],
+        "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' verify --directory /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-evidence/global_step_200"
+      },
+      "accepted_core_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/checkpoint-archives/global_step_200/complete.json",
+      "existing_HK_core_archive": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoints/dfe9c94084bb48b2a9bb7b60f9d882da/global_step_200",
+      "proposed_independent_HK_sidecar_destination": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/checkpoint-evidence/dfe9c94084bb48b2a9bb7b60f9d882da/global_step_200",
+      "sidecar_destination_transfer_implemented_or_executed": false
+    }
+  },
+  "final_cpu": {
+    "argv": [
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python",
+      "-B",
+      "-c",
+      "import runpy,sys;sys.path[:0]=['/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac', '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'];runpy.run_module('reproduction.easy2560_joint4.final_cpu_acceptance',run_name=\"__main__\")",
+      "--base",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018",
+      "--training-commit",
+      "8a5bac94b8230a99b81977f5290589e3d3708dfe",
+      "--output",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/final-cpu-acceptance-730226.json"
+    ],
+    "shell": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/env/bin/python -B -c 'import runpy,sys;sys.path[:0]=['\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/cpu-acceptance-code/0f93e5fd4502478e1a6ab3e7a0e728229adba5ac'\"'\"', '\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/repo'\"'\"'];runpy.run_module('\"'\"'reproduction.easy2560_joint4.final_cpu_acceptance'\"'\"',run_name=\"__main__\")' --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018 --training-commit 8a5bac94b8230a99b81977f5290589e3d3708dfe --output /data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/final-cpu-acceptance-730226.json"
+  },
+  "sequencing": [
+    "Wait for the exact step source archive complete.json with EASY2560_FULL_CHECKPOINT_SOURCE_ARCHIVE_SHA_PASS and all three fresh_source_after_archive_sha_verified/fresh_destination_sha_verified/destination_fsynced true; this is postprocessing, not a training startup condition.",
+    "Run the corresponding seal command once the accepted core archive exists; repeat seal is supported for identical immutable inputs, verify reads the sealed package.",
+    "Persist every returned files_to_archive member with source/destination SHA verification in an independent remote sidecar directory. Current archive_controller does not perform this sidecar transfer.",
+    "Retain current-run source checkpoints through training8a common8.verify_full, which hashes their payloads. The independent final CPU reader alone does not replace that pipeline requirement.",
+    "Run final_cpu only after actual200/no201, all five fixed512 results, exact native51713 and all five accepted core archives exist. Its --output is exclusive-create; do not rerun to an already existing report path."
+  ],
+  "checkpoint_phase": {
+    "5": "stage64 finished; fixed512 callback still pending at checkpoint; a later observed fixed512 row is not post-callback RNG",
+    "50/100/150": "fixed512 finished; grounding refit pending at checkpoint; reward_refresh_pending true",
+    "200": "fixed512 finished; final native51713 pending at checkpoint"
+  },
+  "actual_cuda_restore_accepted": false,
+  "checkpoint_seal_executed": false,
+  "final_acceptance_executed": false,
+  "training_changed": false,
+  "remote_processes_started_or_cancelled": 0,
+  "created_unix": 1792259754.14918
+}
