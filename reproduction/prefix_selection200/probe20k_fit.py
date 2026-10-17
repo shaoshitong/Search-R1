@@ -13,6 +13,12 @@ import time
 from reproduction.prefix20_online.launch import once, publish, read, sha
 
 
+def update_ema(model,ema,decay):
+    import torch
+    with torch.no_grad():
+        for p,q in zip(model.parameters(),ema.parameters()):q.mul_(decay).add_(p.detach(),alpha=1-decay)
+
+
 def mix_batch(batch,labels,pairs,seed,alpha):
     import torch
     from .actor_hidden import WIDTH,DIM
@@ -55,8 +61,9 @@ def train(base,arm_name):
     assert not {g['qid']for g in groups}&{g['qid']for g in testgroups}
     assert not {g['question_hash']for g in groups}&{g['question_hash']for g in testgroups}
     keys=[layout_key(g,data.index)for g in groups]
+    assert Path(s['source_probe_checkpoint']).stat().st_size==s['source_probe_bytes']
     saved=torch.load(s['source_probe_checkpoint'],map_location='cpu',weights_only=False)
-    assert saved['actual_adam_steps_per_rank']==[200]*8
+    assert saved['actual_adam_steps_per_rank']==[200]*8 and saved['run_id']==s['source_probe_run_id']
     model=OnlineQuestionProbe(Path(c['official_model_dir']),273).to(device=device,dtype=torch.float32)
     model.load_state_dict(saved['model'],strict=True)
     optimizer=torch.optim.Adam(model.parameters(),lr=s['learning_rate'],weight_decay=0)
@@ -72,32 +79,55 @@ def train(base,arm_name):
     for parameter in ema.parameters():parameter.requires_grad_(False)
     model=DDP(model,device_ids=[local],broadcast_buffers=False)
     def evaluate(epoch):
-        model.eval();ema.eval();result={name:{}for name in('raw','ema')};began=time.monotonic()
+        model.eval();ema.eval();result={name:{}for name in('raw','ema')};began=time.monotonic();fallbacks=[]
         with torch.no_grad():
             for split,features,question_groups in(('train',data,groups),('test',test,testgroups)):
-                own_groups=question_groups[rank::8];predictions=[]
-                for offset in range(0,len(own_groups),6):
-                    ids=[tid for g in own_groups[offset:offset+6]for tid in g['trajectory_ids']]
-                    batch=features.get_batch(ids,device)
-                    with torch.autocast(device_type='cuda',dtype=torch.bfloat16):raw=model.module(batch);shadow=ema(batch)
+                own_groups=question_groups[rank::8];predictions=[];offset=0
+                micro=s.get('train_eval_micro_questions',25)if split=='train'else s.get('test_eval_micro_questions',6)
+                while offset<len(own_groups):
+                    ids=[tid for g in own_groups[offset:offset+micro]for tid in g['trajectory_ids']]
+                    batch=raw=shadow=None;failed=False
+                    try:
+                        batch=features.get_batch(ids,device)
+                        with torch.autocast(device_type='cuda',dtype=torch.bfloat16):raw=model.module(batch);shadow=ema(batch)
+                    except torch.cuda.OutOfMemoryError:
+                        if micro==1:raise
+                        failed=True
+                    if failed:
+                        # Only a real typed inference OOM changes its microbatch.
+                        del batch,raw,shadow
+                        import gc
+                        gc.collect();torch.cuda.empty_cache()
+                        fallbacks.append(dict(split=split,previous_questions=micro,next_questions=max(1,micro//2),actual_typed_oom=True))
+                        micro=max(1,micro//2);continue
                     predictions.extend((tid,float(z),float(e),int(features.index[tid]['strict_em']))for tid,z,e in zip(ids,raw.cpu().tolist(),shadow.cpu().tolist()))
+                    offset+=len(ids)//5
                 gathered=[None]*8;dist.all_gather_object(gathered,predictions)
                 if rank==0:
                     flat=[r for rows in gathered for r in rows]
                     for name,column in(('raw',1),('ema',2)):
                         rows=[(r[0],r[column],r[3])for r in flat]
                         metrics,grouped=evaluate_predictions(rows,features.index,len(question_groups),arm['group_weight'])
+                        tp=sum(z>=0 and y==1 for _,z,y in rows);fn=sum(z<0 and y==1 for _,z,y in rows)
+                        tn=sum(z<0 and y==0 for _,z,y in rows);fp=sum(z>=0 and y==0 for _,z,y in rows)
                         metrics.update(trajectory_accuracy=sum(int(z>=0)==y for _,z,y in rows)/len(rows),
                             trajectory_correct_prevalence=sum(y for _,_,y in rows)/len(rows),
+                            trajectory_tp=tp,trajectory_fn=fn,trajectory_tn=tn,trajectory_fp=fp,
+                            trajectory_positive_recall=tp/(tp+fn)if tp+fn else None,
+                            trajectory_negative_recall=tn/(tn+fp)if tn+fp else None,
+                            trajectory_balanced_accuracy=(tp/(tp+fn)+tn/(tn+fp))/2 if(tp+fn)and(tn+fp)else None,
                             reference_joint_loss_1plus1=metrics['trajectory_bce']+metrics['group_bce'])
                         result[name][split]=metrics
                         with(out/('epoch-%02d-%s-%s-predictions.jsonl'%(epoch,name,split))).open('x')as f:
                             for row in grouped:f.write(json.dumps(row,sort_keys=True)+'\n')
+        all_fallbacks=[None]*8;dist.all_gather_object(all_fallbacks,fallbacks)
         if rank==0:
             result.update(epoch=epoch,arm=arm,actor_version=c['actor_version'],actual_adam_per_rank=[actual_adam_steps(optimizer)]*8,
                 new_ema_updates=epoch*400,ema_decay=s['ema_decay'],learning_rate=s['learning_rate'],
                 dataset_manifest_sha256=data.manifest_sha,test_manifest_sha256=test.manifest_sha,
-                evaluation_seconds=time.monotonic()-began,readout='question_plus20')
+                evaluation_seconds=time.monotonic()-began,readout='question_plus20',inference_actual_oom_fallbacks=all_fallbacks,
+                train_eval_initial_local_trajectories=s.get('train_eval_micro_questions',25)*5,
+                test_eval_initial_local_trajectories=s.get('test_eval_micro_questions',6)*5)
             once(out/('epoch-%02d-metrics.json'%epoch),result);publish(out/'latest-metrics.json',result)
         dist.barrier();return result
     try:
@@ -126,8 +156,7 @@ def train(base,arm_name):
                 backward.backward();finite=torch.stack([torch.isfinite(p.grad).all()for p in model.parameters()if p.grad is not None]).all().int();dist.all_reduce(finite,op=dist.ReduceOp.MIN)
                 if not int(finite.item()):raise FloatingPointError('Actual nonfinite20k study gradient')
                 optimizer.step();actual=actual_adam_steps(optimizer);assert actual==200+(epoch-1)*400+step
-                with torch.no_grad():
-                    for p,q in zip(model.module.parameters(),ema.parameters()):q.mul_(s['ema_decay']).add_(p.detach(),alpha=1-s['ema_decay'])
+                update_ema(model.module,ema,s['ema_decay'])
                 values=torch.tensor([float(losses[k].detach())*len(chosen)for k in('trajectory_bce','group_bce','total_loss')]+[
                     augmentation['augmented_questions'],augmentation['pairs'],augmentation['lambda_sum']],device=device,dtype=torch.float64)
                 dist.all_reduce(values);stats=values.cpu().tolist()
@@ -172,6 +201,7 @@ def run(base):
     from reproduction.prefix_only_correctness_ab.launch import torchrun_owned_class,DeferredInterrupt,birth_states
     from reproduction.h1008_qprobe.pipeline import UUIDLocks
     base=Path(base);c=read(base/'preparation/launch-config.json');s=c['probe20k_study']
+    assert c['probe20k_role']=='fit'
     assert read(Path(s['dataset_base'])/'dataset-complete.json')['trajectories']==102400
     admit_local_allocation(base,c);lease=UUIDLocks(c['physical_gpu_uuids']);owned=torchrun_owned_class()(base/'logs/process-ledger.json',c['run_id'])
     interrupt=DeferredInterrupt();handlers={v:signal.getsignal(v)for v in(signal.SIGTERM,signal.SIGINT)}
@@ -205,7 +235,8 @@ def run(base):
 def submit(base):
     base=Path(base);prep=base/'preparation'
     if(prep/'submit-intent.json').exists():return dict(status='EXISTING_INTENT_NO_REPLAY',receipt=read(prep/'submit-receipt.json')if(prep/'submit-receipt.json').exists()else None)
-    c=read(prep/'launch-config.json');s=c['probe20k_study'];assert read(Path(s['dataset_base'])/'dataset-complete.json')['trajectories']==102400
+    c=read(prep/'launch-config.json');assert c['probe20k_role']=='fit'
+    s=c['probe20k_study'];assert read(Path(s['dataset_base'])/'dataset-complete.json')['trajectories']==102400
     from .local_probe_fit50 import SHARED_AUTHORIZATION
     assert c['local_probe_fit50']['shared_slurm_physical8_authorization']==SHARED_AUTHORIZATION
     python=str(Path(c['environment_root'])/'bin/python');script=prep/'native-probe20k-fit.sh'

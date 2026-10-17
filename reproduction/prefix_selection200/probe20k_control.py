@@ -11,7 +11,8 @@ from reproduction.prefix_selection200.control import deployment_script
 from reproduction.h1008_qprobe.established_controller_transport import remote
 
 
-def deploy_code(config,commit,reuse_commit,reuse_repo):
+def deploy_code(config,commit,reuse_commit,reuse_repo,role='data'):
+    assert role in ('data','fit') and config['probe20k_role']==role
     deployment=deployment_script(config['base'],commit,config,archive_for_commit(commit,reuse_commit),reuse_commit,reuse_repo)
     before=''
     old=config['probe20k_study'].get('replace_pending')
@@ -37,7 +38,7 @@ else:assert native['JobState']=='CANCELLED'and json.loads(record.read_text())['j
         'if not b.exists():\n exec(compile('+repr(deployment)+',"isolated_probe20k_deploy","exec"),{})\n'
         'else:\n assert (b/"preparation/deploy-receipt.json").exists(),"Reconcile existing deployment intent first"\n'
         'c=json.loads((b/"preparation/launch-config.json").read_text());assert c["source_commit"]=='+repr(commit)+'\n'
-        'sys.path.insert(0,str(b/"repo"));from reproduction.prefix_selection200.probe20k_dataset import submit\n'
+        'sys.path.insert(0,str(b/"repo"));from reproduction.prefix_selection200.'+('probe20k_dataset'if role=='data'else'probe20k_fit')+' import submit\n'
         'print(json.dumps(dict(deploy=json.loads((b/"preparation/deploy-receipt.json").read_text()),submit=submit(b))))\n')
 
 
@@ -71,17 +72,50 @@ print(json.dumps(dict(observed_unix=time.time(),base=str(b),job_id=job,
 '''.replace('BASE',repr(base))
 
 
+def fit_observation_code(base):
+    return r'''
+import pathlib,json,subprocess,sys,time
+b=pathlib.Path(BASE);sys.path.insert(0,str(b/'repo'))
+from reproduction.common8.native_allocation import fields
+def read(p):return json.loads(p.read_text())if p.exists()else None
+receipt=read(b/'preparation/submit-receipt.json');job=receipt['job_id']
+r=subprocess.run(['scontrol','show','job',job,'-o'],capture_output=True,text=True,timeout=30)
+arms={}
+for name in ('data_ema','data_ema_group2','data_ema_mixup'):
+ root=b/'arms'/name;last=[]
+ for rank in range(8):
+  p=root/('rank-%d-updates.jsonl'%rank)
+  if not p.exists():last.append(None);continue
+  with p.open('rb')as f:
+   f.seek(max(0,p.stat().st_size-8192));lines=f.read().decode().splitlines()
+  try:last.append(json.loads(lines[-1]))
+  except (ValueError,IndexError):last.append(None)
+ metrics=[read(p)for p in sorted(root.glob('epoch-*-metrics.json'))]
+ arms[name]=dict(latest=read(root/'latest.json'),progress=read(root/'progress.json'),
+  metrics=metrics,initialization=read(root/'initialization.json'),complete=read(root/'complete.json'),rank_last_updates=last)
+errors={}
+for p in(b/'logs').glob('*.log'):
+ with p.open('rb')as f:
+  f.seek(max(0,p.stat().st_size-20000));tail=f.read().decode(errors='replace')
+ selected=[line for line in tail.splitlines()[-45:]if any(v in line for v in('Traceback','Error','Exception','failed'))]
+ if selected:errors[p.name]='\n'.join(selected)
+print(json.dumps(dict(observed_unix=time.time(),base=str(b),job_id=job,
+ native=fields(r.stdout)if r.returncode==0 else dict(unavailable=r.stderr),stage=read(b/'logs/pipeline-status.json'),
+ arms=arms,complete=read(b/'logs/pipeline-complete.json'),cleanup=read(b/'logs/cleanup-status.json'),error_tails=errors)))
+'''.replace('BASE',repr(base))
+
+
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('phase',choices=('deploy-data','observe-data'));p.add_argument('--config',required=True)
+    p=argparse.ArgumentParser();p.add_argument('phase',choices=('deploy-data','observe-data','deploy-fit','observe-fit'));p.add_argument('--config',required=True)
     p.add_argument('--receipts',required=True);p.add_argument('--reuse-source-commit');p.add_argument('--reuse-source-repo');a=p.parse_args()
     c=json.loads(Path(a.config).read_text());repo=Path(__file__).resolve().parents[2]
-    if a.phase=='deploy-data':
+    if a.phase.startswith('deploy-'):
         commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
         branch=subprocess.check_output(['git','branch','--show-current'],cwd=repo,text=True).strip()
         actual=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+branch],cwd=repo,text=True).split()[0]
         assert actual==commit
-        script=deploy_code(c,commit,a.reuse_source_commit,a.reuse_source_repo)
-    else:script=observation_code(c['base'])
+        script=deploy_code(c,commit,a.reuse_source_commit,a.reuse_source_repo,a.phase.split('-')[1])
+    else:script=(observation_code if a.phase=='observe-data'else fit_observation_code)(c['base'])
     tag=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     directory=Path(a.receipts);path=directory/('probe20k-'+a.phase+'-'+tag+'.transport.json')
     result=remote(script,str(path));values=[json.loads(line)for line in result.splitlines()if line.startswith('{')]
