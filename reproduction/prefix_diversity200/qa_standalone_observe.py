@@ -2,17 +2,17 @@
 import json
 from pathlib import Path
 import time
-from reproduction.h1008_qprobe.management_transport import remote
+from reproduction.h1008_qprobe.management_transport import remote, connection_options, local_connection_path
 
 
-def observe(root,deployment_path=None):
+def observe(root,deployment_path=None,connection=None):
     root=Path(root);output=root/'outputs/search-g1-i1i6-fresh200-20261017'
     deployment=json.loads(Path(deployment_path or output/'QA5_STANDALONE_DEPLOYMENT.json').read_text())
     from .qa_standalone_identity import binding
     target=binding(deployment['actual_config'])
     if target['base']!=deployment['base'] or target['unit']!=deployment['unit']:
         raise ValueError('Deployment receipt and exact QA config disagree')
-    connection=json.loads((root/'work/search-g1-prefix1024-diversity512-20261016/MANAGEMENT_DIRECT_MASTER_CURRENT.json').read_text())
+    connection=json.loads(Path(connection or local_connection_path(root)).read_text())
     script=r'''
 import pathlib,json,subprocess,time
 b=pathlib.Path(BASE);unit=UNIT
@@ -42,7 +42,7 @@ print(json.dumps(value))
 '''.replace('BASE',repr(deployment['base'])).replace('UNIT',repr(deployment['unit']))
     label='QA%d_STANDALONE'%target['outer'] if target['expected_count']==512 else 'QA_FINAL_STANDALONE'
     receipt=output/(label.lower()+'-observe-'+str(time.time_ns())+'-transport.json')
-    value=json.loads(remote(script,receipt,control_path=connection['control_path'],target=deployment['actual_config']['node']))
+    value=json.loads(remote(script,receipt,target=deployment['actual_config']['node'],**connection_options(connection)))
     evidence=receipt.with_name(receipt.name.replace('-transport','-actual'))
     evidence.write_text(json.dumps(value,indent=2)+'\n')
     (output/(label+'_LATEST.json')).write_text(json.dumps(value,indent=2)+'\n')
@@ -51,8 +51,8 @@ print(json.dumps(value))
 
 if __name__=='__main__':
     import argparse
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--deployment');a=p.parse_args()
-    r=observe(a.root,a.deployment)
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--deployment');p.add_argument('--connection');a=p.parse_args()
+    r=observe(a.root,a.deployment,a.connection)
     print(json.dumps(dict(observed_unix=r['observed_unix'],systemd=r['systemd'],
         completed_questions=sum((v or {}).get('completed_questions',0) for v in r['rank_progress']),
         completed_ranks=r['rank_complete'],qa=r['qa'],logs=r['logs'])))

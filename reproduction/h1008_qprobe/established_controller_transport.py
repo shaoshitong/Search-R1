@@ -10,6 +10,8 @@ import subprocess
 CONTROLLER = Path('/Users/shaoshitong/Documents/remote_codex_control/control.py')
 CONTROLLER_SHA256 = '06764cd49f1e29d86867f31e94394b94a598d935aed971da0557396a6668be66'
 MODE = 'established_user_control_py_direct'
+TARGET_ADDRESSES = {'h100-5': '10.33.0.5', 'h100-8': '10.33.0.8',
+                    'h100-10': '10.33.0.18', 'h100-11': '10.33.4.14'}
 
 
 def validate_connection(connection):
@@ -20,6 +22,13 @@ def validate_connection(connection):
         raise ValueError('Established controller must be explicit, pinned and socket-free')
 
 
+def _validate_routes(route):
+    if (route.get('gateway_ip') != '10.33.0.18'
+            or any(route.get('targets', {}).get(target) != address
+                   for target, address in TARGET_ADDRESSES.items())):
+        raise ValueError('Established route must retain the four authorized node mappings and retained18 gateway')
+
+
 def _controller():
     raw = CONTROLLER.read_bytes()
     if hashlib.sha256(raw).hexdigest() != CONTROLLER_SHA256:
@@ -28,16 +37,13 @@ def _controller():
     module = importlib.util.module_from_spec(spec)
     # Execute exactly the local static source whose SHA was checked, not a second read.
     exec(compile(raw, str(CONTROLLER), 'exec'), module.__dict__)
-    route = module.H100_ACCESS
-    if (route.get('gateway_ip') != '10.33.0.18'
-            or route.get('targets', {}).get('h100-10') != '10.33.0.18'):
-        raise ValueError('Established route must retain this task h100-10 / retained18 binding')
+    _validate_routes(module.H100_ACCESS)
     return module
 
 
 def remote(script, evidence, *, target='h100-10'):
-    if target != 'h100-10':
-        raise ValueError('This opt-in adapter only controls this task h100-10 / retained18')
+    if target not in TARGET_ADDRESSES:
+        raise ValueError('This opt-in adapter only controls the four authorized same-cluster H100 nodes')
     controller = _controller()
     args = controller.route(target, '/usr/bin/python3 -')
     record = dict(transport_mode=MODE, controller=str(CONTROLLER), controller_sha256=CONTROLLER_SHA256,
