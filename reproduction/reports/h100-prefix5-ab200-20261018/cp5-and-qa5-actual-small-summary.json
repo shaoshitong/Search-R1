@@ -1,0 +1,311 @@
+{
+  "checked_unix": 1792273575.3571167,
+  "runtime_commit": "2e3976230ac9425d66d8553afa9962821e964932",
+  "node": "h100-11",
+  "arms": {
+    "A": {
+      "cpu_proof_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0005-independent-full-sha-cpu.json",
+      "cpu_proof_sha256": "f13cf7402eef4d334d27bbe90f59b7d9b3dbfadfcb3c4c02f40fc41b7ae13952",
+      "cpu_proof_bytes": 18034,
+      "actual_actor_adam_per_rank": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "actual_probe_adam_per_rank": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "sealed_files": 25,
+      "sealed_bytes": 38605953737,
+      "probe": {
+        "actual_adam_steps_per_rank": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "adam_states": 0,
+        "ema_model_verified": false,
+        "ema_updates": 0,
+        "raw_model_verified": true
+      },
+      "qa_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/complete.json",
+      "qa_sha256": "3d6b1f4e085d83d2cd4ac8e1caef90bd2459d3877f32bf1d9a825aa9a1733cd8",
+      "qa": {
+        "actor_model_dir": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0005-attempt-29402cabfbab4d80b7edc097db8aa046/huggingface",
+        "actor_version": "ca37419b494446398fb15234aa3be91a-actor0005",
+        "actual_compute_dtype": "torch.bfloat16",
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "completed_utc": "2026-10-17T21:43:18.425730+00:00",
+        "em": 0.275390625,
+        "evaluation_contract": {
+          "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+          "actor_loss_dtype": "float32",
+          "actor_master_dtype": "float32",
+          "answer_reserve_tokens": 500,
+          "asynchronous_generation": true,
+          "compute_dtype": "bfloat16",
+          "early_final": true,
+          "kind": "shared_new_context_stream_bf16",
+          "max_action_tokens": 500,
+          "max_context_tokens": 4096,
+          "max_model_tokens": 4096,
+          "max_observation_tokens": 500,
+          "max_request_tokens": 3596,
+          "max_search_turns": 4,
+          "max_start_tokens": 2048,
+          "n": 1,
+          "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+          "natural_eos": "terminal_without_environment_correction",
+          "observation_truncation": "clip_before_input_preserve_information_wrapper",
+          "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+          "temperature": 0.0,
+          "top_k": -1,
+          "top_p": 1.0,
+          "train_compute_dtype": "bfloat16"
+        },
+        "f1": 0.3618067172791212,
+        "interaction_protocol": {
+          "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+          "actor_loss_dtype": "float32",
+          "actor_master_dtype": "float32",
+          "answer_reserve_tokens": 500,
+          "asynchronous_generation": true,
+          "compute_dtype": "bfloat16",
+          "early_final": true,
+          "kind": "shared_new_context_stream_bf16",
+          "max_action_tokens": 500,
+          "max_context_tokens": 4096,
+          "max_model_tokens": 4096,
+          "max_observation_tokens": 500,
+          "max_request_tokens": 3596,
+          "max_search_turns": 4,
+          "max_start_tokens": 2048,
+          "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+          "natural_eos": "terminal_without_environment_correction",
+          "observation_truncation": "clip_before_input_preserve_information_wrapper",
+          "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+          "train_compute_dtype": "bfloat16"
+        },
+        "output_shards": [
+          {
+            "bytes": 492721,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-0-full.jsonl.gz",
+            "sha256": "f6e941f51e1eb059188d2c84bd8f00b7fdba8641345be60b5ca79ca29302892e"
+          },
+          {
+            "bytes": 520702,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-1-full.jsonl.gz",
+            "sha256": "563281a41fdda05ce88300446d64d80cdf89626d7b0abcf5e051f2184175c878"
+          },
+          {
+            "bytes": 508952,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-2-full.jsonl.gz",
+            "sha256": "6e4b1a7772f72db0d422bc9da118f85ffd72829ace75250b1759e7c5ec2ab9ef"
+          },
+          {
+            "bytes": 528426,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-3-full.jsonl.gz",
+            "sha256": "fdb7954440085b3457c31f052d1f1ebbd42669d8ab949c407ccb5598076aeda5"
+          }
+        ],
+        "per_source": {
+          "hotpotqa": {
+            "em": 0.28515625,
+            "f1": 0.3359109822640301,
+            "qa_count": 256
+          },
+          "nq": {
+            "em": 0.265625,
+            "f1": 0.38770245229421235,
+            "qa_count": 256
+          }
+        },
+        "qa_count": 512,
+        "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "rank_receipts": [
+          {
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-0-complete.json",
+            "sha256": "fb392a8f4b292415f5d167fb6a9f808a315465fe8c79639bdac8d10fd687ac0a"
+          },
+          {
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-1-complete.json",
+            "sha256": "3867fa0d868e589d3a51a14a9ac418f51367cc5320ee697af32f87d6ada1a64e"
+          },
+          {
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-2-complete.json",
+            "sha256": "11ce33149752e3228fd6c0499845daa790538dc8bc0ed0d0ac0b35d415b1e3be"
+          },
+          {
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-3-complete.json",
+            "sha256": "6429c299b65156663bf0fea338c997ca0d0a72e21f7d1a7b11f2abfda516d4c8"
+          }
+        ],
+        "run_id": "ca37419b494446398fb15234aa3be91a",
+        "schema_version": 1
+      }
+    },
+    "B": {
+      "cpu_proof_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0005-independent-full-sha-cpu.json",
+      "cpu_proof_sha256": "23914a16668385bfbd8720fa21b7f2df416e9a69587d231dcc46d63e78cf7d20",
+      "cpu_proof_bytes": 18044,
+      "actual_actor_adam_per_rank": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "actual_probe_adam_per_rank": [
+        50,
+        50,
+        50,
+        50
+      ],
+      "sealed_files": 25,
+      "sealed_bytes": 39537796626,
+      "probe": {
+        "actual_adam_steps_per_rank": [
+          50,
+          50,
+          50,
+          50
+        ],
+        "adam_states": 14,
+        "ema_model_verified": true,
+        "ema_updates": 50,
+        "raw_model_verified": true
+      },
+      "qa_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/complete.json",
+      "qa_sha256": "920d593dd0395394f6e613f16a33b9cf14b4408e11bfde721cff3ed7e2185614",
+      "qa": {
+        "actor_model_dir": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0005-attempt-cc1f1ef88aef42ae842c29aabe54769d/huggingface",
+        "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0005",
+        "actual_compute_dtype": "torch.bfloat16",
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "completed_utc": "2026-10-17T21:44:00.855215+00:00",
+        "em": 0.28515625,
+        "evaluation_contract": {
+          "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+          "actor_loss_dtype": "float32",
+          "actor_master_dtype": "float32",
+          "answer_reserve_tokens": 500,
+          "asynchronous_generation": true,
+          "compute_dtype": "bfloat16",
+          "early_final": true,
+          "kind": "shared_new_context_stream_bf16",
+          "max_action_tokens": 500,
+          "max_context_tokens": 4096,
+          "max_model_tokens": 4096,
+          "max_observation_tokens": 500,
+          "max_request_tokens": 3596,
+          "max_search_turns": 4,
+          "max_start_tokens": 2048,
+          "n": 1,
+          "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+          "natural_eos": "terminal_without_environment_correction",
+          "observation_truncation": "clip_before_input_preserve_information_wrapper",
+          "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+          "temperature": 0.0,
+          "top_k": -1,
+          "top_p": 1.0,
+          "train_compute_dtype": "bfloat16"
+        },
+        "f1": 0.3731497838113931,
+        "interaction_protocol": {
+          "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+          "actor_loss_dtype": "float32",
+          "actor_master_dtype": "float32",
+          "answer_reserve_tokens": 500,
+          "asynchronous_generation": true,
+          "compute_dtype": "bfloat16",
+          "early_final": true,
+          "kind": "shared_new_context_stream_bf16",
+          "max_action_tokens": 500,
+          "max_context_tokens": 4096,
+          "max_model_tokens": 4096,
+          "max_observation_tokens": 500,
+          "max_request_tokens": 3596,
+          "max_search_turns": 4,
+          "max_start_tokens": 2048,
+          "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+          "natural_eos": "terminal_without_environment_correction",
+          "observation_truncation": "clip_before_input_preserve_information_wrapper",
+          "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+          "train_compute_dtype": "bfloat16"
+        },
+        "output_shards": [
+          {
+            "bytes": 490475,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-0-full.jsonl.gz",
+            "sha256": "b30efa4b1468d3583a788adf9abe1cd5ad19fc5a80501f9e1e685f85a5fd698f"
+          },
+          {
+            "bytes": 508041,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-1-full.jsonl.gz",
+            "sha256": "74c532e67ab1a3e6f619a3e6d6144338345b24eb2516f43a702d2656e3241588"
+          },
+          {
+            "bytes": 494786,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-2-full.jsonl.gz",
+            "sha256": "cf52a9b5b728125734a323ba344207687b5c1ba07003fe75da8db6494277443e"
+          },
+          {
+            "bytes": 503775,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-3-full.jsonl.gz",
+            "sha256": "cc7a2b93b0a0bf0c12a143bc207d49da6a1fd864af0c294384c49271f6df7c93"
+          }
+        ],
+        "per_source": {
+          "hotpotqa": {
+            "em": 0.3046875,
+            "f1": 0.3540012608095866,
+            "qa_count": 256
+          },
+          "nq": {
+            "em": 0.265625,
+            "f1": 0.39229830681319977,
+            "qa_count": 256
+          }
+        },
+        "qa_count": 512,
+        "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "rank_receipts": [
+          {
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-0-complete.json",
+            "sha256": "65783571dd42450fe163c73623d8ccd741ec4cbf12103e572d1c82341f4ffc9c"
+          },
+          {
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-1-complete.json",
+            "sha256": "acddaf2c53f720dd32d6381a19b8b3b8d58edaf897dd284e35493ab859211087"
+          },
+          {
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-2-complete.json",
+            "sha256": "2977713fa5015df730c6d9f5da81da4a4aaf564e4b475a7130073b59eb65716f"
+          },
+          {
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/rank-3-complete.json",
+            "sha256": "8e1904de0f2133a70c262751214585b4188baafb9e0d29db8a17c9a4cf871823"
+          }
+        ],
+        "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+        "schema_version": 1
+      }
+    }
+  },
+  "whole_goal_complete": false,
+  "independent_backup_claimed": false
+}

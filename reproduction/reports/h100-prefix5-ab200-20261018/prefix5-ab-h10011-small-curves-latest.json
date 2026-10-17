@@ -1,5 +1,5 @@
 {
-  "checked_unix": 1792271913.3486164,
+  "checked_unix": 1792273766.1237686,
   "data": {
     "A": {
       "1": {
@@ -32,6 +32,28 @@
             "outer": 3,
             "total_wall_seconds_including_qa_grounding_storage": 784.1525464951992,
             "training_wall_seconds": 770.5202799346298
+          }
+        }
+      },
+      "4": {
+        "iteration_wall": {
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000004/iteration-wall-time.json",
+          "sha256": "2fc74a465555882e1dba067de40040bf3b7b6a6c2a5787fbccfe427d7a75e51f",
+          "value": {
+            "outer": 4,
+            "total_wall_seconds_including_qa_grounding_storage": 748.5190703719854,
+            "training_wall_seconds": 734.9800017215312
+          }
+        }
+      },
+      "5": {
+        "iteration_wall": {
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/iteration-wall-time.json",
+          "sha256": "79a79ce4a48bebcfe6d0615e399027513eb4677f9b1b0b26e59dc44519497fc8",
+          "value": {
+            "outer": 5,
+            "total_wall_seconds_including_qa_grounding_storage": 899.0921500427648,
+            "training_wall_seconds": 750.4450803790241
           }
         }
       }
@@ -534,6 +556,340 @@
               "step": 10,
               "total_loss": 4.0590686202049255,
               "trajectory_bce": 1.1388914436101913
+            }
+          ]
+        }
+      },
+      "4": {
+        "iteration_wall": {
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000004/iteration-wall-time.json",
+          "sha256": "7ebdbeb07e197ef146bc0ee8d298b74f5d35730725ce059a0dba43be2ad2ea01",
+          "value": {
+            "outer": 4,
+            "total_wall_seconds_including_qa_grounding_storage": 738.386350447312,
+            "training_wall_seconds": 728.8099371176213
+          }
+        },
+        "loss_curve": {
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000004/probe-update/global-loss-updates.jsonl",
+          "sha256": "a472fe5c94e2bd3471b1c056cad595109db67cb2c90a4a4d4090a9894d341e1a",
+          "value": [
+            {
+              "actual_adam_steps": 31,
+              "ema_updates": 31,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.6790577418663922,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 4,
+              "rank": 0,
+              "step": 1,
+              "total_loss": 4.52505061673183,
+              "trajectory_bce": 1.1297619424614251
+            },
+            {
+              "actual_adam_steps": 32,
+              "ema_updates": 32,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7826237398035386,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 4,
+              "rank": 0,
+              "step": 2,
+              "total_loss": 4.965051510754754,
+              "trajectory_bce": 1.0519328713417053
+            },
+            {
+              "actual_adam_steps": 33,
+              "ema_updates": 33,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7690780864042395,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 4,
+              "rank": 0,
+              "step": 3,
+              "total_loss": 4.815444422703163,
+              "trajectory_bce": 0.9700539462706622
+            },
+            {
+              "actual_adam_steps": 34,
+              "ema_updates": 34,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7838276811674529,
+              "learning_rate": 5e-06,
+              "local_questions": 12,
+              "local_trajectories": 60,
+              "outer": 4,
+              "rank": 0,
+              "step": 4,
+              "total_loss": 4.961484694013409,
+              "trajectory_bce": 1.042346290513581
+            },
+            {
+              "actual_adam_steps": 35,
+              "ema_updates": 35,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 52,
+              "group_bce": 0.7891084998846054,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 4,
+              "rank": 0,
+              "step": 5,
+              "total_loss": 5.2277175188064575,
+              "trajectory_bce": 1.282175064086914
+            },
+            {
+              "actual_adam_steps": 36,
+              "ema_updates": 36,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.8602738345370573,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 4,
+              "rank": 0,
+              "step": 6,
+              "total_loss": 5.286176672168806,
+              "trajectory_bce": 0.9848073218383041
+            },
+            {
+              "actual_adam_steps": 37,
+              "ema_updates": 37,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.8100273468915153,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 4,
+              "rank": 0,
+              "step": 7,
+              "total_loss": 4.9595974286397295,
+              "trajectory_bce": 0.9094607818360422
+            },
+            {
+              "actual_adam_steps": 38,
+              "ema_updates": 38,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.6974346100115308,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 4,
+              "rank": 0,
+              "step": 8,
+              "total_loss": 4.603042069603415,
+              "trajectory_bce": 1.1158691679730135
+            },
+            {
+              "actual_adam_steps": 39,
+              "ema_updates": 39,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.5652827696472991,
+              "learning_rate": 5e-06,
+              "local_questions": 12,
+              "local_trajectories": 60,
+              "outer": 4,
+              "rank": 0,
+              "step": 9,
+              "total_loss": 3.917572545070274,
+              "trajectory_bce": 1.091158721961227
+            },
+            {
+              "actual_adam_steps": 40,
+              "ema_updates": 40,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 52,
+              "group_bce": 0.7020790129899979,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 4,
+              "rank": 0,
+              "step": 10,
+              "total_loss": 4.683235049247742,
+              "trajectory_bce": 1.1728401184082031
+            }
+          ]
+        }
+      },
+      "5": {
+        "iteration_wall": {
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/iteration-wall-time.json",
+          "sha256": "5aefd5a4158641cf3eeca03074619eaf403d1449df56e32f40d4b70861b637dc",
+          "value": {
+            "outer": 5,
+            "total_wall_seconds_including_qa_grounding_storage": 898.2127567492425,
+            "training_wall_seconds": 752.010324367322
+          }
+        },
+        "loss_curve": {
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/probe-update/global-loss-updates.jsonl",
+          "sha256": "a522e3875fdfd16b50a0e057edf03ad74d2094e3abb559dc9b980689304bbe9e",
+          "value": [
+            {
+              "actual_adam_steps": 41,
+              "ema_updates": 41,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.788562651942758,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 5,
+              "rank": 0,
+              "step": 1,
+              "total_loss": 5.1715112947950175,
+              "trajectory_bce": 1.2286979988509534
+            },
+            {
+              "actual_adam_steps": 42,
+              "ema_updates": 42,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.8726064235556359,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 5,
+              "rank": 0,
+              "step": 2,
+              "total_loss": 5.805214311562333,
+              "trajectory_bce": 1.442182087430767
+            },
+            {
+              "actual_adam_steps": 43,
+              "ema_updates": 43,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7231616155773986,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 5,
+              "rank": 0,
+              "step": 3,
+              "total_loss": 4.707398162168615,
+              "trajectory_bce": 1.0915900071461995
+            },
+            {
+              "actual_adam_steps": 44,
+              "ema_updates": 44,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.8718090174244899,
+              "learning_rate": 5e-06,
+              "local_questions": 12,
+              "local_trajectories": 60,
+              "outer": 5,
+              "rank": 0,
+              "step": 4,
+              "total_loss": 5.495172996147006,
+              "trajectory_bce": 1.1361278552635043
+            },
+            {
+              "actual_adam_steps": 45,
+              "ema_updates": 45,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 52,
+              "group_bce": 0.7556273192167282,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 5,
+              "rank": 0,
+              "step": 5,
+              "total_loss": 4.904016733169556,
+              "trajectory_bce": 1.1258801966905594
+            },
+            {
+              "actual_adam_steps": 46,
+              "ema_updates": 46,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7298888517361061,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 5,
+              "rank": 0,
+              "step": 6,
+              "total_loss": 4.977316949881759,
+              "trajectory_bce": 1.3278725287493538
+            },
+            {
+              "actual_adam_steps": 47,
+              "ema_updates": 47,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7128005226453146,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 5,
+              "rank": 0,
+              "step": 7,
+              "total_loss": 4.757360308778052,
+              "trajectory_bce": 1.193357623090931
+            },
+            {
+              "actual_adam_steps": 48,
+              "ema_updates": 48,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.672229641792821,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 5,
+              "rank": 0,
+              "step": 8,
+              "total_loss": 4.524478285920386,
+              "trajectory_bce": 1.1633300442321628
+            },
+            {
+              "actual_adam_steps": 49,
+              "ema_updates": 49,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.6913482020883,
+              "learning_rate": 5e-06,
+              "local_questions": 12,
+              "local_trajectories": 60,
+              "outer": 5,
+              "rank": 0,
+              "step": 9,
+              "total_loss": 4.716092614566579,
+              "trajectory_bce": 1.2593517233343685
+            },
+            {
+              "actual_adam_steps": 50,
+              "ema_updates": 50,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 52,
+              "group_bce": 0.6471159160137177,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 5,
+              "rank": 0,
+              "step": 10,
+              "total_loss": 4.177618503570557,
+              "trajectory_bce": 0.9420390427112579
             }
           ]
         }

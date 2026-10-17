@@ -66,3 +66,38 @@ These variable shared-node times do not isolate algorithm speed. Original
 sequential rank-journal facts and per-step probe curves are retained in the
 small JSON artifacts. Runtime remains2e397623 unchanged. Sole readonly observer
 follows the normal milestone5/QA5; full goal remains incomplete.
+
+## Actual milestone5 and QA5
+
+Both same native h100-11 processes completed5/200 and continue6. All4 actor
+ranks each100 actual Adam; A selection probe0/frozen; B actual50 Adam and50 EMA
+updates. No training restart or OOM occurred in this h100-11 execution.
+
+| Fixed512, identical new BF16 greedy protocol | A frozen | B balanced+EMA |
+|---|---:|---:|
+| Strict EM |141/512 =27.5391%|146/512 =28.5156%|
+| F1 |36.1807%|37.3150%|
+| NQ EM |68/256|68/256|
+| Hotpot EM |73/256|78/256|
+| Actual worker exits |4 workers, all0|4 workers, all0|
+
+Both use the exact3d631836… fixed question source. These are early same-protocol
+QA results, not evidence of a statistically established algorithm benefit.
+The normal milestone5 independent full-file SHA plus actual CPU deserialization
+passed for A25files/38605953737B and B25files/39537796626B. These proofs verify
+FP32 actor/Adam/scheduler/RNG/driver/cursor and the correct frozen or raw+EMA
+head state; they are not an independent backup or extra GPU-forward test. Both
+CPU workers are actually gone; do not repeat completed hashes or loads.
+
+Selected outer5 actual mixed: A408/512=79.6875%; B380/512=74.21875%. B balanced
+only that original current512G5 to256mixed+256nonmixed,298unique questions.
+On the original unresampled same data, B raw paired BA45.18%→53.70%, total
+loss5.07047→4.54421. EMA BA remains50%; its total loss4.08221→4.09179 worsens
+slightly. Do not claim all losses declined or call these heldout metrics.
+The first fresh paired probe diagnostic is periodic10, not QA5.
+
+Next natural milestone10 will use original2560candidate G5/full-pool selection
+and fitting rules; B fits50 updates once, with balanced1280/1280 groups. The
+sole readonly observer follows6..10 plus actual scoring11 with head10. Both
+full200 budgets, later QA50/100/150/200, final51713, retention and final native
+exit0/owned cleanup remain incomplete.
