@@ -1,0 +1,295 @@
+{
+  "kind": "dated_execution_record_actual_commands_not_replay_authorization",
+  "date": "2026-10-18",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "f97819939a9c4f17bfc4855fa250eadc",
+  "runtime_source_commit": "d3a03054009fe3bf0068dfefabca941df95df101",
+  "source_tree": "20a57a70df360248bce208a58c2d5838b021f65b",
+  "source_archive_sha256": "bec36b13409554f65e25a584df354a6902c1e8cf7bf240b36208e75ffdfced0a",
+  "source_files": 1382,
+  "base": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-f97819939a9c4f17bfc4855fa250eadc",
+  "code_branch": "codex/a800-prefix5-cuda-cache-repair-20261018",
+  "checkpoint": {
+    "completed_outer": 64,
+    "actor_Adam": 1280,
+    "probe_Adam": 300,
+    "joint_sha256": "df50e3de9f8d92df60bb1638f3749f3295ab57c0720dd911c62e2041d7076c51",
+    "full_state_qualification_sha256": "d21a97766311757aa58f115872bbc224d9b1a95e600251f92629799690ed8f2e",
+    "provider_execution": "a4a0c2a18cca40bc8c3850d40eed8554",
+    "latest_failed_zero_write_execution": "1027b6c100464cc9b488de15d36e0389",
+    "latest_failed_terminal_sha256": "48d4eedc015908240dedd532bb7561f65e280a52343ca32c23f6d265548d4050",
+    "all_states_reused_no_optimizer_reset": true
+  },
+  "execution_proofs": [
+    {
+      "local_receipt": "a800-prefix5-fault65-stage-1792262811937254000.json",
+      "receipt_sha256": "20443316628fd5af99cdf6385513741313a227a5ade67363784c529965010e41",
+      "exit_code": 0,
+      "checked_unix": 1792262811.9370801
+    },
+    {
+      "local_receipt": "a800-prefix5-fault65-prepare-1792262842853026000.json",
+      "receipt_sha256": "acd49ab70ab0f2ea25868f69cad30bdf6f20a7cb737a003548ec48acf0b109e3",
+      "exit_code": 0,
+      "checked_unix": 1792262842.8527691
+    },
+    {
+      "local_receipt": "a800-prefix5-fault65-observe-1792262921428139000.json",
+      "receipt_sha256": "497349bab92c6507b3042ad2509f8c6ce5edddf8e6cb356917fa8591e91f76c8",
+      "exit_code": 0,
+      "checked_unix": 1792262921.4280598
+    },
+    {
+      "local_receipt": "a800-prefix5-fault65-launch-1792262944649380000.json",
+      "receipt_sha256": "3d7a020f7430a8f48b9958201a52c36f4e951a70af783c030a1986586bce4d49",
+      "exit_code": 0,
+      "checked_unix": 1792262944.649195
+    },
+    {
+      "local_receipt": "a800-prefix5-fault65-observe-1792263137914685000.json",
+      "receipt_sha256": "24d61d9dffd1960716a75c470d23d7328d4d53d0c06212616cc397a07f206c93",
+      "exit_code": 0,
+      "checked_unix": 1792263137.914612
+    },
+    {
+      "local_receipt": "a800-prefix5-fault65-observe-1792263343550839000.json",
+      "receipt_sha256": "5a6c65be88b2eb3ce192b2dc8a68c77879212d8a7fd6c70de4e00e9adf78313c",
+      "exit_code": 0,
+      "checked_unix": 1792263343.550677
+    },
+    {
+      "local_receipt": "a800-prefix5-fault65-observe-1792263663354423000.json",
+      "receipt_sha256": "0665810f48fc95fd6db5ebebbe28852e9d6b2a79ac957f137a5c3a898b6e654c",
+      "exit_code": 0,
+      "checked_unix": 1792263663.353701
+    }
+  ],
+  "scientific_contract": {
+    "total_actor_outers": 200,
+    "start_outer": 65,
+    "ordinary_candidates": 5120,
+    "update_candidates": 2560,
+    "G": 5,
+    "selected_questions": 512,
+    "actor_opportunities_per_outer": 20,
+    "probe_period": 10,
+    "probe_update_outers": "10..190",
+    "probe_epochs": 1,
+    "probe_Adam_per_update": 50,
+    "probe_LR": 5e-06,
+    "actor_LR": 1e-06,
+    "actor_local_micro": 4,
+    "actor_global_micro": 16,
+    "gradient_accumulation": 8,
+    "all_correct_only_virtual_zero": true
+  },
+  "execution_delta": {
+    "prefix_cache_before": "off for capture/on for continuation",
+    "prefix_cache_after": false,
+    "all4_actual_engine_flags": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "first_recovered_continuation_count": 2560,
+    "first_recovered_continuation_mixed": 127,
+    "first_recovered_continuation_mixed_fraction": 0.248046875
+  },
+  "status": "RECOVERY_ACCEPTED_TWO_REAL_WINDOWS_AND_FIRST_NORMAL_COMPLETE65_SAME_PROCESS_CONTINUES66",
+  "normal_readonly_command": [
+    "python3",
+    "-m",
+    "reproduction.operations.a800_prefix5_fault_joint_recovery_control",
+    "--action",
+    "observe",
+    "--handle",
+    "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-cuda-cache-fullstate-deployment-20261018.json"
+  ],
+  "once_stage_prepare_launch": "Already executed: never repeat; use actual receipts and same-execution state.",
+  "new_evaluations_model_diagnostics_GPU_tests_review_or_subagents_added": false,
+  "checked_unix": 1792263842.9373162,
+  "second_actual_window": {
+    "observed_unix": 1792263343.4199746,
+    "complete_outers": 64,
+    "new_returned_Adam_per_rank": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "restoration_per_rank": [
+      {
+        "restored_completed_outer": 64,
+        "actual_adam_before": 1280,
+        "restored_scheduler": 64,
+        "actual_learning_rates": [
+          1e-06
+        ],
+        "actual_model_master_dtypes": [
+          "torch.float32"
+        ],
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0064",
+        "restored_grounding_probe_version": "54ac33dcebe64e62a11fe4177f41f116:50:d01ba7a90b6343749157d27892a906db"
+      },
+      {
+        "restored_completed_outer": 64,
+        "actual_adam_before": 1280,
+        "restored_scheduler": 64,
+        "actual_learning_rates": [
+          1e-06
+        ],
+        "actual_model_master_dtypes": [
+          "torch.float32"
+        ],
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0064",
+        "restored_grounding_probe_version": "54ac33dcebe64e62a11fe4177f41f116:50:d01ba7a90b6343749157d27892a906db"
+      },
+      {
+        "restored_completed_outer": 64,
+        "actual_adam_before": 1280,
+        "restored_scheduler": 64,
+        "actual_learning_rates": [
+          1e-06
+        ],
+        "actual_model_master_dtypes": [
+          "torch.float32"
+        ],
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0064",
+        "restored_grounding_probe_version": "54ac33dcebe64e62a11fe4177f41f116:50:d01ba7a90b6343749157d27892a906db"
+      },
+      {
+        "restored_completed_outer": 64,
+        "actual_adam_before": 1280,
+        "restored_scheduler": 64,
+        "actual_learning_rates": [
+          1e-06
+        ],
+        "actual_model_master_dtypes": [
+          "torch.float32"
+        ],
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0064",
+        "restored_grounding_probe_version": "54ac33dcebe64e62a11fe4177f41f116:50:d01ba7a90b6343749157d27892a906db"
+      }
+    ],
+    "actual_receipt": "a800-prefix5-fault65-observe-1792263343550839000.json"
+  },
+  "acceptance_observed_unix": 1792263663.2369878,
+  "pipeline_identity": {
+    "pid": 3087514,
+    "start_ticks": 634253599,
+    "sid": 3087514,
+    "uid": 0,
+    "alive": true
+  },
+  "first_complete_recovered_outer": 65,
+  "first_complete_actor": {
+    "processed_opportunities": 20,
+    "returned_successful_Adam": 20,
+    "skip": 0,
+    "actual_Adam_per_rank": [
+      1300,
+      1300,
+      1300,
+      1300
+    ],
+    "scheduler_completed_outer": 65,
+    "learning_rate": 1e-06,
+    "job_exit_code": 0,
+    "joint_metadata_sha256": "ac5e3ce07a27d291ff3a0bf5fc134c1f2dd13657e898cd2bd8da9a112b06b27b",
+    "raw_checkpoint_independent_rescan_added": false
+  },
+  "probe_state": {
+    "last_update_outer": 60,
+    "actual_Adam_per_rank": [
+      300,
+      300,
+      300,
+      300
+    ],
+    "checkpoint_sha256": "85b85c4a29761b2fdb91ac86516bdd8534394721da821b5473b984a97bedb1b5",
+    "new_probe_writes_since_switch": 0
+  },
+  "selected65": {
+    "questions": 512,
+    "trajectories": 2560,
+    "mixed": 127,
+    "fraction": 0.248046875,
+    "groups": {
+      "all_correct": 80,
+      "all_wrong": 305,
+      "mixed": 127,
+      "original_g5": 0
+    }
+  },
+  "reward65": {
+    "mean": 0.40295161223039033,
+    "minimum": 0.40295161223039033,
+    "maximum": 0.40295161223039033,
+    "grounding_round": 50,
+    "grounding_version": "54ac33dcebe64e62a11fe4177f41f116:50:d01ba7a90b6343749157d27892a906db",
+    "delta_from_parent64": 0.02979876965255246,
+    "not_fixed_QA_quality": true
+  },
+  "normal66": {
+    "stage": "outer-000066-continue",
+    "prefix_questions": 5120,
+    "prefix_trajectories": 25600,
+    "prefix_complete_four_ranks": true,
+    "score_complete": true,
+    "continuation_complete": false,
+    "actor_attempt_recorded": false,
+    "current_inflight": "unknown",
+    "new_actor_return_beyond_saved1300_not_confirmed": true
+  },
+  "existing_scores": {
+    "QA_step": 50,
+    "QA_EM": 0.44140625,
+    "QA_F1": 0.5276351354935914,
+    "probe_update_outer": 60,
+    "test_mixed_balanced_accuracy": 0.5167476824182538,
+    "new_QA_or_probe_score_since_prior_delivery": false
+  },
+  "native65_phase_timings": {
+    "outer-000065-actor-685d5a65bab2437ca8d975447663b400": {
+      "elapsed_seconds": 405.8978182412684,
+      "exit_code": 0
+    },
+    "outer-000065-continue": {
+      "elapsed_seconds": 95.9215770503506,
+      "exit_code": 0
+    }
+  },
+  "GPU": {
+    "current": null,
+    "window_peak": null,
+    "current_execution_peak": null,
+    "sample_coverage": "unknown_not_projected_no_added_sampling"
+  },
+  "curve_boundaries": [
+    {
+      "outer_from": 1,
+      "outer_through": 5,
+      "ordinary_candidates": 2560
+    },
+    {
+      "outer_from": 6,
+      "outer_through": 64,
+      "ordinary_candidates": 5120,
+      "update_candidates": 2560,
+      "continuation_prefix_cache": true
+    },
+    {
+      "outer_from": 65,
+      "ordinary_candidates": 5120,
+      "update_candidates": 2560,
+      "continuation_prefix_cache": false,
+      "inherited_actor_Adam": 1280,
+      "inherited_probe_Adam": 300
+    }
+  ],
+  "two_failed_attempts_retained": true,
+  "formal_total_outer_budget": 200,
+  "completed_goal": false,
+  "final51713_and100_150_200_acceptance_pending": true
+}
