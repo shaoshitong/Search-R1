@@ -1,5 +1,7 @@
 # I1–I6 修复与官方actor fresh200
 
+> 最新实际UTC2026-10-17 06:39：同3431已完整11／200，8rank各actor220／probe0，第12轮actor；原始8–11账本均核20真实写入。CP5副本同birth继续，16文件17,946,369,805B源与目标完整SHA已通过，尚未整体完成。中断只结束了本地等待，已恢复读取同一训练，未重启／改训练。见[第11轮与观察通道恢复小摘要](progress11-observer-recovery.json)。以下首五及QA5为历史阶段记录。
+
 按2026-10-17最新人工指令，本次执行清单仅I1–I6。旧3430已人工取消，last joint99；18888原进程birth两次核对全部消失，cgroup与自有GPU占用均空。错误实验a008／5cba的12个源命名空间仅删除自有权重／optimizer／log，代码、必要小审计与原始轨迹gzip保留；warmup、官方权重、真实round0 grounding、数据、FAISS及fixed recovery assets保留。
 
 |项|修复实现|必要验证|
