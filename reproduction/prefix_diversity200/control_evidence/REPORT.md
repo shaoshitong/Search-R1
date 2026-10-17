@@ -1,6 +1,6 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Actual complete125/200; job3427 RUNNING on h100-10/10.33.0.18, stage OUTER_JOINT_COMPLETE. Saved actor/probe Adam per8rank: [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500] / [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]. Completed joint counters: [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500] / [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
+Actual complete125/200; job3427 RUNNING on h100-10/10.33.0.18, stage outer-000126-score. Saved actor/probe Adam per8rank: [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500] / [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]. Completed joint counters: [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500] / [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
 Latest QA: outer100,512questions EM28.3203% / F134.6557%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.
 Recent actual completejoint intervals within unchanged execution base/source[437.50955629348755, 439.49929571151733, 438.3922929763794, 441.55716824531555]; mean439.240s=7.321min. These wall intervals include any preceding milestoneQA and scheduling overhead; pure per-outer phase durations are recorded separately. Startup and terminal failure/repair costs are separate.
@@ -151,7 +151,7 @@ Checkpoint100 independent CPU acceptance: JOINT_COMPONENTS_VERIFIED_STANDALONE_D
 
 Future driver metadata source fix 04ada154905f2540abe6cbf88bacff64e6221589 is published and remains NOT_DEPLOYED_TO_RUNNING3427; the running source above stays frozen.
 
-Latest passive telemetry4522 samples, last observed1792211545.71783; errors[], wholecard maxused81057MiB/minfree25MiB (coverage above).
+Latest passive telemetry4530 samples, last observed1792211649.4130888; errors[], wholecard maxused81057MiB/minfree25MiB (coverage above).
 
 ## Original reward and scoped costs
 
@@ -159,4 +159,4 @@ Original saved actor grounding reward outer125 selected512G5/2560 mean1.08719361
 
 Committed generation/retrieval through125/125: 107018378 sampled tokens, 649911 logical searches; backlog[]. Inherited prefix searches not doubled; actor512 subset not added. Failed attempts, QA, HTTP retries/cache misses and physical FAISS calls separately scoped.
 
-Historical terminal reservations 51.802222 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total121.368889 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
+Historical terminal reservations 51.802222 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total121.604444 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
