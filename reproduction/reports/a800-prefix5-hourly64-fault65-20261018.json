@@ -1,0 +1,581 @@
+{
+  "kind": "due_hourly_existing_metadata_and_confirmed_fault",
+  "observed_unix": 1792261499.3640802,
+  "observed_shanghai": "2026-10-18T02:24:59.364080+08:00",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "a4a0c2a18cca40bc8c3850d40eed8554",
+  "source_commit": "75d536575593891876df339467da73b3c4cbdc7c",
+  "actual_receipt_sha256": "4169f54c9868c968c6ba8bc4ea3c0dd4c82a5cacc2fe2e450a09c2c4c9bb2b0b",
+  "anchor_complete_outers": 56,
+  "complete_outers": 64,
+  "opportunities_since_anchor": 160,
+  "successful_actor_Adam_since_anchor": 160,
+  "actor_Adam_per_rank": [
+    1280,
+    1280,
+    1280,
+    1280
+  ],
+  "probe_Adam_per_rank": [
+    300,
+    300,
+    300,
+    300
+  ],
+  "skip_since_anchor": 0,
+  "partial_actor65_writes": 0,
+  "optimizer_inflight": 0,
+  "four_rank_counted_once": true,
+  "current_outer": 65,
+  "current_outer_complete": false,
+  "fault": {
+    "phase": "continue",
+    "exit_code": 1,
+    "exception": "CUDA illegal memory access in vLLM sampling",
+    "pipeline_alive": false,
+    "all_owned_births_gone": true,
+    "cleanup": {
+      "checked_unix": 1792261479.282623,
+      "cleaned": true,
+      "owned_births_all_gone": true,
+      "remaining_owned_births": [],
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116"
+    },
+    "failed_log_hashes": [
+      {
+        "rank": 0,
+        "bytes": 8889,
+        "sha256": "95fe245ad5be008975277f11102c2aa8f337aa3d0dde27abb25ce0405127116f"
+      },
+      {
+        "rank": 1,
+        "bytes": 3603,
+        "sha256": "be1a3d4c49417980cadf5c7d231e6e22cbafaa79c1148f42760e7316b287b5c5"
+      },
+      {
+        "rank": 2,
+        "bytes": 3603,
+        "sha256": "bab2c5524195f2277ee168a0b2fe2fd2c2c8a0a0dc0a4268db434dcd3c67dd1d"
+      },
+      {
+        "rank": 3,
+        "bytes": 3603,
+        "sha256": "f83afa4683f0a31a6dd8d77997ce12faab4ddacd16592731a49aa99223cf66dd"
+      }
+    ],
+    "no_actor65_attempt": true,
+    "accepted65_prefix_and_score_exist": true
+  },
+  "complete_window": [
+    {
+      "outer": 57,
+      "metadata_sha256": "5b48bfebaae9bd6b596587948cdf2ed10892254de7b7fddd84fbba9d6606df2c",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          1140,
+          1140,
+          1140,
+          1140
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 57
+      },
+      "reward_mean": 0.8842216594697675,
+      "selected_mixed_fraction": 0.27734375,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 58,
+      "metadata_sha256": "0e9279d39eeca5ac2d7b6afef9dca5e74153c927a9a0e41fb4de7c0cc2f6c5e0",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          1160,
+          1160,
+          1160,
+          1160
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 58
+      },
+      "reward_mean": 0.8934764196295873,
+      "selected_mixed_fraction": 0.3125,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 59,
+      "metadata_sha256": "297806901b5dbe104edec30f9bb014413f6289dc7f9a149aeded9a2efaa73ec3",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          1180,
+          1180,
+          1180,
+          1180
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 59
+      },
+      "reward_mean": 0.8392280656393268,
+      "selected_mixed_fraction": 0.29296875,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 60,
+      "metadata_sha256": "2ff9a5afac29e95b5f1eeef45a9dd1feb605e86060819bd4ea7c60b6f7876b1a",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 60
+      },
+      "reward_mean": 0.7563223847959307,
+      "selected_mixed_fraction": 0.951171875,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": true,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 2560
+      },
+      "probe_update": {
+        "outer": 60,
+        "unselected_training_questions": 2560,
+        "actual_learning_rate": 5e-06,
+        "new_adam_steps_per_rank": 50,
+        "actual_adam_steps_per_rank": [
+          300,
+          300,
+          300,
+          300
+        ],
+        "train_loop_seconds": 7.64419031701982,
+        "before_update": {
+          "test": {
+            "accuracy": 0.412109375,
+            "balanced_accuracy": 0.5155656493213271,
+            "count": 512,
+            "fn": 29,
+            "formula": "1-prod(p_j)-prod(1-p_j)",
+            "fp": 272,
+            "group_bce": 1.1594227290021375,
+            "group_weight": 1.0,
+            "mean_q": 0.5996604894958925,
+            "mixed_count": 89,
+            "mixed_recall": 0.6741573033707865,
+            "nonmixed_count": 423,
+            "nonmixed_recall": 0.35697399527186763,
+            "threshold": 0.5,
+            "tn": 151,
+            "total_loss": 2.0188623993115904,
+            "tp": 60,
+            "trajectory_bce": 0.8594396703094531,
+            "true_mixed": "0<sum(own_strict_em)<5"
+          },
+          "train": {
+            "accuracy": 0.64296875,
+            "balanced_accuracy": 0.6193050177752288,
+            "count": 2560,
+            "fn": 204,
+            "formula": "1-prod(p_j)-prod(1-p_j)",
+            "fp": 710,
+            "group_bce": 0.7522314409882045,
+            "group_weight": 1.0,
+            "mean_q": 0.4173230778850082,
+            "mixed_count": 487,
+            "mixed_recall": 0.5811088295687885,
+            "nonmixed_count": 2073,
+            "nonmixed_recall": 0.6575012059816691,
+            "threshold": 0.5,
+            "tn": 1363,
+            "total_loss": 1.2601387290191917,
+            "tp": 283,
+            "trajectory_bce": 0.5079072880309873,
+            "true_mixed": "0<sum(own_strict_em)<5"
+          }
+        },
+        "train": {
+          "accuracy": 0.575,
+          "balanced_accuracy": 0.5490589380823753,
+          "count": 2560,
+          "fn": 240,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 848,
+          "group_bce": 0.8341455926876357,
+          "group_weight": 1.0,
+          "mean_q": 0.43599593949323223,
+          "mixed_count": 487,
+          "mixed_recall": 0.5071868583162218,
+          "nonmixed_count": 2073,
+          "nonmixed_recall": 0.5909310178485288,
+          "threshold": 0.5,
+          "tn": 1225,
+          "total_loss": 1.3296814366969723,
+          "tp": 247,
+          "trajectory_bce": 0.4955358440093366,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        },
+        "test": {
+          "accuracy": 0.4140625,
+          "balanced_accuracy": 0.5167476824182538,
+          "count": 512,
+          "fn": 29,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 271,
+          "group_bce": 1.1276537859551914,
+          "group_weight": 1.0,
+          "mean_q": 0.5950520761005454,
+          "mixed_count": 89,
+          "mixed_recall": 0.6741573033707865,
+          "nonmixed_count": 423,
+          "nonmixed_recall": 0.35933806146572106,
+          "threshold": 0.5,
+          "tn": 152,
+          "total_loss": 2.027097443043652,
+          "tp": 60,
+          "trajectory_bce": 0.8994436570884605,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        }
+      },
+      "full_pool": {
+        "questions": 2560,
+        "trajectories": 12800,
+        "actual_selected_mixed_fraction": 0.190234375
+      }
+    },
+    {
+      "outer": 61,
+      "metadata_sha256": "0c8e2c1a1c43df8b4c89386889be1111318b537ca4b6a38d8ecb7a207e9da9e1",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          1220,
+          1220,
+          1220,
+          1220
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 61
+      },
+      "reward_mean": 0.3562768173578661,
+      "selected_mixed_fraction": 0.21875,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 62,
+      "metadata_sha256": "91c20ea0da3ffa2f940df00db46897e7050c6f1fbc535ce634a16f48bf72f7f7",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          1240,
+          1240,
+          1240,
+          1240
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 62
+      },
+      "reward_mean": 0.3670447444819729,
+      "selected_mixed_fraction": 0.2109375,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 63,
+      "metadata_sha256": "dcdfaa8af9aee77c40ad035aab22dc92714d627b41b6ea52ef8baeaa63ad5743",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          1260,
+          1260,
+          1260,
+          1260
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 63
+      },
+      "reward_mean": 0.40890255231788614,
+      "selected_mixed_fraction": 0.23046875,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 64,
+      "metadata_sha256": "df50e3de9f8d92df60bb1638f3749f3295ab57c0720dd911c62e2041d7076c51",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          1280,
+          1280,
+          1280,
+          1280
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 64
+      },
+      "reward_mean": 0.3731528425778379,
+      "selected_mixed_fraction": 0.203125,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    }
+  ],
+  "ordinary_mixed": {
+    "outers": [
+      57,
+      58,
+      59,
+      61,
+      62,
+      63,
+      64
+    ],
+    "count": 894,
+    "total": 3584,
+    "mean_fraction": 0.24944196428571427,
+    "latest_count": 104,
+    "latest_fraction": 0.203125,
+    "latest_groups": {
+      "all_correct": 75,
+      "all_wrong": 333,
+      "mixed": 104,
+      "original_g5": 0
+    },
+    "oracle60_excluded": true
+  },
+  "reward": {
+    "mean": 0.609828185783772,
+    "min": 0.3562768173578661,
+    "max": 0.8934764196295873,
+    "latest": 0.3731528425778379,
+    "change_from_anchor": -0.5024603136727819,
+    "grounding_round": 50,
+    "warning": "Selection/probe history differs; this is not a fixed-QA actor quality measurement."
+  },
+  "latest_QA": {
+    "step": 50,
+    "EM": 0.44140625,
+    "F1": 0.5276351354935914,
+    "new_since_last_delivered": false
+  },
+  "latest_probe": {
+    "outer": 60,
+    "epochs": 1,
+    "new_Adam": 50,
+    "cumulative_Adam": 300,
+    "test_mixed_balanced_accuracy": 0.5167476824182538,
+    "new_since_last_delivered": false,
+    "checkpoint_sha256": "85b85c4a29761b2fdb91ac86516bdd8534394721da821b5473b984a97bedb1b5"
+  },
+  "gpu": {
+    "current": null,
+    "window_peak": null,
+    "execution_peak": null,
+    "coverage": "unknown_not_projected"
+  },
+  "recovery": {
+    "authorized": true,
+    "status": "PREPARING_COMPATIBLE_FULL_STATE_RECOVERY_NOT_LAUNCHED",
+    "parent_complete_outer": 64,
+    "algorithm_changed": false,
+    "weights_or_optimizer_reset": false,
+    "failed_sampling_preserved_required": true
+  },
+  "no_extra_GPU_tests_evaluation_review_subagents_modelread": true
+}
