@@ -4,6 +4,7 @@ Reuses watch_actual.EXTRA's actual write count/counter/receipt checks, with the
 requested scheduler boundary and explicit outer1 fresh-init treatment. Never
 imports torch, reads weights, polls GPUs or rewrites a training artifact.
 """
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -66,9 +67,11 @@ def verify(outer, candidates):
          and actor['completed_outer']==joint['probe']['completed_outer']==outer
          and actor['actual_adam_steps_per_rank']==joint['probe']['actual_adam_steps_per_rank']==[20*outer]*8
          and actor['scheduler_completed_outer']==outer, 'Foreign joint boundary')
-    # Follow the original actor rollout's root, rather than assuming any copied
-    # joint alias contains the original probe-update logs.
-    original_root=Path(actor['original_rollout_path']).parent.parent
+    # The actor may have completed in an earlier base before a failed probe
+    # phase; its ledgers still come from rank_receipts below. The actual
+    # SHA-matched joint root owns the later successful probe-update logs.
+    actor_original_rollout_root=Path(actor['original_rollout_path']).parent.parent
+    original_root=path.parent
     original_joint,original_proof=read(original_root/'complete.json')
     need(original_proof['sha256']==expected and original_joint==joint, 'Original rollout root has a different joint')
     need(len(actor['rank_receipts'])==8, 'Missing actor rank receipt')
@@ -107,27 +110,32 @@ def verify(outer, candidates):
     return dict(outer=outer,status='ORIGINAL_8RANK_SMALL_LEDGER_CHECKS_PASS',
         independent_direct_8rank_ledger_facts=True,joint_file=joint_file,original_joint_file=original_proof,
         matching_joint_paths=[str(item[0]) for item in matches],inspected_small_joint_paths=inspected,
-        original_root=str(original_root),actor=ar,probe=pr,
+        original_root=str(original_root),actor_original_rollout_root=str(actor_original_rollout_root),actor=ar,probe=pr,
         actor_actual_steps_per_rank=[20*outer]*8,probe_actual_steps_per_rank=[20*outer]*8,
         scheduler_completed_outer=outer,
         outer1_fresh_scope='Outer1 is explicitly fresh; ACTUAL_RESTORE may name a zero-boundary initialization event. No preceding trained checkpoint is inferred.' if outer==1 else None)
 
 
 def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--outer',type=int,choices=tuple(JOINTS),action='append')
+    args=parser.parse_args();requested=args.outer or list(JOINTS)
+    need(len(requested)==len(set(requested)), 'Do not duplicate an outer in one small-file read')
     started=time.time()
     # Directory names only; the sole file search is exactly these5 fixed joint
     # paths per retained base. Never recurse through logs/checkpoints.
     bases=sorted(p for p in PARENT.glob(PREFIX+'*') if p.is_dir() and not p.is_symlink())
     facts=[]
-    for outer in JOINTS:
+    for outer in requested:
         try: facts.append(verify(outer,bases))
         except (OSError,ValueError,KeyError,TypeError,json.JSONDecodeError) as error:
             facts.append(dict(outer=outer,status='MISSING_OR_INVALID_ORIGINAL_SMALL_LEDGER',
                               independent_direct_8rank_ledger_facts=False,error_type=type(error).__name__,error=str(error)))
     passed=all(row['independent_direct_8rank_ledger_facts'] for row in facts)
-    print(json.dumps(dict(status='LEGACY1_5_DIRECT_SMALL_LEDGER_PASS' if passed else 'LEGACY1_5_DIRECT_SMALL_LEDGER_INCOMPLETE',
+    print(json.dumps(dict(status='REQUESTED_LEGACY_DIRECT_SMALL_LEDGER_PASS' if passed else 'REQUESTED_LEGACY_DIRECT_SMALL_LEDGER_INCOMPLETE',
         run_id=RUN,started_unix=started,finished_unix=time.time(),searched_retained_bases=[str(p)for p in bases],
-        expected_joint_sha256=JOINTS,facts=facts,small_file_count=len(CACHE),small_bytes_read=sum(len(v[0])for v in CACHE.values()),
+        requested_outers=requested,expected_joint_sha256={n:JOINTS[n]for n in requested},facts=facts,
+        small_file_count=len(CACHE),small_bytes_read=sum(len(v[0])for v in CACHE.values()),
         validation_contract='watch_actual.EXTRA exact20/counter/receipt checks plus explicit scheduler and outer1 fresh treatment',
         weights_or_tensors_read=False,gpu_calls=False,training_modified=False,legacy_series_modified=False,
         previous_cpu5_or_cpu50_audit_replayed=False),sort_keys=True,allow_nan=False))
