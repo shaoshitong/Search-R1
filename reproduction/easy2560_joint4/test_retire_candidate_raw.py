@@ -95,6 +95,54 @@ class RetirementTests(unittest.TestCase):
             optimizer_writes_before=(step-1)*20, optimizer_writes_after=step*20 if full else step*20-10)
         self.rows.append(row)
 
+    def use_restored_cp5(self):
+        bound = self.use_published_source(commit='a61b48139386b346e4fef12511ece1ac0d09a8e3',
+                                         run_id='dfe9c94084bb48b2a9bb7b60f9d882da', job='731063')
+        self.origin = self.base/'source-parent'
+        self.parent = dict(self.run, source_commit='8a5bac94b8230a99b81977f5290589e3d3708dfe', slurm_job_id='730226')
+        # prepare_run manifests need not contain a Slurm field; the actual
+        # original job is recorded by the SHA-pinned CPU source receipt.
+        parent_job = self.parent.pop('slurm_job_id')
+        manifest = self.origin/'logs/run-manifest.json'; manifest.parent.mkdir(parents=True)
+        manifest.write_text(json.dumps(self.parent, sort_keys=True))
+        parent_sha = hashlib.sha256(manifest.read_bytes()).hexdigest()
+        self.source_checkpoint = self.origin/'checkpoints/search-g1-common8/actor/global_step_5'
+        self.source_checkpoint.mkdir(parents=True)
+        (self.source_checkpoint/'rank-0.pt').write_bytes(b'protected-source-checkpoint-never-open')
+        old_raw = self.origin/'artifacts/mixed-candidate-pools/old-prefix-pool/0.pt'
+        old_raw.parent.mkdir(parents=True); old_raw.write_bytes(b'protected-historical-raw')
+        (self.origin/'logs/actual-updates.jsonl').write_bytes(
+            b''.join(json.dumps(dict(run_id=self.run_id, step=step)).encode()+b'\n' for step in range(1,6)))
+        progress = dict(completed_outer=5, cumulative_writes=100, attempt_index=5,
+                        aborted_attempts=0, full_budget_outer=5)
+        version = self.run_id+':0:2731eca31a42454bafb84cf51ce3b9de'
+        self.receipt = dict(schema_version=1, kind='easy2560_native4',
+            status='EASY2560_NATIVE4_FULL_SHA_CPU_STATES_PASS', step=5, world_size=4,
+            run_id=self.run_id, source_base=str(self.origin), source_commit=self.parent['source_commit'],
+            source_job=parent_job, checkpoint=str(self.source_checkpoint),
+            source_run_manifest=dict(path=str(manifest), bytes=manifest.stat().st_size, full_read_sha256=parent_sha),
+            actual_optimizer_writes_per_rank=100, attempt_progress=progress,
+            driver_state=dict(source_consumed=12800), reward_probe_round=0, reward_probe_version=version,
+            checkpoint_saved_before_development=True, post_callback_rng_captured=False)
+        self.receipt_path = self.origin/'preparation/native4-recovery5/source-receipt.json'
+        self.receipt_path.parent.mkdir(parents=True)
+        self.receipt_path.write_text(json.dumps(self.receipt, sort_keys=True))
+        self.run.update(initial_probe_version=version, full_state_restore=dict(
+            kind='easy2560_native4', completed_outer=5, source_base=str(self.origin),
+            source_receipt=str(self.receipt_path),
+            source_receipt_sha256=hashlib.sha256(self.receipt_path.read_bytes()).hexdigest(),
+            source_run_manifest_sha256=parent_sha, source_commit=self.parent['source_commit'],
+            source_job=parent_job, source_checkpoint=str(self.source_checkpoint),
+            attempt_progress=progress, attempt_index=5, aborted_attempts=0,
+            actual_optimizer_writes_per_rank=100, candidate_source_cursor=12800,
+            reward_probe_round=0, reward_probe_version=version,
+            checkpoint_saved_before_development=True, post_callback_rng_captured=False))
+        self.write('logs/run-manifest.json', self.run)
+        self.rows = []
+        for step in range(6,10): self.add_outer(step)
+        self.ledger()
+        return bound
+
     def plan(self):
         return core.build_plan(self.base, self.run_id, self.run['source_commit'], self.job)
     def apply(self, plan):
@@ -266,9 +314,80 @@ class RetirementTests(unittest.TestCase):
         for physical, virtual in ((2, False), (True, False), (16, True)):
             self.run.update(actor_micro_batch_per_rank=physical, all_correct_virtual_zero=virtual)
             self.write('logs/run-manifest.json', self.run)
-            with self.subTest(physical=physical, virtual=virtual), self.assertRaisesRegex(ValueError, 'FRESH_NATIVE4'):
+            with self.subTest(physical=physical, virtual=virtual), self.assertRaisesRegex(ValueError, 'NATIVE4_EASY_SCOPE'):
                 self.plan()
         self.assertTrue((self.base/self.pools[1]/'0.pt').exists())
+
+    def test_restored_cp5_only_current_suffix_old_successes_retired_historical_prefix_and_two_latest_preserved(self):
+        bound = self.use_restored_cp5()
+        historical = {path:path.read_bytes() for path in self.origin.rglob('*') if path.is_file()}
+        original = core.read_file
+        def no_tensor_or_historical_raw_reads(base, relative, **kwargs):
+            if base == self.origin:
+                self.assertIn(str(relative), ('logs/run-manifest.json', 'preparation/native4-recovery5/source-receipt.json'))
+            return original(base, relative, **kwargs)
+        with patch.object(core, 'read_file', side_effect=no_tensor_or_historical_raw_reads):
+            plan = self.plan(); result, _ = self.apply(plan)
+        self.assertEqual(plan['restored_prefix_completed_outer'], 5)
+        self.assertEqual(plan['latest_completed_outer'], 9)
+        self.assertEqual([pool['step'] for pool in plan['pools']], [6,7])
+        self.assertEqual(len(plan['binding_files']), 6)
+        self.assertEqual(len(result['actions']), 10)
+        self.assertEqual({pool['step'] for pool in plan['pools']}&set(range(1,6)), set())
+        for path, raw in historical.items(): self.assertEqual(path.read_bytes(), raw)
+        for step in (8,9): self.assertTrue((self.base/self.pools[step]/'0.pt').is_file())
+        # Unlisted leftovers are not authority, even if their names look like
+        # historical steps from the same run ID.
+        self.assertTrue((self.base/self.pools[1]/'0.pt').is_file())
+
+    def test_restored_binding_rejects_foreign_receipt_sha_kind_non5_or_sourcebase_before_deletion(self):
+        self.use_restored_cp5(); saved = copy.deepcopy(self.run)
+        failures = [('source_receipt_sha256', 'c'*64, 'RECEIPT_CHANGED'),
+                    ('kind', 'common8_paired', 'UNSUPPORTED_RESTORED_PREFIX'),
+                    ('completed_outer', 50, 'UNSUPPORTED_RESTORED_PREFIX'),
+                    ('completed_outer', True, 'UNSUPPORTED_RESTORED_PREFIX'),
+                    ('source_base', str(self.base/'foreign-source'), 'SOURCE_BASE_DIFFERS'),
+                    ('source_receipt', str(self.base/'foreign-receipt.json'), 'SOURCE_BASE_DIFFERS')]
+        for key, value, error in failures:
+            self.run = copy.deepcopy(saved); self.run['full_state_restore'][key] = value
+            self.write('logs/run-manifest.json', self.run)
+            with self.subTest(key=key,value=value), self.assertRaisesRegex(ValueError,error): self.plan()
+            self.assertTrue((self.base/self.pools[6]/'0.pt').exists())
+
+    def test_restored_receipt_content_and_parent_identity_must_match_even_with_new_receipt_sha(self):
+        self.use_restored_cp5(); saved_run = copy.deepcopy(self.run); saved_receipt = copy.deepcopy(self.receipt)
+        failures = [('run_id','c'*32), ('source_base',str(self.base)), ('source_job','123'),
+                    ('source_commit','e'*40), ('world_size',8), ('step',50), ('kind','paired8'),
+                    ('checkpoint',str(self.base/'checkpoints/foreign'))]
+        for key, value in failures:
+            self.run = copy.deepcopy(saved_run); receipt = dict(saved_receipt, **{key:value})
+            self.receipt_path.write_text(json.dumps(receipt,sort_keys=True))
+            self.run['full_state_restore']['source_receipt_sha256'] = hashlib.sha256(self.receipt_path.read_bytes()).hexdigest()
+            self.write('logs/run-manifest.json', self.run)
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError,'RESTORED_PARENT_IDENTITY_DIFFERS'): self.plan()
+        self.receipt_path.write_text(json.dumps(saved_receipt,sort_keys=True)); self.run=copy.deepcopy(saved_run)
+        self.write('logs/run-manifest.json', self.run)
+        self.parent['run_id']='c'*32
+        parent_path=self.origin/'logs/run-manifest.json'; parent_path.write_text(json.dumps(self.parent,sort_keys=True))
+        with self.assertRaisesRegex(ValueError,'RESTORED_PARENT_MANIFEST_DIFFERS'): self.plan()
+
+    def test_restored_suffix_must_start_at6_and_source_binding_rechecked_before_apply(self):
+        bound = self.use_restored_cp5(); plan=self.plan(); plan_path=core.save_plan(plan)
+        self.receipt_path.write_bytes(self.receipt_path.read_bytes()+b'\n')
+        with self.assertRaisesRegex(ValueError,'RESTORED_PREFIX_RECEIPT_CHANGED'):
+            core.apply_plan(plan_path,**bound)
+        self.assertTrue((self.base/self.pools[6]/'0.pt').exists())
+        # Reestablish the original receipt SHA, then reject copied history in
+        # the current-base ledger rather than treating it as deletion authority.
+        self.receipt_path.write_text(json.dumps(self.receipt,sort_keys=True))
+        self.rows[0]['step']=5; self.ledger()
+        with self.assertRaisesRegex(ValueError,'NONSEQUENTIAL_COMPLETED_LEDGER'): self.plan()
+
+    def test_restored_suffix_partial_failed_and_active_pools_still_have_no_authority(self):
+        self.use_restored_cp5(); self.rows[0].update(update_status='partial',full_budget_complete=False); self.ledger()
+        self.write(self.pools[7]+'/selection-failure.json',dict(status='failure'))
+        plan=self.plan(); self.assertEqual(plan['pools'],[]); self.assertEqual(len(plan['skipped']),2)
+        for step in (6,7,8,9): self.assertTrue((self.base/self.pools[step]/'0.pt').exists())
 
     def test_published_source_map_rejects_empty_or_escape_path_and_malformed_bytes(self):
         bound = self.use_published_source()

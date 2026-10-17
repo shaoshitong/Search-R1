@@ -7,6 +7,8 @@ tensors can no longer reconstruct unselected candidates' full token outputs.
 Checkpoint/optimizer/RNG recovery does not consume these diagnostic tensors in
 the reviewed Easy recipe. A caller-selected source must carry matching published
 source, runtime-copy and run-manifest bindings; HEAD is never inferred here.
+For a CP5 continuation, the historical prefix is authenticated from small source
+receipts only. It never joins the current-base raw retirement candidate set.
 """
 import argparse
 import fcntl
@@ -68,6 +70,62 @@ def read_file(base, relative, *, parse_json=False):
     return record, json.loads(b''.join(data)) if parse_json else None
 
 
+def restored_prefix_binding(base, run):
+    """Authenticate only the supported fresh-parent CP5 continuation, no tensors."""
+    restoration = run.get('full_state_restore')
+    if not restoration: return 0, []
+    require(isinstance(restoration, dict) and restoration.get('kind') == 'easy2560_native4' and
+        type(restoration.get('completed_outer')) is int and restoration['completed_outer'] == 5,
+        'UNSUPPORTED_RESTORED_PREFIX')
+    origin = owned_base(restoration['source_base'])
+    require(origin != base and Path(restoration['source_receipt']) ==
+        origin/'preparation/native4-recovery5/source-receipt.json', 'RESTORED_SOURCE_BASE_DIFFERS')
+    receipt_record, receipt = read_file(origin, 'preparation/native4-recovery5/source-receipt.json', parse_json=True)
+    require(receipt_record['sha256'] == restoration.get('source_receipt_sha256'),
+        'RESTORED_PREFIX_RECEIPT_CHANGED')
+    require(receipt.get('schema_version') == 1 and receipt.get('kind') == 'easy2560_native4' and
+        receipt.get('status') == 'EASY2560_NATIVE4_FULL_SHA_CPU_STATES_PASS' and
+        type(receipt.get('step')) is int and receipt['step'] == 5 and receipt.get('world_size') == 4 and
+        receipt.get('run_id') == run['run_id'] and receipt.get('source_base') == str(origin) and
+        receipt.get('source_commit') == restoration.get('source_commit') and
+        receipt.get('source_job') == restoration.get('source_job') and
+        receipt.get('checkpoint') == restoration.get('source_checkpoint') ==
+            str(origin/'checkpoints/search-g1-common8/actor/global_step_5'), 'RESTORED_PARENT_IDENTITY_DIFFERS')
+    parent_record, parent = read_file(origin, 'logs/run-manifest.json', parse_json=True)
+    pinned = receipt.get('source_run_manifest') or {}
+    require(pinned.get('path') == str(origin/'logs/run-manifest.json') and
+        pinned.get('bytes') == parent_record['bytes'] and
+        pinned.get('full_read_sha256') == parent_record['sha256'] ==
+            restoration.get('source_run_manifest_sha256') and
+        parent.get('run_id') == receipt['run_id'] and parent.get('source_commit') == receipt['source_commit'] and
+        ('slurm_job_id' not in parent or parent['slurm_job_id'] == receipt['source_job']) and
+        not parent.get('full_state_restore') and
+        parent.get('easy2560_selection') is True and parent.get('training_world_size') == 4,
+        'RESTORED_PARENT_MANIFEST_DIFFERS')
+    for key in ('budget', 'input_sha256', 'initial_model_sha256', 'model_revision',
+                'training_world_size', 'actor_micro_batch_per_rank', 'actor_logical_micro_batch_per_rank',
+                'all_correct_virtual_zero', 'selection_candidate_questions', 'selection_selected_questions',
+                'selection_fixed_candidate_budget'):
+        require(run.get(key) == parent.get(key), 'RESTORED_SCIENTIFIC_INPUT_DIFFERS_' + key)
+    progress = receipt.get('attempt_progress') or {}; driver = receipt.get('driver_state') or {}
+    require(progress.get('completed_outer') == 5 and restoration.get('attempt_progress') == progress and
+        restoration.get('actual_optimizer_writes_per_rank') == receipt.get('actual_optimizer_writes_per_rank') ==
+            progress.get('cumulative_writes') and
+        restoration.get('attempt_index') == progress.get('attempt_index') and
+        restoration.get('aborted_attempts') == progress.get('aborted_attempts') and
+        restoration.get('candidate_source_cursor') == driver.get('source_consumed') and
+        restoration.get('reward_probe_round') == receipt.get('reward_probe_round') and
+        restoration.get('reward_probe_version') == receipt.get('reward_probe_version') and
+        run.get('initial_probe_version') == receipt.get('reward_probe_version') and
+        restoration.get('checkpoint_saved_before_development') is receipt.get('checkpoint_saved_before_development') is True and
+        restoration.get('post_callback_rng_captured') is receipt.get('post_callback_rng_captured') is False,
+        'RESTORED_PREFIX_STATE_DIFFERS')
+    # Absolute origin paths are binding evidence only, never unlink targets.
+    bindings = [dict(record, path=str(origin/record['relative_path']), source_base=str(origin))
+                for record in (receipt_record, parent_record)]
+    return 5, bindings
+
+
 def completed_updates(base):
     # The ledger is append-only during healthy training. A trailing incomplete
     # write is not a completed outer and cannot authorize retirement.
@@ -76,13 +134,7 @@ def completed_updates(base):
     if prefix: prefix += b'\n'
     rows = [json.loads(line) for line in prefix.splitlines() if line]
     run = json.loads((base/'logs/run-manifest.json').read_text())
-    restoration = run.get('full_state_restore') or {}
-    offset = restoration.get('completed_outer', 0)
-    if restoration:
-        require(restoration.get('kind')=='easy2560_native4' and type(offset) is int and 1<=offset<=200,
-                'UNSUPPORTED_RESTORED_PREFIX')
-        require(hashlib.sha256(Path(restoration['source_receipt']).read_bytes()).hexdigest()==
-                restoration['source_receipt_sha256'], 'RESTORED_PREFIX_RECEIPT_CHANGED')
+    offset, _ = restored_prefix_binding(base, run)
     require([row['step'] for row in rows] == list(range(offset+1, offset+len(rows)+1)), 'NONSEQUENTIAL_COMPLETED_LEDGER')
     require(len({row['attempt_id'] for row in rows}) == len(rows), 'DUPLICATE_COMPLETED_ATTEMPT')
     return rows, dict(bytes=len(prefix), sha256=hashlib.sha256(prefix).hexdigest())
@@ -104,8 +156,8 @@ def bind(base, run_id, training_commit, source_job):
         type(run.get('actor_micro_batch_per_rank')) is int and run['actor_micro_batch_per_rank'] in (32, 16, 8, 4) and
         run.get('all_correct_virtual_zero') is False and not run.get('question_probe') and
         run.get('selection_candidate_questions') == 2560 and run.get('selection_selected_questions') == 512 and
-        run.get('selection_fixed_candidate_budget') is True and not run.get('full_state_restore'),
-        'EXPLICIT_FRESH_NATIVE4_EASY_SCOPE_REQUIRED')
+        run.get('selection_fixed_candidate_budget') is True,
+        'EXPLICIT_NATIVE4_EASY_SCOPE_REQUIRED')
     allocation_record, allocation = read_file(base, 'logs/native-allocation-admission.json', parse_json=True)
     require(allocation.get('accepted') is True and allocation.get('run_id') == run_id and
         allocation.get('slurm_job_id') == source_job, 'SOURCE_JOB_DIFFERS')
@@ -135,6 +187,8 @@ def bind(base, run_id, training_commit, source_job):
                 type(record.get('bytes')) is int and record['bytes'] >= 0,
                 'PUBLISHED_RUNTIME_SOURCE_SHA_DIFFERS')
         bindings.extend((publication_record, runtime_record))
+    _, historical_bindings = restored_prefix_binding(base, run)
+    bindings.extend(historical_bindings)
     return run, bindings
 
 
@@ -246,6 +300,7 @@ def build_plan(base, run_id, training_commit, source_job, keep_completed=2):
     return dict(schema_version=1, role='easy2560_candidate_raw_retirement_plan', base=str(base),
         run_id=run_id, training_commit=training_commit, source_job=source_job,
         keep_completed=keep_completed, latest_completed_outer=rows[-1]['step'] if rows else 0,
+        restored_prefix_completed_outer=(run.get('full_state_restore') or {}).get('completed_outer', 0),
         ledger_prefix=ledger, binding_files=bindings, pools=pools, skipped=skipped,
         removable_logical_bytes=sum(record['bytes'] for pool in pools for record in pool['files']),
         retained_scope='selected private token/probability trace; all-group selection JSON; all RNG/before/after; all checkpoints',
