@@ -12,6 +12,8 @@ from pathlib import Path
 
 from .contract import FINAL_OUTER, PERIODIC_CANDIDATES, PROBE_PERIOD, SELECTED_QUESTIONS, WORLD
 
+MAX_QUESTIONS = 20480
+
 
 def digest(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
@@ -20,7 +22,7 @@ def digest(value):
 def policy(max_questions):
     return dict(kind='previous_selected512_actual_mixed_v1',initial_questions=5120,
         epsilon=1e-6,all_mixed_denominator=1.1,minimum_questions=SELECTED_QUESTIONS,
-        maximum_questions=max_questions//WORLD*WORLD,rounding='ceil_multiple_of_world4',
+        maximum_questions=min(MAX_QUESTIONS,max_questions//WORLD*WORLD),rounding='ceil_multiple_of_world4',
         periodic_questions=PERIODIC_CANDIDATES,probe_update_period=PROBE_PERIOD,
         probe_update_at_final=False,feedback='immediately_previous_committed_outer_selected512_actual_EM')
 

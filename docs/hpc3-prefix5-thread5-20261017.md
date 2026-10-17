@@ -90,7 +90,8 @@ immediately previous completed outer, letN be its actual candidate count andm
 the number of genuinely mixed own-EM G5 groups among its final512 selected
 questions. The next ordinary count isN/(m/512+1e-6), exceptm=512 uses
 N/(1.1+1e-6). Round upward to a multiple of4 and bound to[512,the available
-distinct eligible pool rounded down to a multiple of4]. No lower safety cap
+distinct eligible pool rounded down to a multiple of4]. The user's latest
+explicit correction further caps this maximum at20480 questions. No lower safety cap
 or heuristic gain is substituted. P10 update rounds10..190 stay2560 and retain
 their existing one-epoch50-Adam probe budget, as explicitly confirmed by the
 user. A following ordinary round uses that immediately preceding2560 count.
@@ -109,6 +110,7 @@ are unchanged.
 Deployment acceptance: revision4833540d5261a7828ca9135626d4d6243ee35864,
 1328 source files independently SHA-verified on HPC3;85 actual HPC3 CPU tests
 passed with zero failures/errors/skips, including seven new adaptive-budget
-tests. The actual eligible pool bounds the count at168508. Original job728815
+tests. The initial eligible-pool bound168508 was superseded by the user's
+explicit20480-question maximum before launch. Original job728815
 was released after testing; no additional Slurm job or warmup was submitted.
 GPU first-outer/adaptive-feedback execution is still pending scheduling.

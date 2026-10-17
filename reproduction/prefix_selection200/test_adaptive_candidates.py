@@ -33,6 +33,7 @@ def complete(c,outer,mixed):
 class AdaptiveCandidateTests(unittest.TestCase):
     def test_formula_full_mixed_branch_rounding_and_both_bounds(self):
         p=adaptive.policy(168510)
+        self.assertEqual(p['maximum_questions'],20480)
         ordinary=adaptive.prediction(5120,384,p)
         self.assertEqual(ordinary['denominator'],.75+1e-6)
         self.assertEqual(ordinary['questions'],6828)
@@ -42,7 +43,7 @@ class AdaptiveCandidateTests(unittest.TestCase):
         below_full=adaptive.prediction(5120,511,p)
         self.assertEqual(below_full['denominator'],511/512+1e-6)
         self.assertGreater(below_full['questions'],5120)
-        self.assertEqual(adaptive.prediction(5120,0,p)['questions'],168508)
+        self.assertEqual(adaptive.prediction(5120,0,p)['questions'],20480)
         self.assertEqual(adaptive.prediction(512,512,p)['questions'],512)
         # A displayed70% is rounded; feed the exact real integer count/512.
         real70=adaptive.prediction(5120,358,p)
