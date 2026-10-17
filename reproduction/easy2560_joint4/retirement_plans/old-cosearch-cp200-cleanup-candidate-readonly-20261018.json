@@ -1,0 +1,514 @@
+{
+  "status": "READ_ONLY_OLD_FAILED_CHECKPOINT_CANDIDATE_NOT_RELEASED",
+  "checked_unix": 1792254874.802155,
+  "base": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011",
+  "checkpoint_step": 200,
+  "source_job": "713379",
+  "source_job_state": "FAILED",
+  "exit_code": "1:0",
+  "source_job_end_local_cluster": "2026-10-14T14:02:58",
+  "known_jobs_queue_empty": true,
+  "authority_basis": "Latest human cleanup scope includes old failed experiment checkpoints; candidate is identified under failure scope, not a claim of native51713 completion.",
+  "full_checkpoint_receipt": {
+    "files": 33,
+    "bytes": 76555489172,
+    "source_hk33_path_size_sha_maps_equal": true,
+    "source_payload_sizes_unchanged_across_two_observations": true,
+    "source_receipt_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoint-receipt-200.json",
+    "source_receipt_sha256": "620b6fe6d9485ec8652903f49ee6e7bd6c09675932a702c7d6f735db77ce736d",
+    "hk_receipt_copy_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/archive-verified-200.json",
+    "hk_receipt_copy_sha256": "77bd3f89a1bff32dae765b731791ba0fc088c043fd269e2c95eb3ff4d87ee41f",
+    "archive_directory": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200",
+    "historical_archive_status": "HKUST3_ALL_CHECKPOINT_SHA_PASS",
+    "archive_fresh_tensor_sha_performed_this_audit": false
+  },
+  "conservative_tensor_only_candidate": {
+    "files": 25,
+    "bytes": 76555486380,
+    "decimal_GB": 76.55548638,
+    "source_paths": [
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/extra_state_world_size_4_rank_0.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/extra_state_world_size_4_rank_0.pt",
+        "relative_path": "actor/extra_state_world_size_4_rank_0.pt",
+        "bytes": 15077,
+        "historical_receipt_sha256": "352419757112d9c8dd3894c602b969cca11ee84e2f220c09e9226d3526babebb",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932456982384000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/extra_state_world_size_4_rank_1.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/extra_state_world_size_4_rank_1.pt",
+        "relative_path": "actor/extra_state_world_size_4_rank_1.pt",
+        "bytes": 15077,
+        "historical_receipt_sha256": "5579ba04168c331bd3aee96c3e75db115304556757a4b16615e2b6c4a5e3563e",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932456668718000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/extra_state_world_size_4_rank_2.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/extra_state_world_size_4_rank_2.pt",
+        "relative_path": "actor/extra_state_world_size_4_rank_2.pt",
+        "bytes": 15077,
+        "historical_receipt_sha256": "7fcc5300ee3e7d86b12610090fc40fbfdd0dc2c1b116a5212439478b879f3994",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932456841749000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/extra_state_world_size_4_rank_3.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/extra_state_world_size_4_rank_3.pt",
+        "relative_path": "actor/extra_state_world_size_4_rank_3.pt",
+        "bytes": 15077,
+        "historical_receipt_sha256": "562b1b04c8c993d3be93445dff4aec863baccfec657e451eddf2709da6d4aa19",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932456427921000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/model_world_size_4_rank_0.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/model_world_size_4_rank_0.pt",
+        "relative_path": "actor/model_world_size_4_rank_0.pt",
+        "bytes": 3397343275,
+        "historical_receipt_sha256": "b9d3faa626f664fd41da3f045ed5dedcb8a192025cb39c6c486ab68862655f42",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932454169145000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/model_world_size_4_rank_1.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/model_world_size_4_rank_1.pt",
+        "relative_path": "actor/model_world_size_4_rank_1.pt",
+        "bytes": 3397343275,
+        "historical_receipt_sha256": "08b46048a28961a883e46735636b5a9a7bd9ea3f36a02f05a0f18f248164094a",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932453924506000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/model_world_size_4_rank_2.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/model_world_size_4_rank_2.pt",
+        "relative_path": "actor/model_world_size_4_rank_2.pt",
+        "bytes": 3397343275,
+        "historical_receipt_sha256": "38774dd63ba2e781e55bf5222f68197ba67e77f1fa0ec0fb116a85a98ab79efc",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932454182219000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/model_world_size_4_rank_3.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/model_world_size_4_rank_3.pt",
+        "relative_path": "actor/model_world_size_4_rank_3.pt",
+        "bytes": 3397343275,
+        "historical_receipt_sha256": "515ace3a6d31daa4eead51914b28de3f05d202c0c54b46471ff7bbb67700f016",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932453849986000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/optim_world_size_4_rank_0.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/optim_world_size_4_rank_0.pt",
+        "relative_path": "actor/optim_world_size_4_rank_0.pt",
+        "bytes": 6172076587,
+        "historical_receipt_sha256": "8f65f536979d7a9437aed3f69c88d228753fcc0a8957b62498992bc9a4560198",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932457006137000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/optim_world_size_4_rank_1.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/optim_world_size_4_rank_1.pt",
+        "relative_path": "actor/optim_world_size_4_rank_1.pt",
+        "bytes": 6172076587,
+        "historical_receipt_sha256": "f326e85b286d143a55eeeb168f224ae699dc3c964fc1218381f2f57e873e102c",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932456712514000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/optim_world_size_4_rank_2.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/optim_world_size_4_rank_2.pt",
+        "relative_path": "actor/optim_world_size_4_rank_2.pt",
+        "bytes": 6172076587,
+        "historical_receipt_sha256": "f2fa2339e31517915c2358777444201fae15f0422161dcb805d971e85633e4e3",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932456922493000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/optim_world_size_4_rank_3.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/optim_world_size_4_rank_3.pt",
+        "relative_path": "actor/optim_world_size_4_rank_3.pt",
+        "bytes": 6172076587,
+        "historical_receipt_sha256": "444320eb770691639a588aa72b7731454af73f20bb8835695e0b7c4661c8b671",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932456480450000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/data.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/data.pt",
+        "relative_path": "data.pt",
+        "bytes": 6868,
+        "historical_receipt_sha256": "a302bc1b1ae2b627599d618c79281526e2428abe28c7e7338e6250cb78d5247a",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932478325401000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/extra_state_world_size_4_rank_0.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/extra_state_world_size_4_rank_0.pt",
+        "relative_path": "reranker_actor_rollout/extra_state_world_size_4_rank_0.pt",
+        "bytes": 15077,
+        "historical_receipt_sha256": "dd26a2a0993690ff8c9d8c1c43555525e190b180af6cbd30840162d8ab0b2a76",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932470720504000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/extra_state_world_size_4_rank_1.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/extra_state_world_size_4_rank_1.pt",
+        "relative_path": "reranker_actor_rollout/extra_state_world_size_4_rank_1.pt",
+        "bytes": 15077,
+        "historical_receipt_sha256": "2961d4e2cdccd01a9e31478c69f7c50f251b37b82b1e48c6ab409dcc190b8a1d",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932471020482000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/extra_state_world_size_4_rank_2.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/extra_state_world_size_4_rank_2.pt",
+        "relative_path": "reranker_actor_rollout/extra_state_world_size_4_rank_2.pt",
+        "bytes": 15077,
+        "historical_receipt_sha256": "16a1f0eb1365d9cc80eb2ce229248583e197e03b10d789b33155daa368319ebe",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932471146331000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/extra_state_world_size_4_rank_3.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/extra_state_world_size_4_rank_3.pt",
+        "relative_path": "reranker_actor_rollout/extra_state_world_size_4_rank_3.pt",
+        "bytes": 15077,
+        "historical_receipt_sha256": "9dd9be41ce0690416c55d5ba6b1e001511e933d6807bd55e82010f85fb1b57fa",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932470825462000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/model_world_size_4_rank_0.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/model_world_size_4_rank_0.pt",
+        "relative_path": "reranker_actor_rollout/model_world_size_4_rank_0.pt",
+        "bytes": 3397343275,
+        "historical_receipt_sha256": "39932e3eca01f92f32805a7401cc3eb5391a130ddc6af6f55c32adad9aa9bf0f",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932468097928000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/model_world_size_4_rank_1.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/model_world_size_4_rank_1.pt",
+        "relative_path": "reranker_actor_rollout/model_world_size_4_rank_1.pt",
+        "bytes": 3397343275,
+        "historical_receipt_sha256": "cabba516230d7b9f843d70546ffdc29b24877653d4e30b2deb768b2d348b764a",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932468313957000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/model_world_size_4_rank_2.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/model_world_size_4_rank_2.pt",
+        "relative_path": "reranker_actor_rollout/model_world_size_4_rank_2.pt",
+        "bytes": 3397343275,
+        "historical_receipt_sha256": "8b0e6a0eb3bae3c3deca6238f0eb2998cb8475eb8a202f4d76c3202e54fb37ef",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932468248321000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/model_world_size_4_rank_3.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/model_world_size_4_rank_3.pt",
+        "relative_path": "reranker_actor_rollout/model_world_size_4_rank_3.pt",
+        "bytes": 3397343275,
+        "historical_receipt_sha256": "051c390190b8285ff92f28cadcfdaef600141f6a0b3ef3cd289e3ddff95c4b44",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932468210362000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/optim_world_size_4_rank_0.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/optim_world_size_4_rank_0.pt",
+        "relative_path": "reranker_actor_rollout/optim_world_size_4_rank_0.pt",
+        "bytes": 6172076587,
+        "historical_receipt_sha256": "cdadc3e101ed784caa06f8ddebcad58b52c9766b431f16ce5e7164ba3dc1501b",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932470799844000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/optim_world_size_4_rank_1.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/optim_world_size_4_rank_1.pt",
+        "relative_path": "reranker_actor_rollout/optim_world_size_4_rank_1.pt",
+        "bytes": 6172076587,
+        "historical_receipt_sha256": "7ee45080e5c510de09f1939e1a481aca4623ad6e644fbebbccd2cfc828b3f2a4",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932471070444000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/optim_world_size_4_rank_2.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/optim_world_size_4_rank_2.pt",
+        "relative_path": "reranker_actor_rollout/optim_world_size_4_rank_2.pt",
+        "bytes": 6172076587,
+        "historical_receipt_sha256": "c598efbb7e411d30ba5ac6ea6f5ee16470e1ed160bb80b7982452a8b70073b1e",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932471178167000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      },
+      {
+        "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/optim_world_size_4_rank_3.pt",
+        "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/optim_world_size_4_rank_3.pt",
+        "relative_path": "reranker_actor_rollout/optim_world_size_4_rank_3.pt",
+        "bytes": 6172076587,
+        "historical_receipt_sha256": "8a46a231940f8e707519835eae142254e54164198bca8195e4e716614dc1b82b",
+        "source_uid": 21930,
+        "source_mtime_ns": 1791932470856586000,
+        "source_size_verified_twice": true,
+        "archive_size_verified": true
+      }
+    ]
+  },
+  "preserve_small_recovery_proofs": [
+    {
+      "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/recovery-state-rank-0.json",
+      "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/recovery-state-rank-0.json",
+      "relative_path": "actor/recovery-state-rank-0.json",
+      "bytes": 349,
+      "historical_receipt_sha256": "a9d4eba6dd855775968f6091ae77a2c621f3b7d1be04a30a83efa2338e9db7d7",
+      "source_uid": 21930,
+      "source_mtime_ns": 1791932464078414000,
+      "source_size_verified_twice": true,
+      "archive_size_verified": true
+    },
+    {
+      "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/recovery-state-rank-1.json",
+      "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/recovery-state-rank-1.json",
+      "relative_path": "actor/recovery-state-rank-1.json",
+      "bytes": 349,
+      "historical_receipt_sha256": "1fbb4e576025801781f8374f9a55f8e0236057b216507c7d2bb500d0ee4b7732",
+      "source_uid": 21930,
+      "source_mtime_ns": 1791932464076601000,
+      "source_size_verified_twice": true,
+      "archive_size_verified": true
+    },
+    {
+      "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/recovery-state-rank-2.json",
+      "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/recovery-state-rank-2.json",
+      "relative_path": "actor/recovery-state-rank-2.json",
+      "bytes": 349,
+      "historical_receipt_sha256": "039a8ccac8826a7f8c286e251be46473fe4d41a2270a4c7accbc3acfe3616d1a",
+      "source_uid": 21930,
+      "source_mtime_ns": 1791932464108375000,
+      "source_size_verified_twice": true,
+      "archive_size_verified": true
+    },
+    {
+      "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/recovery-state-rank-3.json",
+      "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/actor/recovery-state-rank-3.json",
+      "relative_path": "actor/recovery-state-rank-3.json",
+      "bytes": 349,
+      "historical_receipt_sha256": "d169c7463957080895806695a94b824fcdff4921dc8fb949c1cc65326dbd5f3a",
+      "source_uid": 21930,
+      "source_mtime_ns": 1791932464389912000,
+      "source_size_verified_twice": true,
+      "archive_size_verified": true
+    },
+    {
+      "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/recovery-state-rank-0.json",
+      "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/recovery-state-rank-0.json",
+      "relative_path": "reranker_actor_rollout/recovery-state-rank-0.json",
+      "bytes": 349,
+      "historical_receipt_sha256": "c9c0aaabf64b90add61050ad5c0f81e92d5702ee52a50e5adedf6b95f8fdbd9e",
+      "source_uid": 21930,
+      "source_mtime_ns": 1791932478316343000,
+      "source_size_verified_twice": true,
+      "archive_size_verified": true
+    },
+    {
+      "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/recovery-state-rank-1.json",
+      "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/recovery-state-rank-1.json",
+      "relative_path": "reranker_actor_rollout/recovery-state-rank-1.json",
+      "bytes": 349,
+      "historical_receipt_sha256": "8f8f668f8019ed30b10f94ad0fe4c1cbcb25f147f1cd61c7ab0d9dcf22d76daf",
+      "source_uid": 21930,
+      "source_mtime_ns": 1791932478018714000,
+      "source_size_verified_twice": true,
+      "archive_size_verified": true
+    },
+    {
+      "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/recovery-state-rank-2.json",
+      "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/recovery-state-rank-2.json",
+      "relative_path": "reranker_actor_rollout/recovery-state-rank-2.json",
+      "bytes": 349,
+      "historical_receipt_sha256": "0a2068f3002c83e811756596fb19617ca22b774629f2a4372a87a696bf0258ad",
+      "source_uid": 21930,
+      "source_mtime_ns": 1791932478053945000,
+      "source_size_verified_twice": true,
+      "archive_size_verified": true
+    },
+    {
+      "source_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/recovery-state-rank-3.json",
+      "archive_path": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/checkpoints/global_step_200/reranker_actor_rollout/recovery-state-rank-3.json",
+      "relative_path": "reranker_actor_rollout/recovery-state-rank-3.json",
+      "bytes": 349,
+      "historical_receipt_sha256": "d9d248b51e97f02dd03ef8e8feba9fafaad2da147d86ae8db3aa7d736276fbff",
+      "source_uid": 21930,
+      "source_mtime_ns": 1791932478040495000,
+      "source_size_verified_twice": true,
+      "archive_size_verified": true
+    }
+  ],
+  "preserve_other_small_metadata": [
+    "checkpoint-receipt-200.json",
+    "archive-verified-200.json",
+    "checkpoints/global_step_200/full-sha-receipt.json",
+    "checkpoints/global_step_200/actor/fsdp_config.json",
+    "checkpoints/global_step_200/reranker_actor_rollout/fsdp_config.json",
+    "data-recovery-200.json",
+    "dependent-final-audit/state.json",
+    "controller-state.json"
+  ],
+  "active_backgrounds": {
+    "hpc_canonical_scorer": {
+      "pid": 768928,
+      "exists": true,
+      "scope": "only this host PID namespace",
+      "expected_command_matches": true,
+      "uid": 21930,
+      "command": "python3 -u /data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/common-score-v4-tools/watch_scores.py /data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011 ",
+      "matching_open_descriptors": [
+        {
+          "fd": "1",
+          "target": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/canonical-scorer-v4.log"
+        },
+        {
+          "fd": "2",
+          "target": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/canonical-scorer-v4.log"
+        },
+        {
+          "fd": "3",
+          "target": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/scorer.lock"
+        }
+      ]
+    },
+    "hk_archive_worker": {
+      "pid": 2549357,
+      "exists": true,
+      "scope": "only this host PID namespace",
+      "expected_command_matches": true,
+      "uid": 1002,
+      "command": "python3 -u /backup/shaoshitong/cosearch-instruct200-common-em-20261011/hkust3_archive_worker.py ",
+      "matching_open_descriptors": [
+        {
+          "fd": "1",
+          "target": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/hkust3_archive_worker.py.log"
+        },
+        {
+          "fd": "2",
+          "target": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/hkust3_archive_worker.py.log"
+        },
+        {
+          "fd": "3",
+          "target": "/backup/shaoshitong/cosearch-instruct200-common-em-20261011/archive.lock"
+        }
+      ]
+    },
+    "hk_controller_first": {
+      "pid": 2549357,
+      "epoch": 1792254657.2293422,
+      "status": "WAITING_FOR_CHECKPOINTS"
+    },
+    "hk_controller_second": {
+      "pid": 2549357,
+      "epoch": 1792254777.3803308,
+      "status": "WAITING_FOR_CHECKPOINTS"
+    },
+    "observed_tensor_descriptors_open_by_these_two_pids": false,
+    "global_no_reader_claim": false
+  },
+  "native51713_state": {
+    "accepted": false,
+    "source_final_evaluation_missing": true,
+    "common_raw_product_exists": true,
+    "common_v4_final_receipt_exists": false,
+    "dependent_audit_status": "FINAL_ACCEPTANCE_FAILED_REQUIRES_RECOVERY_OR_REVIEW",
+    "failure": "[Errno 2] No such file or directory: '/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/final-evaluation/200.jsonl'",
+    "notes": "No raw final row scan or repair was performed. Presence of the common raw product/config does not establish complete native51713 acceptance."
+  },
+  "exclusions": [
+    "HPC checkpoint5/50/100/150 already absent; not counted again.",
+    "HK archive payloads are retained; not proposed for deletion.",
+    "Stopped727586 exact39 cleanup is outside this audit and not repeated.",
+    "Shared models, TOPD, cache, retrieval, active730226 and unrelated experiments excluded."
+  ],
+  "future_execution_evidence_gaps": [
+    "Fresh remote HK archive tensor SHA has not been rehashed in this read-only audit.",
+    "Coordinate active historical scorer/archive worker and recheck consumers before any tensor retirement; no watcher was stopped.",
+    "Two known PID namespaces are inspected, not a cluster-wide assertion that no independent reader exists.",
+    "Perform an immediate exact file identity/size/owner check if retirement is later executed."
+  ],
+  "released_bytes": 0,
+  "estimated_budget_exceeded": false,
+  "budget_conclusion": "No total-budget conclusion; fresh whole-storage measurement belongs to the mainline.",
+  "storage_mutated": false,
+  "slurm_mutated": false,
+  "tensor_contents_read": false,
+  "observations": {
+    "hpc1": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-co-rollout-hpc3-4gpu-20261017/old-cosearch-readonly-hpc-1792254683696085000.json",
+      "sha256": "57658095be1802f22bb76227bf971b32b1345ae30b51515f24bbe3603654b72a",
+      "observed_unix": 1792254683.8002458
+    },
+    "hk1": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-co-rollout-hpc3-4gpu-20261017/old-cosearch-readonly-hk-1792254682377486000.json",
+      "sha256": "2beb8e94b5852428ff90a633764427a136d2e3acd043f335b3358e9119e69d4f",
+      "observed_unix": 1792254676.704986
+    },
+    "hpc2": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-co-rollout-hpc3-4gpu-20261017/old-cosearch-readonly-hpc2-1792254798796998000.json",
+      "sha256": "6f4ecab4d70bdcb68f52e6f8f94cdfa7cd2d1180f39ab95a682d27aea6cc86f8",
+      "observed_unix": 1792254798.884423
+    },
+    "hk2": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-co-rollout-hpc3-4gpu-20261017/old-cosearch-readonly-hk2-1792254798344155000.json",
+      "sha256": "f377d445770acb9694c327dad5ad24858f51751d13b1443e3258e8b2bfda2866",
+      "observed_unix": 1792254792.7111373
+    }
+  }
+}

@@ -114,3 +114,11 @@ the same explicit published-source binding; sealed evidence retains the small
 publication records when source retirement was separately authorized. The original93
 pipeline still uses its original verifier; this independent report does not
 rewrite that pipeline's marker or claim whole-goal/recovery acceptance.
+
+`retire_old_cosearch200.py` applies the prior authorization for failed experiment
+checkpoints to exactly25 source tensors from failed job713379/CP200. Its pinned
+plan preserves the full HK33 archive and all small recovery/receipt files. It
+requires fresh full33 hashes on both hosts, exact source identities, both UID
+reader observations and durable per-file unlink records; independent source and
+archive checks close the operation. It leaves both old watchers running and
+does not create the old archive worker's recursive-delete marker.
