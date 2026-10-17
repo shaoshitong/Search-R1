@@ -54,3 +54,15 @@ continue; no outer201 is authorized.
 Small actual evidence: `prefix5-ab-h10011-first-fresh-outer2-actual-facts.json`
 and `prefix5-ab-h10011-small-curves-latest.json`. All tensors, optimizer states,
 rollouts, full predictions and source inputs remain remote.
+
+## Completed outer3
+
+Both same native processes completed3/200 and continue outer4. Actor60 actual
+Adam/rank in both arms; frozenA remains0, B raw/EMA30. Selected actual mixed:
+A383/512=74.8047%, B392/512=76.5625%. No QA5 result yet. Full new outer3 walls:
+A: 784.1525464951992 seconds; B: 814.8239887040108 seconds; 
+
+These variable shared-node times do not isolate algorithm speed. Original
+sequential rank-journal facts and per-step probe curves are retained in the
+small JSON artifacts. Runtime remains2e397623 unchanged. Sole readonly observer
+follows the normal milestone5/QA5; full goal remains incomplete.
