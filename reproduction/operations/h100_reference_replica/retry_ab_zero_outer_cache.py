@@ -13,7 +13,7 @@ import uuid
 from reproduction.prefix20_online.launch import read,sha,once
 
 
-def prepare_retry(source,staged_repo,commit,slot,cache):
+def prepare_retry(source,staged_repo,commit,slot,cache,output_parent=None):
     from reproduction.prefix_selection200.ab_control import prepare
     from reproduction.prefix_only_correctness_ab.launch import birth_states
     from reproduction.prefix20_online.retriever import prepare_corpus
@@ -59,7 +59,10 @@ def prepare_retry(source,staged_repo,commit,slot,cache):
         arrow_files=[dict(path=row['filename'],bytes=Path(row['filename']).stat().st_size)for row in data.cache_files],
         checked_unix=time.time(),new_rollout_or_gpu_forward=False)
     once(source/'preparation/zero-outer-cache-fault-proof.json',proof)
-    base=Path(str(source)+'-cache-repair1')
+    from reproduction.prefix_selection200.h100_replica_hardware import SHARED_PARENT
+    if output_parent is not None and str(output_parent)!=SHARED_PARENT:
+        raise ValueError('Use the explicitly inventoried existing H100-10 shared namespace only')
+    base=(Path(output_parent)/(source.name+'-cache-repair1') if output_parent else Path(str(source)+'-cache-repair1'))
     def rebase(value):
         if isinstance(value,dict):return {k:rebase(v)for k,v in value.items()}
         if isinstance(value,list):return [rebase(v)for v in value]
@@ -71,8 +74,22 @@ def prepare_retry(source,staged_repo,commit,slot,cache):
     template=source/'preparation/cache-repair-config-template.json';once(template,c)
     prepared=prepare(template,staged_repo,commit,slot)
     (base/'probe').mkdir()
+    import hashlib
+    copied={}
     for name in ('latest.pt','latest.json','head-outer-0000.pt','initialization-complete.json','initialization-intent.json'):
-        os.link(source/'probe'/name,base/'probe'/name)
+        src=source/'probe'/name;dst=base/'probe'/name;st=src.stat();key=(st.st_dev,st.st_ino)
+        if key in copied:
+            os.link(copied[key],dst)
+        elif st.st_dev==dst.parent.stat().st_dev:
+            os.link(src,dst);copied[key]=dst
+        else:
+            h=hashlib.sha256()
+            with src.open('rb') as inp,dst.open('xb') as out:
+                for chunk in iter(lambda:inp.read(8*1024**2),b''):
+                    h.update(chunk);out.write(chunk)
+                out.flush();os.fsync(out.fileno())
+            if sha(dst)!=h.hexdigest():raise ValueError('Remote source/target initialization state SHA differs')
+            copied[key]=dst
     if read(base/'probe/latest.json')!=head:raise ValueError('Reused initial model state differs')
     result=dict(prepared,source_base=str(source),cache=str(cache),reused_warmup_actual_adam=[0]*4,
         original_head_sha256=head['sha256'],cache_documents=len(data),submitted=False)
@@ -81,5 +98,5 @@ def prepare_retry(source,staged_repo,commit,slot,cache):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--staged-repo',required=True)
-    p.add_argument('--commit',required=True);p.add_argument('--slot',choices=('A','B'),required=True);p.add_argument('--cache',required=True)
-    a=p.parse_args();print(json.dumps(prepare_retry(a.source,a.staged_repo,a.commit,a.slot,a.cache)))
+    p.add_argument('--commit',required=True);p.add_argument('--slot',choices=('A','B'),required=True);p.add_argument('--cache',required=True);p.add_argument('--output-parent')
+    a=p.parse_args();print(json.dumps(prepare_retry(a.source,a.staged_repo,a.commit,a.slot,a.cache,a.output_parent)))

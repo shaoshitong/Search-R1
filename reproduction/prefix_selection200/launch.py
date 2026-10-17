@@ -22,8 +22,8 @@ PREFIX = a800_runtime.PREFIX
 def validate_config(c, base):
     from .candidate_schedule import validate_schedule
     validate_schedule(c, required=c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1')
-    from .h100_replica_hardware import enabled as h100_layout, validate as validate_h100, PREFIX as H100_PREFIX
-    if c['base'] != str(base) or not str(base).startswith(H100_PREFIX if h100_layout(c) else PREFIX):
+    from .h100_replica_hardware import enabled as h100_layout, validate as validate_h100, PREFIXES as H100_PREFIXES
+    if c['base'] != str(base) or not str(base).startswith(H100_PREFIXES if h100_layout(c) else PREFIX):
         raise ValueError('Use the isolated remote prefix-selection namespace')
     required = dict(outers=200, candidate_questions=CANDIDATE_QUESTIONS, selected_questions=512,
                     responses_per_question=5, prefix_policy_tokens=PREFIX_TOKENS, exploration_questions=0,

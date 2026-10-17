@@ -7,6 +7,8 @@ never treated as permission to stop them.
 """
 LAYOUT = 'h100_four_rank_colocated_v1'
 PREFIX = '/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-'
+SHARED_PARENT = '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong'
+PREFIXES = (PREFIX, SHARED_PARENT+'/search-g1-prefix-selection200-reference-replica-')
 
 
 def enabled(config):

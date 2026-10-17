@@ -35,7 +35,10 @@ def prepare(template,staged_repo,commit,slot):
         if '__pycache__' in relative.parts:continue
         if source.is_symlink():raise ValueError('Staged sources must be regular files')
         target=base/'repo'/relative;target.parent.mkdir(parents=True,exist_ok=True)
-        os.link(source,target)
+        if source.stat().st_dev==target.parent.stat().st_dev:
+            os.link(source,target)
+        else:
+            target.write_bytes(source.read_bytes())
         expected=sha(source);actual=sha(target)
         if actual!=expected:raise ValueError('Assigned source file full SHA differs')
         files.append(dict(path=str(relative),sha256=actual))

@@ -71,10 +71,10 @@ class UUIDLocks:
 
 def native_allocation(base, c):
     """Validate one actual mapping before any CUDA child, while holding leases."""
-    from .h100_replica_hardware import enabled, validate, PREFIX as H100_PREFIX
+    from .h100_replica_hardware import enabled, validate, PREFIXES as H100_PREFIXES
     if enabled(c):
         validate(c)
-        if not str(base).startswith(H100_PREFIX):
+        if not str(base).startswith(H100_PREFIXES):
             raise ValueError('Wrong isolated H100 replica namespace')
         mapping = gpu_inventory()
         ids = c['physical_gpu_indices']

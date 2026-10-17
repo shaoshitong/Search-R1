@@ -94,7 +94,9 @@ def prepare(config, outer):
     if config.get('selected_questions') != SELECTED_QUESTIONS:
         raise ValueError('Candidate scheduling retains exactly512 selected questions')
     base = Path(config['base'])
-    if not str(base).startswith(('/mnt/data/shaoshitong/search-g1-prefix-selection200-',
+    from .h100_replica_hardware import enabled as h100_layout, PREFIXES as H100_PREFIXES
+    h100_output = h100_layout(config) and str(base).startswith(H100_PREFIXES)
+    if not h100_output and not str(base).startswith(('/mnt/data/shaoshitong/search-g1-prefix-selection200-',
                                   '/data/shaoshitong/search-g1-prefix-selection200-',
                                   '/data/shaoshitong/Search-G1-prefix-selection200-')):
         raise ValueError('Candidate artifacts must stay in the remote experiment')

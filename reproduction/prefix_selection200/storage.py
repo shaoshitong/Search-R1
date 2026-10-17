@@ -55,7 +55,8 @@ def owned(base, path):
 
 def validate_base(base):
     base = Path(base)
-    if (not base.is_absolute() or '..' in base.parts or base.parent not in (REMOTE_PARENT, A800_REMOTE_PARENT)
+    from .h100_replica_hardware import SHARED_PARENT
+    if (not base.is_absolute() or '..' in base.parts or base.parent not in (REMOTE_PARENT, A800_REMOTE_PARENT, Path(SHARED_PARENT))
             or not base.name.startswith(PREFIX) or base.resolve(strict=True) != base):
         raise ValueError('Pruning is restricted to a canonical new prefix-selection200 namespace')
     config = read(owned(base, base/'preparation/launch-config.json'))
