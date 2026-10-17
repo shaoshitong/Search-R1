@@ -56,7 +56,7 @@ def aggregate(base):
         summaries=[]
         for epoch,rows in sorted(curve.items()):
             summaries.append(dict(epoch=epoch,actual_updates=len(rows),first=rows[0],last=rows[-1],
-                mean={k:sum(r[k]for r in rows)/len(rows)for k in('trajectory_bce','group_bce','total_loss')},
+                mean={k:sum(r[k]for r in rows)/len(rows)for k in (('dist_loss','mean_correctness_kl','diversity_kl','total_loss')if arm.get('objective')=='group_vector_dist_kl'else('trajectory_bce','group_bce','total_loss'))},
                 augmented_questions=sum(r['augmented_questions']for r in rows)))
         arms.append(dict(arm=arm,epochs=epochs,update_curve_summary=summaries,
                          complete=json.loads((root/'complete.json').read_text())if(root/'complete.json').exists()else None))
@@ -79,7 +79,7 @@ def render(summary,output):
         if setting['mixup']:label+=' + hidden mixup'
         titles.append(label)
     plt.rcParams.update({'font.size':10,'axes.spines.top':False,'axes.spines.right':False})
-    specs=[('balanced_accuracy','Mixed balanced accuracy',100),('trajectory_bce','Trajectory BCE',1),('group_bce','Mixed-group BCE',1)]
+    specs=[('balanced_accuracy','Mixed event balanced accuracy(q)',100),('dist_loss','Groupwise DIST',1),('diversity_kl','Diversity KL',1)]if summary['arms'][0]['arm'].get('objective')=='group_vector_dist_kl'else[('balanced_accuracy','Mixed balanced accuracy',100),('trajectory_bce','Trajectory BCE',1),('group_bce','Mixed-group BCE',1)]
     fig,axes=plt.subplots(2,3,figsize=(15,8),layout='constrained')
     for row,split in enumerate(('train','test')):
         for ax,(key,title,scale)in zip(axes[row],specs):
@@ -98,6 +98,9 @@ def render(summary,output):
         fields=[('accuracy','Mixed ordinary accuracy',100),('balanced_accuracy','Mixed balanced accuracy',100),
                 ('trajectory_accuracy','Trajectory accuracy',100),('trajectory_bce','Trajectory BCE',1),
                 ('group_bce','Mixed-group BCE',1),('reference_joint_loss_1plus1','Common reference loss1+1',1)]
+        if arm['arm'].get('objective')=='group_vector_dist_kl':
+            fields=[('balanced_accuracy','Mixed event BA(q)',100),('diversity_mixed_balanced_accuracy','Diversity threshold BA(D)',100),
+                ('vector_mae','5-vector MAE',1),('dist_loss','Groupwise DIST',1),('mean_correctness_kl','Mean-correctness KL',1),('diversity_kl','Diversity KL',1)]
         for ax,(key,title,scale)in zip(axes.flat,fields):
             for split,color in(('train','#1763a4'),('test','#d45b20')):
                 for mode,style in(('raw','--'),('ema','-')):

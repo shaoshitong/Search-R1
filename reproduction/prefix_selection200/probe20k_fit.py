@@ -48,6 +48,9 @@ def train(base,arm_name):
     from reproduction.prefix_only_correctness_ab.train_ddp import actual_adam_steps
     base=Path(base);c=read(base/'preparation/launch-config.json');s=c['probe20k_study']
     arm=next(v for v in s['arms']if v['name']==arm_name);rank,local,device=setup_ddp()
+    vector_objective=arm.get('objective')=='group_vector_dist_kl'
+    if vector_objective:
+        from .probe_group_vector_dist import vector_dist_loss,dominant_hidden_mixup,evaluation_metrics
     out=base/'arms'/arm_name;out.mkdir(parents=True,exist_ok=True)
     data=CombinedFeatures(Path(s['dataset_base'])/'dataset-complete.json',s.get('selected_data_blocks'))
     questions=len(data.index)//5;updates_per_epoch=questions*100//5120
@@ -128,6 +131,10 @@ def train(base,arm_name):
                             trajectory_negative_recall=tn/(tn+fp)if tn+fp else None,
                             trajectory_balanced_accuracy=(tp/(tp+fn)+tn/(tn+fp))/2 if(tp+fn)and(tn+fp)else None,
                             reference_joint_loss_1plus1=metrics['trajectory_bce']+metrics['group_bce'])
+                        if vector_objective:
+                            by_id={tid:z for tid,z,_label in rows}
+                            for grouped_row in grouped:grouped_row['trajectory_logits']=[by_id[t]for t in grouped_row['trajectory_ids']]
+                            metrics.update(evaluation_metrics(grouped,arm['dist_weight'],arm['mean_weight'],arm['diversity_weight']))
                         result[name][split]=metrics
                         with(out/('epoch-%02d-%s-%s-predictions.jsonl'%(epoch,name,split))).open('x')as f:
                             for row in grouped:f.write(json.dumps(row,sort_keys=True)+'\n')
@@ -157,25 +164,37 @@ def train(base,arm_name):
                 labels=torch.tensor([[data.index[t]['strict_em']for t in g['trajectory_ids']]for g in chosen],device=device,dtype=torch.float32)
                 soft_event=None;augmentation=dict(augmented_questions=0,lambda_sum=0.,pairs=0)
                 if arm['mixup']:
-                    batch,labels,soft_event,augmentation=mix_batch(batch,labels,planned['mix_pairs'][rank],
-                        s['dataset_seed']+epoch*1000003+step*8+rank,arm['mixup_alpha'])
+                    if vector_objective:
+                        batch,labels,augmentation=dominant_hidden_mixup(batch,labels,planned['mix_pairs'][rank],
+                            s['dataset_seed']+epoch*1000003+step*8+rank,arm['mixup_alpha'])
+                    else:
+                        batch,labels,soft_event,augmentation=mix_batch(batch,labels,planned['mix_pairs'][rank],
+                            s['dataset_seed']+epoch*1000003+step*8+rank,arm['mixup_alpha'])
                 optimizer.zero_grad(set_to_none=True)
                 with torch.autocast(device_type='cuda',dtype=torch.bfloat16):logits=model(batch).reshape(len(chosen),5)
-                losses=joint_loss(logits.float(),labels,group_weight=arm['group_weight'],mixed_target=soft_event,validate=False)
+                if vector_objective:
+                    losses=vector_dist_loss(logits.float(),labels,arm['dist_weight'],arm['mean_weight'],arm['diversity_weight'])
+                    loss_keys=('dist_loss','mean_correctness_kl','diversity_kl','total_loss')
+                else:
+                    losses=joint_loss(logits.float(),labels,group_weight=arm['group_weight'],mixed_target=soft_event,validate=False)
+                    loss_keys=('trajectory_bce','group_bce','total_loss')
                 backward=losses['loss']*ddp_mean_scale(len(chosen),planned['global_questions'])
                 backward.backward()
                 optimizer.step();actual=int(next(iter(optimizer.state.values()))['step'].item())
                 update_ema(model.module,ema,s['ema_decay'])
-                values=torch.tensor([float(losses[k].detach())*len(chosen)for k in('trajectory_bce','group_bce','total_loss')]+[
+                values=torch.tensor([float(losses[k].detach())*len(chosen)for k in loss_keys]+[
                     augmentation['augmented_questions'],augmentation['pairs'],augmentation['lambda_sum']],device=device,dtype=torch.float64)
                 dist.all_reduce(values);stats=values.cpu().tolist()
                 with(out/('rank-%d-updates.jsonl'%rank)).open('a')as f:f.write(json.dumps(dict(epoch=epoch,step=step,rank=rank,
                     actual_adam=actual,local_trajectories=len(ids),learning_rate=s['learning_rate'],ema_updates=actual-200))+'\n')
                 if rank==0:
-                    row=dict(epoch=epoch,step=step,actual_adam=actual,trajectory_bce=stats[0]/planned['global_questions'],
-                        group_bce=stats[1]/planned['global_questions'],total_loss=stats[2]/planned['global_questions'],
-                        augmented_questions=int(stats[3]),mixup_pairs=int(stats[4]),mixup_lambda_mean=stats[5]/stats[4]if stats[4]else None,
+                    nloss=len(loss_keys)
+                    row=dict(epoch=epoch,step=step,actual_adam=actual,
+                        **{key:stats[i]/planned['global_questions']for i,key in enumerate(loss_keys)},
+                        augmented_questions=int(stats[nloss]),mixup_pairs=int(stats[nloss+1]),
+                        mixup_lambda_mean=stats[nloss+2]/stats[nloss+1]if stats[nloss+1]else None,
                         online_loss_on_augmented_inputs=arm['mixup'])
+                    if vector_objective:row.update(objective='group_vector_dist_kl',mixup_primary_coefficient_strictly_above_half=True,trajectory_BCE_in_loss=False)
                     with(out/'global-loss-updates.jsonl').open('a')as f:f.write(json.dumps(row)+'\n')
                     publish(out/'progress.json',dict(epoch=epoch,step=step,actual_adam=actual,ema_updates=actual-200))
             assert len(seen)==len(set(seen))==questions*5//8
