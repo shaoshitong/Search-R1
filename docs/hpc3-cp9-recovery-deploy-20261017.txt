@@ -42,6 +42,13 @@ publication = dict(commit=commit, remote_sha=published,
     checked_unix=time.time(), source_only=True)
 changed = subprocess.check_output(['git', 'diff', '--name-only',
     'c33aadcb42e6bd152ef284abc426ff4d56bfae0a', commit], text=True).splitlines()
+original_names = remote('import pathlib,json\np=pathlib.Path(%r)\nprint(json.dumps(list(json.loads(p.read_text())["files"])))\n'
+                        % str(SOURCE / 'preparation/source-publication.json'))
+original_names = next(json.loads(line) for line in original_names.splitlines()
+                      if line.strip().startswith('['))
+# The earlier code-only publisher omitted Git dotfiles. Include such unchanged
+# files as well, so the complete new publication has no missing metadata.
+changed = sorted(set(changed) | (set(files) - set(original_names)))
 stream = io.BytesIO()
 with tarfile.open(fileobj=stream, mode='w:gz') as archive:
     for name in changed:
