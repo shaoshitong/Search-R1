@@ -160,3 +160,5 @@ source hashes/results are kept in `pending-recovery-cpu-tests-final.json`.
 `runtime.shared_devices`只接受恰好4张Slurm分配卡，支持非连续物理索引；检索与训练绑定相同有序UUID。现有vLLM按启动时实际剩余显存确定缓存预算，实际GPU共享运行仍须获配后验证。原排队作业728815原地调整为`gres/gpu=4`，保留emergency_acd，不新增依赖或重复作业。
 
 首次四卡获配后，在任何runtime claim或optimizer更新前因`KeyError: 5`退出：`SLURM_JOB_GPUS`全局编号不能直接用作作业内NVML索引。启动器改为解析Slurm实际传入的`CUDA_VISIBLE_DEVICES`并逐一绑定NVML UUID，原始全局编号仅作为审计信息保留；缺失、重复或无法匹配时明确报错。保存原始失败日志，确认没有任何运行状态或更新后才允许原作业恢复。
+
+集群拒绝FAILED且Requeue=0的728815执行requeuehold或修改Requeue，故修复后的唯一替代提交必须先核对旧作业终态、无runtime claim/actor/probe/joint状态、无同名活跃作业，并持久化提交intent与回执；不新增前置成功依赖，不重复提交未知结果。旧日志与作业回执均保留。

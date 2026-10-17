@@ -6,6 +6,7 @@ import json
 import shlex
 import subprocess
 import time
+import sys
 
 from .control import BASE,OUTPUT,PYTHON,REPO,BRANCH,SBATCH,git
 from .direct_control import run
@@ -33,6 +34,10 @@ assert not (b/'preparation/submit-intent.json').exists()
 
 
 def main():
+    global GUARD
+    startup='--recover-zero-update-startup' in sys.argv
+    if startup:
+        GUARD=GUARD.replace("assert 'JobState=PENDING' in job and 'Reason=JobHeldUser' in job,job", "assert 'JobState=FAILED' in job and 'ExitCode=1:0' in job,job\nassert not any((b/name).exists() for name in ['preparation/launch-config.json','actor/latest.json','probe/latest.json','latest-joint.json'])")
     assert not git('status','--porcelain').strip(),'Commit latest source first'
     commit=git('rev-parse','HEAD').decode().strip()
     subprocess.run(['git','push','origin','HEAD:refs/heads/'+BRANCH],cwd=REPO,check=True)
@@ -99,16 +104,32 @@ with (b/'preparation/build-run.lock').open('a') as lock:
  from reproduction.hpc3_prefix5.runtime import prepare
  result=prepare();assert result['total_physical_gpus']==4
  (b/'preparation/train.sbatch').write_text(SBATCH)
- updated=subprocess.run(['scontrol','update','JobId=728815','TresPerNode=gres/gpu:4'],capture_output=True,text=True)
- assert updated.returncode==0,updated.stderr
- actual_job=subprocess.check_output(['scontrol','show','job','728815','-o'],text=True)
+ job_id='728815'
+ if STARTUP:
+  active=subprocess.check_output(['squeue','-h','-u','mou176','--name=prefix5-thread5','-o','%i|%T'],text=True).strip()
+  assert not active,active
+  intent=b/'preparation/startup-replacement-submit-intent.json';assert not intent.exists(),'Reconcile previous unknown submission first'
+  old_receipt=json.loads((b/'preparation/slurm-submission.json').read_text());assert old_receipt['job']=='728815'
+  (b/'preparation/slurm-submission-728815-before-startup-repair.json').write_text(json.dumps(old_receipt))
+  intent.write_text(json.dumps(dict(epoch=time.time(),source_commit=NEW,previous_job='728815',actual_optimizer_updates=0)))
+  submitted=subprocess.run(['sbatch','--parsable','--hold','--requeue','--partition=emergency_acd','--output='+str(b/'logs/slurm-%j.log'),str(b/'preparation/train.sbatch')],capture_output=True,text=True)
+  submission=dict(returncode=submitted.returncode,stdout=submitted.stdout,stderr=submitted.stderr,epoch=time.time(),partition='emergency_acd',dependency=None,previous_failed_job='728815',source_commit=NEW)
+  if submitted.returncode==0:
+   job_id=submitted.stdout.strip().split(';')[0];assert job_id.isdigit();submission['job']=job_id
+  (b/'preparation/startup-replacement-submit-result.json').write_text(json.dumps(submission))
+  assert submitted.returncode==0,submission
+  (b/'preparation/slurm-submission.json').write_text(json.dumps(submission))
+ else:
+  updated=subprocess.run(['scontrol','update','JobId=728815','TresPerNode=gres/gpu:4'],capture_output=True,text=True)
+  assert updated.returncode==0,updated.stderr
+ actual_job=subprocess.check_output(['scontrol','show','job',job_id,'-o'],text=True)
  assert 'TresPerNode=gres/gpu:4 ' in actual_job and 'gres/gpu=8' not in actual_job and 'Partition=emergency_acd ' in actual_job,actual_job
- result=dict(status='FOUR_TOTAL_SHARED_GPUS_FULL_SOURCE_SHA_VERIFIED',job='728815',epoch=time.time(),commit=NEW,files=len(files),job_before_release=actual_job,total_physical_gpus=4)
+ result=dict(status='FOUR_TOTAL_SHARED_GPUS_FULL_SOURCE_SHA_VERIFIED',job=job_id,epoch=time.time(),commit=NEW,files=len(files),job_before_release=actual_job,total_physical_gpus=4,previous_failed_job='728815' if STARTUP else None)
  (b/'preparation/four-shared-publication.json').write_text(json.dumps(result))
- released=subprocess.run(['scontrol','release','728815'],capture_output=True,text=True);assert released.returncode==0,released.stderr
- result['after_release']=subprocess.check_output(['scontrol','show','job','728815','-o'],text=True)
+ released=subprocess.run(['scontrol','release',job_id],capture_output=True,text=True);assert released.returncode==0,released.stderr
+ result['after_release']=subprocess.check_output(['scontrol','show','job',job_id,'-o'],text=True)
  (b/'preparation/four-shared-release.json').write_text(json.dumps(result));print(json.dumps(result))
-'''.replace('NEW',repr(commit)).replace('PARTS',repr(parts)).replace('METADATA',repr(metadata)).replace('SBATCH',repr(SBATCH)),timeout=60)
+'''.replace('NEW',repr(commit)).replace('PARTS',repr(parts)).replace('METADATA',repr(metadata)).replace('SBATCH',repr(SBATCH)).replace('STARTUP',repr(startup)),timeout=60)
     (OUTPUT/'publication.json').write_text(json.dumps(pub,indent=2))
     (OUTPUT/'four-shared-deployment.json').write_text(json.dumps(receipt,indent=2))
     print(json.dumps(receipt),flush=True)
