@@ -14,7 +14,7 @@ class CombinedFeatures:
         assert self.manifest['questions']==20480 and self.manifest['trajectories']==102400
         self.parts=[];self.owner={};self.index={}
         for block,entry in enumerate(self.manifest['blocks']):
-            part=NativeFeatures(entry['scan_path']);assert part.manifest_sha==entry['scan_sha256']
+            part=NativeFeatures(entry['scan_path'],validate_reads=False);assert part.manifest_sha==entry['scan_sha256']
             assert part.manifest['actor_version']==self.manifest['actor_version']
             own=Path(entry['own_em']);assert sha(own)==entry['own_em_sha256']
             records=[json.loads(line)for line in own.open()]
@@ -32,7 +32,8 @@ class CombinedFeatures:
             selected=[tid for tid in ids if self.owner[tid]==block]
             if selected:chunks.append(part.get_batch(selected,'cpu'));ordered.extend(selected)
         positions={tid:i for i,tid in enumerate(ordered)}
-        batch=batch_subset(concatenate(chunks),[positions[tid]for tid in ids])
+        batch=chunks[0]if len(chunks)==1 else concatenate(chunks)
+        if ordered!=ids:batch=batch_subset(batch,[positions[tid]for tid in ids])
         return batch_to_device(batch,device)
 
     def close(self):

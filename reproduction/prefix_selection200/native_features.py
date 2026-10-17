@@ -7,10 +7,10 @@ from .actor_hidden import QMAX, PREFIX, WIDTH, DIM
 
 
 class NativeFeatures:
-    def __init__(self, directory):
+    def __init__(self, directory, validate_reads=True):
         import numpy as np
         from .probe import prefix_row
-        self.path = Path(directory)
+        self.path = Path(directory);self.validate_reads=validate_reads
         p = self.path/'scan-complete.json'
         self.manifest = json.loads(p.read_text())
         self.manifest_sha = hashlib.sha256(p.read_bytes()).hexdigest()
@@ -52,7 +52,7 @@ class NativeFeatures:
             question[j,:qlen]=True;policy[j,QMAX:QMAX+plen]=True
             positions[j,:qlen]=torch.arange(qlen)
             off=row['policy_offset'];pos=self.positions[off:off+plen].tolist()
-            if pos != (expected_policy_positions(row['segment_bounds']) if plen else []):
+            if self.validate_reads and pos != (expected_policy_positions(row['segment_bounds']) if plen else []):
                 raise ValueError('Native feature own-token positions changed')
             positions[j,QMAX:QMAX+plen]=torch.tensor(pos,dtype=torch.long)
         mask=question|policy

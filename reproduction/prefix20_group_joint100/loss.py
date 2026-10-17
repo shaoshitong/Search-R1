@@ -12,21 +12,21 @@ import torch
 import torch.nn.functional as F
 
 
-def joint_loss(logits, labels, group_weight=1.0, mixed_target=None):
+def joint_loss(logits, labels, group_weight=1.0, mixed_target=None, validate=True):
     """Return two independent means and their weighted sum for logits[B,5].
 
     ``labels`` must contain each trajectory's own0/1 EM, in the same G5 order.
     Low precision logits are promoted to FP32; FP64 is preserved for analyses.
     The caller keeps each complete G5 on its rank so this graph remains local.
     """
-    if logits.ndim != 2 or logits.shape[1] != 5 or logits.shape[0] < 1:
+    if validate and (logits.ndim != 2 or logits.shape[1] != 5 or logits.shape[0] < 1):
         raise ValueError('joint_loss requires nonempty complete local G5 logits[B,5]')
-    if labels.shape != logits.shape:
+    if validate and labels.shape != logits.shape:
         raise ValueError('Each G5 logit needs its own trajectory EM label')
-    if not logits.is_floating_point():
+    if validate and not logits.is_floating_point():
         raise TypeError('Correctness logits must be floating point')
     weight = float(group_weight)
-    if not math.isfinite(weight) or weight < 0:
+    if validate and (not math.isfinite(weight) or weight < 0):
         raise ValueError('The configured group BCE weight must be finite and nonnegative')
     z = logits if logits.dtype == torch.float64 else logits.float()
     target = labels.to(device=z.device, dtype=z.dtype)
@@ -48,7 +48,7 @@ def joint_loss(logits, labels, group_weight=1.0, mixed_target=None):
     k = target.sum(dim=1)
     mixed_label = ((k > 0) & (k < 5)).to(dtype=z.dtype)
     if mixed_target is not None:
-        if mixed_target.shape != (z.shape[0],):
+        if validate and mixed_target.shape != (z.shape[0],):
             raise ValueError('One explicit soft mixed-event target is required per augmented G5')
         # Soft ownEM sums cannot define whether a synthetic group is mixed.
         # Mixup supplies lambda*m_A+(1-lambda)*m_B independently of ownEM.

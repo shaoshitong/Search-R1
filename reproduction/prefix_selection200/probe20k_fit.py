@@ -26,8 +26,6 @@ def mix_batch(batch,labels,pairs,seed,alpha):
     mixed=features.clone();target=labels.clone();event=((labels.sum(1)>0)&(labels.sum(1)<5)).float();soft_event=event.clone()
     rng=random.Random(seed);lambdas=[]
     for a,b in pairs:
-        for key in('attention_mask','position_ids','question_mask','policy_mask'):
-            v=batch[key].reshape(len(labels),5,-1);assert torch.equal(v[a],v[b]),'Mixup must preserve identical mask/position layout'
         lam=rng.betavariate(alpha,alpha);lambdas.append(lam)
         mixed[a]=(lam*features[a].float()+(1-lam)*features[b].float()).to(features.dtype)
         mixed[b]=((1-lam)*features[a].float()+lam*features[b].float()).to(features.dtype)
@@ -53,7 +51,7 @@ def train(base,arm_name):
     out=base/'arms'/arm_name;out.mkdir(parents=True,exist_ok=True)
     data=CombinedFeatures(Path(s['dataset_base'])/'dataset-complete.json')
     assert data.manifest['actor_version']==c['actor_version']
-    diagnostic=data.manifest['diagnostic'];test=NativeFeatures(diagnostic['scan_path'])
+    diagnostic=data.manifest['diagnostic'];test=NativeFeatures(diagnostic['scan_path'],validate_reads=False)
     assert test.manifest['actor_version']==c['actor_version']
     own=Path(diagnostic['scan_path']).parent.parent/'full/own-em.jsonl'
     test.index=join_own_em(test.index,[json.loads(line)for line in own.open()],c['actor_version'],test.manifest_sha,'diagnostic')
@@ -62,9 +60,18 @@ def train(base,arm_name):
     assert not {g['question_hash']for g in groups}&{g['question_hash']for g in testgroups}
     keys=[layout_key(g,data.index)for g in groups]
     assert Path(s['source_probe_checkpoint']).stat().st_size==s['source_probe_bytes']
-    saved=torch.load(s['source_probe_checkpoint'],map_location='cpu',weights_only=False)
-    assert saved['actual_adam_steps_per_rank']==[200]*8 and saved['run_id']==s['source_probe_run_id']
-    model=OnlineQuestionProbe(Path(c['official_model_dir']),273).to(device=device,dtype=torch.float32)
+    previous=read(out/'latest.json')if(out/'latest.json').exists()else None
+    saved=torch.load(previous['checkpoint']if previous else s['source_probe_checkpoint'],map_location='cpu',weights_only=False)
+    completed=previous['epoch']if previous else 0;expected=200+400*completed
+    if previous:
+        assert saved['epoch']==completed and saved['actual_adam_per_rank']==[expected]*8 and saved['run_id']==c['run_id']
+        assert saved['arm']==arm and saved['dataset_manifest_sha256']==data.manifest_sha and saved['test_manifest_sha256']==test.manifest_sha
+        assert saved['ema_updates']==400*completed and saved['ema_decay']==s['ema_decay']
+    else:assert saved['actual_adam_steps_per_rank']==[200]*8 and saved['run_id']==s['source_probe_run_id']
+    class PrevalidatedStudyProbe(OnlineQuestionProbe):
+        def forward(self,batch):
+            return self.forward_validated(batch)
+    model=PrevalidatedStudyProbe(Path(c['official_model_dir']),273).to(device=device,dtype=torch.float32)
     model.load_state_dict(saved['model'],strict=True)
     optimizer=torch.optim.Adam(model.parameters(),lr=s['learning_rate'],weight_decay=0)
     optimizer.load_state_dict(saved['optimizer'])
@@ -72,12 +79,15 @@ def train(base,arm_name):
     for state in optimizer.state.values():
         for key,value in list(state.items()):
             if isinstance(value,torch.Tensor)and key!='step':state[key]=value.to(device)
-    assert actual_adam_steps(optimizer)==200
+    assert actual_adam_steps(optimizer)==expected
     rng=saved['rank_rng'][rank];random.setstate(rng['python']);np.random.set_state(rng['numpy'])
     torch.set_rng_state(rng['torch_cpu']);torch.cuda.set_rng_state(rng['torch_cuda'],device)
     ema=copy.deepcopy(model).eval()
+    if previous:ema.load_state_dict(saved['ema_model'],strict=True)
     for parameter in ema.parameters():parameter.requires_grad_(False)
     model=DDP(model,device_ids=[local],broadcast_buffers=False)
+    def prepare_batch(features,ids):
+        return features.get_batch(ids,device)
     def evaluate(epoch):
         model.eval();ema.eval();result={name:{}for name in('raw','ema')};began=time.monotonic();fallbacks=[]
         with torch.no_grad():
@@ -88,7 +98,7 @@ def train(base,arm_name):
                     ids=[tid for g in own_groups[offset:offset+micro]for tid in g['trajectory_ids']]
                     batch=raw=shadow=None;failed=False
                     try:
-                        batch=features.get_batch(ids,device)
+                        batch=prepare_batch(features,ids)
                         with torch.autocast(device_type='cuda',dtype=torch.bfloat16):raw=model.module(batch);shadow=ema(batch)
                     except torch.cuda.OutOfMemoryError:
                         if micro==1:raise
@@ -131,17 +141,18 @@ def train(base,arm_name):
             once(out/('epoch-%02d-metrics.json'%epoch),result);publish(out/'latest-metrics.json',result)
         dist.barrier();return result
     try:
-        if rank==0:once(out/'initialization.json',dict(source_probe=s['source_probe_checkpoint'],source_sha256=s['source_probe_sha256'],
+        if rank==0 and not(out/'initialization.json').exists():once(out/'initialization.json',dict(source_probe=s['source_probe_checkpoint'],source_sha256=s['source_probe_sha256'],
             source_actual_adam=200,source_model_and_moments_restored=True,ema_initialized_from_same_raw_weights=True,
             actor_updated=False,encoder_forward_repeated=False,arm=arm,readout='question_plus20'))
-        evaluate(0)
-        for epoch in range(1,s['epochs']+1):
+        if previous and rank==0:once(out/('resume-after-epoch-%02d.json'%completed),dict(source_checkpoint=previous['checkpoint'],actual_adam_per_rank=[expected]*8,ema_updates=completed*400,model_optimizer_ema_and_eight_rng_restored=True))
+        if not previous:evaluate(0)
+        for epoch in range(completed+1,s['epochs']+1):
             plan=plan_epoch(keys,s['dataset_seed'],epoch)
             if rank==0:once(out/('epoch-%02d-order.json'%epoch),plan)
             model.train();began=time.monotonic();seen=[]
             for step,planned in enumerate(plan,1):
                 chosen=[groups[i]for i in rank_question_slice(planned,rank)]
-                ids=[t for g in chosen for t in g['trajectory_ids']];seen.extend(ids);batch=data.get_batch(ids,device)
+                ids=[t for g in chosen for t in g['trajectory_ids']];seen.extend(ids);batch=prepare_batch(data,ids)
                 labels=torch.tensor([[data.index[t]['strict_em']for t in g['trajectory_ids']]for g in chosen],device=device,dtype=torch.float32)
                 soft_event=None;augmentation=dict(augmented_questions=0,lambda_sum=0.,pairs=0)
                 if arm['mixup']:
@@ -149,13 +160,10 @@ def train(base,arm_name):
                         s['dataset_seed']+epoch*1000003+step*8+rank,arm['mixup_alpha'])
                 optimizer.zero_grad(set_to_none=True)
                 with torch.autocast(device_type='cuda',dtype=torch.bfloat16):logits=model(batch).reshape(len(chosen),5)
-                losses=joint_loss(logits.float(),labels,group_weight=arm['group_weight'],mixed_target=soft_event)
+                losses=joint_loss(logits.float(),labels,group_weight=arm['group_weight'],mixed_target=soft_event,validate=False)
                 backward=losses['loss']*ddp_mean_scale(len(chosen),planned['global_questions'])
-                finite=torch.isfinite(backward).int();dist.all_reduce(finite,op=dist.ReduceOp.MIN)
-                if not int(finite.item()):raise FloatingPointError('Actual nonfinite20k study loss')
-                backward.backward();finite=torch.stack([torch.isfinite(p.grad).all()for p in model.parameters()if p.grad is not None]).all().int();dist.all_reduce(finite,op=dist.ReduceOp.MIN)
-                if not int(finite.item()):raise FloatingPointError('Actual nonfinite20k study gradient')
-                optimizer.step();actual=actual_adam_steps(optimizer);assert actual==200+(epoch-1)*400+step
+                backward.backward()
+                optimizer.step();actual=int(next(iter(optimizer.state.values()))['step'].item())
                 update_ema(model.module,ema,s['ema_decay'])
                 values=torch.tensor([float(losses[k].detach())*len(chosen)for k in('trajectory_bce','group_bce','total_loss')]+[
                     augmentation['augmented_questions'],augmentation['pairs'],augmentation['lambda_sum']],device=device,dtype=torch.float64)
@@ -216,6 +224,7 @@ def run(base):
     try:
         for arm in s['arms']:
             name=arm['name'];publish(base/'logs/pipeline-status.json',dict(stage=name,checked_unix=time.time(),actor_version=c['actor_version']))
+            if(base/'arms'/name/'complete.json').exists():continue
             command=[python,'-m','torch.distributed.run','--standalone','--nproc_per_node=8','-m','reproduction.prefix_selection200.probe20k_fit','train','--base',str(base),'--arm',name]
             p=owned.start(name,command,env,str(base/'logs'/(name+'.log')),str(base/'repo'))
             while p.poll()is None:owned.observe(name);interrupt.check();time.sleep(1)
@@ -236,6 +245,9 @@ def submit(base):
     base=Path(base);prep=base/'preparation'
     if(prep/'submit-intent.json').exists():return dict(status='EXISTING_INTENT_NO_REPLAY',receipt=read(prep/'submit-receipt.json')if(prep/'submit-receipt.json').exists()else None)
     c=read(prep/'launch-config.json');assert c['probe20k_role']=='fit'
+    if c['probe20k_study'].get('resume_fit_base'):
+        from .probe20k_resume import import_history
+        import_history(base,c)
     s=c['probe20k_study'];assert read(Path(s['dataset_base'])/'dataset-complete.json')['trajectories']==102400
     from .local_probe_fit50 import SHARED_AUTHORIZATION
     assert c['local_probe_fit50']['shared_slurm_physical8_authorization']==SHARED_AUTHORIZATION

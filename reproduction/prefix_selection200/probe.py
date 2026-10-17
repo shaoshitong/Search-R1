@@ -200,6 +200,10 @@ class OnlineQuestionProbe(QuestionPrefixCorrectnessProbe):
     """Identical learned tensors; permit authentic initial-EOS question-only rows."""
     def forward(self, batch):
         validate_online_layout(batch, self.max_positions)
+        return self.forward_validated(batch)
+
+    def forward_validated(self, batch):
+        """Same numerical graph for an already bound immutable feature dataset."""
         features, mask, positions = batch['features'].detach(), batch['attention_mask'], batch['position_ids']
         kwargs = dict(attention_mask=mask, position_ids=positions,
                       position_embeddings=self.rotary(features, positions), use_cache=False, output_attentions=False)
@@ -208,7 +212,7 @@ class OnlineQuestionProbe(QuestionPrefixCorrectnessProbe):
         hidden = self.block(features, **kwargs)
         if isinstance(hidden, tuple):
             hidden = hidden[0]
-        return self.output(masked_flatten(hidden, mask)).squeeze(-1).float()
+        return self.output(hidden.masked_fill(~mask.unsqueeze(-1), 0).flatten(1)).squeeze(-1).float()
 
 
 class PrefixEncoder(InlineEncoder):
