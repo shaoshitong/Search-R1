@@ -11,7 +11,7 @@ from reproduction.prefix_selection200.control import deployment_script
 from reproduction.h1008_qprobe.established_controller_transport import remote
 
 
-def deploy_code(config,commit,reuse_commit,reuse_repo,role='data'):
+def deploy_code(config,commit,reuse_commit,reuse_repo,role='data',stage_only=False):
     assert role in ('data','fit') and config['probe20k_role']==role
     deployment=deployment_script(config['base'],commit,config,archive_for_commit(commit,reuse_commit),reuse_commit,reuse_repo)
     before=''
@@ -46,10 +46,13 @@ if not record.exists():
   later_task_authorization_active=True,training_was_not_started=True,new_cpus=48,new_memory_gib=256),f)
 else:assert native['JobState']=='CANCELLED'and json.loads(record.read_text())['job_id']==str(old['job_id'])
 '''.replace('OLD',repr(old))
-    return (before+'import pathlib,json,sys\nb=pathlib.Path('+repr(config['base'])+');\n'
+    code=(before+'import pathlib,json,sys\nb=pathlib.Path('+repr(config['base'])+');\n'
         'if not b.exists():\n exec(compile('+repr(deployment)+',"isolated_probe20k_deploy","exec"),{})\n'
         'else:\n assert (b/"preparation/deploy-receipt.json").exists(),"Reconcile existing deployment intent first"\n'
-        'c=json.loads((b/"preparation/launch-config.json").read_text());assert c["source_commit"]=='+repr(commit)+'\n'
+        'c=json.loads((b/"preparation/launch-config.json").read_text());assert c["source_commit"]=='+repr(commit)+'\n')
+    if stage_only:
+        return code+'print(json.dumps(dict(deploy=json.loads((b/"preparation/deploy-receipt.json").read_text()),submit=None,stage_only=True)))\n'
+    return(code+
         'sys.path.insert(0,str(b/"repo"));from reproduction.prefix_selection200.'+('probe20k_dataset'if role=='data'else'probe20k_fit')+' import submit\n'
         'print(json.dumps(dict(deploy=json.loads((b/"preparation/deploy-receipt.json").read_text()),submit=submit(b))))\n')
 
@@ -122,15 +125,15 @@ print(json.dumps(dict(observed_unix=time.time(),base=str(b),job_id=job,
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('phase',choices=('deploy-data','observe-data','deploy-fit','observe-fit'));p.add_argument('--config',required=True)
+    p=argparse.ArgumentParser();p.add_argument('phase',choices=('deploy-data','observe-data','deploy-fit','observe-fit','stage-fit'));p.add_argument('--config',required=True)
     p.add_argument('--receipts',required=True);p.add_argument('--reuse-source-commit');p.add_argument('--reuse-source-repo');a=p.parse_args()
     c=json.loads(Path(a.config).read_text());repo=Path(__file__).resolve().parents[2]
-    if a.phase.startswith('deploy-'):
+    if a.phase.startswith('deploy-')or a.phase=='stage-fit':
         commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
         branch=subprocess.check_output(['git','branch','--show-current'],cwd=repo,text=True).strip()
         actual=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+branch],cwd=repo,text=True).split()[0]
         assert actual==commit
-        script=deploy_code(c,commit,a.reuse_source_commit,a.reuse_source_repo,a.phase.split('-')[1])
+        script=deploy_code(c,commit,a.reuse_source_commit,a.reuse_source_repo,a.phase.split('-')[1],stage_only=a.phase=='stage-fit')
     else:script=(observation_code if a.phase=='observe-data'else fit_observation_code)(c['base'])
     tag=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     directory=Path(a.receipts);path=directory/('probe20k-'+a.phase+'-'+tag+'.transport.json')
