@@ -1,5 +1,9 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
+Current remote state UNKNOWN at 2026-10-17T01:32:59.404312+00:00: ordinary alias, per-command handshake compatibility and source-bound observation attempts timed out. Last verified saved joint99 / actor1980 and probe1980 per rank; last successful boundary read 1792200421.635691. Prior RUNNING observation is historical, not current-health proof. Joint100/QA100/CPU100 not verified. No training control action; goal remains ACTIVE. Transport evidence: CONNECTION_OBSERVATION_20261017.json.
+
+Probe trend audit through99: train1024 post-update loss1.434143→2.202314; fixed512 loss1.179217→1.308442, balanced accuracy60.2397%→54.3018%. No sustained improvement claim.
+
 Actual complete99/200; job3427 RUNNING on h100-10/10.33.0.18, stage outer-000100-prefix. Saved actor/probe Adam per8rank: [1980, 1980, 1980, 1980, 1980, 1980, 1980, 1980] / [1980, 1980, 1980, 1980, 1980, 1980, 1980, 1980]. Completed joint counters: [1980, 1980, 1980, 1980, 1980, 1980, 1980, 1980] / [1980, 1980, 1980, 1980, 1980, 1980, 1980, 1980]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
 Latest QA: outer50,512questions EM28.3203% / F134.4268%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.
