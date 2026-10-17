@@ -107,7 +107,110 @@ def fixture(root, *, qualified=False):
     return source,target,current,proof,terminal
 
 
+def pending_fixture(root, *, qualified=True):
+    """Equivalent small N=2/pending3 fixture for the real N=4/pending5 boundary."""
+    from .pool import reserve_indices,state_sha
+    source,target,c,proof,terminal=fixture(root)
+    original=resume.read(source/'preparation/launch-config.json');joint=resume.read(source/'latest-joint.json');actor=joint['actor']
+    before=resume.read(source/'question-pool/state.json');indices,cycles,after=reserve_indices(before,3,2560)
+    folder=source/'outers/outer-000003';pool_sha='e'*64
+    write(source/'question-pool/binding.json',dict(candidate_questions=2560,sha256=pool_sha))
+    write(source/'question-pool/state.json',after)
+    write(folder/'pool-reservation.json',dict(outer=3,pool_sha256=pool_sha,before_sha256=state_sha(before),
+        after_sha256=state_sha(after),after=after,indices=indices,cycles=cycles))
+    rows=[dict(qid=str(index),pool_index=index,pool_cycle=cycle,candidate_ordinal=ordinal)
+        for ordinal,(index,cycle) in enumerate(zip(indices,cycles))]
+    common=dict(run_id='run',outer=3,actor_version=actor['actor_version'])
+    write(folder/'selection.json',dict(run_id='run',outer=3,questions=2560,trajectories=12800,
+        trajectory_group_size=5,pool_sha256=pool_sha,rows=rows))
+    write(folder/'questions.json',dict(run_id='run',outer=3,questions=2560,rows=rows,
+        selection_sha256=resume.sha(folder/'selection.json')))
+    write(folder/'actor-binding.json',dict(common,actor_model_dir=actor['hf_model_dir'],
+        actor_model_files_sha256={name:value['sha256'] for name,value in actor['hf_files'].items()}))
+    ranks=[]
+    for rank in range(4):
+        ranks.append(dict(common,rank=rank,phase='prefix',questions=640,trajectories=3200,
+            states=producer(folder/'prefix'/('states-%d.jsonl.gz'%rank)),
+            prefix=producer(folder/'prefix'/('prefix-%d.jsonl.gz'%rank)),
+            actor_hidden=producer(folder/'prefix'/('hidden-%d.pt'%rank))))
+    scan=folder/'prefix/scan';scanfile=producer(scan/'packed.npy')
+    write(scan/'scan-complete.json',dict(common,count=12800,actor_hidden_native=True,
+        independent_encoder_forward=False,files={'packed.npy':dict(bytes=scanfile['bytes'],sha256=scanfile['sha256'])}))
+    scan_sha=resume.sha(scan/'scan-complete.json')
+    write(folder/'prefix/complete.json',dict(common,questions=2560,trajectories=12800,phase='prefix',
+        ranks=ranks,owned_native_worker_exit_codes={str(rank):0 for rank in range(4)},
+        scan_path=str(scan),scan_sha256=scan_sha,candidate_questions_sha256=resume.sha(folder/'questions.json')))
+    selected=dict(common,prefix_scan_sha256=scan_sha,probe_before_checkpoint_sha256=joint['probe']['sha256'],
+        candidate_questions=2560,selected_questions=512,selected=rows[:512])
+    write(folder/'probe-score/selection.json',selected)
+    index=producer(folder/'probe-score/index.json',b'[]');scores=producer(folder/'probe-score/candidate-scores.jsonl',b'{}\n')
+    # Real79c manifests/complete omit candidate_questions; infer count//5.
+    write(folder/'probe-score/manifest.json',dict(common,count=12800,selected_count=2560,
+        prefix_scan_sha256=scan_sha,probe_before_checkpoint_sha256=joint['probe']['sha256'],
+        selection_sha256=resume.sha(folder/'probe-score/selection.json'),native_hidden_scan=str(scan),
+        no_outcome_labels=True,independent_encoder_forward=False,index_sha256=index['sha256'],candidate_scores_sha256=scores['sha256']))
+    write(folder/'probe-score/complete.json',dict(common,manifest_sha256=resume.sha(folder/'probe-score/manifest.json'),
+        selection_sha256=resume.sha(folder/'probe-score/selection.json')))
+    producer(folder/'full/rank-1.log',b'constructed EADDRINUSE before any rank progress\n')
+    terminal['termination_cause']='FAULT_EXIT';termpath=Path(c['resume_joint']['terminal_proof']);write(termpath,terminal)
+    c['resume_joint']['terminal_proof_sha256']=resume.sha(termpath)
+    c['candidate_schedule']['effective_from_outer']=4
+    proof=resume.compatibility_proof(proof['parent_publication'],proof['target_publication'],
+        authorized_candidate_delta=dict(proof['authorized_candidate_delta'],candidate_schedule=c['candidate_schedule']))
+    write(Path(c['source_compatibility']),proof);c['source_compatibility_sha256']=resume.sha(c['source_compatibility'])
+    pending=resume.pending_sampling_boundary(source,original,joint)
+    if qualified:
+        files=[]
+        for path in sorted(source.rglob('*')):
+            if not path.is_file():continue
+            info=path.stat();files.append(dict(path=str(path),bytes=info.st_size,sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+                dev=info.st_dev,inode=info.st_ino,mtime_ns=info.st_mtime_ns))
+        q=dict(status=resume.QUALIFIED,run_id='run',source_execution_id=original['execution_id'],source_commit=original['source_commit'],
+            completed_outer=2,source_joint_sha256=resume.sha(source/'latest-joint.json'),actual_adam_steps_per_rank=[2]*4,
+            terminal_proof_sha256=resume.sha(termpath),actor_rank_optimizer_rng_scheduler_verified=4,
+            actor_driver_rng_verified=True,probe_model_optimizer_rank_rng_verified=True,pool_exact_permutation_verified=True,
+            payload_full_sha_read_once=True,verified_files=files,pending_sampling=pending,
+            phase_hashes={name:value['sha256'] for name,value in pending['phases'].items()},constructed_fixture_only=True)
+        path=root.resolve()/'qualification.json';write(path,q)
+        c['resume_joint'].update(qualification_proof=str(path),qualification_proof_sha256=resume.sha(path))
+    write(target/'preparation/launch-config.json',c)
+    return source,target,c,pending
+
+
 class RecoveryMetadataTests(unittest.TestCase):
+    def test_pending_legacy_sampling_preserves_after_state_and_reuses_both_phases(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            source,target,c,pending=pending_fixture(Path(temporary))
+            with patch.object(resume,'_native_writers_present',return_value=[]):
+                result=resume.import_complete(target)
+                self.assertEqual(resume.validate_imported_boundary(target,c),2)
+            self.assertEqual(result['effective_from_outer'],4)
+            self.assertEqual(result['consumed_candidates_at_boundary'],5120)
+            self.assertEqual(result['consumed_candidates_current_pool'],7680)
+            self.assertEqual(resume.read(target/'question-pool/state.json'),pending['pool_after'])
+            self.assertEqual(resume.read(target/'outers/outer-000002/pool-state-at-completion.json')['consumed_candidates'],5120)
+            for phase,marker in (('prefix','complete.json'),('probe-score','manifest.json')):
+                root=target/'outers/outer-000003'
+                self.assertTrue(resume.inherited_phase(target,root,phase,c))
+                self.assertEqual((root/phase/marker).stat().st_ino,(source/'outers/outer-000003'/phase/marker).stat().st_ino)
+            self.assertFalse((target/'outers/outer-000003/full').exists())
+
+    def test_pending_requires_accepted_legacy_pool_no_writes_and_complete_full_sha_inventory(self):
+        from .checkpoint_native_pending_probe import Seals
+        with tempfile.TemporaryDirectory() as temporary:
+            source,target,c,pending=pending_fixture(Path(temporary))
+            seals=Seals(source);qualify.seal_pending_sampling(seals,source,pending)
+            self.assertTrue(set(path for item in pending['phases'].values() for path in item['files'])<=set(seals.files))
+            original=resume.read(source/'preparation/launch-config.json');joint=resume.read(source/'latest-joint.json')
+            producer(source/'outers/outer-000003/full/rank-0-progress.json',b'{}')
+            with self.assertRaises(ValueError):resume.pending_sampling_boundary(source,original,joint)
+            (source/'outers/outer-000003/full/rank-0-progress.json').unlink()
+            qpath=Path(c['resume_joint']['qualification_proof']);q=resume.read(qpath)
+            q['verified_files']=[row for row in q['verified_files'] if not row['path'].endswith('hidden-0.pt')]
+            write(qpath,q);c['resume_joint']['qualification_proof_sha256']=resume.sha(qpath)
+            with patch.object(resume,'_native_writers_present',return_value=[]):
+                with self.assertRaises(ValueError):resume.plan(target,c)
+
     def test_unknown_state_cannot_import_and_source_math_delta_is_exact(self):
         with tempfile.TemporaryDirectory() as temporary:
             source,target,c,proof,terminal=fixture(Path(temporary))
@@ -121,6 +224,16 @@ class RecoveryMetadataTests(unittest.TestCase):
             with self.assertRaises(ValueError):resume.compatibility_proof(proof['parent_publication'],changed,authorized_candidate_delta=proof['authorized_candidate_delta'])
             changed=copy.deepcopy(proof['target_publication']);changed['critical_ast_sha256']['update']='f'*64
             with self.assertRaises(ValueError):resume.compatibility_proof(proof['parent_publication'],changed,authorized_candidate_delta=proof['authorized_candidate_delta'])
+            changed=copy.deepcopy(proof['target_publication']);changed['files_sha256']['reproduction/prefix_selection200/vllm_ports.py']='f'*64
+            with self.assertRaises(ValueError):resume.compatibility_proof(proof['parent_publication'],changed,authorized_candidate_delta=proof['authorized_candidate_delta'])
+            infra=dict(kind='vllm_rank_port_namespace_collision_repair',fault_terminal_proof_sha256='e'*64,
+                allowed_files=sorted(resume.PORT_REPAIR_FILES))
+            allowed=resume.compatibility_proof(proof['parent_publication'],changed,
+                authorized_candidate_delta=proof['authorized_candidate_delta'],authorized_infrastructure_delta=infra)
+            self.assertEqual(allowed['authorized_infrastructure_delta'],infra)
+            changed['rollout_critical_ast_sha256']['seed_for']='f'*64
+            with self.assertRaises(ValueError):resume.compatibility_proof(proof['parent_publication'],changed,
+                authorized_candidate_delta=proof['authorized_candidate_delta'],authorized_infrastructure_delta=infra)
             self.assertFalse((target/'actor/latest.json').exists())
 
     def test_constructed_qualified_import_preserves_raw_inodes_history_and_pool(self):

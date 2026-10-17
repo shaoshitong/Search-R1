@@ -20,7 +20,7 @@ from .checkpoint_cpu_once import need, tensor_cpu, validate_adam, validate_rng, 
 from .contract import WORLD, PROBE_LR, PROBE_UPDATES
 from .grounding import expected_round
 from .i1_i6_joint_resume import (QUALIFIED, canonical_path, read, sha, _once, _writer_barrier,
-    _joint, _grounding, verify_source_compatibility, scientific_binding)
+    _joint, _grounding, verify_source_compatibility, scientific_binding,pending_sampling_boundary)
 from .periodic import probe_boundary
 from .pool import state_sha
 
@@ -124,6 +124,22 @@ def probe_state(saved,receipt,config,outer,history):
     return dict(actual_adam_steps_per_rank=[steps]*WORLD,adam_states=adam,rank_rng=rng,finite_model=True)
 
 
+def seal_pending_sampling(seals,base,pending):
+    """Full-SHA each accepted prefix/score file once, including native hidden."""
+    if pending is None:return
+    root=base/'outers'/('outer-%06d'%pending['outer'])
+    for name in ('pool-reservation.json','selection.json','questions.json','actor-binding.json'):seals.json(root/name)
+    for phase in pending['phases']:seals.tree(root/phase)
+    prefix=seals.json(root/'prefix/complete.json');seals.verify_producer_references(prefix)
+    scan=seals.json(root/'prefix/scan/scan-complete.json')
+    for name,producer in scan['files'].items():
+        need(Path(name).name==name,'Accepted pending scan filename escaped its original phase')
+        seals.file(root/'prefix/scan'/name,producer)
+    score=seals.json(root/'probe-score/manifest.json')
+    for name,key in (('index.json','index_sha256'),('candidate-scores.jsonl','candidate_scores_sha256')):
+        path=root/'probe-score'/name;seals.file(path,dict(bytes=path.stat().st_size,sha256=score[key]))
+
+
 def qualify(base,outer,terminal_proof,terminal_sha,output):
     from .checkpoint_native_pending_probe import Seals,_hf
     base=canonical_path(base);output=canonical_path(output,exists=False);config=read(base/'preparation/launch-config.json')
@@ -136,10 +152,12 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
          terminal['uncommitted_after_joint'].get('probe_actual_writes_per_rank')==[0]*WORLD and
          terminal['uncommitted_after_joint'].get('optimizer_work_in_flight') is False and
          terminal['uncommitted_after_joint'].get('all_updates_accounted') is True,'Do not qualify a discarded/unknown partial update as the earlier joint')
+    joint=read(base/'latest-joint.json');pending=pending_sampling_boundary(base,config,joint)
     if output.exists():
         result=read(output)
         need(result['status']==QUALIFIED and result['completed_outer']==outer and result['terminal_proof_sha256']==terminal_sha and
              result['source_joint_sha256']==sha(base/'latest-joint.json'),'Existing qualification belongs to a different actual boundary')
+        need(result.get('pending_sampling')==pending,'Accepted pending sampling inventory changed after its once-only qualification')
         for row in result['verified_files']:
             info=canonical_path(row['path']).stat()
             need((info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns)==(row['dev'],row['inode'],row['bytes'],row['mtime_ns']),
@@ -147,7 +165,7 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
         return dict(result,existing_proof_reused_without_payload_rescan=True)
     intent=output.with_name(output.name+'.intent.json')
     need(not intent.exists(),'Existing incomplete once-only qualification requires reconciliation')
-    joint=read(base/'latest-joint.json');actor=joint['actor'];state=joint['grounding']
+    actor=joint['actor'];state=joint['grounding']
     _once(intent,dict(status='ACTUAL_CPU_QUALIFICATION_STARTED',run_id=config['run_id'],outer=outer,
         source_joint_sha256=sha(base/'latest-joint.json'),terminal_proof_sha256=terminal_sha,started_unix=time.time()))
     allowed=[Path(config['official_model_dir'])/'config.json',terminal_proof,Path(actor['hf_model_dir'])]
@@ -222,6 +240,7 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
         for key,name in (('commit','commit_probe.pkl'),('boundary','boundary_probe.pkl')):
             path=Path(fitted[key]);seals.file(path,dict(bytes=path.stat().st_size,sha256=fitted['head_sha256'][name]))
         if 'adoption_receipt' in fitted:seals.json(fitted['adoption_receipt'])
+    seal_pending_sampling(seals,base,pending)
     files=seals.finish();_writer_barrier(config,read(terminal_proof),read(base/'logs/process-ledger.json'),
         authorized_handoff_sha=authorization,completed_outer=outer)
     result=dict(schema_version=1,status=QUALIFIED,run_id=config['run_id'],source_execution_id=config['execution_id'],
@@ -230,6 +249,8 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
         scheduler_completed_outer=outer,probe_adam_steps_per_rank=joint['probe']['actual_adam_steps_per_rank'],
         consumed_candidates=consumed,actor_rank_optimizer_rng_scheduler_verified=WORLD,actor_driver_rng_verified=True,
         probe_model_optimizer_rank_rng_verified=True,pool_exact_permutation_verified=True,payload_full_sha_read_once=True,
+        pending_sampling=pending,phase_hashes={name:value['sha256'] for name,value in pending['phases'].items()} if pending else {},
+        accepted_phase_trees_full_sha_read_once=bool(pending),
         actor_hf=hf,actor_rank_states=ranks,actor_driver=driver_proof,probe=probe,verified_files=files,
         actual_cpu_deserialization=True,cuda_restore_verified=False,gpu_forward_performed=False,
         qa_or_new_rollout_performed=False,optimizer_reset=False,automatic_rollback_performed=False,completed_unix=time.time())

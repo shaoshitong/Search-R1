@@ -71,8 +71,10 @@ write(b/'preparation/handoff-launch.json',value,True);emit(value)
 PREPARE = COMMON + r'''
 source()
 assert not (b/'preparation/prepare-intent.json').exists(),'Prepare already claimed; inspect, never replay'
-terminal=read(h['parent_terminal_path']);assert terminal['termination_cause']=='AUTHORIZED_BOUNDARY_HANDOFF'
-assert terminal['human_intent_sha256']==h['human_intent_sha256'] and terminal['owned_writers_gone']
+terminal=read(h['parent_terminal_path'])
+assert sha(h['parent_terminal_path'])==h['parent_terminal_sha256'] and terminal['owned_writers_gone']
+assert terminal['termination_cause'] in ('AUTHORIZED_BOUNDARY_HANDOFF','FAULT_EXIT')
+if terminal['termination_cause']=='AUTHORIZED_BOUNDARY_HANDOFF':assert terminal['human_intent_sha256']==h['human_intent_sha256']
 write(b/'preparation/prepare-intent.json',dict(run_id=h['run_id'],execution_id=h['execution_id'],source_commit=h['source_commit'],checked_unix=time.time(),parent_terminal_sha256=sha(h['parent_terminal_path'])),True)
 command=[PYTHON if 'PYTHON' in globals() else '/data/search-g1/env/bin/python','-m','reproduction.operations.a800_prefix5_variable_pool_control','--prepare-worker','--handle',str(b/'preparation/deployment.json')]
 env=dict(os.environ,PYTHONPATH=str(repo),PYTHONDONTWRITEBYTECODE='1',PYTHONUNBUFFERED='1',CUDA_VISIBLE_DEVICES='')
@@ -95,6 +97,9 @@ _body = fresh._observe
 _guard = "assert joint['run_id']==h['run_id'] and joint['source_commit']==h['source_commit']"
 assert _body.count(_guard) == 1
 _body = _body.replace(_guard, "assert joint['run_id']==h['run_id']\n c=read(b/'preparation/launch-config.json')\n if joint['outer']<=c['resume_joint']['completed_outer']:\n  assert sha(b/'latest-joint.json')==c['resume_joint']['source_joint_sha256']\n else:assert joint['source_commit']==h['source_commit']")
+_restore_projection = "restoration=(project(restored[0],('restored_completed_outer','actual_adam_before','restored_scheduler','actual_learning_rates','actual_model_master_dtypes','actor_version','restored_grounding_probe_version')) if restored else None),"
+assert _body.count('incomplete_final_line=incomplete,') == 1
+_body = _body.replace('incomplete_final_line=incomplete,','incomplete_final_line=incomplete,'+_restore_projection)
 _body = _body.removesuffix('\nemit(v)\n')
 OBSERVE = COMMON + _body + r'''
 v['handoff_launch']=document(b,'preparation/handoff-launch.json')
@@ -157,26 +162,32 @@ def prepare_worker(handle_path):
     h=read(handle_path);base=Path(h['base']);parent=Path(h['parent_handle']['base'])
     result=dict(run_id=h['run_id'],execution_id=h['execution_id'],source_commit=h['source_commit'],identity=fresh.previous._identity(),started_unix=time.time())
     try:
-        original=read(parent/'preparation/launch-config.json');terminal=read(h['parent_terminal_path']);n=terminal['stopped_after_complete_outer']
+        original=read(parent/'preparation/launch-config.json');terminal=read(h['parent_terminal_path'])
+        n=terminal.get('stopped_after_complete_outer',terminal.get('completed_outer'))
         if (original['run_id']!=h['run_id'] or original['execution_id']!=h['parent_handle']['execution_id'] or original['source_commit']!=h['parent_handle']['source_commit'] or
-                terminal['human_intent_sha256']!=h['human_intent_sha256'] or sha(base/'preparation/human-intent.json')!=h['human_intent_sha256']):
+                sha(h['parent_terminal_path'])!=h['parent_terminal_sha256'] or
+                (terminal['termination_cause']=='AUTHORIZED_BOUNDARY_HANDOFF' and terminal['human_intent_sha256']!=h['human_intent_sha256']) or
+                sha(base/'preparation/human-intent.json')!=h['human_intent_sha256']):
             raise ValueError('Exact live parent and latest human handoff identity differ')
-        schedule=dict(effective_from_outer=n+1,legacy_candidates=2560,ordinary_candidates=5120,update_candidates=2560,probe_update_period=10,probe_update_at_final=False,selected_questions=512)
-        parent_manifest=resume.source_manifest(parent/'repo',original['source_commit'])
+        effective=h.get('candidate_schedule_effective_from_outer',n+1)
+        schedule=dict(effective_from_outer=effective,legacy_candidates=2560,ordinary_candidates=5120,update_candidates=2560,probe_update_period=10,probe_update_at_final=False,selected_questions=512)
+        science_source=original.get('science_source_commit',original['source_commit'])
+        parent_manifest=resume.source_manifest(parent/'repo',original['source_commit'],science_source_commit=science_source)
         parent_deployment=read(parent/'preparation/deployment.json')
         expected_code={name:value for name,value in parent_deployment['source_files'].items() if Path(name).suffix in ('.py','.sh')}
         if (parent_deployment['source_commit']!=original['source_commit'] or parent_manifest['files_sha256']!=expected_code):
             raise ValueError('Parent actual code no longer matches its immutable deployed publication')
-        target_manifest=resume.source_manifest(base/'repo',h['source_commit'],science_source_commit=original['source_commit'])
+        target_manifest=resume.source_manifest(base/'repo',h['source_commit'],science_source_commit=science_source)
         delta=dict(candidate_schedule=schedule,human_intent_sha256=h['human_intent_sha256'],only_authorized_algorithm_delta='ordinary_candidate_pool_5120_periodic2560')
-        proof=resume.compatibility_proof(parent_manifest,target_manifest,authorized_candidate_delta=delta)
+        proof=resume.compatibility_proof(parent_manifest,target_manifest,authorized_candidate_delta=delta,
+            authorized_infrastructure_delta=h.get('infrastructure_repair'))
         proof_path=base/'preparation/source-compatibility.json';once(proof_path,proof)
         qualification=base/'preparation/full-state-qualified.json'
         publish(base/'preparation/prepare-progress.json',dict(result,stage='ONCE_FULL_SHA_FINITE_SAVED_BOUNDARY_QUALIFICATION',completed_outer=n))
         from reproduction.prefix_selection200.i1_i6_checkpoint_cpu import qualify
         qualify(parent,outer=n,terminal_proof=Path(h['parent_terminal_path']),
             terminal_sha=sha(h['parent_terminal_path']),output=qualification)
-        c=dict(original,base=str(base),execution_id=h['execution_id'],source_commit=h['source_commit'],science_source_commit=original['source_commit'],
+        c=dict(original,base=str(base),execution_id=h['execution_id'],source_commit=h['source_commit'],science_source_commit=science_source,
             source_compatibility=str(proof_path),source_compatibility_sha256=sha(proof_path),candidate_schedule=schedule,
             candidate_schedule_authorization=str(base/'preparation/human-intent.json'),candidate_schedule_authorization_sha256=h['human_intent_sha256'],
             pool_state_path=str(base/'question-pool/state.json'),prefix_probe_receipt=str(base/'probe/latest.json'),
@@ -193,7 +204,7 @@ def prepare_worker(handle_path):
         imported=resume.import_complete(base)
         from reproduction.prefix_selection200.launch import validate_config
         validate_config(c,base)
-        result.update(exit_code=0,status='VARIABLE_POOL_FULL_STATE_CPU_IMPORT_COMPLETE_NOT_CUDA_ACCEPTANCE',completed_outer=n,effective_from_outer=n+1,
+        result.update(exit_code=0,status='VARIABLE_POOL_FULL_STATE_CPU_IMPORT_COMPLETE_NOT_CUDA_ACCEPTANCE',completed_outer=n,effective_from_outer=effective,
             qualification_sha256=sha(qualification),config_sha256=sha(base/'preparation/launch-config.json'),import_receipt_sha256=sha(base/'preparation/resume-joint-receipt.json'),completed_unix=time.time())
     except BaseException as error:
         result.update(exit_code=1,error_class=type(error).__name__,error=str(error),failed_unix=time.time(),same_onceclaim_must_not_be_replayed=True)

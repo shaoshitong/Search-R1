@@ -27,6 +27,7 @@ from reproduction.prefix20_online.rollout import prompt_tokens, strict_label, ut
 from .contract import (G, PREFIX_TOKENS, QMAX, SAMPLING_CONTRACT, WIDTH, WORLD,
     PERIODIC_CANDIDATES, SELECTED_QUESTIONS)
 from .candidate_schedule import candidate_count, schedule_metadata
+from .vllm_ports import bounded_vllm_port_namespace
 from .interaction_protocol import (ACTUAL_COMPUTE_DTYPE, ACTION_TOKENS, BOUNDARY, BUDGET,
     COMPUTE_DTYPE, CONTRACT as INTERACTION_CONTRACT, MAX_OBSERVATION_TOKENS, MAX_SEARCH_TURNS,
     MAX_START_TOKENS, append_chunk, finish_action, first_action_cut, native_snapshot,
@@ -422,7 +423,9 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     seed = seed_for(config['run_id'], outer, 'engine', 0, rank, config.get('seed', 1729),
                     sampling_attempt_id=config.get('sampling_attempt_id'))
     capture_hidden = phase == 'prefix' and config.get('actor_hidden_native', False)
-    llm, utilization, limits, oom_attempts = _build_llm(dict(config, _capture_actor_hidden=capture_hidden), model, seed, free, total)
+    with bounded_vllm_port_namespace(config, rank, outer=outer, phase=phase) as port_namespace:
+        print('VLLM_PORT_NAMESPACE=' + json.dumps(port_namespace.receipt(), sort_keys=True), flush=True)
+        llm, utilization, limits, oom_attempts = _build_llm(dict(config, _capture_actor_hidden=capture_hidden), model, seed, free, total)
     engine = llm.llm_engine
     if str(engine.model_config.dtype) != ACTUAL_COMPUTE_DTYPE:
         raise ValueError('Actual rollout engine must use the shared BF16 train/QA protocol')
@@ -594,6 +597,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
         actor_version=config['actor_version'], actor_model_dir=model, config_sha256=digest(config_path),
         sampling_contract=CONTRACT, action_boundary=BOUNDARY, interaction_protocol=INTERACTION_CONTRACT,
         actual_compute_dtype=str(engine.model_config.dtype), sampling_attempt_id=config.get('sampling_attempt_id'),
+        vllm_port_namespace=port_namespace.receipt(),
         native_output_commit='synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort',
         trajectories=completed, questions=completed//G, device_binding=device_binding,
         pad_token_id=int(tokenizer.pad_token_id), eos_token_id=int(tokenizer.eos_token_id),

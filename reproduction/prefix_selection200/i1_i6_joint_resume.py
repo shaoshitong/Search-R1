@@ -7,6 +7,7 @@ Historical records and state blobs retain their original bytes/source identity.
 """
 import argparse
 import ast
+import copy
 import fcntl
 import hashlib
 import json
@@ -36,13 +37,19 @@ CONTROL_FILES = frozenset({
     'reproduction/prefix_selection200/test_i1_i6_joint_resume.py',
     'reproduction/prefix_selection200/test_candidate_schedule.py',
     'reproduction/prefix_selection200/test_candidate_schedule_commit.py',
+    'reproduction/prefix_selection200/test_vllm_ports.py',
 })
 CANDIDATE_DELTA_FILES = frozenset('reproduction/prefix_selection200/' + name for name in (
     'candidate_schedule.py','contract.py','periodic.py','pool.py','rollout.py','probe.py',
     'periodic_data.py','storage.py','native_features.py','guard_retry.py'))
+PORT_REPAIR_FILES = frozenset(('reproduction/prefix_selection200/rollout.py',
+                              'reproduction/prefix_selection200/vllm_ports.py'))
 PROBE_CRITICAL = ('update','load_online','initialize','initial_online_state','atomic_checkpoint','setup_ddp',
                   'batch_subset','concatenate','inference_logits','mixed_probabilities','stable_top512','join_own_em',
                   'PrefixEncoder','SelectedFeatures')
+ROLLOUT_CRITICAL = ('seed_for','initial_state','retained_length','next_request','prefix_record',
+                   'validate_selection','_states','discard_hidden_lookahead','_build_llm')
+ROLLOUT_AST_POLICY = 'states_question_count_outer_argument_and_exact_candidate_error_text_only_v1'
 
 
 def _critical_ast(repo):
@@ -51,6 +58,32 @@ def _critical_ast(repo):
     tree=ast.parse(path.read_text());nodes={node.name:node for node in tree.body if isinstance(node,(ast.FunctionDef,ast.ClassDef))}
     return {name:hashlib.sha256(ast.dump(nodes[name],include_attributes=False).encode()).hexdigest()
             for name in PROBE_CRITICAL if name in nodes}
+
+
+def _rollout_critical_ast(repo, *, normalize_candidate_metadata=False):
+    path=Path(repo)/'reproduction/prefix_selection200/rollout.py'
+    if not path.exists():return {}
+    tree=ast.parse(path.read_text());nodes={node.name:node for node in tree.body if isinstance(node,(ast.FunctionDef,ast.ClassDef))}
+    class CandidateMetadataOnly(ast.NodeTransformer):
+        def visit_Call(self,node):
+            node=self.generic_visit(node)
+            if (isinstance(node.func,ast.Name) and node.func.id=='question_count' and not node.keywords and
+                    len(node.args)==3 and all(isinstance(value,ast.Name) for value in node.args) and
+                    [value.id for value in node.args]==['config','phase','outer']):node.args=node.args[:2]
+            return node
+        def visit_Constant(self,node):
+            if node.value=='Candidates must cover every distinct question in the current scheduled question pool':
+                return ast.Constant(value='Candidates must cover every distinct question in the current2560-question pool')
+            return node
+    # These are the only already-authorized candidate metadata edits inside
+    # _states. Seeds, state evolution, selected trajectories and engine arguments
+    # keep their exact AST; all other _states code also remains exact.
+    result={}
+    for name in ROLLOUT_CRITICAL:
+        if name not in nodes:continue
+        node=CandidateMetadataOnly().visit(copy.deepcopy(nodes[name])) if normalize_candidate_metadata and name=='_states' else nodes[name]
+        result[name]=hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest()
+    return result
 
 
 def _candidate_delta(value):
@@ -134,13 +167,22 @@ def source_manifest(repo, source_commit, *, science_source_commit=None):
     for value in (source_commit,science_source_commit or source_commit):
         if re.fullmatch('[0-9a-f]{40}',value or '') is None: raise ValueError('Published source commit must be explicit')
     return dict(schema_version=1,source_commit=source_commit,science_source_commit=science_source_commit or source_commit,
-                files_sha256=_code_inventory(repo),critical_ast_sha256=_critical_ast(repo),payload_files_read=0)
+                files_sha256=_code_inventory(repo),critical_ast_sha256=_critical_ast(repo),
+                rollout_critical_ast_sha256=_rollout_critical_ast(repo),
+                rollout_candidate_metadata_ast_sha256=_rollout_critical_ast(repo,normalize_candidate_metadata=True),
+                rollout_critical_ast_policy=ROLLOUT_AST_POLICY,payload_files_read=0)
 
 
-def compatibility_proof(parent_manifest,target_manifest, *, authorized_candidate_delta=None):
+def compatibility_proof(parent_manifest,target_manifest, *, authorized_candidate_delta=None,authorized_infrastructure_delta=None):
     parent=parent_manifest['files_sha256'];target=target_manifest['files_sha256']
     delta=_candidate_delta(authorized_candidate_delta)
-    allowed=CONTROL_FILES | (CANDIDATE_DELTA_FILES if delta else frozenset())
+    infra=authorized_infrastructure_delta
+    if infra is not None and (set(infra)!={'kind','fault_terminal_proof_sha256','allowed_files'} or
+            infra['kind']!='vllm_rank_port_namespace_collision_repair' or
+            re.fullmatch('[0-9a-f]{64}',infra['fault_terminal_proof_sha256']) is None or
+            infra['allowed_files']!=sorted(PORT_REPAIR_FILES)):
+        raise ValueError('Only the explicitly recorded actual-fault vLLM port initialization repair is compatible')
+    allowed=CONTROL_FILES | (CANDIDATE_DELTA_FILES if delta else frozenset()) | (PORT_REPAIR_FILES if infra else frozenset())
     names=set(parent)|set(target);changed={name for name in names if parent.get(name)!=target.get(name)}
     if not changed <= allowed or not (names-allowed):
         raise ValueError('Only explicitly enumerated recovery/controller files may differ; actor/math has no exception')
@@ -148,30 +190,41 @@ def compatibility_proof(parent_manifest,target_manifest, *, authorized_candidate
     if any(target.get(name)!=value for name,value in science.items()): raise ValueError('Scientific source SHA differs')
     if parent_manifest.get('critical_ast_sha256',{})!=target_manifest.get('critical_ast_sha256',{}):
         raise ValueError('Head optimizer/training/restore critical AST changed outside the candidate metadata delta')
-    return dict(schema_version=1,adapter=ADAPTER,authorized_candidate_delta=delta,parent_publication=parent_manifest,target_publication=target_manifest,
+    left=parent_manifest.get('rollout_critical_ast_sha256',{});right=target_manifest.get('rollout_critical_ast_sha256',{})
+    differing={name for name in set(left)|set(right) if left.get(name)!=right.get(name)}
+    if differing and (not delta or differing!={'_states'} or
+            parent_manifest.get('rollout_candidate_metadata_ast_sha256')!=target_manifest.get('rollout_candidate_metadata_ast_sha256')):
+        raise ValueError('Rollout scientific AST differs beyond the explicit candidate count argument/error text')
+    if parent_manifest.get('rollout_critical_ast_policy')!=target_manifest.get('rollout_critical_ast_policy'):
+        raise ValueError('Explicit rollout candidate-metadata AST equivalence policy differs')
+    return dict(schema_version=1,adapter=ADAPTER,authorized_candidate_delta=delta,authorized_infrastructure_delta=infra,parent_publication=parent_manifest,target_publication=target_manifest,
         parent_runtime_source_commit=parent_manifest['source_commit'],
         science_source_commit=parent_manifest['science_source_commit'],
         runtime_source_commit=target_manifest['source_commit'],scientific_files_sha256=science,
         controller_changes={name:dict(parent_sha256=parent.get(name),target_sha256=target.get(name)) for name in sorted(changed)},
-        actor_file_sha_unchanged=True,head_training_critical_ast_unchanged=True,
+        actor_file_sha_unchanged=True,head_training_critical_ast_unchanged=True,rollout_scientific_critical_ast_unchanged=True,
         scientific_payload_or_algorithm_changed=bool(delta),only_scientific_delta='candidate_schedule' if delta else None)
 
 
 def verify_source_compatibility(config):
     path=config['source_compatibility'];proof=read(path)
     if sha(path)!=config['source_compatibility_sha256'] or proof!=compatibility_proof(proof['parent_publication'],proof['target_publication'],
-            authorized_candidate_delta=proof.get('authorized_candidate_delta')):
+            authorized_candidate_delta=proof.get('authorized_candidate_delta'),authorized_infrastructure_delta=proof.get('authorized_infrastructure_delta')):
         raise ValueError('Explicit source compatibility proof differs')
     delta=proof.get('authorized_candidate_delta')
     if delta and (config.get('candidate_schedule')!=delta['candidate_schedule'] or
             config.get('candidate_schedule_authorization_sha256')!=delta['human_intent_sha256'] or
             sha(config['candidate_schedule_authorization'])!=delta['human_intent_sha256']):
         raise ValueError('Candidate schedule changed without its exact pinned human authorization')
+    if proof.get('authorized_infrastructure_delta') and proof['authorized_infrastructure_delta']['fault_terminal_proof_sha256']!=config['resume_joint']['terminal_proof_sha256']:
+        raise ValueError('Port collision repair must bind its actual selected terminal fault')
     if (config['source_commit']!=proof['runtime_source_commit'] or
             config.get('science_source_commit')!=proof['science_source_commit'] or
             proof['target_publication']['science_source_commit']!=proof['science_source_commit'] or
             _code_inventory(Path(config['base'])/'repo')!=proof['target_publication']['files_sha256'] or
-            _critical_ast(Path(config['base'])/'repo')!=proof['target_publication'].get('critical_ast_sha256',{})):
+            _critical_ast(Path(config['base'])/'repo')!=proof['target_publication'].get('critical_ast_sha256',{}) or
+            _rollout_critical_ast(Path(config['base'])/'repo')!=proof['target_publication'].get('rollout_critical_ast_sha256',{}) or
+            _rollout_critical_ast(Path(config['base'])/'repo',normalize_candidate_metadata=True)!=proof['target_publication'].get('rollout_candidate_metadata_ast_sha256',{})):
         raise ValueError('Runtime source/scientific source or actual target code differs from its publication')
     return proof
 
@@ -180,7 +233,7 @@ def source_envelope(config, proof):
     return dict(runtime_source_commit=config['source_commit'],science_source_commit=proof['science_source_commit'],
         source_compatibility=config['source_compatibility'],source_compatibility_sha256=config['source_compatibility_sha256'],
         legacy_binding_source_commit_role='immutable_actor_and_unchanged_contract_source_commit',
-        authorized_candidate_delta=proof.get('authorized_candidate_delta'))
+        authorized_candidate_delta=proof.get('authorized_candidate_delta'),authorized_infrastructure_delta=proof.get('authorized_infrastructure_delta'))
 
 
 def scientific_binding(config, *, original_binding=_state_binding, proof=None):
@@ -276,6 +329,93 @@ def _joint(config,joint,outer, *, previous_actual=None):
     return actor,probe
 
 
+def phase_tree_files(directory):
+    """Inventory accepted immutable sampling files; never read their payloads."""
+    directory=canonical_path(directory);files=[]
+    for parent,dirs,names in os.walk(directory,followlinks=False):
+        for name in dirs:canonical_path(Path(parent)/name)
+        for name in names:
+            path=canonical_path(Path(parent)/name)
+            if not stat.S_ISREG(path.stat().st_mode) or '.partial' in name:
+                raise ValueError('Accepted sampling phase contains a nonregular or partial file')
+            files.append(str(path))
+    if not files:raise ValueError('Accepted sampling phase is empty')
+    return sorted(files)
+
+
+def pending_sampling_boundary(base,config,joint):
+    """Retain the sole reserved next round, before any actor/head update."""
+    from .candidate_schedule import candidate_count,consumed_candidates_through
+    from .pool import reserve_indices
+    base=canonical_path(base);n=joint['outer'];outer=n+1;root=base/'outers'/('outer-%06d'%outer)
+    pool=read(joint['pool_snapshot']);current=read(base/'question-pool/state.json')
+    if not (root/'pool-reservation.json').exists():
+        if current!=pool:raise ValueError('Source pool advanced without its exact next reservation')
+        return None
+    reservation=read(root/'pool-reservation.json');binding=read(base/'question-pool/binding.json')
+    count=candidate_count(config,outer)
+    indices,cycles,after=reserve_indices(pool,outer,count)
+    if (reservation['outer']!=outer or reservation['pool_sha256']!=binding['sha256'] or
+            reservation['before_sha256']!=state_sha(pool) or reservation['after_sha256']!=state_sha(after) or
+            reservation['indices']!=indices or reservation['cycles']!=cycles or reservation['after']!=after or current!=after or
+            current['consumed_candidates']!=consumed_candidates_through(config,outer)):
+        raise ValueError('Retain the original pending permutation, indices, cycles and after-state exactly')
+    if (root/'complete.json').exists() or (root/'probe-update').exists() or any((base/'actor/outers').glob('outer-%04d-attempt-*'%outer)):
+        raise ValueError('Pending sampling recovery cannot discard an actor/probe attempt or complete outer')
+    for name in ('full','full-pool'):
+        directory=root/name
+        if directory.exists() and any(path.is_file() and re.fullmatch(r'rank-[0-3]\.log',path.name) is None for path in directory.rglob('*')):
+            raise ValueError('Pending sampling recovery does not import a future partial continuation')
+    actor=joint['actor'];probe=joint['probe']
+    expected_actor=dict(run_id=config['run_id'],outer=outer,actor_model_dir=actor['hf_model_dir'],
+        actor_version=actor['actor_version'],actor_model_files_sha256={name:row['sha256'] for name,row in actor['hf_files'].items()})
+    if read(root/'actor-binding.json')!=expected_actor:raise ValueError('Pending sampling actor binding differs from the actual joint')
+    selected=read(root/'selection.json');questions=read(root/'questions.json')
+    if (selected['run_id']!=config['run_id'] or selected['outer']!=outer or selected['questions']!=count or
+            selected['trajectories']!=count*5 or selected['trajectory_group_size']!=5 or
+            selected['pool_sha256']!=binding['sha256'] or len(selected['rows'])!=count or
+            questions['run_id']!=config['run_id'] or questions['outer']!=outer or questions['questions']!=count or
+            questions['selection_sha256']!=sha(root/'selection.json') or len(questions['rows'])!=count or
+            [row['pool_index'] for row in selected['rows']]!=indices or
+            [row['pool_cycle'] for row in selected['rows']]!=cycles or
+            any(any(a[key]!=b[key] for key in ('qid','pool_index','pool_cycle','candidate_ordinal'))
+                for a,b in zip(selected['rows'],questions['rows']))):
+        raise ValueError('Pending questions/golds/selection differ from the original reservation')
+    prefix=read(root/'prefix/complete.json')
+    if Path(prefix['scan_path'])!=root/'prefix/scan':raise ValueError('Pending scan escaped its accepted prefix phase')
+    scan=read(root/'prefix/scan/scan-complete.json')
+    score=read(root/'probe-score/manifest.json');done=read(root/'probe-score/complete.json');selection=read(root/'probe-score/selection.json')
+    for value in (prefix,scan,score,done,selection):
+        if value['run_id']!=config['run_id'] or value['outer']!=outer or value['actor_version']!=actor['actor_version']:
+            raise ValueError('Accepted pending prefix/score belongs to another sampling actor/run/outer')
+    ranks=prefix['ranks']
+    if ([row['rank'] for row in ranks]!=list(range(WORLD)) or
+            any(row['run_id']!=config['run_id'] or row['outer']!=outer or row['phase']!='prefix' or
+                row['actor_version']!=actor['actor_version'] or row['questions']!=count//WORLD or
+                row['trajectories']!=count*5//WORLD for row in ranks) or
+            any(code!=0 for code in prefix.get('owned_native_worker_exit_codes',{}).values())):
+        raise ValueError('Accepted pending prefix lacks all four complete authentic rank receipts')
+    if (prefix['questions']!=count or prefix['trajectories']!=count*5 or prefix['phase']!='prefix' or
+            prefix['candidate_questions_sha256']!=sha(root/'questions.json') or
+            Path(prefix['scan_path'])!=root/'prefix/scan' or prefix['scan_sha256']!=sha(root/'prefix/scan/scan-complete.json') or
+            scan['count']!=count*5 or scan['actor_hidden_native'] is not True or scan['independent_encoder_forward'] is not False or
+            score['count']!=count*5 or score.get('candidate_questions',score['count']//5)!=count or score['selected_count']!=512*5 or
+            score['prefix_scan_sha256']!=prefix['scan_sha256'] or score['probe_before_checkpoint_sha256']!=probe['sha256'] or
+            score['no_outcome_labels'] is not True or score['independent_encoder_forward'] is not False or
+            Path(score['native_hidden_scan'])!=root/'prefix/scan' or
+            done['manifest_sha256']!=sha(root/'probe-score/manifest.json') or done['selection_sha256']!=sha(root/'probe-score/selection.json') or
+            score['selection_sha256']!=done['selection_sha256'] or selection['prefix_scan_sha256']!=prefix['scan_sha256'] or
+            selection['probe_before_checkpoint_sha256']!=probe['sha256'] or selection['candidate_questions']!=count or
+            selection['selected_questions']!=512 or len(selection['selected'])!=512):
+        raise ValueError('Pending complete prefix/Top512 scoring provenance/count/SHA differs')
+    phases={name:dict(marker=marker,sha256=sha(root/name/marker),files=phase_tree_files(root/name))
+        for name,marker in (('prefix','complete.json'),('probe-score','manifest.json'))}
+    return dict(outer=outer,candidate_questions=count,reservation_sha256=sha(root/'pool-reservation.json'),
+        pool_state_sha256=sha(base/'question-pool/state.json'),pool_after=after,phases=phases,
+        actual_actor_writes_per_rank=[0]*WORLD,actual_probe_writes_per_rank=[0]*WORLD,
+        accepted_prefix_and_score_reexecuted=False,future_partial_continuation_imported=False)
+
+
 def plan(base,config=None):
     """Read-only recovery plan; UNKNOWN qualification cannot authorize import."""
     base=canonical_path(base);config=config or read(base/'preparation/launch-config.json');spec=config['resume_joint']
@@ -292,10 +432,12 @@ def plan(base,config=None):
     delta=proof.get('authorized_candidate_delta')
     if (config.get('candidate_questions')!=original.get('candidate_questions') and not delta):
         raise ValueError('Candidate budget differs without its explicit authorized schedule')
-    if delta and delta['candidate_schedule']['effective_from_outer']!=spec['completed_outer']+1:
-        raise ValueError('Candidate schedule must start after the imported complete logical boundary')
+    if delta and delta['candidate_schedule']['effective_from_outer'] not in (spec['completed_outer']+1,spec['completed_outer']+2):
+        raise ValueError('Candidate schedule must follow the complete boundary or its sole accepted legacy pending round')
     if proof['parent_runtime_source_commit']!=original['source_commit'] or (_code_inventory(source/'repo')!=proof['parent_publication']['files_sha256'] or
-            _critical_ast(source/'repo')!=proof['parent_publication'].get('critical_ast_sha256',{})):
+            _critical_ast(source/'repo')!=proof['parent_publication'].get('critical_ast_sha256',{}) or
+            _rollout_critical_ast(source/'repo')!=proof['parent_publication'].get('rollout_critical_ast_sha256',{}) or
+            _rollout_critical_ast(source/'repo',normalize_candidate_metadata=True)!=proof['parent_publication'].get('rollout_candidate_metadata_ast_sha256',{})):
         raise ValueError('Parent scientific source publication differs from the actual source checkout')
     terminal=read(spec['terminal_proof']);ledger=read(source/'logs/process-ledger.json')
     if sha(spec['terminal_proof'])!=spec['terminal_proof_sha256'] or sha(source/'logs/process-ledger.json')!=terminal['process_ledger_sha256']:
@@ -315,6 +457,13 @@ def plan(base,config=None):
     if (disposition.get('actor_actual_writes_per_rank')!=[0]*WORLD or disposition.get('probe_actual_writes_per_rank')!=[0]*WORLD or
             disposition.get('optimizer_work_in_flight') is not False or disposition.get('all_updates_accounted') is not True):
         raise ValueError('Uncommitted actual/unknown updates require their own full-state recovery; no silent rollback')
+    pending_sampling=pending_sampling_boundary(source,original,joint)
+    from .candidate_schedule import candidate_count,consumed_candidates_through
+    if pending_sampling and candidate_count(config,n+1)!=pending_sampling['candidate_questions']:
+        raise ValueError('Never resize, discard or resample an already accepted pending candidate pool')
+    if delta and delta['candidate_schedule']['effective_from_outer']==n+2 and (
+            pending_sampling is None or pending_sampling['candidate_questions']!=2560):
+        raise ValueError('Delayed candidate switch requires the sole accepted legacy2560 pending round')
     qpath=spec.get('qualification_proof');q=read(qpath) if qpath else {}
     qualified=bool(qpath and sha(qpath)==spec['qualification_proof_sha256'] and q.get('status')==QUALIFIED and
         q.get('run_id')==config['run_id'] and q.get('source_execution_id')==original['execution_id'] and
@@ -323,7 +472,7 @@ def plan(base,config=None):
         q.get('completed_outer')==n and q.get('actual_adam_steps_per_rank')==actor['actual_adam_steps_per_rank'] and
         q.get('actor_rank_optimizer_rng_scheduler_verified')==WORLD and q.get('actor_driver_rng_verified') is True and
         q.get('probe_model_optimizer_rank_rng_verified') is True and q.get('pool_exact_permutation_verified') is True and
-        q.get('payload_full_sha_read_once') is True)
+        q.get('payload_full_sha_read_once') is True and q.get('pending_sampling')==pending_sampling)
     seals={row['path']:row for row in q.get('verified_files',[])}
     if len(seals)!=len(q.get('verified_files',[])): raise ValueError('Full-state qualification repeats a payload identity')
     assets=[];metadata={};history=[]
@@ -343,13 +492,13 @@ def plan(base,config=None):
     for name in ('actor/latest.json','probe/latest.json','probe/latest.pt','probe/initialization-complete.json','question-pool/binding.json','latest-joint.json'):
         expected=probe if name=='probe/latest.pt' else None
         add(source/name,expected)
-    from .candidate_schedule import candidate_count,consumed_candidates_through
     pool=read(joint['pool_snapshot']);consumed=consumed_candidates_through(original,n)
     if (pool['next_outer']!=n+1 or pool['consumed_candidates']!=consumed or
             pool['cycle']*len(pool['order'])+pool['cursor']!=consumed or
             sorted(pool['order'])!=list(range(len(pool['order']))) or sha(joint['pool_snapshot'])!=joint['pool_sha256']):
         raise ValueError('Exact saved candidate permutation/cycle/cursor differs')
-    add(joint['pool_snapshot'],target='question-pool/state.json');add(joint['pool_snapshot'])
+    add(source/'question-pool/state.json' if pending_sampling else joint['pool_snapshot'],target='question-pool/state.json')
+    add(joint['pool_snapshot'])
     add(joint['probe_snapshot'],probe)
     if (source/'probe/latest.pt').stat().st_ino!=Path(joint['probe_snapshot']).stat().st_ino:
         raise ValueError('Joint probe snapshot must be the actual online state inode')
@@ -393,25 +542,14 @@ def plan(base,config=None):
             path=Path(value[key]);add(path,dict(bytes=path.stat().st_size,sha256=value['head_sha256'][name]))
         if 'adoption_receipt' in value:add(value['adoption_receipt'])
     pending=n+1;pending_root=source/'outers'/('outer-%06d'%pending);phases={}
-    if n<200 and (pending_root/'pool-reservation.json').exists():
-        reservation=read(pending_root/'pool-reservation.json');current=read(source/'question-pool/state.json')
-        if (reservation['outer']!=pending or reservation['before_sha256']!=state_sha(pool) or
-                reservation['after']!=current or reservation['after_sha256']!=state_sha(current) or
-                current['next_outer']!=pending+1 or current['consumed_candidates']!=consumed_candidates_through(original,pending) or
-                len(reservation['indices'])!=candidate_count(config,pending)):
-            raise ValueError('Pending reservation must be the exact next saved-pool transition')
+    if pending_sampling:
         for name in ('pool-reservation.json','selection.json','questions.json','actor-binding.json'):add(pending_root/name)
-        for phase,marker in (('prefix','complete.json'),('probe-score','manifest.json'),('full','complete.json')):
-            path=pending_root/phase/marker
-            if not path.exists():continue
-            if not qualified or q.get('phase_hashes',{}).get(phase)!=sha(path):continue
-            value=read(path)
-            if value['run_id']!=config['run_id'] or value['outer']!=pending or value['actor_version']!=actor['actor_version']:
-                raise ValueError('Qualified pending sampling event uses another actual actor')
-            phases[phase]=dict(marker=phase+'/'+marker,sha256=sha(path))
-            for path,row in seals.items():
-                if Path(path).is_relative_to(pending_root/phase):add(path,row)
-    elif read(source/'question-pool/state.json')!=pool:raise ValueError('Source pool advanced without a sealed next reservation')
+        if qualified:
+            for phase,item in pending_sampling['phases'].items():
+                if q.get('phase_hashes',{}).get(phase)!=item['sha256'] or not set(item['files'])<=set(seals):
+                    raise ValueError('Genuine qualification must cover every accepted pending prefix/score file')
+                phases[phase]=dict(marker=phase+'/'+item['marker'],sha256=item['sha256'])
+                for path in item['files']:add(path,seals[path])
     # Deduplicate identical aliases while preserving distinct hardlinks needed by consumers.
     by_target={}
     for item in assets:
@@ -422,6 +560,8 @@ def plan(base,config=None):
         completed_outer=n,next_outer=n+1,total_logical_budget=200,remaining_logical_outers=200-n,
         actual_adam_steps_per_rank=actor['actual_adam_steps_per_rank'],probe_adam_per_rank=probe['actual_adam_steps_per_rank'],
         scheduler_completed_outer=n,consumed_candidates_at_boundary=consumed,
+        consumed_candidates_current_pool=(pending_sampling['pool_after']['consumed_candidates'] if pending_sampling else consumed),
+        pending_sampling=pending_sampling,
         effective_from_outer=(delta['candidate_schedule']['effective_from_outer'] if delta else None),grounding_state=state,joint_grounding_state=joint['grounding'],grounding_action=action,
         phase_reuse=phases,history_provenance=history,assets=list(by_target.values()),metadata_sha256=metadata,
         source_joint_sha256=spec['source_joint_sha256'],source_compatibility_sha256=config['source_compatibility_sha256'],
