@@ -155,9 +155,22 @@ def scores(value, identity, run, step, *, split, final):
                 canonical_occurrences_retained=True, deduplicated=False)
 
 
-def evaluations(base, run, load_canonical=canonical):
+def restore_chain(base, run):
+    from reproduction.easy2560_joint4.checkpoint_evidence import authenticated_restore_chain
+    return authenticated_restore_chain(base, run)
+
+
+def chained_lines(base, relative, chain):
+    current = list(lines(base/relative))
+    if chain is None:
+        return current
+    from reproduction.easy2560_joint4.checkpoint_evidence import _historical_rows
+    return _historical_rows(chain, relative) + current
+
+
+def evaluations(base, run, load_canonical=canonical, chain=None):
     fixed_identity = load_canonical(base, 'validation'); final_identity = load_canonical(base, 'final')
-    rows = list(lines(base/'logs/validation-identities.jsonl'))
+    rows = chained_lines(base, 'logs/validation-identities.jsonl', chain)
     need(all(row.get('run_id') == run['run_id'] and type(row.get('step')) is int and
              0 <= row['step'] <= 200 for row in rows), 'FOREIGN_OR_POST200_EVALUATION')
     fixed = {}
@@ -171,7 +184,14 @@ def evaluations(base, run, load_canonical=canonical):
     result = scores(final, final_identity, run, 200, split='final', final=True)
     # At5 the producer also writes a distinct fixed512 scalar-row artifact;
     # stage64 is intentionally excluded from the fixed validation curve.
-    after, after_record = small(base/'logs/formal-inline-development-after.json')
+    if chain:
+        from reproduction.easy2560_joint4.checkpoint_evidence import digest as history_digest
+        raw = chain['historical']['logs/formal-inline-development-after.json']
+        after = decode(raw)
+        after_record = dict(path=str(chain['source_base']/'logs/formal-inline-development-after.json'),
+                            bytes=len(raw), sha256=history_digest(raw), authenticated_historical=True)
+    else:
+        after, after_record = small(base/'logs/formal-inline-development-after.json')
     fixed5 = next(row for row in rows if row.get('split') == 'validation' and row['step'] == 5)
     need(after.get('run_id') == run['run_id'] and after.get('step') == 5 and
          after.get('role') == 'formal_inline_development_evaluation' and
@@ -195,12 +215,22 @@ def attempt_id(row):
     return index, aid
 
 
-def no201(base, run):
-    updates = list(lines(base/'logs/actual-updates.jsonl'))
+def no201(base, run, chain=None):
+    current_updates = list(lines(base/'logs/actual-updates.jsonl'))
+    if run.get('full_state_restore'):
+        binding = run['full_state_restore']
+        need(isinstance(binding, dict) and binding.get('kind') == 'easy2560_native4',
+             'CROSS_JOB_AUTHENTICATED_CHAIN_NOT_IMPLEMENTED')
+        # Still fail on missing200 before archive/evaluation/source-proofs work.
+        need([r.get('step') for r in current_updates] == list(range(6, 201)),
+             'MISSING200_OR_EXTRA_COMPLETED_UPDATE')
+        if chain is None:
+            chain = restore_chain(base, run)
+    updates = chained_lines(base, 'logs/actual-updates.jsonl', chain) if chain else current_updates
     need(all(type(r.get('step')) is int for r in updates) and
          [r.get('step') for r in updates] == list(range(1, 201)), 'MISSING200_OR_EXTRA_COMPLETED_UPDATE')
     need(all(r.get('run_id') == run['run_id'] for r in updates), 'FOREIGN_COMPLETED_UPDATE')
-    attempts = list(lines(base/'logs/actual-attempts.jsonl'))
+    attempts = chained_lines(base, 'logs/actual-attempts.jsonl', chain)
     need(attempts and [attempt_id(r)[0] for r in attempts] == list(range(1, len(attempts)+1)) and
          len({attempt_id(r)[1] for r in attempts}) == len(attempts), 'ATTEMPT_PREFIX_NOT_CONTIGUOUS')
     completed = writes = aborted = 0; successes = []
@@ -208,7 +238,8 @@ def no201(base, run):
     need(allocation.get('accepted') is True and allocation.get('run_id') == run['run_id'], 'NATIVE_ALLOCATION_IDENTITY_DIFFERS')
     job = allocation['slurm_job_id']
     for row in attempts:
-        need(row.get('run_id') == run['run_id'] and row.get('slurm_job_id') == job and
+        expected_job = chain['source_job'] if chain and attempt_id(row)[0] <= chain['cutoff_attempt'] else job
+        need(row.get('run_id') == run['run_id'] and row.get('slurm_job_id') == expected_job and
              row.get('all_ranks_agreed') is True and type(row.get('real_rank_count')) is int and
              row['real_rank_count'] == 4 and row.get('logical_update') == completed+1 and
              completed < 200, 'FOREIGN_OR_POST200_DRIVER_ATTEMPT')
@@ -250,14 +281,15 @@ def no201(base, run):
                          'INCOMPLETE_WORKER_ATTEMPT')
                     need(all(r['kind'] not in ('OUTER_BUDGET', 'ABORTED_ATTEMPT') for r in group[:-1]),
                          'WORKER_CONTINUES_AFTER_TERMINAL')
-            for row in lines(base/'logs'/f'{role}-rank-{rank}.jsonl'):
+            for row in chained_lines(base, f'logs/{role}-rank-{rank}.jsonl', chain):
                 index, aid = attempt_id(row); context = row.get('context') or row
                 need(1 <= index <= len(attempts) and aid == attempts[index-1]['attempt_id'] and
                      row.get('run_id') == run['run_id'] and row.get('rank') == rank and
                      context.get('logical_update') == attempts[index-1]['logical_update'] <= 200,
                      'FOREIGN_EXTRA_OR_POST200_RANK_ATTEMPT')
                 if role == 'scheduler':
-                    need(row.get('world_size') == 4 and row.get('slurm_job_id') == job, 'SCHEDULER_NATIVE4_IDENTITY_DIFFERS')
+                    expected_job = chain['source_job'] if chain and index <= chain['cutoff_attempt'] else job
+                    need(row.get('world_size') == 4 and row.get('slurm_job_id') == expected_job, 'SCHEDULER_NATIVE4_IDENTITY_DIFFERS')
                 else:
                     need(row.get('kind') in ('POLICY_MONITOR', 'OPTIMIZER_WRITE', 'OPPORTUNITY',
                          'OUTER_BUDGET', 'ABORTED_ATTEMPT'), 'UNKNOWN_WORKER_EVENT')
@@ -275,16 +307,25 @@ def no201(base, run):
                 no_post200_driver_scheduler_worker_attempts=True, rank_count=4,
                 cumulative_actual_optimizer_writes_per_rank=writes, ranks=rank_summaries,
                 allocation=allocation_record,
+                authenticated_history=chain['public'] if chain else None,
                 scope='durable actual counter/attempt chain; this CPU reader does not independently authenticate physical GPU execution')
 
 
-def checkpoint_evidence(base, run, step, *, archive_root=None):
+def checkpoint_evidence(base, run, step, *, archive_root=None, chain=None, historical_update=None):
     """Authenticate accepted SHA receipts; tensor retention is not required.
 
     An optional HK archive root supplies small checkpoint metadata directly.
     Otherwise a sealed immutable sidecar can supply retired producer metadata.
     Neither route pretends to rehash absent remote tensor bodies.
     """
+    if chain is not None and step <= chain['boundary']:
+        from reproduction.easy2560_joint4.checkpoint_evidence import _historical_rows
+        old_update = next(r for r in _historical_rows(chain, 'logs/actual-updates.jsonl') if r['step'] == step)
+        inherited = checkpoint_evidence(chain['source_base'], chain['source_run'], step,
+                                        archive_root=archive_root, historical_update=old_update)
+        inherited.update(inherited_original_checkpoint=True, source_base=str(chain['source_base']),
+                         source_commit=chain['source_run']['source_commit'], source_job=chain['source_job'])
+        return inherited
     cp = Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'
     archive = Path(archive_root)/f'global_step_{step}' if archive_root is not None else None
     sidecar = base/'preparation/checkpoint-evidence'/f'global_step_{step}'
@@ -344,7 +385,8 @@ def checkpoint_evidence(base, run, step, *, archive_root=None):
     for row in state['worker_files']:
         need(row.get('run_id') == run['run_id'] and row['sha256'] == complete['files_sha256'][f'training_state/rank-{row["rank"]}.pt'],
              'ARCHIVE_RANK_STATE_SHA_DIFFERS')
-    actual = [r for r in lines(base/'logs/actual-updates.jsonl') if r.get('step') == step]
+    actual = ([historical_update] if historical_update is not None else
+              [r for r in lines(base/'logs/actual-updates.jsonl') if r.get('step') == step])
     need(len(actual) == 1 and snapshot.get('completed_update') == actual[0], 'ARCHIVE_COMPLETED_OUTER_DIFFERS')
     return dict(step=step, source_snapshot=snapshot_record, accepted_archive=accepted_record,
                 checkpoint_complete=complete_record, training_state_manifest=state_record,
@@ -362,17 +404,26 @@ def verify_final(base, *, archive_root=None, load_canonical=canonical, training_
          run.get('question_probe') is None and run.get('actor_logical_micro_batch_per_rank') == 4 and
          run.get('actor_micro_batch_per_rank') in (32, 16, 8, 4) and run.get('all_correct_virtual_zero') is False,
          'REVIEWED_EASY_NATIVE4_RUN_REQUIRED')
-    need(not run.get('full_state_restore'), 'CROSS_JOB_AUTHENTICATED_CHAIN_NOT_IMPLEMENTED')
     # Check actual completion first. Missing200 cannot be hidden by optional
     # metadata or a final score copied from a different run.
-    progress = no201(base, run)
+    chain = None
+    if run.get('full_state_restore'):
+        binding = run['full_state_restore']
+        need(isinstance(binding, dict) and binding.get('kind') == 'easy2560_native4',
+             'CROSS_JOB_AUTHENTICATED_CHAIN_NOT_IMPLEMENTED')
+        need([row.get('step') for row in lines(base/'logs/actual-updates.jsonl')] == list(range(6, 201)),
+             'MISSING200_OR_EXTRA_COMPLETED_UPDATE')
+        chain = restore_chain(base, run)
+    progress = no201(base, run, chain=chain)
     source_binding = published_source_binding(base, run, training_commit)
-    evaluation = evaluations(base, run, load_canonical)
-    checkpoints = {str(step): checkpoint_evidence(base, run, step, archive_root=archive_root) for step in STEPS}
+    evaluation = evaluations(base, run, load_canonical, chain=chain)
+    checkpoints = {str(step): checkpoint_evidence(base, run, step, archive_root=archive_root, chain=chain) for step in STEPS}
     return dict(schema_version=1, status=STATUS, cpu_final_accepted=True, base=str(base),
                 run_id=run['run_id'], source_commit=run['source_commit'], run_manifest=run_record,
                 source_publication_binding=source_binding,
                 progress=progress, evaluations=evaluation, checkpoints=checkpoints,
+                authenticated_history=chain['public'] if chain else None,
+                single_original_job_prefix=chain is None, inherited_history_assembled=chain is not None,
                 new_training_updates=0, gpu_allocations=0, model_reloads=0, actual_restore_performed=False,
                 actual_cuda_restore_accepted=False, overall_goal_complete=False, checked_unix=time.time(),
                 scope='fixed five512 evaluations, ordered exact native51713 EM/F1, durable no201 counters and accepted checkpoint archive SHA evidence; actual recovery and physical execution acceptance remain separate')
