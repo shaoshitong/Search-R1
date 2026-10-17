@@ -55,3 +55,25 @@ The hardware-only lifecycle now releases only its own retriever after sampling/d
 The startup recovery keeps the exact pending first pool and authentic prefix/score/full phase files, initial head/EMA and source labels by same-filesystem hardlinks, after original writer exit and original-inode log SHA evidence. Actor restarts at its actual latest complete boundary0 with original official weights; all failed unsaved writes are separately accounted for. No teacher generation or duplicate first-round rollout.
 
 Frozen-arm metrics are retained without fitting: training metrics reuse authentic GPU scoring logits on original labeled groups only; periodic diagnostics perform normal frozen-head scoring on the already generated same-actor512G5. The paired frozen before/after values are identical. This adds neither an optimizer nor an extra rollout, and uncontinued ordinary candidates have no claimed accuracy.
+
+## User-authorized move to h100-11
+
+The user explicitly directed moving to the node with the most actual free VRAM,
+then authorized reducing only per-card micro-batch and increasing accumulation.
+Both h100-8 leaders were pidfd-signalled at 2026-10-17T20:32:05Z; their cleanup
+receipts prove all owned subprocesses gone and no committed first outer. Partial
+Adam writes remain in original journals but are discarded, never stitched.
+The exact completed first-round prefix/score/continuation, initial heads and
+candidate reservation are reused. The destination keeps two four-card slots,
+uses the target node's actual UUIDs, local micro1/global micro4/accumulation32,
+and preserves global mini128, objective and20 update opportunities.
+
+Existing NFS mounts expose all saved trajectories and source assets on h100-11.
+A task-private mount namespace preserves original absolute asset paths and
+immutable receipt hashes. No global mount, foreign process or existing source
+is modified. Only the exact Python environment, official model, E5 and GPU
+retrieval libraries missing from the target are copied remotely to shared
+storage; no large artifact passes through Mac. Submission remains the existing
+once-only native shared launcher: h100-11's eight GPUs/CPUs are already Slurm
+allocated to another task, so this is not falsely reported as a new Slurm GPU
+allocation. The user's existing same-card shared execution authorization applies.

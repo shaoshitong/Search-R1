@@ -74,6 +74,10 @@ def native_allocation(base, c):
     from .h100_replica_hardware import enabled, validate, PREFIXES as H100_PREFIXES
     if enabled(c):
         validate(c)
+        if c.get('expected_execution_node'):
+            import socket
+            if socket.gethostname() != c['expected_execution_node']:
+                raise ValueError('Wrong explicitly bound migration node')
         if not str(base).startswith(H100_PREFIXES):
             raise ValueError('Wrong isolated H100 replica namespace')
         mapping = gpu_inventory()
