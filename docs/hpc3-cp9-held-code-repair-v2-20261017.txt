@@ -1,0 +1,52 @@
+"""Reconcile the fully identified JSON-vs-payload audit error, then qualify.
+
+Keep failed proof intents/logs. Do not replay an incomplete audit or edit its
+result. The new independently named proof uses the repaired, published auditor.
+The exact same GPU job remains held until the genuine full proof and plan pass.
+"""
+import base64,hashlib,json,runpy,shlex,subprocess
+from pathlib import Path
+from reproduction.hpc3_prefix5.control import BASE,OUTPUT,PYTHON
+from reproduction.hpc3_prefix5.direct_control import run
+
+operator=Path('docs/hpc3-cp9-held-code-repair-20261017.txt').read_text()
+operator=operator.replace('2da01adf1321b25a22be0d260ee195fa368373ce','94721327fc240104ec5b911af5beb9add246bd05').replace('cp9-before-code-repair-2da01ad','cp9-before-code-repair-9472132').replace('cp9-held-code-repair','cp9-held-code-repair-v2').replace('cp9-held-repair','cp9-held-repair-v2').replace('repo-cp9-repair-stage','repo-cp9-repair-v2-stage')
+exec(compile(operator,'held-repair-v2','exec'),{'__name__':'__main__'})
+commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+
+preflight=r'''import pathlib,json,subprocess,os,time,hashlib
+b=pathlib.Path(TARGET);p=b/'preparation';old=json.loads((p/'cp9-fixed-cpu-result.json').read_text())
+assert old['returncode']==1 and old['proof_exists'] is False
+log=(b/'logs/cp9-fixed-cpu.log').read_text();assert all('I1_I6_CPU_QUALIFIED_ACTOR_RANK='+str(r) in log for r in range(4)) and 'Actual driver selection head snapshot differs' in log
+c=json.loads((p/'resume-config-template.json').read_text());assert c['source_commit']==COMMIT
+previous=c['resume_joint']['qualification_proof'];c['resume_joint']['qualification_proof']=SOURCE+'/preparation/cp9-actual-full-state-qualification-v2.json'
+assert not pathlib.Path(c['resume_joint']['qualification_proof']).exists() and not pathlib.Path(c['resume_joint']['qualification_proof']+'.intent.json').exists()
+with (p/'cp9-fixed-cpu-error-reconciliation.json').open('x') as f:json.dump(dict(cause='JSON metadata SHA compared to tensor payload SHA',old_intent_preserved=previous+'.intent.json',old_result=old,repaired_source_commit=COMMIT,created_unix=time.time(),gpu_writes=0),f)
+tmp=p/'resume-config-template.json.v2-tmp';tmp.write_text(json.dumps(c,sort_keys=True));os.replace(tmp,p/'resume-config-template.json')
+program=r"""import json,pathlib,torch
+from reproduction.prefix_selection200.i1_i6_checkpoint_cpu import selection_probe_state,probe_state
+s=pathlib.Path(SOURCE);j=json.loads((s/'latest-joint.json').read_text());c=json.loads((s/'preparation/launch-config.json').read_text());d=torch.load(j['actor']['driver_state']['path'],map_location='cpu',mmap=True,weights_only=False);m=json.loads((s/'outers/outer-000009/probe-score/manifest.json').read_text());selection_probe_state(d['prefix_probe_receipt'],m,c,9)
+v=torch.load(s/'probe/latest.pt',map_location='cpu',mmap=True,weights_only=False);proof=probe_state(v,j['probe'],c,9,{})
+print(json.dumps(dict(driver_selection_metadata_actual_passed=True,probe_state_actual=proof)))
+""".replace('SOURCE',repr(SOURCE))
+env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1')
+r=subprocess.run([str(b/'env/bin/python'),'-c',program],capture_output=True,text=True,env=env,timeout=30);print(r.stdout);assert r.returncode==0,r.stderr
+'''.replace('TARGET',repr(BASE+'-r2')).replace('SOURCE',repr(BASE)).replace('COMMIT',repr(commit))
+def remote(code,timeout=40):
+    address=subprocess.check_output(['ipconfig','getifaddr','en0'],text=True).strip()
+    r=run(PYTHON+' -c '+shlex.quote(code),account='mou176',source_address=address,timeout=timeout)
+    assert r.returncode==0,(r.stdout.decode()[-5000:],r.stderr.decode()[-1000:])
+    return r.stdout.decode()
+print(remote(preflight),flush=True)
+supervisor=runpy.run_path('docs/hpc3-cp9-login-cpu-prequalification-20261017.txt')['SUPERVISOR'].replace('BASE',repr(BASE)).replace('cp9-independent-cpu-prequalification.json','cp9-actual-full-state-qualification-v2.json').replace('cp9-login-cpu','cp9-v2-cpu')
+payload=supervisor.encode();digest=hashlib.sha256(payload).hexdigest()
+launch='''import pathlib,base64,hashlib,subprocess,json,time
+b=pathlib.Path(TARGET);p=b/'preparation';script=p/'cp9-v2-cpu-supervisor.py';assert not script.exists()
+data=base64.b64decode(DATA);assert hashlib.sha256(data).hexdigest()==SHA
+with script.open('xb') as f:f.write(data)
+with (b/'logs/cp9-v2-cpu-supervisor.log').open('xb') as log:
+ child=subprocess.Popen([PYTHON,str(script)],stdin=subprocess.DEVNULL,stdout=log,stderr=log,start_new_session=True,close_fds=True)
+print(json.dumps(dict(supervisor_pid=child.pid,source_sha256=SHA,created_unix=time.time(),job=729624,cpu_only=True,still_held=True)))
+'''.replace('TARGET',repr(BASE+'-r2')).replace('DATA',repr(base64.b64encode(payload).decode())).replace('SHA',repr(digest)).replace('PYTHON',repr(PYTHON))
+out=remote(launch);print(out,flush=True)
+v=next(json.loads(line) for line in out.splitlines() if line.strip().startswith('{'));(OUTPUT/'cp9-v2-cpu-start.json').write_text(json.dumps(v,indent=2)+'\n')

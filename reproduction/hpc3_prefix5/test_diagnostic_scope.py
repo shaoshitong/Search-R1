@@ -24,6 +24,23 @@ def function(module, name, namespace):
 
 
 class DiagnosticScopeTests(unittest.TestCase):
+    def test_driver_json_seal_is_not_compared_to_tensor_payload_digest(self):
+        def need(ok,message):
+            if not ok:raise ValueError(message)
+        check=function('reproduction/prefix_selection200/i1_i6_checkpoint_cpu.py',
+                       'selection_probe_state',dict(need=need,WORLD=4,
+                       probe_boundary=lambda outer:dict(last_update_outer=0,actual_adam_per_rank=0)))
+        selected=dict(sha256='a'*64,value=dict(run_id='r',completed_outer=0,
+                      actual_adam_steps_per_rank=[0]*4,sha256='b'*64))
+        score=dict(probe_before_checkpoint_sha256='b'*64)
+        check(selected,score,dict(run_id='r'),9)
+        bad=copy.deepcopy(selected);bad['value']['sha256']='c'*64
+        with self.assertRaisesRegex(ValueError,'selection head'):
+            check(bad,score,dict(run_id='r'),9)
+        bad=copy.deepcopy(selected);bad['value']['actual_adam_steps_per_rank']=[50]*4
+        with self.assertRaisesRegex(ValueError,'selection head'):
+            check(bad,score,dict(run_id='r'),9)
+
     def test_qualification_does_not_require_pruned_historical_probe_aliases(self):
         inputs = function('reproduction/prefix_selection200/i1_i6_checkpoint_cpu.py',
                           'qualification_inputs', dict(Path=Path))

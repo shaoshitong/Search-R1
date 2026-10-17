@@ -124,6 +124,19 @@ def probe_state(saved,receipt,config,outer,history):
     return dict(actual_adam_steps_per_rank=[steps]*WORLD,adam_states=adam,rank_rng=rng,finite_model=True)
 
 
+def selection_probe_state(selected, score, config, outer):
+    """The captured JSON seal and its checkpoint payload digest are distinct."""
+    before=probe_boundary(outer-1)
+    need(selected['value']['run_id']==config['run_id'] and
+         selected['value']['completed_outer']==before['last_update_outer'] and
+         selected['value']['actual_adam_steps_per_rank']==[before['actual_adam_per_rank']]*WORLD and
+         selected['value']['sha256']==score['probe_before_checkpoint_sha256'],
+         'Actual driver selection head snapshot differs')
+    need(isinstance(selected['sha256'],str) and len(selected['sha256'])==64 and
+         all(c in '0123456789abcdef' for c in selected['sha256']),
+         'Captured probe JSON metadata seal is missing')
+
+
 def qualification_inputs(config, actor, history, terminal_proof):
     """Retained inputs only; historical rotating probe aliases may be pruned.
 
@@ -219,10 +232,7 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
     from reproduction.prefix20_online.pool import canonical as pool_canonical
     need(captured['sha256']==hashlib.sha256(pool_canonical(pool)+b'\n').hexdigest(),'Actual driver captured pool bytes differ from producer serialization')
     selected=driver['prefix_probe_receipt'];score=seals.json(base/'outers'/('outer-%06d'%outer)/'probe-score/manifest.json')
-    before=probe_boundary(outer-1)
-    need(selected['value']['completed_outer']==before['last_update_outer'] and
-         selected['value']['actual_adam_steps_per_rank']==[before['actual_adam_per_rank']]*WORLD and
-         selected['sha256']==score['probe_before_checkpoint_sha256'],'Actual driver selection head snapshot differs')
+    selection_probe_state(selected,score,config,outer)
     driver_proof=dict(file=file,rng=validate_rng(driver['rng']),candidate_pool_state_exact=True,prefix_probe_receipt=selected)
     del driver;gc.collect()
     saved,file=seals.mmap_torch(base/'probe/latest.pt',joint['probe'])
