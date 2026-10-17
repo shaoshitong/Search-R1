@@ -243,7 +243,7 @@ def submit(base):
     script.write_text('#!/bin/bash\nset -euo pipefail\nexport CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7\nexport PYTHONPATH='+shlex.quote(str(base/'repo'))+'\nunset PYTHONHOME RAY_ADDRESS HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy\nexec '+shlex.join([python,'-m','reproduction.prefix_selection200.probe20k_fit','run','--base',str(base)])+'\n');script.chmod(0o700)
     command=['sbatch','--parsable','--partition=gpu','--oversubscribe','--nodelist=h100-8','--nodes=1','--ntasks=1',
         '--cpus-per-task='+str(s.get('slurm_cpus',48)),'--mem='+str(s.get('slurm_memory_gib',256))+'G',
-        '--time=0','--signal=B:TERM@60','--export=NONE','--job-name=g1-probe20k-fit-'+s['study_id'][:12],
+        '--time='+s.get('slurm_time_limit','0'),'--signal=B:TERM@60','--export=NONE','--job-name=g1-probe20k-fit-'+s['study_id'][:12],
         '--comment=g1-probe20k-fit:'+s['study_id'],'--chdir='+str(base),'--output='+str(base/'logs/native-%j.log'),'--error='+str(base/'logs/native-%j.log'),str(script)]
     once(prep/'submit-intent.json',dict(command=command,config_sha256=sha(prep/'launch-config.json'),created_unix=time.time()))
     try:
