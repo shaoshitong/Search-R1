@@ -250,6 +250,8 @@ class FinalAcceptanceTests(unittest.TestCase):
             self.ledger('logs/actual-attempts.jsonl', [retry]+self.attempts)
             for rank in range(4):
                 for row in self.schedulers[rank]+self.workers[rank]:
+                    if 'attempt_index' not in row:
+                        row['context'] = dict(row['context'])
                     context = row if 'attempt_index' in row else row['context']
                     context['attempt_index'] += 1; context['attempt_id'] = f'{context["attempt_index"]:032x}'
                 sched = dict(self.schedulers[rank][0], attempt_id=f'{1:032x}', attempt_index=1,
