@@ -243,15 +243,20 @@ def run(base):
                 if health.get('ok')and health.get('run_id')==c['run_id']and health.get('gpu_shards')==8:break
             except (OSError,ValueError):pass
             time.sleep(2)
-        phase('fixed-actor50-prefix',[python,'-m','reproduction.prefix_selection200.rollout','--config',conf,'--outer',str(DATA_OUTER),'--phase','prefix'])
         root=root_dir(c,DATA_OUTER)
-        from .probe import candidate_groups
-        from .rollout import iter_rows
-        prefix=read(root/'prefix/complete.json');index={r['trajectory_id']:r for r in iter_rows(Path(prefix['scan_path'])/'index.jsonl')}
         selection=root/'all-selection.json'
-        once(selection,dict(run_id=c['run_id'],outer=DATA_OUTER,actor_version=spec['actor_version'],
-            prefix_scan_sha256=prefix['scan_sha256'],selected=candidate_groups(index,5120),selected_questions=5120,
-            outcome_labels_used=False,continuation_scope='all_candidates'))
+        if spec.get('reuse_prefix'):
+            imported=read(base/'preparation/reused-complete-prefix.json')
+            assert sha(root/'prefix/complete.json')==imported['prefix_complete_sha256']
+            assert sha(selection)==imported['all_selection_sha256']
+        else:
+            phase('fixed-actor50-prefix',[python,'-m','reproduction.prefix_selection200.rollout','--config',conf,'--outer',str(DATA_OUTER),'--phase','prefix'])
+            from .probe import candidate_groups
+            from .rollout import iter_rows
+            prefix=read(root/'prefix/complete.json');index={r['trajectory_id']:r for r in iter_rows(Path(prefix['scan_path'])/'index.jsonl')}
+            once(selection,dict(run_id=c['run_id'],outer=DATA_OUTER,actor_version=spec['actor_version'],
+                prefix_scan_sha256=prefix['scan_sha256'],selected=candidate_groups(index,5120),selected_questions=5120,
+                outcome_labels_used=False,continuation_scope='all_candidates'))
         phase('fixed-actor50-full25600',[python,'-m','reproduction.prefix_selection200.rollout','--config',conf,'--outer',str(DATA_OUTER),'--phase','continue','--selection',str(selection)])
         phase('fixed-actor50-heldout2560',[python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic','--config',conf,'--outer',str(DATA_OUTER)])
         owned.stop('retriever');services.clear()

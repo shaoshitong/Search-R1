@@ -438,12 +438,14 @@ def _build_llm(config, model, seed, free, total):
             attempts.append(dict(utilization=utilization, limits=dict(limits), error=repr(error), actual_oom=actual_oom))
             if not actual_oom or not bool(config.get('rollout_retry_initialization_oom', True)) or len(attempts) >= 3:
                 raise
-            import gc
-            import torch
-            gc.collect(); torch.cuda.empty_cache()
             utilization *= .85
             limits['max_num_seqs'] = max(32, limits['max_num_seqs'] // 2)
             limits['max_num_batched_tokens'] = max(4096, limits['max_num_batched_tokens'] // 2)
+        # Leave the except block first: its traceback otherwise keeps the failed
+        # engine and model allocations alive while gc runs.
+        import gc
+        import torch
+        gc.collect(); torch.cuda.empty_cache()
 
 
 def worker(config_path, outer, phase, rank, selection_path=None):
@@ -468,7 +470,14 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     free, total = torch.cuda.mem_get_info()
     seed = seed_for(config['run_id'], outer, 'engine', 0, rank, config.get('seed', 1729))
     capture_hidden = phase == 'prefix' and config.get('actor_hidden_native', False)
-    llm, utilization, limits, oom_attempts = _build_llm(dict(config, _capture_actor_hidden=capture_hidden), model, seed, free, total)
+    build_config = dict(config, _capture_actor_hidden=capture_hidden)
+    scoped = config.get('rollout_initialization_overrides', {}).get(str(rank), {})
+    allowed = {'rollout_memory_utilization', 'rollout_free_reserve_gib', 'rollout_utilization_cap',
+               'rollout_max_num_seqs', 'rollout_max_batched_tokens', 'rollout_enforce_eager'}
+    if set(scoped) - allowed:
+        raise ValueError('Unknown rank-local inference resource override')
+    build_config.update(scoped)
+    llm, utilization, limits, oom_attempts = _build_llm(build_config, model, seed, free, total)
     engine = llm.llm_engine
     hidden_capture = hidden_writer = None
     if capture_hidden:

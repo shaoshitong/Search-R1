@@ -20,7 +20,7 @@
   },
   "actor_ppo_epochs": 1,
   "actor_version": "6cd6f043ef1641ae91ac177b4c27fe4a-actor0050",
-  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-fit10-20261017-6d5519fa369f-shared",
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-fit10-20261017-6d5519fa369f-shared-continue1",
   "candidate_questions": 5120,
   "canonical_train": "/mnt/data/shaoshitong/g1f-ef498ac3/data/train.parquet",
   "canonical_train_sha256": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
@@ -497,12 +497,22 @@
     "formal200_resumed": false,
     "stop3434_proof": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-i1-i6-lr1e5-resume50-20261017-6cd6f043ef16/preparation/terminal3434-human-lr1e5-original-inode-full-sha.json",
     "stop3434_proof_sha256": "1e70d7167c0ab0a9ac7b5a8a1092fdbdda3767806ba2c961dc4cffe3eea2f71c",
-    "replace_pending": {
-      "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-fit10-20261017-6d5519fa369f",
-      "job_id": "3440"
-    },
     "shared_slurm_physical8_authorization": "\u5141\u8bb8\u6838\u5b9e\u5e76\u6539\u4e3aSlurm\u5171\u7528\uff0c\u4fdd\u7559\u89c6\u9891\u548c8\u5361\u8bad\u7ec3\u9884\u7b97",
     "preserve_foreign_jobs": true,
-    "known_foreign_cohost": "3439"
+    "known_foreign_cohost": "3439",
+    "reuse_prefix": {
+      "source_base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-fit10-20261017-6d5519fa369f-shared",
+      "source_job_id": "3441",
+      "terminal_proof": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-fit10-20261017-6d5519fa369f-shared/preparation/local50-3441-native-terminal-original-inode-full-sha.json",
+      "terminal_proof_sha256": "8a7faead94dd417498d57c7bd23b73ccec0cd423bbbbdce34ee07cc1bca506e9"
+    }
+  },
+  "rollout_initialization_overrides": {
+    "0": {
+      "rollout_memory_utilization": 0.16,
+      "rollout_max_num_seqs": 256,
+      "rollout_max_batched_tokens": 8192,
+      "rollout_enforce_eager": true
+    }
   }
 }
