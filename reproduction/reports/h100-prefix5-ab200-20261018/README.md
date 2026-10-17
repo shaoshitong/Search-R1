@@ -101,3 +101,17 @@ and fitting rules; B fits50 updates once, with balanced1280/1280 groups. The
 sole readonly observer follows6..10 plus actual scoring11 with head10. Both
 full200 budgets, later QA50/100/150/200, final51713, retention and final native
 exit0/owned cleanup remain incomplete.
+
+### Retaining fixed inputs without modifying either live run
+
+The current private namespace still reads the reference asset bundle and corpus
+cache from h100-8. `operations/h100_reference_replica/retain_fixed_assets.py`
+retains those read-only files on NAS18, at 20MiB/s with 128GiB ordinary free-space
+reserve. New payloads receive source and independent destination full SHA reads.
+The existing immutable, independently verified FAISS/corpus backup is reused by
+hardlink, with its original complete proof explicitly recorded; its large hashes
+are not repeated. The explicit controller reconciles an existing intent/receipt
+before launching a worker. Copy completion does not itself change a live mount,
+UUID lock lease, launcher, scientific configuration, or deployed runtime. A future
+source-independent bootstrap and any necessary complete-boundary handoff remain
+separate work; do not claim the live jobs are already independent of h100-8.
