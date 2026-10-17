@@ -458,6 +458,37 @@ def linked_probe_receipt(value):
     raise ValueError('Prefix probe receipt must be an actual small JSON path or proof')
 
 
+def current_driver_metadata(config, outer):
+    """Bind a new save to this execution base, never inherited resume aliases."""
+    from .pool import state_sha
+    base = remote(config['base'])
+    root = base / 'outers' / ('outer-%06d' % outer)
+    pool_path = base / 'question-pool/state.json'
+    pool = read(pool_path)
+    reservation = read(root / 'pool-reservation.json')
+    if (reservation['outer'] != outer or pool != reservation['after']
+            or state_sha(pool) != reservation['after_sha256']
+            or pool['next_outer'] != outer + 1
+            or pool['consumed_candidates'] != 5120 * outer):
+        raise ValueError('Current actor save lost its actual reserved candidate boundary')
+    pool_proof = dict(path=str(pool_path), sha256=sha(pool_path), value=pool)
+    if pool_proof['sha256'] != hashlib.sha256(canonical(pool) + b'\n').hexdigest():
+        raise ValueError('Candidate state changed while capturing the driver receipt')
+    probe = linked_probe_receipt(str(base / 'probe/latest.json'))
+    score_path = root / 'probe-score/manifest.json'
+    score = read(score_path)
+    before = probe['value']
+    if (score['run_id'] != config['run_id'] or score['outer'] != outer
+            or before['run_id'] != config['run_id']
+            or before['completed_outer'] != outer - 1
+            or before['actual_adam_steps_per_rank'] != [20 * (outer - 1)] * WORLD
+            or before['sha256'] != score['probe_before_checkpoint_sha256']):
+        raise ValueError('Current actor save lost its actual selection-time probe boundary')
+    return dict(candidate_pool_state=pool_proof, prefix_probe_receipt=probe,
+        driver_metadata_binding=dict(source='current_execution_base', outer=outer,
+            run_id=config['run_id'], score_manifest_sha256=sha(score_path)))
+
+
 def _build_actor(model_dir, budget, device):
     import functools
     import torch
@@ -520,13 +551,12 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
         tokenizer.save_pretrained(hfdir)
         hf = {p.name: dict(bytes=p.stat().st_size, sha256=sha(p)) for p in sorted(hfdir.iterdir()) if p.is_file()}
         driver_state = config.get('driver_state', {})
-        pool_path = remote(config['pool_state_path']) if config.get('pool_state_path') else None
-        pool_proof = dict(path=str(pool_path), sha256=sha(pool_path), value=read(pool_path)) if pool_path else None
+        driver_metadata = current_driver_metadata(config, outer)
         driver_proof = atomic_save(attempt_dir / 'driver.pt', dict(run_id=config['run_id'],
             completed_outer=outer, actor_version=actor_version, driver_state=driver_state,
             grounding_probe_version=config['grounding_probe_version'], rng=_rng(),
             rng_scope='actor_phase_rank0; controller candidate RNG/order lives in candidate_pool_state',
-            candidate_pool_state=pool_proof, prefix_probe_receipt=linked_probe_receipt(config.get('prefix_probe_receipt'))))
+            **driver_metadata))
         receipt = dict(schema_version=1, role='prefix_selection200_actor_complete', run_id=config['run_id'],
             source_commit=config.get('source_commit'), completed_outer=outer, actor_version=actor_version,
             model_dir=str(hfdir), actor_model_dir=str(hfdir), hf_model_dir=str(hfdir), model_master_dtype='torch.float32',
