@@ -1,5 +1,7 @@
 # I1–I6 修复与官方actor fresh200
 
+> Latest actual 2026-10-17 09:46 UTC: same3431/h100-8 complete41/200, each rank actor820/probe200;42 prefix. Period40 original eight probe ledgers verify100 new writes each at1e-6; actual41 scoring used updated head40. [Same-rollout paired metrics and100-update curve](period40-paired-and-actual41-use.json), [selected-group history1–40](selected-mixed-outers0001-0040.csv). Frozen training848 is unchanged. QA50 and grounding50 are not yet observed.
+
 > Latest actual 2026-10-17 09:02 UTC: same3431/h100-8 complete35/200, each rank actor700/probe100,36prefix. All25-35 original actor rank journals verify20 writes per rank/round. Two actual management/target reads recovered with the task-only macOS socket-interface mode; no training restart/config edit or global network/auth edit. [Current small progress proof](progress35-and-task-local-transport-recovery.json). ProbeLR stays1e-6; human conditional20 resume could not apply because complete20 actor/Adam/RNG files were rotated; reconsider at retained50, with no automatic LR change approved yet. Older snapshots below are historical.
 
 > Latest actual 2026-10-17 07:37 UTC: same3431/h100-8 complete20/200, each rank actor400/probe100. First period20 trained all5120G5 once at1e-6; actual21 selection used head20 with actor0020. Train balanced mixed accuracy60.9604% ->63.6124%, heldout56.6099% ->57.0806%. Diagnostic gains are modest and ordinary heldout accuracy remains below its majority baseline. [Paired metrics and100-update curve](period20-paired-and-actual21-use.json). Current runtime848 remains frozen; older snapshots below are historical.
@@ -78,3 +80,23 @@ A local-only opt-in can now bind the source-bound SSH byte socket to en0 using D
 Default callers remain unchanged. The interface option is explicit, macOS-only, and does not alter global SSH, authentication, VPN or routing configuration. It is passed only to task-local management reads; frozen trainer848 is unchanged. Syntax checks cover the three modified control modules; actual authenticated management/native read remains necessary to establish whether this mode works. No training/GPU test was added.
 
 The opt-in transport mode has now completed actual authenticated management, h100-8 hostname/nonce and native3431 original-ledger reads. Source-address-only and ordinary alias reads had failed earlier; this temporal comparison does not isolate a permanent network cause. The option is enabled only in this task local observer state. Frozen training848 is unchanged. The next observer uses the published interface-capable helper, reuses the verified owned master while live, and can use the same task-only socket binding on a fresh connection.
+
+## Period40: weak discrimination despite ordinary-accuracy gain
+
+Actor0039 generated this period's5120 training G5 groups and512 disjoint diagnostic G5 groups. Pre/post evaluation uses the exact same rollouts, hidden and own strict-EM labels within each split; all eight ranks naturally consume640 groups/3200 trajectories once. The probe takes100 real synchronized updates at1e-6. The next outer41 actually binds updated head40 to actor0040. Producer model SHA metadata is not an independent tensor readback or semantic reload.
+
+|Same data, pre/post update|Train5120 groups|Heldout512 groups|
+|---|---:|---:|
+|Ordinary mixed accuracy|58.5156% →67.8516%|54.1016% →69.5313%|
+|Balanced mixed accuracy|57.3133% →56.2855%|51.2043% →52.5406%|
+|Mixed recall|54.9329% →33.3860%|46.0177% →22.1239%|
+|Nonmixed recall|59.6937% →79.1851%|56.3910% →82.9574%|
+|Trajectory BCE|0.699631 →0.803111|0.782394 →0.905347|
+|Group BCE|0.749673 →0.620271|0.751339 →0.615910|
+|Total joint loss|1.449304 →1.423382|1.533733 →1.521257|
+
+Ordinary accuracy rises mainly because the head predicts nonmixed more often. Heldout majority baseline is399/512=77.9297%, above the69.5313% ordinary accuracy. Balanced accuracy remains close to50%, mixed recall declines and trajectory BCE worsens: this is not successful generalization. Joint loss decreases slightly because the group term improves more than the trajectory term worsens. Different online batches do not establish monotonic loss decrease.
+
+The full pool contains1267/5120=24.7461% mixed groups; Top512 contains181/512=35.3516%, around1.4286 times pool prevalence. This is selection enrichment, not full-pool accuracy or QA improvement. The fresh diagnostic has113 mixed groups. Its questions stay fixed, but each periodic actor generates new G5 labels/hidden; period20 versus40 is not a fixed-label learning curve. The100-update loop takes8.24818seconds, not whole-outer time.
+
+Human's conditional request to resume20 at1e-5 could not apply because complete20 actor/Adam/RNG files were rotated. Probe LR therefore remains1e-6; retained50 is the next review point. No automatic stop or LR change at50 is assumed.
