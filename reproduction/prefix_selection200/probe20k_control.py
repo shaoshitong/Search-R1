@@ -13,7 +13,27 @@ from reproduction.h1008_qprobe.established_controller_transport import remote
 
 def deploy_code(config,commit,reuse_commit,reuse_repo):
     deployment=deployment_script(config['base'],commit,config,archive_for_commit(commit,reuse_commit),reuse_commit,reuse_repo)
-    return ('import pathlib,json,sys\nb=pathlib.Path('+repr(config['base'])+');\n'
+    before=''
+    old=config['probe20k_study'].get('replace_pending')
+    if old:
+        before=r'''
+import pathlib,json,sys,subprocess,time
+old=OLD;root=pathlib.Path(old['base'])
+r=subprocess.run(['scontrol','show','job',str(old['job_id']),'-o'],text=True,capture_output=True,timeout=30);assert r.returncode==0,r.stderr
+native=dict(item.split('=',1)for item in r.stdout.split()if '='in item)
+assert native['Command']==str(root/'preparation/native-probe20k-data.sh')
+if native['JobState']=='RUNNING':
+ print(json.dumps(dict(status='ORIGINAL_DATA_JOB_NOW_RUNNING_NO_REPLACEMENT',job_id=old['job_id'])));raise SystemExit
+record=root/'preparation/replaced-pending-for-cpu-memory-profile.json'
+if not record.exists():
+ assert native['JobState']=='PENDING'and native['RunTime']=='00:00:00'
+ cancelled=subprocess.run(['scancel',str(old['job_id'])],text=True,capture_output=True,timeout=30);assert cancelled.returncode==0,cancelled.stderr
+ with record.open('x')as f:json.dump(dict(decision_unix=time.time(),job_id=str(old['job_id']),native_before=native,
+  reason='Latest live20k EMA task; replace only never-started own pending job to fit CPU/memory; physical8GPU/science unchanged',
+  later_task_authorization_active=True,training_was_not_started=True,new_cpus=48,new_memory_gib=256),f)
+else:assert native['JobState']=='CANCELLED'and json.loads(record.read_text())['job_id']==str(old['job_id'])
+'''.replace('OLD',repr(old))
+    return (before+'import pathlib,json,sys\nb=pathlib.Path('+repr(config['base'])+');\n'
         'if not b.exists():\n exec(compile('+repr(deployment)+',"isolated_probe20k_deploy","exec"),{})\n'
         'else:\n assert (b/"preparation/deploy-receipt.json").exists(),"Reconcile existing deployment intent first"\n'
         'c=json.loads((b/"preparation/launch-config.json").read_text());assert c["source_commit"]=='+repr(commit)+'\n'

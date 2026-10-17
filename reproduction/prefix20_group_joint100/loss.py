@@ -12,7 +12,7 @@ import torch
 import torch.nn.functional as F
 
 
-def joint_loss(logits, labels, group_weight=1.0):
+def joint_loss(logits, labels, group_weight=1.0, mixed_target=None):
     """Return two independent means and their weighted sum for logits[B,5].
 
     ``labels`` must contain each trajectory's own0/1 EM, in the same G5 order.
@@ -47,6 +47,12 @@ def joint_loss(logits, labels, group_weight=1.0):
     mixed_event_logit = log_mixed_mass - log_extreme_mass
     k = target.sum(dim=1)
     mixed_label = ((k > 0) & (k < 5)).to(dtype=z.dtype)
+    if mixed_target is not None:
+        if mixed_target.shape != (z.shape[0],):
+            raise ValueError('One explicit soft mixed-event target is required per augmented G5')
+        # Soft ownEM sums cannot define whether a synthetic group is mixed.
+        # Mixup supplies lambda*m_A+(1-lambda)*m_B independently of ownEM.
+        mixed_label = mixed_target.to(device=z.device,dtype=z.dtype)
     group_bce = F.binary_cross_entropy_with_logits(mixed_event_logit, mixed_label, reduction='mean')
     mixed_probability = torch.sigmoid(mixed_event_logit)
     total = trajectory_bce + weight * group_bce

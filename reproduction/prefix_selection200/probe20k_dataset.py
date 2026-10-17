@@ -147,7 +147,9 @@ def submit(base):
     assert c['local_probe_fit50']['shared_slurm_physical8_authorization']==SHARED_AUTHORIZATION
     script.write_text('#!/bin/bash\nset -euo pipefail\nexport CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7\nexport PYTHONPATH='+shlex.quote(str(base/'repo'))+'\nunset PYTHONHOME RAY_ADDRESS HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy\nexec '+shlex.join([python,'-m','reproduction.prefix_selection200.probe20k_dataset','run','--base',str(base)])+'\n');script.chmod(0o700)
     command=['sbatch','--parsable','--partition=gpu','--oversubscribe','--nodelist=h100-8','--nodes=1','--ntasks=1',
-        '--cpus-per-task=96','--mem=512G','--time=0','--signal=B:TERM@60','--export=NONE','--job-name=g1-probe20k-data-'+c['run_id'][:12],
+        '--cpus-per-task='+str(c['probe20k_study'].get('slurm_cpus',48)),
+        '--mem='+str(c['probe20k_study'].get('slurm_memory_gib',256))+'G',
+        '--time=0','--signal=B:TERM@60','--export=NONE','--job-name=g1-probe20k-data-'+c['run_id'][:12],
         '--comment=g1-probe20k-data:'+c['run_id'],'--chdir='+str(base),'--output='+str(base/'logs/native-%j.log'),'--error='+str(base/'logs/native-%j.log'),str(script)]
     once(prep/'submit-intent.json',dict(command=command,config_sha256=sha(prep/'launch-config.json'),created_unix=time.time()))
     try:

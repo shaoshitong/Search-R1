@@ -35,7 +35,9 @@ def admit_local_allocation(base, c):
     actual=fields(raw)
     assert socket.gethostname().split('.')[0]=='h100-8' and actual['JobId']==job
     assert actual['JobState']=='RUNNING' and actual['NodeList']=='h100-8' and actual['NumNodes']=='1'
-    assert int(actual['NumCPUs'])>=96 and memory_bytes(actual['TRES'])>=512*2**30
+    profile=c.get('probe20k_study',{})
+    required_cpus=profile.get('slurm_cpus',96);required_memory=profile.get('slurm_memory_gib',512)
+    assert int(actual['NumCPUs'])>=required_cpus and memory_bytes(actual['TRES'])>=required_memory*2**30
     assert actual.get('TresPerNode','(null)')in('(null)','N/A')
     assert os.environ['CUDA_VISIBLE_DEVICES']=='0,1,2,3,4,5,6,7'
     physical=cuda_uuids(8);assert physical==c['physical_gpu_uuids']
