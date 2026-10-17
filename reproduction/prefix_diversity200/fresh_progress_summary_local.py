@@ -188,10 +188,11 @@ def trend_summary(facts, n):
         for role, count in (('continued1024',1024),('actor512',512)):
             item = selection.get(role)
             if item is None: row[role+'_mixed_mean'] = row[role+'_prediction_mean'] = None; continue
-            hist = item['correct_count_histogram']
-            need(set(hist) == set(map(str,range(6))) and all(type(v) is int and v >= 0 for v in hist.values())
+            hist = item.get('correct_count_histogram')
+            need(isinstance(hist,dict) and set(hist).issubset(set(map(str,range(6))))
+                 and all(type(v) is int and v >= 0 for v in hist.values())
                  and sum(hist.values()) == item['questions'] == count, 'Selection histogram/question count differs')
-            mixed = sum(hist[str(k)] for k in range(1,5))
+            mixed = sum(hist.get(str(k),0) for k in range(1,5))
             need(item['mixed_questions'] == mixed and item['mixed_fraction'] == mixed/count, 'Selection mixed fraction is inconsistent')
             prediction = item.get('mean_predicted_mixed_probability')
             need(prediction is None or finite(prediction) and 0 <= prediction <= 1, 'Selection prediction is not a finite probability')

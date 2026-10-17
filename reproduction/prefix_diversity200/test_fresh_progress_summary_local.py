@@ -209,5 +209,36 @@ class LocalSummaryTests(unittest.TestCase):
                 self.assertEqual(pairs['pending_outers'],[76]);self.assertEqual(pairs['count'],75)
                 self.assertIn('76',pairs['missing_binding_sha_by_outer'])
 
+    def test_counter_histograms_allow_omitted_endpoint_and_internal_zero_buckets(self):
+        for all_mixed in (True,False):
+            with self.subTest(all_mixed=all_mixed),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory).resolve();out,mirrors=fixture(root,cost=False,pairs=False)
+                path=out/'COMPLETED_ITERATION_SCALAR_EVIDENCE.json';facts=read(path)
+                for role,count in (('actor512',512),('continued1024',1024)):
+                    item=facts['1']['actor_selection'][role]
+                    item['correct_count_histogram']=({str(k):count//4 for k in range(1,5)}
+                        if all_mixed else {'0':count-1,'3':1})
+                    item['mixed_questions']=count if all_mixed else 1
+                    item['mixed_fraction']=item['mixed_questions']/count
+                write(path,facts);original=path.read_bytes()
+                summarize(root,'progress',mirror_roots=mirrors)
+                self.assertEqual(path.read_bytes(),original)
+                self.assertEqual(read(out/'MIXED_SELECTION_TREND_CURRENT.json')['through_outer'],76)
+
+    def test_missing_or_invalid_histogram_rejects_before_writes(self):
+        for fault in ('missing','invalid_key','negative','not_integer','total'):
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory).resolve();out,mirrors=fixture(root,cost=False,pairs=False)
+                path=out/'COMPLETED_ITERATION_SCALAR_EVIDENCE.json';facts=read(path)
+                item=facts['1']['actor_selection']['actor512']
+                if fault=='missing':del item['correct_count_histogram']
+                elif fault=='invalid_key':item['correct_count_histogram']['6']=0
+                elif fault=='negative':item['correct_count_histogram']['2']=-1
+                elif fault=='not_integer':item['correct_count_histogram']['2']=0.0
+                else:item['correct_count_histogram']['0']=510
+                write(path,facts);before={str(p.relative_to(root)):p.read_bytes()for p in root.rglob('*')if p.is_file()}
+                with self.assertRaises(ValueError):summarize(root,'progress',mirror_roots=mirrors)
+                self.assertEqual(before,{str(p.relative_to(root)):p.read_bytes()for p in root.rglob('*')if p.is_file()})
+
 
 if __name__=='__main__':unittest.main()
