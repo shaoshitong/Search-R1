@@ -98,12 +98,14 @@ value['qa_pending']={k:v for k,v in (value.get('qa_pending')or{}).items()if k no
     assert sorted(map(int, series)) == list(range(1, n + 1))
     save(series_path, series)
     state = json.loads((output / 'STATUS.json').read_text())
-    state.update(stage=stage.get('stage'), outer_in_progress=stage.get('outer'),
+    state.update(base=c['base'],initial_official_fresh_run_source=c.get('initial_official_fresh_run_source',c['base']),
+        stage=stage.get('stage'), outer_in_progress=stage.get('outer'),
         native_state=native.get('JobState', 'UNKNOWN'), job_id=native.get('JobId'),
-        active_training_job=native.get('JobId'), actual_complete_outer=n,
+        active_training_job=native.get('JobId'),training_job=native.get('JobId'),current_remote_state=native.get('JobState','UNKNOWN'),
+        actual_complete_outer=n,
         actor_adam_per_rank=(value.get('actor') or {}).get('actual_adam_steps_per_rank', [0]*8),
         probe_adam_per_rank=(value.get('probe') or {}).get('actual_adam_steps_per_rank', [0]*8),
-        latest_actual_observed_unix=value['observed_unix'], latest_actual_evidence=str(evidence),
+        latest_actual_observed_unix=value['observed_unix'], latest_actual_evidence=str(evidence),current_status_evidence=str(evidence),
         config_sha256=value['config_sha256'], source_commit=c['source_commit'],
         latest_joint_source_commit=joint.get('source_commit'),resume_joint=c.get('resume_joint'),
         qa_pending=value.get('qa_pending'),native_qa_pending=value.get('native_qa_pending'),
