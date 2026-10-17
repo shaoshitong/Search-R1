@@ -67,7 +67,8 @@ def run(path):
                 if check.returncode:
                     control = None
             code = REMOTE.replace('BASE', repr(spec['base'])).replace('VERIFIED', str(spec['verified_outer']))
-            value = json.loads(remote(code, transport, control_path=control, target='h100-8'))
+            value = json.loads(remote(code, transport, control_path=control, target='h100-8',
+                source_bound_tcp=state.get('management_transport', {}).get('source_bound_direct_tcp_enabled', False)))
             actual = directory / ('actorhidden-normal-delayed-' + tag + '-actual.json')
             write_once(actual, value)
             result = dict(status='ACTUAL_METADATA_READ_COMPLETE', token=spec['token'],

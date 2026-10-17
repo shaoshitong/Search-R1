@@ -1,6 +1,7 @@
 """Task-local direct management transport; never changes global SSH or training."""
 import argparse
 import datetime
+import ipaddress
 import json
 import os
 from pathlib import Path
@@ -11,7 +12,7 @@ import sys
 
 MGMT = "import json,shlex,subprocess,datetime,sys\nfrom pathlib import Path\ncfg=json.loads(Path('/home/lichen/.claude/projects/-home-lichen/memory/reference_h100_retained18_route_20261008.public.json').read_text())\ntarget='h100-8';ip=cfg['targets'][target];gateway=cfg['gateway_ip'];user=cfg['user']\nprefix=['env','-u','LD_LIBRARY_PATH','ssh','-T','-i',cfg['management_identity_file'],'-o','IdentitiesOnly=yes','-o','BatchMode=yes','-o','StrictHostKeyChecking=yes','-o','UpdateHostKeys=no','-o','ConnectTimeout=8','-o','ConnectionAttempts=1']\nargs=prefix.copy()\nif ip!=gateway:args+=['-o','ProxyCommand='+shlex.join(prefix+['-W','%h:%p',user+'@'+gateway])]\nkeys=cfg.get('trusted_target_host_keys',{}).get(target)\nif keys:args+=['-o','KnownHostsCommand='+shlex.join(['/bin/echo','\\n'.join(keys)])]\nr=subprocess.run(args+[user+'@'+ip,WORKER_CMD],input=sys.stdin.buffer.read(),capture_output=True,timeout=240)\nprint(json.dumps({'route':'retained18 SSH-W h100-8','returncode':r.returncode,'stdout':r.stdout.decode(),'stderr':r.stderr.decode(),'utc':datetime.datetime.now(datetime.timezone.utc).isoformat()}))\n"
 
-def remote(script, evidence, control_path=None, compat_handshake=False, target='h100-8'):
+def remote(script, evidence, control_path=None, compat_handshake=False, target='h100-8', source_bound_tcp=False):
     if target not in ('h100-8','h100-10'):
         raise ValueError('Only the current training and retained backup nodes are supported')
     args=['env','-u','LD_LIBRARY_PATH','/usr/bin/ssh','-T',
@@ -20,6 +21,15 @@ def remote(script, evidence, control_path=None, compat_handshake=False, target='
           '-o','ConnectTimeout=30','-o','ServerAliveInterval=15','-o','ServerAliveCountMax=4']
     if compat_handshake:
         args+=['-o','IPQoS=none','-o','KexAlgorithms=curve25519-sha256']
+    source_ipv4 = None
+    if source_bound_tcp and not control_path:
+        source_ipv4 = subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],
+                                              text=True,timeout=5).strip()
+        ipaddress.IPv4Address(source_ipv4)
+        helper = Path(__file__).with_name('source_bound_tcp_proxy.py')
+        if not helper.is_file(): raise ValueError('Published source-bound TCP helper is missing')
+        proxy = shlex.join([sys.executable,str(helper),'--source',source_ipv4,'--host','%h','--port','%p'])
+        args+=['-o','ProxyCommand='+proxy,'-o','ProxyJump=none']
     if control_path:
         socket=Path(control_path);parent=socket.parent
         if not parent.name.startswith('qprobe3-mgmt-'):
@@ -37,6 +47,7 @@ def remote(script, evidence, control_path=None, compat_handshake=False, target='
     process=subprocess.run(args,input=script.encode(),capture_output=True,timeout=270)
     record=dict(utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),returncode=process.returncode,
                 stdout=process.stdout.decode(),stderr=process.stderr.decode(),route='mgmt-host alias -> retained18 -> '+target,
+                source_bound_direct_tcp=bool(source_ipv4),source_ipv4=source_ipv4,
                 global_network_configuration_changed=False)
     with Path(evidence).open('x') as stream:json.dump(record,stream,indent=2)
     if process.returncode:raise RuntimeError(record['stderr'])
