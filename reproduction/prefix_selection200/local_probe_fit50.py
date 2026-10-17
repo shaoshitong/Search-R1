@@ -159,7 +159,9 @@ def train(base):
                     for key,value in list(values.items()):
                         if isinstance(value,torch.Tensor):values[key]=value.detach().cpu()
                 path=out/('head-epoch-%02d.pt'%epoch);temp=path.with_suffix('.pt.partial')
-                torch.save(checkpoint,temp);os.replace(temp,path)
+                torch.save(checkpoint,temp)
+                with temp.open('rb') as stream:os.fsync(stream.fileno())
+                os.replace(temp,path)
                 complete=dict(epoch=epoch,actual_adam_per_rank=[actual]*8,checkpoint=str(path),
                     checkpoint_bytes=path.stat().st_size,checkpoint_sha256=sha(path),
                     metrics_sha256=sha(out/('epoch-%02d-metrics.json'%epoch)),train_loop_seconds=loop_seconds)
