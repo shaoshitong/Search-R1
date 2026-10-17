@@ -80,12 +80,38 @@ def import_joint(base):
     if (pool['next_outer']!=n+1 or pool['consumed_candidates']!=5120*n
             or sha(snapshot)!=joint['pool_sha256'] or pool!=completed_pool):
         raise ValueError('Actual candidate cursor is not exactly the completed boundary')
+    reward_history=[];next_reward=None
+    if c.get('grounding_refit_rounds'):
+        from .cost_snapshot import grounding_binding
+        for key in ('grounding_initial_probe_version','grounding_refit_rounds','grounding_manifest',
+                    'grounding_manifest_sha256','interaction_contract','policy_monitor'):
+            if c[key]!=previous[key]:raise ValueError('I1-I6 scientific binding changed: '+key)
+        used_round=min(150,((n-1)//50)*50)
+        used=grounding_binding(source,previous,used_round)
+        if (actor['reward']['version']!=used['version']
+                or any(row['version']!=used['version'] for row in actor['reward']['ranks'])):
+            raise ValueError('Saved actor did not actually use its required reward version')
+        next_round=min(150,(n//50)*50)
+        for ordinal in (50,100,150):
+            pointer=source/'grounding'/('round-%03d-complete.json'%ordinal)
+            if ordinal<=next_round and pointer.exists():
+                row=grounding_binding(source,previous,ordinal,require_adoption=ordinal<=used_round)
+                manifest=read(row['manifest'])
+                for name,key in (('commit_probe.pkl','commit'),('boundary_probe.pkl','boundary')):
+                    if sha(manifest[key])!=manifest['head_sha256'][name]:
+                        raise ValueError('Retained actual fitted reward head changed')
+                reward_history.append(row)
+        next_reward=next((row for row in reward_history if row['round']==next_round),used)
+        # At an exact milestone a missing next fit is recomputed from that same
+        # completed actor by launch. After a milestone, missing used versions
+        # were rejected above; never silently fall back to official round0.
     proof=dict(source_base=str(source),source_job=job,completed_outer=n,
         source_config_sha256=sha(source/'preparation/launch-config.json'),joint_sha256=sha(root/'complete.json'),
         native_query=dict(returncode=native.returncode,stdout=native.stdout,stderr=native.stderr),
         original_logs={p.name:dict(bytes=p.stat().st_size,sha256=sha(p)) for p in (source/'logs').glob('*.log')},
         actor_steps=[20*n]*8,probe_steps=[20*n]*8,scheduler_completed_outer=n,
         candidate_cursor=pool['consumed_candidates'],uncommitted_prefix_replay=replay,
+        reward_version_for_next_outer=next_reward, reward_version_history=reward_history,
         owned_births_present=[],checked_unix=time.time())
     atomic_json(base/'preparation/joint-source-terminal-proof.json',proof)
     atomic_json(base/'preparation/joint-resume-intent.json',dict(source_base=str(source),completed_outer=n,run_id=c['run_id']))
@@ -106,12 +132,27 @@ def import_joint(base):
                     link(snapshot,base/directory/'state.json')
                 else:link(p,base/directory/p.relative_to(source/directory))
     link(source/'latest-joint.json',base/'latest-joint.json')
+    if next_reward is not None:
+        grounding=base/'grounding';grounding.mkdir()
+        initial_adoption=source/'grounding/adopted-round-000.json'
+        if initial_adoption.exists():link(initial_adoption,grounding/initial_adoption.name)
+        for row in reward_history:
+            pointer=Path(row['completed_receipt']);link(pointer,grounding/pointer.name)
+            if row['adoption_receipt']:
+                adopted=Path(row['adoption_receipt']);link(adopted,grounding/adopted.name)
+        live=(read(next_reward['completed_receipt']) if next_reward['completed_receipt'] else
+            dict(run_id=c['run_id'],round=0,version=next_reward['version'],
+                manifest=next_reward['manifest'],manifest_sha256=next_reward['manifest_sha256']))
+        atomic_json(grounding/'live.json',dict(live,restored_from_source=str(source)))
     result=dict(status='COMPLETE_JOINT_BOUNDARY_IMPORTED_NO_RECOMPUTATION',run_id=c['run_id'],
         source_base=str(source),completed_outer=n,next_outer=n+1,actor_steps=[20*n]*8,probe_steps=[20*n]*8,
         actor_recomputed=False,probe_recomputed=False,source_originals_modified=False,assets=assets,
         source_actor_files_referenced_by_original_receipt=True,rotating_history_directories_not_aliased=True,
         future_actor8rank_full_optimizer_scheduler_rng_readback_required=True,
         native_executor_exact_resume_claimed=False,large_assets_via_Mac=False,
+        reward_version_for_next_outer=next_reward,reward_version_history=reward_history,
+        reward_heads_referenced_by_original_immutable_manifest=next_reward is not None,
+        recovered_reward_live_sha256=sha(base/'grounding/live.json') if next_reward else None,
         uncommitted_prefix_replay=replay,
         terminal_proof_sha256=sha(base/'preparation/joint-source-terminal-proof.json'))
     atomic_json(destination,result)

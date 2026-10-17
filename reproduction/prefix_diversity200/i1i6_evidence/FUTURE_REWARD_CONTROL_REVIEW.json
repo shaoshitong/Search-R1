@@ -1,0 +1,24 @@
+{
+  "status": "FOCUSED_STATIC_REVIEW_NO_BLOCKER_FOR_CURRENT_PROTOCOL",
+  "reviewer": "i1i6_context_free_review",
+  "reviewed_utc": "2026-10-17T05:48:18.108239+00:00",
+  "scope": "Future control readers only, not active runtime; round0/50/100/150 cost and joint recovery bindings",
+  "source_sha256": {
+    "cost_snapshot.py": "c957e53bf61664d4fd083bb9edac264c38baf688e012b5a4248cea9251e8c0e1",
+    "joint_import.py": "4d73a3841af461ccb12f1335b07ec5af933a34ab1dbea8533aa41f53eb1fda35"
+  },
+  "round_mapping": {
+    "1-50": 0,
+    "51-100": 50,
+    "101-150": 100,
+    "151-200": 150
+  },
+  "exact_boundary_missing_next_fit": "launch refits from the exact completed milestone actor",
+  "nonboundary_missing_used_fit": "reject before import; never rollbackround0",
+  "protected_round0_manifest": "Exact same path and SHA required by new control import before creating intent",
+  "future_resume_executed": false,
+  "training_changed": false,
+  "additional_tests": false,
+  "gpu_used": false,
+  "remote_used_by_reviewer": false
+}
