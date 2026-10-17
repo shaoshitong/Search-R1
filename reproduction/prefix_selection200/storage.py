@@ -62,6 +62,9 @@ def validate_base(base):
     native=config.get('actor_hidden_native',False)
     clock_ok=(config.get('probe_update_period')==PROBE_PERIOD and config.get('probe_updates_per_period')==PROBE_UPDATES
               and config.get('probe_updates_per_outer')==0 and config.get('probe_update_at_final') is False) if native else config.get('probe_updates_per_outer')==10
+    if config.get('selection_probe_experiment'):
+        from .ab_policy import validate
+        validate(config); clock_ok=True
     if (config['base'] != str(base) or not config['run_id'] or config['outers'] != 200
             or config['world_size'] != WORLD or not clock_ok):
         raise ValueError('Current namespace does not have the approved actor/probe run binding')
@@ -134,7 +137,20 @@ def current_boundary(base, config, outer):
         periodic=is_probe_update(outer);boundary=probe_boundary(outer)
     else:
         periodic=True;boundary=dict(last_update_outer=outer,actual_adam_per_rank=10*outer)
+    ab=config.get('selection_probe_experiment')
+    if ab:
+        from .ab_policy import BALANCED
+        from .ab_lifecycle import boundary as ab_boundary
+        boundary=ab_boundary(config,probe,outer)
+        periodic=ab==BALANCED
     update=read(owned(base,root/('probe-update/complete.json' if periodic else 'probe-frozen.json')))
+    expected_status=('BALANCED_CURRENT_OUTER_PROBE_COMPLETE' if ab and periodic else
+                     'UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE' if native and periodic else
+                     'PROBE_FROZEN_NO_OPTIMIZER_UPDATE' if native else 'SELECTED512G5_ONLINE_PROBE_10_ADAM_COMPLETE')
+    expected_new=(update['new_adam_steps_per_rank'] if ab else PROBE_UPDATES if native and periodic else 0 if native else 10)
+    if ab:
+        from .ab_lifecycle import check_update
+        check_update(config,joint,update)
     if (joint != latest_joint or joint['run_id'] != config['run_id'] or joint['outer'] != outer
             or joint['source_commit'] != config['source_commit']
             or joint['actor'] != actor or joint['probe'] != probe
@@ -143,11 +159,10 @@ def current_boundary(base, config, outer):
             or not actual_actor_boundary(actor, outer)
             or probe['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD
             or actor['scheduler_completed_outer'] != outer
-            or update['status'] != ('UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE' if native and periodic
-                else 'PROBE_FROZEN_NO_OPTIMIZER_UPDATE' if native else 'SELECTED512G5_ONLINE_PROBE_10_ADAM_COMPLETE')
+            or update['status'] != expected_status
             or (periodic and update['run_id'] != config['run_id']) or update['outer'] != outer
             or (periodic and update['checkpoint'] != probe)
-            or update['new_adam_steps_per_rank'] != (PROBE_UPDATES if native and periodic else 0 if native else 10)
+            or update['new_adam_steps_per_rank'] != expected_new
             or update['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD):
         raise ValueError('Actual actor20-opportunity/probe boundaries and this outer joint commit must agree')
     ledger = read(owned(base, base/'logs/process-ledger.json'))
@@ -238,6 +253,9 @@ def planned_assets(base, config, outer, root, joint, update, references):
                     raise ValueError('Previous probe snapshot path differs from its owned outer')
                 from .periodic import probe_boundary
                 expected_steps=(probe_boundary(previous)['actual_adam_per_rank'] if config.get('actor_hidden_native') else 10*previous)
+                if config.get('selection_probe_experiment'):
+                    from .ab_policy import validate_receipt
+                    expected_steps=validate_receipt(config,saved['probe'],previous)['actual_adam_per_rank']
                 if saved['probe']['actual_adam_steps_per_rank'] != [expected_steps]*WORLD:
                     raise ValueError('Previous probe producer is not a complete actual boundary')
                 add(expected, saved['probe'], 'previous_nonmilestone_probe_snapshot')

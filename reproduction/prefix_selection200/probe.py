@@ -346,9 +346,12 @@ def atomic_checkpoint(directory, saved, completed_outer):
                    actual_adam_steps_per_rank=saved['actual_adam_steps_per_rank'],
                    learning_rate=LR, sha256=sha(path), bytes=path.stat().st_size,
                    binding_sha256=saved['binding_sha256'], observed_utc=utc())
-    publish(directory / 'latest.json', receipt)
     from .periodic import is_probe_update
-    if completed_outer == 0 or is_probe_update(completed_outer):
+    if saved['binding'].get('selection_probe_experiment'):
+        receipt.update(ema_updates=saved.get('ema_updates', 0),
+                       selection_model_kind='ema' if 'ema_model' in saved else 'frozen_warmup')
+    publish(directory / 'latest.json', receipt)
+    if completed_outer == 0 or (completed_outer in (5, 50, 100, 150, 200) if saved['binding'].get('selection_probe_experiment') else is_probe_update(completed_outer)):
         os.link(path, directory / ('head-outer-%04d.pt' % completed_outer))
     return receipt
 
@@ -421,6 +424,22 @@ def initialize(args):
     initial = dict(schema_version=1, run_id=binding['run_id'], binding=binding, binding_sha256=digest(binding),
         completed_outer=0, model=model, model_nonpersistent_buffers=buffers, warmup_model_import=proof,
         optimizer=None, rank_rng=None, actual_adam_steps_per_rank=[0]*WORLD, learning_rate=LR)
+    config_path = directory.parent/'preparation/launch-config.json'
+    launch_config = read(config_path) if config_path.exists() else {}
+    from .ab_policy import mode, BALANCED
+    if mode(launch_config):
+        binding.update(selection_probe_experiment=mode(launch_config),
+                       group_weight=launch_config['probe_group_loss_weight'],
+                       ema_rate=launch_config['probe_ema_rate'],
+                       online_update_policy='current_outer_balanced_once' if mode(launch_config)==BALANCED else 'never',
+                       final_outer_probe_update=mode(launch_config)==BALANCED,
+                       updates_per_outer=10 if mode(launch_config)==BALANCED else 0,
+                       probe_total_actual_adam_per_rank=2760 if mode(launch_config)==BALANCED else 0,
+                       total_actual_adam_is_maximum_due_to_missing_class_skips=True)
+        initial['binding_sha256'] = digest(binding)
+        if mode(launch_config)==BALANCED:
+            initial.update(ema_model={k:v.clone() for k,v in model.items()},
+                           ema_nonpersistent_buffers={k:v.clone() for k,v in buffers.items()}, ema_updates=0)
     directory.mkdir(parents=True, exist_ok=True)
     once(directory / 'initialization-intent.json', dict(run_id=args.run_id, source=str(source),
         source_sha256=expected_sha, source_epoch=source_epoch, source_model_kind=model_kind))
@@ -446,7 +465,11 @@ def load_online(args, device):
     directory = remote(args.state_dir)
     receipt = read(directory / 'latest.json')
     from .periodic import probe_boundary
-    expected = probe_boundary(args.outer-1)
+    config_path = directory.parent/'preparation/launch-config.json'
+    launch_config = read(config_path) if config_path.exists() else {}
+    from .ab_policy import mode, validate_receipt
+    expected = (validate_receipt(launch_config, receipt, args.outer-1) if mode(launch_config)
+                else probe_boundary(args.outer-1))
     if (receipt['completed_outer'] != expected['last_update_outer'] or
             receipt['actual_adam_steps_per_rank'] != [expected['actual_adam_per_rank']]*WORLD):
         raise ValueError('Probe must be the last completed10-outer state (outer200 retains190)')
@@ -464,6 +487,8 @@ def load_online(args, device):
             or saved['completed_outer'] != expected['last_update_outer'] or saved['actual_adam_steps_per_rank'] != receipt['actual_adam_steps_per_rank']
             or saved['binding']['learning_rate'] != LR):
         raise ValueError('Online probe binding or actual Adam boundary differs')
+    if mode(launch_config) and saved['binding'].get('selection_probe_experiment') != mode(launch_config):
+        raise ValueError('Saved probe belongs to a different AB arm')
     model = OnlineQuestionProbe(remote(args.model_dir), QMAX).to(device=device, dtype=torch.float32)
     validate_model_state(saved['model'])
     validate_native_buffers(saved['model_nonpersistent_buffers'])
@@ -481,6 +506,9 @@ def score(args):
     features = None
     try:
         model, saved, receipt = load_online(args, device)
+        if saved['binding'].get('selection_probe_experiment') == 'balanced_online_ema':
+            model.load_state_dict(saved['ema_model'], strict=True)
+            restore_native_buffers(model, saved['ema_nonpersistent_buffers'])
         features = NativeFeatures(args.prefix_inputs)
         manifest = features.manifest
         actor_version = manifest['actor_version']
@@ -513,6 +541,8 @@ def score(args):
                 prefix_scan_sha256=features.manifest_sha,probe_before_checkpoint_sha256=receipt['sha256'],
                 candidate_questions=questions,trajectories_per_question=G,exploration=0,
                 formula='1-prod(p_j)-prod(1-p_j)',outcome_labels_used=False,
+                selection_model_kind=receipt.get('selection_model_kind','online'),
+                ema_updates=receipt.get('ema_updates',0),
                 representation_source='same_sampling_actor_native_layer27_postblock',
                 **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions') if key in manifest})
             from .periodic import is_probe_update
@@ -757,14 +787,22 @@ def main():
     args = parser.parse_args()
     required = {'initialize': ('source_checkpoint', 'source_sha256', 'run_id', 'test_cache', 'test_manifest_sha'),
                 'score': ('prefix_inputs', 'output', 'outer', 'model_dir'),
-                'update': ('scored_features', 'own_em', 'output', 'outer', 'model_dir', 'test_cache', 'test_manifest_sha')}
+                'update': ('scored_features', 'own_em', 'output', 'outer', 'model_dir')}
     if any(getattr(args, key) is None for key in required[args.phase]):
         parser.error('Missing phase-specific arguments: '+', '.join(required[args.phase]))
     if args.phase != 'initialize' and not 1 <= args.outer <= 200:
         parser.error('Require outer1..200')
     if args.encoder_micro_batch_size < 1:
         parser.error('Encoder scoring batch must be positive')
-    result = {'initialize': initialize, 'score': score, 'update': update}[args.phase](args)
+    if args.phase == 'update':
+        c = read(Path(args.state_dir).parent/'preparation/launch-config.json')
+        if c.get('selection_probe_experiment'):
+            from .ab_probe import update as ab_update
+            result = ab_update(args)
+        else:
+            result = update(args)
+    else:
+        result = {'initialize': initialize, 'score': score}[args.phase](args)
     if result is not None:
         print(json.dumps(result, allow_nan=False), flush=True)
 

@@ -79,6 +79,9 @@ def actor_ledger(seals,actor,outer,rank):
 
 
 def probe_state(saved,receipt,config,outer,history):
+    if config.get('selection_probe_experiment'):
+        from .ab_checkpoint_once import validate_probe_state
+        return validate_probe_state(saved,receipt,config,outer)
     import torch
     from .prefix5_model import PARAMETER_SHAPES,NATIVE_BUFFER_LAYOUTS
     expected=probe_boundary(outer);completed=expected['last_update_outer'];steps=expected['actual_adam_per_rank']
@@ -242,6 +245,10 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
     need(captured['sha256']==hashlib.sha256(pool_canonical(pool)+b'\n').hexdigest(),'Actual driver captured pool bytes differ from producer serialization')
     selected=driver['prefix_probe_receipt'];score=seals.json(base/'outers'/('outer-%06d'%outer)/'probe-score/manifest.json')
     before=probe_boundary(outer-1)
+    if config.get('selection_probe_experiment'):
+        from .ab_policy import validate_receipt
+        previous=history[outer-1]['probe'] if outer>1 else read(base/'probe/initialization-complete.json')['receipt']
+        before=validate_receipt(config,previous,outer-1)
     selected_proof=validate_driver_probe_receipt(selected,score,before)
     driver_proof=dict(file=file,rng=validate_rng(driver['rng']),candidate_pool_state_exact=True,
                       prefix_probe_receipt=selected,probe_receipt_hash_roles=selected_proof)

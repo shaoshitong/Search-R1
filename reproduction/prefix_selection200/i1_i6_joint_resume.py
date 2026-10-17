@@ -110,7 +110,7 @@ SCIENCE_CONFIG = ('run_id','outers','world_size','model_revision','model_files_s
     'fixed_test_identity_sha256','interaction_protocol','hidden_capture_contract','independent_encoder_forward',
     'grounding_refresh_enabled','grounding_refit_rounds','grounding_calibration_question_ids',
     'grounding_calibration_sha256','grounding_calibration_data_sha256','validation_questions_sha256',
-    'final_questions_sha256')
+    'final_questions_sha256','selection_probe_experiment','probe_group_loss_weight','probe_ema_rate')
 
 
 def digest(value): return hashlib.sha256(canonical(value)).hexdigest()
@@ -347,6 +347,9 @@ def _grounding(config,state,round, *, adopted):
 
 def _joint(config,joint,outer, *, previous_actual=None):
     actor=joint['actor'];probe=joint['probe'];b=probe_boundary(outer)
+    if config.get('selection_probe_experiment'):
+        from .ab_policy import validate_receipt
+        b=validate_receipt(config,probe,outer)
     if (joint['run_id']!=config['run_id'] or joint['outer']!=outer or not actual_actor_boundary(actor,outer) or
             actor['run_id']!=config['run_id'] or actor['completed_outer']!=outer or actor['scheduler_completed_outer']!=outer or
             probe['run_id']!=config['run_id'] or probe['completed_outer']!=b['last_update_outer'] or

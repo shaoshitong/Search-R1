@@ -35,6 +35,9 @@ def validate_config(c, base):
         raise ValueError('The approved prefix selection or training budget differs')
     if c.get('actual_em_selection_fallback') not in ('probe_score_fill', 'require_512_mixed'):
         raise ValueError('Bind an explicit fallback for periodic pools with fewer than512 actual mixed groups')
+    if c.get('selection_probe_experiment'):
+        from .ab_policy import validate as validate_ab
+        validate_ab(c)
     import re
     if (not re.fullmatch('[0-9a-f]{64}', c['probe_source_sha256'])
             or type(c.get('probe_source_epoch')) is not int or c['probe_source_epoch'] < 1
@@ -113,6 +116,9 @@ def reused_phase(base, root, phase, c):
 
 def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=None, grounding_state=None):
     """Publish only an actual actor/probe/pool boundary, including repaired10."""
+    if c.get('selection_probe_experiment'):
+        from .ab_lifecycle import commit_outer as commit_ab
+        return commit_ab(base,c,outer,root,actor_selection_path,timings,grounding_state)
     from .periodic import is_probe_update, probe_boundary
     from .storage import actual_actor_boundary
     from . import grounding
@@ -422,6 +428,7 @@ def run(base):
             validation(outer, actor['hf_model_dir'], recovery_config, base/'recovered-validation',
                        'recovered-outer-%06d-validation' % outer)
         for outer in range(outer + 1, 201):
+            outer_wall_started=time.monotonic()
             root = base / 'outers' / ('outer-%06d' % outer)
             stage('CANDIDATE_POOL_RESERVATION')
             prepare(c, outer)
@@ -534,28 +541,36 @@ def run(base):
                     raise RuntimeError('Actual actor failure requires repair: '+json.dumps(retry))
                 actor_micro = retry['actor_global_micro_batch_size']
                 attempt_id = retry['new_attempt_id']
-            if periodic_update:
-                diagnostic_receipt=read(root/'diagnostic-complete.json')
-                phase('outer-%06d-probe-update' % outer, distributed('reproduction.prefix_selection200.probe',
-                    ['update','--state-dir',str(base/'probe'),'--scored-features',str(root/'probe-score'),
-                     '--own-em',str(root/'full-pool/own-em.jsonl'),'--output',str(root/'probe-update'),
-                     '--own-em-sha256',read(root/'full-pool/complete.json')['own_em']['sha256'],
-                     '--outer',str(outer),'--model-dir',c['official_model_dir'],
-                     '--test-cache',diagnostic_receipt['scan_path'],
-                     '--test-manifest-sha',diagnostic_receipt['scan_sha256']]))
+            from .ab_policy import mode as ab_mode, BALANCED
+            do_probe_update = ab_mode(c)==BALANCED or (not ab_mode(c) and periodic_update)
+            if do_probe_update:
+                scope = 'full-pool' if periodic_update else 'full'
+                update_args = ['update','--state-dir',str(base/'probe'),'--scored-features',str(root/'probe-score'),
+                    '--own-em',str(root/scope/'own-em.jsonl'),'--output',str(root/'probe-update'),
+                    '--own-em-sha256',read(root/scope/'complete.json')['own_em']['sha256'],
+                    '--outer',str(outer),'--model-dir',c['official_model_dir']]
+                if periodic_update:
+                    diagnostic_receipt=read(root/'diagnostic-complete.json')
+                    update_args += ['--test-cache',diagnostic_receipt['scan_path'],
+                                    '--test-manifest-sha',diagnostic_receipt['scan_sha256']]
+                phase('outer-%06d-probe-update' % outer,
+                      distributed('reproduction.prefix_selection200.probe',update_args))
                 probe_metrics=read(root/'probe-update/metrics.json')
             else:
+                current_probe=read(base/'probe/latest.json')
                 probe_metrics=dict(status='PROBE_FROZEN_NO_OPTIMIZER_UPDATE',outer=outer,
-                    new_adam_steps_per_rank=0,actual_adam_steps_per_rank=[probe_boundary(outer)['actual_adam_per_rank']]*WORLD,
-                    last_update_outer=probe_boundary(outer)['last_update_outer'])
+                    new_adam_steps_per_rank=0,actual_adam_steps_per_rank=current_probe['actual_adam_steps_per_rank'],
+                    last_update_outer=current_probe['completed_outer'])
                 once(root/'probe-frozen.json',probe_metrics)
+            if c.get('selection_probe_experiment'):
+                timings['outer-%06d-training-wall'%outer]=time.monotonic()-outer_wall_started
             complete = commit_outer(base, c, outer, root, actor_selection_path, timings, grounding_state=grounding_state)
             actor, probe = complete['actor'], complete['probe']
             stage('OUTER_JOINT_COMPLETE', complete_outer=outer, actor_adam_per_rank=actor['actual_adam_steps_per_rank'][0],
                   processed_opportunities=actor['opportunities_processed'],
                   new_actor_adam_per_rank=actor['new_adam_steps_per_rank'][0],
                   skipped_update_opportunities=actor['skipped_update_opportunities'][0],
-                  probe_adam_per_rank=probe_boundary(outer)['actual_adam_per_rank'])
+                  probe_adam_per_rank=probe['actual_adam_steps_per_rank'][0])
             # Training and QA share the new interaction protocol and BF16.
             if outer in (5, 50, 100, 150, 200):
                 evaluation_config = root / 'evaluation-config.json'
@@ -576,6 +591,10 @@ def run(base):
                     error=repr(error),traceback=traceback.format_exc(),
                     scientific_joint_complete=True,training_continues=True,
                     source_assets_preserved=True))
+            if c.get('selection_probe_experiment'):
+                once(root/'iteration-wall-time.json',dict(outer=outer,
+                    training_wall_seconds=timings['outer-%06d-training-wall'%outer],
+                    total_wall_seconds_including_qa_grounding_storage=time.monotonic()-outer_wall_started))
         for ordinal, pending in list(pending_qa.items()):
             validation(int(ordinal), pending['model'], pending['evaluation_config'],
                 base/'validation-retries'/('outer-%06d-%s'%(int(ordinal),uuid.uuid4().hex)),

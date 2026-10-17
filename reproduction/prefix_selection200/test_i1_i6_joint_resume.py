@@ -32,6 +32,7 @@ def fixture(root, *, qualified=False):
     root=root.resolve();source=root/'source';target=root/'target';source.mkdir();target.mkdir()
     for base in (source,target):
         path=base/'repo/reproduction/prefix_selection200';path.mkdir(parents=True)
+        (path/'rollout.py').write_text((Path(__file__).parent/'rollout.py').read_text())
         (path/'actor.py').write_text('def unchanged_actor(): return 1\n')
         (path/'probe.py').write_text('def update(): return 50\ndef load_online(): return 0\ndef score(): return '+('2560' if base==source else '5120')+'\n')
     (target/'repo/reproduction/prefix_selection200/candidate_schedule.py').write_text('ORDINARY=5120\n')
