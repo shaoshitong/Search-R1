@@ -26,7 +26,8 @@ value=dict(observed_unix=time.time(),base=str(b),unit=unit,systemd=props,cgroup_
  terminal=read(b/'logs/terminal.json'),qa=read(b/'validation/complete.json'),
  rank_progress=[read(b/'validation'/('rank-%d-progress.json'%rank)) for rank in range(8)],
  rank_complete=[read(b/'validation'/('rank-%d-complete.json'%rank)) is not None for rank in range(8)],
- attempts=read(b/'validation/initialization-attempts/history.json'),logs={})
+ attempts=read(b/'validation/initialization-attempts/history.json'),
+ initialization_statuses=[read(p) for p in sorted((b/'validation/initialization-attempts').glob('*-status.json'))],logs={})
 for name in ('controller','retriever','evaluation'):
  p=b/'logs'/(name+'.log')
  if p.exists():

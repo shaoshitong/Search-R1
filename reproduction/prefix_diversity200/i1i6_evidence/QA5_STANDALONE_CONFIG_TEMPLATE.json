@@ -5,7 +5,7 @@
   "actor_ppo_epochs": 1,
   "actor_selected_questions": 512,
   "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
-  "base": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-ed580171",
+  "base": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2",
   "candidate_questions": 5120,
   "canonical_train": "/mnt/shared/workspace/training_data_node_8/shaoshitong/g1f-ef498ac3/data/train.parquet",
   "canonical_train_sha256": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
@@ -119,8 +119,8 @@
   "world_size": 8,
   "evaluation_memory_utilization": 0.2,
   "qa_standalone": {
-    "base": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-ed580171",
-    "unit": "g1-qa-4a1cc2d5-o5-ed580171.service",
+    "base": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2",
+    "unit": "g1-qa-4a1cc2d5-o5-6d487ce7-bind2.service",
     "outer": 5,
     "expected_count": 512,
     "model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
@@ -278,6 +278,8 @@
     "start_free_gib": 40,
     "runtime_free_gib": 12,
     "own_gpu_limit_gib": 36,
-    "source_training_unchanged": true
+    "source_training_unchanged": true,
+    "prior_failed_attempt_base": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-ed580171",
+    "repair": "bind_one_gpu_before_any_cuda_adjacent_import"
   }
 }

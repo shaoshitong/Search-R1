@@ -1,0 +1,495 @@
+{
+  "utc": "2026-10-17T06:56:02.582346+00:00",
+  "verdict": "PASS_LOCAL_CPU_IMPORT_ORDER_REVIEW_NO_BLOCKER",
+  "findings": [],
+  "source_sha256": {
+    "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/eval.py": "39d977040468520df66de2f9501f167e284b086a7fec06079bfb923bf53f2400",
+    "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix20_online/rollout.py": "97518e07fcaa360eaa575770e3c605a782ca711917a2ba655ed79183f3b0db25"
+  },
+  "review_scope": "Only worker initial binding order and device_count1/set_device0 changes. No source edits or GPU/remote/training action.",
+  "fixtures": {
+    "rank0": {
+      "outcome": "reached_tokenizer_after_single_device_set",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "0"
+        ],
+        [
+          "import",
+          "search_g1.async_rollout_runtime",
+          "0"
+        ],
+        [
+          "import",
+          "search_r1.llm_agent.generation",
+          "0"
+        ],
+        [
+          "import",
+          "torch",
+          "0"
+        ],
+        [
+          "import",
+          "transformers",
+          "0"
+        ],
+        [
+          "import",
+          "vllm",
+          "0"
+        ],
+        [
+          "device_count",
+          1
+        ],
+        [
+          "set_device",
+          0
+        ],
+        [
+          "tokenizer"
+        ]
+      ],
+      "final_visible_devices": "0"
+    },
+    "rank1": {
+      "outcome": "reached_tokenizer_after_single_device_set",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "1"
+        ],
+        [
+          "import",
+          "search_g1.async_rollout_runtime",
+          "1"
+        ],
+        [
+          "import",
+          "search_r1.llm_agent.generation",
+          "1"
+        ],
+        [
+          "import",
+          "torch",
+          "1"
+        ],
+        [
+          "import",
+          "transformers",
+          "1"
+        ],
+        [
+          "import",
+          "vllm",
+          "1"
+        ],
+        [
+          "device_count",
+          1
+        ],
+        [
+          "set_device",
+          0
+        ],
+        [
+          "tokenizer"
+        ]
+      ],
+      "final_visible_devices": "1"
+    },
+    "rank2": {
+      "outcome": "reached_tokenizer_after_single_device_set",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "2"
+        ],
+        [
+          "import",
+          "search_g1.async_rollout_runtime",
+          "2"
+        ],
+        [
+          "import",
+          "search_r1.llm_agent.generation",
+          "2"
+        ],
+        [
+          "import",
+          "torch",
+          "2"
+        ],
+        [
+          "import",
+          "transformers",
+          "2"
+        ],
+        [
+          "import",
+          "vllm",
+          "2"
+        ],
+        [
+          "device_count",
+          1
+        ],
+        [
+          "set_device",
+          0
+        ],
+        [
+          "tokenizer"
+        ]
+      ],
+      "final_visible_devices": "2"
+    },
+    "rank3": {
+      "outcome": "reached_tokenizer_after_single_device_set",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "3"
+        ],
+        [
+          "import",
+          "search_g1.async_rollout_runtime",
+          "3"
+        ],
+        [
+          "import",
+          "search_r1.llm_agent.generation",
+          "3"
+        ],
+        [
+          "import",
+          "torch",
+          "3"
+        ],
+        [
+          "import",
+          "transformers",
+          "3"
+        ],
+        [
+          "import",
+          "vllm",
+          "3"
+        ],
+        [
+          "device_count",
+          1
+        ],
+        [
+          "set_device",
+          0
+        ],
+        [
+          "tokenizer"
+        ]
+      ],
+      "final_visible_devices": "3"
+    },
+    "rank4": {
+      "outcome": "reached_tokenizer_after_single_device_set",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "4"
+        ],
+        [
+          "import",
+          "search_g1.async_rollout_runtime",
+          "4"
+        ],
+        [
+          "import",
+          "search_r1.llm_agent.generation",
+          "4"
+        ],
+        [
+          "import",
+          "torch",
+          "4"
+        ],
+        [
+          "import",
+          "transformers",
+          "4"
+        ],
+        [
+          "import",
+          "vllm",
+          "4"
+        ],
+        [
+          "device_count",
+          1
+        ],
+        [
+          "set_device",
+          0
+        ],
+        [
+          "tokenizer"
+        ]
+      ],
+      "final_visible_devices": "4"
+    },
+    "rank5": {
+      "outcome": "reached_tokenizer_after_single_device_set",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "5"
+        ],
+        [
+          "import",
+          "search_g1.async_rollout_runtime",
+          "5"
+        ],
+        [
+          "import",
+          "search_r1.llm_agent.generation",
+          "5"
+        ],
+        [
+          "import",
+          "torch",
+          "5"
+        ],
+        [
+          "import",
+          "transformers",
+          "5"
+        ],
+        [
+          "import",
+          "vllm",
+          "5"
+        ],
+        [
+          "device_count",
+          1
+        ],
+        [
+          "set_device",
+          0
+        ],
+        [
+          "tokenizer"
+        ]
+      ],
+      "final_visible_devices": "5"
+    },
+    "rank6": {
+      "outcome": "reached_tokenizer_after_single_device_set",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "6"
+        ],
+        [
+          "import",
+          "search_g1.async_rollout_runtime",
+          "6"
+        ],
+        [
+          "import",
+          "search_r1.llm_agent.generation",
+          "6"
+        ],
+        [
+          "import",
+          "torch",
+          "6"
+        ],
+        [
+          "import",
+          "transformers",
+          "6"
+        ],
+        [
+          "import",
+          "vllm",
+          "6"
+        ],
+        [
+          "device_count",
+          1
+        ],
+        [
+          "set_device",
+          0
+        ],
+        [
+          "tokenizer"
+        ]
+      ],
+      "final_visible_devices": "6"
+    },
+    "rank7": {
+      "outcome": "reached_tokenizer_after_single_device_set",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "7"
+        ],
+        [
+          "import",
+          "search_g1.async_rollout_runtime",
+          "7"
+        ],
+        [
+          "import",
+          "search_r1.llm_agent.generation",
+          "7"
+        ],
+        [
+          "import",
+          "torch",
+          "7"
+        ],
+        [
+          "import",
+          "transformers",
+          "7"
+        ],
+        [
+          "import",
+          "vllm",
+          "7"
+        ],
+        [
+          "device_count",
+          1
+        ],
+        [
+          "set_device",
+          0
+        ],
+        [
+          "tokenizer"
+        ]
+      ],
+      "final_visible_devices": "7"
+    },
+    "reject_visible_device_count0": {
+      "outcome": "ValueError: QA rank must see exactly its pre-bound physical GPU",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "3"
+        ],
+        [
+          "import",
+          "search_g1.async_rollout_runtime",
+          "3"
+        ],
+        [
+          "import",
+          "search_r1.llm_agent.generation",
+          "3"
+        ],
+        [
+          "import",
+          "torch",
+          "3"
+        ],
+        [
+          "import",
+          "transformers",
+          "3"
+        ],
+        [
+          "import",
+          "vllm",
+          "3"
+        ],
+        [
+          "device_count",
+          0
+        ]
+      ],
+      "final_visible_devices": "3"
+    },
+    "reject_visible_device_count8": {
+      "outcome": "ValueError: QA rank must see exactly its pre-bound physical GPU",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "3"
+        ],
+        [
+          "import",
+          "search_g1.async_rollout_runtime",
+          "3"
+        ],
+        [
+          "import",
+          "search_r1.llm_agent.generation",
+          "3"
+        ],
+        [
+          "import",
+          "torch",
+          "3"
+        ],
+        [
+          "import",
+          "transformers",
+          "3"
+        ],
+        [
+          "import",
+          "vllm",
+          "3"
+        ],
+        [
+          "device_count",
+          8
+        ]
+      ],
+      "final_visible_devices": "3"
+    },
+    "previous_revision_detected_bad_order": {
+      "outcome": "AssertionError: CUDA-adjacent import before rank GPU binding: rollout",
+      "events": [
+        [
+          "import",
+          "rollout",
+          "0,1,2,3,4,5,6,7"
+        ]
+      ],
+      "final_visible_devices": "0,1,2,3,4,5,6,7"
+    },
+    "invalid_rank_rejected_before_cuda_import": {
+      "outcome": "ValueError: Fresh rollout needs exactly eight actually assigned visible GPUs",
+      "events": [],
+      "final_visible_devices": "0,1,2,3,4,5,6,7"
+    }
+  },
+  "static_observations": [
+    "eval module imports actor and interaction modules with no CUDA-adjacent top-level imports.",
+    "_configure_one_visible_gpu helper import and its pool dependency are standard-library-only at module level.",
+    "Worker resolves exactly one physical rank GPU and clears distributed rank variables before importing rollout/search_g1/search_r1/torch/transformers/vllm.",
+    "Worker rejects unexpected torch visible count then explicitly selects logical device0 before tokenizer/model construction.",
+    "Existing model,seed,questions,8TP1,BF16,shared interaction and score settings are unchanged by reviewed diff."
+  ],
+  "limitations": [
+    "AST fixture executes the exact actual worker prefix through tokenizer entry with fake CUDA-adjacent imports and fake NVML inventory. It does not execute torch or use a GPU.",
+    "Observed failure attribution remains inference until new isolated QA confirms per-rank GPU memory placement and real progress."
+  ]
+}

@@ -47,3 +47,10 @@ Mac. Source config, immutable actor identity, fixed512 source and original corpu
 ready receipt are bound separately. Constructor/partial-output rules above apply.
 Native terminal cgroup emptiness and actual QA output are deployment acceptance,
 not implied by the independent local CPU review.
+
+The first standalone GPU run hit the own-memory guard during model loading:
+all eight model workers had loaded on physicalGPU0 after CUDA-capable imports
+ran before per-rank binding. No QA answers were generated. Its terminal/cgroup
+empty/GPU-empty and cost evidence are retained. The repair binds the physical
+rank before importing torch/vLLM/verl, then requires one visible CUDA device.
+A new standalone namespace/unit performs actual QA; frozen training stays intact.

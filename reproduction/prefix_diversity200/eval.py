@@ -77,6 +77,8 @@ def build_evaluation_engine(config, model, seed, free, total, *, factory=None, c
 
 def worker(config_path, model_dir, output_dir, questions_path, expected_count, rank):
     from reproduction.prefix20_online.rollout import _configure_one_visible_gpu
+    # vLLM/verl can touch CUDA during import; bind before importing either.
+    config = read(remote(config_path)); device = _configure_one_visible_gpu(rank)
     from .rollout import (initial_state, start_action, next_request, append_chunk,
         finish_action, stream_action_present, native_snapshot, registered_sampling)
     from search_g1.async_rollout_runtime import AsyncRolloutConfig, BoundedRetriever, execute_one_action
@@ -85,8 +87,9 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
     import torch
     from transformers import AutoTokenizer
     from vllm import SamplingParams
-    config = read(remote(config_path)); device = _configure_one_visible_gpu(rank)
     model_dir, output = remote(model_dir), remote(output_dir)
+    if torch.cuda.device_count()!=1:raise ValueError('QA rank must see exactly its pre-bound physical GPU')
+    torch.cuda.set_device(0)
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True, trust_remote_code=False)
     questions = load_questions(questions_path, expected_count)[rank::8]
