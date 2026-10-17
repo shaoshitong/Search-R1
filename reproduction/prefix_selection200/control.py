@@ -133,9 +133,14 @@ def main():
         code = deployment_script(args.base, args.commit, json.loads(Path(args.config).read_text()), built,
                                  args.reuse_source_commit, args.reuse_source_repo)
     elif args.phase == 'import-lr50':
-        code = ('import sys,json;sys.path.insert(0,'+repr(args.base+'/repo')+');'
-                'from reproduction.prefix_selection200.resume_probe_lr50 import import_complete50;'
-                'print(json.dumps(import_complete50('+repr(args.base)+'),allow_nan=False))')
+        code = ('import os,pathlib,json,subprocess; b=pathlib.Path('+repr(args.base)+');'
+                'c=json.loads((b/"preparation/launch-config.json").read_text());'
+                'env=dict(os.environ,PYTHONPATH=str(b/"repo"),CUDA_VISIBLE_DEVICES="",'
+                'OMP_NUM_THREADS="2",MKL_NUM_THREADS="2");'
+                'r=subprocess.run([str(pathlib.Path(c["environment_root"])/"bin/python"),'
+                '"-m","reproduction.prefix_selection200.resume_probe_lr50","--base",str(b)],'
+                'env=env,cwd=str(b/"repo"),capture_output=True,text=True,timeout=180);'
+                'assert r.returncode==0,(r.stdout,r.stderr);print(r.stdout)')
     elif args.phase == 'import-joint':
         code = ('import sys,json;sys.path.insert(0,'+repr(args.base+'/repo')+');'
                 'from reproduction.prefix_selection200.resume import import_complete;'
