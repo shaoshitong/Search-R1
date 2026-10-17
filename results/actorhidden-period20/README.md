@@ -289,3 +289,39 @@ Destination: /mnt/data/shaoshitong/search-g1-prefix-selection200-independent-bac
 Source inventory on2026-10-17 found that the canonical validation/final paths are absolute symlinks. Their actual payloads are the original g1f-ef498ac3 data files; the question bytes and configured SHA values are unchanged. The official model has an existing completed same-host staging alias under the earlier qprobe3 run, whose original run identity must be preserved. The E5 encoder has a separate existing real data-export directory; its complete source and alias files must match before copying. This is backup preparation, not a model/probe or QA protocol change.
 
 The CPU-only fixed_assets_backup control copies explicit original-path recovery dependencies to h100-10 localext4, with source/destination complete SHA reads,20MiB/s and128GiB ordinary reserve. It waits for the existing nativeCP50 copy result before reading large payloads, never replays that start, never loads CUDA/models, never edits the frozen training tree, and never routes model bytes throughMac. Its independent copy and eventual terminal logs/trajectories/final-output closure remain pending until actual results exist.
+
+
+## Sealed terminal-record archive helper (implemented, not deployed/executed)
+
+The current scientific runner remains frozen atc22. terminal_records_archive.py is a separate CPU-only control for the final outstanding original-data closure. It has not been staged on either node, generated a real terminal inventory, launched a copier, or produced an archive PASS. Ten tiny CPU tests passed for true hardlink deduplication, original path isolation, exact QA question/source/ordinal and aggregate score comparison, incomplete/native-running/release rejection, and preservation of closed failed partial records. None submits a job or loads a GPU/model.
+
+After actual200 and final51713 finish, first retain an actual native COMPLETED0:0 observation tied to this namespace's genuine submit-intent/receipt job id/name. Independently observe original owned births, cgroup and own GPU processes gone twice. Store the source evidence as real, separately hashed records under the current source preparation directory; do not derive native exit0 from a completion manifest. The proof shape is:
+
+```json
+{
+  "status": "NATIVE_COMPLETED_ZERO_OWNED_RELEASE_PROVED",
+  "run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+  "source_base": "ACTUAL_FINAL_BASE",
+  "native": {"JobId": "ACTUAL_SUBMITTED_ID", "JobName": "ACTUAL_SUBMITTED_NAME", "JobState": "COMPLETED", "ExitCode": "0:0"},
+  "owned_release": {"two_actual_checks": true, "all_original_births_gone": true, "cgroup_gone": true, "own_gpu_processes": []},
+  "evidence": [
+    {"role": "native_terminal", "path": "ACTUAL_SOURCE_EVIDENCE", "sha256": "ACTUAL_FULL_SHA"},
+    {"role": "owned_release_first", "path": "ACTUAL_FIRST_CHECK", "sha256": "ACTUAL_FULL_SHA"},
+    {"role": "owned_release_second", "path": "ACTUAL_SECOND_CHECK", "sha256": "ACTUAL_FULL_SHA"}
+  ]
+}
+```
+
+Those are schema placeholders, not execution evidence. The original cleanup receipt is preserved even if it caught a transient zombie; later actual release observations determine whether resources are gone. Global/foreign GPU processes must not be stopped or counted as this task's resources.
+
+Stage only the latest normally-pushed, independently SHA-verified terminal_records_archive.py and checkpoint_backup_native.py in a separate BASE/preparation/terminal-records-tools/<workerSHA> control directory on8, and a separate control directory on10. Verify both actual full code SHAs after staging; never overwrite the frozen training repo. Use the existing source environment Python with CUDA_VISIBLE_DEVICES empty for inventory (PyArrow is needed only for the final canonical dataset check), and system Python on10 for the archive. The standalone entry points are:
+
+```text
+terminal_records_archive.py inventory --base ACTUAL_FINAL_BASE --terminal-proof ACTUAL_PROOF_PATH --terminal-proof-sha ACTUAL_PROOF_SHA --output ACTUAL_FINAL_BASE/preparation/terminal-records-inventory-once-v1.json
+terminal_records_archive.py launch --root /mnt/data/shaoshitong/search-g1-prefix-selection200-independent-backup-20261016/a008d7ce9833-terminal-records-once-v1 --inventory-path ACTUAL_SOURCE_INVENTORY_PATH --inventory-sha ACTUAL_INVENTORY_SHA --code-commit ACTUAL_PUBLISHED_FULL_COMMIT
+terminal_records_archive.py status --root /mnt/data/shaoshitong/search-g1-prefix-selection200-independent-backup-20261016/a008d7ce9833-terminal-records-once-v1 --final-readback
+```
+
+Prepare only after the actual native0/release and final normal CPU checks. Source inventory binds all200 logical completed joints/optimizer clocks to their authentic inherited original outer directories, preserves superseded attempt records/logs separately, follows only this run's authenticated recovery chain, and copies original question/prefix/trajectory/QA records, source code and metadata. It independently compares every final51713 worker ordinal/qid/source and all seven canonical source counts plus aggregate/per-source EM/F1. Scheduled5/50/100/150/200 QA must have successful original actor-bound8FP32 receipts and the exact original512 input identities/split/scores; retry receipts can supply actual successful outputs. Model checkpoints and consumed derived hidden/cache packages are deliberately covered by the existing normal checkpoint copies/rotation, not duplicated as terminal records. Hardlinked originals share one physical archive payload while every original absolute path remains in the restore mapping. Source files are never deleted.
+
+Launch is admitted only on10 localext4 after all five genuine normal checkpoint copies and fixed recovery assets report their actual independent full-SHA PASS. Existing namespace/intent requires reconciliation and is never replayed. Copy and independent target full reads are20MiB/s with128GiB ordinary reserve. Original source signatures and known producer SHAs are checked during actual reads. The full inventory, original outputs and potentially large result remain remote; status emits small summaries and an optional metadata-only final file-size/mapping readback. Generated INVENTORY.json is independently read from the target against its pinned source SHA. Even an archive PASS sets all_experiment_backup_complete=false until the root performs the complete requirement-by-requirement final acceptance; no model semantic reload is implied.
