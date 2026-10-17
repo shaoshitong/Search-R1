@@ -127,13 +127,18 @@ def counterfactual_labels(outputs, original_answers):
 
 
 def gen_batch(llm, prompts, max_tokens, sample, stop):
+    total = getattr(llm, '_g1_calibration_total_limit', None)
     limit = getattr(llm, '_g1_calibration_prompt_limit', None)
+    if total is not None:
+        limit = total-max_tokens
     if limit is not None:
         capacity = llm.llm_engine.model_config.max_model_len
         if limit + max_tokens > capacity:
             raise ValueError('Calibration prompt/output budget exceeds engine context')
         tok = llm._g1_calibration_tokenizer
         ids = [tok.encode(p, add_special_tokens=False) for p in prompts]
+        if total is not None and any(len(x)>limit for x in ids):
+            raise ValueError('Intervention context exceeds shared budget; never silently crop it')
         llm._g1_calibration_context_stats.append(dict(
             count=len(ids), max_original_tokens=max(map(len, ids), default=0),
             truncated=sum(len(x) > limit for x in ids), prompt_limit=limit,
@@ -268,6 +273,7 @@ def main():
     ap.add_argument("--max_turns", type=int, default=4)
     ap.add_argument("--rollout_max_new", type=int, default=256)
     ap.add_argument("--correction_feedback", action="store_true")
+    ap.add_argument("--interaction-config", help="Opt-in shared train/QA calibration interaction JSON")
     ap.add_argument("--gpu_mem", type=float, default=0.45)
     ap.add_argument("--out", default="dumps/run")
     args = ap.parse_args()
@@ -300,13 +306,21 @@ def main():
           flush=True)
 
     # vLLM engine for generation
-    engine_context = 4608 if args.rollout_max_new == 500 else 4096
+    interaction = None
+    if args.interaction_config:
+        from reproduction.common8.calibration_interaction import settings
+        interaction = json.loads(Path(args.interaction_config).read_text())
+        if interaction != settings(args.model, RETRIEVER_URL) or args.rollout_max_new != 500 or not args.correction_feedback:
+            raise ValueError('Calibration interaction differs from declared current model/protocol')
+    engine_context = 4096 if interaction else 4608 if args.rollout_max_new == 500 else 4096
     llm = LLM(model=args.model, dtype="bfloat16", gpu_memory_utilization=args.gpu_mem,
               max_model_len=engine_context, enforce_eager=True, disable_log_stats=True)
     llm._g1_calibration_context_stats = []
     if args.rollout_max_new == 500:
         llm._g1_calibration_prompt_limit = 4096
         llm._g1_calibration_tokenizer = tok
+    if interaction:
+        llm._g1_calibration_total_limit = engine_context
     # HF model for hidden extraction
     tok = AutoTokenizer.from_pretrained(args.model, padding_side="left")
     tok.truncation_side = 'left'
@@ -329,7 +343,12 @@ def main():
     # ---- G rollouts per question (flat) ----
     flat_prompts = [prompts[i] for i in range(nq) for _ in range(args.G)]
     flat_qi = [i for i in range(nq) for _ in range(args.G)]
-    gens, generated_ranges, actual_calls, evidence_ranges, correction_ranges = rollouts_batched(
+    if interaction:
+        from reproduction.common8.calibration_interaction import rollouts
+        gens, generated_ranges, actual_calls, evidence_ranges, correction_ranges = rollouts(
+            llm, flat_prompts, tok, args.G > 1, interaction)
+    else:
+        gens, generated_ranges, actual_calls, evidence_ranges, correction_ranges = rollouts_batched(
                             llm, flat_prompts, sample=(args.G > 1), max_turns=args.max_turns,
                             max_new=args.rollout_max_new, tokenizer=tok,
                             correction_feedback=args.correction_feedback, return_provenance=True)
@@ -437,6 +456,11 @@ def main():
            "model_ranges":generated_ranges,"rollout_character_lengths":[len(g) for g in gens],
            "generation_context_policy":{"engine_max_tokens":engine_context,"prompt_max_tokens":4096 if args.rollout_max_new==500 else None,"truncation_side":"left","batches":calibration_context_stats},
            "boundary_all_reserved_questions":True,"observation_token_cap":500,"hidden_truncation_side":"left"}
+    if interaction:
+        proof['interaction_contract'] = interaction
+        proof['generation_context_policy'].update(engine_max_tokens=4096,
+            prompt_max_tokens='4096 minus actual requested output; no intervention cropping',
+            truncation_side='no generated-prefix cropping')
     with open(os.path.join(args.out,"calibration-label-proof.json"),"w") as f:json.dump(proof,f,indent=2)
     print(f"[dump] SAVED {out_npz} n={len(y_em)} EM={np.mean(y_em):.3f} "
           f"flip={np.mean(y_flip):.3f} cb={np.mean(q_cb_r):.3f} "
