@@ -1,3 +1,15 @@
+## XFormers recovery actually accepted: complete48 and real49 generation
+
+Same3430/h100-8 completed44-48 continuously from the genuine43 model/Adam/RNG state. All40 original actor rank ledgers were independently read:20 writes per outer/rank,100 new writes/rank across these five, ending960/rank; first44 restored860/scheduler43 on all8 ranks. Probe remains200/rank from40, correctly frozen until60 at LR1e-5. All40 native layer27 capture receipts have no independent encoder. Real49 has already generated prefixes. Personal readonly observer27538 naturally exited0 after acceptance; production continues200/no201.
+
+The earlier reproduced44/rank4 FlashAttention fwd_kvcache failure did not recur during these five rounds. Actual44 prefix and continuation logs on all16 workers independently confirm XFormers. Temporary launch blocking is removed. This establishes this actual recovery's progress, not universal kernel correctness or a quality gain. No source states reset, uncommitted updates stitched, batches reduced or extra GPU tests performed; original failed executions remain intact.
+
+Four ordinary complete-to-complete intervals44->45->46->47->48 average313.630699s (5m13.6), range307.271150-327.047318s. These measured boundaries exclude initial recovery and QA; a short GPU training loop is not presented as whole-round latency. Selected actual mixed fractions44-48 are31.25%,31.45%,34.57%,33.40%,28.125%. Ordinary unselected4608 have no full labels, so these are not fullpool accuracy, classifier accuracy or QA results. No new paired diagnostic is scheduled before60; QA50 is still pending.
+
+Current runtime remainsc22dbf86664bcc4da86aecd702fbaaea9c381551/1288 deployed files. This later result publication does not change training. Full200, scheduled QA and final51713/count, actual normal checkpoints/independent retention and nativeexit0/cleanup remain outstanding. Small complete acceptance/timing evidence is xformers-resume43-five-actual.json.
+
+---
+
 ## Localized native44 decode-kernel failure and attention-backend recovery
 
 Actual3428 reproduced3426's CUDA illegal memory access on44 prefix rank4, with0 new Adam. A scoped real-continuation3429 used CUDA_LAUNCH_BLOCKING1 only for44/rank4, without a standalone test job or changed batch. Its synchronous stack identified vLLM FlashAttention unified_flash_attention -> flash_attn_with_kvcache -> fwd_kvcache as the first failing operation. The earlier sampler.cpu frame merely reported the asynchronous fault. Failure occurred on nativecall76 with128 decode queries/maxposition178, after3000/3200 rank trajectories; the existing CPU input snapshot148358B stays remote, with no poisoned-GPU read. This localizes the operation, not the internal CUDA defect. All3429 original20 log inodes fullSHA and37 births/cgroup/ownedGPU gone were recorded, terminalproof5f3ce5738f4fb468104e247e9e9edfa42d8fd08f458a72ac906aa40dda3680e0.
