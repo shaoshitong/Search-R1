@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
-# Bounded read-only supervision for job729624 through joint50 and real outer51 progress.
+# Bounded read-only supervision for job729624 through a supplied milestone.
+# Usage: bash docs/hpc3-prefix5-readonly-watch-20261018.sh [milestone_outer=60]
 # Optional progress files may disappear during phase publication or cleanup.
 # This supervisor never submits jobs, allocates GPUs, or changes training code.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-python3 - <<'PY'
-import json,shlex,subprocess,time
+python3 - "$@" <<'PY'
+import json,shlex,subprocess,time,sys
 from reproduction.hpc3_prefix5.observe import query_for
 from reproduction.hpc3_prefix5.direct_control import run
 from reproduction.hpc3_prefix5.control import PYTHON,OUTPUT
 base='/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2';job='729624'
+if len(sys.argv)>2:raise SystemExit('Expected at most one milestone outer')
+target=int(sys.argv[1]) if len(sys.argv)==2 else 60
+if target not in range(10,201,10):raise SystemExit('Milestone must be10/20/.../200')
 extension=r"""
 result['base']=str(b)
 result['checkpoint_import_pending']=joint is None
@@ -53,9 +57,10 @@ for sample in range(40):
   print(json.dumps(dict(sample=sample,returncode=remote.returncode,observation_error=(remote.stdout.decode()+remote.stderr.decode())[-1800:],training_terminal_not_inferred=True)),flush=True)
  else:
   v=values[-1]
+  v['observer_target_outer']=target
   (OUTPUT/'observation-latest.json').write_text(json.dumps(v,indent=2)+'\n')
   with (OUTPUT/'observations.jsonl').open('a') as f:f.write(json.dumps(v)+'\n')
-  compact={key:v.get(key) for key in ['epoch','job','base','queue','complete_outer','status','actor','probe','checkpoint_import_pending','resume_selected_outer','qualification','qualification_progress_ranks','failed_jobs','rank_failures','inflight_rank_updates','error_lines','phase_progress']};compact['sample']=sample
+  compact={key:v.get(key) for key in ['epoch','job','base','queue','complete_outer','status','actor','probe','checkpoint_import_pending','resume_selected_outer','qualification','qualification_progress_ranks','failed_jobs','rank_failures','inflight_rank_updates','error_lines','phase_progress','observer_target_outer']};compact['sample']=sample
   signature=json.dumps({k:val for k,val in compact.items() if k not in ('epoch','sample')},sort_keys=True)
   printed=compact if signature!=previous_signature else dict(sample=sample,epoch=v['epoch'],job=job,verified_live_queue=v['queue'],unchanged=True)
   previous_signature=signature
@@ -68,6 +73,8 @@ for sample in range(40):
    else:s.update(actual_completed_outers=historical,latest_verified_job=v)
    p.write_text(json.dumps(s,ensure_ascii=False,indent=2)+'\n')
   if v['failed_jobs'] or v.get('error_lines') or (v.get('rank_failures') and any(v['rank_failures'])) or not any('|'+state+'|' in v['queue'] for state in ('PENDING','RUNNING')):break
-  if v['complete_outer']>=50 and (v.get('status') or {}).get('outer',0)>=51 and any((p.get('completed_trajectories') or p.get('scored_trajectories') or 0)>0 for p in v['phase_progress']):break
+  if target==200:
+   if v['pipeline_complete']:break
+  elif v['complete_outer']>=target and (v.get('status') or {}).get('outer',0)>=target+1 and any((p.get('completed_trajectories') or p.get('scored_trajectories') or 0)>0 for p in v['phase_progress']):break
  if sample<39:time.sleep(45)
 PY
