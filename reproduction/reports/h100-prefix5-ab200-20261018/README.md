@@ -123,3 +123,37 @@ The cache retry excludes process lock files and adopts the completed small
 manifest without re-copying/re-hashing those 21 entries. It uses a distinct
 `cache2-` intent/receipt/progress namespace and requires the original worker gone.
 Only immutable cache payloads are in this retry.
+
+### First six complete outers: selected original groups
+
+| Outer | A mixed /512 | B mixed /512 | A wall seconds | B wall seconds |
+|---|---:|---:|---:|---:|
+| 1 | 396 (77.34%) | 402 (78.52%) | 589.55 | 612.04 |
+| 2 | 392 (76.56%) | 392 (76.56%) | 974.19 | 976.12 |
+| 3 | 383 (74.80%) | 392 (76.56%) | 784.15 | 814.82 |
+| 4 | 394 (76.95%) | 409 (79.88%) | 748.52 | 738.39 |
+| 5 | 408 (79.69%) | 380 (74.22%) | 899.09 | 898.21 |
+| 6 | 404 (78.91%) | 361 (70.51%) | 720.92 | 718.56 |
+
+Outer1 reuses prior exact sampling and is excluded from fresh sampling timing.
+Outer5 includes QA; outer6 uses the larger ordinary candidate pool. Shared GPU
+load varies, so these are actual whole-outer observations, not a controlled kernel
+benchmark. Original selected groups are not a heldout diagnostic.
+
+In B outer6, raw mixed balanced accuracy rises 50.02%→57.94%, but raw
+trajectory BCE worsens 1.1310→1.3638 and weighted total worsens 4.4812→4.6690.
+EMA mixed BA stays 50% (all selected groups predicted mixed at threshold0.5);
+EMA total falls 4.7733→4.7567. These mixed signals are recorded without changing
+the requested loss, LR, resampling, or EMA protocol. Periodic10 fresh heldout
+paired diagnostics remain pending.
+
+### Both seven complete: same native runs continue
+
+Both arms complete7/200; all four actor ranks each140 Adam writes and scheduler7.
+A remains frozen with0 online probe updates. B has70 actual probe/EMA updates.
+Outer7 wall seconds including persistence: A787.6631, B785.6887.
+Original selected mixed groups: A405/512 (79.1016%), B332/512 (64.8438%).
+Actual outer8 pipeline has started. Fresh paired probe heldout diagnosis is at10;
+there is no scheduled QA10. Same runtime2e397623, no deployment or restart.
+The complete small original-group paired metrics and all four rank journals for
+each finished outer are in `through7-small-actual-comparison.json`.
