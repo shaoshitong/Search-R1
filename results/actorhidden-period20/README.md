@@ -1,3 +1,22 @@
+## Final51713 input reference prepared, no QA inference (UTC2026-10-17T04:11)
+
+A CPU-only remote read bound the original final.parquet SHA55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1 to the actual frozen C22 eval.load_questions function (readerSHA410c0bc40aba701ad02218741460998d867c375b5daf5823f2a7b5ffc29cda96). The6445844B parquet yields51713 unique question identities with every ordinal0..51712. Source configSHA6e164ce0... matches the active run. No model forward, GPU inference or question/trajectory transfer to Mac occurred.
+
+|Canonical source|Questions|
+|---|---:|
+|2wikimultihopqa|12576|
+|bamboogle|125|
+|hotpotqa|7405|
+|musique|2417|
+|nq|3610|
+|popqa|14267|
+|triviaqa|11313|
+|Total|51713|
+
+The5254603B complete identity JSONL stays remote at currentBASE/preparation/final-canonical-51713-question-identities-once-v1.jsonl, SHA b7804c11b07e24b112640dc7867f113ec4bc7318378b579f3e10c39c364b28ed. A second actual read verified all51713 JSONL rows, unique qids, full ordinal sequence and the seven exact source counts. The small reference proof is currentBASE/preparation/final-canonical-51713-reference-once-v1.json, actualSHA7d76d765dfe91f5c14e2670fb5da9155385c9a7b9f5b7b07c10be0abb2203663. Small metadata is in final51713-canonical-input-reference.json. These are input identities, not generated QA answers or a final score. Actual final output/score/count validation is still pending.
+
+At actual terminal200/finalQA/native0/two ownedrelease checks, include this reference proof and identity index as two additional terminal-proof evidence files; the existing published archive inventory retains additional evidence. They do not substitute for the three mandatory actual native/release evidence roles. Original parquet already has an independent fixed-asset copy. Same3430 last actual89 complete/90actor, no runtime change; sole read-only100 observer67183 remains active. All100/150/200 savepoint/QA/backup obligations and final200/no201 remain active.
+
 ## Fixed recovery assets independently complete; actual86 (UTC2026-10-17T03:49)
 
 The once-started fixed asset copier completedUTC2026-10-17T03:46:29.268745. All33 payloads/86582548181B have matching actual source and independent destination complete-file SHA values, including the64559075373B index and14393579520B corpus. A separate final read verified all33 regular payload sizes,34 final files including the exact original-to-relative restore mapping, final directory and absent staging. The originalPID426227/startticks1925844166 is gone; read-only observer67133 naturally exited0. Actual full small RESULT SHA is c56338510cc22cc5ce16c59e8aee707448a8ca73abdb4b11d7ddb1072982b56c, mappingSHA5a0e6d251880d18b4cbf0cfc8abfc8dcaab060303ade4efcf86a88637d162d69. Destination /mnt/data/shaoshitong/search-g1-prefix-selection200-independent-backup-20261016/a008d7ce9833-fixed-recovery-assets-once-v1/checkpoint. Small per-file hash metadata and the actual final readback are in fixed-recovery-assets-independent-complete.json. No large payload was hashed again during this final metadata read, no semantic model reload occurred, and no model bytes passed through Mac.
