@@ -1,3 +1,5 @@
+Actual follow-up: same3434 completed51 and52, each original8rank20Adamwrites verified; actualactor1020→1040 and retainedprobe200. Last successful metadata read11:55:54UTC was53continuation. Subsequent directalias reads failed; no nativeexit/restart inferred, new job not resubmitted. One personal read-only observer continues;51–55plus actual56 acceptance remainspending. Firstnew1e-5probeAdam remains60pending.
+
 Actual execution update: native3434/h100-8 once submitted after actual source3431 terminal/owned release. New frozenruntime59dcbf0cc1da68e40974b652f92978ce6ded3766;1372targetfiles fullSHA verified. Real CPU reload preserved14trained tensors, allAdam moments/200steps/rank/eightRNG, allparamgroups now1e-5. Actor1000/scheduler50/pool256000 and actualgrounding50 preserved. Source reached58, approved rollback50 does not reuse51–58. GPU progress and51–55+actual56 stillpending; firstfutureprobeupdate60, not yet a new1e-5Adamwrite. See resume50-probe-lr1e5-actual-import-submission.json.
 
 # Retained50 probe-only LR change
