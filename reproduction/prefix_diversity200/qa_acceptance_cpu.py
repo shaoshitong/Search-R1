@@ -12,12 +12,17 @@ def verify(base,expected_count=512):
     os.environ['CUDA_VISIBLE_DEVICES']=''
     from .actor import read,sha,remote
     from .eval import launch,load_questions,score_tokens
+    from .qa_standalone_identity import verify_sources
     from transformers import AutoTokenizer
     base=remote(base);c=read(base/'preparation/config.json');spec=c['qa_standalone'];output=base/'validation'
+    target=verify_sources(c,read,sha)
+    if expected_count!=target['expected_count']:
+        raise ValueError('CPU acceptance count differs from the bound QA task')
     if not (output/'complete.json').is_file() or not all((output/('rank-%d-complete.json'%r)).is_file()for r in range(8)):
         raise ValueError('CPU acceptance requires all existing complete receipts; never generate missing QA')
-    questions_path=c['validation_questions'] if expected_count==512 else c['final_questions']
-    result=launch(base/'preparation/config.json',spec['model_dir'],output,questions_path,expected_count)
+    questions_path=target['questions']
+    result=launch(base/'preparation/config.json',spec['model_dir'],output,questions_path,expected_count,
+        allow_generation=False)
     questions=load_questions(questions_path,expected_count)
     tokenizer=AutoTokenizer.from_pretrained(spec['model_dir'],local_files_only=True,trust_remote_code=False)
     ids=set();correct=0;f1=0.;response_tokens=0;retrieval_calls=0;rank_rows=[]

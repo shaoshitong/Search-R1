@@ -54,3 +54,10 @@ ran before per-rank binding. No QA answers were generated. Its terminal/cgroup
 empty/GPU-empty and cost evidence are retained. The repair binds the physical
 rank before importing torch/vLLM/verl, then requires one visible CUDA device.
 A new standalone namespace/unit performs actual QA; frozen training stays intact.
+
+Isolated QA continuation after the I1–I6 repair:
+- `qa_standalone_identity.py` binds fixed512 to saved5/50/100/150/200, or full51713 to actor200 in a distinct `-final-` namespace. Later checkpoints require the immutable outer `complete.json` SHA and its actual actor/probe20×outer per-rank boundary; a version label alone is insufficient.
+- Build a new config from the already accepted QA5 template, retain canonical data hashes and the shared interaction contract, set the actual saved model/joint/source-evaluation receipt, and obtain fresh UUID/headroom evidence on the chosen authorized H100 node. All output stays on retained18 NFS; retrieval stays on the inference node's loopback. Do not use this as permission to stop or hot-edit native training3433.
+- `qa_standalone_control.deployment_script(config, published_commit)` deploys a new code/config namespace; `submit_script(base)` records one submission intent and refuses replay. Resolve any unknown intent against its exact unit before further action. The repaired overlay includes the CPU raw-output verifier.
+- `qa_standalone_observe --root ... --deployment <specific deployment receipt>` observes that exact unit/node. `qa_acceptance_cpu --base ... --expected-count 512|51713` requires the already complete8 rank receipts and aggregate; it recomputes raw strict scores without generation.
+- Register accepted saved QA only after raw-output CPU reproduction and native unit/cgroup cleanup. Registry final entries additionally carry `expected_count=51713` and `independent_saved_raw_cpu_recompute=true`; final results do not resolve the distinct dev512 milestone200. Prepared support is not actual milestone/final acceptance.

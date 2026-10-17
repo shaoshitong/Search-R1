@@ -196,7 +196,7 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
     atomic_json(output / ('rank-%d-complete.json'%rank), receipt); return receipt
 
 
-def launch(config_path, model_dir, output, questions_path, expected_count=512):
+def launch(config_path, model_dir, output, questions_path, expected_count=512, *, allow_generation=True):
     config_path, model_dir, output, questions_path = map(remote, (config_path, model_dir, output, questions_path))
     config = read(config_path); target = output / 'complete.json'
     expected_sha=config['validation_questions_sha256'] if expected_count==512 else config['final_questions_sha256']
@@ -206,7 +206,10 @@ def launch(config_path, model_dir, output, questions_path, expected_count=512):
     existing=read(target) if target.exists() else None
     output.mkdir(parents=True, exist_ok=True)
     from .evaluation_initialization import supervise
-    supervision=supervise(config_path,model_dir,output,questions_path,expected_count)
+    def reject_generation(*args, **kwargs):
+        raise RuntimeError('Saved-output verification cannot launch QA workers')
+    supervision=supervise(config_path,model_dir,output,questions_path,expected_count,
+        popen=None if allow_generation else reject_generation)
     receipts = [read(output / ('rank-%d-complete.json' % rank)) for rank in range(8)]
     for rank,item in enumerate(receipts):
         expected_rows=canonical_questions[rank::8]
@@ -232,6 +235,8 @@ def launch(config_path, model_dir, output, questions_path, expected_count=512):
     sources = Counter(row['data_source'] for row in rows)
     if expected_count == 512 and sources != dict(nq=256, hotpotqa=256):
         raise ValueError('Fixed512 must retain original256NQ+256Hotpot')
+    if expected_count == 51713 and len(sources) != 7:
+        raise ValueError('Final51713 must retain all seven canonical datasets')
     source_metrics = {}
     for source in sorted(sources):
         subset = [row for row in rows if row['data_source'] == source]

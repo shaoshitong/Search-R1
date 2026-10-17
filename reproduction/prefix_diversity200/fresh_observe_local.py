@@ -62,17 +62,24 @@ value['final_qa']=json.loads(p.read_text()) if p.exists() else None
     extra += r'''
 for spec in standalone_specs:
  p=pathlib.Path(spec['canonical_retained18_base'])
- assert p.parent==pathlib.Path('/mnt/data/shaoshitong') and p.name.startswith('search-g1-qa-i1i6-4a1cc2d5-outer0005-')
+ ordinal=spec['outer'];count=spec.get('expected_count',512)
+ assert ordinal in (5,50,100,150,200) and count in (512,51713) and (count==512 or ordinal==200)
+ assert p.parent==pathlib.Path('/mnt/data/shaoshitong') and p.name.startswith('search-g1-qa-i1i6-4a1cc2d5-outer%04d-'%ordinal)
  cfg=p/'preparation/config.json';receipt=p/'validation/complete.json'
  assert hashlib.sha256(cfg.read_bytes()).hexdigest()==spec['config_sha256']
  conf=json.loads(cfg.read_text());qa=json.loads(receipt.read_text())
  assert hashlib.sha256(receipt.read_bytes()).hexdigest()==spec['qa_receipt_sha256']
  assert conf['qa_source_commit']==spec['source_commit'] and conf['node']==spec['node']
  assert qa['run_id']==conf['run_id']==value['latest_joint']['run_id']
- assert qa['actor_version']==qa['run_id']+'-actor%04d'%spec['outer'] and qa['qa_count']==512
- assert qa['question_source_sha256']==current_config['validation_questions_sha256']
+ assert conf['qa_standalone']['outer']==ordinal and conf['qa_standalone']['expected_count']==count
+ assert qa['actor_version']==qa['run_id']+'-actor%04d'%ordinal and qa['qa_count']==count
+ assert qa['question_source_sha256']==current_config['validation_questions_sha256' if count==512 else 'final_questions_sha256']
  assert qa['evaluation_contract']==spec['evaluation_contract']
- value['qa_completed'].append(dict(outer=spec['outer'],result=qa,source_base=str(p),node=spec['node'],
+ if count==51713:
+  assert len(qa['per_source'])==7 and sum(r['qa_count']for r in qa['per_source'].values())==51713
+  assert spec['native_unit_cleanup_verified'] and spec['independent_saved_raw_cpu_recompute']
+  value['final_qa']=dict(qa,standalone_source_base=str(p),source_commit=spec['source_commit'])
+ else:value['qa_completed'].append(dict(outer=spec['outer'],result=qa,source_base=str(p),node=spec['node'],
   receipt_sha256=spec['qa_receipt_sha256'],source_commit=spec['source_commit'],independent_saved_raw_cpu_recompute=True,
   native_unit_cleanup_verified=spec['native_unit_cleanup_verified']))
 value['qa_completed']=sorted({r['outer']:r for r in value['qa_completed']}.values(),key=lambda r:r['outer'])
@@ -111,6 +118,7 @@ value['qa_pending']={k:v for k,v in (value.get('qa_pending')or{}).items()if k no
         config_sha256=value['config_sha256'], source_commit=c['source_commit'],
         latest_joint_source_commit=joint.get('source_commit'),resume_joint=c.get('resume_joint'),
         qa_pending=value.get('qa_pending'),native_qa_pending=value.get('native_qa_pending'),
+        final_qa=value.get('final_qa'),
         updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(), goal_complete=False)
     if n:
         state['latest_actor_selection'] = joint['actor_selection']
@@ -130,6 +138,7 @@ value['qa_pending']={k:v for k,v in (value.get('qa_pending')or{}).items()if k no
         (state['actor_adam_per_rank'], state['probe_adam_per_rank']),
         'Latest QA: ' + json.dumps({k:v for k,v in state.get('latest_qa',{}).items()if k!='result'} | {'result':{k:v for k,v in state.get('latest_qa',{}).get('result',{}).items()if k in ('actor_version','qa_count','em','f1','per_source','question_source_sha256','completed_utc')}}),
         'Unresolved milestone QA: '+json.dumps(state.get('qa_pending') or {}),
+        'Final51713 QA: '+json.dumps({k:v for k,v in (state.get('final_qa')or{}).items()if k in ('actor_version','qa_count','em','f1','per_source','question_source_sha256','completed_utc','standalone_source_base','source_commit')}),
         'Frozen trainer pending ledger (standalone accepted results are separate): '+json.dumps(state.get('native_qa_pending') or {}),
         'Checkpoint5 CPU acceptance: '+json.dumps(state.get('checkpoint5_cpu_acceptance','not yet available')),
         'Frozen source: ' + c['source_commit'] + '; actual config SHA: ' + value['config_sha256'],

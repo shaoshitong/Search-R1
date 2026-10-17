@@ -5,30 +5,33 @@ import json
 from pathlib import Path
 import subprocess
 import time
+from .qa_standalone_identity import binding
 
-OVERLAY=('__init__.py','actor.py','interaction.py','rollout.py','eval.py','evaluation_initialization.py','qa_standalone.py')
+OVERLAY=('__init__.py','actor.py','interaction.py','rollout.py','eval.py','evaluation_initialization.py',
+    'qa_standalone.py','qa_standalone_identity.py','qa_acceptance_cpu.py')
 
 
 def deployment_script(config,commit):
+    binding(config)
     repo=Path(__file__).resolve().parents[2]
     files={name:subprocess.check_output(['git','-C',str(repo),'show',commit+':reproduction/prefix_diversity200/'+name]) for name in OVERLAY}
     payload=dict(config=dict(config,qa_source_commit=commit),source_commit=commit,files={name:base64.b64encode(value).decode() for name,value in files.items()},
         sha256={name:hashlib.sha256(value).hexdigest() for name,value in files.items()})
     return r'''
-import base64,json,pathlib,hashlib,os,subprocess,time
+import base64,json,pathlib,hashlib,os,subprocess,time,sys
 p=PAYLOAD;c=p['config'];s=c['qa_standalone'];b=pathlib.Path(s['base'])
 def read(x):return json.loads(pathlib.Path(x).read_text())
 def sha(x):return hashlib.sha256(pathlib.Path(x).read_bytes()).hexdigest()
 def once(x,v):
  with pathlib.Path(x).open('x') as f:json.dump(v,f,sort_keys=True);f.flush();os.fsync(f.fileno())
-assert str(b).startswith('/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-') and b.resolve()==b
-assert c['run_id']=='4a1cc2d500fe40979ef8ca4792959438' and c['node']=='h100-5'
-assert s['expected_count']==512 and s['outer']==5
+assert b.parent==pathlib.Path('/mnt/shared/workspace/training_data_node_10/shaoshitong') and b.resolve()==b
+assert c['run_id']=='4a1cc2d500fe40979ef8ca4792959438' and c['node'] in ('h100-5','h100-8','h100-10','h100-11')
 if b.exists():
  print(json.dumps({'status':'EXISTING_QA_NAMESPACE_RECONCILE_NO_REPLAY','base':str(b)}));raise SystemExit
 assert sha(s['source_evaluation_config'])==s['source_evaluation_config_sha256']
 assert read(s['source_evaluation_config'])['actor_version']==c['actor_version']
-assert sha(c['validation_questions'])==c['validation_questions_sha256']
+questions_key='validation_questions' if s['expected_count']==512 else 'final_questions'
+assert sha(c[questions_key])==c[questions_key+'_sha256']
 source=pathlib.Path(s['source_cache']);corpus=read(source/'corpus.json');ready=read(source/'ready.json')
 assert ready==s.pop('expected_source_retriever_ready') and ready['corpus']==corpus
 assert sha(source/'corpus.json')==s['source_corpus_receipt_sha256']
@@ -47,6 +50,9 @@ once(b/'preparation/deploy-intent.json',dict(source_commit=p['source_commit'],cr
 for name,value in p['files'].items():
  data=base64.b64decode(value);assert hashlib.sha256(data).hexdigest()==p['sha256'][name]
  target=b/'repo/reproduction/prefix_diversity200'/name;target.write_bytes(data);assert sha(target)==p['sha256'][name]
+sys.path.insert(0,str(b/'repo'))
+from reproduction.prefix_diversity200.qa_standalone_identity import verify_sources
+verify_sources(c,read,sha)
 # Same retained18 NFS inode; no model/data/index bytes pass through Mac.
 os.link(source/'wiki_dump.jsonl',b/'retrieval-cache/wiki_dump.jsonl')
 assert (source/'wiki_dump.jsonl').stat().st_ino==(b/'retrieval-cache/wiki_dump.jsonl').stat().st_ino
@@ -59,10 +65,15 @@ once(b/'preparation/deployment.json',result);print(json.dumps(result))
 
 def submit_script(base):
     return r'''
-import json,pathlib,subprocess,os,time,fcntl
+import json,pathlib,subprocess,os,time,fcntl,sys,hashlib
 b=pathlib.Path(BASE);c=json.loads((b/'preparation/config.json').read_text());s=c['qa_standalone'];unit=s['unit']
-assert str(b).startswith('/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-') and b.resolve()==b and s['base']==str(b)
-assert unit.startswith('g1-qa-4a1cc2d5-o5-') and unit.endswith('.service')
+assert b.parent==pathlib.Path('/mnt/shared/workspace/training_data_node_10/shaoshitong') and b.resolve()==b and s['base']==str(b)
+manifest=json.loads((b/'preparation/source-files.json').read_text())
+for name,digest in manifest.items():
+ assert hashlib.sha256((b/'repo/reproduction/prefix_diversity200'/name).read_bytes()).hexdigest()==digest
+sys.path.insert(0,str(b/'repo'))
+from reproduction.prefix_diversity200.qa_standalone_identity import verify_sources
+verify_sources(c,lambda p:json.loads(pathlib.Path(p).read_text()),lambda p:hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest())
 def once(p,v):
  with p.open('x') as f:json.dump(v,f,sort_keys=True);f.flush();os.fsync(f.fileno())
 with (b/'preparation/submit.lock').open('a') as lock:

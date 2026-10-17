@@ -1,0 +1,54 @@
+{
+  "status": "NO_CONFIRMED_DEFECTS",
+  "reviewed_files": [
+    "qa_standalone.py",
+    "qa_standalone_control.py",
+    "qa_standalone_identity.py",
+    "qa_acceptance_cpu.py",
+    "eval.py",
+    "fresh_observe_local.py",
+    "qa_standalone_observe.py"
+  ],
+  "checks": [
+    {
+      "outer": 5,
+      "expected_count": 512,
+      "valid_fixture": "PASS",
+      "wrong_probe_boundary": "LEGACY_QA5_EXEMPT"
+    },
+    {
+      "outer": 50,
+      "expected_count": 512,
+      "valid_fixture": "PASS",
+      "wrong_probe_boundary": "REJECTED"
+    },
+    {
+      "outer": 100,
+      "expected_count": 512,
+      "valid_fixture": "PASS",
+      "wrong_probe_boundary": "REJECTED"
+    },
+    {
+      "outer": 150,
+      "expected_count": 512,
+      "valid_fixture": "PASS",
+      "wrong_probe_boundary": "REJECTED"
+    },
+    {
+      "outer": 200,
+      "expected_count": 512,
+      "valid_fixture": "PASS",
+      "wrong_probe_boundary": "REJECTED"
+    },
+    {
+      "outer": 200,
+      "expected_count": 51713,
+      "valid_fixture": "PASS",
+      "wrong_probe_boundary": "REJECTED"
+    }
+  ],
+  "cpu_acceptance_gate": "complete.json AND all eight rank receipts checked before launch; allow_generation=False injects a rejecting Popen callback into supervise, so receipt-loss races cannot start workers",
+  "scope": "Local read-only diff review and in-memory CPU identity fixtures only; no remote calls, submit, GPU, implementation edits, or model loads",
+  "minimal_next_validation": "Before any future deployment, read source joint SHA and exact actor HF path on target node; run existing saved-raw CPU acceptance after all eight rank receipts and aggregate exist.",
+  "generation_prohibition_ast_check": "PASS"
+}

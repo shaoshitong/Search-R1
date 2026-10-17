@@ -5,14 +5,18 @@ import time
 from reproduction.h1008_qprobe.management_transport import remote
 
 
-def observe(root):
+def observe(root,deployment_path=None):
     root=Path(root);output=root/'outputs/search-g1-i1i6-fresh200-20261017'
-    deployment=json.loads((output/'QA5_STANDALONE_DEPLOYMENT.json').read_text())
+    deployment=json.loads(Path(deployment_path or output/'QA5_STANDALONE_DEPLOYMENT.json').read_text())
+    from .qa_standalone_identity import binding
+    target=binding(deployment['actual_config'])
+    if target['base']!=deployment['base'] or target['unit']!=deployment['unit']:
+        raise ValueError('Deployment receipt and exact QA config disagree')
     connection=json.loads((root/'work/search-g1-prefix1024-diversity512-20261016/MANAGEMENT_DIRECT_MASTER_CURRENT.json').read_text())
     script=r'''
 import pathlib,json,subprocess,time
 b=pathlib.Path(BASE);unit=UNIT
-assert b.name.startswith('search-g1-qa-i1i6-4a1cc2d5-outer0005-') and unit.startswith('g1-qa-4a1cc2d5-o5-')
+assert b.name.startswith('search-g1-qa-i1i6-4a1cc2d5-outer') and unit.startswith('g1-qa-4a1cc2d5-o')
 def read(p):return json.loads(p.read_text()) if p.exists() else None
 r=subprocess.run(['systemctl','show',unit,'-p','ActiveState,SubState,Result,ExecMainStatus,MainPID,ControlGroup,CPUUsageNSec,MemoryPeak,MemoryCurrent'],capture_output=True,text=True,timeout=10)
 props=dict(line.split('=',1) for line in r.stdout.splitlines() if '=' in line)
@@ -36,18 +40,19 @@ for name in ('controller','retriever','evaluation'):
   value['logs'][name]=dict(bytes=p.stat().st_size,tail=tail)
 print(json.dumps(value))
 '''.replace('BASE',repr(deployment['base'])).replace('UNIT',repr(deployment['unit']))
-    receipt=output/('qa5-observe-'+str(time.time_ns())+'-transport.json')
-    value=json.loads(remote(script,receipt,control_path=connection['control_path'],target='h100-5'))
+    label='QA%d_STANDALONE'%target['outer'] if target['expected_count']==512 else 'QA_FINAL_STANDALONE'
+    receipt=output/(label.lower()+'-observe-'+str(time.time_ns())+'-transport.json')
+    value=json.loads(remote(script,receipt,control_path=connection['control_path'],target=deployment['actual_config']['node']))
     evidence=receipt.with_name(receipt.name.replace('-transport','-actual'))
     evidence.write_text(json.dumps(value,indent=2)+'\n')
-    (output/'QA5_STANDALONE_LATEST.json').write_text(json.dumps(value,indent=2)+'\n')
+    (output/(label+'_LATEST.json')).write_text(json.dumps(value,indent=2)+'\n')
     return value
 
 
 if __name__=='__main__':
     import argparse
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);a=p.parse_args()
-    r=observe(a.root)
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--deployment');a=p.parse_args()
+    r=observe(a.root,a.deployment)
     print(json.dumps(dict(observed_unix=r['observed_unix'],systemd=r['systemd'],
         completed_questions=sum((v or {}).get('completed_questions',0) for v in r['rank_progress']),
         completed_ranks=r['rank_complete'],qa=r['qa'],logs=r['logs'])))

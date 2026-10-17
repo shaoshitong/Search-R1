@@ -12,6 +12,7 @@ import sys
 import time
 import urllib.request
 from .actor import read, sha, atomic_json
+from .qa_standalone_identity import verify_sources
 
 
 def gpu_rows():
@@ -34,9 +35,7 @@ def shared_retriever(config_path):
     source_receipt=read(original/'corpus.json')
     if sha(original/'corpus.json')!=spec['source_corpus_receipt_sha256']:
         raise ValueError('Original prepared corpus receipt changed')
-    source_config=Path(spec['source_evaluation_config'])
-    if original!=source_config.parents[2]/'retrieval-cache':
-        raise ValueError('Arrow cache must be the original actor run corpus cache')
+    verify_sources(c,read,sha)
     arrow_directory=Path(spec['arrow_directory'])
     arrow_directory.relative_to(original/'arrow')
     if arrow_directory.resolve()!=arrow_directory or any(p.parent!=arrow_directory for p in map(Path,[i['path'] for i in spec['arrow_shards']])):
@@ -76,16 +75,9 @@ def run(config_path):
     if str(base.resolve())!=str(base) or not str(base).startswith('/mnt/'):
         raise ValueError('All QA output must remain on verified remote/shared storage')
     group=own_cgroup(unit)
-    if sha(c['validation_questions'])!=c['validation_questions_sha256']:
-        raise ValueError('Pinned validation questions changed')
-    if spec['expected_count']!=512 or c['actor_version']!=c['run_id']+'-actor%04d'%spec['outer']:
-        raise ValueError('Standalone milestone QA actor identity differs')
+    target=verify_sources(c,read,sha)
     if c['search_url']!='http://127.0.0.1:%d/retrieve'%c['retrieval_port']:
         raise ValueError('Retrieval must stay loopback on the inference node')
-    if sha(spec['source_evaluation_config'])!=spec['source_evaluation_config_sha256']:
-        raise ValueError('Original actor evaluation identity changed')
-    if read(spec['source_evaluation_config'])['actor_version']!=c['actor_version']:
-        raise ValueError('Original QA actor version differs')
     rows=gpu_rows()
     if [r[1] for r in rows]!=c['physical_gpu_uuids'] or len(rows)!=8 or any(r[2]<40*1024 for r in rows):
         raise ValueError('Fresh eight-GPU UUID/headroom check failed; never clean foreign processes')
@@ -150,7 +142,7 @@ def run(config_path):
                 time.sleep(1)
             atomic_json(base/'logs/retriever-ready.json',health)
             evaluation=launch('evaluation',[python,'-m','reproduction.prefix_diversity200.eval','--config',str(config_path),
-                '--model',spec['model_dir'],'--questions',c['validation_questions'],'--expected-count','512','--output',str(base/'validation')],env)
+                '--model',spec['model_dir'],'--questions',target['questions'],'--expected-count',str(target['expected_count']),'--output',str(base/'validation')],env)
             while evaluation.poll() is None:
                 guard()
                 if retriever.poll() is not None:raise RuntimeError('Own retriever exited during QA')
