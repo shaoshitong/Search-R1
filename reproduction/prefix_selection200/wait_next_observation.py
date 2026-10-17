@@ -44,6 +44,7 @@ def run(path):
         return dict(status='EXISTING_CLAIM_RECONCILE_NO_REPLAY', claim=str(claim))
     write_once(claim, dict(token=spec['token'], started_unix=time.time(),
                            not_before_unix=spec['not_before_unix'], remote_mutations=False))
+    result = None
     while True:
         state = read(spec['state_path'])
         if not still_current(spec, state):
@@ -57,14 +58,14 @@ def run(path):
     if still_current(spec, read(spec['state_path'])):
         tag = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
         directory = Path(spec['directory'])
-        control = state.get('management_transport', {}).get('control_path')
-        if control:
-            check = subprocess.run(['/usr/bin/ssh', '-S', control, '-O', 'check', 'mgmt-host'],
-                                   capture_output=True, timeout=10)
-            if check.returncode:
-                control = None
         transport = directory / ('actorhidden-normal-delayed-' + tag + '-transport.json')
         try:
+            control = state.get('management_transport', {}).get('control_path')
+            if control:
+                check = subprocess.run(['/usr/bin/ssh', '-S', control, '-O', 'check', 'mgmt-host'],
+                                       capture_output=True, timeout=10)
+                if check.returncode:
+                    control = None
             code = REMOTE.replace('BASE', repr(spec['base'])).replace('VERIFIED', str(spec['verified_outer']))
             value = json.loads(remote(code, transport, control_path=control, target='h100-8'))
             actual = directory / ('actorhidden-normal-delayed-' + tag + '-actual.json')
@@ -81,6 +82,9 @@ def run(path):
                           checked_unix=time.time(), error=repr(error),
                           transport=str(transport), training_modified=False,
                           primary_state_modified=False)
+    if result is None:
+        result = dict(status='SUPERSEDED_NO_NETWORK_READ', token=spec['token'],
+                      checked_unix=time.time(), training_modified=False)
     write_once(result_path, result)
     return dict(result, result=str(result_path))
 
