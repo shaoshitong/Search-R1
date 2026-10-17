@@ -1,0 +1,425 @@
+{
+  "kind": "natural_periodic30_actual_milestone_not_hourly",
+  "observed_shanghai": "2026-10-17T19:54:01.827382+08:00",
+  "observed_unix": 1792238041.8273823,
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "a4a0c2a18cca40bc8c3850d40eed8554",
+  "runtime_source_commit": "75d536575593891876df339467da73b3c4cbdc7c",
+  "operator_commit": "10acbc44d9ba6c612cb2cb1340a2a6a9cc0c6d93",
+  "actual_receipt_sha256": "1c3ce370797fdd95c5f42ecd21c26852eb76060764cffd322785420022fb7ffd",
+  "progress": {
+    "complete_outers": 30,
+    "target_outers": 200,
+    "saved_actor_Adam_per_rank": [
+      600,
+      600,
+      600,
+      600
+    ],
+    "scheduler": 30,
+    "probe_Adam_per_rank": [
+      150,
+      150,
+      150,
+      150
+    ],
+    "current_outer": 31,
+    "current_stage": "outer-000031-prefix",
+    "current_actor_Adam_confirmed": 0,
+    "current_actor_scope": "prefix stage no actor31 ledger; zero additional confirmed not inferred inflight",
+    "inflight": null,
+    "four_rank_replicas_count_once": true
+  },
+  "since_true_hour_anchor": {
+    "complete_outers": 27,
+    "saved_adam": 540,
+    "actual_returned_adam": 548,
+    "new_sealed_complete_outers": 3,
+    "new_sealed_Adam": 60,
+    "already_reported_live28_now_sealed": 8,
+    "new_actual_returned_Adam": 52,
+    "new_actual_processed_opportunities": 52,
+    "new_skips": 0,
+    "anchor_not_advanced": true
+  },
+  "complete_window_rows": [
+    {
+      "outer": 28,
+      "metadata_sha256": "fb4d9bb989cc721175ef39ce9fd4aa5a6aaa94ad8cd85cee2256667850123492",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          560,
+          560,
+          560,
+          560
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 28
+      },
+      "reward_mean": 0.8813288553530583,
+      "selected_mixed_fraction": 0.5546875,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 29,
+      "metadata_sha256": "f23e4ae1beae3e90ba3d002d3727bdb47cbb42d00662fb36933630534f563563",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          580,
+          580,
+          580,
+          580
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 29
+      },
+      "reward_mean": 0.9045071313274093,
+      "selected_mixed_fraction": 0.50390625,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 30,
+      "metadata_sha256": "eb8e32076b1942adf8141b4d86ff230dda9d387be585322cac5742051d28df00",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          600,
+          600,
+          600,
+          600
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 30
+      },
+      "reward_mean": 0.7364496024616528,
+      "selected_mixed_fraction": 1.0,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": true,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 2560
+      },
+      "probe_update": {
+        "outer": 30,
+        "unselected_training_questions": 2560,
+        "actual_learning_rate": 5e-06,
+        "new_adam_steps_per_rank": 50,
+        "actual_adam_steps_per_rank": [
+          150,
+          150,
+          150,
+          150
+        ],
+        "train_loop_seconds": 7.43502398300916,
+        "before_update": {
+          "test": {
+            "accuracy": 0.505859375,
+            "balanced_accuracy": 0.5313689078231106,
+            "count": 512,
+            "fn": 62,
+            "formula": "1-prod(p_j)-prod(1-p_j)",
+            "fp": 191,
+            "group_bce": 0.9748462619587412,
+            "group_weight": 1.0,
+            "mean_q": 0.5402331506700434,
+            "mixed_count": 153,
+            "mixed_recall": 0.5947712418300654,
+            "nonmixed_count": 359,
+            "nonmixed_recall": 0.467966573816156,
+            "threshold": 0.5,
+            "tn": 168,
+            "total_loss": 1.7587244857248798,
+            "tp": 91,
+            "trajectory_bce": 0.7838782237661386,
+            "true_mixed": "0<sum(own_strict_em)<5"
+          },
+          "train": {
+            "accuracy": 0.6734375,
+            "balanced_accuracy": 0.6655297279744137,
+            "count": 2560,
+            "fn": 261,
+            "formula": "1-prod(p_j)-prod(1-p_j)",
+            "fp": 575,
+            "group_bce": 0.7149560815514027,
+            "group_weight": 1.0,
+            "mean_q": 0.41923167999421074,
+            "mixed_count": 739,
+            "mixed_recall": 0.6468200270635994,
+            "nonmixed_count": 1821,
+            "nonmixed_recall": 0.6842394288852279,
+            "threshold": 0.5,
+            "tn": 1246,
+            "total_loss": 1.1681035834935458,
+            "tp": 478,
+            "trajectory_bce": 0.45314750194214326,
+            "true_mixed": "0<sum(own_strict_em)<5"
+          }
+        },
+        "train": {
+          "accuracy": 0.741015625,
+          "balanced_accuracy": 0.7299157550721955,
+          "count": 2560,
+          "fn": 219,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 444,
+          "group_bce": 0.5668041050064494,
+          "group_weight": 1.0,
+          "mean_q": 0.418284361882041,
+          "mixed_count": 739,
+          "mixed_recall": 0.7036535859269283,
+          "nonmixed_count": 1821,
+          "nonmixed_recall": 0.7561779242174629,
+          "threshold": 0.5,
+          "tn": 1377,
+          "total_loss": 0.954998937456611,
+          "tp": 520,
+          "trajectory_bce": 0.3881948324501617,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        },
+        "test": {
+          "accuracy": 0.462890625,
+          "balanced_accuracy": 0.5551095089846524,
+          "count": 512,
+          "fn": 33,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 242,
+          "group_bce": 1.054951968203146,
+          "group_weight": 1.0,
+          "mean_q": 0.6314937614186714,
+          "mixed_count": 153,
+          "mixed_recall": 0.7843137254901961,
+          "nonmixed_count": 359,
+          "nonmixed_recall": 0.32590529247910865,
+          "threshold": 0.5,
+          "tn": 117,
+          "total_loss": 1.7798436921800072,
+          "tp": 120,
+          "trajectory_bce": 0.7248917239768611,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        }
+      },
+      "full_pool": {
+        "questions": 2560,
+        "trajectories": 12800,
+        "actual_selected_mixed_fraction": 0.288671875
+      }
+    }
+  ],
+  "reward_window": {
+    "outers": [
+      28,
+      29,
+      30
+    ],
+    "mean": 0.8407618630473734,
+    "min": 0.7364496024616528,
+    "max": 0.9045071313274093,
+    "latest": 0.7364496024616528,
+    "includes_oracle30": true
+  },
+  "ordinary_mixed": {
+    "outer28": {
+      "mixed": 284,
+      "groups": 512,
+      "fraction": 0.5546875
+    },
+    "outer29": {
+      "mixed": 258,
+      "groups": 512,
+      "fraction": 0.50390625
+    }
+  },
+  "period30": {
+    "full_pool_questions": 2560,
+    "full_pool_trajectories": 12800,
+    "full_pool_mixed": 739,
+    "full_pool_mixed_fraction": 0.288671875,
+    "selected_questions": 512,
+    "selected_trajectories": 2560,
+    "selected_mixed": 512,
+    "selected_mixed_fraction": 1.0,
+    "selection_scope": "trueEM_priority_not_probe_accuracy",
+    "epochs": 1,
+    "learning_rate": 5e-06,
+    "global_batch_mean_trajectories": 256,
+    "new_Adam_per_rank": [
+      50,
+      50,
+      50,
+      50
+    ],
+    "cumulative_Adam_per_rank": [
+      150,
+      150,
+      150,
+      150
+    ],
+    "train_loop_seconds": 7.43502398300916,
+    "checkpoint_sha256": "279b3b616041026eef4652f5cdb90459f9e85a1c734dcf7ae00ea03e425a27c0",
+    "paired_same_actual_G5_metrics": {
+      "train": {
+        "before": {
+          "count": 2560,
+          "accuracy": 0.6734375,
+          "balanced_accuracy": 0.6655297279744137,
+          "trajectory_bce": 0.45314750194214326,
+          "group_bce": 0.7149560815514027,
+          "total_loss": 1.1681035834935458,
+          "mixed_count": 739,
+          "nonmixed_count": 1821,
+          "tp": 478,
+          "tn": 1246,
+          "fp": 575,
+          "fn": 261
+        },
+        "after": {
+          "count": 2560,
+          "accuracy": 0.741015625,
+          "balanced_accuracy": 0.7299157550721955,
+          "trajectory_bce": 0.3881948324501617,
+          "group_bce": 0.5668041050064494,
+          "total_loss": 0.954998937456611,
+          "mixed_count": 739,
+          "nonmixed_count": 1821,
+          "tp": 520,
+          "tn": 1377,
+          "fp": 444,
+          "fn": 219
+        }
+      },
+      "test": {
+        "before": {
+          "count": 512,
+          "accuracy": 0.505859375,
+          "balanced_accuracy": 0.5313689078231106,
+          "trajectory_bce": 0.7838782237661386,
+          "group_bce": 0.9748462619587412,
+          "total_loss": 1.7587244857248798,
+          "mixed_count": 153,
+          "nonmixed_count": 359,
+          "tp": 91,
+          "tn": 168,
+          "fp": 191,
+          "fn": 62
+        },
+        "after": {
+          "count": 512,
+          "accuracy": 0.462890625,
+          "balanced_accuracy": 0.5551095089846524,
+          "trajectory_bce": 0.7248917239768611,
+          "group_bce": 1.054951968203146,
+          "total_loss": 1.7798436921800072,
+          "mixed_count": 153,
+          "nonmixed_count": 359,
+          "tp": 120,
+          "tn": 117,
+          "fp": 242,
+          "fn": 33
+        }
+      }
+    },
+    "test_all_nonmixed_accuracy_baseline": 0.701171875,
+    "train_total_loss_relative_decline": 0.18243642862526355,
+    "test_total_loss_relative_change": 0.01200825179074183
+  },
+  "QA": {
+    "step": 5,
+    "correct": 136,
+    "count": 512,
+    "EM": 0.265625,
+    "F1": 0.36065851672240307,
+    "new_QA": false
+  },
+  "health": {
+    "pipeline_identity": {
+      "pid": 2460812,
+      "start_ticks": 630157154,
+      "sid": 2460812,
+      "uid": 0,
+      "alive": true
+    },
+    "failed_jobs": [],
+    "cleanup": null
+  },
+  "gpu": {
+    "current": null,
+    "window": null,
+    "execution_peak": null,
+    "coverage": null,
+    "status": "not_projected_unknown_no_extra_query"
+  },
+  "no_extra_evaluation_tests_review_subagent_modelread_or_launch": true,
+  "interpretation": "Training fitting improved; paired fixed512 ordinary accuracy and total/groupBCE worsened while balancedaccuracy rose. No generalization success claim. Fixed IDs get new actual actor G5 per cycle, so crosscycle labels differ. Formal200 continues unchanged."
+}
