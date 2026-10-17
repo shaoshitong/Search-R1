@@ -36,7 +36,16 @@ s=SPEC;source=pathlib.Path(s['prior_stopped_fit_base'])
 p=json.loads((source/s.get('prior_stopped_fit_proof_name','preparation/human-stop-A-run-BC5-terminal-once.json')).read_text())
 assert p['original_births_all_gone']and p['no_live_own_gpu']and p['base']==str(source)
 r=subprocess.run(['scontrol','show','job',s['prior_stopped_fit_job'],'-o'],capture_output=True,text=True,timeout=20)
-assert r.returncode==0 and any('JobState='+state in r.stdout for state in ('CANCELLED','COMPLETED'))and str(source/'preparation/native-probe20k-fit.sh')in r.stdout
+if r.returncode==0:
+ assert any('JobState='+state in r.stdout for state in ('CANCELLED','COMPLETED'))and str(source/'preparation/native-probe20k-fit.sh')in r.stdout
+else:
+ # Slurm may purge an already sealed terminal job. Its original native record
+ # and two owned-resource-release records remain authoritative, not a new job.
+ assert 'Invalid job id' in r.stderr or 'Invalid job id' in r.stdout,(r.stdout,r.stderr)
+ archived=p.get('native','');assert 'JobId='+s['prior_stopped_fit_job']+' 'in archived
+ assert 'JobState=COMPLETED'in archived and 'ExitCode=0:0'in archived and str(source/'preparation/native-probe20k-fit.sh')in archived
+ assert p['job_id']==s['prior_stopped_fit_job']and len(p['release'])==2
+ assert all(not v['remaining_original_births']and not v['owned_gpu']and not v['cgroups']for v in p['release'])
 '''.replace('SPEC',repr(config['probe20k_study']))
     if old:
         before=r'''
