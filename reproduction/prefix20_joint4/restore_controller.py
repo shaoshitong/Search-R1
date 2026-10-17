@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import subprocess
 import time
 
@@ -63,6 +64,28 @@ def document(path, expected_sha=None):
     need(expected_sha is None or digest == expected_sha, 'DOCUMENT_SHA_DIFFERS')
     need(archive.regular(path) == before, 'DOCUMENT_CHANGED_DURING_READ')
     return strict(raw), dict(path=str(path), sha256=digest, **before)
+
+
+def storage_observation_document(source):
+    """Read one complete canonical version despite an atomic refresh rename.
+
+    All other document inputs remain immutable. The selected descriptor must
+    retain its content identity; the canonical path may move to the next valid
+    proof while this descriptor still reads the preceding complete proof.
+    """
+    path = archive.safe_components(Path(source)/'preparation/personal-storage-observation.json')
+    fd = os.open(str(path), os.O_RDONLY | getattr(os, 'O_NOFOLLOW', 0))
+    with os.fdopen(fd, 'rb') as stream:
+        before = os.fstat(stream.fileno())
+        need(stat.S_ISREG(before.st_mode) and before.st_size < 512 * 2**20, 'SMALL_REGULAR_DOCUMENT_REQUIRED')
+        raw = stream.read()
+        after = os.fstat(stream.fileno())
+    identity = lambda value:(value.st_dev, value.st_ino, value.st_size, value.st_mtime_ns)
+    need(identity(before) == identity(after) and len(raw) == before.st_size, 'DOCUMENT_CHANGED_DURING_READ')
+    import hashlib
+    record = dict(path=str(path), sha256=hashlib.sha256(raw).hexdigest(), device=before.st_dev,
+                  inode=before.st_ino, bytes=before.st_size, mtime_ns=before.st_mtime_ns)
+    return strict(raw), record
 
 
 def namespace(source, target=None):
@@ -211,7 +234,7 @@ def budget_projection(observation, snapshot_bytes, source_bytes, *, now=None):
 
 def budget_gate(source, snapshot, manifest):
     from reproduction.prefix20_joint4.storage_complete import validate_upper_bound
-    observation, record = document(source/'preparation/personal-storage-observation.json')
+    observation, record = storage_observation_document(source)
     need(observation.get('measurement_kind') == 'permission_partition_allocated_byte_upper_bound', 'ACTUAL_PERMISSION_PARTITION_MEASUREMENT_REQUIRED')
     validate_upper_bound(observation, source)
     # Validate its raw complete partition and producer identities; never relabel

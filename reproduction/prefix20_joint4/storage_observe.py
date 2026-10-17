@@ -18,7 +18,7 @@ def identity(pid):
     return dict(pid=pid,start_ticks=int(value[19]),boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip())
 
 
-def observe(base,commit):
+def observe(base,commit,*,publish_canonical=True):
     os.umask(0o007);base=own_base(base);preparation=base/'preparation'
     with (preparation/'storage-full-observer.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -43,14 +43,21 @@ def observe(base,commit):
             stdout_sha256=sha(stdout),stderr_sha256=sha(stderr),measurement_complete=code==0 and not timed_out and not errors.strip(),
             started_unix=start,checked_unix=time.time(),training_job_submitted=False)
         publish(directory/'result.json',proof)
-        atomic(preparation/'personal-storage-observation.json',proof)
+        # A refresh may require a second account to measure denied subtrees.
+        # Keep the last complete canonical proof visible until that aggregate
+        # is validated and atomically published by storage_complete.
+        if publish_canonical:
+            atomic(preparation/'personal-storage-observation.json',proof)
         print(json.dumps(proof),flush=True)
         return proof
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--commit',required=True);a=p.parse_args()
-    observe(a.base,a.commit)
+    p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--commit',required=True)
+    p.add_argument('--no-publish-canonical',action='store_true',
+        help='retain the current canonical proof while recording new raw evidence; complete publishes the validated aggregate')
+    a=p.parse_args()
+    observe(a.base,a.commit,publish_canonical=not a.no_publish_canonical)
 
 
 if __name__=='__main__':main()

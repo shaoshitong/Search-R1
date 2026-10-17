@@ -1,12 +1,18 @@
 import copy
+from contextlib import ExitStack,redirect_stdout
+import io
 import json
+import os
 from pathlib import Path
 import tempfile
 import time
+from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 from reproduction.prefix20_joint4.assets import sha
 from reproduction.prefix20_joint4 import storage_complete as module
+from reproduction.prefix20_joint4 import storage_observe
 from reproduction.prefix20_joint4.control import PERSONAL_ROOT,bind_repo
 
 
@@ -48,6 +54,125 @@ class StorageCompletionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory).resolve();target=root/'target';target.mkdir();link=root/'link';link.symlink_to(target)
             with self.assertRaisesRegex(ValueError,'SYMLINK'):module.directory_identity(link)
+
+
+class CanonicalRefreshTests(unittest.TestCase):
+    """Real small receipts and atomic publication; only du/account identity is substituted."""
+    fixture=StorageCompletionTests.fixture
+    def setUp(self):
+        self.saved_umask=os.umask(0o007)
+
+    def tearDown(self):
+        os.umask(self.saved_umask)
+
+    def prepared(self,directory):
+        base=Path(directory).resolve();old=self.fixture(base)
+        canonical=base/'preparation/personal-storage-observation.json'
+        canonical.write_text(json.dumps(old,indent=2))
+        return base,canonical,canonical.read_bytes(),old
+
+    def processes(self,base,canonical,old_bytes,*,part_error=False,root_complete=False):
+        denied=PERSONAL_ROOT+'/constructed/private';commands=[]
+        def popen(command,stdout,stderr):
+            # Every actual external measurement observes the previous complete
+            # canonical, including the denied-partition pass after raw publish.
+            self.assertEqual(canonical.read_bytes(),old_bytes)
+            commands.append(command)
+            if command==['du','-s','-B1',PERSONAL_ROOT]:
+                stdout.write(('1100\t'+PERSONAL_ROOT+'\n').encode())
+                stderr.write(("du: cannot read directory '"+denied+"': Permission denied\n").encode() if not root_complete else b'')
+                code=0 if root_complete else 1
+            else:
+                self.assertEqual(command,['du','-s','-B1',denied])
+                stdout.write(('250\t'+denied+'\n').encode())
+                stderr.write(b'du: I/O error\n' if part_error else b'')
+                code=int(part_error)
+            return SimpleNamespace(pid=12345,poll=lambda:code,wait=lambda **kwargs:code)
+        stack=ExitStack()
+        stack.enter_context(patch.object(storage_observe,'own_base',return_value=base))
+        stack.enter_context(patch.object(module,'own_base',return_value=base))
+        stack.enter_context(patch.object(storage_observe,'identity',return_value=dict(pid=12345,start_ticks=1,boot_id='test')))
+        stack.enter_context(patch.object(module,'identity',return_value=dict(pid=12345,start_ticks=1,boot_id='test')))
+        stack.enter_context(patch.object(module,'directory_identity',return_value=dict(device=1,inode=2,uid=14090)))
+        stack.enter_context(patch.object(storage_observe.subprocess,'Popen',side_effect=popen))
+        stack.enter_context(patch.object(storage_observe.os,'getuid',return_value=14090))
+        stack.enter_context(patch.object(storage_observe.pwd,'getpwuid',return_value=SimpleNamespace(pw_name='jxu957')))
+        stack.enter_context(redirect_stdout(io.StringIO()))
+        return stack,commands
+
+    def test_refresh_keeps_complete_canonical_until_valid_aggregate_atomically_publishes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base,canonical,old_bytes,old=self.prepared(directory)
+            stack,commands=self.processes(base,canonical,old_bytes)
+            with stack:
+                raw=storage_observe.observe(base,'a'*40,publish_canonical=False)
+                self.assertFalse(raw['measurement_complete'])
+                self.assertEqual(canonical.read_bytes(),old_bytes)
+                raw_path=Path(raw['stdout_file']).parent/'result.json'
+                raw_sha=sha(raw_path)
+                self.assertEqual(json.loads(raw_path.read_text()),raw)
+                publications=[];replace=os.replace
+                def replace_complete(source,target):
+                    if Path(target)==canonical:
+                        self.assertEqual(canonical.read_bytes(),old_bytes)
+                        pending=json.loads(Path(source).read_text())
+                        self.assertEqual(module.validate_upper_bound(pending,base),1350)
+                        publications.append(pending)
+                    return replace(source,target)
+                with patch.object(module.os,'replace',side_effect=replace_complete):
+                    final=module.complete(base,raw_path,'a'*40)
+            self.assertEqual(len(commands),2)
+            self.assertEqual(publications,[final])
+            self.assertEqual(json.loads(canonical.read_text()),final)
+            self.assertEqual(module.validate_upper_bound(final,base),1350)
+            self.assertEqual(sha(raw_path),raw_sha)
+            self.assertEqual(sha(old['original_root_receipt_file']),old['original_root_receipt_sha256'])
+            self.assertEqual(final['returncode'],1)
+            self.assertEqual(final['original_root_receipt_sha256'],raw_sha)
+
+    def test_failed_complement_preserves_previous_complete_canonical_and_raw_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base,canonical,old_bytes,old=self.prepared(directory)
+            stack,_=self.processes(base,canonical,old_bytes,part_error=True)
+            with stack:
+                raw=storage_observe.observe(base,'a'*40,publish_canonical=False)
+                raw_path=Path(raw['stdout_file']).parent/'result.json';raw_sha=sha(raw_path)
+                with self.assertRaisesRegex(ValueError,'COMPLEMENT_FAILED'):
+                    module.complete(base,raw_path,'a'*40)
+            self.assertEqual(canonical.read_bytes(),old_bytes)
+            self.assertEqual(module.validate_upper_bound(json.loads(canonical.read_text()),base),1200)
+            self.assertEqual(sha(raw_path),raw_sha)
+            self.assertEqual(len(list((base/'preparation').glob('storage-complements-*/0.result.json'))),1)
+
+    def test_complete_root_observation_is_preserved_without_relabeling_or_interim_publication(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base,canonical,old_bytes,_=self.prepared(directory)
+            stack,commands=self.processes(base,canonical,old_bytes,root_complete=True)
+            with stack:
+                raw=storage_observe.observe(base,'a'*40,publish_canonical=False)
+                raw_path=Path(raw['stdout_file']).parent/'result.json'
+                self.assertTrue(raw['measurement_complete'])
+                self.assertEqual(raw['returncode'],0)
+                # Permission completion remains explicitly limited to rc1 roots.
+                with self.assertRaisesRegex(ValueError,'ORIGINAL_ROOT_DU_RECEIPT'):
+                    module.complete(base,raw_path,'a'*40)
+            self.assertEqual(canonical.read_bytes(),old_bytes)
+            self.assertEqual(json.loads(raw_path.read_text()),raw)
+            self.assertEqual(len(commands),1)
+
+    def test_default_observer_still_publishes_canonical_for_existing_prelaunch_callers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base,canonical,old_bytes,_=self.prepared(directory)
+            stack,_=self.processes(base,canonical,old_bytes)
+            with stack:
+                raw=storage_observe.observe(base,'a'*40)
+            self.assertEqual(json.loads(canonical.read_text()),raw)
+
+    def test_cli_no_publish_option_reaches_the_preserving_api(self):
+        with patch('sys.argv',['storage_observe','--base','/source','--commit','a'*40,'--no-publish-canonical']),\
+                patch.object(storage_observe,'observe') as observe:
+            storage_observe.main()
+        observe.assert_called_once_with('/source','a'*40,publish_canonical=False)
 
 
 class PrelaunchSourcePromotionTests(unittest.TestCase):

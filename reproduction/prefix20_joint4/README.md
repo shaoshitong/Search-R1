@@ -95,6 +95,27 @@ Checkpoints, original trajectories and tensors remain remote. Local storage is
 limited to code, configuration, manifests and small audit summaries. Existing
 healthy experiments are not restarted or edited. Formal update201 is forbidden.
 
+For the existing permission-partition storage refresh, run the published
+operator's `storage_observe --base SOURCE --commit OPERATOR_SHA
+--no-publish-canonical`, then pass the new timestamped raw `result.json` to
+`storage_complete --base SOURCE --root-receipt RAW_RESULT --commit OPERATOR_SHA`
+as jxu957. Both are modules under `reproduction.prefix20_joint4`, executed with
+the source environment and that immutable operator's `PYTHONPATH`. This keeps
+the previous complete canonical proof while raw measurement and complements
+run; only the validated aggregate replaces it atomically. Failed complements
+leave the previous proof intact. The flag is optional for existing prelaunch
+callers, but is required for a refresh that must preserve a complete proof.
+The independent restore operator reads only this replaceable canonical file
+through one stable descriptor, so a queued restore can consume either complete
+version during publication; in-place content changes still reject. Start and
+finish the refresh before the preceding observation expires. Other controller
+documents retain their immutable path/SHA checks, and budget limits and
+freshness requirements are unchanged.
+The original root measurement must also be renewed within its six-hour limit;
+rerunning complements alone does not renew it. A fully successful root `du`
+remains a distinct raw receipt: permission completion rejects it explicitly and
+never relabels it as a failed permission-partition measurement.
+
 ## 实测运行记录：2026-10-17 04:46 CST
 
 HPC3 作业 `727586` 使用四张 GPU 运行，训练源码为

@@ -2,6 +2,7 @@
 import copy
 from contextlib import nullcontext
 import importlib.util
+import hashlib
 import io
 import json
 import os
@@ -161,6 +162,58 @@ class SourceAndBudgetTests(unittest.TestCase):
                           (line.replace('14090','1'),''),(line,'999\n'),(line.replace('restore200-only','other'),'')):
             with patch.object(control,'query',side_effect=account(raw,queue)),self.assertRaises(ValueError):
                 control.terminal_job('999','prefix20-restore200-only')
+
+
+class StorageRefreshReadTests(unittest.TestCase):
+    def test_atomic_refresh_while_open_reads_exact_old_then_exact_new_complete_proof(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory).resolve();path=base/'preparation/personal-storage-observation.json'
+            old=dict(measurement_complete=True,generation='old');new=dict(measurement_complete=True,generation='new')
+            write(path,old);old_raw=path.read_bytes();old_inode=path.stat().st_ino
+            pending=path.with_name('next.json');write(pending,new);new_raw=pending.read_bytes()
+            fstat=os.fstat;calls=[]
+            def replace_after_open(fd):
+                current=fstat(fd);calls.append(current.st_ino)
+                if len(calls)==1:os.replace(pending,path)
+                return current
+            with patch.object(control.os,'fstat',side_effect=replace_after_open):
+                actual,record=control.storage_observation_document(base)
+            self.assertEqual(actual,old)
+            self.assertEqual(calls,[old_inode,old_inode])
+            self.assertEqual(record['inode'],old_inode)
+            self.assertEqual(record['sha256'],hashlib.sha256(old_raw).hexdigest())
+            actual,record=control.storage_observation_document(base)
+            self.assertEqual(actual,new)
+            self.assertEqual(record['inode'],path.stat().st_ino)
+            self.assertEqual(record['sha256'],hashlib.sha256(new_raw).hexdigest())
+
+    def test_actual_in_place_content_mutation_during_read_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory).resolve();path=base/'preparation/personal-storage-observation.json'
+            write(path,dict(measurement_complete=True,generation='old'))
+            fstat=os.fstat;calls=[]
+            def mutate_after_open(fd):
+                current=fstat(fd);calls.append(current.st_ino)
+                if len(calls)==1:
+                    path.write_bytes(b'{"measurement_complete":false,"generation":"mutated-longer"}')
+                return current
+            with patch.object(control.os,'fstat',side_effect=mutate_after_open):
+                with self.assertRaisesRegex(ValueError,'DOCUMENT_CHANGED_DURING_READ'):
+                    control.storage_observation_document(base)
+            self.assertEqual(len(calls),2)
+
+    def test_immutable_document_keeps_rejecting_path_replacement(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory).resolve();path=root/'immutable.json';pending=root/'next.json'
+            write(path,dict(generation='old'));write(pending,dict(generation='new'))
+            read_bytes=Path.read_bytes
+            def replace_after_read(selected):
+                raw=read_bytes(selected)
+                if selected==path:os.replace(pending,path)
+                return raw
+            with patch.object(Path,'read_bytes',replace_after_read):
+                with self.assertRaisesRegex(ValueError,'DOCUMENT_CHANGED_DURING_READ'):
+                    control.document(path)
 
 
 class SubmissionTests(unittest.TestCase):
@@ -441,7 +494,11 @@ class ActualAdapterTests(unittest.TestCase):
         start=execute.index('def execute(')
         self.assertLess(execute.index('validate_execute_permit(base',start),execute.index('allocation = admit(base)',start))
         shell=(root/'restore_only.sh').read_text()
-        self.assertLess(shell.index('restore_controller check-execute'),shell.index('restore_only execute'))
+        self.assertLess(shell.index('restore_controller check-execute'),shell.index('native_ray_resources'))
+        self.assertIn('--role restore',shell)
+        from reproduction.prefix20_joint4.native_ray_resources import command
+        self.assertEqual(command(Path('/target'),'restore','/python'),
+            ['/python','-m','reproduction.prefix20_joint4.restore_only','execute','--base','/target'])
 
 
 if __name__=='__main__':unittest.main()
