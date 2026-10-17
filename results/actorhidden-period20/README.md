@@ -390,3 +390,8 @@ See [the audited report](selected512-accuracy-loss-report.md), [all92 per-outer 
 ### Actual periodic held-out provenance
 
 The fixed512 **question identities** are reused, while G5 trajectories, native actor27 hidden and own strict-EM labels are regenerated at each period using the same actor snapshot as that period's full5120 training pool (outer20/40/60/80 use actor19/39/59/79). [The actual metadata readback](periodic-heldout-current-actor-provenance.json) verifies all four versions and distinct input/outcome SHA references. No old teacher feature or trajectory cache is used to evaluate these periodic losses. Before/after evaluations within one period share actual data; evaluations across periods change generated trajectories and labels. Actor drift between probe updates remains a possible distribution change, not a demonstrated cause of quality results.
+
+
+### Non-selection implementation audit (2026-10-17)
+
+[The source audit](NONSELECTION-AUDIT-20261017.md) confirms three differences from the actual historical common8 baseline: loss reduction weights, training context/answer-reserve protocol, and reward-grounding probe refresh lifecycle. It does not establish a causal EM contribution. Matching reward-class AST and core/scoring bytes are recorded in nonselection-static-audit.json. Existing training remains frozen; no new generation, model forward or training mutation was performed. Actual rollout-level impact quantification is pending, not a claimed pass.

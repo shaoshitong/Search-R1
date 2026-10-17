@@ -1,0 +1,36 @@
+{
+  "observed_utc": "2026-10-17T04:51:33.155284+00:00",
+  "baseline_source_commit": "fe59dc164490098054879141d5421e0b418b4056",
+  "actual_runtime_commit": "c22dbf86664bcc4da86aecd702fbaaea9c381551",
+  "baseline_identity_source": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/latest-iter50-g1-current-raw-20261008-1954.json",
+  "baseline_run_id": "db474b6abf654ad9892b02ae67ab6f86",
+  "baseline_precision_profile": "bf16_policy_fp32_master",
+  "baseline_behavior_probability_policy": "sampling_journal_no_extra_hf_forward",
+  "unchanged_components": {
+    "verl/trainer/ppo/core_algos.py": {
+      "baseline_sha256": "adff53255d8ba659077be57d892c7f058ac41f64b588f1be49016322bc3d2a27",
+      "runtime_sha256": "adff53255d8ba659077be57d892c7f058ac41f64b588f1be49016322bc3d2a27",
+      "byte_equal": true
+    },
+    "search_g1/signals.py": {
+      "baseline_sha256": "470865b441c1f9944695006c143481e64afab0bcf041ae882f8ddf1b536a9d20",
+      "runtime_sha256": "470865b441c1f9944695006c143481e64afab0bcf041ae882f8ddf1b536a9d20",
+      "byte_equal": true
+    },
+    "verl/utils/reward_score/qa_em.py": {
+      "baseline_sha256": "565933963b21062b37c5d4923306f18fa08fbef9a1b54270fb99aab600c323fa",
+      "runtime_sha256": "565933963b21062b37c5d4923306f18fa08fbef9a1b54270fb99aab600c323fa",
+      "byte_equal": true
+    },
+    "EcoRewardManager_class_AST_equal": true
+  },
+  "confirmed_nonselection_differences": [
+    "legacy_equal_two_row_micro_means_vs_current_rank_local16_token_mean",
+    "legacy_raw500_observation_no_answer_reserve_vs_current_wrapper_preserving_clipping_4096_total_500_answer_reserve_early_final",
+    "baseline_prescribed_grounding_refit_after50_100_150_vs_current_fixed_round0_grounding_manifest"
+  ],
+  "causal_EM_attribution_established": false,
+  "actual_rollout_weight_impact_measurement": "pending_readback; no fabricated counts",
+  "training_modified": false,
+  "no_new_gpu_evaluation": true
+}
