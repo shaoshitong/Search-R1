@@ -1,0 +1,244 @@
+{
+  "date_shanghai": "2026-10-18",
+  "role": "actual_chunked_prefill_disabled_fullstate_joint66_to_complete67_execution_record",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "fe7207faf3da498ea3b89bc38c3d6d63",
+  "runtime_source_commit": "eef31859ee20cf536e7c8e4d647306f92badba63",
+  "source_files_verified": 1384,
+  "source_publication": "preparation/a800-prefix5-chunked-prefill-source-publication-20261018.json",
+  "base": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-fe7207faf3da498ea3b89bc38c3d6d63",
+  "actual_fault": {
+    "outer": 67,
+    "parent_execution": "f97819939a9c4f17bfc4855fa250eadc",
+    "parent_source": "d3a03054009fe3bf0068dfefabca941df95df101",
+    "canonical_complete_outer": 66,
+    "canonical_actor_Adam": 1320,
+    "canonical_joint_sha256": "26ec14669960f383e5ed43daaa69706ebd8ab690b7def1eae6f5b3669b9a0f9f",
+    "fault_rank": 2,
+    "error": "CUDA_ILLEGAL_MEMORY_ACCESS_ASYNCHRONOUSLY_REPORTED_IN_NATIVE_VLLM_SAMPLING",
+    "error_receipt": "preparation/a800-prefix5-outer67-rank2-safe-trace-1792266097793809000.json",
+    "log_sha256": "d05af6a18fabd3b35c1f35a2236deb31fbf1c59eaadc1d4adc919174d78a6bf7",
+    "terminal_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-fault65-terminal-1792266252767276000.json",
+    "terminal_sha256": "4b31af0bc5956b04e97eb9710a5a480f65c270379fdb2e46582cc0a7c4ea61ae",
+    "owned_births_verified_gone": 338,
+    "actor67_partial_updates": 0,
+    "probe67_partial_updates": 0,
+    "failed_sampling_preserved": true
+  },
+  "repair": {
+    "constructor_delta": "enable_chunked_prefill=True -> False",
+    "prefix_caching_retained": false,
+    "enforce_eager_retained": true,
+    "actor_probe_loss_bytes_unchanged": true,
+    "normalized_constructor_ast_single_keyword_proved": true,
+    "packages_environment_models_loss_sampling_hyperparameters_unchanged": true,
+    "claimed_proven_kernel_root_cause": false,
+    "related_primary_issue": "https://github.com/vllm-project/vllm/issues/11366"
+  },
+  "fullstate_CPU": {
+    "actual_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-fault65-observe-1792266519407426000.json",
+    "actual_exit": {
+      "completed_outer": 66,
+      "completed_unix": 1792266382.8893116,
+      "config_sha256": "20ce81352a7c9498681f84eb3fe03394ffc2d2186e0dd1bb8c1ea8682191b019",
+      "effective_from_outer": 6,
+      "execution_id": "fe7207faf3da498ea3b89bc38c3d6d63",
+      "exit_code": 0,
+      "identity": {
+        "pid": 3140142,
+        "sid": 3140142,
+        "start_ticks": 634589174,
+        "uid": 0
+      },
+      "import_receipt_sha256": "f0f430f502f76ef709652afb402597e76e89524dc4e38697b1c7e077477b6405",
+      "qualification_sha256": "101c3d1e7f3657c8032fd0adbdfa67c4af26b15101460a11a95e14783f6be774",
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "source_commit": "eef31859ee20cf536e7c8e4d647306f92badba63",
+      "started_unix": 1792266300.5279422,
+      "status": "VARIABLE_POOL_FULL_STATE_CPU_IMPORT_COMPLETE_NOT_CUDA_ACCEPTANCE"
+    },
+    "all_model_optimizer_scheduler_RNG_pool_grounding_full_SHA_finite_once": true,
+    "old_accepted_pending67_prefix_and_score_preserved": true,
+    "prefixes_or_selection_reexecuted": false,
+    "cuda_acceptance_separate": true
+  },
+  "launch": {
+    "actual_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-fault65-launch-1792266537211133000.json",
+    "actual_once_submit": {
+      "status": "ONCE_LAUNCHED_NOT_TRAINING_ACCEPTANCE",
+      "leader": {
+        "pid": 3143826,
+        "start_ticks": 634612849,
+        "sid": 3143826,
+        "uid": 0,
+        "state": "R",
+        "command": "/data/search-g1/env/bin/python -m reproduction.prefix_selection200.launch run --base /data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-fe7207faf3da498ea3b89bc38c3d6d63 "
+      },
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "source_commit": "eef31859ee20cf536e7c8e4d647306f92badba63",
+      "command": [
+        "/data/search-g1/env/bin/python",
+        "-m",
+        "reproduction.prefix_selection200.launch",
+        "run",
+        "--base",
+        "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-fe7207faf3da498ea3b89bc38c3d6d63"
+      ],
+      "launched_unix": 1792266537.180801,
+      "config_sha256": "20ce81352a7c9498681f84eb3fe03394ffc2d2186e0dd1bb8c1ea8682191b019"
+    },
+    "claims_must_not_be_replayed": true
+  },
+  "real_flow": {
+    "first_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-fault65-observe-1792266728645358000.json",
+    "first_completed_continuations_per_rank": [
+      300,
+      400,
+      300,
+      300
+    ],
+    "second_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-fault65-observe-1792266920304008000.json",
+    "second_completed_continuations_per_rank": [
+      640,
+      640,
+      640,
+      640
+    ],
+    "actual_native_chunked_prefill_per_rank": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "actual_native_prefix_cache_per_rank": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "actual_native_eager_per_rank": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "actual_fourrank_restored_outer": 66,
+    "actual_fourrank_restored_Adam": 1320,
+    "actual_fourrank_restored_scheduler": 66,
+    "actual_fourrank_restored_master_dtype": "torch.float32",
+    "actual_fourrank_restored_LR": 1e-06
+  },
+  "first_complete": {
+    "actual_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-fault65-observe-1792267171955985000.json",
+    "observed_unix": 1792267171.8036244,
+    "completed_outer": 67,
+    "total_actor_Adam_counted_once": 1340,
+    "new_returned_Adam_per_rank": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "opportunities_per_rank": 20,
+    "new_skip_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "scheduler": 67,
+    "actual_LR": 1e-06,
+    "joint_metadata_sha256": "b4fd7da6d5da56cc7e552c518f82ae4b889339f5966bbdc30a791604ad9ee9fa",
+    "independent_checkpoint_tensor_rescan_this_observation": false,
+    "selected_group_counts": {
+      "all_correct": 102,
+      "all_wrong": 314,
+      "mixed": 96,
+      "original_g5": 0
+    },
+    "selected_questions": 512,
+    "selected_trajectories": 2560,
+    "selected_mixed_fraction": 0.1875,
+    "reward_mean": 0.437118659412954,
+    "phase_timings": {
+      "outer-000067-actor-534927b74e894e22b2d2aae2aaf9d037": {
+        "elapsed_seconds": 405.15493859071285,
+        "exit_code": 0
+      },
+      "outer-000067-continue": {
+        "elapsed_seconds": 93.47380905225873,
+        "exit_code": 0
+      }
+    },
+    "probe_actual_steps_per_rank": [
+      300,
+      300,
+      300,
+      300
+    ],
+    "probe_latest_update_outer": 60,
+    "probe_model_payload_sha256": "85b85c4a29761b2fdb91ac86516bdd8534394721da821b5473b984a97bedb1b5"
+  },
+  "same_pipeline_next": {
+    "outer": 68,
+    "stage": {
+      "checked_unix": 1792267163.0748553,
+      "outer": 68,
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "stage": "outer-000068-prefix"
+    },
+    "pipeline": {
+      "pid": 3143826,
+      "start_ticks": 634612849,
+      "sid": 3143826,
+      "uid": 0,
+      "alive": true
+    },
+    "prefix_ranks": [
+      null,
+      null,
+      null,
+      null
+    ],
+    "complete68_claimed": false,
+    "actor68_attempt_recorded": false,
+    "unconfirmed_updates_and_inflight": "unknown; no new confirmed returned beyond1340"
+  },
+  "scores": {
+    "latest_QA_step": 50,
+    "QA_EM": 0.44140625,
+    "QA_F1": 0.5276351354935914,
+    "latest_probe_update_outer": 60,
+    "test_mixed_balanced_accuracy": 0.5167476824182538,
+    "no_new_QA_or_probe_metrics": true,
+    "selected_mixed_is_not_classifier_accuracy": true
+  },
+  "history_segments": {
+    "ordinary_candidate5120_from_outer": 6,
+    "prior_cache_off_from_outer": 65,
+    "new_chunked_prefill_off_from_outer": 67,
+    "reused67_prefix_was_original_parent_source": true,
+    "previous66_selected_mixed": 0.203125,
+    "new67_selected_mixed": 0.1875,
+    "change_pp": -1.5625
+  },
+  "future": {
+    "total_target_outers": 200,
+    "first_required_recovery_acceptance_complete": true,
+    "next_normal_metadata_check_not_before_unix": 1792268971.8036244,
+    "monitor": "ACTIVE",
+    "remaining_grounding": [
+      100,
+      150
+    ],
+    "probe_updates": "70,80,...190; no200",
+    "completion_requires": "full1..200 validchain/statefiniteSHA, milestones, final51713 strictEM/F1 sevenSourcesNQ3610 and only-owned cleanup",
+    "historical_other_goals_untouched": true,
+    "source_switch_delivered_anchor_pending": true
+  },
+  "GPU_current_window_execution_peak": {
+    "status": "unknown_not_projected",
+    "no_additional_GPU_query": true
+  },
+  "artifact_policy": "All model/tensor/optimizer/rawQA/token/rollout and full outputs remain remote; only code/config/scalar/hash documents are public and local. No subagents, extra GPU tests, extra evaluation, probability readback, credential publication or foreign process changes."
+}
