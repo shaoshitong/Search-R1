@@ -99,7 +99,8 @@ def bind(base, run_id, training_commit, source_job):
     return run, [manifest_record, allocation_record]
 
 
-def pool_evidence(base, run, update, source_job):
+def selection_pool(base, run, update):
+    """Cheap exact pool binding; it never authorizes deletion by itself."""
     attempt = update['attempt_id']; step = update['step']
     require(re.fullmatch('[0-9a-f]{32}', attempt), 'INVALID_ATTEMPT_ID')
     audit_record, audit = read_file(base, 'artifacts/mixed-selection/' + attempt + '.json', parse_json=True)
@@ -114,6 +115,14 @@ def pool_evidence(base, run, update, source_job):
     pool = checked_path(base, relative, directory=True)
     require(audit['pool_path'] == str(pool) and not (pool/'selection-failure.json').exists(),
             'FAILED_OR_FOREIGN_POOL')
+    return audit_record, audit, relative
+
+
+def pool_evidence(base, run, update, source_job):
+    attempt = update['attempt_id']; step = update['step']
+    audit_record, audit, relative = selection_pool(base, run, update)
+    snapshot = run['run_id'] + ':' + str(step) + ':policy-' + attempt
+    retry = audit['pool_retry']
     groups = audit['groups']
     require([g['ordinal'] for g in groups] == list(range(2560)), 'INCOMPLETE_SELECTION_GROUPS')
     mixed = []; correct = []; all_ids = []; selected = []
@@ -175,6 +184,20 @@ def build_plan(base, run_id, training_commit, source_job, keep_completed=2):
         if not is_full_success(update):
             skipped.append(dict(step=update['step'], reason='partial_or_nonfull_update_preserved')); continue
         try:
+            # Completed old pools are immutable. Once all five target paths are
+            # absent, there is no deletion to authorize and no free-byte claim
+            # to make. Avoid repeatedly hashing their large selected traces.
+            _, _, relative = selection_pool(base, run, update)
+            states = []
+            for name in RAW_NAMES:
+                try: states.append((name, (base/relative/name).lstat()))
+                except FileNotFoundError: states.append((name, None))
+            if all(value is None for _, value in states):
+                skipped.append(dict(step=update['step'],
+                    reason='all_five_raw_absent_no_new_retirement_or_free_byte_claim')); continue
+            require(all(value is not None for _, value in states), 'PARTIAL_RAW_SET_PRESERVED')
+            require(all(stat.S_ISREG(value.st_mode) and value.st_uid == os.getuid() and value.st_nlink == 1
+                        for _, value in states), 'ABNORMAL_RAW_SET_PRESERVED')
             pool = pool_evidence(base, run, update, source_job)
             files = [read_file(base, pool['pool_relative_path'] + '/' + name)[0] for name in RAW_NAMES]
             require(all(record['links'] == 1 for record in files), 'RAW_HARDLINK_NOT_UNIQUE')

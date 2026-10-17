@@ -172,5 +172,31 @@ class RetirementTests(unittest.TestCase):
         self.assertEqual(result['unconfirmed_prior_unlink_bytes'], record['bytes'])
         self.assertEqual(len(result['actions']), 10)
 
+    def test_all_absent_skips_large_trace_hash_without_claiming_history_or_freed_bytes(self):
+        for step in (1, 2):
+            for name in core.RAW_NAMES: (self.base/self.pools[step]/name).unlink()
+        original = core.read_file
+        def cheap_only(base, relative, **kwargs):
+            self.assertNotIn('behavior-traces', str(relative))
+            self.assertNotIn('generation.pt', str(relative))
+            self.assertNotIn('worker-rng', str(relative))
+            return original(base, relative, **kwargs)
+        with patch.object(core, 'read_file', side_effect=cheap_only): plan = self.plan()
+        self.assertEqual(plan['pools'], []); self.assertEqual(plan['removable_logical_bytes'], 0)
+        self.assertTrue(all(row['reason'] == 'all_five_raw_absent_no_new_retirement_or_free_byte_claim'
+                            for row in plan['skipped']))
+
+    def test_partial_missing_set_is_abnormal_and_preserves_other_four_without_trace_hash(self):
+        (self.base/self.pools[1]/'512.pt').unlink()
+        original = core.pool_evidence
+        def guard(base, run, update, job):
+            self.assertNotEqual(update['step'], 1)
+            return original(base, run, update, job)
+        with patch.object(core, 'pool_evidence', side_effect=guard): plan = self.plan()
+        self.assertEqual([pool['step'] for pool in plan['pools']], [2])
+        self.assertIn('PARTIAL_RAW_SET_PRESERVED', plan['skipped'][0]['reason'])
+        for name in ('0.pt', '1024.pt', '1536.pt', '2048.pt'):
+            self.assertTrue((self.base/self.pools[1]/name).exists())
+
 
 if __name__ == '__main__': unittest.main()
