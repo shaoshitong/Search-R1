@@ -1,3 +1,24 @@
+## Actual50 QA and full checkpoint readback
+
+Same3430 completed51/200 and entered52 prefix at the latest native read. All24 original actor ledgers49-51 have20 writes each; actor1020/probe200 actual Adam per each8rank. Probe remains frozen from40 until60 at LR1e-5. Frozen runtimeC22 is unchanged.
+
+ScheduledQA50 completed all512 questions with8 actual worker exit0. The original fixed512 questionSHA and legacy pre-d00 async FP32/raw500/noanswerreserve/noearlyfinal contract exactly matchQA5.
+
+|Fixed512 QA|Outer5|Outer50|Change|
+|---|---:|---:|---:|
+|EM|23.6328% (121/512)|26.1719% (134/512)|+2.5391 pp /13 answers|
+|F1|29.2783%|32.3751%|+3.0968 pp|
+
+Outer50 NQ256 EM28.9063%/F138.6230%, Hotpot256 EM23.4375%/F126.1272%. This is observed within-run validation progress, not isolated evidence for a probe/LR/selection benefit or the final51713 result. QA-pending is empty.
+
+Normal50 CPU inspection independently read all24 checkpoint files/39226487488B and actually loaded model-associated optimizer/scheduler/RNG and complete probe states: actor1000/probe200 per8rank, scheduler50, committedpool256000/next51. Driver auxiliary probe now equals the authentic pre-selectionprobe40 receipt; the earlier reference-path fix is reflected in the actual save. Source proof19ced04cb721c987b6855c0d27635674ca6c0c3703dfed7d9fd4e2a00278d716 was separately read in full14143B. ScheduledQA provides the actual actorHF GPU load/generation; the CPU proof does not claim CUDA RNG application or an independent copy.
+
+Independent50 backup was admitted once on h100-10 localext4:152files/39421836944B,20MiB/s copy and destination reads,128GiB ordinary reserve. PID395412/startticks1925727569, namespace a008d7ce9833-outer-0050-once-v1. Started is not completed: full source/destination SHA result, final directory and original birth gone are pending, semantic_reload=false/all_experiment_backup_complete=false. Source originals and training continue; no model bytes transitMac. Latest restore candidate is51 or actual newer, never50 merely because it was audited. Full200/final51713/later checkpoints/retention/exitcleanup remain unfinished.
+
+Small complete metrics and proof summary: qa50-checkpoint50-readback.json.
+
+---
+
 ## XFormers recovery actually accepted: complete48 and real49 generation
 
 Same3430/h100-8 completed44-48 continuously from the genuine43 model/Adam/RNG state. All40 original actor rank ledgers were independently read:20 writes per outer/rank,100 new writes/rank across these five, ending960/rank; first44 restored860/scheduler43 on all8 ranks. Probe remains200/rank from40, correctly frozen until60 at LR1e-5. All40 native layer27 capture receipts have no independent encoder. Real49 has already generated prefixes. Personal readonly observer27538 naturally exited0 after acceptance; production continues200/no201.

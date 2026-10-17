@@ -1,0 +1,187 @@
+{
+  "job": "3430",
+  "runtime": "c22dbf86664bcc4da86aecd702fbaaea9c381551",
+  "qa50": {
+    "actor_model_dir": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/actor/outers/outer-0050-attempt-6540f91e1d5f44af8777ac37d26b9036/huggingface",
+    "actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0050",
+    "actual_worker_exit_codes": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    },
+    "completed_utc": "2026-10-17T00:15:31.225186+00:00",
+    "em": 0.26171875,
+    "evaluation_contract": {
+      "answer_reserve_tokens": 0,
+      "asynchronous_generation": true,
+      "compute_dtype": "float32",
+      "early_final": false,
+      "kind": "legacy_pre_d00_async_fp32",
+      "max_action_tokens": 500,
+      "max_model_tokens": 4596,
+      "max_observation_tokens": 500,
+      "max_request_tokens": 4096,
+      "max_search_turns": 4,
+      "max_start_tokens": 2048,
+      "n": 1,
+      "observation_truncation": "raw_token_ids_first500_without_wrapper_repair",
+      "retain_async_commit": "1f75a18",
+      "rollback_commits": [
+        "d00e4f8",
+        "a8c3116"
+      ],
+      "temperature": 0.0,
+      "top_k": -1,
+      "top_p": 1.0
+    },
+    "f1": 0.32375104279401157,
+    "per_source": {
+      "hotpotqa": {
+        "em": 0.234375,
+        "f1": 0.2612723214285714,
+        "qa_count": 256
+      },
+      "nq": {
+        "em": 0.2890625,
+        "f1": 0.3862297641594517,
+        "qa_count": 256
+      }
+    },
+    "qa_count": 512,
+    "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+    "schema_version": 1
+  },
+  "qa5": {
+    "actor_model_dir": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-20261016-a008d7ce9833-resume2/actor/outers/outer-0005-attempt-c70eb666fc794cf786ebac2f8006a640/huggingface",
+    "actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0005",
+    "actual_worker_exit_codes": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    },
+    "completed_utc": "2026-10-16T16:51:03.630172+00:00",
+    "em": 0.236328125,
+    "evaluation_contract": {
+      "answer_reserve_tokens": 0,
+      "asynchronous_generation": true,
+      "compute_dtype": "float32",
+      "early_final": false,
+      "kind": "legacy_pre_d00_async_fp32",
+      "max_action_tokens": 500,
+      "max_model_tokens": 4596,
+      "max_observation_tokens": 500,
+      "max_request_tokens": 4096,
+      "max_search_turns": 4,
+      "max_start_tokens": 2048,
+      "n": 1,
+      "observation_truncation": "raw_token_ids_first500_without_wrapper_repair",
+      "retain_async_commit": "1f75a18",
+      "rollback_commits": [
+        "d00e4f8",
+        "a8c3116"
+      ],
+      "temperature": 0.0,
+      "top_k": -1,
+      "top_p": 1.0
+    },
+    "f1": 0.292782738095238,
+    "per_source": {
+      "hotpotqa": {
+        "em": 0.19921875,
+        "f1": 0.2238374255952381,
+        "qa_count": 256
+      },
+      "nq": {
+        "em": 0.2734375,
+        "f1": 0.36172805059523805,
+        "qa_count": 256
+      }
+    },
+    "qa_count": 512,
+    "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+    "schema_version": 1
+  },
+  "same_question_hash_and_evaluation_contract": true,
+  "qa50_eight_workers_exit0": true,
+  "delta_em_percentage_points": 2.5390625,
+  "delta_f1_percentage_points": 3.096830469877354,
+  "additional_exact_answers": 13,
+  "checkpoint50": {
+    "proof": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/preparation/joint-native-0050-independent-full-sha-cpu.json",
+    "proof_bytes": 14143,
+    "full_proof_reader_sha256": "19ced04cb721c987b6855c0d27635674ca6c0c3703dfed7d9fd4e2a00278d716",
+    "status": "NATIVE_ACTOR_PERIODIC_PROBE_JOINT_FULL_SHA_CPU_PASS",
+    "outer": 50,
+    "actor_adam_per_rank": [
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "probe_adam_per_rank": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200
+    ],
+    "files_count": 24,
+    "independent_full_file_sha_all": true,
+    "checkpoint_bytes": 39226487488,
+    "pool_next_outer": 51,
+    "pool_consumed_candidates": 256000,
+    "driver_aux_matches_actual_selection": true,
+    "actual_selected_probe": {
+      "actual_adam_steps_per_rank": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ],
+      "binding_sha256": "87d9a2b2ae97269bb41521ea98c236b04d11af642aa2f0b1df76fa67e9a74442",
+      "bytes": 932251350,
+      "completed_outer": 40,
+      "learning_rate": 1e-05,
+      "observed_utc": "2026-10-16T22:34:32.015075+00:00",
+      "run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+      "sha256": "33c7e662857511b34d041d0b9a483896ba0358c1145b5333d04d120f18c5fe3c"
+    },
+    "gpu_forward_performed": false,
+    "cuda_rng_applied": false,
+    "independent_backup_performed": false
+  },
+  "checkpoint50_small_proof_original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden3430-cp50-small-proof-20261017T002441565864Z-actual.json",
+  "checkpoint50_small_proof_original_sha256": "6ba2aa7fa6ae9a28ee1ebc87e327751fa138d836cf70c8931c14f25478e8723f",
+  "qa50_original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden3430-qa50-20261017T002253684614Z-actual.json",
+  "qa50_original_sha256": "8bd9e006e54d4d370b02f717d64a73dd485f5efd90d373f188996079133fbf5b",
+  "backup50_status": "INDEPENDENT_COPY_STARTED_NOT_COMPLETE",
+  "backup50_namespace": "/mnt/data/shaoshitong/search-g1-prefix-selection200-independent-backup-20261016/a008d7ce9833-outer-0050-once-v1",
+  "backup50_pid": 395412,
+  "backup50_start_ticks": 1925727569,
+  "no_isolated_probe_or_lr_causal_claim": true,
+  "full200_and_final51713_complete": false,
+  "large_tensor_transit_mac": false
+}
