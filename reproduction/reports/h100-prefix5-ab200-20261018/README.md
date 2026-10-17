@@ -1,7 +1,9 @@
 # Prefix5 A/B on h100-11: actual progress
 
-Both independent four-card native runs have completed **2/200 outers** and
-continued to outer3. The user authorized moving from h100-8 to the node with
+Latest verified: both independent four-card native runs have completed
+**10/200 outers** and continued to outer11. The older per-outer tables below are
+historical measurements; see `period10-paired-results.md` for the first fresh
+paired diagnostic. The user authorized moving from h100-8 to the node with
 most actual VRAM headroom, and reducing local micro-batch with accumulation.
 Current deployed runtime is `2e3976230ac9425d66d8553afa9962821e964932`.
 Later report/operation commits do not modify that runtime.
@@ -225,3 +227,25 @@ The original single observer still verifies complete joints and actual score11.
 ### Both ten complete: first fresh paired periodic result
 
 See [period10 paired results](period10-paired-results.md) and the small JSONs for all4-rank actual clocks, original-group metrics,50 globally reduced loss updates, sampling multiplicities summary, and full wall times. Both actor200/rank, Aprobe0, Bprobe/EMA140. Same runtime2e397623; no restart or scientific change. Actual outer11 score adoption is checked separately by the sole existing observer. Full200 and final QA obligations remain incomplete.
+
+## Actual outer11 selection and continued normal follow-up
+
+`score11-ema-adoption.json` records the actual selection receipts: frozen A
+uses its unchanged warmup head with zero online updates; B uses EMA140 from
+its completed outer10 checkpoint, not the raw trainable head. The head hashes
+match the actual preceding joint receipts. These metadata fields are in
+`selection.json`, not `manifest.json`; the previous monitor queried the latter
+and printed null. This was an observation coverage issue, not a training change.
+The frozen scoring code explicitly loads `ema_model` for balanced B. No tensor
+readback or new forward pass was performed for this metadata reconciliation.
+
+The old through10 observer exited naturally. The replacement read-only
+`follow_h10011_ab_normal_boundary` follows the same native leaders at five-minute
+intervals, validates only newly completed original rank journals, and stops for
+root attention when both normal50 savepoints exist or an actual native handle
+is missing/terminal. QA50, grounding50 adoption, normal checkpoint acceptance
+and all later requirements remain separate obligations; observing50 is not
+goal completion. No duplicate trainer, new GPU gate, or runtime deployment is
+introduced. The current run still uses its existing source8-dependent mount;
+the separately verified retained-input bootstrap is prepared for a necessary
+future full-boundary handoff, not hot-swapped into a live process.
