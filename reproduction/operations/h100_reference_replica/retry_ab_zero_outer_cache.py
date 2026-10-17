@@ -65,10 +65,13 @@ def prepare_retry(source,staged_repo,commit,slot,cache,output_parent=None,fault_
     if fault_kind=='kv_profile_capacity':log_paths+=list((source/'outers/outer-000001/prefix').glob('rank-*.log'))
     for path in sorted(log_paths):
         st=path.stat();logs.append(dict(path=str(path),dev=st.st_dev,inode=st.st_ino,bytes=st.st_size,sha256=sha(path)))
-    proof=dict(status='ACTUAL_ZERO_OUTER_HF_CACHE_FAULT_OWNED_GONE_EXISTING_CORPUS_REUSED',
+    proof=dict(status=('ACTUAL_ZERO_OUTER_HF_CACHE_FAULT_OWNED_GONE_EXISTING_CORPUS_REUSED' if fault_kind=='cache_space'
+                       else 'ACTUAL_ZERO_OUTER_KV_CAPACITY_FAULT_PENDING_CANDIDATES_RETAINED'),
         source_base=str(source),fault_kind=fault_kind,original_logs_full_sha=logs,cleanup=cleanup,second_actual_owned_birth_check=[],
         old_native_leader_state=leader_state,
-        actor_actual_writes=0,probe_actual_writes=0,pool_consumed=0,original_head=head,
+        actor_actual_writes=0,probe_actual_writes=0,
+        pool_consumed=read(source/'question-pool/state.json')['consumed_candidates'] if (source/'question-pool/state.json').exists() else 0,
+        original_head=head,
         corpus_cache=str(cache),corpus_provenance=corpus_proof,documents=len(data),
         arrow_files=[dict(path=row['filename'],bytes=Path(row['filename']).stat().st_size)for row in data.cache_files],
         checked_unix=time.time(),new_rollout_or_gpu_forward=False)
@@ -88,7 +91,7 @@ def prepare_retry(source,staged_repo,commit,slot,cache,output_parent=None,fault_
         zero_outer_cache_fault_proof_sha256=sha(source/'preparation/zero-outer-cache-fault-proof.json'))
     if fault_kind=='kv_profile_capacity':
         c.update(rollout_max_num_seqs=256,rollout_max_batched_tokens=8192,
-                 actual_kv_profile_capacity_repair=True,
+                 actual_kv_profile_capacity_repair=True,startup_fault_kind=fault_kind,
                  unchanged_generation_budget_and_sampling_parameters=True)
     template=source/'preparation/cache-repair-config-template.json';once(template,c)
     prepared=prepare(template,staged_repo,commit,slot)
