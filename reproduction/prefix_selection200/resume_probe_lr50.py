@@ -106,7 +106,8 @@ def import_complete50(base):
     if sha(terminal) != spec['terminal_proof_sha256'] or sha(cpu) != spec['checkpoint_cpu_proof_sha256']:
         raise ValueError('Terminal or independently verified50 proof changed')
     ended, checked = read(terminal), read(cpu)
-    if (ended['actual_births_present'] or ended['native_job_cgroup_paths'] or ended['owned_gpu']
+    if (ended.get('status') != 'HUMAN_STOP_ORIGINAL_INODE_FULL_SHA_OWNED_RELEASED'
+            or ended['actual_births_present'] or ended['native_job_cgroup_paths'] or ended['owned_gpu']
             or ended['run_id'] != config['run_id'] or ended['job_id'] != str(spec['source_job_id'])
             or ended['latest_complete_outer'] < 50
             or checked['status'] != 'NATIVE_ACTOR_PERIODIC_PROBE_JOINT_FULL_SHA_CPU_PASS'
