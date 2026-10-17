@@ -186,3 +186,19 @@ claim 和归档 payload 创建之前；第 5 轮已验收归档保留，训练�
 `archive727586-step50-recovery-evidence-1792205540.json`；精确恢复绑定在
 同目录代码文件 `archive727586-step50-recovery.json`。修复后的实际远端
 第 50 轮归档仍须取得传输和 SHA 验收记录，不能由 CPU 测试代替。
+
+2026-10-17 11:18 CST 后续实测：修复源码
+`c713d232af434a02246b5e4a6fb1368e9fa31cd3` 已推送并以独立新归档进程运行。
+第 50 轮 58 个文件、48,561,312,798 字节已完成源文件完整 SHA、HKUST3
+传输与完整 SHA/fsync、源文件再次完整 SHA 验收，实际 accept worker
+退出 0；新传输 42,003,723,054 字节，其余已验证依赖通过硬链接复用。
+源文件保留，第 5 轮既有归档未重传。完整收据 SHA 为
+`8418b4d1e4e3e58842012a935bea69c2d682ebffd85a1f155c600c5a10743807`。
+小型验收摘要为 `checkpoint50-archive-acceptance-summary.json`，实际
+CUDA 恢复仍为未验收。
+
+同一 GPU 作业已完整结束第 53 轮，第 54 轮开始；四个 rank 实测均为
+actor Adam1060 步、scheduler last_epoch53、探针 Adam530 步，无新的
+pipeline-error、training-return 或 cleanup 记录。归档进程已验收
+`[5, 50]`，正在等待第 100 轮。训练源码继续保持 `478f463`，本次未重启
+或热改训练。最终 200 轮及实际四卡恢复仍须按原目标完成。
