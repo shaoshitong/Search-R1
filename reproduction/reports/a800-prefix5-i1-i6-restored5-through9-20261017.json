@@ -1,0 +1,402 @@
+{
+  "role": "actual_five_consecutive_restored_outers_and_natural_period10_progress",
+  "date": "2026-10-17",
+  "observed_unix": 1792225141.10343,
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "a4a0c2a18cca40bc8c3850d40eed8554",
+  "runtime_source_commit": "75d536575593891876df339467da73b3c4cbdc7c",
+  "operator_commit": "e2c1353c7b6021eb121056ec98489efe07b8feeb",
+  "pipeline_identity": {
+    "pid": 2460812,
+    "start_ticks": 630157154,
+    "sid": 2460812,
+    "uid": 0,
+    "alive": true
+  },
+  "native_receipt_sha256": "cef5d12bcecc31e0dcce4bf3f66f648149f1651be449ce1a48acf95861dbeb7d",
+  "completed_outers": 9,
+  "total_budget_outers": 200,
+  "actual_actor_Adam_per_rank": [
+    180,
+    180,
+    180,
+    180
+  ],
+  "four_rank_replicas_count_once": 180,
+  "complete_restore_boundary": {
+    "outer": 4,
+    "actor_Adam": 80
+  },
+  "new_complete_outers_after_resume": 5,
+  "new_successful_Adam_after_resume": 100,
+  "restored_complete_history": [
+    {
+      "outer": 5,
+      "metadata_sha256": "bbd15c64757c39477b18f46ea2af3046fd26bebab36df174ff1a6c6921d003ce",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          100,
+          100,
+          100,
+          100
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 5,
+        "learning_rate_used": 7.017543859649122e-08,
+        "next_learning_rate": 8.771929824561403e-08
+      },
+      "probe": {
+        "completed_outer": 0,
+        "actual_adam_steps_per_rank": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sha256": "79367d33e065cbb9e49a58e5d1469a1b4a9f17815aa16fe769bb360f02d65d98"
+      },
+      "candidate_schedule": {}
+    },
+    {
+      "outer": 6,
+      "metadata_sha256": "d63c777324491bc03e95d953b270aac4198df5608ec8b8c6a292b83e949913c9",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          120,
+          120,
+          120,
+          120
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 6,
+        "learning_rate_used": 8.771929824561403e-08,
+        "next_learning_rate": 1.0526315789473683e-07
+      },
+      "probe": {
+        "completed_outer": 0,
+        "actual_adam_steps_per_rank": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sha256": "79367d33e065cbb9e49a58e5d1469a1b4a9f17815aa16fe769bb360f02d65d98"
+      },
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 7,
+      "metadata_sha256": "8141312b173805fd42db14d51cdb6ec1763dbad03db66b4f890833a8b56dee08",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          140,
+          140,
+          140,
+          140
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 7,
+        "learning_rate_used": 1.0526315789473683e-07,
+        "next_learning_rate": 1.2280701754385964e-07
+      },
+      "probe": {
+        "completed_outer": 0,
+        "actual_adam_steps_per_rank": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sha256": "79367d33e065cbb9e49a58e5d1469a1b4a9f17815aa16fe769bb360f02d65d98"
+      },
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 8,
+      "metadata_sha256": "18dc95c654c02b3e9d81e324c37686c2c956f9f40b4ba01a35ea49ef39269b21",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          160,
+          160,
+          160,
+          160
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 8,
+        "learning_rate_used": 1.2280701754385964e-07,
+        "next_learning_rate": 1.4035087719298244e-07
+      },
+      "probe": {
+        "completed_outer": 0,
+        "actual_adam_steps_per_rank": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sha256": "79367d33e065cbb9e49a58e5d1469a1b4a9f17815aa16fe769bb360f02d65d98"
+      },
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 9,
+      "metadata_sha256": "b8334e4bce75e511a4587e0db7cc1f13faab65d2bf32521fb0dfb303a3e8380a",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          180,
+          180,
+          180,
+          180
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 9,
+        "learning_rate_used": 1.4035087719298244e-07,
+        "next_learning_rate": 1.5789473684210525e-07
+      },
+      "probe": {
+        "completed_outer": 0,
+        "actual_adam_steps_per_rank": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sha256": "79367d33e065cbb9e49a58e5d1469a1b4a9f17815aa16fe769bb360f02d65d98"
+      },
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    }
+  ],
+  "same_pipeline_next_outer": 10,
+  "next_stage": "outer-000010-complete-unselected-pool",
+  "period10_actual_counts": {
+    "selection.json": {
+      "outer": 10,
+      "questions": 2560,
+      "trajectories": 12800,
+      "scheduled_candidate_questions": 2560
+    },
+    "prefix/complete.json": {
+      "outer": 10,
+      "questions": 2560,
+      "trajectories": 12800,
+      "scheduled_candidate_questions": 2560
+    },
+    "probe-score/selection.json": {
+      "outer": 10,
+      "candidate_questions": 2560,
+      "scheduled_candidate_questions": 2560,
+      "selected_questions": 512
+    }
+  },
+  "period10_all_full_trajectories_status": "still_generating_no_complete_metadata_yet",
+  "period10_actor_updates_status": "not_yet_recorded_in_this_capture",
+  "period10_probe50_update_status": "pending_not_claimed_as_completed",
+  "probe_state": {
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+    "completed_outer": 0,
+    "actual_adam_steps_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "bytes": 310593678,
+    "sha256": "79367d33e065cbb9e49a58e5d1469a1b4a9f17815aa16fe769bb360f02d65d98",
+    "binding_sha256": "75f2a943187027a7d49ebefac8b093e57cdb19da2d1dd754ae4ccbc9888228cc"
+  },
+  "existing_QA5": {
+    "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0005",
+    "qa_count": 512,
+    "em": 0.265625,
+    "f1": 0.36065851672240307,
+    "per_source": {
+      "hotpotqa": {
+        "em": 0.28125,
+        "f1": 0.342541094519571,
+        "qa_count": 256
+      },
+      "nq": {
+        "em": 0.25,
+        "f1": 0.37877593892523514,
+        "qa_count": 256
+      }
+    },
+    "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "interaction_protocol": {
+      "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+      "actor_loss_dtype": "float32",
+      "actor_master_dtype": "float32",
+      "answer_reserve_tokens": 500,
+      "asynchronous_generation": true,
+      "compute_dtype": "bfloat16",
+      "early_final": true,
+      "kind": "shared_new_context_stream_bf16",
+      "max_action_tokens": 500,
+      "max_context_tokens": 4096,
+      "max_model_tokens": 4096,
+      "max_observation_tokens": 500,
+      "max_request_tokens": 3596,
+      "max_search_turns": 4,
+      "max_start_tokens": 2048,
+      "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+      "natural_eos": "terminal_without_environment_correction",
+      "observation_truncation": "clip_before_input_preserve_information_wrapper",
+      "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+      "train_compute_dtype": "bfloat16"
+    },
+    "actual_compute_dtype": "torch.bfloat16",
+    "metadata_sha256": "6e8a41fc0a41cfaf970f81a9fcb3ccb934562c19f9babe3ffc059e957e1a01db"
+  },
+  "retained_probe_initialization": true,
+  "new_probe_warmup": false,
+  "actor_probe_Adam_scheduler_rng_reset": false,
+  "candidate_schedule_effective_from_outer": 6,
+  "selected_mixed_existing_complete_groups": [
+    {
+      "outer": 5,
+      "mixed": 412,
+      "groups": 512,
+      "fraction": 0.8046875,
+      "candidate_questions": 2560
+    },
+    {
+      "outer": 6,
+      "mixed": 396,
+      "groups": 512,
+      "fraction": 0.7734375,
+      "candidate_questions": 5120
+    },
+    {
+      "outer": 7,
+      "mixed": 388,
+      "groups": 512,
+      "fraction": 0.7578125,
+      "candidate_questions": 5120
+    },
+    {
+      "outer": 8,
+      "mixed": 364,
+      "groups": 512,
+      "fraction": 0.7109375,
+      "candidate_questions": 5120
+    },
+    {
+      "outer": 9,
+      "mixed": 366,
+      "groups": 512,
+      "fraction": 0.71484375,
+      "candidate_questions": 5120
+    }
+  ],
+  "new_evaluation_added": false,
+  "new_GPU_test_or_review": false,
+  "subagents_called_this_turn": false,
+  "errors_or_failed_jobs_recorded": false,
+  "formal_training_still_active": true,
+  "grounding50_100_150_actual_refresh_status": "future_pending_at_scheduled_boundaries_not_claimed_verified",
+  "final200_state_and_evaluation_status": "not_complete"
+}
