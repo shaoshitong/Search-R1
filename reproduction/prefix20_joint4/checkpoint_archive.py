@@ -382,8 +382,19 @@ def validate_reward(receipt, reward, base, run_id, step):
             re.fullmatch('global_step_(5|50|100|150|200)', encoder.name) is not None and
             int(encoder.name.split('_')[-1]) <= step, 'REWARD_ENCODER_PATH_DIFFERS')
     hashes = reward.get('encoder_sha256')
-    essential = set(MODEL_SHA256) - {'vocab.json', 'merges.txt', 'generation_config.json'}
-    need(isinstance(hashes, dict) and essential <= set(hashes) <= set(MODEL_SHA256), 'REWARD_ENCODER_FILE_SET_DIFFERS')
+    need(isinstance(hashes, dict), 'REWARD_ENCODER_FILE_SET_DIFFERS')
+    if encoder == MODEL:
+        essential = set(MODEL_SHA256) - {'vocab.json', 'merges.txt', 'generation_config.json'}
+        need(essential <= set(hashes) <= set(MODEL_SHA256), 'REWARD_ENCODER_FILE_SET_DIFFERS')
+    else:
+        # Actor checkpoints can be re-sharded by save_pretrained (the actual
+        # round50 producer has three shards; the frozen model has two). The
+        # saved index, read below on source and archive, owns that inventory.
+        metadata = {'config.json', 'model.safetensors.index.json', 'tokenizer.json', 'tokenizer_config.json'}
+        shards = set(hashes) - metadata
+        need(metadata <= set(hashes) and shards and all(isinstance(name, str) and
+            str(relative(name)) == name and '/' not in name and name.endswith('.safetensors')
+            for name in shards), 'REWARD_ENCODER_FILE_SET_DIFFERS')
     for name, digest in hashes.items():
         digest_text(digest)
         if encoder == MODEL:
@@ -395,6 +406,21 @@ def validate_reward(receipt, reward, base, run_id, step):
         need(path not in actual, 'DUPLICATE_REWARD_FILE')
         actual[path] = row['full_read_sha256']
     need(actual == expected, 'REWARD_HEAD_OR_ENCODER_CLOSURE_INCOMPLETE')
+
+
+def _check_reward_encoder_index(reward, locate=lambda path: Path(path)):
+    """Bind refitted reward bytes to their saved HF index, not initial sharding."""
+    encoder = Path(reward['encoder'])
+    if encoder == MODEL:
+        return
+    index = _read_json(locate(encoder/'model.safetensors.index.json'))
+    weights = index.get('weight_map')
+    need(isinstance(weights, dict) and weights and all(isinstance(key, str) and key and
+        isinstance(name, str) and str(relative(name)) == name and '/' not in name and
+        name.endswith('.safetensors') for key, name in weights.items()), 'REWARD_ENCODER_INDEX_INVALID')
+    names = set(weights.values()) | {'config.json', 'model.safetensors.index.json',
+                                    'tokenizer.json', 'tokenizer_config.json'}
+    need(set(reward['encoder_sha256']) == names, 'REWARD_ENCODER_INDEX_FILE_SET_DIFFERS')
 
 
 def dependency_spec(base, run):
@@ -518,6 +544,7 @@ def _check_source_documents(snapshot):
     need(_read_json(run_path) == snapshot['run_manifest'], 'FROZEN_RUN_DOCUMENT_CHANGED')
     reward_path = snapshot['pair_receipt']['reward_probe_manifest']['path']
     need(_read_json(reward_path) == snapshot['reward_manifest'], 'FROZEN_REWARD_DOCUMENT_CHANGED')
+    _check_reward_encoder_index(snapshot['reward_manifest'])
     for role, dep in snapshot['dependencies'].items():
         bound = Path(dep['bound_path'])
         if role.startswith('canonical_data/') and bound.name in LINKED_DATA_NAMES:
@@ -540,6 +567,7 @@ def snapshot(base, step, *, commit, run_id):
     reward = _read_json(reward_path)
     rows = producer_rows(receipt, base)
     validate_pair(receipt, run, reward, base, commit, run_id, step)
+    _check_reward_encoder_index(reward)
     cp = checkpoint_path(base, step)
     exact_tree(cp, [r['relative_path'] for r in receipt['files']])
     index = _read_json(cp/'model.safetensors.index.json')
@@ -645,6 +673,7 @@ def archive_readback(directory, snapshot_path, expected_sha, *, base, commit, ru
          'ARCHIVED_FROZEN_RUN_DOCUMENT_DIFFERS')
     need(_read_json(archived(value['pair_receipt']['reward_probe_manifest']['path'])) == value['reward_manifest'],
          'ARCHIVED_FROZEN_REWARD_DOCUMENT_DIFFERS')
+    _check_reward_encoder_index(value['reward_manifest'], archived)
     exact_tree(directory/'payload', names)
     for name in sorted(dirs, key=lambda p: (len(PurePosixPath(p).parts), p), reverse=True):
         fsync_directory(directory/'payload'/name)

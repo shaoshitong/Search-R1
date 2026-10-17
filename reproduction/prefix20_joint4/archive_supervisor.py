@@ -30,6 +30,18 @@ HPC_IDENTITY = dict(hostname='ACD-Login-1', boot_id='a27512a3-24a0-4ca3-aa92-98d
 KNOWN_HOSTS = '/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts'
 PEER = 'jxu957@10.120.48.31'
 BUNDLE_NAMES = ('checkpoint_archive.py', 'archive_supervisor.py', 'archive_controller.py')
+SNAPSHOT_VALIDATION_RECOVERY = 'terminal_reward_encoder_snapshot_validation'
+
+
+def recovery_controller_root(job_root, recovery):
+    """A failed recovery has its own immutable child, never the old claim."""
+    old_root=Path(recovery.get('old_controller_root',job_root))
+    if recovery.get('reason')==SNAPSHOT_VALIDATION_RECOVERY:
+        core.absolute(str(old_root))
+        core.need(old_root==job_root or core.under(old_root,job_root),'RECOVERY_OLD_ROOT_OUTSIDE_JOB')
+        relative=old_root.relative_to(job_root)
+        core.need(all(re.fullmatch('recovery-[0-9a-f]{40}',part) for part in relative.parts),'RECOVERY_OLD_ROOT_INVALID')
+    return old_root/('recovery-'+recovery['old_code_commit'])
 
 
 def identity(pid=None):
@@ -97,22 +109,37 @@ def validate_config(value):
     if recovery is not None:
         core.need(isinstance(recovery,dict),'CONTROLLER_RECOVERY_BINDING_INVALID')
         collision=recovery.get('reason')=='terminal_archive_progress_timestamp_collision'
-        fields=({'reason','old_code_commit','old_config_sha256','old_exit_sha256','old_result_sha256',
+        snapshot_failure=recovery.get('reason')==SNAPSHOT_VALIDATION_RECOVERY
+        fields=({'reason','old_controller_root','old_code_commit','old_config_sha256','old_exit_sha256','old_result_sha256',
+                 'run_id','failed_step','failed_operation_result_sha256','failed_operation_stderr_sha256','accepted_prefix'} if snapshot_failure else
+                {'reason','old_code_commit','old_config_sha256','old_exit_sha256','old_result_sha256',
                  'source_snapshot_sha256','run_id'} if collision else
                 {'reason','old_code_commit','old_config_sha256','old_exit_sha256','old_stop_request_sha256',
                  'source_no_operations_proof_path','source_no_operations_proof_sha256'})
-        core.need(set(recovery)==fields and (collision or
+        core.need(set(recovery)==fields and (collision or snapshot_failure or
             recovery.get('reason')=='source_system_python36_capture_output_rejected') and
             isinstance(recovery['old_code_commit'],str) and re.fullmatch('[0-9a-f]{40}',recovery['old_code_commit']) is not None and
             recovery['old_code_commit']!=value['code_commit'],'CONTROLLER_RECOVERY_BINDING_INVALID')
-        for name in (('old_config_sha256','old_exit_sha256','old_result_sha256','source_snapshot_sha256') if collision else
+        for name in (('old_config_sha256','old_exit_sha256','old_result_sha256','failed_operation_result_sha256',
+                      'failed_operation_stderr_sha256') if snapshot_failure else
+                     ('old_config_sha256','old_exit_sha256','old_result_sha256','source_snapshot_sha256') if collision else
                      ('old_config_sha256','old_exit_sha256','old_stop_request_sha256','source_no_operations_proof_sha256')):
             core.digest_text(recovery[name])
-        if collision:core.binding(value['base'],value['training_commit'],recovery['run_id'],5)
+        if snapshot_failure:
+            core.binding(value['base'],value['training_commit'],recovery['run_id'],recovery['failed_step'])
+            core.need(type(recovery['failed_step']) is int and recovery['failed_step']==50 and
+                isinstance(recovery['accepted_prefix'],list) and len(recovery['accepted_prefix'])==1,
+                'RECOVERY_ACCEPTED_PREFIX_OR_FAILED_STEP_DIFFERS')
+            prefix=recovery['accepted_prefix'][0]
+            hashes={'source_snapshot_sha256','source_complete_sha256','archive_receipt_sha256','source_acceptance_sha256'}
+            core.need(isinstance(prefix,dict) and set(prefix)==hashes|{'step'} and type(prefix['step']) is int and prefix['step']==5,
+                'RECOVERY_ACCEPTED_PREFIX_INVALID')
+            for name in hashes:core.digest_text(prefix[name])
+        elif collision:core.binding(value['base'],value['training_commit'],recovery['run_id'],5)
         else:
             proof=core.absolute(recovery['source_no_operations_proof_path'])
             core.need(core.under(proof,Path(value['base'])/'preparation/archive-control'),'CONTROLLER_RECOVERY_SOURCE_PROOF_OUTSIDE_BASE')
-        expected_root=expected_root/('recovery-'+recovery['old_code_commit'])
+        expected_root=recovery_controller_root(expected_root,recovery)
     core.need(value['controller_root'] == str(expected_root) and
         value['hpc_identity'] == HPC_IDENTITY and value['known_hosts'] == KNOWN_HOSTS and value['ssh_peer'] == PEER,
         'CONTROLLER_ROUTING_BINDING_DIFFERS')
@@ -638,6 +665,135 @@ def progress_collision_admission(config,password,old,old_root,exited,born,superv
         training_job_changed=False,checked_unix=time.time())
 
 
+SNAPSHOT_FAILURE_OBSERVATION = r'''
+import json,sys,time
+from pathlib import Path
+p=json.load(sys.stdin);old=p['old'];r=p['recovery']
+sys.path.insert(0,str(Path(old['base'])/'preparation/archive-control/code'/old['code_commit']))
+import archive_supervisor as s
+s.source_host();c=s.core
+plan=s.operation_plan(old,r['run_id'],r['failed_step'],'snapshot');root=s.operation_root(plan)
+value=s.operation_status(plan)
+births={name:dict(record=c._read_json(root/name),alive=s.same_birth(c._read_json(root/name)))
+ for name in ('supervisor-birth.json','worker-birth.json')}
+stderr=root/'worker.stderr';c.need(c.regular(stderr)['bytes']<=4*2**20,'RECOVERY_STDERR_NOT_SMALL')
+prefix=[]
+for row in r['accepted_prefix']:
+ path=Path(old['base'])/'preparation/checkpoint-archives'/('global_step_'+str(row['step']))/'complete.json'
+ prefix.append(dict(step=row['step'],path=str(path),sha256=c.sha(path),value=c._read_json(path)))
+pair=Path(old['base'])/'artifacts/question-probe/completed-pairs'/('global_step_'+str(r['failed_step']))/'source-receipt.json'
+receipt=c._read_json(pair)
+print(json.dumps(dict(status='FRESH_TERMINAL_SNAPSHOT_VALIDATION_OBSERVATION',checked_unix=time.time(),
+ operation=value,births=births,stderr_sha256=c.sha(stderr),stderr=stderr.read_text(),accepted_prefix=prefix,
+ pair_receipt=dict(path=str(pair),sha256=c.sha(pair),status=receipt.get('status'),run_id=receipt.get('run_id'),
+ step=receipt.get('step'),world_size=receipt.get('world_size'),actual_cuda_restore_accepted=receipt.get('actual_cuda_restore_accepted')))),flush=True)
+'''
+
+
+def snapshot_failure_observation(old,password,recovery):
+    """Only small terminal receipts and process births; no checkpoint SHA walk."""
+    core.need(isinstance(password,str) and password and '\n' not in password,'RAM_PASSWORD_REQUIRED')
+    environment=dict(os.environ,SSHPASS=password,PYTHONDONTWRITEBYTECODE='1')
+    try:
+        command=shlex.join(source_argv(old,'-c',SNAPSHOT_FAILURE_OBSERVATION))
+        try:
+            result=subprocess.run(ssh_argv(command),input=core.document_bytes(dict(old=old,recovery=recovery)),
+                env=environment,capture_output=True,timeout=45)
+        except subprocess.TimeoutExpired:
+            raise ValueError('RECOVERY_SOURCE_SNAPSHOT_OBSERVATION_UNKNOWN_NO_LAUNCH') from None
+    finally:environment.pop('SSHPASS',None)
+    core.need(result.returncode==0,'RECOVERY_SOURCE_SNAPSHOT_OBSERVATION_FAILED_NO_LAUNCH')
+    try:return json.loads(result.stdout)
+    except (ValueError,UnicodeDecodeError):raise ValueError('RECOVERY_SOURCE_SNAPSHOT_PROOF_INVALID') from None
+
+
+def accepted_prefix_receipts(config,prefix,source_rows):
+    """Authenticate already accepted small receipts without rereading payloads."""
+    recovery=config['recovery_of'];run_id=recovery['run_id'];accepted=[]
+    core.need(isinstance(source_rows,list) and len(source_rows)==len(prefix),'RECOVERY_PREFIX_SOURCE_RECEIPTS_MISSING')
+    for pin,observed in zip(prefix,source_rows):
+        step=pin['step'];directory=core.ARCHIVES/run_id/('global_step_'+str(step))
+        for name,key in (('source-snapshot.json','source_snapshot_sha256'),('archive-receipt.json','archive_receipt_sha256'),
+                         ('source-acceptance.json','source_acceptance_sha256')):
+            core.checked_file(directory/name,pin[key])
+        snapshot=core._read_json(directory/'source-snapshot.json')
+        core.validate_snapshot(snapshot,base=config['base'],commit=config['training_commit'],run_id=run_id,step=step)
+        wrapper=dict(archive_receipt_file=str(directory/'archive-receipt.json'),archive_receipt_sha256=pin['archive_receipt_sha256'],
+            archive_receipt=core._read_json(directory/'archive-receipt.json'))
+        proof=core.validate_archive_proof(wrapper,snapshot,pin['source_snapshot_sha256'])
+        path=Path(config['base'])/'preparation/checkpoint-archives'/('global_step_'+str(step))/'complete.json'
+        complete=observed.get('value',{})
+        core.need(observed.get('step')==step and observed.get('path')==str(path) and
+            observed.get('sha256')==pin['source_complete_sha256'] and core.document_sha(complete)==pin['source_complete_sha256'],
+            'RECOVERY_SOURCE_COMPLETE_RECEIPT_DIFFERS')
+        expected={key:value for key,value in proof.items() if key not in ('checked_unix','source_retention_recheck_pending')}
+        core.need(all(complete.get(key)==value for key,value in expected.items()) and
+            complete.get('source_retention_recheck_pending') is False and complete.get('original_sources_retained') is True and
+            complete.get('source_snapshot')==dict(path=str(path.parent/'source-snapshot.json'),sha256=pin['source_snapshot_sha256']) and
+            complete.get('archive_receipt')==dict(path=wrapper['archive_receipt_file'],sha256=pin['archive_receipt_sha256']),
+            'RECOVERY_ACCEPTED_SOURCE_ARCHIVE_BINDING_DIFFERS')
+        readback=complete.get('source_readback',{})
+        expected_readback=dict(snapshot_file=str(path.parent/'source-snapshot.json'),snapshot_sha256=pin['source_snapshot_sha256'],
+            all_source_files_fresh_sha_pass=True,files=len(snapshot['files']),bytes=snapshot['bytes'],run_id=run_id,step=step,
+            training_source_commit=config['training_commit'],actual_cuda_restore_accepted=False)
+        core.need(all(readback.get(key)==value for key,value in expected_readback.items()),'RECOVERY_PRIOR_FRESH_SOURCE_SHA_NOT_PROVED')
+        source_acceptance=core._read_json(directory/'source-acceptance.json')
+        expected_acceptance=dict(complete_file=str(path),complete_sha256=pin['source_complete_sha256'],status=core.STATUS,
+            step=step,files=len(snapshot['files']),bytes=snapshot['bytes'],actual_cuda_restore_accepted=False)
+        core.need(source_acceptance==expected_acceptance,'RECOVERY_PREFIX_ACCEPTANCE_DIFFERS')
+        accepted.append(dict(pin,archive_root=str(directory),source_acceptance=source_acceptance,
+            payload_rehashed=False,payload_retransferred=False))
+    return accepted
+
+
+def snapshot_validation_admission(config,password,old,old_root,exited,source_observer):
+    recovery=config['recovery_of'];run_id=recovery['run_id'];step=recovery['failed_step']
+    core.checked_file(old_root/'controller-result.json',recovery['old_result_sha256'])
+    failed=core._read_json(old_root/'controller-result.json')
+    core.need(failed.get('status')=='ARCHIVE_CONTROLLER_INCOMPLETE' and failed.get('error_type')=='RuntimeError' and
+        failed.get('error')=='HELD_OPERATION_FAILED_NO_REPLAY' and failed.get('completed_steps')==[5] and
+        failed.get('run_id')==run_id and failed.get('source_job')==config['source_job'] and
+        failed.get('training_job_changed') is False,'RECOVERY_TERMINAL_SNAPSHOT_FAILURE_REQUIRED')
+    binding=core._read_json(old_root/'run-binding.json')
+    core.need(all(binding.get(key)==value for key,value in dict(base=config['base'],source_job=config['source_job'],
+        training_commit=config['training_commit'],run_id=run_id).items()),'RECOVERY_OLD_RUN_BINDING_DIFFERS')
+    core.need(not (core.ARCHIVES/run_id/('global_step_'+str(step))).exists(),'RECOVERY_FAILED_ARCHIVE_DIRECTORY_ALREADY_EXISTS')
+    fresh=(source_observer or (lambda c,p:snapshot_failure_observation(old,p,recovery)))(config,password)
+    core.need(isinstance(fresh,dict) and fresh.get('status')=='FRESH_TERMINAL_SNAPSHOT_VALIDATION_OBSERVATION' and
+        type(fresh.get('checked_unix')) in (int,float) and abs(time.time()-fresh['checked_unix'])<=60,
+        'RECOVERY_FRESH_SNAPSHOT_OBSERVATION_REQUIRED')
+    operation=fresh.get('operation',{});plan=operation_plan(old,run_id,step,'snapshot');result=operation.get('operation_result',{})
+    core.need(operation.get('status')=='FAILED' and operation.get('kind')=='snapshot' and operation.get('step')==step and
+        operation.get('run_id')==run_id and operation.get('operation_root')==str(operation_root(plan)) and
+        operation.get('source_snapshot_claim_present') is False and operation.get('source_snapshot_present') is False and
+        operation.get('source_complete_present') is False,'RECOVERY_FAILED_SNAPSHOT_ALREADY_CLAIMED_OR_UNKNOWN')
+    core.need(operation.get('operation_result_sha256')==recovery['failed_operation_result_sha256'] and
+        core.document_sha(result)==recovery['failed_operation_result_sha256'] and result.get('plan_sha256')==core.document_sha(plan) and
+        type(result.get('worker_returncode')) is int and result['worker_returncode']!=0 and result.get('accepted_output') is False and
+        result.get('stderr_sha256')==recovery['failed_operation_stderr_sha256'] and
+        fresh.get('stderr_sha256')==recovery['failed_operation_stderr_sha256'] and
+        isinstance(fresh.get('stderr'),str) and hashlib.sha256(fresh['stderr'].encode()).hexdigest()==recovery['failed_operation_stderr_sha256'] and
+        'ValueError: PREFIX20_ARCHIVE_REWARD_ENCODER_FILE_SET_DIFFERS' in fresh['stderr'],
+        'RECOVERY_KNOWN_SNAPSHOT_VALIDATION_FAILURE_NOT_PROVED')
+    births=fresh.get('births',{})
+    core.need(set(births)=={'supervisor-birth.json','worker-birth.json'} and
+        all(row.get('alive') is False for row in births.values()) and births['worker-birth.json'].get('record')==result.get('worker'),
+        'RECOVERY_OLD_SOURCE_OPERATION_STILL_ALIVE_OR_UNKNOWN')
+    pair=fresh.get('pair_receipt',{})
+    core.need(all(pair.get(key)==value for key,value in dict(status=core.PAIR_STATUS,run_id=run_id,step=step,world_size=4,
+        actual_cuda_restore_accepted=False,path=str(Path(config['base'])/'artifacts/question-probe/completed-pairs'/('global_step_'+str(step))/'source-receipt.json')).items()),
+        'RECOVERY_FAILED_STEP_COMPLETED_PAIR_MISSING')
+    core.digest_text(pair.get('sha256'))
+    accepted=accepted_prefix_receipts(config,recovery['accepted_prefix'],fresh.get('accepted_prefix'))
+    return dict(status='TERMINAL_SNAPSHOT_VALIDATION_RECOVERY_ADMITTED',run_id=run_id,old_controller_root=str(old_root),
+        new_controller_root=config['controller_root'],old_actual_exit=exited,old_births_dead=True,
+        old_config_sha256=recovery['old_config_sha256'],old_result_sha256=recovery['old_result_sha256'],
+        failed_operation_result_sha256=recovery['failed_operation_result_sha256'],
+        failed_operation_stderr_sha256=recovery['failed_operation_stderr_sha256'],failed_step=step,
+        source_snapshot_claim_absent=True,fresh_source_observation=fresh,accepted_prefix=accepted,
+        training_job_changed=False,checked_unix=time.time())
+
+
 def recovery_admission(config, password, *, source_observer=None):
     """Admit one proved terminal CPU failure after its two own births died.
 
@@ -646,11 +802,12 @@ def recovery_admission(config, password, *, source_observer=None):
     """
     validate_config(config);recovery=config.get('recovery_of')
     if recovery is None:return None
-    old_root=HK_ROOT/'archive-controller'/('job-'+config['source_job'])
+    job_root=HK_ROOT/'archive-controller'/('job-'+config['source_job'])
+    old_root=Path(recovery['old_controller_root']) if recovery['reason']==SNAPSHOT_VALIDATION_RECOVERY else job_root
     core.safe_components(old_root)
     core.checked_file(old_root/'config.json',recovery['old_config_sha256'])
     old=validate_config(core._read_json(old_root/'config.json'))
-    core.need(old.get('recovery_of') is None and old['code_commit']==recovery['old_code_commit'] and
+    core.need((recovery['reason']==SNAPSHOT_VALIDATION_RECOVERY or old.get('recovery_of') is None) and old['code_commit']==recovery['old_code_commit'] and
         old['controller_root']==str(old_root) and all(old[k]==config[k] for k in ('base','source_job','training_commit')),
         'RECOVERY_OLD_CONFIG_BINDING_DIFFERS')
     verify_bundle(code_root(old),old)
@@ -671,6 +828,8 @@ def recovery_admission(config, password, *, source_observer=None):
     core.checked_file(old_root/'controller.log',exited['stdout_sha256'])
     if recovery['reason']=='terminal_archive_progress_timestamp_collision':
         return progress_collision_admission(config,password,old,old_root,exited,born,supervisor,source_observer)
+    if recovery['reason']==SNAPSHOT_VALIDATION_RECOVERY:
+        return snapshot_validation_admission(config,password,old,old_root,exited,source_observer)
     core.checked_file(old_root/'failed-controller-stop-request.json',recovery['old_stop_request_sha256'])
     core.need(not (old_root/'run-binding.json').exists() and not list(old_root.glob('step-*-operation.json')),
         'RECOVERY_OLD_CONTROLLER_HAS_RUN_OR_OPERATIONS')

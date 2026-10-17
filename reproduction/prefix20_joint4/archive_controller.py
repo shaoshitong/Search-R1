@@ -320,6 +320,23 @@ class Controller:
         self.completed.append(step)
         self.event('CHECKPOINT_SOURCE_ARCHIVE_SOURCE_FULL_SHA_PASS',step=step,archive_root=str(directory),source_acceptance=complete)
 
+    def adopt_completed_prefix(self):
+        recovery=self.config.get('recovery_of',{})
+        if recovery.get('reason')!=held.SNAPSHOT_VALIDATION_RECOVERY:return
+        admission=core._read_json(self.root/'recovery-admission.json')
+        core.need(admission.get('status')=='TERMINAL_SNAPSHOT_VALIDATION_RECOVERY_ADMITTED' and
+            admission.get('run_id')==recovery['run_id'] and admission.get('new_controller_root')==str(self.root) and
+            admission.get('old_controller_root')==recovery['old_controller_root'] and
+            admission.get('old_config_sha256')==recovery['old_config_sha256'] and
+            admission.get('old_result_sha256')==recovery['old_result_sha256'] and
+            admission.get('training_job_changed') is False,'RECOVERY_PREFIX_ADMISSION_DIFFERS')
+        accepted=held.accepted_prefix_receipts(self.config,recovery['accepted_prefix'],
+            admission['fresh_source_observation']['accepted_prefix'])
+        core.need(accepted==admission.get('accepted_prefix'),'RECOVERY_PREFIX_ADMISSION_RECEIPTS_CHANGED')
+        self.run_id=recovery['run_id'];self.completed=[row['step'] for row in accepted]
+        self.event('PREVIOUSLY_ACCEPTED_PREFIX_ADOPTED_WITHOUT_PAYLOAD_READ',accepted_prefix=accepted,
+            payload_rehashed=False,payload_retransferred=False)
+
     def run(self):
         core.need(socket.gethostname()=='xielab3','CONTROLLER_ACTUAL_HKUST3_REQUIRED')
         held.verify_bundle(held.code_root(self.config),self.config)
@@ -328,8 +345,9 @@ class Controller:
             core.publish(self.root/'controller-birth.json',held.identity())
             self.event('CONTROLLER_STARTED',training_job_changed=False,credentials_persisted=False)
             try:
-                self.deploy_source_sidecar();last_wait=None
+                self.deploy_source_sidecar();self.adopt_completed_prefix();last_wait=None
                 for step in core.STEPS:
+                    if step in self.completed:continue
                     while True:
                         core.need(time.time()-self.started<=self.config['source_wait_deadline_seconds'],'CONTROLLER_SOURCE_DEADLINE_EXHAUSTED')
                         try:observed=self.probe()

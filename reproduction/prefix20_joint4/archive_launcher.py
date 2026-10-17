@@ -113,7 +113,7 @@ def run(args):
         if recovery is not None:
             config['recovery_of']=recovery
             core.need(isinstance(recovery,dict) and isinstance(recovery.get('old_code_commit'),str),'RECOVERY_METADATA_INVALID')
-            config['controller_root']=str(Path(config['controller_root'])/('recovery-'+recovery['old_code_commit']))
+            config['controller_root']=str(held.recovery_controller_root(Path(config['controller_root']),recovery))
         held.validate_config(config)
     bridge_path=Path(args.bridge_source);core.checked_file(bridge_path,MODERN_BRIDGE_SHA)
     spec=importlib.util.spec_from_file_location('existing_modern_account_bridge',bridge_path)
@@ -147,7 +147,7 @@ def main():
     parser.add_argument('--code-commit',required=True);parser.add_argument('--training-commit',required=True)
     parser.add_argument('--base',required=True);parser.add_argument('--source-job',required=True);parser.add_argument('--output',required=True)
     parser.add_argument('--credentials-file',default='/Users/shaoshitong/Documents/remote_codex_control/memories/hpc3-credentials.private.md')
-    parser.add_argument('--recovery-from',help='Small public JSON pinning the specific failed old controller and no-source-operations proof; use a new --output')
+    parser.add_argument('--recovery-from',help='Small public JSON pinning the terminal old controller and source evidence; use a new --output')
     args=parser.parse_args();raise SystemExit(run(args))
 
 

@@ -252,6 +252,100 @@ class ControllerTests(unittest.TestCase):
             held.recovery_admission(changed,'RAM',source_observer=lambda c,p:observed)
         self.assertTrue(directory.exists());self.assertFalse((root/'timestamp-collision-recovery-claim.json').exists())
 
+    def snapshot_validation_fixture(self):
+        spec=importlib.util.spec_from_file_location('snapshot_failure_archive_fixture',Path(__file__).with_name('test_checkpoint_archive.py'))
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);module.archive=core
+        temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)
+        pair=module.Fixture(temporary.name,step=5);self.addCleanup(pair.close)
+        wrapped=pair.snapshot();directory=pair.mirror(wrapped);archive=pair.archive(wrapped,directory)
+        source=core.accept_archive(pair.base,wrapped['snapshot_file'],wrapped['snapshot_sha256'],archive,
+            commit=pair.commit,run_id=pair.run_id,step=5)
+        core.publish(directory/'source-acceptance.json',source)
+        old_root=Path(self.f.config['controller_root'])/('recovery-'+'e'*40);old_root.mkdir()
+        old=dict(self.f.config,base=str(pair.base),training_commit=pair.commit,controller_root=str(old_root),recovery_of=dict(
+            reason='terminal_archive_progress_timestamp_collision',old_code_commit='e'*40,old_config_sha256='f'*64,
+            old_exit_sha256='f'*64,old_result_sha256='f'*64,source_snapshot_sha256=wrapped['snapshot_sha256'],run_id=pair.run_id))
+        born=dict(self.f.born(),host='xielab3');supervisor=dict(born,pid=born['pid']+1,start_ticks=2)
+        core.publish(old_root/'config.json',old);core.publish(old_root/'controller-launch-claim.json',dict(config_sha256=core.document_sha(old)))
+        core.publish(old_root/'controller-birth.json',born);core.publish(old_root/'controller-supervisor-birth.json',supervisor)
+        core.publish(old_root/'launcher-observed-birth.json',supervisor)
+        (old_root/'controller.log').write_text('constructed held operation failed\n')
+        core.publish(old_root/'controller-exit.json',dict(config_sha256=core.document_sha(old),controller=born,
+            returncode=1,stdout_sha256=core.sha(old_root/'controller.log')))
+        core.publish(old_root/'controller-result.json',dict(status='ARCHIVE_CONTROLLER_INCOMPLETE',error_type='RuntimeError',
+            error='HELD_OPERATION_FAILED_NO_REPLAY',completed_steps=[5],run_id=pair.run_id,source_job=old['source_job'],training_job_changed=False))
+        core.publish(old_root/'run-binding.json',dict(base=old['base'],training_commit=old['training_commit'],
+            source_job=old['source_job'],run_id=pair.run_id))
+        plan=held.operation_plan(old,pair.run_id,50,'snapshot');stderr='ValueError: PREFIX20_ARCHIVE_REWARD_ENCODER_FILE_SET_DIFFERS\n'
+        result=dict(plan_sha256=core.document_sha(plan),worker=born,worker_returncode=1,accepted_output=False,
+            stderr_sha256=hashlib.sha256(stderr.encode()).hexdigest())
+        recovery=dict(reason=held.SNAPSHOT_VALIDATION_RECOVERY,old_controller_root=str(old_root),old_code_commit=old['code_commit'],
+            old_config_sha256=core.sha(old_root/'config.json'),old_exit_sha256=core.sha(old_root/'controller-exit.json'),
+            old_result_sha256=core.sha(old_root/'controller-result.json'),run_id=pair.run_id,failed_step=50,
+            failed_operation_result_sha256=core.document_sha(result),failed_operation_stderr_sha256=result['stderr_sha256'],accepted_prefix=[dict(
+                step=5,source_snapshot_sha256=wrapped['snapshot_sha256'],source_complete_sha256=source['complete_sha256'],
+                archive_receipt_sha256=archive['archive_receipt_sha256'],source_acceptance_sha256=core.sha(directory/'source-acceptance.json'))])
+        new=dict(old,code_commit='d'*40,recovery_of=recovery,
+            controller_root=str(held.recovery_controller_root(Path(self.f.config['controller_root']),recovery)))
+        fresh=dict(status='FRESH_TERMINAL_SNAPSHOT_VALIDATION_OBSERVATION',checked_unix=time.time(),operation=dict(status='FAILED',kind='snapshot',
+            step=50,run_id=pair.run_id,operation_root=str(held.operation_root(plan)),source_snapshot_claim_present=False,
+            source_snapshot_present=False,source_complete_present=False,operation_result=result,operation_result_sha256=core.document_sha(result)),
+            births={'supervisor-birth.json':dict(record=supervisor,alive=False),'worker-birth.json':dict(record=born,alive=False)},
+            stderr=stderr,stderr_sha256=result['stderr_sha256'],accepted_prefix=[dict(step=5,path=source['complete_file'],
+                sha256=source['complete_sha256'],value=core._read_json(source['complete_file']))],pair_receipt=dict(
+                path=str(pair.base/'artifacts/question-probe/completed-pairs/global_step_50/source-receipt.json'),sha256='f'*64,
+                status=core.PAIR_STATUS,run_id=pair.run_id,step=50,world_size=4,actual_cuda_restore_accepted=False))
+        return new,old,old_root,pair,fresh
+
+    def test_terminal_snapshot_recovery_adopts_accepted5_and_runs_only_remaining_steps(self):
+        new,old,old_root,pair,fresh=self.snapshot_validation_fixture();held.validate_config(new)
+        original=core.checked_file;reads=[]
+        def small_only(path,*args,**kwargs):
+            reads.append(str(path));self.assertNotIn('/payload/',str(path))
+            return original(path,*args,**kwargs)
+        with patch.object(held,'same_birth',return_value=False),patch.object(core,'checked_file',side_effect=small_only):
+            admitted=held.recovery_admission(new,'RAM',source_observer=lambda c,p:fresh)
+        self.assertEqual([r['step'] for r in admitted['accepted_prefix']],[5]);self.assertFalse(admitted['accepted_prefix'][0]['payload_rehashed'])
+        self.assertTrue(old_root.exists());self.assertFalse(Path(new['controller_root']).exists())
+        self.assertNotEqual(held.operation_root(held.operation_plan(new,pair.run_id,50,'snapshot')),
+            held.operation_root(held.operation_plan(old,pair.run_id,50,'snapshot')))
+        root=Path(new['controller_root']);root.mkdir();core.publish(root/'recovery-admission.json',admitted)
+        c=control.Controller(new,'RAM');c.deploy_source_sidecar=lambda:None;calls=[]
+        c.probe=lambda:dict(run_id=pair.run_id,prepared_sha256='e'*64,source_terminal=False,pair_receipts={str(s):True for s in core.STEPS})
+        c.archive_step=lambda step:(calls.append(step),c.completed.append(step))
+        with patch.object(control.socket,'gethostname',return_value='xielab3'),patch.object(held,'identity',side_effect=self.f.born),\
+             patch.object(held,'verify_bundle',return_value={}),patch.object(core,'checked_file',side_effect=small_only):
+            result=c.run()
+        self.assertEqual(calls,[50,100,150,200]);self.assertEqual(result['steps'],[5,50,100,150,200])
+        self.assertFalse(result['actual_cuda_restore_accepted'])
+
+    def test_snapshot_recovery_refuses_live_old_controller_before_source_observation(self):
+        new,old,root,pair,fresh=self.snapshot_validation_fixture()
+        with patch.object(held,'same_birth',return_value=True):
+            with self.assertRaisesRegex(ValueError,'STILL_ALIVE'):
+                held.recovery_admission(new,'RAM',source_observer=lambda c,p:self.fail('no remote observation'))
+        self.assertFalse(Path(new['controller_root']).exists())
+
+    def test_snapshot_recovery_refuses_unknown_live_or_claimed_source_and_changed_prefix(self):
+        new,old,root,pair,fresh=self.snapshot_validation_fixture()
+        variants=[]
+        changed=copy.deepcopy(fresh);changed['operation']['status']='UNKNOWN_OPERATION_OUTCOME';variants.append(changed)
+        changed=copy.deepcopy(fresh);changed['operation']['source_snapshot_claim_present']=True;variants.append(changed)
+        changed=copy.deepcopy(fresh);changed['births']['supervisor-birth.json']['alive']=True;variants.append(changed)
+        changed=copy.deepcopy(fresh);changed['accepted_prefix'][0]['sha256']='e'*64;variants.append(changed)
+        changed=copy.deepcopy(fresh);changed['stderr']='different failure';variants.append(changed)
+        for changed in variants:
+            with self.subTest(changed=changed.get('status')),patch.object(held,'same_birth',return_value=False),self.assertRaises(ValueError):
+                held.recovery_admission(new,'RAM',source_observer=lambda c,p:changed)
+        self.assertFalse(Path(new['controller_root']).exists())
+
+    def test_snapshot_recovery_unknown_ssh_never_admits_and_has_no_secret_in_plan(self):
+        new,old,root,pair,fresh=self.snapshot_validation_fixture()
+        with patch.object(held.subprocess,'run',side_effect=subprocess.TimeoutExpired([],45)):
+            with self.assertRaisesRegex(ValueError,'OBSERVATION_UNKNOWN_NO_LAUNCH'):
+                held.snapshot_failure_observation(old,'RAM-secret',new['recovery_of'])
+        self.assertNotIn('RAM-secret',json.dumps(new))
+
     def test_source_no_operations_observation_requires_fresh_identity_and_exit_zero(self):
         new,root=self.recovery_fixture();paths=[str(self.f.base/p) for p in ('preparation/archive-control/operations','preparation/checkpoint-archives')]
         proof=dict(status='FRESH_SOURCE_NO_ARCHIVE_OPERATIONS_PASS',base=str(self.f.base),source_job=self.f.job,

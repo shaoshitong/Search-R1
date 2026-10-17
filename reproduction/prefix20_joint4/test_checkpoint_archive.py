@@ -120,6 +120,29 @@ class Fixture:
         for item in reversed(self.patches):
             item.stop()
 
+    def use_refitted_actor_encoder(self, encoder_step=None):
+        encoder_step = self.step if encoder_step is None else encoder_step
+        encoder = self.base/'checkpoints/search-g1-common8/actor'/('global_step_' + str(encoder_step))
+        encoder.mkdir(parents=True, exist_ok=True)
+        shards = ['model-%05d-of-00003.safetensors' % index for index in range(1, 4)]
+        names = shards + ['config.json', 'model.safetensors.index.json', 'tokenizer.json', 'tokenizer_config.json']
+        for name in names:
+            (encoder/name).write_bytes(b'constructed refitted actor ' + name.encode())
+        self.write_json(encoder/'model.safetensors.index.json', dict(weight_map={
+            'weight%d' % index: name for index, name in enumerate(shards)}))
+        if encoder == self.cp:
+            (encoder/'weights.safetensors').unlink()
+            self.receipt['files'] = [self.file_record(path, relative_path=str(path.relative_to(self.cp)))
+                for path in sorted(self.cp.rglob('*')) if path.is_file()]
+            self.receipt['hf_saved_tensor_count'] = len(shards)
+        self.reward.update(encoder=str(encoder), encoder_sha256={name: archive.sha(encoder/name) for name in names})
+        heads = [Path(self.reward[key]) for key in ('commit', 'boundary')]
+        self.receipt['reward_files'] = [self.file_record(path) for path in heads + [encoder/name for name in names]]
+        self.write_json(self.pair/'reward-probe-manifest.json', self.reward)
+        self.receipt['reward_probe_manifest'] = self.file_record(self.pair/'reward-probe-manifest.json')
+        self.write_json(self.pair/'source-receipt.json', self.receipt)
+        return encoder
+
     @property
     def kwargs(self):
         return dict(base=self.base, commit=self.commit, run_id=self.run_id, step=self.step)
@@ -171,6 +194,86 @@ class ArchiveTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             archive.accept_archive(f.base, snap['snapshot_file'], snap['snapshot_sha256'], proof,
                 commit=f.commit, run_id=f.run_id, step=f.step)
+
+    def test_round50_three_shard_actor_refit_has_real_source_archive_source_hash_chain(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            f = Fixture(temporary, step=50)
+            try:
+                encoder = f.use_refitted_actor_encoder()
+                snap = f.snapshot()
+                names = set(f.reward['encoder_sha256'])
+                self.assertEqual(len(names), 7)
+                source_files = {row['source_path'] for row in snap['snapshot']['files']}
+                self.assertTrue({str(encoder/name) for name in names} <= source_files)
+                proof = f.archive(snap, f.mirror(snap))
+                result = archive.accept_archive(f.base, snap['snapshot_file'], snap['snapshot_sha256'], proof,
+                    commit=f.commit, run_id=f.run_id, step=50)
+                self.assertEqual(result['status'], archive.STATUS)
+                self.assertFalse(result['actual_cuda_restore_accepted'])
+            finally:
+                f.close()
+
+    def test_round200_preserves_separate_round150_three_shard_reward_encoder(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            f = Fixture(temporary, step=200)
+            try:
+                encoder = f.use_refitted_actor_encoder(encoder_step=150)
+                snap = f.snapshot()
+                self.assertNotEqual(encoder, f.cp)
+                proof = f.archive(snap, f.mirror(snap))
+                result = archive.accept_archive(f.base, snap['snapshot_file'], snap['snapshot_sha256'], proof,
+                    commit=f.commit, run_id=f.run_id, step=200)
+                self.assertEqual(result['status'], archive.STATUS)
+            finally:
+                f.close()
+
+    def test_actor_refit_missing_or_extra_index_shard_is_rejected_before_claim(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            f = Fixture(temporary, step=50)
+            try:
+                encoder = f.use_refitted_actor_encoder()
+                for name, digest in (('model-00003-of-00003.safetensors', None),
+                                     ('model-unreferenced.safetensors', 'f'*64)):
+                    changed = copy.deepcopy(f.reward)
+                    if digest is None:
+                        changed['encoder_sha256'].pop(name)
+                    else:
+                        changed['encoder_sha256'][name] = digest
+                    f.write_json(f.pair/'reward-probe-manifest.json', changed)
+                    receipt = copy.deepcopy(f.receipt)
+                    receipt['reward_probe_manifest'] = f.file_record(f.pair/'reward-probe-manifest.json')
+                    receipt['reward_files'] = [row for row in receipt['reward_files']
+                        if row['path'] != str(encoder/name)]
+                    if digest is not None:
+                        extra = encoder/name
+                        extra.write_bytes(b'not referenced by saved index')
+                        changed['encoder_sha256'][name] = archive.sha(extra)
+                        f.write_json(f.pair/'reward-probe-manifest.json', changed)
+                        receipt['reward_probe_manifest'] = f.file_record(f.pair/'reward-probe-manifest.json')
+                        receipt['reward_files'].append(f.file_record(extra))
+                    f.write_json(f.pair/'source-receipt.json', receipt)
+                    with self.subTest(name=name), self.assertRaisesRegex(ValueError, 'ENCODER_INDEX_FILE_SET'):
+                        f.snapshot()
+                self.assertFalse((f.base/'preparation/checkpoint-archives/global_step_50/claim.json').exists())
+            finally:
+                f.close()
+
+    def test_actor_refit_shard_same_identity_tamper_still_fails_full_sha(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            f = Fixture(temporary, step=50)
+            try:
+                encoder = f.use_refitted_actor_encoder()
+                snap = f.snapshot()
+                shard = encoder/'model-00003-of-00003.safetensors'
+                before = shard.stat()
+                raw = bytearray(shard.read_bytes())
+                raw[0] ^= 1
+                shard.write_bytes(raw)
+                os.utime(shard, ns=(before.st_atime_ns, before.st_mtime_ns))
+                with self.assertRaisesRegex(ValueError, 'FULL_SHA'):
+                    archive.source_readback(snap['snapshot_file'], snap['snapshot_sha256'], **f.kwargs)
+            finally:
+                f.close()
 
     def test_binding_rejects_wrong_run_commit_step_topology_and_noncanonical_base(self):
         f = self.fixture
