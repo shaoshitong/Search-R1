@@ -141,6 +141,30 @@ if c is not None and c.get('resume_joint'):
     actor=project(actor,('actual_adam_steps_per_rank','new_adam_steps_per_rank','opportunities_processed','skipped_update_opportunities','scheduler_completed_outer','learning_rate_used','next_learning_rate')),
     probe=project(probe,('completed_outer','actual_adam_steps_per_rank','sha256')),
     candidate_schedule=value.get('candidate_schedule')))
+v['delivered_anchor_complete_window']=dict(status='unknown_no_same_execution_delivered_anchor')
+after=p.get('after_step')
+last=(v.get('latest_joint') or {}).get('outer')
+if type(after) is int and type(last) is int and 0<=after<=last<=200:
+ window=dict(after_step=after,through_step=last,rows=[],status='unknown_oversize' if last-after>50 else 'observed')
+ if last-after<=50:
+  for ordinal in range(after,last+1):
+   if ordinal==0:continue
+   root=b/'outers'/('outer-%06d'%ordinal);value=document(root,'complete.json')
+   assert value is not None and value['run_id']==h['run_id'] and value['outer']==ordinal
+   actor=value['actor'];assert actual_actor_boundary(actor,ordinal)
+   rollout=value['rollout'];periodic=value['periodic_probe_update']
+   row=dict(outer=ordinal,metadata_sha256=sha(root/'complete.json'),
+    actor=project(actor,('actual_adam_steps_per_rank','new_adam_steps_per_rank','opportunities_processed','skipped_update_opportunities','scheduler_completed_outer')),
+    reward_mean=actor.get('reward',{}).get('score_mean'),selected_mixed_fraction=rollout.get('actual_selected_mixed_fraction'),
+    selected_questions=rollout['questions'],selected_trajectories=rollout['trajectories'],periodic_probe_update=periodic,
+    candidate_schedule=value.get('candidate_schedule'))
+   if periodic:
+    metrics=value['probe_metrics'];row['probe_update']=dict(project(metrics,('outer','unselected_training_questions','actual_learning_rate','new_adam_steps_per_rank','actual_adam_steps_per_rank','train_loop_seconds')),before_update=metrics['before_update'],train=metrics['train'],test=metrics['test'])
+    pool=document(root/'full-pool','complete.json')
+    row['full_pool']=None if pool is None else project(pool,('questions','trajectories','actual_selected_mixed_fraction'))
+   if ordinal==after:window['anchor_row']=row
+   else:window['rows'].append(row)
+ v['delivered_anchor_complete_window']=window
 v['cpu_qualification_is_not_cuda_restoration']=True
 emit(v)
 '''
@@ -246,6 +270,11 @@ def main():
     if args.action is None or (args.action=='stage' and args.payload is None):parser.error('Action and stage payload are required')
     h=json.loads(args.handle.read_text());payload=dict(handle=h)
     if args.action=='stage':payload.update(json.loads(args.payload.read_text()))
+    if args.action=='observe':
+        anchor=json.loads((ROOT/'progress-checks/hourly-anchor.json').read_text())
+        if (anchor.get('delivered') is True and anchor.get('run_id')==h['run_id'] and
+                anchor.get('execution_id')==h['execution_id']):
+            payload['after_step']=anchor['complete_outers']
     began=time.time();code=dict(stage=STAGE,handoff=HANDOFF,prepare=PREPARE,launch=LAUNCH,observe=OBSERVE)[args.action]
     try:
         p=subprocess.run(route(code),input=json.dumps(payload).encode(),stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=65)

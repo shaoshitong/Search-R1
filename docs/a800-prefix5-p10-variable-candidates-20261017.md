@@ -53,3 +53,5 @@ CPU恢复入口原来把被正常存储清理的第1至3轮probe快照当成必�
 只读监控现投影现成milestone QA标量和其metadata SHA，不触发生成或重评分。更新机会中的真实skip允许成功写入对应不连续opportunity编号；复用的I1–I6 reader已经严格检查0..19内递增机会与实际恢复Adam连续计数，保持该检查，不再覆盖成旧版reader的断言。此变更仅在发布的本地操作入口，运行source75未改。
 
 恢复后的连续五轮跟进仅读取已有`complete.json`标量与SHA，最多五条，核对每轮真实20机会／保留Adam／skip／scheduler及probe边界；不加载checkpoint，不为验收重复训练或插入评测。
+
+小时只读入口从本地同run/ex、delivered=true的真实anchor取得after-step，同次有界SSH最多投影50个已存在完整outer的reward、真实Mixed、机会／Adam／skip／scheduler及周期probe配对指标。超限或缺同execution anchor明确unknown；不额外生成／评分／读取模型，旧anchor不会套到新run。运行source75保持不变。
