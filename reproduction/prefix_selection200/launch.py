@@ -258,6 +258,8 @@ def run(base):
     conf = str(base / 'preparation/launch-config.json')
     services = {}; success = False; timings = {}; actor_micro = c['actor_global_micro_batch_size']
     grounding_state = None
+    retriever_name = None
+    retriever_generation = 0
     if c.get('python_header_cpath'):
         env['CPATH'] = c['python_header_cpath']
 
@@ -308,6 +310,35 @@ def run(base):
                 raise TimeoutError('Own service did not become ready: ' + name)
             time.sleep(3)
 
+    def ensure_retriever():
+        nonlocal retriever_name, retriever_generation
+        if retriever_name is not None:
+            if services[retriever_name].poll() is not None:
+                raise RuntimeError('Own retriever exited unexpectedly')
+            return
+        retriever_generation += 1
+        retriever_name = 'retriever' if retriever_generation == 1 else 'retriever-load-%06d' % retriever_generation
+        began = time.monotonic()
+        services[retriever_name] = start(retriever_name, [python, '-m', 'reproduction.prefix20_online.retriever',
+            '--index', c['retrieval_index'], '--corpus', c['retrieval_corpus'], '--encoder', c['retrieval_encoder'],
+            '--cache', str(base / 'retrieval-cache'), '--run-id', c['run_id'], '--port', str(c['retrieval_port']),
+            '--data-cache', c.get('retrieval_data_cache', str(base / 'retrieval-cache')),
+            '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', str(c.get('retrieval_gpu_shards', 2))],
+            dict(env, CUDA_VISIBLE_DEVICES=','.join(map(str,c['auxiliary_gpu_indices'])), PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
+        await_service(retriever_name, c['search_url'].replace('/retrieve', '/health'),
+                      dict(run_id=c['run_id'], gpu_shards=c.get('retrieval_gpu_shards', 2)))
+        timings['outer-%06d-retriever-load-%06d' % (outer,retriever_generation)] = dict(
+            elapsed_seconds=time.monotonic()-began, exit_code=0)
+
+    def release_retriever_for_actor():
+        nonlocal retriever_name
+        if c.get('retriever_phase_residency') != 'rollout_only' or retriever_name is None:
+            return
+        name = retriever_name
+        owned.stop(name)
+        services.pop(name)
+        retriever_name = None
+
     def start_grounding(state):
         from . import grounding
         live = grounding.publish_live(base, c, state)
@@ -352,6 +383,7 @@ def run(base):
     pending_qa = read(previous_qa) if previous_qa.is_file() else {}
 
     def validation(ordinal, model, evaluation_config, output, name):
+        ensure_retriever()
         code = phase(name, [python, '-m', 'reproduction.prefix_selection200.eval',
             '--config', str(evaluation_config), '--model', model,
             '--questions', c['validation_questions'], '--expected-count', '512', '--output', str(output)],
@@ -403,13 +435,8 @@ def run(base):
         env_root = Path(c['environment_root'])
         libs = list((env_root / 'lib/python3.10/site-packages/nvidia').glob('*/lib'))
         libs += [env_root / 'lib/python3.10/site-packages/torch/lib']
-        services['retriever'] = start('retriever', [python, '-m', 'reproduction.prefix20_online.retriever',
-            '--index', c['retrieval_index'], '--corpus', c['retrieval_corpus'], '--encoder', c['retrieval_encoder'],
-            '--cache', str(base / 'retrieval-cache'), '--run-id', c['run_id'], '--port', str(c['retrieval_port']),
-            '--data-cache', c.get('retrieval_data_cache', str(base / 'retrieval-cache')),
-            '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', str(c.get('retrieval_gpu_shards', 2))],
-            dict(env, CUDA_VISIBLE_DEVICES=','.join(map(str,c['auxiliary_gpu_indices'])), PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
-        await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=c.get('retrieval_gpu_shards', 2)))
+        if not c.get('startup_sampling_resume'):
+            ensure_retriever()
         from . import grounding
         if outer:
             # A future compatible recovery must retain the exact adopted state.
@@ -456,6 +483,7 @@ def run(base):
             periodic_update = is_probe_update(outer)
 
             def sample_outer(sampling_attempt=None):
+                ensure_retriever()
                 sampling_conf = conf
                 if sampling_attempt:
                     sampling_conf = str(root/('sampling-attempt-%s-config.json' % sampling_attempt))
@@ -501,7 +529,11 @@ def run(base):
                         '--config', sampling_conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(actor_selection_path)])
                 return actor_selection_path
 
-            actor_selection_path = sample_outer()
+            if outer == 1 and c.get('startup_sampling_resume'):
+                from .startup_sampling_resume import validate_reused_sampling
+                actor_selection_path = validate_reused_sampling(base,c)
+            else:
+                actor_selection_path = sample_outer()
             if compatible_resume:
                 from .i1_i6_actor_resume import collect_oom_retry, archive_zero_write_attempt
             else:
@@ -511,6 +543,7 @@ def run(base):
                             else 'reproduction.prefix_selection200.actor')
             attempt_id = uuid.uuid4().hex
             while True:
+                release_retriever_for_actor()
                 attempt_config = dict(grounding.bind_attempt(c, grounding_state, actor, outer), actor_attempt_id=attempt_id,
                     actor_global_micro_batch_size=actor_micro,
                     pool_state_path=str(base/'question-pool/state.json'),
@@ -541,7 +574,7 @@ def run(base):
                     raise RuntimeError('Actual actor failure requires repair: '+json.dumps(retry))
                 actor_micro = retry['actor_global_micro_batch_size']
                 attempt_id = retry['new_attempt_id']
-            from .ab_policy import mode as ab_mode, BALANCED
+            from .ab_policy import mode as ab_mode, BALANCED, FROZEN
             do_probe_update = ab_mode(c)==BALANCED or (not ab_mode(c) and periodic_update)
             if do_probe_update:
                 scope = 'full-pool' if periodic_update else 'full'
@@ -556,6 +589,22 @@ def run(base):
                 phase('outer-%06d-probe-update' % outer,
                       distributed('reproduction.prefix_selection200.probe',update_args))
                 probe_metrics=read(root/'probe-update/metrics.json')
+            elif ab_mode(c)==FROZEN:
+                scope='full-pool' if periodic_update else 'full'
+                report_args=['frozen-report','--state-dir',str(base/'probe'),
+                    '--scored-features',str(root/'probe-score'),'--own-em',str(root/scope/'own-em.jsonl'),
+                    '--outer',str(outer),'--output',str(root/'probe-frozen.json')]
+                if periodic_update:
+                    diagnostic_receipt=read(root/'diagnostic-complete.json')
+                    target=root/'frozen-diagnostic-score'
+                    phase('outer-%06d-frozen-diagnostic-score'%outer,distributed('reproduction.prefix_selection200.probe',
+                        ['score','--state-dir',str(base/'probe'),'--prefix-inputs',diagnostic_receipt['scan_path'],
+                         '--output',str(target),'--outer',str(outer),'--model-dir',c['official_model_dir']]))
+                    report_args += ['--frozen-test-score',str(target),'--test-own-em',
+                        str(Path(diagnostic_receipt['full_complete']).parent/'own-em.jsonl')]
+                phase('outer-%06d-frozen-metrics'%outer,
+                      [python,'-m','reproduction.prefix_selection200.probe']+report_args,
+                      dict(env,CUDA_VISIBLE_DEVICES=''))
             else:
                 current_probe=read(base/'probe/latest.json')
                 probe_metrics=dict(status='PROBE_FROZEN_NO_OPTIMIZER_UPDATE',outer=outer,
@@ -603,6 +652,7 @@ def run(base):
             raise RuntimeError('Actor/probe200 complete; actual QA failures remain pending: '+json.dumps(pending_qa))
         final_config = base / 'preparation/final-evaluation-config.json'
         once(final_config, dict(c, actor_version=read(base / 'actor/latest.json')['actor_version']))
+        ensure_retriever()
         phase('final51713', [python, '-m', 'reproduction.prefix_selection200.eval', '--config', str(final_config),
             '--model', read(base / 'actor/latest.json')['hf_model_dir'], '--questions', c['final_questions'],
             '--expected-count', '51713', '--output', str(base / 'final-evaluation')])

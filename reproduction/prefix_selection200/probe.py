@@ -772,7 +772,7 @@ def update(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase', choices=('initialize', 'score', 'update'))
+    parser.add_argument('phase', choices=('initialize', 'score', 'update', 'frozen-report'))
     parser.add_argument('--state-dir', required=True)
     parser.add_argument('--source-checkpoint'); parser.add_argument('--source-sha256', default=EPOCH3_SHA)
     parser.add_argument('--source-epoch', type=int, default=3)
@@ -782,19 +782,24 @@ def main():
     parser.add_argument('--own-em'); parser.add_argument('--own-em-sha256'); parser.add_argument('--output')
     parser.add_argument('--outer', type=int); parser.add_argument('--model-dir')
     parser.add_argument('--test-cache'); parser.add_argument('--test-manifest-sha')
+    parser.add_argument('--frozen-test-score'); parser.add_argument('--test-own-em')
     parser.add_argument('--encoder-micro-batch-size', type=int, default=256)
     parser.add_argument('--seed', type=int, default=1729)
     args = parser.parse_args()
     required = {'initialize': ('source_checkpoint', 'source_sha256', 'run_id', 'test_cache', 'test_manifest_sha'),
                 'score': ('prefix_inputs', 'output', 'outer', 'model_dir'),
-                'update': ('scored_features', 'own_em', 'output', 'outer', 'model_dir')}
+                'update': ('scored_features', 'own_em', 'output', 'outer', 'model_dir'),
+                'frozen-report': ('scored_features','own_em','output','outer')}
     if any(getattr(args, key) is None for key in required[args.phase]):
         parser.error('Missing phase-specific arguments: '+', '.join(required[args.phase]))
     if args.phase != 'initialize' and not 1 <= args.outer <= 200:
         parser.error('Require outer1..200')
     if args.encoder_micro_batch_size < 1:
         parser.error('Encoder scoring batch must be positive')
-    if args.phase == 'update':
+    if args.phase == 'frozen-report':
+        from .frozen_probe_report import report
+        result = report(args)
+    elif args.phase == 'update':
         c = read(Path(args.state_dir).parent/'preparation/launch-config.json')
         if c.get('selection_probe_experiment'):
             from .ab_probe import update as ab_update

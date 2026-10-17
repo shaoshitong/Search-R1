@@ -110,5 +110,54 @@ class ABProbeTests(unittest.TestCase):
                 self.assertEqual(result['probe_boundary']['last_update_outer'],0 if arm==FROZEN else outer)
                 self.assertTrue(Path(result['probe_snapshot']).exists())
 
+    def test_frozen_metrics_use_only_labeled_original_groups(self):
+        import json
+        from .frozen_probe_report import scored_metrics
+        from .test_candidate_schedule_commit import write
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);score=root/'score';score.mkdir();index=[];scores=[];outcomes=[]
+            for q in range(513):
+                ids=['q%d-t%d'%(q,j)for j in range(5)]
+                logits=([-8.]*5 if q%3==0 else [8.,-8.,-8.,-8.,-8.] if q%3==1 else [8.]*5)
+                labels=([0]*5 if q%3==0 else [1,0,0,0,0] if q%3==1 else [1]*5)
+                scores.append(dict(trajectory_ids=ids,trajectory_logits=logits))
+                for j,tid in enumerate(ids):
+                    index.append(dict(trajectory_id=tid,qid='q%d'%q,question_hash='hash%d'%q,
+                                      candidate_ordinal=q,response_index=j))
+                    if q<512:outcomes.append(dict(trajectory_id=tid,qid='q%d'%q,strict_em=labels[j],
+                        actor_version='actor0',prefix_scan_sha256='prefix',selection_sha256='selection'))
+            write(score/'manifest.json',dict(actor_version='actor0',prefix_scan_sha256='prefix',selection_sha256='selection'))
+            write(score/'index.json',index)
+            (score/'candidate-scores.jsonl').write_text(''.join(json.dumps(r)+'\n'for r in scores))
+            own=root/'own.jsonl';own.write_text(''.join(json.dumps(r)+'\n'for r in outcomes))
+            metrics,_,_=scored_metrics(score,own)
+            self.assertEqual((metrics['count'],metrics['mixed_count']),(512,171))
+            self.assertEqual(metrics['balanced_accuracy'],1.)
+            self.assertEqual(metrics['accuracy'],1.)
+            own.write_text(''.join(json.dumps(r)+'\n'for r in outcomes[:-1]))
+            with self.assertRaises(ValueError):scored_metrics(score,own)
+
+    def test_startup_reuse_binds_original_label_free_selection(self):
+        from .startup_sampling_resume import validate_reused_sampling
+        from .test_candidate_schedule_commit import write
+        from reproduction.prefix20_online.launch import sha
+        with tempfile.TemporaryDirectory() as d:
+            base=Path(d);root=base/'outers/outer-000001'
+            selected=root/'probe-score/selection.json'
+            write(selected,dict(outcome_labels_used=False,selected_questions=512))
+            write(root/'probe-score/manifest.json',dict(actor_version='run-official0',
+                selection_sha256=sha(selected),probe_before_checkpoint_sha256='head0'))
+            write(root/'prefix/complete.json',dict(run_id='run',outer=1))
+            write(root/'probe-score/complete.json',dict(run_id='run',outer=1,
+                manifest_sha256=sha(root/'probe-score/manifest.json')))
+            write(root/'full/complete.json',dict(run_id='run',outer=1,actor_version='run-official0',
+                trajectories=2560,actor_selection_sha256=sha(selected)))
+            write(base/'probe/latest.json',dict(sha256='head0'))
+            phases={x:dict(marker='complete.json',sha256=sha(root/x/'complete.json'))for x in ('prefix','probe-score','full')}
+            c=dict(run_id='run',startup_sampling_resume=dict(actor_completed_outer=0,probe_actual_adam=[0]*4,phases=phases))
+            self.assertEqual(validate_reused_sampling(base,c),selected)
+            write(selected,dict(outcome_labels_used=True,selected_questions=512))
+            with self.assertRaises(ValueError):validate_reused_sampling(base,c)
+
 
 if __name__=='__main__':unittest.main()
