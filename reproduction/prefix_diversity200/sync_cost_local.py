@@ -115,13 +115,17 @@ print(json.dumps(out,allow_nan=False))
           retrieval['total_distinct_logical_retrieval_calls'],retrieval['pending_complete_outers'],
           reservation['terminal_jobs_gpu_hours'],reservation['observed_total_reserved_gpu_hours']))
     (output/'REPORT.md').write_text(report);(root/'outputs/REPORT.md').write_text(report)
-    selection=read(output/'COMPLETED_ITERATION_SCALAR_EVIDENCE.json')[str(n)]['joint']['actor_selection']
+    scalar_series=read(output/'COMPLETED_ITERATION_SCALAR_EVIDENCE.json')
+    selection=scalar_series[str(n)]['joint']['actor_selection']
+    direct_outers=sorted(int(k) for k,v in scalar_series.items() if v.get('independent_direct_8rank_ledger_facts') is True)
+    pending_direct_outers=sorted(int(k) for k,v in scalar_series.items() if v.get('independent_direct_8rank_ledger_facts') is not True)
+    ledger_scope=f'Independent direct8rank ledger rows {direct_outers}; rows without the newer direct-read flag {pending_direct_outers} retain their original joint/CPU milestone evidence and require separate small-ledger readback. All1–{n} retain20 probe loss points.'
     handoff=(work/'CURRENT_HANDOFF.md').read_text()
     handoff=re.sub(r'^# Search-G1: .*',f'# Search-G1: {n}/200 complete, original job{state["job_id"]} continues',handoff,count=1)
     handoff=re.sub(r'Actual observation .*?\n\n',
         f'Actual observation {state["latest_actual_observed_unix"]}: {state["native_state"]}, stage {state["stage"]}, {state["node"]}. Base {state["base"]}; frozen source {state["frozen_source"]}; config SHA256 {state["config_sha256"]}. Saved joint actor/probe Adam {state["joint_actor_adam_per_rank"]}/{state["joint_probe_adam_per_rank"]}; historical20/rank unsaved probe separate. Healthy training remains continuous.\n\n',handoff,count=1,flags=re.S)
     handoff=re.sub(r'Outer\d+:.*?\n\n',
-        f'Outer{n}: continued mixed{selection["continued1024"]["mixed_questions"]}/1024; actor mixed{selection["actor512"]["mixed_questions"]}/512. No extra sampling; EM-same groups fill512. All1–{n} direct8rank20 actor/probe writes and20 loss points retained. Recent mean whole-outer{state["recent_actual_whole_outer_mean_seconds"]}s. QA latest outer{state["latest_qa_outer"]}, EM{state["latest_qa_em"]}/F1{state["latest_qa_f1"]}, count{state["latest_qa_count"]}.\n\n',handoff,count=1,flags=re.S)
+        f'Outer{n}: continued mixed{selection["continued1024"]["mixed_questions"]}/1024; actor mixed{selection["actor512"]["mixed_questions"]}/512. No extra sampling; EM-same groups fill512. {ledger_scope} Recent mean whole-outer{state["recent_actual_whole_outer_mean_seconds"]}s. QA latest outer{state["latest_qa_outer"]}, EM{state["latest_qa_em"]}/F1{state["latest_qa_f1"]}, count{state["latest_qa_count"]}.\n\n',handoff,count=1,flags=re.S)
     handoff=re.sub(r'Cost coverage:.*?\n\n',
         f'Cost coverage: generation through{generation_outer}, retrieval through{max(map(int,retrieval["complete_outer_rows"]))}, {cost["total_completed_outer_sampled_tokens"]} sampled tokens/{retrieval["total_distinct_logical_retrieval_calls"]} logical searches. Reward history through{reward_outer}, mean{reward["score_mean"]}, distinct from QA. Use published python3 -m reproduction.prefix_diversity200.sync_cost_local --root {root} --publish to observe/sync/publish without training actions; bounded CPU cost readers execute outside frozen runtime. Remote proof cache preparation/retrieval-cost-v1, at most4 new complete outers per call. Prefix searches not doubled; actor512 subset not added. No raw/model output returns locally. Failed attempts/QA/physical HTTP/cache/query counts separate.\n\n',handoff,count=1,flags=re.S)
     handoff=re.sub(r'brings observed total to[0-9.]+',f'brings observed total to{reservation["observed_total_reserved_gpu_hours"]:.6f}',handoff)

@@ -1,0 +1,102 @@
+{
+  "status": "LEGACY1_5_DIRECT_LEDGER_INCOMPLETE_MANAGEMENT_CONNECTION_FAILED",
+  "run_id": "f3ee1435e5014ba1969387c91878893a",
+  "recorded_unix": 1792212012.55915,
+  "reader_source_commit": "b0d8bbc08b2fee1c12d6844792924bf55096ac00",
+  "reader_source_sha256": "20e9aaa2c41f4ae066a948562eeccb61d83046171f25da74ea084d2d36682f59",
+  "remote_execution_confirmed": false,
+  "actual_joint_or_ledger_read_confirmed": false,
+  "expected_joint_sha256": {
+    "1": "c0e306c030a27f847db251a8c57da56d619817e4a6320918d90bc4b17f3e5182",
+    "2": "e7d3e32a72725888dd72d9d8ad3070b3f7dc04ffeede820606c2df48042bca73",
+    "3": "a4aef5933ac1e71e0f0089d306a996560e1139cb3cd54d714b1af5e09a9c2b2e",
+    "4": "ef4abfa02c9cb95db0d49ac53bdbb89f0a5a4e4fca42ff084a0179150031adad",
+    "5": "c9e6cc2af7a5de8d10d297f9fefa6bdcc2a07b048c1584320ad519ae149564b0"
+  },
+  "facts": [
+    {
+      "outer": 1,
+      "status": "NOT_READ_MANAGEMENT_CONNECTION_FAILED",
+      "expected_joint_sha256": "c0e306c030a27f847db251a8c57da56d619817e4a6320918d90bc4b17f3e5182",
+      "independent_direct_8rank_ledger_facts": false,
+      "original_joint_located": false,
+      "actor_rank_ledgers_verified": 0,
+      "probe_rank_ledgers_verified": 0,
+      "missing_files_claimed": false
+    },
+    {
+      "outer": 2,
+      "status": "NOT_READ_MANAGEMENT_CONNECTION_FAILED",
+      "expected_joint_sha256": "e7d3e32a72725888dd72d9d8ad3070b3f7dc04ffeede820606c2df48042bca73",
+      "independent_direct_8rank_ledger_facts": false,
+      "original_joint_located": false,
+      "actor_rank_ledgers_verified": 0,
+      "probe_rank_ledgers_verified": 0,
+      "missing_files_claimed": false
+    },
+    {
+      "outer": 3,
+      "status": "NOT_READ_MANAGEMENT_CONNECTION_FAILED",
+      "expected_joint_sha256": "a4aef5933ac1e71e0f0089d306a996560e1139cb3cd54d714b1af5e09a9c2b2e",
+      "independent_direct_8rank_ledger_facts": false,
+      "original_joint_located": false,
+      "actor_rank_ledgers_verified": 0,
+      "probe_rank_ledgers_verified": 0,
+      "missing_files_claimed": false
+    },
+    {
+      "outer": 4,
+      "status": "NOT_READ_MANAGEMENT_CONNECTION_FAILED",
+      "expected_joint_sha256": "ef4abfa02c9cb95db0d49ac53bdbb89f0a5a4e4fca42ff084a0179150031adad",
+      "independent_direct_8rank_ledger_facts": false,
+      "original_joint_located": false,
+      "actor_rank_ledgers_verified": 0,
+      "probe_rank_ledgers_verified": 0,
+      "missing_files_claimed": false
+    },
+    {
+      "outer": 5,
+      "status": "NOT_READ_MANAGEMENT_CONNECTION_FAILED",
+      "expected_joint_sha256": "c9e6cc2af7a5de8d10d297f9fefa6bdcc2a07b048c1584320ad519ae149564b0",
+      "independent_direct_8rank_ledger_facts": false,
+      "original_joint_located": false,
+      "actor_rank_ledgers_verified": 0,
+      "probe_rank_ledgers_verified": 0,
+      "missing_files_claimed": false
+    }
+  ],
+  "attempted_scope": {
+    "target": "h100-10",
+    "transport": "default management_transport, control_path=None, compat_handshake=False",
+    "base_glob": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501*",
+    "joint_relative_paths": [
+      "outers/outer-000001/complete.json",
+      "outers/outer-000002/complete.json",
+      "outers/outer-000003/complete.json",
+      "outers/outer-000004/complete.json",
+      "outers/outer-000005/complete.json"
+    ],
+    "follow_only_matching_original_joint_actor_receipt_ledgers_and_original_root_probe_rank_jsonl": true,
+    "maximum_per_file_bytes": 4194304,
+    "recursive_log_scan": false
+  },
+  "transport_failure": {
+    "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/legacy1-5-ledgers-1792211908799447000-transport.json",
+    "sha256": "ad9c787406175934fcc87414cded25a41ef7e073f1cd23248ef71ebf3849b783",
+    "utc": "2026-10-17T04:39:29.353133+00:00",
+    "returncode": 255,
+    "stderr": "Connection to 52.6.216.152 port 22 timed out\r\n"
+  },
+  "scope_limits": [
+    "No original ledger result was returned; no independent1\u20135 flag may be inferred or added to the scalar series.",
+    "Connection failure does not establish file absence or training failure.",
+    "Fresh/restore scheduler state remains unverified by this attempt.",
+    "The parent requested returning scope without expanded scans or repeated acceptance; no additional connection retry was made."
+  ],
+  "training_modified": false,
+  "root_status_or_report_modified": false,
+  "scalar_series_modified": false,
+  "weights_or_tensors_read": false,
+  "gpu_calls": false,
+  "cpu5_or_cpu50_replayed": false
+}

@@ -1,0 +1,37 @@
+{
+  "recorded_utc": "2026-10-17T04:43:09.117616+00:00",
+  "status": "CURRENT_REMOTE_UNKNOWN_AFTER_CONNECTION_RESET_AND_TIMEOUT",
+  "last_verified_complete_outer": 125,
+  "last_verified_observed_unix": 1792211665.9525359,
+  "last_verified_stage": "outer-000126-score",
+  "last_verified_native_state": "RUNNING",
+  "job_id": "3427",
+  "plain_alias_authenticated_earlier": true,
+  "task_owned_master_attempt": {
+    "started_unix": 1792212030.870799,
+    "control_path": "/private/tmp/qprobe3-mgmt-whofkvms/control",
+    "status": "LOCAL_MASTER_EXITED",
+    "training_action": "none",
+    "global_config_changed": false,
+    "route": "user mgmt-host alias, foreground task-owned mux",
+    "pid": 54753,
+    "argv": [
+      "ssh",
+      "-M",
+      "-S",
+      "/private/tmp/qprobe3-mgmt-whofkvms/control",
+      "-N",
+      "-o",
+      "ControlPersist=no",
+      "mgmt-host"
+    ],
+    "log": "work/search-g1-prefix1024-diversity512-20261016/management-master-1792212030870802000.log",
+    "exit_code": 255,
+    "exited_unix": 1792212116.5269482
+  },
+  "training_actions": [],
+  "goal_status": "active",
+  "current_training_failure_proven": false,
+  "global_ssh_config_changed": false,
+  "legacy1_5_direct_ledger_read": "INCOMPLETE_CONNECTION; original milestone evidence retained"
+}

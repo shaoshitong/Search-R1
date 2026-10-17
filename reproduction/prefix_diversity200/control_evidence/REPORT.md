@@ -1,5 +1,7 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
+Current connection recheck 2026-10-17T04:43:09.117616+00:00: new SSH handshake was reset, then the task-owned ordinary-alias SSH master timed out (exit255). Current remote state UNKNOWN; the last actual observation below remains125 complete /126 score on3427. Connection failure is not proof of training exit. No training stop, resubmission, restart or runtime edit.
+
 Actual complete125/200; job3427 RUNNING on h100-10/10.33.0.18, stage outer-000126-score. Saved actor/probe Adam per8rank: [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500] / [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]. Completed joint counters: [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500] / [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
 Latest QA: outer100,512questions EM28.3203% / F134.6557%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.

@@ -108,6 +108,9 @@ def refresh(root):
     actor=(value.get('actor')or{}).get('actual_adam_steps_per_rank');probe=(value.get('probe')or{}).get('actual_adam_steps_per_rank')
     selection=joint['actor_selection'];metrics=joint['probe_metrics']
     s.update(actual_complete_outer=n,stage=stage.get('stage'),native_state=native.get('JobState','UNKNOWN'),
+        current_remote_state=native.get('JobState','UNKNOWN'),last_known_native_state=native.get('JobState','UNKNOWN'),
+        last_verified_complete_outer=n,last_verified_boundary_read_unix=value['observed_unix'],
+        connection_status='SUCCESS_DEFAULT_READER',connection_rechecked_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
         job_id=native.get('JobId',s['job_id']),active_training_job=native.get('JobId',s['job_id']),
         actual_actor_adam_per_rank=actor,actual_probe_adam_per_rank=probe,
         joint_actor_adam_per_rank=joint['actor_adam'],joint_probe_adam_per_rank=joint['probe_adam'],
