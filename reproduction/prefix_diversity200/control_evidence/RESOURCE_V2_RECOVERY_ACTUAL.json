@@ -1,0 +1,50 @@
+{
+  "status": "ISOLATED_V2_TWO_ACTUAL_PROGRESS_READS_PASS_TRAINING_UNCHANGED",
+  "job": "3433",
+  "unit": "g1-resource5s-4a1cc2d500fe-3433-v2",
+  "source_commit": "d1bc3eefd2573bd4ae4263bb1eda45664ad9b6d1",
+  "observations": [
+    {
+      "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-i1i6-fresh200-20261017/resource5s-query-1792269923473428000-result.json",
+      "observed_unix": 1792269929.5433466,
+      "samples": 5,
+      "sample_observed_unix": 1792269924.4769444,
+      "stream_bytes": 8000,
+      "unit_state": {
+        "returncode": 0,
+        "stdout": "MainPID=1942612\nResult=success\nExecMainStatus=0\nControlGroup=/system.slice/g1-resource5s-4a1cc2d500fe-3433-v2.service\nLoadState=loaded\nActiveState=active\nSubState=running\n",
+        "stderr": ""
+      },
+      "errors": []
+    },
+    {
+      "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-i1i6-fresh200-20261017/resource5s-query-1792269984816874000-result.json",
+      "observed_unix": 1792269990.9313364,
+      "samples": 17,
+      "sample_observed_unix": 1792269985.6222308,
+      "stream_bytes": 26711,
+      "unit_state": {
+        "returncode": 0,
+        "stdout": "MainPID=1942612\nResult=success\nExecMainStatus=0\nControlGroup=/system.slice/g1-resource5s-4a1cc2d500fe-3433-v2.service\nLoadState=loaded\nActiveState=active\nSubState=running\n",
+        "stderr": ""
+      },
+      "errors": []
+    }
+  ],
+  "v1_oom_evidence": "resource5s-health-1792269578011692000-result.json",
+  "v1_preserved": true,
+  "resource_coverage_gaps": [
+    {
+      "after_unix": 1792256248.012871,
+      "before_unix": 1792269902.7055047,
+      "peak_and_cpu_samples_available": false
+    }
+  ],
+  "cpu_lower_bound_combination": "Maximum across segments; overlapping process lifetimes are never summed",
+  "sampled_peaks_are_not_continuous": true,
+  "training_modified": false,
+  "new_model_forward": false,
+  "actual_training_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-i1i6-fresh200-20261017/read-1792269991270712000-actual.json",
+  "actual_complete_outer": 121,
+  "not_goal_completion": true
+}
