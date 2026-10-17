@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "report_date": "2026-10-17",
+  "role": "verified_human_I1_I6_fresh_actor_switch",
+  "old": {
+    "run_id": "387d3f6e228a488f90c418e2ba47e28e",
+    "execution_id": "1bf0183c24c84abfa8a65c587089145d",
+    "complete_outers": 57,
+    "successful_adam_per_rank": 1140,
+    "outer58_new_adam_per_rank": 0,
+    "owned_births_gone": 5426,
+    "termination": "human_stop_for_I1_I6_fresh_restart",
+    "qa50": {
+      "em_correct": 157,
+      "count": 512,
+      "em": 0.306640625,
+      "f1": 0.37414124503968255,
+      "status": "old_mismatched_protocol_historical_audit_not_new_score"
+    }
+  },
+  "cleanup": {
+    "status": "EXPLICIT_WRONG_RUN_OUTPUTS_DELETED_PROTECTED_ASSETS_RETAINED",
+    "exact_namespaces": 6,
+    "removed_files": 6347,
+    "all_selected_scopes_absent": true,
+    "shared_inputs_retained": true,
+    "code_preparation_retained": true,
+    "receipt_sha256": "abdbe9123f3c357af09bebcc6909772757147fc2c7e8cda3e635c499d6f347a6",
+    "protected_warmup_model_sha256": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594"
+  },
+  "new": {
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+    "execution_id": "d8e23e068bc34eeebc214e26b200eddc",
+    "runtime_source": "79c645a4a51bd0bcb0fab4ee36b8fcd634290b2f",
+    "source_tree": "bb9a7b39c70cdb758440ab12dc90177ded3c897d",
+    "exact_source_files": 1339,
+    "base": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116",
+    "pipeline": {
+      "pid": 2370069,
+      "start_ticks": 629537068,
+      "sid": 2370069,
+      "uid": 0,
+      "alive": true
+    },
+    "stage": {
+      "checked_unix": 1792215786.0935237,
+      "outer": 0,
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "stage": "STARTING_AUX_TWO_SHARD_RETRIEVER_AND_FOUR_GROUNDING_REPLICAS"
+    },
+    "complete_outers": 0,
+    "formal_actor_adam": 0,
+    "online_probe_adam": 0,
+    "initial_probe": "retained_epoch5_EMA_model_only",
+    "actor_optimizer_scheduler_rng_sampler_pool": "fresh_official",
+    "total_outers": 200,
+    "qa": null,
+    "two_positive_flow_verification": "pending",
+    "first_complete_outer": "pending"
+  },
+  "checks": {
+    "necessary_cpu_tests": 29,
+    "extra_gpu_tests": 0,
+    "extra_evaluations": 0,
+    "new_reviews": 0
+  },
+  "observed_unix": 1792215846.8720205,
+  "operator_receipt_sha256": "28ac0190743e54802dd57d767e46132ca68d2a1760e73d69e081e24b2f34b353"
+}
