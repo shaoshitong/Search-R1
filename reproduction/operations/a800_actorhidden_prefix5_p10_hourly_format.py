@@ -20,6 +20,11 @@ HISTORY_FIELDS = (
     "candidate_mixed_count", "fallback_count", "all_correct_groups",
     "all_wrong_groups", "mixed_groups", "joint_sha256",
 )
+NATIVE_JOINT_CONTRACT = "a800_p10_eager_native_joint_bounded_metadata_v1"
+NATIVE_PARENT_RUN = "387d3f6e228a488f90c418e2ba47e28e"
+NATIVE_PARENT_EXECUTION = "cb12bf6ab10b46b0a72f1f0c2e753d78"
+NATIVE_PARENT_SOURCE = "858381986d3332898c4e8aa8e5c31e966363ceea"
+NATIVE_PARENT_JOINT_SHA = "5fe53575eea47c2393b2925e0c108ba0164787429a0528f637bfeb34a2341679"
 
 
 def require(condition, message):
@@ -122,6 +127,61 @@ def safe_qa(value, complete_outer, anchor_outer, anchor_qa):
     return result
 
 
+def native_joint_boundary(actual, start, end, history):
+    """Authenticate the actual joint27 CPU/import chain, without reading state."""
+    qualified = actual.get("native_joint_cpu_qualification")
+    imported = actual.get("native_joint_import")
+    require(isinstance(qualified, dict) and isinstance(imported, dict),
+            "Native joint recovery lacks its existing CPU qualification/import metadata")
+    require(qualified.get("status") == "NATIVE_ACTOR_PERIODIC_PROBE_JOINT_FULL_SHA_CPU_PASS"
+            and qualified.get("adapter") == "native_a800_joint_v1",
+            "Native joint CPU qualification is missing, failed, or uses another adapter")
+    require(actual["run_id"] == NATIVE_PARENT_RUN, "Native joint recovery run differs")
+    for key in ("completed_outer", "scheduler_completed_outer", "probe_completed_outer"):
+        integer(qualified.get(key), "qualified " + key)
+    parent_base = ("/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-"
+                   + actual["run_id"] + "-resume-" + NATIVE_PARENT_EXECUTION)
+    for key, value in (("run_id", actual["run_id"]), ("source_base", parent_base),
+                       ("source_execution_id", NATIVE_PARENT_EXECUTION),
+                       ("source_commit", NATIVE_PARENT_SOURCE), ("completed_outer", 27),
+                       ("scheduler_completed_outer", 27), ("probe_completed_outer", 20)):
+        require(qualified.get(key) == value, "Native joint CPU qualification " + key + " differs")
+    four_counts(qualified.get("actor_adam_per_rank"), "qualified native actor Adam", 540)
+    four_counts(qualified.get("probe_adam_per_rank"), "qualified native probe Adam", 100)
+    require(qualified.get("owned_births_all_gone") is True, "Parent owned writers were not proven gone")
+    require(digest(qualified.get("source_joint_sha256"), "qualified source joint SHA") == NATIVE_PARENT_JOINT_SHA,
+            "Qualified source joint27 SHA differs")
+    require(imported.get("status") == "NATIVE_A800_JOINT_IMPORTED"
+            and imported.get("full_state_import") is True and imported.get("optimizer_reset") is False,
+            "Native joint import is not the qualified full-state continuation")
+    for key in ("run_id", "execution_id", "source_commit"):
+        require(imported.get(key) == actual[key], "Native joint import " + key + " differs")
+    require(imported.get("source_base") == parent_base
+            and imported.get("source_execution_id") == NATIVE_PARENT_EXECUTION
+            and imported.get("completed_outer") == 27,
+            "Native joint import parent/boundary differs")
+    integer(imported.get("completed_outer"), "imported completed_outer")
+    four_counts(imported.get("actor_adam_per_rank"), "imported native actor Adam", 540)
+    four_counts(imported.get("probe_adam_per_rank"), "imported native probe Adam", 100)
+    require(actual["execution_id"] != NATIVE_PARENT_EXECUTION
+            and actual["source_commit"] != NATIVE_PARENT_SOURCE,
+            "Native recovery must use a distinct source/execution")
+    require(actual["base"] == "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-"
+            + actual["run_id"] + "-resume-" + actual["execution_id"],
+            "Native recovery namespace differs")
+    require(actual.get("cpu_qualification_is_not_cuda_restoration") is True,
+            "CPU qualification scope must remain distinct from actual CUDA restoration")
+    require(27 <= start <= end, "Native hourly window cannot predate its inherited joint27 boundary")
+    require(history[26]["joint_sha256"] == NATIVE_PARENT_JOINT_SHA,
+            "Inherited scalar history27 differs from the qualified source joint")
+    return {"adapter": "native_a800_joint_v1", "inherited_complete_outer": 27,
+            "parent_base": parent_base, "parent_execution_id": NATIVE_PARENT_EXECUTION,
+            "parent_source_commit": NATIVE_PARENT_SOURCE, "parent_joint_sha256": NATIVE_PARENT_JOINT_SHA,
+            "retained_actor_Adam_per_rank": [540] * 4, "retained_probe_Adam_per_rank": [100] * 4,
+            "full_state_import": True, "optimizer_reset": False,
+            "cpu_qualification_is_not_cuda_restoration": True}
+
+
 def format_report(record, anchor, receipt_sha, anchor_sha):
     require(record.get("exit_code") == 0 and not record.get("timed_out"),
             "Observer failed or timed out; preserve unknown")
@@ -129,7 +189,7 @@ def format_report(record, anchor, receipt_sha, anchor_sha):
     actual = json.loads(record["stdout"])
     require(actual.get("operator_contract") in (
                 "a800_actorhidden_prefix5_p10_bounded_scalar_observer_v1",
-                "a800_p10_pending_probe_bounded_metadata_v1"),
+                "a800_p10_pending_probe_bounded_metadata_v1", NATIVE_JOINT_CONTRACT),
             "Receipt is not the current P10 scalar observer")
     require(actual.get("metadata_only") is True and actual.get("models_or_tensors_read") is False,
             "Receipt is not metadata-only")
@@ -191,6 +251,8 @@ def format_report(record, anchor, receipt_sha, anchor_sha):
             require(mixed == min(candidate, 512) and fallback == 512 - mixed, "EM-priority fallback differs")
         digest(item["joint_sha256"], "joint SHA")
         history.append({key: item[key] for key in HISTORY_FIELDS})
+    native_resume = (native_joint_boundary(actual, start, end, history)
+                     if actual["operator_contract"] == NATIVE_JOINT_CONTRACT else None)
     if start and "reward_mean" in anchor:
         require(abs(number(anchor["reward_mean"], "anchor reward") - history[start - 1]["reward_mean"]) <= 1e-12,
                 "Anchor reward does not match its own outer")
@@ -296,6 +358,8 @@ def format_report(record, anchor, receipt_sha, anchor_sha):
               "QA_newness_unknown_since_anchor": unknown_qa,
               "GPU_current": UNKNOWN, "GPU_window_peak": UNKNOWN, "GPU_execution_peak": UNKNOWN,
               "GPU_sampling_coverage": "not_recorded_in_this_existing_receipt"}
+    if native_resume is not None:
+        result["native_joint_resume"] = native_resume
     return result
 
 
