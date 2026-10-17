@@ -56,14 +56,14 @@ def aggregate(base):
         summaries=[]
         for epoch,rows in sorted(curve.items()):
             summaries.append(dict(epoch=epoch,actual_updates=len(rows),first=rows[0],last=rows[-1],
-                mean={k:sum(r[k]for r in rows)/len(rows)for k in (('dist_loss','mean_correctness_kl','diversity_kl','total_loss')if arm.get('objective')=='group_vector_dist_kl'else('trajectory_bce','group_bce','total_loss'))},
+                mean={k:sum(r[k]for r in rows)/len(rows)for k in ((('dist_loss','mean_correctness_kl','diversity_kl','total_loss')if arm['mean_weight']else('dist_loss','diversity_kl','total_loss'))if arm.get('objective')=='group_vector_dist_kl'else('trajectory_bce','group_bce','total_loss'))},
                 augmented_questions=sum(r['augmented_questions']for r in rows)))
         arms.append(dict(arm=arm,epochs=epochs,update_curve_summary=summaries,
                          complete=json.loads((root/'complete.json').read_text())if(root/'complete.json').exists()else None))
     return dict(actor_version=config['actor_version'],dataset_base=config['probe20k_study']['dataset_base'],
-        questions=spec['questions'],trajectories=spec['trajectories'],test_questions=512,learning_rate=spec['learning_rate'],ema_decay=spec['ema_decay'],
+        questions=spec['questions'],trajectories=spec['trajectories'],test_questions=spec.get('test_questions',512),learning_rate=spec['learning_rate'],ema_decay=spec['ema_decay'],
         arms=arms,formal_actor_updated=False,raw_predictions_exported=False,
-        same_data_source_and_head_initialization=True,post_update_real_unaugmented_evaluation=True)
+        same_data_source_and_head_initialization=True,post_update_real_unaugmented_evaluation=True,question_split=spec.get('question_split'),test_protocol=spec.get('test_protocol','original_fixed512'))
 
 
 def render(summary,output):
@@ -91,7 +91,7 @@ def render(summary,output):
             if key=='balanced_accuracy':ax.axhline(50,color='grey',linestyle=':',linewidth=1)
             ax.set(title=split.upper()+': '+title,xlabel='Epoch (0 = common initialization)',ylabel='Percent'if scale==100 else'Loss')
             ax.grid(alpha=.2);ax.legend(fontsize=7)
-    fig.suptitle('Frozen actor50 | '+str(summary['questions'])+' G5 train / 512 G5 test | full question+20 readout\nSolid = EMA('+str(summary['ema_decay'])+'), dashed = raw; LR '+str(summary['learning_rate'])+'; true post-update evaluation')
+    fig.suptitle('Frozen actor50 | '+str(summary['questions'])+' G5 train / '+str(summary['test_questions'])+' G5 test | full question+20 readout\nSolid = EMA('+str(summary['ema_decay'])+'), dashed = raw; LR '+str(summary['learning_rate'])+'; true post-update evaluation')
     fig.savefig(output/'matched20k-ema-curves.png',dpi=160);fig.savefig(output/'matched20k-ema-curves.pdf');plt.close(fig)
     for i,arm in enumerate(summary['arms']):
         fig,axes=plt.subplots(2,3,figsize=(14,8),layout='constrained');epochs=arm['epochs'];x=[r['epoch']for r in epochs]

@@ -52,14 +52,23 @@ def train(base,arm_name):
     if vector_objective:
         from .probe_group_vector_dist import vector_dist_loss,dominant_hidden_mixup,evaluation_metrics
     out=base/'arms'/arm_name;out.mkdir(parents=True,exist_ok=True)
-    data=CombinedFeatures(Path(s['dataset_base'])/'dataset-complete.json',s.get('selected_data_blocks'))
-    questions=len(data.index)//5;updates_per_epoch=questions*100//5120
-    assert data.manifest['actor_version']==c['actor_version']
-    diagnostic=data.manifest['diagnostic'];test=NativeFeatures(diagnostic['scan_path'],validate_reads=False)
-    assert test.manifest['actor_version']==c['actor_version']
-    own=Path(diagnostic['scan_path']).parent.parent/'full/own-em.jsonl'
-    test.index=join_own_em(test.index,[json.loads(line)for line in own.open()],c['actor_version'],test.manifest_sha,'diagnostic')
-    groups=candidate_groups(data.index,questions);testgroups=candidate_groups(test.index,512)
+    pooled=None;split=s.get('question_split')
+    if split:
+        from .probe20k_features import split_question_features
+        pooled=CombinedFeatures(Path(s['dataset_base'])/'dataset-complete.json')
+        data,test=split_question_features(pooled,split['train_questions'],split['seed'])
+        if rank==0:once(out/'question-split.json',dict(train=data.binding,test=test.binding,
+            train_manifest_sha256=data.manifest_sha,test_manifest_sha256=test.manifest_sha,
+            split_by_question=True,labels_used_for_partition=False,old_diagnostic_used=False))
+    else:
+        data=CombinedFeatures(Path(s['dataset_base'])/'dataset-complete.json',s.get('selected_data_blocks'))
+        diagnostic=data.manifest['diagnostic'];test=NativeFeatures(diagnostic['scan_path'],validate_reads=False)
+        own=Path(diagnostic['scan_path']).parent.parent/'full/own-em.jsonl'
+        test.index=join_own_em(test.index,[json.loads(line)for line in own.open()],c['actor_version'],test.manifest_sha,'diagnostic')
+    questions=len(data.index)//5;test_questions=len(test.index)//5;updates_per_epoch=questions*100//5120
+    assert data.manifest['actor_version']==test.manifest['actor_version']==c['actor_version']
+    groups=candidate_groups(data.index,questions);testgroups=candidate_groups(test.index,test_questions)
+    assert questions==s['questions']and test_questions==s.get('test_questions',512)
     assert not {g['qid']for g in groups}&{g['qid']for g in testgroups}
     assert not {g['question_hash']for g in groups}&{g['question_hash']for g in testgroups}
     keys=[layout_key(g,data.index)for g in groups]
@@ -142,7 +151,7 @@ def train(base,arm_name):
         if rank==0:
             result.update(epoch=epoch,arm=arm,actor_version=c['actor_version'],actual_adam_per_rank=[actual_adam_steps(optimizer)]*8,
                 new_ema_updates=epoch*updates_per_epoch,ema_decay=s['ema_decay'],learning_rate=s['learning_rate'],
-                dataset_manifest_sha256=data.manifest_sha,test_manifest_sha256=test.manifest_sha,
+                dataset_manifest_sha256=data.manifest_sha,test_manifest_sha256=test.manifest_sha,test_questions=test_questions,test_trajectories=test_questions*5,
                 evaluation_seconds=time.monotonic()-began,train_questions=questions,train_trajectories=questions*5,selected_data_blocks=data.selected_blocks,readout='question_plus20',inference_actual_oom_fallbacks=all_fallbacks,
                 train_eval_initial_local_trajectories=s.get('train_eval_micro_questions',25)*5,
                 test_eval_initial_local_trajectories=s.get('test_eval_micro_questions',6)*5)
@@ -174,7 +183,7 @@ def train(base,arm_name):
                 with torch.autocast(device_type='cuda',dtype=torch.bfloat16):logits=model(batch).reshape(len(chosen),5)
                 if vector_objective:
                     losses=vector_dist_loss(logits.float(),labels,arm['dist_weight'],arm['mean_weight'],arm['diversity_weight'])
-                    loss_keys=('dist_loss','mean_correctness_kl','diversity_kl','total_loss')
+                    loss_keys=(('dist_loss','mean_correctness_kl','diversity_kl','total_loss')if arm['mean_weight']else('dist_loss','diversity_kl','total_loss'))
                 else:
                     losses=joint_loss(logits.float(),labels,group_weight=arm['group_weight'],mixed_target=soft_event,validate=False)
                     loss_keys=('trajectory_bce','group_bce','total_loss')
@@ -194,7 +203,7 @@ def train(base,arm_name):
                         augmented_questions=int(stats[nloss]),mixup_pairs=int(stats[nloss+1]),
                         mixup_lambda_mean=stats[nloss+2]/stats[nloss+1]if stats[nloss+1]else None,
                         online_loss_on_augmented_inputs=arm['mixup'])
-                    if vector_objective:row.update(objective='group_vector_dist_kl',mixup_primary_coefficient_strictly_above_half=True,trajectory_BCE_in_loss=False)
+                    if vector_objective:row.update(objective='group_vector_dist_kl',mixup_primary_coefficient_strictly_above_half=True,trajectory_BCE_in_loss=False,group_mean_KL_in_loss=bool(arm['mean_weight']))
                     with(out/'global-loss-updates.jsonl').open('a')as f:f.write(json.dumps(row)+'\n')
                     publish(out/'progress.json',dict(epoch=epoch,step=step,actual_adam=actual,ema_updates=actual-200))
             assert len(seen)==len(set(seen))==questions*5//8
@@ -207,7 +216,7 @@ def train(base,arm_name):
                     ema_model={k:v.detach().cpu()for k,v in ema.state_dict().items()},optimizer=copy.deepcopy(optimizer.state_dict()),
                     rank_rng=all_rng,actual_adam_per_rank=[actual]*8,ema_updates=actual-200,ema_decay=s['ema_decay'],
                     dataset_manifest_sha256=data.manifest_sha,test_manifest_sha256=test.manifest_sha,learning_rate=s['learning_rate'],
-                    selected_data_blocks=data.selected_blocks,train_questions=questions,updates_per_epoch=updates_per_epoch)
+                    selected_data_blocks=data.selected_blocks,train_questions=questions,test_questions=test_questions,question_split=split,updates_per_epoch=updates_per_epoch)
                 for values in saved['optimizer']['state'].values():
                     for key,value in list(values.items()):
                         if isinstance(value,torch.Tensor):values[key]=value.detach().cpu()
@@ -222,6 +231,7 @@ def train(base,arm_name):
             new_adam_per_rank=updates_per_epoch*s['epochs'],actual_adam_per_rank=[200+updates_per_epoch*s['epochs']]*8,ema_updates=updates_per_epoch*s['epochs'],actor_updates=0,latest=read(out/'latest.json')))
     finally:
         data.close();test.close()
+        if pooled is not None:pooled.close()
         if dist.is_initialized():dist.destroy_process_group()
 
 

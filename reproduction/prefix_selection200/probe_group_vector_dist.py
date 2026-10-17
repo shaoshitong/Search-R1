@@ -42,7 +42,8 @@ def vector_dist_loss(logits,target,dist_weight=1,mean_weight=1,diversity_weight=
     am,ad=group_logits(logits)
     mean_kl=bernoulli_kl(am,r.mean(-1)).mean()
     diversity_kl=bernoulli_kl(ad,diversity_target(r)).mean()
-    total=dist_weight*relation+mean_weight*mean_kl+diversity_weight*diversity_kl
+    total=dist_weight*relation+diversity_weight*diversity_kl
+    if mean_weight:total=total+mean_weight*mean_kl
     return dict(loss=total,total_loss=total,dist_loss=relation,mean_correctness_kl=mean_kl,
         diversity_kl=diversity_kl,predicted_mean_correctness=torch.sigmoid(am),predicted_diversity=torch.sigmoid(ad))
 
@@ -84,7 +85,8 @@ def evaluation_metrics(rows,dist_weight=1,mean_weight=1,diversity_weight=5):
         diversity_tp=tp,diversity_fn=fn,diversity_tn=tn,diversity_fp=fp,
         vector_mae=float((p-targets).abs().mean()),vector_pearson_mixed_groups=float(correlation[active].mean()),
         group_mean_mae=float((p.mean(-1)-targets.mean(-1)).abs().mean()),
-        objective='G5_Pearson_DIST_plus_mean_KL_plus_finiteG_diversity_KL',
+        objective=('G5_Pearson_DIST_plus_mean_KL_plus_finiteG_diversity_KL'if mean_weight else'G5_Pearson_DIST_plus_finiteG_diversity_KL'),
+        group_mean_KL_in_training_loss=bool(mean_weight),group_mean_KL_weight=mean_weight,
         trajectory_BCE_in_training_loss=False,binary_mixed_BCE_in_training_loss=False,
         vector_relation_constant_target_term=0,diversity_threshold=.5,
         legacy_trajectory_and_binary_mixed_BCE_are_diagnostics_only=True)

@@ -40,3 +40,27 @@ class CombinedFeatures:
 
     def close(self):
         for part in self.parts:part.close()
+
+
+class QuestionSubsetFeatures:
+    """Question-disjoint read-only view; all five siblings stay in one split."""
+    def __init__(self,parent,groups,name,seed):
+        import hashlib
+        self.parent=parent;self.manifest=parent.manifest;self.selected_blocks=parent.selected_blocks
+        self.binding=dict(source_manifest_sha256=parent.manifest_sha,split=name,seed=seed,
+            questions=len(groups),question_ids=[g['qid']for g in groups])
+        self.manifest_sha=hashlib.sha256(json.dumps(self.binding,sort_keys=True).encode()).hexdigest()
+        self.index={tid:dict(parent.index[tid],candidate_ordinal=i)for i,g in enumerate(groups)for tid in g['trajectory_ids']}
+    def get_batch(self,ids,device):return self.parent.get_batch(ids,device)
+    def close(self):pass  # Parent lifetime is owned by the single trainer.
+
+
+def split_question_features(parent,train_questions,seed):
+    import random
+    from .probe import candidate_groups
+    groups=candidate_groups(parent.index,len(parent.index)//5)
+    order=list(range(len(groups)));random.Random(seed).shuffle(order)
+    selected=set(order[:train_questions])
+    train=[g for i,g in enumerate(groups)if i in selected]
+    test=[g for i,g in enumerate(groups)if i not in selected]
+    return QuestionSubsetFeatures(parent,train,'train',seed),QuestionSubsetFeatures(parent,test,'test',seed)
