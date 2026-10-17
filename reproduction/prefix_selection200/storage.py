@@ -13,7 +13,8 @@ import re
 import stat
 import time
 
-from .contract import WORLD, PROBE_PERIOD, PROBE_UPDATES, CANDIDATE_QUESTIONS, G
+from .contract import WORLD, PROBE_PERIOD, PROBE_UPDATES, G
+from .candidate_schedule import candidate_count
 
 
 REMOTE_PARENT = Path('/mnt/data/shaoshitong')
@@ -54,8 +55,9 @@ def owned(base, path):
 
 def validate_base(base):
     base = Path(base)
-    if (not base.is_absolute() or '..' in base.parts or base.parent not in (REMOTE_PARENT, A800_REMOTE_PARENT)
-            or not base.name.startswith(PREFIX) or base.resolve(strict=True) != base):
+    hpc3 = base == Path('/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017')
+    if (not base.is_absolute() or '..' in base.parts or (not hpc3 and (base.parent not in (REMOTE_PARENT, A800_REMOTE_PARENT)
+            or not base.name.startswith(PREFIX))) or base.resolve(strict=True) != base):
         raise ValueError('Pruning is restricted to a canonical new prefix-selection200 namespace')
     config = read(owned(base, base/'preparation/launch-config.json'))
     native=config.get('actor_hidden_native',False)
@@ -197,7 +199,7 @@ def planned_assets(base, config, outer, root, joint, update, references):
     manifest = read(manifest_path)
     if config.get('actor_hidden_native'):
         if (manifest['role']!='current_actor_native_hidden_features' or manifest['run_id']!=config['run_id']
-                or manifest['outer']!=outer or manifest['count']!=CANDIDATE_QUESTIONS*G or manifest['independent_encoder_forward']):
+                or manifest['outer']!=outer or manifest['count']!=candidate_count(config,outer)*G or manifest['independent_encoder_forward']):
             raise ValueError('Consumed native features do not belong to this completed outer')
         scans=[root/'prefix/scan/scan-complete.json']
         diag=root/'diagnostic-complete.json'

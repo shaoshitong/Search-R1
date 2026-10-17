@@ -20,6 +20,8 @@ PREFIX = a800_runtime.PREFIX
 
 
 def validate_config(c, base):
+    from .candidate_schedule import validate_schedule
+    validate_schedule(c, required=c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1')
     if c['base'] != str(base) or not str(base).startswith(PREFIX):
         raise ValueError('Use the isolated remote prefix-selection namespace')
     required = dict(outers=200, candidate_questions=CANDIDATE_QUESTIONS, selected_questions=512,
@@ -83,6 +85,9 @@ def _json_request(url):
 
 def reused_phase(base, root, phase, c):
     """Only explicitly imported complete source phases may bypass execution."""
+    if c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1':
+        from .i1_i6_joint_resume import inherited_phase
+        return inherited_phase(base, root, phase, c)
     if c.get('resume_joint', {}).get('adapter') == 'native_a800_joint_v1':
         from .native_joint_resume import inherited_phase
         return inherited_phase(base, root, phase, c)
@@ -125,8 +130,10 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
             or (periodic_update and updated['checkpoint'] != probe)):
         raise RuntimeError('Actual actor/probe Adam boundaries differ from the completed outer')
     pool = read(base/'question-pool/state.json')
-    if (pool['next_outer'] != outer+1 or pool['consumed_candidates'] != CANDIDATE_QUESTIONS*outer
-            or pool['cycle']*len(pool['order'])+pool['cursor'] != CANDIDATE_QUESTIONS*outer):
+    from .candidate_schedule import consumed_candidates_through, schedule_metadata
+    consumed = consumed_candidates_through(c, outer)
+    if (pool['next_outer'] != outer+1 or pool['consumed_candidates'] != consumed
+            or pool['cycle']*len(pool['order'])+pool['cursor'] != consumed):
         raise RuntimeError('Joint commit cannot advance beyond its actual reserved candidate pool')
     snapshot = root/'pool-state-at-completion.json'
     once(snapshot, pool)
@@ -148,6 +155,17 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
         actor_selection_outcome_labels_used=periodic_update, rollout=read(root/'full/complete.json'),
         probe_metrics=probe_metrics, periodic_probe_update=periodic_update,
         probe_boundary=boundary, source_commit=c['source_commit'], observed_unix=time.time())
+    complete['candidate_schedule'] = schedule_metadata(c, outer)
+    if c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1':
+        from .i1_i6_joint_resume import verify_source_compatibility, source_envelope
+        complete.update(source_envelope(c, verify_source_compatibility(c)))
+        parent = c['resume_joint']
+        complete['source_lineage'] = dict(parent_source_commit=parent['source_commit'],
+            parent_execution_id=parent['source_execution_id'], parent_base=parent['source_base'],
+            inherited_complete_through=parent['completed_outer'],
+            qualification_proof_sha256=parent['qualification_proof_sha256'],
+            imported_history_receipt=str(base/'preparation/resume-joint-receipt.json'),
+            effective_candidate_schedule_from_outer=c['candidate_schedule']['effective_from_outer'])
     complete['phase_timings'] = {key:value for key,value in timings.items()
                                 if key.startswith('outer-%06d-'%outer)}
     if c.get('resume_pending_probe'):
@@ -183,7 +201,8 @@ def run(base):
         raise ValueError('Submitted configuration changed')
     if (base / 'logs/process-ledger.json').exists():
         raise RuntimeError('Existing execution needs explicit recovery; do not replay its launch')
-    if c.get('resume_pending_probe') or c.get('resume_joint') or c.get('resume_import'):
+    compatible_resume = c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1'
+    if c.get('resume_pending_probe') or c.get('resume_import') or (c.get('resume_joint') and not compatible_resume):
         raise ValueError('I1-I6 fresh source requires an explicitly compatible recovery adapter; old hardcoded-count adapters are forbidden')
     pending_recovery = c.get('resume_pending_probe')
     if pending_recovery and c.get('resume_joint'):
@@ -195,7 +214,9 @@ def run(base):
         from .pending_probe_resume import validate_imported_pending
         outer = validate_imported_pending(base, c)
     elif outer:
-        if c['resume_joint'].get('adapter') == 'native_a800_joint_v1':
+        if compatible_resume:
+            from .i1_i6_joint_resume import validate_imported_boundary
+        elif c['resume_joint'].get('adapter') == 'native_a800_joint_v1':
             from .native_joint_resume import validate_imported_boundary
         else:
             from .resume import validate_imported_boundary
@@ -406,7 +427,10 @@ def run(base):
             actor_binding_path = root / 'actor-binding.json'
             if actor_binding_path.exists():
                 inherited_binding = False
-                if c.get('resume_joint', {}).get('adapter') == 'native_a800_joint_v1':
+                if compatible_resume:
+                    from .i1_i6_joint_resume import inherited_actor_binding
+                    inherited_binding = inherited_actor_binding(base, root, c, actor_binding)
+                elif c.get('resume_joint', {}).get('adapter') == 'native_a800_joint_v1':
                     from .native_joint_resume import inherited_actor_binding
                     inherited_binding = inherited_actor_binding(base, root, c, actor_binding)
                 if ((not c.get('resume_import') and not inherited_binding)
@@ -464,7 +488,13 @@ def run(base):
                 return actor_selection_path
 
             actor_selection_path = sample_outer()
-            from .actor import collect_oom_retry
+            if compatible_resume:
+                from .i1_i6_actor_resume import collect_oom_retry, archive_zero_write_attempt
+            else:
+                from .actor import collect_oom_retry
+                from .guard_retry import archive_zero_write_attempt
+            actor_module = ('reproduction.prefix_selection200.i1_i6_actor_resume' if compatible_resume
+                            else 'reproduction.prefix_selection200.actor')
             attempt_id = uuid.uuid4().hex
             while True:
                 attempt_config = dict(grounding.bind_attempt(c, grounding_state, actor, outer), actor_attempt_id=attempt_id,
@@ -473,13 +503,12 @@ def run(base):
                     prefix_probe_receipt=str(base/'probe/latest.json'))
                 attempt_path = root / ('actor-attempt-%s-config.json' % attempt_id)
                 once(attempt_path, attempt_config)
-                code = phase('outer-%06d-actor-%s' % (outer, attempt_id), distributed('reproduction.prefix_selection200.actor',
+                code = phase('outer-%06d-actor-%s' % (outer, attempt_id), distributed(actor_module,
                     ['--config', str(attempt_path), '--outer', str(outer), '--rollout', str(root / 'full/complete.json'),
                      '--output', str(base / 'actor')]), allow_failed=True)
                 if code == 0:
                     guarded = base/'actor/outers'/('outer-%04d-attempt-%s' % (outer, attempt_id))/'guard-result.json'
                     if guarded.is_file():
-                        from .guard_retry import archive_zero_write_attempt
                         rejected = archive_zero_write_attempt(base, attempt_config, outer, root, attempt_id)
                         stage('OUTER_GUARD_ZERO_WRITE_RESAMPLE', logical_outer_not_completed=outer,
                               zero_write_attempt=attempt_id, scheduler_advanced=False)

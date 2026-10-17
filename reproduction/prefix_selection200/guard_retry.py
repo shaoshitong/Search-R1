@@ -14,7 +14,8 @@ import time
 import uuid
 
 from .actor import canonical, restore_metadata, _state_binding
-from .contract import CANDIDATE_QUESTIONS, WORLD
+from .contract import WORLD
+from .candidate_schedule import candidate_count
 from .storage import owned, validate_base
 
 GENERATED = ('prefix', 'probe-score', 'full', 'full-pool', 'full-pool-config.json')
@@ -147,11 +148,12 @@ def archive_zero_write_attempt(base, config, outer, root, attempt_id):
     """After owned workers exit, retain rejected artifacts and return a fresh sample ID.
 
     Caller injects ``sampling_attempt_id`` into a NEW rollout config, reruns
-    prefix/score/continue on the retained2560 questions, then uses a new actor
+    prefix/score/continue on the retained scheduled candidates, then uses a new actor
     attempt ID. It must not call pool.prepare again or replay the bad rollout.
     An interrupted archive is retained with its intent and requires reconciliation.
     """
     base, disk = validate_base(base); root = Path(root)
+    candidates = candidate_count(config, outer)
     if (type(outer) is not int or not 1 <= outer <= 200 or
             root != base / 'outers' / ('outer-%06d' % outer) or
             not isinstance(attempt_id, str) or re.fullmatch('[0-9a-f]{32}', attempt_id) is None or
@@ -177,18 +179,18 @@ def archive_zero_write_attempt(base, config, outer, root, attempt_id):
         questions = _read(root / 'questions.json'); selection = _read(root / 'selection.json')
         reservation = _read(root / 'pool-reservation.json')
         if (questions.get('run_id') != config['run_id'] or questions.get('outer') != outer or
-                questions.get('questions') != CANDIDATE_QUESTIONS or len(questions.get('rows', [])) != CANDIDATE_QUESTIONS or
-                len({row['qid'] for row in questions['rows']}) != CANDIDATE_QUESTIONS or
+                questions.get('questions') != candidates or len(questions.get('rows', [])) != candidates or
+                len({row['qid'] for row in questions['rows']}) != candidates or
                 questions.get('selection_sha256') != preserved['selection.json']['sha256'] or
                 selection.get('run_id') != config['run_id'] or selection.get('outer') != outer or
-                selection.get('questions') != CANDIDATE_QUESTIONS or
-                len(selection.get('rows', [])) != CANDIDATE_QUESTIONS or
+                selection.get('questions') != candidates or
+                len(selection.get('rows', [])) != candidates or
                 {row['qid'] for row in selection['rows']} != {row['qid'] for row in questions['rows']} or
                 reservation.get('outer') != outer or
-                len(reservation.get('indices', [])) != CANDIDATE_QUESTIONS or
-                len(set(reservation['indices'])) != CANDIDATE_QUESTIONS or
+                len(reservation.get('indices', [])) != candidates or
+                len(set(reservation['indices'])) != candidates or
                 reservation['indices'] != [row['pool_index'] for row in selection['rows']]):
-            raise ValueError('Keep the exact already-reserved2560 distinct question identities')
+            raise ValueError('Keep the exact already-reserved scheduled distinct question identities')
         guard_sha = _sha(guard_path)
         archive_parent = owned(base, root / 'guard-rejected-attempts')
         if not archive_parent.exists(): os.mkdir('guard-rejected-attempts', dir_fd=root_fd)
@@ -229,7 +231,7 @@ def archive_zero_write_attempt(base, config, outer, root, attempt_id):
                 actual_adam_steps_per_rank=prior, new_adam_steps_per_rank=[0]*WORLD, opportunities_processed=20,
                 complete_outer=False, scheduler_completed_outer=outer - 1, scheduler_advances=0,
                 logical_count_advanced=False, automatic_rollback_performed=False, actor_version=actor_version,
-                reserved_questions=CANDIDATE_QUESTIONS, same_reserved_questions=True, fresh_current_actor_sampling_required=True,
+                reserved_questions=candidates, same_reserved_questions=True, fresh_current_actor_sampling_required=True,
                 replay_rejected_rollout=False, sampling_attempt_id=sampling_attempt_id,
                 new_sampling_attempt_id=sampling_attempt_id, optimizer_writes_this_attempt=0,
                 archive_path=str(archive), receipt_path=str(completed),

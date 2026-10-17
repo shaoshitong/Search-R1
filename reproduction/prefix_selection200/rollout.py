@@ -25,7 +25,8 @@ import time
 from reproduction.prefix20_online.pool import atomic, canonical, digest, immutable, read
 from reproduction.prefix20_online.rollout import prompt_tokens, strict_label, utc
 from .contract import (G, PREFIX_TOKENS, QMAX, SAMPLING_CONTRACT, WIDTH, WORLD,
-    CANDIDATE_QUESTIONS, SELECTED_QUESTIONS)
+    PERIODIC_CANDIDATES, SELECTED_QUESTIONS)
+from .candidate_schedule import candidate_count, schedule_metadata
 from .interaction_protocol import (ACTUAL_COMPUTE_DTYPE, ACTION_TOKENS, BOUNDARY, BUDGET,
     COMPUTE_DTYPE, CONTRACT as INTERACTION_CONTRACT, MAX_OBSERVATION_TOKENS, MAX_SEARCH_TURNS,
     MAX_START_TOKENS, append_chunk, finish_action, first_action_cut, native_snapshot,
@@ -78,12 +79,27 @@ def root_dir(config, outer):
     return Path(config['base']) / 'outers' / ('outer-%06d' % outer)
 
 
-def question_count(config, phase):
-    n=int(config.get('rollout_candidate_questions',CANDIDATE_QUESTIONS) if phase=='prefix'
-          else config.get('rollout_continuation_questions',SELECTED_QUESTIONS))
-    if n not in (SELECTED_QUESTIONS,CANDIDATE_QUESTIONS):
-        raise ValueError('Native phase covers512 diagnostic/selected or2560 candidate questions, each complete G5')
-    return n
+def question_count(config, phase, outer=None):
+    if phase not in ('prefix', 'continue'):
+        raise ValueError('Unknown native rollout phase')
+    if outer is None:
+        if config.get('candidate_schedule') is not None:
+            raise ValueError('Scheduled rollout count requires its actual outer')
+        expected = PERIODIC_CANDIDATES
+    else:
+        expected = candidate_count(config, outer)
+    if phase == 'prefix':
+        requested = config.get('rollout_candidate_questions', SELECTED_QUESTIONS if config.get('diagnostic_only') else expected)
+        allowed = {expected, SELECTED_QUESTIONS} if config.get('candidate_schedule') is None else {SELECTED_QUESTIONS if config.get('diagnostic_only') else expected}
+    else:
+        requested = config.get('rollout_continuation_questions', SELECTED_QUESTIONS)
+        allowed = {SELECTED_QUESTIONS, PERIODIC_CANDIDATES}
+        if config.get('candidate_schedule') is not None:
+            from .periodic import is_probe_update
+            allowed = {SELECTED_QUESTIONS, PERIODIC_CANDIDATES} if is_probe_update(outer) else {SELECTED_QUESTIONS}
+    if type(requested) is not int or requested not in allowed:
+        raise ValueError('Native question count differs from scheduled prefix/Top512/periodic-full-pool scope')
+    return requested
 
 
 def phase_output(config,outer,phase):
@@ -237,7 +253,7 @@ def validate_rank_receipt(config_path, config, outer, phase, rank, path):
     """
     path=Path(path);saved=read(path);current_sha=digest(config_path)
     expected=dict(run_id=config['run_id'],outer=outer,phase=phase,rank=rank,
-                  actor_version=config['actor_version'],trajectories=question_count(config,phase)*G//WORLD,
+                  actor_version=config['actor_version'],trajectories=question_count(config,phase,outer)*G//WORLD,
                   interaction_protocol=INTERACTION_CONTRACT,actual_compute_dtype=ACTUAL_COMPUTE_DTYPE,
                   sampling_attempt_id=config.get('sampling_attempt_id'))
     if any(saved.get(key)!=value for key,value in expected.items()):
@@ -283,10 +299,10 @@ def _states(config, outer, rank, phase, tokenizer, selection_path):
         if bundle.get('outer', outer) != outer:
             raise ValueError('Questions belong to another outer')
         groups = [dict(row) for row in bundle['rows']]
-        if len(groups) != question_count(config,phase) or len({r['qid'] for r in groups}) != question_count(config,phase):
-            raise ValueError('Candidates must cover every distinct question in the current2560-question pool')
+        if len(groups) != question_count(config,phase,outer) or len({r['qid'] for r in groups}) != question_count(config,phase,outer):
+            raise ValueError('Candidates must cover every distinct question in the current scheduled question pool')
         normalized = [r.get('normalized_question_hash', r['question_hash']) for r in groups]
-        if len(set(normalized)) != question_count(config,phase):
+        if len(set(normalized)) != question_count(config,phase,outer):
             raise ValueError('Candidate question contents repeat')
         for i, group in enumerate(groups):
             group.setdefault('candidate_ordinal', i)
@@ -297,9 +313,9 @@ def _states(config, outer, rank, phase, tokenizer, selection_path):
     if (receipt.get('interaction_protocol') != INTERACTION_CONTRACT
             or receipt.get('actual_compute_dtype') != ACTUAL_COMPUTE_DTYPE):
         raise ValueError('Selected continuation prefix scan used a different interaction protocol/dtype')
-    groups = validate_selection(read(selection_path), receipt,question_count(config,phase))
+    groups = validate_selection(read(selection_path), receipt,question_count(config,phase,outer))
     assigned = groups[rank::WORLD]
-    if len(assigned) != question_count(config,phase)//WORLD:
+    if len(assigned) != question_count(config,phase,outer)//WORLD:
         raise ValueError('Continuation requires equal completeG5 question shards across four GPUs')
     wanted = {tid: group for group in assigned for tid in group['trajectory_ids']}
     states = {}
@@ -645,7 +661,7 @@ def pack_prefix(config, outer, ranks):
             if 'normalized_question_hash' in original:
                 row['normalized_question_hash'] = original['normalized_question_hash']
             rows.append(row); policies.extend(ids); positions.extend(pos); offsets.append(len(policies))
-    if len(rows) != question_count(config,'prefix')*5 or len(groups) != question_count(config,'prefix'):
+    if len(rows) != question_count(config,'prefix',outer)*5 or len(groups) != question_count(config,'prefix',outer):
         raise ValueError('Prefix scan requires all current candidate completeG5 groups')
     for siblings in groups.values():
         if len(siblings) != G or {r['response_index'] for r in siblings} != set(range(G)) or len({r['question_hash'] for r in siblings}) != 1:
@@ -681,6 +697,7 @@ def pack_prefix(config, outer, ranks):
         sources_sha256=source_sha, prefix_window='multi_turn_actual_kept_policy_tokens',
         prefix_source='same_trajectory_native_prefix_then_continue', labels_present=False,
         sampling_contract=CONTRACT, action_boundary=BOUNDARY, interaction_protocol=INTERACTION_CONTRACT,
+        **schedule_metadata(config, outer),
         files={name:dict(sha256=digest(out/name),bytes=(out/name).stat().st_size) for name in
                tuple(name+'.npy' for name in arrays)+('index.jsonl',)})
     immutable(out/'scan-complete.json',proof)
@@ -702,7 +719,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
     checked=[validate_rank_receipt(config_path,config,outer,phase,rank,output/('rank-%d-complete.json'%rank))
              for rank in range(WORLD)]
     ranks=[item[0] for item in checked]
-    expected=question_count(config,phase)*G//WORLD
+    expected=question_count(config,phase,outer)*G//WORLD
     for rank,value in enumerate(ranks):
         if value['rank']!=rank or value['phase']!=phase or value['outer']!=outer or value['trajectories']!=expected or value['actor_version']!=config['actor_version']:
             raise ValueError('Native phase rank completion identity/count differs')
@@ -716,6 +733,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
         candidate_questions_sha256=digest(root/'questions.json'),head_prefix_tokens=PREFIX_TOKENS,
         trajectories=sum(r['trajectories'] for r in ranks),questions=sum(r['questions'] for r in ranks),
         sampling_contract=CONTRACT,action_boundary=BOUNDARY,interaction_protocol=INTERACTION_CONTRACT,
+        **schedule_metadata(config, outer),
         actual_compute_dtype=ACTUAL_COMPUTE_DTYPE, sampling_attempt_id=config.get('sampling_attempt_id'),
         actual_sampled_tokens=sum(r['actual_sampled_tokens'] for r in ranks),
         native_generation_requests=sum(r['generation_requests'] for r in ranks),completed_utc=utc())
@@ -729,7 +747,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
     else:
         selection_path=Path(selection_path or root/'probe-score'/'selection.json')
         prefix=read(root/'prefix'/'complete.json')
-        groups=validate_selection(read(selection_path),prefix,question_count(config,phase))
+        groups=validate_selection(read(selection_path),prefix,question_count(config,phase,outer))
         wanted={tid:group['qid'] for group in groups for tid in group['trajectory_ids']}
         seen=set(); all_labels=[]
         for rank in ranks:
@@ -750,8 +768,8 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
         value.update(own_em=file_item(own,len(all_labels)),shards=[r['full'] for r in ranks],
             selection_sha256=digest(selection_path),prefix_scan_sha256=prefix['scan_sha256'],
             actor_selection_path=str(selection_path.resolve()),actor_selection_sha256=digest(selection_path),
-            actual_selected_mixed_questions=mixed,actual_selected_mixed_fraction=mixed/question_count(config,phase),
-            all_candidate_mixed_accuracy_available=question_count(config,phase)==CANDIDATE_QUESTIONS,
+            actual_selected_mixed_questions=mixed,actual_selected_mixed_fraction=mixed/question_count(config,phase,outer),
+            all_candidate_mixed_accuracy_available=question_count(config,phase,outer)==candidate_count(config,outer),
             selected_strict_correct=sum(row['strict_em'] for row in all_labels))
     immutable(target,value)
     return value
