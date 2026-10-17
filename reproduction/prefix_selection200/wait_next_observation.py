@@ -69,7 +69,7 @@ def run(path):
             code = REMOTE.replace('BASE', repr(spec['base'])).replace('VERIFIED', str(spec['verified_outer']))
             if state.get('management_transport', {}).get('use_established_controller_route'):
                 from reproduction.h1008_qprobe.established_controller_transport import remote as established_remote
-                value = json.loads(established_remote(code, transport, target='h100-8'))
+                value = json.loads(established_remote(code, transport, target='h100-8', control_path=control))
             else:
                 value = json.loads(remote(code, transport, control_path=control, target='h100-8',
                     source_bound_tcp=state.get('management_transport', {}).get('source_bound_direct_tcp_enabled', False),
