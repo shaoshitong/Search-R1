@@ -214,7 +214,8 @@ def no201(base, run):
                 else:
                     need(terminal['kind'] == ('OUTER_BUDGET' if complete else 'ABORTED_ATTEMPT') and
                          terminal.get('cumulative_writes') == attempt['optimizer_writes_after'] and
-                         sum(r['kind'] == 'OPTIMIZER_WRITE' for r in group) == attempt['optimizer_writes_this_attempt'],
+                         [r.get('write_count') for r in group if r['kind'] == 'OPTIMIZER_WRITE'] ==
+                         list(range(attempt['optimizer_writes_before']+1, attempt['optimizer_writes_after']+1)),
                          'INCOMPLETE_WORKER_ATTEMPT')
                     need(all(r['kind'] not in ('OUTER_BUDGET', 'ABORTED_ATTEMPT') for r in group[:-1]),
                          'WORKER_CONTINUES_AFTER_TERMINAL')
@@ -226,6 +227,9 @@ def no201(base, run):
                      'FOREIGN_EXTRA_OR_POST200_RANK_ATTEMPT')
                 if role == 'scheduler':
                     need(row.get('world_size') == 4 and row.get('slurm_job_id') == job, 'SCHEDULER_NATIVE4_IDENTITY_DIFFERS')
+                else:
+                    need(row.get('kind') in ('POLICY_MONITOR', 'OPTIMIZER_WRITE', 'OPPORTUNITY',
+                         'OUTER_BUDGET', 'ABORTED_ATTEMPT'), 'UNKNOWN_WORKER_EVENT')
                 if index != current:
                     need(index == current+1, 'REORDERED_OR_MISSING_RANK_ATTEMPT')
                     if events: check_group(current, events)

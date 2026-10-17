@@ -74,7 +74,7 @@ class FinalAcceptanceTests(unittest.TestCase):
                 self.schedulers[rank] += [dict(row, kind=kind) for kind in ('BEGIN', 'COMMIT_PREPARED', 'COMPLETE')]
                 context = dict(logical_update=step, attempt_id=aid, attempt_index=step)
                 common = dict(run_id=self.run_id, rank=rank, context=context)
-                self.workers[rank] += [dict(common, kind='OPTIMIZER_WRITE'), dict(common, kind='OPPORTUNITY'),
+                self.workers[rank] += [dict(common, kind='OPTIMIZER_WRITE', write_count=step), dict(common, kind='OPPORTUNITY'),
                     dict(run_id=self.run_id, rank=rank, kind='OUTER_BUDGET', logical_update=step,
                          attempt_id=aid, attempt_index=step, cumulative_writes=step)]
         self.ledger('logs/actual-updates.jsonl', self.updates)
@@ -234,6 +234,15 @@ class FinalAcceptanceTests(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, 'PARTIAL_OR_OVERSIZED'):
                         core.no201(self.base, self.run)
                     self.ledger(name, rows)
+
+    def test_worker_write201_counter_cannot_hide_under_logical200(self):
+        with tempfile.TemporaryDirectory() as td:
+            self.fixture(td)
+            bad = copy.deepcopy(self.workers[0])
+            next(row for row in reversed(bad) if row['kind'] == 'OPTIMIZER_WRITE')['write_count'] = 201
+            self.ledger('logs/optimizer-rank-0.jsonl', bad)
+            with self.assertRaisesRegex(ValueError, 'INCOMPLETE_WORKER_ATTEMPT'):
+                core.no201(self.base, self.run)
 
     def test_real_guard_retry_before200_is_allowed_without_inventing_an_update(self):
         with tempfile.TemporaryDirectory() as td:
