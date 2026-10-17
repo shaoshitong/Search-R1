@@ -1,6 +1,6 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Actual complete123/200; job3427 RUNNING on h100-10/10.33.0.18, stage outer-000124-continue. Saved actor/probe Adam per8rank: [2460, 2460, 2460, 2460, 2460, 2460, 2460, 2460] / [2460, 2460, 2460, 2460, 2460, 2460, 2460, 2460]. Completed joint counters: [2460, 2460, 2460, 2460, 2460, 2460, 2460, 2460] / [2460, 2460, 2460, 2460, 2460, 2460, 2460, 2460]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
+Actual complete123/200; job3427 RUNNING on h100-10/10.33.0.18, stage outer-000124-diversity-selection. Saved actor/probe Adam per8rank: [2460, 2460, 2460, 2460, 2460, 2460, 2460, 2460] / [2460, 2460, 2460, 2460, 2460, 2460, 2460, 2460]. Completed joint counters: [2460, 2460, 2460, 2460, 2460, 2460, 2460, 2460] / [2460, 2460, 2460, 2460, 2460, 2460, 2460, 2460]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
 Latest QA: outer100,512questions EM28.3203% / F134.6557%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.
 Recent actual completejoint intervals within unchanged execution base/source[434.3809869289398, 432.7028522491455, 437.50955629348755, 439.49929571151733]; mean436.023s=7.267min. These wall intervals include any preceding milestoneQA and scheduling overhead; pure per-outer phase durations are recorded separately. Startup and terminal failure/repair costs are separate.
@@ -145,14 +145,12 @@ Cost: COST_SNAPSHOT.json contains existing native token/request metadata and pha
 
 Completion remains unproven: actual200, normal50/100/150/200checkpoint/QA, fullseven51713, HF/tokenizer/nativefinite/nonzeroupdate/source/split identity, cost/ownedcleanup and finalpublication. GoalACTIVE; no stop/restart is performed by this reader.
 
-Latest passive telemetry4466 samples, last observed1792210825.8183596; errors[], wholecard maxused81057MiB/minfree25MiB (coverage above).
+Latest passive telemetry4476 samples, last observed1792210953.915376; errors[], wholecard maxused81057MiB/minfree25MiB (coverage above).
 
 ## Original reward and scoped costs
 
 Original saved actor grounding reward outer123 selected512G5/2560 mean1.02870277, min0.05000000, max1.59934068. All8rank statistics finite; prefix correctness head not used as reward. Original joint receipt hashes bind history1–123; no new forward. Selected training reward is distinct from heldout QA or proof of selection benefit.
 
-Committed generation/retrieval through123/107: 105317333 sampled tokens, 557752 logical searches; backlog[108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123]. Inherited prefix searches not doubled; actor512 subset not added. Failed attempts, QA, HTTP retries/cache misses and physical FAISS calls separately scoped.
+Committed generation/retrieval through123/111: 105317333 sampled tokens, 578231 logical searches; backlog[112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123]. Inherited prefix searches not doubled; actor512 subset not added. Failed attempts, QA, HTTP retries/cache misses and physical FAISS calls separately scoped.
 
-Historical terminal reservations 51.802222 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total119.775556 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
-
-Checkpoint100 independent CPU audit: FAILED driver-boundary assertion; original proof SHAf917d16cf75a658e1fa066775d60f9053929bd7d099cc7a5c40d18e2579cbdcf. Exit1, CPU90.035217s; small driver/pool/config diagnosis in progress. No100 acceptance PASS claim and no training action. HF/all8 reads preceded failure; full acceptance remains incomplete.
+Historical terminal reservations 51.802222 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total120.053333 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
