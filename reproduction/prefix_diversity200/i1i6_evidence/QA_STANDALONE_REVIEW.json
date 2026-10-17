@@ -1,0 +1,262 @@
+{
+  "utc": "2026-10-17T06:49:31.378819+00:00",
+  "source_sha256": {
+    "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/qa_standalone.py": "f337959993026f0a2ccaf7462b1d5c1722eccead40a9c7c42f16f18e834e595f",
+    "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/qa_standalone_control.py": "27b0775c17809b6523045d2363f472d386a9b94e467e8d86ee09dc094c01557d"
+  },
+  "scope": "Bounded static review and CPU fake Dataset/Popen/health/cgroup fixture. No source edits, remote, GPU, deployment, or training operation.",
+  "fixtures": {
+    "valid_order": {
+      "accepted": true,
+      "error": null,
+      "loaded_paths": [
+        "/private/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-standalone-cpu-3eenryv9/source-run/retrieval-cache/arrow/fingerprint/json-train-00000-of-00002.arrow",
+        "/private/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-standalone-cpu-3eenryv9/source-run/retrieval-cache/arrow/fingerprint/json-train-00001-of-00002.arrow"
+      ]
+    },
+    "wrong_order": {
+      "accepted": false,
+      "error": "ValueError: Original ordered Arrow corpus changed",
+      "loaded_paths": []
+    },
+    "alien_arrow_same_size_rejected": {
+      "accepted": false,
+      "error": "ValueError: '/private/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-standalone-cpu-3eenryv9/alien-arrow' is not in the subpath of '/private/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-standalone-cpu-3eenryv9/source-run/retrieval-cache/arrow' OR one path is relative and the other is absolute.",
+      "loaded_paths": []
+    },
+    "symlink_shard_escape": {
+      "accepted": false,
+      "error": "ValueError: Original ordered Arrow corpus changed",
+      "loaded_paths": []
+    },
+    "run_cleanup_guard_identity": {
+      "error": "RuntimeError: Actual QA worker process failed: 1",
+      "events": [
+        [
+          "terminate",
+          10000
+        ],
+        [
+          "wait",
+          10000
+        ]
+      ],
+      "child_pids": [
+        10000,
+        10001
+      ],
+      "reaped_pids": [
+        10000,
+        10001
+      ],
+      "all_handles_closed": true,
+      "guard": {
+        "free_mib": {
+          "GPU-0": 80896,
+          "GPU-1": 80896,
+          "GPU-2": 80896,
+          "GPU-3": 80896,
+          "GPU-4": 80896,
+          "GPU-5": 80896,
+          "GPU-6": 80896,
+          "GPU-7": 80896
+        },
+        "observed_unix": 1792219771.3610492,
+        "own_gpu_memory_mib": {
+          "GPU-0": 1000,
+          "GPU-1": 3000,
+          "GPU-2": 0,
+          "GPU-3": 0,
+          "GPU-4": 0,
+          "GPU-5": 0,
+          "GPU-6": 0,
+          "GPU-7": 0
+        },
+        "owned_pids": [
+          10000,
+          10001,
+          10002
+        ],
+        "peak_sampled_own_gpu_memory_mib": {
+          "GPU-0": 1000,
+          "GPU-1": 3000,
+          "GPU-2": 0,
+          "GPU-3": 0,
+          "GPU-4": 0,
+          "GPU-5": 0,
+          "GPU-6": 0,
+          "GPU-7": 0
+        },
+        "physical_gpus": 8,
+        "slurm_reserved_gpus": 0
+      },
+      "terminal": {
+        "cleanup_errors": [],
+        "cpu_seconds_self_and_reaped_children": 0.069616,
+        "descendant_cleanup": "systemd KillMode=control-group; native terminal cgroup readback required",
+        "ended_unix": 1792219771.361922,
+        "error": "RuntimeError('Actual QA worker process failed: 1')",
+        "outer": 5,
+        "peak_sampled_own_gpu_memory_mib": {
+          "GPU-0": 1000,
+          "GPU-1": 3000,
+          "GPU-2": 0,
+          "GPU-3": 0,
+          "GPU-4": 0,
+          "GPU-5": 0,
+          "GPU-6": 0,
+          "GPU-7": 0
+        },
+        "result": null,
+        "slurm_reserved_gpus": 0,
+        "started_unix": 1792219771.3604128,
+        "success": false,
+        "systemd_unit": "g1-qa-fixture.service",
+        "unreaped_child_pids": [],
+        "wall_gpu8_hours": 3.3516354031032986e-06
+      },
+      "correct_health_identity_allowed_evaluation": true
+    },
+    "timeout_kill_race_reap": {
+      "error": "RuntimeError: Actual QA worker process failed: 1",
+      "events": [
+        [
+          "wait",
+          10001
+        ],
+        [
+          "terminate",
+          10000
+        ],
+        [
+          "wait",
+          10000
+        ],
+        [
+          "kill",
+          10000
+        ],
+        [
+          "wait",
+          10000
+        ]
+      ],
+      "all_owned_reaped": true,
+      "all_handles_closed": true
+    },
+    "wrong_health_pid": {
+      "rejected": true,
+      "error": "ValueError: Wrong owned loopback retriever identity",
+      "children_launched": 1,
+      "all_owned_reaped": true,
+      "all_handles_closed": true
+    },
+    "wrong_health_index": {
+      "rejected": true,
+      "error": "ValueError: Wrong owned loopback retriever identity",
+      "children_launched": 1,
+      "all_owned_reaped": true,
+      "all_handles_closed": true
+    },
+    "wrong_health_documents": {
+      "rejected": true,
+      "error": "ValueError: Wrong owned loopback retriever identity",
+      "children_launched": 1,
+      "all_owned_reaped": true,
+      "all_handles_closed": true
+    },
+    "startup_40gib_floor": {
+      "rejected": true,
+      "error": "ValueError: Fresh eight-GPU UUID/headroom check failed; never clean foreign processes",
+      "children_launched": 0,
+      "all_owned_reaped": true
+    },
+    "running_12gib_floor": {
+      "rejected": true,
+      "error": "RuntimeError: Shared memory/UUID guard; only this systemd unit stops",
+      "children_launched": 1,
+      "all_owned_reaped": true
+    },
+    "own_36gib_ceiling": {
+      "rejected": true,
+      "error": "RuntimeError: Shared memory/UUID guard; only this systemd unit stops",
+      "children_launched": 1,
+      "all_owned_reaped": true
+    },
+    "cgroup_exact_unit": {
+      "accepted": true,
+      "expected": true
+    },
+    "cgroup_foreign_unit": {
+      "accepted": false,
+      "expected": false
+    },
+    "cgroup_wrong_owned_unit": {
+      "accepted": false,
+      "expected": false
+    }
+  },
+  "verdict": "PASS_LOCAL_CPU_REVIEW_NO_BLOCKER",
+  "control_helper_review": {
+    "source_sha256": "27b0775c17809b6523045d2363f472d386a9b94e467e8d86ee09dc094c01557d",
+    "fixtures": {
+      "deployment_script_compiles": true,
+      "overlay_exact_seven": [
+        "__init__.py",
+        "actor.py",
+        "interaction.py",
+        "rollout.py",
+        "eval.py",
+        "evaluation_initialization.py",
+        "qa_standalone.py"
+      ],
+      "submit_once": {
+        "passed": true,
+        "systemd_run_calls": 1,
+        "error": null
+      },
+      "unit_collision": {
+        "passed": true,
+        "systemd_run_calls": 0,
+        "error": "collision rejected"
+      },
+      "existing_intent": {
+        "passed": true,
+        "systemd_run_calls": 0,
+        "error": null
+      },
+      "submit_timeout": {
+        "passed": true,
+        "systemd_run_calls": 1,
+        "error": null
+      }
+    },
+    "static_findings": [],
+    "observed_scope": "Generated scripts only create new validated NFS namespace, seven code overlay files, copied small receipts/config, and a hardlink to existing corpus inode; source33 code/model/index are referenced. Submit uses exact prefixed unit, rejects unit collision/old intent and never stops or modifies Slurm/systemd jobs."
+  },
+  "findings": [],
+  "review_conclusion": "No blocking finding in current bytes. Arrow symlink escape and cleanup terminate/timeout-kill races are resolved; CPU fault fixtures verify own cgroup PID accounting, wrong Arrow order/cache/symlink and wrong health identity rejection, 40/12/36GiB guard limits and all owned handle cleanup. Deployment unit settings CPUQuota3200%,MemoryMax256G,KillModecontrol-group,Restartno confirmed in generated command.",
+  "limitations": [
+    "No actual GPU, remote, systemd, Slurm, model, Arrow dataset, or HTTP service was accessed.",
+    "Dataset and process fixtures are CPU fakes; final native cgroup-empty readback and real QA progress/complete score acceptance remain execution work.",
+    "This is code review, not a claim that physical GPUs are reserved by Slurm; deployment records Slurm reserved GPUs0."
+  ],
+  "completed_utc": "2026-10-17T06:50:39.463990+00:00",
+  "config_template_review": {
+    "sha256": "9ccecebf15cf3bf94e33b8bff11147e59a1818b9e7c1607a66f05787fc67d084",
+    "passed": true,
+    "node": "h100-5",
+    "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+    "expected_count": 512,
+    "model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
+    "arrow_shards": 28,
+    "documents": 21015324,
+    "seed": 1729,
+    "evaluation_memory_utilization": 0.2,
+    "scope": "Static local config only. No remote files, UUIDs, free GPU memory or systemd state read."
+  },
+  "source_still_matches": {
+    "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/qa_standalone.py": true,
+    "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/qa_standalone_control.py": true
+  }
+}

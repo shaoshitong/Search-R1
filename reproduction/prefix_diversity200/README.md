@@ -35,3 +35,15 @@ Independent local review and CPU lifecycle/canonical-negative fixtures are under
 `i1i6_evidence/QA_FRESH_PROCESS_REVIEW.json`; they are not GPU acceptance. This
 repair is deployed separately from frozen training and does not change a live
 trainer's source.
+
+Standalone milestone QA uses `qa_standalone` and `qa_standalone_control` on a
+separately authorized H100 node. Its systemd cgroup has32 CPU cores/256GiB,
+physical8GPU access and explicitly zero Slurm GPU reservation. It does not change
+the trainer or other jobs. The memory/UUID guard stops only its own unit. The
+original committed28 Arrow shards are read-only memory-mapped in original order;
+full8GPU FP16 FAISS/E5 and BF16 TP1 inference run on the same node over loopback.
+The extracted corpus is a same-NFS-inode hardlink; models/data/index never cross
+Mac. Source config, immutable actor identity, fixed512 source and original corpus
+ready receipt are bound separately. Constructor/partial-output rules above apply.
+Native terminal cgroup emptiness and actual QA output are deployment acceptance,
+not implied by the independent local CPU review.
