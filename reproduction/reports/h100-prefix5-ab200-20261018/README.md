@@ -213,3 +213,11 @@ This is fixed-input retention and recovery-path readiness. Current live training
 namespaces/UUID leases are unchanged and still retain their source8 dependency;
 no training handoff, restart, or scientific change was performed. Full200 per arm,
 QA50/100/150/200, final51713, final state and resource closure remain incomplete.
+
+Periodic rollout progress has a distinct output directory: `full-pool`, plus the
+fresh fixed-question diagnostic under `diagnostic/outers/outer-N`. A null ordinary
+`full` progress field during that phase is not evidence of a stalled rollout.
+`read_periodic_phases_once.py --outer N` reads only those producer progress JSONs
+and small completion/metric headers, with a fresh local evidence tag. It does not
+load tensors, start a second observer, mutate training, or repeat generation.
+The original single observer still verifies complete joints and actual score11.
