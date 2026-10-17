@@ -2,6 +2,7 @@
 import ast
 import copy
 import json
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -23,6 +24,42 @@ def function(module, name, namespace):
 
 
 class DiagnosticScopeTests(unittest.TestCase):
+    def test_qualification_does_not_require_pruned_historical_probe_aliases(self):
+        inputs = function('reproduction/prefix_selection200/i1_i6_checkpoint_cpu.py',
+                          'qualification_inputs', dict(Path=Path))
+        with tempfile.TemporaryDirectory() as directory:
+            base=Path(directory).resolve()
+            names=['official/config.json','terminal.json','actor/hf/config.json',
+                   'actor/rank0.pt','actor/driver.pt','old/grounding.json','old/pool.json',
+                   'grounding/manifest.json','grounding/commit.pkl','grounding/boundary.pkl',
+                   'grounding/adoption.json']
+            for name in names:
+                path=base/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('{}')
+            old=dict(probe_snapshot=str(base/'old/pruned-probe.pt'),
+                grounding_snapshot=str(base/'old/grounding.json'),pool_snapshot=str(base/'old/pool.json'),
+                grounding={key:str(base/'grounding'/name) for key,name in
+                    [('manifest_path','manifest.json'),('commit','commit.pkl'),
+                     ('boundary','boundary.pkl'),('adoption_receipt','adoption.json')]})
+            actor=dict(hf_model_dir=str(base/'actor/hf'),hf_files={'config.json':{}},
+                rank_states=[dict(path=str(base/'actor/rank0.pt'))],driver_state=dict(path=str(base/'actor/driver.pt')))
+            paths=inputs(dict(official_model_dir=str(base/'official')),actor,{1:old},base/'terminal.json')
+            self.assertNotIn(Path(old['probe_snapshot']),paths)
+            self.assertTrue(all(path.resolve(strict=True)==path for path in paths))
+            # Required current actor assets are never silently dropped.
+            (base/'actor/rank0.pt').unlink()
+            with self.assertRaises(FileNotFoundError):
+                [path.resolve(strict=True) for path in paths]
+
+    def test_rotating_storage_accepts_only_owned_hpc3_recovery_siblings(self):
+        base=Path('/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017')
+        admits=function('reproduction/prefix_selection200/storage.py','hpc3_namespace',
+                        dict(HPC3_BASE=base,re=re))
+        for name in (base.name,base.name+'-r2',base.name+'-r19'):
+            self.assertTrue(admits(base.with_name(name)))
+        for name in (base.name+'-other',base.name+'-r0',base.name+'-r2-foreign',base.name+'-r'):
+            self.assertFalse(admits(base.with_name(name)))
+        self.assertFalse(admits(Path('/tmp')/(base.name+'-r2')))
+
     def test_fixed512_never_resolves_the_diagnostic_directory_as_training_history(self):
         isolate = function('reproduction/prefix_selection200/launch.py',
                            'diagnostic_sampling_config', {})

@@ -124,6 +124,24 @@ def probe_state(saved,receipt,config,outer,history):
     return dict(actual_adam_steps_per_rank=[steps]*WORLD,adam_states=adam,rank_rng=rng,finite_model=True)
 
 
+def qualification_inputs(config, actor, history, terminal_proof):
+    """Retained inputs only; historical rotating probe aliases may be pruned.
+
+    Current joint probe bytes and inode are still fully checked in qualify.
+    Earlier joint receipts retain their original hash/counters; recovery does
+    not require a deleted alias for an earlier nonmilestone checkpoint.
+    """
+    allowed=[Path(config['official_model_dir'])/'config.json',terminal_proof,Path(actor['hf_model_dir'])]
+    allowed.extend(Path(row['path']) for row in actor['rank_states'])
+    allowed.append(Path(actor['driver_state']['path']))
+    allowed.extend(Path(actor['hf_model_dir'])/name for name in actor['hf_files'])
+    for item in history.values():
+        value=item['grounding']
+        allowed.extend(Path(value[key]) for key in ('manifest_path','commit','boundary','adoption_receipt'))
+        allowed.extend((Path(item['grounding_snapshot']),Path(item['pool_snapshot'])))
+    return allowed
+
+
 def qualify(base,outer,terminal_proof,terminal_sha,output):
     from .checkpoint_native_pending_probe import Seals,_hf
     base=canonical_path(base);output=canonical_path(output,exists=False);config=read(base/'preparation/launch-config.json')
@@ -150,14 +168,10 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
     joint=read(base/'latest-joint.json');actor=joint['actor'];state=joint['grounding']
     _once(intent,dict(status='ACTUAL_CPU_QUALIFICATION_STARTED',run_id=config['run_id'],outer=outer,
         source_joint_sha256=sha(base/'latest-joint.json'),terminal_proof_sha256=terminal_sha,started_unix=time.time()))
-    allowed=[Path(config['official_model_dir'])/'config.json',terminal_proof,Path(actor['hf_model_dir'])]
-    allowed.extend(Path(row['path']) for row in actor['rank_states']);allowed.append(Path(actor['driver_state']['path']))
-    allowed.extend(Path(actor['hf_model_dir'])/name for name in actor['hf_files'])
     history={}
     for n in range(1,outer+1):
         item=read(base/'outers'/('outer-%06d'%n)/'complete.json');history[n]=item
-        value=item['grounding'];allowed.extend(Path(value[key]) for key in ('manifest_path','commit','boundary','adoption_receipt'))
-        allowed.extend((Path(item['grounding_snapshot']),Path(item['pool_snapshot']),Path(item['probe_snapshot'])))
+    allowed=qualification_inputs(config,actor,history,terminal_proof)
     due=base/'grounding/rounds'/('round-%06d'%outer)/'fit-complete.json'
     if due.exists():
         value=read(due);allowed.extend(Path(value[key]) for key in ('manifest_path','commit','boundary'))

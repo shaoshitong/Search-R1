@@ -1,0 +1,107 @@
+"""Repair the not-yet-started CP9 job in place, retaining its queue identity.
+
+Hold only verified own PENDING729624. Preserve complete prior source/metadata,
+stage and SHA-check every published file, run remote regressions, then atomically
+replace the never-executed runtime and regenerate its explicit compatibility.
+Leave held for actual full-state CPU qualification; release is a separate step.
+"""
+import base64
+import gzip
+import hashlib
+import io
+import json
+from pathlib import Path
+import shlex
+import subprocess
+import tarfile
+import time
+from reproduction.hpc3_prefix5.control import BASE, OUTPUT, PYTHON
+from reproduction.hpc3_prefix5.direct_control import run
+
+TARGET=BASE+'-r2'
+def remote(code,timeout=25):
+    address=subprocess.check_output(['ipconfig','getifaddr','en0'],text=True).strip()
+    result=run(PYTHON+' -c '+shlex.quote(code),account='mou176',source_address=address,timeout=timeout)
+    if result.returncode:raise RuntimeError(result.stdout.decode()[-6000:]+result.stderr.decode()[-1000:])
+    return result.stdout.decode()
+
+commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+assert subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/prefix5-hpc3-20261017'],text=True).split()[0]==commit
+assert not subprocess.check_output(['git','status','--porcelain'],text=True).strip()
+files=[x for x in subprocess.check_output(['git','ls-files','-z']).decode().split('\0') if x]
+publication=dict(commit=commit,remote_sha=commit,files={name:hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in files},checked_unix=time.time(),source_only=True)
+changed=[name for name in subprocess.check_output(['git','diff','--name-only','2da01adf1321b25a22be0d260ee195fa368373ce',commit],text=True).splitlines() if name in files]
+stream=io.BytesIO()
+with tarfile.open(fileobj=stream,mode='w:gz') as archive:
+    for name in changed:
+        data=Path(name).read_bytes();item=tarfile.TarInfo(name);item.size=len(data);item.mode=Path(name).stat().st_mode&0o777;archive.addfile(item,io.BytesIO(data))
+archive=stream.getvalue()
+hold=remote('''import os,pathlib,json,subprocess,time,shutil,hashlib
+b=pathlib.Path(TARGET);p=b/'preparation';record=p/'cp9-held-code-repair.json'
+assert not record.exists(),'Reconcile the existing repair before any replay'
+raw=subprocess.check_output(['scontrol','show','job','-o','729624'],text=True)
+f=dict(x.split('=',1) for x in raw.split() if '=' in x)
+assert f['JobId']=='729624' and f['JobName']=='prefix5-thread5-cp9' and f['UserId'].endswith('('+str(os.getuid())+')') and f['JobState']=='PENDING' and f['Partition']=='emergency_acd'
+assert not (p/'submit-intent.json').exists() and not (b/'logs/process-ledger.json').exists()
+prior=json.loads((p/'source-publication.json').read_text());assert prior['commit']=='2da01adf1321b25a22be0d260ee195fa368373ce'
+backup=p/'cp9-before-code-repair-2da01ad';backup.mkdir()
+for name in ('source-publication.json','source-compatibility.json','resume-config-template.json','slurm-submission.json','resume-cp9.sbatch'):
+ shutil.copy2(p/name,backup/name)
+v=dict(created_unix=time.time(),job=729624,scope='Only own never-started PENDING CP9 continuation; no GPU or optimizer writes',old_source_commit=prior['commit'],new_source_commit=COMMIT,backup=str(backup),observed_state=f['JobState'],source_backup_pushed=True)
+with record.open('x') as h:json.dump(v,h)
+subprocess.run(['scontrol','hold','729624'],check=True,capture_output=True,text=True,timeout=20)
+held=subprocess.check_output(['scontrol','show','job','-o','729624'],text=True);d=dict(x.split('=',1) for x in held.split() if '=' in x)
+assert d['JobState']=='PENDING' and d['Reason']=='JobHeldUser' and d.get('AllocTRES')=='(null)',held
+stage=b/'repo-cp9-repair-stage';shutil.copytree(b/'repo',stage)
+print(json.dumps(dict(status='OWN_PENDING_JOB_HELD_SOURCE_STAGED',record=v)))
+'''.replace('TARGET',repr(TARGET)).replace('COMMIT',repr(commit)))
+print(hold,flush=True)
+
+def transfer(data,name):
+    encoded=base64.b64encode(data).decode();path=TARGET+'/preparation/'+name
+    for start in range(0,len(encoded),24000):
+        remote('import pathlib,base64\np=pathlib.Path(%r)\nwith p.open(%r) as f:f.write(base64.b64decode(%r))\n'%(path,'wb' if start==0 else 'ab',encoded[start:start+24000]))
+    return path
+archive_path=transfer(archive,'cp9-held-repair-code.tgz')
+raw=json.dumps(publication,sort_keys=True).encode();metadata_path=transfer(gzip.compress(raw),'cp9-held-repair-publication.json.gz')
+print(remote('''import pathlib,tarfile,hashlib,json,gzip
+b=pathlib.Path(TARGET);stage=b/'repo-cp9-repair-stage'
+assert hashlib.sha256(pathlib.Path(ARCHIVE).read_bytes()).hexdigest()==ARCHIVESHA
+with tarfile.open(ARCHIVE,'r:gz') as archive:
+ for item in archive.getmembers():
+  name=pathlib.PurePosixPath(item.name);assert item.isfile() and not name.is_absolute() and '..' not in name.parts
+  path=stage/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(archive.extractfile(item).read());path.chmod(item.mode)
+raw=gzip.decompress(pathlib.Path(META).read_bytes());assert hashlib.sha256(raw).hexdigest()==METASHA
+pub=json.loads(raw)
+for name,digest in pub['files'].items():assert hashlib.sha256((stage/name).read_bytes()).hexdigest()==digest,name
+print(json.dumps(dict(status='STAGED_ALL_PUBLISHED_FILES_SHA_MATCH',files=len(pub['files']),commit=pub['commit'])))
+'''.replace('TARGET',repr(TARGET)).replace('ARCHIVESHA',repr(hashlib.sha256(archive).hexdigest())).replace('ARCHIVE',repr(archive_path)).replace('METASHA',repr(hashlib.sha256(raw).hexdigest())).replace('META',repr(metadata_path))),flush=True)
+tests='''import pathlib,subprocess,os,json
+b=pathlib.Path(TARGET);stage=b/'repo-cp9-repair-stage'
+names=['reproduction.hpc3_prefix5.test_diagnostic_scope','reproduction.hpc3_prefix5.test_terminal','reproduction.prefix_selection200.test_i1_i6_pending_probe','reproduction.prefix_selection200.test_adaptive_candidates','reproduction.prefix_selection200.test_four_rank_actor']
+program='import sys,unittest;sys.path.insert(0,'+repr(str(stage))+');suite=unittest.defaultTestLoader.loadTestsFromNames('+repr(names)+');r=unittest.TextTestRunner(verbosity=2).run(suite);raise SystemExit(not r.wasSuccessful())'
+env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1')
+log=b/'preparation/cp9-held-repair-tests.log'
+with log.open('x') as stream:r=subprocess.run([str(b/'env/bin/python'),'-c',program],cwd=stage,env=env,stdout=stream,stderr=subprocess.STDOUT)
+print(log.read_text()[-5000:]);assert r.returncode==0
+'''.replace('TARGET',repr(TARGET))
+print(remote(tests,timeout=55),flush=True)
+swapped=remote('''import pathlib,subprocess,json,gzip,os,time,hashlib,sys
+b=pathlib.Path(TARGET);p=b/'preparation';stage=b/'repo-cp9-repair-stage'
+q=subprocess.check_output(['squeue','-h','-j','729624','-o','%i|%T|%R'],text=True).strip();assert q=='729624|PENDING|(JobHeldUser)',q
+assert not (p/'submit-intent.json').exists() and not (b/'logs/process-ledger.json').exists()
+old=p/'cp9-before-code-repair-2da01ad/repo';(b/'repo').rename(old);stage.rename(b/'repo')
+pub=json.loads(gzip.decompress(pathlib.Path(META).read_bytes()));sys.path.insert(0,str(b/'repo'))
+from reproduction.prefix_selection200.i1_i6_joint_resume import source_manifest,compatibility_proof,sha
+c=json.loads((p/'resume-config-template.json').read_text());source=pathlib.Path(c['resume_joint']['source_base'])
+parent=source_manifest(source/'repo',c['resume_joint']['source_commit']);target=source_manifest(b/'repo',pub['commit'],science_source_commit=parent['science_source_commit']);proof=compatibility_proof(parent,target)
+def publish(path,value):
+ tmp=path.with_name(path.name+'.repair-tmp');tmp.write_text(json.dumps(value,sort_keys=True));os.replace(tmp,path)
+publish(p/'source-publication.json',pub);publish(p/'source-compatibility.json',proof)
+c['source_commit']=pub['commit'];c['source_compatibility_sha256']=sha(p/'source-compatibility.json');publish(p/'resume-config-template.json',c)
+result=dict(status='HELD_RECOVERY_CODE_REPAIRED_NEEDS_ACTUAL_CP9_QUALIFICATION',job=729624,new_source_commit=pub['commit'],science_source_commit=parent['science_source_commit'],full_source_files_SHA_verified=len(pub['files']),controller_changes=sorted(proof['controller_changes']),queue_preserved=True,still_held=True,completed_unix=time.time())
+publish(p/'cp9-held-code-repair-complete.json',result);print(json.dumps(result))
+'''.replace('TARGET',repr(TARGET)).replace('META',repr(metadata_path)),timeout=40)
+print(swapped,flush=True)
+value=next(json.loads(line) for line in swapped.splitlines() if line.strip().startswith('{'))
+(OUTPUT/'cp9-held-code-repair.json').write_text(json.dumps(value,indent=2)+'\n')

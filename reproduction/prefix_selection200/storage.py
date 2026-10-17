@@ -21,6 +21,13 @@ REMOTE_PARENT = Path('/mnt/data/shaoshitong')
 A800_REMOTE_PARENT = Path('/data/shaoshitong')
 PREFIX = 'search-g1-prefix-selection200-'
 MILESTONES = {0, 5, 50, 100, 150, 200}
+HPC3_BASE = Path('/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017')
+
+
+def hpc3_namespace(base):
+    """Admit only this experiment and numbered sibling recovery executions."""
+    return (base.parent == HPC3_BASE.parent and
+            re.fullmatch(re.escape(HPC3_BASE.name)+r'(?:-r[1-9][0-9]*)?',base.name) is not None)
 
 
 def read(path):
@@ -55,7 +62,7 @@ def owned(base, path):
 
 def validate_base(base):
     base = Path(base)
-    hpc3 = base == Path('/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017')
+    hpc3 = hpc3_namespace(base)
     if (not base.is_absolute() or '..' in base.parts or (not hpc3 and (base.parent not in (REMOTE_PARENT, A800_REMOTE_PARENT)
             or not base.name.startswith(PREFIX))) or base.resolve(strict=True) != base):
         raise ValueError('Pruning is restricted to a canonical new prefix-selection200 namespace')

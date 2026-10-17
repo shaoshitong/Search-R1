@@ -33,6 +33,7 @@ CONTROL_FILES = frozenset({
     'reproduction/prefix_selection200/i1_i6_actor_resume.py',
     'reproduction/prefix_selection200/i1_i6_checkpoint_cpu.py',
     'reproduction/prefix_selection200/i1_i6_pending_probe.py',
+    'reproduction/prefix_selection200/storage.py',
     'reproduction/prefix_selection200/test_i1_i6_pending_probe.py',
     'reproduction/hpc3_prefix5/check_recovery_cpu.py',
     'reproduction/hpc3_prefix5/observe.py',
