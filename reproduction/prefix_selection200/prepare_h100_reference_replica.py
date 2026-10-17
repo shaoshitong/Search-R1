@@ -94,6 +94,7 @@ def prepare(assets, output, source_commit, infrastructure):
             physical_gpu_indices=cards, auxiliary_gpu_indices=cards,
             physical_gpu_uuids=[gpus[i] for i in cards], auxiliary_gpu_uuids=[gpus[i] for i in cards],
             grounding_physical_gpu=cards[-1], grounding_refit_visible_device=cards[-1],
+            grounding_physical_gpu_by_rank=cards,
             execution_hardware_layout=LAYOUT, retrieval_gpu_shards=4,
             gpu_uuid_lock_root='/mnt/data/shaoshitong/.search-g1-gpu-uuid-locks',
             shared_existing_foreign_jobs_authorized=True,

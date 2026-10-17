@@ -108,8 +108,10 @@ cloning/query settings, mean pooling, `query: ` prefix and top3.
 The original A800 run has four training GPUs plus two auxiliary GPUs. Here each
 four-card H100 slot colocates retrieval/reward services with training. Exact
 FAISS shards change2→4 for memory placement; the full index, search precision,
-topk, encoder and retrieval algorithm stay unchanged. Grounding service/refit
-physical devices become3/7. Role placement, UUID locks, ports, absolute paths
+topk, encoder and retrieval algorithm stay unchanged. The four identical
+grounding services are distributed one per training card, instead of crowding
+four encoder replicas onto one already shared card. Grounding refits use3/7
+after those four services stop. Role placement, UUID locks, ports, absolute paths
 and new execution identities necessarily differ. Hardware-dependent floating
 point results are not promised bitwise equal.
 

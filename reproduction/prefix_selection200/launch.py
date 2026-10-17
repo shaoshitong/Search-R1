@@ -310,7 +310,8 @@ def run(base):
             name = 'grounding-%06d-rank-%d' % (state['round'], rank)
             services[name] = start(name, [python, 'probe_server.py', '--manifest', str(live),
                 '--port', str(c['grounding_probe_base_port'] + rank)],
-                dict(env, CUDA_VISIBLE_DEVICES=str(c['grounding_physical_gpu']),
+                dict(env, CUDA_VISIBLE_DEVICES=str(c.get('grounding_physical_gpu_by_rank',
+                    [c['grounding_physical_gpu']] * WORLD)[rank]),
                      SEARCH_G1_BASE=str(base / 'grounding' / ('rank-%d' % rank)), OMP_NUM_THREADS='2'))
         for rank in range(WORLD):
             name = 'grounding-%06d-rank-%d' % (state['round'], rank)

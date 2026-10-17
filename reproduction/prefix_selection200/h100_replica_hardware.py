@@ -19,6 +19,7 @@ def validate(config):
     if (train not in ([0, 1, 2, 3], [4, 5, 6, 7]) or aux != train
             or config.get('retrieval_gpu_shards') != 4
             or config.get('grounding_physical_gpu') != train[-1]
+            or config.get('grounding_physical_gpu_by_rank') != train
             or config.get('grounding_refit_visible_device') != train[-1]
             or config.get('world_size') != 4
             or len(config['physical_gpu_uuids']) != 4
