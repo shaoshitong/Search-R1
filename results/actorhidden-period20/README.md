@@ -1,3 +1,9 @@
+## Terminal archive tools staged separately (UTC2026-10-17T02:51)
+
+Published9e64fd04 archive helper and common copier have now been independently read back in full at both endpoints. Source staging is under the current3430 BASE/preparation/terminal-records-tools/2340aa77…; destination staging is h100-10 independent-backup root/terminal-records-control/2340aa77…. The actual helper SHA is2340aa77615edc7bc0535b774489478a130ed1e573c993874dce0b6a67c2f5fc and common copier SHA72870be9c54337dea86a45d4440e6693bce05afed82dee21a90d6595ade9b008. Full small original records and endpoint paths are in terminal-records-tools-stage-readback.json. No source inventory, archive intent, archive worker, model load or GPU test has run. Native3430 and frozen C22 source were unchanged.
+
+Actual3430 continued76→77/200, each8rankactor1540/probe300, then78nativeprefix. The sole root read-only period80 observer64097 follows the same job at180-second intervals; it saves small records and does not write main state, gate training or repeat the initial acceptance. Period80 fullpool paired metrics and actual81 newprobe use are pending. Final200/no201, QA51713/exact seven-source identities/counts, normal100/150/200 copies, fixed-asset completion, terminal originals archive, actualexit0 and owned release all remain required.
+
 ## Actual50 QA and full checkpoint readback
 
 ## Actual70 and independentCP50 complete (UTC2026-10-17T02:12)
