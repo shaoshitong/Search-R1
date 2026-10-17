@@ -1,5 +1,7 @@
 # I1–I6 修复与官方actor fresh200
 
+> Latest actual 2026-10-17 10:50 UTC: same3431/h100-8 complete51/200, each rank actor1020/probe200;52prefix. QA50 original512 output/identity/strict scoring independently read back:190 correct, EM37.1094%, F1 45.4629%, all8workers0. NormalCP50 has36 full-file independentSHA/CPU-state reads; actual grounding50 fit/adopt and original51 eight-rank reward-version use are proven. Independentcopy50 is progressing, not complete. [Milestone50 actual evidence](milestone50-qa-grounding-cpu-and-actual51.json). Frozen848 unchanged; probeLR1e-6 until human's50-review reply. Older snapshots are historical.
+
 > Latest actual 2026-10-17 09:46 UTC: same3431/h100-8 complete41/200, each rank actor820/probe200;42 prefix. Period40 original eight probe ledgers verify100 new writes each at1e-6; actual41 scoring used updated head40. [Same-rollout paired metrics and100-update curve](period40-paired-and-actual41-use.json), [selected-group history1–40](selected-mixed-outers0001-0040.csv). Frozen training848 is unchanged. QA50 and grounding50 are not yet observed.
 
 > Latest actual 2026-10-17 09:02 UTC: same3431/h100-8 complete35/200, each rank actor700/probe100,36prefix. All25-35 original actor rank journals verify20 writes per rank/round. Two actual management/target reads recovered with the task-only macOS socket-interface mode; no training restart/config edit or global network/auth edit. [Current small progress proof](progress35-and-task-local-transport-recovery.json). ProbeLR stays1e-6; human conditional20 resume could not apply because complete20 actor/Adam/RNG files were rotated; reconsider at retained50, with no automatic LR change approved yet. Older snapshots below are historical.
@@ -100,3 +102,20 @@ Ordinary accuracy rises mainly because the head predicts nonmixed more often. He
 The full pool contains1267/5120=24.7461% mixed groups; Top512 contains181/512=35.3516%, around1.4286 times pool prevalence. This is selection enrichment, not full-pool accuracy or QA improvement. The fresh diagnostic has113 mixed groups. Its questions stay fixed, but each periodic actor generates new G5 labels/hidden; period20 versus40 is not a fixed-label learning curve. The100-update loop takes8.24818seconds, not whole-outer time.
 
 Human's conditional request to resume20 at1e-5 could not apply because complete20 actor/Adam/RNG files were rotated. Probe LR therefore remains1e-6; retained50 is the next review point. No automatic stop or LR change at50 is assumed.
+
+## Normal50: actual QA, grounding fit/adoption and complete recovery state
+
+|Same new run and shared QA contract|Outer5|Outer50|
+|---|---:|---:|
+|QA512 strict EM|139/512=27.1484%|190/512=37.1094%|
+|QA512 F1|35.4714%|45.4629%|
+
+Outer50 has256 NQ and256 Hotpot questions, with NQ EM97/256=37.8906% and Hotpot93/256=36.3281%. All original eight workers exited0. A CPU-only reader independently hashed/read the16 original rank-receipt/output files, checked every canonical qid/ordinal/source, and recomputed strict EM/F1 from actual prompt/response token IDs, masks and original gold using the actual scorer. It matches the producer aggregate. Full outputs stayed remote. Asynchronous output order is aligned by canonical ordinal, rather than zipped against sorted receipts. This is post hoc output verification, not model generation or a training gate. QA50 uses the same new BF16 interaction contract as this run's QA5; old broken-run/legacy scores are not silently combined with this curve. The change cannot isolate a data-selection algorithm benefit without a matched control.
+
+The original300-question grounding procedure actually fitted boundary and commit heads against actor0050 with2-fold grouped CV: commit AUC0.838282 and boundary AUC0.741794. The recorded new interaction contract matches train/QA. All8 reward replicas actually adopted the resulting version, and the original completed51 actor receipt shows all8 reward ranks used that exact version. This now supplies runtime evidence forI3, beyond earlier static call-chain checks. These are reward-grounding heads; the correctness-selection head still updates only20/40/60…200.
+
+The immutable50 recovery point has36 independently full-hashed files,39,240,509,750B, actual CPU load of all8 actor/rank states and periodic probe: actor1000/rank, probe200/rank, scheduler50, saved RNG, pool consumed256000/next51. Effective next grounding round50 is fitted/adopted; saved actor50 itself correctly used round0 for its preceding update. No GPU semantic reload or CUDA-RNG application is claimed.
+
+An independent h100-10 ext4 copy started once (PID1103066/startticks1929451008),171 payloads45,615,868,686B at20MiB/s with128GiB ordinary reserve. Two source/destination-phase observations show the same birth progressing from1.263GB first-shard copy to a real3,968,658,944B target shard with638MB of its independent target full hash read. It remains pending, not a completed backup or semantic reload. No model bytes went through Mac. Existing unique intent/receipt must not be replayed.
+
+Human asked to revisit probeLR at retained50 after complete20 proved unavailable. A choice between complete50 resume at1e-5 and continued1e-6 has been presented; no answer has been assumed. The current healthy job continues at1e-6. If that change is authorized, it must preserve actor1000/probe200, optimizer moments, scheduler50, RNG, pool and adoptedgrounding50; the old pre20/Adam0 LR5 importer cannot be used as-is. No old warmup or actor reset is permitted. Full200 and final51713, future milestones and all final closure remain pending.
