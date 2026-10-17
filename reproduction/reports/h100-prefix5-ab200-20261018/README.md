@@ -188,3 +188,28 @@ state validation to the dedicated A/B implementation. Frozen A has no online
 optimizer/EMA; B preserves raw/EMA/Adam/4-rank RNG and balancing state. The legacy
 `resume.py` and `native_a800_joint_v1` fixed-clock adapters are not the A/B entry.
 This identifies the existing supported code path; no recovery was executed.
+
+### Eight complete and fixed input retention complete
+
+Both native arms complete8/200, actor160 per each of4ranks, A probe0,
+B probe/EMA80. Original selected mixed fractions: A368/512=71.875%,
+B336/512=65.625%. Whole outer8 including persistence: A806.226s,
+B806.789s (about13min26s). Outer9 has really reserved new candidates.
+No QA8 or heldout-period10 result is claimed. Actual four-rank write journals
+and original-group pre/post raw/EMA metrics are in the through8 small comparison.
+
+Fixed input retention completes with53 payloads:51 freshly copied files
+28,545,953,373B with source and independent target fullSHA, plus2 hardlinks
+to the existing immutable fullSHA index/corpus backup. Total retained payload
+bytes107,498,608,266B. Cache retry RESULT SHA
+`ac175bd5800380dde729603bb1032b6bef390c6832cdac3bdc5221db5e1bf354`.
+The worker209722/start705287691 is actually gone. Do not repeat completed copying
+or large hashes. The final CPU path inspection validated all53 payload rows and
+36 canonical A/B path roles using direct NAS18 mounts; proofSHA
+`119f5518d7df8578ed97ed48df07a2999ee1823430e72837739f1b538ab019eb`.
+The inspection performs neither model forward nor new large hashes.
+
+This is fixed-input retention and recovery-path readiness. Current live training
+namespaces/UUID leases are unchanged and still retain their source8 dependency;
+no training handoff, restart, or scientific change was performed. Full200 per arm,
+QA50/100/150/200, final51713, final state and resource closure remain incomplete.

@@ -1,5 +1,5 @@
 {
-  "checked_unix": 1792275010.2388082,
+  "checked_unix": 1792275810.9737701,
   "data": {
     "A": {
       "1": {
@@ -76,6 +76,17 @@
             "outer": 7,
             "total_wall_seconds_including_qa_grounding_storage": 787.6630802089348,
             "training_wall_seconds": 779.9816244039685
+          }
+        }
+      },
+      "8": {
+        "iteration_wall": {
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000008/iteration-wall-time.json",
+          "sha256": "bc0d7f890080f469ba4445b2256ba61d7911bc978a0604d2707252fcd4b7a5f3",
+          "value": {
+            "outer": 8,
+            "total_wall_seconds_including_qa_grounding_storage": 806.2259011641145,
+            "training_wall_seconds": 789.284038476646
           }
         }
       }
@@ -1246,6 +1257,173 @@
               "step": 10,
               "total_loss": 4.636094689369202,
               "trajectory_bce": 1.501429170370102
+            }
+          ]
+        }
+      },
+      "8": {
+        "iteration_wall": {
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000008/iteration-wall-time.json",
+          "sha256": "4239b11fb519dfeaeb188be674f5ff31b5dc3ac9668112ef2d3256f5b9cd8374",
+          "value": {
+            "outer": 8,
+            "total_wall_seconds_including_qa_grounding_storage": 806.7889805333689,
+            "training_wall_seconds": 797.3008817872033
+          }
+        },
+        "loss_curve": {
+          "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000008/probe-update/global-loss-updates.jsonl",
+          "sha256": "58cafa1ec78fa4037a7de96f4ca756653b28b812561f7c5f00853683cf3dfd6d",
+          "value": [
+            {
+              "actual_adam_steps": 71,
+              "ema_updates": 71,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.9157789466427821,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 8,
+              "rank": 0,
+              "step": 1,
+              "total_loss": 5.971449496699314,
+              "trajectory_bce": 1.3925547202428181
+            },
+            {
+              "actual_adam_steps": 72,
+              "ema_updates": 72,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7297663957464928,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 8,
+              "rank": 0,
+              "step": 2,
+              "total_loss": 5.214505148868935,
+              "trajectory_bce": 1.5656731572805667
+            },
+            {
+              "actual_adam_steps": 73,
+              "ema_updates": 73,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7709154580153671,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 8,
+              "rank": 0,
+              "step": 3,
+              "total_loss": 5.3917954201791805,
+              "trajectory_bce": 1.5372179956997143
+            },
+            {
+              "actual_adam_steps": 74,
+              "ema_updates": 74,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7996559493681964,
+              "learning_rate": 5e-06,
+              "local_questions": 12,
+              "local_trajectories": 60,
+              "outer": 8,
+              "rank": 0,
+              "step": 4,
+              "total_loss": 5.4921787392859365,
+              "trajectory_bce": 1.4938990251690734
+            },
+            {
+              "actual_adam_steps": 75,
+              "ema_updates": 75,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 52,
+              "group_bce": 0.7626341134309769,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 8,
+              "rank": 0,
+              "step": 5,
+              "total_loss": 5.3524569272994995,
+              "trajectory_bce": 1.539286494255066
+            },
+            {
+              "actual_adam_steps": 76,
+              "ema_updates": 76,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7261146213494095,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 8,
+              "rank": 0,
+              "step": 6,
+              "total_loss": 5.252750097536573,
+              "trajectory_bce": 1.6221769907895256
+            },
+            {
+              "actual_adam_steps": 77,
+              "ema_updates": 77,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7572159498345619,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 8,
+              "rank": 0,
+              "step": 7,
+              "total_loss": 5.396977293725107,
+              "trajectory_bce": 1.610897377425549
+            },
+            {
+              "actual_adam_steps": 78,
+              "ema_updates": 78,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.7555816769599915,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 8,
+              "rank": 0,
+              "step": 8,
+              "total_loss": 5.275151458441043,
+              "trajectory_bce": 1.497243179994471
+            },
+            {
+              "actual_adam_steps": 79,
+              "ema_updates": 79,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 51,
+              "group_bce": 0.64826766649882,
+              "learning_rate": 5e-06,
+              "local_questions": 12,
+              "local_trajectories": 60,
+              "outer": 8,
+              "rank": 0,
+              "step": 9,
+              "total_loss": 4.550419171651204,
+              "trajectory_bce": 1.3090807620216818
+            },
+            {
+              "actual_adam_steps": 80,
+              "ema_updates": 80,
+              "event": "ACTUAL_PROBE_ADAM_WRITE",
+              "global_questions": 52,
+              "group_bce": 0.6907228976488113,
+              "learning_rate": 5e-06,
+              "local_questions": 13,
+              "local_trajectories": 65,
+              "outer": 8,
+              "rank": 0,
+              "step": 10,
+              "total_loss": 4.76030969619751,
+              "trajectory_bce": 1.3066953420639038
             }
           ]
         }
