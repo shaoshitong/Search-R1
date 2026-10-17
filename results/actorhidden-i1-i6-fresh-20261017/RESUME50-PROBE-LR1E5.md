@@ -1,3 +1,5 @@
+Actual execution update: native3434/h100-8 once submitted after actual source3431 terminal/owned release. New frozenruntime59dcbf0cc1da68e40974b652f92978ce6ded3766;1372targetfiles fullSHA verified. Real CPU reload preserved14trained tensors, allAdam moments/200steps/rank/eightRNG, allparamgroups now1e-5. Actor1000/scheduler50/pool256000 and actualgrounding50 preserved. Source reached58, approved rollback50 does not reuse51–58. GPU progress and51–55+actual56 stillpending; firstfutureprobeupdate60, not yet a new1e-5Adamwrite. See resume50-probe-lr1e5-actual-import-submission.json.
+
 # Retained50 probe-only LR change
 
 Latest human instruction: “需要变成1e-5跑，探针部分”, following the offered retained50 resume. This authorizes only a controlled stop of3431 and restart from independently validated complete50, not a goal pause. Actor LR1e-6, original I1–I6 interaction/reward/PPO recipe,200outer and all QA/backup obligations remain unchanged.
