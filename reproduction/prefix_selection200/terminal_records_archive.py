@@ -111,6 +111,7 @@ class FileInventory:
         if key not in self.rows:
             self.rows[key] = dict(source_path=str(path), original_paths=[], roles=[], bytes=st.st_size,
                 source_mtime_ns=st.st_mtime_ns, expected_sha256=expected_sha256,
+                source_mode=st.st_mode & 0o777,
                 relative_path=str(Path('payload')/path.relative_to('/')))
         row = self.rows[key]
         if expected_sha256 is not None:
@@ -296,6 +297,7 @@ def worker(root):
         need(count==row['bytes'] and row['expected_sha256'] in(None,digest),'Original full SHA differs')
         independent=full_read(target,callback=lambda n:progress(n,'independent_target_full_sha'))
         need(independent==(count,digest),'Independent archival target SHA differs')
+        os.chmod(target,row['source_mode'])
         copied.append(dict(row,source_full_sha256=digest,destination_full_sha256=independent[1]));progress(count,'verified')
     need(sha(path)==intent['inventory_sha256'],'Inventory changed during archive')
     inventory_raw=path.read_bytes()
