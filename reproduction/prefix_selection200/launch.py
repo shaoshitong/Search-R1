@@ -103,6 +103,14 @@ def reused_phase(base, root, phase, c):
     return True
 
 
+def diagnostic_sampling_config(config):
+    """Fixed heldout sampling has no training candidate history or cursor."""
+    value = dict(config)
+    for key in ('adaptive_candidates', 'candidate_schedule', 'candidate_budget'):
+        value.pop(key, None)
+    return value
+
+
 def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=None, grounding_state=None):
     """Publish only an actual actor/probe/pool boundary, including repaired10."""
     from .periodic import is_probe_update, probe_boundary
@@ -484,9 +492,12 @@ def run(base):
                                 diagnostic['questions'] != 512 or diagnostic['trajectories'] != 2560):
                             raise ValueError('Only the same zero-write actor diagnostic may be reused')
                     else:
+                        diagnostic_config = root / ('diagnostic-sampling-%s-config.json' %
+                                                    (sampling_attempt or 'initial'))
+                        once(diagnostic_config, diagnostic_sampling_config(read(sampling_conf)))
                         phase(job('current-actor-diagnostic'),
                             [python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic',
-                             '--config',sampling_conf,'--outer',str(outer)])
+                             '--config',str(diagnostic_config),'--outer',str(outer)])
                 else:
                     phase(job('continue'), [python, '-m', 'reproduction.prefix_selection200.rollout',
                         '--config', sampling_conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(actor_selection_path)])

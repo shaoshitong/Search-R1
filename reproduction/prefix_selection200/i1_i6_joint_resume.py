@@ -35,6 +35,12 @@ CONTROL_FILES = frozenset({
     'reproduction/prefix_selection200/i1_i6_pending_probe.py',
     'reproduction/prefix_selection200/test_i1_i6_pending_probe.py',
     'reproduction/hpc3_prefix5/check_recovery_cpu.py',
+    'reproduction/hpc3_prefix5/observe.py',
+    'reproduction/hpc3_prefix5/test_observe.py',
+    'reproduction/hpc3_prefix5/test_diagnostic_scope.py',
+    'reproduction/hpc3_prefix5/terminal.py',
+    'reproduction/hpc3_prefix5/test_terminal.py',
+    'reproduction/hpc3_prefix5/recover_diagnostic.py',
     'reproduction/operations/a800_prefix5_variable_pool_control.py',
     'reproduction/operations/a800_i1_i6_boundary_handoff.py',
     'reproduction/prefix_selection200/test_i1_i6_joint_resume.py',
@@ -245,6 +251,9 @@ def _writer_barrier(config,terminal,ledger, *, authorized_handoff_sha=None, comp
     recorded={(row['pid'],row['start_ticks'],row['sid'],row['uid']) for row in terminal['owned_births']}
     known={(row['pid'],row['start_ticks'],row['sid'],row['uid']) for job in ledger.get('jobs',{}).values()
            for row in job.get('ledger',{}).values()}
+    if absence_check is None and config.get('execution_backend') == 'slurm_hpc3':
+        from reproduction.hpc3_prefix5.terminal import writers_present
+        absence_check = lambda value: writers_present(value, config)
     if not known or not known<=recorded or (absence_check or _native_writers_present)(terminal):
         raise RuntimeError('Actual source owned writers remain present or their birth coverage is incomplete')
 
@@ -300,6 +309,17 @@ def _joint(config,joint,outer, *, previous_actual=None):
         raise ValueError('History does not retain each actual partial Adam contribution')
     _grounding(config,joint['grounding'],expected_round(outer-1),adopted=True)
     return actor,probe
+
+
+def pending_candidate_questions(config, original, outer):
+    """Planning precedes import: adaptive provenance still lives at the source."""
+    from .candidate_schedule import candidate_count
+    if config.get('adaptive_candidates') is not None:
+        if (config['adaptive_candidates'] != original.get('adaptive_candidates')
+                or config.get('candidate_schedule') != original.get('candidate_schedule')):
+            raise ValueError('Adaptive recovery must retain its original schedule and feedback policy')
+        return candidate_count(original, outer)
+    return candidate_count(config, outer)
 
 
 def plan(base,config=None):
@@ -423,7 +443,7 @@ def plan(base,config=None):
         if (reservation['outer']!=pending or reservation['before_sha256']!=state_sha(pool) or
                 reservation['after']!=current or reservation['after_sha256']!=state_sha(current) or
                 current['next_outer']!=pending+1 or current['consumed_candidates']!=consumed_candidates_through(original,pending) or
-                len(reservation['indices'])!=candidate_count(config,pending)):
+                len(reservation['indices'])!=pending_candidate_questions(config,original,pending)):
             raise ValueError('Pending reservation must be the exact next saved-pool transition')
         for name in ('pool-reservation.json','selection.json','questions.json','actor-binding.json'):add(pending_root/name)
         if original.get('adaptive_candidates') is not None:add(pending_root/'candidate-budget.json')
