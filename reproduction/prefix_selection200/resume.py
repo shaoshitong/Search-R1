@@ -128,6 +128,8 @@ def import_complete(base):
                     'grounding_calibration_question_ids')
     if any(config[k] != original[k] for k in science):
         raise ValueError('Recovery cannot change the scientific training contract')
+    if config.get('resume_probe_lr_transition') != original.get('resume_probe_lr_transition'):
+        raise ValueError('Fault recovery must preserve the authorized LR-transition provenance')
     def checked_stats(value):
         if isinstance(value, dict):
             if all(k in value for k in ('path', 'bytes', 'inode', 'mtime_ns')):
@@ -156,6 +158,8 @@ def import_complete(base):
     link(source / 'actor/latest.json', base / 'actor/latest.json')
     for name in ('initialization-complete.json', 'latest.json', 'latest.pt'):
         link(source / 'probe' / name, base / 'probe' / name)
+    if (source / 'probe/lr-change-receipt.json').is_file():
+        link(source / 'probe/lr-change-receipt.json', base / 'probe/lr-change-receipt.json')
     link(source / 'question-pool/binding.json', base / 'question-pool/binding.json')
     link(joint['pool_snapshot'], base / 'question-pool/state.json')
     link(source / 'latest-joint.json', base / 'latest-joint.json')

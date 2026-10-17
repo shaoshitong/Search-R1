@@ -17,9 +17,11 @@ from reproduction.prefix20_online.launch import once, publish
 
 def validate_authorization(config):
     spec = config.get('resume_joint', {})
-    human = spec.get('human_authorization', {})
+    transition = config.get('resume_probe_lr_transition', {})
+    human = transition.get('human_authorization', spec.get('human_authorization', {}))
+    origin = transition.get('resume_outer', spec.get('completed_outer'))
     if (config.get('probe_learning_rate') != 1e-5
-            or spec.get('completed_outer') != 50
+            or origin != 50
             or human.get('resume_from50') is not True
             or human.get('probe_lr_only') is not True
             or human.get('raw_human_message') != '需要变成1e-5跑，探针部分'):
@@ -30,7 +32,8 @@ def validate_change(config, original):
     validate_authorization(config)
     allowed = {'base', 'source_commit', 'resume_joint', 'resume_probe_lr_transition',
                'probe_learning_rate', 'pool_state_path', 'prefix_probe_receipt'}
-    if (original['probe_learning_rate'] != 1e-6
+    if (config['resume_joint']['completed_outer'] != 50
+            or original['probe_learning_rate'] != 1e-6
             or set(config) - set(original) - allowed
             or any(config.get(key) != value for key, value in original.items() if key not in allowed)):
         raise ValueError('Only probe LR and isolated execution/recovery paths may change')

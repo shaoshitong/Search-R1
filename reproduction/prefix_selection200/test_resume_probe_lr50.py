@@ -3,7 +3,7 @@ import copy
 import unittest
 
 from .checkpoint_cpu_once import digest
-from .resume_probe_lr50 import rebind_trained_probe, validate_change
+from .resume_probe_lr50 import rebind_trained_probe, validate_change, validate_authorization
 
 
 class TrainedLR50Tests(unittest.TestCase):
@@ -48,6 +48,15 @@ class TrainedLR50Tests(unittest.TestCase):
             with self.assertRaises(ValueError): validate_change(dict(changed, **{key: value}), original)
         value = copy.deepcopy(changed); value['resume_joint']['completed_outer'] = 5
         with self.assertRaises(ValueError): validate_change(value, original)
+
+    def test_later_fault_recovery_keeps_rate_without_rolling_back_to50(self):
+        human = dict(resume_from50=True, probe_lr_only=True,
+                     raw_human_message='需要变成1e-5跑，探针部分')
+        future = dict(probe_learning_rate=1e-5, resume_joint=dict(completed_outer=85),
+                      resume_probe_lr_transition=dict(resume_outer=50, human_authorization=human))
+        validate_authorization(future)
+        future['resume_probe_lr_transition']['resume_outer'] = 5
+        with self.assertRaises(ValueError): validate_authorization(future)
 
 
 if __name__ == '__main__':
