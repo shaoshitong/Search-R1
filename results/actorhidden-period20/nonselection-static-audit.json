@@ -30,7 +30,16 @@
     "baseline_prescribed_grounding_refit_after50_100_150_vs_current_fixed_round0_grounding_manifest"
   ],
   "causal_EM_attribution_established": false,
-  "actual_rollout_weight_impact_measurement": "pending_readback; no fabricated counts",
+  "actual_rollout_weight_impact_measurement": "nonselection-actual50-cpu-audit.json: actual source trajectory/ledger readback, no model forward",
   "training_modified": false,
-  "no_new_gpu_evaluation": true
+  "no_new_gpu_evaluation": true,
+  "qa50_failure_classes": {
+    "official_correct": 134,
+    "legal_answer_wrong": 222,
+    "strict_parser_rejected": 156,
+    "rejected_with_nonempty_complete_answer_tag": 149,
+    "rejected_last_answer_payload_matches_gold": 58,
+    "valid_answer_after_finished_information_block": 115,
+    "gold_matching_valid_answer_after_finished_information_block": 43
+  }
 }
