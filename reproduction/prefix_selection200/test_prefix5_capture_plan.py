@@ -12,6 +12,7 @@ import torch
 
 from .actor_hidden import ActorHiddenCapture
 from .contract import DIM, G, PREFIX_TOKENS, QMAX, WIDTH, WORLD
+from .interaction_protocol import CONTRACT as INTERACTION_CONTRACT, ACTUAL_COMPUTE_DTYPE
 from .periodic import complete_pool_plan, is_probe_update, probe_boundary
 from .pool import fixed_test_identities
 from .rollout import (
@@ -142,6 +143,8 @@ class Prefix5CapturePlanTest(unittest.TestCase):
             full = root / 'full.gz'; full.write_bytes(b'cpu-only producer fixture')
             own = root / 'own.jsonl'; own.write_bytes(b'cpu-only own-label fixture')
             saved = dict(run_id='run', outer=1, phase='continue', rank=3, actor_version='actor0',
+                interaction_protocol=INTERACTION_CONTRACT,
+                actual_compute_dtype=ACTUAL_COMPUTE_DTYPE,sampling_attempt_id=None,
                 trajectories=640, config_sha256=digest(conf), full=file_item(full, 640), own_em=file_item(own, 640))
             receipt = root / 'complete.json'; receipt.write_bytes(canonical(saved))
             validated, reused = validate_rank_receipt(conf, config, 1, 'continue', 3, receipt)

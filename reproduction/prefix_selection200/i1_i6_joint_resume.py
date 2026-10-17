@@ -26,6 +26,7 @@ from .storage import actual_actor_boundary
 
 ADAPTER = 'i1_i6_joint_v1'
 QUALIFIED = 'I1_I6_ACTUAL_FULL_STATE_QUALIFIED_ONCE'
+HPC3_BASE = Path('/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017')
 CONTROL_FILES = frozenset({
     'reproduction/prefix_selection200/launch.py',
     'reproduction/prefix_selection200/i1_i6_joint_resume.py',
@@ -118,8 +119,20 @@ def _once(path,value):
         stream.write(canonical(value)+b'\n');stream.flush();os.fsync(stream.fileno())
 
 
+def source_tree(repo):
+    """Admit only our published HPC3 alias; payload paths stay symlink-free."""
+    repo=Path(repo)
+    if repo==HPC3_BASE/'repo' and repo.is_symlink():
+        target=repo.resolve(strict=True)
+        if (target.parent!=HPC3_BASE/'source' or re.fullmatch('[0-9a-f]{40}',target.name) is None
+                or target.stat().st_uid!=os.getuid() or repo.lstat().st_uid!=os.getuid()):
+            raise ValueError('HPC3 source alias must name this user-owned immutable publication')
+        return canonical_path(target)
+    return canonical_path(repo)
+
+
 def _code_inventory(repo):
-    repo=canonical_path(repo);result={}
+    repo=source_tree(repo);result={}
     for path in sorted(repo.rglob('*')):
         relative=path.relative_to(repo)
         if any(part in ('.git','__pycache__','.pytest_cache','.venv') for part in relative.parts): continue
@@ -132,6 +145,7 @@ def source_manifest(repo, source_commit, *, science_source_commit=None):
     """Small code publication manifest; the publisher pins its actual Git commit."""
     for value in (source_commit,science_source_commit or source_commit):
         if re.fullmatch('[0-9a-f]{40}',value or '') is None: raise ValueError('Published source commit must be explicit')
+    repo=source_tree(repo)
     return dict(schema_version=1,source_commit=source_commit,science_source_commit=science_source_commit or source_commit,
                 files_sha256=_code_inventory(repo),critical_ast_sha256=_critical_ast(repo),payload_files_read=0)
 

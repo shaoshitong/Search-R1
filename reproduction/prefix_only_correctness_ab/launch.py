@@ -1,6 +1,7 @@
 """Once native job: prefix10/20/40/80 on physical0-1/2-3/4-5/6-7; offline probes only."""
 import argparse
 import csv
+import errno
 import fcntl
 import hashlib
 import io
@@ -190,6 +191,15 @@ def torchrun_owned_class():
                     for record in sorted(self.observe(name),key=lambda row:row['pid']!=job['leader']['pid']):
                         try:signal_owned(record,sig,process=self.handles.get(name) if record['pid']==job['leader']['pid'] else None)
                         except ProcessLookupError:pass
+                        except OSError as error:
+                            if error.errno!=errno.ENOSYS or record['pid']==job['leader']['pid']:raise
+                            # Old HPC3 kernels cannot anchor a descendant PID.
+                            # Let the authenticated live leader forward this
+                            # signal during the grace period; never use kill(pid)
+                            # for a ledger-only descendant. Remaining children
+                            # still cause the final ownership check to fail.
+                            job.setdefault('descendant_signal_deferred',[]).append(
+                                dict(pid=record['pid'],start_ticks=record['start_ticks'],signal=int(sig)))
                     deadline=time.monotonic()+seconds
                     while self.observe(name) and time.monotonic()<deadline:time.sleep(.2)
                     if not self.observe(name):break
