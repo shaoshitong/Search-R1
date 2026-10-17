@@ -163,6 +163,10 @@ def prepare_worker(handle_path):
             raise ValueError('Exact live parent and latest human handoff identity differ')
         schedule=dict(effective_from_outer=n+1,legacy_candidates=2560,ordinary_candidates=5120,update_candidates=2560,probe_update_period=10,probe_update_at_final=False,selected_questions=512)
         parent_manifest=resume.source_manifest(parent/'repo',original['source_commit'])
+        parent_deployment=read(parent/'preparation/deployment.json')
+        expected_code={name:value for name,value in parent_deployment['source_files'].items() if Path(name).suffix in ('.py','.sh')}
+        if (parent_deployment['source_commit']!=original['source_commit'] or parent_manifest['files_sha256']!=expected_code):
+            raise ValueError('Parent actual code no longer matches its immutable deployed publication')
         target_manifest=resume.source_manifest(base/'repo',h['source_commit'],science_source_commit=original['source_commit'])
         delta=dict(candidate_schedule=schedule,human_intent_sha256=h['human_intent_sha256'],only_authorized_algorithm_delta='ordinary_candidate_pool_5120_periodic2560')
         proof=resume.compatibility_proof(parent_manifest,target_manifest,authorized_candidate_delta=delta)

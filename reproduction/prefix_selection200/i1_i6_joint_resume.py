@@ -319,6 +319,7 @@ def plan(base,config=None):
     qualified=bool(qpath and sha(qpath)==spec['qualification_proof_sha256'] and q.get('status')==QUALIFIED and
         q.get('run_id')==config['run_id'] and q.get('source_execution_id')==original['execution_id'] and
         q.get('source_commit')==original['source_commit'] and q.get('source_joint_sha256')==spec['source_joint_sha256'] and
+        q.get('terminal_proof_sha256')==spec['terminal_proof_sha256'] and
         q.get('completed_outer')==n and q.get('actual_adam_steps_per_rank')==actor['actual_adam_steps_per_rank'] and
         q.get('actor_rank_optimizer_rng_scheduler_verified')==WORLD and q.get('actor_driver_rng_verified') is True and
         q.get('probe_model_optimizer_rank_rng_verified') is True and q.get('pool_exact_permutation_verified') is True and

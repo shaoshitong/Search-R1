@@ -98,6 +98,7 @@ def fixture(root, *, qualified=False):
                 dev=info.st_dev,inode=info.st_ino,mtime_ns=info.st_mtime_ns))
         q=dict(status=resume.QUALIFIED,run_id='run',source_execution_id=config['execution_id'],source_commit=config['source_commit'],
             completed_outer=2,source_joint_sha256=resume.sha(source/'latest-joint.json'),actual_adam_steps_per_rank=[2]*4,
+            terminal_proof_sha256=resume.sha(termpath),
             actor_rank_optimizer_rng_scheduler_verified=4,actor_driver_rng_verified=True,probe_model_optimizer_rank_rng_verified=True,
             pool_exact_permutation_verified=True,payload_full_sha_read_once=True,verified_files=files,constructed_fixture_only=True)
         qpath=root/'qualification.json';write(qpath,q)
