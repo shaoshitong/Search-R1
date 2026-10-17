@@ -20,6 +20,29 @@ from reproduction.prefix20_online.launch import once, publish, read, sha, native
 
 
 DATA_OUTER = 51  # actor0050 supplies every prefix and continuation.
+SHARED_AUTHORIZATION = '\u5141\u8bb8\u6838\u5b9e\u5e76\u6539\u4e3aSlurm\u5171\u7528\uff0c\u4fdd\u7559\u89c6\u9891\u548c8\u5361\u8bad\u7ec3\u9884\u7b97'
+
+
+def admit_local_allocation(base, c):
+    """Record CPU-only Slurm sharing separately from eight physical CUDA GPUs."""
+    if c['local_probe_fit50'].get('shared_slurm_physical8_authorization') != SHARED_AUTHORIZATION:
+        return native_allocation(base,c)
+    from reproduction.common8.native_allocation import fields, cuda_uuids
+    from reproduction.common8.stage_retrieval import memory_bytes
+    import socket
+    job=os.environ['SLURM_JOB_ID']
+    raw=subprocess.check_output(['scontrol','show','job',job,'-o'],text=True,timeout=30)
+    actual=fields(raw)
+    assert socket.gethostname().split('.')[0]=='h100-8' and actual['JobId']==job
+    assert actual['JobState']=='RUNNING' and actual['NodeList']=='h100-8' and actual['NumNodes']=='1'
+    assert int(actual['NumCPUs'])>=96 and memory_bytes(actual['TRES'])>=512*2**30
+    assert actual.get('TresPerNode','(null)')in('(null)','N/A')
+    assert os.environ['CUDA_VISIBLE_DEVICES']=='0,1,2,3,4,5,6,7'
+    physical=cuda_uuids(8);assert physical==c['physical_gpu_uuids']
+    value=dict(run_id=c['run_id'],job_id=job,native=raw,physical_gpu_uuids=physical,
+        slurm_reserved_gpu_count=0,physical_cuda_gpu_count=8,
+        sharing_authorization=SHARED_AUTHORIZATION,preserve_foreign_jobs=True,checked_unix=time.time())
+    once(base/'logs/native-allocation.json',value);return value
 
 
 def train(base):
@@ -181,7 +204,7 @@ def run(base):
     from .rollout import root_dir
     base=Path(base);c=read(base/'preparation/launch-config.json');spec=c['local_probe_fit50']
     assert spec['epochs']==10 and spec['actor_outer']==50 and spec['learning_rate']==1e-5
-    native_allocation(base,c);lease=UUIDLocks(c['physical_gpu_uuids'])
+    admit_local_allocation(base,c);lease=UUIDLocks(c['physical_gpu_uuids'])
     owned=torchrun_owned_class()(base/'logs/process-ledger.json',c['run_id'])
     interrupt=DeferredInterrupt();handlers={s:signal.getsignal(s)for s in (signal.SIGTERM,signal.SIGINT)}
     for sig in handlers:signal.signal(sig,interrupt.handler)
@@ -252,8 +275,9 @@ def submit(base):
     c=read(prep/'launch-config.json');python=str(Path(c['environment_root'])/'bin/python');script=prep/'native-local-fit50.sh'
     once(prep/'local-only-scope.json',dict(actor_updates=0,probe_epochs=10,formal200_resumed=False))
     script.write_text('#!/bin/bash\nset -euo pipefail\nexport PYTHONPATH='+shlex.quote(str(base/'repo'))+'\nexport CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7\nunset PYTHONHOME RAY_ADDRESS HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy\nexec '+shlex.join([python,'-m','reproduction.prefix_selection200.local_probe_fit50','run','--base',str(base)])+'\n');script.chmod(0o700)
+    gpu_request=[] if c['local_probe_fit50'].get('shared_slurm_physical8_authorization')==SHARED_AUTHORIZATION else ['--gres=gpu:8']
     cmd=['sbatch','--parsable','--partition=gpu','--oversubscribe','--nodelist=h100-8','--nodes=1','--ntasks=1',
-        '--cpus-per-task=96','--mem=512G','--gres=gpu:8','--time=0','--signal=B:TERM@60','--export=NONE',
+        '--cpus-per-task=96','--mem=512G']+gpu_request+['--time=0','--signal=B:TERM@60','--export=NONE',
         '--job-name=g1-fit50-'+c['local_probe_fit50']['experiment_id'][:12],
         '--comment=g1-local-fit50:'+c['local_probe_fit50']['experiment_id'],'--chdir='+str(base),
         '--output='+str(base/'logs/native-%j.log'),'--error='+str(base/'logs/native-%j.log'),str(script)]

@@ -18,6 +18,26 @@ def build(config, commit, reuse_commit, reuse_repo):
     return r'''
 import pathlib,json,hashlib,sys,glob,subprocess,os
 b=pathlib.Path(BASE)
+replacement=REPLACEMENT
+if replacement:
+ from_base=pathlib.Path(replacement['base']);job=str(replacement['job_id'])
+ sys.path.insert(0,str(from_base/'repo'))
+ from reproduction.common8.native_allocation import fields
+ r=subprocess.run(['scontrol','show','job',job,'-o'],capture_output=True,text=True,timeout=30)
+ assert r.returncode==0,(r.stdout,r.stderr)
+ native=fields(r.stdout)
+ assert native['Command']==str(from_base/'preparation/native-local-fit50.sh')
+ if native['JobState']=='RUNNING':
+  print(json.dumps(dict(status='ORIGINAL_LOCAL_JOB_ALREADY_RUNNING_NO_SECOND_SUBMISSION',job_id=job)));raise SystemExit
+ receipt=from_base/'preparation/replaced-pending-for-authorized-sharing.json'
+ if not receipt.exists():
+  assert native['JobState']=='PENDING' and native['RunTime']=='00:00:00'
+  stopped=subprocess.run(['scancel',job],capture_output=True,text=True,timeout=30)
+  assert stopped.returncode==0,stopped.stderr
+  with receipt.open('x')as stream:json.dump(dict(job_id=job,native_before=native,returncode=0,
+   reason='authorized physical8 Slurm sharing; no actor/probe updates existed'),stream)
+ else:
+  assert native['JobState']=='CANCELLED' and json.loads(receipt.read_text())['job_id']==job
 if not b.exists():
  DEPLOYMENT
 else:
@@ -50,7 +70,7 @@ print(json.dumps(dict(status='LOCAL50_CODE_AND_FIXED_ACTOR_BOUND_SUBMISSION',bas
  source_commit=c['source_commit'],deploy=read(b/'preparation/deploy-receipt.json'),
  actor_version=c['actor_version'],questions=5120,diagnostic_questions=512,probe_epochs=10,
  learning_rate=s['learning_rate'],submit=submitted,old3434_second_release_check=True)))
-'''.replace('BASE',repr(config['base'])).replace('COMMIT',repr(commit)).replace('DEPLOYMENT',deployment)
+'''.replace('BASE',repr(config['base'])).replace('REPLACEMENT',repr(config['local_probe_fit50'].get('replace_pending'))).replace('COMMIT',repr(commit)).replace('DEPLOYMENT',deployment)
 
 
 if __name__=='__main__':
