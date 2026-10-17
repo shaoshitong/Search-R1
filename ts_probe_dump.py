@@ -38,6 +38,14 @@ THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL)
 
 
 # ----------------------------- helpers -----------------------------
+def file_sha(path):
+    digest = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(8 * 1024 ** 2), b''):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 # Local service calls should not be routed through an outbound HTTP proxy.
 _SESSION = requests.Session()
 _SESSION.trust_env = False
@@ -128,6 +136,10 @@ def counterfactual_labels(outputs, original_answers):
 
 def gen_batch(llm, prompts, max_tokens, sample, stop):
     limit = getattr(llm, '_g1_calibration_prompt_limit', None)
+    if getattr(llm, '_g1_calibration_total_context', None) is not None:
+        # Closed-book and evidence-deletion interventions keep their original
+        # label recipe inside the opt-in native4096 context.
+        limit = llm._g1_calibration_total_context - max_tokens
     if limit is not None:
         capacity = llm.llm_engine.model_config.max_model_len
         if limit + max_tokens > capacity:
@@ -270,6 +282,7 @@ def main():
     ap.add_argument("--correction_feedback", action="store_true")
     ap.add_argument("--gpu_mem", type=float, default=0.45)
     ap.add_argument("--out", default="dumps/run")
+    ap.add_argument("--interaction-config", help="Use the canonical new train/QA interaction for grounding rollouts")
     args = ap.parse_args()
     if args.max_turns != 4 or args.rollout_max_new not in (256, 500):
         raise ValueError('Expected four search-capable turns and a declared 256/500 action budget')
@@ -300,10 +313,24 @@ def main():
           flush=True)
 
     # vLLM engine for generation
-    engine_context = 4608 if args.rollout_max_new == 500 else 4096
+    interaction = None
+    if args.interaction_config:
+        from reproduction.prefix_selection200.interaction_protocol import BUDGET, CONTRACT as INTERACTION_CONTRACT
+        interaction = json.loads(Path(args.interaction_config).read_text())
+        if (interaction.get('interaction_protocol', INTERACTION_CONTRACT) != INTERACTION_CONTRACT
+                or args.rollout_max_new != 500 or not args.correction_feedback):
+            raise ValueError('Shared grounding requires new protocol/action500/correction labels')
+        if interaction.get('calibration_model', args.model) != args.model:
+            raise ValueError('Grounding interaction config names another actual actor model')
+        interaction['calibration_model'] = args.model
+    engine_context = BUDGET['total_tokens'] if interaction is not None else (4608 if args.rollout_max_new == 500 else 4096)
+    engine_options = {} if interaction is None else dict(enable_chunked_prefill=True,
+        enable_prefix_caching=True, disable_async_output_proc=True)
     llm = LLM(model=args.model, dtype="bfloat16", gpu_memory_utilization=args.gpu_mem,
-              max_model_len=engine_context, enforce_eager=True, disable_log_stats=True)
+              max_model_len=engine_context, enforce_eager=True, disable_log_stats=True, **engine_options)
     llm._g1_calibration_context_stats = []
+    if interaction is not None:
+        llm._g1_calibration_total_context = engine_context
     if args.rollout_max_new == 500:
         llm._g1_calibration_prompt_limit = 4096
         llm._g1_calibration_tokenizer = tok
@@ -329,7 +356,14 @@ def main():
     # ---- G rollouts per question (flat) ----
     flat_prompts = [prompts[i] for i in range(nq) for _ in range(args.G)]
     flat_qi = [i for i in range(nq) for _ in range(args.G)]
-    gens, generated_ranges, actual_calls, evidence_ranges, correction_ranges = rollouts_batched(
+    if interaction is not None:
+        from reproduction.prefix_selection200.calibration_interaction import rollouts as unified_rollouts
+        gens, generated_ranges, actual_calls, evidence_ranges, correction_ranges = unified_rollouts(
+            llm, flat_prompts, tok, args.G > 1, interaction)
+        # Hidden contexts use the same admitted initial prompts as generation.
+        prompts = [llm._g1_calibration_initial_prompt_texts[index * args.G] for index in range(nq)]
+    else:
+        gens, generated_ranges, actual_calls, evidence_ranges, correction_ranges = rollouts_batched(
                             llm, flat_prompts, sample=(args.G > 1), max_turns=args.max_turns,
                             max_new=args.rollout_max_new, tokenizer=tok,
                             correction_feedback=args.correction_feedback, return_provenance=True)
@@ -370,6 +404,7 @@ def main():
     # Measure own allocator release; shared-service peaks require separate GPU samples.
     generation_allocated_before_release = torch.cuda.memory_allocated()
     calibration_context_stats = list(llm._g1_calibration_context_stats)
+    interaction_stats = getattr(llm, '_g1_calibration_interaction_stats', None)
     # Dispose of generation engine before HF extraction: never overlap both caches.
     try:
         llm.llm_engine.model_executor.shutdown()
@@ -437,6 +472,12 @@ def main():
            "model_ranges":generated_ranges,"rollout_character_lengths":[len(g) for g in gens],
            "generation_context_policy":{"engine_max_tokens":engine_context,"prompt_max_tokens":4096 if args.rollout_max_new==500 else None,"truncation_side":"left","batches":calibration_context_stats},
            "boundary_all_reserved_questions":True,"observation_token_cap":500,"hidden_truncation_side":"left"}
+    if interaction is not None:
+        proof['interaction_protocol'] = INTERACTION_CONTRACT
+        proof['interaction_config_sha256'] = file_sha(args.interaction_config)
+        proof['interaction_execution'] = interaction_stats
+        proof['grounding_source_actor_version'] = interaction.get('actor_version')
+        proof['generation_context_policy']['prompt_max_tokens'] = INTERACTION_CONTRACT['max_start_tokens']
     with open(os.path.join(args.out,"calibration-label-proof.json"),"w") as f:json.dump(proof,f,indent=2)
     print(f"[dump] SAVED {out_npz} n={len(y_em)} EM={np.mean(y_em):.3f} "
           f"flip={np.mean(y_flip):.3f} cb={np.mean(q_cb_r):.3f} "

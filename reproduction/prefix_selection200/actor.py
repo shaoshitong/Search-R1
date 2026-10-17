@@ -3,7 +3,8 @@
 The native sampling journal supplies old policy probabilities, including the
 scored prefixes. Grounding flip/boundary supplies the unchanged soft reward;
 the correctness prefix probe is used neither as reward nor as an old policy.
-Every successful phase writes twenty Adam updates and one outer scheduler step.
+Every completed phase processes twenty opportunities and advances one outer scheduler step.
+Ordinary guards retain actual partial Adam writes and skip rejected opportunities.
 HF exports retain FP32 master values, rather than quantizing resume state to BF16.
 """
 import argparse
@@ -22,13 +23,15 @@ import shutil
 import uuid
 
 from .contract import SAMPLING_CONTRACT, WORLD
+from .actor_safety import (REFERENCE_MICRO, REFERENCE_MICROS_PER_VIRTUAL_MINI,
+    POLICY_SAFEGUARDS, FrozenPolicyMonitor, frozen_monitor_ids, opportunity_result, attempt_result)
 
 REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
 MILESTONES = (5, 50, 100, 150, 200)
 VIRTUAL_WORLD = 8
 VIRTUAL_MINI = 16
 VIRTUAL_PER_RANK = VIRTUAL_WORLD // WORLD
-OBJECTIVE = 'mean_of_eight_virtual_rank_local16_policy_token_means'
+OBJECTIVE = 'mean_of_eight_virtual_ranks_each_mean_of_eight_micro2_masked_token_means'
 ZERO_ANCHOR_MODE = 'zero_anchor_all_correct_only'
 ADVANTAGE_EPSILON = 1e-6
 GROUNDING_ARCHIVE = ('/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/'
@@ -95,7 +98,7 @@ class ActorBudget:
                 or self.ppo_epochs != 1 or type(self.global_micro) is not int
                 or self.global_micro < WORLD or self.global_mini % self.global_micro
                 or self.global_micro % WORLD):
-            raise ValueError('Keep4physical/8virtual ranks, mini128, one pass,20writes; micro must divide mini128')
+            raise ValueError('Keep4physical/8virtual ranks, mini128, one pass,20opportunities; micro must divide mini128')
 
     @property
     def effective_global_micro(self):
@@ -172,7 +175,7 @@ def collect_oom_retry(output, config_path, outer, rollout_path, attempt_id, *, p
         if latest['completed_outer'] == outer:
             # A launcher failure after state publication must not run the20 steps again.
             if (latest.get('run_id') != config['run_id'] or latest.get('binding') != _state_binding(config)
-                    or latest.get('actual_adam_steps_per_rank') != [20 * outer] * WORLD
+                    or not valid_actual_steps(latest.get('actual_adam_steps_per_rank'), outer)
                     or latest.get('scheduler_completed_outer') != outer
                     or latest.get('original_rollout_sha256') != sha(rollout_path)):
                 raise ValueError('Published actor completion does not match this failed launch input')
@@ -180,6 +183,7 @@ def collect_oom_retry(output, config_path, outer, rollout_path, attempt_id, *, p
                         completed_outer=outer, actor_version=latest['actor_version'])
         restore_metadata(config, latest, outer)
         completed, version = latest['completed_outer'], latest['actor_version']
+    completed_steps = latest['actual_adam_steps_per_rank'][0] if latest else 0
     failures, ledgers, counts, missing = [], [], [], []
     for rank in range(WORLD):
         ledger = directory / ('rank-%d-updates.jsonl' % rank)
@@ -196,9 +200,10 @@ def collect_oom_retry(output, config_path, outer, rollout_path, attempt_id, *, p
                     raise ValueError('Failed-attempt ledger belongs to another rank or outer')
             writes = [row for row in records if row['event'] == 'ACTUAL_ADAM_WRITE']
             for index, row in enumerate(writes):
-                if (row['rank'] != rank or row['outer'] != outer or row['opportunity'] != index
+                if (row['rank'] != rank or row['outer'] != outer or type(row['opportunity']) is not int or not 0 <= row['opportunity'] < 20
+                        or (index and row['opportunity'] <= writes[index - 1]['opportunity'])
                         or row['writes_this_attempt'] != index + 1
-                        or row['actual_adam_steps'] != 20 * completed + index + 1):
+                        or row['actual_adam_steps'] != completed_steps + index + 1):
                     raise ValueError('Failed-attempt ledger counters are not sequential actual writes')
             count = len(writes)
             ledgers.append(dict(rank=rank, path=str(ledger), sha256=sha(ledger), confirmed_writes=count))
@@ -509,7 +514,8 @@ def compute_soft_rewards(rows, tokenizer, config, rank=0):
     scores = manager(data).sum(-1).float()
     if manager.last_probe_version != config['grounding_probe_version']:
         raise ValueError('Grounding reward probe version differs')
-    return scores, dict(version=manager.last_probe_version, rank=rank, probe_url=os.environ['PROBE_URL'],
+    return scores, dict(version=manager.last_probe_version, **_grounding_receipt(config),
+        rank=rank, probe_url=os.environ['PROBE_URL'],
         reward_environment=REWARD_ENV, score_mean=float(scores.mean()), score_min=float(scores.min()),
         score_max=float(scores.max()), prefix_correctness_head_used_for_reward=False)
 
@@ -523,7 +529,7 @@ def rank_plan(seed, outer, world=WORLD):
 
 
 def virtual_minibatches(ids):
-    """Never replace two reference token means with one combined token mean."""
+    """Preserve two virtual ranks and their eight reference micro2 means each."""
     if len(ids) != VIRTUAL_MINI * VIRTUAL_PER_RANK:
         raise ValueError('A physical minibatch must contain two complete virtual16 groups')
     return [ids[start:start + VIRTUAL_MINI] for start in range(0, len(ids), VIRTUAL_MINI)]
@@ -538,11 +544,50 @@ def masked_policy_objective(old, current, advantages, mask, *, loss_fn):
 
 
 def micro_loss_weight(micro_policy_tokens, local_minibatch_policy_tokens):
-    """Changing micro must preserve the authorized local16 token-mean objective."""
+    """A split reference micro2 retains its parent two-row token denominator."""
     if (type(micro_policy_tokens) is not int or type(local_minibatch_policy_tokens) is not int
             or not 0 <= micro_policy_tokens <= local_minibatch_policy_tokens):
         raise ValueError('Actual authored-token mass differs from its parent minibatch')
     return micro_policy_tokens / local_minibatch_policy_tokens if local_minibatch_policy_tokens else 0.
+
+
+def reference_policy_objective(old, current, advantages, mask, *, virtual_offset,
+                               virtual_pair_token_masses, loss_fn):
+    """Large forward, original micro2 means; OOM micro1 keeps pair denominators.
+
+    The caller sums these losses over both virtual16 blocks. FSDP's four-rank
+    average then yields (1/64) sum of all64 reference micro2 masked means.
+    """
+    if (type(virtual_offset) is not int or virtual_offset < 0 or
+            virtual_offset + len(current) > VIRTUAL_MINI or
+            len(virtual_pair_token_masses) != REFERENCE_MICROS_PER_VIRTUAL_MINI):
+        raise ValueError('A physical forward must retain its original virtual16/micro2 identity')
+    loss = current.masked_fill(~mask.bool(), 0.).sum() * 0.
+    metrics = []
+    offset = 0
+    while offset < len(current):
+        pair = (virtual_offset + offset) // REFERENCE_MICRO
+        end = min(len(current), offset + REFERENCE_MICRO - (virtual_offset + offset) % REFERENCE_MICRO)
+        part = slice(offset, end)
+        value, clipfrac, kl = masked_policy_objective(old[part], current[part], advantages[part], mask[part],
+                                                     loss_fn=loss_fn)
+        mass = int(mask[part].sum())
+        weight = micro_loss_weight(mass, virtual_pair_token_masses[pair]) / (
+            REFERENCE_MICROS_PER_VIRTUAL_MINI * VIRTUAL_PER_RANK)
+        loss = loss + value * weight
+        metrics.append(dict(loss=float(value.detach()), clip_fraction=float(clipfrac.detach()),
+            old_policy_kl=float(kl.detach()), actual_policy_token_mass=mass,
+            reference_micro2_index=pair, reference_micro2_policy_token_mass=virtual_pair_token_masses[pair],
+            gradient_weight=weight))
+        offset = end
+    return loss, metrics
+
+
+def valid_actual_steps(values, completed_outer):
+    """One to twenty real writes per completed20-opportunity outer, equal on ranks."""
+    return (isinstance(values, list) and len(values) == WORLD and
+            all(type(value) is int and completed_outer <= value <= 20 * completed_outer for value in values) and
+            len(set(values)) == 1)
 
 
 def _rng():
@@ -559,25 +604,58 @@ def _set_rng(state):
     torch.set_rng_state(state['torch_cpu']); torch.cuda.set_rng_state(state['torch_cuda'])
 
 
+
+def _grounding_attempt(config, latest, outer):
+    """Use the exact adopted evaluator bound by this attempt's launcher config."""
+    from .grounding import checked_state, validate_actor_transition
+    if (config.get('grounding_refresh_enabled') is not True or
+            not isinstance(config.get('grounding_state'), dict) or
+            type(outer) is not int or not 1 <= outer <= 200):
+        raise ValueError('Fresh actor requires its actual adopted dynamic grounding state')
+    supplied = config['grounding_state']
+    state = checked_state(config, supplied)
+    if (state != supplied or state['round'] != min((outer - 1) // 50 * 50, 150) or
+            state['version'] != config['grounding_probe_version'] or
+            state['manifest_path'] != config['grounding_current_manifest']):
+        raise ValueError('Actor attempt grounding version, manifest or scheduled round differs')
+    transition = validate_actor_transition(config, latest, outer)
+    # Preserve the complete exact checked state; do not reconstruct a lossy subset.
+    return json.loads(canonical(state)), transition
+
+
+def _grounding_receipt(config):
+    state = config['grounding_state']
+    return dict(grounding_state=state, grounding_probe_version=state['version'],
+        grounding_current_manifest=state['manifest_path'], grounding_manifest=state['manifest_path'],
+        grounding_manifest_sha256=state['manifest_sha256'])
+
 def _state_binding(config):
     # Micro is intentionally mutable after a real OOM; the scientific budget is not.
-    return dict(run_id=config['run_id'], model_revision=REVISION,
+    return dict(run_id=config['run_id'], model_revision=config.get('model_revision', REVISION),
+        source_commit=config.get('source_commit'), model_files_sha256=config.get('model_files_sha256'),
+        canonical_train=config.get('canonical_train'), canonical_train_sha256=config.get('canonical_train_sha256'),
+        source_question_pool_sha256=config.get('source_question_pool_sha256'),
+        common_manifest_sha256=config.get('common_manifest_sha256'),
+        composite_manifest_sha256=config.get('composite_manifest_sha256'),
         official_model_dir=str(remote(config['official_model_dir'])), world_size=WORLD,
         seed=int(config.get('seed', 1729)),
         global_mini=128, ppo_epochs=1, trajectories=2560, updates_per_outer=20,
         learning_rate=1e-6, outer_warmup=57, clip_ratio=.2, dual_clip=3., grad_clip=1.,
         loss_reduction=OBJECTIVE, reference_virtual_world=VIRTUAL_WORLD,
+        reference_micro=REFERENCE_MICRO, reference_micros_per_virtual_mini=REFERENCE_MICROS_PER_VIRTUAL_MINI,
+        policy_safeguards=POLICY_SAFEGUARDS, policy_guard_accounting='20opportunities_at_least1write_no_rollback',
         reference_virtual_local_mini=VIRTUAL_MINI, virtual_blocks_per_physical_rank=VIRTUAL_PER_RANK,
         entropy_coefficient=0., reference_kl_coefficient=0., reference_kl_type='low_var_kl',
         advantage_normalization=advantage_contract(config),
-        grounding_probe_version=config['grounding_probe_version'], reward_environment=REWARD_ENV)
+        grounding_lifecycle=config.get('grounding_state', {}).get('lifecycle'),
+        reward_environment=REWARD_ENV)
 
 
 def restore_metadata(config, latest, outer):
     expected = outer - 1
     if (latest['run_id'] != config['run_id'] or latest['completed_outer'] != expected
             or latest['binding'] != _state_binding(config)
-            or latest['actual_adam_steps_per_rank'] != [20 * expected] * WORLD
+            or not valid_actual_steps(latest['actual_adam_steps_per_rank'], expected)
             or latest['scheduler_completed_outer'] != expected):
         raise ValueError('Restore only the immediately previous complete actor/Adam/scheduler boundary')
 
@@ -641,8 +719,8 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
     from search_g1.training_state import atomic_save, cpu_tree
     rank = dist.get_rank()
     state = dict(schema_version=1, run_id=config['run_id'], completed_outer=outer, rank=rank,
-        actual_adam_steps=20 * outer, scheduler_completed_outer=outer,
-        binding=_state_binding(config), optimizer=cpu_tree(optimizer.state_dict()),
+        actual_adam_steps=ranks[rank]['actual_adam_steps'], scheduler_completed_outer=outer,
+        binding=_state_binding(config), **_grounding_receipt(config), optimizer=cpu_tree(optimizer.state_dict()),
         optimizer_parameter_layout=optimizer_layout(optimizer),
         scheduler=cpu_tree(scheduler.state_dict()), rng=_rng(),
         model_master_dtype='torch.float32', optimizer_layout='FSDP_FULL_SHARD_same_Qwen2DecoderLayer_wrap_world4',
@@ -664,15 +742,22 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
         pool_proof = dict(path=str(pool_path), sha256=sha(pool_path), value=read(pool_path)) if pool_path else None
         driver_proof = atomic_save(attempt_dir / 'driver.pt', dict(run_id=config['run_id'],
             completed_outer=outer, actor_version=actor_version, driver_state=driver_state,
-            grounding_probe_version=config['grounding_probe_version'], rng=_rng(),
+            **_grounding_receipt(config),
+            rng=_rng(),
             rng_scope='actor_phase_rank0; controller candidate RNG/order lives in candidate_pool_state',
             candidate_pool_state=pool_proof, prefix_probe_receipt=linked_probe_receipt(config.get('prefix_probe_receipt'))))
         receipt = dict(schema_version=1, role='prefix_selection200_actor_complete', run_id=config['run_id'],
+            status='complete', complete_outer=True, **_grounding_receipt(config),
             source_commit=config.get('source_commit'), completed_outer=outer, actor_version=actor_version,
             model_dir=str(hfdir), actor_model_dir=str(hfdir), hf_model_dir=str(hfdir), model_master_dtype='torch.float32',
             rollout_compute_dtype='bfloat16', state_dir=str(attempt_dir), state_path=str(attempt_dir), rank_states=proofs,
-            hf_files=hf, driver_state=driver_proof, actual_adam_steps_per_rank=[20 * outer] * WORLD,
-            new_adam_steps_per_rank=[20] * WORLD, scheduler_completed_outer=outer,
+            hf_files=hf, driver_state=driver_proof,
+            actual_adam_steps_per_rank=[row['actual_adam_steps'] for row in ranks],
+            new_adam_steps_per_rank=[row['new_adam_steps'] for row in ranks], scheduler_completed_outer=outer,
+            opportunities_processed=20, full_budget_complete=all(row['full_budget_complete'] for row in ranks),
+            skipped_update_opportunities=[row['skipped_update_opportunities'] for row in ranks],
+            written_with_post_guard=[row['written_with_post_guard'] for row in ranks],
+            automatic_rollback_performed=False,
             learning_rate_used=learning_rate(outer - 1), next_learning_rate=learning_rate(outer),
             requested_global_micro=budget.global_micro,
             actual_global_micro=budget.effective_global_micro, actual_local_micro=budget.local_micro,
@@ -712,6 +797,13 @@ def train(config_path, outer, rollout_path, output_path):
         if latest is None: raise ValueError('Missing this run latest complete actor state')
         restore_metadata(config, latest, outer)
         model_dir = str(remote(latest['model_dir'])); old_version = latest['actor_version']
+    grounding_state, grounding_transition = _grounding_attempt(config, latest, outer)
+    config = dict(config, grounding_state=grounding_state)
+    grounding_digests = [None] * WORLD
+    grounding_digest = hashlib.sha256(canonical(grounding_state)).hexdigest()
+    dist.all_gather_object(grounding_digests, grounding_digest)
+    if any(digest != grounding_digest for digest in grounding_digests):
+        raise ValueError('All four actor ranks must adopt the same exact grounding attempt state')
     supplied_attempt = config.get('actor_attempt_id')
     if supplied_attempt is not None and (not isinstance(supplied_attempt, str)
             or re.fullmatch('[0-9a-f]{32}', supplied_attempt) is None):
@@ -724,6 +816,7 @@ def train(config_path, outer, rollout_path, output_path):
         atomic_json(attempt_dir / 'attempt.json', dict(run_id=config['run_id'], outer=outer,
             attempt_id=attempt[0], cached_rollout_path=str(rollout_path), actor_version=old_version,
             config_path=str(config_path), config_sha256=sha(config_path),
+            **_grounding_receipt(config), grounding_transition=grounding_transition,
             requested_actor_global_micro_batch_size=budget.global_micro,
             actor_global_micro_batch_size=budget.effective_global_micro,
             virtual_local_mini=VIRTUAL_MINI, virtual_blocks_per_physical_rank=VIRTUAL_PER_RANK,
@@ -732,18 +825,22 @@ def train(config_path, outer, rollout_path, output_path):
     # Attempt identity exists even if loading/initializing the model encounters OOM.
     rows, rollout = load_rollout(rollout_path, config, outer, old_version)
     actor, wrapped, optimizer, scheduler, tokenizer = _build_actor(model_dir, budget, local)
+    writes_before = latest['actual_adam_steps_per_rank'][rank] if latest else 0
     if latest:
         item = latest['rank_states'][rank]; path = remote(item['path'])
         if path.stat().st_size != item['bytes'] or sha(path) != item['sha256']:
             raise ValueError('Latest complete rank state differs')
         saved = torch.load(path, map_location='cpu', weights_only=False)
-        if saved['rank'] != rank or saved['binding'] != _state_binding(config) or saved['actual_adam_steps'] != 20 * (outer - 1):
+        if saved['rank'] != rank or saved['binding'] != _state_binding(config) or saved['actual_adam_steps'] != writes_before:
             raise ValueError('Rank-local actor restore binding/count differs')
+        if (saved['grounding_state'] != latest['grounding_state'] or
+                saved['grounding_probe_version'] != latest['grounding_probe_version']):
+            raise ValueError('Restored rank checkpoint lost its actual previous reward evaluator')
         if saved['optimizer_parameter_layout'] != optimizer_layout(optimizer):
             raise ValueError('FSDP rank-local parameter shard ordering/shape differs from the complete state')
         optimizer.load_state_dict(saved['optimizer']); scheduler.load_state_dict(saved['scheduler']); _set_rng(saved['rng'])
     actual_steps = {int(value['step'].item()) for value in optimizer.state.values() if 'step' in value}
-    expected_steps = {20 * (outer - 1)} if outer > 1 else set()
+    expected_steps = {writes_before} if writes_before else set()
     if (actual_steps != expected_steps or any(p.dtype != torch.float32 for p in wrapped.parameters())
             or any(value.dtype != torch.float32 for state in optimizer.state.values()
                    for key, value in state.items() if key in ('exp_avg', 'exp_avg_sq'))):
@@ -752,10 +849,13 @@ def train(config_path, outer, rollout_path, output_path):
         raise ValueError('Actual outer scheduler did not restore its true completed clock')
     ledger = attempt_dir / ('rank-%d-updates.jsonl' % rank)
     append(ledger, dict(event='ACTUAL_RESTORE', rank=rank, outer=outer, restored_completed_outer=outer - 1,
-        actual_adam_before=20 * (outer - 1), restored_scheduler=scheduler.last_epoch,
+        actual_adam_before=writes_before, restored_scheduler=scheduler.last_epoch,
         actual_learning_rates=[part['lr'] for part in optimizer.param_groups],
         actual_model_master_dtypes=sorted({str(p.dtype) for p in wrapped.parameters()}),
-        actor_version=old_version, requested_global_micro=budget.global_micro,
+        restored_grounding_state=latest['grounding_state'] if latest else None,
+        restored_grounding_probe_version=latest['grounding_probe_version'] if latest else None,
+        actor_version=old_version, **_grounding_receipt(config), grounding_transition=grounding_transition,
+        requested_global_micro=budget.global_micro,
         actual_global_micro=budget.effective_global_micro, utc=utc()))
     reward_ids = list(range(rank, len(rows), WORLD))
     local_scores, local_reward_proof = compute_soft_rewards([rows[i] for i in reward_ids], tokenizer, config, rank)
@@ -777,7 +877,7 @@ def train(config_path, outer, rollout_path, output_path):
     if rank == 0:
         atomic_json(normalization_path, normalization)
     advantages = advantage_values.tolist()
-    reward_proof = dict(version=config['grounding_probe_version'], ranks=[part['proof'] for part in reward_parts],
+    reward_proof = dict(version=config['grounding_probe_version'], **_grounding_receipt(config), ranks=[part['proof'] for part in reward_parts],
         trajectories=len(rows), score_mean=math.fsum(scores) / len(scores),
         prefix_correctness_head_used_for_reward=False, actual_reward_world_size=WORLD,
         advantage_contract=normalization_contract, advantage_summary=normalization['summary'],
@@ -785,57 +885,100 @@ def train(config_path, outer, rollout_path, output_path):
             sha256=hashlib.sha256(normalization_bytes).hexdigest()),
         unmodified_raw_rewards_sha256=normalization['unmodified_raw_rewards_sha256'])
     plan = rank_plan(seed, outer)[rank]
-    writes = 0
+    monitor_ids = frozen_monitor_ids(plan, rows)
+    frozen = tensor_batch([rows[i] for i in monitor_ids], tokenizer.pad_token_id)
+    frozen['advantages'] = torch.tensor([advantages[i] for i in monitor_ids], dtype=torch.float32)[:, None].expand(
+        -1, frozen['responses'].shape[1]).clone()
+    monitor = FrozenPolicyMonitor(actor, frozen, device=local, local_micro=budget.local_micro,
+        identity=dict(run_id=config['run_id'], outer=outer, attempt_id=attempt[0], rank=rank,
+            restored_actor_version=old_version, restored_actual_adam_steps=writes_before,
+            original_rollout_sha256=sha(rollout_path),
+            trajectory_ids=[rows[i]['trajectory_id'] for i in monitor_ids], selection_indices=monitor_ids))
+    writes, opportunities = 0, []
+    from search_g1.numerics import require_finite
+    from search_g1.policy_safety import RecoverableGuard
     try:
         wrapped.train()
         for step, ids in enumerate(plan):
-            optimizer.zero_grad(set_to_none=True); metrics = []
-            for block, virtual_ids in enumerate(virtual_minibatches(ids)):
-                mini_mass = sum(sum(rows[i]['response_info_mask']) for i in virtual_ids)
-                for offset in range(0, len(virtual_ids), budget.local_micro):
-                    micro_ids = virtual_ids[offset:offset + budget.local_micro]
-                    batch = tensor_batch([rows[i] for i in micro_ids], tokenizer.pad_token_id)
-                    response_width = batch['responses'].shape[1]
-                    batch['advantages'] = torch.tensor([advantages[i] for i in micro_ids], dtype=torch.float32)[:, None].expand(-1, response_width)
-                    batch = {key: value.to(local) for key, value in batch.items()}
-                    _, current = actor._forward_micro_batch(batch, temperature=1., compute_entropy=False)
-                    loss, clipfrac, kl = masked_policy_objective(batch['old_log_probs'], current,
-                        batch['advantages'], batch['loss_mask'], loss_fn=compute_policy_loss)
-                    # Keep reference guards exactly: true nonfinite is invalid;
-                    # magnitude/ratio diagnostics do not stop this actor path.
-                    finite = torch.tensor(int(torch.isfinite(loss)), dtype=torch.int32, device=local)
-                    dist.all_reduce(finite, op=dist.ReduceOp.MIN)
-                    if not finite.item(): raise FloatingPointError('Nonfinite actual actor loss')
-                    micro_mass = sum(sum(rows[i]['response_info_mask']) for i in micro_ids)
-                    # FSDP averages physical ranks. Each rank contributes half
-                    # of each virtual16 token mean, giving the original1/8 sum.
-                    weight = micro_loss_weight(micro_mass, mini_mass) / VIRTUAL_PER_RANK
-                    (loss * weight).backward()
-                    metrics.append(dict(loss=float(loss.detach()), clip_fraction=float(clipfrac.detach()),
-                        old_policy_kl=float(kl.detach()), actual_policy_token_mass=micro_mass,
-                        virtual_rank=rank * VIRTUAL_PER_RANK + block,
-                        virtual_minibatch_policy_token_mass=mini_mass, gradient_weight=weight))
-            norm = clip_global_l2(wrapped, 1., diagnostic=False)
-            optimizer.step(); writes += 1
-            steps = {int(value['step'].item()) for value in optimizer.state.values() if 'step' in value}
-            if steps != {20 * (outer - 1) + writes}: raise ValueError('Actual Adam step counters differ')
-            append(ledger, dict(event='ACTUAL_ADAM_WRITE', rank=rank, outer=outer, opportunity=step,
-                actual_adam_steps=20 * (outer - 1) + writes, writes_this_attempt=writes,
-                actual_learning_rate=optimizer.param_groups[0]['lr'], grad_norm=float(norm),
-                local_trajectories=len(ids), global_mini=128, local_micro=budget.local_micro,
-                requested_global_micro=budget.global_micro, actual_global_micro=budget.effective_global_micro,
-                gradient_accumulation=budget.accumulation,
-                objective=OBJECTIVE, metrics=metrics, utc=utc()))
-        if writes != 20: raise ValueError('Incomplete outer budget cannot advance scheduler/save latest')
-        scheduler.step()
-        rank_receipt = dict(rank=rank, outer=outer, new_adam_steps=writes, actual_adam_steps=20 * outer,
-            opportunities=20, scheduler_completed_outer=scheduler.last_epoch,
-            next_learning_rate=optimizer.param_groups[0]['lr'], ledger_path=str(ledger), ledger_sha256=sha(ledger))
+            optimizer.zero_grad(set_to_none=True); metrics = []; numerical_guard = None; norm = None
+            before = writes_before + writes
+            pre = monitor.observe(stage='before_minibatch', opportunity=step, actual_adam_steps=before)
+            append(ledger, dict(event='POLICY_MONITOR', rank=rank, outer=outer, **pre, utc=utc()))
+            if pre['allowed']:
+                try:
+                    for block, virtual_ids in enumerate(virtual_minibatches(ids)):
+                        pair_masses = [sum(sum(rows[i]['response_info_mask']) for i in virtual_ids[pair:pair + REFERENCE_MICRO])
+                                       for pair in range(0, VIRTUAL_MINI, REFERENCE_MICRO)]
+                        for offset in range(0, len(virtual_ids), budget.local_micro):
+                            micro_ids = virtual_ids[offset:offset + budget.local_micro]
+                            batch = tensor_batch([rows[i] for i in micro_ids], tokenizer.pad_token_id)
+                            response_width = batch['responses'].shape[1]
+                            batch['advantages'] = torch.tensor([advantages[i] for i in micro_ids], dtype=torch.float32)[:, None].expand(-1, response_width)
+                            batch = {key: value.to(local) for key, value in batch.items()}
+                            _, current = actor._forward_micro_batch(batch, temperature=1., compute_entropy=False)
+                            authored = batch['loss_mask'].bool()
+                            require_finite(dict(new=torch.where(authored, current, 0.),
+                                old=torch.where(authored, batch['old_log_probs'], 0.),
+                                advantages=torch.where(authored, batch['advantages'], 0.)),
+                                stage='before_dual_clip_exp', recoverable=True)
+                            loss, parts = reference_policy_objective(batch['old_log_probs'], current,
+                                batch['advantages'], batch['loss_mask'], virtual_offset=offset,
+                                virtual_pair_token_masses=pair_masses, loss_fn=compute_policy_loss)
+                            require_finite(dict(loss=loss), stage='before_backward', recoverable=True)
+                            loss.backward()
+                            metrics.extend(dict(part, virtual_rank=rank * VIRTUAL_PER_RANK + block) for part in parts)
+                    norm = clip_global_l2(wrapped, 1., diagnostic=False, recoverable=True)
+                    optimizer.step(); writes += 1
+                    steps = {int(value['step'].item()) for value in optimizer.state.values() if 'step' in value}
+                    if steps != {writes_before + writes}: raise ValueError('Actual Adam step counters differ')
+                    append(ledger, dict(event='ACTUAL_ADAM_WRITE', rank=rank, outer=outer, opportunity=step,
+                        actual_adam_steps=writes_before + writes, writes_this_attempt=writes,
+                        actual_learning_rate=optimizer.param_groups[0]['lr'], grad_norm=float(norm),
+                        local_trajectories=len(ids), global_mini=128, local_micro=budget.local_micro,
+                        requested_global_micro=budget.global_micro, actual_global_micro=budget.effective_global_micro,
+                        gradient_accumulation=budget.accumulation, objective=OBJECTIVE, metrics=metrics, utc=utc()))
+                except RecoverableGuard as rejection:
+                    numerical_guard = dict(stage=rejection.stage, reasons=rejection.reasons,
+                                           diagnostic=rejection.diagnostic)
+                    optimizer.zero_grad(set_to_none=True)
+            # Every opportunity has a real after observation, including a skip.
+            # Only its adjacent unchanged-state next-before call can share it.
+            post = monitor.observe(stage='after_minibatch', opportunity=step, actual_adam_steps=writes_before + writes)
+            append(ledger, dict(event='POLICY_MONITOR', rank=rank, outer=outer, **post, utc=utc()))
+            disposition = opportunity_result(opportunity=step, before=before, after=writes_before + writes,
+                pre=pre, post=post, numerical_guard=numerical_guard)
+            opportunities.append(disposition)
+            append(ledger, dict(event='OPPORTUNITY', rank=rank, outer=outer, **disposition, utc=utc()))
+        optimizer.zero_grad(set_to_none=True)
+        result = attempt_result(opportunities, writes_before=writes_before)
+        rank_receipt = dict(result, rank=rank, run_id=config['run_id'], outer=outer, attempt_id=attempt[0],
+            **_grounding_receipt(config), grounding_transition=grounding_transition,
+            new_adam_steps=writes, actual_adam_steps=writes_before + writes, opportunities=20,
+            next_learning_rate=learning_rate(outer),
+            scheduler_completed_outer=scheduler.last_epoch + int(result['complete_outer']),
+            actual_monitor_forward_calls=monitor.actual_forward_calls,
+            fresh_monitor_observations=monitor.fresh_observations, reused_monitor_observations=monitor.reused_observations,
+            ledger_path=str(ledger), ledger_sha256=sha(ledger))
         ranks = [None] * WORLD; dist.all_gather_object(ranks, rank_receipt)
-        if any(row['new_adam_steps'] != 20 or row['scheduler_completed_outer'] != outer for row in ranks):
-            raise ValueError('All four ranks must complete20 writes before actor completion')
+        shared = ('new_adam_steps', 'actual_adam_steps', 'opportunities', 'opportunity_statuses', 'complete_outer',
+                  'grounding_state', 'grounding_probe_version')
+        if any(any(row[key] != rank_receipt[key] for key in shared) for row in ranks):
+            raise ValueError('All four ranks must agree on actual writes and all20 opportunity dispositions')
+        if not result['complete_outer']:
+            guarded = dict(result, run_id=config['run_id'], outer=outer, attempt_id=attempt[0],
+                binding=_state_binding(config), **_grounding_receipt(config), grounding_transition=grounding_transition,
+                ranks=ranks, scheduler_completed_outer=scheduler.last_epoch,
+                cached_rollout_path=str(rollout_path), cached_rollout_sha256=sha(rollout_path),
+                actor_version=old_version, utc=utc())
+            if rank == 0: atomic_json(attempt_dir / 'guard-result.json', guarded)
+            dist.barrier()
+            return guarded
+        scheduler.step()
         _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, scheduler, tokenizer,
             rollout_path, config['run_id'] + '-actor%04d' % outer, budget, reward_proof, ranks)
+        return dict(result, run_id=config['run_id'], outer=outer, attempt_id=attempt[0],
+                    **_grounding_receipt(config), grounding_transition=grounding_transition,
+                    actual_adam_steps_per_rank=[row['actual_adam_steps'] for row in ranks])
     except BaseException as error:
         # A true OOM is a failed attempt, never a numeric skip or a completed outer.
         is_oom = isinstance(error, torch.cuda.OutOfMemoryError)
@@ -884,7 +1027,8 @@ def main():
     parser.add_argument('--rollout', required=True); parser.add_argument('--output', required=True)
     args = parser.parse_args()
     try:
-        train(args.config, args.outer, args.rollout, args.output)
+        result = train(args.config, args.outer, args.rollout, args.output)
+        print('SEARCH_G1_NATIVE_ACTOR_RESULT=' + json.dumps(result), flush=True)
     except BaseException as error:
         import torch
         # Also record real initialization OOMs, before a synchronized attempt

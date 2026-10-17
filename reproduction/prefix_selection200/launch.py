@@ -39,6 +39,15 @@ def validate_config(c, base):
             or c.get('hidden_capture_contract') != HIDDEN_CAPTURE_CONTRACT
             or c.get('independent_encoder_forward') is not False):
         raise ValueError('Bind an explicitly retained complete EMA source and native question5 capture')
+    from .interaction_protocol import CONTRACT as INTERACTION_CONTRACT
+    from .grounding import validate_config as validate_grounding
+    if c.get('interaction_protocol') != INTERACTION_CONTRACT:
+        raise ValueError('Freeze the shared new BF16 train/QA interaction contract')
+    validate_grounding(c)
+    from .actor import OBJECTIVE
+    from .actor_safety import POLICY_SAFEGUARDS
+    if c.get('actor_loss_reduction') != OBJECTIVE or c.get('policy_safeguards') != POLICY_SAFEGUARDS:
+        raise ValueError('Freeze the original64 equal micro2 loss and authorized policy safeguards')
     if c['model_revision'] != 'aa8e72537993ba99e69dfaafa59ed015b17504d1':
         raise ValueError('Official actor/ref/encoder revision differs')
     if len(set(c['physical_gpu_uuids'])) != WORLD:
@@ -91,9 +100,11 @@ def reused_phase(base, root, phase, c):
     return True
 
 
-def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=None):
+def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=None, grounding_state=None):
     """Publish only an actual actor/probe/pool boundary, including repaired10."""
     from .periodic import is_probe_update, probe_boundary
+    from .storage import actual_actor_boundary
+    from . import grounding
     periodic_update = is_probe_update(outer)
     if periodic_update:
         probe_metrics = read(root/'probe-update/metrics.json')
@@ -108,7 +119,7 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
     actor, probe = read(base/'actor/latest.json'), read(base/'probe/latest.json')
     boundary = probe_boundary(outer)
     if (actor['completed_outer'] != outer or actor['scheduler_completed_outer'] != outer
-            or actor['actual_adam_steps_per_rank'] != [20*outer]*WORLD
+            or not actual_actor_boundary(actor, outer)
             or probe['completed_outer'] != boundary['last_update_outer']
             or probe['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD
             or (periodic_update and updated['checkpoint'] != probe)):
@@ -121,7 +132,15 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
     once(snapshot, pool)
     probe_snapshot = root/'probe-state-at-completion.pt'
     os.link(base/'probe/latest.pt', probe_snapshot)
+    grounding_state = grounding.checked_state(c, grounding_state, require_adopted=True)
+    if actor.get('grounding_state') != grounding_state:
+        raise RuntimeError('Joint grounding state differs from actual actor-used state')
+    grounding_snapshot = root/'grounding-state-at-completion.json'
+    once(grounding_snapshot, grounding_state)
     complete = dict(run_id=c['run_id'], execution_id=c.get('execution_id'), outer=outer, actor=actor, probe=probe,
+        grounding=grounding_state, grounding_snapshot=str(grounding_snapshot),
+        grounding_snapshot_sha256=sha(grounding_snapshot),
+        grounding_refresh_due=outer if outer in grounding.REFIT_ROUNDS else None,
         probe_snapshot=str(probe_snapshot), pool_snapshot=str(snapshot), pool_sha256=sha(snapshot),
         selection_sha256=sha(actor_selection_path),
         actor_selection_path=str(actor_selection_path), actor_selection_sha256=sha(actor_selection_path),
@@ -164,6 +183,8 @@ def run(base):
         raise ValueError('Submitted configuration changed')
     if (base / 'logs/process-ledger.json').exists():
         raise RuntimeError('Existing execution needs explicit recovery; do not replay its launch')
+    if c.get('resume_pending_probe') or c.get('resume_joint') or c.get('resume_import'):
+        raise ValueError('I1-I6 fresh source requires an explicitly compatible recovery adapter; old hardcoded-count adapters are forbidden')
     pending_recovery = c.get('resume_pending_probe')
     if pending_recovery and c.get('resume_joint'):
         raise ValueError('Complete-joint and committed-actor/pending-probe recovery are distinct boundaries')
@@ -203,6 +224,7 @@ def run(base):
     python = str(Path(c['environment_root']) / 'bin/python')
     conf = str(base / 'preparation/launch-config.json')
     services = {}; success = False; timings = {}; actor_micro = c['actor_global_micro_batch_size']
+    grounding_state = None
     if c.get('python_header_cpath'):
         env['CPATH'] = c['python_header_cpath']
 
@@ -252,6 +274,45 @@ def run(base):
             if time.monotonic() > deadline:
                 raise TimeoutError('Own service did not become ready: ' + name)
             time.sleep(3)
+
+    def start_grounding(state):
+        from . import grounding
+        live = grounding.publish_live(base, c, state)
+        replicas = []
+        for rank in range(WORLD):
+            name = 'grounding-%06d-rank-%d' % (state['round'], rank)
+            services[name] = start(name, [python, 'probe_server.py', '--manifest', str(live),
+                '--port', str(c['grounding_probe_base_port'] + rank)],
+                dict(env, CUDA_VISIBLE_DEVICES=str(c['grounding_physical_gpu']),
+                     SEARCH_G1_BASE=str(base / 'grounding' / ('rank-%d' % rank)), OMP_NUM_THREADS='2'))
+        for rank in range(WORLD):
+            name = 'grounding-%06d-rank-%d' % (state['round'], rank)
+            actual = await_service(name, 'http://127.0.0.1:%d/health' % (c['grounding_probe_base_port'] + rank),
+                dict(version=state['version'], round=state['round'], encoder=state['encoder']))
+            replicas.append(dict(actual, rank=rank, owned_service=name, pid=services[name].pid))
+        return grounding.adopt(base, c, state, replicas)
+
+    def refresh_grounding(completed):
+        nonlocal grounding_state
+        from . import grounding
+        if completed not in grounding.REFIT_ROUNDS:
+            return
+        if grounding_state['round'] != completed:
+            stage('GROUNDING_REFIT_REQUIRED', complete_outer=completed)
+            # Stop only our four evaluator replicas; retriever and other tasks
+            # remain bound to their existing owned allocation.
+            for name in [key for key in services if key.startswith('grounding-')]:
+                owned.stop(name); services.pop(name)
+            phase('outer-%06d-grounding-refit' % completed,
+                [python, '-m', 'reproduction.prefix_selection200.grounding', '--base', str(base),
+                 '--outer', str(completed)],
+                dict(env, CUDA_VISIBLE_DEVICES=str(c['grounding_refit_visible_device'])))
+            fitted = read(base / 'grounding/rounds' / ('round-%06d' % completed) / 'fit-complete.json')
+            grounding_state = start_grounding(fitted)
+        path = base / 'outers' / ('outer-%06d' % completed) / 'grounding-refresh.json'
+        if not path.exists():
+            once(path, dict(run_id=c['run_id'], outer=completed, grounding=grounding_state,
+                            required_before_outer=completed + 1))
 
     previous_qa = Path((pending_recovery or c.get('resume_joint', {})).get('source_base', str(base))) / 'logs/qa-pending.json'
     pending_qa = read(previous_qa) if previous_qa.is_file() else {}
@@ -314,15 +375,16 @@ def run(base):
             '--data-cache', c.get('retrieval_data_cache', str(base / 'retrieval-cache')),
             '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', '2'],
             dict(env, CUDA_VISIBLE_DEVICES=','.join(map(str,c['auxiliary_gpu_indices'])), PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
-        for rank in range(WORLD):
-            name = 'grounding-rank-%d' % rank
-            services[name] = start(name, [python, 'probe_server.py', '--manifest', c['grounding_manifest'],
-                '--port', str(c['grounding_probe_base_port'] + rank)],
-                dict(env, CUDA_VISIBLE_DEVICES=str(c['grounding_physical_gpu']), SEARCH_G1_BASE=str(base / 'grounding' / ('rank-%d' % rank)), OMP_NUM_THREADS='2'))
         await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=2))
-        for rank in range(WORLD):
-            await_service('grounding-rank-%d' % rank, 'http://127.0.0.1:%d/health' % (c['grounding_probe_base_port'] + rank),
-                dict(version=c['grounding_probe_version']))
+        from . import grounding
+        if outer:
+            # A future compatible recovery must retain the exact adopted state.
+            recovered = grounding.recovery_state(Path(c['resume_joint']['source_base']), c,
+                read(base/'latest-joint.json'))
+            grounding_state = start_grounding(recovered)
+        else:
+            grounding_state = start_grounding(grounding.initialize(base, c))
+        refresh_grounding(outer)
         # Retry the interrupted milestone QA with its saved actor, then continue
         # from the joint actor/probe/pool boundary without redoing any updates.
         if outer in (5, 50, 100, 150, 200):
@@ -352,49 +414,80 @@ def run(base):
                     raise ValueError('Inherited actual actor binding differs')
             else:
                 once(actor_binding_path, actor_binding)
-            if not reused_phase(base, root, 'prefix', c):
-                phase('outer-%06d-prefix' % outer, [python, '-m', 'reproduction.prefix_selection200.rollout',
-                    '--config', conf, '--outer', str(outer), '--phase', 'prefix'])
-            if not reused_phase(base, root, 'probe-score', c):
-                phase('outer-%06d-score' % outer, distributed('reproduction.prefix_selection200.probe',
-                    ['score', '--state-dir', str(base / 'probe'), '--prefix-inputs', str(root / 'prefix/scan'),
-                     '--output', str(root / 'probe-score'), '--outer', str(outer), '--model-dir', c['official_model_dir'],
-                     '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256))]))
-            from .periodic import is_probe_update,probe_boundary
-            periodic_update=is_probe_update(outer)
-            actor_selection_path=root/'probe-score/selection.json'
-            if periodic_update:
-                # The label-free predicted selection remains immutable. Complete
-                # every candidate once, then separately bind actual-mixed actor
-                # selection to those exact native outcomes and project its G5s.
-                phase('outer-%06d-complete-unselected-pool'%outer,
-                    [python,'-m','reproduction.prefix_selection200.periodic_data','complete-pool',
-                     '--config',conf,'--outer',str(outer)])
-                actor_selection_path=root/'probe-score/actual-em-selection.json'
-                actual_selection=read(actor_selection_path)
-                if (actual_selection.get('outcome_labels_used') is not True
-                        or actual_selection.get('fallback_mode') != c['actual_em_selection_fallback']):
-                    raise ValueError('Periodic actual-EM actor selection is missing its bound fallback policy')
-                phase('outer-%06d-current-actor-diagnostic'%outer,
-                    [python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic',
-                     '--config',conf,'--outer',str(outer)])
-            else:
-                phase('outer-%06d-continue' % outer, [python, '-m', 'reproduction.prefix_selection200.rollout',
-                    '--config', conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(actor_selection_path)])
-            # Retry only an actual typed CUDA OOM, after all failed owned workers
-            # have exited. Restore the previous committed state and SAME rollout;
-            # never combine an abandoned partial Adam prefix with the retry.
+            from .periodic import is_probe_update, probe_boundary
+            periodic_update = is_probe_update(outer)
+
+            def sample_outer(sampling_attempt=None):
+                sampling_conf = conf
+                if sampling_attempt:
+                    sampling_conf = str(root/('sampling-attempt-%s-config.json' % sampling_attempt))
+                    once(sampling_conf, dict(c, sampling_attempt_id=sampling_attempt))
+                def job(phase_name):
+                    return 'outer-%06d-%s' % (outer, phase_name) + (
+                        '-sample-' + sampling_attempt if sampling_attempt else '')
+                if not reused_phase(base, root, 'prefix', c):
+                    phase(job('prefix'), [python, '-m', 'reproduction.prefix_selection200.rollout',
+                        '--config', sampling_conf, '--outer', str(outer), '--phase', 'prefix'])
+                if not reused_phase(base, root, 'probe-score', c):
+                    phase(job('score'), distributed('reproduction.prefix_selection200.probe',
+                        ['score', '--state-dir', str(base / 'probe'), '--prefix-inputs', str(root / 'prefix/scan'),
+                         '--output', str(root / 'probe-score'), '--outer', str(outer), '--model-dir', c['official_model_dir'],
+                         '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256))]))
+                actor_selection_path=root/'probe-score/selection.json'
+                if periodic_update:
+                    # The label-free predicted selection remains immutable. Complete
+                    # every candidate once, then separately bind actual-mixed actor
+                    # selection to those exact native outcomes and project its G5s.
+                    phase(job('complete-unselected-pool'),
+                        [python,'-m','reproduction.prefix_selection200.periodic_data','complete-pool',
+                         '--config',sampling_conf,'--outer',str(outer)])
+                    actor_selection_path=root/'probe-score/actual-em-selection.json'
+                    actual_selection=read(actor_selection_path)
+                    if (actual_selection.get('outcome_labels_used') is not True
+                            or actual_selection.get('fallback_mode') != c['actual_em_selection_fallback']):
+                        raise ValueError('Periodic actual-EM actor selection is missing its bound fallback policy')
+                    diagnostic_path = root/'diagnostic-complete.json'
+                    if diagnostic_path.is_file():
+                        diagnostic = read(diagnostic_path)
+                        if (not sampling_attempt or diagnostic['run_id'] != c['run_id'] or
+                                diagnostic['outer'] != outer or diagnostic['actor_version'] != actor_binding['actor_version'] or
+                                diagnostic['fixed_test_identity_sha256'] != c['fixed_test_identity_sha256'] or
+                                diagnostic['questions'] != 512 or diagnostic['trajectories'] != 2560):
+                            raise ValueError('Only the same zero-write actor diagnostic may be reused')
+                    else:
+                        phase(job('current-actor-diagnostic'),
+                            [python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic',
+                             '--config',sampling_conf,'--outer',str(outer)])
+                else:
+                    phase(job('continue'), [python, '-m', 'reproduction.prefix_selection200.rollout',
+                        '--config', sampling_conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(actor_selection_path)])
+                return actor_selection_path
+
+            actor_selection_path = sample_outer()
             from .actor import collect_oom_retry
             attempt_id = uuid.uuid4().hex
             while True:
-                attempt_config = dict(c, actor_attempt_id=attempt_id,
-                    actor_global_micro_batch_size=actor_micro)
+                attempt_config = dict(grounding.bind_attempt(c, grounding_state, actor, outer), actor_attempt_id=attempt_id,
+                    actor_global_micro_batch_size=actor_micro,
+                    pool_state_path=str(base/'question-pool/state.json'),
+                    prefix_probe_receipt=str(base/'probe/latest.json'))
                 attempt_path = root / ('actor-attempt-%s-config.json' % attempt_id)
                 once(attempt_path, attempt_config)
                 code = phase('outer-%06d-actor-%s' % (outer, attempt_id), distributed('reproduction.prefix_selection200.actor',
                     ['--config', str(attempt_path), '--outer', str(outer), '--rollout', str(root / 'full/complete.json'),
                      '--output', str(base / 'actor')]), allow_failed=True)
                 if code == 0:
+                    guarded = base/'actor/outers'/('outer-%04d-attempt-%s' % (outer, attempt_id))/'guard-result.json'
+                    if guarded.is_file():
+                        from .guard_retry import archive_zero_write_attempt
+                        rejected = archive_zero_write_attempt(base, attempt_config, outer, root, attempt_id)
+                        stage('OUTER_GUARD_ZERO_WRITE_RESAMPLE', logical_outer_not_completed=outer,
+                              zero_write_attempt=attempt_id, scheduler_advanced=False)
+                        actor_selection_path = sample_outer(rejected['sampling_attempt_id'])
+                        attempt_id = uuid.uuid4().hex
+                        continue
+                    if read(base/'actor/latest.json').get('completed_outer') != outer:
+                        raise RuntimeError('Actor exit0 without a complete boundary or typed zero-write guard')
                     break
                 retry = collect_oom_retry(base / 'actor', attempt_path, outer, root / 'full/complete.json',
                     attempt_id, phase_exit_code=code)
@@ -420,16 +513,20 @@ def run(base):
                     new_adam_steps_per_rank=0,actual_adam_steps_per_rank=[probe_boundary(outer)['actual_adam_per_rank']]*WORLD,
                     last_update_outer=probe_boundary(outer)['last_update_outer'])
                 once(root/'probe-frozen.json',probe_metrics)
-            complete = commit_outer(base, c, outer, root, actor_selection_path, timings)
+            complete = commit_outer(base, c, outer, root, actor_selection_path, timings, grounding_state=grounding_state)
             actor, probe = complete['actor'], complete['probe']
-            stage('OUTER_JOINT_COMPLETE', complete_outer=outer, actor_adam_per_rank=20 * outer,
+            stage('OUTER_JOINT_COMPLETE', complete_outer=outer, actor_adam_per_rank=actor['actual_adam_steps_per_rank'][0],
+                  processed_opportunities=actor['opportunities_processed'],
+                  new_actor_adam_per_rank=actor['new_adam_steps_per_rank'][0],
+                  skipped_update_opportunities=actor['skipped_update_opportunities'][0],
                   probe_adam_per_rank=probe_boundary(outer)['actual_adam_per_rank'])
-            # The evaluation module retains the earlier confirmed legacy QA protocol.
+            # Training and QA share the new interaction protocol and BF16.
             if outer in (5, 50, 100, 150, 200):
                 evaluation_config = root / 'evaluation-config.json'
                 once(evaluation_config, dict(c, actor_version=actor['actor_version']))
                 validation(outer, actor['hf_model_dir'], evaluation_config, root/'validation',
                            'outer-%06d-validation' % outer)
+            refresh_grounding(outer)
             # Only completed run-owned derived features are removable; retain tokens/labels.
             from .storage import prune_completed
             try:

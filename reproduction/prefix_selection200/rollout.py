@@ -1,7 +1,7 @@
 """Native 4 x TP1 prefix screening and continuation of the SAME G5 samples.
 
-This is a new training sampling contract, not an alias for the historical
-full-500-then-cut evaluation sampler. A logical action has a 500-token budget;
+Train and greedy QA share the canonical new interaction protocol.
+A logical action has a 500-token budget;
 native calls can pause it at the fifth retained policy token. The first
 complete action actually observed in the cumulative native stream is executed.
 Length quota is a pause, never an invented EOS or environment correction.
@@ -16,10 +16,8 @@ from concurrent.futures import ThreadPoolExecutor
 import gzip
 import hashlib
 import json
-import math
 import os
 from pathlib import Path
-import re
 import subprocess
 import sys
 import time
@@ -28,12 +26,14 @@ from reproduction.prefix20_online.pool import atomic, canonical, digest, immutab
 from reproduction.prefix20_online.rollout import prompt_tokens, strict_label, utc
 from .contract import (G, PREFIX_TOKENS, QMAX, SAMPLING_CONTRACT, WIDTH, WORLD,
     CANDIDATE_QUESTIONS, SELECTED_QUESTIONS)
+from .interaction_protocol import (ACTUAL_COMPUTE_DTYPE, ACTION_TOKENS, BOUNDARY, BUDGET,
+    COMPUTE_DTYPE, CONTRACT as INTERACTION_CONTRACT, MAX_OBSERVATION_TOKENS, MAX_SEARCH_TURNS,
+    MAX_START_TOKENS, append_chunk, finish_action, first_action_cut, native_snapshot,
+    registered_sampling, start_action, stream_action_present, terminal_token_ids)
 
 
 REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
 CONTRACT = SAMPLING_CONTRACT
-BOUNDARY = 'first_complete_action_seen_in_actual_chunk_stream'
-ACTION = re.compile(r'<(search|answer)>(.*?)</\1>', re.DOTALL)
 
 
 def _configure_one_visible_gpu(rank):
@@ -95,6 +95,8 @@ def phase_output(config,outer,phase):
 
 def binding(config, outer):
     value = dict(config)
+    if value.get('interaction_protocol', INTERACTION_CONTRACT) != INTERACTION_CONTRACT:
+        raise ValueError('Configured rollout interaction protocol differs from canonical train/QA protocol')
     if (value.get('world_size', WORLD) != WORLD or
             value.get('prefix_policy_tokens', PREFIX_TOKENS) != PREFIX_TOKENS):
         raise ValueError('Native rollout requires the bound four-rank prefix5 recipe')
@@ -108,61 +110,18 @@ def binding(config, outer):
     return value
 
 
-def seed_for(run_id, outer, trajectory_id, turn, chunk, seed=1729):
+def seed_for(run_id, outer, trajectory_id, turn, chunk, seed=1729, sampling_attempt_id=None):
     """Independent, recorded native request streams, including resumed chunks."""
     value = [run_id, int(outer), trajectory_id, int(turn), int(chunk), int(seed)]
+    if sampling_attempt_id is not None:
+        if not isinstance(sampling_attempt_id, str) or not sampling_attempt_id:
+            raise ValueError('A resampling attempt requires its explicit nonempty identity')
+        value.append(sampling_attempt_id)
     return int.from_bytes(hashlib.sha256(canonical(value)).digest()[:8], 'big') % (2 ** 31 - 1)
 
 
-def first_action_cut(token_ids, decode, *, terminal_ids=(), native_stopped=False):
-    """Find the first complete executable action without looking at future IDs.
-
-    A token straddling the closing tag remains whole. Execution text is cut at
-    the closing tag, so its token suffix cannot create a second tool action.
-    Only an actual trailing native EOS/stop token is omitted from PPO policy
-    positions, as in the existing retained-token contract.
-    """
-    raw = list(token_ids)
-    terminal = bool(raw and raw[-1] in set(terminal_ids))
-    usable = raw[:-1] if terminal else raw
-    text = decode(usable)
-    match = ACTION.search(text)
-    if match is None:
-        return dict(kept_token_ids=usable, kept_token_count=len(usable),
-                    execution_text=text, action=None, boundary_found=False,
-                    native_terminal=bool(terminal or native_stopped), discarded_token_count=len(raw)-len(usable))
-    # Decode original IDs only; do not tokenize decoded text to manufacture IDs.
-    # Presence of a complete ASCII closing tag is monotonic over byte-BPE
-    # prefixes. Binary search preserves the whole boundary token without an
-    # O(action_length**2) tokenizer-decode loop on every completed action.
-    lo, keep = 1, len(usable)
-    while lo < keep:
-        middle = (lo + keep) // 2
-        if ACTION.search(decode(usable[:middle])) is not None:
-            keep = middle
-        else:
-            lo = middle + 1
-    execution = decode(usable[:keep])
-    actual = ACTION.search(execution)
-    return dict(kept_token_ids=usable[:keep], kept_token_count=keep,
-                execution_text=execution[:actual.end()], action=actual.group(1),
-                boundary_found=True, native_terminal=bool(terminal or native_stopped),
-                discarded_token_count=len(raw)-keep)
-
-
-def stream_action_present(token_ids, decode):
-    # Qwen byte-BPE cannot use more than one token per ASCII byte in these
-    # closing tags. Avoid decoding an entire growing500-token action for every
-    # native decode step of every concurrent request; full regex parsing is
-    # needed only after a closing tag actually enters the observed suffix.
-    tail = decode(token_ids[-32:])
-    if '</search>' not in tail and '</answer>' not in tail:
-        return False
-    return ACTION.search(decode(token_ids)) is not None
-
-
 def initial_state(config, outer, group, response_index, tokenizer):
-    prompt = prompt_tokens(tokenizer, group['prompt'], 2048)
+    prompt = prompt_tokens(tokenizer, group['prompt'], MAX_START_TOKENS)
     if not prompt:
         raise ValueError('Actual official initial request is empty')
     ordinal = int(group['candidate_ordinal'])
@@ -174,7 +133,8 @@ def initial_state(config, outer, group, response_index, tokenizer):
                 group=group, prompt=prompt, response=[], info_mask=[], log_probs=[],
                 turns=[], ordinal=0, chunks_started=0, action=None,
                 retrieval_calls=0, terminal=False, terminal_reason=None,
-                sampling_contract=CONTRACT, action_boundary=BOUNDARY)
+                sampling_contract=CONTRACT, action_boundary=BOUNDARY, interaction_protocol=INTERACTION_CONTRACT,
+                sampling_attempt_id=config.get('sampling_attempt_id'))
 
 
 def retained_length(state):
@@ -184,23 +144,11 @@ def retained_length(state):
     return count
 
 
-def start_action(state, budget):
-    from reproduction.common8.context_budget import final_stage
-    if state['action'] is not None:
-        return
-    request = state['prompt'] + state['response']
-    if len(request) + budget['action_tokens'] > budget['total_tokens']:
-        raise ValueError('Real context cannot accommodate a logical500-token action')
-    state['action'] = dict(turn_index=state['ordinal'], actual_request_token_ids=request,
-                           raw_generated_token_ids=[], selected_logprobs=[], actual_sampling_chunks=[],
-                           final_turn=final_stage(len(request), state['ordinal'], 4, budget))
-
-
 def next_request(state, phase, config):
     if state['terminal']:
         return None
     action = state['action']
-    remaining = 500 - len(action['raw_generated_token_ids'])
+    remaining = ACTION_TOKENS - len(action['raw_generated_token_ids'])
     if phase == 'prefix':
         remaining = min(remaining, PREFIX_TOKENS - retained_length(state))
     if remaining <= 0:
@@ -209,75 +157,13 @@ def next_request(state, phase, config):
     request = action['actual_request_token_ids'] + action['raw_generated_token_ids']
     rid = '%s-t%d-chunk%d' % (state['trajectory_id'], state['ordinal'], chunk)
     seed = seed_for(state['run_id'], state['outer'], state['trajectory_id'],
-                    state['ordinal'], chunk, config.get('seed', 1729))
+                    state['ordinal'], chunk, config.get('seed', 1729),
+                    sampling_attempt_id=config.get('sampling_attempt_id', state.get('sampling_attempt_id')))
     state['chunks_started'] += 1
     return dict(request_id=rid, actual_request_token_ids=request, max_tokens=remaining, seed=seed,
                 logical_turn_index=state['ordinal'], native_chunk_index=chunk,
-                logical_action_budget=500, phase=phase)
-
-
-def append_chunk(state, request, raw_ids, log_probs, sampling, *, finish_reason,
-                 stop_reason, terminal_ids, decode, action_boundary_abort=False):
-    """Append actual sampler evidence; return an action cut only at real events."""
-    action = state['action']
-    raw_ids, log_probs = list(raw_ids), list(log_probs)
-    if len(raw_ids) != len(log_probs) or any(not math.isfinite(p) or p > 1e-6 for p in log_probs):
-        raise ValueError('Actual native selected-token log probabilities are missing/nonfinite')
-    if (request['actual_request_token_ids'] != action['actual_request_token_ids'] + action['raw_generated_token_ids']
-            or len(raw_ids) > request['max_tokens']):
-        raise ValueError('Native continuation request or quota differs from retained state')
-    chunk = dict(request, raw_generated_token_ids=raw_ids, selected_logprobs=log_probs,
-                 sampling=sampling, finish_reason=finish_reason, stop_reason=stop_reason,
-                 native_action_boundary_abort=bool(action_boundary_abort), actor_version=state['actor_version'],
-                 policy_snapshot_id=state['actor_version'], logprob_semantics='selected_token_logprob_at_actual_sampling_call')
-    action['actual_sampling_chunks'].append(chunk)
-    action['raw_generated_token_ids'].extend(raw_ids)
-    action['selected_logprobs'].extend(log_probs)
-    stopped = finish_reason == 'stop'
-    cut = first_action_cut(action['raw_generated_token_ids'], decode,
-                           terminal_ids=terminal_ids, native_stopped=stopped)
-    exhausted = len(action['raw_generated_token_ids']) >= 500
-    if cut['boundary_found'] or cut['native_terminal'] or exhausted:
-        return cut
-    if len(raw_ids) != request['max_tokens']:
-        raise ValueError('Native completion ended without an actual action, EOS or requested quota')
-    return None
-
-
-def finish_action(state, cut, environment, tokenizer, budget):
-    from reproduction.common8.context_budget import observation_room, observation_tokens
-    action = state['action']
-    text, done, valid, is_search = environment
-    natural_eos = cut['native_terminal']
-    room = observation_room(len(action['actual_request_token_ids']), cut['kept_token_count'], budget)
-    observation, clipped = ([], False) if action['final_turn'] or natural_eos else observation_tokens(
-        tokenizer, text, min(500, room))
-    terminal = bool(action['final_turn'] or done or natural_eos)
-    turn = dict(action, trajectory_id=state['trajectory_id'], policy_snapshot_id=state['actor_version'],
-                actor_version=state['actor_version'], sampling_contract=CONTRACT,
-                raw_generated_token_count=len(action['raw_generated_token_ids']),
-                kept_token_count=cut['kept_token_count'], prefix_cut=cut,
-                observation_token_ids=observation if is_search else [],
-                correction_token_ids=observation if not is_search else [],
-                observation_clipped=clipped, final_turn=terminal,
-                valid_action=int(valid), is_search=int(is_search),
-                finish_reason=action['actual_sampling_chunks'][-1]['finish_reason'],
-                stop_reason=action['actual_sampling_chunks'][-1]['stop_reason'])
-    kept = cut['kept_token_ids']
-    state['response'].extend(kept + observation)
-    state['info_mask'].extend([1] * len(kept) + [0] * len(observation))
-    state['log_probs'].extend(action['selected_logprobs'][:len(kept)] + [0.] * len(observation))
-    state['turns'].append(turn)
-    state['retrieval_calls'] += int(is_search and not action['final_turn'] and not natural_eos)
-    state['action'] = None
-    if len(state['prompt']) + len(state['response']) > budget['total_tokens']:
-        raise ValueError('Actual retained context exceeds4096 tokens')
-    state['terminal'] = terminal
-    if terminal:
-        state['terminal_reason'] = ('natural_eos' if natural_eos else
-                                    'answer' if done else 'final_action_budget')
-    else:
-        state['ordinal'] += 1
+                logical_action_budget=ACTION_TOKENS, phase=phase,
+                sampling_attempt_id=config.get('sampling_attempt_id', state.get('sampling_attempt_id')))
 
 
 def prefix_record(state):
@@ -351,9 +237,11 @@ def validate_rank_receipt(config_path, config, outer, phase, rank, path):
     """
     path=Path(path);saved=read(path);current_sha=digest(config_path)
     expected=dict(run_id=config['run_id'],outer=outer,phase=phase,rank=rank,
-                  actor_version=config['actor_version'],trajectories=question_count(config,phase)*G//WORLD)
+                  actor_version=config['actor_version'],trajectories=question_count(config,phase)*G//WORLD,
+                  interaction_protocol=INTERACTION_CONTRACT,actual_compute_dtype=ACTUAL_COMPUTE_DTYPE,
+                  sampling_attempt_id=config.get('sampling_attempt_id'))
     if any(saved.get(key)!=value for key,value in expected.items()):
-        raise ValueError('Existing rank receipt has a different actual run/actor/outer/phase/rank')
+        raise ValueError('Existing rank receipt has a different actual run/actor/outer/phase/rank/protocol')
     reuse=None
     if saved.get('config_sha256')!=current_sha:
         allowed=config.get('continue_reuse')
@@ -406,6 +294,9 @@ def _states(config, outer, rank, phase, tokenizer, selection_path):
                 raise ValueError('Candidate ordinal must preserve input order')
         return [initial_state(config, outer, row, j, tokenizer) for row in groups[rank::WORLD] for j in range(G)]
     receipt = read(root / 'prefix' / 'complete.json')
+    if (receipt.get('interaction_protocol') != INTERACTION_CONTRACT
+            or receipt.get('actual_compute_dtype') != ACTUAL_COMPUTE_DTYPE):
+        raise ValueError('Selected continuation prefix scan used a different interaction protocol/dtype')
     groups = validate_selection(read(selection_path), receipt,question_count(config,phase))
     assigned = groups[rank::WORLD]
     if len(assigned) != question_count(config,phase)//WORLD:
@@ -422,7 +313,9 @@ def _states(config, outer, rank, phase, tokenizer, selection_path):
             if tid not in wanted:
                 continue
             group = wanted[tid]
-            if (state['actor_version'] != config['actor_version'] or state['group']['qid'] != group['qid']
+            if (state.get('sampling_attempt_id') != config.get('sampling_attempt_id')
+                    or state.get('interaction_protocol') != INTERACTION_CONTRACT
+                    or state['actor_version'] != config['actor_version'] or state['group']['qid'] != group['qid']
                     or state['candidate_ordinal'] != group['candidate_ordinal']
                     or state['group']['question_hash'] != group['question_hash']):
                 raise ValueError('Selected original prefix/state identity differs')
@@ -437,67 +330,6 @@ def _states(config, outer, rank, phase, tokenizer, selection_path):
     if set(states) != set(wanted):
         raise ValueError('A selected original trajectory prefix is missing')
     return [states[tid] for group in assigned for tid in group['trajectory_ids']]
-
-
-def _sampling_dict(params):
-    fields = ('n', 'best_of', 'temperature', 'top_p', 'top_k', 'min_p', 'presence_penalty',
-              'frequency_penalty', 'repetition_penalty', 'ignore_eos', 'logprobs', 'max_tokens',
-              'min_tokens', 'stop', 'stop_token_ids', 'include_stop_str_in_output', 'seed', 'detokenize')
-    value = {key: getattr(params, key) for key in fields if hasattr(params, key)}
-    value['do_sample'] = value.get('temperature', 1.) != 0
-    value['logprob_semantics'] = 'selected_token_logprob_at_actual_sampling_call'
-    return value
-
-
-def registered_sampling(engine, request, caller):
-    """Read the actual vLLM0.6.3 registered group, after EOS config merging.
-
-    The input SamplingParams is cloned by LLMEngine. Saving just the caller
-    would incorrectly describe that clone as actual execution metadata.
-    Reading its newly queued group neither advances nor modifies sampling.
-    """
-    schedulers = engine.scheduler
-    if not isinstance(schedulers, (list, tuple)):
-        schedulers = [schedulers]
-    groups = (group for scheduler in schedulers
-              for name in ('waiting', 'running', 'swapped')
-              for group in getattr(scheduler, name, ()))
-    for group in groups:
-        if group.request_id != request['request_id']:
-            continue
-        if list(group.prompt_token_ids) != request['actual_request_token_ids']:
-            raise ValueError('Actual registered native group has different original request IDs')
-        actual = _sampling_dict(group.sampling_params)
-        actual['effective_all_stop_token_ids'] = sorted(group.sampling_params.all_stop_token_ids)
-        actual['caller_sampling'] = _sampling_dict(caller)
-        actual['registered_request_id'] = request['request_id']
-        actual['metadata_source'] = 'actual_vllm_registered_sequence_group_after_generation_config_merge'
-        return actual
-    raise ValueError('New native request is missing from the actual vLLM scheduler queues')
-
-
-def native_snapshot(native):
-    """Copy matched native IDs/LP before external abort releases its sequence.
-
-    vLLM0.6.3 intermediate outputs freeze token IDs but expose the live
-    sequence LP list. Async stepping can advance that shared list after the
-    token snapshot, mixing commit clocks. This engine therefore uses
-    synchronous output commit (not serial generation).
-    Neither missing probabilities nor future tokens are fabricated or fitted.
-    """
-    tokens=list(native.token_ids)
-    rows=None if native.logprobs is None else list(native.logprobs)
-    if rows is None or len(rows) != len(tokens):
-        raise ValueError('Native vLLM selected-token behavior probability mismatch: token_count=%d logprob_count=%s finish_reason=%r' %
-                         (len(tokens),None if rows is None else len(rows),native.finish_reason))
-    values = []
-    for token, row in zip(tokens, rows):
-        selected = row.get(token)
-        if selected is None:
-            raise ValueError('Actual selected native token is absent from logprob row')
-        values.append(float(selected.logprob if hasattr(selected, 'logprob') else selected))
-    return dict(raw_generated_token_ids=tokens,selected_logprobs=values,
-                finish_reason=native.finish_reason,stop_reason=native.stop_reason)
 
 
 def discard_hidden_lookahead(retained, actual):
@@ -530,8 +362,8 @@ def _build_llm(config, model, seed, free, total):
     attempts = []
     while True:
         try:
-            llm = LLM(model=model, tokenizer=model, trust_remote_code=False, dtype='bfloat16',
-                      tensor_parallel_size=1, max_model_len=4096, seed=seed,
+            llm = LLM(model=model, tokenizer=model, trust_remote_code=False, dtype=COMPUTE_DTYPE,
+                      tensor_parallel_size=1, max_model_len=BUDGET['total_tokens'], seed=seed,
                       gpu_memory_utilization=utilization, swap_space=0,
                       enforce_eager=bool(config.get('_capture_actor_hidden') or config.get('rollout_enforce_eager', False)),
                       enable_chunked_prefill=True, enable_prefix_caching=not config.get('_capture_actor_hidden', False),
@@ -571,10 +403,13 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     selection_path = Path(selection_path or root / 'probe-score' / 'selection.json')
     states = _states(config, outer, rank, phase, tokenizer, selection_path)
     free, total = torch.cuda.mem_get_info()
-    seed = seed_for(config['run_id'], outer, 'engine', 0, rank, config.get('seed', 1729))
+    seed = seed_for(config['run_id'], outer, 'engine', 0, rank, config.get('seed', 1729),
+                    sampling_attempt_id=config.get('sampling_attempt_id'))
     capture_hidden = phase == 'prefix' and config.get('actor_hidden_native', False)
     llm, utilization, limits, oom_attempts = _build_llm(dict(config, _capture_actor_hidden=capture_hidden), model, seed, free, total)
     engine = llm.llm_engine
+    if str(engine.model_config.dtype) != ACTUAL_COMPUTE_DTYPE:
+        raise ValueError('Actual rollout engine must use the shared BF16 train/QA protocol')
     hidden_capture = hidden_writer = None
     if capture_hidden:
         from .actor_hidden import ActorHiddenCapture, NativeFeatureWriter
@@ -583,17 +418,16 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     hidden_flushes = {}
     generation_path = Path(model) / 'generation_config.json'
     generation = read(generation_path) if generation_path.exists() else {}
-    stop = generation.get('eos_token_id', tokenizer.eos_token_id)
-    stop = [stop] if isinstance(stop, int) else list(stop)
-    terminal_ids = sorted(set(stop + [tokenizer.eos_token_id]))
-    recipe = GenerationConfig(max_turns=4, max_start_length=2048, max_prompt_length=4096,
-                              max_response_length=500, max_obs_length=500, num_gpus=WORLD,
+    stop, terminal_ids = terminal_token_ids(generation, tokenizer)
+    recipe = GenerationConfig(max_turns=MAX_SEARCH_TURNS, max_start_length=MAX_START_TOKENS,
+                              max_prompt_length=BUDGET['total_tokens'], max_response_length=ACTION_TOKENS,
+                              max_obs_length=MAX_OBSERVATION_TOKENS, num_gpus=WORLD,
                               search_url=config['search_url'], topk=3)
     manager = LLMGenerationManager(tokenizer, None, recipe)
     retriever = BoundedRetriever(manager, AsyncRolloutConfig(agent_workers=limits['max_num_seqs'],
         max_inflight_trajectories=limits['max_num_seqs'], retrieval_concurrency=int(config.get('retrieval_threads_per_engine', 16)),
         tool_timeout=float(config.get('retrieval_timeout', 60)), tool_retries=2, engine_step_budget=8))
-    budget = dict(total_tokens=4096, action_tokens=500, answer_reserve_tokens=500)
+    budget = dict(BUDGET)
     decode = lambda ids: tokenizer.decode(ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
     waiting, ready, pending, tools = deque(states), deque(), {}, {}
     completed, active, peak, requests, sampled = 0, 0, 0, 0, 0
@@ -634,7 +468,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
                 response_token_ids=state['response'], response_info_mask=state['info_mask'],
                 response_log_probs=state['log_probs'], behavior_turns=state['turns'],
                 sampling_journal=[chunk for turn in state['turns'] for chunk in turn['actual_sampling_chunks']],
-                sampling_contract=CONTRACT, action_boundary=BOUNDARY, strict_em=label,
+                sampling_contract=CONTRACT, action_boundary=BOUNDARY, interaction_protocol=INTERACTION_CONTRACT, strict_em=label,
                 reward_model=group['reward_model'], data_source=group['data_source'],
                 extra_info=group.get('extra_info', {}), prefix_sha256=state['prefix_sha256'],
                 prefix_scan_sha256=state['prefix_scan_sha256'], selection_sha256=state['selection_sha256'],
@@ -742,7 +576,8 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     feature_path = hidden_writer.finish() if hidden_writer is not None else None
     result = dict(schema_version=1, phase=phase, outer=outer, rank=rank, run_id=config['run_id'],
         actor_version=config['actor_version'], actor_model_dir=model, config_sha256=digest(config_path),
-        sampling_contract=CONTRACT, action_boundary=BOUNDARY, old_full500_evaluation_sampler_changed=False,
+        sampling_contract=CONTRACT, action_boundary=BOUNDARY, interaction_protocol=INTERACTION_CONTRACT,
+        actual_compute_dtype=str(engine.model_config.dtype), sampling_attempt_id=config.get('sampling_attempt_id'),
         native_output_commit='synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort',
         trajectories=completed, questions=completed//G, device_binding=device_binding,
         pad_token_id=int(tokenizer.pad_token_id), eos_token_id=int(tokenizer.eos_token_id),
@@ -845,7 +680,7 @@ def pack_prefix(config, outer, ranks):
         encoder_global_max_tokens=max([qmax]+[s['context_length'] for row in rows for s in row['segments']]),
         sources_sha256=source_sha, prefix_window='multi_turn_actual_kept_policy_tokens',
         prefix_source='same_trajectory_native_prefix_then_continue', labels_present=False,
-        sampling_contract=CONTRACT, action_boundary=BOUNDARY,
+        sampling_contract=CONTRACT, action_boundary=BOUNDARY, interaction_protocol=INTERACTION_CONTRACT,
         files={name:dict(sha256=digest(out/name),bytes=(out/name).stat().st_size) for name in
                tuple(name+'.npy' for name in arrays)+('index.jsonl',)})
     immutable(out/'scan-complete.json',proof)
@@ -858,7 +693,10 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
     target=output/'complete.json'
     if target.exists():
         value=read(target)
-        if value['actor_version']!=config['actor_version'] or value['config_sha256']!=digest(config_path):
+        if (value['actor_version']!=config['actor_version'] or value['config_sha256']!=digest(config_path)
+                or value.get('interaction_protocol')!=INTERACTION_CONTRACT
+                or value.get('actual_compute_dtype')!=ACTUAL_COMPUTE_DTYPE
+                or value.get('sampling_attempt_id')!=config.get('sampling_attempt_id')):
             raise ValueError('Existing phase receipt belongs to a different actor/config')
         return value
     checked=[validate_rank_receipt(config_path,config,outer,phase,rank,output/('rank-%d-complete.json'%rank))
@@ -877,7 +715,8 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
         model_revision=REVISION,pad_token_id=ranks[0]['pad_token_id'],eos_token_id=ranks[0]['eos_token_id'],
         candidate_questions_sha256=digest(root/'questions.json'),head_prefix_tokens=PREFIX_TOKENS,
         trajectories=sum(r['trajectories'] for r in ranks),questions=sum(r['questions'] for r in ranks),
-        sampling_contract=CONTRACT,action_boundary=BOUNDARY,old_full500_evaluation_sampler_changed=False,
+        sampling_contract=CONTRACT,action_boundary=BOUNDARY,interaction_protocol=INTERACTION_CONTRACT,
+        actual_compute_dtype=ACTUAL_COMPUTE_DTYPE, sampling_attempt_id=config.get('sampling_attempt_id'),
         actual_sampled_tokens=sum(r['actual_sampled_tokens'] for r in ranks),
         native_generation_requests=sum(r['generation_requests'] for r in ranks),completed_utc=utc())
     value['reused_original_rank_receipts']=[item[1] for item in checked if item[1] is not None]

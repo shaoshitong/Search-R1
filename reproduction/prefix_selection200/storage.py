@@ -84,6 +84,43 @@ def related(path, references):
     return any(path == ref or path in ref.parents or ref in path.parents for ref in references)
 
 
+
+def actual_actor_boundary(actor, outer):
+    """Validate a complete20-opportunity receipt using real retained Adam writes."""
+    from .actor import valid_actual_steps
+    try:
+        actual = actor['actual_adam_steps_per_rank']
+        new = actor['new_adam_steps_per_rank']
+        skipped = actor['skipped_update_opportunities']
+        receipts = actor['rank_receipts']
+        if (not valid_actual_steps(actual, outer) or not isinstance(new, list) or len(new) != WORLD or
+                any(type(count) is not int or not 1 <= count <= 20 for count in new) or len(set(new)) != 1 or
+                not isinstance(skipped, list) or skipped != [20 - count for count in new] or
+                any(type(count) is not int for count in skipped) or
+                not valid_actual_steps([actual[rank] - new[rank] for rank in range(WORLD)], outer - 1) or
+                actor['opportunities_processed'] != 20 or type(actor['opportunities_processed']) is not int or
+                actor['complete_outer'] is not True or actor['status'] != 'complete' or
+                actor['full_budget_complete'] is not (new[0] == 20) or
+                actor['automatic_rollback_performed'] is not False or
+                len(receipts) != WORLD or {row['rank'] for row in receipts} != set(range(WORLD))):
+            return False
+        for row in receipts:
+            rank = row['rank']; statuses = row['opportunity_statuses']
+            if (row['actual_adam_steps'] != actual[rank] or row['new_adam_steps'] != new[rank] or
+                    row['optimizer_writes_before'] != actual[rank] - new[rank] or
+                    row['optimizer_writes_after'] != actual[rank] or row['optimizer_writes_this_attempt'] != new[rank] or
+                    row['opportunities_processed'] != 20 or row['opportunities'] != 20 or
+                    row['skipped_update_opportunities'] != skipped[rank] or
+                    row['complete_outer'] is not True or row['full_budget_complete'] is not (new[rank] == 20) or
+                    row['automatic_rollback_performed'] is not False or not isinstance(statuses, list) or len(statuses) != 20 or
+                    any(status not in ('written', 'written_with_post_guard', 'skipped_guard') for status in statuses) or
+                    statuses.count('skipped_guard') != skipped[rank] or
+                    statuses.count('written_with_post_guard') != row['written_with_post_guard']):
+                return False
+        return True
+    except (KeyError, TypeError, IndexError):
+        return False
+
 def current_boundary(base, config, outer):
     root = base/'outers'/('outer-%06d'%outer)
     joint = read(owned(base, root/'complete.json'))
@@ -102,7 +139,7 @@ def current_boundary(base, config, outer):
             or joint['actor'] != actor or joint['probe'] != probe
             or actor['run_id'] != config['run_id'] or probe['run_id'] != config['run_id']
             or actor['completed_outer'] != outer or probe['completed_outer'] != boundary['last_update_outer']
-            or actor['actual_adam_steps_per_rank'] != [20*outer]*WORLD
+            or not actual_actor_boundary(actor, outer)
             or probe['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD
             or actor['scheduler_completed_outer'] != outer
             or update['status'] != ('UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE' if native and periodic
@@ -111,7 +148,7 @@ def current_boundary(base, config, outer):
             or (periodic and update['checkpoint'] != probe)
             or update['new_adam_steps_per_rank'] != (PROBE_UPDATES if native and periodic else 0 if native else 10)
             or update['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD):
-        raise ValueError('Actor20N/probe10N and this outer joint commit must actually agree')
+        raise ValueError('Actual actor20-opportunity/probe boundaries and this outer joint commit must agree')
     ledger = read(owned(base, base/'logs/process-ledger.json'))
     if ledger['run_id'] != config['run_id']:
         raise ValueError('Process ownership ledger belongs to another run')
@@ -220,7 +257,7 @@ def planned_assets(base, config, outer, root, joint, update, references):
                     or proof.get('milestone') or related(attempt, references)):
                 continue
             if (proof['role'] != 'prefix_selection200_actor_complete' or proof['completed_outer'] != n
-                    or proof['actual_adam_steps_per_rank'] != [20*n]*WORLD
+                    or not actual_actor_boundary(proof, n)
                     or proof['scheduler_completed_outer'] != n
                     or proof['state_path'] != str(attempt) or proof['state_dir'] != str(attempt)):
                 raise ValueError('Rotating actor checkpoint does not match its own complete producer')

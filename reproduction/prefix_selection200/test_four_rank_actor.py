@@ -58,18 +58,20 @@ class FourRankActorTests(unittest.TestCase):
             mass = mask[ids].sum()
             return (values * mask[ids]).sum() / mass if mass else values.sum() * 0.
 
-        reference = sum(loss(list(range(v * 16, (v + 1) * 16))) for v in range(8)) / 8
+        reference = sum(loss(list(range(pair * 2, (pair + 1) * 2))) for pair in range(64)) / 64
         reference.backward(); expected_grad = parameter.grad.clone()
-        for requested in (4, 16, 64, 128):
+        for requested in (4, 8, 16, 64, 128):
             parameter.grad = None; budget = ActorBudget(requested); physical = []
             for rank in range(WORLD):
                 reduced = parameter * 0.
                 for block in virtual_minibatches(list(range(rank * 32, (rank + 1) * 32))):
-                    mass = int(mask[block].sum())
-                    for start in range(0, 16, budget.local_micro):
-                        ids = block[start:start + budget.local_micro]
-                        weight = micro_loss_weight(int(mask[ids].sum()), mass) / 2
-                        reduced = reduced + loss(ids) * weight
+                    for pair in range(0, 16, 2):
+                        parent = block[pair:pair + 2]
+                        mass = int(mask[parent].sum())
+                        for start in range(0, 2, min(2, budget.local_micro)):
+                            ids = parent[start:start + min(2, budget.local_micro)]
+                            weight = micro_loss_weight(int(mask[ids].sum()), mass) / 16
+                            reduced = reduced + loss(ids) * weight
                 physical.append(reduced)
             actual = sum(physical) / WORLD
             actual.backward()

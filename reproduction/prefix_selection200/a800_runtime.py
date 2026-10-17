@@ -7,6 +7,7 @@ OFD descriptors stay open in the parent and are inherited by every child.
 import csv
 import fcntl
 import io
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -15,7 +16,15 @@ import subprocess
 import time
 
 from reproduction.a800.owned_processes import identity, same
-from reproduction.prefix20_online.launch import once, publish, read, sha
+from reproduction.prefix20_online.launch import once, publish, read
+
+
+def sha(path):
+    digest = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(8 * 1024 ** 2), b''):
+            digest.update(block)
+    return digest.hexdigest()
 
 PREFIX = '/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-'
 
