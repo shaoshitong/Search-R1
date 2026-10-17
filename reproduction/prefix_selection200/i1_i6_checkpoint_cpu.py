@@ -20,7 +20,7 @@ from .checkpoint_cpu_once import need, tensor_cpu, validate_adam, validate_rng, 
 from .contract import WORLD, PROBE_LR, PROBE_UPDATES
 from .grounding import expected_round
 from .i1_i6_joint_resume import (QUALIFIED, canonical_path, read, sha, _once, _writer_barrier,
-    _joint, _grounding, verify_source_compatibility, scientific_binding)
+    _joint, _grounding, verify_source_compatibility, scientific_binding, qualified_file_stat)
 from .periodic import probe_boundary
 from .pool import state_sha
 
@@ -172,9 +172,7 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
         need(result['status']==QUALIFIED and result['completed_outer']==outer and result['terminal_proof_sha256']==terminal_sha and
              result['source_joint_sha256']==sha(base/'latest-joint.json'),'Existing qualification belongs to a different actual boundary')
         for row in result['verified_files']:
-            info=canonical_path(row['path']).stat()
-            need((info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns)==(row['dev'],row['inode'],row['bytes'],row['mtime_ns']),
-                 'An already-qualified immutable file changed; no blind rescan')
+            qualified_file_stat(row['path'],row)
         return dict(result,existing_proof_reused_without_payload_rescan=True)
     intent=output.with_name(output.name+'.intent.json')
     need(not intent.exists(),'Existing incomplete once-only qualification requires reconciliation')

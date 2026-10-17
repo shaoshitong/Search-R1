@@ -3,6 +3,7 @@ import ast
 import copy
 import json
 import re
+import types
 from pathlib import Path
 import tempfile
 import unittest
@@ -24,6 +25,22 @@ def function(module, name, namespace):
 
 
 class DiagnosticScopeTests(unittest.TestCase):
+    def test_cross_node_seal_requires_attested_filesystem_and_exact_data_identity(self):
+        with tempfile.TemporaryDirectory() as directory:
+            p=Path(directory).resolve()/'state.pt';p.write_bytes(b'actual saved bytes')
+            st=p.stat();row=dict(path=str(p),dev=st.st_dev+1,inode=st.st_ino,
+                                bytes=st.st_size,mtime_ns=st.st_mtime_ns)
+            check=function('reproduction/prefix_selection200/i1_i6_joint_resume.py',
+                'qualified_file_stat',dict(canonical_path=lambda p:Path(p).resolve(strict=True),
+                os=types.SimpleNamespace(statvfs=lambda p:types.SimpleNamespace(f_fsid=66))))
+            with self.assertRaisesRegex(ValueError,'identity differs'):
+                check(p,row)
+            portable=dict(row,shared_filesystem_fsid='66');self.assertEqual(check(p,portable).st_ino,st.st_ino)
+            for key,value in [('shared_filesystem_fsid','67'),('inode',st.st_ino+1),
+                              ('bytes',st.st_size+1),('mtime_ns',st.st_mtime_ns+1),('path',str(p)+'-other')]:
+                with self.assertRaisesRegex(ValueError,'identity differs'):
+                    check(p,dict(portable,**{key:value}))
+
     def test_driver_json_seal_is_not_compared_to_tensor_payload_digest(self):
         def need(ok,message):
             if not ok:raise ValueError(message)

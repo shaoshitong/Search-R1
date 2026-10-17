@@ -1,0 +1,61 @@
+"""Repair terminal bootstrap729624 and requeue that same owned job once.
+
+Retain original CPU proof and failed log. Attest its unchanged files on the
+original audit host with GPFS filesystem IDs, preserving actual SHA/CPU evidence.
+No weight/Adam/RNG is regenerated, reset, copied locally, or rehashed here.
+"""
+import base64,hashlib,json,shlex,subprocess
+from pathlib import Path
+from reproduction.hpc3_prefix5.control import BASE,OUTPUT,PYTHON
+from reproduction.hpc3_prefix5.direct_control import run
+
+operator=Path('docs/hpc3-cp9-held-code-repair-20261017.txt').read_text()
+operator=operator.replace('2da01adf1321b25a22be0d260ee195fa368373ce','ab7dc0195db160c5304c92118a78f3f225c52491').replace('cp9-before-code-repair-2da01ad','cp9-before-code-repair-ab7dc01').replace('cp9-held-code-repair','cp9-failed-code-repair-v3').replace('cp9-held-repair','cp9-failed-repair-v3').replace('repo-cp9-repair-stage','repo-cp9-repair-v3-stage')
+operator=operator.replace("and f['JobState']=='PENDING'","and f['JobState']=='FAILED'")
+begin=operator.index("subprocess.run(['scontrol','hold','729624']")
+end=operator.index("stage=b/'repo-cp9-repair-v3-stage'",begin)
+operator=operator[:begin]+'''assert not subprocess.check_output(['squeue','-h','-j','729624','-o','%i'],text=True).strip()
+rows=[line.split('|') for line in subprocess.check_output(['sacct','-nP','-j','729624','--format=JobIDRaw,UID,State,ExitCode'],text=True).splitlines() if line.strip()]
+assert rows[0][0]=='729624' and rows[0][1]==str(os.getuid()) and {r[0] for r in rows}>={'729624','729624.batch','729624.extern'}
+assert all(r[2].split()[0].rstrip('+') in ('FAILED','COMPLETED','CANCELLED','TIMEOUT') for r in rows)
+'''+operator[end:]
+old="assert q=='729624|PENDING|(JobHeldUser)',q"
+assert old in operator
+operator=operator.replace(old,"assert not q,q;assert 'JobState=FAILED' in subprocess.check_output(['scontrol','show','job','-o','729624'],text=True)")
+operator=operator.replace('still_held=True','still_held=False').replace('OWN_PENDING_JOB_HELD_SOURCE_STAGED','OWN_TERMINAL_JOB_SOURCE_STAGED').replace('HELD_RECOVERY_CODE_REPAIRED','TERMINAL_RECOVERY_CODE_REPAIRED')
+exec(compile(operator,'terminal-bootstrap-repair-v3','exec'),{'__name__':'__main__'})
+
+program=r'''import pathlib,json,os,socket,subprocess,time,copy,hashlib
+from reproduction.prefix_selection200.i1_i6_joint_resume import qualified_file_stat,read,sha,_once,plan
+from reproduction.prefix_selection200.i1_i6_checkpoint_cpu import qualify
+from reproduction.prefix_selection200.launch import validate_config
+b=pathlib.Path(TARGET);p=b/'preparation';c=read(p/'resume-config-template.json');old=pathlib.Path(c['resume_joint']['qualification_proof']);assert old.name=='cp9-actual-full-state-qualification-v2.json'
+assert sha(old)=='84542f4b1f9d16971c468c7ac0d99e193608ab273a9b2438b253473bc3cf37a5'
+q=read(old);assert q['status']=='I1_I6_ACTUAL_FULL_STATE_QUALIFIED_ONCE' and q['actual_adam_steps_per_rank']==[180]*4 and q['payload_full_sha_read_once'] and q['actual_cpu_deserialization']
+portable=copy.deepcopy(q)
+for row in portable['verified_files']:
+ qualified_file_stat(row['path'],row)
+ fsid=str(os.statvfs(row['path']).f_fsid);assert fsid.isdigit() and fsid!='0'
+ row['shared_filesystem_fsid']=fsid
+portable.update(schema_version=2,portable_seals_attested_unix=time.time(),portable_seals_audit_host=socket.gethostname(),derived_from_actual_qualification=dict(path=str(old),sha256=sha(old)),payload_SHA_reused_from_genuine_complete_proof=True,new_tensor_payload_reads=0)
+new=old.with_name('cp9-actual-full-state-qualification-v3-portable.json');_once(new,portable)
+c['resume_joint']['qualification_proof']=str(new);c['resume_joint']['qualification_proof_sha256']=sha(new)
+spec=c['resume_joint'];v=qualify(pathlib.Path(spec['source_base']),9,pathlib.Path(spec['terminal_proof']),spec['terminal_proof_sha256'],new);assert v['existing_proof_reused_without_payload_rescan']
+validate_config(c,b);planned=plan(b,c);assert planned['genuine_full_state_qualification'] and planned['completed_outer']==9 and planned['next_outer']==10
+_once(p/'cp9-portable-seal-preflight-plan.json',planned)
+tmp=p/'resume-config-template.json.portable-tmp';tmp.write_text(json.dumps(c,sort_keys=True));os.replace(tmp,p/'resume-config-template.json')
+assert not (p/'submit-intent.json').exists() and not (p/'resume-joint-intent.json').exists() and not (b/'logs/process-ledger.json').exists()
+raw=subprocess.check_output(['scontrol','show','job','-o','729624'],text=True);fields=dict(x.split('=',1) for x in raw.split() if '=' in x)
+assert fields['JobId']=='729624' and fields['JobState']=='FAILED' and fields['UserId'].endswith('('+str(os.getuid())+')') and fields['TresPerNode']=='gres/gpu:4'
+assert not subprocess.check_output(['squeue','-h','-j','729624','-o','%i'],text=True).strip()
+oldlog=b/'logs/slurm-729624.log';backup=b/'logs/slurm-729624-attempt0-mount-seal-failure.log';digest=sha(oldlog);oldlog.rename(backup);assert sha(backup)==digest
+record=dict(created_unix=time.time(),job=729624,scope='Same terminal bootstrap job before any import or optimizer write',old_failure_log=str(backup),old_failure_log_sha256=digest,source_commit=c['source_commit'],science_source_commit=c['science_source_commit'],portable_proof=str(new),portable_proof_sha256=sha(new),original_proof_sha256=sha(old),shared_fsids=sorted({r['shared_filesystem_fsid'] for r in portable['verified_files']}),full_actual_CPU_qualification_retained=True,additional_tensor_payload_reads=0,optimizer_reset=False,rollback=False)
+_once(p/'cp9-portable-seal-requeue-intent.json',record)
+subprocess.run(['scontrol','requeue','729624'],capture_output=True,text=True,check=True,timeout=20)
+record.update(queue=subprocess.check_output(['squeue','-h','-j','729624','-o','%i|%T|%P|%R|%S'],text=True).strip(),requeued_unix=time.time())
+_once(p/'cp9-portable-seal-requeue-complete.json',record);print(json.dumps(record))
+'''.replace('TARGET',repr(BASE+'-r2'))
+outer='import base64,subprocess,os;env=dict(os.environ,CUDA_VISIBLE_DEVICES="",OMP_NUM_THREADS="2",MKL_NUM_THREADS="2",PYTHONDONTWRITEBYTECODE="1");r=subprocess.run(['+repr(BASE+'-r2/env/bin/python')+',"-c",base64.b64decode('+repr(base64.b64encode(program.encode()).decode())+').decode()],env=env);raise SystemExit(r.returncode)'
+address=subprocess.check_output(['ipconfig','getifaddr','en0'],text=True).strip();r=run(PYTHON+' -c '+shlex.quote(outer),account='mou176',source_address=address,timeout=55)
+assert r.returncode==0,(r.stdout.decode()[-6000:],r.stderr.decode()[-1000:])
+v=next(json.loads(line) for line in r.stdout.decode().splitlines() if line.strip().startswith('{'));(OUTPUT/'cp9-portable-seal-requeue.json').write_text(json.dumps(v,indent=2)+'\n');print(json.dumps(v))

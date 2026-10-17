@@ -259,9 +259,27 @@ def _writer_barrier(config,terminal,ledger, *, authorized_handoff_sha=None, comp
         raise RuntimeError('Actual source owned writers remain present or their birth coverage is incomplete')
 
 
+def qualified_file_stat(path, row):
+    """Device numbers are host-local; an attested shared FSID may bridge hosts.
+
+    Inode, size and data mtime must still match exactly. A legacy seal without
+    an actual audit-host filesystem attestation keeps its strict device check.
+    """
+    path=canonical_path(path);info=path.stat()
+    identity=row.get('shared_filesystem_fsid')
+    same_data=(info.st_ino,info.st_size,info.st_mtime_ns)==(row['inode'],row['bytes'],row['mtime_ns'])
+    same_filesystem=(str(os.statvfs(path).f_fsid)==identity if identity is not None else info.st_dev==row['dev'])
+    if str(path)!=row['path'] or not same_data or not same_filesystem:
+        raise ValueError('Already-qualified immutable file identity differs: '+str(path)+
+            '; expected='+repr((row['dev'],row['inode'],row['bytes'],row['mtime_ns'],identity))+
+            '; actual='+repr((info.st_dev,info.st_ino,info.st_size,info.st_mtime_ns,
+                               str(os.statvfs(path).f_fsid) if identity is not None else None)))
+    return info
+
+
 def _seal(path, expected, seals, *, required):
     """Consume a once-verified digest and immutable inode; do not read payload."""
-    path=canonical_path(path);info=path.stat();row=seals.get(str(path))
+    path=canonical_path(path);row=seals.get(str(path));info=qualified_file_stat(path,row) if row else path.stat()
     if not stat.S_ISREG(info.st_mode) or info.st_size!=expected['bytes']:
         raise ValueError('Producer payload path/size differs')
     if not re.fullmatch('[0-9a-f]{64}',expected['sha256']): raise ValueError('Actual producer SHA is missing')
@@ -269,10 +287,11 @@ def _seal(path, expected, seals, *, required):
         if required: raise ValueError('Genuine full-state qualification omitted a required payload')
         return dict(path=str(path),bytes=info.st_size,sha256=expected['sha256'],dev=info.st_dev,inode=info.st_ino,
                     mtime_ns=info.st_mtime_ns,qualification='UNKNOWN_NOT_REHASHED')
-    if (row['sha256']!=expected['sha256'] or row['bytes']!=info.st_size or row['dev']!=info.st_dev or
+    if (row['sha256']!=expected['sha256'] or row['bytes']!=info.st_size or
             row['inode']!=info.st_ino or row['mtime_ns']!=info.st_mtime_ns):
         raise ValueError('Payload changed since its genuine once-only qualification')
-    return dict(row,qualification='EXISTING_ACTUAL_ONCE_ONLY_SEAL_NOT_REPEATED')
+    return dict(row,dev=info.st_dev,qualification_original_dev=row['dev'],
+                qualification='EXISTING_ACTUAL_ONCE_ONLY_SEAL_NOT_REPEATED')
 
 
 def _grounding(config,state,round, *, adopted):
