@@ -78,11 +78,13 @@ def render(summary,output):
     titles=[]
     for arm in summary['arms']:
         setting=arm['arm'];label=str(summary['questions'])+' + EMA'
-        if setting['group_weight']!=1:label+=' + group weight'+str(setting['group_weight'])
+        if setting.get('objective')=='group_vector_dist_softmix_kl':label+=' + DIST + soft mixed KL'+str(setting['soft_mixed_weight'])
+        elif setting['group_weight']!=1:label+=' + group weight'+str(setting['group_weight'])
         if setting['mixup']:label+=' + hidden mixup'
         titles.append(label)
     plt.rcParams.update({'font.size':10,'axes.spines.top':False,'axes.spines.right':False})
     specs=[('balanced_accuracy','Mixed event balanced accuracy(q)',100),('dist_loss','Groupwise DIST',1),('diversity_kl','Diversity KL',1)]if summary['arms'][0]['arm'].get('objective')=='group_vector_dist_kl'else[('balanced_accuracy','Mixed balanced accuracy',100),('trajectory_bce','Trajectory BCE',1),('group_bce','Mixed-group BCE',1)]
+    if summary['arms'][0]['arm'].get('objective')=='group_vector_dist_softmix_kl':specs=[('balanced_accuracy','Mixed event balanced accuracy(h)',100),('dist_loss','Groupwise DIST',1),('soft_mixed_kl','Soft mixed-event KL',1)]
     fig,axes=plt.subplots(2,3,figsize=(15,8),layout='constrained')
     for row,split in enumerate(('train','test')):
         for ax,(key,title,scale)in zip(axes[row],specs):
@@ -104,6 +106,7 @@ def render(summary,output):
         if arm['arm'].get('objective')=='group_vector_dist_kl':
             fields=[('balanced_accuracy','Mixed event BA(q)',100),('diversity_mixed_balanced_accuracy','Diversity threshold BA(D)',100),
                 ('vector_mae','5-vector MAE',1),('dist_loss','Groupwise DIST',1),('mean_correctness_kl','Mean-correctness KL',1),('diversity_kl','Diversity KL',1)]
+        if arm['arm'].get('objective')=='group_vector_dist_softmix_kl':fields=[('accuracy','h mixed accuracy',100),('balanced_accuracy','h mixed balanced accuracy',100),('dist_loss','Groupwise DIST',1),('soft_mixed_kl','Soft mixed-event KL',1),('total_loss','DIST +50 soft mixed KL',1),('group_mean_mae','Mean correctness MAE (diagnostic)',1)]
         for ax,(key,title,scale)in zip(axes.flat,fields):
             for split,color in(('train','#1763a4'),('test','#d45b20')):
                 for mode,style in(('raw','--'),('ema','-')):
