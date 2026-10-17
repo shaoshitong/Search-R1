@@ -1,0 +1,59 @@
+{
+  "status": "ACTUAL_QA5_COMPLETE_AND_NATIVE_CLEANUP_ACCEPTED",
+  "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+  "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+  "checkpoint_outer": 5,
+  "qa_count": 512,
+  "correct": 146,
+  "em": 0.28515625,
+  "f1": 0.3724878203488658,
+  "per_source": {
+    "hotpotqa": {
+      "em": 0.29296875,
+      "f1": 0.3476020236762097,
+      "qa_count": 256
+    },
+    "nq": {
+      "em": 0.27734375,
+      "f1": 0.39737361702152174,
+      "qa_count": 256
+    }
+  },
+  "source_commit": "e6dc5708c6ec223086e661095dc36fc841e18f39",
+  "config_sha256": "a1447f9da0387e0bf9e6e721b8f289730546ae73e71b45e7d34cadacae9d4dc8",
+  "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+  "qa_receipt_sha256": "22966691d8c1f18d6865178a5a67bf32b51cf32da889d5ca725d547f1e0f3ffe",
+  "node": "h100-5",
+  "unit": "g1-qa-4a1cc2d5-o5-6d487ce7-bind2.service",
+  "all_rank_exit0": true,
+  "all_rank_first_constructor_attempt": true,
+  "rank_gpu_uuid_count": 8,
+  "raw_shards_all_sha_checked": true,
+  "strict_saved_token_scores_recomputed": true,
+  "tokenizer_reloaded": true,
+  "native_unit_exit0": true,
+  "own_cgroup_absent": true,
+  "post_cleanup_gpu_compute_empty": true,
+  "source_training_unchanged": true,
+  "successful_qa_whole_unit_wall_seconds": 112.79448318481445,
+  "successful_qa_cpu_seconds_self_and_reaped_children": 392.808603,
+  "successful_qa_physical8_wall_gpu_hours": 0.2506544049580892,
+  "successful_qa_peak5s_own_mib": {
+    "GPU-26e47632-03c7-ed47-78bb-70a48ad6f5c9": 22718,
+    "GPU-28cfaee7-5866-15ec-e6cb-0240ea621a14": 23352,
+    "GPU-5b62f3fb-95a8-cc9f-4398-66164aaf65dd": 22716,
+    "GPU-6c5b821c-fa0d-d42f-0087-74a68c1d96dd": 22718,
+    "GPU-819af62a-431c-af77-7e81-df60999e88a9": 22720,
+    "GPU-a8eff387-7a27-4358-0257-90320ab1ebc0": 22718,
+    "GPU-ba592047-ee84-b8e9-b0f2-80293c3e6b0c": 22716,
+    "GPU-f97a13cb-a6e9-70b4-598e-48034ff7b242": 22718
+  },
+  "failed_prior_unit_cpu_seconds_systemd": 202.457869,
+  "failed_prior_unit_physical8_wall_gpu_hours": 0.2956701315773858,
+  "cost_scope": "Physical8 device-wall hours, not billed/exclusive Slurm GPU hours; shared GPU SM busy-time not measured. Raw response tokens include environmental observations, not sampled-policy tokens.",
+  "logical_retrieval_calls": 573,
+  "response_tokens_including_observations": 331097,
+  "slurm_reserved_gpus": 0,
+  "full51713_complete": false,
+  "training200_complete": false
+}

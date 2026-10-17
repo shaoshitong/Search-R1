@@ -20,6 +20,8 @@ def observe(root, output, connection):
     root, output = Path(root), Path(output)
     config_path = output / 'CURRENT_CONFIG.json'
     c = json.loads(config_path.read_text())
+    registry_path=output/'QA_STANDALONE_REGISTRY.json'
+    qa_registry=json.loads(registry_path.read_text()) if registry_path.exists() else []
     cp = json.loads(Path(connection).read_text())['control_path']
     series_path = output / 'COMPLETED_ITERATION_SCALAR_EVIDENCE.json'
     series = json.loads(series_path.read_text()) if series_path.exists() else {}
@@ -56,6 +58,28 @@ for ordinal in (5,50,100,150,200):
 p=base/'final-evaluation/complete.json'
 value['final_qa']=json.loads(p.read_text()) if p.exists() else None
 '''
+    extra += '\nstandalone_specs='+repr(qa_registry)+'\n'
+    extra += r'''
+for spec in standalone_specs:
+ p=pathlib.Path(spec['canonical_retained18_base'])
+ assert p.parent==pathlib.Path('/mnt/data/shaoshitong') and p.name.startswith('search-g1-qa-i1i6-4a1cc2d5-outer0005-')
+ cfg=p/'preparation/config.json';receipt=p/'validation/complete.json'
+ assert hashlib.sha256(cfg.read_bytes()).hexdigest()==spec['config_sha256']
+ conf=json.loads(cfg.read_text());qa=json.loads(receipt.read_text())
+ assert hashlib.sha256(receipt.read_bytes()).hexdigest()==spec['qa_receipt_sha256']
+ assert conf['qa_source_commit']==spec['source_commit'] and conf['node']==spec['node']
+ assert qa['run_id']==conf['run_id']==value['latest_joint']['run_id']
+ assert qa['actor_version']==qa['run_id']+'-actor%04d'%spec['outer'] and qa['qa_count']==512
+ assert qa['question_source_sha256']==current_config['validation_questions_sha256']
+ assert qa['evaluation_contract']==spec['evaluation_contract']
+ value['qa_completed'].append(dict(outer=spec['outer'],result=qa,source_base=str(p),node=spec['node'],
+  receipt_sha256=spec['qa_receipt_sha256'],source_commit=spec['source_commit'],independent_saved_raw_cpu_recompute=True,
+  native_unit_cleanup_verified=spec['native_unit_cleanup_verified']))
+value['qa_completed']=sorted({r['outer']:r for r in value['qa_completed']}.values(),key=lambda r:r['outer'])
+value['native_qa_pending']=value.get('qa_pending')
+resolved={str(r['outer'])for r in value['qa_completed']}
+value['qa_pending']={k:v for k,v in (value.get('qa_pending')or{}).items()if k not in resolved}
+'''
     code = SCRIPT.replace('print(json.dumps(value,allow_nan=False))',
         extra + '\nprint(json.dumps(value,allow_nan=False))').replace('BASE', repr(c['base']))
     transport = output / ('read-' + str(time.time_ns()) + '-transport.json')
@@ -82,7 +106,7 @@ value['final_qa']=json.loads(p.read_text()) if p.exists() else None
         latest_actual_observed_unix=value['observed_unix'], latest_actual_evidence=str(evidence),
         config_sha256=value['config_sha256'], source_commit=c['source_commit'],
         latest_joint_source_commit=joint.get('source_commit'),resume_joint=c.get('resume_joint'),
-        qa_pending=value.get('qa_pending'),
+        qa_pending=value.get('qa_pending'),native_qa_pending=value.get('native_qa_pending'),
         updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(), goal_complete=False)
     if n:
         state['latest_actor_selection'] = joint['actor_selection']
@@ -100,8 +124,9 @@ value['final_qa']=json.loads(p.read_text()) if p.exists() else None
         (state['job_id'], state['native_state'], c['node'], n, state['stage']),
         'Saved actor/probe Adam per rank: %s / %s.' %
         (state['actor_adam_per_rank'], state['probe_adam_per_rank']),
-        'Latest QA: ' + json.dumps(state.get('latest_qa', 'not yet produced under the new protocol')),
-        'Actual milestone QA pending: '+json.dumps(state.get('qa_pending') or {}),
+        'Latest QA: ' + json.dumps({k:v for k,v in state.get('latest_qa',{}).items()if k!='result'} | {'result':{k:v for k,v in state.get('latest_qa',{}).get('result',{}).items()if k in ('actor_version','qa_count','em','f1','per_source','question_source_sha256','completed_utc')}}),
+        'Unresolved milestone QA: '+json.dumps(state.get('qa_pending') or {}),
+        'Frozen trainer pending ledger (standalone accepted results are separate): '+json.dumps(state.get('native_qa_pending') or {}),
         'Checkpoint5 CPU acceptance: '+json.dumps(state.get('checkpoint5_cpu_acceptance','not yet available')),
         'Frozen source: ' + c['source_commit'] + '; actual config SHA: ' + value['config_sha256'],
         '5120G5 prefix20 -> Top1024 same-prefix continuation -> actual EM variance Top512 actor; probe ALL1024/5120 one natural epoch20Adam atLR1e-6.',

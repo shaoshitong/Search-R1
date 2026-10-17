@@ -26,6 +26,7 @@ value=dict(observed_unix=time.time(),base=str(b),unit=unit,systemd=props,cgroup_
  terminal=read(b/'logs/terminal.json'),qa=read(b/'validation/complete.json'),
  rank_progress=[read(b/'validation'/('rank-%d-progress.json'%rank)) for rank in range(8)],
  rank_complete=[read(b/'validation'/('rank-%d-complete.json'%rank)) is not None for rank in range(8)],
+ gpu_compute=subprocess.run(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader,nounits'],capture_output=True,text=True,timeout=10).stdout,
  attempts=read(b/'validation/initialization-attempts/history.json'),
  initialization_statuses=[read(p) for p in sorted((b/'validation/initialization-attempts').glob('*-status.json'))],logs={})
 for name in ('controller','retriever','evaluation'):

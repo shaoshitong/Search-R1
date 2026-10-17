@@ -1,0 +1,33 @@
+[
+  {
+    "canonical_retained18_base": "/mnt/data/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2",
+    "target_base": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2",
+    "node": "h100-5",
+    "unit": "g1-qa-4a1cc2d5-o5-6d487ce7-bind2.service",
+    "source_commit": "e6dc5708c6ec223086e661095dc36fc841e18f39",
+    "config_sha256": "a1447f9da0387e0bf9e6e721b8f289730546ae73e71b45e7d34cadacae9d4dc8",
+    "qa_receipt_sha256": "22966691d8c1f18d6865178a5a67bf32b51cf32da889d5ca725d547f1e0f3ffe",
+    "outer": 5,
+    "evaluation_contract": {
+      "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+      "answer_reserve_tokens": 500,
+      "compute_dtype": "bfloat16",
+      "early_final": true,
+      "kind": "prefix_selection_shared_bf16_context4096_action500_reserve500_stream_boundary_v2",
+      "max_action_tokens": 500,
+      "max_model_tokens": 4096,
+      "max_observation_tokens": 500,
+      "max_request_tokens": 4096,
+      "max_search_turns": 4,
+      "max_start_tokens": 2048,
+      "n": 1,
+      "observation_truncation": "clip_body_preserve_information_wrapper",
+      "scoring": "unchanged_strict_qa_em_and_f1",
+      "synchronous_native_output_commit": true,
+      "temperature": 0.0,
+      "top_k": -1,
+      "top_p": 1.0
+    },
+    "native_unit_cleanup_verified": true
+  }
+]

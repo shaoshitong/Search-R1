@@ -1,0 +1,334 @@
+{
+  "actor_model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
+  "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+  "actual_worker_exit_codes": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+    "7": 0
+  },
+  "completed_utc": "2026-10-17T06:58:54.067508+00:00",
+  "em": 0.28515625,
+  "evaluation_contract": {
+    "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+    "answer_reserve_tokens": 500,
+    "compute_dtype": "bfloat16",
+    "early_final": true,
+    "kind": "prefix_selection_shared_bf16_context4096_action500_reserve500_stream_boundary_v2",
+    "max_action_tokens": 500,
+    "max_model_tokens": 4096,
+    "max_observation_tokens": 500,
+    "max_request_tokens": 4096,
+    "max_search_turns": 4,
+    "max_start_tokens": 2048,
+    "n": 1,
+    "observation_truncation": "clip_body_preserve_information_wrapper",
+    "scoring": "unchanged_strict_qa_em_and_f1",
+    "synchronous_native_output_commit": true,
+    "temperature": 0.0,
+    "top_k": -1,
+    "top_p": 1.0
+  },
+  "f1": 0.3724878203488658,
+  "initialization_attempt_history": [
+    {
+      "attempt": 1,
+      "cleanup": false,
+      "config_sha256": "741a3042ab1bc40b02fb06d40b9d85d49408a4176e16a04e2882582f503f133c",
+      "ended_unix": 1792220331.0343223,
+      "exit_code": 0,
+      "pid": 2081175,
+      "rank": 3,
+      "reaped": true,
+      "started_unix": 1792220291.379955,
+      "status": {
+        "actor_model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
+        "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+        "attempt": 1,
+        "config_sha256": "741a3042ab1bc40b02fb06d40b9d85d49408a4176e16a04e2882582f503f133c",
+        "created_utc": "2026-10-17T06:58:44.617716+00:00",
+        "expected_count": 512,
+        "kind": "INITIALIZATION_READY",
+        "pid": 2081175,
+        "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "rank": 3,
+        "run_id": "4a1cc2d500fe40979ef8ca4792959438"
+      },
+      "status_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/initialization-attempts/rank-3-attempt-01-status.json"
+    },
+    {
+      "attempt": 1,
+      "cleanup": false,
+      "config_sha256": "995b816f4031858fd893c471729582032a17695d62f2abb993bbcfc2930d9055",
+      "ended_unix": 1792220331.4377482,
+      "exit_code": 0,
+      "pid": 2081174,
+      "rank": 2,
+      "reaped": true,
+      "started_unix": 1792220291.3776932,
+      "status": {
+        "actor_model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
+        "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+        "attempt": 1,
+        "config_sha256": "995b816f4031858fd893c471729582032a17695d62f2abb993bbcfc2930d9055",
+        "created_utc": "2026-10-17T06:58:45.243151+00:00",
+        "expected_count": 512,
+        "kind": "INITIALIZATION_READY",
+        "pid": 2081174,
+        "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "rank": 2,
+        "run_id": "4a1cc2d500fe40979ef8ca4792959438"
+      },
+      "status_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/initialization-attempts/rank-2-attempt-01-status.json"
+    },
+    {
+      "attempt": 1,
+      "cleanup": false,
+      "config_sha256": "c80667c5f565daefc238d2ab808a4a631e9585f89be830a6a55f046af7b5b5a3",
+      "ended_unix": 1792220332.4415724,
+      "exit_code": 0,
+      "pid": 2081173,
+      "rank": 1,
+      "reaped": true,
+      "started_unix": 1792220291.3753898,
+      "status": {
+        "actor_model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
+        "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+        "attempt": 1,
+        "config_sha256": "c80667c5f565daefc238d2ab808a4a631e9585f89be830a6a55f046af7b5b5a3",
+        "created_utc": "2026-10-17T06:58:45.198826+00:00",
+        "expected_count": 512,
+        "kind": "INITIALIZATION_READY",
+        "pid": 2081173,
+        "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "rank": 1,
+        "run_id": "4a1cc2d500fe40979ef8ca4792959438"
+      },
+      "status_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/initialization-attempts/rank-1-attempt-01-status.json"
+    },
+    {
+      "attempt": 1,
+      "cleanup": false,
+      "config_sha256": "f0e1b60dedc73d27141291509d90be715c1230cdca09532f017864f33f748adf",
+      "ended_unix": 1792220332.8447647,
+      "exit_code": 0,
+      "pid": 2081177,
+      "rank": 5,
+      "reaped": true,
+      "started_unix": 1792220291.3846152,
+      "status": {
+        "actor_model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
+        "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+        "attempt": 1,
+        "config_sha256": "f0e1b60dedc73d27141291509d90be715c1230cdca09532f017864f33f748adf",
+        "created_utc": "2026-10-17T06:58:45.624492+00:00",
+        "expected_count": 512,
+        "kind": "INITIALIZATION_READY",
+        "pid": 2081177,
+        "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "rank": 5,
+        "run_id": "4a1cc2d500fe40979ef8ca4792959438"
+      },
+      "status_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/initialization-attempts/rank-5-attempt-01-status.json"
+    },
+    {
+      "attempt": 1,
+      "cleanup": false,
+      "config_sha256": "ec621c1727fe128342e23cb91d78873ef9af8cf44d84fe78d0ef39a61d2c8aba",
+      "ended_unix": 1792220333.0474718,
+      "exit_code": 0,
+      "pid": 2081176,
+      "rank": 4,
+      "reaped": true,
+      "started_unix": 1792220291.3823278,
+      "status": {
+        "actor_model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
+        "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+        "attempt": 1,
+        "config_sha256": "ec621c1727fe128342e23cb91d78873ef9af8cf44d84fe78d0ef39a61d2c8aba",
+        "created_utc": "2026-10-17T06:58:45.616698+00:00",
+        "expected_count": 512,
+        "kind": "INITIALIZATION_READY",
+        "pid": 2081176,
+        "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "rank": 4,
+        "run_id": "4a1cc2d500fe40979ef8ca4792959438"
+      },
+      "status_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/initialization-attempts/rank-4-attempt-01-status.json"
+    },
+    {
+      "attempt": 1,
+      "cleanup": false,
+      "config_sha256": "8c17eb7d8954bc1b580eafdb337306faf6dc44084c20d913656b8dda133abcdd",
+      "ended_unix": 1792220333.450564,
+      "exit_code": 0,
+      "pid": 2081179,
+      "rank": 7,
+      "reaped": true,
+      "started_unix": 1792220291.3894,
+      "status": {
+        "actor_model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
+        "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+        "attempt": 1,
+        "config_sha256": "8c17eb7d8954bc1b580eafdb337306faf6dc44084c20d913656b8dda133abcdd",
+        "created_utc": "2026-10-17T06:58:45.632216+00:00",
+        "expected_count": 512,
+        "kind": "INITIALIZATION_READY",
+        "pid": 2081179,
+        "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "rank": 7,
+        "run_id": "4a1cc2d500fe40979ef8ca4792959438"
+      },
+      "status_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/initialization-attempts/rank-7-attempt-01-status.json"
+    },
+    {
+      "attempt": 1,
+      "cleanup": false,
+      "config_sha256": "9b292bda9c1718f5b6762138c9021165ad8bb615ddb0257bdd0c7b0cda1ec74d",
+      "ended_unix": 1792220333.8537364,
+      "exit_code": 0,
+      "pid": 2081172,
+      "rank": 0,
+      "reaped": true,
+      "started_unix": 1792220291.3729672,
+      "status": {
+        "actor_model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
+        "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+        "attempt": 1,
+        "config_sha256": "9b292bda9c1718f5b6762138c9021165ad8bb615ddb0257bdd0c7b0cda1ec74d",
+        "created_utc": "2026-10-17T06:58:45.119062+00:00",
+        "expected_count": 512,
+        "kind": "INITIALIZATION_READY",
+        "pid": 2081172,
+        "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "rank": 0,
+        "run_id": "4a1cc2d500fe40979ef8ca4792959438"
+      },
+      "status_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/initialization-attempts/rank-0-attempt-01-status.json"
+    },
+    {
+      "attempt": 1,
+      "cleanup": false,
+      "config_sha256": "cdbb5a56c720673e6e6518a2ed55b220f9df04a85ae5ef402a4ec407cb45fc2e",
+      "ended_unix": 1792220334.0569422,
+      "exit_code": 0,
+      "pid": 2081178,
+      "rank": 6,
+      "reaped": true,
+      "started_unix": 1792220291.3871813,
+      "status": {
+        "actor_model_dir": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/actor/outers/outer-0005-attempt-0dc49341a2e74eaba8d6fbaa3b1a2990/huggingface",
+        "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0005",
+        "attempt": 1,
+        "config_sha256": "cdbb5a56c720673e6e6518a2ed55b220f9df04a85ae5ef402a4ec407cb45fc2e",
+        "created_utc": "2026-10-17T06:58:45.616313+00:00",
+        "expected_count": 512,
+        "kind": "INITIALIZATION_READY",
+        "pid": 2081178,
+        "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "rank": 6,
+        "run_id": "4a1cc2d500fe40979ef8ca4792959438"
+      },
+      "status_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/initialization-attempts/rank-6-attempt-01-status.json"
+    }
+  ],
+  "initialization_cleanup_errors": [],
+  "initialization_supervisor_cuda_initialized": false,
+  "output_shards": [
+    {
+      "bytes": 270519,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-0-full.jsonl.gz",
+      "sha256": "7b886b4351664110f17f8021d9204e4701bb71600cf3d1855539d00fd848e0ad"
+    },
+    {
+      "bytes": 311272,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-1-full.jsonl.gz",
+      "sha256": "8b45585a8c824dfc90400c62ac0c7ecd389b61a6364a8ec08ab4a700137436f4"
+    },
+    {
+      "bytes": 263824,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-2-full.jsonl.gz",
+      "sha256": "9b50634a716731a8a3cbcc2b32d6c5b4d3ddf6d174b821f91c3e924ae3dcadd1"
+    },
+    {
+      "bytes": 278302,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-3-full.jsonl.gz",
+      "sha256": "35f1091a1a9e77f8fa8c1985ab50e96b850dda0c2af6982f5a97858cac7f01c9"
+    },
+    {
+      "bytes": 250770,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-4-full.jsonl.gz",
+      "sha256": "2f7373ce17b57c2122acd592c0f2bb671e160ada6a5d7a0830eebc156145f164"
+    },
+    {
+      "bytes": 264210,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-5-full.jsonl.gz",
+      "sha256": "2527a7137004715425bff001768a0a10528384b345789b115622eca299aa74cf"
+    },
+    {
+      "bytes": 289674,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-6-full.jsonl.gz",
+      "sha256": "aa1cd579a7824783b577aa274d45add908ca07f5eb478a79cbb938e42ca2ac60"
+    },
+    {
+      "bytes": 321496,
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-7-full.jsonl.gz",
+      "sha256": "d3702d5981a07d05f74d636c51ec2f2c62981d3606eda3a383510a6400ba3d2c"
+    }
+  ],
+  "per_source": {
+    "hotpotqa": {
+      "em": 0.29296875,
+      "f1": 0.3476020236762097,
+      "qa_count": 256
+    },
+    "nq": {
+      "em": 0.27734375,
+      "f1": 0.39737361702152174,
+      "qa_count": 256
+    }
+  },
+  "qa_count": 512,
+  "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+  "rank_receipts": [
+    {
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-0-complete.json",
+      "sha256": "14bac837f7f3536d88f8cb5f0a8b0e9ed4352e17630f13367977b8aad102f4de"
+    },
+    {
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-1-complete.json",
+      "sha256": "737eecae61faa751140b871926953e0dd891062cda136f99d6bd9f6f03d7b44b"
+    },
+    {
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-2-complete.json",
+      "sha256": "39870e1578b02f88bb54c04b1c9f0f9858b5edf9671cd50681cff2ec5abe96a4"
+    },
+    {
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-3-complete.json",
+      "sha256": "3e71986e74cc9889bdec60d3fa3f3fde1307727596339d63762e9a815f3d54e6"
+    },
+    {
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-4-complete.json",
+      "sha256": "1bd3bb797b79feb0b2da648c7316c73cc954a0fe3cc854aecf9c9285320ef1e1"
+    },
+    {
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-5-complete.json",
+      "sha256": "214b05610811e4a6d6f88a4544b1600f4113026ec9fa86653ca17473ff6ffed4"
+    },
+    {
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-6-complete.json",
+      "sha256": "6327837736d4a623cdb8940c72b6bd3a19ddc2e4fb5496950b21195c57cc046a"
+    },
+    {
+      "path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0005-6d487ce7-bind2/validation/rank-7-complete.json",
+      "sha256": "21cc4e3fe1631e1dabd303def73b10a6b1ed504ddd92f46882eb5b8c8e7410e1"
+    }
+  ],
+  "reused_rank_receipts": [],
+  "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+  "schema_version": 1
+}
