@@ -83,7 +83,14 @@ def run(request_path):
         mem = subprocess.run(['nvidia-smi', '--query-gpu=memory.free', '--format=csv,noheader,nounits'],
                              capture_output=True, text=True, timeout=15)
         free = [int(x) for x in mem.stdout.split()] if mem.returncode == 0 else []
-        ready = apps.returncode == 0 and not apps.stdout.strip() and len(free) == 8 and min(free) >= 76000
+        observed = {int(x) for x in apps.stdout.split()} if apps.returncode == 0 else set()
+        # Small, explicitly observed resident probes may coexist. Do not wait
+        # for an empty machine when the frozen production preflight allows it.
+        allowed = r.get('allowed_resident_probes', [])
+        resident_ok = all(not absent(x) for x in allowed)
+        ready = (apps.returncode == 0 and resident_ok
+                 and observed <= {x['pid'] for x in allowed}
+                 and len(free) == 8 and min(free) >= 65536)
         write(out / 'resource-state.json', dict(time=time.time(), ready=ready,
             gpu_pids=apps.stdout, free_MiB=free, apps_rc=apps.returncode, memory_rc=mem.returncode))
         if ready:
