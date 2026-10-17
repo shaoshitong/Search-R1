@@ -179,8 +179,8 @@ def readers(value):
 
 def validate_source(value, archive, root):
     if os.getuid() != 14090 or socket.gethostname() != 'ACD-Login-1': raise ValueError('PINNED_HPC_JXU_OWNER_REQUIRED')
-    if archive['status'] != 'ALL39_HK_ARCHIVE_FRESH_SHA_PASS' or archive['plan_sha256'] != PLAN_SHA:
-        raise ValueError('FRESH_HK_PROOF_REQUIRED')
+    if archive['status'] not in ('ALL39_HK_ARCHIVE_FRESH_SHA_PASS', 'ALL39_ACCEPTED_ARCHIVE_MAPPING_ONLY') or archive['plan_sha256'] != PLAN_SHA:
+        raise ValueError('ACCEPTED_ARCHIVE_MAPPING_REQUIRED_FOR_INDEPENDENT_SOURCE_SHA')
     before_terminal = terminal(); checked = {}; done = 0; total = sum(x['bytes'] for x in value['files'])
     metadata = {}
     for step in STEPS:
@@ -232,6 +232,8 @@ def execute(value, source, archive, guards, root):
                       terminal=current_terminal, readers=guards, birth=birth(), created_unix=time.time()))
     # Validate every identity before the first unlink; deletion itself is exact-file only.
     for row in value['files']:
+        if source['files'][row['path']]['sha256'] != archive['files'][row['path']]['sha256']:
+            raise ValueError('INDEPENDENT_SOURCE_AND_FRESH_ARCHIVE_SHA_DIFFER')
         if identity(row['path']) != source['files'][row['path']]['identity']:
             raise ValueError('SOURCE_IDENTITY_CHANGED_BEFORE_FIRST_UNLINK')
     deleted = []; freed = 0
