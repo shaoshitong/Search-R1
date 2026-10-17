@@ -1,5 +1,14 @@
 ## Actual50 QA and full checkpoint readback
 
+## Actual55 and fixed recovery assets queued (UTC2026-10-17T00:46)
+
+Same3430/runtimec22 completed55/200, actor1100/probe200 actualAdam per each8rank;56 was actor phase. The24 original rank ledgers for53–55 each prove20 writes. Selectedmixed53/54/55 was151/152/154 of512 (29.49/29.69/30.08%), while mean predictedq was84.57/84.63/84.97%. This remains an overprediction on selected groups, not an accuracy for the4608 uncontinued questions or a QA result. Period60 paired training/heldout metrics remain pending.
+
+The fixed recovery inventory is actually prepared:33files/86582548181B, SHA96b5213b0ee498a5ff8f60a0e1bd34d71ccfd5e2a006acdbf02e61f92dd2fa81. Both complete source and existing export-alias E5 files were read and matched; official model staging preserves its earlier verified run identity. Validation/final aliases resolve the original g1f canonical files without changing bytes or configuredSHA. A separate target read verified the complete small inventory and both published control fileSHAs; all33 export aliases are present.
+
+Independent copy was ONCE queued on h100-10 localext4: PID426227/startticks1925844166, namespacea008d7ce9833-fixed-recovery-assets-once-v1. Two actual readings confirm the same live birth waiting for the existing CP50 copier; no fixed asset copy or independent completion is claimed yet. Copy and target reads are20MiB/s,128GiB ordinary reserve, zero GPU/model loading, no Mac model transit. Do not replay its prepare/start or start later milestone copiers concurrently while it runs. Actual CP50 at00:46 had independently verified10/152files/11767354683B, with the fourth HF shard's target SHA in progress. Later checkpoint copies and terminal logs/all retained trajectories/final outputs still remain pending; training stays frozen atc22.
+
+
 Same3430 completed51/200 and entered52 prefix at the latest native read. All24 original actor ledgers49-51 have20 writes each; actor1020/probe200 actual Adam per each8rank. Probe remains frozen from40 until60 at LR1e-5. Frozen runtimeC22 is unchanged.
 
 ScheduledQA50 completed all512 questions with8 actual worker exit0. The original fixed512 questionSHA and legacy pre-d00 async FP32/raw500/noanswerreserve/noearlyfinal contract exactly matchQA5.
