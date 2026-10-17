@@ -55,13 +55,10 @@ def validate_config(c, base):
         raise ValueError('Official actor/ref/encoder revision differs')
     if len(set(c['physical_gpu_uuids'])) != WORLD:
         raise ValueError('Four actual physical training GPUs are required')
-    if (len(c.get('physical_gpu_indices', [])) != WORLD
-            or len(c.get('auxiliary_gpu_indices', [])) != 4
-            or len(c.get('auxiliary_gpu_uuids') or []) != 4
-            or set(c['physical_gpu_indices']) & set(c['auxiliary_gpu_indices'])
-            or len(set(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])) != 8
-            or c.get('probe_source_run') != '8af926a49630428097b94027864da68b'):
-        raise ValueError('Bind actual four training/two auxiliary UUIDs and the approved warmup source')
+    from .gpu_layout import placement
+    placement(c)
+    if c.get('probe_source_run') != '8af926a49630428097b94027864da68b':
+        raise ValueError('Bind the approved warmup source')
     for key in ('environment_root', 'model_dir', 'official_model_dir', 'encoder_model_dir',
                 'canonical_train', 'source_question_pool', 'probe_source_checkpoint',
                 'fixed_test_features', 'retrieval_index', 'retrieval_corpus', 'grounding_manifest'):
@@ -226,7 +223,8 @@ def run(base):
         else:
             from .resume import validate_imported_boundary
         validate_imported_boundary(base, c)
-    lease = UUIDLocks(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])
+    from .gpu_layout import placement, grounding_device
+    lease = UUIDLocks(placement(c)[1])
     try:
         native_allocation(base, c)
     except BaseException:
@@ -309,7 +307,7 @@ def run(base):
             name = 'grounding-%06d-rank-%d' % (state['round'], rank)
             services[name] = start(name, [python, 'probe_server.py', '--manifest', str(live),
                 '--port', str(c['grounding_probe_base_port'] + rank)],
-                dict(env, CUDA_VISIBLE_DEVICES=str(c['grounding_physical_gpu']),
+                dict(env, CUDA_VISIBLE_DEVICES=str(grounding_device(c, rank)),
                      SEARCH_G1_BASE=str(base / 'grounding' / ('rank-%d' % rank)), OMP_NUM_THREADS='2'))
         for rank in range(WORLD):
             name = 'grounding-%06d-rank-%d' % (state['round'], rank)
@@ -392,7 +390,8 @@ def run(base):
                 '--source-model-kind', c['probe_source_model_kind'], '--run-id', c['run_id'],
                 '--test-cache', c['fixed_test_features'], '--test-manifest-sha', c['fixed_test_manifest_sha256']],
                 dict(env, CUDA_VISIBLE_DEVICES=''))
-        stage('STARTING_AUX_TWO_SHARD_RETRIEVER_AND_FOUR_GROUNDING_REPLICAS')
+        stage('STARTING_FOUR_SHARD_RETRIEVER_AND_FOUR_GROUNDING_REPLICAS',
+              gpu_resource_layout=c.get('gpu_resource_layout', 'legacy_separate_auxiliary'))
         env_root = Path(c['environment_root'])
         libs = list((env_root / 'lib/python3.10/site-packages/nvidia').glob('*/lib'))
         libs += [env_root / 'lib/python3.10/site-packages/torch/lib']

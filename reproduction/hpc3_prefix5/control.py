@@ -47,7 +47,7 @@ SBATCH='''#!/usr/bin/env bash
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=48
 #SBATCH --mem=512G
-#SBATCH --gres=gpu:8
+#SBATCH --gres=gpu:4
 #SBATCH --time=7-00:00:00
 set -euo pipefail
 base=BASE_VALUE

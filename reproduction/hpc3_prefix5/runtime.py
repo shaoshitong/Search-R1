@@ -1,10 +1,21 @@
-"""Bind the reference Prefix5/P10 algorithm to one real HPC3 4+4 allocation."""
+"""Bind Prefix5/P10 to four physical GPUs shared by training and retrieval."""
 import argparse,csv,hashlib,io,json,os,pathlib,subprocess,time,uuid
 BASE=pathlib.Path('/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017')
 COMMON=pathlib.Path('/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b')
 OFFICIAL=pathlib.Path('/data/user/jxu957/experiments/topd-20261008/runtime/assets/qwen2.5-3b-instruct-aa8e725')
 REUSED=pathlib.Path('/data/user/jxu957/experiments/cosearch-continue300-x203-20261008')
 R17=pathlib.Path('/data/user/jxu957/experiments/qprobe-teacher-warmup200-periodic25-thread5-20261016-r17')
+from reproduction.prefix_selection200.gpu_layout import SHARED
+
+
+def shared_devices(selected, by_index):
+ if len(selected)!=4 or len(set(selected))!=4:
+  raise ValueError('Expected exactly four physical Slurm GPUs, shared by training and retrieval')
+ uuids=[by_index[x] for x in selected]
+ if len(set(uuids))!=4:raise ValueError('Actual four GPU UUIDs must be distinct')
+ return dict(gpu_resource_layout=SHARED,physical_gpu_indices=list(selected),physical_gpu_uuids=uuids,
+  auxiliary_gpu_indices=list(selected),auxiliary_gpu_uuids=list(uuids),grounding_physical_gpus=list(selected),
+  grounding_physical_gpu=selected[-1],grounding_refit_visible_device=selected[-1])
 
 
 def sha(path):
@@ -34,12 +45,15 @@ def prepare():
   prior=json.loads(done.read_text());publication=json.loads((p/'source-publication.json').read_text())
   template=json.loads((p/'launch-config-template.json').read_text());desired=adaptive_policy(template)
   policy_changed=template.get('adaptive_candidates')!=desired
-  if prior['commit']!=publication['commit'] or policy_changed:
+  layout_changed=template.get('gpu_resource_layout')!=SHARED
+  if prior['commit']!=publication['commit'] or policy_changed or layout_changed:
    if (p/'submit-intent.json').exists():raise ValueError('Cannot rebind a claimed runtime')
-   template.update(source_commit=publication['commit'],adaptive_candidates=desired)
+   template.update(source_commit=publication['commit'],adaptive_candidates=desired,gpu_resource_layout=SHARED,
+    grounding_physical_gpus=[0,1,2,3],grounding_physical_gpu=3,grounding_refit_visible_device=3)
    (p/'launch-config-template.json').write_text(json.dumps(template,sort_keys=True))
    prior.update(commit=publication['commit'],code_rebind_before_launch_unix=time.time(),verified_scientific_inputs_unchanged=True,
-    adaptive_candidates=desired,adaptive_policy_changed=policy_changed);done.write_text(json.dumps(prior,sort_keys=True))
+    adaptive_candidates=desired,adaptive_policy_changed=policy_changed,gpu_resource_layout=SHARED,
+    total_physical_gpus=4);done.write_text(json.dumps(prior,sort_keys=True))
   return prior
  accepted=json.loads((BASE/'receive-complete.json').read_text())
  if accepted['status']!='REFERENCE_ASSETS_ALL_TARGET_SHA_VERIFIED':raise ValueError('Target assets have not passed SHA')
@@ -54,7 +68,7 @@ def prepare():
   retrieval_corpus='/data/user/jxu957/experiments/topd-20261008/bundle/retrieval/wiki/wiki-18.jsonl',
   retrieval_encoder=str(REUSED/'source/assets-root/assets/e5-base-v2'),retriever_gpu_lib=str(BASE/'retriever-gpu-lib'),retrieval_data_cache=str(BASE/'retrieval-cache'),
   grounding_calibration_questions=str(a/'calibration-300.parquet'),grounding_calibration_data=str(a/'calibration-300.parquet'),
-  grounding_refit_visible_device=7,grounding_physical_gpu=7,python_header_cpath='/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/bootstrap-tools/python-dev/usr/include/python3.10',
+  gpu_resource_layout=SHARED,grounding_physical_gpus=[0,1,2,3],grounding_refit_visible_device=3,grounding_physical_gpu=3,python_header_cpath='/data/user/jxu957/experiments/qprobe-teacher-warmup200-20261014/bootstrap-tools/python-dev/usr/include/python3.10',
   rollout_enforce_eager=True,pool_state_path=str(BASE/'question-pool/state.json'),prefix_probe_receipt=str(BASE/'probe/latest.json'),
   candidate_schedule=dict(effective_from_outer=1,legacy_candidates=2560,ordinary_candidates=5120,update_candidates=2560,probe_update_period=10,probe_update_at_final=False,selected_questions=512))
  # Scientific source files, labels and EMA remain byte-identical. Only the paths
@@ -93,13 +107,12 @@ def run():
  def indexes(values):
   return [int(x) if x.isdigit() else by_uuid[x] for x in values]
  selected=indexes(assigned if assigned!=[''] else visible)
- if len(selected)!=8 or len(set(selected))!=8:raise ValueError('Expected actual eight-GPU Slurm allocation')
- train,aux=selected[:4],selected[4:]
- c.update(physical_gpu_indices=train,physical_gpu_uuids=[by_index[x] for x in train],auxiliary_gpu_indices=aux,auxiliary_gpu_uuids=[by_index[x] for x in aux],grounding_physical_gpu=aux[-1],grounding_refit_visible_device=aux[-1],slurm_job=os.environ['SLURM_JOB_ID'],slurm_node=os.uname().nodename)
+ c.update(shared_devices(selected,by_index),slurm_job=os.environ['SLURM_JOB_ID'],slurm_node=os.uname().nodename)
+ train,aux=c['physical_gpu_indices'],c['auxiliary_gpu_indices']
  from reproduction.prefix_selection200.launch import validate_config
  validate_config(c,BASE);once(p/'launch-config.json',c)
  once(p/'submit-intent.json',dict(config_sha256=sha(p/'launch-config.json'),run_id=c['run_id'],source_commit=c['source_commit'],job=os.environ['SLURM_JOB_ID'],created_unix=time.time()))
- once(BASE/'logs/slurm-allocation.json',dict(job=os.environ['SLURM_JOB_ID'],node=os.uname().nodename,uid=os.getuid(),training=train,auxiliary=aux,assigned_uuids=[by_index[x] for x in selected],time=time.time()))
+ once(BASE/'logs/slurm-allocation.json',dict(job=os.environ['SLURM_JOB_ID'],node=os.uname().nodename,uid=os.getuid(),training=train,auxiliary=aux,assigned_uuids=[by_index[x] for x in selected],total_physical_gpus=4,gpu_resource_layout=SHARED,time=time.time()))
  from reproduction.prefix_selection200.launch import run as launch
  return launch(BASE)
 

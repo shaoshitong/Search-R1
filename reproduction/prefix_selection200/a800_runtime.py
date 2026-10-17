@@ -1,7 +1,7 @@
 """A800 process admission for the four-rank prefix5 actor experiment.
 
 No Slurm, global Ray cleanup, GPU reservation process, or foreign signal. The
-published config binds four idle training UUIDs and two auxiliary UUIDs once.
+published config binds four idle training UUIDs and explicit auxiliary placement.
 OFD descriptors stay open in the parent and are inherited by every child.
 """
 import csv
@@ -73,15 +73,13 @@ def native_allocation(base, c):
     """Validate one actual mapping before any CUDA child, while holding leases."""
     if not str(base).startswith(PREFIX):
         raise ValueError('Wrong isolated A800 namespace')
+    from .gpu_layout import placement
     training = c['physical_gpu_indices']
     aux = c['auxiliary_gpu_indices']
-    if len(training) != 4 or len(set(training)) != 4 or len(aux) != 4 or len(set(aux)) != 4 or set(training) & set(aux):
-        raise ValueError('Four Slurm training GPUs and four distinct shared auxiliary GPUs required')
+    ids, expected = placement(c)
     if not os.environ.get('SLURM_JOB_ID') or c.get('execution_backend') != 'slurm_hpc3':
         raise ValueError('HPC3 requires a real owned Slurm allocation')
     mapping = gpu_inventory()
-    ids = training + aux
-    expected = c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids']
     if [mapping[i]['uuid'] for i in ids] != expected:
         raise ValueError('Actual indices/UUIDs changed after preparation')
     used = {x['uuid'] for x in compute_processes()}
@@ -90,6 +88,8 @@ def native_allocation(base, c):
     value = dict(run_id=c['run_id'], source_commit=c['source_commit'],
         physical_gpu_indices=training, physical_gpu_uuids=c['physical_gpu_uuids'],
         auxiliary_gpu_indices=aux, auxiliary_gpu_uuids=c['auxiliary_gpu_uuids'],
+        gpu_resource_layout=c.get('gpu_resource_layout', 'legacy_separate_auxiliary'),
+        unique_physical_gpu_count=len(ids),
         checked_unix=time.time(), idle_memory_threshold_MiB=64,
         actual_inventory=[mapping[i] for i in ids], foreign_processes_stopped=False)
     once(base / 'logs/native-allocation.json', value)
