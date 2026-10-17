@@ -49,6 +49,9 @@ def collect(root):
             cpu_reserved_capacity_hours=96*seconds/3600,
             observed_owned_cpu_core_seconds_lower_bound=cpu,resource_observed_unix=resources['last_observed_unix'],
             sampler_samples=resources['samples'],resource_coverage=resources['coverage'],
+            resource_segments=resources.get('resource_segments'),
+            resource_coverage_gaps=resources.get('resource_coverage_gaps',[]),
+            cpu_lower_bound_combination=resources.get('cpu_lower_bound_combination'),
             start_time=native['StartTime'],end_time=native['EndTime'],
             role='planned_joint6_handoff'if job=='3432'else'current_same_run_continuation'))
     if seen!={'3432','3433'} or records[0]['end_time']>records[1]['start_time']:

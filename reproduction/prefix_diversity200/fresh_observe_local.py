@@ -2,6 +2,7 @@
 import argparse
 import datetime
 import hashlib
+import inspect
 import json
 from pathlib import Path
 import shutil
@@ -10,6 +11,7 @@ import time
 from reproduction.h1008_qprobe.management_transport import remote, connection_options
 from .poll_local import SCRIPT
 from .watch_actual import EXTRA
+from .resource_sample import combine_resource_summaries
 
 
 def save(path, value):
@@ -30,10 +32,18 @@ def observe(root, output, connection):
     extra = 'import hashlib\nif value.get("latest_joint"):\n'
     extra += '\n'.join(' ' + line for line in EXTRA.replace('VERIFIED', str(verified)).splitlines())
     extra += '\nelse:\n value["new_complete_facts"]=[]\n'
+    extra += '\n' + inspect.getsource(combine_resource_summaries) + '\n'
     extra += r'''
 value['config_sha256']=hashlib.sha256((base/'preparation/launch-config.json').read_bytes()).hexdigest()
-p=base/'preparation/resource5s-v1/summary.json'
-value['resource_summary']=json.loads(p.read_text()) if p.exists() else None
+resource_segments=[]
+for segment in ('resource5s-v1','resource5s-v2'):
+ p=base/'preparation'/segment/'summary.json'
+ if p.exists():
+  raw=p.read_bytes();summary=json.loads(raw)
+  assert summary['base']==str(base) and summary['run_id']==value['latest_joint']['run_id'] and summary['job']==value['native']['JobId']
+  summary['segment_source']=dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())
+  resource_segments.append(summary)
+value['resource_summary']=combine_resource_summaries(resource_segments)
 value['qa_completed']=[]
 ancestors=[base];seen={str(base)};current_config=json.loads((base/'preparation/launch-config.json').read_text())
 for _ in range(16):
