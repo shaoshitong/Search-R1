@@ -1,0 +1,128 @@
+{
+  "accepted_label_points": 25,
+  "additional_evaluation": false,
+  "additional_training": false,
+  "complete_goal_claim": false,
+  "input_sha256": {
+    "aggregate.json": "d78cbca875930a60704f7e05eaf58513aedb0b77727e3dee59295f856ab77306",
+    "curve.csv": "47c9313524b3009456e3fffc60b3cbac11df77eaa46c4c6777b56bb7f566111a"
+  },
+  "missing_label_points": [
+    {
+      "condition": "budget-5",
+      "outer": 50
+    },
+    {
+      "condition": "budget-5",
+      "outer": 100
+    },
+    {
+      "condition": "budget-5",
+      "outer": 150
+    },
+    {
+      "condition": "budget-20",
+      "outer": 5
+    },
+    {
+      "condition": "budget-20",
+      "outer": 50
+    },
+    {
+      "condition": "budget-20",
+      "outer": 100
+    },
+    {
+      "condition": "budget-20",
+      "outer": 150
+    },
+    {
+      "condition": "position-early",
+      "outer": 5
+    },
+    {
+      "condition": "position-early",
+      "outer": 50
+    },
+    {
+      "condition": "position-early",
+      "outer": 100
+    },
+    {
+      "condition": "position-early",
+      "outer": 150
+    },
+    {
+      "condition": "position-late",
+      "outer": 5
+    },
+    {
+      "condition": "position-late",
+      "outer": 50
+    },
+    {
+      "condition": "position-late",
+      "outer": 100
+    },
+    {
+      "condition": "position-late",
+      "outer": 150
+    },
+    {
+      "condition": "generation-2",
+      "outer": 5
+    },
+    {
+      "condition": "generation-2",
+      "outer": 50
+    },
+    {
+      "condition": "generation-2",
+      "outer": 100
+    },
+    {
+      "condition": "generation-2",
+      "outer": 150
+    }
+  ],
+  "output_sha256": {
+    "aggregate-em.pdf": "c53871b8c6669651a5036f04ecc6d16d941829d419bdfe89969900e5cd330cb1",
+    "aggregate-em.png": "8cf95b0a469d755ba02f07fb727fac5616740b324cbd9dc0cc2196cd0f1c31d4"
+  },
+  "planned_label_points": 44,
+  "plotted_unique_conditions": {
+    "A-original": [
+      5,
+      50,
+      100,
+      150
+    ],
+    "C1-root-only": [
+      5,
+      50,
+      100,
+      150
+    ],
+    "C2-random-final": [
+      5,
+      50,
+      100,
+      150
+    ],
+    "budget-5": [
+      5
+    ]
+  },
+  "protocol": "recursive_ablation150_combined_aggregate_figure_v1",
+  "raw_rollout_or_checkpoint_reads": false,
+  "remote_actions": false,
+  "report_commit": "e107fccff183614cd9c174203ff5519eaad9e77b",
+  "reused_labels": {
+    "budget-10": "A-original",
+    "generation-1": "C1-root-only",
+    "generation-4": "A-original",
+    "position-uniform": "A-original"
+  },
+  "source_commit": "8c2fff2a79f9734a2f6f373897f2f183235d5150",
+  "source_sha256": "8b7df793c1124c1404fcd1e445370fb09510b0a46677a58e1af37a8edaf5bd79"
+}
