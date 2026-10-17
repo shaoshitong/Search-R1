@@ -99,6 +99,10 @@ def inventory(base):
         original = Path(c[key]); expected = c.get(key+'_sha256')
         if key == 'probe_source_checkpoint': expected = c['probe_source_sha256']
         add(original, original.resolve(), key, expected)
+    if c.get('grounding_refresh_enabled'):
+        original = Path(c['grounding_calibration_questions'])
+        need(sha(original) == c['grounding_calibration_sha256'], 'Grounding calibration data changed')
+        add(original, original.resolve(), 'grounding_calibration_questions', c['grounding_calibration_sha256'])
     manifest = Path(c['grounding_manifest']); m = read(manifest)
     need(sha(manifest) == c['grounding_manifest_sha256'], 'Grounding version manifest changed')
     add(manifest, manifest.resolve(), 'fixed_grounding_manifest', c['grounding_manifest_sha256'])
