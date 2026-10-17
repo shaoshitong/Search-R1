@@ -42,7 +42,9 @@ def source(require_receipt=True):
   value=read(b/'preparation/source-receipt.json')
   assert value['source_commit']==h['source_commit'] and value['source_files_verified']==len(h['source_files'])
 def emit(value):
- raw=json.dumps(value,allow_nan=False);assert len(raw.encode())<=128*1024;print(raw)
+ raw=json.dumps(value,allow_nan=False);size=len(raw.encode())
+ assert size<=128*1024,'Metadata output budget exceeded: %d bytes > 131072'%size
+ print(raw)
 def prepared():
  ended=read(b/'preparation/prepare-exit.json')
  assert ended['exit_code']==0 and ended['run_id']==h['run_id'] and ended['execution_id']==h['execution_id']
@@ -108,7 +110,59 @@ _restore_projection = "restoration=(project(restored[0],('restored_completed_out
 assert _body.count('incomplete_final_line=incomplete,') == 1
 _body = _body.replace('incomplete_final_line=incomplete,','incomplete_final_line=incomplete,'+_restore_projection)
 _body = _body.removesuffix('\nemit(v)\n')
-OBSERVE = COMMON + _body + r'''
+
+# This code is sent through the existing read-only SSH invocation, never written
+# into the running trainer checkout. All source/birth/rank/ledger checks finish
+# before projection; the128KiB output guard and64MiB read guard stay unchanged.
+READONLY_PROJECTION = r'''
+def compact_observation(value):
+ original_bytes=len(json.dumps(value,allow_nan=False).encode())
+ value=dict(value)
+ def digest(item):
+  raw=json.dumps(item,sort_keys=True,separators=(',',':'),allow_nan=False).encode()
+  return hashlib.sha256(raw).hexdigest()
+ def compact_job(job):
+  item=dict(job)
+  births=item.pop('live_recorded_births',None)
+  if births is not None:
+   assert isinstance(births,list)
+   item['live_recorded_birth_count']=len(births)
+   item['live_recorded_births_canonical_sha256']=digest(births)
+   item['live_recorded_births_projection']='all checked remotely; identities omitted from output, exact count/hash retained'
+  return item
+ for key in ('jobs','live_jobs'):
+  if isinstance(value.get(key),list):value[key]=[compact_job(job) for job in value[key]]
+ if value.get('latest_joint') is not None:
+  joint=dict(value['latest_joint']);actor=dict(joint['actor'])
+  reward=actor.get('reward')
+  if isinstance(reward,dict):
+   reward=dict(reward)
+   state=reward.get('grounding_state')
+   if isinstance(state,dict):
+    reward['grounding_state_canonical_sha256']=digest(state)
+    reward['grounding_state']=dict(project(state,('round','version','run_id','source_run_id',
+     'source_actor_version','source_actor_counters','manifest_path','manifest_sha256',
+     'head_sha256','adoption_receipt_sha256','encoder','lifecycle')),
+     projection='identity, version, counters and hashes; full metadata remains remote')
+   ranks=reward.get('ranks')
+   if isinstance(ranks,list):
+    compact=[]
+    for rank in ranks:
+     item=dict(rank);state=item.pop('grounding_state',None)
+     if state is not None:item['grounding_state_canonical_sha256']=digest(state)
+     compact.append(item)
+    reward['ranks']=compact
+   actor['reward']=reward
+  joint['actor']=actor;value['latest_joint']=joint
+ value['readonly_output_projection']=dict(schema='compact_grounding_and_owned_births_v1',
+  original_serialized_bytes=original_bytes,output_limit_bytes=128*1024,
+  source_checks_unchanged=True,rank_accounting_unchanged=True,
+  live_birth_checks_unchanged=True,models_or_tensors_read=False,
+  repeated_grounding_state_and_live_birth_identities_omitted=True)
+ return value
+'''
+
+OBSERVE = COMMON + READONLY_PROJECTION + _body + r'''
 v['handoff_launch']=document(b,'preparation/handoff-launch.json')
 v['handoff_exit']=document(b,'preparation/handoff-exit.json')
 v['handoff_progress']=document(b,'preparation/handoff-progress.json')
@@ -166,7 +220,7 @@ if type(after) is int and type(last) is int and 0<=after<=last<=200:
    else:window['rows'].append(row)
  v['delivered_anchor_complete_window']=window
 v['cpu_qualification_is_not_cuda_restoration']=True
-emit(v)
+emit(compact_observation(v))
 '''
 
 def handoff_worker(handle_path):
