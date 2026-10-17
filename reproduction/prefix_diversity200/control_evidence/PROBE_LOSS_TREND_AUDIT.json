@@ -1,9 +1,9 @@
 {
-  "created_utc": "2026-10-17T04:20:24.707029+00:00",
+  "created_utc": "2026-10-17T04:34:14.969601+00:00",
   "run_id": "f3ee1435e5014ba1969387c91878893a",
-  "through_outer": 123,
+  "through_outer": 125,
   "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/COMPLETED_ITERATION_SCALAR_EVIDENCE.json",
-  "source_sha256": "cb65420f72ee28367f9b0dd599142c9b7e821911e2bc7c7377b9fcd6a6eeb5b7",
+  "source_sha256": "aa1e954082bc18fb098f21bea9dbb7ecf7584197ec1a06dfd5bdec7d3e76777c",
   "threshold": 0.5,
   "loss_definition": "trajectory_mean_BCE + group_mean_BCE; weights1/1; train ALL1024/5120,20 synchronous Adam/rank,one natural epoch",
   "rows": [
@@ -2958,24 +2958,72 @@
         2.053899760339774,
         2.4309852941363466
       ]
+    },
+    {
+      "outer": 124,
+      "train1024_after_update": {
+        "total_loss": 2.262874760951608,
+        "trajectory_bce": 1.2256778177228558,
+        "group_bce": 1.0371969432287522,
+        "balanced_accuracy": 0.5407719363198815,
+        "mixed_recall": 0.7972972972972973,
+        "nonmixed_recall": 0.2842465753424658
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.3688550947245886,
+        "trajectory_bce": 0.6544875929784555,
+        "group_bce": 0.7143675017461332,
+        "balanced_accuracy": 0.5251216635939343,
+        "mixed_recall": 0.17486338797814208,
+        "nonmixed_recall": 0.8753799392097265
+      },
+      "online20_step_loss_weighted_mean": 2.297101943055168,
+      "online20_step_loss_range": [
+        2.0340971625768223,
+        2.515715243769627
+      ]
+    },
+    {
+      "outer": 125,
+      "train1024_after_update": {
+        "total_loss": 2.245381245073391,
+        "trajectory_bce": 1.317453770048462,
+        "group_bce": 0.9279274750249291,
+        "balanced_accuracy": 0.5177749981484376,
+        "mixed_recall": 0.5620437956204379,
+        "nonmixed_recall": 0.47350620067643745
+      },
+      "fixed_diagnostic512_after_update": {
+        "total_loss": 1.46131086801468,
+        "trajectory_bce": 0.6986045342859244,
+        "group_bce": 0.7627063337287556,
+        "balanced_accuracy": 0.5327370571528227,
+        "mixed_recall": 0.14754098360655737,
+        "nonmixed_recall": 0.9179331306990881
+      },
+      "online20_step_loss_weighted_mean": 2.2531352335354313,
+      "online20_step_loss_range": [
+        1.954284579146142,
+        2.5365422847224215
+      ]
     }
   ],
   "first_to_latest_delta": {
     "train1024_after_update": {
-      "total_loss": 0.8024972894007538,
-      "trajectory_bce": 0.4784648734690251,
-      "group_bce": 0.3240324159317287,
-      "balanced_accuracy": 0.05431692353733353,
-      "mixed_recall": -0.18404907975460127,
-      "nonmixed_recall": 0.2926829268292683
+      "total_loss": 0.8112385681954488,
+      "trajectory_bce": 0.5819980666277691,
+      "group_bce": 0.22924050156767994,
+      "balanced_accuracy": 0.017774998148437637,
+      "mixed_recall": -0.43795620437956206,
+      "nonmixed_recall": 0.47350620067643745
     },
     "fixed_diagnostic512_after_update": {
-      "total_loss": 0.1926664755405545,
-      "trajectory_bce": 0.1514370910452273,
-      "group_bce": 0.041229384495327204,
-      "balanced_accuracy": -0.07181058680884267,
-      "mixed_recall": -0.3715846994535519,
-      "nonmixed_recall": 0.22796352583586632
+      "total_loss": 0.28209419006041525,
+      "trajectory_bce": 0.19362435072008566,
+      "group_bce": 0.08846983934032959,
+      "balanced_accuracy": -0.06965967412427121,
+      "mixed_recall": -0.40983606557377045,
+      "nonmixed_recall": 0.270516717325228
     }
   },
   "interpretation": [
@@ -2985,5 +3033,5 @@
     "No uncontinued-candidate accuracy inferred; no new forward, extra fitting, reinitialization, loss or sampling changes.",
     "Natural step batches differ. First/last or weighted average across20 steps are descriptive online losses, not a paired before/after fit comparison."
   ],
-  "training_action": "none; original3427 verified RUNNING after connectivity recovered; goal200/final51713 incomplete"
+  "training_action": "none; original3427 continuous, frozene346; actual200/final51713 incomplete"
 }
