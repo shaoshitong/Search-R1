@@ -107,6 +107,10 @@ _body = _body.replace(_guard, "assert joint['run_id']==h['run_id']\n c=read(b/'p
 _restore_projection = "restoration=(project(restored[0],('restored_completed_outer','actual_adam_before','restored_scheduler','actual_learning_rates','actual_model_master_dtypes','actor_version','restored_grounding_probe_version')) if restored else None),"
 assert _body.count('incomplete_final_line=incomplete,') == 1
 _body = _body.replace('incomplete_final_line=incomplete,','incomplete_final_line=incomplete,'+_restore_projection)
+_write_guard = "assert all(row['rank']==rank and row['outer']==current and row['opportunity']==index for index,row in enumerate(writes))"
+assert _body.count(_write_guard) == 1
+_body = _body.replace(_write_guard,
+    "assert all(row['rank']==rank and row['outer']==current and type(row['opportunity']) is int and 0<=row['opportunity']<20 for row in writes) and all(a['opportunity']<z['opportunity'] for a,z in zip(writes,writes[1:]))")
 _body = _body.removesuffix('\nemit(v)\n')
 OBSERVE = COMMON + _body + r'''
 v['handoff_launch']=document(b,'preparation/handoff-launch.json')
@@ -121,6 +125,13 @@ if type(current) is int and 1<=current<=200:
  for name in ('selection.json','prefix/complete.json','probe-score/selection.json','full-pool/complete.json','full/complete.json','probe-update/complete.json'):
   value=document(b/'outers'/('outer-%06d'%current),name)
   if value is not None:v['current_candidate_counts'][name]=project(value,('outer','questions','trajectories','count','candidate_questions','scheduled_candidate_questions','selected_questions','new_adam_steps_per_rank','status','actual_selected_mixed_fraction','candidate_mixed_questions','selected_mixed_questions','fallback_questions'))
+v['existing_milestone_qa']={}
+for ordinal in (5,50,100,150,200):
+ root=b/'outers'/('outer-%06d'%ordinal)/'validation'
+ value=document(root,'complete.json')
+ if value is not None:
+  assert value['run_id']==h['run_id'] and value['qa_count']==512
+  v['existing_milestone_qa'][str(ordinal)]=dict(project(value,('actor_version','qa_count','em','f1','per_source','question_source_sha256','interaction_protocol','actual_compute_dtype')),metadata_sha256=sha(root/'complete.json'))
 v['cpu_qualification_is_not_cuda_restoration']=True
 emit(v)
 '''
