@@ -1,7 +1,7 @@
 # Prefix5 A/B on h100-11: actual progress
 
 Latest verified: both independent four-card native runs have completed
-**10/200 outers** and continued to outer11. The older per-outer tables below are
+**13/200 outers** and begun outer14. The older per-outer tables below are
 historical measurements; see `period10-paired-results.md` for the first fresh
 paired diagnostic. The user authorized moving from h100-8 to the node with
 most actual VRAM headroom, and reducing local micro-batch with accumulation.
@@ -249,3 +249,13 @@ goal completion. No duplicate trainer, new GPU gate, or runtime deployment is
 introduced. The current run still uses its existing source8-dependent mount;
 the separately verified retained-input bootstrap is prepared for a necessary
 future full-boundary handoff, not hot-swapped into a live process.
+
+## Through13 small results
+
+See [through13-results.md](through13-results.md) and
+[through13-small-metrics-and-loss-curves.json](through13-small-metrics-and-loss-curves.json).
+The new parameterized `read_ab_small_report_once --through N` replaces ad-hoc
+loop edits in the old two-outer reporting snippet. It reads only completed
+metadata and global loss rows, reports missing future rows as pending, and
+never changes the runtime or creates a second watcher. Both200-outer budgets
+and all scheduled QA/final-state obligations remain incomplete.
