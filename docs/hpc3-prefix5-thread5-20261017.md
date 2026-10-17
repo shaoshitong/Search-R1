@@ -158,3 +158,5 @@ source hashes/results are kept in `pending-recovery-cpu-tests-final.json`.
 用户明确纠正为总共4张H100，训练与辅助检索共用同一批4张物理卡，取代此前8卡申请。保持4个训练rank、四分片FP16 Flat检索、4个grounding服务；每卡一个grounding副本，避免所有副本集中一张训练卡。GPU UUID租约按物理卡去重，共4把锁；不改变student/probe损失、预算、Prefix5/P10、动态候选公式或I1–I6。
 
 `runtime.shared_devices`只接受恰好4张Slurm分配卡，支持非连续物理索引；检索与训练绑定相同有序UUID。现有vLLM按启动时实际剩余显存确定缓存预算，实际GPU共享运行仍须获配后验证。原排队作业728815原地调整为`gres/gpu=4`，保留emergency_acd，不新增依赖或重复作业。
+
+首次四卡获配后，在任何runtime claim或optimizer更新前因`KeyError: 5`退出：`SLURM_JOB_GPUS`全局编号不能直接用作作业内NVML索引。启动器改为解析Slurm实际传入的`CUDA_VISIBLE_DEVICES`并逐一绑定NVML UUID，原始全局编号仅作为审计信息保留；缺失、重复或无法匹配时明确报错。保存原始失败日志，确认没有任何运行状态或更新后才允许原作业恢复。

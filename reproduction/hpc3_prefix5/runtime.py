@@ -18,6 +18,20 @@ def shared_devices(selected, by_index):
   grounding_physical_gpu=selected[-1],grounding_refit_visible_device=selected[-1])
 
 
+def visible_allocation(visible, assigned, by_index):
+ """Slurm job GPU IDs are global; CUDA/NVML IDs can be cgroup-local."""
+ by_uuid={value:key for key,value in by_index.items()}
+ values=visible if visible!=[''] else assigned
+ selected=[]
+ for value in values:
+  if value.isdigit() and int(value) in by_index:selected.append(int(value))
+  elif value in by_uuid:selected.append(by_uuid[value])
+  else:raise ValueError('Visible GPU absent from NVML inventory: '+repr(dict(visible=visible,slurm_job_gpus=assigned,nvml=by_index)))
+ if len(selected)!=4 or len(set(selected))!=4:
+  raise ValueError('Exactly four distinct Slurm-visible GPUs required: '+repr(dict(visible=visible,slurm_job_gpus=assigned,nvml=by_index)))
+ return selected
+
+
 def sha(path):
  h=hashlib.sha256()
  with pathlib.Path(path).open('rb') as f:
@@ -103,16 +117,14 @@ def run():
  if (p/'submit-intent.json').exists():raise ValueError('Existing execution claim: never restart blindly')
  visible=os.environ.get('CUDA_VISIBLE_DEVICES','').split(',');assigned=os.environ.get('SLURM_JOB_GPUS','').split(',')
  mapping=list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid','--format=csv,noheader,nounits'],text=True))))
- by_index={int(x[0]):x[1].strip() for x in mapping};by_uuid={v:k for k,v in by_index.items()}
- def indexes(values):
-  return [int(x) if x.isdigit() else by_uuid[x] for x in values]
- selected=indexes(assigned if assigned!=[''] else visible)
+ by_index={int(x[0]):x[1].strip() for x in mapping}
+ selected=visible_allocation(visible,assigned,by_index)
  c.update(shared_devices(selected,by_index),slurm_job=os.environ['SLURM_JOB_ID'],slurm_node=os.uname().nodename)
  train,aux=c['physical_gpu_indices'],c['auxiliary_gpu_indices']
  from reproduction.prefix_selection200.launch import validate_config
  validate_config(c,BASE);once(p/'launch-config.json',c)
  once(p/'submit-intent.json',dict(config_sha256=sha(p/'launch-config.json'),run_id=c['run_id'],source_commit=c['source_commit'],job=os.environ['SLURM_JOB_ID'],created_unix=time.time()))
- once(BASE/'logs/slurm-allocation.json',dict(job=os.environ['SLURM_JOB_ID'],node=os.uname().nodename,uid=os.getuid(),training=train,auxiliary=aux,assigned_uuids=[by_index[x] for x in selected],total_physical_gpus=4,gpu_resource_layout=SHARED,time=time.time()))
+ once(BASE/'logs/slurm-allocation.json',dict(job=os.environ['SLURM_JOB_ID'],node=os.uname().nodename,uid=os.getuid(),training=train,auxiliary=aux,assigned_uuids=[by_index[x] for x in selected],slurm_global_job_gpu_ids=assigned,initial_cuda_visible_devices=visible,total_physical_gpus=4,gpu_resource_layout=SHARED,time=time.time()))
  from reproduction.prefix_selection200.launch import run as launch
  return launch(BASE)
 

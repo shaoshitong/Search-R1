@@ -5,12 +5,20 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from .runtime import shared_devices
+from .runtime import shared_devices,visible_allocation
 from .control import SBATCH
 from reproduction.prefix_selection200 import gpu_layout, a800_runtime
 
 
 class SharedGPUPlacementTests(unittest.TestCase):
+    def test_slurm_global_ids_are_not_nvml_cgroup_local_indices(self):
+        inventory={i:'GPU-%d'%i for i in range(4)}
+        self.assertEqual(visible_allocation(['0','1','2','3'],['4','5','6','7'],inventory),[0,1,2,3])
+        self.assertEqual(visible_allocation(['GPU-3','GPU-1','GPU-0','GPU-2'],['4','5','6','7'],inventory),[3,1,0,2])
+        self.assertEqual(visible_allocation([''],['0','1','2','3'],inventory),[0,1,2,3])
+        for values in (['4','5','6','7'],['0','1','2','2'],['0','1']):
+            with self.assertRaises(ValueError):visible_allocation(values,['4','5','6','7'],inventory)
+
     def fixture(self):
         return shared_devices([1,3,5,7],{i:'GPU-%d'%i for i in [1,3,5,7]})
 
