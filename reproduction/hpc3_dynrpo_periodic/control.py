@@ -18,7 +18,7 @@ from .common import BASE, DEFAULT_BASE, PIN
 from .local_control import run
 
 REPO = Path(__file__).resolve().parents[2]
-BRANCH = 'codex/dynrpo-periodic25-hpc3-20261016'
+BRANCH = 'codex/dynrpo-i1-i6-fresh-20261017'
 CONTROL_PYTHON = '/data/user/jxu957/experiments/topd-20261008/environment/topd-py310/bin/python'
 
 

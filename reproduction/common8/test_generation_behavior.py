@@ -57,7 +57,12 @@ class TokenizerFixture:
         return ''.join(self.fragments.get(value, 'P') for value in ids
                        if not skip_special_tokens or value not in self.all_special_ids)
 
-    def encode(self, *args, **kwargs):
+    def encode(self, text, *, add_special_tokens):
+        assert add_special_tokens is False
+        # New context planning tokenizes only environment observations. Keep
+        # rejecting every model-authored string, so prefix integrity is tested.
+        if text in ('evidence', 'correction') or '<information>' in text:
+            return [30 if text == 'evidence' else 31] * getattr(self, 'env_length', 1)
         self.encode_calls += 1
         raise AssertionError('Controller must not retokenize model output')
 
@@ -135,6 +140,7 @@ class ManagerFixture:
             max_start_length=2048, max_prompt_length=max_prompt_length,
             max_response_length=500, max_obs_length=500)
         self.env_length = env_length
+        self.tokenizer.env_length = env_length
         self.environment_calls = []
 
     def execute_predictions(self, texts, pad_token, active_mask, do_search):
@@ -179,6 +185,20 @@ def generation_fixture(prompts=None, *, validation=False, do_sample=True):
 
 
 class ControllerCpuTests(unittest.TestCase):
+    def test_clipped_information_keeps_both_tags_and_untouched_answer_budget(self):
+        from reproduction.common8.context_budget import observation_tokens, observation_room, protocol
+        tokenizer = SimpleNamespace(encode=lambda text, **kwargs: list(map(ord, text)))
+        text = '\n<information>' + 'evidence ' * 200 + '</information>\n'
+        budget = protocol(SimpleNamespace(max_prompt_length=4096, max_response_length=500))
+        limit = min(500, observation_room(3000, 400, budget))
+        tokens, clipped = observation_tokens(tokenizer, text, limit)
+        retained = ''.join(map(chr, tokens))
+        self.assertTrue(clipped)
+        self.assertTrue(retained.startswith('\n<information>'))
+        self.assertTrue(retained.endswith('</information>\n'))
+        self.assertEqual(len(tokens), limit)
+        self.assertGreaterEqual(4096 - 3000 - 400 - len(tokens), 500)
+
     def run_success(self, manager=None, prompts=None):
         manager = manager or ManagerFixture()
         batch, initial = generation_fixture(prompts)
@@ -346,21 +366,23 @@ class ControllerCpuTests(unittest.TestCase):
         self.assertEqual(projected, result.batch['sampling_log_probs'][0].tolist())
         self.assertEqual(mask, result.batch['sampling_mask'][0].tolist())
 
-    def test_rolling_overflow_rejects_entire_call_and_preserves_environment_cause(self):
+    def test_invalid_total_budget_rejects_before_native_generation(self):
         manager = ManagerFixture(max_prompt_length=5, env_length=2)
-        records = self.run_failure(manager, 'rolling_window')
-        self.assertEqual(len(manager.actor_rollout_wg.calls), 1)
-        event = next(record for record in records if record.get('role') == 'actual_environment_event')
-        self.assertEqual(event['observation_or_correction_token_ids'], [[30, 30], [30, 30]])
-        self.assertEqual(event['is_search'], [1, 1])
-        self.assertEqual(event['row_ids'], ['cpu-traj-0', 'cpu-traj-1'])
-        self.assertEqual(sum('raw_generated_token_ids' in record for record in records), 8)
+        batch, initial = generation_fixture()
+        with patch('reproduction.common8.behavior_runtime.failed_generation_evidence'):
+            with self.assertRaisesRegex(ValueError, 'Invalid total context / answer reservation'):
+                controller.run(manager, batch, initial)
+        self.assertEqual(manager.actor_rollout_wg.calls, [])
 
-    def test_response_overflow_preserves_actual_model_and_environment_events(self):
-        records = self.run_failure(ManagerFixture(max_prompt_length=3, env_length=4), 'response_prefix_budget')
-        event = next(record for record in records if record.get('role') == 'actual_environment_event')
-        self.assertEqual(event['observation_or_correction_token_ids'][0], [30] * 4)
-        self.assertEqual(records[0]['raw_generated_token_ids'], [20, 21, 22, 99])
+    def test_long_observation_is_clipped_before_input_and_reserves_final_answer(self):
+        manager, _, result = self.run_success(ManagerFixture(max_prompt_length=1005, env_length=1000))
+        turns = result.non_tensor_batch['behavior_turns'][0]
+        self.assertEqual(turns[0]['observation_token_ids'], [30] * 500)
+        self.assertEqual(turns[0]['raw_generated_token_ids'], [20, 21, 22, 99])
+        self.assertEqual(turns[1]['actual_request_token_ids'], [10, 11, 20, 21] + [30] * 500)
+        self.assertTrue(turns[1]['final_turn'])
+        self.assertEqual(result.batch['responses'][0].tolist(), [20, 21] + [30] * 500 + [23, 24])
+        self.assertEqual([row['do_search'] for row in manager.environment_calls], [True, False])
 
     def test_internal_actual_stop_and_pad_reject_whole_outer_with_raw_evidence(self):
         for special in (0, 99):

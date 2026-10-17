@@ -46,7 +46,13 @@ def matching_bindings(old, run):
 
 
 def reuse_initial_calibration(base, run):
-    certificate = base/'preparation/zero-update-retry.json'
+    # A human-requested fresh experiment may reuse an independently pristine
+    # historical round zero. Never describe the cancelled trained run as a
+    # zero-update failure, and never import one of its later reward heads.
+    certificate = base/'preparation/initial-calibration-reuse.json'
+    fresh_restart = certificate.exists()
+    if not fresh_restart:
+        certificate = base/'preparation/zero-update-retry.json'
     if not certificate.exists():
         return False
     retry = read(certificate)
@@ -54,6 +60,29 @@ def reuse_initial_calibration(base, run):
     pattern = re.escape(str(DEFAULT_BASE))+r'(?:-r[1-9][0-9]*)?'
     assert source != base and re.fullmatch(pattern, str(source))
     owned(source, directory=True); owned(base, directory=True)
+    if fresh_restart:
+        assert retry['kind'] == 'HUMAN_FRESH_ACTOR_PRISTINE_ROUND0_REUSE_V1'
+        stopped = Path(retry['stopped_base'])
+        assert stopped not in (base, source) and re.fullmatch(pattern, str(stopped))
+        owned(stopped, directory=True)
+        stopped_run = read(stopped/'logs/run-manifest.json')
+        assert stopped_run['run_id'] == retry['stopped_run_id']
+        assert retry['human_message_id'] == '01a14849-d31c-7a80-b223-6a46bc3a5a08'
+        assert retry['human_original_unix'] == 1792214160
+        job = retry['stopped_job']
+        assert job.isdecimal()
+        submission = read(stopped/'preparation/formal-submission.json')
+        assert submission['job'] == job
+        terminal = subprocess.check_output(['sacct', '-nP', '-X', '-j', job,
+            '--format=JobID,State,ExitCode,User'], text=True, timeout=30).strip().splitlines()
+        assert len(terminal) == 1
+        fields = terminal[0].split('|')
+        assert fields[0] == job and fields[1].split()[0] == 'CANCELLED'
+        assert fields[3] == pwd.getpwuid(os.getuid()).pw_name
+        assert job not in subprocess.check_output(['squeue', '-h', '-u', str(os.getuid()),
+            '-o', '%i'], text=True, timeout=30).split()
+        assert retry['actor_restart'] == 'official_initial_model_optimizer_zero'
+        assert retry['question_probe_restart'] == 'accepted_warmup400_no_reset'
     live_path = source/'artifacts/live/manifest.json'
     if not live_path.exists():
         return False

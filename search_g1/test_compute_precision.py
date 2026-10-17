@@ -1,10 +1,11 @@
 import ast
 import datetime
 import json
+import os
 from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Tuple
+from typing import Optional, Tuple
 import unittest
 import tempfile
 from unittest.mock import patch
@@ -28,6 +29,9 @@ def preserve_tf32():
 
 
 class Config(dict):
+    def __init__(self, **values):
+        super().__init__(entropy_coeff=0.0, **values)
+
     def __getattr__(self, name):
         return self[name]
 
@@ -106,8 +110,9 @@ def actual_methods():
         logs = torch.log_softmax(logits.float(), -1)
         return -(logs.exp() * logs).sum(-1)
 
-    namespace = dict(torch=torch, nn=torch.nn, Tuple=Tuple, BasePPOActor=Base,
+    namespace = dict(torch=torch, nn=torch.nn, os=os, json=json, Tuple=Tuple, Optional=Optional, BasePPOActor=Base,
                      ComputePrecision=ComputePrecision, logprobs_from_logits=logprobs,
+                     logprobs_of_labels_v2=logprobs,
                      verl_F=SimpleNamespace(entropy_from_logits=entropy))
     cls = ast.ClassDef(name='DataParallelPPOActor', bases=[ast.Name(id='BasePPOActor', ctx=ast.Load())],
                        keywords=[], body=methods, decorator_list=[])
