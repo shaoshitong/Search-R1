@@ -105,3 +105,10 @@ all historical and pending budgets. Neither predicted probabilities nor the
 mixed ratio over the entire candidate pool is used as feedback. Actor losses,
 probe training losses/Adam cadence, warmup EMA, datasets, and512 selection size
 are unchanged.
+
+Deployment acceptance: revision4833540d5261a7828ca9135626d4d6243ee35864,
+1328 source files independently SHA-verified on HPC3;85 actual HPC3 CPU tests
+passed with zero failures/errors/skips, including seven new adaptive-budget
+tests. The actual eligible pool bounds the count at168508. Original job728815
+was released after testing; no additional Slurm job or warmup was submitted.
+GPU first-outer/adaptive-feedback execution is still pending scheduling.
