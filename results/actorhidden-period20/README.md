@@ -1,3 +1,25 @@
+## Period80 at LR1e-5: paired metrics and actual81 use (UTC2026-10-17T03:20)
+
+Same3430 completed80/200: each8rank actor1600/probe400 actual Adam. The same-process81 score actually used probe80 SHA1976805c740b41318916509f5b93dc9db75d5faeee2e3b8afbe595b0cbb682dd with actor0080; selectionSHA7293b35da8f4b7eecbcb22ef5aa5e84dd16c3f3e564d1691d11bbf9d59493b29. Root read-only observer64097 naturally exited0 after paired80 and this actual next use. Frozen trainingruntime C22 is unchanged. The producer's932251350B probe SHA is not an independently hashed or reloaded tensor claim.
+
+The paired training5120G5 and diagnostic512G5 both use sampling actor0079 and share zero qid/content. Training mixed942/5120=18.3984%, heldout95/512=18.5547%; selected133/512=25.9766%,1.4119 times this fullpool prevalence. The Top512 was fixed with probe60 before seeing outcomes; its rows were projected from the full pool without extra generation. This enrichment is an observed selection statistic, not isolated LR causality or QA success.
+
+|Same-input paired metric at80|Train before|Train after|Heldout before|Heldout after|
+|---|---:|---:|---:|---:|
+|Mixed ordinary accuracy|38.2227%|79.3945%|34.9609%|77.5391%|
+|Mixed balanced accuracy|54.5414%|61.0632%|51.9437%|54.1045%|
+|Mixed recall|80.3609%|32.0594%|78.9474%|16.8421%|
+|Nonmixed recall|28.7219%|90.0670%|24.9400%|91.3669%|
+|Trajectory BCE|.6323320|.9040178|.7220492|1.0837568|
+|Group BCE|1.0620853|.4869926|1.0859867|.5630823|
+|Total loss|1.6944173|1.3910104|1.8080359|1.6468392|
+
+Heldout confusion before TP75/FN20/TN104/FP313, after TP16/FN79/TN381/FP36. The nonmixed majority baseline417/512=81.4453% still exceeds the post-update ordinary accuracy; balanced baseline is50%. The update improves group loss and balanced accuracy slightly while trajectory loss and mixed recall worsen, so it does not establish adequate heldout discrimination. Period20/40/60/80 labels come from different actor snapshots and are not a fixed-label learning curve.
+
+All8 original probe ledgers show100 new writes/rank at exact1e-5,640 complete groups/3200 trajectories per rank, with80 global255 and20 global260 steps: all25600 once. The100 updates' small global loss records are in lr1e5-periodic80-loss-curve.json; batchwise endpoints use different examples and do not prove a monotone learning curve. Full paired metrics and metadata evidence are in lr1e5-periodic80-readback.json and lr1e5-periodic80-paired-summary.json. The first80 actor journal proof is work/actorhidden3430-period80-follow-20261017T031652967534Z-actual.json SHA1cea89196df148f716848c280cff5c88eb1ce139a20d3a0a480823aefbfe7d89; the paired+actual81-use raw SHA isadee096c468c7187b103d0166a90872c9710489051a60ccf73840cd9c9d83152.
+
+The100-Adam loop was8.62073s; recorded main phases sum848.79107s (~14m09). These are not a complete-to-complete outer wall interval. Normal100 source readback and independentcopy wait for the actual save and the currently live fixed-asset copier, respectively. Full200/no201, QA100/150/200/final51713 exact identities/sourcecounts, all normal checkpoints and retention, real nativeexit0/ownedcleanup remain pending. Latest restore candidate80 or any newer actual joint, never audited50/43 for helper compatibility. No new GPU gate, algorithm change, model transit to Mac or training restart occurred.
+
 ## Terminal archive tools staged separately (UTC2026-10-17T02:51)
 
 Published9e64fd04 archive helper and common copier have now been independently read back in full at both endpoints. Source staging is under the current3430 BASE/preparation/terminal-records-tools/2340aa77…; destination staging is h100-10 independent-backup root/terminal-records-control/2340aa77…. The actual helper SHA is2340aa77615edc7bc0535b774489478a130ed1e573c993874dce0b6a67c2f5fc and common copier SHA72870be9c54337dea86a45d4440e6693bce05afed82dee21a90d6595ade9b008. Full small original records and endpoint paths are in terminal-records-tools-stage-readback.json. No source inventory, archive intent, archive worker, model load or GPU test has run. Native3430 and frozen C22 source were unchanged.
