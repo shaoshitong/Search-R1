@@ -119,3 +119,18 @@ The immutable50 recovery point has36 independently full-hashed files,39,240,509,
 An independent h100-10 ext4 copy started once (PID1103066/startticks1929451008),171 payloads45,615,868,686B at20MiB/s with128GiB ordinary reserve. Two source/destination-phase observations show the same birth progressing from1.263GB first-shard copy to a real3,968,658,944B target shard with638MB of its independent target full hash read. It remains pending, not a completed backup or semantic reload. No model bytes went through Mac. Existing unique intent/receipt must not be replayed.
 
 Human asked to revisit probeLR at retained50 after complete20 proved unavailable. A choice between complete50 resume at1e-5 and continued1e-6 has been presented; no answer has been assumed. The current healthy job continues at1e-6. If that change is authorized, it must preserve actor1000/probe200, optimizer moments, scheduler50, RNG, pool and adoptedgrounding50; the old pre20/Adam0 LR5 importer cannot be used as-is. No old warmup or actor reset is permitted. Full200 and final51713, future milestones and all final closure remain pending.
+
+
+## Existing probability distribution audit through actual73 (CPU-only)
+
+The human-requested audit reads existing per-group probabilities and strict-EM metadata remotely; no tensors, model forwards, training edits or prediction rows leave h100-8. `probability_distribution_audit.py` reproduces the aggregate; `probability-distributions-through73.json` contains source hashes, probability quantiles, calibration bins/Brier/AUC and selected/candidate summaries. The training runtime remains59d; later publication is not a runtime deployment. Probe LR is now the explicitly authorized1e-5 after the full50 restoration, superseding the historical pending-choice paragraphs above.
+
+|Post-update fixed-question heldout|20|40|60|
+|---|---:|---:|---:|
+|Mean trajectory p / actual correctness|15.99% /33.09%|10.24% /37.11%|25.25% /39.14%|
+|Mean mixed q / actual mixing|49.90% /32.81%|35.45% /22.07%|63.51% /19.34%|
+|Mixed ranking AUROC|0.59579|0.54455|0.48962|
+
+At73, Top512 meanq is92.0574%, but111/512=21.6797% are mixed;303/512=59.1797% are allcorrect and98/512=19.1406% allwrong. Selected trajectory probabilities all lie in0.21867..0.77322 (mean0.46304), and selected q spans0.88739..0.94342. Thus high scores are largely selecting intermediate, similar correctness probabilities rather than demonstrating different eventual outcomes. The formula naturally gives15/16 at five identical p=.5; high q alone is not evidence of calibrated diversity. Heldout60's highest51 q groups average92.71% predicted mixing but only7/51=13.73% actually mix, versus99/512=19.34% over the full heldout. This is a small observed top-decile sample, not a statistical significance claim.
+
+Direct reconstruction of every audited q from its five saved probabilities differs by <1e-14. This checks formula arithmetic, not the entire training implementation or the conditional-independence assumption. Same-question p max-minus-min averages.07148/.03722/.05239 in heldout20/40/60; this documents similar scores, not proof that prefixes/hidden are identical. Tests use new actor-specific trajectories each period, so no isolated LR causal claim or fixed-label time-series interpretation is made. No unscheduled LR/loss/sampling change or training stop follows this audit.
