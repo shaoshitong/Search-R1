@@ -50,5 +50,21 @@
   "cpu_acceptance_gate": "complete.json AND all eight rank receipts checked before launch; allow_generation=False injects a rejecting Popen callback into supervise, so receipt-loss races cannot start workers",
   "scope": "Local read-only diff review and in-memory CPU identity fixtures only; no remote calls, submit, GPU, implementation edits, or model loads",
   "minimal_next_validation": "Before any future deployment, read source joint SHA and exact actor HF path on target node; run existing saved-raw CPU acceptance after all eight rank receipts and aggregate exist.",
-  "generation_prohibition_ast_check": "PASS"
+  "generation_prohibition_ast_check": "PASS",
+  "probe_loss_pairs_review": {
+    "status": "PASS_AFTER_FIX",
+    "formula": "PASS: trajectory mean BCE denominator5120 + mixed-event mean BCE denominator1024, both weight1; stable32-pattern mixed event includes patterns1..30 and excludes0/31; pairs with metrics.train post-update full1024 rather than20 different-batch step losses",
+    "finding": {
+      "priority": "P1",
+      "file": "reproduction/prefix_diversity200/probe_loss_pairs_local.py",
+      "line": 40,
+      "title": "Compare the saved selection file hash instead of its newline-free object digest",
+      "explanation": "metrics.selection_sha256 is manifest.selection_sha256 = sha(selection.json). The writer uses canonical(selection)+b\"\\n\"; digest(selection) omits the newline and also defaults ensure_ascii=True unlike the writer. Therefore valid saved selections fail the assertion and no pairs are produced.",
+      "minimal_fix": "Use sha(selection_path)==metrics[\"selection_sha256\"] alongside the joint comparison.",
+      "minimal_validation": "Read one existing small saved selection and compare its file SHA to metrics.selection_sha256; this requires no model forward or training.",
+      "status": "resolved",
+      "resolution": "Confirmed latest source compares joint.selection_sha256 == sha(selection_path) == metrics.selection_sha256; newline-free digest helper removed."
+    },
+    "scope": "Read-only local code review; no remote calls, GPU, model forward, or implementation changes"
+  }
 }
