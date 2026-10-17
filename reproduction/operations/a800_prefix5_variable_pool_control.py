@@ -128,6 +128,19 @@ for ordinal in (5,50,100,150,200):
  if value is not None:
   assert value['run_id']==h['run_id'] and value['qa_count']==512
   v['existing_milestone_qa'][str(ordinal)]=dict(project(value,('actor_version','qa_count','em','f1','per_source','question_source_sha256','interaction_protocol','actual_compute_dtype')),metadata_sha256=sha(root/'complete.json'))
+v['restored_complete_history']=[]
+if c is not None and c.get('resume_joint'):
+ start=c['resume_joint']['completed_outer']+1
+ for ordinal in range(start,min(start+5,201)):
+  root=b/'outers'/('outer-%06d'%ordinal)
+  value=document(root,'complete.json')
+  if value is not None:
+   actor=value['actor'];probe=value['probe']
+   assert value['run_id']==h['run_id'] and value['outer']==ordinal and actual_actor_boundary(actor,ordinal)
+   v['restored_complete_history'].append(dict(outer=ordinal,metadata_sha256=sha(root/'complete.json'),
+    actor=project(actor,('actual_adam_steps_per_rank','new_adam_steps_per_rank','opportunities_processed','skipped_update_opportunities','scheduler_completed_outer','learning_rate_used','next_learning_rate')),
+    probe=project(probe,('completed_outer','actual_adam_steps_per_rank','sha256')),
+    candidate_schedule=value.get('candidate_schedule')))
 v['cpu_qualification_is_not_cuda_restoration']=True
 emit(v)
 '''
