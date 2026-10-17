@@ -1,5 +1,27 @@
 ## Actual50 QA and full checkpoint readback
 
+## Period60 at LR1e-5: paired metrics and actual61 use (UTC2026-10-17T01:22)
+
+Same3430 completed60 then61, each8rank actor1220/probe300 realAdam;62 actually began native prefixes. Period60 trained all5120 different candidate groups/25600 trajectories once at1e-5:100 true writes per rank,640groups/3200trajectories per rank,80 global255 and20 global260 steps. The preselection used probe40 before seeing labels. Actual61 selection used new probe60 SHA7b309c9ecd8d382f1a6152a38b4a05260f8edc52b76a42c4b4cdd8d1a59277b8 and actor0060; selectionSHA080a20fed3cb06b7e74ec8a8bcaeed804e0b29b72f5a8e36ff760458a29888b1. Root observer8078 printed paired60+actual61-use completion; its handle is now absent (separate tool exit code unavailable). No repeat initial-five gate or runtime change.
+
+All paired inputs came from the same sampling actor0059: fullpool1075/5120=20.9961% mixed, selected145/512=28.3203% (1.3488 times pool prevalence), fresh heldout110/512=21.4844% mixed. Train/heldout share zero qid or normalized question content. Heldout majority baseline is402/512=78.5156%, balanced baseline50%. These labels differ from prior actor snapshots; do not interpret20/40/60 as one fixed-label learning curve or isolate the LR change.
+
+| Paired same-input metric | Before | After |
+|---|---:|---:|
+| Train mixed balanced accuracy |53.6590%|63.7117%|
+| Heldout mixed balanced accuracy |52.1031%|52.7476%|
+| Heldout ordinary accuracy |63.6719%|43.9453%|
+| Heldout mixed recall |31.8182%|68.1818%|
+| Heldout nonmixed recall |72.3881%|37.3134%|
+| Heldout trajectory BCE |.9086943|.7340753|
+| Heldout group BCE |.6599507|.9098916|
+| Heldout total BCE |1.5686450|1.6439669|
+
+Train total loss1.5039382→1.4574744; train trajectory BCE.8284310→.6231048 while group BCE.6755072→.8343696. Heldout BA gains only0.6445pp and remains near50%; ordinaryaccuracy and group/totalBCE worsen as false positives rise111→252. This is not a demonstrated heldout quality improvement. Preserve the human-authorized loss,threshold,LR and sampling; the scientific run continues200/no201.
+
+The100-step global ledger actually records201..300 at1e-5, total25600 rows. First10/last10 online-batch mean total losses1.5107779/1.5798145; batches differ, so this is not a paired full-training loss comparison or a required monotonic curve. All100 points are in lr1e5-periodic60-loss-curve.json. Actual100-update loop9.6475s, full probe phase43.4623s. Recorded main phases sum769.0236s (12m49s); this is not claimed as a whole joint-to-joint interval. Full200/QA51713/normal100150200/independent archival/nativeexit0 cleanup remain pending.
+
+
 ## Actual55 and fixed recovery assets queued (UTC2026-10-17T00:46)
 
 Same3430/runtimec22 completed55/200, actor1100/probe200 actualAdam per each8rank;56 was actor phase. The24 original rank ledgers for53–55 each prove20 writes. Selectedmixed53/54/55 was151/152/154 of512 (29.49/29.69/30.08%), while mean predictedq was84.57/84.63/84.97%. This remains an overprediction on selected groups, not an accuracy for the4608 uncontinued questions or a QA result. Period60 paired training/heldout metrics remain pending.
