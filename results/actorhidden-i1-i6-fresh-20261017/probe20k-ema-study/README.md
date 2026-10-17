@@ -21,3 +21,9 @@ Three arm phases run sequentially in a single eight-rank allocation, loading the
 CPU fixtures verify EMA direction, separate convex targets, unchanged default BCE, differentiability and complete dataset coverage, without a GPU forward. These do not block or modify the healthy data-generation job. `cpu-fixtures.json` contains the actual CPU result.
 
 Data3468 frozen runtime84167eb2, data base `/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-dataset-20261017-0bdddc20840b-r48`. Fit has not yet been submitted at this publication. Deployment/submit controls use unique intent/receipts and must not be replayed.
+
+## Data initialization recovery
+
+Native3468 completed block52 (25,600 new continuations) and then actually failed at block53 engine initialization. Rank5 reported zeroKV cache blocks. The installed vLLM0.6.3 computes peak memory from the change in free GPU memory and explicitly assumes other processes do not change their usage while profiling. Concurrent preserved video occupied approximately50GiB/card in the terminal sample and varied in the next sample. The failure is not a probe/actor update failure. Original inode logs and103 owned process births have been retained and actual nativeFAILED1:0/owned cleanup/cgroupgone observed.
+
+Recovery data namespace appends`-resume52`, refers to completed block52 in its original location, preserves exact source questions/IDs/actorversion/seeds and generates only the remaining two blocks. All eight inference workers use the already-working rank0 resource profile: utilization0.16,256 sequences,8192 batched tokens,eager. This changes concurrency/cache resources, not question count, G5 sampling parameters or token budgets. No video is stopped. The separate fit dataset pointer follows the recovery manifest. The original3468 intent is never replayed.

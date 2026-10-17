@@ -101,6 +101,16 @@ def run(base):
             time.sleep(2)
         source=Path(s['baseline_data_base']);blocks=[dict(root=str(source/'outers/outer-000051'),outer=51,reused=True)]
         for outer in(52,53,54):
+            recovery=s.get('resume_dataset_base')
+            if recovery:
+                previous=Path(recovery)/'outers'/('outer-%06d'%outer)
+                if(previous/'prefix/complete.json').exists()and(previous/'full/complete.json').exists():
+                    old_full=read(previous/'full/complete.json');old_prefix=read(previous/'prefix/complete.json')
+                    assert old_full['trajectories']==25600 and old_full['actor_version']==c['actor_version']
+                    assert old_prefix['actor_version']==c['actor_version']
+                    assert read(previous/'questions.json')==read(base/'outers'/('outer-%06d'%outer)/'questions.json')
+                    blocks.append(dict(root=str(previous),outer=outer,reused=True,recovered_complete=True))
+                    continue
             root=base/'outers'/('outer-%06d'%outer)
             if not(root/'prefix/complete.json').exists():
                 phase('block%d-prefix'%outer,[python,'-m','reproduction.prefix_selection200.rollout','--config',str(conf),'--outer',str(outer),'--phase','prefix'])

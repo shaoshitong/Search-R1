@@ -20,7 +20,7 @@
   },
   "actor_ppo_epochs": 1,
   "actor_version": "6cd6f043ef1641ae91ac177b4c27fe4a-actor0050",
-  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-dataset-20261017-0bdddc20840b-r48",
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-dataset-20261017-0bdddc20840b-r48-resume52",
   "candidate_questions": 5120,
   "canonical_train": "/mnt/data/shaoshitong/g1f-ef498ac3/data/train.parquet",
   "canonical_train_sha256": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
@@ -512,6 +512,48 @@
       "rollout_max_num_seqs": 256,
       "rollout_max_batched_tokens": 8192,
       "rollout_enforce_eager": true
+    },
+    "1": {
+      "rollout_memory_utilization": 0.16,
+      "rollout_max_num_seqs": 256,
+      "rollout_max_batched_tokens": 8192,
+      "rollout_enforce_eager": true
+    },
+    "2": {
+      "rollout_memory_utilization": 0.16,
+      "rollout_max_num_seqs": 256,
+      "rollout_max_batched_tokens": 8192,
+      "rollout_enforce_eager": true
+    },
+    "3": {
+      "rollout_memory_utilization": 0.16,
+      "rollout_max_num_seqs": 256,
+      "rollout_max_batched_tokens": 8192,
+      "rollout_enforce_eager": true
+    },
+    "4": {
+      "rollout_memory_utilization": 0.16,
+      "rollout_max_num_seqs": 256,
+      "rollout_max_batched_tokens": 8192,
+      "rollout_enforce_eager": true
+    },
+    "5": {
+      "rollout_memory_utilization": 0.16,
+      "rollout_max_num_seqs": 256,
+      "rollout_max_batched_tokens": 8192,
+      "rollout_enforce_eager": true
+    },
+    "6": {
+      "rollout_memory_utilization": 0.16,
+      "rollout_max_num_seqs": 256,
+      "rollout_max_batched_tokens": 8192,
+      "rollout_enforce_eager": true
+    },
+    "7": {
+      "rollout_memory_utilization": 0.16,
+      "rollout_max_num_seqs": 256,
+      "rollout_max_batched_tokens": 8192,
+      "rollout_enforce_eager": true
     }
   },
   "probe20k_study": {
@@ -556,15 +598,15 @@
     ],
     "slurm_cpus": 48,
     "slurm_memory_gib": 256,
-    "replace_pending": {
-      "job_id": "3467",
-      "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-dataset-20261017-0bdddc20840b"
-    },
     "train_eval_micro_questions": 25,
     "test_eval_micro_questions": 6,
-    "dataset_base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-dataset-20261017-0bdddc20840b-r48",
+    "dataset_base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-dataset-20261017-0bdddc20840b-r48-resume52",
     "source_probe_run_id": "6cd6f043ef1641ae91ac177b4c27fe4a",
-    "source_probe_bytes": 932251350
+    "source_probe_bytes": 932251350,
+    "resume_dataset_base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-dataset-20261017-0bdddc20840b-r48",
+    "prior_native_job": "3468",
+    "prior_native_terminal_proof": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-dataset-20261017-0bdddc20840b-r48/preparation/terminal3468-original-inodes-once-v1.json",
+    "prior_release_proof": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-dataset-20261017-0bdddc20840b-r48/preparation/terminal3468-second-release-source-read.json"
   },
   "probe20k_role": "data"
 }

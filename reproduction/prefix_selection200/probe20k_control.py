@@ -16,6 +16,18 @@ def deploy_code(config,commit,reuse_commit,reuse_repo,role='data'):
     deployment=deployment_script(config['base'],commit,config,archive_for_commit(commit,reuse_commit),reuse_commit,reuse_repo)
     before=''
     old=config['probe20k_study'].get('replace_pending')
+    recovery=config['probe20k_study'].get('resume_dataset_base')if role=='data'else None
+    if recovery:
+        before=r'''
+import json,pathlib,subprocess
+s=SPEC
+proof=json.loads(pathlib.Path(s['prior_native_terminal_proof']).read_text())
+released=json.loads(pathlib.Path(s['prior_release_proof']).read_text())
+assert proof['cleanup']['owned_births_all_gone']and not released['remaining_original_births']and released['original_birth_count']>0
+r=subprocess.run(['scontrol','show','job',s['prior_native_job'],'-o'],text=True,capture_output=True,timeout=30);assert r.returncode==0
+native=dict(item.split('=',1)for item in r.stdout.split()if '='in item)
+assert native['JobState']in('FAILED','CANCELLED','OUT_OF_MEMORY','COMPLETED')and native['Command']==s['resume_dataset_base']+'/preparation/native-probe20k-data.sh'
+'''.replace('SPEC',repr(config['probe20k_study']))
     if old:
         before=r'''
 import pathlib,json,sys,subprocess,time
