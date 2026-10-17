@@ -31,10 +31,11 @@ class Candidate:
 
 
 class MixedFirstSelector:
-    def __init__(self, target=512, limit=2048, responses=5):
+    def __init__(self, target=512, limit=2048, responses=5, fixed_pool=False):
         if not 0 < target <= limit or responses < 2:
             raise ValueError('Invalid group budget')
         self.target, self.limit, self.responses = target, limit, responses
+        self.fixed_pool = bool(fixed_pool)
         self.reserved = []
         self.ids, self.contents, self.results, self.trajectories = set(), set(), {}, set()
 
@@ -43,7 +44,7 @@ class MixedFirstSelector:
         key, content = str(question_id), question_identity(question)
         if key in self.ids or content in self.contents:
             return None
-        if len(self.reserved) >= self.limit or self.mixed_count >= self.target:
+        if len(self.reserved) >= self.limit or (not self.fixed_pool and self.mixed_count >= self.target):
             return None
         ordinal = len(self.reserved)
         self.ids.add(key); self.contents.add(content)
@@ -74,6 +75,8 @@ class MixedFirstSelector:
     def select(self):
         if len(self.results) != len(self.reserved):
             raise ValueError('Incomplete/error groups remain in flight')
+        if self.fixed_pool and len(self.reserved) != self.limit:
+            raise ValueError('Fixed selection requires every distinct candidate to complete')
         ordered = [self.results[i] for i in range(len(self.reserved))]
         mixed = [x for x in ordered if x.category == 'mixed']
         if len(mixed) >= self.target:

@@ -232,6 +232,12 @@ def bind_actual_config(actor_config, group=None):
         if os.environ.get('SEARCH_G1_PROFILE')=='common8':
             run=json.loads((Path(os.environ['SEARCH_G1_BASE'])/'logs/run-manifest.json').read_text())
             monitor_count=monitor_trajectories_per_rank(run)
+            if run.get('easy2560_selection') is True:
+                from reproduction.common8.precision_contract import easy2560_native4
+                from reproduction.common8.topology import actor_local_micro
+                ok = ok and (easy2560_native4(run)
+                    and document.get('ppo_micro_batch_size') == actor_local_micro(run)
+                    and document.get('ppo_logical_micro_batch_size') == 4)
             diagnostic = run.get('finite_thresholds_diagnostic_only',False)
             configured_diagnostic = s.get('finite_thresholds_diagnostic_only',False) if s else False
             if type(diagnostic) is not bool or configured_diagnostic is not diagnostic:

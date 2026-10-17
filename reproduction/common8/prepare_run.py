@@ -93,7 +93,7 @@ def verify_model(model, official_path):
     return hashes
 
 
-def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None,restore_receipt=None,execution_site=None,actor_micro_batch_per_rank=None):
+def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None,restore_receipt=None,execution_site=None,actor_micro_batch_per_rank=None,actor_logical_micro_batch_per_rank=None,easy2560_selection=False):
     base,model,official_path=map(Path,(base,model,official_path))
     assert execution_site in (None,'hpc3','h1008')
     target=base/'logs/run-manifest.json'
@@ -135,6 +135,13 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         retrieval_placement='pending actual resource and retrieval-equivalence admission',
         probe_visible_device=None)
     if execution_site in ('hpc3','h1008'):result['execution_site']=execution_site
+    if easy2560_selection:
+        assert execution_site=='hpc3' and actor_micro_batch_per_rank in (4,8,16,32)
+        assert actor_logical_micro_batch_per_rank==4 and not restore_receipt
+        result.update(easy2560_selection=True,data_selection_mode='mixed_first',
+            actor_logical_micro_batch_per_rank=4,selection_candidate_questions=2560,
+            selection_selected_questions=512,selection_fixed_candidate_budget=True,
+            all_correct_virtual_zero=False)
     if execution_site=='h1008':
         from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE
         assert os.environ.get('SEARCH_G1_EXECUTION_PROFILE')==NATIVE_BF16_PROFILE, 'H1008 must bind its BF16/FP32 execution recipe explicitly'
@@ -151,6 +158,9 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         result.update(precision_profile=profile, behavior_probability_policy=SAMPLING_JOURNAL_POLICY,
             execution_backend='slurm', training_world_size=size, actor_micro_batch_per_rank=4 if execution_site=='h1008' else 2 if size==8 else 4,
             vllm_gpu_memory_utilization=rollout_memory_utilization, followup_checkpoint_required=True)
+        if easy2560_selection:
+            assert size==4
+            result['actor_micro_batch_per_rank']=actor_micro_batch_per_rank
         result['budget'].update(world_size=size,compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
         from reproduction.common8.formal_contract import formal_mathematics
         result['budget'].update(formal_mathematics(result))

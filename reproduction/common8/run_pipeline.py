@@ -290,6 +290,12 @@ class Pipeline:
         self.wait('final-acceptance',v)
         return 'FINISHED_FULL200_FINAL51713_AND_OWNED_CLEANUP'
     def initial_probe_calibration(self):
+        if self.run.get('easy2560_selection') and not self.run.get('full_state_restore'):
+            from reproduction.easy2560_joint4.adopt_reward_zero import adopt
+            receipt=adopt(self.base,self.run)
+            self.stage('REUSED_OFFICIAL_ROUND0_GROUNDING_PROBE',
+                       version=receipt['version'],new_calibration_generated=False)
+            return
         if self.run.get('full_state_restore'):
             if self.run['full_state_restore'].get('kind')=='question_probe_pair':
                 from search_g1.qprobe_checkpoint import install_restored_reward_probe

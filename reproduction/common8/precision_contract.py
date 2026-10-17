@@ -6,6 +6,16 @@ NATIVE4_BF16_PROFILE = 'native4_bf16_varlen_fp32_master'
 SAMPLING_JOURNAL_POLICY = 'sampling_journal_no_extra_hf_forward'
 
 
+def easy2560_native4(run):
+    """The explicit Easy experiment may change physical, never logical, micros."""
+    return (run.get('easy2560_selection') is True and run.get('profile') == 'common8'
+        and run.get('execution_site') == 'hpc3' and run.get('execution_backend', 'slurm') == 'slurm'
+        and type(run.get('training_world_size')) is int and run['training_world_size'] == 4
+        and run.get('data_selection_mode') == 'mixed_first' and not run.get('question_probe')
+        and type(run.get('actor_logical_micro_batch_per_rank')) is int
+        and run['actor_logical_micro_batch_per_rank'] == 4)
+
+
 def bf16_policy(run):
     profile = run.get('precision_profile')
     assert profile in (None, BF16_PROFILE, NATIVE_BF16_PROFILE, NATIVE4_BF16_PROFILE), 'Unknown policy precision profile'
@@ -23,7 +33,13 @@ def bf16_policy(run):
     if profile == NATIVE4_BF16_PROFILE:
         assert run.get('training_world_size') == 4 and run.get('execution_backend') == 'slurm'
         assert run.get('execution_site') == 'hpc3'
-        assert run.get('actor_micro_batch_per_rank') == 4 and run.get('vllm_gpu_memory_utilization') == 0.1
+        if run.get('easy2560_selection') is True:
+            assert easy2560_native4(run), 'Large physical micros require the explicit native4 Easy logical4 scope'
+            micro = run.get('actor_micro_batch_per_rank')
+            assert type(micro) is int and micro in (4, 8, 16, 32)
+        else:
+            assert run.get('actor_micro_batch_per_rank') == 4
+        assert run.get('vllm_gpu_memory_utilization') == 0.1
         return True
     return False
 

@@ -326,6 +326,7 @@ class DataParallelPPOActor(BasePPOActor):
         from search_g1.policy_safety import monitor
         from reproduction.common8.worker_evidence import append
         from reproduction.common8.topology import monitor_scope
+        from search_g1.logical_micro_loss import logical_token_weights
         group = self.actor_module.process_group if isinstance(self.actor_module, FSDP) else None
         self.compute_precision.validate_worker(process_group=group)
         import hashlib
@@ -340,6 +341,8 @@ class DataParallelPPOActor(BasePPOActor):
             negative_tail_limit=tail_limit, calibration_sha256=self._safety_calibration_sha,
             execution_role=self._policy_execution_role, state_masking=bool(self.config.state_masking),
             micro_batch_size=int(self.config.ppo_micro_batch_size),
+            logical_micro_batch_size=int(getattr(self.config, 'ppo_logical_micro_batch_size', None)
+                                         or self.config.ppo_micro_batch_size),
             use_remove_padding=bool(self.use_remove_padding),
             compute_precision=dict(vars(self.compute_precision)),
             context={key:value for key,value in context.items()
@@ -376,7 +379,9 @@ class DataParallelPPOActor(BasePPOActor):
                         valid = mask.bool()
                         delta = torch.where(valid,new,0.).double() - torch.where(valid,micro['old_log_probs'],0.).double()
                         values.append(delta);masks.append(mask);advantages.append(micro['advantages'])
-                        weights.append(mask.double()/mask.sum().clamp_min(1).double())
+                        weights.append(logical_token_weights(mask.double(),
+                            int(getattr(self.config, 'ppo_logical_micro_batch_size', None)
+                                or self.config.ppo_micro_batch_size)))
             finally:
                 self.actor_module.train(old_mode)
             report = monitor(torch.cat(values),torch.cat(advantages),torch.cat(masks),torch.cat(weights),
@@ -396,7 +401,9 @@ class DataParallelPPOActor(BasePPOActor):
                       reused_monitor_forward_count=self._reused_monitor_forward_count,
                       calibration_sha256=self._safety_calibration_sha,
                       monitor_identity=self._monitor_identity,
-                      objective_weight_definition='equal two-row micro masked_mean; weighted global numerator/denominator',
+                      objective_weight_definition=('equal four-row logical micro masked_mean; weighted global numerator/denominator'
+                          if getattr(self.config, 'ppo_logical_micro_batch_size', None) is not None else
+                          'equal two-row micro masked_mean; weighted global numerator/denominator'),
                       monitoring_scope=monitor_scope(),
                       rejection_count=getattr(self,'_policy_rejections',0)+int(not report['allowed']))
         append('POLICY_MONITOR',report,collective=getattr(self,'_recoverable_guard_mode',False),group=group)
@@ -505,17 +512,21 @@ class DataParallelPPOActor(BasePPOActor):
 
         assert self.config.ppo_mini_batch_size % self.config.ppo_micro_batch_size == 0
         self.gradient_accumulation = self.config.ppo_mini_batch_size // self.config.ppo_micro_batch_size
+        logical_micro = int(getattr(self.config, 'ppo_logical_micro_batch_size', None)
+                            or self.config.ppo_micro_batch_size)
+        assert self.config.ppo_micro_batch_size % logical_micro == 0
         logical_update=data.meta_info.get('logical_update')
         writes_before = getattr(self, '_optimizer_writes', 0)
         common8 = __import__('os').environ.get('SEARCH_G1_PROFILE') == 'common8'
         if common8:
             from reproduction.common8.behavior_runtime import verify_worker_input
-            from reproduction.common8.topology import actor_local_mini, actor_local_micro, local_trajectories, world_size
+            from reproduction.common8.topology import actor_local_mini, actor_local_micro, actor_logical_micro, local_trajectories, world_size
             verify_worker_input(data, logical_update=logical_update, group=group)
             batch_gate_sha = data.meta_info['behavior_probability_gate']['sha256']
             assert torch.distributed.get_world_size() == world_size()
             assert len(data) == local_trajectories() and self.config.ppo_mini_batch_size == actor_local_mini()
             assert self.config.ppo_micro_batch_size == actor_local_micro() and self.config.ppo_epochs == 1
+            assert logical_micro == actor_logical_micro()
         temperature = data.meta_info['temperature']
 
 
@@ -655,6 +666,7 @@ class DataParallelPPOActor(BasePPOActor):
             budget = dict(rank=torch.distributed.get_rank(),
                 logical_update=logical_update, local_trajectories=len(batch),
                 local_mini=self.config.ppo_mini_batch_size, local_micro=self.config.ppo_micro_batch_size, optimizer_writes=writes,
+                local_logical_micro=logical_micro,gradient_accumulation=self.gradient_accumulation,
                 cumulative_writes=self._optimizer_writes)
             if safety_enabled:
                 budget.update(extra_policy_monitor_forwards=bool(extra_monitor_forwards),
@@ -670,7 +682,10 @@ class DataParallelPPOActor(BasePPOActor):
 
     def _run_minibatch(self, mini_batch, *, temperature, safety_enabled, safety, frozen, tail_limit, metrics):
         """One update opportunity; caller records its disposition on every rank."""
+        from search_g1.logical_micro_loss import logical_policy_loss, logical_masked_mean, logical_slices
         group = self.actor_module.process_group if isinstance(self.actor_module,FSDP) else None
+        logical_micro = int(getattr(self.config, 'ppo_logical_micro_batch_size', None)
+                            or self.config.ppo_micro_batch_size)
         recoverable = getattr(self,'_recoverable_guard_mode',False)
         extra_monitor_forwards = safety_enabled and safety.get('extra_policy_monitor_forwards',True)
         if extra_monitor_forwards:
@@ -695,15 +710,19 @@ class DataParallelPPOActor(BasePPOActor):
                 require_finite(dict(new=torch.where(authored,new,0.),old=torch.where(authored,old,0.),
                     advantage=torch.where(authored,advantages,0.),mass=mask.sum()),
                     stage='before_dual_clip_exp',process_group=group,positive=('mass',),recoverable=recoverable)
-            pg_loss,clipfrac,ppo_kl=core_algos.compute_policy_loss(old_log_prob=old,log_prob=new,
+            pg_loss,clipfrac,ppo_kl=logical_policy_loss(core_algos.compute_policy_loss,
+                logical_micro_batch_size=logical_micro,old_log_prob=old,log_prob=new,
                 advantages=advantages,eos_mask=mask,cliprange=self.config.clip_ratio,
                 dual_clip=float(safety.dual_clip) if safety_enabled else None)
             if 'selection_fallback' in micro:
                 from search_g1.source_loss_audit import contributions
-                append_to_dict(metrics,contributions(old,new,advantages,mask,
-                    micro['selection_fallback'],self.config.clip_ratio,
-                    float(safety.dual_clip) if safety_enabled else None))
-            entropy_loss=verl_F.masked_mean(entropy,mask) if compute_entropy else new.new_zeros(())
+                source_rows=[contributions(old[part],new[part],advantages[part],mask[part],
+                    micro['selection_fallback'][part],self.config.clip_ratio,
+                    float(safety.dual_clip) if safety_enabled else None)
+                    for part in logical_slices(new.shape[0],logical_micro)]
+                append_to_dict(metrics,{key:sum(row[key] for row in source_rows)/len(source_rows)
+                                        for key in source_rows[0]})
+            entropy_loss=logical_masked_mean(entropy,mask,logical_micro) if compute_entropy else new.new_zeros(())
             policy_loss=pg_loss-entropy_loss*self.config.entropy_coeff
             numerical_fields=dict(pg_loss=pg_loss,entropy_loss=entropy_loss,ppo_kl=ppo_kl,
                 response_tokens=mask.sum(),authored_log_prob=torch.where(authored,new,0.),
@@ -718,8 +737,8 @@ class DataParallelPPOActor(BasePPOActor):
                 else:
                     masked_new=torch.where(authored,new,torch.zeros_like(new))
                     masked_ref=torch.where(authored,micro['ref_log_prob'],torch.zeros_like(micro['ref_log_prob']))
-                    kl_loss=masked_mean(core_algos.kl_penalty(logprob=masked_new,
-                        ref_logprob=masked_ref,kl_penalty=self.config.kl_loss_type),mask)
+                    kl_loss=logical_masked_mean(core_algos.kl_penalty(logprob=masked_new,
+                        ref_logprob=masked_ref,kl_penalty=self.config.kl_loss_type),mask,logical_micro)
                     policy_loss=policy_loss+kl_loss*self.config.kl_loss_coef
                     numerical_fields.update(kl_loss=kl_loss,authored_ref_log_prob=masked_ref)
                 metrics['actor/kl_loss']=kl_loss.detach().item()

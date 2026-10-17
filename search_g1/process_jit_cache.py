@@ -1,4 +1,4 @@
-"""Isolate prefix20 JIT cache writers on the shared HPC3 filesystem."""
+"""Isolate owned Prefix20/Easy native4 JIT writers on the HPC3 filesystem."""
 import json
 import os
 from pathlib import Path
@@ -45,7 +45,7 @@ def isolate(base, identity):
 def configure():
     value=os.environ.get('SEARCH_G1_BASE','')
     # Other algorithms and already-deployed checkouts retain their own policy.
-    if not re.fullmatch('/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-[A-Za-z0-9._-]+',value):
+    if not re.fullmatch('/data/user/jxu957/experiments/(?:qprobe-teacher-warmup200-prefix20-|easy2560-corollout-joint4-)[A-Za-z0-9._-]+',value):
         return None
     base=Path(value)
     if base.resolve()!=base:raise ValueError('PREFIX20_JIT_DEDICATED_BASE_REQUIRED')

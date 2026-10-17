@@ -15,6 +15,10 @@ data:
   return_raw_chat: False
   shuffle_train_dataloader: True
   selection_mode: legacy # legacy preserves the existing mixed_first_selection flag
+  selection_candidate_questions: 2048
+  selection_selected_questions: 512
+  selection_fixed_candidate_budget: false
+  selection_eligible_pool_path: null
 
 prefix20_probe:
   probe_architecture: qwen2_prefix20_trajectory_em_v1
@@ -76,6 +80,7 @@ actor_rollout_ref:
     allow_tf32: null # null preserves the caller's legacy Torch flags
     ppo_mini_batch_size: 256
     ppo_micro_batch_size: 64
+    ppo_logical_micro_batch_size: null # optional per-rank loss blocks, independent of physical batching
     use_dynamic_bsz: False
     ppo_max_token_len_per_gpu: 16384 # n * ${data.max_prompt_length} + ${data.max_response_length}
     grad_clip: 1.0

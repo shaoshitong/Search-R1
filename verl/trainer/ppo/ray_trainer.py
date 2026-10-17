@@ -742,7 +742,14 @@ class RayPPOTrainer(object):
                 qprobe_proof = qprobe.save_checkpoint(state_dir, self.global_steps,
                     compact_stream_state(stream.state()), self.reward_fn.expected_probe_version,
                     actor_snapshot_id=run_id+':'+str(self.global_steps))
-            driver = atomic_save(state_dir/'driver.pt', dict(completed_outer=self.global_steps,
+            run = __import__('json').loads((Path(os.environ['SEARCH_G1_BASE'])/
+                                           'logs/run-manifest.json').read_text())
+            if run.get('easy2560_selection') is True:
+                from search_g1.training_state import capture_easy2560_driver
+                assert qprobe_proof is None
+                driver_state = capture_easy2560_driver(self, run)
+            else:
+                driver_state = dict(completed_outer=self.global_steps,
                 candidate_stream=compact_stream_state(stream.state()), rng=driver_rng(),
                 probe_version=self.reward_fn.expected_probe_version, question_probe=qprobe_proof,
                 attempt_progress=(None if getattr(self,'inline_attempt_progress',None) is None else
@@ -750,7 +757,8 @@ class RayPPOTrainer(object):
                          cumulative_writes=self.inline_attempt_progress.cumulative_writes,
                          attempt_index=self.inline_attempt_progress.attempt_index,
                          aborted_attempts=self.inline_attempt_progress.aborted_attempts,
-                         full_budget_outer=self.inline_attempt_progress.full_budget_outer))))
+                         full_budget_outer=self.inline_attempt_progress.full_budget_outer)))
+            driver = atomic_save(state_dir/'driver.pt', driver_state)
             import json
             with (state_dir/'manifest.json').open('x') as f:
                 json.dump(dict(completed_outer=self.global_steps,worker_files=proofs,driver_file=driver,
@@ -894,6 +902,10 @@ class RayPPOTrainer(object):
                 from search_g1.prefix20_data import Prefix20CandidateStream
                 mixed_stream=Prefix20CandidateStream(self.train_dataloader,self.config.prefix20_probe.eligible_pool_path,
                     restored_state=getattr(self,'_restored_candidate_state',None))
+            elif selection_mode=='mixed_first' and self.config.data.get('selection_eligible_pool_path'):
+                from search_g1.prefix20_data import Prefix20CandidateStream
+                mixed_stream=Prefix20CandidateStream(self.train_dataloader,self.config.data.selection_eligible_pool_path,
+                    restored_state=getattr(self,'_restored_candidate_state',None))
             else:
                 mixed_stream = stream_cls(self.train_dataloader,
                     restored_state=getattr(self,'_restored_candidate_state',None))
@@ -954,6 +966,10 @@ class RayPPOTrainer(object):
                     metrics.update({"selection/"+k: mixed_audit[k] for k in
                         ("attempted_candidates","selected_mixed","selected_all_correct_fallback","raw_generated_trajectories", "raw_generated_policy_tokens",
                          "raw_actual_retrieval_calls", "candidate_fill_seconds")})
+                    if self.config.data.get('selection_fixed_candidate_budget',False):
+                        metrics['selection/selected_mixed_fraction']=mixed_audit['selected_mixed']/mixed_audit['selected_groups']
+                        metrics['selection/selected_all_correct_fraction']=mixed_audit['selected_all_correct_fallback']/mixed_audit['selected_groups']
+                        metrics['selection/insufficient_pool_retries']=mixed_audit['pool_retry']
                     if selection_mode=='prefix20_probe':
                         metrics['selection/selected_mixed_fraction']=mixed_audit['selected_mixed_fraction']
                         metrics['selection/completed_selected_trajectories']=mixed_audit['completed_selected_trajectories']

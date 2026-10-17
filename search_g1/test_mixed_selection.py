@@ -48,4 +48,25 @@ class SelectionTests(unittest.TestCase):
         self.assertEqual(s.audit()['selected_all_correct_fallback'],112)
         self.assertEqual(len(s.select()),512)
 
+    def test_fixed_pool_completes_remaining_candidates_after_enough_mixed(self):
+        s=MixedFirstSelector(target=2,limit=4,fixed_pool=True)
+        for i in range(2):
+            self.assertEqual(s.reserve(str(i),'question '+str(i)),i)
+            s.complete(i,[str(i)+'-'+str(j) for j in range(5)],[1,0,1,0,1])
+        with self.assertRaises(ValueError):s.select()
+        for i in (2,3):
+            self.assertEqual(s.reserve(str(i),'question '+str(i)),i)
+        for i in (3,2):s.complete(i,[str(i)+'-'+str(j) for j in range(5)],[1]*5)
+        self.assertEqual([x.ordinal for x in s.select()],[0,1])
+        self.assertEqual(s.audit()['attempted_candidates'],4)
+
+    def test_fixed2560_excludes_wrong_and_uses_correct_only_as_fallback(self):
+        s=MixedFirstSelector(target=512,limit=2560,fixed_pool=True)
+        for i in range(2560):s.reserve(str(i),'question '+str(i))
+        for i in reversed(range(2560)):
+            values=[1,0,0,0,0] if 100<=i<500 else [1]*5 if 1000<=i<1200 else [0]*5
+            s.complete(i,[str(i)+'-'+str(j) for j in range(5)],values)
+        self.assertEqual([x.ordinal for x in s.select()],list(range(100,500))+list(range(1000,1112)))
+        self.assertEqual(s.audit()['selected_all_correct_fallback'],112)
+
 if __name__ == '__main__':unittest.main()

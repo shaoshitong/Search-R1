@@ -17,7 +17,7 @@ from reproduction.common8.topology import (
 from search_g1.monitor_forward_reuse import summarize_monitor_execution
 from reproduction.common8.safety_calibration_evidence import (
     EvidenceError, GLOBAL_FIELDS, GRADIENT_CLIP_FLOAT32_TOLERANCE, GRADIENT_CLIP_LIMIT,
-    OBJECTIVE_WEIGHT_DEFINITION, QUANTILE_METHOD,
+    QUANTILE_METHOD, objective_weight_definition,
     _adjacent, _enforcement, _finite, _hash, _identity, _integer, _require,
     _row, _same_arithmetic, _statistics,
 )
@@ -199,6 +199,9 @@ def _audit_transaction_rows(rows_by_rank, binding, attempt, rejection_before, *,
                 _require(row['context']==context and row['calibration_sha256']==binding['calibration_sha256'] and
                          row['execution_role']=='production' and row['monitoring_scope']==monitor_scope(run),
                          'Transaction monitor policy identity differs')
+                if run.get('easy2560_selection') is True:
+                    _require(row['objective_weight_definition'] == objective_weight_definition(run),
+                             'Transaction logical objective weighting differs')
                 _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run))
                 if identity is None: identity = row['monitor_identity']
                 _require(identity==row['monitor_identity'], 'Transaction frozen sample changed')
@@ -326,7 +329,7 @@ def _audit_monitor_rows(rows_by_rank, binding, attempt, rejection_before, *, run
                 _require(row['calibration_sha256'] == binding['calibration_sha256'] and
                          row['execution_role'] == 'production' and row['enforcement'] == dict(_enforcement('production'),**(dict(negative_tail='observe_only',old_policy_kl='observe_only',log_ratio_bound='observe_only') if run.get('finite_thresholds_diagnostic_only',False) else {})),
                          'Actual monitor prospective plan or enforced role differs')
-                _require(row['objective_weight_definition'] == OBJECTIVE_WEIGHT_DEFINITION and
+                _require(row['objective_weight_definition'] == objective_weight_definition(run) and
                          row['monitoring_scope'] == monitor_scope(run), 'Actual monitor weight/scope differs')
                 _identity(row['monitor_identity'], monitor_count=monitor_trajectories_per_rank(run))
                 if identity is None:

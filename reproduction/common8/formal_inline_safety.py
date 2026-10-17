@@ -9,7 +9,7 @@ import json
 import math
 import os
 import time
-from reproduction.common8.topology import actor_local_micro
+from reproduction.common8.topology import actor_local_micro, actor_logical_micro
 from pathlib import Path
 
 from reproduction.common8.formal_contract import (
@@ -505,6 +505,11 @@ def verify_first_five(base, run, behavior_gates, scheduler_receipts):
         run_id=run['run_id'], calibration_sha256=sha, outer_count=5, initial_optimizer_writes=0,
         candidate_thresholds=FORMAL_SAFEGUARDS, complete_attempts=complete_attempts,
         training_world_size=world_size(run),actor_micro_batch_per_rank=actor_local_micro(run))
+    if run.get('easy2560_selection') is True:
+        binding.update(actor_logical_micro_batch_per_rank=actor_logical_micro(run))
+        for name in ('easy2560_selection', 'execution_site', 'execution_backend', 'data_selection_mode', 'question_probe'):
+            if name in run:
+                binding[name] = run[name]
     transactional=any(row.get('recovery_protocol_version',1)==2 for row in complete_attempts)
     if transactional:
         # All actual monitor/write/rollback rows were checked by the attempt

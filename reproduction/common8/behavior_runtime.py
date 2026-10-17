@@ -56,6 +56,9 @@ def _native_run():
     validate_base(base, run)
     assert run['profile'] == 'common8' and run['completed_updates'] == 0
     world_size(run)
+    if run.get('easy2560_selection') is True:
+        from reproduction.common8.precision_contract import easy2560_native4
+        assert easy2560_native4(run), 'Easy behavior journal requires native4 mixed_first and logical4 without a question head'
     job = execution_job_id(run)
     # This is a current disk-source identity check, not proof of loaded modules.
     for name, expected in run['source_sha256'].items():

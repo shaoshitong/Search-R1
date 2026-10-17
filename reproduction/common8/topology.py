@@ -43,8 +43,18 @@ def ranks(run=None):
 def actor_local_micro(run=None):
     run = _bound_run() if run is None else run
     value = run.get("actor_micro_batch_per_rank", 2) if run is not None else 2
-    assert type(value) is int and value in (2, 4)
+    allowed = (2, 4, 8, 16, 32) if run is not None and run.get('actor_logical_micro_batch_per_rank') == 4 and world_size(run) == 4 else (2, 4)
+    assert type(value) is int and value in allowed
     assert actor_local_mini(run) % value == 0
+    return value
+
+
+def actor_logical_micro(run=None):
+    run = _bound_run() if run is None else run
+    physical = actor_local_micro(run)
+    value = run.get('actor_logical_micro_batch_per_rank', physical) if run is not None else physical
+    assert type(value) is int and value in (2, 4)
+    assert physical % value == 0, 'Physical micros must contain whole logical micros'
     return value
 
 
@@ -74,11 +84,12 @@ def formal_monitor_geometry(run):
     size=world_size(run)
     if size==4:
         assert 'actor_micro_batch_per_rank' in run, 'Native4 requires an explicit actor micro binding'
-    micro=actor_local_micro(run);count=monitor_trajectories_per_rank(run)
-    assert count%micro==0, 'Monitor rows must form complete actor micros'
+    micro=actor_local_micro(run);logical=actor_logical_micro(run);count=monitor_trajectories_per_rank(run)
+    assert count%logical==0, 'Monitor rows must form complete logical micros'
     return dict(training_world_size=size,actor_micro_batch_per_rank=micro,
+                actor_logical_micro_batch_per_rank=logical,
                 monitor_trajectories_per_rank=count,
-                expected_complete_effective_weight_mass=float(size*(count//micro)))
+                expected_complete_effective_weight_mass=float(size*(count//logical)))
 
 
 def monitor_scope(run=None):
@@ -114,8 +125,13 @@ def validate_base(base, run):
         assert re.fullmatch(r'/data/shaoshitong/Search-G1-a800-fresh200-[A-Za-z0-9._-]+', str(base)), \
             'Local training requires its fresh A800 run namespace'
     elif run.get('execution_site') == 'hpc3':
-        assert re.fullmatch(r'/data/user/jxu957/experiments/qprobe-teacher-warmup200-[A-Za-z0-9._-]+',str(base)), \
-            'HPC3 requires the dedicated question-probe run namespace'
+        if run.get('easy2560_selection') is True:
+            assert re.fullmatch(r'/data/user/jxu957/experiments/easy2560-corollout-[A-Za-z0-9._-]+',str(base)), \
+                'Easy2560 requires its dedicated run namespace'
+            assert world_size(run)==4, 'Easy2560 requires four native ranks'
+        else:
+            assert re.fullmatch(r'/data/user/jxu957/experiments/qprobe-teacher-warmup200-[A-Za-z0-9._-]+',str(base)), \
+                'HPC3 requires the dedicated question-probe run namespace'
         assert run.get('execution_backend','slurm')=='slurm' and world_size(run) in (4,8)
     else:
         assert str(base).startswith('/mnt/data/shaoshitong/'), 'Native training namespace changed'

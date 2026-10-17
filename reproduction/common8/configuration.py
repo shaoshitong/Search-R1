@@ -65,6 +65,16 @@ def arguments(base):
     if type(extra) is not bool or (not extra and not diagnostic):
         raise ValueError('No-extra-monitor mode requires explicit binary diagnostic-only binding')
     overrides.append('actor_rollout_ref.actor.policy_safety.extra_policy_monitor_forwards='+str(extra).lower())
+    if run.get('easy2560_selection'):
+        from reproduction.common8.precision_contract import easy2560_native4
+        assert easy2560_native4(run)
+        overrides.extend(['data.selection_mode=mixed_first',
+            'data.selection_candidate_questions='+str(run['selection_candidate_questions']),
+            'data.selection_selected_questions='+str(run['selection_selected_questions']),
+            'data.selection_fixed_candidate_budget=true',
+            'data.selection_eligible_pool_path='+json.dumps(run['selection_eligible_pool_path']),
+            'actor_rollout_ref.actor.ppo_logical_micro_batch_size=4',
+            '+algorithm.all_correct_virtual_zero=false'])
     from reproduction.common8.qprobe_configuration import arguments as qprobe_arguments
     overrides.extend(qprobe_arguments(run, base))
     from search_g1.rollout_phase_contract import hydra_arguments

@@ -4,8 +4,8 @@ import hashlib
 from pathlib import Path
 
 from reproduction.common8.policy_calibration_plan import MATHEMATICS, canonical_bytes
-from reproduction.common8.topology import world_size, actor_global_micro, execution_job_id, monitor_trajectories_per_rank
-from reproduction.common8.precision_contract import bf16_policy, remove_padding, verify as verify_precision_config
+from reproduction.common8.topology import world_size, actor_global_micro, actor_logical_micro, execution_job_id, monitor_trajectories_per_rank
+from reproduction.common8.precision_contract import bf16_policy, easy2560_native4, remove_padding, verify as verify_precision_config
 
 CONTRACT_KIND = 'fresh200_warmup57'
 TARGET_UPDATES = 200
@@ -36,6 +36,11 @@ def formal_mathematics(run=None):
                   per_rank_log_prob_micro_batch=32 // size,
                   objective_reduction=('original four-row micro masked_mean'
                       if actor_global_micro(run)//size == 4 else 'original two-row micro masked_mean'))
+    if run is not None and run.get('easy2560_selection') is True:
+        assert easy2560_native4(run), 'Easy mathematics requires native4 mixed_first and logical4'
+        logical = actor_logical_micro(run)
+        values.update(per_rank_actor_logical_micro_batch=logical,
+                      objective_reduction='original four-row micro masked_mean')
     if run is not None and bf16_policy(run):
         values.update(compute_dtype='bfloat16', rollout_dtype='bfloat16', allow_tf32=None)
     return values
@@ -58,15 +63,16 @@ def has_formal_markers(run):
 
 
 def skip_initial_evaluation(run):
-    """An explicit fresh native4 Prefix20 policy, without a historical baseline."""
+    """An explicit fresh native4 policy, without a historical baseline claim."""
     if run.get('pretraining_baseline_policy') != SKIP_INITIAL_EVALUATION_POLICY:
         return False
     assert (run.get('profile') == 'common8' and run.get('execution_site') == 'hpc3'
         and run.get('execution_backend', 'slurm') == 'slurm' and run.get('training_world_size') == 4
         and run.get('startup_admission_mode') == 'actual_first_five'
-        and run.get('data_selection_mode') == 'prefix20_probe'
-        and run.get('question_probe', {}).get('probe_architecture') == 'qwen2_prefix20_trajectory_em_v1'
-        and not run.get('full_state_restore')), 'Initial evaluation skip requires fresh native4 Prefix20'
+        and ((run.get('data_selection_mode') == 'prefix20_probe'
+              and run.get('question_probe', {}).get('probe_architecture') == 'qwen2_prefix20_trajectory_em_v1')
+             or easy2560_native4(run))
+        and not run.get('full_state_restore')), 'Initial evaluation skip requires explicit fresh native4 Prefix20 or Easy'
     return True
 
 
@@ -117,6 +123,11 @@ def verify_formal_config(document, run, base):
         grad_clip=1.0, clip_ratio=0.2, state_masking=True, use_kl_loss=True,
         entropy_coeff=0.0, kl_loss_coef=0.0, kl_loss_type='low_var_kl',
         use_dynamic_bsz=False, ulysses_sequence_parallel_size=1), 'Actor mathematics')
+    if run.get('easy2560_selection') is True:
+        assert easy2560_native4(run)
+        exact(actor, dict(ppo_logical_micro_batch_size=4), 'Logical actor objective')
+        exact(document['algorithm'], dict(all_correct_virtual_zero=False), 'Easy real-group advantages')
+        exact(document['data'], dict(selection_mode='mixed_first'), 'Easy selection')
     exact(actor['optim'], dict(lr=1e-6, lr_warmup_steps_ratio=0.0,
         lr_warmup_steps=WARMUP_STEPS, warmup_style='constant'), 'Optimizer mathematics')
     verify_precision_config(document, run)

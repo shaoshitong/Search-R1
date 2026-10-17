@@ -266,6 +266,9 @@ def verify_full(base):
             adopted_initial='adoption_origin' in live
             if adopted_initial:
                 initial_probe_adoption=verify_a800_adopted_initial_probe(base,run,live,archive_path)
+            elif 'reused_origin' in live:
+                from reproduction.easy2560_joint4.adopt_reward_zero import verify_adopted
+                initial_probe_adoption=verify_adopted(base,run,live,archive_path)
             else:
                 assert archive_path.parent.name.startswith('round_0-attempt-'), 'Formal initial0 is freshly fitted in this namespace'
             initial_probe=json.loads((base/'logs/formal-inline-initial-probe.json').read_text())

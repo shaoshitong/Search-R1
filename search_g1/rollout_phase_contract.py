@@ -90,6 +90,19 @@ def scalar_metrics(output):
             if all(type(row.get(key)) is int for row in ranks):
                 result['infra/rollout/'+key+'_sum']=sum(row[key] for row in ranks)
         return result
+    if phase.get('role')=='fixed_candidate_pool_full_rollouts':
+        phases=phase['phases']
+        if not phases or len({p['phase_id'] for p in phases})!=len(phases):
+            raise ValueError('Fixed pool requires distinct completed native sampling phases')
+        receipts=[r for p in phases for r in p['phase_metrics']]
+        if any(type(r.get('weight_syncs')) is not int or r['weight_syncs']!=1 for r in receipts):
+            raise ValueError('Each full candidate phase must synchronize once per worker')
+        result['infra/rollout/weight_syncs_per_rank']=len(phases)
+        result['infra/rollout/selected_trajectories']=phase['selected_trajectories']
+        for key in ('engine_steps','completed_requests'):
+            if all(type(r.get(key)) is int for r in receipts):
+                result['infra/rollout/'+key+'_sum']=sum(r[key] for r in receipts)
+        return result
     ranks=phase['phase_metrics']
     if not isinstance(ranks,list) or not ranks:
         raise ValueError('Missing actual worker phase-close receipts')

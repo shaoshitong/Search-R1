@@ -6,13 +6,14 @@ from pathlib import Path
 import numpy as np
 import torch
 from verl import DataProto
-from search_g1.mixed_selection import MixedFirstSelector
+from search_g1.mixed_selection import MixedFirstSelector, InsufficientEligibleGroups
 from search_g1.signals import decode_segments, contexts
 from verl.utils.reward_score import qa_em
 
 
 ROW_META = ('turns_stats', 'active_mask', 'valid_action_stats',
-            'valid_search_stats', 'actual_retrieval_stats')
+            'valid_search_stats', 'actual_retrieval_stats',
+            'clipped_observation_stats', 'early_final_turn_stats')
 
 def subset(batch, indices):
     meta = batch.meta_info.copy()
@@ -131,20 +132,56 @@ def padded_concat(outputs, pad_id):
 
 
 def collect(trainer, manager, stream, attempt_identity):
+    """Discard insufficient fixed pools before any reward or optimizer update."""
+    retries = 0
+    discarded = []
+    while True:
+        try:
+            return _collect_once(trainer, manager, stream, attempt_identity, retries, discarded)
+        except InsufficientEligibleGroups as exc:
+            if not trainer.config.data.get('selection_fixed_candidate_budget', False):
+                raise
+            discarded.append(exc.pool_summary)
+            retries += 1
+            print(json.dumps(dict(stage='mixed_insufficient_pool_consumed',
+                step=trainer.global_steps,pool_retry=retries,
+                **exc.pool_summary)),flush=True)
+
+
+def _collect_once(trainer, manager, stream, attempt_identity, pool_retry=0, discarded=()):
     from reproduction.common8.behavior_runtime import prepare_identity, attach_generation_identity
     started = time.monotonic()
     raw_policy_tokens = raw_retrieval_calls = 0
     generation_timings = {}
-    selector = MixedFirstSelector(); candidates = {}; identities = []
+    generation_phases = []
+    config = trainer.config.data
+    limit = int(config.get('selection_candidate_questions',2048))
+    target = int(config.get('selection_selected_questions',512))
+    fixed = bool(config.get('selection_fixed_candidate_budget',False))
+    if target != 512 or limit % 512:
+        raise ValueError('Native G5 mixed collection requires selected512 and full512 candidate chunks')
+    selector = MixedFirstSelector(target=target,limit=limit,fixed_pool=fixed)
+    candidates = {}; identities = []
     snapshot = None
     base = Path(os.environ['SEARCH_G1_BASE'])
     tag = attempt_identity['attempt_id'] if attempt_identity is not None else str(trainer.global_steps)
-    pool = base/'artifacts/mixed-candidate-pools'/tag
+    pool = base/'artifacts/mixed-candidate-pools'/(tag+'-pool-'+str(pool_retry) if fixed else tag)
     pool.mkdir(parents=True, exist_ok=False)
-    while len(selector.reserved) < 2048 and selector.mixed_count < 512:
-        parent, ordinals = stream.parents(selector, trainer.tokenizer)
+    raw_pool = stream.collect_pool(limit)[0] if fixed else None
+    while len(selector.reserved) < limit and (fixed or selector.mixed_count < target):
+        if fixed:
+            begin = len(selector.reserved)
+            ordinals = list(range(begin,begin+512))
+            parent = stream.materialize(raw_pool,ordinals)
+            for local, ordinal in enumerate(ordinals):
+                actual = selector.reserve(parent.non_tensor_batch['candidate_stable_id'][local],
+                                          parent.non_tensor_batch['candidate_original_question'][local])
+                if actual != ordinal:
+                    raise ValueError('Fixed eligible candidate pool changed order or uniqueness')
+        else:
+            parent, ordinals = stream.parents(selector, trainer.tokenizer)
         identity = prepare_identity(parent, trainer.global_steps, repeats=5,
-            candidate_offset=ordinals[0], **({k:attempt_identity[k] for k in ('attempt_id','attempt_index')}
+            candidate_offset=pool_retry*limit+ordinals[0], **({k:attempt_identity[k] for k in ('attempt_id','attempt_index')}
                                            if attempt_identity is not None else {}))
         if snapshot is None:
             snapshot = identity['policy_snapshot_id']
@@ -161,6 +198,8 @@ def collect(trainer, manager, stream, attempt_identity):
         manager.timing_raw = {}
         output = manager.run_llm_loop(gen_batch=gen,
             initial_input_ids=gen.batch['input_ids'][:,-manager.config.max_start_length:].clone().long())
+        if 'async_rollout' in output.meta_info:
+            generation_phases.append(output.meta_info['async_rollout'])
         # Save the actual post-generation sampling boundary as well as the
         # pre-generation one. A later backward failure must not require replay
         # of an already completed candidate group to reconstruct its RNG.
@@ -196,9 +235,15 @@ def collect(trainer, manager, stream, attempt_identity):
     try:
         audit = selector.audit()
     except Exception as exc:
+        summary=dict(status=str(exc),reserved=len(selector.reserved),mixed=selector.mixed_count,
+            optimizer_started=False,pool_path=str(pool),
+            raw_generated_trajectories=len(selector.reserved)*5,
+            raw_generated_policy_tokens=raw_policy_tokens,raw_actual_retrieval_calls=raw_retrieval_calls,
+            candidate_fill_seconds=time.monotonic()-started,candidate_generation_timings=generation_timings,
+            candidate_generation_phases=generation_phases)
         with (pool/'selection-failure.json').open('x') as f:
-            json.dump({'status':str(exc),'reserved':len(selector.reserved),
-                       'mixed':selector.mixed_count,'optimizer_started':False},f)
+            json.dump(summary,f);f.flush();os.fsync(f.fileno())
+        if isinstance(exc,InsufficientEligibleGroups):exc.pool_summary=summary
         raise
     members = selector.select()
     parents = DataProto.concat([candidates[x.ordinal][0] for x in members])
@@ -222,6 +267,28 @@ def collect(trainer, manager, stream, attempt_identity):
                  raw_actual_retrieval_calls=raw_retrieval_calls,
                  candidate_fill_seconds=time.monotonic()-started,
                  candidate_generation_timings=generation_timings)
+    if fixed:
+        audit.update(fixed_candidate_budget=True,pool_retry=pool_retry,pool_path=str(pool),
+                     discarded_insufficient_pools=list(discarded),
+                     candidate_generation_phases=[phase for row in discarded
+                         for phase in row['candidate_generation_phases']]+generation_phases,
+                     eligible_pool_binding=dict(stream.binding))
+        for key in ('raw_generated_trajectories','raw_generated_policy_tokens',
+                    'raw_actual_retrieval_calls','candidate_fill_seconds'):
+            audit[key] += sum(row[key] for row in discarded)
+        for row in discarded:
+            for key,value in row['candidate_generation_timings'].items():
+                audit['candidate_generation_timings'][key]=audit['candidate_generation_timings'].get(key,0.)+value
+        phases=audit['candidate_generation_phases']
+        if phases:
+            output.meta_info['async_rollout']=dict(role='fixed_candidate_pool_full_rollouts',phases=phases,
+                completed_trajectories=sum(p['completed_trajectories'] for p in phases),
+                generation_requests=sum(p['generation_requests'] for p in phases),
+                environment_actions=sum(p['environment_actions'] for p in phases),
+                peak_inflight_trajectories=max(p['peak_inflight_trajectories'] for p in phases),
+                retrieval_concurrency=phases[0]['retrieval_concurrency'],
+                phase_elapsed_seconds=sum(p['phase_elapsed_seconds'] for p in phases),
+                selected_trajectories=len(output),actor_updates_during_phase=0)
     with (directory/(tag+'.json')).open('x') as f:
         json.dump(audit,f);f.flush();os.fsync(f.fileno())
     parents = parents.repeat(repeat_times=5,interleave=True)

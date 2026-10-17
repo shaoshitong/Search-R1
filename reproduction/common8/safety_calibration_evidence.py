@@ -22,6 +22,20 @@ def _enforcement(role):
     return dict(negative_tail='observe_only' if role == 'policy_safety_calibration_discovery' else 'enforced',
                 old_policy_kl='enforced', numerical_finite='enforced', dual_clip='enforced')
 OBJECTIVE_WEIGHT_DEFINITION = 'equal two-row micro masked_mean; weighted global numerator/denominator'
+LOGICAL4_OBJECTIVE_WEIGHT_DEFINITION = 'equal four-row logical micro masked_mean; weighted global numerator/denominator'
+
+
+def objective_weight_definition(run=None):
+    """Keep historical receipt text; the new Easy scope names its logical loss."""
+    from reproduction.common8.precision_contract import easy2560_native4
+    from reproduction.common8.topology import _bound_run
+    run = _bound_run() if run is None else run
+    if run is not None and run.get('easy2560_selection') is True:
+        assert easy2560_native4(run), 'Logical4 monitor requires the explicit Easy scope'
+        return LOGICAL4_OBJECTIVE_WEIGHT_DEFINITION
+    return OBJECTIVE_WEIGHT_DEFINITION
+
+
 MONITORING_SCOPE = 'fixed four trajectories per rank across length strata; not full rollout'
 QUANTILE_METHOD = 'exact global nearest-order statistic'
 # IEEE-754 binary32 has 24 significant bits: epsilon is 2**-23 and
@@ -213,8 +227,10 @@ def verify_formal_segment(rows_by_rank, binding):
     _require(type(size) is int and size in (4, 8), 'Unsupported formal evidence topology')
     from reproduction.common8.topology import formal_monitor_geometry
     run=dict(profile='common8',training_world_size=size)
-    if 'actor_micro_batch_per_rank' in binding:
-        run['actor_micro_batch_per_rank']=binding['actor_micro_batch_per_rank']
+    for name in ('actor_micro_batch_per_rank', 'actor_logical_micro_batch_per_rank',
+                 'easy2560_selection', 'execution_site', 'execution_backend', 'data_selection_mode', 'question_probe'):
+        if name in binding:
+            run[name] = binding[name]
     try:geometry=formal_monitor_geometry(run)
     except (AssertionError,KeyError,TypeError) as failure:
         raise EvidenceError('Invalid bound formal monitor geometry: '+str(failure)) from failure
@@ -296,7 +312,7 @@ def verify_formal_segment(rows_by_rank, binding):
                     _require(row['calibration_sha256'] == binding['calibration_sha256'], 'Formal frozen plan differs')
                     _require(row['execution_role'] == 'production' and row['enforcement'] == _enforcement('production'),
                              'Formal brakes are not enforced')
-                    _require(row['objective_weight_definition'] == OBJECTIVE_WEIGHT_DEFINITION and
+                    _require(row['objective_weight_definition'] == objective_weight_definition(run) and
                              row['monitoring_scope'] == scope, 'Formal monitor weighting/scope differs')
                     _integer(row['rejection_count'], 'actual cumulative rejection_count')
                     _identity(row['monitor_identity'], monitor_count=monitor_count)

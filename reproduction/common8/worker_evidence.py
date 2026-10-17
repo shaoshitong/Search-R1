@@ -1,9 +1,11 @@
 """Durable per-rank scalar evidence, independent of Ray console forwarding."""
 import json
+import math
 import os
 from pathlib import Path
 
 from reproduction.common8.topology import monitor_trajectories_per_rank, ranks
+from reproduction.common8.safety_calibration_evidence import objective_weight_definition
 from search_g1.monitor_forward_reuse import summarize_monitor_execution
 
 
@@ -48,6 +50,11 @@ def _append_local(kind, payload):
 
 def read_console_form(base, run_id):
     run=json.loads((Path(base)/'logs/run-manifest.json').read_text())
+    if run.get('easy2560_selection') is True:
+        from reproduction.common8.precision_contract import easy2560_native4
+        from reproduction.common8.topology import formal_monitor_geometry
+        assert easy2560_native4(run)
+        geometry = formal_monitor_geometry(run)
     lines=[]
     for rank in ranks(run):
         path=Path(base)/'logs'/f'optimizer-rank-{rank}.jsonl'
@@ -58,6 +65,14 @@ def read_console_form(base, run_id):
             kind=row.pop('kind')
             if kind=='POLICY_MONITOR':
                 assert isinstance(row['allowed'],bool) and row['optimizer_writes']>=0
+                if run.get('easy2560_selection') is True:
+                    assert row['objective_weight_definition'] == objective_weight_definition(run)
+                    identity = row['monitor_identity']
+                    assert len(identity['selection_indices']) == len(set(identity['selection_indices'])) == 8
+                    assert len(identity['actor_token_lengths']) == 8
+                    if row['kl_estimate_complete']:
+                        assert math.isclose(row['effective_weight_mass'],
+                            geometry['expected_complete_effective_weight_mass'], rel_tol=1e-12, abs_tol=1e-12)
                 monitors.append(row)
                 continue
             if kind=='OUTER_BUDGET':budgets.append(row)
@@ -127,5 +142,5 @@ def read_console_form(base, run_id):
                         assert row['optimizer_writes']==start+mini+post
                         assert row['allowed'] is True and row['kl_estimate_complete'] is True
                     assert row['calibration_sha256']==calibration and row['monitor_identity']==identity
-                    assert row['objective_weight_definition']=='equal two-row micro masked_mean; weighted global numerator/denominator'
+                    assert row['objective_weight_definition'] == objective_weight_definition(run)
     return '\n'.join(lines)
