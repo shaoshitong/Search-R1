@@ -28,6 +28,16 @@ r=subprocess.run(['scontrol','show','job',s['prior_native_job'],'-o'],text=True,
 native=dict(item.split('=',1)for item in r.stdout.split()if '='in item)
 assert native['JobState']in('FAILED','CANCELLED','OUT_OF_MEMORY','COMPLETED')and native['Command']==s['resume_dataset_base']+'/preparation/native-probe20k-data.sh'
 '''.replace('SPEC',repr(config['probe20k_study']))
+    prior=config['probe20k_study'].get('prior_stopped_fit_base')if role=='fit'else None
+    if prior:
+        before=r'''
+import pathlib,json,subprocess
+s=SPEC;source=pathlib.Path(s['prior_stopped_fit_base'])
+p=json.loads((source/'preparation/human-stop-A-run-BC5-terminal-once.json').read_text())
+assert p['original_births_all_gone']and p['no_live_own_gpu']and p['base']==str(source)
+r=subprocess.run(['scontrol','show','job',s['prior_stopped_fit_job'],'-o'],capture_output=True,text=True,timeout=20)
+assert r.returncode==0 and 'JobState=CANCELLED'in r.stdout and str(source/'preparation/native-probe20k-fit.sh')in r.stdout
+'''.replace('SPEC',repr(config['probe20k_study']))
     if old:
         before=r'''
 import pathlib,json,sys,subprocess,time

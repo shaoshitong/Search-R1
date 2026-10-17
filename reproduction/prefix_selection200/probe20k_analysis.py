@@ -37,8 +37,13 @@ def score_summary(path):
 
 def aggregate(base):
     base=Path(base);config=json.loads((base/'preparation/launch-config.json').read_text());arms=[]
-    for arm in config['probe20k_study']['arms']:
-        root=base/'arms'/arm['name'];epochs=[json.loads(p.read_text())for p in sorted(root.glob('epoch-*-metrics.json'))]
+    spec=config['probe20k_study'];sources=[(arm,base/'arms'/arm['name'])for arm in spec['arms']]
+    if spec.get('comparison_baseline_base'):
+        old=Path(spec['comparison_baseline_base']);oldc=json.loads((old/'preparation/launch-config.json').read_text())
+        sources.insert(0,(next(a for a in oldc['probe20k_study']['arms']if a['name']=='data_ema'),old/'arms/data_ema'))
+    for arm,root in sources:
+        epochs=[json.loads(p.read_text())for p in sorted(root.glob('epoch-*-metrics.json'))]
+        epochs=[e for e in epochs if e['epoch']<=spec['epochs']]
         for epoch in epochs:
             for mode in ('raw','ema'):
                 for split in ('train','test'):
@@ -46,7 +51,8 @@ def aggregate(base):
         updates=root/'global-loss-updates.jsonl';curve={}
         if updates.exists():
             for line in updates.open():
-                row=json.loads(line);curve.setdefault(row['epoch'],[]).append(row)
+                row=json.loads(line)
+                if row['epoch']<=spec['epochs']:curve.setdefault(row['epoch'],[]).append(row)
         summaries=[]
         for epoch,rows in sorted(curve.items()):
             summaries.append(dict(epoch=epoch,actual_updates=len(rows),first=rows[0],last=rows[-1],

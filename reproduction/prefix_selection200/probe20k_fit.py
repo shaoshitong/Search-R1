@@ -197,8 +197,8 @@ def train(base,arm_name):
                     metrics_sha256=sha(out/('epoch-%02d-metrics.json'%epoch)),train_loop_seconds=seconds)
                 once(out/('epoch-%02d-complete.json'%epoch),complete);publish(out/'latest.json',complete)
             dist.barrier()
-        if rank==0:once(out/'complete.json',dict(status='ACTUAL_20K_PROBE_ARM_TEN_EPOCHS_COMPLETE',arm=arm_name,epochs=10,
-            new_adam_per_rank=4000,actual_adam_per_rank=[4200]*8,ema_updates=4000,actor_updates=0,latest=read(out/'latest.json')))
+        if rank==0:once(out/'complete.json',dict(status='ACTUAL_20K_PROBE_ARM_COMPLETE',arm=arm_name,epochs=s['epochs'],
+            new_adam_per_rank=400*s['epochs'],actual_adam_per_rank=[200+400*s['epochs']]*8,ema_updates=400*s['epochs'],actor_updates=0,latest=read(out/'latest.json')))
     finally:
         data.close();test.close()
         if dist.is_initialized():dist.destroy_process_group()
@@ -230,8 +230,8 @@ def run(base):
             while p.poll()is None:owned.observe(name);interrupt.check();time.sleep(1)
             owned.observe(name);owned.jobs[name]['exit_code']=p.returncode;owned.save();owned.stop(name)
             if p.returncode:raise RuntimeError('Actual20k probe arm failed: '+name)
-            assert read(base/'arms'/name/'complete.json')['actual_adam_per_rank']==[4200]*8
-        once(base/'logs/pipeline-complete.json',dict(status='THREE_MATCHED_20K_EMA_PROBE_ARMS_COMPLETE',arms=[v['name']for v in s['arms']],actor_updates=0,formal200_resumed=False))
+            assert read(base/'arms'/name/'complete.json')['actual_adam_per_rank']==[200+400*s['epochs']]*8
+        once(base/'logs/pipeline-complete.json',dict(status='MATCHED_20K_EMA_PROBE_ARMS_COMPLETE',arms=[v['name']for v in s['arms']],epochs_per_arm=s['epochs'],actor_updates=0,formal200_resumed=False))
     finally:
         try:
             owned.stop_all();owned.reap();births=[v for j in owned.jobs.values()for v in j['ledger'].values()];present=birth_states(births)
