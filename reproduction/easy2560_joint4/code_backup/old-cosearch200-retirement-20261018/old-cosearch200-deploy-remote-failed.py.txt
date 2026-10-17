@@ -1,0 +1,24 @@
+import base64,hashlib,json,os,socket,stat,subprocess,sys,time
+from pathlib import Path
+x=json.load(sys.stdin);site=x['site'];expected_uid=14090 if site=='hpc' else 1002;expected_host='ACD-Login-1' if site=='hpc' else 'xielab3'
+assert os.getuid()==expected_uid and socket.gethostname()==expected_host
+root=Path(x['code_root']);assert root.resolve()==root
+task_umask=os.umask(0o022);root.mkdir(parents=True,mode=0o755,exist_ok=True);assert root.stat().st_uid==expected_uid
+records={}
+for name,row in x['files'].items():
+ assert name in ('retire_old_cosearch200.py','candidate.json');p=root/name;raw=base64.b64decode(row['data_b64']);assert len(raw)==row['bytes'] and hashlib.sha256(raw).hexdigest()==row['sha256']
+ if p.exists():assert p.resolve()==p and stat.S_ISREG(p.lstat().st_mode) and p.stat().st_uid==expected_uid and p.read_bytes()==raw
+ else:
+  fd=os.open(p,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o644)
+  with os.fdopen(fd,'wb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
+ got=p.read_bytes();assert hashlib.sha256(got).hexdigest()==row['sha256'];records[name]={'bytes':len(got),'sha256':hashlib.sha256(got).hexdigest()}
+manifest={'role':'standalone_old_failed_cosearch200_retirement','operator_commit':x['operator_commit'],'source_job':'713379','step':200,'operation_id':x['operation_id'],'target_count':25,'retained_archive_core_count':33,'files':records}
+p=root/'source-manifest.json';raw=(json.dumps(manifest,indent=2,sort_keys=True)+'
+').encode()
+if p.exists():assert p.resolve()==p and p.read_bytes()==raw
+else:
+ fd=os.open(p,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o644)
+ with os.fdopen(fd,'wb') as f:f.write(raw);f.flush();os.fsync(f.fileno())
+fd=os.open(root,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW);os.fsync(fd);os.close(fd);os.umask(task_umask)
+r=subprocess.run([x['python'],'-B',str(root/'retire_old_cosearch200.py'),'--help'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=20);assert r.returncode==0 and not r.stderr
+print(json.dumps({'site':site,'uid':os.getuid(),'host':socket.gethostname(),'checked_unix':time.time(),'code_root':str(root),'files':records,'code_manifest_sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'help_returncode':r.returncode,'help_stderr':r.stderr,'python_outer_version':sys.version,'no_payload_sha_or_unlink_started':True},sort_keys=True))
