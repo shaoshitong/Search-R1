@@ -1,0 +1,52 @@
+{
+  "status": "MILESTONE100_CPU_ACCEPTANCE_PENDING_MANAGEMENT_UNREACHABLE",
+  "recorded_unix": 1792200799.9785101,
+  "run_id": "f3ee1435e5014ba1969387c91878893a",
+  "job_id": 3427,
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4",
+  "runtime_source_commit": "e3463cfddca71a22ac684d75c875dbe123e8bc43",
+  "runtime_config_sha256": "384cf0f516e7bf9ce3623bdf48e87a078f8eceaa5af5e03f238e04e86ae59ad8",
+  "published_control_commit": "155206e38c356cd1f28e44ee6c34004c20fa3b40",
+  "core_helper_sha256": "5ebc33355a6b6516bfe06cf04cb970887a95ec93e86eb0be4e3d7614865d8211",
+  "last_successful_direct_observation": {
+    "observed_unix": 1792200421.635691,
+    "milestone100_exists": false,
+    "latest_joint_outer": 99,
+    "latest_joint_unix": 1792200228.0672581,
+    "actor_steps": [
+      1980,
+      1980,
+      1980,
+      1980,
+      1980,
+      1980,
+      1980,
+      1980
+    ],
+    "probe_steps": [
+      1980,
+      1980,
+      1980,
+      1980,
+      1980,
+      1980,
+      1980,
+      1980
+    ]
+  },
+  "last_successful_direct_observation_file": "milestone-wait-1792200414739347000-result.json",
+  "current_training_status": "UNKNOWN_management_unreachable_not_a_training_terminal",
+  "current_milestone100_status": "UNKNOWN_after_last_successful_observation",
+  "audit_intent_created": false,
+  "cpu_unit_submitted": false,
+  "cpu_audit_executed": false,
+  "pass_created": false,
+  "large_weight_files_read": false,
+  "gpu_forward_performed": false,
+  "training_modified": false,
+  "global_ssh_network_credentials_modified": false,
+  "source_ip_route_attempted_by_this_worker": false,
+  "failed_ordinary_and_compat_transport": 2,
+  "latest_parent_instruction": "Retain100 pending if both routes fail; no repeated high-frequency retry, no CPU intent. Parent keeps goal active and will continue same3427 after management recovers.",
+  "next_action": "After management recovers, directly verify same run/job and actual joint100, writer STOPPED and immutable producer receipts; then invoke published checkpoint_cpu_control with checkpoint100 config once and observe real progress/exit. Do not repeat5/50 or resubmit training."
+}
