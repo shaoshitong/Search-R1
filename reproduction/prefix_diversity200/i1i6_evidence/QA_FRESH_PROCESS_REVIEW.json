@@ -1,0 +1,1117 @@
+{
+  "reviewed_utc": "2026-10-17T06:36:15.865529+00:00",
+  "scope": "Independent local bounded review. Fake subprocess fixtures only; no remote, GPU, deployment, source or training operation.",
+  "reviewed_source_sha256": {
+    "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/evaluation_initialization.py": "6b51a9c15757e1ac1671aca342ba16c3e22cca63c2fa60b803c55b9e143ce35b",
+    "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/eval.py": "d46dd5ceda077b85fa447c776925b345fd541e1318ab25f8e229b3404734066b",
+    "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/h1008_qprobe/management_transport.py": "49a71c7dce7a263ddbfbf46b26916a38c6d919cb15e02a00914d39f830563970"
+  },
+  "fixtures": {
+    "constructor_retry_fresh_pid_reap_first": {
+      "error": null,
+      "attempt_counts": {
+        "0": 2
+      },
+      "events": [
+        [
+          "spawn",
+          0,
+          1,
+          10000
+        ],
+        [
+          "wait",
+          0,
+          1,
+          10000
+        ],
+        [
+          "spawn",
+          0,
+          2,
+          10001
+        ],
+        [
+          "wait",
+          0,
+          2,
+          10001
+        ]
+      ],
+      "all_owned_reaped": true,
+      "fresh_pid_distinct": true,
+      "partial_preserved": false,
+      "receipt": {
+        "actual_worker_exit_codes": {
+          "0": 0
+        },
+        "reused_rank_receipts": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "initialization_attempt_history": [
+          {
+            "rank": 0,
+            "pid": 10000,
+            "attempt": 1,
+            "exit_code": 1,
+            "config_sha256": "24c187128edc01523b9d06b10e2e3421d5ef20c5aef3d98a19da536bf71e9291",
+            "status_path": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-fresh-cpu-3wyynubc/qa/initialization-attempts/rank-0-attempt-01-status.json",
+            "started_unix": 1792218975.03349,
+            "ended_unix": 1792218975.033577,
+            "status": {
+              "kind": "INITIALIZATION_FAILED",
+              "run_id": "review-fixture",
+              "actor_version": "actor5",
+              "rank": 0,
+              "pid": 10000,
+              "attempt": 1,
+              "config_sha256": "24c187128edc01523b9d06b10e2e3421d5ef20c5aef3d98a19da536bf71e9291",
+              "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-fresh-cpu-3wyynubc/model",
+              "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+              "expected_count": 512,
+              "retryable_initialization": true,
+              "actual_cuda_oom": true,
+              "invalid_memory_profile": false
+            }
+          },
+          {
+            "rank": 0,
+            "pid": 10001,
+            "attempt": 2,
+            "exit_code": 0,
+            "config_sha256": "50cab876f92cf4983ffb5cb52dacf71c63dbbf63a71c282152997978c4fead17",
+            "status_path": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-fresh-cpu-3wyynubc/qa/initialization-attempts/rank-0-attempt-02-status.json",
+            "started_unix": 1792218975.03423,
+            "ended_unix": 1792218975.236671,
+            "status": {
+              "kind": "INITIALIZATION_FAILED",
+              "run_id": "review-fixture",
+              "actor_version": "actor5",
+              "rank": 0,
+              "pid": 10001,
+              "attempt": 2,
+              "config_sha256": "50cab876f92cf4983ffb5cb52dacf71c63dbbf63a71c282152997978c4fead17",
+              "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-fresh-cpu-3wyynubc/model",
+              "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+              "expected_count": 512,
+              "retryable_initialization": true,
+              "actual_cuda_oom": true,
+              "invalid_memory_profile": false
+            }
+          }
+        ],
+        "initialization_supervisor_cuda_initialized": false
+      }
+    },
+    "generation_error_never_retried": {
+      "error": {
+        "type": "RuntimeError",
+        "message": "Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 1, 'exit_code': 1, 'config_sha256': '8ce97280"
+      },
+      "attempt_counts": {
+        "0": 1
+      },
+      "events": [
+        [
+          "spawn",
+          0,
+          1,
+          10000
+        ],
+        [
+          "wait",
+          0,
+          1,
+          10000
+        ]
+      ],
+      "all_owned_reaped": true,
+      "fresh_pid_distinct": true,
+      "partial_preserved": false,
+      "receipt": null
+    },
+    "wrong_status_pid_rejected": {
+      "error": {
+        "type": "RuntimeError",
+        "message": "Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 1, 'exit_code': 1, 'config_sha256': '84687d92"
+      },
+      "attempt_counts": {
+        "0": 1
+      },
+      "events": [
+        [
+          "spawn",
+          0,
+          1,
+          10000
+        ],
+        [
+          "wait",
+          0,
+          1,
+          10000
+        ]
+      ],
+      "all_owned_reaped": true,
+      "fresh_pid_distinct": true,
+      "partial_preserved": false,
+      "receipt": null
+    },
+    "partial_preserved_no_retry": {
+      "error": {
+        "type": "RuntimeError",
+        "message": "Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 1, 'exit_code': 1, 'config_sha256': '36d8daa4"
+      },
+      "attempt_counts": {
+        "0": 1
+      },
+      "events": [
+        [
+          "spawn",
+          0,
+          1,
+          10000
+        ],
+        [
+          "wait",
+          0,
+          1,
+          10000
+        ]
+      ],
+      "all_owned_reaped": true,
+      "fresh_pid_distinct": true,
+      "partial_preserved": true,
+      "receipt": null
+    },
+    "maximum_four_constructor_attempts": {
+      "error": {
+        "type": "RuntimeError",
+        "message": "Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10003, 'attempt': 4, 'exit_code': 1, 'config_sha256': 'a6e2c807"
+      },
+      "attempt_counts": {
+        "0": 4
+      },
+      "events": [
+        [
+          "spawn",
+          0,
+          1,
+          10000
+        ],
+        [
+          "wait",
+          0,
+          1,
+          10000
+        ],
+        [
+          "spawn",
+          0,
+          2,
+          10001
+        ],
+        [
+          "wait",
+          0,
+          2,
+          10001
+        ],
+        [
+          "spawn",
+          0,
+          3,
+          10002
+        ],
+        [
+          "wait",
+          0,
+          3,
+          10002
+        ],
+        [
+          "spawn",
+          0,
+          4,
+          10003
+        ],
+        [
+          "wait",
+          0,
+          4,
+          10003
+        ]
+      ],
+      "all_owned_reaped": true,
+      "fresh_pid_distinct": true,
+      "partial_preserved": false,
+      "receipt": null
+    },
+    "spawn_exception_owned_cleanup": {
+      "error": {
+        "type": "OSError",
+        "message": "injected Popen failure"
+      },
+      "attempt_counts": {
+        "0": 1,
+        "1": 1,
+        "2": 1
+      },
+      "events": [
+        [
+          "spawn",
+          0,
+          1,
+          10000
+        ],
+        [
+          "spawn",
+          1,
+          1,
+          10001
+        ],
+        [
+          "terminate",
+          0,
+          1,
+          10000
+        ],
+        [
+          "terminate",
+          1,
+          1,
+          10001
+        ],
+        [
+          "wait",
+          0,
+          1,
+          10000
+        ],
+        [
+          "wait",
+          1,
+          1,
+          10001
+        ]
+      ],
+      "all_owned_reaped": true,
+      "fresh_pid_distinct": true,
+      "partial_preserved": false,
+      "receipt": null
+    },
+    "cleanup_terminate_exception": {
+      "error": {
+        "type": "ProcessLookupError",
+        "message": "injected terminate race"
+      },
+      "attempt_counts": {
+        "0": 1,
+        "1": 1,
+        "2": 1
+      },
+      "events": [
+        [
+          "spawn",
+          0,
+          1,
+          10000
+        ],
+        [
+          "spawn",
+          1,
+          1,
+          10001
+        ],
+        [
+          "terminate",
+          0,
+          1,
+          10000
+        ]
+      ],
+      "all_owned_reaped": false,
+      "fresh_pid_distinct": true,
+      "partial_preserved": false,
+      "receipt": null
+    },
+    "resume_existing_attempt_directory": {
+      "error": {
+        "type": "FileExistsError",
+        "message": "[Errno 17] File exists: '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-fresh-cpu-1fos4yyb/qa/initialization-attempts'"
+      },
+      "attempt_counts": {},
+      "events": [],
+      "all_owned_reaped": true,
+      "fresh_pid_distinct": true,
+      "partial_preserved": false,
+      "receipt": null
+    },
+    "classifier": {
+      "known_profile_assertion_retryable": true,
+      "arbitrary_suffix_profile_assertion_retryable": true,
+      "generic_assertion_retryable": false,
+      "non_oom_runtime_retryable": false
+    }
+  },
+  "verdict": "PASS_LOCAL_CPU_REVIEW_NO_BLOCKER",
+  "findings": [],
+  "reviewed_positive_properties": [
+    "One factory construction per worker; failed constructor status is emitted only inside the constructor exception block.",
+    "A failed worker is wait/reaped before a replacement rank starts; replacement launches Python -m through Popen, not CUDA fork.",
+    "Bound initialization status includes PID, rank, attempt, attempt-config hash, run, actor, model, source SHA and expected question count.",
+    "READY/generation failure, mismatched PID, and existing raw shard are rejected; failed shards are preserved.",
+    "Fake subprocess attempts stop at4; OOM settings backoff changes scalar utilization and scheduler limits while preserving model/seed/expected_count/question source.",
+    "No modifications observed to the shared interaction budget or strict scoring implementation; worker remainsBF16,TP1,max_model_len4096; all8ranks retained.",
+    "The management transport diff only adds human-authorizedh100-5/h100-11 to existingh100-8/h100-10 allowlists and CLI choices."
+  ],
+  "fixture_limitations": [
+    "Only CPU fake Popen lifecycle and filesystem/status behavior were tested; fake PIDs demonstrate ordering, not operating-system CUDA teardown.",
+    "No GPU/remote acceptance, training state read, training process mutation, deployment, or model loading was performed.",
+    "Source files were not edited by the reviewer; source hashes identify the reviewed snapshot."
+  ],
+  "input_evidence": [
+    "QA5_FAILURE_EVIDENCE.json",
+    "QA5_FAILURE_ANALYSIS.json"
+  ],
+  "report_completed_utc": "2026-10-17T06:42:13.875852+00:00",
+  "previous_review_verdict": "BLOCKED_PENDING_MINIMAL_SUPERVISOR_FIXES",
+  "previous_findings": [
+    {
+      "priority": "P1",
+      "file": "reproduction/prefix_diversity200/evaluation_initialization.py",
+      "lines": [
+        47,
+        52
+      ],
+      "title": "Existing attempt directory prevents recovering incomplete QA",
+      "trigger": "Relaunch the same output after any supervisor invocation has made initialization-attempts while fewer than eight rank receipts exist.",
+      "observed": "FileExistsError is raised before a missing rank can start. Successful existing rank receipts are preserved but cannot be reused to complete the evaluation.",
+      "minimal_fix": "Preserve old evidence and validate it before continuing; use a durable rank attempt counter with new filenames/session identity, permitting recovery only for a rank with no raw shard and with remaining <=4 total constructor attempts. An existing-directory flag alone still collides with attempt-01 config/log."
+    },
+    {
+      "priority": "P1",
+      "file": "reproduction/prefix_diversity200/evaluation_initialization.py",
+      "lines": [
+        100,
+        108
+      ],
+      "title": "A cleanup exception leaves other owned evaluation workers unreaped",
+      "trigger": "Failure spawning a later worker, then an owned worker terminate() or wait()/kill() raises during cleanup.",
+      "observed": "Injected terminate ProcessLookupError aborts finally before either active worker is waited; later workers do not receive cleanup. This is not whole-own-worker cleanup.",
+      "minimal_fix": "Handle cleanup per process and always close each stream in its own finally. Attempt terminate/wait/kill/reap for every owned process despite earlier cleanup exceptions, preserving the primary error and reporting aggregated cleanup failures."
+    },
+    {
+      "priority": "P2",
+      "file": "reproduction/prefix_diversity200/evaluation_initialization.py",
+      "lines": [
+        11,
+        14
+      ],
+      "title": "Profiling assertion recognition accepts arbitrary suffixes",
+      "trigger": "An AssertionError with the known numeric prefix but unrelated appended text.",
+      "observed": "The arbitrary-suffix fake assertion is marked retryable; the requirement says the exact observed profiling assertion only.",
+      "minimal_fix": "Use fullmatch against the complete known vLLM assertion template with numeric fields; retain strict exception type. Add one known-message and one wrong-suffix negative fixture."
+    }
+  ],
+  "rereview": {
+    "utc": "2026-10-17T06:41:32.171197+00:00",
+    "source_sha256": {
+      "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/evaluation_initialization.py": "2cf640ac2c6bbf5fcf174007256df722cfcb597e4a7317e766776a7c5ff5ea89",
+      "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/eval.py": "c2e0cb608203189122147d59cf75f513e2610b351508541d8918a9589c4c0a1d"
+    },
+    "fixtures": {
+      "fresh_retry_reap_before_fresh_pid": {
+        "passed": true,
+        "error": null,
+        "launched_rank_attempts": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "events": [
+          [
+            "spawn",
+            0,
+            1,
+            10000
+          ],
+          [
+            "wait",
+            0,
+            1,
+            10000
+          ],
+          [
+            "spawn",
+            0,
+            2,
+            10001
+          ],
+          [
+            "wait",
+            0,
+            2,
+            10001
+          ]
+        ],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-dw5nm7go/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [],
+          "completed_utc": "2026-10-17T06:41:31.513652+00:00",
+          "primary_error": null,
+          "unreaped_ranks": []
+        }
+      },
+      "clean_partial_rank_resume": {
+        "passed": true,
+        "error": null,
+        "launched_rank_attempts": [
+          [
+            0,
+            2
+          ]
+        ],
+        "events": [
+          [
+            "spawn",
+            0,
+            2,
+            10000
+          ],
+          [
+            "wait",
+            0,
+            2,
+            10000
+          ]
+        ],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-ugcuuoc4/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [],
+          "completed_utc": "2026-10-17T06:41:31.518176+00:00",
+          "primary_error": null,
+          "unreaped_ranks": []
+        }
+      },
+      "global_max4_after_resume": {
+        "passed": true,
+        "error": {
+          "type": "RuntimeError",
+          "message": "Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 4, 'exit_code': 1, 'reaped': True, 'config_sha256': 'e7a2dc2f9fda"
+        },
+        "launched_rank_attempts": [
+          [
+            0,
+            4
+          ]
+        ],
+        "events": [
+          [
+            "spawn",
+            0,
+            4,
+            10000
+          ],
+          [
+            "wait",
+            0,
+            4,
+            10000
+          ]
+        ],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-l_8szetf/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [],
+          "completed_utc": "2026-10-17T06:41:31.523603+00:00",
+          "primary_error": "RuntimeError(\"Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 4, 'exit_code': 1, 'reaped': True, 'config_sha256': 'e7a2dc2f9fda88c98f4edca8a085e7054a9298147329b4b1b8c37fece2feff0d', 'status_path': '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-l_8szetf/out/initialization-attempts/rank-0-attempt-04-status.json', 'started_unix': 1792219291.523283, 'ended_unix': 1792219291.523341, 'status': {'kind': 'INITIALIZATION_FAILED', 'run_id': 'fixture', 'actor_version': 'actor5', 'rank': 0, 'pid': 10000, 'attempt': 4, 'config_sha256': 'e7a2dc2f9fda88c98f4edca8a085e7054a9298147329b4b1b8c37fece2feff0d', 'actor_model_dir': '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-l_8szetf/model', 'question_source_sha256': '0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa', 'expected_count': 512, 'retryable_initialization': True, 'actual_cuda_oom': True, 'invalid_memory_profile': False}, 'cleanup': False}\")",
+          "unreaped_ranks": []
+        }
+      },
+      "global_max4_fresh": {
+        "passed": true,
+        "error": {
+          "type": "RuntimeError",
+          "message": "Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10003, 'attempt': 4, 'exit_code': 1, 'reaped': True, 'config_sha256': 'c3d9e30b8e55"
+        },
+        "launched_rank_attempts": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            3
+          ],
+          [
+            0,
+            4
+          ]
+        ],
+        "events": [
+          [
+            "spawn",
+            0,
+            1,
+            10000
+          ],
+          [
+            "wait",
+            0,
+            1,
+            10000
+          ],
+          [
+            "spawn",
+            0,
+            2,
+            10001
+          ],
+          [
+            "wait",
+            0,
+            2,
+            10001
+          ],
+          [
+            "spawn",
+            0,
+            3,
+            10002
+          ],
+          [
+            "wait",
+            0,
+            3,
+            10002
+          ],
+          [
+            "spawn",
+            0,
+            4,
+            10003
+          ],
+          [
+            "wait",
+            0,
+            4,
+            10003
+          ]
+        ],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-ve0s6h18/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [],
+          "completed_utc": "2026-10-17T06:41:32.134207+00:00",
+          "primary_error": "RuntimeError(\"Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10003, 'attempt': 4, 'exit_code': 1, 'reaped': True, 'config_sha256': 'c3d9e30b8e551c464a77ec2df95097c51b1f104b66f3ea790139b887474f1916', 'status_path': '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-ve0s6h18/out/initialization-attempts/rank-0-attempt-04-status.json', 'started_unix': 1792219291.9322932, 'ended_unix': 1792219292.133813, 'status': {'kind': 'INITIALIZATION_FAILED', 'run_id': 'fixture', 'actor_version': 'actor5', 'rank': 0, 'pid': 10003, 'attempt': 4, 'config_sha256': 'c3d9e30b8e551c464a77ec2df95097c51b1f104b66f3ea790139b887474f1916', 'actor_model_dir': '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-ve0s6h18/model', 'question_source_sha256': '0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa', 'expected_count': 512, 'retryable_initialization': True, 'actual_cuda_oom': True, 'invalid_memory_profile': False}, 'cleanup': False}\")",
+          "unreaped_ranks": []
+        }
+      },
+      "concurrent_owner_rejected": {
+        "passed": true,
+        "error": null,
+        "launched_rank_attempts": [
+          [
+            0,
+            1
+          ]
+        ],
+        "events": [
+          [
+            "spawn",
+            0,
+            1,
+            10000
+          ],
+          [
+            "wait",
+            0,
+            1,
+            10000
+          ]
+        ],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [
+          "blocked"
+        ],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-ks7g8q_0/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [],
+          "completed_utc": "2026-10-17T06:41:32.140511+00:00",
+          "primary_error": null,
+          "unreaped_ranks": []
+        }
+      },
+      "terminate_exception_all_reaped": {
+        "passed": true,
+        "error": {
+          "type": "OSError",
+          "message": "injected Popen failure"
+        },
+        "launched_rank_attempts": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "events": [
+          [
+            "spawn",
+            0,
+            1,
+            10000
+          ],
+          [
+            "spawn",
+            1,
+            1,
+            10001
+          ],
+          [
+            "terminate",
+            0,
+            1,
+            10000
+          ],
+          [
+            "terminate",
+            1,
+            1,
+            10001
+          ],
+          [
+            "wait",
+            0,
+            1,
+            10000
+          ],
+          [
+            "wait",
+            1,
+            1,
+            10001
+          ]
+        ],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-174or_0m/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [
+            {
+              "error": "ProcessLookupError('injected terminate race')",
+              "operation": "terminate",
+              "rank": 0
+            }
+          ],
+          "completed_utc": "2026-10-17T06:41:32.145699+00:00",
+          "primary_error": "OSError('injected Popen failure')",
+          "unreaped_ranks": []
+        }
+      },
+      "wait_exception_final_reap_all": {
+        "passed": true,
+        "error": {
+          "type": "OSError",
+          "message": "injected Popen failure"
+        },
+        "launched_rank_attempts": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "events": [
+          [
+            "spawn",
+            0,
+            1,
+            10000
+          ],
+          [
+            "spawn",
+            1,
+            1,
+            10001
+          ],
+          [
+            "terminate",
+            0,
+            1,
+            10000
+          ],
+          [
+            "terminate",
+            1,
+            1,
+            10001
+          ],
+          [
+            "wait",
+            0,
+            1,
+            10000
+          ],
+          [
+            "kill",
+            0,
+            1,
+            10000
+          ],
+          [
+            "wait",
+            0,
+            1,
+            10000
+          ],
+          [
+            "wait",
+            1,
+            1,
+            10001
+          ]
+        ],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-mqskm6rf/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [
+            {
+              "error": "OSError('injected wait failure')",
+              "operation": "reap",
+              "rank": 0
+            }
+          ],
+          "completed_utc": "2026-10-17T06:41:32.151316+00:00",
+          "primary_error": "OSError('injected Popen failure')",
+          "unreaped_ranks": []
+        }
+      },
+      "ambiguous_prior_launch_rejected": {
+        "passed": true,
+        "error": {
+          "type": "RuntimeError",
+          "message": "QA attempt journal is incomplete; preserve evidence and reconcile before retry"
+        },
+        "launched_rank_attempts": [],
+        "events": [],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-7a0l5gws/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [],
+          "completed_utc": "2026-10-17T06:41:32.154552+00:00",
+          "primary_error": "RuntimeError('QA attempt journal is incomplete; preserve evidence and reconcile before retry')",
+          "unreaped_ranks": []
+        }
+      },
+      "partial_raw_preserved_no_launch": {
+        "passed": true,
+        "error": {
+          "type": "FileExistsError",
+          "message": "Preserve partial QA shard; constructor retries cannot resample answers"
+        },
+        "launched_rank_attempts": [],
+        "events": [],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-u_f805ys/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [],
+          "completed_utc": "2026-10-17T06:41:32.157832+00:00",
+          "primary_error": "FileExistsError('Preserve partial QA shard; constructor retries cannot resample answers')",
+          "unreaped_ranks": []
+        }
+      },
+      "wrong_binding_rejected": {
+        "passed": true,
+        "error": {
+          "type": "RuntimeError",
+          "message": "Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 1, 'exit_code': 1, 'reaped': True, 'config_sha256': 'dc97c86a60ea"
+        },
+        "launched_rank_attempts": [
+          [
+            0,
+            1
+          ]
+        ],
+        "events": [
+          [
+            "spawn",
+            0,
+            1,
+            10000
+          ],
+          [
+            "wait",
+            0,
+            1,
+            10000
+          ]
+        ],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-ms23867n/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [],
+          "completed_utc": "2026-10-17T06:41:32.161782+00:00",
+          "primary_error": "RuntimeError(\"Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 1, 'exit_code': 1, 'reaped': True, 'config_sha256': 'dc97c86a60ea405b3c084a3735392ae75340dee4bfa5af55cb5fced9515405dd', 'status_path': '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-ms23867n/out/initialization-attempts/rank-0-attempt-01-status.json', 'started_unix': 1792219292.161522, 'ended_unix': 1792219292.1615849, 'status': {'kind': 'INITIALIZATION_FAILED', 'run_id': 'fixture', 'actor_version': 'actor5', 'rank': 0, 'pid': 10100, 'attempt': 1, 'config_sha256': 'dc97c86a60ea405b3c084a3735392ae75340dee4bfa5af55cb5fced9515405dd', 'actor_model_dir': '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-ms23867n/model', 'question_source_sha256': '0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa', 'expected_count': 512, 'retryable_initialization': True, 'actual_cuda_oom': True, 'invalid_memory_profile': False}, 'cleanup': False}\")",
+          "unreaped_ranks": []
+        }
+      },
+      "generation_failure_not_retried": {
+        "passed": true,
+        "error": {
+          "type": "RuntimeError",
+          "message": "Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 1, 'exit_code': 1, 'reaped': True, 'config_sha256': 'c137cde1de83"
+        },
+        "launched_rank_attempts": [
+          [
+            0,
+            1
+          ]
+        ],
+        "events": [
+          [
+            "spawn",
+            0,
+            1,
+            10000
+          ],
+          [
+            "wait",
+            0,
+            1,
+            10000
+          ]
+        ],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-3fpy88i9/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [],
+          "completed_utc": "2026-10-17T06:41:32.166005+00:00",
+          "primary_error": "RuntimeError(\"Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 1, 'exit_code': 1, 'reaped': True, 'config_sha256': 'c137cde1de83e1d0707892a0ee8193d0387b483ed0c8267293be35297a8d0bda', 'status_path': '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-3fpy88i9/out/initialization-attempts/rank-0-attempt-01-status.json', 'started_unix': 1792219292.1657212, 'ended_unix': 1792219292.165789, 'status': {'kind': 'INITIALIZATION_READY', 'run_id': 'fixture', 'actor_version': 'actor5', 'rank': 0, 'pid': 10000, 'attempt': 1, 'config_sha256': 'c137cde1de83e1d0707892a0ee8193d0387b483ed0c8267293be35297a8d0bda', 'actor_model_dir': '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-3fpy88i9/model', 'question_source_sha256': '0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa', 'expected_count': 512, 'retryable_initialization': True, 'actual_cuda_oom': True, 'invalid_memory_profile': False}, 'cleanup': False}\")",
+          "unreaped_ranks": []
+        }
+      },
+      "raw_created_after_failure_not_retried": {
+        "passed": true,
+        "error": {
+          "type": "RuntimeError",
+          "message": "Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 1, 'exit_code': 1, 'reaped': True, 'config_sha256': '9dc2ad03d3c7"
+        },
+        "launched_rank_attempts": [
+          [
+            0,
+            1
+          ]
+        ],
+        "events": [
+          [
+            "spawn",
+            0,
+            1,
+            10000
+          ],
+          [
+            "wait",
+            0,
+            1,
+            10000
+          ]
+        ],
+        "all_owned_reaped": true,
+        "all_log_handles_closed": true,
+        "owner_contention": [],
+        "terminal": {
+          "all_owned_workers_reaped": true,
+          "binding": {
+            "actor_model_dir": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-thr2enx0/model",
+            "actor_version": "actor5",
+            "expected_count": 512,
+            "original_config_sha256": "b2689699df4caf2b5bd53ea8fc4e3852cc971d583f9864b4659c4762ba33aa60",
+            "question_source_sha256": "0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa",
+            "run_id": "fixture"
+          },
+          "cleanup_errors": [],
+          "completed_utc": "2026-10-17T06:41:32.169530+00:00",
+          "primary_error": "RuntimeError(\"Owned QA worker failed outside a retryable uncommitted constructor: {'rank': 0, 'pid': 10000, 'attempt': 1, 'exit_code': 1, 'reaped': True, 'config_sha256': '9dc2ad03d3c7dbf0116e6d78ec2c10f24a365d0b63b5ea2be8604d699d297a5d', 'status_path': '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-thr2enx0/out/initialization-attempts/rank-0-attempt-01-status.json', 'started_unix': 1792219292.1691651, 'ended_unix': 1792219292.169238, 'status': {'kind': 'INITIALIZATION_FAILED', 'run_id': 'fixture', 'actor_version': 'actor5', 'rank': 0, 'pid': 10000, 'attempt': 1, 'config_sha256': '9dc2ad03d3c7dbf0116e6d78ec2c10f24a365d0b63b5ea2be8604d699d297a5d', 'actor_model_dir': '/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qa-rereview-cpu-thr2enx0/model', 'question_source_sha256': '0f6244832676abafd5fea72b1f97c1539d235c5092a7931a161ebc7ec58c4bfa', 'expected_count': 512, 'retryable_initialization': True, 'actual_cuda_oom': True, 'invalid_memory_profile': False}, 'cleanup': False}\")",
+          "unreaped_ranks": []
+        }
+      },
+      "exact_assertion_classifier": {
+        "known": true,
+        "wrong_suffix": false,
+        "non_assertion": false
+      }
+    },
+    "scope": "Current supervisor and eval aggregate reuse reviewed with local CPU fake Popen and synthetic512 receipt fixtures. No source edit, remote, GPU, deployment, or training action.",
+    "limitations": [
+      "CPU fake subprocesses prove supervisor lifecycle ordering, not actual CUDA context teardown or GPU execution.",
+      "Aggregate fixtures use 512 synthetic canonical identities and fake small raw shards; no real questions or QA are generated."
+    ],
+    "aggregate_cpu_fixtures": {
+      "valid_existing_aggregate_reused": true,
+      "wrong_aggregate_model": true,
+      "wrong_aggregate_run": true,
+      "wrong_aggregate_score": true,
+      "wrong_aggregate_rank_hash": true,
+      "wrong_rank_seed": true,
+      "wrong_rank_qid": true,
+      "wrong_rank_contract": true,
+      "wrong_rank_dtype": true,
+      "same_size_raw_shard_tamper_rejected": true,
+      "changed_canonical_source_rejected": true
+    },
+    "aggregate_source_sha256": "c2e0cb608203189122147d59cf75f513e2610b351508541d8918a9589c4c0a1d",
+    "completed_utc": "2026-10-17T06:42:02.874019+00:00",
+    "resolved_previous_findings": [
+      "P1 incomplete evaluation recovery",
+      "P1 cleanup exception skips other owned children",
+      "P2 nonexact profiling assertion classifier"
+    ],
+    "source_still_matches": {
+      "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/evaluation_initialization.py": true,
+      "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016/reproduction/prefix_diversity200/eval.py": true
+    }
+  },
+  "previous_additional_observation": "Canonical rank receipt hardening was being edited concurrently by the main agent; this report does not assert completion of that independent change. Existing top-level complete.json fast path still relies on limited old checks in the reviewed view.",
+  "additional_observation": "Re-review passed: all initial findings resolved by exact classifier, bound durable attempt/reap journal and owner lock, and per-worker isolated cleanup. Current complete.json reuse revalidates all canonical rank receipts and raw-shard hashes before checking aggregate identity and metrics. No blocking finding in this bounded review."
+}

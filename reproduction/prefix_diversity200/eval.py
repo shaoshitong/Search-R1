@@ -52,57 +52,27 @@ def load_questions(path, expected_count):
     return rows
 
 
-def _cleanup_failed_initialization():
-    """Release only this TP1 process's failed constructor, never another task."""
-    import gc
-    import torch
-    from vllm.distributed import parallel_state
-    parallel_state.destroy_model_parallel()
-    if hasattr(parallel_state, 'destroy_distributed_environment'):
-        parallel_state.destroy_distributed_environment()
-    gc.collect(); torch.cuda.empty_cache()
-
-
 def build_evaluation_engine(config, model, seed, free, total, *, factory=None, cleanup=None):
-    """Fill available VRAM; lower cache/concurrency only after actual constructor OOM."""
-    import torch
+    """One constructor per process; a CUDA-free supervisor owns bounded retries."""
     if factory is None:
         from vllm import LLM
         factory = LLM
-    if cleanup is None: cleanup = _cleanup_failed_initialization
     reserve = float(config.get('evaluation_free_reserve_gib', 2)) * 1024 ** 3
     cap = float(config.get('evaluation_utilization_cap', .95))
     requested = config.get('evaluation_memory_utilization', 'auto')
-    utilization = min(cap, (free - reserve) / total) if requested == 'auto' else float(requested)
+    utilization = min(cap, (free-reserve)/total) if requested=='auto' else float(requested)
+    utilization *= float(config.get('evaluation_initialization_utilization_scale',1))
     if not 0 < utilization <= 1:
         raise ValueError('Actual available VRAM cannot supply the configured evaluation reservation')
-    limits = dict(max_num_seqs=int(config.get('evaluation_max_num_seqs', 1024)),
-                  max_num_batched_tokens=int(config.get('evaluation_max_batched_tokens', 32768)))
-    attempts = []
-    while True:
-        try:
-            llm = factory(model=str(model), tokenizer=str(model), trust_remote_code=False,
-                dtype='bfloat16', tensor_parallel_size=1, max_model_len=4096, seed=seed,
-                gpu_memory_utilization=utilization, swap_space=0,
-                enforce_eager=bool(config.get('evaluation_enforce_eager', False)),
-                # Same BF16 engine context and synchronous stream commit as training.
-                enable_chunked_prefill=True, enable_prefix_caching=True, disable_async_output_proc=True, disable_log_stats=True, **limits)
-            return llm, utilization, limits, attempts
-        except Exception as error:
-            message = str(error)
-            actual_oom = isinstance(error, torch.cuda.OutOfMemoryError) or (
-                isinstance(error, RuntimeError) and ('CUDA out of memory' in message or 'CUDA error: out of memory' in message))
-            attempts.append(dict(gpu_memory_utilization=utilization, limits=dict(limits),
-                error_type=type(error).__name__, actual_cuda_oom=actual_oom))
-            if not actual_oom or len(attempts) >= 4:
-                raise
-            # The exception traceback otherwise retains its failed LLM/model
-            # constructor frames and GPU tensors through the following retry.
-            error.__traceback__ = None
-            cleanup()
-            utilization *= .85
-            limits['max_num_seqs'] = max(32, limits['max_num_seqs'] // 2)
-            limits['max_num_batched_tokens'] = max(4096, limits['max_num_batched_tokens'] // 2)
+    limits = dict(max_num_seqs=int(config.get('evaluation_max_num_seqs',1024)),
+        max_num_batched_tokens=int(config.get('evaluation_max_batched_tokens',32768)))
+    llm = factory(model=str(model),tokenizer=str(model),trust_remote_code=False,
+        dtype='bfloat16',tensor_parallel_size=1,max_model_len=4096,seed=seed,
+        gpu_memory_utilization=utilization,swap_space=0,
+        enforce_eager=bool(config.get('evaluation_enforce_eager',False)),
+        enable_chunked_prefill=True,enable_prefix_caching=True,disable_async_output_proc=True,
+        disable_log_stats=True,**limits)
+    return llm,utilization,limits,[]
 
 
 def worker(config_path, model_dir, output_dir, questions_path, expected_count, rank):
@@ -121,7 +91,16 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
     tokenizer = AutoTokenizer.from_pretrained(model_dir, local_files_only=True, trust_remote_code=False)
     questions = load_questions(questions_path, expected_count)[rank::8]
     free, total = torch.cuda.mem_get_info(); seed = int(config.get('seed', 1729)) + rank * 104729
-    llm, utilization, limits, initialization_oom_attempts = build_evaluation_engine(config, model_dir, seed, free, total)
+    from .evaluation_initialization import initialization_status, initialization_error
+    try:
+        llm, utilization, limits, initialization_oom_attempts = build_evaluation_engine(config, model_dir, seed, free, total)
+    except Exception as error:
+        actual_oom=isinstance(error,torch.cuda.OutOfMemoryError) or (isinstance(error,RuntimeError)
+            and ('CUDA out of memory' in str(error) or 'CUDA error: out of memory' in str(error)))
+        initialization_status(config_path,model_dir,questions_path,expected_count,rank,
+            failure=initialization_error(error,actual_oom))
+        raise
+    initialization_status(config_path,model_dir,questions_path,expected_count,rank)
     engine = llm.llm_engine
     generation = read(model_dir / 'generation_config.json')
     stop = generation.get('eos_token_id', tokenizer.eos_token_id)
@@ -217,37 +196,30 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
 def launch(config_path, model_dir, output, questions_path, expected_count=512):
     config_path, model_dir, output, questions_path = map(remote, (config_path, model_dir, output, questions_path))
     config = read(config_path); target = output / 'complete.json'
-    if target.exists():
-        existing = read(target)
-        if (existing['actor_version'] != config['actor_version'] or existing['qa_count'] != expected_count
-                or existing['question_source_sha256'] != sha(questions_path)):
-            raise ValueError('Existing fixed evaluation receipt differs')
-        return existing
-    output.mkdir(parents=True, exist_ok=True); processes, streams = [], []
-    try:
-        for rank in range(8):
-            if (output / ('rank-%d-complete.json' % rank)).exists(): continue
-            stream = (output / ('rank-%d.log' % rank)).open('ab'); streams.append(stream)
-            process = subprocess.Popen([sys.executable, '-m', 'reproduction.prefix_diversity200.eval',
-                '--config', str(config_path), '--model', str(model_dir), '--output', str(output),
-                '--questions', str(questions_path), '--expected-count', str(expected_count), '--rank', str(rank)],
-                stdout=stream, stderr=subprocess.STDOUT)
-            processes.append((rank, process))
-        while any(process.poll() is None for _, process in processes):
-            failed = {rank: p.returncode for rank, p in processes if p.poll() not in (None, 0)}
-            if failed: raise RuntimeError('Owned fixed evaluation worker failed: ' + json.dumps(failed))
-            time.sleep(1)
-        if any(p.returncode != 0 for _, p in processes): raise RuntimeError('Fixed evaluation worker failed')
-    finally:
-        for _, process in processes:
-            if process.poll() is None: process.terminate()
-        deadline = time.monotonic() + 60
-        for _, process in processes:
-            if process.poll() is None:
-                try: process.wait(timeout=max(.01, deadline - time.monotonic()))
-                except subprocess.TimeoutExpired: process.kill(); process.wait()
-        for stream in streams: stream.close()
+    expected_sha=config['validation_questions_sha256'] if expected_count==512 else config['final_questions_sha256']
+    if expected_count not in (512,51713) or sha(questions_path)!=expected_sha:
+        raise ValueError('QA must use the original pinned canonical questions without a new split')
+    canonical_questions=load_questions(questions_path,expected_count)
+    existing=read(target) if target.exists() else None
+    output.mkdir(parents=True, exist_ok=True)
+    from .evaluation_initialization import supervise
+    supervision=supervise(config_path,model_dir,output,questions_path,expected_count)
     receipts = [read(output / ('rank-%d-complete.json' % rank)) for rank in range(8)]
+    for rank,item in enumerate(receipts):
+        expected_rows=canonical_questions[rank::8]
+        if (item['rank']!=rank or item['run_id']!=config['run_id']
+                or item['actor_model_dir']!=str(model_dir) or item['actor_version']!=config['actor_version']
+                or item['question_source_sha256']!=expected_sha
+                or item['seed']!=int(config.get('seed',1729))+rank*104729
+                or item['question_count']!=len(expected_rows) or item['qa_count']!=len(expected_rows)
+                or [(r['evaluation_ordinal'],r['qid'],r['data_source']) for r in item['rows']]
+                    !=[(r['evaluation_ordinal'],r['qid'],r['data_source']) for r in expected_rows]):
+            raise ValueError('Actual QA rank receipt lost canonical question/model/seed binding')
+        shard=output/('rank-%d-full.jsonl.gz'%rank)
+        if item['full_output']['path']!=str(shard) or item['full_output']['bytes']!=shard.stat().st_size:
+            raise ValueError('QA complete receipt does not describe the retained full shard')
+        if rank in supervision['reused_rank_receipts'] and item['full_output']['sha256']!=sha(shard):
+            raise ValueError('Previously completed QA shard changed before explicit reuse')
     rows = sorted([row for item in receipts for row in item['rows']], key=lambda row: row['evaluation_ordinal'])
     if ([row['evaluation_ordinal'] for row in rows] != list(range(expected_count))
             or len({row['qid'] for row in rows}) != expected_count
@@ -269,7 +241,13 @@ def launch(config_path, model_dir, output, questions_path, expected_count=512):
         output_shards=[item['full_output'] for item in receipts],
         rank_receipts=[dict(path=str(output / ('rank-%d-complete.json' % r)),
                             sha256=sha(output / ('rank-%d-complete.json' % r))) for r in range(8)],
-        completed_utc=utc(), actual_worker_exit_codes={str(r): p.returncode for r, p in processes})
+        completed_utc=utc(), **supervision)
+    if existing is not None:
+        keys=('run_id','actor_version','actor_model_dir','evaluation_contract','qa_count',
+            'question_source_sha256','em','f1','per_source','output_shards','rank_receipts')
+        if any(existing.get(key)!=result[key] for key in keys):
+            raise ValueError('Existing QA aggregate does not match the independently revalidated canonical rank receipts')
+        return existing
     atomic_json(target, result); return result
 
 

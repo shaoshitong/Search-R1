@@ -15,3 +15,23 @@ Save rolling joint actor/probe/optimizer/RNG/pool identity and5/50/100/150/200 m
 Entry: `python -m reproduction.prefix_diversity200.control deploy|submit|observe --target h100-10 ...`. Preflight helper only stages own CPU dependencies and read-only input verification; tests are minimal CPU checks and never rerun warmup/baselines. New code inherits synchronous vLLM token/logprob snapshot fix95f27fd7.
 
 Runtime acceptance2026-10-16: actual joint1/2/3 saved;8rank actor/probe60 each after true Adam40/scheduler2 restoration and20 additional writes. Probe has20 additional failed unsaved physical writes/rank, separately preserved. Normal outer3 phase sum419.492678102s. Current3421 uses frozen9ce4b14a; later observer/report commits are not hot deployed. Updated scalar/control evidence lives in control_evidence, complete assets remain remote.
+
+
+### QA initialization repair (2026-10-17)
+
+QA uses a CUDA-free parent and eight fresh TP1 worker processes. A constructor
+CUDA OOM or the exact observed invalid-memory-profile assertion can be retried
+at most four times per rank. Every previous child is waited/reaped first; OOM
+backoff reduces KV/profile concurrency only. Model, question split, seeds, BF16,
+greedy decoding, interaction budgets and strict scorer remain fixed.
+
+A locked, bound journal preserves the total attempt budget across clean partial
+resumes. Completed rank receipts are checked against canonical questions and raw
+shard hashes. Generation failures and partial answer shards are preserved and
+never automatically resampled. An ambiguous old owner requires reconciliation.
+Existing aggregate results are also revalidated against all eight rank receipts.
+
+Independent local review and CPU lifecycle/canonical-negative fixtures are under
+`i1i6_evidence/QA_FRESH_PROCESS_REVIEW.json`; they are not GPU acceptance. This
+repair is deployed separately from frozen training and does not change a live
+trainer's source.
