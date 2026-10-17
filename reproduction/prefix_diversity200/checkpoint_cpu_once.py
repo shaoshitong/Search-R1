@@ -19,6 +19,7 @@ import time
 
 from .actor import MILESTONES, REVISION, _state_binding, learning_rate
 from .diversity import select_groups, summarize
+from .checkpoint_cpu_correction import proof_name, verify_predecessor
 
 STATUS = 'PREFIX_SELECTION200_JOINT_MILESTONE_FULL_SHA_CPU_PASS'
 SOURCE_PROBE_SHA = '8df6bd445945ffbbf6a94171f24934495f0ce3ff17a3d2577bbd53d4b8fefd56'
@@ -640,7 +641,7 @@ def _once(path, value):
         json.dump(value, handle, sort_keys=True, allow_nan=False); handle.flush(); os.fsync(handle.fileno())
 
 
-def audit(base, outer):
+def audit(base, outer, *, audit_version="v1", correction_config=None):
     need(os.environ.get('CUDA_VISIBLE_DEVICES') == '', 'Run with CUDA_VISIBLE_DEVICES= for CPU-only audit')
     base = Path(base)
     need(base.is_absolute() and base.parent == Path('/mnt/data/shaoshitong')
@@ -650,7 +651,7 @@ def audit(base, outer):
     config_path = base / 'preparation/launch-config.json'; config = read(config_path)
     need(config['base'] == str(base) and config['model_revision'] == REVISION
          and config['outers'] == 200 and config['world_size'] == 8, 'Current run scientific identity differs')
-    proof_path = base / 'preparation' / ('joint-milestone-%04d-independent-full-sha-cpu-once-v1.json' % outer)
+    proof_path = base / 'preparation' / (proof_name(outer, audit_version)+'.json')
     intent = proof_path.with_name(proof_path.stem + '-intent.json')
     joint_path = base / 'outers' / ('outer-%06d' % outer) / 'complete.json'
     with proof_path.with_suffix('.lock').open('a') as lock:
@@ -665,9 +666,16 @@ def audit(base, outer):
             return dict(status='EXISTING_CPU_MILESTONE_INTENT_NO_BLIND_REPLAY', outer=outer, intent_path=str(intent), training_modified=False)
         if not joint_path.is_file():
             return dict(status='PENDING_ACTUAL_JOINT_MILESTONE_NO_INTENT', outer=outer, missing=str(joint_path), once_intent_created=False)
+        correction = None
+        if audit_version == 'v2':
+            need(correction_config and correction_config['outer'] == outer, 'v2 requires explicit predecessor correction binding')
+            correction = verify_predecessor(base, correction_config)
+        else:
+            need(correction_config is None, 'v1 must not accept a correction configuration')
         joint = read(joint_path); joint_proof = hash_file(joint_path); config_proof = hash_file(config_path)
         _once(intent, dict(run_id=config['run_id'], outer=outer, joint_complete_sha256=joint_proof['sha256'],
-            config_sha256=config_proof['sha256'], source_commit=config['source_commit'], started_unix=time.time()))
+            config_sha256=config_proof['sha256'], source_commit=config['source_commit'], audit_version=audit_version,
+            corrected_predecessor=correction, started_unix=time.time()))
         started = time.monotonic()
         try:
             result = _audit_complete(base, config, joint, outer)
@@ -684,7 +692,7 @@ def audit(base, outer):
                 run_id=config['run_id'], outer=outer, joint_complete_sha256=joint_proof['sha256'],
                 error_type=type(error).__name__, error=str(error),
                 independent_full_file_sha_performed=False, actual_cpu_deserialization_performed=False)
-        proof.update(gpu_forward_performed=False, cuda_rng_applied=False, independent_backup_performed=False,
+        proof.update(audit_version=audit_version, corrected_predecessor=correction, gpu_forward_performed=False, cuda_rng_applied=False, independent_backup_performed=False,
             training_modified=False, old_weight_files_read=bool(config.get('interaction_contract')),
             historical_training_checkpoint_weight_files_read=False,
             official_initial_small_tensor_reads_performed=bool(config.get('interaction_contract')),
@@ -700,7 +708,10 @@ def audit(base, outer):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', required=True); parser.add_argument('--outer', required=True, type=int)
-    args = parser.parse_args(); result = audit(args.base, args.outer)
+    parser.add_argument('--audit-version', choices=('v1','v2'), default='v1')
+    parser.add_argument('--correction-config', help='Explicit small v2 controller configuration JSON')
+    args = parser.parse_args(); result = audit(args.base, args.outer, audit_version=args.audit_version,
+        correction_config=json.loads(args.correction_config) if args.correction_config else None)
     print(json.dumps(result, sort_keys=True, allow_nan=False))
     if 'FAILED' in result['status'] or ('proof_status' in result and result['proof_status'] != STATUS):
         raise SystemExit(1)

@@ -11,6 +11,7 @@ import time
 FILES = ('reproduction/prefix_diversity200/__init__.py',
          'reproduction/prefix_diversity200/actor.py', 'reproduction/prefix_diversity200/diversity.py',
          'reproduction/prefix_diversity200/checkpoint_cpu_once.py',
+         'reproduction/prefix_diversity200/checkpoint_cpu_correction.py',
          'reproduction/prefix_diversity200/checkpoint_i1i6_cpu.py',
          'reproduction/prefix_diversity200/checkpoint_i1i6_runtime_files.json',
          'reproduction/prefix_diversity200/checkpoint_i1i6_runtime_files_33ef.json',
@@ -35,7 +36,13 @@ assert pathlib.PurePosixPath(c['control_name']).name==c['control_name'] and c['c
 assert len(c['runtime_config_sha256'])==64
 assert hashlib.sha256((b/'preparation/launch-config.json').read_bytes()).hexdigest()==c['runtime_config_sha256']
 assert c['memory_max']=='12G' and c['cpu_quota']=='100%','CPU acceptance is limited to12GiB and one CPU'
-proof_name='joint-milestone-%04d-independent-full-sha-cpu-once-v1'%c['outer']
+version=c.get('audit_version','v1');assert version in ('v1','v2')
+proof_name='joint-milestone-%04d-independent-full-sha-cpu-once-%s'%(c['outer'],version)
+correction=None
+if version=='v2':
+ name='reproduction/prefix_diversity200/checkpoint_cpu_correction.py';entry=p['files'][name];raw=base64.b64decode(entry['data'])
+ assert hashlib.sha256(raw).hexdigest()==entry['sha256']
+ scope={};exec(compile(raw,name,'exec'),scope);correction=scope['verify_predecessor'](b,c)
 joint_path=b/'outers'/('outer-%06d'%c['outer'])/'complete.json'
 candidate=None
 if joint_path.is_file():
@@ -49,7 +56,7 @@ if PHASE=='check':
  latest=read(b/'latest-joint.json')if(b/'latest-joint.json').exists()else None
  markers={path.name:read(path)for path in(b/'preparation').glob(proof_name+'*.json')}
  unit=subprocess.run(['systemctl','--user','show',c['unit'],'--property=LoadState','--property=ActiveState','--property=SubState','--property=ExecMainPID','--property=ExecMainStatus'],capture_output=True,text=True,timeout=15)
- print(json.dumps(dict(status='PENDING_ACTUAL_JOINT_NO_INTENT'if candidate is None else('ACTUAL_JOINT_WRITERS_STOPPED_READY'if candidate['writers_stopped']else'PENDING_WRITERS_NO_INTENT'),candidate=candidate,latest_complete=latest['outer']if latest else 0,config_sha256=hashlib.sha256((b/'preparation/launch-config.json').read_bytes()).hexdigest(),audit_markers=markers,control_root_exists=root.exists(),existing_unit=unit.stdout,unit_query_exit=unit.returncode,audit_intent_created=False,training_modified=False,observed_unix=time.time())))
+ print(json.dumps(dict(status='PENDING_ACTUAL_JOINT_NO_INTENT'if candidate is None else('ACTUAL_JOINT_WRITERS_STOPPED_READY'if candidate['writers_stopped']else'PENDING_WRITERS_NO_INTENT'),candidate=candidate,latest_complete=latest['outer']if latest else 0,config_sha256=hashlib.sha256((b/'preparation/launch-config.json').read_bytes()).hexdigest(),audit_markers=markers,corrected_predecessor=correction,control_root_exists=root.exists(),existing_unit=unit.stdout,unit_query_exit=unit.returncode,audit_intent_created=False,training_modified=False,observed_unix=time.time())))
  raise SystemExit
 if PHASE=='deploy':
  assert candidate and candidate['writers_stopped'],'Actual immutable joint and stopped successful writers required'

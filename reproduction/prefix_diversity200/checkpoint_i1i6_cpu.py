@@ -62,6 +62,52 @@ def native_budget(row):
              'I2 actual native request/action/observation exceeds the shared contract')
 
 
+def validate_resume_origin(base, config, actor):
+    """33ef import result stores Adam counters; terminal and actual joint store scheduler."""
+    from .checkpoint_cpu_once import owned, read, hash_file, need
+    spec = config['resume_joint']; source_base = Path(spec['source_base'])
+    need(source_base != base and source_base.parent == base.parent
+         and config['initial_official_fresh_run_source'] == str(source_base),
+         'I1-I6 continuation lost its original fresh official run')
+    initial_path = source_base/'preparation/launch-config.json'; initial = read(initial_path)
+    resume_path = owned(base, base/'preparation/joint-resume-receipt.json')
+    terminal_path = owned(base, base/'preparation/joint-source-terminal-proof.json')
+    resume, terminal = read(resume_path), read(terminal_path)
+    source_joint_path = owned(source_base, source_base/'outers'/('outer-%06d' % spec['completed_outer'])/'complete.json')
+    source_joint = read(source_joint_path); recovered_actor, recovered_probe = source_joint['actor'], source_joint['probe']
+    need(resume['status'] == 'COMPLETE_JOINT_BOUNDARY_IMPORTED_NO_RECOMPUTATION'
+         and resume['run_id'] == initial['run_id'] == config['run_id']
+         and resume['source_base'] == terminal['source_base'] == str(source_base)
+         and resume['completed_outer'] == terminal['completed_outer'] == spec['completed_outer']
+         and resume['terminal_proof_sha256'] == hash_file(terminal_path)['sha256']
+         and terminal['source_config_sha256'] == hash_file(initial_path)['sha256']
+         and initial['fresh_actor_from_official'] is True and initial['source_commit'] == RUNTIME
+         and initial['actor_version'] == config['actor_version']
+         and initial['grounding_initial_probe_version'] == config['grounding_initial_probe_version']
+         and resume['actor_steps'] == resume['probe_steps'] == [20*spec['completed_outer']]*8
+         and terminal['scheduler_completed_outer'] == recovered_actor['scheduler_completed_outer'] == spec['completed_outer']
+         and terminal['actor_steps'] == recovered_actor['actual_adam_steps_per_rank'] == resume['actor_steps']
+         and terminal['probe_steps'] == recovered_probe['actual_adam_steps_per_rank'] == resume['probe_steps']
+         and source_joint['run_id'] == recovered_actor['run_id'] == recovered_probe['run_id'] == config['run_id']
+         and source_joint['outer'] == recovered_actor['completed_outer'] == recovered_probe['completed_outer'] == spec['completed_outer']
+         and terminal['joint_sha256'] == hash_file(source_joint_path)['sha256']
+         and spec['completed_outer'] < actor['completed_outer'],
+         'I1-I6 continuation is not a proven intact joint boundary from the fresh official run')
+    science = ('model_revision','model_files_sha256','candidate_questions','selected_questions',
+        'actor_selected_questions','responses_per_question','prefix_policy_tokens','seed',
+        'official_model_dir','canonical_train_sha256','validation_questions_sha256',
+        'final_questions_sha256','grounding_calibration_sha256','interaction_contract',
+        'grounding_manifest_sha256','grounding_refit_rounds','policy_monitor',
+        'probe_learning_rate','probe_updates_per_outer','probe_epochs_per_outer',
+        'probe_global_batch_average','actor_global_mini_batch','actor_ppo_epochs',
+        'fixed_test_manifest_sha256')
+    need(all(initial[key] == config[key] for key in science), 'I1-I6 resumed scientific identity differs')
+    origin = dict(initial_config=hash_file(initial_path), resume=hash_file(resume_path),
+                  terminal=hash_file(terminal_path), original_joint=hash_file(source_joint_path),
+                  scheduler_completed_outer=terminal['scheduler_completed_outer'], completed_outer=spec['completed_outer'])
+    return origin
+
+
 def audit_contract(base, config, actor, root):
     from .checkpoint_cpu_once import hash_file, read, need
     from .interaction import ROLE, contract
@@ -73,39 +119,7 @@ def audit_contract(base, config, actor, root):
          'I1-I6 new-run source/fresh-start/stable-initial-grounding/BF16 binding differs')
     origin = None
     if config['fresh_actor_from_official'] is not True:
-        from .checkpoint_cpu_once import owned
-        spec = config['resume_joint']; source_base = Path(spec['source_base'])
-        need(source_base != base and source_base.parent == base.parent
-             and config['initial_official_fresh_run_source'] == str(source_base),
-             'I1-I6 continuation lost its original fresh official run')
-        initial_path = source_base/'preparation/launch-config.json'; initial = read(initial_path)
-        resume_path = owned(base, base/'preparation/joint-resume-receipt.json')
-        terminal_path = owned(base, base/'preparation/joint-source-terminal-proof.json')
-        resume, terminal = read(resume_path), read(terminal_path)
-        need(resume['status'] == 'COMPLETE_JOINT_BOUNDARY_IMPORTED_NO_RECOMPUTATION'
-             and resume['run_id'] == initial['run_id'] == config['run_id']
-             and resume['source_base'] == terminal['source_base'] == str(source_base)
-             and resume['completed_outer'] == terminal['completed_outer'] == spec['completed_outer']
-             and resume['terminal_proof_sha256'] == hash_file(terminal_path)['sha256']
-             and terminal['source_config_sha256'] == hash_file(initial_path)['sha256']
-             and initial['fresh_actor_from_official'] is True and initial['source_commit'] == RUNTIME
-             and initial['actor_version'] == config['actor_version']
-             and initial['grounding_initial_probe_version'] == config['grounding_initial_probe_version']
-             and resume['actor_steps'] == resume['probe_steps'] == [20*spec['completed_outer']]*8
-             and resume['scheduler_completed_outer'] == spec['completed_outer']
-             and spec['completed_outer'] < actor['completed_outer'],
-             'I1-I6 continuation is not a proven intact joint boundary from the fresh official run')
-        science = ('model_revision','model_files_sha256','candidate_questions','selected_questions',
-            'actor_selected_questions','responses_per_question','prefix_policy_tokens','seed',
-            'official_model_dir','canonical_train_sha256','validation_questions_sha256',
-            'final_questions_sha256','grounding_calibration_sha256','interaction_contract',
-            'grounding_manifest_sha256','grounding_refit_rounds','policy_monitor',
-            'probe_learning_rate','probe_updates_per_outer','probe_epochs_per_outer',
-            'probe_global_batch_average','actor_global_mini_batch','actor_ppo_epochs',
-            'fixed_test_manifest_sha256')
-        need(all(initial[key] == config[key] for key in science), 'I1-I6 resumed scientific identity differs')
-        origin = dict(initial_config=hash_file(initial_path), resume=hash_file(resume_path),
-                      terminal=hash_file(terminal_path), completed_outer=spec['completed_outer'])
+        origin = validate_resume_origin(base, config, actor)
     else:
         need(not config.get('resume_joint'), 'Fresh actor must not claim a joint import')
     pinned = read(Path(__file__).with_name(RUNTIME_PINS[config['source_commit']]))
