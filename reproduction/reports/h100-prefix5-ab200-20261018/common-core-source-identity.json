@@ -1,0 +1,85 @@
+{
+  "status": "AB_AUTHORIZED_DELTA_AND_COMMON_ACTOR_REWARD_ROLLOUT_SOURCE_IDENTITY_PASS",
+  "baseline": "7679bb8ced2c13922fa9f5c9050ed0ce7fa54dde",
+  "runtime": "5033a4df122197131f736100748a03aed48c9f8c",
+  "exact_core_files": [
+    {
+      "path": "reproduction/prefix_selection200/actor.py",
+      "sha256": "7f4bbcdbd23648569afe8ee8d1b35066e46d8da72709e765cb6f5fc0e16943de"
+    },
+    {
+      "path": "reproduction/prefix_selection200/actor_safety.py",
+      "sha256": "d1fbc6d8346d37934a24b3b645a647327b6dc6912f6d912aad09c1bec93a07d5"
+    },
+    {
+      "path": "reproduction/prefix_selection200/actor_hidden.py",
+      "sha256": "65be5bd5326445ffc0bbc3c21953b04e66ef839f9fa8c23c7ef9139f50e9bf0f"
+    },
+    {
+      "path": "reproduction/prefix_selection200/rollout.py",
+      "sha256": "6932e047a0c45ee762297b55e740f2cadeb7bc5b997ba4b22608a416f3b7e818"
+    },
+    {
+      "path": "reproduction/prefix_selection200/grounding.py",
+      "sha256": "bc0d1dd4bf588e2f6720fd8888bbff1537e3c119fe0c33efe9359ba571278597"
+    },
+    {
+      "path": "reproduction/prefix_selection200/interaction_protocol.py",
+      "sha256": "e64534bb841c361c60ed598a9aba9401a0e7579c637e1d5d7a139bad0bc088a3"
+    },
+    {
+      "path": "reproduction/prefix_selection200/periodic.py",
+      "sha256": "bcbee592cc43355272a6a3f31cc659d8672cc17d32776faf587d48359675a00c"
+    },
+    {
+      "path": "reproduction/prefix_selection200/candidate_schedule.py",
+      "sha256": "9fa322d489c689858946d2c1c9b08c64e67c4ac0acc1753e30fdeb58da6fef87"
+    },
+    {
+      "path": "reproduction/prefix_selection200/periodic_data.py",
+      "sha256": "419eb8f26cac1a9515c28db40d57c75e0b4627b275997fdc41fdcab6ce9ad315"
+    },
+    {
+      "path": "reproduction/prefix_selection200/prefix5_model.py",
+      "sha256": "1710b883f4f23a6f27c6bf8bb9b10a30d51857cc3908bdbdebf06b09a7d438e5"
+    },
+    {
+      "path": "reproduction/prefix_selection200/probe_plan.py",
+      "sha256": "93265165a1b3d2dbf3703372592c6e557f874e7162f6d2be8d787df3e35cef50"
+    }
+  ],
+  "changed_scientific_files_outside_allowlist": [],
+  "all_changes": [
+    "docs/h100-prefix5-reference-replica-preparation-20261018.md",
+    "reproduction/operations/h100_reference_replica/cleanup_prefix5_reference_transfer_staging.py",
+    "reproduction/operations/h100_reference_replica/finalize_prefix5_reference_preparation.py",
+    "reproduction/operations/h100_reference_replica/readback_prefix5_reference_replica_commit.py",
+    "reproduction/operations/h100_reference_replica/stage_prefix5_reference_preparation_delta.py",
+    "reproduction/prefix_selection200/ab_checkpoint_once.py",
+    "reproduction/prefix_selection200/ab_control.py",
+    "reproduction/prefix_selection200/ab_lifecycle.py",
+    "reproduction/prefix_selection200/ab_policy.py",
+    "reproduction/prefix_selection200/ab_probe.py",
+    "reproduction/prefix_selection200/i1_i6_checkpoint_cpu.py",
+    "reproduction/prefix_selection200/i1_i6_joint_resume.py",
+    "reproduction/prefix_selection200/launch.py",
+    "reproduction/prefix_selection200/probe.py",
+    "reproduction/prefix_selection200/storage.py",
+    "reproduction/prefix_selection200/test_ab_policy.py",
+    "reproduction/prefix_selection200/test_i1_i6_joint_resume.py",
+    "reproduction/reports/h100-prefix5-ab200-20261018/PROTOCOL.md",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-a800-environment.json",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-assets-copy-complete.json",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-code-stage.json",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-h100-environment.json",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-official-model-identity.json",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-prepared-small-summary.json",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-replica-independent-audit.md",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-replica-independent-code-comparison.json",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-replica-independent-final-small-proof.json",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-retrieval-assets-comparison.json",
+    "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-transfer-staging-cleanup.json"
+  ],
+  "checked_utc": "2026-10-17T19:44:36.656945+00:00",
+  "gpu_test_performed": false
+}
