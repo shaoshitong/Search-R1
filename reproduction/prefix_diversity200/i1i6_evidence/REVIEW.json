@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "reviewed_utc": "2026-10-17T05:27:14.580155+00:00",
+  "reviewer": "i1i6_context_free_review",
+  "repository": "/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016",
+  "branch": "codex/search-g1-i1i6-fresh200-20261017",
+  "scope": "I1-I6 only; concise static code review and small CPU checks",
+  "status": "NO_UNRESOLVED_BLOCKER_FOUND_IN_REVIEWED_SCOPE",
+  "limits": {
+    "gpu_used": false,
+    "remote_access_used": false,
+    "model_or_tensor_assets_read": false,
+    "new_tests_added": false,
+    "source_files_modified_by_reviewer": false,
+    "production_execution_verified": false,
+    "large_tests_run": false
+  },
+  "source_sha256": {
+    "actor.py": "7d97e9c7e190dc680cfe70dd4f8e891541c0e2d825e49ffada8aa1e301c72a86",
+    "eval.py": "c5890ebd0bd6a716dffeeb60f67871b3276d433155b039c255c691b87fe39905",
+    "rollout.py": "ed0c283cb353832bd1e87ddb834a91ff0506d1b2b8a28a957011ed5ea5fadf33",
+    "launch.py": "a81ea3bbde138d57a5d2c2c807d96f617b3573c703bdeb1bacc8323df3c8e95c",
+    "grounding.py": "84f6632d0cd153b5cc3f30418dcd708023133834d2f50aa155be4f1350c18813",
+    "interaction.py": "5a1af508d612842eadf698d1f8ad4570b3b26cf9e3507af5098d66927d428714"
+  },
+  "findings": [
+    {
+      "id": "I3-recovery-live",
+      "severity": "P1",
+      "status": "FIXED_AND_STATICALLY_REVIEWED",
+      "problem": "Launcher reset reward grounding to round0 on recovery and could skip the completed milestone refit.",
+      "resolution": "Launcher loads persisted live binding and enforces the required reward round at recovery; missing version at the exact milestone is refit before the next outer, and incompatible later state is rejected."
+    },
+    {
+      "id": "I3-refit-failed-directory",
+      "severity": "P1",
+      "status": "FIXED_AND_STATICALLY_REVIEWED",
+      "problem": "Deterministic round directory with exist_ok=False blocked recovery after partial fitting failure.",
+      "resolution": "Each fit now writes a unique round-attempt UUID directory. A completed fit atomically publishes its round complete pointer before live; recovery validates run, round, actor version, model path, manifest SHA and both head SHAs, then restores live without refitting. Incomplete attempts remain evidence and do not block a new attempt."
+    }
+  ],
+  "checks_previously_executed": [
+    {
+      "kind": "AST",
+      "result": "PASS",
+      "detail": "Six modules parsed before the latest grounding-only recovery change; no GPU imports or runtime execution. Latest recovery change was subsequently reviewed by source inspection."
+    },
+    {
+      "kind": "actual_PPO_CPU_loss_and_gradient",
+      "result": "PASS",
+      "detail": "Called actual logical_pair_objective with the actual compute_policy_loss function extracted from its source AST; CPU float64 inputs include unequal row lengths, an empty logical pair, positive and negative advantages and clipping.",
+      "physical_local_micro_values": [
+        16,
+        8,
+        4,
+        2,
+        1
+      ],
+      "loss_each": 0.4905510310654686,
+      "maximum_gradient_difference": 0.0,
+      "tolerance": 1e-12
+    },
+    {
+      "kind": "actual_stream_helper_fake_token_state",
+      "result": "PASS",
+      "detail": "Executed actual append_chunk and first_action_cut helpers with a 20-token pause and original ID/logprob continuation. Closing tag and extra suffix sharing one token preserve the whole native token while execution text ends at the closing tag; stored selected logprobs remain unchanged."
+    }
+  ],
+  "static_contract_observations": {
+    "I1": "QA uses shared training action/state helpers and context4096/action500/reserve500 with early final and information-wrapper-preserving observation clipping; score_tokens strict path unchanged.",
+    "I2": "Eight logical two-row masked means retain their authorized weights across physical micro sizes, including local1 fallback.",
+    "I3": "Separate actual-actor grounding refits at50/100/150 produce both commit and boundary heads using canonical300/G5 and are adopted for the next outer; selection probe remains distinct.",
+    "I4": "Fixed four length-stratified trajectories per rank are monitored before and after each minibatch; finite threshold excursions are diagnostic and actual nonfinite values remain fatal.",
+    "I5": "Training BF16 compute with FP32 master/Adam state and QA BF16 engine.",
+    "I6": "QA shares native snapshot, stream action stopping/cropping and retained-token state logic with training; same-prefix continuation retains original policy IDs and selected logprobs."
+  },
+  "latest_followup": "Reviewed only the new grounding recovery publication/reuse logic on followup. Did not rerun existing mathematical or stream checks and did not add tests.",
+  "caveat": "Static and small CPU review is not GPU execution, end-to-end training, checkpoint acceptance or evidence of 200 completed outers."
+}

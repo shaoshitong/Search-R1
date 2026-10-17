@@ -1,0 +1,24 @@
+{
+  "logs/policy-safety-calibration.json": {
+    "sha256": "20d64fd0cb36e6516734c1ad2576ef0e75dff67155a531ff95e27728118e0fa6",
+    "values": {
+      "schema_version": 4,
+      "run_id": "15bb15365346401da1d919e9cde8f813",
+      "source_commit": "0553adec146537e07b84377ce31cba41a54f37cd",
+      "dual_clip": 3.0,
+      "target_old_policy_kl": 0.2,
+      "kl_log_bound": 30.0,
+      "negative_tail_limit": 0.01
+    }
+  },
+  "logs/run-manifest.json": {
+    "sha256": "be7b772df0a9c47afcac6cdab4f7049b30f2ff1df7a74ceffa2cd88139a5f6e0",
+    "values": {
+      "run_id": "15bb15365346401da1d919e9cde8f813",
+      "source_commit": "0553adec146537e07b84377ce31cba41a54f37cd",
+      "policy_safety_mode": "inline_first_five",
+      "precision_profile": "native8_bf16_varlen_fp32_master",
+      "training_world_size": 8
+    }
+  }
+}
