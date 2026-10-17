@@ -1,0 +1,63 @@
+{
+  "kind": "repeated_outer65_CUDA_failure_execution_cache_repair",
+  "date": "2026-10-18",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "failed_execution_id": "1027b6c100464cc9b488de15d36e0389",
+  "failed_source_commit": "e1890a83d1070b5b864722a5d0acf42acd2cd27f",
+  "retained_completed_outer": 64,
+  "retained_actor_Adam": 1280,
+  "retained_probe_Adam": 300,
+  "new_actor_Adam_in_failed_recovery": 0,
+  "new_probe_Adam_in_failed_recovery": 0,
+  "failed_phase": "outer65-continuation",
+  "actual_kernel_origin": "unknown_asynchronous_CUDA_error_reported_from_sampler",
+  "failed_rank_log_hashes": [
+    {
+      "rank": 0,
+      "bytes": 8889,
+      "sha256": "1a97397f176df73ed5b91626984612ab083b648a76b9c2ed23b05cb1447fddc7"
+    },
+    {
+      "rank": 1,
+      "bytes": 3602,
+      "sha256": "94582eb0a9c8fc4b3f167970c7b7556469fe8f3a89c2527d19d8050126c97995"
+    },
+    {
+      "rank": 2,
+      "bytes": 3604,
+      "sha256": "e34ab34b4d9bf95d5224f71fcc5ad16010175141647862fe467acaa94e377136"
+    },
+    {
+      "rank": 3,
+      "bytes": 3603,
+      "sha256": "10065138f877731a5ef57c39fc6d414728cc9aa1cd8a7377d0c36bae3af70ee8"
+    }
+  ],
+  "latest_failed_terminal_sha256": "48d4eedc015908240dedd532bb7561f65e280a52343ca32c23f6d265548d4050",
+  "latest_failed_owned_births_gone": 17,
+  "failed_sampling_preserved": true,
+  "canonical_joint64_sha256": "df50e3de9f8d92df60bb1638f3749f3295ab57c0720dd911c62e2041d7076c51",
+  "checkpoint_provider": "original source75/exa4a0 complete64; identical joint in failed ex1027, no new optimizer writes",
+  "reuse_existing_full_SHA_finite_proof_sha256": "d21a97766311757aa58f115872bbc224d9b1a95e600251f92629799690ed8f2e",
+  "engine_change": {
+    "argument": "enable_prefix_caching",
+    "before": "not config.get('_capture_actor_hidden', False)",
+    "after": false,
+    "normalization_before": {
+      "policy": "single_enable_prefix_caching_argument_literal_false_v1",
+      "mode": "disabled_for_capture_only",
+      "normalized_build_llm_sha256": "4b05958a6bc464d13b1c4ea3246d771888ed5a5b5b9a48f78cde7bdcf37f4773"
+    },
+    "normalization_after": {
+      "policy": "single_enable_prefix_caching_argument_literal_false_v1",
+      "mode": "disabled",
+      "normalized_build_llm_sha256": "4b05958a6bc464d13b1c4ea3246d771888ed5a5b5b9a48f78cde7bdcf37f4773"
+    }
+  },
+  "trajectory_actor_probe_loss_files_unchanged": true,
+  "sampling_batch_LR_GRPO_virtual0_unchanged": true,
+  "extra_evaluation_or_GPU_test_added": false,
+  "actual_repair_continuation_acceptance": "pending_not_launched",
+  "primary_issue_related_not_root_cause_proof": "https://github.com/vllm-project/vllm/issues/6208",
+  "checked_unix": 1792262718.853416
+}

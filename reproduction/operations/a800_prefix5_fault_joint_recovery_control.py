@@ -6,6 +6,7 @@ adapter. Never replay a launch claim or treat CPU qualification as CUDA restore.
 """
 import argparse
 import json
+import os
 from pathlib import Path
 import subprocess
 import time
@@ -19,7 +20,10 @@ STAGE = previous.STAGE
 PREPARE = previous.PREPARE.replace(
     'reproduction.operations.a800_prefix5_variable_pool_control', MODULE)
 LAUNCH = previous.LAUNCH
-OBSERVE = previous.OBSERVE
+_progress_projection="'elapsed_seconds','device_binding'"
+assert previous.OBSERVE.count(_progress_projection)==1
+OBSERVE = previous.OBSERVE.replace(_progress_projection,
+    "'elapsed_seconds','device_binding','actual_engine_enforce_eager','actual_engine_enable_prefix_caching'")
 
 TERMINAL = previous.COMMON + r'''
 import socket
@@ -109,6 +113,9 @@ def prepare_worker(handle_path):
         original = read(parent/'preparation/launch-config.json')
         terminal = read(h['parent_terminal_path'])
         n = h['resume_completed_outer']
+        if (h.get('infrastructure_repair',{}).get('kind')=='vllm_prefix_cache_illegal_access_repair'
+                and not h.get('latest_failed_handle')):
+            raise ValueError('Repeated CUDA fault repair must reconcile the latest failed execution too')
         if (n != 64 or terminal['termination_cause'] != 'FAULT_EXIT'
                 or terminal['completed_outer'] != n
                 or original['run_id'] != h['run_id']
@@ -118,6 +125,21 @@ def prepare_worker(handle_path):
                 or sha(base/'preparation/human-intent.json') != h['human_intent_sha256']
                 or original['candidate_schedule'] != h['retained_candidate_schedule']):
             raise ValueError('Require the exact stopped fault boundary and unchanged candidate schedule')
+        if h.get('latest_failed_handle'):
+            latest=Path(h['latest_failed_handle']['base'])
+            failed_config=read(latest/'preparation/launch-config.json')
+            failed_terminal=read(h['latest_failed_terminal_path'])
+            if (sha(h['latest_failed_terminal_path'])!=h['latest_failed_terminal_sha256'] or
+                    failed_config['run_id']!=h['run_id'] or
+                    failed_config['execution_id']!=h['latest_failed_handle']['execution_id'] or
+                    failed_terminal['completed_outer']!=n or
+                    failed_terminal['uncommitted_after_joint']!=dict(actor_actual_writes_per_rank=[0]*4,
+                        probe_actual_writes_per_rank=[0]*4,optimizer_work_in_flight=False,all_updates_accounted=True) or
+                    sha(latest/'latest-joint.json')!=sha(parent/'latest-joint.json') or
+                    sha(latest/'actor/latest.json')!=sha(parent/'actor/latest.json') or
+                    sha(latest/'probe/latest.json')!=sha(parent/'probe/latest.json')):
+                raise ValueError('Latest failed execution must retain exactly the same joint64 with zero new optimizer writes')
+            resume._writer_barrier(failed_config,failed_terminal,read(latest/'logs/process-ledger.json'))
         science = original.get('science_source_commit', original['source_commit'])
         parent_manifest = resume.source_manifest(parent/'repo', original['source_commit'],
                                                   science_source_commit=science)
@@ -127,13 +149,22 @@ def prepare_worker(handle_path):
         if parent_manifest['files_sha256'] != expected:
             raise ValueError('Parent source no longer matches its actual immutable deployment')
         target_manifest = resume.source_manifest(base/'repo', h['source_commit'], science_source_commit=science)
-        proof = resume.compatibility_proof(parent_manifest, target_manifest)
+        proof = resume.compatibility_proof(parent_manifest, target_manifest,
+                                           authorized_infrastructure_delta=h.get('infrastructure_repair'))
         proof_path = base/'preparation/source-compatibility.json'
         once(proof_path, proof)
         qualification = base/'preparation/full-state-qualified.json'
         publish(base/'preparation/prepare-progress.json', dict(result,
             stage='ONCE_FULL_SHA_FINITE_JOINT64_AND_ACCEPTED_PENDING65_QUALIFICATION', completed_outer=n))
         from reproduction.prefix_selection200.i1_i6_checkpoint_cpu import qualify
+        if h.get('reuse_qualified_checkpoint'):
+            saved=Path(h['reuse_qualified_checkpoint'])
+            if (sha(saved)!=h['reuse_qualified_checkpoint_sha256'] or
+                    read(saved)['source_joint_sha256']!=sha(parent/'latest-joint.json') or
+                    read(saved)['terminal_proof_sha256']!=h['parent_terminal_sha256'] or
+                    read(saved)['source_execution_id']!=original['execution_id']):
+                raise ValueError('Reuse requires the original actual full-SHA/finite proof for this identical checkpoint')
+            os.link(saved,qualification,follow_symlinks=False)
         qualify(parent, outer=n, terminal_proof=Path(h['parent_terminal_path']),
                 terminal_sha=sha(h['parent_terminal_path']), output=qualification)
         c = dict(original, base=str(base), execution_id=h['execution_id'], source_commit=h['source_commit'],

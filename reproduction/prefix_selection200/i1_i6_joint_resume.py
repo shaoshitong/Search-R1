@@ -45,6 +45,7 @@ CANDIDATE_DELTA_FILES = frozenset('reproduction/prefix_selection200/' + name for
     'periodic_data.py','storage.py','native_features.py','guard_retry.py'))
 PORT_REPAIR_FILES = frozenset(('reproduction/prefix_selection200/rollout.py',
                               'reproduction/prefix_selection200/vllm_ports.py'))
+CACHE_REPAIR_FILES = frozenset(('reproduction/prefix_selection200/rollout.py',))
 PROBE_CRITICAL = ('update','load_online','initialize','initial_online_state','atomic_checkpoint','setup_ddp',
                   'batch_subset','concatenate','inference_logits','mixed_probabilities','stable_top512','join_own_em',
                   'PrefixEncoder','SelectedFeatures')
@@ -163,6 +164,23 @@ def _code_inventory(repo):
     return result
 
 
+def _prefix_cache_repair_manifest(repo):
+    """Prove the sole engine-constructor edit is disabling prefix caching."""
+    path=Path(repo)/'reproduction/prefix_selection200/rollout.py'
+    tree=ast.parse(path.read_text())
+    node=next(value for value in tree.body if isinstance(value,ast.FunctionDef) and value.name=='_build_llm')
+    original=ast.dump(ast.parse("not config.get('_capture_actor_hidden', False)",mode='eval').body,include_attributes=False)
+    matches=[value for value in ast.walk(node) if isinstance(value,ast.keyword) and value.arg=='enable_prefix_caching']
+    if len(matches)!=1:raise ValueError('Require one explicit native engine prefix-cache argument')
+    value=matches[0].value
+    if ast.dump(value,include_attributes=False)==original:mode='disabled_for_capture_only'
+    elif isinstance(value,ast.Constant) and value.value is False:mode='disabled'
+    else:raise ValueError('Prefix-cache repair admits only the original expression or literal False')
+    matches[0].value=ast.Constant(value=False)
+    return dict(policy='single_enable_prefix_caching_argument_literal_false_v1',mode=mode,
+                normalized_build_llm_sha256=hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest())
+
+
 def source_manifest(repo, source_commit, *, science_source_commit=None):
     """Small code publication manifest; the publisher pins its actual Git commit."""
     for value in (source_commit,science_source_commit or source_commit):
@@ -171,6 +189,7 @@ def source_manifest(repo, source_commit, *, science_source_commit=None):
                 files_sha256=_code_inventory(repo),critical_ast_sha256=_critical_ast(repo),
                 rollout_critical_ast_sha256=_rollout_critical_ast(repo),
                 rollout_candidate_metadata_ast_sha256=_rollout_critical_ast(repo,normalize_candidate_metadata=True),
+                rollout_prefix_cache_repair=_prefix_cache_repair_manifest(repo),
                 rollout_critical_ast_policy=ROLLOUT_AST_POLICY,payload_files_read=0)
 
 
@@ -178,12 +197,14 @@ def compatibility_proof(parent_manifest,target_manifest, *, authorized_candidate
     parent=parent_manifest['files_sha256'];target=target_manifest['files_sha256']
     delta=_candidate_delta(authorized_candidate_delta)
     infra=authorized_infrastructure_delta
+    cache_repair=infra is not None and infra.get('kind')=='vllm_prefix_cache_illegal_access_repair'
+    infra_files=CACHE_REPAIR_FILES if cache_repair else PORT_REPAIR_FILES
     if infra is not None and (set(infra)!={'kind','fault_terminal_proof_sha256','allowed_files'} or
-            infra['kind']!='vllm_rank_port_namespace_collision_repair' or
+            infra['kind'] not in ('vllm_rank_port_namespace_collision_repair','vllm_prefix_cache_illegal_access_repair') or
             re.fullmatch('[0-9a-f]{64}',infra['fault_terminal_proof_sha256']) is None or
-            infra['allowed_files']!=sorted(PORT_REPAIR_FILES)):
-        raise ValueError('Only the explicitly recorded actual-fault vLLM port initialization repair is compatible')
-    allowed=CONTROL_FILES | (CANDIDATE_DELTA_FILES if delta else frozenset()) | (PORT_REPAIR_FILES if infra else frozenset())
+            infra['allowed_files']!=sorted(infra_files)):
+        raise ValueError('Require an enumerated actual-fault port or prefix-cache execution repair')
+    allowed=CONTROL_FILES | (CANDIDATE_DELTA_FILES if delta else frozenset()) | (infra_files if infra else frozenset())
     names=set(parent)|set(target);changed={name for name in names if parent.get(name)!=target.get(name)}
     if not changed <= allowed or not (names-allowed):
         raise ValueError('Only explicitly enumerated recovery/controller files may differ; actor/math has no exception')
@@ -193,18 +214,27 @@ def compatibility_proof(parent_manifest,target_manifest, *, authorized_candidate
         raise ValueError('Head optimizer/training/restore critical AST changed outside the candidate metadata delta')
     left=parent_manifest.get('rollout_critical_ast_sha256',{});right=target_manifest.get('rollout_critical_ast_sha256',{})
     differing={name for name in set(left)|set(right) if left.get(name)!=right.get(name)}
-    if differing and (not delta or differing!={'_states'} or
+    if cache_repair:
+        before=parent_manifest.get('rollout_prefix_cache_repair',{});after=target_manifest.get('rollout_prefix_cache_repair',{})
+        if (delta or differing!={'_build_llm'} or before.get('mode')!='disabled_for_capture_only' or
+                after.get('mode')!='disabled' or before.get('policy')!=after.get('policy') or
+                not before.get('normalized_build_llm_sha256') or
+                before['normalized_build_llm_sha256']!=after.get('normalized_build_llm_sha256')):
+            raise ValueError('Cache repair changed more than the sole constructor cache flag')
+    elif differing and (not delta or differing!={'_states'} or
             parent_manifest.get('rollout_candidate_metadata_ast_sha256')!=target_manifest.get('rollout_candidate_metadata_ast_sha256')):
         raise ValueError('Rollout scientific AST differs beyond the explicit candidate count argument/error text')
     if parent_manifest.get('rollout_critical_ast_policy')!=target_manifest.get('rollout_critical_ast_policy'):
         raise ValueError('Explicit rollout candidate-metadata AST equivalence policy differs')
-    return dict(schema_version=1,adapter=ADAPTER,authorized_candidate_delta=delta,authorized_infrastructure_delta=infra,parent_publication=parent_manifest,target_publication=target_manifest,
+    result=dict(schema_version=1,adapter=ADAPTER,authorized_candidate_delta=delta,authorized_infrastructure_delta=infra,parent_publication=parent_manifest,target_publication=target_manifest,
         parent_runtime_source_commit=parent_manifest['source_commit'],
         science_source_commit=parent_manifest['science_source_commit'],
         runtime_source_commit=target_manifest['source_commit'],scientific_files_sha256=science,
         controller_changes={name:dict(parent_sha256=parent.get(name),target_sha256=target.get(name)) for name in sorted(changed)},
-        actor_file_sha_unchanged=True,head_training_critical_ast_unchanged=True,rollout_scientific_critical_ast_unchanged=True,
+        actor_file_sha_unchanged=True,head_training_critical_ast_unchanged=True,rollout_scientific_critical_ast_unchanged=not cache_repair,
         scientific_payload_or_algorithm_changed=bool(delta),only_scientific_delta='candidate_schedule' if delta else None)
+    if cache_repair:result['rollout_critical_ast_equal_except_verified_prefix_cache_toggle']=True
+    return result
 
 
 def verify_source_compatibility(config):
@@ -218,7 +248,7 @@ def verify_source_compatibility(config):
             sha(config['candidate_schedule_authorization'])!=delta['human_intent_sha256']):
         raise ValueError('Candidate schedule changed without its exact pinned human authorization')
     if proof.get('authorized_infrastructure_delta') and proof['authorized_infrastructure_delta']['fault_terminal_proof_sha256']!=config['resume_joint']['terminal_proof_sha256']:
-        raise ValueError('Port collision repair must bind its actual selected terminal fault')
+        raise ValueError('Infrastructure repair must bind its actual selected terminal fault')
     if (config['source_commit']!=proof['runtime_source_commit'] or
             config.get('science_source_commit')!=proof['science_source_commit'] or
             proof['target_publication']['science_source_commit']!=proof['science_source_commit'] or
