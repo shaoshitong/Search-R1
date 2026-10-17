@@ -1,23 +1,271 @@
 {
-  "status": "PENDING_ACTUAL_JOINT_NO_INTENT",
-  "observed_unix": 1792215520.6064045,
-  "actual_latest_complete": 0,
+  "status": "CPU_ACCEPTANCE_PASS",
   "run_id": "4a1cc2d500fe40979ef8ca4792959438",
-  "job": 3432,
-  "runtime_source_commit": "68d2d131aee91d194c487f54a0204f53397d87ea",
+  "outer": 5,
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe",
+  "runtime_source": "68d2d131aee91d194c487f54a0204f53397d87ea",
   "runtime_config_sha256": "359e637a5130c0273ecde4927b093495ea2aeacbea7a932dbb8085122ec44d2a",
-  "published_execution_source_commit": "4202be0f106d06a2661d01e37d2a0eaca389b59f",
-  "branch": "codex/prefix-diversity-checkpoint5-cpu-20261016",
-  "audit_intent_created": false,
-  "cpu_process_started": false,
-  "cpu_acceptance_performed": false,
-  "gpu_forward_performed": false,
-  "training_modified": false,
-  "large_payload_transferred_to_Mac": false,
-  "small_readiness_receipt": {
-    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-i1i6-fresh200-20261017/acceptance5/checkpoint5-cpu-check-1792215504665030000-result.json",
-    "sha256": "be294207a5a50356890de1b5838f763ee25d833b48b0ca69ea15320c5c736161"
+  "joint5_sha256": "1f4ba1d50a15f5b22ccc705b3237c184471052f5b61408e1999d621ab55d4f50",
+  "executed_publication_commit": "ecabb7f31848c13f0b6ecdae6d03a452af549f61",
+  "executed_reader_sha256": "09608ca28a6c18326bf9c01bf1c31fa26323e49ad6ba49f973531330aeb646da",
+  "remote_proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/preparation/joint-milestone-0005-independent-full-sha-cpu-once-v1.json",
+  "remote_proof_sha256": "4cdaa4c502718338c0262dae7f0080fb79dd876e8a944175167d96b4c1af5fb1",
+  "remote_control_root": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/acceptance5-cpu-control-v1",
+  "reader_pid": 854187,
+  "actor_actual_adam_steps_per_rank": [
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100
+  ],
+  "probe_actual_adam_steps_per_rank": [
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100,
+    100
+  ],
+  "actor_scheduler_completed_outer": [
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5,
+    5
+  ],
+  "actor_adam_states_per_rank": [
+    37,
+    37,
+    37,
+    37,
+    37,
+    37,
+    37,
+    37
+  ],
+  "next_learning_rate": 8.771929824561403e-08,
+  "hf_fp32_finite_tensors": 435,
+  "actor_optimizer_files_bytes": 24687892288,
+  "probe_summary": {
+    "actual_adam_steps_per_rank": [
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100
+    ],
+    "adam_fp32_states": 14,
+    "learning_rate": 1e-06,
+    "model_fp32_tensors": 14,
+    "rank_rng_count": 8
   },
-  "next_action": "Once actual joint5 exists and both writers exited0, deploy once then observe real CPU progress twice and terminal proof; do not busy poll.",
-  "scope": "Existing once full-SHA/CPU reader + original logical-pair native mask weights + BF16 shared source contract and existing QA receipts if complete + stable initial grounding + strict current driver binding. No CUDA exact restore or independent backup."
+  "pool": {
+    "actual_permutation_entries": 168510,
+    "consumed_candidates": 25600,
+    "cursor": 25600,
+    "cycle": 0,
+    "eligible_questions": 168510,
+    "next_outer": 6,
+    "source_pool_sha256": "ae13710254e7ae77cf5531b62a755ec2000bc3fba20051bbafaff1f6714aa8fc"
+  },
+  "probe_clock": {
+    "group_denominator": 1024,
+    "original_rank_write_logs": 8,
+    "pre_step_prediction_clock_verified": true,
+    "trajectory_denominator": 5120,
+    "writes_per_rank": 20
+  },
+  "original_native_records_equal": true,
+  "logical_pair_weights_verified_all8": true,
+  "current_driver_standalone_strict_binding_passed": true,
+  "source_split_and_stable_initial_grounding_passed": true,
+  "original_qa": {
+    "actual_qa_execution_verified": false,
+    "status": "NOT_COMPLETED_AT_CPU_READ_NO_ADDITIONAL_QA"
+  },
+  "parameter_change": {
+    "all_model_parameters_compared": false,
+    "compared_elements": 6656,
+    "compared_tensors": [
+      {
+        "comparison_dtype": "torch.float32",
+        "elements": 2048,
+        "learned_dtype": "torch.float32",
+        "max_absolute_difference": 3.0100345611572266e-06,
+        "nonzero_difference_elements": 2001,
+        "official_file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/assets/qwen2.5-3b-instruct-aa8e725/model-00001-of-00002.safetensors",
+        "official_file_pinned_sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+        "official_full_file_hash_repeated": false,
+        "official_saved_dtype": "torch.bfloat16",
+        "official_tensor_only_cpu_read": true,
+        "tensor": "model.layers.0.input_layernorm.weight"
+      },
+      {
+        "comparison_dtype": "torch.float32",
+        "elements": 2048,
+        "learned_dtype": "torch.float32",
+        "max_absolute_difference": 3.0994415283203125e-06,
+        "nonzero_difference_elements": 2006,
+        "official_file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/assets/qwen2.5-3b-instruct-aa8e725/model-00001-of-00002.safetensors",
+        "official_file_pinned_sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+        "official_full_file_hash_repeated": false,
+        "official_saved_dtype": "torch.bfloat16",
+        "official_tensor_only_cpu_read": true,
+        "tensor": "model.layers.0.post_attention_layernorm.weight"
+      },
+      {
+        "comparison_dtype": "torch.float32",
+        "elements": 256,
+        "learned_dtype": "torch.float32",
+        "max_absolute_difference": 2.592802047729492e-06,
+        "nonzero_difference_elements": 162,
+        "official_file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/assets/qwen2.5-3b-instruct-aa8e725/model-00001-of-00002.safetensors",
+        "official_file_pinned_sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+        "official_full_file_hash_repeated": false,
+        "official_saved_dtype": "torch.bfloat16",
+        "official_tensor_only_cpu_read": true,
+        "tensor": "model.layers.0.self_attn.k_proj.bias"
+      },
+      {
+        "comparison_dtype": "torch.float32",
+        "elements": 2048,
+        "learned_dtype": "torch.float32",
+        "max_absolute_difference": 2.686167135834694e-06,
+        "nonzero_difference_elements": 1687,
+        "official_file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/assets/qwen2.5-3b-instruct-aa8e725/model-00001-of-00002.safetensors",
+        "official_file_pinned_sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+        "official_full_file_hash_repeated": false,
+        "official_saved_dtype": "torch.bfloat16",
+        "official_tensor_only_cpu_read": true,
+        "tensor": "model.layers.0.self_attn.q_proj.bias"
+      },
+      {
+        "comparison_dtype": "torch.float32",
+        "elements": 256,
+        "learned_dtype": "torch.float32",
+        "max_absolute_difference": 2.857297658920288e-06,
+        "nonzero_difference_elements": 254,
+        "official_file": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/assets/qwen2.5-3b-instruct-aa8e725/model-00001-of-00002.safetensors",
+        "official_file_pinned_sha256": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+        "official_full_file_hash_repeated": false,
+        "official_saved_dtype": "torch.bfloat16",
+        "official_tensor_only_cpu_read": true,
+        "tensor": "model.layers.0.self_attn.v_proj.bias"
+      }
+    ],
+    "fallback_used": false,
+    "first_outer_lr_zero_is_intentional": true,
+    "learned_hf_second_read_performed": false,
+    "max_absolute_difference": 3.0994415283203125e-06,
+    "nonzero_difference_elements": 6110,
+    "official_full_weight_hash_repeated": false,
+    "official_index_small_file": {
+      "bytes": 35581,
+      "dev": 64768,
+      "independent_full_sha": true,
+      "inode": 138880098,
+      "mtime_ns": 1791093611349812309,
+      "path": "/mnt/data/shaoshitong/search-r1-rl/tree-grpo-retained18-20261008/instruct300/assets/qwen2.5-3b-instruct-aa8e725/model.safetensors.index.json",
+      "sha256": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56"
+    },
+    "positive_lr_completed_outers": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "status": "ACTUAL_PARAMETER_CHANGE_OBSERVED"
+  },
+  "cost": {
+    "cpu_system_seconds": 25.256703,
+    "cpu_user_seconds": 69.697787,
+    "elapsed_seconds": 94.98614559322596,
+    "error": null,
+    "exit_code": 0,
+    "finished_unix": 1792217772.9666872,
+    "gpu_forward_performed": false,
+    "helper_commit": "ecabb7f31848c13f0b6ecdae6d03a452af549f61",
+    "max_rss_kib": 4543524,
+    "proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/preparation/joint-milestone-0005-independent-full-sha-cpu-once-v1.json",
+    "proof_sha256": "4cdaa4c502718338c0262dae7f0080fb79dd876e8a944175167d96b4c1af5fb1",
+    "proof_status": "PREFIX_SELECTION200_JOINT_MILESTONE_FULL_SHA_CPU_PASS",
+    "status": "CPU_ACCEPTANCE_PASS",
+    "subprocess_exit": 0,
+    "training_modified": false
+  },
+  "actual_progress_observations": [
+    {
+      "observed_unix": 1792217703.26483,
+      "log_bytes": 225,
+      "systemd": "Result=success\nExecMainPID=854187\nExecMainStatus=0\nMemoryCurrent=536592384\nCPUUsageNSec=25352780000\nIOReadBytes=18446744073709551615\nCPUQuotaPerSecUSec=1s\nMemoryMax=12884901888\nActiveState=active\nSubState=running\n",
+      "terminal_exit": null,
+      "receipt": "checkpoint5-cpu-observe-1792217688868782000-result.json",
+      "receipt_sha256": "4eca264df70b920f2fa1d518055df50c2bcbd6283c6fbf7c8c0ab883daca3ca7"
+    },
+    {
+      "observed_unix": 1792217733.0535314,
+      "log_bytes": 5469,
+      "systemd": "Result=success\nExecMainPID=854187\nExecMainStatus=0\nMemoryCurrent=2038939648\nCPUUsageNSec=55140586000\nIOReadBytes=18446744073709551615\nCPUQuotaPerSecUSec=1s\nMemoryMax=12884901888\nActiveState=active\nSubState=running\n",
+      "terminal_exit": null,
+      "receipt": "checkpoint5-cpu-observe-1792217714127219000-result.json",
+      "receipt_sha256": "bf3003cffbdeffe4621a204d548ea782e8e44f3032107eed7c3f67255567f258"
+    },
+    {
+      "observed_unix": 1792217748.440652,
+      "log_bytes": 6669,
+      "systemd": "Result=success\nExecMainPID=854187\nExecMainStatus=0\nMemoryCurrent=3590139904\nCPUUsageNSec=70521328000\nIOReadBytes=18446744073709551615\nCPUQuotaPerSecUSec=1s\nMemoryMax=12884901888\nActiveState=active\nSubState=running\n",
+      "terminal_exit": null,
+      "receipt": "checkpoint5-cpu-observe-1792217741620034000-result.json",
+      "receipt_sha256": "442c7f987dcce72c08da5d3f388e5d99a681d27cc1b6e204e197937db0c7b93c"
+    },
+    {
+      "observed_unix": 1792217774.91883,
+      "log_bytes": 9619,
+      "systemd": "Result=success\nExecMainPID=0\nExecMainStatus=0\nMemoryCurrent=[not set]\nCPUUsageNSec=[not set]\nIOReadBytes=18446744073709551615\nCPUQuotaPerSecUSec=infinity\nMemoryMax=infinity\nActiveState=inactive\nSubState=dead\n",
+      "terminal_exit": {
+        "cpu_system_seconds": 25.256703,
+        "cpu_user_seconds": 69.697787,
+        "elapsed_seconds": 94.98614559322596,
+        "error": null,
+        "exit_code": 0,
+        "finished_unix": 1792217772.9666872,
+        "gpu_forward_performed": false,
+        "helper_commit": "ecabb7f31848c13f0b6ecdae6d03a452af549f61",
+        "max_rss_kib": 4543524,
+        "proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe/preparation/joint-milestone-0005-independent-full-sha-cpu-once-v1.json",
+        "proof_sha256": "4cdaa4c502718338c0262dae7f0080fb79dd876e8a944175167d96b4c1af5fb1",
+        "proof_status": "PREFIX_SELECTION200_JOINT_MILESTONE_FULL_SHA_CPU_PASS",
+        "status": "CPU_ACCEPTANCE_PASS",
+        "subprocess_exit": 0,
+        "training_modified": false
+      },
+      "receipt": "checkpoint5-cpu-observe-1792217759181086000-result.json",
+      "receipt_sha256": "6a1eb8b681beaa20d785d9fd192f78e5604ef3cdef5b4907337c967ed713daf5"
+    }
+  ],
+  "gpu_forward_performed": false,
+  "cuda_rng_applied": false,
+  "training_modified": false,
+  "official_full_weight_sha_repeated": false,
+  "learned_hf_second_read_performed": false,
+  "historical_training_checkpoint_weights_read": false,
+  "independent_backup_performed": false,
+  "limitations": [
+    "CPU deserialization and saved RNG bytes do not establish exact CUDA executor restore.",
+    "Parameter change is demonstrated for selected5 small tensors only.",
+    "Shared BF16 train/QA source contract is verified; original QA5 was not complete at CPU read and no additional QA was run.",
+    "Single-cluster milestone retention is not an independent backup."
+  ]
 }
