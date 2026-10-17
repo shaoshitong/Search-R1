@@ -72,10 +72,10 @@ def _read(path, *, record=None, under=None):
     with path.open('rb') as stream:
         before = os.fstat(stream.fileno())
         need(0 <= before.st_size <= MAX_SMALL, 'SMALL_PROOF_LIMIT')
-        raw = stream.read(MAX_SMALL + 1); after = os.fstat(stream.fileno())
-    signature = lambda st: (st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns)
-    need(signature(before) == signature(after) == signature(path.stat()) and len(raw) == before.st_size,
-         'SMALL_PROOF_CHANGED_DURING_READ')
+        raw = stream.read(MAX_SMALL + 1)
+        from reproduction.easy2560_joint4.final_cpu_acceptance import _verify_stable_fd_snapshot
+        _verify_stable_fd_snapshot(stream, path, before, digest(raw), len(raw), check=need,
+                                   changed='SMALL_PROOF_CHANGED_DURING_READ')
     actual = dict(path=str(path), bytes=len(raw), sha256=digest(raw))
     if record is not None:
         need(record.get('path') == str(path) and type(record.get('bytes')) is int and

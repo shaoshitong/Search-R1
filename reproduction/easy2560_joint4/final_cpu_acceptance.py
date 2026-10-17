@@ -51,32 +51,55 @@ def decode(raw):
     return json.loads(raw, parse_constant=_constant, object_pairs_hook=_pairs)
 
 
+def _verify_stable_fd_snapshot(stream, path, before, raw_sha256, byte_count, *,
+                               check=need, changed='EVIDENCE_CHANGED_DURING_READ'):
+    """DPC may settle a just-written mtime/ctime while an unchanged fd is read.
+
+    Never tolerate content or identity differences: timestamps alone trigger
+    one complete same-fd byte comparison. No time tolerance, sleep, new open,
+    or retry is used. Each path snapshot is a single stat call.
+    """
+    after = os.fstat(stream.fileno()); path_after = path.stat()
+    identity = lambda st: (st.st_dev, st.st_ino, st.st_size, st.st_uid)
+    check(identity(before) == identity(after) == identity(path_after) and byte_count == before.st_size, changed)
+    timestamps = lambda st: (st.st_mtime_ns, st.st_ctime_ns)
+    if timestamps(before) == timestamps(after) == timestamps(path_after):
+        return
+    stream.seek(0); reread = hashlib.sha256(); length = 0
+    while True:
+        block = stream.read(min(8 * 1024**2, byte_count-length+1))
+        if not block:
+            break
+        reread.update(block); length += len(block)
+        check(length <= byte_count, changed)
+    final = os.fstat(stream.fileno()); path_final = path.stat()
+    check(identity(before) == identity(final) == identity(path_final) and
+          length == byte_count and reread.hexdigest() == raw_sha256, changed)
+
+
 def small(path):
     path = Path(path)
     with path.open('rb') as stream:
         before = os.fstat(stream.fileno())
         need(before.st_size <= MAX_SMALL, 'SMALL_EVIDENCE_LIMIT')
         raw = stream.read(MAX_SMALL + 1)
-        after = os.fstat(stream.fileno())
-    identity = lambda st: (st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns)
-    need(identity(before) == identity(after) == identity(path.stat()), 'EVIDENCE_CHANGED_DURING_READ')
-    return decode(raw), dict(path=str(path), bytes=len(raw), sha256=digest(raw))
+        sha256 = digest(raw)
+        _verify_stable_fd_snapshot(stream, path, before, sha256, len(raw))
+    return decode(raw), dict(path=str(path), bytes=len(raw), sha256=sha256)
 
 
 def lines(path):
     """Unlike an in-flight prefix seal, final acceptance rejects partial tails."""
     path = Path(path)
     with path.open('rb') as stream:
-        before = os.fstat(stream.fileno())
+        before = os.fstat(stream.fileno()); raw_sha256 = hashlib.sha256(); byte_count = 0
         for raw in iter(lambda: stream.readline(MAX_LINE + 1), b''):
             need(raw.endswith(b'\n') and len(raw) <= MAX_LINE, 'PARTIAL_OR_OVERSIZED_FINAL_LEDGER')
             need(raw.strip(), 'BLANK_FINAL_LEDGER_ROW')
+            raw_sha256.update(raw); byte_count += len(raw)
             yield decode(raw)
-        after = os.fstat(stream.fileno())
-    need((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns) ==
-         (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns) ==
-         (path.stat().st_dev, path.stat().st_ino, path.stat().st_size, path.stat().st_mtime_ns),
-         'FINAL_LEDGER_CHANGED_DURING_READ')
+        _verify_stable_fd_snapshot(stream, path, before, raw_sha256.hexdigest(), byte_count,
+                                   changed='FINAL_LEDGER_CHANGED_DURING_READ')
 
 
 def published_source_binding(base, run, training_commit):
