@@ -1,6 +1,8 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Actual complete127/200; job3427 RUNNING on h100-10/10.33.0.18, stage outer-000128-actor-2d3a8330fa2a47069652c1b3b5e7d419. Saved actor/probe Adam per8rank: [2540, 2540, 2540, 2540, 2540, 2540, 2540, 2540] / [2540, 2540, 2540, 2540, 2540, 2540, 2540, 2540]. Completed joint counters: [2540, 2540, 2540, 2540, 2540, 2540, 2540, 2540] / [2540, 2540, 2540, 2540, 2540, 2540, 2540, 2540]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
+Connection diagnosis 2026-10-17T04:56:03.537441+00:00: user requested real proxy/SSH investigation. Explicit direct en0 SSH authenticated in2.869s. Mgmt sudo-readonly journal proves MaxStartups10:30:100 throttling12:36:55–12:52:10CST,60+17 newconnections dropped. Config ProxyCommand/ProxyJump none; en0-scoped physical route bypasses default utun4, despite system7892 proxy settings. Task-owned direct master68635/session89032 Ocheck and two actual3427 polls succeeded (127joint complete,128actor→probe progress). Do not treat old blocked records as current remote failure or stop instruction. No training/global SSH/network/server configuration change. See SSH_DIRECT_DIAGNOSIS_20261017.json. Goal tool last-read blocked cannot be changed to active by update_goal; current work follows latest human authorization.
+
+Actual complete127/200; job3427 RUNNING on h100-10/10.33.0.18, stage outer-000128-probe-update. Saved actor/probe Adam per8rank: [2560, 2560, 2560, 2560, 2560, 2560, 2560, 2560] / [2540, 2540, 2540, 2540, 2540, 2540, 2540, 2540]. Completed joint counters: [2540, 2540, 2540, 2540, 2540, 2540, 2540, 2540] / [2540, 2540, 2540, 2540, 2540, 2540, 2540, 2540]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 
 Latest QA: outer100,512questions EM28.3203% / F134.6557%. QA uses unchanged8TP1 FP32 greedy/full500/raw500/foursearch/noanswerreserve/noearlyfinal. Classification diagnostics below are distinct from QA EM/F1. Full final51713 remains required.
 Recent actual completejoint intervals within unchanged execution base/source[438.3922929763794, 441.55716824531555, 445.50114011764526, 442.63766503334045]; mean442.022s=7.367min. These wall intervals include any preceding milestoneQA and scheduling overhead; pure per-outer phase durations are recorded separately. Startup and terminal failure/repair costs are separate.
@@ -147,18 +149,10 @@ History:3416 preAdam pathfailure;3417 actor20saved/probe20unsaved diagnosticfail
 
 Cost: COST_SNAPSHOT.json contains existing native token/request metadata and phasewall with explicit coverage; failed attempts/QA/setup/idle separate. Passive resource5s unit runs outside frozenrepo (CPU10%,Memory128M,Nice19), noGPUforward or trainingcontrol. Wholecard sampledpeaks cover only the current sampler window recorded by started_unix and last_observed_unix in RESOURCE5S_SUMMARY_LATEST.json, not historical/continuouspeaks or amplecapacity. CPU observedbirth utime+stime is an incomplete lowerbound over observed owned process births; past/shortlived CPU may be missing, never fullCPUcost. Raw telemetry staysremote. Logical retrieval coverage is recorded separately in RETRIEVAL_COST_SNAPSHOT.json; final combinedGPU/CPU accounting remains incomplete.
 
-Completion remains unproven: actual200, normal50/100/150/200checkpoint/QA, fullseven51713, HF/tokenizer/nativefinite/nonzeroupdate/source/split identity, cost/ownedcleanup and finalpublication. GoalACTIVE; no stop/restart is performed by this reader.
+Completion remains unproven: actual200, normal50/100/150/200checkpoint/QA, fullseven51713, HF/tokenizer/nativefinite/nonzeroupdate/source/split identity, cost/ownedcleanup and finalpublication. Goal remains incomplete; no stop/restart is performed by this reader.
 
 Checkpoint100 independent CPU acceptance: JOINT_COMPONENTS_VERIFIED_STANDALONE_DRIVER_FAIL_RETAINED. Original standalone-driver result: FAIL_ACTUAL_STALE_RESUME3_POOL_AND_PROBE_DESCRIPTOR. Joint component proof: 80c2c9b2ebfb877330826732e7af8f20f8928caf5474a15366a643f2cc346a53. A component result does not overwrite an original failed proof; restore only through its explicitly verified joint pool/probe bindings.
 
 Future driver metadata source fix 04ada154905f2540abe6cbf88bacff64e6221589 is published and remains NOT_DEPLOYED_TO_RUNNING3427; the running source above stays frozen.
 
-Latest passive telemetry4614 samples, last observed1792212757.3119297; errors[], wholecard maxused81057MiB/minfree25MiB (coverage above).
-
-## Original reward and scoped costs
-
-Original saved actor grounding reward outer127 selected512G5/2560 mean1.08452216, min0.05000000, max1.59876812. All8rank statistics finite; prefix correctness head not used as reward. Original joint receipt hashes bind history1–127; no new forward. Selected training reward is distinct from heldout QA or proof of selection benefit.
-
-Committed generation/retrieval through127/127: 108716077 sampled tokens, 660151 logical searches; backlog[]. Inherited prefix searches not doubled; actor512 subset not added. Failed attempts, QA, HTTP retries/cache misses and physical FAISS calls separately scoped.
-
-Historical terminal reservations 51.802222 GPU-hours include useful saved updates and failure/setup/QA overhead. With current job, observed reserved total124.077778 GPU-hours is a lower bound for running jobs at native observation. Do not add phase wall again. Reserved CPU capacity is not actual CPU use; sacct disabled/sstat invalid, CPU snapshots partial. Goal200/final51713 and final cost report remain incomplete.
+Latest passive telemetry4620 samples, last observed1792212840.2179656; errors[], wholecard maxused81057MiB/minfree25MiB (coverage above).

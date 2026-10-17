@@ -1,0 +1,61 @@
+{
+  "recorded_utc": "2026-10-17T04:56:03.537441+00:00",
+  "ssh_effective_route": {
+    "alias": "mgmt-host",
+    "target": "52.6.216.152:22",
+    "user": "lichen",
+    "ProxyCommand": "none",
+    "ProxyJump": "none",
+    "BindInterface": "en0",
+    "environment_proxy_variables_present": false
+  },
+  "system_proxy": {
+    "HTTP": "127.0.0.1:7892",
+    "HTTPS": "127.0.0.1:7892",
+    "SOCKS": "127.0.0.1:7892",
+    "default_unscoped_route": "utun4 via198.18.0.1",
+    "ssh_scoped_route": "en0 via10.4.167.254",
+    "ssh_debug_bound_address": "10.4.166.96",
+    "system_proxy_configuration_is_not_evidence_that_OpenSSH_used_it": true
+  },
+  "direct_success": {
+    "elapsed_seconds": 2.869239792,
+    "utc": "2026-10-17T04:52:12.419134+00:00",
+    "returncode": 0,
+    "stdout": "mgmt-host\nSat Oct 17 04:52:12 UTC 2026\n",
+    "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/ssh-direct-debug-1792212729550042000.json",
+    "sha256": "25ea58fa8e4797a0faa90f5c126670360d9512046d9844d2a03867d2c81a8865"
+  },
+  "server_limits": [
+    "logingracetime 120",
+    "maxstartups 10:30:100",
+    "persourcemaxstartups none"
+  ],
+  "server_events": [
+    "2026-10-17T04:36:55+00:00 mgmt-host sshd[3215735]: error: beginning MaxStartups throttling",
+    "2026-10-17T04:36:55+00:00 mgmt-host sshd[3215735]: drop connection #12 from [218.107.35.219]:16720 on [172.31.12.217]:22 past MaxStartups",
+    "2026-10-17T04:50:02+00:00 mgmt-host sshd[3215735]: exited MaxStartups throttling after 00:13:06, 60 connections dropped",
+    "2026-10-17T04:50:02+00:00 mgmt-host sshd[3215735]: error: beginning MaxStartups throttling",
+    "2026-10-17T04:50:02+00:00 mgmt-host sshd[3215735]: drop connection #10 from [218.107.35.219]:17080 on [172.31.12.217]:22 past MaxStartups",
+    "2026-10-17T04:52:10+00:00 mgmt-host sshd[3215735]: exited MaxStartups throttling after 00:02:07, 17 connections dropped"
+  ],
+  "server_diagnostic_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/mgmt-effective-ssh-diagnostic-1792212889743492000.json",
+  "server_diagnostic_sha256": "dfcdff72437c97888681daf844ca52a42829dd3134148a84717b558561958321",
+  "conclusion": "Management sshd had MaxStartups throttling overlapping failed attempts; explicit direct connection authenticated immediately after recorded throttling ended. This supports the transport failure diagnosis; no claim every individual timeout has a matched server line.",
+  "dropped_connections_in_two_windows": 77,
+  "throttling_window_cst": "2026-10-17 12:36:55\u201312:52:10",
+  "management_master": {
+    "control_path": "/var/folders/6k/lf0fpt5j2ps0ztkt_tyvwntw0000gn/T/qprobe3-mgmt-clm2sb4h/control",
+    "pid": 68635,
+    "unified_session": 89032,
+    "authenticated_unix": 1792212758.955689,
+    "ocheck": "Master running (pid=68635)\n"
+  },
+  "actual_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/refresh-1792212857108990000-actual.json",
+  "last_complete": 127,
+  "stage": "outer-000128-probe-update",
+  "native": "RUNNING",
+  "training_actions": [],
+  "global_ssh_network_server_config_changes": [],
+  "goal_tool_status_last_read": "blocked; current human instruction authorizes continued diagnosis; this tool cannot set active"
+}

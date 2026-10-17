@@ -1,0 +1,7 @@
+
+
+## 2026-10-17 Search-G1 direct SSH / management MaxStartups diagnosis
+
+Connection diagnosis 2026-10-17T04:56:03.537441+00:00: user requested real proxy/SSH investigation. Explicit direct en0 SSH authenticated in2.869s. Mgmt sudo-readonly journal proves MaxStartups10:30:100 throttling12:36:55–12:52:10CST,60+17 newconnections dropped. Config ProxyCommand/ProxyJump none; en0-scoped physical route bypasses default utun4, despite system7892 proxy settings. Task-owned direct master68635/session89032 Ocheck and two actual3427 polls succeeded (127joint complete,128actor→probe progress). Do not treat old blocked records as current remote failure or stop instruction. No training/global SSH/network/server configuration change. See SSH_DIRECT_DIAGNOSIS_20261017.json. Goal tool last-read blocked cannot be changed to active by update_goal; current work follows latest human authorization.
+
+For this Search-G1 task, first read work/search-g1-prefix1024-diversity512-20261016/MANAGEMENT_DIRECT_MASTER_CURRENT.json, then validate own socket/Ocheck; use published management_transport.remote(control_path=current,target=h100-10). Do not borrow other tasks’ sockets, force7892, override normal KEX, or change global SSH/network/server limits. Socket/PID are observations, not permanent identity. If it is gone, diagnose ssh -G, route -ifscope en0, ssh -vvv and actual server auth throttling before inferring a broad outage. No repeated training submission from observation failure.
