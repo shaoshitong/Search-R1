@@ -1,0 +1,132 @@
+{
+  "status": "ACTUAL86_NATIVE_AND_FIXED_ASSET_COMPLETION",
+  "original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden3430-fixed-complete-native-20261017T034946546491Z-actual.json",
+  "original_sha256": "ca749c1f2a11c5278bac2e7aafa258376730691b28995ccf250021041ce7c39a",
+  "observed_unix": 1792208995.1559055,
+  "job": "3430",
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers",
+  "complete_outer": 86,
+  "native_state": "RUNNING",
+  "stage": {
+    "actor_adam_per_rank": 1720,
+    "checked_unix": 1792208988.124573,
+    "complete_outer": 86,
+    "outer": 86,
+    "probe_adam_per_rank": 400,
+    "run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+    "stage": "OUTER_JOINT_COMPLETE"
+  },
+  "actor_adam_per_rank": [
+    1720,
+    1720,
+    1720,
+    1720,
+    1720,
+    1720,
+    1720,
+    1720
+  ],
+  "probe_adam_per_rank": [
+    400,
+    400,
+    400,
+    400,
+    400,
+    400,
+    400,
+    400
+  ],
+  "original_new_actor_journals_verified": [
+    84,
+    85,
+    86
+  ],
+  "latest_selected": {
+    "outer": 86,
+    "completed_unix": 1792208988.1217558,
+    "sampling_actor_version": "a008d7ce983347bbb6e81051b25a7c4e-actor0085",
+    "probe_used_to_select_sha256": "1976805c740b41318916509f5b93dc9db75d5faeee2e3b8afbe595b0cbb682dd",
+    "selected_questions": 512,
+    "selected_trajectories": 2560,
+    "correct_count_histogram": {
+      "0": 76,
+      "1": 23,
+      "2": 18,
+      "3": 27,
+      "4": 60,
+      "5": 308
+    },
+    "all_wrong_questions": 76,
+    "mixed_questions": 128,
+    "all_correct_questions": 308,
+    "actual_mixed_fraction": 0.25,
+    "mean_predicted_mixed_probability": 0.7663020123040843,
+    "unselected_outcome_labels_available": false,
+    "actor_actual_adam_per_rank": [
+      1720,
+      1720,
+      1720,
+      1720,
+      1720,
+      1720,
+      1720,
+      1720
+    ],
+    "probe_actual_adam_per_rank": [
+      400,
+      400,
+      400,
+      400,
+      400,
+      400,
+      400,
+      400
+    ],
+    "phase_timings": {
+      "outer-000086-actor-a521931252b94323b68db661857b7364": {
+        "elapsed_seconds": 120.43194233998656,
+        "exit_code": 0
+      },
+      "outer-000086-continue": {
+        "elapsed_seconds": 95.65675926208496,
+        "exit_code": 0
+      },
+      "outer-000086-prefix": {
+        "elapsed_seconds": 79.9879717901349,
+        "exit_code": 0
+      },
+      "outer-000086-score": {
+        "elapsed_seconds": 23.182123683393,
+        "exit_code": 0
+      }
+    },
+    "native_capture_seconds_per_rank": [
+      15.725526388734579,
+      15.863240852952003,
+      16.189702577888966,
+      16.026869725435972,
+      15.597001604735851,
+      15.84490279853344,
+      16.25392910093069,
+      15.8394342251122
+    ],
+    "periodic_probe_metrics": null,
+    "selection_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000086/probe-score/selection.json",
+    "selection_sha256": "bd0316fd375678f5f72caa427a6e6c6c576752c588531a1ca77fe2e382b8b79d",
+    "strict_em_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000086/full/own-em.jsonl",
+    "strict_em_sha256": "cace9c33e484258fb988646b90769e769434dcab64c2a10df5c4357ae7678cf8",
+    "joint_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000086/complete.json",
+    "joint_sha256": "66d738dbe2928e5ad4c5470cb1dd83f0e96aef03738ff14b89b55b13c6864d4c"
+  },
+  "source_filesystem": {
+    "uid": 0,
+    "ordinary_available_bytes": 0,
+    "physical_free_including_reserved_bytes": 221191770112,
+    "capacity_exclusive_to_job": false,
+    "reserved_policy_modified": false
+  },
+  "runtime": "c22dbf86664bcc4da86aecd702fbaaea9c381551",
+  "training_restarted": false,
+  "configuration_changed": false,
+  "goal_complete": false
+}
