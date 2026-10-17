@@ -53,10 +53,10 @@ def validate_config(c, base):
     if len(set(c['physical_gpu_uuids'])) != WORLD:
         raise ValueError('Four actual physical training GPUs are required')
     if (len(c.get('physical_gpu_indices', [])) != WORLD
-            or c.get('auxiliary_gpu_indices') != [5, 6]
-            or len(c.get('auxiliary_gpu_uuids') or []) != 2
-            or set(c['physical_gpu_indices']) & {5, 6}
-            or len(set(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])) != 6
+            or len(c.get('auxiliary_gpu_indices', [])) != 4
+            or len(c.get('auxiliary_gpu_uuids') or []) != 4
+            or set(c['physical_gpu_indices']) & set(c['auxiliary_gpu_indices'])
+            or len(set(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])) != 8
             or c.get('probe_source_run') != '8af926a49630428097b94027864da68b'):
         raise ValueError('Bind actual four training/two auxiliary UUIDs and the approved warmup source')
     for key in ('environment_root', 'model_dir', 'official_model_dir', 'encoder_model_dir',
@@ -373,9 +373,9 @@ def run(base):
             '--index', c['retrieval_index'], '--corpus', c['retrieval_corpus'], '--encoder', c['retrieval_encoder'],
             '--cache', str(base / 'retrieval-cache'), '--run-id', c['run_id'], '--port', str(c['retrieval_port']),
             '--data-cache', c.get('retrieval_data_cache', str(base / 'retrieval-cache')),
-            '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', '2'],
+            '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', str(len(c['auxiliary_gpu_indices']))],
             dict(env, CUDA_VISIBLE_DEVICES=','.join(map(str,c['auxiliary_gpu_indices'])), PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
-        await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=2))
+        await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=len(c['auxiliary_gpu_indices'])))
         from . import grounding
         if outer:
             # A future compatible recovery must retain the exact adopted state.

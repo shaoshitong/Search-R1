@@ -80,7 +80,8 @@ def prepare(config, outer):
     base = Path(config['base'])
     if not str(base).startswith(('/mnt/data/shaoshitong/search-g1-prefix-selection200-',
                                   '/data/shaoshitong/search-g1-prefix-selection200-',
-                                  '/data/shaoshitong/Search-G1-prefix-selection200-')):
+                                  '/data/shaoshitong/Search-G1-prefix-selection200-',
+                                  '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017')):
         raise ValueError('Candidate artifacts must stay in the remote experiment')
     root = base / 'question-pool'
     target = base / 'outers' / ('outer-%06d' % outer)

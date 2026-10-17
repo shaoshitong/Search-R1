@@ -88,7 +88,7 @@ def validate_config(config):
             or not _calibration(config)[1]
             or not str(_calibration(config)[0]).startswith(('/mnt/', '/dataset/', '/data/'))
             or type(config.get('grounding_refit_visible_device', 6)) is not int
-            or config.get('grounding_refit_visible_device', 6) != 6
+            or config.get('grounding_refit_visible_device', 6) not in config.get('auxiliary_gpu_indices', [6])
             or config.get('world_size', WORLD) != WORLD
             or config.get('interaction_protocol', INTERACTION_CONTRACT) != INTERACTION_CONTRACT):
         raise ValueError('Bind the real 300-question grounding calibration and 50/100/150 lifecycle')

@@ -26,7 +26,7 @@ def sha(path):
             digest.update(block)
     return digest.hexdigest()
 
-PREFIX = '/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-'
+PREFIX = '/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017'
 
 
 def gpu_inventory():
@@ -48,7 +48,7 @@ def compute_processes():
 
 class UUIDLocks:
     def __init__(self, uuids):
-        root = Path('/data/shaoshitong/.search-g1-gpu-uuid-locks')
+        root = Path('/data/user/jxu957/experiments/.thread5-prefix5-gpu-uuid-locks')
         root.mkdir(exist_ok=True)
         self.fds = []
         try:
@@ -75,8 +75,10 @@ def native_allocation(base, c):
         raise ValueError('Wrong isolated A800 namespace')
     training = c['physical_gpu_indices']
     aux = c['auxiliary_gpu_indices']
-    if len(training) != 4 or len(set(training)) != 4 or aux != [5, 6] or set(training) & set(aux):
-        raise ValueError('Four distinct training cards excluding auxiliary5/6 required')
+    if len(training) != 4 or len(set(training)) != 4 or len(aux) != 4 or len(set(aux)) != 4 or set(training) & set(aux):
+        raise ValueError('Four Slurm training GPUs and four distinct shared auxiliary GPUs required')
+    if not os.environ.get('SLURM_JOB_ID') or c.get('execution_backend') != 'slurm_hpc3':
+        raise ValueError('HPC3 requires a real owned Slurm allocation')
     mapping = gpu_inventory()
     ids = training + aux
     expected = c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids']

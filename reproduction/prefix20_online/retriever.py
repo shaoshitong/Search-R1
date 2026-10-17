@@ -149,7 +149,7 @@ def main():
     parser.add_argument('--run-id', required=True)
     parser.add_argument('--port', type=int, default=18010)
     parser.add_argument('--batch-queries', type=int, default=512)
-    parser.add_argument('--gpu-shards', type=int, choices=(2,8), default=8)
+    parser.add_argument('--gpu-shards', type=int, choices=(2,4,8), default=8)
     args = parser.parse_args()
     if args.batch_queries < 1 or not 1 <= args.port <= 65535:
         parser.error('Positive query batch and valid port required')
