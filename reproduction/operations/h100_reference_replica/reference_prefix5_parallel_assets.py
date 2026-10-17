@@ -53,7 +53,7 @@ with archive.open('xb')as f:
   with path.open('rb')as source:
    for chunk in iter(lambda:source.read(8*1024**2),b''):h.update(chunk);f.write(chunk)
 assert archive.stat().st_size==PACK['bytes']and h.hexdigest()==PACK['sha256']
-with archive.open('rb')as f:r=subprocess.run(['sh','-c',TARGET_CMD],stdin=f,capture_output=True,timeout=240)
+with archive.open('rb')as f:r=subprocess.run(['sh','-c',TARGET_CMD],stdin=f,capture_output=True,timeout=900)
 assert r.returncode==0,r.stderr.decode();result=json.loads(r.stdout);(b/'target-complete.json').write_text(json.dumps(result));print(json.dumps(result))
 # Clear only this successful management staging, after full destination proof.
 for path in paths+[archive]:path.unlink()

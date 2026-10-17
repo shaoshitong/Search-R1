@@ -55,6 +55,16 @@ def prepare(assets, output, source_commit, infrastructure):
             raise ValueError('Transported EMA tensors differ from the reference checkpoint')
         del saved, model, buffers
     ref = json.loads(Path(rows['reference_launch_config']['target']).read_text())
+    for role, key in [('canonical_train', 'canonical_train_sha256'),
+                      ('validation_questions', 'validation_questions_sha256'),
+                      ('final_questions', 'final_questions_sha256'),
+                      ('common_manifest_path', 'common_manifest_sha256'),
+                      ('composite_manifest_path', 'composite_manifest_sha256'),
+                      ('source_question_pool', 'source_question_pool_sha256'),
+                      ('fixed_test_identity_path', 'fixed_test_identity_sha256'),
+                      ('grounding_calibration_questions', 'grounding_calibration_sha256')]:
+        if rows[role]['independent_target_sha256'] != ref[key]:
+            raise ValueError('Copied reference data identity differs: ' + role)
     copied = {k: r['target'] for k, r in rows.items()}
     original_grounding = json.loads(Path(copied['grounding_manifest']).read_text())
     # Only physical file paths change. Keep original head bytes, labels, layer
