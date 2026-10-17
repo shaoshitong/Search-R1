@@ -107,10 +107,6 @@ _body = _body.replace(_guard, "assert joint['run_id']==h['run_id']\n c=read(b/'p
 _restore_projection = "restoration=(project(restored[0],('restored_completed_outer','actual_adam_before','restored_scheduler','actual_learning_rates','actual_model_master_dtypes','actor_version','restored_grounding_probe_version')) if restored else None),"
 assert _body.count('incomplete_final_line=incomplete,') == 1
 _body = _body.replace('incomplete_final_line=incomplete,','incomplete_final_line=incomplete,'+_restore_projection)
-_write_guard = "assert all(row['rank']==rank and row['outer']==current and row['opportunity']==index for index,row in enumerate(writes))"
-assert _body.count(_write_guard) == 1
-_body = _body.replace(_write_guard,
-    "assert all(row['rank']==rank and row['outer']==current and type(row['opportunity']) is int and 0<=row['opportunity']<20 for row in writes) and all(a['opportunity']<z['opportunity'] for a,z in zip(writes,writes[1:]))")
 _body = _body.removesuffix('\nemit(v)\n')
 OBSERVE = COMMON + _body + r'''
 v['handoff_launch']=document(b,'preparation/handoff-launch.json')

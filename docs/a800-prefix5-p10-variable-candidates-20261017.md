@@ -50,4 +50,4 @@ CPU恢复入口原来把被正常存储清理的第1至3轮probe快照当成必�
 
 恢复操作入口必须在`/data/search-g1/env/bin/python`下验证源码AST。物理SSH入口默认系统Python与训练环境版本不同，虽然每个文件SHA完全相同，Python AST字段差异仍会造成假拒绝。本次只在本地已发布操作入口为原路由增加stdin读取前的execv；远端已部署source75及已验收状态不修改，CPU fullSHA/finite证明直接复用。原launch在`prepared()`阶段、onceclaim之前被拒绝，无pipeline/submit intent；修复操作入口后才进行首次实际launch，不重放已发生训练。
 
-只读监控现投影现成milestone QA标量和其metadata SHA，不触发生成或重评分。更新机会中的真实skip允许成功写入对应不连续opportunity编号；监控严格检查0..19内递增顺序，而非假定每次机会都成功Adam。此变更仅在发布的本地操作入口，运行source75未改。
+只读监控现投影现成milestone QA标量和其metadata SHA，不触发生成或重评分。更新机会中的真实skip允许成功写入对应不连续opportunity编号；复用的I1–I6 reader已经严格检查0..19内递增机会与实际恢复Adam连续计数，保持该检查，不再覆盖成旧版reader的断言。此变更仅在发布的本地操作入口，运行source75未改。
