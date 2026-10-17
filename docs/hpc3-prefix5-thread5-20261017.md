@@ -50,3 +50,36 @@ CPU candidate clocks passed6 tests; the seventh initially lacked its preserved
 AST-proof fixture, which is included here and rerun independently. This is not
 a GPU training qualification. The real first complete iteration remains the
 training-start acceptance gate.
+
+Final logic audit (2026-10-17): deployed revision
+`c578d1809b8cc587fae7b7264c560e8133bd095d` passed78 targeted CPU tests
+on the actual HPC3 environment, with zero failures/errors/skips. Coverage:
+whole-G5 candidate clocks and identity, unchanged-prefix continuation, native
+layer27 capture positions, joint-BCE analytic values/gradients/extreme logits,
+unequal-DDP-batch weighting, physical4/reference8 actor value and gradient
+equivalence, strict-EM mixed selection, all-correct-only virtual-zero statistics,
+actual Adam/skipped-opportunity accounting, storage boundary admission, and
+shared train/QA interaction/grounding clocks. These are CPU checks, not a real
+four-GPU save/load or first-outer acceptance.
+
+Two integration defects were repaired before launch: stopped-writer recovery
+now resolves only this run's owned `repo -> source/<commit>` publication alias
+while checkpoint paths still reject symlinks; on a kernel without pidfd,
+cleanup gives the authenticated live torchrun leader time to forward signals
+and reap children. It never falls back to numeric signaling of descendants.
+The latter passed an actual Linux parent/child termination test with pidfd
+disabled. A stale prefix-receipt test fixture was also updated to include the
+required shared interaction protocol/BF16 fields; production validation stayed
+strict. An initially misspelled test-module invocation was corrected.
+
+Actor, actor-safety, gradient-clipping, hidden capture, native probe model,
+joint loss, and train/QA interaction files are byte-identical to reference
+`79c645a4a51bd0bcb0fab4ee36b8fcd634290b2f`. Candidate ordinary5120/P10 pool
+changes retain the14 previously sealed probe training/loading/optimizer ASTs.
+The exact existing job728815 was briefly held only while publishing/testing
+this fix and then released without a second submission. Online probe updates
+are every10 outers, one epoch/50 Adam writes, continuing its own parameters and
+Adam; this is the requested reference recipe, replacing the old P25/20epoch
+recipe. Random exploration is0 in this reference configuration. No claim of
+zero possible runtime defects or GPU restore correctness is made before the
+actual allocation and checkpoint exist.
