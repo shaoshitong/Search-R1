@@ -182,3 +182,31 @@ All aggregated metrics/source hashes, every global step loss, native closure pro
 ### Authorized next matched ablation: policy-only direct readout
 
 The human authorized removing question outputs and retesting. Preserve all actual question/context+20 hidden and full head attention; only the last20 policy-position outputs enter Linear(40960,1). Start from the same original joint50 head40/Adam200, slicing the output policy columns and their Adam moments, not from the extra-ten-epoch final head. Reuse the identical fixed actor50 train/heldout data, same ten shuffle orders, LR1e-5 and unchanged joint loss. No rollout/actor/retriever or formal200 continuation. `local_probe_policy_readout50.py` is a separate once native entry; status remains pending until actual submission/updates.
+
+## Completed policy-only readout ablation, native3463
+
+All10 epochs actually completed with native COMPLETED0:0,1000 new synchronous Adam per each8 ranks, final1200 (source200 plus1000). Final nativeCPU proof independently reads925,539,946B checkpoint SHAac16ab5d46c063c38085ecf733d95e55fed2ece3b00928639a25c8ac83e31d5d,14 FP32 model/Adam states,outputweight1x40960 and8rankRNG. Allten shuffle files equal the full-readout baseline byte-for-byte. Two actual ownbirth/cgroup/GPU release checks passed. No new rollout or actor/encoder update.
+
+All question+20 nativehidden and trainable-head attention remain unchanged. Only directquestionoutput readout columns and their Adam moments are removed; the source policytail and other source weights/moments/RNG are retained. Initial logits necessarily change when removing previously trainedquestion coefficients. This is a matched removal test from the same source head, not two separately pretrained architectures.
+
+|Epoch|Train mixed BA|Test mixed BA|Train trajectory accuracy|Test trajectory accuracy|Train total|Test total|
+|---|---:|---:|---:|---:|---:|---:|
+|0|50.01%|50.00%|64.05%|63.12%|2.6249|2.6128|
+|1|53.86%|51.25%|63.34%|61.68%|1.4469|1.5165|
+|2|60.65%|53.70%|63.35%|61.68%|1.4375|1.5345|
+|3|63.95%|49.90%|63.35%|61.68%|1.3820|1.5161|
+|4|66.89%|51.21%|63.37%|61.68%|1.3469|1.5226|
+|5|70.93%|52.85%|63.38%|61.68%|1.3058|1.5335|
+|6|75.37%|52.22%|63.48%|61.68%|1.2601|1.5501|
+|7|79.52%|50.13%|64.01%|61.76%|1.2053|1.5658|
+|8|84.24%|51.77%|63.90%|61.68%|1.1500|1.6161|
+|9|83.74%|51.10%|65.59%|61.80%|1.0779|1.6081|
+|10|85.83%|49.69%|66.27%|61.95%|1.0090|1.6344|
+
+![Full vs policy readout curves](local50-policy-only-readout/question-readout-ablation-comparison.png)
+
+At10, policy-only test mixedBA49.6883% versus fullreadout51.4439%; trajectoryaccuracy61.9531% versus62.8906%. Policy-only did not fix heldout generalization. This does not rule out question information shortcut through contextual policyhidden or head attention. Fullreadout test trajectoryBCE drops.945835->.710112 at3, then rises.991651 at10; groupBCE and total did not improve relative toepoch0. The two terms must be interpreted separately.
+
+### New human-authorized20k EMA study
+
+Human requests20,480 different questionsG5=102,400 trajectories plus EMA, then separate1+2+3 and1+2+4 arms. Human explicitly chose restoring question+20 directreadout and hidden+true-soft-label mixup. Defaults recorded for reproducibility: ten epochs perarm,LR1e-5,EMAdecay.99; group2 arm increases only mixedBCEweight1->2; mixup arm keeps1/1 and usesBeta(.2,.2),completeG5pairs with compatiblemask/positionlayout and separately mixed ownEM/mixedlabels (never derive mixedlabel from fractionalEMsum). Existing5120actor0050G5 and fresh15360sameactorG5 form one shareddata pool, fixedsameactor512G5 heldout unchanged. Allarms restart the same originaljoint50 probe/head40Adam200, not previous localfinalheads. Withfourfold data,100->400updates perepoch,4000new/4200finalAdam eacharm; this is not an isolated sample-size-only causal experiment. Native data-only entry `probe20k_dataset.py` cannot launch formalactor training.

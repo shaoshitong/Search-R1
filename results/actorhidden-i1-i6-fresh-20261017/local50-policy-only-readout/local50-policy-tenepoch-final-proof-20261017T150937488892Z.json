@@ -1,0 +1,344 @@
+{
+  "existing": false,
+  "proof_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/preparation/local50-tenepoch-final-independent-cpu-original-records-once-v1.json",
+  "proof_sha256": "c9ee7cbdceeaca9c91294fbbd7f03521b6ce11ebda6062ca0e419627ff45dc26",
+  "proof": {
+    "status": "LOCAL50_TEN_EPOCH_ACTUAL_COMPLETE_NATIVE_EXIT0_AND_FINAL_CPU_READBACK",
+    "job_id": "3463",
+    "native": {
+      "JobId": "3463",
+      "JobName": "g1-policyreadout-5599f0f6a502",
+      "UserId": "root(0)",
+      "GroupId": "root(0)",
+      "MCS_label": "N/A",
+      "Priority": "4294898618",
+      "Nice": "0",
+      "Account": "(null)",
+      "QOS": "(null)",
+      "JobState": "COMPLETED",
+      "Reason": "None",
+      "Dependency": "(null)",
+      "Requeue": "1",
+      "Restarts": "0",
+      "BatchFlag": "1",
+      "Reboot": "0",
+      "ExitCode": "0:0",
+      "RunTime": "00:03:22",
+      "TimeLimit": "UNLIMITED",
+      "TimeMin": "N/A",
+      "SubmitTime": "2026-10-17T23:05:42",
+      "EligibleTime": "2026-10-17T23:05:42",
+      "AccrueTime": "2026-10-17T23:05:42",
+      "StartTime": "2026-10-17T23:05:43",
+      "EndTime": "2026-10-17T23:09:05",
+      "Deadline": "N/A",
+      "SuspendTime": "None",
+      "SecsPreSuspend": "0",
+      "LastSchedEval": "2026-10-17T23:05:43",
+      "Scheduler": "Main",
+      "Partition": "gpu",
+      "Sid": "h100-8:760966",
+      "ReqNodeList": "h100-8",
+      "ExcNodeList": "(null)",
+      "NodeList": "h100-8",
+      "BatchHost": "h100-8",
+      "NumNodes": "1",
+      "NumCPUs": "96",
+      "NumTasks": "1",
+      "Task": "96",
+      "T": "0:0:*:*",
+      "TRES": "cpu=96,mem=512G,node=1,billing=96",
+      "Node": "*",
+      "C": "0:0:*:*",
+      "CoreSpec": "*",
+      "MinCPUsNode": "96",
+      "MinMemoryNode": "512G",
+      "MinTmpDiskNode": "0",
+      "Features": "(null)",
+      "DelayBoot": "00:00:00",
+      "OverSubscribe": "YES",
+      "Contiguous": "0",
+      "Licenses": "(null)",
+      "Network": "(null)",
+      "Command": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/preparation/native-local-fit50-policy-readout.sh",
+      "WorkDir": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502",
+      "Comment": "g1-local50-policy-only:5599f0f6a50245cf8a3022a73eca45f5",
+      "StdErr": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/logs/native-3463.log",
+      "StdIn": "/dev/null",
+      "StdOut": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/logs/native-3463.log"
+    },
+    "actor_updated": false,
+    "formal200_resumed": false,
+    "release_checks": [
+      {
+        "checked_unix": 1792249789.421008,
+        "actual_births_present": [],
+        "cgroup_paths": [],
+        "owned_gpu_pids": []
+      },
+      {
+        "checked_unix": 1792249794.6288433,
+        "actual_births_present": [],
+        "cgroup_paths": [],
+        "owned_gpu_pids": []
+      }
+    ],
+    "original_logs": [
+      {
+        "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/logs/native-3463.log",
+        "dev": 64768,
+        "inode": 179191757,
+        "bytes": 5,
+        "sha256": "38e0b9de817f645c4bec37c0d4a3e58baecccb040f5718dc069a72c7385a0bed"
+      },
+      {
+        "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/logs/policy-only-readout-train.log",
+        "dev": 64768,
+        "inode": 179191777,
+        "bytes": 8040,
+        "sha256": "4c2977b9ef0accca244a95b542ecd230e4910891b0f6ff4b092a8a886f78e785"
+      }
+    ],
+    "original_births": 9,
+    "checkpoints": [
+      {
+        "actual_adam_per_rank": [
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300,
+          300
+        ],
+        "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/train/head-epoch-01.pt",
+        "checkpoint_bytes": 925539946,
+        "checkpoint_sha256": "b65051be590205ce1c04230059e4f2787391729bd753c84407a173823b6b4627",
+        "epoch": 1,
+        "metrics_sha256": "efe1bcca2e0f97de4d17e9b23343827c09bc0fc771d505ef98b9391b5acf3449",
+        "train_loop_seconds": 8.856591373682022
+      },
+      {
+        "actual_adam_per_rank": [
+          400,
+          400,
+          400,
+          400,
+          400,
+          400,
+          400,
+          400
+        ],
+        "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/train/head-epoch-02.pt",
+        "checkpoint_bytes": 925539946,
+        "checkpoint_sha256": "3f4199b95f27cc1cc56c93fd9cf10d2134455ff03b8d2dc5eed2a928c7b4ed1a",
+        "epoch": 2,
+        "metrics_sha256": "9abd1d20b592e1954e2f46cf1ef8f114259b91178d917db3e5c258f128c5f9b8",
+        "train_loop_seconds": 8.762232452630997
+      },
+      {
+        "actual_adam_per_rank": [
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500,
+          500
+        ],
+        "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/train/head-epoch-03.pt",
+        "checkpoint_bytes": 925539946,
+        "checkpoint_sha256": "e83f21108eea5301102ad875815ecf7e41a302b200d6cd790f230ea1e239c90e",
+        "epoch": 3,
+        "metrics_sha256": "4528925f35bdfb7641bf704725644b3187bc43aa7f38bb2ec76b5edc92b82cce",
+        "train_loop_seconds": 8.790766276419163
+      },
+      {
+        "actual_adam_per_rank": [
+          600,
+          600,
+          600,
+          600,
+          600,
+          600,
+          600,
+          600
+        ],
+        "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/train/head-epoch-04.pt",
+        "checkpoint_bytes": 925539946,
+        "checkpoint_sha256": "2262260833972a9679eb461d9654ec37cb82bad37b0a372393a5051f079bf5d7",
+        "epoch": 4,
+        "metrics_sha256": "891276f1bff985955a9a34de95c0088642dd132dbe8768ffd7544417752b5ab4",
+        "train_loop_seconds": 8.776369739323854
+      },
+      {
+        "actual_adam_per_rank": [
+          700,
+          700,
+          700,
+          700,
+          700,
+          700,
+          700,
+          700
+        ],
+        "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/train/head-epoch-05.pt",
+        "checkpoint_bytes": 925539946,
+        "checkpoint_sha256": "0042eca08c51294d3a058751eaa83795479b8fc65c5a3669f4dd0751570de3e4",
+        "epoch": 5,
+        "metrics_sha256": "de4693884cf17950daddefb0a55713bf7beb0ca1d8773ff7febbfd92778da2c4",
+        "train_loop_seconds": 8.778656113892794
+      },
+      {
+        "actual_adam_per_rank": [
+          800,
+          800,
+          800,
+          800,
+          800,
+          800,
+          800,
+          800
+        ],
+        "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/train/head-epoch-06.pt",
+        "checkpoint_bytes": 925539946,
+        "checkpoint_sha256": "23247fa84ed7f11328f90accee81daf1e0b41fe1bf3def6482de93c32d27190c",
+        "epoch": 6,
+        "metrics_sha256": "47bdd4f76a58f4971b5d3612aa3a63a5b5df06b0df6c11f5d0263998f17c0d6f",
+        "train_loop_seconds": 8.745739582926035
+      },
+      {
+        "actual_adam_per_rank": [
+          900,
+          900,
+          900,
+          900,
+          900,
+          900,
+          900,
+          900
+        ],
+        "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/train/head-epoch-07.pt",
+        "checkpoint_bytes": 925539946,
+        "checkpoint_sha256": "09bf8816452e7c6f9ce7003d7fe090e9166d4832a6230da3e087fbb24e772547",
+        "epoch": 7,
+        "metrics_sha256": "a9aeb94cc600ddf85e11f2d1ce4f60f9318934f59d678a0c172b8f8c5b994f28",
+        "train_loop_seconds": 8.721618629992008
+      },
+      {
+        "actual_adam_per_rank": [
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/train/head-epoch-08.pt",
+        "checkpoint_bytes": 925539946,
+        "checkpoint_sha256": "74e4320468e0b68a7c99e536d54fc186fec67869d544a095aad4fae1c7621371",
+        "epoch": 8,
+        "metrics_sha256": "e55cb1948dda1a1611258bca90a38aa65b3bc83a6b7f4d419992b2766e3de9dc",
+        "train_loop_seconds": 8.722031779587269
+      },
+      {
+        "actual_adam_per_rank": [
+          1100,
+          1100,
+          1100,
+          1100,
+          1100,
+          1100,
+          1100,
+          1100
+        ],
+        "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/train/head-epoch-09.pt",
+        "checkpoint_bytes": 925539946,
+        "checkpoint_sha256": "117fe0fc87a16b1569e5c42967971d18ab43ffdb37a091f0b6f74a02741eb97e",
+        "epoch": 9,
+        "metrics_sha256": "434e838286e21cd638e3082cc6817830f5bacad9207130a688f536394573bf6b",
+        "train_loop_seconds": 8.721304804086685
+      },
+      {
+        "actual_adam_per_rank": [
+          1200,
+          1200,
+          1200,
+          1200,
+          1200,
+          1200,
+          1200,
+          1200
+        ],
+        "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-local-probe50-policy-only-20261017-5599f0f6a502/train/head-epoch-10.pt",
+        "checkpoint_bytes": 925539946,
+        "checkpoint_sha256": "ac16ab5d46c063c38085ecf733d95e55fed2ece3b00928639a25c8ac83e31d5d",
+        "epoch": 10,
+        "metrics_sha256": "ed4a4b1232173bef72461a3a9eaeca2602273fcc7d669e6696ce2e146210f31d",
+        "train_loop_seconds": 8.687952537089586
+      }
+    ],
+    "all_ten_group_orders_distinct": true,
+    "rank_updates": [
+      {
+        "rank": 0,
+        "new_writes": 1000,
+        "final_adam": 1200,
+        "ledger_sha256": "d5ae8b78af35eb0955e1b6abe988fbf66f8236e8ec87c62f7b74fc90725b642c"
+      },
+      {
+        "rank": 1,
+        "new_writes": 1000,
+        "final_adam": 1200,
+        "ledger_sha256": "2c9bcfb7e23a5d50e6e12d8a3a100ead0853e41a4246e0e05a90e157841da942"
+      },
+      {
+        "rank": 2,
+        "new_writes": 1000,
+        "final_adam": 1200,
+        "ledger_sha256": "51643ff7d40dd3a1de5859fcea55441f3264826386f355b251e0c00378ae1ecd"
+      },
+      {
+        "rank": 3,
+        "new_writes": 1000,
+        "final_adam": 1200,
+        "ledger_sha256": "c1a6bd638776f315130a958c83e950774b899b1a28e4d6945a9d8bf57bb2e1d3"
+      },
+      {
+        "rank": 4,
+        "new_writes": 1000,
+        "final_adam": 1200,
+        "ledger_sha256": "7b35c633566f78246e4e6eff3373d8d2943d067d16a748f9221ce7afd42688d9"
+      },
+      {
+        "rank": 5,
+        "new_writes": 1000,
+        "final_adam": 1200,
+        "ledger_sha256": "ba4b27f8dded9d33a40e30e6d3d40f149269cb8b743e59d06a0b23182c23cf5e"
+      },
+      {
+        "rank": 6,
+        "new_writes": 1000,
+        "final_adam": 1200,
+        "ledger_sha256": "66fed92cb4ff363b67fb298f7b69548da42baee774309bde821d2d941d4a71b7"
+      },
+      {
+        "rank": 7,
+        "new_writes": 1000,
+        "final_adam": 1200,
+        "ledger_sha256": "15e22c3b46e07f20050183dbdb2324abcb13c032486252a3ac2353af15a22d4d"
+      }
+    ],
+    "final_checkpoint_independent_full_sha256": "ac16ab5d46c063c38085ecf733d95e55fed2ece3b00928639a25c8ac83e31d5d",
+    "final_model_state_tensors": 14,
+    "final_adam_steps": 1200,
+    "final_checkpoint_actual_cpu_load": true,
+    "gpu_forward_performed": false,
+    "checkpoint_other_than_final_independent_hash_performed": false,
+    "checked_unix": 1792249797.2357323
+  }
+}

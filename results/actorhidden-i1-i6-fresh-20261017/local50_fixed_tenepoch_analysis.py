@@ -45,7 +45,9 @@ def inspect(base, helper_directory):
             summary['high_confidence_wrong_fraction'] = audit.mean([(p >= .9 and y == 0) or (p <= .1 and y == 1) for p,y in zip(ps,ys)])
             item['splits'][split] = dict(summary, source_sha256=audit.sha(path))
         epochs.append(item)
-    root = base/'outers/outer-000051'
+    config = json.loads((base/'preparation/launch-config.json').read_text())
+    data_base = Path(config['local_probe_fit50'].get('fixed_data_source_base', base))
+    root = data_base/'outers/outer-000051'
     diagnostic = json.loads((root/'diagnostic-complete.json').read_text())
     scan = Path(diagnostic['scan_path'])
     conflicts = dict(train=conflict.inspect(root/'prefix/scan', root/'full/own-em.jsonl'),

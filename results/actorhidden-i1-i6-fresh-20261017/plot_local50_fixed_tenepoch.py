@@ -54,5 +54,30 @@ def render(summary, output):
     plt.close(fig)
 
 
+def render_comparison(full, policy, output):
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    full=json.loads(Path(full).read_text());policy=json.loads(Path(policy).read_text())
+    assert len(full['epochs'])==len(policy['epochs'])==11
+    for a,b in zip(full['epochs'],policy['epochs']):
+        for name in ('actor_version','fixed_train_scan_sha256','fixed_test_scan_sha256','learning_rate'):
+            assert a['metrics'][name]==b['metrics'][name]
+        assert b['metrics']['policy_only_readout'] is True
+    fig,axes=plt.subplots(2,3,figsize=(15,8),layout='constrained')
+    fields=[('trajectory_accuracy','Trajectory accuracy',100),('balanced_accuracy','Mixed balanced accuracy',100),
+            ('accuracy','Mixed ordinary accuracy',100),('trajectory_bce','Trajectory BCE',1),
+            ('group_bce','Mixed-group BCE',1),('total_loss','Total joint loss',1)]
+    for ax,(key,title,scale)in zip(axes.flat,fields):
+        for data,color,label in ((full,'#1763a4','Q+20 readout'),(policy,'#d45b20','20-only readout')):
+            for split,style in (('train','-'),('test','--')):
+                ax.plot(range(11),[r['metrics'][split][key]*scale for r in data['epochs']],style,
+                        marker='o',markersize=3,color=color,label=label+' '+split)
+        if key=='balanced_accuracy':ax.axhline(50,color='grey',linestyle=':')
+        ax.set(title=title,xlabel='Probe epoch',ylabel='Percent'if scale==100 else'Loss');ax.set_xticks(range(11));ax.legend(fontsize=8);ax.grid(alpha=.2)
+    fig.suptitle('Matched fixed actor50 / fixed G5 data / same source probe / LR 1e-5\nQuestion remains in context and head attention; only direct Linear readout differs')
+    output=Path(output);fig.savefig(output.with_suffix('.png'),dpi=160);fig.savefig(output.with_suffix('.pdf'));plt.close(fig)
+
+
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('summary');p.add_argument('output');a=p.parse_args();render(a.summary,a.output)

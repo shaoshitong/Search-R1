@@ -1,0 +1,69 @@
+"""Code-only isolated data deployment; query the existing intent, never replay."""
+import argparse
+import datetime
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+from reproduction.prefix20_group_joint100.control import archive_for_commit
+from reproduction.prefix_selection200.control import deployment_script
+from reproduction.h1008_qprobe.established_controller_transport import remote
+
+
+def deploy_code(config,commit,reuse_commit,reuse_repo):
+    deployment=deployment_script(config['base'],commit,config,archive_for_commit(commit,reuse_commit),reuse_commit,reuse_repo)
+    return ('import pathlib,json,sys\nb=pathlib.Path('+repr(config['base'])+');\n'
+        'if not b.exists():\n exec(compile('+repr(deployment)+',"isolated_probe20k_deploy","exec"),{})\n'
+        'else:\n assert (b/"preparation/deploy-receipt.json").exists(),"Reconcile existing deployment intent first"\n'
+        'c=json.loads((b/"preparation/launch-config.json").read_text());assert c["source_commit"]=='+repr(commit)+'\n'
+        'sys.path.insert(0,str(b/"repo"));from reproduction.prefix_selection200.probe20k_dataset import submit\n'
+        'print(json.dumps(dict(deploy=json.loads((b/"preparation/deploy-receipt.json").read_text()),submit=submit(b))))\n')
+
+
+def observation_code(base):
+    return r'''
+import pathlib,json,subprocess,sys,time
+b=pathlib.Path(BASE);sys.path.insert(0,str(b/'repo'))
+from reproduction.common8.native_allocation import fields
+def read(p):return json.loads(p.read_text())if p.exists()else None
+receipt=read(b/'preparation/submit-receipt.json');job=receipt['job_id']
+r=subprocess.run(['scontrol','show','job',job,'-o'],capture_output=True,text=True,timeout=30)
+blocks=[]
+for outer in(52,53,54):
+ root=b/'outers'/('outer-%06d'%outer);value=dict(outer=outer)
+ for phase in('prefix','full'):
+  rows=[read(root/phase/('rank-%d-progress.json'%rank))for rank in range(8)]
+  value[phase+'_completed']=sum((row or{}).get('completed_trajectories',0)for row in rows)
+  value[phase+'_complete']=(root/phase/'complete.json').exists()
+ blocks.append(value)
+errors={}
+for p in(b/'logs').glob('*.log'):
+ with p.open('rb')as f:
+  f.seek(max(0,p.stat().st_size-16000));tail=f.read().decode(errors='replace')
+ selected=[line for line in tail.splitlines()[-35:]if any(v in line for v in('Traceback','Error','Exception','failed'))]
+ if selected:errors[p.name]='\n'.join(selected)
+print(json.dumps(dict(observed_unix=time.time(),base=str(b),job_id=job,
+ native=fields(r.stdout)if r.returncode==0 else dict(unavailable=r.stderr),
+ stage=read(b/'logs/pipeline-status.json'),progress=read(b/'logs/dataset-progress.json'),
+ complete=read(b/'dataset-complete.json'),cleanup=read(b/'logs/cleanup-status.json'),
+ blocks=blocks,error_tails=errors,training_modified=False)))
+'''.replace('BASE',repr(base))
+
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser();p.add_argument('phase',choices=('deploy-data','observe-data'));p.add_argument('--config',required=True)
+    p.add_argument('--receipts',required=True);p.add_argument('--reuse-source-commit');p.add_argument('--reuse-source-repo');a=p.parse_args()
+    c=json.loads(Path(a.config).read_text());repo=Path(__file__).resolve().parents[2]
+    if a.phase=='deploy-data':
+        commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
+        branch=subprocess.check_output(['git','branch','--show-current'],cwd=repo,text=True).strip()
+        actual=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+branch],cwd=repo,text=True).split()[0]
+        assert actual==commit
+        script=deploy_code(c,commit,a.reuse_source_commit,a.reuse_source_repo)
+    else:script=observation_code(c['base'])
+    tag=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
+    directory=Path(a.receipts);path=directory/('probe20k-'+a.phase+'-'+tag+'.transport.json')
+    result=remote(script,str(path));values=[json.loads(line)for line in result.splitlines()if line.startswith('{')]
+    output=path.with_name(path.stem.replace('.transport','')+'.json');output.write_text(json.dumps(values[-1],indent=2)+'\n')
+    print(json.dumps(dict(actual=str(output),sha256=hashlib.sha256(output.read_bytes()).hexdigest(),result=values[-1])))
