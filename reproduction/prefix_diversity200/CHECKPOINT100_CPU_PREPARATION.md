@@ -1,0 +1,11 @@
+# CP100 first CPU acceptance preparation
+
+Configuration only: no audit has been submitted or accepted by this publication. Use `checkpoint100_calibration1_cpu_control.json` for run `4a1cc2d500fe40979ef8ca4792959438`, calibration1 base, frozen runtime `33ef232e605f7864086d1685d9a4d8ea0d67f4ab` and launch-config SHA `d2faa73dc70e741700323f0a3c3846abd09b560aa9af4c2a9a07b7b27aa189a1`.
+
+This is the first CP100 audit, explicitly `audit_version=v1`. CP50's v2 correction and predecessor fields do not apply. Its separate namespace is `acceptance100-cpu-control-v1`, unit `prefix-diversity-4a1cc2d5-cal1-checkpoint100-cpu-v1`; the once proof/intent prefix is `preparation/joint-milestone-0100-independent-full-sha-cpu-once-v1` under this base. Preserve existing markers and reconcile the unit/intent/proof before any single deployment; never replay CP5/CP50.
+
+Wait for the main task's actual immutable `outers/outer-000100/complete.json` and both successful writers recorded STOPPED. Expect all eight actor/probe clocks at 2000 and scheduler outer100. The existing control checks exact run/source/config identity and successful writer termination before deployment. The published reader verifies actual actor-attempt grounding for outer100 (round50), rather than treating launch round0 or a later round100 fit as the actor100 reward version. CPU checkpoint acceptance does not prove subsequent native QA100 or grounding100 success.
+
+After separate authorization and actual joint100 evidence, use the existing `reproduction.prefix_diversity200.checkpoint_cpu_control` entry with this committed `--config`, task `ESTABLISHED_CONTROLLER_CURRENT.json` as `--connection`, and a fresh local `acceptance100` receipts directory: check → reconcile unique intent/unit → deploy once → observe through actual exit/proof with at least two measured progress samples. The helper requires HEAD to match the pushed branch and records that actual execution commit automatically; do not copy the CP50 helper commit or invent a joint100 SHA. Transport remains the pinned existing controller route to h100-10.
+
+The existing control enforces one CPU, 12GiB, Nice19, IOWeight10, no visible GPU and at most3600 seconds. All large checkpoint/rollout reads stay remote when later authorized. This preparation changes no reader, training runtime, launch config or ROOT status/report.
