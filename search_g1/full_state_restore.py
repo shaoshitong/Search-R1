@@ -12,6 +12,9 @@ import random
 import time
 import uuid
 
+FINAL_EASY_STATUS = 'EASY2560_FINAL200_CHAINED_FULL_SHA_CPU_STATES_PASS'
+FINAL_EASY_KIND = 'easy2560_final200_restore_only'
+
 
 def digest(path):
     h=hashlib.sha256()
@@ -22,6 +25,9 @@ def digest(path):
 
 def source(receipt_path):
     p=Path(receipt_path).resolve();r=json.loads(p.read_text())
+    if r.get('status')==FINAL_EASY_STATUS:
+        from search_g1.easy2560_final_checkpoint import source as final_easy_source
+        return final_easy_source(p)
     from search_g1.easy2560_restore import STATUS as EASY_STATUS, source as easy_source
     if r.get('status')==EASY_STATUS:return easy_source(p)
     from search_g1.qprobe_checkpoint import PAIR_STATUS,read_source
@@ -63,6 +69,8 @@ def execution_budget_compatible(run, parent):
 
 def bind(run,receipt_path):
     p,r,checkpoint,origin,parent=source(receipt_path)
+    if r.get('status')==FINAL_EASY_STATUS:
+        raise ValueError('EASY2560_FINAL200_RESTORE_ONLY_NOT_A_TRAINING_BIND')
     from search_g1.easy2560_restore import STATUS as EASY_STATUS, bind as easy_bind
     if r.get('status')==EASY_STATUS:return easy_bind(run,receipt_path)
     from search_g1.qprobe_checkpoint import PAIR_STATUS,bind_restore
@@ -91,6 +99,8 @@ def from_config(config):
     receipt=config.trainer.get('full_state_restore_receipt',None)
     if not receipt:return None
     p,r,checkpoint,origin,parent=source(receipt)
+    if r.get('status')==FINAL_EASY_STATUS:
+        raise ValueError('EASY2560_FINAL200_RESTORE_ONLY_NOT_A_TRAINING_BIND')
     assert Path(config.actor_rollout_ref.model.actor_checkpoint_path).resolve()==checkpoint
     assert config.trainer.total_training_steps==201 and config.trainer.acceptance_step==5
     from search_g1.qprobe_checkpoint import PAIR_STATUS
@@ -139,6 +149,18 @@ def publish(path,value):
     finally:os.close(fd)
 
 
+def final_collective_inputs(load):
+    """A failed local final-state read must not strand peers in model gather."""
+    import torch.distributed as dist
+    value=None;failure=None
+    try:value=load()
+    except Exception as error:failure=type(error).__name__+': '+str(error)[:512]
+    failures=[None]*dist.get_world_size()
+    dist.all_gather_object(failures,failure)
+    assert not any(failures),'EASY2560_FINAL200_COLLECTIVE_STATE_INPUTS '+repr(failures)
+    return value
+
+
 def restore_worker(worker,receipt_path):
     # In-memory diagnostics are never part of checkpoint state or restorable.
     worker.actor._invalidate_monitor_forward_cache(model_changed=True)
@@ -151,28 +173,37 @@ def restore_worker(worker,receipt_path):
     from search_g1.qprobe_checkpoint import PAIR_STATUS,validate_rank_state
     paired=r.get('status')==PAIR_STATUS
     from search_g1.easy2560_restore import STATUS as EASY_STATUS
-    easy=r.get('status')==EASY_STATUS
+    final_easy=r.get('status')==FINAL_EASY_STATUS
+    easy=r.get('status')==EASY_STATUS or final_easy
     stateful=paired or easy
     size=r['world_size'] if stateful else 8
     outer=r['step'] if stateful else 5
     writes=r['attempt_progress']['cumulative_writes'] if stateful else 100
     expected_tensors=r['hf_saved_tensor_count'] if stateful else 435
     assert torch.distributed.get_world_size()==size
-    proof=next(v for v in r['files'] if v['relative_path']==f'training_state/rank-{rank}.pt')
-    assert digest(proof['path'])==proof['full_read_sha256']
-    saved=torch.load(proof['path'],map_location='cpu',weights_only=False)
-    assert saved['rank']==rank and saved['world_size']==size and saved['actual_optimizer_writes']==writes
-    if stateful:validate_rank_state(saved,rank,size,outer,expected_writes=writes)
+    def load_saved():
+        proof=next(v for v in r['files'] if v['relative_path']==f'training_state/rank-{rank}.pt')
+        assert digest(proof['path'])==proof['full_read_sha256']
+        saved=torch.load(proof['path'],map_location='cpu',weights_only=False)
+        assert saved['rank']==rank and saved['world_size']==size and saved['actual_optimizer_writes']==writes
+        if stateful:validate_rank_state(saved,rank,size,outer,expected_writes=writes)
+        return proof,saved
+    proof,saved=final_collective_inputs(load_saved) if final_easy else load_saved()
     # Compare all actual FSDP-restored model tensors with saved HF tensors.
     if worker._is_offload_param:
         load_fsdp_param_and_grad(module=worker.actor_module_fsdp,device_id=torch.cuda.current_device(),load_grad=False)
     with FSDP.state_dict_type(worker.actor_module_fsdp,StateDictType.FULL_STATE_DICT,FullStateDictConfig(offload_to_cpu=True,rank0_only=True)):
         actual_model=worker.actor_module_fsdp.state_dict()
     checked=0
+    model_shas={}
     if rank==0:
         weightmap=json.loads((checkpoint/'model.safetensors.index.json').read_text())['weight_map']
         assert set(actual_model)==set(weightmap)
         for shard in sorted(set(weightmap.values())):
+            if final_easy:
+                model_proof=next(v for v in r['files'] if v['relative_path']==shard)
+                model_shas[shard]=digest(checkpoint/shard)
+                assert model_shas[shard]==model_proof['full_read_sha256']
             with safe_open(str(checkpoint/shard),framework='pt',device='cpu') as f:
                 for name in f.keys():equal_tree(actual_model[name],f.get_tensor(name));checked+=1
         assert checked==expected_tensors
@@ -234,6 +265,9 @@ def restore_worker(worker,receipt_path):
         source_run_id=saved['run_id'],source_step=outer,checked_unix=time.time())
     if paired:row['sampling_rng_source']='authenticated post-evaluation/refit boundary-worker-rng'
     if easy:row['sampling_rng_source']='actual saved checkpoint before development callback; post-evaluation RNG unavailable'
+    if final_easy:
+        row.update(kind=FINAL_EASY_KIND, restore_only=True, source_model_shards_sha256=model_shas,
+                   sampling_rng_source=r['sampling_rng_stage'], post_callback_rng_captured=False)
     if easy:
         row.update(run_id=current_run['run_id'],source_receipt_sha256=digest(p),
             source_job=r['source_job'],source_commit=parent['source_commit'],
@@ -267,6 +301,8 @@ def bind_restored_probe(trainer,saved,run,live,source_run_id):
 
 
 def restore_driver(trainer,receipt_path):
+    if json.loads(Path(receipt_path).read_text()).get('status')==FINAL_EASY_STATUS:
+        return restore_final_easy_driver(trainer,receipt_path)
     from search_g1.easy2560_restore import STATUS as EASY_STATUS,restore_driver as restore_easy_driver
     if json.loads(Path(receipt_path).read_text()).get('status')==EASY_STATUS:
         return restore_easy_driver(trainer,receipt_path)
@@ -294,6 +330,33 @@ def restore_driver(trainer,receipt_path):
              historical_reward_diagnostics_restored=False,source_driver_full_sha256=proof['full_read_sha256'],checked_unix=time.time())
     publish(Path(os.environ['SEARCH_G1_BASE'])/'logs/full-state-restored-driver.json',row)
     return row
+
+
+def restore_final_easy_driver(trainer,receipt_path):
+    """Read back the saved outer200 Easy stream/RNG without drawing outer201."""
+    import torch
+    from search_g1.training_state import restore_easy2560_driver
+    p,r,checkpoint,_,_=source(receipt_path)
+    assert r['status']==FINAL_EASY_STATUS and r['step']==200 and r['restore_only'] is True
+    base=Path(os.environ['SEARCH_G1_BASE']).resolve()
+    run=json.loads((base/'logs/run-manifest.json').read_text())
+    binding=run['full_state_restore']
+    assert binding['kind']==FINAL_EASY_KIND and binding['source_receipt_sha256']==digest(p)
+    proof=r['driver_file'];assert digest(proof['path'])==proof['full_read_sha256']
+    saved=torch.load(proof['path'],map_location='cpu',weights_only=False)
+    result=restore_easy2560_driver(trainer,saved,run,source_run_id=r['run_id'],
+        live_probe=json.loads((base/'artifacts/live/manifest.json').read_text()))
+    assert result['completed_outer']==200 and result['reward_refresh_pending'] is False
+    result.update(schema_version=1,role='actual_easy2560_final200_restored_driver',kind=FINAL_EASY_KIND,
+        run_id=run['run_id'],source_checkpoint=str(checkpoint),source_step=200,
+        slurm_job_id=os.environ.get('SLURM_JOB_ID'),source_job=r['source_job'],source_commit=r['source_commit'],
+        source_receipt_sha256=digest(p),source_driver_full_sha256=proof['full_read_sha256'],
+        post_callback_rng_captured=False,sampling_rng_source=r['sampling_rng_stage'],
+        actual_driver_dataequal=bool(result['actual_driver_rng_readback_equal'] and
+            result['actual_candidate_stream_readback_equal']),restore_only=True,
+        actual_cuda_restore_accepted=False,checked_unix=time.time())
+    publish(base/'logs/full-state-restored-driver.json',result)
+    return result
 
 
 def prepare_guarded_restore(base,run,document,method,initial,receipts):
@@ -495,11 +558,14 @@ def optimizer_construction_config(config,model_path):
     p,r,checkpoint,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']
     assert config.get('completed_updates',0)==r['step']==binding['completed_outer']
-    if binding.get('kind')!='question_probe_pair':assert r['step']==5
+    if binding.get('kind')==FINAL_EASY_KIND:
+        assert r['status']==FINAL_EASY_STATUS and r['step']==200 and r['restore_only'] is True
+    elif binding.get('kind')!='question_probe_pair':assert r['step']==5
     assert Path(model_path).resolve()==checkpoint
     construction=copy.deepcopy(dict(config));construction['completed_updates']=0
     # This does not change the resolved training counter or pretend restoration
-    # happened. restore_worker must load and read back Adam100/scheduler5 before use.
+    # happened. restore_worker must load and read back the saved Adam/scheduler
+    # state before use, including the separate final200 restore-only path.
     return construction
 
 

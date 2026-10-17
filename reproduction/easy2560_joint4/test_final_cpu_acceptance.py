@@ -4,6 +4,7 @@ import copy
 import json
 import math
 from pathlib import Path
+from types import SimpleNamespace
 import shutil
 import tempfile
 import unittest
@@ -143,6 +144,24 @@ class FinalAcceptanceTests(unittest.TestCase):
 
     def verify(self, **kwargs):
         return core.verify_final(self.base, load_canonical=self.load_canonical, **kwargs)
+
+    def test_optional_restore_proof_is_consumed_without_starting_gpu_or_marking_goal_complete(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.fixture(directory)
+            calls=[]
+            def accepted(path,**kwargs):
+                calls.append((path,kwargs))
+                self.assertEqual(kwargs['checkpoint_summary']['step'],200)
+                self.assertEqual(kwargs['progress']['cumulative_actual_optimizer_writes_per_rank'],200)
+                return {'actual_cuda_restore_accepted':True,'actual_restore_performed_by_this_cpu_reader':False}
+            stub=SimpleNamespace(verify_actual_final_restore=accepted)
+            with patch.dict('sys.modules',{'reproduction.easy2560_joint4.final_restore_acceptance':stub}):
+                report=self.verify(final_restore_proof='/fixture/completed-gpu-proof.json')
+            self.assertEqual(len(calls),1)
+            self.assertTrue(report['actual_cuda_restore_accepted'])
+            self.assertFalse(report['actual_restore_performed'])
+            self.assertEqual((report['gpu_allocations'],report['model_reloads'],report['new_training_updates']),(0,0,0))
+            self.assertFalse(report['overall_goal_complete'])
 
     def test_native_full51713_preserves_repeated_ids_and_outputs_both_macro_scores(self):
         with tempfile.TemporaryDirectory() as td:

@@ -397,7 +397,8 @@ def checkpoint_evidence(base, run, step, *, archive_root=None, chain=None, histo
                 sealed_supplement=supplement)
 
 
-def verify_final(base, *, archive_root=None, load_canonical=canonical, training_commit=REVIEWED_COMMIT):
+def verify_final(base, *, archive_root=None, load_canonical=canonical, training_commit=REVIEWED_COMMIT,
+                 final_restore_proof=None):
     base = Path(base).resolve(); run, run_record = small(base/'logs/run-manifest.json')
     need(run.get('source_commit') == training_commit and run.get('easy2560_selection') is True and
          run.get('training_world_size') == 4 and run.get('data_selection_mode') == 'mixed_first' and
@@ -418,6 +419,12 @@ def verify_final(base, *, archive_root=None, load_canonical=canonical, training_
     source_binding = published_source_binding(base, run, training_commit)
     evaluation = evaluations(base, run, load_canonical, chain=chain)
     checkpoints = {str(step): checkpoint_evidence(base, run, step, archive_root=archive_root, chain=chain) for step in STEPS}
+    actual_restore = None
+    if final_restore_proof is not None:
+        from reproduction.easy2560_joint4.final_restore_acceptance import verify_actual_final_restore
+        actual_restore = verify_actual_final_restore(final_restore_proof, base=base, run=run,
+            checkpoint_summary=checkpoints['200'], progress=progress)
+        need(actual_restore.get('actual_cuda_restore_accepted') is True, 'ACTUAL_FINAL_RESTORE_NOT_ACCEPTED')
     return dict(schema_version=1, status=STATUS, cpu_final_accepted=True, base=str(base),
                 run_id=run['run_id'], source_commit=run['source_commit'], run_manifest=run_record,
                 source_publication_binding=source_binding,
@@ -425,7 +432,8 @@ def verify_final(base, *, archive_root=None, load_canonical=canonical, training_
                 authenticated_history=chain['public'] if chain else None,
                 single_original_job_prefix=chain is None, inherited_history_assembled=chain is not None,
                 new_training_updates=0, gpu_allocations=0, model_reloads=0, actual_restore_performed=False,
-                actual_cuda_restore_accepted=False, overall_goal_complete=False, checked_unix=time.time(),
+                actual_cuda_restore_accepted=actual_restore is not None, actual_final_restore=actual_restore,
+                overall_goal_complete=False, checked_unix=time.time(),
                 scope='fixed five512 evaluations, ordered exact native51713 EM/F1, durable no201 counters and accepted checkpoint archive SHA evidence; actual recovery and physical execution acceptance remain separate')
 
 
@@ -436,8 +444,10 @@ def main():
     parser.add_argument('--training-commit', default=REVIEWED_COMMIT,
                         help='explicit full40 training source; a non93 commit requires publication/run-source/run-map binding')
     parser.add_argument('--output', help='new small JSON report; existing reports are never overwritten')
+    parser.add_argument('--final-restore-proof', help='optional completed actual all4 CP200 restore-only proof; never starts it')
     args = parser.parse_args()
-    result = verify_final(args.base, archive_root=args.archive_root, training_commit=args.training_commit)
+    result = verify_final(args.base, archive_root=args.archive_root, training_commit=args.training_commit,
+                          final_restore_proof=args.final_restore_proof)
     raw = encoded(result)
     if args.output:
         with Path(args.output).open('xb') as stream:
