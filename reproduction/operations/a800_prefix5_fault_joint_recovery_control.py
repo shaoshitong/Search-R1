@@ -23,7 +23,7 @@ LAUNCH = previous.LAUNCH
 _progress_projection="'elapsed_seconds','device_binding'"
 assert previous.OBSERVE.count(_progress_projection)==1
 OBSERVE = previous.OBSERVE.replace(_progress_projection,
-    "'elapsed_seconds','device_binding','actual_engine_enforce_eager','actual_engine_enable_prefix_caching'")
+    "'elapsed_seconds','device_binding','actual_engine_enforce_eager','actual_engine_enable_prefix_caching','actual_engine_chunked_prefill_enabled'")
 
 TERMINAL = previous.COMMON + r'''
 import socket
@@ -32,8 +32,8 @@ sys.path.insert(0,str(repo))
 from reproduction.operations.a800_i1_i6_boundary_handoff import identity, same
 c=read(b/'preparation/launch-config.json');joint=read(b/'latest-joint.json')
 n=p['completed_outer'];pending=n+1
-assert n==64 and joint['outer']==n and joint['actor']['completed_outer']==n
-assert joint['actor']['actual_adam_steps_per_rank']==[1280]*4
+assert n==66 and joint['outer']==n and joint['actor']['completed_outer']==n
+assert joint['actor']['actual_adam_steps_per_rank']==[1320]*4
 assert joint['probe']['completed_outer']==60 and joint['probe']['actual_adam_steps_per_rank']==[300]*4
 submit=read(b/'preparation/submit-receipt.json');assert same(submit['leader']) is None
 cleanup=read(b/'logs/cleanup-status.json')
@@ -46,12 +46,12 @@ for job in ledger['jobs'].values():
    who=identity(row);assert same(who) is None
    births[(who['pid'],who['start_ticks'],who['sid'],who['uid'])]=who
 assert births and not bound_processes(b,exclude=(os.getpid(),))
-failed=ledger['jobs']['outer-000065-continue'];assert failed['exit_code']==1
-root=b/'outers/outer-000065'
+failed=ledger['jobs'][f'outer-{pending:06d}-continue'];assert failed['exit_code']==1
+root=b/'outers'/f'outer-{pending:06d}'
 assert not (root/'complete.json').exists() and not (root/'probe-update').exists()
-assert not list((b/'actor/outers').glob('outer-0065-attempt-*'))
+assert not list((b/'actor/outers').glob(f'outer-{pending:04d}-attempt-*'))
 assert (root/'prefix/complete.json').is_file() and (root/'probe-score/complete.json').is_file()
-terminal_path=b/'preparation/fault-outer65-terminal-20261018.json'
+terminal_path=b/'preparation'/f'fault-outer{pending}-terminal-20261018.json'
 def terminal_summary(value):
  summary={k:v for k,v in value.items() if k!='owned_births'}
  raw=json.dumps(value['owned_births'],sort_keys=True,allow_nan=False).encode()
@@ -64,32 +64,32 @@ if terminal_path.exists():
  assert value['source_joint_sha256']==sha(b/'latest-joint.json') and value['process_ledger_sha256']==sha(b/'logs/process-ledger.json')
  emit(dict(status='EXISTING_EXACT_FAULT_TERMINAL',terminal_proof=str(terminal_path),terminal_proof_sha256=sha(terminal_path),value=terminal_summary(value)))
 else:
- intent=b/'preparation/fault-outer65-archive-intent-20261018.json'
+ intent=b/'preparation'/f'fault-outer{pending}-archive-intent-20261018.json'
  assert not intent.exists(),'Reconcile an interrupted archive; do not replay'
- full=root/'full';regular(full/'rank-0.log')
+ full=root/'full';regular(full/('rank-%d.log'%p['fault_rank']))
  assert not (full/'complete.json').exists() and not list(full.glob('rank-*-complete.json'))
  files=[]
  for f in sorted(full.rglob('*')):
   assert not f.is_symlink()
   if f.is_file():regular(f);files.append(dict(relative_path=str(f.relative_to(full)),bytes=f.stat().st_size,sha256=sha(f)))
  assert files
- archive=b/'failed-sampling'/('outer-000065-continue-'+h['execution_id'])
+ archive=b/'failed-sampling'/(f'outer-{pending:06d}-continue-'+h['execution_id'])
  assert not archive.exists()
  value=dict(run_id=h['run_id'],execution_id=h['execution_id'],source_commit=h['source_commit'],
   completed_outer=n,pending_outer=pending,source_directory=str(full),archive_directory=str(archive),files=files,
   accepted_full_phase=False,accepted_rank_receipts=0,actor_updates=0,probe_updates=0,checked_unix=time.time())
  write(intent,value,True);archive.parent.mkdir(exist_ok=True);os.rename(full,archive)
  assert not full.exists() and all(sha(archive/row['relative_path'])==row['sha256'] for row in files)
- archive_receipt=b/'preparation/fault-outer65-archive-complete-20261018.json'
+ archive_receipt=b/'preparation'/f'fault-outer{pending}-archive-complete-20261018.json'
  write(archive_receipt,dict(value,status='FAILED_UNCOMMITTED_CONTINUATION_RETAINED',archive_verified=True),True)
  terminal=dict(run_id=h['run_id'],execution_id=h['execution_id'],source_commit=h['source_commit'],base=str(b),
   host=socket.gethostname(),boot_id=pathlib.Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
   termination_cause='FAULT_EXIT',completed_outer=n,pending_outer=pending,pipeline_alive=False,
   owned_writers_gone=True,actual_births_present=[],owned_births=list(births.values()),
   process_ledger_sha256=sha(b/'logs/process-ledger.json'),source_joint_sha256=sha(b/'latest-joint.json'),
-  failed_job='outer-000065-continue',failed_job_exit_code=1,
+  failed_job=f'outer-{pending:06d}-continue',failed_job_exit_code=1,
   fault_error_class='CUDA_ILLEGAL_MEMORY_ACCESS_VLLM_SAMPLER',
-  failed_log_sha256=sha(archive/'rank-0.log'),failed_sampling_archive=str(archive),
+  failed_log_sha256=sha(archive/('rank-%d.log'%p['fault_rank'])),failed_sampling_archive=str(archive),
   failed_sampling_archive_receipt=str(archive_receipt),failed_sampling_archive_receipt_sha256=sha(archive_receipt),
   uncommitted_after_joint=dict(actor_actual_writes_per_rank=[0]*4,probe_actual_writes_per_rank=[0]*4,
    optimizer_work_in_flight=False,all_updates_accounted=True),
@@ -116,7 +116,7 @@ def prepare_worker(handle_path):
         if (h.get('infrastructure_repair',{}).get('kind')=='vllm_prefix_cache_illegal_access_repair'
                 and not h.get('latest_failed_handle')):
             raise ValueError('Repeated CUDA fault repair must reconcile the latest failed execution too')
-        if (n != 64 or terminal['termination_cause'] != 'FAULT_EXIT'
+        if (not 1<=n<200 or terminal['termination_cause'] != 'FAULT_EXIT'
                 or terminal['completed_outer'] != n
                 or original['run_id'] != h['run_id']
                 or original['execution_id'] != h['parent_handle']['execution_id']
@@ -155,7 +155,7 @@ def prepare_worker(handle_path):
         once(proof_path, proof)
         qualification = base/'preparation/full-state-qualified.json'
         publish(base/'preparation/prepare-progress.json', dict(result,
-            stage='ONCE_FULL_SHA_FINITE_JOINT64_AND_ACCEPTED_PENDING65_QUALIFICATION', completed_outer=n))
+            stage='ONCE_FULL_SHA_FINITE_JOINT_AND_ACCEPTED_PENDING_SAMPLING_QUALIFICATION', completed_outer=n))
         from reproduction.prefix_selection200.i1_i6_checkpoint_cpu import qualify
         if h.get('reuse_qualified_checkpoint'):
             saved=Path(h['reuse_qualified_checkpoint'])
@@ -206,6 +206,8 @@ def main():
     parser.add_argument('--handle', type=Path, required=True)
     parser.add_argument('--payload', type=Path)
     parser.add_argument('--after-step', type=int)
+    parser.add_argument('--fault-completed-outer', type=int)
+    parser.add_argument('--fault-rank', type=int)
     parser.add_argument('--prepare-worker', action='store_true')
     args = parser.parse_args()
     if args.prepare_worker:
@@ -218,7 +220,8 @@ def main():
     if args.action == 'stage':
         payload.update(json.loads(args.payload.read_text()))
     if args.action == 'terminal':
-        payload['completed_outer'] = 64
+        payload['completed_outer'] = args.fault_completed_outer if args.fault_completed_outer is not None else h['resume_completed_outer']
+        payload['fault_rank'] = args.fault_rank if args.fault_rank is not None else 0
     if args.action == 'observe':
         anchor = json.loads((ROOT/'progress-checks/hourly-anchor.json').read_text())
         if args.after_step is not None:

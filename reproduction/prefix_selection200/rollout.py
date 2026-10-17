@@ -383,7 +383,7 @@ def _build_llm(config, model, seed, free, total):
                       tensor_parallel_size=1, max_model_len=BUDGET['total_tokens'], seed=seed,
                       gpu_memory_utilization=utilization, swap_space=0,
                       enforce_eager=bool(config.get('_capture_actor_hidden') or config.get('rollout_enforce_eager', False)),
-                      enable_chunked_prefill=True, enable_prefix_caching=False,
+                      enable_chunked_prefill=False, enable_prefix_caching=False,
                       disable_async_output_proc=True,
                       disable_log_stats=True, **limits)
             return llm, utilization, limits, attempts
@@ -466,6 +466,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
             elapsed_seconds=time.monotonic()-started, device_binding=device_binding,
             actual_engine_enforce_eager=bool(engine.model_config.enforce_eager),
             actual_engine_enable_prefix_caching=bool(engine.cache_config.enable_prefix_caching),
+            actual_engine_chunked_prefill_enabled=bool(engine.scheduler_config.chunked_prefill_enabled),
             gpu_memory_utilization=utilization, scheduler_limits=limits, initialization_oom_attempts=oom_attempts))
 
     def save(state, first_stream, second_stream):
@@ -605,6 +606,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
         native_terminal_ids=terminal_ids, gpu_memory_utilization=utilization,
         actual_engine_enforce_eager=bool(engine.model_config.enforce_eager),
         actual_engine_enable_prefix_caching=bool(engine.cache_config.enable_prefix_caching),
+        actual_engine_chunked_prefill_enabled=bool(engine.scheduler_config.chunked_prefill_enabled),
         initial_free_gpu_bytes=free, initial_total_gpu_bytes=total, initialization_oom_attempts=oom_attempts,
         scheduler_limits=limits, engine_seed=seed, actual_sampled_tokens=sampled, generation_requests=requests,
         elapsed_seconds=time.monotonic()-started, completed_utc=utc())

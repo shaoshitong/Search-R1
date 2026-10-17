@@ -181,6 +181,20 @@ def _prefix_cache_repair_manifest(repo):
                 normalized_build_llm_sha256=hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest())
 
 
+def _chunked_prefill_repair_manifest(repo):
+    """Admit only the single scheduler chunked-prefill constructor toggle."""
+    path=Path(repo)/'reproduction/prefix_selection200/rollout.py'
+    tree=ast.parse(path.read_text())
+    node=next(value for value in tree.body if isinstance(value,ast.FunctionDef) and value.name=='_build_llm')
+    matches=[value for value in ast.walk(node) if isinstance(value,ast.keyword) and value.arg=='enable_chunked_prefill']
+    if len(matches)!=1 or not isinstance(matches[0].value,ast.Constant) or type(matches[0].value.value) is not bool:
+        raise ValueError('Require exactly one literal boolean chunked-prefill constructor argument')
+    mode='enabled' if matches[0].value.value else 'disabled'
+    matches[0].value=ast.Constant(value=False)
+    return dict(policy='single_enable_chunked_prefill_argument_literal_false_v1',mode=mode,
+                normalized_build_llm_sha256=hashlib.sha256(ast.dump(node,include_attributes=False).encode()).hexdigest())
+
+
 def source_manifest(repo, source_commit, *, science_source_commit=None):
     """Small code publication manifest; the publisher pins its actual Git commit."""
     for value in (source_commit,science_source_commit or source_commit):
@@ -190,6 +204,7 @@ def source_manifest(repo, source_commit, *, science_source_commit=None):
                 rollout_critical_ast_sha256=_rollout_critical_ast(repo),
                 rollout_candidate_metadata_ast_sha256=_rollout_critical_ast(repo,normalize_candidate_metadata=True),
                 rollout_prefix_cache_repair=_prefix_cache_repair_manifest(repo),
+                rollout_chunked_prefill_repair=_chunked_prefill_repair_manifest(repo),
                 rollout_critical_ast_policy=ROLLOUT_AST_POLICY,payload_files_read=0)
 
 
@@ -198,9 +213,10 @@ def compatibility_proof(parent_manifest,target_manifest, *, authorized_candidate
     delta=_candidate_delta(authorized_candidate_delta)
     infra=authorized_infrastructure_delta
     cache_repair=infra is not None and infra.get('kind')=='vllm_prefix_cache_illegal_access_repair'
-    infra_files=CACHE_REPAIR_FILES if cache_repair else PORT_REPAIR_FILES
+    chunk_repair=infra is not None and infra.get('kind')=='vllm_chunked_prefill_illegal_access_repair'
+    infra_files=CACHE_REPAIR_FILES if cache_repair or chunk_repair else PORT_REPAIR_FILES
     if infra is not None and (set(infra)!={'kind','fault_terminal_proof_sha256','allowed_files'} or
-            infra['kind'] not in ('vllm_rank_port_namespace_collision_repair','vllm_prefix_cache_illegal_access_repair') or
+            infra['kind'] not in ('vllm_rank_port_namespace_collision_repair','vllm_prefix_cache_illegal_access_repair','vllm_chunked_prefill_illegal_access_repair') or
             re.fullmatch('[0-9a-f]{64}',infra['fault_terminal_proof_sha256']) is None or
             infra['allowed_files']!=sorted(infra_files)):
         raise ValueError('Require an enumerated actual-fault port or prefix-cache execution repair')
@@ -221,6 +237,13 @@ def compatibility_proof(parent_manifest,target_manifest, *, authorized_candidate
                 not before.get('normalized_build_llm_sha256') or
                 before['normalized_build_llm_sha256']!=after.get('normalized_build_llm_sha256')):
             raise ValueError('Cache repair changed more than the sole constructor cache flag')
+    elif chunk_repair:
+        before=parent_manifest.get('rollout_chunked_prefill_repair',{});after=target_manifest.get('rollout_chunked_prefill_repair',{})
+        if (delta or differing!={'_build_llm'} or before.get('mode')!='enabled' or
+                after.get('mode')!='disabled' or before.get('policy')!=after.get('policy') or
+                not before.get('normalized_build_llm_sha256') or
+                before['normalized_build_llm_sha256']!=after.get('normalized_build_llm_sha256')):
+            raise ValueError('Chunked-prefill repair changed more than its single constructor scheduler toggle')
     elif differing and (not delta or differing!={'_states'} or
             parent_manifest.get('rollout_candidate_metadata_ast_sha256')!=target_manifest.get('rollout_candidate_metadata_ast_sha256')):
         raise ValueError('Rollout scientific AST differs beyond the explicit candidate count argument/error text')
@@ -231,9 +254,10 @@ def compatibility_proof(parent_manifest,target_manifest, *, authorized_candidate
         science_source_commit=parent_manifest['science_source_commit'],
         runtime_source_commit=target_manifest['source_commit'],scientific_files_sha256=science,
         controller_changes={name:dict(parent_sha256=parent.get(name),target_sha256=target.get(name)) for name in sorted(changed)},
-        actor_file_sha_unchanged=True,head_training_critical_ast_unchanged=True,rollout_scientific_critical_ast_unchanged=not cache_repair,
+        actor_file_sha_unchanged=True,head_training_critical_ast_unchanged=True,rollout_scientific_critical_ast_unchanged=not (cache_repair or chunk_repair),
         scientific_payload_or_algorithm_changed=bool(delta),only_scientific_delta='candidate_schedule' if delta else None)
     if cache_repair:result['rollout_critical_ast_equal_except_verified_prefix_cache_toggle']=True
+    if chunk_repair:result['rollout_critical_ast_equal_except_verified_chunked_prefill_toggle']=True
     return result
 
 
