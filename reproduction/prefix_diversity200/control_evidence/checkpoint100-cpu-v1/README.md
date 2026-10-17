@@ -1,0 +1,13 @@
+# CP100 first v1 CPU acceptance
+
+Actual CP100 passed once on h100-10: subprocess/reader exit0, elapsed93.108 seconds. Execution helper commit is `759d28c45aed0f18ab4f42ad6be17f5f690029d5`; this evidence publication has its own later Git commit. Runtime remained `33ef232e605f7864086d1685d9a4d8ea0d67f4ab`. Run `4a1cc2d500fe40979ef8ca4792959438`, calibration1 base, joint SHA `b1db2307b6a4170f0ab91b7aeb6d037f99ee8e7c6a000673794b907e7d2f00b4`, exact launch-config SHA in SUMMARY.
+
+Exact remote proof SHA: `d5b612106cc942ebfcfab978704cda740fe5f3403831e952af086e9e89d1eb1b` (49786 bytes), retained byte-for-byte as terminal/PROOF.json with intent/log/exit/deploy receipts. Eight actor ranks and probe each2000Adam; actor scheduler100, rank-private RNG, driver/pool, split/source/config, 20 original writes and finite diagnostics per rank, all1024G5 native rollout and actor512 subset equality, and probe20-step/true-mean clocks were checked. Actor100 actual grounding is round50. All435 HF tensors were CPU-read and finite; tokenizer semantics match. Five selected official-initial tensors demonstrate6621/6656 changed elements; this is not an all-parameter comparison.
+
+The sole CPU unit used oneCPU/12GiB/Nice19/no visible GPU, maximum3600 seconds. PROGRESS_SAMPLES shows two measured CPU/log increments before completion; systemd IOReadBytes was unavailable (sentinel), not measured disk bytes. Terminal collection confirmed unit not-found/inactive/dead, PID0 and the original reader process gone. No stop/reset/removal was needed; all proof/intent/log/source evidence remains preserved.
+
+Only small evidence returned locally. No CP5/CP50 tensors were read, no CP100 large-payload replay, backup, GPU forward or CUDA RNG application occurred. The proof's legacy old_weight_files_read flag refers to selected small official-initial tensor reads; its historical_training_checkpoint_weight_files_read is false. This CPU audit does not verify exact CUDA executor restore, native QA100, grounding100 adoption, final200 or full51713 completion. Training/QA/grounding were not modified.
+
+TERMINAL_COLLECTION.py only collects small terminal evidence and confirms owned-unit exit. ASSEMBLE_SUMMARY.py assembles the already collected local evidence. They do not rerun the audit; retained intent/proof prohibits replay. Larger transport/observation envelopes remain only in this task's OUT/acceptance100-calibration1, not in this small evidence bundle. MANIFEST.json binds every bundled file; REMOTE_SMALL_FILES_MANIFEST.json binds exact remote small-file bytes.
+
+TRANSPORT_COMPACT.json records only the pinned existing control.py route, no socket/SSH override or global network/auth change. Its exact full receipt envelopes remain in task OUT.

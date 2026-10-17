@@ -1,0 +1,249 @@
+{
+  "status": "CP100_FIRST_V1_CPU_ACCEPTANCE_PASS",
+  "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+  "outer": 100,
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1",
+  "target": "h100-10",
+  "execution_helper_commit": "759d28c45aed0f18ab4f42ad6be17f5f690029d5",
+  "runtime_source_commit": "33ef232e605f7864086d1685d9a4d8ea0d67f4ab",
+  "runtime_config_sha256": "d2faa73dc70e741700323f0a3c3846abd09b560aa9af4c2a9a07b7b27aa189a1",
+  "control_config_sha256": "fd16a618306d5c15543a9d20c8b4fc3652792709beacc7e8e096506f2ed31ddc",
+  "joint_sha256": "b1db2307b6a4170f0ab91b7aeb6d037f99ee8e7c6a000673794b907e7d2f00b4",
+  "audit_version": "v1",
+  "predecessor": null,
+  "proof": {
+    "path": "terminal/PROOF.json",
+    "remote_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/preparation/joint-milestone-0100-independent-full-sha-cpu-once-v1.json",
+    "sha256": "d5b612106cc942ebfcfab978704cda740fe5f3403831e952af086e9e89d1eb1b",
+    "bytes": 49786,
+    "status": "PREFIX_SELECTION200_JOINT_MILESTONE_FULL_SHA_CPU_PASS"
+  },
+  "exit": {
+    "status": "CPU_ACCEPTANCE_PASS",
+    "subprocess_exit": 0,
+    "exit_code": 0,
+    "elapsed_seconds": 93.10806220397353,
+    "cpu_user_seconds": 69.473016,
+    "cpu_system_seconds": 23.673217,
+    "max_rss_kib": 4544396,
+    "finished_unix": 1792259979.9040813,
+    "reader_proof_elapsed_seconds": 92.70696067810059
+  },
+  "budget": {
+    "cpu_quota": "100%",
+    "memory_max": "12G",
+    "nice": 19,
+    "io_weight": 10,
+    "runtime_max_seconds": 3600,
+    "CUDA_VISIBLE_DEVICES": "",
+    "gpu_forward_performed": false
+  },
+  "verified": {
+    "actor_actual_adam_steps_per_rank": [
+      2000,
+      2000,
+      2000,
+      2000,
+      2000,
+      2000,
+      2000,
+      2000
+    ],
+    "probe_actual_adam_steps_per_rank": [
+      2000,
+      2000,
+      2000,
+      2000,
+      2000,
+      2000,
+      2000,
+      2000
+    ],
+    "actor_ranks": [
+      {
+        "rank": 0,
+        "scheduler_completed_outer": 100,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 1,
+        "scheduler_completed_outer": 100,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 2,
+        "scheduler_completed_outer": 100,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 3,
+        "scheduler_completed_outer": 100,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 4,
+        "scheduler_completed_outer": 100,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 5,
+        "scheduler_completed_outer": 100,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 6,
+        "scheduler_completed_outer": 100,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 7,
+        "scheduler_completed_outer": 100,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      }
+    ],
+    "probe": {
+      "actual_adam_steps_per_rank": [
+        2000,
+        2000,
+        2000,
+        2000,
+        2000,
+        2000,
+        2000,
+        2000
+      ],
+      "adam_fp32_states": 14,
+      "learning_rate": 1e-06,
+      "model_fp32_tensors": 14,
+      "rank_rng_count": 8
+    },
+    "probe_clock": {
+      "group_denominator": 1024,
+      "original_rank_write_logs": 8,
+      "pre_step_prediction_clock_verified": true,
+      "trajectory_denominator": 5120,
+      "writes_per_rank": 20
+    },
+    "saved_actor_driver_cpu_deserialized": true,
+    "saved_candidate_pool": {
+      "actual_permutation_entries": 168510,
+      "consumed_candidates": 512000,
+      "cursor": 6470,
+      "cycle": 3,
+      "eligible_questions": 168510,
+      "next_outer": 101,
+      "source_pool_sha256": "ae13710254e7ae77cf5531b62a755ec2000bc3fba20051bbafaff1f6714aa8fc"
+    },
+    "grounding_round": 50,
+    "grounding_version": "4a1cc2d500fe40979ef8ca4792959438:50:9262847e4f5e4df79a536c0cff82ed2d",
+    "hf_tensors_cpu_read": 435,
+    "hf_fp32_elements": 3397103616,
+    "tokenizer_semantics_equal": true,
+    "parameter_change": {
+      "compared_elements": 6656,
+      "nonzero_difference_elements": 6621,
+      "max_absolute_difference": 0.00011633336544036865,
+      "all_model_parameters_compared": false
+    },
+    "original_full_trajectories": 5120,
+    "actor_selected_trajectories": 2560,
+    "native_records_equal": true,
+    "strict_em_top512_recomputed": true,
+    "fixed_test_manifest_sha256": "a125fc5af90e34fcd728c82077d9d62070a78d5ef703ac11f3748687d088e64f",
+    "frozen_runtime_file_count": 12
+  },
+  "progress_samples": "PROGRESS_SAMPLES.json",
+  "preflight": "PREFLIGHT_COMPACT.json",
+  "cleanup": {
+    "status": "OWNED_CPU_UNIT_EXITED_NO_ACTIVE_WORKERS",
+    "observed_unix": 1792260057.8731945,
+    "helper_commit": "759d28c45aed0f18ab4f42ad6be17f5f690029d5",
+    "proof_sha256": "d5b612106cc942ebfcfab978704cda740fe5f3403831e952af086e9e89d1eb1b",
+    "systemd": {
+      "Result": "success",
+      "ExecMainPID": "0",
+      "ExecMainStatus": "0",
+      "ControlGroup": "",
+      "LoadState": "not-found",
+      "ActiveState": "inactive",
+      "SubState": "dead"
+    },
+    "reader_pid": 1683875,
+    "reader_birth_ticks": "1932044100",
+    "same_reader_process_alive": false,
+    "owned_cgroup_members": null,
+    "action": "Successful transient unit already exited; no stop/reset/removal required. Preserve proof, intent, logs and deployed source.",
+    "tensor_payload_read": false,
+    "large_payload_repeated": false,
+    "training_modified": false,
+    "qa_or_grounding_modified": false,
+    "gpu_forward_performed": false
+  },
+  "scope": {
+    "independent_full_file_sha": true,
+    "actual_cpu_deserialization": true,
+    "single_deployment": true,
+    "large_payload_replay": false,
+    "cp5_cp50_tensor_reads": false,
+    "large_payload_transferred_to_Mac": false,
+    "training_modified": false,
+    "qa_or_grounding_modified": false,
+    "gpu_forward_performed": false,
+    "cuda_rng_applied": false,
+    "cuda_executor_exact_restore_verified": false,
+    "independent_backup_performed": false,
+    "official_initial_small_tensor_reads_performed": true,
+    "legacy_old_weight_files_read_flag_scope": "Only official initial selected small tensors; historical training checkpoint weight files not read.",
+    "qa_or_grounding_success_assessed": false,
+    "final200_or_full51713_completion_assessed": false
+  },
+  "created_unix": 1792260146.711618
+}
