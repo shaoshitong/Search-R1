@@ -720,7 +720,11 @@ class RayPPOTrainer(object):
             assert all(p['actual_adam_scheduler_readback_equal'] and p['actual_rng_readback_equal'] for p in proofs)
             publish(Path(os.environ['SEARCH_G1_BASE'])/'logs/full-state-restored-workers.json',
                     dict(source_step=run['full_state_restore']['completed_outer'],
-                         actual_optimizer_writes_per_rank=run['full_state_restore']['actual_optimizer_writes_per_rank'],ranks=proofs))
+                         actual_optimizer_writes_per_rank=run['full_state_restore']['actual_optimizer_writes_per_rank'],
+                         run_id=run['run_id'],source_commit=run['source_commit'],
+                         slurm_job_id=os.environ.get('SLURM_JOB_ID'),
+                         source_receipt_sha256=run['full_state_restore']['source_receipt_sha256'],
+                         actual_world_size=size,ranks=proofs))
 
     def _save_checkpoint(self):
         actor_local_path = os.path.join(self.config.trainer.default_local_dir, 'actor',
@@ -811,6 +815,7 @@ class RayPPOTrainer(object):
                 assert continuation_k == 0 and self.total_training_steps == 301
         five_update_records = []
         inline_attempts=None
+        easy_restore=False
         # perform validation before training
         # currently, we only support validation using the reward_function.
         if self.val_reward_fn is not None and self.config.trainer.get('val_before_train', True):
@@ -835,8 +840,14 @@ class RayPPOTrainer(object):
                 if restore_receipt:
                     from search_g1.full_state_restore import restore_driver
                     restore_driver(self,restore_receipt)
-                    from search_g1.full_state_restore import record_original_baseline
-                    base,run=active_run();record_original_baseline(base,run)
+                    base,run=active_run()
+                    easy_restore=run['full_state_restore'].get('kind')=='easy2560_native4'
+                    if easy_restore:
+                        from search_g1.easy2560_restore_runtime import record_development_history
+                        record_development_history(base,run)
+                    else:
+                        from search_g1.full_state_restore import record_original_baseline
+                        record_original_baseline(base,run)
                     progress = getattr(self, '_restored_attempt_progress', None)
                     if progress is None:
                         progress = dict(completed_outer=5,cumulative_writes=100,attempt_index=5,aborted_attempts=0)
@@ -846,7 +857,7 @@ class RayPPOTrainer(object):
                         progress['completed_outer'] if progress['cumulative_writes']==progress['completed_outer']*20 else 0)
                     # Finish only the canonical dev512-after5 that the failed
                     # allocation never reached. Do not repeat initial/stage64.
-                    if run['full_state_restore'].get('kind') == 'question_probe_pair':
+                    if run['full_state_restore'].get('kind') in ('question_probe_pair','easy2560_native4'):
                         # The completed pair already has its historical evaluation.
                         # Future validation runs at the normal common8 cadence.
                         pass
@@ -911,6 +922,9 @@ class RayPPOTrainer(object):
                     restored_state=getattr(self,'_restored_candidate_state',None))
             self.mixed_stream = mixed_stream
             assert inline_attempts is not None and self.config.do_search
+            if easy_restore:
+                from search_g1.easy2560_restore_runtime import verify_reconstructed_stream
+                verify_reconstructed_stream(self,mixed_stream)
             if selection_mode in ("question_probe","prefix20_probe"):
                 from pathlib import Path
                 from search_g1.qprobe_runtime import QProbeRuntime
@@ -1216,7 +1230,9 @@ class RayPPOTrainer(object):
                     if self.config.trainer.save_freq > 0 and \
                             (self.global_steps % self.config.trainer.save_freq == 0 or
                             self.global_steps == self.config.trainer.get('acceptance_step',0) or
-                            (self.config.trainer.get('full_state_restore_receipt',None) and self.global_steps == min(continuation_k + 5, self.total_training_steps - 1)) or
+                            (self.config.trainer.get('full_state_restore_receipt',None) and
+                             not easy_restore and
+                             self.global_steps == min(continuation_k + 5, self.total_training_steps - 1)) or
                             self.global_steps + 1 >= self.total_training_steps):
                         with _timer('save_checkpoint', timing_raw):
                             self._save_checkpoint()
@@ -1250,6 +1266,7 @@ class RayPPOTrainer(object):
                     from reproduction.profile import accept_five_updates
                     accept_five_updates(checkpoint, five_update_records)
                 if (self.config.trainer.get('full_state_restore_receipt',None) and
+                        not easy_restore and
                         self.global_steps==min(continuation_k+5,self.total_training_steps-1)):
                     from search_g1.full_state_restore import accept_resumed_five
                     accept_resumed_five(five_update_records)

@@ -22,6 +22,8 @@ def digest(path):
 
 def source(receipt_path):
     p=Path(receipt_path).resolve();r=json.loads(p.read_text())
+    from search_g1.easy2560_restore import STATUS as EASY_STATUS, source as easy_source
+    if r.get('status')==EASY_STATUS:return easy_source(p)
     from search_g1.qprobe_checkpoint import PAIR_STATUS,read_source
     if r.get('status')==PAIR_STATUS:return read_source(p)
     assert r['status']=='SOURCE_CHECKPOINT5_FULL_SHA_AND_CPU_STATES_PASS'
@@ -61,6 +63,8 @@ def execution_budget_compatible(run, parent):
 
 def bind(run,receipt_path):
     p,r,checkpoint,origin,parent=source(receipt_path)
+    from search_g1.easy2560_restore import STATUS as EASY_STATUS, bind as easy_bind
+    if r.get('status')==EASY_STATUS:return easy_bind(run,receipt_path)
     from search_g1.qprobe_checkpoint import PAIR_STATUS,bind_restore
     if r.get('status')==PAIR_STATUS:return bind_restore(run,receipt_path)
     execution_budget_compatible(run, parent)
@@ -90,7 +94,14 @@ def from_config(config):
     assert Path(config.actor_rollout_ref.model.actor_checkpoint_path).resolve()==checkpoint
     assert config.trainer.total_training_steps==201 and config.trainer.acceptance_step==5
     from search_g1.qprobe_checkpoint import PAIR_STATUS
-    if r.get('status')==PAIR_STATUS:
+    from search_g1.easy2560_restore import STATUS as EASY_STATUS
+    if r.get('status')==EASY_STATUS:
+        from reproduction.common8.precision_contract import easy2560_native4
+        assert easy2560_native4(parent) and r['world_size']==4
+        assert config.actor_rollout_ref.actor.ppo_micro_batch_size==parent['actor_micro_batch_per_rank']*4
+        assert config.actor_rollout_ref.actor.ppo_logical_micro_batch_size==4
+        assert config.data.selection_mode=='mixed_first' and not config.algorithm.all_correct_virtual_zero
+    elif r.get('status')==PAIR_STATUS:
         from reproduction.common8.topology import world_size
         assert world_size(parent)==r['world_size']
         assert config.actor_rollout_ref.actor.ppo_micro_batch_size==parent['actor_micro_batch_per_rank']*r['world_size']
@@ -139,16 +150,19 @@ def restore_worker(worker,receipt_path):
     p,r,checkpoint,origin,parent=source(receipt_path);rank=worker.rank
     from search_g1.qprobe_checkpoint import PAIR_STATUS,validate_rank_state
     paired=r.get('status')==PAIR_STATUS
-    size=r['world_size'] if paired else 8
-    outer=r['step'] if paired else 5
-    writes=r['attempt_progress']['cumulative_writes'] if paired else 100
-    expected_tensors=r['hf_saved_tensor_count'] if paired else 435
+    from search_g1.easy2560_restore import STATUS as EASY_STATUS
+    easy=r.get('status')==EASY_STATUS
+    stateful=paired or easy
+    size=r['world_size'] if stateful else 8
+    outer=r['step'] if stateful else 5
+    writes=r['attempt_progress']['cumulative_writes'] if stateful else 100
+    expected_tensors=r['hf_saved_tensor_count'] if stateful else 435
     assert torch.distributed.get_world_size()==size
     proof=next(v for v in r['files'] if v['relative_path']==f'training_state/rank-{rank}.pt')
     assert digest(proof['path'])==proof['full_read_sha256']
     saved=torch.load(proof['path'],map_location='cpu',weights_only=False)
     assert saved['rank']==rank and saved['world_size']==size and saved['actual_optimizer_writes']==writes
-    if paired:validate_rank_state(saved,rank,size,outer,expected_writes=writes)
+    if stateful:validate_rank_state(saved,rank,size,outer,expected_writes=writes)
     # Compare all actual FSDP-restored model tensors with saved HF tensors.
     if worker._is_offload_param:
         load_fsdp_param_and_grad(module=worker.actor_module_fsdp,device_id=torch.cuda.current_device(),load_grad=False)
@@ -178,9 +192,9 @@ def restore_worker(worker,receipt_path):
     worker.actor._full_budget_outers=saved.get('full_budget_outers',outer if writes==outer*20 else 0)
     worker.actor._optimizer_calls=saved.get('optimizer_calls',writes)
     worker.actor._optimizer_rollbacks=saved.get('optimizer_rollbacks',0)
-    worker.actor._last_attempt_index=saved['last_attempt_index'] if paired else 5
+    worker.actor._last_attempt_index=saved['last_attempt_index'] if stateful else 5
     worker.actor._inline_initial_optimizer_published=True
-    if paired:
+    if stateful:
         # Counters/attempt identities come from this checkpoint only. Parent
         # logs may contain a later suffix and must never leak future attempts.
         worker.actor._used_attempt_ids=set(saved['used_attempt_ids'])
@@ -219,6 +233,11 @@ def restore_worker(worker,receipt_path):
         policy_rejections=worker.actor._policy_rejections,
         source_run_id=saved['run_id'],source_step=outer,checked_unix=time.time())
     if paired:row['sampling_rng_source']='authenticated post-evaluation/refit boundary-worker-rng'
+    if easy:row['sampling_rng_source']='actual saved checkpoint before development callback; post-evaluation RNG unavailable'
+    if easy:
+        row.update(run_id=current_run['run_id'],source_receipt_sha256=digest(p),
+            source_job=r['source_job'],source_commit=parent['source_commit'],
+            actual_model_collective_readback_equal=True)
     publish(Path(os.environ['SEARCH_G1_BASE'])/'logs'/f'full-state-restored-rank-{rank}.json',row)
     return row
 
@@ -248,6 +267,9 @@ def bind_restored_probe(trainer,saved,run,live,source_run_id):
 
 
 def restore_driver(trainer,receipt_path):
+    from search_g1.easy2560_restore import STATUS as EASY_STATUS,restore_driver as restore_easy_driver
+    if json.loads(Path(receipt_path).read_text()).get('status')==EASY_STATUS:
+        return restore_easy_driver(trainer,receipt_path)
     from search_g1.qprobe_checkpoint import PAIR_STATUS,restore_driver as restore_pair_driver
     if json.loads(Path(receipt_path).read_text()).get('status')==PAIR_STATUS:
         return restore_pair_driver(trainer,receipt_path)
@@ -282,7 +304,7 @@ def prepare_guarded_restore(base,run,document,method,initial,receipts):
     base=Path(base);binding=active(run);p,r,cp,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']
     allocation=json.loads((base/'logs/native-allocation-admission.json').read_text())
-    paired=binding.get('kind')=='question_probe_pair'
+    paired=binding.get('kind') in ('question_probe_pair','easy2560_native4')
     actual_writes=binding['actual_optimizer_writes_per_rank'] if paired else 100
     step=binding['completed_outer'] if paired else 5
     probability=dict(role='verified_full_state_restore_source',run_id=run['run_id'],
@@ -311,7 +333,7 @@ def verify_guarded_restore(base,run,probability):
     binding=active(run);p,r,cp,origin,parent=source(binding['source_receipt'])
     assert digest(p)==binding['source_receipt_sha256']==probability['source_receipt_sha256']
     assert probability['role']=='verified_full_state_restore_source'
-    if binding.get('kind')=='question_probe_pair':
+    if binding.get('kind') in ('question_probe_pair','easy2560_native4'):
         assert probability['actual_optimizer_writes']==binding['actual_optimizer_writes_per_rank']
         assert probability['source_step']==binding['completed_outer']
     else:assert probability['actual_optimizer_writes']==100 and probability['source_step']==5
@@ -366,6 +388,9 @@ def accept_resumed_five(records):
 
 def verified_runtime_prefix(base,run):
     """Require actual restored worker/driver readbacks before auditing a suffix."""
+    if (active(run) or {}).get('kind')=='easy2560_native4':
+        from search_g1.easy2560_restore_runtime import verified_runtime_prefix as easy_prefix
+        return easy_prefix(base,run)
     if (active(run) or {}).get('kind')=='question_probe_pair':
         from search_g1.qprobe_checkpoint import verified_runtime_prefix as pair_prefix
         return pair_prefix(base,run)

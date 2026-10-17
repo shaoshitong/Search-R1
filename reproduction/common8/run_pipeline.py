@@ -285,6 +285,13 @@ class Pipeline:
         if role in CALIBRATION_ROLES:
             self.calibration_measurements()
             return 'FINISHED_POLICY_CALIBRATION_MEASUREMENTS_AND_OWNED_CLEANUP'
+        if self.run.get('easy2560_selection'):
+            # Native4 Easy is audited by its independent CPU archive/evaluation
+            # consumer after the asynchronous archive finishes. Do not route
+            # its genuine cross-job prefix through legacy common8/8-rank gates.
+            self.stage('EASY200_PRODUCER_COMPLETE_INDEPENDENT_CPU_ACCEPTANCE_PENDING',
+                       actual_final_archive_acceptance_claimed=False)
+            return 'FINISHED_EASY200_PRODUCER_AND_OWNED_CLEANUP_CPU_ACCEPTANCE_PENDING'
         self.stage('FINAL200_COMPLETE_SHARED_EVALUATION_ACCEPTANCE')
         v=self.start('final-acceptance',[self.python,'-m','reproduction.common8.verify_full','--base',str(self.base)],[])
         self.wait('final-acceptance',v)
@@ -297,6 +304,12 @@ class Pipeline:
                        version=receipt['version'],new_calibration_generated=False)
             return
         if self.run.get('full_state_restore'):
+            if self.run['full_state_restore'].get('kind')=='easy2560_native4':
+                from search_g1.easy2560_restore import install_restored_reward_probe
+                receipt=install_restored_reward_probe(self.base,self.run)
+                self.stage('RESTORING_SAVED_EASY_GROUNDING_PROBE_NO_NEW_CALIBRATION',
+                           version=receipt['version'],round=receipt['round'])
+                return
             if self.run['full_state_restore'].get('kind')=='question_probe_pair':
                 from search_g1.qprobe_checkpoint import install_restored_reward_probe
                 receipt=install_restored_reward_probe(self.base,self.run)

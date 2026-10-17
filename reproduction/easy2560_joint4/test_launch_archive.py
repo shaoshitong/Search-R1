@@ -26,8 +26,8 @@ class LaunchTests(unittest.TestCase):
         command = launch_command(BASE, 'a' * 40, 32)
         for option in ('--gres=gpu:4', '--account=jxu957', '--qos=formal-user', '--partition=emergency_acd'):
             self.assertIn(option, command)
-        self.assertEqual(command[-1], '32')
-        self.assertIn('/reproduction/easy2560_joint4/train.sh', command[-4])
+        self.assertEqual(command[-2:], ['32', ''])
+        self.assertIn('/reproduction/easy2560_joint4/train.sh', command[-5])
 
     def test_physical_fallback_preserves_logical_four(self):
         for physical in (32, 16, 8, 4):

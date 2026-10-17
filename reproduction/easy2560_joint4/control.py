@@ -130,7 +130,7 @@ def bind_repo(base, commit):
     return bound
 
 
-def launch_command(base, commit, actor_micro=32):
+def launch_command(base, commit, actor_micro=32, restore_receipt=None):
     base = own_base(base)
     if actor_micro not in MICROS: raise ValueError('EASY2560_UNSUPPORTED_PHYSICAL_MICRO')
     return ['sbatch', '--parsable', '--partition=emergency_acd', '--qos=formal-user',
@@ -141,7 +141,17 @@ def launch_command(base, commit, actor_micro=32):
             '--output=' + str(base / 'logs/training-%j.log'),
             '--error=' + str(base / 'logs/training-%j.log'),
             str(base / 'source' / commit / 'reproduction/easy2560_joint4/train.sh'),
-            str(base), commit, str(actor_micro)]
+            str(base), commit, str(actor_micro), str(restore_receipt) if restore_receipt else '']
+
+
+def restore_binding(receipt):
+    """Pin the explicit small recovery receipt before the single submission."""
+    if receipt is None:
+        return dict(restore_receipt=None, restore_receipt_sha256=None)
+    path = Path(receipt)
+    if not path.is_absolute() or path.resolve() != path or not path.is_file() or path.is_symlink():
+        raise ValueError('EASY2560_CANONICAL_RESTORE_RECEIPT_REQUIRED')
+    return dict(restore_receipt=str(path), restore_receipt_sha256=sha(path))
 
 
 def bootstrap(base, commit, predecessor=PREDECESSOR):
@@ -150,20 +160,22 @@ def bootstrap(base, commit, predecessor=PREDECESSOR):
     return dict(environment=environment, source=source, training_submitted=False)
 
 
-def submit(base, commit, actor_micro=32, predecessor=PREDECESSOR):
+def submit(base, commit, actor_micro=32, predecessor=PREDECESSOR, restore_receipt=None):
     base = own_base(base); bootstrap(base, commit, predecessor)
     claim = base / 'preparation/training-submit-claim.json'
     receipt = base / 'preparation/training-submission.json'
     if any(p.exists() for p in (claim, receipt, base / 'job.id', base / 'logs/run-manifest.json')):
         raise ValueError('EASY2560_SUBMISSION_ALREADY_ATTEMPTED_INSPECT_ACTUAL_JOB')
-    command = launch_command(base, commit, actor_micro)
+    restoration = restore_binding(restore_receipt)
+    command = launch_command(base, commit, actor_micro, restoration['restore_receipt'])
     publish(claim, dict(source_commit=commit, command=command,
                         actor_micro_batch_per_rank=actor_micro, logical_micro_batch_per_rank=4,
+                        **restoration,
                         personal_storage_budget_bytes=2 * 10**12, created_unix=time.time()))
     result = subprocess.run(command, capture_output=True, text=True, timeout=30)
     value = dict(source_commit=commit, command=command, returncode=result.returncode,
                  stdout=result.stdout, stderr=result.stderr, checked_unix=time.time(),
-                 actor_micro_batch_per_rank=actor_micro, training_world_size=4)
+                 actor_micro_batch_per_rank=actor_micro, training_world_size=4, **restoration)
     if result.returncode == 0:
         job = result.stdout.strip().split(';')[0]
         if not job.isdecimal(): raise ValueError('EASY2560_UNKNOWN_SUBMISSION_RESULT_INSPECT_CLAIM')
@@ -178,9 +190,10 @@ def main():
     p = argparse.ArgumentParser(); p.add_argument('mode', choices=('bootstrap', 'submit'))
     p.add_argument('--base', default=BASE); p.add_argument('--commit', required=True)
     p.add_argument('--predecessor', default=PREDECESSOR)
+    p.add_argument('--restore-receipt')
     p.add_argument('--actor-micro', type=int, choices=MICROS, default=32); a = p.parse_args()
     value = (bootstrap(a.base, a.commit, a.predecessor) if a.mode == 'bootstrap' else
-             submit(a.base, a.commit, a.actor_micro, a.predecessor))
+             submit(a.base, a.commit, a.actor_micro, a.predecessor, a.restore_receipt))
     print(json.dumps(value), flush=True)
 
 

@@ -57,10 +57,11 @@ def event(root, **values):
     print(json.dumps(value), flush=True)
 
 
-def run(base, commit, job, password, poll_seconds=60):
+def run(base, commit, job, password, poll_seconds=60, first_step=5):
     if socket.gethostname() != 'xielab3' or os.getuid() != 1002:
         raise ValueError('EASY2560_ARCHIVE_CONTROLLER_REQUIRES_HKUST3')
     base = own_base(base)
+    if first_step not in core.STEPS: raise ValueError('EASY2560_ARCHIVE_FIXED_FIRST_MILESTONE_REQUIRED')
     if not str(job).isdecimal(): raise ValueError('EASY2560_ARCHIVE_SOURCE_JOB_REQUIRED')
     root = HK_ROOT / 'archive-controller' / ('job-' + job)
     root.mkdir(parents=True, exist_ok=True)
@@ -70,10 +71,11 @@ def run(base, commit, job, password, poll_seconds=60):
     birth = dict(pid=os.getpid(), start_ticks=int(Path('/proc/self/stat').read_text().rsplit(')', 1)[1].split()[19]),
                  boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip(), uid=os.getuid())
     publish(claim, dict(base=str(base), source_commit=commit, source_job=job, birth=birth,
+                        requested_steps=[step for step in core.STEPS if step>=first_step],
                         credentials_persisted=False, checked_unix=time.time()))
     env = dict(os.environ, SSHPASS=password); completed = []; password = None
     try:
-        for step in core.STEPS:
+        for step in (value for value in core.STEPS if value>=first_step):
             source = base / 'preparation/checkpoint-archives' / ('global_step_' + str(step)) / 'source-snapshot.json'
             while True:
                 # Observe actual job and a fully produced native4 checkpoint.
@@ -130,11 +132,12 @@ def run(base, commit, job, password, poll_seconds=60):
 
 def main():
     p = argparse.ArgumentParser(); p.add_argument('--base', required=True); p.add_argument('--commit', required=True)
-    p.add_argument('--job', required=True); p.add_argument('--poll-seconds', type=int, default=60); a = p.parse_args()
+    p.add_argument('--job', required=True); p.add_argument('--poll-seconds', type=int, default=60)
+    p.add_argument('--first-step', type=int, choices=core.STEPS, default=5); a = p.parse_args()
     secret = json.load(sys.stdin); password = secret.pop('password'); secret = None
     if not isinstance(password, str) or not password or '\n' in password:
         raise ValueError('EASY2560_RAM_PASSWORD_STDIN_REQUIRED')
-    run(a.base, a.commit, a.job, password, a.poll_seconds)
+    run(a.base, a.commit, a.job, password, a.poll_seconds, a.first_step)
 
 
 if __name__ == '__main__': main()

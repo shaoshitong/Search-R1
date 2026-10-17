@@ -75,7 +75,15 @@ def completed_updates(base):
     raw = path.read_bytes(); prefix = b'\n'.join(raw.split(b'\n')[:-1])
     if prefix: prefix += b'\n'
     rows = [json.loads(line) for line in prefix.splitlines() if line]
-    require([row['step'] for row in rows] == list(range(1, len(rows)+1)), 'NONSEQUENTIAL_COMPLETED_LEDGER')
+    run = json.loads((base/'logs/run-manifest.json').read_text())
+    restoration = run.get('full_state_restore') or {}
+    offset = restoration.get('completed_outer', 0)
+    if restoration:
+        require(restoration.get('kind')=='easy2560_native4' and type(offset) is int and 1<=offset<=200,
+                'UNSUPPORTED_RESTORED_PREFIX')
+        require(hashlib.sha256(Path(restoration['source_receipt']).read_bytes()).hexdigest()==
+                restoration['source_receipt_sha256'], 'RESTORED_PREFIX_RECEIPT_CHANGED')
+    require([row['step'] for row in rows] == list(range(offset+1, offset+len(rows)+1)), 'NONSEQUENTIAL_COMPLETED_LEDGER')
     require(len({row['attempt_id'] for row in rows}) == len(rows), 'DUPLICATE_COMPLETED_ATTEMPT')
     return rows, dict(bytes=len(prefix), sha256=hashlib.sha256(prefix).hexdigest())
 
@@ -237,7 +245,7 @@ def build_plan(base, run_id, training_commit, source_job, keep_completed=2):
             skipped.append(dict(step=update['step'], reason=type(error).__name__ + ': ' + str(error)))
     return dict(schema_version=1, role='easy2560_candidate_raw_retirement_plan', base=str(base),
         run_id=run_id, training_commit=training_commit, source_job=source_job,
-        keep_completed=keep_completed, latest_completed_outer=len(rows),
+        keep_completed=keep_completed, latest_completed_outer=rows[-1]['step'] if rows else 0,
         ledger_prefix=ledger, binding_files=bindings, pools=pools, skipped=skipped,
         removable_logical_bytes=sum(record['bytes'] for pool in pools for record in pool['files']),
         retained_scope='selected private token/probability trace; all-group selection JSON; all RNG/before/after; all checkpoints',

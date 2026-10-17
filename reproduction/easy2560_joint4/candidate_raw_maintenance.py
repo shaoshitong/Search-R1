@@ -146,7 +146,7 @@ def cycle(base, helper, state, observation, *, dry_observe=False,
     except FileNotFoundError: rows = []
     else: rows, _ = helper.completed_updates(base)
     require(all(row['run_id'] == bound['run_id'] for row in rows), 'FOREIGN_COMPLETED_LEDGER')
-    frontier = len(rows); state['last_observed_completed_outer'] = frontier
+    frontier = rows[-1]['step'] if rows else 0; state['last_observed_completed_outer'] = frontier
     state['full_success_outer_count'] = sum(helper.is_full_success(row) for row in rows)
     eligible = [row['step'] for row in rows[:-2] if helper.is_full_success(row)]
     state['eligible_old_success_outer_count'] = len(eligible)

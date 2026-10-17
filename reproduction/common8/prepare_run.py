@@ -93,7 +93,7 @@ def verify_model(model, official_path):
     return hashes
 
 
-def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None,restore_receipt=None,execution_site=None,actor_micro_batch_per_rank=None,actor_logical_micro_batch_per_rank=None,easy2560_selection=False):
+def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,rollout_memory_utilization=0.1,local_retrieval_assets=None,restore_receipt=None,execution_site=None,actor_micro_batch_per_rank=None,actor_logical_micro_batch_per_rank=None,easy2560_selection=False,easy2560_settings=None):
     base,model,official_path=map(Path,(base,model,official_path))
     assert execution_site in (None,'hpc3','h1008')
     target=base/'logs/run-manifest.json'
@@ -137,11 +137,15 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
     if execution_site in ('hpc3','h1008'):result['execution_site']=execution_site
     if easy2560_selection:
         assert execution_site=='hpc3' and actor_micro_batch_per_rank in (4,8,16,32)
-        assert actor_logical_micro_batch_per_rank==4 and not restore_receipt
+        assert actor_logical_micro_batch_per_rank==4
         result.update(easy2560_selection=True,data_selection_mode='mixed_first',
             actor_logical_micro_batch_per_rank=4,selection_candidate_questions=2560,
             selection_selected_questions=512,selection_fixed_candidate_budget=True,
             all_correct_virtual_zero=False)
+        if easy2560_settings is not None:
+            result.update(easy2560_settings)
+    else:
+        assert easy2560_settings is None
     if execution_site=='h1008':
         from reproduction.common8.precision_contract import NATIVE_BF16_PROFILE
         assert os.environ.get('SEARCH_G1_EXECUTION_PROFILE')==NATIVE_BF16_PROFILE, 'H1008 must bind its BF16/FP32 execution recipe explicitly'
@@ -170,7 +174,12 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
         validate_base(base.resolve(),result)
     if restore_receipt:
         from search_g1.qprobe_checkpoint import PAIR_STATUS
-        if restore_source.get('status')==PAIR_STATUS:
+        if easy2560_selection:
+            from search_g1.easy2560_restore import STATUS as EASY_STATUS
+            assert restore_source.get('status')==EASY_STATUS
+            assert restore_source['world_size']==result['training_world_size']==4
+            assert restore_parent['actor_micro_batch_per_rank']==result['actor_micro_batch_per_rank']
+        elif restore_source.get('status')==PAIR_STATUS:
             # This CLI is the native eight-rank route. Four-rank local sources
             # use the local preparation entry; changing shard layout is forbidden.
             assert restore_source['world_size']==result['training_world_size'], 'Checkpoint shard layout must match actual native topology'

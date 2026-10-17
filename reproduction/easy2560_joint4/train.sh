@@ -4,6 +4,7 @@ umask 007
 BASE="${1:?explicit remote run base required}"
 COMMIT="${2:?immutable source commit required}"
 ACTOR_MICRO="${3:-32}"
+RESTORE_RECEIPT="${4:-}"
 export SEARCH_G1_BASE="$BASE" SEARCH_G1_SOURCE_COMMIT="$COMMIT" SEARCH_G1_PROFILE=common8
 export QPROBE_SOURCE="$BASE/repo" SEARCH_G1_TRAINING_WORLD_SIZE=4
 export SEARCH_G1_EXECUTION_PROFILE=native4_bf16_varlen_fp32_master
@@ -17,5 +18,7 @@ unset PYTHONHOME RAY_ADDRESS HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_p
 unset SEARCH_G1_SLURM_SHARED_AUTHORIZATION
 mkdir -p "$BASE/cache/triton" "$BASE/cache/torch-extensions" "$BASE/cache/inductor" "$BASE/artifacts"
 cd "$BASE/repo"
-python -B -m reproduction.easy2560_joint4.prepare_training --base "$BASE" --commit "$COMMIT" --actor-micro "$ACTOR_MICRO"
+PREPARE_ARGS=(--base "$BASE" --commit "$COMMIT" --actor-micro "$ACTOR_MICRO")
+if [[ -n "$RESTORE_RECEIPT" ]]; then PREPARE_ARGS+=(--restore-receipt "$RESTORE_RECEIPT"); fi
+python -B -m reproduction.easy2560_joint4.prepare_training "${PREPARE_ARGS[@]}"
 exec python -B -m reproduction.easy2560_joint4.native_ray_resources --base "$BASE"
