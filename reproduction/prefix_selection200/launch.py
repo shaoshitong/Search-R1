@@ -22,7 +22,8 @@ PREFIX = a800_runtime.PREFIX
 def validate_config(c, base):
     from .candidate_schedule import validate_schedule
     validate_schedule(c, required=c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1')
-    if c['base'] != str(base) or not str(base).startswith(PREFIX):
+    from .h100_replica_hardware import enabled as h100_layout, validate as validate_h100, PREFIX as H100_PREFIX
+    if c['base'] != str(base) or not str(base).startswith(H100_PREFIX if h100_layout(c) else PREFIX):
         raise ValueError('Use the isolated remote prefix-selection namespace')
     required = dict(outers=200, candidate_questions=CANDIDATE_QUESTIONS, selected_questions=512,
                     responses_per_question=5, prefix_policy_tokens=PREFIX_TOKENS, exploration_questions=0,
@@ -54,17 +55,22 @@ def validate_config(c, base):
         raise ValueError('Official actor/ref/encoder revision differs')
     if len(set(c['physical_gpu_uuids'])) != WORLD:
         raise ValueError('Four actual physical training GPUs are required')
-    if (len(c.get('physical_gpu_indices', [])) != WORLD
-            or c.get('auxiliary_gpu_indices') != [5, 6]
-            or len(c.get('auxiliary_gpu_uuids') or []) != 2
-            or set(c['physical_gpu_indices']) & {5, 6}
-            or len(set(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])) != 6
-            or c.get('probe_source_run') != '8af926a49630428097b94027864da68b'):
-        raise ValueError('Bind actual four training/two auxiliary UUIDs and the approved warmup source')
+    if h100_layout(c):
+        validate_h100(c)
+        if c.get('probe_source_run') != '8af926a49630428097b94027864da68b':
+            raise ValueError('Use the exact reference warmup source run')
+    else:
+        if (len(c.get('physical_gpu_indices', [])) != WORLD
+                or c.get('auxiliary_gpu_indices') != [5, 6]
+                or len(c.get('auxiliary_gpu_uuids') or []) != 2
+                or set(c['physical_gpu_indices']) & {5, 6}
+                or len(set(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])) != 6
+                or c.get('probe_source_run') != '8af926a49630428097b94027864da68b'):
+            raise ValueError('Bind actual four training/two auxiliary UUIDs and the approved warmup source')
     for key in ('environment_root', 'model_dir', 'official_model_dir', 'encoder_model_dir',
                 'canonical_train', 'source_question_pool', 'probe_source_checkpoint',
                 'fixed_test_features', 'retrieval_index', 'retrieval_corpus', 'grounding_manifest'):
-        if not str(c[key]).startswith(('/data/',)):
+        if not str(c[key]).startswith(('/mnt/', '/dataset/', '/data/')):
             raise ValueError('All large inputs and outputs must stay remote: ' + key)
     return c
 
@@ -221,7 +227,7 @@ def run(base):
         else:
             from .resume import validate_imported_boundary
         validate_imported_boundary(base, c)
-    lease = UUIDLocks(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'])
+    lease = UUIDLocks(c['physical_gpu_uuids'] + c['auxiliary_gpu_uuids'], root=c.get('gpu_uuid_lock_root'))
     try:
         native_allocation(base, c)
     except BaseException:
@@ -394,9 +400,9 @@ def run(base):
             '--index', c['retrieval_index'], '--corpus', c['retrieval_corpus'], '--encoder', c['retrieval_encoder'],
             '--cache', str(base / 'retrieval-cache'), '--run-id', c['run_id'], '--port', str(c['retrieval_port']),
             '--data-cache', c.get('retrieval_data_cache', str(base / 'retrieval-cache')),
-            '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', '2'],
+            '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', str(c.get('retrieval_gpu_shards', 2))],
             dict(env, CUDA_VISIBLE_DEVICES=','.join(map(str,c['auxiliary_gpu_indices'])), PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
-        await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=2))
+        await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=c.get('retrieval_gpu_shards', 2)))
         from . import grounding
         if outer:
             # A future compatible recovery must retain the exact adopted state.

@@ -47,12 +47,12 @@ def compute_processes():
 
 
 class UUIDLocks:
-    def __init__(self, uuids):
-        root = Path('/data/shaoshitong/.search-g1-gpu-uuid-locks')
+    def __init__(self, uuids, root=None):
+        root = Path(root or '/data/shaoshitong/.search-g1-gpu-uuid-locks')
         root.mkdir(exist_ok=True)
         self.fds = []
         try:
-            for uuid in sorted(uuids):
+            for uuid in sorted(set(uuids)):
                 if not uuid.startswith('GPU-') or Path(uuid).name != uuid:
                     raise ValueError('Invalid actual GPU UUID')
                 fd = os.open(root / (uuid + '.lock'), os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
@@ -71,6 +71,23 @@ class UUIDLocks:
 
 def native_allocation(base, c):
     """Validate one actual mapping before any CUDA child, while holding leases."""
+    from .h100_replica_hardware import enabled, validate, PREFIX as H100_PREFIX
+    if enabled(c):
+        validate(c)
+        if not str(base).startswith(H100_PREFIX):
+            raise ValueError('Wrong isolated H100 replica namespace')
+        mapping = gpu_inventory()
+        ids = c['physical_gpu_indices']
+        if [mapping[i]['uuid'] for i in ids] != c['physical_gpu_uuids']:
+            raise ValueError('Bound H100 indices/UUIDs changed')
+        value = dict(run_id=c['run_id'], source_commit=c['source_commit'],
+            physical_gpu_indices=ids, physical_gpu_uuids=c['physical_gpu_uuids'],
+            auxiliary_gpu_indices=ids, auxiliary_gpu_uuids=c['auxiliary_gpu_uuids'],
+            checked_unix=time.time(), actual_inventory=[mapping[i] for i in ids],
+            observed_compute_processes=compute_processes(), foreign_processes_stopped=False,
+            shared_existing_foreign_jobs_authorized=True, colocated_retrieval=True)
+        once(base / 'logs/native-allocation.json', value)
+        return value
     if not str(base).startswith(PREFIX):
         raise ValueError('Wrong isolated A800 namespace')
     training = c['physical_gpu_indices']
