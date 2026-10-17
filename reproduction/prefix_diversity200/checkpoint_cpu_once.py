@@ -1,8 +1,9 @@
 """Once-only CPU/full-file readback of this run's actual joint milestones.
 
-This reads no old actor/probe weight file, invokes no model forward or CUDA API,
+This reads no historical training checkpoint, invokes no model forward or CUDA API,
 and never changes training state. CPU deserialization is not a GPU restore or an
-independent backup. Missing joint completion is pending without an audit intent.
+independent backup. I1-I6 compares only selected small official initial tensors.
+Missing joint completion is pending without an audit intent.
 """
 import argparse
 import fcntl
@@ -359,7 +360,7 @@ def audit_hf(base, actor, config):
     print(json.dumps(dict(stage='HF_FULL_SHA_CPU_BEGIN', path=str(directory), unix=time.time())), flush=True)
     files = [hash_file(owned(base, directory / name), producer) for name, producer in actor['hf_files'].items()]
     saved_config = read(directory / 'config.json')
-    # Original architecture JSON is small; no old weight file is opened.
+    # Architecture JSON is small; official weight access below is limited to selected small tensors.
     original = read(Path(config['official_model_dir']) / 'config.json')
     for key in ('model_type', 'hidden_size', 'num_hidden_layers', 'intermediate_size', 'vocab_size',
                 'num_attention_heads', 'num_key_value_heads', 'tie_word_embeddings'):
@@ -372,19 +373,49 @@ def audit_hf(base, actor, config):
         # FP32 values are then exactly the retained shared embedding parameter.
         shapes.pop('lm_head.weight'); tied_alias_omitted = True
     need(set(index) == set(shapes), 'HF shard index does not describe the complete official actor')
+    change_rows, official_index = [], None
+    if config.get('interaction_contract'):
+        from .checkpoint_i1i6_cpu import INITIAL_CHANGE_TENSORS, CHANGE_FALLBACK, compare_official_small_tensor
+        official_index_path = original_dir/'model.safetensors.index.json'
+        official_index_file = hash_file(official_index_path)
+        need(official_index_file['sha256'] == config['model_files_sha256']['model.safetensors.index.json'],
+             'Official small-tensor index differs from the pinned initial model')
+        official_index = read(official_index_path)['weight_map']
+        need(INITIAL_CHANGE_TENSORS.issubset(index) and INITIAL_CHANGE_TENSORS.issubset(official_index),
+             'Deterministic initial parameter-change probes missing from learned/official actor')
     seen, elements = set(), 0
     for name in sorted(set(index.values())):
         path = owned(base, directory / name); before = path.stat()
         with safe_open(str(path), framework='pt', device='cpu') as handle:
-            for key in handle.keys():
+            for key in sorted(handle.keys()):
                 need(key not in seen and index.get(key) == name, 'Duplicate or misplaced HF tensor')
                 tensor = handle.get_tensor(key)
                 tensor_cpu(tensor, dtype=torch.float32, shape=shapes[key], finite=True)
+                if official_index is not None:
+                    primary_done = INITIAL_CHANGE_TENSORS.issubset({row['tensor'] for row in change_rows})
+                    fallback = (key == CHANGE_FALLBACK and primary_done
+                                and not any(row['nonzero_difference_elements'] for row in change_rows))
+                    if key in INITIAL_CHANGE_TENSORS or fallback:
+                        change_rows.append(compare_official_small_tensor(tensor, key, original_dir, official_index, config))
                 seen.add(key); elements += tensor.numel(); del tensor
         need(signature(before) == signature(path.stat()), 'HF tensor file changed during actual CPU read')
     need(seen == set(shapes), 'Actor HF CPU read omitted a learned tensor')
+    parameter_change = None
+    if official_index is not None:
+        need(INITIAL_CHANGE_TENSORS.issubset({row['tensor'] for row in change_rows}),
+             'Same HF CPU traversal omitted a deterministic parameter-change probe')
+        changed = sum(row['nonzero_difference_elements'] for row in change_rows)
+        parameter_change = dict(status='ACTUAL_PARAMETER_CHANGE_OBSERVED' if changed else 'SELECTED_TENSORS_EQUAL_INITIAL_NO_PARAMETER_CHANGE_PROVEN',
+            compared_tensors=change_rows, compared_elements=sum(row['elements'] for row in change_rows),
+            nonzero_difference_elements=changed, max_absolute_difference=max(row['max_absolute_difference'] for row in change_rows),
+            fallback_used=any(row['tensor'] == CHANGE_FALLBACK for row in change_rows),
+            official_index_small_file=official_index_file, official_full_weight_hash_repeated=False,
+            learned_hf_second_read_performed=False, all_model_parameters_compared=False,
+            first_outer_lr_zero_is_intentional=True, positive_lr_completed_outers=list(range(2,actor['completed_outer']+1)))
+        print(json.dumps(dict(stage='HF_INITIAL_PARAMETER_CHANGE_COMPARISON_COMPLETE', result=parameter_change, unix=time.time())), flush=True)
     print(json.dumps(dict(stage='HF_FULL_SHA_CPU_COMPLETE', tensors=len(seen), unix=time.time())), flush=True)
     return dict(files=files, actual_cpu_tensor_reads=len(seen), actual_fp32_elements=elements,
+                official_initial_parameter_change=parameter_change,
                 tokenizer_semantics_equal=True, original_tokenizer_small_file=original_tokenizer,
                 tied_lm_head_alias_omitted=tied_alias_omitted,
                 master_low_bits_preserved_in_hf=True, forward_performed=False)
@@ -649,7 +680,10 @@ def audit(base, outer):
                 error_type=type(error).__name__, error=str(error),
                 independent_full_file_sha_performed=False, actual_cpu_deserialization_performed=False)
         proof.update(gpu_forward_performed=False, cuda_rng_applied=False, independent_backup_performed=False,
-            training_modified=False, old_weight_files_read=False, large_payload_transferred_to_Mac=False,
+            training_modified=False, old_weight_files_read=bool(config.get('interaction_contract')),
+            historical_training_checkpoint_weight_files_read=False,
+            official_initial_small_tensor_reads_performed=bool(config.get('interaction_contract')),
+            large_payload_transferred_to_Mac=False,
             reader_source_sha256=hash_file(__file__)['sha256'], elapsed_seconds=time.monotonic() - started)
         _once(proof_path, proof)
         return dict(status=proof['status'], outer=outer, proof=hash_file(proof_path),

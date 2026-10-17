@@ -91,3 +91,43 @@ def audit_contract(base, config, actor, root):
                 stable_initial_grounding_binding=True, shared_bf16_train_qa_source_contract_verified=True,
                 train_native_request_budgets_verified=True, original_qa=qa,
                 cuda_executor_exact_restore_verified=False)
+
+
+# All probes are whole small learned tensors, never an embedding or LM-head
+# matrix. If these first-block probes are unchanged, inspect only the final
+# RMSNorm already encountered later in the same learned-HF CPU traversal.
+INITIAL_CHANGE_TENSORS = frozenset({
+    'model.layers.0.self_attn.q_proj.bias',
+    'model.layers.0.self_attn.k_proj.bias',
+    'model.layers.0.self_attn.v_proj.bias',
+    'model.layers.0.input_layernorm.weight',
+    'model.layers.0.post_attention_layernorm.weight',
+})
+CHANGE_FALLBACK = 'model.norm.weight'
+
+
+def compare_official_small_tensor(learned, key, official_dir, official_index, config):
+    """CPU read only one chosen official tensor, promoted to the FP32 master."""
+    import torch
+    from safetensors import safe_open
+    from .checkpoint_cpu_once import need, signature, tensor_cpu
+    name = official_index[key]
+    need(Path(name).name == name and name in config['model_files_sha256'],
+         'Official initial tensor escapes its pinned weight shard')
+    path = official_dir/name; before = path.stat()
+    with safe_open(str(path), framework='pt', device='cpu') as handle:
+        original = handle.get_tensor(key)
+        tensor_cpu(original, shape=learned.shape, finite=True)
+        original_dtype = str(original.dtype)
+        promoted = original.to(dtype=torch.float32)
+        difference = learned - promoted
+        tensor_cpu(difference, dtype=torch.float32, shape=learned.shape, finite=True)
+        changed = int(torch.count_nonzero(difference).item())
+        maximum = float(difference.abs().max().item())
+        result = dict(tensor=key, elements=learned.numel(), nonzero_difference_elements=changed,
+                      max_absolute_difference=maximum, learned_dtype=str(learned.dtype),
+                      official_saved_dtype=original_dtype, comparison_dtype='torch.float32',
+                      official_file=str(path), official_file_pinned_sha256=config['model_files_sha256'][name],
+                      official_full_file_hash_repeated=False, official_tensor_only_cpu_read=True)
+    need(signature(before) == signature(path.stat()), 'Official small tensor source changed during CPU read')
+    return result

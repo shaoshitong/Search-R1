@@ -1,0 +1,28 @@
+{
+  "status": "PARAMETER_CHANGE_COMPARISON_PREPARED_NOT_EXECUTED",
+  "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+  "outer": 5,
+  "implementation_scope": "same existing HF CPU tensor traversal;5 deterministic small first-block tensors;final RMSNorm fallback only if initial5zero",
+  "reported_fields": [
+    "tensor",
+    "elements",
+    "nonzero_difference_elements",
+    "max_absolute_difference",
+    "official_saved_dtype",
+    "comparison_dtype",
+    "official_file_pinned_sha256"
+  ],
+  "official_initial_comparison_dtype": "torch.float32",
+  "official_full_weight_hash_repeated": false,
+  "learned_hf_second_read_performed": false,
+  "no_gpu_forward": true,
+  "training_modified": false,
+  "audit_intent_created": false,
+  "previous_actual_readiness": "latest_complete0 / joint5missing at1792215520.6064045; not refreshed in this preparation",
+  "static_check": "Python AST PASS; no model/tensor read performed locally",
+  "files": {
+    "reproduction/prefix_diversity200/checkpoint_cpu_once.py": "09608ca28a6c18326bf9c01bf1c31fa26323e49ad6ba49f973531330aeb646da",
+    "reproduction/prefix_diversity200/checkpoint_i1i6_cpu.py": "bf087dce8568e062ddc14f9bd54149926677d6847392d7a36a191f520feb7973"
+  },
+  "prepared_unix": 1792216197.836687
+}
