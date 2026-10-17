@@ -10,7 +10,7 @@ This checkout, namespace, locks, state and Slurm launcher are independent. The
 reference chat's running process and checkout were never changed.
 
 Ordinary outers use 5120 authentic G5 prefixes, then predicted Mixed Top512 and
-continue those same prefixes. Ou ters10/20/...190 use2560 complete G5 groups,
+continue those same prefixes. Outers10/20/...190 use2560 complete G5 groups,
 prioritize actual strict-EM mixed groups (probe-score fallback), and update the
 probe once over12800 trajectories:50 Adam steps,LR5e-6,globalbatch256. Outer200
 is ordinary and does not refit. Actor remains512G5/globalmini128/oneepoch,

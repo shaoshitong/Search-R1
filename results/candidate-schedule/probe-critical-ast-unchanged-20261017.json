@@ -1,0 +1,42 @@
+{
+  "status": "ALL_14_PROBE_OPTIMIZER_AND_MATH_CRITICAL_AST_UNCHANGED",
+  "source": "reproduction/prefix_selection200/probe.py",
+  "baseline": "Same recovery-control worktree file captured before candidate edits",
+  "ast_serialization": "ast.dump(node, include_attributes=False), UTF-8, SHA256",
+  "modified_probe_nodes": [
+    "candidate_groups",
+    "score"
+  ],
+  "before": {
+    "mixed_probabilities": "c0020d76522676b7fbaf256a856dd16c285ff9123a7b93f2418c169b1759f668",
+    "stable_top512": "98cd3d0360e23eddb4782993098d569f7ee9863c1d0f156cb90c55cf72d05f2f",
+    "join_own_em": "72fb8b3e29370489db3e5f705d48e576cb48a4534d71fb12902f7a2c95613927",
+    "PrefixEncoder": "bb4b2e083f9064e7aefc7bf057546625dd50789f0be338ee0cee2b65f0c2d5e8",
+    "batch_subset": "f6afcbc9d1ca644b27cb11f14180e63a15a6f8c05ac4c927c406c8b6e5e0b326",
+    "concatenate": "99c326062dbf472d0e6c5ea4cb127fd0e7a3f7d8a36b786d8f85b8cfb29c551f",
+    "inference_logits": "230d454990fe8f2691b025e21e1f6101f4e86d6ee60ce62d3a2d18620096fc08",
+    "SelectedFeatures": "6237e846d7f8df5ff82e2e090813351f64b3f9fd4de7626276e6502c063874b9",
+    "atomic_checkpoint": "c695cf50383e330901b58fe900c0bd4de51b307de6ca97d4554b401458c357e6",
+    "initial_online_state": "c080937c735e1e4dde083447a7a014d856f0b605c9e4c28e7b69950a466d1ca4",
+    "initialize": "4c4bf0f177e234701feb630ec37d4bd48b8ade3e41597fa7cb979cb95185fe84",
+    "setup_ddp": "50e18886029bb2d1734ea043a2a7153ed73eb9b42c68704f0590ec6afab3bbf3",
+    "load_online": "ecd9f7533cf5191a7088afb6feb1eed8729c7e5e5db1e485d7ea5a6487258609",
+    "update": "07157890485bf2cc6eb1ae39a1e31065396f69a2eba04c495957376e92872041"
+  },
+  "after": {
+    "mixed_probabilities": "c0020d76522676b7fbaf256a856dd16c285ff9123a7b93f2418c169b1759f668",
+    "stable_top512": "98cd3d0360e23eddb4782993098d569f7ee9863c1d0f156cb90c55cf72d05f2f",
+    "join_own_em": "72fb8b3e29370489db3e5f705d48e576cb48a4534d71fb12902f7a2c95613927",
+    "PrefixEncoder": "bb4b2e083f9064e7aefc7bf057546625dd50789f0be338ee0cee2b65f0c2d5e8",
+    "batch_subset": "f6afcbc9d1ca644b27cb11f14180e63a15a6f8c05ac4c927c406c8b6e5e0b326",
+    "concatenate": "99c326062dbf472d0e6c5ea4cb127fd0e7a3f7d8a36b786d8f85b8cfb29c551f",
+    "inference_logits": "230d454990fe8f2691b025e21e1f6101f4e86d6ee60ce62d3a2d18620096fc08",
+    "SelectedFeatures": "6237e846d7f8df5ff82e2e090813351f64b3f9fd4de7626276e6502c063874b9",
+    "atomic_checkpoint": "c695cf50383e330901b58fe900c0bd4de51b307de6ca97d4554b401458c357e6",
+    "initial_online_state": "c080937c735e1e4dde083447a7a014d856f0b605c9e4c28e7b69950a466d1ca4",
+    "initialize": "4c4bf0f177e234701feb630ec37d4bd48b8ade3e41597fa7cb979cb95185fe84",
+    "setup_ddp": "50e18886029bb2d1734ea043a2a7153ed73eb9b42c68704f0590ec6afab3bbf3",
+    "load_online": "ecd9f7533cf5191a7088afb6feb1eed8729c7e5e5db1e485d7ea5a6487258609",
+    "update": "07157890485bf2cc6eb1ae39a1e31065396f69a2eba04c495957376e92872041"
+  }
+}
