@@ -1,0 +1,221 @@
+{
+  "checked_unix": 1792212702.587356,
+  "read_only": true,
+  "new_inference": false,
+  "cpu_tokenizer_decode_existing_only": true,
+  "raw_outputs_remain_remote": true,
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers",
+  "results": [
+    {
+      "phase": "qa",
+      "iteration": 50,
+      "counts": {
+        "n": 512,
+        "correct": 134,
+        "policy_tokens": 54543,
+        "invalid_any": 26,
+        "missing_strict_answer": 156,
+        "previous_obs_information_unclosed": 131,
+        "last_policy_has_information_close": 124,
+        "missing_contains_answer_open": 149,
+        "missing_contains_answer_close": 149,
+        "missing_contains_nested_search": 40,
+        "missing_contains_information_close": 124,
+        "missing_prior_unclosed_model_repairs_then_answer": 119
+      },
+      "turn_histogram": {
+        "2": 485,
+        "3": 12,
+        "4": 7,
+        "5": 8
+      },
+      "search_count_histogram": {
+        "1": 497,
+        "2": 15
+      },
+      "last_finish_reason": {
+        "stop": 506,
+        "length": 6
+      },
+      "examples": [
+        {
+          "qid_sha256": "c01cbb1fcd3fa06250a1efb2455de6d7293887426991adc84ef241e01d460f2b",
+          "correct": 0,
+          "turns": 2,
+          "previous_observation_token_count": 500,
+          "previous_observation_tail": " show, \"\"Mad Men\"\". In March 2015, Rahm began a recurring role playing consultant and attorney, Michael Barnow, on the TV show, \"\"Madam Secretary\"\". Rahm married Amy Lonkar, a cardio-thoracic surgeon, at the UC Davis Medical Center, on April 28, 2012",
+          "last_policy_text": ". Kevin Rahm was born in Chicago, Illinois.\n</information>\n<answer>November 29, 1959</answer>",
+          "last_policy_tokens": 30,
+          "finish_reason": "stop"
+        },
+        {
+          "qid_sha256": "0f72e4f0cd8127a46175d8da2961132fbcc1ad6349be137cd23391389c49ed26",
+          "correct": 0,
+          "turns": 2,
+          "previous_observation_token_count": 500,
+          "previous_observation_tail": "anently from the League was Costa Rica on 22 January 1925; having joined on 16 December 1920, this also makes it the member to have most quickly withdrawn. Brazil was the first founding member to withdraw (14 June 1926), and Haiti the last (April 194",
+          "last_policy_text": "0). </information>\n<answer>\nJapan </answer>",
+          "last_policy_tokens": 12,
+          "finish_reason": "stop"
+        },
+        {
+          "qid_sha256": "016ea306149f5b2366054d66d41c2a025996787c4c61ebd8f45425f8560a656a",
+          "correct": 0,
+          "turns": 2,
+          "previous_observation_token_count": 500,
+          "previous_observation_tail": "3 in anticipation of the introduction of long distance competition in the United States. The area code was intended for assignment by interexchange carriers to implement new services rapidly. The destinations of numbers in this numbering plan area (N",
+          "last_policy_text": "PA) are not specified. Area code 700 is not assigned to any specific geographic area. </information>\n\n<answer>\nOhio\n</answer>",
+          "last_policy_tokens": 32,
+          "finish_reason": "stop"
+        },
+        {
+          "qid_sha256": "c5121179b03080b1e113509d4737d4fc0fddba803934ab7418992392d9332114",
+          "correct": 0,
+          "turns": 2,
+          "previous_observation_token_count": 500,
+          "previous_observation_tail": "31). They are second in NBA championships only to the Boston Celtics, winning 16 championships to the Celtics 17 NBA titles. Their rosters have included some of the game's greatest players, including George Mikan, Jim Pollard, Clyde Lovellette, Elgin",
+          "last_policy_text": " Baylor, Jerry West, Wilt Chamberlain, Jerry West, Magic Johnson, Kobe Bryant, and LeBron James. </information>\n\n<answer>\nLos Angeles Lakers\n</answer>",
+          "last_policy_tokens": 36,
+          "finish_reason": "stop"
+        },
+        {
+          "qid_sha256": "8a954dabfd0479f8989d9ce418d62d5e0b8a01e402a67604330247c7681e1d26",
+          "correct": 0,
+          "turns": 2,
+          "previous_observation_token_count": 500,
+          "previous_observation_tail": "a reasonable time frame\"\". In 1931, the government decreed to change over within five years, which did not happen. The main obstacles were financial cost and widespread opposition in rural areas. In November 1938, parliament finally decided to change",
+          "last_policy_text": " to right-hand traffic with effect from 1 May 1939. The occupation of the Czech part\n</information>\n<answer>\n1794\n</answer>",
+          "last_policy_tokens": 37,
+          "finish_reason": "stop"
+        },
+        {
+          "qid_sha256": "5c08b9b5e7d1faa1bdaf3e78c857644f12b8379895250a31c5b3d2cb768e8268",
+          "correct": 0,
+          "turns": 2,
+          "previous_observation_token_count": 500,
+          "previous_observation_tail": " the U.S. every month, with an estimated 114,532 units delivered through November 2018. Limited production of the Model 3 began in mid-2017, with the first production vehicle rolling off the assembly line on July 7, 2017, with the official launch and",
+          "last_policy_text": " start of production for the Model 3 in late 2017. </doc>\n</information>\n<answer>March 31, 2016</answer>",
+          "last_policy_tokens": 38,
+          "finish_reason": "stop"
+        }
+      ],
+      "files": [
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/validation/rank-0-full.jsonl.gz",
+          "bytes": 104928,
+          "sha256": "9ab4a14c9319b4ebd0546b2cda07f66581aecb11cb5df065c71cb14f5f82eb36"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/validation/rank-1-full.jsonl.gz",
+          "bytes": 100866,
+          "sha256": "9eed3848c151f9805adb0985dac176e2fd2a2610c97e4c7f7cdacf4f3cccd9b3"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/validation/rank-2-full.jsonl.gz",
+          "bytes": 101752,
+          "sha256": "da99114650d2e8ceb9cea7f25a761e1db2032a6c1d0d210e0f390e8c39bc2033"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/validation/rank-3-full.jsonl.gz",
+          "bytes": 99757,
+          "sha256": "7c7632c4e21ce61e7ae504b427767c8e33f8a2f6c6d6050ce03cb442e3c3dfe4"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/validation/rank-4-full.jsonl.gz",
+          "bytes": 99871,
+          "sha256": "bd4daf4a92f39b9c217b61e46decba4ef5e18091b4e0d9101ea09698936c2fd5"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/validation/rank-5-full.jsonl.gz",
+          "bytes": 100548,
+          "sha256": "76d06201ec61b6e8152cd7fec4be7d05e47579eb07d16d5904296751a22a2f57"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/validation/rank-6-full.jsonl.gz",
+          "bytes": 100551,
+          "sha256": "2cf117cbf353b3312422de3f5ac65fc62e31bd6021f6b74181de4f4f591cf4fd"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/validation/rank-7-full.jsonl.gz",
+          "bytes": 101076,
+          "sha256": "0aaac27ad489919a48503bc0b949a011c27915d6416e2d66d82c0047504839e1"
+        }
+      ]
+    },
+    {
+      "phase": "train",
+      "iteration": 50,
+      "counts": {
+        "n": 2560,
+        "correct": 2053,
+        "policy_tokens": 183956,
+        "terminal:answer": 2559,
+        "observation_clipped_any": 855,
+        "missing_strict_answer": 1,
+        "previous_obs_information_unclosed": 0,
+        "last_policy_has_information_close": 0,
+        "terminal:natural_eos": 1,
+        "missing_contains_answer_open": 0,
+        "missing_contains_answer_close": 0,
+        "missing_contains_nested_search": 0,
+        "missing_contains_information_close": 0,
+        "missing_prior_unclosed_model_repairs_then_answer": 0
+      },
+      "turn_histogram": {
+        "1": 1,
+        "2": 2559
+      },
+      "search_count_histogram": {
+        "0": 1,
+        "1": 2559
+      },
+      "last_finish_reason": {
+        "None": 2559,
+        "stop": 1
+      },
+      "examples": [],
+      "files": [
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/full/rank-0-full.jsonl.gz",
+          "bytes": 1368337,
+          "sha256": "5be4e8125e245113d963c5b8cf1d809fe449c98b7c8067d296ff2ba0df41e1a4"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/full/rank-1-full.jsonl.gz",
+          "bytes": 1401318,
+          "sha256": "781a2235041a5a6939ebc4b3f51a9a3c27e839701e6f6eef7b5eb6a24fc64030"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/full/rank-2-full.jsonl.gz",
+          "bytes": 1394599,
+          "sha256": "e40b050777f8b051eb26fd8ecadf232b0235b78056e6a04fd0a7934ba632d0d5"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/full/rank-3-full.jsonl.gz",
+          "bytes": 1371290,
+          "sha256": "f1f9f2bf3f651b1ba1ffa48715eae0fb395f1743290b896c7744d10ab5cd9ff4"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/full/rank-4-full.jsonl.gz",
+          "bytes": 1395566,
+          "sha256": "c56f64b587b2d739b16b26ad4edf7efc10cbb0b3c0fdf973dd1c9dff4a34b64c"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/full/rank-5-full.jsonl.gz",
+          "bytes": 1377690,
+          "sha256": "1e7ce72515cd0e666c5ef039a690ca484038dc531d31c65e3d8603fd3fdd3795"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/full/rank-6-full.jsonl.gz",
+          "bytes": 1400721,
+          "sha256": "6fbc7f305053562c02cd989b954fb75a642d4d34884fbc65db51d4ea05503742"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/full/rank-7-full.jsonl.gz",
+          "bytes": 1403218,
+          "sha256": "fad8174416c19213a4568271af6abe255e10e5c09a798a769c01ad9a54eb8252"
+        }
+      ]
+    }
+  ]
+}

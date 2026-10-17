@@ -1,0 +1,165 @@
+[
+  {
+    "name": "Easy Selection+Soft Reward",
+    "iter": 50,
+    "train": {
+      "iter": 50,
+      "em": 0.496,
+      "reward": 0.729,
+      "source": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/logs/search-g1-common8-training.log"
+    },
+    "fixed": {
+      "iter": 50,
+      "em": 0.408203125,
+      "f1": 0.4799959697420635,
+      "n": 512,
+      "correct": 209.0,
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/logs/validation-identities.jsonl",
+      "record_sha256": "849eacd666efb979a0281e5956ee2161649fd9d39b508e05e0af891338dad14d"
+    },
+    "completed": 200,
+    "output_dir": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012",
+    "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/g1-audit.json"
+  },
+  {
+    "name": "Prefix20 actor-hidden LR1e-5 CP5 branch",
+    "iter": 50,
+    "train": {
+      "iter": 50,
+      "correct": 2053,
+      "n": 2560,
+      "em": 0.801953125,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/complete.json",
+      "sha256": "a8e0c4d18b7875f792537f4c83305d77941d11a79e7faf6e177a9c10cc001457",
+      "run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+      "actor_adam": [
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000,
+        1000
+      ],
+      "probe_adam": [
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200,
+        200
+      ]
+    },
+    "fixed": {
+      "iter": 50,
+      "n": 512,
+      "em": 0.26171875,
+      "f1": 0.32375104279401157,
+      "correct": 134,
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume43-xformers/outers/outer-000050/validation/complete.json",
+      "sha256": "b36fa5e3cf2cd8de1e2931ef1fa88e495f872eb75fd5349d2a8eeb6ba4e8b061",
+      "evaluation_contract": {
+        "answer_reserve_tokens": 0,
+        "asynchronous_generation": true,
+        "compute_dtype": "float32",
+        "early_final": false,
+        "kind": "legacy_pre_d00_async_fp32",
+        "max_action_tokens": 500,
+        "max_model_tokens": 4596,
+        "max_observation_tokens": 500,
+        "max_request_tokens": 4096,
+        "max_search_turns": 4,
+        "max_start_tokens": 2048,
+        "n": 1,
+        "observation_truncation": "raw_token_ids_first500_without_wrapper_repair",
+        "retain_async_commit": "1f75a18",
+        "rollback_commits": [
+          "d00e4f8",
+          "a8c3116"
+        ],
+        "temperature": 0.0,
+        "top_k": -1,
+        "top_p": 1.0
+      },
+      "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb"
+    },
+    "completed": 92,
+    "output_dir": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-lr1e5-20261017-a008d7ce9833-resume5",
+    "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-1230/h100-8-current.json"
+  },
+  {
+    "name": "Prefix20 joint4 727586",
+    "iter": 50,
+    "train": {
+      "iter": 50,
+      "em": 0.491015625,
+      "n": 2560,
+      "correct": 1257,
+      "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/artifacts/question-probe/completed/outer-0050.json",
+      "sha256": "eb1cc71f5cd42b5a68978d9277290484593a0edd182bab8490acb8197f86ce9b",
+      "metric": "mean of actual strict correctness labels; NOT probe classification accuracy"
+    },
+    "fixed": {
+      "iter": 50,
+      "run_id": "e4cf46d47ae24434a177931df5530751",
+      "split": "validation",
+      "final": false,
+      "checked_unix": 1792204933.1758175,
+      "validation_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "n": 512,
+      "em": 0.388671875,
+      "f1": 0.4654389880952381,
+      "correct": 199,
+      "unique": 512,
+      "unique_source_scoped": 512,
+      "counts": {
+        "nq": 256,
+        "hotpotqa": 256
+      },
+      "source_metrics": {
+        "nq": {
+          "count": 256,
+          "em": 0.40234375,
+          "f1": 0.5084077380952382
+        },
+        "hotpotqa": {
+          "count": 256,
+          "em": 0.375,
+          "f1": 0.4224702380952381
+        }
+      },
+      "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/logs/validation-identities.jsonl",
+      "row_sha256": "0bb96ccd7e9bb1393ca7e6629a05c4c03275dbbb9ebc971f01728aad22d6014c"
+    },
+    "completed": 60,
+    "output_dir": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017",
+    "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-1230/jxu957-current.json"
+  },
+  {
+    "name": "Prefix5 actor-hidden P10 candidate2560",
+    "iter": 50,
+    "train": {
+      "iter": 50,
+      "em": 0.52890625,
+      "n": 2560,
+      "correct": 1354,
+      "sha256": "97024b028c4a97f15a8500ced2fa4253f526936a933e7c89cb96d00ecd764d20",
+      "actual_em_selection": true
+    },
+    "fixed": {
+      "iter": 50,
+      "n": 512,
+      "em": 0.306640625,
+      "f1": 0.37414124503968255,
+      "sha256": "80b2aa8e19214ecd7d15595342a426309f0a7ebe4472882cc7b7c97eced3596e",
+      "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "correct": 157
+    },
+    "completed": 51,
+    "output_dir": null,
+    "audit_file": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261017-1230/g1-current.json"
+  }
+]

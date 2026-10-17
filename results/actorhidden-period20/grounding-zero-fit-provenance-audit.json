@@ -1,0 +1,759 @@
+{
+  "observed_utc": "2026-10-17T05:06:22.259732+00:00",
+  "training_modified": false,
+  "model_loaded": false,
+  "manifests": [
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/version-manifest.json",
+      "actual_sha256": "a3eaa7213f63553bf09316063b031b43adc825f5555e9af16b711af7eab1095d",
+      "manifest": {
+        "run_id": "15bb15365346401da1d919e9cde8f813",
+        "round": 0,
+        "version": "15bb15365346401da1d919e9cde8f813:0:a72f2e62b8674787bee00266a8eef79e",
+        "encoder": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+        "commit": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/heads/commit_probe.pkl",
+        "boundary": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/heads/boundary_probe.pkl",
+        "encoder_sha256": {
+          "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+          "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+          "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+          "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+          "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+          "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+        },
+        "head_sha256": {
+          "commit_probe.pkl": "c48f4337a5dc78506febaf8fdf745b1b155f5bab39efd44e8d4170b55b4f1654",
+          "boundary_probe.pkl": "c42564a7ab4b81d86551c4aaccf4bba172478f698fb28499fcba65bd7772fe42"
+        },
+        "calibration_report": {
+          "commit_cv_auc": 0.905198036442294,
+          "boundary_cv_auc": 0.7774344405594406,
+          "commit_position": "Xa",
+          "commit_label": "flip",
+          "unique_question_count": 300,
+          "commit_trajectory_count": 944,
+          "boundary_class_counts": [
+            263,
+            37
+          ],
+          "commit_class_counts": [
+            269,
+            675
+          ],
+          "question_grouped_cv": true,
+          "boundary_unique_question_weighting": true,
+          "require_all_cv_folds": true,
+          "configured_cv_folds": 2
+        },
+        "label_proof": {
+          "actual_retrieval_counts": {
+            "count": 1500,
+            "json_sha256": "8d813f638ef519f24f7598828e5a62adc145120eaf30a2bcfa8e4eed8790dde7"
+          },
+          "authored_search_tag_counts": {
+            "count": 1500,
+            "json_sha256": "b870ef6c3773782561df67e7bf6111dab97e5aa2763d712d1b9f68ec3adfd267"
+          },
+          "generation_allocated_before_release": 19333803520,
+          "generation_allocated_after_release": 41943040,
+          "model": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+          "question_count": 300,
+          "searched_valid_trajectory_count": 944,
+          "closed_book_label": "exact_match_no_retrieval",
+          "reliance_label": "normalized_answer_change_after_evidence_deletion",
+          "commit_position": "Xa",
+          "model_authored_answer_spans": true,
+          "group_size": 5,
+          "question_ids": {
+            "count": 300,
+            "json_sha256": "105dcb143fef2365451d7d236283ab53fb642d17dda85fa9ac7818a5703cf877"
+          },
+          "boundary_class_counts": [
+            263,
+            37
+          ],
+          "reliance_class_counts": [
+            269,
+            675
+          ],
+          "counterfactual_invalid_count": 2,
+          "counterfactual_strict_invalid_count": 5,
+          "invalid_counterfactual_policy": "no_usable_answer_counts_as_flip_source_operational_proxy",
+          "calibration_protocol": {
+            "top_p": 1.0,
+            "rollout_max_new": 500,
+            "counterfactual_max_new": 32,
+            "closed_book_max_new": 24,
+            "correction_feedback": true
+          },
+          "malformed_calibration_action_policy": "correction_within_four_turn_budget",
+          "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction",
+          "retrieval_evidence_ranges": {
+            "count": 1500,
+            "json_sha256": "a15e3df8c88f2e401b582257a5986bf2b6a93902c8e8063386b9c1ee5f45d540"
+          },
+          "correction_feedback_ranges": {
+            "count": 1500,
+            "json_sha256": "a759b629492204d18b6fbffcf924a1ca16810c78574e9b72f239e047a419ac73"
+          },
+          "model_ranges": {
+            "count": 1500,
+            "json_sha256": "837e8bafecb55b8621fd58440f294525f2de9aff6ab462cf1cdfc09b6b542b9d"
+          },
+          "rollout_character_lengths": {
+            "count": 1500,
+            "json_sha256": "af7fa42e7598322f16a48843a57058cda45db5980281a9402f5cefcb9bd4da57"
+          },
+          "generation_context_policy": {
+            "engine_max_tokens": 4608,
+            "prompt_max_tokens": 4096,
+            "truncation_side": "left",
+            "batches": [
+              {
+                "count": 300,
+                "max_original_tokens": 139,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 24
+              },
+              {
+                "count": 1500,
+                "max_original_tokens": 214,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 500
+              },
+              {
+                "count": 1484,
+                "max_original_tokens": 1001,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 500
+              },
+              {
+                "count": 792,
+                "max_original_tokens": 1486,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 500
+              },
+              {
+                "count": 665,
+                "max_original_tokens": 1950,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 500
+              },
+              {
+                "count": 581,
+                "max_original_tokens": 2446,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 500
+              },
+              {
+                "count": 944,
+                "max_original_tokens": 1053,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 32
+              },
+              {
+                "count": 944,
+                "max_original_tokens": 948,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 32
+              }
+            ]
+          },
+          "boundary_all_reserved_questions": true,
+          "observation_token_cap": 500,
+          "hidden_truncation_side": "left"
+        },
+        "published_unix": 1791694598.2624788,
+        "calibration_report_sha256": "52735bd98c170ef0fb66053a4e5972bfd9afa4046b51272eb48752b218d73371",
+        "dump_sha256": {
+          "calibration-label-proof.json": "c7af0e9cee65bb48c70743db8f32314f642d621c26f25756ce61c445e828560e",
+          "nq-hotpot-common_0.jsonl": "e260268459686c6ed12c874eb0f2318e4a821890ec8d6da0295435e2cecb9943",
+          "nq-hotpot-common_0.npz": "318f3e32b9aa3fea12828dc993126cdcc519168c0905f667d33429c7c5283ee8"
+        }
+      },
+      "related_small_files": {
+        "calibration.log": {
+          "bytes": 5891,
+          "sha256": "2c824ec8989c3034c69eead97fa38eadeb4876bbf64403db36e179f82af39eec",
+          "fit_status_lines": [
+            "  Xa/flip/mlp64/L21        AUC=0.888",
+            "  Xa/flip/mlp64/L24        AUC=0.905",
+            "  Xa/flip/mlp64/L27        AUC=0.890",
+            "  Xa/flip/mlp128/L21       AUC=0.892",
+            "  Xa/flip/mlp128/L24       AUC=0.885",
+            "  Xa/flip/mlp128/L27       AUC=0.888",
+            "  Xa/flip/mlp256/L21       AUC=0.901",
+            "  Xa/flip/mlp256/L24       AUC=0.902",
+            "  Xa/flip/mlp256/L27       AUC=0.905",
+            "  -> BEST commit probe: Xa/flip/mlp256/L27  AUC=0.905",
+            "  boundary Xp/lr/L21: AUC=0.692",
+            "  boundary Xp/lr/L24: AUC=0.757",
+            "  boundary Xp/lr/L27: AUC=0.675",
+            "  boundary Xp/mlp64/L21: AUC=0.657",
+            "  boundary Xp/mlp64/L24: AUC=0.685",
+            "  boundary Xp/mlp64/L27: AUC=0.777",
+            "  boundary Xp/mlp128/L21: AUC=0.502",
+            "  boundary Xp/mlp128/L24: AUC=0.735",
+            "  boundary Xp/mlp128/L27: AUC=0.727",
+            "[save] commit(Xa/L27/flip/mlp256 AUC=0.905) + boundary(Xp/L27/mlp64 AUC=0.777) -> /mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/heads"
+          ]
+        },
+        "heads/calibration-report.json": {
+          "bytes": 436,
+          "sha256": "52735bd98c170ef0fb66053a4e5972bfd9afa4046b51272eb48752b218d73371",
+          "content": {
+            "commit_cv_auc": 0.905198036442294,
+            "boundary_cv_auc": 0.7774344405594406,
+            "commit_position": "Xa",
+            "commit_label": "flip",
+            "unique_question_count": 300,
+            "commit_trajectory_count": 944,
+            "boundary_class_counts": [
+              263,
+              37
+            ],
+            "commit_class_counts": [
+              269,
+              675
+            ],
+            "question_grouped_cv": true,
+            "boundary_unique_question_weighting": true,
+            "require_all_cv_folds": true,
+            "configured_cv_folds": 2
+          }
+        },
+        "dumps/calibration-label-proof.json": {
+          "bytes": 478961,
+          "sha256": "c7af0e9cee65bb48c70743db8f32314f642d621c26f25756ce61c445e828560e",
+          "content": {
+            "actual_retrieval_counts": {
+              "count": 1500,
+              "json_sha256": "8d813f638ef519f24f7598828e5a62adc145120eaf30a2bcfa8e4eed8790dde7"
+            },
+            "authored_search_tag_counts": {
+              "count": 1500,
+              "json_sha256": "b870ef6c3773782561df67e7bf6111dab97e5aa2763d712d1b9f68ec3adfd267"
+            },
+            "generation_allocated_before_release": 19333803520,
+            "generation_allocated_after_release": 41943040,
+            "model": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+            "question_count": 300,
+            "searched_valid_trajectory_count": 944,
+            "closed_book_label": "exact_match_no_retrieval",
+            "reliance_label": "normalized_answer_change_after_evidence_deletion",
+            "commit_position": "Xa",
+            "model_authored_answer_spans": true,
+            "group_size": 5,
+            "question_ids": {
+              "count": 300,
+              "json_sha256": "105dcb143fef2365451d7d236283ab53fb642d17dda85fa9ac7818a5703cf877"
+            },
+            "boundary_class_counts": [
+              263,
+              37
+            ],
+            "reliance_class_counts": [
+              269,
+              675
+            ],
+            "counterfactual_invalid_count": 2,
+            "counterfactual_strict_invalid_count": 5,
+            "invalid_counterfactual_policy": "no_usable_answer_counts_as_flip_source_operational_proxy",
+            "calibration_protocol": {
+              "top_p": 1.0,
+              "rollout_max_new": 500,
+              "counterfactual_max_new": 32,
+              "closed_book_max_new": 24,
+              "correction_feedback": true
+            },
+            "malformed_calibration_action_policy": "correction_within_four_turn_budget",
+            "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction",
+            "retrieval_evidence_ranges": {
+              "count": 1500,
+              "json_sha256": "a15e3df8c88f2e401b582257a5986bf2b6a93902c8e8063386b9c1ee5f45d540"
+            },
+            "correction_feedback_ranges": {
+              "count": 1500,
+              "json_sha256": "a759b629492204d18b6fbffcf924a1ca16810c78574e9b72f239e047a419ac73"
+            },
+            "model_ranges": {
+              "count": 1500,
+              "json_sha256": "837e8bafecb55b8621fd58440f294525f2de9aff6ab462cf1cdfc09b6b542b9d"
+            },
+            "rollout_character_lengths": {
+              "count": 1500,
+              "json_sha256": "af7fa42e7598322f16a48843a57058cda45db5980281a9402f5cefcb9bd4da57"
+            },
+            "generation_context_policy": {
+              "engine_max_tokens": 4608,
+              "prompt_max_tokens": 4096,
+              "truncation_side": "left",
+              "batches": [
+                {
+                  "count": 300,
+                  "max_original_tokens": 139,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 24
+                },
+                {
+                  "count": 1500,
+                  "max_original_tokens": 214,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 500
+                },
+                {
+                  "count": 1484,
+                  "max_original_tokens": 1001,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 500
+                },
+                {
+                  "count": 792,
+                  "max_original_tokens": 1486,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 500
+                },
+                {
+                  "count": 665,
+                  "max_original_tokens": 1950,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 500
+                },
+                {
+                  "count": 581,
+                  "max_original_tokens": 2446,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 500
+                },
+                {
+                  "count": 944,
+                  "max_original_tokens": 1053,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 32
+                },
+                {
+                  "count": 944,
+                  "max_original_tokens": 948,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 32
+                }
+              ]
+            },
+            "boundary_all_reserved_questions": true,
+            "observation_token_cap": 500,
+            "hidden_truncation_side": "left"
+          }
+        }
+      },
+      "head_files": {
+        "commit": {
+          "path": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/heads/commit_probe.pkl",
+          "exists": true,
+          "bytes": 6746246,
+          "actual_sha256": "c48f4337a5dc78506febaf8fdf745b1b155f5bab39efd44e8d4170b55b4f1654"
+        },
+        "boundary": {
+          "path": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/heads/boundary_probe.pkl",
+          "exists": true,
+          "bytes": 1629483,
+          "actual_sha256": "c42564a7ab4b81d86551c4aaccf4bba172478f698fb28499fcba65bd7772fe42"
+        }
+      }
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/version-manifest.json",
+      "actual_sha256": "924e5487d19cf667dee56ae0a76eba7143cd6eb6325f1024989bac5d05efbb61",
+      "manifest": {
+        "run_id": "15bb15365346401da1d919e9cde8f813",
+        "round": 0,
+        "version": "15bb15365346401da1d919e9cde8f813:0:a72f2e62b8674787bee00266a8eef79e",
+        "encoder": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+        "commit": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/heads/commit_probe.pkl",
+        "boundary": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/heads/boundary_probe.pkl",
+        "encoder_sha256": {
+          "config.json": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b",
+          "model-00001-of-00002.safetensors": "67347b23fb4165b652eb6611f5e1f2a06dfcddba8e909df1b2b0b1857bee06c2",
+          "model-00002-of-00002.safetensors": "a40d941d0e7e0b966ad8b62bb6d6b7c88cce1299197b599d9d0a4ce59aabfc1d",
+          "model.safetensors.index.json": "bc8aaa0c87d4335177e01c765f1de0db81661c67c1a72fbfb0d521b09f5ddc56",
+          "tokenizer.json": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+          "tokenizer_config.json": "5b5d4f65d0acd3b2d56a35b56d374a36cbc1c8fa5cf3b3febbbfabf22f359583"
+        },
+        "head_sha256": {
+          "commit_probe.pkl": "c48f4337a5dc78506febaf8fdf745b1b155f5bab39efd44e8d4170b55b4f1654",
+          "boundary_probe.pkl": "c42564a7ab4b81d86551c4aaccf4bba172478f698fb28499fcba65bd7772fe42"
+        },
+        "calibration_report": {
+          "commit_cv_auc": 0.905198036442294,
+          "boundary_cv_auc": 0.7774344405594406,
+          "commit_position": "Xa",
+          "commit_label": "flip",
+          "unique_question_count": 300,
+          "commit_trajectory_count": 944,
+          "boundary_class_counts": [
+            263,
+            37
+          ],
+          "commit_class_counts": [
+            269,
+            675
+          ],
+          "question_grouped_cv": true,
+          "boundary_unique_question_weighting": true,
+          "require_all_cv_folds": true,
+          "configured_cv_folds": 2
+        },
+        "label_proof": {
+          "actual_retrieval_counts": {
+            "count": 1500,
+            "json_sha256": "8d813f638ef519f24f7598828e5a62adc145120eaf30a2bcfa8e4eed8790dde7"
+          },
+          "authored_search_tag_counts": {
+            "count": 1500,
+            "json_sha256": "b870ef6c3773782561df67e7bf6111dab97e5aa2763d712d1b9f68ec3adfd267"
+          },
+          "generation_allocated_before_release": 19333803520,
+          "generation_allocated_after_release": 41943040,
+          "model": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+          "question_count": 300,
+          "searched_valid_trajectory_count": 944,
+          "closed_book_label": "exact_match_no_retrieval",
+          "reliance_label": "normalized_answer_change_after_evidence_deletion",
+          "commit_position": "Xa",
+          "model_authored_answer_spans": true,
+          "group_size": 5,
+          "question_ids": {
+            "count": 300,
+            "json_sha256": "105dcb143fef2365451d7d236283ab53fb642d17dda85fa9ac7818a5703cf877"
+          },
+          "boundary_class_counts": [
+            263,
+            37
+          ],
+          "reliance_class_counts": [
+            269,
+            675
+          ],
+          "counterfactual_invalid_count": 2,
+          "counterfactual_strict_invalid_count": 5,
+          "invalid_counterfactual_policy": "no_usable_answer_counts_as_flip_source_operational_proxy",
+          "calibration_protocol": {
+            "top_p": 1.0,
+            "rollout_max_new": 500,
+            "counterfactual_max_new": 32,
+            "closed_book_max_new": 24,
+            "correction_feedback": true
+          },
+          "malformed_calibration_action_policy": "correction_within_four_turn_budget",
+          "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction",
+          "retrieval_evidence_ranges": {
+            "count": 1500,
+            "json_sha256": "a15e3df8c88f2e401b582257a5986bf2b6a93902c8e8063386b9c1ee5f45d540"
+          },
+          "correction_feedback_ranges": {
+            "count": 1500,
+            "json_sha256": "a759b629492204d18b6fbffcf924a1ca16810c78574e9b72f239e047a419ac73"
+          },
+          "model_ranges": {
+            "count": 1500,
+            "json_sha256": "837e8bafecb55b8621fd58440f294525f2de9aff6ab462cf1cdfc09b6b542b9d"
+          },
+          "rollout_character_lengths": {
+            "count": 1500,
+            "json_sha256": "af7fa42e7598322f16a48843a57058cda45db5980281a9402f5cefcb9bd4da57"
+          },
+          "generation_context_policy": {
+            "engine_max_tokens": 4608,
+            "prompt_max_tokens": 4096,
+            "truncation_side": "left",
+            "batches": [
+              {
+                "count": 300,
+                "max_original_tokens": 139,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 24
+              },
+              {
+                "count": 1500,
+                "max_original_tokens": 214,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 500
+              },
+              {
+                "count": 1484,
+                "max_original_tokens": 1001,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 500
+              },
+              {
+                "count": 792,
+                "max_original_tokens": 1486,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 500
+              },
+              {
+                "count": 665,
+                "max_original_tokens": 1950,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 500
+              },
+              {
+                "count": 581,
+                "max_original_tokens": 2446,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 500
+              },
+              {
+                "count": 944,
+                "max_original_tokens": 1053,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 32
+              },
+              {
+                "count": 944,
+                "max_original_tokens": 948,
+                "truncated": 0,
+                "prompt_limit": 4096,
+                "max_new": 32
+              }
+            ]
+          },
+          "boundary_all_reserved_questions": true,
+          "observation_token_cap": 500,
+          "hidden_truncation_side": "left"
+        },
+        "published_unix": 1791694598.2624788,
+        "calibration_report_sha256": "52735bd98c170ef0fb66053a4e5972bfd9afa4046b51272eb48752b218d73371",
+        "dump_sha256": {
+          "calibration-label-proof.json": "c7af0e9cee65bb48c70743db8f32314f642d621c26f25756ce61c445e828560e",
+          "nq-hotpot-common_0.jsonl": "e260268459686c6ed12c874eb0f2318e4a821890ec8d6da0295435e2cecb9943",
+          "nq-hotpot-common_0.npz": "318f3e32b9aa3fea12828dc993126cdcc519168c0905f667d33429c7c5283ee8"
+        },
+        "restoration_origin": {
+          "source_archive": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/version-manifest.json",
+          "source_archive_sha256": "a3eaa7213f63553bf09316063b031b43adc825f5555e9af16b711af7eab1095d",
+          "new_calibration_generated": false,
+          "source_base": "/mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011"
+        }
+      },
+      "related_small_files": {
+        "calibration.log": {
+          "bytes": 5891,
+          "sha256": "2c824ec8989c3034c69eead97fa38eadeb4876bbf64403db36e179f82af39eec",
+          "fit_status_lines": [
+            "  Xa/flip/mlp64/L21        AUC=0.888",
+            "  Xa/flip/mlp64/L24        AUC=0.905",
+            "  Xa/flip/mlp64/L27        AUC=0.890",
+            "  Xa/flip/mlp128/L21       AUC=0.892",
+            "  Xa/flip/mlp128/L24       AUC=0.885",
+            "  Xa/flip/mlp128/L27       AUC=0.888",
+            "  Xa/flip/mlp256/L21       AUC=0.901",
+            "  Xa/flip/mlp256/L24       AUC=0.902",
+            "  Xa/flip/mlp256/L27       AUC=0.905",
+            "  -> BEST commit probe: Xa/flip/mlp256/L27  AUC=0.905",
+            "  boundary Xp/lr/L21: AUC=0.692",
+            "  boundary Xp/lr/L24: AUC=0.757",
+            "  boundary Xp/lr/L27: AUC=0.675",
+            "  boundary Xp/mlp64/L21: AUC=0.657",
+            "  boundary Xp/mlp64/L24: AUC=0.685",
+            "  boundary Xp/mlp64/L27: AUC=0.777",
+            "  boundary Xp/mlp128/L21: AUC=0.502",
+            "  boundary Xp/mlp128/L24: AUC=0.735",
+            "  boundary Xp/mlp128/L27: AUC=0.727",
+            "[save] commit(Xa/L27/flip/mlp256 AUC=0.905) + boundary(Xp/L27/mlp64 AUC=0.777) -> /mnt/data/shaoshitong/search-g1-mixed-2de313e-20261011/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/heads"
+          ]
+        },
+        "heads/calibration-report.json": {
+          "bytes": 436,
+          "sha256": "52735bd98c170ef0fb66053a4e5972bfd9afa4046b51272eb48752b218d73371",
+          "content": {
+            "commit_cv_auc": 0.905198036442294,
+            "boundary_cv_auc": 0.7774344405594406,
+            "commit_position": "Xa",
+            "commit_label": "flip",
+            "unique_question_count": 300,
+            "commit_trajectory_count": 944,
+            "boundary_class_counts": [
+              263,
+              37
+            ],
+            "commit_class_counts": [
+              269,
+              675
+            ],
+            "question_grouped_cv": true,
+            "boundary_unique_question_weighting": true,
+            "require_all_cv_folds": true,
+            "configured_cv_folds": 2
+          }
+        },
+        "dumps/calibration-label-proof.json": {
+          "bytes": 478961,
+          "sha256": "c7af0e9cee65bb48c70743db8f32314f642d621c26f25756ce61c445e828560e",
+          "content": {
+            "actual_retrieval_counts": {
+              "count": 1500,
+              "json_sha256": "8d813f638ef519f24f7598828e5a62adc145120eaf30a2bcfa8e4eed8790dde7"
+            },
+            "authored_search_tag_counts": {
+              "count": 1500,
+              "json_sha256": "b870ef6c3773782561df67e7bf6111dab97e5aa2763d712d1b9f68ec3adfd267"
+            },
+            "generation_allocated_before_release": 19333803520,
+            "generation_allocated_after_release": 41943040,
+            "model": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725",
+            "question_count": 300,
+            "searched_valid_trajectory_count": 944,
+            "closed_book_label": "exact_match_no_retrieval",
+            "reliance_label": "normalized_answer_change_after_evidence_deletion",
+            "commit_position": "Xa",
+            "model_authored_answer_spans": true,
+            "group_size": 5,
+            "question_ids": {
+              "count": 300,
+              "json_sha256": "105dcb143fef2365451d7d236283ab53fb642d17dda85fa9ac7818a5703cf877"
+            },
+            "boundary_class_counts": [
+              263,
+              37
+            ],
+            "reliance_class_counts": [
+              269,
+              675
+            ],
+            "counterfactual_invalid_count": 2,
+            "counterfactual_strict_invalid_count": 5,
+            "invalid_counterfactual_policy": "no_usable_answer_counts_as_flip_source_operational_proxy",
+            "calibration_protocol": {
+              "top_p": 1.0,
+              "rollout_max_new": 500,
+              "counterfactual_max_new": 32,
+              "closed_book_max_new": 24,
+              "correction_feedback": true
+            },
+            "malformed_calibration_action_policy": "correction_within_four_turn_budget",
+            "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction",
+            "retrieval_evidence_ranges": {
+              "count": 1500,
+              "json_sha256": "a15e3df8c88f2e401b582257a5986bf2b6a93902c8e8063386b9c1ee5f45d540"
+            },
+            "correction_feedback_ranges": {
+              "count": 1500,
+              "json_sha256": "a759b629492204d18b6fbffcf924a1ca16810c78574e9b72f239e047a419ac73"
+            },
+            "model_ranges": {
+              "count": 1500,
+              "json_sha256": "837e8bafecb55b8621fd58440f294525f2de9aff6ab462cf1cdfc09b6b542b9d"
+            },
+            "rollout_character_lengths": {
+              "count": 1500,
+              "json_sha256": "af7fa42e7598322f16a48843a57058cda45db5980281a9402f5cefcb9bd4da57"
+            },
+            "generation_context_policy": {
+              "engine_max_tokens": 4608,
+              "prompt_max_tokens": 4096,
+              "truncation_side": "left",
+              "batches": [
+                {
+                  "count": 300,
+                  "max_original_tokens": 139,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 24
+                },
+                {
+                  "count": 1500,
+                  "max_original_tokens": 214,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 500
+                },
+                {
+                  "count": 1484,
+                  "max_original_tokens": 1001,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 500
+                },
+                {
+                  "count": 792,
+                  "max_original_tokens": 1486,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 500
+                },
+                {
+                  "count": 665,
+                  "max_original_tokens": 1950,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 500
+                },
+                {
+                  "count": 581,
+                  "max_original_tokens": 2446,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 500
+                },
+                {
+                  "count": 944,
+                  "max_original_tokens": 1053,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 32
+                },
+                {
+                  "count": 944,
+                  "max_original_tokens": 948,
+                  "truncated": 0,
+                  "prompt_limit": 4096,
+                  "max_new": 32
+                }
+              ]
+            },
+            "boundary_all_reserved_questions": true,
+            "observation_token_cap": 500,
+            "hidden_truncation_side": "left"
+          }
+        }
+      },
+      "head_files": {
+        "commit": {
+          "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/heads/commit_probe.pkl",
+          "exists": true,
+          "bytes": 6746246,
+          "actual_sha256": "c48f4337a5dc78506febaf8fdf745b1b155f5bab39efd44e8d4170b55b4f1654"
+        },
+        "boundary": {
+          "path": "/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/heads/boundary_probe.pkl",
+          "exists": true,
+          "bytes": 1629483,
+          "actual_sha256": "c42564a7ab4b81d86551c4aaccf4bba172478f698fb28499fcba65bd7772fe42"
+        }
+      }
+    }
+  ]
+}

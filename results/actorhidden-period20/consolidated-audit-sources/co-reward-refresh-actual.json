@@ -1,0 +1,414 @@
+{
+  "observed_unix": 1792212657.9925086,
+  "base": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017",
+  "read_only": true,
+  "weights_read": false,
+  "files": [
+    {
+      "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/artifacts/live/manifest.json",
+      "sha256": "aaf3f69672162b13d1ce5bb2446da33a06fc0cd42499613ff4214f79dafe4949",
+      "bytes": 419137,
+      "data": {
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "round": 50,
+        "version": "e4cf46d47ae24434a177931df5530751:50:cf4a6e021ed5484e85b811f27f7cdb84",
+        "encoder": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/checkpoints/search-g1-common8/actor/global_step_50",
+        "commit": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/artifacts/round_50-attempt-c44b4b3a302745ea9715181606a00d90/heads/commit_probe.pkl",
+        "boundary": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/artifacts/round_50-attempt-c44b4b3a302745ea9715181606a00d90/heads/boundary_probe.pkl",
+        "published_unix": 1792205265.388887,
+        "encoder_sha256": {
+          "config.json": "07c274d30999824add43858fe2f5ef065e31bfd8896eccaa3c586a7e9a84aa26",
+          "model-00001-of-00003.safetensors": "edd160442e24278a3b365a49754a463cab5ff9466cafcbf82d1d1c8aeaa13009",
+          "model-00002-of-00003.safetensors": "34d0e796387e483aea14d826ca458e042dade7d093f4bad3dea7f11b5abc9d16",
+          "model-00003-of-00003.safetensors": "be8315df9a3fa9b4e768d0b255c46d3e8fbce04b90122c926cd0af7d0374b16c",
+          "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+          "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+          "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+        },
+        "head_sha256": {
+          "commit_probe.pkl": "012d82a877b51b1e690d256907951b72387cbc44851979a0d7e4c89e83c94ca7",
+          "boundary_probe.pkl": "27d946281d207b1feda19685d76d95d5174f1d56841818cb87ab5afe4d45b93a"
+        },
+        "calibration_report_sha256": "2eba03182797df8068fcc3f8ce9f815a88bb85ca5eb0189fe3bf5dc121200e4f",
+        "calibration_report_fields": {
+          "commit_cv_auc": 0.8017537559658089,
+          "boundary_cv_auc": 0.7340782288698955,
+          "commit_position": "Xa",
+          "commit_label": "flip",
+          "unique_question_count": 300,
+          "commit_trajectory_count": 1353,
+          "question_grouped_cv": true,
+          "boundary_unique_question_weighting": true,
+          "require_all_cv_folds": true,
+          "configured_cv_folds": 2
+        }
+      },
+      "actor_complete": {
+        "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/checkpoints/search-g1-common8/actor/global_step_50/complete.json",
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "step": 50,
+        "manifest_encoder_hashes_match_complete": true,
+        "matched_members": [
+          "config.json",
+          "model-00001-of-00003.safetensors",
+          "model-00002-of-00003.safetensors",
+          "model-00003-of-00003.safetensors",
+          "model.safetensors.index.json"
+        ],
+        "members_not_in_complete": [
+          "tokenizer.json",
+          "tokenizer_config.json"
+        ],
+        "complete_schema_keys": [
+          "run_id",
+          "step",
+          "validated_tensor_count",
+          "finite_all_saved_tensors",
+          "checkpoint",
+          "files_sha256",
+          "question_probe",
+          "actual_optimizer_writes_per_rank",
+          "training_state_readback"
+        ],
+        "manifest_members": [
+          "config.json",
+          "model-00001-of-00003.safetensors",
+          "model-00002-of-00003.safetensors",
+          "model-00003-of-00003.safetensors",
+          "model.safetensors.index.json",
+          "tokenizer.json",
+          "tokenizer_config.json"
+        ]
+      }
+    },
+    {
+      "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/artifacts/round_50-attempt-c44b4b3a302745ea9715181606a00d90/version-manifest.json",
+      "sha256": "aaf3f69672162b13d1ce5bb2446da33a06fc0cd42499613ff4214f79dafe4949",
+      "bytes": 419137,
+      "data": {
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "round": 50,
+        "version": "e4cf46d47ae24434a177931df5530751:50:cf4a6e021ed5484e85b811f27f7cdb84",
+        "encoder": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/checkpoints/search-g1-common8/actor/global_step_50",
+        "commit": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/artifacts/round_50-attempt-c44b4b3a302745ea9715181606a00d90/heads/commit_probe.pkl",
+        "boundary": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/artifacts/round_50-attempt-c44b4b3a302745ea9715181606a00d90/heads/boundary_probe.pkl",
+        "published_unix": 1792205265.388887,
+        "encoder_sha256": {
+          "config.json": "07c274d30999824add43858fe2f5ef065e31bfd8896eccaa3c586a7e9a84aa26",
+          "model-00001-of-00003.safetensors": "edd160442e24278a3b365a49754a463cab5ff9466cafcbf82d1d1c8aeaa13009",
+          "model-00002-of-00003.safetensors": "34d0e796387e483aea14d826ca458e042dade7d093f4bad3dea7f11b5abc9d16",
+          "model-00003-of-00003.safetensors": "be8315df9a3fa9b4e768d0b255c46d3e8fbce04b90122c926cd0af7d0374b16c",
+          "model.safetensors.index.json": "3a899e7f6ef595e15c34b5ffc7e4a1df6131d7c371418b1a6e8f823ab8a7302d",
+          "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+          "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+        },
+        "head_sha256": {
+          "commit_probe.pkl": "012d82a877b51b1e690d256907951b72387cbc44851979a0d7e4c89e83c94ca7",
+          "boundary_probe.pkl": "27d946281d207b1feda19685d76d95d5174f1d56841818cb87ab5afe4d45b93a"
+        },
+        "calibration_report_sha256": "2eba03182797df8068fcc3f8ce9f815a88bb85ca5eb0189fe3bf5dc121200e4f",
+        "calibration_report_fields": {
+          "commit_cv_auc": 0.8017537559658089,
+          "boundary_cv_auc": 0.7340782288698955,
+          "commit_position": "Xa",
+          "commit_label": "flip",
+          "unique_question_count": 300,
+          "commit_trajectory_count": 1353,
+          "question_grouped_cv": true,
+          "boundary_unique_question_weighting": true,
+          "require_all_cv_folds": true,
+          "configured_cv_folds": 2
+        }
+      },
+      "actor_complete": {
+        "path": "/data/user/jxu957/experiments/qprobe-teacher-warmup200-prefix20-joint4-recovery727414-20261017/checkpoints/search-g1-common8/actor/global_step_50/complete.json",
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "step": 50,
+        "manifest_encoder_hashes_match_complete": true,
+        "matched_members": [
+          "config.json",
+          "model-00001-of-00003.safetensors",
+          "model-00002-of-00003.safetensors",
+          "model-00003-of-00003.safetensors",
+          "model.safetensors.index.json"
+        ],
+        "members_not_in_complete": [
+          "tokenizer.json",
+          "tokenizer_config.json"
+        ],
+        "complete_schema_keys": [
+          "run_id",
+          "step",
+          "validated_tensor_count",
+          "finite_all_saved_tensors",
+          "checkpoint",
+          "files_sha256",
+          "question_probe",
+          "actual_optimizer_writes_per_rank",
+          "training_state_readback"
+        ],
+        "manifest_members": [
+          "config.json",
+          "model-00001-of-00003.safetensors",
+          "model-00002-of-00003.safetensors",
+          "model-00003-of-00003.safetensors",
+          "model.safetensors.index.json",
+          "tokenizer.json",
+          "tokenizer_config.json"
+        ]
+      }
+    }
+  ],
+  "log_events": [
+    {
+      "line": 6505,
+      "text": "\u001b[36m(main_task pid=1459003)\u001b[0m SEARCH_G1_BOTH_PROBES_FITTED=e4cf46d47ae24434a177931df5530751:50:cf4a6e021ed5484e85b811f27f7cdb84"
+    },
+    {
+      "line": 6506,
+      "text": "\u001b[36m(main_task pid=1459003)\u001b[0m SEARCH_G1_REFIT_ADOPTED=e4cf46d47ae24434a177931df5530751:50:cf4a6e021ed5484e85b811f27f7cdb84"
+    }
+  ],
+  "actual_update_versions": [
+    {
+      "line": 48,
+      "keys": [
+        "run_id",
+        "step",
+        "metrics",
+        "probe_version",
+        "behavior_probability_gate_sha256",
+        "behavior_trace_sha256",
+        "attempt_id",
+        "attempt_index",
+        "optimizer_writes_before",
+        "optimizer_writes_after",
+        "opportunities_processed",
+        "actual_optimizer_writes",
+        "update_status",
+        "recovery_protocol_version",
+        "full_budget_complete",
+        "opportunities_unattempted",
+        "actual_monitor_forward_count",
+        "reused_monitor_forward_count"
+      ],
+      "data": {
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "step": 48,
+        "probe_version": "e4cf46d47ae24434a177931df5530751:0:7d69d997cc3541b18c6605f7746c5c75",
+        "attempt_id": "6ffbf6b9238b4f0884491971dc3e8621",
+        "actual_optimizer_writes": 20
+      }
+    },
+    {
+      "line": 49,
+      "keys": [
+        "run_id",
+        "step",
+        "metrics",
+        "probe_version",
+        "behavior_probability_gate_sha256",
+        "behavior_trace_sha256",
+        "attempt_id",
+        "attempt_index",
+        "optimizer_writes_before",
+        "optimizer_writes_after",
+        "opportunities_processed",
+        "actual_optimizer_writes",
+        "update_status",
+        "recovery_protocol_version",
+        "full_budget_complete",
+        "opportunities_unattempted",
+        "actual_monitor_forward_count",
+        "reused_monitor_forward_count"
+      ],
+      "data": {
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "step": 49,
+        "probe_version": "e4cf46d47ae24434a177931df5530751:0:7d69d997cc3541b18c6605f7746c5c75",
+        "attempt_id": "0af83c168f2246a89a2d2841fb4067bb",
+        "actual_optimizer_writes": 20
+      }
+    },
+    {
+      "line": 50,
+      "keys": [
+        "run_id",
+        "step",
+        "metrics",
+        "probe_version",
+        "behavior_probability_gate_sha256",
+        "behavior_trace_sha256",
+        "attempt_id",
+        "attempt_index",
+        "optimizer_writes_before",
+        "optimizer_writes_after",
+        "opportunities_processed",
+        "actual_optimizer_writes",
+        "update_status",
+        "recovery_protocol_version",
+        "full_budget_complete",
+        "opportunities_unattempted",
+        "actual_monitor_forward_count",
+        "reused_monitor_forward_count"
+      ],
+      "data": {
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "step": 50,
+        "probe_version": "e4cf46d47ae24434a177931df5530751:0:7d69d997cc3541b18c6605f7746c5c75",
+        "attempt_id": "de26ceb037ef476c8e018666dd3d15a7",
+        "actual_optimizer_writes": 20
+      }
+    },
+    {
+      "line": 51,
+      "keys": [
+        "run_id",
+        "step",
+        "metrics",
+        "probe_version",
+        "behavior_probability_gate_sha256",
+        "behavior_trace_sha256",
+        "attempt_id",
+        "attempt_index",
+        "optimizer_writes_before",
+        "optimizer_writes_after",
+        "opportunities_processed",
+        "actual_optimizer_writes",
+        "update_status",
+        "recovery_protocol_version",
+        "full_budget_complete",
+        "opportunities_unattempted",
+        "actual_monitor_forward_count",
+        "reused_monitor_forward_count"
+      ],
+      "data": {
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "step": 51,
+        "probe_version": "e4cf46d47ae24434a177931df5530751:50:cf4a6e021ed5484e85b811f27f7cdb84",
+        "attempt_id": "dce6f1bbc7314200a5cedbdb444f14ac",
+        "actual_optimizer_writes": 20
+      }
+    },
+    {
+      "line": 52,
+      "keys": [
+        "run_id",
+        "step",
+        "metrics",
+        "probe_version",
+        "behavior_probability_gate_sha256",
+        "behavior_trace_sha256",
+        "attempt_id",
+        "attempt_index",
+        "optimizer_writes_before",
+        "optimizer_writes_after",
+        "opportunities_processed",
+        "actual_optimizer_writes",
+        "update_status",
+        "recovery_protocol_version",
+        "full_budget_complete",
+        "opportunities_unattempted",
+        "actual_monitor_forward_count",
+        "reused_monitor_forward_count"
+      ],
+      "data": {
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "step": 52,
+        "probe_version": "e4cf46d47ae24434a177931df5530751:50:cf4a6e021ed5484e85b811f27f7cdb84",
+        "attempt_id": "c8b26bf1eef44a69950dd21aa1b49161",
+        "actual_optimizer_writes": 20
+      }
+    },
+    {
+      "line": 53,
+      "keys": [
+        "run_id",
+        "step",
+        "metrics",
+        "probe_version",
+        "behavior_probability_gate_sha256",
+        "behavior_trace_sha256",
+        "attempt_id",
+        "attempt_index",
+        "optimizer_writes_before",
+        "optimizer_writes_after",
+        "opportunities_processed",
+        "actual_optimizer_writes",
+        "update_status",
+        "recovery_protocol_version",
+        "full_budget_complete",
+        "opportunities_unattempted",
+        "actual_monitor_forward_count",
+        "reused_monitor_forward_count"
+      ],
+      "data": {
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "step": 53,
+        "probe_version": "e4cf46d47ae24434a177931df5530751:50:cf4a6e021ed5484e85b811f27f7cdb84",
+        "attempt_id": "0bb3acc4dd7f4389a1f05f90d35eb725",
+        "actual_optimizer_writes": 20
+      }
+    },
+    {
+      "line": 54,
+      "keys": [
+        "run_id",
+        "step",
+        "metrics",
+        "probe_version",
+        "behavior_probability_gate_sha256",
+        "behavior_trace_sha256",
+        "attempt_id",
+        "attempt_index",
+        "optimizer_writes_before",
+        "optimizer_writes_after",
+        "opportunities_processed",
+        "actual_optimizer_writes",
+        "update_status",
+        "recovery_protocol_version",
+        "full_budget_complete",
+        "opportunities_unattempted",
+        "actual_monitor_forward_count",
+        "reused_monitor_forward_count"
+      ],
+      "data": {
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "step": 54,
+        "probe_version": "e4cf46d47ae24434a177931df5530751:50:cf4a6e021ed5484e85b811f27f7cdb84",
+        "attempt_id": "afc08f9ceda9437ca312ce28df294fff",
+        "actual_optimizer_writes": 20
+      }
+    },
+    {
+      "line": 55,
+      "keys": [
+        "run_id",
+        "step",
+        "metrics",
+        "probe_version",
+        "behavior_probability_gate_sha256",
+        "behavior_trace_sha256",
+        "attempt_id",
+        "attempt_index",
+        "optimizer_writes_before",
+        "optimizer_writes_after",
+        "opportunities_processed",
+        "actual_optimizer_writes",
+        "update_status",
+        "recovery_protocol_version",
+        "full_budget_complete",
+        "opportunities_unattempted",
+        "actual_monitor_forward_count",
+        "reused_monitor_forward_count"
+      ],
+      "data": {
+        "run_id": "e4cf46d47ae24434a177931df5530751",
+        "step": 55,
+        "probe_version": "e4cf46d47ae24434a177931df5530751:50:cf4a6e021ed5484e85b811f27f7cdb84",
+        "attempt_id": "309e55a983494f94a57b783d599fb7a6",
+        "actual_optimizer_writes": 20
+      }
+    }
+  ]
+}
