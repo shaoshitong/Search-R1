@@ -75,7 +75,7 @@ SCIENCE_CONFIG = ('run_id','outers','world_size','model_revision','model_files_s
     'fixed_test_identity_sha256','interaction_protocol','hidden_capture_contract','independent_encoder_forward',
     'grounding_refresh_enabled','grounding_refit_rounds','grounding_calibration_question_ids',
     'grounding_calibration_sha256','grounding_calibration_data_sha256','validation_questions_sha256',
-    'final_questions_sha256')
+    'final_questions_sha256','adaptive_candidates')
 
 
 def digest(value): return hashlib.sha256(canonical(value)).hexdigest()
@@ -276,6 +276,10 @@ def _grounding(config,state,round, *, adopted):
 
 def _joint(config,joint,outer, *, previous_actual=None):
     actor=joint['actor'];probe=joint['probe'];b=probe_boundary(outer)
+    if config.get('adaptive_candidates') is not None:
+        from .candidate_schedule import schedule_metadata
+        if joint.get('candidate_schedule')!=schedule_metadata(config,outer):
+            raise ValueError('Joint checkpoint lost its exact adaptive candidate budget/feedback')
     if (joint['run_id']!=config['run_id'] or joint['outer']!=outer or not actual_actor_boundary(actor,outer) or
             actor['run_id']!=config['run_id'] or actor['completed_outer']!=outer or actor['scheduler_completed_outer']!=outer or
             probe['run_id']!=config['run_id'] or probe['completed_outer']!=b['last_update_outer'] or
@@ -377,7 +381,7 @@ def plan(base,config=None):
         if re.fullmatch('[0-9a-f]{40}',saved['source_commit']) is None:raise ValueError('Historical source commit must remain explicit')
         history.append(dict(outer=outer,source_commit=saved['source_commit'],sha256=sha(root/'complete.json')))
         add(root/'complete.json');add(saved['grounding_snapshot'])
-        for name in ('probe-frozen.json','probe-update/complete.json','probe-update/metrics.json','validation/complete.json','grounding-refresh.json'):
+        for name in ('probe-frozen.json','probe-update/complete.json','probe-update/metrics.json','validation/complete.json','grounding-refresh.json','candidate-budget.json'):
             path=root/name
             if path.is_file():add(path)
     state=joint['grounding'];action='RESTART_SAME_ADOPTED_VERSION';pending_fit=None
@@ -413,6 +417,7 @@ def plan(base,config=None):
                 len(reservation['indices'])!=candidate_count(config,pending)):
             raise ValueError('Pending reservation must be the exact next saved-pool transition')
         for name in ('pool-reservation.json','selection.json','questions.json','actor-binding.json'):add(pending_root/name)
+        if original.get('adaptive_candidates') is not None:add(pending_root/'candidate-budget.json')
         for phase,marker in (('prefix','complete.json'),('probe-score','manifest.json'),('full','complete.json')):
             path=pending_root/phase/marker
             if not path.exists():continue

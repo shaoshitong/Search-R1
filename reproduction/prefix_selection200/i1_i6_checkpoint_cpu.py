@@ -180,6 +180,8 @@ def qualify(base,outer,terminal_proof,terminal_sha,output):
     for n,item in history.items():
         _joint(config,item,n,previous_actual=previous);previous=item['actor']['actual_adam_steps_per_rank']
         seals.json(base/'outers'/('outer-%06d'%n)/'complete.json');seals.json(item['grounding_snapshot']);seals.json(item['pool_snapshot'])
+        if config.get('adaptive_candidates') is not None:
+            seals.json(base/'outers'/('outer-%06d'%n)/'candidate-budget.json')
         value=item['grounding'];seals.json(value['manifest_path']);seals.json(value['adoption_receipt'])
         for key,name in (('commit','commit_probe.pkl'),('boundary','boundary_probe.pkl')):
             path=Path(value[key]);seals.file(path,dict(bytes=path.stat().st_size,sha256=value['head_sha256'][name]))

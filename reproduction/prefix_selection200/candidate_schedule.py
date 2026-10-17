@@ -7,6 +7,8 @@ FIELDS = frozenset(('effective_from_outer', 'legacy_candidates', 'ordinary_candi
 
 
 def validate_schedule(config, *, required=False):
+    from .adaptive_candidates import validate
+    validate(config)
     value = config.get('candidate_schedule')
     if value is None:
         if required:
@@ -33,6 +35,9 @@ def candidate_count(config, outer):
     if type(outer) is not int or not 1 <= outer <= FINAL_OUTER:
         raise ValueError('Candidate count requires actual outer1..200')
     value = validate_schedule(config)
+    if config.get('adaptive_candidates') is not None:
+        from .adaptive_candidates import budget
+        return budget(config,outer)['questions']
     if value is None or outer < value['effective_from_outer']:
         return PERIODIC_CANDIDATES
     update = outer < FINAL_OUTER and outer % PROBE_PERIOD == 0
@@ -44,6 +49,9 @@ def consumed_candidates_through(config, completed_outer):
     if type(completed_outer) is not int or not 0 <= completed_outer <= FINAL_OUTER:
         raise ValueError('Candidate clock requires completed outer0..200')
     value = validate_schedule(config)
+    if config.get('adaptive_candidates') is not None:
+        from .adaptive_candidates import budget
+        return 0 if completed_outer==0 else budget(config,completed_outer)['consumed_after']
     if value is None:
         return completed_outer * PERIODIC_CANDIDATES
     before = min(completed_outer, value['effective_from_outer'] - 1)
@@ -58,7 +66,11 @@ def schedule_metadata(config, outer):
     value = validate_schedule(config)
     if value is None or outer < value['effective_from_outer']:
         return {}
-    return dict(candidate_schedule=value, scheduled_candidate_questions=candidate_count(config, outer))
+    result=dict(candidate_schedule=value, scheduled_candidate_questions=candidate_count(config, outer))
+    if config.get('adaptive_candidates') is not None:
+        from .adaptive_candidates import budget
+        result.update(adaptive_candidates=dict(config['adaptive_candidates']),candidate_budget=budget(config,outer))
+    return result
 
 
 def scoring_candidate_count(manifest):

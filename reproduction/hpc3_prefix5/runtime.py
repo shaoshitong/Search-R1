@@ -18,16 +18,28 @@ def once(path,value):
  with pathlib.Path(path).open('x') as f:json.dump(value,f,sort_keys=True,allow_nan=False);f.flush();os.fsync(f.fileno())
 
 
+def adaptive_policy(config):
+ from reproduction.prefix_selection200.adaptive_candidates import policy
+ source=pathlib.Path(config['source_question_pool'])
+ if sha(source)!=config['source_question_pool_sha256']:raise ValueError('Adaptive eligible pool changed')
+ pool=json.loads(source.read_text())
+ if pool['eligible_unique_questions']!=len(pool['records']):raise ValueError('Adaptive distinct pool size differs')
+ return policy(len(pool['records']))
+
+
 def prepare():
  a=BASE/'reference-assets';p=BASE/'preparation';p.mkdir(exist_ok=True)
  done=p/'assets-ready.json'
  if done.exists():
   prior=json.loads(done.read_text());publication=json.loads((p/'source-publication.json').read_text())
-  if prior['commit']!=publication['commit']:
+  template=json.loads((p/'launch-config-template.json').read_text());desired=adaptive_policy(template)
+  policy_changed=template.get('adaptive_candidates')!=desired
+  if prior['commit']!=publication['commit'] or policy_changed:
    if (p/'submit-intent.json').exists():raise ValueError('Cannot rebind a claimed runtime')
-   template=json.loads((p/'launch-config-template.json').read_text());template['source_commit']=publication['commit']
+   template.update(source_commit=publication['commit'],adaptive_candidates=desired)
    (p/'launch-config-template.json').write_text(json.dumps(template,sort_keys=True))
-   prior.update(commit=publication['commit'],code_rebind_before_launch_unix=time.time(),verified_scientific_inputs_unchanged=True);done.write_text(json.dumps(prior,sort_keys=True))
+   prior.update(commit=publication['commit'],code_rebind_before_launch_unix=time.time(),verified_scientific_inputs_unchanged=True,
+    adaptive_candidates=desired,adaptive_policy_changed=policy_changed);done.write_text(json.dumps(prior,sort_keys=True))
   return prior
  accepted=json.loads((BASE/'receive-complete.json').read_text())
  if accepted['status']!='REFERENCE_ASSETS_ALL_TARGET_SHA_VERIFIED':raise ValueError('Target assets have not passed SHA')
@@ -63,11 +75,11 @@ def prepare():
   if sha(ground[key])!=ground['head_sha256'][name]:raise ValueError('Grounding head differs')
  from reproduction.prefix_selection200.pool import fixed_test_identities
  fixed_test_identities(c)
- from reproduction.prefix_selection200.candidate_schedule import candidate_count,consumed_candidates_through
- assert candidate_count(c,1)==5120 and candidate_count(c,10)==2560 and candidate_count(c,200)==5120
- assert consumed_candidates_through(c,200)==181*5120+19*2560
+ c['adaptive_candidates']=adaptive_policy(c)
+ from reproduction.prefix_selection200.candidate_schedule import candidate_count
+ assert candidate_count(c,1)==5120
  once(p/'launch-config-template.json',c)
- result=dict(status='HPC3_PREFIX5_TARGET_ASSETS_READY',commit=publication['commit'],checked_unix=time.time(),fixed_warmup_model_only=True,online_probe_adam_initial=0,checked=checked,full_warmup_cache_copied=False)
+ result=dict(status='HPC3_PREFIX5_TARGET_ASSETS_READY',commit=publication['commit'],checked_unix=time.time(),fixed_warmup_model_only=True,online_probe_adam_initial=0,checked=checked,full_warmup_cache_copied=False,adaptive_candidates=c['adaptive_candidates'])
  once(done,result);return result
 
 

@@ -20,7 +20,7 @@ from .storage import owned, validate_base
 
 GENERATED = ('prefix', 'probe-score', 'full', 'full-pool', 'full-pool-config.json')
 PRESERVED = ('questions.json', 'selection.json', 'pool-reservation.json', 'actor-binding.json')
-OPTIONAL_PRESERVED = ('diagnostic-complete.json',)
+OPTIONAL_PRESERVED = ('diagnostic-complete.json','candidate-budget.json')
 
 
 def _signature(info):

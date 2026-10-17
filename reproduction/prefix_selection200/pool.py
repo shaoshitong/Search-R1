@@ -138,6 +138,11 @@ def prepare(config, outer):
                 or binding.get('fixed_test_identity_sha256') != config.get('fixed_test_identity_sha256')):
             raise ValueError('Candidate source changed')
         pool, state = read(source), read(root / 'state.json')
+        if config.get('adaptive_candidates') is not None:
+            from .adaptive_candidates import ensure
+            if config['adaptive_candidates']['maximum_questions']>len(pool['records']):
+                raise ValueError('Adaptive candidate limit exceeds the distinct eligible question pool')
+            ensure(config,outer)
         if state.get('candidate_questions') != PERIODIC_CANDIDATES:
             raise ValueError('Pool state belongs to another candidate budget')
         reservation = target / 'pool-reservation.json'

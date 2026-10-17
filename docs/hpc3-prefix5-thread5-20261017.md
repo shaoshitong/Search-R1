@@ -83,3 +83,25 @@ Adam; this is the requested reference recipe, replacing the old P25/20epoch
 recipe. Random exploration is0 in this reference configuration. No claim of
 zero possible runtime defects or GPU restore correctness is made before the
 actual allocation and checkpoint exist.
+
+Latest user change,2026-10-17: ordinary candidate counts are adaptive, superseding
+the fixed5120 ordinary count above. The first outer still uses5120. For the
+immediately previous completed outer, letN be its actual candidate count andm
+the number of genuinely mixed own-EM G5 groups among its final512 selected
+questions. The next ordinary count isN/(m/512+1e-6), exceptm=512 uses
+N/(1.1+1e-6). Round upward to a multiple of4 and bound to[512,the available
+distinct eligible pool rounded down to a multiple of4]. No lower safety cap
+or heuristic gain is substituted. P10 update rounds10..190 stay2560 and retain
+their existing one-epoch50-Adam probe budget, as explicitly confirmed by the
+user. A following ordinary round uses that immediately preceding2560 count.
+Outer200 remains ordinary/adaptive, without a probe update.
+
+Each outer writes `candidate-budget.json` under the pool writer lock before
+advancing its cursor. It binds the exact previous joint SHA, actual selected
+mixed count/fraction, formula/rounding/bounds, and consumed-before/after counts.
+Prefix/score/full manifests and joint checkpoints carry the same budget. Guard
+resampling preserves it; full-state qualification seals it and recovery imports
+all historical and pending budgets. Neither predicted probabilities nor the
+mixed ratio over the entire candidate pool is used as feedback. Actor losses,
+probe training losses/Adam cadence, warmup EMA, datasets, and512 selection size
+are unchanged.

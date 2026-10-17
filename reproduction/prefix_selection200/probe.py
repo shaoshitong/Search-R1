@@ -514,7 +514,7 @@ def score(args):
                 candidate_questions=questions,trajectories_per_question=G,exploration=0,
                 formula='1-prod(p_j)-prod(1-p_j)',outcome_labels_used=False,
                 representation_source='same_sampling_actor_native_layer27_postblock',
-                **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions') if key in manifest})
+                **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions','adaptive_candidates','candidate_budget') if key in manifest})
             from .periodic import is_probe_update
             selection=dict(common,selected=selected,selected_questions=SELECTED_QUESTIONS,
                 tie_break='original_candidate_ordinal_ascending',continuation_scope='top512',
@@ -537,7 +537,7 @@ def score(args):
                 no_outcome_labels=True,independent_encoder_forward=False,
                 representation_source='same_sampling_actor_native_layer27_postblock',
                 candidate_questions=questions,
-                **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions') if key in manifest},
+                **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions','adaptive_candidates','candidate_budget') if key in manifest},
                 elapsed_seconds=time.monotonic()-started)
             once(out/'manifest.json',result)
             once(out/'complete.json',dict(status='PREFIX%dG5_STABLE_TOP512_SCORE_COMPLETE' % questions,outer=args.outer,
