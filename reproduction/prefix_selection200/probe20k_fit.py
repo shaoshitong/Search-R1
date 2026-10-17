@@ -48,8 +48,11 @@ def train(base,arm_name):
     from reproduction.prefix_only_correctness_ab.train_ddp import actual_adam_steps
     base=Path(base);c=read(base/'preparation/launch-config.json');s=c['probe20k_study']
     arm=next(v for v in s['arms']if v['name']==arm_name);rank,local,device=setup_ddp()
-    vector_objective=arm.get('objective')=='group_vector_dist_kl'
-    if vector_objective:
+    softmix_objective=arm.get('objective')=='group_vector_dist_softmix_kl'
+    vector_objective=arm.get('objective')in('group_vector_dist_kl','group_vector_dist_softmix_kl')
+    if softmix_objective:
+        from .probe_softmix_dist import softmix_loss,mix_batch as softmix_batch,evaluation_metrics as softmix_evaluation
+    elif vector_objective:
         from .probe_group_vector_dist import vector_dist_loss,dominant_hidden_mixup,evaluation_metrics
     out=base/'arms'/arm_name;out.mkdir(parents=True,exist_ok=True)
     pooled=None;split=s.get('question_split')
@@ -143,7 +146,7 @@ def train(base,arm_name):
                         if vector_objective:
                             by_id={tid:z for tid,z,_label in rows}
                             for grouped_row in grouped:grouped_row['trajectory_logits']=[by_id[t]for t in grouped_row['trajectory_ids']]
-                            metrics.update(evaluation_metrics(grouped,arm['dist_weight'],arm['mean_weight'],arm['diversity_weight']))
+                            metrics.update(softmix_evaluation(grouped,arm['dist_weight'],arm['soft_mixed_weight'])if softmix_objective else evaluation_metrics(grouped,arm['dist_weight'],arm['mean_weight'],arm['diversity_weight']))
                         result[name][split]=metrics
                         with(out/('epoch-%02d-%s-%s-predictions.jsonl'%(epoch,name,split))).open('x')as f:
                             for row in grouped:f.write(json.dumps(row,sort_keys=True)+'\n')
@@ -173,7 +176,10 @@ def train(base,arm_name):
                 labels=torch.tensor([[data.index[t]['strict_em']for t in g['trajectory_ids']]for g in chosen],device=device,dtype=torch.float32)
                 soft_event=None;augmentation=dict(augmented_questions=0,lambda_sum=0.,pairs=0)
                 if arm['mixup']:
-                    if vector_objective:
+                    if softmix_objective:
+                        batch,labels,soft_event,augmentation=softmix_batch(batch,labels,planned['mix_pairs'][rank],
+                            s['dataset_seed']+epoch*1000003+step*8+rank,arm['mixup_alpha'])
+                    elif vector_objective:
                         batch,labels,augmentation=dominant_hidden_mixup(batch,labels,planned['mix_pairs'][rank],
                             s['dataset_seed']+epoch*1000003+step*8+rank,arm['mixup_alpha'])
                     else:
@@ -181,7 +187,10 @@ def train(base,arm_name):
                             s['dataset_seed']+epoch*1000003+step*8+rank,arm['mixup_alpha'])
                 optimizer.zero_grad(set_to_none=True)
                 with torch.autocast(device_type='cuda',dtype=torch.bfloat16):logits=model(batch).reshape(len(chosen),5)
-                if vector_objective:
+                if softmix_objective:
+                    losses=softmix_loss(logits.float(),labels,soft_event,arm['dist_weight'],arm['soft_mixed_weight'])
+                    loss_keys=('dist_loss','soft_mixed_kl','total_loss')
+                elif vector_objective:
                     losses=vector_dist_loss(logits.float(),labels,arm['dist_weight'],arm['mean_weight'],arm['diversity_weight'])
                     loss_keys=(('dist_loss','mean_correctness_kl','diversity_kl','total_loss')if arm['mean_weight']else('dist_loss','diversity_kl','total_loss'))
                 else:
@@ -203,7 +212,8 @@ def train(base,arm_name):
                         augmented_questions=int(stats[nloss]),mixup_pairs=int(stats[nloss+1]),
                         mixup_lambda_mean=stats[nloss+2]/stats[nloss+1]if stats[nloss+1]else None,
                         online_loss_on_augmented_inputs=arm['mixup'])
-                    if vector_objective:row.update(objective='group_vector_dist_kl',mixup_primary_coefficient_strictly_above_half=True,trajectory_BCE_in_loss=False,group_mean_KL_in_loss=bool(arm['mean_weight']))
+                    if vector_objective:row.update(objective=arm['objective'],mixup_primary_coefficient_strictly_above_half=True,trajectory_BCE_in_loss=False,group_mean_KL_in_loss=bool(arm['mean_weight']))
+                    if softmix_objective:row.update(soft_mixed_KL_in_loss=True,soft_mixed_weight=arm['soft_mixed_weight'],D_intensity_KL_in_loss=False,primary_prediction='h=1-prod(p)-prod(1-p)')
                     with(out/'global-loss-updates.jsonl').open('a')as f:f.write(json.dumps(row)+'\n')
                     publish(out/'progress.json',dict(epoch=epoch,step=step,actual_adam=actual,ema_updates=actual-200))
             assert len(seen)==len(set(seen))==questions*5//8

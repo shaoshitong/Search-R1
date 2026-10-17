@@ -48,7 +48,7 @@ def vector_dist_loss(logits,target,dist_weight=1,mean_weight=1,diversity_weight=
         diversity_kl=diversity_kl,predicted_mean_correctness=torch.sigmoid(am),predicted_diversity=torch.sigmoid(ad))
 
 
-def dominant_hidden_mixup(batch,labels,pairs,seed,alpha):
+def dominant_hidden_mixup(batch,labels,pairs,seed,alpha,with_pair_lambdas=False):
     from .actor_hidden import WIDTH,DIM
     features=batch['features'].reshape(len(labels),5,WIDTH,DIM);mixed=features.clone();target=labels.clone()
     rng=random.Random(seed);coefficients=[]
@@ -60,9 +60,10 @@ def dominant_hidden_mixup(batch,labels,pairs,seed,alpha):
         mixed[b]=(lam*features[b].float()+(1-lam)*features[a].float()).to(features.dtype)
         target[a]=lam*labels[a]+(1-lam)*labels[b]
         target[b]=lam*labels[b]+(1-lam)*labels[a]
-    return dict(batch,features=mixed.reshape_as(batch['features'])),target,dict(augmented_questions=2*len(pairs),
-        pairs=len(pairs),lambda_sum=sum(coefficients),dominant_lambda_min=min(coefficients)if coefficients else None,
-        dominant_lambda_max=max(coefficients)if coefficients else None)
+    augmentation=dict(augmented_questions=2*len(pairs),pairs=len(pairs),lambda_sum=sum(coefficients),
+        dominant_lambda_min=min(coefficients)if coefficients else None,dominant_lambda_max=max(coefficients)if coefficients else None)
+    if with_pair_lambdas:augmentation['pair_lambdas']=coefficients
+    return dict(batch,features=mixed.reshape_as(batch['features'])),target,augmentation
 
 
 def evaluation_metrics(rows,dist_weight=1,mean_weight=1,diversity_weight=5):

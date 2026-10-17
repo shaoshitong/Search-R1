@@ -6,4 +6,4 @@ Actual loss DIST + 50*KL(Bern(D(r))||Bern(D(p))). GroupmeanKL0 and individualBCE
 
 Primary mixed decision remains q=1-prod(p)-prod(1-p) threshold.5 against0<K<5. Secondary D-threshold.5 accuracy is recorded separately. True d_target requires actualEM labels and is never used as a model prediction. Both losses/metrics recorded everyepoch0..10 on complete unaugmented train/test,raw andEMA. No loss/threshold/label redefinition during the run. Because LR and weight both change, effects cannot be isolated to learning rate alone. Tests are an internal random repartition, not a new external QA benchmark. Large models/features/predictions remain remote; Mac onlysmallaggregate/docs/code/figures. Formalactor remains stopped.
 
-Status: prepared, launch pending.
+Status: SUPERSEDED BEFORE DEPLOYMENT/SUBMISSION by the later explicit human choice to use h-softmixedKL, not D-intensityKL. No job or submit intent was created for this prepared configuration. See LR1E5-SOFTMIX50-10E.md.

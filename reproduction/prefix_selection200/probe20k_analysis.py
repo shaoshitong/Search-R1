@@ -54,9 +54,12 @@ def aggregate(base):
                 row=json.loads(line)
                 if row['epoch']<=spec['epochs']:curve.setdefault(row['epoch'],[]).append(row)
         summaries=[]
+        if arm.get('objective')=='group_vector_dist_softmix_kl':loss_keys=('dist_loss','soft_mixed_kl','total_loss')
+        elif arm.get('objective')=='group_vector_dist_kl':loss_keys=('dist_loss','mean_correctness_kl','diversity_kl','total_loss')if arm['mean_weight']else('dist_loss','diversity_kl','total_loss')
+        else:loss_keys=('trajectory_bce','group_bce','total_loss')
         for epoch,rows in sorted(curve.items()):
             summaries.append(dict(epoch=epoch,actual_updates=len(rows),first=rows[0],last=rows[-1],
-                mean={k:sum(r[k]for r in rows)/len(rows)for k in ((('dist_loss','mean_correctness_kl','diversity_kl','total_loss')if arm['mean_weight']else('dist_loss','diversity_kl','total_loss'))if arm.get('objective')=='group_vector_dist_kl'else('trajectory_bce','group_bce','total_loss'))},
+                mean={k:sum(r[k]for r in rows)/len(rows)for k in loss_keys},
                 augmented_questions=sum(r['augmented_questions']for r in rows)))
         arms.append(dict(arm=arm,epochs=epochs,update_curve_summary=summaries,
                          complete=json.loads((root/'complete.json').read_text())if(root/'complete.json').exists()else None))
