@@ -1,0 +1,179 @@
+{
+  "status": "INITIAL_FIVE_COMPLETE_QA5_AND_ACTUAL_SIXTH_STARTED",
+  "recorded_utc": "2026-10-17T06:09:20.193173+00:00",
+  "run_id": "6cd6f043ef1641ae91ac177b4c27fe4a",
+  "job_id": "3431",
+  "node": "h100-8",
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-i1-i6-fresh-20261017-6cd6f043ef16",
+  "frozen_training_source": "848a67a41a289aa0d9a04b907f852ef61d38cc63",
+  "complete_outer": 6,
+  "current_stage": "outer-000007-continue",
+  "actor_adam_per_rank": [
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120,
+    120
+  ],
+  "probe_adam_per_rank": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "first_five_original_facts": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden-i1-i6-fresh-6cd6f043-watch/actorhidden-period20-first-five-actual-facts.json",
+  "first_five_original_facts_sha256": "64ad961a66f7280040c7bbd03eb322bdea07d345aa38f7b63aee3b3f64b6b237",
+  "latest_actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden-i1-i6-fresh-6cd6f043-watch/actorhidden-fresh-follow-20261017T060823664822Z-actual.json",
+  "latest_actual_sha256": "1011c7df45b1243758571ba5b9f2988cbee699f25b26f0005bcec035e2e86d94",
+  "qa5": {
+    "actor_model_dir": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-i1-i6-fresh-20261017-6cd6f043ef16/actor/outers/outer-0005-attempt-497671396c54466a96fcbfaf10b15a53/huggingface",
+    "actor_version": "6cd6f043ef1641ae91ac177b4c27fe4a-actor0005",
+    "actual_worker_exit_codes": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0
+    },
+    "completed_utc": "2026-10-17T06:01:01.922211+00:00",
+    "em": 0.271484375,
+    "evaluation_contract": {
+      "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+      "answer_reserve_tokens": 500,
+      "asynchronous_generation": true,
+      "compute_dtype": "bfloat16",
+      "early_final": true,
+      "eos_policy": "omit_native_terminal_id_and_end_trajectory",
+      "kind": "unified_context4096_bf16_stream_action_v1",
+      "max_action_tokens": 500,
+      "max_model_tokens": 4096,
+      "max_observation_tokens": 500,
+      "max_request_tokens": 4096,
+      "max_search_turns": 4,
+      "max_start_tokens": 2048,
+      "n": 1,
+      "native_output_commit": "synchronous_token_ids_snapshot_before_action_abort",
+      "observation_truncation": "clip_before_input_preserve_information_wrapper",
+      "sampled_action_tokens": "original_ids_through_first_complete_action_boundary_token",
+      "strict_answer_scoring": true,
+      "temperature": 0.0,
+      "top_k": -1,
+      "top_p": 1.0
+    },
+    "f1": 0.3547144455587428,
+    "per_source": {
+      "hotpotqa": {
+        "em": 0.265625,
+        "f1": 0.3280409982585983,
+        "qa_count": 256
+      },
+      "nq": {
+        "em": 0.27734375,
+        "f1": 0.3813878928588873,
+        "qa_count": 256
+      }
+    },
+    "qa_count": 512,
+    "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+    "run_id": "6cd6f043ef1641ae91ac177b4c27fe4a",
+    "schema_version": 1
+  },
+  "ordinary_joint_to_joint_seconds": {
+    "outers": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "values": [
+      332.489134311676,
+      334.82165813446045,
+      346.8131220340729,
+      336.58893299102783
+    ],
+    "mean": 337.6782118678093,
+    "min": 332.489134311676,
+    "max": 346.8131220340729,
+    "excludes_startup_and_qa5": true
+  },
+  "first_five_selected_mixed": [
+    {
+      "outer": 1,
+      "selected_mixed": 0.720703125
+    },
+    {
+      "outer": 2,
+      "selected_mixed": 0.716796875
+    },
+    {
+      "outer": 3,
+      "selected_mixed": 0.740234375
+    },
+    {
+      "outer": 4,
+      "selected_mixed": 0.74609375
+    },
+    {
+      "outer": 5,
+      "selected_mixed": 0.67578125
+    }
+  ],
+  "phase_means_seconds": {
+    "prefix": 72.59486786574125,
+    "score": 22.335550459474327,
+    "continue": 102.77407880797982,
+    "actor": 131.22999272868037
+  },
+  "cpu_checkpoint5": {
+    "status": "NATIVE_ACTOR_PERIODIC_PROBE_JOINT_FULL_SHA_CPU_PASS",
+    "proof_path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-i1-i6-fresh-20261017-6cd6f043ef16/preparation/joint-native-0005-independent-full-sha-cpu.json",
+    "proof_sha256": "e088ad07f9a8f3458685fc216c5b557c424711fc8186ca970024eb29b7e8f4dc",
+    "small_actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden-fresh-cp5-fixed-cpu-20261017T060627351282Z-actual.json",
+    "small_actual_sha256": "8c5504dbf8e85c7c6532d1d367f5491e6b2fbeb59b0371b0469626d06cba133f",
+    "files": 30,
+    "bytes": 38613963993,
+    "gpu_forward_performed": false,
+    "independent_backup_performed": false
+  },
+  "cpu_control_helper": {
+    "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-i1-i6-fresh-20261017-6cd6f043ef16/preparation/normal-savepoint-tools/07f7fa8cc46a948ef506360339b056d5ae123f5bf3b5df9c5dd86938cf4cff50/checkpoint_native_once.py",
+    "sha256": "07f7fa8cc46a948ef506360339b056d5ae123f5bf3b5df9c5dd86938cf4cff50",
+    "commit": "6e8cd92a2b6d9ea9bb13bb542f9c33f0d19f5080",
+    "frozen_repo_modified": false,
+    "use_for_future_normal_savepoints": true,
+    "entry": "python -c \"import sys;path=sys.argv.pop(1);exec(compile(open(path).read(),path,\"exec\"),{\"__name__\":\"__main__\",\"__package__\":\"reproduction.prefix_selection200\"})\" HELPER --base BASE --outer ACTUAL_MILESTONE",
+    "cuda_visible_devices": "",
+    "cpu_only": true,
+    "failed_original_inspector_reason": "local digest shadowing fixed; original failed without final proof; repaired isolated inspector now passed"
+  },
+  "independent_backup5": {
+    "status": "INDEPENDENT_COPY_STARTED_NOT_COMPLETE",
+    "namespace": "/mnt/data/shaoshitong/search-g1-prefix-selection200-independent-backup-20261016/6cd6f043ef16-outer-0005-once-v1",
+    "pid": 847868,
+    "start_ticks": 1927785014,
+    "expected_files": 165,
+    "expected_bytes": 44996144989,
+    "start_actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden-fresh-backup5-start-20261017T060809553639Z-actual.json",
+    "start_actual_sha256": "c42b3fe55963a4a9624f4505f69b75b57991cbf2a65193bdec82d5382713fd37",
+    "complete": false
+  },
+  "quality_success_claimed": false,
+  "full200_goal_complete": false,
+  "training_hot_modified": false,
+  "normal_gpu_tests_added": false,
+  "automation_current_app_setting_preserved": {
+    "status": "PAUSED",
+    "interval_minutes": 60,
+    "training_not_paused": true
+  }
+}
