@@ -1,0 +1,63 @@
+{
+  "actual_cuda_restore_accepted": false,
+  "actual_first_five_proof": {
+    "actual_complete_outers": 5,
+    "actual_full_budget_outers": 5,
+    "actual_monitor_forward_count": 105,
+    "actual_optimizer_writes_per_rank": 100,
+    "completed_outer_optimizer_opportunities_per_rank": 100,
+    "guard_triggered_monitor_count": 0,
+    "reused_monitor_forward_count": 95,
+    "role": "actual_formal_first_five_safety_audit",
+    "run_id": "dfe9c94084bb48b2a9bb7b60f9d882da",
+    "selected_evidence_sha256": "2105457186a5425648cab931606bf92937d85f2efa9102ec06c3064982e0158e",
+    "structural_accepted": true,
+    "unique_global_monitor_count": 200
+  },
+  "audit_sha256": "97b5f84891d997555185932e8bfaea22110e51b442c4074ff615ab1861108ac6",
+  "automatic_retry": false,
+  "backup_scripts": {
+    "remote_cpu_check.py": {
+      "bytes": 6802,
+      "sha256": "cba599986b8f422a36c1fdf5afea61ce86e65b244be9ecabd75a55ca709c9e75"
+    },
+    "retest_visible_parent.py": {
+      "bytes": 2747,
+      "sha256": "c8b5a16238a99fb07fd4fff5bccb21f2607b042df6424142e3d390e461af7434"
+    },
+    "run_once.py": {
+      "bytes": 4784,
+      "sha256": "62039f2cea0034f346f07501cd87e2321da86100fe31f88b0eef5389c26708eb"
+    }
+  },
+  "checked_unix": 1792267040.2837381,
+  "first_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-co-rollout-hpc3-4gpu-20261017/recovery5-d915-independent-cpu-observe-1792266933.json",
+  "fixture_issue": "SSH login parent PID absent in proc; single fixture rerun under same-UID visible Python parent and original environment wrapper passed. Bare shared interpreter retry lacked environment package paths; preserved separately.",
+  "old_acceptance_or_logs_overwritten": false,
+  "operator_commit": "d91575dbca221f66c467dccafa8508d9fb703688",
+  "original_tests": {
+    "direct_pass": 38,
+    "errors": 1,
+    "skipped": 0,
+    "tests": 39
+  },
+  "reader_files_match_published_git_object": {
+    "reproduction/common8/behavior_runtime.py": "635a4429b07fdc8f1defc34f600c3c6d8e0147e9e3459e61d97d43241e65e4aa",
+    "reproduction/common8/formal_attempt_audit.py": "69f575c614b53ad1f3efddd6259072de4f812983297f8f906617317ed8ae0b72",
+    "reproduction/common8/formal_inline_safety.py": "0bdb4a7f7815135efbb3afd7cdf6cc04e4a6df045073cb6793dfcdb5851792fb",
+    "reproduction/common8/runtime.py": "c986b8a52f226afc0754c216fad801e4a3ad1888b9c4bed9a6bc2bc764b50345",
+    "reproduction/common8/safety_calibration_evidence.py": "b867ce1cab191a9e0888a8341aec74974ddf72f1077ea07985450b24c5062903"
+  },
+  "remote_audit_directory": "/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730226-20261018/preparation/d915-independent-cpu-reader-check-20261018",
+  "run_id": "dfe9c94084bb48b2a9bb7b60f9d882da",
+  "second_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-6/outputs/easy2560-co-rollout-hpc3-4gpu-20261017/recovery5-d915-independent-cpu-observe-1792267024.json",
+  "single_fixture_retest": {
+    "receipt": "2434f23ec7d0a16a9377eb9c22f9692e61bef9693514b25b0ac29278d5ba3343",
+    "status": "VISIBLE_PARENT_FIXTURE_PASS",
+    "test": "reproduction.common8.test_configuration.ConfigurationTests.test_claimed_launcher_records_exact_exec_arguments_without_starting_trainer"
+  },
+  "source_job": "730226",
+  "status": "ACTUAL_FIRST_FIVE_AND_ALL_39_DISTINCT_TARGETED_CPU_TESTS_PASS",
+  "training_commit": "8a5bac94b8230a99b81977f5290589e3d3708dfe",
+  "training_started_or_changed": false
+}

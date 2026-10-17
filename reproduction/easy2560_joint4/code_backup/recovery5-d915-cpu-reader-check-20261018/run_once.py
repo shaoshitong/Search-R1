@@ -19,10 +19,11 @@ AUDIT = NEW+'/preparation/d915-independent-cpu-reader-check-20261018'
 
 def main():
     parser = argparse.ArgumentParser(); parser.add_argument('--execute', action='store_true')
-    parser.add_argument('--observe', action='store_true'); args = parser.parse_args()
-    if args.execute and args.observe: parser.error('choose execute or observe')
-    if args.execute:
-        source = (HERE/'remote_cpu_check.py').read_text()
+    parser.add_argument('--observe', action='store_true')
+    parser.add_argument('--parent-fixture-retest', action='store_true'); args = parser.parse_args()
+    if sum((args.execute,args.observe,args.parent_fixture_retest))>1: parser.error('choose one operation')
+    if args.execute or args.parent_fixture_retest:
+        source = (HERE/('retest_visible_parent.py' if args.parent_fixture_retest else 'remote_cpu_check.py')).read_text()
         command = shlex.join(['/usr/bin/env','CUDA_VISIBLE_DEVICES=','PYTHONDONTWRITEBYTECODE=1',
             'OMP_NUM_THREADS=1','MKL_NUM_THREADS=1',OLD+'/env/bin/python','-B','-c',source])
     else:
@@ -31,17 +32,17 @@ from pathlib import Path
 p=Path(AUDIT)
 result=dict(checked_unix=time.time(),audit=str(p),exists=p.exists(),files={})
 if p.exists():
- for name in ('started.json','actual-first-five-reader.json','targeted-tests.json','complete.json'):
+ for name in ('started.json','actual-first-five-reader.json','targeted-tests.json','complete.json','visible-parent-fixture-retest.json','visible-parent-fixture-wrapper-retest.json'):
   f=p/name
   if f.exists():
    b=f.read_bytes();result['files'][name]=dict(bytes=len(b),sha256=hashlib.sha256(b).hexdigest(),value=json.loads(b))
 print(json.dumps(result,sort_keys=True))
 """.replace('AUDIT', repr(AUDIT))
         command = shlex.join(['python3','-B','-c',source])
-    record = dict(kind='execute' if args.execute else 'observe', command=command,
+    record = dict(kind='parent-fixture-retest' if args.parent_fixture_retest else ('execute' if args.execute else 'observe'), command=command,
         script_sha256=hashlib.sha256(source.encode()).hexdigest(), audit=AUDIT,
         credentials_persisted=False, automatic_retry=False, checked_unix=time.time())
-    if not args.execute and not args.observe:
+    if not args.execute and not args.observe and not args.parent_fixture_retest:
         print(json.dumps(dict(status='LOCAL_DRY_RUN_NO_CREDENTIAL_READ', **record),sort_keys=True)); return
     # No password in argv, files, receipts, source code, or console.
     secret = Path('/Users/shaoshitong/Documents/remote_codex_control/memories/hpc3-credentials.private.md').read_text()
