@@ -134,3 +134,39 @@ full SHA must match before asset readiness. Preserve source experiment/jobs.
 which two experiments to run. After preparation, an independent sub-agent
 audits the complete reference diff, assets and configuration for omissions.
 Any residual gap must be reported and fixed before claiming readiness.
+## Actual preparation completion
+
+Prepared runtime is `7679bb8ced2c13922fa9f5c9050ed0ce7fa54dde`. All1395
+tracked target source files were independently read back with full SHA256;
+normal Git push and independent all-file readback also passed. Subsequent
+results/controller publication does not change this staged runtime.
+
+All14 copied assets (383603476B) have equal source/target full SHA256. The
+original warmup container SHA starts `b5c81ae7`; its EMA-only transport has
+SHA `06ffd8c21b6208ff5a0beb11cded62da7b9551c3e1357a1d7321e69eb06d994e`.
+Actual target CPU load verified all14 EMA tensors and2 native buffers equal
+the source tensor hashes. Unused warmup Adam/RNG/raw-model state was excluded
+from transport and is not imported. The original checkpoint is preserved.
+All10 retrieval assets and9 official-model file identities match the reference.
+Only successfully copied task-specific transfer staging was removed.
+
+The actual remote templates are:
+
+- SlotA, GPU0–3: `/mnt/data/shaoshitong/search-g1-prefix5-reference-preparation-20261018/prepared-7679bb8c/slots/A/config.template.json`, SHA `fac3f8b4ecbd009314d215f2fceaa9390b456ae018f3c6830eba16a760556837`; retrieval18410, grounding18420–18423.
+- SlotB, GPU4–7: `/mnt/data/shaoshitong/search-g1-prefix5-reference-preparation-20261018/prepared-7679bb8c/slots/B/config.template.json`, SHA `508a7b24fd5ff68b683cb968e7161af2812aa290376b61e06c52a24df47a270f`; retrieval18510, grounding18520–18523.
+
+Both colocate retrieval/reward services with their own training cards. Exact
+configuration deltas are stored beside each template. No launch configuration,
+submit intent, submit receipt or training job was created. No GPU forward or
+training update was performed. Experiment assignments are pending from the user.
+
+The user-requested independent sub-agent audit concluded
+`PREPARATION_INDEPENDENT_AUDIT_PASS_NO_TRAINING_LAUNCHED`:347 existing scientific
+Python files are byte-identical to the reference; the four existing-file changes
+are hardware/path placement only. Both actual templates, assets and initialization
+were audited with no additional scientific configuration differences found.
+This is preparation verification, not an unperformed GPU execution claim.
+
+See [independent audit](../reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-replica-independent-audit.md)
+and the adjacent small JSON evidence. Models, datasets, checkpoints and full
+outputs remain remote.

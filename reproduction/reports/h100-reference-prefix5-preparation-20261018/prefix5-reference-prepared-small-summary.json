@@ -1,0 +1,1016 @@
+{
+  "status": "TWO_FOUR_CARD_REFERENCE_TEMPLATES_PREPARED_NO_TRAINING_SUBMITTED",
+  "reference_thread": "01a1488e-807d-7ca3-b024-96b8fe97486c",
+  "reference_runtime": "75d536575593891876df339467da73b3c4cbdc7c",
+  "reference_cache_repair": "d3a03054009fe3bf0068dfefabca941df95df101",
+  "source_commit": "7679bb8ced2c13922fa9f5c9050ed0ce7fa54dde",
+  "source_config_sha256": "9159d226c7a199225cfc2ef64ebbd92907fff15ba33ecb7e1e75a6831a4531e7",
+  "original_warmup_sha256": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594",
+  "transported_model_checkpoint_sha256": "06ffd8c21b6208ff5a0beb11cded62da7b9551c3e1357a1d7321e69eb06d994e",
+  "assets_copy_proof": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/copy-complete.json",
+  "slots": {
+    "A": {
+      "config_sha256": "fac3f8b4ecbd009314d215f2fceaa9390b456ae018f3c6830eba16a760556837",
+      "changed_fields": [
+        "actor_model_dir",
+        "actor_version",
+        "auxiliary_gpu_indices",
+        "auxiliary_gpu_uuids",
+        "base",
+        "candidate_schedule_authorization",
+        "candidate_schedule_authorization_sha256",
+        "canonical_train",
+        "common_manifest_path",
+        "composite_manifest_path",
+        "encoder_model_dir",
+        "environment_root",
+        "execution_hardware_layout",
+        "execution_id",
+        "experiment_assignment_pending",
+        "final_questions",
+        "fixed_test_features",
+        "fixed_test_identity_path",
+        "fresh_actor_optimizer_scheduler_rng_sampler",
+        "full_state_resume",
+        "gpu_uuid_lock_root",
+        "grounding_calibration_questions",
+        "grounding_initial_manifest_sha256",
+        "grounding_manifest",
+        "grounding_manifest_sha256",
+        "grounding_physical_gpu",
+        "grounding_physical_gpu_by_rank",
+        "grounding_probe_base_port",
+        "grounding_refit_visible_device",
+        "model_dir",
+        "official_model_dir",
+        "original_warmup_checkpoint_sha256",
+        "physical_gpu_uuids",
+        "pool_state_path",
+        "prefix_probe_receipt",
+        "preparation_only",
+        "probe_source_bytes",
+        "probe_source_checkpoint",
+        "probe_source_cpu_proof",
+        "probe_source_inode",
+        "probe_source_sha256",
+        "reference_infrastructure_repair",
+        "reference_runtime_commit",
+        "reference_thread",
+        "resolve_idle_auxiliary_uuid_at_prepare",
+        "resume_joint",
+        "retained_warmup_model_only",
+        "retrieval_corpus",
+        "retrieval_data_cache",
+        "retrieval_encoder",
+        "retrieval_gpu_shards",
+        "retrieval_index",
+        "retrieval_port",
+        "retriever_gpu_lib",
+        "run_id",
+        "science_source_commit",
+        "search_url",
+        "shared_existing_foreign_jobs_authorized",
+        "source_commit",
+        "source_compatibility",
+        "source_compatibility_sha256",
+        "source_question_pool",
+        "validation_questions"
+      ],
+      "training_cards": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "retrieval_cards": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "experiment_assignment_pending": true,
+      "config": {
+        "world_size": 4,
+        "physical_gpu_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "physical_gpu_uuids": [
+          "GPU-53210089-2b52-bf37-b574-f91e8892a012",
+          "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c",
+          "GPU-85473c01-4753-bf6f-080f-9c89017440dd",
+          "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a"
+        ],
+        "auxiliary_gpu_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grounding_physical_gpu_by_rank": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "grounding_refit_visible_device": 3,
+        "retrieval_gpu_shards": 4,
+        "retrieval_port": 18410,
+        "grounding_probe_base_port": 18420,
+        "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944",
+        "run_id": "ca37419b494446398fb15234aa3be91a",
+        "source_commit": "7679bb8ced2c13922fa9f5c9050ed0ce7fa54dde",
+        "actor_version": "ca37419b494446398fb15234aa3be91a-official0",
+        "fresh_actor_optimizer_scheduler_rng_sampler": true,
+        "retained_warmup_model_only": true,
+        "full_state_resume": false,
+        "old_actor_state_imported": false,
+        "old_online_probe_optimizer_imported": false,
+        "probe_source_epoch": 5,
+        "probe_source_model_kind": "ema",
+        "probe_source_sha256": "06ffd8c21b6208ff5a0beb11cded62da7b9551c3e1357a1d7321e69eb06d994e",
+        "original_warmup_checkpoint_sha256": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594",
+        "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "probe_learning_rate": 5e-06,
+        "probe_update_period": 10,
+        "probe_updates_per_period": 50,
+        "probe_update_at_final": false,
+        "actor_global_mini_batch": 128,
+        "actor_global_micro_batch_size": 16,
+        "actor_ppo_epochs": 1,
+        "actor_loss_reduction": "mean_of_eight_virtual_ranks_each_mean_of_eight_micro2_masked_token_means",
+        "nonmixed_advantage_mode": "zero_anchor_all_correct_only",
+        "policy_safeguards": {
+          "dual_clip": 3.0,
+          "kl_log_bound": 30.0,
+          "negative_tail_limit": 0.01,
+          "target_old_policy_kl": 0.2
+        },
+        "interaction_protocol": {
+          "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+          "actor_loss_dtype": "float32",
+          "actor_master_dtype": "float32",
+          "answer_reserve_tokens": 500,
+          "asynchronous_generation": true,
+          "compute_dtype": "bfloat16",
+          "early_final": true,
+          "kind": "shared_new_context_stream_bf16",
+          "max_action_tokens": 500,
+          "max_context_tokens": 4096,
+          "max_model_tokens": 4096,
+          "max_observation_tokens": 500,
+          "max_request_tokens": 3596,
+          "max_search_turns": 4,
+          "max_start_tokens": 2048,
+          "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+          "natural_eos": "terminal_without_environment_correction",
+          "observation_truncation": "clip_before_input_preserve_information_wrapper",
+          "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+          "train_compute_dtype": "bfloat16"
+        },
+        "grounding_refresh_enabled": true,
+        "grounding_refit_rounds": [
+          50,
+          100,
+          150
+        ],
+        "grounding_calibration_sha256": "fa7089e21bfd56326a4fd10874362b5fda1a1b70f969a14e4bcbb581daad4be1",
+        "canonical_train_sha256": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
+        "validation_questions_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "final_questions_sha256": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+        "common_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+        "composite_manifest_sha256": "8ac391ba26466e9fdbe9220b157bec81294ead69a09a0b7c2c4994cc7873a2c7",
+        "fixed_test_identity_sha256": "1ebb2d88013ef335275ca60d86e423fd75e33a7149136525a92f1f2308a2dbbd",
+        "fixed_test_manifest_sha256": "e9ed944ed244513ab55bdd1b13aae745c5b7902228294fd62ef70ea349b6f246",
+        "source_question_pool_sha256": "cd89360de408717fc4815fc108812ce87f97811332b2cd3c296caf7738b7735f",
+        "seed": 1729,
+        "exploration_questions": 0,
+        "experiment_assignment_pending": true,
+        "preparation_only": true
+      },
+      "exact_delta": {
+        "actor_model_dir": {
+          "reference": "/data/search-g1/assets/qwen2.5-3b-instruct",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725"
+        },
+        "actor_version": {
+          "reference": "54ac33dcebe64e62a11fe4177f41f116-official0",
+          "replica": "ca37419b494446398fb15234aa3be91a-official0"
+        },
+        "auxiliary_gpu_indices": {
+          "reference": [
+            5,
+            6
+          ],
+          "replica": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        "auxiliary_gpu_uuids": {
+          "reference": [
+            "GPU-21508d9d-bd43-ff94-7bee-1227ec7b007b",
+            "GPU-92249a14-a344-f77f-e18c-d1cea5c638a7"
+          ],
+          "replica": [
+            "GPU-53210089-2b52-bf37-b574-f91e8892a012",
+            "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c",
+            "GPU-85473c01-4753-bf6f-080f-9c89017440dd",
+            "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a"
+          ]
+        },
+        "base": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944"
+        },
+        "candidate_schedule_authorization": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/preparation/human-intent.json",
+          "replica": null
+        },
+        "candidate_schedule_authorization_sha256": {
+          "reference": "236c43f0c11c809e3c5a6d3d797a6d24b4eb3c822894c4bd0fd5417687e59bcb",
+          "replica": null
+        },
+        "canonical_train": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/data/train.parquet",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/canonical_train.parquet"
+        },
+        "common_manifest_path": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/data/manifest.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/common_manifest_path.json"
+        },
+        "composite_manifest_path": {
+          "reference": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-d7dd61bb36454e1e80c2306b5fb7d23a/data/composite-manifest.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/composite_manifest_path.json"
+        },
+        "encoder_model_dir": {
+          "reference": "/data/search-g1/assets/qwen2.5-3b-instruct",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725"
+        },
+        "environment_root": {
+          "reference": "/data/search-g1/env",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/env"
+        },
+        "execution_hardware_layout": {
+          "reference": null,
+          "replica": "h100_four_rank_colocated_v1"
+        },
+        "execution_id": {
+          "reference": "a4a0c2a18cca40bc8c3850d40eed8554",
+          "replica": "0b4b3fa29ff74f49bc60c1dc6a67dc8f"
+        },
+        "experiment_assignment_pending": {
+          "reference": null,
+          "replica": true
+        },
+        "final_questions": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/data/final.parquet",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/final_questions.parquet"
+        },
+        "fixed_test_features": {
+          "reference": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-d7dd61bb36454e1e80c2306b5fb7d23a/features",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/warmup-feature-binding-only"
+        },
+        "fixed_test_identity_path": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/preparation/fixed512-identities.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/fixed_test_identity_path.json"
+        },
+        "fresh_actor_optimizer_scheduler_rng_sampler": {
+          "reference": false,
+          "replica": true
+        },
+        "full_state_resume": {
+          "reference": true,
+          "replica": false
+        },
+        "gpu_uuid_lock_root": {
+          "reference": null,
+          "replica": "/mnt/data/shaoshitong/.search-g1-gpu-uuid-locks"
+        },
+        "grounding_calibration_questions": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/data/calibration-300.parquet",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/grounding_calibration_questions.parquet"
+        },
+        "grounding_initial_manifest_sha256": {
+          "reference": null,
+          "replica": "c15f3612ef58434fe032362a2e0cc66abf693aa132958687b79a85c2341f9eaa"
+        },
+        "grounding_manifest": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/artifacts/round_0-attempt-ee628b426d5b4446bdae30167266fd7c/version-manifest.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/grounding-manifest-h100-paths.json"
+        },
+        "grounding_manifest_sha256": {
+          "reference": "eb54e4ac27035260e22e30788937dcdaa9208acde6b1d0a1b5d3ce413b946a5d",
+          "replica": "c15f3612ef58434fe032362a2e0cc66abf693aa132958687b79a85c2341f9eaa"
+        },
+        "grounding_physical_gpu": {
+          "reference": 6,
+          "replica": 3
+        },
+        "grounding_physical_gpu_by_rank": {
+          "reference": null,
+          "replica": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        "grounding_probe_base_port": {
+          "reference": 18140,
+          "replica": 18420
+        },
+        "grounding_refit_visible_device": {
+          "reference": 6,
+          "replica": 3
+        },
+        "model_dir": {
+          "reference": "/data/search-g1/assets/qwen2.5-3b-instruct",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725"
+        },
+        "official_model_dir": {
+          "reference": "/data/search-g1/assets/qwen2.5-3b-instruct",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725"
+        },
+        "original_warmup_checkpoint_sha256": {
+          "reference": null,
+          "replica": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594"
+        },
+        "physical_gpu_uuids": {
+          "reference": [
+            "GPU-9b8498ae-93e5-dee7-545a-25669080cf83",
+            "GPU-34c7ae67-d246-50d7-6ef6-2d7f64a86e40",
+            "GPU-19f588c3-3f42-a910-5f9a-21687befed5b",
+            "GPU-ef98537d-a371-e4f0-56f9-53ce0084a7b9"
+          ],
+          "replica": [
+            "GPU-53210089-2b52-bf37-b574-f91e8892a012",
+            "GPU-9b68e8d5-643e-25d0-99fa-6cdcd810082c",
+            "GPU-85473c01-4753-bf6f-080f-9c89017440dd",
+            "GPU-9f380cfa-4239-a891-2e73-4bc48f32f06a"
+          ]
+        },
+        "pool_state_path": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/question-pool/state.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944/question-pool/state.json"
+        },
+        "prefix_probe_receipt": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/probe/latest.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944/probe/latest.json"
+        },
+        "preparation_only": {
+          "reference": null,
+          "replica": true
+        },
+        "probe_source_bytes": {
+          "reference": 1242424352,
+          "replica": 310596618
+        },
+        "probe_source_checkpoint": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116/preparation/warmup-source-epoch-0005.pt",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/probe_source_checkpoint.pt"
+        },
+        "probe_source_cpu_proof": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116/preparation/source-qualification.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/probe_source_cpu_proof.json"
+        },
+        "probe_source_inode": {
+          "reference": 7526615178,
+          "replica": 179259971
+        },
+        "probe_source_sha256": {
+          "reference": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594",
+          "replica": "06ffd8c21b6208ff5a0beb11cded62da7b9551c3e1357a1d7321e69eb06d994e"
+        },
+        "reference_infrastructure_repair": {
+          "reference": null,
+          "replica": "d3a03054009fe3bf0068dfefabca941df95df101"
+        },
+        "reference_runtime_commit": {
+          "reference": "848a67a41a289aa0d9a04b907f852ef61d38cc63",
+          "replica": "75d536575593891876df339467da73b3c4cbdc7c"
+        },
+        "reference_thread": {
+          "reference": "01a0fcbb-863f-7450-926d-db537f648265",
+          "replica": "01a1488e-807d-7ca3-b024-96b8fe97486c"
+        },
+        "resolve_idle_auxiliary_uuid_at_prepare": {
+          "reference": true,
+          "replica": false
+        },
+        "resume_joint": {
+          "reference": {
+            "adapter": "i1_i6_joint_v1",
+            "completed_outer": 4,
+            "qualification_proof": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/preparation/full-state-qualified.json",
+            "qualification_proof_sha256": "47cfbeb750a4e05e6f56c2ce657b9a26941de933d9d056fc828a3b3bcbc7a9ca",
+            "source_base": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116",
+            "source_commit": "79c645a4a51bd0bcb0fab4ee36b8fcd634290b2f",
+            "source_config_sha256": "f408569b6472ab64cb653098a5fcdfcb73258f57095c24fddb00daad3f00d8fa",
+            "source_execution_id": "d8e23e068bc34eeebc214e26b200eddc",
+            "source_joint_sha256": "485340ac4853903b457ea0b1bcb89da41fea460dbf762d787ac86be73334badc",
+            "terminal_proof": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116/preparation/fault-outer5-terminal-20261017.json",
+            "terminal_proof_sha256": "0209bb47be8ba201a7733967756f05974e8154a3bd640b64ca42679462f71922"
+          },
+          "replica": null
+        },
+        "retained_warmup_model_only": {
+          "reference": false,
+          "replica": true
+        },
+        "retrieval_corpus": {
+          "reference": "/data/search-r1/assets/wiki/wiki-18.jsonl",
+          "replica": "/mnt/data/shaoshitong/search-r1-rl/gigpo/assets-root/assets/wiki/wiki-18.jsonl"
+        },
+        "retrieval_data_cache": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/retrieval-cache",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944/retrieval-cache"
+        },
+        "retrieval_encoder": {
+          "reference": "/data/search-r1/assets/e5-base-v2",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/assets/e5-base-v2"
+        },
+        "retrieval_gpu_shards": {
+          "reference": null,
+          "replica": 4
+        },
+        "retrieval_index": {
+          "reference": "/data/search-r1/assets/wiki/e5_Flat.index",
+          "replica": "/mnt/data/shaoshitong/search-r1-rl/gigpo/assets-root/assets/wiki/e5_Flat.index"
+        },
+        "retrieval_port": {
+          "reference": 18041,
+          "replica": 18410
+        },
+        "retriever_gpu_lib": {
+          "reference": "/data/search-r1/retriever-gpu-lib",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/retriever-gpu-lib"
+        },
+        "run_id": {
+          "reference": "54ac33dcebe64e62a11fe4177f41f116",
+          "replica": "ca37419b494446398fb15234aa3be91a"
+        },
+        "science_source_commit": {
+          "reference": "79c645a4a51bd0bcb0fab4ee36b8fcd634290b2f",
+          "replica": "7679bb8ced2c13922fa9f5c9050ed0ce7fa54dde"
+        },
+        "search_url": {
+          "reference": "http://127.0.0.1:18041/retrieve",
+          "replica": "http://127.0.0.1:18410/retrieve"
+        },
+        "shared_existing_foreign_jobs_authorized": {
+          "reference": null,
+          "replica": true
+        },
+        "source_commit": {
+          "reference": "75d536575593891876df339467da73b3c4cbdc7c",
+          "replica": "7679bb8ced2c13922fa9f5c9050ed0ce7fa54dde"
+        },
+        "source_compatibility": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/preparation/source-compatibility.json",
+          "replica": null
+        },
+        "source_compatibility_sha256": {
+          "reference": "44bf95b5ba80ac1e7494a3f6c492a55d650aa5834b8bc1971693c38450be1a30",
+          "replica": null
+        },
+        "source_question_pool": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/question-pool/source-pool.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/source_question_pool.json"
+        },
+        "validation_questions": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/data/validation.parquet",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/validation_questions.parquet"
+        }
+      },
+      "resume_fields_present": [],
+      "no_launch_or_submit_files": true
+    },
+    "B": {
+      "config_sha256": "508a7b24fd5ff68b683cb968e7161af2812aa290376b61e06c52a24df47a270f",
+      "changed_fields": [
+        "actor_model_dir",
+        "actor_version",
+        "auxiliary_gpu_indices",
+        "auxiliary_gpu_uuids",
+        "base",
+        "candidate_schedule_authorization",
+        "candidate_schedule_authorization_sha256",
+        "canonical_train",
+        "common_manifest_path",
+        "composite_manifest_path",
+        "encoder_model_dir",
+        "environment_root",
+        "execution_hardware_layout",
+        "execution_id",
+        "experiment_assignment_pending",
+        "final_questions",
+        "fixed_test_features",
+        "fixed_test_identity_path",
+        "fresh_actor_optimizer_scheduler_rng_sampler",
+        "full_state_resume",
+        "gpu_uuid_lock_root",
+        "grounding_calibration_questions",
+        "grounding_initial_manifest_sha256",
+        "grounding_manifest",
+        "grounding_manifest_sha256",
+        "grounding_physical_gpu",
+        "grounding_physical_gpu_by_rank",
+        "grounding_probe_base_port",
+        "grounding_refit_visible_device",
+        "model_dir",
+        "official_model_dir",
+        "original_warmup_checkpoint_sha256",
+        "physical_gpu_indices",
+        "physical_gpu_uuids",
+        "pool_state_path",
+        "prefix_probe_receipt",
+        "preparation_only",
+        "probe_source_bytes",
+        "probe_source_checkpoint",
+        "probe_source_cpu_proof",
+        "probe_source_inode",
+        "probe_source_sha256",
+        "reference_infrastructure_repair",
+        "reference_runtime_commit",
+        "reference_thread",
+        "resolve_idle_auxiliary_uuid_at_prepare",
+        "resume_joint",
+        "retained_warmup_model_only",
+        "retrieval_corpus",
+        "retrieval_data_cache",
+        "retrieval_encoder",
+        "retrieval_gpu_shards",
+        "retrieval_index",
+        "retrieval_port",
+        "retriever_gpu_lib",
+        "run_id",
+        "science_source_commit",
+        "search_url",
+        "shared_existing_foreign_jobs_authorized",
+        "source_commit",
+        "source_compatibility",
+        "source_compatibility_sha256",
+        "source_question_pool",
+        "validation_questions"
+      ],
+      "training_cards": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "retrieval_cards": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "experiment_assignment_pending": true,
+      "config": {
+        "world_size": 4,
+        "physical_gpu_indices": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "physical_gpu_uuids": [
+          "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369",
+          "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548",
+          "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1",
+          "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e"
+        ],
+        "auxiliary_gpu_indices": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "grounding_physical_gpu_by_rank": [
+          4,
+          5,
+          6,
+          7
+        ],
+        "grounding_refit_visible_device": 7,
+        "retrieval_gpu_shards": 4,
+        "retrieval_port": 18510,
+        "grounding_probe_base_port": 18520,
+        "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2",
+        "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+        "source_commit": "7679bb8ced2c13922fa9f5c9050ed0ce7fa54dde",
+        "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-official0",
+        "fresh_actor_optimizer_scheduler_rng_sampler": true,
+        "retained_warmup_model_only": true,
+        "full_state_resume": false,
+        "old_actor_state_imported": false,
+        "old_online_probe_optimizer_imported": false,
+        "probe_source_epoch": 5,
+        "probe_source_model_kind": "ema",
+        "probe_source_sha256": "06ffd8c21b6208ff5a0beb11cded62da7b9551c3e1357a1d7321e69eb06d994e",
+        "original_warmup_checkpoint_sha256": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594",
+        "model_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "probe_learning_rate": 5e-06,
+        "probe_update_period": 10,
+        "probe_updates_per_period": 50,
+        "probe_update_at_final": false,
+        "actor_global_mini_batch": 128,
+        "actor_global_micro_batch_size": 16,
+        "actor_ppo_epochs": 1,
+        "actor_loss_reduction": "mean_of_eight_virtual_ranks_each_mean_of_eight_micro2_masked_token_means",
+        "nonmixed_advantage_mode": "zero_anchor_all_correct_only",
+        "policy_safeguards": {
+          "dual_clip": 3.0,
+          "kl_log_bound": 30.0,
+          "negative_tail_limit": 0.01,
+          "target_old_policy_kl": 0.2
+        },
+        "interaction_protocol": {
+          "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+          "actor_loss_dtype": "float32",
+          "actor_master_dtype": "float32",
+          "answer_reserve_tokens": 500,
+          "asynchronous_generation": true,
+          "compute_dtype": "bfloat16",
+          "early_final": true,
+          "kind": "shared_new_context_stream_bf16",
+          "max_action_tokens": 500,
+          "max_context_tokens": 4096,
+          "max_model_tokens": 4096,
+          "max_observation_tokens": 500,
+          "max_request_tokens": 3596,
+          "max_search_turns": 4,
+          "max_start_tokens": 2048,
+          "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+          "natural_eos": "terminal_without_environment_correction",
+          "observation_truncation": "clip_before_input_preserve_information_wrapper",
+          "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+          "train_compute_dtype": "bfloat16"
+        },
+        "grounding_refresh_enabled": true,
+        "grounding_refit_rounds": [
+          50,
+          100,
+          150
+        ],
+        "grounding_calibration_sha256": "fa7089e21bfd56326a4fd10874362b5fda1a1b70f969a14e4bcbb581daad4be1",
+        "canonical_train_sha256": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
+        "validation_questions_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+        "final_questions_sha256": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+        "common_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+        "composite_manifest_sha256": "8ac391ba26466e9fdbe9220b157bec81294ead69a09a0b7c2c4994cc7873a2c7",
+        "fixed_test_identity_sha256": "1ebb2d88013ef335275ca60d86e423fd75e33a7149136525a92f1f2308a2dbbd",
+        "fixed_test_manifest_sha256": "e9ed944ed244513ab55bdd1b13aae745c5b7902228294fd62ef70ea349b6f246",
+        "source_question_pool_sha256": "cd89360de408717fc4815fc108812ce87f97811332b2cd3c296caf7738b7735f",
+        "seed": 1729,
+        "exploration_questions": 0,
+        "experiment_assignment_pending": true,
+        "preparation_only": true
+      },
+      "exact_delta": {
+        "actor_model_dir": {
+          "reference": "/data/search-g1/assets/qwen2.5-3b-instruct",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725"
+        },
+        "actor_version": {
+          "reference": "54ac33dcebe64e62a11fe4177f41f116-official0",
+          "replica": "d9e5385ebec24ea8ab6cb8db8d2f825a-official0"
+        },
+        "auxiliary_gpu_indices": {
+          "reference": [
+            5,
+            6
+          ],
+          "replica": [
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "auxiliary_gpu_uuids": {
+          "reference": [
+            "GPU-21508d9d-bd43-ff94-7bee-1227ec7b007b",
+            "GPU-92249a14-a344-f77f-e18c-d1cea5c638a7"
+          ],
+          "replica": [
+            "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369",
+            "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548",
+            "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1",
+            "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e"
+          ]
+        },
+        "base": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2"
+        },
+        "candidate_schedule_authorization": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/preparation/human-intent.json",
+          "replica": null
+        },
+        "candidate_schedule_authorization_sha256": {
+          "reference": "236c43f0c11c809e3c5a6d3d797a6d24b4eb3c822894c4bd0fd5417687e59bcb",
+          "replica": null
+        },
+        "canonical_train": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/data/train.parquet",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/canonical_train.parquet"
+        },
+        "common_manifest_path": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/data/manifest.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/common_manifest_path.json"
+        },
+        "composite_manifest_path": {
+          "reference": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-d7dd61bb36454e1e80c2306b5fb7d23a/data/composite-manifest.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/composite_manifest_path.json"
+        },
+        "encoder_model_dir": {
+          "reference": "/data/search-g1/assets/qwen2.5-3b-instruct",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725"
+        },
+        "environment_root": {
+          "reference": "/data/search-g1/env",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/env"
+        },
+        "execution_hardware_layout": {
+          "reference": null,
+          "replica": "h100_four_rank_colocated_v1"
+        },
+        "execution_id": {
+          "reference": "a4a0c2a18cca40bc8c3850d40eed8554",
+          "replica": "b24b1a76173f40b493973c6453c1787c"
+        },
+        "experiment_assignment_pending": {
+          "reference": null,
+          "replica": true
+        },
+        "final_questions": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/data/final.parquet",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/final_questions.parquet"
+        },
+        "fixed_test_features": {
+          "reference": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-d7dd61bb36454e1e80c2306b5fb7d23a/features",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/warmup-feature-binding-only"
+        },
+        "fixed_test_identity_path": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/preparation/fixed512-identities.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/fixed_test_identity_path.json"
+        },
+        "fresh_actor_optimizer_scheduler_rng_sampler": {
+          "reference": false,
+          "replica": true
+        },
+        "full_state_resume": {
+          "reference": true,
+          "replica": false
+        },
+        "gpu_uuid_lock_root": {
+          "reference": null,
+          "replica": "/mnt/data/shaoshitong/.search-g1-gpu-uuid-locks"
+        },
+        "grounding_calibration_questions": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/data/calibration-300.parquet",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/grounding_calibration_questions.parquet"
+        },
+        "grounding_initial_manifest_sha256": {
+          "reference": null,
+          "replica": "c15f3612ef58434fe032362a2e0cc66abf693aa132958687b79a85c2341f9eaa"
+        },
+        "grounding_manifest": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/artifacts/round_0-attempt-ee628b426d5b4446bdae30167266fd7c/version-manifest.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/grounding-manifest-h100-paths.json"
+        },
+        "grounding_manifest_sha256": {
+          "reference": "eb54e4ac27035260e22e30788937dcdaa9208acde6b1d0a1b5d3ce413b946a5d",
+          "replica": "c15f3612ef58434fe032362a2e0cc66abf693aa132958687b79a85c2341f9eaa"
+        },
+        "grounding_physical_gpu": {
+          "reference": 6,
+          "replica": 7
+        },
+        "grounding_physical_gpu_by_rank": {
+          "reference": null,
+          "replica": [
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "grounding_probe_base_port": {
+          "reference": 18140,
+          "replica": 18520
+        },
+        "grounding_refit_visible_device": {
+          "reference": 6,
+          "replica": 7
+        },
+        "model_dir": {
+          "reference": "/data/search-g1/assets/qwen2.5-3b-instruct",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725"
+        },
+        "official_model_dir": {
+          "reference": "/data/search-g1/assets/qwen2.5-3b-instruct",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725"
+        },
+        "original_warmup_checkpoint_sha256": {
+          "reference": null,
+          "replica": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594"
+        },
+        "physical_gpu_indices": {
+          "reference": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "replica": [
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "physical_gpu_uuids": {
+          "reference": [
+            "GPU-9b8498ae-93e5-dee7-545a-25669080cf83",
+            "GPU-34c7ae67-d246-50d7-6ef6-2d7f64a86e40",
+            "GPU-19f588c3-3f42-a910-5f9a-21687befed5b",
+            "GPU-ef98537d-a371-e4f0-56f9-53ce0084a7b9"
+          ],
+          "replica": [
+            "GPU-56b1a759-2d63-8c03-fd6f-97883cd6a369",
+            "GPU-898426c9-149c-ecf1-1cd6-450c8d36a548",
+            "GPU-fc12be2b-bff3-6df7-9eca-656755fdf7c1",
+            "GPU-cef6b05a-4e86-cab0-b75e-c417c30cf67e"
+          ]
+        },
+        "pool_state_path": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/question-pool/state.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2/question-pool/state.json"
+        },
+        "prefix_probe_receipt": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/probe/latest.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2/probe/latest.json"
+        },
+        "preparation_only": {
+          "reference": null,
+          "replica": true
+        },
+        "probe_source_bytes": {
+          "reference": 1242424352,
+          "replica": 310596618
+        },
+        "probe_source_checkpoint": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116/preparation/warmup-source-epoch-0005.pt",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/probe_source_checkpoint.pt"
+        },
+        "probe_source_cpu_proof": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116/preparation/source-qualification.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/probe_source_cpu_proof.json"
+        },
+        "probe_source_inode": {
+          "reference": 7526615178,
+          "replica": 179259971
+        },
+        "probe_source_sha256": {
+          "reference": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594",
+          "replica": "06ffd8c21b6208ff5a0beb11cded62da7b9551c3e1357a1d7321e69eb06d994e"
+        },
+        "reference_infrastructure_repair": {
+          "reference": null,
+          "replica": "d3a03054009fe3bf0068dfefabca941df95df101"
+        },
+        "reference_runtime_commit": {
+          "reference": "848a67a41a289aa0d9a04b907f852ef61d38cc63",
+          "replica": "75d536575593891876df339467da73b3c4cbdc7c"
+        },
+        "reference_thread": {
+          "reference": "01a0fcbb-863f-7450-926d-db537f648265",
+          "replica": "01a1488e-807d-7ca3-b024-96b8fe97486c"
+        },
+        "resolve_idle_auxiliary_uuid_at_prepare": {
+          "reference": true,
+          "replica": false
+        },
+        "resume_joint": {
+          "reference": {
+            "adapter": "i1_i6_joint_v1",
+            "completed_outer": 4,
+            "qualification_proof": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/preparation/full-state-qualified.json",
+            "qualification_proof_sha256": "47cfbeb750a4e05e6f56c2ce657b9a26941de933d9d056fc828a3b3bcbc7a9ca",
+            "source_base": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116",
+            "source_commit": "79c645a4a51bd0bcb0fab4ee36b8fcd634290b2f",
+            "source_config_sha256": "f408569b6472ab64cb653098a5fcdfcb73258f57095c24fddb00daad3f00d8fa",
+            "source_execution_id": "d8e23e068bc34eeebc214e26b200eddc",
+            "source_joint_sha256": "485340ac4853903b457ea0b1bcb89da41fea460dbf762d787ac86be73334badc",
+            "terminal_proof": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116/preparation/fault-outer5-terminal-20261017.json",
+            "terminal_proof_sha256": "0209bb47be8ba201a7733967756f05974e8154a3bd640b64ca42679462f71922"
+          },
+          "replica": null
+        },
+        "retained_warmup_model_only": {
+          "reference": false,
+          "replica": true
+        },
+        "retrieval_corpus": {
+          "reference": "/data/search-r1/assets/wiki/wiki-18.jsonl",
+          "replica": "/mnt/data/shaoshitong/search-r1-rl/gigpo/assets-root/assets/wiki/wiki-18.jsonl"
+        },
+        "retrieval_data_cache": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/retrieval-cache",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2/retrieval-cache"
+        },
+        "retrieval_encoder": {
+          "reference": "/data/search-r1/assets/e5-base-v2",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/assets/e5-base-v2"
+        },
+        "retrieval_gpu_shards": {
+          "reference": null,
+          "replica": 4
+        },
+        "retrieval_index": {
+          "reference": "/data/search-r1/assets/wiki/e5_Flat.index",
+          "replica": "/mnt/data/shaoshitong/search-r1-rl/gigpo/assets-root/assets/wiki/e5_Flat.index"
+        },
+        "retrieval_port": {
+          "reference": 18041,
+          "replica": 18510
+        },
+        "retriever_gpu_lib": {
+          "reference": "/data/search-r1/retriever-gpu-lib",
+          "replica": "/dataset/shaoshitong/Search-G1-common8/retriever-gpu-lib"
+        },
+        "run_id": {
+          "reference": "54ac33dcebe64e62a11fe4177f41f116",
+          "replica": "d9e5385ebec24ea8ab6cb8db8d2f825a"
+        },
+        "science_source_commit": {
+          "reference": "79c645a4a51bd0bcb0fab4ee36b8fcd634290b2f",
+          "replica": "7679bb8ced2c13922fa9f5c9050ed0ce7fa54dde"
+        },
+        "search_url": {
+          "reference": "http://127.0.0.1:18041/retrieve",
+          "replica": "http://127.0.0.1:18510/retrieve"
+        },
+        "shared_existing_foreign_jobs_authorized": {
+          "reference": null,
+          "replica": true
+        },
+        "source_commit": {
+          "reference": "75d536575593891876df339467da73b3c4cbdc7c",
+          "replica": "7679bb8ced2c13922fa9f5c9050ed0ce7fa54dde"
+        },
+        "source_compatibility": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-a4a0c2a18cca40bc8c3850d40eed8554/preparation/source-compatibility.json",
+          "replica": null
+        },
+        "source_compatibility_sha256": {
+          "reference": "44bf95b5ba80ac1e7494a3f6c492a55d650aa5834b8bc1971693c38450be1a30",
+          "replica": null
+        },
+        "source_question_pool": {
+          "reference": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-411c44aad7ba4e8c90f5fbec9e5ecbaa/question-pool/source-pool.json",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/source_question_pool.json"
+        },
+        "validation_questions": {
+          "reference": "/data/shaoshitong/Search-G1-a800-fresh200-7895330a2c584bba9940720e98f006ef/data/validation.parquet",
+          "replica": "/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/validation_questions.parquet"
+        }
+      },
+      "resume_fields_present": [],
+      "no_launch_or_submit_files": true
+    }
+  },
+  "configs": {
+    "A": "/mnt/data/shaoshitong/search-g1-prefix5-reference-preparation-20261018/prepared-7679bb8c/slots/A/config.template.json",
+    "B": "/mnt/data/shaoshitong/search-g1-prefix5-reference-preparation-20261018/prepared-7679bb8c/slots/B/config.template.json"
+  },
+  "training_submitted": false,
+  "algorithm_audit_pending": true,
+  "actual_target_EMA_tensor_and_buffer_hashes_compared": true,
+  "actual_CUDA_forward_performed": false
+}
