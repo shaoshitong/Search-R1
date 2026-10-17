@@ -44,8 +44,20 @@ if log.exists():
 print(json.dumps(result,allow_nan=False))
 '''
 
+def query_for(base):
+ """Explicitly follow this experiment's isolated recovery, never another task."""
+ value=pathlib.PurePosixPath(base);original=pathlib.PurePosixPath(BASE)
+ if (not value.is_absolute() or '..' in value.parts or value.parent!=original.parent
+     or (value!=original and not (value.name.startswith(original.name+'-r')
+         and value.name[len(original.name)+2:].isdigit()))):
+  raise ValueError('Observation target must belong to this exact experiment family')
+ return QUERY.replace(str(original),str(value),1)
+
+
 def main():
- r=run(PYTHON+' -c '+shlex.quote(QUERY))
+ import argparse
+ parser=argparse.ArgumentParser();parser.add_argument('--base',default=BASE);args=parser.parse_args()
+ r=run(PYTHON+' -c '+shlex.quote(query_for(args.base)))
  if r.returncode:raise RuntimeError('Metadata read failed: '+r.stderr.decode()[:1000])
  v=json.loads(r.stdout);OUTPUT.mkdir(exist_ok=True,parents=True);(OUTPUT/'observation-latest.json').write_text(json.dumps(v,indent=2));
  with (OUTPUT/'observations.jsonl').open('a') as f:f.write(json.dumps(v)+'\n')

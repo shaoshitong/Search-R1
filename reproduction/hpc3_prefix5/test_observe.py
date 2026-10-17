@@ -10,10 +10,17 @@ import unittest
 from unittest.mock import patch
 
 from .control import BASE
-from .observe import QUERY
+from .observe import QUERY, query_for
 
 
 class ObserveTests(unittest.TestCase):
+    def test_recovery_target_is_explicit_and_cannot_escape_this_experiment(self):
+        target = str(BASE) + '-r2'
+        self.assertIn("b=pathlib.Path('" + target + "')", query_for(target))
+        for value in ('/tmp/another-task', str(BASE) + '/../other', str(BASE) + '-another'):
+            with self.assertRaises(ValueError):
+                query_for(value)
+
     def fixture(self, root):
         values = {
             'preparation/slurm-submission.json': {'job': '729343'},
