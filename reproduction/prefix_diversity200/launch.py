@@ -220,6 +220,30 @@ def run(base):
                 raise TimeoutError('Own service did not become ready: ' + name)
             time.sleep(3)
 
+    (base/'grounding').mkdir(exist_ok=True)
+    grounding = (read(base/'grounding/live.json') if (base/'grounding/live.json').exists()
+        else dict(round=0,manifest=c['grounding_manifest'],version=c['grounding_probe_version']))
+    if grounding.get('run_id',c['run_id'])!=c['run_id']:
+        raise ValueError('Reward grounding live binding belongs to another run')
+
+    def start_grounding():
+        for rank in range(8):
+            name = 'grounding-round-%03d-rank-%d' % (grounding['round'], rank)
+            services[name] = start(name, [python, 'probe_server.py', '--manifest', grounding['manifest'],
+                '--port', str(c['grounding_probe_base_port'] + rank)],
+                dict(env, CUDA_VISIBLE_DEVICES=str(rank), SEARCH_G1_BASE=str(base / 'grounding' / ('rank-%d' % rank)), OMP_NUM_THREADS='2'))
+        for rank in range(8):
+            name = 'grounding-round-%03d-rank-%d' % (grounding['round'], rank)
+            await_service(name, 'http://127.0.0.1:%d/health' % (c['grounding_probe_base_port'] + rank), dict(version=grounding['version']))
+        publish(base/('grounding/adopted-round-%03d.json'%grounding['round']), dict(grounding, adopted_unix=time.time()))
+
+    def stop_grounding():
+        names = [name for name in services if name.startswith('grounding-round-')]
+        for name in names:
+            if services[name].poll() is None: services[name].terminate()
+        for name in names:
+            owned.stop(name); services.pop(name)
+
     previous_qa = Path(c.get('resume_joint', {}).get('source_base', str(base))) / 'logs/qa-pending.json'
     pending_qa = read(previous_qa) if previous_qa.is_file() else {}
 
@@ -252,15 +276,8 @@ def run(base):
             '--cache', str(base / 'retrieval-cache'), '--run-id', c['run_id'], '--port', str(c['retrieval_port']),
             '--batch-queries', str(c.get('retrieval_batch_queries', 1024))],
             dict(env, PYTHONPATH=c['retriever_gpu_lib'] + ':' + runtime_path, LD_LIBRARY_PATH=':'.join(map(str, libs))))
-        for rank in range(8):
-            name = 'grounding-rank-%d' % rank
-            services[name] = start(name, [python, 'probe_server.py', '--manifest', c['grounding_manifest'],
-                '--port', str(c['grounding_probe_base_port'] + rank)],
-                dict(env, CUDA_VISIBLE_DEVICES=str(rank), SEARCH_G1_BASE=str(base / 'grounding' / ('rank-%d' % rank)), OMP_NUM_THREADS='2'))
         await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=8))
-        for rank in range(8):
-            await_service('grounding-rank-%d' % rank, 'http://127.0.0.1:%d/health' % (c['grounding_probe_base_port'] + rank),
-                dict(version=c['grounding_probe_version']))
+        start_grounding()
         start_outer = 1
         if (base/'latest-joint.json').exists():
             inherited = read(base/'latest-joint.json')
@@ -272,6 +289,15 @@ def run(base):
                     or inherited['actor']['actual_adam_steps_per_rank'] != [20*(start_outer-1)]*8
                     or inherited['probe']['actual_adam_steps_per_rank'] != [20*(start_outer-1)]*8):
                 raise ValueError('Joint recovery must preserve the actual completed clock')
+        required_reward_round = min(150, ((start_outer-1)//50)*50)
+        if grounding['round'] != required_reward_round:
+            if grounding['round'] > required_reward_round or start_outer-1 != required_reward_round:
+                raise ValueError('Missing actual committed reward-grounding version; reconcile saved manifest before continuation')
+            stop_grounding()
+            actor = read(base/'actor/latest.json')
+            phase('grounding-refit-%03d'%required_reward_round,[python,'-m','reproduction.prefix_diversity200.grounding',
+                '--config',conf,'--outer',str(required_reward_round),'--model',actor['hf_model_dir']],dict(env,CUDA_VISIBLE_DEVICES='0'))
+            grounding = read(base/'grounding/live.json');start_grounding()
         if start_outer - 1 in (5, 50, 100, 150, 200):
             outer = start_outer - 1
             actor = read(base / 'actor/latest.json')
@@ -324,7 +350,10 @@ def run(base):
                 attempt_id = uuid.uuid4().hex
                 while True:
                     attempt_config = dict(c, actor_attempt_id=attempt_id,
-                        actor_global_micro_batch_size=actor_micro)
+                        actor_global_micro_batch_size=actor_micro,
+                        grounding_probe_version=grounding['version'],
+                        grounding_active_manifest=grounding['manifest'],
+                        grounding_initial_probe_version=c['grounding_probe_version'])
                     attempt_path = root / ('actor-attempt-%s-config.json' % attempt_id)
                     once(attempt_path, attempt_config)
                     code = phase('outer-%06d-actor-%s' % (outer, attempt_id), distributed('reproduction.prefix_diversity200.actor',
@@ -370,6 +399,12 @@ def run(base):
                 once(evaluation_config, dict(c, actor_version=actor['actor_version']))
                 validation(outer, actor['hf_model_dir'], evaluation_config, root/'validation',
                            'outer-%06d-validation' % outer)
+            if outer in (50,100,150):
+                stop_grounding()
+                phase('grounding-refit-%03d'%outer, [python, '-m', 'reproduction.prefix_diversity200.grounding',
+                    '--config',conf,'--outer',str(outer),'--model',actor['hf_model_dir']], dict(env,CUDA_VISIBLE_DEVICES='0'))
+                grounding = read(base/'grounding/live.json')
+                start_grounding()
             # Only completed run-owned derived features are removable; retain tokens/labels.
             from .storage import prune_completed
             prune_completed(base, outer)

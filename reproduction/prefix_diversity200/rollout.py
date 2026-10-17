@@ -516,7 +516,8 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     retriever = BoundedRetriever(manager, AsyncRolloutConfig(agent_workers=limits['max_num_seqs'],
         max_inflight_trajectories=limits['max_num_seqs'], retrieval_concurrency=int(config.get('retrieval_threads_per_engine', 16)),
         tool_timeout=float(config.get('retrieval_timeout', 60)), tool_retries=2, engine_step_budget=8))
-    budget = dict(total_tokens=4096, action_tokens=500, answer_reserve_tokens=500)
+    from .interaction import BUDGET
+    budget = dict(BUDGET)
     decode = lambda ids: tokenizer.decode(ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
     waiting, ready, pending, tools = deque(states), deque(), {}, {}
     completed, active, peak, requests, sampled = 0, 0, 0, 0, 0
@@ -641,7 +642,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
         pool.shutdown(wait=True, cancel_futures=True)
     result = dict(schema_version=1, phase=phase, outer=outer, rank=rank, run_id=config['run_id'],
         actor_version=config['actor_version'], actor_model_dir=model, config_sha256=digest(config_path),
-        sampling_contract=CONTRACT, action_boundary=BOUNDARY, old_full500_evaluation_sampler_changed=False,
+        sampling_contract=CONTRACT, action_boundary=BOUNDARY, old_full500_evaluation_sampler_changed=True,
         native_output_commit='synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort',
         trajectories=completed, questions=completed//G, device_binding=device_binding,
         pad_token_id=int(tokenizer.pad_token_id), eos_token_id=int(tokenizer.eos_token_id),
@@ -753,7 +754,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
         model_revision=REVISION,pad_token_id=ranks[0]['pad_token_id'],eos_token_id=ranks[0]['eos_token_id'],
         candidate_questions_sha256=digest(root/'questions.json'),head_prefix_tokens=PREFIX_TOKENS,
         trajectories=sum(r['trajectories'] for r in ranks),questions=sum(r['questions'] for r in ranks),
-        sampling_contract=CONTRACT,action_boundary=BOUNDARY,old_full500_evaluation_sampler_changed=False,
+        sampling_contract=CONTRACT,action_boundary=BOUNDARY,old_full500_evaluation_sampler_changed=True,
         actual_sampled_tokens=sum(r['actual_sampled_tokens'] for r in ranks),
         native_generation_requests=sum(r['generation_requests'] for r in ranks),completed_utc=utc())
     value['reused_original_rank_receipts']=[item[1] for item in checked if item[1] is not None]
