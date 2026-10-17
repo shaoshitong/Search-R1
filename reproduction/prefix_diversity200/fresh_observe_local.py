@@ -41,6 +41,11 @@ for _ in range(16):
  assert ancestor.parent==base.parent and ancestor.name.startswith('search-g1-prefix-diversity200-') and str(ancestor) not in seen
  current_config=json.loads((ancestor/'preparation/launch-config.json').read_text());assert current_config['run_id']==value['latest_joint']['run_id']
  ancestors.append(ancestor);seen.add(str(ancestor))
+if value.get('qa_pending') is None:
+ for ancestor in ancestors:
+  pending_path=ancestor/'logs/qa-pending.json'
+  if pending_path.exists():
+   value['qa_pending']=json.loads(pending_path.read_text());break
 for ordinal in (5,50,100,150,200):
  for ancestor in ancestors:
   p=ancestor/'outers'/('outer-%06d'%ordinal)/'validation/complete.json'
