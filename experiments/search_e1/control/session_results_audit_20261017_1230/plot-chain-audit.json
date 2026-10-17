@@ -1,0 +1,1726 @@
+{
+  "created_utc": "2026-10-15T10:12:13.545597+00:00",
+  "read_only_sources": true,
+  "remote_state_changed": false,
+  "input": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/all-seven-results.json",
+    "sha256": "b4aaa453a76115ca37ea06c86577f384cc4a39e2f6fa57dfff6f7a3935433401"
+  },
+  "cosearch": {
+    "run": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011",
+    "canonical_lineage": {
+      "709265": [
+        1,
+        5
+      ],
+      "709923": [
+        6,
+        100
+      ],
+      "713379": [
+        101,
+        200
+      ]
+    },
+    "evidence": {
+      "local_path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/session-refresh-20261015-current/co-actual-2.json",
+      "local_sha256": "18767d10576f1dc4eff33f0f68d558bb456a4efc8e17bd0b748fc547719503be",
+      "remote_path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/recovery-plan.json",
+      "remote_sha256": "e85f73b9337f62fb7f1d9a2ba70a701b5c4cb5a059d567647123097a844828cb",
+      "data": {
+        "step": 100,
+        "source_job": "709923",
+        "receipt_sha256": "e4d364ddf9c0248c922487dabad6bb2bc207581309a30ee6f77653a9a12c8816",
+        "prior_history": {
+          "prior_job": "709265",
+          "prior_through": 5,
+          "prior_history": {}
+        },
+        "failure_history": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/failed-job-709923",
+        "recomputed_failed_interval": [
+          101,
+          140
+        ]
+      }
+    },
+    "chosen_count": 200,
+    "excluded_count": 6,
+    "chosen": [
+      {
+        "iteration": 1,
+        "em": 0.26796875,
+        "correct": 686,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-1.json",
+        "expected_job": "709265",
+        "actual_job": "709265"
+      },
+      {
+        "iteration": 2,
+        "em": 0.278125,
+        "correct": 712,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-2.json",
+        "expected_job": "709265",
+        "actual_job": "709265"
+      },
+      {
+        "iteration": 3,
+        "em": 0.259375,
+        "correct": 664,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-3.json",
+        "expected_job": "709265",
+        "actual_job": "709265"
+      },
+      {
+        "iteration": 4,
+        "em": 0.256640625,
+        "correct": 657,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-4.json",
+        "expected_job": "709265",
+        "actual_job": "709265"
+      },
+      {
+        "iteration": 5,
+        "em": 0.278515625,
+        "correct": 713,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-5.json",
+        "expected_job": "709265",
+        "actual_job": "709265"
+      },
+      {
+        "iteration": 6,
+        "em": 0.30078125,
+        "correct": 770,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-6.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 7,
+        "em": 0.269921875,
+        "correct": 691,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-7.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 8,
+        "em": 0.2640625,
+        "correct": 676,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-8.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 9,
+        "em": 0.269140625,
+        "correct": 689,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-9.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 10,
+        "em": 0.26484375,
+        "correct": 678,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-10.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 11,
+        "em": 0.30234375,
+        "correct": 774,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-11.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 12,
+        "em": 0.303125,
+        "correct": 776,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-12.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 13,
+        "em": 0.32734375,
+        "correct": 838,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-13.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 14,
+        "em": 0.30703125,
+        "correct": 786,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-14.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 15,
+        "em": 0.33203125,
+        "correct": 850,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-15.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 16,
+        "em": 0.333984375,
+        "correct": 855,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-16.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 17,
+        "em": 0.324609375,
+        "correct": 831,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-17.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 18,
+        "em": 0.337890625,
+        "correct": 865,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-18.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 19,
+        "em": 0.363671875,
+        "correct": 931,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-19.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 20,
+        "em": 0.3578125,
+        "correct": 916,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-20.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 21,
+        "em": 0.3625,
+        "correct": 928,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-21.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 22,
+        "em": 0.362890625,
+        "correct": 929,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-22.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 23,
+        "em": 0.304296875,
+        "correct": 779,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-23.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 24,
+        "em": 0.334375,
+        "correct": 856,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-24.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 25,
+        "em": 0.366015625,
+        "correct": 937,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-25.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 26,
+        "em": 0.3546875,
+        "correct": 908,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-26.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 27,
+        "em": 0.3546875,
+        "correct": 908,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-27.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 28,
+        "em": 0.322265625,
+        "correct": 825,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-28.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 29,
+        "em": 0.358203125,
+        "correct": 917,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-29.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 30,
+        "em": 0.34453125,
+        "correct": 882,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-30.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 31,
+        "em": 0.3484375,
+        "correct": 892,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-31.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 32,
+        "em": 0.37109375,
+        "correct": 950,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-32.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 33,
+        "em": 0.363671875,
+        "correct": 931,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-33.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 34,
+        "em": 0.35390625,
+        "correct": 906,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-34.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 35,
+        "em": 0.394140625,
+        "correct": 1009,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-35.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 36,
+        "em": 0.358203125,
+        "correct": 917,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-36.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 37,
+        "em": 0.3796875,
+        "correct": 972,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-37.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 38,
+        "em": 0.3515625,
+        "correct": 900,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-38.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 39,
+        "em": 0.3578125,
+        "correct": 916,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-39.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 40,
+        "em": 0.389453125,
+        "correct": 997,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-40.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 41,
+        "em": 0.396484375,
+        "correct": 1015,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-41.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 42,
+        "em": 0.365625,
+        "correct": 936,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-42.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 43,
+        "em": 0.41875,
+        "correct": 1072,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-43.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 44,
+        "em": 0.378125,
+        "correct": 968,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-44.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 45,
+        "em": 0.427734375,
+        "correct": 1095,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-45.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 46,
+        "em": 0.381640625,
+        "correct": 977,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-46.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 47,
+        "em": 0.42734375,
+        "correct": 1094,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-47.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 48,
+        "em": 0.415234375,
+        "correct": 1063,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-48.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 49,
+        "em": 0.37109375,
+        "correct": 950,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-49.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 50,
+        "em": 0.40078125,
+        "correct": 1026,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-50.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 51,
+        "em": 0.42578125,
+        "correct": 1090,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-51.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 52,
+        "em": 0.3984375,
+        "correct": 1020,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-52.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 53,
+        "em": 0.460546875,
+        "correct": 1179,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-53.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 54,
+        "em": 0.405078125,
+        "correct": 1037,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-54.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 55,
+        "em": 0.42421875,
+        "correct": 1086,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-55.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 56,
+        "em": 0.4359375,
+        "correct": 1116,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-56.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 57,
+        "em": 0.426953125,
+        "correct": 1093,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-57.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 58,
+        "em": 0.444140625,
+        "correct": 1137,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-58.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 59,
+        "em": 0.457421875,
+        "correct": 1171,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-59.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 60,
+        "em": 0.4390625,
+        "correct": 1124,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-60.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 61,
+        "em": 0.48828125,
+        "correct": 1250,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-61.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 62,
+        "em": 0.442578125,
+        "correct": 1133,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-62.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 63,
+        "em": 0.45546875,
+        "correct": 1166,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-63.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 64,
+        "em": 0.465234375,
+        "correct": 1191,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-64.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 65,
+        "em": 0.4515625,
+        "correct": 1156,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-65.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 66,
+        "em": 0.49140625,
+        "correct": 1258,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-66.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 67,
+        "em": 0.429296875,
+        "correct": 1099,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-67.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 68,
+        "em": 0.46015625,
+        "correct": 1178,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-68.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 69,
+        "em": 0.434765625,
+        "correct": 1113,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-69.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 70,
+        "em": 0.481640625,
+        "correct": 1233,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-70.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 71,
+        "em": 0.49375,
+        "correct": 1264,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-71.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 72,
+        "em": 0.479296875,
+        "correct": 1227,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-72.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 73,
+        "em": 0.474609375,
+        "correct": 1215,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-73.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 74,
+        "em": 0.466796875,
+        "correct": 1195,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-74.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 75,
+        "em": 0.45078125,
+        "correct": 1154,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-75.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 76,
+        "em": 0.4609375,
+        "correct": 1180,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-76.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 77,
+        "em": 0.49296875,
+        "correct": 1262,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-77.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 78,
+        "em": 0.48671875,
+        "correct": 1246,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-78.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 79,
+        "em": 0.47890625,
+        "correct": 1226,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-79.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 80,
+        "em": 0.46015625,
+        "correct": 1178,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-80.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 81,
+        "em": 0.4640625,
+        "correct": 1188,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-81.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 82,
+        "em": 0.5078125,
+        "correct": 1300,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-82.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 83,
+        "em": 0.492578125,
+        "correct": 1261,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-83.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 84,
+        "em": 0.516015625,
+        "correct": 1321,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-84.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 85,
+        "em": 0.508984375,
+        "correct": 1303,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-85.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 86,
+        "em": 0.494140625,
+        "correct": 1265,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-86.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 87,
+        "em": 0.48671875,
+        "correct": 1246,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-87.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 88,
+        "em": 0.485546875,
+        "correct": 1243,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-88.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 89,
+        "em": 0.492578125,
+        "correct": 1261,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-89.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 90,
+        "em": 0.5046875,
+        "correct": 1292,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-90.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 91,
+        "em": 0.509375,
+        "correct": 1304,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-91.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 92,
+        "em": 0.515234375,
+        "correct": 1319,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-92.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 93,
+        "em": 0.48515625,
+        "correct": 1242,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-93.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 94,
+        "em": 0.511328125,
+        "correct": 1309,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-94.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 95,
+        "em": 0.482421875,
+        "correct": 1235,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-95.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 96,
+        "em": 0.549609375,
+        "correct": 1407,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-96.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 97,
+        "em": 0.490625,
+        "correct": 1256,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-97.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 98,
+        "em": 0.492578125,
+        "correct": 1261,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-98.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 99,
+        "em": 0.530859375,
+        "correct": 1359,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-99.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 100,
+        "em": 0.475390625,
+        "correct": 1217,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709923/completed-outer-100.json",
+        "expected_job": "709923",
+        "actual_job": "709923"
+      },
+      {
+        "iteration": 101,
+        "em": 0.49296875,
+        "correct": 1262,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-101.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 102,
+        "em": 0.4828125,
+        "correct": 1236,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-102.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 103,
+        "em": 0.481640625,
+        "correct": 1233,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-103.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 104,
+        "em": 0.50390625,
+        "correct": 1290,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-104.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 105,
+        "em": 0.50703125,
+        "correct": 1298,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-105.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 106,
+        "em": 0.50625,
+        "correct": 1296,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-106.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 107,
+        "em": 0.47421875,
+        "correct": 1214,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-107.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 108,
+        "em": 0.513671875,
+        "correct": 1315,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-108.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 109,
+        "em": 0.51484375,
+        "correct": 1318,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-109.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 110,
+        "em": 0.50390625,
+        "correct": 1290,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-110.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 111,
+        "em": 0.497265625,
+        "correct": 1273,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-111.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 112,
+        "em": 0.503125,
+        "correct": 1288,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-112.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 113,
+        "em": 0.51015625,
+        "correct": 1306,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-113.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 114,
+        "em": 0.506640625,
+        "correct": 1297,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-114.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 115,
+        "em": 0.515625,
+        "correct": 1320,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-115.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 116,
+        "em": 0.51015625,
+        "correct": 1306,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-116.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 117,
+        "em": 0.503515625,
+        "correct": 1289,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-117.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 118,
+        "em": 0.48515625,
+        "correct": 1242,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-118.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 119,
+        "em": 0.523828125,
+        "correct": 1341,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-119.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 120,
+        "em": 0.49296875,
+        "correct": 1262,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-120.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 121,
+        "em": 0.525,
+        "correct": 1344,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-121.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 122,
+        "em": 0.527734375,
+        "correct": 1351,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-122.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 123,
+        "em": 0.500390625,
+        "correct": 1281,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-123.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 124,
+        "em": 0.491015625,
+        "correct": 1257,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-124.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 125,
+        "em": 0.520703125,
+        "correct": 1333,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-125.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 126,
+        "em": 0.5125,
+        "correct": 1312,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-126.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 127,
+        "em": 0.5203125,
+        "correct": 1332,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-127.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 128,
+        "em": 0.495703125,
+        "correct": 1269,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-128.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 129,
+        "em": 0.5296875,
+        "correct": 1356,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-129.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 130,
+        "em": 0.48828125,
+        "correct": 1250,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-130.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 131,
+        "em": 0.5,
+        "correct": 1280,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-131.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 132,
+        "em": 0.51875,
+        "correct": 1328,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-132.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 133,
+        "em": 0.512890625,
+        "correct": 1313,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-133.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 134,
+        "em": 0.519921875,
+        "correct": 1331,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-134.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 135,
+        "em": 0.505078125,
+        "correct": 1293,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-135.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 136,
+        "em": 0.51015625,
+        "correct": 1306,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-136.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 137,
+        "em": 0.5015625,
+        "correct": 1284,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-137.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 138,
+        "em": 0.548828125,
+        "correct": 1405,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-138.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 139,
+        "em": 0.556640625,
+        "correct": 1425,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-139.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 140,
+        "em": 0.528125,
+        "correct": 1352,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-140.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 141,
+        "em": 0.546484375,
+        "correct": 1399,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-141.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 142,
+        "em": 0.55234375,
+        "correct": 1414,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-142.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 143,
+        "em": 0.50390625,
+        "correct": 1290,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-143.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 144,
+        "em": 0.515625,
+        "correct": 1320,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-144.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 145,
+        "em": 0.496484375,
+        "correct": 1271,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-145.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 146,
+        "em": 0.555078125,
+        "correct": 1421,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-146.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 147,
+        "em": 0.51328125,
+        "correct": 1314,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-147.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 148,
+        "em": 0.50546875,
+        "correct": 1294,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-148.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 149,
+        "em": 0.509375,
+        "correct": 1304,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-149.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 150,
+        "em": 0.51953125,
+        "correct": 1330,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-150.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 151,
+        "em": 0.5140625,
+        "correct": 1316,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-151.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 152,
+        "em": 0.5078125,
+        "correct": 1300,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-152.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 153,
+        "em": 0.509375,
+        "correct": 1304,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-153.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 154,
+        "em": 0.508203125,
+        "correct": 1301,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-154.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 155,
+        "em": 0.519140625,
+        "correct": 1329,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-155.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 156,
+        "em": 0.554296875,
+        "correct": 1419,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-156.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 157,
+        "em": 0.480859375,
+        "correct": 1231,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-157.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 158,
+        "em": 0.495703125,
+        "correct": 1269,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-158.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 159,
+        "em": 0.527734375,
+        "correct": 1351,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-159.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 160,
+        "em": 0.539453125,
+        "correct": 1381,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-160.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 161,
+        "em": 0.515625,
+        "correct": 1320,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-161.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 162,
+        "em": 0.51875,
+        "correct": 1328,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-162.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 163,
+        "em": 0.528515625,
+        "correct": 1353,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-163.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 164,
+        "em": 0.563671875,
+        "correct": 1443,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-164.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 165,
+        "em": 0.484765625,
+        "correct": 1241,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-165.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 166,
+        "em": 0.5296875,
+        "correct": 1356,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-166.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 167,
+        "em": 0.499609375,
+        "correct": 1279,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-167.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 168,
+        "em": 0.492578125,
+        "correct": 1261,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-168.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 169,
+        "em": 0.54375,
+        "correct": 1392,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-169.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 170,
+        "em": 0.523828125,
+        "correct": 1341,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-170.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 171,
+        "em": 0.513671875,
+        "correct": 1315,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-171.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 172,
+        "em": 0.53046875,
+        "correct": 1358,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-172.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 173,
+        "em": 0.548046875,
+        "correct": 1403,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-173.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 174,
+        "em": 0.546484375,
+        "correct": 1399,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-174.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 175,
+        "em": 0.511328125,
+        "correct": 1309,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-175.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 176,
+        "em": 0.535546875,
+        "correct": 1371,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-176.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 177,
+        "em": 0.540234375,
+        "correct": 1383,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-177.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 178,
+        "em": 0.503125,
+        "correct": 1288,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-178.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 179,
+        "em": 0.53046875,
+        "correct": 1358,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-179.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 180,
+        "em": 0.536328125,
+        "correct": 1373,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-180.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 181,
+        "em": 0.53515625,
+        "correct": 1370,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-181.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 182,
+        "em": 0.5203125,
+        "correct": 1332,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-182.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 183,
+        "em": 0.543359375,
+        "correct": 1391,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-183.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 184,
+        "em": 0.554296875,
+        "correct": 1419,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-184.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 185,
+        "em": 0.514453125,
+        "correct": 1317,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-185.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 186,
+        "em": 0.5171875,
+        "correct": 1324,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-186.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 187,
+        "em": 0.49140625,
+        "correct": 1258,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-187.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 188,
+        "em": 0.540234375,
+        "correct": 1383,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-188.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 189,
+        "em": 0.509375,
+        "correct": 1304,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-189.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 190,
+        "em": 0.530078125,
+        "correct": 1357,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-190.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 191,
+        "em": 0.520703125,
+        "correct": 1333,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-191.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 192,
+        "em": 0.505859375,
+        "correct": 1295,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-192.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 193,
+        "em": 0.55234375,
+        "correct": 1414,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-193.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 194,
+        "em": 0.53671875,
+        "correct": 1374,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-194.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 195,
+        "em": 0.536328125,
+        "correct": 1373,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-195.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 196,
+        "em": 0.508203125,
+        "correct": 1301,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-196.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 197,
+        "em": 0.5171875,
+        "correct": 1324,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-197.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 198,
+        "em": 0.5328125,
+        "correct": 1364,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-198.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 199,
+        "em": 0.4796875,
+        "correct": 1228,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-199.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      },
+      {
+        "iteration": 200,
+        "em": 0.50234375,
+        "correct": 1286,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/713379/completed-outer-200.json",
+        "expected_job": "713379",
+        "actual_job": "713379"
+      }
+    ],
+    "excluded": [
+      {
+        "iteration": 6,
+        "em": 0.28828125,
+        "correct": 738,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-6.json",
+        "expected_job": "709923",
+        "actual_job": "709265",
+        "reason": "discarded interval from superseded job; canonical recovery lineage recomputed this iteration"
+      },
+      {
+        "iteration": 7,
+        "em": 0.26875,
+        "correct": 688,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-7.json",
+        "expected_job": "709923",
+        "actual_job": "709265",
+        "reason": "discarded interval from superseded job; canonical recovery lineage recomputed this iteration"
+      },
+      {
+        "iteration": 8,
+        "em": 0.259375,
+        "correct": 664,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-8.json",
+        "expected_job": "709923",
+        "actual_job": "709265",
+        "reason": "discarded interval from superseded job; canonical recovery lineage recomputed this iteration"
+      },
+      {
+        "iteration": 9,
+        "em": 0.273046875,
+        "correct": 699,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-9.json",
+        "expected_job": "709923",
+        "actual_job": "709265",
+        "reason": "discarded interval from superseded job; canonical recovery lineage recomputed this iteration"
+      },
+      {
+        "iteration": 10,
+        "em": 0.253125,
+        "correct": 648,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-10.json",
+        "expected_job": "709923",
+        "actual_job": "709265",
+        "reason": "discarded interval from superseded job; canonical recovery lineage recomputed this iteration"
+      },
+      {
+        "iteration": 11,
+        "em": 0.305859375,
+        "correct": 783,
+        "path": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/runtime/cosearch-instruct200-common-em-20261011/common-scoring-v4/common-training/709265/completed-outer-11.json",
+        "expected_job": "709923",
+        "actual_job": "709265",
+        "reason": "discarded interval from superseded job; canonical recovery lineage recomputed this iteration"
+      }
+    ],
+    "validation": {
+      "iterations_1_through_200_unique": true,
+      "no_failed_interval_709923_after100": true
+    }
+  },
+  "gigpo": {
+    "same_run_identity_verified": true,
+    "historical_source": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/training-and-fixed512-em-20261014-2030/metrics-and-evidence.json",
+      "sha256": "f3d5f2ea9e6ac3dde719f5c44593659e8fad7cd8a1c5406ff52c9a7f6399d201"
+    },
+    "sourcebound_historical_range": [
+      51,
+      200
+    ],
+    "historical_per_iteration_source_sha_present": true,
+    "fresh_overlap_point_count": 12,
+    "max_overlap_float_difference": 1.1920928966180355e-08,
+    "recommendation": "Use sourcebound historical51..200 with the12 freshly checked points overriding float approximations. Leave1..50 absent; do not assert they were re-read this round."
+  }
+}
