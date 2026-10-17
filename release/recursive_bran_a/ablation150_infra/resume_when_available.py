@@ -87,7 +87,7 @@ def run(request_path):
         # Small, explicitly observed resident probes may coexist. Do not wait
         # for an empty machine when the frozen production preflight allows it.
         allowed = r.get('allowed_resident_probes', [])
-        resident_ok = all(not absent(x) for x in allowed)
+        resident_ok = all(not absent(x) for x in allowed if x['pid'] in observed)
         ready = (apps.returncode == 0 and resident_ok
                  and observed <= {x['pid'] for x in allowed}
                  and len(free) == 8 and min(free) >= 65536)
