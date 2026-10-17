@@ -1,3 +1,7 @@
+## Consolidated incident audit, 2026-10-17
+
+[合并事故报告](CONSOLIDATED-INCIDENT-REPORT-20261017.md) merges the human-specified cross-experiment report with this thread's actual audits. The current run is **not a clean selection-only comparison**: rollout/QA interaction, actor reduction weights and grounding-refit lifecycle differ. Round0 was actually fitted in parent15bb (300 calibration questions, 944 valid commit trajectories, actual log/report/head SHA verified); current a008 imports it, but omits later50/100/150 reward-grounding refits. Monitor-call, precision and action-termination differences are recorded with evidence limits. Existing QA scores are preserved; diagnostic answer extraction is not rescoring. No runtime, scorer or training change was made. Input report snapshots and exact SHA are retained in consolidated-audit-sources/manifest.json.
+
 ## Final51713 input reference prepared, no QA inference (UTC2026-10-17T04:11)
 
 A CPU-only remote read bound the original final.parquet SHA55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1 to the actual frozen C22 eval.load_questions function (readerSHA410c0bc40aba701ad02218741460998d867c375b5daf5823f2a7b5ffc29cda96). The6445844B parquet yields51713 unique question identities with every ordinal0..51712. Source configSHA6e164ce0... matches the active run. No model forward, GPU inference or question/trajectory transfer to Mac occurred.
