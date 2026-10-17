@@ -20,7 +20,7 @@ def validate_config(c, base):
         raise ValueError('Use the isolated remote prefix-selection namespace')
     required = dict(outers=200, candidate_questions=5120, selected_questions=512,
                     responses_per_question=5, prefix_policy_tokens=20, exploration_questions=0,
-                    probe_learning_rate=1e-5, probe_epochs_per_update=1, probe_update_period=20,
+                    probe_learning_rate=1e-6, probe_epochs_per_update=1, probe_update_period=20,
                     probe_updates_per_period=100, actor_hidden_native=True, probe_global_batch_average=256,
                     actor_global_mini_batch=128, actor_ppo_epochs=1, world_size=8)
     if any(c.get(k) != v for k, v in required.items()):
@@ -31,6 +31,8 @@ def validate_config(c, base):
         raise ValueError('Official actor/ref/encoder revision differs')
     if len(set(c['physical_gpu_uuids'])) != 8:
         raise ValueError('Eight actual physical GPUs are required')
+    from .grounding import validate_config as validate_grounding
+    validate_grounding(c)
     for key in ('environment_root', 'model_dir', 'official_model_dir', 'encoder_model_dir',
                 'canonical_train', 'source_question_pool', 'probe_source_checkpoint',
                 'fixed_test_features', 'retrieval_index', 'retrieval_corpus', 'grounding_manifest'):
@@ -140,6 +142,7 @@ def run(base):
     conf = str(base / 'preparation/launch-config.json')
     outer = int(c.get('resume_joint', {}).get('completed_outer', 0))
     services = {}; success = False; timings = {}; actor_micro = c['actor_global_micro_batch_size']
+    grounding_state = None
     if outer:
         from .resume import validate_imported_boundary
         validate_imported_boundary(base, c)
@@ -193,6 +196,47 @@ def run(base):
                 raise TimeoutError('Own service did not become ready: ' + name)
             time.sleep(3)
 
+    def start_grounding(state):
+        from . import grounding
+        live = grounding.publish_live(base, c, state)
+        replicas = []
+        for rank in range(8):
+            name = 'grounding-%06d-rank-%d' % (state['round'], rank)
+            services[name] = start(name, [python, 'probe_server.py', '--manifest', str(live),
+                '--port', str(c['grounding_probe_base_port'] + rank)],
+                dict(env, CUDA_VISIBLE_DEVICES=str(rank),
+                     SEARCH_G1_BASE=str(base / 'grounding' / ('rank-%d' % rank)), OMP_NUM_THREADS='2'))
+        for rank in range(8):
+            name = 'grounding-%06d-rank-%d' % (state['round'], rank)
+            actual = await_service(name, 'http://127.0.0.1:%d/health' % (c['grounding_probe_base_port'] + rank),
+                dict(version=state['version'], round=state['round'], encoder=state['encoder']))
+            replicas.append(dict(actual, rank=rank, owned_service=name, pid=services[name].pid))
+        return grounding.adopt(base, c, state, replicas)
+
+    def refresh_grounding(completed):
+        nonlocal grounding_state
+        from . import grounding
+        if completed not in grounding.REFIT_ROUNDS:
+            return
+        if grounding_state['round'] != completed:
+            stage('GROUNDING_REFIT_REQUIRED', complete_outer=completed)
+            # Free only our old eight evaluator replicas before fitting the
+            # original boundary/commit heads against this saved actor version.
+            for name in [key for key in services if key.startswith('grounding-')]:
+                owned.stop(name); services.pop(name)
+            phase('outer-%06d-grounding-refit' % completed,
+                [python, '-m', 'reproduction.prefix_selection200.grounding', '--base', str(base),
+                 '--outer', str(completed)])
+            fitted = read(base / 'grounding/rounds' / ('round-%06d' % completed) / 'fit-complete.json')
+            grounding_state = start_grounding(fitted)
+        # Immutable next-update binding is separate from the already committed
+        # actor/probe joint state. Recovery at50 resumes50 and completes/adopts
+        # its pending refit; it never repeats the actor update or skips refit.
+        path = base / 'outers' / ('outer-%06d' % completed) / 'grounding-refresh.json'
+        if not path.exists():
+            once(path, dict(run_id=c['run_id'], outer=completed, grounding=grounding_state,
+                            required_before_outer=completed + 1))
+
     previous_qa = Path(c.get('resume_joint', {}).get('source_base', str(base))) / 'logs/qa-pending.json'
     pending_qa = read(previous_qa) if previous_qa.is_file() else {}
 
@@ -214,7 +258,8 @@ def run(base):
         phase('probe-initialize-model-only', [python, '-m', 'reproduction.prefix_selection200.probe', 'initialize',
             '--state-dir', str(base / 'probe'), '--source-checkpoint', c['probe_source_checkpoint'],
             '--source-sha256', c['probe_source_sha256'], '--run-id', c['run_id'],
-            '--test-cache', c['fixed_test_features'], '--test-manifest-sha', c['fixed_test_manifest_sha256']],
+            '--test-cache', c['fixed_test_features'], '--test-manifest-sha', c['fixed_test_manifest_sha256'],
+            '--learning-rate', str(c['probe_learning_rate'])],
             dict(env, CUDA_VISIBLE_DEVICES=''))
         stage('STARTING_RETRIEVER_AND_EIGHT_GROUNDING_REPLICAS')
         env_root = Path(c['environment_root'])
@@ -226,15 +271,10 @@ def run(base):
             '--data-cache', c.get('retrieval_data_cache', str(base / 'retrieval-cache')),
             '--batch-queries', str(c.get('retrieval_batch_queries', 1024))],
             dict(env, PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
-        for rank in range(8):
-            name = 'grounding-rank-%d' % rank
-            services[name] = start(name, [python, 'probe_server.py', '--manifest', c['grounding_manifest'],
-                '--port', str(c['grounding_probe_base_port'] + rank)],
-                dict(env, CUDA_VISIBLE_DEVICES=str(rank), SEARCH_G1_BASE=str(base / 'grounding' / ('rank-%d' % rank)), OMP_NUM_THREADS='2'))
         await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=8))
-        for rank in range(8):
-            await_service('grounding-rank-%d' % rank, 'http://127.0.0.1:%d/health' % (c['grounding_probe_base_port'] + rank),
-                dict(version=c['grounding_probe_version']))
+        from . import grounding
+        grounding_state = start_grounding(grounding.initialize(base, c))
+        refresh_grounding(outer)
         # Retry the interrupted milestone QA with its saved actor, then continue
         # from the joint actor/probe/pool boundary without redoing any updates.
         if outer in (5, 50, 100, 150, 200):
@@ -287,7 +327,7 @@ def run(base):
             from .actor import collect_oom_retry
             attempt_id = uuid.uuid4().hex
             while True:
-                attempt_config = dict(c, actor_attempt_id=attempt_id,
+                attempt_config = dict(grounding.bind_attempt(c, grounding_state, actor, outer), actor_attempt_id=attempt_id,
                     actor_global_micro_batch_size=actor_micro,
                     pool_state_path=str(base / 'question-pool/state.json'),
                     prefix_probe_receipt=str(base / 'probe/latest.json'))
@@ -329,22 +369,28 @@ def run(base):
             once(snapshot, read(base / 'question-pool/state.json'))
             probe_snapshot = root / 'probe-state-at-completion.pt'
             os.link(base / 'probe/latest.pt', probe_snapshot)
+            grounding_snapshot = root / 'grounding-state-at-completion.json'
+            once(grounding_snapshot, grounding_state)
             complete = dict(run_id=c['run_id'], outer=outer, actor=actor, probe=probe,
                 probe_snapshot=str(probe_snapshot), pool_snapshot=str(snapshot), pool_sha256=sha(snapshot),
                 selection_sha256=sha(root / 'probe-score/selection.json'), rollout=read(root / 'full/complete.json'),
                 probe_metrics=probe_metrics, periodic_probe_update=periodic_update,
-                probe_boundary=probe_boundary(outer), source_commit=c['source_commit'], observed_unix=time.time())
+                probe_boundary=probe_boundary(outer), source_commit=c['source_commit'], observed_unix=time.time(),
+                grounding=grounding_state, grounding_snapshot=str(grounding_snapshot),
+                grounding_snapshot_sha256=sha(grounding_snapshot),
+                grounding_refresh_due=outer if outer in grounding.REFIT_ROUNDS else None)
             complete['phase_timings'] = {key: value for key,value in timings.items() if key.startswith('outer-%06d-' % outer)}
             once(root / 'complete.json', complete)
             publish(base / 'latest-joint.json', complete)
             stage('OUTER_JOINT_COMPLETE', complete_outer=outer, actor_adam_per_rank=20 * outer,
                   probe_adam_per_rank=probe_boundary(outer)['actual_adam_per_rank'])
-            # The evaluation module retains the earlier confirmed legacy QA protocol.
+            # Training and validation use the same approved interaction protocol.
             if outer in (5, 50, 100, 150, 200):
                 evaluation_config = root / 'evaluation-config.json'
                 once(evaluation_config, dict(c, actor_version=actor['actor_version']))
                 validation(outer, actor['hf_model_dir'], evaluation_config, root/'validation',
                            'outer-%06d-validation' % outer)
+            refresh_grounding(outer)
             # Only completed run-owned derived features are removable; retain tokens/labels.
             from .storage import prune_completed
             try:

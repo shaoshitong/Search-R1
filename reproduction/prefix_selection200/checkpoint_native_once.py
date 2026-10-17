@@ -103,13 +103,54 @@ def inspect(base,outer):
          and pool['consumed_candidates']==5120*outer and pool['cycle']*size+pool['cursor']==5120*outer,
          'Saved question pool/permutation/cycle/cursor differs from completed outer')
     files.append(hash_file(owned(base,joint['pool_snapshot'])))
+    grounding_lifecycle = None
+    if config.get('grounding_refresh_enabled'):
+        from .grounding import validate_joint, recovery_state, expected_round
+        used = validate_joint(config, joint)
+        effective = recovery_state(base, config, joint)
+        assets = {}
+        metadata = {joint['grounding_snapshot']}
+        for state in (used, effective):
+            path = Path(state['manifest_path']); manifest = read(path)
+            metadata.add(str(path))
+            if state.get('adoption_receipt'):
+                metadata.add(state['adoption_receipt'])
+            fitted = path.parent / 'fit-complete.json'
+            if fitted.is_file(): metadata.add(str(fitted))
+            for name, digest in state['encoder_sha256'].items():
+                file = Path(state['encoder']) / name
+                assets[str(file)] = dict(path=str(file), bytes=file.stat().st_size, sha256=digest,
+                    sha256_source='actual_saved_grounding_manifest_producer_not_independent_cpu_read')
+            for key, name in (('boundary', 'boundary_probe.pkl'), ('commit', 'commit_probe.pkl')):
+                file = Path(state[key]); digest = state['head_sha256'][name]
+                item = dict(path=str(file), bytes=file.stat().st_size, sha256=digest,
+                    sha256_source='actual_saved_grounding_manifest_producer_not_independent_cpu_read')
+                assets[str(file)] = item
+        refresh = root / 'grounding-refresh.json'
+        if refresh.is_file(): metadata.add(str(refresh))
+        calibration = Path(config['grounding_calibration_questions'])
+        assets[str(calibration)] = dict(path=str(calibration), bytes=calibration.stat().st_size,
+            sha256=config['grounding_calibration_sha256'],
+            sha256_source='bound_calibration_source_not_independent_cpu_read')
+        existing = {item['path'] for item in files}
+        # Read the actual small state/manifest/head bytes; do not repeatedly
+        # hash the large immutable evaluator encoder already saved by actor or
+        # retained as the separately backed-up official/fixed recovery asset.
+        for path in sorted(metadata | {state[key] for state in (used, effective) for key in ('boundary', 'commit')}):
+            if path not in existing:
+                files.append(hash_file(Path(path), assets.get(path)))
+        grounding_lifecycle = dict(used=used, effective_for_next_actor=effective,
+            refit_pending_before_next_actor=(effective['round'] != expected_round(outer)
+                                             or 'adoption_receipt' not in effective),
+            assets=list(assets.values()), encoder_semantic_reload_performed=False)
     result=dict(status='NATIVE_ACTOR_PERIODIC_PROBE_JOINT_FULL_SHA_CPU_PASS',run_id=config['run_id'],outer=outer,
         actor_actual_adam_steps_per_rank=[20*outer]*8,probe_actual_adam_steps_per_rank=[steps]*8,
         probe_last_update_outer=boundary['last_update_outer'],actor_rank_cpu_states=ranks,
         probe_fp32_tensors=14,probe_fp32_adam_states=adam,files=files,
         pool_next_outer=pool['next_outer'],pool_consumed_candidates=pool['consumed_candidates'],
         actual_selection_binding=selection_binding,
-        gpu_forward_performed=False,cuda_rng_applied=False,independent_backup_performed=False)
+        gpu_forward_performed=False,cuda_rng_applied=False,independent_backup_performed=False,
+        grounding_lifecycle=grounding_lifecycle)
     with proof.open('x') as f:json.dump(result,f,sort_keys=True);f.flush();os.fsync(f.fileno())
     return dict(status=result['status'],proof=str(proof),sha256=hash_file(proof)['sha256'],outer=outer,
                 actor_actual_adam_steps_per_rank=[20*outer]*8,probe_actual_adam_steps_per_rank=[steps]*8)

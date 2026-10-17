@@ -20,19 +20,29 @@ import sys
 import time
 
 try:
-    from .checkpoint_backup_native import (MOUNT, PARENT, RUN, RATE, RESERVE,
+    from .checkpoint_backup_native import (MOUNT, PARENT, RATE, RESERVE, run_identity, checkpoint_namespace,
         exported, full_read, need, read, record, sha, utc)
 except ImportError:
-    from checkpoint_backup_native import (MOUNT, PARENT, RUN, RATE, RESERVE,
+    from checkpoint_backup_native import (MOUNT, PARENT, RATE, RESERVE, run_identity, checkpoint_namespace,
         exported, full_read, need, read, record, sha, utc)
 
-NAME = RUN[:12]+'-terminal-records-once-v1'
+try:
+    from .interaction_contract import evaluation_contract
+except ImportError:
+    from interaction_contract import evaluation_contract
+
+QA_CONTRACT = evaluation_contract()
+
+
+def terminal_namespace(run_id):
+    return PARENT/(run_identity(run_id)[:12]+'-terminal-records-once-v1')
 PASS = 'INDEPENDENT_TERMINAL_RECORDS_FULL_SHA_PASS'
 
 
 def assert_terminal(config, joint, pipeline, cleanup, proof):
     """A supplied terminal receipt must bind the actual sealed run, not intent."""
-    need(config['run_id'] == joint['run_id'] == pipeline['run_id'] == cleanup['run_id'] == proof['run_id'] == RUN,
+    run_id = run_identity(config['run_id'])
+    need(joint['run_id'] == pipeline['run_id'] == cleanup['run_id'] == proof['run_id'] == run_id,
          'Terminal identities differ')
     need(config['outers'] == joint['outer'] == pipeline['complete_outers'] == 200,
          'All200 actually complete before archival')
@@ -50,6 +60,15 @@ def assert_terminal(config, joint, pipeline, cleanup, proof):
     # it; the later two actual release observations are authoritative.
     need({row['role'] for row in proof['evidence']} >=
          {'native_terminal','owned_release_first','owned_release_second'}, 'Original terminal/release evidence is missing')
+
+
+def assert_evaluation_contract(result, worker=None):
+    need(result['evaluation_contract'] == QA_CONTRACT, 'QA does not use the shared new interaction contract')
+    if worker is not None:
+        need(worker['actor_version'] == result['actor_version']
+             and worker['evaluation_contract'] == QA_CONTRACT
+             and worker['actual_compute_dtype'] == 'torch.bfloat16',
+             'Actual QA worker actor/shared-BF16 contract differs')
 
 
 def canonical_rows(original):
@@ -146,13 +165,15 @@ def inventory(base, proof_path, proof_sha256):
     need(socket.gethostname() == 'h100-8', 'Prepare sealed records on the source node')
     base = allowed_base(base); proof_path = Path(proof_path)
     need(base in proof_path.parents and sha(proof_path) == proof_sha256, 'Pinned actual terminal proof differs')
-    c = read(base/'preparation/launch-config.json'); joint = read(base/'latest-joint.json')
+    c = read(base/'preparation/launch-config.json'); run_id = run_identity(c['run_id'])
+    need(c['base'] == str(base), 'Pinned config namespace differs')
+    joint = read(base/'latest-joint.json')
     pipeline = read(base/'logs/pipeline-complete.json'); cleanup = read(base/'logs/cleanup-status.json')
     proof = read(proof_path); assert_terminal(c,joint,pipeline,cleanup,proof)
     submitted=read(base/'preparation/submit-receipt.json');intent=read(base/'preparation/submit-intent.json')
     need(submitted['status']=='SUBMITTED' and submitted['returncode']==0
          and submitted['intent_sha256']==sha(base/'preparation/submit-intent.json')
-         and intent['run_id']==RUN and str(proof['native']['JobId'])==str(submitted['job_id'])
+         and intent['run_id']==run_id and str(proof['native']['JobId'])==str(submitted['job_id'])
          and proof['native']['JobName']==intent['job_name'], 'Native exit proof is not the actual submitted job')
     need(read(base/'logs/qa-pending.json') == {}, 'Actual scheduled QA failures remain pending')
     sys.path.insert(0,str(base/'repo'))
@@ -161,7 +182,7 @@ def inventory(base, proof_path, proof_sha256):
     bases = {base}; points = []; metadata = []; saved_by_outer = {}
     for outer in range(1,201):
         path = base/'outers'/('outer-%06d'%outer)/'complete.json'; saved = read(path)
-        need(saved['run_id'] == RUN and saved['outer'] == outer
+        need(saved['run_id'] == run_id and saved['outer'] == outer
              and saved['actor']['actual_adam_steps_per_rank'] == [20*outer]*8
              and saved['probe']['actual_adam_steps_per_rank'] == [100*(outer//20)]*8,
              'A logical outer lacks its correct completed optimizer boundary')
@@ -170,7 +191,7 @@ def inventory(base, proof_path, proof_sha256):
         need(source_outer.parent.parent == source and source_outer.name == 'outer-%06d'%outer,
              'Inherited original record is not the same logical outer')
         actual = read(source_outer/'complete.json')
-        need(actual['run_id'] == RUN and actual['outer'] == outer
+        need(actual['run_id'] == run_id and actual['outer'] == outer
              and actual['selection_sha256'] == saved['selection_sha256'], 'Inherited joint identity differs')
         row = summarize_outer(source_outer/'complete.json')
         need(row['actor_actual_adam_per_rank'] == [20*outer]*8, 'Actual inherited actor boundary differs')
@@ -181,7 +202,7 @@ def inventory(base, proof_path, proof_sha256):
     pending = list(bases)
     while pending:
         source = pending.pop(); cfg = read(source/'preparation/launch-config.json')
-        need(cfg['run_id'] == RUN, 'History belongs to another experiment')
+        need(cfg['run_id'] == run_id, 'History belongs to another experiment')
         parent = cfg.get('resume_joint',{}).get('source_base')
         if parent:
             parent = allowed_base(parent)
@@ -204,7 +225,8 @@ def inventory(base, proof_path, proof_sha256):
     files.tree(base/'final-evaluation','full_final_evaluation')
 
     final = read(base/'final-evaluation/complete.json')
-    need(final['actor_version'] == joint['actor']['actor_version'] and final['evaluation_contract']['kind'] == 'legacy_pre_d00_async_fp32'
+    assert_evaluation_contract(final)
+    need(final['actor_version'] == joint['actor']['actor_version']
          and final['actual_worker_exit_codes'] == {str(i):0 for i in range(8)}, 'Actual final actor/protocol/worker exits differ')
     need(sha(c['final_questions']) == c['final_questions_sha256'] == final['question_source_sha256'], 'Canonical final input changed')
     import pyarrow.parquet as pq
@@ -219,8 +241,7 @@ def inventory(base, proof_path, proof_sha256):
         for receipt in result['rank_receipts']:
             files.add(receipt['path'],'actual_evaluation_worker_receipt',receipt['sha256'])
             worker=read(receipt['path'])
-            need(worker['actor_version']==result['actor_version'] and worker['evaluation_contract']==result['evaluation_contract']
-                 and worker['actual_compute_dtype']=='torch.float32','Actual QA worker actor/FP32 contract differs')
+            assert_evaluation_contract(result,worker)
             worker_rows.extend(worker['rows'])
         return worker_rows
     rows=evaluation_artifacts(final)
@@ -239,7 +260,7 @@ def inventory(base, proof_path, proof_sha256):
             candidates += list((source/'validation-retries').glob('outer-%06d-*/complete.json'%outer))
         expected_model = saved_by_outer[outer]['actor']['hf_model_dir']
         matching = [(p,read(p)) for p in candidates
-                    if read(p).get('actor_version') == RUN+'-actor%04d'%outer
+                    if read(p).get('actor_version') == run_id+'-actor%04d'%outer
                     and read(p).get('actor_model_dir') == expected_model]
         need(matching, 'Scheduled validation original receipt missing')
         path,value = matching[-1]
@@ -255,7 +276,7 @@ def inventory(base, proof_path, proof_sha256):
         files.add(item['path'],'native_terminal_original_evidence',item['sha256'])
     need(sha(proof_path) == proof_sha256,'Terminal proof changed during inventory')
     payloads = files.files()
-    return dict(status='SEALED_TERMINAL_RECORDS_INVENTORY_ONLY',run_id=RUN,source_base=str(base),
+    return dict(status='SEALED_TERMINAL_RECORDS_INVENTORY_ONLY',run_id=run_id,source_base=str(base),
         terminal_proof_sha256=proof_sha256,created_utc=utc(),files=payloads,
         bytes=sum(r['bytes'] for r in payloads),original_path_count=sum(len(r['original_paths']) for r in payloads),
         original_hard_links_deduplicated=True,complete_outers=200,final_qa_count=51713,
@@ -263,22 +284,25 @@ def inventory(base, proof_path, proof_sha256):
         independent_backup_performed=False,training_modified=False,semantic_reload_performed=False)
 
 
-def dependencies_pass():
+def dependencies_pass(run_id):
+    run_id = run_identity(run_id)
     for outer in (5,50,100,150,200):
-        root=PARENT/(RUN[:12]+'-outer-%04d-once-v1'%outer)
+        root=checkpoint_namespace(run_id,outer)
         result=read(root/'RESULT.json')
-        need(result['status']=='INDEPENDENT_PREFIX200_JOINT_BACKUP_FULL_SHA_PASS' and result['run_id']==RUN
+        need(result['status']=='INDEPENDENT_PREFIX200_JOINT_BACKUP_FULL_SHA_PASS' and result['run_id']==run_id
              and result['outer']==outer,'Normal independent checkpoint copy is unfinished')
-    fixed=read(PARENT/(RUN[:12]+'-fixed-recovery-assets-once-v1')/'RESULT.json')
-    need(fixed['status']=='INDEPENDENT_FIXED_RECOVERY_ASSETS_FULL_SHA_PASS' and fixed['run_id']==RUN,
+    fixed=read(PARENT/(run_id[:12]+'-fixed-recovery-assets-once-v1')/'RESULT.json')
+    need(fixed['status']=='INDEPENDENT_FIXED_RECOVERY_ASSETS_FULL_SHA_PASS' and fixed['run_id']==run_id,
          'Fixed recovery dependency copy is unfinished')
 
 
 def worker(root):
-    root=Path(root);need(socket.gethostname()=='h100-10' and root==PARENT/NAME and root.resolve()==root,'Wrong archival destination')
-    intent=read(root/'INTENT.json');need(sha(__file__)==intent['worker_sha256'] and sha(Path(__file__).with_name('checkpoint_backup_native.py'))==intent['common_sha256'],'Published archive control changed')
-    dependencies_pass();path=exported(intent['inventory_path']);need(sha(path)==intent['inventory_sha256'],'Sealed inventory changed')
-    plan=read(path);need(plan['run_id']==RUN and plan['status']=='SEALED_TERMINAL_RECORDS_INVENTORY_ONLY' and plan['complete_outers']==200,'Wrong sealed run')
+    root=Path(root);intent=read(root/'INTENT.json');run_id=run_identity(intent['run_id'])
+    need(socket.gethostname()=='h100-10' and root==terminal_namespace(run_id) and root.resolve()==root,'Wrong archival destination')
+    need(sha(__file__)==intent['worker_sha256'] and sha(Path(__file__).with_name('checkpoint_backup_native.py'))==intent['common_sha256']
+         and sha(Path(__file__).with_name('interaction_contract.py'))==intent['interaction_contract_sha256'],'Published archive control changed')
+    dependencies_pass(run_id);path=exported(intent['inventory_path']);need(sha(path)==intent['inventory_sha256'],'Sealed inventory changed')
+    plan=read(path);need(plan['run_id']==run_id and plan['status']=='SEALED_TERMINAL_RECORDS_INVENTORY_ONLY' and plan['complete_outers']==200,'Wrong sealed run')
     need(subprocess.check_output(['findmnt','-n','-T',str(root),'-o','FSTYPE'],text=True).strip()=='ext4','Independent local ext4 required')
     need(os.statvfs(root).f_bavail*os.statvfs(root).f_frsize>=plan['bytes']+RESERVE,'Ordinary free reserve required')
     os.nice(19);staging=root/'records.partial';staging.mkdir();copied=[]
@@ -305,13 +329,13 @@ def worker(root):
     with(staging/'INVENTORY.json').open('xb')as out:out.write(inventory_raw);out.flush();os.fsync(out.fileno())
     need(sha(staging/'INVENTORY.json')==intent['inventory_sha256'],'Independent inventory metadata copy differs')
     mapping={name:r['relative_path']for r in copied for name in r['original_paths']}
-    record(staging,'RESTORE_MAPPING.json',dict(run_id=RUN,mapping=mapping))
+    record(staging,'RESTORE_MAPPING.json',dict(run_id=run_id,mapping=mapping))
     for directory in sorted([staging]+[p for p in staging.rglob('*')if p.is_dir()],key=lambda p:len(p.parts),reverse=True):
         fd=os.open(directory,os.O_RDONLY)
         try:os.fsync(fd)
         finally:os.close(fd)
     need(not(root/'records').exists(),'Do not overwrite a previous archive');os.rename(staging,root/'records')
-    result=dict(status=PASS,run_id=RUN,completed_utc=utc(),files=copied,bytes=plan['bytes'],
+    result=dict(status=PASS,run_id=run_id,completed_utc=utc(),files=copied,bytes=plan['bytes'],
         original_path_count=len(mapping),inventory_sha256=intent['inventory_sha256'],
         restore_mapping_sha256=sha(root/'records/RESTORE_MAPPING.json'),source_bases_preserved=True,
         generated_metadata_files=['INVENTORY.json','RESTORE_MAPPING.json'],
@@ -322,24 +346,27 @@ def worker(root):
 
 def launch(root, inventory_path, inventory_sha256, code_commit):
     """Called on10 only after actual native0 and all prerequisite copies pass."""
-    root=Path(root);need(socket.gethostname()=='h100-10' and root==PARENT/NAME
+    path=exported(inventory_path);need(sha(path)==inventory_sha256,'Prepared inventory SHA differs')
+    plan=read(path);run_id=run_identity(plan['run_id'])
+    root=Path(root);need(socket.gethostname()=='h100-10' and root==terminal_namespace(run_id)
         and root.parent.resolve()==root.parent,'Wrong archive namespace')
     need(re.fullmatch(r'[0-9a-f]{40}',code_commit) is not None,'Published full source commit required')
     with(PARENT/'terminal-records-start.lock').open('a')as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         if root.exists():return dict(status='EXISTING_NAMESPACE_RECONCILE_NO_REPLAY',namespace=str(root))
-        dependencies_pass();path=exported(inventory_path)
+        dependencies_pass(run_id);path=exported(inventory_path)
         need(sha(path)==inventory_sha256,'Prepared inventory SHA differs')
-        plan=read(path);need(plan['run_id']==RUN and plan['status']=='SEALED_TERMINAL_RECORDS_INVENTORY_ONLY'
+        plan=read(path);need(plan['run_id']==run_id and plan['status']=='SEALED_TERMINAL_RECORDS_INVENTORY_ONLY'
             and plan['complete_outers']==200 and plan['final_qa_count']==51713,'Actual sealed experiment required')
         need(os.statvfs(PARENT).f_bavail*os.statvfs(PARENT).f_frsize>=plan['bytes']+RESERVE,'Ordinary free reserve required')
         root.mkdir(mode=0o700)
-        for name in('terminal_records_archive.py','checkpoint_backup_native.py'):
+        for name in('terminal_records_archive.py','checkpoint_backup_native.py','interaction_contract.py'):
             code=Path(__file__).with_name(name).read_bytes()
             with(root/name).open('xb')as f:f.write(code);f.flush();os.fsync(f.fileno())
             need(sha(root/name)==hashlib.sha256(code).hexdigest(),'Published control write differs')
-        intent=dict(run_id=RUN,inventory_path=str(inventory_path),inventory_sha256=inventory_sha256,
+        intent=dict(run_id=run_id,inventory_path=str(inventory_path),inventory_sha256=inventory_sha256,
             worker_sha256=sha(root/'terminal_records_archive.py'),common_sha256=sha(root/'checkpoint_backup_native.py'),
+            interaction_contract_sha256=sha(root/'interaction_contract.py'),
             code_commit=code_commit,expected_files=len(plan['files']),expected_bytes=plan['bytes'],created_utc=utc())
         with(root/'INTENT.json').open('x')as f:json.dump(intent,f,sort_keys=True);f.flush();os.fsync(f.fileno())
         with(root/'archive.log').open('xb')as log:
@@ -347,7 +374,7 @@ def launch(root, inventory_path, inventory_sha256, code_commit):
                 stdin=subprocess.DEVNULL,stdout=log,stderr=log,start_new_session=True,
                 env={'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C','CUDA_VISIBLE_DEVICES':''})
         fields=(Path('/proc')/str(child.pid)/'stat').read_text().rsplit(')',1)[1].split()
-        receipt=dict(status='TERMINAL_RECORD_COPY_STARTED_NOT_COMPLETE',run_id=RUN,namespace=str(root),
+        receipt=dict(status='TERMINAL_RECORD_COPY_STARTED_NOT_COMPLETE',run_id=run_id,namespace=str(root),
             pid=child.pid,start_ticks=int(fields[19]),sid=os.getsid(child.pid),expected_files=len(plan['files']),
             expected_bytes=plan['bytes'],bytes_per_second_limit=RATE,ordinary_reserve_bytes=RESERVE,
             semantic_reload_performed=False,training_modified=False,model_bytes_transit_Mac=False)
@@ -357,9 +384,12 @@ def launch(root, inventory_path, inventory_sha256, code_commit):
 
 def status(root, final_readback=False):
     """Only small summaries leave10; the full original-data inventory stays remote."""
-    root=Path(root);need(socket.gethostname()=='h100-10' and root==PARENT/NAME,'Wrong archive status namespace')
+    root=Path(root);need(socket.gethostname()=='h100-10' and root.parent==PARENT
+        and re.fullmatch(r'[0-9a-f]{12}-terminal-records-once-v1',root.name) is not None,'Wrong archive status namespace')
     result=dict(namespace=str(root),exists=root.exists(),read_only=True)
     if not root.exists():return result
+    intent=read(root/'INTENT.json');run_id=run_identity(intent['run_id'])
+    need(root==terminal_namespace(run_id),'Archive status namespace differs from original intent')
     for name in('INTENT.json','RECEIPT.json','PROGRESS.json','ERROR.json'):
         if(root/name).exists():result[name]=read(root/name)
     if 'RECEIPT.json'in result:

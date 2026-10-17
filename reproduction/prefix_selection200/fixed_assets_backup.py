@@ -14,16 +14,19 @@ import subprocess
 import time
 
 try:
-    from .checkpoint_backup_native import (MOUNT, PARENT, RUN, RESERVE, RATE,
+    from .checkpoint_backup_native import (MOUNT, PARENT, RESERVE, RATE, run_identity, checkpoint_namespace,
         exported, full_read, need, read, record, sha, signature, utc)
 except ImportError:  # Published standalone CPU control bundle on the remote hosts.
-    from checkpoint_backup_native import (MOUNT, PARENT, RUN, RESERVE, RATE,
+    from checkpoint_backup_native import (MOUNT, PARENT, RESERVE, RATE, run_identity, checkpoint_namespace,
         exported, full_read, need, read, record, sha, signature, utc)
 
 STAGE = Path('/mnt/data/shaoshitong/search-g1-qprobe3-h1008-003a0b0-20261015-v3/backup-dependencies/official-model-once-v1')
 E5_ALIAS = Path('/mnt/data/shaoshitong/search-r1-rl/gigpo/assets-root/assets/e5-base-v2')
-NAME = RUN[:12] + '-fixed-recovery-assets-once-v1'
 PASS = 'INDEPENDENT_FIXED_RECOVERY_ASSETS_FULL_SHA_PASS'
+
+
+def fixed_namespace(run_id):
+    return PARENT/(run_identity(run_id)[:12]+'-fixed-recovery-assets-once-v1')
 
 
 def safe_original(path):
@@ -40,8 +43,8 @@ def inventory(base):
     need(socket.gethostname() == 'h100-8' and base.parent == Path('/mnt/data/shaoshitong')
          and base.name.startswith('search-g1-prefix-selection200-actorhidden20-'), 'Wrong source')
     config_path = base/'preparation/launch-config.json'
-    c = read(config_path)
-    need(c['run_id'] == RUN and c['actor_hidden_native'] and c['probe_learning_rate'] == 1e-5,
+    c = read(config_path); run_id = run_identity(c['run_id'])
+    need(c['base'] == str(base) and c['actor_hidden_native'] and c['probe_learning_rate'] == 1e-5,
          'Use the current actor-hidden/LR authorization')
     rows = {}
 
@@ -105,7 +108,7 @@ def inventory(base):
     if archive: add(archive, Path(archive).resolve(), 'original_grounding_manifest_provenance', sha(archive))
     for path in (config_path, base/'preparation/source-files.json'):
         add(path, path, 'frozen_runtime_binding', sha(path))
-    return dict(status='FIXED_RECOVERY_ASSETS_INVENTORY_ONLY', run_id=RUN, source_base=str(base),
+    return dict(status='FIXED_RECOVERY_ASSETS_INVENTORY_ONLY', run_id=run_id, source_base=str(base),
         source_config_sha256=sha(config_path), files=sorted(rows.values(), key=lambda r:r['original_path']),
         bytes=sum(r['bytes'] for r in rows.values()), source_host='h100-8', created_utc=utc(),
         official_staging_original_run_id=stage['run_id'], official_staging_proof_sha256=sha(STAGE/'RESULT.json'),
@@ -115,7 +118,8 @@ def inventory(base):
 
 
 def admitted_rows(plan):
-    need(plan['status'] == 'FIXED_RECOVERY_ASSETS_INVENTORY_ONLY' and plan['run_id'] == RUN, 'Wrong inventory')
+    run_identity(plan['run_id'])
+    need(plan['status'] == 'FIXED_RECOVERY_ASSETS_INVENTORY_ONLY', 'Wrong inventory')
     need(plan['files'] and sum(r['bytes'] for r in plan['files']) == plan['bytes'], 'Inventory total differs')
     names = set()
     for row in plan['files']:
@@ -130,12 +134,12 @@ def admitted_rows(plan):
 
 def run(root):
     root = Path(root)
-    need(socket.gethostname() == 'h100-10' and root == PARENT/NAME and root.resolve() == root, 'Wrong independent destination')
-    intent = read(root/'INTENT.json')
+    intent = read(root/'INTENT.json'); run_id = run_identity(intent['run_id'])
+    need(socket.gethostname() == 'h100-10' and root == fixed_namespace(run_id) and root.resolve() == root, 'Wrong independent destination')
     need(sha(__file__) == intent['worker_sha256']
          and sha(Path(__file__).with_name('checkpoint_backup_native.py')) == intent['common_sha256'], 'Published backup control changed')
     os.nice(19)
-    dependency = PARENT/(RUN[:12]+'-outer-0050-once-v1')
+    dependency = checkpoint_namespace(run_id,50)
     # Serialize with the existing copy. Waiting is explicit progress, never a
     # second CP50 launch or an increase in aggregate copy bandwidth.
     while not (dependency/'RESULT.json').exists():
@@ -144,9 +148,12 @@ def run(root):
         need(state and state[0] != 'Z' and int(state[19]) == receipt['start_ticks'], 'CP50 copier is absent; reconcile its result')
         record(root, 'PROGRESS.json', dict(phase='WAIT_EXISTING_CP50_COPY', dependency=str(dependency), utc=utc()))
         time.sleep(60)
-    need(read(dependency/'RESULT.json')['status'] == 'INDEPENDENT_PREFIX200_JOINT_BACKUP_FULL_SHA_PASS', 'CP50 copy did not finish successfully')
+    need(read(dependency/'RESULT.json')['status'] == 'INDEPENDENT_PREFIX200_JOINT_BACKUP_FULL_SHA_PASS'
+         and read(dependency/'RESULT.json')['run_id'] == run_id, 'CP50 copy did not finish successfully')
     need(sha(exported(intent['inventory_path'])) == intent['inventory_sha256'], 'Pinned source inventory changed')
-    plan = read(exported(intent['inventory_path'])); files = list(admitted_rows(plan))
+    plan = read(exported(intent['inventory_path']));
+    need(plan['run_id'] == run_id, 'Inventory run differs from pinned intent')
+    files = list(admitted_rows(plan))
     need(os.statvfs(root).f_bavail*os.statvfs(root).f_frsize >= plan['bytes']+RESERVE, 'Ordinary destination reserve exhausted')
     need(subprocess.check_output(['findmnt','-n','-T',str(root),'-o','FSTYPE'],text=True).strip() == 'ext4', 'Independent local ext4 required')
     staging = root/'checkpoint.partial'; staging.mkdir(); copied = []
@@ -168,14 +175,14 @@ def run(root):
         copied.append(dict(row, relative_path=str(relative), source_full_sha256=digest, destination_full_sha256=actual_sha))
         progress(count, 'verified')
     need(sha(exported(intent['inventory_path'])) == intent['inventory_sha256'], 'Inventory changed during copy')
-    record(staging, 'RESTORE_MAPPING.json', dict(run_id=RUN, mapping={r['original_path']:r['relative_path'] for r in copied}))
+    record(staging, 'RESTORE_MAPPING.json', dict(run_id=run_id, mapping={r['original_path']:r['relative_path'] for r in copied}))
     for directory in sorted([staging]+[p for p in staging.rglob('*') if p.is_dir()],key=lambda p:len(p.parts),reverse=True):
         fd=os.open(directory,os.O_RDONLY)
         try: os.fsync(fd)
         finally: os.close(fd)
     need(not (root/'checkpoint').exists(), 'Never replace a previous final copy')
     os.rename(staging, root/'checkpoint')
-    result=dict(status=PASS, run_id=RUN, completed_utc=utc(), files=copied,
+    result=dict(status=PASS, run_id=run_id, completed_utc=utc(), files=copied,
         bytes=sum(r['bytes'] for r in copied), inventory_sha256=intent['inventory_sha256'],
         semantic_reload_performed=False, all_experiment_backup_complete=False,
         model_bytes_transit_Mac=False, training_modified=False,

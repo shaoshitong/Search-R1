@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import time
 
-from .actor import read, sha, restore_metadata
+from .actor import read, sha, restore_metadata, _state_binding
 from reproduction.prefix20_online.launch import once
 
 
@@ -63,7 +63,17 @@ def boundary(config, joint, actor, probe, pool):
             or pool['next_outer'] != outer + 1 or pool['consumed_candidates'] != 5120 * outer
             or pool['cycle'] * len(pool['order']) + pool['cursor'] != 5120 * outer):
         raise ValueError('Restore only the complete joint actor/probe/candidate boundary')
-    restore_metadata(config, actor, outer + 1)
+    if config.get('grounding_refresh_enabled'):
+        from .grounding import validate_joint
+        validate_joint(config, joint)
+        # At a due milestone the actor state is valid before its refit. The
+        # launcher restores/adopts the new evaluator before the NEXT update.
+        if (actor['binding'] != _state_binding(config)
+                or actor['actual_adam_steps_per_rank'] != [20 * outer] * 8
+                or actor['scheduler_completed_outer'] != outer):
+            raise ValueError('Restore the exact actor/Adam/scheduler scientific boundary')
+    else:
+        restore_metadata(config, actor, outer + 1)
     return outer
 
 
@@ -112,6 +122,10 @@ def import_complete(base):
         'actor_global_mini_batch', 'actor_ppo_epochs', 'seed', 'official_model_dir',
         'encoder_model_dir', 'canonical_train_sha256', 'fixed_test_manifest_sha256', 'grounding_probe_version')
     if native:science+=('actor_hidden_native','hidden_capture_contract','probe_update_period','probe_updates_per_period','probe_epochs_per_update')
+    if config.get('grounding_refresh_enabled'):
+        science += ('grounding_refresh_enabled', 'grounding_refit_rounds',
+                    'grounding_manifest_sha256', 'grounding_calibration_sha256',
+                    'grounding_calibration_question_ids')
     if any(config[k] != original[k] for k in science):
         raise ValueError('Recovery cannot change the scientific training contract')
     def checked_stats(value):
@@ -145,11 +159,18 @@ def import_complete(base):
     link(source / 'question-pool/binding.json', base / 'question-pool/binding.json')
     link(joint['pool_snapshot'], base / 'question-pool/state.json')
     link(source / 'latest-joint.json', base / 'latest-joint.json')
+    if config.get('grounding_refresh_enabled'):
+        from .grounding import recovery_state
+        from reproduction.prefix20_online.launch import publish
+        current_grounding = recovery_state(source, config, joint)
+        (base / 'grounding').mkdir(parents=True, exist_ok=True)
+        publish(base / 'grounding/latest.json', current_grounding)
     # Small completed metrics retain the full learning history; large original
     # trajectories/checkpoints remain at their recorded immutable source paths.
     for n in range(1, outer + 1):
         src = source / 'outers' / ('outer-%06d' % n)
-        for name in ('complete.json', 'probe-update/metrics.json', 'probe-frozen.json'):
+        for name in ('complete.json', 'probe-update/metrics.json', 'probe-frozen.json',
+                     'grounding-state-at-completion.json', 'grounding-refresh.json'):
             path = src / name
             if path.is_file(): link(path, base / 'outers' / src.name / name)
     if reservation:
@@ -165,6 +186,10 @@ def import_complete(base):
         scheduler_completed_outer=actor['scheduler_completed_outer'], candidate_cursor=pool['cursor'],
         candidate_cycle=pool['cycle'], assets=assets, source_modified=False, optimizer_reset=False,
         large_assets_transferred_to_Mac=False, pending_reservation=reservation)
+    if config.get('grounding_refresh_enabled'):
+        result['grounding_state'] = current_grounding
+        result['grounding_refit_pending_before_next_actor'] = current_grounding['round'] != (
+            min(outer // 50 * 50, 150))
     once(receipt, result)
     validate_imported_boundary(base, config)
     return result

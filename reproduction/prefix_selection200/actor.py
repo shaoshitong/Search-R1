@@ -7,6 +7,7 @@ Every successful phase writes twenty Adam updates and one outer scheduler step.
 HF exports retain FP32 master values, rather than quantizing resume state to BF16.
 """
 import argparse
+import copy
 from collections import defaultdict
 from dataclasses import dataclass
 import datetime
@@ -28,6 +29,14 @@ SAMPLING_CONTRACT = 'chunked_native_action500_prefix20_v1'
 GROUNDING_ARCHIVE = ('/mnt/data/shaoshitong/search-g1-speed-resume5-0553ade-20261012/'
     'artifacts/round_0-attempt-22c55c34f646454f9c1f158ebdeb59c2/version-manifest.json')
 GROUNDING_ARCHIVE_SHA256 = '924e5487d19cf667dee56ae0a76eba7143cd6eb6325f1024989bac5d05efbb61'
+LOSS_REDUCTION = 'mean_of_eight_ranks_then_equal_original_two_row_masked_policy_token_means'
+POLICY_MONITOR_CONTRACT = dict(mode='inline_first_five', enabled=True,
+    scope='each_outer_before_after_each_minibatch_fixed_four_length_strata_trajectories_per_rank',
+    monitor_trajectories_per_rank=4, logical_loss_micro_rows=2,
+    dual_clip=3., target_old_policy_kl=.2, kl_log_bound=30., negative_tail_limit=.01,
+    finite_thresholds_diagnostic_only=True, actual_nonfinite_rejected=True,
+    extra_policy_monitor_forwards=True, reuse_adjacent_after_as_before=True,
+    calibration_or_admission_gate_added=False)
 
 
 def canonical(value):
@@ -400,11 +409,193 @@ def masked_policy_objective(old, current, advantages, mask, *, loss_fn):
 
 
 def micro_loss_weight(micro_policy_tokens, local_minibatch_policy_tokens):
-    """Changing micro must preserve the authorized local16 token-mean objective."""
+    """Compatibility helper for historical audit callers, NOT the actor objective.
+
+    The active actor below uses original two-row means, including when a true
+    OOM requires physical one-row forwards.  Whole-minibatch token weighting was
+    the I2 defect and must never be used to scale the active backward pass.
+    """
     if (type(micro_policy_tokens) is not int or type(local_minibatch_policy_tokens) is not int
             or not 0 <= micro_policy_tokens <= local_minibatch_policy_tokens):
         raise ValueError('Actual authored-token mass differs from its parent minibatch')
     return micro_policy_tokens / local_minibatch_policy_tokens if local_minibatch_policy_tokens else 0.
+
+
+def pair_token_masses(rows, ids):
+    """Bind the eight original two-row groups before physical micro splitting."""
+    if len(ids) != 16 or len(set(ids)) != 16:
+        raise ValueError('Actor local minibatch must contain sixteen distinct trajectory rows')
+    return [sum(sum(rows[i]['response_info_mask']) for i in ids[start:start + 2])
+            for start in range(0, len(ids), 2)]
+
+
+def original_pair_policy_objective(old, current, advantages, mask, *, pair_masses,
+                                   row_offset, loss_fn):
+    """Original micro2 masked means, without shrinking the physical forward.
+
+    The local sixteen rows define eight logical two-row means, each weighted
+    1/8. A physical micro may contain one, two, four, eight or sixteen rows.
+    Splitting a logical pair after a real OOM weights each fragment by its own
+    authored-token mass / the COMPLETE pair mass; it never reweights different
+    pairs. Observations/padding are excluded by the original policy mask.
+    An all-empty legal EOS pair contributes differentiable zero with its 1/8
+    share retained, rather than duplicating rows or inventing a policy token.
+    """
+    import torch
+    if (old.shape != current.shape or advantages.shape != current.shape or mask.shape != current.shape
+            or current.ndim != 2 or len(pair_masses) != 8 or type(row_offset) is not int
+            or row_offset < 0 or row_offset + len(current) > 16
+            or any(type(mass) is not int or mass < 0 for mass in pair_masses)):
+        raise ValueError('Physical actor micro must retain its original two-row grouping and masks')
+    zero = torch.where(mask.bool(), current, 0.).sum() * 0.
+    loss, clip, kl = zero, zero.detach(), zero.detach()
+    details = []
+    start = 0
+    while start < len(current):
+        logical_row = row_offset + start
+        pair = logical_row // 2
+        stop = min(len(current), start + 2 - logical_row % 2)
+        fragment_mask = mask[start:stop]
+        mass = int(fragment_mask.sum().item())
+        parent_mass = pair_masses[pair]
+        if mass > parent_mass:
+            raise ValueError('A physical fragment cannot exceed its original pair policy-token mass')
+        term, fraction, approximate_kl = masked_policy_objective(old[start:stop], current[start:stop],
+            advantages[start:stop], fragment_mask, loss_fn=loss_fn)
+        weight = (mass / parent_mass / len(pair_masses)) if parent_mass else 0.
+        loss, clip, kl = loss + term * weight, clip + fraction * weight, kl + approximate_kl * weight
+        details.append(dict(pair_index=pair, local_row_start=logical_row,
+            rows=stop - start, authored_token_mass=mass, original_pair_token_mass=parent_mass,
+            gradient_weight=weight))
+        start = stop
+    return loss, clip, kl, details
+
+
+def frozen_policy_monitor(rows, local_plan, advantages, tokenizer):
+    """The old fixed four length strata, from this rank's actual rollout rows.
+
+    Empty EOS outcomes stay in PPO and in the frozen selection with zero mask.
+    This keeps all ranks on the same four-row FSDP forward schedule. No policy
+    token or sampled trajectory is fabricated to make a monitor denominator.
+    """
+    import torch
+    ids = [i for mini in local_plan for i in mini]
+    ordered = sorted(ids, key=lambda i: sum(rows[i]['response_info_mask']))
+    count = min(4, len(ordered))
+    selected = ([ordered[i] for i in torch.linspace(0, len(ordered) - 1, count).long().tolist()]
+                if count else [])
+    if not selected:
+        return None, dict(trajectory_ids=[], selected_local_rows=[], actor_token_lengths=[],
+                          tensor_sha256={}, selection='actual_length_strata_empty_policy_rows_preserved')
+    batch = tensor_batch([rows[i] for i in selected], tokenizer.pad_token_id)
+    batch['advantages'] = torch.tensor([advantages[i] for i in selected], dtype=torch.float32)[:, None].expand(
+        -1, batch['responses'].shape[1]).clone()
+    identity = dict(trajectory_ids=[rows[i]['trajectory_id'] for i in selected],
+        selected_local_rows=[ids.index(i) for i in selected],
+        actor_token_lengths=batch['loss_mask'].sum(-1).tolist(),
+        tensor_sha256={key: hashlib.sha256(value.contiguous().view(torch.uint8).numpy().tobytes()).hexdigest()
+                       for key, value in batch.items()}, selection='actual_length_strata_empty_policy_rows_preserved')
+    return batch, identity
+
+
+class OriginalPolicyMonitor:
+    """Actual before/after observations; finite threshold breaches only warn.
+
+    Reuses only the immediately preceding after-write observation when all
+    ranks confirm unchanged parameters/buffers and the same Adam clock. This
+    costs 21 actual four-row monitor batches per ordinary 20-update outer when
+    reuse is possible (otherwise at most 40); it is not an admission, baseline,
+    independent model test, optimizer rollback or reason to stop on a finite
+    KL/tail threshold. The underlying original monitor still rejects true
+    nonfinite effective inputs, and never fabricates an overflowed KL estimate.
+    """
+    def __init__(self, actor, rows, local_plan, advantages, tokenizer, *, budget, device,
+                 run_id, outer, rank, actor_version, ledger):
+        self.actor, self.budget, self.device = actor, budget, device
+        self.frozen, self.identity = frozen_policy_monitor(rows, local_plan, advantages, tokenizer)
+        self.run_id, self.outer, self.rank = run_id, outer, rank
+        self.actor_version, self.ledger = actor_version, ledger
+        self.cache = None
+        self.actual_forwards, self.reused_forwards = 0, 0
+
+    def _key(self, adam_steps):
+        import itertools
+        tensors = itertools.chain(self.actor.actor_module.parameters(), self.actor.actor_module.buffers())
+        return (adam_steps, tuple((id(value), value._version) for value in tensors))
+
+    def observe(self, stage, minibatch_index, actual_adam_steps):
+        import torch
+        import torch.distributed as dist
+        from search_g1.policy_safety import monitor
+        if stage not in ('before_minibatch', 'after_minibatch'):
+            raise ValueError('Original policy monitor requires an actual before/after stage')
+        reuse = (stage == 'before_minibatch' and self.cache is not None
+            and self.cache['minibatch_index'] + 1 == minibatch_index
+            and self.cache['key'] == self._key(actual_adam_steps))
+        vote = torch.tensor(int(reuse), dtype=torch.int32, device=self.device)
+        if dist.is_initialized(): dist.all_reduce(vote, op=dist.ReduceOp.MIN)
+        reused = bool(vote.item())
+        source = None
+        if reused:
+            report = copy.deepcopy(self.cache['report'])
+            source = dict(stage='after_minibatch', minibatch_index=self.cache['minibatch_index'],
+                          actual_adam_steps=actual_adam_steps)
+            self.reused_forwards += 1
+        else:
+            # A rank with no policy sample joins the SAME global collectives
+            # with a zero-mask row; it does not fabricate a sampled trajectory.
+            if self.frozen is None:
+                delta = torch.zeros((1, 1), dtype=torch.float64, device=self.device)
+                advantages = torch.zeros_like(delta); masks = torch.zeros_like(delta); weights = torch.zeros_like(delta)
+            else:
+                old_mode = self.actor.actor_module.training
+                self.actor.actor_module.eval()
+                values, masks_parts = [], []
+                try:
+                    with torch.no_grad():
+                        for start in range(0, len(self.frozen['responses']), self.budget.local_micro):
+                            micro = {key: value[start:start + self.budget.local_micro].to(self.device)
+                                     for key, value in self.frozen.items()}
+                            _, current = self.actor._forward_micro_batch(micro, temperature=1., compute_entropy=False)
+                            mask = micro['loss_mask']
+                            values.append(torch.where(mask.bool(), current, 0.).double()
+                                          - torch.where(mask.bool(), micro['old_log_probs'], 0.).double())
+                            masks_parts.append(mask)
+                finally:
+                    self.actor.actor_module.train(old_mode)
+                delta = torch.cat(values); masks = torch.cat(masks_parts)
+                advantages = self.frozen['advantages'].to(self.device)
+                weights = torch.zeros_like(delta)
+                # Logical micro2 weights are independent of OOM physical splits.
+                for start in range(0, len(masks), 2):
+                    pair = masks[start:start + 2]
+                    weights[start:start + 2] = pair.double() / pair.sum().clamp_min(1).double()
+            report = monitor(delta, advantages, masks, weights, c=3., kl_log_bound=30., target_kl=.2,
+                negative_tail_limit=.01, finite_thresholds_diagnostic_only=True)
+            self.actual_forwards += 1
+            # An entirely empty global authored-token sample is explicitly N/A,
+            # a legal all-EOS outcome, rather than a new speculative stop gate.
+            if report.get('fatal_reasons') == ['empty_effective_samples']:
+                report.update(allowed=True, fatal_reasons=[], reasons=[], observation_available=False,
+                              observation_unavailable_reason='no_authored_policy_tokens_in_global_rollout')
+            else:
+                report['observation_available'] = True
+        self.cache = None
+        report.update(run_id=self.run_id, rank=self.rank, outer=self.outer,
+            stage=stage, minibatch_index=minibatch_index, actual_adam_steps=actual_adam_steps,
+            actor_version=self.actor_version, monitor_identity=self.identity,
+            objective_weight_definition='equal two-row micro masked_mean; weighted global numerator/denominator',
+            contract=POLICY_MONITOR_CONTRACT, actual_monitor_forward=not reused,
+            forward_reused=reused, forward_source=source,
+            actual_monitor_forward_count=self.actual_forwards, reused_monitor_forward_count=self.reused_forwards,
+            monitor_forward_count_unit='one fixed monitor batch, not physical micro forward calls', utc=utc())
+        append(self.ledger, dict(event='POLICY_MONITOR', **report))
+        if not report['allowed']:
+            raise FloatingPointError('Nonfinite actual old-policy monitor: ' + repr(report['fatal_reasons']))
+        if stage == 'after_minibatch':
+            self.cache = dict(key=self._key(actual_adam_steps), report=copy.deepcopy(report),
+                              minibatch_index=minibatch_index)
+        return report
 
 
 def _rng():
@@ -422,24 +613,27 @@ def _set_rng(state):
 
 
 def _state_binding(config):
+    from reproduction.prefix_selection200.grounding import static_binding
     # Micro is intentionally mutable after a real OOM; the scientific budget is not.
     return dict(run_id=config['run_id'], model_revision=REVISION,
         official_model_dir=str(remote(config['official_model_dir'])), world_size=8,
         seed=int(config.get('seed', 1729)),
         global_mini=128, ppo_epochs=1, trajectories=2560, updates_per_outer=20,
         learning_rate=1e-6, outer_warmup=57, clip_ratio=.2, dual_clip=3., grad_clip=1.,
-        loss_reduction='mean_of_eight_rank_local_minibatch_policy_token_means',
+        loss_reduction=LOSS_REDUCTION, policy_monitor=POLICY_MONITOR_CONTRACT,
         entropy_coefficient=0., reference_kl_coefficient=0., reference_kl_type='low_var_kl',
-        grounding_probe_version=config['grounding_probe_version'], reward_environment=REWARD_ENV)
+        grounding_lifecycle=static_binding(config), reward_environment=REWARD_ENV)
 
 
 def restore_metadata(config, latest, outer):
+    from reproduction.prefix_selection200.grounding import validate_actor_transition
     expected = outer - 1
     if (latest['run_id'] != config['run_id'] or latest['completed_outer'] != expected
             or latest['binding'] != _state_binding(config)
             or latest['actual_adam_steps_per_rank'] != [20 * expected] * WORLD
             or latest['scheduler_completed_outer'] != expected):
         raise ValueError('Restore only the immediately previous complete actor/Adam/scheduler boundary')
+    validate_actor_transition(config, latest, outer)
 
 
 def optimizer_layout(optimizer):
@@ -502,7 +696,8 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
     rank = dist.get_rank()
     state = dict(schema_version=1, run_id=config['run_id'], completed_outer=outer, rank=rank,
         actual_adam_steps=20 * outer, scheduler_completed_outer=outer,
-        binding=_state_binding(config), optimizer=cpu_tree(optimizer.state_dict()),
+        binding=_state_binding(config), grounding_probe_version=config['grounding_probe_version'],
+        grounding_state=config.get('grounding_state'), optimizer=cpu_tree(optimizer.state_dict()),
         optimizer_parameter_layout=optimizer_layout(optimizer),
         scheduler=cpu_tree(scheduler.state_dict()), rng=_rng(),
         model_master_dtype='torch.float32', optimizer_layout='FSDP_FULL_SHARD_same_Qwen2DecoderLayer_wrap_world8',
@@ -524,11 +719,12 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
         pool_proof = dict(path=str(pool_path), sha256=sha(pool_path), value=read(pool_path)) if pool_path else None
         driver_proof = atomic_save(attempt_dir / 'driver.pt', dict(run_id=config['run_id'],
             completed_outer=outer, actor_version=actor_version, driver_state=driver_state,
-            grounding_probe_version=config['grounding_probe_version'], rng=_rng(),
+            grounding_probe_version=config['grounding_probe_version'], grounding_state=config.get('grounding_state'), rng=_rng(),
             rng_scope='actor_phase_rank0; controller candidate RNG/order lives in candidate_pool_state',
             candidate_pool_state=pool_proof, prefix_probe_receipt=linked_probe_receipt(config.get('prefix_probe_receipt'))))
         receipt = dict(schema_version=1, role='prefix_selection200_actor_complete', run_id=config['run_id'],
             source_commit=config.get('source_commit'), completed_outer=outer, actor_version=actor_version,
+            grounding_probe_version=config['grounding_probe_version'], grounding_state=config.get('grounding_state'),
             model_dir=str(hfdir), actor_model_dir=str(hfdir), hf_model_dir=str(hfdir), model_master_dtype='torch.float32',
             rollout_compute_dtype='bfloat16', state_dir=str(attempt_dir), state_path=str(attempt_dir), rank_states=proofs,
             hf_files=hf, driver_state=driver_proof, actual_adam_steps_per_rank=[20 * outer] * WORLD,
@@ -565,6 +761,8 @@ def train(config_path, outer, rollout_path, output_path):
     latest = read(output / 'latest.json') if (output / 'latest.json').exists() else None
     if outer == 1:
         if latest is not None: raise ValueError('Fresh official outer1 cannot inherit an actor checkpoint')
+        from reproduction.prefix_selection200.grounding import validate_actor_transition
+        validate_actor_transition(config, None, outer)
         model_dir = str(remote(config['official_model_dir'])); old_version = config['run_id'] + '-official0'
     else:
         if latest is None: raise ValueError('Missing this run latest complete actor state')
@@ -594,6 +792,9 @@ def train(config_path, outer, rollout_path, output_path):
         saved = torch.load(path, map_location='cpu', weights_only=False)
         if saved['rank'] != rank or saved['binding'] != _state_binding(config) or saved['actual_adam_steps'] != 20 * (outer - 1):
             raise ValueError('Rank-local actor restore binding/count differs')
+        if (saved.get('grounding_probe_version') != latest.get('grounding_probe_version')
+                or saved.get('grounding_state') != latest.get('grounding_state')):
+            raise ValueError('Rank-local state must retain the previous checkpoint reward-grounding version')
         if saved['optimizer_parameter_layout'] != optimizer_layout(optimizer):
             raise ValueError('FSDP rank-local parameter shard ordering/shape differs from the complete state')
         optimizer.load_state_dict(saved['optimizer']); scheduler.load_state_dict(saved['scheduler']); _set_rng(saved['rng'])
@@ -625,12 +826,16 @@ def train(config_path, outer, rollout_path, output_path):
         trajectories=len(rows), score_mean=math.fsum(scores) / len(scores),
         prefix_correctness_head_used_for_reward=False, actual_reward_world_size=WORLD)
     plan = rank_plan(seed, outer)[rank]
+    policy_monitor = OriginalPolicyMonitor(actor, rows, plan, advantages, tokenizer, budget=budget,
+        device=local, run_id=config['run_id'], outer=outer, rank=rank,
+        actor_version=old_version, ledger=ledger)
     writes = 0
     try:
         wrapped.train()
         for step, ids in enumerate(plan):
             optimizer.zero_grad(set_to_none=True); metrics = []
-            mini_mass = sum(sum(rows[i]['response_info_mask']) for i in ids)
+            policy_monitor.observe('before_minibatch', step, 20 * (outer - 1) + writes)
+            pair_masses = pair_token_masses(rows, ids)
             for offset in range(0, len(ids), budget.local_micro):
                 micro_ids = ids[offset:offset + budget.local_micro]
                 batch = tensor_batch([rows[i] for i in micro_ids], tokenizer.pad_token_id)
@@ -638,18 +843,18 @@ def train(config_path, outer, rollout_path, output_path):
                 batch['advantages'] = torch.tensor([advantages[i] for i in micro_ids], dtype=torch.float32)[:, None].expand(-1, response_width)
                 batch = {key: value.to(local) for key, value in batch.items()}
                 _, current = actor._forward_micro_batch(batch, temperature=1., compute_entropy=False)
-                loss, clipfrac, kl = masked_policy_objective(batch['old_log_probs'], current,
-                    batch['advantages'], batch['loss_mask'], loss_fn=compute_policy_loss)
+                loss, clipfrac, kl, pair_fragments = original_pair_policy_objective(batch['old_log_probs'], current,
+                    batch['advantages'], batch['loss_mask'], pair_masses=pair_masses,
+                    row_offset=offset, loss_fn=compute_policy_loss)
                 # Only true nonfinite loss/gradient is invalid; magnitude/ratio diagnostics never stop this run.
                 finite = torch.tensor(int(torch.isfinite(loss)), dtype=torch.int32, device=local)
                 dist.all_reduce(finite, op=dist.ReduceOp.MIN)
                 if not finite.item(): raise FloatingPointError('Nonfinite actual actor loss')
-                micro_mass = sum(sum(rows[i]['response_info_mask']) for i in micro_ids)
-                weight = micro_loss_weight(micro_mass, mini_mass)
-                (loss * weight).backward()
+                loss.backward()
                 metrics.append(dict(loss=float(loss.detach()), clip_fraction=float(clipfrac.detach()),
-                    old_policy_kl=float(kl.detach()), actual_policy_token_mass=micro_mass,
-                    local_minibatch_policy_token_mass=mini_mass, gradient_weight=weight))
+                    old_policy_kl=float(kl.detach()), actual_policy_token_mass=int(batch['loss_mask'].sum().item()),
+                    original_pair_token_masses=pair_masses, pair_fragments=pair_fragments,
+                    loss_already_scaled_by_original_eight_pairs=True))
             norm = clip_global_l2(wrapped, 1., diagnostic=False)
             optimizer.step(); writes += 1
             steps = {int(value['step'].item()) for value in optimizer.state.values() if 'step' in value}
@@ -659,12 +864,16 @@ def train(config_path, outer, rollout_path, output_path):
                 actual_learning_rate=optimizer.param_groups[0]['lr'], grad_norm=float(norm),
                 local_trajectories=len(ids), global_mini=128, local_micro=budget.local_micro,
                 gradient_accumulation=budget.accumulation,
-                objective='mean_of_eight_rank_local_minibatch_policy_token_means', metrics=metrics, utc=utc()))
+                objective=LOSS_REDUCTION, metrics=metrics, utc=utc()))
+            policy_monitor.observe('after_minibatch', step, 20 * (outer - 1) + writes)
         if writes != 20: raise ValueError('Incomplete outer budget cannot advance scheduler/save latest')
         scheduler.step()
         rank_receipt = dict(rank=rank, outer=outer, new_adam_steps=writes, actual_adam_steps=20 * outer,
             opportunities=20, scheduler_completed_outer=scheduler.last_epoch,
-            next_learning_rate=optimizer.param_groups[0]['lr'], ledger_path=str(ledger), ledger_sha256=sha(ledger))
+            next_learning_rate=optimizer.param_groups[0]['lr'], ledger_path=str(ledger), ledger_sha256=sha(ledger),
+            policy_monitor=dict(contract=POLICY_MONITOR_CONTRACT,
+                actual_monitor_forward_count=policy_monitor.actual_forwards,
+                reused_monitor_forward_count=policy_monitor.reused_forwards))
         ranks = [None] * WORLD; dist.all_gather_object(ranks, rank_receipt)
         if any(row['new_adam_steps'] != 20 or row['scheduler_completed_outer'] != outer for row in ranks):
             raise ValueError('All eight ranks must complete20 writes before actor completion')

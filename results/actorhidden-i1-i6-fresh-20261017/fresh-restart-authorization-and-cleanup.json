@@ -1,0 +1,80 @@
+{
+  "created_utc": "2026-10-17T05:26:42.998094+00:00",
+  "run_id": "6cd6f043ef1641ae91ac177b4c27fe4a",
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-actorhidden20-i1-i6-fresh-20261017-6cd6f043ef16",
+  "probe_learning_rate": 1e-06,
+  "old_job": "3430",
+  "old_run_id": "a008d7ce983347bbb6e81051b25a7c4e",
+  "official_actor_fresh": true,
+  "old_actor_optimizer_imported": false,
+  "warmup_rerun": false,
+  "new_interaction_contract": "unified_context4096_bf16_stream_action_v1",
+  "checklist": [
+    "I1",
+    "I2",
+    "I3",
+    "I4",
+    "I5",
+    "I6"
+  ],
+  "all_large_outputs_remote": true,
+  "gpu_training_validation": "PENDING_ACTUAL_NATIVE_TRAINING",
+  "grounding50_gpu_refit": "PENDING_NORMAL_MILESTONE50",
+  "source_cleanup": {
+    "original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden-rejected-cleanup-source-20261017T052156341418Z-actual.json",
+    "sha256": "52af26441400d196d99892efd261817c77ab010b260daf7f343ee7b48d2c9d19",
+    "actual": {
+      "status": "REJECTED_RUN_WEIGHTS_AND_LOGS_DELETED",
+      "target": "source",
+      "utc": "2026-10-17T05:23:10.031456+00:00",
+      "deleted_files": 4756,
+      "deleted_logical_bytes": 642327859094,
+      "actual_physical_free_delta_bytes": 623099379712,
+      "ordinary_available_bytes": 25619869696,
+      "plan": "/mnt/data/shaoshitong/search-g1-rejected-cleanup-source-i1-i6-20261017.json",
+      "plan_sha256": "4fffc03e397bebb8f9e60123b800ebe3c8d74c247c30eefc1de51743c7c65faf",
+      "preserves": [
+        "warmup checkpoints",
+        "official weights",
+        "shared round0 grounding",
+        "fixed recovery assets",
+        "datasets and FAISS",
+        "source code",
+        "small audit metadata",
+        "original trajectory gzip files"
+      ]
+    }
+  },
+  "backup_cleanup": {
+    "original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden-rejected-cleanup-backup-20261017T052157499979Z-actual.json",
+    "sha256": "ffd28d5cff1fda36bf994594a46b3918bd0cb9e5bd3f0ca76e8632282e24ebf7",
+    "actual": {
+      "status": "REJECTED_RUN_WEIGHTS_AND_LOGS_DELETED",
+      "target": "backup",
+      "utc": "2026-10-17T05:22:13.952106+00:00",
+      "deleted_files": 118,
+      "deleted_logical_bytes": 117939676036,
+      "actual_physical_free_delta_bytes": 215660859392,
+      "ordinary_available_bytes": 2216877723648,
+      "plan": "/mnt/data/shaoshitong/search-g1-rejected-cleanup-backup-i1-i6-20261017.json",
+      "plan_sha256": "30e443e466da61dc5d2ba45e8c2afd2dc5613606e67377f799fe87941d94e326",
+      "preserves": [
+        "warmup checkpoints",
+        "official weights",
+        "shared round0 grounding",
+        "fixed recovery assets",
+        "datasets and FAISS",
+        "source code",
+        "small audit metadata",
+        "original trajectory gzip files"
+      ]
+    }
+  },
+  "owned_release": {
+    "first": "actorhidden3430-stop-cleanup-latest-small.json",
+    "second": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/actorhidden3430-release-second-20261017T052030759173Z-actual.json",
+    "second_sha256": "108f8394f4bf77443463c9a82bc1a3748207db08f777b14817296a9450e60931",
+    "two_actual_checks": true,
+    "all_owned_released": true
+  }
+}

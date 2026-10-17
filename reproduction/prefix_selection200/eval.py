@@ -1,10 +1,9 @@
-"""Async eight-TP1 evaluation with the explicitly requested pre-d00 contract.
+"""Eight-TP1 QA using the same BF16 interaction contract as training.
 
-Greedy full500 actions, FP32 inference, raw first500 observation tokens, four
-search-capable actions followed by the original final action. There is no answer
-reservation, wrapper repair, early final or prefix-selection screening. Native
-tokens and complete outputs remain remote. This is an opt-in entry point; it
-does not modify any default rollout or the BF16 actor training configuration.
+Greedy n1 changes sampling only. Context budgeting, information wrappers,
+early-final decisions, first-complete-action streaming and native EOS trimming
+are shared with the actual prefix/continuation sampler. Strict scoring is
+unchanged; original canonical questions and full outputs remain remote.
 """
 import argparse
 from collections import Counter, deque
@@ -19,24 +18,10 @@ import sys
 import time
 
 from .actor import atomic_json, canonical, read, remote, sha, utc
+from .interaction_contract import (BUDGET, INTERACTION_CONTRACT, evaluation_contract, first_action_cut, final_turn,
+    interaction_outcome, stream_action_present)
 
-CONTRACT = dict(kind='legacy_pre_d00_async_fp32', compute_dtype='float32', temperature=0.,
-    top_p=1., top_k=-1, n=1, max_action_tokens=500, max_start_tokens=2048,
-    max_request_tokens=4096, max_model_tokens=4596, max_observation_tokens=500,
-    max_search_turns=4, answer_reserve_tokens=0, early_final=False,
-    observation_truncation='raw_token_ids_first500_without_wrapper_repair',
-    asynchronous_generation=True, rollback_commits=['d00e4f8', 'a8c3116'], retain_async_commit='1f75a18')
-
-
-def legacy_observation_tokens(tokenizer, text):
-    """Exactly upstream _process_next_obs truncation, including a cut closing tag."""
-    return list(tokenizer(text, add_special_tokens=False)['input_ids'])[:500]
-
-
-def legacy_final_turn(ordinal):
-    if type(ordinal) is not int or not 0 <= ordinal <= 4:
-        raise ValueError('Legacy evaluation contains four tool turns and one final turn')
-    return ordinal == 4
+CONTRACT = evaluation_contract()
 
 
 def score_tokens(tokenizer, prompt, response, mask, gold):
@@ -103,13 +88,12 @@ def build_evaluation_engine(config, model, seed, free, total, *, factory=None, c
     while True:
         try:
             llm = factory(model=str(model), tokenizer=str(model), trust_remote_code=False,
-                dtype='float32', tensor_parallel_size=1, max_model_len=4596, seed=seed,
+                dtype='bfloat16', tensor_parallel_size=1, max_model_len=4096, seed=seed,
                 gpu_memory_utilization=utilization, swap_space=0,
                 enforce_eager=bool(config.get('evaluation_enforce_eager', False)),
-                # The installed H100 Triton prefix kernel aborts compiling FP32
-                # MMA layouts. The legacy full-prefill XFormers path supports
-                # FP32; retain identical prompts/sampling/precision and8TP1.
-                enable_chunked_prefill=False, enable_prefix_caching=False, disable_log_stats=True, **limits)
+                # Same native token-output commit semantics as training.
+                enable_chunked_prefill=bool(config.get('rollout_enable_chunked_prefill', True)),
+                enable_prefix_caching=True, disable_async_output_proc=True, disable_log_stats=True, **limits)
             return llm, utilization, limits, attempts
         except Exception as error:
             message = str(error)
@@ -128,13 +112,39 @@ def build_evaluation_engine(config, model, seed, free, total, *, factory=None, c
             limits['max_num_batched_tokens'] = max(4096, limits['max_num_batched_tokens'] // 2)
 
 
+def evaluation_stream_snapshot(result, expected_request, terminal_ids, decode, abort_request):
+    """Commit the same first-action token boundary used by native training.
+
+    Copy metadata before abort releases/mutates the vLLM sequence. An unfinished
+    partial action remains active; EOS ends the trajectory without a tool call.
+    """
+    if len(result.outputs) != 1 or list(result.prompt_token_ids) != expected_request:
+        raise ValueError('Actual evaluation request/completion identity differs')
+    native = result.outputs[0]
+    raw = list(native.token_ids)
+    if not result.finished and not stream_action_present(raw, decode):
+        return None
+    finish_reason, stop_reason = native.finish_reason, native.stop_reason
+    cut = first_action_cut(raw, decode, terminal_ids=terminal_ids,
+        native_stopped=finish_reason == 'stop')
+    aborted = not result.finished
+    snapshot = dict(raw_generated_token_ids=raw, finish_reason=finish_reason,
+        stop_reason=stop_reason, native_action_boundary_abort=aborted, prefix_cut=cut)
+    if aborted:
+        abort_request(str(result.request_id))
+    return snapshot
+
+
 def worker(config_path, model_dir, output_dir, questions_path, expected_count, rank):
     from reproduction.prefix20_online.rollout import _configure_one_visible_gpu, prompt_tokens
     config = read(remote(config_path)); device = _configure_one_visible_gpu(rank)
+    backend = config.get('rollout_attention_backend')
+    if backend is not None:
+        if backend != 'XFORMERS': raise ValueError('Unsupported configured native attention backend')
+        os.environ['VLLM_ATTENTION_BACKEND'] = backend
     import torch
     from transformers import AutoTokenizer
     from vllm import SamplingParams
-    from reproduction.common8.behavior_trace import raw_prefix_to_first_closing_tag
     from search_g1.async_rollout_runtime import AsyncRolloutConfig, BoundedRetriever, execute_one_action
     from search_r1.llm_agent.generation import GenerationConfig, LLMGenerationManager
     model_dir, output = remote(model_dir), remote(output_dir)
@@ -149,6 +159,8 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
     generation = read(model_dir / 'generation_config.json')
     stop = generation.get('eos_token_id', tokenizer.eos_token_id)
     stop = [stop] if isinstance(stop, int) else list(stop)
+    terminal_ids = sorted(set(stop + [tokenizer.eos_token_id]))
+    decode = lambda ids: tokenizer.decode(ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
     params = SamplingParams(n=1, temperature=0., top_p=1., top_k=-1, max_tokens=500,
         stop_token_ids=stop, ignore_eos=False, logprobs=None, detokenize=False)
     recipe = GenerationConfig(max_turns=4, max_start_length=2048, max_prompt_length=4096,
@@ -163,6 +175,7 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
                     for row in questions)
     ready, pending, tools, finished = deque(), {}, {}, []
     active = 0; requests = 0; started = time.monotonic()
+    budget = dict(BUDGET)
     output.mkdir(parents=True, exist_ok=True)
     full = output / ('rank-%d-full.jsonl.gz' % rank)
     if full.exists(): raise FileExistsError('Never overwrite an existing evaluation shard')
@@ -171,16 +184,21 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
     def finish_environment(state, environment, stream):
         nonlocal active
         text, done, valid, searched = environment
-        kept = state.pop('cut')['kept_token_ids']
-        final = legacy_final_turn(state['ordinal'])
-        observation = [] if final else legacy_observation_tokens(tokenizer, text)
+        cut = state.pop('cut'); kept = cut['kept_token_ids']
+        final = state['final_turn']
+        transition = interaction_outcome(tokenizer, len(state['request']), len(kept),
+            final, cut, environment, budget)
+        observation = transition['observation_token_ids']
         turn = state.pop('turn'); turn.update(observation_token_ids=observation,
-            info_mask=[1] * len(kept) + [0] * len(observation), final_turn=final or bool(done))
+            observation_clipped=transition['observation_clipped'],
+            info_mask=[1] * len(kept) + [0] * len(observation), final_turn=transition['terminal'])
         state['turns'].append(turn); state['response'].extend(kept + observation)
         state['mask'].extend([1] * len(kept) + [0] * len(observation))
-        state['retrieval_calls'] += int(searched and not final)
+        state['retrieval_calls'] += transition['retrieval_calls']
         state['valid_actions'] += int(valid)
-        if not final and not done:
+        if len(state['prompt']) + len(state['response']) > budget['total_tokens']:
+            raise ValueError('Actual retained QA context exceeds shared4096-token budget')
+        if not transition['terminal']:
             state['ordinal'] += 1; ready.append(state); return
         row = state['group']
         measured = score_tokens(tokenizer, state['prompt'], state['response'], state['mask'],
@@ -206,36 +224,31 @@ def worker(config_path, model_dir, output_dir, questions_path, expected_count, r
                     ready.append(waiting.popleft()); active += 1
                 while ready:
                     state = ready.popleft(); request = state['prompt'] + state['response']
-                    # This is the pre-d00 native context admission, not a new early-final shortcut.
-                    if len(request) > 4096:
-                        raise ValueError('Legacy native rolling context exceeds4096; no unrequested answer reserve/cropping')
+                    state['final_turn'] = final_turn(len(request), state['ordinal'], budget)
                     rid = '%d-%d-%d' % (rank, state['group']['evaluation_ordinal'], state['ordinal'])
                     state['request'] = request; pending[rid] = state; requests += 1
                     engine.add_request(rid, {'prompt_token_ids': request}, params)
                 if engine.has_unfinished_requests():
                     for result in engine.step():
-                        if not result.finished: continue
-                        state = pending.pop(str(result.request_id))
-                        if len(result.outputs) != 1 or list(result.prompt_token_ids) != state['request']:
-                            raise ValueError('Actual evaluation request/completion identity differs')
-                        native = result.outputs[0]; raw = list(native.token_ids)
-                        cut = raw_prefix_to_first_closing_tag(raw,
-                            lambda ids: tokenizer.decode(ids, skip_special_tokens=False, clean_up_tokenization_spaces=False),
-                            eos_token_id=tokenizer.eos_token_id, pad_token_id=tokenizer.pad_token_id,
-                            special_token_ids=sorted(set(tokenizer.all_special_ids)),
-                            executor_decode=lambda ids: tokenizer.decode(ids, skip_special_tokens=True, clean_up_tokenization_spaces=False),
-                            effective_stop_token_ids=stop)
+                        rid = str(result.request_id)
+                        if rid not in pending: continue
+                        state = pending[rid]
+                        snapshot = evaluation_stream_snapshot(result, state['request'], terminal_ids,
+                            decode, engine.abort_request)
+                        if snapshot is None: continue
+                        pending.pop(rid)
+                        cut = snapshot['prefix_cut']
                         state['cut'] = cut
-                        state['turn'] = dict(actual_request_token_ids=state['request'], raw_generated_token_ids=raw,
+                        state['turn'] = dict(snapshot, actual_request_token_ids=state['request'],
                             kept_token_ids=cut['kept_token_ids'], kept_token_count=cut['kept_token_count'],
-                            finish_reason=native.finish_reason, stop_reason=native.stop_reason,
                             ordinal=state['ordinal'], sampling=dict(temperature=0., top_p=1., top_k=-1, max_tokens=500, n=1))
-                        kind, _ = manager.postprocess_predictions([cut['execution_text']])
-                        if kind[0] == 'search' and not legacy_final_turn(state['ordinal']):
+                        if cut['native_terminal']:
+                            finish_environment(state, ('', True, int(cut['action'] is not None), 0), stream)
+                        elif cut['action'] == 'search' and not state['final_turn']:
                             tools[pool.submit(execute_one_action, manager, cut['execution_text'], True, retriever)] = state
                         else:
                             finish_environment(state, execute_one_action(manager, cut['execution_text'],
-                                not legacy_final_turn(state['ordinal']), retriever), stream)
+                                not state['final_turn'], retriever), stream)
                 done_tools = [future for future in tools if future.done()]
                 for future in done_tools: finish_environment(tools.pop(future), future.result(), stream)
                 if not ready and not engine.has_unfinished_requests() and tools and not done_tools: time.sleep(.001)
@@ -260,7 +273,8 @@ def launch(config_path, model_dir, output, questions_path, expected_count=512):
     if target.exists():
         existing = read(target)
         if (existing['actor_version'] != config['actor_version'] or existing['qa_count'] != expected_count
-                or existing['question_source_sha256'] != sha(questions_path)):
+                or existing['question_source_sha256'] != sha(questions_path)
+                or existing.get('evaluation_contract') != CONTRACT):
             raise ValueError('Existing fixed evaluation receipt differs')
         return existing
     output.mkdir(parents=True, exist_ok=True); processes, streams = [], []
@@ -292,8 +306,8 @@ def launch(config_path, model_dir, output, questions_path, expected_count=512):
     if ([row['evaluation_ordinal'] for row in rows] != list(range(expected_count))
             or len({row['qid'] for row in rows}) != expected_count
             or any(item['actor_version'] != config['actor_version'] or item['evaluation_contract'] != CONTRACT
-                   or item['actual_compute_dtype'] != 'torch.float32' for item in receipts)):
-        raise ValueError('Fixed greedy FP32 evaluation omitted, duplicated or changed a canonical question')
+                   or item['actual_compute_dtype'] != 'torch.bfloat16' for item in receipts)):
+        raise ValueError('Fixed greedy shared-BF16 evaluation omitted, duplicated or changed a canonical question')
     sources = Counter(row['data_source'] for row in rows)
     if expected_count == 512 and sources != dict(nq=256, hotpotqa=256):
         raise ValueError('Fixed512 must retain original256NQ+256Hotpot')

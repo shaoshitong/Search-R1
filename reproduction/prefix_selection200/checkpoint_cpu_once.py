@@ -139,6 +139,10 @@ def validate_actor_state(saved, actor, config, outer, rank):
          and saved['binding'] == actor['binding'] == _state_binding(config), 'Actor state belongs to another run/rank/recipe')
     need(saved['actual_adam_steps'] == 20 * outer and saved['scheduler_completed_outer'] == outer,
          'Actual actor Adam/scheduler boundary differs')
+    if config.get('grounding_refresh_enabled'):
+        need(saved['grounding_probe_version'] == actor['grounding_probe_version']
+             and saved['grounding_state'] == actor['grounding_state'],
+             'Actual saved actor rank lost its dynamic reward-grounding version')
     layout = saved['optimizer_parameter_layout']
     need(len(layout) == len(saved['optimizer']['param_groups']), 'FSDP optimizer group layout differs')
     shapes = []

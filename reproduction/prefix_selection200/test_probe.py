@@ -15,12 +15,12 @@ from reproduction.prefix_selection200.probe import (
 class ProbeContracts(unittest.TestCase):
     def test_loss_curve_reports_global_first_last_without_monotonic_claim(self):
         rows = [dict(step=j, trajectory_bce=.1*j, group_bce=.2*j, total_loss=.3*j)
-                for j in range(1, 11)]
+                for j in range(1, 101)]
         result = summarize_loss_curve(rows)
-        self.assertAlmostEqual(result['delta_end_minus_start']['total_loss'], 2.7)
+        self.assertAlmostEqual(result['delta_end_minus_start']['total_loss'], 29.7)
         self.assertTrue(result['batches_differ_between_steps'])
         self.assertFalse(result['monotonic_decrease_required'])
-        self.assertEqual(result['actual_adam_updates_per_rank'], 10)
+        self.assertEqual(result['actual_adam_updates_per_rank'], 100)
         with self.assertRaises(ValueError):
             summarize_loss_curve(rows[:-1])
 

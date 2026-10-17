@@ -37,7 +37,7 @@ from reproduction.prefix_only_correctness_ab.train_ddp import actual_adam_steps
 SOURCE_SHA = '8df6bd445945ffbbf6a94171f24934495f0ce3ff17a3d2577bbd53d4b8fefd56'
 SOURCE_RUN = 'cee20bcd24194b79a9a8a88809bd5886'
 TEST_SHA = 'a125fc5af90e34fcd728c82077d9d62070a78d5ef703ac11f3748687d088e64f'
-QMAX, WIDTH, DIM, LR = 273, 293, 2048, 1e-5
+QMAX, WIDTH, DIM, LR = 273, 293, 2048, 1e-6
 TENSOR_FIELDS = ('features', 'attention_mask', 'position_ids', 'question_mask',
                  'policy_mask', 'question_lengths', 'policy_lengths')
 
@@ -410,6 +410,8 @@ def initial_online_state(source, binding):
 
 
 def initialize(args):
+    if getattr(args, 'learning_rate', LR) != LR:
+        raise ValueError('The latest explicit fresh200 goal fixes probe learning rate at1e-6')
     directory, source = remote(args.state_dir), remote(args.source_checkpoint)
     if (directory / 'initialization-complete.json').exists():
         existing = read(directory / 'initialization-complete.json')
@@ -748,8 +750,11 @@ def main():
     parser.add_argument('--outer', type=int); parser.add_argument('--model-dir')
     parser.add_argument('--test-cache'); parser.add_argument('--test-manifest-sha')
     parser.add_argument('--encoder-micro-batch-size', type=int, default=256)
+    parser.add_argument('--learning-rate', type=float, default=LR)
     parser.add_argument('--seed', type=int, default=1729)
     args = parser.parse_args()
+    if args.learning_rate != LR:
+        parser.error('The current fresh200 goal requires probe learning rate1e-6')
     required = {'initialize': ('source_checkpoint', 'source_sha256', 'run_id', 'test_cache', 'test_manifest_sha'),
                 'score': ('prefix_inputs', 'output', 'outer', 'model_dir'),
                 'update': ('scored_features', 'own_em', 'output', 'outer', 'model_dir', 'test_cache', 'test_manifest_sha')}

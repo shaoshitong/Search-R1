@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import time
 
-from .checkpoint_backup_native import PARENT, RUN
+from .checkpoint_backup_native import PARENT, checkpoint_namespace, run_identity
 from reproduction.h1008_qprobe.management_transport import remote
 
 REPO = Path(__file__).resolve().parents[2]
@@ -18,7 +18,7 @@ def start_script(spec, code, commit):
     return r'''
 import pathlib,json,base64,hashlib,os,socket,subprocess,time,fcntl
 p=PAYLOAD;root=pathlib.Path(p['namespace']);parent=root.parent
-assert socket.gethostname()=='h100-10' and str(parent)==EXPECTED_PARENT and root.name.startswith(RUN_PREFIX)
+assert socket.gethostname()=='h100-10' and str(parent)==EXPECTED_PARENT and root.name==p['run_id'][:12]+'-outer-%04d-once-v1'%p['outer']
 parent.mkdir(mode=0o700,exist_ok=True);assert parent.resolve()==parent
 with(parent/'start-control.lock').open('a')as lock:
  fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -42,10 +42,11 @@ with(parent/'start-control.lock').open('a')as lock:
  tail=(pathlib.Path('/proc')/str(child.pid)/'stat').read_text().rsplit(')',1)[1].split()
  receipt=dict(status='INDEPENDENT_COPY_STARTED_NOT_COMPLETE',namespace=str(root),pid=child.pid,start_ticks=int(tail[19]),sid=os.getsid(child.pid),uid=os.getuid(),run_id=p['run_id'],outer=p['outer'],code_commit=p['code_commit'],code_sha256=p['code_sha256'],expected_files=len(assets),expected_bytes=need,ordinary_free_bytes=fs.f_bavail*fs.f_frsize,bytes_per_second_limit=scope['RATE'],semantic_reload_performed=False,training_modified=False,model_bytes_transit_Mac=False)
  once(root/'RECEIPT.json',receipt);print(json.dumps(receipt))
-'''.replace('PAYLOAD', repr(payload)).replace('EXPECTED_PARENT', repr(str(PARENT))).replace('RUN_PREFIX',repr(RUN[:12]))
+'''.replace('PAYLOAD', repr(payload)).replace('EXPECTED_PARENT', repr(str(PARENT)))
 
 
-def status_script(namespace):
+def status_script(namespace, run_id=None):
+    if run_id is not None: run_id = run_identity(run_id)
     return r'''
 import pathlib,json,os,hashlib,socket
 root=pathlib.Path(NAMESPACE);out=dict(hostname=socket.gethostname(),namespace=str(root),exists=root.exists(),read_only=True)
@@ -53,7 +54,10 @@ if root.exists():
  for name in('INTENT.json','RECEIPT.json','PROGRESS.json','RESULT.json'):
   path=root/name
   if path.exists():out[name]=json.loads(path.read_text())
+ intent=out.get('INTENT.json')
+ if EXPECTED_RUN is not None and intent is not None:assert intent['run_id']==EXPECTED_RUN,'Existing namespace belongs to a different full logical run'
  receipt=out.get('RECEIPT.json')
+ if EXPECTED_RUN is not None and receipt is not None:assert receipt['run_id']==EXPECTED_RUN,'Existing receipt belongs to a different full logical run'
  if receipt:
   path=pathlib.Path('/proc')/str(receipt['pid'])/'stat'
   if path.exists():
@@ -64,22 +68,22 @@ if root.exists():
  if(root/'backup.log').exists():
   with(root/'backup.log').open('rb')as f:f.seek(max(0,os.fstat(f.fileno()).st_size-1500));out['log_tail']=f.read().decode(errors='replace')
 print(json.dumps(out))
-'''.replace('NAMESPACE',repr(namespace))
+'''.replace('NAMESPACE',repr(namespace)).replace('EXPECTED_RUN',repr(run_id))
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('phase',choices=('start','status'))
-    parser.add_argument('--outer',type=int,required=True);parser.add_argument('--source-base');parser.add_argument('--cpu-proof')
+    parser.add_argument('--run-id',required=True);parser.add_argument('--outer',type=int,required=True);parser.add_argument('--source-base');parser.add_argument('--cpu-proof')
     parser.add_argument('--cpu-proof-sha256');parser.add_argument('--receipts',required=True)
-    args=parser.parse_args();namespace=str(PARENT/(RUN[:12]+'-outer-%04d-once-v1'%args.outer))
+    args=parser.parse_args();run_id=run_identity(args.run_id);namespace=str(checkpoint_namespace(run_id,args.outer))
     if args.phase=='start':
         if not all((args.source_base,args.cpu_proof,args.cpu_proof_sha256)):parser.error('Start needs actual source/proof identity')
         commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
         code=subprocess.check_output(['git','show',commit+':reproduction/prefix_selection200/checkpoint_backup_native.py'],cwd=REPO)
         if code!=(REPO/'reproduction/prefix_selection200/checkpoint_backup_native.py').read_bytes():raise ValueError('Publish current backup code before starting')
-        script=start_script(dict(namespace=namespace,run_id=RUN,outer=args.outer,source_base=args.source_base,
+        script=start_script(dict(namespace=namespace,run_id=run_id,outer=args.outer,source_base=args.source_base,
             cpu_proof=args.cpu_proof,cpu_proof_sha256=args.cpu_proof_sha256),code,commit)
-    else:script=status_script(namespace)
+    else:script=status_script(namespace,run_id)
     path=Path(args.receipts)/('prefix-selection200-backup-'+args.phase+'-'+str(time.time_ns())+'.json')
     result=json.loads(remote(script,path,target='h100-10'));actual=path.with_name(path.stem+'-actual.json')
     actual.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(dict(path=str(actual),result=result)))

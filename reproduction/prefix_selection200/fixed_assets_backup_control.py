@@ -8,7 +8,8 @@ import subprocess
 import time
 
 from reproduction.h1008_qprobe.management_transport import remote
-from .fixed_assets_backup import PARENT, NAME, RUN
+from .fixed_assets_backup import PARENT, fixed_namespace
+from .checkpoint_backup_native import run_identity
 from .checkpoint_backup_native_control import status_script
 
 REPO = Path(__file__).resolve().parents[2]
@@ -42,7 +43,7 @@ spec=importlib.util.spec_from_file_location('fixed_assets_backup',control/'fixed
 path=base/'preparation/fixed-recovery-assets-inventory-once-v1.json'
 if path.exists():
  plan=module.read(path)
- assert plan['run_id']==module.RUN and plan['source_base']==str(base) and plan['inventory_worker_sha256']==files['fixed_assets_backup.py']['sha256']
+ assert plan['run_id']==module.run_identity(module.read(base/'preparation/launch-config.json')['run_id']) and plan['source_base']==str(base) and plan['inventory_worker_sha256']==files['fixed_assets_backup.py']['sha256']
  assert plan['source_config_sha256']==module.sha(base/'preparation/launch-config.json')
  replay=False
 else:
@@ -52,7 +53,8 @@ print(json.dumps(dict(status=plan['status'],inventory_path=str(path),inventory_s
 '''.replace('BASE',repr(base)).replace('FILES',repr(files)).replace('COMMIT',repr(commit))
 
 
-def start_script(inventory_path, inventory_sha, commit, files):
+def start_script(inventory_path, inventory_sha, commit, files, run_id):
+    run_id = run_identity(run_id)
     return r'''
 import base64,fcntl,hashlib,json,os,socket,subprocess,time
 from pathlib import Path
@@ -79,17 +81,18 @@ with(parent/'fixed-assets-start.lock').open('a')as lock:
  with(root/'backup.log').open('xb')as log:
   child=subprocess.Popen(['/usr/bin/python3','-E','-B','-S',str(root/'fixed_assets_backup.py'),'--root',str(root)],stdin=subprocess.DEVNULL,stdout=log,stderr=log,start_new_session=True,env={'PATH':'/usr/bin:/bin','LANG':'C','LC_ALL':'C'})
  state=(Path('/proc')/str(child.pid)/'stat').read_text().rsplit(')',1)[1].split()
- receipt=dict(status='FIXED_ASSET_COPY_STARTED_OR_WAITING_NOT_COMPLETE',namespace=str(root),pid=child.pid,start_ticks=int(state[19]),sid=os.getsid(child.pid),expected_files=len(plan['files']),expected_bytes=plan['bytes'],ordinary_free_bytes=fs.f_bavail*fs.f_frsize,bytes_per_second_limit=20*1024**2,wait_for_existing_cp50=True,semantic_reload_performed=False,training_modified=False,model_bytes_transit_Mac=False)
+ receipt=dict(status='FIXED_ASSET_COPY_STARTED_OR_WAITING_NOT_COMPLETE',run_id=RUN_ID,namespace=str(root),pid=child.pid,start_ticks=int(state[19]),sid=os.getsid(child.pid),expected_files=len(plan['files']),expected_bytes=plan['bytes'],ordinary_free_bytes=fs.f_bavail*fs.f_frsize,bytes_per_second_limit=20*1024**2,wait_for_existing_cp50=True,semantic_reload_performed=False,training_modified=False,model_bytes_transit_Mac=False)
  once(root/'RECEIPT.json',receipt);print(json.dumps(receipt))
-'''.replace('PARENT_PATH',repr(str(PARENT))).replace('ROOT_NAME',repr(NAME)).replace('FILES',repr(files)).replace('INVENTORY_PATH',repr(inventory_path)).replace('INVENTORY_SHA',repr(inventory_sha)).replace('RUN_ID',repr(RUN)).replace('COMMIT',repr(commit))
+'''.replace('PARENT_PATH',repr(str(PARENT))).replace('ROOT_NAME',repr(fixed_namespace(run_id).name)).replace('FILES',repr(files)).replace('INVENTORY_PATH',repr(inventory_path)).replace('INVENTORY_SHA',repr(inventory_sha)).replace('RUN_ID',repr(run_id)).replace('COMMIT',repr(commit))
 
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('phase',choices=['prepare','start','status'])
-    p.add_argument('--base');p.add_argument('--inventory-path');p.add_argument('--inventory-sha');p.add_argument('--receipts',required=True);a=p.parse_args()
+    p.add_argument('--run-id');p.add_argument('--base');p.add_argument('--inventory-path');p.add_argument('--inventory-sha');p.add_argument('--receipts',required=True);a=p.parse_args()
     target='h100-10'
     if a.phase == 'status':
-        script=status_script(str(PARENT/NAME)).replace("print(json.dumps(out))", "error=root/'ERROR.json';out['error']=json.loads(error.read_text()) if error.exists() else None;print(json.dumps(out))")
+        if not a.run_id:p.error('Status needs the complete --run-id')
+        script=status_script(str(fixed_namespace(a.run_id)),a.run_id).replace("print(json.dumps(out))", "error=root/'ERROR.json';out['error']=json.loads(error.read_text()) if error.exists() else None;print(json.dumps(out))")
     else:
         commit,files=published_bundle()
         if a.phase=='prepare':
@@ -97,7 +100,8 @@ def main():
             script=prepare_script(a.base,commit,files);target='h100-8'
         else:
             if not(a.inventory_path and a.inventory_sha):p.error('Start needs the actual prepared inventory path/SHA')
-            script=start_script(a.inventory_path,a.inventory_sha,commit,files)
+            if not a.run_id:p.error('Start needs the complete --run-id matching its inventory')
+            script=start_script(a.inventory_path,a.inventory_sha,commit,files,a.run_id)
     path=Path(a.receipts)/('actorhidden-fixed-assets-'+a.phase+'-'+str(time.time_ns())+'-transport.json')
     result=json.loads(remote(script,path,control_path=None,target=target));actual=path.with_name(path.name.replace('-transport','-actual'))
     actual.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(dict(path=str(actual),result=result)))

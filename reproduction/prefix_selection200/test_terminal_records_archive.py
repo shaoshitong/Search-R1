@@ -4,7 +4,11 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
-from .terminal_records_archive import RUN, FileInventory, assert_terminal, assert_final_rows, canonical_rows
+from .terminal_records_archive import (FileInventory, assert_terminal, assert_final_rows, canonical_rows,
+    assert_evaluation_contract, terminal_namespace)
+from .eval import CONTRACT
+
+RUN = '6cd6f043ef1641ae91ac177b4c27fe4a'
 
 
 class TerminalArchiveTests(unittest.TestCase):
@@ -25,6 +29,26 @@ class TerminalArchiveTests(unittest.TestCase):
                              (4,lambda x:x.update(evidence=[]))]:
             args=self.boundary();change(args[index])
             with self.assertRaises(ValueError):assert_terminal(*args)
+
+    def test_actual_run_identity_is_dynamic_and_cross_run_is_rejected(self):
+        for run_id in (RUN, 'f'*32):
+            args=self.boundary()
+            for value in args:value['run_id']=run_id
+            assert_terminal(*args)
+            self.assertTrue(terminal_namespace(run_id).name.startswith(run_id[:12]))
+        args=self.boundary();args[1]['run_id']='a'*32
+        with self.assertRaisesRegex(ValueError,'identities'):assert_terminal(*args)
+
+    def test_shared_new_qa_contract_and_actual_bf16_worker_required(self):
+        result=dict(actor_version='actor',evaluation_contract=CONTRACT)
+        worker=dict(actor_version='actor',evaluation_contract=CONTRACT,actual_compute_dtype='torch.bfloat16')
+        assert_evaluation_contract(result,worker)
+        for change in (dict(actual_compute_dtype='torch.float32'),
+                       dict(evaluation_contract=dict(CONTRACT,answer_reserve_tokens=0)),
+                       dict(actor_version='wrong')):
+            with self.assertRaises(ValueError):assert_evaluation_contract(result,dict(worker,**change))
+        with self.assertRaises(ValueError):
+            assert_evaluation_contract(dict(result,evaluation_contract=dict(kind='legacy_pre_d00_async_fp32')))
 
     def test_exact_question_source_and_ordinal_not_only_total_count(self):
         canonical=canonical_rows([dict(data_source='a',qid='one'),dict(data_source='b',qid='two'),dict(data_source='b',qid='three')])

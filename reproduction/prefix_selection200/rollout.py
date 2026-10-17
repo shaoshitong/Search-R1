@@ -1,7 +1,7 @@
 """Native 8 x TP1 prefix screening and continuation of the SAME G5 samples.
 
-This is a new training sampling contract, not an alias for the historical
-full-500-then-cut evaluation sampler. A logical action has a 500-token budget;
+Training and QA share the context, action-boundary and EOS contract in
+interaction_contract. A logical action has a 500-token budget;
 native calls can pause it at the twentieth retained policy token. The first
 complete action actually observed in the cumulative native stream is executed.
 Length quota is a pause, never an invented EOS or environment correction.
@@ -19,19 +19,18 @@ import json
 import math
 import os
 from pathlib import Path
-import re
 import subprocess
 import sys
 import time
 
 from reproduction.prefix20_online.pool import atomic, canonical, digest, immutable, read
 from reproduction.prefix20_online.rollout import _configure_one_visible_gpu, prompt_tokens, strict_label, utc
+from .interaction_contract import (BUDGET, BOUNDARY, INTERACTION_CONTRACT, first_action_cut,
+    final_turn, interaction_outcome, stream_action_present)
 
 
 REVISION = 'aa8e72537993ba99e69dfaafa59ed015b17504d1'
 CONTRACT = 'chunked_native_action500_prefix20_v1'
-BOUNDARY = 'first_complete_action_seen_in_actual_chunk_stream'
-ACTION = re.compile(r'<(search|answer)>(.*?)</\1>', re.DOTALL)
 PREFIX_TOKENS = 20
 WORLD = 8
 G = 5
@@ -74,52 +73,6 @@ def seed_for(run_id, outer, trajectory_id, turn, chunk, seed=1729):
     return int.from_bytes(hashlib.sha256(canonical(value)).digest()[:8], 'big') % (2 ** 31 - 1)
 
 
-def first_action_cut(token_ids, decode, *, terminal_ids=(), native_stopped=False):
-    """Find the first complete executable action without looking at future IDs.
-
-    A token straddling the closing tag remains whole. Execution text is cut at
-    the closing tag, so its token suffix cannot create a second tool action.
-    Only an actual trailing native EOS/stop token is omitted from PPO policy
-    positions, as in the existing retained-token contract.
-    """
-    raw = list(token_ids)
-    terminal = bool(raw and raw[-1] in set(terminal_ids))
-    usable = raw[:-1] if terminal else raw
-    text = decode(usable)
-    match = ACTION.search(text)
-    if match is None:
-        return dict(kept_token_ids=usable, kept_token_count=len(usable),
-                    execution_text=text, action=None, boundary_found=False,
-                    native_terminal=bool(terminal or native_stopped), discarded_token_count=len(raw)-len(usable))
-    # Decode original IDs only; do not tokenize decoded text to manufacture IDs.
-    # Presence of a complete ASCII closing tag is monotonic over byte-BPE
-    # prefixes. Binary search preserves the whole boundary token without an
-    # O(action_length**2) tokenizer-decode loop on every completed action.
-    lo, keep = 1, len(usable)
-    while lo < keep:
-        middle = (lo + keep) // 2
-        if ACTION.search(decode(usable[:middle])) is not None:
-            keep = middle
-        else:
-            lo = middle + 1
-    execution = decode(usable[:keep])
-    actual = ACTION.search(execution)
-    return dict(kept_token_ids=usable[:keep], kept_token_count=keep,
-                execution_text=execution[:actual.end()], action=actual.group(1),
-                boundary_found=True, native_terminal=bool(terminal or native_stopped),
-                discarded_token_count=len(raw)-keep)
-
-
-def stream_action_present(token_ids, decode):
-    # Qwen byte-BPE cannot use more than one token per ASCII byte in these
-    # closing tags. Avoid decoding an entire growing500-token action for every
-    # native decode step of every concurrent request; full regex parsing is
-    # needed only after a closing tag actually enters the observed suffix.
-    tail = decode(token_ids[-32:])
-    if '</search>' not in tail and '</answer>' not in tail:
-        return False
-    return ACTION.search(decode(token_ids)) is not None
-
 
 def initial_state(config, outer, group, response_index, tokenizer):
     prompt = prompt_tokens(tokenizer, group['prompt'], 2048)
@@ -145,15 +98,12 @@ def retained_length(state):
 
 
 def start_action(state, budget):
-    from reproduction.common8.context_budget import final_stage
     if state['action'] is not None:
         return
     request = state['prompt'] + state['response']
-    if len(request) + budget['action_tokens'] > budget['total_tokens']:
-        raise ValueError('Real context cannot accommodate a logical500-token action')
     state['action'] = dict(turn_index=state['ordinal'], actual_request_token_ids=request,
                            raw_generated_token_ids=[], selected_logprobs=[], actual_sampling_chunks=[],
-                           final_turn=final_stage(len(request), state['ordinal'], 4, budget))
+                           final_turn=final_turn(len(request), state['ordinal'], budget))
 
 
 def next_request(state, phase, config):
@@ -205,14 +155,12 @@ def append_chunk(state, request, raw_ids, log_probs, sampling, *, finish_reason,
 
 
 def finish_action(state, cut, environment, tokenizer, budget):
-    from reproduction.common8.context_budget import observation_room, observation_tokens
     action = state['action']
     text, done, valid, is_search = environment
-    natural_eos = cut['native_terminal']
-    room = observation_room(len(action['actual_request_token_ids']), cut['kept_token_count'], budget)
-    observation, clipped = ([], False) if action['final_turn'] or natural_eos else observation_tokens(
-        tokenizer, text, min(500, room))
-    terminal = bool(action['final_turn'] or done or natural_eos)
+    transition = interaction_outcome(tokenizer, len(action['actual_request_token_ids']),
+        cut['kept_token_count'], action['final_turn'], cut, environment, budget)
+    observation, clipped = transition['observation_token_ids'], transition['observation_clipped']
+    natural_eos, terminal = transition['natural_eos'], transition['terminal']
     turn = dict(action, trajectory_id=state['trajectory_id'], policy_snapshot_id=state['actor_version'],
                 actor_version=state['actor_version'], sampling_contract=CONTRACT,
                 raw_generated_token_count=len(action['raw_generated_token_ids']),
@@ -228,7 +176,7 @@ def finish_action(state, cut, environment, tokenizer, budget):
     state['info_mask'].extend([1] * len(kept) + [0] * len(observation))
     state['log_probs'].extend(action['selected_logprobs'][:len(kept)] + [0.] * len(observation))
     state['turns'].append(turn)
-    state['retrieval_calls'] += int(is_search and not action['final_turn'] and not natural_eos)
+    state['retrieval_calls'] += transition['retrieval_calls']
     state['action'] = None
     if len(state['prompt']) + len(state['response']) > budget['total_tokens']:
         raise ValueError('Actual retained context exceeds4096 tokens')
@@ -542,7 +490,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     retriever = BoundedRetriever(manager, AsyncRolloutConfig(agent_workers=limits['max_num_seqs'],
         max_inflight_trajectories=limits['max_num_seqs'], retrieval_concurrency=int(config.get('retrieval_threads_per_engine', 16)),
         tool_timeout=float(config.get('retrieval_timeout', 60)), tool_retries=2, engine_step_budget=8))
-    budget = dict(total_tokens=4096, action_tokens=500, answer_reserve_tokens=500)
+    budget = dict(BUDGET)
     decode = lambda ids: tokenizer.decode(ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
     waiting, ready, pending, tools = deque(states), deque(), {}, {}
     completed, active, peak, requests, sampled = 0, 0, 0, 0, 0
@@ -692,7 +640,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     feature_path = hidden_writer.finish() if hidden_writer is not None else None
     result = dict(schema_version=1, phase=phase, outer=outer, rank=rank, run_id=config['run_id'],
         actor_version=config['actor_version'], actor_model_dir=model, config_sha256=digest(config_path),
-        sampling_contract=CONTRACT, action_boundary=BOUNDARY, old_full500_evaluation_sampler_changed=False,
+        sampling_contract=CONTRACT, action_boundary=BOUNDARY, interaction_contract=INTERACTION_CONTRACT,
         native_output_commit='synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort',
         trajectories=completed, questions=completed//G, device_binding=device_binding,
         pad_token_id=int(tokenizer.pad_token_id), eos_token_id=int(tokenizer.eos_token_id),
@@ -785,7 +733,7 @@ def pack_prefix(config, outer, ranks):
         encoder_global_max_tokens=max([qmax]+[s['context_length'] for row in rows for s in row['segments']]),
         sources_sha256=source_sha, prefix_window='multi_turn_actual_kept_policy_tokens',
         prefix_source='same_trajectory_native_prefix_then_continue', labels_present=False,
-        sampling_contract=CONTRACT, action_boundary=BOUNDARY,
+        sampling_contract=CONTRACT, action_boundary=BOUNDARY, interaction_contract=INTERACTION_CONTRACT,
         files={name:dict(sha256=digest(out/name),bytes=(out/name).stat().st_size) for name in
                tuple(name+'.npy' for name in arrays)+('index.jsonl',)})
     immutable(out/'scan-complete.json',proof)
@@ -817,7 +765,7 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
         model_revision=REVISION,pad_token_id=ranks[0]['pad_token_id'],eos_token_id=ranks[0]['eos_token_id'],
         candidate_questions_sha256=digest(root/'questions.json'),head_prefix_tokens=PREFIX_TOKENS,
         trajectories=sum(r['trajectories'] for r in ranks),questions=sum(r['questions'] for r in ranks),
-        sampling_contract=CONTRACT,action_boundary=BOUNDARY,old_full500_evaluation_sampler_changed=False,
+        sampling_contract=CONTRACT,action_boundary=BOUNDARY,interaction_contract=INTERACTION_CONTRACT,
         actual_sampled_tokens=sum(r['actual_sampled_tokens'] for r in ranks),
         native_generation_requests=sum(r['generation_requests'] for r in ranks),completed_utc=utc())
     value['reused_original_rank_receipts']=[item[1] for item in checked if item[1] is not None]

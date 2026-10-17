@@ -3,7 +3,9 @@ import hashlib
 from pathlib import Path
 import tempfile
 import unittest
-from .fixed_assets_backup import admitted_rows, RUN, full_read, safe_original
+from .fixed_assets_backup import admitted_rows, full_read, safe_original, fixed_namespace
+
+RUN = '6cd6f043ef1641ae91ac177b4c27fe4a'
 
 
 class FixedAssetTests(unittest.TestCase):
@@ -11,6 +13,12 @@ class FixedAssetTests(unittest.TestCase):
         return dict(status='FIXED_RECOVERY_ASSETS_INVENTORY_ONLY',run_id=RUN,bytes=17,
             files=[dict(original_path='/dataset/frozen/model',exported_source_path='/mnt/data/stage/model',
                 bytes=17,expected_sha256='a'*64,export_mtime_ns=0)])
+
+    def test_namespace_comes_from_actual_full_run_identity(self):
+        for run_id in (RUN, 'f'*32):
+            plan=self.plan();plan['run_id']=run_id
+            self.assertEqual(len(list(admitted_rows(plan))),1)
+            self.assertTrue(fixed_namespace(run_id).name.startswith(run_id[:12]))
 
     def test_original_paths_are_preserved_while_reading_export_alias(self):
         row,source,destination=list(admitted_rows(self.plan()))[0]
