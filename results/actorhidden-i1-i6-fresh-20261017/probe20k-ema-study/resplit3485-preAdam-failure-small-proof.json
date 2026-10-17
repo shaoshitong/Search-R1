@@ -1,0 +1,48 @@
+{
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b",
+  "job_id": "3485",
+  "native": "JobId=3485 JobName=g1-probe20k-fit-0bdddc20840b UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898576 Nice=0 Account=(null) QOS=(null) JobState=FAILED Reason=NonZeroExitCode Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=1:0 RunTime=00:00:52 TimeLimit=00:30:00 TimeMin=N/A SubmitTime=2026-10-18T02:01:46 EligibleTime=2026-10-18T02:01:46 AccrueTime=2026-10-18T02:01:46 StartTime=2026-10-18T02:02:12 EndTime=2026-10-18T02:03:04 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-18T02:02:12 Scheduler=Backfill Partition=gpu AllocNode:Sid=h100-8:947902 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=48 NumTasks=1 CPUs/Task=48 ReqB:S:C:T=0:0:*:* TRES=cpu=48,mem=256G,node=1,billing=48 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=48 MinMemoryNode=256G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b/preparation/native-probe20k-fit.sh WorkDir=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b Comment=g1-probe20k-fit:0bdddc20840b4fd7ac744703d560b1f3  StdErr=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b/logs/native-3485.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b/logs/native-3485.log Power= \n",
+  "original_birth_count": 9,
+  "original_births_all_gone": true,
+  "no_live_own_gpu": true,
+  "release": [
+    {
+      "remaining_original_births": [],
+      "owned_gpu": [],
+      "cgroups": [],
+      "checked_unix": 1792260317.081933
+    },
+    {
+      "remaining_original_births": [],
+      "owned_gpu": [],
+      "cgroups": [],
+      "checked_unix": 1792260318.2465324
+    }
+  ],
+  "original_inode_logs": [
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b/logs/native-3485.log",
+      "inode": 179256321,
+      "bytes": 875,
+      "sha256": "64091ec2e67c1ae7a114479d8a10a6aa275dd18e8cec3d8f973963052ef9cbb8"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b/logs/q5120_t15360_dist_divkl_dominantmix.log",
+      "inode": 179256338,
+      "bytes": 4927,
+      "sha256": "b4a172fd439d86f9ef8b77887d479ea203f3fb83c41cb84a5c5e75b5f8c92cb3"
+    }
+  ],
+  "arms": {
+    "q5120_t15360_dist_divkl_dominantmix": {
+      "actual_new_adam": 0,
+      "complete_epochs": 0,
+      "split_sha256": "d2566a0c387985a571f3c6f51c96a878f938c48689ebc8d29f5c04433948a873",
+      "train_questions": 5120,
+      "test_questions": 15360
+    }
+  },
+  "no_actual_new_adam": true,
+  "error": "group_predictions old test-size whitelist rejected15360 before training",
+  "checked_unix": 1792260319.2738223
+}

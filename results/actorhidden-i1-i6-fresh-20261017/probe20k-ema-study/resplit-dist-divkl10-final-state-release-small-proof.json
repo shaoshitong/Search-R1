@@ -1,0 +1,364 @@
+{
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix",
+  "job_id": "3486",
+  "native": "JobId=3486 JobName=g1-probe20k-fit-0bdddc20840b UserId=root(0) GroupId=root(0) MCS_label=N/A Priority=4294898575 Nice=0 Account=(null) QOS=(null) JobState=COMPLETED Reason=None Dependency=(null) Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:09:56 TimeLimit=00:30:00 TimeMin=N/A SubmitTime=2026-10-18T02:06:28 EligibleTime=2026-10-18T02:06:28 AccrueTime=2026-10-18T02:06:28 StartTime=2026-10-18T02:06:42 EndTime=2026-10-18T02:16:38 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-18T02:06:42 Scheduler=Backfill Partition=gpu AllocNode:Sid=h100-8:953701 ReqNodeList=h100-8 ExcNodeList=(null) NodeList=h100-8 BatchHost=h100-8 NumNodes=1 NumCPUs=48 NumTasks=1 CPUs/Task=48 ReqB:S:C:T=0:0:*:* TRES=cpu=48,mem=256G,node=1,billing=48 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=48 MinMemoryNode=256G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=YES Contiguous=0 Licenses=(null) Network=(null) Command=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/preparation/native-probe20k-fit.sh WorkDir=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix Comment=g1-probe20k-fit:0bdddc20840b4fd7ac744703d560b1f3  StdErr=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/logs/native-3486.log StdIn=/dev/null StdOut=/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/logs/native-3486.log Power= \n",
+  "original_birth_count": 9,
+  "original_births_all_gone": true,
+  "no_live_own_gpu": true,
+  "release": [
+    {
+      "remaining_original_births": [],
+      "owned_gpu": [],
+      "cgroups": [],
+      "checked_unix": 1792261048.8904302
+    },
+    {
+      "remaining_original_births": [],
+      "owned_gpu": [],
+      "cgroups": [],
+      "checked_unix": 1792261050.07366
+    }
+  ],
+  "original_inode_logs": [
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/logs/native-3486.log",
+      "inode": 179257999,
+      "bytes": 5,
+      "sha256": "38e0b9de817f645c4bec37c0d4a3e58baecccb040f5718dc069a72c7385a0bed"
+    },
+    {
+      "path": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/logs/q5120_t15360_dist_divkl_dominantmix.log",
+      "inode": 179258019,
+      "bytes": 8040,
+      "sha256": "4c2977b9ef0accca244a95b542ecd230e4910891b0f6ff4b092a8a886f78e785"
+    }
+  ],
+  "arms": {
+    "q5120_t15360_dist_divkl_dominantmix": {
+      "question_split_sha256": "d2566a0c387985a571f3c6f51c96a878f938c48689ebc8d29f5c04433948a873",
+      "split_seed": 20261018,
+      "train_questions": 5120,
+      "test_questions": 15360,
+      "question_overlap": 0,
+      "final_checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-10.pt",
+      "bytes": 1242962686,
+      "independent_full_sha256": "686eee5ee7ac4ae26484aa57cd0b530d864128cae8796652430a15439975b131",
+      "cpu_state_load": true,
+      "model_and_ema_tensors": 14,
+      "optimizer_states": 14,
+      "eight_rng_present": true,
+      "actual_adam_per_rank": [
+        1200,
+        1200,
+        1200,
+        1200,
+        1200,
+        1200,
+        1200,
+        1200
+      ],
+      "ema_updates": 1000,
+      "rank_update_journals": [
+        {
+          "rank": 0,
+          "actual_logged_updates": 1000,
+          "last": {
+            "epoch": 10,
+            "step": 100,
+            "rank": 0,
+            "actual_adam": 1200,
+            "local_trajectories": 30,
+            "learning_rate": 5e-05,
+            "ema_updates": 1000
+          }
+        },
+        {
+          "rank": 1,
+          "actual_logged_updates": 1000,
+          "last": {
+            "epoch": 10,
+            "step": 100,
+            "rank": 1,
+            "actual_adam": 1200,
+            "local_trajectories": 30,
+            "learning_rate": 5e-05,
+            "ema_updates": 1000
+          }
+        },
+        {
+          "rank": 2,
+          "actual_logged_updates": 1000,
+          "last": {
+            "epoch": 10,
+            "step": 100,
+            "rank": 2,
+            "actual_adam": 1200,
+            "local_trajectories": 30,
+            "learning_rate": 5e-05,
+            "ema_updates": 1000
+          }
+        },
+        {
+          "rank": 3,
+          "actual_logged_updates": 1000,
+          "last": {
+            "epoch": 10,
+            "step": 100,
+            "rank": 3,
+            "actual_adam": 1200,
+            "local_trajectories": 30,
+            "learning_rate": 5e-05,
+            "ema_updates": 1000
+          }
+        },
+        {
+          "rank": 4,
+          "actual_logged_updates": 1000,
+          "last": {
+            "epoch": 10,
+            "step": 100,
+            "rank": 4,
+            "actual_adam": 1200,
+            "local_trajectories": 35,
+            "learning_rate": 5e-05,
+            "ema_updates": 1000
+          }
+        },
+        {
+          "rank": 5,
+          "actual_logged_updates": 1000,
+          "last": {
+            "epoch": 10,
+            "step": 100,
+            "rank": 5,
+            "actual_adam": 1200,
+            "local_trajectories": 35,
+            "learning_rate": 5e-05,
+            "ema_updates": 1000
+          }
+        },
+        {
+          "rank": 6,
+          "actual_logged_updates": 1000,
+          "last": {
+            "epoch": 10,
+            "step": 100,
+            "rank": 6,
+            "actual_adam": 1200,
+            "local_trajectories": 35,
+            "learning_rate": 5e-05,
+            "ema_updates": 1000
+          }
+        },
+        {
+          "rank": 7,
+          "actual_logged_updates": 1000,
+          "last": {
+            "epoch": 10,
+            "step": 100,
+            "rank": 7,
+            "actual_adam": 1200,
+            "local_trajectories": 35,
+            "learning_rate": 5e-05,
+            "ema_updates": 1000
+          }
+        }
+      ],
+      "normal_savepoints": [
+        {
+          "actual_adam_per_rank": [
+            300,
+            300,
+            300,
+            300,
+            300,
+            300,
+            300,
+            300
+          ],
+          "arm": "q5120_t15360_dist_divkl_dominantmix",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-01.pt",
+          "checkpoint_bytes": 1242962686,
+          "checkpoint_sha256": "60e780a90bbe1767d6625c511754951431c9879e9166d0a8c8bed449514c599f",
+          "epoch": 1,
+          "metrics_sha256": "a66233d4c367b02c31dd58f7e03f5311cb9bebc675951044dceb992ead928184",
+          "train_loop_seconds": 23.071107998490334
+        },
+        {
+          "actual_adam_per_rank": [
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400,
+            400
+          ],
+          "arm": "q5120_t15360_dist_divkl_dominantmix",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-02.pt",
+          "checkpoint_bytes": 1242962686,
+          "checkpoint_sha256": "ec8ea12a7f1e4c034142ee6db351cd4fc0098cc534e175e66ccbb8c0b3ff2bed",
+          "epoch": 2,
+          "metrics_sha256": "4994cc7264324ab3720643d0a4fa504a4bac34c4b2070146adcee060798706ad",
+          "train_loop_seconds": 22.280305314809084
+        },
+        {
+          "actual_adam_per_rank": [
+            500,
+            500,
+            500,
+            500,
+            500,
+            500,
+            500,
+            500
+          ],
+          "arm": "q5120_t15360_dist_divkl_dominantmix",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-03.pt",
+          "checkpoint_bytes": 1242962686,
+          "checkpoint_sha256": "55bdb904ade0b3b089ccf4d9bb7d12cf5e02508c5e71f73619d2b4c27b04e79b",
+          "epoch": 3,
+          "metrics_sha256": "6a595ad6b16b1228a50a166142a5611aa3d72b5fea3e634b787418416442ddfe",
+          "train_loop_seconds": 22.665603332221508
+        },
+        {
+          "actual_adam_per_rank": [
+            600,
+            600,
+            600,
+            600,
+            600,
+            600,
+            600,
+            600
+          ],
+          "arm": "q5120_t15360_dist_divkl_dominantmix",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-04.pt",
+          "checkpoint_bytes": 1242962686,
+          "checkpoint_sha256": "6bae2030a42758039be162996c54ec8f8a2523643c533ce91e8fc7e3893d9551",
+          "epoch": 4,
+          "metrics_sha256": "189986903fcabd64739c0e86fe528727fe96e8d5ed878a35cc492b6b0dace42a",
+          "train_loop_seconds": 22.63404305651784
+        },
+        {
+          "actual_adam_per_rank": [
+            700,
+            700,
+            700,
+            700,
+            700,
+            700,
+            700,
+            700
+          ],
+          "arm": "q5120_t15360_dist_divkl_dominantmix",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-05.pt",
+          "checkpoint_bytes": 1242962686,
+          "checkpoint_sha256": "ffefe3f95c454c6ef3823d2030648668773634d3d70d4bcc0d0904ff674c6050",
+          "epoch": 5,
+          "metrics_sha256": "98f9b1280f8342a7b95adf1540c935fd3395ca6956704dc0d830fb038f8d1d46",
+          "train_loop_seconds": 22.658368576318026
+        },
+        {
+          "actual_adam_per_rank": [
+            800,
+            800,
+            800,
+            800,
+            800,
+            800,
+            800,
+            800
+          ],
+          "arm": "q5120_t15360_dist_divkl_dominantmix",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-06.pt",
+          "checkpoint_bytes": 1242962686,
+          "checkpoint_sha256": "21de83bc050cb5f9f90cd9008abd229eef573489378eef0ddd76abc8a638b7a3",
+          "epoch": 6,
+          "metrics_sha256": "de1f44e50ed2bc80e5d4ebd3d00e6e35dcfdefbe8e96dbddc09b3f935464d447",
+          "train_loop_seconds": 22.924715392291546
+        },
+        {
+          "actual_adam_per_rank": [
+            900,
+            900,
+            900,
+            900,
+            900,
+            900,
+            900,
+            900
+          ],
+          "arm": "q5120_t15360_dist_divkl_dominantmix",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-07.pt",
+          "checkpoint_bytes": 1242962686,
+          "checkpoint_sha256": "294fb421cc637b9af281294b8e83181c9f68c9ef2c7ec6fe0174da19527a5aaf",
+          "epoch": 7,
+          "metrics_sha256": "7cbdaf2564dcf5a8e43124187cb9354c2678251c3a0c243ef81a4702991f3e65",
+          "train_loop_seconds": 22.906008824706078
+        },
+        {
+          "actual_adam_per_rank": [
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000,
+            1000
+          ],
+          "arm": "q5120_t15360_dist_divkl_dominantmix",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-08.pt",
+          "checkpoint_bytes": 1242962686,
+          "checkpoint_sha256": "1534609ac00bbe658212dfe03ab07f18587d18e940e2328ad40e9dafc0dc8d1f",
+          "epoch": 8,
+          "metrics_sha256": "f4dbb544304edd634c3bae7998f74dd4d122d6dce462ca8eb6a21bd607724549",
+          "train_loop_seconds": 22.60825825110078
+        },
+        {
+          "actual_adam_per_rank": [
+            1100,
+            1100,
+            1100,
+            1100,
+            1100,
+            1100,
+            1100,
+            1100
+          ],
+          "arm": "q5120_t15360_dist_divkl_dominantmix",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-09.pt",
+          "checkpoint_bytes": 1242962686,
+          "checkpoint_sha256": "6cf96570148143f148eed92d90847d5a105073264ca53ef3802fae1b64d19271",
+          "epoch": 9,
+          "metrics_sha256": "35ddec4c77e40acbeddc2d0227dcf595089f47f68356f9d8abd59c9bea96bb3f",
+          "train_loop_seconds": 23.201510451734066
+        },
+        {
+          "actual_adam_per_rank": [
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200,
+            1200
+          ],
+          "arm": "q5120_t15360_dist_divkl_dominantmix",
+          "checkpoint": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix/arms/q5120_t15360_dist_divkl_dominantmix/head-epoch-10.pt",
+          "checkpoint_bytes": 1242962686,
+          "checkpoint_sha256": "686eee5ee7ac4ae26484aa57cd0b530d864128cae8796652430a15439975b131",
+          "epoch": 10,
+          "metrics_sha256": "e37dd73ca481e2f6c3a5fc831e45eb37afeeb01a4c586285910a1ed3e9b5cb13",
+          "train_loop_seconds": 23.302923016250134
+        }
+      ]
+    }
+  },
+  "all_requested_resplit_dist_divkl10_complete": true,
+  "formal_actor_resumed": false,
+  "checked_unix": 1792261054.226334
+}
