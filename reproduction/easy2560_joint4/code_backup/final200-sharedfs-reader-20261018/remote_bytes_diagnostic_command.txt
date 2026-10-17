@@ -1,0 +1,18 @@
+CUDA_VISIBLE_DEVICES='' '/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730912-20261018/env/bin/python' -B -c 'import os,json,time,tempfile,hashlib
+from pathlib import Path
+rows=[]
+def st(x):return {k:getattr(x,k) for k in ("st_dev","st_ino","st_size","st_mtime_ns","st_ctime_ns")}
+def sha(x):return hashlib.sha256(x).hexdigest()
+with tempfile.TemporaryDirectory(prefix="final-reader-stat-probe-",dir="/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730912-20261018/tmp") as td:
+ p=Path(td)/"only-own-fixture.jsonl"
+ for i in range(24):
+  raw=(json.dumps({"iteration":i,"payload":"x"*400})+"\n").encode()*140
+  p.write_bytes(raw)
+  with p.open("rb") as f:
+   a=os.fstat(f.fileno());first=f.read();z=os.fstat(f.fileno())
+   f.seek(0);second=f.read();zz=os.fstat(f.fileno())
+  ps=p.stat()
+  rows.append(dict(i=i,before=st(a),after=st(z),second_after=st(zz),path_stat=st(ps),timestamp_changed=a.st_mtime_ns!=z.st_mtime_ns,first_sha=sha(first),second_sha=sha(second),expected_sha=sha(raw),same_bytes=first==second==raw))
+print(json.dumps(dict(checked_unix=time.time(),samples=len(rows),timestamp_changes=sum(x["timestamp_changed"] for x in rows),all_bytes_equal=all(x["same_bytes"] for x in rows),changed=[x for x in rows if x["timestamp_changed"]],gpu_allocations=0,new_training_updates=0)))
+'
+

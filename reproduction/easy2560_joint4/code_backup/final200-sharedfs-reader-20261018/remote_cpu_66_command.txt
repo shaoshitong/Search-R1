@@ -1,0 +1,10 @@
+CUDA_VISIBLE_DEVICES='' '/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730912-20261018/env/bin/python' -B -c 'import os,json,sys,subprocess,time,hashlib
+from pathlib import Path
+b=Path("/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730912-20261018");src=Path("/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730912-20261018/source/4e1573bfc8e323a5b10da4975448c469f1e00c28")
+before=hashlib.sha256((b/'\''preparation/run-source.json'\'').read_bytes()).hexdigest()
+env=dict(os.environ,QPROBE_SOURCE=str(src),PYTHONPATH=str(src),CUDA_VISIBLE_DEVICES='\'''\'',OMP_NUM_THREADS='\''4'\'',OPENBLAS_NUM_THREADS='\''4'\'',TMPDIR=str(b/'\''tmp'\''))
+start=time.time()
+r=subprocess.run([str(b/'\''env/bin/python'\''),'\''-B'\'','\''-m'\'','\''unittest'\'']+["search_g1.test_easy2560_restore","search_g1.test_easy2560_final_dispatch","search_g1.test_easy2560_final_checkpoint","reproduction.easy2560_joint4.test_final_cpu_acceptance","reproduction.easy2560_joint4.test_final_restore_only","reproduction.easy2560_joint4.test_final_restore_acceptance"]+['\''-q'\''],cwd=str(src),env=env,capture_output=True,text=True,timeout=90)
+runtime=json.loads((b/'\''preparation/run-source.json'\'').read_text())
+print(json.dumps(dict(checked_unix=time.time(),started_unix=start,source_commit="4e1573bfc8e323a5b10da4975448c469f1e00c28",returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,source_publication_sha256=hashlib.sha256((src/'\''source-publication.json'\'').read_bytes()).hexdigest(),runtime_unchanged=before==hashlib.sha256((b/'\''preparation/run-source.json'\'').read_bytes()).hexdigest(),active_training_commit=runtime['\''source_commit'\''],actual_CUDA_restore_accepted=False,gpu_allocations=0,new_training_updates=0)))'
+

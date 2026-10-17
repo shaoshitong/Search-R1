@@ -1,0 +1,34 @@
+CUDA_VISIBLE_DEVICES='' TMPDIR='/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730912-20261018/tmp' '/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730912-20261018/env/bin/python' -B -c 'import os,sys,json,time,unittest,inspect
+from pathlib import Path
+sys.path.insert(0,"/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730912-20261018/source/4e1573bfc8e323a5b10da4975448c469f1e00c28")
+from reproduction.easy2560_joint4 import final_cpu_acceptance as m
+from reproduction.easy2560_joint4.test_final_cpu_acceptance import FinalAcceptanceTests
+obs=[]
+stat_events=[]
+original_stat=Path.stat
+original_need=m.need
+def ident(st):
+ return {k:getattr(st,k) for k in ("st_dev","st_ino","st_size","st_mtime_ns","st_ctime_ns","st_uid")}
+def stat(p,*a,**kw):
+ s=original_stat(p,*a,**kw)
+ stat_events.append((str(p),ident(s)))
+ if len(stat_events)>100:del stat_events[:50]
+ return s
+def need(condition,message):
+ if not condition and "CHANGED_DURING_READ" in message:
+  f=inspect.currentframe().f_back
+  p=f.f_locals.get("path")
+  obs.append(dict(message=message,function=f.f_code.co_name,path=str(p),
+   before=ident(f.f_locals["before"]),after=ident(f.f_locals["after"]),
+   path_stat_events=[v for n,v in stat_events if n==str(p)][-8:],
+   repeat_stat=[ident(original_stat(p)) for _ in range(3)]))
+ return original_need(condition,message)
+Path.stat=stat
+m.need=need
+names=["test_archive_completed_update_must_match_the_actual_attempt_not_only_step","test_each_fixed_milestone_is_required_once_and_stage64_cannot_replace_it","test_extra201_driver_scheduler_worker_or_completed_row_fails","test_new_source_retains_early_missing200_and_fresh_only_checks"]
+start=time.time()
+r=unittest.TestResult()
+unittest.TestSuite([FinalAcceptanceTests(n) for n in names]).run(r)
+print(json.dumps(dict(started_unix=start,checked_unix=time.time(),tests=r.testsRun,failures=[(str(t),s) for t,s in r.failures],errors=[(str(t),s) for t,s in r.errors],observations=obs,gpu_allocations=0,new_training_updates=0)))
+'
+
