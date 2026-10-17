@@ -34,6 +34,9 @@ CANDIDATE_SHA = 'd29f22692fffb884a34fb9fc5841c882831c2d7b335e893822879c67b0e68b8
 SOURCE_RECEIPT_SHA = '620b6fe6d9485ec8652903f49ee6e7bd6c09675932a702c7d6f735db77ce736d'
 ARCHIVE_COPY_SHA = '77bd3f89a1bff32dae765b731791ba0fc088c043fd269e2c95eb3ff4d87ee41f'
 HK_RECEIPT_SHA = 'e50fde1e701024a9664740bcb4a20d1d04cff108196434d0b7de72678be67fd8'
+# Published d45 HK worker predates only the source-side preserved-file fix.
+# Its HK SHA path is AST-checked unchanged; never accept this for source proof.
+LEGACY_HK_OPERATOR_SHA = '8015dea69062d69cc06760f2177d335ac85f6e3a137736f7d2504a117a998927'
 TOTAL_BYTES = 76555489172
 TARGET_BYTES = 76555486380
 ROLES = ('actor', 'reranker_actor_rollout')
@@ -233,7 +236,7 @@ def measured_sha(path, uid, root, phase, done, total, completed):
 
 
 def checkpoint_tree():
-    """A tiny CP-only metadata walk; preserves every file outside the fixed25."""
+    """CP-only metadata walk; large preserved assets are never content-read."""
     no_links(CP); files = {}; directory_bytes = 0
     for directory, dirs, names in os.walk(CP, followlinks=False):
         directory = no_links(directory); directory_bytes += directory.stat().st_blocks*512
@@ -241,8 +244,10 @@ def checkpoint_tree():
         for name in names:
             path = directory/name; rel = str(path.relative_to(CP)); record = identity(path)
             if rel not in TARGET_NAMES:
-                need(record['bytes'] <= 2*1024**2, 'UNEXPECTED_LARGE_NONTARGET_PRESERVED')
-                record['sha256'] = small_raw(path)[1]
+                if record['bytes'] <= 2*1024**2:
+                    record['sha256'] = small_raw(path)[1]
+                else:
+                    record['content_sha256_read'] = False
             files[rel] = record
     return dict(files=files, allocated_bytes=directory_bytes+sum(r['allocated_bytes'] for r in files.values()))
 
@@ -306,9 +311,11 @@ def proof_bind(plan, proof, operation_id, site):
         proof['candidate_sha256'] == CANDIDATE_SHA and proof['operation_id'] == operation_id and
         tuple(sorted(proof['files'])) == CORE_NAMES and proof['hashed_bytes'] == TOTAL_BYTES, 'FRESH33_BOUND_PROOF_REQUIRED')
     actor = proof['process_identity']
+    accepted_sha = {digest(Path(__file__).read_bytes())}
+    if site == 'hk': accepted_sha.add(LEGACY_HK_OPERATOR_SHA)
     need(actor['host'] == (HK_HOST if site == 'hk' else HPC_HOST) and
          actor['uid'] == (HK_UID if site == 'hk' else SOURCE_UID) and
-         proof['operator_source_sha256'] == digest(Path(__file__).read_bytes()), 'FRESH_PROOF_OWNER_HOST_DIFFERS')
+         proof['operator_source_sha256'] in accepted_sha, 'FRESH_PROOF_OWNER_HOST_DIFFERS')
     for name in CORE_NAMES:
         row = proof['files'][name]
         need((row['bytes'], row['sha256']) == (plan['core'][name]['bytes'], plan['core'][name]['sha256']) and

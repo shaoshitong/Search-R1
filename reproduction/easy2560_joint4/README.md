@@ -122,3 +122,13 @@ requires fresh full33 hashes on both hosts, exact source identities, both UID
 reader observations and durable per-file unlink records; independent source and
 archive checks close the operation. It leaves both old watchers running and
 does not create the old archive worker's recursive-delete marker.
+Non-target tokenizer assets larger than2MiB remain in place with strict file
+identity comparison; their contents are not read for hashes. Only the exact
+published d45 HK worker SHA is accepted as compatible archive evidence; source
+evidence must match the current operator, with the HK hashing path checked by
+AST against d45. `recover_cosearch200_source_audit.py` defaults to read-only
+inspection of the one failed d45 source attempt. Its explicit `--apply` moves
+only that attempt's six CPU audit files into a fixed failure directory after
+confirming its original process birth exited and no deletion began. It preserves
+the plan and all checkpoint files, never starts another worker, and refuses to
+retry a partial audit move.

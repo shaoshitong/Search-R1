@@ -1,5 +1,6 @@
 """Tiny real-file destructive fixtures; no SSH, Slurm, Torch or model assets."""
 import copy
+import ast
 from contextlib import ExitStack, contextmanager
 import hashlib
 import json
@@ -7,11 +8,13 @@ import os
 from pathlib import Path
 import tempfile
 import time
+import subprocess
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
 from reproduction.easy2560_joint4 import retire_old_cosearch200 as op
+from reproduction.easy2560_joint4 import recover_cosearch200_source_audit as recovery
 
 
 class OldCoSearchRetirementTests(unittest.TestCase):
@@ -226,6 +229,145 @@ class OldCoSearchRetirementTests(unittest.TestCase):
             with self.subTest(mutation=mutation), self.assertRaisesRegex(ValueError, 'FRESH33_BOUND_PROOF_REQUIRED|FRESH_PROOF_OWNER_HOST_DIFFERS'):
                 self.execute(source, wrong, guards)
         self.assertFalse((self.sroot/'deletion-claim.json').exists()); self.assertTrue(all((self.cp/n).exists() for n in op.TARGET_NAMES))
+
+    def test_large_nontarget_is_identity_preserved_without_content_sha_and_only25_removed(self):
+        large = self.cp/'actor/huggingface/tokenizer.json'
+        self.put(large, b'x'*(2*1024**2+17)); before = op.identity(large)
+        original = op.small_raw
+        def small_only(path):
+            self.assertNotEqual(Path(path), large, 'large retained tokenizer must not be read for SHA')
+            return original(path)
+        with patch.object(op, 'small_raw', side_effect=small_only):
+            source, archive, guards = self.proofs()
+            row = source['preserved_checkpoint_tree']['files']['actor/huggingface/tokenizer.json']
+            self.assertFalse(row['content_sha256_read']); self.assertNotIn('sha256', row)
+            result = self.execute(source, archive, guards)
+        self.assertEqual(op.identity(large), before)
+        self.assertEqual(len(result['confirmed_unlinked_files']), 25)
+
+    def test_large_nontarget_replaced_identity_rejected_before_unlink(self):
+        large = self.cp/'actor/huggingface/tokenizer.json'
+        self.put(large, b'x'*(2*1024**2+17)); source, archive, guards = self.proofs()
+        replacement = large.with_suffix('.replacement'); replacement.write_bytes(large.read_bytes()); replacement.replace(large)
+        with self.assertRaisesRegex(ValueError, 'NONTARGET_METADATA_CHANGED_OR_MISSING'):
+            self.execute(source, archive, guards)
+        self.assertFalse((self.sroot/'actions.jsonl').exists())
+        self.assertTrue(all((self.cp/n).exists() for n in op.TARGET_NAMES))
+
+    def test_exact_legacy_hk_sha_allowed_but_old_source_or_other_hk_sha_rejected(self):
+        source, archive, _ = self.proofs(); archive['operator_source_sha256'] = op.LEGACY_HK_OPERATOR_SHA
+        op.proof_bind(self.plan, archive, self.operation, 'hk')
+        source['operator_source_sha256'] = op.LEGACY_HK_OPERATOR_SHA
+        with self.assertRaisesRegex(ValueError, 'FRESH_PROOF_OWNER_HOST_DIFFERS'):
+            op.proof_bind(self.plan, source, self.operation, 'source')
+        archive['operator_source_sha256'] = '0'*64
+        with self.assertRaisesRegex(ValueError, 'FRESH_PROOF_OWNER_HOST_DIFFERS'):
+            op.proof_bind(self.plan, archive, self.operation, 'hk')
+
+    def test_published_d45_hk_worker_source_functions_remain_ast_identical(self):
+        repo = Path(__file__).resolve().parents[2]
+        path = 'reproduction/easy2560_joint4/retire_old_cosearch200.py'
+        raw = subprocess.check_output(['git', 'show', 'd45b76fb66b6c5ef9f90552f843cbf551aa51e3f:'+path], cwd=str(repo))
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), op.LEGACY_HK_OPERATOR_SHA)
+        def functions(data):
+            return {n.name:ast.dump(n, include_attributes=False) for n in ast.parse(data).body if isinstance(n, ast.FunctionDef)}
+        old, current = functions(raw), functions(Path(op.__file__).read_bytes())
+        for name in ('need','canonical','digest','no_links','identity','small_raw','small','fsync_dir',
+                     'write','birth','context','receipt_map','progress','measured_sha','validate'):
+            with self.subTest(name=name): self.assertEqual(old[name], current[name])
+
+    @contextmanager
+    def failed_audit(self):
+        failed_birth = dict(self.birth(), host=op.HPC_HOST, pid=456789)
+        with patch.object(recovery, 'OPERATION_ID', self.operation), \
+             patch.object(recovery, 'FAILED_BIRTH', failed_birth), self.site('source'):
+            self.put(self.sroot/'plan.json', self.plan)
+            self.put(self.sroot/'source-launch-claim.json', dict(operation_id=self.operation,
+                candidate_sha256=op.CANDIDATE_SHA, phase='source', operator_source_sha256=op.LEGACY_HK_OPERATOR_SHA))
+            self.put(self.sroot/'source-process.json', dict(operation_id=self.operation, phase='source', child=failed_birth))
+            self.put(self.sroot/'source-worker.json', failed_birth)
+            self.put(self.sroot/'source-exit.json', dict(returncode=1, error=recovery.FAILED_ERROR))
+            self.put(self.sroot/'source.log', b'original failed source traceback remains byte-identical\n')
+            self.put(self.sroot/'source.lock', b'')
+            yield failed_birth
+
+    def test_failed_source_audit_exact_six_renamed_unchanged_plan_and_cp_untouched(self):
+        with self.failed_audit():
+            before = {name:(op.identity(self.sroot/name), (self.sroot/name).read_bytes())
+                      for name in recovery.MOVE_NAMES+('plan.json',)}
+            cp_before = {n:op.identity(self.cp/n) for n in op.CORE_NAMES}
+            preview = recovery.inspect(self.sroot, self.root/'no-proc')
+            self.assertEqual(preview['status'], 'EXACT_FAILED_SOURCE_AUDIT_READY_TO_PRESERVE')
+            self.assertFalse((self.sroot/'source-recovery-claim.json').exists())
+            result = recovery.preserve(self.sroot, self.root/'no-proc')
+            self.assertEqual(result['confirmed_moved_names'], list(recovery.MOVE_NAMES))
+            self.assertFalse(result['worker_launched'])
+            for name, (identity, raw) in before.items():
+                target = self.sroot/name if name == 'plan.json' else self.sroot/recovery.ATTEMPT_NAME/name
+                self.assertEqual(op.identity(target), identity); self.assertEqual(target.read_bytes(), raw)
+                if name != 'plan.json': self.assertFalse((self.sroot/name).exists())
+            self.assertEqual({n:op.identity(self.cp/n) for n in op.CORE_NAMES}, cp_before)
+            with self.assertRaisesRegex(ValueError, 'RECOVERY_ALREADY_CLAIMED'):
+                recovery.preserve(self.sroot, self.root/'no-proc')
+
+    def test_failed_source_audit_live_exact_birth_blocks_preservation_but_reused_pid_is_exited(self):
+        with self.failed_audit() as failed:
+            proot = self.root/'proc'; proc = proot/str(failed['pid']); (proc/'ns').mkdir(parents=True)
+            self.put(proot/'sys/kernel/random/boot_id', failed['boot_id'].encode())
+            (proc/'ns/pid').symlink_to(failed['pid_namespace'])
+            fields = ['S']+['0']*19; fields[19] = str(failed['start_ticks'])
+            (proc/'stat').write_text(str(failed['pid'])+' (worker) '+' '.join(fields))
+            with self.assertRaisesRegex(ValueError, 'ORIGINAL_BIRTH_STILL_LIVE'):
+                recovery.preserve(self.sroot, proot)
+            self.assertFalse((self.sroot/'source-recovery-claim.json').exists())
+            fields[19] = str(failed['start_ticks']+1)
+            (proc/'stat').write_text(str(failed['pid'])+' (reused) '+' '.join(fields))
+            self.assertEqual(recovery.inspect(self.sroot, proot)['exited_observation']['reason'], 'BIRTH_REUSED')
+
+    def test_failed_source_audit_wrong_exit_birth_deletion_or_symlink_never_moves(self):
+        with self.failed_audit():
+            exit_path = self.sroot/'source-exit.json'; raw = exit_path.read_bytes()
+            self.put(exit_path, dict(returncode=0, error=recovery.FAILED_ERROR))
+            with self.assertRaisesRegex(ValueError, 'EXACT_FAILED_SOURCE_ATTEMPT_REQUIRED'):
+                recovery.preserve(self.sroot, self.root/'no-proc')
+            exit_path.write_bytes(raw)
+            worker_path = self.sroot/'source-worker.json'; worker_raw = worker_path.read_bytes()
+            self.put(worker_path, dict(recovery.FAILED_BIRTH, start_ticks=recovery.FAILED_BIRTH['start_ticks']+1))
+            with self.assertRaisesRegex(ValueError, 'EXACT_FAILED_SOURCE_ATTEMPT_REQUIRED'):
+                recovery.preserve(self.sroot, self.root/'no-proc')
+            worker_path.write_bytes(worker_raw)
+            for name in ('deletion-claim.json', 'actions.jsonl', 'source-validation.json'):
+                self.put(self.sroot/name, b'{}')
+                with self.assertRaisesRegex(ValueError, 'FAILED_SOURCE_AUDIT_HAS_'):
+                    recovery.preserve(self.sroot, self.root/'no-proc')
+                (self.sroot/name).unlink()
+            sentinel = self.root/'active730226/sentinel'; self.put(sentinel, b'never moved or changed')
+            path = self.sroot/'source.log'; path.unlink(); path.symlink_to(sentinel)
+            with self.assertRaisesRegex(ValueError, 'SYMLINK'):
+                recovery.preserve(self.sroot, self.root/'no-proc')
+            self.assertEqual(sentinel.read_bytes(), b'never moved or changed')
+            self.assertFalse((self.sroot/'source-recovery-claim.json').exists())
+
+    def test_failed_source_audit_third_rename_failure_is_durable_partial_and_not_retryable(self):
+        with self.failed_audit():
+            rename = os.rename; count = 0
+            def fail_third(source, dest):
+                nonlocal count
+                count += 1
+                if count == 3: raise OSError('constructed third phase-rename failure')
+                return rename(source, dest)
+            with patch.object(recovery.os, 'rename', side_effect=fail_third), self.assertRaisesRegex(OSError, 'third phase-rename'):
+                recovery.preserve(self.sroot, self.root/'no-proc')
+            destination = self.sroot/recovery.ATTEMPT_NAME
+            failure = json.loads((destination/'preserve-failure.json').read_text())
+            self.assertEqual(failure['confirmed_moved_names'], list(recovery.MOVE_NAMES[:2]))
+            self.assertFalse(failure['auto_retry_allowed']); self.assertFalse((destination/'preserved.json').exists())
+            journal = [json.loads(row) for row in (destination/'actions.jsonl').read_text().splitlines()]
+            self.assertEqual([r['stage'] for r in journal], ['PREPARED_RENAME','RENAMED','PREPARED_RENAME','RENAMED','PREPARED_RENAME'])
+            self.assertTrue(all((self.sroot/name).exists() for name in recovery.MOVE_NAMES[2:]))
+            self.assertTrue((self.sroot/'plan.json').exists())
+            with self.assertRaisesRegex(ValueError, 'RECOVERY_ALREADY_CLAIMED'):
+                recovery.preserve(self.sroot, self.root/'no-proc')
 
     def test_reader_scan_checks_real_fd_and_maps_including_current_uid_process(self):
         proc = self.root/'proc/123'; (proc/'fd').mkdir(parents=True)
