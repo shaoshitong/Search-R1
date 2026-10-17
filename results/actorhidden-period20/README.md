@@ -1,5 +1,18 @@
 ## Actual50 QA and full checkpoint readback
 
+## Actual70 and independentCP50 complete (UTC2026-10-17T02:12)
+
+After the management entry closed/timedout, a bounded read through the same mgmt-host/retained18 route with the existing task-local compatible handshake succeeded. A second actual read proved69→70/200, all8ranks actor1380→1400/probe300, then71nativeprefixes. The72 original actor rank ledgers for62–70 each show20 real writes; the model/optimizer clock advanced throughout the earlier observation outage. No training restart, global SSH/auth change or runtime hotedit occurred. The outage cause and a causal handshake fix are not established.
+
+Outer70 selected130/512=25.3906% truly mixed,81allwrong/301allcorrect; mean selected predictedq.9265844, using the actual probe60 SHA7b309c9e…. The prediction remains high relative to the observed selected rate. Outer62–69 selected fractions are in restored70-fixed-assets-progress.json; changing actors/candidate batches prevent attributing their difference to LR or probe updates alone. Ordinary rounds have no labels for unselected4608 questions. Current probe remains frozen until80.
+
+IndependentCP50 actually finishedUTC01:28:04.042568 on h100-10 localext4. All152 source/destination complete-file SHA values match,39421836944B. A separate final read verified all152 payload files at expected sizes without symlinks,153 total files including the generated restore mapping, exact original-to-relative mapping and its actualSHA0ca8063c08686256475d05c9e3968cf8838a08ac7de5d5ffa8774003b5a4beb9. OriginalPID395412 is gone; final exists, staging absent. Full small RESULT actualSHA989d6b89438d628c9dfb61748e42c7b32e690ff777a91dbcd9e3ec36474a50ab. The source CPU proof19ced04c… remains pinned. Destination /mnt/data/shaoshitong/search-g1-prefix-selection200-independent-backup-20261016/a008d7ce9833-outer-0050-once-v1/checkpoint. No copy restart, repeat large-file hashing or semantic reload was performed.
+
+The once-queued fixed-asset copier automatically followedCP50. SamePID426227/startticks1925844166 verified31/33files/7629893288B, then advanced the index copy35627466752→37524340736B; a separate actual destination stat showed37669044224B. The partial index and remaining corpus have not completed their independent full SHA; this is ongoing progress, not a full asset backup pass. Rate20MiB/s,128GiB ordinary reserve, no Mac model transit. Do not replay either consumed start or start another milestone copy concurrently while the fixed copier is live.
+
+OnlyCP5/50 copies are complete. Normal100/150/200, full200/no201, final51713/exact seven source counts, remaining fixed assets and terminal original trajectories/logs/final-output archive, actualexit0 and owned resource release remain pending. Latest recovery candidate is70 or any newer actual complete point; never roll back to50 merely because its copy is verified.
+
+
 ## Period60 at LR1e-5: paired metrics and actual61 use (UTC2026-10-17T01:22)
 
 Same3430 completed60 then61, each8rank actor1220/probe300 realAdam;62 actually began native prefixes. Period60 trained all5120 different candidate groups/25600 trajectories once at1e-5:100 true writes per rank,640groups/3200trajectories per rank,80 global255 and20 global260 steps. The preselection used probe40 before seeing labels. Actual61 selection used new probe60 SHA7b309c9ecd8d382f1a6152a38b4a05260f8edc52b76a42c4b4cdd8d1a59277b8 and actor0060; selectionSHA080a20fed3cb06b7e74ec8a8bcaeed804e0b29b72f5a8e36ff760458a29888b1. Root observer8078 printed paired60+actual61-use completion; its handle is now absent (separate tool exit code unavailable). No repeat initial-five gate or runtime change.
