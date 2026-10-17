@@ -44,7 +44,8 @@ def collect(root,maximum_new_outers=4):
     connection=json.loads((root/'work/search-g1-prefix1024-diversity512-20261016/MANAGEMENT_DIRECT_MASTER_CURRENT.json').read_text())
     payload=dict(base=c['base'],run_id=c['run_id'],config_sha256=hashlib.sha256(config_path.read_bytes()).hexdigest(),maximum_new_outers=maximum_new_outers)
     transport=out/('fresh-cost-'+str(time.time_ns())+'-transport.json')
-    value=json.loads(remote(SCRIPT.replace('PAYLOAD',repr(payload)),transport,control_path=connection['control_path'],target=c['node']))
+    value=json.loads(remote(SCRIPT.replace('PAYLOAD',repr(payload)),transport,control_path=connection['control_path'],target=c['node'],
+                            compact_handshake=connection.get('compact_handshake',False)))
     actual=transport.with_name(transport.name.replace('-transport','-actual'));actual.write_text(json.dumps(value,indent=2)+'\n')
     (out/'COST_CURRENT_PROGRESS.json').write_text(json.dumps(value,indent=2)+'\n')
     gen,ret=value['generation'],value['retrieval']

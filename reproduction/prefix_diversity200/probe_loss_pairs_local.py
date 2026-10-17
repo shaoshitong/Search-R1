@@ -92,7 +92,8 @@ def collect(root, maximum_new_outers=4):
     payload=dict(base=c['base'],run_id=c['run_id'],config_sha256=hashlib.sha256(config_path.read_bytes()).hexdigest(),
         outers=[dict(outer=n,joint_sha256=facts[str(n)]['joint_sha256'])for n in pending[:maximum_new_outers]])
     transport=out/('probe-pairs-'+str(time.time_ns())+'-transport.json')
-    value=json.loads(remote(SCRIPT.replace('PAYLOAD',repr(payload)),transport,control_path=connection['control_path'],target=c['node']))
+    value=json.loads(remote(SCRIPT.replace('PAYLOAD',repr(payload)),transport,control_path=connection['control_path'],target=c['node'],
+                            compact_handshake=connection.get('compact_handshake',False)))
     actual=transport.with_name(transport.name.replace('-transport','-actual'));actual.write_text(json.dumps(value,indent=2)+'\n')
     for row in value['rows']:rows[row['outer']]=row
     result=dict(rows=[rows[n]for n in sorted(rows)],pending_outers=[n for n in pending if n not in rows],reader=value['reader'],evidence=str(actual),

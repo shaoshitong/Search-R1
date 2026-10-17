@@ -22,7 +22,8 @@ def observe(root, output, connection):
     c = json.loads(config_path.read_text())
     registry_path=output/'QA_STANDALONE_REGISTRY.json'
     qa_registry=json.loads(registry_path.read_text()) if registry_path.exists() else []
-    cp = json.loads(Path(connection).read_text())['control_path']
+    connection_info = json.loads(Path(connection).read_text())
+    cp = connection_info['control_path']
     series_path = output / 'COMPLETED_ITERATION_SCALAR_EVIDENCE.json'
     series = json.loads(series_path.read_text()) if series_path.exists() else {}
     verified = max(map(int, series), default=0)
@@ -90,7 +91,8 @@ value['qa_pending']={k:v for k,v in (value.get('qa_pending')or{}).items()if k no
     code = SCRIPT.replace('print(json.dumps(value,allow_nan=False))',
         extra + '\nprint(json.dumps(value,allow_nan=False))').replace('BASE', repr(c['base']))
     transport = output / ('read-' + str(time.time_ns()) + '-transport.json')
-    value = json.loads(remote(code, transport, control_path=cp, target=c['node']))
+    value = json.loads(remote(code, transport, control_path=cp, target=c['node'],
+                              compact_handshake=connection_info.get('compact_handshake', False)))
     assert value['base'] == c['base']
     assert value['config_sha256'] == hashlib.sha256(config_path.read_bytes()).hexdigest()
     evidence = transport.with_name(transport.name.replace('-transport', '-actual'))
