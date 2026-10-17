@@ -40,3 +40,10 @@ observe仅ONE有界SSH，65秒/64MiB metadata/128KiB输出，读取已有JSON/sc
 候选2560题×G5；普通轮预测Top512，10/20/…/190更新轮按真实混合优先512、不足按探针分数补齐；probe LR5e-6、每周期50 Adam；outer200不更新probe。actor每完整outer20真实Adam；全对G5零锚点公式不变，全错和混合按原公式。QA/checkpoint保存点5/50/100/150/200及final51713保持。
 
 真实1..200完整链、最终canonical有限值/SHA、final51713 ordered IDs/二元EM/F1/七源NQ3610与only-owned cleanup全部通过才可完成新实验；旧暂停goal不因本次恢复而完成或删除。大产物只留远端，Git仅代码/config/docs/scalar/hash。
+
+
+## CPU qualification correction on 2026-10-17
+
+The first isolated CPU prepare (source26f32b4941f0350932e78eb99ee0531b661cc9c6 / execution6cc73ac131734c9e8e4522c99f503c90) exited before CUDA admission or state import. Its driver guard incorrectly compared two different JSON encodings of the same pool object. The actual small driver projection confirms that the driver stores the pool.atomic compact JSON plus newline SHA; the joint snapshot is a separate file with spaces and no newline. The corrected reader validates each producer's exact bytes, source path and full object equality, preserving the joint snapshot's independent full SHA. It checks the small driver state before any large files. Preserve the failed source/proof/namespace and use a new execution; never replay that onceclaim.
+
+The existing worker progress and complete receipts now include the actual engine.model_config.enforce_eager flag, projected by the sole metadata observer. This is normal execution metadata and adds no model forward, evaluation or GPU acceptance task.

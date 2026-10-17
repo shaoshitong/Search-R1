@@ -9,6 +9,7 @@ reload acceptance, a completed outer28, or an independent backup.
 import argparse
 import fcntl
 import gc
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -21,6 +22,7 @@ from .contract import CANDIDATE_QUESTIONS, G, PREFIX_TOKENS, QMAX, WIDTH, WORLD
 from .periodic import probe_boundary
 from .pool import reserve_indices, state_sha
 from .prefix5_model import NATIVE_BUFFER_LAYOUTS, PARAMETER_SHAPES
+from reproduction.prefix20_online.pool import canonical as pool_canonical
 
 STATUS = 'NATIVE_ACTOR_PERIODIC_PROBE_JOINT_FULL_SHA_CPU_PASS'
 ADAPTER = 'native_a800_joint_v1'
@@ -330,6 +332,35 @@ def _probe(seals, config, probe, joint20):
         learning_rate=5e-6, source_warmup_weights_reloaded=False)
 
 
+def validate_driver_metadata(driver, config, actor, probe, pool, *, probe_receipt_sha):
+    """Validate the actor producer's captured pool file, not a later JSON alias.
+
+    actor._save_complete hashes question-pool/state.json, whose pool.atomic
+    writer emits compact JSON plus a newline.  launch.once writes the joint
+    pool snapshot using spaced JSON without a newline.  The snapshot has its
+    own separately sealed full-file SHA; its parsed state must match exactly.
+    The two genuine producer files are not interchangeable byte receipts.
+    """
+    need(driver['run_id'] == config['run_id'] and driver['completed_outer'] == 27
+         and driver['actor_version'] == actor['actor_version'],
+         'Actor27 driver run/completed-outer/model version differs')
+    captured = driver['candidate_pool_state']
+    need(captured['path'] == config['pool_state_path']
+         and captured['value'] == pool,
+         'Actor27 driver did not capture the exact producer pool27 path and state')
+    expected_pool_sha = hashlib.sha256(pool_canonical(pool) + b'\n').hexdigest()
+    need(captured['sha256'] == expected_pool_sha,
+         'Actor27 driver pool SHA differs from the exact pool.atomic producer bytes')
+    selected_probe = driver['prefix_probe_receipt']
+    need(selected_probe['path'] == config['prefix_probe_receipt']
+         and selected_probe['value'] == probe and selected_probe['sha256'] == probe_receipt_sha,
+         'Actor27 driver selection-time probe20 path/metadata/file SHA differs')
+    return dict(captured_pool_path=captured['path'], captured_pool_file_sha256=captured['sha256'],
+        captured_pool_object_sha256=state_sha(pool),
+        producer_serialization='pool.atomic:compact_sorted_JSON_ensure_ascii_false_plus_newline',
+        joint_snapshot_object_exactly_equal=True, probe_receipt_sha256=probe_receipt_sha)
+
+
 def _qualify(args):
     import torch
     need(os.environ.get('CUDA_VISIBLE_DEVICES') == '', 'Use CUDA_VISIBLE_DEVICES= for remote CPU-only qualification')
@@ -361,6 +392,12 @@ def _qualify(args):
     need(seals.json(Path(actor['state_path']) / 'complete.json') == actor, 'Actor27 attempt producer receipt changed')
     pool, current, reservation = _pool_metadata(seals, config, joint)
     root, prefix, score, scan, selection = _prefix_metadata(seals, config, joint, actor, probe)
+    # The driver is a small RNG/candidate metadata checkpoint, without model or
+    # optimizer tensors.  Close its producer-byte semantics before large reads.
+    driver, driver_file = seals.mmap_torch(actor['driver_state']['path'], actor['driver_state'])
+    driver_metadata = validate_driver_metadata(driver, config, actor, probe, pool,
+        probe_receipt_sha=seals.file(base / 'probe/latest.json')['sha256'])
+    driver_rng = validate_rng(driver['rng']); del driver; gc.collect()
     # Small semantic/provenance checks above precede every multi-GB hidden/model
     # read.  Only producer-committed inputs are sealed; failed continuation data
     # without a complete rank receipt is intentionally left unqualified.
@@ -378,14 +415,6 @@ def _qualify(args):
          and seals.json(rollout_path) == joint['rollout'], 'Actor27 lost its own actual retained rollout binding')
     hf = _hf(seals, actor, config)
     ranks = [_rank_state(seals, actor, config, 27, rank, actor['original_rollout_sha256']) for rank in range(4)]
-    driver, driver_file = seals.mmap_torch(actor['driver_state']['path'], actor['driver_state'])
-    need(driver['run_id'] == config['run_id'] and driver['completed_outer'] == 27
-         and driver['actor_version'] == actor['actor_version'] and driver['candidate_pool_state']['value'] == pool
-         and driver['candidate_pool_state']['sha256'] == seals.file(joint['pool_snapshot'])['sha256']
-         and driver['prefix_probe_receipt']['value'] == probe
-         and driver['prefix_probe_receipt']['sha256'] == seals.file(base / 'probe/latest.json')['sha256'],
-         'Actor27 driver does not retain its true candidate27/probe20 boundary')
-    driver_rng = validate_rng(driver['rng']); del driver; gc.collect()
     snapshot = seals.file(joint['probe_snapshot'], probe); latest = seals.file(base / 'probe/latest.pt', probe)
     need((snapshot['dev'], snapshot['inode']) == (latest['dev'], latest['inode']), 'Joint27 probe snapshot is not the same immutable probe20 inode')
     probe_proof = _probe(seals, config, probe, history[20])
@@ -415,7 +444,8 @@ def _qualify(args):
         owned_births_all_gone=True, actual_actor28_attempts=0, failed_continuation_complete=False,
         terminal_proof=str(terminal_file['path']), terminal_proof_sha256=terminal_file['sha256'],
         files=files, verified_files=files, actor_hf=hf, actor_rank_cpu_states=ranks,
-        actor_driver_file=driver_file, actor_driver_rng=driver_rng, probe=probe_proof,
+        actor_driver_file=driver_file, actor_driver_metadata=driver_metadata,
+        actor_driver_rng=driver_rng, probe=probe_proof,
         native_recipe=dict(world_size=4, question_max_tokens=273, prefix_tokens=5, head_max_tokens=278,
             candidate_questions=2560, selected_questions=512, responses_per_question=5,
             probe_update_period=10, probe_updates_per_period=50, probe_learning_rate=5e-6),

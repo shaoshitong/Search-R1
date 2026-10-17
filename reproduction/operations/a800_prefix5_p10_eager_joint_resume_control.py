@@ -136,6 +136,10 @@ _OLD_SOURCE_GUARD = "assert joint['run_id']==h['run_id'] and joint['source_commi
 assert _OBSERVE_BODY.count(_OLD_SOURCE_GUARD) == 1
 _OBSERVE_BODY = _OBSERVE_BODY.replace(_OLD_SOURCE_GUARD, "assert joint['run_id']==h['run_id']\n if joint['outer']==27:\n  assert joint['source_commit']==parent_h['source_commit']\n  imported=read(b/'preparation/resume-joint-receipt.json')\n  assert sha(b/'latest-joint.json')==sha(parent/'latest-joint.json')=='5fe53575eea47c2393b2925e0c108ba0164787429a0528f637bfeb34a2341679'\n else:assert joint['outer']>=28 and joint['source_commit']==h['source_commit']")
 _OBSERVE_BODY = _OBSERVE_BODY.removesuffix('\nemit(v)\n')
+_PROGRESS_FIELDS = "'generation_requests','actual_sampled_tokens','elapsed_seconds','device_binding')))"
+assert _OBSERVE_BODY.count(_PROGRESS_FIELDS) == 1
+_OBSERVE_BODY = _OBSERVE_BODY.replace(_PROGRESS_FIELDS,
+    "'generation_requests','actual_sampled_tokens','elapsed_seconds','device_binding','actual_engine_enforce_eager')))")
 OBSERVE = COMMON + _OBSERVE_BODY + r'''
 v['prepare_progress']=document(b,'preparation/prepare-progress.json')
 qpath=b/'preparation/native-a800-joint-qualified.json'

@@ -611,6 +611,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
             active_trajectories=active, pending_generation=len(pending), pending_retrieval=len(tools),
             peak_inflight_trajectories=peak, generation_requests=requests, actual_sampled_tokens=sampled,
             elapsed_seconds=time.monotonic()-started, device_binding=device_binding,
+            actual_engine_enforce_eager=bool(engine.model_config.enforce_eager),
             gpu_memory_utilization=utilization, scheduler_limits=limits, initialization_oom_attempts=oom_attempts))
 
     def save(state, first_stream, second_stream):
@@ -746,6 +747,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
         trajectories=completed, questions=completed//G, device_binding=device_binding,
         pad_token_id=int(tokenizer.pad_token_id), eos_token_id=int(tokenizer.eos_token_id),
         native_terminal_ids=terminal_ids, gpu_memory_utilization=utilization,
+        actual_engine_enforce_eager=bool(engine.model_config.enforce_eager),
         initial_free_gpu_bytes=free, initial_total_gpu_bytes=total, initialization_oom_attempts=oom_attempts,
         scheduler_limits=limits, engine_seed=seed, actual_sampled_tokens=sampled, generation_requests=requests,
         elapsed_seconds=time.monotonic()-started, completed_utc=utc())
