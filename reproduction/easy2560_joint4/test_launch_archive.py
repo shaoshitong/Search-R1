@@ -67,9 +67,38 @@ class ArchiveTests(unittest.TestCase):
                                   (record + b'\n' + b'{"step":51', True),
                                   (record, False)):
                 ledger.write_bytes(raw); output = io.StringIO()
-                with patch('subprocess.check_output', return_value='RUNNING\n'), redirect_stdout(output):
+                result = __import__('subprocess').CompletedProcess([], 0, 'RUNNING\n', '')
+                with patch('subprocess.run', return_value=result), redirect_stdout(output):
                     exec(checkpoint_status_code(root, 50, '123'), {})
                 self.assertEqual(json.loads(output.getvalue())['ready'], expected)
+
+    def test_complete_checkpoint_does_not_query_purged_slurm_job(self):
+        from reproduction.easy2560_joint4.archive_controller import checkpoint_status_code
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); cp = root / 'checkpoints/search-g1-common8/actor/global_step_200'
+            cp.mkdir(parents=True); (root / 'logs').mkdir()
+            (cp / 'complete.json').write_text(json.dumps(dict(run_id='run', files_sha256={
+                'training_state/rank-%d.pt' % r: 'hash' for r in range(4)})))
+            (root / 'logs/native-allocation-admission.json').write_text(json.dumps(dict(slurm_job_id='123')))
+            ledger = root / 'logs/actual-updates.jsonl'
+            ledger.write_text(json.dumps(dict(step=200, run_id='run')) + '\n')
+            output = io.StringIO()
+            with patch('subprocess.run', side_effect=AssertionError('purged squeue must not run')) as query, redirect_stdout(output):
+                exec(checkpoint_status_code(root, 200, '123'), {})
+            query.assert_not_called()
+            self.assertTrue(json.loads(output.getvalue())['ready'])
+
+    def test_missing_checkpoint_keeps_failed_queue_lookup_unknown(self):
+        from reproduction.easy2560_joint4.archive_controller import checkpoint_status_code
+        result = __import__('subprocess').CompletedProcess([], 1, '', 'Invalid job id specified')
+        with tempfile.TemporaryDirectory() as td:
+            output = io.StringIO()
+            with patch('subprocess.run', return_value=result), redirect_stdout(output):
+                exec(checkpoint_status_code(Path(td), 200, '123'), {})
+            state = json.loads(output.getvalue())
+            self.assertFalse(state['ready'])
+            self.assertEqual(state['queue_returncode'], 1)
+            self.assertIn('Invalid job', state['queue_error'])
 
     def fixture(self, root):
         source = root / 'source'; source.mkdir()

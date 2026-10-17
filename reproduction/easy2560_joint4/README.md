@@ -81,3 +81,31 @@ The common lifecycle retains fixed512 checks at5/50/100/150/200 and final exact
 native51713 evaluation with seven-source and macro/weighted EM/F1; no update201.
 Submission/RUNNING/first log is not acceptance. Verify at least two actual measured
 progress points, one completed outer, error/exit status and four-rank update counts.
+
+## Independent CPU maintenance and final reports
+
+`candidate_raw_maintenance.py` observes only job730080 and the reviewed fresh
+93eda66 training run. Its published helper retains the latest two completed
+outers, every failed/partial pool, selected token/probability traces, selection
+JSON, RNG and checkpoints. Only the five raw tensors of older full-success
+pools may be retired. Retired unselected candidates cannot be replayed in full.
+The process has one durable launch claim; a timeout never authorizes a duplicate
+or a training restart. Block-release receipts do not claim a fresh quota reading.
+
+After a milestone's existing full archive has passed its actual source and
+destination SHA checks, `checkpoint_evidence seal` creates a separate immutable
+bundle of exact ledger prefixes, eligible membership and saved callback phase.
+It leaves producer checkpoints and accepted receipts unchanged. CP5 was saved
+before the extra fixed512 callback; CP50/100/150 were saved after fixed512 and
+before grounding refresh; CP200 precedes final51713 and has no further refit.
+No sidecar claims post-callback RNG capture or an actual CUDA restore.
+
+`final_cpu_acceptance --base BASE --output NEW_REPORT.json` consumes the five
+fixed512 points and exact ordered native51713 scores, preserving repeated
+canonical questions, and reports per-source, macro and weighted EM/F1. It rejects
+missing200, incomplete final ledgers and any update201. It also authenticates
+existing complete checkpoint archive receipts, including through sealed small
+metadata after an explicitly authorized source retirement. It performs no
+training, answer generation, model reload or GPU allocation. The original93
+pipeline still uses its original verifier; this independent report does not
+rewrite that pipeline's marker or claim whole-goal/recovery acceptance.

@@ -26,17 +26,26 @@ def source_command(base, *arguments):
 
 def checkpoint_status_code(base, step, job):
     """Generated remote Python uses an unambiguous newline byte, not escapes."""
-    return ("import json,subprocess;from pathlib import Path;"
-            "b=Path(" + repr(str(base)) + ");p=b/'checkpoints/search-g1-common8/actor/global_step_" + str(step) + "/complete.json';"
-            "v=json.loads(p.read_text()) if p.is_file() else {};"
-            "u=b/'logs/actual-updates.jsonl';raw=u.read_bytes() if u.is_file() else b'';"
-            "rows=[json.loads(x) for x in raw.split(bytes((10,)))[:-1] if x];"
-            "a=b/'logs/native-allocation-admission.json';allocation=json.loads(a.read_text()) if a.is_file() else {};"
-            "ready=all('training_state/rank-%d.pt'%r in v.get('files_sha256',{}) for r in range(4)) and "
-            "any(x.get('step')==" + str(step) + " and x.get('run_id')==v.get('run_id') for x in rows);"
-            "assert not ready or allocation.get('slurm_job_id')==" + repr(job) + ";"
-            "j=subprocess.check_output(['squeue','-h','-j'," + repr(job) + ",'--format=%T'],text=True).strip();"
-            "print(json.dumps(dict(ready=ready,job_state=j)))")
+    # A complete checkpoint is durable evidence after Slurm has purged its job.
+    # Queue lookup is relevant only while waiting for an unfinished checkpoint.
+    return '\n'.join((
+        'import json,subprocess', 'from pathlib import Path',
+        'b=Path(' + repr(str(base)) + ')',
+        "p=b/'checkpoints/search-g1-common8/actor/global_step_%d/complete.json'" % step,
+        'v=json.loads(p.read_text()) if p.is_file() else {}',
+        "u=b/'logs/actual-updates.jsonl';raw=u.read_bytes() if u.is_file() else b''",
+        'rows=[json.loads(x) for x in raw.split(bytes((10,)))[:-1] if x]',
+        "a=b/'logs/native-allocation-admission.json'",
+        'allocation=json.loads(a.read_text()) if a.is_file() else {}',
+        "ready=all('training_state/rank-%d.pt'%r in v.get('files_sha256',{}) for r in range(4)) and " +
+        'any(x.get("step")==%d and x.get("run_id")==v.get("run_id") for x in rows)' % step,
+        'assert not ready or allocation.get("slurm_job_id")=='+repr(job),
+        "j='';queue_rc=None;queue_error=''",
+        'if not ready:',
+        '    q=subprocess.run(["squeue","-h","-j",'+repr(job)+',"--format=%T"],capture_output=True,text=True)',
+        '    j=q.stdout.strip();queue_rc=q.returncode;queue_error=q.stderr[-1000:]',
+        'print(json.dumps(dict(ready=ready,job_state=j,queue_returncode=queue_rc,queue_error=queue_error)))',
+    ))
 
 
 def event(root, **values):
@@ -74,6 +83,8 @@ def run(base, commit, job, password, poll_seconds=60):
                 if checked.returncode: raise RuntimeError('EASY2560_ARCHIVE_SOURCE_OBSERVATION_UNKNOWN: ' + checked.stderr[-1000:])
                 state = json.loads(checked.stdout)
                 if state['ready']: break
+                if state['queue_returncode'] != 0:
+                    raise RuntimeError('EASY2560_ARCHIVE_SOURCE_QUEUE_OBSERVATION_UNKNOWN: ' + state['queue_error'])
                 event(root, phase='WAITING_CHECKPOINT', source_job=job, step=step,
                       actual_job_state=state['job_state'], completed_steps=completed)
                 if not state['job_state']:
