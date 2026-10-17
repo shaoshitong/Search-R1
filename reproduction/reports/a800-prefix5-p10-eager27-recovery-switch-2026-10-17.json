@@ -1,0 +1,420 @@
+{
+  "schema_version": 1,
+  "report_kind": "actual_recovery_and_execution_switch_milestone",
+  "date": "2026-10-17",
+  "status": "RECOVERED_OUTER28_COMPLETE_SAME_PIPELINE_ADVANCING29",
+  "experiment200_complete": false,
+  "identity": {
+    "run_id": "387d3f6e228a488f90c418e2ba47e28e",
+    "execution_id": "1bf0183c24c84abfa8a65c587089145d",
+    "runtime_source_commit": "0de9565c9b1c735635744f7e80a2526a2852e568",
+    "base": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-387d3f6e228a488f90c418e2ba47e28e-resume-1bf0183c24c84abfa8a65c587089145d",
+    "pipeline_pid": 2043511,
+    "pipeline_birth": 627546281,
+    "observed_unix": 1792196658.9064436,
+    "observed_shanghai": "2026-10-17T08:24:18.906444+08:00",
+    "pipeline_alive": true,
+    "rollout_enforce_eager": true
+  },
+  "boundary": {
+    "complete_outer": 28,
+    "target_outer": 200,
+    "actor_saved_adam_per_rank": [
+      560,
+      560,
+      560,
+      560
+    ],
+    "scheduler_completed_outer": 28,
+    "probe_last_update_outer": 20,
+    "probe_saved_adam_per_rank": [
+      100,
+      100,
+      100,
+      100
+    ],
+    "replica_updates_counted_once": true,
+    "inherited_joint_outer": 27,
+    "inherited_actor_adam_per_rank": [
+      540,
+      540,
+      540,
+      540
+    ],
+    "inherited_probe_adam_per_rank": [
+      100,
+      100,
+      100,
+      100
+    ],
+    "new_execution_complete_outers": [
+      28
+    ],
+    "new_execution_committed_actor_adam": 20,
+    "new_execution_probe_adam": 0,
+    "current_outer": 29,
+    "current_actor_returned_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "current_actor_partial_committed": false,
+    "current_actor_inflight": null,
+    "skip_count": null,
+    "complete29": false
+  },
+  "parent_chain": {
+    "execution_id": "cb12bf6ab10b46b0a72f1f0c2e753d78",
+    "source_commit": "858381986d3332898c4e8aa8e5c31e966363ceea",
+    "complete_outer": 27,
+    "joint_sha256": "5fe53575eea47c2393b2925e0c108ba0164787429a0528f637bfeb34a2341679",
+    "actor_adam": 540,
+    "probe_adam": 100,
+    "probe_outer": 20,
+    "actual_failure": "outer28 continuation rank0 CUDA illegal memory access in vLLM sampler/from_lists",
+    "actor28_attempts_in_parent": 0,
+    "failed_parent_continuation_preserved": true,
+    "recorded_owned_births_confirmed_gone": 3041,
+    "cleanup_owned_births_all_gone": true,
+    "terminal_proof_sha256": "0afb0b111de397284437770e689bbbfc9132f3da9a80da1215779508855460c1",
+    "original_sources_preserved": [
+      {
+        "outers": [
+          1,
+          9
+        ],
+        "source_commit": "31f616264ceeb4f0e4d33b39bd85df1214afc15d"
+      },
+      {
+        "outers": [
+          10,
+          27
+        ],
+        "source_commit": "858381986d3332898c4e8aa8e5c31e966363ceea"
+      }
+    ]
+  },
+  "recovery": {
+    "kind": "full_actor_probe_optimizer_scheduler_rng_candidate_state",
+    "cpu_qualification_status": "NATIVE_ACTOR_PERIODIC_PROBE_JOINT_FULL_SHA_CPU_PASS",
+    "cpu_qualification_sha256": "b72b9c09354ee45aba5b353f9cb55405a534e56dcbe956c10615933a801556da",
+    "cpu_qualification_is_not_cuda_restoration": true,
+    "import_receipt_sha256": "a51da822ffa72b174fb0b4144da37f964a1c20e1a69bfd564c6360bd331ffba4",
+    "phase_import_receipt_sha256": "e15e85f97683c7c28b2c767ec4a9ec79ebbe9434aa072444e13f030e51561b74",
+    "new_config_sha256": "ecd297d99aded788768a6f08fd3c0667c9bff66c884eeab2f205072dbcaa7703",
+    "probe_checkpoint_sha256": "dc89c9d262aefc1400fe51912021e16e43a9e240cb58f40008dfb4d7b5e722d1",
+    "probe_binding_sha256": "5f49e57e0fbe4d8aeb1dbcdc4d0d4f0a6bc531185bc3788c0b08161f0b4d372c",
+    "optimizer_reset": false,
+    "warmup_repeated": false,
+    "actor27_reexecuted": false,
+    "accepted_prefix28_trajectories_reused": 12800,
+    "accepted_score28_reused": true,
+    "accepted_prefix28_new_generation": 0,
+    "failed_continuation_partial_files_imported": false,
+    "new_continuation28_complete_trajectories": 2560,
+    "actual_actor28_completed_after_restore": true,
+    "actual_actor28_new_adam_per_rank": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "joint28_sha256": "c1c00046abcc2ec44185d835a802a26f1acf5a4ba8714dbd08787c40ffbe1c8c",
+    "probe_optimizer_cuda_update_since_switch": false
+  },
+  "cpu_guard_repair": {
+    "earlier_cpu_preparation_failed": true,
+    "earlier_failed_namespace_preserved": true,
+    "earlier_attempt_cuda_started": false,
+    "earlier_attempt_state_imported": false,
+    "cause": "Driver saved pool JSON used compact encoding with newline; joint snapshot used default-spaced JSON. Exact pool objects were equal but file byte hashes correctly differed.",
+    "actual_driver_file_sha256": "59450fd9f5a2db2514e6cd453c4926012e101dbb3e769ce41c1c12ec844869a7",
+    "driver_original_pool_serialization_sha256": "0316d6d491cfd22ecdebc48764fc3ae77fc5fb0d3c2755fca1c5db8a8248e191",
+    "joint27_pool_snapshot_file_sha256": "6b30e700f7fed6ac7ab48b8f09eb4917b0f709d72457ef98a6b6552353a90e10",
+    "joint27_pool_object_sha256": "179fe2aaa4e4227ac093877c25807adbc212983027199a32192ecde23769acd9",
+    "actual_reconciliation_proof_sha256": "0b01f509ec10d5ad03ea3ac1c4126d5abd4ed94546dfcbd9d3a986fb93ad7fae",
+    "fix": "Validate the exact driver serialization and source path plus exact embedded pool object equality; keep independent file seals and reservation object-digest checks.",
+    "scientific_contract_changed": false
+  },
+  "measured_flow": [
+    {
+      "observed_unix": 1792196295.2361488,
+      "complete_outer": 27,
+      "actor_saved_adam": 540,
+      "outer28_continuation_complete": 2560,
+      "outer28_partial_returned_per_rank": [
+        15,
+        15,
+        15,
+        15
+      ],
+      "last_actual_adam_per_rank": [
+        555,
+        555,
+        555,
+        555
+      ],
+      "actual_continue_enforce_eager_per_rank": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "recorded_actor_failures": [
+        null,
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "observed_unix": 1792196658.9064436,
+      "complete_outer": 28,
+      "actor_saved_adam": 560,
+      "outer29_prefix_complete": 12800,
+      "outer29_score_exit_code": 0,
+      "outer29_continuation_complete": 2560,
+      "outer29_actor_returned_per_rank": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "actual_continue_enforce_eager_per_rank": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "recorded_actor_failures": [
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  ],
+  "separate_windows": {
+    "parent_since_delivered_anchor24": {
+      "execution_id": "cb12bf6ab10b46b0a72f1f0c2e753d78",
+      "complete_outers": [
+        25,
+        26,
+        27
+      ],
+      "complete_count": 3,
+      "actor_returned_adam_increment": 60,
+      "probe_returned_adam_increment": 0,
+      "reward_mean": 0.6900111775874392,
+      "reward_mean_range": [
+        0.6647816218566731,
+        0.7099005601397949
+      ],
+      "selected_mixed_count": 785,
+      "selected_questions": 1536,
+      "selected_mixed_fraction": 0.5110677083333334,
+      "selection_kind": "ordinary_predicted_top512_actual_outcomes",
+      "actual_em_oracle_selection": false,
+      "rows": [
+        {
+          "outer": 25,
+          "actor_adam_per_rank": 500,
+          "probe_completed_outer": 20,
+          "probe_adam_per_rank": 100,
+          "reward_mean": 0.6647816218566731,
+          "reward_min": -0.10000000149011612,
+          "reward_max": 1.5983009338378906,
+          "selected_mixed_fraction": 0.556640625,
+          "selected_mixed_count": 285,
+          "selected_strict_correct": 1239,
+          "actual_em_selection": false,
+          "candidate_mixed_count": null,
+          "fallback_count": null,
+          "all_correct_groups": 113,
+          "all_wrong_groups": 114,
+          "mixed_groups": 285,
+          "joint_sha256": "e3bfcf21430f6f0a5602a1ce655456dd75d8e2af5944cb5e6cc5b831298583c0"
+        },
+        {
+          "outer": 26,
+          "actor_adam_per_rank": 520,
+          "probe_completed_outer": 20,
+          "probe_adam_per_rank": 100,
+          "reward_mean": 0.69535135076585,
+          "reward_min": -0.10000000149011612,
+          "reward_max": 1.596760869026184,
+          "selected_mixed_fraction": 0.48828125,
+          "selected_mixed_count": 250,
+          "selected_strict_correct": 1260,
+          "actual_em_selection": false,
+          "candidate_mixed_count": null,
+          "fallback_count": null,
+          "all_correct_groups": 128,
+          "all_wrong_groups": 134,
+          "mixed_groups": 250,
+          "joint_sha256": "ea53841a0b6eb0b859031d1afe8bc2bb77036f179f28bed24cf17b54c6e8dfd7"
+        },
+        {
+          "outer": 27,
+          "actor_adam_per_rank": 540,
+          "probe_completed_outer": 20,
+          "probe_adam_per_rank": 100,
+          "reward_mean": 0.7099005601397949,
+          "reward_min": -0.10000000149011612,
+          "reward_max": 1.5979052782058716,
+          "selected_mixed_fraction": 0.48828125,
+          "selected_mixed_count": 250,
+          "selected_strict_correct": 1298,
+          "actual_em_selection": false,
+          "candidate_mixed_count": null,
+          "fallback_count": null,
+          "all_correct_groups": 135,
+          "all_wrong_groups": 127,
+          "mixed_groups": 250,
+          "joint_sha256": "5fe53575eea47c2393b2925e0c108ba0164787429a0528f637bfeb34a2341679"
+        }
+      ]
+    },
+    "new_execution_since_inherited27": {
+      "execution_id": "1bf0183c24c84abfa8a65c587089145d",
+      "complete_outers": [
+        28
+      ],
+      "complete_count": 1,
+      "actor_returned_adam_increment": 20,
+      "probe_returned_adam_increment": 0,
+      "reward_mean": 0.7184820546099218,
+      "reward_mean_range": [
+        0.7184820546099218,
+        0.7184820546099218
+      ],
+      "selected_mixed_count": 253,
+      "selected_questions": 512,
+      "selected_mixed_fraction": 0.494140625,
+      "selection_kind": "ordinary_predicted_top512_actual_outcomes",
+      "actual_em_oracle_selection": false,
+      "rows": [
+        {
+          "outer": 28,
+          "actor_adam_per_rank": 560,
+          "probe_completed_outer": 20,
+          "probe_adam_per_rank": 100,
+          "reward_mean": 0.7184820546099218,
+          "reward_min": -0.10000000149011612,
+          "reward_max": 1.5975794792175293,
+          "selected_mixed_fraction": 0.494140625,
+          "selected_mixed_count": 253,
+          "selected_strict_correct": 1307,
+          "actual_em_selection": false,
+          "candidate_mixed_count": null,
+          "fallback_count": null,
+          "all_correct_groups": 134,
+          "all_wrong_groups": 125,
+          "mixed_groups": 253,
+          "joint_sha256": "c1c00046abcc2ec44185d835a802a26f1acf5a4ba8714dbd08787c40ffbe1c8c"
+        }
+      ]
+    }
+  },
+  "qa": {
+    "new_qa_since_switch": false,
+    "latest_existing_outer": 5,
+    "count": 512,
+    "em": 0.23046875,
+    "f1": 0.2888516865079365,
+    "metadata_sha256": "05520a85768d35ced42ef730d9789af31c1195e128c055f1923596b1d3245aa6",
+    "next_qa_outer50_status": "NOT_GENERATED_UNKNOWN_NOT_ZERO",
+    "probe20_diagnostics_are_existing_not_new_qa": true
+  },
+  "gpu": {
+    "current": null,
+    "actual_window_peak": null,
+    "current_execution_cumulative_peak": null,
+    "sampling_coverage": null,
+    "status": "NOT_RECORDED_BY_THIS_METADATA_ENTRY_UNKNOWN"
+  },
+  "errors": {
+    "current_pipeline_terminal_error": null,
+    "current_nonzero_exit_jobs": [],
+    "current_actor_failures": [
+      null,
+      null,
+      null,
+      null
+    ],
+    "cleanup_not_yet_applicable_to_live_pipeline": true
+  },
+  "delivery": {
+    "report_published": false,
+    "user_delivery_pending": true,
+    "source_hour_anchor": {
+      "run_id": "387d3f6e228a488f90c418e2ba47e28e",
+      "execution_id": "cb12bf6ab10b46b0a72f1f0c2e753d78",
+      "source_commit": "858381986d3332898c4e8aa8e5c31e966363ceea",
+      "complete_outers": 24,
+      "delivered_unix": 1792192888.4879239,
+      "sha256": "73cc7b5af1aee0b11c9be99f2e83bf7797c1d10dd375cee1335db3a121a17c46"
+    },
+    "hour_anchor_modified": false,
+    "execution_switch_anchor_to_be_created_only_after_actual_delivery": true
+  },
+  "evidence": [
+    {
+      "role": "actual_cpu_prepare",
+      "path": "preparation/a800-prefix5-p10-eager-joint-observe-1792195846463383000.json",
+      "bytes": 27385,
+      "sha256": "3fdd1d371143a1add5cad5b5b85ab7747c27674ad3f01f7c3b39e8cc8d370c1f"
+    },
+    {
+      "role": "actual_once_launch",
+      "path": "preparation/a800-prefix5-p10-eager-joint-launch-1792195871459336000.json",
+      "bytes": 2724,
+      "sha256": "c2106b86aa83ebb1730853de4d2631ebd26de106fafd87a10230945327b01dc3"
+    },
+    {
+      "role": "actual_startup_flow1",
+      "path": "preparation/a800-prefix5-p10-eager-joint-observe-1792196295332389000.json",
+      "bytes": 65106,
+      "sha256": "d367dd5abd6f5b169de8f9dcc5d1f2937ac9aae0e48d9e106f065d7379bb71c1"
+    },
+    {
+      "role": "actual_startup_flow2",
+      "path": "preparation/a800-prefix5-p10-eager-joint-observe-1792196659023465000.json",
+      "bytes": 66258,
+      "sha256": "a4cf04d2624126f03d14d652e36c0eb53aaf98c2c72208e5a7ff53248225b960"
+    },
+    {
+      "role": "actual_parent_fault",
+      "path": "preparation/a800-prefix5-p10-outer28-actual-failure-1792194682845869000.json",
+      "bytes": 11543,
+      "sha256": "cc93a594141ad32e639493f5ad93e25720e02392002ab95b510f67ea81850b03"
+    },
+    {
+      "role": "actual_driver_binding_reconciliation",
+      "path": "preparation/a800-prefix5-p10-eager27-driver-binding-actual-20261017.json",
+      "bytes": 2356,
+      "sha256": "0b01f509ec10d5ad03ea3ac1c4126d5abd4ed94546dfcbd9d3a986fb93ad7fae"
+    }
+  ],
+  "publication_scope": "scalar/hash only; no QA text, tokens, trajectory contents, model/tensor payloads, process command lists, URLs, credentials or environment values",
+  "progress_verification": {
+    "two_positive_actual_flow_observations": true,
+    "first_complete_restored_outer": 28,
+    "initial_recovery_flow_requirement_met": true,
+    "five_restored_complete_outers_required": [
+      28,
+      29,
+      30,
+      31,
+      32
+    ],
+    "following_outer_required_started": 33,
+    "five_outer_followup_status": "PENDING_NOT_YET_OBSERVED",
+    "complete_restored_outers_at_capture": [
+      28
+    ],
+    "next_normal_metadata_not_before_unix": 1792198458.9064436,
+    "no_extra_evaluation_or_minute_polling": true
+  }
+}
