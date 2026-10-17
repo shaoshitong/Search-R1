@@ -117,13 +117,13 @@ def inspect(base,outer):
                 metadata.add(state['adoption_receipt'])
             fitted = path.parent / 'fit-complete.json'
             if fitted.is_file(): metadata.add(str(fitted))
-            for name, digest in state['encoder_sha256'].items():
+            for name, expected_sha in state['encoder_sha256'].items():
                 file = Path(state['encoder']) / name
-                assets[str(file)] = dict(path=str(file), bytes=file.stat().st_size, sha256=digest,
+                assets[str(file)] = dict(path=str(file), bytes=file.stat().st_size, sha256=expected_sha,
                     sha256_source='actual_saved_grounding_manifest_producer_not_independent_cpu_read')
             for key, name in (('boundary', 'boundary_probe.pkl'), ('commit', 'commit_probe.pkl')):
-                file = Path(state[key]); digest = state['head_sha256'][name]
-                item = dict(path=str(file), bytes=file.stat().st_size, sha256=digest,
+                file = Path(state[key]); expected_sha = state['head_sha256'][name]
+                item = dict(path=str(file), bytes=file.stat().st_size, sha256=expected_sha,
                     sha256_source='actual_saved_grounding_manifest_producer_not_independent_cpu_read')
                 assets[str(file)] = item
         refresh = root / 'grounding-refresh.json'
