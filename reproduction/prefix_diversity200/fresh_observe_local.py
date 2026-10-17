@@ -33,11 +33,21 @@ value['config_sha256']=hashlib.sha256((base/'preparation/launch-config.json').re
 p=base/'preparation/resource5s-v1/summary.json'
 value['resource_summary']=json.loads(p.read_text()) if p.exists() else None
 value['qa_completed']=[]
+ancestors=[base];seen={str(base)};current_config=json.loads((base/'preparation/launch-config.json').read_text())
+for _ in range(16):
+ parent=current_config.get('resume_joint',{}).get('source_base')
+ if not parent:break
+ ancestor=pathlib.Path(parent)
+ assert ancestor.parent==base.parent and ancestor.name.startswith('search-g1-prefix-diversity200-') and str(ancestor) not in seen
+ current_config=json.loads((ancestor/'preparation/launch-config.json').read_text());assert current_config['run_id']==value['latest_joint']['run_id']
+ ancestors.append(ancestor);seen.add(str(ancestor))
 for ordinal in (5,50,100,150,200):
- p=base/'outers'/('outer-%06d'%ordinal)/'validation/complete.json'
- if p.exists():
-  qa=json.loads(p.read_text());assert qa['qa_count']==512
-  value['qa_completed'].append(dict(outer=ordinal,result=qa))
+ for ancestor in ancestors:
+  p=ancestor/'outers'/('outer-%06d'%ordinal)/'validation/complete.json'
+  if p.exists():
+   qa=json.loads(p.read_text());assert qa['qa_count']==512 and qa['run_id']==value['latest_joint']['run_id']
+   assert qa['actor_version']==qa['run_id']+'-actor%04d'%ordinal
+   value['qa_completed'].append(dict(outer=ordinal,result=qa,source_base=str(ancestor),receipt_sha256=hashlib.sha256(p.read_bytes()).hexdigest()));break
 p=base/'final-evaluation/complete.json'
 value['final_qa']=json.loads(p.read_text()) if p.exists() else None
 '''
@@ -66,6 +76,7 @@ value['final_qa']=json.loads(p.read_text()) if p.exists() else None
         probe_adam_per_rank=(value.get('probe') or {}).get('actual_adam_steps_per_rank', [0]*8),
         latest_actual_observed_unix=value['observed_unix'], latest_actual_evidence=str(evidence),
         config_sha256=value['config_sha256'], source_commit=c['source_commit'],
+        latest_joint_source_commit=joint.get('source_commit'),resume_joint=c.get('resume_joint'),
         updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(), goal_complete=False)
     if n:
         state['latest_actor_selection'] = joint['actor_selection']
@@ -87,7 +98,8 @@ value['final_qa']=json.loads(p.read_text()) if p.exists() else None
         'Frozen source: ' + c['source_commit'] + '; actual config SHA: ' + value['config_sha256'],
         '5120G5 prefix20 -> Top1024 same-prefix continuation -> actual EM variance Top512 actor; probe ALL1024/5120 one natural epoch20Adam atLR1e-6.',
         'Shared BF16 train/QA interaction4096/action500/reserve500, early final and protected observation wrapper; strict scorer unchanged. Original logical two-row objective and fixed before/after monitor restored; finite thresholds diagnostic-only. Actual reward-grounding refits50/100/150.',
-        'Official actor fresh0; best retained warmup probe model-only with online Adam0. No repeated warmup or initial QA. First actor outer uses scheduledLR0; nonzero parameter change requires a later positive-LR update.',
+        'This logical run originated from official actor0 and best retained warmup probe model-only/online Adam0. No repeated warmup or initial QA. First actor outer uses scheduledLR0; nonzero parameter change requires a later positive-LR update.',
+        'Current continuation boundary: '+json.dumps(c.get('resume_joint','original fresh launch; no continuation')),
         'Old3427 ended at131 before the protocol repair and was explicitly invalidated by latest human authorization. Its131 are historical and do not count in this fresh run. Old owned wrong outputs were removed; protected shared inputs remain.',
         'Whole-card resource peaks cover the actual five-second sample window only; observed owned CPU is an incomplete lower bound. All large assets stay remote on retained18, exported as same-cluster NFS.200/full51713/checkpoint validation/cost and cleanup remain unfinished.',
         'Evidence: ' + str(evidence),
