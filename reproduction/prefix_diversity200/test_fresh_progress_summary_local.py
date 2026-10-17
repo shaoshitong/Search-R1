@@ -174,6 +174,28 @@ class LocalSummaryTests(unittest.TestCase):
             self.assertFalse(summary['all_latest_phase_exits_zero'])
             self.assertTrue(summary['all8_actor_probe20_actual_writes'])
 
+    def test_legacy_goal_boundary_sha_and_annotation_stay_consistent(self):
+        for joint_available in (True,False):
+            with self.subTest(joint_available=joint_available),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory).resolve();out,mirrors=fixture(root,cost=False,pairs=False)
+                path=out/'GOAL_TURN_PROGRESS_CURRENT.json';goal=read(path)
+                old=dict(actual_complete_outer=75,latest_joint_sha256=digest('joint75'),
+                    current_turn_verified_increment='old round75 note')
+                goal.update(old);write(path,goal)
+                if not joint_available:
+                    actual=read(out/'LATEST_ACTUAL.json');actual['latest_joint']=None;write(out/'LATEST_ACTUAL.json',actual)
+                summarize(root,'progress','new caller annotation',mirror_roots=mirrors)
+                goal=read(path)
+                self.assertEqual(goal['actual_complete_outer'],76 if joint_available else None)
+                self.assertEqual(goal['latest_joint_sha256'],digest('joint76')if joint_available else None)
+                self.assertEqual(goal['current_turn_verified_increment'],'new caller annotation')
+                self.assertEqual(goal['current_turn_verified_increment_kind'],'caller_supplied_annotation_from_cli_note')
+                self.assertEqual({key:goal['previous_turn_progress_annotation'][key]for key in old},old)
+                self.assertEqual(goal['goal_status'],'active');self.assertFalse(goal['goal_complete'])
+                self.assertEqual(goal['keep'],'goal')
+                summarize(root,'progress','new caller annotation',mirror_roots=mirrors)
+                self.assertEqual(read(path)['previous_turn_progress_annotation'],goal['previous_turn_progress_annotation'])
+
     def test_missing_pair_binding_sha_is_pending(self):
         for field in ('checkpoint','own_em_sha256','prefix_selection_sha256'):
             with self.subTest(field=field),tempfile.TemporaryDirectory() as directory:

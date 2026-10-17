@@ -307,9 +307,18 @@ def summarize(root, classification, note='', *, mirror_roots=None):
     goal = load('GOAL_TURN_PROGRESS_CURRENT.json') or {}; requirement = load('REQUIREMENT_EVIDENCE_CURRENT.json') or {}
     for old in (goal,requirement):
         need(old.get('run_id',RUN_ID) == RUN_ID, 'Existing derived document belongs to another run')
+    legacy_fields = ('actual_complete_outer','latest_joint_sha256','current_turn_verified_increment')
+    previous = {key:copy.deepcopy(goal[key]) for key in legacy_fields if key in goal}
+    current = dict(actual_complete_outer=n,latest_joint_sha256=summary['joint_sha256'],
+                   current_turn_verified_increment=note)
+    if previous and any(previous.get(key) != value for key,value in current.items()):
+        goal['previous_turn_progress_annotation'] = dict(previous,
+            scope='Previous top-level boundary/SHA and caller-supplied annotation; retained before this local update.')
     for document in (goal,requirement):
         document.update(run_id=RUN_ID,actual_complete_outer=n,derived_progress_summary=summary)
     goal.update(classification=classification,note=note,actual_evidence=str(out/'LATEST_ACTUAL.json'),observed_unix=actual.get('observed_unix'),
+        latest_joint_sha256=summary['joint_sha256'],current_turn_verified_increment=note,
+        current_turn_verified_increment_kind='caller_supplied_annotation_from_cli_note',
         actor_adam_per_rank=clocks.get('actor'),probe_adam_per_rank=clocks.get('probe'),
         outer_in_progress=stage.get('outer'),active_job=summary['active_job'],
         all_latest_phase_exits_zero=summary['all_latest_phase_exits_zero'],
