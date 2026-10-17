@@ -1,0 +1,30 @@
+"""Run repaired mmap auditor once while this account's GPU job is held.
+
+Preserve the failed independent audit and its intent. The repaired auditor uses
+the still-absent canonical proof; its supervisor is the published CPU-only RSS
+guard. This operator does not release the job or alter checkpoint payloads.
+"""
+import base64,hashlib,json,runpy,shlex,subprocess
+from pathlib import Path
+from reproduction.hpc3_prefix5.control import BASE,OUTPUT,PYTHON
+from reproduction.hpc3_prefix5.direct_control import run
+
+original=runpy.run_path('docs/hpc3-cp9-login-cpu-prequalification-20261017.txt')['SUPERVISOR']
+code=original.replace('BASE',repr(BASE)).replace('cp9-independent-cpu-prequalification.json','cp9-actual-full-state-qualification.json').replace('cp9-login-cpu','cp9-fixed-cpu')
+data=code.encode();digest=hashlib.sha256(data).hexdigest()
+remote='''import pathlib,json,subprocess,base64,hashlib,os,time
+b=pathlib.Path(TARGET);p=b/'preparation';script=p/'cp9-fixed-cpu-supervisor.py'
+assert not script.exists(),'Inspect the previous fixed audit; never replay blindly'
+q=subprocess.check_output(['squeue','-h','-j','729624','-o','%i|%T|%R'],text=True).strip();assert q=='729624|PENDING|(JobHeldUser)',q
+assert json.loads((p/'source-publication.json').read_text())['commit']=='94721327fc240104ec5b911af5beb9add246bd05'
+payload=base64.b64decode(PAYLOAD);assert hashlib.sha256(payload).hexdigest()==DIGEST
+with script.open('xb') as f:f.write(payload)
+with (b/'logs/cp9-fixed-cpu-supervisor.log').open('xb') as log:
+ child=subprocess.Popen([PYTHON,str(script)],stdin=subprocess.DEVNULL,stdout=log,stderr=log,start_new_session=True,close_fds=True)
+print(json.dumps(dict(supervisor_pid=child.pid,script=str(script),source_sha256=DIGEST,created_unix=time.time(),job=729624,held=True,cpu_only=True)))
+'''.replace('TARGET',repr(BASE+'-r2')).replace('PAYLOAD',repr(base64.b64encode(data).decode())).replace('DIGEST',repr(digest)).replace('PYTHON',repr(PYTHON))
+address=subprocess.check_output(['ipconfig','getifaddr','en0'],text=True).strip()
+r=run(PYTHON+' -c '+shlex.quote(remote),account='mou176',source_address=address,timeout=25)
+assert r.returncode==0,(r.stdout.decode(),r.stderr.decode())
+v=next(json.loads(line) for line in r.stdout.decode().splitlines() if line.strip().startswith('{'))
+(Path(OUTPUT)/'cp9-fixed-cpu-start.json').write_text(json.dumps(v,indent=2)+'\n');print(json.dumps(v))
