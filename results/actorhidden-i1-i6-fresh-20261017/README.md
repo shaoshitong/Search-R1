@@ -1,5 +1,7 @@
 # I1–I6 修复与官方actor fresh200
 
+> Latest actual 2026-10-17 07:37 UTC: same3431/h100-8 complete20/200, each rank actor400/probe100. First period20 trained all5120G5 once at1e-6; actual21 selection used head20 with actor0020. Train balanced mixed accuracy60.9604% ->63.6124%, heldout56.6099% ->57.0806%. Diagnostic gains are modest and ordinary heldout accuracy remains below its majority baseline. [Paired metrics and100-update curve](period20-paired-and-actual21-use.json). Current runtime848 remains frozen; older snapshots below are historical.
+
 > Latest actual 2026-10-17 07:14 UTC: same3431/h100-8 complete17/200, each rank actor340/probe0, outer18 actor stage. Probe0 before20 follows the protocol. CP5 independent copy completed at07:19:51: all165 payloads44,996,144,989B source/target full SHA matched; a separate final metadata read verified166 final files including mapping, exact sizes, no staging and original copier birth gone. See [independent CP5 copy summary](checkpoint5-independent-backup-complete.json). Semantic reload and all-experiment backup are not claimed. This supersedes older snapshots below.
 
 > 最新实际UTC2026-10-17 06:39：同3431已完整11／200，8rank各actor220／probe0，第12轮actor；原始8–11账本均核20真实写入。CP5副本同birth继续，16文件17,946,369,805B源与目标完整SHA已通过，尚未整体完成。中断只结束了本地等待，已恢复读取同一训练，未重启／改训练。见[第11轮与观察通道恢复小摘要](progress11-observer-recovery.json)。以下首五及QA5为历史阶段记录。
@@ -44,3 +46,21 @@ CP5独立完整SHA及实际CPU状态读回通过，30文件38,613,963,993B，act
 |Search-G1 Prefix5／`79c645a4a51bd0bcb0fab4ee36b8fcd634290b2f`|新train／QA／校准、动态grounding拟合／adopt已接通。旧`native_joint_resume.py:65,161,307`仍以20×outer及旧无grounding配置核验，旧CPU资格入口还固定joint27／prefix28，不能直接恢复新schema。|已通知适配独立恢复控制；未发现必须立刻停止当前fresh主循环的已确认错误。它的有限KL／tail阈值仍可skip Adam，本线程仅诊断，必须如实比较实际Adam／skip，不能只按outer等同预算。|
 
 本线程848a67a4已显式为正常grounding校准传`--interaction-config`，与train／QA共用`calibration_interaction`；checkpoint／backup工具同时记录动态grounding版本及依赖。它们已通过必要CPU检查，真实第50轮fit／adopt仍待正常进度验证。各会话获知后自行负责发布和正常完整断点交接，通知不等于其修复已部署验收。
+
+## First period20: paired same-rollout metrics and actual21 adoption
+
+The sampler actor0019 generated all5120 training groups and the512 disjoint heldout groups. Every group contains its own five retained prefixes, continuations and strict-EM labels. The original eight rank ledgers each contain100 actual probe Adam writes,640 groups/3200 trajectories, with80 global batches of255 trajectories and20 of260; learning rate1e-6. Training/heldout question IDs and normalized-content hashes have zero overlap. The old probe selected Top512 before labels; selected continuations were projected from the same full pool without extra generation.
+
+|Same data, pre/post probe update|Train5120 groups|Heldout512 groups|
+|---|---:|---:|
+|Ordinary mixed accuracy|60.6641% ->62.6563%|56.8359% ->56.4453%|
+|Balanced mixed accuracy|60.9604% ->63.6124%|56.6099% ->57.0806%|
+|Mixed recall|61.7665% ->66.2137%|55.9524% ->58.9286%|
+|Nonmixed recall|60.1542% ->61.0111%|57.2674% ->55.2326%|
+|Trajectory BCE|0.624287 ->0.610446|0.699766 ->0.691915|
+|Group BCE|0.717979 ->0.690690|0.738013 ->0.736743|
+|Total joint loss|1.342266 ->1.301136|1.437780 ->1.428659|
+
+Training truth contains1619/5120 mixed groups; heldout168/512. Top512 contains261/512 mixed (50.9766%), against31.6211% in the full pool,1.6121x prevalence. This is selection enrichment, not full-pool accuracy or QA gain. Heldout nonmixed-majority baseline is344/512=67.1875%; post-update ordinary accuracy56.4453% remains below it, while balanced accuracy is57.0806%. Quality remains limited. The paired loss decreases use an identical head-evaluation data set before/after; the100 online update losses use different batches and cannot establish monotonic decrease.
+
+Actual21 score completion independently binds head20 producerSHAeea4bd7dd483d3ec9f654201200ee85da55eeaf38cb41afca708eef7262a149f to actor0020 with no outcome-label use. No tensor was loaded or independently rehashed by this metadata read, and no model semantic reload is claimed. Probe100-update loop took8.24249seconds; complete probe phase40.97637seconds. Phase timings and raw counts are retained in the linked small result; neither loop time nor phase sum is claimed as whole-outer wall time. QA20 is not a scheduled evaluation; QA50/final51713 remain pending.
