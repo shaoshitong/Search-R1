@@ -33,7 +33,7 @@
   "previous_tree_full_f1": 0.538153839337549,
   "previous_tree_full_em": 0.4693984104577186,
   "uncontinued_unlabelled_questions": 4096,
-  "updated_utc": "2026-10-17T04:27:24.309523+00:00",
+  "updated_utc": "2026-10-17T04:30:01.652354+00:00",
   "job_id": "3427",
   "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4",
   "frozen_source": "e3463cfddca71a22ac684d75c875dbe123e8bc43",
@@ -127,7 +127,7 @@
     438.3922929763794
   ],
   "recent_actual_whole_outer_mean_seconds": 437.02599930763245,
-  "results_publication_commit": "1ca38b6550936d86dcd811590839b426846ed662",
+  "results_publication_commit": "a18b5911cfb02dbfeaf5761c4a8361aa56ef349b",
   "results_publication": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/RESULTS_PUBLICATION.json",
   "joint_actor_adam_per_rank": [
     2480,
@@ -840,7 +840,7 @@
   "probe_loss_audit_through": 99,
   "probe_loss_audit_publication": "14a40074b922733c54de182ddbe45115c6b10a7a",
   "blocker_consecutive_goal_continuation_turns": 0,
-  "checkpoint100_cpu_acceptance": "FAILED_DRIVER_BOUNDARY_ASSERTION_DIAGNOSIS_IN_PROGRESS",
+  "checkpoint100_cpu_acceptance": "JOINT_COMPONENTS_VERIFIED_STANDALONE_DRIVER_FAIL_RETAINED",
   "checkpoint100_cpu_pending_summary": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/acceptance100/PENDING_STATUS.json",
   "checkpoint100_cpu_pending_publication": "0e1f95d4b2dd6f886242c62e711febd18e79e9db",
   "blocked_audit_passed": false,
@@ -850,5 +850,15 @@
   "goal_execution_status": "active",
   "checkpoint100_cpu_proof_sha256": "f917d16cf75a658e1fa066775d60f9053929bd7d099cc7a5c40d18e2579cbdcf",
   "checkpoint100_cpu_failure": "Actual actor driver state did not preserve the real candidate boundary",
-  "checkpoint100_cpu_training_action": "none; original3427 continues; only small driver/pool/config diagnosis authorized"
+  "checkpoint100_cpu_training_action": "none; use verified joint pool/probe snapshots for recovery, never stale driver descriptors",
+  "checkpoint100_standalone_driver_status": "FAIL_ACTUAL_STALE_RESUME3_POOL_AND_PROBE_DESCRIPTOR",
+  "checkpoint100_joint_component_proof_sha256": "80c2c9b2ebfb877330826732e7af8f20f8928caf5474a15366a643f2cc346a53",
+  "checkpoint100_joint_component_proof_remote": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/acceptance100-joint-supplement-v1/proof.json",
+  "checkpoint100_cpu_summary": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/acceptance100/SUMMARY.json",
+  "checkpoint100_cpu_publication": "676c28c60b165db712e22e6c2e8bcb6a67f76e3c",
+  "checkpoint100_restore_bindings": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/acceptance100/RECOVERY_BINDINGS.json",
+  "driver_metadata_future_fix_commit": "04ada154905f2540abe6cbf88bacff64e6221589",
+  "driver_metadata_future_fix_branch": "codex/prefix-joint-metadata-fix-20261017",
+  "driver_metadata_future_fix_deployment": "NOT_DEPLOYED_TO_RUNNING3427",
+  "driver_metadata_future_fix_review": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-prefix1024-diversity512/driver-metadata-future-fix/REVIEW.json"
 }

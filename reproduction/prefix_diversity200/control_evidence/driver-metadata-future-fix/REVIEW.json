@@ -1,0 +1,150 @@
+{
+  "conclusion": "PASS",
+  "blocking_findings": [],
+  "reviewed_at_utc": "2026-10-17T04:26:35.060118+00:00",
+  "source": {
+    "repository": "/Users/shaoshitong/Documents/Search-G1/prefix-joint-metadata-fix-20261017",
+    "branch": "codex/prefix-joint-metadata-fix-20261017",
+    "commit": "04ada154905f2540abe6cbf88bacff64e6221589",
+    "actor_sha256": "199363223c69712095c8fb623ccf6834664c02fa40ae216295c9bc1607aca641",
+    "diff": "HEAD^..HEAD: only reproduction/prefix_diversity200/actor.py; 33 insertions, 3 deletions",
+    "working_tree_clean_before_and_after": true
+  },
+  "scope": {
+    "reviewed": [
+      "current_driver_metadata",
+      "_save_complete metadata call and driver.pt keyword expansion"
+    ],
+    "context_only": [
+      "pool.state_sha and JSON serialization",
+      "launch actor-before-probe-update order",
+      "probe receipt and scoring SHA fields"
+    ],
+    "excluded": [
+      "remote access",
+      "GPU",
+      "training processes",
+      "training execution",
+      "torch import",
+      "checkpoint/weight loading",
+      "distributed _save_complete runtime",
+      "deployment or current-running-job modification"
+    ]
+  },
+  "static_review": {
+    "current_base_ignores_inherited_aliases": true,
+    "reservation_outer_and_after_hash_and_value_checked": true,
+    "pool_next_outer_and_5120_times_outer_checked": true,
+    "probe_run_id_outer_minus_one_and_20_times_outer_minus_one_checked": true,
+    "score_run_id_outer_and_selection_probe_sha_checked": true,
+    "save_integration_ast_verified": true,
+    "policy_and_training_budget_unchanged": true,
+    "notes": [
+      "Probe latest remains the selection-time n-1 receipt because the controller updates the probe only after actor completion.",
+      "Probe sha256 here is compared to the score manifest checkpoint identity; fixture does not load or hash a model checkpoint."
+    ]
+  },
+  "fixtures": {
+    "runtime": "3.9.6",
+    "real_json_files_per_case": 4,
+    "stale_alias_json_files": 2,
+    "only_mock": "actor.remote path placement guard replaced with local Path.resolve for temporary fixtures",
+    "real_read_and_hash": true,
+    "torch_imported": false,
+    "total_cases": 12,
+    "passed_cases": 12,
+    "results": [
+      {
+        "case": "current_base_over_stale_existing_aliases",
+        "actual": "accepted_current_base_and_exact_real_json_hashes",
+        "passed": true
+      },
+      {
+        "case": "reservation_outer",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual reserved candidate boundary",
+        "passed": true
+      },
+      {
+        "case": "pool_next_outer",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual reserved candidate boundary",
+        "passed": true
+      },
+      {
+        "case": "pool_consumed_candidates",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual reserved candidate boundary",
+        "passed": true
+      },
+      {
+        "case": "reservation_after_mismatch",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual reserved candidate boundary",
+        "passed": true
+      },
+      {
+        "case": "reservation_after_sha",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual reserved candidate boundary",
+        "passed": true
+      },
+      {
+        "case": "score_run_id",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual selection-time probe boundary",
+        "passed": true
+      },
+      {
+        "case": "score_outer",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual selection-time probe boundary",
+        "passed": true
+      },
+      {
+        "case": "probe_run_id",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual selection-time probe boundary",
+        "passed": true
+      },
+      {
+        "case": "probe_completed_outer",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual selection-time probe boundary",
+        "passed": true
+      },
+      {
+        "case": "probe_adam_steps",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual selection-time probe boundary",
+        "passed": true
+      },
+      {
+        "case": "probe_score_checkpoint_sha_mismatch",
+        "actual": "rejected",
+        "exception": "ValueError",
+        "message": "Current actor save lost its actual selection-time probe boundary",
+        "passed": true
+      }
+    ],
+    "temporary_fixtures_removed": true,
+    "harness_setup_correction": "Initial acceptance path assertion compared unresolved /var temporary path to real /private/var resolved path. Resolved fixture base and corrected the expectation; no source change. Initial attempt stopped before any negative cases."
+  },
+  "postcheck": {
+    "source_commit_unchanged": true,
+    "working_tree_porcelain": ""
+  },
+  "limitations": [
+    "CPU fixtures execute current_driver_metadata, while _save_complete integration is checked statically to avoid torch, GPU, model, and distributed runtime."
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "status": "JOINT100_CPU_COMPONENTS_VERIFIED_WITH_EXPLICIT_BINDINGS_STANDALONE_DRIVER_FAIL_RETAINED",
+  "outer": 100,
+  "run_id": "f3ee1435e5014ba1969387c91878893a",
+  "runtime_source_commit": "e3463cfddca71a22ac684d75c875dbe123e8bc43",
+  "runtime_config_sha256": "384cf0f516e7bf9ce3623bdf48e87a078f8eceaa5af5e03f238e04e86ae59ad8",
+  "standalone_driver": {
+    "status": "FAIL_ACTUAL_STALE_POOL_AND_PREVIOUS_PROBE_DESCRIPTOR",
+    "original_audit_helper_commit": "0e1f95d4b2dd6f886242c62e711febd18e79e9db",
+    "original_failed_proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/joint-milestone-0100-independent-full-sha-cpu-once-v1.json",
+    "original_failed_proof_sha256": "f917d16cf75a658e1fa066775d60f9053929bd7d099cc7a5c40d18e2579cbdcf",
+    "original_proof_unchanged": true,
+    "actual_stale_pool_next_outer": 54,
+    "actual_stale_pool_consumed": 271360,
+    "actual_stale_previous_probe_outer": 52
+  },
+  "joint_bundle_components": {
+    "status": "JOINT100_COMPONENT_CPU_VERIFICATION_PASS_STANDALONE_DRIVER_FAIL_RETAINED",
+    "supplement_helper_commit": "8d5501994e38856dc2103c1291a4e0a0cc4fa218",
+    "supplement_source_sha256": "c10576a995361f03eba46a284ae1c84ecab95ea19ecfce729117c9c59f714f08",
+    "proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/acceptance100-joint-supplement-v1/proof.json",
+    "proof_sha256": "80c2c9b2ebfb877330826732e7af8f20f8928caf5474a15366a643f2cc346a53",
+    "probe100": {
+      "file": {
+        "actual_cpu_deserialization": true,
+        "bytes": 932251158,
+        "dev": 64768,
+        "independent_full_sha": true,
+        "inode": 140000004,
+        "mtime_ns": 1792200640974625569,
+        "path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/probe/head-outer-0100.pt",
+        "sha256": "e787b13c0f645edf0627fce04d6f77597226fad01740e109f32d3c0458adeb0b"
+      },
+      "summary": {
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000,
+          2000,
+          2000,
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "adam_fp32_states": 14,
+        "learning_rate": 1e-06,
+        "model_fp32_tensors": 14,
+        "rank_rng_count": 8
+      }
+    },
+    "pool": {
+      "actual_permutation_entries": 168510,
+      "consumed_candidates": 512000,
+      "cursor": 6470,
+      "cycle": 3,
+      "eligible_questions": 168510,
+      "next_outer": 101,
+      "source_pool_sha256": "ae13710254e7ae77cf5531b62a755ec2000bc3fba20051bbafaff1f6714aa8fc"
+    },
+    "driver_rng": {
+      "cuda_rng_applied": false,
+      "python_numpy_cpu_torch_state_loaded": true,
+      "saved_cuda_rng_bytes": 16
+    },
+    "actor_evidence_reused_without_large_reread": true,
+    "reuse_basis": "Pinned original core5eb/full completed log stage chain plus verified source control flow and unchanged pre/post inode-size-mtime signatures; never BEGIN alone.",
+    "recovery_bindings_file": "RECOVERY_BINDINGS.json"
+  },
+  "cpu_cost": {
+    "original_audit": {
+      "cpu_system_seconds": 23.052699,
+      "cpu_user_seconds": 66.926417,
+      "elapsed_seconds": 90.0053206011653,
+      "error": "Actual actor driver state did not preserve the real candidate boundary",
+      "exit_code": 1,
+      "finished_unix": 1792210817.1501658,
+      "gpu_forward_performed": false,
+      "helper_commit": "0e1f95d4b2dd6f886242c62e711febd18e79e9db",
+      "max_rss_kib": 4512704,
+      "proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/joint-milestone-0100-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "f917d16cf75a658e1fa066775d60f9053929bd7d099cc7a5c40d18e2579cbdcf",
+      "proof_status": "PREFIX_SELECTION200_CPU_MILESTONE_AUDIT_FAILED_TRAINING_UNCHANGED",
+      "status": "CPU_ACCEPTANCE_FAILED_NO_REPLAY",
+      "subprocess_exit": 0,
+      "training_modified": false
+    },
+    "append_only_supplement": {
+      "elapsed_seconds": 3.613201204687357,
+      "cpu_user_seconds": 2.7436439999999997,
+      "cpu_system_seconds": 1.046755,
+      "max_rss_kib": 1350224,
+      "exit_code": 0,
+      "finished_unix": 1792211205.9634633
+    },
+    "separate_small_diagnostic_cpu_usage_unmetered": true
+  },
+  "observations": [
+    {
+      "unix": 1792210759.4173892,
+      "log_bytes": 233,
+      "stage": "HF_FULL_SHA_CPU_BEGIN"
+    },
+    {
+      "unix": 1792210813.4039335,
+      "log_bytes": 3991,
+      "stage": "HF435_and_rank0through6_complete_rank7_reading"
+    },
+    {
+      "unix": 1792210839.5735202,
+      "log_bytes": 5432,
+      "stage": "ACTUAL_DRIVER_BOUNDARY_FAILURE",
+      "exit_code": 1
+    },
+    {
+      "unix": 1792211202.2246864,
+      "stage": "SUPPLEMENT_CPU_UNIT_STARTED",
+      "log_bytes": 0
+    },
+    {
+      "unix": 1792211224.857976,
+      "stage": "JOINT100_COMPONENT_CPU_VERIFICATION_PASS_STANDALONE_DRIVER_FAIL_RETAINED",
+      "log_bytes": 1425,
+      "exit_code": 0
+    },
+    {
+      "unix": 1792211249.3843207,
+      "stage": "SUPPLEMENT_PROOF_AND_ORIGINAL_FAILURE_STABLE",
+      "proof_sha256": "80c2c9b2ebfb877330826732e7af8f20f8928caf5474a15366a643f2cc346a53",
+      "original_failure_sha256": "f917d16cf75a658e1fa066775d60f9053929bd7d099cc7a5c40d18e2579cbdcf"
+    }
+  ],
+  "limits": [
+    "Original strict standalone-driver audit remains FAIL; no unconditional replacement PASS.",
+    "Recovery must explicitly use joint100 pool snapshot/current probe100 and selection-time probe99 receipt, never legacy driver data/probe aliases.",
+    "All assets remain remote; no checkpoint was rewritten.",
+    "No native CUDA executor restore, GPU forward, additional QA or independent backup performed.",
+    "Only probe100 was newly read as a large tensor file in the supplement; actor HF/all8 ranks were not reread."
+  ],
+  "training_modified": false
+}
