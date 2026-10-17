@@ -10,7 +10,7 @@ import sys
 import time
 
 
-def inspect(base, job):
+def inspect(base, job, stop_receipt=None):
     base = Path(base)
     sys.path.insert(0, str(base / 'repo'))
     from reproduction.common8.native_allocation import fields
@@ -31,7 +31,8 @@ def inspect(base, job):
     # Slurm may purge a cancelled job before the following inspection. The
     # successful scoped scancel receipt, empty native queue and actual owned
     # birth/cgroup/GPU release prove stopping without inventing an exit code.
-    stop = base / 'preparation/human-resume20-lr1e5-stop-once-v1/RECEIPT.json'
+    stop = (Path(stop_receipt) if stop_receipt else
+            base / 'preparation/human-resume20-lr1e5-stop-once-v1/RECEIPT.json')
     queue = subprocess.run(['squeue', '-h', '-o', '%i'], capture_output=True, text=True, timeout=30)
     stopped = json.loads(stop.read_text()) if stop.exists() else {}
     purged_after_stop = (result.returncode != 0 and queue.returncode == 0
@@ -80,5 +81,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', required=True)
     parser.add_argument('--job', required=True)
+    parser.add_argument('--stop-receipt')
     args = parser.parse_args()
-    print(json.dumps(inspect(args.base, args.job)))
+    print(json.dumps(inspect(args.base, args.job, args.stop_receipt)))

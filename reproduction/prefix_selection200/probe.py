@@ -388,7 +388,7 @@ def atomic_checkpoint(directory, saved, completed_outer):
     os.replace(temporary, path)
     receipt = dict(run_id=saved['run_id'], completed_outer=completed_outer,
                    actual_adam_steps_per_rank=saved['actual_adam_steps_per_rank'],
-                   learning_rate=LR, sha256=sha(path), bytes=path.stat().st_size,
+                   learning_rate=saved['learning_rate'], sha256=sha(path), bytes=path.stat().st_size,
                    binding_sha256=saved['binding_sha256'], observed_utc=utc())
     publish(directory / 'latest.json', receipt)
     if completed_outer == 0 or completed_outer % 20 == 0:
@@ -411,7 +411,7 @@ def initial_online_state(source, binding):
 
 def initialize(args):
     if getattr(args, 'learning_rate', LR) != LR:
-        raise ValueError('The latest explicit fresh200 goal fixes probe learning rate at1e-6')
+        raise ValueError('Probe initialization must match the explicit runtime learning rate')
     directory, source = remote(args.state_dir), remote(args.source_checkpoint)
     if (directory / 'initialization-complete.json').exists():
         existing = read(directory / 'initialization-complete.json')
@@ -741,6 +741,7 @@ def update(args):
 
 
 def main():
+    global LR
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('phase', choices=('initialize', 'score', 'update'))
     parser.add_argument('--state-dir', required=True)
@@ -753,8 +754,9 @@ def main():
     parser.add_argument('--learning-rate', type=float, default=LR)
     parser.add_argument('--seed', type=int, default=1729)
     args = parser.parse_args()
-    if args.learning_rate != LR:
-        parser.error('The current fresh200 goal requires probe learning rate1e-6')
+    if args.learning_rate not in (1e-6, 1e-5):
+        parser.error('Require the explicit original or human-authorized probe rate')
+    LR = args.learning_rate
     required = {'initialize': ('source_checkpoint', 'source_sha256', 'run_id', 'test_cache', 'test_manifest_sha'),
                 'score': ('prefix_inputs', 'output', 'outer', 'model_dir'),
                 'update': ('scored_features', 'own_em', 'output', 'outer', 'model_dir', 'test_cache', 'test_manifest_sha')}

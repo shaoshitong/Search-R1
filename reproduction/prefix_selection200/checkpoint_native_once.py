@@ -26,6 +26,14 @@ def actual_selection_binding(base, outer, joint, driver):
         expected = read(previous / 'probe-update/metrics.json')['checkpoint']
     else:
         expected = read(base / 'probe/initialization-complete.json')['receipt']
+    transition = base / 'probe/lr-change-receipt.json'
+    if 50 < outer <= 60 and transition.is_file():
+        change = read(transition)
+        need(change['source_probe_receipt'] == expected
+             and change['resume_outer'] == 50
+             and change['probe_actual_adam_per_rank'] == [200] * 8,
+             'Authorized LR-only probe transition differs from original head40')
+        expected = change['rebound_probe_receipt']
     selection = read(root / 'probe-score/selection.json')
     manifest = read(root / 'probe-score/manifest.json')
     complete = read(root / 'probe-score/complete.json')

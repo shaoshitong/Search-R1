@@ -20,11 +20,16 @@ def validate_config(c, base):
         raise ValueError('Use the isolated remote prefix-selection namespace')
     required = dict(outers=200, candidate_questions=5120, selected_questions=512,
                     responses_per_question=5, prefix_policy_tokens=20, exploration_questions=0,
-                    probe_learning_rate=1e-6, probe_epochs_per_update=1, probe_update_period=20,
+                    probe_epochs_per_update=1, probe_update_period=20,
                     probe_updates_per_period=100, actor_hidden_native=True, probe_global_batch_average=256,
                     actor_global_mini_batch=128, actor_ppo_epochs=1, world_size=8)
     if any(c.get(k) != v for k, v in required.items()):
         raise ValueError('The approved prefix selection or training budget differs')
+    if c.get('probe_learning_rate') == 1e-5:
+        from .resume_probe_lr50 import validate_authorization
+        validate_authorization(c)
+    elif c.get('probe_learning_rate') != 1e-6:
+        raise ValueError('Require the original or explicitly authorized probe LR')
     if c['probe_source_sha256'] != '8df6bd445945ffbbf6a94171f24934495f0ce3ff17a3d2577bbd53d4b8fefd56':
         raise ValueError('Initialize from the best retained warmup CP100')
     if c['model_revision'] != 'aa8e72537993ba99e69dfaafa59ed015b17504d1':
@@ -306,7 +311,8 @@ def run(base):
                 phase('outer-%06d-score' % outer, distributed('reproduction.prefix_selection200.probe',
                     ['score', '--state-dir', str(base / 'probe'), '--prefix-inputs', str(root / 'prefix/scan'),
                      '--output', str(root / 'probe-score'), '--outer', str(outer), '--model-dir', c['official_model_dir'],
-                     '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256))]))
+                     '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256)),
+                     '--learning-rate', str(c['probe_learning_rate'])]))
             from .periodic import is_probe_update,probe_boundary
             periodic_update=is_probe_update(outer)
             if periodic_update:
@@ -350,7 +356,7 @@ def run(base):
             if periodic_update:
                 diagnostic_receipt=read(root/'diagnostic-complete.json')
                 phase('outer-%06d-probe-update' % outer, distributed('reproduction.prefix_selection200.probe',
-                    ['update','--state-dir',str(base/'probe'),'--scored-features',str(root/'probe-score'),
+                    ['update','--state-dir',str(base/'probe'),'--learning-rate',str(c['probe_learning_rate']),'--scored-features',str(root/'probe-score'),
                      '--own-em',str(root/'full-pool/own-em.jsonl'),'--output',str(root/'probe-update'),
                      '--own-em-sha256',read(root/'full-pool/complete.json')['own_em']['sha256'],
                      '--outer',str(outer),'--model-dir',c['official_model_dir'],

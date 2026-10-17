@@ -121,7 +121,7 @@ once(prep/'deploy-receipt.json',result);print(json.dumps(result))
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase', choices=('deploy', 'import-resume', 'import-joint', 'submit', 'query', 'observe'))
+    parser.add_argument('phase', choices=('deploy', 'import-resume', 'import-joint', 'import-lr50', 'submit', 'query', 'observe'))
     parser.add_argument('--base', required=True); parser.add_argument('--commit'); parser.add_argument('--config')
     parser.add_argument('--receipts', required=True); parser.add_argument('--reuse-source-commit'); parser.add_argument('--reuse-source-repo')
     args = parser.parse_args()
@@ -132,6 +132,10 @@ def main():
         built = archive_for_commit(args.commit, args.reuse_source_commit)
         code = deployment_script(args.base, args.commit, json.loads(Path(args.config).read_text()), built,
                                  args.reuse_source_commit, args.reuse_source_repo)
+    elif args.phase == 'import-lr50':
+        code = ('import sys,json;sys.path.insert(0,'+repr(args.base+'/repo')+');'
+                'from reproduction.prefix_selection200.resume_probe_lr50 import import_complete50;'
+                'print(json.dumps(import_complete50('+repr(args.base)+'),allow_nan=False))')
     elif args.phase == 'import-joint':
         code = ('import sys,json;sys.path.insert(0,'+repr(args.base+'/repo')+');'
                 'from reproduction.prefix_selection200.resume import import_complete;'

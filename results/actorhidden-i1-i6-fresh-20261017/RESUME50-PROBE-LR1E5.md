@@ -1,0 +1,11 @@
+# Retained50 probe-only LR change
+
+Latest human instruction: “需要变成1e-5跑，探针部分”, following the offered retained50 resume. This authorizes only a controlled stop of3431 and restart from independently validated complete50, not a goal pause. Actor LR1e-6, original I1–I6 interaction/reward/PPO recipe,200outer and all QA/backup obligations remain unchanged.
+
+The source50 checkpoint contains actor1000/rank and the actual updated40 probe with200Adam/rank. `resume_probe_lr50` reads that immutable point even if the stopped source later completed more outers. It preserves every model tensor, Adam moment/step, all eight probe RNG streams and actor/scheduler/pool state. Only probe learning-rate binding and Adam param-group lr change1e-6→1e-5. Serialized state is CPU-reloaded and compared exactly, without a model forward. This is not the old pre20/Adam0 `recover_lr5` importer.
+
+The actual actor0050-fitted grounding heads are retained; eight fresh reward replicas adopt them before51. Completed QA50 is reused from its exact actor/contract rather than generated again. Old source originals and the in-progress independent CP50 copy remain intact. Completed51+ of the stopped execution are deliberately excluded from the retained50 branch, not added to resumed clocks.
+
+Probe scoring and update commands pass the explicit runtime rate. It stays frozen51–59; the next100 real probe updates occur at60 with1e-5. WholeG5 sampling, one natural pass and the two loss weights stay unchanged. Historical20/40 metrics keep their original1e-6 provenance. A separate LR-transition receipt resolves actual preselection probe identity for51–60 without rewriting historical40 metrics.
+
+Nine focused CPU checks cover actor/budget immutability, trained moment/RNG preservation, rejection of reset/mismatched clocks and original recovery regressions. Actual remote terminal/resource release, import of the real trained state, GPU restoration and new complete iterations remain to be observed; this document does not claim deployment success. Source code is published before deployment; frozen source848 is never hot-edited.
