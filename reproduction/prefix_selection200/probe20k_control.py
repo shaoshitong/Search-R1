@@ -62,9 +62,13 @@ from reproduction.common8.native_allocation import fields
 def read(p):return json.loads(p.read_text())if p.exists()else None
 receipt=read(b/'preparation/submit-receipt.json');job=receipt['job_id']
 r=subprocess.run(['scontrol','show','job',job,'-o'],capture_output=True,text=True,timeout=30)
-blocks=[]
+blocks=[];config=read(b/'preparation/launch-config.json');previous=config['probe20k_study'].get('resume_dataset_base')
 for outer in(52,53,54):
  root=b/'outers'/('outer-%06d'%outer);value=dict(outer=outer)
+ if previous:
+  old=pathlib.Path(previous)/'outers'/('outer-%06d'%outer)
+  if(old/'prefix/complete.json').exists()and(old/'full/complete.json').exists():root=old;value['reused_complete']=True
+ value['root']=str(root)
  for phase in('prefix','full'):
   rows=[read(root/phase/('rank-%d-progress.json'%rank))for rank in range(8)]
   value[phase+'_completed']=sum((row or{}).get('completed_trajectories',0)for row in rows)
