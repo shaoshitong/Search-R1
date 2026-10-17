@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import shutil
 import time
-from reproduction.h1008_qprobe.management_transport import remote
+from reproduction.h1008_qprobe.management_transport import remote, connection_options, local_connection_path
 
 SCRIPT = r'''
 import os,sys,json,pathlib,hashlib,math,time,resource
@@ -75,7 +75,7 @@ print(json.dumps(dict(rows=rows,reader=dict(observed_unix=time.time(),wall_secon
 '''
 
 
-def collect(root, maximum_new_outers=4):
+def collect(root, maximum_new_outers=4, connection=None):
     if not 1 <= maximum_new_outers <= 4:
         raise ValueError('At most four new paired scalar proofs per call')
     root=Path(root);out=root/'outputs/search-g1-i1i6-fresh200-20261017'
@@ -88,12 +88,11 @@ def collect(root, maximum_new_outers=4):
             raise ValueError('Previously paired joint identity changed')
     pending=[n for n in sorted(map(int,facts))if n not in rows]
     config_path=out/'CURRENT_CONFIG.json';c=json.loads(config_path.read_text())
-    connection=json.loads((root/'work/search-g1-prefix1024-diversity512-20261016/MANAGEMENT_DIRECT_MASTER_CURRENT.json').read_text())
+    connection=json.loads(Path(connection or local_connection_path(root)).read_text())
     payload=dict(base=c['base'],run_id=c['run_id'],config_sha256=hashlib.sha256(config_path.read_bytes()).hexdigest(),
         outers=[dict(outer=n,joint_sha256=facts[str(n)]['joint_sha256'])for n in pending[:maximum_new_outers]])
     transport=out/('probe-pairs-'+str(time.time_ns())+'-transport.json')
-    value=json.loads(remote(SCRIPT.replace('PAYLOAD',repr(payload)),transport,control_path=connection['control_path'],target=c['node'],
-                            compact_handshake=connection.get('compact_handshake',False)))
+    value=json.loads(remote(SCRIPT.replace('PAYLOAD',repr(payload)),transport,target=c['node'], **connection_options(connection)))
     actual=transport.with_name(transport.name.replace('-transport','-actual'));actual.write_text(json.dumps(value,indent=2)+'\n')
     for row in value['rows']:rows[row['outer']]=row
     result=dict(rows=[rows[n]for n in sorted(rows)],pending_outers=[n for n in pending if n not in rows],reader=value['reader'],evidence=str(actual),
@@ -106,5 +105,5 @@ def collect(root, maximum_new_outers=4):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--maximum-new-outers',type=int,default=4);a=p.parse_args()
-    print(json.dumps(collect(a.root,a.maximum_new_outers)))
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--connection');p.add_argument('--maximum-new-outers',type=int,default=4);a=p.parse_args()
+    print(json.dumps(collect(a.root,a.maximum_new_outers,a.connection)))

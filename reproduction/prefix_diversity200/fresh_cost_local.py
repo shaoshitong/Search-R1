@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import shutil
 import time
-from reproduction.h1008_qprobe.management_transport import remote
+from reproduction.h1008_qprobe.management_transport import remote, connection_options, local_connection_path
 
 SCRIPT=r'''
 import os,sys,json,pathlib,hashlib,time,resource
@@ -37,15 +37,14 @@ print(json.dumps(result,allow_nan=False))
 '''
 
 
-def collect(root,maximum_new_outers=4):
+def collect(root,maximum_new_outers=4,connection=None):
     if not 1<=maximum_new_outers<=4:raise ValueError('At most4 new raw-shard proofs per invocation')
     root=Path(root);out=root/'outputs/search-g1-i1i6-fresh200-20261017'
     config_path=out/'CURRENT_CONFIG.json';c=json.loads(config_path.read_text())
-    connection=json.loads((root/'work/search-g1-prefix1024-diversity512-20261016/MANAGEMENT_DIRECT_MASTER_CURRENT.json').read_text())
+    connection=json.loads(Path(connection or local_connection_path(root)).read_text())
     payload=dict(base=c['base'],run_id=c['run_id'],config_sha256=hashlib.sha256(config_path.read_bytes()).hexdigest(),maximum_new_outers=maximum_new_outers)
     transport=out/('fresh-cost-'+str(time.time_ns())+'-transport.json')
-    value=json.loads(remote(SCRIPT.replace('PAYLOAD',repr(payload)),transport,control_path=connection['control_path'],target=c['node'],
-                            compact_handshake=connection.get('compact_handshake',False)))
+    value=json.loads(remote(SCRIPT.replace('PAYLOAD',repr(payload)),transport,target=c['node'], **connection_options(connection)))
     actual=transport.with_name(transport.name.replace('-transport','-actual'));actual.write_text(json.dumps(value,indent=2)+'\n')
     (out/'COST_CURRENT_PROGRESS.json').write_text(json.dumps(value,indent=2)+'\n')
     gen,ret=value['generation'],value['retrieval']
@@ -66,5 +65,5 @@ def collect(root,maximum_new_outers=4):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--maximum-new-outers',type=int,default=4);a=p.parse_args()
-    print(json.dumps(collect(a.root,a.maximum_new_outers)))
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--connection');p.add_argument('--maximum-new-outers',type=int,default=4);a=p.parse_args()
+    print(json.dumps(collect(a.root,a.maximum_new_outers,a.connection)))

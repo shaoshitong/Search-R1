@@ -47,7 +47,9 @@ if joint_path.is_file():
  candidate={'joint_sha256':hashlib.sha256(joint_path.read_bytes()).hexdigest(),'writers':writers,'writers_stopped':all(v and v.get('state')=='STOPPED'and v.get('exit_code')==0 for v in writers.values())}
 if PHASE=='check':
  latest=read(b/'latest-joint.json')if(b/'latest-joint.json').exists()else None
- print(json.dumps(dict(status='PENDING_ACTUAL_JOINT_NO_INTENT'if candidate is None else('ACTUAL_JOINT_WRITERS_STOPPED_READY'if candidate['writers_stopped']else'PENDING_WRITERS_NO_INTENT'),candidate=candidate,latest_complete=latest['outer']if latest else 0,config_sha256=hashlib.sha256((b/'preparation/launch-config.json').read_bytes()).hexdigest(),audit_intent_created=False,training_modified=False,observed_unix=time.time())))
+ markers={path.name:read(path)for path in(b/'preparation').glob(proof_name+'*.json')}
+ unit=subprocess.run(['systemctl','--user','show',c['unit'],'--property=LoadState','--property=ActiveState','--property=SubState','--property=ExecMainPID','--property=ExecMainStatus'],capture_output=True,text=True,timeout=15)
+ print(json.dumps(dict(status='PENDING_ACTUAL_JOINT_NO_INTENT'if candidate is None else('ACTUAL_JOINT_WRITERS_STOPPED_READY'if candidate['writers_stopped']else'PENDING_WRITERS_NO_INTENT'),candidate=candidate,latest_complete=latest['outer']if latest else 0,config_sha256=hashlib.sha256((b/'preparation/launch-config.json').read_bytes()).hexdigest(),audit_markers=markers,control_root_exists=root.exists(),existing_unit=unit.stdout,unit_query_exit=unit.returncode,audit_intent_created=False,training_modified=False,observed_unix=time.time())))
  raise SystemExit
 if PHASE=='deploy':
  assert candidate and candidate['writers_stopped'],'Actual immutable joint and stopped successful writers required'
@@ -83,7 +85,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('phase', choices=('check','deploy', 'observe')); parser.add_argument('--receipts', required=True)
     parser.add_argument('--config', required=True, help='Committed explicit base/outer/source/config-SHA binding')
-    parser.add_argument('--master-receipt',required=True)
+    parser.add_argument('--connection', '--master-receipt', dest='connection', required=True,
+        help='Verified established controller receipt, or legacy authenticated master receipt')
     args = parser.parse_args()
     source = Path(__file__).resolve().parents[2]
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source, text=True).strip()
@@ -95,12 +98,17 @@ def main():
         raw = subprocess.check_output(['git', 'show', commit+':'+name], cwd=source)
         files[name] = dict(data=base64.b64encode(raw).decode(), sha256=hashlib.sha256(raw).hexdigest(), bytes=len(raw))
     config = json.loads(base64.b64decode(files[args.config]['data']))
-    from reproduction.h1008_qprobe.management_transport import remote
+    from reproduction.h1008_qprobe.management_transport import remote, connection_options
     receipts = Path(args.receipts); receipts.mkdir(parents=True, exist_ok=True)
     path = receipts/('checkpoint%d-cpu-'%config['outer']+args.phase+'-'+str(time.time_ns())+'.json')
-    master=json.loads(Path(args.master_receipt).read_text())
-    assert master['status']=='AUTHENTICATED_MASTER_OCHECK'
-    result = json.loads(remote(script(args.phase, config, commit, files), path, control_path=master['control_path'], target=config['target']))
+    connection=json.loads(Path(args.connection).read_text())
+    options=connection_options(connection)
+    if options.get('established_controller'):
+        assert connection['status']=='ESTABLISHED_CONTROLLER_TWO_ACTUAL_READS_PASS'
+        assert connection['controller_sha256']=='06764cd49f1e29d86867f31e94394b94a598d935aed971da0557396a6668be66'
+    else:
+        assert connection['status']=='AUTHENTICATED_MASTER_OCHECK'
+    result = json.loads(remote(script(args.phase, config, commit, files), path, target=config['target'], **options))
     output = path.with_name(path.stem+'-result.json'); output.write_text(json.dumps(result, indent=2)+'\n')
     small = {k:v for k,v in result.items() if k != 'proof'}
     if 'proof' in result: small['proof_status'] = result['proof']['status']
