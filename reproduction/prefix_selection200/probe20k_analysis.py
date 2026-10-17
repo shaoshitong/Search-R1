@@ -4,10 +4,45 @@ import json
 from pathlib import Path
 
 
+def auc(scores,labels):
+    ordered=sorted(zip(scores,labels));positives=sum(labels);negatives=len(labels)-positives
+    if not positives or not negatives:return None
+    total=0.;start=0
+    while start<len(ordered):
+        end=start+1
+        while end<len(ordered)and ordered[end][0]==ordered[start][0]:end+=1
+        total+=sum(y for _,y in ordered[start:end])*(start+end+1)/2
+        start=end
+    return (total-positives*(positives+1)/2)/(positives*negatives)
+
+
+def score_summary(path):
+    rows=[json.loads(line)for line in path.open()];prob=[p for r in rows for p in r['probabilities']]
+    labels=[y for r in rows for y in r['strict_em']];q=[r['mixed_probability']for r in rows];m=[r['mixed_label']for r in rows]
+    result=dict(trajectory_auc=auc(prob,labels),mixed_auc=auc(q,m),mean_p=sum(prob)/len(prob),
+        trajectory_brier=sum((p-y)**2 for p,y in zip(prob,labels))/len(prob),
+        mixed_brier=sum((p-y)**2 for p,y in zip(q,m))/len(q),
+        saturation_below_001=sum(p<.01 for p in prob)/len(prob),saturation_above_099=sum(p>.99 for p in prob)/len(prob))
+    for y in (0,1):
+        values=[p for p,label in zip(prob,labels)if label==y]
+        result['mean_p_given_em_'+str(y)]=sum(values)/len(values)if values else None
+    result['by_correct_count']={}
+    for k in range(6):
+        selected=[r for r in rows if r['correct_count']==k]
+        result['by_correct_count'][str(k)]=dict(count=len(selected),
+            mean_p=sum(sum(r['probabilities'])for r in selected)/(5*len(selected))if selected else None,
+            mean_q=sum(r['mixed_probability']for r in selected)/len(selected)if selected else None)
+    return result
+
+
 def aggregate(base):
     base=Path(base);config=json.loads((base/'preparation/launch-config.json').read_text());arms=[]
     for arm in config['probe20k_study']['arms']:
         root=base/'arms'/arm['name'];epochs=[json.loads(p.read_text())for p in sorted(root.glob('epoch-*-metrics.json'))]
+        for epoch in epochs:
+            for mode in ('raw','ema'):
+                for split in ('train','test'):
+                    epoch[mode][split]['score_distribution']=score_summary(root/('epoch-%02d-%s-%s-predictions.jsonl'%(epoch['epoch'],mode,split)))
         updates=root/'global-loss-updates.jsonl';curve={}
         if updates.exists():
             for line in updates.open():
