@@ -48,10 +48,17 @@ assert not (root/'complete.json').exists() and not (root/'probe-update').exists(
 assert not list((b/'actor/outers').glob('outer-0065-attempt-*'))
 assert (root/'prefix/complete.json').is_file() and (root/'probe-score/complete.json').is_file()
 terminal_path=b/'preparation/fault-outer65-terminal-20261018.json'
+def terminal_summary(value):
+ summary={k:v for k,v in value.items() if k!='owned_births'}
+ raw=json.dumps(value['owned_births'],sort_keys=True,allow_nan=False).encode()
+ summary.update(owned_births_count=len(value['owned_births']),
+  owned_births_canonical_sha256=hashlib.sha256(raw).hexdigest(),
+  owned_births_projection='all identities retained in immutable remote proof; exact count/hash returned')
+ return summary
 if terminal_path.exists():
  value=read(terminal_path)
  assert value['source_joint_sha256']==sha(b/'latest-joint.json') and value['process_ledger_sha256']==sha(b/'logs/process-ledger.json')
- emit(dict(status='EXISTING_EXACT_FAULT_TERMINAL',terminal_proof=str(terminal_path),terminal_proof_sha256=sha(terminal_path),value=value))
+ emit(dict(status='EXISTING_EXACT_FAULT_TERMINAL',terminal_proof=str(terminal_path),terminal_proof_sha256=sha(terminal_path),value=terminal_summary(value)))
 else:
  intent=b/'preparation/fault-outer65-archive-intent-20261018.json'
  assert not intent.exists(),'Reconcile an interrupted archive; do not replay'
@@ -85,7 +92,7 @@ else:
   accepted_prefix_and_score_preserved=True,failed_rollout_artifacts_deleted=False,checked_unix=time.time())
  write(terminal_path,terminal,True)
  emit(dict(status='ACTUAL_FAULT_TERMINAL_AND_FAILED_SAMPLING_PRESERVED',terminal_proof=str(terminal_path),
-  terminal_proof_sha256=sha(terminal_path),value=terminal))
+  terminal_proof_sha256=sha(terminal_path),value=terminal_summary(terminal)))
 '''
 
 
