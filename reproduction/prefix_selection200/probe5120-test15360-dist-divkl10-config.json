@@ -20,7 +20,7 @@
   },
   "actor_ppo_epochs": 1,
   "actor_version": "6cd6f043ef1641ae91ac177b4c27fe4a-actor0050",
-  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b",
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b-eval15360fix",
   "candidate_questions": 5120,
   "canonical_train": "/mnt/data/shaoshitong/g1f-ef498ac3/data/train.parquet",
   "canonical_train_sha256": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1",
@@ -557,10 +557,10 @@
     "slurm_time_limit": "00:30:00",
     "repeated_loop_checks": false,
     "human_check_removal_instruction": "检查全部移除吧，这种完全没必要，因为第一次检查没问题，后面也不会出问题",
-    "prior_stopped_fit_base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-q5120-dist-meankl-divkl-dominantmix10",
-    "prior_stopped_fit_job": "3474",
+    "prior_stopped_fit_base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe-dist-divkl-resplit5120-15360-20261018-0bdddc20840b",
+    "prior_stopped_fit_job": "3485",
     "human_execution_update": "去掉组均值KL；原20480题按固定随机种子划分5120训练/剩余15360测试；重新10epoch；其余LR5e-5/EMA.99/DIST1/多样性KL5/主辅hidden mixup训练集不变",
-    "prior_stopped_fit_proof_name": "preparation/vector-dist-kl10-final-native-state-release-once.json",
+    "prior_stopped_fit_proof_name": "preparation/failed3485-zero-new-adam-originals-once.json",
     "prior_20k_comparison_base": "/mnt/data/shaoshitong/search-g1-prefix-selection200-probe20k-fit-20261017-0bdddc20840b-r48-bc5",
     "question_split": {
       "train_questions": 5120,
@@ -570,7 +570,8 @@
       "stratified": false
     },
     "test_questions": 15360,
-    "test_protocol": "remaining15360_from_original20480_question_disjoint_resplit_not_old512"
+    "test_protocol": "remaining15360_from_original20480_question_disjoint_resplit_not_old512",
+    "prior_stopped_fit_terminal_state": "FAILED"
   },
   "probe20k_role": "fit"
 }
