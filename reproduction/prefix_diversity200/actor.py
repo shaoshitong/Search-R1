@@ -399,12 +399,61 @@ def masked_policy_objective(old, current, advantages, mask, *, loss_fn):
     return loss_fn(old, current, advantages, mask, cliprange=.2, dual_clip=3.)
 
 
-def micro_loss_weight(micro_policy_tokens, local_minibatch_policy_tokens):
-    """Changing micro must preserve the authorized local16 token-mean objective."""
-    if (type(micro_policy_tokens) is not int or type(local_minibatch_policy_tokens) is not int
-            or not 0 <= micro_policy_tokens <= local_minibatch_policy_tokens):
-        raise ValueError('Actual authored-token mass differs from its parent minibatch')
-    return micro_policy_tokens / local_minibatch_policy_tokens if local_minibatch_policy_tokens else 0.
+def logical_pair_objective(old, current, advantages, mask, offset, pair_masses, *, loss_fn):
+    """Original eight local two-row means, independent of physical forward size."""
+    combined = current.masked_fill(~mask.bool(), 0.).sum() * 0.
+    parts = []
+    for first in range(0, len(current)):
+        absolute = offset + first
+        if first and (absolute // 2)==((absolute-1)//2): continue
+        last = min(len(current), first + (2 - absolute % 2))
+        mass = int(mask[first:last].sum().item()); pair = absolute // 2
+        weight = mass / (8 * pair_masses[pair]) if pair_masses[pair] else 0.
+        loss, clipfrac, kl = masked_policy_objective(old[first:last],current[first:last],
+            advantages[first:last],mask[first:last],loss_fn=loss_fn)
+        combined = combined + loss * weight
+        parts.append(dict(logical_pair=pair,policy_tokens=mass,pair_policy_tokens=pair_masses[pair],
+            gradient_weight=weight,loss=float(loss.detach()),clip_fraction=float(clipfrac.detach()),old_policy_kl=float(kl.detach())))
+    return combined, parts
+
+
+def frozen_policy_monitor(rows, ids, advantages, tokenizer):
+    import torch
+    ordered = sorted(ids,key=lambda i:sum(rows[i]['response_info_mask']))
+    indices = [ordered[int(x)] for x in torch.linspace(0,len(ordered)-1,4).long().tolist()]
+    batch = tensor_batch([rows[i] for i in indices],tokenizer.pad_token_id)
+    batch['advantages'] = torch.tensor([advantages[i] for i in indices],dtype=torch.float32)[:,None].expand_as(batch['loss_mask'])
+    weights = torch.zeros_like(batch['loss_mask'],dtype=torch.float64)
+    for first in range(0,4,2):
+        mass = batch['loss_mask'][first:first+2].sum().double().clamp_min(1)
+        weights[first:first+2] = batch['loss_mask'][first:first+2].double()/mass
+    identity = {name:hashlib.sha256(value.detach().cpu().contiguous().view(torch.uint8).numpy().tobytes()).hexdigest() for name,value in batch.items()}
+    return batch, weights, dict(selection_indices=indices,tensor_sha256=identity,scope='four length-stratified trajectories per rank fixed through the outer')
+
+
+def policy_monitor(actor, wrapped, frozen, weights, identity, local_micro, local, stage, writes, ledger, config):
+    import torch
+    from search_g1.policy_safety import monitor
+    mode=wrapped.training;values=[]
+    try:
+        wrapped.eval()
+        with torch.no_grad():
+            for first in range(0,4,min(local_micro,4)):
+                last=min(first+local_micro,4)
+                batch={name:value[first:last].to(local) for name,value in frozen.items()}
+                _, current=actor._forward_micro_batch(batch,temperature=1.,compute_entropy=False)
+                mask=batch['loss_mask'].bool()
+                values.append(torch.where(mask,current.double()-batch['old_log_probs'].double(),0.))
+    finally:wrapped.train(mode)
+    safety=config['policy_monitor']
+    report=monitor(torch.cat(values),frozen['advantages'].to(local),frozen['loss_mask'].to(local),weights.to(local),
+        c=3.,kl_log_bound=safety['kl_log_bound'],target_kl=safety['target_old_policy_kl'],
+        negative_tail_limit=safety['negative_tail_limit'],group=wrapped.process_group,
+        execution_role='production',finite_thresholds_diagnostic_only=True)
+    append(ledger,dict(event='POLICY_MONITOR',stage=stage,optimizer_writes=writes,input_identity=identity,report=report,utc=utc()))
+    if report['invalid_count']:
+        raise FloatingPointError('Actual nonfinite authored policy monitor values')
+    return report
 
 
 def _rng():
@@ -428,9 +477,10 @@ def _state_binding(config):
         seed=int(config.get('seed', 1729)),
         global_mini=128, ppo_epochs=1, trajectories=2560, updates_per_outer=20,
         learning_rate=1e-6, outer_warmup=57, clip_ratio=.2, dual_clip=3., grad_clip=1.,
-        loss_reduction='mean_of_eight_rank_local_minibatch_policy_token_means',
+        loss_reduction='mean_of_eight_rank_eight_logical_two_row_policy_means',
         entropy_coefficient=0., reference_kl_coefficient=0., reference_kl_type='low_var_kl',
-        grounding_probe_version=config['grounding_probe_version'], reward_environment=REWARD_ENV)
+        grounding_probe_version=config.get('grounding_initial_probe_version',config['grounding_probe_version']),
+        grounding_refit_rounds=[0,50,100,150], reward_environment=REWARD_ENV)
 
 
 def restore_metadata(config, latest, outer):
@@ -456,6 +506,37 @@ def linked_probe_receipt(value):
         return dict(path=str(path), sha256=sha(path), value=read(path))
     if isinstance(value, dict): return value
     raise ValueError('Prefix probe receipt must be an actual small JSON path or proof')
+
+
+def current_driver_metadata(config, outer):
+    """Bind a new save to this execution base, never inherited resume aliases."""
+    from .pool import state_sha
+    base = remote(config['base'])
+    root = base / 'outers' / ('outer-%06d' % outer)
+    pool_path = base / 'question-pool/state.json'
+    pool = read(pool_path)
+    reservation = read(root / 'pool-reservation.json')
+    if (reservation['outer'] != outer or pool != reservation['after']
+            or state_sha(pool) != reservation['after_sha256']
+            or pool['next_outer'] != outer + 1
+            or pool['consumed_candidates'] != 5120 * outer):
+        raise ValueError('Current actor save lost its actual reserved candidate boundary')
+    pool_proof = dict(path=str(pool_path), sha256=sha(pool_path), value=pool)
+    if pool_proof['sha256'] != hashlib.sha256(canonical(pool) + b'\n').hexdigest():
+        raise ValueError('Candidate state changed while capturing the driver receipt')
+    probe = linked_probe_receipt(str(base / 'probe/latest.json'))
+    score_path = root / 'probe-score/manifest.json'
+    score = read(score_path)
+    before = probe['value']
+    if (score['run_id'] != config['run_id'] or score['outer'] != outer
+            or before['run_id'] != config['run_id']
+            or before['completed_outer'] != outer - 1
+            or before['actual_adam_steps_per_rank'] != [20 * (outer - 1)] * WORLD
+            or before['sha256'] != score['probe_before_checkpoint_sha256']):
+        raise ValueError('Current actor save lost its actual selection-time probe boundary')
+    return dict(candidate_pool_state=pool_proof, prefix_probe_receipt=probe,
+        driver_metadata_binding=dict(source='current_execution_base', outer=outer,
+            run_id=config['run_id'], score_manifest_sha256=sha(score_path)))
 
 
 def _build_actor(model_dir, budget, device):
@@ -520,13 +601,12 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
         tokenizer.save_pretrained(hfdir)
         hf = {p.name: dict(bytes=p.stat().st_size, sha256=sha(p)) for p in sorted(hfdir.iterdir()) if p.is_file()}
         driver_state = config.get('driver_state', {})
-        pool_path = remote(config['pool_state_path']) if config.get('pool_state_path') else None
-        pool_proof = dict(path=str(pool_path), sha256=sha(pool_path), value=read(pool_path)) if pool_path else None
+        metadata = current_driver_metadata(config, outer)
         driver_proof = atomic_save(attempt_dir / 'driver.pt', dict(run_id=config['run_id'],
             completed_outer=outer, actor_version=actor_version, driver_state=driver_state,
             grounding_probe_version=config['grounding_probe_version'], rng=_rng(),
             rng_scope='actor_phase_rank0; controller candidate RNG/order lives in candidate_pool_state',
-            candidate_pool_state=pool_proof, prefix_probe_receipt=linked_probe_receipt(config.get('prefix_probe_receipt'))))
+            **metadata))
         receipt = dict(schema_version=1, role='prefix_selection200_actor_complete', run_id=config['run_id'],
             source_commit=config.get('source_commit'), completed_outer=outer, actor_version=actor_version,
             model_dir=str(hfdir), actor_model_dir=str(hfdir), hf_model_dir=str(hfdir), model_master_dtype='torch.float32',
@@ -625,12 +705,14 @@ def train(config_path, outer, rollout_path, output_path):
         trajectories=len(rows), score_mean=math.fsum(scores) / len(scores),
         prefix_correctness_head_used_for_reward=False, actual_reward_world_size=WORLD)
     plan = rank_plan(seed, outer)[rank]
+    frozen, monitor_weights, monitor_identity = frozen_policy_monitor(rows,reward_ids,advantages,tokenizer)
     writes = 0
     try:
         wrapped.train()
         for step, ids in enumerate(plan):
             optimizer.zero_grad(set_to_none=True); metrics = []
-            mini_mass = sum(sum(rows[i]['response_info_mask']) for i in ids)
+            pair_masses = [sum(sum(rows[i]['response_info_mask']) for i in ids[first:first+2]) for first in range(0,16,2)]
+            policy_monitor(actor,wrapped,frozen,monitor_weights,monitor_identity,budget.local_micro,local,'before_minibatch',writes,ledger,config)
             for offset in range(0, len(ids), budget.local_micro):
                 micro_ids = ids[offset:offset + budget.local_micro]
                 batch = tensor_batch([rows[i] for i in micro_ids], tokenizer.pad_token_id)
@@ -638,20 +720,15 @@ def train(config_path, outer, rollout_path, output_path):
                 batch['advantages'] = torch.tensor([advantages[i] for i in micro_ids], dtype=torch.float32)[:, None].expand(-1, response_width)
                 batch = {key: value.to(local) for key, value in batch.items()}
                 _, current = actor._forward_micro_batch(batch, temperature=1., compute_entropy=False)
-                loss, clipfrac, kl = masked_policy_objective(batch['old_log_probs'], current,
-                    batch['advantages'], batch['loss_mask'], loss_fn=compute_policy_loss)
-                # Only true nonfinite loss/gradient is invalid; magnitude/ratio diagnostics never stop this run.
-                finite = torch.tensor(int(torch.isfinite(loss)), dtype=torch.int32, device=local)
-                dist.all_reduce(finite, op=dist.ReduceOp.MIN)
-                if not finite.item(): raise FloatingPointError('Nonfinite actual actor loss')
-                micro_mass = sum(sum(rows[i]['response_info_mask']) for i in micro_ids)
-                weight = micro_loss_weight(micro_mass, mini_mass)
-                (loss * weight).backward()
-                metrics.append(dict(loss=float(loss.detach()), clip_fraction=float(clipfrac.detach()),
-                    old_policy_kl=float(kl.detach()), actual_policy_token_mass=micro_mass,
-                    local_minibatch_policy_token_mass=mini_mass, gradient_weight=weight))
+                loss, parts = logical_pair_objective(batch['old_log_probs'],current,
+                    batch['advantages'],batch['loss_mask'],offset,pair_masses,loss_fn=compute_policy_loss)
+                finite = torch.tensor(int(torch.isfinite(loss)),dtype=torch.int32,device=local)
+                dist.all_reduce(finite,op=dist.ReduceOp.MIN)
+                if not finite.item():raise FloatingPointError('Nonfinite actual actor loss')
+                loss.backward();metrics.extend(parts)
             norm = clip_global_l2(wrapped, 1., diagnostic=False)
             optimizer.step(); writes += 1
+            policy_monitor(actor,wrapped,frozen,monitor_weights,monitor_identity,budget.local_micro,local,'after_minibatch',writes,ledger,config)
             steps = {int(value['step'].item()) for value in optimizer.state.values() if 'step' in value}
             if steps != {20 * (outer - 1) + writes}: raise ValueError('Actual Adam step counters differ')
             append(ledger, dict(event='ACTUAL_ADAM_WRITE', rank=rank, outer=outer, opportunity=step,
@@ -659,7 +736,7 @@ def train(config_path, outer, rollout_path, output_path):
                 actual_learning_rate=optimizer.param_groups[0]['lr'], grad_norm=float(norm),
                 local_trajectories=len(ids), global_mini=128, local_micro=budget.local_micro,
                 gradient_accumulation=budget.accumulation,
-                objective='mean_of_eight_rank_local_minibatch_policy_token_means', metrics=metrics, utc=utc()))
+                objective='mean_of_eight_rank_eight_logical_two_row_policy_means', metrics=metrics, utc=utc()))
         if writes != 20: raise ValueError('Incomplete outer budget cannot advance scheduler/save latest')
         scheduler.step()
         rank_receipt = dict(rank=rank, outer=outer, new_adam_steps=writes, actual_adam_steps=20 * outer,

@@ -153,12 +153,12 @@ def validate_probe_clock(metrics, rank_rows, global_rows, outer):
                 trajectory_denominator=5120, pre_step_prediction_clock_verified=True)
 
 
-def audit_rollout_records(base, rollout, actor_rollout, selected, labels):
+def audit_rollout_records(base, rollout, actor_rollout, selected, labels, *, i1i6=False):
     """Full SHA/read original native records; compare actor subset byte semantics."""
     from .actor import validate_record
     wanted = {tid for row in selected['selected'] for tid in row['trajectory_ids']}
     by_id = {row['trajectory_id']: row for row in labels}
-    originals, proofs = {}, []
+    originals, proofs, policy_counts = {}, [], {}
     for role, receipt in (('full1024', rollout), ('actor512', actor_rollout)):
         seen = set()
         for item in receipt['shards']:
@@ -169,6 +169,10 @@ def audit_rollout_records(base, rollout, actor_rollout, selected, labels):
                     row = json.loads(line); tid = row['trajectory_id']; count += 1
                     need(tid not in seen and tid in by_id, 'Duplicate or foreign completed native trajectory')
                     seen.add(tid); validate_record(row, receipt['actor_version'])
+                    if i1i6:
+                        from .checkpoint_i1i6_cpu import native_budget
+                        native_budget(row)
+                        if role == 'actor512': policy_counts[(row['candidate_ordinal'],row['response_index'])] = sum(row['response_info_mask'])
                     need(row['qid'] == by_id[tid]['qid'] and row['prefix_sha256'] == by_id[tid]['prefix_sha256']
                          and row['selection_sha256'] == by_id[tid]['selection_sha256'], 'Native trajectory lost original prefix/outcome binding')
                     if role == 'full1024' and tid in wanted: originals[tid] = digest(row)
@@ -176,7 +180,7 @@ def audit_rollout_records(base, rollout, actor_rollout, selected, labels):
             need(count == item['count'] and signature(before) == signature(path.stat()), 'Native trajectory shard changed or has wrong count')
         need(seen == (set(by_id) if role == 'full1024' else wanted), 'Completed native trajectory set differs')
     return dict(files=proofs, original_full_trajectories=5120, actor_selected_trajectories=2560,
-                original_native_records_equal=True)
+                original_native_records_equal=True, actor_policy_counts=[v for k,v in sorted(policy_counts.items())])
 
 
 def tensor_cpu(value, *, dtype=None, shape=None, finite=False):
@@ -390,6 +394,7 @@ def _audit_complete(base, config, joint, outer, *, driver_validator=None):
     import torch
     torch.set_num_threads(1)
     root = base / 'outers' / ('outer-%06d' % outer)
+    i1i6 = bool(config.get('interaction_contract'))
     actor, probe = joint['actor'], joint['probe']
     need(joint['run_id'] == config['run_id'] and joint['outer'] == outer
          and joint['source_commit'] == config['source_commit'], 'Joint savepoint belongs to another experiment')
@@ -399,6 +404,10 @@ def _audit_complete(base, config, joint, outer, *, driver_validator=None):
          and probe['actual_adam_steps_per_rank'] == [20 * outer] * 8
          and actor['scheduler_completed_outer'] == outer and actor['milestone'] is True,
          'Actor/probe counters do not share a complete milestone')
+    contract_proof = None
+    if i1i6:
+        from .checkpoint_i1i6_cpu import audit_contract
+        contract_proof = audit_contract(base, config, actor, root)
     from .actor import REWARD_ENV
     reward = actor['reward']
     need(reward['version'] == config['grounding_probe_version'] and reward['trajectories'] == 2560
@@ -470,7 +479,8 @@ def _audit_complete(base, config, joint, outer, *, driver_validator=None):
                  and row['selection_sha256'] == metadata['selection']['sha256'] for row in labels),
          'Actual own-trajectory outcomes do not cover the selected sameG5')
     diversity = validate_selection(selection, labels, actor_selection, rollout, actor_rollout, joint, metadata)
-    native_records = audit_rollout_records(base, rollout, actor_rollout, actor_selection, labels)
+    native_records = audit_rollout_records(base, rollout, actor_rollout, actor_selection, labels, i1i6=i1i6)
+    actor_policy_counts = native_records.pop('actor_policy_counts')
     rank_rows = []
     for rank in range(8):
         path = owned(base, root / 'probe-update' / ('rank-%d-updates.jsonl' % rank))
@@ -525,13 +535,16 @@ def _audit_complete(base, config, joint, outer, *, driver_validator=None):
         need(receipt['rank'] == rank and receipt['outer'] == outer and receipt['new_adam_steps'] == 20
              and receipt['actual_adam_steps'] == 20 * outer and receipt['opportunities'] == 20
              and ledger_proof['sha256'] == receipt['ledger_sha256'], 'Actor milestone rank receipt differs from its original update ledger')
-        writes = [json.loads(line) for line in ledger.read_text().splitlines()]
-        writes = [row for row in writes if row['event'] == 'ACTUAL_ADAM_WRITE']
+        all_records = [json.loads(line) for line in ledger.read_text().splitlines()]
+        writes = [row for row in all_records if row['event'] == 'ACTUAL_ADAM_WRITE']
         need(len(writes) == 20 and all(row['rank'] == rank and row['outer'] == outer
              and row['opportunity'] == j and row['writes_this_attempt'] == j + 1
              and row['actual_adam_steps'] == 20 * (outer - 1) + j + 1
              and row['actual_learning_rate'] == learning_rate(outer-1) for j, row in enumerate(writes)),
              'Original actor ledger does not prove20 actual rank-local writes')
+        if i1i6:
+            from .checkpoint_i1i6_cpu import validate_pair_writes
+            summary['logical_pair_objective'] = validate_pair_writes(writes, all_records, actor_policy_counts, config['seed'], outer, rank)
         summary.update(file=file_proof, actual_update_ledger=ledger_proof)
         ranks.append(summary); del saved; gc.collect()
     driver_path = owned(base, actor['driver_state']['path'])
@@ -545,6 +558,12 @@ def _audit_complete(base, config, joint, outer, *, driver_validator=None):
              and driver['candidate_pool_state']['value'] == pool
              and driver['candidate_pool_state']['sha256'] == hashlib.sha256(canonical(pool)+b'\n').hexdigest(),
              'Actual actor driver state did not preserve the real candidate boundary')
+        if i1i6:
+            need(driver['driver_metadata_binding'] == dict(source='current_execution_base', outer=outer,
+                 run_id=config['run_id'], score_manifest_sha256=metadata['score_manifest']['sha256'])
+                 and driver['candidate_pool_state']['path'] == str(base/'question-pool/state.json')
+                 and driver['grounding_probe_version'] == config['grounding_probe_version'],
+                 'I4 driver did not bind current execution pool/probe and stable reward version')
         previous_probe = driver['prefix_probe_receipt']['value']
         need(previous_probe['run_id'] == config['run_id'] and previous_probe['completed_outer'] == outer - 1
              and previous_probe['actual_adam_steps_per_rank'] == [20 * (outer - 1)] * 8
@@ -576,7 +595,7 @@ def _audit_complete(base, config, joint, outer, *, driver_validator=None):
          and source['epoch'] == 100 and source['checkpoint_sha256'] == SOURCE_PROBE_SHA
          and source['independent_full_file_sha_performed'] is True and source['cpu_load_performed'] is True,
          'Unsupported source warmup CPU proof; never infer PASS from a producer SHA alone')
-    return dict(actor_hf=hf, actor_rank_states=ranks, actor_driver_file=driver_file,
+    return dict(i1i6_contract=contract_proof, actor_hf=hf, actor_rank_states=ranks, actor_driver_file=driver_file,
         explicit_joint_driver_components=driver_components,
         probe=dict(file=probe_file, summary=probe_summary), pool=pool_summary,
         strict_em_diversity=diversity, original_native_records=native_records, probe_clock=probe_clock,

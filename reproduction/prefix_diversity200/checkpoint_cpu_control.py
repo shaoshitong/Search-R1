@@ -11,6 +11,9 @@ import time
 FILES = ('reproduction/prefix_diversity200/__init__.py',
          'reproduction/prefix_diversity200/actor.py', 'reproduction/prefix_diversity200/diversity.py',
          'reproduction/prefix_diversity200/checkpoint_cpu_once.py',
+         'reproduction/prefix_diversity200/checkpoint_i1i6_cpu.py',
+         'reproduction/prefix_diversity200/checkpoint_i1i6_runtime_files.json',
+         'reproduction/prefix_diversity200/interaction.py',
          'reproduction/prefix_diversity200/checkpoint_cpu_runner.py',
          'reproduction/prefix20_online/pool.py')
 
@@ -27,8 +30,21 @@ assert actual['run_id']==c['run_id'] and actual['source_commit']==c['runtime_sou
 assert b.parent==pathlib.Path('/mnt/data/shaoshitong') and c['outer'] in (5,50,100,150,200)
 if c.get('runtime_config_sha256'):assert hashlib.sha256((b/'preparation/launch-config.json').read_bytes()).hexdigest()==c['runtime_config_sha256']
 proof_name='joint-milestone-%04d-independent-full-sha-cpu-once-v1'%c['outer']
+joint_path=b/'outers'/('outer-%06d'%c['outer'])/'complete.json'
+candidate=None
+if joint_path.is_file():
+ j=read(joint_path);a=j['actor'];n=c['outer']
+ assert j['run_id']==c['run_id']and j['source_commit']==c['runtime_source_commit']and j['outer']==n
+ assert a['completed_outer']==j['probe']['completed_outer']==n and a['actual_adam_steps_per_rank']==j['probe']['actual_adam_steps_per_rank']==[20*n]*8 and a['scheduler_completed_outer']==n
+ jobs=read(b/'logs/process-ledger.json')['jobs'];attempt=pathlib.Path(a['state_path']).name.split('-attempt-',1)[1]
+ writers={name:jobs.get(name)for name in ('outer-%06d-actor-%s'%(n,attempt),'outer-%06d-probe-update'%n)}
+ candidate={'joint_sha256':hashlib.sha256(joint_path.read_bytes()).hexdigest(),'writers':writers,'writers_stopped':all(v and v.get('state')=='STOPPED'and v.get('exit_code')==0 for v in writers.values())}
+if PHASE=='check':
+ latest=read(b/'latest-joint.json')if(b/'latest-joint.json').exists()else None
+ print(json.dumps(dict(status='PENDING_ACTUAL_JOINT_NO_INTENT'if candidate is None else('ACTUAL_JOINT_WRITERS_STOPPED_READY'if candidate['writers_stopped']else'PENDING_WRITERS_NO_INTENT'),candidate=candidate,latest_complete=latest['outer']if latest else 0,config_sha256=hashlib.sha256((b/'preparation/launch-config.json').read_bytes()).hexdigest(),audit_intent_created=False,training_modified=False,observed_unix=time.time())))
+ raise SystemExit
 if PHASE=='deploy':
- assert (b/'outers'/('outer-%06d'%c['outer'])/'complete.json').is_file()
+ assert candidate and candidate['writers_stopped'],'Actual immutable joint and stopped successful writers required'
  assert not root.exists(),'Existing owned control namespace requires observation, not replay'
  assert not list((b/'preparation').glob(proof_name+'*.json')),'Prior audit intent/proof must be reconciled'
  root.mkdir(mode=0o700)
@@ -59,8 +75,9 @@ print(json.dumps(r))
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase', choices=('deploy', 'observe')); parser.add_argument('--receipts', required=True)
+    parser.add_argument('phase', choices=('check','deploy', 'observe')); parser.add_argument('--receipts', required=True)
     parser.add_argument('--config', default='reproduction/prefix_diversity200/checkpoint5_cpu_control.json')
+    parser.add_argument('--master-receipt',required=True)
     args = parser.parse_args()
     source = Path(__file__).resolve().parents[2]
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source, text=True).strip()
@@ -75,7 +92,9 @@ def main():
     from reproduction.h1008_qprobe.management_transport import remote
     receipts = Path(args.receipts); receipts.mkdir(parents=True, exist_ok=True)
     path = receipts/('checkpoint%d-cpu-'%config['outer']+args.phase+'-'+str(time.time_ns())+'.json')
-    result = json.loads(remote(script(args.phase, config, commit, files), path, target=config['target']))
+    master=json.loads(Path(args.master_receipt).read_text())
+    assert master['status']=='AUTHENTICATED_MASTER_OCHECK'
+    result = json.loads(remote(script(args.phase, config, commit, files), path, control_path=master['control_path'], target=config['target']))
     output = path.with_name(path.stem+'-result.json'); output.write_text(json.dumps(result, indent=2)+'\n')
     small = {k:v for k,v in result.items() if k != 'proof'}
     if 'proof' in result: small['proof_status'] = result['proof']['status']
