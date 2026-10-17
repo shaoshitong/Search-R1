@@ -1,0 +1,565 @@
+{
+  "kind": "actual_hourly_scalar_report",
+  "observed_shanghai": "2026-10-17T22:25:44.153510+08:00",
+  "observed_unix": 1792247144.1535096,
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "a4a0c2a18cca40bc8c3850d40eed8554",
+  "runtime_source_commit": "75d536575593891876df339467da73b3c4cbdc7c",
+  "operator_commit": "10acbc44d9ba6c612cb2cb1340a2a6a9cc0c6d93",
+  "actual_receipt_sha256": "37dd19fc0455c39aa8a140f3294205b3d8a2b4490a03a537c97612da6ef925ab",
+  "previous_delivered_anchor": {
+    "complete_outers": 38,
+    "actor_saved_successful_Adam": 760,
+    "actor_total_returned_Adam": 760,
+    "live_outer": 39,
+    "live_unsealed_returned_Adam": 0,
+    "delivered_unix": 1792243655.64661
+  },
+  "progress": {
+    "complete_outers": 43,
+    "target": 200,
+    "saved_actor_Adam_per_rank": [
+      860,
+      860,
+      860,
+      860
+    ],
+    "scheduler": 43,
+    "current_outer": 44,
+    "current_processed_opportunities_per_rank": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "current_confirmed_returned_Adam_per_rank": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "total_confirmed_returned_Adam_per_rank": [
+      861,
+      861,
+      861,
+      861
+    ],
+    "new_complete_outers": 5,
+    "new_sealed_Adam": 100,
+    "previously_reported_unsealed_Adam_now_sealed": 0,
+    "new_actual_returned_Adam": 101,
+    "new_actual_processed_opportunities": 101,
+    "new_skips": 0,
+    "remaining_current_opportunities_not_confirmed": 19,
+    "separate_inflight": null,
+    "optimizer_call_attempts": null,
+    "rollback_count": null,
+    "four_rank_replicas_count_once": true
+  },
+  "complete_window_rows": [
+    {
+      "outer": 39,
+      "metadata_sha256": "390f5e4c7cc1f02d7d6fc1ce889151dfbd48b437530e12408b246a5af6cc7333",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          780,
+          780,
+          780,
+          780
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 39
+      },
+      "reward_mean": 0.7723285128784483,
+      "selected_mixed_fraction": 0.455078125,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 40,
+      "metadata_sha256": "62cefd4a6384f27d9ad3a167fa386c3c9c38c5a043441dca416700779d2f18ae",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          800,
+          800,
+          800,
+          800
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 40
+      },
+      "reward_mean": 0.7257250783048221,
+      "selected_mixed_fraction": 1.0,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": true,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 2560
+      },
+      "probe_update": {
+        "outer": 40,
+        "unselected_training_questions": 2560,
+        "actual_learning_rate": 5e-06,
+        "new_adam_steps_per_rank": 50,
+        "actual_adam_steps_per_rank": [
+          200,
+          200,
+          200,
+          200
+        ],
+        "train_loop_seconds": 7.509657978080213,
+        "before_update": {
+          "test": {
+            "accuracy": 0.4296875,
+            "balanced_accuracy": 0.531723729234769,
+            "count": 512,
+            "fn": 34,
+            "formula": "1-prod(p_j)-prod(1-p_j)",
+            "fp": 258,
+            "group_bce": 1.1147418902042905,
+            "group_weight": 1.0,
+            "mean_q": 0.6380712942772632,
+            "mixed_count": 141,
+            "mixed_recall": 0.7588652482269503,
+            "nonmixed_count": 371,
+            "nonmixed_recall": 0.3045822102425876,
+            "threshold": 0.5,
+            "tn": 113,
+            "total_loss": 1.8618448471623705,
+            "tp": 107,
+            "trajectory_bce": 0.7471029569580799,
+            "true_mixed": "0<sum(own_strict_em)<5"
+          },
+          "train": {
+            "accuracy": 0.635546875,
+            "balanced_accuracy": 0.6236148632691666,
+            "count": 2560,
+            "fn": 278,
+            "formula": "1-prod(p_j)-prod(1-p_j)",
+            "fp": 655,
+            "group_bce": 0.7535744443301333,
+            "group_weight": 1.0,
+            "mean_q": 0.4441089955437533,
+            "mixed_count": 691,
+            "mixed_recall": 0.597684515195369,
+            "nonmixed_count": 1869,
+            "nonmixed_recall": 0.6495452113429642,
+            "threshold": 0.5,
+            "tn": 1214,
+            "total_loss": 1.2000407121341201,
+            "tp": 413,
+            "trajectory_bce": 0.4464662678039869,
+            "true_mixed": "0<sum(own_strict_em)<5"
+          }
+        },
+        "train": {
+          "accuracy": 0.7078125,
+          "balanced_accuracy": 0.6899810217587743,
+          "count": 2560,
+          "fn": 241,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 507,
+          "group_bce": 0.6138306844239809,
+          "group_weight": 1.0,
+          "mean_q": 0.42370978898625095,
+          "mixed_count": 691,
+          "mixed_recall": 0.6512301013024602,
+          "nonmixed_count": 1869,
+          "nonmixed_recall": 0.7287319422150883,
+          "threshold": 0.5,
+          "tn": 1362,
+          "total_loss": 1.0213475128655711,
+          "tp": 450,
+          "trajectory_bce": 0.40751682844159015,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        },
+        "test": {
+          "accuracy": 0.435546875,
+          "balanced_accuracy": 0.5401636367112079,
+          "count": 512,
+          "fn": 32,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 257,
+          "group_bce": 1.1297709921157302,
+          "group_weight": 1.0,
+          "mean_q": 0.6466747598463037,
+          "mixed_count": 141,
+          "mixed_recall": 0.7730496453900709,
+          "nonmixed_count": 371,
+          "nonmixed_recall": 0.30727762803234504,
+          "threshold": 0.5,
+          "tn": 114,
+          "total_loss": 1.8800790499564959,
+          "tp": 109,
+          "trajectory_bce": 0.7503080578407657,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        }
+      },
+      "full_pool": {
+        "questions": 2560,
+        "trajectories": 12800,
+        "actual_selected_mixed_fraction": 0.269921875
+      }
+    },
+    {
+      "outer": 41,
+      "metadata_sha256": "6037e27351698563c133333930a0fde827a6539c574fa480d56778a1fc4d5df8",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          820,
+          820,
+          820,
+          820
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 41
+      },
+      "reward_mean": 0.6635209149069852,
+      "selected_mixed_fraction": 0.4375,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 42,
+      "metadata_sha256": "b596672a0ccee6b1e2e06f1101a507e963ec1a442597c86773385af6975569e9",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          840,
+          840,
+          840,
+          840
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 42
+      },
+      "reward_mean": 0.6441564585678862,
+      "selected_mixed_fraction": 0.40625,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    },
+    {
+      "outer": 43,
+      "metadata_sha256": "d824ecabfaf638445a497e07801426af53cc9640cc2c505e8f4df774e4e381f5",
+      "actor": {
+        "actual_adam_steps_per_rank": [
+          860,
+          860,
+          860,
+          860
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "scheduler_completed_outer": 43
+      },
+      "reward_mean": 0.6846523591200822,
+      "selected_mixed_fraction": 0.40625,
+      "selected_questions": 512,
+      "selected_trajectories": 2560,
+      "periodic_probe_update": false,
+      "candidate_schedule": {
+        "candidate_schedule": {
+          "effective_from_outer": 6,
+          "legacy_candidates": 2560,
+          "ordinary_candidates": 5120,
+          "probe_update_at_final": false,
+          "probe_update_period": 10,
+          "selected_questions": 512,
+          "update_candidates": 2560
+        },
+        "scheduled_candidate_questions": 5120
+      }
+    }
+  ],
+  "reward_window": {
+    "from": 39,
+    "through": 43,
+    "mean": 0.6980766647556448,
+    "min": 0.6441564585678862,
+    "max": 0.7723285128784483,
+    "latest": 0.6846523591200822,
+    "latest_minus_anchor38": -0.03972663575259494,
+    "includes_EM_priority_outer40": true
+  },
+  "selected_mixed_window": {
+    "ordinary_outers": [
+      39,
+      41,
+      42,
+      43
+    ],
+    "mixed": 873,
+    "groups": 2048,
+    "fraction": 0.42626953125,
+    "EM_priority_outer40_separate": {
+      "mixed": 512,
+      "groups": 512,
+      "fraction": 1.0,
+      "not_probe_accuracy": true
+    }
+  },
+  "latest_complete_mixed": {
+    "outer": 43,
+    "mixed": 208,
+    "groups": 512,
+    "fraction": 0.40625
+  },
+  "current_generated_mixed": {
+    "outer": 44,
+    "mixed": 198,
+    "groups": 512,
+    "fraction": 0.38671875,
+    "not_complete_outer": true
+  },
+  "probe": {
+    "latest_update_outer": 40,
+    "cumulative_Adam_per_rank": [
+      200,
+      200,
+      200,
+      200
+    ],
+    "new_Adam_since_hour_anchor": 50,
+    "epoch_count_per_update": 1,
+    "learning_rate": 5e-06,
+    "train_questions": 2560,
+    "train_trajectories": 12800,
+    "train_loop_seconds": 7.509657978080213,
+    "metrics_already_delivered_at_probe40_milestone": true,
+    "new_metrics_since_probe40_milestone": false,
+    "next_natural_update_outer": 50,
+    "checkpoint_sha256": "e91342670d3be552cbfbbae28fcba5c891749fab233e0e51bc6dc192011b6262",
+    "retained_latest_paired_metrics": {
+      "train": {
+        "before": {
+          "accuracy": 0.635546875,
+          "balanced_accuracy": 0.6236148632691666,
+          "count": 2560,
+          "fn": 278,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 655,
+          "group_bce": 0.7535744443301333,
+          "group_weight": 1.0,
+          "mean_q": 0.4441089955437533,
+          "mixed_count": 691,
+          "mixed_recall": 0.597684515195369,
+          "nonmixed_count": 1869,
+          "nonmixed_recall": 0.6495452113429642,
+          "threshold": 0.5,
+          "tn": 1214,
+          "total_loss": 1.2000407121341201,
+          "tp": 413,
+          "trajectory_bce": 0.4464662678039869,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        },
+        "after": {
+          "accuracy": 0.7078125,
+          "balanced_accuracy": 0.6899810217587743,
+          "count": 2560,
+          "fn": 241,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 507,
+          "group_bce": 0.6138306844239809,
+          "group_weight": 1.0,
+          "mean_q": 0.42370978898625095,
+          "mixed_count": 691,
+          "mixed_recall": 0.6512301013024602,
+          "nonmixed_count": 1869,
+          "nonmixed_recall": 0.7287319422150883,
+          "threshold": 0.5,
+          "tn": 1362,
+          "total_loss": 1.0213475128655711,
+          "tp": 450,
+          "trajectory_bce": 0.40751682844159015,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        }
+      },
+      "test": {
+        "before": {
+          "accuracy": 0.4296875,
+          "balanced_accuracy": 0.531723729234769,
+          "count": 512,
+          "fn": 34,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 258,
+          "group_bce": 1.1147418902042905,
+          "group_weight": 1.0,
+          "mean_q": 0.6380712942772632,
+          "mixed_count": 141,
+          "mixed_recall": 0.7588652482269503,
+          "nonmixed_count": 371,
+          "nonmixed_recall": 0.3045822102425876,
+          "threshold": 0.5,
+          "tn": 113,
+          "total_loss": 1.8618448471623705,
+          "tp": 107,
+          "trajectory_bce": 0.7471029569580799,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        },
+        "after": {
+          "accuracy": 0.435546875,
+          "balanced_accuracy": 0.5401636367112079,
+          "count": 512,
+          "fn": 32,
+          "formula": "1-prod(p_j)-prod(1-p_j)",
+          "fp": 257,
+          "group_bce": 1.1297709921157302,
+          "group_weight": 1.0,
+          "mean_q": 0.6466747598463037,
+          "mixed_count": 141,
+          "mixed_recall": 0.7730496453900709,
+          "nonmixed_count": 371,
+          "nonmixed_recall": 0.30727762803234504,
+          "threshold": 0.5,
+          "tn": 114,
+          "total_loss": 1.8800790499564959,
+          "tp": 109,
+          "trajectory_bce": 0.7503080578407657,
+          "true_mixed": "0<sum(own_strict_em)<5"
+        }
+      }
+    },
+    "evaluation_scope": "Same fixed512 question IDs, current actor resampled G5; before/after within this update share the same actual trajectories and labels. Across periods labels/features differ. Online raw head; EMA only model initialization."
+  },
+  "QA": {
+    "latest_step": 5,
+    "correct": 136,
+    "count": 512,
+    "EM": 0.265625,
+    "F1": 0.36065851672240307,
+    "new_QA": false,
+    "metadata_sha256": "6e8a41fc0a41cfaf970f81a9fcb3ccb934562c19f9babe3ffc059e957e1a01db"
+  },
+  "gpu": {
+    "instantaneous": null,
+    "actual_window_peak": null,
+    "execution_peak": null,
+    "sampling_coverage_and_gaps": null,
+    "status": "unknown_not_projected_no_extra_query"
+  },
+  "health": {
+    "pipeline_identity": {
+      "pid": 2460812,
+      "start_ticks": 630157154,
+      "sid": 2460812,
+      "uid": 0,
+      "alive": true
+    },
+    "failed_jobs": [],
+    "current_rank_failures": [
+      null,
+      null,
+      null,
+      null
+    ],
+    "cleanup": null,
+    "no_extra_tests_review_evaluation_subagents_modelread_or_launch": true
+  },
+  "interpretation": "Same pipeline continues to200. Ordinary Mixed declines; oracle40 separated. Probe40 paired training loss improves, test loss worsens with small balanced-accuracy gain. No new QA result or claim of generalization."
+}
