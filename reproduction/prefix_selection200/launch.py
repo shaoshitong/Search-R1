@@ -21,7 +21,8 @@ PREFIX = a800_runtime.PREFIX
 
 def validate_config(c, base):
     from .candidate_schedule import validate_schedule
-    validate_schedule(c, required=c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1')
+    validate_schedule(c, required=(c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1'
+        or c.get('resume_pending_probe', {}).get('adapter') == 'i1_i6_pending_probe_v1'))
     if c['base'] != str(base) or not str(base).startswith(PREFIX):
         raise ValueError('Use the isolated remote prefix-selection namespace')
     required = dict(outers=200, candidate_questions=CANDIDATE_QUESTIONS, selected_questions=512,
@@ -169,6 +170,8 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
     complete['phase_timings'] = {key:value for key,value in timings.items()
                                 if key.startswith('outer-%06d-'%outer)}
     if c.get('resume_pending_probe'):
+        from .i1_i6_joint_resume import verify_source_compatibility, source_envelope
+        complete.update(source_envelope(c, verify_source_compatibility(c)))
         parent = c['resume_pending_probe']
         complete['source_lineage'] = dict(parent_source_commit=parent['source_commit'],
             parent_execution_id=parent['source_execution_id'], parent_base=parent['source_base'],
@@ -202,7 +205,9 @@ def run(base):
     if (base / 'logs/process-ledger.json').exists():
         raise RuntimeError('Existing execution needs explicit recovery; do not replay its launch')
     compatible_resume = c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1'
-    if c.get('resume_pending_probe') or c.get('resume_import') or (c.get('resume_joint') and not compatible_resume):
+    compatible_pending = c.get('resume_pending_probe', {}).get('adapter') == 'i1_i6_pending_probe_v1'
+    if ((c.get('resume_pending_probe') and not compatible_pending) or c.get('resume_import')
+            or (c.get('resume_joint') and not compatible_resume)):
         raise ValueError('I1-I6 fresh source requires an explicitly compatible recovery adapter; old hardcoded-count adapters are forbidden')
     pending_recovery = c.get('resume_pending_probe')
     if pending_recovery and c.get('resume_joint'):
@@ -211,7 +216,7 @@ def run(base):
     # All CPU seals are checked before acquiring leases or admitting CUDA.  A
     # failed import cannot leave a new allocation or a started child behind.
     if pending_recovery:
-        from .pending_probe_resume import validate_imported_pending
+        from .i1_i6_pending_probe import validate_imported_pending
         outer = validate_imported_pending(base, c)
     elif outer:
         if compatible_resume:
@@ -354,8 +359,8 @@ def run(base):
 
     try:
         if pending_recovery:
-            # Actor10 has already returned all20 Adam writes and committed its
-            # complete optimizer/scheduler/four-rank RNG.  The failed probe
+            # The actor has already retained its actual writes (including guard
+            # skips) and complete optimizer/scheduler/four-rank RNG. The probe
             # wrote zero updates; reuse its exact sampling actor hidden/EM and
             # diagnostic.  Do not reserve, generate, score, or run actor10 again.
             outer = pending_recovery['pending_outer']
@@ -373,12 +378,13 @@ def run(base):
                     '--test-cache', diagnostic['scan_path'],
                     '--test-manifest-sha', diagnostic['scan_sha256']]))
             recovery = read(base/'preparation/resume-pending-probe-receipt.json')
+            saved_actor = read(base/'actor/latest.json')
             commit_outer(base, c, outer, root, root/'probe-score/actual-em-selection.json',
-                         timings, recovery=recovery)
+                         timings, recovery=recovery, grounding_state=saved_actor['grounding_state'])
             stage('RECOVERED_ACTOR_PROBE_POOL_JOINT_COMPLETE', complete_outer=outer,
-                  actor_adam_per_rank=20*outer,
+                  actor_adam_per_rank=saved_actor['actual_adam_steps_per_rank'][0],
                   probe_adam_per_rank=read(base/'probe/latest.json')['actual_adam_steps_per_rank'][0],
-                  inherited_actor_updates_not_reexecuted=20)
+                  inherited_actor_updates_not_reexecuted=saved_actor['new_adam_steps_per_rank'][0])
         elif not outer:
             phase('probe-initialize-model-only', [python, '-m', 'reproduction.prefix_selection200.probe', 'initialize',
                 '--state-dir', str(base / 'probe'), '--source-checkpoint', c['probe_source_checkpoint'],
@@ -400,7 +406,7 @@ def run(base):
         from . import grounding
         if outer:
             # A future compatible recovery must retain the exact adopted state.
-            recovered = grounding.recovery_state(Path(c['resume_joint']['source_base']), c,
+            recovered = grounding.recovery_state(Path((pending_recovery or c['resume_joint'])['source_base']), c,
                 read(base/'latest-joint.json'))
             grounding_state = start_grounding(recovered)
         else:
@@ -488,12 +494,12 @@ def run(base):
                 return actor_selection_path
 
             actor_selection_path = sample_outer()
-            if compatible_resume:
+            if compatible_resume or compatible_pending:
                 from .i1_i6_actor_resume import collect_oom_retry, archive_zero_write_attempt
             else:
                 from .actor import collect_oom_retry
                 from .guard_retry import archive_zero_write_attempt
-            actor_module = ('reproduction.prefix_selection200.i1_i6_actor_resume' if compatible_resume
+            actor_module = ('reproduction.prefix_selection200.i1_i6_actor_resume' if compatible_resume or compatible_pending
                             else 'reproduction.prefix_selection200.actor')
             attempt_id = uuid.uuid4().hex
             while True:

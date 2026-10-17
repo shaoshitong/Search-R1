@@ -114,3 +114,42 @@ tests. The initial eligible-pool bound168508 was superseded by the user's
 explicit20480-question maximum before launch. Original job728815
 was released after testing; no additional Slurm job or warmup was submitted.
 GPU first-outer/adaptive-feedback execution is still pending scheduling.
+
+Saved-actor / pending-probe recovery repair,2026-10-17:
+`reproduction.prefix_selection200.i1_i6_pending_probe` replaces the rejected
+legacy adapter only when explicitly selected as `i1_i6_pending_probe_v1` in a
+new recovery execution. It accepts completed periodic actors10..190 with real
+guard/skipped-opportunity accounting and the exact adaptive candidate history.
+It retains the saved actor/Adam/scheduler/four-rank RNG and sampling actor,
+unchanged probe/Adam/RNG, pool reservation, native hidden/own-EM inputs and
+adopted grounding version. Actor updates, generation and scoring are not rerun.
+
+The `qualify` command requires an actual stopped-writer terminal proof and
+`CUDA_VISIBLE_DEVICES=`. It reads real HF tensors, each rank Adam/scheduler/RNG,
+probe and pending sampling payloads on remote CPU with full SHA. The separate
+`plan`/`import` operations require that proof and use immutable stat seals and
+hardlinks; they do not rehash model payloads or deserialize tensors. Existing
+unfinished intents require reconciliation. Source assets remain dependencies.
+Only a genuinely zero-write probe failure is supported by this adapter. It
+explicitly rejects partial/unknown unsaved probe updates, stale qualifiers,
+changed feedback/cursors and completed probe/joint states; it never silently
+rewinds to the previous joint.
+
+The launcher now passes the retained grounding state into the repaired joint,
+reports real actor counts instead of20*outer, restarts the appropriate adopted
+reward version and uses the source-compatible actor wrapper on subsequent
+outers. Cross-node import cannot use the new node's /proc to infer absence on
+the old node: it additionally requires fresh exact-owner/host/job terminal
+Slurm accounting. Same-node checks continue to verify the actual birth IDs.
+Shared-storage reads retry at most3 times and only accept an attempt with
+identical before/after device/inode/size/mtime/ctime, retaining all exact SHA
+checks. No unstable attempt's bytes are returned.
+
+`python3 -m reproduction.hpc3_prefix5.check_recovery_cpu` stages only the changed
+code in an isolated remote CPU overlay. It tests guarded actor retention,
+adaptive pool cycles and feedback, pending joint closure, no duplicate import,
+unknown/partial-write rejection, cross-node admission, unstable read rejection,
+and an actual small CPU Adam/RNG next-update roundtrip, alongside the existing
+actor/interaction/probe-schedule regressions. These constructed tests are not
+acceptance of a real native four-GPU restore or completed training. Their exact
+source hashes/results are kept in `pending-recovery-cpu-tests-final.json`.

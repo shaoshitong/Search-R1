@@ -32,6 +32,9 @@ CONTROL_FILES = frozenset({
     'reproduction/prefix_selection200/i1_i6_joint_resume.py',
     'reproduction/prefix_selection200/i1_i6_actor_resume.py',
     'reproduction/prefix_selection200/i1_i6_checkpoint_cpu.py',
+    'reproduction/prefix_selection200/i1_i6_pending_probe.py',
+    'reproduction/prefix_selection200/test_i1_i6_pending_probe.py',
+    'reproduction/hpc3_prefix5/check_recovery_cpu.py',
     'reproduction/operations/a800_prefix5_variable_pool_control.py',
     'reproduction/operations/a800_i1_i6_boundary_handoff.py',
     'reproduction/prefix_selection200/test_i1_i6_joint_resume.py',
@@ -95,11 +98,17 @@ def canonical_path(path, *, exists=True):
 def _raw(path):
     path=canonical_path(path); descriptor=os.open(path,os.O_RDONLY|os.O_NOFOLLOW)
     try:
-        before=os.fstat(descriptor)
-        if not stat.S_ISREG(before.st_mode): raise ValueError('Recovery metadata must be a regular file')
-        with os.fdopen(os.dup(descriptor),'rb') as stream: result=stream.read()
-        if _signature(before)!=_signature(os.fstat(descriptor)): raise ValueError('Recovery metadata changed while read')
-        return result
+        # Shared-storage metadata can settle after the creator closes/fsyncs a
+        # new receipt. Retry a rejected read, never return bytes from an unstable
+        # attempt. The accepted attempt still requires identical before/after
+        # device/inode/size/mtime/ctime and callers retain exact SHA checks.
+        for _ in range(3):
+            os.lseek(descriptor,0,os.SEEK_SET)
+            before=os.fstat(descriptor)
+            if not stat.S_ISREG(before.st_mode): raise ValueError('Recovery metadata must be a regular file')
+            with os.fdopen(os.dup(descriptor),'rb') as stream: result=stream.read()
+            if _signature(before)==_signature(os.fstat(descriptor)): return result
+        raise ValueError('Recovery metadata changed while read after three bounded attempts')
     finally: os.close(descriptor)
 
 
@@ -220,7 +229,7 @@ def _native_writers_present(terminal):
     return present
 
 
-def _writer_barrier(config,terminal,ledger, *, authorized_handoff_sha=None, completed_outer=None):
+def _writer_barrier(config,terminal,ledger, *, authorized_handoff_sha=None, completed_outer=None, absence_check=None):
     if (terminal.get('run_id')!=config['run_id'] or terminal.get('execution_id')!=config['execution_id'] or
             terminal.get('source_commit')!=config['source_commit'] or terminal.get('base')!=config['base'] or
             terminal.get('termination_cause') not in ('FAULT_EXIT','AUTHORIZED_BOUNDARY_HANDOFF') or
@@ -236,7 +245,7 @@ def _writer_barrier(config,terminal,ledger, *, authorized_handoff_sha=None, comp
     recorded={(row['pid'],row['start_ticks'],row['sid'],row['uid']) for row in terminal['owned_births']}
     known={(row['pid'],row['start_ticks'],row['sid'],row['uid']) for job in ledger.get('jobs',{}).values()
            for row in job.get('ledger',{}).values()}
-    if not known or not known<=recorded or _native_writers_present(terminal):
+    if not known or not known<=recorded or (absence_check or _native_writers_present)(terminal):
         raise RuntimeError('Actual source owned writers remain present or their birth coverage is incomplete')
 
 
