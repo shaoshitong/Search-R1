@@ -112,7 +112,7 @@ script = """import subprocess,os,json,pathlib
 b=pathlib.Path(%r);python=str(b/'env/bin/python')
 env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1',TMPDIR=str(b/'tmp'))
 names=['reproduction.hpc3_prefix5.test_diagnostic_scope','reproduction.hpc3_prefix5.test_terminal',
- 'reproduction.prefix_selection200.test_i1_i6_joint_resume','reproduction.prefix_selection200.test_adaptive_candidates']
+ 'reproduction.prefix_selection200.test_i1_i6_pending_probe','reproduction.prefix_selection200.test_adaptive_candidates']
 with (b/'preparation/recovery-tests.log').open('w') as log:
  result=subprocess.run([python,'-m','unittest','-v']+names,env=env,stdout=log,stderr=subprocess.STDOUT)
 if result.returncode:
