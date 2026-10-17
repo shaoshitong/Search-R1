@@ -1,0 +1,48 @@
+{
+  "train": {
+    "trajectories": 25600,
+    "questions": 5120,
+    "unique_effective_inputs": 20940,
+    "repeated_input_classes": 2968,
+    "conflicting_input_classes": 311,
+    "trajectories_in_conflicting_classes": 864,
+    "minimum_mistakes_for_deterministic_identical_input_classifier": 331,
+    "empirical_trajectory_accuracy_ceiling": 0.9870703125,
+    "empirical_trajectory_bce_floor": 0.021619915126686134,
+    "within_question_distinct_effective_input_histogram": {
+      "5": 2536,
+      "1": 134,
+      "3": 762,
+      "4": 1232,
+      "2": 456
+    },
+    "mask_and_position_semantics": "fixedQ273+policy20; authentic full causal contexts and segment positions included",
+    "theoretical_input_equivalence_not_bitwise_bf16_hidden_identity": true,
+    "hidden_tensor_loaded": false,
+    "model_forward_performed": false,
+    "training_modified": false
+  },
+  "test": {
+    "trajectories": 2560,
+    "questions": 512,
+    "unique_effective_inputs": 2126,
+    "repeated_input_classes": 283,
+    "conflicting_input_classes": 23,
+    "trajectories_in_conflicting_classes": 62,
+    "minimum_mistakes_for_deterministic_identical_input_classifier": 25,
+    "empirical_trajectory_accuracy_ceiling": 0.990234375,
+    "empirical_trajectory_bce_floor": 0.015775775993222878,
+    "within_question_distinct_effective_input_histogram": {
+      "4": 118,
+      "2": 42,
+      "5": 267,
+      "3": 75,
+      "1": 10
+    },
+    "mask_and_position_semantics": "fixedQ273+policy20; authentic full causal contexts and segment positions included",
+    "theoretical_input_equivalence_not_bitwise_bf16_hidden_identity": true,
+    "hidden_tensor_loaded": false,
+    "model_forward_performed": false,
+    "training_modified": false
+  }
+}

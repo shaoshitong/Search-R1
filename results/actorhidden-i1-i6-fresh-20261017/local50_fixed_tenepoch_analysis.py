@@ -14,7 +14,9 @@ def load_module(path, name):
 
 
 def inspect(base, helper_directory):
+    import sys
     base, helper_directory = Path(base), Path(helper_directory)
+    sys.path.insert(0, str(base/'repo'))
     audit = load_module(helper_directory/'probability_distribution_audit.py', 'existing_probability_audit')
     conflict = load_module(helper_directory/'local50_identical_input_analysis.py', 'local50_input_conflicts')
     epochs = []

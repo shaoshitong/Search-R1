@@ -59,13 +59,17 @@ def train(base):
     base = Path(base); c = read(base/'preparation/launch-config.json')
     spec = c['local_probe_fit50']; rank, local, device = setup_ddp()
     out = base/'train'; out.mkdir(exist_ok=True)
-    root = base/'outers'/('outer-%06d'%DATA_OUTER)
+    data_base = Path(spec.get('fixed_data_source_base', base))
+    root = data_base/'outers'/('outer-%06d'%DATA_OUTER)
     train_data = NativeFeatures(root/'prefix/scan')
     diagnostic = read(root/'diagnostic-complete.json')
     test_data = NativeFeatures(diagnostic['scan_path'])
     all_selection = root/'all-selection.json'
     actor_version = spec['actor_version']
     assert train_data.manifest['actor_version'] == test_data.manifest['actor_version'] == actor_version
+    if spec.get('policy_only_readout'):
+        assert train_data.manifest_sha == spec['fixed_train_scan_sha256']
+        assert test_data.manifest_sha == spec['fixed_test_scan_sha256']
     for data, own, selection in ((train_data, root/'full/own-em.jsonl', sha(all_selection)),
             (test_data, Path(diagnostic['scan_path']).parent.parent/'full/own-em.jsonl', 'diagnostic')):
         data.index = join_own_em(data.index, [json.loads(line) for line in own.open()],
@@ -77,7 +81,14 @@ def train(base):
     source = Path(spec['probe_checkpoint']); assert source.stat().st_size == spec['probe_bytes']
     saved = torch.load(source, map_location='cpu', weights_only=False)
     assert saved['run_id'] == c['run_id'] and saved['actual_adam_steps_per_rank'] == [200]*8
-    model = OnlineQuestionProbe(Path(c['official_model_dir']), 273).to(device=device, dtype=torch.float32)
+    policy_only = spec.get('policy_only_readout', False)
+    if policy_only:
+        from .local_probe_policy_readout50 import PolicyOnlyReadoutProbe, policy_source_state
+        model = PolicyOnlyReadoutProbe(Path(c['official_model_dir']), 273)
+        saved = policy_source_state(saved, model)
+    else:
+        model = OnlineQuestionProbe(Path(c['official_model_dir']), 273)
+    model = model.to(device=device, dtype=torch.float32)
     model.load_state_dict(saved['model'], strict=True)
     optimizer = torch.optim.Adam(model.parameters(), lr=spec['learning_rate'], weight_decay=0)
     optimizer.load_state_dict(saved['optimizer'])
@@ -116,6 +127,7 @@ def train(base):
         if rank == 0:
             result.update(epoch=epoch,actual_adam_per_rank=[actual_adam_steps(optimizer)]*8,
                 learning_rate=spec['learning_rate'],actor_version=actor_version,
+                policy_only_readout=policy_only,question_context_and_attention_preserved=True,
                 fixed_train_scan_sha256=train_data.manifest_sha,fixed_test_scan_sha256=test_data.manifest_sha,
                 evaluation_seconds=time.monotonic()-began)
             once(out/('epoch-%02d-metrics.json'%epoch),result)
@@ -127,7 +139,8 @@ def train(base):
             once(out/'initialization.json',dict(actor_version=actor_version,
                 source_probe_path=str(source),source_probe_sha256=spec['probe_sha256'],
                 source_actual_adam_per_rank=[200]*8,learning_rate=spec['learning_rate'],
-                optimizer_moments_imported=True,actor_updated=False,encoder_forward_repeated=False))
+                optimizer_moments_imported=True,actor_updated=False,encoder_forward_repeated=False,
+                policy_only_readout=policy_only,question_context_and_attention_preserved=True))
         evaluate(0)
         for epoch in range(1,11):
             # Reuse the tested whole-G5 planner, changing only its shuffle seed.
@@ -177,6 +190,7 @@ def train(base):
                     model={k:v.detach().cpu() for k,v in model.module.state_dict().items()},
                     optimizer=copy.deepcopy(optimizer.state_dict()),rank_rng=all_rng,actual_adam_per_rank=[actual]*8,
                     learning_rate=spec['learning_rate'],actor_version=actor_version,
+                    policy_only_readout=policy_only,question_context_and_attention_preserved=True,
                     train_scan_sha256=train_data.manifest_sha,test_scan_sha256=test_data.manifest_sha)
                 for values in checkpoint['optimizer']['state'].values():
                     for key,value in list(values.items()):

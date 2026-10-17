@@ -41,6 +41,9 @@ def once(state, directory):
     tag=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     prefix=directory/('local-probe50-actual-'+tag)
     code=REMOTE.replace('BASE',repr(state['base'])).replace('JOB',repr(state['current_job_id']))
+    if state.get('fixed_data_source_base'):
+        code=code.replace("root=b/'outers/outer-000051'",
+                          "root=pathlib.Path("+repr(state['fixed_data_source_base'])+")/'outers/outer-000051'")
     value=json.loads(remote(code,str(prefix)+'.transport.json'))
     path=Path(str(prefix)+'.json');path.write_text(json.dumps(value,indent=2)+'\n')
     return value, path

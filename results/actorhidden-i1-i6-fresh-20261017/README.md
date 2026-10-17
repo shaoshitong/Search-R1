@@ -148,3 +148,37 @@ All checkpoints/hidden/rollouts/predictions stay remote. The local config is `re
 Local50 execution uses prior authorized physical8 sharing:3440 pending0time was cancelled before any work;3441 ran on96CPU/512GiB with0 reservedGPU/8 actualCUDAUUIDs, preserving foreign3439 onGPU0. All25600 actor0050 prefixes/nativehidden completed once.3441 then actually FAILED1:0 at fullcontinuation vLLM initialization onGPU0 (foreign49.28GiB; typed CUDA OOM), before any probe writes.20 original inode logs fullSHA and subsequent ownbirth/cgroup/GPU release are preserved in the source terminalproof SHA8a7faead94dd417498d57c7bd23b73ccec0cd423bbbbdce34ee07cc1bca506e9.
 
 The isolated recovery reuses exactly those complete prefixes/hidden/states via read-only hardlinks, never regenerates them, and starts only full continuations. OnlyGPU0 resource settings reduce to fixedvLLMutil.16/maxseq256/maxbatched8192/eager; other7 retain their largebatch/autofree policy. The actual initializationOOM retry also now leaves its except block beforegc/emptycache, allowing traceback-held allocations to be released. Actorweights/inputs/seeds/headloss/LR/10epoch budget remain unchanged. These are actualOOM resource repairs, not a numerical gate. A read-only local observer follows10epochs/nativeexit and never changes training or primary state. CPU identical-input conflict analysis is prepared for posthoc use; it reads actual token contexts and labels without hidden tensors/model forwards.
+
+## Completed local50 fixed-data ten-epoch diagnosis (2026-10-17)
+
+Native3442 actually COMPLETED0:0; all8 ranks wrote1000 new Adam updates201..1200, exactly100 per epoch and3200 trajectories per rank per epoch. Ten distinct question-group shuffles cover each fixed25600-trajectory train set once. Actor0050 and heldout512G5 remain fixed. Probe starts from the true joint50 head40/Adam200 and usesLR1e-5, unchanged trajectoryBCE + mixedBCE weights1/1. No actor updates or formal200 restart. Final checkpoint independently full-hashed and actually CPU-loaded; both owned birth/cgroup/GPU release observations passed. All ten checkpoints and complete receipts exist; only final checkpoint received a new independent tensor-file hash/load in this closure.
+
+|Probe epoch|Train mixed BA|Test mixed BA|Train trajectory accuracy|Test trajectory accuracy|Train total loss|Test total loss|
+|---|---:|---:|---:|---:|---:|---:|
+|0|54.49%|51.65%|65.00%|62.54%|1.4426|1.5500|
+|1|65.80%|53.14%|68.71%|64.34%|1.3725|1.6381|
+|2|74.99%|49.74%|67.61%|62.97%|1.1682|1.5729|
+|3|76.86%|54.64%|70.07%|65.00%|1.1965|1.7239|
+|4|86.42%|52.75%|68.50%|62.93%|0.9835|1.6124|
+|5|84.61%|53.86%|69.89%|63.40%|0.9848|1.6725|
+|6|91.91%|53.62%|69.30%|62.89%|0.8948|1.6733|
+|7|87.36%|51.01%|70.72%|63.16%|0.8735|1.6762|
+|8|87.13%|51.23%|71.09%|63.20%|0.8545|1.6927|
+|9|86.35%|51.69%|71.25%|63.63%|0.8394|1.6927|
+|10|86.28%|51.44%|71.36%|62.89%|0.8409|1.7337|
+
+![Same-data learning curves](local50-fixed-tenepoch/fixed-data-learning-curves.png)
+
+Fixed train mixed prevalence1044/5120=20.390625%; heldout108/512=21.09375%, so heldout nonmixed-majority accuracy78.90625%. Test ordinary mixed accuracy69.7266%->61.9141% falls because TP increases22->36 but FP increases69->123. Test balanced accuracy51.6456%->51.4439% is essentially flat; trajectory accuracy62.5391%->62.8906% is also flat, rather than both accuracies sharply falling. Test trajectory BCE.945835->.991651 and group BCE.604116->.742010 worsen. Test trajectory AUROC.699856->.651202 decreases, while group AUROC.533714->.544257 increases slightly but remains weak. Best observed train BA91.9059% at6; best observed test BA54.6434% at3. Selecting a checkpoint by this diagnostic does not create independent test evidence.
+
+Overfitting/generalization failure is demonstrated on this fixed cohort; question shortcut learning is a plausible mechanism, not established as the unique cause. Final train mixed AUROC.975403 versus heldout.544257. Heldout ownEM1 meanp.176249 versus EM0 meanp.102627: weak separation and low probabilities, not literal globally identical predictions. Allcorrect train groups are problematic:1005/1356 are incorrectly called mixed at epoch10, and47.7876% of their individual probabilities lie in.12..22. This does not establish that all such predictions occupy a single stationary point.
+
+The actual frozen loss code was evaluated on a synthetic allcorrectG5 with allp=.1669358413: gradientmax2.78e-17, positive logit-Hessian eigenvalues.165267/.166882, predictedmix.598641 despite truemix0. This verifies an objective-induced bad local minimum in five independent logit coordinates. It is NOT a measurement that the shared-parameter neural probe is trapped there or proof of the unique empirical failure cause.
+
+Identical effective token/context/mask/position inputs with conflicting final labels occur in311 training input classes covering864 trajectories. Under the stated deterministic identical-effective-input assumption the unavoidable empirical error is331/25600=1.293%; resulting ceiling98.707%. It is not a heldout generalization guarantee or claim of bitwise BF16 hidden identity across execution shapes. These conflicts alone do not explain71.36% training trajectory accuracy.
+
+All aggregated metrics/source hashes, every global step loss, native closure proof, CPU synthetic check and input-conflict summaries are in `local50-fixed-tenepoch/`; predictions/tokenIDs/hidden/tensors/weights remain remote. Figures were rendered remotely from aggregate metrics; only final small PNG/PDF documentation and numeric summaries reached Mac.
+
+### Authorized next matched ablation: policy-only direct readout
+
+The human authorized removing question outputs and retesting. Preserve all actual question/context+20 hidden and full head attention; only the last20 policy-position outputs enter Linear(40960,1). Start from the same original joint50 head40/Adam200, slicing the output policy columns and their Adam moments, not from the extra-ten-epoch final head. Reuse the identical fixed actor50 train/heldout data, same ten shuffle orders, LR1e-5 and unchanged joint loss. No rollout/actor/retriever or formal200 continuation. `local_probe_policy_readout50.py` is a separate once native entry; status remains pending until actual submission/updates.
