@@ -1,6 +1,6 @@
 # Search-G1: 125/200 complete, original job3427 continues
 
-Current connection recheck 2026-10-17T04:43:09.117616+00:00: new SSH handshake was reset, then the task-owned ordinary-alias SSH master timed out (exit255). Current remote state UNKNOWN; the last actual observation below remains125 complete /126 score on3427. Connection failure is not proof of training exit. No training stop, resubmission, restart or runtime edit.
+Current connection recheck 2026-10-17T04:46:41.895371+00:00: both default published reader and literal ssh mgmt-host returned management timeout255. Current remote state UNKNOWN; last actual read remains125 complete /126 score on3427. This does not establish training exit; no stop/restart/resubmit/runtime edit. Fresh outage audit2/3, goal remains active.
 
 Latest connection recovery 2026-10-17T04:21:56.606425+00:00: user asked literal ssh mgmt-host; interactive session13301 authenticated and read h100-10 same3427/joint122. Default published reader separately verified joint123/2460Adam each8rank and124prefix then124continuation; no source-IP/compat/socket overrides, no global SSH change or training restart. Goal tool independently read ACTIVE. Prior01:xx blocked records are historical and preserved in BLOCKED_AUDIT/CONNECTION_OBSERVATION, not current instructions. Interactive SSH exited normally0 after read; no local master left.
 

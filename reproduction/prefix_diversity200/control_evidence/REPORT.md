@@ -1,6 +1,6 @@
 # Search-G1 predictedTop1024 / actualEM-varianceTop512
 
-Current connection recheck 2026-10-17T04:43:09.117616+00:00: new SSH handshake was reset, then the task-owned ordinary-alias SSH master timed out (exit255). Current remote state UNKNOWN; the last actual observation below remains125 complete /126 score on3427. Connection failure is not proof of training exit. No training stop, resubmission, restart or runtime edit.
+Current connection recheck 2026-10-17T04:46:41.895371+00:00: both default published reader and literal ssh mgmt-host returned management timeout255. Current remote state UNKNOWN; last actual read remains125 complete /126 score on3427. This does not establish training exit; no stop/restart/resubmit/runtime edit. Fresh outage audit2/3, goal remains active.
 
 Actual complete125/200; job3427 RUNNING on h100-10/10.33.0.18, stage outer-000126-score. Saved actor/probe Adam per8rank: [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500] / [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]. Completed joint counters: [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500] / [2500, 2500, 2500, 2500, 2500, 2500, 2500, 2500]. Historical failed unsaved probe20/rank remains separate; never sum8replicas as globalupdates.
 

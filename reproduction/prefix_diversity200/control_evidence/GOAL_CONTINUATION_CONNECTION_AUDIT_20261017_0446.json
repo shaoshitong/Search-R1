@@ -1,0 +1,36 @@
+{
+  "recorded_utc": "2026-10-17T04:46:41.895371+00:00",
+  "goal_turn_classification": "no new remote progress; revalidated same observation blocker",
+  "previous_goal_turn_classification": "progress: actual125, CPU100 component proof, published future metadata fix",
+  "fresh_outage_consecutive_goal_turns": 2,
+  "last_actual_complete_outer": 125,
+  "last_actual_stage": "outer-000126-score",
+  "last_actual_job": "3427",
+  "last_actual_read_unix": 1792211665.9525359,
+  "current_remote_state": "UNKNOWN_CONNECTION_FAILED",
+  "attempts": [
+    {
+      "command": "published sync_cost_local -> default management_transport",
+      "evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/work/search-g1-prefix1024-diversity512-20261016/refresh-1792212228647075000-transport.json",
+      "sha256": "af3b3ca9107bd26e01ab8b09ed4bf8cdc29087a6276ddcd6898acdb247f65068",
+      "returncode": 255,
+      "stderr": "Connection to 52.6.216.152 port 22 timed out\r\n"
+    },
+    {
+      "command": "ssh mgmt-host",
+      "pty_session": 79063,
+      "elapsed_seconds_at_last_live_check": 84,
+      "exit_code": 255,
+      "stderr": "ssh_dispatch_run_fatal: Connection to 52.6.216.152 port 22: Operation timed out",
+      "authenticated": false
+    }
+  ],
+  "training_terminal_proven": false,
+  "training_actions": [],
+  "no_new_submission": true,
+  "global_config_changed": false,
+  "goal_status": "active",
+  "blocked_threshold_met": false,
+  "remaining_scope": "actual200 + normal150/200 QA/checkpoints + final51713 + HF/native/probe/tokenizer/component acceptance + cost/own cleanup/final publication",
+  "delegated_preparation": "existing independent CPU agent preparing normal150/200 component entry; no SSH retry, GPU or replay5/50/100"
+}
