@@ -1,166 +1,98 @@
 {
-  "status": "CPU100_FAIL_ACTUAL_STALE_DRIVER_BOUNDARIES_NO_BLIND_REPLAY",
+  "status": "JOINT100_CPU_COMPONENTS_VERIFIED_WITH_EXPLICIT_BINDINGS_STANDALONE_DRIVER_FAIL_RETAINED",
   "outer": 100,
   "run_id": "f3ee1435e5014ba1969387c91878893a",
   "runtime_source_commit": "e3463cfddca71a22ac684d75c875dbe123e8bc43",
   "runtime_config_sha256": "384cf0f516e7bf9ce3623bdf48e87a078f8eceaa5af5e03f238e04e86ae59ad8",
-  "executed_helper_commit": "0e1f95d4b2dd6f886242c62e711febd18e79e9db",
-  "unchanged_core_reader_sha256": "5ebc33355a6b6516bfe06cf04cb970887a95ec93e86eb0be4e3d7614865d8211",
-  "original_failed_proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/joint-milestone-0100-independent-full-sha-cpu-once-v1.json",
-  "original_failed_proof_sha256": "f917d16cf75a658e1fa066775d60f9053929bd7d099cc7a5c40d18e2579cbdcf",
-  "joint_complete_sha256": "e31e82f31896f1a5a0ca769fcb760a8061244eb069b3ec5f9bba85c81f9d5f1e",
-  "original_reader_log_sha256": "b5b4d78da4ee40e6a88bed44dde7a52a402d48a67309fee57b22dc990ec93c2f",
-  "cpu_exit": {
-    "cpu_system_seconds": 23.052699,
-    "cpu_user_seconds": 66.926417,
-    "elapsed_seconds": 90.0053206011653,
-    "error": "Actual actor driver state did not preserve the real candidate boundary",
-    "exit_code": 1,
-    "finished_unix": 1792210817.1501658,
-    "gpu_forward_performed": false,
-    "helper_commit": "0e1f95d4b2dd6f886242c62e711febd18e79e9db",
-    "max_rss_kib": 4512704,
-    "proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/joint-milestone-0100-independent-full-sha-cpu-once-v1.json",
-    "proof_sha256": "f917d16cf75a658e1fa066775d60f9053929bd7d099cc7a5c40d18e2579cbdcf",
-    "proof_status": "PREFIX_SELECTION200_CPU_MILESTONE_AUDIT_FAILED_TRAINING_UNCHANGED",
-    "status": "CPU_ACCEPTANCE_FAILED_NO_REPLAY",
-    "subprocess_exit": 0,
-    "training_modified": false
+  "standalone_driver": {
+    "status": "FAIL_ACTUAL_STALE_POOL_AND_PREVIOUS_PROBE_DESCRIPTOR",
+    "original_audit_helper_commit": "0e1f95d4b2dd6f886242c62e711febd18e79e9db",
+    "original_failed_proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/joint-milestone-0100-independent-full-sha-cpu-once-v1.json",
+    "original_failed_proof_sha256": "f917d16cf75a658e1fa066775d60f9053929bd7d099cc7a5c40d18e2579cbdcf",
+    "original_proof_unchanged": true,
+    "actual_stale_pool_next_outer": 54,
+    "actual_stale_pool_consumed": 271360,
+    "actual_stale_previous_probe_outer": 52
   },
-  "original_stage_evidence": {
-    "hf435_fp32_finite_full_sha": true,
-    "all8_rank_full_sha_cpu_load_optimizer100_outer_scheduler100_rng_validation": true,
-    "coverage_basis": "Original unchanged reader control flow and complete stage log; no large-file replay. HF/rank producer files retain identical stat signatures from readiness to post-audit.",
-    "actor_actual_adam_steps_per_rank": [
-      2000,
-      2000,
-      2000,
-      2000,
-      2000,
-      2000,
-      2000,
-      2000
-    ],
-    "scheduler_completed_outer": 100
-  },
-  "driver_diagnostic": {
-    "actor_version": "f3ee1435e5014ba1969387c91878893a-actor0100",
-    "completed_outer": 100,
-    "config_sha256": "384cf0f516e7bf9ce3623bdf48e87a078f8eceaa5af5e03f238e04e86ae59ad8",
-    "config_source_commit": "e3463cfddca71a22ac684d75c875dbe123e8bc43",
-    "configured_pool_state_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/question-pool/state.json",
-    "configured_prefix_probe_receipt": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/probe/latest.json",
-    "driver_file": {
-      "bytes": 727192,
-      "path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/actor/outers/outer-0100-attempt-188e29f19c86406592cd39ccda4edf18/driver.pt",
-      "sha256": "5b3e030175d76b687a8a0261dfca77d8adc56a67bb0fd54846e9396724ce5211"
+  "joint_bundle_components": {
+    "status": "JOINT100_COMPONENT_CPU_VERIFICATION_PASS_STANDALONE_DRIVER_FAIL_RETAINED",
+    "supplement_helper_commit": "8d5501994e38856dc2103c1291a4e0a0cc4fa218",
+    "supplement_source_sha256": "c10576a995361f03eba46a284ae1c84ecab95ea19ecfce729117c9c59f714f08",
+    "proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/acceptance100-joint-supplement-v1/proof.json",
+    "proof_sha256": "80c2c9b2ebfb877330826732e7af8f20f8928caf5474a15366a643f2cc346a53",
+    "probe100": {
+      "file": {
+        "actual_cpu_deserialization": true,
+        "bytes": 932251158,
+        "dev": 64768,
+        "independent_full_sha": true,
+        "inode": 140000004,
+        "mtime_ns": 1792200640974625569,
+        "path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/probe/head-outer-0100.pt",
+        "sha256": "e787b13c0f645edf0627fce04d6f77597226fad01740e109f32d3c0458adeb0b"
+      },
+      "summary": {
+        "actual_adam_steps_per_rank": [
+          2000,
+          2000,
+          2000,
+          2000,
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "adam_fp32_states": 14,
+        "learning_rate": 1e-06,
+        "model_fp32_tensors": 14,
+        "rank_rng_count": 8
+      }
     },
-    "driver_pool_equals_joint_pool": false,
-    "driver_previous_probe_matches_score": false,
-    "driver_python_numpy_cpu_rng_present": true,
-    "driver_state_keys": [],
-    "expected_previous_probe": {
-      "actual_adam_steps_per_rank": [
-        1980,
-        1980,
-        1980,
-        1980,
-        1980,
-        1980,
-        1980,
-        1980
-      ],
-      "completed_outer": 99,
-      "run_id": "f3ee1435e5014ba1969387c91878893a",
-      "sha256": "f7791a5efffebd62860943875a0bbc2a037905bdc7249036a26d5cec0f4d53bd"
-    },
-    "expected_previous_probe_matches_score": true,
-    "joint_pool": {
-      "candidate_questions": 5120,
+    "pool": {
+      "actual_permutation_entries": 168510,
       "consumed_candidates": 512000,
       "cursor": 6470,
       "cycle": 3,
+      "eligible_questions": 168510,
       "next_outer": 101,
-      "seed": 1729
+      "source_pool_sha256": "ae13710254e7ae77cf5531b62a755ec2000bc3fba20051bbafaff1f6714aa8fc"
     },
-    "joint_pool_equals_reservation_after": true,
-    "joint_pool_hash_matches_producer": true,
-    "joint_pool_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/outers/outer-000100/pool-state-at-completion.json",
-    "joint_pool_sha256": "127dd2bb67fe02036bd19ca1418e81d9113dc4feb308b74a3da9e964674e4102",
-    "large_weight_files_read": false,
-    "run_id": "f3ee1435e5014ba1969387c91878893a",
-    "saved_driver_pool": {
-      "candidate_questions": 5120,
-      "consumed_candidates": 271360,
-      "cursor": 102850,
-      "cycle": 1,
-      "next_outer": 54,
-      "seed": 1729
+    "driver_rng": {
+      "cuda_rng_applied": false,
+      "python_numpy_cpu_torch_state_loaded": true,
+      "saved_cuda_rng_bytes": 16
     },
-    "saved_driver_pool_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/question-pool/state.json",
-    "saved_driver_pool_sha256": "a09e649610c7d586cfa0121f38e86f7b174494d3928708e94d9bca3b5efb9b40",
-    "saved_driver_previous_probe": {
-      "actual_adam_steps_per_rank": [
-        1040,
-        1040,
-        1040,
-        1040,
-        1040,
-        1040,
-        1040,
-        1040
-      ],
-      "completed_outer": 52,
-      "run_id": "f3ee1435e5014ba1969387c91878893a",
-      "sha256": "e300ccbcc09ac24889f1c70a92e92550aaa114b5eab438413e69942eb5070fd0"
-    },
-    "saved_driver_previous_probe_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume3/probe/latest.json",
-    "score_manifest_previous_probe_sha256": "f7791a5efffebd62860943875a0bbc2a037905bdc7249036a26d5cec0f4d53bd",
-    "training_modified": false
+    "actor_evidence_reused_without_large_reread": true,
+    "reuse_basis": "Pinned original core5eb/full completed log stage chain plus verified source control flow and unchanged pre/post inode-size-mtime signatures; never BEGIN alone.",
+    "recovery_bindings_file": "RECOVERY_BINDINGS.json"
   },
-  "probe100_cpu_deserialized": false,
-  "probe100_sha_producer_only": "e787b13c0f645edf0627fce04d6f77597226fad01740e109f32d3c0458adeb0b",
-  "correct_joint_pool": {
-    "candidate_questions": 5120,
-    "consumed_candidates": 512000,
-    "cursor": 6470,
-    "cycle": 3,
-    "next_outer": 101,
-    "seed": 1729
-  },
-  "selection_summaries": {
-    "continued1024": {
-      "correct_count_histogram": {
-        "0": 210,
-        "1": 26,
-        "2": 26,
-        "3": 28,
-        "4": 61,
-        "5": 673
-      },
-      "mean_population_em_variance": 0.02625,
-      "mean_predicted_mixed_probability": 0.6838265689962297,
-      "mixed_fraction": 0.1376953125,
-      "mixed_questions": 141,
-      "questions": 1024,
-      "trajectories": 5120
+  "cpu_cost": {
+    "original_audit": {
+      "cpu_system_seconds": 23.052699,
+      "cpu_user_seconds": 66.926417,
+      "elapsed_seconds": 90.0053206011653,
+      "error": "Actual actor driver state did not preserve the real candidate boundary",
+      "exit_code": 1,
+      "finished_unix": 1792210817.1501658,
+      "gpu_forward_performed": false,
+      "helper_commit": "0e1f95d4b2dd6f886242c62e711febd18e79e9db",
+      "max_rss_kib": 4512704,
+      "proof_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261016-f3ee1435e501-resume4/preparation/joint-milestone-0100-independent-full-sha-cpu-once-v1.json",
+      "proof_sha256": "f917d16cf75a658e1fa066775d60f9053929bd7d099cc7a5c40d18e2579cbdcf",
+      "proof_status": "PREFIX_SELECTION200_CPU_MILESTONE_AUDIT_FAILED_TRAINING_UNCHANGED",
+      "status": "CPU_ACCEPTANCE_FAILED_NO_REPLAY",
+      "subprocess_exit": 0,
+      "training_modified": false
     },
-    "actor512": {
-      "correct_count_histogram": {
-        "0": 65,
-        "1": 26,
-        "2": 26,
-        "3": 28,
-        "4": 61,
-        "5": 306
-      },
-      "mean_population_em_variance": 0.0525,
-      "mean_predicted_mixed_probability": 0.7980589834315334,
-      "mixed_fraction": 0.275390625,
-      "mixed_questions": 141,
-      "questions": 512,
-      "trajectories": 2560
-    }
+    "append_only_supplement": {
+      "elapsed_seconds": 3.613201204687357,
+      "cpu_user_seconds": 2.7436439999999997,
+      "cpu_system_seconds": 1.046755,
+      "max_rss_kib": 1350224,
+      "exit_code": 0,
+      "finished_unix": 1792211205.9634633
+    },
+    "separate_small_diagnostic_cpu_usage_unmetered": true
   },
   "observations": [
     {
@@ -178,20 +110,31 @@
       "log_bytes": 5432,
       "stage": "ACTUAL_DRIVER_BOUNDARY_FAILURE",
       "exit_code": 1
+    },
+    {
+      "unix": 1792211202.2246864,
+      "stage": "SUPPLEMENT_CPU_UNIT_STARTED",
+      "log_bytes": 0
+    },
+    {
+      "unix": 1792211224.857976,
+      "stage": "JOINT100_COMPONENT_CPU_VERIFICATION_PASS_STANDALONE_DRIVER_FAIL_RETAINED",
+      "log_bytes": 1425,
+      "exit_code": 0
+    },
+    {
+      "unix": 1792211249.3843207,
+      "stage": "SUPPLEMENT_PROOF_AND_ORIGINAL_FAILURE_STABLE",
+      "proof_sha256": "80c2c9b2ebfb877330826732e7af8f20f8928caf5474a15366a643f2cc346a53",
+      "original_failure_sha256": "f917d16cf75a658e1fa066775d60f9053929bd7d099cc7a5c40d18e2579cbdcf"
     }
   ],
-  "recoverable_material": [
-    "Original actor HF435 and all8 native Adam/scheduler/RNG passed before driver assertion.",
-    "Correct joint100 pool snapshot contains full permutation/cursor next101 and matches producer SHA/reservation.after.",
-    "Joint99 probe receipt exactly matches actual100 scoring-time probe identity; probe100 producer receipt and file remain remote but CPU read not reached."
-  ],
   "limits": [
-    "The original driver.pt embeds stale resume3 pool next54 and probe52 descriptors; not a verifier-only path typo.",
-    "No full CPU milestone PASS; no CUDA executor exact resume or independent backup.",
-    "Probe100/driver RNG final validation were not reached by the full audit.",
-    "Do not restore candidate order or selection-time probe identity from the stale driver descriptor.",
-    "No training source/runtime/state changed; no large weights replayed or transferred to Mac."
+    "Original strict standalone-driver audit remains FAIL; no unconditional replacement PASS.",
+    "Recovery must explicitly use joint100 pool snapshot/current probe100 and selection-time probe99 receipt, never legacy driver data/probe aliases.",
+    "All assets remain remote; no checkpoint was rewritten.",
+    "No native CUDA executor restore, GPU forward, additional QA or independent backup performed.",
+    "Only probe100 was newly read as a large tensor file in the supplement; actor HF/all8 ranks were not reread."
   ],
-  "training_modified": false,
-  "original_failed_once_proof_preserved": true
+  "training_modified": false
 }
