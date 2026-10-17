@@ -386,7 +386,7 @@ def audit_hf(base, actor, config):
                 master_low_bits_preserved_in_hf=True, forward_performed=False)
 
 
-def _audit_complete(base, config, joint, outer):
+def _audit_complete(base, config, joint, outer, *, driver_validator=None):
     import torch
     torch.set_num_threads(1)
     root = base / 'outers' / ('outer-%06d' % outer)
@@ -536,16 +536,22 @@ def _audit_complete(base, config, joint, outer):
         ranks.append(summary); del saved; gc.collect()
     driver_path = owned(base, actor['driver_state']['path'])
     driver, driver_file = load_torch_cpu(driver_path, actor['driver_state'])
-    need(driver['run_id'] == config['run_id'] and driver['completed_outer'] == outer
-         and driver['actor_version'] == actor['actor_version']
-         and driver['candidate_pool_state']['value'] == pool
-         and driver['candidate_pool_state']['sha256'] == hashlib.sha256(canonical(pool)+b'\n').hexdigest(),
-         'Actual actor driver state did not preserve the real candidate boundary')
-    previous_probe = driver['prefix_probe_receipt']['value']
-    need(previous_probe['run_id'] == config['run_id'] and previous_probe['completed_outer'] == outer - 1
-         and previous_probe['actual_adam_steps_per_rank'] == [20 * (outer - 1)] * 8
-         and previous_probe['sha256'] == manifest['probe_before_checkpoint_sha256'],
-         'Actor driver lost its actual selection-time probe state/version')
+    driver_components = None
+    if driver_validator is None:
+        # Preserve the original strict standalone-driver interpretation. New
+        # joint-component readers must select their alternative explicitly.
+        need(driver['run_id'] == config['run_id'] and driver['completed_outer'] == outer
+             and driver['actor_version'] == actor['actor_version']
+             and driver['candidate_pool_state']['value'] == pool
+             and driver['candidate_pool_state']['sha256'] == hashlib.sha256(canonical(pool)+b'\n').hexdigest(),
+             'Actual actor driver state did not preserve the real candidate boundary')
+        previous_probe = driver['prefix_probe_receipt']['value']
+        need(previous_probe['run_id'] == config['run_id'] and previous_probe['completed_outer'] == outer - 1
+             and previous_probe['actual_adam_steps_per_rank'] == [20 * (outer - 1)] * 8
+             and previous_probe['sha256'] == manifest['probe_before_checkpoint_sha256'],
+             'Actor driver lost its actual selection-time probe state/version')
+    else:
+        driver_components = driver_validator(driver, actor, config, joint, outer, pool, manifest)
     validate_rng(driver['rng']); del driver; gc.collect()
     probe_path = owned(base, base / 'probe' / ('head-outer-%04d.pt' % outer))
     probe_snapshot = owned(base, joint['probe_snapshot'])
@@ -571,6 +577,7 @@ def _audit_complete(base, config, joint, outer):
          and source['independent_full_file_sha_performed'] is True and source['cpu_load_performed'] is True,
          'Unsupported source warmup CPU proof; never infer PASS from a producer SHA alone')
     return dict(actor_hf=hf, actor_rank_states=ranks, actor_driver_file=driver_file,
+        explicit_joint_driver_components=driver_components,
         probe=dict(file=probe_file, summary=probe_summary), pool=pool_summary,
         strict_em_diversity=diversity, original_native_records=native_records, probe_clock=probe_clock,
         source_pool_file=source_proof, reused_prior_warmup_small_proof=prior_file,
