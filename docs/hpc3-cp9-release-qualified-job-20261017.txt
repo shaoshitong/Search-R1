@@ -1,0 +1,33 @@
+"""Release the same held job only after actual full-state proof and import plan.
+
+No import, CUDA, payload rehash, new GPU request, or new Slurm job occurs here.
+The real batch entry still verifies and imports before starting its four ranks.
+"""
+import base64,json,shlex,subprocess
+from reproduction.hpc3_prefix5.control import BASE,OUTPUT,PYTHON
+from reproduction.hpc3_prefix5.direct_control import run
+
+program=r'''import pathlib,json,os,time,subprocess
+from reproduction.prefix_selection200.i1_i6_joint_resume import plan,read,sha,_once
+from reproduction.prefix_selection200.launch import validate_config
+b=pathlib.Path(TARGET);p=b/'preparation';c=read(p/'resume-config-template.json');qpath=pathlib.Path(c['resume_joint']['qualification_proof']);q=read(qpath)
+assert q['status']=='I1_I6_ACTUAL_FULL_STATE_QUALIFIED_ONCE' and q['completed_outer']==9 and q['actual_adam_steps_per_rank']==[180]*4 and q['probe_adam_steps_per_rank']==[0]*4 and q['payload_full_sha_read_once'] is True
+assert qpath.name=='cp9-actual-full-state-qualification-v2.json' and c['source_commit']=='ab7dc0195db160c5304c92118a78f3f225c52491'
+result=read(p/'cp9-v2-cpu-result.json');assert result['returncode']==0 and result['proof_exists'] and result['proof_sha256']==sha(qpath)
+c['resume_joint']['qualification_proof_sha256']=sha(qpath);validate_config(c,b);v=plan(b,c)
+assert v['genuine_full_state_qualification'] and v['status']=='READY_QUALIFIED_FULL_JOINT_IMPORT' and v['completed_outer']==9 and v['next_outer']==10 and v['remaining_logical_outers']==191
+_once(p/'cp9-qualified-preflight-plan.json',v)
+tmp=p/'resume-config-template.json.qualified-tmp';tmp.write_text(json.dumps(c,sort_keys=True));os.replace(tmp,p/'resume-config-template.json')
+raw=subprocess.check_output(['scontrol','show','job','-o','729624'],text=True);f=dict(x.split('=',1) for x in raw.split() if '=' in x)
+assert f['JobId']=='729624' and f['JobName']=='prefix5-thread5-cp9' and f['JobState']=='PENDING' and f['Reason']=='JobHeldUser' and f['UserId'].endswith('('+str(os.getuid())+')') and f['Partition']=='emergency_acd' and f['TresPerNode']=='gres/gpu:4'
+_once(p/'cp9-release-intent.json',dict(created_unix=time.time(),job=729624,scope='Release own pending same job after repaired actual CP9 qualification',qualification_sha256=sha(qpath),plan_sha256=sha(p/'cp9-qualified-preflight-plan.json'),source_commit=c['source_commit']))
+subprocess.run(['scontrol','release','729624'],check=True,capture_output=True,text=True,timeout=20)
+queue=subprocess.check_output(['squeue','-h','-j','729624','-o','%i|%T|%P|%R|%S'],text=True).strip()
+assert 'JobHeldUser' not in queue,queue
+summary=dict(status='CP9_FULL_STATE_QUALIFIED_AND_SAME_GPU_JOB_RELEASED',job=729624,queue=queue,source_commit=c['source_commit'],science_source_commit=c['science_source_commit'],completed_outer=9,actor_adam=[180]*4,probe_adam=[0]*4,qualified_files=len(q['verified_files']),qualification_sha256=sha(qpath),import_plan_sha256=sha(p/'cp9-qualified-preflight-plan.json'),remaining_outers=191,planned_assets=len(v['assets']),payload_rehash_repeated_by_plan=False,gpu_restore_actual_pending=True,released_unix=time.time())
+_once(p/'cp9-release-complete.json',summary);print(json.dumps(summary))
+'''.replace('TARGET',repr(BASE+'-r2'))
+outer='import subprocess,base64,os;env=dict(os.environ,CUDA_VISIBLE_DEVICES="",OMP_NUM_THREADS="2",MKL_NUM_THREADS="2",PYTHONDONTWRITEBYTECODE="1");r=subprocess.run(['+repr(BASE+'-r2/env/bin/python')+',"-c",base64.b64decode('+repr(base64.b64encode(program.encode()).decode())+').decode()],env=env);raise SystemExit(r.returncode)'
+address=subprocess.check_output(['ipconfig','getifaddr','en0'],text=True).strip();r=run(PYTHON+' -c '+shlex.quote(outer),account='mou176',source_address=address,timeout=55)
+assert r.returncode==0,(r.stdout.decode()[-6000:],r.stderr.decode()[-1000:])
+v=next(json.loads(line) for line in r.stdout.decode().splitlines() if line.strip().startswith('{'));(OUTPUT/'cp9-qualified-release.json').write_text(json.dumps(v,indent=2)+'\n');print(json.dumps(v))
