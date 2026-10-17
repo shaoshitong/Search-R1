@@ -50,7 +50,12 @@ def inspect(base):
         assert len(raw) == shard["bytes"] and hashlib.sha256(raw).hexdigest() == shard["sha256"]
         rows = [json.loads(line) for line in gzip.decompress(raw).splitlines()]
         assert len(rows) == len(receipt["rows"]) == 64
-        for row, recorded in zip(rows, receipt["rows"]):
+        # Full outputs stream in async completion order; receipts are sorted.
+        by_ordinal = {row["evaluation_ordinal"]: row for row in receipt["rows"]}
+        assert len(by_ordinal) == 64
+        assert {row["evaluation_ordinal"] for row in rows} == set(by_ordinal)
+        for row in rows:
+            recorded = by_ordinal[row["evaluation_ordinal"]]
             assert all(row[key] == value for key, value in recorded.items())
             question = canonical[row["evaluation_ordinal"]]
             assert (row["qid"], row["data_source"]) == (question["qid"], question["data_source"])
