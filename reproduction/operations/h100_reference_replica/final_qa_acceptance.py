@@ -139,7 +139,10 @@ def inspect_final(base):
     from reproduction.prefix_selection200 import rollout as native_rollout
     from reproduction.prefix_selection200 import interaction_protocol
     from reproduction.common8 import calibration_evaluation
+    from reproduction.common8 import context_budget
+    from reproduction.prefix20_online import rollout as prompt_assembly
     from search_g1 import signals
+    from search_r1 import qa_protocol
     from verl.utils.reward_score import qa_em
     from transformers import AutoTokenizer
     config_sha=file_sha(config_path);complete_sha=file_sha(complete_path)
@@ -158,7 +161,10 @@ def inspect_final(base):
         'reproduction/prefix_selection200/rollout.py':native_rollout.__file__,
         'reproduction/prefix_selection200/interaction_protocol.py':interaction_protocol.__file__,
         'reproduction/common8/calibration_evaluation.py':calibration_evaluation.__file__,
+        'reproduction/common8/context_budget.py':context_budget.__file__,
+        'reproduction/prefix20_online/rollout.py':prompt_assembly.__file__,
         'search_g1/signals.py':signals.__file__,
+        'search_r1/qa_protocol.py':qa_protocol.__file__,
         'verl/utils/reward_score/qa_em.py':qa_em.__file__})
     once(intent,dict(run_id=config['run_id'],actor_version=config['actor_version'],started_unix=time.time(),cpu_only=True,whole_goal_completion_claimed=False))
     need(file_sha(config['final_questions'])==CANONICAL_SHA,'Actual complete canonical input SHA differs')
