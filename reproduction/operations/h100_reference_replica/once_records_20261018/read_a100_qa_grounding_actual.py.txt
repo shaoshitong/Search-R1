@@ -1,4 +1,8 @@
-"""Original normal100 QA/grounding metadata only; PARAMS supplied by root."""
+"""Original normal100 QA/grounding metadata only; PARAMS base/arm from root.
+
+The historical filename is retained for A100 callers. Both arms use the same
+new QA contract and actual round100 reward-refit evidence, with explicit labels.
+"""
 import hashlib,json,math,sys
 from collections import Counter
 from pathlib import Path
@@ -7,6 +11,7 @@ def read(path):return json.loads(Path(path).read_text())
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 def need(value,message):
  if not value:raise ValueError(message)
+arm=PARAMS.get('arm','A');need(arm in ('A','B'),'Normal100 arm label differs')
 base=Path(PARAMS['base']);root=base/'outers/outer-000100';config=read(base/'preparation/launch-config.json');joint=read(root/'complete.json')
 sys.path.insert(0,str(base/'repo'))
 from reproduction.prefix_selection200.eval import load_questions,CONTRACT
@@ -40,4 +45,4 @@ next_path=base/'outers/outer-000101/complete.json';following={'status':'ACTUAL_C
 if next_path.exists():
  nxt=read(next_path);reward=nxt['actor']['reward'];need(nxt['grounding']['version']==ground['version']==reward['version']and len(reward['ranks'])==4 and all(x['version']==ground['version']for x in reward['ranks']),'Actual101 reward scoring did not use fitted100 grounding')
  following=dict(status='ACTUAL_COMPLETE101_USES_ROUND100_REWARD',outer=101,grounding_round=nxt['grounding']['round'],version=reward['version'],actor_adam=nxt['actor']['actual_adam_steps_per_rank'],actual_reward_rank_count=len(reward['ranks']))
-print(json.dumps(dict(role='ACTUAL_A100_QA512_AND_GROUNDING100',run_id=config['run_id'],outer=100,actor_version=qa['actor_version'],actor_adam=joint['actor']['actual_adam_steps_per_rank'],probe_adam=joint['probe']['actual_adam_steps_per_rank'],qa={k:qa[k]for k in ('qa_count','em','f1','per_source','question_source_sha256','actual_worker_exit_codes','evaluation_contract','actual_compute_dtype')},qa_complete_sha256=sha(root/'validation/complete.json'),original_rank_receipts=rank_summaries,canonical_identity_and_worker_aggregates_checked=True,raw_output_shard_hashes_repeated=False,grounding=dict(round=100,version=ground['version'],source_actor_version=ground['source_actor_version'],calibration_count=300,manifest_sha256=ground['manifest_sha256'],adoption_receipt_sha256=ground['adoption_receipt_sha256'],actual_replica_ranks=[x['rank']for x in adoption['replicas']],small_head_actual_sha=heads),following_actual=following,no_model_forward_or_new_GPU_test=True,full_inputs_outputs_stay_remote=True,training_changed=False)))
+print(json.dumps(dict(role='ACTUAL_NORMAL100_QA512_AND_GROUNDING100',arm=arm,run_id=config['run_id'],outer=100,actor_version=qa['actor_version'],actor_adam=joint['actor']['actual_adam_steps_per_rank'],probe_adam=joint['probe']['actual_adam_steps_per_rank'],qa={k:qa[k]for k in ('qa_count','em','f1','per_source','question_source_sha256','actual_worker_exit_codes','evaluation_contract','actual_compute_dtype')},qa_complete_sha256=sha(root/'validation/complete.json'),original_rank_receipts=rank_summaries,canonical_identity_and_worker_aggregates_checked=True,raw_output_shard_hashes_repeated=False,grounding=dict(round=100,version=ground['version'],source_actor_version=ground['source_actor_version'],calibration_count=300,manifest_sha256=ground['manifest_sha256'],adoption_receipt_sha256=ground['adoption_receipt_sha256'],actual_replica_ranks=[x['rank']for x in adoption['replicas']],small_head_actual_sha=heads),following_actual=following,no_model_forward_or_new_GPU_test=True,full_inputs_outputs_stay_remote=True,training_changed=False)))
