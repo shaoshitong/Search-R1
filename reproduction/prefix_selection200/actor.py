@@ -521,10 +521,11 @@ def compute_soft_rewards(rows, tokenizer, config, rank=0):
 
 
 def rank_plan(seed, outer, world=WORLD):
-    """Each physical rank owns two adjacent original virtual16 minibatches."""
+    """Each physical rank owns its adjacent original virtual16 minibatches."""
     if world != WORLD or not 1 <= outer <= 200: raise ValueError('Require configured physical ranks and outer1..200')
     order = list(range(2560)); random.Random(seed + outer).shuffle(order)
-    return [[order[step * 128 + rank * 32:step * 128 + (rank + 1) * 32]
+    width = 128 // world
+    return [[order[step * 128 + rank * width:step * 128 + (rank + 1) * width]
              for step in range(20)] for rank in range(world)]
 
 

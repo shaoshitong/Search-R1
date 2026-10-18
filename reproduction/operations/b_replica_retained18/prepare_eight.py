@@ -31,6 +31,23 @@ old_receipt=read(old/'preparation/submit-receipt.json');ledger=read(old/'logs/pr
 live=[who for job in ledger['jobs'].values() for who in job.get('ledger',{}).values() if same(who)]
 assert not same(old_receipt['leader']) and not live,'Own four-card predecessor still executing'
 cleanup=read(old/'logs/cleanup-status.json');assert cleanup and cleanup['cleaned']
+if ACTION=='sync' and read(p/'preparation/launch-config.json')['source_commit']!=COMMIT:
+ current=read(p/'preparation/launch-config.json')
+ assert current['preparation_only'] and current['training_authorized'] is False and current['experiment_assignment_pending']
+ assert not(p/'preparation/submit-intent.json').exists()and not(p/'actor').exists()and not(p/'probe').exists()
+ backup=p/'preparation'/('before-unstarted-code-sync-'+COMMIT);backup.mkdir()
+ for name in ('launch-config.json','source-full-sha.json','stage-complete.json'):
+  (backup/name).write_bytes((p/'preparation'/name).read_bytes())
+ with tarfile.open(fileobj=io.BytesIO(gzip.decompress(base64.b64decode(ARCHIVE))))as tf:
+  for member in tf.getmembers():
+   assert not member.name.startswith('/')and'..'not in pathlib.Path(member.name).parts and(member.isfile()or member.isdir())
+  tf.extractall(p/'repo')
+ files=json.loads(gzip.decompress(base64.b64decode(MANIFEST)))
+ for row in files:assert sha(p/'repo'/row['path'])==row['sha256'],row['path']
+ current.update(source_commit=COMMIT,reference_B_snapshot_commit=REFERENCE)
+ (p/'preparation/launch-config.json').write_text(json.dumps(current,sort_keys=True))
+ (p/'preparation/source-full-sha.json').write_text(json.dumps(dict(commit=COMMIT,reference_B_commit=REFERENCE,files=files)))
+ (p/'preparation/stage-complete.json').write_text(json.dumps(dict(source_commit=COMMIT,files=len(files),prepared_unix=time.time(),training_started=False,unstarted_source_sync=True)))
 if ACTION=='stage' and not p.exists():
  p.mkdir();(p/'repo').mkdir();(p/'preparation').mkdir();(p/'logs').mkdir()
  with (p/'preparation/stage-intent.json').open('x')as f:json.dump(dict(source_commit=COMMIT,created_unix=time.time(),preparation_only=True),f)
@@ -105,12 +122,12 @@ print(json.dumps(dict(receipt=receipt,config=read(p/'preparation/launch-config.j
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action',choices=('stage','inspect'))
+    parser.add_argument('action',choices=('stage','sync','inspect'))
     args=parser.parse_args()
     auth=json.loads((OUT/'HUMAN_PREPARE_ONLY_8GPU.json').read_text())
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
     archive=b'';files=[]
-    if args.action=='stage':
+    if args.action in ('stage','sync'):
         if subprocess.check_output(['git','status','--porcelain'],cwd=REPO,text=True).strip():
             raise ValueError('Publish clean source before remote preparation')
         published=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/search-g1-b-replica-20261018'],cwd=REPO,text=True).split()[0]
