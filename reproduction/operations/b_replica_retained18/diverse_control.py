@@ -70,6 +70,15 @@ elif ACTION=='migrate':
  st=pathlib.Path('/proc')/str(child.pid)/'stat';fields=st.read_text().rsplit(')',1)[1].split()
  launched=dict(pid=child.pid,start_ticks=int(fields[19]),sid=int(fields[3]),created_unix=time.time())
  (p/'preparation/import-worker-receipt.json').write_text(json.dumps(launched));print(json.dumps(launched))
+elif ACTION=='finalize':
+ import base64
+ assert not(p/'preparation/submit-intent.json').exists()
+ f=p/'preparation'/('cpu-finalizer-'+COMMIT+'.py')
+ assert not f.exists(),'Finalizer already issued; inspect terminal'
+ f.write_bytes(base64.b64decode(FINALIZER));assert sha(f)==FINALIZER_SHA
+ result=subprocess.run(command([canonical+'/preparation/'+f.name,'--base',canonical]),capture_output=True,text=True,timeout=120)
+ (p/'preparation/cpu-finalizer-execution.json').write_text(json.dumps(dict(commit=COMMIT,script_sha256=FINALIZER_SHA,returncode=result.returncode,stdout=result.stdout,stderr=result.stderr)))
+ print(json.dumps(read(p/'preparation/cpu-finalizer-execution.json')))
 elif ACTION=='submit':
  assert (read(p/'preparation/import-finalizer-terminal.json')or read(p/'preparation/import-worker-terminal.json'))['status']=='COMPLETE'
  code='import json;from reproduction.prefix_selection200.launch import submit;print(json.dumps(submit('+repr(canonical)+')))'
@@ -100,9 +109,12 @@ else:
 '''
 
 def main():
- parser=argparse.ArgumentParser();parser.add_argument('action',choices=['stage','migrate','submit','observe']);args=parser.parse_args()
+ parser=argparse.ArgumentParser();parser.add_argument('action',choices=['stage','migrate','finalize','submit','observe']);args=parser.parse_args()
  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
  values=dict(ACTION=args.action,PHYSICAL=PHYSICAL,CANONICAL=CANONICAL,PREPARED=PREPARED,SOURCE=SOURCE,COMMIT=commit)
+ if args.action=='finalize':
+  f=REPO/'reproduction/operations/b_replica_retained18/diverse_finalize.py'
+  values.update(FINALIZER=base64.b64encode(f.read_bytes()).decode(),FINALIZER_SHA=hashlib.sha256(f.read_bytes()).hexdigest())
  if args.action=='stage':
   assert not subprocess.check_output(['git','status','--porcelain'],cwd=REPO,text=True).strip(),'Publish clean source first'
   published=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/b-diverse10to5-cp50-eight-20261018'],cwd=REPO,text=True).split()[0];assert published==commit

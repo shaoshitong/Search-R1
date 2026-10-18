@@ -182,7 +182,8 @@ def import_complete(base):
             if (src/name).exists()and not(dst/name).exists():(dst/name).write_bytes((src/name).read_bytes())
     (b/'question-pool').mkdir()
     for name in ('binding.json','provenance.json'):
-        (b/'question-pool'/name).write_bytes((source/'question-pool'/name).read_bytes())
+        if name=='binding.json' or (source/'question-pool'/name).exists():
+            (b/'question-pool'/name).write_bytes((source/'question-pool'/name).read_bytes())
     (b/'question-pool/state.json').write_bytes(Path(j['pool_snapshot']).read_bytes())
     fork=copy.deepcopy(j);fork.update(actor=actor,probe=probe_receipt,probe_snapshot=str(b/'probe/head-imported-cp50.pt'),
         imported_boundary=True,source_cp50_joint_sha256=sha(jp))
