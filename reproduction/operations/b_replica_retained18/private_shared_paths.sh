@@ -2,7 +2,7 @@
 # Private namespace only. Payloads and outputs remain on retained H10018.
 set -euo pipefail
 node=$(hostname)
-[[ $node == h100-8 || $node == h100-10 ]]
+[[ $node == h100-8 || $node == h100-10 || $node == h100-5 ]]
 [[ $(readlink /proc/self/ns/mnt) != $(readlink /proc/1/ns/mnt) ]]
 stash=/run/search-g1-diverse-retained18-shared
 mkdir -p "$stash"
