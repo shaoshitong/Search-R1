@@ -1,0 +1,42 @@
+{
+  "role": "isolated_readonly_observer_optional_metadata_budget_repair_before_actual_validation",
+  "created_unix": 1792294143.427974,
+  "runtime_source_commit": "eef31859ee20cf536e7c8e4d647306f92badba63",
+  "runtime_execution_id": "fe7207faf3da498ea3b89bc38c3d6d63",
+  "failure_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/a800-prefix5-fault65-observe-1792293850667467000.json",
+  "failure": "Metadata read budget exceeded while reading optional delivered-anchor outer complete.json history",
+  "new_operator_relative_path": "reproduction/operations/a800_prefix5_bounded_metadata_observer.py",
+  "new_operator_sha256": "2c5bfb85f3de9914ed903e2d4bdde2470fc9516a41909a20d70ed6d9a499e7dc",
+  "required_observer_prefix_sha256": "cd15c44d712649da98eda2105fde2e9951359bc1dc387ca38bf7b0aeb907a1f2",
+  "required_observer_prefix_byte_identical": true,
+  "source_owned_birth_current_rank_ledger_native_progress_latest_joint_candidate_QA_checks_unchanged": true,
+  "read_limit_bytes": 67108864,
+  "output_limit_bytes": 131072,
+  "SSH_timeout_seconds": 65,
+  "training_environment_python_and_physical_SSH_route_unchanged": true,
+  "mutations_exposed_by_new_entry": [],
+  "changes": [
+    "omit repeated previously accepted recovery67..71 reads",
+    "reuse already checked latest-joint JSON only after immutable outer SHA equality",
+    "read at most five recent new complete outer metadata rows",
+    "check remaining JSON metadata budget before optional historical documents",
+    "report omitted rows/documents explicitly unknown, never synthesize counters/reward/metrics",
+    "report final cumulative metadata JSON bytes after optional history"
+  ],
+  "static_validation": {
+    "local_entry_syntax": "PASS",
+    "assembled_remote_program_syntax": "PASS",
+    "required_prefix_identity": "PASS",
+    "original_training_checkout_clean_and_operator_hash_unchanged": "PASS",
+    "new_training_tests_GPU_evaluations_models_tensors_or_probabilities_read": false
+  },
+  "actual_validation": {
+    "first_new_operator_actual_receipt": null,
+    "second_new_operator_actual_receipt": null,
+    "status": "PENDING_normal30min_reads_no_early_SSH"
+  },
+  "hour_anchor_advance": false,
+  "runtime_restart_or_hot_edit": false,
+  "known_behavior": "A partial history window is explicitly unknown; local previously accepted scalar rows may be merged only by same run/execution/source and matching outer SHA. Missing rows remain unknown.",
+  "historical_other_goals_untouched": true
+}
