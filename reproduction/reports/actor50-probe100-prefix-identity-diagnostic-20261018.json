@@ -1,0 +1,655 @@
+{
+  "role": "actual_prefix5_repetition_comparison_and_probe_warmup_diagnostic",
+  "checked_unix": 1792305547.356714,
+  "request": "Inspect referenced thread conclusion and current actor50/probe warmup Prefix5 identity",
+  "current": {
+    "role": "existing_prefix5_identity_diagnostic",
+    "checked_unix": 1792305437.8535922,
+    "run_id": "81df904ad9584e29a35d703570b2bcef",
+    "execution_id": "a2b04d10010e486b991abcf8fb75df83",
+    "runtime_source_commit": "d52b51f427aadb0da2f22c6204f2a5d17454338c",
+    "latest_complete_epochs": 16,
+    "latest_EMA_updates": 220,
+    "live_status": {
+      "actor_updates": 0,
+      "checked_unix": 1792305427.5888474,
+      "cycle": 9,
+      "run_id": "81df904ad9584e29a35d703570b2bcef",
+      "stage": "cycle-0009-prefix"
+    },
+    "current_failure": null,
+    "source50_checkpoint_sha256": "80c5b4cdbafed1c92441352cd725cc7b2819319da37f7672498f58524ec79f2c",
+    "comparison_scope": "within each question own five trajectories; not across questions",
+    "exact_token_identity": "producer SHA256 of actual retained policy token IDs, verified index manifest SHA",
+    "input_metadata_signature": "question_hash, policy_tokens_hash, positions_hash, segment bounds and causal context hashes",
+    "remote_metadata_bytes_read": 122451337,
+    "raw_data_returned": false,
+    "rows": [
+      {
+        "scope": "warmup_train_cycle1_epochs1-2",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "questions": 512,
+        "trajectories": 2560,
+        "unique_prefix_count_distribution": {
+          "1": 372,
+          "2": 131,
+          "3": 9
+        },
+        "all5_prefix_equal": 372,
+        "all5_prefix_equal_fraction": 0.7265625,
+        "all5_input_metadata_equal": 372,
+        "pair_equal": 4435,
+        "pair_total": 5120,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 512,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 138,
+            "all5_prefix_equal": 111,
+            "all5_input_metadata_equal": 111
+          },
+          "all_wrong": {
+            "groups": 237,
+            "all5_prefix_equal": 168,
+            "all5_input_metadata_equal": 168
+          },
+          "mixed": {
+            "groups": 137,
+            "all5_prefix_equal": 93,
+            "all5_input_metadata_equal": 93
+          }
+        },
+        "saved_prediction_groups": 0,
+        "saved_pj_all5_equal_at1e10": 0,
+        "scan_manifest_sha256": "d622746e43ac59b01bdfc80386b0eab32a8cb9c6ff54cf3e798b6476658bbfa0",
+        "index_sha256": "d5afb34752fb1deed6778f3ec31b515f8b0e57975b520e12e059e6971bf7765e",
+        "own_EM_sha256": "f2181781296757141bc02137d9d3de780110b1c79da27ebae1fa95e89ca65b19",
+        "saved_score_sha256": null,
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      },
+      {
+        "scope": "warmup_train_cycle2_epochs3-4",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "questions": 512,
+        "trajectories": 2560,
+        "unique_prefix_count_distribution": {
+          "1": 337,
+          "2": 156,
+          "3": 18,
+          "4": 1
+        },
+        "all5_prefix_equal": 337,
+        "all5_prefix_equal_fraction": 0.658203125,
+        "all5_input_metadata_equal": 337,
+        "pair_equal": 4221,
+        "pair_total": 5120,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 512,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 146,
+            "all5_prefix_equal": 104,
+            "all5_input_metadata_equal": 104
+          },
+          "all_wrong": {
+            "groups": 232,
+            "all5_prefix_equal": 152,
+            "all5_input_metadata_equal": 152
+          },
+          "mixed": {
+            "groups": 134,
+            "all5_prefix_equal": 81,
+            "all5_input_metadata_equal": 81
+          }
+        },
+        "saved_prediction_groups": 0,
+        "saved_pj_all5_equal_at1e10": 0,
+        "scan_manifest_sha256": "c852cd08aaab36a4baaed038c0c5ec54b33d98132df15208a22c94dcfe1835ed",
+        "index_sha256": "56931c92099093a353f3ec3489a97ab7e4c42bb3b322f1470eb86c2bb0f33350",
+        "own_EM_sha256": "8090e0449526847a2e8650c8a9e6bae70c9ea265db9947b5b1e0b3b89f479549",
+        "saved_score_sha256": null,
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      },
+      {
+        "scope": "warmup_train_cycle3_epochs5-6",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "questions": 512,
+        "trajectories": 2560,
+        "unique_prefix_count_distribution": {
+          "1": 369,
+          "3": 19,
+          "2": 124
+        },
+        "all5_prefix_equal": 369,
+        "all5_prefix_equal_fraction": 0.720703125,
+        "all5_input_metadata_equal": 369,
+        "pair_equal": 4393,
+        "pair_total": 5120,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 512,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 174,
+            "all5_prefix_equal": 139,
+            "all5_input_metadata_equal": 139
+          },
+          "all_wrong": {
+            "groups": 221,
+            "all5_prefix_equal": 161,
+            "all5_input_metadata_equal": 161
+          },
+          "mixed": {
+            "groups": 117,
+            "all5_prefix_equal": 69,
+            "all5_input_metadata_equal": 69
+          }
+        },
+        "saved_prediction_groups": 0,
+        "saved_pj_all5_equal_at1e10": 0,
+        "scan_manifest_sha256": "e0dab75939d9b158550314f756d5bc17fa67a797367825b9144998448ff20127",
+        "index_sha256": "a2755be643dc662601406fe2a85c2ec6ec6b95a1eebea49a6f1ac3701908c890",
+        "own_EM_sha256": "6b314e25c32e41aa09dd78db864ba1124fca3f9d103435f1bdecfaecee1300a5",
+        "saved_score_sha256": null,
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      },
+      {
+        "scope": "warmup_train_cycle4_epochs7-8",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "questions": 512,
+        "trajectories": 2560,
+        "unique_prefix_count_distribution": {
+          "1": 370,
+          "2": 133,
+          "3": 9
+        },
+        "all5_prefix_equal": 370,
+        "all5_prefix_equal_fraction": 0.72265625,
+        "all5_input_metadata_equal": 370,
+        "pair_equal": 4415,
+        "pair_total": 5120,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 512,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 156,
+            "all5_prefix_equal": 128,
+            "all5_input_metadata_equal": 128
+          },
+          "all_wrong": {
+            "groups": 235,
+            "all5_prefix_equal": 165,
+            "all5_input_metadata_equal": 165
+          },
+          "mixed": {
+            "groups": 121,
+            "all5_prefix_equal": 77,
+            "all5_input_metadata_equal": 77
+          }
+        },
+        "saved_prediction_groups": 0,
+        "saved_pj_all5_equal_at1e10": 0,
+        "scan_manifest_sha256": "97ba09ea40be7970b6bf926ebad60a2ca3c143876a872a5c8bec696ea1fa95b4",
+        "index_sha256": "af74410e5eb0285b29432d88597939f09bea2764c7cfcb6039fc7c26994ef4b9",
+        "own_EM_sha256": "52adbfb3b7c34b47ff7d8d6159c152ff9a1e4e240fd47f635dc4d62fa51f51d2",
+        "saved_score_sha256": null,
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      },
+      {
+        "scope": "warmup_train_cycle5_epochs9-10",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "questions": 512,
+        "trajectories": 2560,
+        "unique_prefix_count_distribution": {
+          "1": 345,
+          "3": 14,
+          "2": 152,
+          "4": 1
+        },
+        "all5_prefix_equal": 345,
+        "all5_prefix_equal_fraction": 0.673828125,
+        "all5_input_metadata_equal": 345,
+        "pair_equal": 4273,
+        "pair_total": 5120,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 512,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 164,
+            "all5_prefix_equal": 121,
+            "all5_input_metadata_equal": 121
+          },
+          "all_wrong": {
+            "groups": 206,
+            "all5_prefix_equal": 143,
+            "all5_input_metadata_equal": 143
+          },
+          "mixed": {
+            "groups": 142,
+            "all5_prefix_equal": 81,
+            "all5_input_metadata_equal": 81
+          }
+        },
+        "saved_prediction_groups": 0,
+        "saved_pj_all5_equal_at1e10": 0,
+        "scan_manifest_sha256": "cb16c9b2ee1098b4c25ef9e4dbe53839f642740b30794e2e1a41cbc6a9f13930",
+        "index_sha256": "1b2ca31c314527cff5cbd562be21f078697876c57be0280212ebd063ae2f6015",
+        "own_EM_sha256": "b682f029e1e92d7938dc08a67d9260ad65976c53a5552bf2c05ebb447a156c08",
+        "saved_score_sha256": null,
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      },
+      {
+        "scope": "warmup_train_cycle6_epochs11-12",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "questions": 512,
+        "trajectories": 2560,
+        "unique_prefix_count_distribution": {
+          "1": 353,
+          "2": 144,
+          "3": 15
+        },
+        "all5_prefix_equal": 353,
+        "all5_prefix_equal_fraction": 0.689453125,
+        "all5_input_metadata_equal": 353,
+        "pair_equal": 4320,
+        "pair_total": 5120,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 512,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 161,
+            "all5_prefix_equal": 120,
+            "all5_input_metadata_equal": 120
+          },
+          "all_wrong": {
+            "groups": 236,
+            "all5_prefix_equal": 164,
+            "all5_input_metadata_equal": 164
+          },
+          "mixed": {
+            "groups": 115,
+            "all5_prefix_equal": 69,
+            "all5_input_metadata_equal": 69
+          }
+        },
+        "saved_prediction_groups": 0,
+        "saved_pj_all5_equal_at1e10": 0,
+        "scan_manifest_sha256": "1f4e92dbcb2f61919e7d9bc2feff2ff00a075dc46c8f2fdfc6a496d6c62d25b9",
+        "index_sha256": "5491f1ec7c85165376a58f743ea5744e5d1e6d41f9df2c3fd40666d14f4553a3",
+        "own_EM_sha256": "3bfebd50fcedd5187765a41dd8291712b05df781fccef7b729af34bc00b0bc5f",
+        "saved_score_sha256": null,
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      },
+      {
+        "scope": "warmup_train_cycle7_epochs13-14",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "questions": 512,
+        "trajectories": 2560,
+        "unique_prefix_count_distribution": {
+          "2": 142,
+          "1": 355,
+          "3": 15
+        },
+        "all5_prefix_equal": 355,
+        "all5_prefix_equal_fraction": 0.693359375,
+        "all5_input_metadata_equal": 355,
+        "pair_equal": 4337,
+        "pair_total": 5120,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 512,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 172,
+            "all5_prefix_equal": 130,
+            "all5_input_metadata_equal": 130
+          },
+          "all_wrong": {
+            "groups": 205,
+            "all5_prefix_equal": 135,
+            "all5_input_metadata_equal": 135
+          },
+          "mixed": {
+            "groups": 135,
+            "all5_prefix_equal": 90,
+            "all5_input_metadata_equal": 90
+          }
+        },
+        "saved_prediction_groups": 0,
+        "saved_pj_all5_equal_at1e10": 0,
+        "scan_manifest_sha256": "2a292dc0f6c5112d4f7c81c4e1c0669d05458a789cce37add013187c173e938e",
+        "index_sha256": "c864839ab08d852b76bb719ddf1b38aa066bbd37c11cc2ae482d52b9faf27d0d",
+        "own_EM_sha256": "31cb0252280208f2af728494d58360e260d5a53ea5ce0c4acf3da31d0a080cc3",
+        "saved_score_sha256": null,
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      },
+      {
+        "scope": "warmup_train_cycle8_epochs15-16",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "questions": 512,
+        "trajectories": 2560,
+        "unique_prefix_count_distribution": {
+          "1": 367,
+          "2": 133,
+          "3": 12
+        },
+        "all5_prefix_equal": 367,
+        "all5_prefix_equal_fraction": 0.716796875,
+        "all5_input_metadata_equal": 367,
+        "pair_equal": 4401,
+        "pair_total": 5120,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 512,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 161,
+            "all5_prefix_equal": 122,
+            "all5_input_metadata_equal": 122
+          },
+          "all_wrong": {
+            "groups": 247,
+            "all5_prefix_equal": 181,
+            "all5_input_metadata_equal": 181
+          },
+          "mixed": {
+            "groups": 104,
+            "all5_prefix_equal": 64,
+            "all5_input_metadata_equal": 64
+          }
+        },
+        "saved_prediction_groups": 0,
+        "saved_pj_all5_equal_at1e10": 0,
+        "scan_manifest_sha256": "3f6a24ff417ffb0a62892d56337af24b24f360654549d65be629490160edba01",
+        "index_sha256": "84aad4eef39985edeb6b780f0f0c3c9889e52d44a01295a03083255a9462302c",
+        "own_EM_sha256": "58522bbda9e0d95fcbf897300c2b5a5a5c56e5896a273905c0baf7618c1c8c57",
+        "saved_score_sha256": null,
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      },
+      {
+        "scope": "warmup_fixed_probe_test512",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "questions": 512,
+        "trajectories": 2560,
+        "unique_prefix_count_distribution": {
+          "2": 141,
+          "1": 353,
+          "3": 18
+        },
+        "all5_prefix_equal": 353,
+        "all5_prefix_equal_fraction": 0.689453125,
+        "all5_input_metadata_equal": 353,
+        "pair_equal": 4325,
+        "pair_total": 5120,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 512,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 176,
+            "all5_prefix_equal": 138,
+            "all5_input_metadata_equal": 138
+          },
+          "all_wrong": {
+            "groups": 222,
+            "all5_prefix_equal": 143,
+            "all5_input_metadata_equal": 143
+          },
+          "mixed": {
+            "groups": 114,
+            "all5_prefix_equal": 72,
+            "all5_input_metadata_equal": 72
+          }
+        },
+        "saved_prediction_groups": 0,
+        "saved_pj_all5_equal_at1e10": 0,
+        "scan_manifest_sha256": "0ba9545ab4b3f15df33f97d1d13d77b31cb829eacafe88d33404185b9d8028cb",
+        "index_sha256": "fd3e842af55206d980d3bd57f45b7356b7b4cde0cd9f9b00600cdd4037f28388",
+        "own_EM_sha256": "a5eb88808d5053aac61206ffbc25503b17d1bf57e90b8e59c01ac5c365b7a9f1",
+        "saved_score_sha256": null,
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      },
+      {
+        "scope": "former_formal_outer50_pre_actor_update",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0049",
+        "questions": 2560,
+        "trajectories": 12800,
+        "unique_prefix_count_distribution": {
+          "1": 1791,
+          "2": 704,
+          "3": 65
+        },
+        "all5_prefix_equal": 1791,
+        "all5_prefix_equal_fraction": 0.699609375,
+        "all5_input_metadata_equal": 1791,
+        "pair_equal": 21774,
+        "pair_total": 25600,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 2560,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 820,
+            "all5_prefix_equal": 631,
+            "all5_input_metadata_equal": 631
+          },
+          "all_wrong": {
+            "groups": 1149,
+            "all5_prefix_equal": 784,
+            "all5_input_metadata_equal": 784
+          },
+          "mixed": {
+            "groups": 591,
+            "all5_prefix_equal": 376,
+            "all5_input_metadata_equal": 376
+          }
+        },
+        "saved_prediction_groups": 2560,
+        "saved_pj_all5_equal_at1e10": 1793,
+        "scan_manifest_sha256": "46ce37d948bc668b625393cabfbe78da9475cb98809d2600bf863532447e8a41",
+        "index_sha256": "64f5b05de72860ff20c7b37cf56112c3839011a6cd363741a84bec744e770697",
+        "own_EM_sha256": "95947f04965216b04a60a5b5cd8d0982def002105d6788fe6f2e98efcffd6f42",
+        "saved_score_sha256": "31488736b23416daa83ac05ff6db41f934079ae52e13e1ba6938144a8f6b11af",
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      },
+      {
+        "scope": "former_formal_outer51_pre_actor_update",
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "questions": 5120,
+        "trajectories": 25600,
+        "unique_prefix_count_distribution": {
+          "1": 3653,
+          "2": 1351,
+          "3": 115,
+          "4": 1
+        },
+        "all5_prefix_equal": 3653,
+        "all5_prefix_equal_fraction": 0.7134765625,
+        "all5_input_metadata_equal": 3653,
+        "pair_equal": 43904,
+        "pair_total": 51200,
+        "groups_with_short_prefix": 0,
+        "labelled_groups": 512,
+        "by_true_class": {
+          "all_correct": {
+            "groups": 229,
+            "all5_prefix_equal": 185,
+            "all5_input_metadata_equal": 185
+          },
+          "all_wrong": {
+            "groups": 109,
+            "all5_prefix_equal": 77,
+            "all5_input_metadata_equal": 77
+          },
+          "mixed": {
+            "groups": 174,
+            "all5_prefix_equal": 117,
+            "all5_input_metadata_equal": 117
+          }
+        },
+        "saved_prediction_groups": 5120,
+        "saved_pj_all5_equal_at1e10": 3649,
+        "scan_manifest_sha256": "a5b43f12c27cb481e1070e81a89065f5d08afba1ac8f39994ad0690cef822fc1",
+        "index_sha256": "2f1a7fa1998bb959860689d70d80c81f4814297d2f4ec4992f7d7564f0c5ad7b",
+        "own_EM_sha256": "fa251928e99d9cdb20b3eda690f04aad635092b394324d01e19ecc3dcc1d455f",
+        "saved_score_sha256": "106d765902fede77cbff22530f3da18fb8750a8803c250069a83d29b367750e7",
+        "no_new_generation": true,
+        "no_model_forward": true,
+        "no_tensor_read": true
+      }
+    ]
+  },
+  "current_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-probe100-prefix-identity-1792305437710658000.json",
+  "feature_CPU_comparison": {
+    "role": "existing_native_prefix_feature_identity_CPU_diagnostic",
+    "checked_unix": 1792305509.1999395,
+    "run_id": "81df904ad9584e29a35d703570b2bcef",
+    "execution_id": "a2b04d10010e486b991abcf8fb75df83",
+    "latest_complete_epochs": 16,
+    "rows": [
+      {
+        "scope": "fixed_probe512",
+        "cycle": 0,
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "selection": "first16 completeG5 trueMixed groups whose retained policy5 hashes match exactly",
+        "groups_compared": 16,
+        "all5_valid_native_features_bit_identical": 16,
+        "unique_feature_rows_per_group": {
+          "1": 16
+        },
+        "max_abs_BF16_feature_difference": 0.0,
+        "max_relative_L2_feature_difference": 0.0,
+        "relevant_feature_bytes_read": 45957120,
+        "feature_digest_aggregate": "db01fb6ee6523c477e17af7552881372f005a25a91e6336a6d66e23319e2a29e",
+        "features_already_present": true,
+        "no_new_model_forward": true,
+        "raw_tensor_returned": false
+      },
+      {
+        "scope": "first_train512",
+        "cycle": 1,
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "selection": "first16 completeG5 trueMixed groups whose retained policy5 hashes match exactly",
+        "groups_compared": 16,
+        "all5_valid_native_features_bit_identical": 16,
+        "unique_feature_rows_per_group": {
+          "1": 16
+        },
+        "max_abs_BF16_feature_difference": 0.0,
+        "max_relative_L2_feature_difference": 0.0,
+        "relevant_feature_bytes_read": 46551040,
+        "feature_digest_aggregate": "bf9443a9dd52e549c05015815fa7bcfdcbb24c62f68ca633d18d0a7c52b38158",
+        "features_already_present": true,
+        "no_new_model_forward": true,
+        "raw_tensor_returned": false
+      },
+      {
+        "scope": "latest_train512",
+        "cycle": 8,
+        "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+        "selection": "first16 completeG5 trueMixed groups whose retained policy5 hashes match exactly",
+        "groups_compared": 16,
+        "all5_valid_native_features_bit_identical": 15,
+        "unique_feature_rows_per_group": {
+          "1": 15,
+          "2": 1
+        },
+        "max_abs_BF16_feature_difference": 16.0,
+        "max_relative_L2_feature_difference": 0.008584075217419124,
+        "relevant_feature_bytes_read": 46817280,
+        "feature_digest_aggregate": "39f696cb357adb47d1ca99efbcfa31041413fa2198f33bcbc1239f5be5026712",
+        "features_already_present": true,
+        "no_new_model_forward": true,
+        "raw_tensor_returned": false
+      }
+    ],
+    "no_GPU_queries": true,
+    "no_generation": true
+  },
+  "feature_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-probe100-prefix-feature-identity-1792305509050169000.json",
+  "warmup_aggregate": {
+    "completed_data_cycles": 8,
+    "original_questions": 4096,
+    "all5_prefix_equal": 2868,
+    "fraction": 0.7001953125,
+    "true_mixed_groups": 1005,
+    "true_mixed_with_all5_prefix_equal": 624,
+    "fraction_within_true_mixed": 0.6208955223880597
+  },
+  "reference_thread": {
+    "thread": "01a0fcbe-15f8-7600-ae84-9487d924560a",
+    "title": "U-验证 TOP-D 在 Search Agentic RL 中的效果",
+    "local_scalar_summary_SHA256": "2966d17c84b8e37db1c26dec292c16bb7570993224ca12ab441a2954277e78c3",
+    "rows": [
+      {
+        "outer": 50,
+        "groups": 2560,
+        "same_prefix5_groups": 2317,
+        "same_prefix5_and_policy_positions_groups": 2317,
+        "same_five_p_groups": 2313,
+        "same_p_but_different_prefix5_groups": 4,
+        "true_mixed_among_same_prefix5": 491,
+        "mean_unique_prefix5_per_question": 1.10625,
+        "index_sha256": "43785e5003ec1d2f1dfcdcbbd1470466cb25066ec3c5df9e69581263b90b83a2",
+        "scores_sha256": "b8c59f301cb59002ae29077cc0179c66262e5016326b484d83a61db4ac6d189a",
+        "own_em_sha256": "77471b8711f1c33a991c0d0673b3478ac35199a1b8c0028da6b6c7cdef216d21"
+      },
+      {
+        "outer": 100,
+        "groups": 2560,
+        "same_prefix5_groups": 2552,
+        "same_prefix5_and_policy_positions_groups": 2552,
+        "same_five_p_groups": 2550,
+        "same_p_but_different_prefix5_groups": 0,
+        "true_mixed_among_same_prefix5": 293,
+        "mean_unique_prefix5_per_question": 1.003125,
+        "index_sha256": "6e80f5c7eb27555dc687da483b26486d58ab4f0c1b63c509a28d3cd1e9f5e4d6",
+        "scores_sha256": "456763fc4e0d2d5c3df9370202f9ec72dc0e37cdd59a2018632063fd24f44492",
+        "own_em_sha256": "53aafd57bc596cec54c7be13e67266644d7652cbc6ea907aa1f34a2455c8a48d"
+      },
+      {
+        "outer": 110,
+        "groups": 2560,
+        "same_prefix5_groups": 2553,
+        "same_prefix5_and_policy_positions_groups": 2553,
+        "same_five_p_groups": 2548,
+        "same_p_but_different_prefix5_groups": 0,
+        "true_mixed_among_same_prefix5": 271,
+        "mean_unique_prefix5_per_question": 1.002734375,
+        "index_sha256": "7e8eeb241f26e1e13a9292cf06c4dd4699b44eeb15f4bfe9a51846d437ea5263",
+        "scores_sha256": "6b919cb2a3548c4c9caec07c5fcba4d9145e25ed7ccd4ca126c44658cf3053dd",
+        "own_em_sha256": "def8358918345e06ebe45daac5091429ae28015de20db8697a26709e71e8fe5d"
+      }
+    ]
+  },
+  "interpretation": {
+    "within_question_not_across_questions": true,
+    "all_groups_equal_claim": false,
+    "balanced_sampling_does_not_add_future_trajectory_information": true,
+    "identical_inputs_imply_identical_deterministic_pointwise_outputs": "code implication, no fresh prediction inference run",
+    "saved_online_probabilities_analyzed_only": true,
+    "current_warmup_per_trajectory_predictions_not_saved": "not claimed directly observed",
+    "feature_equality": "47 of48 specifically selected equal-token trueMixed groups bit-identical; one differs, no all-dataset extrapolation",
+    "group_Mixed_still_can_be_learned_from_question_and_prefix_statistics": true
+  },
+  "training_modified": false,
+  "actor_updates": 0,
+  "new_generation": false,
+  "new_model_forward": false,
+  "all_models_tensors_rollouts_remain_remote": true
+}
