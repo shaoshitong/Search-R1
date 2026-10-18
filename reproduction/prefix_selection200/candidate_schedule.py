@@ -7,6 +7,10 @@ FIELDS = frozenset(('effective_from_outer', 'legacy_candidates', 'ordinary_candi
 
 
 def validate_schedule(config, *, required=False):
+    if config.get('grpo_from_actor50'):
+        from reproduction.actor50_grpo.schedule import validate_branch
+        validate_branch(config)
+        return dict(config['candidate_schedule'])
     value = config.get('candidate_schedule')
     if value is None:
         if required:
@@ -33,6 +37,8 @@ def candidate_count(config, outer):
     if type(outer) is not int or not 1 <= outer <= FINAL_OUTER:
         raise ValueError('Candidate count requires actual outer1..200')
     value = validate_schedule(config)
+    if config.get('grpo_from_actor50') and outer > 50:
+        return PERIODIC_CANDIDATES
     if value is None or outer < value['effective_from_outer']:
         return PERIODIC_CANDIDATES
     update = outer < FINAL_OUTER and outer % PROBE_PERIOD == 0
@@ -44,6 +50,8 @@ def consumed_candidates_through(config, completed_outer):
     if type(completed_outer) is not int or not 0 <= completed_outer <= FINAL_OUTER:
         raise ValueError('Candidate clock requires completed outer0..200')
     value = validate_schedule(config)
+    if config.get('grpo_from_actor50') and completed_outer >= 50:
+        return config['actor50_pool_consumed_candidates'] + (completed_outer-50)*PERIODIC_CANDIDATES
     if value is None:
         return completed_outer * PERIODIC_CANDIDATES
     before = min(completed_outer, value['effective_from_outer'] - 1)
@@ -56,6 +64,12 @@ def consumed_candidates_through(config, completed_outer):
 
 def schedule_metadata(config, outer):
     value = validate_schedule(config)
+    if config.get('grpo_from_actor50') and outer > 50:
+        from reproduction.actor50_grpo.schedule import outer_plan
+        return dict(candidate_schedule=value, scheduled_candidate_questions=PERIODIC_CANDIDATES,
+            grpo_from_actor50=True, actor50_branch_schedule=config['actor50_branch_schedule'],
+            actor50_pool_consumed_candidates=config['actor50_pool_consumed_candidates'],
+            actual_outer_plan=outer_plan(outer))
     if value is None or outer < value['effective_from_outer']:
         return {}
     return dict(candidate_schedule=value, scheduled_candidate_questions=candidate_count(config, outer))

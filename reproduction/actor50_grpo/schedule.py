@@ -8,6 +8,21 @@ RERANK_CANDIDATES = 1024
 PREFIX40_FROM = 100
 RERANK_FROM = 150
 
+BRANCH_SCHEDULE = dict(actor_start_outer=50, final_outer=200, candidates=2560,
+    selected=512, prefix20_from=51, prefix40_from=100, rerank1024_from=150,
+    probe_period=10, probe_update_at_final=False,
+    rerank_fallback=['mixed','all_correct','all_wrong'])
+
+
+def validate_branch(config):
+    if (config.get('grpo_from_actor50') is not True
+            or config.get('actor50_branch_schedule') != BRANCH_SCHEDULE
+            or type(config.get('actor50_pool_consumed_candidates')) is not int
+            or config['actor50_pool_consumed_candidates'] < 50*2560
+            or not isinstance(config.get('candidate_schedule'),dict)):
+        raise ValueError('Bind the exact actor50/Prefix20/100/150/200 branch schedule')
+    return config
+
 
 def outer_plan(outer):
     if type(outer) is not int or not START_OUTER < outer <= FINAL_OUTER:

@@ -178,8 +178,10 @@ class OnlineQuestionProbe(nn.Module):
         if (config.hidden_size, config.num_hidden_layers, config.num_attention_heads,
                 config.num_key_value_heads, config.intermediate_size) != (2048, 36, 16, 2, 11008):
             raise ValueError('Require the official Qwen2.5-3B native architecture')
-        if question_max_tokens != QMAX or WIDTH != QMAX + PREFIX_TOKENS or PREFIX_TOKENS != 5:
-            raise ValueError('The source question5 model requires Q273 plus five policy slots')
+        from .contract import ACTOR50_BRANCH
+        allowed = (20,40) if ACTOR50_BRANCH else (5,)
+        if question_max_tokens != QMAX or WIDTH != QMAX + PREFIX_TOKENS or PREFIX_TOKENS not in allowed:
+            raise ValueError('The native head width must match its actual retained policy token contract')
         config._attn_implementation = 'flash_attention_2'
         self.question_max_tokens, self.policy_tokens = QMAX, PREFIX_TOKENS
         self.max_tokens, self.hidden_size = WIDTH, DIM
