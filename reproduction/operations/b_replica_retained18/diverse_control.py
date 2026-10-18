@@ -133,7 +133,19 @@ else:
     score_rows=[json.loads(line)for line in scores.read_text().splitlines()]
     probe_variance=dict(questions=len(score_rows),mean_within_group_probability_variance=statistics.fmean(statistics.pvariance(r['trajectory_probabilities'])for r in score_rows),nonzero_probability_variance_groups=sum(statistics.pvariance(r['trajectory_probabilities'])>0 for r in score_rows))
    prefix_receipt=read(p/'outers'/('outer-%06d'%n)/'prefix/complete.json')
-   facts.append({k:v.get(k)for k in ('outer','source_commit','selection_metrics','iteration_wall','phase_timings')}|dict(actor=v['actor']['actual_adam_steps_per_rank'],probe=v['probe']['actual_adam_steps_per_rank'],direct_rank_evidence=rank_evidence,probe_variance=probe_variance,prefix_counts={k:prefix_receipt.get(k)for k in ('questions','trajectories','prefix_candidates_generated','prefixes_retained','prefixes_discarded','discarded_probe_evaluations','diversity_statistics','actual_sampled_tokens','native_generation_requests')}))
+   diversity_comparison=None
+   proof_files=prefix_receipt.get('prefix_diversity_shards',[])
+   if proof_files:
+    unique_rows=[]
+    for item in proof_files:
+     for line in physical_path(item['path']).read_text().splitlines():
+      proof=json.loads(line);candidates=proof['candidates']
+      first={tuple(row['policy_token_ids'])for row in candidates if row['sampled_response_index']<5}
+      retained={tuple(row['policy_token_ids'])for row in candidates if row['selected']}
+      possible=min(5,len({tuple(row['policy_token_ids'])for row in candidates}))
+      unique_rows.append((len(first),len(retained),possible))
+    diversity_comparison=dict(questions=len(unique_rows),first_native_five_mean_unique=sum(r[0]for r in unique_rows)/len(unique_rows),retained_five_mean_unique=sum(r[1]for r in unique_rows)/len(unique_rows),groups_strictly_more_unique_than_first_five=sum(r[1]>r[0]for r in unique_rows),groups_with_five_distinct_retained=sum(r[1]==5 for r in unique_rows),all_groups_retain_maximum_possible_distinct=all(r[1]==r[2]for r in unique_rows),counterfactual_scope='first five prefixes in the same native ten draws; no extra continuation/control effect claim')
+   facts.append({k:v.get(k)for k in ('outer','source_commit','selection_metrics','iteration_wall','phase_timings')}|dict(actor=v['actor']['actual_adam_steps_per_rank'],probe=v['probe']['actual_adam_steps_per_rank'],direct_rank_evidence=rank_evidence,probe_variance=probe_variance,diversity_comparison=diversity_comparison,prefix_counts={k:prefix_receipt.get(k)for k in ('questions','trajectories','prefix_candidates_generated','prefixes_retained','prefixes_discarded','discarded_probe_evaluations','diversity_statistics','actual_sampled_tokens','native_generation_requests')}))
  active_actor=[]
  for f in (p/'actor/outers').glob('outer-%04d-attempt-*/rank-*-updates.jsonl'%outer):
   records=[json.loads(line)for line in f.read_text().splitlines()if line]
