@@ -1,4 +1,35 @@
-# Independent B replica on retained H10018
+# Retained H10018: eight-card preparation only
+
+Latest human instruction supersedes running this thread's B replica: prepare
+eight cards, synchronize reference B, do not train, await a different experiment.
+The prior four-card leader2889528 and all its owned subprocesses are stopped;
+joint1 and partial outer2 evidence remain remote. No other A/B task was stopped.
+
+Prepared physical directory:
+`/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-eight-prepared-20261018`.
+Actual eight-card source is `3d05b867a3db7823f92c68da9aa3e704b142a7a4`, copied
+independently and full-SHA checked for1512 files. Config SHA is
+`d999093b8cab1b01ee0e4da1a55342881e8942bc802e167c4f0d2e2d1d300305`.
+Two remote CPU-only inspections passed with GPU0–7 UUIDs, eight-rank actor
+coverage, true-global probe weighting, retained asset paths and package imports.
+CUDA was not initialized, no model/optimizer was loaded, no submit intent or
+GPU allocation exists. `preparation_only`, unassigned and not-authorized flags
+cause both normal submit/run entry points to refuse training.
+
+Latest published reference B sync is73f925bd03d2a320bd68336c7abb4c5fb3efe4aa:
+CP50 continuation, prefix20/40/80 and ordinary predicted Top768/1024/1536 of5120,
+then actual-mixed-first/score-fill512, balanced rawLR5e-6/group-loss5/EMA.99.
+Its original four-card CP50 state has not been imported or called an eight-card
+resume. See [EIGHT_GPU_PREPARATION.md](EIGHT_GPU_PREPARATION.md) and source
+`environment8.sh` only inside the private retained18 namespace. Staging control
+offers stage/sync/inspect only; it has no training action.
+
+Local task evidence: `EIGHT_ENVIRONMENT_SYNC.json`,
+`EIGHT_ENVIRONMENT_INSPECT.json`, `EIGHT_PREPARED_CONFIG.json` and the latest
+`STATUS.json`/`REPORT.md` in this chat's `outputs/b-replica-retained18-20261018`.
+The following records describe historical four-card execution, not an active run.
+
+## Historical four-card deployment (human-stopped)
 
 Human 2026-10-18 explicitly stops old native3433 and requests experiment B from thread01a0fcbb-863f-7450-926d-db537f648265, with an independent code directory. Original A/B jobs remain untouched.
 
