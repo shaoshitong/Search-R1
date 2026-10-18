@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "role": "executed_read_only_posthoc_operations",
+  "automatic_execution": false,
+  "replay_instruction": "These operations have already completed. This document is an execution record, not a launcher or permission to restart training.",
+  "subject": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018",
+    "job": "734689",
+    "run_id": "dfe9c94084bb48b2a9bb7b60f9d882da",
+    "training_commit": "4cc07f3103917f5ac6bb81f6b022d454809c1054",
+    "training_world_size": 4
+  },
+  "operations": [
+    {
+      "kind": "single_completed_outer_cpu_semantic_replay",
+      "operator_commit": "5799cd515186cba9856405c12839d4dc24b2d0c9",
+      "outer": 13,
+      "attempt_id": "7db913b0543144b5963e9f5fcca60ae3",
+      "remote_command": "env CUDA_VISIBLE_DEVICES='' '/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python' -B -c 'import json,sys,time\nfrom pathlib import Path\nstarted=time.time()\nbase=Path(\"/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018\")\nsource=base/\"source\"/\"5799cd515186cba9856405c12839d4dc24b2d0c9\"\nsys.path.insert(0,str(source))\nfrom reproduction.easy2560_joint4 import summarize_saved_telemetry as telemetry\nfrom reproduction.easy2560_joint4.checkpoint_evidence import authenticated_restore_chain\nfrom reproduction.easy2560_joint4.selection_evidence import verify_attempt\npart=telemetry.segment(base,13)\nrun=part[\"run\"]\nassert part[\"job\"]==\"734689\"\nassert run[\"run_id\"]==\"dfe9c94084bb48b2a9bb7b60f9d882da\"\nassert run[\"source_commit\"]==\"4cc07f3103917f5ac6bb81f6b022d454809c1054\"\nchain=authenticated_restore_chain(base,run)\nassert chain[\"source_job\"]==\"730226\" and chain[\"current_job\"]==\"734689\"\nupdates=[u for u in part[\"updates\"] if u[\"step\"]==13]\nassert len(updates)==1\nupdate=updates[0]\nassert update[\"attempt_id\"]==\"7db913b0543144b5963e9f5fcca60ae3\" and update[\"full_budget_complete\"] is True\nassert update[\"optimizer_writes_before\"]==240 and update[\"optimizer_writes_after\"]==260\nactivity=telemetry.write_activity(part,update)\nassert activity[\"matching_actual_attempt_available\"] is True\nwindow=telemetry.actor_memory(part,update)[\"actor_window\"]\nassert window[\"terminal_kind\"]==\"COMPLETE\"\nresult=verify_attempt(base,run,update,expected_job=\"734689\")\nassert not any(x in sys.modules for x in (\"torch\",\"numpy\"))\nprint(json.dumps(dict(status=\"ACTUAL_CURRENT734689_OUTER13_CPU_SEMANTIC_REPLAY_PASS\",operator_commit=\"5799cd515186cba9856405c12839d4dc24b2d0c9\",subject_job=\"734689\",started_unix=started,checked_unix=time.time(),authenticated_original_prefix_job=chain[\"source_job\"],four_rank_completed_window=window,result=result,training_modified=False,files_written_by_reader=0,final200_complete=False)))\n'",
+      "actual_result": "ACTUAL_CURRENT734689_OUTER13_CPU_SEMANTIC_REPLAY_PASS",
+      "receipt": "current734689-selection13-native-replay-1792335165.json",
+      "scope": "Authenticate original730226 CP5/current734689 restore chain and four-rank completed outer13, then replay saved selection and selected native token/context/mask/sampling-LP hashes. No unselected EM or actual GPU-probability recomputation.",
+      "selected_trace_bytes": 246449264,
+      "new_training_updates": 0,
+      "model_reloads": 0,
+      "gpu_allocations": 0,
+      "remote_files_written_by_reader": 0,
+      "final200_acceptance_claimed": false
+    },
+    {
+      "kind": "three_owned_bases_allocated_metadata",
+      "remote_command": "'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python' -B -c 'import json,time,subprocess\npaths=[\"/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018\",\"/data/user/jxu957/experiments/easy2560-corollout-joint4-recovery5-after730961-20261018\",\"/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018\"]\nstart=time.time()\nr=subprocess.run([\"du\",\"-s\",\"-B1\",\"--\"]+paths,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=40)\nrows=[]\nfor line in r.stdout.splitlines():\n n,p=line.split(None,1);rows.append(dict(path=p,allocated_bytes=int(n)))\nprint(json.dumps(dict(started_unix=start,finished_unix=time.time(),returncode=r.returncode,rows=rows,stderr=r.stderr,scope=\"three owned Easy bases only; not personal root, quota, free space or an upper bound\",symlinks_followed=False,tensor_or_model_content_reads=False,historical_cleanup_subtracted_again=False)))\n'",
+      "receipts": [
+        "current734689-three-owned-bases-storage-first-env-1792334006.json",
+        "current734689-three-owned-bases-storage-second-env-1792334296.json"
+      ],
+      "summary": "current734689-three-owned-bases-storage-two-points-summary.json",
+      "first_status": "du rc1: one current active process-ledger.json.tmp vanished; not a training error",
+      "second_status": "du rc0, stderr empty",
+      "scope": "Three owned Easy base directories only, no symlink traversal or tensor/model payload read; not a personal-root, quota/free-space or final200 fit measurement.",
+      "previous_diagnostic_failure_preserved": "current734689-three-owned-bases-storage-first-1792333907.json",
+      "compatibility_note": "The login Python3.6 rejected subprocess text=True before starting du. The executed command uses the existing environment Python and universal_newlines=True.",
+      "deletions_performed": 0,
+      "retirement_permission_inferred": false
+    }
+  ],
+  "training_modified": false,
+  "services_restarted": false,
+  "new_slurm_jobs": 0,
+  "live_source_rebound": false
+}
