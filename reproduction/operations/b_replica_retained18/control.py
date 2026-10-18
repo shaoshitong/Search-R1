@@ -16,7 +16,7 @@ def inside(code):
  return dict(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr)
 '''
 def main():
- a=argparse.ArgumentParser();a.add_argument('phase',choices=['prepare','submit','observe']);args=a.parse_args()
+ a=argparse.ArgumentParser();a.add_argument('phase',choices=['prepare','repair_paths','submit','observe']);args=a.parse_args()
  OUT.mkdir(exist_ok=True)
  s=COMMON.replace('PHYSICAL',repr(PHYSICAL)).replace('CANONICAL',repr(CANONICAL))
  if args.phase=='prepare':
@@ -55,6 +55,22 @@ files=[dict(path=str(f.relative_to(p/'repo')),sha256=hashlib.sha256(f.read_bytes
 check=inside("import sys,json;sys.path.insert(0,"+repr(canonical+'/repo')+");from reproduction.prefix_selection200.launch import config; c=config("+repr(canonical)+");print(json.dumps(dict(run_id=c['run_id'],mode=c['selection_probe_experiment'],base=c['base'],source_commit=c['source_commit'])))")
 print(json.dumps(dict(config=c,source_files=len(files),validation=check)))
 '''.replace('ARCHIVE',repr(base64.b64encode(archive).decode())).replace('MANIFEST',repr(packed_manifest)).replace('SOURCE',repr(SOURCE)).replace('COMMIT',repr(commit))
+ elif args.phase=='repair_paths':
+  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
+  files={str(f.relative_to(REPO)):base64.b64encode(f.read_bytes()).decode()for f in(REPO/'reproduction/operations/b_replica_retained18').glob('*')if f.is_file()}
+  s+='''
+import base64
+assert not(p/'preparation/submit-intent.json').exists(),'No edits after submission'
+assert not(p/'actor').exists()and not(p/'probe').exists()
+backup=p/'preparation/before-private-path-repair1';backup.mkdir(exist_ok=False)
+cpath=p/'preparation/launch-config.json';(backup/'launch-config.json').write_bytes(cpath.read_bytes())
+for name,data in FILES.items():
+ f=p/'repo'/name;(backup/f.name).write_bytes(f.read_bytes());f.write_bytes(base64.b64decode(data))
+c=json.loads(cpath.read_text());c['source_commit']=COMMIT;cpath.write_text(json.dumps(c,sort_keys=True))
+rows=[dict(path=str(f.relative_to(p/'repo')),sha256=hashlib.sha256(f.read_bytes()).hexdigest())for f in(p/'repo').rglob('*')if f.is_file()and'__pycache__'not in f.parts]
+(p/'preparation/source-full-sha-after-private-path-repair1.json').write_text(json.dumps(dict(commit=COMMIT,files=rows)))
+print(json.dumps(dict(commit=COMMIT,files=len(rows),check=inside("import sys,json;sys.path.insert(0,"+repr(canonical+'/repo')+");from reproduction.prefix_selection200.launch import config;print(json.dumps(config("+repr(canonical)+")[\"run_id\"]))"))))
+'''.replace('FILES',repr(files)).replace('COMMIT',repr(commit))
  elif args.phase=='submit':
   s+='''\ncode="import sys,json;sys.path.insert(0,"+repr(canonical+'/repo')+");from reproduction.prefix_selection200.launch import submit;print(json.dumps(submit("+repr(canonical)+")))"
 print(json.dumps(inside(code)))
