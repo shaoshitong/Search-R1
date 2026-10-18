@@ -84,7 +84,13 @@ def config(base):
 
 
 def submit(base):
+    _require_training_assignment(config(base))
     return a800_runtime.submit(base, validate_config)
+
+
+def _require_training_assignment(c):
+    if c.get('preparation_only') or c.get('experiment_assignment_pending') or c.get('training_authorized') is False:
+        raise ValueError('Environment preparation only: wait for the human experiment assignment; do not train')
 
 
 def _json_request(url):
@@ -206,6 +212,7 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
 
 
 def run(base):
+    _require_training_assignment(config(base))
     from reproduction.prefix_only_correctness_ab.launch import torchrun_owned_class, DeferredInterrupt, birth_states
     from .pool import prepare
     base = Path(base).resolve(); c = config(base)

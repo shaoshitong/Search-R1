@@ -35,7 +35,7 @@ def actor_state(saved,actor,config,outer,rank):
          saved['grounding_probe_version']==actor['grounding_probe_version'] and
          saved['original_rollout_sha256']==actor['original_rollout_sha256'], 'Actual actor rank/state/science/grounding boundary differs')
     need(saved['model_master_dtype']=='torch.float32' and
-         saved['optimizer_layout']=='FSDP_FULL_SHARD_same_Qwen2DecoderLayer_wrap_world4','Actual FP32 master/FSDP layout differs')
+         saved['optimizer_layout']=='FSDP_FULL_SHARD_same_Qwen2DecoderLayer_wrap_world%d'%WORLD,'Actual FP32 master/FSDP layout differs')
     groups=saved['optimizer']['param_groups'];layout=saved['optimizer_parameter_layout'];shapes=[]
     need(len(groups)==len(layout),'Saved optimizer group/flat-shard layout differs')
     for group,rows in zip(groups,layout):

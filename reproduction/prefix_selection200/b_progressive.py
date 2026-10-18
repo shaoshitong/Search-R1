@@ -21,7 +21,9 @@ def ordinary(config,outer):
     return enabled(config) and outer>50 and not is_probe_update(outer) and not config.get('diagnostic_only')
 def validate(config):
     if not enabled(config):return
-    if config.get('selection_probe_experiment')!='balanced_online_ema' or config['physical_gpu_indices']!=[4,5,6,7]:raise ValueError('B cards only')
+    from .contract import WORLD
+    cards=list(range(8)) if WORLD==8 else [4,5,6,7]
+    if config.get('selection_probe_experiment')!='balanced_online_ema' or config['physical_gpu_indices']!=cards:raise ValueError('Configured B cards only')
     if config['b_progressive'].get('resume_outer')!=50:raise ValueError('Initial fork is complete CP50')
 
 def expand(saved,new_prefix):

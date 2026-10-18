@@ -6,28 +6,31 @@ those same cards. Sharing with already authorized foreign jobs is recorded,
 never treated as permission to stop them.
 """
 LAYOUT = 'h100_four_rank_colocated_v1'
+EIGHT_LAYOUT = 'h100_eight_rank_colocated_prepared_v1'
 PREFIX = '/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-'
 SHARED_PARENT = '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong'
 PREFIXES = (PREFIX, SHARED_PARENT+'/search-g1-prefix-selection200-reference-replica-')
 
 
 def enabled(config):
-    return config.get('execution_hardware_layout') == LAYOUT
+    return config.get('execution_hardware_layout') in (LAYOUT, EIGHT_LAYOUT)
 
 
 def validate(config):
     train = config['physical_gpu_indices']
     aux = config['auxiliary_gpu_indices']
-    if (train not in ([0, 1, 2, 3], [4, 5, 6, 7]) or aux != train
-            or config.get('retrieval_gpu_shards') != 4
+    world = 8 if config.get('execution_hardware_layout') == EIGHT_LAYOUT else 4
+    slots = (list(range(8)),) if world == 8 else ([0, 1, 2, 3], [4, 5, 6, 7])
+    if (train not in slots or aux != train
+            or config.get('retrieval_gpu_shards') != world
             or config.get('grounding_physical_gpu') != train[-1]
             or config.get('grounding_physical_gpu_by_rank') != train
             or config.get('grounding_refit_visible_device') != train[-1]
-            or config.get('world_size') != 4
-            or len(config['physical_gpu_uuids']) != 4
-            or len(set(config['physical_gpu_uuids'])) != 4
+            or config.get('world_size') != world
+            or len(config['physical_gpu_uuids']) != world
+            or len(set(config['physical_gpu_uuids'])) != world
             or config['auxiliary_gpu_uuids'] != config['physical_gpu_uuids']
             or config.get('gpu_uuid_lock_root') != '/mnt/data/shaoshitong/.search-g1-gpu-uuid-locks'
             or config.get('shared_existing_foreign_jobs_authorized') is not True):
-        raise ValueError('Bind one four-card slot with colocated exact-index retrieval and grounding')
+        raise ValueError('Bind the explicit physical-rank profile with colocated exact-index retrieval and grounding')
     return config

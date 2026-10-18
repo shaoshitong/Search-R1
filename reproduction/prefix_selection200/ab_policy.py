@@ -1,6 +1,7 @@
 """Explicit two-arm selection-probe policy; candidate/actor science stays separate."""
 import random
 from collections import Counter
+from .contract import WORLD
 
 FROZEN = 'warmup_frozen'
 BALANCED = 'balanced_online_ema'
@@ -19,7 +20,8 @@ def validate(config):
                     probe_ema_rate=.99 if arm == BALANCED else None)
     if any(config.get(k) != v for k, v in expected.items()):
         raise ValueError('AB learning rate/loss/EMA differs from human protocol')
-    if config['physical_gpu_indices'] != ([0, 1, 2, 3] if arm == FROZEN else [4, 5, 6, 7]):
+    slot = list(range(8)) if WORLD == 8 and arm == BALANCED else ([0, 1, 2, 3] if arm == FROZEN else [4, 5, 6, 7])
+    if config['physical_gpu_indices'] != slot or config.get('world_size', WORLD) != WORLD:
         raise ValueError('AB arm must own its assigned four-card slot')
     return config
 
@@ -34,10 +36,10 @@ def validate_receipt(config, receipt, outer):
     arm = mode(config)
     expected_outer = 0 if arm == FROZEN else outer
     counts = receipt['actual_adam_steps_per_rank']
-    if (receipt['completed_outer'] != expected_outer or len(counts) != 4
+    if (receipt['completed_outer'] != expected_outer or len(counts) != WORLD
             or len(set(counts)) != 1 or type(counts[0]) is not int or counts[0] < 0):
         raise ValueError('AB actual checkpoint boundary differs')
-    if arm == FROZEN and counts != [0]*4:
+    if arm == FROZEN and counts != [0]*WORLD:
         raise ValueError('Frozen arm cannot have online Adam writes')
     if arm == BALANCED and receipt.get('ema_updates') != counts[0]:
         raise ValueError('EMA advances once per actual Adam write')

@@ -8,6 +8,7 @@ import time
 
 from reproduction.prefix20_online.launch import read, sha, once
 from . import ab_policy as policy
+from .contract import WORLD
 
 
 def prepare(template,staged_repo,commit,slot):
@@ -75,7 +76,7 @@ def observe(base,verified=0):
             ranks.append(dict(rank=row['rank'],writes=len(writes),actual_adam_steps=row['actual_adam_steps'],ledger_sha256=sha(path)))
         update=j['probe_metrics'];probe_ranks=[]
         if update['new_adam_steps_per_rank']:
-            for rank in range(4):
+            for rank in range(WORLD):
                 path=root/'probe-update'/('rank-%d-updates.jsonl'%rank)
                 rows=[json.loads(line) for line in path.open()]
                 if (len(rows)!=update['new_adam_steps_per_rank'] or rows[-1]['actual_adam_steps']!=head['actual_adam_steps_per_rank'][rank]

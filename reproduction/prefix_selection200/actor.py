@@ -1,4 +1,4 @@
-"""Four physical ranks preserve the reference eight-rank actor objective.
+"""Four or eight physical ranks preserve the reference eight-rank objective.
 
 The native sampling journal supplies old policy probabilities, including the
 scored prefixes. Grounding flip/boundary supplies the unchanged soft reward;
@@ -98,7 +98,7 @@ class ActorBudget:
                 or self.ppo_epochs != 1 or type(self.global_micro) is not int
                 or self.global_micro < WORLD or self.global_mini % self.global_micro
                 or self.global_micro % WORLD):
-            raise ValueError('Keep4physical/8virtual ranks, mini128, one pass,20opportunities; micro must divide mini128')
+            raise ValueError('Keep the configured physical/8virtual ranks, mini128, one pass,20opportunities; micro must divide mini128')
 
     @property
     def effective_global_micro(self):
@@ -522,7 +522,7 @@ def compute_soft_rewards(rows, tokenizer, config, rank=0):
 
 def rank_plan(seed, outer, world=WORLD):
     """Each physical rank owns two adjacent original virtual16 minibatches."""
-    if world != WORLD or not 1 <= outer <= 200: raise ValueError('Require four ranks and outer1..200')
+    if world != WORLD or not 1 <= outer <= 200: raise ValueError('Require configured physical ranks and outer1..200')
     order = list(range(2560)); random.Random(seed + outer).shuffle(order)
     return [[order[step * 128 + rank * 32:step * 128 + (rank + 1) * 32]
              for step in range(20)] for rank in range(world)]
@@ -723,7 +723,7 @@ def _save_complete(config, output, attempt_dir, outer, wrapped, optimizer, sched
         binding=_state_binding(config), **_grounding_receipt(config), optimizer=cpu_tree(optimizer.state_dict()),
         optimizer_parameter_layout=optimizer_layout(optimizer),
         scheduler=cpu_tree(scheduler.state_dict()), rng=_rng(),
-        model_master_dtype='torch.float32', optimizer_layout='FSDP_FULL_SHARD_same_Qwen2DecoderLayer_wrap_world4',
+        model_master_dtype='torch.float32', optimizer_layout='FSDP_FULL_SHARD_same_Qwen2DecoderLayer_wrap_world%d' % WORLD,
         original_rollout_path=str(rollout_path), original_rollout_sha256=sha(rollout_path))
     state_proof = atomic_save(attempt_dir / ('rank-%d.pt' % rank), state)
     proofs = [None] * WORLD; dist.all_gather_object(proofs, state_proof)
@@ -782,7 +782,7 @@ def train(config_path, outer, rollout_path, output_path):
     if config['model_revision'] != REVISION or not 1 <= outer <= 200:
         raise ValueError('Fresh official actor200 revision/budget differs')
     rank, local, world = (int(os.environ[k]) for k in ('RANK', 'LOCAL_RANK', 'WORLD_SIZE'))
-    if world != WORLD: raise ValueError('Actor phase requires exactly4 physical ranks')
+    if world != WORLD: raise ValueError('Actor phase requires the configured physical rank count')
     torch.cuda.set_device(local); dist.init_process_group('nccl')
     torch.backends.cuda.matmul.allow_bf16_reduced_precision_reduction = False
     budget = ActorBudget(int(config.get('actor_global_micro_batch_size', 16)))

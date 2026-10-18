@@ -1,6 +1,12 @@
-"""Shared scientific dimensions for the four-GPU question+prefix5 variant."""
+"""Shared science with an explicit four- or eight-physical-rank profile."""
 
-WORLD = 4
+import os
+# An explicit process-wide profile is inherited by every native child. The
+# original source arm keeps its four-rank default; the independent prepared
+# environment opts into eight physical ranks before importing this package.
+WORLD = int(os.environ.get('SEARCH_G1_PHYSICAL_WORLD_SIZE', '4'))
+if WORLD not in (4, 8):
+    raise ValueError('Only the original four-rank or prepared eight-rank profile is supported')
 from .b_progressive import retained_prefix
 PREFIX_TOKENS = retained_prefix()
 QMAX = 273

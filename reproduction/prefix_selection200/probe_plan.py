@@ -1,25 +1,26 @@
-"""Four-rank whole-G5 partitions with the reference's unchanged global batches."""
+"""Physical-rank whole-G5 partitions with unchanged global batches."""
 import random
 
 from .contract import WORLD, FINAL_OUTER, CANDIDATE_QUESTIONS, PROBE_PERIOD, PROBE_UPDATES
 
 
 def _natural_plan(seed, outer, questions, updates):
-    if type(outer) is not int or not 1 <= outer <= FINAL_OUTER or WORLD != 4:
-        raise ValueError('Require an actual four-rank actor outer1..200')
+    if type(outer) is not int or not 1 <= outer <= FINAL_OUTER or WORLD not in (4, 8):
+        raise ValueError('Require the configured physical ranks and outer1..200')
     shuffled = list(range(questions))
     random.Random(seed + outer).shuffle(shuffled)
     plan, offset, extras_start = [], 0, 0
     for step in range(updates):
         n = 52 if (step + 1) % 5 == 0 else 51
-        counts = [12] * WORLD
-        for j in range(n - 12 * WORLD):
+        floor = n // WORLD
+        counts = [floor] * WORLD
+        for j in range(n - floor * WORLD):
             counts[(extras_start + j) % WORLD] += 1
         plan.append(dict(question_indices=shuffled[offset:offset+n],
                          global_questions=n, rank_questions=counts,
                          extras_start=extras_start))
         offset += n
-        extras_start = (extras_start + n - 12 * WORLD) % WORLD
+        extras_start = (extras_start + n - floor * WORLD) % WORLD
     if (offset != questions or sorted(i for batch in plan for i in batch['question_indices']) != list(range(questions))
             or any(sum(batch['rank_questions'][rank] for batch in plan) != questions // WORLD
                    for rank in range(WORLD))):
@@ -40,7 +41,7 @@ def complete_pool_plan(seed, outer):
 def rank_question_slice(batch, rank):
     counts = batch['rank_questions']
     if (type(rank) is not int or not 0 <= rank < WORLD or len(counts) != WORLD
-            or any(type(n) is not int or n not in (12, 13) for n in counts)
+            or any(type(n) is not int or n not in (batch['global_questions']//WORLD, (batch['global_questions']+WORLD-1)//WORLD) for n in counts)
             or sum(counts) != batch['global_questions']
             or len(batch['question_indices']) != batch['global_questions']):
         raise ValueError('Invalid four-rank complete-G5 partition')
@@ -50,6 +51,6 @@ def rank_question_slice(batch, rank):
 
 def ddp_mean_scale(local_questions, global_questions):
     """Four-rank DDP averages gradients; recover the true global question mean."""
-    if local_questions not in (12, 13) or global_questions not in (51, 52):
+    if global_questions not in (51, 52) or local_questions not in (global_questions//WORLD, (global_questions+WORLD-1)//WORLD):
         raise ValueError('Unexpected four-rank whole-G5 batch')
     return WORLD * local_questions / global_questions

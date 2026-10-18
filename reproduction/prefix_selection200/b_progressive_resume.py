@@ -11,6 +11,8 @@ from .b_progressive import MODE,enabled,validate
 PROTECTED=('actor.py','actor_safety.py','interaction_protocol.py','grounding.py','ab_probe.py','ab_policy.py','probe_plan.py')
 
 def verify(config):
+    if config.get('world_size') != 4:
+        raise ValueError('Reference CP50 contains four-rank FSDP Adam/RNG; eight-rank import requires a separately qualified resharding adapter')
     validate(config);p=read(config['source_compatibility'])
     if sha(config['source_compatibility'])!=config['source_compatibility_sha256'] or p['mode']!=MODE:raise ValueError('Explicit source delta proof changed')
     root=Path(config['base'])/'repo'
