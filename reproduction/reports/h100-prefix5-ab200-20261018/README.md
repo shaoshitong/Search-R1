@@ -1,5 +1,9 @@
 # Prefix5 A/B on h100-11: actual progress
 
+## Per-iteration selected mixing through42
+
+[Complete per-iteration A/B table,1–42](selected-mixing-per-iteration-through042.md) includes exact mixed counts/512 and the original ordinary-window means. Periodic10/20/30/40 actual-EM-priority selection is marked explicitly. Last successful actual read is06:16UTC; later native progress is currently unobserved, not inferred complete. This table uses existing small records and neither regenerates trajectories nor changes either run.
+
 ## Latest recorded period40
 
 Both arms have committed40/200: actor800/rank, frozen A probe0 and B raw/EMA560.
