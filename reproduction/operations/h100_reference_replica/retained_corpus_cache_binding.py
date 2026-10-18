@@ -79,7 +79,7 @@ def overlay_script(result):
     """Only a new unshared mount namespace can apply this private cache view."""
     import shlex
     bootstrap='/root/.local/share/search-g1/prefix5-retained-bootstrap/6f970c9201962423daf2d463f9135f0f3cc6b16e5df9b9c12be24d5b7dbb3f60/h10011_retained_paths.sh'
-    return "#!/bin/bash\nset -euo pipefail\n[[ $(hostname) == h100-11 ]]\n[[ $(readlink /proc/self/ns/mnt) != $(readlink /proc/1/ns/mnt) ]]\n"+"exec bash "+shlex.quote(bootstrap)+" /bin/bash -c "+shlex.quote('mount --bind "$1" "$2"; shift 2; exec "$@"')+" _ "+shlex.quote(result['cache'])+" "+shlex.quote(result['virtual_cache'])+' "$@"\n'
+    return "#!/bin/bash\nset -euo pipefail\n[[ $(hostname) == h100-11 ]]\n[[ $(readlink /proc/self/ns/mnt) != $(readlink /proc/1/ns/mnt) ]]\n"+"exec bash "+shlex.quote(bootstrap)+" /bin/bash -c "+shlex.quote('set -euo pipefail; mount --bind "$1" "$2"; shift 2; exec "$@"')+" _ "+shlex.quote(result['cache'])+" "+shlex.quote(result['virtual_cache'])+' "$@"\n'
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('action',choices=('plan','apply'));p.add_argument('--retained',required=True);p.add_argument('--retention-sha',required=True);a=p.parse_args();print(json.dumps((plan if a.action=='plan'else apply)(a.retained,a.retention_sha)))
