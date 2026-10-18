@@ -7,7 +7,9 @@ parent notification signal, not the process's termination signal.
 import base64
 import errno
 import hashlib
+import json
 import os
+from pathlib import Path
 import socket
 import struct
 import subprocess
@@ -117,3 +119,30 @@ def qualification():
         for child,code in children.values():
             # These are only the tiny owned test children, never a trainer.
             child.wait(timeout=3)
+
+
+def qualify_once(root):
+    root=Path(root);root.mkdir(parents=True,exist_ok=True);result=root/'RESULT.json';intent=root/'INTENT.json'
+    source=Path(__file__);source_sha=hashlib.sha256(source.read_bytes()).hexdigest()
+    host=socket.gethostname();boot=Path('/proc/sys/kernel/random/boot_id').read_text().strip()
+    if result.exists():
+        value=json.loads(result.read_text())
+        if value['source_sha256']!=source_sha or value['host']!=host or value['boot_id']!=boot:
+            raise ValueError('Existing kernel qualification belongs to another source/host/boot')
+        return dict(value,existing_result_reused_without_child_rerun=True)
+    if intent.exists():raise RuntimeError('Existing qualification intent: inspect original outcome, never replay')
+    common=dict(host=host,boot_id=boot,kernel=os.uname().release,source=str(source),source_sha256=source_sha,
+        pid=os.getpid(),started_unix=time.time(),training_modified=False)
+    with intent.open('x')as stream:json.dump(common,stream);stream.flush();os.fsync(stream.fileno())
+    try:value=dict(common,**qualification())
+    except (OSError,RuntimeError,ValueError,TimeoutError)as error:
+        value=dict(common,status='KERNEL_PROC_EXIT_QUALIFICATION_UNAVAILABLE_NOT_TRAINING_FAILURE',error=repr(error),errno=getattr(error,'errno',None))
+    value['completed_unix']=time.time()
+    with result.open('x')as stream:json.dump(value,stream,sort_keys=True);stream.flush();os.fsync(stream.fileno())
+    return value
+
+
+if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser();parser.add_argument('--qualify-root',required=True);args=parser.parse_args()
+    print(json.dumps(qualify_once(args.qualify_root)))
