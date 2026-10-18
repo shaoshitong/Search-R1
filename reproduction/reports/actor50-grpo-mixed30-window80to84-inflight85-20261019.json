@@ -1,0 +1,548 @@
+{
+  "schema_version": 1,
+  "goal_status": "ACTIVE_TO200_FINAL_ACCEPTANCE_PENDING",
+  "observed_unix": 1792350907.8271441,
+  "observed_shanghai": "2026-10-19T03:15:07.827144+08:00",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "40389d9b00204a80ba68475fac254f9c",
+  "runtime_source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+  "metadata_operator_commit": "47816f51cdcc91578721e55f5b3b6299f8ae10ae",
+  "live_runtime_modified": false,
+  "receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-grpo-observe-1792350907924176000.json",
+  "receipt_sha256": "a5aa856a874b9136fa7573d379091282023305163c512a7f79508ebf4257ef42",
+  "pipeline_leader": {
+    "pid": 3889886,
+    "start_ticks": 639247028,
+    "sid": 3889886,
+    "uid": 0,
+    "state": "S"
+  },
+  "latest_saved": {
+    "outer": 84,
+    "scheduler": 84,
+    "actor_Adam_per_rank": [
+      1680,
+      1680,
+      1680,
+      1680
+    ],
+    "new_Adam_per_rank": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "processed_opportunities": 20,
+    "skipped_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "joint_metadata_sha256": "d01b807f4a09d830f4b5cdd425387c8cf88f46da52e688db7ff6414aea308dfd",
+    "probe": {
+      "actual_adam_steps_per_rank": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "binding_sha256": "c966ac43e2760c0246b1b672b98407cacbeaadd0b96806d533ff91fc1bf4070a",
+      "bytes": 932197340,
+      "completed_outer": 80,
+      "learning_rate": 5e-06,
+      "observed_utc": "2026-10-18T17:49:34.686706+00:00",
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "sha256": "76ea05db5206af58245fe5005f77775f9ac88c6d2642553a10a2fd6c54baa883"
+    },
+    "mixed_floor": {
+      "candidate_questions": 2560,
+      "completed_candidate_questions": 768,
+      "exhausted": false,
+      "extra_native_batches": 2,
+      "final_fraction": 0.30078125,
+      "final_mixed": 154,
+      "initial_fraction": 0.2265625,
+      "initial_mixed": 116,
+      "initial_scope_questions": 512,
+      "native_prefix_or_score_regenerated": false,
+      "policy": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "remaining_uncontinued_questions": 1792,
+      "shortfall": 0,
+      "target_mixed": 154,
+      "target_reached": true,
+      "triggered": true,
+      "replacement_count": 38,
+      "replacement_metadata_sha256": "9f316df37899e6af8175453d8e864a454460816398b8551e7a5339860bade523"
+    }
+  },
+  "recent_complete_metadata": [
+    {
+      "outer": 80,
+      "metadata_status": "PRESENT",
+      "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+      "metadata_sha256": "56743e9e68acb49e93d7e397e19ebc69ca2c4fcddaa098663622c439d02c9747",
+      "actor_Adam": [
+        1600,
+        1600,
+        1600,
+        1600
+      ],
+      "scheduler": 80,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 80,
+      "probe_Adam": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "rollout_mixed": 0.75390625,
+      "mixed_floor": {
+        "initial_mixed": 386,
+        "final_mixed": 386,
+        "initial_fraction": 0.75390625,
+        "final_fraction": 0.75390625,
+        "extra_native_batches": 0,
+        "completed_candidate_questions": 2560,
+        "remaining_uncontinued_questions": 0,
+        "triggered": false,
+        "shortfall": 0,
+        "exhausted": true,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 0
+    },
+    {
+      "outer": 81,
+      "metadata_status": "PRESENT",
+      "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+      "metadata_sha256": "33484fa5364e5410c8474c4503de15eeefbcf1e9d46a00d56a60a95f987e7b51",
+      "actor_Adam": [
+        1620,
+        1620,
+        1620,
+        1620
+      ],
+      "scheduler": 81,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 80,
+      "probe_Adam": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 112,
+        "final_mixed": 154,
+        "initial_fraction": 0.21875,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 3,
+        "completed_candidate_questions": 896,
+        "remaining_uncontinued_questions": 1664,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 42
+    },
+    {
+      "outer": 82,
+      "metadata_status": "PRESENT",
+      "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+      "metadata_sha256": "ff63c07c0bdcaf3accde4a9facba702a49c945a48d7ed260c8ebf09599bf44d7",
+      "actor_Adam": [
+        1640,
+        1640,
+        1640,
+        1640
+      ],
+      "scheduler": 82,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 80,
+      "probe_Adam": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 107,
+        "final_mixed": 154,
+        "initial_fraction": 0.208984375,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 2,
+        "completed_candidate_questions": 768,
+        "remaining_uncontinued_questions": 1792,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 47
+    },
+    {
+      "outer": 83,
+      "metadata_status": "PRESENT",
+      "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+      "metadata_sha256": "7252a682346938318a59d6891ea715ce002a16cfdbe9f648f6ec0e4fa922d20b",
+      "actor_Adam": [
+        1660,
+        1660,
+        1660,
+        1660
+      ],
+      "scheduler": 83,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 80,
+      "probe_Adam": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 98,
+        "final_mixed": 154,
+        "initial_fraction": 0.19140625,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 3,
+        "completed_candidate_questions": 896,
+        "remaining_uncontinued_questions": 1664,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 56
+    },
+    {
+      "outer": 84,
+      "metadata_status": "PRESENT",
+      "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+      "metadata_sha256": "d01b807f4a09d830f4b5cdd425387c8cf88f46da52e688db7ff6414aea308dfd",
+      "actor_Adam": [
+        1680,
+        1680,
+        1680,
+        1680
+      ],
+      "scheduler": 84,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 80,
+      "probe_Adam": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 116,
+        "final_mixed": 154,
+        "initial_fraction": 0.2265625,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 2,
+        "completed_candidate_questions": 768,
+        "remaining_uncontinued_questions": 1792,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 38
+    }
+  ],
+  "overlap80through83_identical_to_previous": true,
+  "progress_from50": {
+    "new_complete_outers": 34,
+    "saved_new_actor_Adam_counted_once": 680
+  },
+  "progress_since_saved83": {
+    "new_complete_outers": [
+      84
+    ],
+    "saved_new_actor_Adam_counted_once": 20,
+    "inflight85_actual_returned_updates_counted_once": 8,
+    "inflight85_joint_complete": false
+  },
+  "latest_natural_probe": {
+    "outer": 80,
+    "status": "UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE",
+    "actual_adam_steps_per_rank": [
+      150,
+      150,
+      150,
+      150
+    ],
+    "new_adam_steps_per_rank": 50,
+    "actual_learning_rate": 5e-06,
+    "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0079",
+    "before_update": {
+      "train": {
+        "count": 2560,
+        "mixed_count": 386,
+        "nonmixed_count": 2174,
+        "accuracy": 0.621484375,
+        "balanced_accuracy": 0.6002914805687565,
+        "tp": 220,
+        "fp": 803,
+        "fn": 166,
+        "tn": 1371,
+        "mixed_recall": 0.5699481865284974,
+        "nonmixed_recall": 0.6306347746090156,
+        "threshold": 0.5,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "trajectory_bce": 0.5057858765794357,
+        "group_bce": 0.7811144422863828,
+        "total_loss": 1.2869003188658186,
+        "group_weight": 1.0
+      },
+      "test": {
+        "count": 512,
+        "mixed_count": 81,
+        "nonmixed_count": 431,
+        "accuracy": 0.41015625,
+        "balanced_accuracy": 0.5393715447853112,
+        "tp": 59,
+        "fp": 280,
+        "fn": 22,
+        "tn": 151,
+        "mixed_recall": 0.7283950617283951,
+        "nonmixed_recall": 0.3503480278422274,
+        "threshold": 0.5,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "trajectory_bce": 0.8113489923229598,
+        "group_bce": 1.1937331349994258,
+        "total_loss": 2.0050821273223853,
+        "group_weight": 1.0
+      }
+    },
+    "after_update": {
+      "train": {
+        "count": 2560,
+        "mixed_count": 386,
+        "nonmixed_count": 2174,
+        "accuracy": 0.70859375,
+        "balanced_accuracy": 0.6931279225514917,
+        "tp": 259,
+        "fp": 619,
+        "fn": 127,
+        "tn": 1555,
+        "mixed_recall": 0.6709844559585493,
+        "nonmixed_recall": 0.7152713891444342,
+        "threshold": 0.5,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "trajectory_bce": 0.46629189563831036,
+        "group_bce": 0.6118243356035402,
+        "total_loss": 1.0781162312418506,
+        "group_weight": 1.0
+      },
+      "test": {
+        "count": 512,
+        "mixed_count": 81,
+        "nonmixed_count": 431,
+        "accuracy": 0.431640625,
+        "balanced_accuracy": 0.5421070722694853,
+        "tp": 57,
+        "fp": 267,
+        "fn": 24,
+        "tn": 164,
+        "mixed_recall": 0.7037037037037037,
+        "nonmixed_recall": 0.3805104408352668,
+        "threshold": 0.5,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "trajectory_bce": 0.8317487426654386,
+        "group_bce": 1.1520656537001825,
+        "total_loss": 1.9838143963656212,
+        "group_weight": 1.0
+      }
+    },
+    "diagnostic_semantics": "same_head_pre_and_post_update_full2560G5_and_current_actor_fixed512G5",
+    "unselected_training_questions": 2560,
+    "checkpoint": {
+      "actual_adam_steps_per_rank": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "binding_sha256": "c966ac43e2760c0246b1b672b98407cacbeaadd0b96806d533ff91fc1bf4070a",
+      "bytes": 932197340,
+      "completed_outer": 80,
+      "learning_rate": 5e-06,
+      "sha256": "76ea05db5206af58245fe5005f77775f9ac88c6d2642553a10a2fd6c54baa883"
+    },
+    "complete_metadata_sha256": "57a72c10c85a70b93e61ff16d1a3884c4937ef3b78abf2a6c3b172afbc458043",
+    "metrics_sha256": "d81a9ca9220516bb5f950f52a338a99507a77ea1fc670db64f9e9ac87a3eaba5",
+    "scored_features_manifest_sha256": "085dac11885a2e74f709a44e01a3e64c9e5184f5adc18954975af8d3e20fcddc",
+    "own_em_sha256": "fb78142717341f335d9d71c176fc9cddf0178ac057ae894fb2fbe8533bec7f8c",
+    "selection_sha256": "391efffef830860735d8601fa3d9dcfa97a0c66f915380b1b4241db764b54fcc",
+    "observed_utc": "2026-10-18T17:49:34.769747+00:00"
+  },
+  "probe_metrics_unchanged_no_new_evaluation": true,
+  "current_stage": {
+    "checked_unix": 1792350345.7129126,
+    "outer": 85,
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+    "stage": "outer-000085-actor-d139213caee54f3585128e58097824ca"
+  },
+  "current_actor_inflight": [
+    {
+      "rank": 0,
+      "restored_outer": 84,
+      "prior_Adam": 1680,
+      "returned_writes": 8,
+      "latest_actual_Adam": 1688
+    },
+    {
+      "rank": 1,
+      "restored_outer": 84,
+      "prior_Adam": 1680,
+      "returned_writes": 8,
+      "latest_actual_Adam": 1688
+    },
+    {
+      "rank": 2,
+      "restored_outer": 84,
+      "prior_Adam": 1680,
+      "returned_writes": 8,
+      "latest_actual_Adam": 1688
+    },
+    {
+      "rank": 3,
+      "restored_outer": 84,
+      "prior_Adam": 1680,
+      "returned_writes": 8,
+      "latest_actual_Adam": 1688
+    }
+  ],
+  "current_floor": {
+    "actor_selection_sha256": "f0f3932d036a3340c2084fee206b6d694eca6673ff7cefdf5a0f95f11d8bfb89",
+    "candidate_questions": 2560,
+    "completed_candidate_questions": 768,
+    "exhausted": false,
+    "extra_native_batches": 2,
+    "final_fraction": 0.30078125,
+    "final_mixed": 154,
+    "full_pool_complete_sha256": "3f03f641ceb5f3d9bfa323ac2793a0b6cc6507bb3d1c1438a2091cdfe6785656",
+    "initial_fraction": 0.208984375,
+    "initial_mixed": 107,
+    "initial_scope_questions": 512,
+    "native_prefix_or_score_regenerated": false,
+    "policy": {
+      "continuation_batch_questions": 128,
+      "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+      "replace_only_nonmixed": true,
+      "stop_when": "154_mixed_or_candidate_pool_exhausted",
+      "target_mixed_questions": 154,
+      "trigger_denominator": 10,
+      "trigger_numerator": 3
+    },
+    "predicted_selection_sha256": "1cffd64c5515fe86f52d10d179f389be52a91485e088352c94ad9ad897b9a34e",
+    "remaining_uncontinued_questions": 1792,
+    "shortfall": 0,
+    "target_mixed": 154,
+    "target_reached": true,
+    "triggered": true,
+    "replacement_count": 47,
+    "replacement_metadata_sha256": "4d0b54426ed80ad87c54c0eeeb411e176771dd2b28594605be4a013c50bf5c0b"
+  },
+  "latest_milestone_QA": null,
+  "failure": null,
+  "exit": null,
+  "cleanup": null,
+  "pipeline_complete": null,
+  "App_monitor": "PAUSED_NO_NEW_SCHEDULE",
+  "observations_this_normal_window": 1,
+  "normal_read_period_seconds": 1800,
+  "next_normal_read_not_before_unix": 1792352707.8271441,
+  "remaining_scope": "Continue same driver through natural probe90..190, Prefix40 at100, Top1024 actualEM selection at150, saved-actor grounding refresh/adopt, complete200 and final51713 acceptance. Future milestones remain unverified."
+}
