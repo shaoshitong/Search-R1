@@ -1,0 +1,23 @@
+{
+  "role": "actor50_probe100_implementation_and_meaningful_CPU_verification",
+  "checked_unix": 1792303269.243191,
+  "target_epochs": 100,
+  "cycles": 50,
+  "epochs_per_cycle": 2,
+  "actor_updates": 0,
+  "EMA": 0.99,
+  "learning_rate": 5e-06,
+  "initial_model": "actual_online_probe50_raw_model_only",
+  "new_Adam_at_zero": true,
+  "source_probe50_sha256": "771f8c5c7b1a359cf786b5353a46261d23d2999567b3c8ba1bef3e0455c16184",
+  "CPU_checks": "PASS genuine full-G5 class balance, all original group coverage, deterministic sampling, nonempty fourrank slices, missingclass explicit rejection; Python compile",
+  "actual_training": "PENDING",
+  "fixed_probe512_events": "generated once by frozenactor50; distinct from actorQA EM; no train overlap",
+  "source_files_sha256": {
+    "reproduction/actor50_probe100/__init__.py": "639211c9ca653820a6db4977cb0e93b88e7948581efe8d884cf0ac7a13b775e8",
+    "reproduction/actor50_probe100/control.py": "952651fa6dafbf88866c9117762b4a0368e9e3435ffe59b292b3c26c3f332da8",
+    "reproduction/actor50_probe100/pipeline.py": "3a25477b4c6a6a11d0cdbf2323b6996b255edb392ca138cfd35f3f80328fe4e0",
+    "reproduction/actor50_probe100/plan.py": "b58468d54ec9a311b3ba4ba15b023b3e9e6cdc552e0e7ac9a80f7072b19fe5b3",
+    "reproduction/actor50_probe100/train.py": "fbca9a60d78e18afc2c46fff44d374de6c254b263aad42b4b81f39f3ab6cb697"
+  }
+}
