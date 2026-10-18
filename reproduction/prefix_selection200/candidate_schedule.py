@@ -63,6 +63,11 @@ def consumed_candidates_through(config, completed_outer):
 
 
 def schedule_metadata(config, outer):
+    if config.get('progressive_prefix') and outer<=50:
+        from pathlib import Path
+        import json
+        original=json.loads((Path(config['resume_joint']['source_base'])/'preparation/launch-config.json').read_text())
+        return schedule_metadata(original,outer)
     value = validate_schedule(config)
     if value is None or outer < value['effective_from_outer']:
         return {}

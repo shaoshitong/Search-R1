@@ -141,7 +141,8 @@ def initial_state(config, outer, group, response_index, tokenizer):
     if not prompt:
         raise ValueError('Actual official initial request is empty')
     ordinal = int(group['candidate_ordinal'])
-    tid = '%s%s-outer%06d-c%04d-g%d' % (config['run_id'],
+    namespace=config['run_id']+('-'+config['probe_refresh_tag'] if config.get('probe_refresh_tag') else '')
+    tid = '%s%s-outer%06d-c%04d-g%d' % (namespace,
         '-diagnostic' if config.get('diagnostic_only') else '',outer,ordinal,response_index)
     return dict(schema_version=1, run_id=config['run_id'], outer=outer,
                 actor_version=config['actor_version'], trajectory_id=tid,

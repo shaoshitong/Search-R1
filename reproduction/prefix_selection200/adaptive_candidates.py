@@ -116,6 +116,11 @@ def derive(config,outer):
 
 
 def budget(config,outer):
+    if config.get('progressive_prefix') and outer<=50:
+        # Historical budgets retain the old cap/hash and source journal. Only
+        # the newly authorized suffix is512..5120; do not rewrite its prefix.
+        source=Path(config['resume_joint']['source_base'])
+        return budget(read(source/'preparation/launch-config.json'),outer)
     if type(outer) is not int or not 1<=outer<=FINAL_OUTER:
         raise ValueError('Adaptive candidate outer must be1..200')
     if config.get('candidate_budget') is not None:

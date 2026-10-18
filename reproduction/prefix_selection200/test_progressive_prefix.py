@@ -10,6 +10,28 @@ from .progressive_prefix import (actor_prefix,after_boundary,boundary,before_fit
 
 
 class ProgressivePrefixTests(unittest.TestCase):
+    def test_short_prefix_padding_is_masked_at_every_new_length(self):
+        code='''
+import torch
+from reproduction.prefix_selection200.contract import WIDTH,PREFIX_TOKENS,QMAX,DIM
+from reproduction.prefix_selection200.prefix5_model import validate_online_layout
+n=3;plen=7
+features=torch.zeros(n,WIDTH,DIM);mask=torch.zeros(n,WIDTH,dtype=torch.bool)
+question=mask.clone();policy=mask.clone();position=torch.zeros(n,WIDTH,dtype=torch.long)
+question[:,:10]=True;position[:,:10]=torch.arange(10)
+policy[:,QMAX:QMAX+plen]=True;position[:,QMAX:QMAX+plen]=torch.arange(50,50+plen)
+batch=dict(features=features,attention_mask=question|policy,position_ids=position,
+ question_mask=question,policy_mask=policy,question_lengths=torch.full((n,),10,dtype=torch.long),
+ policy_lengths=torch.full((n,),plen,dtype=torch.long),
+ policy_segments=[[dict(turn_index=0,policy_start=0,policy_length=plen,position_start=50)] for _ in range(n)])
+validate_online_layout(batch,32768)
+assert not policy[:,QMAX+plen:].any() and not position[:,QMAX+plen:].any()
+print('PAD_MASK_PASS')
+'''
+        for prefix in (20,40,80):
+            env=dict(os.environ,DYNRPO_PROGRESSIVE_PREFIX='cp50_prefix20_40_80_three_epoch_v1',DYNRPO_PREFIX_TOKENS=str(prefix))
+            self.assertEqual(subprocess.check_output([sys.executable,'-c',code],env=env,text=True).strip(),'PAD_MASK_PASS')
+
     def test_all_stage_processes_have_three_complete_g5_epochs(self):
         code='''
 import json

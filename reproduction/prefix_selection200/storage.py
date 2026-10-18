@@ -151,7 +151,7 @@ def current_boundary(base, config, outer):
             or not actual_actor_boundary(actor, outer)
             or probe['actual_adam_steps_per_rank'] != [boundary['actual_adam_per_rank']]*WORLD
             or actor['scheduler_completed_outer'] != outer
-            or update['status'] != ('UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE' if native and periodic
+            or update['status'] != ('UNSELECTED2560G5_PERIODIC_PROBE_%d_ADAM_COMPLETE'%PROBE_UPDATES if native and periodic
                 else 'PROBE_FROZEN_NO_OPTIMIZER_UPDATE' if native else 'SELECTED512G5_ONLINE_PROBE_10_ADAM_COMPLETE')
             or (periodic and update['run_id'] != config['run_id']) or update['outer'] != outer
             or (periodic and update['checkpoint'] != probe)

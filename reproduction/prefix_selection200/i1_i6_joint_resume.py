@@ -187,6 +187,8 @@ def compatibility_proof(parent_manifest,target_manifest, *, authorized_candidate
 
 
 def verify_source_compatibility(config):
+    from .progressive_resume import selected,verify
+    if selected(config):return verify(config)
     path=config['source_compatibility'];proof=read(path)
     if sha(path)!=config['source_compatibility_sha256'] or proof!=compatibility_proof(proof['parent_publication'],proof['target_publication'],
             authorized_candidate_delta=proof.get('authorized_candidate_delta')):
@@ -208,7 +210,8 @@ def verify_source_compatibility(config):
 def source_envelope(config, proof):
     return dict(runtime_source_commit=config['source_commit'],science_source_commit=proof['science_source_commit'],
         source_compatibility=config['source_compatibility'],source_compatibility_sha256=config['source_compatibility_sha256'],
-        legacy_binding_source_commit_role='immutable_actor_and_unchanged_contract_source_commit',
+        legacy_binding_source_commit_role=('immutable_actor_math_with_explicit_progressive_probe_delta' if config.get('progressive_prefix') else 'immutable_actor_and_unchanged_contract_source_commit'),
+        authorized_prefix_delta=proof.get('authorized_prefix_delta'),
         authorized_candidate_delta=proof.get('authorized_candidate_delta'))
 
 
@@ -345,6 +348,8 @@ def pending_candidate_questions(config, original, outer):
 def plan(base,config=None):
     """Read-only recovery plan; UNKNOWN qualification cannot authorize import."""
     base=canonical_path(base);config=config or read(base/'preparation/launch-config.json');spec=config['resume_joint']
+    from .progressive_resume import selected,plan as progressive_plan
+    if selected(config):return progressive_plan(base,config)
     if (spec.get('adapter')!=ADAPTER or config.get('resume_pending_probe') or config.get('resume_import') or
             config['base']!=str(base) or config.get('outers')!=200 or config.get('world_size')!=WORLD):
         raise ValueError('Use an explicit new I1–I6 full-joint recovery namespace and total budget200')
@@ -501,6 +506,8 @@ def plan(base,config=None):
 def import_complete(base):
     """Mutating entry point: genuine fault/qualification and actual gone checks twice."""
     base=canonical_path(base);config=read(base/'preparation/launch-config.json')
+    from .progressive_resume import selected,import_complete as progressive_import
+    if selected(config):return progressive_import(base)
     lock_path=base/'preparation/i1-i6-joint-import.lock'
     descriptor=os.open(lock_path,os.O_CREAT|os.O_RDWR|os.O_NOFOLLOW,0o600)
     try:
@@ -531,6 +538,8 @@ def import_complete(base):
 
 
 def validate_imported_boundary(base,config):
+    from .progressive_resume import selected,validate_imported_boundary as progressive_validate
+    if selected(config):return progressive_validate(base,config)
     base=canonical_path(base);receipt=read(base/'preparation/resume-joint-receipt.json')
     current=plan(base,config)
     if (receipt['status']!='I1_I6_FULL_JOINT_IMPORTED' or receipt['adapter']!=ADAPTER or

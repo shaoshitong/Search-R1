@@ -81,22 +81,25 @@ def actor_ledger(seals,actor,outer,rank):
 def probe_state(saved,receipt,config,outer,history):
     import torch
     from .prefix5_model import PARAMETER_SHAPES,NATIVE_BUFFER_LAYOUTS
+    from .contract import PREFIX_TOKENS,WIDTH,PROBE_UPDATES,PROBE_EPOCHS
+    from .progressive_prefix import enabled
+    progressive=enabled()
     expected=probe_boundary(outer);completed=expected['last_update_outer'];steps=expected['actual_adam_per_rank']
     need(saved['run_id']==config['run_id'] and saved['completed_outer']==completed and
          saved['actual_adam_steps_per_rank']==[steps]*WORLD and saved['learning_rate']==PROBE_LR and
          saved['binding_sha256']==digest(saved['binding'])==receipt['binding_sha256'],'Actual periodic probe state/steps/binding differs')
     required=dict(role='prefix_selection200_actorhidden_period10_question5_correctness_probe',run_id=config['run_id'],
         representation_source='current_sampling_actor_native_layer27_postblock',independent_encoder_forward=False,
-        probe_update_period=10,updates_per_period=50,encoder_revision=REVISION,question_max_tokens=273,
-        head_max_tokens=278,prefix_tokens=5,feature_layer=27,feature_boundary='post_block',
+        probe_update_period=10,updates_per_period=PROBE_UPDATES,encoder_revision=REVISION,question_max_tokens=273,
+        head_max_tokens=WIDTH,prefix_tokens=PREFIX_TOKENS,feature_layer=27,feature_boundary='post_block',
         source_probe_sha256=config['probe_source_sha256'],source_epoch=config['probe_source_epoch'],source_model_kind='ema',
         source_warmup_run=config['probe_source_run'],warmup_model_weights_only=True,warmup_optimizer_imported=False,
         online_initial_adam_steps=0,learning_rate=PROBE_LR,group_weight=1.,
         loss='mean_trajectory_BCE_plus_mean_G5_mixed_BCE',updates_per_outer=0,global_batch_average=256,
-        actual_global_batches=[255,260],world_size=WORLD,accumulation=1,rank_questions_per_period=640,
-        rank_trajectories_per_period=3200,selected_questions=512,candidate_questions=2560,exploration=0,
+        actual_global_batches=[255,260],world_size=WORLD,accumulation=1,rank_questions_per_period=640*PROBE_EPOCHS,
+        rank_trajectories_per_period=3200*PROBE_EPOCHS,selected_questions=512,candidate_questions=2560,exploration=0,
         diagnostic_manifest_sha256=config['fixed_test_manifest_sha256'],final_outer_probe_update=False,
-        probe_total_actual_adam_per_rank=950)
+        probe_total_actual_adam_per_rank=2500 if progressive else 950)
     need(all(saved['binding'].get(key)==value for key,value in required.items()),'Actual retained head optimizer/science recipe differs')
     model=saved['model'];need(set(model)==set(PARAMETER_SHAPES),'Native copied block/binary-head tensors missing')
     for name,shape in PARAMETER_SHAPES.items():tensor_cpu(model[name],dtype=torch.float32,shape=shape,finite=True)
@@ -112,7 +115,7 @@ def probe_state(saved,receipt,config,outer,history):
              'Initial head is not its original model-only warmup import')
         return dict(actual_adam_steps_per_rank=[0]*WORLD,optimizer='correctly_absent_at_actual0',rank_rng='correctly_absent_at_actual0',finite_model=True)
     actual=history[completed]
-    need(actual['probe']==receipt and saved['actor_version']==actual['rollout']['actor_version'] and
+    need(actual['probe']==receipt and saved['actor_version']==(actual['probe_metrics']['actor_version'] if progressive else actual['rollout']['actor_version']) and
          saved['scored_features_manifest_sha256']==actual['probe_metrics']['scored_features_manifest_sha256'] and
          saved['own_em_sha256']==actual['probe_metrics']['own_em_sha256'],'Saved head binds another actual sampling actor/outcome batch')
     adam=validate_adam(saved['optimizer'],[value.shape for value in model.values()],steps,PROBE_LR,weight_decay=0.)

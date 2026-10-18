@@ -333,7 +333,7 @@ class SelectedFeatures:
         return batch_to_device(concatenate(single), device)
 
 
-def atomic_checkpoint(directory, saved, completed_outer):
+def atomic_checkpoint(directory, saved, completed_outer, *, milestone_alias=True):
     directory = remote(directory)
     temporary, path = directory / 'latest.pt.partial', directory / 'latest.pt'
     if temporary.exists():
@@ -345,10 +345,12 @@ def atomic_checkpoint(directory, saved, completed_outer):
     receipt = dict(run_id=saved['run_id'], completed_outer=completed_outer,
                    actual_adam_steps_per_rank=saved['actual_adam_steps_per_rank'],
                    learning_rate=LR, sha256=sha(path), bytes=path.stat().st_size,
-                   binding_sha256=saved['binding_sha256'], observed_utc=utc())
+                   binding_sha256=saved['binding_sha256'], observed_utc=utc(),
+                   prefix_tokens=saved.get('prefix_tokens',saved['binding'].get('prefix_tokens',5)),
+                   head_max_tokens=saved['binding'].get('head_max_tokens',WIDTH))
     publish(directory / 'latest.json', receipt)
     from .periodic import is_probe_update
-    if completed_outer == 0 or is_probe_update(completed_outer):
+    if milestone_alias and (completed_outer == 0 or is_probe_update(completed_outer)):
         os.link(path, directory / ('head-outer-%04d.pt' % completed_outer))
     return receipt
 
@@ -447,6 +449,8 @@ def load_online(args, device):
     receipt = read(directory / 'latest.json')
     from .periodic import probe_boundary
     expected = probe_boundary(args.outer-1)
+    from .progressive_prefix import enabled,before_fit
+    if enabled() and getattr(args,'boundary_refresh',False):expected=before_fit(args.outer)
     if (receipt['completed_outer'] != expected['last_update_outer'] or
             receipt['actual_adam_steps_per_rank'] != [expected['actual_adam_per_rank']]*WORLD):
         raise ValueError('Probe must be the last completed10-outer state (outer200 retains190)')
@@ -607,6 +611,8 @@ def update(args):
                 for split in ('train','test')}
         optimizer = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=0)
         expected_before = probe_boundary(args.outer-1)['actual_adam_per_rank']
+        from .progressive_prefix import enabled,before_fit
+        if enabled() and getattr(args,'boundary_refresh',False):expected_before=before_fit(args.outer)['actual_adam_per_rank']
         if expected_before:
             optimizer.load_state_dict(saved['optimizer'])
             for state in optimizer.state.values():
@@ -627,15 +633,35 @@ def update(args):
         if len(set(binding_values)) != 1:
             raise ValueError('Four ranks differ in features, outcomes, plan, or prior probe')
         out = remote(args.output)
-        if rank == 0:
+        resume_epoch=getattr(args,'resume_epoch',None)
+        recovered_epoch=None
+        if resume_epoch is not None:
+            from .probe_epoch_checkpoint import restore_epoch
+            recovered_epoch=restore_epoch(out,resume_epoch,features_sha=features.manifest_sha,
+                labels_sha=sha(own_path),plan_sha=digest(plan),base_saved=saved,expected_before=expected_before)
+            model.load_state_dict(recovered_epoch['model'],strict=True)
+            restore_native_buffers(model,recovered_epoch['model_nonpersistent_buffers'])
+            optimizer.load_state_dict(recovered_epoch['optimizer'])
+            for state in optimizer.state.values():
+                for key,value in state.items():
+                    if isinstance(value,torch.Tensor) and key!='step':state[key]=value.to(device)
+            rng=recovered_epoch['rank_rng'][rank]
+            random.setstate(rng['python']);np.random.set_state(rng['numpy'])
+            torch.set_rng_state(rng['torch_cpu']);torch.cuda.set_rng_state(rng['torch_cuda'],device)
+            if actual_adam_steps(optimizer)!=expected_before+resume_epoch*50:
+                raise ValueError('Recovered actual epoch Adam boundary differs')
+        elif rank == 0:
             out.mkdir(parents=True, exist_ok=False)
         dist.barrier()
         model = DistributedDataParallel(model, device_ids=[local], broadcast_buffers=False)
         model.train()
         totals = [0.0, 0.0, 0.0, 0, 0]
         global_curve = []
+        if recovered_epoch is not None:
+            totals=list(recovered_epoch['rank_totals'][rank]);global_curve=list(recovered_epoch['global_curve'])
         started = time.monotonic()
         for step, planned in enumerate(plan, start=1):
+            if recovered_epoch is not None and step<=recovered_epoch['steps_in_current_fit']:continue
             local_groups = [groups[j] for j in rank_question_slice(planned, rank)]
             ids = [tid for group in local_groups for tid in group['trajectory_ids']]
             batch = features.get_batch(ids, device)
@@ -672,6 +698,7 @@ def update(args):
             if (global_groups != planned['global_questions'] or global_trajectories != global_groups*5):
                 raise RuntimeError('Global step diagnostics differ from their real whole-G5 batch')
             global_row = dict(outer=args.outer, step=step, actual_adam_steps_per_rank=actual,
+                epoch=planned.get('epoch',1),epoch_step=planned.get('epoch_step',step),
                 actual_learning_rate=LR, global_questions=global_groups,
                 global_trajectories=global_trajectories,
                 trajectory_bce=float(step_stats[0]/global_groups),
@@ -681,6 +708,7 @@ def update(args):
             if rank == 0:
                 append(out / 'global-loss-updates.jsonl', global_row)
             row = dict(outer=args.outer, rank=rank, step=step, actual_adam_steps=actual,
+                epoch=planned.get('epoch',1),epoch_step=planned.get('epoch_step',step),
                 actual_learning_rate=LR, local_questions=n, local_trajectories=len(ids),
                 global_questions=planned['global_questions'], global_trajectories=planned['global_questions']*5,
                 trajectory_bce=float(losses['trajectory_bce'].detach()), group_bce=float(losses['group_bce'].detach()),
@@ -688,13 +716,41 @@ def update(args):
                 loss_semantics='this_step_own_batch_before_update_different_batches_not_monotonic_claim', observed_utc=utc())
             append(out / ('rank-%d-updates.jsonl' % rank), row)
             publish(out / ('progress-rank-%d.json' % rank), dict(row, stage='ONLINE_PROBE_ADAM_WRITE_COMPLETE'))
+            from .contract import PROBE_EPOCHS
+            if PROBE_EPOCHS>1 and step%50==0:
+                epoch_predictions=evaluate(model)
+                if rank==0:
+                    epoch_metrics={}
+                    for split in ('train','test'):
+                        count=CANDIDATE_QUESTIONS if split=='train' else SELECTED_QUESTIONS
+                        epoch_metrics[split],group_rows=evaluate_predictions(epoch_predictions[split],
+                            index if split=='train' else test.index,count)
+                        with (out/('%s-epoch-%03d-group-predictions.jsonl'%(split,step//50))).open('x') as handle:
+                            for group_row in group_rows:handle.write(canonical(group_row).decode()+'\n')
+                    once(out/('epoch-%03d-metrics.json'%(step//50)),dict(epoch=step//50,
+                        actual_adam_steps_per_rank=[actual]*WORLD,prefix_tokens=PREFIX_TOKENS,
+                        metrics=epoch_metrics,scope='full_same_actor_train2560G5_and_probe_diagnostic512G5_not_formal_QA_EM'))
+                model.train()
+                epoch_rng=dict(rank=rank,actual_adam_steps=actual,python=random.getstate(),
+                    numpy=np.random.get_state(),torch_cpu=torch.get_rng_state(),torch_cuda=torch.cuda.get_rng_state(device))
+                epoch_rngs=[None]*WORLD;dist.all_gather_object(epoch_rngs,epoch_rng)
+                epoch_totals=[None]*WORLD;dist.all_gather_object(epoch_totals,list(totals))
+                if rank==0:
+                    from .probe_epoch_checkpoint import save_epoch
+                    epoch_proof=save_epoch(out,epoch=step//50,model=model.module,optimizer=optimizer,
+                        rank_rng=epoch_rngs,base_saved=saved,expected_before=expected_before,steps=step,
+                        features_sha=features.manifest_sha,labels_sha=sha(own_path),plan_sha=digest(plan),
+                        totals=epoch_totals,global_curve=global_curve)
+                    publish(out/'latest-epoch.json',epoch_proof)
+                dist.barrier()
         train_loop_seconds = time.monotonic()-started
-        if totals[3:] != [CANDIDATE_QUESTIONS//WORLD, CANDIDATE_QUESTIONS*G//WORLD]:
-            raise RuntimeError('Periodic rank must visit640 own groups/3200 trajectories once')
+        from .contract import PROBE_EPOCHS
+        if totals[3:] != [CANDIDATE_QUESTIONS//WORLD*PROBE_EPOCHS, CANDIDATE_QUESTIONS*G//WORLD*PROBE_EPOCHS]:
+            raise RuntimeError('Periodic rank must visit640 own groups/3200 trajectories per complete epoch')
         stats = torch.tensor(totals, dtype=torch.float64, device=device)
         dist.all_reduce(stats)
-        if stats[3:].tolist() != [CANDIDATE_QUESTIONS, CANDIDATE_QUESTIONS*G]:
-            raise RuntimeError('Periodic natural pass must cover exactly the unselected2560G5')
+        if stats[3:].tolist() != [CANDIDATE_QUESTIONS*PROBE_EPOCHS, CANDIDATE_QUESTIONS*G*PROBE_EPOCHS]:
+            raise RuntimeError('Every periodic epoch must cover exactly the unselected2560G5')
         predictions = evaluate(model)
         rng = dict(rank=rank, actual_adam_steps=actual_adam_steps(optimizer), python=random.getstate(),
                    numpy=np.random.get_state(), torch_cpu=torch.get_rng_state(), torch_cuda=torch.cuda.get_rng_state(device))
@@ -714,13 +770,16 @@ def update(args):
                 model_nonpersistent_buffers=nonpersistent_buffers(model.module),
                 warmup_model_import=saved.get('warmup_model_import'), optimizer=optimizer_state, rank_rng=all_rng, actual_adam_steps_per_rank=[probe_boundary(args.outer)['actual_adam_per_rank']]*WORLD,
                 learning_rate=LR, scored_features_manifest_sha256=features.manifest_sha,
-                own_em_sha256=sha(own_path), actor_version=m['actor_version'])
+                own_em_sha256=sha(own_path), actor_version=m['actor_version'],
+                optimizer_parameter_names=[name for name,_ in model.module.named_parameters()],
+                prefix_tokens=PREFIX_TOKENS,epochs_completed=PROBE_EPOCHS)
             result = atomic_checkpoint(args.state_dir, checkpoint, args.outer)
             metrics = dict(run_id=saved['run_id'], outer=args.outer, actual_adam_steps_per_rank=[probe_boundary(args.outer)['actual_adam_per_rank']]*WORLD,
                 new_adam_steps_per_rank=PROBE_UPDATES, actual_learning_rate=LR, train=train_metrics, test=test_metrics,
                 before_update=before_metrics, unselected_training_questions=CANDIDATE_QUESTIONS, actor_hidden_native=True,
-                train_online_trajectory_bce=float(stats[0]/CANDIDATE_QUESTIONS), train_online_group_bce=float(stats[1]/CANDIDATE_QUESTIONS),
-                train_online_total_loss=float(stats[2]/CANDIDATE_QUESTIONS), train_loop_seconds=train_loop_seconds,
+                train_online_trajectory_bce=float(stats[0]/(CANDIDATE_QUESTIONS*PROBE_EPOCHS)), train_online_group_bce=float(stats[1]/(CANDIDATE_QUESTIONS*PROBE_EPOCHS)),
+                train_online_total_loss=float(stats[2]/(CANDIDATE_QUESTIONS*PROBE_EPOCHS)), train_loop_seconds=train_loop_seconds,
+                epochs=PROBE_EPOCHS,prefix_tokens=PREFIX_TOKENS,
                 diagnostic_semantics='same_head_pre_and_post_update_full2560G5_and_current_actor_fixed512G5',
                 step_loss_semantics='different_natural_batches_before_their_own_update_no_monotonic_claim',
                 global_step_loss_curve=summarize_loss_curve(global_curve),
@@ -732,7 +791,7 @@ def update(args):
                 with (out / (split+'-group-predictions.jsonl')).open('x') as handle:
                     for row in rows:
                         handle.write(canonical(row).decode()+'\n')
-            once(out / 'complete.json', dict(status='UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE', **metrics,
+            once(out / 'complete.json', dict(status='UNSELECTED2560G5_PERIODIC_PROBE_%d_ADAM_COMPLETE'%PROBE_UPDATES, **metrics,
                                             metrics_sha256=sha(out / 'metrics.json'), observed_utc=utc()))
         dist.barrier()
     finally:
@@ -754,6 +813,8 @@ def main():
     parser.add_argument('--test-cache'); parser.add_argument('--test-manifest-sha')
     parser.add_argument('--encoder-micro-batch-size', type=int, default=256)
     parser.add_argument('--seed', type=int, default=1729)
+    parser.add_argument('--resume-epoch',type=int,choices=(1,2,3),help='Explicit qualified stopped-fit epoch boundary; rejects later uncheckpointed writes')
+    parser.add_argument('--boundary-refresh',action='store_true',help='Explicit post50/100/150 new-prefix fit from the retained prior probe clock')
     args = parser.parse_args()
     required = {'initialize': ('source_checkpoint', 'source_sha256', 'run_id', 'test_cache', 'test_manifest_sha'),
                 'score': ('prefix_inputs', 'output', 'outer', 'model_dir'),

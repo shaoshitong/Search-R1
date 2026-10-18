@@ -12,7 +12,7 @@ import uuid
 
 from reproduction.prefix20_online.launch import read, sha, once, publish
 from .contract import (CANDIDATE_QUESTIONS, PROBE_LR, PROBE_PERIOD, PROBE_UPDATES,
-                       WORLD, PREFIX_TOKENS, HIDDEN_CAPTURE_CONTRACT)
+                       WORLD, PREFIX_TOKENS, HIDDEN_CAPTURE_CONTRACT,PROBE_EPOCHS)
 from .a800_runtime import query, native_allocation, UUIDLocks
 from . import a800_runtime
 
@@ -27,7 +27,7 @@ def validate_config(c, base):
         raise ValueError('Use the isolated remote prefix-selection namespace')
     required = dict(outers=200, candidate_questions=CANDIDATE_QUESTIONS, selected_questions=512,
                     responses_per_question=5, prefix_policy_tokens=PREFIX_TOKENS, exploration_questions=0,
-                    probe_learning_rate=PROBE_LR, probe_epochs_per_update=1, probe_update_period=PROBE_PERIOD,
+                    probe_learning_rate=PROBE_LR, probe_epochs_per_update=PROBE_EPOCHS, probe_update_period=PROBE_PERIOD,
                     probe_updates_per_period=PROBE_UPDATES, actor_hidden_native=True, probe_global_batch_average=256,
                     actor_global_mini_batch=128, actor_ppo_epochs=1, world_size=WORLD,
                     probe_update_at_final=False, nonmixed_advantage_mode='zero_anchor_all_correct_only')
@@ -120,7 +120,7 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
     if periodic_update:
         probe_metrics = read(root/'probe-update/metrics.json')
         updated = read(root/'probe-update/complete.json')
-        if (updated['status'] != 'UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE'
+        if (updated['status'] != 'UNSELECTED2560G5_PERIODIC_PROBE_%d_ADAM_COMPLETE'%PROBE_UPDATES
                 or updated['outer'] != outer or updated['run_id'] != c['run_id']
                 or updated['new_adam_steps_per_rank'] != PROBE_UPDATES
                 or updated['metrics_sha256'] != sha(root/'probe-update/metrics.json')):
@@ -174,6 +174,14 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
             effective_candidate_schedule_from_outer=c['candidate_schedule']['effective_from_outer'])
     complete['phase_timings'] = {key:value for key,value in timings.items()
                                 if key.startswith('outer-%06d-'%outer)}
+    if c.get('progressive_prefix'):
+        from .progressive_prefix import actor_prefix,after_boundary
+        complete['progressive_prefix']=dict(mode=c['progressive_prefix']['mode'],
+            actor_prefix_tokens=actor_prefix(outer),probe_prefix_tokens=after_boundary(outer),
+            epochs_per_update=3,ordinary_candidate_limits=[512,5120])
+        if outer in (100,150):
+            reserved=base/'probe-refreshes'/('round-%06d'%outer)/'outers'/root.name/'probe-only-reservation.json'
+            complete['probe_refresh_reservation']=dict(path=str(reserved),sha256=sha(reserved),actor_pool_advanced=False)
     if c.get('resume_pending_probe'):
         from .i1_i6_joint_resume import verify_source_compatibility, source_envelope
         complete.update(source_envelope(c, verify_source_compatibility(c)))
@@ -205,6 +213,8 @@ def run(base):
     from reproduction.prefix_only_correctness_ab.launch import torchrun_owned_class, DeferredInterrupt, birth_states
     from .pool import prepare
     base = Path(base).resolve(); c = config(base)
+    from .progressive_resume import selected as progressive_selected
+    progressive=progressive_selected(c)
     if sha(base / 'preparation/launch-config.json') != read(base / 'preparation/submit-intent.json')['config_sha256']:
         raise ValueError('Submitted configuration changed')
     if (base / 'logs/process-ledger.json').exists():
@@ -290,6 +300,49 @@ def run(base):
 
     def distributed(module, args):
         return [python, '-m', 'torch.distributed.run', '--standalone', '--nproc_per_node=%d' % WORLD, '-m', module] + args
+
+    def progressive_refresh(completed):
+        """Fit at a new-length boundary only after its actor state is durable."""
+        nonlocal c,env
+        from .progressive_prefix import after_boundary
+        length=after_boundary(completed)
+        scoped_env=dict(env,DYNRPO_PREFIX_TOKENS=str(length))
+        root=base/'outers'/('outer-%06d'%completed)
+        data=base/'probe-refreshes'/('round-%06d'%completed)
+        data_root=data/'outers'/root.name;data_config=data/'preparation/launch-config.json'
+        phase('outer-%06d-prefix%d-readout-expand'%(completed,length),
+            [python,'-m','reproduction.prefix_selection200.progressive_refresh','migrate',
+             '--base',str(base),'--outer',str(completed)],dict(scoped_env,CUDA_VISIBLE_DEVICES=''))
+        phase('outer-%06d-prefix%d-refresh-prepare'%(completed,length),
+            [python,'-m','reproduction.prefix_selection200.progressive_refresh','prepare',
+             '--base',str(base),'--outer',str(completed)],dict(scoped_env,CUDA_VISIBLE_DEVICES=''))
+        phase('outer-%06d-prefix%d-refresh-sample'%(completed,length),
+            [python,'-m','reproduction.prefix_selection200.rollout','--config',str(data_config),
+             '--outer',str(completed),'--phase','prefix'],scoped_env)
+        phase('outer-%06d-prefix%d-refresh-score'%(completed,length),
+            distributed('reproduction.prefix_selection200.probe',[
+                'score','--state-dir',str(base/'probe'),'--prefix-inputs',str(data_root/'prefix/scan'),
+                '--output',str(data_root/'probe-score'),'--outer',str(completed),
+                '--model-dir',c['official_model_dir'],'--boundary-refresh']),scoped_env)
+        phase('outer-%06d-prefix%d-refresh-full-pool'%(completed,length),
+            [python,'-m','reproduction.prefix_selection200.periodic_data','complete-pool',
+             '--config',str(data_config),'--outer',str(completed)],scoped_env)
+        phase('outer-%06d-prefix%d-refresh-diagnostic'%(completed,length),
+            [python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic',
+             '--config',str(data_config),'--outer',str(completed)],scoped_env)
+        diagnostic=read(data_root/'diagnostic-complete.json')
+        phase('outer-%06d-probe-update'%completed,
+            distributed('reproduction.prefix_selection200.probe',[
+                'update','--state-dir',str(base/'probe'),'--scored-features',str(data_root/'probe-score'),
+                '--own-em',str(data_root/'full-pool/own-em.jsonl'),'--output',str(root/'probe-update'),
+                '--own-em-sha256',read(data_root/'full-pool/complete.json')['own_em']['sha256'],
+                '--outer',str(completed),'--model-dir',c['official_model_dir'],
+                '--test-cache',diagnostic['scan_path'],'--test-manifest-sha',diagnostic['scan_sha256'],
+                '--boundary-refresh']),scoped_env)
+        c=dict(c,prefix_policy_tokens=length,
+               hidden_capture_contract='sample%d_keep%d_postblock27_native_residual_sum_v1'%(length+1,length))
+        env=scoped_env
+        return read(root/'probe-update/metrics.json')
 
     def await_service(name, url, expected):
         deadline = time.monotonic() + 1800
@@ -419,6 +472,12 @@ def run(base):
         else:
             grounding_state = start_grounding(grounding.initialize(base, c))
         refresh_grounding(outer)
+        if progressive and not (base/'preparation/progressive-bootstrap-complete.json').exists():
+            progressive_refresh(50)
+            from .progressive_refresh import bootstrap_joint
+            bootstrap_joint(base)
+            stage('CP50_PREFIX20_THREE_EPOCH_BOOTSTRAP_COMPLETE',complete_outer=50,
+                  inherited_actor_updates_reexecuted=0,probe_actual_adam_per_rank=400)
         # Retry the interrupted milestone QA with its saved actor, then continue
         # from the joint actor/probe/pool boundary without redoing any updates.
         if outer in (5, 50, 100, 150, 200):
@@ -429,8 +488,15 @@ def run(base):
                        'recovered-outer-%06d-validation' % outer)
         for outer in range(outer + 1, 201):
             root = base / 'outers' / ('outer-%06d' % outer)
+            if progressive:
+                from .progressive_prefix import actor_prefix
+                expected_prefix=actor_prefix(outer)
+                if c['prefix_policy_tokens']!=expected_prefix or env.get('DYNRPO_PREFIX_TOKENS')!=str(expected_prefix):
+                    raise ValueError('Actor sampling, scoring, probe width and continuation must use the same current prefix')
+                conf=str(root/'current-stage-config.json')
             stage('CANDIDATE_POOL_RESERVATION')
             prepare(c, outer)
+            if progressive:once(conf,c)
             actor = read(base / 'actor/latest.json') if outer > 1 else None
             actor_binding = dict(run_id=c['run_id'], outer=outer,
                 actor_model_dir=actor['hf_model_dir'] if actor else c['official_model_dir'],
@@ -483,6 +549,7 @@ def run(base):
                     if (actual_selection.get('outcome_labels_used') is not True
                             or actual_selection.get('fallback_mode') != c['actual_em_selection_fallback']):
                         raise ValueError('Periodic actual-EM actor selection is missing its bound fallback policy')
+                    if progressive and outer in (100,150):return actor_selection_path
                     diagnostic_path = root/'diagnostic-complete.json'
                     if diagnostic_path.is_file():
                         diagnostic = read(diagnostic_path)
@@ -543,7 +610,9 @@ def run(base):
                     raise RuntimeError('Actual actor failure requires repair: '+json.dumps(retry))
                 actor_micro = retry['actor_global_micro_batch_size']
                 attempt_id = retry['new_attempt_id']
-            if periodic_update:
+            if periodic_update and progressive and outer in (100,150):
+                probe_metrics=progressive_refresh(outer)
+            elif periodic_update:
                 diagnostic_receipt=read(root/'diagnostic-complete.json')
                 phase('outer-%06d-probe-update' % outer, distributed('reproduction.prefix_selection200.probe',
                     ['update','--state-dir',str(base/'probe'),'--scored-features',str(root/'probe-score'),
