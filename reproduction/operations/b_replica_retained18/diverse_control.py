@@ -71,7 +71,7 @@ elif ACTION=='migrate':
  launched=dict(pid=child.pid,start_ticks=int(fields[19]),sid=int(fields[3]),created_unix=time.time())
  (p/'preparation/import-worker-receipt.json').write_text(json.dumps(launched));print(json.dumps(launched))
 elif ACTION=='submit':
- assert read(p/'preparation/import-worker-terminal.json')['status']=='COMPLETE'
+ assert (read(p/'preparation/import-finalizer-terminal.json')or read(p/'preparation/import-worker-terminal.json'))['status']=='COMPLETE'
  code='import json;from reproduction.prefix_selection200.launch import submit;print(json.dumps(submit('+repr(canonical)+')))'
  value=subprocess.run(command(['-c',code]),capture_output=True,text=True,timeout=180)
  print(json.dumps(dict(returncode=value.returncode,stdout=value.stdout,stderr=value.stderr)))
@@ -95,7 +95,7 @@ else:
   if v:facts.append({k:v.get(k)for k in ('outer','source_commit','selection_metrics','iteration_wall','phase_timings')}|dict(actor=v['actor']['actual_adam_steps_per_rank'],probe=v['probe']['actual_adam_steps_per_rank']))
  print(json.dumps(dict(observed_unix=time.time(),source_commit=read(p/'preparation/launch-config.json')['source_commit'],stage=stage,
   joint_outer=(j or{}).get('outer'),facts=facts,progress=progress,logs=logs,import_files=ranks,
-  importer=birth('import-worker-receipt.json'),import_terminal=read(p/'preparation/import-worker-terminal.json'),
+  importer=birth('import-worker-receipt.json'),import_terminal=read(p/'preparation/import-worker-terminal.json'),import_finalizer=read(p/'preparation/import-finalizer-terminal.json'),
   training=birth('submit-receipt.json'),cleanup=read(p/'logs/cleanup-status.json'),complete=read(p/'complete.json'))))
 '''
 
