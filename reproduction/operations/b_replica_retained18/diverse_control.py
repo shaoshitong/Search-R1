@@ -101,7 +101,19 @@ else:
  facts=[]
  for n in range(51,201):
   v=read(p/'outers'/('outer-%06d'%n)/'complete.json')
-  if v:facts.append({k:v.get(k)for k in ('outer','source_commit','selection_metrics','iteration_wall','phase_timings')}|dict(actor=v['actor']['actual_adam_steps_per_rank'],probe=v['probe']['actual_adam_steps_per_rank']))
+  if v:
+   rank_evidence=[]
+   for row in v['actor']['rank_receipts']:
+    records=[json.loads(line)for line in pathlib.Path(row['ledger_path']).read_text().splitlines()]
+    restore=next(r for r in records if r['event']=='ACTUAL_RESTORE');writes=[r for r in records if r['event']=='ACTUAL_ADAM_WRITE']
+    rank_evidence.append(dict(rank=row['rank'],restored_outer=restore['restored_completed_outer'],adam_before=restore['actual_adam_before'],scheduler_before=restore['restored_scheduler'],writes=len(writes),opportunities=sum(r['event']=='OPPORTUNITY'for r in records),local_micro=writes[-1]['local_micro']if writes else None,accumulation=writes[-1]['gradient_accumulation']if writes else None,ledger_sha256=sha(pathlib.Path(row['ledger_path'])),expected_ledger_sha256=row['ledger_sha256']))
+   scores=p/'outers'/('outer-%06d'%n)/'probe-score/candidate-scores.jsonl';probe_variance=None
+   if scores.exists():
+    import statistics
+    score_rows=[json.loads(line)for line in scores.read_text().splitlines()]
+    probe_variance=dict(questions=len(score_rows),mean_within_group_probability_variance=statistics.fmean(statistics.pvariance(r['trajectory_probabilities'])for r in score_rows),nonzero_probability_variance_groups=sum(statistics.pvariance(r['trajectory_probabilities'])>0 for r in score_rows))
+   prefix_receipt=read(p/'outers'/('outer-%06d'%n)/'prefix/complete.json')
+   facts.append({k:v.get(k)for k in ('outer','source_commit','selection_metrics','iteration_wall','phase_timings')}|dict(actor=v['actor']['actual_adam_steps_per_rank'],probe=v['probe']['actual_adam_steps_per_rank'],direct_rank_evidence=rank_evidence,probe_variance=probe_variance,prefix_counts={k:prefix_receipt.get(k)for k in ('questions','trajectories','prefix_candidates_generated','prefixes_discarded','discarded_probe_evaluations')}))
  print(json.dumps(dict(observed_unix=time.time(),source_commit=read(p/'preparation/launch-config.json')['source_commit'],stage=stage,
   joint_outer=(j or{}).get('outer'),facts=facts,progress=progress,logs=logs,import_files=ranks,
   importer=birth('import-worker-receipt.json'),import_terminal=read(p/'preparation/import-worker-terminal.json'),import_finalizer=read(p/'preparation/import-finalizer-terminal.json'),
