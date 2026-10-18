@@ -314,3 +314,22 @@ controls, never a deployment into frozen runtime2e397623.
 ## Period30 paired results
 
 See [period30-paired-results.md](period30-paired-results.md) and [small metrics](period30-paired-small-metrics.json). Both complete30, actual31 uses frozen A0/B EMA420. EMA diagnostic BA improves while ordinary accuracy and mixed loss worsen. Runtime2e397623 unchanged.
+
+
+## Reusable committed-progress comparison
+
+[Through30 comparison](through30-comparison/comparison-progress.md) includes every
+committed outer, separates periodic actual-EM-priority selection from ordinary
+pre-label selection, and retains all420 B global loss rows in its JSON companion.
+The generator reads only an existing small-report JSON; it has no remote access
+or trainer deployment path:
+
+```sh
+python3 -m reproduction.operations.h100_reference_replica.build_ab_progress_report \
+  --source /absolute/path/to/already-read-small-report.json \
+  --output /absolute/path/to/report-directory
+```
+
+Missing values remain pending. QA records retain their original evidence;
+classification metrics are never substituted for QA. The generated report is
+partial progress, not final200/QA/state/resource acceptance.
