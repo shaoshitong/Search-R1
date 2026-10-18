@@ -19,7 +19,8 @@ def main():
  if args.phase=='stage':
   assert not subprocess.check_output(['git','status','--porcelain'],cwd=REPO,text=True).strip()
   assert subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/b-diverse10to5-cp50-eight-20261018'],cwd=REPO,text=True).split()[0]==commit
-  archive=base64.b64encode(gzip.compress(subprocess.check_output(['git','archive',commit],cwd=REPO))).decode()
+  changed=subprocess.check_output(['git','diff','--name-only','--diff-filter=ACMRT','ff04ea81e4f3d7783d9c84c558faa515e5eca79f',commit],cwd=REPO,text=True).splitlines()
+  archive=base64.b64encode(gzip.compress(subprocess.check_output(['git','archive',commit,'--',*changed],cwd=REPO))).decode()
   code=r'''
 import sys,uuid
 from reproduction.prefix_selection200.diverse_native_resume import qualify,prepare,PROTECTED
@@ -49,9 +50,10 @@ print(json.dumps(dict(status='CP64_NATIVE_READY',base=str(b),actor=r['actor_adam
   assert len(uuids)==8
   code='BASE='+repr(C)+'\nSOURCE='+repr(SOURCE)+'\nCOMMIT='+repr(commit)+'\nUUIDS='+repr(uuids)+'\n'+code
   s=pre+'ARCHIVE='+repr(archive)+'\nWORKER='+repr(code)+'\n'+r'''
-import base64,gzip,tarfile,io,hashlib
+import base64,gzip,tarfile,io,hashlib,shutil
 assert not p.exists(),'Existing recovery must be reconciled, never overwritten'
-(p/'repo').mkdir(parents=True);(p/'preparation').mkdir();(p/'logs').mkdir()
+source=p.parent/'search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp50-eight-20261018-r2'
+shutil.copytree(source/'repo',p/'repo',ignore=shutil.ignore_patterns('__pycache__','.git'));(p/'preparation').mkdir();(p/'logs').mkdir()
 with tarfile.open(fileobj=io.BytesIO(gzip.decompress(base64.b64decode(ARCHIVE))))as tf:
  for m in tf.getmembers():assert not m.name.startswith('/')and'..'not in pathlib.Path(m.name).parts and(m.isfile()or m.isdir())
  tf.extractall(p/'repo')

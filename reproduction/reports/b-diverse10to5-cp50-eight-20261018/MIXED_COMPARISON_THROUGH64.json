@@ -1,0 +1,152 @@
+{
+  "created_utc": "2026-10-18T16:11:17.967111+00:00",
+  "definition": "Actual EM mixed labels among final512 selected training groups: 0<correct_count<5",
+  "baseline_thread": "01a0fcbb-863f-7450-926d-db537f648265",
+  "baseline_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-h10011-normal-follow-actual-facts.json",
+  "baseline_source_sha256": "7cff0cf8765df9fbacf1821a8f6d1dde2fb1df271f2b9b732afdc7f8b2c219ae",
+  "diverse_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/b-replica-retained18-20261018/DIVERSE_LATEST.json",
+  "diverse_source_sha256": "39c370413d3357151ed7ef8ba801840628e630e3e5a348b79e06d46125cb8617",
+  "rows": [
+    {
+      "outer": 52,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 235,
+      "baseline_mixed": 209,
+      "own_fraction": 0.458984375,
+      "baseline_fraction": 0.408203125,
+      "difference_percentage_points": 5.078125
+    },
+    {
+      "outer": 53,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 254,
+      "baseline_mixed": 231,
+      "own_fraction": 0.49609375,
+      "baseline_fraction": 0.451171875,
+      "difference_percentage_points": 4.4921875
+    },
+    {
+      "outer": 54,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 247,
+      "baseline_mixed": 228,
+      "own_fraction": 0.482421875,
+      "baseline_fraction": 0.4453125,
+      "difference_percentage_points": 3.7109375
+    },
+    {
+      "outer": 55,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 289,
+      "baseline_mixed": 240,
+      "own_fraction": 0.564453125,
+      "baseline_fraction": 0.46875,
+      "difference_percentage_points": 9.5703125
+    },
+    {
+      "outer": 56,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 264,
+      "baseline_mixed": 214,
+      "own_fraction": 0.515625,
+      "baseline_fraction": 0.41796875,
+      "difference_percentage_points": 9.765625
+    },
+    {
+      "outer": 57,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 250,
+      "baseline_mixed": 208,
+      "own_fraction": 0.48828125,
+      "baseline_fraction": 0.40625,
+      "difference_percentage_points": 8.203125
+    },
+    {
+      "outer": 58,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 237,
+      "baseline_mixed": 210,
+      "own_fraction": 0.462890625,
+      "baseline_fraction": 0.41015625,
+      "difference_percentage_points": 5.2734375
+    },
+    {
+      "outer": 59,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 253,
+      "baseline_mixed": 209,
+      "own_fraction": 0.494140625,
+      "baseline_fraction": 0.408203125,
+      "difference_percentage_points": 8.59375
+    },
+    {
+      "outer": 60,
+      "periodic": true,
+      "questions": 512,
+      "own_mixed": 512,
+      "baseline_mixed": 465,
+      "own_fraction": 1.0,
+      "baseline_fraction": 0.908203125,
+      "difference_percentage_points": 9.1796875
+    },
+    {
+      "outer": 61,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 231,
+      "baseline_mixed": 198,
+      "own_fraction": 0.451171875,
+      "baseline_fraction": 0.38671875,
+      "difference_percentage_points": 6.4453125
+    },
+    {
+      "outer": 62,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 252,
+      "baseline_mixed": 200,
+      "own_fraction": 0.4921875,
+      "baseline_fraction": 0.390625,
+      "difference_percentage_points": 10.15625
+    },
+    {
+      "outer": 63,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 243,
+      "baseline_mixed": 200,
+      "own_fraction": 0.474609375,
+      "baseline_fraction": 0.390625,
+      "difference_percentage_points": 8.3984375
+    },
+    {
+      "outer": 64,
+      "periodic": false,
+      "questions": 512,
+      "own_mixed": 249,
+      "baseline_mixed": 211,
+      "own_fraction": 0.486328125,
+      "baseline_fraction": 0.412109375,
+      "difference_percentage_points": 7.421875
+    }
+  ],
+  "ordinary_mean": {
+    "own": 0.4889322916666667,
+    "baseline": 0.4163411458333333
+  },
+  "new_test_score": false,
+  "limits": [
+    "Single continuation comparison, different actual question/trajectory samples after divergence",
+    "Baseline4ranks versus fork8ranks with unchanged global mini128 and per-cardmicro1; accumulation32 versus16",
+    "Ordinary prefix generation doubles5 to10; only retained5 pass probe; no equal-cost superiority claim",
+    "Periodic60 uses originalG5 and actual-label rerank, so separated from ordinary rounds"
+  ]
+}
