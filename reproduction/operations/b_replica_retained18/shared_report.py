@@ -17,6 +17,15 @@ def main():
   lines.append(f"|{r['outer']}|{kind}|{r['actor'][0]}|{r['probe'][0]}|{100*r['selection_metrics']['mixed_fraction']:.2f}%|{duration}|{total_duration}|")
  lines+=['','周期全池轮使用全候选的实际结果选组，其训练组混奖比例与普通轮分开看，不能当作测试集EM/F1。']
  lines+=['','训练分钟取原生training-wall；迭代总分钟取原生iteration-wall-time，包含本轮原定QA、grounding及存储处理。缺少总计实读时显示待核对，不以训练耗时替代；训练200后的最终51713评测另行计时。']
+ status=json.loads((root/'outputs/STATUS.json').read_text())
+ diagnostic=status.get('latest_fixed512_diagnostic')
+ if diagnostic:
+  delta=diagnostic.get('delta_em_percentage_points')
+  change=f"；相对上次变化{delta:+.2f}个百分点"if delta is not None else''
+  lines+=['',f"固定512题G5诊断：actor第{diagnostic['actor_outer']}轮，EM {100*diagnostic['trajectory_mean_em']:.2f}%（{diagnostic['strict_correct']}/{diagnostic['trajectories']}）{change}。此为诊断采样口径，非最终51713题评测。"]
+ validation=status.get('latest_fixed512_validation')
+ if validation:
+  lines+=['',f"固定512题greedy验证：actor第{validation['actor_outer']}轮，EM {100*validation['em']:.2f}%，F1 {100*validation['f1']:.2f}%。与G5诊断使用不同推理口径，不能混为同一指标。"]
  active=v.get('active_actor',[])
  if active:lines+=['',f"当前直接rank记录：{[(r['rank'],r['writes'],r['opportunities'],r['last_adam'])for r in active]}。实际写入单列，不把机会当写入。"]
  lines+=['','此前45GB空余及等待整节点属于助手额外加入的限制，已按最新人工共卡指令撤回；实际运行使用既有共享配置与UUID租约。第一SSH启动退出、systemd启动因NFS设备号误报而退出的证据保留，均0个actor写入。当前独立服务托管，不借用其他任务cgroup。','',f"运行源码：`{v['receipt']['source_commit']}`，科学checkpoint binding保留c3ced090。新NFS适配仅允许来自精确retained18导出且inode/大小/数据mtime完全相同的st_dev映射，原全SHA与28片顺序不变；明确未声称新的字节SHA读回。",'','51–64轮普通轮（排除周期60）实际训练混奖平均48.18%，参考B为41.56%，提高6.63个百分点。训练组混奖比较不能证明测试EM/F1提升；8卡/4卡、后续采样分化及10候选生成成本差异单列。','',f"直接证据：`{v['evidence']}`。恢复验收须65–69完整且70真实继续，随后同一实例保持200总预算。5秒整卡显存/利用率记录远端日志，不能用Torch峰值或共享SM利用率推称本任务独占资源/计费。",'']
