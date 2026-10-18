@@ -1,0 +1,17 @@
+# Progressive B: latest complete-state recovery entry
+
+The initial human-authorized rollback remains fixed at CP50. A separate `prepare_latest(source, new_base, staged_repo, published_commit)` entry now supports the same progressive run's actual latest complete outer51..200, instead of silently reusing50. It does not submit, stop or edit a healthy trainer.
+
+Prerequisites are the stopped source's actual owned-process cleanup, its current `latest-joint.json`, the matching immutable complete marker and an existing full-file-SHA/actual-CPU-deserialization proof for that exact boundary. Already verified large files are not rehashed here. The importer consumes their unchanged inode/size/mtime seals. A newer source joint makes an older recovery request fail rather than rolling backward.
+
+Actor, online probe, EMA, both optimizers and rank RNG state are imported through the original saved payloads/receipts. Actual actor/probe counters come from the real complete joint and its proof, not20N or10N. The original source weights/logs and uncommitted work remain at the source; unsaved optimizer/rollout payloads are never spliced into the new complete trajectory.
+
+If the next candidate reservation already exists, its exact order, cycle, cursor, indices and authentic question/selection metadata are retained. Only model-dependent unsaved prefix/continuation outputs are not imported. This prevents a second question-pool consumption while permitting a correctly restored model to resume the same reserved questions.
+
+The initial progressive protocol origin remains50. A future complete100 checkpoint restores its20-token head and expands to40 before101 using the existing dimension-migration code. Complete150 similarly restores40 then expands to80 before151. Later within-stage checkpoints restore their actual20/40/80 head dimensions. Microbatch settings are retained on latest-state recovery.
+
+The returned `required_process_environment` must be installed **before Python imports contract/model modules**, for preparation validation and native submission inside the CPU-qualified `retained-cache-v2` namespace. For example, a complete140 recovery needs `SEARCH_G1_B_PREFIX_TOKENS=40`; a complete100 recovery needs20 and the normal101 migration performs expansion. The existing launch entry remains the submitter; this importer does not add a second launcher or signal path.
+
+Seven focused CPU tests passed: the three existing progressive boundary/expansion/same-G5 tests and four metadata recovery tests. The latter cover explicit rollback versus latest recovery, refusal of an older joint, real skipped-update counters, preserved next reservations, and a150→151 import fixture retaining the original payload inode and optimizer counters. They do not claim an actual GPU restore from a future checkpoint.
+
+The actor, actor safeguards, interaction/reward, grounding and probe optimization/loss/sampling files are byte-identical to the currently frozen B runtime `c5f1a07e6a9f4ccee35f45ddf69ab4aa3d28e910`. Current A/B processes and frozen runtime directories were not changed. Actual future full-state qualification, deployment and GPU restore remain pending until a real fault or authorized boundary handoff requires them.
