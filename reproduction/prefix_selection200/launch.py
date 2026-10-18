@@ -455,6 +455,13 @@ def run(base):
             validation(outer, actor['hf_model_dir'], recovery_config, base/'recovered-validation',
                        'recovered-outer-%06d-validation' % outer)
         for outer in range(outer + 1, 201):
+            from .b_progressive import enabled as b_progressive,prefix as b_prefix,ENV as b_env
+            if b_progressive(c):
+                length=b_prefix(outer);env[b_env]=str(length);os.environ[b_env]=str(length)
+                if outer==51 or length!=c['prefix_policy_tokens']:
+                    phase('outer-%06d-prefix-dimension'%outer,[python,'-m','reproduction.prefix_selection200.b_progressive_control','migrate','--base',str(base),'--prefix',str(length)],dict(env,CUDA_VISIBLE_DEVICES=''))
+                c=dict(c,prefix_policy_tokens=length,hidden_capture_contract='sample%d_keep%d_postblock27_native_residual_sum_v1'%(length+1,length))
+                conf=str(base/'preparation'/('outer-%06d-launch-config.json'%outer));once(conf,c)
             outer_wall_started=time.monotonic()
             root = base / 'outers' / ('outer-%06d' % outer)
             stage('CANDIDATE_POOL_RESERVATION')
@@ -524,6 +531,9 @@ def run(base):
                         phase(job('current-actor-diagnostic'),
                             [python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic',
                              '--config',sampling_conf,'--outer',str(outer)])
+                elif __import__('reproduction.prefix_selection200.b_progressive',fromlist=['ordinary']).ordinary(c,outer):
+                    phase(job('expanded-continuation-rerank'),[python,'-m','reproduction.prefix_selection200.b_progressive_control','complete','--config',sampling_conf,'--outer',str(outer)])
+                    actor_selection_path=root/'probe-score/actual-em-selection.json'
                 else:
                     phase(job('continue'), [python, '-m', 'reproduction.prefix_selection200.rollout',
                         '--config', sampling_conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(actor_selection_path)])

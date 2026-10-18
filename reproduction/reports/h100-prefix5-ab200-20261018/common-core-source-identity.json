@@ -1,7 +1,7 @@
 {
   "status": "AB_AUTHORIZED_DELTA_AND_COMMON_ACTOR_REWARD_ROLLOUT_SOURCE_IDENTITY_PASS",
   "baseline": "7679bb8ced2c13922fa9f5c9050ed0ce7fa54dde",
-  "runtime": "5033a4df122197131f736100748a03aed48c9f8c",
+  "runtime": "2e3976230ac9425d66d8553afa9962821e964932",
   "exact_core_files": [
     {
       "path": "reproduction/prefix_selection200/actor.py",
@@ -53,21 +53,31 @@
     "docs/h100-prefix5-reference-replica-preparation-20261018.md",
     "reproduction/operations/h100_reference_replica/cleanup_prefix5_reference_transfer_staging.py",
     "reproduction/operations/h100_reference_replica/finalize_prefix5_reference_preparation.py",
+    "reproduction/operations/h100_reference_replica/h10011_private_paths.sh",
     "reproduction/operations/h100_reference_replica/readback_prefix5_reference_replica_commit.py",
+    "reproduction/operations/h100_reference_replica/retry_ab_zero_outer_cache.py",
     "reproduction/operations/h100_reference_replica/stage_prefix5_reference_preparation_delta.py",
+    "reproduction/operations/h100_reference_replica/watch_prefix5_ab_actual.py",
+    "reproduction/prefix_selection200/a800_runtime.py",
     "reproduction/prefix_selection200/ab_checkpoint_once.py",
     "reproduction/prefix_selection200/ab_control.py",
     "reproduction/prefix_selection200/ab_lifecycle.py",
     "reproduction/prefix_selection200/ab_policy.py",
     "reproduction/prefix_selection200/ab_probe.py",
+    "reproduction/prefix_selection200/frozen_probe_report.py",
+    "reproduction/prefix_selection200/h100_replica_hardware.py",
     "reproduction/prefix_selection200/i1_i6_checkpoint_cpu.py",
     "reproduction/prefix_selection200/i1_i6_joint_resume.py",
     "reproduction/prefix_selection200/launch.py",
+    "reproduction/prefix_selection200/node_migration.py",
+    "reproduction/prefix_selection200/pool.py",
     "reproduction/prefix_selection200/probe.py",
+    "reproduction/prefix_selection200/startup_sampling_resume.py",
     "reproduction/prefix_selection200/storage.py",
     "reproduction/prefix_selection200/test_ab_policy.py",
     "reproduction/prefix_selection200/test_i1_i6_joint_resume.py",
     "reproduction/reports/h100-prefix5-ab200-20261018/PROTOCOL.md",
+    "reproduction/reports/h100-prefix5-ab200-20261018/common-core-source-identity.json",
     "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-a800-environment.json",
     "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-assets-copy-complete.json",
     "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-code-stage.json",
@@ -80,6 +90,7 @@
     "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-retrieval-assets-comparison.json",
     "reproduction/reports/h100-reference-prefix5-preparation-20261018/prefix5-reference-transfer-staging-cleanup.json"
   ],
-  "checked_utc": "2026-10-17T19:44:36.656945+00:00",
-  "gpu_test_performed": false
+  "checked_utc": "2026-10-17T20:40:12.561671+00:00",
+  "gpu_test_performed": false,
+  "migration_note": "Hardware node/UUID/path namespace only; original actor objective, reward, Prefix5 and interaction source unchanged"
 }

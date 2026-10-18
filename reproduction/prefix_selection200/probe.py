@@ -333,7 +333,7 @@ class SelectedFeatures:
         return batch_to_device(concatenate(single), device)
 
 
-def atomic_checkpoint(directory, saved, completed_outer):
+def atomic_checkpoint(directory, saved, completed_outer, *, dimension_migration=False):
     directory = remote(directory)
     temporary, path = directory / 'latest.pt.partial', directory / 'latest.pt'
     if temporary.exists():
@@ -351,7 +351,7 @@ def atomic_checkpoint(directory, saved, completed_outer):
         receipt.update(ema_updates=saved.get('ema_updates', 0),
                        selection_model_kind='ema' if 'ema_model' in saved else 'frozen_warmup')
     publish(directory / 'latest.json', receipt)
-    if completed_outer == 0 or (completed_outer in (5, 50, 100, 150, 200) if saved['binding'].get('selection_probe_experiment') else is_probe_update(completed_outer)):
+    if not dimension_migration and (completed_outer == 0 or (completed_outer in (5, 50, 100, 150, 200) if saved['binding'].get('selection_probe_experiment') else is_probe_update(completed_outer))):
         os.link(path, directory / ('head-outer-%04d.pt' % completed_outer))
     return receipt
 
@@ -546,9 +546,10 @@ def score(args):
                 representation_source='same_sampling_actor_native_layer27_postblock',
                 **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions') if key in manifest})
             from .periodic import is_probe_update
+            from .b_progressive import ordinary as b_ordinary
             selection=dict(common,selected=selected,selected_questions=SELECTED_QUESTIONS,
                 tie_break='original_candidate_ordinal_ascending',continuation_scope='top512',
-                provisional_for_actor=is_probe_update(args.outer),
+                provisional_for_actor=is_probe_update(args.outer) or b_ordinary(read(Path(args.state_dir).parent/'preparation/launch-config.json'),args.outer),
                 selection_semantics='predicted_mixed_probability_top512_before_any_outcome')
             once(out/'selection.json',selection)
             from .periodic import is_probe_update
@@ -557,6 +558,11 @@ def score(args):
                      selected_questions=questions,continuation_scope='all_candidates'))
             with (out/'candidate-scores.jsonl').open('x') as f:
                 for row in all_scores:f.write(canonical(row).decode()+'\n')
+            from .b_progressive import ordinary,continuation_questions
+            launch_config=read(Path(args.state_dir).parent/'preparation/launch-config.json')
+            if ordinary(launch_config,args.outer):
+                count=continuation_questions(args.outer)
+                once(out/'pool-selection.json',dict(common,selected=sorted(all_scores,key=lambda row:(-row['q'],row['candidate_ordinal']))[:count],selected_questions=count,continuation_scope='predicted_top_expanded_candidates'))
             once(out/'index.json',list(features.index.values()))
             result=dict(role='current_actor_native_hidden_features',run_id=saved['run_id'],outer=args.outer,
                 count=questions*G,selected_count=SELECTED_QUESTIONS*G,question_max_tokens=QMAX,head_max_tokens=WIDTH,

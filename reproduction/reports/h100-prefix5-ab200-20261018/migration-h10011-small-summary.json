@@ -1,0 +1,77 @@
+{
+  "observed_utc": "2026-10-17T20:38:57.713429+00:00",
+  "node": "h100-11",
+  "runtime_commit": "2e3976230ac9425d66d8553afa9962821e964932",
+  "source_h1008_stopped_and_owned_gone": true,
+  "saved_first_sampling_reused": true,
+  "committed_first_outer": true,
+  "initial_global_micro": 4,
+  "local_micro": 1,
+  "accumulation": 32,
+  "actor_global_mini": 128,
+  "budget_outers_per_arm": 200,
+  "no_model_through_mac": true,
+  "slurm_gpu_allocation_claimed": false,
+  "initial_native_receipts": {
+    "A": {
+      "status": "ONCE_LAUNCHED_NOT_TRAINING_ACCEPTANCE",
+      "leader": {
+        "pid": 128824,
+        "start_ticks": 704780598,
+        "sid": 128824,
+        "uid": 0,
+        "state": "R",
+        "command": ""
+      },
+      "run_id": "ca37419b494446398fb15234aa3be91a",
+      "source_commit": "2e3976230ac9425d66d8553afa9962821e964932",
+      "command": [
+        "/dataset/shaoshitong/Search-G1-common8/env/bin/python",
+        "-m",
+        "reproduction.prefix_selection200.launch",
+        "run",
+        "--base",
+        "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1"
+      ],
+      "launched_unix": 1792269381.1360304,
+      "config_sha256": "f4d40c76c49f506167b7feb1ff1516e8e119fcb5506e7328c5af454106e34867"
+    },
+    "B": {
+      "status": "ONCE_LAUNCHED_NOT_TRAINING_ACCEPTANCE",
+      "leader": {
+        "pid": 128834,
+        "start_ticks": 704780626,
+        "sid": 128834,
+        "uid": 0,
+        "state": "R",
+        "command": ""
+      },
+      "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+      "source_commit": "2e3976230ac9425d66d8553afa9962821e964932",
+      "command": [
+        "/dataset/shaoshitong/Search-G1-common8/env/bin/python",
+        "-m",
+        "reproduction.prefix_selection200.launch",
+        "run",
+        "--base",
+        "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1"
+      ],
+      "launched_unix": 1792269381.4193134,
+      "config_sha256": "483e8ad671640650524fa8cea59362a2a625cd3d9c29c2adc347c277e77b5285"
+    }
+  },
+  "last_actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-h10011-watch-20261017T203837781745Z-actual.json",
+  "first_complete_actual_facts_sha256": "80f083ba2d78f10d44495ba3d21fe1254a424bc8df751ef287d64bdc407ab63d",
+  "actual_actor_adam_each_rank": {
+    "A": 20,
+    "B": 20
+  },
+  "actual_probe_adam_each_rank": {
+    "A": 0,
+    "B": 10
+  },
+  "actual_b_ema_updates": 10,
+  "new_normal_outer2_started": true,
+  "first_round_reused_sampling": true,
+  "normal_full_iteration_runtime_pending": true
+}

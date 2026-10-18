@@ -1,0 +1,51 @@
+{
+  "status": "SAME_H10011_STRICT_KEY_LAN5_READ_ONLY_PATH_ACTUALLY_VERIFIED",
+  "endpoint_source": "Known5 authenticated Slurm NodeAddr=10.32.0.11, existing target management identity10.33.4.14",
+  "strict_host_key_alias": "10.33.4.14",
+  "existing_identity_and_strict_checks_preserved": true,
+  "native_identity_actual": {
+    "hostname": "h100-11",
+    "unix": 1792293726.7605844,
+    "leaders": {
+      "A": {
+        "pid": 128824,
+        "start_ticks": 704780598,
+        "same_birth": true,
+        "state": "S",
+        "uid": 0
+      },
+      "B": {
+        "pid": 128834,
+        "start_ticks": 704780626,
+        "same_birth": true,
+        "state": "S",
+        "uid": 0
+      }
+    }
+  },
+  "native_identity_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-slurm-advertised-lan11-via5-20261018T032207012356Z.json",
+  "native_identity_source_sha256": "74ec26fef0661117d277a84ddbc90dc4bcdcd6d29c9bcf3f9b9a3ed08326bd93",
+  "completed_metadata_read": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-small-report-through030-20261018T032434823584Z.json",
+    "sha256": "55858da754e7612f00343b1e79fba4dde7cd00ffd55f3c644ce233043a69a919",
+    "actual_complete_by_arm": {
+      "A": 30,
+      "B": 29
+    },
+    "observation_transport": {
+      "route": "lan5",
+      "earlier_transport_failures": [],
+      "training_or_global_configuration_changed": false
+    }
+  },
+  "local_safety_checks": [
+    "Target/gateway separation with original host-key alias",
+    "Unknown target rejected",
+    "Existing source mappings not mutated",
+    "No fallback on remote Python/application exit1",
+    "Fallback on SSH255, one primary default attempt"
+  ],
+  "training_changed": false,
+  "global_ssh_or_network_changed": false,
+  "network_root_cause_isolated": false
+}

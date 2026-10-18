@@ -1,0 +1,39 @@
+{
+  "status": "ACTUAL_SCORE11_SELECTION_RECEIPTS_MATCH_HEAD10",
+  "original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-score11-actual-adoption-20261017T230105268770Z.json",
+  "original_sha256": "1f6c42a949086b3ba1ab63907bad018db1be804867a5b643d2ba067f922181fb",
+  "records": {
+    "A": {
+      "selection": {
+        "value": {
+          "outer": 11,
+          "actor_version": "ca37419b494446398fb15234aa3be91a-actor0010",
+          "probe_before_checkpoint_sha256": "0d62658c030a16254ceb8dab977bdbbc42654e1a2edd0365ef916b952f91520f",
+          "selection_model_kind": "frozen_warmup",
+          "ema_updates": 0,
+          "outcome_labels_used": false,
+          "selected_questions": 512
+        },
+        "sha256": "260b2e4374ae01d26b937b0d8f8d62ef26824cfd2839761d9365bf44b64e0bea"
+      },
+      "matches_actual_complete10_head": true
+    },
+    "B": {
+      "selection": {
+        "value": {
+          "outer": 11,
+          "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0010",
+          "probe_before_checkpoint_sha256": "233e4a01171b8820860c69757cb191b0014b8e9b827c0f6a8721e2a1a54ab52a",
+          "selection_model_kind": "ema",
+          "ema_updates": 140,
+          "outcome_labels_used": false,
+          "selected_questions": 512
+        },
+        "sha256": "706392db3c528aa631fbbf0fe3aeb4715fc11a7f3d08db70db42c0666f0484d3"
+      },
+      "matches_actual_complete10_head": true
+    }
+  },
+  "monitoring_correction": "selection_model_kind and ema_updates are in selection.json, not manifest.json",
+  "training_runtime_unchanged": "2e3976230ac9425d66d8553afa9962821e964932"
+}

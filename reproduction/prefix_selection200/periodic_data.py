@@ -19,7 +19,7 @@ from .candidate_schedule import candidate_count, schedule_metadata
 FALLBACK_MODES = ('probe_score_fill', 'require_512_mixed')
 
 
-def select_actual_mixed_groups(groups, records, *, fallback_mode, provenance, expected_prefixes):
+def select_actual_mixed_groups(groups, records, *, fallback_mode, provenance, expected_prefixes, admitted_questions=PERIODIC_CANDIDATES, ordinal_limit=PERIODIC_CANDIDATES):
     """Actual mixed first, with explicit policy for a pool containing <512 mixed.
 
 Every label is bound to the same authentic candidate G5/prefix/actor and the
@@ -28,13 +28,13 @@ the optional nonmixed fill remains predicted pMixed descending/ordinal ties.
 """
     if fallback_mode not in FALLBACK_MODES:
         raise ValueError('An explicit actual-EM mixed shortfall fallback mode is required')
-    if len(groups) != PERIODIC_CANDIDATES:
+    if len(groups) != admitted_questions:
         raise ValueError('Actual-EM selection requires the complete2560 candidate questions')
     owners, qids, ordinals, hashes = {}, set(), set(), set()
     for group in groups:
         qid, ordinal, probability = group['qid'], group['candidate_ordinal'], group['q']
         if (qid in qids or ordinal in ordinals or group['question_hash'] in hashes
-                or type(ordinal) is not int or not 0 <= ordinal < PERIODIC_CANDIDATES
+                or type(ordinal) is not int or not 0 <= ordinal < ordinal_limit
                 or type(probability) not in (float, int) or not math.isfinite(probability)
                 or not 0 <= probability <= 1 or len(group['trajectory_ids']) != G
                 or len(set(group['trajectory_ids'])) != G):
@@ -85,15 +85,19 @@ the optional nonmixed fill remains predicted pMixed descending/ordinal ties.
         all_selected_are_actual_mixed=fallback_count == 0)
 
 
-def actual_em_selection(config_path, outer):
+def actual_em_selection(config_path, outer, *, allow_b_progressive=False):
     """Write a distinct final actor selection after all candidate G5s completed."""
     from .periodic import is_probe_update
-    if not is_probe_update(outer):
-        raise ValueError('Only periodic update rounds10..190 may use final EM to select actor groups')
+    from .b_progressive import ordinary,continuation_questions
+    if not is_probe_update(outer) and not allow_b_progressive:raise ValueError('Only periodic update rounds may use actual outcomes without the authorized B suffix')
+    expanded=allow_b_progressive and ordinary(read(config_path),outer)
+    if not is_probe_update(outer) and not expanded:
+        raise ValueError('Actual EM rerank requires a periodic pool or authorized B suffix')
     c = binding(read(config_path), outer); root = root_dir(c, outer)
     candidates = candidate_count(c, outer)
-    if candidates != PERIODIC_CANDIDATES:
-        raise ValueError('Actual-EM selection is limited to the scheduled periodic2560 pool')
+    if candidates != PERIODIC_CANDIDATES and not expanded:
+        raise ValueError('Unauthorized actual-EM candidate pool')
+    continued=continuation_questions(outer) if expanded else candidates
     fallback_mode = c.get('actual_em_selection_fallback')
     if fallback_mode not in FALLBACK_MODES:
         raise ValueError('Bind an explicit actual_em_selection_fallback before reading outcomes')
@@ -102,9 +106,9 @@ def actual_em_selection(config_path, outer):
     predicted_path = root / 'probe-score/selection.json'
     scored = read(scored_path)
     source_path = root / 'full-pool/complete.json'; source = read(source_path)
-    groups = validate_selection(scored, prefix, candidates)
+    groups = validate_selection(scored, prefix, continued)
     expected = dict(run_id=c['run_id'], outer=outer, actor_version=c['actor_version'],
-        questions=candidates, trajectories=candidates * G,
+        questions=continued, trajectories=continued * G,
         prefix_scan_sha256=prefix['scan_sha256'], selection_sha256=digest(scored_path))
     if any(source.get(key) != value for key, value in expected.items()):
         raise ValueError('Full-pool outcomes belong to another actual actor/prefix/selection')
@@ -115,19 +119,21 @@ def actual_em_selection(config_path, outer):
             or manifest['prefix_scan_sha256'] != prefix['scan_sha256']):
         raise ValueError('Original label-free score index or provisional predicted selection changed')
     indexed = read(index_path)
-    expected_prefixes = {row['trajectory_id']: row['prefix_sha256'] for row in indexed}
-    if len(expected_prefixes) != candidates * G:
+    wanted={tid for group in groups for tid in group['trajectory_ids']}
+    expected_prefixes = {row['trajectory_id']: row['prefix_sha256'] for row in indexed if row['trajectory_id'] in wanted}
+    if len(expected_prefixes) != continued * G:
         raise ValueError('Scored full-pool prefix identities are missing or duplicated')
     own = Path(source['own_em']['path'])
     if own.stat().st_size != source['own_em']['bytes'] or digest(own) != source['own_em']['sha256']:
         raise ValueError('Complete full-pool own-EM file differs from its producer SHA')
     selected, stats = select_actual_mixed_groups(groups, iter_rows(own), fallback_mode=fallback_mode,
         provenance=dict(actor_version=c['actor_version'], prefix_scan_sha256=prefix['scan_sha256'],
-                        pool_selection_sha256=digest(scored_path)), expected_prefixes=expected_prefixes)
+                        pool_selection_sha256=digest(scored_path)), expected_prefixes=expected_prefixes,admitted_questions=continued,ordinal_limit=candidates)
     result = dict(schema_version=1, run_id=c['run_id'], outer=outer, actor_version=c['actor_version'],
         prefix_scan_sha256=prefix['scan_sha256'], selected=selected, selected_questions=SELECTED_QUESTIONS,
         candidate_questions=candidates, trajectories_per_question=G, exploration=0,
         outcome_labels_used=True, selection_scope='actor_only_periodic_full_pool_actual_EM',
+        actual_labeled_candidate_questions=continued,
         predicted_selection_path=str(predicted_path), predicted_selection_sha256=digest(predicted_path),
         original_pool_selection_path=str(scored_path), original_pool_selection_sha256=digest(scored_path),
         full_pool_complete_path=str(source_path), full_pool_complete_sha256=digest(source_path),
@@ -138,12 +144,14 @@ def actual_em_selection(config_path, outer):
     return target
 
 
-def project_top512(config_path, outer, selection_path=None):
+def project_top512(config_path, outer, selection_path=None, *, allow_b_progressive=False):
     """No generation: select exact completed full-pool rows for actor PPO."""
     c=binding(read(config_path),outer);root=root_dir(c,outer)
     candidates = candidate_count(c, outer)
-    if candidates != PERIODIC_CANDIDATES:
-        raise ValueError('Only periodic2560 outcomes can be projected for the actor')
+    from .b_progressive import ordinary,continuation_questions
+    expanded=allow_b_progressive and ordinary(c,outer)
+    if candidates != PERIODIC_CANDIDATES and not expanded:raise ValueError('Unauthorized projection')
+    continued=continuation_questions(outer) if expanded else candidates
     source=read(root/'full-pool/complete.json')
     prefix=read(root/'prefix/complete.json')
     top_path=Path(selection_path or root/'probe-score/actual-em-selection.json');selection=read(top_path)
@@ -165,7 +173,7 @@ def project_top512(config_path, outer, selection_path=None):
                         'qid', 'strict_em', 'actor_version', 'prefix_sha256', 'prefix_scan_sha256', 'selection_sha256')):
                     raise ValueError('Projected native trajectory differs from the actual own-EM event used for selection')
                 rows[row['trajectory_id']]=row
-    if (set(rows)!=wanted or source['trajectories']!=candidates * G
+    if (set(rows)!=wanted or source['trajectories']!=continued * G
             or source['actor_version']!=c['actor_version']
             or selection['full_pool_complete_sha256'] != digest(root/'full-pool/complete.json')
             or selection['original_pool_selection_sha256'] != source['selection_sha256']
@@ -215,7 +223,8 @@ def project_top512(config_path, outer, selection_path=None):
         projected_generation_requests=0,actual_selected_mixed_questions=sum(hist[k] for k in (1,2,3,4)),
         actual_selected_mixed_fraction=sum(hist[k] for k in (1,2,3,4))/512,
         selected_strict_correct=sum(label_by_id.values()),selected_correct_count_histogram=hist,
-        all_candidate_mixed_accuracy_available=True)
+        all_candidate_mixed_accuracy_available=not expanded,
+        actual_labeled_candidate_questions=continued)
     immutable(out/'complete.json',value)
     return value
 

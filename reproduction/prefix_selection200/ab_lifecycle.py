@@ -76,7 +76,7 @@ def commit_outer(base,c,outer,root,actor_selection_path,timings,grounding_state)
         probe_snapshot=str(probe_snapshot),pool_snapshot=str(pool_snapshot),pool_sha256=sha(pool_snapshot),
         selection_sha256=sha(actor_selection_path),actor_selection_path=str(actor_selection_path),
         actor_selection_sha256=sha(actor_selection_path),predicted_selection_sha256=sha(root/'probe-score/selection.json'),
-        actor_selection_outcome_labels_used=is_probe_update(outer),rollout=read(root/'full/complete.json'),
+        actor_selection_outcome_labels_used=bool(read(actor_selection_path).get('outcome_labels_used',False)),rollout=read(root/'full/complete.json'),
         probe_metrics=update,periodic_probe_update=is_probe_update(outer),
         selection_probe_experiment=policy.mode(c),probe_boundary=boundary(c,probe,outer),
         selection_metrics=selection_metrics(root,actor_selection_path),

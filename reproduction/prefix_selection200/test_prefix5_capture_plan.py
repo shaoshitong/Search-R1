@@ -143,6 +143,8 @@ class Prefix5CapturePlanTest(unittest.TestCase):
             own = root / 'own.jsonl'; own.write_bytes(b'cpu-only own-label fixture')
             saved = dict(run_id='run', outer=1, phase='continue', rank=3, actor_version='actor0',
                 trajectories=640, config_sha256=digest(conf), full=file_item(full, 640), own_em=file_item(own, 640))
+            from .interaction_protocol import CONTRACT, ACTUAL_COMPUTE_DTYPE
+            saved.update(interaction_protocol=CONTRACT,actual_compute_dtype=ACTUAL_COMPUTE_DTYPE)
             receipt = root / 'complete.json'; receipt.write_bytes(canonical(saved))
             validated, reused = validate_rank_receipt(conf, config, 1, 'continue', 3, receipt)
             self.assertEqual(validated['trajectories'], 640)

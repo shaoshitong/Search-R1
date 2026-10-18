@@ -98,6 +98,8 @@ def question_count(config, phase, outer=None):
         if config.get('candidate_schedule') is not None:
             from .periodic import is_probe_update
             allowed = {SELECTED_QUESTIONS, PERIODIC_CANDIDATES} if is_probe_update(outer) else {SELECTED_QUESTIONS}
+    from .b_progressive import ordinary,continuation_questions
+    if phase=='continue' and outer is not None and ordinary(config,outer):allowed.add(continuation_questions(outer))
     if type(requested) is not int or requested not in allowed:
         raise ValueError('Native question count differs from scheduled prefix/Top512/periodic-full-pool scope')
     return requested
