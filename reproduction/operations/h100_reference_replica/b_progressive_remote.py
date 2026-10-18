@@ -10,7 +10,7 @@ def ctl():
 def remote(inner,label,*,namespace=True,timeout=100):
     script=inner
     if namespace:
-        script='import subprocess,os\np=subprocess.run('+repr(['unshare','--mount','--propagation','private','bash',PATH_LAYOUTS['retained'],'/dataset/shaoshitong/Search-G1-common8/env/bin/python','-'])+',input='+repr(inner)+',env=dict(os.environ,CUDA_VISIBLE_DEVICES="",PYTHONDONTWRITEBYTECODE="1",SEARCH_G1_B_PREFIX_TOKENS="20"),text=True,capture_output=True,timeout='+str(timeout-10)+')\nassert p.returncode==0,p.stderr\nprint(p.stdout)'
+        script='import subprocess,os\np=subprocess.run('+repr(['unshare','--mount','--propagation','private','bash',PATH_LAYOUTS['source8'],'/dataset/shaoshitong/Search-G1-common8/env/bin/python','-'])+',input='+repr(inner)+',env=dict(os.environ,CUDA_VISIBLE_DEVICES="",PYTHONDONTWRITEBYTECODE="1",SEARCH_G1_B_PREFIX_TOKENS="20"),text=True,capture_output=True,timeout='+str(timeout-10)+')\nassert p.returncode==0,p.stderr\nprint(p.stdout)'
     p=subprocess.run(ctl().route('h100-11','/usr/bin/python3 -'),input=script,text=True,capture_output=True,timeout=timeout)
     tag=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out=ROOT/('work/b-progressive-'+label+'-'+tag+'.json');out.write_text(json.dumps(dict(rc=p.returncode,stdout=p.stdout,stderr=p.stderr),indent=2)+'\n')
     if p.returncode:raise RuntimeError(str(out)+' '+p.stderr[-5000:])
