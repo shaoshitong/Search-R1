@@ -1,7 +1,9 @@
 """Opaque CPU fixtures exercise the real chained scalar/archive consumer.
 
-Only Torch loading/rank tensor validation and canonical parquet reading are
-injected. No synthetic bytes claim CUDA/model/optimizer recovery acceptance.
+Torch loading/rank tensor validation, canonical parquet reading and selected
+trace verification are injected: these scalar/tensor fixtures contain no
+generated trajectories. Separate selection tests cover that consumer. No
+synthetic bytes claim CUDA/model/optimizer recovery acceptance.
 """
 import builtins
 import copy
@@ -16,6 +18,7 @@ from search_g1 import easy2560_final_checkpoint as module
 from search_g1.test_easy2560_restore import Fixture as RankFixture
 from reproduction.easy2560_joint4 import final_cpu_acceptance as final
 from reproduction.easy2560_joint4.test_authenticated_history import bind_fixture, put
+from reproduction.easy2560_joint4.test_final_cpu_acceptance import OPAQUE_SELECTION_FIXTURE_SCOPE
 
 
 class Fixture:
@@ -96,6 +99,7 @@ class Fixture:
 
     def create(self):
         with patch.object(final,'canonical',side_effect=self.new.load_canonical), \
+             patch.object(final,'selection_evidence',return_value=OPAQUE_SELECTION_FIXTURE_SCOPE), \
              patch.object(module.saved,'_load_cpu',side_effect=lambda path:json.loads(Path(path).read_bytes())), \
              patch.object(module.saved,'_validate_rank',side_effect=RankFixture.rank_check):
             return module.create_receipt(self.base,self.cp,self.output)

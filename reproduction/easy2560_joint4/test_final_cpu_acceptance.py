@@ -1,4 +1,9 @@
-"""CPU scalar/receipt fixtures use published producer schemas, never model loading."""
+"""CPU scalar/receipt fixtures use published producer schemas, never model loading.
+
+These opaque fixtures have no generated selected traces. Their ``verify``
+helper explicitly isolates selection verification; separate integration and
+selection-evidence tests exercise that added final-consumer requirement.
+"""
 import builtins
 import copy
 import json
@@ -13,6 +18,8 @@ from unittest.mock import patch
 from reproduction.easy2560_joint4 import final_cpu_acceptance as core
 
 PUBLISHED_MICRO16_COMMIT = '8a5bac94b8230a99b81977f5290589e3d3708dfe'
+OPAQUE_SELECTION_FIXTURE_SCOPE = dict(
+    fixture_scope='selection verification mocked: scalar/archive fixtures contain no selected traces')
 
 
 class FinalAcceptanceTests(unittest.TestCase):
@@ -143,7 +150,8 @@ class FinalAcceptanceTests(unittest.TestCase):
         self.put(folder+'/complete.json', accepted)
 
     def verify(self, **kwargs):
-        return core.verify_final(self.base, load_canonical=self.load_canonical, **kwargs)
+        with patch.object(core, 'selection_evidence', return_value=OPAQUE_SELECTION_FIXTURE_SCOPE):
+            return core.verify_final(self.base, load_canonical=self.load_canonical, **kwargs)
 
     def test_optional_restore_proof_is_consumed_without_starting_gpu_or_marking_goal_complete(self):
         with tempfile.TemporaryDirectory() as directory:

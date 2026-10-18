@@ -334,6 +334,54 @@ def no201(base, run, chain=None):
                 scope='durable actual counter/attempt chain; this CPU reader does not independently authenticate physical GPU execution')
 
 
+def selection_evidence(base, run, chain=None):
+    """Verify every completed outer's saved selection/reuse evidence on CPU.
+
+    Call only after ``no201`` and the restore chain have been authenticated.
+    Historical selected traces remain bound to their original execution; a
+    restore does not turn the accepted first five outers into new-job output.
+    This is a final consumer, not a partial-run or training-startup check.
+    """
+    updates = chained_lines(base, 'logs/actual-updates.jsonl', chain)
+    need([row.get('step') for row in updates] == list(range(1, 201)) and
+         all(type(row.get('step')) is int and row.get('run_id') == run['run_id'] for row in updates),
+         'SELECTION_FULL200_COMPLETED_UPDATES_REQUIRED')
+    identities = [attempt_id(row) for row in updates]
+    need(len(set(identities)) == len({index for index, _ in identities}) ==
+         len({aid for _, aid in identities}) == 200,
+         'SELECTION_DUPLICATE_COMPLETED_ATTEMPT')
+    allocation, _ = small(base/'logs/native-allocation-admission.json')
+    job = allocation.get('slurm_job_id')
+    need(allocation.get('accepted') is True and allocation.get('run_id') == run['run_id'] and
+         isinstance(job, str) and job, 'SELECTION_CURRENT_ALLOCATION_REQUIRED')
+    if chain is not None:
+        need(chain['boundary'] == 5 and chain['current_job'] == job and
+             chain['source_run']['run_id'] == run['run_id'], 'SELECTION_RESTORE_CHAIN_DIFFERS')
+    # Import after the full200 requirement so an incomplete run cannot cause
+    # expensive selected-trace reads, let alone be labelled final acceptance.
+    from reproduction.easy2560_joint4.selection_evidence import verify_attempt
+    summaries = []
+    for update in updates:
+        historical = chain is not None and update['step'] <= chain['boundary']
+        origin = chain['source_base'] if historical else base
+        origin_run = chain['source_run'] if historical else run
+        origin_job = chain['source_job'] if historical else job
+        summaries.append(verify_attempt(Path(origin), origin_run, update, expected_job=origin_job))
+    segments = []
+    if chain is not None:
+        segments.append(dict(first_outer=1, last_outer=5, completed_outers=5,
+            base=str(chain['source_base']), run_id=chain['source_run']['run_id'],
+            source_commit=chain['source_run']['source_commit'], slurm_job_id=chain['source_job']))
+    first = 6 if chain is not None else 1
+    segments.append(dict(first_outer=first, last_outer=200, completed_outers=201-first,
+        base=str(base), run_id=run['run_id'], source_commit=run['source_commit'], slurm_job_id=job))
+    return dict(schema_version=1, status='EASY2560_FULL200_SELECTION_REUSE_EVIDENCE_ACCEPTED',
+                verified_completed_outers=200, full_training_history_verified=True,
+                source_segments=segments, per_outer=summaries,
+                new_training_updates=0, gpu_allocations=0, model_reloads=0,
+                scope='saved complete2560 candidate identity/order, strict-EM mixed-first selection and original selected trajectory/token/native-sampling-logprob reuse; CPU posthoc verification only')
+
+
 def checkpoint_evidence(base, run, step, *, archive_root=None, chain=None, historical_update=None):
     """Authenticate accepted SHA receipts; tensor retention is not required.
 
@@ -439,6 +487,7 @@ def verify_final(base, *, archive_root=None, load_canonical=canonical, training_
              'MISSING200_OR_EXTRA_COMPLETED_UPDATE')
         chain = restore_chain(base, run)
     progress = no201(base, run, chain=chain)
+    selection = selection_evidence(base, run, chain=chain)
     source_binding = published_source_binding(base, run, training_commit)
     evaluation = evaluations(base, run, load_canonical, chain=chain)
     checkpoints = {str(step): checkpoint_evidence(base, run, step, archive_root=archive_root, chain=chain) for step in STEPS}
@@ -451,13 +500,13 @@ def verify_final(base, *, archive_root=None, load_canonical=canonical, training_
     return dict(schema_version=1, status=STATUS, cpu_final_accepted=True, base=str(base),
                 run_id=run['run_id'], source_commit=run['source_commit'], run_manifest=run_record,
                 source_publication_binding=source_binding,
-                progress=progress, evaluations=evaluation, checkpoints=checkpoints,
+                progress=progress, selection_evidence=selection, evaluations=evaluation, checkpoints=checkpoints,
                 authenticated_history=chain['public'] if chain else None,
                 single_original_job_prefix=chain is None, inherited_history_assembled=chain is not None,
                 new_training_updates=0, gpu_allocations=0, model_reloads=0, actual_restore_performed=False,
                 actual_cuda_restore_accepted=actual_restore is not None, actual_final_restore=actual_restore,
                 overall_goal_complete=False, checked_unix=time.time(),
-                scope='fixed five512 evaluations, ordered exact native51713 EM/F1, durable no201 counters and accepted checkpoint archive SHA evidence; actual recovery and physical execution acceptance remain separate')
+                scope='full200 saved selection/reuse evidence, fixed five512 evaluations, ordered exact native51713 EM/F1, durable no201 counters and accepted checkpoint archive SHA evidence; actual recovery and physical execution acceptance remain separate')
 
 
 def main():
