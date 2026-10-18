@@ -37,6 +37,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base', default=str(VALIDATORS))
     parser.add_argument('--outer', type=int, choices=(5, 50, 100, 150, 200), required=True)
+    parser.add_argument('--recovered', action='store_true', help='Explicitly audit this execution resume milestone QA')
     args = parser.parse_args()
     base = Path(args.base)
     assert (base.parent == FAMILY.parent and base.resolve(strict=True) == base
@@ -44,6 +45,9 @@ def main():
     assert read(VALIDATORS / 'preparation/source-publication.json')['commit'] == RUNTIME
     root = base / 'outers' / ('outer-%06d' % args.outer)
     target = root / 'validation/complete.json'
+    if args.recovered:
+        assert read(base/'preparation/launch-config.json')['resume_joint']['completed_outer']==args.outer
+        target=base/'recovered-validation/complete.json'
     if not target.is_file():
         print(json.dumps(dict(status='PENDING_NO_COMPLETE_FIXED512_QA', outer=args.outer)))
         return
@@ -120,11 +124,12 @@ def main():
             assert math.isclose(result['per_source'][source][key], measured[key], rel_tol=0, abs_tol=1e-12)
         per_source[source] = measured
     assert all(value == 0 for value in result['actual_worker_exit_codes'].values())
-    phase = read(base / 'logs/phase-timings.json').get('outer-%06d-validation' % args.outer)
+    phase_name=('recovered-outer-%06d-validation' if args.recovered else 'outer-%06d-validation')%args.outer
+    phase = read(base / 'logs/phase-timings.json').get(phase_name)
     pending_path = base / 'logs/qa-pending.json'
     pending = read(pending_path) if pending_path.is_file() else {}
     print(json.dumps(dict(status='FIXED512_QA_FRESH_SHA_IDENTITY_AND_STORED_STRICT_AGGREGATION_PASS',
-        epoch=time.time(), base=str(base), outer=args.outer, run_id=RUN_ID,
+        epoch=time.time(), base=str(base), outer=args.outer, run_id=RUN_ID,recovered_qa=args.recovered,
         actor_version=result['actor_version'], question_source_sha256=questions_sha,
         complete_sha256=sha(target), verified_files=files, qa_count=512,
         strict_correct=sum(row['em'] for row in rows), **metrics, per_source=per_source,
