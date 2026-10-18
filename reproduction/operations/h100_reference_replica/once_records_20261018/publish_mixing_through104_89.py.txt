@@ -1,0 +1,63 @@
+"""Local small-evidence publication; no SSH, training action or fitted values."""
+import copy,hashlib,json,statistics
+from pathlib import Path
+repo=Path.cwd()
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+baseline=repo/'reproduction/reports/h100-prefix5-ab200-20261018/progressive-through-a87-b72/PER-ITERATION.json'
+sources=[baseline,root/'work/prefix5-ab-h10011-normal-follow-actual-facts.json',
+ root/'work/b-progressive-human-AB-current-mixed-count-and-proportion-20261018T195956556139Z.json',
+ root/'work/b-progressive-goal-live-clock-and-normal100-20261018T200754660714Z.json']
+old=json.loads(baseline.read_text());rows={a:{r['outer']:copy.deepcopy(r)for r in old['current'][a]['rows']}for a in ('A','B')}
+for path in sources[1:]:
+ data=json.loads(path.read_text())
+ if 'stdout'in data:
+  if data['rc']!=0:raise ValueError('Unsuccessful observation')
+  data=json.loads(data['stdout']);facts={a:v['facts']for a,v in data.items()}
+ else:facts=data['facts']
+ for a,entries in facts.items():
+  for fact in entries:
+   n=fact['outer'];selected=fact['selection_metrics']
+   if n in rows[a] and rows[a][n]['selected']['mixed']!=selected['mixed']:raise ValueError('Conflicting same-lineage mixed counts')
+   rows[a][n]=dict(outer=n,periodic=n<200 and n%10==0,
+    prefix_tokens=5 if a=='A'or n<=50 else 20 if n<=100 else 40 if n<=150 else 80,
+    selected=selected,actual_complete_source=str(path))
+limits={'A':104,'B':89}
+for a,limit in limits.items():
+ rows[a]={n:r for n,r in rows[a].items()if n<=limit}
+ if sorted(rows[a])!=list(range(1,limit+1)):raise ValueError('Incomplete observed iteration series')
+ for row in rows[a].values():
+  m=row['selected']
+  if m['questions']!=512 or sum(m[k]for k in ('mixed','all_correct','all_wrong'))!=512:raise ValueError('Selected-group counts differ')
+  if m['mixed_fraction']!=m['mixed']/512:raise ValueError('Count/fraction differs')
+windows=[]
+for lo,hi in ((6,9),(11,19),(21,29),(31,39),(41,49),(51,59),(61,69),(71,79),(81,89)):
+ ids=[n for n in range(lo,hi+1)if n%10]
+ windows.append(dict(start=lo,end=hi,outers=ids,arms={a:dict(mean_mixed_count=statistics.mean(rows[a][n]['selected']['mixed']for n in ids),mean_mixed_fraction=statistics.mean(rows[a][n]['selected']['mixed_fraction']for n in ids))for a in rows}))
+out=repo/'reproduction/reports/h100-prefix5-ab200-20261018/progressive-through-a104-b89';out.mkdir(exist_ok=True)
+result=dict(observed_utc='2026-10-18T20:07:54Z',complete_outer=limits,current={a:dict(rows=[rows[a][n]for n in sorted(rows[a])])for a in rows},
+ source_files=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest())for p in sources],
+ ordinary_window_means=windows,unobserved_values_fitted=False,B_old_stopped_51_58_excluded=True,
+ ordinary_means_exclude_periodic=True,metric_is_probe_classification_accuracy=False,A_B_post50_differences=old['A_B_post50_differences'])
+(out/'PER-ITERATION.json').write_text(json.dumps(result,indent=2)+'\n')
+text=['# Actual selected mixing through A104 / B89','',
+ 'Original completed-outer metadata only. Each selected question has five trajectories; mixed means strict-EM correct count1–4. Every denominator is512. No missing count was fitted or interpolated. Historical stopped B51–58 is excluded; B51+ is the authorized CP50 progressive lineage.','',
+ '', '',
+ 'B after50 differs in prefix length and predicted-admission continuation plus actual-mixed-first reranking, as well as online/EMA fitting. Its higher final selected mixing is not an isolated EMA effect or probe classification accuracy. Periodic multiples of10 use outcome-assisted full-pool selection in both arms and are excluded from ordinary-window means.','',
+ '| Ordinary window | A mean mixed /512 | B mean mixed /512 |','|---|---:|---:|']
+for w in windows:
+ vals=[w['arms'][a]for a in ('A','B')]
+ text.append('| %d–%d | %.2f / %.2f%% | %.2f / %.2f%% |'%(w['start'],w['end'],vals[0]['mean_mixed_count'],100*vals[0]['mean_mixed_fraction'],vals[1]['mean_mixed_count'],100*vals[1]['mean_mixed_fraction']))
+text+=['','| Outer | Periodic | A mixed /512 | B mixed /512 |','|---:|---|---:|---:|']
+for n in range(1,105):
+ cells=[]
+ for a in ('A','B'):
+  m=rows[a].get(n,{}).get('selected');cells.append('%d / %.4f%%'%(m['mixed'],100*m['mixed_fraction'])if m else 'not yet observed')
+ text.append('| %d | %s | %s | %s |'%(n,'yes'if n<200 and n%10==0 else 'no',*cells))
+text+=['','Frozen training runtimes are unchanged. Both200-outer objectives and later/final QA remain incomplete.']
+# Derive latest text counts from evidence rather than a hand-written complement.
+for a in ('A','B'):
+ m=rows[a][limits[a]]['selected']
+ print(a,limits[a],m)
+text[4]='Latest A104:%dmixed/%dall-correct/%dall-wrong (%.4f%% mixed). Latest B89:%dmixed/%dall-correct/%dall-wrong (%.4f%% mixed). The JSON contains the authoritative counts for every outer; the following table shows only mixed counts.'%tuple(v for a in ('A','B')for v in [rows[a][limits[a]]['selected']['mixed'],rows[a][limits[a]]['selected']['all_correct'],rows[a][limits[a]]['selected']['all_wrong'],100*rows[a][limits[a]]['selected']['mixed_fraction']])
+(out/'README.md').write_text('\n'.join(text)+'\n')
+print(out)
