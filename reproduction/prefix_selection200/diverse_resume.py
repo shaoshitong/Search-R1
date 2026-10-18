@@ -51,14 +51,21 @@ def fork_rng(value,target_rank):
 def flat_numels(model):
     """Saved safetensors omit tied aliases; grouped root/layer counts are exact."""
     from safetensors import safe_open
-    counts=[0]*37
+    import torch
+    tied=read(Path(model)/'config.json').get('tie_word_embeddings') is True
+    counts=[0]*37;aliases={}
     for f in sorted(Path(model).glob('*.safetensors')):
         with safe_open(str(f),framework='pt',device='cpu')as tensors:
             for key in tensors.keys():
+                if key in ('model.embed_tokens.weight','lm_head.weight') and tied:aliases[key]=(str(f),key)
+                if key=='lm_head.weight' and tied:continue
                 size=1
                 for n in tensors.get_slice(key).get_shape():size*=n
                 index=int(key.split('.')[2])+1 if key.startswith('model.layers.')else 0
                 counts[index]+=size
+    if tied and 'lm_head.weight' in aliases:
+        with safe_open(aliases['model.embed_tokens.weight'][0],framework='pt',device='cpu')as left, safe_open(aliases['lm_head.weight'][0],framework='pt',device='cpu')as right:
+            if not torch.equal(left.get_tensor('model.embed_tokens.weight'),right.get_tensor('lm_head.weight')):raise ValueError('Declared tied saved HF aliases differ')
     if any(n<=0 or n%8 for n in counts):raise ValueError('Unpadded native root/36-layer counts must divide eight')
     return counts
 

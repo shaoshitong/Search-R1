@@ -2,7 +2,7 @@
 import argparse,base64,gzip,hashlib,io,json,subprocess,tarfile,time
 from pathlib import Path
 from .control import REPO,OUT,remote
-PHYSICAL='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp50-eight-20261018'
+PHYSICAL='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp50-eight-20261018-r1'
 CANONICAL='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'+PHYSICAL.rsplit('/',1)[1]
 PREPARED='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-eight-prepared-20261018'
 SOURCE='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1'

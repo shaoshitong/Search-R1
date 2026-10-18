@@ -7,7 +7,7 @@ def main():
  import torch
  from reproduction.prefix_selection200.launch import config,_require_training_assignment
  from reproduction.prefix_selection200.prefix_diversity import select
- from reproduction.prefix_selection200.diverse_resume import split_optimizer,fork_rng
+ from reproduction.prefix_selection200.diverse_resume import split_optimizer,fork_rng,flat_numels
  from reproduction.prefix_selection200.actor import ActorBudget,rank_plan
  from reproduction.prefix_selection200.actor_hidden import NativeFeatureWriter
  from reproduction.prefix_selection200.contract import WORLD,WIDTH,DIM
@@ -33,6 +33,11 @@ def main():
  assert torch.equal(fork_rng(rng,0)['torch_cpu'],rng['torch_cpu'])
  assert not torch.equal(fork_rng(rng,1)['torch_cpu'],rng['torch_cpu'])
  with tempfile.TemporaryDirectory(dir=Path(a.base)/'preparation')as directory:
+  from safetensors.torch import save_file
+  model=Path(directory)/'tiny-hf';model.mkdir();(model/'config.json').write_text(json.dumps(dict(tie_word_embeddings=True)))
+  weights={'model.embed_tokens.weight':torch.ones(8),'model.norm.weight':torch.ones(16),'lm_head.weight':torch.ones(8)}
+  weights.update({'model.layers.%d.weight'%i:torch.ones(24)for i in range(36)})
+  save_file(weights,str(model/'model.safetensors'));assert flat_numels(model)==[24]*37
   writer=NativeFeatureWriter(directory,0,['g%d'%i for i in range(10)],selected_capacity=5)
   for i in [9,2,5,7,0]:
    result=writer.write(dict(trajectory_id='g%d'%i,actor_version='CP50'),dict(features=torch.full((WIDTH,DIM),float(i),dtype=torch.bfloat16)))
