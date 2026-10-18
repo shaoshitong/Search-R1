@@ -6,6 +6,9 @@ BINDING_COMMIT='c3ced09047dd4ccd66e5d232f36b5952c178a7ce'
 
 def validate_runtime_compatibility(c):
  ref=c['runtime_compatibility'];proof=read(ref['path'])
+ if proof.get('status')=='DIVERSE_SAME_EIGHT_NATIVE_RECOVERY':
+  from .diverse_native_resume import validate_compatibility
+  return validate_compatibility(c,proof)
  if (sha(ref['path'])!=ref['sha256'] or proof['status']!='EIGHT_MONITOR_MAPPING_ZERO_WRITE_REPAIR'
      or proof['binding_commit']!=BINDING_COMMIT or c['actor_checkpoint_binding_commit']!=BINDING_COMMIT
      or proof['runtime_commit']!=c['source_commit'] or proof['source_actual_writes']!=[0]*8

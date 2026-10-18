@@ -106,6 +106,9 @@ def imported_actor_boundary(actor,outer):
 
 
 def validate_imported(base,config):
+    if config.get('resume_joint',{}).get('recovery_mode')=='diverse_same_eight_latest_joint_v1':
+        from .diverse_native_resume import validate_imported as native_validate
+        return native_validate(base,config)
     b=Path(base);ref=read(b/'preparation/resume-joint-receipt.json');j=read(b/'latest-joint.json')
     if (ref['adapter']!=ADAPTER or ref['completed_outer']!=50 or config['world_size']!=8
             or sha(ref['source_joint_path'])!=ref['source_joint_sha256']or not imported_actor_boundary(j['actor'],50)
