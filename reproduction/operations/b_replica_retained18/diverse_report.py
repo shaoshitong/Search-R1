@@ -15,6 +15,10 @@ def main():
   last=facts[-1];d=last['diversity_comparison'];p=last['prefix_counts'];z=last['probe_variance']
   lines+=['',f"最新完整轮：实际生成{p['prefix_candidates_generated']}个前缀，保留{p['prefixes_retained']}个，丢弃前缀的探针调用为0。直接取同批前5条平均{d['first_native_five_mean_unique']:.4f}种不同前缀；10选5后{d['retained_five_mean_unique']:.4f}种。{d['groups_strictly_more_unique_than_first_five']}/{d['questions']}组增加；全部组保留了10个候选中最多可得的不同前缀。",'',f"保留G5内探针概率方差的题均值：{z['mean_within_group_probability_variance']:.9g}。这与训练混合比例均不是测试集EM/F1。未重复初始基线。"]
  lines+=['','mini128、每卡micro1、global micro8、accum16、每rank20更新机会；分段20/40/80、Top768/1024/1536及其他B规则保留。源CP50 Adam1000、scheduler50与probe/EMA700已真实继承。4→8分片的RNG映射不称为完整executor精确重放。','',f"实际运行源码：`{v['source_commit']}`；checkpoint binding兼容c3ced090。目录：`{c['base']}`。模型、数据、索引和checkpoint全部留在远端。",'','第一CPU导入的两个错误及第一GPU actor的零写入退出证据保留；首次GPU失败为monitor硬编码4卡分块。修复保持相同32个全局监控样本和阈值，独立CPU36/36核验通过。复用原51轮采样，未重采或reset；失败成本与正常训练分别记录。','',f"证据：`{latest['evidence']}`；直接8rank日志核对见DIVERSE_LATEST.json。仅完成51–55并确认56真实推进后才交付启动验收，随后同一实例继续200；完整最终评测与资源收尾仍未完成。",'']
+ acceptance=OUT/'DIVERSE_STARTUP_ACCEPTANCE.json'
+ if acceptance.exists():
+  a=json.loads(acceptance.read_text())
+  lines+=['',f"恢复启动验收：{a['status']}。51–55连续五轮已完整保存，56轮两次直接观察确认有真实采样增量；同一实例继续200。此记录仅确认恢复与持续推进，最终训练和完整测试仍待完成。"]
  text='\n'.join(lines);(OUT/'DIVERSE_REPORT.md').write_text(text);(ROOT/'outputs/REPORT.md').write_text(text)
  for target in (ROOT/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/b-replica-retained18-20261018',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/b-replica-retained18-20261018')):
   target.mkdir(parents=True,exist_ok=True);(target/'DIVERSE_REPORT.md').write_text(text)
