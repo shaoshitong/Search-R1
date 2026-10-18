@@ -22,8 +22,15 @@ def main():
         raw=Path(__file__).with_name(name).read_bytes()
         sources[name]=dict(sha256=hashlib.sha256(raw).hexdigest(),data=base64.b64encode(raw).decode())
     state=json.loads((ROOT/'work/search-g1-prefix5-ab200-state.json').read_text())
-    targets={arm:dict(base=value['base'],run_id=value['run_id'],config_sha256=value['config_sha256'],
-        leader={key:value['submit_receipt']['leader'][key]for key in ('pid','start_ticks','sid','uid')})for arm,value in state['slots'].items()}
+    compact=json.loads((ROOT/'work/prefix5-ab-latest-compact.json').read_text())
+    targets={}
+    for arm,value in state['slots'].items():
+        actual=compact['arms'][arm];receipt=actual['native']
+        if actual['base']!=value['base']or receipt['run_id']!=value['run_id']or receipt['config_sha256']!=value['config_sha256']:
+            raise ValueError('Primary state and current original submitted run differ')
+        if receipt['leader_same_birth']is not True:raise ValueError('Current leader is not the submitted birth')
+        targets[arm]=dict(base=actual['base'],run_id=receipt['run_id'],config_sha256=receipt['config_sha256'],
+            leader={key:receipt['leader'][key]for key in ('pid','start_ticks','sid','uid')})
     if {arm:value['leader']['pid']for arm,value in targets.items()}!={'A':128824,'B':757735}:
         raise ValueError('This once collector is bound only to the actual current A/B leaders')
     manifest=dict(targets=targets,qualification_result=PARENT+'/h100-11-'+BOOT+'/qualification-once-v1/RESULT.json')
