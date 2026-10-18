@@ -8,6 +8,11 @@ stash=/run/search-g1-diverse-retained18-shared
 mkdir -p "$stash"
 if [[ $node == h100-10 ]]; then
   mount --bind /mnt/data/shaoshitong "$stash"
+elif [[ $node == h100-5 ]]; then
+  export_root=/run/search-g1-retained18-export
+  mkdir -p "$export_root"
+  mount -t nfs4 -o rw,vers=4.2 10.33.0.18:/mnt/data "$export_root"
+  mount --bind "$export_root/shaoshitong" "$stash"
 else
   mount --bind /mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong "$stash"
 fi
