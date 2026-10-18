@@ -7,11 +7,15 @@ SELECTED = 512
 RERANK_CANDIDATES = 1024
 PREFIX40_FROM = 100
 RERANK_FROM = 150
+MIXED_FLOOR = dict(trigger_numerator=3, trigger_denominator=10,
+    target_mixed_questions=154, continuation_batch_questions=128,
+    remaining_order='predicted_pMixed_descending_then_original_candidate_ordinal',
+    replace_only_nonmixed=True, stop_when='154_mixed_or_candidate_pool_exhausted')
 
 BRANCH_SCHEDULE = dict(actor_start_outer=50, final_outer=200, candidates=2560,
     selected=512, prefix20_from=51, prefix40_from=100, rerank1024_from=150,
     probe_period=10, probe_update_at_final=False,
-    rerank_fallback=['mixed','all_correct','all_wrong'])
+    rerank_fallback=['mixed','all_correct','all_wrong'], mixed_floor=MIXED_FLOOR)
 
 
 def validate_branch(config):
@@ -39,7 +43,8 @@ def outer_plan(outer):
             (RERANK_CANDIDATES if rerank else SELECTED),
         probe_training_questions=CANDIDATES if periodic else 0,
         probe_actual_updates=50 if periodic else 0,
-        fallback='all_correct_then_all_wrong' if rerank else 'probe_score_fill')
+        fallback='all_correct_then_all_wrong' if rerank else 'probe_score_fill',
+        mixed_floor=MIXED_FLOOR)
 
 
 def probe_boundary(completed_outer):

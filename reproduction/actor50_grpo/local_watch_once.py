@@ -18,6 +18,8 @@ def main():
     d=wrapper['result'];assert d['execution_id']==c['execution_id'] and d['source_commit']==c['source_commit']
     c.update(latest_actual=wrapper['receipt'],latest_actual_checked_unix=d['checked_unix'],
         stage=d['stage'],workers=d['workers'],latest_failure=d['failure'],latest_exit=d['exit'],latest_cleanup=d['cleanup'],actor_inflight=d.get('actor_inflight'))
+    c.update(mixed_floor=d.get('mixed_floor'),mixed_floor_progress=d.get('mixed_floor_progress'),
+        prepare_restart_exit=d.get('prepare_restart_exit'))
     j=d.get('joint')
     if j:
         assert len(set(j['actor_Adam']))==1 and j['scheduler']==j['outer']
@@ -35,6 +37,7 @@ def main():
         stage=d['stage'],complete_outer=j['outer'] if j else None,actor_Adam=j['actor_Adam'] if j else None,
         probe=d['probe'],new_selected_Mixed=j['rollout_mixed'] if j and j['outer']>50 else None,
         actor_inflight=d.get('actor_inflight'),grounding_existing_logs=d.get('grounding_existing_logs'),advantage_summary=d.get('advantage_summary'),
+        mixed_floor=d.get('mixed_floor'),mixed_floor_progress=d.get('mixed_floor_progress'),prepare_restart_exit=d.get('prepare_restart_exit'),
         rollout={phase:[None if x is None else x.get('completed_trajectories') for x in rows] for phase,rows in d.get('rollout',{}).items()},
         failure=d['failure'],exit=d['exit'],cleanup=d['cleanup'],complete=d['complete'])))
 

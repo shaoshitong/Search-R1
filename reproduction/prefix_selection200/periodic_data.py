@@ -149,6 +149,8 @@ def project_top512(config_path, outer, selection_path=None):
     top_path=Path(selection_path or root/'probe-score/actual-em-selection.json');selection=read(top_path)
     scopes={'actor_only_periodic_full_pool_actual_EM'}
     if c.get('grpo_from_actor50') and outer>=150:scopes.add('actor_only_predicted_top1024_actual_EM')
+    if c.get('grpo_from_actor50') and c.get('actor50_branch_schedule',{}).get('mixed_floor'):
+        scopes.add('actor_only_mixed_floor30_actual_EM')
     if selection.get('outcome_labels_used') is not True or selection.get('selection_scope') not in scopes:
         raise ValueError('Periodic actor projection requires its separate actual-EM selection')
     groups=validate_selection(selection,prefix)
@@ -220,6 +222,7 @@ def project_top512(config_path, outer, selection_path=None):
         selected_strict_correct=sum(label_by_id.values()),selected_correct_count_histogram=hist,
         all_candidate_mixed_accuracy_available=completed_pool_questions==candidates,
         completed_pool_questions=completed_pool_questions)
+    if selection.get('mixed_floor') is not None:value['mixed_floor']=selection['mixed_floor']
     immutable(out/'complete.json',value)
     return value
 

@@ -50,11 +50,14 @@ def collect_oom_retry(output,config_path,*args,**kwargs):
 
 def archive_zero_write_attempt(base,config,*args,**kwargs):
     from reproduction.prefix_selection200 import guard_retry
-    original=guard_retry._state_binding
+    original=guard_retry._state_binding;generated=guard_retry.GENERATED
+    root=Path(args[1]) if len(args)>1 else Path(kwargs['root'])
+    extras=tuple(p.name for p in root.iterdir() if p.name.startswith('floor-') or p.name.startswith('mixed-floor-'))
     with binding_context(config):
         guard_retry._state_binding=actor._state_binding
+        guard_retry.GENERATED=generated+extras
         try:return guard_retry.archive_zero_write_attempt(base,config,*args,**kwargs)
-        finally:guard_retry._state_binding=original
+        finally:guard_retry._state_binding=original;guard_retry.GENERATED=generated
 
 
 def main():

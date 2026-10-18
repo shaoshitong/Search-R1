@@ -76,6 +76,19 @@ if action=='stage':
    grounding_rpc_batch=32,recovery_sampling=dict(source_base=str(parent),source_commit=p['parent']['source_commit'],
     source_execution_id=p['parent']['execution_id'],outer=51,zero_write_attempt='58c1b020c75940568ce59e5b56b454d9'))
   once(b/'preparation/recovery-parent-handle.json',p['parent'])
+ if p.get('restart_parent'):
+  parent=pathlib.Path(p['restart_parent']['base']);assert read(parent/'preparation/deployment.json')==p['restart_parent']
+  clean=read(parent/'logs/cleanup-status.json');assert clean['cleaned'] and clean['owned_births_all_gone']
+  assert same(read(parent/'preparation/submit-receipt.json')['leader']) is None
+  stop=read(parent/'preparation/human-restart-mixed30.json')
+  assert stop['intent']['stop_execution_id']==p['restart_parent']['execution_id']
+  c=read(parent/'preparation/launch-config.json');c.pop('recovery_sampling',None)
+  c.update(base=str(b),execution_id=h['execution_id'],source_commit=h['source_commit'],
+   actor50_branch_schedule=BRANCH_SCHEDULE,pool_state_path=str(b/'question-pool/state.json'),
+   prefix_probe_receipt=str(b/'probe/latest.json'),grounding_rpc_batch=32,
+   restart_from_actor50=dict(source_base=str(parent),source_execution_id=p['restart_parent']['execution_id'],
+    human_intent_sha256=hashlib.sha256(json.dumps(p['intent'],sort_keys=True).encode()).hexdigest()))
+  once(b/'preparation/restart-parent-handle.json',p['restart_parent'])
  # Pick unused loopback ports now; owned services will validate their run IDs.
  import socket
  def port(start,width):
@@ -101,16 +114,16 @@ if action=='stage':
   if checked.returncode:raise RuntimeError('Actual CPU entry failed: '+checked.stderr.decode()[-4000:])
  value=dict(status='CODE_AND_CONFIG_STAGED_NO_GPU',checked_unix=time.time(),source_files=len(h['source_files']),source_commit=h['source_commit'])
  once(b/'preparation/source-receipt.json',value)
-elif action in ('prepare','seed','recover'):
- source();c=read(b/'preparation/launch-config.json');phase={'prepare':'actor','seed':'seed','recover':'recover'}[action];name='prepare-'+phase
+elif action in ('prepare','seed','recover','restart'):
+ source();c=read(b/'preparation/launch-config.json');phase={'prepare':'actor','seed':'seed','recover':'recover','restart':'restart'}[action];name='prepare-'+phase
  assert not (b/'preparation'/(name+'-intent.json')).exists(),'Onceclaim exists: inspect, do not replay'
  if action=='seed':
   assert read(b/'preparation/prepare-actor-exit.json')['success']
   wh=read(b/'preparation/warmup-parent-handle.json');clean=read(pathlib.Path(wh['base'])/'logs/cleanup-status.json')
   assert clean['cleaned'] and clean['owned_births_all_gone']
  once(b/'preparation'/(name+'-intent.json'),dict(checked_unix=time.time()))
- command=([str(pathlib.Path(c['environment_root'])/'bin/python'),'-m','reproduction.actor50_grpo.recovery','--base',str(b)]
-  if action=='recover' else [str(pathlib.Path(c['environment_root'])/'bin/python'),'-m','reproduction.actor50_grpo.bootstrap',phase,'--base',str(b)])
+ command=([str(pathlib.Path(c['environment_root'])/'bin/python'),'-m','reproduction.actor50_grpo.'+('restart' if action=='restart' else 'recovery'),'--base',str(b)]
+  if action in ('recover','restart') else [str(pathlib.Path(c['environment_root'])/'bin/python'),'-m','reproduction.actor50_grpo.bootstrap',phase,'--base',str(b)])
  value=launch(name,command,c)
 elif action=='submit':
  source();c=read(b/'preparation/launch-config.json');sys.path.insert(0,str(repo))
@@ -127,13 +140,14 @@ else:
   prepare_progress=small(b/'preparation/prepare-progress.json'),prepare_actor_exit=small(b/'preparation/prepare-actor-exit.json'),
   prepare_seed_exit=small(b/'preparation/prepare-seed-exit.json'),stage=small(b/'logs/pipeline-status.json'),
   prepare_recover_exit=small(b/'preparation/prepare-recover-exit.json'),
+  prepare_restart_exit=small(b/'preparation/prepare-restart-exit.json'),
   probe=small(b/'probe/latest.json'),failure=small(b/'logs/failure.json'),exit=small(b/'logs/exit.json'),
   cleanup=small(b/'logs/cleanup-status.json'))
  completed=small(b/'logs/pipeline-complete.json')
  value['complete']=None if completed is None else dict(run_id=completed['run_id'],complete_outers=completed['complete_outers'],
   final_evaluation={k:v for k,v in completed['final_evaluation'].items() if k in ('questions','strict_em','exact_match','em','f1','count','ordered_ids_sha256','question_ids_sha256')})
  value['workers']={}
- for name in ('prepare-actor','prepare-seed','prepare-recover','pipeline'):
+ for name in ('prepare-actor','prepare-seed','prepare-recover','prepare-restart','pipeline'):
   item=small(b/'preparation'/(name+'-launch.json'));value['workers'][name]=same(item['leader']) if item else None
  joint=small(b/'latest-joint.json')
  if joint:
@@ -145,6 +159,8 @@ else:
   root=b/'outers'/('outer-%06d'%outer)
   value['rollout']={phase:[small(root/phase/('rank-%d-progress.json'%r)) for r in range(4)] for phase in ('prefix','full','full-pool')}
   value['QA']=small(root/'validation/complete.json')
+  value['mixed_floor']=small(root/'mixed-floor-complete.json')
+  value['mixed_floor_progress']=small(root/'mixed-floor-progress.json')
   name=(value['stage'] or {}).get('stage','');value['actor_inflight']=[]
   if '-actor-' in name:
    import re
@@ -177,7 +193,7 @@ else:
     value['actor_inflight'].append(dict(rank=rank,restore=None if restored is None else
      {k:restored.get(k) for k in ('restored_completed_outer','actual_adam_before','restored_scheduler','actual_learning_rates','actual_global_micro')},
      returned_writes=len(writes),latest_actual_Adam=None if not writes else writes[-1]['actual_adam_steps']))
- for name in ('pipeline','prepare-actor','prepare-seed','prepare-recover'):
+ for name in ('pipeline','prepare-actor','prepare-seed','prepare-recover','prepare-restart'):
   path=b/'logs'/(name+'.log')
   if path.exists():
    with path.open('rb') as f:f.seek(max(0,path.stat().st_size-4096));value[name+'_tail']=f.read().decode(errors='replace')
@@ -186,8 +202,8 @@ raw=json.dumps(value,allow_nan=False);assert len(raw.encode())<128*1024;print(ra
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--action',choices=('stage','prepare','seed','recover','submit','observe'),required=True)
-    p.add_argument('--handle',type=Path,required=True);p.add_argument('--parent-handle',type=Path);a=p.parse_args();w=Path(__file__).resolve().parents[2];payload=dict(action=a.action)
+    p=argparse.ArgumentParser();p.add_argument('--action',choices=('stage','prepare','seed','recover','restart','submit','observe'),required=True)
+    p.add_argument('--handle',type=Path,required=True);p.add_argument('--parent-handle',type=Path);p.add_argument('--restart-handle',type=Path);a=p.parse_args();w=Path(__file__).resolve().parents[2];payload=dict(action=a.action)
     if a.action=='stage':
         assert not a.handle.exists() and not subprocess.check_output(['git','status','--porcelain'],cwd=w).strip()
         archive,files=archive_source(w);execution=uuid.uuid4().hex
@@ -198,6 +214,10 @@ def main():
             warmup=json.loads((ROOT/'preparation/actor50-prefix20-fresh100-entryfix-deployment-20261018.json').read_text()),
             intent=json.loads((ROOT/'preparation/actor50-grpo-prefix20to40-human-intent-20261018.json').read_text()))
         if a.parent_handle:payload['parent']=json.loads(a.parent_handle.read_text())
+        if a.restart_handle:
+            assert not a.parent_handle
+            payload['restart_parent']=json.loads(a.restart_handle.read_text())
+            payload['intent']=json.loads((ROOT/'preparation/actor50-grpo-mixed30-human-intent-20261018.json').read_text())
     else:h=json.loads(a.handle.read_text())
     payload['handle']=h;r=subprocess.run(route(REMOTE),input=json.dumps(payload).encode(),stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=65)
     out=ROOT/'preparation'/('actor50-grpo-'+a.action+'-'+str(time.time_ns())+'.json')

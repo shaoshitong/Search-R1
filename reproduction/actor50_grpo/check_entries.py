@@ -13,7 +13,7 @@ def main():
     from reproduction.prefix_selection200.prefix5_model import PARAMETER_SHAPES
     from reproduction.prefix_selection200.actor_hidden import PREFIX,WIDTH
     from .actor import ACTOR_SOURCE_SHA256
-    from . import worker,rerank,lift40,bootstrap,run
+    from . import worker,rerank,lift40,bootstrap,run,mixed_floor,restart
     from .schedule import BRANCH_SCHEDULE,outer_plan
     from reproduction.prefix_selection200 import actor
     assert hashlib.sha256(Path(actor.__file__).read_bytes()).hexdigest()==ACTOR_SOURCE_SHA256

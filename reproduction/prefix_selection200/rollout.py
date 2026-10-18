@@ -102,6 +102,11 @@ def question_count(config, phase, outer=None):
             from reproduction.actor50_grpo.schedule import outer_plan
             plan=outer_plan(outer)
             allowed={SELECTED_QUESTIONS} if config.get('diagnostic_only') else {plan['continuation_questions']}
+            if config.get('mixed_floor_continuation'):
+                from reproduction.actor50_grpo.schedule import MIXED_FLOOR
+                if config['actor50_branch_schedule'].get('mixed_floor')!=MIXED_FLOOR:
+                    raise ValueError('Variable continuation requires the authorized mixed30 floor')
+                allowed={512,1024,2560,MIXED_FLOOR['continuation_batch_questions']}
     if type(requested) is not int or requested not in allowed:
         raise ValueError('Native question count differs from scheduled prefix/Top512/periodic-full-pool scope')
     return requested
@@ -109,7 +114,9 @@ def question_count(config, phase, outer=None):
 
 def phase_output(config,outer,phase):
     name='prefix' if phase=='prefix' else config.get('rollout_full_subdirectory','full')
-    if name not in ('prefix','full','full-pool'):
+    import re
+    floor_scope=config.get('grpo_from_actor50') and config.get('mixed_floor_continuation') and re.fullmatch(r'floor-(initial|extra-\d{4})',name)
+    if name not in ('prefix','full','full-pool') and not floor_scope:
         raise ValueError('Unknown native artifact scope')
     return root_dir(config,outer)/name
 

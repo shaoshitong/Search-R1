@@ -162,7 +162,7 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
         selection_sha256=sha(actor_selection_path),
         actor_selection_path=str(actor_selection_path), actor_selection_sha256=sha(actor_selection_path),
         predicted_selection_sha256=sha(root/'probe-score/selection.json'),
-        actor_selection_outcome_labels_used=periodic_update or (c.get('grpo_from_actor50') and outer>=150), rollout=read(root/'full/complete.json'),
+        actor_selection_outcome_labels_used=periodic_update or bool(c.get('grpo_from_actor50')), rollout=read(root/'full/complete.json'),
         probe_metrics=probe_metrics, periodic_probe_update=periodic_update,
         probe_boundary=boundary, source_commit=c['source_commit'], observed_unix=time.time())
     complete['candidate_schedule'] = schedule_metadata(c, outer)
@@ -499,7 +499,24 @@ def run(base):
                          '--output', str(root / 'probe-score'), '--outer', str(outer), '--model-dir', c['official_model_dir'],
                          '--encoder-micro-batch-size', str(c.get('encoder_micro_batch', 256))]))
                 actor_selection_path=root/'probe-score/selection.json'
-                if periodic_update:
+                if actor50_branch:
+                    phase(job('conditional-mixed30-completion'),[python,'-m','reproduction.actor50_grpo.worker','mixed-floor',
+                        '--config',sampling_conf,'--outer',str(outer)])
+                    actor_selection_path=root/'probe-score/actual-em-selection.json'
+                    if periodic_update:
+                        diagnostic_path=root/'diagnostic-complete.json'
+                        if diagnostic_path.exists():
+                            diagnostic=read(diagnostic_path)
+                            if (not sampling_attempt or diagnostic['run_id']!=c['run_id'] or diagnostic['outer']!=outer
+                                    or diagnostic['actor_version']!=actor_binding['actor_version']
+                                    or diagnostic['fixed_test_identity_sha256']!=c['fixed_test_identity_sha256']
+                                    or diagnostic['questions']!=512 or diagnostic['trajectories']!=2560):
+                                raise ValueError('Only the same zero-write actor diagnostic may be reused')
+                        else:
+                            phase(job('current-actor-diagnostic'),
+                                [python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic',
+                                 '--config',sampling_conf,'--outer',str(outer)])
+                elif periodic_update:
                     # The label-free predicted selection remains immutable. Complete
                     # every candidate once, then separately bind actual-mixed actor
                     # selection to those exact native outcomes and project its G5s.

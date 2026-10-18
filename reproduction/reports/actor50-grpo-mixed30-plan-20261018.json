@@ -1,0 +1,58 @@
+{
+  "recorded_unix": 1792312790.9941812,
+  "role": "HUMAN_RESTART_FROM_ACTOR50_WITH_CONDITIONAL_MIXED30_FLOOR",
+  "schedule": {
+    "actor_start_outer": 50,
+    "final_outer": 200,
+    "candidates": 2560,
+    "selected": 512,
+    "prefix20_from": 51,
+    "prefix40_from": 100,
+    "rerank1024_from": 150,
+    "probe_period": 10,
+    "probe_update_at_final": false,
+    "rerank_fallback": [
+      "mixed",
+      "all_correct",
+      "all_wrong"
+    ],
+    "mixed_floor": {
+      "trigger_numerator": 3,
+      "trigger_denominator": 10,
+      "target_mixed_questions": 154,
+      "continuation_batch_questions": 128,
+      "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+      "replace_only_nonmixed": true,
+      "stop_when": "154_mixed_or_candidate_pool_exhausted"
+    }
+  },
+  "superseded_execution": "02fcac91a48a4ee5a878d5990b02aed3",
+  "superseded_terminal_checked_twice": true,
+  "actor50_Adam_per_rank": [
+    1000,
+    1000,
+    1000,
+    1000
+  ],
+  "source_warmup_complete_epochs": 56,
+  "source_warmup_Adam_EMA": 770,
+  "source_warmup_sha256": "a93496353721a18387dd131e01464296dc76a6faa9daec2aa90f2e8cfda900eb",
+  "online_initial_probe_sha256": "560ed0bf0429e1b1c7539106f55f6096b824c3de9fcfbddd4c4fc1490657869e",
+  "online_initial_Adam": 0,
+  "source50_full_state_proof_reused_only_when_file_device_inode_size_mtime_match": true,
+  "previous51_sampling_reused": false,
+  "previous_post50_updates_imported": false,
+  "refill_trigger": "initial_selected_mixed * 10 <= 512 * 3",
+  "target_mixed": 154,
+  "final_questions": 512,
+  "rank_remaining": "predicted Mixed probability descending; original ordinal tie",
+  "refill": "complete disjoint originalG5 in128-question batches; replace only nonmixed until154 or exhaustion",
+  "candidate_exhaustion": "record true shortfall; no fabricated Mixed or new pool",
+  "periodic": "complete2560 originalG5 once, use cached outcomes for refill and natural50 probeAdam; no extra update",
+  "actor_source_sha256": "7f4bbcdbd23648569afe8ee8d1b35066e46d8da72709e765cb6f5fc0e16943de",
+  "verification": "8 synthetic CPU receipt fixtures; no model/evaluation/rollout invoked",
+  "App_monitor": "PAUSED",
+  "goal_status": "ACTIVE_200_FINAL_ACCEPTANCE_PENDING",
+  "no_subagents": true,
+  "all_large_assets_remote": true
+}

@@ -15,7 +15,9 @@ def main():
         probe='reproduction.prefix_selection200.probe',
         periodic='reproduction.prefix_selection200.periodic_data',
         actor='reproduction.actor50_grpo.actor',lift40='reproduction.actor50_grpo.lift40')
-    if role=='rerank':
+    if role=='mixed-floor':
+        from .mixed_floor import main as execute
+    elif role=='rerank':
         from .rerank import main as execute
     elif role=='periodic' and args[0]=='complete-pool' and plan['actual_em_rerank']:
         from .rerank import complete_main as execute
