@@ -1,10 +1,13 @@
 """Once control for actual A/B normal-savepoint CPU readback; no trainer edit.
 
 Start never retries transport or a consumed intent. Status reads small receipts,
-proofs and bounded logs only. The CPU worker is the existing frozen module.
+proofs and bounded logs only. A uses its frozen worker; progressive B uses a
+versioned preparation-only reader for the completed stage's20/40/80 dimensions.
 """
 import argparse
+import base64
 import datetime
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -15,11 +18,12 @@ from .readonly_management_route import MODES, lan5_argv, run_readonly
 
 
 INNER = r'''
-import hashlib,json,os,subprocess,time
+import base64,hashlib,json,os,subprocess,time
 from pathlib import Path
 ARMS=__ARMS__
 OUTER=__OUTER__
 ACTION=__ACTION__
+PROGRESSIVE_WORKER=__PROGRESSIVE_WORKER__
 result={}
 def birth(receipt):
  p=Path('/proc/'+str(receipt['pid'])+'/stat')
@@ -54,14 +58,31 @@ for arm,entry in ARMS.items():
   config_path=prep/'launch-config.json';raw=config_path.read_bytes();config=json.loads(raw)
   if hashlib.sha256(raw).hexdigest()!=entry['config_sha256'] or config['run_id']!=entry['run_id']:
    raise RuntimeError('Actual launch binding differs; do not start a checkpoint reader')
+  progressive=config.get('b_progressive',{}).get('mode')=='b_cp50_prefix20_40_80_two_stage_v1'
+  prefix=(5 if OUTER<=50 else 20 if OUTER<=100 else 40 if OUTER<=150 else 80) if progressive else 5
   claim={'outer':OUTER,'run_id':entry['run_id'],'source_commit':entry['commit'],
    'config_sha256':entry['config_sha256'],'created_unix':time.time(),
-   'cpu_only':True,'training_not_stopped':True,'transport_auto_retry':False}
-  with intent.open('x') as stream:json.dump(claim,stream)
+   'cpu_only':True,'training_not_stopped':True,'transport_auto_retry':False,'checkpoint_prefix_tokens':prefix}
   env=dict(os.environ,PYTHONPATH=str(b/'repo'),CUDA_VISIBLE_DEVICES='',
-   OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1')
+   OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1',
+   SEARCH_G1_B_PREFIX_TOKENS=str(prefix))
   command=['/dataset/shaoshitong/Search-G1-common8/env/bin/python','-m',
    'reproduction.prefix_selection200.ab_checkpoint_once','--base',str(b),'--outer',str(OUTER)]
+  if progressive:
+   # A versioned CPU-only reader lives beside preparation evidence. The active
+   # frozen repo is never overwritten, even when a later boundary changes width.
+   payload=base64.b64decode(PROGRESSIVE_WORKER['base64'])
+   checksum=hashlib.sha256(payload).hexdigest()
+   if checksum!=PROGRESSIVE_WORKER['sha256']:raise ValueError('CPU worker payload SHA differs')
+   worker=prep/'normal-savepoint-tools'/checksum/'ab_checkpoint_once.py'
+   worker.parent.mkdir(parents=True,exist_ok=True)
+   if not worker.exists():
+    with worker.open('xb') as stream:stream.write(payload)
+   if hashlib.sha256(worker.read_bytes()).hexdigest()!=checksum:raise ValueError('Staged CPU worker SHA differs')
+   code='import importlib.util,json;spec=importlib.util.spec_from_file_location("reproduction.prefix_selection200._normal_checkpoint_control",'+repr(str(worker))+');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);print(json.dumps(m.inspect('+repr(str(b))+','+repr(OUTER)+')))'
+   command=['/dataset/shaoshitong/Search-G1-common8/env/bin/python','-c',code]
+   claim.update(cpu_control_source=str(worker),cpu_control_source_sha256=checksum,frozen_repo_changed=False)
+  with intent.open('x') as stream:json.dump(claim,stream)
   with log.open('ab') as stream:
    process=subprocess.Popen(command,env=env,cwd=b/'repo',stdout=stream,
     stderr=subprocess.STDOUT,stdin=subprocess.DEVNULL,start_new_session=True)
@@ -81,7 +102,14 @@ print(json.dumps(result))
 def remote_inner(arms, outer, action):
     if outer not in (50, 100, 150, 200) or action not in ('start', 'status'):
         raise ValueError('Only actual normal savepoints and explicit actions are supported')
-    return INNER.replace('__ARMS__', repr(arms)).replace('__OUTER__', repr(outer)).replace('__ACTION__', repr(action))
+    worker=Path(__file__).resolve().parents[2]/'prefix_selection200/ab_checkpoint_once.py'
+    payload=worker.read_bytes()
+    substitutions={'__ARMS__':repr(arms),'__OUTER__':repr(outer),'__ACTION__':repr(action),
+        '__PROGRESSIVE_WORKER__':repr(dict(base64=base64.b64encode(payload).decode(),sha256=hashlib.sha256(payload).hexdigest()))}
+    # Replace template tokens in one pass: inserted paths/source are never
+    # interpreted as further placeholders.
+    import re
+    return re.sub('|'.join(map(re.escape,substitutions)),lambda match:substitutions[match.group()],INNER)
 
 
 def main():

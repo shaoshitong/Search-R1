@@ -9,6 +9,20 @@ from .checkpoint_cpu_once import need, tensor_cpu, validate_adam, validate_rng, 
 from .prefix5_model import PARAMETER_SHAPES, NATIVE_BUFFER_LAYOUTS
 
 
+def probe_layout(config,outer):
+    """A saved joint belongs to its completed stage, not the next live stage."""
+    from . import b_progressive
+    need(type(outer) is int and 1<=outer<=200,'Require an actual completed outer1..200')
+    if b_progressive.enabled(config):
+        b_progressive.validate(config)
+        prefix=b_progressive.prefix(outer)
+    else:
+        prefix=5
+    shapes=dict(PARAMETER_SHAPES)
+    shapes['output.weight']=(1,(273+prefix)*2048)
+    return prefix,shapes
+
+
 def validate_probe_state(saved,receipt,config,outer):
     import torch
     expected=policy.validate_receipt(config,receipt,outer)
@@ -16,16 +30,16 @@ def validate_probe_state(saved,receipt,config,outer):
     need(saved['binding_sha256']==digest(saved['binding'])==receipt['binding_sha256']
          and saved['run_id']==config['run_id'] and saved['completed_outer']==expected['last_update_outer']
          and saved['actual_adam_steps_per_rank']==[steps]*4,'AB saved state/receipt mismatch')
-    b=saved['binding']
+    b=saved['binding'];prefix,shapes=probe_layout(config,outer)
     need(b['selection_probe_experiment']==arm and b['learning_rate']==5e-6
          and b['group_weight']==config['probe_group_loss_weight'] and b['ema_rate']==config['probe_ema_rate']
-         and b['prefix_tokens']==5 and b['head_max_tokens']==278 and b['question_max_tokens']==273
+         and b['prefix_tokens']==prefix and b['head_max_tokens']==273+prefix and b['question_max_tokens']==273
          and b['source_probe_sha256']==config['probe_source_sha256']
          and b['source_epoch']==5 and b['source_model_kind']=='ema'
          and b['warmup_optimizer_imported'] is False and b['world_size']==4,'AB source/architecture/optimizer recipe differs')
     def model_tensors(model,buffers):
-        need(set(model)==set(PARAMETER_SHAPES),'Missing copied block/Linear parameters')
-        for name,shape in PARAMETER_SHAPES.items():tensor_cpu(model[name],dtype=torch.float32,shape=shape,finite=True)
+        need(set(model)==set(shapes),'Missing copied block/Linear parameters')
+        for name,shape in shapes.items():tensor_cpu(model[name],dtype=torch.float32,shape=shape,finite=True)
         layout=next((layout for layout in NATIVE_BUFFER_LAYOUTS if set(layout)==set(buffers)),None)
         need(layout is not None,'Missing native RoPE buffers')
         for name,shape in layout.items():tensor_cpu(buffers[name],dtype=torch.float32,shape=shape,finite=True)
@@ -54,7 +68,8 @@ def validate_probe_state(saved,receipt,config,outer):
             need(row['rank']==rank and row['actual_adam_steps']==steps,'Probe RNG actual clock differs');validate_rng(row)
     elif steps:raise ValueError('Actual trained probe requires rank RNG')
     return dict(actual_adam_steps_per_rank=[steps]*4,ema_updates=saved.get('ema_updates',0),
-                raw_model_verified=True,ema_model_verified=arm==policy.BALANCED,adam_states=adam)
+                raw_model_verified=True,ema_model_verified=arm==policy.BALANCED,adam_states=adam,
+                prefix_tokens=prefix,head_max_tokens=273+prefix)
 
 
 def inspect(base,outer):
