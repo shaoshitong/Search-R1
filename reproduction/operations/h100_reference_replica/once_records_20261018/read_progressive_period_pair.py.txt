@@ -1,0 +1,29 @@
+"""Existing periodic metadata only; PARAMS injected by current authorized caller."""
+import hashlib,json
+from pathlib import Path
+
+def read(p):return json.loads(Path(p).read_text())
+def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def need(v,msg):
+ if not v:raise ValueError(msg)
+base=Path(PARAMS['base']);n=PARAMS['outer'];root=base/'outers'/('outer-%06d'%n)
+j=read(root/'complete.json');diag=read(root/'diagnostic-complete.json');scan=read(Path(diag['scan_path'])/'scan-complete.json');prefix=read(root/'prefix/scan/scan-complete.json')
+train=read(root/'questions.json')['rows'];test=read(Path(diag['scan_path']).parent.parent/'questions.json')['rows']
+qids={str(x['qid'])for x in train}&{str(x['qid'])for x in test};texts={x['normalized_question_hash']for x in train}&{x['normalized_question_hash']for x in test}
+need(len(train)==2560 and len(test)==512 and not qids and not texts,'Periodic original train/fixed heldout identities differ')
+need(diag['actor_version']==scan['actor_version']==prefix['actor_version'] and diag['training_questions_used']is False,'Paired diagnostic does not use the original same actor')
+need(prefix['actor_hidden_native']is True and prefix['independent_encoder_forward']is False,'Prefix representation is not the actual sampling actor hidden')
+need(prefix['max_policy_prefix_tokens']==scan['max_policy_prefix_tokens']==20,'Current stage prefix differs')
+path=base/'outers'/('outer-%06d'%(n+1))/'probe-score/selection.json';adoption=read(path)
+need(adoption['selection_model_kind']=='ema'and adoption['outcome_labels_used']is False,'Following selection did not use the unlabelled EMA scoring path')
+need(adoption['probe_before_checkpoint_sha256']==j['probe']['sha256'] and adoption['ema_updates']==j['probe']['actual_adam_steps_per_rank'][0],'Following selection does not use the completed periodic probe')
+need(adoption['actor_version']==j['actor']['actor_version'],'Following actual sampling actor differs')
+metrics=j['probe_metrics'];curve=metrics['global_step_loss_curve']
+need(len(curve)==50 and metrics['new_adam_steps_per_rank']==50,'Periodic real update curve incomplete')
+print(json.dumps(dict(role='ORIGINAL_SAME_ACTOR_PERIODIC_PAIR_AND_FOLLOWING_EMA_ADOPTION',outer=n,source_complete_sha256=sha(root/'complete.json'),
+ training_questions=len(train),heldout_questions=len(test),qid_overlap=len(qids),normalized_text_overlap=len(texts),
+ prefix_tokens=prefix['max_policy_prefix_tokens'],head_max_tokens=prefix['head_max_tokens'],sampling_actor=prefix['actor_version'],
+ metric_fields={k:metrics[k]for k in ('learning_rate','ema_rate','group_loss_weight','sampling','before_update','after_update','global_step_loss_curve','train_loop_seconds')},
+ probe_adam=j['probe']['actual_adam_steps_per_rank'],actual_following_adoption={k:adoption[k]for k in ('outer','actor_version','selection_model_kind','ema_updates','probe_before_checkpoint_sha256','outcome_labels_used')},
+ following_selection_sha256=sha(path),probe_payload_sha_kind='PRODUCER_METADATA_NOT_INDEPENDENT_TENSOR_READBACK',
+ model_or_hidden_tensor_loaded=False,full_rollout_or_prediction_copied_to_mac=False,training_modified=False)))
