@@ -14,7 +14,7 @@ from .control import REPO, OUT, PHYSICAL as STOPPED, remote
 
 PHYSICAL='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-eight-prepared-20261018'
 CANONICAL='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'+PHYSICAL.rsplit('/',1)[1]
-REFERENCE='c5f1a07e6a9f4ccee35f45ddf69ab4aa3d28e910'
+REFERENCE='73f925bd03d2a320bd68336c7abb4c5fb3efe4aa'
 BASELINE='b52590d0a068b7d56d92908adc138aba0180b9cd'
 
 REMOTE=r'''

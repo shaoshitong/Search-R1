@@ -7,7 +7,7 @@ The old four-card instance is stopped with its own PID/start-tick identity;
 complete joint1 and any uncommitted outer2 journals remain retained.
 
 The source thread is `01a0fcbb-863f-7450-926d-db537f648265`. Its synchronized
-publication is `c5f1a07e6a9f4ccee35f45ddf69ab4aa3d28e910`, including the B-only
+publication is `73f925bd03d2a320bd68336c7abb4c5fb3efe4aa`, including the B-only
 CP50 fork, native prefix20/40/80 and expanded-set outcome reranking. At read time
 it was preparing its CP50 continuation after stopping its old B at complete58;
 A was left running. These are source-thread facts, not this copy's progress.
