@@ -270,3 +270,21 @@ B EMA full-pool BA66.96%→68.15%, fresh diagnostic BA53.18%→53.69%;
 diagnostic mixed BCE worsens1.04549→1.05375. No QA20 or benefit claim.
 The same native processes continue toward200; the normal50 observer remains
 active and the frozen runtime is unchanged.
+
+## Actual25 and a scoped observation interruption
+
+Both same h100-11 native leaders completed25/200, actor500/rank; A frozen0,
+B raw/EMA330. Original21–25 actor and probe journals are retained in the local
+small evidence bundle. The next26 was already updating when the original
+observer read back again at02:24:31UTC. No trainer or observer was restarted.
+
+During02:14/02:19 reads, the private management-to-retained18 SSH hop timed
+out. Ordinary `ssh mgmt-host hostname` succeeded. Known5 could reach18 SSH
+and NFS and source8 NFS, while5/8 TCP22 were reachable from management.
+An offline Tailscale peer record for8 did not prove compute8 was down.
+Slurm reported11 ALLOCATED; that alone was not used as training proof.
+The original18 route subsequently read the same native leader births,
+complete25 and actual26 writes. The network root cause was not isolated;
+no global network/auth/SSH or training configuration changed. See
+[private-hop-observation-recovery-20261018.json](private-hop-observation-recovery-20261018.json).
+The route remains the original retained18 path and all200/QA obligations continue.

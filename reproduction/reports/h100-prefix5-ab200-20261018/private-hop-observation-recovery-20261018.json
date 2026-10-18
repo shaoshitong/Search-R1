@@ -1,0 +1,49 @@
+{
+  "status": "ORIGINAL_ROUTE_ACTUAL_NATIVE_READBACK_RECOVERED",
+  "ordinary_ssh_mgmt_host_succeeded": true,
+  "failed_scope": "mgmt-host to retained18 TCP22/SSH; not general mgmt-host failure",
+  "local_observer_unchanged": true,
+  "training_restarted": false,
+  "training_configuration_changed": false,
+  "global_network_or_auth_changed": false,
+  "network_root_cause_isolated": false,
+  "diagnostic_facts": [
+    "mgmt-host ordinary SSH hostname succeeded",
+    "TCP22 to known5 and known8 reachable from mgmt",
+    "retained18 TCP22 unreachable from mgmt during incident, reachable from known5",
+    "known5 sees retained18 NFS and source8 NFS reachable; Slurm lists h10011 ALLOCATED, which alone is not native training proof",
+    "original retained18 observer later returned same original native leaders, complete25 and actual26 updates"
+  ],
+  "current_actual_recovery_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-h10011-normal-follow-20261018T022431812596Z-actual.json",
+  "current_actual_recovery_source_sha256": "4cf3c1175b1d13310e4a2d3899ad2cb6bec9c11bf2757711b68a23d59d1d39af",
+  "evidence": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-direct-hop-recheck-20261018T021735011423Z.json",
+      "sha256": "475b468df0ce2b69080744f1ec94438b04b149b5780b31615ea90434202bf5e3"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-known-target-direct-diagnostic-20261018T021851387898Z.json",
+      "sha256": "6f306e3eab9e7b95bf1ef3f1fd422ea6e6c7c2cbe5ea8157120cf53b798769aa"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-management-route-status-20261018T021954363939Z.json",
+      "sha256": "7c45868ec86df1938b147c2d92db4a14d425a7cf0946b09b28ac8ee8ac25f814"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-cluster-subnet-readonly-20261018T022140956514Z.json",
+      "sha256": "5f585952aa341d65eca9b8e367da41e6bc8fd7da9a7c50214d1b71d0a475eb38"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-known-cluster-ports-20261018T022237207045Z.json",
+      "sha256": "f93bfbca02ac104e663389e38cf63f7f0298af6dc2115a6ec6a658541703e072"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-known5-same-target-20261018T022452562236Z.json",
+      "sha256": "9c4cf60f9c5052405fc2e5eecbec4022ece540357bd520f5d0ef440e955c0a8e"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-private-lan-from-known5-20261018T022633465940Z.json",
+      "sha256": "2ffa9d5f4d59a4bfea4bada8aafc86ee319c92c7a33a14b90e468d5cb391eabf"
+    }
+  ]
+}
