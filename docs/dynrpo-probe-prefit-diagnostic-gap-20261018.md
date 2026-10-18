@@ -1,4 +1,4 @@
-# Probe pre-fit diagnostic gap: observed facts and unresolved cause
+# Probe pre-fit diagnostic gap: exact warmup question coverage
 
 These are Mixed/nonMixed classifier metrics (`q>=0.5`), not QA EM. Both sides
 are newly sampled from the same frozen actor: actor50 at the CP50 refresh and
@@ -35,13 +35,40 @@ Checked directly against the saved sampling records:
 - Train mean q remains around0.35--0.46 across capture ranks/640-row buckets;
   no single rank or first/last capture bucket accounts for the shift.
 
-The numerical failure is established: the retained head assigns too much Mixed
-mass to the fixed diagnostic cohort, producing many false positives. The root
-cause of that systematic score shift is NOT yet established. Do not describe it
-as an expected random train/test difference, merely this fit's overfitting, or a
-proven absence of hidden representation bugs. A possible amplification is that
-uncertain per-trajectory probabilities yield high `1-prod(p)-prod(1-p)` (five0.5
-values yield0.9375), but aggregate mean q alone does not prove this mechanism.
+The decisive historical difference was then verified against all1744 real
+warmup feature shards' `groups.json`, checking each file against its manifest SHA.
+Only metadata was read; no feature tensors, model weights or raw rollout payloads
+were transported. The cache manifest SHA exactly matches the retained EMA5 head's
+feature binding and the imported HPC3 reference.
+
+| Question cohort | Current questions | Previously present in EMA5 warmup training |
+|---|---:|---:|
+|50 fit pool|2560|2560 (100%)|
+|60 fit pool|2560|2560 (100%)|
+|Fixed probe diagnostic|512|0 (0%)|
+
+The445440 warmup G5 sampling events cover168510 distinct normalized training
+questions: the entire eligible source pool. Mean warmup G5 event counts for the
+current50 and60 fit questions are2.6273 and2.6313 per warmup epoch. EMA5 then
+traversed the warmup bank for five epochs. Its saved train/test Mixed accuracies
+were86.2536%/61.5234%, balanced85.0335%/57.0872%, and total losses0.638514/1.369222.
+A substantial train/heldout gap was already in the inherited initialization.
+These historical scores use the historical bank's labels, not current actor EM.
+
+Therefore fresh actor rollouts do not make the training questions unseen by the
+probe. The two current fit/diagnostic sets are disjoint, but only the fixed
+probe diagnostic is held out from the full warmup history. This is a confirmed
+structural reason why a large gap can already exist BEFORE a new fit; the prior
+P10-only overlap check was insufficient because it omitted the much larger
+warmup bank. Do not describe current pre-fit train accuracy as performance on
+unseen questions or attribute the whole gap solely to the current3-epoch fit.
+
+The actual diagnostic score shift and false positives remain real. This overlap
+audit establishes historical exposure, not a controlled quantitative attribution
+of every loss difference or a proof that every implementation detail is bug-free.
+No stale actor or misaligned label join was found by the stated identity checks.
+The q formula can amplify uncertain probabilities (five0.5 values yield0.9375),
+but mean q alone does not prove that it is the sole cause.
 
 No heldout threshold tuning, scorer relaxation, loss change or head reset was
 performed. The separately human-authorized two-stage actor selection uses probe
@@ -52,3 +79,5 @@ Actual scalar evidence remains in the task output
 `outputs/hpc3-prefix5-switch-20261017/probe-fit50-60-diagnostic-distribution-audit.json`.
 Raw rollouts, tensors and checkpoints remain remote. Audit operator:
 `docs/hpc3-probe-diagnostic-gap-audit-20261018.py`.
+
+Exact membership evidence: `outputs/hpc3-prefix5-switch-20261017/probe-warmup-current-question-overlap-exact.json`; operator `docs/hpc3-warmup-question-overlap-20261018.py`.
