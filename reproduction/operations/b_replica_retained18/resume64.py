@@ -22,7 +22,7 @@ def main():
   changed=subprocess.check_output(['git','diff','--name-only','--diff-filter=ACMRT','ff04ea81e4f3d7783d9c84c558faa515e5eca79f',commit],cwd=REPO,text=True).splitlines()
   archive=base64.b64encode(gzip.compress(subprocess.check_output(['git','archive',commit,'--',*changed],cwd=REPO))).decode()
   code=r'''
-import sys,uuid
+import sys,uuid,pathlib,json,time
 from reproduction.prefix_selection200.diverse_native_resume import qualify,prepare,PROTECTED
 from reproduction.prefix_selection200.diverse_resume import read,sha,once
 b=pathlib.Path(BASE);source=pathlib.Path(SOURCE);old=read(source/'preparation/launch-config.json')
