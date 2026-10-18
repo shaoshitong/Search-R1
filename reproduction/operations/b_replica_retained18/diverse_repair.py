@@ -41,7 +41,8 @@ def prepare(source,target,canonical,commit):
  for name in ('resume-joint-receipt.json','actor-cp50-4to8-reshard.json'):(target/'preparation'/name).write_bytes((source/'preparation'/name).read_bytes())
  original=source/'outers/outer-000051';root=target/'outers/outer-000051';root.mkdir()
  for name in ('prefix','probe-score','full','full-pool'):links('outers/outer-000051/'+name)
- for name in ('pool-reservation.json','selection.json','questions.json','actor-binding.json'):(root/name).write_bytes((original/name).read_bytes())
+ for name in ('pool-reservation.json','selection.json','questions.json'):(root/name).write_bytes((original/name).read_bytes())
+ (root/'imported-original-actor-binding.json').write_bytes((original/'actor-binding.json').read_bytes())
  seals={relative:sha(original/relative)for relative in ('prefix/complete.json','probe-score/complete.json','probe-score/manifest.json','probe-score/actual-em-selection.json','full/complete.json','full-pool/complete.json')}
  c['resume_cached_sampling']=dict(source_base=old['base'],outer=51,seals=seals)
  once(target/'preparation/launch-config.json',c)
