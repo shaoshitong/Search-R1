@@ -354,6 +354,37 @@ class RetirementTests(unittest.TestCase):
             with self.subTest(key=key,value=value), self.assertRaisesRegex(ValueError,error): self.plan()
             self.assertTrue((self.base/self.pools[6]/'0.pt').exists())
 
+    def test_authorized_micro8_transition_retires_only_current_raw_and_rejects_budget_drift(self):
+        self.use_restored_cp5()
+        from search_g1.easy2560_restore import physical_micro_transition
+        self.parent['budget'] = dict(ppo_micro_batch_size=64, per_rank_actor_micro_batch=16,
+            ppo_mini_batch_size=128, per_rank_actor_logical_micro_batch=4,
+            objective_reduction='original four-row micro masked_mean', learning_rate=1e-6)
+        manifest = self.origin/'logs/run-manifest.json'
+        manifest.write_text(json.dumps(self.parent, sort_keys=True))
+        parent_sha = hashlib.sha256(manifest.read_bytes()).hexdigest()
+        self.receipt['source_run_manifest'].update(bytes=manifest.stat().st_size, full_read_sha256=parent_sha)
+        self.receipt_path.write_text(json.dumps(self.receipt, sort_keys=True))
+        self.run.update(actor_micro_batch_per_rank=8, budget=dict(self.parent['budget'],
+            ppo_micro_batch_size=32, per_rank_actor_micro_batch=8))
+        binding = self.run['full_state_restore']
+        binding.update(source_run_manifest_sha256=parent_sha,
+            source_receipt_sha256=hashlib.sha256(self.receipt_path.read_bytes()).hexdigest(),
+            physical_micro_transition=physical_micro_transition(self.parent, 8))
+        self.write('logs/run-manifest.json', self.run)
+        self.assertEqual([p['step'] for p in self.plan()['pools']], [6,7])
+        self.run['budget']['learning_rate'] = 2e-6
+        self.write('logs/run-manifest.json', self.run)
+        with self.assertRaisesRegex(ValueError, 'SCIENTIFIC_INPUT_OR_BATCH_DIFFERS_budget'):
+            self.plan()
+        self.assertTrue((self.base/self.pools[6]/'0.pt').exists())
+        self.run['budget']['learning_rate'] = 1e-6
+        binding['physical_micro_transition']['target_accumulation_steps'] = 2
+        self.write('logs/run-manifest.json', self.run)
+        with self.assertRaisesRegex(ValueError, 'RESTORED_PHYSICAL_TRANSITION_DIFFERS'):
+            self.plan()
+        self.assertTrue((self.source_checkpoint/'rank-0.pt').is_file())
+
     def test_restored_receipt_content_and_parent_identity_must_match_even_with_new_receipt_sha(self):
         self.use_restored_cp5(); saved_run = copy.deepcopy(self.run); saved_receipt = copy.deepcopy(self.receipt)
         failures = [('run_id','c'*32), ('source_base',str(self.base)), ('source_job','123'),

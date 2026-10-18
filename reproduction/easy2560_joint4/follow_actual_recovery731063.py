@@ -21,6 +21,8 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--bridge-source',required=True);p.add_argument('--control-work',required=True)
     p.add_argument('--output-dir',type=Path,required=True)
+    p.add_argument('--command-bindings',type=Path,
+                   help='Explicit published read-only job/commit/command binding; defaults to historical731063')
     p.add_argument('--max-seconds',type=int,default=10800)
     p.add_argument('--stop-after-completed-outer',type=int,
                    help='Stop only this observer at an actual completed outer1..200; no next outer required')
@@ -29,8 +31,10 @@ def main():
     if a.stop_after_completed_outer is not None and not 1<=a.stop_after_completed_outer<=200:
         raise ValueError('Completed observation boundary must be outer1..200')
     repo=Path(__file__).resolve().parents[2]
-    binding=json.loads((repo/'reproduction/easy2560_joint4/code_backup/recovery5-731063-20261018/current-readonly-followup-commands.json').read_text())
-    assert binding['job']=='731063' and binding['source_commit']=='a61b48139386b346e4fef12511ece1ac0d09a8e3'
+    binding_path=a.command_bindings or repo/'reproduction/easy2560_joint4/code_backup/recovery5-731063-20261018/current-readonly-followup-commands.json'
+    binding=json.loads(binding_path.read_text());job=binding['job']
+    assert isinstance(job,str) and re.fullmatch('[1-9][0-9]*',job)
+    assert re.fullmatch('[0-9a-f]{40}',binding['source_commit'])
     spec=importlib.util.spec_from_file_location('account_bridge',a.bridge_source)
     bridge=importlib.util.module_from_spec(spec);spec.loader.exec_module(bridge)
     a.output_dir.mkdir(parents=True,exist_ok=True)
@@ -43,7 +47,7 @@ def main():
         except (subprocess.TimeoutExpired,TimeoutError):
             result=subprocess.CompletedProcess([],124,'','Read-only observation timed out')
         except Exception as error:
-            print(json.dumps(dict(status='CPU_OBSERVER_WRAPPER_FAILED_ATTENTION_REQUIRED',job='731063',
+            print(json.dumps(dict(status='CPU_OBSERVER_WRAPPER_FAILED_ATTENTION_REQUIRED',job=job,
                 checked_unix=time.time(),polls=polls,error=repr(error),goal_complete=False,
                 training_stop_requested=False,no_automatic_submission=True)),flush=True)
             return
@@ -66,7 +70,7 @@ def main():
         else:
             try:
                 d=json.loads(result.stdout)
-                assert d['job']=='731063'
+                assert d['job']==job
             except (ValueError,KeyError,TypeError,AssertionError) as error:
                 row.update(status='CPU_READONLY_WRAPPER_OUTPUT_INVALID_ATTENTION_REQUIRED',error=repr(error),
                            stderr=result.stderr[-1800:],goal_complete=False,training_stop_requested=False,
@@ -90,19 +94,19 @@ def main():
                     error_lines=d['error_lines'])),flush=True)
             stage=d['stage'].get('stage') if isinstance(d['stage'],dict) else d['stage']
             if d['error_lines'] or stage in ('FAILED','OWNED_CLEANUP_FAILED'):
-                print(json.dumps(dict(status='ATTENTION_REQUIRED_NO_AUTOMATIC_SUBMISSION',job='731063')),flush=True)
+                print(json.dumps(dict(status='ATTENTION_REQUIRED_NO_AUTOMATIC_SUBMISSION',job=job)),flush=True)
                 return
             if '|RUNNING|' not in d['queue']['stdout']:
-                print(json.dumps(dict(status='ATTENTION_REQUIRED_NO_AUTOMATIC_SUBMISSION',job='731063')),flush=True)
+                print(json.dumps(dict(status='ATTENTION_REQUIRED_NO_AUTOMATIC_SUBMISSION',job=job)),flush=True)
                 return
             if a.stop_after_completed_outer is not None and last>=a.stop_after_completed_outer:
-                print(json.dumps(dict(status='ACTUAL_COMPLETED_OUTER_BOUNDARY_OBSERVED',job='731063',
+                print(json.dumps(dict(status='ACTUAL_COMPLETED_OUTER_BOUNDARY_OBSERVED',job=job,
                     requested_completed_outer=a.stop_after_completed_outer,completed_outer=last,
                     checked_unix=d['checked_unix'],goal_complete=False,acceptance_claimed=False,
                     training_stop_requested=False)),flush=True)
                 return
             if a.stop_after_completed_outer is None and last>=10 and next_started:
-                print(json.dumps(dict(status='RECOVERY_FIRST_FIVE_COMPLETE_AND_NEXT11_STARTED',job='731063',
+                print(json.dumps(dict(status='RECOVERY_FIRST_FIVE_COMPLETE_AND_NEXT11_STARTED',job=job,
                     completed_outer=last,goal_complete=False,training_stop_requested=False)),flush=True)
                 return
         time.sleep(min(45,max(0,deadline-time.monotonic())))

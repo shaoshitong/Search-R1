@@ -102,8 +102,18 @@ def restored_prefix_binding(base, run):
         not parent.get('full_state_restore') and
         parent.get('easy2560_selection') is True and parent.get('training_world_size') == 4,
         'RESTORED_PARENT_MANIFEST_DIFFERS')
-    for key in ('budget', 'input_sha256', 'initial_model_sha256', 'model_revision',
-                'training_world_size', 'actor_micro_batch_per_rank', 'actor_logical_micro_batch_per_rank',
+    if run.get('actor_micro_batch_per_rank') == parent.get('actor_micro_batch_per_rank'):
+        require(run.get('budget') == parent.get('budget'), 'RESTORED_SCIENTIFIC_INPUT_DIFFERS_budget')
+    else:
+        # Reuse the already published pure-Python restore contract. Only an
+        # explicit physical16 -> 8/4 transition may change the two execution
+        # geometry fields; all scientific budget fields remain identical.
+        from search_g1.easy2560_restore import _compatible_execution_budget
+        transition = _compatible_execution_budget(run, parent)
+        require(restoration.get('physical_micro_transition') == transition,
+                'RESTORED_PHYSICAL_TRANSITION_DIFFERS')
+    for key in ('input_sha256', 'initial_model_sha256', 'model_revision',
+                'training_world_size', 'actor_logical_micro_batch_per_rank',
                 'all_correct_virtual_zero', 'selection_candidate_questions', 'selection_selected_questions',
                 'selection_fixed_candidate_budget'):
         require(run.get(key) == parent.get(key), 'RESTORED_SCIENTIFIC_INPUT_DIFFERS_' + key)
