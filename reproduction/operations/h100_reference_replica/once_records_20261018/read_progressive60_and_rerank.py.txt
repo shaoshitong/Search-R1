@@ -1,0 +1,72 @@
+"""Read existing small metadata only; caller injects PARAMS before this source.
+
+No model, tensor, full trajectory, generation, training or primary-state write.
+Question identity sets and own-EM metadata are aggregated on the remote host.
+"""
+import hashlib,json
+from pathlib import Path
+from collections import Counter
+
+base=Path(PARAMS['base'])
+def read(path):return json.loads(Path(path).read_text())
+def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def need(value,message):
+    if not value:raise ValueError(message)
+
+cohorts=[]
+for outer in PARAMS['outers']:
+    root=base/'outers'/('outer-%06d'%outer)
+    actual_path=root/'probe-score/actual-em-selection.json';actual=read(actual_path)
+    predicted_path=Path(actual['predicted_selection_path']);predicted=read(predicted_path)
+    admitted_path=Path(actual['original_pool_selection_path']);admitted=read(admitted_path)
+    need(sha(predicted_path)==actual['predicted_selection_sha256'] and sha(admitted_path)==actual['original_pool_selection_sha256'],'Original predicted selection changed')
+    need(predicted['outcome_labels_used']is False and admitted['outcome_labels_used']is False and actual['outcome_labels_used']is True,'Selection provenance differs')
+    groups=admitted['selected'];owners={tid:str(g['qid'])for g in groups for tid in g['trajectory_ids']}
+    need(len(owners)==len(groups)*5 and len({str(g['qid'])for g in groups})==len(groups),'Admitted authentic G5 identities differ')
+    labels={};digest=hashlib.sha256();own=Path(actual['full_pool_own_em_path'])
+    with own.open('rb')as stream:
+        for raw in stream:
+            digest.update(raw);row=json.loads(raw);tid=row['trajectory_id']
+            need(tid in owners and tid not in labels and str(row['qid'])==owners[tid],'Own label/G5 ownership differs')
+            need(row['actor_version']==actual['actor_version'] and row['selection_sha256']==actual['original_pool_selection_sha256'] and row['prefix_scan_sha256']==actual['prefix_scan_sha256'],'Own label actor/selection/prefix differs')
+            need(type(row['strict_em'])is int and row['strict_em']in (0,1),'Own strict EM is not binary')
+            labels[tid]=row['strict_em']
+    need(labels.keys()==owners.keys() and digest.hexdigest()==actual['full_pool_own_em_sha256'],'Small own-EM metadata incomplete or SHA differs')
+    mixed={str(g['qid']):int(0<sum(labels[tid]for tid in g['trajectory_ids'])<5)for g in groups}
+    def cohort(rows):
+        need(len({str(g['qid'])for g in rows})==len(rows)and all(str(g['qid'])in mixed for g in rows),'Comparison subset differs from completed admitted G5')
+        return dict(questions=len(rows),actual_mixed=sum(mixed[str(g['qid'])]for g in rows),
+            actual_mixed_fraction=sum(mixed[str(g['qid'])]for g in rows)/len(rows),
+            mean_selection_q=sum(g['q']for g in rows)/len(rows))
+    first=cohort(predicted['selected']);pool=cohort(groups);final=cohort(actual['selected'])
+    need(first['questions']==final['questions']==512 and pool['questions']==actual['actual_labeled_candidate_questions'],'Original comparison budgets differ')
+    need(pool['actual_mixed']==actual['actual_mixed_candidate_count'] and final['actual_mixed']==actual['chosen_mixed_count'],'Derived actual mixed counts differ')
+    cohorts.append(dict(outer=outer,actor_version=actual['actor_version'],periodic=outer%10==0 and outer<200,
+        predicted_top512_same_G5=first,completed_admitted_pool=pool,final_actual_mixed_first512=final,
+        same_data_rerank_gain_groups=final['actual_mixed']-first['actual_mixed'],
+        actual_full_rollout_trajectories=5*len(groups),actor_training_trajectories=2560,
+        additional_full_rollout_trajectories=5*(len(groups)-512),
+        uncontinued_unlabeled_candidates=predicted['candidate_questions']-len(groups),
+        own_em_metadata_sha256=digest.hexdigest(),actual_selection_sha256=sha(actual_path)))
+
+root=base/'outers/outer-000060';joint=read(root/'complete.json');metrics=joint['probe_metrics']
+diagnostic=read(root/'diagnostic-complete.json');scan=read(Path(diagnostic['scan_path'])/'scan-complete.json')
+train=read(root/'questions.json')['rows']
+test=read(Path(diagnostic['scan_path']).parent.parent/'questions.json')['rows']
+qid_overlap={str(row['qid'])for row in train}&{str(row['qid'])for row in test}
+text_overlap={row['normalized_question_hash']for row in train}&{row['normalized_question_hash']for row in test}
+need(not qid_overlap and not text_overlap,'Actual train/heldout question identities overlap')
+need(diagnostic['actor_version']==cohorts[[r['outer']for r in cohorts].index(60)]['actor_version'] and diagnostic['training_questions_used']is False,'Diagnostic is not fresh heldout at the same actor')
+need(scan['actor_version']==diagnostic['actor_version'] and scan['max_policy_prefix_tokens']==20 and scan['head_max_tokens']==293,'Actual diagnostic feature binding differs')
+after=read(base/'outers/outer-000061/probe-score/selection.json')
+need(after['probe_before_checkpoint_sha256']==joint['probe']['sha256'] and after['selection_model_kind']=='ema'and after['ema_updates']==840,'Actual61 did not select with updated EMA60')
+result=dict(role='EXISTING_METADATA_ONLY_PROGRESSIVE60_AND_SAME_G5_RERANK_DECOMPOSITION',base=str(base),
+    cohorts=cohorts,period60=dict(actor_version=diagnostic['actor_version'],original_training_questions=len(train),
+        fixed_heldout_questions=len(test),qid_overlap=len(qid_overlap),normalized_text_overlap=len(text_overlap),
+        diagnostic_actor_version=diagnostic['actor_version'],diagnostic_prefix_tokens=scan['max_policy_prefix_tokens'],
+        diagnostic_head_max_tokens=scan['head_max_tokens'],diagnostic_receipt_sha256=sha(root/'diagnostic-complete.json'),
+        metrics={k:metrics[k]for k in ('learning_rate','ema_rate','group_loss_weight','sampling','before_update','after_update','train_loop_seconds','global_step_loss_curve')},
+        new_probe_writes=metrics['new_adam_steps_per_rank'],actual_probe_adam=joint['probe']['actual_adam_steps_per_rank'],
+        actual61_adoption={k:after[k]for k in ('actor_version','selection_model_kind','ema_updates','probe_before_checkpoint_sha256','outcome_labels_used')}),
+    no_full5120_accuracy_claim=True,tensor_or_full_trajectory_files_read=False,new_model_forward_or_generation=False,training_modified=False)
+print(json.dumps(result))
