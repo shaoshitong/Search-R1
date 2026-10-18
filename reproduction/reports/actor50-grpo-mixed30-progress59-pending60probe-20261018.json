@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "goal_status": "ACTIVE_TO200_FINAL_ACCEPTANCE_PENDING",
+  "observed_unix": 1792323686.63874,
+  "observed_shanghai": "2026-10-18T19:41:26.638740+08:00",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "40389d9b00204a80ba68475fac254f9c",
+  "runtime_source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+  "metadata_operator_commit": "0a49454027d188a84b28509fb49322febb918d97",
+  "live_runtime_modified": false,
+  "receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-grpo-observe-1792323686702024000.json",
+  "receipt_sha256": "820b51f137beed2220ced4abe12705c9685eda6b1c679b9d7e3140a5749afd48",
+  "pipeline_leader": {
+    "pid": 3889886,
+    "start_ticks": 639247028,
+    "sid": 3889886,
+    "uid": 0,
+    "state": "S"
+  },
+  "latest_saved": {
+    "outer": 59,
+    "scheduler": 59,
+    "actor_Adam_per_rank": [
+      1180,
+      1180,
+      1180,
+      1180
+    ],
+    "new_Adam_per_rank": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "processed_opportunities": 20,
+    "skipped_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "joint_metadata_sha256": "7ae9b03711fc4d66eaf1939abceb616416c431956c03132615a59c3b283bf538",
+    "mixed_floor": {
+      "candidate_questions": 2560,
+      "completed_candidate_questions": 512,
+      "exhausted": false,
+      "extra_native_batches": 0,
+      "final_fraction": 0.3359375,
+      "final_mixed": 172,
+      "initial_fraction": 0.3359375,
+      "initial_mixed": 172,
+      "initial_scope_questions": 512,
+      "native_prefix_or_score_regenerated": false,
+      "policy": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "remaining_uncontinued_questions": 2048,
+      "shortfall": 0,
+      "target_mixed": 154,
+      "target_reached": true,
+      "triggered": false
+    }
+  },
+  "progress_from50": {
+    "complete_new_outers": 9,
+    "saved_actual_Adam_counted_once": 180,
+    "replicas_are_not_summed": true
+  },
+  "progress_since_saved58": {
+    "complete_new_outers": 1,
+    "saved_actual_Adam_delta_counted_once": 20
+  },
+  "inflight60": {
+    "stage": {
+      "checked_unix": 1792322883.8811357,
+      "outer": 60,
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "stage": "outer-000060-actor-c4880f3977a44e69931f90cc1242885f"
+    },
+    "actor_returned_write_ledger": [
+      {
+        "rank": 0,
+        "restore": {
+          "restored_completed_outer": 59,
+          "actual_adam_before": 1180,
+          "restored_scheduler": 59,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 20,
+        "latest_actual_Adam": 1200
+      },
+      {
+        "rank": 1,
+        "restore": {
+          "restored_completed_outer": 59,
+          "actual_adam_before": 1180,
+          "restored_scheduler": 59,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 20,
+        "latest_actual_Adam": 1200
+      },
+      {
+        "rank": 2,
+        "restore": {
+          "restored_completed_outer": 59,
+          "actual_adam_before": 1180,
+          "restored_scheduler": 59,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 20,
+        "latest_actual_Adam": 1200
+      },
+      {
+        "rank": 3,
+        "restore": {
+          "restored_completed_outer": 59,
+          "actual_adam_before": 1180,
+          "restored_scheduler": 59,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 20,
+        "latest_actual_Adam": 1200
+      }
+    ],
+    "joint_complete": false,
+    "full_pool_candidate_questions": 2560,
+    "full_pool_trajectories_per_rank": [
+      3200,
+      3200,
+      3200,
+      3200
+    ],
+    "full_pool_trajectories_total": 12800,
+    "mixed_floor": {
+      "actor_selection_sha256": "98abc73ed1559fa503c84198d77a0d6de435530708c18e849994b8232567a08c",
+      "candidate_questions": 2560,
+      "completed_candidate_questions": 2560,
+      "exhausted": true,
+      "extra_native_batches": 0,
+      "final_fraction": 1.0,
+      "final_mixed": 512,
+      "full_pool_complete_sha256": "aae94360193a16f3899108d8ef53520731c135a1a8c51e19b0eddc91dc4da075",
+      "initial_fraction": 1.0,
+      "initial_mixed": 512,
+      "initial_scope_questions": 2560,
+      "native_prefix_or_score_regenerated": false,
+      "policy": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "predicted_selection_sha256": "06b175aaface48c3b76dca2a6d508529c58c6a481fe310bfd4c243ad5381493c",
+      "remaining_uncontinued_questions": 0,
+      "shortfall": 0,
+      "target_mixed": 154,
+      "target_reached": true,
+      "triggered": false
+    },
+    "existing_group_counts": {
+      "all_correct": 0,
+      "all_wrong": 0,
+      "mixed": 512,
+      "original_g5": 0
+    },
+    "selected_Mixed_interpretation": "512/512 is actual strict-EM Mixed-priority selection in the natural P10 all-pool round, not probe accuracy or balanced accuracy."
+  },
+  "probe": {
+    "actual_adam_steps_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "binding_sha256": "c966ac43e2760c0246b1b672b98407cacbeaadd0b96806d533ff91fc1bf4070a",
+    "bytes": 310715406,
+    "completed_outer": 50,
+    "learning_rate": 5e-06,
+    "observed_utc": "2026-10-18T08:09:27.898714+00:00",
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+    "sha256": "560ed0bf0429e1b1c7539106f55f6096b824c3de9fcfbddd4c4fc1490657869e"
+  },
+  "probe_diagnostics": null,
+  "latest_milestone_QA": null,
+  "expected_first_online_probe_update": {
+    "outer": 60,
+    "new_Adam_per_rank": 50,
+    "status": "PENDING_ACTUAL_COMPLETE_METADATA"
+  },
+  "failure": null,
+  "exit": null,
+  "cleanup": null,
+  "pipeline_complete": null,
+  "App_monitor": "PAUSED",
+  "observations_this_normal_window": 1,
+  "normal_read_period_seconds": 1800,
+  "next_normal_read_not_before_unix": 1792325486.63874,
+  "remaining_scope": "Continue same driver through natural probe updates, Prefix40 at100, Top1024 actualEM selection at150, required saved-actor grounding refresh/adopt, complete200 and final51713 acceptance; no completion claim yet."
+}
