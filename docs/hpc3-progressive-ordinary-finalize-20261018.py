@@ -154,21 +154,21 @@ def main():
     code = "import os;os.environ['DYNRPO_PROGRESSIVE_PREFIX']='cp50_prefix20_40_80_three_epoch_v1';os.environ['DYNRPO_PREFIX_TOKENS']="+repr(str(20 if n<=100 else 40 if n<=150 else 80))+"\nimport sys;sys.path.insert(0,"+repr(BASE+'/repo')+")\nBASE="+repr(BASE)+'\nRUNTIME='+repr(RUNTIME)+'\nctx='+repr(ctx)+'\n'+REMOTE
     address = subprocess.check_output(['ipconfig','getifaddr','en0'], text=True).strip()
     r = run(PYTHON+' -c '+shlex.quote(code), account='mou176', source_address=address, timeout=25)
-    if r.returncode:raise RuntimeError('Ordinary audit/mirror failed; no training action taken: '+r.stdout.decode()[-1200:])
-    value = json.loads(r.stdout.decode().strip());report=value['report'];mirror=value['mirror']
+    if r.returncode:raise RuntimeError('Ordinary audit/mirror failed; no training action taken: '+r.stdout.decode()[-1200:]+r.stderr.decode()[-1200:])
+    value = next(json.loads(line) for line in reversed(r.stdout.decode().splitlines()) if line.lstrip().startswith('{'));report=value['report'];mirror=value['mirror']
     raw = (json.dumps(report,sort_keys=True,indent=2)+'\n').encode()
     assert hashlib.sha256(raw).hexdigest()==mirror['sha256']
     path = OUTPUT/('progressive-ordinary-outer-%06d-finalization.json'%n);path.write_bytes(raw)
     save(OUTPUT/('progressive-ordinary-outer-%06d-mirror.json'%n), mirror)
-    for name in ('current.json','goal-acceptance-ledger.json'):
-        path_state=OUTPUT/name;s=json.loads(path_state.read_text())
+    for name in ('current.json','progressive-goal-acceptance-ledger.json'):
+        path_state=OUTPUT/name;s=json.loads(path_state.read_text()) if path_state.exists() else {}
         s.update(checked_unix=time.time(),goal_status='active',full_goal_complete=False,
-                 actual_complete_outer=max(s.get('actual_complete_outer',0),d['complete_outer']),
-                 actual_completed_outers=max(s.get('actual_completed_outers',0),d['complete_outer']),
+                 actual_complete_outer=d['complete_outer'],
+                 actual_completed_outers=d['complete_outer'],
                  latest_native_acceptance=str(path),latest_native_accepted_outer=n,
                  last_goal_turn_classification='progress',last_turn_classification='progress',
                  observer_session=args.observer_session)
-        if name=='current.json':s['formal_outers']=max(s.get('formal_outers',0),d['complete_outer'])
+        if name=='current.json':s['formal_outers']=d['complete_outer']
         save(path_state,s)
     print(json.dumps(dict(status=report['status'],verified_outer=n,
           actual_adam_per_rank=report['actor']['actual_adam_steps_per_rank'],
