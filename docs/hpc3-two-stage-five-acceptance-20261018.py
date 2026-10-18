@@ -31,7 +31,9 @@ def main():
     c=rd(B/'preparation/launch-config.json');verify(c)
     assert c['source_commit']=='2000d46a530c64d78be7802bf11175a68b65effe' and c['two_stage_selection']==specification(62)
     proof=B/'preparation/two-stage-five-actual-next-use.json'
-    if proof.exists():print(json.dumps(dict(status='EXISTING_ACCEPTANCE',sha256=sha(proof))));return
+    if proof.exists():
+        assert rd(proof)['operator_script_sha256']==sha(__file__)
+        print(json.dumps(dict(status='EXISTING_ACCEPTANCE',sha256=sha(proof))));return
     latest=rd(B/'latest-joint.json');stage=rd(B/'logs/pipeline-status.json')
     if latest['outer']<66 or stage['outer']<67:print(json.dumps(dict(status='WAITING_FOR_COMPLETE66_AND_POSITIVE67',complete_outer=latest['outer'],stage=stage)));return
     progress=[rd(B/'outers/outer-000067/prefix'/('rank-%d-progress.json'%rank)) for rank in range(4)]
@@ -57,6 +59,7 @@ def main():
         assert j['probe_metrics']['new_adam_steps_per_rank']==0 and j['grounding']['round']==50
         assert pf['actor_version']==pool['actor_version']==selected['actor_version']==previous['actor']['actor_version']
         assert pf['head_prefix_tokens']==20 and final['selection_scope']=='actor_only_probe_top1024_actual_EM'
+        assert a['original_rollout_sha256']==sha(root/'full/complete.json')
         scores_path=root/'probe-score/candidate-scores.jsonl';assert sha(scores_path)==score['candidate_scores_sha256'];scores=list(rows(scores_path))
         expected=sorted(scores,key=lambda r:(-r['q'],r['candidate_ordinal']))[:1024]
         assert inter['selected']==expected and len({r['qid'] for r in expected})==1024
@@ -86,14 +89,16 @@ def main():
             ledger=actor_ledger(Seals(),a,n,rank);path=next(r['ledger_path'] for r in a['rank_receipts'] if r['rank']==rank);events=list(rows(path));restores=[e for e in events if e['event']=='ACTUAL_RESTORE'];assert len(restores)==1
             restore=restores[0];assert restore['restored_completed_outer']==n-1 and restore['actual_adam_before']==previous['actor']['actual_adam_steps_per_rank'][rank] and restore['restored_scheduler']==n-1
             assert restore['actual_learning_rates']==[1e-6] and restore['actual_model_master_dtypes']==['torch.float32'] and restore['actor_version']==previous['actor']['actor_version']
-            rank_checks.append(dict(rank=rank,ledger=ledger,restore=restore))
+            monitors=[e for e in events if e['event']=='POLICY_MONITOR']
+            assert len(monitors)==40 and Counter((m['opportunity'],m['stage']) for m in monitors)==Counter((i,stage) for i in range(20) for stage in ('before_minibatch','after_minibatch'))
+            rank_checks.append(dict(rank=rank,ledger=ledger,restore=restore,actual_before_after_monitor_invocations=len(monitors)))
         assert a['scheduler_completed_outer']==n and [x-y for x,y in zip(a['actual_adam_steps_per_rank'],a['new_adam_steps_per_rank'])]==previous['actor']['actual_adam_steps_per_rank']
         bgt=rd(root/'candidate-budget.json');assert bgt==budget(c,n) and bgt['questions']==5120
         assert bgt['consumed_before']==rd(previous['pool_snapshot'])['consumed_candidates']
         state=rd(j['pool_snapshot']);assert sha(j['pool_snapshot'])==j['pool_sha256'] and state['next_outer']==n+1 and state['consumed_candidates']==bgt['consumed_after']
         checks.append(dict(outer=n,actor_actual_adam=a['actual_adam_steps_per_rank'],new_adam=a['new_adam_steps_per_rank'],probe_adam=[550]*4,candidates=5120,full_rollout_questions=1024,actual_mixed_in_1024=mixed,selected_mixed=min(mixed,512),selected_fraction=min(mixed,512)/512,rank_checks=rank_checks,complete_sha256=sha(root/'complete.json')))
         previous=j
-    result=dict(status='CP61_TWO_STAGE_FIVE_COMPLETE_AND_ACTUAL_POSITIVE67_PASS',base=str(B),job=c['slurm_job'],runtime_commit=c['source_commit'],checked_unix=time.time(),imported_outer=61,checked_outers=list(range(62,67)),positive_next=67,checks=checks,source_stopped_cpu_proof_sha256=c['resume_joint']['qualification_proof_sha256'],tensor_payloads_rehashed=False,goal200_complete=False)
+    result=dict(status='CP61_TWO_STAGE_FIVE_COMPLETE_AND_ACTUAL_POSITIVE67_PASS',base=str(B),job=c['slurm_job'],runtime_commit=c['source_commit'],operator_script_sha256=sha(__file__),checked_unix=time.time(),imported_outer=61,checked_outers=list(range(62,67)),positive_next=67,checks=checks,source_stopped_cpu_proof_sha256=c['resume_joint']['qualification_proof_sha256'],tensor_payloads_rehashed=False,goal200_complete=False)
     once(proof,result);print(json.dumps(dict(status=result['status'],path=str(proof),sha256=sha(proof),mixed=[r['selected_mixed'] for r in checks],actor_adam=checks[-1]['actor_actual_adam'])))
 
 if __name__=='__main__':main()
