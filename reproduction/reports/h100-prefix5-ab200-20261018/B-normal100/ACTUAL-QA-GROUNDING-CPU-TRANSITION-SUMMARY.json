@@ -1,4 +1,236 @@
 {
+  "actual101_complete_followup": {
+    "reward": {
+      "status": "ACTUAL_COMPLETE101_FOUR_RANK_REWARD100_USE",
+      "version": "d9e5385ebec24ea8ab6cb8db8d2f825a:100:a5fafdc6dfef4262960164b80c990a09",
+      "actor": [
+        2020,
+        2020,
+        2020,
+        2020
+      ],
+      "probe": [
+        1410,
+        1410,
+        1410,
+        1410
+      ],
+      "actual_reward_rank_count": 4
+    },
+    "journals": {
+      "outer": 101,
+      "actor": [
+        {
+          "rank": 0,
+          "writes": 20,
+          "actual_adam_steps": 2020,
+          "ledger_sha256": "754312bce6c40abaabf7965c67f4af3066f049530aa2e12b952ae44eb5460193"
+        },
+        {
+          "rank": 1,
+          "writes": 20,
+          "actual_adam_steps": 2020,
+          "ledger_sha256": "f8873d8208ac5f6ea1784075a16206cd699f6359f5ae3d7c510ee9fa6a9f3592"
+        },
+        {
+          "rank": 2,
+          "writes": 20,
+          "actual_adam_steps": 2020,
+          "ledger_sha256": "c09063b7dbefe133c37f57002013aa2c2f64ab5c1f79ce2d72265fa5f859b020"
+        },
+        {
+          "rank": 3,
+          "writes": 20,
+          "actual_adam_steps": 2020,
+          "ledger_sha256": "8479400c69aa01ba19134dfc598c99ff4d74904953301a65d62eba30e551adcd"
+        }
+      ],
+      "probe": [
+        {
+          "rank": 0,
+          "writes": 10,
+          "last_actual": 1410,
+          "ledger_sha256": "783643b862899db8c3a0f30f70d0d09a1964fb64e7db982a8e543239f6aac1ba"
+        },
+        {
+          "rank": 1,
+          "writes": 10,
+          "last_actual": 1410,
+          "ledger_sha256": "ca1052f89e132969ff73838b9a8ed95155d6010e60571d8aaef2ebae44883ccd"
+        },
+        {
+          "rank": 2,
+          "writes": 10,
+          "last_actual": 1410,
+          "ledger_sha256": "fda4baea599bd346ca914fe9cc2835e2dca63743c4f93538a734689b12e06474"
+        },
+        {
+          "rank": 3,
+          "writes": 10,
+          "last_actual": 1410,
+          "ledger_sha256": "eca0f8d5729eeec32d60772fa21883f095a124b354f04446a0e31e5d7a943abf"
+        }
+      ],
+      "probe_actual": [
+        1410,
+        1410,
+        1410,
+        1410
+      ],
+      "ema_updates": 1410,
+      "selection_metrics": {
+        "all_correct": 66,
+        "all_correct_fraction": 0.12890625,
+        "all_wrong": 288,
+        "all_wrong_fraction": 0.5625,
+        "mean_selection_q": 0.9306248909328053,
+        "mixed": 158,
+        "mixed_fraction": 0.30859375,
+        "no_uncontinued_candidate_accuracy_claim": true,
+        "questions": 512
+      },
+      "phase_timings": {
+        "outer-000101-actor-bd6b6738a0c94e728fa7fa79a4fc9997": {
+          "elapsed_seconds": 486.6314547229558,
+          "exit_code": 0
+        },
+        "outer-000101-expanded-continuation-rerank": {
+          "elapsed_seconds": 164.44138897489756,
+          "exit_code": 0
+        },
+        "outer-000101-prefix": {
+          "elapsed_seconds": 171.95407881587744,
+          "exit_code": 0
+        },
+        "outer-000101-prefix-dimension": {
+          "elapsed_seconds": 10.898677797988057,
+          "exit_code": 0
+        },
+        "outer-000101-probe-update": {
+          "elapsed_seconds": 31.720742197707295,
+          "exit_code": 0
+        },
+        "outer-000101-score": {
+          "elapsed_seconds": 29.57860502321273,
+          "exit_code": 0
+        },
+        "outer-000101-training-wall": 888.692168707028
+      },
+      "probe_metrics": {
+        "new_adam_steps_per_rank": 10,
+        "sampling": {
+          "original_counts": [
+            354,
+            158
+          ],
+          "repeated_fraction": 0.404296875,
+          "sampled_counts": [
+            256,
+            256
+          ],
+          "status": "BALANCED_RESAMPLED_ONE_PASS",
+          "unique_questions": 305
+        },
+        "before_update": {
+          "ema": {
+            "train": {
+              "accuracy": 0.30859375,
+              "balanced_accuracy": 0.5,
+              "count": 512,
+              "fn": 0,
+              "formula": "1-prod(p_j)-prod(1-p_j)",
+              "fp": 354,
+              "group_bce": 1.9163023627300695,
+              "group_weight": 5.0,
+              "mean_q": 0.9306249631302521,
+              "mixed_count": 158,
+              "mixed_recall": 1.0,
+              "nonmixed_count": 354,
+              "nonmixed_recall": 0.0,
+              "threshold": 0.5,
+              "tn": 0,
+              "total_loss": 10.277195787181236,
+              "tp": 158,
+              "trajectory_bce": 0.695683973530889,
+              "true_mixed": "0<sum(own_strict_em)<5"
+            }
+          },
+          "raw": {
+            "train": {
+              "accuracy": 0.4296875,
+              "balanced_accuracy": 0.5420153042980762,
+              "count": 512,
+              "fn": 26,
+              "formula": "1-prod(p_j)-prod(1-p_j)",
+              "fp": 266,
+              "group_bce": 0.8420448074574636,
+              "group_weight": 5.0,
+              "mean_q": 0.6304144545564991,
+              "mixed_count": 158,
+              "mixed_recall": 0.8354430379746836,
+              "nonmixed_count": 354,
+              "nonmixed_recall": 0.24858757062146894,
+              "threshold": 0.5,
+              "tn": 88,
+              "total_loss": 4.829127755456776,
+              "tp": 132,
+              "trajectory_bce": 0.618903718169458,
+              "true_mixed": "0<sum(own_strict_em)<5"
+            }
+          }
+        },
+        "after_update": {
+          "ema": {
+            "train": {
+              "accuracy": 0.30859375,
+              "balanced_accuracy": 0.5,
+              "count": 512,
+              "fn": 0,
+              "formula": "1-prod(p_j)-prod(1-p_j)",
+              "fp": 354,
+              "group_bce": 1.8502853760731388,
+              "group_weight": 5.0,
+              "mean_q": 0.92497282227298,
+              "mixed_count": 158,
+              "mixed_recall": 1.0,
+              "nonmixed_count": 354,
+              "nonmixed_recall": 0.0,
+              "threshold": 0.5,
+              "tn": 0,
+              "total_loss": 9.907801366922019,
+              "tp": 158,
+              "trajectory_bce": 0.6563744865563261,
+              "true_mixed": "0<sum(own_strict_em)<5"
+            }
+          },
+          "raw": {
+            "train": {
+              "accuracy": 0.638671875,
+              "balanced_accuracy": 0.6721197167989702,
+              "count": 512,
+              "fn": 38,
+              "formula": "1-prod(p_j)-prod(1-p_j)",
+              "fp": 147,
+              "group_bce": 0.6571626910898407,
+              "group_weight": 5.0,
+              "mean_q": 0.536229101942935,
+              "mixed_count": 158,
+              "mixed_recall": 0.759493670886076,
+              "nonmixed_count": 354,
+              "nonmixed_recall": 0.5847457627118644,
+              "threshold": 0.5,
+              "tn": 207,
+              "total_loss": 3.921171455619813,
+              "tp": 120,
+              "trajectory_bce": 0.6353580001706096,
+              "true_mixed": "0<sum(own_strict_em)<5"
+            }
+          }
+        },
+        "train_loop_seconds": 1.6124545680359006
+      }
+    }
+  },
   "qa_grounding": {
     "role": "ACTUAL_NORMAL100_QA512_AND_GROUNDING100",
     "arm": "B",
@@ -2011,6 +2243,11 @@
     "prefix_quota_does_not_apply_to_evaluate_phase": true
   },
   "original_small_evidence": [
+    {
+      "role": "actual101",
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/b-progressive-actual101-complete-reward100-and-latest-journals-20261018T233202603191Z.json",
+      "sha256": "5b02a7407d2af3cb5ccad7ec92dbbcd43b20bf36d320fbc7a0d70acfd4d757a3"
+    },
     {
       "role": "qa_grounding",
       "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/b-progressive-B100-QA-grounding-and-40token101-actual-20261018T231309855650Z.json",

@@ -1,0 +1,10 @@
+"""Archived executed local entrypoint; existing output/PID means no replay."""
+import json,os,sys
+from pathlib import Path
+r=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control');s=json.loads((r/'work/search-g1-prefix5-ab200-state.json').read_text());assert not s['root_readonly_observer_active'] and s['normal100_observer_terminal']['actual_exit_code']==0
+out=r/'work/prefix5-ab-follow150-retained-v2-output.jsonl';pid=r/'work/prefix5-ab-follow150-local-process-once.json'
+with out.open('x')as stream:
+ with pid.open('x')as f:json.dump({'pid':os.getpid(),'role':'Read-only normal150 observer','output':str(out),'initial_verified':{a:v['complete_outer']for a,v in s['slots'].items()},'training_changed':False},f)
+ os.dup2(stream.fileno(),1);os.dup2(stream.fileno(),2)
+argv=[sys.executable,'-u','-m','reproduction.operations.h100_reference_replica.follow_h10011_ab_normal_boundary','--until','150','--verified-a',str(s['slots']['A']['complete_outer']),'--verified-b',str(s['slots']['B']['complete_outer']),'--interval','1800','--transport','retained18_fallback_lan5','--path-layout','retained-cache-v2']
+os.execv(sys.executable,argv)

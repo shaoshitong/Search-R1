@@ -3,6 +3,7 @@ import hashlib,json
 from pathlib import Path
 root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control');w=root/'work'
 source={
+ 'actual101':w/'b-progressive-actual101-complete-reward100-and-latest-journals-20261018T233202603191Z.json',
  'qa_grounding':w/'b-progressive-B100-QA-grounding-and-40token101-actual-20261018T231309855650Z.json',
  'transition':w/'b-progressive-period100-paired-and-native40-101-adoption-20261018T231659470774Z.json',
  'cpu':w/'prefix5-ab-normal-cp100-status-20261018T230844875448Z.json',
@@ -17,10 +18,14 @@ assert transition['actual_following_prefix']['count']==25600 and transition['act
 assert cpu['result']['status']=='AB_JOINT_FULL_SHA_CPU_PASS'
 assert all(r['writes']==20 and r['actual_adam_steps']==2000 for r in fact['actor'])and len(fact['actor'])==4
 assert all(r['writes']==50 and r['last_actual']==1400 for r in fact['probe'])and len(fact['probe'])==4
+follow=value(source['actual101'])['B'];assert follow['actual101_reward_use']['status']=='ACTUAL_COMPLETE101_FOUR_RANK_REWARD100_USE'
+assert follow['complete_outer']>=101
+followfact=next(x for x in follow['facts']if x['outer']==101)
+assert len(followfact['actor'])==len(followfact['probe'])==4 and all(x['writes']==20 for x in followfact['actor'])and all(x['writes']==10 for x in followfact['probe'])
 m=pair['metric_fields'];curve=m['global_step_loss_curve'];windows={}
 for name,part in [('first10',curve[:10]),('last10',curve[-10:])]:
  n=sum(x['global_questions']for x in part);windows[name]={k:sum(x[k]*x['global_questions']for x in part)/n for k in ('trajectory_bce','group_bce','total_loss')}
-proof=dict(qa_grounding=qa,actual_transition=transition,normal_checkpoint_source_cpu=cpu,
+proof=dict(actual101_complete_followup=dict(reward=follow['actual101_reward_use'],journals=followfact),qa_grounding=qa,actual_transition=transition,normal_checkpoint_source_cpu=cpu,
  actor_journals=fact['actor'],probe_journals=fact['probe'],selection=fact['selection_metrics'],phase_timings=fact['phase_timings'],
  weighted_changing_batch_windows=windows,qa100_matched_comparison=dict(A=a,B=b,contracts_equal=True,canonical_questions_equal=True),
  existing_B50_execution_difference=state['B_qa50_recovery_reproducibility'],
@@ -42,7 +47,7 @@ t+=['',
  'The original B50 QA was221/512 EM43.1641%, F151.3998%; an already-existing recovered B50 execution was220/512 EM42.9688%, F151.6048%. Their previously recorded execution reproducibility difference remains unresolved despite identical identities/protocol/source. Both values remain visible; no new QA50 was generated. B100 improves by11 or12 correct questions relative to those existing executions.','',
  'Post50 B also changes prefix length and expanded-admission/outcome-assisted reranking, in addition to raw/EMA fitting. The observed A/B difference cannot isolate an EMA effect or establish statistical significance. QA100 uses actor100; the new probe100 is for subsequent selection and cannot itself explain actor100 QA.','',
  '## Actual100 reward refit','',
- 'The original ordered300 calibration questions were used with actor100. The completed immutable manifest and both small grounding heads were actually read and SHA checked; all four real HTTP replicas adopted the newly fitted round100 version. This is separate from the selection probe. Full actor101 reward-use confirmation remains pending until that actor completes; replica adoption alone is not that confirmation.','',
+ 'The original ordered300 calibration questions were used with actor100. The completed immutable manifest and both small grounding heads were actually read and SHA checked; all four real HTTP replicas adopted the newly fitted round100 version. This is separate from the selection probe. Subsequent completed actor101 receipts also confirm all four actual reward-RPC records used this round100 version.','',
  'Grounding version: `%s`.'%qa['grounding']['version'],'',
  '## Source joint checkpoint100','',
  'The once-only CPU reader independently hashed all25 source files totaling%d bytes and actually deserialized the saved states: actor2000/rank, scheduler100, probe raw/EMA/Adam1400/rank, EMA1400, and saved four-rank RNG. Source probe is the correct20-token/293-position checkpoint. The proof is `%s`, SHA `%s`. No GPU forward/restore or independent backup was performed; completed hashes/loads must not be repeated.'%(sum(x['bytes']for x in cpu['result']['files']),cpu['proof'],cpu['proof_sha256']),'',
@@ -64,5 +69,5 @@ t+=['',
  '## Actual101 native40-token / EMA adoption','',
  'Original next-prefix scan actually contains25600 trajectories from actor0100, max retained policy prefix40 and head313 positions, actor-hidden-native=true, independent-encoder-forward=false, labels_present=false. The legacy string identifiers containing “policy5/prefix5” remain unchanged; the actual numeric dimension/source fields above record this40-token phase.','',
  'The immutable20→40 migration binds the completed100 checkpoint to a new40-token payload, preserving the recorded raw/EMA/Adam1400 clocks, LR, run and no-reset flags. Actual101 unlabelled EMA scoring uses the migrated payload `%s` and actor0100. Migration receipts and actual score metadata are not an independent tensor-preservation/forward audit.'%pair['actual_following_adoption']['probe_before_checkpoint_sha256'],'',
- 'Actual101 completion/optimizer writes and actual reward-RPC100 use remain pending in this report. Later150/200 QA, final51713 and native exit0/resource closure are not yet achieved. Models, optimizer, hidden and complete trajectories remain remote.']
+ 'Actual101 is now complete: all four actor journals record20 writes to2020 and all four probe journals10 writes to1410. Its actual four-rank reward records use the fitted100 version. Later150/200 QA, final51713 and native exit0/resource closure are not yet achieved. Models, optimizer, hidden and complete trajectories remain remote.']
 (out/'README.md').write_text('\n'.join(t)+'\n');print(out)

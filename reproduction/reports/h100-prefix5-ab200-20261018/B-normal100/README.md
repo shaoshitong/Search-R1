@@ -22,7 +22,7 @@ Post50 B also changes prefix length and expanded-admission/outcome-assisted rera
 
 ## Actual100 reward refit
 
-The original ordered300 calibration questions were used with actor100. The completed immutable manifest and both small grounding heads were actually read and SHA checked; all four real HTTP replicas adopted the newly fitted round100 version. This is separate from the selection probe. Full actor101 reward-use confirmation remains pending until that actor completes; replica adoption alone is not that confirmation.
+The original ordered300 calibration questions were used with actor100. The completed immutable manifest and both small grounding heads were actually read and SHA checked; all four real HTTP replicas adopted the newly fitted round100 version. This is separate from the selection probe. Subsequent completed actor101 receipts also confirm all four actual reward-RPC records used this round100 version.
 
 Grounding version: `d9e5385ebec24ea8ab6cb8db8d2f825a:100:a5fafdc6dfef4262960164b80c990a09`.
 
@@ -60,4 +60,4 @@ Original next-prefix scan actually contains25600 trajectories from actor0100, ma
 
 The immutable20→40 migration binds the completed100 checkpoint to a new40-token payload, preserving the recorded raw/EMA/Adam1400 clocks, LR, run and no-reset flags. Actual101 unlabelled EMA scoring uses the migrated payload `5994fc1aaf5ebe5ee14f6fba9dd85721c4b57e05ea2c94bbadbfbb8cc5a25654` and actor0100. Migration receipts and actual score metadata are not an independent tensor-preservation/forward audit.
 
-Actual101 completion/optimizer writes and actual reward-RPC100 use remain pending in this report. Later150/200 QA, final51713 and native exit0/resource closure are not yet achieved. Models, optimizer, hidden and complete trajectories remain remote.
+Actual101 is now complete: all four actor journals record20 writes to2020 and all four probe journals10 writes to1410. Its actual four-rank reward records use the fitted100 version. Later150/200 QA, final51713 and native exit0/resource closure are not yet achieved. Models, optimizer, hidden and complete trajectories remain remote.
