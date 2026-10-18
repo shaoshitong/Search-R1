@@ -20,7 +20,9 @@ c=rd(b/'preparation/launch-config.json');pub=rd(b/'preparation/source-publicatio
 job=rd(b/'preparation/slurm-submission.json')['job']
 assert job=='733898' and pub['commit']=='2000d46a530c64d78be7802bf11175a68b65effe'
 root=b/'outers'/('outer-%06d'%outer)
-diagnostic=root/'diagnostic/outers'/('outer-%06d'%outer)
+refresh_data=REFRESH_DATA
+data=(b/'probe-refreshes'/('round-%06d'%outer)/'outers'/root.name) if refresh_data else root
+diagnostic=data/'diagnostic/outers'/('outer-%06d'%outer)
 def counters(parent):
  result=[]
  for rank in range(4):
@@ -30,8 +32,10 @@ def counters(parent):
 actor=rd(b/'actor/latest.json',128*1024**2);probe=rd(b/'probe/latest.json')
 fitted=rd(root/'probe-update/complete.json')
 value=dict(epoch=time.time(),job=job,queue=subprocess.check_output(['squeue','-h','-j',job,'-o','%i|%T|%P|%R'],text=True).strip(),
- status=rd(b/'logs/pipeline-status.json'),budget=rd(root/'candidate-budget.json'),
- prefix=counters(root/'prefix'),full_pool=counters(root/'full-pool'),selected_full=counters(root/'full'),
+ status=rd(b/'logs/pipeline-status.json'),budget=rd(root/'candidate-budget.json') if not refresh_data else None,
+ sampling_role='post_actor_new_prefix_refresh' if refresh_data else 'actor_outer_sampling',sampling_root=str(data),
+ refresh_reservation=rd(data/'probe-only-reservation.json') if refresh_data else None,
+ prefix=counters(data/'prefix'),full_pool=counters(data/'full-pool'),selected_full=counters(data/'full'),
  diagnostic_prefix=counters(diagnostic/'prefix'),diagnostic_full=counters(diagnostic/'full'),
  actor={k:actor.get(k) for k in ('completed_outer','actual_adam_steps_per_rank','scheduler_completed_outer','skipped_update_opportunities')},
  probe={k:probe.get(k) for k in ('completed_outer','actual_adam_steps_per_rank','sha256')},
@@ -45,22 +49,28 @@ print(json.dumps(value))
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--outer', type=int, choices=range(60, 200, 10), required=True)
+    parser.add_argument('--refresh-data', action='store_true', help='Observe separate post100/150 new-prefix sampling')
     args = parser.parse_args()
+    if args.refresh_data and args.outer not in (100,150):
+        parser.error('Only100/150 have a separate post-actor prefix refresh in R4')
     address = subprocess.check_output(['ipconfig', 'getifaddr', 'en0'], text=True).strip()
-    result = run(PYTHON + ' -c ' + shlex.quote(QUERY.replace('OUTER', str(args.outer))),
+    code=QUERY.replace('OUTER',str(args.outer)).replace('REFRESH_DATA',repr(args.refresh_data))
+    result = run(PYTHON + ' -c ' + shlex.quote(code),
                  account='mou176', source_address=address, timeout=25)
     if result.returncode:
         raise RuntimeError('Read failed; training terminal is not inferred: ' + result.stderr.decode()[-1200:])
     value = next(json.loads(line) for line in reversed(result.stdout.decode().splitlines())
                  if line.lstrip().startswith('{'))
-    path = OUTPUT / ('two-stage-periodic-%06d-current.json' % args.outer)
+    tag='refresh' if args.refresh_data else 'periodic'
+    path = OUTPUT / ('two-stage-%s-%06d-current.json' % (tag,args.outer))
     path.write_text(json.dumps(value, indent=2) + '\n')
-    with (OUTPUT / ('two-stage-periodic-%06d-observations.jsonl' % args.outer)).open('a') as f:
+    with (OUTPUT / ('two-stage-%s-%06d-observations.jsonl' % (tag,args.outer))).open('a') as f:
         f.write(json.dumps(value) + '\n')
     # Epoch receipts, paths and fit records remain in the small local audit;
     # terminal output only displays measured counters.
     print(json.dumps(dict(epoch=value['epoch'], queue=value['queue'], stage=value['status'],
-        questions=value['budget']['questions'] if value['budget'] else None,
+        sampling_role=value['sampling_role'],sampling_root=value['sampling_root'],
+        questions=(len(value['refresh_reservation']['indices']) if value['refresh_reservation'] else None) if args.refresh_data else (value['budget']['questions'] if value['budget'] else None),
         **{key:[r['completed_trajectories'] if r else None for r in value[key]]
            for key in ('prefix','full_pool','diagnostic_prefix','diagnostic_full')},
         actor=value['actor'], probe=value['probe'],
