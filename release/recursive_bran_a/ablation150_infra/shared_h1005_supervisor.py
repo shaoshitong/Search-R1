@@ -6,6 +6,7 @@ import socket
 import subprocess
 import time
 import fcntl
+import argparse
 
 
 def write(path, value):
@@ -14,14 +15,15 @@ def write(path, value):
     os.replace(temp, path)
 
 
-def main():
+def main(reuse_admitted=False):
     assert socket.gethostname().split('.')[0] == 'h100-5' and os.getuid() == 0
     base = Path('/dataset/shaoshitong/recursive-ablation150-20261014')
     source = base / 'source-h1005-shared-d15f311'
     reference = Path('/dataset/shaoshitong/recursive-bran-a-h100-20261012/recovery-from100-20261013')
     runtime = Path('/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009')
-    control = base / 'shared-h1005-20261018'
+    control = base / ('shared-h1005-study-retry-20261018' if reuse_admitted else 'shared-h1005-20261018')
     control.mkdir(exist_ok=True)
+    (base / 'budget-5/logs').mkdir(parents=True, exist_ok=True)
     lock = (control / 'supervisor.lock').open('a')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     if (control / 'actual-exit.json').exists():
@@ -53,6 +55,10 @@ def main():
             '--base', str(reference / 'retriever')]),
         ('native-study-continuation', ['bash', str(source / 'release/recursive_bran_a/ablation150_v1/study.sh')]),
     ]
+    if reuse_admitted:
+        stages = [('reuse-live-admitted-retriever', [str(runtime / 'env/bin/python'), '-B',
+            str(source / 'release/recursive_bran_a/h100_migration/reuse_retriever.py'),
+            str(reference / 'retriever')]), stages[-1]]
     for stage, command in stages:
         with (control / (stage + '.log')).open('xb') as log:
             child = subprocess.Popen(command, env=env, stdout=log, stderr=subprocess.STDOUT)
@@ -70,4 +76,7 @@ def main():
 
 
 if __name__ == '__main__':
-    raise SystemExit(main())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--reuse-admitted-retriever', action='store_true')
+    args = parser.parse_args()
+    raise SystemExit(main(args.reuse_admitted_retriever))
