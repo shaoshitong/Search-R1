@@ -500,6 +500,130 @@
       }
     }
   },
-  "actual41_B_ema_adoption": "pending next existing observer record",
-  "global_loss_rows_verified": 560
+  "global_loss_rows_verified": 560,
+  "journal_and_actual41_small_proof": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-h10011-period40-journals-and-actual41-adoption.json",
+    "sha256": "140c7dc229d0ec49e293e62ce59fff115d98e520c28cd06ba8fea9720977d556"
+  },
+  "actual41_scoring_adoption": {
+    "A": {
+      "outer": 41,
+      "actor_version": "ca37419b494446398fb15234aa3be91a-actor0040",
+      "selection_model_kind": "frozen_warmup",
+      "ema_updates": 0,
+      "probe_before_checkpoint_sha256": "0d62658c030a16254ceb8dab977bdbbc42654e1a2edd0365ef916b952f91520f",
+      "outcome_labels_used": false,
+      "matches_previous_complete_head": true
+    },
+    "B": {
+      "outer": 41,
+      "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0040",
+      "selection_model_kind": "ema",
+      "ema_updates": 560,
+      "probe_before_checkpoint_sha256": "e3aafadbb5b18d77b564430c4267ec35604fb4e7815968395a4c7373669df316",
+      "outcome_labels_used": false,
+      "matches_previous_complete_head": true
+    }
+  },
+  "original_rank40_journals": {
+    "A": {
+      "outer": 40,
+      "actor": [
+        {
+          "rank": 0,
+          "writes": 20,
+          "actual_adam_steps": 800,
+          "ledger_sha256": "c1c8bcee15a9fb9ded4b94fcfb70b606d9ff1a50bd52c7f6c23b912e116da4d9"
+        },
+        {
+          "rank": 1,
+          "writes": 20,
+          "actual_adam_steps": 800,
+          "ledger_sha256": "b38d02f94cd15d022c34dfd5fe48470564bac88186788a64936963ba157c7cd8"
+        },
+        {
+          "rank": 2,
+          "writes": 20,
+          "actual_adam_steps": 800,
+          "ledger_sha256": "2d67b39b7e07effe5c178bda4fa28b0ddd7051722e8619245b13c11ab099662e"
+        },
+        {
+          "rank": 3,
+          "writes": 20,
+          "actual_adam_steps": 800,
+          "ledger_sha256": "f47528f5516862057a5acc036aac2024cd918a09a78d92cfc5f0ca4405ce97bf"
+        }
+      ],
+      "probe": [],
+      "probe_actual": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "ema_updates": 0
+    },
+    "B": {
+      "outer": 40,
+      "actor": [
+        {
+          "rank": 0,
+          "writes": 20,
+          "actual_adam_steps": 800,
+          "ledger_sha256": "988fd4ed13465de7f412eaac37218aebf86c1be61bf7d519cf285b93a00afc82"
+        },
+        {
+          "rank": 1,
+          "writes": 20,
+          "actual_adam_steps": 800,
+          "ledger_sha256": "b4fd9fdd5dbf9241f8cd7e1fbbc0ecf306b6e4e368f7f61ef8a13f5f54bdf922"
+        },
+        {
+          "rank": 2,
+          "writes": 20,
+          "actual_adam_steps": 800,
+          "ledger_sha256": "50808eb5b891fa891bca010c683f998bd966eaf2c11f314068e6b4df4d3e2fff"
+        },
+        {
+          "rank": 3,
+          "writes": 20,
+          "actual_adam_steps": 800,
+          "ledger_sha256": "39e6a45233026c344a51d22a7fd943613c6544dc60f4f5695299e1c51a83ae34"
+        }
+      ],
+      "probe": [
+        {
+          "rank": 0,
+          "writes": 50,
+          "last_actual": 560,
+          "ledger_sha256": "8e006976c5ccbee406e4309ce7c5e2ede9177ad3260df26406b5ec912695034c"
+        },
+        {
+          "rank": 1,
+          "writes": 50,
+          "last_actual": 560,
+          "ledger_sha256": "df2ffa8ec3edd06191ad593f22b883122369036c83912c28a2483a2798b30d5f"
+        },
+        {
+          "rank": 2,
+          "writes": 50,
+          "last_actual": 560,
+          "ledger_sha256": "d180d5cef63a7f5e54172b476eb897f87800b92482bf09e2f1557e07e9cf69a6"
+        },
+        {
+          "rank": 3,
+          "writes": 50,
+          "last_actual": 560,
+          "ledger_sha256": "ba786bc9ed13a1536a838601ec39fe6f77a4a6516cd6daddb33f923b655c490c"
+        }
+      ],
+      "probe_actual": [
+        560,
+        560,
+        560,
+        560
+      ],
+      "ema_updates": 560
+    }
+  }
 }

@@ -1,6 +1,6 @@
 # Period40: paired probe and selection results
 
-Both independent native h100-11 runs have committed40/200. Each physical actor rank has800 actual Adam writes. A remains frozen with0 probe writes; B has560 actual raw/EMA writes, including50 writes in this period at LR5e-6. Frozen runtime2e397623 is unchanged. Original rank-journal verification and actual41 B EMA adoption are reconciled separately with the existing normal-boundary observer.
+Both independent native h100-11 runs have committed40/200. Each physical actor rank has800 actual Adam writes. A remains frozen with0 probe writes; B has560 actual raw/EMA writes, including50 writes in this period at LR5e-6. Frozen runtime2e397623 is unchanged. The existing normal-boundary observer independently read all four original actor journals per arm (20 writes each) and all four B probe journals (50 writes each). Actual41 ordinary scoring uses unchanged A frozen0 and B EMA560, with recorded hashes matching each previous completed head and no outcome labels used.
 
 ## Fresh data and selection
 
