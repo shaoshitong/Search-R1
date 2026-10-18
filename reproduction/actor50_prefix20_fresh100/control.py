@@ -42,6 +42,9 @@ if p['action']=='stage':
  scope=p['human']['scope'];assert scope['resume_existing_prefix20_epoch20_full_state'] and scope['fresh512_G5_training_per_new_cycle'] and scope['never_reuse_first20_epoch_train_questions']
  latest=read(parent/'probe/latest.json');n=latest['cycle'];clock=latest['ema_updates']
  assert 10<=n<50 and latest['completed_epochs']==2*n and latest['actual_adam_steps_per_rank']==[clock]*4
+ for rank in range(4):
+  pending=parent/'training'/('cycle-%04d'%(n+1))/('rank-%d-progress.json'%rank)
+  assert not pending.exists() or read(pending)['actual_returned_adam']<=clock,'Unsealed real optimizer writes: no silent rollback/replay'
  cp=pathlib.Path(latest['checkpoint']);assert cp.stat().st_size==latest['bytes'] and sha(cp)==latest['sha256']
  b.mkdir();(b/'preparation').mkdir();(b/'logs').mkdir();repo.mkdir()
  raw=base64.b64decode(p['archive_b64']);assert hashlib.sha256(raw).hexdigest()==h['archive_sha256']
@@ -54,6 +57,9 @@ if p['action']=='stage':
  sys.path.insert(0,str(repo))
  from reproduction.actor50_prefix20_reuse20.model import validate_model_state
  from reproduction.prefix_selection200.prefix5_model import validate_native_buffers
+ import importlib
+ entry=importlib.import_module('reproduction.actor50_prefix20_fresh100.rollout')
+ assert entry.PREFIX_TOKENS==20 and entry.WIDTH==293 and not torch.cuda.is_initialized()
  state=torch.load(cp,map_location='cpu',weights_only=False)
  assert state['run_id']==h['run_id'] and state['completed_epochs']==2*n and state['cycle']==n
  assert state['new_adam_updates']==state['ema_updates']==clock and state['prefix_policy_tokens']==20 and state['actor_updates']==0
@@ -98,7 +104,10 @@ if p['action']=='stage':
  proof=dict(source_checkpoint=str(cp),source_checkpoint_sha256=latest['sha256'],source_latest=latest,
   raw_EMA_Adam_native_buffers_CPU_finite=True,all_four_rank_RNG_preserved=True,
   actual_Adam_EMA=clock,complete_epochs=2*n,fixed512_prefix20_cache_reused=True,parent_owned_writers_gone=True,
-  new_training_will_be_fresh_G5=True,actual_CUDA_continuation='PENDING_REAL_NEXT_WRITES',checked_unix=time.time())
+  new_training_will_be_fresh_G5=True,actual_CUDA_continuation='PENDING_REAL_NEXT_WRITES',
+  native20_entry_imported_in_training_environment_without_CUDA=True,
+  parent_failure=read(parent/'logs/failure.json') if (parent/'logs/failure.json').exists() else None,
+  checked_unix=time.time())
  once(b/'preparation/resume-qualified.json',proof)
  value=dict(status='FULLSTATE_PREFIX20_FRESH_SOURCE_STAGED_NOT_LAUNCHED',source_commit=h['source_commit'],
   source_files_verified=len(h['source_files']),config_sha256=sha(b/'preparation/config.json'),

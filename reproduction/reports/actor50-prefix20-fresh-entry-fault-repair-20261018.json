@@ -1,0 +1,27 @@
+{
+  "role": "native20_entry_import_fault_before_any_new_rollout_or_optimizer_write",
+  "checked_unix": 1792307550.312163,
+  "failed_execution": "6246e99757894d0d827fe131bb68337d",
+  "runtime_source": "55b5e6132d8617421828fd57f53e57b374e2b0a3",
+  "latest_complete_epochs": 20,
+  "Adam_EMA": 276,
+  "error": {
+    "exit_code": 0,
+    "stdout": "{\"checked_unix\": 1792307522.6128776, \"logs\": [{\"name\": \"logs/cycle-0011-prefix20.log\", \"bytes\": 623, \"sha256\": \"29ac14bb1ab6f11bd4bb1c674913bf9f92907c12303376a83f4da819e1115ad3\", \"tail\": \"Traceback (most recent call last):\\n  File \\\"/usr/lib/python3.10/runpy.py\\\", line 196, in _run_module_as_main\\n    return _run_code(code, main_globals, None,\\n  File \\\"/usr/lib/python3.10/runpy.py\\\", line 86, in _run_code\\n    exec(code, run_globals)\\n  File \\\"/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-3c91ac3eb68b46459433bd8c6091fec6-prefix20-fresh-resume-6246e99757894d0d827fe131bb68337d/repo/reproduction/actor50_prefix20_fresh100/rollout.py\\\", line 30, in <module>\\n    from .vllm_ports import bounded_vllm_port_namespace\\nModuleNotFoundError: No module named 'reproduction.actor50_prefix20_fresh100.vllm_ports'\\n\"}]}\n",
+    "stderr": "client_global_hostkeys_prove_confirm: server gave bad signature for RSA key 0: incorrect signature\r\n"
+  },
+  "exit": {
+    "checked_unix": 1792307475.1616616,
+    "cycle": 11,
+    "success": false
+  },
+  "cleanup": {
+    "checked_unix": 1792307475.1604712,
+    "cleaned": true,
+    "owned_births_all_gone": true,
+    "remaining_owned_birth_count": 0
+  },
+  "repair": "Use published dimension-independent vllm_ports helper through absolute import; CPU-import actual new entry in training environment before submit; reject pending unsealed optimizer writes during future fullstate resume",
+  "new_namespace_required": true,
+  "actor_updates": 0
+}

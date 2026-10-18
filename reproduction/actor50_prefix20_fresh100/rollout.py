@@ -27,7 +27,7 @@ from reproduction.prefix20_online.rollout import prompt_tokens, strict_label, ut
 from .contract import (G, PREFIX_TOKENS, QMAX, SAMPLING_CONTRACT, WIDTH, WORLD,
     PERIODIC_CANDIDATES, SELECTED_QUESTIONS)
 from .candidate_schedule import candidate_count, schedule_metadata
-from .vllm_ports import bounded_vllm_port_namespace
+from reproduction.prefix_selection200.vllm_ports import bounded_vllm_port_namespace
 from .interaction_protocol import (ACTUAL_COMPUTE_DTYPE, ACTION_TOKENS, BOUNDARY, BUDGET,
     COMPUTE_DTYPE, CONTRACT as INTERACTION_CONTRACT, MAX_OBSERVATION_TOKENS, MAX_SEARCH_TURNS,
     MAX_START_TOKENS, append_chunk, finish_action, first_action_cut, native_snapshot,
@@ -96,7 +96,7 @@ def question_count(config, phase, outer=None):
         requested = config.get('rollout_continuation_questions', SELECTED_QUESTIONS)
         allowed = {SELECTED_QUESTIONS, PERIODIC_CANDIDATES}
         if config.get('candidate_schedule') is not None:
-            from .periodic import is_probe_update
+            from reproduction.prefix_selection200.periodic import is_probe_update
             allowed = {SELECTED_QUESTIONS, PERIODIC_CANDIDATES} if is_probe_update(outer) else {SELECTED_QUESTIONS}
     if type(requested) is not int or requested not in allowed:
         raise ValueError('Native question count differs from scheduled prefix/Top512/periodic-full-pool scope')
