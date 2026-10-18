@@ -166,7 +166,7 @@ def main():
             for row in files:
                 row['shared_filesystem_fsid'] = int(os.statvfs(row['path']).f_fsid)
             assert sha(joint_path) == joint_sha
-            result = dict(context, status=PASS, finished_unix=time.time(), validator_runtime_commit=VALIDATOR_COMMIT,
+            result = dict(context, status=PASS, finished_unix=time.time(), validator_runtime_commit=pub['commit'],
                 run_id=RUN_ID, source_config_sha256=sha(base / 'preparation/launch-config.json'),
                 actor_hf=hf, actor_rank_states=ranks, actor_driver_file=driver_file, actor_driver_rng=driver_rng,
                 actor_actual_adam_steps_per_rank=actor['actual_adam_steps_per_rank'], scheduler_completed_outer=args.outer,
