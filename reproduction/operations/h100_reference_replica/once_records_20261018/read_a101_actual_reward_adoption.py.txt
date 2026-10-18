@@ -1,0 +1,25 @@
+"""Read original complete101 reward versions/journals only; no new execution."""
+import hashlib,json
+from pathlib import Path
+
+def read(path):return json.loads(Path(path).read_text())
+def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def need(value,message):
+ if not value:raise ValueError(message)
+base=Path(PARAMS['base']);path=base/'outers/outer-000101/complete.json'
+if not path.exists():
+ print(json.dumps({'status':'ACTUAL_COMPLETE101_NOT_YET_OBSERVED','training_changed':False}));raise SystemExit(0)
+previous=read(base/'outers/outer-000100/complete.json');joint=read(path);actor=joint['actor'];reward=actor['reward'];refresh=read(base/'outers/outer-000100/grounding-refresh.json');g=refresh['grounding']
+need(joint['outer']==101 and joint['run_id']==previous['run_id']and actor['scheduler_completed_outer']==101,'Actual101 joint identity/scheduler differs')
+need(joint['grounding']['version']==g['version']==actor['grounding_probe_version']==reward['version']and g['round']==100,'Actual101 reward evaluator did not switch to fitted100')
+need(g['source_actor_version']==previous['actor']['actor_version']and reward['trajectories']==2560 and reward['prefix_correctness_head_used_for_reward']is False,'Source actor/reward role differs')
+need(sorted(x['rank']for x in reward['ranks'])==list(range(4))and all(x['version']==g['version']and x['prefix_correctness_head_used_for_reward']is False for x in reward['ranks']),'Actual four reward-rank versions differ')
+ranks=[]
+for row in sorted(actor['rank_receipts'],key=lambda x:x['rank']):
+ rank=row['rank'];ledger=Path(row['ledger_path']);need(sha(ledger)==row['ledger_sha256'],'Original101 rank journal SHA differs')
+ events=[json.loads(line)for line in ledger.read_text().splitlines()];restored=[x for x in events if x['event']=='ACTUAL_RESTORE'];writes=[x for x in events if x['event']=='ACTUAL_ADAM_WRITE'];need(len(restored)==1,'Missing actual rank state restoration')
+ r=restored[0];before=previous['actor']['actual_adam_steps_per_rank'][rank];after=actor['actual_adam_steps_per_rank'][rank]
+ need(r['restored_completed_outer']==100 and r['actual_adam_before']==before and r['grounding_probe_version']==g['version']and r['grounding_state']['round']==100,'Actual restored actor/probe clock differs')
+ need([x['actual_adam_steps']for x in writes]==list(range(before+1,after+1))and row['new_adam_steps']==len(writes),'Actual101 writes differ from the saved states')
+ ranks.append(dict(rank=rank,restored_completed_outer=100,restored_actor_adam=before,actual_new_writes=len(writes),actor_adam_after=after,grounding_round=r['grounding_state']['round'],grounding_version=r['grounding_probe_version'],journal_sha256=row['ledger_sha256']))
+print(json.dumps(dict(status='ACTUAL_COMPLETE101_FOUR_RANK_REWARD100_ADOPTION_PASS',run_id=joint['run_id'],outer=101,source_complete_sha256=sha(path),source_actor100=previous['actor']['actor_version'],old_actor100_reward_round=previous['grounding']['round'],new_reward_round=100,new_reward_version=g['version'],actual_reward_ranks=len(reward['ranks']),actual_rank_restore_and_updates=ranks,selection_head_used_for_reward=False,model_or_optimizer_tensor_loaded_by_this_reader=False,training_changed=False)))
