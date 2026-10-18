@@ -1,0 +1,19 @@
+"""Read actual retained recovery code metadata; no training/control mutation."""
+import contextlib,hashlib,io,json,subprocess
+from pathlib import Path
+from reproduction.operations.h100_reference_replica.b_progressive_remote import remote
+from reproduction.operations.h100_reference_replica.follow_h10011_ab_normal_boundary import PATH_LAYOUTS
+commit='d68173cea039f5949e6bd799ead7ed590ee87b71'
+root='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-'+commit
+expected={}
+for name in ('actor.py','actor_safety.py','interaction_protocol.py','grounding.py','ab_probe.py','ab_policy.py','probe_plan.py'):
+ rel='reproduction/prefix_selection200/'+name
+ expected[rel]=hashlib.sha256(subprocess.check_output(['git','show','2e3976230ac9425d66d8553afa9962821e964932:'+rel])).hexdigest()
+for name in ('ab_frozen_latest_resume.py','b_progressive_resume.py','i1_i6_joint_resume.py'):
+ rel='reproduction/prefix_selection200/'+name
+ expected[rel]=hashlib.sha256(subprocess.check_output(['git','show',commit+':'+rel])).hexdigest()
+inner='''import hashlib,json\nfrom pathlib import Path\nb=Path(ROOT);expected=EXPECTED;files=[p for p in b.rglob('*')if p.is_file()and'__pycache__'not in p.parts]\nassert len(files)==1393,len(files)\nrows=[]\nfor name,checksum in expected.items():\n p=b/name;actual=hashlib.sha256(p.read_bytes()).hexdigest();assert actual==checksum,name;rows.append({'path':name,'sha256':actual,'bytes':p.stat().st_size})\nprint(json.dumps({'status':'RETAINED_CODE_SECOND_METADATA_AND_10_SMALL_SOURCE_SHA_PASS','commit':COMMIT,'physical':str(b),'actual_file_count':len(files),'actual_total_code_bytes':sum(p.stat().st_size for p in files),'readback_files':rows,'all1393_file_hashes_repeated':False,'first_stage_performed1393_full_sha':True,'live_training_changed':False,'new_namespace_uses_retained_wrapper':True}))'''.replace('ROOT',repr(root)).replace('EXPECTED',repr(expected)).replace('COMMIT',repr(commit))
+script='import subprocess,os\np=subprocess.run('+repr(['unshare','--mount','--propagation','private','bash',PATH_LAYOUTS['retained-cache-v2'],'/usr/bin/python3','-'])+',input='+repr(inner)+',env=dict(os.environ,CUDA_VISIBLE_DEVICES="",PYTHONDONTWRITEBYTECODE="1"),text=True,capture_output=True,timeout=60)\nassert p.returncode==0,p.stderr\nprint(p.stdout)'
+buf=io.StringIO()
+with contextlib.redirect_stdout(buf):v=remote(script,'retained-latest-recovery-code-second-read',namespace=False,timeout=80)
+e=json.loads(buf.getvalue())['evidence'];print(json.dumps({'evidence':e,'status':v['status'],'files':v['actual_file_count'],'bytes':v['actual_total_code_bytes'],'live_training_changed':False}))
