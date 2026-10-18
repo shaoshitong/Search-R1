@@ -1,7 +1,7 @@
 # Prefix5 A/B on h100-11: actual progress
 
 Latest verified: both independent four-card native runs have completed
-**13/200 outers** and begun outer14. The older per-outer tables below are
+**20/200 outers** and begun preparing21. The older per-outer tables below are
 historical measurements; see `period10-paired-results.md` for the first fresh
 paired diagnostic. The user authorized moving from h100-8 to the node with
 most actual VRAM headroom, and reducing local micro-batch with accumulation.
@@ -259,3 +259,14 @@ loop edits in the old two-outer reporting snippet. It reads only completed
 metadata and global loss rows, reports missing future rows as pending, and
 never changes the runtime or creates a second watcher. Both200-outer budgets
 and all scheduled QA/final-state obligations remain incomplete.
+
+## Completed period20
+
+See [period20-paired-results.md](period20-paired-results.md),
+[period20-paired-metrics.json](period20-paired-metrics.json), and
+[through20-small-metrics-and-loss-curves.json](through20-small-metrics-and-loss-curves.json).
+Both complete20, actor400/rank; frozen A0, B280 actual Adam/EMA/rank.
+B EMA full-pool BA66.96%→68.15%, fresh diagnostic BA53.18%→53.69%;
+diagnostic mixed BCE worsens1.04549→1.05375. No QA20 or benefit claim.
+The same native processes continue toward200; the normal50 observer remains
+active and the frozen runtime is unchanged.
