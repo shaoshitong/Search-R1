@@ -136,6 +136,20 @@ else:
    import re
    attempt=name.rsplit('-actor-',1)[1];assert re.fullmatch('[0-9a-f]{32}',attempt)
    directory=b/'actor/outers'/('outer-%04d-attempt-%s'%(outer,attempt))
+   advantage=small(directory/'advantage-statistics.json')
+   value['advantage_summary']=None if advantage is None else advantage.get('summary')
+   value['grounding_existing_logs']=[]
+   for rank in range(4):
+    logs=sorted((b/'logs').glob('grounding-*-rank-%d.log'%rank))
+    if not logs:value['grounding_existing_logs'].append(None);continue
+    path=logs[-1];info=path.stat()
+    with path.open('rb') as f:
+     if info.st_size>8*1024**2:f.seek(max(0,info.st_size-65536))
+     rawlog=f.read(8*1024**2)
+    lines=rawlog.decode(errors='replace').splitlines();requests=[line for line in lines if 'POST /judge_probe ' in line]
+    value['grounding_existing_logs'].append(dict(rank=rank,name=path.name,bytes=info.st_size,mtime_ns=info.st_mtime_ns,
+     counts_scope='entire_existing_log' if info.st_size<=8*1024**2 else 'tail64KiB_only',
+     existing_HTTP200=sum(' 200 ' in line for line in requests),other_HTTP=len(requests)-sum(' 200 ' in line for line in requests)))
    for rank in range(4):
     path=directory/('rank-%d-updates.jsonl'%rank)
     if not path.exists():value['actor_inflight'].append(None);continue

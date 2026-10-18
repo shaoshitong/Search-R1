@@ -34,7 +34,7 @@ def main():
     print(json.dumps(dict(receipt=wrapper['receipt'],at=d['checked_unix'],leader=d['workers']['pipeline'],
         stage=d['stage'],complete_outer=j['outer'] if j else None,actor_Adam=j['actor_Adam'] if j else None,
         probe=d['probe'],new_selected_Mixed=j['rollout_mixed'] if j and j['outer']>50 else None,
-        actor_inflight=d.get('actor_inflight'),
+        actor_inflight=d.get('actor_inflight'),grounding_existing_logs=d.get('grounding_existing_logs'),advantage_summary=d.get('advantage_summary'),
         rollout={phase:[None if x is None else x.get('completed_trajectories') for x in rows] for phase,rows in d.get('rollout',{}).items()},
         failure=d['failure'],exit=d['exit'],cleanup=d['cleanup'],complete=d['complete'])))
 
