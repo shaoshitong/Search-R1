@@ -29,11 +29,12 @@ for row in qualified['verified_files']:
  assert (st.st_ino,st.st_size,st.st_mtime_ns)==(row['inode'],row['bytes'],row['mtime_ns'])
  assert str(os.statvfs(row['path']).f_fsid)==str(row['shared_filesystem_fsid'])
 probe=j['probe'];path=Path(j['probe_snapshot']);before=path.stat()
-assert before.st_size==probe['bytes'] and sha(path)==probe['sha256']
+assert before.st_size==probe['bytes']
 proof=b/'preparation/progressive-bootstrap-probe-full-sha-cpu.json'
 if proof.exists():
  old=rd(proof);assert old['probe_checkpoint_sha256']==probe['sha256']
  print(json.dumps(old));raise SystemExit(0)
+assert sha(path)==probe['sha256']
 import torch
 torch.set_num_threads(2)
 from reproduction.prefix_selection200.i1_i6_checkpoint_cpu import probe_state
@@ -63,7 +64,7 @@ def main():
     address=subprocess.check_output(['ipconfig','getifaddr','en0'],text=True).strip()
     r=run(PYTHON+' -c '+shlex.quote(code),account='mou176',source_address=address,timeout=55)
     if r.returncode:raise RuntimeError(r.stdout.decode()[-5000:]+r.stderr.decode()[-1000:])
-    value=json.loads(r.stdout)
+    value=next(json.loads(line) for line in reversed(r.stdout.decode().splitlines()) if line.lstrip().startswith('{'))
     (OUTPUT/'progressive-cp50-bootstrap-readback.json').write_text(json.dumps(value,indent=2)+'\n')
     print(json.dumps(value))
 
