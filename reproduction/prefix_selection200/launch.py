@@ -89,6 +89,9 @@ def _json_request(url):
 def reused_phase(base, root, phase, c):
     """Only explicitly imported complete source phases may bypass execution."""
     if c.get('grpo_from_actor50'):
+        if c.get('recovery_sampling'):
+            from reproduction.actor50_grpo.recovery import inherited_phase
+            return inherited_phase(base,root,phase,c)
         if (root/phase/'complete.json').exists():
             raise ValueError('Actor50 branch requires explicit full-state recovery, not phase replay')
         return False
@@ -459,7 +462,10 @@ def run(base):
             actor_binding_path = root / 'actor-binding.json'
             if actor_binding_path.exists():
                 inherited_binding = False
-                if compatible_resume:
+                if actor50_branch and c.get('recovery_sampling'):
+                    from reproduction.actor50_grpo.recovery import inherited_actor_binding
+                    inherited_binding=inherited_actor_binding(base,root,c,actor_binding)
+                elif compatible_resume:
                     from .i1_i6_joint_resume import inherited_actor_binding
                     inherited_binding = inherited_actor_binding(base, root, c, actor_binding)
                 elif c.get('resume_joint', {}).get('adapter') == 'native_a800_joint_v1':
@@ -519,6 +525,8 @@ def run(base):
                     phase(job('complete-top1024-rerank'),[python,'-m','reproduction.actor50_grpo.worker','rerank',
                         '--config',sampling_conf,'--outer',str(outer)])
                     actor_selection_path=root/'probe-score/actual-em-selection.json'
+                elif actor50_branch and c.get('recovery_sampling') and reused_phase(base,root,'full',c):
+                    pass
                 else:
                     phase(job('continue'), [python, '-m', 'reproduction.prefix_selection200.rollout',
                         '--config', sampling_conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(actor_selection_path)])
