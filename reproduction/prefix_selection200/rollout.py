@@ -28,6 +28,7 @@ from .contract import (G, PREFIX_TOKENS, QMAX, SAMPLING_CONTRACT, WIDTH, WORLD,
     PERIODIC_CANDIDATES, SELECTED_QUESTIONS)
 from .candidate_schedule import candidate_count, schedule_metadata
 from .vllm_ports import bounded_vllm_port_namespace
+from . import prefix_diversity
 from .interaction_protocol import (ACTUAL_COMPUTE_DTYPE, ACTION_TOKENS, BOUNDARY, BUDGET,
     COMPUTE_DTYPE, CONTRACT as INTERACTION_CONTRACT, MAX_OBSERVATION_TOKENS, MAX_SEARCH_TURNS,
     MAX_START_TOKENS, append_chunk, finish_action, first_action_cut, native_snapshot,
@@ -216,6 +217,9 @@ def prefix_record(state):
                retained_policy_length=len(ids), future_information_included=False)
     if 'normalized_question_hash' in group:
         row['normalized_question_hash'] = group['normalized_question_hash']
+    if 'sampled_response_index' in state:
+        row.update(sampled_response_index=state['sampled_response_index'],
+                   diversity_selection_sha256=state['diversity_selection_sha256'])
     row['prefix_sha256'] = hashlib.sha256(canonical(row)).hexdigest()
     return row
 
@@ -261,6 +265,12 @@ def validate_rank_receipt(config_path, config, outer, phase, rank, path):
                   sampling_attempt_id=config.get('sampling_attempt_id'))
     if any(saved.get(key)!=value for key,value in expected.items()):
         raise ValueError('Existing rank receipt has a different actual run/actor/outer/phase/rank/protocol')
+    if phase=='prefix' and prefix_diversity.enabled(config):
+        if saved.get('prefix_candidates_generated')!=expected['trajectories']*2 or saved.get('prefixes_discarded')!=expected['trajectories']:
+            raise ValueError('Actual ten-to-five prefix counts differ')
+        item=saved['prefix_diversity']
+        if digest(item['path'])!=item['sha256'] or Path(item['path']).stat().st_size!=item['bytes']:
+            raise ValueError('Prefix diversity evidence changed')
     reuse=None
     if saved.get('config_sha256')!=current_sha:
         allowed=config.get('continue_reuse')
@@ -311,7 +321,7 @@ def _states(config, outer, rank, phase, tokenizer, selection_path):
             group.setdefault('candidate_ordinal', i)
             if group['candidate_ordinal'] != i:
                 raise ValueError('Candidate ordinal must preserve input order')
-        return [initial_state(config, outer, row, j, tokenizer) for row in groups[rank::WORLD] for j in range(G)]
+        return [initial_state(config, outer, row, j, tokenizer) for row in groups[rank::WORLD] for j in range(prefix_diversity.draws(config))]
     receipt = read(root / 'prefix' / 'complete.json')
     if (receipt.get('interaction_protocol') != INTERACTION_CONTRACT
             or receipt.get('actual_compute_dtype') != ACTUAL_COMPUTE_DTYPE):
@@ -426,6 +436,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     seed = seed_for(config['run_id'], outer, 'engine', 0, rank, config.get('seed', 1729),
                     sampling_attempt_id=config.get('sampling_attempt_id'))
     capture_hidden = phase == 'prefix' and config.get('actor_hidden_native', False)
+    diverse = phase=='prefix' and prefix_diversity.enabled(config)
     with bounded_vllm_port_namespace(config, rank, outer=outer, phase=phase) as port_namespace:
         print('VLLM_PORT_NAMESPACE=' + json.dumps(port_namespace.receipt(), sort_keys=True), flush=True)
         llm, utilization, limits, oom_attempts = _build_llm(dict(config, _capture_actor_hidden=capture_hidden), model, seed, free, total)
@@ -436,7 +447,8 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     if capture_hidden:
         from .actor_hidden import ActorHiddenCapture, NativeFeatureWriter
         hidden_capture = ActorHiddenCapture(engine, config['actor_version'])
-        hidden_writer = NativeFeatureWriter(output, rank, [row['trajectory_id'] for row in states])
+        hidden_writer = NativeFeatureWriter(output, rank, [row['trajectory_id'] for row in states],
+            selected_capacity=len(states)//2 if diverse else None)
     hidden_flushes = {}
     generation_path = Path(model) / 'generation_config.json'
     generation = read(generation_path) if generation_path.exists() else {}
@@ -453,6 +465,9 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     decode = lambda ids: tokenizer.decode(ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
     waiting, ready, pending, tools = deque(states), deque(), {}, {}
     completed, active, peak, requests, sampled = 0, 0, 0, 0, 0
+    retained=0;diverse_pending={};diverse_proofs=[]
+    diversity_path=output/('rank-%d-prefix-diversity.jsonl'%rank)
+    diversity_stream=diversity_path.open('x') if diverse else None
     started = time.monotonic()
     progress_path = output / ('rank-%d-progress.json' % rank)
     names = ('states.jsonl.gz', 'prefix.jsonl.gz') if phase == 'prefix' else ('full.jsonl.gz', 'own-em.jsonl')
@@ -464,6 +479,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
     def progress(stage):
         atomic(progress_path, dict(stage=stage, phase=phase, outer=outer, rank=rank, utc=utc(),
             actor_version=config['actor_version'], completed_trajectories=completed, expected_trajectories=len(states),
+            retained_prefixes=retained if phase=='prefix' else None,prefix_candidates_per_question=prefix_diversity.draws(config) if phase=='prefix' else None,
             active_trajectories=active, pending_generation=len(pending), pending_retrieval=len(tools),
             peak_inflight_trajectories=peak, generation_requests=requests, actual_sampled_tokens=sampled,
             elapsed_seconds=time.monotonic()-started, device_binding=device_binding,
@@ -472,15 +488,31 @@ def worker(config_path, outer, phase, rank, selection_path=None):
             gpu_memory_utilization=utilization, scheduler_limits=limits, initialization_oom_attempts=oom_attempts))
 
     def save(state, first_stream, second_stream):
-        nonlocal completed, active
+        nonlocal completed, active, retained
         if phase == 'prefix':
             row = prefix_record(state)
-            if hidden_capture is not None:
-                native_features = hidden_capture.finish(row)
-                row.update(hidden_writer.write(row, native_features), feature_rank=rank)
-            state['prefix_sha256'] = row['prefix_sha256']
-            first_stream.write(canonical(state).decode() + '\n')
-            second_stream.write(canonical(row).decode() + '\n')
+            native_features = hidden_capture.finish(row) if hidden_capture is not None else None
+            if diverse:
+                siblings=diverse_pending.setdefault(str(row['qid']),[]);siblings.append((state,row,native_features))
+                if len(siblings)<10:
+                    completed+=1;active-=1
+                    return
+                siblings.sort(key=lambda item:item[1]['response_index'])
+                selected,proof=prefix_diversity.select([item[1]for item in siblings])
+                proof.update(qid=row['qid'],outer=outer,rank=rank)
+                diversity_stream.write(canonical(proof).decode()+'\n');diverse_proofs.append(proof)
+                accepted=[]
+                for slot,index in enumerate(selected):
+                    member,original,features=siblings[index]
+                    member.update(sampled_response_index=member['response_index'],response_index=slot,
+                        diversity_selection_sha256=proof['selection_sha256'])
+                    accepted.append((member,prefix_record(member),features))
+                del diverse_pending[str(row['qid'])]
+            else:accepted=[(state,row,native_features)]
+            for member,prefix,features in accepted:
+                if hidden_capture is not None:prefix.update(hidden_writer.write(prefix,features),feature_rank=rank)
+                member['prefix_sha256']=prefix['prefix_sha256'];retained+=1
+                first_stream.write(canonical(member).decode()+'\n');second_stream.write(canonical(prefix).decode()+'\n')
         else:
             group = state['group']
             label = strict_label(tokenizer, state['response'], state['info_mask'], group['reward_model']['ground_truth'])
@@ -596,6 +628,9 @@ def worker(config_path, outer, phase, rank, selection_path=None):
         pool.shutdown(wait=True, cancel_futures=True)
         if hidden_capture is not None:
             hidden_capture.close()
+        if diversity_stream is not None:
+            diversity_stream.flush();os.fsync(diversity_stream.fileno());diversity_stream.close()
+    if diverse_pending:raise ValueError('Incomplete ten-prefix sibling group')
     feature_path = hidden_writer.finish() if hidden_writer is not None else None
     result = dict(schema_version=1, phase=phase, outer=outer, rank=rank, run_id=config['run_id'],
         actor_version=config['actor_version'], actor_model_dir=model, config_sha256=digest(config_path),
@@ -603,7 +638,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
         actual_compute_dtype=str(engine.model_config.dtype), sampling_attempt_id=config.get('sampling_attempt_id'),
         vllm_port_namespace=port_namespace.receipt(),
         native_output_commit='synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort',
-        trajectories=completed, questions=completed//G, device_binding=device_binding,
+        trajectories=retained if phase=='prefix' else completed, questions=(retained if phase=='prefix' else completed)//G, device_binding=device_binding,
         pad_token_id=int(tokenizer.pad_token_id), eos_token_id=int(tokenizer.eos_token_id),
         native_terminal_ids=terminal_ids, gpu_memory_utilization=utilization,
         actual_engine_enforce_eager=bool(engine.model_config.enforce_eager),
@@ -612,13 +647,23 @@ def worker(config_path, outer, phase, rank, selection_path=None):
         scheduler_limits=limits, engine_seed=seed, actual_sampled_tokens=sampled, generation_requests=requests,
         elapsed_seconds=time.monotonic()-started, completed_utc=utc())
     for key, path in zip(('states', 'prefix') if phase == 'prefix' else ('full', 'own_em'), paths):
-        result[key] = file_item(path, completed)
+        result[key] = file_item(path, retained if phase=='prefix' else completed)
     if feature_path is not None:
-        result.update(actor_hidden=file_item(feature_path, completed),
+        result.update(actor_hidden=file_item(feature_path, retained),
             actor_hidden_layer=27, actor_hidden_boundary='post_block_hidden_plus_residual',
             actor_hidden_forward_calls=hidden_capture.calls, actor_hidden_captured_rows=hidden_capture.captured_rows,
             actor_hidden_forward_and_capture_seconds=hidden_capture.elapsed_seconds,
             independent_encoder_forward=False, native_hidden_flush=True)
+    if diverse:
+        if retained!=len(states)//2 or completed!=len(states):raise ValueError('Ten-to-five prefix accounting differs')
+        result.update(prefix_candidates_generated=completed,prefixes_discarded=completed-retained,
+            prefix_diversity=file_item(diversity_path,len(diverse_proofs)),
+            diversity_statistics=dict(questions=len(diverse_proofs),
+                mean_unique_before=sum(p['unique_input_prefixes']for p in diverse_proofs)/len(diverse_proofs),
+                mean_unique_after=sum(p['unique_retained_prefixes']for p in diverse_proofs)/len(diverse_proofs),
+                mean_pairwise_before=sum(p['mean_pairwise_distance_before']for p in diverse_proofs)/len(diverse_proofs),
+                mean_pairwise_after=sum(p['mean_pairwise_distance_after']for p in diverse_proofs)/len(diverse_proofs),
+                probe_evaluated_prefixes=retained,discarded_probe_evaluations=0))
     if phase == 'continue':
         result.update(selection_sha256=digest(selection_path), prefix_scan_sha256=read(root/'prefix'/'complete.json')['scan_sha256'])
     immutable(receipt_path, result); progress('NATIVE_RANK_PHASE_COMPLETE')
@@ -753,6 +798,12 @@ def aggregate(config_path, outer, phase, selection_path=None, worker_exit_codes=
         scan=pack_prefix(config,outer,ranks)
         value.update(scan_path=str(scan.parent),scan_sha256=digest(scan),
                      shards=[r['prefix'] for r in ranks],state_shards=[r['states'] for r in ranks])
+        if prefix_diversity.enabled(config):
+            value.update(prefix_candidates_generated=sum(r['prefix_candidates_generated']for r in ranks),
+                prefixes_retained=sum(r['trajectories']for r in ranks),prefixes_discarded=sum(r['prefixes_discarded']for r in ranks),
+                diversity_statistics={key:sum(r['diversity_statistics'][key]*r['questions']for r in ranks)/value['questions']
+                    for key in ('mean_unique_before','mean_unique_after','mean_pairwise_before','mean_pairwise_after')},
+                discarded_probe_evaluations=0,prefix_diversity_shards=[r['prefix_diversity']for r in ranks])
     else:
         selection_path=Path(selection_path or root/'probe-score'/'selection.json')
         prefix=read(root/'prefix'/'complete.json')

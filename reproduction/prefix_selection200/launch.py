@@ -20,6 +20,10 @@ PREFIX = a800_runtime.PREFIX
 
 
 def validate_config(c, base):
+    if c.get('prefix_diversity'):
+        from .prefix_diversity import MODE
+        if c['prefix_diversity']!={'mode':MODE,'candidates_per_question':10,'retained_per_question':5,'discarded_probe_evaluations':0}:
+            raise ValueError('Freeze the authorized outcome-free ten-to-five prefix selector')
     from .candidate_schedule import validate_schedule
     validate_schedule(c, required=c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1')
     from .h100_replica_hardware import enabled as h100_layout, validate as validate_h100, PREFIXES as H100_PREFIXES
@@ -220,8 +224,9 @@ def run(base):
         raise ValueError('Submitted configuration changed')
     if (base / 'logs/process-ledger.json').exists():
         raise RuntimeError('Existing execution needs explicit recovery; do not replay its launch')
+    diverse_resume = c.get('resume_joint', {}).get('adapter') == 'b_diverse_4to8_cp50_v1'
     compatible_resume = c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1'
-    if c.get('resume_pending_probe') or c.get('resume_import') or (c.get('resume_joint') and not compatible_resume):
+    if c.get('resume_pending_probe') or c.get('resume_import') or (c.get('resume_joint') and not compatible_resume and not diverse_resume):
         raise ValueError('I1-I6 fresh source requires an explicitly compatible recovery adapter; old hardcoded-count adapters are forbidden')
     pending_recovery = c.get('resume_pending_probe')
     if pending_recovery and c.get('resume_joint'):
@@ -233,7 +238,9 @@ def run(base):
         from .pending_probe_resume import validate_imported_pending
         outer = validate_imported_pending(base, c)
     elif outer:
-        if compatible_resume:
+        if diverse_resume:
+            from .diverse_resume import validate_imported as validate_imported_boundary
+        elif compatible_resume:
             from .i1_i6_joint_resume import validate_imported_boundary
         elif c['resume_joint'].get('adapter') == 'native_a800_joint_v1':
             from .native_joint_resume import validate_imported_boundary
@@ -457,10 +464,18 @@ def run(base):
         # from the joint actor/probe/pool boundary without redoing any updates.
         if outer in (5, 50, 100, 150, 200):
             actor = read(base / 'actor/latest.json')
-            recovery_config = base / 'preparation/recovered-evaluation-config.json'
-            once(recovery_config, dict(c, actor_version=actor['actor_version']))
-            validation(outer, actor['hf_model_dir'], recovery_config, base/'recovered-validation',
-                       'recovered-outer-%06d-validation' % outer)
+            if diverse_resume and outer==50:
+                source_qa=Path(c['resume_joint']['source_base'])/'outers/outer-000050/validation/complete.json'
+                original_qa=read(source_qa)
+                if original_qa.get('actor_version')!=actor['actor_version'] or original_qa.get('qa_count',original_qa.get('count'))!=512:
+                    raise ValueError('Parent CP50 QA actor/count differs; do not invent a reused score')
+                once(base/'preparation/inherited-cp50-validation.json',dict(path=str(source_qa),sha256=sha(source_qa),
+                    result=original_qa,reason='unchanged exact CP50 weights; no repeated baseline',new_evaluation_calls=0))
+            else:
+                recovery_config = base / 'preparation/recovered-evaluation-config.json'
+                once(recovery_config, dict(c, actor_version=actor['actor_version']))
+                validation(outer, actor['hf_model_dir'], recovery_config, base/'recovered-validation',
+                           'recovered-outer-%06d-validation' % outer)
         for outer in range(outer + 1, 201):
             from .b_progressive import enabled as b_progressive,prefix as b_prefix,ENV as b_env
             if b_progressive(c):

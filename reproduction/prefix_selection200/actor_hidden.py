@@ -167,23 +167,30 @@ class ActorHiddenCapture:
 
 class NativeFeatureWriter:
     """BF16 bits in remote uint16 mmap; no full-candidate tensor in GPU RAM."""
-    def __init__(self, directory, rank, trajectory_ids):
+    def __init__(self, directory, rank, trajectory_ids, *, selected_capacity=None):
         import numpy as np
         self.path = Path(directory) / ('rank-%d-actor-hidden.npy'%rank)
         if self.path.exists():
             raise FileExistsError('Never overwrite an uncommitted native feature shard')
-        self.rows = {tid:i for i,tid in enumerate(trajectory_ids)}
-        if len(self.rows) != len(trajectory_ids):
+        self.allowed=set(trajectory_ids)
+        if len(self.allowed) != len(trajectory_ids):
             raise ValueError('Duplicate feature trajectory identity')
+        self.dynamic=selected_capacity is not None
+        self.capacity=selected_capacity if self.dynamic else len(trajectory_ids)
+        if type(self.capacity)is not int or not 1<=self.capacity<=len(trajectory_ids):raise ValueError('Invalid retained feature capacity')
+        self.rows = {} if self.dynamic else {tid:i for i,tid in enumerate(trajectory_ids)}
         self.written = set()
         self.array = np.lib.format.open_memmap(self.path, mode='w+', dtype=np.uint16,
-                                              shape=(len(self.rows),WIDTH,DIM))
+                                              shape=(self.capacity,WIDTH,DIM))
 
     def write(self, prefix, data):
         import torch
         tid = prefix['trajectory_id']
-        if tid not in self.rows or tid in self.written:
+        if tid not in self.allowed or tid in self.written:
             raise ValueError('Unknown or repeated native feature row')
+        if self.dynamic:
+            if len(self.rows)>=self.capacity:raise ValueError('Selected feature capacity exceeded')
+            self.rows[tid]=len(self.rows)
         row = self.rows[tid]
         self.array[row] = data['features'].contiguous().view(torch.uint16).numpy()
         self.written.add(tid)
@@ -193,7 +200,7 @@ class NativeFeatureWriter:
                     feature_dtype='bfloat16_bits_uint16', future_information_included=False)
 
     def finish(self):
-        if self.written != set(self.rows):
+        if self.written != set(self.rows) or len(self.written)!=self.capacity:
             raise ValueError('Native capture did not cover every real trajectory')
         self.array.flush()
         with self.path.open('rb') as handle:

@@ -155,7 +155,7 @@ def initialize(base, config):
     return state
 
 
-def checked_state(config, state, *, require_adopted=True):
+def checked_state(config, state, *, require_adopted=True, _historical_world=None):
     expected = _manifest_state(config, state['manifest_path'], digest=state['manifest_sha256'])
     if (state['run_id'] != config['run_id'] or state['lifecycle'] != static_binding(config)
             or any(state[key] != expected[key] for key in
@@ -170,12 +170,24 @@ def checked_state(config, state, *, require_adopted=True):
         adopted = read(proof)
         if (adopted['run_id'] != config['run_id'] or adopted['version'] != state['version']
                 or adopted['round'] != state['round'] or adopted['manifest_sha256'] != state['manifest_sha256']
-                or sorted(row['rank'] for row in adopted['replicas']) != list(range(WORLD))
+                or sorted(row['rank'] for row in adopted['replicas']) != list(range(WORLD if _historical_world is None else _historical_world))
                 or any(row.get('ok') is not True or row.get('version') != state['version']
                        or row.get('round') != state['round'] or row.get('encoder') != state['encoder']
                        for row in adopted['replicas'])):
             raise ValueError('All four actual reward replicas must adopt the same fitted evaluator')
     return state
+
+
+def checked_actor_grounding(config, actor):
+    """Historical four-rank evidence stays four-rank; live adoption stays WORLD."""
+    if not actor.get('imported_4to8_cp50'):
+        return checked_state(config, actor['grounding_state'])
+    from .diverse_resume import imported_actor_boundary
+    if not imported_actor_boundary(actor,50):raise ValueError('Unqualified imported actor grounding')
+    migration=read(actor['imported_4to8_cp50']['path'])
+    original=read(migration['source_joint_path'])['actor']['grounding_state']
+    if original!=actor['grounding_state']:raise ValueError('Historical grounding must remain original')
+    return checked_state(config, original, _historical_world=4)
 
 
 def publish_live(base, config, state):
@@ -225,7 +237,7 @@ def validate_actor_transition(config, latest, outer):
     if latest is None or latest['completed_outer'] != outer - 1:
         raise ValueError('Grounding transition must bind the immediately previous actor checkpoint')
     actual_actor_boundary(latest, outer - 1)
-    previous = checked_state(config, latest['grounding_state'])
+    previous = checked_actor_grounding(config, latest)
     previous_version = latest['grounding_probe_version']
     if (previous_version != previous['version'] or previous['round'] != expected_round(outer - 2)):
         raise ValueError('Previous actor did not retain its actual reward-grounding clock')
@@ -240,8 +252,9 @@ def validate_actor_transition(config, latest, outer):
 
 def validate_joint(config, joint):
     """Check the evaluator actually used by the committed actor update."""
-    outer = joint['outer']; state = checked_state(config, joint['grounding'])
-    actor = joint['actor']
+    outer = joint['outer']; actor = joint['actor']
+    state = checked_actor_grounding(config, actor)
+    if joint['grounding'] != state:raise ValueError('Joint and actor grounding differ')
     actual_actor_boundary(actor, outer)
     if (joint['run_id'] != config['run_id'] or state['round'] != expected_round(outer - 1)
             or actor['grounding_probe_version'] != state['version']
@@ -265,7 +278,7 @@ def recovery_state(source, config, joint):
         if (result['run_id'] != config['run_id'] or result['outer'] != due
                 or result['required_before_outer'] != due + 1):
             raise ValueError('Recovered grounding transition belongs to another milestone')
-        value = checked_state(config, result['grounding'])
+        value = checked_state(config, result['grounding'], _historical_world=4 if joint['actor'].get('imported_4to8_cp50') else None)
     elif fitted.is_file():
         # A real completed fit may not have reached all-four adoption before
         # interruption. Restart replicas with that actual fit, then adopt it;

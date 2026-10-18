@@ -92,6 +92,9 @@ def related(path, references):
 
 def actual_actor_boundary(actor, outer):
     """Validate a complete20-opportunity receipt using real retained Adam writes."""
+    if actor.get('imported_4to8_cp50'):
+        from .diverse_resume import imported_actor_boundary
+        return imported_actor_boundary(actor,outer)
     from .actor import valid_actual_steps
     try:
         actual = actor['actual_adam_steps_per_rank']
