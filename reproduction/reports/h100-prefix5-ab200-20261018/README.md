@@ -309,3 +309,8 @@ The old observer must exit before replacement because of the shared local
 singleton lock. Stopping that local reader does not stop a trainer. Preserve
 its cumulative facts before starting a new reader. These are observation
 controls, never a deployment into frozen runtime2e397623.
+
+
+## Period30 paired results
+
+See [period30-paired-results.md](period30-paired-results.md) and [small metrics](period30-paired-small-metrics.json). Both complete30, actual31 uses frozen A0/B EMA420. EMA diagnostic BA improves while ordinary accuracy and mixed loss worsen. Runtime2e397623 unchanged.
