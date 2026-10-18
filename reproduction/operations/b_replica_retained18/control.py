@@ -1,5 +1,5 @@
 """Local orchestration through the already successful pinned controller only."""
-import argparse,base64,gzip,hashlib,json,pathlib,subprocess,sys,time
+import argparse,base64,gzip,hashlib,io,json,pathlib,subprocess,sys,tarfile,time
 REPO=pathlib.Path(__file__).resolve().parents[3]
 sys.path.insert(0,'/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016')
 from reproduction.h1008_qprobe.management_transport import remote
@@ -21,7 +21,14 @@ def main():
  s=COMMON.replace('PHYSICAL',repr(PHYSICAL)).replace('CANONICAL',repr(CANONICAL))
  if args.phase=='prepare':
   commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
-  archive=gzip.compress(subprocess.check_output(['git','archive','HEAD'],cwd=REPO),compresslevel=6)
+  tracked=subprocess.check_output(['git','ls-files','-z'],cwd=REPO).decode().strip('\0').split('\0')
+  manifest=[dict(path=f,sha256=hashlib.sha256((REPO/f).read_bytes()).hexdigest())for f in tracked]
+  buffer=io.BytesIO()
+  with tarfile.open(fileobj=buffer,mode='w')as tar:
+   for f in tracked:
+    if f.startswith('reproduction/operations/b_replica_retained18/'):tar.add(REPO/f,arcname=f,recursive=False)
+  archive=gzip.compress(buffer.getvalue(),compresslevel=6)
+  packed_manifest=base64.b64encode(gzip.compress(json.dumps(manifest).encode())).decode()
   s+='''\nimport io,tarfile,base64,gzip
 assert not p.exists(),'Existing deployment must be reconciled, never overwritten'
 p.mkdir();(p/'repo').mkdir();(p/'preparation').mkdir();(p/'logs').mkdir()
@@ -31,6 +38,15 @@ with tarfile.open(fileobj=io.BytesIO(raw))as tar:
   assert not f.name.startswith('/') and '..'not in pathlib.Path(f.name).parts
   assert f.isdir()or f.isfile(),f.name
  tar.extractall(p/'repo')
+source=pathlib.Path(SOURCE).parents[1]/'repo'
+for row in json.loads(gzip.decompress(base64.b64decode(MANIFEST))):
+ relative=pathlib.Path(row['path']);assert not relative.is_absolute()and '..'not in relative.parts
+ target=p/'repo'/relative
+ if not target.exists():
+  original=source/relative;assert original.is_file()and not original.is_symlink(),str(original)
+  data=original.read_bytes();assert hashlib.sha256(data).hexdigest()==row['sha256'],str(relative)
+  target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
+ assert hashlib.sha256(target.read_bytes()).hexdigest()==row['sha256'],str(relative)
 sys.path.insert(0,str(p/'repo'))
 from reproduction.operations.b_replica_retained18.deploy import prepare
 c=prepare(str(p),canonical,SOURCE,COMMIT)
@@ -38,7 +54,7 @@ files=[dict(path=str(f.relative_to(p/'repo')),sha256=hashlib.sha256(f.read_bytes
 (p/'preparation/source-full-sha.json').write_text(json.dumps(dict(commit=COMMIT,files=files)))
 check=inside("import sys,json;sys.path.insert(0,"+repr(canonical+'/repo')+");from reproduction.prefix_selection200.launch import config; c=config("+repr(canonical)+");print(json.dumps(dict(run_id=c['run_id'],mode=c['selection_probe_experiment'],base=c['base'],source_commit=c['source_commit'])))")
 print(json.dumps(dict(config=c,source_files=len(files),validation=check)))
-'''.replace('ARCHIVE',repr(base64.b64encode(archive).decode())).replace('SOURCE',repr(SOURCE)).replace('COMMIT',repr(commit))
+'''.replace('ARCHIVE',repr(base64.b64encode(archive).decode())).replace('MANIFEST',repr(packed_manifest)).replace('SOURCE',repr(SOURCE)).replace('COMMIT',repr(commit))
  elif args.phase=='submit':
   s+='''\ncode="import sys,json;sys.path.insert(0,"+repr(canonical+'/repo')+");from reproduction.prefix_selection200.launch import submit;print(json.dumps(submit("+repr(canonical)+")))"
 print(json.dumps(inside(code)))
