@@ -1,0 +1,392 @@
+{
+  "schema_version": 1,
+  "goal_status": "ACTIVE_TO200_FINAL_ACCEPTANCE_PENDING",
+  "checked_unix": 1792320061.9140348,
+  "checked_shanghai": "2026-10-18T18:41:01.914035+08:00",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "40389d9b00204a80ba68475fac254f9c",
+  "runtime_source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+  "metadata_operator_commit": "0a49454027d188a84b28509fb49322febb918d97",
+  "receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-grpo-observe-1792320061873177000.json",
+  "receipt_sha256": "b77de3d26de3ed689342fdad05767e9e6e79b9b73275c106edeb742963cabe60",
+  "workers": {
+    "prepare-actor": null,
+    "prepare-seed": null,
+    "prepare-recover": null,
+    "prepare-restart": null,
+    "pipeline": {
+      "pid": 3889886,
+      "start_ticks": 639247028,
+      "sid": 3889886,
+      "uid": 0,
+      "state": "S"
+    }
+  },
+  "latest_saved_joint": {
+    "outer": 56,
+    "actor_Adam": [
+      1120,
+      1120,
+      1120,
+      1120
+    ],
+    "scheduler": 56,
+    "probe": {
+      "actual_adam_steps_per_rank": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "binding_sha256": "c966ac43e2760c0246b1b672b98407cacbeaadd0b96806d533ff91fc1bf4070a",
+      "bytes": 310715406,
+      "completed_outer": 50,
+      "learning_rate": 5e-06,
+      "observed_utc": "2026-10-18T08:09:27.898714+00:00",
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "sha256": "560ed0bf0429e1b1c7539106f55f6096b824c3de9fcfbddd4c4fc1490657869e"
+    },
+    "rollout_mixed": 0.310546875,
+    "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+    "actor50_branch_plan": {
+      "actor_questions": 512,
+      "actual_em_rerank": false,
+      "candidate_questions": 2560,
+      "continuation_questions": 512,
+      "fallback": "probe_score_fill",
+      "mixed_floor": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "outer": 56,
+      "predicted_top_questions": 512,
+      "prefix_tokens": 20,
+      "probe_actual_updates": 0,
+      "probe_training_questions": 0,
+      "probe_update": false
+    },
+    "metadata_sha256": "73a3dee544fb11c9f3e6dccf179c917b7993539c5c86d4c25ffd55e1924cc4ad",
+    "new_actor_Adam": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "processed_opportunities": 20,
+    "skipped_opportunities": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mixed_floor": {
+      "candidate_questions": 2560,
+      "completed_candidate_questions": 512,
+      "exhausted": false,
+      "extra_native_batches": 0,
+      "final_fraction": 0.310546875,
+      "final_mixed": 159,
+      "initial_fraction": 0.310546875,
+      "initial_mixed": 159,
+      "initial_scope_questions": 512,
+      "native_prefix_or_score_regenerated": false,
+      "policy": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "remaining_uncontinued_questions": 2048,
+      "replacements": [],
+      "shortfall": 0,
+      "target_mixed": 154,
+      "target_reached": true,
+      "triggered": false
+    }
+  },
+  "completed_new_outers_from50": 6,
+  "new_saved_actor_updates_counted_once": 120,
+  "window_from_saved55": {
+    "new_saved_outers": 1,
+    "new_saved_actor_updates": 20,
+    "latest_saved20_returned_Adam": true,
+    "latest_saved0skip": true
+  },
+  "current_outer57": {
+    "status": "20_RETURNED_ADAM_PER_RANK_BUT_JOINT_NOT_YET_SEALED_IN_THIS_OBSERVATION",
+    "stage": {
+      "checked_unix": 1792319350.4435885,
+      "outer": 57,
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "stage": "outer-000057-actor-70b63e7e2fa242cdb17e704702fe2814"
+    },
+    "actor_inflight": [
+      {
+        "rank": 0,
+        "restore": {
+          "restored_completed_outer": 56,
+          "actual_adam_before": 1120,
+          "restored_scheduler": 56,
+          "actual_learning_rates": [
+            9.82456140350877e-07
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 20,
+        "latest_actual_Adam": 1140
+      },
+      {
+        "rank": 1,
+        "restore": {
+          "restored_completed_outer": 56,
+          "actual_adam_before": 1120,
+          "restored_scheduler": 56,
+          "actual_learning_rates": [
+            9.82456140350877e-07
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 20,
+        "latest_actual_Adam": 1140
+      },
+      {
+        "rank": 2,
+        "restore": {
+          "restored_completed_outer": 56,
+          "actual_adam_before": 1120,
+          "restored_scheduler": 56,
+          "actual_learning_rates": [
+            9.82456140350877e-07
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 20,
+        "latest_actual_Adam": 1140
+      },
+      {
+        "rank": 3,
+        "restore": {
+          "restored_completed_outer": 56,
+          "actual_adam_before": 1120,
+          "restored_scheduler": 56,
+          "actual_learning_rates": [
+            9.82456140350877e-07
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 20,
+        "latest_actual_Adam": 1140
+      }
+    ],
+    "mixed_floor": {
+      "actor_selection_sha256": "3a5aa34d29187371d3c781a8748cbd046122064a38ef07c4f88dbfd922480ae6",
+      "candidate_questions": 2560,
+      "completed_candidate_questions": 512,
+      "exhausted": false,
+      "extra_native_batches": 0,
+      "final_fraction": 0.30859375,
+      "final_mixed": 158,
+      "full_pool_complete_sha256": "b42890f7710bce10323d6f726ce1603a07420f3f3c61669f3d100092f4260e13",
+      "initial_fraction": 0.30859375,
+      "initial_mixed": 158,
+      "initial_scope_questions": 512,
+      "native_prefix_or_score_regenerated": false,
+      "policy": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "predicted_selection_sha256": "0ec1290cd674feacad6fe37e42b2d141c246fb82f4049488f580cca72711ccc0",
+      "remaining_uncontinued_questions": 2048,
+      "replacements": [],
+      "shortfall": 0,
+      "target_mixed": 154,
+      "target_reached": true,
+      "triggered": false
+    },
+    "advantage_summary": {
+      "actual_group_counts": {
+        "all_correct": 203,
+        "all_wrong": 151,
+        "mixed": 158,
+        "original_g5": 0
+      },
+      "actual_groups": 512,
+      "actual_trajectories": 2560,
+      "epsilon": 1e-06,
+      "mode": "zero_anchor_all_correct_only",
+      "per_type_statistics": {
+        "all_correct": {
+          "advantage_mean": {
+            "max": 0.40824776887893677,
+            "mean": 0.40643712922270075,
+            "min": 0.3592938184738159
+          },
+          "normalization_mean": {
+            "max": 1.3332887887954712,
+            "mean": 1.0797923183793505,
+            "min": 0.8166922926902771
+          },
+          "normalization_sample_std": {
+            "max": 0.6531754732131958,
+            "mean": 0.5314072841787573,
+            "min": 0.4000958502292633
+          },
+          "raw_reward_mean": {
+            "max": 1.5999466180801392,
+            "mean": 1.295750784462896,
+            "min": 0.9800307154655457
+          },
+          "raw_reward_sample_std": {
+            "max": 0.2963099777698517,
+            "mean": 0.027466447176242848,
+            "min": 4.339283634635649e-07
+          }
+        },
+        "all_wrong": {
+          "advantage_mean": {
+            "max": 0.0,
+            "mean": 0.0,
+            "min": 0.0
+          },
+          "normalization_mean": {
+            "max": 0.05000000074505806,
+            "mean": 0.05000000074505806,
+            "min": 0.05000000074505806
+          },
+          "normalization_sample_std": {
+            "max": 0.0,
+            "mean": 0.0,
+            "min": 0.0
+          },
+          "raw_reward_mean": {
+            "max": 0.05000000074505806,
+            "mean": 0.05000000074505806,
+            "min": 0.05000000074505806
+          },
+          "raw_reward_sample_std": {
+            "max": 0.0,
+            "mean": 0.0,
+            "min": 0.0
+          }
+        },
+        "mixed": {
+          "advantage_mean": {
+            "max": 2.086162567138672e-07,
+            "mean": 2.0432510218229735e-08,
+            "min": -2.6226044269606064e-07
+          },
+          "normalization_mean": {
+            "max": 1.2897982597351074,
+            "mean": 0.7400262049293216,
+            "min": 0.23738670349121094
+          },
+          "normalization_sample_std": {
+            "max": 0.8481160402297974,
+            "mean": 0.6587385791766492,
+            "min": 0.4163988530635834
+          },
+          "raw_reward_mean": {
+            "max": 1.2897982597351074,
+            "mean": 0.7400262049293216,
+            "min": 0.23738670349121094
+          },
+          "raw_reward_sample_std": {
+            "max": 0.8481160402297974,
+            "mean": 0.6587385791766492,
+            "min": 0.4163988530635834
+          }
+        }
+      },
+      "raw_rewards_modified": false,
+      "standard_deviation_correction": 1,
+      "synthetic_actor_trajectories": 0,
+      "virtual_zero_statistics_groups": 203
+    },
+    "existing_grounding_logs": [
+      {
+        "rank": 0,
+        "name": "grounding-000050-rank-0.log",
+        "bytes": 10289,
+        "mtime_ns": 1792319823900645817,
+        "counts_scope": "entire_existing_log",
+        "existing_HTTP200": 140,
+        "other_HTTP": 0
+      },
+      {
+        "rank": 1,
+        "name": "grounding-000050-rank-1.log",
+        "bytes": 10289,
+        "mtime_ns": 1792319824300650806,
+        "counts_scope": "entire_existing_log",
+        "existing_HTTP200": 140,
+        "other_HTTP": 0
+      },
+      {
+        "rank": 2,
+        "name": "grounding-000050-rank-2.log",
+        "bytes": 10289,
+        "mtime_ns": 1792319824300650806,
+        "counts_scope": "entire_existing_log",
+        "existing_HTTP200": 140,
+        "other_HTTP": 0
+      },
+      {
+        "rank": 3,
+        "name": "grounding-000050-rank-3.log",
+        "bytes": 10289,
+        "mtime_ns": 1792319823940646315,
+        "counts_scope": "entire_existing_log",
+        "existing_HTTP200": 140,
+        "other_HTTP": 0
+      }
+    ]
+  },
+  "online_probe": {
+    "actual_adam_steps_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "binding_sha256": "c966ac43e2760c0246b1b672b98407cacbeaadd0b96806d533ff91fc1bf4070a",
+    "bytes": 310715406,
+    "completed_outer": 50,
+    "learning_rate": 5e-06,
+    "observed_utc": "2026-10-18T08:09:27.898714+00:00",
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+    "sha256": "560ed0bf0429e1b1c7539106f55f6096b824c3de9fcfbddd4c4fc1490657869e"
+  },
+  "probe_diagnostics": null,
+  "probe_note": "Natural first update60 remains pending; no new classifier BA or QA EM may be inferred from selected Mixed.",
+  "latest_milestone_QA": null,
+  "failure": null,
+  "exit": null,
+  "cleanup": null,
+  "pipeline_complete": null,
+  "normal_metadata_period_seconds": 1800,
+  "next_normal_read_not_before_unix": 1792321861.9140348,
+  "observations_this_normal_window": 1,
+  "live_runtime_modified": false,
+  "App_monitor": "PAUSED",
+  "remaining_acceptance": [
+    "natural60..190 probe50-Adam updates",
+    "inclusive100 Prefix40 and saved-actor grounding refit/adopt",
+    "inclusive150 predictedTop1024 actualEM selection and saved-actor grounding refit/adopt",
+    "effective chain to200 and full saved joint",
+    "final51713 ordered IDs strict EM/F1 seven-source counts and canonical SHA/finite qualification",
+    "only-owned cleanup after source publication"
+  ]
+}
