@@ -144,13 +144,55 @@ else:
   keys=('run_id','actor_version','evaluation_contract','interaction_protocol','actual_compute_dtype','qa_count',
    'question_source_sha256','em','f1','per_source','completed_utc','actual_worker_exit_codes')
   return None if item is None else {k:item[k] for k in keys if k in item}
+ def audit_json(path):
+  # Read only bounded existing metadata, never the checkpoint/head files it names.
+  path=pathlib.Path(path);assert path.is_relative_to(b) and path.resolve()==path and not path.is_symlink()
+  if not path.is_file():return None,dict(metadata_status='NOT_YET_RECORDED')
+  size=path.stat().st_size
+  if size>256*1024:return None,dict(metadata_status='ABOVE_256KIB_READ_BUDGET',bytes=size)
+  raw=path.read_bytes();assert len(raw)<=256*1024
+  return json.loads(raw),dict(metadata_status='PRESENT',metadata_sha256=hashlib.sha256(raw).hexdigest(),bytes=len(raw))
+ def grounding_summary(item):
+  keys=('run_id','round','version','source_actor_version','encoder','encoder_sha256','head_sha256',
+   'manifest_sha256','adoption_receipt_sha256','freshly_fitted_in_this_run','imported_actual_round0_fit',
+   'source_actor_counters')
+  return None if item is None else {k:item[k] for k in keys if k in item}
+ transition,transition_meta=audit_json(b/'probe/prefix40-transition.json')
+ value_transition=dict(transition_meta)
+ if transition is not None:
+  keys=('kind','source_sha256','source_completed_outer','actual_adam_steps_per_rank',
+   'original_model_and_moments_bit_preserved','new20_head_columns_and_moments_zero',
+   'optimizer_reset','rank_RNG_preserved','checked_unix')
+  value_transition['receipt']={k:transition[k] for k in keys if k in transition}
+  value_transition['checkpoint']={k:v for k,v in transition.get('checkpoint',{}).items() if k in
+   ('sha256','bytes','completed_outer','actual_adam_steps_per_rank','binding_sha256','learning_rate')}
+ grounding_latest,grounding_latest_meta=audit_json(b/'grounding/latest.json')
+ grounding_lifecycle=dict(latest=dict(grounding_latest_meta,state=grounding_summary(grounding_latest)),milestones=[])
+ if grounding_latest is not None and grounding_latest.get('adoption_receipt'):
+  adopted,adopted_meta=audit_json(grounding_latest['adoption_receipt'])
+  grounding_lifecycle['latest_adoption']=dict(adopted_meta)
+  if adopted is not None:
+   grounding_lifecycle['latest_adoption'].update(
+    receipt_sha256_matches=adopted_meta['metadata_sha256']==grounding_latest.get('adoption_receipt_sha256'),
+    run_id=adopted.get('run_id'),round=adopted.get('round'),version=adopted.get('version'),
+    manifest_sha256=adopted.get('manifest_sha256'),adopted_unix=adopted.get('adopted_unix'),
+    replicas=[{k:row[k] for k in ('rank','ok','round','version','encoder','owned_service','pid') if k in row}
+     for row in adopted.get('replicas',[])])
+ for milestone in (100,150):
+  fitted,fit_meta=audit_json(b/'grounding/rounds'/('round-%06d'%milestone)/'fit-complete.json')
+  refreshed,refresh_meta=audit_json(b/'outers'/('outer-%06d'%milestone)/'grounding-refresh.json')
+  grounding_lifecycle['milestones'].append(dict(outer=milestone,fit=dict(fit_meta,state=grounding_summary(fitted)),
+   refresh=dict(refresh_meta,run_id=None if refreshed is None else refreshed.get('run_id'),
+    outer=None if refreshed is None else refreshed.get('outer'),
+    required_before_outer=None if refreshed is None else refreshed.get('required_before_outer'),
+    state=None if refreshed is None else grounding_summary(refreshed.get('grounding')))))
  value=dict(run_id=h['run_id'],execution_id=h['execution_id'],source_commit=h['source_commit'],checked_unix=time.time(),
   prepare_progress=small(b/'preparation/prepare-progress.json'),prepare_actor_exit=small(b/'preparation/prepare-actor-exit.json'),
   prepare_seed_exit=small(b/'preparation/prepare-seed-exit.json'),stage=small(b/'logs/pipeline-status.json'),
   prepare_recover_exit=small(b/'preparation/prepare-recover-exit.json'),
   prepare_restart_exit=small(b/'preparation/prepare-restart-exit.json'),
   probe=small(b/'probe/latest.json'),failure=small(b/'logs/failure.json'),exit=small(b/'logs/exit.json'),
-  cleanup=small(b/'logs/cleanup-status.json'))
+  cleanup=small(b/'logs/cleanup-status.json'),prefix40_transition=value_transition,grounding_lifecycle=grounding_lifecycle)
  completed=small(b/'logs/pipeline-complete.json')
  value['complete']=None if completed is None else dict(run_id=completed['run_id'],complete_outers=completed['complete_outers'],
   final_evaluation=qa_summary(completed['final_evaluation']))
@@ -187,7 +229,9 @@ else:
    source_commit=joint['source_commit'],actor50_branch_plan=joint.get('actor50_branch_plan'),
    metadata_sha256=hashlib.sha256(joint_raw).hexdigest(),new_actor_Adam=a.get('new_adam_steps_per_rank'),
    processed_opportunities=a.get('opportunities_processed'),skipped_opportunities=a.get('skipped_update_opportunities'),
-   mixed_floor=joint['rollout'].get('mixed_floor'))
+   mixed_floor=joint['rollout'].get('mixed_floor'),actor_version=a.get('actor_version'),
+   grounding=grounding_summary(joint.get('grounding')),actor_grounding=grounding_summary(a.get('grounding_state')),
+   grounding_snapshot_sha256=joint.get('grounding_snapshot_sha256'))
  value['recent_complete_metadata']=[]
  if joint:
   for ordinal in range(max(51,joint['outer']-4),joint['outer']+1):
