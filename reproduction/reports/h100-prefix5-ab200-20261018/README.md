@@ -333,3 +333,34 @@ python3 -m reproduction.operations.h100_reference_replica.build_ab_progress_repo
 Missing values remain pending. QA records retain their original evidence;
 classification metrics are never substituted for QA. The generated report is
 partial progress, not final200/QA/state/resource acceptance.
+
+
+## Normal savepoint CPU control (50/100/150/200)
+
+`reproduction.operations.h100_reference_replica.normal_checkpoint_control` invokes
+the already-deployed frozen `ab_checkpoint_once`; it does not replace trainer code,
+stop training, load models on GPU, or expand the existing normal acceptance scope.
+It uses current assigned-arm bindings and the qualified h100-11 private wrapper.
+After any future placement/wrapper handoff, reconcile that binding before reuse.
+
+```sh
+# Read small current receipts/proofs first; safe read-only transport fallback.
+python3 -m reproduction.operations.h100_reference_replica.normal_checkpoint_control \
+  status --outer 50 --transport retained18_fallback_lan5
+# Only after actual immutable50 exists and no consumed intent/receipt is unresolved.
+python3 -m reproduction.operations.h100_reference_replica.normal_checkpoint_control \
+  start --outer 50 --transport retained18
+```
+
+Start never automatically retries transport. An uncertain SSH outcome requires
+status reconciliation on the same outer/arm. Existing proof, control/worker intent,
+or receipt never launches another reader, including a stale PID. Missing complete
+joint returns pending without consuming an intent. CPU workers use empty CUDA,
+two CPU math threads and separate proof/log/intent/receipt paths for each arm and
+outer. Status reads bounded logs and complete small proofs with their SHA only.
+Only a genuine completed frozen-worker proof establishes CPU/full-file acceptance;
+process liveness or controller launch does not. Existing completed5 is excluded.
+
+Local control fixtures verified missing joint, consumed intent, stale receipt,
+existing proof and rejected start auto-retry without launching a worker or making
+any remote call. No normal50/100/150/200 audit has been executed by this preparation.
