@@ -172,6 +172,9 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
         complete['source_lineage']=dict(actor50_joint_sha256=c['source_joint50_sha256'],
             source_warmup_sha256=c['probe_source_sha256'],source_warmup_epoch=c['probe_source_epoch'],
             inherited_actor_outers=50,online_probe_Adam_base_outer=50)
+        if c.get('recovery_sampling') and outer==51:
+            complete['source_lineage']['zero_write51_sampling_recovery']=dict(c['recovery_sampling'],
+                import_receipt_sha256=sha(base/'preparation/recovery-import.json'))
     if c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1':
         from .i1_i6_joint_resume import verify_source_compatibility, source_envelope
         complete.update(source_envelope(c, verify_source_compatibility(c)))
