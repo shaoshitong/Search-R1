@@ -33,6 +33,7 @@ assert not same(old_receipt['leader']) and not live,'Own four-card predecessor s
 cleanup=read(old/'logs/cleanup-status.json');assert cleanup and cleanup['cleaned']
 if ACTION=='sync' and read(p/'preparation/launch-config.json')['source_commit']!=COMMIT:
  current=read(p/'preparation/launch-config.json')
+ assert current['source_commit']==DELTA_SOURCE,'Prepared source changed; reconcile the exact delta base'
  assert current['preparation_only'] and current['training_authorized'] is False and current['experiment_assignment_pending']
  assert not(p/'preparation/submit-intent.json').exists()and not(p/'actor').exists()and not(p/'probe').exists()
  backup=p/'preparation'/('before-unstarted-code-sync-'+COMMIT);backup.mkdir()
@@ -115,7 +116,7 @@ receipt=dict(status='EIGHT_GPU_ENVIRONMENT_PREPARED_NOT_STARTED',checked_unix=ti
  training_started=False,submit_intent_exists=False,checkpoint_imported=False,
  model_or_environment_installed=False,large_assets_transferred=False,new_gpu_allocation=False,
  source_code_mutable_hardlinks=False)
-(p/'preparation/environment-inspection-'+str(time.time_ns())+'.json').write_text(json.dumps(receipt))
+(p/'preparation'/('environment-inspection-'+str(time.time_ns())+'.json')).write_text(json.dumps(receipt))
 print(json.dumps(dict(receipt=receipt,config=read(p/'preparation/launch-config.json'))))
 '''
 
@@ -123,6 +124,7 @@ print(json.dumps(dict(receipt=receipt,config=read(p/'preparation/launch-config.j
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action',choices=('stage','sync','inspect'))
+    parser.add_argument('--from-commit',default=BASELINE,help='Exact existing remote source for a code-only sync')
     args=parser.parse_args()
     auth=json.loads((OUT/'HUMAN_PREPARE_ONLY_8GPU.json').read_text())
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
@@ -133,7 +135,7 @@ def main():
         published=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/search-g1-b-replica-20261018'],cwd=REPO,text=True).split()[0]
         if published!=commit:raise ValueError('Latest source not pushed')
         tracked=subprocess.check_output(['git','ls-files','-z'],cwd=REPO).decode().rstrip('\0').split('\0')
-        changed=set(subprocess.check_output(['git','diff','--name-only',BASELINE,commit],cwd=REPO,text=True).splitlines())
+        changed=set(subprocess.check_output(['git','diff','--name-only',args.from_commit,commit],cwd=REPO,text=True).splitlines())
         files=[dict(path=name,sha256=hashlib.sha256((REPO/name).read_bytes()).hexdigest())for name in tracked]
         buf=io.BytesIO()
         with tarfile.open(fileobj=buf,mode='w')as tf:
@@ -141,7 +143,7 @@ def main():
                 if name in changed:tf.add(REPO/name,arcname=name,recursive=False)
         archive=gzip.compress(buf.getvalue(),compresslevel=6)
     script=REMOTE
-    values=dict(PHYSICAL=PHYSICAL,CANONICAL=CANONICAL,STOPPED=STOPPED,ACTION=args.action,COMMIT=commit,
+    values=dict(PHYSICAL=PHYSICAL,CANONICAL=CANONICAL,STOPPED=STOPPED,ACTION=args.action,COMMIT=commit,DELTA_SOURCE=args.from_commit,
         REFERENCE=REFERENCE,AUTH=auth,ARCHIVE=base64.b64encode(archive).decode(),
         MANIFEST=base64.b64encode(gzip.compress(json.dumps(files).encode())).decode())
     script='\n'.join(name+'='+repr(value)for name,value in values.items())+'\n'+script
