@@ -11,6 +11,11 @@ def main():
     path=ROOT/'preparation/qprobe-teacher-warmup-a800-progress-handoff.json';h=json.loads(path.read_text())
     key='current_a800_actor50_grpo_prefix2040';assert h['current_authoritative']['active_experiment_key']==key
     c=h['current_authoritative'][key];workdir=Path(__file__).resolve().parents[2]
+    now=time.time();gate=c.get('next_normal_read_not_before_unix',0)
+    if c.get('active_launch_owner') or now<gate:
+        print(json.dumps(dict(observation='LOCAL_ONLY_NO_SSH',active_launch_owner=c.get('active_launch_owner',False),
+            checked_unix=now,next_normal_read_not_before_unix=gate)))
+        return
     result=subprocess.run(['python3','-m','reproduction.actor50_grpo.control','--action','observe','--handle',c['handle']],
         cwd=workdir,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,timeout=75)
     if result.returncode:raise RuntimeError('Unknown observation; do not restart: '+result.stderr[-2000:])
@@ -20,6 +25,8 @@ def main():
         stage=d['stage'],workers=d['workers'],latest_failure=d['failure'],latest_exit=d['exit'],latest_cleanup=d['cleanup'],actor_inflight=d.get('actor_inflight'))
     c.update(mixed_floor=d.get('mixed_floor'),mixed_floor_progress=d.get('mixed_floor_progress'),
         prepare_restart_exit=d.get('prepare_restart_exit'),floor_native_progress=d.get('floor_native_progress'))
+    c.update(probe_diagnostics=d.get('probe_diagnostics'),latest_milestone_QA=d.get('latest_milestone_QA'),
+        normal_metadata_period_seconds=1800,next_normal_read_not_before_unix=d['checked_unix']+1800)
     j=d.get('joint')
     if j:
         assert len(set(j['actor_Adam']))==1 and j['scheduler']==j['outer']
@@ -41,6 +48,8 @@ def main():
     print(json.dumps(dict(receipt=wrapper['receipt'],at=d['checked_unix'],leader=d['workers']['pipeline'],
         stage=d['stage'],complete_outer=j['outer'] if j else None,actor_Adam=j['actor_Adam'] if j else None,
         probe=d['probe'],new_selected_Mixed=j['rollout_mixed'] if j and j['outer']>50 else None,
+        probe_diagnostics=d.get('probe_diagnostics'),latest_milestone_QA=d.get('latest_milestone_QA'),
+        next_normal_read_not_before_unix=c['next_normal_read_not_before_unix'],
         actor_inflight=d.get('actor_inflight'),grounding_existing_logs=d.get('grounding_existing_logs'),advantage_summary=d.get('advantage_summary'),
         mixed_floor=d.get('mixed_floor'),mixed_floor_progress=d.get('mixed_floor_progress'),prepare_restart_exit=d.get('prepare_restart_exit'),
         floor_native_progress=[None if x is None else x.get('completed_trajectories') for x in d.get('floor_native_progress',[])],

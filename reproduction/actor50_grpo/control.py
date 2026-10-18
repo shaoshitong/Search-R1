@@ -136,6 +136,14 @@ elif action=='submit':
  once(b/'preparation/submit-receipt.json',value)
 else:
  source();small=lambda f:read(f) if pathlib.Path(f).is_file() else None
+ def scalar_metrics(item):
+  keys=('count','mixed_count','nonmixed_count','accuracy','balanced_accuracy','tp','fp','fn','tn',
+   'mixed_recall','nonmixed_recall','threshold','formula','true_mixed','trajectory_bce','group_bce','total_loss','group_weight')
+  return None if item is None else {k:item[k] for k in keys if k in item}
+ def qa_summary(item):
+  keys=('run_id','actor_version','evaluation_contract','interaction_protocol','actual_compute_dtype','qa_count',
+   'question_source_sha256','em','f1','per_source','completed_utc','actual_worker_exit_codes')
+  return None if item is None else {k:item[k] for k in keys if k in item}
  value=dict(run_id=h['run_id'],execution_id=h['execution_id'],source_commit=h['source_commit'],checked_unix=time.time(),
   prepare_progress=small(b/'preparation/prepare-progress.json'),prepare_actor_exit=small(b/'preparation/prepare-actor-exit.json'),
   prepare_seed_exit=small(b/'preparation/prepare-seed-exit.json'),stage=small(b/'logs/pipeline-status.json'),
@@ -145,7 +153,28 @@ else:
   cleanup=small(b/'logs/cleanup-status.json'))
  completed=small(b/'logs/pipeline-complete.json')
  value['complete']=None if completed is None else dict(run_id=completed['run_id'],complete_outers=completed['complete_outers'],
-  final_evaluation={k:v for k,v in completed['final_evaluation'].items() if k in ('questions','strict_em','exact_match','em','f1','count','ordered_ids_sha256','question_ids_sha256')})
+  final_evaluation=qa_summary(completed['final_evaluation']))
+ probe_outer=(value['probe'] or {}).get('completed_outer',50)
+ value['probe_diagnostics']=None
+ if 50<probe_outer<200 and probe_outer%10==0:
+  directory=b/'outers'/('outer-%06d'%probe_outer)/'probe-update'
+  item=small(directory/'complete.json')
+  value['probe_diagnostics']=dict(outer=probe_outer,status='PENDING_EXISTING_COMPLETE_METADATA')
+  if item is not None:
+   assert item['run_id']==h['run_id'] and item['outer']==probe_outer
+   assert item['metrics_sha256']==sha(directory/'metrics.json')
+   value['probe_diagnostics']=dict(outer=probe_outer,status=item['status'],
+    actual_adam_steps_per_rank=item['actual_adam_steps_per_rank'],new_adam_steps_per_rank=item['new_adam_steps_per_rank'],
+    actual_learning_rate=item['actual_learning_rate'],actor_version=item['actor_version'],
+    before_update={split:scalar_metrics(item['before_update'].get(split)) for split in ('train','test')},
+    after_update={split:scalar_metrics(item.get(split)) for split in ('train','test')},
+    diagnostic_semantics=item.get('diagnostic_semantics'),
+    unselected_training_questions=item['unselected_training_questions'],
+    checkpoint={k:v for k,v in item['checkpoint'].items() if k in
+     ('sha256','bytes','completed_outer','actual_adam_steps_per_rank','binding_sha256','learning_rate')},
+    complete_metadata_sha256=sha(directory/'complete.json'),metrics_sha256=item['metrics_sha256'],
+    scored_features_manifest_sha256=item['scored_features_manifest_sha256'],own_em_sha256=item['own_em_sha256'],
+    selection_sha256=item['selection_sha256'],observed_utc=item.get('observed_utc'))
  value['workers']={}
  for name in ('prepare-actor','prepare-seed','prepare-recover','prepare-restart','pipeline'):
   item=small(b/'preparation'/(name+'-launch.json'));value['workers'][name]=same(item['leader']) if item else None
@@ -159,6 +188,15 @@ else:
    metadata_sha256=hashlib.sha256(joint_raw).hexdigest(),new_actor_Adam=a.get('new_adam_steps_per_rank'),
    processed_opportunities=a.get('opportunities_processed'),skipped_opportunities=a.get('skipped_update_opportunities'),
    mixed_floor=joint['rollout'].get('mixed_floor'))
+ value['latest_milestone_QA']=None
+ for milestone in (200,150,100):
+  if joint and joint['outer']>=milestone:
+   directory=b/'outers'/('outer-%06d'%milestone)/'validation';item=small(directory/'complete.json')
+   if item is not None:
+    assert item['run_id']==h['run_id']
+    value['latest_milestone_QA']=dict(outer=milestone,metrics=qa_summary(item),
+     complete_metadata_sha256=sha(directory/'complete.json'))
+    break
  outer=(value['stage'] or {}).get('outer')
  if outer:
   root=b/'outers'/('outer-%06d'%outer)
