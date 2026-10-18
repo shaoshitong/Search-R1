@@ -364,3 +364,14 @@ process liveness or controller launch does not. Existing completed5 is excluded.
 Local control fixtures verified missing joint, consumed intent, stale receipt,
 existing proof and rejected start auto-retry without launching a worker or making
 any remote call. No normal50/100/150/200 audit has been executed by this preparation.
+
+
+## Through35 complete comparison
+
+Both35 records are complete: [selection and fitting notes](through35-selection-and-fitting.md),
+[all-outer comparison](through35-comparison/comparison-progress.md), and
+[small metric/loss evidence](through35-comparison/comparison-progress.json).
+Recent31–35 B selected mixing exceeds A while the full ordinary6–35 mean remains
+lower; no QA-benefit or isolated EMA-causality claim. B35 raw fitting improves
+original selected-set BA; EMA Top512 remain all-positive at threshold0.5, which
+is a selected-subset result rather than proof of global collapse. Runtime unchanged.
