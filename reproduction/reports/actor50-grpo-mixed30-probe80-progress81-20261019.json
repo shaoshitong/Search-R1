@@ -1,0 +1,653 @@
+{
+  "schema_version": 1,
+  "goal_status": "ACTIVE_TO200_FINAL_ACCEPTANCE_PENDING",
+  "observed_unix": 1792347264.7294586,
+  "observed_shanghai": "2026-10-19T02:14:24.729459+08:00",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "40389d9b00204a80ba68475fac254f9c",
+  "runtime_source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+  "metadata_operator_commit": "47816f51cdcc91578721e55f5b3b6299f8ae10ae",
+  "live_runtime_modified": false,
+  "receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-grpo-observe-1792347264782669000.json",
+  "receipt_sha256": "34597b51144d296ba3113850be0a38506daac3b74bd79762d4e1425906db629a",
+  "pipeline_leader": {
+    "pid": 3889886,
+    "start_ticks": 639247028,
+    "sid": 3889886,
+    "uid": 0,
+    "state": "R"
+  },
+  "latest_saved": {
+    "outer": 81,
+    "scheduler": 81,
+    "actor_Adam_per_rank": [
+      1620,
+      1620,
+      1620,
+      1620
+    ],
+    "new_Adam_per_rank": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "processed_opportunities": 20,
+    "skipped_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "joint_metadata_sha256": "33484fa5364e5410c8474c4503de15eeefbcf1e9d46a00d56a60a95f987e7b51",
+    "probe": {
+      "actual_adam_steps_per_rank": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "binding_sha256": "c966ac43e2760c0246b1b672b98407cacbeaadd0b96806d533ff91fc1bf4070a",
+      "bytes": 932197340,
+      "completed_outer": 80,
+      "learning_rate": 5e-06,
+      "observed_utc": "2026-10-18T17:49:34.686706+00:00",
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "sha256": "76ea05db5206af58245fe5005f77775f9ac88c6d2642553a10a2fd6c54baa883"
+    },
+    "mixed_floor": {
+      "candidate_questions": 2560,
+      "completed_candidate_questions": 896,
+      "exhausted": false,
+      "extra_native_batches": 3,
+      "final_fraction": 0.30078125,
+      "final_mixed": 154,
+      "initial_fraction": 0.21875,
+      "initial_mixed": 112,
+      "initial_scope_questions": 512,
+      "native_prefix_or_score_regenerated": false,
+      "policy": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "remaining_uncontinued_questions": 1664,
+      "shortfall": 0,
+      "target_mixed": 154,
+      "target_reached": true,
+      "triggered": true,
+      "replacement_count": 42,
+      "replacement_metadata_sha256": "e7ddbd01568ec2f8b0fc8413d6d154bb0a01770c8820999dcdb4ea005bfc0dae"
+    }
+  },
+  "recent_complete_metadata": [
+    {
+      "outer": 77,
+      "metadata_status": "PRESENT",
+      "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+      "metadata_sha256": "f50ba31993ecf93b5d5b89d3ef5853cc8c0e289f8ef911f5f2d74256e296e676",
+      "actor_Adam": [
+        1540,
+        1540,
+        1540,
+        1540
+      ],
+      "scheduler": 77,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 70,
+      "probe_Adam": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 119,
+        "final_mixed": 154,
+        "initial_fraction": 0.232421875,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 2,
+        "completed_candidate_questions": 768,
+        "remaining_uncontinued_questions": 1792,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 35
+    },
+    {
+      "outer": 78,
+      "metadata_status": "PRESENT",
+      "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+      "metadata_sha256": "f1a47d7905b7028ebacfddc9f8e7d96392d97ff88841f7cb16d4ddc5b602956e",
+      "actor_Adam": [
+        1560,
+        1560,
+        1560,
+        1560
+      ],
+      "scheduler": 78,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 70,
+      "probe_Adam": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 118,
+        "final_mixed": 154,
+        "initial_fraction": 0.23046875,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 2,
+        "completed_candidate_questions": 768,
+        "remaining_uncontinued_questions": 1792,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 36
+    },
+    {
+      "outer": 79,
+      "metadata_status": "PRESENT",
+      "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+      "metadata_sha256": "2da8f31531e632c2ebfe201b9b466f2c70724cfdaaa332695b32ff3630532cb4",
+      "actor_Adam": [
+        1580,
+        1580,
+        1580,
+        1580
+      ],
+      "scheduler": 79,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 70,
+      "probe_Adam": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 112,
+        "final_mixed": 154,
+        "initial_fraction": 0.21875,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 2,
+        "completed_candidate_questions": 768,
+        "remaining_uncontinued_questions": 1792,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 42
+    },
+    {
+      "outer": 80,
+      "metadata_status": "PRESENT",
+      "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+      "metadata_sha256": "56743e9e68acb49e93d7e397e19ebc69ca2c4fcddaa098663622c439d02c9747",
+      "actor_Adam": [
+        1600,
+        1600,
+        1600,
+        1600
+      ],
+      "scheduler": 80,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 80,
+      "probe_Adam": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "rollout_mixed": 0.75390625,
+      "mixed_floor": {
+        "initial_mixed": 386,
+        "final_mixed": 386,
+        "initial_fraction": 0.75390625,
+        "final_fraction": 0.75390625,
+        "extra_native_batches": 0,
+        "completed_candidate_questions": 2560,
+        "remaining_uncontinued_questions": 0,
+        "triggered": false,
+        "shortfall": 0,
+        "exhausted": true,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 0
+    },
+    {
+      "outer": 81,
+      "metadata_status": "PRESENT",
+      "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+      "metadata_sha256": "33484fa5364e5410c8474c4503de15eeefbcf1e9d46a00d56a60a95f987e7b51",
+      "actor_Adam": [
+        1620,
+        1620,
+        1620,
+        1620
+      ],
+      "scheduler": 81,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 80,
+      "probe_Adam": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 112,
+        "final_mixed": 154,
+        "initial_fraction": 0.21875,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 3,
+        "completed_candidate_questions": 896,
+        "remaining_uncontinued_questions": 1664,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 42
+    }
+  ],
+  "overlapping_complete_metadata77through79_identical_to_prior_observation": true,
+  "progress_from50": {
+    "complete_new_outers": 31,
+    "saved_actual_actor_Adam_counted_once": 620,
+    "online_probe_Adam_counted_once": 150,
+    "replicas_are_not_summed": true
+  },
+  "progress_since_saved79": {
+    "complete_new_outers": 2,
+    "new_outers": [
+      80,
+      81
+    ],
+    "saved_actual_Adam_delta_counted_once": 40,
+    "overlap77through79_not_recounted": true
+  },
+  "natural_probe_update80": {
+    "outer": 80,
+    "status": "UNSELECTED2560G5_PERIODIC_PROBE_50_ADAM_COMPLETE",
+    "actual_adam_steps_per_rank": [
+      150,
+      150,
+      150,
+      150
+    ],
+    "new_adam_steps_per_rank": 50,
+    "actual_learning_rate": 5e-06,
+    "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0079",
+    "before_update": {
+      "train": {
+        "count": 2560,
+        "mixed_count": 386,
+        "nonmixed_count": 2174,
+        "accuracy": 0.621484375,
+        "balanced_accuracy": 0.6002914805687565,
+        "tp": 220,
+        "fp": 803,
+        "fn": 166,
+        "tn": 1371,
+        "mixed_recall": 0.5699481865284974,
+        "nonmixed_recall": 0.6306347746090156,
+        "threshold": 0.5,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "trajectory_bce": 0.5057858765794357,
+        "group_bce": 0.7811144422863828,
+        "total_loss": 1.2869003188658186,
+        "group_weight": 1.0
+      },
+      "test": {
+        "count": 512,
+        "mixed_count": 81,
+        "nonmixed_count": 431,
+        "accuracy": 0.41015625,
+        "balanced_accuracy": 0.5393715447853112,
+        "tp": 59,
+        "fp": 280,
+        "fn": 22,
+        "tn": 151,
+        "mixed_recall": 0.7283950617283951,
+        "nonmixed_recall": 0.3503480278422274,
+        "threshold": 0.5,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "trajectory_bce": 0.8113489923229598,
+        "group_bce": 1.1937331349994258,
+        "total_loss": 2.0050821273223853,
+        "group_weight": 1.0
+      }
+    },
+    "after_update": {
+      "train": {
+        "count": 2560,
+        "mixed_count": 386,
+        "nonmixed_count": 2174,
+        "accuracy": 0.70859375,
+        "balanced_accuracy": 0.6931279225514917,
+        "tp": 259,
+        "fp": 619,
+        "fn": 127,
+        "tn": 1555,
+        "mixed_recall": 0.6709844559585493,
+        "nonmixed_recall": 0.7152713891444342,
+        "threshold": 0.5,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "trajectory_bce": 0.46629189563831036,
+        "group_bce": 0.6118243356035402,
+        "total_loss": 1.0781162312418506,
+        "group_weight": 1.0
+      },
+      "test": {
+        "count": 512,
+        "mixed_count": 81,
+        "nonmixed_count": 431,
+        "accuracy": 0.431640625,
+        "balanced_accuracy": 0.5421070722694853,
+        "tp": 57,
+        "fp": 267,
+        "fn": 24,
+        "tn": 164,
+        "mixed_recall": 0.7037037037037037,
+        "nonmixed_recall": 0.3805104408352668,
+        "threshold": 0.5,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "trajectory_bce": 0.8317487426654386,
+        "group_bce": 1.1520656537001825,
+        "total_loss": 1.9838143963656212,
+        "group_weight": 1.0
+      }
+    },
+    "diagnostic_semantics": "same_head_pre_and_post_update_full2560G5_and_current_actor_fixed512G5",
+    "unselected_training_questions": 2560,
+    "checkpoint": {
+      "actual_adam_steps_per_rank": [
+        150,
+        150,
+        150,
+        150
+      ],
+      "binding_sha256": "c966ac43e2760c0246b1b672b98407cacbeaadd0b96806d533ff91fc1bf4070a",
+      "bytes": 932197340,
+      "completed_outer": 80,
+      "learning_rate": 5e-06,
+      "sha256": "76ea05db5206af58245fe5005f77775f9ac88c6d2642553a10a2fd6c54baa883"
+    },
+    "complete_metadata_sha256": "57a72c10c85a70b93e61ff16d1a3884c4937ef3b78abf2a6c3b172afbc458043",
+    "metrics_sha256": "d81a9ca9220516bb5f950f52a338a99507a77ea1fc670db64f9e9ac87a3eaba5",
+    "scored_features_manifest_sha256": "085dac11885a2e74f709a44e01a3e64c9e5184f5adc18954975af8d3e20fcddc",
+    "own_em_sha256": "fb78142717341f335d9d71c176fc9cddf0178ac057ae894fb2fbe8533bec7f8c",
+    "selection_sha256": "391efffef830860735d8601fa3d9dcfa97a0c66f915380b1b4241db764b54fcc",
+    "observed_utc": "2026-10-18T17:49:34.769747+00:00"
+  },
+  "previous_online_checkpoint_sha256": "0b53f58f073014d9fda031eabccfa97ccffaa03df07f2d678bd74fc4f08f962d",
+  "classification_changes_percentage_points": {
+    "train": {
+      "balanced_accuracy_percentage_points": 9.283644198273521,
+      "accuracy_percentage_points": 8.710937500000004,
+      "mixed_recall_percentage_points": 10.103626943005183,
+      "nonmixed_recall_percentage_points": 8.46366145354186
+    },
+    "test": {
+      "balanced_accuracy_percentage_points": 0.27355274841740496,
+      "accuracy_percentage_points": 2.1484375,
+      "mixed_recall_percentage_points": -2.4691358024691357,
+      "nonmixed_recall_percentage_points": 3.01624129930394
+    }
+  },
+  "classification_scalar_arithmetic_verified": true,
+  "paired_online_probe_history": [
+    {
+      "outer": 60,
+      "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0059",
+      "train_BA_before": 0.5895495495495495,
+      "train_BA_after": 0.6976131976131976,
+      "test_BA_before": 0.5395811395811396,
+      "test_BA_after": 0.5386568386568387,
+      "test_Mixed_count": 105,
+      "test_nonmixed_count": 407,
+      "metrics_sha256": "dcf9921b7d7795c0afdf4634a7bc7684d3c89b8cd9085ea6b7b0122ca11001d2"
+    },
+    {
+      "outer": 70,
+      "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0069",
+      "train_BA_before": 0.6085005715606288,
+      "train_BA_after": 0.6896642442400307,
+      "test_BA_before": 0.49665311977049964,
+      "test_BA_after": 0.5105453289770765,
+      "test_Mixed_count": 89,
+      "test_nonmixed_count": 423,
+      "metrics_sha256": "3f14a545793a37c568fd46e04054e5aa1f1e6e56a6cfb0dde80ea1fa1056a1f8"
+    },
+    {
+      "outer": 80,
+      "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0079",
+      "train_BA_before": 0.6002914805687565,
+      "train_BA_after": 0.6931279225514917,
+      "test_BA_before": 0.5393715447853112,
+      "test_BA_after": 0.5421070722694853,
+      "test_Mixed_count": 81,
+      "test_nonmixed_count": 431,
+      "metrics_sha256": "d81a9ca9220516bb5f950f52a338a99507a77ea1fc670db64f9e9ac87a3eaba5"
+    }
+  ],
+  "interpretation": "Within round80 same events: train Mixed BA60.02915to69.31279%(+9.28364pp), fixed512testBA53.93715to54.21071%(+0.27355pp). Prior pairedtest60=53.95811to53.86568%,70=49.66531to51.05453%; per-period testMixed counts105/89/81 differ because G5 labels regenerate with the current actor. Compare within-period pre/post; do not attribute cross-period changes solely to probe updates. These are classification metrics, not selected composition or QA EM.",
+  "trained_three_batch_refill81": {
+    "initial_Mixed": 112,
+    "final_Mixed": 154,
+    "extra_original_G5_questions": 384,
+    "extra_original_G5_trajectories": 1920,
+    "replacement_count": 42,
+    "actual_returned_Adam_per_rank": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "skips_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "status": "COMPLETE_FULL_JOINT_METADATA_VERIFIED"
+  },
+  "inflight82": {
+    "stage": {
+      "checked_unix": 1792347180.3549027,
+      "outer": 82,
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "stage": "outer-000082-actor-3d18c57335a445de9775ed90bc25873a"
+    },
+    "actor_returned_write_ledger": [
+      {
+        "rank": 0,
+        "restore": {
+          "restored_completed_outer": 81,
+          "actual_adam_before": 1620,
+          "restored_scheduler": 81,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 0,
+        "latest_actual_Adam": null
+      },
+      {
+        "rank": 1,
+        "restore": {
+          "restored_completed_outer": 81,
+          "actual_adam_before": 1620,
+          "restored_scheduler": 81,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 0,
+        "latest_actual_Adam": null
+      },
+      {
+        "rank": 2,
+        "restore": {
+          "restored_completed_outer": 81,
+          "actual_adam_before": 1620,
+          "restored_scheduler": 81,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 0,
+        "latest_actual_Adam": null
+      },
+      {
+        "rank": 3,
+        "restore": {
+          "restored_completed_outer": 81,
+          "actual_adam_before": 1620,
+          "restored_scheduler": 81,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_global_micro": 16
+        },
+        "returned_writes": 0,
+        "latest_actual_Adam": null
+      }
+    ],
+    "joint_complete": false,
+    "mixed_floor": {
+      "actor_selection_sha256": "dcca4cac287386101ca6b88399e059cc19e8f24d48f3cfed35fea0a81853d3de",
+      "candidate_questions": 2560,
+      "completed_candidate_questions": 768,
+      "exhausted": false,
+      "extra_native_batches": 2,
+      "final_fraction": 0.30078125,
+      "final_mixed": 154,
+      "full_pool_complete_sha256": "960180d2e9e691909f21871c3e7f437dfc7011a10c6eb7129d6b10b8c0605d13",
+      "initial_fraction": 0.208984375,
+      "initial_mixed": 107,
+      "initial_scope_questions": 512,
+      "native_prefix_or_score_regenerated": false,
+      "policy": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "predicted_selection_sha256": "f1c8094704d6324d49da38a5f353486af4d398e6b701d2907b7be93d7b4105f2",
+      "remaining_uncontinued_questions": 1792,
+      "shortfall": 0,
+      "target_mixed": 154,
+      "target_reached": true,
+      "triggered": true,
+      "replacement_count": 47,
+      "replacement_metadata_sha256": "615c13f2983766e55fb0287b05b6ecc767f363efd2d04651bbaad58aa84c1f27"
+    }
+  },
+  "latest_milestone_QA": null,
+  "failure": null,
+  "exit": null,
+  "cleanup": null,
+  "pipeline_complete": null,
+  "App_monitor": "PAUSED",
+  "observations_this_normal_window": 1,
+  "normal_read_period_seconds": 1800,
+  "next_normal_read_not_before_unix": 1792349064.7294586,
+  "remaining_scope": "Continue same driver through natural probe90..190, Prefix40 at100, Top1024 actualEM selection at150, saved-actor grounding refresh/adopt, complete200 and final51713 acceptance. Future milestones remain unverified."
+}
