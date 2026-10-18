@@ -349,7 +349,8 @@ def atomic_checkpoint(directory, saved, completed_outer):
     publish(directory / 'latest.json', receipt)
     from .periodic import is_probe_update
     if completed_outer == 0 or is_probe_update(completed_outer):
-        os.link(path, directory / ('head-outer-%04d.pt' % completed_outer))
+        suffix='-prefix40' if saved.get('dimension_transition') else ''
+        os.link(path, directory / ('head-outer-%04d%s.pt' % (completed_outer,suffix)))
     return receipt
 
 
@@ -507,7 +508,12 @@ def score(args):
         merged=[pair for rows in gathered for pair in rows]
         if len(merged)!=questions*G or len({tid for tid,_ in merged})!=questions*G:
             raise ValueError('Score every scheduled authentic native G5 exactly once')
-        selected,all_scores=stable_top512(groups,dict(merged))
+        from .contract import ACTOR50_BRANCH
+        if ACTOR50_BRANCH:
+            from reproduction.actor50_grpo.schedule import outer_plan
+            selected_count=outer_plan(args.outer)['predicted_top_questions']
+        else:selected_count=SELECTED_QUESTIONS
+        selected,all_scores=stable_top512(groups,dict(merged),k=selected_count)
         if rank==0:
             common=dict(schema_version=2,run_id=saved['run_id'],outer=args.outer,actor_version=actor_version,
                 prefix_scan_sha256=features.manifest_sha,probe_before_checkpoint_sha256=receipt['sha256'],
@@ -516,10 +522,10 @@ def score(args):
                 representation_source='same_sampling_actor_native_layer27_postblock',
                 **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions') if key in manifest})
             from .periodic import is_probe_update
-            selection=dict(common,selected=selected,selected_questions=SELECTED_QUESTIONS,
-                tie_break='original_candidate_ordinal_ascending',continuation_scope='top512',
-                provisional_for_actor=is_probe_update(args.outer),
-                selection_semantics='predicted_mixed_probability_top512_before_any_outcome')
+            selection=dict(common,selected=selected,selected_questions=selected_count,
+                tie_break='original_candidate_ordinal_ascending',continuation_scope='top%d'%selected_count,
+                provisional_for_actor=is_probe_update(args.outer) or selected_count==1024,
+                selection_semantics='predicted_mixed_probability_top%d_before_any_outcome'%selected_count)
             once(out/'selection.json',selection)
             from .periodic import is_probe_update
             if is_probe_update(args.outer):
@@ -529,7 +535,7 @@ def score(args):
                 for row in all_scores:f.write(canonical(row).decode()+'\n')
             once(out/'index.json',list(features.index.values()))
             result=dict(role='current_actor_native_hidden_features',run_id=saved['run_id'],outer=args.outer,
-                count=questions*G,selected_count=SELECTED_QUESTIONS*G,question_max_tokens=QMAX,head_max_tokens=WIDTH,
+                count=questions*G,selected_count=selected_count*G,question_max_tokens=QMAX,head_max_tokens=WIDTH,
                 actor_version=actor_version,prefix_scan_sha256=features.manifest_sha,
                 probe_before_checkpoint_sha256=receipt['sha256'],selection_sha256=sha(out/'selection.json'),
                 native_hidden_scan=str(features.path),native_hidden_shards=manifest['actor_hidden_shards'],
@@ -542,7 +548,7 @@ def score(args):
             once(out/'manifest.json',result)
             once(out/'complete.json',dict(status='PREFIX%dG5_STABLE_TOP512_SCORE_COMPLETE' % questions,outer=args.outer,
                 run_id=saved['run_id'],manifest_sha256=sha(out/'manifest.json'),
-                selection_sha256=sha(out/'selection.json'),selected_questions=512,selected_trajectories=2560,
+                selection_sha256=sha(out/'selection.json'),selected_questions=selected_count,selected_trajectories=selected_count*G,
                 candidate_questions=questions,
                 actor_version=actor_version,observed_utc=utc()))
         dist.barrier()

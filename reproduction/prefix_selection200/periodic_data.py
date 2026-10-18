@@ -147,7 +147,9 @@ def project_top512(config_path, outer, selection_path=None):
     source=read(root/'full-pool/complete.json')
     prefix=read(root/'prefix/complete.json')
     top_path=Path(selection_path or root/'probe-score/actual-em-selection.json');selection=read(top_path)
-    if selection.get('outcome_labels_used') is not True or selection.get('selection_scope') != 'actor_only_periodic_full_pool_actual_EM':
+    scopes={'actor_only_periodic_full_pool_actual_EM'}
+    if c.get('grpo_from_actor50') and outer>=150:scopes.add('actor_only_predicted_top1024_actual_EM')
+    if selection.get('outcome_labels_used') is not True or selection.get('selection_scope') not in scopes:
         raise ValueError('Periodic actor projection requires its separate actual-EM selection')
     groups=validate_selection(selection,prefix)
     wanted={tid for group in groups for tid in group['trajectory_ids']}
@@ -165,7 +167,8 @@ def project_top512(config_path, outer, selection_path=None):
                         'qid', 'strict_em', 'actor_version', 'prefix_sha256', 'prefix_scan_sha256', 'selection_sha256')):
                     raise ValueError('Projected native trajectory differs from the actual own-EM event used for selection')
                 rows[row['trajectory_id']]=row
-    if (set(rows)!=wanted or source['trajectories']!=candidates * G
+    completed_pool_questions=source['questions'] if c.get('grpo_from_actor50') else candidates
+    if (set(rows)!=wanted or source['trajectories']!=completed_pool_questions * G
             or source['actor_version']!=c['actor_version']
             or selection['full_pool_complete_sha256'] != digest(root/'full-pool/complete.json')
             or selection['original_pool_selection_sha256'] != source['selection_sha256']
@@ -215,7 +218,8 @@ def project_top512(config_path, outer, selection_path=None):
         projected_generation_requests=0,actual_selected_mixed_questions=sum(hist[k] for k in (1,2,3,4)),
         actual_selected_mixed_fraction=sum(hist[k] for k in (1,2,3,4))/512,
         selected_strict_correct=sum(label_by_id.values()),selected_correct_count_histogram=hist,
-        all_candidate_mixed_accuracy_available=True)
+        all_candidate_mixed_accuracy_available=completed_pool_questions==candidates,
+        completed_pool_questions=completed_pool_questions)
     immutable(out/'complete.json',value)
     return value
 

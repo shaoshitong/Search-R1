@@ -98,6 +98,10 @@ def question_count(config, phase, outer=None):
         if config.get('candidate_schedule') is not None:
             from .periodic import is_probe_update
             allowed = {SELECTED_QUESTIONS, PERIODIC_CANDIDATES} if is_probe_update(outer) else {SELECTED_QUESTIONS}
+        if config.get('grpo_from_actor50'):
+            from reproduction.actor50_grpo.schedule import outer_plan
+            plan=outer_plan(outer)
+            allowed={SELECTED_QUESTIONS} if config.get('diagnostic_only') else {plan['continuation_questions']}
     if type(requested) is not int or requested not in allowed:
         raise ValueError('Native question count differs from scheduled prefix/Top512/periodic-full-pool scope')
     return requested
@@ -687,7 +691,7 @@ def pack_prefix(config, outer, ranks):
     source_sha = hashlib.sha256(canonical([rank['prefix'] for rank in ranks])).hexdigest()
     qmax = max(r['initial_context']['request_length'] for r in rows)
     proof = dict(schema_version=3, role='prefix_selection200_score_safe_actual_token_scan',
-        representation='initial_request_and_retained_policy5_layer27_postblock_v1',
+        representation='initial_request_and_retained_policy%d_layer27_postblock_v1' % PREFIX_TOKENS,
         encoder_revision=REVISION, actor_hidden_native=bool(config.get('actor_hidden_native')),
         actor_hidden_shards=[r['actor_hidden'] for r in ranks] if config.get('actor_hidden_native') else None,
         hidden_feature_actor_version=config['actor_version'] if config.get('actor_hidden_native') else None,

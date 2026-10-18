@@ -57,6 +57,7 @@ def rank_actual_groups(groups):
     for original in groups:
         row=dict(original);k=row.get('actual_correct_count');ids=row.get('trajectory_ids',[])
         if (type(k) is not int or not 0<=k<=5 or len(ids)!=5 or len(set(ids))!=5
+                or type(row['candidate_ordinal']) is not int or not 0<=row['candidate_ordinal']<CANDIDATES
                 or row['candidate_ordinal'] in ordinals or row['qid'] in qids
                 or trajectories.intersection(ids)):
             raise ValueError('Require distinct, complete, strict-binary ownG5 outcomes')
