@@ -4,7 +4,7 @@ REPO=pathlib.Path(__file__).resolve().parents[3]
 sys.path.insert(0,'/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016')
 from reproduction.h1008_qprobe.management_transport import remote
 OUT=pathlib.Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/b-replica-retained18-20261018')
-PHYSICAL='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-own-20261018-cache1'
+PHYSICAL='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-own-20261018-cache1-kvcap1'
 CANONICAL='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'+PHYSICAL.rsplit('/',1)[1]
 SOURCE='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/launch-config.json'
 COMMON='''import pathlib,json,subprocess,time,os,sys,hashlib
@@ -16,10 +16,10 @@ def inside(code):
  return dict(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr)
 '''
 def main():
- a=argparse.ArgumentParser();a.add_argument('phase',choices=['prepare','repair_paths','repair_cache','submit','observe']);args=a.parse_args()
+ a=argparse.ArgumentParser();a.add_argument('phase',choices=['prepare','repair_paths','repair_cache','repair_kv','submit','observe']);args=a.parse_args()
  OUT.mkdir(exist_ok=True)
  s=COMMON.replace('PHYSICAL',repr(PHYSICAL)).replace('CANONICAL',repr(CANONICAL))
- if args.phase in ('prepare','repair_cache'):
+ if args.phase in ('prepare','repair_cache','repair_kv'):
   commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
   tracked=subprocess.check_output(['git','ls-files','-z'],cwd=REPO).decode().strip('\0').split('\0')
   manifest=[dict(path=f,sha256=hashlib.sha256((REPO/f).read_bytes()).hexdigest())for f in tracked]
@@ -30,6 +30,7 @@ def main():
   archive=gzip.compress(buffer.getvalue(),compresslevel=6)
   packed_manifest=base64.b64encode(gzip.compress(json.dumps(manifest).encode())).decode()
   source_config=SOURCE if args.phase=='prepare' else '/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-own-20261018/preparation/launch-config.json'
+  if args.phase=='repair_kv':source_config='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-own-20261018-cache1/preparation/launch-config.json'
   s+='''\nimport io,tarfile,base64,gzip
 assert not p.exists(),'Existing deployment must be reconciled, never overwritten'
 p.mkdir();(p/'repo').mkdir();(p/'preparation').mkdir();(p/'logs').mkdir()
@@ -56,8 +57,9 @@ files=[dict(path=str(f.relative_to(p/'repo')),sha256=hashlib.sha256(f.read_bytes
 check=inside("import sys,json;sys.path.insert(0,"+repr(canonical+'/repo')+");from reproduction.prefix_selection200.launch import config; c=config("+repr(canonical)+");print(json.dumps(dict(run_id=c['run_id'],mode=c['selection_probe_experiment'],base=c['base'],source_commit=c['source_commit'])))")
 print(json.dumps(dict(config=c,source_files=len(files),validation=check)))
 '''.replace('ARCHIVE',repr(base64.b64encode(archive).decode())).replace('MANIFEST',repr(packed_manifest)).replace('SOURCE',repr(source_config)).replace('COMMIT',repr(commit))
-  if args.phase=='repair_cache':
+  if args.phase in ('repair_cache','repair_kv'):
    s=s.replace('from reproduction.operations.b_replica_retained18.deploy import prepare\nc=prepare(str(p),canonical,'+repr(source_config)+','+repr(commit)+')', 'from reproduction.operations.b_replica_retained18.cache_retry import prepare\nprepare('+repr(str(pathlib.Path(source_config).parents[1]))+',str(p),canonical,'+repr(commit)+')\nc=json.loads((p/"preparation/launch-config.json").read_text())')
+  if args.phase=='repair_kv':s=s.replace('from reproduction.operations.b_replica_retained18.cache_retry import prepare','from reproduction.operations.b_replica_retained18.kv_retry import prepare')
  elif args.phase=='repair_paths':
   commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
   files={str(f.relative_to(REPO)):base64.b64encode(f.read_bytes()).decode()for f in(REPO/'reproduction/operations/b_replica_retained18').glob('*')if f.is_file()}
@@ -100,7 +102,7 @@ print(json.dumps(dict(observed_unix=time.time(),run_id=c['run_id'],base=str(p),c
  e=OUT/(args.phase+'-'+str(time.time_ns())+'-transport.json')
  raw=remote(s,e,target='h100-10',established_controller=True);v=json.loads(raw)
  path=e.with_name(e.name.replace('-transport','-actual'));path.write_text(json.dumps(v,indent=2));(OUT/'LATEST.json').write_text(json.dumps(dict(phase=args.phase,evidence=str(path),actual=v),indent=2))
- if args.phase in ('prepare','repair_cache'):
+ if args.phase in ('prepare','repair_cache','repair_kv'):
   (OUT/'CURRENT_CONFIG.json').write_text(json.dumps(v['config'],indent=2));print(json.dumps(dict(evidence=str(path),validation=v['validation'],files=v['source_files'])))
  else:print(json.dumps(dict(evidence=str(path),actual=v)))
 if __name__=='__main__':main()
