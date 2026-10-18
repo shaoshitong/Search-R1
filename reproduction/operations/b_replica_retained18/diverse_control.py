@@ -65,6 +65,18 @@ if ACTION in ('stage','repair'):
  test=subprocess.run(command(['-m','reproduction.operations.b_replica_retained18.diverse_cpu_check','--base',canonical]),text=True,capture_output=True,timeout=120)
  (p/'preparation/cpu-check-terminal.json').write_text(json.dumps(dict(returncode=test.returncode,stdout=test.stdout,stderr=test.stderr)))
  print(json.dumps(dict(config=c,check=read(p/'preparation/cpu-check-terminal.json'))))
+elif ACTION=='archive_pending_actor_binding':
+ # Re-stage only a copied, not-yet-used bookkeeping marker. Preserve bytes;
+ # no config, tensor, sample, source code or active actor is edited.
+ stage=read(p/'logs/pipeline-status.json');assert stage['outer']==50,stage
+ assert not list((p/'actor/outers').glob('outer-0051-attempt-*'))
+ path=p/'outers/outer-000051/actor-binding.json';original=read(path);c=read(p/'preparation/launch-config.json');actor=read(p/'actor/latest.json')
+ expected=dict(run_id=c['run_id'],outer=51,actor_model_dir=actor['hf_model_dir'],actor_version=actor['actor_version'],actor_model_files_sha256={name:item['sha256']for name,item in actor['hf_files'].items()})
+ assert original==expected
+ destination=path.with_name('imported-original-actor-binding.json');assert not destination.exists()
+ path.rename(destination)
+ (p/'preparation/pending-actor-binding-restaged.json').write_text(json.dumps(dict(original_sha256=sha(destination),expected=expected,reason='Copied pending marker is preserved; launcher writes identical current actor binding once',changed_sampling_or_weights=False,observed_unix=time.time())))
+ print(json.dumps(read(p/'preparation/pending-actor-binding-restaged.json')))
 elif ACTION=='migrate':
  check=read(p/'preparation/cpu-check-terminal.json');assert check['returncode']==0,check
  assert not(p/'preparation/import-worker-launch.json').exists(),'CPU migration already dispatched; inspect instead'
@@ -131,7 +143,7 @@ else:
 '''
 
 def main():
- parser=argparse.ArgumentParser();parser.add_argument('action',choices=['stage','repair','migrate','finalize','submit','observe']);args=parser.parse_args()
+ parser=argparse.ArgumentParser();parser.add_argument('action',choices=['stage','repair','archive_pending_actor_binding','migrate','finalize','submit','observe']);args=parser.parse_args()
  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
  values=dict(ACTION=args.action,PHYSICAL=PHYSICAL,CANONICAL=CANONICAL,PREPARED=PREPARED,SOURCE=SOURCE,COMMIT=commit)
  if args.action=='finalize':
