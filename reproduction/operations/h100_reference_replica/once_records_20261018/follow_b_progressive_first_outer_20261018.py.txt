@@ -1,0 +1,21 @@
+import sys,json,time,datetime
+from pathlib import Path
+sys.path.insert(0,'/Users/shaoshitong/Documents/Search-G1/h100-prefix5-reference-replica-20261018')
+from reproduction.operations.h100_reference_replica.b_progressive_remote import remote
+b='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2'
+verified=50;last=None
+while True:
+ s='''import sys,json\nfrom pathlib import Path\nb=Path(BASE);sys.path.insert(0,str(b/'repo'));from reproduction.prefix_selection200.ab_control import observe\nv=observe(b,VERIFIED);root=b/'outers/outer-000051';v['first_stage_counts']={}\nfor name in ('prefix/complete.json','probe-score/pool-selection.json','full-pool/complete.json','full/complete.json','probe-update/complete.json'):\n p=root/name\n if p.exists():\n  x=json.loads(p.read_text());v['first_stage_counts'][name]={k:x.get(k)for k in ('questions','trajectories','selected_questions','head_prefix_tokens','head_max_tokens','prefix_policy_tokens','chosen_mixed_count','fallback_count','new_adam_steps_per_rank','actual_adam_steps_per_rank')}\nv['actor_partial']=[]\nfor p in (b/'actor/outers').glob('outer-0051-attempt-*/rank-0-updates.jsonl'):\n rows=[json.loads(x)for x in p.read_text().splitlines()];writes=[x for x in rows if x.get('event')=='ACTUAL_ADAM_WRITE'];v['actor_partial'].append({'writes':len(writes),'actual':writes[-1]['actual_adam_steps']if writes else 1000})\nif not v['native'].get('leader_same_birth'):\n p=b/'logs/native-pipeline.log'\n with p.open('rb')as f:f.seek(max(0,p.stat().st_size-4000));v['log_tail']=f.read().decode(errors='replace')\nprint(json.dumps(v))'''.replace('BASE',repr(b)).replace('VERIFIED',str(verified))
+ try:
+  v=remote(s,'first-outer-follow',timeout=90)
+  # remote() normally prints a large result; stdout is redirected by caller.
+  summary={'checked_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'complete':v['complete_outer'],'actor':v['actor_adam'],'probe':v['probe_adam'],'stage':v['stage'],'same_birth':v['native'].get('leader_same_birth'),'cleanup':v['cleanup'],'first_stage_counts':v['first_stage_counts'],'actor_partial':v['actor_partial'],'facts':v['facts'],'log_tail':v.get('log_tail')}
+  Path('work/b-progressive-first-outer-latest.json').write_text(json.dumps(summary,indent=2)+'\n')
+  verified=max(verified,v['complete_outer'])
+  key=(verified,(v['stage']or{}).get('stage'),str(v['actor_partial']))
+  if key!=last:print('SMALL_PROGRESS '+json.dumps({k:val for k,val in summary.items()if k!='facts'}),file=sys.stderr,flush=True);last=key
+  if not v['native'].get('leader_same_birth'):raise RuntimeError('Actual native exited; root must inspect original error')
+  if verified>=51 and (v['stage']or{}).get('outer',0)>=52:print('FIRST_COMPLETE_OUTER_AND_NEXT_ACTUAL_STAGE_ACCEPTED',file=sys.stderr,flush=True);break
+ except Exception as e:
+  print('ROOT_ATTENTION '+str(e),file=sys.stderr,flush=True);raise
+ time.sleep(40)
