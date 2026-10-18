@@ -20,6 +20,9 @@ PREFIX = a800_runtime.PREFIX
 
 
 def validate_config(c, base):
+    if c.get('grpo_from_actor50'):
+        from reproduction.actor50_grpo.bootstrap import validate_config as actor50_config
+        return actor50_config(c,base)
     from .candidate_schedule import validate_schedule
     validate_schedule(c, required=c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1')
     if c['base'] != str(base) or not str(base).startswith(PREFIX):
@@ -85,6 +88,10 @@ def _json_request(url):
 
 def reused_phase(base, root, phase, c):
     """Only explicitly imported complete source phases may bypass execution."""
+    if c.get('grpo_from_actor50'):
+        if (root/phase/'complete.json').exists():
+            raise ValueError('Actor50 branch requires explicit full-state recovery, not phase replay')
+        return False
     if c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1':
         from .i1_i6_joint_resume import inherited_phase
         return inherited_phase(base, root, phase, c)
@@ -152,10 +159,16 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
         selection_sha256=sha(actor_selection_path),
         actor_selection_path=str(actor_selection_path), actor_selection_sha256=sha(actor_selection_path),
         predicted_selection_sha256=sha(root/'probe-score/selection.json'),
-        actor_selection_outcome_labels_used=periodic_update, rollout=read(root/'full/complete.json'),
+        actor_selection_outcome_labels_used=periodic_update or (c.get('grpo_from_actor50') and outer>=150), rollout=read(root/'full/complete.json'),
         probe_metrics=probe_metrics, periodic_probe_update=periodic_update,
         probe_boundary=boundary, source_commit=c['source_commit'], observed_unix=time.time())
     complete['candidate_schedule'] = schedule_metadata(c, outer)
+    if c.get('grpo_from_actor50'):
+        from reproduction.actor50_grpo.schedule import outer_plan
+        complete['actor50_branch_plan']=outer_plan(outer)
+        complete['source_lineage']=dict(actor50_joint_sha256=c['source_joint50_sha256'],
+            source_warmup_sha256=c['probe_source_sha256'],source_warmup_epoch=c['probe_source_epoch'],
+            inherited_actor_outers=50,online_probe_Adam_base_outer=50)
     if c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1':
         from .i1_i6_joint_resume import verify_source_compatibility, source_envelope
         complete.update(source_envelope(c, verify_source_compatibility(c)))
@@ -202,7 +215,8 @@ def run(base):
     if (base / 'logs/process-ledger.json').exists():
         raise RuntimeError('Existing execution needs explicit recovery; do not replay its launch')
     compatible_resume = c.get('resume_joint', {}).get('adapter') == 'i1_i6_joint_v1'
-    if c.get('resume_pending_probe') or c.get('resume_import') or (c.get('resume_joint') and not compatible_resume):
+    actor50_branch=c.get('grpo_from_actor50') is True
+    if c.get('resume_pending_probe') or c.get('resume_import') or (c.get('resume_joint') and not compatible_resume and not actor50_branch):
         raise ValueError('I1-I6 fresh source requires an explicitly compatible recovery adapter; old hardcoded-count adapters are forbidden')
     pending_recovery = c.get('resume_pending_probe')
     if pending_recovery and c.get('resume_joint'):
@@ -214,7 +228,9 @@ def run(base):
         from .pending_probe_resume import validate_imported_pending
         outer = validate_imported_pending(base, c)
     elif outer:
-        if compatible_resume:
+        if actor50_branch:
+            from reproduction.actor50_grpo.bootstrap import validate_imported_boundary
+        elif compatible_resume:
             from .i1_i6_joint_resume import validate_imported_boundary
         elif c['resume_joint'].get('adapter') == 'native_a800_joint_v1':
             from .native_joint_resume import validate_imported_boundary
@@ -240,6 +256,7 @@ def run(base):
         TMPDIR=str(base / 'tmp'), PYTHONUNBUFFERED='1', NO_PROXY='127.0.0.1,localhost')
     for key in ('PYTHONHOME', 'RAY_ADDRESS', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'http_proxy', 'https_proxy', 'all_proxy'):
         env.pop(key, None)
+    if actor50_branch:env['CUDA_LAUNCH_BLOCKING']='1'
     for name in ('tmp', 'cache/hf', 'cache/triton', 'cache/inductor'):
         (base / name).mkdir(parents=True, exist_ok=True)
     python = str(Path(c['environment_root']) / 'bin/python')
@@ -261,6 +278,10 @@ def run(base):
 
     def phase(name, command, child_env=None, allow_failed=False):
         began = time.monotonic()
+        if actor50_branch and outer>=51:
+            from reproduction.actor50_grpo.schedule import outer_plan
+            child_env=dict(child_env or env,SEARCH_G1_GRPO_FROM50='1',
+                SEARCH_G1_GRPO_PREFIX=str(outer_plan(outer)['prefix_tokens']))
         stage(name); p = start(name, command, child_env)
         while p.poll() is None:
             owned.observe(name); interrupt.check()
@@ -408,7 +429,7 @@ def run(base):
         refresh_grounding(outer)
         # Retry the interrupted milestone QA with its saved actor, then continue
         # from the joint actor/probe/pool boundary without redoing any updates.
-        if outer in (5, 50, 100, 150, 200):
+        if outer in (5, 50, 100, 150, 200) and not actor50_branch:
             actor = read(base / 'actor/latest.json')
             recovery_config = base / 'preparation/recovered-evaluation-config.json'
             once(recovery_config, dict(c, actor_version=actor['actor_version']))
@@ -416,8 +437,19 @@ def run(base):
                        'recovered-outer-%06d-validation' % outer)
         for outer in range(outer + 1, 201):
             root = base / 'outers' / ('outer-%06d' % outer)
+            if actor50_branch:
+                from reproduction.actor50_grpo.schedule import outer_plan
+                plan=outer_plan(outer)
+                c=dict(c,prefix_policy_tokens=plan['prefix_tokens'],
+                    hidden_capture_contract='sample%d_keep%d_postblock27_native_residual_sum_v1'%(plan['prefix_tokens']+1,plan['prefix_tokens']),
+                    actual_em_selection_fallback=plan['fallback'])
+                if outer==100:
+                    phase('outer-000100-prefix40-state-lift',[python,'-m','reproduction.actor50_grpo.worker',
+                        'lift40','--state-dir',str(base/'probe'),'--outer','100'])
             stage('CANDIDATE_POOL_RESERVATION')
             prepare(c, outer)
+            if actor50_branch:
+                conf=str(root/'phase-config.json');once(conf,c)
             actor = read(base / 'actor/latest.json') if outer > 1 else None
             actor_binding = dict(run_id=c['run_id'], outer=outer,
                 actor_model_dir=actor['hf_model_dir'] if actor else c['official_model_dir'],
@@ -462,9 +494,10 @@ def run(base):
                     # The label-free predicted selection remains immutable. Complete
                     # every candidate once, then separately bind actual-mixed actor
                     # selection to those exact native outcomes and project its G5s.
-                    phase(job('complete-unselected-pool'),
-                        [python,'-m','reproduction.prefix_selection200.periodic_data','complete-pool',
-                         '--config',sampling_conf,'--outer',str(outer)])
+                    command=([python,'-m','reproduction.actor50_grpo.worker','rerank']
+                        if actor50_branch and outer>=150 else
+                        [python,'-m','reproduction.prefix_selection200.periodic_data','complete-pool'])
+                    phase(job('complete-unselected-pool'),command+['--config',sampling_conf,'--outer',str(outer)])
                     actor_selection_path=root/'probe-score/actual-em-selection.json'
                     actual_selection=read(actor_selection_path)
                     if (actual_selection.get('outcome_labels_used') is not True
@@ -482,19 +515,25 @@ def run(base):
                         phase(job('current-actor-diagnostic'),
                             [python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic',
                              '--config',sampling_conf,'--outer',str(outer)])
+                elif actor50_branch and outer>=150:
+                    phase(job('complete-top1024-rerank'),[python,'-m','reproduction.actor50_grpo.worker','rerank',
+                        '--config',sampling_conf,'--outer',str(outer)])
+                    actor_selection_path=root/'probe-score/actual-em-selection.json'
                 else:
                     phase(job('continue'), [python, '-m', 'reproduction.prefix_selection200.rollout',
                         '--config', sampling_conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(actor_selection_path)])
                 return actor_selection_path
 
             actor_selection_path = sample_outer()
-            if compatible_resume:
+            if actor50_branch:
+                from reproduction.actor50_grpo.actor import collect_oom_retry,archive_zero_write_attempt
+            elif compatible_resume:
                 from .i1_i6_actor_resume import collect_oom_retry, archive_zero_write_attempt
             else:
                 from .actor import collect_oom_retry
                 from .guard_retry import archive_zero_write_attempt
-            actor_module = ('reproduction.prefix_selection200.i1_i6_actor_resume' if compatible_resume
-                            else 'reproduction.prefix_selection200.actor')
+            actor_module = ('reproduction.actor50_grpo.actor' if actor50_branch else
+                ('reproduction.prefix_selection200.i1_i6_actor_resume' if compatible_resume else 'reproduction.prefix_selection200.actor'))
             attempt_id = uuid.uuid4().hex
             while True:
                 attempt_config = dict(grounding.bind_attempt(c, grounding_state, actor, outer), actor_attempt_id=attempt_id,

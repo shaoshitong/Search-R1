@@ -52,3 +52,6 @@ def main():
     p=argparse.ArgumentParser(add_help=False);p.add_argument('--config',required=True)
     a,_=p.parse_known_args();config=actor.read(a.config)
     with binding_context(config):actor.main()
+
+
+if __name__=='__main__':main()

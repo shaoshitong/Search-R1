@@ -153,7 +153,11 @@ def join_own_em(index, records, actor_version, prefix_scan_sha, selection_sha):
 def prefix_row(original):
     """A real initial EOS may leave no kept policy tokens; keep its question."""
     if original.get('length', original.get('prefix_length')) != 0:
-        row = normalized_row(original, QMAX)
+        from .contract import ACTOR50_BRANCH
+        if ACTOR50_BRANCH:
+            from reproduction.actor50_grpo.features import normalized_native_row
+            row=normalized_native_row(original,QMAX,PREFIX_TOKENS)
+        else:row = normalized_row(original, QMAX)
         if not 1 <= row['policy_length'] <= PREFIX_TOKENS:
             raise ValueError('Only the authentic first five policy tokens may enter this probe')
         return row
