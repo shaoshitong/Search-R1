@@ -21,6 +21,11 @@ WRAPPER = ('/mnt/shared/workspace/training_data_node_8/shaoshitong/'
            '/repo/reproduction/operations/h100_reference_replica/h10011_private_paths.sh')
 PATH_LAYOUTS = {
     'source8': WRAPPER,
+    # CPU-qualified retained corpus/Arrow view; explicit selection only.
+    'retained-cache-v2': ('/mnt/shared/workspace/training_data_node_10/shaoshitong/'
+        'search-g1-prefix5-h10011-retained-fixed-assets-20261018/corpus-cache-relocations/'
+        'ea94181843f69e23119e92af730895d8a32a0fa95abf8bff438ad9a2882d5d14/'
+        'retained_cache_overlay_paths.sh'),
     # Already staged and CPU path-qualified; selecting this for a reader is not
     # a training handoff and never changes an existing mount namespace.
     'retained': ('/root/.local/share/search-g1/prefix5-retained-bootstrap/'
