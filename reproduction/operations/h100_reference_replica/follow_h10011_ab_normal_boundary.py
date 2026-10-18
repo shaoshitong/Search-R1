@@ -73,6 +73,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--until', type=int, default=50, choices=(50,100,150,200))
     parser.add_argument('--verified', type=int, default=10)
+    parser.add_argument('--verified-a',type=int)
+    parser.add_argument('--verified-b',type=int)
     parser.add_argument('--interval', type=int, default=300)
     parser.add_argument('--once', action='store_true')
     parser.add_argument('--transport', choices=MODES, default='retained18')
@@ -85,7 +87,9 @@ def main():
     assert set(arms) == {'A','B'} and all(x['node']=='h100-11'for x in arms.values())
     spec = importlib.util.spec_from_file_location('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py')
     ctl = importlib.util.module_from_spec(spec); spec.loader.exec_module(ctl)
-    verified = {s:args.verified for s in arms}
+    verified = {'A':args.verified if args.verified_a is None else args.verified_a,
+                'B':args.verified if args.verified_b is None else args.verified_b}
+    if not all(0<=value<args.until for value in verified.values()):raise ValueError('Each arm requires its own actual verified boundary below target')
     facts = {s:[] for s in arms}
     last_key = None
     while True:
