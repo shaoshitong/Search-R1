@@ -16,7 +16,7 @@ def execution_profile_bound(environ=None):
     import os
     environ = os.environ if environ is None else environ
     return bool(environ.get('RECURSIVE_A_CONTINUATION_BINDING')) or (
-        environ.get('SEARCH_R1_EXECUTION_BACKEND') == 'slurm_h100'
+        environ.get('SEARCH_R1_EXECUTION_BACKEND') in ('slurm_h100', 'h100_shared')
         and environ.get('RECURSIVE_A_H100_FRESH_PROFILE') == '1'
         and bool(environ.get('SEARCH_R1_BASELINE_RUN_ID'))
         and len(environ.get('SEARCH_R1_BASELINE_CONFIG_SHA256', '')) == 64)

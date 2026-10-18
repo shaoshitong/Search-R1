@@ -13,7 +13,9 @@ def execute(args):
     receipt_path = Path(args.receipt).resolve()
     record = read_receipt(receipt_path)
     base = Path(record['base'])
-    if not os.environ.get('SLURM_JOB_ID') or os.environ['SLURM_JOB_ID'] != os.environ.get('RBA_H100_ALLOCATION_ID'):
+    from search_r1.baselines.execution_identity import shared_h100, execution_id
+    shared = shared_h100()
+    if not shared and (not os.environ.get('SLURM_JOB_ID') or os.environ['SLURM_JOB_ID'] != os.environ.get('RBA_H100_ALLOCATION_ID')):
         raise ValueError('Inherited task-owned H100 allocation is required')
     if os.environ.get('CUDA_VISIBLE_DEVICES') != '0,1,2,3,4,5,6,7':
         raise ValueError('All eight authorized physical cards are required')
@@ -46,7 +48,7 @@ def execute(args):
     output.mkdir(parents=True, exist_ok=False)
     os.environ.update(RECURSIVE_ABLATION_RECEIPT=str(receipt_path),
         SEARCH_R1_BASELINE_RUN_ID=record['run_id'], E1_RUN_ID=record['run_id'],
-        SEARCH_R1_EXECUTION_BACKEND='slurm_h100',
+        SEARCH_R1_EXECUTION_BACKEND=('h100_shared' if shared else 'slurm_h100'),
         SEARCH_R1_BASELINE_COMMIT=record['source_commit'],
         SEARCH_R1_BASELINE_CONFIG_SHA256=record['config_sha256'],
         SEARCH_R1_BASELINE_DATA_IDENTITY=record['data_identity'],
@@ -81,7 +83,7 @@ def execute(args):
         entry_source_commit=os.environ.get('RBA_ABLATION_ENTRY_COMMIT', record['source_commit']),
         resume_manifest=args.resume_manifest, retry_unstarted_proof=retry_proof,
         zero_write_manifest=zero_write_manifest, zero_write_sha256=zero_write_sha,
-        allocation=os.environ['SLURM_JOB_ID'])
+        allocation=(None if shared else os.environ['SLURM_JOB_ID']), execution_id=execution_id(), execution_backend=('h100_shared' if shared else 'slurm_h100'))
     replace_json(previous, entry)
     print('ABLATION_ENTRY_START=' + json.dumps(entry, sort_keys=True), flush=True)
     from omegaconf import OmegaConf
@@ -92,7 +94,7 @@ def execute(args):
     prepare_click()
     import ray
     env = {key: value for key, value in os.environ.items() if key.startswith(('RECURSIVE_ABLATION_', 'SEARCH_R1_', 'RECURSIVE_A_', 'TREE_'))}
-    for key in ('SLURM_JOB_ID', 'CPATH', 'TRITON_LIBCUDA_PATH', 'LIBRARY_PATH', 'PYTHONPATH'):
+    for key in ('RBA_H100_SHARED_EXECUTION_ID', 'SLURM_JOB_ID', 'CPATH', 'TRITON_LIBCUDA_PATH', 'LIBRARY_PATH', 'PYTHONPATH'):
         if key in os.environ:
             env[key] = os.environ[key]
     env.update(TOKENIZERS_PARALLELISM='false', NCCL_DEBUG='WARN')

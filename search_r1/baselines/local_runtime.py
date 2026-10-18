@@ -15,13 +15,18 @@ def loopback(value):
 def check_local_runtime(config, ray_nodes=None):
     if not config.baselines.get('local_runtime_only', False):
         return
-    expected = config.baselines.local_runtime_host
+    from .execution_identity import shared_h100
+    shared = shared_h100()
+    expected = 'h100-5' if shared else config.baselines.local_runtime_host
     if not expected or socket.gethostname().split('.')[0] != expected:
         raise ValueError('Runtime is not on the expected local host')
     direct=os.environ.get('SEARCH_R1_EXECUTION_BACKEND')=='hkust_direct'
     if direct:
         if expected!='xielab1' or os.getuid()!=1005 or not os.environ.get('SEARCH_R1_BASELINE_RUN_ID'):
             raise ValueError('Direct HKUST runtime identity changed')
+        from .preflight import validate_inherited_gpu_leases
+        validate_inherited_gpu_leases(config.trainer.n_gpus_per_node)
+    elif shared:
         from .preflight import validate_inherited_gpu_leases
         validate_inherited_gpu_leases(config.trainer.n_gpus_per_node)
     elif os.environ.get('SLURM_JOB_NODELIST') != expected or not os.environ.get('SLURM_JOB_ID'):

@@ -3,7 +3,7 @@ set -euo pipefail
 source_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 runtime="${RBA_ABLATION_RUNTIME:-/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009}"
 base="${RBA_ABLATION_BASE:?Set the independent study remote output directory}"
-export RBA_H100_ALLOCATION_ID="${RBA_H100_ALLOCATION_ID:-$SLURM_JOB_ID}" RBA_H100_SHARED_ALLOCATION=1
+export RBA_H100_ALLOCATION_ID="${RBA_H100_ALLOCATION_ID:-${SLURM_JOB_ID:-}}" RBA_H100_SHARED_ALLOCATION=1
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 export PYTHONPATH="$source_root" PATH="$runtime/env/bin:/usr/local/bin:/usr/bin:/bin"
 mkdir -p "$base"

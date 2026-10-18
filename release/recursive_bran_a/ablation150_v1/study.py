@@ -59,7 +59,8 @@ def run(args):
         known.update(state['complete'])
     start = dict(time=time.time(), pid=os.getpid(), uid=os.getuid(),
         tick=int(Path('/proc/self/stat').read_text().rsplit(')', 1)[1].split()[19]),
-        source_commit=args.source_commit, allocation=os.environ['SLURM_JOB_ID'])
+        source_commit=args.source_commit, allocation=os.environ.get('SLURM_JOB_ID'),
+        execution_id=os.environ.get('RBA_H100_SHARED_EXECUTION_ID', os.environ.get('SLURM_JOB_ID')))
     start['entry_source_commit'] = os.environ.get('RBA_ABLATION_ENTRY_COMMIT', args.source_commit)
     previous = base / 'study-start.json'
     if previous.exists():

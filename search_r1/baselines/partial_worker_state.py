@@ -15,7 +15,7 @@ from .tree_guard_continue import enabled, RESULT_PROTOCOL, validate_ledger
 PROTOCOL = 'tree_partial_state_v1'
 IDENTITY_KEYS = {'job_id','run_id','code_commit','config_sha256','data_identity','model_identity',
                  'training_protocol','attempted_outer','completed_outer'}
-ENV_KEYS = {'job_id':'SLURM_JOB_ID','run_id':'SEARCH_R1_BASELINE_RUN_ID','code_commit':'SEARCH_R1_BASELINE_COMMIT',
+ENV_KEYS = {'job_id':('RBA_H100_SHARED_EXECUTION_ID' if os.environ.get('RBA_H100_SHARED_EXECUTION_ID') else 'SLURM_JOB_ID'),'run_id':'SEARCH_R1_BASELINE_RUN_ID','code_commit':'SEARCH_R1_BASELINE_COMMIT',
             'config_sha256':'SEARCH_R1_BASELINE_CONFIG_SHA256','data_identity':'SEARCH_R1_BASELINE_DATA_IDENTITY',
             'model_identity':'SEARCH_R1_MODEL_IDENTITY'}
 

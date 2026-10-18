@@ -3,7 +3,7 @@ set -euo pipefail
 source_root="$(cd "$(dirname "$0")/../../.." && pwd)"
 runtime="${RBA_ABLATION_RUNTIME:-/dataset/shaoshitong/search-r1-rl/bapo-aligned-cohost-node11-v11-20261009}"
 base="${RBA_ABLATION_BASE:?Set the independent condition remote output directory}"
-export RBA_H100_ALLOCATION_ID="${RBA_H100_ALLOCATION_ID:-$SLURM_JOB_ID}" RBA_H100_SHARED_ALLOCATION=1
+export RBA_H100_ALLOCATION_ID="${RBA_H100_ALLOCATION_ID:-${SLURM_JOB_ID:-}}" RBA_H100_SHARED_ALLOCATION=1
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 export PATH="$runtime/env/bin:/usr/local/bin:/usr/bin:/bin"
 export PYTHONPATH="$source_root/release/recursive_bran_a/ablation150_v1:$source_root:$runtime/retriever-gpu-lib:$source_root/release/recursive_bran_a/retriever_overlap_candidate:$source_root/release/recursive_bran_a/h100_migration/oracle_source"

@@ -47,7 +47,8 @@ def check_selected_gpus(selected, inventory, processes):
                 or record['memory_total'] <= 0 or record['memory_used'] < 0
                 or not 0 <= record['utilization'] <= 100):
             raise RuntimeError(f'Allocated GPU {device} has unknown/invalid occupancy')
-        shared_h100=(os.environ.get('RBA_H100_SHARED_ALLOCATION')=='1' and os.environ.get('SLURM_JOB_NODELIST')=='h100-11' and os.environ.get('SLURM_JOB_ID')==os.environ.get('RBA_H100_ALLOCATION_ID'))
+        from .execution_identity import shared_h100 as direct_shared_h100
+        shared_h100=direct_shared_h100() or (os.environ.get('RBA_H100_SHARED_ALLOCATION')=='1' and os.environ.get('SLURM_JOB_NODELIST')=='h100-11' and os.environ.get('SLURM_JOB_ID')==os.environ.get('RBA_H100_ALLOCATION_ID'))
         if shared_h100 and record['memory_total']-record['memory_used']<24576:
             raise RuntimeError(f'Allocated shared H100 {device} has insufficient actual memory')
         if not shared_h100 and not contention_attempt() and (record['utilization'] > 15 or 100 * record['memory_used'] / record['memory_total'] > 15):
