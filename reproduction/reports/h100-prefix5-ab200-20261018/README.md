@@ -289,3 +289,23 @@ complete25 and actual26 writes. The network root cause was not isolated;
 no global network/auth/SSH or training configuration changed. See
 [private-hop-observation-recovery-20261018.json](private-hop-observation-recovery-20261018.json).
 The route remains the original retained18 path and all200/QA obligations continue.
+
+## Optional same-instance LAN observation fallback
+
+`readonly_management_route.py` preserves the normal mgmt-host→retained18
+route by default. Explicit `--transport retained18_fallback_lan5` may retry
+only a read-only observation after SSH255 or client timeout, via known5 and
+Slurm's verified h100-11 NodeAddr10.32.0.11. The target retains
+HostKeyAlias10.33.4.14 and its original trusted key, strict checking and
+existing management identity. Unknown nodes/mappings are rejected. Remote
+Python/application errors are surfaced rather than replayed. Do not use
+automatic read-only retries for submission, cancellation, deployment or
+CPU-once writers. No global route, SSH/auth configuration or trainer changes.
+
+Actual LAN authentication returned hostnameh100-11 and both original leader
+PID/births. A complete-metadata read through this path also succeeded; see
+[verified-lan5-readonly-fallback.json](verified-lan5-readonly-fallback.json).
+The old observer must exit before replacement because of the shared local
+singleton lock. Stopping that local reader does not stop a trainer. Preserve
+its cumulative facts before starting a new reader. These are observation
+controls, never a deployment into frozen runtime2e397623.

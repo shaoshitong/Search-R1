@@ -9,9 +9,10 @@ import importlib.util
 import json
 from pathlib import Path
 import subprocess
+from .readonly_management_route import MODES, run_readonly
 
 ROOT=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
-p=argparse.ArgumentParser();p.add_argument('--outer',type=int,required=True);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--outer',type=int,required=True);p.add_argument('--transport',choices=MODES,default='retained18');a=p.parse_args()
 assert a.outer in range(10,200,10)
 arms=json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())
 remote=r'''
@@ -39,6 +40,6 @@ for arm,entry in ARMS.items():
 print(json.dumps({'observed_unix':time.time(),'outer':N,'arms':r}))
 '''.replace('__ARMS__',repr(arms)).replace('__OUTER__',str(a.outer))
 spec=importlib.util.spec_from_file_location('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl)
-r=subprocess.run(ctl.route('h100-11','/usr/bin/python3 -'),input=remote,text=True,capture_output=True,timeout=65);assert r.returncode==0,r.stderr;d=json.loads(r.stdout);tag=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out=ROOT/('work/prefix5-ab-periodic%d-phases-%s.json'%(a.outer,tag));out.write_text(json.dumps(d,indent=2)+'\n');print('actual',str(out),'SHA',hashlib.sha256(out.read_bytes()).hexdigest())
+r,transport=run_readonly(ctl,'h100-11','/usr/bin/python3 -',input_text=remote,timeout=65,mode=a.transport);assert r.returncode==0,r.stderr;d=json.loads(r.stdout);d['observation_transport']=transport;tag=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out=ROOT/('work/prefix5-ab-periodic%d-phases-%s.json'%(a.outer,tag));out.write_text(json.dumps(d,indent=2)+'\n');print('actual',str(out),'SHA',hashlib.sha256(out.read_bytes()).hexdigest())
 for arm,v in d['arms'].items():
  print(arm,[(k,[(x['rank'],x['completed_trajectories'],x['expected_trajectories'],x['stage'])for x in rows])for k,rows in v['phases'].items()]);print('records',arm,{k:v['value']for k,v in v['records'].items()})

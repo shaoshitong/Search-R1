@@ -10,6 +10,7 @@ import importlib.util
 import json
 from pathlib import Path
 import subprocess
+from .readonly_management_route import MODES, run_readonly
 
 ROOT = Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
 REMOTE = r'''
@@ -64,6 +65,7 @@ print(json.dumps(dict(checked_unix=time.time(),requested_through=THROUGH,actual_
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--through', type=int, required=True)
+    parser.add_argument('--transport', choices=MODES, default='retained18')
     args = parser.parse_args()
     assert 1 <= args.through <= 200
     arms = json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())
@@ -71,10 +73,11 @@ def main():
     spec = importlib.util.spec_from_file_location('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py')
     ctl = importlib.util.module_from_spec(spec); spec.loader.exec_module(ctl)
     script = REMOTE.replace('__ARMS__',repr(arms)).replace('__THROUGH__',str(args.through))
-    response = subprocess.run(ctl.route('h100-11','/usr/bin/python3 -'),input=script,
-                              text=True,capture_output=True,timeout=90)
+    response, transport = run_readonly(ctl,'h100-11','/usr/bin/python3 -',
+                                      input_text=script,timeout=90,mode=args.transport)
     if response.returncode: raise RuntimeError(response.stderr or response.stdout)
     value = json.loads(response.stdout)
+    value['observation_transport'] = transport
     stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
     target = ROOT/('work/prefix5-ab-small-report-through%03d-%s.json'%(args.through,stamp))
     target.write_text(json.dumps(value,indent=2)+'\n')

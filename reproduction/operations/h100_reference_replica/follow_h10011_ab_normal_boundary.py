@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 import subprocess
 import time
+from .readonly_management_route import MODES, run_readonly
 
 ROOT = Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
 RUNTIME = '2e3976230ac9425d66d8553afa9962821e964932'
@@ -66,6 +67,7 @@ def main():
     parser.add_argument('--verified', type=int, default=10)
     parser.add_argument('--interval', type=int, default=300)
     parser.add_argument('--once', action='store_true')
+    parser.add_argument('--transport', choices=MODES, default='retained18')
     args = parser.parse_args()
     assert 0 <= args.verified < args.until and args.interval >= 60
     lock = (ROOT/'work/prefix5-ab-h10011-normal-boundary-observer.lock').open('a')
@@ -87,8 +89,8 @@ def main():
             'text=True,capture_output=True,timeout=120)\n'
             'assert p.returncode==0,p.stderr\nprint(p.stdout)')
         try:
-            response = subprocess.run(ctl.route('h100-11','/usr/bin/python3 -'),input=script,
-                                      text=True,capture_output=True,timeout=155)
+            response, transport = run_readonly(ctl,'h100-11','/usr/bin/python3 -',
+                input_text=script,timeout=155,mode=args.transport)
             if response.returncode: raise RuntimeError(response.stderr or response.stdout)
             raw = json.loads(response.stdout)
             evidence = ROOT/('work/prefix5-ab-h10011-normal-follow-'+tag+'-actual.json')
@@ -104,7 +106,7 @@ def main():
                         and not v['pipeline_complete']): attention.append(arm)
             value=dict(observed_utc=tag,node='h100-11',arms=compact,verified=verified,
                 original=str(evidence),original_sha256=hashlib.sha256(evidence.read_bytes()).hexdigest(),
-                terminal_attention=attention,training_modified=False)
+                terminal_attention=attention,training_modified=False,observation_transport=transport)
             (ROOT/'work/prefix5-ab-latest-compact.json').write_text(json.dumps(value,indent=2)+'\n')
             (ROOT/'work/prefix5-ab-h10011-normal-follow-actual-facts.json').write_text(
                 json.dumps(dict(facts=facts,last_observation=str(evidence)),indent=2)+'\n')
