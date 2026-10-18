@@ -69,7 +69,7 @@ for name,data in FILES.items():
 c=json.loads(cpath.read_text());c['source_commit']=COMMIT;cpath.write_text(json.dumps(c,sort_keys=True))
 rows=[dict(path=str(f.relative_to(p/'repo')),sha256=hashlib.sha256(f.read_bytes()).hexdigest())for f in(p/'repo').rglob('*')if f.is_file()and'__pycache__'not in f.parts]
 (p/'preparation/source-full-sha-after-private-path-repair1.json').write_text(json.dumps(dict(commit=COMMIT,files=rows)))
-print(json.dumps(dict(commit=COMMIT,files=len(rows),check=inside("import sys,json;sys.path.insert(0,"+repr(canonical+'/repo')+");from reproduction.prefix_selection200.launch import config;print(json.dumps(config("+repr(canonical)+")[\"run_id\"]))"))))
+print(json.dumps(dict(commit=COMMIT,files=len(rows),check=inside("import sys,json;sys.path.insert(0,"+repr(canonical+'/repo')+");from reproduction.prefix_selection200.launch import config;print(json.dumps(config("+repr(canonical)+")['run_id']))"))))
 '''.replace('FILES',repr(files)).replace('COMMIT',repr(commit))
  elif args.phase=='submit':
   s+='''\ncode="import sys,json;sys.path.insert(0,"+repr(canonical+'/repo')+");from reproduction.prefix_selection200.launch import submit;print(json.dumps(submit("+repr(canonical)+")))"
@@ -93,6 +93,7 @@ for f in (p/'outers'/('outer-%06d'%(outer+1 if str((stage or{}).get('stage',''))
  if f.stat().st_size<10000:progress[str(f.relative_to(p))]=read(f)
 print(json.dumps(dict(observed_unix=time.time(),run_id=c['run_id'],base=str(p),canonical=canonical,joint=facts,stage=stage,leader=leader,receipt=receipt,logs=logs,progress=progress,cleanup=read(p/'logs/cleanup-status.json'),complete=read(p/'complete.json'))))
 '''
+ compile(s,'B-remote-'+args.phase,'exec')
  e=OUT/(args.phase+'-'+str(time.time_ns())+'-transport.json')
  raw=remote(s,e,target='h100-10',established_controller=True);v=json.loads(raw)
  path=e.with_name(e.name.replace('-transport','-actual'));path.write_text(json.dumps(v,indent=2));(OUT/'LATEST.json').write_text(json.dumps(dict(phase=args.phase,evidence=str(path),actual=v),indent=2))
