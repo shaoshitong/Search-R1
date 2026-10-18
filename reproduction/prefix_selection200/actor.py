@@ -633,7 +633,7 @@ def _grounding_receipt(config):
 def _state_binding(config):
     # Micro is intentionally mutable after a real OOM; the scientific budget is not.
     return dict(run_id=config['run_id'], model_revision=config.get('model_revision', REVISION),
-        source_commit=config.get('source_commit'), model_files_sha256=config.get('model_files_sha256'),
+        source_commit=config.get('actor_checkpoint_binding_commit',config.get('source_commit')), model_files_sha256=config.get('model_files_sha256'),
         canonical_train=config.get('canonical_train'), canonical_train_sha256=config.get('canonical_train_sha256'),
         source_question_pool_sha256=config.get('source_question_pool_sha256'),
         common_manifest_sha256=config.get('common_manifest_sha256'),

@@ -13,7 +13,12 @@ def main():
  from reproduction.prefix_selection200.contract import WORLD,WIDTH,DIM
  c=config(a.base);_require_training_assignment(c);budget=ActorBudget(c['actor_global_micro_batch_size'])
  assert WORLD==8 and budget.local_micro==1 and budget.accumulation==16
- plan=rank_plan(1729,51);assert len(plan)==8 and all(len(r)==20 for r in plan)
+ from reproduction.prefix_selection200.actor_safety import frozen_monitor_ids
+ plan=rank_plan(1729,51);clear_rows=[dict(response_info_mask=[1]*(i%37+1))for i in range(2560)]
+ eight=[frozen_monitor_ids(rank,clear_rows)for rank in plan]
+ four=[frozen_monitor_ids([a+b for a,b in zip(plan[2*r],plan[2*r+1])],clear_rows)for r in range(4)]
+ assert [i for r in four for i in r]==[i for r in eight for i in r] and len(set(i for r in eight for i in r))==32
+ assert len(plan)==8 and all(len(r)==20 for r in plan)
  assert sorted(i for r in plan for b in r for i in b)==list(range(2560))
  for unique in (1,3,5,10):
   rows=[dict(policy_token_ids=[i%unique,8,9],trajectory_id='q:g%d'%i,response_index=i,prefix_sha256=str(i))for i in range(10)]

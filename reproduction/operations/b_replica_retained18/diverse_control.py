@@ -2,7 +2,7 @@
 import argparse,base64,gzip,hashlib,io,json,subprocess,tarfile,time
 from pathlib import Path
 from .control import REPO,OUT,remote
-PHYSICAL='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp50-eight-20261018-r1'
+PHYSICAL='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp50-eight-20261018-r2'
 CANONICAL='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'+PHYSICAL.rsplit('/',1)[1]
 PREPARED='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-eight-prepared-20261018'
 SOURCE='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1'
@@ -18,7 +18,7 @@ def command(args):
  'SEARCH_G1_PHYSICAL_WORLD_SIZE=8','SEARCH_G1_B_PREFIX_TOKENS=20','PYTHONDONTWRITEBYTECODE=1',
  'PYTHONPATH='+canonical+'/repo','HF_HUB_OFFLINE=1','HF_DATASETS_OFFLINE=1','CUDA_VISIBLE_DEVICES=',
  'OMP_NUM_THREADS=2','MKL_NUM_THREADS=2',python]+args
-if ACTION=='stage':
+if ACTION in ('stage','repair'):
  import io,tarfile,base64,gzip
  assert not p.exists(),'Existing stage must be reconciled, never overwritten'
  p.mkdir();(p/'repo').mkdir();(p/'preparation').mkdir();(p/'logs').mkdir()
@@ -33,26 +33,31 @@ if ACTION=='stage':
    original=pathlib.Path(PREPARED)/'repo'/row['path'];data=original.read_bytes();assert hashlib.sha256(data).hexdigest()==row['sha256'],row['path']
    target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
   assert sha(target)==row['sha256'],row['path']
- c=read(pathlib.Path(PREPARED)/'preparation/launch-config.json');old=c['base']
- def rebase(x):
-  if isinstance(x,dict):return{k:rebase(v)for k,v in x.items()}
-  if isinstance(x,list):return[rebase(v)for v in x]
-  if isinstance(x,str)and(x==old or x.startswith(old+'/')):return canonical+x[len(old):]
-  return x
- c=rebase(c)
- source_physical=pathlib.Path('/mnt/data/shaoshitong')/pathlib.Path(SOURCE).name
- joint=read(source_physical/'outers/outer-000050/complete.json')
- c.update(run_id=joint['run_id'],execution_id=uuid.uuid4().hex,source_commit=COMMIT,actor_version=joint['actor']['actor_version'],
-  preparation_only=False,training_authorized=True,experiment_assignment_pending=False,environment_only_8gpu=False,
-  initialization_assignment_pending=False,checkpoint_imported=True,full_state_resume=True,
-  fresh_actor_optimizer_scheduler_rng_sampler=False,old_actor_state_imported=True,old_online_probe_optimizer_imported=True,
-  actor_global_micro_batch_size=8,prefix_policy_tokens=20,hidden_capture_contract='sample21_keep20_postblock27_native_residual_sum_v1',
-  b_progressive=dict(mode='b_cp50_prefix20_40_80_two_stage_v1',resume_outer=50),
-  prefix_diversity=dict(mode='ten_native_prefixes_farthest_first_five_v1',candidates_per_question=10,retained_per_question=5,discarded_probe_evaluations=0),
-  resume_joint=dict(adapter='b_diverse_4to8_cp50_v1',source_base=SOURCE,completed_outer=50,source_joint_sha256=sha(source_physical/'outers/outer-000050/complete.json')),
-  retrieval_port=19660,search_url='http://127.0.0.1:19660/retrieve',grounding_probe_base_port=19670,
-  reference_B_snapshot_commit='2b50a4512d1a00213894ac2ac8235c9dd466eeef',
-  unchanged_generation_budget_and_sampling_parameters=False)
+ if ACTION=='repair':
+  sys.path.insert(0,str(p/'repo'))
+  from reproduction.operations.b_replica_retained18.diverse_repair import prepare
+  c=prepare('/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp50-eight-20261018-r1',p,canonical,COMMIT)
+ else:
+  c=read(pathlib.Path(PREPARED)/'preparation/launch-config.json');old=c['base']
+  def rebase(x):
+   if isinstance(x,dict):return{k:rebase(v)for k,v in x.items()}
+   if isinstance(x,list):return[rebase(v)for v in x]
+   if isinstance(x,str)and(x==old or x.startswith(old+'/')):return canonical+x[len(old):]
+   return x
+  c=rebase(c)
+  source_physical=pathlib.Path('/mnt/data/shaoshitong')/pathlib.Path(SOURCE).name
+  joint=read(source_physical/'outers/outer-000050/complete.json')
+  c.update(run_id=joint['run_id'],execution_id=uuid.uuid4().hex,source_commit=COMMIT,actor_version=joint['actor']['actor_version'],
+   preparation_only=False,training_authorized=True,experiment_assignment_pending=False,environment_only_8gpu=False,
+   initialization_assignment_pending=False,checkpoint_imported=True,full_state_resume=True,
+   fresh_actor_optimizer_scheduler_rng_sampler=False,old_actor_state_imported=True,old_online_probe_optimizer_imported=True,
+   actor_global_micro_batch_size=8,prefix_policy_tokens=20,hidden_capture_contract='sample21_keep20_postblock27_native_residual_sum_v1',
+   b_progressive=dict(mode='b_cp50_prefix20_40_80_two_stage_v1',resume_outer=50),
+   prefix_diversity=dict(mode='ten_native_prefixes_farthest_first_five_v1',candidates_per_question=10,retained_per_question=5,discarded_probe_evaluations=0),
+   resume_joint=dict(adapter='b_diverse_4to8_cp50_v1',source_base=SOURCE,completed_outer=50,source_joint_sha256=sha(source_physical/'outers/outer-000050/complete.json')),
+   retrieval_port=19660,search_url='http://127.0.0.1:19660/retrieve',grounding_probe_base_port=19670,
+   reference_B_snapshot_commit='2b50a4512d1a00213894ac2ac8235c9dd466eeef',
+   unchanged_generation_budget_and_sampling_parameters=False)
  (p/'preparation/launch-config.json').write_text(json.dumps(c,sort_keys=True))
  (p/'preparation/human-authorization.json').write_text(json.dumps(AUTH,ensure_ascii=False,indent=2))
  (p/'preparation/source-full-sha.json').write_text(json.dumps(dict(commit=COMMIT,files=files)))
@@ -80,7 +85,7 @@ elif ACTION=='finalize':
  (p/'preparation/cpu-finalizer-execution.json').write_text(json.dumps(dict(commit=COMMIT,script_sha256=FINALIZER_SHA,returncode=result.returncode,stdout=result.stdout,stderr=result.stderr)))
  print(json.dumps(read(p/'preparation/cpu-finalizer-execution.json')))
 elif ACTION=='submit':
- assert (read(p/'preparation/import-finalizer-terminal.json')or read(p/'preparation/import-worker-terminal.json'))['status']=='COMPLETE'
+ assert read(p/'preparation/resume-joint-receipt.json')['status']=='B_CP50_DIVERSE_EIGHT_IMPORTED'
  code='import json;from reproduction.prefix_selection200.launch import submit;print(json.dumps(submit('+repr(canonical)+')))'
  value=subprocess.run(command(['-c',code]),capture_output=True,text=True,timeout=180)
  print(json.dumps(dict(returncode=value.returncode,stdout=value.stdout,stderr=value.stderr)))
@@ -126,13 +131,13 @@ else:
 '''
 
 def main():
- parser=argparse.ArgumentParser();parser.add_argument('action',choices=['stage','migrate','finalize','submit','observe']);args=parser.parse_args()
+ parser=argparse.ArgumentParser();parser.add_argument('action',choices=['stage','repair','migrate','finalize','submit','observe']);args=parser.parse_args()
  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
  values=dict(ACTION=args.action,PHYSICAL=PHYSICAL,CANONICAL=CANONICAL,PREPARED=PREPARED,SOURCE=SOURCE,COMMIT=commit)
  if args.action=='finalize':
   f=REPO/'reproduction/operations/b_replica_retained18/diverse_finalize.py'
   values.update(FINALIZER=base64.b64encode(f.read_bytes()).decode(),FINALIZER_SHA=hashlib.sha256(f.read_bytes()).hexdigest())
- if args.action=='stage':
+ if args.action in ('stage','repair'):
   assert not subprocess.check_output(['git','status','--porcelain'],cwd=REPO,text=True).strip(),'Publish clean source first'
   published=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/b-diverse10to5-cp50-eight-20261018'],cwd=REPO,text=True).split()[0];assert published==commit
   tracked=subprocess.check_output(['git','ls-files','-z'],cwd=REPO).decode().rstrip('\0').split('\0')
@@ -149,7 +154,7 @@ def main():
  value=json.loads(remote(script,evidence,target='h100-10',established_controller=True))
  actual=evidence.with_name(evidence.name.replace('-transport','-actual'));actual.write_text(json.dumps(value,indent=2))
  (OUT/'DIVERSE_LATEST.json').write_text(json.dumps(dict(action=args.action,evidence=str(actual),actual=value),indent=2))
- if args.action=='stage':
+ if args.action in ('stage','repair'):
   (OUT/'DIVERSE_CONFIG.json').write_text(json.dumps(value['config'],indent=2));print(json.dumps(dict(evidence=str(actual),check=value['check'])))
  else:print(json.dumps(dict(evidence=str(actual),actual=value)))
 if __name__=='__main__':main()

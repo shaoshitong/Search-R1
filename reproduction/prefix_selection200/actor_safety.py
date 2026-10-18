@@ -20,11 +20,13 @@ def tensor_identity(batch):
 
 def frozen_monitor_ids(plan, rows):
     """Four length strata from each original virtual rank's 320 actual rows."""
+    if len(plan)!=20 or {len(mini)for mini in plan} not in ({16},{32}):
+        raise ValueError('Monitor needs20 physical minis containing one or two complete virtual16 blocks')
     result = []
-    for block in range(2):
+    for block in range(len(plan[0])//16):
         assigned = [i for mini in plan for i in mini[block * 16:(block + 1) * 16]]
         if len(assigned) != 320 or len(set(assigned)) != 320:
-            raise ValueError('Monitor must use the exact physical4/reference8 rank assignment')
+            raise ValueError('Monitor must preserve each original virtual8 rank assignment')
         ordered = sorted(assigned, key=lambda i: sum(rows[i]['response_info_mask']))
         # torch.linspace(0,319,4).long(), as in the original actor.
         result.extend(ordered[index] for index in (0, 106, 212, 319))

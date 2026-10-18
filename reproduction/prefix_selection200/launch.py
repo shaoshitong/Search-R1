@@ -20,6 +20,9 @@ PREFIX = a800_runtime.PREFIX
 
 
 def validate_config(c, base):
+    if c.get('actor_checkpoint_binding_commit'):
+        from .diverse_cached_resume import validate_runtime_compatibility
+        validate_runtime_compatibility(c)
     if c.get('prefix_diversity'):
         from .prefix_diversity import MODE
         if c['prefix_diversity']!={'mode':MODE,'candidates_per_question':10,'retained_per_question':5,'discarded_probe_evaluations':0}:
@@ -561,7 +564,10 @@ def run(base):
                         '--config', sampling_conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(actor_selection_path)])
                 return actor_selection_path
 
-            if outer == 1 and c.get('startup_sampling_resume'):
+            if outer==51 and c.get('resume_cached_sampling'):
+                from .diverse_cached_resume import validate_cached_sampling
+                actor_selection_path=validate_cached_sampling(base,c)
+            elif outer == 1 and c.get('startup_sampling_resume'):
                 from .startup_sampling_resume import validate_reused_sampling
                 actor_selection_path = validate_reused_sampling(base,c)
             else:
