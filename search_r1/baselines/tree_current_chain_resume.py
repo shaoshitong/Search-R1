@@ -255,7 +255,7 @@ def migrate_trainer(trainer):
         parent_epoch=0, new_batch_size=512, saved_parent_provenance=saved_parent_provenance,
         same_fresh200_chain=True, child_code_commit=child_commit,
         child_config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
-        child_job_id=os.environ['SLURM_JOB_ID'], child_run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
+        child_job_id=__import__('search_r1.baselines.execution_identity',fromlist=['execution_id']).execution_id(), child_run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
         parent_failed_attempt=dict(attempt_id=PARENT_NEXT_STEP, completed_outer_credit=0,
             optimizer_writes=None, published_rank_optimizer_record=None,
             error_type='HumanRequestedStop', failure_component='manual_stop_slow3339',

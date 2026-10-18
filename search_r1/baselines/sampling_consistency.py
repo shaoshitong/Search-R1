@@ -127,7 +127,7 @@ def record_raw_turn(worker, output):
                   code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
                   config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
                   data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
-                  job_id=os.environ['SLURM_JOB_ID'],run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
+                  job_id=__import__('search_r1.baselines.execution_identity',fromlist=['execution_id']).execution_id(),run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'],
                   model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
                   local_rows=len(output), saved_rows=saved_rows, optimizer_committed=0,
                   context_scope='Before response decode/retokenization/rolling-window truncation')
@@ -313,7 +313,7 @@ def fresh_calibration_driver_provenance(trainer):
                     config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
                     data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
                     model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
-                    job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
+                    job_id=__import__('search_r1.baselines.execution_identity',fromlist=['execution_id']).execution_id(), run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
     workers = provenance['workers']
     if (len(workers) != 8 or {record['rank'] for record in workers} != set(range(8))
             or any(record['world_size'] != 8 or record['optimizer_state_entries'] != 0
@@ -355,7 +355,7 @@ def calibrate_actor(worker, data):
                   config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
                   data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
                   model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
-                  job_id=os.environ['SLURM_JOB_ID'],run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
+                  job_id=__import__('search_r1.baselines.execution_identity',fromlist=['execution_id']).execution_id(),run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
         if ((not corrected and not record['diagnostic_records'])
                 or len(record['diagnostic_entries']) != len(record['diagnostic_records'])
                 or record['scheduler_step'] != record['parent_completed_outer']):
@@ -451,7 +451,7 @@ def finalize_calibration(trainer, batch):
                     config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
                     data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
                     model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
-                    job_id=os.environ['SLURM_JOB_ID'],run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
+                    job_id=__import__('search_r1.baselines.execution_identity',fromlist=['execution_id']).execution_id(),run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
     if any(record['rank'] != rank or record['world_size'] != 8
            or record['optimizer_committed'] != 0 or record['scheduler_advanced']
            or record['scheduler_step'] != parent or (not corrected and not record['diagnostic_records'])
@@ -509,7 +509,7 @@ def finalize_calibration(trainer, batch):
                  new_completed_outer=0, optimizer_committed=0, scheduler_advanced=False,
                  sampler_cursor_before_outer=provenance['parent_cursor'],
                  sampler_cursor_after_observation=trainer.checkpoint_sampler.cursor,
-                 job_id=os.environ['SLURM_JOB_ID'], code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
+                 job_id=__import__('search_r1.baselines.execution_identity',fromlist=['execution_id']).execution_id(), code_commit=os.environ['SEARCH_R1_BASELINE_COMMIT'],
                  config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
                  data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
                  model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],

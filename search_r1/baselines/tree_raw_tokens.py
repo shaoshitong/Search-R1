@@ -595,7 +595,7 @@ def capture_native_emissions(request_outputs,sampling_params,call_id,rank,*,nati
     settings=capture_native_sampling_settings(sampling_params)
     require(type(native_stopping) is dict,'Actual native effective EOS/stop capture required')
     provenance={key:os.environ.get(key) for key in ('SEARCH_R1_BASELINE_COMMIT','SEARCH_R1_BASELINE_CONFIG_SHA256',
-        'SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID','SLURM_JOB_ID')}
+        'SEARCH_R1_BASELINE_DATA_IDENTITY','SEARCH_R1_MODEL_IDENTITY','SEARCH_R1_BASELINE_RUN_ID',('RBA_H100_SHARED_EXECUTION_ID' if os.environ.get('RBA_H100_SHARED_EXECUTION_ID') else 'SLURM_JOB_ID'))}
     require(all(isinstance(value,str) and value for value in provenance.values()),
             'Own source/config/data/model/run/job provenance is required for opt-in emission capture')
     rows=[];seen=set()

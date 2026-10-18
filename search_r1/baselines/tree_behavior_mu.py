@@ -21,7 +21,7 @@ META = 'tree_behavior_mu_protocol'
 PROVENANCE_META = 'tree_behavior_mu_runtime_provenance'
 PROVENANCE_KEYS = ('SEARCH_R1_BASELINE_COMMIT', 'SEARCH_R1_BASELINE_CONFIG_SHA256',
                    'SEARCH_R1_BASELINE_DATA_IDENTITY', 'SEARCH_R1_MODEL_IDENTITY',
-                   'SEARCH_R1_BASELINE_RUN_ID', 'SLURM_JOB_ID')
+                   'SEARCH_R1_BASELINE_RUN_ID', ('RBA_H100_SHARED_EXECUTION_ID' if __import__('os').environ.get('RBA_H100_SHARED_EXECUTION_ID') else 'SLURM_JOB_ID'))
 PLAIN_DISTRIBUTION = dict(temperature=1., top_p=1., top_k=-1, min_p=0.,
                           presence_penalty=0., frequency_penalty=0.,
                           repetition_penalty=1., n=1, best_of=1, _real_n=1, logits_processors=None,

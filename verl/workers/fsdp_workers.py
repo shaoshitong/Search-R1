@@ -77,7 +77,7 @@ def inspect_fresh_worker_state(worker, expected_model_path):
                       config_sha256=os.environ['SEARCH_R1_BASELINE_CONFIG_SHA256'],
                       data_identity=os.environ['SEARCH_R1_BASELINE_DATA_IDENTITY'],
                       model_identity=os.environ['SEARCH_R1_MODEL_IDENTITY'],
-                      job_id=os.environ['SLURM_JOB_ID'], run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
+                      job_id=__import__('search_r1.baselines.execution_identity',fromlist=['execution_id']).execution_id(), run_id=os.environ['SEARCH_R1_BASELINE_RUN_ID'])
     except Exception as exc:
         error = repr(exc)
     sync_prepare(error, device)
