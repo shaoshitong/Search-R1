@@ -12,8 +12,8 @@ from reproduction.hpc3_prefix5.observe import query_for
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--samples',type=int,default=80);parser.add_argument('--interval',type=int,default=30);args=parser.parse_args()
-    assert 1<=args.samples<=160 and 10<=args.interval<=60
+    parser=argparse.ArgumentParser();parser.add_argument('--samples',type=int,default=80);parser.add_argument('--interval',type=int,default=30);parser.add_argument('--target',type=int,default=55);args=parser.parse_args()
+    assert 1<=args.samples<=160 and 10<=args.interval<=60 and 55<=args.target<=199
     operator=runpy.run_path(str(Path(__file__).with_name('hpc3-progressive-observe-20261018.py')))
     code=query_for(operator['BASE']).replace('print(json.dumps(result,allow_nan=False))',operator['EXTRA']+'\nprint(json.dumps(result,allow_nan=False))')
     code=code.replace("result['shared_free_bytes']=", "result['bootstrap_complete']=bool((b/'preparation/progressive-bootstrap-complete.json').exists())\nresult['shared_free_bytes']=")
@@ -36,8 +36,8 @@ def main():
             print(json.dumps(row),flush=True)
             if not v['queue'] or v['failed_jobs']:
                 print(json.dumps(dict(status='ATTENTION_TERMINAL_OR_FAILED_PHASE',logs=v.get('recent_logs'))),flush=True);return
-            if v['complete_outer']>=55 and v['status']['outer']>=56 and any((x or 0)>0 for x in counts(v.get('prefix',[]))):
-                print(json.dumps(dict(status='FIVE_COMPLETE_RESUMED_OUTERS_AND_POSITIVE_NEXT_PHASE',outer=v['complete_outer'])),flush=True);return
+            if v['complete_outer']>=args.target and v['status']['outer']>=args.target+1 and any((x or 0)>0 for x in counts(v.get('prefix',[]))):
+                print(json.dumps(dict(status='TARGET_COMPLETE_AND_POSITIVE_NEXT_PHASE',outer=v['complete_outer'],target=args.target)),flush=True);return
         except Exception as error:
             print(json.dumps(dict(sample=ordinal+1,status='READ_FAILED_NOT_CURRENT_PROGRESS',error=repr(error))),flush=True)
         if ordinal+1<args.samples:time.sleep(args.interval)
