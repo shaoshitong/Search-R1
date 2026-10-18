@@ -188,6 +188,30 @@ else:
    metadata_sha256=hashlib.sha256(joint_raw).hexdigest(),new_actor_Adam=a.get('new_adam_steps_per_rank'),
    processed_opportunities=a.get('opportunities_processed'),skipped_opportunities=a.get('skipped_update_opportunities'),
    mixed_floor=joint['rollout'].get('mixed_floor'))
+ value['recent_complete_metadata']=[]
+ if joint:
+  for ordinal in range(max(51,joint['outer']-4),joint['outer']+1):
+   recent_path=b/'outers'/('outer-%06d'%ordinal)/'complete.json'
+   if not recent_path.is_file():
+    value['recent_complete_metadata'].append(dict(outer=ordinal,metadata_status='MISSING'));continue
+   assert recent_path.resolve()==recent_path and not recent_path.is_symlink()
+   size=recent_path.stat().st_size
+   if size>1024**2:
+    value['recent_complete_metadata'].append(dict(outer=ordinal,metadata_status='ABOVE_1MIB_READ_BUDGET',bytes=size));continue
+   recent_raw=recent_path.read_bytes();assert len(recent_raw)<=1024**2
+   recent=json.loads(recent_raw);assert recent['run_id']==h['run_id'] and recent['outer']==ordinal
+   actor=recent['actor'];probe=recent['probe'];floor=recent['rollout'].get('mixed_floor') or {}
+   floor_keys=('initial_mixed','final_mixed','initial_fraction','final_fraction','extra_native_batches',
+    'completed_candidate_questions','remaining_uncontinued_questions','triggered','shortfall','exhausted',
+    'target_mixed','target_reached','native_prefix_or_score_regenerated')
+   value['recent_complete_metadata'].append(dict(outer=ordinal,metadata_status='PRESENT',
+    source_commit=recent.get('source_commit'),metadata_sha256=hashlib.sha256(recent_raw).hexdigest(),
+    actor_Adam=actor['actual_adam_steps_per_rank'],scheduler=actor['scheduler_completed_outer'],
+    new_actor_Adam=actor.get('new_adam_steps_per_rank'),
+    processed_opportunities=actor.get('opportunities_processed'),skipped_opportunities=actor.get('skipped_update_opportunities'),
+    probe_completed_outer=probe.get('completed_outer'),probe_Adam=probe.get('actual_adam_steps_per_rank'),
+    rollout_mixed=recent['rollout'].get('actual_selected_mixed_fraction'),
+    mixed_floor={k:floor[k] for k in floor_keys if k in floor},replacement_count=len(floor.get('replacements',[]))))
  value['latest_milestone_QA']=None
  for milestone in (200,150,100):
   if joint and joint['outer']>=milestone:
