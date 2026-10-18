@@ -24,7 +24,7 @@ for i in range(65,201):
 active=[]
 for f in(p/'actor/outers').glob('outer-%04d-attempt-*/rank-*-updates.jsonl'%n):
  rows=[json.loads(s)for s in f.read_text().splitlines()if s];r=next((x for x in rows if x['event']=='ACTUAL_RESTORE'),None);w=[x for x in rows if x['event']=='ACTUAL_ADAM_WRITE']
- active.append(dict(rank=r['rank']if r else None,restore=r,writes=len(w),opportunities=sum(x['event']=='OPPORTUNITY'for x in rows),last_adam=w[-1]['actual_adam_steps']if w else None))
+ active.append(dict(rank=r['rank']if r else None,restore={k:r.get(k)for k in ('restored_completed_outer','actual_adam_before','restored_scheduler','actual_model_master_dtypes','actual_learning_rates','actual_global_micro')}if r else None,writes=len(w),opportunities=sum(x['event']=='OPPORTUNITY'for x in rows),last_adam=w[-1]['actual_adam_steps']if w else None))
 logs=[]
 for f in sorted((p/'logs').glob('*.log'),key=lambda f:f.stat().st_mtime,reverse=True)[:4]:
  with f.open('rb')as q:q.seek(max(0,f.stat().st_size-3000));tail=q.read().decode(errors='replace')
