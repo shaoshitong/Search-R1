@@ -1,9 +1,11 @@
-# R4 P100: paired checkpoint and fixed512 QA accepted; grounding transition pending
+# R4 P100: checkpoint, fixed512 QA and actual complete101 transition accepted
 
 Job733898 continues on ACD1-6 with four shared H100 GPUs, immutable runtime
 2000d46a530c64d78be7802bf11175a68b65effe. This is an intermediate milestone
-report, not completion of the200-outer/final51713 objective. As of this report,
-round100 reward-grounding fitting and its actual use by complete101 are pending.
+report, not completion of the200-outer/final51713 objective. Round100 reward
+grounding was fitted from saved actor100 and adopted by all four replicas.
+The independent transition audit then passed against actual complete101;
+outer102 had started Prefix generation at the latest observation.
 
 ## Student first, then new Prefix40 data and fitting
 
@@ -89,14 +91,48 @@ QA source-complete SHA: `65c3467b8facebf9e1be86338a42e05f9e4874f9b4b5028a9675c4d
 QA audit mirror: `preparation/fixed512-000100-fresh-sha-acceptance.json`, SHA
 `30f21e02e276542c9ffd032deece923490a8c2050688030952c6cd45f927981a`.
 
-## Remaining acceptance
+## Grounding100 and actual complete101 transition
 
-Reward-grounding round100 is being fitted from the actual saved actor100.
-Its new300-question/G5 calibration had produced1497/1500 valid rollouts at
-the last observed event. No round100 fit-complete/adoption proof or actual101
-reward use was accepted yet. The separate transition tool must verify the
-new fitted heads, four real reward replicas, Prefix40/new-probe scoring and
-actual complete101 restore/write journals. Do not count this report as that
-transition acceptance. Remaining work also includes training through200, later
-probe updates, Prefix80/grounding150, fixed512 QA150/200, final51713 QA, all
-checkpoint checks and own-resource cleanup. Full goal remains active.
+The new heads were fitted from actual actor0100 using the bound300-question
+G5 calibration, with1497/1500 valid rollouts, both required CV folds and BF16
+interaction. Commit CV AUC was0.809940; boundary CV AUC was0.759499. These
+are grounding calibration metrics, not the selection probe or formal QA EM.
+All four actual reward services adopted version
+`cc0de51f2d68495c9664aa888074839c:100:0250f494eabf41f596a6d49f09586a45`.
+
+The independent transition reader checked the fitted binary heads' full SHA
+and finite CPU state, actor100 encoder binding, calibration identity/protocol,
+four distinct rank reward endpoints, and the new version recorded in actor101's
+actual reward receipt. Selection-probe weights were not used for reward.
+It also checked actual101 Prefix40 generation from actor0100, scoring with the
+exact fitted1150-step probe, and four rank restore/update ledgers. All four
+actors restored2000 and wrote20 actual updates, reaching2020; scheduler101
+completed and zero opportunities were skipped. The complete101 joint SHA is
+`6063f792d156fabbdcf855b5b9ca06d04b79bfdafecf015bd9641c109646d212`.
+
+Acceptance status: `ACTUAL_PREFIX_AND_GROUNDING_TRANSITION_USED_BY_COMPLETE_NEXT_OUTER_PASS`.
+Remote proof: `preparation/transition-000100-actual-next-complete.json`, SHA
+`fd96fa2d4e205a7bbd9237ac240fc0047f8784898a774a5f99cbc35a6b14901a`.
+Grounding manifest SHA: `65afaea92d4a5955e2d9b51b366f1ac6b741550e0b340dc0ef3fb0fe35040dff`.
+Four-service adoption SHA: `b713df76a6bebf6f6f9ca65dee8d644f5a767be52f34d6c106c93b0092766be7`.
+
+The transition reader reused the sealed fullCPU100 proof after checking its
+file stat/filesystem seals. It did not repeat the full calibration feature
+payload hash scan or independently compare both pre-fit migration tensors;
+the readout expansion assertions above remain runtime-checked evidence.
+Formal fixed512 QA was accepted separately, as documented above.
+
+The first ordinary Prefix40 round101 selected193/512 real Mixed questions
+(37.6953%),154 all-wrong and165 all-correct, with319 nonMixed fills. Its
+successful phase times summed678.078s; joint100-to-joint101 was1200.145s
+and additionally includes post100 QA/grounding/orchestration. This single
+round does not demonstrate improved Mixed selection from Prefix40. Round100's
+73.4375% came from the larger2560-question P10 pool and is not a matched
+ordinary-round comparison.
+
+## Remaining work
+
+Training through200, later probe updates, Prefix80/grounding150, fixed512
+QA150/200, final51713 QA, all remaining checkpoint checks and own-resource
+cleanup remain incomplete. Full goal remains active. No runtime source,
+scorer, threshold or training configuration was changed for this audit.
