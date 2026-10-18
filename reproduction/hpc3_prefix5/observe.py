@@ -16,7 +16,21 @@ def read(p,limit=1024**2,required=False):
    time.sleep(.05)
  if len(raw)>limit:raise ValueError('Oversized metadata receipt: '+str(p))
  return json.loads(raw)
-s=read(b/'preparation/slurm-submission.json');job=s['job'];status=read(b/'logs/pipeline-status.json');a=read(b/'actor/latest.json');probe=read(b/'probe/latest.json');joint=read(b/'latest-joint.json')
+# Grounding refits embed their source actor lineage. Real round100 receipts are
+# 6--8MiB and round150 grows again; these two known journals get a bounded128MiB
+# remote read. Small scalar/progress receipts retain their original1MiB cap.
+s=read(b/'preparation/slurm-submission.json');job=s['job'];status=read(b/'logs/pipeline-status.json');a=read(b/'actor/latest.json',limit=128*1024**2);probe=read(b/'probe/latest.json');joint=read(b/'latest-joint.json',limit=128*1024**2)
+def project_metadata(value):
+ if isinstance(value,list):return [project_metadata(item) for item in value]
+ if not isinstance(value,dict):return value
+ result={}
+ for key,item in value.items():
+  if key=='source_actor_receipt' and isinstance(item,dict):
+   import hashlib
+   result[key]={name:item.get(name) for name in ('run_id','completed_outer','actor_version','actual_adam_steps_per_rank','scheduler_completed_outer','grounding_probe_version','hf_model_dir')}
+   result[key].update(operator_projection='embedded_source_actor_lineage_summary',original_canonical_json_sha256=hashlib.sha256(json.dumps(item,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest())
+  else:result[key]=project_metadata(item)
+ return result
 queue=subprocess.run(['squeue','-h','-j',job,'-o','%i|%T|%P|%R|%S'],capture_output=True,text=True)
 result=dict(epoch=time.time(),job=job,queue=queue.stdout.strip(),queue_returncode=queue.returncode,queue_stderr=queue.stderr.strip(),accounting=subprocess.check_output(['sacct','-nP','-j',job,'--format=JobID,User,State,ExitCode,NodeList'],text=True).strip(),source_publication=read(b/'preparation/source-publication.json')['commit'],status=status,complete_outer=joint['outer'] if joint else 0,actor={k:a.get(k) for k in ['completed_outer','actual_adam_steps_per_rank','new_adam_steps_per_rank','scheduler_completed_outer','skipped_update_opportunities']} if a else None,probe={k:probe.get(k) for k in ['completed_outer','actual_adam_steps_per_rank']} if probe else None,allocation=read(b/'logs/slurm-allocation.json'),cleanup=read(b/'logs/cleanup-status.json'),pipeline_complete=bool((b/'logs/pipeline-complete.json').exists()),failed_jobs=[])
 # The cumulative process history grows throughout200 outers. Only its filtered

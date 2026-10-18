@@ -15,9 +15,9 @@ extra=r"""
 import hashlib
 o=NATIVE_OUTER
 path=b/'outers'/f'outer-{o:06d}'/'complete.json'
-j=read(path);result['native_joint']=j;result['next_budget']=read(b/'outers'/f'outer-{o+1:06d}'/'candidate-budget.json');result['native_rank_evidence']=[]
+j=read(path,limit=128*1024**2);result['native_joint']=project_metadata(j);result['native_joint_file_sha256']=hashlib.sha256(path.read_bytes()).hexdigest() if j else None;result['native_joint_control_projection']='embedded source_actor_receipt only; complete original journal stays remote';result['next_budget']=read(b/'outers'/f'outer-{o+1:06d}'/'candidate-budget.json');result['native_rank_evidence']=[]
 if j:
- prev=read(b/'outers'/f'outer-{o-1:06d}'/'complete.json')
+ prev=read(b/'outers'/f'outer-{o-1:06d}'/'complete.json',limit=128*1024**2)
  result['native_selection']=read(pathlib.Path(j['actor_selection_path']))
  for rank,receipt in enumerate(j['actor']['rank_receipts']):
   raw=pathlib.Path(receipt['ledger_path']).read_bytes()

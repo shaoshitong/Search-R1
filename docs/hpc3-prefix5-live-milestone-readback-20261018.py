@@ -105,8 +105,18 @@ def main():
             config = json.loads((base / 'preparation/launch-config.json').read_text())
             joint = json.loads(joint_path.read_text()); actor = joint['actor']; state = joint['grounding']
             assert config['run_id'] == joint['run_id'] == RUN_ID and joint['outer'] == args.outer
-            history = {n: json.loads((base / 'outers' / ('outer-%06d' % n) / 'complete.json').read_text())
-                       for n in range(1, args.outer + 1)}
+            # The validators use only the prior actor counter and the last
+            # probe-update's batch binding. Do not retain200 recursively embedded
+            # grounding journals alongside the actual multi-GB CPU tensors.
+            history = {}
+            for n in {args.outer - 1, joint['probe']['completed_outer']} - {0}:
+                item = joint if n == args.outer else json.loads(
+                    (base / 'outers' / ('outer-%06d' % n) / 'complete.json').read_text())
+                history[n] = dict(actor=dict(actual_adam_steps_per_rank=item['actor']['actual_adam_steps_per_rank']),
+                    probe=item['probe'], rollout=dict(actor_version=item['rollout']['actor_version']),
+                    probe_metrics={key: item['probe_metrics'].get(key) for key in
+                                   ('scored_features_manifest_sha256', 'own_em_sha256')})
+                del item
             _joint(config, joint, args.outer, previous_actual=history[args.outer - 1]['actor']['actual_adam_steps_per_rank'])
             assert len(actor['rank_states']) == len(actor['rank_receipts']) == 4
             allowed = [Path(config['official_model_dir']) / 'config.json', Path(actor['hf_model_dir']),
