@@ -1,0 +1,24 @@
+"""Existing periodic pair plus actual following native-prefix metadata only.
+
+Caller injects PARAMS (base, outer) and the published PERIOD_READER source.
+Missing outputs stay pending; this reader cannot modify or stop training.
+"""
+import hashlib,json
+from pathlib import Path
+api={};exec(PERIOD_READER,api)
+b=Path(PARAMS['base']);n=PARAMS['outer'];following=b/'outers'/('outer-%06d'%(n+1))
+paths=dict(periodic_complete=b/'outers'/('outer-%06d'%n)/'complete.json',
+ following_prefix=following/'prefix/scan/scan-complete.json',following_score=following/'probe-score/selection.json')
+present={k:p.is_file()for k,p in paths.items()}
+result=dict(status='PENDING_EXISTING_PERIODIC_AND_FOLLOWING_PREFIX_SCORE',present=present,
+ reader_source_sha256=hashlib.sha256(PERIOD_READER.encode()).hexdigest(),training_modified=False)
+if all(present.values()):
+ paired=api['observe'](PARAMS);scan=json.loads(paths['following_prefix'].read_text());length=api['stage_prefix'](n+1)
+ api['need'](scan['max_policy_prefix_tokens']==length and scan['head_max_tokens']==273+length,'Following native prefix/head dimensions differ')
+ api['need'](scan['actor_hidden_native']is True and scan['independent_encoder_forward']is False,'Following prefix did not use the actual sampling actor hidden')
+ api['need'](scan['actor_version']==paired['actual_following_adoption']['actor_version'],'Following prefix/EMA adoption actor version differs')
+ result.update(status='ACTUAL_PERIODIC_PAIR_AND_FOLLOWING_NATIVE_PREFIX_EMA_ADOPTION',paired=paired,
+  actual_following_prefix={k:v for k,v in scan.items()if isinstance(v,(str,int,float,bool))or v is None},
+  following_prefix_scan_sha256=hashlib.sha256(paths['following_prefix'].read_bytes()).hexdigest(),
+  no_model_hidden_optimizer_or_full_rollout_payload_loaded=True)
+print(json.dumps(result))

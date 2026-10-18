@@ -1,0 +1,68 @@
+"""Publish existing small B100 source proofs, paired results and actual101 scan."""
+import hashlib,json
+from pathlib import Path
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control');w=root/'work'
+source={
+ 'qa_grounding':w/'b-progressive-B100-QA-grounding-and-40token101-actual-20261018T231309855650Z.json',
+ 'transition':w/'b-progressive-period100-paired-and-native40-101-adoption-20261018T231659470774Z.json',
+ 'cpu':w/'prefix5-ab-normal-cp100-status-20261018T230844875448Z.json',
+ 'journals':w/'b-progressive-normal100-actual-complete-and-qa-progress-20261018T230744556814Z.json'}
+def value(path):
+ d=json.loads(path.read_text());assert d.get('rc',d.get('returncode'))==0;return json.loads(d['stdout'])
+qa=value(source['qa_grounding'])['qa_grounding'];transition=value(source['transition']);pair=transition['paired'];cpu=value(source['cpu'])['B'];actual=value(source['journals']);fact=next(f for f in actual['B']['facts']if f['outer']==100)
+state=json.loads((w/'search-g1-prefix5-ab200-state.json').read_text());a=state['A100_QA_and_grounding_actual']['qa'];b=qa['qa']
+assert a['evaluation_contract']==b['evaluation_contract']and a['question_source_sha256']==b['question_source_sha256']
+assert transition['status']=='ACTUAL_PERIODIC_PAIR_AND_FOLLOWING_NATIVE_PREFIX_EMA_ADOPTION'
+assert transition['actual_following_prefix']['count']==25600 and transition['actual_following_prefix']['max_policy_prefix_tokens']==40
+assert cpu['result']['status']=='AB_JOINT_FULL_SHA_CPU_PASS'
+assert all(r['writes']==20 and r['actual_adam_steps']==2000 for r in fact['actor'])and len(fact['actor'])==4
+assert all(r['writes']==50 and r['last_actual']==1400 for r in fact['probe'])and len(fact['probe'])==4
+m=pair['metric_fields'];curve=m['global_step_loss_curve'];windows={}
+for name,part in [('first10',curve[:10]),('last10',curve[-10:])]:
+ n=sum(x['global_questions']for x in part);windows[name]={k:sum(x[k]*x['global_questions']for x in part)/n for k in ('trajectory_bce','group_bce','total_loss')}
+proof=dict(qa_grounding=qa,actual_transition=transition,normal_checkpoint_source_cpu=cpu,
+ actor_journals=fact['actor'],probe_journals=fact['probe'],selection=fact['selection_metrics'],phase_timings=fact['phase_timings'],
+ weighted_changing_batch_windows=windows,qa100_matched_comparison=dict(A=a,B=b,contracts_equal=True,canonical_questions_equal=True),
+ existing_B50_execution_difference=state['B_qa50_recovery_reproducibility'],
+ original_small_evidence=[dict(role=k,path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest())for k,p in source.items()],
+ training_runtime_modified=False,goal_complete=False)
+out=Path('reproduction/reports/h100-prefix5-ab200-20261018/B-normal100');out.mkdir(exist_ok=True)
+(out/'ACTUAL-QA-GROUNDING-CPU-TRANSITION-SUMMARY.json').write_text(json.dumps(proof,indent=2)+'\n')
+t=['# B normal100: actual QA, joint state and native40-token transition','',
+ 'Both current four-GPU arms run on h100-11. Frozen training sources remain A2e397623 and Bc5f1a07e. These are actual intermediate results, not completion of the two200-outer/final51713 objectives.','',
+ '## Same fixed512 QA / same new BF16 contract','',
+ '| Actual actor100 | Correct /512 | QA EM | QA F1 |','|---|---:|---:|---:|']
+for arm,q in [('A',a),('B',b)]:t.append('| %s | %d | %.4f%% | %.4f%% |'%(arm,round(q['em']*512),100*q['em'],100*q['f1']))
+t+=['',
+ 'B answers17 more questions correctly than A at100: +3.3203 percentage points EM and +3.7875 points F1. Canonical question bytes, every qid/ordinal/source, original worker receipt SHA and score aggregation were checked; all four actual B workers exited0 with128 rows each. Source question SHA is `%s`.'%b['question_source_sha256'],'',
+ '| Source | A EM | B EM | A F1 | B F1 |','|---|---:|---:|---:|---:|']
+for key in ('nq','hotpotqa'):
+ x=a['per_source'][key];y=b['per_source'][key];t.append('| %s (256 each) | %.4f%% | %.4f%% | %.4f%% | %.4f%% |'%(key,100*x['em'],100*y['em'],100*x['f1'],100*y['f1']))
+t+=['',
+ 'The original B50 QA was221/512 EM43.1641%, F151.3998%; an already-existing recovered B50 execution was220/512 EM42.9688%, F151.6048%. Their previously recorded execution reproducibility difference remains unresolved despite identical identities/protocol/source. Both values remain visible; no new QA50 was generated. B100 improves by11 or12 correct questions relative to those existing executions.','',
+ 'Post50 B also changes prefix length and expanded-admission/outcome-assisted reranking, in addition to raw/EMA fitting. The observed A/B difference cannot isolate an EMA effect or establish statistical significance. QA100 uses actor100; the new probe100 is for subsequent selection and cannot itself explain actor100 QA.','',
+ '## Actual100 reward refit','',
+ 'The original ordered300 calibration questions were used with actor100. The completed immutable manifest and both small grounding heads were actually read and SHA checked; all four real HTTP replicas adopted the newly fitted round100 version. This is separate from the selection probe. Full actor101 reward-use confirmation remains pending until that actor completes; replica adoption alone is not that confirmation.','',
+ 'Grounding version: `%s`.'%qa['grounding']['version'],'',
+ '## Source joint checkpoint100','',
+ 'The once-only CPU reader independently hashed all25 source files totaling%d bytes and actually deserialized the saved states: actor2000/rank, scheduler100, probe raw/EMA/Adam1400/rank, EMA1400, and saved four-rank RNG. Source probe is the correct20-token/293-position checkpoint. The proof is `%s`, SHA `%s`. No GPU forward/restore or independent backup was performed; completed hashes/loads must not be repeated.'%(sum(x['bytes']for x in cpu['result']['files']),cpu['proof'],cpu['proof_sha256']),'',
+ '## Original-distribution probe fit at100','',
+ 'Sampling actor0099 supplied the original2560 trainingG5 and fresh fixed512 heldoutG5. No qid or normalized-content overlap. Before/after uses identical trajectories and labels, not teacher trajectories or QA100 greedy responses.','',
+ '| Model / original distribution | Mixed BA before → after | Trajectory BCE before → after | Mixed BCE before → after |','|---|---:|---:|---:|']
+for model in ('raw','ema'):
+ for split in ('train','test'):
+  x=m['before_update'][model][split];y=m['after_update'][model][split]
+  t.append('| %s / %s | %.4f%% → %.4f%% | %.6f → %.6f | %.6f → %.6f |'%(model,split,100*x['balanced_accuracy'],100*y['balanced_accuracy'],x['trajectory_bce'],y['trajectory_bce'],x['group_bce'],y['group_bce']))
+t+=['',
+ 'EMA heldout BA improves48.55%→56.69%, but its heldout mixedBCE worsens0.889256→1.091456. Raw heldout mixedBCE also worsens despite higher BA. This is not uniform improvement. Heldout has74mixed/438nonmixed (majority85.5469%); post EMA ordinary accuracy45.1172%, mixed recall72.9730%, nonmixed recall40.4110%, with261 false positives. Mean predicted mixture0.58734 remains above true prevalence0.14453.','',
+ 'Original train has301mixed/2259nonmixed. Its one balanced pass is1280+1280 groups,1278 unique,50.0781% repetitions. All four actual probe journals show50 Adam/EMA writes1350→1400 atLR5e-6/EMA.99, trajectoryBCE+5×mixedBCE; actor journals show20 writes1980→2000.','',
+ '| Actual changing-batch window | Trajectory BCE | Mixed BCE | Weighted total |','|---|---:|---:|---:|']
+for name,z in windows.items():t.append('| %s | %.6f | %.6f | %.6f |'%(name,z['trajectory_bce'],z['group_bce'],z['total_loss']))
+t+=['',
+ 'Windows use different balanced mini-batches and actual global-question weights, not repeated fixed-data loss. The probe100 loop takes%.6fs; whole training-wall phase takes%.6fs (%.2fmin).'% (m['train_loop_seconds'],fact['phase_timings']['outer-000100-training-wall'],fact['phase_timings']['outer-000100-training-wall']/60),'',
+ 'Periodic100 selects301/512=58.7891% mixed using the existing actual-label-assisted rule. This is not probe classification accuracy.','',
+ '## Actual101 native40-token / EMA adoption','',
+ 'Original next-prefix scan actually contains25600 trajectories from actor0100, max retained policy prefix40 and head313 positions, actor-hidden-native=true, independent-encoder-forward=false, labels_present=false. The legacy string identifiers containing “policy5/prefix5” remain unchanged; the actual numeric dimension/source fields above record this40-token phase.','',
+ 'The immutable20→40 migration binds the completed100 checkpoint to a new40-token payload, preserving the recorded raw/EMA/Adam1400 clocks, LR, run and no-reset flags. Actual101 unlabelled EMA scoring uses the migrated payload `%s` and actor0100. Migration receipts and actual score metadata are not an independent tensor-preservation/forward audit.'%pair['actual_following_adoption']['probe_before_checkpoint_sha256'],'',
+ 'Actual101 completion/optimizer writes and actual reward-RPC100 use remain pending in this report. Later150/200 QA, final51713 and native exit0/resource closure are not yet achieved. Models, optimizer, hidden and complete trajectories remain remote.']
+(out/'README.md').write_text('\n'.join(t)+'\n');print(out)
