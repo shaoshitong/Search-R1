@@ -1,0 +1,23 @@
+import json,subprocess,importlib.util,datetime
+from pathlib import Path
+r=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control');a=json.loads((r/'work/prefix5-ab-assigned-arms.json').read_text())['B']
+authorization={'received_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'human_instruction':'B可以停掉，从50iter resume；只修改prefix20/40/80和768/1024/1536题续写后选512；A继续','scope':'Stop only original B native; resume B full CP50, preserve all other settings','source':a}
+p=r/'work/prefix5-b-progressive-human-authorization.json'
+if not p.exists():p.write_text(json.dumps(authorization,ensure_ascii=False,indent=2)+'\n')
+inner=r'''import json,os,signal,time
+from pathlib import Path
+b=Path(__BASE__);r=json.loads((b/'preparation/submit-receipt.json').read_text());leader=r['leader'];p=b/'preparation/human-stop-b-progressive-cp50-20261018.json'
+if p.exists():out={'status':'EXISTING_STOP_INTENT_NO_REPLAY','proof':str(p)}
+else:
+ out={'requested_unix':time.time(),'human_instruction':'Stop only B; resume its CP50 with20/40/80 prefixes and expanded Top candidates','scope':'B only; A preserved','leader':leader,'latest_complete_at_request':json.loads((b/'latest-joint.json').read_text())['outer']}
+ with p.open('x')as f:json.dump(out,f)
+ try:
+  fd=os.pidfd_open(leader['pid']);s=Path('/proc/%d/stat'%leader['pid']).read_text().rsplit(')',1)[1].split();assert int(s[19])==leader['start_ticks'];signal.pidfd_send_signal(fd,signal.SIGTERM);os.close(fd);out['signal_sent']=True
+ except ProcessLookupError:out['already_gone']=True
+print(json.dumps(out))
+'''.replace('__BASE__',repr(a['base']))
+spec=importlib.util.spec_from_file_location('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl)
+wrapper='/root/.local/share/search-g1/prefix5-retained-bootstrap/6f970c9201962423daf2d463f9135f0f3cc6b16e5df9b9c12be24d5b7dbb3f60/h10011_retained_paths.sh'
+script='import subprocess\np=subprocess.run('+repr(['unshare','--mount','--propagation','private','bash',wrapper,'/usr/bin/python3','-c',inner])+',text=True,capture_output=True,timeout=25)\nassert p.returncode==0,p.stderr\nprint(p.stdout)'
+v=subprocess.run(ctl.route('h100-11','/usr/bin/python3 -'),input=script,text=True,capture_output=True,timeout=50)
+e=r/('work/prefix5-b-progressive-stop-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'.json');e.write_text(json.dumps({'rc':v.returncode,'stdout':v.stdout,'stderr':v.stderr},indent=2));print(e);print(v.stdout);assert v.returncode==0,v.stderr

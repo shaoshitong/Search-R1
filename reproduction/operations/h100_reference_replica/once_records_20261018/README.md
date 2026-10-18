@@ -1,0 +1,1 @@
+Historical exact control sources, archived as text to prevent accidental stop/submit replay. They bind this 2026-10-18 human instruction. Current B is a new CP50 branch; do not replay the stop or preparation against mutable assigned-arms metadata. Models and full outputs remain remote.

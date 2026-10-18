@@ -17,7 +17,7 @@ def remote(inner,label,*,namespace=True,timeout=100):
     value=json.loads(p.stdout);print(json.dumps(dict(evidence=str(out),result=value)),flush=True);return value
 
 def stage(commit):
-    source=json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())['B']['base']+'/repo'
+    source=json.loads((ROOT/'work/prefix5-b-progressive-human-authorization.json').read_text())['source']['base']+'/repo'
     parent='2e3976230ac9425d66d8553afa9962821e964932'
     def tree(revision):
         data=subprocess.check_output(['git','ls-tree','-rz',revision],cwd=REPO);result={}
@@ -55,7 +55,7 @@ print(json.dumps(dict(physical=str(b),files=len(expected),changed_files=len(delt
 def main():
     p=argparse.ArgumentParser();p.add_argument('action',choices=('stage','prepare','submit','observe'));p.add_argument('--commit');p.add_argument('--base');a=p.parse_args()
     if a.action=='stage':return stage(a.commit)
-    source=json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())['B']['base']
+    source=json.loads((ROOT/'work/prefix5-b-progressive-human-authorization.json').read_text())['source']['base']
     b=a.base
     if a.action=='prepare':
         staged='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-'+a.commit

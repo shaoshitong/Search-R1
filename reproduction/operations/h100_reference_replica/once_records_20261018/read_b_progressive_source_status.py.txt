@@ -1,0 +1,10 @@
+import json,subprocess,importlib.util,datetime,sys
+from pathlib import Path
+sys.path.insert(0,'/Users/shaoshitong/Documents/Search-G1/h100-prefix5-reference-replica-20261018')
+from reproduction.operations.h100_reference_replica.follow_h10011_ab_normal_boundary import PATH_LAYOUTS
+r=Path('work');arms=json.loads((r/'prefix5-ab-assigned-arms.json').read_text());b=arms['B']['base']
+inner='''import json,os,time\nfrom pathlib import Path\nb=Path(%r)\ndef read(p):return json.loads(p.read_text())if p.exists()else None\nc=read(b/'preparation/launch-config.json');proof=read(b/'preparation/ab-joint-0050-independent-full-sha-cpu.json');cleanup=read(b/'logs/cleanup-status.json');joint=read(b/'outers/outer-000050/complete.json');print(json.dumps({'config':c,'cleanup':cleanup,'proof':proof,'cp50_joint_summary':{'actor_binding':joint['actor']['binding'],'keys':list(joint),'actor_dir':joint['actor']['state_dir'],'probe':joint['probe']},'log_tail':(b/'logs/native-pipeline.log').read_text()[-1800:]}))'''%b
+script='import subprocess,os\np=subprocess.run('+repr(['unshare','--mount','--propagation','private','bash',PATH_LAYOUTS['retained'],'/usr/bin/python3','-c',inner])+',text=True,capture_output=True,timeout=20)\nassert p.returncode==0,p.stderr\nprint(p.stdout)'
+spec=importlib.util.spec_from_file_location('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py');ctl=importlib.util.module_from_spec(spec);spec.loader.exec_module(ctl)
+p=subprocess.run(ctl.route('h100-11','/usr/bin/python3 -'),input=script,text=True,capture_output=True,timeout=45);assert p.returncode==0,p.stderr
+v=json.loads(p.stdout);out=r/('prefix5-b-progressive-source-status-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'.json');out.write_text(json.dumps(v,indent=2));print(json.dumps({'evidence':str(out),'cleanup':v['cleanup'],'proof_status':(v['proof']or{}).get('status'),'proofkeys':list(v['proof']or{}),'binding':v['cp50_joint_summary']['actor_binding'],'log':v['log_tail'][-500:]}))
