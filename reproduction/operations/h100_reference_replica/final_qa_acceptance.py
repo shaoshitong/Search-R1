@@ -187,7 +187,10 @@ def inspect_final(base):
         part,file=read_shard(worker['full_output'],worker,questions,rank,prompt_for,score)
         need(not rows.keys()&part.keys(),'QA ordinal repeats between native workers')
         rows.update(part);files.append(file)
-    need(set(rows)==set(range(51713)) and len({r['qid']for r in rows.values()})==51713,'Actual final QA identity coverage differs')
+    unique_qids=len({r['qid']for r in rows.values()});coverage=set(rows)==set(range(51713))
+    need(coverage and unique_qids==51713,'Actual final QA identity coverage differs')
+    actual_counts=dict(Counter(row['data_source']for row in rows.values()))
+    need(actual_counts==SOURCES,'Actual output source counts differ')
     aggregate=aggregates(rows);matching_aggregate(aggregate,complete)
     for file in files:
         need(stat_key(Path(file['path']).stat())==(file['dev'],file['inode'],file['bytes'],file['mtime_ns']),
@@ -196,7 +199,7 @@ def inspect_final(base):
     need(file_sha(config_path)==config_sha and file_sha(complete_path)==complete_sha,'Final QA configuration/receipt changed during rescore')
     result=dict(status='FINAL51713_ORIGINAL_OUTPUT_SCORE_READBACK_PASS',run_id=config['run_id'],actor_version=config['actor_version'],
         evaluation_config_sha256=config_sha,final_receipt_sha256=complete_sha,canonical_input_sha256=CANONICAL_SHA,
-        actual_source_counts=SOURCES,actual_qa_count=51713,actual_unique_qids=51713,actual_full_ordinal_coverage=True,
+        actual_source_counts=actual_counts,actual_qa_count=len(rows),actual_unique_qids=unique_qids,actual_full_ordinal_coverage=coverage,
         aggregate=aggregate,original_compressed_shards=files,actual_worker_exit_codes=exits,
         frozen_eval_source_sha256=file_sha(native.__file__),scoring_publication=publication,completed_unix=time.time(),
         model_weights_loaded=False,gpu_forward_performed=False,new_generation_performed=False,
