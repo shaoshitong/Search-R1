@@ -93,6 +93,7 @@ def build_evaluation_engine(config, model, seed, free, total, *, factory=None, c
             llm = factory(model=str(model), tokenizer=str(model), trust_remote_code=False,
                 dtype=COMPUTE_DTYPE, tensor_parallel_size=1, max_model_len=BUDGET['total_tokens'], seed=seed,
                 gpu_memory_utilization=utilization, swap_space=0,
+                num_gpu_blocks_override=config.get('evaluation_num_gpu_blocks_override'),
                 enforce_eager=bool(config.get('evaluation_enforce_eager', False)),
                 enable_chunked_prefill=True, enable_prefix_caching=True,
                 disable_async_output_proc=True, disable_log_stats=True, **limits)

@@ -11,7 +11,7 @@ def prepare(source,target,canonical,commit):
     assert not same(read(source/'preparation/submit-receipt.json')['leader'])
     assert not(source/'actor').exists()and not(source/'latest-joint.json').exists()
     phase=source/'outers/outer-000001/prefix';logs=list(phase.glob('rank-*.log'))
-    assert any('torch.OutOfMemoryError: CUDA out of memory'in f.read_text()for f in logs)
+    assert any(any(kind in f.read_text()for kind in ['torch.OutOfMemoryError: CUDA out of memory','No available memory for the cache blocks'])for f in logs)
     assert not(phase/'complete.json').exists()
     head=read(source/'probe/latest.json');assert head['actual_adam_steps_per_rank']==[0]*4
     def remap(v):
@@ -19,7 +19,7 @@ def prepare(source,target,canonical,commit):
         if isinstance(v,dict):return {k:remap(x)for k,x in v.items()}
         if isinstance(v,list):return [remap(x)for x in v]
         return v
-    c=remap(old);c.update(source_commit=commit,execution_id=uuid.uuid4().hex,rollout_utilization_cap=.13,evaluation_utilization_cap=.13,retrieval_data_cache=old['retrieval_data_cache'])
+    c=remap(old);c.update(source_commit=commit,execution_id=uuid.uuid4().hex,rollout_utilization_cap=.13,evaluation_utilization_cap=.13,retrieval_data_cache=old['retrieval_data_cache'],rollout_num_gpu_blocks_override=2048,evaluation_num_gpu_blocks_override=2048,rollout_max_batched_tokens=4096,rollout_max_num_seqs=64,evaluation_max_batched_tokens=4096,evaluation_max_num_seqs=64,evaluation_enforce_eager=True)
     # Preserve the consumed first reservation; never draw another candidate set.
     (target/'question-pool').mkdir()
     for name in ['binding.json','state.json']:os.link(source/'question-pool'/name,target/'question-pool'/name)

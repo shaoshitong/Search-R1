@@ -4,7 +4,7 @@ REPO=pathlib.Path(__file__).resolve().parents[3]
 sys.path.insert(0,'/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016')
 from reproduction.h1008_qprobe.management_transport import remote
 OUT=pathlib.Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/b-replica-retained18-20261018')
-PHYSICAL='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-own-20261018-cache1-kvcap1'
+PHYSICAL='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-own-20261018-cache1-kvcap1-blocks1'
 CANONICAL='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'+PHYSICAL.rsplit('/',1)[1]
 SOURCE='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/launch-config.json'
 COMMON='''import pathlib,json,subprocess,time,os,sys,hashlib
@@ -26,11 +26,11 @@ def main():
   buffer=io.BytesIO()
   with tarfile.open(fileobj=buffer,mode='w')as tar:
    for f in tracked:
-    if f.startswith('reproduction/operations/b_replica_retained18/')or f=='reproduction/prefix20_online/retriever.py':tar.add(REPO/f,arcname=f,recursive=False)
+    if f.startswith('reproduction/operations/b_replica_retained18/')or f in ('reproduction/prefix20_online/retriever.py','reproduction/prefix_selection200/rollout.py','reproduction/prefix_selection200/eval.py'):tar.add(REPO/f,arcname=f,recursive=False)
   archive=gzip.compress(buffer.getvalue(),compresslevel=6)
   packed_manifest=base64.b64encode(gzip.compress(json.dumps(manifest).encode())).decode()
   source_config=SOURCE if args.phase=='prepare' else '/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-own-20261018/preparation/launch-config.json'
-  if args.phase=='repair_kv':source_config='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-own-20261018-cache1/preparation/launch-config.json'
+  if args.phase=='repair_kv':source_config='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-own-20261018-cache1-kvcap1/preparation/launch-config.json'
   s+='''\nimport io,tarfile,base64,gzip
 assert not p.exists(),'Existing deployment must be reconciled, never overwritten'
 p.mkdir();(p/'repo').mkdir();(p/'preparation').mkdir();(p/'logs').mkdir()

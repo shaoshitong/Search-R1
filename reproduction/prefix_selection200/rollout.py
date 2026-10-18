@@ -382,6 +382,7 @@ def _build_llm(config, model, seed, free, total):
             llm = LLM(model=model, tokenizer=model, trust_remote_code=False, dtype=COMPUTE_DTYPE,
                       tensor_parallel_size=1, max_model_len=BUDGET['total_tokens'], seed=seed,
                       gpu_memory_utilization=utilization, swap_space=0,
+                      num_gpu_blocks_override=config.get('rollout_num_gpu_blocks_override'),
                       enforce_eager=bool(config.get('_capture_actor_hidden') or config.get('rollout_enforce_eager', False)),
                       enable_chunked_prefill=True, enable_prefix_caching=False,
                       disable_async_output_proc=True,
