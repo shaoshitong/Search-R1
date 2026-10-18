@@ -162,7 +162,10 @@ def main():
     save(OUTPUT/('progressive-ordinary-outer-%06d-mirror.json'%n), mirror)
     for name in ('current.json','progressive-goal-acceptance-ledger.json'):
         path_state=OUTPUT/name;s=json.loads(path_state.read_text()) if path_state.exists() else {}
-        s.update(checked_unix=time.time(),goal_status='active',full_goal_complete=False,
+        s.update(checked_unix=d['epoch'],goal_status='active',full_goal_complete=False,
+                 status='PROGRESSIVE_TRAINING_RUNNING_WITH_VERIFIED_NATIVE_JOINT',job=d['job'],base=BASE,
+                 runtime_source_commit=RUNTIME,pipeline=dict(status=d['status'],complete_outer=d['complete_outer'],
+                     actor=d['actor'],probe=d['probe'],errors=d['error_lines']),
                  actual_complete_outer=d['complete_outer'],
                  actual_completed_outers=d['complete_outer'],
                  latest_native_acceptance=str(path),latest_native_accepted_outer=n,
