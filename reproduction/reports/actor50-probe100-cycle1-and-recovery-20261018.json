@@ -1,0 +1,195 @@
+{
+  "role": "actual_two_epoch_result_and_cycle2_native_CUDA_fault_recovery",
+  "checked_unix": 1792304038.987885,
+  "actual_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-probe100-observe-1792303759263706000.json",
+  "completed_epochs": 2,
+  "new_Adam_per_rank": [
+    28,
+    28,
+    28,
+    28
+  ],
+  "EMA_updates": 28,
+  "checkpoint_sha256": "76221b63d18d8bc17ce742138caa88196f6c8d44113826a2f7dd8cefbf567fef",
+  "source_probe50_sha256": "771f8c5c7b1a359cf786b5353a46261d23d2999567b3c8ba1bef3e0455c16184",
+  "metrics": {
+    "actor_updates": 0,
+    "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+    "after": {
+      "test": {
+        "accuracy": 0.4140625,
+        "balanced_accuracy": 0.526095389226836,
+        "count": 512,
+        "fn": 31,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 269,
+        "group_bce": 1.1655131388867883,
+        "group_weight": 1.0,
+        "mean_q": 0.6265692048467474,
+        "mixed_count": 114,
+        "mixed_recall": 0.7280701754385965,
+        "nonmixed_count": 398,
+        "nonmixed_recall": 0.3241206030150754,
+        "resampled_evaluation": false,
+        "threshold": 0.5,
+        "tn": 129,
+        "total_loss": 1.9545266170104667,
+        "tp": 83,
+        "trajectory_accuracy": 0.60625,
+        "trajectory_bce": 0.7890134781236784,
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "weight_kind": "EMA0.99"
+      },
+      "train": {
+        "accuracy": 0.6640625,
+        "balanced_accuracy": 0.6502189781021899,
+        "count": 512,
+        "fn": 52,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 120,
+        "group_bce": 0.6981319296940695,
+        "group_weight": 1.0,
+        "mean_q": 0.4328396115115187,
+        "mixed_count": 137,
+        "mixed_recall": 0.6204379562043796,
+        "nonmixed_count": 375,
+        "nonmixed_recall": 0.68,
+        "resampled_evaluation": false,
+        "threshold": 0.5,
+        "tn": 255,
+        "total_loss": 1.2375563218258097,
+        "tp": 85,
+        "trajectory_accuracy": 0.771875,
+        "trajectory_bce": 0.5394243921317402,
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "weight_kind": "EMA0.99"
+      }
+    },
+    "before": {
+      "test": {
+        "accuracy": 0.416015625,
+        "balanced_accuracy": 0.5210923036233801,
+        "count": 512,
+        "fn": 33,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 266,
+        "group_bce": 1.149603607459724,
+        "group_weight": 1.0,
+        "mean_q": 0.6158451657442507,
+        "mixed_count": 114,
+        "mixed_recall": 0.7105263157894737,
+        "nonmixed_count": 398,
+        "nonmixed_recall": 0.3316582914572864,
+        "resampled_evaluation": false,
+        "threshold": 0.5,
+        "tn": 132,
+        "total_loss": 1.9522951384083624,
+        "tp": 81,
+        "trajectory_accuracy": 0.6078125,
+        "trajectory_bce": 0.8026915309486384,
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "weight_kind": "EMA0.99"
+      },
+      "train": {
+        "accuracy": 0.640625,
+        "balanced_accuracy": 0.6203211678832117,
+        "count": 512,
+        "fn": 58,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 126,
+        "group_bce": 0.7519955796050672,
+        "group_weight": 1.0,
+        "mean_q": 0.42926703174183073,
+        "mixed_count": 137,
+        "mixed_recall": 0.5766423357664233,
+        "nonmixed_count": 375,
+        "nonmixed_recall": 0.664,
+        "resampled_evaluation": false,
+        "threshold": 0.5,
+        "tn": 249,
+        "total_loss": 1.3159051837477085,
+        "tp": 79,
+        "trajectory_accuracy": 0.76640625,
+        "trajectory_bce": 0.5639096041426412,
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "weight_kind": "EMA0.99"
+      }
+    },
+    "checked_unix": 1792303724.7661798,
+    "completed_epochs": 2,
+    "cycle": 1,
+    "ema_updates": 28,
+    "epoch_sampling": [
+      {
+        "balanced_class_counts": {
+          "all_correct": 237,
+          "all_wrong": 237,
+          "mixed": 237
+        },
+        "balanced_groups": 711,
+        "balanced_trajectories": 3555,
+        "epoch": 1,
+        "optimizer_updates": 14,
+        "original_class_counts": {
+          "all_correct": 138,
+          "all_wrong": 237,
+          "mixed": 137
+        },
+        "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+      },
+      {
+        "balanced_class_counts": {
+          "all_correct": 237,
+          "all_wrong": 237,
+          "mixed": 237
+        },
+        "balanced_groups": 711,
+        "balanced_trajectories": 3555,
+        "epoch": 2,
+        "optimizer_updates": 14,
+        "original_class_counts": {
+          "all_correct": 138,
+          "all_wrong": 237,
+          "mixed": 137
+        },
+        "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+      }
+    ],
+    "new_adam_updates": 28,
+    "test_events_fixed_across_all_cycles": true,
+    "test_questions": 512,
+    "train_eval_on_original_unsampled512": true,
+    "train_questions": 512,
+    "training_seconds": 6.082259283401072,
+    "weight_kind": "EMA0.99"
+  },
+  "actual_failure": {
+    "checked_unix": 1792303755.4303985,
+    "cycle": 2,
+    "error_type": "RuntimeError",
+    "message": "Own phase failed: cycle-0002-prefix",
+    "traceback": "Traceback (most recent call last):\n  File \"/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-81df904ad9584e29a35d703570b2bcef-actor50-probe100/repo/reproduction/actor50_probe100/pipeline.py\", line 189, in run\n    generate(base,cycle,eligible[(cycle-1)*512:cycle*512],False)\n  File \"/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-81df904ad9584e29a35d703570b2bcef-actor50-probe100/repo/reproduction/actor50_probe100/pipeline.py\", line 144, in generate\n    phase(prefix_tag+'-prefix',[python,'-m','reproduction.prefix_selection200.rollout','--config',str(conf),'--outer',str(outer),'--phase','prefix'])\n  File \"/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-81df904ad9584e29a35d703570b2bcef-actor50-probe100/repo/reproduction/actor50_probe100/pipeline.py\", line 127, in phase\n    if process.returncode:raise RuntimeError('Own phase failed: '+name)\nRuntimeError: Own phase failed: cycle-0002-prefix\n"
+  },
+  "owned_terminal": {
+    "checked_unix": 1792303757.053114,
+    "cleaned": true,
+    "owned_births_all_gone": true,
+    "remaining_owned_birth_count": 0
+  },
+  "repair_scope": {
+    "new_namespace": true,
+    "full_raw_EMA_Adam_fourrankRNG_continuation": true,
+    "fixed_test_events_reused": true,
+    "no_completed_epochs_repeated": true,
+    "only_pending_cycle2_rollout_recomputed": true,
+    "scheduler_max_seqs": 128,
+    "scheduler_max_batched_tokens": 4096,
+    "cache_utilization_cap": 0.85,
+    "CUDA_LAUNCH_BLOCKING": 1,
+    "probe_math_byte_unchanged": true,
+    "native_rollout_math_byte_unchanged": true,
+    "actual_CUDA_restore": "PENDING"
+  },
+  "actor_updates": 0,
+  "total_target_epochs": 100
+}

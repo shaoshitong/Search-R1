@@ -65,6 +65,16 @@ Entry points:
 * `python -m reproduction.actor50_probe100.control --action submit --handle ...`
 * `python -m reproduction.actor50_probe100.control --action observe --handle ...`
 
+After an actual failed execution has completed its owned cleanup, `resume-stage`
+uses a new source/execution namespace and imports only the latest complete new
+warmup cycle. Raw/EMA models, Adam, four-rank RNG, epoch and EMA clocks are
+CPU-verified and preserved. Fixed test events and completed scalar history are
+reused. Uncommitted generation stays in the failed namespace and is recomputed;
+no completed epoch is repeated. The observed cycle2 CUDA fault recovery caps
+the native scheduler at128 sequences/4096 batched tokens and85% cache budget,
+with process-scoped synchronous CUDA error reporting. Sampling math and the
+probe algorithm do not change. CPU import is not actual CUDA acceptance.
+
 Staging, actual source qualification, idle GPU admission, actual first
 rollout, first two real epochs, continuing cycles and final100 epoch acceptance
 are distinct evidence boundaries. A submit receipt is not a training result.

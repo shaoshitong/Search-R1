@@ -106,6 +106,7 @@ def run(base):
         NCCL_NVLS_ENABLE='0',NO_PROXY='127.0.0.1,localhost')
     for k in ('PYTHONHOME','RAY_ADDRESS','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','http_proxy','https_proxy','all_proxy'):env.pop(k,None)
     if c.get('python_header_cpath'):env['CPATH']=c['python_header_cpath']
+    if c.get('cuda_launch_blocking'):env['CUDA_LAUNCH_BLOCKING']='1'
     for name in ('tmp','cache/hf','cache/triton','cache/inductor','cycles','training','probe'):
         (base/name).mkdir(parents=True,exist_ok=True)
     cycle=0;success=False
@@ -219,4 +220,13 @@ def run(base):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--base',required=True)
-    run(parser.parse_args().base)
+    value=parser.parse_args().base
+    try:run(value)
+    except BaseException as error:
+        root=Path(value)
+        if not (root/'logs/failure.json').exists():
+            publish(root/'logs/failure.json',dict(error_type=type(error).__name__,message=str(error),
+                traceback=traceback.format_exc(),checked_unix=time.time()))
+        if not (root/'logs/exit.json').exists():
+            publish(root/'logs/exit.json',dict(success=False,checked_unix=time.time()))
+        raise
