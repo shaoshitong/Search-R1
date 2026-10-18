@@ -1,0 +1,79 @@
+{
+  "status": "QA150_SAVED_RAW_INDEPENDENT_CPU_ACCEPTANCE_PASS",
+  "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+  "outer": 150,
+  "node": "h100-11",
+  "wrapper_publication_commit": "76e9aaefaf73b3d6853571f2f070e33d4ccafca7",
+  "qa_source_commit": "2b0a9f7b809d63880dcb0e30bebc96ab11267f45",
+  "config_sha256": "6a87a930ff83bcf0b9404999bbd89ac70a277740724b7f30e4659c1113630c98",
+  "joint_sha256": "4b248ce57737c1910502e2e6096ebc121e1f8954bb78d91559f62dd0418bb7b6",
+  "qa_receipt_sha256": "db17bcc8bf216770ed1ca25b67851c962a17794db040e1b2afc4680624e4c6d2",
+  "proof_path": "/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-qa-i1i6-4a1cc2d5-outer0150-22d511fc/preparation/independent-qa512-cpu-recompute.json",
+  "local_exact_proof": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/search-g1-i1i6-fresh200-20261017/qa150-cpu-acceptance/PROOF.json",
+  "proof_sha256": "5aa2c7268cc5fbf3b72e47450378fa3f9cba139851eb139ff3095ee11d78deb3",
+  "proof_bytes": 3382,
+  "count": 512,
+  "correct": 208,
+  "em": 0.40625,
+  "f1": 0.4835861818685809,
+  "per_source": {
+    "hotpotqa": {
+      "em": 0.41015625,
+      "f1": 0.45900607638888885,
+      "qa_count": 256
+    },
+    "nq": {
+      "em": 0.40234375,
+      "f1": 0.5081662873482726,
+      "qa_count": 256
+    }
+  },
+  "rank_counts": [
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64,
+    64
+  ],
+  "all_ranks_bf16": true,
+  "all_eight_generation_workers_exit_zero": true,
+  "cpu_recompute_wall_seconds": 8.570062693208456,
+  "cpu_cost": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "cpu_affinity": [
+      0
+    ],
+    "cpu_system_seconds": 0.9035749999999999,
+    "cpu_user_seconds": 6.87677,
+    "elapsed_seconds": 8.571162570267916,
+    "ended_unix": 1792284631.9055386,
+    "gpu_forward_performed": false,
+    "max_rss_kib": 710736,
+    "model_weights_loaded": false,
+    "new_generation": false,
+    "nice": 19,
+    "started_unix": 1792284623.3343782,
+    "status": "CPU_SAVED_OUTPUT_ACCEPTANCE_PASS"
+  },
+  "cpu_verifier_exit_code": 0,
+  "preflight_observed_unix": 1792284623.2675455,
+  "postflight_observed_unix": 1792284632.393663,
+  "unit_inactive_dead_mainpid0": true,
+  "cgroup_exists": false,
+  "cgroup_pids": [],
+  "cleanup_errors": [],
+  "unreaped_child_pids": [],
+  "complete_hf_weights_read": false,
+  "new_generation": false,
+  "gpu_forward_performed": false,
+  "training_modified": false,
+  "grounding_modified": false,
+  "instances_started_stopped_or_restarted": false,
+  "original_qa_results_unchanged": true,
+  "source_raw_shards_stayed_remote": true,
+  "cp_checkpoint_acceptance_repeated": false,
+  "final200_full51713_completion_assessed": false
+}

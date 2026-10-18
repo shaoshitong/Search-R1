@@ -1,0 +1,131 @@
+{
+  "observed_unix": 1792284537.672258,
+  "live": {
+    "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+    "round": 150,
+    "version": "4a1cc2d500fe40979ef8ca4792959438:150:60b251c93b6f4923a0ee6ea5bc3b6348",
+    "manifest": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/grounding/round-150-attempt-568ff25438e64259bd8c327f47bfd120/version-manifest.json",
+    "manifest_sha256": "5adfd6ba0bf5d9b073104b0bcba3074ceb453aa902db3cad5cb0622d0bdc7ec8",
+    "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0150",
+    "actual_both_heads_fitted": true
+  },
+  "manifest_sha_verified": true,
+  "head_sha_verified": {
+    "commit_probe.pkl": "42b6e685d1f8a5ce94bda67256fc0965505a11aeb7531216f7d2e7c63e3674b6",
+    "boundary_probe.pkl": "870b4064b9dd5e5c6f7a17a4e1347664db9aaef86e015375b3d0d8d4e476f84c"
+  },
+  "calibration_report": {
+    "commit_cv_auc": 0.7686249884922942,
+    "boundary_cv_auc": 0.719042333914698,
+    "commit_position": "Xa",
+    "commit_label": "flip",
+    "unique_question_count": 300,
+    "commit_trajectory_count": 1496,
+    "boundary_class_counts": [
+      262,
+      38
+    ],
+    "commit_class_counts": [
+      406,
+      1090
+    ],
+    "question_grouped_cv": true,
+    "boundary_unique_question_weighting": true,
+    "require_all_cv_folds": true,
+    "configured_cv_folds": 2
+  },
+  "label_proof_scalars": {
+    "generation_allocated_before_release": 19476540928,
+    "generation_allocated_after_release": 41943040,
+    "model": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0150-attempt-816eb0d2e0724149874d0809ad5cf5b9/huggingface",
+    "question_count": 300,
+    "searched_valid_trajectory_count": 1496,
+    "closed_book_label": "exact_match_no_retrieval",
+    "reliance_label": "normalized_answer_change_after_evidence_deletion",
+    "commit_position": "Xa",
+    "model_authored_answer_spans": true,
+    "group_size": 5,
+    "counterfactual_invalid_count": 0,
+    "counterfactual_strict_invalid_count": 0,
+    "invalid_counterfactual_policy": "no_usable_answer_counts_as_flip_source_operational_proxy",
+    "malformed_calibration_action_policy": "correction_within_four_turn_budget",
+    "evidence_deletion": "typed_retrieval_ranges_only_preserve_model_and_correction",
+    "boundary_all_reserved_questions": true,
+    "observation_token_cap": 500,
+    "hidden_truncation_side": "left",
+    "interaction_contract": "prefix_selection_shared_bf16_context4096_action500_reserve500_stream_boundary_v2",
+    "interaction_config_sha256": "d02782fe4db9f0d5d0fb7155ceecfb1614a4119c6d29284fd2cfc5b93ce14e9f",
+    "shared_native_state_machine": "reproduction.prefix_diversity200.rollout"
+  },
+  "adoption": {
+    "actor_version": "4a1cc2d500fe40979ef8ca4792959438-actor0150",
+    "actual_both_heads_fitted": true,
+    "adopted_unix": 1792284472.733295,
+    "manifest": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/grounding/round-150-attempt-568ff25438e64259bd8c327f47bfd120/version-manifest.json",
+    "manifest_sha256": "5adfd6ba0bf5d9b073104b0bcba3074ceb453aa902db3cad5cb0622d0bdc7ec8",
+    "round": 150,
+    "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+    "version": "4a1cc2d500fe40979ef8ca4792959438:150:60b251c93b6f4923a0ee6ea5bc3b6348"
+  },
+  "replica_health": [
+    {
+      "rank": 0,
+      "ok": true,
+      "round": 150,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0150-attempt-816eb0d2e0724149874d0809ad5cf5b9/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:150:60b251c93b6f4923a0ee6ea5bc3b6348"
+    },
+    {
+      "rank": 1,
+      "ok": true,
+      "round": 150,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0150-attempt-816eb0d2e0724149874d0809ad5cf5b9/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:150:60b251c93b6f4923a0ee6ea5bc3b6348"
+    },
+    {
+      "rank": 2,
+      "ok": true,
+      "round": 150,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0150-attempt-816eb0d2e0724149874d0809ad5cf5b9/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:150:60b251c93b6f4923a0ee6ea5bc3b6348"
+    },
+    {
+      "rank": 3,
+      "ok": true,
+      "round": 150,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0150-attempt-816eb0d2e0724149874d0809ad5cf5b9/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:150:60b251c93b6f4923a0ee6ea5bc3b6348"
+    },
+    {
+      "rank": 4,
+      "ok": true,
+      "round": 150,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0150-attempt-816eb0d2e0724149874d0809ad5cf5b9/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:150:60b251c93b6f4923a0ee6ea5bc3b6348"
+    },
+    {
+      "rank": 5,
+      "ok": true,
+      "round": 150,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0150-attempt-816eb0d2e0724149874d0809ad5cf5b9/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:150:60b251c93b6f4923a0ee6ea5bc3b6348"
+    },
+    {
+      "rank": 6,
+      "ok": true,
+      "round": 150,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0150-attempt-816eb0d2e0724149874d0809ad5cf5b9/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:150:60b251c93b6f4923a0ee6ea5bc3b6348"
+    },
+    {
+      "rank": 7,
+      "ok": true,
+      "round": 150,
+      "encoder": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/actor/outers/outer-0150-attempt-816eb0d2e0724149874d0809ad5cf5b9/huggingface",
+      "version": "4a1cc2d500fe40979ef8ca4792959438:150:60b251c93b6f4923a0ee6ea5bc3b6348"
+    }
+  ],
+  "actual_actor151_update_use_pending": true,
+  "selection_probe_is_separate": true,
+  "status": "ACTUAL_REWARD_ROUND150_FIT_ADOPTED_ALL8_PENDING_COMPLETE_ACTOR151_USE"
+}

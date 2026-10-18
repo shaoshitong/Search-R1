@@ -1,0 +1,249 @@
+{
+  "status": "CP150_FIRST_V1_CPU_ACCEPTANCE_PASS",
+  "run_id": "4a1cc2d500fe40979ef8ca4792959438",
+  "outer": 150,
+  "base": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1",
+  "target": "h100-10",
+  "execution_helper_commit": "b4cc36a715968bd6f2106e0e397566de6afa33f1",
+  "runtime_source_commit": "33ef232e605f7864086d1685d9a4d8ea0d67f4ab",
+  "runtime_config_sha256": "d2faa73dc70e741700323f0a3c3846abd09b560aa9af4c2a9a07b7b27aa189a1",
+  "control_config_sha256": "8de9e69ccc7723dbb7e5f322c8317e7f4857b009c9d0c666cacf3628bf246e62",
+  "joint_sha256": "4b248ce57737c1910502e2e6096ebc121e1f8954bb78d91559f62dd0418bb7b6",
+  "audit_version": "v1",
+  "predecessor": null,
+  "proof": {
+    "path": "terminal/PROOF.json",
+    "remote_path": "/mnt/data/shaoshitong/search-g1-prefix-diversity200-20261017-4a1cc2d500fe-calibration1/preparation/joint-milestone-0150-independent-full-sha-cpu-once-v1.json",
+    "sha256": "998a5886bc0d0e8ec0cbc546e0114503f25394f5eb2d7e31ebba2c8350c07597",
+    "bytes": 50047,
+    "status": "PREFIX_SELECTION200_JOINT_MILESTONE_FULL_SHA_CPU_PASS"
+  },
+  "exit": {
+    "status": "CPU_ACCEPTANCE_PASS",
+    "subprocess_exit": 0,
+    "exit_code": 0,
+    "elapsed_seconds": 92.54794738814235,
+    "cpu_user_seconds": 69.257225,
+    "cpu_system_seconds": 23.344368,
+    "max_rss_kib": 4544348,
+    "finished_unix": 1792284299.700401,
+    "reader_proof_elapsed_seconds": 92.15077881887555
+  },
+  "budget": {
+    "cpu_quota": "100%",
+    "memory_max": "12G",
+    "nice": 19,
+    "io_weight": 10,
+    "runtime_max_seconds": 3600,
+    "CUDA_VISIBLE_DEVICES": "",
+    "gpu_forward_performed": false
+  },
+  "verified": {
+    "actor_actual_adam_steps_per_rank": [
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000
+    ],
+    "probe_actual_adam_steps_per_rank": [
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000,
+      3000
+    ],
+    "actor_ranks": [
+      {
+        "rank": 0,
+        "scheduler_completed_outer": 150,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 1,
+        "scheduler_completed_outer": 150,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 2,
+        "scheduler_completed_outer": 150,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 3,
+        "scheduler_completed_outer": 150,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 4,
+        "scheduler_completed_outer": 150,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 5,
+        "scheduler_completed_outer": 150,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 6,
+        "scheduler_completed_outer": 150,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      },
+      {
+        "rank": 7,
+        "scheduler_completed_outer": 150,
+        "actual_adam_states": 37,
+        "successful_writes": 20,
+        "private_rng": {
+          "cuda_rng_applied": false,
+          "python_numpy_cpu_torch_state_loaded": true,
+          "saved_cuda_rng_bytes": 16
+        }
+      }
+    ],
+    "probe": {
+      "actual_adam_steps_per_rank": [
+        3000,
+        3000,
+        3000,
+        3000,
+        3000,
+        3000,
+        3000,
+        3000
+      ],
+      "adam_fp32_states": 14,
+      "learning_rate": 1e-06,
+      "model_fp32_tensors": 14,
+      "rank_rng_count": 8
+    },
+    "probe_clock": {
+      "group_denominator": 1024,
+      "original_rank_write_logs": 8,
+      "pre_step_prediction_clock_verified": true,
+      "trajectory_denominator": 5120,
+      "writes_per_rank": 20
+    },
+    "saved_actor_driver_cpu_deserialized": true,
+    "saved_candidate_pool": {
+      "actual_permutation_entries": 168510,
+      "consumed_candidates": 768000,
+      "cursor": 93960,
+      "cycle": 4,
+      "eligible_questions": 168510,
+      "next_outer": 151,
+      "source_pool_sha256": "ae13710254e7ae77cf5531b62a755ec2000bc3fba20051bbafaff1f6714aa8fc"
+    },
+    "grounding_round": 100,
+    "grounding_version": "4a1cc2d500fe40979ef8ca4792959438:100:cdc9e0943dc74829b1da75954bc50815",
+    "hf_tensors_cpu_read": 435,
+    "hf_fp32_elements": 3397103616,
+    "tokenizer_semantics_equal": true,
+    "parameter_change": {
+      "compared_elements": 6656,
+      "nonzero_difference_elements": 6623,
+      "max_absolute_difference": 0.00018440186977386475,
+      "all_model_parameters_compared": false
+    },
+    "original_full_trajectories": 5120,
+    "actor_selected_trajectories": 2560,
+    "native_records_equal": true,
+    "strict_em_top512_recomputed": true,
+    "fixed_test_manifest_sha256": "a125fc5af90e34fcd728c82077d9d62070a78d5ef703ac11f3748687d088e64f",
+    "frozen_runtime_file_count": 12
+  },
+  "progress_samples": "PROGRESS_SAMPLES.json",
+  "preflight": "PREFLIGHT_COMPACT.json",
+  "cleanup": {
+    "status": "OWNED_CPU_UNIT_EXITED_NO_ACTIVE_WORKERS",
+    "observed_unix": 1792284391.3443437,
+    "helper_commit": "b4cc36a715968bd6f2106e0e397566de6afa33f1",
+    "proof_sha256": "998a5886bc0d0e8ec0cbc546e0114503f25394f5eb2d7e31ebba2c8350c07597",
+    "systemd": {
+      "Result": "success",
+      "ExecMainPID": "0",
+      "ExecMainStatus": "0",
+      "ControlGroup": "",
+      "LoadState": "not-found",
+      "ActiveState": "inactive",
+      "SubState": "dead"
+    },
+    "reader_pid": 2292360,
+    "reader_birth_ticks": "1934476138",
+    "same_reader_process_alive": false,
+    "owned_cgroup_members": null,
+    "action": "Successful transient unit already exited; no stop/reset/removal required. Preserve proof, intent, logs and deployed source.",
+    "tensor_payload_read": false,
+    "large_payload_repeated": false,
+    "training_modified": false,
+    "qa_or_grounding_modified": false,
+    "gpu_forward_performed": false
+  },
+  "scope": {
+    "independent_full_file_sha": true,
+    "actual_cpu_deserialization": true,
+    "single_deployment": true,
+    "large_payload_replay": false,
+    "cp5_cp50_cp100_tensor_reads": false,
+    "large_payload_transferred_to_Mac": false,
+    "training_modified": false,
+    "qa_or_grounding_modified": false,
+    "gpu_forward_performed": false,
+    "cuda_rng_applied": false,
+    "cuda_executor_exact_restore_verified": false,
+    "independent_backup_performed": false,
+    "official_initial_small_tensor_reads_performed": true,
+    "legacy_old_weight_files_read_flag_scope": "Only official initial selected small tensors; historical training checkpoint weight files not read.",
+    "qa_or_grounding_success_assessed": false,
+    "final200_or_full51713_completion_assessed": false
+  },
+  "created_unix": 1792284417.998414
+}
