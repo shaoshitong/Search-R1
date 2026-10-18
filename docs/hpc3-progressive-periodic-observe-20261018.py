@@ -20,6 +20,7 @@ c=rd(b/'preparation/launch-config.json');pub=rd(b/'preparation/source-publicatio
 job=rd(b/'preparation/slurm-submission.json')['job']
 assert job=='733342' and pub['commit']=='89c97ff2a5a60c7c3d6e1b0bf825d122f0ff874c'
 root=b/'outers'/('outer-%06d'%outer)
+diagnostic=root/'diagnostic/outers'/('outer-%06d'%outer)
 def counters(parent):
  result=[]
  for rank in range(4):
@@ -31,7 +32,7 @@ fitted=rd(root/'probe-update/complete.json')
 value=dict(epoch=time.time(),job=job,queue=subprocess.check_output(['squeue','-h','-j',job,'-o','%i|%T|%P|%R'],text=True).strip(),
  status=rd(b/'logs/pipeline-status.json'),budget=rd(root/'candidate-budget.json'),
  prefix=counters(root/'prefix'),full_pool=counters(root/'full-pool'),selected_full=counters(root/'full'),
- diagnostic_prefix=counters(root/'diagnostic/prefix'),diagnostic_full=counters(root/'diagnostic/full'),
+ diagnostic_prefix=counters(diagnostic/'prefix'),diagnostic_full=counters(diagnostic/'full'),
  actor={k:actor.get(k) for k in ('completed_outer','actual_adam_steps_per_rank','scheduler_completed_outer','skipped_update_opportunities')},
  probe={k:probe.get(k) for k in ('completed_outer','actual_adam_steps_per_rank','sha256')},
  fit=[rd(root/'probe-update'/('progress-rank-%d.json'%rank)) for rank in range(4)],
