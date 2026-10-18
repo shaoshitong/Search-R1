@@ -28,7 +28,10 @@ def need(condition, message):
 
 
 def _scope(run):
-    saved._scope(run)
+    # This is the final checkpoint of the resumed allocation, whose authorized
+    # physical fallback may be 8 or 4. The original CP5 source keeps the default
+    # physical-16-only admission in easy2560_restore.source/create_receipt.
+    saved._scope(run, physical_micros=(16, 8, 4))
     binding = run.get('full_state_restore') or {}
     need(binding.get('kind') == saved.KIND and binding.get('completed_outer') == 5,
          'AUTHENTICATED_CP5_CONTINUATION_REQUIRED')

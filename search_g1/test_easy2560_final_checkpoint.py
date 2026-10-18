@@ -106,6 +106,41 @@ class Fixture:
 
 
 class FinalCheckpointTests(unittest.TestCase):
+    def test_physical8_final_create_and_source_retain_original_physical16_prefix(self):
+        with tempfile.TemporaryDirectory() as root:
+            f = Fixture(root)
+            original_manifest = (f.old.base/'logs/run-manifest.json').read_bytes()
+            original_receipt = (f.base/'restore-receipt.json').read_bytes()
+            f.new.run['actor_micro_batch_per_rank'] = 8
+            put(f.base/'logs/run-manifest.json', f.new.run)
+            f.refresh()
+            result = f.create()
+            with patch.object(module.saved, '_load_cpu', side_effect=AssertionError('source must not load tensors')):
+                _, receipt, _, _, parent = module.source(f.output, rehash_checkpoint=True)
+            self.assertEqual(result['world_size'], 4)
+            self.assertEqual(parent['actor_micro_batch_per_rank'], 8)
+            self.assertEqual(parent['actor_logical_micro_batch_per_rank'], 4)
+            self.assertEqual(receipt['authenticated_history']['source_job'], '730226')
+            self.assertEqual((f.old.base/'logs/run-manifest.json').read_bytes(), original_manifest)
+            self.assertEqual((f.base/'restore-receipt.json').read_bytes(), original_receipt)
+            original_run = json.loads(original_manifest)
+            self.assertEqual(original_run['actor_micro_batch_per_rank'], 16)
+            module.saved._scope(original_run)
+            with self.assertRaisesRegex(ValueError, 'EXACT_NATIVE4_EASY_SCOPE'):
+                module.saved._scope(dict(original_run, actor_micro_batch_per_rank=8))
+
+    def test_final_scope_rejects_upward_or_wrong_logical_and_topology_before_loading(self):
+        for key, value in (('actor_micro_batch_per_rank', 32), ('actor_micro_batch_per_rank', True),
+                           ('actor_logical_micro_batch_per_rank', 8), ('training_world_size', 8),
+                           ('all_correct_virtual_zero', True)):
+            with self.subTest(key=key, value=value), tempfile.TemporaryDirectory() as root:
+                f = Fixture(root); f.new.run[key] = value
+                put(f.base/'logs/run-manifest.json', f.new.run)
+                with patch.object(module.saved, '_load_cpu', side_effect=AssertionError('invalid scope must fail before load')):
+                    with self.assertRaisesRegex(ValueError, 'EXACT_NATIVE4_EASY_SCOPE'):
+                        f.create()
+                self.assertFalse(f.output.exists())
+
     def test_real_two_execution_chain_full_CP200_and_round150_without_training_bind(self):
         with tempfile.TemporaryDirectory() as root:
             f=Fixture(root);result=f.create()
