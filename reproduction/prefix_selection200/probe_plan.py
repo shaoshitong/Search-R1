@@ -1,7 +1,7 @@
 """Four-rank whole-G5 partitions with the reference's unchanged global batches."""
 import random
 
-from .contract import WORLD, FINAL_OUTER, CANDIDATE_QUESTIONS, PROBE_PERIOD, PROBE_UPDATES
+from .contract import WORLD, FINAL_OUTER, CANDIDATE_QUESTIONS, PROBE_PERIOD, PROBE_UPDATES, PROBE_EPOCHS
 
 
 def _natural_plan(seed, outer, questions, updates):
@@ -34,7 +34,10 @@ def online_plan(seed, outer):
 def complete_pool_plan(seed, outer):
     if type(outer) is not int or not 1 <= outer < FINAL_OUTER or outer % PROBE_PERIOD:
         raise ValueError('Probe writes only at10,20,...190; never at200')
-    return _natural_plan(seed, outer, CANDIDATE_QUESTIONS, PROBE_UPDATES)
+    if PROBE_EPOCHS==1:return _natural_plan(seed,outer,CANDIDATE_QUESTIONS,PROBE_UPDATES)
+    return [dict(batch,epoch=epoch+1,epoch_step=step+1)
+            for epoch in range(PROBE_EPOCHS)
+            for step,batch in enumerate(_natural_plan(seed+1000003*epoch,outer,CANDIDATE_QUESTIONS,50))]
 
 
 def rank_question_slice(batch, rank):

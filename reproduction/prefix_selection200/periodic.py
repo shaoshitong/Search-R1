@@ -13,6 +13,8 @@ def is_probe_update(outer):
 
 
 def probe_boundary(completed_outer):
+    from .progressive_prefix import enabled,boundary
+    if enabled():return boundary(completed_outer)
     if type(completed_outer) is not int or not 0 <= completed_outer <= FINAL_OUTER:
         raise ValueError('Completed actor outer must be0..200')
     last = min(completed_outer // PERIOD * PERIOD, FINAL_OUTER - PERIOD)
