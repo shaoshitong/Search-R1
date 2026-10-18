@@ -10,20 +10,36 @@ def ctl():
 def remote(inner,label,*,namespace=True,timeout=100):
     script=inner
     if namespace:
-        script='import subprocess,os\np=subprocess.run('+repr(['unshare','--mount','--propagation','private','bash',PATH_LAYOUTS['retained'],'/dataset/shaoshitong/Search-G1-common8/env/bin/python','-c',inner])+',env=dict(os.environ,CUDA_VISIBLE_DEVICES="",PYTHONDONTWRITEBYTECODE="1",SEARCH_G1_B_PREFIX_TOKENS="20"),text=True,capture_output=True,timeout='+str(timeout-10)+')\nassert p.returncode==0,p.stderr\nprint(p.stdout)'
+        script='import subprocess,os\np=subprocess.run('+repr(['unshare','--mount','--propagation','private','bash',PATH_LAYOUTS['retained'],'/dataset/shaoshitong/Search-G1-common8/env/bin/python','-'])+',input='+repr(inner)+',env=dict(os.environ,CUDA_VISIBLE_DEVICES="",PYTHONDONTWRITEBYTECODE="1",SEARCH_G1_B_PREFIX_TOKENS="20"),text=True,capture_output=True,timeout='+str(timeout-10)+')\nassert p.returncode==0,p.stderr\nprint(p.stdout)'
     p=subprocess.run(ctl().route('h100-11','/usr/bin/python3 -'),input=script,text=True,capture_output=True,timeout=timeout)
     tag=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ');out=ROOT/('work/b-progressive-'+label+'-'+tag+'.json');out.write_text(json.dumps(dict(rc=p.returncode,stdout=p.stdout,stderr=p.stderr),indent=2)+'\n')
     if p.returncode:raise RuntimeError(str(out)+' '+p.stderr[-5000:])
     value=json.loads(p.stdout);print(json.dumps(dict(evidence=str(out),result=value)),flush=True);return value
 
 def stage(commit):
-    raw=subprocess.check_output(['git','archive',commit],cwd=REPO);expected={}
-    with tarfile.open(fileobj=io.BytesIO(raw))as t:
-        for item in t:
-            if item.isfile():expected[item.name]=hashlib.sha256(t.extractfile(item).read()).hexdigest()
-    physical='/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-20261018-'+commit
-    inner='''import base64,gzip,hashlib,io,json,tarfile\nfrom pathlib import Path\nb=Path(PHYSICAL);b.mkdir(exist_ok=True)\nraw=gzip.decompress(base64.b64decode(PAYLOAD))\nexpected=EXPECTED\nwith tarfile.open(fileobj=io.BytesIO(raw))as archive:\n for item in archive:\n  if not item.isfile():continue\n  path=b/item.name\n  if not path.is_relative_to(b)or item.name.startswith('/')or'..'in Path(item.name).parts:raise ValueError('Archive path escapes publication')\n  content=archive.extractfile(item).read();path.parent.mkdir(parents=True,exist_ok=True)\n  if not path.exists():\n   with path.open('xb')as f:f.write(content)\n  if hashlib.sha256(path.read_bytes()).hexdigest()!=expected[item.name]:raise ValueError('Staged source SHA mismatch')\nprint(json.dumps(dict(physical=str(b),files=len(expected),commit=COMMIT,full_target_source_sha=True)))\n'''.replace('PHYSICAL',repr(physical)).replace('PAYLOAD',repr(base64.b64encode(gzip.compress(raw,compresslevel=3)).decode())).replace('EXPECTED',repr(expected)).replace('COMMIT',repr(commit))
-    return remote(inner,'code-stage',namespace=False,timeout=100)
+    source=json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())['B']['base']+'/repo'
+    parent='2e3976230ac9425d66d8553afa9962821e964932'
+    names=subprocess.check_output(['git','ls-tree','-r','--name-only',commit],cwd=REPO,text=True).splitlines()
+    code=[n for n in names if n.endswith(('.py','.sh'))]
+    expected={};delta={}
+    for name in code:
+        raw=subprocess.check_output(['git','show',commit+':'+name],cwd=REPO);expected[name]=hashlib.sha256(raw).hexdigest()
+        old=subprocess.run(['git','show',parent+':'+name],cwd=REPO,capture_output=True)
+        if old.returncode or old.stdout!=raw:delta[name]=base64.b64encode(raw).decode()
+    physical='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-'+commit
+    inner="""import base64,hashlib,json,os
+from pathlib import Path
+b=Path(DEST);b.mkdir(exist_ok=True);source=Path(SOURCE);expected=EXPECTED;delta=DELTA
+for name,checksum in expected.items():
+ path=b/name;path.parent.mkdir(parents=True,exist_ok=True)
+ if not path.exists():
+  if name in delta:
+   with path.open('xb')as f:f.write(base64.b64decode(delta[name]))
+  else:os.link(source/name,path)
+ if hashlib.sha256(path.read_bytes()).hexdigest()!=checksum:raise ValueError('Runtime source SHA differs: '+name)
+print(json.dumps(dict(physical=str(b),files=len(expected),changed_files=len(delta),commit=COMMIT,full_target_source_sha=True,only_code_deployed=True,source_hardlinks_never_mutated=True)))
+""".replace('DEST',repr(physical)).replace('SOURCE',repr(source)).replace('EXPECTED',repr(expected)).replace('DELTA',repr(delta)).replace('COMMIT',repr(commit))
+    return remote(inner,'code-stage',timeout=180)
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('action',choices=('stage','prepare','submit','observe'));p.add_argument('--commit');p.add_argument('--base');a=p.parse_args()
@@ -31,7 +47,7 @@ def main():
     source=json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())['B']['base']
     b=a.base
     if a.action=='prepare':
-        staged='/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-20261018-'+a.commit
+        staged='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-'+a.commit
         inner='import sys,json;sys.path.insert(0,'+repr(staged)+');from reproduction.prefix_selection200.b_progressive_resume import prepare;print(json.dumps(prepare('+','.join(map(repr,[source,b,staged,a.commit,json.loads((ROOT/'work/prefix5-b-progressive-human-authorization.json').read_text())]))+')))' 
     elif a.action=='submit':
         inner='import sys,json;sys.path.insert(0,'+repr(b+'/repo')+');from reproduction.prefix_selection200.launch import submit;print(json.dumps(submit('+repr(b)+')))'
