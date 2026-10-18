@@ -1,5 +1,17 @@
 # Prefix5 A/B on h100-11: actual progress
 
+## Latest recorded period40
+
+Both arms have committed40/200: actor800/rank, frozen A probe0 and B raw/EMA560.
+Fresh paired results are in [period40-paired-results.md](period40-paired-results.md),
+with all per-outer metrics and560 actual B loss rows in
+[through40-comparison/comparison-progress.md](through40-comparison/comparison-progress.md).
+B EMA diagnostic BA at20/30/40 is53.6887%/56.7986%/50.7539%, so the earlier
+improvement did not persist. Same-data period40 train BA64.0018%→65.7491%,
+diagnostic50.7410%→50.7539%, mixed BCE1.079363→1.120269. No algorithm-success claim.
+Normal50 checkpoint, QA50 and grounding50 refit/adoption remain next obligations;
+both200 and final51713 remain incomplete. Frozen training runtime is unchanged.
+
 The period20 snapshot records both independent four-card native runs at
 **20/200 complete outers**, preparing21. Later progress is recorded in the
 chronological sections below and the task's current state. The per-outer tables
