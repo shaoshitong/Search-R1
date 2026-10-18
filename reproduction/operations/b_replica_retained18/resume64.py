@@ -70,8 +70,11 @@ stat=(pathlib.Path('/proc')/str(child.pid)/'stat').read_text();receipt=dict(pid=
   call('COMMIT='+repr(commit)+'\n'+s,'stage')
  elif args.phase=='poll':
   call(pre+r'''
-ready=p/'preparation/native-recovery-complete.json';r=json.loads((p/'preparation/cpu-recovery-receipt.json').read_text());proc=pathlib.Path('/proc')/str(r['pid'])
-print(json.dumps(dict(ready=json.loads(ready.read_text())if ready.exists()else None,process_stat=(proc/'stat').read_text()if proc.exists()else None,log=(p/'logs/cpu-recovery.log').read_text()[-8000:])))
+ready=p/'preparation/native-recovery-complete.json';receipt=p/'preparation/cpu-recovery-fixed-receipt.json'
+if not receipt.exists():receipt=p/'preparation/cpu-recovery-receipt.json'
+r=json.loads(receipt.read_text());proc=pathlib.Path('/proc')/str(r['pid']);log=p/'logs/cpu-recovery-fixed-import.log'
+if not log.exists():log=p/'logs/cpu-recovery.log'
+print(json.dumps(dict(ready=json.loads(ready.read_text())if ready.exists()else None,process_stat=(proc/'stat').read_text()if proc.exists()else None,log=log.read_text()[-8000:])))
 ''','poll')
  elif args.phase=='submit':
   s='import pathlib,json,subprocess,time,os\nb=pathlib.Path('+repr(C)+')\n'+r'''
