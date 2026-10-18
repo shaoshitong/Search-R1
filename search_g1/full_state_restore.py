@@ -107,8 +107,12 @@ def from_config(config):
     from search_g1.easy2560_restore import STATUS as EASY_STATUS
     if r.get('status')==EASY_STATUS:
         from reproduction.common8.precision_contract import easy2560_native4
+        from search_g1.easy2560_restore import physical_micro_transition
         assert easy2560_native4(parent) and r['world_size']==4
-        assert config.actor_rollout_ref.actor.ppo_micro_batch_size==parent['actor_micro_batch_per_rank']*4
+        global_micro=config.actor_rollout_ref.actor.ppo_micro_batch_size
+        assert type(global_micro) is int and global_micro % 4 == 0
+        physical_micro_transition(parent,global_micro//4)
+        assert config.actor_rollout_ref.actor.ppo_mini_batch_size==128
         assert config.actor_rollout_ref.actor.ppo_logical_micro_batch_size==4
         assert config.data.selection_mode=='mixed_first' and not config.algorithm.all_correct_virtual_zero
     elif r.get('status')==PAIR_STATUS:

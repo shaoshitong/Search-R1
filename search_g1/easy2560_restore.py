@@ -102,12 +102,53 @@ def _identity(record, *, rehash=False):
     return path
 
 
-def _scope(run):
+def _scope(run, *, physical_micros=(16,)):
     from reproduction.common8.precision_contract import easy2560_native4
     _need(easy2560_native4(run) and run.get('question_probe') is None and
-          run.get('actor_micro_batch_per_rank') == 16 and run.get('all_correct_virtual_zero') is False and
+          type(run.get('actor_micro_batch_per_rank')) is int and
+          run['actor_micro_batch_per_rank'] in physical_micros and run.get('all_correct_virtual_zero') is False and
           run.get('selection_candidate_questions') == 2560 and run.get('selection_selected_questions') == 512 and
           run.get('selection_fixed_candidate_budget') is True, 'EXACT_NATIVE4_EASY_SCOPE_REQUIRED')
+
+
+def physical_micro_transition(parent, target_micro):
+    """Allow the owned OOM fallback while retaining the logical four-row loss.
+
+    CP5 is the original physical16/native4 source. Its optimizer shard layout
+    does not depend on forward micro size; only the number of accumulation
+    passes changes. This does not claim bitwise continuation after regrouping.
+    """
+    source_micro = parent.get('actor_micro_batch_per_rank')
+    _need(type(source_micro) is int and source_micro == 16 and
+          type(target_micro) is int and target_micro in (16, 8, 4) and target_micro <= source_micro and
+          parent.get('training_world_size') == 4 and
+          parent.get('actor_logical_micro_batch_per_rank') == 4,
+          'PHYSICAL_MICRO_FALLBACK_DIFFERS')
+    return dict(source_physical_micro_per_rank=source_micro, target_physical_micro_per_rank=target_micro,
+                source_accumulation_steps=32 // source_micro, target_accumulation_steps=32 // target_micro,
+                global_mini_batch=128, training_world_size=4, logical_micro_per_rank=4,
+                objective_reduction='original four-row micro masked_mean',
+                bitwise_continuation_claimed=False)
+
+
+def _compatible_execution_budget(run, parent):
+    transition = physical_micro_transition(parent, run.get('actor_micro_batch_per_rank'))
+    before, after = parent['budget'], run['budget']
+    allowed = {'ppo_micro_batch_size', 'per_rank_actor_micro_batch'}
+    _need(before.keys() == after.keys() and all(before[k] == after[k] for k in before if k not in allowed),
+          'SCIENTIFIC_INPUT_OR_BATCH_DIFFERS_budget')
+    if transition['source_physical_micro_per_rank'] != transition['target_physical_micro_per_rank']:
+        for budget, micro in ((before, transition['source_physical_micro_per_rank']),
+                              (after, transition['target_physical_micro_per_rank'])):
+            _need(budget.get('ppo_micro_batch_size') == micro * 4 and
+                  budget.get('per_rank_actor_micro_batch') == micro and
+                  budget.get('ppo_mini_batch_size') == 128 and
+                  budget.get('per_rank_actor_logical_micro_batch') == 4 and
+                  budget.get('objective_reduction') == transition['objective_reduction'],
+                  'PHYSICAL_MICRO_BUDGET_GEOMETRY_DIFFERS')
+    else:
+        _need(before == after, 'SCIENTIFIC_INPUT_OR_BATCH_DIFFERS_budget')
+    return transition
 
 
 def _load_cpu(path):
@@ -381,12 +422,13 @@ def source(receipt_path):
 
 
 def bind(run, receipt_path):
-    path, receipt, checkpoint, base, parent = source(receipt_path); _scope(run)
+    path, receipt, checkpoint, base, parent = source(receipt_path); _scope(run, physical_micros=(16, 8, 4))
     _need(receipt['step'] == 5, 'ONLY_CP5_TRAINING_CONTINUATION_IMPLEMENTED')
     _need(not run.get('full_state_restore') and run.get('completed_updates', 0) == 0,
           'TARGET_MUST_BE_PRISTINE_UNFINISHED')
-    for key in ('budget', 'input_sha256', 'initial_model_sha256', 'model_revision',
-                'training_world_size', 'actor_micro_batch_per_rank', 'actor_logical_micro_batch_per_rank',
+    transition = _compatible_execution_budget(run, parent)
+    for key in ('input_sha256', 'initial_model_sha256', 'model_revision',
+                'training_world_size', 'actor_logical_micro_batch_per_rank',
                 'all_correct_virtual_zero', 'selection_candidate_questions', 'selection_selected_questions',
                 'selection_fixed_candidate_budget'):
         _need(run.get(key) == parent.get(key), 'SCIENTIFIC_INPUT_OR_BATCH_DIFFERS_' + key)
@@ -402,6 +444,7 @@ def bind(run, receipt_path):
         initial_probe_version=receipt['reward_probe_version'],
         pretraining_baseline_policy='reuse_historical',
         full_state_restore=dict(kind=KIND, source_receipt=str(path), source_receipt_sha256=digest(path),
+            physical_micro_transition=transition,
             source_checkpoint=str(checkpoint), source_base=str(base), source_job=receipt['source_job'],
             source_commit=receipt['source_commit'], source_run_manifest_sha256=receipt['source_run_manifest']['full_read_sha256'],
             completed_outer=receipt['step'], actual_optimizer_writes_per_rank=progress['cumulative_writes'],

@@ -178,7 +178,9 @@ def prepare(base,model,official_path,commit,allow_existing_gpu_processes=False,r
             from search_g1.easy2560_restore import STATUS as EASY_STATUS
             assert restore_source.get('status')==EASY_STATUS
             assert restore_source['world_size']==result['training_world_size']==4
-            assert restore_parent['actor_micro_batch_per_rank']==result['actor_micro_batch_per_rank']
+            # Easy bind below validates the original physical16 CP5 and only
+            # permits downward physical fallback, with unchanged logical4 loss,
+            # global mini128 and every non-physical budget/input field.
         elif restore_source.get('status')==PAIR_STATUS:
             # This CLI is the native eight-rank route. Four-rank local sources
             # use the local preparation entry; changing shard layout is forbidden.
