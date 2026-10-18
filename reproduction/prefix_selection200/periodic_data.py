@@ -133,6 +133,7 @@ def actual_em_selection(config_path, outer, *, allow_b_progressive=False):
         prefix_scan_sha256=prefix['scan_sha256'], selected=selected, selected_questions=SELECTED_QUESTIONS,
         candidate_questions=candidates, trajectories_per_question=G, exploration=0,
         outcome_labels_used=True, selection_scope='actor_only_periodic_full_pool_actual_EM',
+        actual_labeled_candidate_questions=continued,
         predicted_selection_path=str(predicted_path), predicted_selection_sha256=digest(predicted_path),
         original_pool_selection_path=str(scored_path), original_pool_selection_sha256=digest(scored_path),
         full_pool_complete_path=str(source_path), full_pool_complete_sha256=digest(source_path),
@@ -222,7 +223,8 @@ def project_top512(config_path, outer, selection_path=None, *, allow_b_progressi
         projected_generation_requests=0,actual_selected_mixed_questions=sum(hist[k] for k in (1,2,3,4)),
         actual_selected_mixed_fraction=sum(hist[k] for k in (1,2,3,4))/512,
         selected_strict_correct=sum(label_by_id.values()),selected_correct_count_histogram=hist,
-        all_candidate_mixed_accuracy_available=True)
+        all_candidate_mixed_accuracy_available=not expanded,
+        actual_labeled_candidate_questions=continued)
     immutable(out/'complete.json',value)
     return value
 

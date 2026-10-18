@@ -1,5 +1,5 @@
 """Direct authenticated B-only publication/CP50 preparation/once launch control."""
-import argparse,base64,datetime,hashlib,importlib.util,io,json,subprocess,tarfile
+import argparse,base64,datetime,gzip,hashlib,importlib.util,io,json,subprocess,tarfile
 from pathlib import Path
 from .follow_h10011_ab_normal_boundary import ROOT,PATH_LAYOUTS
 REPO=Path(__file__).resolve().parents[3]
@@ -22,7 +22,7 @@ def stage(commit):
         for item in t:
             if item.isfile():expected[item.name]=hashlib.sha256(t.extractfile(item).read()).hexdigest()
     physical='/mnt/shared/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-20261018-'+commit
-    inner='''import base64,hashlib,io,json,tarfile\nfrom pathlib import Path\nb=Path(PHYSICAL);b.mkdir(exist_ok=True)\nraw=base64.b64decode(PAYLOAD)\nexpected=EXPECTED\nwith tarfile.open(fileobj=io.BytesIO(raw))as archive:\n for item in archive:\n  if not item.isfile():continue\n  path=b/item.name\n  if not path.is_relative_to(b)or item.name.startswith('/')or'..'in Path(item.name).parts:raise ValueError('Archive path escapes publication')\n  content=archive.extractfile(item).read();path.parent.mkdir(parents=True,exist_ok=True)\n  if not path.exists():\n   with path.open('xb')as f:f.write(content)\n  if hashlib.sha256(path.read_bytes()).hexdigest()!=expected[item.name]:raise ValueError('Staged source SHA mismatch')\nprint(json.dumps(dict(physical=str(b),files=len(expected),commit=COMMIT,full_target_source_sha=True)))\n'''.replace('PHYSICAL',repr(physical)).replace('PAYLOAD',repr(base64.b64encode(raw).decode())).replace('EXPECTED',repr(expected)).replace('COMMIT',repr(commit))
+    inner='''import base64,gzip,hashlib,io,json,tarfile\nfrom pathlib import Path\nb=Path(PHYSICAL);b.mkdir(exist_ok=True)\nraw=gzip.decompress(base64.b64decode(PAYLOAD))\nexpected=EXPECTED\nwith tarfile.open(fileobj=io.BytesIO(raw))as archive:\n for item in archive:\n  if not item.isfile():continue\n  path=b/item.name\n  if not path.is_relative_to(b)or item.name.startswith('/')or'..'in Path(item.name).parts:raise ValueError('Archive path escapes publication')\n  content=archive.extractfile(item).read();path.parent.mkdir(parents=True,exist_ok=True)\n  if not path.exists():\n   with path.open('xb')as f:f.write(content)\n  if hashlib.sha256(path.read_bytes()).hexdigest()!=expected[item.name]:raise ValueError('Staged source SHA mismatch')\nprint(json.dumps(dict(physical=str(b),files=len(expected),commit=COMMIT,full_target_source_sha=True)))\n'''.replace('PHYSICAL',repr(physical)).replace('PAYLOAD',repr(base64.b64encode(gzip.compress(raw,compresslevel=3)).decode())).replace('EXPECTED',repr(expected)).replace('COMMIT',repr(commit))
     return remote(inner,'code-stage',namespace=False,timeout=100)
 
 def main():

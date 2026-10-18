@@ -546,9 +546,10 @@ def score(args):
                 representation_source='same_sampling_actor_native_layer27_postblock',
                 **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions') if key in manifest})
             from .periodic import is_probe_update
+            from .b_progressive import ordinary as b_ordinary
             selection=dict(common,selected=selected,selected_questions=SELECTED_QUESTIONS,
                 tie_break='original_candidate_ordinal_ascending',continuation_scope='top512',
-                provisional_for_actor=is_probe_update(args.outer),
+                provisional_for_actor=is_probe_update(args.outer) or b_ordinary(read(Path(args.state_dir).parent/'preparation/launch-config.json'),args.outer),
                 selection_semantics='predicted_mixed_probability_top512_before_any_outcome')
             once(out/'selection.json',selection)
             from .periodic import is_probe_update
