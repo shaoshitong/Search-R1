@@ -1,0 +1,41 @@
+"""Publish existing small receipts and paired metrics; no training operations."""
+import hashlib,json
+from pathlib import Path
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+pairpath=root/'work/b-progressive-period90-paired-followup-20261018T203244488108Z.json'
+rankpath=root/'work/b-progressive-period90-complete-actual-rank-journals-20261018T203310085733Z.json'
+def value(path):
+ raw=json.loads(path.read_text());assert raw['rc']==0;return json.loads(raw['stdout'])
+pair=value(pairpath);actual=value(rankpath);fact=next(f for f in actual['B']['facts']if f['outer']==90)
+assert len(fact['actor'])==len(fact['probe'])==4
+assert all(r['writes']==20 and r['actual_adam_steps']==1800 for r in fact['actor'])
+assert all(r['writes']==50 and r['last_actual']==1260 for r in fact['probe'])
+m=pair['metric_fields'];curve=m['global_step_loss_curve'];windows={}
+for name,part in [('first10',curve[:10]),('last10',curve[-10:])]:
+ count=sum(r['global_questions']for r in part)
+ windows[name]={k:sum(r[k]*r['global_questions']for r in part)/count for k in ('trajectory_bce','group_bce','total_loss')}
+out=Path('reproduction/reports/h100-prefix5-ab200-20261018/progressive-period90');out.mkdir(exist_ok=True)
+proof=dict(pair=pair,actual_actor_journals=fact['actor'],actual_probe_journals=fact['probe'],
+ selected=fact['selection_metrics'],phase_timings=fact['phase_timings'],weighted_changing_batch_windows=windows,
+ original_small_evidence=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest())for p in (pairpath,rankpath)],
+ training_runtime_modified=False,independent_model_tensor_hash_or_load_performed=False)
+(out/'ACTUAL-PAIRED-AND-UPDATE-CURVE.json').write_text(json.dumps(proof,indent=2)+'\n')
+t=['# Progressive B: actual periodic90','',
+ 'Same sampling actor0089 produced native question+20 prefixes and labels for the original2560-question training pool and fresh fixed512-question heldoutG5. Qid/content overlaps are zero. Before/after metrics use the same original trajectories; these are mixed-classification metrics, not QA EM/F1.','',
+ '| Model / original distribution | Mixed BA before → after | Trajectory BCE before → after | Mixed BCE before → after |','|---|---:|---:|---:|']
+for model in ('raw','ema'):
+ for split in ('train','test'):
+  a=m['before_update'][model][split];b=m['after_update'][model][split]
+  t.append('| %s / %s | %.4f%% → %.4f%% | %.6f → %.6f | %.6f → %.6f |'%(model,split,100*a['balanced_accuracy'],100*b['balanced_accuracy'],a['trajectory_bce'],b['trajectory_bce'],a['group_bce'],b['group_bce']))
+t+=['',
+ 'EMA heldout BA falls54.90%→51.86%, while original-train BA rises53.87%→57.05%. Its heldout mixedBCE worsens1.254616→1.314165 despite trajectoryBCE improving0.804784→0.776616. This update improves training fit without heldout improvement; raw heldout BA rises only53.16%→54.09%. It is not quality success.','',
+ 'Original train contains372mixed/2188nonmixed. Balanced resampling uses1280+1280 groups,1325 unique,48.2422% repetitions. Heldout contains86mixed/426nonmixed, majority83.2031%. Post-update EMA ordinary accuracy is33.7891%, mixed recall79.0698%, nonmixed recall24.6479%, with321 false positives. The threshold remains0.5. Different periodic actor versions and labels do not form a fixed-label learning curve.','',
+ '| Actual changing-batch window | Trajectory BCE | Mixed BCE | Weighted total |','|---|---:|---:|---:|']
+for name,v in windows.items():t.append('| %s | %.6f | %.6f | %.6f |'%(name,v['trajectory_bce'],v['group_bce'],v['total_loss']))
+t+=['',
+ 'First/last10 windows use different balanced mini-batches, weighted by actual global question counts; they are not repeated fixed-data evaluations. All four original rank journals show50 probe writes1210→1260, one EMA update per write; all four actor journals show20 writes1780→1800. LR5e-6, EMA.99 and trajectoryBCE+5×mixedBCE are unchanged. The50 probe updates use40 global255-trajectory and10 global260-trajectory steps.','',
+ 'Probe loop:%.6fs. Entire outer training wall:%.6fs (%.2fmin), including rollout, actor and other phases. The probe loop is not the whole iteration.'%(m['train_loop_seconds'],fact['phase_timings']['outer-000090-training-wall'],fact['phase_timings']['outer-000090-training-wall']/60),'',
+ 'Actual91 unlabelled EMA scoring adopted head90 payload `%s`, EMA1260 and actor0090. These are producer checkpoint identities plus actual score records, not independent model tensor hashing/deserialization.'%pair['actual_following_adoption']['probe_before_checkpoint_sha256'],'',
+ 'Periodic90 selects372/512=72.65625% mixed by the existing actual-label-assisted full-pool rule; this is not classifier accuracy. Post50 ordinary B also uses expanded-prefix-admission continuation and true-mixed-first reranking, so selected-ratio differences cannot isolate EMA effects.','',
+ 'Frozen A/B training runtimes are unchanged. Actual100/150/200 normal-savepoint, QA and final51713 obligations remain pending for B; both complete200 objectives remain active.']
+(out/'README.md').write_text('\n'.join(t)+'\n');print(out)
