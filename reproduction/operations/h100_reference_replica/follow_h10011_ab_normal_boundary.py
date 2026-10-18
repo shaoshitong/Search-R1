@@ -19,6 +19,14 @@ RUNTIME = '2e3976230ac9425d66d8553afa9962821e964932'
 WRAPPER = ('/mnt/shared/workspace/training_data_node_8/shaoshitong/'
            'search-g1-prefix5-reference-preparation-20261018/code/' + RUNTIME +
            '/repo/reproduction/operations/h100_reference_replica/h10011_private_paths.sh')
+PATH_LAYOUTS = {
+    'source8': WRAPPER,
+    # Already staged and CPU path-qualified; selecting this for a reader is not
+    # a training handoff and never changes an existing mount namespace.
+    'retained': ('/root/.local/share/search-g1/prefix5-retained-bootstrap/'
+                 '6f970c9201962423daf2d463f9135f0f3cc6b16e5df9b9c12be24d5b7dbb3f60/'
+                 'h10011_retained_paths.sh'),
+}
 
 INNER = r'''
 import sys,json,time
@@ -68,6 +76,7 @@ def main():
     parser.add_argument('--interval', type=int, default=300)
     parser.add_argument('--once', action='store_true')
     parser.add_argument('--transport', choices=MODES, default='retained18')
+    parser.add_argument('--path-layout', choices=tuple(PATH_LAYOUTS), default='source8')
     args = parser.parse_args()
     assert 0 <= args.verified < args.until and args.interval >= 60
     lock = (ROOT/'work/prefix5-ab-h10011-normal-boundary-observer.lock').open('a')
@@ -83,7 +92,7 @@ def main():
         tag = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
         inner = INNER.replace('__ARMS__',repr(arms)).replace('__VERIFIED__',repr(verified))
         script = ('import subprocess,os\np=subprocess.run('+repr([
-            'unshare','--mount','--propagation','private','bash',WRAPPER,
+            'unshare','--mount','--propagation','private','bash',PATH_LAYOUTS[args.path_layout],
             '/dataset/shaoshitong/Search-G1-common8/env/bin/python','-c',inner])+
             ',env=dict(os.environ,CUDA_VISIBLE_DEVICES="",PYTHONDONTWRITEBYTECODE="1"),'
             'text=True,capture_output=True,timeout=120)\n'
@@ -107,6 +116,8 @@ def main():
             value=dict(observed_utc=tag,node='h100-11',arms=compact,verified=verified,
                 original=str(evidence),original_sha256=hashlib.sha256(evidence.read_bytes()).hexdigest(),
                 terminal_attention=attention,training_modified=False,observation_transport=transport)
+            value['observation_namespace'] = dict(path_layout=args.path_layout,
+                wrapper=PATH_LAYOUTS[args.path_layout],live_training_changed=False)
             (ROOT/'work/prefix5-ab-latest-compact.json').write_text(json.dumps(value,indent=2)+'\n')
             (ROOT/'work/prefix5-ab-h10011-normal-follow-actual-facts.json').write_text(
                 json.dumps(dict(facts=facts,last_observation=str(evidence)),indent=2)+'\n')

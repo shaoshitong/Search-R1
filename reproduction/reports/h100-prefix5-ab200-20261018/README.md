@@ -375,3 +375,27 @@ Recent31–35 B selected mixing exceeds A while the full ordinary6–35 mean rem
 lower; no QA-benefit or isolated EMA-causality claim. B35 raw fitting improves
 original selected-set BA; EMA Top512 remain all-positive at threshold0.5, which
 is a selected-subset result rather than proof of global collapse. Runtime unchanged.
+
+
+## Explicit retained-path reader option for a future full handoff
+
+The normal observer and normal CPU controller now accept
+`--path-layout source8|retained`. Default `source8` is unchanged. The retained
+choice names only the previously staged SHA-pinned wrapper
+`/root/.local/share/search-g1/prefix5-retained-bootstrap/6f970c9201962423daf2d463f9135f0f3cc6b16e5df9b9c12be24d5b7dbb3f60/h10011_retained_paths.sh`.
+Its prior CPU path proof is `119f5518d7df8578ed97ed48df07a2999ee1823430e72837739f1b538ab019eb`;
+no retention copy, large-file hash or path audit was repeated for this option.
+
+Current singleton reader73622 still runs its originally loaded code/default
+source8 path. Do not restart it merely for this optional CLI preparation, launch
+a duplicate reader or change trainer mounts. A reader using retained paths does
+not establish a training handoff: live A/B still depend on their original paths.
+Training source independence requires a real complete-joint restore at a suitable
+boundary, preserved current actor/probe/EMA/Adam/RNG/pool/grounding state, and owned
+process/lease release before starting a new private namespace. Never hot-swap
+mounts/OFD lease inodes or roll back to an older helper-compatible checkpoint.
+After a real handoff, reconcile current assigned-arm bases and explicitly select
+the qualified layout for the next singleton reader/CPU control. Start continues
+to prohibit automatic transport retry. Local CLI/syntax and retained-wrapper SHA
+checks executed; no remote command, GPU test, observer replacement or trainer
+handoff was executed by this preparation.

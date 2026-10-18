@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from .follow_h10011_ab_normal_boundary import ROOT, WRAPPER
+from .follow_h10011_ab_normal_boundary import ROOT, PATH_LAYOUTS
 from .readonly_management_route import MODES, lan5_argv, run_readonly
 
 
@@ -90,6 +90,7 @@ def main():
     parser.add_argument('--outer', type=int, required=True, choices=(50, 100, 150, 200))
     parser.add_argument('--arm', choices=('A', 'B', 'both'), default='both')
     parser.add_argument('--transport', choices=MODES, default='retained18')
+    parser.add_argument('--path-layout', choices=tuple(PATH_LAYOUTS), default='source8')
     args = parser.parse_args()
     if args.action == 'start' and args.transport == 'retained18_fallback_lan5':
         parser.error('Once start cannot automatically retry transport; query status after an uncertain outcome')
@@ -100,7 +101,7 @@ def main():
         raise ValueError('This control is scoped to the current qualified h100-11 placement')
     inner = remote_inner(arms, args.outer, args.action)
     script = ('import subprocess,os\np=subprocess.run('+repr([
-        'unshare', '--mount', '--propagation', 'private', 'bash', WRAPPER,
+        'unshare', '--mount', '--propagation', 'private', 'bash', PATH_LAYOUTS[args.path_layout],
         '/usr/bin/python3', '-c', inner])+
         ',env=dict(os.environ,CUDA_VISIBLE_DEVICES="",PYTHONDONTWRITEBYTECODE="1"),'
         'text=True,capture_output=True,timeout=40)\n'
@@ -124,7 +125,9 @@ def main():
             action=args.action, outer=args.outer, training_modified=False), indent=2)+'\n')
         raise
     value = dict(returncode=response.returncode, stdout=response.stdout, stderr=response.stderr,
-                 transport=route, action=args.action, outer=args.outer, training_modified=False)
+                 transport=route, action=args.action, outer=args.outer, training_modified=False,
+                 observation_namespace=dict(path_layout=args.path_layout,
+                     wrapper=PATH_LAYOUTS[args.path_layout],live_training_changed=False))
     evidence.write_text(json.dumps(value, indent=2)+'\n')
     if response.returncode:
         raise RuntimeError(f'Control outcome saved at {evidence}; query once state, never blind replay: {response.stderr}')
