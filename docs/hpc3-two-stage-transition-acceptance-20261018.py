@@ -72,14 +72,15 @@ assert labels['calibration_protocol']['rollout_max_new']==500 and labels['calibr
 assert labels['interaction_execution']['actual_compute_dtype']=='torch.bfloat16'
 assert labels['interaction_config_sha256']==sha(groot/'interaction-config.json')
 assert report['require_all_cv_folds'] is True and report['configured_cv_folds']==2
-import joblib,numpy as np
+import joblib
+from reproduction.a800.recovery_binding import finite_fitted_values
 ground_heads=[]
 for key,name in (('boundary','boundary_probe.pkl'),('commit','commit_probe.pkl')):
  p=Path(state[key]);assert sha(p)==state['head_sha256'][name]
  fitted=joblib.load(p);clf=fitted['clf']
  assert list(clf.classes_)==[0,1] and math.isfinite(float(fitted['auc']))
- assert np.isfinite(clf.coef_).all() and np.isfinite(clf.intercept_).all()
- ground_heads.append(dict(kind=key,path=str(p),sha256=sha(p),auc=float(fitted['auc']),finite_binary_classifier=True))
+ finite_fitted_values(vars(clf))
+ ground_heads.append(dict(kind=key,path=str(p),sha256=sha(p),auc=float(fitted['auc']),finite_binary_classifier=True,estimator_class=type(clf).__name__))
 reward=next_a['reward'];assert reward['actual_reward_world_size']==4 and reward['trajectories']==2560
 assert reward['prefix_correctness_head_used_for_reward'] is False and reward['version']==state['version']
 assert sorted(r['rank'] for r in reward['ranks'])==list(range(4)) and len({r['probe_url'] for r in reward['ranks']})==4
@@ -116,7 +117,7 @@ refresh_score=rd(data/'probe-score/manifest.json')
 assert refresh_score['probe_before_checkpoint_sha256']==migration['migrated_receipt']['sha256']
 assert j['probe_metrics']['actor_version']==a['actor_version'] and j['probe_metrics']['epochs']==3 and j['probe_metrics']['new_adam_steps_per_rank']==150
 result=dict(status='ACTUAL_PREFIX_AND_GROUNDING_TRANSITION_USED_BY_COMPLETE_NEXT_OUTER_PASS',outer=n,checked_unix=time.time(),
- job='733898',run_id=c['run_id'],runtime_commit=j['runtime_source_commit'],operator_query_sha256=QUERY_SHA,
+ job='733898',run_id=c['run_id'],runtime_commit=j['runtime_source_commit'],operator_query_sha256=QUERY_SHA,audit_runtime_python=os.path.realpath(sys.executable),
  source_joint_sha256=sha(root/'complete.json'),next_joint_sha256=sha(next_root/'complete.json'),
  milestone_cpu_proof=str(cpu_path),milestone_cpu_proof_sha256=sha(cpu_path),milestone_cpu_stat_seals_reused=True,
  old_prefix=actor_prefix(n),new_prefix=after_boundary(n),probe_head_sha256=head['sha256'],probe_adam=head['actual_adam_steps_per_rank'],
@@ -142,7 +143,15 @@ def main():
     cpu_sha = hashlib.sha256(Path(__file__).with_name('hpc3-two-stage-milestone-readback-20261018.py').read_bytes()).hexdigest()
     code = QUERY.replace('TARGET_OUTER', str(args.outer)).replace('CPU_OPERATOR_SHA', repr(cpu_sha)).replace('QUERY_SHA', repr(hashlib.sha256(QUERY.encode()).hexdigest()))
     address = subprocess.check_output(['ipconfig', 'getifaddr', 'en0'], text=True).strip()
-    response = run(PYTHON + ' -c ' + shlex.quote(code), account='mou176', source_address=address, timeout=55)
+    # The control interpreter has torch for checkpoint inspection but does not
+    # contain joblib/sklearn. Use the immutable job's configured runtime for its
+    # actual fitted Pipeline/MLP heads; do not install into a live environment.
+    bootstrap = ("import json,os;from pathlib import Path;"
+                 "b=Path('/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4');"
+                 "c=json.loads((b/'preparation/launch-config.json').read_text());"
+                 "p=str(Path(c['environment_root'])/'bin/python');"
+                 "os.environ['CUDA_VISIBLE_DEVICES']='';os.execv(p,[p,'-c'," + repr(code) + "])")
+    response = run(PYTHON + ' -c ' + shlex.quote(bootstrap), account='mou176', source_address=address, timeout=55)
     if response.returncode:
         raise RuntimeError('Transition audit failed; no training action taken: ' + response.stdout.decode()[-1200:] + response.stderr.decode()[-1000:])
     value = next(json.loads(line) for line in reversed(response.stdout.decode().splitlines()) if line.lstrip().startswith('{'))
