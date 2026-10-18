@@ -1,0 +1,174 @@
+{
+  "identities_equal": true,
+  "contract_equal": {
+    "actor_version": true,
+    "question_source_sha256": true,
+    "evaluation_contract": true,
+    "interaction_protocol": true,
+    "actual_compute_dtype": true
+  },
+  "rank_settings": [
+    {
+      "seed": [
+        1729,
+        106458,
+        211187,
+        315916
+      ],
+      "actual_scheduler_limits": [
+        {
+          "max_num_batched_tokens": 32768,
+          "max_num_seqs": 1024
+        },
+        {
+          "max_num_batched_tokens": 32768,
+          "max_num_seqs": 1024
+        },
+        {
+          "max_num_batched_tokens": 32768,
+          "max_num_seqs": 1024
+        },
+        {
+          "max_num_batched_tokens": 32768,
+          "max_num_seqs": 1024
+        }
+      ],
+      "gpu_memory_utilization": [
+        0.7172687413473605,
+        0.6870766180628571,
+        0.702691452656765,
+        0.7261742152113788
+      ],
+      "actual_compute_dtype": [
+        "torch.bfloat16",
+        "torch.bfloat16",
+        "torch.bfloat16",
+        "torch.bfloat16"
+      ]
+    },
+    {
+      "seed": [
+        1729,
+        106458,
+        211187,
+        315916
+      ],
+      "actual_scheduler_limits": [
+        {
+          "max_num_batched_tokens": 32768,
+          "max_num_seqs": 1024
+        },
+        {
+          "max_num_batched_tokens": 32768,
+          "max_num_seqs": 1024
+        },
+        {
+          "max_num_batched_tokens": 32768,
+          "max_num_seqs": 1024
+        },
+        {
+          "max_num_batched_tokens": 32768,
+          "max_num_seqs": 1024
+        }
+      ],
+      "gpu_memory_utilization": [
+        0.7496562069295116,
+        0.7572050085871184,
+        0.7572050085871184,
+        0.7572042377506375
+      ],
+      "actual_compute_dtype": [
+        "torch.bfloat16",
+        "torch.bfloat16",
+        "torch.bfloat16",
+        "torch.bfloat16"
+      ]
+    }
+  ],
+  "answer_changed": 25,
+  "em_changed": [
+    {
+      "ordinal": 26,
+      "source": "nq",
+      "old_em": 1,
+      "new_em": 0,
+      "old_f1": 1.0,
+      "new_f1": 0.4,
+      "same_answer": false
+    },
+    {
+      "ordinal": 340,
+      "source": "hotpotqa",
+      "old_em": 0,
+      "new_em": 1,
+      "old_f1": 0.0,
+      "new_f1": 1.0,
+      "same_answer": false
+    },
+    {
+      "ordinal": 455,
+      "source": "hotpotqa",
+      "old_em": 0,
+      "new_em": 1,
+      "old_f1": 0.0,
+      "new_f1": 1.0,
+      "same_answer": false
+    },
+    {
+      "ordinal": 470,
+      "source": "hotpotqa",
+      "old_em": 1,
+      "new_em": 0,
+      "old_f1": 1.0,
+      "new_f1": 0.4,
+      "same_answer": false
+    },
+    {
+      "ordinal": 493,
+      "source": "hotpotqa",
+      "old_em": 0,
+      "new_em": 1,
+      "old_f1": 0.0,
+      "new_f1": 1.0,
+      "same_answer": false
+    },
+    {
+      "ordinal": 500,
+      "source": "hotpotqa",
+      "old_em": 1,
+      "new_em": 0,
+      "old_f1": 1.0,
+      "new_f1": 0.0,
+      "same_answer": false
+    },
+    {
+      "ordinal": 502,
+      "source": "hotpotqa",
+      "old_em": 1,
+      "new_em": 0,
+      "old_f1": 1.0,
+      "new_f1": 0.0,
+      "same_answer": false
+    }
+  ],
+  "f1_changed_count": 9,
+  "total_rows_changed": 71,
+  "gpu_forward_performed": false,
+  "full_outputs_copied_to_mac": false,
+  "cause": "UNRESOLVED_EXECUTION_REPRODUCIBILITY_DIFFERENCE_NOT_ALGORITHM_ATTRIBUTION",
+  "original_qa50": {
+    "em": 0.431640625,
+    "f1": 0.5139975420691076
+  },
+  "recovered_qa50": {
+    "em": 0.4296875,
+    "f1": 0.5160483233191075
+  },
+  "existing_output_comparison_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/b-progressive-qa50-existing-output-compare-20261018T111817160260Z.json",
+  "evidence_sha256": "8983658003e8ceac1a34956ed54d5e51f0d0314a1bfa6807b3cfad326a307972",
+  "static_source_identical": {
+    "reproduction/prefix_selection200/eval.py": true,
+    "reproduction/prefix_selection200/interaction_protocol.py": true
+  },
+  "prefix_quota_does_not_apply_to_evaluate_phase": true
+}

@@ -1,0 +1,78 @@
+{
+  "observed_utc": "20261018T111052457123Z",
+  "node": "h100-11",
+  "arms": {
+    "A": {
+      "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1",
+      "complete_outer": 64,
+      "actor_adam": [
+        1280,
+        1280,
+        1280,
+        1280
+      ],
+      "probe_adam": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "stage": {
+        "checked_unix": 1792321447.7556555,
+        "outer": 65,
+        "run_id": "ca37419b494446398fb15234aa3be91a",
+        "stage": "outer-000065-actor-5243c55b7c2b4bea8669e2e3f65f9243"
+      }
+    },
+    "B": {
+      "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2",
+      "complete_outer": 52,
+      "actor_adam": [
+        1040,
+        1040,
+        1040,
+        1040
+      ],
+      "probe_adam": [
+        720,
+        720,
+        720,
+        720
+      ],
+      "stage": {
+        "checked_unix": 1792321480.5961215,
+        "outer": 53,
+        "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+        "stage": "outer-000053-actor-77d47b54014c4326b9be648ceae8494c"
+      }
+    }
+  },
+  "raw_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-h10011-normal-follow-20261018T111052457123Z-actual.json",
+  "raw_sha256": "4c92c92ce90521a365254c0b809a913a7ad5b275cca1d429ee6cd87a66423797",
+  "A50_cpu_proof": {
+    "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+    "outer": 50,
+    "proof": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0050-independent-full-sha-cpu.json",
+    "proof_sha256": "c1e6135380e32e94a9b4e82457791bc798980c9251046a15b7be1daf857dcaf0",
+    "files": 25,
+    "bytes": 38605966861,
+    "actor_actual_adam_steps_per_rank": [
+      1000,
+      1000,
+      1000,
+      1000
+    ],
+    "probe_actual_adam_steps_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "actual_cpu_deserialization": true,
+    "gpu_forward_performed": false,
+    "repeat_large_hash_or_load": false
+  },
+  "retained_cpu_entry_report": "reproduction/reports/h100-prefix5-ab200-20261018/retained-cache-relocation/CPU-ENTRY-PASS.json",
+  "retained_live_training_handoff_pending": true,
+  "goal_complete": false
+}
