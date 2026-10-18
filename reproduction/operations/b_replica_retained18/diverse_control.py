@@ -11,6 +11,9 @@ import pathlib,os,sys,json,subprocess,time,hashlib,uuid
 p=pathlib.Path(PHYSICAL);canonical=CANONICAL
 def read(f):return json.loads(f.read_text())if f.exists()else None
 def sha(f):return hashlib.sha256(f.read_bytes()).hexdigest()
+def physical_path(value):
+ value=str(value);prefix='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'
+ return pathlib.Path('/mnt/data/shaoshitong')/value[len(prefix):]if value.startswith(prefix)else pathlib.Path(value)
 wrapper=p/'repo/reproduction/operations/b_replica_retained18/private_paths.sh'
 python='/dataset/shaoshitong/Search-G1-common8/env/bin/python'
 def command(args):
@@ -121,9 +124,9 @@ else:
   if v:
    rank_evidence=[]
    for row in v['actor']['rank_receipts']:
-    records=[json.loads(line)for line in pathlib.Path(row['ledger_path']).read_text().splitlines()]
+    records=[json.loads(line)for line in physical_path(row['ledger_path']).read_text().splitlines()]
     restore=next(r for r in records if r['event']=='ACTUAL_RESTORE');writes=[r for r in records if r['event']=='ACTUAL_ADAM_WRITE']
-    rank_evidence.append(dict(rank=row['rank'],restored_outer=restore['restored_completed_outer'],adam_before=restore['actual_adam_before'],scheduler_before=restore['restored_scheduler'],writes=len(writes),opportunities=sum(r['event']=='OPPORTUNITY'for r in records),local_micro=writes[-1]['local_micro']if writes else None,accumulation=writes[-1]['gradient_accumulation']if writes else None,ledger_sha256=sha(pathlib.Path(row['ledger_path'])),expected_ledger_sha256=row['ledger_sha256']))
+    rank_evidence.append(dict(rank=row['rank'],restored_outer=restore['restored_completed_outer'],adam_before=restore['actual_adam_before'],scheduler_before=restore['restored_scheduler'],writes=len(writes),opportunities=sum(r['event']=='OPPORTUNITY'for r in records),local_micro=writes[-1]['local_micro']if writes else None,accumulation=writes[-1]['gradient_accumulation']if writes else None,ledger_sha256=sha(physical_path(row['ledger_path'])),expected_ledger_sha256=row['ledger_sha256']))
    scores=p/'outers'/('outer-%06d'%n)/'probe-score/candidate-scores.jsonl';probe_variance=None
    if scores.exists():
     import statistics
