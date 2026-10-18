@@ -106,7 +106,7 @@ def reused_phase(base, root, phase, c):
 def diagnostic_sampling_config(config):
     """Fixed heldout sampling has no training candidate history or cursor."""
     value = dict(config)
-    for key in ('adaptive_candidates', 'candidate_schedule', 'candidate_budget'):
+    for key in ('adaptive_candidates', 'candidate_schedule', 'candidate_budget','two_stage_selection'):
         value.pop(key, None)
     return value
 
@@ -158,7 +158,7 @@ def commit_outer(base, c, outer, root, actor_selection_path, timings, recovery=N
         selection_sha256=sha(actor_selection_path),
         actor_selection_path=str(actor_selection_path), actor_selection_sha256=sha(actor_selection_path),
         predicted_selection_sha256=sha(root/'probe-score/selection.json'),
-        actor_selection_outcome_labels_used=periodic_update, rollout=read(root/'full/complete.json'),
+        actor_selection_outcome_labels_used=read(actor_selection_path).get('outcome_labels_used',False), rollout=read(root/'full/complete.json'),
         probe_metrics=probe_metrics, periodic_probe_update=periodic_update,
         probe_boundary=boundary, source_commit=c['source_commit'], observed_unix=time.time())
     complete['candidate_schedule'] = schedule_metadata(c, outer)
@@ -472,7 +472,7 @@ def run(base):
         else:
             grounding_state = start_grounding(grounding.initialize(base, c))
         refresh_grounding(outer)
-        if progressive and not (base/'preparation/progressive-bootstrap-complete.json').exists():
+        if progressive and not c.get('two_stage_selection') and not (base/'preparation/progressive-bootstrap-complete.json').exists():
             progressive_refresh(50)
             from .progressive_refresh import bootstrap_joint
             bootstrap_joint(base)
@@ -565,6 +565,11 @@ def run(base):
                         phase(job('current-actor-diagnostic'),
                             [python,'-m','reproduction.prefix_selection200.periodic_data','diagnostic',
                              '--config',str(diagnostic_config),'--outer',str(outer)])
+                elif c.get('two_stage_selection'):
+                    phase(job('complete-predicted-top1024'),
+                        [python,'-m','reproduction.prefix_selection200.two_stage_selection',
+                         '--config',sampling_conf,'--outer',str(outer)])
+                    actor_selection_path=root/'probe-score/actual-em-selection.json'
                 else:
                     phase(job('continue'), [python, '-m', 'reproduction.prefix_selection200.rollout',
                         '--config', sampling_conf, '--outer', str(outer), '--phase', 'continue', '--selection', str(actor_selection_path)])

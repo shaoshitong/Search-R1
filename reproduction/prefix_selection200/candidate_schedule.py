@@ -63,6 +63,11 @@ def consumed_candidates_through(config, completed_outer):
 
 
 def schedule_metadata(config, outer):
+    if config.get('two_stage_selection') and outer<config['two_stage_selection']['effective_from_outer']:
+        from pathlib import Path
+        import json
+        original=json.loads((Path(config['resume_joint']['source_base'])/'preparation/launch-config.json').read_text())
+        return schedule_metadata(original,outer)
     if config.get('progressive_prefix') and outer<=50:
         from pathlib import Path
         import json
@@ -72,6 +77,10 @@ def schedule_metadata(config, outer):
     if value is None or outer < value['effective_from_outer']:
         return {}
     result=dict(candidate_schedule=value, scheduled_candidate_questions=candidate_count(config, outer))
+    if config.get('two_stage_selection'):
+        from .two_stage_selection import validate
+        result['two_stage_selection']=dict(validate(config))
+        result['actual_em_selection_fallback']=config['actual_em_selection_fallback']
     if config.get('adaptive_candidates') is not None:
         from .adaptive_candidates import budget
         result.update(adaptive_candidates=dict(config['adaptive_candidates']),candidate_budget=budget(config,outer))

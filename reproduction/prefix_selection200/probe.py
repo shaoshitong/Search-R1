@@ -518,15 +518,20 @@ def score(args):
                 candidate_questions=questions,trajectories_per_question=G,exploration=0,
                 formula='1-prod(p_j)-prod(1-p_j)',outcome_labels_used=False,
                 representation_source='same_sampling_actor_native_layer27_postblock',
-                **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions','adaptive_candidates','candidate_budget') if key in manifest})
+                **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions','adaptive_candidates','candidate_budget','two_stage_selection','actual_em_selection_fallback') if key in manifest})
             from .periodic import is_probe_update
             selection=dict(common,selected=selected,selected_questions=SELECTED_QUESTIONS,
                 tie_break='original_candidate_ordinal_ascending',continuation_scope='top512',
-                provisional_for_actor=is_probe_update(args.outer),
+                provisional_for_actor=(is_probe_update(args.outer) or bool(manifest.get('two_stage_selection'))),
                 selection_semantics='predicted_mixed_probability_top512_before_any_outcome')
             once(out/'selection.json',selection)
             from .periodic import is_probe_update
-            if is_probe_update(args.outer):
+            from .two_stage_selection import ordinary as two_stage_ordinary
+            if two_stage_ordinary(manifest,args.outer):
+                intermediate=sorted(all_scores,key=lambda r:(-r['q'],r['candidate_ordinal']))[:1024]
+                once(out/'pool-selection.json',dict(common,selected=intermediate,selected_questions=1024,
+                    continuation_scope='predicted_top1024_before_outcomes',selection_semantics='label_free_probe_top1024'))
+            elif is_probe_update(args.outer):
                 once(out/'pool-selection.json',dict(common,selected=sorted(all_scores,key=lambda r:r['candidate_ordinal']),
                      selected_questions=questions,continuation_scope='all_candidates'))
             with (out/'candidate-scores.jsonl').open('x') as f:
@@ -541,7 +546,7 @@ def score(args):
                 no_outcome_labels=True,independent_encoder_forward=False,
                 representation_source='same_sampling_actor_native_layer27_postblock',
                 candidate_questions=questions,
-                **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions','adaptive_candidates','candidate_budget') if key in manifest},
+                **{key: manifest[key] for key in ('candidate_schedule', 'scheduled_candidate_questions','adaptive_candidates','candidate_budget','two_stage_selection','actual_em_selection_fallback') if key in manifest},
                 elapsed_seconds=time.monotonic()-started)
             once(out/'manifest.json',result)
             once(out/'complete.json',dict(status='PREFIX%dG5_STABLE_TOP512_SCORE_COMPLETE' % questions,outer=args.outer,

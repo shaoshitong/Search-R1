@@ -89,6 +89,9 @@ def checked(config,outer,value):
 
 
 def derive(config,outer):
+    if config.get('two_stage_selection'):
+        from .two_stage_selection import derive as fixed_derive
+        return fixed_derive(config,outer)
     spec=validate(config)
     common=dict(schema_version=1,run_id=config['run_id'],outer=outer,policy_sha256=digest(spec))
     if outer==1:
@@ -116,6 +119,9 @@ def derive(config,outer):
 
 
 def budget(config,outer):
+    if config.get('two_stage_selection'):
+        from .two_stage_selection import budget as fixed_budget
+        return fixed_budget(config,outer)
     if config.get('progressive_prefix') and outer<=50:
         # Historical budgets retain the old cap/hash and source journal. Only
         # the newly authorized suffix is512..5120; do not rewrite its prefix.
@@ -131,6 +137,9 @@ def budget(config,outer):
 
 def ensure(config,outer):
     """Call under the candidate-pool writer lock, before advancing its cursor."""
+    if config.get('two_stage_selection'):
+        from .two_stage_selection import ensure as fixed_ensure
+        return fixed_ensure(config,outer)
     expected=derive(config,outer);target=path(config,outer)
     if target.exists():
         if checked(config,outer,read(target))!=expected:

@@ -111,7 +111,7 @@ def prepare(base,outer):
     scoped=dict(c,base=str(data),prefix_policy_tokens=PREFIX_TOKENS,hidden_capture_contract=HIDDEN_CAPTURE_CONTRACT,
         progressive_probe_refresh=True,probe_refresh_tag='probe-refresh-p%d'%PREFIX_TOKENS,
         actor_model_dir=actor['hf_model_dir'],actor_version=actor['actor_version'])
-    for name in ['adaptive_candidates','candidate_schedule']:
+    for name in ['adaptive_candidates','candidate_schedule','two_stage_selection']:
         scoped.pop(name,None)
     immutable(conf,scoped)
     return dict(config=str(conf),root=str(target),actor_version=actor['actor_version'])

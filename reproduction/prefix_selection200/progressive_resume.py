@@ -22,6 +22,13 @@ def selected(config):return config.get('progressive_prefix',{}).get('mode')==MOD
 
 
 def verify(config):
+    if config.get('two_stage_selection'):
+        from .two_stage_resume import verify as suffix_verify
+        return suffix_verify(config)
+    return _verify_progressive(config)
+
+
+def _verify_progressive(config):
     proof=read(config['source_compatibility'])
     if sha(config['source_compatibility'])!=config['source_compatibility_sha256'] or proof.get('mode')!=MODE:
         raise ValueError('Progressive continuation needs its exact explicit source delta proof')
@@ -59,6 +66,10 @@ def writers_gone(source,config):
 
 
 def plan(base,config=None):
+    config=config or read(Path(base)/'preparation/launch-config.json')
+    if config.get('two_stage_selection'):
+        from .two_stage_resume import plan as suffix_plan
+        return suffix_plan(base,config)
     base=Path(base);config=config or read(base/'preparation/launch-config.json');verify(config)
     spec=config['resume_joint'];source=Path(spec['source_base'])
     if base==source or base.parent!=source.parent or spec['completed_outer']!=50:
@@ -94,6 +105,9 @@ def plan(base,config=None):
 
 
 def import_complete(base):
+    if read(Path(base)/'preparation/launch-config.json').get('two_stage_selection'):
+        from .two_stage_resume import import_complete as suffix_import
+        return suffix_import(base)
     base=Path(base);config=read(base/'preparation/launch-config.json');result=plan(base,config)
     receipt=base/'preparation/resume-joint-receipt.json'
     if receipt.exists():validate_imported_boundary(base,config);return read(receipt)
@@ -124,6 +138,9 @@ def import_complete(base):
 
 
 def validate_imported_boundary(base,config):
+    if config.get('two_stage_selection'):
+        from .two_stage_resume import validate_imported_boundary as suffix_validate
+        return suffix_validate(base,config)
     base=Path(base);receipt=read(base/'preparation/resume-joint-receipt.json');current=plan(base,config)
     if receipt['source_joint_sha256']!=current['source_joint_sha256']:
         raise ValueError('Imported CP50 provenance changed')
