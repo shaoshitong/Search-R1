@@ -86,7 +86,10 @@ def plan(base,config=None):
         pending_pool=pool,actor_adam=j['actor']['actual_adam_steps_per_rank'],probe_adam=j['probe']['actual_adam_steps_per_rank'],recovery_mode=LATEST if latest else'EXPLICIT_HUMAN_ROLLBACK50')
 
 def validate_imported(base,config):
-    result=plan(base,config);b=Path(base);receipt=read(b/'preparation/resume-joint-receipt.json')
+    return _validate_imported(base,config,plan)
+
+def _validate_imported(base,config,planner):
+    result=planner(base,config);b=Path(base);receipt=read(b/'preparation/resume-joint-receipt.json')
     if receipt['source_joint_sha256']!=result['source_joint_sha256']or read(b/'latest-joint.json')['outer']!=result['completed_outer']:raise ValueError('Imported actual complete joint differs')
     j=read(b/'latest-joint.json')
     if read(b/'actor/latest.json')!=j['actor']or read(b/'probe/latest.json')!=j['probe']:raise ValueError('Actor/probe latest receipts not restored')
@@ -95,8 +98,11 @@ def validate_imported(base,config):
     return result['completed_outer']
 
 def import_complete(base):
-    b=Path(base);c=read(b/'preparation/launch-config.json');result=plan(b,c)
-    if (b/'preparation/resume-joint-receipt.json').exists():validate_imported(b,c);return read(b/'preparation/resume-joint-receipt.json')
+    return _import_complete(base,plan,validate_imported,verify,arm='B')
+
+def _import_complete(base,planner,validator,verifier,*,arm):
+    b=Path(base);c=read(b/'preparation/launch-config.json');result=planner(b,c)
+    if (b/'preparation/resume-joint-receipt.json').exists():validator(b,c);return read(b/'preparation/resume-joint-receipt.json')
     if(b/'preparation/resume-joint-intent.json').exists():raise ValueError('Existing interrupted import must be reconciled, never replayed')
     once(b/'preparation/resume-joint-intent.json',result);source=Path(result['source_base']);n=result['completed_outer'];j=read(source/'outers'/('outer-%06d'%n)/'complete.json')
     def copy(src,dst):
@@ -119,8 +125,8 @@ def import_complete(base):
     # rollout or actual writes are imported into this explicit rollback branch.
     for name in ('initialization-complete.json','initialization-intent.json'):
         if (source/'probe'/name).exists():copy(source/'probe'/name,b/'probe'/name)
-    result.update(status='B_LATEST_FULL_JOINT_IMPORTED'if result['pending_pool']is not None else'B_CP50_FULL_JOINT_IMPORTED',discarded_later_history_preserved_at_source=True,source_binding=verify(c),imported_actor_adam=j['actor']['actual_adam_steps_per_rank'],imported_probe_adam=j['probe']['actual_adam_steps_per_rank'],unsaved_optimizer_or_rollout_payloads_imported=False)
-    once(b/'preparation/resume-joint-receipt.json',result);validate_imported(b,c);return result
+    result.update(status=arm+'_LATEST_FULL_JOINT_IMPORTED'if result['pending_pool']is not None else arm+'_CP50_FULL_JOINT_IMPORTED',discarded_later_history_preserved_at_source=True,source_binding=verifier(c),imported_actor_adam=j['actor']['actual_adam_steps_per_rank'],imported_probe_adam=j['probe']['actual_adam_steps_per_rank'],unsaved_optimizer_or_rollout_payloads_imported=False)
+    once(b/'preparation/resume-joint-receipt.json',result);validator(b,c);return result
 
 
 def prepare(source,base,staged_repo,commit,authorization,*,_completed_outer=50,_latest=False):

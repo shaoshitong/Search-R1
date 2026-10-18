@@ -238,6 +238,10 @@ def compatibility_proof(parent_manifest,target_manifest, *, authorized_candidate
 
 
 def verify_source_compatibility(config):
+    from .ab_frozen_latest_resume import enabled as frozen_latest
+    if frozen_latest(config):
+        from . import ab_frozen_latest_resume as frozen
+        return frozen.verify(config)
     from .b_progressive import enabled
     if enabled(config):
         from .b_progressive_resume import verify
@@ -457,6 +461,10 @@ def pending_sampling_boundary(base,config,joint):
 def plan(base,config=None):
     """Read-only recovery plan; UNKNOWN qualification cannot authorize import."""
     base=canonical_path(base);config=config or read(base/'preparation/launch-config.json')
+    from .ab_frozen_latest_resume import enabled as frozen_latest
+    if frozen_latest(config):
+        from . import ab_frozen_latest_resume as frozen
+        return frozen.plan(base,config)
     from .b_progressive import enabled
     if enabled(config):
         from .b_progressive_resume import plan as bplan
@@ -618,6 +626,10 @@ def plan(base,config=None):
 def import_complete(base):
     """Mutating entry point: genuine fault/qualification and actual gone checks twice."""
     base=canonical_path(base);config=read(base/'preparation/launch-config.json')
+    from .ab_frozen_latest_resume import enabled as frozen_latest
+    if frozen_latest(config):
+        from . import ab_frozen_latest_resume as frozen
+        return frozen.import_complete(base)
     from .b_progressive import enabled
     if enabled(config):
         from .b_progressive_resume import import_complete as bimport
@@ -652,6 +664,10 @@ def import_complete(base):
 
 
 def validate_imported_boundary(base,config):
+    from .ab_frozen_latest_resume import enabled as frozen_latest
+    if frozen_latest(config):
+        from . import ab_frozen_latest_resume as frozen
+        return frozen.validate_imported(base,config)
     from .b_progressive import enabled
     if enabled(config):
         from .b_progressive_resume import validate_imported
