@@ -17,7 +17,7 @@ def main():
     wrapper=json.loads(result.stdout);out=ROOT/'preparation'/('actor50-grpo-observation-wrapper-'+str(time.time_ns())+'.json');out.write_text(result.stdout)
     d=wrapper['result'];assert d['execution_id']==c['execution_id'] and d['source_commit']==c['source_commit']
     c.update(latest_actual=wrapper['receipt'],latest_actual_checked_unix=d['checked_unix'],
-        stage=d['stage'],workers=d['workers'],latest_failure=d['failure'],latest_exit=d['exit'],latest_cleanup=d['cleanup'])
+        stage=d['stage'],workers=d['workers'],latest_failure=d['failure'],latest_exit=d['exit'],latest_cleanup=d['cleanup'],actor_inflight=d.get('actor_inflight'))
     j=d.get('joint')
     if j:
         assert len(set(j['actor_Adam']))==1 and j['scheduler']==j['outer']
@@ -34,6 +34,7 @@ def main():
     print(json.dumps(dict(receipt=wrapper['receipt'],at=d['checked_unix'],leader=d['workers']['pipeline'],
         stage=d['stage'],complete_outer=j['outer'] if j else None,actor_Adam=j['actor_Adam'] if j else None,
         probe=d['probe'],new_selected_Mixed=j['rollout_mixed'] if j and j['outer']>50 else None,
+        actor_inflight=d.get('actor_inflight'),
         rollout={phase:[None if x is None else x.get('completed_trajectories') for x in rows] for phase,rows in d.get('rollout',{}).items()},
         failure=d['failure'],exit=d['exit'],cleanup=d['cleanup'],complete=d['complete'])))
 

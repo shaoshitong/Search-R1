@@ -131,6 +131,24 @@ else:
   root=b/'outers'/('outer-%06d'%outer)
   value['rollout']={phase:[small(root/phase/('rank-%d-progress.json'%r)) for r in range(4)] for phase in ('prefix','full','full-pool')}
   value['QA']=small(root/'validation/complete.json')
+  name=(value['stage'] or {}).get('stage','');value['actor_inflight']=[]
+  if '-actor-' in name:
+   import re
+   attempt=name.rsplit('-actor-',1)[1];assert re.fullmatch('[0-9a-f]{32}',attempt)
+   directory=b/'actor/outers'/('outer-%04d-attempt-%s'%(outer,attempt))
+   for rank in range(4):
+    path=directory/('rank-%d-updates.jsonl'%rank)
+    if not path.exists():value['actor_inflight'].append(None);continue
+    assert path.stat().st_size<2*1024**2;lines=path.read_text().splitlines();rows=[]
+    for i,line in enumerate(lines):
+     try:rows.append(json.loads(line))
+     except json.JSONDecodeError:
+      if i!=len(lines)-1:raise
+    restored=next((x for x in rows if x['event']=='ACTUAL_RESTORE'),None)
+    writes=[x for x in rows if x['event']=='ACTUAL_ADAM_WRITE']
+    value['actor_inflight'].append(dict(rank=rank,restore=None if restored is None else
+     {k:restored.get(k) for k in ('restored_completed_outer','actual_adam_before','restored_scheduler','actual_learning_rates','actual_global_micro')},
+     returned_writes=len(writes),latest_actual_Adam=None if not writes else writes[-1]['actual_adam_steps']))
  for name in ('pipeline','prepare-actor','prepare-seed'):
   path=b/'logs'/(name+'.log')
   if path.exists():
