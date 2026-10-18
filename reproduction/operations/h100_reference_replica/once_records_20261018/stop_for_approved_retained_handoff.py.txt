@@ -1,0 +1,31 @@
+"""One exact native leader only, after explicit approval of this cold handoff.
+
+PARAMS binds arm, base, run, launch-config SHA and original leader PID/birth.
+The archived B-only CP50 stop authorization is deliberately not accepted.
+"""
+import hashlib,json,os,signal,time
+from pathlib import Path
+b=Path(PARAMS['base']);auth=PARAMS['authorization'];arm=PARAMS['arm']
+if auth.get('status')!='HUMAN_APPROVED_RETAINED_INPUT_COLD_HANDOFF' or not auth.get('human_instruction') or not auth.get('received_utc'):
+ raise ValueError('Actual explicit cold-handoff approval is required; keep training running')
+if auth['sources'][arm]!=PARAMS['expected_source']:
+ raise ValueError('Approval does not bind this exact source execution')
+expected=PARAMS['expected_source'];config_raw=(b/'preparation/launch-config.json').read_bytes();config=json.loads(config_raw);submitted=json.loads((b/'preparation/submit-receipt.json').read_text());leader=submitted['leader']
+if config['run_id']!=expected['run_id'] or hashlib.sha256(config_raw).hexdigest()!=expected['config_sha256'] or str(b)!=expected['base'] or any(leader[k]!=expected['leader'][k]for k in ('pid','start_ticks')):
+ raise ValueError('Actual source/leader differs from the approved execution; no signal')
+intent=b/'preparation/approved-retained-input-handoff-stop-once-v1.json'
+if intent.exists():
+ print(json.dumps(dict(status='EXISTING_STOP_INTENT_QUERY_ONLY_NO_REPLAY',intent=str(intent))))
+else:
+ fd=os.pidfd_open(leader['pid'])
+ try:
+  fields=Path('/proc/%d/stat'%leader['pid']).read_text().rsplit(')',1)[1].split()
+  if int(fields[19])!=leader['start_ticks']or fields[0]=='Z':raise ValueError('Original approved native birth is not live; query terminal state')
+  record=dict(requested_unix=time.time(),authorization=auth,arm=arm,leader=leader,
+   latest_joint_at_request=json.loads((b/'latest-joint.json').read_text())['outer'],
+   reason='Approved same-goal retained-input cold handoff; no algorithm/budget change',
+   goal_paused=False,foreign_processes_signalled=False)
+  with intent.open('x')as stream:json.dump(record,stream);stream.flush();os.fsync(stream.fileno())
+  signal.pidfd_send_signal(fd,signal.SIGTERM)
+  print(json.dumps(dict(status='EXACT_APPROVED_LEADER_SIGTERM_SENT_QUERY_CLEANUP_NEXT',intent=str(intent),**record)))
+ finally:os.close(fd)
