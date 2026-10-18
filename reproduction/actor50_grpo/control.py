@@ -149,11 +149,16 @@ else:
  value['workers']={}
  for name in ('prepare-actor','prepare-seed','prepare-recover','prepare-restart','pipeline'):
   item=small(b/'preparation'/(name+'-launch.json'));value['workers'][name]=same(item['leader']) if item else None
- joint=small(b/'latest-joint.json')
+ joint_path=b/'latest-joint.json';joint_raw=joint_path.read_bytes() if joint_path.is_file() else None
+ assert joint_raw is None or len(joint_raw)<8*1024**2
+ joint=json.loads(joint_raw) if joint_raw is not None else None
  if joint:
   a=joint['actor'];value['joint']=dict(outer=joint['outer'],actor_Adam=a['actual_adam_steps_per_rank'],
    scheduler=a['scheduler_completed_outer'],probe=joint['probe'],rollout_mixed=joint['rollout'].get('actual_selected_mixed_fraction'),
-   source_commit=joint['source_commit'],actor50_branch_plan=joint.get('actor50_branch_plan'))
+   source_commit=joint['source_commit'],actor50_branch_plan=joint.get('actor50_branch_plan'),
+   metadata_sha256=hashlib.sha256(joint_raw).hexdigest(),new_actor_Adam=a.get('new_adam_steps_per_rank'),
+   processed_opportunities=a.get('opportunities_processed'),skipped_opportunities=a.get('skipped_update_opportunities'),
+   mixed_floor=joint['rollout'].get('mixed_floor'))
  outer=(value['stage'] or {}).get('outer')
  if outer:
   root=b/'outers'/('outer-%06d'%outer)
@@ -161,6 +166,11 @@ else:
   value['QA']=small(root/'validation/complete.json')
   value['mixed_floor']=small(root/'mixed-floor-complete.json')
   value['mixed_floor_progress']=small(root/'mixed-floor-progress.json')
+  fp=value['mixed_floor_progress'] or {};batch=fp.get('batch')
+  import re
+  if batch and re.fullmatch(r'floor-(initial|extra-\d{4})',batch):
+   directory=root/('full-pool' if (outer%10==0 and outer<200) else batch)
+   value['floor_native_progress']=[small(directory/('rank-%d-progress.json'%r)) for r in range(4)]
   name=(value['stage'] or {}).get('stage','');value['actor_inflight']=[]
   if '-actor-' in name:
    import re

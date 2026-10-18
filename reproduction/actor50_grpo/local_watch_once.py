@@ -19,13 +19,18 @@ def main():
     c.update(latest_actual=wrapper['receipt'],latest_actual_checked_unix=d['checked_unix'],
         stage=d['stage'],workers=d['workers'],latest_failure=d['failure'],latest_exit=d['exit'],latest_cleanup=d['cleanup'],actor_inflight=d.get('actor_inflight'))
     c.update(mixed_floor=d.get('mixed_floor'),mixed_floor_progress=d.get('mixed_floor_progress'),
-        prepare_restart_exit=d.get('prepare_restart_exit'))
+        prepare_restart_exit=d.get('prepare_restart_exit'),floor_native_progress=d.get('floor_native_progress'))
     j=d.get('joint')
     if j:
         assert len(set(j['actor_Adam']))==1 and j['scheduler']==j['outer']
         c.update(complete_outer=j['outer'],actor_actual_Adam_per_rank=j['actor_Adam'],
             new_actor_actual_updates_per_rank=[n-1000 for n in j['actor_Adam']],
             scheduler_completed_outer=j['scheduler'],probe=j['probe'],new_complete_outers=j['outer']-50)
+        c.update(latest_joint_metadata_sha256=j.get('metadata_sha256'),latest_joint_new_Adam=j.get('new_actor_Adam'),
+            latest_joint_skipped=j.get('skipped_opportunities'),latest_joint_mixed_floor=j.get('mixed_floor'))
+        if j['outer']>50:
+            done=c.setdefault('initial_followup_complete_outers',[])
+            if j['outer'] not in done:done.append(j['outer'])
         if j['outer']>50:c['CUDA_restore_verified']=True
     c['status']='GRPO_COMPLETE%d_OF200_RUNNING'%(j['outer'] if j else 50)
     if not d['workers']['pipeline'] and not d['complete']:c['status']='CPU_PREPARATION_OR_TERMINAL_INSPECT_ACTUAL_METADATA'
@@ -38,6 +43,10 @@ def main():
         probe=d['probe'],new_selected_Mixed=j['rollout_mixed'] if j and j['outer']>50 else None,
         actor_inflight=d.get('actor_inflight'),grounding_existing_logs=d.get('grounding_existing_logs'),advantage_summary=d.get('advantage_summary'),
         mixed_floor=d.get('mixed_floor'),mixed_floor_progress=d.get('mixed_floor_progress'),prepare_restart_exit=d.get('prepare_restart_exit'),
+        floor_native_progress=[None if x is None else x.get('completed_trajectories') for x in d.get('floor_native_progress',[])],
+        latest_joint_metadata_sha256=j.get('metadata_sha256') if j else None,
+        latest_joint_new_Adam=j.get('new_actor_Adam') if j else None,latest_joint_skipped=j.get('skipped_opportunities') if j else None,
+        latest_joint_mixed_floor=j.get('mixed_floor') if j else None,
         rollout={phase:[None if x is None else x.get('completed_trajectories') for x in rows] for phase,rows in d.get('rollout',{}).items()},
         failure=d['failure'],exit=d['exit'],cleanup=d['cleanup'],complete=d['complete'])))
 
