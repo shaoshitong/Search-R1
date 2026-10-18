@@ -1,9 +1,10 @@
 # Prefix5 A/B on h100-11: actual progress
 
-Latest verified: both independent four-card native runs have completed
-**20/200 outers** and begun preparing21. The older per-outer tables below are
-historical measurements; see `period10-paired-results.md` for the first fresh
-paired diagnostic. The user authorized moving from h100-8 to the node with
+The period20 snapshot records both independent four-card native runs at
+**20/200 complete outers**, preparing21. Later progress is recorded in the
+chronological sections below and the task's current state. The per-outer tables
+are historical measurements, not a live counter; see `period10-paired-results.md`
+for the first fresh paired diagnostic. The user authorized moving from h100-8 to the node with
 most actual VRAM headroom, and reducing local micro-batch with accumulation.
 Current deployed runtime is `2e3976230ac9425d66d8553afa9962821e964932`.
 Later report/operation commits do not modify that runtime.
