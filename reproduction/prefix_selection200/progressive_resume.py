@@ -69,6 +69,8 @@ def plan(base,config=None):
     writers_gone(source,config)
     joint_path=source/'outers/outer-000050/complete.json';joint=read(joint_path)
     proof=read(spec['qualification_proof'])
+    if sha(spec['qualification_proof'])!=spec['qualification_proof_sha256']:
+        raise ValueError('Existing CP50 qualification proof SHA changed')
     if (proof['status']!='LIVE_IMMUTABLE_MILESTONE_FULL_SHA_CPU_READBACK_PASS'
             or proof['outer']!=50 or not proof['actual_cpu_deserialization']
             or proof['source_joint_sha256']!=sha(joint_path)

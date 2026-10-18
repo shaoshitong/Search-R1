@@ -119,7 +119,7 @@ b=pathlib.Path(%r);python=str(b/'env/bin/python')
 env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1',TMPDIR=str(b/'tmp'),
  DYNRPO_PROGRESSIVE_PREFIX='cp50_prefix20_40_80_three_epoch_v1',DYNRPO_PREFIX_TOKENS='20')
 subprocess.run([python,'-m','reproduction.hpc3_prefix5.progressive_runtime','--base',str(b),'--prepare'],env=env,check=True)
-code="from pathlib import Path;import json;from reproduction.prefix_selection200.progressive_resume import plan;from reproduction.prefix_selection200.launch import validate_config;b=Path(%r);c=json.loads((b/'preparation/resume-config-template.json').read_text());validate_config(c,b);print(json.dumps(plan(b,c)))" % str(b)
+code="from pathlib import Path;import json;from reproduction.prefix_selection200.progressive_resume import plan;from reproduction.prefix_selection200.launch import validate_config;b=Path(%%r);c=json.loads((b/'preparation/resume-config-template.json').read_text());validate_config(c,b);print(json.dumps(plan(b,c)))" %% str(b)
 subprocess.run([python,'-c',code],env=env,check=True)
 """ % str(TARGET)
 print(remote(script,timeout=55),flush=True)
