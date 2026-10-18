@@ -16,6 +16,7 @@ elif [[ $node == h100-5 ]]; then
 else
   mount --bind /mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong "$stash"
 fi
+mkdir -p /mnt/data
 mount -t tmpfs -o size=16m,nodev,nosuid diverse-private /mnt/data
 shared=/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong
 mkdir -p "$shared" /mnt/data/shaoshitong /dataset/shaoshitong/Search-G1-common8
