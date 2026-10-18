@@ -1,0 +1,527 @@
+{
+  "checked_unix": 1792309416.2741773,
+  "runtime_source_commit": "5951eb356ea9d57249cd9da6f6531024f578cdb3",
+  "run_id": "3c91ac3eb68b46459433bd8c6091fec6",
+  "execution_id": "1c8f2fe703c642cf838324712da635b5",
+  "complete_epochs": 38,
+  "target_epochs": 100,
+  "actual_Adam_EMA": 524,
+  "actor_updates": 0,
+  "fresh_completed_questions": 4608,
+  "fresh_completed_trajectories": 23040,
+  "old_training_G5_not_reused": true,
+  "failure": null,
+  "exit": null,
+  "next_stage": {
+    "actor_updates": 0,
+    "checked_unix": 1792309378.647026,
+    "cycle": 20,
+    "run_id": "3c91ac3eb68b46459433bd8c6091fec6",
+    "stage": "cycle-0020-completeG5"
+  },
+  "fixed512_EMA_curve_since20": [
+    {
+      "epoch": 20,
+      "cycle": 10,
+      "Adam_EMA": 276,
+      "test_BA": 0.5480031737635547,
+      "test_trajectory_accuracy": 0.605859375,
+      "mixed_recall": 0.7894736842105263,
+      "nonmixed_recall": 0.3065326633165829,
+      "tp": 90,
+      "tn": 122,
+      "train_before_BA": 0.5685331825037707,
+      "train_after_BA": 0.597473604826546,
+      "train_trajectory_accuracy": 0.80703125,
+      "sampling": [
+        {
+          "balanced_class_counts": {
+            "all_correct": 215,
+            "all_wrong": 215,
+            "mixed": 215
+          },
+          "balanced_groups": 645,
+          "balanced_trajectories": 3225,
+          "epoch": 19,
+          "optimizer_updates": 13,
+          "original_class_counts": {
+            "all_correct": 193,
+            "all_wrong": 215,
+            "mixed": 104
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        },
+        {
+          "balanced_class_counts": {
+            "all_correct": 215,
+            "all_wrong": 215,
+            "mixed": 215
+          },
+          "balanced_groups": 645,
+          "balanced_trajectories": 3225,
+          "epoch": 20,
+          "optimizer_updates": 13,
+          "original_class_counts": {
+            "all_correct": 193,
+            "all_wrong": 215,
+            "mixed": 104
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        }
+      ]
+    },
+    {
+      "epoch": 22,
+      "cycle": 11,
+      "Adam_EMA": 302,
+      "test_BA": 0.5392312439389932,
+      "test_trajectory_accuracy": 0.600390625,
+      "mixed_recall": 0.7719298245614035,
+      "nonmixed_recall": 0.3065326633165829,
+      "tp": 88,
+      "tn": 122,
+      "train_before_BA": 0.5965333878719705,
+      "train_after_BA": 0.6070048062174047,
+      "train_trajectory_accuracy": 0.803515625,
+      "sampling": [
+        {
+          "balanced_class_counts": {
+            "all_correct": 218,
+            "all_wrong": 218,
+            "mixed": 218
+          },
+          "balanced_groups": 654,
+          "balanced_trajectories": 3270,
+          "epoch": 21,
+          "optimizer_updates": 13,
+          "original_class_counts": {
+            "all_correct": 167,
+            "all_wrong": 218,
+            "mixed": 127
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        },
+        {
+          "balanced_class_counts": {
+            "all_correct": 218,
+            "all_wrong": 218,
+            "mixed": 218
+          },
+          "balanced_groups": 654,
+          "balanced_trajectories": 3270,
+          "epoch": 22,
+          "optimizer_updates": 13,
+          "original_class_counts": {
+            "all_correct": 167,
+            "all_wrong": 218,
+            "mixed": 127
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        }
+      ]
+    },
+    {
+      "epoch": 24,
+      "cycle": 12,
+      "Adam_EMA": 330,
+      "test_BA": 0.5266904698933264,
+      "test_trajectory_accuracy": 0.609375,
+      "mixed_recall": 0.7543859649122807,
+      "nonmixed_recall": 0.2989949748743719,
+      "tp": 86,
+      "tn": 119,
+      "train_before_BA": 0.5663967258794845,
+      "train_after_BA": 0.601619644723093,
+      "train_trajectory_accuracy": 0.819140625,
+      "sampling": [
+        {
+          "balanced_class_counts": {
+            "all_correct": 235,
+            "all_wrong": 235,
+            "mixed": 235
+          },
+          "balanced_groups": 705,
+          "balanced_trajectories": 3525,
+          "epoch": 23,
+          "optimizer_updates": 14,
+          "original_class_counts": {
+            "all_correct": 161,
+            "all_wrong": 235,
+            "mixed": 116
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        },
+        {
+          "balanced_class_counts": {
+            "all_correct": 235,
+            "all_wrong": 235,
+            "mixed": 235
+          },
+          "balanced_groups": 705,
+          "balanced_trajectories": 3525,
+          "epoch": 24,
+          "optimizer_updates": 14,
+          "original_class_counts": {
+            "all_correct": 161,
+            "all_wrong": 235,
+            "mixed": 116
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        }
+      ]
+    },
+    {
+      "epoch": 26,
+      "cycle": 13,
+      "Adam_EMA": 358,
+      "test_BA": 0.5411046460372035,
+      "test_trajectory_accuracy": 0.606640625,
+      "mixed_recall": 0.7807017543859649,
+      "nonmixed_recall": 0.3015075376884422,
+      "tp": 89,
+      "tn": 120,
+      "train_before_BA": 0.603077428540138,
+      "train_after_BA": 0.6204687328879641,
+      "train_trajectory_accuracy": 0.81875,
+      "sampling": [
+        {
+          "balanced_class_counts": {
+            "all_correct": 233,
+            "all_wrong": 233,
+            "mixed": 233
+          },
+          "balanced_groups": 699,
+          "balanced_trajectories": 3495,
+          "epoch": 25,
+          "optimizer_updates": 14,
+          "original_class_counts": {
+            "all_correct": 164,
+            "all_wrong": 233,
+            "mixed": 115
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        },
+        {
+          "balanced_class_counts": {
+            "all_correct": 233,
+            "all_wrong": 233,
+            "mixed": 233
+          },
+          "balanced_groups": 699,
+          "balanced_trajectories": 3495,
+          "epoch": 26,
+          "optimizer_updates": 14,
+          "original_class_counts": {
+            "all_correct": 164,
+            "all_wrong": 233,
+            "mixed": 115
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        }
+      ]
+    },
+    {
+      "epoch": 28,
+      "cycle": 14,
+      "Adam_EMA": 384,
+      "test_BA": 0.5298201533985718,
+      "test_trajectory_accuracy": 0.6,
+      "mixed_recall": 0.7631578947368421,
+      "nonmixed_recall": 0.2964824120603015,
+      "tp": 87,
+      "tn": 118,
+      "train_before_BA": 0.6071926158133054,
+      "train_after_BA": 0.6314872866597004,
+      "train_trajectory_accuracy": 0.788671875,
+      "sampling": [
+        {
+          "balanced_class_counts": {
+            "all_correct": 205,
+            "all_wrong": 205,
+            "mixed": 205
+          },
+          "balanced_groups": 615,
+          "balanced_trajectories": 3075,
+          "epoch": 27,
+          "optimizer_updates": 13,
+          "original_class_counts": {
+            "all_correct": 191,
+            "all_wrong": 205,
+            "mixed": 116
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        },
+        {
+          "balanced_class_counts": {
+            "all_correct": 205,
+            "all_wrong": 205,
+            "mixed": 205
+          },
+          "balanced_groups": 615,
+          "balanced_trajectories": 3075,
+          "epoch": 28,
+          "optimizer_updates": 13,
+          "original_class_counts": {
+            "all_correct": 191,
+            "all_wrong": 205,
+            "mixed": 116
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        }
+      ]
+    },
+    {
+      "epoch": 30,
+      "cycle": 15,
+      "Adam_EMA": 412,
+      "test_BA": 0.530437274089747,
+      "test_trajectory_accuracy": 0.60625,
+      "mixed_recall": 0.7719298245614035,
+      "nonmixed_recall": 0.2889447236180904,
+      "tp": 88,
+      "tn": 115,
+      "train_before_BA": 0.6135736737443069,
+      "train_after_BA": 0.6371266063677379,
+      "train_trajectory_accuracy": 0.79765625,
+      "sampling": [
+        {
+          "balanced_class_counts": {
+            "all_correct": 236,
+            "all_wrong": 236,
+            "mixed": 236
+          },
+          "balanced_groups": 708,
+          "balanced_trajectories": 3540,
+          "epoch": 29,
+          "optimizer_updates": 14,
+          "original_class_counts": {
+            "all_correct": 157,
+            "all_wrong": 236,
+            "mixed": 119
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        },
+        {
+          "balanced_class_counts": {
+            "all_correct": 236,
+            "all_wrong": 236,
+            "mixed": 236
+          },
+          "balanced_groups": 708,
+          "balanced_trajectories": 3540,
+          "epoch": 30,
+          "optimizer_updates": 14,
+          "original_class_counts": {
+            "all_correct": 157,
+            "all_wrong": 236,
+            "mixed": 119
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        }
+      ]
+    },
+    {
+      "epoch": 32,
+      "cycle": 16,
+      "Adam_EMA": 442,
+      "test_BA": 0.5285638719915366,
+      "test_trajectory_accuracy": 0.61015625,
+      "mixed_recall": 0.7631578947368421,
+      "nonmixed_recall": 0.29396984924623115,
+      "tp": 87,
+      "tn": 117,
+      "train_before_BA": 0.6307966962057988,
+      "train_after_BA": 0.6464553041383464,
+      "train_trajectory_accuracy": 0.812109375,
+      "sampling": [
+        {
+          "balanced_class_counts": {
+            "all_correct": 242,
+            "all_wrong": 242,
+            "mixed": 242
+          },
+          "balanced_groups": 726,
+          "balanced_trajectories": 3630,
+          "epoch": 31,
+          "optimizer_updates": 15,
+          "original_class_counts": {
+            "all_correct": 152,
+            "all_wrong": 242,
+            "mixed": 118
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        },
+        {
+          "balanced_class_counts": {
+            "all_correct": 242,
+            "all_wrong": 242,
+            "mixed": 242
+          },
+          "balanced_groups": 726,
+          "balanced_trajectories": 3630,
+          "epoch": 32,
+          "optimizer_updates": 15,
+          "original_class_counts": {
+            "all_correct": 152,
+            "all_wrong": 242,
+            "mixed": 118
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        }
+      ]
+    },
+    {
+      "epoch": 34,
+      "cycle": 17,
+      "Adam_EMA": 470,
+      "test_BA": 0.5367186811249228,
+      "test_trajectory_accuracy": 0.612109375,
+      "mixed_recall": 0.7719298245614035,
+      "nonmixed_recall": 0.3015075376884422,
+      "tp": 88,
+      "tn": 120,
+      "train_before_BA": 0.5649603352791499,
+      "train_after_BA": 0.5784527551478607,
+      "train_trajectory_accuracy": 0.827734375,
+      "sampling": [
+        {
+          "balanced_class_counts": {
+            "all_correct": 227,
+            "all_wrong": 227,
+            "mixed": 227
+          },
+          "balanced_groups": 681,
+          "balanced_trajectories": 3405,
+          "epoch": 33,
+          "optimizer_updates": 14,
+          "original_class_counts": {
+            "all_correct": 166,
+            "all_wrong": 227,
+            "mixed": 119
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        },
+        {
+          "balanced_class_counts": {
+            "all_correct": 227,
+            "all_wrong": 227,
+            "mixed": 227
+          },
+          "balanced_groups": 681,
+          "balanced_trajectories": 3405,
+          "epoch": 34,
+          "optimizer_updates": 14,
+          "original_class_counts": {
+            "all_correct": 166,
+            "all_wrong": 227,
+            "mixed": 119
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        }
+      ]
+    },
+    {
+      "epoch": 36,
+      "cycle": 18,
+      "Adam_EMA": 496,
+      "test_BA": 0.5354623997178877,
+      "test_trajectory_accuracy": 0.606640625,
+      "mixed_recall": 0.7719298245614035,
+      "nonmixed_recall": 0.2989949748743719,
+      "tp": 88,
+      "tn": 119,
+      "train_before_BA": 0.5849961669039536,
+      "train_after_BA": 0.6061658087832658,
+      "train_trajectory_accuracy": 0.78671875,
+      "sampling": [
+        {
+          "balanced_class_counts": {
+            "all_correct": 219,
+            "all_wrong": 219,
+            "mixed": 219
+          },
+          "balanced_groups": 657,
+          "balanced_trajectories": 3285,
+          "epoch": 35,
+          "optimizer_updates": 13,
+          "original_class_counts": {
+            "all_correct": 178,
+            "all_wrong": 219,
+            "mixed": 115
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        },
+        {
+          "balanced_class_counts": {
+            "all_correct": 219,
+            "all_wrong": 219,
+            "mixed": 219
+          },
+          "balanced_groups": 657,
+          "balanced_trajectories": 3285,
+          "epoch": 36,
+          "optimizer_updates": 13,
+          "original_class_counts": {
+            "all_correct": 178,
+            "all_wrong": 219,
+            "mixed": 115
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        }
+      ]
+    },
+    {
+      "epoch": 38,
+      "cycle": 19,
+      "Adam_EMA": 524,
+      "test_BA": 0.5291809926827118,
+      "test_trajectory_accuracy": 0.608203125,
+      "mixed_recall": 0.7719298245614035,
+      "nonmixed_recall": 0.2864321608040201,
+      "tp": 88,
+      "tn": 114,
+      "train_before_BA": 0.5739365603226989,
+      "train_after_BA": 0.6023560689402274,
+      "train_trajectory_accuracy": 0.822265625,
+      "sampling": [
+        {
+          "balanced_class_counts": {
+            "all_correct": 235,
+            "all_wrong": 235,
+            "mixed": 235
+          },
+          "balanced_groups": 705,
+          "balanced_trajectories": 3525,
+          "epoch": 37,
+          "optimizer_updates": 14,
+          "original_class_counts": {
+            "all_correct": 169,
+            "all_wrong": 235,
+            "mixed": 108
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        },
+        {
+          "balanced_class_counts": {
+            "all_correct": 235,
+            "all_wrong": 235,
+            "mixed": 235
+          },
+          "balanced_groups": 705,
+          "balanced_trajectories": 3525,
+          "epoch": 38,
+          "optimizer_updates": 14,
+          "original_class_counts": {
+            "all_correct": 169,
+            "all_wrong": 235,
+            "mixed": 108
+          },
+          "sampling": "all majority groups once; minority whole-G5 oversampling with replacement"
+        }
+      ]
+    }
+  ],
+  "source": "existing scalar metadata only; no new evaluation or rollout triggered by observation",
+  "curve_receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-prefix20-fresh-existing-curve-1792309416232608000.json",
+  "latest_actual": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-prefix20-fresh-observe-1792309399088538000.json"
+}
