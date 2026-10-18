@@ -130,6 +130,29 @@ round does not demonstrate improved Mixed selection from Prefix40. Round100's
 73.4375% came from the larger2560-question P10 pool and is not a matched
 ordinary-round comparison.
 
+## Actual Prefix40 continuation and PPO projection
+
+The separate read-only raw-record audit passed for all5120 trajectories in
+round101's Top1024 pool and the2560 projected actor trajectories. Fresh SHA
+was checked for17 raw-record files kept on remote storage. Each checked
+prefix retained40 real policy tokens. Their IDs, original request/positions,
+closed-turn tokens/masks/logprobs and partially completed action chunks matched
+the real full continuations. All5123 recorded native hidden-flush events
+discarded exactly one lookahead token. The final512 groups were independently
+ranked from the stored strict labels and original q scores, with no rescoring.
+Every original scientific field was unchanged in the projected PPO rows;
+only the declared subset selection bookkeeping was rebound.
+
+Remote proof `preparation/prefix-continuity-000101.json`, SHA
+`b1004f785a9ee2737eec992713a58235ef428bb0748674471dc1ec5ef0ddf26e`.
+Operator `docs/hpc3-two-stage-prefix-boundary-continuity-20261018.py`, SHA
+`c4f20ed1150ae4ba72a910de4392e8fb57a12e053a4da8c37f3f94fdd2d95ab9`,
+was committed/pushed as4239f20d7938d81360c6fab44043e8f2cc271042 and staged
+as an immutable separate preparation tool, without changing runtime2000d46.
+No hidden-feature tensor was read. All checked Top1024 prefixes reached40,
+so this audit does not independently exercise short-prefix feature padding.
+Its real151 entry returned PENDING; Prefix80 still requires actual151 evidence.
+
 ## Remaining work
 
 Training through200, later probe updates, Prefix80/grounding150, fixed512
