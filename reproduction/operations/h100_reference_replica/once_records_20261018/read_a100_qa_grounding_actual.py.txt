@@ -1,0 +1,43 @@
+"""Original normal100 QA/grounding metadata only; PARAMS supplied by root."""
+import hashlib,json,math,sys
+from collections import Counter
+from pathlib import Path
+
+def read(path):return json.loads(Path(path).read_text())
+def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def need(value,message):
+ if not value:raise ValueError(message)
+base=Path(PARAMS['base']);root=base/'outers/outer-000100';config=read(base/'preparation/launch-config.json');joint=read(root/'complete.json')
+sys.path.insert(0,str(base/'repo'))
+from reproduction.prefix_selection200.eval import load_questions,CONTRACT
+from reproduction.prefix_selection200.interaction_protocol import CONTRACT as INTERACTION
+qa=read(root/'validation/complete.json');canonical=load_questions(config['validation_questions'],512)
+need(qa['run_id']==config['run_id']and qa['actor_version']==joint['actor']['actor_version']and qa['qa_count']==512,'QA source actor/count differs')
+need(qa['actual_worker_exit_codes']=={str(i):0 for i in range(4)},'All four actual QA workers must exit0')
+need(qa['evaluation_contract']==CONTRACT and qa['interaction_protocol']==INTERACTION and qa['actual_compute_dtype']=='torch.bfloat16','Shared new BF16 QA contract differs')
+need(qa['question_source_sha256']==sha(config['validation_questions'])==config['validation_questions_sha256'],'Canonical fixed512 bytes differ')
+rows=[];rank_summaries=[]
+for rank,item in enumerate(qa['rank_receipts']):
+ need(sha(item['path'])==item['sha256'],'Original QA rank receipt SHA differs')
+ value=read(item['path']);need(value['rank']==rank and value['qa_count']==128 and value['actor_version']==qa['actor_version'],'Actual four-rank QA split differs')
+ need(value['interaction_protocol']==INTERACTION and value['question_source_sha256']==qa['question_source_sha256'],'Rank QA inputs/protocol differ')
+ rows.extend(value['rows']);rank_summaries.append(dict(rank=rank,qa_count=value['qa_count'],receipt_sha256=item['sha256'],actual_compute_dtype=value['actual_compute_dtype']))
+rows.sort(key=lambda x:x['evaluation_ordinal'])
+need([x['evaluation_ordinal']for x in rows]==list(range(512))and len({x['qid']for x in rows})==512,'Missing/repeated actual QA identities')
+need(all(x['qid']==y['qid']and x['data_source']==y['data_source']for x,y in zip(rows,canonical)),'Canonical QA qid/ordinal/source identity differs')
+need(Counter(x['data_source']for x in rows)==dict(nq=256,hotpotqa=256),'Fixed512 source counts differ')
+need(math.isclose(sum(x['em']for x in rows)/512,qa['em'],abs_tol=1e-12)and math.isclose(sum(x['f1']for x in rows)/512,qa['f1'],abs_tol=1e-12),'Original worker-score aggregates differ')
+refresh=read(root/'grounding-refresh.json');ground=refresh['grounding'];manifest=read(ground['manifest_path']);adoption=read(ground['adoption_receipt'])
+need(refresh['required_before_outer']==101 and ground['round']==100 and ground['source_actor_version']==qa['actor_version'],'Actual reward refit must bind actor100')
+need(sha(ground['manifest_path'])==ground['manifest_sha256']and sha(ground['adoption_receipt'])==ground['adoption_receipt_sha256'],'Reward fit/adoption metadata SHA differs')
+need(manifest['label_proof']['question_count']==manifest['calibration_report']['unique_question_count']==300 and set(manifest['label_proof']['question_ids'])==set(config['grounding_calibration_question_ids']),'Original300-question grounding calibration differs')
+need(ground['encoder_sha256']=={k:v['sha256']for k,v in joint['actor']['hf_files'].items()},'Grounding source HF is not complete actor100')
+need(sorted(x['rank']for x in adoption['replicas'])==list(range(4))and all(x['ok']is True and x['round']==100 and x['version']==ground['version']for x in adoption['replicas']),'Actual four reward replicas did not adopt round100')
+heads=[]
+for key,name in [('boundary','boundary_probe.pkl'),('commit','commit_probe.pkl')]:
+ actual=sha(ground[key]);need(actual==ground['head_sha256'][name],'Actual newly fitted small grounding head SHA differs');heads.append(dict(role=key,sha256=actual,bytes=Path(ground[key]).stat().st_size))
+next_path=base/'outers/outer-000101/complete.json';following={'status':'ACTUAL_COMPLETE101_NOT_YET_OBSERVED'}
+if next_path.exists():
+ nxt=read(next_path);reward=nxt['actor']['reward'];need(nxt['grounding']['version']==ground['version']==reward['version']and len(reward['ranks'])==4 and all(x['version']==ground['version']for x in reward['ranks']),'Actual101 reward scoring did not use fitted100 grounding')
+ following=dict(status='ACTUAL_COMPLETE101_USES_ROUND100_REWARD',outer=101,grounding_round=nxt['grounding']['round'],version=reward['version'],actor_adam=nxt['actor']['actual_adam_steps_per_rank'],actual_reward_rank_count=len(reward['ranks']))
+print(json.dumps(dict(role='ACTUAL_A100_QA512_AND_GROUNDING100',run_id=config['run_id'],outer=100,actor_version=qa['actor_version'],actor_adam=joint['actor']['actual_adam_steps_per_rank'],probe_adam=joint['probe']['actual_adam_steps_per_rank'],qa={k:qa[k]for k in ('qa_count','em','f1','per_source','question_source_sha256','actual_worker_exit_codes','evaluation_contract','actual_compute_dtype')},qa_complete_sha256=sha(root/'validation/complete.json'),original_rank_receipts=rank_summaries,canonical_identity_and_worker_aggregates_checked=True,raw_output_shard_hashes_repeated=False,grounding=dict(round=100,version=ground['version'],source_actor_version=ground['source_actor_version'],calibration_count=300,manifest_sha256=ground['manifest_sha256'],adoption_receipt_sha256=ground['adoption_receipt_sha256'],actual_replica_ranks=[x['rank']for x in adoption['replicas']],small_head_actual_sha=heads),following_actual=following,no_model_forward_or_new_GPU_test=True,full_inputs_outputs_stay_remote=True,training_changed=False)))

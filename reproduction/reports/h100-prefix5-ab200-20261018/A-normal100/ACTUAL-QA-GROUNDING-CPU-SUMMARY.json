@@ -1,0 +1,220 @@
+{
+  "status": "A100_QA512_GROUNDING_AND_FULL_SHA_CPU_OBSERVED",
+  "complete_outer": 100,
+  "runtime_unchanged": "2e3976230ac9425d66d8553afa9962821e964932",
+  "normal_checkpoint": {
+    "remote_proof": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0100-independent-full-sha-cpu.json",
+    "remote_proof_sha256": "a9a0197bc03603949781ff76fc7695f6679e86520d5ac441c584fab689c2cc97",
+    "files": 25,
+    "bytes": 38606777083,
+    "actual_cpu_deserialization": true,
+    "actor_actual_adam_perrank": [
+      1997,
+      1997,
+      1997,
+      1997
+    ],
+    "probe_actual_adam_perrank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "independent_backup_or_extra_gpu_forward_performed": false
+  },
+  "actual_original_actor_journals": [
+    {
+      "rank": 0,
+      "writes": 20,
+      "actual_adam_steps": 1997,
+      "ledger_sha256": "4a54c43635bcaace429c6449ab3681f58405a2f2ba0664422a2db419ed310076"
+    },
+    {
+      "rank": 1,
+      "writes": 20,
+      "actual_adam_steps": 1997,
+      "ledger_sha256": "ff982151a4f0ebdaaa09cd4d83908d8f0736585ab34d830b59cee81019ba575e"
+    },
+    {
+      "rank": 2,
+      "writes": 20,
+      "actual_adam_steps": 1997,
+      "ledger_sha256": "7a7a023776eb84e49a7fa7b72d209df0720d7f86d0dfbed160b4fe733ec13383"
+    },
+    {
+      "rank": 3,
+      "writes": 20,
+      "actual_adam_steps": 1997,
+      "ledger_sha256": "4ee7f2993ca5def157f3155659b0a6a2fdf7654f6033bb12228405b813695669"
+    }
+  ],
+  "selected_mixing": {
+    "all_correct": 273,
+    "all_correct_fraction": 0.533203125,
+    "all_wrong": 51,
+    "all_wrong_fraction": 0.099609375,
+    "mean_selection_q": 0.7737241986957353,
+    "mixed": 188,
+    "mixed_fraction": 0.3671875,
+    "no_uncontinued_candidate_accuracy_claim": true,
+    "questions": 512
+  },
+  "qa_grounding": {
+    "role": "ACTUAL_A100_QA512_AND_GROUNDING100",
+    "run_id": "ca37419b494446398fb15234aa3be91a",
+    "outer": 100,
+    "actor_version": "ca37419b494446398fb15234aa3be91a-actor0100",
+    "actor_adam": [
+      1997,
+      1997,
+      1997,
+      1997
+    ],
+    "probe_adam": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "qa": {
+      "qa_count": 512,
+      "em": 0.419921875,
+      "f1": 0.5028851573773451,
+      "per_source": {
+        "hotpotqa": {
+          "em": 0.421875,
+          "f1": 0.47155877976190474,
+          "qa_count": 256
+        },
+        "nq": {
+          "em": 0.41796875,
+          "f1": 0.5342115349927851,
+          "qa_count": 256
+        }
+      },
+      "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "actual_worker_exit_codes": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "evaluation_contract": {
+        "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+        "actor_loss_dtype": "float32",
+        "actor_master_dtype": "float32",
+        "answer_reserve_tokens": 500,
+        "asynchronous_generation": true,
+        "compute_dtype": "bfloat16",
+        "early_final": true,
+        "kind": "shared_new_context_stream_bf16",
+        "max_action_tokens": 500,
+        "max_context_tokens": 4096,
+        "max_model_tokens": 4096,
+        "max_observation_tokens": 500,
+        "max_request_tokens": 3596,
+        "max_search_turns": 4,
+        "max_start_tokens": 2048,
+        "n": 1,
+        "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+        "natural_eos": "terminal_without_environment_correction",
+        "observation_truncation": "clip_before_input_preserve_information_wrapper",
+        "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+        "temperature": 0.0,
+        "top_k": -1,
+        "top_p": 1.0,
+        "train_compute_dtype": "bfloat16"
+      },
+      "actual_compute_dtype": "torch.bfloat16"
+    },
+    "qa_complete_sha256": "dd6dc3b0a24989062d8681a898bf651f2e1232399f440b408640f510ffda62ca",
+    "original_rank_receipts": [
+      {
+        "rank": 0,
+        "qa_count": 128,
+        "receipt_sha256": "fe33a0e04c72a555ec0b195a3153e3e133fc4b5934a029125b7cb426fcc24e12",
+        "actual_compute_dtype": "torch.bfloat16"
+      },
+      {
+        "rank": 1,
+        "qa_count": 128,
+        "receipt_sha256": "bc3b2103a9791060c2e2e0ff1ebf8024af3b2622e5e399b6742d2120cf89efa3",
+        "actual_compute_dtype": "torch.bfloat16"
+      },
+      {
+        "rank": 2,
+        "qa_count": 128,
+        "receipt_sha256": "481d1f63717212c4ffa60698a5f5b023e2db48249ffe19fe4f53bea32a3a6f3e",
+        "actual_compute_dtype": "torch.bfloat16"
+      },
+      {
+        "rank": 3,
+        "qa_count": 128,
+        "receipt_sha256": "5d3941c7587ff5173008d90d49c2e9284b7441bc57cc2b2d900926aaa5dd381d",
+        "actual_compute_dtype": "torch.bfloat16"
+      }
+    ],
+    "canonical_identity_and_worker_aggregates_checked": true,
+    "raw_output_shard_hashes_repeated": false,
+    "grounding": {
+      "round": 100,
+      "version": "ca37419b494446398fb15234aa3be91a:100:bfaf0fa6a5aa4932858f13a7a20150cc",
+      "source_actor_version": "ca37419b494446398fb15234aa3be91a-actor0100",
+      "calibration_count": 300,
+      "manifest_sha256": "979fd52025decca9f7986a79c2b7b7775516b65d41fa9c99915c95b8c41f0909",
+      "adoption_receipt_sha256": "dbb279d90e8440663e8fa9cd9e19eea1014a7c196c7f6ea0f27c23b77187cd84",
+      "actual_replica_ranks": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "small_head_actual_sha": [
+        {
+          "role": "boundary",
+          "sha256": "101ea26c00b5d4fd3315d82e0389e657e0a34fbf2b4407839d6f434f8b9240d0",
+          "bytes": 17323
+        },
+        {
+          "role": "commit",
+          "sha256": "e6c93c4d7b7725627dae0837e37bee14900dbb0379c81037905b0b4bc4b19e57",
+          "bytes": 3203958
+        }
+      ]
+    },
+    "following_actual": {
+      "status": "ACTUAL_COMPLETE101_NOT_YET_OBSERVED"
+    },
+    "no_model_forward_or_new_GPU_test": true,
+    "full_inputs_outputs_stay_remote": true,
+    "training_changed": false
+  },
+  "QA_history": {
+    "5": {
+      "em": 0.275390625,
+      "f1": 0.3618067172791212,
+      "qa_count": 512
+    },
+    "50": {
+      "em": 0.39453125,
+      "f1": 0.48032163366147757,
+      "qa_count": 512
+    },
+    "100": {
+      "em": 0.419921875,
+      "f1": 0.5028851573773451,
+      "qa_count": 512
+    }
+  },
+  "source_evidence": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-normal-cp100-status-20261018T191332819963Z.json",
+      "sha256": "cd2fd2f12db1629a414664887ab99bbc01bbb1274215fbf6c9bbfaac1e1ce5d1"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/b-progressive-A100-original-QA512-grounding100-and-actual101-20261018T191722502895Z.json",
+      "sha256": "227274f4879422f62a55d62b877c958bfdfbc3975422130618f3d24cd35a4cec"
+    }
+  ],
+  "goal_complete": false
+}
