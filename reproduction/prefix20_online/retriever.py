@@ -168,6 +168,9 @@ def main():
     upstream.load_corpus = lambda _: datasets.load_dataset(
         'json', data_files=str(corpus_path), split='train', num_proc=4,
         cache_dir=str(data_cache/'arrow'))
+    if (data_cache/'prebuilt-arrow.json').exists():
+        from reproduction.operations.b_replica_retained18.prebuilt_corpus import load as load_prebuilt
+        upstream.load_corpus = lambda _: load_prebuilt(data_cache)
     config = upstream.Config(retrieval_method='e5', retrieval_topk=3,
         index_path=args.index, corpus_path=args.corpus, faiss_gpu=True,
         retrieval_model_path=args.encoder, retrieval_pooling_method='mean',
