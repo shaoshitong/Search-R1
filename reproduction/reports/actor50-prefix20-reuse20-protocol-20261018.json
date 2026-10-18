@@ -1,0 +1,35 @@
+{
+  "role": "latest_human_authorized_matched_prefix20_reuse20_protocol",
+  "checked_unix": 1792306303.140231,
+  "actor": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+  "actor_updates": 0,
+  "new_rollouts": 0,
+  "epochs": 20,
+  "cycles": 10,
+  "epochs_per_cycle": 2,
+  "train_questions": 5120,
+  "fixed_probe_test_questions": 512,
+  "train_and_test_exact_saved_G5_outcomes_reused": true,
+  "initialization": "same original saved probe50 raw model, original Q273+5 output columns copied; added15 output positions zero",
+  "optimizer": "new Adam0 LR5e-6 wd0, same deterministic G5 class balance plans and four-rank exact global means",
+  "EMA": "0.99 once per actual returned Adam, expected total276 matching Prefix5",
+  "feature_source": "Original native question+first5 BF16 features preserved bitwise; only positions6..20 added by frozen saved actor50 layer27 causal teacher forcing of the recorded original requests/tokens. No original official encoder substituted. HF replay is disclosed for added positions.",
+  "replay_backend": "same actor50 HF checkpoint, BF16 FlashAttention2, postblock27; no sampled tokens, no generation, no gold/final labels passed to model",
+  "data_shortfalls": "Keep actual short terminal lengths; never invent EOS or policy tokens; report complete-length groups separately",
+  "source_Prefix5": {
+    "complete_epochs": 20,
+    "Adam_EMA": 276,
+    "test_mixed_BA": 0.5417217667283787,
+    "checkpoint_sha256": "fce2b80ca56fec9de8d37219d319768e41f2bd67cefbb7e4959bccc16b746be9",
+    "owned_cleanup": true
+  },
+  "CPU_checks": [
+    "new-source AST",
+    "multi-turn real RoPE positions",
+    "policy tokens exclude tool observations",
+    "short terminal retained without synthetic tokens"
+  ],
+  "all_large_outputs_remote": true,
+  "App_automation": "still PAUSED",
+  "no_subagents": true
+}
