@@ -19,13 +19,24 @@ def remote(inner,label,*,namespace=True,timeout=100):
 def stage(commit):
     source=json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())['B']['base']+'/repo'
     parent='2e3976230ac9425d66d8553afa9962821e964932'
-    names=subprocess.check_output(['git','ls-tree','-r','--name-only',commit],cwd=REPO,text=True).splitlines()
-    code=[n for n in names if n.endswith(('.py','.sh'))]
+    def tree(revision):
+        data=subprocess.check_output(['git','ls-tree','-rz',revision],cwd=REPO);result={}
+        for row in data.split(b'\0'):
+            if row:
+                meta,name=row.split(b'\t',1);result[name.decode()]=meta.split()[2].decode()
+        return result
+    parent_tree=tree(parent);current=tree(commit)
     expected={};delta={}
-    for name in code:
-        raw=subprocess.check_output(['git','show',commit+':'+name],cwd=REPO);expected[name]=hashlib.sha256(raw).hexdigest()
-        old=subprocess.run(['git','show',parent+':'+name],cwd=REPO,capture_output=True)
-        if old.returncode or old.stdout!=raw:delta[name]=base64.b64encode(raw).decode()
+    archive=subprocess.check_output(['git','archive',commit],cwd=REPO)
+    with tarfile.open(fileobj=io.BytesIO(archive))as tar:
+        for item in tar:
+            name=item.name
+            if not item.isfile():continue
+            # Runtime includes version files, YAML/templates and package data.
+            # Published plots/full metric reports are not runtime dependencies.
+            if name.startswith('reproduction/reports/') and not name.endswith(('.py','.sh')):continue
+            raw=tar.extractfile(item).read();expected[name]=hashlib.sha256(raw).hexdigest()
+            if parent_tree.get(name)!=current[name]:delta[name]=base64.b64encode(raw).decode()
     physical='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-'+commit
     inner="""import base64,hashlib,json,os
 from pathlib import Path
