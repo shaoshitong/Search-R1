@@ -458,7 +458,8 @@ def run(base):
             from .b_progressive import enabled as b_progressive,prefix as b_prefix,ENV as b_env
             if b_progressive(c):
                 length=b_prefix(outer);env[b_env]=str(length);os.environ[b_env]=str(length)
-                phase('outer-%06d-prefix-dimension'%outer,[python,'-m','reproduction.prefix_selection200.b_progressive_control','migrate','--base',str(base),'--prefix',str(length)],dict(env,CUDA_VISIBLE_DEVICES=''))
+                if outer==51 or length!=c['prefix_policy_tokens']:
+                    phase('outer-%06d-prefix-dimension'%outer,[python,'-m','reproduction.prefix_selection200.b_progressive_control','migrate','--base',str(base),'--prefix',str(length)],dict(env,CUDA_VISIBLE_DEVICES=''))
                 c=dict(c,prefix_policy_tokens=length,hidden_capture_contract='sample%d_keep%d_postblock27_native_residual_sum_v1'%(length+1,length))
                 conf=str(base/'preparation'/('outer-%06d-launch-config.json'%outer));once(conf,c)
             outer_wall_started=time.monotonic()
