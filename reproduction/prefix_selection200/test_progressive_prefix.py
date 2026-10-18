@@ -63,6 +63,30 @@ print(json.dumps([PREFIX_TOKENS,WIDTH,PROBE_EPOCHS,PROBE_UPDATES,probe_boundary(
                          [400,400,550,1150,1900,2500,2500])
         self.assertEqual(boundary(200)['last_update_outer'],190)
 
+    def test_expanded_adam_next_update_matches_retained_coordinates(self):
+        torch.manual_seed(27)
+        old=torch.nn.Parameter(torch.randn(1,(QMAX+5)*DIM)*.001)
+        optimizer=torch.optim.Adam([old],lr=5e-6)
+        x=torch.randn_like(old)
+        (old*x).sum().backward();optimizer.step();optimizer.zero_grad(set_to_none=True)
+        saved=dict(model={'output.weight':old.detach().clone()},optimizer=copy.deepcopy(optimizer.state_dict()),
+                   optimizer_parameter_names=['output.weight'],rank_rng=[])
+        expanded=expand_probe_state(saved,20)
+        new=torch.nn.Parameter(expanded['model']['output.weight'])
+        continued=torch.optim.Adam([new],lr=5e-6);continued.load_state_dict(expanded['optimizer'])
+        old_loss=(old*x).sum();new_x=torch.zeros_like(new);new_x[:,:old.numel()]=x
+        new_loss=(new*new_x).sum()
+        torch.testing.assert_close(old_loss,new_loss,rtol=1e-5,atol=1e-6)
+        old_loss.backward();new_loss.backward();optimizer.step();continued.step()
+        self.assertTrue(torch.equal(old,new[:,:old.numel()]))
+        for key in ('exp_avg','exp_avg_sq'):
+            self.assertTrue(torch.equal(optimizer.state[old][key],continued.state[new][key][:,:old.numel()]))
+        self.assertEqual(int(continued.state[new]['step']),2)
+        self.assertEqual(torch.count_nonzero(new[:,old.numel():]),0)
+        continued.zero_grad(set_to_none=True)
+        new.sum().backward();continued.step()
+        self.assertTrue(bool(torch.all(new[:,old.numel():]!=0)))
+
     def test_expansion_preserves_block_moments_bias_clock_and_rng(self):
         model={'block.weight':torch.randn(3,3),'output.weight':torch.randn(1,(QMAX+5)*DIM),
                'output.bias':torch.randn(1)}
