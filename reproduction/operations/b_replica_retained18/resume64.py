@@ -82,19 +82,22 @@ assert(b/'preparation/native-recovery-complete.json').exists()
 intent=b/'preparation/slurm-submit-intent.json'
 if intent.exists():
  print(json.dumps(dict(status='EXISTING_INTENT_RECONCILE',intent=json.loads(intent.read_text()))));raise SystemExit
-inventory=subprocess.check_output(['nvidia-smi','--query-gpu=memory.used,memory.total','--format=csv,noheader,nounits'],text=True)
-assert all(int(line.split(',')[1])-int(line.split(',')[0])>=45000 for line in inventory.splitlines()),inventory
 runner=b/'preparation/slurm-run.sh'
 body="""#!/bin/bash
 set -euo pipefail
 exec unshare --mount --propagation private bash "BASE/repo/reproduction/operations/b_replica_retained18/private_shared_paths.sh" env SEARCH_G1_PHYSICAL_WORLD_SIZE=8 SEARCH_G1_B_PREFIX_TOKENS=20 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="BASE/repo" /dataset/shaoshitong/Search-G1-common8/env/bin/python -u -m reproduction.operations.b_replica_retained18.slurm_native_wait --base "BASE"
 """.replace('BASE',str(b));runner.write_text(body)
-with intent.open('x')as f:json.dump(dict(created_unix=time.time(),node='h100-8',world=8),f)
-value=subprocess.run(['sbatch','--parsable','--nodes=1','--ntasks=1','--nodelist=h100-8','--gres=gpu:8','--cpus-per-task=32','--mem=256G','--time=1-12:00:00','--job-name=sst-b-diverse-cp64-eight','--output='+str(b/'logs/slurm-%j.log'),str(runner)],capture_output=True,text=True,timeout=40)
+with intent.open('x')as f:json.dump(dict(created_unix=time.time(),eligible_nodes=['h100-8','h100-10'],world=8),f)
+value=subprocess.run(['sbatch','--parsable','--nodes=1','--ntasks=1','--exclude=h100-5,h100-11','--gres=gpu:8','--cpus-per-task=32','--mem=256G','--time=1-12:00:00','--job-name=sst-b-diverse-cp64-eight','--output='+str(b/'logs/slurm-%j.log'),str(runner)],capture_output=True,text=True,timeout=40)
 r=dict(returncode=value.returncode,stdout=value.stdout,stderr=value.stderr,observed_unix=time.time());(b/'preparation/slurm-submit-result.json').write_text(json.dumps(r));print(json.dumps(r))
 '''
   call(s,'submit','h100-8')
  else:
+  query=call('import subprocess,json,time\nprint(json.dumps(dict(observed_unix=time.time(),queue=subprocess.check_output(["squeue","-h","-n","sst-b-diverse-cp64-eight","-o","%i %T %N %R"],text=True))))','queue')
+  fields=query['queue'].split()
+  if fields and fields[1]=='PENDING':
+   (OUT/'RESUME64_LATEST.json').write_text(json.dumps(query,indent=2));return
+  node=fields[2]if fields and fields[1]=='RUNNING'else'h100-10'
   s='import pathlib,json,subprocess,time\nb=pathlib.Path('+repr(C)+')\n'+r'''
 def read(p):return json.loads(p.read_text())if p.exists()else None
 stage=read(b/'logs/pipeline-status.json');n=(stage or{}).get('outer',65);root=b/'outers'/('outer-%06d'%n)
@@ -110,6 +113,6 @@ for f in sorted((b/'logs').glob('*.log'),key=lambda f:f.stat().st_mtime,reverse=
  logs.append(dict(path=str(f.relative_to(b)),tail=tail,bytes=f.stat().st_size,mtime=f.stat().st_mtime))
 print(json.dumps(dict(observed_unix=time.time(),stage=stage,joint=read(b/'latest-joint.json'),progress=progress,receipt=receipt,leader=leader,cleanup=read(b/'logs/cleanup-status.json'),slurm=read(b/'preparation/slurm-submit-result.json'),facts=facts,logs=logs,queue=subprocess.run(['squeue','-h','-n','sst-b-diverse-cp64-eight','-o','%i %T %N %R'],capture_output=True,text=True).stdout)))
 '''
-  v=call(s,'observe','h100-8');(OUT/'RESUME64_LATEST.json').write_text(json.dumps(v,indent=2))
+  v=call(s,'observe',node);(OUT/'RESUME64_LATEST.json').write_text(json.dumps(v,indent=2))
 
 if __name__=='__main__':main()

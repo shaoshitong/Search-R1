@@ -1,11 +1,16 @@
 #!/bin/bash
 # Private namespace only. Payloads and outputs remain on retained H10018.
 set -euo pipefail
-[[ $(hostname) == h100-8 ]]
+node=$(hostname)
+[[ $node == h100-8 || $node == h100-10 ]]
 [[ $(readlink /proc/self/ns/mnt) != $(readlink /proc/1/ns/mnt) ]]
 stash=/run/search-g1-diverse-retained18-shared
 mkdir -p "$stash"
-mount --bind /mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong "$stash"
+if [[ $node == h100-10 ]]; then
+  mount --bind /mnt/data/shaoshitong "$stash"
+else
+  mount --bind /mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong "$stash"
+fi
 mount -t tmpfs -o size=16m,nodev,nosuid diverse-private /mnt/data
 shared=/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong
 mkdir -p "$shared" /mnt/data/shaoshitong /dataset/shaoshitong/Search-G1-common8
