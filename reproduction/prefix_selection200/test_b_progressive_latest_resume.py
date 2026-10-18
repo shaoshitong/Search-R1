@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from .b_progressive_resume import LATEST,boundary,qualified_boundary,pending_pool,import_complete,validate_imported,sha
+from .b_progressive_resume import LATEST,boundary,qualified_boundary,pending_pool,import_complete,validate_imported,sha,recovery_environment
 from .pool import reserve_for_outer,state_sha
 
 
@@ -21,6 +21,11 @@ class LatestProgressiveResumeTests(unittest.TestCase):
         for n in (51,100,150,200):self.assertEqual(boundary(self.config(n)),(n,True))
         for n,latest in ((51,False),(49,True),(50,True),(201,True)):
             with self.assertRaises(ValueError):boundary(self.config(n,latest))
+
+    def test_recovery_process_uses_completed_head_not_next_stage(self):
+        for n,length in ((100,20),(101,40),(150,40),(151,80),(200,80)):
+            with patch('reproduction.prefix_selection200.b_progressive_resume.read',return_value={'outer':n}):
+                self.assertEqual(recovery_environment('/source'),{'SEARCH_G1_B_PREFIX_TOKENS':str(length)})
 
     def test_latest_actor_skips_and_probe_missing_class_are_actual_clocks(self):
         c=self.config(150);j=dict(run_id=c['run_id'],outer=150,

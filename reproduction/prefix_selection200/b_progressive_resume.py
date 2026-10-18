@@ -162,11 +162,24 @@ def prepare(source,base,staged_repo,commit,authorization,*,_completed_outer=50,_
     return dict(status='B_PROGRESSIVE_LATEST_JOINT_PREPARED'if _latest else'B_PROGRESSIVE_CP50_PREPARED',base=str(base),run_id=c['run_id'],commit=commit,files=len(files),config_sha256=sha(base/'preparation/launch-config.json'),imported_boundary=result['completed_outer'],required_process_environment={ENV:str(length)},next_outer=n+1,no_new_actor_probe_or_rng_initialization=True)
 
 
+def recovery_environment(source):
+    """Read JSON first, so the controller can start the right isolated process."""
+    from .b_progressive import prefix,ENV
+    n=read(Path(source)/'latest-joint.json')['outer']
+    if type(n)is not int or not 51<=n<=200:raise ValueError('Actual progressive latest51..200 required')
+    return {ENV:str(prefix(n))}
+
+
 def prepare_latest(source,base,staged_repo,commit):
     """Fault/handoff only: actual stopped source, latest proof, no older fallback.
 
     This is not a submit/start action. The controller must launch with the
     returned process-scoped prefix environment before Python imports contract.
     """
-    source=Path(source);stopped(source);n=read(source/'latest-joint.json')['outer']
+    import sys
+    from .b_progressive import ENV
+    source=Path(source);stopped(source);n=read(source/'latest-joint.json')['outer'];expected=recovery_environment(source)
+    loaded=sys.modules.get('reproduction.prefix_selection200.contract')
+    if os.environ.get(ENV)!=expected[ENV]or(loaded is not None and loaded.PREFIX_TOKENS!=int(expected[ENV])):
+        raise RuntimeError('Start a fresh recovery Python process with '+ENV+'='+expected[ENV]+' before importing contract/model modules')
     return prepare(source,base,staged_repo,commit,None,_completed_outer=n,_latest=True)
