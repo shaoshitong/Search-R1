@@ -38,7 +38,7 @@ The reference process is never stopped or edited by this fork.
   stream. This is not an exact eight-executor replay. Pool order/cursor is CP50.
 - Historical4-replica grounding adoption is verified as historical4. All8 live
   replicas must actually reload/read health/adopt the same existing CP50 fit.
-- Training runtime frozen at c3ced09047dd4ccd66e5d232f36b5952c178a7ce.
+- Original first startup runtime c3ced09047dd4ccd66e5d232f36b5952c178a7ce.
   A published external CPU metadata finalizer completes an optional missing
   source provenance record; original failed importer terminal is retained.
   It does not rewrite tensors or frozen training source.
@@ -49,3 +49,15 @@ positive56 before startup acceptance; continue the same process to200.
 Initial QA is inherited from unchanged CP50, not rerun. Actual new writes,
 skips, elapsed time, mixed ratio, prefix diversity and five-probe probability
 variance are read from genuine outputs. Acceptance is not final quality success.
+
+Actual first GPU attempt restored all8 ranks but wrote0 Adam updates: the
+monitor sampler still required two virtual16 blocks per physical rank. The
+repaired runtime ff04ea81e4f3d7783d9c84c558faa515e5eca79f admits one block per
+rank on world8 and preserves the identical ordered32 global monitor IDs
+(independent CPU36/36 cases passed). It uses an explicit immutable checkpoint
+binding compatibility proof to c3ced090; model/Adam blobs are not rewritten.
+The zero-write outer51 native prefix/score/continuation artifacts are reused.
+Original failure, cleanup, journals and GPU time remain separate evidence.
+The repair has one native leader PID2994909/start1938322513 on H10018; the first
+leader PID2974049 and all owned children are confirmed gone. No reference A/B
+process, live source, threshold, sampled sequence or optimizer history changed.

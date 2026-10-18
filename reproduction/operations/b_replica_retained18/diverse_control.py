@@ -130,7 +130,7 @@ else:
     score_rows=[json.loads(line)for line in scores.read_text().splitlines()]
     probe_variance=dict(questions=len(score_rows),mean_within_group_probability_variance=statistics.fmean(statistics.pvariance(r['trajectory_probabilities'])for r in score_rows),nonzero_probability_variance_groups=sum(statistics.pvariance(r['trajectory_probabilities'])>0 for r in score_rows))
    prefix_receipt=read(p/'outers'/('outer-%06d'%n)/'prefix/complete.json')
-   facts.append({k:v.get(k)for k in ('outer','source_commit','selection_metrics','iteration_wall','phase_timings')}|dict(actor=v['actor']['actual_adam_steps_per_rank'],probe=v['probe']['actual_adam_steps_per_rank'],direct_rank_evidence=rank_evidence,probe_variance=probe_variance,prefix_counts={k:prefix_receipt.get(k)for k in ('questions','trajectories','prefix_candidates_generated','prefixes_discarded','discarded_probe_evaluations')}))
+   facts.append({k:v.get(k)for k in ('outer','source_commit','selection_metrics','iteration_wall','phase_timings')}|dict(actor=v['actor']['actual_adam_steps_per_rank'],probe=v['probe']['actual_adam_steps_per_rank'],direct_rank_evidence=rank_evidence,probe_variance=probe_variance,prefix_counts={k:prefix_receipt.get(k)for k in ('questions','trajectories','prefix_candidates_generated','prefixes_retained','prefixes_discarded','discarded_probe_evaluations','diversity_statistics','actual_sampled_tokens','native_generation_requests')}))
  active_actor=[]
  for f in (p/'actor/outers').glob('outer-%04d-attempt-*/rank-*-updates.jsonl'%outer):
   records=[json.loads(line)for line in f.read_text().splitlines()if line]
