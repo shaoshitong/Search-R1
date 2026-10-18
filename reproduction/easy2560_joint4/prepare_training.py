@@ -20,6 +20,8 @@ def selection_settings(predecessor, physical, restoring=False):
                 selection_eligible_pool_path=pool or str(old / 'assets/prefix20/eligible-question-pool.json'),
                 actor_micro_batch_per_rank=physical, actor_logical_micro_batch_per_rank=4,
                 all_correct_virtual_zero=False, startup_admission_mode='actual_first_five',
+                easy2560_rolling_checkpoint=True, save_interval=1,
+                checkpoint_milestone_steps=[5, 50, 100, 150, 200],
                 personal_storage_budget_bytes=2 * 10**12)
     if not restoring: settings['initial_reward_probe_source_base'] = str(predecessor)
     return settings
@@ -73,6 +75,8 @@ def prepare(base, commit, actor_micro=32, restore_receipt=None):
                  restore_receipt_sha256=restoration['restore_receipt_sha256'],
                  restored_completed_outer=(run.get('full_state_restore') or {}).get('completed_outer'),
                  actual_cuda_restore_accepted=False,
+                 rolling_full_checkpoint_every_outer=True,
+                 rolling_retention='publish new complete boundary before retiring previous non-milestone',
                  actual_training_progress_pending=True, checked_unix=time.time())
     publish(base / 'logs/easy2560-configuration-prepared.json', proof)
     return proof

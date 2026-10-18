@@ -16,7 +16,7 @@ import uuid
 
 KIND = 'easy2560_native4'
 STATUS = 'EASY2560_NATIVE4_FULL_SHA_CPU_STATES_PASS'
-STEPS = (5, 50, 100, 150, 200)
+STEPS = range(1, 201)
 
 
 def _need(condition, message):
@@ -114,12 +114,12 @@ def _scope(run, *, physical_micros=(16,)):
 def physical_micro_transition(parent, target_micro):
     """Allow the owned OOM fallback while retaining the logical four-row loss.
 
-    CP5 is the original physical16/native4 source. Its optimizer shard layout
+    The source keeps the native4 FSDP shard layout. Its optimizer shard layout
     does not depend on forward micro size; only the number of accumulation
     passes changes. This does not claim bitwise continuation after regrouping.
     """
     source_micro = parent.get('actor_micro_batch_per_rank')
-    _need(type(source_micro) is int and source_micro == 16 and
+    _need(type(source_micro) is int and source_micro in (16, 8, 4) and
           type(target_micro) is int and target_micro in (16, 8, 4) and target_micro <= source_micro and
           parent.get('training_world_size') == 4 and
           parent.get('actor_logical_micro_batch_per_rank') == 4,
@@ -198,7 +198,10 @@ def _driver(saved, run, outer, ranks):
           and progress['attempt_index'] == ranks[0]['last_attempt_index'] and
           progress['aborted_attempts'] == progress['attempt_index'] - outer and
           progress['full_budget_outer'] <= outer, 'DRIVER_WORKER_COUNTS_DIFFER')
-    _need(saved['reward_refresh_pending'] is (outer in (50, 100, 150)), 'SAVED_REFIT_PHASE_DIFFERS')
+    callbacks_complete = saved.get('callbacks_complete', False)
+    _need(type(callbacks_complete) is bool and
+          saved['reward_refresh_pending'] is (outer in (50, 100, 150) and not callbacks_complete),
+          'SAVED_REFIT_PHASE_DIFFERS')
     consumed = stream['consumed_source_rows']; order = stream['candidate_order']; binding = stream['prefix20_pool_binding']
     _need(binding['canonical_train_sha256'] == run['input_sha256']['train.parquet'],
           'SOURCE_POOL_CANONICAL_TRAIN_DIFFERS')
@@ -218,15 +221,180 @@ def _driver(saved, run, outer, ranks):
                 epoch=stream['epoch'], pending_offset=offset, pending_source_present=pending is not None,
                 prefix20_pool_binding=copy.deepcopy(binding), probe_version=saved['probe_version'],
                 probe_round=saved['probe_round'], reward_refresh_pending=saved['reward_refresh_pending'],
-                actual_driver_rng_saved=True, question_probe=None)
+                actual_driver_rng_saved=True, callbacks_complete=callbacks_complete, question_probe=None)
+
+
+
+def _read_boundary(base, checkpoint, run, outer, ranks, original_driver):
+    """Read a genuine callback-complete boundary; never synthesize newer RNG."""
+    path = base/'preparation/rolling-checkpoints'/('global_step_' + str(outer))/'boundary/manifest.json'
+    if not path.is_file(): return None
+    value = _json(path)
+    _need(value.get('schema_version') == 1 and value.get('callbacks_complete') is True and
+          value['run_id'] == run['run_id'] and value['completed_outer'] == outer and
+          value.get('source_commit', run['source_commit']) == run['source_commit'],
+          'BOUNDARY_MANIFEST_IDENTITY_DIFFERS')
+    folder = path.parent
+    records = []
+    def member(proof):
+        item = _record(proof['path'], expected=proof['sha256'])
+        _need(Path(item['path']).is_relative_to(folder), 'BOUNDARY_FILE_OUTSIDE_OWN_DIRECTORY')
+        if 'bytes' in proof: _need(item['bytes'] == proof['bytes'], 'BOUNDARY_FILE_SIZE_DIFFERS')
+        records.append(item)
+        return item
+    workers = []
+    _need(sorted(row['rank'] for row in value['worker_files']) == list(range(4)), 'BOUNDARY_FOUR_RANKS_REQUIRED')
+    for proof in sorted(value['worker_files'], key=lambda row: row['rank']):
+        record = member(proof); saved = _load_cpu(record['path']); rank = proof['rank']
+        _need(saved['run_id'] == run['run_id'] and saved['source_commit'] == run['source_commit'] and
+              saved['rank'] == rank and saved['world_size'] == 4 and
+              saved['completed_outer'] == outer and saved['actual_optimizer_writes'] == ranks[rank]['actual_optimizer_writes'] and
+              saved['last_attempt_index'] == ranks[rank]['last_attempt_index'] and
+              saved['used_attempt_ids'] == ranks[rank]['used_attempt_ids'] and
+              saved['policy_rejections'] == ranks[rank]['policy_rejections'] and
+              isinstance(saved.get('rng'), dict) and 'optimizer' not in saved and 'scheduler' not in saved,
+              'BOUNDARY_WORKER_STATE_DIFFERS')
+        workers.append(dict(record, rank=rank))
+    driver_record = member(value['driver_file']); driver = _load_cpu(driver_record['path'])
+    summary = _driver(driver, run, outer, ranks)
+    _need(summary['callbacks_complete'] is True and summary['reward_refresh_pending'] is False and
+          summary['probe_round'] == min(outer//50, 3)*50 and
+          summary['probe_version'] == value['probe_version'] and summary['probe_round'] == value['probe_round'],
+          'BOUNDARY_CALLBACK_PHASE_DIFFERS')
+    # Callbacks may advance RNG and the frozen grounding version, but must not
+    # draw another training question or alter the completed actor counters.
+    from search_g1.full_state_restore import equal_tree
+    equal_tree(driver['candidate_stream'], original_driver['candidate_stream'])
+    equal_tree(driver['attempt_progress'], original_driver['attempt_progress'])
+    reward_record = None
+    if value.get('reward_probe_manifest') is not None:
+        reward_record = member(value['reward_probe_manifest'])
+        probe = _json(reward_record['path'])
+        _need(probe['run_id'] == run['run_id'] and probe['version'] == summary['probe_version'] and
+              probe['round'] == summary['probe_round'], 'BOUNDARY_GROUNDING_SNAPSHOT_DIFFERS')
+    manifest = _record(path); records.append(manifest)
+    return dict(driver=driver, driver_file=driver_record, worker_files=workers,
+                manifest=manifest, records=records, reward_probe_manifest=reward_record)
+
+
+def _read_prefix_record(record):
+    _identity(record)
+    with Path(record['path']).open('rb') as stream: raw = stream.read(record['bytes'])
+    _need(len(raw) == record['bytes'] and hashlib.sha256(raw).hexdigest() == record['full_read_sha256'],
+          'INHERITED_PREFIX_SHA_DIFFERS')
+    return [json.loads(line) for line in raw.splitlines() if line]
+
+
+def _validate_history(receipt):
+    updates, attempts = receipt['authenticated_updates'], receipt['authenticated_attempts']
+    outer = receipt['step']; progress = receipt['attempt_progress']
+    _need([row['step'] for row in updates] == list(range(1, outer+1)) and
+          all(row['run_id'] == receipt['run_id'] for row in updates) and
+          updates[-1]['optimizer_writes_after'] == progress['cumulative_writes'] and
+          updates[-1]['attempt_index'] == progress['attempt_index'], 'AUTHENTICATED_UPDATE_HISTORY_DIFFERS')
+    _need([row['attempt_index'] for row in attempts] == list(range(1, progress['attempt_index']+1)) and
+          all(row['run_id'] == receipt['run_id'] for row in attempts) and
+          len({row['attempt_id'] for row in attempts}) == len(attempts) and
+          {row['attempt_id'] for row in attempts} == set(receipt['ranks'][0]['used_attempt_ids']),
+          'AUTHENTICATED_ATTEMPT_HISTORY_DIFFERS')
+    before = 0
+    for row in updates:
+        _need(row['optimizer_writes_before'] == before and
+              before < row['optimizer_writes_after'] <= before+20,
+              'AUTHENTICATED_ADAM_HISTORY_DIFFERS')
+        before = row['optimizer_writes_after']
+
+
+def _inherited_history(base, run):
+    """Flatten saved history without retaining ancestors' retired tensor files.
+
+    The target actually restored its bound parent before its first new outer.
+    Those current readbacks and the parent receipt SHA authenticate that edge.
+    Parent log prefixes/receipts remain small durable history; parent HF/Adam
+    payloads are deliberately not needed after a newer full save is published.
+    """
+    result = dict(files={}, updates=[], attempts=[], after5=None, lineage=[])
+    binding = run.get('full_state_restore')
+    if not binding: return result
+    _need(binding.get('kind') == KIND, 'EASY_LINEAGE_KIND_DIFFERS')
+    path = _regular(Path(binding['source_receipt']).resolve())
+    _need(digest(path) == binding['source_receipt_sha256'], 'INHERITED_RECEIPT_SHA_DIFFERS')
+    parent = _json(path); previous = binding['completed_outer']
+    _need(parent.get('kind') == KIND and parent.get('status') == STATUS and parent['run_id'] == run['run_id'] and
+          parent['step'] == previous and parent['attempt_progress'] == binding['attempt_progress'],
+          'INHERITED_RECEIPT_BINDING_DIFFERS')
+    files = parent['historical_artifacts']['prefix_files']
+    parent_checkpoint = Path(parent['checkpoint'])
+    for n, record in enumerate(files):
+        # Ancestor CP metadata was included in legacy receipts. Its original
+        # content remains inside the immutable parent receipt, while deletion
+        # of that obsolete checkpoint must not disable future continuation.
+        if Path(record['path']).is_relative_to(parent_checkpoint): continue
+        _identity(record)
+        result['files']['inherited/' + str(n) + '/' + record['relative_path']] = record
+    parent_record = _record(path, relative_path='lineage/source-receipt.json')
+    result['files']['lineage/source-receipt.json'] = parent_record
+    if parent.get('schema_version') == 2:
+        _validate_history(parent)
+        result['updates'] = copy.deepcopy(parent['authenticated_updates'])
+        result['attempts'] = copy.deepcopy(parent['authenticated_attempts'])
+    else:
+        result['updates'] = _read_prefix_record(parent['historical_files']['logs/actual-updates.jsonl'])
+        result['attempts'] = _read_prefix_record(parent['historical_files']['logs/actual-attempts.jsonl'])
+    _need([row['step'] for row in result['updates']] == list(range(1, previous+1)), 'INHERITED_UPDATE_PREFIX_DIFFERS')
+    result['after5'] = parent['historical_artifacts']['development'].get('after5')
+    result['lineage'] = copy.deepcopy(parent.get('lineage', [])) + [dict(
+        source_base=parent['source_base'], source_job=parent['source_job'], source_commit=parent['source_commit'],
+        completed_outer=previous, source_receipt=str(path), source_receipt_sha256=binding['source_receipt_sha256'])]
+    workers_path = base/'logs/full-state-restored-workers.json'
+    driver_path = base/'logs/full-state-restored-driver.json'
+    workers, driver = _json(workers_path), _json(driver_path)
+    rows = workers['ranks']; writes = parent['attempt_progress']['cumulative_writes']
+    _need(len(rows) == 4 and sorted(row['rank'] for row in rows) == list(range(4)) and
+          workers['source_receipt_sha256'] == binding['source_receipt_sha256'] and
+          workers['source_step'] == previous and driver['completed_outer'] == previous and
+          driver['actual_driver_rng_readback_equal'] is True and driver['actual_candidate_stream_readback_equal'] is True and
+          driver['attempt_progress'] == parent['attempt_progress'] and
+          driver['actual_candidate_source_cursor'] == parent['driver_state']['source_consumed'] and
+          all(row['actual_adam_scheduler_readback_equal'] is True and row['actual_rng_readback_equal'] is True and
+              row['source_step'] == previous and row['source_run_id'] == run['run_id'] and
+              row['actual_optimizer_writes'] == writes and row['scheduler_last_epoch'] == previous and
+              row['last_attempt_index'] == parent['attempt_progress']['attempt_index'] and
+              row['source_receipt_sha256'] == binding['source_receipt_sha256'] and
+              row.get('actual_model_collective_readback_equal') is True for row in rows) and
+          next(row for row in rows if row['rank'] == 0)['model_hf_exact_tensors_checked_on_rank0'] ==
+              parent['hf_saved_tensor_count'],
+          'CURRENT_ACTUAL_RESTORE_HISTORY_MISSING')
+    for role, p in [('workers', workers_path), ('driver', driver_path)]:
+        result['files']['lineage/current-actual-restored-' + role + '.json'] = _record(p,
+            relative_path='lineage/current-actual-restored-' + role + '.json')
+    return result
+
+
+def boundary_worker_rng(receipt, rank, checkpoint_state):
+    """Select the authenticated idle post-callback RNG for an actual worker."""
+    rows = [row for row in receipt['boundary_worker_files'] if row['rank'] == rank]
+    _need(len(rows) == 1 and receipt['post_callback_rng_captured'] is True, 'BOUNDARY_RANK_REQUIRED')
+    proof = rows[0]; _identity(proof, rehash=True); saved = _load_cpu(proof['path'])
+    for key in ('run_id', 'rank', 'world_size', 'actual_optimizer_writes', 'completed_outer',
+                'last_attempt_index', 'used_attempt_ids', 'policy_rejections'):
+        _need(saved[key] == checkpoint_state[key], 'BOUNDARY_RANK_COUNTER_DIFFERS_' + key)
+    _need('optimizer' not in saved and 'scheduler' not in saved and isinstance(saved.get('rng'), dict),
+          'BOUNDARY_RNG_ONLY_REQUIRED')
+    return saved['rng']
 
 
 def create_receipt(base, checkpoint, output):
-    base = Path(base).resolve(); checkpoint = Path(checkpoint).resolve(); output = Path(output).resolve()
+    base = Path(base).resolve(); output = Path(output).resolve()
+    if str(checkpoint) == 'latest':
+        from search_g1.easy2560_rolling_checkpoint import latest_checkpoint
+        latest = latest_checkpoint(base, verify=True)
+        _need(latest is not None, 'NO_COMPLETE_ROLLING_CHECKPOINT')
+        checkpoint = latest['checkpoint']
+    checkpoint = Path(checkpoint).resolve()
     _need(checkpoint.is_relative_to(base) and not output.is_relative_to(checkpoint), 'TASK_PATH_SCOPE_DIFFERS')
     _need(not output.exists(), 'OUTPUT_ALREADY_EXISTS')
-    run = _json(base/'logs/run-manifest.json'); _scope(run)
-    _need(not run.get('full_state_restore'), 'ORIGINAL_JOB_PREFIX_REQUIRED_NO_IMPLICIT_CHAIN')
+    run = _json(base/'logs/run-manifest.json'); _scope(run, physical_micros=(16, 8, 4))
     complete = _json(checkpoint/'complete.json'); outer = complete['step']
     _need(type(outer) is int and outer in STEPS and complete['run_id'] == run['run_id'] and
           complete['finite_all_saved_tensors'] is True and Path(complete['checkpoint']) == checkpoint,
@@ -255,17 +423,25 @@ def create_receipt(base, checkpoint, output):
     _need(len({signature(row) for row in ranks}) == 1, 'SAVED_RANK_COUNTERS_DIVERGE')
     driver_file = by_name['training_state/driver.pt']; driver = _load_cpu(driver_file['path'])
     _need(state['driver_file']['sha256'] == driver_file['full_read_sha256'], 'MANIFEST_DRIVER_SHA_DIFFERS')
+    _driver(driver, run, outer, ranks)  # Validate the original full-state save too.
+    checkpoint_driver_file = driver_file
+    boundary = _read_boundary(base, checkpoint, run, outer, ranks, driver)
+    if boundary is not None:
+        driver, driver_file = boundary['driver'], boundary['driver_file']
     summary = _driver(driver, run, outer, ranks); progress = copy.deepcopy(driver['attempt_progress'])
     pool = _record(Path(run['selection_eligible_pool_path']).resolve(), relative_path='external/eligible-question-pool.json',
                    expected=summary['prefix20_pool_binding']['eligible_pool_sha256'])
     matches = []
-    for path in (base/'artifacts').glob('round_*/version-manifest.json'):
-        value = _json(path)
-        if value.get('version') == driver['probe_version'] and value.get('run_id') == run['run_id']:
-            matches.append((path, value))
+    if boundary is not None and boundary['reward_probe_manifest'] is not None:
+        path = Path(boundary['reward_probe_manifest']['path']); matches.append((path, _json(path)))
+    else:
+        for path in (base/'artifacts').glob('round_*/version-manifest.json'):
+            value = _json(path)
+            if value.get('version') == driver['probe_version'] and value.get('run_id') == run['run_id']:
+                matches.append((path, value))
     _need(len(matches) == 1, 'EXACT_SAVED_GROUNDING_VERSION_REQUIRED')
     probe_path, probe = matches[0]
-    _need(probe['round'] == driver['probe_round'] == min((outer - 1)//50, 3)*50,
+    _need(probe['round'] == driver['probe_round'] == min((outer if summary['callbacks_complete'] else outer - 1)//50, 3)*50,
           'SAVED_GROUNDING_ROUND_DIFFERS')
     reward_files = []
     for key, name in (('commit', 'commit_probe.pkl'), ('boundary', 'boundary_probe.pkl')):
@@ -280,7 +456,8 @@ def create_receipt(base, checkpoint, output):
     allocation = _json(base/'logs/native-allocation-admission.json')
     _need(allocation['accepted'] is True and allocation['run_id'] == run['run_id'] and
           allocation['training_world_size'] == 4, 'SOURCE_ALLOCATION_DIFFERS')
-    historical = {}
+    inherited = _inherited_history(base, run)
+    historical = dict(inherited['files'])
     def pin(relative, *, expected=None):
         record = _record(base/relative, relative_path=relative, expected=expected)
         historical[relative] = record; return record
@@ -288,6 +465,8 @@ def create_receipt(base, checkpoint, output):
     pin('logs/native-allocation-admission.json')
     updates, record = _prefix(base/'logs/actual-updates.jsonl', 'logs/actual-updates.jsonl', lambda row: row['step'] <= outer)
     historical[record['relative_path']] = record
+    current_updates = updates
+    updates = inherited['updates'] + current_updates
     _need([row['step'] for row in updates] == list(range(1, outer+1)) and
           all(row['run_id'] == run['run_id'] for row in updates) and
           updates[-1]['optimizer_writes_after'] == writes and
@@ -295,8 +474,11 @@ def create_receipt(base, checkpoint, output):
     attempts, record = _prefix(base/'logs/actual-attempts.jsonl', 'logs/actual-attempts.jsonl',
                               lambda row: row['attempt_index'] <= progress['attempt_index'])
     historical[record['relative_path']] = record
+    current_attempts = attempts
+    attempts = inherited['attempts'] + current_attempts
     _need([row['attempt_index'] for row in attempts] == list(range(1, progress['attempt_index']+1)) and
-          all(row['run_id'] == run['run_id'] and row['slurm_job_id'] == allocation['slurm_job_id'] for row in attempts) and
+          all(row['run_id'] == run['run_id'] for row in attempts) and
+          all(row['slurm_job_id'] == allocation['slurm_job_id'] for row in current_attempts) and
           sorted(row['attempt_id'] for row in attempts) == sorted(ranks[0]['used_attempt_ids']), 'ACTUAL_ATTEMPT_PREFIX_DIFFERS')
     for role in ('optimizer', 'scheduler'):
         for rank in range(4):
@@ -305,7 +487,7 @@ def create_receipt(base, checkpoint, output):
                 lambda row: _worker_prefix_row(row, progress['attempt_index']))
             _need(all(row['run_id'] == run['run_id'] and row['rank'] == rank for row in rows), 'ACTUAL_RANK_PREFIX_DIFFERS')
             historical[relative] = record
-    for row in updates:
+    for row in current_updates:
         aid = row['attempt_id']
         pin('logs/behavior-probability-attempt-' + aid + '.json', expected=row['behavior_probability_gate_sha256'])
         pin('artifacts/mixed-selection/' + aid + '.json')
@@ -318,21 +500,28 @@ def create_receipt(base, checkpoint, output):
                      'logs/policy-safety-calibration.json', 'preparation/run-source.json',
                      'source/'+run['source_commit']+'/source-publication.json'):
         if (base/relative).is_file(): pin(relative)
-    after = historical.get('logs/formal-inline-development-after.json')
-    _need(after is not None, 'REAL_HISTORICAL_QA5_REQUIRED_NO_INVENTED_BASELINE')
-    qa = _json(after['path'])
-    _need(qa['run_id'] == run['run_id'] and qa['step'] == 5, 'HISTORICAL_QA5_IDENTITY_DIFFERS')
+    after = historical.get('logs/formal-inline-development-after.json') or inherited['after5']
+    if after is not None:
+        qa = _json(after['path'])
+        _need(qa['run_id'] == run['run_id'] and qa['step'] == 5, 'HISTORICAL_QA5_IDENTITY_DIFFERS')
+    elif outer >= 5:
+        _need(False, 'REAL_HISTORICAL_QA5_REQUIRED_NO_INVENTED_BASELINE')
     for name in ('source-snapshot.json', 'complete.json'):
         relative = 'preparation/checkpoint-archives/global_step_' + str(outer) + '/' + name
         if (base/relative).is_file(): pin(relative)
     historical['checkpoint/complete.json'] = dict(by_name['complete.json'], relative_path='checkpoint/complete.json')
     historical['checkpoint/training_state/manifest.json'] = dict(by_name['training_state/manifest.json'],
                                                                relative_path='checkpoint/training_state/manifest.json')
-    receipt = dict(schema_version=1, kind=KIND, status=STATUS, step=outer, world_size=4,
+    receipt = dict(schema_version=2 if boundary is not None or run.get('full_state_restore') else 1, kind=KIND, status=STATUS, step=outer, world_size=4,
         run_id=run['run_id'], source_commit=run['source_commit'], source_job=allocation['slurm_job_id'],
         checkpoint=str(checkpoint), source_base=str(base), files=files, ranks=ranks,
         hf_saved_tensor_count=complete['validated_tensor_count'], actual_optimizer_writes_per_rank=writes,
-        driver_file=driver_file, boundary_driver=driver_file, driver_state=summary, attempt_progress=progress,
+        driver_file=driver_file, checkpoint_driver_file=checkpoint_driver_file, boundary_driver=driver_file,
+        boundary_worker_files=[] if boundary is None else boundary['worker_files'],
+        boundary_manifest=None if boundary is None else boundary['manifest'],
+        driver_state=summary, attempt_progress=progress,
+        authenticated_updates=updates, authenticated_attempts=attempts,
+        lineage=inherited['lineage'],
         source_run_manifest=source_run, eligible_pool=pool,
         reward_probe_manifest=_record(probe_path, relative_path='grounding/version-manifest.json'),
         reward_probe_version=probe['version'], reward_probe_round=probe['round'], reward_files=reward_files,
@@ -342,15 +531,17 @@ def create_receipt(base, checkpoint, output):
             development=dict(after5=after), prefix_files=list(historical.values()),
             reward_archives=[dict(version=probe['version'], round=probe['round'], path=str(probe_path),
                                  full_read_sha256=digest(probe_path))]),
-        checkpoint_saved_before_development=outer == 5, post_callback_rng_captured=False,
-        sampling_rng_stage='saved_checkpoint_before_development' if outer == 5 else 'saved_checkpoint_before_pending_callback',
+        checkpoint_saved_before_development=outer == 5 and boundary is None,
+        post_callback_rng_captured=boundary is not None,
+        sampling_rng_stage=('post_outer_scheduled_QA_and_grounding_adoption_before_final_evaluation' if boundary is not None else
+                            'saved_checkpoint_before_development' if outer == 5 else 'saved_checkpoint_before_pending_callback'),
         reward_refresh_pending=driver['reward_refresh_pending'], final_evaluation_pending=outer == 200,
         historical_QA5_is_post_save_result_only=True, completed_QA5_replay_required=False,
         source_archive_receipt_available=('preparation/checkpoint-archives/global_step_' + str(outer) + '/complete.json') in historical,
         same_job_continuation=False, actual_cuda_restore_accepted=False, model_tensor_reload_performed=False,
         checked_unix=time.time(), scope='full saved native4 CP bytes/CPU Adam scheduler and genuine historical prefix; CUDA/dataequal restore pending')
     # No source record may have changed while the long CPU/SHA pass ran.
-    for record in files + reward_files + encoder_files + [source_run, pool, receipt['reward_probe_manifest']]:
+    for record in files + reward_files + encoder_files + [source_run, pool, receipt['reward_probe_manifest']] + ([] if boundary is None else boundary['records']):
         _identity(record)
     _publish(output, receipt)
     return dict(path=str(output), sha256=digest(output), status=STATUS, step=outer, world_size=4,
@@ -359,7 +550,7 @@ def create_receipt(base, checkpoint, output):
 
 def source(receipt_path):
     path = _regular(Path(receipt_path).resolve()); receipt = _json(path)
-    _need(receipt.get('schema_version') == 1 and receipt.get('kind') == KIND and receipt.get('status') == STATUS,
+    _need(receipt.get('schema_version') in (1, 2) and receipt.get('kind') == KIND and receipt.get('status') == STATUS,
           'RECEIPT_SCHEMA_DIFFERS')
     checkpoint = Path(receipt['checkpoint']); base = Path(receipt['source_base'])
     _need(receipt['world_size'] == 4 and receipt['step'] in STEPS and checkpoint.resolve() == checkpoint and
@@ -372,14 +563,15 @@ def source(receipt_path):
         _identity(record, rehash=record['relative_path'] in ('complete.json', 'training_state/manifest.json'))
     for record in receipt['reward_files'] + receipt['reward_encoder_files'] + [receipt['eligible_pool']]:
         _identity(record)
+    for record in receipt.get('boundary_worker_files', []) + ([receipt['boundary_manifest']] if receipt.get('boundary_manifest') else []) + [receipt['driver_file']]:
+        _identity(record, rehash=True)
     for record in receipt['historical_artifacts']['prefix_files']:
         _identity(record)  # Full prefix SHA was computed by publisher; no repeated large log scans.
     for record in (receipt['source_run_manifest'], receipt['reward_probe_manifest'],
-                   receipt['historical_artifacts']['development']['after5']):
-        _identity(record, rehash=True)
-    parent = _json(receipt['source_run_manifest']['path']); _scope(parent)
+                   receipt['historical_artifacts']['development'].get('after5')):
+        if record is not None: _identity(record, rehash=True)
+    parent = _json(receipt['source_run_manifest']['path']); _scope(parent, physical_micros=(16, 8, 4))
     _need(Path(receipt['source_run_manifest']['path']) == base/'logs/run-manifest.json' and
-          Path(receipt['historical_artifacts']['development']['after5']['path']) == base/'logs/formal-inline-development-after.json' and
           parent['run_id'] == receipt['run_id'] and parent['source_commit'] == receipt['source_commit'],
           'SOURCE_RUN_BINDING_DIFFERS')
     complete = _json(checkpoint/'complete.json'); state = _json(checkpoint/'training_state/manifest.json')
@@ -408,22 +600,31 @@ def source(receipt_path):
               row['used_attempt_ids'] == ranks[0]['used_attempt_ids'] and
               row['policy_rejections'] == ranks[0]['policy_rejections'], 'SOURCE_RANK_COUNTER_BINDING_DIFFERS')
     _need(progress['aborted_attempts'] == progress['attempt_index']-outer and
-          state['driver_file']['sha256'] == receipt['driver_file']['full_read_sha256'] ==
+          state['driver_file']['sha256'] == receipt.get('checkpoint_driver_file', receipt['driver_file'])['full_read_sha256'] ==
           by_name['training_state/driver.pt']['full_read_sha256'] and
-          receipt['driver_file']['path'] == by_name['training_state/driver.pt']['path'] and
+          receipt.get('checkpoint_driver_file', receipt['driver_file'])['path'] == by_name['training_state/driver.pt']['path'] and
           receipt['driver_state']['completed_outer'] == outer and
           receipt['driver_state']['probe_version'] == receipt['reward_probe_version'] and
           receipt['driver_state']['probe_round'] == receipt['reward_probe_round'], 'SOURCE_DRIVER_COUNTER_BINDING_DIFFERS')
-    _need(receipt['checkpoint_saved_before_development'] is (outer == 5) and
-          receipt['post_callback_rng_captured'] is False and
-          receipt['driver_state']['reward_refresh_pending'] is receipt['reward_refresh_pending'] is (outer in (50,100,150)) and
+    post = receipt['post_callback_rng_captured']
+    _need(type(post) is bool and
+          receipt['checkpoint_saved_before_development'] is (outer == 5 and not post) and
+          receipt['driver_state']['reward_refresh_pending'] is receipt['reward_refresh_pending'] is
+              (outer in (50,100,150) and not post) and
           receipt['completed_QA5_replay_required'] is False, 'SOURCE_SAVED_CALLBACK_PHASE_DIFFERS')
+    if post:
+        _need(receipt.get('schema_version') == 2 and receipt['driver_state'].get('callbacks_complete') is True and
+              len(receipt.get('boundary_worker_files', [])) == 4 and receipt.get('boundary_manifest') and
+              receipt['driver_file']['path'] != by_name['training_state/driver.pt']['path'],
+              'POST_CALLBACK_BOUNDARY_MISSING')
+    if receipt.get('schema_version') == 2:
+        _validate_history(receipt)
     return path, receipt, checkpoint, base, parent
 
 
 def bind(run, receipt_path):
     path, receipt, checkpoint, base, parent = source(receipt_path); _scope(run, physical_micros=(16, 8, 4))
-    _need(receipt['step'] == 5, 'ONLY_CP5_TRAINING_CONTINUATION_IMPLEMENTED')
+    _need(type(receipt['step']) is int and 1 <= receipt['step'] < 200, 'TRAINING_SOURCE_MUST_PRECEDE_OUTER200')
     _need(not run.get('full_state_restore') and run.get('completed_updates', 0) == 0,
           'TARGET_MUST_BE_PRISTINE_UNFINISHED')
     transition = _compatible_execution_budget(run, parent)
@@ -452,7 +653,8 @@ def bind(run, receipt_path):
             aborted_attempts=progress['aborted_attempts'], candidate_source_cursor=receipt['driver_state']['source_consumed'],
             reward_probe_round=receipt['reward_probe_round'], reward_probe_version=receipt['reward_probe_version'],
             checkpoint_saved_before_development=receipt['checkpoint_saved_before_development'],
-            post_callback_rng_captured=False, same_job_continuation=False,
+            reward_refresh_pending=receipt['reward_refresh_pending'],
+            post_callback_rng_captured=receipt['post_callback_rng_captured'], same_job_continuation=False,
             followup_acceptance_outer=min(receipt['step'] + 5, 200)),
         optimizer_semantics='actual saved native4 HF/Adam/scheduler/RNG/data stream; cross-job prefix kept as history; CUDA readback pending')
     return run
@@ -493,7 +695,7 @@ def restore_driver(trainer, path):
                   source_job=receipt['source_job'], source_commit=receipt['source_commit'],
                   source_receipt_sha256=digest(path), source_driver_full_sha256=receipt['driver_file']['full_read_sha256'],
                   same_job_continuation=False, checkpoint_saved_before_development=receipt['checkpoint_saved_before_development'],
-                  post_callback_rng_captured=False, completed_QA5_replay_required=False,
+                  post_callback_rng_captured=receipt['post_callback_rng_captured'], completed_QA5_replay_required=False,
                   actual_driver_dataequal=bool(result['actual_driver_rng_readback_equal'] and
                                                result['actual_candidate_stream_readback_equal']),
                   actual_cuda_restore_accepted=False, checked_unix=time.time())

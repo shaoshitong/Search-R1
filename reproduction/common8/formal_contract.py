@@ -154,7 +154,8 @@ def verify_formal_config(document, run, base):
         optimizer_offload=True), 'Actor FSDP graph')
     assert reference['fsdp_config']['param_offload'] is True
     exact(document['trainer'], dict(n_gpus_per_node=world_size(run), nnodes=1,
-        total_training_steps=TARGET_UPDATES + 1, total_epochs=15, save_freq=50,
+        total_training_steps=TARGET_UPDATES + 1, total_epochs=15,
+        save_freq=(1 if run.get('easy2560_rolling_checkpoint') is True else 50),
         test_freq=50, acceptance_step=5, val_only=False,
         val_before_train=val_before_train(run)), 'Training horizon')
     assert document['trainer']['default_local_dir'] == run['checkpoint_dir']

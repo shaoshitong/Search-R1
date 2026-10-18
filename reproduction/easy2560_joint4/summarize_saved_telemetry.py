@@ -87,7 +87,7 @@ def segment(base, through):
     source_sha = hashlib.sha256(canonical(source_map)).hexdigest()
     updates, updates_record = ledger(base/'logs/actual-updates.jsonl', stop=lambda r: r.get('step') == through)
     offset = (run.get('full_state_restore') or {}).get('completed_outer', 0)
-    need(offset in (0, 5), 'ONLY_FRESH_OR_CP5_HISTORY_SUPPORTED')
+    need(type(offset) is int and 0 <= offset < 200, 'INVALID_RESTORED_OUTER')
     need([row.get('step') for row in updates] == list(range(offset+1, offset+len(updates)+1)),
          'SEGMENT_COMPLETED_OUTERS_NOT_CONTIGUOUS')
     need(all(row.get('run_id') == run['run_id'] for row in updates), 'FOREIGN_UPDATE_RUN')
@@ -242,15 +242,23 @@ def summarize(bases, through_outer):
         restore = part['run'].get('full_state_restore')
         if restore:
             parent = by_base.get(restore.get('source_base'))
-            need(restore.get('kind') == 'easy2560_native4' and restore.get('completed_outer') == 5 and parent is not None and
-                 not parent['run'].get('full_state_restore') and parent['job'] == restore.get('source_job') and
-                 parent['run']['source_commit'] == restore.get('source_commit'), 'EXPLICIT_CP5_PARENT_SEGMENT_REQUIRED')
+            need(restore.get('kind') == 'easy2560_native4' and
+                 type(restore.get('completed_outer')) is int and 1 <= restore['completed_outer'] < 200 and parent is not None and
+                 parent['job'] == restore.get('source_job') and
+                 parent['run']['source_commit'] == restore.get('source_commit'), 'EXPLICIT_PARENT_SEGMENT_REQUIRED')
+    ends = {}
+    for part in parts:
+        restore = part['run'].get('full_state_restore')
+        if restore:
+            key = restore['source_base']; boundary = restore['completed_outer']
+            need(key not in ends or ends[key] == boundary, 'AMBIGUOUS_PARENT_SUFFIX')
+            ends[key] = boundary
     outers = {}; segments = []
     for part in parts:
         run = part['run']; steps = []
         for update in part['updates']:
             step = update['step']
-            if step > through_outer: continue
+            if step > min(through_outer, ends.get(str(part['base']), through_outer)): continue
             need(step not in outers, 'DUPLICATE_OUTER_ACROSS_BASES')
             writes = number(update['actual_optimizer_writes'], integer=True)
             before = number(update['optimizer_writes_before'], integer=True); after = number(update['optimizer_writes_after'], integer=True)

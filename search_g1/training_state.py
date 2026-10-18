@@ -51,12 +51,14 @@ def compact_stream_state(state):
     return state
 
 
-def capture_easy2560_driver(trainer, run, *, live_probe=None):
+def capture_easy2560_driver(trainer, run, *, live_probe=None, callbacks_complete=False):
     """Capture the actual Easy stream and driver, without a selection head.
 
     Checkpoints at50/100/150 precede the grounding refit at that boundary.
     Their saved grounding version is intentional; recovery must finish that
-    pending refit before beginning the next outer. Final200 has no refit.
+    pending refit before beginning the next outer. A rolling post-callback
+    sidecar instead captures the adopted probe and the next-outer RNG boundary.
+    Final200 has no refit.
     """
     from reproduction.common8.precision_contract import easy2560_native4
     assert easy2560_native4(run)
@@ -82,7 +84,8 @@ def capture_easy2560_driver(trainer, run, *, live_probe=None):
         run_id=run['run_id'], source_commit=run['source_commit'], completed_outer=step,
         candidate_stream=stream, rng=driver_rng(),
         probe_version=live_probe['version'], probe_round=live_probe['round'],
-        reward_refresh_pending=step in (50, 100, 150), question_probe=None,
+        reward_refresh_pending=step in (50, 100, 150) and not callbacks_complete,
+        callbacks_complete=bool(callbacks_complete), question_probe=None,
         attempt_progress=copy.deepcopy(attempt))
 
 
@@ -106,7 +109,8 @@ def restore_easy2560_driver(trainer, saved, run, *, source_run_id, live_probe,
     assert saved['probe_version'] == live_probe['version']
     assert saved['probe_round'] == live_probe['round']
     assert type(saved['reward_refresh_pending']) is bool
-    assert saved['reward_refresh_pending'] == (step in (50, 100, 150))
+    assert saved['reward_refresh_pending'] == (step in (50, 100, 150) and
+                                              not saved.get('callbacks_complete', False))
     progress = saved['attempt_progress']
     assert progress['completed_outer'] == step
     assert all(type(progress[name]) is int and progress[name] >= 0 for name in

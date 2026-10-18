@@ -92,10 +92,25 @@ class SavedTelemetryTests(unittest.TestCase):
         self.assertEqual([r['source_job'] for r in result['outers']],['730226']*5+['731063']*2)
         self.assertEqual(result['outers'][-1]['cumulative_retained_adam_writes_per_rank'],140)
         for path,raw in before.items():self.assertEqual(path.read_bytes(),raw)
-        with self.assertRaisesRegex(ValueError,'EXPLICIT_CP5_PARENT_SEGMENT_REQUIRED'):core.summarize([new],7)
+        with self.assertRaisesRegex(ValueError,'EXPLICIT_PARENT_SEGMENT_REQUIRED'):core.summarize([new],7)
         foreign=self.fixture('other',range(1,2));p=foreign/'logs/run-manifest.json'
         manifest=json.loads(p.read_bytes());manifest['run_id']='e'*32;self.write(p,manifest)
         with self.assertRaisesRegex(ValueError,'ALLOCATION_IDENTITY_DIFFERS'):core.summarize([old,foreign],7)
+
+    def test_cp50_child_truncates_parent_failed_suffix_without_relabelling(self):
+        old=self.fixture(steps=range(1,6))
+        middle=self.fixture('middle',range(6,53),restored=old)
+        third=self.fixture('third',range(51,54),restored=middle)
+        path=third/'logs/run-manifest.json';run=json.loads(path.read_bytes())
+        parent=json.loads((middle/'logs/run-manifest.json').read_bytes())
+        run['full_state_restore'].update(completed_outer=50,source_job='731063',source_commit=parent['source_commit'])
+        self.write(path,run)
+        result=core.summarize([old,middle,third],53)
+        self.assertEqual(result['missing_outers'],[])
+        self.assertEqual([r['step'] for r in result['outers']],list(range(1,54)))
+        self.assertEqual([r['source_base'] for r in result['outers']],
+                         [str(old)]*5+[str(middle)]*45+[str(third)]*3)
+        self.assertEqual(result['segments'][1]['completed_outers_in_report'],list(range(6,51)))
 
     def test_wrong_run_audit_job_gpu_source_map_and_rank_attempt_are_rejected(self):
         changes=(('logs/actual-updates.jsonl','run_id','e'*32),

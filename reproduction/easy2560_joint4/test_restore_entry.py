@@ -1,5 +1,6 @@
 """CPU launch plumbing: explicit receipt, once-only claim, pre-bind Easy scope."""
 import json
+import importlib.util
 import os
 from pathlib import Path
 import shutil
@@ -14,6 +15,33 @@ from reproduction.common8 import prepare_run
 
 
 class RestoreEntryTests(unittest.TestCase):
+    @unittest.skipUnless(importlib.util.find_spec('hydra'), 'Use existing HPC environment for real Hydra composition')
+    def test_rolling_checkpoint_cadence_preserves_four_gpu_scientific_recipe(self):
+        from reproduction.common8 import configuration, test_configuration
+        from reproduction.common8.formal_contract import formal_mathematics, SKIP_INITIAL_EVALUATION_POLICY
+        from reproduction.common8.precision_contract import NATIVE4_BF16_PROFILE, SAMPLING_JOURNAL_POLICY
+        with tempfile.TemporaryDirectory() as td:
+            base, run = test_configuration.ConfigurationTests().fixture(td)
+            run.update(prepare_training.selection_settings(base/'old', 8))
+            run.update(execution_site='hpc3', execution_backend='slurm', training_world_size=4,
+                precision_profile=NATIVE4_BF16_PROFILE, vllm_gpu_memory_utilization=.1,
+                behavior_probability_policy=SAMPLING_JOURNAL_POLICY,
+                pretraining_baseline_policy=SKIP_INITIAL_EVALUATION_POLICY)
+            run['budget']['world_size'] = 4
+            run['budget'].update(formal_mathematics(run))
+            (base/'logs/run-manifest.json').write_text(json.dumps(run))
+            _, config, args = configuration.resolved(base)
+            self.assertEqual(len({a.split('=',1)[0] for a in args}), len(args))
+            self.assertEqual((config.trainer.save_freq, config.trainer.test_freq), (1,50))
+            self.assertTrue(config.trainer.rolling_checkpoint)
+            self.assertEqual(config.trainer.n_gpus_per_node, 4)
+            self.assertEqual(config.trainer.total_training_steps, 201)
+            self.assertEqual(config.actor_rollout_ref.actor.ppo_mini_batch_size, 128)
+            self.assertEqual(config.actor_rollout_ref.actor.ppo_micro_batch_size, 32)
+            self.assertEqual(config.actor_rollout_ref.actor.ppo_logical_micro_batch_size, 4)
+            self.assertEqual(config.data.selection_candidate_questions, 2560)
+            self.assertFalse(config.algorithm.all_correct_virtual_zero)
+
     def test_explicit_fourth_argument_and_once_claim_pin_the_receipt_sha(self):
         with tempfile.TemporaryDirectory() as td:
             base = Path(td).resolve(); receipt = base / 'saved-state.json'

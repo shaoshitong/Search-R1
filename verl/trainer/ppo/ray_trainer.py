@@ -923,8 +923,12 @@ class RayPPOTrainer(object):
             self.mixed_stream = mixed_stream
             assert inline_attempts is not None and self.config.do_search
             if easy_restore:
-                from search_g1.easy2560_restore_runtime import verify_reconstructed_stream
+                from search_g1.easy2560_restore_runtime import verify_reconstructed_stream, finish_pending_refresh
                 verify_reconstructed_stream(self,mixed_stream)
+                # Older milestone saves precede the scheduled grounding refit.
+                # Resume that real callback once, after exact state readback
+                # and before drawing any candidate for the next outer.
+                finish_pending_refresh(self, continuation_k)
             if selection_mode in ("question_probe","prefix20_probe"):
                 from pathlib import Path
                 from search_g1.qprobe_runtime import QProbeRuntime
@@ -1258,13 +1262,21 @@ class RayPPOTrainer(object):
                 if continuation_k < self.global_steps <= continuation_k + 5:
                     five_update_records.append(dict(step=self.global_steps, metrics=dict(metrics),
                         probe_version=getattr(self.reward_fn, 'last_probe_version', None)))
-                if (not self.config.trainer.get('full_state_restore_receipt',None) and
-                        self.global_steps == self.config.trainer.get('acceptance_step', 0)):
+                if (self.global_steps == self.config.trainer.get('acceptance_step', 0) and
+                        (not self.config.trainer.get('full_state_restore_receipt',None) or
+                         (easy_restore and continuation_k < self.global_steps))):
                     if os.environ.get('SEARCH_G1_PROFILE')=='common8':
                         from reproduction.common8.formal_inline_evaluation import active_run,evaluate_development
                         if active_run() is not None:evaluate_development(self)
-                    from reproduction.profile import accept_five_updates
-                    accept_five_updates(checkpoint, five_update_records)
+                    if not self.config.trainer.get('full_state_restore_receipt',None):
+                        from reproduction.profile import accept_five_updates
+                        accept_five_updates(checkpoint, five_update_records)
+                    else:
+                        # A recovery from outer1..4 still owes the original
+                        # fixed QA5. Its earlier updates belong to the source
+                        # segment, so a same-process fresh-five receipt would
+                        # be false; the history reader verifies both segments.
+                        print('SEARCH_G1_RESUMED_FIXED_QA5_COMPLETE', flush=True)
                 if (self.config.trainer.get('full_state_restore_receipt',None) and
                         not easy_restore and
                         self.global_steps==min(continuation_k+5,self.total_training_steps-1)):
@@ -1277,6 +1289,17 @@ class RayPPOTrainer(object):
                 if checkpoint is not None and self.qprobe_runtime is not None:
                     from search_g1.qprobe_checkpoint import publish_completed_pair
                     publish_completed_pair(self, checkpoint)
+
+                if checkpoint is not None and self.config.trainer.get('rolling_checkpoint', False):
+                    # The full model/Adam snapshot is already on disk. Finish
+                    # QA/refit first, then pin the small driver/worker RNG state
+                    # for the next outer before replacing the previous pointer.
+                    from search_g1.easy2560_restore_runtime import capture_boundary
+                    from search_g1.easy2560_rolling_checkpoint import publish_checkpoint
+                    boundary = capture_boundary(self, checkpoint)
+                    rolling = publish_checkpoint(os.environ['SEARCH_G1_BASE'], checkpoint,
+                                                 boundary_manifest=boundary)
+                    print('SEARCH_G1_ROLLING_CHECKPOINT=' + json.dumps(rolling), flush=True)
 
                 self.global_steps += 1
 

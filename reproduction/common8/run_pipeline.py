@@ -68,13 +68,13 @@ def supported_execution_role(run,base=None):
 
 
 def assert_initial_state(run):
-    """Keep fresh admission strict; accept only the bound native4 Easy CP5."""
+    """Accept a bound native4 Easy boundary without resetting its real counters."""
     assert run['profile']=='common8' and run['completed_updates']==0
     assert run.get('restore_only_role') is None, 'Restore-only execution uses its independent entry'
     restore=run.get('full_state_restore') or {}
     if restore.get('kind')=='easy2560_native4':
         from reproduction.common8.precision_contract import easy2560_native4
-        assert easy2560_native4(run) and type(restore['completed_outer']) is int and restore['completed_outer']==5
+        assert easy2560_native4(run) and type(restore['completed_outer']) is int and 1 <= restore['completed_outer'] < 200
         assert isinstance(restore['reward_probe_version'],str) and restore['reward_probe_version']
         assert run['initial_probe_version']==restore['reward_probe_version']
         return

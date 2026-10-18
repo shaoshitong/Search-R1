@@ -244,6 +244,9 @@ def restore_worker(worker,receipt_path):
     if paired:
         from search_g1.qprobe_checkpoint import boundary_worker_rng
         rng=boundary_worker_rng(r,rank,saved)
+    elif easy and r.get('post_callback_rng_captured'):
+        from search_g1.easy2560_restore import boundary_worker_rng
+        rng=boundary_worker_rng(r,rank,saved)
     else:rng=saved['rng']
     manager=worker.rollout_sharding_manager
     engine=worker.rollout.inference_engine.llm_engine;assert not engine.has_unfinished_requests()
@@ -268,7 +271,7 @@ def restore_worker(worker,receipt_path):
         policy_rejections=worker.actor._policy_rejections,
         source_run_id=saved['run_id'],source_step=outer,checked_unix=time.time())
     if paired:row['sampling_rng_source']='authenticated post-evaluation/refit boundary-worker-rng'
-    if easy:row['sampling_rng_source']='actual saved checkpoint before development callback; post-evaluation RNG unavailable'
+    if easy:row['sampling_rng_source']=r['sampling_rng_stage']
     if final_easy:
         row.update(kind=FINAL_EASY_KIND, restore_only=True, source_model_shards_sha256=model_shas,
                    sampling_rng_source=r['sampling_rng_stage'], post_callback_rng_captured=False)
@@ -564,6 +567,8 @@ def optimizer_construction_config(config,model_path):
     assert config.get('completed_updates',0)==r['step']==binding['completed_outer']
     if binding.get('kind')==FINAL_EASY_KIND:
         assert r['status']==FINAL_EASY_STATUS and r['step']==200 and r['restore_only'] is True
+    elif binding.get('kind')=='easy2560_native4':
+        assert type(r['step']) is int and 1 <= r['step'] < 200
     elif binding.get('kind')!='question_probe_pair':assert r['step']==5
     assert Path(model_path).resolve()==checkpoint
     construction=copy.deepcopy(dict(config));construction['completed_updates']=0

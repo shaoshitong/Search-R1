@@ -1,6 +1,6 @@
 """Final native4 Easy checkpoint provenance for a separate restore-only role.
 
-Creation authenticates the original CP5 execution plus the real 6..200 suffix,
+Creation authenticates every original execution segment through outer200,
 all five accepted archives and exact native51713 results. It then reads every
 actual CP200 byte and all four CPU Adam/scheduler states. No training, CUDA,
 post-final-evaluation RNG capture or actual recovery is claimed here.
@@ -33,8 +33,9 @@ def _scope(run):
     # physical-16-only admission in easy2560_restore.source/create_receipt.
     saved._scope(run, physical_micros=(16, 8, 4))
     binding = run.get('full_state_restore') or {}
-    need(binding.get('kind') == saved.KIND and binding.get('completed_outer') == 5,
-         'AUTHENTICATED_CP5_CONTINUATION_REQUIRED')
+    need(binding.get('kind') == saved.KIND and type(binding.get('completed_outer')) is int and
+         1 <= binding['completed_outer'] < 200,
+         'AUTHENTICATED_CONTINUATION_REQUIRED')
     need(Path(run['checkpoint_dir']).is_absolute(), 'ABSOLUTE_CHECKPOINT_ROOT_REQUIRED')
 
 
@@ -88,8 +89,14 @@ def _pin_inputs(base, run, acceptance):
     pin('original/run-manifest.json', parent['path'], parent['full_read_sha256'])
     history = original.get('historical_artifacts', {}).get('prefix_files')
     if history is None: history = list(original['historical_files'].values())
-    for row in history:
-        pin('original/' + row['relative_path'], row['path'], row['full_read_sha256'], row)
+    for index, row in enumerate(history):
+        if Path(row['path']).is_relative_to(Path(original['checkpoint'])):
+            continue
+        # Flattened receipts retain repeated per-execution relative names.
+        # Keep each exact prefix instead of overwriting an ancestor's record.
+        label = ('original/prefix/' + str(index) + '/' + row['relative_path']
+                 if original.get('schema_version') == 2 else 'original/' + row['relative_path'])
+        pin(label, row['path'], row['full_read_sha256'], row)
     reward = original['reward_probe_manifest']
     pin('original/reward-probe-manifest.json', reward['path'], reward['full_read_sha256'])
     names = ['logs/run-manifest.json', 'logs/native-allocation-admission.json',
@@ -241,8 +248,8 @@ def create_receipt(base, checkpoint, output):
         reward_encoder_files=encoders, question_probe=None, history_records=history_records,
         authenticated_history=acceptance['authenticated_history'], final_cpu_acceptance=acceptance,
         checkpoint_archive=acceptance['checkpoints']['200'],
-        historical_original_prefix=dict(completed_outers=[1,5], **copy.deepcopy(run['full_state_restore'])),
-        current_suffix_completed_outers=[6,200], single_original_job_prefix=False,
+        historical_original_prefix=dict(completed_outers=[1,run['full_state_restore']['completed_outer']], **copy.deepcopy(run['full_state_restore'])),
+        current_suffix_completed_outers=[run['full_state_restore']['completed_outer']+1,200], single_original_job_prefix=False,
         inherited_history_assembled=True, no_update201=True,
         sampling_rng_stage='saved_checkpoint_before_final51713', checkpoint_saved_before_final_evaluation=True,
         post_callback_rng_captured=False, reward_refresh_pending=False, final_evaluation_pending_at_saved_boundary=True,
@@ -320,7 +327,8 @@ def source(receipt_path, *, rehash_checkpoint=False):
          acceptance['progress']['actual_completed_updates'] == 200 and acceptance['progress']['rank_count'] == 4 and
          acceptance['evaluations']['final51713']['question_count'] == 51713 and
          acceptance['authenticated_history'] == history and history['current_job'] == receipt['source_job'] and
-         history['current_source_commit'] == run['source_commit'] and history['completed_outer'] == 5 and
+         history['current_source_commit'] == run['source_commit'] and
+         history['completed_outer'] == run['full_state_restore']['completed_outer'] and
          history['single_original_job_prefix'] is False and history['inherited_history_assembled'] is True and
          history['source_receipt_sha256'] == run['full_state_restore']['source_receipt_sha256'] and
          receipt['checkpoint_archive'] == acceptance['checkpoints']['200'], 'AUTHENTICATED_CHAIN_SUMMARY_DIFFERS')

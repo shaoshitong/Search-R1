@@ -209,11 +209,15 @@ class EasyRestoreTests(unittest.TestCase):
                 write(f.output,receipt)
                 with self.assertRaises(ValueError):module.source(f.output)
 
-    def test_only_cp5_training_bind_supported_until_pending_refit_is_wired(self):
+    def test_old_milestone_binding_keeps_pending_refit_explicit(self):
         with tempfile.TemporaryDirectory() as folder:
-            f=Fixture(folder);f.create();source=list(module.source(f.output));source[1]=dict(source[1],step=50)
-            with patch.object(module,'source',return_value=tuple(source)), self.assertRaisesRegex(ValueError,'ONLY_CP5'):
-                module.bind(copy.deepcopy(f.run),f.output)
+            f=Fixture(folder);f.create();old=list(module.source(f.output))
+            old[1]=dict(old[1],step=50,reward_refresh_pending=True)
+            with patch.object(module,'source',return_value=tuple(old)):
+                child=module.bind(copy.deepcopy(f.run),f.output)
+            self.assertEqual(child['full_state_restore']['completed_outer'],50)
+            self.assertTrue(child['full_state_restore']['reward_refresh_pending'])
+            self.assertFalse(child['full_state_restore']['post_callback_rng_captured'])
 
     def test_real_initial_optimizer_header_does_not_require_invented_attempt_index(self):
         with tempfile.TemporaryDirectory() as folder:

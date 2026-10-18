@@ -185,7 +185,7 @@ def _receipt_record_raw(record, path):
                      prefix_only=bool(record.get('prefix_only', False)))
 
 
-def authenticated_restore_chain(base, run, *, bundle=None, sealed_directory=None):
+def _legacy_restore_chain(base, run, *, bundle=None, sealed_directory=None, namespace=""):
     """Read a truthful two-execution chain; never relabel old rows as the new job.
 
     This validates existing CPU/full-SHA and actual worker/driver readback
@@ -200,7 +200,7 @@ def authenticated_restore_chain(base, run, *, bundle=None, sealed_directory=None
     base = Path(base); sealed = Path(sealed_directory) if sealed_directory else None
     def get(name, path, *, expected=None, record=None):
         if sealed is not None:
-            raw, actual = read_small(sealed/'chain'/name, expected=expected)
+            raw, actual = read_small(sealed/'chain'/namespace/name, expected=expected)
             if record is not None:
                 need(len(raw) == record['bytes'] and digest(raw) ==
                      record.get('full_read_sha256', record.get('sha256')), 'SEALED_HISTORICAL_FILE_DIFFERS')
@@ -209,7 +209,7 @@ def authenticated_restore_chain(base, run, *, bundle=None, sealed_directory=None
         else:
             raw, actual = read_small(Path(path), expected=expected)
         if bundle is not None:
-            bundle.put('chain/'+name, raw, actual)
+            bundle.put('chain/'+namespace+name, raw, actual)
         return raw
     receipt_path = Path(binding['source_receipt'])
     receipt_sha = binding.get('source_receipt_sha256')
@@ -404,8 +404,202 @@ def authenticated_restore_chain(base, run, *, bundle=None, sealed_directory=None
         post_callback_rng_captured=False, actual_restore_performed_by_this_cpu_reader=False)
     return dict(public=public, source_base=source_base, source_run=old_run,
                 historical=cached, records=history, progress=progress, receipt=receipt,
-                boundary=5, cutoff_attempt=progress['attempt_index'], source_job=receipt['source_job'], current_job=job)
+                boundary=5, cutoff_attempt=progress['attempt_index'], source_job=receipt['source_job'], current_job=job,
+                segments=[dict(first_outer=1, last_outer=5, first_attempt=1, last_attempt=progress['attempt_index'],
+                    base=source_base, run=old_run, job=receipt['source_job'])])
 
+
+
+def authenticated_restore_chain(base, run, *, bundle=None, sealed_directory=None, namespace="", _seen=None):
+    """Authenticate each actual restore edge and preserve every execution segment.
+
+    Schema2 receipts carry exact flattened update/attempt rows. Only immutable
+    small receipts and ledger prefixes are consumed here; an obsolete rolling
+    checkpoint's tensor/driver payloads need not remain after a newer save.
+    """
+    binding = run.get('full_state_restore')
+    if not binding:
+        return None
+    need(isinstance(binding, dict) and binding.get('kind') == 'easy2560_native4',
+         'CROSS_JOB_AUTHENTICATED_PREFIX_NOT_IMPLEMENTED')
+    base = Path(base); sealed = Path(sealed_directory) if sealed_directory else None
+    def get(name, path, *, expected=None, record=None):
+        if sealed is not None:
+            raw, actual = read_small(sealed/'chain'/namespace/name, expected=expected)
+            if record is not None:
+                need(len(raw) == record['bytes'] and digest(raw) ==
+                     record.get('full_read_sha256', record.get('sha256')), 'SEALED_HISTORICAL_FILE_DIFFERS')
+        elif record is not None:
+            raw, actual = _receipt_record_raw(record, Path(path))
+        else:
+            raw, actual = read_small(Path(path), expected=expected)
+        if bundle is not None:
+            bundle.put('chain/'+namespace+name, raw, actual)
+        return raw
+    # Peek before copying so legacy sidecars keep their exact public format.
+    receipt_path = Path(binding['source_receipt'])
+    if sealed is not None:
+        raw, _ = read_small(sealed/'chain'/namespace/'restore-receipt.json',
+                            expected=binding['source_receipt_sha256'])
+    else:
+        raw, _ = read_small(receipt_path, expected=binding['source_receipt_sha256'])
+    receipt = json.loads(raw)
+    if receipt.get('schema_version', 1) == 1 and receipt.get('step') == 5:
+        return _legacy_restore_chain(base, run, bundle=bundle, sealed_directory=sealed,
+                                     namespace=namespace)
+    receipt_raw = get('restore-receipt.json', receipt_path, expected=binding['source_receipt_sha256'])
+    seen = set() if _seen is None else set(_seen)
+    edge = (str(base), binding['source_receipt_sha256'])
+    need(edge not in seen and len(seen) < 200, 'CYCLIC_OR_EXCESSIVE_RESTORE_LINEAGE')
+    seen.add(edge)
+    outer = binding.get('completed_outer'); source_base = Path(binding['source_base'])
+    checkpoint = Path(binding['source_checkpoint'])
+    need(type(outer) is int and 1 <= outer < 200 and source_base.is_absolute() and source_base != base and
+         checkpoint == source_base/'checkpoints/search-g1-common8/actor'/('global_step_%d' % outer) and
+         receipt.get('schema_version') == 2 and receipt.get('status') == RESTORE_STATUS and
+         receipt.get('kind') == 'easy2560_native4' and receipt.get('step') == outer and receipt.get('world_size') == 4 and
+         receipt.get('source_base') == str(source_base) and receipt.get('checkpoint') == str(checkpoint) and
+         receipt.get('run_id') == run['run_id'] and receipt.get('source_commit') == binding.get('source_commit') and
+         receipt.get('source_job') == binding.get('source_job'), 'RESTORE_RECEIPT_BINDING_DIFFERS')
+    progress = receipt['attempt_progress']; writes = receipt['actual_optimizer_writes_per_rank']
+    need(progress.get('completed_outer') == outer and progress.get('cumulative_writes') == writes and
+         type(writes) is int and outer <= writes <= outer*20 and
+         type(progress.get('attempt_index')) is int and progress['attempt_index'] >= outer and
+         binding.get('actual_optimizer_writes_per_rank') == writes,
+         'RESTORE_PROGRESS_DIFFERS')
+    old_raw = get('source-run-manifest.json', source_base/'logs/run-manifest.json',
+                  record=receipt['source_run_manifest'])
+    old_run = json.loads(old_raw)
+    need(old_run.get('run_id') == run['run_id'] and old_run.get('source_commit') == receipt['source_commit'] and
+         old_run.get('easy2560_selection') is True and old_run.get('training_world_size') == 4 and
+         old_run.get('all_correct_virtual_zero') is False and old_run.get('question_probe') is None,
+         'RESTORE_SOURCE_RUN_BINDING_DIFFERS')
+    parent = authenticated_restore_chain(source_base, old_run, bundle=bundle, sealed_directory=sealed,
+        namespace=namespace+'parent/', _seen=seen)
+    start = parent['boundary'] if parent else 0
+    prior_attempt = parent['cutoff_attempt'] if parent else 0
+    need(start < outer, 'RESTORE_LINEAGE_MUST_ADVANCE')
+    history = receipt.get('historical_files', {})
+    if not history:
+        history = {r['relative_path']:r for r in receipt['historical_artifacts']['prefix_files']}
+    cached = dict(parent['historical']) if parent else {}
+    relatives = ['logs/actual-updates.jsonl', 'logs/actual-attempts.jsonl', 'logs/validation-identities.jsonl']
+    relatives += ['logs/%s-rank-%d.jsonl' % (role, rank) for role in ('scheduler','optimizer') for rank in range(4)]
+    for rel in relatives:
+        record = history.get(rel)
+        if record is None and rel == 'logs/validation-identities.jsonl':
+            continue  # No new fixed QA is scheduled between milestones.
+        need(record is not None and record['path'] == str(source_base/rel), 'SOURCE_SEGMENT_PREFIX_REQUIRED')
+        value = get('historical/'+rel, source_base/rel, record=record)
+        cached[rel] = (cached.get(rel, b'') + value)
+    updates = _historical_rows(dict(historical=cached), 'logs/actual-updates.jsonl')
+    attempts = _historical_rows(dict(historical=cached), 'logs/actual-attempts.jsonl')
+    need(updates == receipt.get('authenticated_updates') and attempts == receipt.get('authenticated_attempts') and
+         [r['step'] for r in updates] == list(range(1, outer+1)) and
+         [attempt_identity(r)[0] for r in attempts] == list(range(1, progress['attempt_index']+1)) and
+         len({r['attempt_id'] for r in attempts}) == len(attempts) and
+         all(r['run_id'] == run['run_id'] for r in updates+attempts), 'AUTHENTICATED_FLATTENED_HISTORY_DIFFERS')
+    current_attempts = [r for r in attempts if r['attempt_index'] > prior_attempt]
+    need(current_attempts and all(r['slurm_job_id'] == receipt['source_job'] for r in current_attempts) and
+         attempts[-1]['completed_outer'] == outer and attempts[-1]['optimizer_writes_after'] == writes,
+         'SOURCE_SEGMENT_JOB_OR_COUNTERS_DIFFER')
+    if 'logs/formal-inline-development-after.json' in history:
+        record = history['logs/formal-inline-development-after.json']
+        qa = get('historical/logs/formal-inline-development-after.json', record['path'], record=record)
+        cached['logs/formal-inline-development-after.json'] = qa
+    need(outer < 5 or 'logs/formal-inline-development-after.json' in cached, 'REAL_HISTORICAL_QA5_REQUIRED')
+    # Source publication belongs to this execution, not to its ancestor or HEAD.
+    publication = runtime = None
+    if old_run['source_commit'] != REVIEWED_COMMIT:
+        rel = 'source/'+old_run['source_commit']+'/source-publication.json'
+        publication = json.loads(get('historical/'+rel, source_base/rel, record=history.get(rel)))
+        rel = 'preparation/run-source.json'
+        runtime = json.loads(get('historical/'+rel, source_base/rel, record=history.get(rel)))
+    publication_binding = published_source_binding(source_base, old_run, old_run['source_commit'], publication, runtime)
+    allocation = json.loads(get('current-allocation.json', base/'logs/native-allocation-admission.json'))
+    old_allocation = json.loads(get('historical/logs/native-allocation-admission.json',
+        source_base/'logs/native-allocation-admission.json', record=history['logs/native-allocation-admission.json']))
+    job = allocation.get('slurm_job_id')
+    need(allocation.get('accepted') is True and allocation.get('run_id') == run['run_id'] and
+         old_allocation.get('accepted') is True and old_allocation.get('run_id') == run['run_id'] and
+         old_allocation.get('slurm_job_id') == receipt['source_job'] and job != receipt['source_job'],
+         'RESTORE_ALLOCATION_CHAIN_DIFFERS')
+    workers_raw = get('full-state-restored-workers.json', base/'logs/full-state-restored-workers.json')
+    driver_raw = get('full-state-restored-driver.json', base/'logs/full-state-restored-driver.json')
+    workers, driver = json.loads(workers_raw), json.loads(driver_raw)
+    need(workers.get('run_id') == run['run_id'] and workers.get('source_commit') == run['source_commit'] and
+         workers.get('slurm_job_id') == job and workers.get('source_receipt_sha256') == binding['source_receipt_sha256'] and
+         workers.get('actual_world_size') == 4, 'RESTORED_WORKERS_AGGREGATE_DIFFERS')
+    ranks = workers.get('ranks', []); uuids = allocation.get('actual_cuda_runtime_uuids', [])
+    need(len(ranks) == 4 and sorted(r['rank'] for r in ranks) == list(range(4)) and
+         len(set(uuids)) == 4 and {r.get('actual_cuda_uuid') for r in ranks} == set(uuids), 'RESTORED_NATIVE4_UUIDS_DIFFERS')
+    files = {r['path']:r for r in receipt['files']}
+    for row in ranks:
+        state = files.get(str(checkpoint/('training_state/rank-%d.pt' % row['rank'])))
+        need(state is not None and row.get('source_state_full_sha256') == state['full_read_sha256'] and
+             row.get('run_id') == row.get('source_run_id') == run['run_id'] and
+             row.get('source_receipt_sha256') == binding['source_receipt_sha256'] and
+             row.get('source_job') == receipt['source_job'] and row.get('source_commit') == old_run['source_commit'] and
+             row.get('source_step') == outer and row.get('source_checkpoint') == str(checkpoint) and
+             row.get('slurm_job_id') == job and row.get('world_size') == 4 and
+             row.get('actual_optimizer_writes') == writes and row.get('scheduler_last_epoch') == outer and
+             row.get('last_attempt_index') == progress['attempt_index'] and
+             row.get('actual_model_collective_readback_equal') is True and
+             row.get('actual_adam_scheduler_readback_equal') is True and row.get('actual_rng_readback_equal') is True,
+             'RESTORED_RANK_READBACK_DIFFERS')
+        birth = row.get('process_identity', {})
+        need(type(birth.get('pid')) is int and birth['pid'] > 0 and
+             type(birth.get('start_ticks')) is int and birth['start_ticks'] > 0, 'RESTORED_RANK_BIRTH_REQUIRED')
+    need(len({(r['process_identity']['pid'], r['process_identity']['start_ticks']) for r in ranks}) == 4 and
+         next(r for r in ranks if r['rank'] == 0).get('model_hf_exact_tensors_checked_on_rank0') == 435,
+         'RESTORED_RANK0_FULL_MODEL_OR_DISTINCT_BIRTHS_REQUIRED')
+    post = receipt.get('post_callback_rng_captured') is True
+    need(driver.get('run_id') == run['run_id'] and driver.get('source_receipt_sha256') == binding['source_receipt_sha256'] and
+         driver.get('source_job') == receipt['source_job'] and driver.get('source_commit') == old_run['source_commit'] and
+         driver.get('source_step') == outer and driver.get('slurm_job_id') == job and
+         driver.get('source_driver_full_sha256') == receipt['driver_file']['full_read_sha256'] and
+         driver.get('actual_candidate_source_cursor') == receipt['driver_state']['source_consumed'] and
+         driver.get('actual_probe_version') == receipt['reward_probe_version'] and
+         driver.get('actual_probe_round') == receipt['reward_probe_round'] and
+         driver.get('attempt_progress') == progress and driver.get('actual_driver_rng_readback_equal') is True and
+         driver.get('actual_candidate_stream_readback_equal') is True and
+         driver.get('post_callback_rng_captured') is post and driver.get('same_job_continuation') is False,
+         'RESTORED_DRIVER_READBACK_DIFFERS')
+    segments = list(parent['segments']) if parent else []
+    segments.append(dict(first_outer=start+1, last_outer=outer, first_attempt=prior_attempt+1,
+        last_attempt=progress['attempt_index'], base=source_base, run=old_run, job=receipt['source_job']))
+    public_segments = [dict(first_outer=s['first_outer'], last_outer=s['last_outer'],
+        first_attempt=s['first_attempt'], last_attempt=s['last_attempt'], base=str(s['base']),
+        run_id=s['run']['run_id'], source_commit=s['run']['source_commit'], source_job=s['job']) for s in segments]
+    public = dict(source_base=str(source_base), source_checkpoint=str(checkpoint), completed_outer=outer,
+        source_commit=old_run['source_commit'], source_job=receipt['source_job'], current_job=job,
+        current_source_commit=run['source_commit'], source_receipt_sha256=binding['source_receipt_sha256'],
+        historical_attempt_index=progress['attempt_index'], historical_optimizer_writes=writes,
+        source_segments=public_segments, parent_authenticated_history=parent['public'] if parent else None,
+        source_publication_binding=publication_binding, single_original_job_prefix=False, inherited_history_assembled=True,
+        native4_worker_driver_restore_proofs_authenticated=True,
+        worker_readback_receipt_sha256=digest(workers_raw), driver_readback_receipt_sha256=digest(driver_raw),
+        post_callback_rng_captured=post, actual_restore_performed_by_this_cpu_reader=False)
+    return dict(public=public, source_base=source_base, source_run=old_run, historical=cached,
+        records=history, progress=progress, receipt=receipt, boundary=outer,
+        cutoff_attempt=progress['attempt_index'], source_job=receipt['source_job'], current_job=job, segments=segments,
+        parent_chain=parent)
+
+
+def historical_origin(chain, *, attempt_index=None, outer=None):
+    """Resolve the original execution; never substitute a failed suffix."""
+    need(chain is not None and (attempt_index is None) != (outer is None), 'ORIGIN_KEY_REQUIRED')
+    for item in chain.get('segments', []):
+        lower, upper = ((item['first_attempt'], item['last_attempt']) if attempt_index is not None else
+                        (item['first_outer'], item['last_outer']))
+        value = attempt_index if attempt_index is not None else outer
+        if lower <= value <= upper:
+            return item['base'], item['run'], item['job']
+    # Legacy external fixtures may provide only the old two-execution shape.
+    if not chain.get('segments') and ((attempt_index is not None and attempt_index <= chain['cutoff_attempt']) or
+                                    (outer is not None and outer <= chain['boundary'])):
+        return chain['source_base'], chain['source_run'], chain['source_job']
+    raise ValueError('EASY2560_EVIDENCE_HISTORICAL_ORIGIN_NOT_FOUND')
 
 def _historical_rows(chain, relative):
     raw = chain['historical'][relative]
@@ -417,7 +611,7 @@ def _historical_rows(chain, relative):
 
 def _attempt_origin(base, run, chain, attempt_index):
     if chain is not None and attempt_index <= chain['cutoff_attempt']:
-        return chain['source_base'], chain['source_run'], chain['source_job']
+        return historical_origin(chain, attempt_index=attempt_index)
     return base, run, chain['current_job'] if chain else None
 
 
@@ -444,7 +638,7 @@ def _validate_ledgers(base, run, step, driver, bundle, job, chain=None):
     writes = completed = aborted = full = 0
     successful = []
     for r in attempts:
-        expected_job = chain['source_job'] if chain and r['attempt_index'] <= chain['cutoff_attempt'] else job
+        expected_job = historical_origin(chain, attempt_index=r['attempt_index'])[2] if chain and r['attempt_index'] <= chain['cutoff_attempt'] else job
         need(r['run_id'] == run['run_id'] and r['slurm_job_id'] == expected_job and
              r['all_ranks_agreed'] is True and r['real_rank_count'] == 4,
              'CROSS_JOB_OR_FOREIGN_ATTEMPT')
@@ -469,8 +663,9 @@ def _validate_ledgers(base, run, step, driver, bundle, job, chain=None):
              'UPDATE_ATTEMPT_BINDING_DIFFERS')
     if chain is not None:
         history = [r for r in attempts if r['attempt_index'] <= chain['cutoff_attempt']]
-        need(history[-1]['completed_outer'] == 5 and history[-1]['optimizer_writes_after'] == 100 and
-             len([u for u in updates if u['step'] <= 5]) == 5, 'AUTHENTICATED_PREFIX_BOUNDARY_DIFFERS')
+        need(history[-1]['completed_outer'] == chain['boundary'] and
+             history[-1]['optimizer_writes_after'] == chain['progress']['cumulative_writes'] and
+             len([u for u in updates if u['step'] <= chain['boundary']]) == chain['boundary'], 'AUTHENTICATED_PREFIX_BOUNDARY_DIFFERS')
     by_id = {r['attempt_id']: r for r in attempts}
     for rank in range(4):
         for role, terminal in (('scheduler', ('COMPLETE', 'ABORTED_ATTEMPT')),
@@ -487,7 +682,7 @@ def _validate_ledgers(base, run, step, driver, bundle, job, chain=None):
                 if aid not in groups: groups[aid] = []; seen.append(aid)
                 groups[aid].append(row)
                 if role == 'scheduler':
-                    expected_job = chain['source_job'] if chain and index <= chain['cutoff_attempt'] else job
+                    expected_job = historical_origin(chain, attempt_index=index)[2] if chain and index <= chain['cutoff_attempt'] else job
                     need(row['slurm_job_id'] == expected_job and row['world_size'] == 4,
                          'RANK_PREFIX_CROSS_JOB')
                 if role == 'optimizer' and row['kind'] == 'POLICY_MONITOR':
@@ -569,7 +764,7 @@ def _validation_observation(base, step, bundle, chain=None):
                'prefix/validation-identities.jsonl', sealed,
                dict(path=str(path), bytes=len(sealed), sha256=digest(sealed), prefix_only=True))
     if chain is not None:
-        need(all(row['step'] > 5 for row in rows), 'CURRENT_VALIDATION_REPLAYS_HISTORICAL_BOUNDARY')
+        need(all(row['step'] > chain['boundary'] for row in rows), 'CURRENT_VALIDATION_REPLAYS_HISTORICAL_BOUNDARY')
         rows = _historical_rows(chain, 'logs/validation-identities.jsonl') + rows
     fixed = [r for r in rows if r['step'] == step and r['split'] == 'validation']
     need(step == 5 or len(fixed) == 1, 'PRE_SAVE_FIXED512_EVIDENCE_MISSING_OR_DUPLICATED')

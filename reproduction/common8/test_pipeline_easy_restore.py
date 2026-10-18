@@ -36,7 +36,7 @@ class EasyRestorePipelineEntryTests(unittest.TestCase):
             with self.subTest(key=key), self.assertRaises(AssertionError):
                 module.assert_initial_state(dict(run, **{key:value}))
 
-    def test_saved_version_exception_is_only_exact_easy_native4_checkpoint_five(self):
+    def test_saved_version_exception_requires_exact_easy_native4_boundary(self):
         changes = [('completed_updates',5), ('completed_updates',200), ('easy2560_selection',False),
             ('training_world_size',8), ('execution_site','h1008'), ('actor_logical_micro_batch_per_rank',8),
             ('question_probe',{'enabled':True}), ('initial_probe_version',None),
@@ -45,12 +45,20 @@ class EasyRestorePipelineEntryTests(unittest.TestCase):
             with self.subTest(key=key, value=value), self.assertRaises(AssertionError):
                 module.assert_initial_state(dict(self.restored(), **{key:value}))
         for key, value in [('kind','other'), ('kind','easy2560_final200_restore_only'),
-                           ('completed_outer',6), ('completed_outer',200), ('completed_outer',True),
+                           ('completed_outer',0), ('completed_outer',200), ('completed_outer',True),
                            ('reward_probe_version',''), ('reward_probe_version',None),
                            ('reward_probe_version','other')]:
             run = self.restored(); run['full_state_restore'][key] = value
             with self.subTest(binding=key,value=value), self.assertRaises(AssertionError):
                 module.assert_initial_state(run)
+
+    def test_every_retained_completed_outer_before200_can_enter_without_repeating_source_scan(self):
+        for outer in (1,6,17,50,149,199):
+            with self.subTest(outer=outer):
+                run=self.restored();run['full_state_restore']['completed_outer']=outer
+                with patch('search_g1.easy2560_restore.source',side_effect=AssertionError('do not repeat CPU readback')):
+                    module.assert_initial_state(run)
+                self.assertEqual(run['full_state_restore']['completed_outer'],outer)
 
     def test_actual_main_reaches_existing_allocation_and_pipeline_without_source_reload(self):
         for restored in (False, True):

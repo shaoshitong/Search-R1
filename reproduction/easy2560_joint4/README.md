@@ -48,6 +48,32 @@ job runs. Do not raise the cap or silently omit checkpoint milestones.
 
 ## Full-state archival
 
+New Easy launches enable `easy2560_rolling_checkpoint=true` and save a full
+native-four checkpoint after **every completed outer**, with model, rank-local
+Adam/scheduler/RNG, driver RNG and exact candidate stream. After scheduled QA
+and grounding adoption, small worker/driver boundary snapshots pin the actual
+next-outer state. `preparation/rolling-checkpoints/latest.json` advances only
+after the complete new files and SHA manifest are flushed. Only then may the
+previous managed non-milestone checkpoint be retired. A partial/new failed save
+leaves the preceding recovery point; checkpoints5/50/100/150/200 are protected.
+New and previous saves temporarily coexist on HPC3; include this peak in the
+2TB budget. No tensor payload is downloaded to the Mac.
+
+Recovery accepts any completed outer before200, not only5, including a checkpoint
+from an already resumed run. `python -m search_g1.easy2560_restore --base BASE
+--checkpoint latest --output NEW_RECEIPT.json` selects the most recent complete
+rolling checkpoint; pass its immutable receipt to the existing `control submit
+--restore-receipt` entry in a new dedicated base. Restore all state and continue
+at the saved outer+1; retain each real execution segment in the historical ledger.
+An obsolete rolling checkpoint's tensors are not a permanent ancestor dependency.
+
+This is a prospective recovery change. Job734689/source4cc has no dynamic
+checkpoint hook and remains unchanged. Per the user's2026-10-19 instruction,
+enable the repaired implementation if this job genuinely fails; do not restart
+a healthy job merely to deploy it, and do not pretend unsaved outers have a
+recoverable checkpoint. Once enabled, verify consecutive actual saves and a real
+restore before claiming the recovery mechanism has passed runtime acceptance.
+
 `checkpoint_archive snapshot` runs CPU-only on HPC3 after a milestone's complete
 four-rank state and actual outer ledger row exist. It dynamically inventories all
 saved HF shards, four rank-local Adam/scheduler/RNG files, driver candidate stream,

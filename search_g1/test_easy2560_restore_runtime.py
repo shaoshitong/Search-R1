@@ -81,15 +81,69 @@ class ResumedRawLedgerTests(unittest.TestCase):
         from reproduction.easy2560_joint4.retire_candidate_raw import completed_updates
         with tempfile.TemporaryDirectory() as td:
             base=Path(td).resolve();(base/'logs').mkdir()
-            receipt=base/'receipt.json';receipt.write_text('{}')
-            run=dict(full_state_restore=dict(kind='easy2560_native4',completed_outer=5,
+            origin=base/'origin';receipt=origin/'preparation/native4-recovery5/source-receipt.json'
+            receipt.parent.mkdir(parents=True);receipt.write_text('{}')
+            run=dict(full_state_restore=dict(kind='easy2560_native4',completed_outer=5,source_base=str(origin),
                 source_receipt=str(receipt),source_receipt_sha256=hashlib.sha256(receipt.read_bytes()).hexdigest()))
             (base/'logs/run-manifest.json').write_text(json.dumps(run))
             ledger=base/'logs/actual-updates.jsonl'
             ledger.write_text(''.join(json.dumps(dict(step=n,attempt_id=str(n)))+'\n' for n in (6,7,8)))
-            self.assertEqual([r['step'] for r in completed_updates(base)[0]],[6,7,8])
-            receipt.write_text('changed')
-            with self.assertRaisesRegex(ValueError,'RESTORED_PREFIX_RECEIPT_CHANGED'):completed_updates(base)
+            with patch('reproduction.easy2560_joint4.retire_candidate_raw.restored_prefix_binding',return_value=(5,{})):
+                self.assertEqual([r['step'] for r in completed_updates(base)[0]],[6,7,8])
+            receipt.write_text('{"changed":true}')
+            with patch('reproduction.easy2560_joint4.retire_candidate_raw.owned_base',side_effect=lambda p:Path(p).resolve()), \
+                 self.assertRaisesRegex(ValueError,'RESTORED_PREFIX_RECEIPT_CHANGED'):completed_updates(base)
+
+
+
+
+class PendingRefreshTests(unittest.TestCase):
+    def test_actual_pending_saved_boundary_refits_source_checkpoint_before_new_samples(self):
+        import os
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td).resolve();(base/'logs').mkdir();cp=base/'source-global-step-50';cp.mkdir()
+            binding=dict(kind='easy2560_native4',completed_outer=50,reward_refresh_pending=True,
+                source_checkpoint=str(cp),source_receipt_sha256='a'*64)
+            (base/'logs/run-manifest.json').write_text(json.dumps(dict(run_id='r',full_state_restore=binding)))
+            trainer=SimpleNamespace(_restored_reward_refresh_pending=True,
+                reward_fn=SimpleNamespace(expected_probe_version='r:0:old'),
+                val_reward_fn=SimpleNamespace(expected_probe_version='r:0:old'))
+            with patch.dict(os.environ,SEARCH_G1_BASE=str(base)), \
+                 patch('reproduction.profile.refresh_after_checkpoint',return_value='r:50:adopted') as refresh, \
+                 patch('search_g1.easy2560_restore.source',side_effect=AssertionError('already restored; no repeated large scan')):
+                proof=runtime.finish_pending_refresh(trainer,50)
+                again=runtime.finish_pending_refresh(trainer,50)
+            refresh.assert_called_once_with(50,str(cp));self.assertIsNone(again)
+            self.assertFalse(trainer._restored_reward_refresh_pending)
+            self.assertEqual(trainer.reward_fn.expected_probe_version,'r:50:adopted')
+            self.assertEqual(trainer.val_reward_fn.expected_probe_version,'r:50:adopted')
+            self.assertFalse(proof['repeated_fixed_QA']);self.assertFalse(proof['new_training_samples_drawn'])
+            self.assertTrue((base/'logs/restored-pending-grounding-refresh-complete.json').is_file())
+
+    def test_completed_sidecar_has_no_pending_callback_and_makes_no_RPC(self):
+        from types import SimpleNamespace
+        with patch('reproduction.profile.refresh_after_checkpoint') as refresh:
+            self.assertIsNone(runtime.finish_pending_refresh(SimpleNamespace(_restored_reward_refresh_pending=False),50))
+        refresh.assert_not_called()
+
+    def test_refit_failure_keeps_pending_flag_and_prior_probe(self):
+        import os
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td).resolve();(base/'logs').mkdir();cp=base/'source-global-step-100';cp.mkdir()
+            binding=dict(kind='easy2560_native4',completed_outer=100,reward_refresh_pending=True,
+                source_checkpoint=str(cp),source_receipt_sha256='b'*64)
+            (base/'logs/run-manifest.json').write_text(json.dumps(dict(run_id='r',full_state_restore=binding)))
+            trainer=SimpleNamespace(_restored_reward_refresh_pending=True,
+                reward_fn=SimpleNamespace(expected_probe_version='r:50:old'),val_reward_fn=None)
+            with patch.dict(os.environ,SEARCH_G1_BASE=str(base)), \
+                 patch('reproduction.profile.refresh_after_checkpoint',side_effect=RuntimeError('actual refit failed')), \
+                 self.assertRaisesRegex(RuntimeError,'actual refit failed'):
+                runtime.finish_pending_refresh(trainer,100)
+            self.assertTrue(trainer._restored_reward_refresh_pending)
+            self.assertEqual(trainer.reward_fn.expected_probe_version,'r:50:old')
+            self.assertFalse((base/'logs/restored-pending-grounding-refresh-complete.json').exists())
 
 
 if __name__=='__main__':unittest.main()

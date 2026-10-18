@@ -71,9 +71,29 @@ def read_file(base, relative, *, parse_json=False):
 
 
 def restored_prefix_binding(base, run):
-    """Authenticate only the supported fresh-parent CP5 continuation, no tensors."""
+    """Authenticate the saved prefix without loading checkpoint tensors."""
     restoration = run.get('full_state_restore')
     if not restoration: return 0, []
+    receipt_path = Path(restoration['source_receipt'])
+    origin_path = owned_base(restoration['source_base'])
+    require(origin_path != base and receipt_path.is_relative_to(origin_path/'preparation'),
+            'RESTORED_SOURCE_BASE_DIFFERS')
+    receipt_relative = str(receipt_path.relative_to(origin_path))
+    receipt_record, source_receipt = read_file(origin_path, receipt_relative, parse_json=True)
+    if source_receipt.get('schema_version') == 2:
+        require(receipt_record['sha256'] == restoration.get('source_receipt_sha256'),
+                'RESTORED_PREFIX_RECEIPT_CHANGED')
+        # This CPU-only reader verifies every actual execution segment and
+        # restored worker/driver receipt. Retired ancestor tensor paths are not
+        # read and never become unlink targets in this maintenance process.
+        from reproduction.easy2560_joint4.checkpoint_evidence import authenticated_restore_chain
+        chain = authenticated_restore_chain(base, run)
+        require(chain is not None and chain['boundary'] == restoration['completed_outer'],
+                'RESTORED_PREFIX_BOUNDARY_DIFFERS')
+        parent_record, _ = read_file(origin_path, 'logs/run-manifest.json', parse_json=True)
+        bindings = [dict(record, path=str(origin_path/record['relative_path']), source_base=str(origin_path))
+                    for record in (receipt_record, parent_record)]
+        return chain['boundary'], bindings
     require(isinstance(restoration, dict) and restoration.get('kind') == 'easy2560_native4' and
         type(restoration.get('completed_outer')) is int and restoration['completed_outer'] == 5,
         'UNSUPPORTED_RESTORED_PREFIX')

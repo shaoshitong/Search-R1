@@ -68,12 +68,29 @@ class Micro8RestoreTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'SCIENTIFIC_INPUT'):
                 saved.bind(child, fixture.output)
 
-    def test_saved_original_scope_remains_physical16_only(self):
+    def test_saved_receipt_accepts_current_physical8_checkpoint(self):
         with tempfile.TemporaryDirectory() as td:
             fixture = Fixture(td); fixture.run['actor_micro_batch_per_rank'] = 8
             write(fixture.base/'logs/run-manifest.json', fixture.run)
-            with self.assertRaisesRegex(ValueError, 'EXACT_NATIVE4_EASY_SCOPE'):
-                fixture.create()
+            fixture.create()
+            _, receipt, _, _, parent = saved.source(fixture.output)
+            self.assertEqual(parent['actor_micro_batch_per_rank'], 8)
+            self.assertEqual(receipt['world_size'], 4)
+
+    def test_optimizer_construction_keeps_actual_arbitrary_resume_counter(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td).resolve(); (root/'logs').mkdir()
+            receipt = root/'receipt.json'; receipt.write_text('{}')
+            checkpoint = root/'cp37'
+            binding = dict(kind=saved.KIND, completed_outer=37, source_receipt=str(receipt),
+                           source_receipt_sha256=full_state_restore.digest(receipt))
+            write(root/'logs/run-manifest.json', dict(full_state_restore=binding))
+            config = dict(completed_updates=37, untouched='same')
+            with patch.dict(os.environ, SEARCH_G1_BASE=str(root)), patch.object(
+                    full_state_restore, 'source', return_value=(receipt,dict(step=37),checkpoint,root,{})):
+                constructed = full_state_restore.optimizer_construction_config(config, checkpoint)
+            self.assertEqual(config['completed_updates'], 37)
+            self.assertEqual(constructed, dict(completed_updates=0, untouched='same'))
 
     def test_training_constructor_accepts_global_micro32_with_mini128(self):
         with tempfile.TemporaryDirectory() as td:

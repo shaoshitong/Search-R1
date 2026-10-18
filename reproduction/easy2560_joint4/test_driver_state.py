@@ -89,6 +89,27 @@ class DriverTests(unittest.TestCase):
         self.assertEqual(expected[2], random.random())
         self.assertEqual(target.val_reward_fn.expected_probe_version, saved['probe_version'])
 
+    def test_post_refit_boundary_restores_adopted_probe_and_exact_next_draws(self):
+        trainer = trainer_fixture(step=50); run = run_fixture()
+        live = self.live(version='easy-cpu-fixture:50:adopted', round=50)
+        trainer.reward_fn.expected_probe_version = live['version']
+        # QA/refit has already consumed randomness before this saved boundary.
+        torch.rand(5); np.random.rand(5); random.random()
+        saved = capture_easy2560_driver(trainer, run, live_probe=live, callbacks_complete=True)
+        self.assertFalse(saved['reward_refresh_pending'])
+        self.assertTrue(saved['callbacks_complete'])
+        expected = (torch.rand(7), np.random.rand(7), random.random())
+        torch.rand(11); np.random.rand(11); random.random()
+        target = trainer_fixture(step=50); target.reward_fn.expected_probe_version = None
+        proof = restore_easy2560_driver(target, saved, run,
+            source_run_id=run['run_id'], live_probe=live,
+            stream_factory=lambda loader, restored_state: Stream(restored_state))
+        self.assertFalse(proof['reward_refresh_pending'])
+        self.assertEqual(proof['actual_probe_round'], 50)
+        self.assertTrue(torch.equal(expected[0], torch.rand(7)))
+        self.assertTrue(np.array_equal(expected[1], np.random.rand(7)))
+        self.assertEqual(expected[2], random.random())
+
     def test_restore_rejects_head_foreign_scope_or_live_version_before_rng_mutation(self):
         run = run_fixture(); saved = capture_easy2560_driver(trainer_fixture(), run, live_probe=self.live())
         for kind in ('head', 'logical', 'mode', 'version', 'round'):

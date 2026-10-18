@@ -211,7 +211,9 @@ def evaluations(base, run, load_canonical=canonical, chain=None):
         from reproduction.easy2560_joint4.checkpoint_evidence import digest as history_digest
         raw = chain['historical']['logs/formal-inline-development-after.json']
         after = decode(raw)
-        after_record = dict(path=str(chain['source_base']/'logs/formal-inline-development-after.json'),
+        from reproduction.easy2560_joint4.checkpoint_evidence import historical_origin
+        qa_base, _, _ = historical_origin(chain, outer=5)
+        after_record = dict(path=str(qa_base/'logs/formal-inline-development-after.json'),
                             bytes=len(raw), sha256=history_digest(raw), authenticated_historical=True)
     else:
         after, after_record = small(base/'logs/formal-inline-development-after.json')
@@ -239,13 +241,15 @@ def attempt_id(row):
 
 
 def no201(base, run, chain=None):
+    from reproduction.easy2560_joint4.checkpoint_evidence import historical_origin
     current_updates = list(lines(base/'logs/actual-updates.jsonl'))
     if run.get('full_state_restore'):
         binding = run['full_state_restore']
-        need(isinstance(binding, dict) and binding.get('kind') == 'easy2560_native4',
+        need(isinstance(binding, dict) and binding.get('kind') == 'easy2560_native4' and
+             type(binding.get('completed_outer')) is int and 1 <= binding['completed_outer'] < 200,
              'CROSS_JOB_AUTHENTICATED_CHAIN_NOT_IMPLEMENTED')
         # Still fail on missing200 before archive/evaluation/source-proofs work.
-        need([r.get('step') for r in current_updates] == list(range(6, 201)),
+        need([r.get('step') for r in current_updates] == list(range(binding['completed_outer']+1, 201)),
              'MISSING200_OR_EXTRA_COMPLETED_UPDATE')
         if chain is None:
             chain = restore_chain(base, run)
@@ -261,7 +265,7 @@ def no201(base, run, chain=None):
     need(allocation.get('accepted') is True and allocation.get('run_id') == run['run_id'], 'NATIVE_ALLOCATION_IDENTITY_DIFFERS')
     job = allocation['slurm_job_id']
     for row in attempts:
-        expected_job = chain['source_job'] if chain and attempt_id(row)[0] <= chain['cutoff_attempt'] else job
+        expected_job = historical_origin(chain, attempt_index=attempt_id(row)[0])[2] if chain and attempt_id(row)[0] <= chain['cutoff_attempt'] else job
         need(row.get('run_id') == run['run_id'] and row.get('slurm_job_id') == expected_job and
              row.get('all_ranks_agreed') is True and type(row.get('real_rank_count')) is int and
              row['real_rank_count'] == 4 and row.get('logical_update') == completed+1 and
@@ -311,7 +315,7 @@ def no201(base, run, chain=None):
                      context.get('logical_update') == attempts[index-1]['logical_update'] <= 200,
                      'FOREIGN_EXTRA_OR_POST200_RANK_ATTEMPT')
                 if role == 'scheduler':
-                    expected_job = chain['source_job'] if chain and index <= chain['cutoff_attempt'] else job
+                    expected_job = historical_origin(chain, attempt_index=index)[2] if chain and index <= chain['cutoff_attempt'] else job
                     need(row.get('world_size') == 4 and row.get('slurm_job_id') == expected_job, 'SCHEDULER_NATIVE4_IDENTITY_DIFFERS')
                 else:
                     need(row.get('kind') in ('POLICY_MONITOR', 'OPTIMIZER_WRITE', 'OPPORTUNITY',
@@ -355,7 +359,7 @@ def selection_evidence(base, run, chain=None):
     need(allocation.get('accepted') is True and allocation.get('run_id') == run['run_id'] and
          isinstance(job, str) and job, 'SELECTION_CURRENT_ALLOCATION_REQUIRED')
     if chain is not None:
-        need(chain['boundary'] == 5 and chain['current_job'] == job and
+        need(1 <= chain['boundary'] < 200 and chain['current_job'] == job and
              chain['source_run']['run_id'] == run['run_id'], 'SELECTION_RESTORE_CHAIN_DIFFERS')
     # Import after the full200 requirement so an incomplete run cannot cause
     # expensive selected-trace reads, let alone be labelled final acceptance.
@@ -363,16 +367,21 @@ def selection_evidence(base, run, chain=None):
     summaries = []
     for update in updates:
         historical = chain is not None and update['step'] <= chain['boundary']
-        origin = chain['source_base'] if historical else base
-        origin_run = chain['source_run'] if historical else run
-        origin_job = chain['source_job'] if historical else job
+        if historical:
+            from reproduction.easy2560_joint4.checkpoint_evidence import historical_origin
+            origin, origin_run, origin_job = historical_origin(chain, outer=update['step'])
+        else:
+            origin, origin_run, origin_job = base, run, job
         summaries.append(verify_attempt(Path(origin), origin_run, update, expected_job=origin_job))
     segments = []
     if chain is not None:
-        segments.append(dict(first_outer=1, last_outer=5, completed_outers=5,
-            base=str(chain['source_base']), run_id=chain['source_run']['run_id'],
-            source_commit=chain['source_run']['source_commit'], slurm_job_id=chain['source_job']))
-    first = 6 if chain is not None else 1
+        origins = chain.get('segments') or [dict(first_outer=1, last_outer=chain['boundary'],
+            base=chain['source_base'], run=chain['source_run'], job=chain['source_job'])]
+        for origin in origins:
+            segments.append(dict(first_outer=origin['first_outer'], last_outer=origin['last_outer'],
+                completed_outers=origin['last_outer']-origin['first_outer']+1, base=str(origin['base']),
+                run_id=origin['run']['run_id'], source_commit=origin['run']['source_commit'], slurm_job_id=origin['job']))
+    first = chain['boundary']+1 if chain is not None else 1
     segments.append(dict(first_outer=first, last_outer=200, completed_outers=201-first,
         base=str(base), run_id=run['run_id'], source_commit=run['source_commit'], slurm_job_id=job))
     return dict(schema_version=1, status='EASY2560_FULL200_SELECTION_REUSE_EVIDENCE_ACCEPTED',
@@ -392,10 +401,12 @@ def checkpoint_evidence(base, run, step, *, archive_root=None, chain=None, histo
     if chain is not None and step <= chain['boundary']:
         from reproduction.easy2560_joint4.checkpoint_evidence import _historical_rows
         old_update = next(r for r in _historical_rows(chain, 'logs/actual-updates.jsonl') if r['step'] == step)
-        inherited = checkpoint_evidence(chain['source_base'], chain['source_run'], step,
+        from reproduction.easy2560_joint4.checkpoint_evidence import historical_origin
+        origin, origin_run, origin_job = historical_origin(chain, outer=step)
+        inherited = checkpoint_evidence(origin, origin_run, step,
                                         archive_root=archive_root, historical_update=old_update)
-        inherited.update(inherited_original_checkpoint=True, source_base=str(chain['source_base']),
-                         source_commit=chain['source_run']['source_commit'], source_job=chain['source_job'])
+        inherited.update(inherited_original_checkpoint=True, source_base=str(origin),
+                         source_commit=origin_run['source_commit'], source_job=origin_job)
         return inherited
     cp = Path(run['checkpoint_dir'])/'actor'/f'global_step_{step}'
     archive = Path(archive_root)/f'global_step_{step}' if archive_root is not None else None
@@ -481,9 +492,10 @@ def verify_final(base, *, archive_root=None, load_canonical=canonical, training_
     chain = None
     if run.get('full_state_restore'):
         binding = run['full_state_restore']
-        need(isinstance(binding, dict) and binding.get('kind') == 'easy2560_native4',
+        need(isinstance(binding, dict) and binding.get('kind') == 'easy2560_native4' and
+             type(binding.get('completed_outer')) is int and 1 <= binding['completed_outer'] < 200,
              'CROSS_JOB_AUTHENTICATED_CHAIN_NOT_IMPLEMENTED')
-        need([row.get('step') for row in lines(base/'logs/actual-updates.jsonl')] == list(range(6, 201)),
+        need([row.get('step') for row in lines(base/'logs/actual-updates.jsonl')] == list(range(binding['completed_outer']+1, 201)),
              'MISSING200_OR_EXTRA_COMPLETED_UPDATE')
         chain = restore_chain(base, run)
     progress = no201(base, run, chain=chain)
