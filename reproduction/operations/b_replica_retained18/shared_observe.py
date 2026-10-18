@@ -2,7 +2,7 @@
 import datetime,json,time
 from pathlib import Path
 from .control import remote,OUT
-BASE='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp64-h1005-20261019-r2'
+BASE='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp64-h1005-20261019-r3'
 SCRIPT=r'''
 import pathlib,json,time,hashlib
 p=pathlib.Path(BASE)
@@ -40,7 +40,7 @@ def observe():
   code='WHO='+repr(leader)+'\n'+r'''
 import pathlib,json,subprocess,time
 p=pathlib.Path('/proc')/str(WHO['pid']);st=(p/'stat').read_text()if p.exists()else None
-same=bool(st and int(st.rsplit(')',1)[1].split()[19])==WHO['start_ticks'])
+same=bool(st and int(st.rsplit(')',1)[1].split()[19])==WHO['start_ticks']and st.rsplit(')',1)[1].split()[0]!='Z')
 print(json.dumps(dict(observed_unix=time.time(),same_birth=same,stat=st,gpu=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.used,memory.total,utilization.gpu','--format=csv,noheader,nounits'],text=True))))
 '''
   v['actual_node_health']=json.loads(remote(code,OUT/('shared-follow-health-'+str(time.time_ns())+'.json'),target='h100-5',established_controller=True))

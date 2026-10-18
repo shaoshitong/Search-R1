@@ -19,7 +19,10 @@ def main():
  publish(cp,c);receipt=submit(b);print(json.dumps(receipt),flush=True)
  # The service must retain a live main process; detached session IDs alone
  # do not protect grandchildren from systemd cgroup cleanup on main exit.
- while same(receipt['leader']):time.sleep(3)
+ while same(receipt['leader']):
+  finished,_=os.waitpid(receipt['leader']['pid'],os.WNOHANG)
+  if finished:break
+  time.sleep(3)
  if not(b/'complete.json').exists():raise RuntimeError('Native writer exited; preserve actual state and diagnose')
 
 if __name__=='__main__':main()
