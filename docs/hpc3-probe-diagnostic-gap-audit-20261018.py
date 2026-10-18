@@ -27,7 +27,7 @@ for n in (50,60):
   for dataset in ds(qs):
    chosen=[key for key,q in qmap.items() if str(q.get('data_source'))==dataset];ks=[sum(byq[key]) for key in chosen]
    perds[dataset]=dict(questions=len(chosen),K_hist=dict(collections.Counter(ks)),mixed_fraction=sum(0<k<5 for k in ks)/len(ks),trajectory_em=sum(ks)/(len(ks)*5))
-  report[split]=dict(actor_version=pf['actor_version'],hidden_feature_actor_version=scan['hidden_feature_actor_version'],full_actor_version=full['actor_version'],actor_model_dir=rd(r/'actor-binding.json').get('actor_model_dir'),head_max_tokens=scan['head_max_tokens'],max_policy_prefix_tokens=scan['max_policy_prefix_tokens'],questions=len(qs),data_sources=ds(qs),label_summary=perds,question_length=stat([x['initial_context']['request_length'] for x in index]),policy_length=stat([x['prefix_length'] for x in index]),index_keys=list(index[0]),feature_ranks=dict(collections.Counter(x['feature_rank'] for x in index)),sampling_flags={k:scan.get(k) for k in ['sampling','temperature','top_p','actor_hidden_native','independent_encoder_forward']})
+  report[split]=dict(actor_version=pf['actor_version'],hidden_feature_actor_version=scan['hidden_feature_actor_version'],full_actor_version=full['actor_version'],actor_model_dir=rd(r/'actor-binding.json').get('actor_model_dir'),head_max_tokens=scan['head_max_tokens'],max_policy_prefix_tokens=scan['max_policy_prefix_tokens'],questions=len(qs),source_index_summary=stat([q['source_index'] for q in qs]),source_index_deciles=dict(collections.Counter(int(q['source_index'])//16903 for q in qs)),data_sources=ds(qs),label_summary=perds,question_length=stat([x['initial_context']['request_length'] for x in index]),policy_length=stat([x['prefix_length'] for x in index]),index_keys=list(index[0]),feature_ranks=dict(collections.Counter(x['feature_rank'] for x in index)),sampling_flags={k:scan.get(k) for k in ['sampling','temperature','top_p','actor_hidden_native','independent_encoder_forward']})
  report['qid_overlap']=len(sets['train']&sets['diagnostic'])
  pred={}
  for split in ['train','test']:
@@ -46,6 +46,11 @@ for n in (50,60):
   gb+=-math.log(max(1e-300,q if y else 1-q));tb+=sum(max(t,0)-t*yj+math.log1p(math.exp(-abs(t))) for t,yj in zip(z,ys))/5
   means.append(q)
   perds[source_map[row['qid']]].append((q,y,int(positive==y)))
+ ix_by_tid={r['trajectory_id']:r for r in rows(Path(rd(data/'prefix/complete.json')['scan_path'])/'index.jsonl')}
+ by_capture_bucket=collections.defaultdict(list)
+ for row in score_rows:
+  first=ix_by_tid[row['trajectory_ids'][0]];by_capture_bucket[(first['feature_rank'],first['feature_row']//640)].append(row['q'])
+ report['train_pre_fit_q_by_capture_rank_and_640_row_bucket']={str(k):dict(n=len(v),mean_q=statistics.mean(v)) for k,v in sorted(by_capture_bucket.items())}
  report['pre_fit_candidate_score_recomputed']=dict(mean_q=statistics.mean(means),accuracy=(tp+tn)/len(score_rows),tp=tp,fp=fp,tn=tn,fn=fn,trajectory_bce=tb/len(score_rows),group_bce=gb/len(score_rows),total_loss=(tb+gb)/len(score_rows),dataset={k:dict(mean_q=statistics.mean(r[0] for r in rs),accuracy=statistics.mean(r[2] for r in rs),n=len(rs)) for k,rs in perds.items()})
  seen=set()
  for old in range(10,n,10):
@@ -56,6 +61,19 @@ for n in (50,60):
   prev=b/'probe-refreshes/round-000050/outers/outer-000050/questions.json'
   seen.update(q['qid'] for q in rd(prev)['rows'])
  report['prior_periodic_question_overlap']=dict(prior_unique=len(seen),train_seen=len(sets['train']&seen),diagnostic_seen=len(sets['diagnostic']&seen),scope='retained_P10_full_pool_and_prefix20_refresh; excludes_initial_warmup')
+ conditioned={}
+ for kind,subset in [('seen_prior_P10',[r for r in score_rows if r['qid'] in seen]),('unseen_prior_P10',[r for r in score_rows if r['qid'] not in seen])]:
+  if not subset:continue
+  truth=[int(0<sum(labs[t] for t in r['trajectory_ids'])<5) for r in subset]
+  conditioned[kind]=dict(n=len(subset),mean_q=statistics.mean(r['q'] for r in subset),accuracy=statistics.mean(int((r['q']>=.5)==y) for r,y in zip(subset,truth)),actual_mixed_fraction=statistics.mean(truth))
+ report['pre_fit_conditioned_on_prior_P10']=conditioned
+ for split,r in [('train',data),('diagnostic',diag)]:
+  prefix=rd(r/'prefix/complete.json');full=rd(r/('full-pool' if split=='train' else 'full')/'complete.json');ix=rows(Path(prefix['scan_path'])/'index.jsonl');byid={v['trajectory_id']:v for v in ix};own=rows(full['own_em']['path'])
+  assert len(byid)==len(own) and len(set(v['trajectory_id'] for v in own))==len(own)
+  assert all(v['qid']==byid[v['trajectory_id']]['qid'] and v['prefix_sha256']==byid[v['trajectory_id']]['prefix_sha256'] and v['actor_version']==byid[v['trajectory_id']]['feature_actor_version']==prefix['actor_version'] and v['prefix_scan_sha256']==prefix['scan_sha256'] for v in own)
+  report[split]['all_own_EM_prefix_feature_identities_checked']=len(own)
+ report['sampling_contract_train_equals_diagnostic']=rd(data/'prefix/complete.json')['sampling_contract']==rd(diag/'prefix/complete.json')['sampling_contract']
+ report['interaction_protocol_train_equals_diagnostic']=rd(data/'prefix/complete.json')['interaction_protocol']==rd(diag/'prefix/complete.json')['interaction_protocol']
  out['rounds'][str(n)]=report
 proof=b/'preparation/stopped-joint-000061-v1-full-sha-cpu.json'
 progress=proof.with_name(proof.name+'.progress.json');failure=proof.with_name(proof.name+'.failure.json')
