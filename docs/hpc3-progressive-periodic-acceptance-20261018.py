@@ -31,7 +31,7 @@ def wait(stage):print(json.dumps(dict(status=stage,outer=n)));raise SystemExit(0
 root=b/'outers'/('outer-%06d'%n);joint_path=root/'complete.json'
 if not joint_path.exists():wait('WAITING_FOR_ACTUAL_P10_JOINT')
 proof=b/'preparation'/('progressive-periodic-%06d-actual-next-use.json'%n)
-if proof.exists():print(json.dumps(rd(proof)));raise SystemExit(0)
+if proof.exists():print(json.dumps(dict(report=rd(proof),mirror=dict(path=str(proof),sha256=sha(proof)))));raise SystemExit(0)
 cpu=b/'preparation'/('live-probe-%06d-v1-full-sha-cpu.json'%n)
 if not cpu.exists():wait('WAITING_FOR_FINAL_PROBE_FULL_SHA_CPU_PROOF')
 c=rd(b/'preparation/launch-config.json');j=rd(joint_path);previous=rd(b/'outers'/('outer-%06d'%(n-1))/'complete.json')
@@ -139,6 +139,7 @@ result=dict(status='P10_THREE_EPOCH_CPU_QUALIFIED_AND_NEXT_REAL_NEW_HEAD_ACTOR_U
  probe_rank_update_ledgers=updates,full_pool_questions=2560,full_pool_k_histogram=pool_hist,full_pool_mixed=pool_mixed,
  selected512_k_histogram=selected_hist,selected512_mixed=selected_mixed,probe_data_actor_version=pool['actor_version'],
  actual_next_head_score_sha256=sha(score_path),next_candidate_budget=nb,next_actual_actor_restore_and_writes=next_evidence,
+ next_ledger_scope='observed complete-line snapshots; no next-outer producer-final-SHA claim',
  actual_actor_tensor_cpu_readback_performed=False,full_200_goal_complete=False)
 with proof.open('x') as f:json.dump(result,f,sort_keys=True,indent=2);f.write('\n');f.flush();os.fsync(f.fileno())
 print(json.dumps(dict(report=result,mirror=dict(path=str(proof),sha256=sha(proof)))))
