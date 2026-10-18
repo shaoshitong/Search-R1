@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "goal_status": "ACTIVE_TO200_FINAL_ACCEPTANCE_PENDING",
+  "observed_unix": 1792329121.8785133,
+  "observed_shanghai": "2026-10-18T21:12:01.878513+08:00",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "40389d9b00204a80ba68475fac254f9c",
+  "runtime_source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+  "metadata_operator_commit": "0a49454027d188a84b28509fb49322febb918d97",
+  "live_runtime_modified": false,
+  "receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-grpo-observe-1792329121785797000.json",
+  "receipt_sha256": "fea741843dab9995bb0358b8de8f9ffcbbe9a5095fc500d4e1db134e2c93beb0",
+  "pipeline_leader": {
+    "pid": 3889886,
+    "start_ticks": 639247028,
+    "sid": 3889886,
+    "uid": 0,
+    "state": "S"
+  },
+  "latest_saved": {
+    "outer": 65,
+    "scheduler": 65,
+    "actor_Adam_per_rank": [
+      1300,
+      1300,
+      1300,
+      1300
+    ],
+    "new_Adam_per_rank": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "processed_opportunities": 20,
+    "skipped_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "joint_metadata_sha256": "23959f97d040644b3601ce5b3901e37d14155cfe1f2a615df4ce5d0d1f83653b",
+    "probe": {
+      "actual_adam_steps_per_rank": [
+        50,
+        50,
+        50,
+        50
+      ],
+      "binding_sha256": "c966ac43e2760c0246b1b672b98407cacbeaadd0b96806d533ff91fc1bf4070a",
+      "bytes": 932197340,
+      "completed_outer": 60,
+      "learning_rate": 5e-06,
+      "observed_utc": "2026-10-18T11:42:07.991864+00:00",
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "sha256": "36e6ff360b0641d05e5c9d2a8bcbcb08b9fed51bf8bc53c6f083e307f105e110"
+    },
+    "mixed_floor": {
+      "candidate_questions": 2560,
+      "completed_candidate_questions": 640,
+      "exhausted": false,
+      "extra_native_batches": 1,
+      "final_fraction": 0.30078125,
+      "final_mixed": 154,
+      "initial_fraction": 0.265625,
+      "initial_mixed": 136,
+      "initial_scope_questions": 512,
+      "native_prefix_or_score_regenerated": false,
+      "policy": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "remaining_uncontinued_questions": 1920,
+      "shortfall": 0,
+      "target_mixed": 154,
+      "target_reached": true,
+      "triggered": true,
+      "replacement_count": 18,
+      "replacement_metadata_sha256": "44e5e2db561d64b9a4c8657d0f0d09411cf88b0736a35809e3f942314f12b267"
+    }
+  },
+  "progress_from50": {
+    "complete_new_outers": 15,
+    "saved_actual_actor_Adam_counted_once": 300,
+    "online_probe_Adam_counted_once": 50,
+    "replicas_are_not_summed": true
+  },
+  "progress_since_saved63": {
+    "complete_new_outers": 2,
+    "saved_actual_Adam_delta_counted_once": 40
+  },
+  "inflight66": {
+    "stage": {
+      "checked_unix": 1792329109.4817047,
+      "outer": 66,
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "stage": "outer-000066-prefix"
+    },
+    "prefix_completed_trajectories_per_rank": [
+      null,
+      null,
+      null,
+      null
+    ],
+    "joint_complete": false,
+    "mixed_floor": null,
+    "interpretation": "Prefix stage just began; missing progress markers are unknown, not zero or failure."
+  },
+  "last_probe_evaluation": {
+    "outer": 60,
+    "new_evaluation_in_this_window": false,
+    "unchanged_complete_metadata_sha256": "5ca485c102a34533672abde12cfe6540df76b95d93556dfd61958e37c05ed8dd",
+    "unchanged_metrics_sha256": "dcf9921b7d7795c0afdf4634a7bc7684d3c89b8cd9085ea6b7b0122ca11001d2",
+    "checkpoint_sha256": "36e6ff360b0641d05e5c9d2a8bcbcb08b9fed51bf8bc53c6f083e307f105e110",
+    "original_metric_observed_utc": "2026-10-18T11:42:08.087231+00:00",
+    "last_test_BA_before": 0.5395811395811396,
+    "last_test_BA_after": 0.5386568386568387,
+    "full_pre_post_report": "reproduction/reports/actor50-grpo-mixed30-probe60-progress61-20261018.json"
+  },
+  "interpretation": "Round65 actual Mixed136to154 with128extra originalG5 questions and18nonmixed replacements is sealed after20returnedAdam/0skip. Round66 is not complete. Selected composition is not classifier BA; no new probe evaluation since60.",
+  "latest_milestone_QA": null,
+  "failure": null,
+  "exit": null,
+  "cleanup": null,
+  "pipeline_complete": null,
+  "App_monitor": "PAUSED",
+  "observations_this_normal_window": 1,
+  "normal_read_period_seconds": 1800,
+  "next_normal_read_not_before_unix": 1792330921.8785133,
+  "remaining_scope": "Continue same driver to200 and final51713 acceptance, including natural probe70..190, Prefix40 at100, Top1024 actualEM selection at150, and saved-actor grounding refresh/adopt. Future milestones remain unverified."
+}
