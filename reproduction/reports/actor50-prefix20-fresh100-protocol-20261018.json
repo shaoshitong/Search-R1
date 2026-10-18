@@ -1,0 +1,38 @@
+{
+  "role": "latest_human_prefix20_fullstate_fresh_G5_continuation",
+  "checked_unix": 1792307310.111754,
+  "run_id": "3c91ac3eb68b46459433bd8c6091fec6",
+  "source_epochs": 20,
+  "source_Adam_EMA": 276,
+  "source_checkpoint_sha256": "07252568121a05826ae976acbe6d2058d321825903772f1be4c0e5189a9cbde3",
+  "target_total_epochs": 100,
+  "new_cycles": 40,
+  "new_training_questions": 20480,
+  "excluded_previous_train_questions": 5120,
+  "actor_frozen": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+  "actor_updates": 0,
+  "full_raw_EMA_Adam_4rankRNG_restore": true,
+  "optimizer_reset": false,
+  "EMA_reset": false,
+  "probe_implementation": "Same Q273+policy20/nativeblock35/flattenLinear; same trajectoryBCE+G5mixedBCE1:1; class-balanced wholeG5 oversampling; LR5e-6 and EMA.99 perreturnedAdam",
+  "new_training_data": "Each cycle entirely new512 questions, native20 prefixes and original-same-G5 continuation to true binary strictEM; no old G5 replay or prediction prefilter",
+  "new_feature_source": "All question and20 policy positions captured from actual actor50 native layer27 during sampling;20th token hiddenflush discard21stlookahead; no independent encoder forward",
+  "fixed_probe_test": "Original fixed512 Prefix20 features and original ownG5 labels held unchanged for controlled trend",
+  "native_concurrency": {
+    "max_num_seqs": 128,
+    "max_num_batched_tokens": 4096,
+    "utilization_cap": 0.85,
+    "eager": true,
+    "prefix_cache": false,
+    "chunked_prefill": false
+  },
+  "CPU_checks": [
+    "all new AST",
+    "actual prefix20 retained multi-turn20 coordinates",
+    "21st sampledlookahead discarded",
+    "all native worker routes use Prefix20 implementation"
+  ],
+  "all_large_outputs_remote": true,
+  "App_monitor": "PAUSED",
+  "no_subagents": true
+}
