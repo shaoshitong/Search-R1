@@ -6,24 +6,52 @@ def read(p):return json.loads(Path(p).read_text())
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def need(v,msg):
  if not v:raise ValueError(msg)
-base=Path(PARAMS['base']);n=PARAMS['outer'];root=base/'outers'/('outer-%06d'%n)
-j=read(root/'complete.json');diag=read(root/'diagnostic-complete.json');scan=read(Path(diag['scan_path'])/'scan-complete.json');prefix=read(root/'prefix/scan/scan-complete.json')
-train=read(root/'questions.json')['rows'];test=read(Path(diag['scan_path']).parent.parent/'questions.json')['rows']
-qids={str(x['qid'])for x in train}&{str(x['qid'])for x in test};texts={x['normalized_question_hash']for x in train}&{x['normalized_question_hash']for x in test}
-need(len(train)==2560 and len(test)==512 and not qids and not texts,'Periodic original train/fixed heldout identities differ')
-need(diag['actor_version']==scan['actor_version']==prefix['actor_version'] and diag['training_questions_used']is False,'Paired diagnostic does not use the original same actor')
-need(prefix['actor_hidden_native']is True and prefix['independent_encoder_forward']is False,'Prefix representation is not the actual sampling actor hidden')
-need(prefix['max_policy_prefix_tokens']==scan['max_policy_prefix_tokens']==20,'Current stage prefix differs')
-path=base/'outers'/('outer-%06d'%(n+1))/'probe-score/selection.json';adoption=read(path)
-need(adoption['selection_model_kind']=='ema'and adoption['outcome_labels_used']is False,'Following selection did not use the unlabelled EMA scoring path')
-need(adoption['probe_before_checkpoint_sha256']==j['probe']['sha256'] and adoption['ema_updates']==j['probe']['actual_adam_steps_per_rank'][0],'Following selection does not use the completed periodic probe')
-need(adoption['actor_version']==j['actor']['actor_version'],'Following actual sampling actor differs')
-metrics=j['probe_metrics'];curve=metrics['global_step_loss_curve']
-need(len(curve)==50 and metrics['new_adam_steps_per_rank']==50,'Periodic real update curve incomplete')
-print(json.dumps(dict(role='ORIGINAL_SAME_ACTOR_PERIODIC_PAIR_AND_FOLLOWING_EMA_ADOPTION',outer=n,source_complete_sha256=sha(root/'complete.json'),
- training_questions=len(train),heldout_questions=len(test),qid_overlap=len(qids),normalized_text_overlap=len(texts),
- prefix_tokens=prefix['max_policy_prefix_tokens'],head_max_tokens=prefix['head_max_tokens'],sampling_actor=prefix['actor_version'],
- metric_fields={k:metrics[k]for k in ('learning_rate','ema_rate','group_loss_weight','sampling','before_update','after_update','global_step_loss_curve','train_loop_seconds')},
- probe_adam=j['probe']['actual_adam_steps_per_rank'],actual_following_adoption={k:adoption[k]for k in ('outer','actor_version','selection_model_kind','ema_updates','probe_before_checkpoint_sha256','outcome_labels_used')},
- following_selection_sha256=sha(path),probe_payload_sha_kind='PRODUCER_METADATA_NOT_INDEPENDENT_TENSOR_READBACK',
- model_or_hidden_tensor_loaded=False,full_rollout_or_prediction_copied_to_mac=False,training_modified=False)))
+def stage_prefix(outer):
+ need(51<=outer<=200,'Progressive B observation requires outer51..200')
+ return 20 if outer<=100 else 40 if outer<=150 else 80
+
+def following_probe(j,adoption,n,migration=None):
+ """Bind small producer receipts only; this is not a tensor preservation audit."""
+ need(adoption['outer']==n+1,'Following selection outer differs')
+ need(adoption['selection_model_kind']=='ema'and adoption['outcome_labels_used']is False,'Following selection did not use the unlabelled EMA scoring path')
+ need(adoption['actor_version']==j['actor']['actor_version'],'Following actual sampling actor differs')
+ before=j['probe'];expected=before['sha256']
+ if stage_prefix(n+1)!=stage_prefix(n):
+  need(migration is not None,'Following prefix expansion requires its actual migration receipt')
+  need(migration['before']==before,'Migration is not bound to the completed periodic probe')
+  flags=migration['migration'];after=migration['after']
+  need(flags['old_prefix']==stage_prefix(n)and flags['new_prefix']==stage_prefix(n+1),'Migration prefix stages differ')
+  need(all(flags[k]is False for k in ('block_reset','optimizer_reset','ema_reset','rank_rng_reset'))and flags['new_linear_coordinates_zero']is True,'Migration reports reset state or nonzero new coordinates')
+  for key in ('run_id','completed_outer','actual_adam_steps_per_rank','learning_rate','ema_updates','selection_model_kind'):
+   need(after[key]==before[key],'Migration changed completed probe clock/binding: '+key)
+  need(before['completed_outer']==n and after['sha256']!=before['sha256'],'Expansion must preserve the completed outer and create a distinct payload')
+  expected=after['sha256']
+ else:need(migration is None,'Unexpected migration in an unchanged prefix stage')
+ need(adoption['probe_before_checkpoint_sha256']==expected and adoption['ema_updates']==before['actual_adam_steps_per_rank'][0],'Following selection does not use the completed periodic probe or its bound expansion')
+ return dict(dimension_migration=migration,adopted_payload_sha256=expected,
+             evidence_kind='PRODUCER_RECEIPTS_AND_ACTUAL_SCORE_METADATA_NOT_TENSOR_READBACK')
+
+def observe(params):
+ base=Path(params['base']);n=params['outer'];root=base/'outers'/('outer-%06d'%n)
+ j=read(root/'complete.json');diag=read(root/'diagnostic-complete.json');scan=read(Path(diag['scan_path'])/'scan-complete.json');prefix=read(root/'prefix/scan/scan-complete.json')
+ train=read(root/'questions.json')['rows'];test=read(Path(diag['scan_path']).parent.parent/'questions.json')['rows']
+ qids={str(x['qid'])for x in train}&{str(x['qid'])for x in test};texts={x['normalized_question_hash']for x in train}&{x['normalized_question_hash']for x in test}
+ need(len(train)==2560 and len(test)==512 and not qids and not texts,'Periodic original train/fixed heldout identities differ')
+ need(diag['actor_version']==scan['actor_version']==prefix['actor_version'] and diag['training_questions_used']is False,'Paired diagnostic does not use the original same actor')
+ need(prefix['actor_hidden_native']is True and prefix['independent_encoder_forward']is False,'Prefix representation is not the actual sampling actor hidden')
+ need(prefix['max_policy_prefix_tokens']==scan['max_policy_prefix_tokens']==stage_prefix(n),'Current stage prefix differs')
+ path=base/'outers'/('outer-%06d'%(n+1))/'probe-score/selection.json';adoption=read(path)
+ migration_path=base/'preparation'/('prefix-migration-%d-to-%d-at-%d.json'%(stage_prefix(n),stage_prefix(n+1),n))
+ migration=read(migration_path)if stage_prefix(n)!=stage_prefix(n+1)else None
+ adoption_binding=following_probe(j,adoption,n,migration)
+ metrics=j['probe_metrics'];curve=metrics['global_step_loss_curve']
+ need(len(curve)==50 and metrics['new_adam_steps_per_rank']==50,'Periodic real update curve incomplete')
+ return dict(role='ORIGINAL_SAME_ACTOR_PERIODIC_PAIR_AND_FOLLOWING_EMA_ADOPTION',outer=n,source_complete_sha256=sha(root/'complete.json'),
+  training_questions=len(train),heldout_questions=len(test),qid_overlap=len(qids),normalized_text_overlap=len(texts),
+  prefix_tokens=prefix['max_policy_prefix_tokens'],head_max_tokens=prefix['head_max_tokens'],sampling_actor=prefix['actor_version'],
+  metric_fields={k:metrics[k]for k in ('learning_rate','ema_rate','group_loss_weight','sampling','before_update','after_update','global_step_loss_curve','train_loop_seconds')},
+  probe_adam=j['probe']['actual_adam_steps_per_rank'],actual_following_adoption={k:adoption[k]for k in ('outer','actor_version','selection_model_kind','ema_updates','probe_before_checkpoint_sha256','outcome_labels_used')},
+  following_selection_sha256=sha(path),following_probe_binding=adoption_binding,probe_payload_sha_kind='PRODUCER_METADATA_NOT_INDEPENDENT_TENSOR_READBACK',
+  model_or_hidden_tensor_loaded=False,full_rollout_or_prediction_copied_to_mac=False,training_modified=False)
+
+if 'PARAMS'in globals():print(json.dumps(observe(PARAMS)))
