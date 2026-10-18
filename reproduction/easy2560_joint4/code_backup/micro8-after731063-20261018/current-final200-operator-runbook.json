@@ -1,0 +1,503 @@
+{
+  "schema_version": 1,
+  "status": "BOUND_734689_FINAL200_RUNBOOK_NOT_EXECUTED",
+  "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018",
+  "source_job": "734689",
+  "run_id": "dfe9c94084bb48b2a9bb7b60f9d882da",
+  "training_commit": "4cc07f3103917f5ac6bb81f6b022d454809c1054",
+  "operator_commit": "28e839d3649782598392d2c1424c9aa277d53733",
+  "operator_source_directory": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+  "operator_deployment_evidence": "final-native4-micro8-28e839d-HPC-source-deployment.json",
+  "original_prefix": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018",
+    "source_job": "730226",
+    "training_commit": "8a5bac94b8230a99b81977f5290589e3d3708dfe",
+    "completed_outers": [
+      1,
+      5
+    ],
+    "checkpoint": 5,
+    "source_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro16-after730080-20261018/preparation/native4-recovery5/source-receipt.json",
+    "source_receipt_sha256": "bfe797a9dfd3ddcab94e47283a17f861fe2ec41121134d9a883e57ae4771ca93",
+    "existing_checkpoint5_archive_and_sidecar_preserved": true,
+    "new_checkpoint5_or_new_evaluation5_claimed": false
+  },
+  "current_suffix": {
+    "completed_outers_required": [
+      6,
+      200
+    ],
+    "source_job": "734689",
+    "training_commit": "4cc07f3103917f5ac6bb81f6b022d454809c1054",
+    "failed731063_suffix6_through40_historical_only": true,
+    "partial41_not_stitched": true
+  },
+  "hardware": {
+    "account": "jxu957",
+    "partition": "emergency_acd",
+    "qos": "formal-user",
+    "GPUs": 4,
+    "physical_micro_per_rank": 8,
+    "logical_micro_per_rank": 4,
+    "gradient_accumulation": 4,
+    "global_mini_batch": 128,
+    "all_correct_virtual_zero": false
+  },
+  "import_resolution": "Every CPU invocation pins the complete independent28e839d source before the immutable live4cc repo, checks actual base/job/run/training identity, and never infers GitHEAD. CUDA target uses its own published28e839d repo.",
+  "postprocessing_only": true,
+  "new_training_startup_gates": 0,
+  "live_training_source_modified": false,
+  "milestone_sidecars": {
+    "50": {
+      "execute_only_after": "Actual own full outer50 and accepted full native4 core archive at this boundary; postprocessing only.",
+      "seal": {
+        "argv": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('reproduction.easy2560_joint4.checkpoint_evidence').origin)==code/'reproduction/easy2560_joint4/checkpoint_evidence.py';runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "seal",
+          "--base",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018",
+          "--training-commit",
+          "4cc07f3103917f5ac6bb81f6b022d454809c1054",
+          "--run-id",
+          "dfe9c94084bb48b2a9bb7b60f9d882da",
+          "--source-job",
+          "734689",
+          "--step",
+          "50"
+        ],
+        "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"').origin)==code/'\"'\"'reproduction/easy2560_joint4/checkpoint_evidence.py'\"'\"';runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' seal --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018 --training-commit 4cc07f3103917f5ac6bb81f6b022d454809c1054 --run-id dfe9c94084bb48b2a9bb7b60f9d882da --source-job 734689 --step 50",
+        "execution_host": "HPC3 jxu957",
+        "CPU_only": true,
+        "executed": false
+      },
+      "verify": {
+        "argv": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('reproduction.easy2560_joint4.checkpoint_evidence').origin)==code/'reproduction/easy2560_joint4/checkpoint_evidence.py';runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "verify",
+          "--directory",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-evidence/global_step_50"
+        ],
+        "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"').origin)==code/'\"'\"'reproduction/easy2560_joint4/checkpoint_evidence.py'\"'\"';runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' verify --directory /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-evidence/global_step_50",
+        "execution_host": "HPC3 jxu957",
+        "CPU_only": true,
+        "executed": false
+      },
+      "accepted_core_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-archives/global_step_50/complete.json",
+      "sidecar_archive_transfer_executed": false,
+      "HK_sidecar_transfer": {
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py",
+          "--step",
+          "50",
+          "--execute"
+        ],
+        "shell": "/usr/bin/python3 -B /backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py --step 50 --execute",
+        "dry_run_argv": [
+          "/usr/bin/python3",
+          "-B",
+          "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py",
+          "--step",
+          "50"
+        ],
+        "dry_run_shell": "/usr/bin/python3 -B /backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py --step 50",
+        "execution_host": "HKUST3 xielab3 uid1002",
+        "script_sha256": "1b5d161ad1dd0360977446bc4c212cc63b348a76642c191f42526437cb101f73",
+        "executed": false,
+        "requires_actual_source_seal_and_current_core_archive": true,
+        "requires_verified_HK_script_deployment": true,
+        "credentials": "password JSON via RAM-only stdin; absent from argv/artifacts"
+      }
+    },
+    "100": {
+      "execute_only_after": "Actual own full outer100 and accepted full native4 core archive at this boundary; postprocessing only.",
+      "seal": {
+        "argv": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('reproduction.easy2560_joint4.checkpoint_evidence').origin)==code/'reproduction/easy2560_joint4/checkpoint_evidence.py';runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "seal",
+          "--base",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018",
+          "--training-commit",
+          "4cc07f3103917f5ac6bb81f6b022d454809c1054",
+          "--run-id",
+          "dfe9c94084bb48b2a9bb7b60f9d882da",
+          "--source-job",
+          "734689",
+          "--step",
+          "100"
+        ],
+        "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"').origin)==code/'\"'\"'reproduction/easy2560_joint4/checkpoint_evidence.py'\"'\"';runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' seal --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018 --training-commit 4cc07f3103917f5ac6bb81f6b022d454809c1054 --run-id dfe9c94084bb48b2a9bb7b60f9d882da --source-job 734689 --step 100",
+        "execution_host": "HPC3 jxu957",
+        "CPU_only": true,
+        "executed": false
+      },
+      "verify": {
+        "argv": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('reproduction.easy2560_joint4.checkpoint_evidence').origin)==code/'reproduction/easy2560_joint4/checkpoint_evidence.py';runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "verify",
+          "--directory",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-evidence/global_step_100"
+        ],
+        "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"').origin)==code/'\"'\"'reproduction/easy2560_joint4/checkpoint_evidence.py'\"'\"';runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' verify --directory /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-evidence/global_step_100",
+        "execution_host": "HPC3 jxu957",
+        "CPU_only": true,
+        "executed": false
+      },
+      "accepted_core_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-archives/global_step_100/complete.json",
+      "sidecar_archive_transfer_executed": false,
+      "HK_sidecar_transfer": {
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py",
+          "--step",
+          "100",
+          "--execute"
+        ],
+        "shell": "/usr/bin/python3 -B /backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py --step 100 --execute",
+        "dry_run_argv": [
+          "/usr/bin/python3",
+          "-B",
+          "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py",
+          "--step",
+          "100"
+        ],
+        "dry_run_shell": "/usr/bin/python3 -B /backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py --step 100",
+        "execution_host": "HKUST3 xielab3 uid1002",
+        "script_sha256": "1b5d161ad1dd0360977446bc4c212cc63b348a76642c191f42526437cb101f73",
+        "executed": false,
+        "requires_actual_source_seal_and_current_core_archive": true,
+        "requires_verified_HK_script_deployment": true,
+        "credentials": "password JSON via RAM-only stdin; absent from argv/artifacts"
+      }
+    },
+    "150": {
+      "execute_only_after": "Actual own full outer150 and accepted full native4 core archive at this boundary; postprocessing only.",
+      "seal": {
+        "argv": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('reproduction.easy2560_joint4.checkpoint_evidence').origin)==code/'reproduction/easy2560_joint4/checkpoint_evidence.py';runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "seal",
+          "--base",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018",
+          "--training-commit",
+          "4cc07f3103917f5ac6bb81f6b022d454809c1054",
+          "--run-id",
+          "dfe9c94084bb48b2a9bb7b60f9d882da",
+          "--source-job",
+          "734689",
+          "--step",
+          "150"
+        ],
+        "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"').origin)==code/'\"'\"'reproduction/easy2560_joint4/checkpoint_evidence.py'\"'\"';runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' seal --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018 --training-commit 4cc07f3103917f5ac6bb81f6b022d454809c1054 --run-id dfe9c94084bb48b2a9bb7b60f9d882da --source-job 734689 --step 150",
+        "execution_host": "HPC3 jxu957",
+        "CPU_only": true,
+        "executed": false
+      },
+      "verify": {
+        "argv": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('reproduction.easy2560_joint4.checkpoint_evidence').origin)==code/'reproduction/easy2560_joint4/checkpoint_evidence.py';runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "verify",
+          "--directory",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-evidence/global_step_150"
+        ],
+        "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"').origin)==code/'\"'\"'reproduction/easy2560_joint4/checkpoint_evidence.py'\"'\"';runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' verify --directory /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-evidence/global_step_150",
+        "execution_host": "HPC3 jxu957",
+        "CPU_only": true,
+        "executed": false
+      },
+      "accepted_core_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-archives/global_step_150/complete.json",
+      "sidecar_archive_transfer_executed": false,
+      "HK_sidecar_transfer": {
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py",
+          "--step",
+          "150",
+          "--execute"
+        ],
+        "shell": "/usr/bin/python3 -B /backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py --step 150 --execute",
+        "dry_run_argv": [
+          "/usr/bin/python3",
+          "-B",
+          "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py",
+          "--step",
+          "150"
+        ],
+        "dry_run_shell": "/usr/bin/python3 -B /backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py --step 150",
+        "execution_host": "HKUST3 xielab3 uid1002",
+        "script_sha256": "1b5d161ad1dd0360977446bc4c212cc63b348a76642c191f42526437cb101f73",
+        "executed": false,
+        "requires_actual_source_seal_and_current_core_archive": true,
+        "requires_verified_HK_script_deployment": true,
+        "credentials": "password JSON via RAM-only stdin; absent from argv/artifacts"
+      }
+    },
+    "200": {
+      "execute_only_after": "Actual own full outer200 and accepted full native4 core archive at this boundary; postprocessing only.",
+      "seal": {
+        "argv": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('reproduction.easy2560_joint4.checkpoint_evidence').origin)==code/'reproduction/easy2560_joint4/checkpoint_evidence.py';runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "seal",
+          "--base",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018",
+          "--training-commit",
+          "4cc07f3103917f5ac6bb81f6b022d454809c1054",
+          "--run-id",
+          "dfe9c94084bb48b2a9bb7b60f9d882da",
+          "--source-job",
+          "734689",
+          "--step",
+          "200"
+        ],
+        "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"').origin)==code/'\"'\"'reproduction/easy2560_joint4/checkpoint_evidence.py'\"'\"';runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' seal --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018 --training-commit 4cc07f3103917f5ac6bb81f6b022d454809c1054 --run-id dfe9c94084bb48b2a9bb7b60f9d882da --source-job 734689 --step 200",
+        "execution_host": "HPC3 jxu957",
+        "CPU_only": true,
+        "executed": false
+      },
+      "verify": {
+        "argv": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+          "-B",
+          "-c",
+          "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('reproduction.easy2560_joint4.checkpoint_evidence').origin)==code/'reproduction/easy2560_joint4/checkpoint_evidence.py';runpy.run_module('reproduction.easy2560_joint4.checkpoint_evidence',run_name=\"__main__\")",
+          "verify",
+          "--directory",
+          "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-evidence/global_step_200"
+        ],
+        "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"').origin)==code/'\"'\"'reproduction/easy2560_joint4/checkpoint_evidence.py'\"'\"';runpy.run_module('\"'\"'reproduction.easy2560_joint4.checkpoint_evidence'\"'\"',run_name=\"__main__\")' verify --directory /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-evidence/global_step_200",
+        "execution_host": "HPC3 jxu957",
+        "CPU_only": true,
+        "executed": false
+      },
+      "accepted_core_receipt": "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/checkpoint-archives/global_step_200/complete.json",
+      "sidecar_archive_transfer_executed": false,
+      "HK_sidecar_transfer": {
+        "argv": [
+          "/usr/bin/python3",
+          "-B",
+          "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py",
+          "--step",
+          "200",
+          "--execute"
+        ],
+        "shell": "/usr/bin/python3 -B /backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py --step 200 --execute",
+        "dry_run_argv": [
+          "/usr/bin/python3",
+          "-B",
+          "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py",
+          "--step",
+          "200"
+        ],
+        "dry_run_shell": "/usr/bin/python3 -B /backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py --step 200",
+        "execution_host": "HKUST3 xielab3 uid1002",
+        "script_sha256": "1b5d161ad1dd0360977446bc4c212cc63b348a76642c191f42526437cb101f73",
+        "executed": false,
+        "requires_actual_source_seal_and_current_core_archive": true,
+        "requires_verified_HK_script_deployment": true,
+        "credentials": "password JSON via RAM-only stdin; absent from argv/artifacts"
+      }
+    }
+  },
+  "final200_preconditions": [
+    "Actual current source734689 completes every outer6..200, with authenticated original730226 prefix1..5; no optimizer/update201.",
+    "Actual fixed512 QA at5/50/100/150/200 and ordered native51713, including seven-source macro/weighted EM and F1.",
+    "All five complete native4 core checkpoint archives have accepted fresh source/destination full-SHA receipts; new milestone sidecars sealed and copied by a separately current-job-bound remote transport.",
+    "Do not run these final200 commands during partial training: create_receipt calls the real final CPU consumer and fails on missing200 or missing native51713.",
+    "The new source receipt/report are exclusive-create outputs: inspect an existing output or uncertain result instead of redispatching.",
+    "Before prepare, publish exact operator28e839d full source plus source-publication.json under the distinct restore target source/28e839d and verify all file SHA; that target deployment is not yet performed.",
+    "Before one restore submission, inspect target prepare/execution/submit claims and actual job; a timeout is not terminal and never authorizes a duplicate."
+  ],
+  "source_receipt_create": {
+    "argv": [
+      "env",
+      "CUDA_VISIBLE_DEVICES=",
+      "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+      "-B",
+      "-c",
+      "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('search_g1.easy2560_final_checkpoint').origin)==code/'search_g1/easy2560_final_checkpoint.py';runpy.run_module('search_g1.easy2560_final_checkpoint',run_name=\"__main__\")",
+      "create",
+      "--base",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018",
+      "--checkpoint",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/checkpoints/search-g1-common8/actor/global_step_200",
+      "--output",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/native4-final200-734689/source-receipt.json"
+    ],
+    "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'search_g1.easy2560_final_checkpoint'\"'\"').origin)==code/'\"'\"'search_g1/easy2560_final_checkpoint.py'\"'\"';runpy.run_module('\"'\"'search_g1.easy2560_final_checkpoint'\"'\"',run_name=\"__main__\")' create --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018 --checkpoint /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/checkpoints/search-g1-common8/actor/global_step_200 --output /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/native4-final200-734689/source-receipt.json",
+    "execution_host": "HPC3 jxu957",
+    "CPU_only": true,
+    "executed": false
+  },
+  "restore_target": {
+    "base": "/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018",
+    "source_commit": "28e839d3649782598392d2c1424c9aa277d53733",
+    "source_deployment_performed": false,
+    "source_deployment_required": "/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018/source/28e839d3649782598392d2c1424c9aa277d53733/source-publication.json",
+    "prepare": {
+      "argv": [
+        "env",
+        "CUDA_VISIBLE_DEVICES=",
+        "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+        "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+        "-B",
+        "-c",
+        "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('reproduction.easy2560_joint4.final_restore_only').origin)==code/'reproduction/easy2560_joint4/final_restore_only.py';runpy.run_module('reproduction.easy2560_joint4.final_restore_only',run_name=\"__main__\")",
+        "prepare",
+        "--base",
+        "/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018",
+        "--source-receipt",
+        "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/native4-final200-734689/source-receipt.json",
+        "--commit",
+        "28e839d3649782598392d2c1424c9aa277d53733"
+      ],
+      "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'reproduction.easy2560_joint4.final_restore_only'\"'\"').origin)==code/'\"'\"'reproduction/easy2560_joint4/final_restore_only.py'\"'\"';runpy.run_module('\"'\"'reproduction.easy2560_joint4.final_restore_only'\"'\"',run_name=\"__main__\")' prepare --base /data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018 --source-receipt /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/native4-final200-734689/source-receipt.json --commit 28e839d3649782598392d2c1424c9aa277d53733",
+      "execution_host": "HPC3 jxu957",
+      "CPU_only": true,
+      "executed": false
+    },
+    "submit_once": {
+      "argv": [
+        "sbatch",
+        "--parsable",
+        "--partition=emergency_acd",
+        "--qos=formal-user",
+        "--account=jxu957",
+        "--nodes=1",
+        "--ntasks=1",
+        "--gres=gpu:4",
+        "--cpus-per-task=48",
+        "--mem=512G",
+        "--time=01:00:00",
+        "--export=NONE",
+        "--output=/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018/logs/restore-%j.log",
+        "--error=/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018/logs/restore-%j.log",
+        "/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018/repo/reproduction/easy2560_joint4/final_restore_only.sh",
+        "/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018"
+      ],
+      "shell": "sbatch --parsable --partition=emergency_acd --qos=formal-user --account=jxu957 --nodes=1 --ntasks=1 --gres=gpu:4 --cpus-per-task=48 --mem=512G --time=01:00:00 --export=NONE --output=/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018/logs/restore-%j.log --error=/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018/logs/restore-%j.log /data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018/repo/reproduction/easy2560_joint4/final_restore_only.sh /data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018",
+      "executed": false,
+      "requires_existing_target_preparation": true,
+      "requires_actual_final200_receipt": true,
+      "requires_source_production_GPU_contexts_released": true
+    },
+    "expected_actual_proof": "/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018/logs/final-restore-only-complete.json",
+    "actual_restore_executed": false
+  },
+  "final_cpu_with_actual_restore": {
+    "argv": [
+      "env",
+      "CUDA_VISIBLE_DEVICES=",
+      "QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python",
+      "-B",
+      "-c",
+      "import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='28e839d3649782598392d2c1424c9aa277d53733' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='734689';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('dfe9c94084bb48b2a9bb7b60f9d882da', '4cc07f3103917f5ac6bb81f6b022d454809c1054', 8, 4);assert Path(importlib.util.find_spec('reproduction.easy2560_joint4.final_cpu_acceptance').origin)==code/'reproduction/easy2560_joint4/final_cpu_acceptance.py';runpy.run_module('reproduction.easy2560_joint4.final_cpu_acceptance',run_name=\"__main__\")",
+      "--base",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018",
+      "--training-commit",
+      "4cc07f3103917f5ac6bb81f6b022d454809c1054",
+      "--final-restore-proof",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018/logs/final-restore-only-complete.json",
+      "--output",
+      "/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/final-cpu-acceptance-734689-with-actual-restore.json"
+    ],
+    "shell": "env CUDA_VISIBLE_DEVICES= QPROBE_SOURCE=/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733 /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/env/bin/python -B -c 'import importlib.util,json,runpy,sys;from pathlib import Path;code=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/source/28e839d3649782598392d2c1424c9aa277d53733'\"'\"');sys.path.insert(0,str(code));publication=json.loads((code/\"source-publication.json\").read_text());assert publication[\"source_commit\"]=='\"'\"'28e839d3649782598392d2c1424c9aa277d53733'\"'\"' and publication[\"fresh_source_all_files_sha_verified\"] is True;base=Path('\"'\"'/data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018'\"'\"');run=json.loads((base/\"logs/run-manifest.json\").read_text());assert (base/\"job.id\").read_text().strip()=='\"'\"'734689'\"'\"';assert (run[\"run_id\"],run[\"source_commit\"],run[\"actor_micro_batch_per_rank\"],run[\"training_world_size\"])==('\"'\"'dfe9c94084bb48b2a9bb7b60f9d882da'\"'\"', '\"'\"'4cc07f3103917f5ac6bb81f6b022d454809c1054'\"'\"', 8, 4);assert Path(importlib.util.find_spec('\"'\"'reproduction.easy2560_joint4.final_cpu_acceptance'\"'\"').origin)==code/'\"'\"'reproduction/easy2560_joint4/final_cpu_acceptance.py'\"'\"';runpy.run_module('\"'\"'reproduction.easy2560_joint4.final_cpu_acceptance'\"'\"',run_name=\"__main__\")' --base /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018 --training-commit 4cc07f3103917f5ac6bb81f6b022d454809c1054 --final-restore-proof /data/user/jxu957/experiments/easy2560-corollout-joint4-finalrestore200-after734689-20261018/logs/final-restore-only-complete.json --output /data/user/jxu957/experiments/easy2560-corollout-joint4-micro8-after731063-20261018/preparation/final-cpu-acceptance-734689-with-actual-restore.json",
+    "execution_host": "HPC3 jxu957",
+    "CPU_only": true,
+    "executed": false
+  },
+  "final_cpu_default_not_used": true,
+  "required_training_commit_argv": [
+    "--training-commit",
+    "4cc07f3103917f5ac6bb81f6b022d454809c1054"
+  ],
+  "old_command_policy": {
+    "do_not_replay": [
+      "cpu-acceptance-micro16-exact-command-templates.json",
+      "cpu-acceptance-micro16-bound-run-commands-20261018.json"
+    ],
+    "old_final_operator78_and5799_superseded_by": "28e839d3649782598392d2c1424c9aa277d53733",
+    "invoke_hk_sidecar_once_py": "Historical source730226/8a/0f binding only. Its --step flag does not rebind734689; never use it for the new50/100/150/200 sidecars.",
+    "new734689_sidecar_transfer_command_bound_and_published": false,
+    "new734689_sidecar_transfer_pending": "The independent script/commands are locally bound and CPU tested; commit/push and exact small HK script deployment/SHA verification remain pending. Execute only after the actual boundary source seal and accepted core archive.",
+    "new734689_sidecar_transfer_command_bound_locally": true
+  },
+  "execution_performed": false,
+  "remote_calls_performed": 0,
+  "GPU_allocations_performed": 0,
+  "actual_final200_available_or_accepted": false,
+  "actual_final_restore_accepted": false,
+  "overall_goal_complete": false,
+  "sidecar_transport": {
+    "local_published_member": "reproduction/easy2560_joint4/code_backup/micro8-after731063-20261018/current-sidecar-archive734689.py",
+    "source_sha256": "1b5d161ad1dd0360977446bc4c212cc63b348a76642c191f42526437cb101f73",
+    "source_bytes": 9745,
+    "future_HK_script": "/backup/shaoshitong/easy2560-corollout-hpc3-4gpu-20261017/postprocessing-operators/job-734689/current-sidecar-archive734689.py",
+    "HK_deployment_executed": false,
+    "remote_transfer_executed": false,
+    "execution_host": "HKUST3 xielab3 uid1002",
+    "credential_delivery": "RAM-only JSON stdin through the existing authorized transport; never argv, source, log or file.",
+    "source_verifier_commit": "28e839d3649782598392d2c1424c9aa277d53733",
+    "source_verifier_sha256": "a503352c5113834be34735e3b8e7f8d0d071483d8edd6ebd7ae71ebd40166db9",
+    "SSH_helper_training_commit": "4cc07f3103917f5ac6bb81f6b022d454809c1054",
+    "SSH_helper_SHA256": "3a40d7566ad390792ce1606518790bedfaf30a375c7f727e9ed87e71082fc55d",
+    "behavior": "Default dry-run reads no credential and makes no SSH call. --execute verifies the current suffix sealed source twice, receives only exact listed small files, freshly verifies destination SHA and fsyncs before publication. Existing/partial destinations are inspected, never overwritten. No retry/controller/GPU/train change.",
+    "after_local_commit_and_push": "Deploy these exact small script bytes to future_HK_script and verify the above full SHA before any invocation; do not substitute the old invoke_hk_sidecar_once helper.",
+    "inherited_history_required": true,
+    "original_checkpoint5_preserved": true,
+    "CPU_fixtures": {
+      "module": "reproduction.easy2560_joint4.test_sidecar734689",
+      "tests": 5,
+      "passed": true,
+      "remote_calls": 0
+    }
+  }
+}
