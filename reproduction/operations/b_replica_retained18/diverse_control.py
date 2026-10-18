@@ -114,7 +114,12 @@ else:
     probe_variance=dict(questions=len(score_rows),mean_within_group_probability_variance=statistics.fmean(statistics.pvariance(r['trajectory_probabilities'])for r in score_rows),nonzero_probability_variance_groups=sum(statistics.pvariance(r['trajectory_probabilities'])>0 for r in score_rows))
    prefix_receipt=read(p/'outers'/('outer-%06d'%n)/'prefix/complete.json')
    facts.append({k:v.get(k)for k in ('outer','source_commit','selection_metrics','iteration_wall','phase_timings')}|dict(actor=v['actor']['actual_adam_steps_per_rank'],probe=v['probe']['actual_adam_steps_per_rank'],direct_rank_evidence=rank_evidence,probe_variance=probe_variance,prefix_counts={k:prefix_receipt.get(k)for k in ('questions','trajectories','prefix_candidates_generated','prefixes_discarded','discarded_probe_evaluations')}))
- print(json.dumps(dict(observed_unix=time.time(),source_commit=read(p/'preparation/launch-config.json')['source_commit'],stage=stage,
+ active_actor=[]
+ for f in (p/'actor/outers').glob('outer-%04d-attempt-*/rank-*-updates.jsonl'%outer):
+  records=[json.loads(line)for line in f.read_text().splitlines()if line]
+  restore=next((r for r in records if r['event']=='ACTUAL_RESTORE'),None);writes=[r for r in records if r['event']=='ACTUAL_ADAM_WRITE']
+  active_actor.append(dict(path=str(f.relative_to(p)),rank=restore['rank']if restore else None,restore={k:restore.get(k)for k in ('restored_completed_outer','actual_adam_before','restored_scheduler','actual_model_master_dtypes','actual_learning_rates')}if restore else None,writes=len(writes),opportunities=sum(r['event']=='OPPORTUNITY'for r in records),last_adam=writes[-1]['actual_adam_steps']if writes else None,last_event=records[-1]['event']if records else None))
+ print(json.dumps(dict(active_actor=active_actor,observed_unix=time.time(),source_commit=read(p/'preparation/launch-config.json')['source_commit'],stage=stage,
   joint_outer=(j or{}).get('outer'),facts=facts,progress=progress,logs=logs,import_files=ranks,
   importer=birth('import-worker-receipt.json'),import_terminal=read(p/'preparation/import-worker-terminal.json'),import_finalizer=read(p/'preparation/import-finalizer-terminal.json'),
   training=birth('submit-receipt.json'),cleanup=read(p/'logs/cleanup-status.json'),complete=read(p/'complete.json'))))
