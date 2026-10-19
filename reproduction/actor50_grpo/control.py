@@ -247,7 +247,7 @@ else:
  def recent_complete_projection():
   result=[]
   if joint:
-   for ordinal in range(max(51,joint['outer']-4),joint['outer']+1):
+   for ordinal in range(joint['outer'],max(51,joint['outer']-4)-1,-1):
     recent_path=b/'outers'/('outer-%06d'%ordinal)/'complete.json'
     if not recent_path.is_file():
      result.append(dict(outer=ordinal,metadata_status='MISSING'));continue
@@ -271,7 +271,7 @@ else:
      probe_completed_outer=probe.get('completed_outer'),probe_Adam=probe.get('actual_adam_steps_per_rank'),
      rollout_mixed=recent['rollout'].get('actual_selected_mixed_fraction'),
      mixed_floor={k:floor[k] for k in floor_keys if k in floor},replacement_count=len(floor.get('replacements',[]))))
-  return result
+  return sorted(result,key=lambda row:row['outer'])
  value['latest_milestone_QA']=None
  for milestone in (200,150,100):
   if joint and joint['outer']>=milestone:
