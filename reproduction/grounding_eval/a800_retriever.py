@@ -9,6 +9,7 @@ import csv
 import fcntl
 import hashlib
 import importlib.util
+import inspect
 import io
 import json
 import os
@@ -27,6 +28,26 @@ SOURCE_SHA = {
     'search_r1/llm_agent/generation.py': '38785f5f611f35fbaf8911c21c0434d915a83498d6d705c01fe27946129afc4f',
     'reproduction/common8/temporary_cache.py': '94087c2caea98e81c836d179be79d87f6f164f3adfbd6da7931ae90098de55cd',
 }
+
+
+def single_gpu_entrypoint(source):
+    """Adapt only the historical launch guards, never the retrieval computation.
+
+    FAISS may return a plain GpuIndex instead of IndexShards for one GPU. The
+    assigned visible-device count, corpus dimensions and real observation-token
+    parity remain mandatory. Exact text guards fail closed if upstream changes.
+    """
+    edits = {
+        'choices=(2,8)': 'choices=(1,2,8)',
+        'retriever.index.count() != args.gpu_shards':
+            "(retriever.index.count() if hasattr(retriever.index, 'count') else 1) != args.gpu_shards",
+    }
+    for old, new in edits.items():
+        if source.count(old) != 1:
+            raise ValueError('Unexpected historical single-GPU launch guard')
+        source = source.replace(old, new)
+    compile(source, '<grounding-single-gpu-main>', 'exec')
+    return source
 
 
 def sha(path):
@@ -151,12 +172,14 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--source-repo', required=True)
     p.add_argument('--output', required=True)
-    p.add_argument('--gpu-uuids', nargs=2, required=True)
+    p.add_argument('--gpu-uuids', nargs='+', required=True)
     p.add_argument('--tokenizer', required=True)
     p.add_argument('--records', required=True)
     p.add_argument('--data-cache', required=True)
     p.add_argument('--port', type=int, default=19000)
     args = p.parse_args()
+    if len(args.gpu_uuids) not in (1, 2) or len(set(args.gpu_uuids)) != len(args.gpu_uuids):
+        p.error('Assign exactly one or two distinct auxiliary GPU UUIDs')
     out, repo = Path(args.output), Path(args.source_repo)
     out.mkdir(parents=True, exist_ok=True)
     if (out / 'admission.json').exists():
@@ -182,6 +205,16 @@ def main():
     spec = importlib.util.spec_from_file_location('grounding_pinned_retriever',
         repo / 'reproduction/prefix20_online/retriever.py')
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+    if len(args.gpu_uuids) == 1:
+        original_main = inspect.getsource(module.main)
+        adapted_main = single_gpu_entrypoint(original_main)
+        atomic(out / 'single-gpu-launch-adaptation.json', dict(
+            source_sha256=hashlib.sha256(original_main.encode()).hexdigest(),
+            adapted_sha256=hashlib.sha256(adapted_main.encode()).hexdigest(),
+            edits=['allow one assigned auxiliary GPU',
+                   'accept single plain GpuIndex after visible-device count validation'],
+            retrieval_computation_changed=False, parity_required_before_listen=True))
+        exec(compile(adapted_main, '<grounding-single-gpu-main>', 'exec'), module.__dict__)
     original = module.BatchedRequests
     class ParityChecked(original):
         def __init__(self, retriever, **kwargs):
@@ -195,7 +228,7 @@ def main():
         '--encoder', '/data/search-r1/assets/e5-base-v2',
         '--cache', str(out / 'cache'), '--data-cache', args.data_cache,
         '--run-id', run_id, '--port', str(args.port), '--batch-queries', '1024',
-        '--gpu-shards', '2']
+        '--gpu-shards', str(len(args.gpu_uuids))]
     # All held leases remain live until this own service exits.
     try:
         module.main()
