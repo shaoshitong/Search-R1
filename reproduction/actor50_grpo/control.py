@@ -149,8 +149,8 @@ else:
   path=pathlib.Path(path);assert path.is_relative_to(b) and path.resolve()==path and not path.is_symlink()
   if not path.is_file():return None,dict(metadata_status='NOT_YET_RECORDED')
   size=path.stat().st_size
-  if size>256*1024:return None,dict(metadata_status='ABOVE_256KIB_READ_BUDGET',bytes=size)
-  raw=path.read_bytes();assert len(raw)<=256*1024
+  if size>1024**2:return None,dict(metadata_status='ABOVE_1MIB_READ_BUDGET',bytes=size)
+  raw=path.read_bytes();assert len(raw)<=1024**2
   return json.loads(raw),dict(metadata_status='PRESENT',metadata_sha256=hashlib.sha256(raw).hexdigest(),bytes=len(raw))
  def grounding_summary(item):
   keys=('run_id','round','version','source_actor_version','encoder','encoder_sha256','head_sha256',
