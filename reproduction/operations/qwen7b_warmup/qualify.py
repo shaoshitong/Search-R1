@@ -12,6 +12,8 @@ from torch import nn
 from .packed_features import NativeFeatureWriter,FeatureReader,DIM,QMAX,PREFIX,WIDTH
 from .model import Probe
 from .train import balanced_plan
+from .sampling import prefix_record,canonical
+import hashlib
 from .download_model import atomic
 from reproduction.prefix20_group_joint100.loss import joint_loss
 
@@ -80,9 +82,16 @@ def main():
         model.load_state_dict(restored['model']);adam.load_state_dict(restored['adam']);torch.set_rng_state(restored['rng']);step()
         assert all(torch.equal(v,uninterrupted['model'][k]) for k,v in model.state_dict().items())
         assert all(torch.equal(v,uninterrupted['adam']['state'][k][name]) for k,s in adam.state_dict()['state'].items() for name,v in s.items())
+        fixture=dict(run_id='fixture',outer=1,actor_version='fixture',trajectory_id='fixture-g0',
+            candidate_ordinal=0,response_index=0,prompt=[1,2],turns=[],terminal=False,terminal_reason=None,
+            action=dict(actual_request_token_ids=[1,2],raw_generated_token_ids=list(range(3,23)),turn_index=0),
+            group=dict(qid='fixture',data_source='fixture',question_hash='0'*64,split='diagnostic'))
+        prefix=prefix_record(fixture);assert prefix['split']=='diagnostic'
+        digest=prefix.pop('prefix_sha256');assert hashlib.sha256(canonical(prefix)).hexdigest()==digest
         report=dict(status='CPU_INVARIANTS_PASSED',lossless_nonidentical_question_features=True,
             short_answer_and_position_gaps=True,prefix5_future15_invariance=True,whole_G5_balance=True,
             unequal_DDP_rank_gradient_matches_global_mean=True,Adam_RNG_next_step_exact=True,
+            diagnostic_split_bound_in_prefix_hash=True,
             feature_layer=26,head_layer=27,layer_indexing='zero_based_model.layers',fit_prefix=5,capture_prefix=20,
             gpu_native_capture_and_four_rank_resume='NOT_YET_TESTED')
         atomic(base/'preparation/cpu-qualification.json',report);print(json.dumps(report),flush=True)
