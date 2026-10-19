@@ -126,7 +126,8 @@ def intervene(docs, golds, key, question=''):
                 for date_match in pattern.finditer(context):
                     if date_match.end()==len(context.rstrip(' .,;')):
                         candidate=date_match.group()[:-len(actual)]+value
-                        if parse_date(candidate):grounded_dates.add(candidate)
+                        parsed_date=parse_date(candidate)
+                        if parsed_date and parsed_date['kind']=='date':grounded_dates.add(candidate)
         parts.append(doc[end:]);modified.append(''.join(parts))
     if not replacements:return dict(status='UNPERTURBABLE',invalid_reason='no_boundary_matched_raw_or_explicit_equivalent_gold')
     # Check every declared original equivalent after the one-pass operation.

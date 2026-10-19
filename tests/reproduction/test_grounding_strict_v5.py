@@ -176,3 +176,11 @@ def test_legal_unit_equivalence_preserves_value():
     assert classify('36 months','3 years old',['42 months'],['36 months'])=='Hall'
     assert classify('36 months','four years old',['42 months'],['36 months'])=='Amb'
     assert classify('20%','21 percent',['21%'],['20%'])=='True'
+
+
+
+def test_person_relation_prefix_is_preserved():
+    r=intervene(['It was written by John Smith.'],['written by John Smith'],1729,'who wrote it')
+    assert r['status']=='READY'
+    assert r['modified_docs'][0].startswith('It was written by ')
+    assert r['replacement_mapping'][0]['injected'].startswith('written by ')

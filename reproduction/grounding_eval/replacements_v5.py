@@ -165,7 +165,9 @@ def parse_alias(raw, question):
     # Names require an explicit person-role question and a multiword proper name.
     # WHO alone is insufficient (countries, teams, organizations also answer WHO).
     if re.search(r'\b(author|wrote|writer|sang|singer|actor|actress|played|president|person|scientist|invented)\b', question, re.I):
-        name = re.sub(r'^(?:written by|by)\s+', '', text, flags=re.I)
+        prefix_match = re.match(r'^(?:written by|by)\s+', text, re.I)
+        prefix = text[:prefix_match.end()] if prefix_match else ''
+        name = text[len(prefix):]
         parts = name.split()
         if 2 <= len(parts) <= 5 and all(re.fullmatch(r"[A-Z][A-Za-z'’-]*\.?", p) for p in parts):
             if any(w.casefold() in ('empire', 'kingdom', 'university', 'astros', 'dodgers', 'states', 'city', 'team') for w in parts):
@@ -174,7 +176,7 @@ def parse_alias(raw, question):
             if middle and any(len(p.rstrip('.')) != 1 for p in middle):
                 return dict(kind='invalid', reason='unresolved_middle_name_identity')
             return dict(kind='person', value=(parts[0].casefold(), parts[-1].casefold()), raw=raw,
-                        first=parts[0], last=parts[-1])
+                        first=parts[0], last=parts[-1], prefix=prefix)
     return dict(kind='invalid', reason='unsupported_or_uncertain_answer_type')
 
 
