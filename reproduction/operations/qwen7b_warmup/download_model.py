@@ -58,7 +58,7 @@ def read_range(opener, url, start, end):
             block=response.read1(min(1024**2,expected-size))
             if not block:break
             data.append(block);size+=len(block)
-        assert size==expected,'Short bounded weight range'
+        if size!=expected:raise OSError('Short bounded weight range; retain contiguous partial and retry')
     return b''.join(data)
 
 
@@ -170,7 +170,7 @@ def main():
                                     last = time.monotonic()
                             handle.flush()
                             os.fsync(handle.fileno())
-                assert partial.stat().st_size == item['size'], 'Short download'
+                if partial.stat().st_size != item['size']:raise OSError('Short download; retain partial and retry')
                 update(name, status='VERIFYING_SHA', bytes=item['size'], total_bytes=item['size'])
                 actual = verify(partial, item)
                 partial.replace(final)
