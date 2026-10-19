@@ -1,5 +1,27 @@
 # Strict NQ grounding (2026-10-19)
 
+## Protocol audit correction — 2026-10-19
+
+Frozen v4 outputs are retained for reproducibility, but their TC/D-Inv are
+**diagnostic, not accepted paper-strict measurements**. Stratified response audits
+found invalid type substitutions/date ranges, EM-normalized aliases corrupting
+numeric type parsing, and missed original/counterfactual semantic aliases. An
+execution `complete` or matching SHA proves successful computation and data
+integrity, not semantic validity of the intervention. Do not put frozen v4 TC in a
+paper main table as an accepted strict result. Normal QA EM and actual token
+accounting are independent of these counterfactual intervention defects.
+
+The separately published official changed-answer replay keeps the existing
+responses/interventions and changes only the classification rule (optionally its
+answer parser). It does not reproduce the official fake pool, prompt, judge model,
+missing-intervention fallback or independent seeds. Label it
+`official-changed-rule-replay-on-v4-responses`, never `official-code-legacy`
+full reproduction. Its classes and outputs remain separate from strict caches.
+A corrected strict implementation must have a new protocol/config/source hash,
+new request IDs and a new output root; v4 runtime and accepted normal traces are
+immutable. The implementation description below documents frozen v4 intent and
+operation, not a new scientific acceptance.
+
 This offline evaluator never imports or changes a trainer. Its normal-input adapter
 must preserve the selected historical checkpoint's normal QA interaction protocol.
 Only the fixed 3,610 NQ occurrences are supplemented when historical full traces
@@ -13,7 +35,7 @@ question and modified actual seen docs, greedy BF16,512 generated tokens,8,192
 context, no new retrieval, strict terminal nonnested answer parsing. Search tokens
 are not suppressed. These choices are not presented as exact author settings.
 
-The accepted v4 intervention stops at `</answer>` and retains that closing tag.
+The frozen v4 intervention stops at `</answer>` and retains that closing tag.
 Replacement aliases include terminal-punctuation variants. Question-guided types
 handle quantities/dates before person cues; unknown-type fallback is marked in the
 record. Exact normalized injected values and explicit aliases determine True;
