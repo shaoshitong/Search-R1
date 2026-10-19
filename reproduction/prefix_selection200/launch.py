@@ -425,7 +425,7 @@ def run(base):
             '--cache', str(base / 'retrieval-cache'), '--run-id', c['run_id'], '--port', str(c['retrieval_port']),
             '--data-cache', c.get('retrieval_data_cache', str(base / 'retrieval-cache')),
             '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', str(shards)] +
-            (['--consistency-questions',c['retrieval_consistency_questions']] if c.get('approved_single_auxiliary') else []),
+            (['--consistency-questions',c['retrieval_consistency_questions'],'--consistency-reference',c['retrieval_consistency_reference']] if c.get('approved_single_auxiliary') else []),
             dict(env, CUDA_VISIBLE_DEVICES=','.join(map(str,c['auxiliary_gpu_indices'])), PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
         await_service('retriever', c['search_url'].replace('/retrieve', '/health'),
             dict(run_id=c['run_id'], gpu_shards=shards,**({'consistency_verified':True} if c.get('approved_single_auxiliary') else {})))

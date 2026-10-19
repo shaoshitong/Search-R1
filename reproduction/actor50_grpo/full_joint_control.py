@@ -74,10 +74,12 @@ if action=='stage':
  if h.get('single_auxiliary'):
   sys.path.insert(0,str(repo))
   from reproduction.actor50_grpo.single_auxiliary import validate as single_auxiliary,GPU4
-  c.update(auxiliary_gpu_indices=[4],auxiliary_gpu_uuids=[GPU4],retrieval_gpu_shards=1,
+  c.update(auxiliary_gpu_indices=[4],auxiliary_gpu_uuids=[GPU4],retrieval_gpu_shards=1,retrieval_logical_shards=2,
+   retrieval_consistency_reference=str(b/'preparation/retrieval-reference.json'),
    retrieval_consistency_questions=c['validation_questions'],approved_single_auxiliary=h['single_auxiliary'],
    reuse_qualified_full_joint=h['reuse_qualified_full_joint'])
   single_auxiliary(c)
+  once(b/'preparation/retrieval-reference.json',h['retrieval_reference'])
   once(b/'preparation/single-auxiliary-human-intent.json',h['single_auxiliary'])
  import socket
  def ports(start,width):
@@ -131,7 +133,7 @@ raw=json.dumps(value,allow_nan=False);assert len(raw.encode())<128*1024;print(ra
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--action',choices=('stage','prepare','submit','inspect'),required=True)
     parser.add_argument('--handle',type=Path,required=True);parser.add_argument('--parent-handle',type=Path)
-    parser.add_argument('--single-auxiliary-intent',type=Path);parser.add_argument('--reuse-qualified-handle',type=Path);parser.add_argument('--reuse-qualified-sha256')
+    parser.add_argument('--single-auxiliary-intent',type=Path);parser.add_argument('--reuse-qualified-handle',type=Path);parser.add_argument('--reuse-qualified-sha256');parser.add_argument('--retrieval-reference',type=Path)
     parser.add_argument('--terminal-path');parser.add_argument('--terminal-sha256');args=parser.parse_args()
     work=Path(__file__).resolve().parents[2];payload=dict(action=args.action)
     if args.action=='stage':
@@ -143,8 +145,9 @@ def main():
             source_files=files,archive_sha256=hashlib.sha256(archive).hexdigest(),parent_handle=parent,
             terminal_path=args.terminal_path,terminal_sha256=args.terminal_sha256,created_unix=time.time())
         if args.single_auxiliary_intent:
-            assert args.reuse_qualified_handle and args.reuse_qualified_sha256
+            assert args.reuse_qualified_handle and args.reuse_qualified_sha256 and args.retrieval_reference
             h['single_auxiliary']=json.loads(args.single_auxiliary_intent.read_text())
+            h['retrieval_reference']=json.loads(args.retrieval_reference.read_text())
             prior=json.loads(args.reuse_qualified_handle.read_text())
             h['reuse_qualified_full_joint']=dict(base=prior['base'],sha256=args.reuse_qualified_sha256)
             h['source_reuse_handle']=prior

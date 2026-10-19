@@ -151,8 +151,10 @@ def main():
     parser.add_argument('--batch-queries', type=int, default=512)
     parser.add_argument('--gpu-shards', type=int, choices=(1,2,8), default=8)
     parser.add_argument('--consistency-questions',help='Fixed512 source for approved single GPU retrieval consistency gate')
+    parser.add_argument('--consistency-reference',help='Retained actual original two-shard Top3 identity proof')
     args = parser.parse_args()
-    if (args.gpu_shards==1) != bool(args.consistency_questions):
+    if ((args.gpu_shards==1) != bool(args.consistency_questions)
+            or (args.gpu_shards==1) != bool(args.consistency_reference)):
         parser.error('Single GPU retrieval requires the explicit consistency gate')
     if args.batch_queries < 1 or not 1 <= args.port <= 65535:
         parser.error('Positive query batch and valid port required')
@@ -180,41 +182,28 @@ def main():
     # DenseRetriever overwrites its CPU Index reference with the cloned GPU
     # IndexShards; do not retain an extra copy of the 64 GB CPU index.
     consistency=None
-    if args.consistency_questions:
-        from reproduction.actor50_grpo.single_auxiliary import consistency_queries,check_retrieval
-        # Keep the unchanged DenseRetriever corpus/encoder; clone its exact CPU
-        # Flat vectors ourselves to bound single-GPU conversion memory.
-        config.faiss_gpu=False
-        retriever=upstream.DenseRetriever(config)
-        cpu_index=retriever.index;retriever.index=None
-        queries,query_info=consistency_queries(args.consistency_questions)
-        embeddings=retriever.encoder.encode(queries)
-        co=faiss.GpuMultipleClonerOptions();co.useFloat16=True;co.shard=True
-        reference=faiss.index_cpu_to_gpus_list(cpu_index,co=co,gpus=[0,0])
-        reference_scores,reference_ids=reference.search(embeddings,3)
-        del reference;gc.collect();torch.cuda.empty_cache()
-        # Do not hold both layouts during CUDA capacity growth. The original
-        # whole-index cloner stages64GB FP32; bounded adds stage<=192MiB.
-        flat=faiss.IndexFlat(cpu_index.d,cpu_index.metric_type)
-        retriever.index=faiss.index_cpu_to_all_gpus(flat,co=co)
-        for offset in range(0,cpu_index.ntotal,65536):
-            retriever.index.add(cpu_index.reconstruct_n(offset,min(65536,cpu_index.ntotal-offset)))
-            publish(cache/'index-load-progress.json',dict(stage='SINGLE_GPU_FP16_ORDERED_BLOCK_ADD',
-                documents=int(retriever.index.ntotal),expected_documents=int(cpu_index.ntotal),block_vectors=65536,checked_unix=time.time()))
-        del cpu_index;gc.collect();torch.cuda.empty_cache()
-        consistency=check_retrieval(retriever,reference_scores,reference_ids,embeddings,query_info)
-        publish(cache/'consistency.json',consistency)
-        del embeddings,reference_scores,reference_ids
-    else:
-        retriever=upstream.DenseRetriever(config)
+    original_clone=faiss.index_cpu_to_all_gpus
+    if args.consistency_reference:
+        # Keep the original two-way FP16 partition/merge layout. Both logical
+        # shards are on visible device0, the one approved physical GPU4.
+        def clone_on_one_physical_gpu(cpu_index,co=None,ngpu=-1):
+            return faiss.index_cpu_to_gpus_list(cpu_index,co=co,gpus=[0,0])
+        faiss.index_cpu_to_all_gpus=clone_on_one_physical_gpu
+    try:retriever=upstream.DenseRetriever(config)
+    finally:faiss.index_cpu_to_all_gpus=original_clone
     gc.collect()
     actual_shards=retriever.index.count() if hasattr(retriever.index,'count') else 1
-    if actual_shards != args.gpu_shards or retriever.index.d != 768:
-        raise ValueError('Original Flat index did not initialize every assigned shard')
+    expected_shards=2 if args.consistency_reference else args.gpu_shards
+    if actual_shards != expected_shards or retriever.index.d != 768:
+        raise ValueError('Original Flat index did not initialize every assigned logical shard')
     if retriever.index.ntotal != len(retriever.corpus):
         raise ValueError('Original index and corpus document counts differ')
+    if args.consistency_reference:
+        from reproduction.actor50_grpo.single_auxiliary import check_retained_layout
+        consistency=check_retained_layout(retriever,json.loads(Path(args.consistency_reference).read_text()),args.consistency_questions)
+        publish(cache/'consistency.json',consistency)
     ready = dict(run_id=args.run_id, pid=os.getpid(), ready=True,
-        gpu_shards=args.gpu_shards, dimension=int(retriever.index.d), documents=int(retriever.index.ntotal),
+        gpu_shards=args.gpu_shards,logical_index_shards=actual_shards, dimension=int(retriever.index.d), documents=int(retriever.index.ntotal),
         index=str(Path(args.index).resolve()), corpus_archive=str(Path(args.corpus).resolve()),
         encoder=str(Path(args.encoder).resolve()), corpus=extraction,
         encoder_dtype='float16', index_dtype='float16', pooling='mean',

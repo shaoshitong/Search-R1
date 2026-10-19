@@ -49,7 +49,7 @@ def prepare_reuse(base,c):
     # Resource, source, ports and own metadata paths may differ; science cannot.
     allowed={'base','execution_id','source_commit','pool_state_path','prefix_probe_receipt',
         'retrieval_port','search_url','grounding_probe_base_port','auxiliary_gpu_indices','auxiliary_gpu_uuids',
-        'retrieval_gpu_shards','approved_single_auxiliary','retrieval_consistency_questions','reuse_qualified_full_joint'}
+        'retrieval_gpu_shards','retrieval_logical_shards','retrieval_consistency_reference','approved_single_auxiliary','retrieval_consistency_questions','reuse_qualified_full_joint'}
     assert {k:v for k,v in oldc.items() if k not in allowed}=={k:v for k,v in c.items() if k not in allowed},'Qualified scientific configuration changed'
     from reproduction.operations.a800_i1_i6_boundary_handoff import owned_present
     parent=Path(c['resume_joint']['source_base']);terminal=read(c['resume_joint']['terminal_path'])
