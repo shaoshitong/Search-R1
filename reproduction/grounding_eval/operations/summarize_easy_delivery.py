@@ -22,13 +22,20 @@ for path in sorted(audit.glob('easy-a800-asset-observation-*.json')):
     observations.append(dict(snapshot=path.name,snapshot_sha256=hashlib.sha256(raw).hexdigest(),
         at=observation['at'],observed_bytes=status['observed_bytes'],attempts=attempts,
         partial_file_sizes={record['name']:record['size'] for record in observation.get('files',[]) if record['name'].endswith('.part')}))
+retry_event_path=audit/'easy-a800-retry-events.json'
+retry_events=json.loads(retry_event_path.read_text()) if retry_event_path.exists() else None
+if retry_events:
+    observed_curl_codes.extend(record['curl_exit'] for event in retry_events['events']
+        for record in event['files'].values() if 'curl_exit' in record)
+minimum_previous=sum(max(0,value-1) for value in maximum_attempts.values())
 upload['_download_recovery_audit']=dict(maximum_observed_attempts=maximum_attempts,
-    minimum_nonzero_previous_attempts=sum(max(0,value-1) for value in maximum_attempts.values()),
+    minimum_nonzero_previous_attempts=minimum_previous,
     observed_curl_exit_codes=observed_curl_codes,
-    prior_exit_code_null_reason='Legacy worker overwrites per-attempt exit codes; an uncaptured code cannot be reconstructed from final status.' if not observed_curl_codes else None,
+    prior_exit_code_null_reason='Legacy worker overwrites per-attempt exit codes; uncaptured earlier codes cannot be reconstructed from final status.' if len(observed_curl_codes)<minimum_previous else None,
     per_connection_max_time_seconds=600,recovery_kept_existing_writer_and_sha_named_partials=True,
     attribution='Bounded600s per-connection HTTP timeout followed by retained-part continuation; not an inference failure.',
-    observations=observations)
+    observations=observations,retry_events=retry_events,
+    retry_event_audit_sha256=hashlib.sha256(retry_event_path.read_bytes()).hexdigest() if retry_events else None)
 remote=r'''
 import pathlib,json,sys,hashlib,time
 upload=json.load(sys.stdin);base=pathlib.Path('/data/shaoshitong/grounding-eval-20261019')
