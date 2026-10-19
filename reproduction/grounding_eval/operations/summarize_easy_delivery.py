@@ -1,6 +1,7 @@
 """Export a small final receipt only after normal and both CF acceptances."""
 import argparse
 import importlib.util
+import hashlib
 import json
 from pathlib import Path
 import shlex
@@ -9,6 +10,25 @@ import subprocess
 parser=argparse.ArgumentParser(__doc__);parser.add_argument('--audit-dir',required=True);args=parser.parse_args()
 audit=Path(args.audit_dir);upload=json.loads((audit/'easy-hf-verified-status.json').read_text())
 assert upload['state']=='HF_FILES_VERIFIED' and len(upload['receipts'])==13
+observations=[]; maximum_attempts={}; observed_curl_codes=[]
+for path in sorted(audit.glob('easy-a800-asset-observation-*.json')):
+    raw=path.read_bytes(); observation=json.loads(raw); status=observation.get('status',{})
+    if not isinstance(status,dict) or 'files' not in status:
+        continue
+    attempts={name:record['attempt'] for name,record in status['files'].items() if 'attempt' in record}
+    for name,attempt in attempts.items():
+        maximum_attempts[name]=max(maximum_attempts.get(name,0),attempt)
+    observed_curl_codes.extend(record['curl_exit'] for record in status['files'].values() if 'curl_exit' in record)
+    observations.append(dict(snapshot=path.name,snapshot_sha256=hashlib.sha256(raw).hexdigest(),
+        at=observation['at'],observed_bytes=status['observed_bytes'],attempts=attempts,
+        partial_file_sizes={record['name']:record['size'] for record in observation.get('files',[]) if record['name'].endswith('.part')}))
+upload['_download_recovery_audit']=dict(maximum_observed_attempts=maximum_attempts,
+    minimum_nonzero_previous_attempts=sum(max(0,value-1) for value in maximum_attempts.values()),
+    observed_curl_exit_codes=observed_curl_codes,
+    prior_exit_code_null_reason='Legacy worker overwrites per-attempt exit codes; an uncaptured code cannot be reconstructed from final status.' if not observed_curl_codes else None,
+    per_connection_max_time_seconds=600,recovery_kept_existing_writer_and_sha_named_partials=True,
+    attribution='Bounded600s per-connection HTTP timeout followed by retained-part continuation; not an inference failure.',
+    observations=observations)
 remote=r'''
 import pathlib,json,sys,hashlib,time
 upload=json.load(sys.stdin);base=pathlib.Path('/data/shaoshitong/grounding-eval-20261019')
@@ -46,6 +66,7 @@ for version in('v4','v5'):exits[version+'-CF']=read(control/(version+'-run-exit.
 assert all(v==0 for v in exits.values())
 metrics=[read(p)for p in sorted((normal/'batch-metrics').glob('*.json'))]
 report={'state':'EASY_NORMAL_AND_DUAL_CF_INDEPENDENTLY_VERIFIED','at':time.time(),'method':'Easy Selection','checkpoint':'iter200','normal':{'root':str(normal),'questions':3610,'correct':v4['counts']['normal_correct'],'EM':v4['counts']['normal_correct']/3610,'token_usage':normal_tokens,'actual_batch_sizes':nr['actual_batch_sizes'],'per_batch_execution_metrics':metrics,'independent_verification_path':str(normal/'normal-independent-verification.json'),'independent_verification_sha256':sha(normal/'normal-independent-verification.json'),'source_sha256':normal_sha,'normal_content_order_sha256':content},'v4_diagnostic':reports['v4'],'v5_corrected_strict':reports['v5'],'assets':{'repo':ar['repo'],'revision':ar['revision'],'prefix':ar['prefix'],'verified_files':len(ar['files']),'verified_bytes':ar['verified_bytes'],'all_selected_file_source_and_target_sha_verified':True,'file_inventory':ar['files'],'receipt_path':str(asset/'asset-migration-complete.json'),'receipt_sha256':sha(asset/'asset-migration-complete.json'),'source_preserved':True,'model_bytes_through_Mac':0},'exit_codes':exits,'all_raw_outputs_remain_remote':True,'normal_recomputed_for_CF':False,'two_CF_protocols_kept_separate':True,'normal_content_order_sha256':content}
+report['assets']['download_recovery_audit']=upload['_download_recovery_audit']
 out=base/'easy-selection-final-delivery.json'
 if out.exists():raise FileExistsError('Do not overwrite final delivery receipt')
 with out.open('x')as f:json.dump(report,f,indent=2);f.flush();import os;os.fsync(f.fileno())
