@@ -1,0 +1,46 @@
+"""Publish original B150 paired metrics and actual151 prefix expansion; no remote action."""
+import hashlib,json,math
+from pathlib import Path
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+source=root/'work/b-progressive-period150-paired-and-151-migration-reward-adoption-20261019T134429340240Z.json'
+envelope=json.loads(source.read_text());assert envelope['rc']==0
+d=json.loads(envelope['stdout'])['periodic'];m=d['metric_fields']
+assert d['outer']==150 and d['training_questions']==2560 and d['heldout_questions']==512
+assert d['qid_overlap']==d['normalized_text_overlap']==0 and d['prefix_tokens']==40
+assert m['learning_rate']==5e-6 and m['ema_rate']==.99 and m['group_loss_weight']==5
+assert d['probe_adam']==[2100]*4 and d['actual_following_adoption']['outer']==151
+assert d['actual_following_adoption']['ema_updates']==2100
+migration=d['following_probe_binding']['dimension_migration']['migration']
+assert migration['old_prefix']==40 and migration['new_prefix']==80
+assert all(migration[k] is False for k in ('block_reset','optimizer_reset','ema_reset','rank_rng_reset'))
+curve=m['global_step_loss_curve'];assert len(curve)==50
+for i,x in enumerate(curve,1):
+ assert x['step']==i and x['actual_adam_steps']==2050+i and x['ema_updates']==2050+i
+ assert math.isclose(x['total_loss'],x['trajectory_bce']+5*x['group_bce'],rel_tol=1e-6,abs_tol=2e-6)
+journal=root/'work/prefix5-ab-h10011-normal-follow-20261019T133536691767Z-actual.json'
+fact=next(x for x in json.loads(journal.read_text())['B']['facts']if x['outer']==150)
+assert sorted(x['rank']for x in fact['probe'])==[0,1,2,3]
+assert all(x['writes']==50 and x['last_actual']==2100 for x in fact['probe'])
+def mean(xs,k):return sum(x[k]*x['global_questions']for x in xs)/sum(x['global_questions']for x in xs)
+windows={name:{k:mean(xs,k)for k in ('trajectory_bce','group_bce','total_loss')}for name,xs in [('first10',curve[:10]),('last10',curve[-10:])]}
+result=dict(d,source_original=str(source),source_original_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),original_probe_journals=fact['probe'],original_journal_observation=str(journal),original_journal_observation_sha256=hashlib.sha256(journal.read_bytes()).hexdigest(),changing_batch_weighted_loss_windows=windows,recorded_phase_timings=fact['phase_timings'],not_QA_EM_or_F1=True)
+out=Path('reproduction/reports/h100-prefix5-ab200-20261018/progressive-period150');out.mkdir(exist_ok=True)
+(out/'PAIRED-METRICS-AND-50-STEP-CURVE.json').write_text(json.dumps(result,indent=2)+'\n')
+t=['# B150 paired probe metrics and actual151 prefix expansion','',
+ 'Original actor149 generated2560 training questionsG5 and the fresh fixed512 heldout questionsG5 using its native40-token hidden/head313. Qid and normalized-question overlaps are zero. Paired before/after metrics use the exact same trajectories and labels; periods use changing actor snapshots and are not a fixed-label learning curve. These classification metrics are not QA EM/F1.','',
+ 'All four original probe journals record50 real Adam writes2050→2100 atLR5e-6, EMA.99, trajectoryBCE+5mixedBCE. Actual151 initial candidate scoring uses actor150 and the migrated EMA150 at80 tokens. The migration binds before/after payloads and preserves the Adam/EMA/RNG clocks without reported resets, with new linear coordinates zero. This is producer-receipt/actual-score binding, not an independent tensor-preservation audit. Later outcome-assisted final512 reranking remains the authorized separate selection stage.','',
+ '| Head / original distribution | Before BA | After BA | Before trajectory BCE | After trajectory BCE | Before mixed BCE | After mixed BCE |','|---|---:|---:|---:|---:|---:|---:|']
+for h,part in [('raw','train'),('raw','test'),('ema','train'),('ema','test')]:
+ a=m['before_update'][h][part];b=m['after_update'][h][part]
+ t.append('| %s / %s | %.4f%% | %.4f%% | %.6f | %.6f | %.6f | %.6f |'%(h,part,100*a['balanced_accuracy'],100*b['balanced_accuracy'],a['trajectory_bce'],b['trajectory_bce'],a['group_bce'],b['group_bce']))
+z=m['after_update']['ema']['test'];train=m['before_update']['raw']['train'];sampling=m['sampling']
+t+=['',
+ 'Heldout BA improves for both heads, but ordinary heldout accuracy falls and mixed BCE worsens for both heads. Trajectory BCE improves. This is not uniform probe generalization improvement; no algorithm, loss, threshold or learning rate was changed.','',
+ 'Post-update EMA heldout:%d/%d actually mixed (%.4f%%), mean predicted q %.4f%%; ordinary accuracy %.4f%% versus majority %.4f%%. Mixed recall %.4f%%, nonmixed recall %.4f%%; TP%d/FN%d/TN%d/FP%d. The predicted mixed probability remains much higher than actual prevalence.'%(z['mixed_count'],z['count'],100*z['mixed_count']/z['count'],100*z['mean_q'],100*z['accuracy'],100*max(z['mixed_count'],z['nonmixed_count'])/z['count'],100*z['mixed_recall'],100*z['nonmixed_recall'],z['tp'],z['fn'],z['tn'],z['fp']),
+ '',
+ 'Original training pool:%dmixed/%dnonmixed. Balanced fitting draws1280+1280 with replacement:%dunique groups, %.4f%% repeated draws. Train evaluation uses all original2560 groups. Selected%d/512 mixed is outcome-assisted periodic selection, not probe classification accuracy.'%(train['mixed_count'],train['nonmixed_count'],sampling['unique_questions'],100*sampling['repeated_fraction'],fact['selection_metrics']['mixed']),
+ '', '| Changing balanced-batch window | Trajectory BCE | Mixed BCE | Weighted total |','|---|---:|---:|---:|']
+for name,v in windows.items():t.append('| %s | %.6f | %.6f | %.6f |'%(name,v['trajectory_bce'],v['group_bce'],v['total_loss']))
+t+=['', 'These are global-question-weighted means over changing batches, not fixed-data loss. All50 scalar steps are retained in the JSON. Probe train loop %.6fs is not whole-outer time; the original recorded training-wall phase is%.6fs, with QA/refit closure separately recorded.'%(m['train_loop_seconds'],fact['phase_timings']['outer-000150-training-wall']), '', 'No weights, hidden, full trajectories or predictions were copied to Mac; no new forward/rollout/GPU test ran. Actual complete151 grounding150 reward use was not yet available at this read. Both200/final51713 and native/resource closure remain incomplete.']
+(out/'README.md').write_text('\n'.join(t)+'\n')
+print(json.dumps(dict(report=str(out),loss_windows=windows)))
