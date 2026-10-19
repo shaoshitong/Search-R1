@@ -108,6 +108,11 @@ def run(args):
     if args.limit: pending=pending[:args.limit]
     if not pending:
         atomic(out/'summary.json',aggregate(prepared,result_rows(out)),replace=True); return
+    gpu_fd=None
+    if args.gpu_uuid:
+        from .normal_a800 import gpu_lease
+        gpu_fd,_=gpu_lease(args.gpu_uuid)
+        os.environ['CUDA_VISIBLE_DEVICES']=args.gpu_uuid
     from transformers import AutoTokenizer
     import torch
     import vllm
@@ -201,6 +206,7 @@ def run(args):
         batch=min(requested_max,batch*2)
     atomic(out/'summary.json',aggregate(prepared,result_rows(out)),replace=True)
     atomic(out/('worker-exit-'+str(os.getpid())+'.json'),dict(exit_code=0,utc=utc(),summary=read(out/'summary.json')))
+    if gpu_fd is not None: os.close(gpu_fd)
 
 def verify(args):
     manifest,prepared=validated(args.manifest); out=Path(manifest['output'])
@@ -226,6 +232,7 @@ def main():
         cmd=sub.add_parser(name);cmd.add_argument('--manifest',required=True)
         if name in ('run','pilot'):
             cmd.add_argument('--max-batch',type=int,default=256);cmd.add_argument('--limit',type=int,default=0)
+            cmd.add_argument('--gpu-uuid',help='A800 physical UUID: acquire the existing task GPU lease before CUDA')
     args=p.parse_args()
     if args.action=='prepare':prepare(args)
     elif args.action in ('run','pilot'):
