@@ -1,0 +1,41 @@
+"""Local publication of existing periodic110 metadata; no training action."""
+import hashlib,json,math
+from pathlib import Path
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+source=root/'work/b-progressive-period110-original-paired-and-111-adoption-20261019T032712972750Z.json'
+e=json.loads(source.read_text());assert e['rc']==0;d=json.loads(e['stdout']);m=d['metric_fields']
+assert d['outer']==110 and d['training_questions']==2560 and d['heldout_questions']==512
+assert d['qid_overlap']==d['normalized_text_overlap']==0 and d['prefix_tokens']==40
+assert m['learning_rate']==5e-6 and m['ema_rate']==.99 and m['group_loss_weight']==5
+curve=m['global_step_loss_curve'];assert len(curve)==50
+for i,row in enumerate(curve,1):
+ assert row['step']==i and row['actual_adam_steps']==1490+i and row['ema_updates']==1490+i
+ assert math.isclose(row['total_loss'],row['trajectory_bce']+5*row['group_bce'],rel_tol=1e-6,abs_tol=2e-6)
+def mean(xs,key):
+ return sum(x[key]*x['global_questions']for x in xs)/sum(x['global_questions']for x in xs)
+summary={label:{k:mean(xs,k)for k in ('trajectory_bce','group_bce','total_loss')}for label,xs in [('first10',curve[:10]),('last10',curve[-10:])]}
+s=json.loads((root/'work/search-g1-prefix5-ab200-state.json').read_text())['B110_periodic_observed']
+assert all(x['writes']==50 and x['last_actual']==1540 for x in s['original_probe_journals'])
+out=Path('reproduction/reports/h100-prefix5-ab200-20261018/progressive-period110');out.mkdir(exist_ok=True)
+result=dict(d,source_original=str(source),source_original_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+ original_probe_journals=s['original_probe_journals'],original_journal_observation=s['source'],original_journal_observation_sha256=s['source_sha256'],
+ changing_batch_weighted_loss_windows=summary,not_QA_EM_or_F1=True)
+(out/'PAIRED-METRICS-AND-50-STEP-CURVE.json').write_text(json.dumps(result,indent=2)+'\n')
+t=['# B110: original paired probe metrics and actual111 adoption','',
+ 'Original actor109 produced this periodic2560-questionG5 pool and fresh fixed512-questionG5 diagnostic set. Both use actual40-token actor hidden (head313); qid and normalized-question overlap are zero. The same trajectories and labels are used before/after updating. These are probe classification/loss metrics, not QA EM/F1.','',
+ 'Raw Adam uses LR5e-6, trajectoryBCE + 5 × mixedBCE, EMA0.99. All four original rank journals recorded50 real writes,1490→1540; each actual write updated EMA. Actual unlabelled selection111 used the bound EMA110 payload and actor110. No model/hidden tensor, complete rollout or full predictions were brought to Mac; no forward, training mutation or new test occurred.','',
+ '| Head / original distribution | Before balanced accuracy | After balanced accuracy | Before trajectory BCE | After trajectory BCE | Before mixed BCE | After mixed BCE |',
+ '|---|---:|---:|---:|---:|---:|---:|']
+for head,name in [('raw','train'),('raw','test'),('ema','train'),('ema','test')]:
+ a=m['before_update'][head][name];b=m['after_update'][head][name]
+ t.append('| %s / %s | %.4f%% | %.4f%% | %.6f | %.6f | %.6f | %.6f |'%(head,name,100*a['balanced_accuracy'],100*b['balanced_accuracy'],a['trajectory_bce'],b['trajectory_bce'],a['group_bce'],b['group_bce']))
+t+=['',
+ 'Training-side raw and EMA balanced accuracy improve, while heldout balanced accuracy decreases in this same-data paired comparison. EMA heldout predicts mixed too often:84/512 are actually mixed (16.40625%), but mean predicted q is68.8613%; post-update mixed recall83.3333%, nonmixed recall23.8318%, FP326/TN102/TP70/FN14. Ordinary accuracy33.59375% is below the always-nonmixed majority baseline83.59375%. This is weak generalization, not evidence of quality success.','',
+ 'The original training pool has322mixed/2238nonmixed. Fitting uses1280+1280 replacement sampling,1271unique groups and50.3515625% repeated draws. Training-side post-update evaluation uses the original2560 groups, not the resampled sequence. Final selected322/512 mixed is outcome-assisted periodic selection, not classifier accuracy.','',
+ '| Actual changing-batch loss window | Trajectory BCE | Mixed BCE | Weighted total |','|---|---:|---:|---:|']
+for label,v in summary.items():t.append('| %s | %.6f | %.6f | %.6f |'%(label,v['trajectory_bce'],v['group_bce'],v['total_loss']))
+t+=['',
+ 'Windows are weighted by actual global question counts and involve different batches; they are not a fixed-data loss curve. The complete50-step record is in the JSON. This periodic round performs exactly50 updates. Its probe update loop is %.6fseconds, which is not whole-outer runtime.'%m['train_loop_seconds'],
+ '', 'Source probe payload SHA is producer metadata only, not an independent tensor hash/reload. Both200-outer goals, later150/200 QA/final51713 and actual exit/resource closure remain incomplete. Healthy training continues unchanged.']
+(out/'README.md').write_text('\n'.join(t)+'\n')
+print(out);print(summary)
