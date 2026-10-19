@@ -10,7 +10,7 @@ Frozen live training sources are A`2e3976230ac9425d66d8553afa9962821e964932` and
 
 ## Proven normal100 / actual101
 
-A100 QA:215/512 EM41.9921875%, F150.28851574%. B100 QA:232/512 EM45.3125%, F154.07598586%, identical canonical512/new BF16 contract, original worker identities/aggregates/all4 exit0 checked. B50 has both original221/512 and recovered220/512 executions with a recorded unresolved execution difference; do not silently choose one.
+A100 QA:215/512 EM 41.9921875%, F1 50.28851574%. B100 QA:232/512 EM 45.3125%, F1 54.07598586%, identical canonical512/new BF16 contract, original worker identities/aggregates/all4 exit0 checked. B50 has both original221/512 and recovered220/512 executions with a recorded unresolved execution difference; do not silently choose one.
 
 Both normal100 source checkpoints already passed independent full-file SHA and actual CPU state reads. A100 actualactor1997/probe0; B100actor2000/probe1400, source prefix20. Never repeat completed large checks or roll back a newer actual complete point to the last audited checkpoint. B100 reward refit used the original300 and all4 replicas adopted100. Actual complete101 subsequently proved20 actor writes→2020,10 raw/EMA writes→1410 and all4 actual reward records using100. Native101 scan contained25600 trajectories, prefix40/head313, actual actor100 hidden, no independent encoder/no labels, and adopted the bound20→40 migration with no recorded reset. Those migration receipts are not an independent tensor-preservation audit.
 
