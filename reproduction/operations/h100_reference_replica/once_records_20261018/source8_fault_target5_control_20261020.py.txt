@@ -1,0 +1,55 @@
+exec(open('/tmp/g1_recover_control.py').read().split("if __name__=='__main__':")[0])
+import base64
+COMMIT=json.loads((w/'prefix5-ab-source8-fault-retained-code-stage.json').read_text())['commit']
+STAGED='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-'+COMMIT
+wrapper=(repo/'reproduction/operations/h100_reference_replica/h1005_retained_paths.sh').read_text();WH=hashlib.sha256(wrapper.encode()).hexdigest()
+
+def target(inner,label,prefix='5',timeout=180):
+ boot='/root/.local/share/search-g1/source8-fault-recovery/'+COMMIT+'/h1005_retained_paths.sh'
+ script='boot='+repr(boot)+';data='+repr(base64.b64encode(wrapper.encode()).decode())+';expected_sha='+repr(WH)+';inner='+repr(inner)+';prefix='+repr(prefix)+';timeout='+str(timeout-10)+'\n'+"""import subprocess,os,hashlib,base64
+from pathlib import Path
+p=Path(boot);raw=base64.b64decode(data)
+p.parent.mkdir(parents=True,exist_ok=True)
+if not p.exists():
+ with p.open('xb')as f:f.write(raw)
+assert hashlib.sha256(p.read_bytes()).hexdigest()==expected_sha
+r=subprocess.run(['unshare','--mount','--propagation','private','bash',str(p),'/dataset/shaoshitong/Search-G1-common8/env/bin/python','-'],input=inner,env=dict(os.environ,CUDA_VISIBLE_DEVICES='',PYTHONDONTWRITEBYTECODE='1',SEARCH_G1_B_PREFIX_TOKENS=prefix),text=True,capture_output=True,timeout=timeout)
+print(r.stdout,end='');print(r.stderr,file=__import__('sys').stderr);raise SystemExit(r.returncode)
+"""
+ p=subprocess.run(ctl().route('h100-5','/usr/bin/python3 -'),input=script,text=True,capture_output=True,timeout=timeout)
+ path=w/('prefix5-ab-fault-target5-'+label+'-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')+'.json');path.write_text(json.dumps(dict(returncode=p.returncode,stdout=p.stdout,stderr=p.stderr),indent=2)+'\n');print(path,flush=True);print(p.stdout[-7000:],flush=True)
+ if p.returncode:raise RuntimeError(p.stderr[-4000:])
+ return json.loads(p.stdout)
+
+if __name__=='__main__':
+ action=sys.argv[1]
+ if action=='preflight':
+  inner='''import socket,json,sys,subprocess,os
+from pathlib import Path
+sys.path.insert(0,STAGED)
+from reproduction.prefix_selection200.source8_fault_recovery import qualified
+out={a:dict(barrier=qualified(s['base'])['status'],latest=json.loads((Path(s['base'])/'latest-joint.json').read_text())['outer'])for a,s in SOURCES.items()}
+print(json.dumps(dict(host=socket.gethostname(),source=out,python=sys.executable,torch=__import__('torch').__version__,gpu=subprocess.run(['nvidia-smi','--query-gpu=index,uuid,memory.total,memory.used','--format=csv,noheader'],text=True,capture_output=True).stdout,source8_mounts=[l for l in Path('/proc/self/mountinfo').read_text().splitlines()if '10.32.0.8:'in l],fixed_identity_read=Path('/mnt/data/shaoshitong/search-g1-prefix5-reference-assets-20261018-model-only/fixed_test_identity_path.json').is_file())))'''.replace('STAGED',repr(STAGED)).replace('SOURCES',repr(sources))
+  v=target(inner,'preflight');(w/'prefix5-ab-source8-fault-target5-preflight.json').write_text(json.dumps(v,indent=2)+'\n')
+ elif action=='prepare':
+  for arm,src in sources.items():
+   dest=src['base']+'-retained-h1005-r1'
+   module='ab_frozen_latest_resume'if arm=='A'else'b_progressive_resume'
+   inner='''import sys,json,csv,io,subprocess
+from pathlib import Path
+sys.path.insert(0,STAGED)
+from reproduction.prefix_selection200.MODULE import prepare_latest
+from reproduction.prefix_selection200.source8_fault_recovery import place_prepared
+b=Path(DEST)
+if b.exists():raise ValueError('Existing target preparation must be reconciled, not replayed')
+r=prepare_latest(SOURCE,str(b),STAGED,COMMIT)
+rows=list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid','--format=csv,noheader,nounits'],text=True))))
+uuids=[r[1].strip()for r in sorted(rows,key=lambda r:int(r[0]))]
+r.update(node='h100-5',placement=place_prepared(b,uuids));r['config_sha256']=r['placement']['config_sha256'];print(json.dumps(r))'''.replace('STAGED',repr(STAGED)).replace('MODULE',module).replace('DEST',repr(dest)).replace('SOURCE',repr(src['base'])).replace('COMMIT',repr(COMMIT))
+   v=target(inner,'prepare-'+arm,prefix='5'if arm=='A'else'80',timeout=240);(w/('prefix5-ab-source8-fault-prepared-'+arm+'.json')).write_text(json.dumps(v,indent=2)+'\n')
+ elif action=='submit':
+  for arm in ([sys.argv[2]]if len(sys.argv)>2 else ['A','B']):
+   prepared=json.loads((w/('prefix5-ab-source8-fault-prepared-'+arm+'.json')).read_text());b=prepared['base']
+   code=(repo/'reproduction/operations/h100_reference_replica/native_wait_supervisor.py').read_text()
+   inner="import sys,json,hashlib,subprocess,os,time\nfrom pathlib import Path\nb=Path(BASE);prep=b/'preparation';path=prep/'native-wait-supervisor.py';raw=CODE.encode();expected=hashlib.sha256(raw).hexdigest()\nif not path.exists():\n with path.open('xb')as f:f.write(raw)\nassert hashlib.sha256(path.read_bytes()).hexdigest()==expected\nintent=prep/'native-wait-supervisor-submit-intent.json'\nreceipt=prep/'native-wait-supervisor-submit-receipt.json'\nif intent.exists():\n print(receipt.read_text()if receipt.exists()else json.dumps(dict(status='EXISTING_INTENT_QUERY_ONLY')))\nelse:\n assert not(prep/'submit-intent.json').exists()\n with intent.open('x')as f:json.dump(dict(base=str(b),created_unix=time.time(),supervisor_sha256=expected),f);f.flush();os.fsync(f.fileno())\n with(prep/'native-wait-supervisor.log').open('xb')as f:p=subprocess.Popen([sys.executable,str(path),'--base',str(b)],stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,start_new_session=True,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))\n sys.path.insert(0,str(b/'repo'))\n from reproduction.a800.owned_processes import identity\n r=dict(status='OWNED_NATIVE_SUPERVISOR_STARTED_NOT_TRAINING_ACCEPTANCE',base=str(b),supervisor=identity(p.pid),source_sha256=expected)\n with receipt.open('x')as f:json.dump(r,f)\n print(json.dumps(r))".replace('BASE',repr(b)).replace('CODE',repr(code))
+   v=target(inner,'submit-'+arm,prefix='5'if arm=='A'else'80',timeout=160);(w/('prefix5-ab-source8-fault-submitted-'+arm+'.json')).write_text(json.dumps(v,indent=2)+'\n')
