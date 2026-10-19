@@ -16,3 +16,5 @@ The repository copy is a publication/backup snapshot of code and audit data; the
 Visual revision: removed the iteration heading and letter-code legend; enlarged direct labels and axes. The light-blue lower-right rectangle is bounded by the exact DynRPO coordinates and means higher measured token cost and lower EM. It does not encode latency. All seven numerical results remain unchanged.
 
 Sketch revision: deeper blue shaded region; seven solid colored marker designs (circle, right triangle, diamond, square, hexagon, downward triangle, star); rough double-stroke axes and leader lines; TOP-D leader explicitly attaches next to the visible label; red bold `More tokens, lower EM!` notice. Numerical measurements unchanged.
+
+Pale-red revision: changed only the dominance-area fill to #F4DCDD at 82% opacity and its sketch boundary to #C99191. Sketch outlines, direct labels, solid multicolor markers, red notice, coordinates and measurements preserved.

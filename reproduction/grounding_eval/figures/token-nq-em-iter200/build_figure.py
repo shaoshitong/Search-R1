@@ -47,7 +47,7 @@ audit = dict(axes=dict(x='Mean cumulative actual input + raw generated tokens pe
         'DynRPO aborts native generation at the first complete action; historical adapters may generate discarded tails. This is a native-implementation usage comparison, not a controlled estimate of policy-only token efficiency.',
         'Original six adapters retained native per-method loops. Retrieval fanout migration: OPSD 8->2 and Easy Selection 8->1; cropped document parity sampled, not full-run original query parity.',
         'Single measurement per model; no run-level variance or invented error bars. Points across algorithms are not connected.'],
-    style='Sketch outlines, large direct method labels, seven dark colors and seven solid marker designs; deeper blue dominance region and bold red exclamation; no legend or iteration heading.',
+    style='Sketch outlines, large direct method labels, seven dark colors and seven solid marker designs; pale red dominance region and bold red exclamation; no legend or iteration heading.',
     dominated_region=dict(reference='DynRPO',x_min=rows[-1]['mean_tokens'],
         y_max=rows[-1]['em_percent'],interpretation='More measured tokens per question and lower NQ EM; not a latency claim.',
         methods=[r['method'] for r in rows if r['mean_tokens']>rows[-1]['mean_tokens'] and r['em_percent']<rows[-1]['em_percent']]))
@@ -93,9 +93,9 @@ Y=lambda y:B-(y-YMIN)/(YMAX-YMIN)*(B-T)
 # DynRPO coordinates. Easy Selection and Soft->Hard are outside this region.
 gx,gy=X(rows[-1]['mean_tokens']),Y(rows[-1]['em_percent'])
 rect('',gx,gy,R-gx,B-gy,
-     'fillColor=#CBDDE8;fillOpacity=87;strokeColor=none;',id='dynrpo-dominated-region')
-line(gx,gy,R,gy,'#7E9FB5',1.25,True,True,id='dominance-horizontal-boundary')
-line(gx,gy,gx,B,'#7E9FB5',1.25,True,True,id='dominance-vertical-boundary')
+     'fillColor=#F4DCDD;fillOpacity=82;strokeColor=none;',id='dynrpo-dominated-region')
+line(gx,gy,R,gy,'#C99191',1.25,True,True,id='dominance-horizontal-boundary')
+line(gx,gy,gx,B,'#C99191',1.25,True,True,id='dominance-vertical-boundary')
 for yy in [28,32,36,40,44,48,50]:
     y=Y(yy)
     if yy>28:line(L,y,R,y,'#E3E8EB',.75,True)
