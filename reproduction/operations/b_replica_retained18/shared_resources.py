@@ -10,9 +10,14 @@ def main():
    p=Path('/proc')/str(who['pid'])
    try:st=(p/'stat').read_text();fields=st.rsplit(')',1)[1].split();alive=int(fields[19])==who['start_ticks']and fields[0]!='Z'
    except OSError:alive=False
-   row=dict(observed_unix=time.time(),leader_same_birth=alive,
-    gpu=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu','--format=csv,noheader,nounits'],text=True),
-    apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader,nounits'],text=True))
+   row=dict(observed_unix=time.time(),leader_same_birth=alive)
+   for key,query in (('gpu','--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu'),('apps','--query-compute-apps=gpu_uuid,pid,used_memory')):
+    try:
+     result=subprocess.run(['nvidia-smi',query,'--format=csv,noheader,nounits'],capture_output=True,text=True,timeout=15)
+     row[key]=result.stdout if result.returncode==0 else None
+     row[key+'_query']=dict(returncode=result.returncode,stdout=result.stdout,stderr=result.stderr,valid=result.returncode==0)
+    except subprocess.TimeoutExpired:
+     row[key]=None;row[key+'_query']=dict(returncode=None,valid=False,error='NVML_QUERY_TIMEOUT')
    out.write(json.dumps(row)+'\n')
    if not alive:return
    time.sleep(5)
