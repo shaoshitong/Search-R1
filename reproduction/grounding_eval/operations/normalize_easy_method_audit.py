@@ -34,6 +34,13 @@ def normalize(path):
         proof = dict(independent_verified=True, acceptance_path=report["acceptance_path"], acceptance_sha256=report["acceptance_sha256"], normal_sha256=report["source_normal_sha256"], manifest_sha256=report["manifest_file_sha256"])
         metrics[name] = dict(values, protocol=protocol, coverage=report["coverage"], CF_tokens=report["cf_tokens"], actual_batch_sizes=report["actual_inference_batch_sizes"], proof=proof)
     row = dict(method="Easy Selection", checkpoint_iteration=200, canonical_question_gold_order_sha256=x["normal_content_order_sha256"], normal=normal, assets=x["assets"], exit_codes=x["exit_codes"], **metrics, evidence_sources=[dict(path=str(path.resolve()), sha256=hashlib.sha256(raw).hexdigest())])
+    # Keep pilot costs and the repaired pre-generation failure visible without
+    # counting them as accepted formal trajectories or masking active failures.
+    row["pilot_execution"] = x["pilot_execution"]
+    row["execution_incidents"] = x["execution_incidents"]
+    prior = row["execution_incidents"]["prior_zero_generation_admission_failure"]
+    assert prior["raw_rows"] == 0 and prior["exit_code"] == 1
+    assert row["pilot_execution"]["separate_from_formal_3610_costs"] is True
     return dict(state="EASY_ACCEPTED_SIXTH_METHOD", methods=[row])
 
 
