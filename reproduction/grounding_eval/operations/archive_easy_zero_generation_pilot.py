@@ -31,6 +31,6 @@ def main():
  out=subprocess.run(cmd,text=True,capture_output=True,timeout=45)
  assert out.returncode==0,out.stderr[-1500:]
  receipt=json.loads(out.stdout.strip().splitlines()[-1])
- Path('outputs/grounding-eval-20261019/easy-pilot-zero-generation-archive.json').write_text(json.dumps(receipt,indent=2))
+ Path('/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/grounding-eval-20261019/easy-pilot-zero-generation-archive.json').write_text(json.dumps(receipt,indent=2))
  print(json.dumps(receipt))
 if __name__=='__main__':main()
