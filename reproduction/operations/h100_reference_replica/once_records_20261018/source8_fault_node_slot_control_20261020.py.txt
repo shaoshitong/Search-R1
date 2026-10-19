@@ -1,0 +1,39 @@
+import sys;sys.path.insert(0,'/tmp');from g1_fault_target import *
+from reproduction.operations.h100_reference_replica.readonly_management_route import lan5_argv
+
+def target_node(inner,label,node='h100-11',prefix='5',timeout=240):
+ raw=(repo/'reproduction/operations/h100_reference_replica/h100_retained_fault_paths.sh').read_bytes();h=hashlib.sha256(raw).hexdigest();boot='/root/.local/share/search-g1/source8-fault-recovery/'+h+'/retained-fault-paths.sh'
+ script='boot='+repr(boot)+';data='+repr(base64.b64encode(raw).decode())+';expected='+repr(h)+';inner='+repr(inner)+';node='+repr(node)+';prefix='+repr(prefix)+';timeout='+str(timeout-10)+'\n'+'''import subprocess,os,hashlib,base64
+from pathlib import Path
+p=Path(boot);p.parent.mkdir(parents=True,exist_ok=True)
+if not p.exists():
+ with p.open('xb')as f:f.write(base64.b64decode(data))
+assert hashlib.sha256(p.read_bytes()).hexdigest()==expected
+r=subprocess.run(['unshare','--mount','--propagation','private','bash',str(p),node,'/dataset/shaoshitong/Search-G1-common8/env/bin/python','-'],input=inner,env=dict(os.environ,CUDA_VISIBLE_DEVICES='',SEARCH_G1_B_PREFIX_TOKENS=prefix,PYTHONDONTWRITEBYTECODE='1'),text=True,capture_output=True,timeout=timeout)
+print(r.stdout,end='');print(r.stderr,file=__import__('sys').stderr);raise SystemExit(r.returncode)
+'''
+ argv=lan5_argv(ctl(),node,'/usr/bin/python3 -')if node=='h100-11'else ctl().route(node,'/usr/bin/python3 -')
+ p=subprocess.run(argv,input=script,text=True,capture_output=True,timeout=timeout);path=w/('prefix5-ab-fault-'+node+'-'+label+'-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')+'.json');path.write_text(json.dumps(dict(returncode=p.returncode,stdout=p.stdout,stderr=p.stderr),indent=2)+'\n');print(path,flush=True);print(p.stdout[-5000:],flush=True)
+ if p.returncode:raise RuntimeError(p.stderr[-4000:])
+ return json.loads(p.stdout)
+
+if __name__=='__main__':
+ action=sys.argv[1];src=auth['sources']['A']['base'];dest=src+'-retained-h10011-cards4-7-r3'
+ if action=='preflight':
+  v=target_node("import subprocess,json,socket;print(json.dumps(dict(node=socket.gethostname(),gpu=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.free,memory.used','--format=csv,noheader'],text=True))))",'preflight');(w/'prefix5-ab-source8-fault-A11-preflight.json').write_text(json.dumps(v,indent=2)+'\n')
+ elif action=='prepare':
+  inner='''import sys,json,subprocess,csv,io
+from pathlib import Path
+sys.path.insert(0,STAGED)
+from reproduction.prefix_selection200.ab_frozen_latest_resume import prepare_latest
+from reproduction.prefix_selection200.source8_fault_recovery import place_prepared
+from reproduction.prefix20_online.launch import read,publish,sha,once
+assert read(Path(FAILED)/'latest-joint.json')==read(Path(SOURCE)/'latest-joint.json')
+assert read(Path(FAILED)/'logs/cleanup-status.json')['owned_births_all_gone']
+assert read(Path(FAILED)/'preparation/native-actual-waitpid-exit.json')['actual_returncode']==1
+assert not list((Path(FAILED)/'actor/outers').glob('outer-0188-attempt-*/rank-*-updates.jsonl'))
+r=prepare_latest(SOURCE,DEST,STAGED,COMMIT)
+uuids=[v[1].strip()for v in csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid','--format=csv,noheader,nounits'],text=True)))]
+r.update(node='h100-11',cards=[4,5,6,7],placement=place_prepared(DEST,uuids,target_node='h100-11',cards=[4,5,6,7],retrieval_port=19410,grounding_port=19420))
+p=Path(DEST)/'preparation/launch-config.json';c=read(p);c['shared_gpu_process_local_profile']=True;publish(p,c);r['config_sha256']=sha(p);print(json.dumps(r))'''.replace('STAGED',repr(STAGED)).replace('SOURCE',repr(src)).replace('DEST',repr(dest)).replace('COMMIT',repr(COMMIT)).replace('FAILED',repr(src+'-retained-h1005-r1'))
+  v=target_node(inner,'prepare-A11-profile-fix');(w/'prefix5-ab-source8-fault-prepared-A-h1005-r2-unsubmitted.json').write_text((w/'prefix5-ab-source8-fault-prepared-A.json').read_text());(w/'prefix5-ab-source8-fault-prepared-A.json').write_text(json.dumps(v,indent=2)+'\n')

@@ -88,9 +88,31 @@ print(json.dumps(result,allow_nan=False))
 '''
 
 
+def read_assigned(ctl,arms,verified):
+    raw={};routes={}
+    for arm,entry in arms.items():
+        node=entry['node'];wrapper=entry['runtime_wrapper_path']
+        if node not in ('h100-5','h100-11')or not wrapper.startswith('/root/.local/share/search-g1/source8-fault-recovery/'):
+            raise ValueError('Use the explicitly retained and bound execution/node wrapper')
+        inner=INNER.replace('__ARMS__',repr({arm:entry})).replace('__VERIFIED__',repr({arm:verified[arm]}))
+        command=['unshare','--mount','--propagation','private','bash',wrapper]
+        if entry.get('runtime_wrapper_node_argument'):command.append(node)
+        command+=['/dataset/shaoshitong/Search-G1-common8/env/bin/python','-c',inner]
+        env=dict(CUDA_VISIBLE_DEVICES='',PYTHONDONTWRITEBYTECODE='1',
+                 **entry.get('required_process_environment',{}))
+        script='import subprocess,os\np=subprocess.run('+repr(command)+',env=dict(os.environ,**'+repr(env)+'),text=True,capture_output=True,timeout=120)\nassert p.returncode==0,p.stderr\nprint(p.stdout)'
+        response,route=run_readonly(ctl,node,'/usr/bin/python3 -',input_text=script,timeout=155,
+            mode='retained18_fallback_lan5'if node=='h100-11'else'retained18')
+        if response.returncode:raise RuntimeError(response.stderr or response.stdout)
+        value=json.loads(response.stdout)
+        if set(value)!={arm}:raise ValueError('Assigned arm observation differs')
+        raw.update(value);routes[arm]=dict(node=node,**route)
+    return raw,dict(per_arm=routes,training_or_global_configuration_changed=False)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--node',choices=('h100-11','h100-5'),default='h100-11')
+    parser.add_argument('--node',choices=('h100-11','h100-5','assigned'),default='h100-11')
     parser.add_argument('--until', type=int, default=50, choices=(50,100,150,200))
     parser.add_argument('--verified', type=int, default=10)
     parser.add_argument('--verified-a',type=int)
@@ -104,7 +126,7 @@ def main():
     lock = (ROOT/'work/prefix5-ab-h10011-normal-boundary-observer.lock').open('a')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     arms = json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())
-    assert set(arms) == {'A','B'} and all(x['node']==args.node for x in arms.values())
+    assert set(arms) == {'A','B'} and all(x['node']in('h100-5','h100-11')and(args.node=='assigned'or x['node']==args.node)for x in arms.values())
     spec = importlib.util.spec_from_file_location('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py')
     ctl = importlib.util.module_from_spec(spec); spec.loader.exec_module(ctl)
     verified = {'A':args.verified if args.verified_a is None else args.verified_a,
@@ -122,10 +144,16 @@ def main():
             'text=True,capture_output=True,timeout=120)\n'
             'assert p.returncode==0,p.stderr\nprint(p.stdout)')
         try:
-            response, transport = run_readonly(ctl,args.node,'/usr/bin/python3 -',
-                input_text=script,timeout=155,mode=args.transport)
-            if response.returncode: raise RuntimeError(response.stderr or response.stdout)
-            raw = json.loads(response.stdout)
+            if args.node=='assigned':
+                fresh=json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())
+                if {a:v['run_id']for a,v in fresh.items()}!={a:v['run_id']for a,v in arms.items()}:
+                    raise ValueError('A placement refresh cannot replace the logical experiments')
+                arms=fresh;raw,transport=read_assigned(ctl,arms,verified)
+            else:
+                response, transport = run_readonly(ctl,args.node,'/usr/bin/python3 -',
+                    input_text=script,timeout=155,mode=args.transport)
+                if response.returncode: raise RuntimeError(response.stderr or response.stdout)
+                raw = json.loads(response.stdout)
             evidence = ROOT/('work/prefix5-ab-'+args.node+'-normal-follow-'+tag+'-actual.json')
             evidence.write_text(json.dumps(raw,indent=2)+'\n')
             compact, attention = {}, []
@@ -141,7 +169,7 @@ def main():
                 original=str(evidence),original_sha256=hashlib.sha256(evidence.read_bytes()).hexdigest(),
                 terminal_attention=attention,training_modified=False,observation_transport=transport)
             value['observation_namespace'] = dict(path_layout=args.path_layout,
-                wrapper=PATH_LAYOUTS[args.path_layout],live_training_changed=False)
+                wrapper=({a:v['runtime_wrapper_path']for a,v in arms.items()}if args.node=='assigned'else PATH_LAYOUTS[args.path_layout]),live_training_changed=False)
             (ROOT/'work/prefix5-ab-latest-compact.json').write_text(json.dumps(value,indent=2)+'\n')
             (ROOT/'work/prefix5-ab-h10011-normal-follow-actual-facts.json').write_text(
                 json.dumps(dict(facts=facts,last_observation=str(evidence)),indent=2)+'\n')
