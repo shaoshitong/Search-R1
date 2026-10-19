@@ -1,0 +1,55 @@
+"""Publish already-read A150 scalar QA, grounding and CPU checkpoint evidence.
+
+No remote action, tensor load, rollout or training edit.
+"""
+import hashlib,json
+from pathlib import Path
+
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+qa_source=root/'work/b-progressive-A150-original-QA-grounding-20261019T064516046923Z.json'
+cp_source=root/'work/prefix5-ab-normal-cp150-status-20261019T064432610488Z.json'
+qa_env=json.loads(qa_source.read_text());assert qa_env['rc']==0
+qa=json.loads(qa_env['stdout'])
+cp_env=json.loads(cp_source.read_text());assert cp_env['returncode']==0
+cp=json.loads(cp_env['stdout'])['A'];proof=cp['result']
+assert qa['arm']=='A' and qa['outer']==proof['outer']==150
+assert qa['run_id']==proof['run_id']=='ca37419b494446398fb15234aa3be91a'
+assert qa['actor_adam']==proof['actor_actual_adam_steps_per_rank']==[2997]*4
+assert qa['probe_adam']==proof['probe_actual_adam_steps_per_rank']==[0]*4
+assert proof['status']=='AB_JOINT_FULL_SHA_CPU_PASS'
+assert proof['actual_cpu_deserialization'] and not proof['gpu_forward_performed']
+assert not proof['independent_backup_performed']
+assert qa['canonical_identity_and_worker_aggregates_checked']
+assert qa['qa']['actual_worker_exit_codes']=={str(i):0 for i in range(4)}
+assert qa['qa']['question_source_sha256']=='3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb'
+assert qa['qa']['qa_count']==512 and qa['qa']['em']*512==211
+assert qa['grounding']['round']==150 and qa['grounding']['calibration_count']==300
+assert qa['grounding']['actual_replica_ranks']==[0,1,2,3]
+assert qa['following_actual']['status']=='NEXT_COMPLETE_ACTOR_NOT_YET_OBSERVED'
+files=proof['files'];assert all(x['independent_full_sha']for x in files)
+result=dict(qa_original=qa,checkpoint_cpu_proof=cp,
+ source_evidence=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest())for p in (qa_source,cp_source)],
+ checkpoint_file_count=len(files),checkpoint_bytes=sum(x['bytes']for x in files),
+ training_runtime_changed=False,actual151_reward_adoption_pending=True,
+ both200_and_final51713_complete=False)
+out=Path('reproduction/reports/h100-prefix5-ab200-20261018/A-normal150');out.mkdir(exist_ok=True)
+(out/'ACTUAL-QA-GROUNDING-CPU-PROOF.json').write_text(json.dumps(result,indent=2)+'\n')
+text='''# A150: actual QA512, reward refit and complete source state
+
+The original frozen-selection A execution reached complete outer150 on h100-11. Its four actual actor journals/state clocks are2997 Adam writes per rank, selection-probe0; three historical skipped opportunities remain excluded. This is not3000 theoretical writes.
+
+| Fixed canonical512 QA | EM | F1 |
+|---|---:|---:|
+| A100 | 215/512 =41.9921875% | 50.2885157377% |
+| A150 | 211/512 =41.2109375% | 49.2313058036% |
+
+A150 answers four fewer questions correctly than A100. Both use the same canonical question identities and shared new BF16 evaluation contract. All four original QA workers exited0 with128 rows each; original receipt SHA, every qid/ordinal/source and worker-score aggregates were checked. This is not final51713 evaluation or evidence of continued quality improvement.
+
+The original300-question grounding calibration was refitted at150 using actor150. The actual boundary/commit head bytes and metadata were checked; all four reward replicas adopted the new150 version. Actual complete actor151 reward use remains pending at this report's observation; adoption alone does not prove that future update.
+
+The existing once CPU proof independently read every sealed source file's full SHA and deserialized actual actor/Adam/RNG/probe/data state. Source proof status isAB_JOINT_FULL_SHA_CPU_PASS. It did not perform GPU inference or create an independent physical backup. No completed hash/load was replayed for this publication. Exact source paths, hashes, per-rank clocks and scalar receipts are in the JSON.
+
+Both original training leaders continued unchanged. Frozen A runtime2e3976230ac9425d66d8553afa9962821e964932 and B runtimec5f1a07e6a9f4ccee35f45ddf69ab4aa3d28e910 are unchanged by this report. Both200/no201, B150, both200/final51713, final retained state and native/resource closure remain incomplete. Models, optimizers, hidden and complete outputs remain remote.
+'''
+(out/'README.md').write_text(text)
+print(json.dumps(dict(report=str(out),files=len(files),bytes=result['checkpoint_bytes'])))

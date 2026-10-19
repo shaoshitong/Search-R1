@@ -1,0 +1,570 @@
+{
+  "qa_original": {
+    "role": "ACTUAL_NORMAL_MILESTONE_QA512_AND_GROUNDING",
+    "arm": "A",
+    "run_id": "ca37419b494446398fb15234aa3be91a",
+    "outer": 150,
+    "actor_version": "ca37419b494446398fb15234aa3be91a-actor0150",
+    "actor_adam": [
+      2997,
+      2997,
+      2997,
+      2997
+    ],
+    "probe_adam": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "qa": {
+      "qa_count": 512,
+      "em": 0.412109375,
+      "f1": 0.4923130580357144,
+      "per_source": {
+        "hotpotqa": {
+          "em": 0.4296875,
+          "f1": 0.4788690476190476,
+          "qa_count": 256
+        },
+        "nq": {
+          "em": 0.39453125,
+          "f1": 0.505757068452381,
+          "qa_count": 256
+        }
+      },
+      "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "actual_worker_exit_codes": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "evaluation_contract": {
+        "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+        "actor_loss_dtype": "float32",
+        "actor_master_dtype": "float32",
+        "answer_reserve_tokens": 500,
+        "asynchronous_generation": true,
+        "compute_dtype": "bfloat16",
+        "early_final": true,
+        "kind": "shared_new_context_stream_bf16",
+        "max_action_tokens": 500,
+        "max_context_tokens": 4096,
+        "max_model_tokens": 4096,
+        "max_observation_tokens": 500,
+        "max_request_tokens": 3596,
+        "max_search_turns": 4,
+        "max_start_tokens": 2048,
+        "n": 1,
+        "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+        "natural_eos": "terminal_without_environment_correction",
+        "observation_truncation": "clip_before_input_preserve_information_wrapper",
+        "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+        "temperature": 0.0,
+        "top_k": -1,
+        "top_p": 1.0,
+        "train_compute_dtype": "bfloat16"
+      },
+      "actual_compute_dtype": "torch.bfloat16"
+    },
+    "qa_complete_sha256": "ed78c9e34dff124f7750f2c2ab0e88a9b6012e43693b6faf334fee9d2ac43330",
+    "original_rank_receipts": [
+      {
+        "rank": 0,
+        "qa_count": 128,
+        "receipt_sha256": "370f037bf98bd8485fec138df16121a0d617078218c10015cf60ab8b31ac5824",
+        "actual_compute_dtype": "torch.bfloat16"
+      },
+      {
+        "rank": 1,
+        "qa_count": 128,
+        "receipt_sha256": "1108c31fa9c4f401b679dd37594e4f91b13230932d863d85f84d585e4d72c0e4",
+        "actual_compute_dtype": "torch.bfloat16"
+      },
+      {
+        "rank": 2,
+        "qa_count": 128,
+        "receipt_sha256": "55034944a3fa362d9b9a5be7ad6e358f8e69a9bced9693695c6c287cc418a8e1",
+        "actual_compute_dtype": "torch.bfloat16"
+      },
+      {
+        "rank": 3,
+        "qa_count": 128,
+        "receipt_sha256": "36f35dbb335a78b270f99326cbc7141d53f3306ffc84b74783092cafe5872fa3",
+        "actual_compute_dtype": "torch.bfloat16"
+      }
+    ],
+    "canonical_identity_and_worker_aggregates_checked": true,
+    "raw_output_shard_hashes_repeated": false,
+    "grounding": {
+      "round": 150,
+      "version": "ca37419b494446398fb15234aa3be91a:150:1d2605f881514d809783e7a683490b8f",
+      "source_actor_version": "ca37419b494446398fb15234aa3be91a-actor0150",
+      "calibration_count": 300,
+      "manifest_sha256": "5a399f9fedb11bb761c0422742e0e347c29a4f02ef0f0462a0af390eefca78e0",
+      "adoption_receipt_sha256": "47817f22bf707eae7c0c0c1c27247666de3045abe625428012589130bed04190",
+      "actual_replica_ranks": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "small_head_actual_sha": [
+        {
+          "role": "boundary",
+          "sha256": "08f8db943f0b6c898a8562e79c16065b93b1122715da889d60afcae0ab66db45",
+          "bytes": 17323
+        },
+        {
+          "role": "commit",
+          "sha256": "5a38d94069b5f49af6b18b70bd911530b2d8629470432d442218e91f913f930d",
+          "bytes": 3203878
+        }
+      ]
+    },
+    "following_actual": {
+      "status": "NEXT_COMPLETE_ACTOR_NOT_YET_OBSERVED",
+      "expected_outer": 151
+    },
+    "no_model_forward_or_new_GPU_test": true,
+    "full_inputs_outputs_stay_remote": true,
+    "training_changed": false
+  },
+  "checkpoint_cpu_proof": {
+    "outer": 150,
+    "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1",
+    "run_id": "ca37419b494446398fb15234aa3be91a",
+    "status": "EXISTING_CPU_PROOF_NO_REPLAY",
+    "proof": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0150-independent-full-sha-cpu.json",
+    "proof_sha256": "5a9fd6a11fe76b9d3dac2abf062ce5f136dd1f07db4c45608ceed0f06241b750",
+    "result": {
+      "actor_actual_adam_steps_per_rank": [
+        2997,
+        2997,
+        2997,
+        2997
+      ],
+      "actor_hf": {
+        "all_finite": true,
+        "canonical_tensor_count": 435,
+        "cpu_safetensors_mmap": true,
+        "forward_performed": false,
+        "fp32_elements": 3397103616
+      },
+      "actor_rank_states": [
+        {
+          "actual_adam_steps": 2997,
+          "adam_states": 37,
+          "file": {
+            "actual_cpu_deserialization": true,
+            "bytes": 6172525484,
+            "cpu_mmap": true,
+            "dev": 59,
+            "independent_full_sha": true,
+            "inode": 140845653,
+            "mtime_ns": 1792391549364306486,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-0.pt",
+            "sha256": "785922313cc689adb8056777e23f3f41ebd15bcfad92029572ea376aa50f9769"
+          },
+          "ledger": {
+            "file": {
+              "bytes": 1789853,
+              "dev": 59,
+              "independent_full_sha": true,
+              "inode": 140845487,
+              "mtime_ns": 1792391526141112861,
+              "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-0-updates.jsonl",
+              "sha256": "3a20105694e821d0b0bbfb14442601a23f79c02e4d9c24c162c29ca1e3223292"
+            },
+            "opportunities": 20,
+            "rank": 0,
+            "returned_writes": 20
+          },
+          "rank": 0,
+          "rng": {
+            "cuda_rng_applied": false,
+            "python_numpy_cpu_torch_state_loaded": true,
+            "saved_cuda_rng_bytes": 16
+          },
+          "scheduler_completed_outer": 150
+        },
+        {
+          "actual_adam_steps": 2997,
+          "adam_states": 37,
+          "file": {
+            "actual_cpu_deserialization": true,
+            "bytes": 6172525548,
+            "cpu_mmap": true,
+            "dev": 59,
+            "independent_full_sha": true,
+            "inode": 140845655,
+            "mtime_ns": 1792391550440269160,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-1.pt",
+            "sha256": "03dea0693894ee7a661325b4876cab96a18f67254e6c00af54c9a2376fa44ee6"
+          },
+          "ledger": {
+            "file": {
+              "bytes": 1789875,
+              "dev": 59,
+              "independent_full_sha": true,
+              "inode": 140845490,
+              "mtime_ns": 1792391526141112861,
+              "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-1-updates.jsonl",
+              "sha256": "7e2ca61f6a6b90a737ee93aa1a1f3ebff6db58625edbe823911fbfd3cd776757"
+            },
+            "opportunities": 20,
+            "rank": 1,
+            "returned_writes": 20
+          },
+          "rank": 1,
+          "rng": {
+            "cuda_rng_applied": false,
+            "python_numpy_cpu_torch_state_loaded": true,
+            "saved_cuda_rng_bytes": 16
+          },
+          "scheduler_completed_outer": 150
+        },
+        {
+          "actual_adam_steps": 2997,
+          "adam_states": 37,
+          "file": {
+            "actual_cpu_deserialization": true,
+            "bytes": 6172525484,
+            "cpu_mmap": true,
+            "dev": 59,
+            "independent_full_sha": true,
+            "inode": 140845640,
+            "mtime_ns": 1792391549844289835,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-2.pt",
+            "sha256": "e6c63a6a754ddd2d1b882a6529c95e1ca158af11f39131772bbac8763008d39c"
+          },
+          "ledger": {
+            "file": {
+              "bytes": 1790032,
+              "dev": 59,
+              "independent_full_sha": true,
+              "inode": 140845488,
+              "mtime_ns": 1792391526141112861,
+              "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-2-updates.jsonl",
+              "sha256": "ec1d916891e8fae5a80e04a91d75ef6d5146c6e3541ab0a22e2908d8de2ba198"
+            },
+            "opportunities": 20,
+            "rank": 2,
+            "returned_writes": 20
+          },
+          "rank": 2,
+          "rng": {
+            "cuda_rng_applied": false,
+            "python_numpy_cpu_torch_state_loaded": true,
+            "saved_cuda_rng_bytes": 16
+          },
+          "scheduler_completed_outer": 150
+        },
+        {
+          "actual_adam_steps": 2997,
+          "adam_states": 37,
+          "file": {
+            "actual_cpu_deserialization": true,
+            "bytes": 6172525548,
+            "cpu_mmap": true,
+            "dev": 59,
+            "independent_full_sha": true,
+            "inode": 140845654,
+            "mtime_ns": 1792391549648296634,
+            "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-3.pt",
+            "sha256": "a527cbe902cf7263bac6a05def780a406d0434f29d09dc6a9f267293bc6114dc"
+          },
+          "ledger": {
+            "file": {
+              "bytes": 1790316,
+              "dev": 59,
+              "independent_full_sha": true,
+              "inode": 140845489,
+              "mtime_ns": 1792391526141112861,
+              "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-3-updates.jsonl",
+              "sha256": "04f58f0a4daa93e5deed31be6f027d7374cafa836583253e382ee9b4afa29b90"
+            },
+            "opportunities": 20,
+            "rank": 3,
+            "returned_writes": 20
+          },
+          "rank": 3,
+          "rng": {
+            "cuda_rng_applied": false,
+            "python_numpy_cpu_torch_state_loaded": true,
+            "saved_cuda_rng_bytes": 16
+          },
+          "scheduler_completed_outer": 150
+        }
+      ],
+      "actual_cpu_deserialization": true,
+      "files": [
+        {
+          "bytes": 661,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140509851,
+          "mtime_ns": 1791188079790250953,
+          "path": "/dataset/shaoshitong/Search-G1-common8/bootstrap-assets/instruct300/assets/qwen2.5-3b-instruct-aa8e725/config.json",
+          "sha256": "eed00b17e22553979d090fa492e587e92885e328914c8e0b0b78f0a0d3576b3b"
+        },
+        {
+          "bytes": 1317720,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845709,
+          "mtime_ns": 1792391624709692233,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/driver.pt",
+          "sha256": "52f3817086e11cda8f0376c052c9345ea1850e0603829ccafc96cdc32408c9bc"
+        },
+        {
+          "bytes": 605,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845718,
+          "mtime_ns": 1792391603922413493,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/added_tokens.json",
+          "sha256": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b"
+        },
+        {
+          "bytes": 985,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845683,
+          "mtime_ns": 1792391582551155016,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/config.json",
+          "sha256": "4aee03092abdd5edba61f4a2aeac852145c8573ef58edcafb430267b1e33a5bd"
+        },
+        {
+          "bytes": 243,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845684,
+          "mtime_ns": 1792391582551155016,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/generation_config.json",
+          "sha256": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96"
+        },
+        {
+          "bytes": 1671853,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845720,
+          "mtime_ns": 1792391604002410717,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/merges.txt",
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+        },
+        {
+          "bytes": 3929249504,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845685,
+          "mtime_ns": 1792391586415020950,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/model-00001-of-00004.safetensors",
+          "sha256": "64c076e2e4e4936af31eaa6dc94743c29894ff86a021eac0bc4aca6f73080667"
+        },
+        {
+          "bytes": 3917843656,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845661,
+          "mtime_ns": 1792391592518809166,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/model-00002-of-00004.safetensors",
+          "sha256": "7f9052cda9ef8bd5e4b80c45a7aa35319a7ec86a051e27ffe48675972fbd93e1"
+        },
+        {
+          "bytes": 3917843680,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845686,
+          "mtime_ns": 1792391598634596965,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/model-00003-of-00004.safetensors",
+          "sha256": "a2dd3968aee197ce07afafabec4b1e67b139c6110be2991a15ad94e8fb14762e"
+        },
+        {
+          "bytes": 1823527024,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845704,
+          "mtime_ns": 1792391602786452908,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/model-00004-of-00004.safetensors",
+          "sha256": "24ed7612a715706add5c0b8ced5f52946c90515f45aa22bbbd22fe2c25ddce21"
+        },
+        {
+          "bytes": 35640,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845695,
+          "mtime_ns": 1792391603918413631,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/model.safetensors.index.json",
+          "sha256": "c0139b4a802a6c6f3b4638e46abb152847b2389e24544d7fd2466e1956ea19e3"
+        },
+        {
+          "bytes": 613,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845717,
+          "mtime_ns": 1792391603922413493,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/special_tokens_map.json",
+          "sha256": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd"
+        },
+        {
+          "bytes": 11421896,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845721,
+          "mtime_ns": 1792391604102407248,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/tokenizer.json",
+          "sha256": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa"
+        },
+        {
+          "bytes": 7306,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845716,
+          "mtime_ns": 1792391603922413493,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/tokenizer_config.json",
+          "sha256": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6"
+        },
+        {
+          "bytes": 2776833,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845719,
+          "mtime_ns": 1792391604010410440,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/huggingface/vocab.json",
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        },
+        {
+          "bytes": 1789853,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845487,
+          "mtime_ns": 1792391526141112861,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-0-updates.jsonl",
+          "sha256": "3a20105694e821d0b0bbfb14442601a23f79c02e4d9c24c162c29ca1e3223292"
+        },
+        {
+          "bytes": 6172525484,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845653,
+          "mtime_ns": 1792391549364306486,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-0.pt",
+          "sha256": "785922313cc689adb8056777e23f3f41ebd15bcfad92029572ea376aa50f9769"
+        },
+        {
+          "bytes": 1789875,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845490,
+          "mtime_ns": 1792391526141112861,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-1-updates.jsonl",
+          "sha256": "7e2ca61f6a6b90a737ee93aa1a1f3ebff6db58625edbe823911fbfd3cd776757"
+        },
+        {
+          "bytes": 6172525548,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845655,
+          "mtime_ns": 1792391550440269160,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-1.pt",
+          "sha256": "03dea0693894ee7a661325b4876cab96a18f67254e6c00af54c9a2376fa44ee6"
+        },
+        {
+          "bytes": 1790032,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845488,
+          "mtime_ns": 1792391526141112861,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-2-updates.jsonl",
+          "sha256": "ec1d916891e8fae5a80e04a91d75ef6d5146c6e3541ab0a22e2908d8de2ba198"
+        },
+        {
+          "bytes": 6172525484,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845640,
+          "mtime_ns": 1792391549844289835,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-2.pt",
+          "sha256": "e6c63a6a754ddd2d1b882a6529c95e1ca158af11f39131772bbac8763008d39c"
+        },
+        {
+          "bytes": 1790316,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845489,
+          "mtime_ns": 1792391526141112861,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-3-updates.jsonl",
+          "sha256": "04f58f0a4daa93e5deed31be6f027d7374cafa836583253e382ee9b4afa29b90"
+        },
+        {
+          "bytes": 6172525548,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845654,
+          "mtime_ns": 1792391549648296634,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/actor/outers/outer-0150-attempt-a1bb82da4a5546d0b77237a7dda6827d/rank-3.pt",
+          "sha256": "a527cbe902cf7263bac6a05def780a406d0434f29d09dc6a9f267293bc6114dc"
+        },
+        {
+          "bytes": 1237103,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140845812,
+          "mtime_ns": 1792391670956087613,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000150/pool-state-at-completion.json",
+          "sha256": "2cd4955448b5a73b7bcb3871518b1464061d2b46f359b8ae4e39509c1927d4e8"
+        },
+        {
+          "bytes": 310593806,
+          "dev": 59,
+          "independent_full_sha": true,
+          "inode": 140196595,
+          "mtime_ns": 1792266756369243859,
+          "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000150/probe-state-at-completion.pt",
+          "sha256": "0d62658c030a16254ceb8dab977bdbbc42654e1a2edd0365ef916b952f91520f"
+        }
+      ],
+      "gpu_forward_performed": false,
+      "independent_backup_performed": false,
+      "outer": 150,
+      "probe": {
+        "actual_adam_steps_per_rank": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "adam_states": 0,
+        "ema_model_verified": false,
+        "ema_updates": 0,
+        "raw_model_verified": true
+      },
+      "probe_actual_adam_steps_per_rank": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "run_id": "ca37419b494446398fb15234aa3be91a",
+      "status": "AB_JOINT_FULL_SHA_CPU_PASS"
+    },
+    "log_tail": "{\"status\": \"AB_JOINT_FULL_SHA_CPU_PASS\", \"proof\": \"/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0150-independent-full-sha-cpu.json\", \"sha256\": \"5a9fd6a11fe76b9d3dac2abf062ce5f136dd1f07db4c45608ceed0f06241b750\"}\n"
+  },
+  "source_evidence": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/b-progressive-A150-original-QA-grounding-20261019T064516046923Z.json",
+      "sha256": "de150475e8fef70e193762e091a768bc57d29c05459ec77df15ce64b628ad431"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-normal-cp150-status-20261019T064432610488Z.json",
+      "sha256": "06068b27c0b644b1352eb0df1621638798a3de1c6f0b22e13a4a71325d097202"
+    }
+  ],
+  "checkpoint_file_count": 25,
+  "checkpoint_bytes": 38614791268,
+  "training_runtime_changed": false,
+  "actual151_reward_adoption_pending": true,
+  "both200_and_final51713_complete": false
+}

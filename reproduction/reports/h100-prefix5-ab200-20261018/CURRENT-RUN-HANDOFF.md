@@ -14,7 +14,13 @@ A100 QA:215/512 EM 41.9921875%, F1 50.28851574%. B100 QA:232/512 EM 45.3125%, F1
 
 Both normal100 source checkpoints already passed independent full-file SHA and actual CPU state reads. A100 actualactor1997/probe0; B100actor2000/probe1400, source prefix20. Never repeat completed large checks or roll back a newer actual complete point to the last audited checkpoint. B100 reward refit used the original300 and all4 replicas adopted100. Actual complete101 subsequently proved20 actor writes→2020,10 raw/EMA writes→1410 and all4 actual reward records using100. Native101 scan contained25600 trajectories, prefix40/head313, actual actor100 hidden, no independent encoder/no labels, and adopted the bound20→40 migration with no recorded reset. Those migration receipts are not an independent tensor-preservation audit.
 
-See `B-normal100/README.md` and its full small JSON for exact source paths/hashes and paired results. Generic read-only150/200 reader is prepared in `once_records_20261018/read_normal_milestone_qa_grounding_actual.py.txt`;200 must use existing grounding150, no refit200/no201. It has not yet verified unproduced150/200 outputs. Final QA acceptance helpers require all51713 exact canonical IDs/ordinals/seven source counts, original worker scores and raw-output aggregation, not just a qa_count.
+See `B-normal100/README.md` and its full small JSON for exact source paths/hashes and paired results. Generic read-only150/200 reader is in `once_records_20261018/read_normal_milestone_qa_grounding_actual.py.txt`;200 must use existing grounding150, no refit200/no201. Final QA acceptance helpers require all51713 exact canonical IDs/ordinals/seven source counts, original worker scores and raw-output aggregation, not just a qa_count.
+
+## Actual A150 milestone
+
+At2026-10-19T06:45UTC the original A150 QA worker receipts, all512 identities/aggregates and all4 exit0 were checked:211/512 EM41.2109375%, F149.2313058036%. This is four fewer correct answers than A100, not continued improvement. The original300-question reward refit150 and all4 actual replica adoptions were verified. Actual complete151 reward use remains pending at that observation. See `A-normal150/README.md` and its small JSON.
+
+A150 existing once source CPU proof isAB_JOINT_FULL_SHA_CPU_PASS:25 files38,614,791,268 bytes, actualactor2997/probe0 per rank, full source SHA and actual CPU state read. ProofSHA5a9fd6a11fe76b9d3dac2abf062ce5f136dd1f07db4c45608ceed0f06241b750. Do not repeat its completed hashes/loads. This is not independent physical backup or GPU forward. Latest restore candidates follow actual newer complete state, never regress to150 for helper convenience. B150/both200/final51713 are still pending; both original leaders continue.
 
 ## Current monitoring and history
 
