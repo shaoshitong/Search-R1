@@ -9,7 +9,10 @@ from search_r1.qa_protocol import extract_final_answer
 from transformers import AutoTokenizer
 m,prepared=validated(a.manifest);root=pathlib.Path(m['output']);source=list(read_jsonl(m['source']['path']))
 identity=validate_normal_identity(source,m['checkpoint']['path'],m['normal_config_path']);assert identity==m['normal_identity']
-assert {v['name']:v['sha256']for v in m['checkpoint']['files']}==identity['verified_checkpoint_files']
+cf_files={v['name']:v['sha256']for v in m['checkpoint']['files']};bound_files=identity['verified_checkpoint_files']
+extra_normal_receipts=set(bound_files)-set(cf_files)
+assert extra_normal_receipts <= {'asset-binding.json','asset-status.json','complete.json'}
+assert set(cf_files)<=set(bound_files) and all(bound_files[k]==v for k,v in cf_files.items())
 tok=AutoTokenizer.from_pretrained(m['checkpoint']['path'],local_files_only=True)
 files=sorted((root/'results').glob('*.json'));results=[read(f)for f in files];ready={r['request_id']:r for r in prepared if r['status']=='READY'};assert len(results)==len(ready)
 for r in results:
@@ -22,7 +25,7 @@ old=read(root/'verified-summary.json')
 for k in ['counts','coverage','TC','D_Inv','TC_denominator','D_Inv_denominator']:assert summary[k]==old[k]
 attempts=attempt_token_usage(root);assert attempts['errors']==0 and attempts['failed_or_interrupted_attempts']==0 and attempts['request_attempts']==len(results)
 assert attempts['successful_attempt_output_tokens']==sum(r['generation_tokens']for r in results)
-report=dict(state='INDEPENDENT_CF_FULL_READ_VERIFIED',at=time.time(),method=m['method'],normal_identity=identity,normal_sha256=sha(m['source']['path']),all_checkpoint_files_fresh_sha_verified=True,cf_summary=summary,cf_attempts=attempts,cf_results=len(results),cf_result_bytes=sum(f.stat().st_size for f in files),cf_results_hash=digest({f.name:sha(f)for f in files}),cf_manifest_sha256=sha(a.manifest),cf_prepared_sha256=sha(root/'prepared.jsonl'),cf_prompt_token_hashes_reconstructed=True,scope='Diagnostic typed-v4; not corrected strict or full official reproduction')
+report=dict(state='INDEPENDENT_CF_FULL_READ_VERIFIED',at=time.time(),method=m['method'],normal_identity=identity,normal_sha256=sha(m['source']['path']),all_checkpoint_files_fresh_sha_verified=True,extra_non_HF_normal_receipts_verified=sorted(extra_normal_receipts),cf_summary=summary,cf_attempts=attempts,cf_results=len(results),cf_result_bytes=sum(f.stat().st_size for f in files),cf_results_hash=digest({f.name:sha(f)for f in files}),cf_manifest_sha256=sha(a.manifest),cf_prepared_sha256=sha(root/'prepared.jsonl'),cf_prompt_token_hashes_reconstructed=True,scope='Diagnostic typed-v4; not corrected strict or full official reproduction')
 out=pathlib.Path(a.output);out.parent.mkdir(parents=True,exist_ok=True)
 with out.open('x')as f:json.dump(report,f);f.flush();os.fsync(f.fileno())
 print(json.dumps(report))

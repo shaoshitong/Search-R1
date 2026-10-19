@@ -1,5 +1,6 @@
 """SSH-disconnection-safe CPU-only independent OPSD CF acceptance."""
-import importlib.util,subprocess,shlex,json,pathlib
+import importlib.util,subprocess,shlex,json,pathlib,argparse
+p=argparse.ArgumentParser(__doc__);p.add_argument('--retry2-runtime');args=p.parse_args()
 code=r'''
 import pathlib,json,subprocess,os,time,fcntl
 b=pathlib.Path('/data/shaoshitong/grounding-eval-20261019');out=b/'opsd3304-cf-acceptance-control';out.mkdir(exist_ok=True)
@@ -18,7 +19,10 @@ with(out/'controller.log').open('xb')as log:p=subprocess.Popen(['/usr/bin/python
 launch={'pid':p.pid,'launched_at':time.time(),'command':command,'cpu_only':True,'reason':'Prior foreground verifier SSH broken pipe; confirmed absent before new bounded retry'}
 (out/'launch.json').write_text(json.dumps(launch));print(json.dumps(launch))
 '''
+if args.retry2_runtime:
+ assert pathlib.PurePosixPath(args.retry2_runtime).parent==pathlib.PurePosixPath('/data/shaoshitong/grounding-eval-20261019') and pathlib.PurePosixPath(args.retry2_runtime).name.startswith('acceptance-runtime-')
+ code=code.replace("out=b/'opsd3304-cf-acceptance-control'","out=b/'opsd3304-cf-acceptance-control-retry2'").replace("b/'acceptance-runtime-30242ef2/verify_completed_cf.py'",repr(args.retry2_runtime+'/verify_completed_cf.py'))
 compile(code,'cpu-acceptance-launch','exec')
 s=importlib.util.spec_from_file_location('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
 r=subprocess.run(m.route('baai-a800','/usr/bin/python3 -c '+shlex.quote(code)),capture_output=True,text=True,timeout=30)
-d={'rc':r.returncode,'stdout':r.stdout,'stderr':r.stderr[-1000:]};pathlib.Path('/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/grounding-eval-20261019/opsd-cf-acceptance-background-launch.json').write_text(json.dumps(d,indent=2));print(json.dumps(d));raise SystemExit(r.returncode)
+d={'rc':r.returncode,'stdout':r.stdout,'stderr':r.stderr[-1000:]};(pathlib.Path('/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/grounding-eval-20261019')/('opsd-cf-acceptance-background-retry2-launch.json'if args.retry2_runtime else'opsd-cf-acceptance-background-launch.json')).write_text(json.dumps(d,indent=2));print(json.dumps(d));raise SystemExit(r.returncode)
