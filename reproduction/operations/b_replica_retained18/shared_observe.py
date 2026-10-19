@@ -51,7 +51,12 @@ def observe():
 import pathlib,json,subprocess,time
 p=pathlib.Path('/proc')/str(WHO['pid']);st=(p/'stat').read_text()if p.exists()else None
 same=bool(st and int(st.rsplit(')',1)[1].split()[19])==WHO['start_ticks']and st.rsplit(')',1)[1].split()[0]!='Z')
-print(json.dumps(dict(observed_unix=time.time(),same_birth=same,stat=st,gpu=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.used,memory.total,utilization.gpu','--format=csv,noheader,nounits'],text=True))))
+try:
+ query=subprocess.run(['nvidia-smi','--query-gpu=index,memory.used,memory.total,utilization.gpu','--format=csv,noheader,nounits'],capture_output=True,text=True,timeout=20)
+ gpu=dict(gpu=query.stdout,gpu_query_returncode=query.returncode,gpu_query_stderr=query.stderr,gpu_observation_valid=query.returncode==0)
+except subprocess.TimeoutExpired:
+ gpu=dict(gpu=None,gpu_query_returncode=None,gpu_query_stderr='NVML_QUERY_TIMEOUT',gpu_observation_valid=False)
+print(json.dumps(dict(observed_unix=time.time(),same_birth=same,stat=st,**gpu)))
 '''
   v['actual_node_health']=json.loads(remote(code,OUT/('shared-follow-health-'+str(time.time_ns())+'.json'),target=v['node'],established_controller=True))
  dest=f.with_name(f.name.replace('-transport','-actual'));dest.write_text(json.dumps(v,ensure_ascii=False,indent=2));v['evidence']=str(dest)
@@ -59,6 +64,7 @@ print(json.dumps(dict(observed_unix=time.time(),same_birth=same,stat=st,gpu=subp
  alive=bool(v.get('actual_node_health',{}).get('same_birth'))and not bool(v['cleanup'])
  observed200=v.get('complete_outer')==200
  status='SHARED_NATIVE_200_OBSERVED_AWAITING_AUDIT'if observed200 else('SHARED_NATIVE_CONTINUING'if alive else'SHARED_NATIVE_EXITED_NEEDS_DIAGNOSIS')
+ if alive and not v.get('actual_node_health',{}).get('gpu_observation_valid',True):status='SHARED_NATIVE_GPU_OBSERVATION_UNKNOWN_NEEDS_CHECK'
  root=OUT.parents[1];s=json.loads((root/'outputs/STATUS.json').read_text());s.update(status=status,actual_native_running=alive,actual_training_running=alive and not observed200,actual_complete_outer=v['complete_outer'],current_stage=(v['stage']or{}).get('stage'),node=v['node'],ip={'h100-5':'10.33.0.5','h100-8':'10.33.0.8','h100-10':'10.33.0.18'}[v['node']],world_size=8,resume_job_id=None,cancelled_pending_job=3674,base=receipt['command'][-1]if receipt else None,physical_base=BASE,source_commit=receipt['source_commit']if receipt else None,native_leader=leader,training_started=bool(receipt),owned_births_all_gone=bool((v['cleanup']or{}).get('owned_births_all_gone')),execution_node_pending=False,current_evidence=str(dest),updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
  (root/'outputs/STATUS.json').write_text(json.dumps(s,ensure_ascii=False,indent=2))
  for target in (OUT,root/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/b-replica-retained18-20261018',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/b-replica-retained18-20261018')):
