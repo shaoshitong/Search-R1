@@ -31,6 +31,15 @@ class AssetFetchTests(unittest.TestCase):
             with patch('reproduction.grounding_eval.asset_fetch.subprocess.run',side_effect=curl):
                 with self.assertRaises(RuntimeError):run(j,'TOKEN_SENTINEL')
             self.assertEqual(first.read_bytes(),b'badmodel!');self.assertFalse((Path(t)/'complete.json').exists())
+    def test_preserves_original_complete_file_for_easy_export(self):
+        with tempfile.TemporaryDirectory()as t:
+            j=self.job(Path(t));data=b'modeldata';j['files']['complete.json']={'size':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+            with self.assertRaises(AssertionError):validate_job(j)
+            j['receipt_name']='asset-migration-complete.json';validate_job(j)
+            def curl(args,**kw):Path(args[args.index('--output')+1]).write_bytes(data);return SimpleNamespace(returncode=0)
+            with patch('reproduction.grounding_eval.asset_fetch.subprocess.run',side_effect=curl):run(j,'TOKEN_SENTINEL')
+            self.assertEqual((Path(t)/'complete.json').read_bytes(),data)
+            self.assertEqual(json.loads((Path(t)/'asset-migration-complete.json').read_text())['verified_bytes'],117)
     def test_rejects_unplanned_and_escape(self):
         j=self.job(Path('/tmp/fixture'));j['prefix']='../../escape'
         with self.assertRaises(AssertionError):validate_job(j)

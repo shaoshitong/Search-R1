@@ -40,7 +40,12 @@ def write_json(path: Path, value: dict) -> None:
 def validate_job(job: dict) -> None:
     assert job['repo'] == 'Sutoonq/TMP_MODEL'
     assert len(job['revision']) == 40 and all(c in '0123456789abcdef' for c in job['revision'])
-    assert len(job['files']) == 12
+    assert len(job['files']) in (12, 13)
+    receipt_name = job.get('receipt_name', 'complete.json')
+    assert receipt_name in ('complete.json', 'asset-migration-complete.json')
+    assert receipt_name not in job['files'], 'Migration receipt must never overwrite an original HF file'
+    if len(job['files']) == 13:
+        assert 'complete.json' in job['files'] and receipt_name == 'asset-migration-complete.json'
     assert not Path(job['prefix']).is_absolute() and '..' not in Path(job['prefix']).parts
     for name, entry in job['files'].items():
         assert Path(name).name == name and name not in ('.', '..')
@@ -133,7 +138,7 @@ def run(job: dict, token: str) -> dict:
                   'verified_bytes':total,'repo':job['repo'],'revision':job['revision'],
                   'prefix':job['prefix'],'output':str(root),'route':job['route'],
                   'fresh_readback_epoch':time.time(),'source_receipt_sha256':job['source_receipt_sha256']}
-        write_json(root/'complete.json',result)
+        write_json(root/job.get('receipt_name', 'complete.json'),result)
         with mutex: state['status']=result['status'];state['finished_epoch']=time.time()
         publish(); return result
     except BaseException as error:
