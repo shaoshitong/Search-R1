@@ -1,0 +1,53 @@
+"""Merge actual local selection records only; no remote action or interpolation."""
+import copy,hashlib,json,statistics
+from pathlib import Path
+
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+report=Path('reproduction/reports/h100-prefix5-ab200-20261018')
+sources=[report/'progressive-through-a135-b114/PER-ITERATION.json',
+ root/'work/prefix5-ab-normal150-history-through-a152-b128-20261019T071105.json']
+old=json.loads(sources[0].read_text());history=json.loads(sources[1].read_text())
+rows={a:{r['outer']:copy.deepcopy(r)for r in old['current'][a]['rows']}for a in ('A','B')}
+limits={'A':152,'B':128}
+for a,facts in history['facts'].items():
+ for f in facts:
+  n=f['outer'];m=f['selection_metrics']
+  if n in rows[a]:
+   assert all(rows[a][n]['selected'][k]==m[k]for k in ('mixed','all_wrong','all_correct'))
+  rows[a][n]=dict(outer=n,prefix_tokens=5 if a=='A' or n<=50 else 20 if n<=100 else 40 if n<=150 else 80,
+   periodic=n<200 and n%10==0,selected=m,actual_complete_source=str(sources[1]))
+for a,limit in limits.items():
+ assert sorted(rows[a])==list(range(1,limit+1))
+ for v in rows[a].values():
+  m=v['selected'];assert m['questions']==512 and sum(m[k]for k in ('mixed','all_wrong','all_correct'))==512
+  assert m['mixed_fraction']==m['mixed']/512
+windows=[]
+for lo,hi in [(6,9)]+[(n+1,n+9)for n in range(10,120,10)]+[(121,128)]:
+ ids=list(range(lo,hi+1))
+ windows.append(dict(start=lo,end=hi,complete_window=hi%10==9,
+  arms={a:dict(mean_mixed_count=statistics.mean(rows[a][n]['selected']['mixed']for n in ids),
+   mean_mixed_fraction=statistics.mean(rows[a][n]['selected']['mixed_fraction']for n in ids))for a in rows}))
+result=dict(observed_utc='2026-10-19T07:09:24.721062Z',complete_outer=limits,
+ current={a:dict(rows=[v[n]for n in sorted(v)])for a,v in rows.items()},
+ source_files=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest())for p in sources],
+ ordinary_window_means=windows,unobserved_values_fitted=False,B_old_stopped_51_58_excluded=True,
+ ordinary_means_exclude_periodic=True,metric_is_probe_classification_accuracy=False,
+ A_B_post50_differences=old['A_B_post50_differences'])
+out=report/'progressive-through-a152-b128';out.mkdir(exist_ok=True)
+(out/'PER-ITERATION.json').write_text(json.dumps(result,indent=2)+'\n')
+text=['# Actual selected mixing through A152 / B128','',
+ 'Every row is an actual complete outer with strict-EM group counts. Mixed means1–4 correct out of5, denominator512 questions. No interpolation, missing-value fit or stopped old B51–58 is included. All overlaps between published and sealed observer history agree. Models and full outputs remain remote.','',
+ 'A stays frozen/prefix5. B51–100 uses prefix20/admit768, B101–150 prefix40/admit1024 and actual-mixed-first final512 rerank. These differences confound an isolated EMA comparison. Periodic multiples of10 use outcome-assisted full-pool selection in both arms and are excluded from ordinary means. Selected mixing is neither classifier accuracy nor QA EM/F1.','',
+ '| Ordinary rounds | A mean mixed count / ratio | B mean mixed count / ratio |','|---|---:|---:|']
+for w in windows:
+ a,b=[w['arms'][x]for x in ('A','B')]
+ text.append('| %d–%d%s | %.2f / %.2f%% | %.2f / %.2f%% |'%(w['start'],w['end'],''if w['complete_window']else ' (partial decade)',a['mean_mixed_count'],100*a['mean_mixed_fraction'],b['mean_mixed_count'],100*b['mean_mixed_fraction']))
+text+=['','| Outer | Periodic | A mixed count / ratio | B mixed count / ratio |','|---:|---|---:|---:|']
+for n in range(1,153):
+ cells=[]
+ for a in ('A','B'):
+  m=rows[a].get(n,{}).get('selected');cells.append('%d / %.4f%%'%(m['mixed'],100*m['mixed_fraction'])if m else 'not yet observed')
+ text.append('| %d | %s | %s | %s |'%(n,'yes'if n<200 and n%10==0 else 'no',*cells))
+text+=['','Both original leaders continue on h100-11 unchanged. Latest human instruction keeps current runs without a maintenance restart. Both200, B150/both200 QA, final51713 and true terminal/resource closure remain incomplete.']
+(out/'README.md').write_text('\n'.join(text)+'\n')
+print(json.dumps(dict(output=str(out),complete_outer=limits,last_window=windows[-1])))
