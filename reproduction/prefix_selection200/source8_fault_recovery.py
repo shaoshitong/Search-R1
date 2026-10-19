@@ -35,7 +35,7 @@ def qualified(source):
     return proof
 
 
-def place_prepared(base, target_uuids):
+def place_prepared(base, target_uuids, *, target_node=None, cards=None, retrieval_port=None, grounding_port=None):
     """Bind only placement after complete same-run import; no algorithm delta."""
     from reproduction.prefix20_online.launch import publish, once
     from .h100_replica_hardware import validate
@@ -45,13 +45,26 @@ def place_prepared(base, target_uuids):
         raise ValueError('Never edit a submitted execution')
     if len(target_uuids)!=8 or len(set(target_uuids))!=8:
         raise ValueError('Need all actual target UUIDs')
+    import socket
+    target_node=target_node or proof['target_node']
+    if target_node not in ('h100-5','h100-11') or socket.gethostname()!=target_node:
+        raise ValueError('Placement must run on the actually verified authorized target')
+    ids=cards or c['physical_gpu_indices']
+    source_config=read(source/'preparation/launch-config.json')
+    selected=[target_uuids[i] for i in ids]
+    if target_node==proof['source_node'] and set(selected)&set(source_config['physical_gpu_uuids']):
+        raise ValueError('Do not reuse the source execution GPU leases while exit residue remains')
     old=dict(expected_execution_node=c.get('expected_execution_node'),
              physical_gpu_uuids=c['physical_gpu_uuids'],auxiliary_gpu_uuids=c['auxiliary_gpu_uuids'])
-    c.update(expected_execution_node=proof['target_node'],
-             physical_gpu_uuids=[target_uuids[i] for i in c['physical_gpu_indices']],
-             auxiliary_gpu_uuids=[target_uuids[i] for i in c['auxiliary_gpu_indices']])
+    c.update(expected_execution_node=target_node,physical_gpu_indices=ids,auxiliary_gpu_indices=ids,
+             physical_gpu_uuids=selected,auxiliary_gpu_uuids=selected,
+             grounding_physical_gpu=ids[-1],grounding_physical_gpu_by_rank=ids,
+             grounding_refit_visible_device=ids[-1])
+    if retrieval_port is not None:
+        c.update(retrieval_port=retrieval_port,search_url='http://127.0.0.1:%d/retrieve'%retrieval_port)
+    if grounding_port is not None:c['grounding_probe_base_port']=grounding_port
     validate(c)
-    record=dict(source_node=proof['source_node'],target_node=proof['target_node'],
+    record=dict(source_node=proof['source_node'],target_node=target_node,
                 source_barrier=str(source/'preparation/source8-fault-writer-barrier.json'),
                 source_barrier_sha256=sha(source/'preparation/source8-fault-writer-barrier.json'),
                 previous=old,actual_target_uuids=target_uuids,science_changed=False)
