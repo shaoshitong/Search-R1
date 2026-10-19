@@ -62,6 +62,10 @@ def verify(config):
     return p
 
 def stopped(source):
+    source=Path(source)
+    if (source/'preparation/source8-fault-writer-barrier.json').exists():
+        from .source8_fault_recovery import qualified
+        return qualified(source)
     from reproduction.prefix_only_correctness_ab.launch import birth_states
     from reproduction.a800.owned_processes import same
     cleanup=read(source/'logs/cleanup-status.json');ledger=read(source/'logs/process-ledger.json')

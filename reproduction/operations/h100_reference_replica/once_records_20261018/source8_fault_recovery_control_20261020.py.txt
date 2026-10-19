@@ -1,0 +1,119 @@
+import sys,json,subprocess,datetime,hashlib,os,signal
+from pathlib import Path
+repo=Path('/Users/shaoshitong/Documents/Search-G1/h100-prefix5-reference-replica-20261018');sys.path.insert(0,str(repo))
+from reproduction.operations.h100_reference_replica.b_progressive_remote import ctl
+from reproduction.operations.h100_reference_replica.readonly_management_route import lan5_argv
+from reproduction.operations.h100_reference_replica.follow_h10011_ab_normal_boundary import PATH_LAYOUTS,ROOT
+w=ROOT/'work';s=json.loads((w/'search-g1-prefix5-ab200-state.json').read_text());sources={k:dict(base=v['base'],run_id=v['run_id'],config_sha256=v['config_sha256'])for k,v in s['slots'].items()}
+for k,pid,ticks in [('A',128824,704780598),('B',757735,709771046)]:sources[k]['leader']=dict(pid=pid,start_ticks=ticks,sid=pid,uid=0)
+auth=dict(status='HUMAN_APPROVED_RETAINED_INPUT_COLD_HANDOFF',human_instruction='是因为那个八号节点它那个就是GPU被释放掉了，所以你得就是去其他地方去做这个事情，就是换到其他GPU去做这个事情。对，反正你找到空闲GPU或者空闲显存的GPU就可以做。',received_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),scope='Actual source8 NFS failure recovery; same latest joint, science and remaining budget; supersedes prior healthy maintenance deferral',sources=sources)
+local=w/'prefix5-ab-source8-fault-recovery-authorization-20261020.json'
+if local.exists():auth=json.loads(local.read_text())
+else:local.write_text(json.dumps(auth,ensure_ascii=False,indent=2)+'\n')
+def call(inner,label,prefix='5',timeout=120):
+ args=['unshare','--mount','--propagation','private','bash',PATH_LAYOUTS['retained-cache-v2'],'/dataset/shaoshitong/Search-G1-common8/env/bin/python','-']
+ script='import subprocess,os\np=subprocess.run('+repr(args)+',input='+repr(inner)+',env=dict(os.environ,CUDA_VISIBLE_DEVICES="",PYTHONDONTWRITEBYTECODE="1",SEARCH_G1_B_PREFIX_TOKENS='+repr(prefix)+'),text=True,capture_output=True,timeout='+str(timeout-10)+')\nprint(p.stdout,end="");print(p.stderr,file=__import__("sys").stderr);raise SystemExit(p.returncode)'
+ p=subprocess.run(lan5_argv(ctl(),'h100-11','/usr/bin/python3 -'),input=script,text=True,capture_output=True,timeout=timeout)
+ path=w/('prefix5-ab-fault-'+label+'-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')+'.json');path.write_text(json.dumps(dict(returncode=p.returncode,stdout=p.stdout,stderr=p.stderr),indent=2)+'\n');print(str(path),flush=True);print(p.stdout[-10000:],flush=True)
+ if p.returncode:raise RuntimeError(p.stderr[-4000:])
+ return p
+if __name__=='__main__':
+ action=sys.argv[1]
+ if action=='stop':
+  helper=(repo/'reproduction/operations/h100_reference_replica/once_records_20261018/stop_for_approved_retained_handoff.py.txt').read_text()
+  for arm,src in sources.items():call('PARAMS='+repr(dict(base=src['base'],arm=arm,authorization=auth,expected_source=src))+'\n'+helper,'stop-'+arm)
+ elif action=='force':
+  if len(sys.argv)>2:sources={sys.argv[2]:sources[sys.argv[2]]}
+  inner="""import sys,json,os,signal,time,hashlib
+from pathlib import Path
+sys.path.insert(0,STAGED)
+from reproduction.a800.owned_processes import same,identity,signal_owned
+from reproduction.prefix_only_correctness_ab.launch import torchrun_owned_class,birth_states
+out={}
+for arm,src in SOURCES.items():
+ b=Path(src['base']);leader=src['leader'];stop=b/'preparation/approved-retained-input-handoff-stop-once-v1.json'
+ assert stop.exists();intent=b/'preparation/source8-nfs-fault-force-cleanup-once-v1.json'
+ if intent.exists():out[arm]=dict(status='EXISTING_FORCE_INTENT_QUERY_ONLY');continue
+ r=dict(source=src,authorization=AUTH,reason='Exact leader still D/rpc_wait_bit_killable after SIGTERM on dead source8 NFS',created_unix=time.time(),native_finally_executed=False)
+ with intent.open('x')as f:json.dump(r,f);f.flush();os.fsync(f.fileno())
+ if same(leader):
+  current=identity(leader['pid']);assert current['state']=='D',current
+  signal_owned(leader,signal.SIGKILL)
+ owned=torchrun_owned_class()(b/'logs/process-ledger.json',src['run_id']);owned.stop_all()
+ checks=[]
+ for i in range(2):
+  births=[v for j in owned.jobs.values()for v in j.get('ledger',{}).values()];present=birth_states(births)
+  checks.append(dict(unix=time.time(),leader_same_birth=same(leader),remaining_owned_births=present));time.sleep(2)
+ assert all(not c['leader_same_birth']and not c['remaining_owned_births']for c in checks),checks
+ logs=[]
+ for path in sorted((b/'logs').rglob('*.log')):
+  st=path.stat();h=hashlib.sha256()
+  with path.open('rb')as f:
+   for chunk in iter(lambda:f.read(8*1024**2),b''):h.update(chunk)
+  after=path.stat();assert(st.st_ino,st.st_size,st.st_mtime_ns)==(after.st_ino,after.st_size,after.st_mtime_ns)
+  logs.append(dict(path=str(path),inode=st.st_ino,bytes=st.st_size,sha256=h.hexdigest()))
+ cleanup=dict(run_id=src['run_id'],cleaned=True,owned_births_all_gone=True,remaining_owned_births=[],checked_unix=time.time(),producer='EXTERNAL_EXACT_OWNED_SOURCE8_NFS_FAULT_RECOVERY',native_finally_executed=False,leader_termination_signal=9,release_checks=checks,original_inode_logs_full_sha=logs)
+ assert not(b/'logs/cleanup-status.json').exists()
+ with(b/'logs/cleanup-status.json').open('x')as f:json.dump(cleanup,f);f.flush();os.fsync(f.fileno())
+ out[arm]=dict(status='EXACT_OWNED_SOURCE8_NFS_FAULT_CLEANUP_VERIFIED',latest=json.loads((b/'latest-joint.json').read_text())['outer'],log_files=len(logs),proof=str(b/'logs/cleanup-status.json'))
+print(json.dumps(out))""".replace('SOURCES',repr(sources)).replace('AUTH',repr(auth)).replace('STAGED',repr('/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-d68173cea039f5949e6bd799ead7ed590ee87b71'))
+  call(inner,'force-cleanup',timeout=240)
+ elif action=='barrier':
+  inner="""import json,sys,time,os,hashlib
+from pathlib import Path
+sys.path.insert(0,STAGED)
+from reproduction.a800.owned_processes import same,identity
+from reproduction.prefix20_online.launch import once,sha
+out={}
+for arm,src in SOURCES.items():
+ b=Path(src['base']);path=b/'preparation/source8-fault-writer-barrier.json'
+ if path.exists():out[arm]=json.loads(path.read_text());continue
+ ledger=json.loads((b/'logs/process-ledger.json').read_text());births=[v for j in ledger['jobs'].values()for v in j.get('ledger',{}).values()];leader=json.loads((b/'preparation/submit-receipt.json').read_text())['leader'];checks=[]
+ for i in range(2):
+  rows=[]
+  for r in births:
+   if same(r):
+    cur=identity(r['pid']);f=Path('/proc/%d/stat'%r['pid']).read_text().rsplit(')',1)[1].split();cur['flags']=int(f[6]);cur['exit_only']=cur['state']=='Z'or(cur['state']=='D'and bool(cur['flags']&4));rows.append(cur)
+  checks.append(dict(unix=time.time(),leader_same_birth=same(leader),remaining_owned_births=rows));time.sleep(2)
+ assert all(not c['leader_same_birth']and all(r['exit_only']for r in c['remaining_owned_births'])for c in checks),checks
+ proof=dict(status='SOURCE8_NFS_FAULT_NO_USERSPACE_WRITERS',source_base=str(b),source_node='h100-11',target_node='h100-5',run_id=src['run_id'],config_sha256=sha(b/'preparation/launch-config.json'),leader=leader,checks=checks,authorization=AUTH,owned_gpu_release_complete=False,remaining_kernel_exit_residue_not_training=True,original_native_termination_signal=9)
+ once(path,proof);out[arm]=dict(status=proof['status'],remaining_exit_only=checks[-1]['remaining_owned_births'],proof=str(path),sha256=sha(path))
+print(json.dumps(out))""".replace('SOURCES',repr(sources)).replace('AUTH',repr(auth)).replace('STAGED',repr('/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-d68173cea039f5949e6bd799ead7ed590ee87b71'))
+  call(inner,'barrier')
+ elif action=='cpu':
+  for arm,src in sources.items():
+   staged='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-d68173cea039f5949e6bd799ead7ed590ee87b71'
+   inner="""import sys,json,subprocess,os,time
+from pathlib import Path
+sys.path.insert(0,STAGED)
+from reproduction.prefix_selection200.b_progressive_resume import stopped
+from reproduction.a800.owned_processes import identity
+b=Path(BASE);assert json.loads((b/'preparation/source8-fault-writer-barrier.json').read_text())['status']=='SOURCE8_NFS_FAULT_NO_USERSPACE_WRITERS';n=json.loads((b/'latest-joint.json').read_text())['outer'];proof=b/'preparation'/('ab-joint-%04d-independent-full-sha-cpu.json'%n)
+intent=b/'preparation/source8-fault-latest-cpu-worker-once-v1.json'
+if proof.exists():print(json.dumps(dict(status='EXISTING_PROOF',proof=str(proof))))
+elif intent.exists():print(intent.read_text())
+else:
+ code='import sys,json;sys.path.insert(0,'+repr(STAGED)+');from reproduction.prefix_selection200.ab_checkpoint_once import inspect;print(json.dumps(inspect('+repr(str(b))+','+str(n)+')),flush=True)'
+ with intent.open('x')as f:json.dump(dict(outer=n,created_unix=time.time(),status='START_INTENT'),f);f.flush();os.fsync(f.fileno())
+ log=b/'preparation/source8-fault-latest-cpu-worker.log'
+ with log.open('xb')as f:p=subprocess.Popen([sys.executable,'-c',code],env=dict(os.environ,CUDA_VISIBLE_DEVICES='',PYTHONDONTWRITEBYTECODE='1'),stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
+ r=dict(outer=n,leader=identity(p.pid),log=str(log),proof=str(proof),cpu_only=True)
+ with(b/'preparation/source8-fault-latest-cpu-worker-receipt.json').open('x')as f:json.dump(r,f)
+ print(json.dumps(r))""".replace('STAGED',repr(staged)).replace('BASE',repr(src['base']))
+   call(inner,'cpu-start-'+arm,prefix='5'if arm=='A'else'80')
+ elif action=='read':
+  inner='''import json,subprocess,time,sys
+from pathlib import Path
+sys.path.insert(0,STAGED)
+from reproduction.a800.owned_processes import same,identity
+out={}
+for arm,s in SOURCES.items():
+ b=Path(s['base']);leader=s['leader'];live=same(leader);ledger=json.loads((b/'logs/process-ledger.json').read_text());rows=[]
+ for j in ledger['jobs'].values():
+  for r in j.get('ledger',{}).values():
+   if same(r):rows.append(identity(r['pid']))
+ out[arm]=dict(leader=identity(leader['pid'])if live else None,owned=rows,latest=json.loads((b/'latest-joint.json').read_text())['outer'],cleanup=json.loads((b/'logs/cleanup-status.json').read_text())if(b/'logs/cleanup-status.json').exists()else None)
+out['gpu']=subprocess.run(['nvidia-smi','--query-gpu=index,uuid,memory.total,memory.used,utilization.gpu','--format=csv,noheader'],capture_output=True,text=True,timeout=20).stdout
+out['gpu_apps']=subprocess.run(['nvidia-smi','--query-compute-apps=pid,gpu_uuid,used_memory','--format=csv,noheader'],capture_output=True,text=True,timeout=20).stdout
+print(json.dumps(out))'''.replace('SOURCES',repr(sources)).replace('STAGED',repr('/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-d68173cea039f5949e6bd799ead7ed590ee87b71'))
+  call(inner,'read')
