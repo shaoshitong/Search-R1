@@ -173,6 +173,48 @@ def validate_gpu_snapshot(index, expected_uuid, rows, processes, minimum_free_gi
         raise RuntimeError('GPU already has a compute process')
 
 
+def controller_reservations(process, directory, selected_uuid):
+    """Scope a recognized cooperating controller by *held* kernel OFD locks.
+
+    An open lock pathname alone is not a reservation. Unknown, unreadable,
+    deleted/recreated, partial-byte, and selected-device reservations reject.
+    This never releases or changes another controller's lock.
+    """
+    process, directory = Path(process), Path(directory).resolve()
+    held = set()
+    try:
+        for fd in (process / 'fd').iterdir():
+            target = os.readlink(fd)
+            target_path = Path(target)
+            if target_path.parent.resolve() != directory:
+                continue
+            if not re.fullmatch(r'GPU-[0-9a-f-]+\.lock', target_path.name):
+                # A deleted UUID lease cannot safely be compared with the new
+                # filesystem entry now bearing the same UUID name.
+                if target_path.name.startswith('GPU-'):
+                    raise RuntimeError('Controller has an unknown/deleted UUID lease')
+                continue
+            opened, current = fd.stat(), target_path.stat()
+            if (opened.st_dev, opened.st_ino) != (current.st_dev, current.st_ino):
+                raise RuntimeError('Controller UUID lock inode was replaced')
+            info = (process / 'fdinfo' / fd.name).read_text()
+            for line in info.splitlines():
+                fields = line.split()
+                if (len(fields) >= 9 and fields[0] == 'lock:' and
+                    fields[2:5] == ['OFDLCK', 'ADVISORY', 'WRITE'] and
+                    fields[-2:] == ['0', 'EOF']):
+                    held.add(target_path.name[:-5])
+        if not held:
+            raise RuntimeError('Controller GPU scope cannot be proven by held OFD UUID locks')
+        if selected_uuid in held:
+            raise RuntimeError('Controller already reserves selected GPU UUID')
+        return dict(pid=int(process.name), reservation_uuids=sorted(held),
+                    proof='kernel /proc/PID/fdinfo OFDLCK ADVISORY WRITE whole-file',
+                    selected_uuid_excluded=True)
+    except (OSError, ValueError) as error:
+        raise RuntimeError('Controller GPU reservation evidence unreadable; admission denied') from error
+
+
 def admit_gpu(index, expected_uuid, directory, minimum_free_gib):
     """Same UUID OFD lease namespace as standalone training and CF workers."""
     if not re.fullmatch(r'GPU-[0-9a-f-]+', expected_uuid):
@@ -190,6 +232,7 @@ def admit_gpu(index, expected_uuid, directory, minimum_free_gib):
             'nvidia-smi', '--query-compute-apps=gpu_uuid,pid', '--format=csv,noheader,nounits'], text=True)))
         )
         validate_gpu_snapshot(index, expected_uuid, rows, processes, minimum_free_gib)
+        controller_scopes = []
         for process in Path('/proc').iterdir():
             if not process.name.isdigit() or int(process.name) == os.getpid():
                 continue
@@ -199,10 +242,10 @@ def admit_gpu(index, expected_uuid, directory, minimum_free_gib):
                 command = (process / 'cmdline').read_bytes().split(b'\0')
                 if any(x.startswith((b'reproduction.prefix_selection200.',
                                      b'reproduction.prefix20_online.')) for x in command):
-                    raise RuntimeError('A training/bootstrap controller may reserve the GPU')
+                    controller_scopes.append(controller_reservations(process, directory, expected_uuid))
             except (PermissionError, FileNotFoundError, ProcessLookupError):
                 pass
-        return fd, rows
+        return fd, rows, controller_scopes
     except BaseException:
         os.close(fd)
         raise
@@ -401,7 +444,7 @@ def main():
     args = p.parse_args()
     out = Path(args.output); out.mkdir(parents=True, exist_ok=True)
     lease = open(out / '.normal.lock', 'a+'); fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    gpu_fd, admission_rows = admit_gpu(args.gpu_index, args.gpu_uuid,
+    gpu_fd, admission_rows, controller_scopes = admit_gpu(args.gpu_index, args.gpu_uuid,
                                      args.gpu_lock_directory, args.min_start_free_gib)
     physical_uuid = args.gpu_uuid
     # Keep this file descriptor/OFD lease live for the entire evaluation.
@@ -414,6 +457,9 @@ def main():
         physical_index=args.gpu_index, inventory=admission_rows, pid=os.getpid(),
         lock_kind='OFD', gpu_lock_directory=str(Path(args.gpu_lock_directory).resolve()),
         cuda_visible_devices=str(args.gpu_index), checked_at=time.time()))
+    atomic(out / 'controller-reservation-admission.json', dict(checked_at=time.time(),
+        selected_gpu_uuid=physical_uuid, controller_scopes=controller_scopes,
+        slurm_nodes_rejected=True, foreign_locks_modified=False))
     if args.method == 'easy' and not args.identity_file:
         raise ValueError('Easy requires original final-result occurrence identity')
     maximum_batch = args.max_batch_size or args.batch_size
