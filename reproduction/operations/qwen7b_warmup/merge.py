@@ -39,6 +39,7 @@ def main():
                     row=json.loads(line);tid=row['trajectory_id'];qid=row['qid']
                     assert tid not in seen and tid in labels and qid in inputs
                     assert row['question_hash']==inputs[qid]['question_hash']
+                    assert row['split']==inputs[qid]['split']
                     assert row['initial_prompt_token_ids']==inputs[qid]['initial_prompt_token_ids']
                     assert row['retained_policy_length']<=20 and row['feature_layer']==26
                     seen.add(tid);own.setdefault(qid,[]).append((row['response_index'],tid,labels[tid]))

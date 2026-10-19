@@ -9,6 +9,7 @@ from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 import gzip
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -17,7 +18,7 @@ import time
 import atexit
 from reproduction.prefix20_online.pool import atomic, canonical, digest, immutable, read
 from reproduction.prefix_selection200.rollout import (root_dir, phase_output, initial_state,
-    retained_length, next_request, prefix_record, discard_hidden_lookahead, file_item,
+    retained_length, next_request, prefix_record as reference_prefix_record, discard_hidden_lookahead, file_item,
     _build_llm as reference_build_llm, iter_rows, seed_for)
 from reproduction.prefix20_online.rollout import strict_label, utc
 from reproduction.prefix_selection200.interaction_protocol import (ACTUAL_COMPUTE_DTYPE,
@@ -33,6 +34,14 @@ WORLD = 1
 REVISION = 'a09a35458c702b33eeacc393d103063234e8bc28'
 CONTRACT = SAMPLING_CONTRACT
 _CACHED = {}
+
+
+def prefix_record(state):
+    row=reference_prefix_record(state)
+    row['split']=state['group']['split']
+    row.pop('prefix_sha256')
+    row['prefix_sha256']=hashlib.sha256(canonical(row)).hexdigest()
+    return row
 
 
 def _configure_one_visible_gpu(rank):
@@ -212,7 +221,7 @@ def worker(config_path, outer, phase, rank, selection_path=None):
             label = strict_label(tokenizer, state['response'], state['info_mask'], group['reward_model']['ground_truth'])
             row = dict(schema_version=1, run_id=config['run_id'], outer=outer, actor_version=config['actor_version'],
                 policy_snapshot_id=config['actor_version'], trajectory_id=state['trajectory_id'], qid=group['qid'],
-                question_hash=group['question_hash'], candidate_ordinal=state['candidate_ordinal'],
+                question_hash=group['question_hash'], split=group['split'], candidate_ordinal=state['candidate_ordinal'],
                 response_index=state['response_index'], initial_prompt_token_ids=state['prompt'],
                 response_token_ids=state['response'], response_info_mask=state['info_mask'],
                 response_log_probs=state['log_probs'], behavior_turns=state['turns'],
