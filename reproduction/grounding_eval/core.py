@@ -15,7 +15,7 @@ from pathlib import Path
 from search_r1.qa_protocol import extract_final_answer
 
 PROTOCOL = 'paper-strict-v1'
-CF_CONFIG = dict(protocol_version=PROTOCOL, replacement_version='typed-question-guided-v3',
+CF_CONFIG = dict(protocol_version=PROTOCOL, replacement_version='typed-question-guided-v4-punctuation-aliases',
     seed=1729, prompt_version='single-user-question-docs-v1',
     parser_version='terminal-nonnested-qa-v1', normalization='qa-em-ascii-punct-articles-v1',
     max_new_tokens=512, max_model_len=8192, temperature=0., top_p=1., top_k=-1,
@@ -56,7 +56,17 @@ def normalize(text):
 def occurrence(row): return [str(row['data_source']), int(row['evaluation_ordinal']), str(row['qid'])]
 
 def intervene(docs, golds, key, question=''):
-    aliases = sorted(set(g.strip() for g in golds if g.strip() and normalize(g)), key=lambda x:(-len(x), x))
+    # QA EM ignores punctuation/articles. A gold such as "Super Bowl LII,"
+    # therefore also names an unpunctuated occurrence in the actual evidence.
+    # Keep terminal punctuation OUTSIDE the replaced lexical span. Longest
+    # alternatives still run once on original docs, with whole-word boundaries.
+    aliases=set()
+    for g in golds:
+        trimmed=g.strip().strip(',;:.!? \t\n\"\'`')
+        if trimmed and normalize(trimmed):aliases.add(trimmed)
+        normalized=normalize(g)
+        if normalized:aliases.add(normalized)
+    aliases = sorted(aliases,key=lambda x:(-len(x),x))
     if not aliases: return dict(status='INVALID_INTERVENTION', invalid_reason='empty_gold_aliases')
     from .replacements import make_replacements
     replacement=make_replacements(aliases,key,question)

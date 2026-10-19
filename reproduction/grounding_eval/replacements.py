@@ -83,6 +83,14 @@ def make_replacements(golds, seed_key, question):
     golds=sorted(set(x.strip()for x in golds if x.strip()and _norm(x)))
     if not golds:raise ValueError('No usable gold aliases')
     n=_seed(seed_key);q=question.casefold()
+    # Names of TV programmes (Grey's Anatomy) and institutional contexts may
+    # contain anatomy/country hints. An explicit WHO asks for a person first.
+    if re.search(r'\bwho\b|\bwhose\b|\bwhich person\b',q):
+        pool=_POOLS['person'];start=n%len(pool)
+        for i in range(len(pool)):
+            value=pool[(start+i)%len(pool)]
+            result=_pack({a:value for a in golds},'question_hint_person',golds)
+            if result:return result
     # Repeated outer loop only changes a collision-avoiding deterministic offset.
     roman=[]
     for alias in golds:

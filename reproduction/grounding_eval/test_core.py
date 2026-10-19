@@ -27,6 +27,20 @@ class StrictProtocol(unittest.TestCase):
         self.assertEqual(q['replacement_count'],2)
         self.assertNotIn(q['injected_value'],['2003','2,003'])
 
+    def test_normalized_gold_punctuation_does_not_leave_original_fact(self):
+        p=intervene(['The Eagles won Super Bowl LII in 2017.'],['Super Bowl LII,','2017'],['nq',8],
+            'When did the Eagles last win the Super Bowl?')
+        self.assertEqual(p['replacement_count'],2)
+        self.assertNotIn('Super Bowl LII in',p['modified_docs'][0])
+        self.assertEqual(p['replacement_kind'],'roman_and_season_year_offset')
+        p=intervene(['The dog named Spike appeared.'],['Spike.'],['nq',27],'What is the dog named?')
+        self.assertEqual(p['replacement_count'],1)
+
+    def test_who_in_anatomy_title_gets_person(self):
+        p=intervene(['Dr. Lexie Grey died.'],['Dr. Lexie Grey','Lexie'],['nq',25],
+            "Who died in the plane crash in Grey's Anatomy?")
+        self.assertEqual(p['replacement_kind'],'question_hint_person')
+
     def test_legal_final_answer_only(self):
         p=prepare_row(row(model_spans=['<search><answer>Ann</answer></search>']),M)
         self.assertEqual(p['original_em'],0)
