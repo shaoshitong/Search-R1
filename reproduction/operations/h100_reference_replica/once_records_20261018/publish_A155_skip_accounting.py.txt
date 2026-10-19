@@ -1,0 +1,42 @@
+"""Publish existing original skip evidence; never repeat its remote read."""
+import hashlib,json
+from pathlib import Path
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+source=root/'work/b-progressive-A155-actual-13-skip-reasons-20261019T081204599047Z.json'
+env=json.loads(source.read_text());assert env['rc']==0
+d=json.loads(env['stdout']);assert d['outer']==155
+assert sorted(r['rank']for r in d['ranks'])==[0,1,2,3]
+follow=root/'work/prefix5-ab-h10011-normal-follow-20261019T081006786266Z-actual.json'
+observed=json.loads(follow.read_text());facts={x['outer']:x for x in observed['A']['facts']}
+for r in d['ranks']:
+ assert r['opportunity_status_counts']==dict(written=6,written_with_post_guard=1,skipped_guard=13)
+ assert r['new_actual_writes']==7 and r['actual_after']==3084
+ assert [x['opportunity']for x in r['skipped_opportunities']]==list(range(7,20))
+ assert all(x['actual_before']==x['actual_after']==3084 for x in r['skipped_opportunities'])
+ assert all(e['reasons']==['negative_advantage_tail']for x in r['skipped_opportunities']for e in x['guard_events'])
+ first=r['first_rejected_monitor']
+ assert first['opportunity']==6 and first['stage']=='after_minibatch'
+ assert first['reasons']==['negative_advantage_tail'] and first['invalid_count']==first['overflow_count']==0
+ assert first['sampled_old_policy_kl']<.2 and first['negative_tail_weight_fraction']>.01
+ assert r['ledger_sha256']==next(x['ledger_sha256']for x in facts[155]['actor']if x['rank']==r['rank'])
+assert all(x['writes']==20 and x['actual_adam_steps']==3104 for x in facts[156]['actor'])
+assert observed['A']['native']['leader_same_birth'] is True
+result=dict(original_skip_read=d,source_files=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest())for p in (source,follow)],
+ following_actual_complete156=facts[156],actual_cumulative_adam_per_rank=[3104]*4,
+ cumulative_unwritten_opportunities_through156=16,earlier_historical_unwritten_opportunities=3,
+ new_skipped_opportunities155=13,no_training_change=True)
+out=Path('reproduction/reports/h100-prefix5-ab200-20261018/A155-skip-accounting');out.mkdir(exist_ok=True)
+(out/'ORIGINAL-SKIP-REASONS-AND-A156-ACTUAL.json').write_text(json.dumps(result,indent=2)+'\n')
+(out/'README.md').write_text('''# A155: actual writes and original guard dispositions
+
+All four original A155 journals processed20 opportunities:6 ordinary writes,1 retained write with a post-update guard, then13 skipped opportunities. Each rank made7 actual Adam writes,3077→3084. All four original ledger hashes match the independently read completion observation.
+
+After the seventh write (zero-based opportunity6), the original negative-advantage-tail guard rejected the frozen monitor observation. It recorded1 tail token among59 negative tokens: tail weight fraction0.01694915254237288, exceeding the unchanged reference1% limit. Sampled old-policy KL was0.0032950861857104683 (below0.2); invalid/overflow counts were0. The subsequent13 opportunities kept the unchanged3084 state, with the same explicit tail reason. The seventh successful write was retained; no rollback occurred.
+
+This was the existing reference opportunity guard, not a newly added audit, CUDA/OOM failure or native training exit. The guard record's `fatal_reasons` field rejects an opportunity; it does not establish native-process failure. No threshold, algorithm, safety setting or running code was changed.
+
+The original next outer156 completed20 actual writes on all four ranks, to3104. Its original leader stayed the same birth and157 had started. There are16 unwritten opportunities cumulatively through156 (3 earlier historical plus13 at155). Reports must use3104, not theoretical3120 or a sum of physical ranks. Normal outer counting follows the reference20-processed/at-least-one-write rule; it does not claim20 writes in every completed outer.
+
+Only scalar reasons and hashes were returned; full logs, weights and tensors remain remote. This publication did not load a model or perform a new forward. Both200/no201, later QA/final51713 and actual terminal/resource closure remain incomplete.
+''')
+print(out)

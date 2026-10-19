@@ -1,0 +1,21 @@
+"""Read original A155 scalar opportunity dispositions; caller supplies BASE.
+
+No model load, forward, training edit or full-log transfer.
+"""
+import json,hashlib,collections
+from pathlib import Path
+base=Path(BASE);attempt=base/'actor/outers/outer-0155-attempt-ae2ad60937514d53a414dd9b4d861a88'
+result=[]
+for rank in range(4):
+ p=attempt/('rank-%d-updates.jsonl'%rank);raw=p.read_bytes();rows=[json.loads(x)for x in raw.splitlines()]
+ ops=[x for x in rows if x['event']=='OPPORTUNITY'];writes=[x for x in rows if x['event']=='ACTUAL_ADAM_WRITE']
+ rejected=[x for x in rows if x['event']=='POLICY_MONITOR'and not x['allowed']]
+ assert len(ops)==20 and len(writes)==7
+ result.append(dict(rank=rank,ledger_sha256=hashlib.sha256(raw).hexdigest(),
+  opportunity_status_counts=dict(collections.Counter(x['status']for x in ops)),
+  new_actual_writes=len(writes),actual_after=writes[-1]['actual_adam_steps'],
+  skipped_opportunities=[dict(opportunity=x['opportunity'],guard_events=x['guard_events'],
+   actual_before=x['actual_adam_before'],actual_after=x['actual_adam_after'])for x in ops if x['status']=='skipped_guard'],
+  first_rejected_monitor={k:v for k,v in rejected[0].items()if k not in ('binding','binding_sha256')}if rejected else None))
+print(json.dumps(dict(outer=155,role='ORIGINAL_ACTUAL_SKIPPED_OPPORTUNITY_CAUSE_NOT_NEW_TEST',
+ ranks=result,training_modified=False,no_model_forward=True,no_full_logs_copied_to_Mac=True)))
