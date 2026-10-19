@@ -28,7 +28,12 @@ def main():
         actual=compact['arms'][arm];receipt=actual['native']
         if actual['base']!=value['base']or receipt['run_id']!=value['run_id']or receipt['config_sha256']!=value['config_sha256']:
             raise ValueError('Primary state and current original submitted run differ')
-        if receipt['leader_same_birth']is not True:raise ValueError('Current leader is not the submitted birth')
+        # Starting a collector needs a live submitted birth. Reading an already
+        # bound collector must also work after that birth exits: its terminal
+        # proof is exactly what status is meant to retrieve. Run/config/PID
+        # bindings below still prevent reusing this collector for another run.
+        if args.action=='start'and receipt['leader_same_birth']is not True:
+            raise ValueError('Current leader is not the submitted birth')
         targets[arm]=dict(base=actual['base'],run_id=receipt['run_id'],config_sha256=receipt['config_sha256'],
             leader={key:receipt['leader'][key]for key in ('pid','start_ticks','sid','uid')})
     if {arm:value['leader']['pid']for arm,value in targets.items()}!={'A':128824,'B':757735}:
