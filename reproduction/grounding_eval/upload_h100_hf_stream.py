@@ -4,6 +4,7 @@ Preparation alone never uploads. --execute is required, and the token is read
 only from the existing task-private file. No model bytes are staged on disk.
 """
 import argparse
+from contextlib import ExitStack
 import fcntl
 import hashlib
 import io
@@ -14,6 +15,7 @@ import selectors
 import shlex
 import subprocess
 import time
+import threading
 
 
 ALLOWED = {
@@ -196,6 +198,89 @@ def metadata_match(meta, record, git_blob=None):
     return git_blob is not None and file_value(meta, 'blob_id') == git_blob
 
 
+def upload_selected(api, commit_operation, upload_info, plan, records, fresh, cfg, root, status,
+                    read_timeout, upload_threads=3, stream_type=RemoteFile):
+    """One commit, independent per-file streams; LFS parts stay sequential.
+
+    Audited against hub 1.23.0: preupload's thread pool schedules different
+    operations, whereas lfs._upload_parts_iteratively seeks a single stream
+    sequentially. No hf_transfer/Xet reader is enabled. Source positions can
+    rewind during hashing/retry and are never presented as HF-verified bytes.
+    """
+    if upload_threads not in (1, 2, 3):
+        raise ValueError('At most three independent file uploads')
+    mutex = threading.RLock()
+    status['file_progress'] = {}
+    status['upload_threads'] = upload_threads
+    status['state'] = 'PREPARING_INDEPENDENT_STREAMS'
+    paths = [plan['prefix'].rstrip('/') + '/' + r['name'] for r in records]
+    initial_revision = api.model_info(plan['repo']).sha
+    existing = {file_value(x, 'path'): x for x in api.get_paths_info(
+        plan['repo'], paths, revision=initial_revision, repo_type='model')}
+    prepared = []
+    operations = []
+    with ExitStack() as stack:
+        for record, bound, path in zip(records, fresh, paths):
+            name = record['name']
+            def progress(position, *, name=name, size=bound['bytes']):
+                with mutex:
+                    prior = status['file_progress'].get(name, {})
+                    bucket = position // (64 << 20)
+                    if position == size or bucket != prior.get('progress_bucket'):
+                        status['file_progress'][name] = dict(
+                            source_read_position_bytes=position, source_bytes=size,
+                            progress_bucket=bucket, updated_at=time.time(),
+                            meaning='source stream position; may rewind; not HF verified')
+                        status['updated_at'] = time.time()
+                        publish(root / 'status.json', status)
+            stream = stack.enter_context(stream_type(cfg, bound, read_timeout, progress))
+            sample = stream.read(min(512, bound['bytes']))
+            stream.seek(0)
+            git_blob = None
+            if bound['bytes'] < (32 << 20):
+                h = hashlib.sha1(('blob %d\0' % bound['bytes']).encode())
+                while stream.tell() < bound['bytes']:
+                    h.update(stream.read(min(MAX_READ, bound['bytes'] - stream.tell())))
+                git_blob = h.hexdigest()
+                stream.seek(0)
+            meta = existing.get(path)
+            if meta is not None and not metadata_match(meta, bound, git_blob):
+                raise RuntimeError('Existing destination conflicts with source')
+            skipped = meta is not None
+            if not skipped:
+                operation = commit_operation(path_in_repo=path, path_or_fileobj=sample)
+                operation.path_or_fileobj = stream
+                operation.upload_info = upload_info(size=bound['bytes'],
+                    sha256=bytes.fromhex(bound['sha256']), sample=sample)
+                operations.append(operation)
+            prepared.append((record, bound, path, git_blob, skipped))
+        status.update(state='UPLOADING', pending_operations=len(operations),
+                      source_positions_are_hf_verified=False, updated_at=time.time())
+        publish(root / 'status.json', status)
+        if operations:
+            revision = api.create_commit(plan['repo'], operations=operations,
+                num_threads=upload_threads,
+                commit_message='Preserve Easy Selection iter200 for grounding evaluation',
+                repo_type='model').oid
+        else:
+            revision = initial_revision
+        # Only pinned remote metadata creates verified-byte receipts. Source
+        # read progress and a successful PUT are not sufficient evidence.
+        final = {file_value(x, 'path'): x for x in api.get_paths_info(
+            plan['repo'], paths, revision=revision, repo_type='model')}
+        receipts = []
+        for record, bound, path, git_blob, skipped in prepared:
+            if not metadata_match(final.get(path), bound, git_blob):
+                raise RuntimeError('HF pinned full size/LFS SHA or Git blob verification failed')
+            receipts.append(dict(name=record['name'], path=path, bytes=bound['bytes'],
+                sha256=bound['sha256'], git_blob_id=git_blob, commit=revision,
+                already_present=skipped, verified_at=time.time()))
+        status.update(receipts=receipts, verified_bytes=sum(r['bytes'] for r in receipts),
+                      updated_at=time.time())
+        publish(root / 'status.json', status)
+    return revision
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--plan', required=True)
@@ -203,6 +288,7 @@ def main():
     parser.add_argument('--route-json', required=True)
     parser.add_argument('--token-file', required=True)
     parser.add_argument('--read-timeout', type=float, default=60)
+    parser.add_argument('--upload-threads', type=int, choices=(1, 2, 3), default=3)
     parser.add_argument('--source-hash-timeout', type=float, default=900)
     parser.add_argument('--execute', action='store_true')
     args = parser.parse_args()
@@ -226,7 +312,15 @@ def main():
         return
     os.environ['HF_HUB_DISABLE_XET'] = '1'
     os.environ['HF_HUB_ENABLE_HF_TRANSFER'] = '0'
+    os.environ['HF_HUB_DISABLE_PROGRESS_BARS'] = '1'
+    os.environ['HF_HUB_VERBOSITY'] = 'error'
+    os.environ['HF_DEBUG'] = '0'
+    import huggingface_hub
+    if huggingface_hub.__version__ != '1.23.0':
+        raise RuntimeError('Re-audit hub per-file concurrency before using another version')
     from huggingface_hub import HfApi, CommitOperationAdd
+    from huggingface_hub.utils import logging as hub_logging
+    hub_logging.set_verbosity_error()
     from huggingface_hub.lfs import UploadInfo
     root = Path(args.task_dir)
     root.mkdir(parents=True, exist_ok=True)
@@ -244,50 +338,13 @@ def main():
     status = dict(state='UPLOADING', pid=os.getpid(), started_at=time.time(),
                   plan_sha256=digest(plan), source_manifest=fresh, receipts=[],
                   verified_bytes=0,
-                  model_disk_staging=False, mac_in_data_route=False)
+                  model_disk_staging=False, mac_in_data_route=False,
+                  huggingface_hub_version=huggingface_hub.__version__,
+                  transfer_strategy='one commit; independent file streams; sequential parts per file')
     publish(root / 'status.json', status)
     try:
-        for record, bound in zip(records, fresh):
-            path = plan['prefix'].rstrip('/') + '/' + record['name']
-            def progress(position):
-                if position == bound['bytes'] or position // (64 << 20) != status.get('progress_bucket', -1):
-                    status.update(current_file=record['name'], source_read_position_bytes=position,
-                                  progress_bucket=position // (64 << 20), updated_at=time.time())
-                    publish(root / 'status.json', status)
-            with RemoteFile(cfg, bound, args.read_timeout, progress) as stream:
-                sample = stream.read(min(512, bound['bytes']))
-                stream.seek(0)
-                # Git's identity is required for non-LFS metadata, not a SHA256
-                # claim on a repository Git blob. Largest metadata file is12MB.
-                git_blob = None
-                if bound['bytes'] < (32 << 20):
-                    h = hashlib.sha1(('blob %d\0' % bound['bytes']).encode())
-                    while stream.tell() < bound['bytes']:
-                        h.update(stream.read(min(MAX_READ, bound['bytes'] - stream.tell())))
-                    git_blob = h.hexdigest()
-                    stream.seek(0)
-                existing = api.get_paths_info(plan['repo'], [path], repo_type='model')
-                if existing and not metadata_match(existing[0], bound, git_blob):
-                    raise RuntimeError('Existing destination conflicts with source')
-                if existing:
-                    revision = api.model_info(plan['repo']).sha
-                    skipped = True
-                else:
-                    operation = CommitOperationAdd(path_in_repo=path, path_or_fileobj=sample)
-                    operation.path_or_fileobj = stream
-                    operation.upload_info = UploadInfo(size=bound['bytes'], sha256=bytes.fromhex(bound['sha256']), sample=sample)
-                    revision = api.create_commit(plan['repo'], operations=[operation],
-                                commit_message='Preserve Easy Selection iter200 for grounding evaluation', repo_type='model').oid
-                    skipped = False
-                meta = api.get_paths_info(plan['repo'], [path], revision=revision, repo_type='model')
-                if len(meta) != 1 or not metadata_match(meta[0], bound, git_blob):
-                    raise RuntimeError('HF full size/LFS SHA or Git blob verification failed')
-                status['receipts'].append(dict(name=record['name'], path=path, bytes=bound['bytes'],
-                    sha256=bound['sha256'], git_blob_id=git_blob, commit=revision,
-                    already_present=skipped, verified_at=time.time()))
-                status.update(updated_at=time.time(), verified_bytes=sum(
-                    r['bytes'] for r in status['receipts']))
-                publish(root / 'status.json', status)
+        upload_selected(api, CommitOperationAdd, UploadInfo, plan, records, fresh, cfg,
+                        root, status, args.read_timeout, args.upload_threads)
         # Fresh metadata for all files at one final immutable revision.
         revision = api.model_info(plan['repo']).sha
         paths = [plan['prefix'] + '/' + r['name'] for r in records]
