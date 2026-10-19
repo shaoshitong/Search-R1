@@ -49,7 +49,7 @@ def ssh_source(cfg, command):
             cfg['management_identity_file'], '-o', 'IdentitiesOnly=yes',
             '-o', 'BatchMode=yes', '-o', 'StrictHostKeyChecking=yes',
             '-o', 'UpdateHostKeys=no', '-o', 'ConnectTimeout=8',
-            '-o', 'ConnectionAttempts=1', '-o', 'ServerAliveInterval=10',
+            '-o', 'ConnectionAttempts=1', '-o', 'ServerAliveInterval=5',
             '-o', 'ServerAliveCountMax=2']
     keys = cfg.get('trusted_target_host_keys', {}).get('h100-10')
     if keys:
