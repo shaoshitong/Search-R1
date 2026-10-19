@@ -1,0 +1,18 @@
+"""Independent fresh source-bound target readback. No model body leaves A800."""
+import sys,subprocess,json,pathlib,shlex,hashlib,time
+sys.path.insert(0,'/Users/shaoshitong/Documents/remote_codex_control');import control
+D=pathlib.Path('outputs/grounding-eval-20261019');expected=json.loads((D/'opsd-a800-asset-job.json').read_text())
+code=r'''import sys,json,pathlib,hashlib,time,os,subprocess
+j=json.load(sys.stdin);root=pathlib.Path(j['output']);start=time.time();s=json.loads((root/'asset-status.json').read_text());complete=json.loads((root/'complete.json').read_text());assert s['status']=='MIGRATION_ALL_SELECTED_ASSETS_VERIFIED' and complete['status']==s['status'];assert json.loads((root/'asset-binding.json').read_text())==j
+actual={}
+for n,v in j['files'].items():
+ p=root/n;a=p.stat();h=hashlib.sha256()
+ with p.open('rb')as f:
+  for b in iter(lambda:f.read(4*1024*1024),b''):h.update(b)
+ z=p.stat();assert(a.st_size,a.st_ino,a.st_mtime_ns)==(z.st_size,z.st_ino,z.st_mtime_ns);assert a.st_size==v['size'] and h.hexdigest()==v['sha256'];assert complete['files'][n]=={'size':v['size'],'sha256':v['sha256']};actual[n]={'size':a.st_size,'sha256':h.hexdigest()}
+assert complete['revision']==j['revision'] and complete['source_receipt_sha256']==j['source_receipt_sha256'];fd=os.open(root,os.O_RDONLY);os.fsync(fd);os.close(fd)
+remaining=[q.name for q in root.glob('*.part')];assert not remaining
+out={'state':'INDEPENDENT_A800_FRESH_ALL_12FILES_SHA_VERIFIED','started_epoch':start,'finished_epoch':time.time(),'host':os.uname().nodename,'target':str(root),'route':j['route'],'verified_files':len(actual),'verified_bytes':sum(v['size']for v in actual.values()),'files':actual,'source_receipt_sha256':j['source_receipt_sha256'],'repo':j['repo'],'revision':j['revision'],'prefix':j['prefix'],'complete_sha256':hashlib.sha256((root/'complete.json').read_bytes()).hexdigest(),'binding_sha256':hashlib.sha256((root/'asset-binding.json').read_bytes()).hexdigest(),'process_after_verification':subprocess.run(['ps','-p',str(s['pid']),'-o','pid,stat,args'],capture_output=True,text=True,timeout=5).stdout,'model_bytes_through_Mac':0,'gpu_jobs_submitted':0};print(json.dumps(out))'''
+r=subprocess.run(control.route('baai-a800','python3 -B -c '+shlex.quote(code)),input=json.dumps(expected),capture_output=True,text=True,timeout=180)
+if r.returncode:raise RuntimeError('Independent target verification not complete; no model or credential retained')
+x=json.loads(r.stdout);(D/'opsd-a800-asset-final-independent.json').write_text(json.dumps(x,indent=2)+'\n');print(json.dumps({k:v for k,v in x.items()if k!='files'}))
