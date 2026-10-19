@@ -554,7 +554,9 @@ def main():
         capacity = dict(kv_capacity_tokens=None, reason='vllm_version_does_not_expose_cache_config')
     atomic(out / ('engine-capacity-%d.json' % os.getpid()), dict(capacity,
         pid=os.getpid(), checked_at=time.time(), execution_batch_cap=execution_cap,
-        max_num_seqs=args.max_num_seqs, max_num_batched_tokens=args.max_num_batched_tokens))
+        max_num_seqs=args.max_num_seqs, max_num_batched_tokens=args.max_num_batched_tokens,
+        initialization_peak_allocated_bytes=torch.cuda.max_memory_allocated(),
+        initialization_peak_reserved_bytes=torch.cuda.max_memory_reserved()))
     manager = LLMGenerationManager(tokenizer, worker, generation, is_validation=True)
     # No injected text or docs enters this normal rerun. Original prompts only.
     completed = 0; started = time.time(); total = min(args.limit, 3610)
@@ -622,6 +624,7 @@ def main():
                 normal_binding_sha256=binding_hash,
                 checkpoint_files_sha256=hashlib.sha256(canonical(normal_config['checkpoint_files'])).hexdigest(),
                 checkpoint_id=hashlib.sha256(canonical(normal_config['checkpoint_files'])).hexdigest()))
+        torch.cuda.reset_peak_memory_stats()
         t0 = time.time()
         try:
             if args.method == 'easy':
