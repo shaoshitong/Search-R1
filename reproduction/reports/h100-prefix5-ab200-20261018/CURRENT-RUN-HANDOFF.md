@@ -83,3 +83,18 @@ The user storage memory explicitly forbids stopping/hot-mounting healthy trainin
 Only if later explicitly approved, use each arm's actual latest complete joint after stopping its exact owned leader and verifying cleanup. Prepared runtime`d68173cea039f5949e6bd799ead7ed590ee87b71` is already independently published/staged on retained storage. A`ab_frozen_latest_resume.prepare_latest`/B`b_progressive_resume.prepare_latest` preserve model/both relevant optimizer clocks/EMA/RNG/permutation/cursor/pending question reservation. Fresh process prefix5 for A, completed-stage20/40/80 for B. Never reset0, prefer old50/100 for helper convenience, or stitch unsaved updates. Reconcile unique intents/receipts before every mutation. Personally follow five new complete outers plus the next real start after an actual restart.
 
 Direct configured mgmt-host→retained18 is the normal route; the read-only LAN5 fallback is scoped. A transport/observer timeout is not native terminal. Keep original logs/branches/runs; no large artifacts via Mac or deletion of historical runs to make space.
+
+## Assigned-node normal200/final QA CPU acceptance controls
+
+The control entry points now default to `--path-layout assigned`. Each arm is dispatched separately to its actual node and retained wrapper from `work/prefix5-ab-assigned-arms.json`; A uses h100-11 with the generic wrapper's explicit node argument, B uses h100-5 without that argument. Prefix environment stays5 for A and80 for current B. These controls never change either frozen repo or start QA/training. A pending output starts no CPU worker and creates no audit intent.
+
+Read-only readiness/status:
+
+```
+python3 -m reproduction.operations.h100_reference_replica.normal_checkpoint_control status --outer 200 --transport retained18_fallback_lan5
+python3 -m reproduction.operations.h100_reference_replica.final_qa_acceptance_control status --transport retained18_fallback_lan5
+```
+
+Only after each actual200 joint is committed, start its CPU reader once with `--arm A --transport lan5` or `--arm B --transport retained18`. Final-output CPU acceptance similarly starts only after that arm's actual pipeline/final51713 output has committed. Neither start action permits fallback/retry; uncertain outcomes require status of the same intent/receipt. Do not re-run inherited50/100/150 full hashes/loads in the new execution namespaces; the already accepted original proofs and copied joint identity remain their evidence. CPU model-state checks are not GPU forward tests or independent physical backups. Final-output acceptance does not replace actual direct-parent waitpid exit0 or owned-resource closure.
+
+The existing final worker validates exact canonical51713 question IDs/ordinals, all seven source counts, canonical prompts, all original four worker exits and metric rows, and recomputes strict EM/F1 while reading each original compressed shard once with full SHA. The14 focused CPU tests covering per-node dispatch, no start retry, progressive checkpoint widths and final-output fixtures passed; no GPU test was added. Live training runtime remains A6dc4a39e/B3b1889a0.

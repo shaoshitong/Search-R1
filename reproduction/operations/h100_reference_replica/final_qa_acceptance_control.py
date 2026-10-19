@@ -75,9 +75,13 @@ def remote_inner(arms,action):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=('start','status'));p.add_argument('--arm',choices=('A','B','both'),default='both');p.add_argument('--transport',choices=MODES,default='retained18');p.add_argument('--path-layout',choices=tuple(PATH_LAYOUTS),default='retained-cache-v2');a=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=('start','status'));p.add_argument('--arm',choices=('A','B','both'),default='both');p.add_argument('--transport',choices=MODES,default='retained18');p.add_argument('--path-layout',choices=tuple(PATH_LAYOUTS)+('assigned',),default='assigned');a=p.parse_args()
     if a.action=='start'and a.transport=='retained18_fallback_lan5':p.error('Once start cannot auto-retry; query status after uncertain outcomes')
     arms=json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text());arms={k:v for k,v in arms.items()if a.arm=='both'or k==a.arm}
+    if a.path_layout=='assigned':
+        from .assigned_cpu_control import execute
+        result=execute(arms,lambda selected:remote_inner(selected,a.action),a.action,a.transport,'final-qa-cpu-assigned')
+        print(json.dumps(result));return
     if not all(v['node']=='h100-11'for v in arms.values()):raise ValueError('Current qualified h100-11 placement only')
     inner=remote_inner(arms,a.action)
     script='import subprocess,os\np=subprocess.run('+repr(['unshare','--mount','--propagation','private','bash',PATH_LAYOUTS[a.path_layout],'/usr/bin/python3','-c',inner])+',env=dict(os.environ,CUDA_VISIBLE_DEVICES="",PYTHONDONTWRITEBYTECODE="1"),text=True,capture_output=True,timeout=40)\nassert p.returncode==0,p.stderr\nprint(p.stdout)'

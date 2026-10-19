@@ -118,13 +118,18 @@ def main():
     parser.add_argument('--outer', type=int, required=True, choices=(50, 100, 150, 200))
     parser.add_argument('--arm', choices=('A', 'B', 'both'), default='both')
     parser.add_argument('--transport', choices=MODES, default='retained18')
-    parser.add_argument('--path-layout', choices=tuple(PATH_LAYOUTS), default='source8')
+    parser.add_argument('--path-layout', choices=tuple(PATH_LAYOUTS)+('assigned',), default='assigned')
     args = parser.parse_args()
     if args.action == 'start' and args.transport == 'retained18_fallback_lan5':
         parser.error('Once start cannot automatically retry transport; query status after an uncertain outcome')
     arms = json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())
     if args.arm != 'both':
         arms = {args.arm: arms[args.arm]}
+    if args.path_layout=='assigned':
+        from .assigned_cpu_control import execute
+        result=execute(arms,lambda selected:remote_inner(selected,args.outer,args.action),
+                       args.action,args.transport,'normal-cp%d-assigned'%args.outer)
+        print(json.dumps(result));return
     if not all(entry['node'] == 'h100-11' for entry in arms.values()):
         raise ValueError('This control is scoped to the current qualified h100-11 placement')
     inner = remote_inner(arms, args.outer, args.action)
