@@ -49,7 +49,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', required=True)
     parser.add_argument('--proxy', default='http://127.0.0.1:17894')
-    parser.add_argument('--workers', type=int, default=4)
+    parser.add_argument('--workers', type=int, default=11)
     parser.add_argument('--weight-endpoint', default='https://hf-mirror.com')
     args = parser.parse_args()
     root = Path(args.root)
@@ -81,6 +81,7 @@ def main():
     names = {'config.json', 'generation_config.json', 'tokenizer_config.json', 'tokenizer.json',
         'vocab.json', 'merges.txt', 'model.safetensors.index.json'}
     items = [item for item in inventory['siblings'] if item['rfilename'] in names or item['rfilename'].endswith('.safetensors')]
+    items.sort(key=lambda item: (item['rfilename'].endswith('.safetensors'), item['rfilename']))
     assert all('/' not in item['rfilename'] and item.get('size', 0) > 0 for item in items)
     assert len([item for item in items if item['rfilename'].endswith('.safetensors')]) == 4
     old_state = json.loads((root / 'progress.json').read_text()) if (root / 'progress.json').exists() else {}
@@ -109,10 +110,10 @@ def main():
                     assert offset < item['size'], 'Partial larger than official file'
                     weights = name.endswith('.safetensors')
                     endpoint = args.weight_endpoint
-                    route = 'raw' if endpoint == 'https://hf-mirror.com' and not weights else 'resolve'
+                    route = 'raw' if endpoint == 'https://hf-mirror.com' and not weights and attempt % 2 == 0 else 'resolve'
                     url = '%s/%s/%s/%s/%s' % (endpoint, MODEL, route, REVISION, name)
                     connection = direct if endpoint == 'https://hf-mirror.com' else opener
-                    headers = {'Accept-Encoding': 'identity'}
+                    headers = {'Accept-Encoding': 'identity', 'User-Agent': 'Mozilla/5.0'}
                     if weights or offset:
                         headers['Range'] = 'bytes=%d-' % offset
                     request = urllib.request.Request(url, headers=headers)
