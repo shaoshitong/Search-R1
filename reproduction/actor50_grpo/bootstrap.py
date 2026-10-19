@@ -50,13 +50,18 @@ def validate_config(c,base):
         actor_hidden_native=True,probe_update_at_final=False,
         nonmixed_advantage_mode='zero_anchor_all_correct_only')
     if any(c.get(k)!=v for k,v in required.items()):raise ValueError('Actor50 GRPO branch recipe differs')
-    if (c['resume_joint']['adapter']!='actor50_prefix2040_v1' or c['resume_joint']['completed_outer']!=50
-            or c['resume_joint']['source_base']!=SOURCE_BASE
-            or c['source_joint50_sha256']!=SOURCE_JOINT_SHA
+    resumed=c['resume_joint'].get('adapter')=='actor50_full_joint_v1'
+    if (not resumed and (c['resume_joint']['adapter']!='actor50_prefix2040_v1'
+            or c['resume_joint']['completed_outer']!=50 or c['resume_joint']['source_base']!=SOURCE_BASE)):
+        raise ValueError('Bind the actual original actor50 boundary')
+    if (c['source_joint50_sha256']!=SOURCE_JOINT_SHA
             or c['probe_source_model_kind']!='ema' or c['probe_source_epoch']<1
             or len(c['probe_source_sha256'])!=64 or c['actual_em_selection_fallback']!='probe_score_fill'
             or c['model_revision']!='aa8e72537993ba99e69dfaafa59ed015b17504d1'):
         raise ValueError('Bind actual actor50 and the latest complete warmup EMA source')
+    if resumed:
+        if not 51<=c['resume_joint']['completed_outer']<200 or not c.get('full_joint_fault_recovery'):
+            raise ValueError('Require an explicit stopped full-joint fault recovery')
     from reproduction.prefix_selection200.actor import OBJECTIVE
     from reproduction.prefix_selection200.actor_safety import POLICY_SAFEGUARDS
     from reproduction.prefix_selection200.interaction_protocol import CONTRACT
@@ -73,6 +78,9 @@ def validate_config(c,base):
 
 def validate_imported_boundary(base,c):
     base=Path(base);validate_config(c,base)
+    if c['resume_joint'].get('adapter')=='actor50_full_joint_v1':
+        from .full_joint_resume import validate_boundary
+        return validate_boundary(base,c)
     q=read(base/'preparation/branch-qualified.json')
     if q['source_commit']!=c['source_commit'] or q['status']!='ACTOR50_WARMUP_EMA_BRANCH_CPU_QUALIFIED':
         raise ValueError('Missing immutable actor50/warmup CPU import qualification')

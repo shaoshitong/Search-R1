@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "goal_status": "ACTIVE_TO200_FINAL_ACCEPTANCE_PENDING",
+  "execution_id": "40389d9b00204a80ba68475fac254f9c",
+  "runtime_source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+  "observed_unix": 1792391063.3504562,
+  "receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-grpo-observe-1792391063643368000.json",
+  "receipt_sha256": "89edfa45ebecb5c47a43df499c1e1e165384752a153320e6616246e00ad0e0aa",
+  "latest_saved": 115,
+  "actor_actual_Adam": [
+    2298,
+    2298,
+    2298,
+    2298
+  ],
+  "scheduler": 115,
+  "probe_completed_outer": 110,
+  "probe_actual_Adam": [
+    300,
+    300,
+    300,
+    300
+  ],
+  "new_complete_since50": 65,
+  "new_saved_actual_Adam": 1298,
+  "historical_skips": 2,
+  "failure": {
+    "checked_unix": 1792389636.3488467,
+    "error": "RuntimeError('Actual phase failed: outer-000116-prefix; preserve its original log and artifacts')",
+    "traceback": "Traceback (most recent call last):\n  File \"/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/repo/reproduction/actor50_grpo/run.py\", line 18, in main\n    run(base);success=True\n  File \"/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/repo/reproduction/prefix_selection200/launch.py\", line 555, in run\n    actor_selection_path = sample_outer()\n  File \"/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/repo/reproduction/prefix_selection200/launch.py\", line 494, in sample_outer\n    phase(job('prefix'), [python, '-m', 'reproduction.prefix_selection200.rollout',\n  File \"/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/repo/reproduction/prefix_selection200/launch.py\", line 304, in phase\n    raise RuntimeError('Actual phase failed: ' + name + '; preserve its original log and artifacts')\nRuntimeError: Actual phase failed: outer-000116-prefix; preserve its original log and artifacts\n"
+  },
+  "exit": {
+    "checked_unix": 1792389636.3497686,
+    "success": false
+  },
+  "cleanup": {
+    "checked_unix": 1792389636.3475814,
+    "cleaned": true,
+    "owned_births_all_gone": true,
+    "remaining_owned_births": [],
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116"
+  },
+  "pipeline_alive": false,
+  "terminal_proof": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/preparation/fault116-terminal-20261019.json",
+  "terminal_sha256": "2ca0d43809f20d4a1985a49fbe1bf1ccafaba338fc21975a497fffc4817ed16c",
+  "terminal": {
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+    "execution_id": "40389d9b00204a80ba68475fac254f9c",
+    "source_commit": "399c8b093b22c93e67d5d03fae48a5c76e251103",
+    "checked_unix": 1792391231.1557758,
+    "termination_cause": "FAULT_EXIT",
+    "completed_outer": 115,
+    "pending_outer": 116,
+    "source_joint_sha256": "2fa1475c5fb73cf00555a1780fef3bebd2423d4562a6434b22d698a238d4498c",
+    "actor_actual_Adam": [
+      2298,
+      2298,
+      2298,
+      2298
+    ],
+    "scheduler": 115,
+    "probe_actual_Adam": [
+      300,
+      300,
+      300,
+      300
+    ],
+    "probe_completed_outer": 110,
+    "process_ledger_sha256": "9176d36ac507420d842ee275b7014c2c5e3dab0b1dd56ebbb3a2ce018c3781a6",
+    "owned_writers_gone": true,
+    "actual_owned_present": [],
+    "fault_class": "VLLM_FLASH_ATTN_KVCACHE_CUDA_ILLEGAL_ACCESS",
+    "failed_rank": 2,
+    "logs": [
+      {
+        "path": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/logs/outer-000116-prefix.log",
+        "bytes": 1167,
+        "sha256": "0fb36bdaf88c3ab799ec32fc98d5b7cde713c94e6f1a43ade52c98695d7ac13f"
+      },
+      {
+        "path": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/outers/outer-000116/prefix/rank-0.log",
+        "bytes": 3507,
+        "sha256": "b96ce63a5c1b3800212348013c9eab87c81d8eec471089868ac1ad3aa27dad33"
+      },
+      {
+        "path": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/outers/outer-000116/prefix/rank-1.log",
+        "bytes": 3508,
+        "sha256": "1aba9c70af66ff42f8cc5d9551677b85c42d317d7cdf37352b14ce5321007892"
+      },
+      {
+        "path": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/outers/outer-000116/prefix/rank-2.log",
+        "bytes": 11239,
+        "sha256": "8ba1e595e28d98dcbb8aebac8dd8584dbaaafc24ac28173af6cedee0f2f5aebc"
+      },
+      {
+        "path": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/outers/outer-000116/prefix/rank-3.log",
+        "bytes": 3507,
+        "sha256": "545671d8be6f03aaf73b1be8e224e705639d839bad95d97e363a6cda9c0d12dc"
+      }
+    ],
+    "original_partial_prefix_preserved_in_place": true,
+    "uncommitted_actor_Adam": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "uncommitted_probe_Adam": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pool_snapshot": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/outers/outer-000115/pool-state-at-completion.json",
+    "pool_snapshot_sha256": "94ce64e55e17769421879a3fba90cbf3b07b10347726b3dc6bc3fb76ab720b3b",
+    "failed116_must_recompute": true
+  },
+  "infrastructure_repair": {
+    "kind": "bounded_native_flash_kvcache_workload",
+    "max_num_seqs": [
+      128,
+      64
+    ],
+    "max_batched_tokens": [
+      4096,
+      2048
+    ],
+    "gpu_utilization_cap": [
+      0.85,
+      0.7
+    ],
+    "attention_backend_unchanged": true,
+    "enforce_eager": true,
+    "prefix_caching": false
+  },
+  "latest_full_joint_recovery_scope": "115 joint actor/probe/both Adam/scheduler/allrank+driverRNG/pool/grounding100;116 failed partialprefix preserved; redo116 only/no reset50",
+  "GPU_admission_snapshot": {
+    "checked_unix": 1792391231.377448,
+    "approved_indices_free": [
+      0,
+      1,
+      2,
+      3,
+      5,
+      6
+    ],
+    "foreign_indices_excluded": [
+      4,
+      7
+    ],
+    "foreign_processes_stopped": false
+  },
+  "CPU_full_payload_SHA_finite_qualification": "PENDING_ONCE_FOR_ACTUAL115",
+  "CUDA_restore": "PENDING_ACTUAL116",
+  "recovery_five_complete_plus_next": "PENDING116..120_AND121",
+  "App_monitor": "PAUSED",
+  "no_subagents": true,
+  "remaining_scope": [
+    "Actual recovery from full115",
+    "Five complete116..120 plus121 ongoing",
+    "150 Top1024 actualstrictEM selection and rewardfit/fouradoption",
+    "Actual200 and final51713 strictEMF1 orderedIDs seven sources NQ3610 lineage finiteSHA onlyownedcleanup"
+  ]
+}
