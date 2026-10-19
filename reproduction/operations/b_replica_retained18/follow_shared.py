@@ -1,11 +1,25 @@
 """Read-only supervision through 200, retaining the five-outer milestone."""
-import time,json
+import time,json,re
 from .shared_observe import observe
 from .control import OUT
 
 def main():
  while True:
-  v=observe()
+  try:
+   v=observe()
+  except RuntimeError as error:
+   # Transport failure does not establish that the native writer exited.
+   # Keep scientific/ledger failures fatal instead of treating them as SSH loss.
+   message=str(error)
+   if not re.search(r'BOUNDED_ESTABLISHED_ROUTE_TIMEOUT|Connection to [^\n]+ port \d+ timed out|ssh: connect to host [^\n]+|kex_exchange_identification:|Connection reset by peer|Connection closed by [^\n]+|Broken pipe',message,re.I):
+    raise
+   failure=dict(observed_unix=time.time(),status='CURRENT_RUNTIME_UNKNOWN_TRANSPORT_FAILURE',
+    error=message,retry_after_seconds=1800,native_action='none')
+   path=OUT/('shared-monitor-transport-failure-'+str(time.time_ns())+'.json')
+   path.write_text(json.dumps(failure,ensure_ascii=False,indent=2))
+   print(json.dumps(failure,ensure_ascii=False),flush=True)
+   time.sleep(1800)
+   continue
   if v.get('complete_outer')==200:
    final=next((r for r in v['facts']if r['outer']==200),None)
    if not final or {r['rank']for r in final['ranks']}!=set(range(8))or not all(r['ledger_sha_matches']for r in final['ranks']):
