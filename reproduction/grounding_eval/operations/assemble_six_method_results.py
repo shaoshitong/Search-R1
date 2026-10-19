@@ -105,6 +105,8 @@ def assemble(paths):
             "corrected_strict_v5": "New CF generations on conservative finite typed subset; conditional coverage differs by method; not a population-wide grounding ranking",
             "normal_tokens": "Accepted unique formal trajectories. Raw generated output includes tails discarded by the historical action parser. Retained trajectory counts initial prompt, retained output and seen environment once; cumulative input includes repeated history.",
             "all_job_cost": "Pilots, discarded retries and retriever startup are separate operational diagnostics; formal token totals do not claim complete hardware billing cost.",
+            "normal_execution": "Each method retains its historical interaction adapter. Migrated retriever fanout changed from 8 to 2 for OPSD and 8 to 1 for Easy Selection. Sampled cropped-document token parity passed; full original-run query parity was not established. Regenerated NQ EM need not exactly equal a historical aggregate.",
+            "execution_incidents": "The first full-index GPU clone during retriever initialization ran out of memory and was replaced by a bounded-copy implementation. Easy Selection had recovered HTTP download timeouts and a preserved zero-generation admission failure before its successful pilot. These are not hidden by zero accepted-trajectory inference-error counts.",
         },
         "sources": sources,
         "methods": [rows[m] for m in METHODS],
