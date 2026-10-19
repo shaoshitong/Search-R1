@@ -20,6 +20,7 @@ WRAPPER = ('/mnt/shared/workspace/training_data_node_8/shaoshitong/'
            'search-g1-prefix5-reference-preparation-20261018/code/' + RUNTIME +
            '/repo/reproduction/operations/h100_reference_replica/h10011_private_paths.sh')
 PATH_LAYOUTS = {
+    'h1005-retained': '/root/.local/share/search-g1/source8-fault-recovery/3b1889a04b94db76cc1239f78d697da7b5b91544/h1005_retained_paths.sh',
     'source8': WRAPPER,
     # CPU-qualified retained corpus/Arrow view; explicit selection only.
     'retained-cache-v2': ('/mnt/shared/workspace/training_data_node_10/shaoshitong/'
@@ -89,6 +90,7 @@ print(json.dumps(result,allow_nan=False))
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--node',choices=('h100-11','h100-5'),default='h100-11')
     parser.add_argument('--until', type=int, default=50, choices=(50,100,150,200))
     parser.add_argument('--verified', type=int, default=10)
     parser.add_argument('--verified-a',type=int)
@@ -102,7 +104,7 @@ def main():
     lock = (ROOT/'work/prefix5-ab-h10011-normal-boundary-observer.lock').open('a')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
     arms = json.loads((ROOT/'work/prefix5-ab-assigned-arms.json').read_text())
-    assert set(arms) == {'A','B'} and all(x['node']=='h100-11'for x in arms.values())
+    assert set(arms) == {'A','B'} and all(x['node']==args.node for x in arms.values())
     spec = importlib.util.spec_from_file_location('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py')
     ctl = importlib.util.module_from_spec(spec); spec.loader.exec_module(ctl)
     verified = {'A':args.verified if args.verified_a is None else args.verified_a,
@@ -120,11 +122,11 @@ def main():
             'text=True,capture_output=True,timeout=120)\n'
             'assert p.returncode==0,p.stderr\nprint(p.stdout)')
         try:
-            response, transport = run_readonly(ctl,'h100-11','/usr/bin/python3 -',
+            response, transport = run_readonly(ctl,args.node,'/usr/bin/python3 -',
                 input_text=script,timeout=155,mode=args.transport)
             if response.returncode: raise RuntimeError(response.stderr or response.stdout)
             raw = json.loads(response.stdout)
-            evidence = ROOT/('work/prefix5-ab-h10011-normal-follow-'+tag+'-actual.json')
+            evidence = ROOT/('work/prefix5-ab-'+args.node+'-normal-follow-'+tag+'-actual.json')
             evidence.write_text(json.dumps(raw,indent=2)+'\n')
             compact, attention = {}, []
             for arm,v in raw.items():
@@ -135,7 +137,7 @@ def main():
                     'qa','qa_pending','current_score_adoption','grounding_refreshes')}
                 if ((v['cleanup']or v['native'].get('leader_same_birth')is False)
                         and not v['pipeline_complete']): attention.append(arm)
-            value=dict(observed_utc=tag,node='h100-11',arms=compact,verified=verified,
+            value=dict(observed_utc=tag,node=args.node,arms=compact,verified=verified,
                 original=str(evidence),original_sha256=hashlib.sha256(evidence.read_bytes()).hexdigest(),
                 terminal_attention=attention,training_modified=False,observation_transport=transport)
             value['observation_namespace'] = dict(path_layout=args.path_layout,
