@@ -31,13 +31,15 @@ def main():
     while True:
         try:
             inventory=r'''
-import pathlib,json,hashlib
+import pathlib,json,hashlib,time
 root=pathlib.Path(ROOT);out={}
 if root.exists():
  for p in root.rglob('*'):
   rel=p.relative_to(root)
   if not p.is_file() or p.is_symlink() or any(x.startswith(('cache','ray-diagnostic')) for x in rel.parts):continue
-  if p.suffix not in ('.json','.jsonl','.py','.md') or '.partial' in p.name or p.name.endswith('.tmp'):continue
+  if p.suffix not in ('.json','.jsonl','.py','.md','.log') or '.partial' in p.name or p.name.endswith('.tmp'):continue
+  # Closed/stable logs join the mirror; never race an actively growing log.
+  if p.suffix=='.log' and time.time()-p.stat().st_mtime<60:continue
   h=hashlib.sha256(p.read_bytes()).hexdigest();out[str(rel)]={'bytes':p.stat().st_size,'sha256':h}
 print(json.dumps(out))
 '''.replace('ROOT',repr(SRC))

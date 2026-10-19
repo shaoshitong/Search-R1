@@ -436,6 +436,7 @@ def main():
                 historical_qid=historical_qid, question=question, gold=gold,
                 original_prompt=chat, source_run_id=args.run_id,
                 normal_binding_sha256=binding_hash,
+                checkpoint_files_sha256=hashlib.sha256(canonical(normal_config['checkpoint_files'])).hexdigest(),
                 checkpoint_id=hashlib.sha256(canonical(normal_config['checkpoint_files'])).hexdigest()))
         t0 = time.time()
         if args.method == 'easy':
