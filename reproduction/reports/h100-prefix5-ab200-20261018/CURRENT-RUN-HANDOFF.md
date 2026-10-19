@@ -22,6 +22,8 @@ At2026-10-19T06:45UTC the original A150 QA worker receipts, all512 identities/ag
 
 A150 existing once source CPU proof isAB_JOINT_FULL_SHA_CPU_PASS:25 files38,614,791,268 bytes, actualactor2997/probe0 per rank, full source SHA and actual CPU state read. ProofSHA5a9fd6a11fe76b9d3dac2abf062ce5f136dd1f07db4c45608ceed0f06241b750. Do not repeat its completed hashes/loads. This is not independent physical backup or GPU forward. Latest restore candidates follow actual newer complete state, never regress to150 for helper convenience. B150/both200/final51713 are still pending; both original leaders continue.
 
+The subsequent06:59UTC original read closed A151 reward use: all4 original journals20writes→3017, probe0, all4 actual reward records using grounding150, same leader birth and152 continuation. B was complete128/actor2560/probe1760. See the separate `A-normal150/ACTUAL-151-REWARD-ADOPTION.json`; it supersedes the earlier pending151 item without rewriting that observation.
+
 ## Current monitoring and history
 
 The normal100 observer session59968 exited0 naturally. Do not poll or replay it. Its closed facts/compact were sealed at `work/prefix5-ab-normal100-terminal-{facts,compact}-20261018T231620.json`; source B101/A119 followup is separately named by main state. The current normal150 read-only observer is session51545/localPID82126, interval1800s, `retained18_fallback_lan5`, private `retained-cache-v2`. It owns current compact/facts files and does not write primary state or mutate training. Consume new output; do not duplicate it. Root is sole primary-state writer. If it later finishes at both150, continue QA/refit/state inspection and then200; observer completion is not training completion.

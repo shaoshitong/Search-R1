@@ -14,3 +14,7 @@ The original300-question grounding calibration was refitted at150 using actor150
 The existing once CPU proof independently read every sealed source file's full SHA and deserialized actual actor/Adam/RNG/probe/data state. Source proof status isAB_JOINT_FULL_SHA_CPU_PASS. It did not perform GPU inference or create an independent physical backup. No completed hash/load was replayed for this publication. Exact source paths, hashes, per-rank clocks and scalar receipts are in the JSON.
 
 Both original training leaders continued unchanged. Frozen A runtime2e3976230ac9425d66d8553afa9962821e964932 and B runtimec5f1a07e6a9f4ccee35f45ddf69ab4aa3d28e910 are unchanged by this report. Both200/no201, B150, both200/final51713, final retained state and native/resource closure remain incomplete. Models, optimizers, hidden and complete outputs remain remote.
+
+## Subsequent actual151 reward use
+
+At2026-10-19T06:59UTC the original complete151 was read: all four original actor journals recorded20 writes each to3017, probe0. Its four actual reward-scoring records used the newly fitted grounding150 version. The original leader remained the same birth and152 continuation had started. This closes the earlier pending151-use item; it is recorded separately in `ACTUAL-151-REWARD-ADOPTION.json`, preserving the earlier observation's chronology. Complete151 selected38/512 mixed (7.421875%); this is selected-set prevalence, not full-candidate classifier accuracy. Both200 and final QA remain incomplete.

@@ -1,0 +1,28 @@
+"""Publish already-observed original A151 reward use; no remote action."""
+import hashlib,json
+from pathlib import Path
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+source=root/'work/b-progressive-A151-reward-adoption-and-AB-progress-20261019T065953527317Z.json'
+env=json.loads(source.read_text());assert env['rc']==0
+d=json.loads(env['stdout']);a=d['arms']['A'];qa=d['A150'];f=next(x for x in a['facts']if x['outer']==151)
+assert a['native']['leader_same_birth'] and a['complete_outer']==151
+assert sorted(x['rank']for x in f['actor'])==[0,1,2,3]
+assert all(x['writes']==20 and x['actual_adam_steps']==3017 for x in f['actor'])
+assert f['probe_actual']==[0]*4
+use=qa['following_actual'];assert use['status']=='ACTUAL_NEXT_COMPLETE_ACTOR_USES_NEW_REFIT'
+assert use['outer']==151 and use['grounding_round']==150 and use['actual_reward_rank_count']==4
+assert use['actor_adam']==[3017]*4 and use['version']==qa['grounding']['version']
+result=dict(source_original=str(source),source_original_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+ actual_complete_outer=151,actual_reward_use=use,original_actor_journals=f['actor'],probe_actual=[0]*4,
+ actual_next_stage=a['stage'],selection_metrics=f['selection_metrics'],phase_timings=f['phase_timings'],
+ no_training_change=True,no_new_model_forward=True)
+out=Path('reproduction/reports/h100-prefix5-ab200-20261018/A-normal150')
+(out/'ACTUAL-151-REWARD-ADOPTION.json').write_text(json.dumps(result,indent=2)+'\n')
+p=out/'README.md';text=p.read_text()
+text+='''
+## Subsequent actual151 reward use
+
+At2026-10-19T06:59UTC the original complete151 was read: all four original actor journals recorded20 writes each to3017, probe0. Its four actual reward-scoring records used the newly fitted grounding150 version. The original leader remained the same birth and152 continuation had started. This closes the earlier pending151-use item; it is recorded separately in `ACTUAL-151-REWARD-ADOPTION.json`, preserving the earlier observation's chronology. Complete151 selected38/512 mixed (7.421875%); this is selected-set prevalence, not full-candidate classifier accuracy. Both200 and final QA remain incomplete.
+'''
+p.write_text(text)
+print(out/'ACTUAL-151-REWARD-ADOPTION.json')
