@@ -185,7 +185,17 @@ def main():
         def clone_with_reference(cpu_index,co=None,ngpu=-1):
             # Original two-way sharding on GPU4 only; no access to foreign5/6.
             reference.append(faiss.index_cpu_to_gpus_list(cpu_index,co=co,gpus=[0,0]))
-            return original_clone(cpu_index,co=co,ngpu=ngpu)
+            # A whole single-GPU clone stages the64GB FP32 matrix on CUDA
+            # before converting toFP16. Clone an empty identical Flat metric
+            # and add bounded original vectors in order instead.
+            flat=faiss.IndexFlat(cpu_index.d,cpu_index.metric_type)
+            actual=original_clone(flat,co=co,ngpu=ngpu)
+            block=65536
+            for offset in range(0,cpu_index.ntotal,block):
+                actual.add(cpu_index.reconstruct_n(offset,min(block,cpu_index.ntotal-offset)))
+                publish(cache/'index-load-progress.json',dict(stage='SINGLE_GPU_FP16_ORDERED_BLOCK_ADD',
+                    documents=int(actual.ntotal),expected_documents=int(cpu_index.ntotal),block_vectors=block,checked_unix=time.time()))
+            return actual
         faiss.index_cpu_to_all_gpus=clone_with_reference
     try:retriever = upstream.DenseRetriever(config)
     finally:faiss.index_cpu_to_all_gpus=original_clone
