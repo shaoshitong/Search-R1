@@ -65,10 +65,11 @@ job=dict(normal_only=True,normal_command=command,control_output=str(control),nor
 jobpath=control/'job.json'
 with jobpath.open('x')as f:json.dump(job,f,indent=2);f.flush();os.fsync(f.fileno())
 log=(control/'controller.log').open('ab',buffering=0);p=subprocess.Popen(['/data/search-g1/env/bin/python','-B',str(runtime/'normal_job.py'),'--job',str(jobpath)],stdout=log,stderr=subprocess.STDOUT,start_new_session=True);log.close()
-stat=pathlib.Path('/proc')/str(p.pid)/'stat';s=stat.read_text();ticks=int(s[s.rfind(')')+2:].split()[19]);receipt=dict(pid=p.pid,birth_ticks=ticks,phase=phase,command=command,root=str(root),source_commit=x['source_commit'],source_sha256=job['source_sha256'],at=time.time(),normal_only=True,cf_started=False,retriever_restarted=False,gpu_uuid=x['gpu_uuid'],gpu_index=0,initial_batch=32 if phase=='pilot96'else128,maximum_batch=64 if phase=='pilot96'else256,admission_gpu=selected[0])
+stat=pathlib.Path('/proc')/str(p.pid)/'stat';s=stat.read_text();ticks=int(s[s.rfind(')')+2:].split()[19]);receipt=dict(pid=p.pid,birth_ticks=ticks,phase=phase,command=command,root=str(root),source_commit=x['source_commit'],source_sha256=job['source_sha256'],at=time.time(),normal_only=True,cf_started=False,retriever_restarted=False,gpu_uuid=x['gpu_uuid'],gpu_index=0,initial_batch=32 if phase=='pilot96' else 128,maximum_batch=64 if phase=='pilot96' else 256,admission_gpu=selected[0])
 with(control/'launch.json').open('x')as f:json.dump(receipt,f,indent=2);f.flush();os.fsync(f.fileno())
 print(json.dumps(receipt))
 '''
+    compile(remote, 'explicit-normal-only-launch', 'exec')
     spec = importlib.util.spec_from_file_location('existing_control',
         '/Users/shaoshitong/Documents/remote_codex_control/control.py')
     ctl = importlib.util.module_from_spec(spec); spec.loader.exec_module(ctl)
