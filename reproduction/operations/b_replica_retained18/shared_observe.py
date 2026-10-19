@@ -1,8 +1,8 @@
 """Read actual same-card CP64 continuation, without touching the writer."""
-import datetime,json,time
+import datetime,json,time,os
 from pathlib import Path
 from .control import remote,OUT
-BASE='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp64-h1005-20261019-r3'
+BASE=os.environ.get('B_SHARED_OBSERVE_BASE','/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp64-h1005-20261019-r3')
 SCRIPT=r'''
 import pathlib,json,time,hashlib
 p=pathlib.Path(BASE)
@@ -16,10 +16,14 @@ def read(f):
 def physical(f):
  s=str(f);prefix='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'
  return pathlib.Path('/mnt/data/shaoshitong')/s[len(prefix):]if s.startswith(prefix)else pathlib.Path(s)
-stage=read(p/'logs/pipeline-status.json');n=max(65,(stage or{}).get('outer',65));root=p/'outers'/('outer-%06d'%n)
+config=read(p/'preparation/launch-config.json')
+execution_node=config['expected_execution_node']
+if execution_node not in ('h100-5','h100-8','h100-10'):raise ValueError('Require activated allowed shared node; H10011 excluded')
+resume_outer=int(config.get('resume_joint',{}).get('completed_outer',64))
+stage=read(p/'logs/pipeline-status.json');n=max(resume_outer+1,(stage or{}).get('outer',resume_outer+1));root=p/'outers'/('outer-%06d'%n)
 progress={str(f.relative_to(p)):read(f)for f in root.rglob('*progress*.json')if f.stat().st_size<15000}
 facts=[]
-for i in range(65,201):
+for i in range(resume_outer+1,201):
  j=read(p/'outers'/('outer-%06d'%i)/'complete.json')
  if not j:continue
  ranks=[]
@@ -35,7 +39,7 @@ logs=[]
 for f in sorted((p/'logs').glob('*.log'),key=lambda f:f.stat().st_mtime,reverse=True)[:4]:
  with f.open('rb')as q:q.seek(max(0,f.stat().st_size-3000));tail=q.read().decode(errors='replace')
  logs.append(dict(path=str(f.relative_to(p)),tail=tail,bytes=f.stat().st_size,mtime=f.stat().st_mtime))
-print(json.dumps(dict(observed_unix=time.time(),node='h100-5',stage=stage,complete_outer=(read(p/'latest-joint.json')or{}).get('outer'),facts=facts,active_actor=active,progress=progress,receipt=read(p/'preparation/submit-receipt.json'),cleanup=read(p/'logs/cleanup-status.json'),logs=logs)))
+print(json.dumps(dict(observed_unix=time.time(),node=execution_node,base=BASE,resume_outer=resume_outer,stage=stage,complete_outer=(read(p/'latest-joint.json')or{}).get('outer'),facts=facts,active_actor=active,progress=progress,receipt=read(p/'preparation/submit-receipt.json'),cleanup=read(p/'logs/cleanup-status.json'),logs=logs)))
 '''
 
 def observe():
@@ -49,13 +53,13 @@ p=pathlib.Path('/proc')/str(WHO['pid']);st=(p/'stat').read_text()if p.exists()el
 same=bool(st and int(st.rsplit(')',1)[1].split()[19])==WHO['start_ticks']and st.rsplit(')',1)[1].split()[0]!='Z')
 print(json.dumps(dict(observed_unix=time.time(),same_birth=same,stat=st,gpu=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.used,memory.total,utilization.gpu','--format=csv,noheader,nounits'],text=True))))
 '''
-  v['actual_node_health']=json.loads(remote(code,OUT/('shared-follow-health-'+str(time.time_ns())+'.json'),target='h100-5',established_controller=True))
+  v['actual_node_health']=json.loads(remote(code,OUT/('shared-follow-health-'+str(time.time_ns())+'.json'),target=v['node'],established_controller=True))
  dest=f.with_name(f.name.replace('-transport','-actual'));dest.write_text(json.dumps(v,ensure_ascii=False,indent=2));v['evidence']=str(dest)
  (OUT/'SHARED_RESUME64_LATEST.json').write_text(json.dumps(v,ensure_ascii=False,indent=2))
  alive=bool(v.get('actual_node_health',{}).get('same_birth'))and not bool(v['cleanup'])
  observed200=v.get('complete_outer')==200
  status='SHARED_NATIVE_200_OBSERVED_AWAITING_AUDIT'if observed200 else('SHARED_NATIVE_CONTINUING'if alive else'SHARED_NATIVE_EXITED_NEEDS_DIAGNOSIS')
- root=OUT.parents[1];s=json.loads((root/'outputs/STATUS.json').read_text());s.update(status=status,actual_native_running=alive,actual_training_running=alive and not observed200,actual_complete_outer=v['complete_outer'],current_stage=(v['stage']or{}).get('stage'),node='h100-5',ip='10.33.0.5',world_size=8,resume_job_id=None,cancelled_pending_job=3674,base=receipt['command'][-1]if receipt else None,source_commit=receipt['source_commit']if receipt else None,native_leader=leader,current_evidence=str(dest),updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
+ root=OUT.parents[1];s=json.loads((root/'outputs/STATUS.json').read_text());s.update(status=status,actual_native_running=alive,actual_training_running=alive and not observed200,actual_complete_outer=v['complete_outer'],current_stage=(v['stage']or{}).get('stage'),node=v['node'],ip={'h100-5':'10.33.0.5','h100-8':'10.33.0.8','h100-10':'10.33.0.18'}[v['node']],world_size=8,resume_job_id=None,cancelled_pending_job=3674,base=receipt['command'][-1]if receipt else None,physical_base=BASE,source_commit=receipt['source_commit']if receipt else None,native_leader=leader,training_started=bool(receipt),owned_births_all_gone=bool((v['cleanup']or{}).get('owned_births_all_gone')),execution_node_pending=False,current_evidence=str(dest),updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
  (root/'outputs/STATUS.json').write_text(json.dumps(s,ensure_ascii=False,indent=2))
  for target in (OUT,root/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/b-replica-retained18-20261018',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/b-replica-retained18-20261018')):
   (target/'SHARED_RESUME64_STATUS.json').write_text(json.dumps(v,ensure_ascii=False,indent=2))
