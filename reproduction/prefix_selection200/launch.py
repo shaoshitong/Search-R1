@@ -415,7 +415,8 @@ def run(base):
                 '--source-model-kind', c['probe_source_model_kind'], '--run-id', c['run_id'],
                 '--test-cache', c['fixed_test_features'], '--test-manifest-sha', c['fixed_test_manifest_sha256']],
                 dict(env, CUDA_VISIBLE_DEVICES=''))
-        stage('STARTING_AUX_TWO_SHARD_RETRIEVER_AND_FOUR_GROUNDING_REPLICAS')
+        shards=c.get('retrieval_gpu_shards',2)
+        stage('STARTING_AUX_RETRIEVER_AND_FOUR_GROUNDING_REPLICAS',retrieval_gpu_shards=shards)
         env_root = Path(c['environment_root'])
         libs = list((env_root / 'lib/python3.10/site-packages/nvidia').glob('*/lib'))
         libs += [env_root / 'lib/python3.10/site-packages/torch/lib']
@@ -423,9 +424,11 @@ def run(base):
             '--index', c['retrieval_index'], '--corpus', c['retrieval_corpus'], '--encoder', c['retrieval_encoder'],
             '--cache', str(base / 'retrieval-cache'), '--run-id', c['run_id'], '--port', str(c['retrieval_port']),
             '--data-cache', c.get('retrieval_data_cache', str(base / 'retrieval-cache')),
-            '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', '2'],
+            '--batch-queries', str(c.get('retrieval_batch_queries', 1024)), '--gpu-shards', str(shards)] +
+            (['--consistency-questions',c['retrieval_consistency_questions']] if c.get('approved_single_auxiliary') else []),
             dict(env, CUDA_VISIBLE_DEVICES=','.join(map(str,c['auxiliary_gpu_indices'])), PYTHONPATH=c['retriever_gpu_lib'] + ':' + str(base / 'repo'), LD_LIBRARY_PATH=':'.join(map(str, libs))))
-        await_service('retriever', c['search_url'].replace('/retrieve', '/health'), dict(run_id=c['run_id'], gpu_shards=2))
+        await_service('retriever', c['search_url'].replace('/retrieve', '/health'),
+            dict(run_id=c['run_id'], gpu_shards=shards,**({'consistency_verified':True} if c.get('approved_single_auxiliary') else {})))
         from . import grounding
         if outer:
             # A future compatible recovery must retain the exact adopted state.

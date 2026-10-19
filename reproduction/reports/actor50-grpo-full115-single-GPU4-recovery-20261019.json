@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "human_intent": {
+    "kind": "human_approved_single_GPU4_full115_retrieval_v1",
+    "human_intent": {
+      "human_text": "可以的，继续",
+      "observed_unix": 1792400721.26842,
+      "actor_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "actor_uuids": [
+        "GPU-9b8498ae-93e5-dee7-545a-25669080cf83",
+        "GPU-34c7ae67-d246-50d7-6ef6-2d7f64a86e40",
+        "GPU-19f588c3-3f42-a910-5f9a-21687befed5b",
+        "GPU-ef98537d-a371-e4f0-56f9-53ce0084a7b9"
+      ],
+      "auxiliary_indices": [
+        4
+      ],
+      "auxiliary_uuid": "GPU-c63282c6-1d05-224e-234b-2a8c794b1f04",
+      "retrieval_consistency_required": true,
+      "scope": "Stopped fault116 FULL115 continuation to200 and final51713; no foreign processes stopped"
+    },
+    "human_intent_sha256": "e52c43831486e8b99ff0d6d533f88c90e400b37051b934322094db37a4ea5c53"
+  },
+  "source_boundary": 115,
+  "actor_actual_Adam": 2298,
+  "scheduler": 115,
+  "probe_actual_Adam": 300,
+  "scope": "Explicit GPU4 mapping, gated64 fixed-question retrieval top3 comparison, reuse qualified full115 CPU proof/stat seals, unchanged science",
+  "retrieval_reference": "Original two-shard FP16 FAISS clone on GPU4 twice; comparison validates partition/merge, not two physical GPUs",
+  "acceptance": "GPU mapping rejects tampered index/UUID/shard count; legacy admission unchanged; seven modules and remote control AST parse",
+  "CUDA_retrieval_consistency": "PENDING_ACTUAL",
+  "CUDA_actor_restore": "PENDING_ACTUAL",
+  "new_large_local_artifacts": false
+}

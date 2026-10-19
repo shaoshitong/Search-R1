@@ -149,8 +149,11 @@ def main():
     parser.add_argument('--run-id', required=True)
     parser.add_argument('--port', type=int, default=18010)
     parser.add_argument('--batch-queries', type=int, default=512)
-    parser.add_argument('--gpu-shards', type=int, choices=(2,8), default=8)
+    parser.add_argument('--gpu-shards', type=int, choices=(1,2,8), default=8)
+    parser.add_argument('--consistency-questions',help='Fixed512 source for approved single GPU retrieval consistency gate')
     args = parser.parse_args()
+    if (args.gpu_shards==1) != bool(args.consistency_questions):
+        parser.error('Single GPU retrieval requires the explicit consistency gate')
     if args.batch_queries < 1 or not 1 <= args.port <= 65535:
         parser.error('Positive query batch and valid port required')
     import datasets
@@ -176,12 +179,28 @@ def main():
     started = time.monotonic()
     # DenseRetriever overwrites its CPU Index reference with the cloned GPU
     # IndexShards; do not retain an extra copy of the 64 GB CPU index.
-    retriever = upstream.DenseRetriever(config)
+    reference=[]
+    original_clone=faiss.index_cpu_to_all_gpus
+    if args.consistency_questions:
+        def clone_with_reference(cpu_index,co=None,ngpu=-1):
+            # Original two-way sharding on GPU4 only; no access to foreign5/6.
+            reference.append(faiss.index_cpu_to_gpus_list(cpu_index,co=co,gpus=[0,0]))
+            return original_clone(cpu_index,co=co,ngpu=ngpu)
+        faiss.index_cpu_to_all_gpus=clone_with_reference
+    try:retriever = upstream.DenseRetriever(config)
+    finally:faiss.index_cpu_to_all_gpus=original_clone
     gc.collect()
-    if retriever.index.count() != args.gpu_shards or retriever.index.d != 768:
+    actual_shards=retriever.index.count() if hasattr(retriever.index,'count') else 1
+    if actual_shards != args.gpu_shards or retriever.index.d != 768:
         raise ValueError('Original Flat index did not initialize every assigned shard')
     if retriever.index.ntotal != len(retriever.corpus):
         raise ValueError('Original index and corpus document counts differ')
+    consistency=None
+    if args.consistency_questions:
+        from reproduction.actor50_grpo.single_auxiliary import check_retrieval
+        consistency=check_retrieval(retriever,reference[0],args.consistency_questions)
+        publish(cache/'consistency.json',consistency)
+        reference.clear();gc.collect();torch.cuda.empty_cache()
     ready = dict(run_id=args.run_id, pid=os.getpid(), ready=True,
         gpu_shards=args.gpu_shards, dimension=int(retriever.index.d), documents=int(retriever.index.ntotal),
         index=str(Path(args.index).resolve()), corpus_archive=str(Path(args.corpus).resolve()),
@@ -190,7 +209,9 @@ def main():
         query_prefix='query: ', topk=3, batch_queries=args.batch_queries,
         endpoint='http://127.0.0.1:'+str(args.port)+'/retrieve',
         initialization_seconds=time.monotonic()-started,
-        cpu_full_index_retained=False, synthetic_queries=0)
+        cpu_full_index_retained=False, synthetic_queries=0,
+        consistency_verified=consistency is not None and consistency['status']=='PASS',
+        consistency_sha256=hashlib.sha256((cache/'consistency.json').read_bytes()).hexdigest() if consistency else None)
     publish(cache/'ready.json', ready)
     print('PREFIX20_RETRIEVER_READY='+json.dumps(ready), flush=True)
     batching = BatchedRequests(retriever, batch_queries=args.batch_queries)

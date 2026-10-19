@@ -69,7 +69,8 @@ def validate_config(c,base):
     if c['actor_loss_reduction']!=OBJECTIVE or c['policy_safeguards']!=POLICY_SAFEGUARDS or c['interaction_protocol']!=CONTRACT:
         raise ValueError('I1-I6 actor science and shared BF16 interaction must remain unchanged')
     check_grounding(c)
-    if len(set(c['physical_gpu_uuids']+c['auxiliary_gpu_uuids']))!=6 or c['auxiliary_gpu_indices']!=[5,6]:
+    from .single_auxiliary import validate as single_auxiliary
+    if not single_auxiliary(c) and (len(set(c['physical_gpu_uuids']+c['auxiliary_gpu_uuids']))!=6 or c['auxiliary_gpu_indices']!=[5,6]):
         raise ValueError('Retain four actual actor UUIDs and two approved auxiliary UUIDs')
     for key in ('canonical_train','official_model_dir','source_question_pool','probe_source_checkpoint','validation_questions','final_questions'):
         if not str(c[key]).startswith('/data/'):raise ValueError('Large data must remain remote')

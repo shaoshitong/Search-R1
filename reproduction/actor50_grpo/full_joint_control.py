@@ -17,7 +17,14 @@ def admitted(c):
  result=subprocess.run(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],capture_output=True,text=True,timeout=15)
  assert result.returncode==0
  approved=set(c['physical_gpu_uuids']+c['auxiliary_gpu_uuids'])
- assert len(approved)==6 and c['physical_gpu_indices']==[0,1,2,3] and c['auxiliary_gpu_indices']==[5,6]
+ sys.path.insert(0,str(repo))
+ from reproduction.actor50_grpo.single_auxiliary import validate as single_auxiliary
+ single=single_auxiliary(c)
+ assert len(approved)==(5 if single else 6) and c['physical_gpu_indices']==[0,1,2,3] and c['auxiliary_gpu_indices']==([4] if single else [5,6])
+ inventory=subprocess.run(['nvidia-smi','--query-gpu=index,uuid,memory.used','--format=csv,noheader,nounits'],capture_output=True,text=True,timeout=15);assert inventory.returncode==0
+ mapping={int(row.split(',')[0]):(row.split(',')[1].strip(),int(row.split(',')[2])) for row in inventory.stdout.splitlines() if row.strip()}
+ assert [mapping[i][0] for i in c['physical_gpu_indices']+c['auxiliary_gpu_indices']]==c['physical_gpu_uuids']+c['auxiliary_gpu_uuids']
+ assert all(mapping[i][1]<=64 for i in c['physical_gpu_indices']+c['auxiliary_gpu_indices'])
  assert not any(line.split(',')[0].strip() in approved for line in result.stdout.splitlines() if line.strip()),'Approved GPU acquired by another task; never stop it'
 if action=='stage':
  parent=pathlib.Path(h['parent_handle']['base'])
@@ -35,6 +42,8 @@ if action=='stage':
  for name,digest in h['source_files'].items():assert sha(repo/name)==digest,name
  allowed={'reproduction/actor50_grpo/bootstrap.py','reproduction/prefix_selection200/launch.py','reproduction/actor50_grpo/full_joint_resume.py','reproduction/actor50_grpo/full_joint_control.py',
   'reproduction/actor50_grpo/control.py','reproduction/actor50_grpo/local_watch_once.py'}
+ if h.get('single_auxiliary'):
+  allowed.update({'reproduction/actor50_grpo/single_auxiliary.py','reproduction/prefix_selection200/a800_runtime.py','reproduction/prefix20_online/retriever.py'})
  for name,digest in h['parent_handle']['source_files'].items():
   if pathlib.Path(name).suffix in ('.py','.sh') and name not in allowed:
    assert h['source_files'].get(name)==digest,'Unrelated scientific source changed: '+name
@@ -52,6 +61,14 @@ if action=='stage':
   fault_infrastructure_repair=dict(kind='bounded_native_flash_kvcache_workload',old_sequences=128,new_sequences=64,
    old_batched_tokens=4096,new_batched_tokens=2048,old_utilization_cap=.85,new_utilization_cap=.7,
    attention_backend_unchanged=True,enforce_eager=True,prefix_cache_enabled=False))
+ if h.get('single_auxiliary'):
+  sys.path.insert(0,str(repo))
+  from reproduction.actor50_grpo.single_auxiliary import validate as single_auxiliary,GPU4
+  c.update(auxiliary_gpu_indices=[4],auxiliary_gpu_uuids=[GPU4],retrieval_gpu_shards=1,
+   retrieval_consistency_questions=c['validation_questions'],approved_single_auxiliary=h['single_auxiliary'],
+   reuse_qualified_full_joint=h['reuse_qualified_full_joint'])
+  single_auxiliary(c)
+  once(b/'preparation/single-auxiliary-human-intent.json',h['single_auxiliary'])
  import socket
  def ports(start,width):
   for number in range(start,60000-width):
@@ -104,6 +121,7 @@ raw=json.dumps(value,allow_nan=False);assert len(raw.encode())<128*1024;print(ra
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--action',choices=('stage','prepare','submit','inspect'),required=True)
     parser.add_argument('--handle',type=Path,required=True);parser.add_argument('--parent-handle',type=Path)
+    parser.add_argument('--single-auxiliary-intent',type=Path);parser.add_argument('--reuse-qualified-handle',type=Path);parser.add_argument('--reuse-qualified-sha256')
     parser.add_argument('--terminal-path');parser.add_argument('--terminal-sha256');args=parser.parse_args()
     work=Path(__file__).resolve().parents[2];payload=dict(action=args.action)
     if args.action=='stage':
@@ -114,6 +132,10 @@ def main():
             base='/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-'+parent['run_id']+'-resume-'+execution,
             source_files=files,archive_sha256=hashlib.sha256(archive).hexdigest(),parent_handle=parent,
             terminal_path=args.terminal_path,terminal_sha256=args.terminal_sha256,created_unix=time.time())
+        if args.single_auxiliary_intent:
+            assert args.reuse_qualified_handle and args.reuse_qualified_sha256
+            h['single_auxiliary']=json.loads(args.single_auxiliary_intent.read_text())
+            h['reuse_qualified_full_joint']=dict(base=json.loads(args.reuse_qualified_handle.read_text())['base'],sha256=args.reuse_qualified_sha256)
         args.handle.write_text(json.dumps(h,indent=2)+'\n');payload['archive_b64']=base64.b64encode(archive).decode()
     else:h=json.loads(args.handle.read_text())
     payload['handle']=h;result=subprocess.run(route(REMOTE),input=json.dumps(payload).encode(),capture_output=True,timeout=65)

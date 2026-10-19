@@ -75,7 +75,9 @@ def native_allocation(base, c):
         raise ValueError('Wrong isolated A800 namespace')
     training = c['physical_gpu_indices']
     aux = c['auxiliary_gpu_indices']
-    if len(training) != 4 or len(set(training)) != 4 or aux != [5, 6] or set(training) & set(aux):
+    from reproduction.actor50_grpo.single_auxiliary import validate as single_auxiliary
+    approved_single=single_auxiliary(c)
+    if len(training) != 4 or len(set(training)) != 4 or (aux != [5, 6] and not approved_single) or set(training) & set(aux):
         raise ValueError('Four distinct training cards excluding auxiliary5/6 required')
     mapping = gpu_inventory()
     ids = training + aux

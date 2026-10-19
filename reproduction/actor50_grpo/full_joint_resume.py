@@ -35,7 +35,49 @@ def validate_boundary(base,c):
     return n
 
 
+
+def prepare_reuse(base,c):
+    """Rebind an existing full SHA/finite proof without rereading any payload."""
+    import copy
+    item=c['reuse_qualified_full_joint'];old=Path(item['base'])
+    path=old/'preparation/full-joint-qualified.json'
+    assert sha(path)==item['sha256']
+    prior=read(path);oldc=read(old/'preparation/launch-config.json')
+    assert read(old/'preparation/prepare-full-exit.json')['success']
+    assert not (old/'preparation/submit-intent.json').exists()
+    validate_boundary(old,oldc)
+    # Resource, source, ports and own metadata paths may differ; science cannot.
+    allowed={'base','execution_id','source_commit','pool_state_path','prefix_probe_receipt',
+        'retrieval_port','search_url','grounding_probe_base_port','auxiliary_gpu_indices','auxiliary_gpu_uuids',
+        'retrieval_gpu_shards','approved_single_auxiliary','retrieval_consistency_questions','reuse_qualified_full_joint'}
+    assert {k:v for k,v in oldc.items() if k not in allowed}=={k:v for k,v in c.items() if k not in allowed},'Qualified scientific configuration changed'
+    from reproduction.operations.a800_i1_i6_boundary_handoff import owned_present
+    parent=Path(c['resume_joint']['source_base']);terminal=read(c['resume_joint']['terminal_path'])
+    assert not owned_present(parent) and sha(c['resume_joint']['terminal_path'])==c['resume_joint']['terminal_sha256']
+    assert terminal['owned_writers_gone'] and sha(parent/'latest-joint.json')==prior['source_joint_sha256']
+    for rel in ('actor/latest.json','probe/latest.json','question-pool/state.json','question-pool/binding.json','latest-joint.json'):
+        once(base/rel,read(old/rel))
+    os.link(old/'probe/latest.pt',base/'probe/latest.pt')
+    n=prior['completed_outer']
+    for ordinal in range(1,n+1):
+        for rel in ('complete.json','probe-update/complete.json','probe-update/metrics.json','validation/complete.json'):
+            source=old/'outers'/('outer-%06d'%ordinal)/rel
+            if source.is_file():
+                target=base/'outers'/('outer-%06d'%ordinal)/rel;target.parent.mkdir(parents=True,exist_ok=True);os.link(source,target)
+    for rel in ('probe/prefix40-transition.json','probe/initialization-complete.json','logs/qa-pending.json'):
+        if (old/rel).exists():once(base/rel,read(old/rel))
+    proof=copy.deepcopy(prior);proof.update(source_commit=c['source_commit'],checked_unix=time.time(),
+        qualification_reused=dict(base=str(old),sha256=item['sha256'],payload_SHA_finite_scanned_again=False,all_19_payload_stat_seals_reverified=True),
+        sealed_metadata=[dict(path=str(base/rel),sha256=sha(base/rel)) for rel in
+            ('actor/latest.json','probe/latest.json','question-pool/state.json','question-pool/binding.json','latest-joint.json','preparation/launch-config.json')])
+    once(base/'preparation/full-joint-qualified.json',proof);validate_boundary(base,c)
+    return dict(status=proof['status'],completed_outer=n,actor_actual_Adam=proof['actor_actual_Adam'],
+        probe_actual_Adam=proof['probe_actual_Adam'],qualification_reused=proof['qualification_reused'],checked_unix=time.time())
+
+
 def prepare(base):
+    base=Path(base);c=read(base/'preparation/launch-config.json');validate_config(c,base)
+    if c.get('reuse_qualified_full_joint'):return prepare_reuse(base,c)
     import torch
     from safetensors import safe_open
     from reproduction.prefix_selection200.checkpoint_cpu_once import hash_file,tensor_cpu,validate_adam,validate_rng
