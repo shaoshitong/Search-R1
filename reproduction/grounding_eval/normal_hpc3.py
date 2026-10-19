@@ -74,14 +74,26 @@ def load_job(path):
     job.setdefault('gpu_memory_utilization', .60)
     job.setdefault('max_num_batched_tokens', 16384)
     job.setdefault('max_num_seqs', 64)
+    job.setdefault('max_batch_size', job['max_num_seqs'])
     job.setdefault('retriever_port', 18119)
     job.setdefault('retriever_threads', 16)
     job.setdefault('start_retriever', True)
-    if not 1 <= job['batch_size'] <= job['max_num_seqs'] <= 256:
+    if not 1 <= job['batch_size'] <= job['max_batch_size'] <= job['max_num_seqs'] <= 256:
         raise ValueError('Unsafe batch bounds')
     if not .2 <= job['gpu_memory_utilization'] <= .8:
         raise ValueError('Reserve memory for the E5 encoder')
     return job
+
+
+def execution_batches(job, total_gpu_bytes, initial_override=None):
+    # Execution scheduling only: frozen rollout budget/decoder remains unchanged.
+    maximum = min(job['max_batch_size'], job['max_num_seqs'])
+    if total_gpu_bytes < 70 * 1024**3:
+        maximum = min(maximum, 128)
+    initial = job['batch_size'] if initial_override is None else initial_override
+    if not isinstance(initial, int) or isinstance(initial, bool) or initial < 1 or initial > job['max_batch_size']:
+        raise ValueError('Initial batch override outside frozen execution bounds')
+    return min(initial, maximum), maximum
 
 
 def checkpoint_inventory(path):
@@ -134,6 +146,7 @@ def start_retriever(job, out):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('--job', required=True)
+    parser.add_argument('--initial-batch-size', type=int, help='Execution-only initial size on recovery; cannot raise frozen max bounds')
     args = parser.parse_args(argv)
     job = load_job(args.job)
     out = Path(job['output_dir']); out.mkdir(parents=True, exist_ok=True)
@@ -214,10 +227,20 @@ def main(argv=None):
             child, log, search_url = start_retriever(job, out)
         if not search_url:
             raise ValueError('No retrieval endpoint')
+        initial_batch, maximum_batch = execution_batches(job, torch.cuda.get_device_properties(0).total_memory, args.initial_batch_size)
+        atomic(out / ('normal-execution-%d.json' % os.getpid()), {
+            'pid': os.getpid(), 'gpu_name': torch.cuda.get_device_name(0),
+            'gpu_total_bytes': torch.cuda.get_device_properties(0).total_memory,
+            'cuda_visible_devices': os.environ.get('CUDA_VISIBLE_DEVICES'),
+            'initial_batch': initial_batch, 'maximum_batch': maximum_batch,
+            'max_num_seqs': min(job['max_num_seqs'], maximum_batch),
+            'max_num_batched_tokens': job['max_num_batched_tokens'],
+            'on_oom': 'publish_error_and_exit_without_reusing_engine',
+            'scientific_protocol_unchanged': True, 'time': time.time()})
         engine = LLM(model=job['checkpoint_path'], tokenizer=job['checkpoint_path'], dtype='bfloat16',
             tensor_parallel_size=1, gpu_memory_utilization=job['gpu_memory_utilization'],
             enforce_eager=True, max_model_len=4596,
-            max_num_batched_tokens=job['max_num_batched_tokens'], max_num_seqs=job['max_num_seqs'],
+            max_num_batched_tokens=job['max_num_batched_tokens'], max_num_seqs=min(job['max_num_seqs'], maximum_batch),
             enable_prefix_caching=False, seed=42)
         params = SamplingParams(n=1, best_of=1, top_p=1., top_k=-1, min_p=0., temperature=0.,
             max_tokens=500, ignore_eos=False, detokenize=False)
@@ -281,7 +304,7 @@ def main(argv=None):
             max_prompt_length=4096, max_response_length=500, max_obs_length=500, num_gpus=1,
             search_url=search_url, topk=3, force_final_answer=True), is_validation=True)
         started = time.time()
-        batch_size = job['batch_size']
+        batch_size = initial_batch
         while offset < len(selected):
             chosen = selected[offset:offset + batch_size]
             bd = collate_fn([dataset[i] for i in chosen])
@@ -309,7 +332,7 @@ def main(argv=None):
                 record = {'qid': str(row['extra_info']['index']), 'data_source': 'nq',
                     'evaluation_ordinal': ordinal, 'question': question_from_prompt(row['prompt']), 'gold': gold,
                     'model_spans': spans, 'seen_docs': manager.seen[i],
-                    'actual_retrieval_calls': manager.calls[i], 'source_run_id': job['method'],
+                    'actual_retrieval_calls': manager.calls[i], 'source_run_id': job.get('source_run_id', job['method']),
                     'checkpoint_hash': binding['checkpoint_hash'], 'normal_config_hash': digest(binding),
                     'seen_observation_token_ids': manager.observation_ids[i],
                     'response_token_ids': batch.batch['responses'][i].tolist(),
@@ -337,9 +360,11 @@ def main(argv=None):
             atomic(out / 'normal-progress.json', {'completed_unique': offset, 'total': len(selected),
                 'output_bytes': sum(p.stat().st_size for p in batch_root.glob('batch-*.json')),
                 'latest_success': time.time(), 'seconds': time.time() - started,
-                'batch_size': batch_size, 'errors': 0, 'pid': os.getpid(),
+                'batch_size': len(records), 'next_batch_size': min(maximum_batch, batch_size * 2),
+                'maximum_batch_size': maximum_batch, 'errors': 0, 'pid': os.getpid(),
                 'gpu_allocated_bytes': torch.cuda.memory_allocated(), 'gpu_reserved_bytes': torch.cuda.memory_reserved()})
             print('NORMAL_PROGRESS', offset, len(selected), time.time(), flush=True)
+            batch_size = min(maximum_batch, batch_size * 2)
         publish_normal(out, batch_root, binding, selected)
     finally:
         if child is not None:

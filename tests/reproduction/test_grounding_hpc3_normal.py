@@ -3,7 +3,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from reproduction.grounding_eval.normal_hpc3 import atomic, digest, publish_normal, question_from_prompt, sha
+from reproduction.grounding_eval.normal_hpc3 import atomic, digest, publish_normal, question_from_prompt, sha, execution_batches
 
 class NormalSourceAcceptance(unittest.TestCase):
     def test_occurrences_and_actual_shard_hash_survive_publication(self):
@@ -35,6 +35,15 @@ class NormalSourceAcceptance(unittest.TestCase):
                 publish_normal(root,batches,{'checkpoint_hash':'ours'},[0])
             self.assertFalse((root/'normal-complete.json').exists())
             self.assertFalse((root/'normal.jsonl').exists())
+
+    def test_adaptive_execution_bounds_do_not_change_job(self):
+        job=dict(batch_size=64,max_batch_size=256,max_num_seqs=256)
+        saved=dict(job)
+        self.assertEqual(execution_batches(job,80*1024**3),(64,256))
+        self.assertEqual(execution_batches(job,40*1024**3),(64,128))
+        self.assertEqual(execution_batches(job,80*1024**3,16),(16,256))
+        self.assertEqual(job,saved)
+        with self.assertRaises(ValueError):execution_batches(job,80*1024**3,512)
 
     def test_question_is_not_instruction_example(self):
         self.assertEqual(question_from_prompt([{'role':'user','content':'Example: <answer> Beijing </answer>.\nQuestion: where is A?'}]), 'where is A?')
