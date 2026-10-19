@@ -80,6 +80,16 @@ def assemble(paths):
             assert 0 <= normal["correct"] <= normal["questions"]
             equal_number(normal["EM"], normal["correct"] / 3610)
             verify_tokens(normal["tokens"], 3610)
+            actual_input = normal["tokens"]["cumulative_model_input_tokens"]["total"]
+            actual_output = normal["tokens"]["raw_generated_tokens"]["total"]
+            normal["inference_cost_tokens"] = {
+                "measured_input_total": actual_input,
+                "measured_raw_output_total": actual_output,
+                "input_plus_raw_output_total": actual_input + actual_output,
+                "mean_input_plus_raw_output_per_question": (actual_input + actual_output) / 3610,
+                "questions": 3610,
+                "scope": "Accepted formal normal inference only; includes repeated input history and generated tails discarded by the action parser. CF and pilots are separate. No monetary or cache-discount estimate.",
+            }
             for name in ("requested_changed_rule_on_v4", "corrected_strict_v5"):
                 metric = row[name]
                 verify_metric(metric, normal)
