@@ -61,7 +61,7 @@
     {
       "code": "E",
       "method": "Soft-to-Hard",
-      "label": "Soft->Hard",
+      "label": "Soft → Hard",
       "iteration": 200,
       "questions": 3610,
       "correct": 1684,
@@ -109,7 +109,7 @@
     },
     {
       "path": "/Users/shaoshitong/Downloads/WWW_2026_PAPER/drawio_figure/time-em-iter50-100/time-em-iter50-100.pdf",
-      "sha256": "ca8482f96f2e6d6148da0d63a2b20a2363d2454c5bd5c59f5f40745703468c36"
+      "sha256": "fe2c324ddc96d382aaae9f0510bdb29c2a4e176e38570f88ab57fdf691e12ab2"
     }
   ],
   "canonical_question_gold_order_sha256": "23c0a8307f38a7a8d1cbd9e71fb115b7bd091421a3d3b10952fb71c8210b551c",
@@ -120,5 +120,17 @@
     "Original six adapters retained native per-method loops. Retrieval fanout migration: OPSD 8->2 and Easy Selection 8->1; cropped document parity sampled, not full-run original query parity.",
     "Single measurement per model; no run-level variance or invented error bars. Points across algorithms are not connected."
   ],
-  "style": "Latest user-edited time-em-iter50-100 PDF: italic Times, hollow markers, muted blue / brick red, horizontal dotted grid, blue hachure inset legend."
+  "style": "Italic Times, larger direct method labels, hollow markers, muted blue / brick red, horizontal dotted grid; no legend or iteration heading.",
+  "dominated_region": {
+    "reference": "DynRPO",
+    "x_min": 982.0337950138504,
+    "y_max": 47.257617728531855,
+    "interpretation": "More measured tokens per question and lower NQ EM; not a latency claim.",
+    "methods": [
+      "Search-G1",
+      "TOP-D alpha=0.1",
+      "OPD alpha=1",
+      "OPSD3304"
+    ]
+  }
 }

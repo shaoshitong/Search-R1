@@ -12,3 +12,5 @@ Style follows the latest user-edited time-em-iter50-100 PDF. Original style file
 Build in the original artifact folder with `python3 build_figure.py`, then export the drawio file via draw.io desktop CLI using `--export --format pdf --crop`, then run `python3 finalize_figure.py`. Finalization requires PyMuPDF and checks all seven point coordinates, PDF text, and vector content. It also creates the PNG and verification record.
 
 The repository copy is a publication/backup snapshot of code and audit data; the original artifact folder and local source-summary paths are recorded in the files. Full inference outputs remain remote.
+
+Visual revision: removed the iteration heading and letter-code legend; enlarged direct labels and axes. The light-blue lower-right rectangle is bounded by the exact DynRPO coordinates and means higher measured token cost and lower EM. It does not encode latency. All seven numerical results remain unchanged.

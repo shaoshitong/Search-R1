@@ -26,6 +26,14 @@ assert len(page.get_drawings())>=40
 page.get_pixmap(matrix=fitz.Matrix(2,2),alpha=False).save(P/'token-nq-em-iter200.png')
 audit=json.loads((P/'data-audit.json').read_text())
 root=E.parse(P/'token-nq-em-iter200.drawio')
+assert root.find(".//mxCell[@id='iteration-key']") is None
+assert root.find(".//mxCell[@id='method-legend-background']") is None
+assert 'Iteration 200' not in page.get_text()
+region=root.find(".//mxCell[@id='dynrpo-dominated-region']/mxGeometry")
+dyn=audit['points'][-1]
+assert math.isclose(float(region.get('x')),110+(dyn['mean_tokens']-800)/2000*1790,abs_tol=1e-8)
+assert math.isclose(float(region.get('y')),495-(dyn['em_percent']-28)/22*460,abs_tol=1e-8)
+assert audit['dominated_region']['methods']==['Search-G1','TOP-D alpha=0.1','OPD alpha=1','OPSD3304']
 points=[]
 for r in audit['points']:
     c=root.find(f".//mxCell[@id='point-{r['code']}']/mxGeometry")
@@ -36,9 +44,12 @@ for r in audit['points']:
     assert math.isclose(decoded_x,r['mean_tokens'],abs_tol=1e-8)
     assert math.isclose(decoded_y,r['em_percent'],abs_tol=1e-8)
     assert r['label'] in page.get_text()
+    assert root.find(f".//mxCell[@id='label-{r['code']}']").get('value')==r['label']
     points.append(dict(code=r['code'],verified_x=decoded_x,verified_y=decoded_y))
 sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
 report=dict(verified=True,point_coordinate_checks=points,
+    dominance_region_boundary_verified=True,dominated_methods=audit['dominated_region']['methods'],
+    direct_labels_verified=True,iteration_heading_and_legend_removed=True,
     all_pdf_text_preserved=True,page_size=[page.rect.width,page.rect.height],
     native_vector_paths=len(page.get_drawings()),raster_images=len(page.get_images()),
     files={p.name:sha(p) for p in P.iterdir() if p.suffix in ['.pdf','.png','.drawio','.py','.json'] and p.name!='verification.json'})
