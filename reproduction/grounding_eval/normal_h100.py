@@ -2,7 +2,7 @@
 
 Run this FILE in a fresh interpreter, with the historical runtime repo supplied.
 Easy retains authored token prefixes; OPSD uses its original retokenizing
-SearchRollout. Neither adapter creates an optimizer or imports a trainer object.
+LLMGenerationManager validation loop. Neither adapter creates an optimizer.
 GPU initialization is deliberately inside main, after identity/lock validation.
 """
 import argparse
@@ -78,7 +78,7 @@ def token_accounting(row):
         else:
             corrections += environment_count
     initial = len(row['initial_prompt_token_ids'])
-    row.update(model_generated_tokens=generated, observation_tokens=observations,
+    row.update(model_generated_tokens=kept, raw_generated_tokens=generated, observation_tokens=observations,
         environment_correction_tokens=corrections, retained_model_tokens=kept,
         initial_prompt_tokens=initial, trajectory_total_tokens=initial+kept+observations+corrections,
         cumulative_model_input_tokens=inputs, api_cache_tokens=None,
@@ -86,11 +86,23 @@ def token_accounting(row):
     return row
 
 
+def seen_document(text):
+    """Remove only actual boundary information wrappers, retain cropped body."""
+    text = re.sub(r'^\s*<information>', '', text, count=1)
+    return re.sub(r'</information>\s*$', '', text, count=1)
+
+
 def gpu_free(index):
     import subprocess
     result = subprocess.run(['nvidia-smi', '-i', str(index), '--query-gpu=memory.free',
         '--format=csv,noheader,nounits'], capture_output=True, text=True, check=True)
     return int(result.stdout.strip())
+
+
+def gpu_uuid(index):
+    import subprocess
+    return subprocess.run(['nvidia-smi', '-i', str(index), '--query-gpu=uuid',
+        '--format=csv,noheader'], capture_output=True, text=True, check=True).stdout.strip()
 
 
 class LocalVLLM:
@@ -101,6 +113,7 @@ class LocalVLLM:
 
     def decode(self, requests):
         # Sorting is unnecessary: vLLM performs its own bounded continuous batch.
+        self.last_requests = [list(row) for row in requests]
         self.last = self.llm.generate(prompt_token_ids=requests, sampling_params=self.sampling,
                                      use_tqdm=False)
         return self.last
@@ -171,14 +184,19 @@ def easy_normal(manager, worker, prompts, tokenizer, config, raw_cut):
             state['actual_calls'] += int(bool(searches[i] and not final))
             state['done'] = bool(dones[i]) or final
     return [dict(model_spans=response_spans(tokenizer, s['response'], s['mask']),
-        seen_docs=[tokenizer.decode(t['retained_observation_token_ids'], skip_special_tokens=False,
-            clean_up_tokenization_spaces=False) for t in s['turns'] if t['actual_search']],
+        seen_docs=[seen_document(tokenizer.decode(t['retained_observation_token_ids'], skip_special_tokens=False,
+            clean_up_tokenization_spaces=False)) for t in s['turns'] if t['actual_search']],
         actual_retrieval_calls=s['actual_calls'], turns=s['turns'],
         response_token_ids=s['response'], model_mask=s['mask'], initial_prompt_token_ids=s['prompt']) for s in states]
 
 
-def opsd_normal(manager, worker, prompts, tokenizer, config, engine_class):
-    """Use the historical OPSD SearchRollout unchanged, capture_raw enabled."""
+def opsd_normal(manager, worker, prompts, tokenizer, config):
+    """Wrap the REAL historical _validate -> run_llm_loop, without changing it.
+
+    SearchRollout is used by training, not this validation path. Capture the
+    exact requests, original retokenized actions and cropped observations via
+    transparent wrappers around the historical manager's methods.
+    """
     import torch
     from verl import DataProto
     width = max(map(len, prompts)); pad = tokenizer.pad_token_id
@@ -189,19 +207,63 @@ def opsd_normal(manager, worker, prompts, tokenizer, config, engine_class):
     batch = DataProto.from_dict(dict(input_ids=ids, attention_mask=mask,
         position_ids=manager.tensor_fn.create_position_ids(mask)), meta_info=dict(do_sample=False,
         recompute_log_prob=False, eos_token_id=tokenizer.eos_token_id, pad_token_id=pad, validate=True))
-    engine = engine_class(manager, context_alignment='report', capture_raw=True)
-    output, owners = engine.run(batch)
-    if list(owners) != list(range(len(prompts))):
-        raise ValueError('Historical OPSD unexpectedly changed source order')
+    captures = [[] for _ in prompts]
+    original_post = manager._postprocess_responses
+    original_execute = manager.execute_predictions
+    original_observations = manager._process_next_obs
+    current = {}
+
+    def postprocess(responses):
+        value = original_post(responses)
+        current['actions'] = value[0]
+        return value
+
+    def execute(predictions, pad_token, active_mask=None, do_search=True):
+        result = original_execute(predictions, pad_token, active_mask, do_search=do_search)
+        active_indices = [i for i, flag in enumerate(active_mask.tolist()) if flag]
+        if len(active_indices) != len(worker.last):
+            raise ValueError('Historical validation active row capture mismatch')
+        current['active'] = active_indices
+        for local, i in enumerate(active_indices):
+            item = worker.last[local].outputs[0]
+            action = [int(v) for v in current['actions'][local].tolist() if int(v) != pad]
+            captures[i].append(dict(turn_index=len(captures[i]),
+                generation_context_token_ids=worker.last_requests[local],
+                raw_response_token_ids=list(item.token_ids), postprocessed_action_token_ids=action,
+                retained_observation_token_ids=[], observation_text_before_truncation=result[0][i],
+                actual_search=bool(result[3][i] and do_search), final_only=not do_search,
+                finish_reason=item.finish_reason, stop_reason=item.stop_reason))
+        return result
+
+    def observations(texts):
+        value = original_observations(texts)
+        for i in current['active']:
+            captures[i][-1]['retained_observation_token_ids'] = [int(v) for v in value[i].tolist() if int(v) != pad]
+        return value
+
+    manager._postprocess_responses = postprocess
+    manager.execute_predictions = execute
+    manager._process_next_obs = observations
+    try:
+        manager.timing_raw = {}
+        output = manager.run_llm_loop(batch, ids[:, -config.max_start_length:].clone())
+    finally:
+        manager._postprocess_responses = original_post
+        manager.execute_predictions = original_execute
+        manager._process_next_obs = original_observations
     rows = []
-    for state in engine.last_states:
-        rows.append(dict(model_spans=response_spans(tokenizer, state.response, state.model_mask),
-            seen_docs=[tokenizer.decode(t['retained_observation_token_ids'], skip_special_tokens=False,
-                clean_up_tokenization_spaces=False) for t in state.records
-                if t['valid_search'] and t['normal_search_round']],
-            actual_retrieval_calls=sum(int(t['valid_search'] and t['normal_search_round']) for t in state.records),
-            turns=state.records, response_token_ids=state.response, model_mask=state.model_mask,
-            initial_prompt_token_ids=state.prompt))
+    response_width = output.batch['responses'].shape[1]
+    for i, turns in enumerate(captures):
+        response = output.batch['responses'][i].tolist()
+        active = output.batch['attention_mask'][i, -response_width:].bool()
+        model = output.batch['info_mask'][i, -response_width:].bool()
+        model_mask = (active & model).long().tolist()
+        rows.append(dict(model_spans=response_spans(tokenizer, response, model_mask),
+            seen_docs=[seen_document(tokenizer.decode(t['retained_observation_token_ids'], skip_special_tokens=False,
+                clean_up_tokenization_spaces=False)) for t in turns if t['actual_search']],
+            actual_retrieval_calls=sum(int(t['actual_search']) for t in turns),
+            turns=turns, response_token_ids=response, model_mask=model_mask,
+            initial_prompt_token_ids=turns[0]['generation_context_token_ids']))
     return rows
 
 
@@ -217,6 +279,8 @@ def main():
     p.add_argument('--retrieval-url', required=True)
     p.add_argument('--identity-file', help='Historical Easy final-result.json question_ids, required for Easy')
     p.add_argument('--gpu-index', type=int, required=True)
+    p.add_argument('--gpu-lock-directory', required=True,
+                   help='One common task directory shared by all normal/CF workers')
     p.add_argument('--batch-size', type=int, default=128)
     p.add_argument('--max-num-seqs', type=int, default=128)
     p.add_argument('--max-num-batched-tokens', type=int, default=8192)
@@ -227,6 +291,14 @@ def main():
     args = p.parse_args()
     out = Path(args.output); out.mkdir(parents=True, exist_ok=True)
     lease = open(out / '.normal.lock', 'a+'); fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    physical_uuid = gpu_uuid(args.gpu_index)
+    gpu_locks = Path(args.gpu_lock_directory); gpu_locks.mkdir(parents=True, exist_ok=True)
+    gpu_lease = open(gpu_locks / (physical_uuid+'.lock'), 'a+')
+    fcntl.flock(gpu_lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    gpu_lease.seek(0); gpu_lease.truncate()
+    json.dump(dict(pid=os.getpid(), output=str(out), physical_uuid=physical_uuid,
+                   started_at=time.time(), argv=sys.argv), gpu_lease)
+    gpu_lease.flush(); os.fsync(gpu_lease.fileno())
     if args.method == 'easy' and not args.identity_file:
         raise ValueError('Easy requires original final-result occurrence identity')
     if not (0 < args.batch_size <= 1024 and 0 < args.limit <= 3610):
@@ -255,31 +327,36 @@ def main():
     generation = GenerationConfig(**{k: v for k, v in expected.items() if k in GenerationConfig.__annotations__})
     generation.force_final_answer = bool(config.get('force_final_answer', True))
     tokenizer = AutoTokenizer.from_pretrained(args.checkpoint, local_files_only=True)
+    data_sha256 = sha(args.data)
+    if data_sha256 != '55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1':
+        raise ValueError('Final parquet differs from frozen common split SHA256')
     frame = pd.read_parquet(args.data)
+    if len(frame) != 51713:
+        raise ValueError('Original final parquet must contain exactly 51713 rows')
     indices = [i for i, value in enumerate(frame['data_source']) if value == 'nq']
     if len(indices) != 3610:
         raise ValueError('Expected fixed 3610 NQ occurrences in original final parquet')
     original_ids = json.loads(Path(args.identity_file).read_text()) if args.identity_file else None
+    if original_ids is not None:
+        if (original_ids['run_id'] != args.run_id or original_ids['validation_sha256'] != data_sha256 or
+            len(original_ids['question_ids']) != 51713 or len(original_ids['data_sources']) != 51713):
+            raise ValueError('Historical final identity run/data SHA/count mismatch')
     source_files = dict(generation=sha(historical_generation.__file__))
     if args.method == 'easy':
         trace = importlib.import_module('reproduction.common8.behavior_trace')
         if not str(Path(trace.__file__).resolve()).startswith(runtime + '/'):
             raise ValueError('Historical Easy trace imported from another checkout')
         source_files['behavior_trace'] = sha(trace.__file__)
-    else:
-        rollout = importlib.import_module('search_r1.baselines.rollout')
-        if not str(Path(rollout.__file__).resolve()).startswith(runtime + '/'):
-            raise ValueError('Historical OPSD rollout imported from another checkout')
-        source_files['rollout'] = sha(rollout.__file__)
     normal_config = dict(method=args.method, run_id=args.run_id, checkpoint=str(Path(args.checkpoint).resolve()),
         checkpoint_files={x.name: sha(x) for x in Path(args.checkpoint).iterdir() if x.is_file()
             and x.name.endswith(('.json', '.safetensors', '.txt')) and not x.name.startswith('backup-')},
-        data_sha256=sha(args.data), source_config_sha256=sha(args.source_config),
+        data_path=str(Path(args.data).resolve()), data_sha256=data_sha256,
+        source_config_sha256=sha(args.source_config),
         normal_protocol=expected, runtime_sources_sha256=source_files,
         greedy=True, dtype='bfloat16', adapter_sha256=sha(__file__),
         inference_batch=args.batch_size, max_num_seqs=args.max_num_seqs,
         max_num_batched_tokens=args.max_num_batched_tokens, gpu_memory_utilization=args.gpu_memory_utilization,
-        nq_occurrences=indices, limit=args.limit)
+        nq_occurrences=indices, limit=args.limit, physical_gpu_uuid=physical_uuid)
     binding_hash = hashlib.sha256(canonical(normal_config)).hexdigest()
     binding_path = out / 'normal-binding.json'
     if binding_path.exists():
@@ -334,21 +411,37 @@ def main():
             gold = plain(row['reward_model'])['ground_truth']['target']
             gold = [gold] if isinstance(gold, str) else gold
             prompt_text = '\n'.join(turn['content'] for turn in chat)
-            match = re.search(r'Question:\s*(.*)', prompt_text, re.S)
-            question = match.group(1).strip() if match else prompt_text
+            matches = list(re.finditer(r'Question:\s*', prompt_text))
+            if not matches:
+                raise ValueError('Unknown original common prompt question schema')
+            question = prompt_text[matches[-1].end():].strip()
             extra = plain(row.get('extra_info', {}))
-            qid = str(extra.get('id', extra.get('index', hashlib.sha256(canonical([chat, gold])).hexdigest())))
+            if not isinstance(extra, dict) or 'index' not in extra:
+                raise ValueError('Original canonical extra_info.index missing')
+            qid = str(extra['index'])
+            historical_qid = None
             if original_ids is not None:
                 if original_ids['data_sources'][ordinal] != 'nq':
                     raise ValueError('Historical final occurrence source mismatch')
-                qid = str(original_ids['question_ids'][ordinal])
+                historical_qid = str(original_ids['question_ids'][ordinal])
+                expected_historical_qid = hashlib.sha256(re.sub(r'\s+', ' ', question).strip().casefold().encode()).hexdigest()
+                if historical_qid != expected_historical_qid:
+                    raise ValueError('Historical final identity prompt/order mismatch')
+                if original_ids.get('rows'):
+                    saved_row = original_ids['rows'][ordinal]
+                    if (saved_row['ordinal'] != ordinal or saved_row['question_id'] != historical_qid or
+                        saved_row['data_source'] != 'nq'):
+                        raise ValueError('Historical final journal row occurrence mismatch')
             identities.append(dict(data_source='nq', evaluation_ordinal=ordinal, qid=qid,
-                question=question, gold=gold, original_prompt=chat, source_run_id=args.run_id))
+                historical_qid=historical_qid, question=question, gold=gold,
+                original_prompt=chat, source_run_id=args.run_id,
+                normal_binding_sha256=binding_hash,
+                checkpoint_id=hashlib.sha256(canonical(normal_config['checkpoint_files'])).hexdigest()))
         t0 = time.time()
         if args.method == 'easy':
             generated = easy_normal(manager, worker, prompts, tokenizer, generation, trace.raw_prefix_to_first_closing_tag)
         else:
-            generated = opsd_normal(manager, worker, prompts, tokenizer, generation, rollout.SearchRollout)
+            generated = opsd_normal(manager, worker, prompts, tokenizer, generation)
         raw = [token_accounting(dict(identity, **value)) for identity, value in zip(identities, generated)]
         atomic(raw_path, dict(binding_sha256=binding_hash, rows=raw, completed_at=time.time()))
         raw_sha = sha(raw_path)
