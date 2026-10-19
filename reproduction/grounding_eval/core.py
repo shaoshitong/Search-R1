@@ -15,12 +15,13 @@ from pathlib import Path
 from search_r1.qa_protocol import extract_final_answer
 
 PROTOCOL = 'paper-strict-v1'
-CF_CONFIG = dict(protocol_version=PROTOCOL, replacement_version='typed-boundary-v2-common-occurrence',
+CF_CONFIG = dict(protocol_version=PROTOCOL, replacement_version='typed-question-guided-v3',
     seed=1729, prompt_version='single-user-question-docs-v1',
     parser_version='terminal-nonnested-qa-v1', normalization='qa-em-ascii-punct-articles-v1',
     max_new_tokens=512, max_model_len=8192, temperature=0., top_p=1., top_k=-1,
     dtype='bfloat16', new_retrieval=False, ban_search_tokens=False,
-    max_attempts=3, tensor_parallel_size=1)
+    max_attempts=3, tensor_parallel_size=1, answer_stop='</answer>',
+    include_stop_str_in_output=True, stop_version='normal-terminal-answer-action-v1')
 
 def utc(): return datetime.now(timezone.utc).isoformat()
 def canonical(obj): return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()
@@ -54,33 +55,26 @@ def normalize(text):
 
 def occurrence(row): return [str(row['data_source']), int(row['evaluation_ordinal']), str(row['qid'])]
 
-def fake_value(golds, key):
-    """Deterministic, type-coarse plausible value; reject normalized gold collisions."""
-    n = int(digest([CF_CONFIG['seed'], key])[:12], 16)
-    numeric = all(re.fullmatch(r'[\d\s.,%+−-]+', g.strip()) for g in golds if g.strip())
-    pool = ([str(1600 + (n+i*127)%700) for i in range(16)] if numeric else
-            ['Alexander Hamilton', 'Tokyo', 'Microsoft', 'Charles Darwin', 'Brazil',
-             'Queen Victoria', 'Mars', 'Stanford', 'Helsinki', 'Eleanor Roosevelt'])
-    pool = pool[n%len(pool):]+pool[:n%len(pool)]
-    forbidden = {normalize(g) for g in golds}
-    return next(x for x in pool if normalize(x) and normalize(x) not in forbidden)
-
-def intervene(docs, golds, key):
+def intervene(docs, golds, key, question=''):
     aliases = sorted(set(g.strip() for g in golds if g.strip() and normalize(g)), key=lambda x:(-len(x), x))
     if not aliases: return dict(status='INVALID_INTERVENTION', invalid_reason='empty_gold_aliases')
-    fake = fake_value(aliases, key)
+    from .replacements import make_replacements
+    replacement=make_replacements(aliases,key,question)
+    alias_map={k.casefold():v for k,v in replacement['alias_to_value'].items()}
+    fake=replacement['injected_value']
     # Lookarounds prevent replacing Ann in Anna or 19 in 1999. One pass on
     # ORIGINAL docs, longest alternatives first; newly injected strings never match.
     pattern = re.compile(r'(?<!\w)(?:'+ '|'.join(re.escape(a) for a in aliases) +r')(?!\w)', re.I)
     modified, replacements = [], []
     for i, doc in enumerate(docs):
         matches = list(pattern.finditer(doc))
-        replacements.extend(dict(doc_index=i, start=m.start(), end=m.end(), original=m.group(), injected=fake) for m in matches)
-        modified.append(pattern.sub(lambda _:fake, doc))
+        replacements.extend(dict(doc_index=i, start=m.start(), end=m.end(), original=m.group(), injected=alias_map[m.group().casefold()]) for m in matches)
+        modified.append(pattern.sub(lambda m:alias_map[m.group().casefold()], doc))
     if not replacements: return dict(status='UNPERTURBABLE', invalid_reason='no_boundary_matched_gold_in_actual_seen_docs')
-    if modified == docs or normalize(fake) in {normalize(g) for g in aliases}:
+    if modified == docs or any(normalize(x) in {normalize(g) for g in aliases} for x in replacement['cf_aliases']):
         return dict(status='INVALID_INTERVENTION', invalid_reason='unchanged_or_equivalent_injection')
-    return dict(status='READY', modified_docs=modified, injected_value=fake, cf_aliases=[fake],
+    return dict(status='READY', modified_docs=modified, injected_value=fake,
+                cf_aliases=replacement['cf_aliases'], replacement_kind=replacement['replacement_kind'],
                 replacement_mapping=replacements, replacement_count=len(replacements), modified_docs_sha256=digest(modified))
 
 def classify(original, cf_answer, cf_aliases, golds):
@@ -116,8 +110,8 @@ def prepare_row(row, manifest):
     # Historical methods sometimes serialize bare qid differently. The immutable
     # common dataset ordinal/question/golds make the same intervention assignment
     # across methods; the full original qid still belongs to the resume identity.
-    seed_key=key[:2]+[digest([row['question'],sorted(normalize(g) for g in row['gold'])])]
-    return dict(base, replacement_seed_key=seed_key, **intervene(row['seen_docs'], row['gold'], seed_key))
+    seed_key=[CF_CONFIG['seed']]+key[:2]+[digest([row['question'],sorted(normalize(g) for g in row['gold'])])]
+    return dict(base, replacement_seed_key=seed_key, **intervene(row['seen_docs'], row['gold'], seed_key,row['question']))
 
 def messages(row):
     docs = '\n\n'.join(row['modified_docs'])

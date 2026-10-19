@@ -49,6 +49,7 @@ def prepare(args):
     config=dict(CF_CONFIG)
     code_files=[Path(__file__), Path(__file__).with_name('core.py'),
                 Path(__file__).with_name('identity.py'),
+                Path(__file__).with_name('replacements.py'),
                 Path(__file__).parents[2]/'search_r1/qa_protocol.py']
     code={str(p.relative_to(Path(__file__).parents[2])):sha(p) for p in code_files}
     config['implementation_sha256']=digest(code)
@@ -141,7 +142,7 @@ def run(args):
     model=manifest['checkpoint']['path']; config=manifest['cf_config']
     tokenizer=AutoTokenizer.from_pretrained(model,local_files_only=True,trust_remote_code=False)
     free,total=torch.cuda.mem_get_info(); reserve=4*1024**3
-    utilization=min(.90,(free-reserve)/total)
+    utilization=min(args.max_memory_utilization,(free-reserve)/total)
     if free<20*1024**3 or utilization<=0: raise RuntimeError('Less than20GiB free: refuse occupied/insufficient GPU')
     requested_max=args.max_batch
     engine=LLM(model=model,tokenizer=model,dtype='bfloat16',tensor_parallel_size=1,
@@ -157,11 +158,14 @@ def run(args):
     stop=[stop] if isinstance(stop,int) else list(stop)
     stop=sorted(set(stop+[tokenizer.eos_token_id]))
     params=SamplingParams(temperature=0.,top_p=1.,top_k=-1,max_tokens=config['max_new_tokens'],
+        stop=[config['answer_stop']],include_stop_str_in_output=config['include_stop_str_in_output'],
         stop_token_ids=stop,skip_special_tokens=False,seed=config['seed'])
     atomic(out/('engine-'+str(os.getpid())+'.json'),dict(checkpoint=model,checkpoint_hash=manifest['checkpoint_hash'],
         torch=torch.__version__,vllm=vllm.__version__,device=torch.cuda.get_device_name(),
         cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),free_before=free,total=total,
-        utilization=utilization,max_batch=requested_max,stop_token_ids=stop,pid=os.getpid(),utc=utc()))
+        utilization=utilization,max_batch=requested_max,stop_token_ids=stop,
+        sampling_params_repr=repr(params),max_model_len=config['max_model_len'],
+        pid=os.getpid(),utc=utc()))
     position=0; batch=min(16,requested_max); completed=len(done); started=time.monotonic()
     attempts=Counter()
     if (out/'attempts.jsonl').exists():
@@ -268,7 +272,10 @@ def main():
         if name in ('run','pilot'):
             cmd.add_argument('--max-batch',type=int,default=256);cmd.add_argument('--limit',type=int,default=0)
             cmd.add_argument('--gpu-uuid',help='A800 physical UUID: acquire the existing task GPU lease before CUDA')
+            cmd.add_argument('--max-memory-utilization',type=float,default=.90,help='GPU-total cap; shared H100 requires independently justified conservative budget')
     args=p.parse_args()
+    if args.action in ('run','pilot') and not 0<args.max_memory_utilization<=.95:
+        raise ValueError('Memory cap must be in (0,.95]')
     if args.action=='prepare':prepare(args)
     elif args.action in ('run','pilot'):
         if args.action=='pilot':args.limit=16
