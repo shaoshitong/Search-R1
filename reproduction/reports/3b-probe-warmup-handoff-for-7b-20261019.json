@@ -1,0 +1,193 @@
+{
+  "role": "LOCAL_STATIC_3B_PROBE_WARMUP_FACTS_FOR_INDEPENDENT_7B_PORT",
+  "created_unix": 1792424918.3327942,
+  "request_source_thread": "01a0fcbe-15f8-7600-ae84-9487d924560a",
+  "scope": "Existing local code, pinned git objects and historical small receipts only. No active-training query, signal, launch, checkpoint/tensor read, or message to other threads.",
+  "best_claim": "Global best checkpoint is NOT established by these records. Current GRPO uses latest fully sealed epoch56 EMA by human handoff, not a validation-best selection. Do not describe historical99.88 as current mixed balanced accuracy.",
+  "official3B_revision": "aa8e72537993ba99e69dfaafa59ed015b17504d1",
+  "common_manifest_sha256": "0b002b0038d58d0ce07c073e41a8be785ce47eb4f15a1ee883fe19cc86dbcf24",
+  "datasets": {
+    "canonical_train_questions": 169028,
+    "probe_dev_questions": 512,
+    "probe_dev_G5_trajectories": 2560,
+    "dev_sources": {
+      "nq": 256,
+      "hotpotqa": 256
+    },
+    "final_QA_questions": 51713,
+    "final_QA_sources": 7,
+    "final_NQ_questions": 3610,
+    "identity_rule": "Canonical stable source+upstream identity plus question/normalized-question hashes; train/dev disjoint. Retain original split; do not turn final QA into probe training."
+  },
+  "full_merged_question5_warmup": {
+    "code_commit": "ddf36cca14ac7aafb0b5395ffa88d57ed8c35e74",
+    "local_package": "/Users/shaoshitong/Documents/Search-G1/repo/reproduction/question5_ema_warmup",
+    "entry": "torchrun -m reproduction.question5_ema_warmup.train --config <remote config>",
+    "remote_execution_base": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-8af926a49630428097b94027864da68b-resume-bcfa1de0a90a4fcda70263a75153fcee",
+    "remote_cache_base": "/data/shaoshitong/Search-G1-question5-ema-joint200-20261016-d7dd61bb36454e1e80c2306b5fb7d23a",
+    "feature_manifest_sha256": "e9ed944ed244513ab55bdd1b13aae745c5b7902228294fd62ef70ea349b6f246",
+    "data_manifest_sha256": "8ac391ba26466e9fdbe9220b157bec81294ead69a09a0b7c2c4994cc7873a2c7",
+    "train_event_groups_per_epoch": 445440,
+    "train_trajectory_exposures_per_epoch": 2227200,
+    "event_warning": "Merged authentic sampling events from original corpus and reference bank; 445440 groups is NOT169028 unique questions and NOT a new single G5 rollout per canonical question. Group by source-event+qid, not qid alone.",
+    "sampling": "Exact-once complete merged event coverage, no class balancing/oversampling in this package.",
+    "optimizer": "torch.optim.Adam, weight_decay0, default PyTorch betas/eps",
+    "LR": "Cosine3e-5 to3e-6; originally200epochs/1740000 virtual data-phase updates, later larger global-batch schedule retained phase clock.",
+    "global_groups": "Epoch1..3 pattern51/51/51/51/52 (avg256trajectories perAdam); fromepoch4 204/204/204/204/208 (avg1024trajectories).",
+    "ema": "0.99 per successful counter-verified Adam; full raw/EMA/Adam/RNG/nativebuffers checkpoint.",
+    "published_epochs_1_to_5": [
+      {
+        "epoch": 1,
+        "actual_Adam": 8700,
+        "train_mixed_BA": 0.6773703097999505,
+        "test_mixed_BA": 0.5435165346222199,
+        "test_trajectory_accuracy": 0.773046875,
+        "historical_checkpoint_sha256": "a3a4959f14413948f88c9a7add54eb670746fa63005972390c0ab907d30a5f8c"
+      },
+      {
+        "epoch": 2,
+        "actual_Adam": 17400,
+        "train_mixed_BA": 0.7619666946911174,
+        "test_mixed_BA": 0.5733137342833889,
+        "test_trajectory_accuracy": 0.7734375,
+        "historical_checkpoint_sha256": "b59d75f190e99a8f7d1f2a577b36d39260bf557cc3f99a3f32796aa7bde459aa"
+      },
+      {
+        "epoch": 3,
+        "actual_Adam": 26100,
+        "train_mixed_BA": 0.8010515778262539,
+        "test_mixed_BA": 0.5632733735279951,
+        "test_trajectory_accuracy": 0.782421875,
+        "historical_checkpoint_sha256": "4fccd80f9c0761e0b613f8fbf45f0b562c08ec9d007fa868aa746bc49b4f4437"
+      },
+      {
+        "epoch": 4,
+        "actual_Adam": 28275,
+        "train_mixed_BA": 0.847472288642452,
+        "test_mixed_BA": 0.5657149500888601,
+        "test_trajectory_accuracy": 0.7703125,
+        "historical_checkpoint_sha256": "f5b7c900bca27a62c1215a482f1697ea8090c279d1b17fa093e06a5226d5231a"
+      },
+      {
+        "epoch": 5,
+        "actual_Adam": 30450,
+        "train_mixed_BA": 0.8503352742377359,
+        "test_mixed_BA": 0.570872157722524,
+        "test_trajectory_accuracy": 0.770703125,
+        "historical_checkpoint_sha256": "b5c81ae76c12f677a0663d6e6b0f0482ca63fde0507c2a018aa6034282105594"
+      }
+    ],
+    "best_of_this_published_subset": "Epoch2 EMA testBA0.5733137342833889. Only best among publishedepochs1..5, not globalbest; historical mutable-latest SHA does NOT prove a separate immutableepoch2 weight file still exists.",
+    "adopted_historical_epoch3_sha256": "4fccd80f9c0761e0b613f8fbf45f0b562c08ec9d007fa868aa746bc49b4f4437"
+  },
+  "current_actor50_prefix20_warmup": {
+    "code_commit": "5951eb356ea9d57249cd9da6f6531024f578cdb3",
+    "local_package": "/Users/shaoshitong/Documents/Search-G1/actor50-grpo-mixed30-20261018/reproduction/actor50_prefix20_fresh100",
+    "model_package": "/Users/shaoshitong/Documents/Search-G1/actor50-grpo-mixed30-20261018/reproduction/actor50_prefix20_reuse20",
+    "plan_file": "/Users/shaoshitong/Documents/Search-G1/actor50-grpo-mixed30-20261018/reproduction/actor50_probe100/plan.py",
+    "remote_base": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-3c91ac3eb68b46459433bd8c6091fec6-prefix20-fresh-resume-1c8f2fe703c642cf838324712da635b5",
+    "checkpoint": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-3c91ac3eb68b46459433bd8c6091fec6-prefix20-fresh-resume-1c8f2fe703c642cf838324712da635b5/probe/cycle-0028.pt",
+    "checkpoint_sha256": "a93496353721a18387dd131e01464296dc76a6faa9daec2aa90f2e8cfda900eb",
+    "completed_epochs": 56,
+    "actual_Adam_EMA": 770,
+    "weight_kind": "EMA0.99",
+    "metrics": {
+      "test": {
+        "accuracy": 0.40625,
+        "balanced_accuracy": 0.5210702635986952,
+        "count": 512,
+        "fn": 31,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 273,
+        "group_bce": 1.1945332070659003,
+        "group_weight": 1.0,
+        "mean_q": 0.6481371475584763,
+        "mixed_count": 114,
+        "mixed_recall": 0.7280701754385965,
+        "nonmixed_count": 398,
+        "nonmixed_recall": 0.314070351758794,
+        "resampled_evaluation": false,
+        "threshold": 0.5,
+        "tn": 125,
+        "total_loss": 1.9634277924467065,
+        "tp": 83,
+        "trajectory_accuracy": 0.613671875,
+        "trajectory_bce": 0.7688945853808062,
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "weight_kind": "EMA0.99"
+      },
+      "train": {
+        "accuracy": 0.623046875,
+        "balanced_accuracy": 0.6004833963850358,
+        "count": 512,
+        "fn": 54,
+        "formula": "1-prod(p_j)-prod(1-p_j)",
+        "fp": 139,
+        "group_bce": 0.7328302591567158,
+        "group_weight": 1.0,
+        "mean_q": 0.4316618352356051,
+        "mixed_count": 122,
+        "mixed_recall": 0.5573770491803278,
+        "nonmixed_count": 390,
+        "nonmixed_recall": 0.6435897435897436,
+        "resampled_evaluation": false,
+        "threshold": 0.5,
+        "tn": 251,
+        "total_loss": 1.2658801135748274,
+        "tp": 68,
+        "trajectory_accuracy": 0.77890625,
+        "trajectory_bce": 0.5330498544181117,
+        "true_mixed": "0<sum(own_strict_em)<5",
+        "weight_kind": "EMA0.99"
+      }
+    },
+    "frozen_actor": "54ac33dcebe64e62a11fe4177f41f116-actor0050",
+    "actor_updates": 0,
+    "procedure": "First20epochs10existingauthentic512G5batches reused; then fresh512questionsG5 each cycle, excluding first5120trainingquestions;2epochs on each newbatch; fixed512dev original ownG5 labels+features held constant.",
+    "unique_train_question_count_through_epoch56": 14336,
+    "train_events_through_epoch56": 14336,
+    "train_trajectories_through_epoch56": 71680,
+    "classes": "K=0 allwrong;K=5 allcorrect;0<K<5 mixed includingK1.",
+    "balancing": "Per512Q cycle, all majority G5 groups once; oversample whole minority G5 groups with replacement to largest class count. Allthree classes equal; never rebalance test. Missingclass raiseserror.",
+    "batch": "51wholeG5 groups/globalAdam (255trajectories), remainder retained;4rank whole-G5 partition and exact global mean scale4*nlocal/nglobal.",
+    "optimizer": "Adam LR5e-6 constant, weight_decay0; resumes raw/EMA/Adam/all4rankRNG eachcycle, no cycle reset.",
+    "EMA": "Every verified returned Adam:EMA=.99*EMA+.01*raw, once. Evaluate same EMA train/test before and after each2epochcycle.",
+    "GRPO_adoption": "Only epoch56EMA model/nativebuffers imported into formalactor50 continuation; formalonlineprobeAdam initialized0. Online updates are raw, not EMA."
+  },
+  "shared_architecture": {
+    "frozen_feature": "3B layer index27 POST-block hidden; native vLLM capture includes residual once (post_block_hidden_plus_residual); cache BF16 detached. Use actual full causal request for retained tokens.",
+    "native_feature_code": "/Users/shaoshitong/Documents/Search-G1/actor50-grpo-mixed30-20261018/reproduction/actor50_prefix20_fresh100/actor_hidden.py",
+    "head_code": "/Users/shaoshitong/Documents/Search-G1/actor50-grpo-mixed30-20261018/reproduction/prefix_selection200/prefix5_model.py",
+    "prefix20_head_code": "/Users/shaoshitong/Documents/Search-G1/actor50-grpo-mixed30-20261018/reproduction/actor50_prefix20_reuse20/model.py",
+    "native_head": "Train full official Qwen2DecoderLayer index35 plus native rotary and one Linear; copy official layer35 at fresh init. 3B36layers/hidden2048/16Qheads/2KV/intermediate11008.",
+    "input_layout": "[Qmaxquestion slots, Ppolicy slots,2048]; Qmax273 for current3B data, P20 => width293. Right-pad question; policy starts at fixed Qmax. Keep real RoPE positions/segments independent of storage slot. Mask padding, causal attention, zero masked outputs then flatten then Linear to1logit pertrajectory.",
+    "token_rule": "Use original initial_prompt_token_ids, all original question/context tokens (not text-only decode-retokenize), and SAMEtrajectory firstP actual kept policy tokens in turnorder, skipping environment observations as targets but retaining authentic causal context. No future token information. Short/EOS prefixes use masks, no invented tokens.",
+    "capture_flush": "For actual native sampling, hidden of last retained token requires processing it; twentieth-token hidden flush discards21st sampled lookahead. Verify rank-worker hook captures true post27 hidden+residual once.",
+    "initialization": "Prefix5->20 migration preserves existing first278*2048 Linear columns and zero-adds remaining15*2048 columns. This is same3B dimensional lift; not cross-size checkpoint transfer."
+  },
+  "loss": {
+    "code": "/Users/shaoshitong/Documents/Search-G1/actor50-grpo-mixed30-20261018/reproduction/prefix20_group_joint100/loss.py",
+    "trajectory": "mean BCEWithLogits(z_j, ownstrictEM_j)",
+    "Mixed": "m=1[0<sum(ownstrictEM)<5];p_j=sigmoid(z_j);q=1-prod(p_j)-prod(1-p_j); mean BCE(q,m).",
+    "weights": {
+      "trajectory": 1,
+      "mixed": 1
+    },
+    "numerical": "Compute all32 Bernoulli pattern logmasses; Mixed patterns1..30 vs extremes0/31, eventlogit=logMixedMass-logExtremeMass. FP32 loss, no clamp/floor/detach. Keep complete sameeventG5 local.",
+    "metrics": "Primary mixedBA=.5*(TP/(TP+FN)+TN/(TN+FP)), thresholdq>=.5. Ordinary groupaccuracy, trajectoryaccuracy, selectedMixedfraction and actorQAEM are separate."
+  },
+  "rollout_and_strict_EM": {
+    "source_of_label": "Original own full trajectory strict binaryEM, joined by unique event+trajectory identity+hash. A new continuation requires its own actual newEM.",
+    "current_native_contract": "BF16/context4096/action500/observation500/answerreserve500/firstcompleteaction/earlyfinal/protectedinformation; max4searchturns; do not relax strictscorer.",
+    "source_code": "/Users/shaoshitong/Documents/Search-G1/actor50-grpo-mixed30-20261018/reproduction/prefix_selection200/rollout.py",
+    "do_not_reuse_3B": "For fresh7B experiment generate real7B G5 and7B native features/positions/labels. 3B rollouts/EM/checkpoints are provenance/reference, not real7B outputs."
+  },
+  "port7B_not_experimentally_validated": {
+    "status": "NO7Btrainingorlayerport executed in this thread; recommendations below only, no current7Bconfigverified in this handoff.",
+    "layer_alignment": "Read actual7B config L,H,heads,KV,intermediate and its layer names. Native last block index L-1; literal block35/layer27 from3B cannot be assumed valid.",
+    "candidate_feature_rule": "Preserve relative post-block depth: j=round((27+1)*L/36)-1. If a verified7Bconfig has L28, this heuristic gives featureindex21 and lastblock27. This is a proposed ablation, NOT measured-equivalent or guaranteedbest.",
+    "dimensions": "Derive flattened Linear width=(scannedQmax+P)*H. Re-scan7B tokenizer prompt lengths; do not hardcode273/2048. Keep original7B RoPE/head layouts and load its own official lastblock; 3B model/Adam tensors are incompatible.",
+    "fresh_full_train": "If exactly one realG5 per169028canonicaltrainquestions, expect169028groups/845140trajectories BEFORE any intentional balancing, plus separate512G5dev. This differs from merged445440event data and actor50 cycles; label the protocol change explicitly.",
+    "sharding": "8two-GPUjobs may partition stable question ordinals disjointly; eachquestion keeps all5 ownresponses and exactly-once sourceevent IDs. Merge manifests with counts/orderedIDs/hash proofs before probe training. Runtime/resources/7Btraining not authorized or launched here."
+  }
+}
