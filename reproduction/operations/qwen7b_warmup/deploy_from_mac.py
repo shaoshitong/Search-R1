@@ -1,0 +1,59 @@
+"""Code-only archive deployment; password is read from private memory into RAM."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import shlex
+import subprocess
+import sys
+
+
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--control-root',required=True);args=parser.parse_args()
+    control=Path(args.control_root);repo=Path(__file__).resolve().parents[3]
+    assert (repo/'.git').exists()
+    assert not subprocess.check_output(['git','status','--porcelain'],cwd=repo).strip(),'Publish clean source before deployment'
+    commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
+    remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/qwen7b-probe-warmup-20261019'],cwd=repo,text=True).split()[0]
+    assert remote==commit
+    archive=subprocess.check_output(['git','archive','--format=tar.gz',commit],cwd=repo)
+    sha=hashlib.sha256(archive).hexdigest()
+    files={str(p.relative_to(repo)):hashlib.sha256(p.read_bytes()).hexdigest() for p in Path(__file__).parent.iterdir() if p.is_file()}
+    publication=dict(commit=commit,remote_sha=remote,branch='codex/qwen7b-probe-warmup-20261019',archive_sha256=sha,files=files)
+    stage='/backup/shaoshitong/qwen7b-native-warmup-code-20261019/source-'+commit+'.tar.gz'
+    base='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019'
+    code='import pathlib,sys,hashlib; p=pathlib.Path('+repr(stage)+');p.parent.mkdir(parents=True,exist_ok=True);d=sys.stdin.buffer.read();assert hashlib.sha256(d).hexdigest()=='+repr(sha)+';p.write_bytes(d)'
+    ssh=['ssh','-T','-oConnectTimeout=8','-oBatchMode=yes','hkust3']
+    result=subprocess.run(ssh+['python3 -c '+shlex.quote(code)],input=archive,capture_output=True,timeout=45)
+    assert result.returncode==0,result.stderr.decode()
+    setup='base='+repr(base)+'\npublication='+repr(publication)+'\n'+'''
+import pathlib,tarfile,hashlib,json
+b=pathlib.Path(base);p=b/'preparation/source.tar.gz'
+assert hashlib.sha256(p.read_bytes()).hexdigest()==publication['archive_sha256']
+repo=b/'repo';assert not (b/'config.json').exists(),'Never hot-overwrite prepared/running source'
+repo.mkdir(exist_ok=True)
+with tarfile.open(str(p),'r:gz') as t:
+ for m in t.getmembers():assert not m.name.startswith('/') and '..' not in pathlib.Path(m.name).parts
+ t.extractall(str(repo))
+for name,sha in publication['files'].items():assert hashlib.sha256((repo/name).read_bytes()).hexdigest()==sha,name
+(b/'preparation/source-publication.json').write_text(json.dumps(publication,indent=2))
+for name in ['logs','probe','tmp','cache']:(b/name).mkdir(exist_ok=True)
+print(json.dumps(dict(status='SOURCE_DEPLOYED_ALL_FILES_SHA_MATCH',commit=publication['commit'],files=len(publication['files']))))
+'''
+    transfer='stage='+repr(stage)+'\nbase='+repr(base)+'\nsetup='+repr(setup)+'\n'+'''
+import os,sys,subprocess,shlex
+pw=sys.stdin.readline().strip();assert pw;env=dict(os.environ,SSHPASS=pw);pw=None
+ssh=['sshpass','-e','ssh','-T','-oStrictHostKeyChecking=yes','-oHostKeyAlias=hpc3login.hpc.hkust-gz.edu.cn','-oUserKnownHostsFile=/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts','-oConnectTimeout=10','mou176@10.120.81.30']
+subprocess.run(ssh+['mkdir -p '+shlex.quote(base+'/preparation')],env=env,check=True)
+subprocess.run(['rsync','--checksum','-e',shlex.join(ssh[:-1]),stage,'mou176@10.120.81.30:'+base+'/preparation/source.tar.gz'],env=env,check=True)
+subprocess.run(ssh+['python3 -c '+shlex.quote(setup)],env=env,check=True)
+'''
+    sys.path.insert(0,str(control/'work/prefix-schedule-cp50-20261018'))
+    from reproduction.hpc3_prefix5.direct_control import password_for
+    result=subprocess.run(ssh+['python3 -c '+shlex.quote(transfer)],input=password_for('mou176')+b'\n',capture_output=True,timeout=60)
+    print(result.stdout.decode());assert result.returncode==0,result.stderr.decode()[-1000:]
+    destination=control/'outputs/qwen7b-warmup-20261019/source-publication.json'
+    destination.write_text(json.dumps(publication,indent=2))
+
+
+if __name__=='__main__':main()
