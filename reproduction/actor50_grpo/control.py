@@ -15,10 +15,22 @@ REMOTE=r'''
 import base64,hashlib,io,json,os,pathlib,subprocess,sys,tarfile,time
 p=json.load(sys.stdin);h=p['handle'];b=pathlib.Path(h['base']);repo=b/'repo'
 assert str(b)=='/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-'+h['run_id']+'-resume-'+h['execution_id']
+# Reserve1MiB for the few /proc identity reads; all ordinary file bytes share63MiB.
+metadata_read_used=0;metadata_read_limit=63*1024**2
+def file_bytes(path,limit=None):
+ global metadata_read_used
+ with pathlib.Path(path).open('rb') as handle:
+  size=os.fstat(handle.fileno()).st_size
+  if limit is not None and size>limit:raise RuntimeError('Existing metadata exceeds per-file budget')
+  if p['action']=='observe' and metadata_read_used+size>metadata_read_limit:
+   raise RuntimeError('Unknown observation: existing metadata byte budget exhausted; do not restart training')
+  raw=handle.read(size)
+ if p['action']=='observe':metadata_read_used+=len(raw)
+ return raw
 def read(f):
  f=pathlib.Path(f);assert f.resolve()==f and not f.is_symlink() and f.stat().st_size<8*1024**2
- return json.loads(f.read_text())
-def sha(f):return hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest()
+ return json.loads(file_bytes(f,8*1024**2-1))
+def sha(f):return hashlib.sha256(file_bytes(f)).hexdigest()
 def once(f,v):
  f=pathlib.Path(f);f.parent.mkdir(parents=True,exist_ok=True)
  with f.open('x') as out:json.dump(v,out,sort_keys=True,allow_nan=False)
@@ -150,7 +162,7 @@ else:
   if not path.is_file():return None,dict(metadata_status='NOT_YET_RECORDED')
   size=path.stat().st_size
   if size>1024**2:return None,dict(metadata_status='ABOVE_1MIB_READ_BUDGET',bytes=size)
-  raw=path.read_bytes();assert len(raw)<=1024**2
+  raw=file_bytes(path,1024**2);assert len(raw)<=1024**2
   return json.loads(raw),dict(metadata_status='PRESENT',metadata_sha256=hashlib.sha256(raw).hexdigest(),bytes=len(raw))
  def grounding_summary(item):
   keys=('run_id','round','version','source_actor_version','encoder','encoder_sha256','head_sha256',
@@ -220,7 +232,7 @@ else:
  value['workers']={}
  for name in ('prepare-actor','prepare-seed','prepare-recover','prepare-restart','pipeline'):
   item=small(b/'preparation'/(name+'-launch.json'));value['workers'][name]=same(item['leader']) if item else None
- joint_path=b/'latest-joint.json';joint_raw=joint_path.read_bytes() if joint_path.is_file() else None
+ joint_path=b/'latest-joint.json';joint_raw=file_bytes(joint_path,8*1024**2-1) if joint_path.is_file() else None
  assert joint_raw is None or len(joint_raw)<8*1024**2
  joint=json.loads(joint_raw) if joint_raw is not None else None
  if joint:
@@ -232,30 +244,34 @@ else:
    mixed_floor=joint['rollout'].get('mixed_floor'),actor_version=a.get('actor_version'),
    grounding=grounding_summary(joint.get('grounding')),actor_grounding=grounding_summary(a.get('grounding_state')),
    grounding_snapshot_sha256=joint.get('grounding_snapshot_sha256'))
- value['recent_complete_metadata']=[]
- if joint:
-  for ordinal in range(max(51,joint['outer']-4),joint['outer']+1):
-   recent_path=b/'outers'/('outer-%06d'%ordinal)/'complete.json'
-   if not recent_path.is_file():
-    value['recent_complete_metadata'].append(dict(outer=ordinal,metadata_status='MISSING'));continue
-   assert recent_path.resolve()==recent_path and not recent_path.is_symlink()
-   size=recent_path.stat().st_size
-   if size>1024**2:
-    value['recent_complete_metadata'].append(dict(outer=ordinal,metadata_status='ABOVE_1MIB_READ_BUDGET',bytes=size));continue
-   recent_raw=recent_path.read_bytes();assert len(recent_raw)<=1024**2
-   recent=json.loads(recent_raw);assert recent['run_id']==h['run_id'] and recent['outer']==ordinal
-   actor=recent['actor'];probe=recent['probe'];floor=recent['rollout'].get('mixed_floor') or {}
-   floor_keys=('initial_mixed','final_mixed','initial_fraction','final_fraction','extra_native_batches',
-    'completed_candidate_questions','remaining_uncontinued_questions','triggered','shortfall','exhausted',
-    'target_mixed','target_reached','native_prefix_or_score_regenerated')
-   value['recent_complete_metadata'].append(dict(outer=ordinal,metadata_status='PRESENT',
-    source_commit=recent.get('source_commit'),metadata_sha256=hashlib.sha256(recent_raw).hexdigest(),
-    actor_Adam=actor['actual_adam_steps_per_rank'],scheduler=actor['scheduler_completed_outer'],
-    new_actor_Adam=actor.get('new_adam_steps_per_rank'),
-    processed_opportunities=actor.get('opportunities_processed'),skipped_opportunities=actor.get('skipped_update_opportunities'),
-    probe_completed_outer=probe.get('completed_outer'),probe_Adam=probe.get('actual_adam_steps_per_rank'),
-    rollout_mixed=recent['rollout'].get('actual_selected_mixed_fraction'),
-    mixed_floor={k:floor[k] for k in floor_keys if k in floor},replacement_count=len(floor.get('replacements',[]))))
+ def recent_complete_projection():
+  result=[]
+  if joint:
+   for ordinal in range(max(51,joint['outer']-4),joint['outer']+1):
+    recent_path=b/'outers'/('outer-%06d'%ordinal)/'complete.json'
+    if not recent_path.is_file():
+     result.append(dict(outer=ordinal,metadata_status='MISSING'));continue
+    assert recent_path.resolve()==recent_path and not recent_path.is_symlink()
+    size=recent_path.stat().st_size
+    if size>8*1024**2:
+     result.append(dict(outer=ordinal,metadata_status='ABOVE_8MIB_READ_BUDGET',bytes=size));continue
+    if metadata_read_used+size>metadata_read_limit:
+     result.append(dict(outer=ordinal,metadata_status='TOTAL_METADATA_READ_BUDGET',bytes=size));continue
+    recent_raw=file_bytes(recent_path,8*1024**2);assert len(recent_raw)<=8*1024**2
+    recent=json.loads(recent_raw);assert recent['run_id']==h['run_id'] and recent['outer']==ordinal
+    actor=recent['actor'];probe=recent['probe'];floor=recent['rollout'].get('mixed_floor') or {}
+    floor_keys=('initial_mixed','final_mixed','initial_fraction','final_fraction','extra_native_batches',
+     'completed_candidate_questions','remaining_uncontinued_questions','triggered','shortfall','exhausted',
+     'target_mixed','target_reached','native_prefix_or_score_regenerated')
+    result.append(dict(outer=ordinal,metadata_status='PRESENT',
+     source_commit=recent.get('source_commit'),metadata_sha256=hashlib.sha256(recent_raw).hexdigest(),
+     actor_Adam=actor['actual_adam_steps_per_rank'],scheduler=actor['scheduler_completed_outer'],
+     new_actor_Adam=actor.get('new_adam_steps_per_rank'),
+     processed_opportunities=actor.get('opportunities_processed'),skipped_opportunities=actor.get('skipped_update_opportunities'),
+     probe_completed_outer=probe.get('completed_outer'),probe_Adam=probe.get('actual_adam_steps_per_rank'),
+     rollout_mixed=recent['rollout'].get('actual_selected_mixed_fraction'),
+     mixed_floor={k:floor[k] for k in floor_keys if k in floor},replacement_count=len(floor.get('replacements',[]))))
+  return result
  value['latest_milestone_QA']=None
  for milestone in (200,150,100):
   if joint and joint['outer']>=milestone:
@@ -291,7 +307,9 @@ else:
     path=logs[-1];info=path.stat()
     with path.open('rb') as f:
      if info.st_size>8*1024**2:f.seek(max(0,info.st_size-65536))
-     rawlog=f.read(8*1024**2)
+     read_size=min(info.st_size,65536) if info.st_size>8*1024**2 else info.st_size
+     if metadata_read_used+read_size>metadata_read_limit:raise RuntimeError('Unknown observation: log read budget exhausted')
+     rawlog=f.read(read_size);metadata_read_used+=len(rawlog)
     lines=rawlog.decode(errors='replace').splitlines();requests=[line for line in lines if 'POST /judge_probe ' in line]
     value['grounding_existing_logs'].append(dict(rank=rank,name=path.name,bytes=info.st_size,mtime_ns=info.st_mtime_ns,
      counts_scope='entire_existing_log' if info.st_size<=8*1024**2 else 'tail64KiB_only',
@@ -299,7 +317,7 @@ else:
    for rank in range(4):
     path=directory/('rank-%d-updates.jsonl'%rank)
     if not path.exists():value['actor_inflight'].append(None);continue
-    assert path.stat().st_size<2*1024**2;lines=path.read_text().splitlines();rows=[]
+    assert path.stat().st_size<2*1024**2;lines=file_bytes(path,2*1024**2-1).decode().splitlines();rows=[]
     for i,line in enumerate(lines):
      try:rows.append(json.loads(line))
      except json.JSONDecodeError:
@@ -312,7 +330,13 @@ else:
  for name in ('pipeline','prepare-actor','prepare-seed','prepare-recover','prepare-restart'):
   path=b/'logs'/(name+'.log')
   if path.exists():
-   with path.open('rb') as f:f.seek(max(0,path.stat().st_size-4096));value[name+'_tail']=f.read().decode(errors='replace')
+   with path.open('rb') as f:
+    tail_size=min(os.fstat(f.fileno()).st_size,4096);f.seek(max(0,os.fstat(f.fileno()).st_size-4096))
+    if metadata_read_used+tail_size>metadata_read_limit:raise RuntimeError('Unknown observation: tail read budget exhausted')
+    rawtail=f.read(tail_size);metadata_read_used+=len(rawtail);value[name+'_tail']=rawtail.decode(errors='replace')
+if action=='observe':
+ value['recent_complete_metadata']=recent_complete_projection()
+ value['metadata_read_bytes']=metadata_read_used;value['metadata_read_budget_bytes']=metadata_read_limit
 raw=json.dumps(value,allow_nan=False);assert len(raw.encode())<128*1024;print(raw)
 '''
 
