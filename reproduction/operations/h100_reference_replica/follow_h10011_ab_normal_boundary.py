@@ -34,7 +34,7 @@ PATH_LAYOUTS = {
 }
 
 INNER = r'''
-import sys,json,time
+import sys,json,time,hashlib
 from pathlib import Path
 ARMS=__ARMS__
 VERIFIED=__VERIFIED__
@@ -64,7 +64,20 @@ for arm,entry in ARMS.items():
  v['grounding_refreshes']={}
  for i in (50,100,150):
   path=b/'outers'/('outer-%06d'%i)/'grounding-refresh.json'
-  if path.exists():v['grounding_refreshes'][str(i)]=json.loads(path.read_text())
+  if path.exists():
+   # Full refresh receipts embed the source actor state and can exceed8MB.
+   # Keep them remote; normal milestone readers separately verify the original
+   # QA/refit/adoption records. Repeating that payload in every status poll
+   # makes an otherwise small read vulnerable to transfer timeouts.
+   raw=path.read_bytes();refresh=json.loads(raw);ground=refresh['grounding']
+   v['grounding_refreshes'][str(i)]=dict(
+    metadata_summary_only=True,source_path=str(path),
+    source_sha256=hashlib.sha256(raw).hexdigest(),
+    outer=refresh['outer'],run_id=refresh['run_id'],
+    required_before_outer=refresh['required_before_outer'],
+    grounding={key:ground.get(key)for key in (
+     'round','version','source_actor_version','manifest_path','manifest_sha256',
+     'adoption_receipt','adoption_receipt_sha256','head_sha256')})
  if v['cleanup']or v['native'].get('leader_same_birth')is False:
   path=b/'logs/native-pipeline.log'
   with path.open('rb')as stream:
