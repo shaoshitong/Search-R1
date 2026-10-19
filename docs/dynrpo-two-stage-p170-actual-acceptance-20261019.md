@@ -1,4 +1,4 @@
-# R4 P170: three epochs and independent probe CPU qualification
+# R4 P170: three epochs, probe CPU qualification and actual171 use accepted
 
 Job733898 continues on ACD1-6 using four shared H100 GPUs. The immutable
 training runtime is2000d46a530c64d78be7802bf11175a68b65effe. This report
@@ -63,10 +63,29 @@ Proof SHA:
 `d0628087f3b01fccbfea8ab9a9f58490405063640c91a96c1299fc59a7f5dec4`.
 Its exact3242 bytes were mirrored locally and verified.
 
-## Remaining acceptance
+## Actual171 new-head use and actor continuity
 
-At this report's initial capture, actual171 Prefix80 generation was advancing
-on all four ranks. Exact new-head scoring, actor3400 restoration and new
-actual171 Adam writes still need their separate acceptance receipt. The
-remaining180/190 probe updates,200 milestone checkpoint/QA, final51713 and
-resource closure remain required. The full goal is not complete.
+The separate acceptance checked all150 probe updates per rank, all three
+epoch boundaries, actor170's20 real writes per rank and student-save-before-fit
+ordering. It verified the source joint and CPU stat seals, and independently
+read the stored strict-G5 pool and selected membership. Intermediate epoch
+payload full SHA and full actor CPU loading were not repeated.
+
+Actual171 scored using the exact2200-step head and frozen saved actor0170,
+with Prefix80 and head capacity353 tokens. Its score-manifest SHA is
+`6c6f551f7f1db7011b1b6eeda4cd1357b0fcf5b06e42fb0bc464e38f52124f46`.
+Its ordinary budget is5120 prefix questions, then1024 complete original G5s,
+then512 outcome-selected questions. It does not use the superseded dynamic
+candidate formula. All four actor ranks restored Adam3400/scheduler170 and
+FP32 master parameters, then each performed three actual writes to3403 at
+acceptance. These are live complete-line ledger snapshots, not a claim that
+actor171 or its producer-final ledger had already completed.
+
+Acceptance status:
+`P10_THREE_EPOCH_CPU_QUALIFIED_AND_NEXT_REAL_NEW_HEAD_ACTOR_USE_ACCEPTED`.
+Remote proof:`preparation/two-stage-periodic-000170-actual-next-use.json`.
+Proof SHA:
+`619f6cb8512842e657856883663df325900274735dc6a90743cc17d85697824e`.
+
+The remaining180/190 probe updates,200 milestone checkpoint/QA, final51713
+and resource closure remain required. The full goal is not complete.
