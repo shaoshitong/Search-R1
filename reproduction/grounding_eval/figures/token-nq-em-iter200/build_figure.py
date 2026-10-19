@@ -94,6 +94,9 @@ Y=lambda y:B-(y-YMIN)/(YMAX-YMIN)*(B-T)
 gx,gy=X(rows[-1]['mean_tokens']),Y(rows[-1]['em_percent'])
 rect('',gx,gy,R-gx,B-gy,
      'fillColor=#F4DCDD;fillOpacity=82;strokeColor=none;',id='dynrpo-dominated-region')
+rect('',gx,gy,R-gx,B-gy,
+     'fillColor=#D8A2A2;fillOpacity=35;strokeColor=none;sketch=1;jiggle=0.55;disableMultiStroke=1;fillStyle=hachure;hachureGap=10;fillWeight=0.6;',
+     id='pale-red-sketch-hatching')
 line(gx,gy,R,gy,'#C99191',1.25,True,True,id='dominance-horizontal-boundary')
 line(gx,gy,gx,B,'#C99191',1.25,True,True,id='dominance-vertical-boundary')
 for yy in [28,32,36,40,44,48,50]:
