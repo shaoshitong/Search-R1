@@ -334,12 +334,15 @@ def main():
     p.add_argument('--gpu-lock-directory', required=True,
                    help='One common task directory shared by all normal/CF workers')
     p.add_argument('--batch-size', type=int, default=128)
+    p.add_argument('--max-batch-size', type=int,
+                   help='Execution-only growth cap after successful batches; frozen in binding')
     p.add_argument('--max-num-seqs', type=int, default=128)
     p.add_argument('--max-num-batched-tokens', type=int, default=8192)
     p.add_argument('--gpu-memory-utilization', type=float, default=.25)
     p.add_argument('--min-start-free-gib', type=float, default=48.)
     p.add_argument('--min-running-free-gib', type=float, default=12.)
     p.add_argument('--limit', type=int, default=3610)
+    p.add_argument('--retrieval-provenance', help='Explicit source/spec/topology caveats for this normal rerun')
     args = p.parse_args()
     out = Path(args.output); out.mkdir(parents=True, exist_ok=True)
     lease = open(out / '.normal.lock', 'a+'); fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -358,7 +361,8 @@ def main():
         cuda_visible_devices=str(args.gpu_index), checked_at=time.time()))
     if args.method == 'easy' and not args.identity_file:
         raise ValueError('Easy requires original final-result occurrence identity')
-    if not (0 < args.batch_size <= 1024 and 0 < args.limit <= 3610):
+    maximum_batch = args.max_batch_size or args.batch_size
+    if not (0 < args.batch_size <= maximum_batch <= args.max_num_seqs <= 1024 and 0 < args.limit <= 3610):
         raise ValueError('Invalid batch or NQ limit')
     if gpu_free(args.gpu_index) < args.min_start_free_gib * 1024:
         raise RuntimeError('Insufficient fresh free memory before model load')
@@ -368,6 +372,7 @@ def main():
     import pandas as pd
     from omegaconf import OmegaConf
     from transformers import AutoTokenizer
+    import torch
     from vllm import LLM, SamplingParams
     from search_r1.llm_agent.generation import GenerationConfig, LLMGenerationManager
     historical_generation = importlib.import_module('search_r1.llm_agent.generation')
@@ -413,8 +418,11 @@ def main():
         normal_protocol=expected, runtime_sources_sha256=source_files,
         greedy=True, dtype='bfloat16', adapter_sha256=sha(__file__),
         inference_batch=args.batch_size, max_num_seqs=args.max_num_seqs,
+        maximum_inference_batch=maximum_batch,
         max_num_batched_tokens=args.max_num_batched_tokens, gpu_memory_utilization=args.gpu_memory_utilization,
-        nq_occurrences=indices, limit=args.limit, physical_gpu_uuid=physical_uuid)
+        nq_occurrences=indices, limit=args.limit, physical_gpu_uuid=physical_uuid,
+        retrieval_provenance=json.loads(Path(args.retrieval_provenance).read_text())
+            if args.retrieval_provenance else None)
     binding_hash = hashlib.sha256(canonical(normal_config)).hexdigest()
     binding_path = out / 'normal-binding.json'
     if binding_path.exists():
@@ -437,15 +445,17 @@ def main():
     manager = LLMGenerationManager(tokenizer, worker, generation, is_validation=True)
     # No injected text or docs enters this normal rerun. Original prompts only.
     completed = 0; started = time.time(); total = min(args.limit, 3610)
-    for start in range(0, total, args.batch_size):
-        selected = indices[start:min(total, start + args.batch_size)]
+    start = 0; batch_size = args.batch_size
+    while start < total:
+        selected = indices[start:min(total, start + batch_size)]
         stem = 'batch-%06d-%06d' % (start, start + len(selected))
         raw_path, norm_path = out / 'raw' / (stem + '.json'), out / 'normalized' / (stem + '.json')
         if raw_path.exists() and norm_path.exists():
             saved = json.loads(norm_path.read_text())
             if saved['binding_sha256'] != binding_hash or saved['raw_sha256'] != sha(raw_path):
                 raise ValueError('Completed batch integrity mismatch')
-            completed += len(selected); continue
+            completed += len(selected); start += len(selected)
+            batch_size = min(maximum_batch, batch_size * 2); continue
         if raw_path.exists() and not norm_path.exists():
             saved = json.loads(raw_path.read_text())
             if saved['binding_sha256'] != binding_hash or len(saved['rows']) != len(selected):
@@ -453,7 +463,8 @@ def main():
             raw_sha = sha(raw_path)
             atomic(norm_path, dict(binding_sha256=binding_hash, raw_sha256=raw_sha,
                 rows=[dict(row, source_shard_sha256=raw_sha) for row in saved['rows']]))
-            completed += len(selected); continue
+            completed += len(selected); start += len(selected)
+            batch_size = min(maximum_batch, batch_size * 2); continue
         if norm_path.exists():
             raise ValueError('Normalized batch exists without its original raw source')
         if gpu_free(args.gpu_index) < args.min_running_free_gib * 1024:
@@ -497,10 +508,17 @@ def main():
                 checkpoint_files_sha256=hashlib.sha256(canonical(normal_config['checkpoint_files'])).hexdigest(),
                 checkpoint_id=hashlib.sha256(canonical(normal_config['checkpoint_files'])).hexdigest()))
         t0 = time.time()
-        if args.method == 'easy':
-            generated = easy_normal(manager, worker, prompts, tokenizer, generation, trace.raw_prefix_to_first_closing_tag)
-        else:
-            generated = opsd_normal(manager, worker, prompts, tokenizer, generation)
+        try:
+            if args.method == 'easy':
+                generated = easy_normal(manager, worker, prompts, tokenizer, generation, trace.raw_prefix_to_first_closing_tag)
+            else:
+                generated = opsd_normal(manager, worker, prompts, tokenizer, generation)
+        except Exception as error:
+            atomic(out/'normal-error.json', dict(state='INFERENCE_ERROR', completed=completed,
+                offset=start, actual_batch_size=len(selected), error_type=type(error).__name__,
+                error=str(error), updated_at=time.time(), binding_sha256=binding_hash,
+                completed_batches_retained=True, broken_engine_reused=False))
+            raise
         raw = [token_accounting(dict(identity, **value)) for identity, value in zip(identities, generated)]
         atomic(raw_path, dict(binding_sha256=binding_hash, rows=raw, completed_at=time.time()))
         raw_sha = sha(raw_path)
@@ -510,8 +528,15 @@ def main():
         progress = dict(state='RUNNING', method=args.method, pid=os.getpid(), completed=completed,
             target=total, updated_at=time.time(), latest_batch_seconds=time.time()-t0,
             total_seconds=time.time()-started, binding_sha256=binding_hash,
+            actual_batch_size=len(selected), next_batch_size=min(maximum_batch, batch_size * 2),
+            maximum_batch_size=maximum_batch, physical_gpu_uuid=physical_uuid,
+            gpu_allocated_bytes=torch.cuda.memory_allocated(), gpu_reserved_bytes=torch.cuda.memory_reserved(),
+            gpu_peak_allocated_bytes=torch.cuda.max_memory_allocated(),
+            gpu_peak_reserved_bytes=torch.cuda.max_memory_reserved(),
+            gpu_free_mib=gpu_free(args.gpu_index), errors=0,
             unique_occurrences=completed, raw_bytes=sum(p.stat().st_size for p in (out/'raw').glob('*.json')))
         atomic(out/'progress.json', progress); print(json.dumps(progress), flush=True)
+        start += len(selected); batch_size = min(maximum_batch, batch_size * 2)
     combined = out/'normal.jsonl'; temporary = out/'normal.jsonl.tmp'
     with open(temporary, 'wb') as stream:
         for path in sorted((out/'normalized').glob('*.json')):
