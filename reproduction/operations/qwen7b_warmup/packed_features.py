@@ -105,6 +105,11 @@ class FeatureReader:
                 assert row['trajectory_id'] not in self.records
                 self.records[row['trajectory_id']] = (str(root), row)
 
+    def close(self):
+        for handles,_ in self.cache.values():
+            for handle in handles.values():handle.close()
+        self.cache.clear()
+
     def handles(self, root):
         import numpy as np
         if root not in self.cache:

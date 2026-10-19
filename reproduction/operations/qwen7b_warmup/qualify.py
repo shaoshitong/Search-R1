@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import random
 import tempfile
+from contextlib import ExitStack
 import numpy as np
 import torch
 from torch import nn
@@ -26,7 +27,7 @@ class Rotary(nn.Module):
 def main():
     base=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019')
     torch.manual_seed(19);random.seed(19);np.random.seed(19)
-    with tempfile.TemporaryDirectory(prefix='qualification-',dir=str(base/'tmp')) as temporary:
+    with tempfile.TemporaryDirectory(prefix='qualification-',dir=str(base/'tmp')) as temporary, ExitStack() as cleanup:
         root=Path(temporary);tids=['q%d-r%d'%(q,j) for q in range(2) for j in range(5)]
         writer=NativeFeatureWriter(root,0,tids);expected={}
         for q in range(2):
@@ -41,17 +42,20 @@ def main():
                 writer.write(dict(trajectory_id=tid,qid=str(q),initial_prompt_token_ids=list(range(length)),actor_version='official7b-test'),
                     dict(features=features,position_ids=positions,question_length=length,policy_length=plen))
                 expected[tid]=(features,positions)
-        manifest=writer.finish();reader=FeatureReader([str(manifest)]);data=reader.get(tids,'cpu')
+        manifest=writer.finish();reader=FeatureReader([str(manifest)]);cleanup.callback(reader.close);data=reader.get(tids,'cpu')
         for i,tid in enumerate(tids):
             assert torch.equal(data['features'][i],expected[tid][0])
             assert torch.equal(data['position_ids'][i],expected[tid][1])
         probe=Probe.__new__(Probe);nn.Module.__init__(probe)
         probe.qmax=QMAX;probe.prefix=5;probe.width=QMAX+5;probe.block=Echo();probe.rotary=Rotary()
+        probe.cache_position=False
         probe.output=nn.Linear((QMAX+5)*DIM,1)
-        before=probe(data).detach();future={k:v.clone() for k,v in data.items()}
+        with torch.autocast('cpu',dtype=torch.bfloat16):before=probe(data).detach()
+        future={k:v.clone() for k,v in data.items()}
         future['features'][:,QMAX+5:]=1000;future['position_ids'][:,QMAX+5:]=99999
         future['attention_mask'][:,QMAX+5:]=~future['attention_mask'][:,QMAX+5:]
-        assert torch.equal(before,probe(future).detach()),'Later15 tokens leaked into Prefix5'
+        with torch.autocast('cpu',dtype=torch.bfloat16):after=probe(future).detach()
+        assert torch.equal(before,after),'Later15 tokens leaked into Prefix5'
         groups=[dict(labels=([0]*5 if i<7 else [0,1,0,1,0] if i<11 else [1]*5)) for i in range(16)]
         batches,info=balanced_plan(groups,17,1);flattened=[i for batch in batches for i in batch]
         assert set(flattened)==set(range(16)) and len(flattened)==21
