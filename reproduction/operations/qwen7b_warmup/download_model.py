@@ -45,12 +45,31 @@ def verify(path, item):
     return actual
 
 
+def read_range(opener, url, start, end):
+    """Bounded remote-only RAM chunk; a trickling socket cannot run forever."""
+    request=urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0',
+        'Accept-Encoding':'identity','Range':'bytes=%d-%d'%(start,end)})
+    deadline=time.monotonic()+40
+    with opener.open(request,timeout=15) as response:
+        assert response.status==206 and response.headers['Content-Range'].startswith('bytes %d-%d/'%(start,end))
+        data=[];size=0;expected=end-start+1
+        while size<expected:
+            if time.monotonic()>deadline:raise TimeoutError('Whole weight range deadline exceeded')
+            block=response.read1(min(1024**2,expected-size))
+            if not block:break
+            data.append(block);size+=len(block)
+        assert size==expected,'Short bounded weight range'
+    return b''.join(data)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', required=True)
     parser.add_argument('--proxy', default='http://127.0.0.1:17894')
     parser.add_argument('--workers', type=int, default=11)
     parser.add_argument('--weight-endpoint', default='https://hf-mirror.com')
+    parser.add_argument('--weight-connections',type=int,default=4)
+    parser.add_argument('--chunk-mib',type=int,default=8)
     args = parser.parse_args()
     root = Path(args.root)
     root.mkdir(parents=True, exist_ok=True)
@@ -117,7 +136,19 @@ def main():
                     if weights or offset:
                         headers['Range'] = 'bytes=%d-' % offset
                     request = urllib.request.Request(url, headers=headers)
-                    with connection.open(request, timeout=25) as response:
+                    if weights and args.weight_connections>1:
+                        chunk=args.chunk_mib*1024**2
+                        with partial.open('ab') as handle, concurrent.futures.ThreadPoolExecutor(max_workers=args.weight_connections) as pool:
+                            while offset<item['size']:
+                                ranges=[(start,min(start+chunk,item['size'])-1) for start in range(offset,min(offset+args.weight_connections*chunk,item['size']),chunk)]
+                                futures=[pool.submit(read_range,connection,url,start,end) for start,end in ranges]
+                                for (start,end),future in zip(ranges,futures):
+                                    data=future.result();assert start==offset and len(data)==end-start+1
+                                    handle.write(data);offset+=len(data);handle.flush()
+                                    update(name,status='DOWNLOADING',bytes=offset,total_bytes=item['size'],attempt=attempt+1,connections=args.weight_connections)
+                            os.fsync(handle.fileno())
+                    else:
+                      with connection.open(request, timeout=25) as response:
                         if response.status == 206:
                             assert response.headers['Content-Range'].startswith('bytes %d-' % offset)
                             mode = 'ab'
