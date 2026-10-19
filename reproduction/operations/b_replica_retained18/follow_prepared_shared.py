@@ -2,13 +2,20 @@
 import argparse
 import json
 import os
+import re
 import time
 from .control import OUT, remote
 
 SCRIPT = r"""
 import json,pathlib,time
 p=pathlib.Path(BASE)
-def read(f):return json.loads(f.read_text())if f.exists()else None
+def read(f):
+ for attempt in range(12):
+  try:return json.loads(f.read_text())
+  except FileNotFoundError:return None
+  except json.JSONDecodeError:
+   if attempt==11:raise
+   time.sleep(0.25)
 f=p/'logs/capacity-wait-samples.jsonl'
 print(json.dumps(dict(observed_unix=time.time(),base=BASE,
  wait_receipt=read(p/'preparation/capacity-wait-receipt.json'),
@@ -31,6 +38,8 @@ def main():
             value = json.loads(remote('BASE='+repr(args.physical_base)+'\n'+SCRIPT,
                                      evidence, target='h100-10', established_controller=True))
         except RuntimeError as error:
+            if not re.search(r'timed out|BOUNDED_ESTABLISHED_ROUTE_TIMEOUT|not responding|Connection closed|Connection reset|ssh: connect|kex_exchange_identification|Broken pipe',str(error),re.I):
+                raise
             print(json.dumps(dict(observed_unix=time.time(),status='CURRENT_UNKNOWN',
                 evidence=str(evidence),error=str(error),native_action='none',retry_seconds=1800)),flush=True)
             time.sleep(1800)
@@ -57,8 +66,16 @@ try:
 except OSError:same=False
 print(json.dumps(dict(observed_unix=time.time(),same_birth=same)))
 """
-        alive = json.loads(remote(health,OUT/('prepared-follow-health-%d.json'%time.time_ns()),
-                                  target=receipt['node'],established_controller=True))
+        try:
+            alive = json.loads(remote(health,OUT/('prepared-follow-health-%d.json'%time.time_ns()),
+                                      target=receipt['node'],established_controller=True))
+        except RuntimeError as error:
+            if not re.search(r'timed out|BOUNDED_ESTABLISHED_ROUTE_TIMEOUT|not responding|Connection closed|Connection reset|ssh: connect|kex_exchange_identification|Broken pipe',str(error),re.I):
+                raise
+            print(json.dumps(dict(observed_unix=time.time(),status='CURRENT_UNKNOWN',
+                error=str(error),native_action='none',retry_seconds=1800)),flush=True)
+            time.sleep(1800)
+            continue
         if not alive['same_birth']:
             raise RuntimeError('On-node capacity waiter exited; preserve evidence and diagnose')
         time.sleep(30)
