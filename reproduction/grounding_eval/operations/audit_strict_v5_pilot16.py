@@ -12,8 +12,8 @@ ready=[p for p in prepared if p['status']=='READY'];results=result_rows(cf);byid
 source={r['evaluation_ordinal']:r for r in map(json.loads,pathlib.Path(m['source']['path']).read_text().splitlines())};tok=AutoTokenizer.from_pretrained(m['checkpoint']['path'],local_files_only=True)
 rows=[]
 for p in ready[:16]:
- r=byid[p['request_id']];assert prepare_row(source[p['evaluation_ordinal']],m)==p
- assert r['cf_answer']==extract_final_answer([r['cf_response']])and r['classification']==classify(p['original_answer'],r['cf_answer'],p['cf_aliases'],p['gold'])
+ r=byid[p['request_id']];reprepared=prepare_row(source[p['evaluation_ordinal']],m);reprepared['prepared_at']=p['prepared_at'];assert reprepared==p
+ assert r['cf_answer']==extract_final_answer([r['cf_response']])and r['classification']==classify(p['original_answer'],r['cf_answer'],p['cf_aliases'],p.get('original_semantic_aliases',p['gold']))
  ids=tok.apply_chat_template(messages(p),tokenize=True,add_generation_prompt=True);assert digest(ids)==r['prompt_token_ids_sha256']and len(ids)==r['model_input_tokens']
  assert r['generation_tokens']+r['model_input_tokens']==r['trajectory_total_tokens']
  mappings=p['replacement_mapping'];perdoc=collections.defaultdict(list)
