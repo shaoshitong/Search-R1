@@ -37,6 +37,14 @@ def main():
             or ready['status'] != 'LATEST_NATIVE_JOINT_PREPARED_AWAITING_TARGET'
             or ready['training_started'] or ready['optimizer_reset']):
         raise ValueError('Require an unlaunched qualified native joint')
+    source = Path(config['resume_joint']['source_base'])
+    joint_path = source / 'latest-joint.json'
+    proof = read(source / 'preparation' / ('recovery%d-cpu' % ready['outer']) / 'full-state-proof.json')
+    cleanup = read(source / 'logs/cleanup-status.json')
+    if (read(joint_path)['outer'] != ready['outer']
+            or proof['joint_sha256'] != hashlib.sha256(joint_path.read_bytes()).hexdigest()
+            or not cleanup.get('owned_births_all_gone')):
+        raise ValueError('Source boundary or terminal cleanup changed; reconcile before dispatch')
     stat = Path('/proc/self/stat').read_text().rsplit(')', 1)[1].split()
     once(base / 'preparation/capacity-wait-receipt.json', dict(node=node, pid=os.getpid(),
         start_ticks=int(stat[19]), observed_unix=time.time(), source_outer=ready['outer'],
