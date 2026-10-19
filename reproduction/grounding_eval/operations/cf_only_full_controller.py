@@ -4,6 +4,7 @@ p=argparse.ArgumentParser(__doc__);p.add_argument('--job',required=True);a=p.par
 assert job['mode']=='full_after_pilot_review'and job['module']=='reproduction.grounding_eval.strict_v5'and job['method']in ['Search-G1','Soft-to-Hard','OPSD3304']
 assert job['source_commit']=='16c36aa777f684f245b1d38cb2939ef175131831'
 review=job['pilot_manual_review'];assert review['approved']is True and review['reviewed_pilot_sha256']=='1fad1cb490e182920dc2f9f9edccb8520bbc2949a5425fdcda998786b00c4cca'
+if job['method']!='Search-G1':assert review['g1_independent_acceptance_sha256']=='111ca6a60a4513faf122305141593ddea914d46cfd82914d4d5fd4bd29b69797'
 root=pathlib.Path(job['control_output']);root.mkdir(exist_ok=True);lock=open(root/'controller.lock','a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
 canon=lambda x:json.dumps(x,sort_keys=True,separators=(',',':')).encode();sha=lambda p:hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
 def publish(name,obj):
