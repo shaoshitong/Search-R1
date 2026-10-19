@@ -15,6 +15,11 @@ def main():
     raise
    failure=dict(observed_unix=time.time(),status='CURRENT_RUNTIME_UNKNOWN_TRANSPORT_FAILURE',
     error=message,retry_after_seconds=1800,native_action='none')
+   try:
+    last=json.loads((OUT/'SHARED_RESUME64_LATEST.json').read_text())
+    failure['last_confirmed']={k:last.get(k)for k in('observed_unix','complete_outer','stage','evidence')}
+   except(OSError,ValueError):
+    failure['last_confirmed']=None
    path=OUT/('shared-monitor-transport-failure-'+str(time.time_ns())+'.json')
    path.write_text(json.dumps(failure,ensure_ascii=False,indent=2))
    print(json.dumps(failure,ensure_ascii=False),flush=True)
