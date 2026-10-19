@@ -3,10 +3,41 @@ import unittest
 from pathlib import Path
 import tempfile
 from unittest.mock import patch
-from reproduction.grounding_eval.normal_h100 import validate_gpu_snapshot, controller_reservations
+from reproduction.grounding_eval.normal_h100 import (validate_gpu_snapshot, controller_reservations,
+    python_module,prefix_process_reservations,NoHeldGPUReservations)
 
 
 class Admission(unittest.TestCase):
+    def test_only_actual_python_module_option_matches(self):
+        self.assertEqual(python_module([b'python',b'-u',b'-m',b'reproduction.prefix_selection200.rollout'],'/usr/bin/python3.10'),'reproduction.prefix_selection200.rollout')
+        for command in ([b'python',b'script.py',b'-m',b'reproduction.prefix_selection200.rollout'],
+                        [b'python',b'-c',b'reproduction.prefix_selection200.rollout'],
+                        [b'bash',b'-m',b'reproduction.prefix_selection200.rollout']):
+            self.assertIsNone(python_module(command,'/bin/bash' if command[0]==b'bash' else '/usr/bin/python3'))
+
+    def child_scope_case(self, selected='GPU-f', parent_reservations=None, changed=False, module='reproduction.prefix_selection200.rollout'):
+        temporary=tempfile.TemporaryDirectory();self.addCleanup(temporary.cleanup)
+        root=Path(temporary.name);child=root/'123';parent=root/'100';parent.mkdir();child.mkdir()
+        (parent/'cmdline').write_bytes(b'python\0-m\0reproduction.actor50_grpo.worker\0')
+        (parent/'exe').symlink_to('/usr/bin/python3.10')
+        before=dict(pid=123,ppid=100,birth_ticks=10);after=dict(before,ppid=101)if changed else before
+        owner=dict(pid=100,ppid=1,birth_ticks=5)
+        proof=dict(pid=100,reservation_uuids=parent_reservations if parent_reservations is not None else ['GPU-a','GPU-b','GPU-c','GPU-d','GPU-e'])
+        rows=[[str(i),'GPU-'+name]for i,name in enumerate('abcdef')]
+        with patch('reproduction.grounding_eval.normal_h100.controller_reservations',side_effect=[NoHeldGPUReservations('child has no held lock'),proof]),patch('reproduction.grounding_eval.normal_h100.process_identity',side_effect=[before,owner,after,owner]),patch('reproduction.grounding_eval.normal_h100.cuda_visible_devices',return_value='0,1,2,3'):
+            return prefix_process_reservations(child,root/'locks',selected,rows,module)
+
+    def test_known_rollout_child_with_stable_reserved_parent_is_scoped(self):
+        self.assertEqual(self.child_scope_case()['parent_reservation_proof']['reservation_uuids'],['GPU-a','GPU-b','GPU-c','GPU-d','GPU-e'])
+
+    def test_rollout_changed_parent_link_or_parent_claiming_selected_rejects(self):
+        with self.assertRaises(RuntimeError):self.child_scope_case(changed=True)
+        with self.assertRaises(RuntimeError):self.child_scope_case(selected='GPU-a')
+        with self.assertRaises(RuntimeError):self.child_scope_case(parent_reservations=[])
+
+    def test_unknown_child_module_cannot_borrow_parent_scope(self):
+        with self.assertRaises(RuntimeError):self.child_scope_case(module='reproduction.prefix_selection200.bootstrap')
+
     def fake_controller(self, root, uuids, locked=True):
         directory = root / 'leases'; directory.mkdir()
         process = root / '123'; (process/'fd').mkdir(parents=True); (process/'fdinfo').mkdir()

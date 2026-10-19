@@ -173,6 +173,67 @@ def validate_gpu_snapshot(index, expected_uuid, rows, processes, minimum_free_gi
         raise RuntimeError('GPU already has a compute process')
 
 
+class NoHeldGPUReservations(RuntimeError):
+    pass
+
+
+def python_module(command, executable):
+    """Only interpreter -m is a module; script arguments and -c text are not."""
+    if not re.fullmatch(r'python(?:\d+(?:\.\d+)*)?', Path(executable).name):
+        return None
+    index = 1
+    while index < len(command):
+        value = command[index]
+        if value == b'-m':
+            return command[index+1].decode() if index+1 < len(command) else None
+        if value in (b'-c', b'--') or not value.startswith(b'-'):
+            return None
+        index += 2 if value in (b'-W', b'-X', b'--check-hash-based-pycs') else 1
+    return None
+
+
+def process_identity(process):
+    text = (Path(process)/'stat').read_text()
+    fields = text[text.rfind(')')+2:].split()
+    return dict(pid=int(Path(process).name), ppid=int(fields[1]), birth_ticks=int(fields[19]))
+
+
+def cuda_visible_devices(process):
+    """Stream-discard other environment values; retain this one safe key only."""
+    key=bytearray(); value=bytearray(); equals=False; keep=False
+    with (Path(process)/'environ').open('rb') as stream:
+        while True:
+            byte=stream.read(1)
+            if not byte:
+                return None
+            if byte == b'\0':
+                if keep:
+                    return value.decode()
+                key.clear(); value.clear(); equals=False; keep=False
+            elif not equals and byte == b'=':
+                equals=True; keep=key == b'CUDA_VISIBLE_DEVICES'
+            elif not equals:
+                if len(key) < 256:
+                    key.extend(byte)
+            elif keep:
+                if len(value) >= 1024:
+                    raise RuntimeError('Unexpected CUDA visibility scope')
+                value.extend(byte)
+
+
+def visible_uuid_scope(value, gpu_rows):
+    if not value:
+        raise RuntimeError('Worker CUDA device scope is unknown')
+    mapping = {str(int(row[0])):row[1].strip() for row in gpu_rows}
+    known=set(mapping.values()); result=set()
+    for item in value.split(','):
+        item=item.strip(); uuid=mapping.get(item,item)
+        if uuid not in known:
+            raise RuntimeError('Unknown CUDA visibility device')
+        result.add(uuid)
+    return result
+
+
 def controller_reservations(process, directory, selected_uuid):
     """Scope a recognized cooperating controller by *held* kernel OFD locks.
 
@@ -205,7 +266,7 @@ def controller_reservations(process, directory, selected_uuid):
                     fields[-2:] == ['0', 'EOF']):
                     held.add(target_path.name[:-5])
         if not held:
-            raise RuntimeError('Controller GPU scope cannot be proven by held OFD UUID locks')
+            raise NoHeldGPUReservations('Controller GPU scope cannot be proven by held OFD UUID locks')
         if selected_uuid in held:
             raise RuntimeError('Controller already reserves selected GPU UUID')
         return dict(pid=int(process.name), reservation_uuids=sorted(held),
@@ -213,6 +274,40 @@ def controller_reservations(process, directory, selected_uuid):
                     selected_uuid_excluded=True)
     except (OSError, ValueError) as error:
         raise RuntimeError('Controller GPU reservation evidence unreadable; admission denied') from error
+
+
+def prefix_process_reservations(process, directory, selected_uuid, gpu_rows, module):
+    """Known rollout child may inherit *scope*, never ownership, from its parent."""
+    try:
+        return dict(controller_reservations(process,directory,selected_uuid), module=module)
+    except NoHeldGPUReservations:
+        if module != 'reproduction.prefix_selection200.rollout':
+            raise
+    try:
+        child_before=process_identity(process)
+        parent=Path(process).parent/str(child_before['ppid'])
+        parent_before=process_identity(parent)
+        command=(parent/'cmdline').read_bytes().split(b'\0')
+        parent_module=python_module(command,os.readlink(parent/'exe'))
+        if parent_module != 'reproduction.actor50_grpo.worker':
+            raise RuntimeError('Unknown rollout parent controller')
+        proof=controller_reservations(parent,directory,selected_uuid)
+        child_visible=cuda_visible_devices(process); parent_visible=cuda_visible_devices(parent)
+        child_scope=visible_uuid_scope(child_visible,gpu_rows)
+        parent_scope=visible_uuid_scope(parent_visible,gpu_rows)
+        reservations=set(proof['reservation_uuids'])
+        if not child_scope <= parent_scope <= reservations or selected_uuid in child_scope|parent_scope:
+            raise RuntimeError('Rollout visibility is not within proven parent reservations')
+        if process_identity(process)!=child_before or process_identity(parent)!=parent_before:
+            raise RuntimeError('Rollout parent link or process birth changed during admission')
+        return dict(pid=child_before['pid'],module=module,process_identity=child_before,
+            CUDA_VISIBLE_DEVICES=child_visible,visible_gpu_uuids=sorted(child_scope),
+            parent_identity=parent_before,parent_module=parent_module,
+            parent_CUDA_VISIBLE_DEVICES=parent_visible,parent_visible_gpu_uuids=sorted(parent_scope),
+            parent_reservation_proof=proof,selected_uuid_excluded=True,
+            proof='known actual -m rollout worker, stable kernel PPID/birth, direct controller held OFD scope')
+    except (OSError,ValueError) as error:
+        raise RuntimeError('Rollout parent reservation evidence unreadable; admission denied') from error
 
 
 def admit_gpu(index, expected_uuid, directory, minimum_free_gib):
@@ -240,11 +335,23 @@ def admit_gpu(index, expected_uuid, directory, minimum_free_gib):
                 if (process / 'comm').read_text().strip() == 'slurmd':
                     raise RuntimeError('Scheduler node requires explicit Slurm allocation adapter')
                 command = (process / 'cmdline').read_bytes().split(b'\0')
-                if any(x.startswith((b'reproduction.prefix_selection200.',
-                                     b'reproduction.prefix20_online.')) for x in command):
-                    controller_scopes.append(controller_reservations(process, directory, expected_uuid))
+                module=python_module(command,command[0].decode(errors='replace')) if command else None
+                if module and module.startswith(('reproduction.prefix_selection200.',
+                                                  'reproduction.prefix20_online.')):
+                    try:
+                        if python_module(command,os.readlink(process/'exe')) != module:
+                            raise RuntimeError('Prefix process executable identity differs')
+                    except OSError as error:
+                        raise RuntimeError('Prefix executable identity unreadable; admission denied') from error
+                    controller_scopes.append(prefix_process_reservations(process,directory,expected_uuid,rows,module))
             except (PermissionError, FileNotFoundError, ProcessLookupError):
                 pass
+        rows = list(csv.reader(io.StringIO(subprocess.check_output([
+            'nvidia-smi', '--query-gpu=index,uuid,memory.used,memory.free,utilization.gpu',
+            '--format=csv,noheader,nounits'],text=True))))
+        processes = list(csv.reader(io.StringIO(subprocess.check_output([
+            'nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True))))
+        validate_gpu_snapshot(index,expected_uuid,rows,processes,minimum_free_gib)
         return fd, rows, controller_scopes
     except BaseException:
         os.close(fd)
