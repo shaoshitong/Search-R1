@@ -1,0 +1,43 @@
+"""Publish existing periodic120 scalar metadata only; training untouched."""
+import hashlib,json,math
+from pathlib import Path
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+source=root/'work/b-progressive-period120-original-paired-and-121-adoption-20261019T050904440284Z.json'
+env=json.loads(source.read_text());assert env['rc']==0;d=json.loads(env['stdout']);m=d['metric_fields']
+assert d['outer']==120 and d['training_questions']==2560 and d['heldout_questions']==512
+assert d['qid_overlap']==d['normalized_text_overlap']==0 and d['prefix_tokens']==40
+assert m['learning_rate']==5e-6 and m['ema_rate']==.99 and m['group_loss_weight']==5
+curve=m['global_step_loss_curve'];assert len(curve)==50
+for i,x in enumerate(curve,1):
+ assert x['step']==i and x['actual_adam_steps']==1630+i and x['ema_updates']==1630+i
+ assert math.isclose(x['total_loss'],x['trajectory_bce']+5*x['group_bce'],rel_tol=1e-6,abs_tol=2e-6)
+journalsource=root/'work/prefix5-ab-h10011-normal-follow-20261019T050656478640Z-actual.json'
+f=next(x for x in json.loads(journalsource.read_text())['B']['facts']if x['outer']==120)
+assert sorted(x['rank']for x in f['probe'])==[0,1,2,3]
+assert all(x['writes']==50 and x['last_actual']==1680 for x in f['probe'])
+def mean(xs,k):return sum(x[k]*x['global_questions']for x in xs)/sum(x['global_questions']for x in xs)
+windows={label:{k:mean(xs,k)for k in ('trajectory_bce','group_bce','total_loss')}for label,xs in [('first10',curve[:10]),('last10',curve[-10:])]}
+result=dict(d,source_original=str(source),source_original_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+ original_probe_journals=f['probe'],original_journal_observation=str(journalsource),original_journal_observation_sha256=hashlib.sha256(journalsource.read_bytes()).hexdigest(),
+ changing_batch_weighted_loss_windows=windows,not_QA_EM_or_F1=True)
+out=Path('reproduction/reports/h100-prefix5-ab200-20261018/progressive-period120');out.mkdir(exist_ok=True)
+(out/'PAIRED-METRICS-AND-50-STEP-CURVE.json').write_text(json.dumps(result,indent=2)+'\n')
+t=['# B120: original paired probe metrics and actual121 adoption','',
+ 'The original actor119 produced the periodic2560-questionG5 pool and fresh fixed512-questionG5 diagnostic set using actual40-token actor hidden (head313). Qid and normalized-question overlap are zero. Before/after metrics use the same original trajectories and labels. These classification metrics are not QA EM/F1, and changing actor snapshots make different periodic sets a changing-label series.','',
+ 'LR5e-6, EMA0.99, trajectoryBCE + 5 × mixedBCE are unchanged. All four actual original probe journals recorded50 writes,1630→1680. The actual unlabelled selection121 used the corresponding EMA120 payload with actor120. This is metadata adoption evidence, not an independent tensor preservation audit.','',
+ '| Head / original distribution | Before BA | After BA | Before trajectory BCE | After trajectory BCE | Before mixed BCE | After mixed BCE |','|---|---:|---:|---:|---:|---:|---:|']
+for head,name in [('raw','train'),('raw','test'),('ema','train'),('ema','test')]:
+ a=m['before_update'][head][name];b=m['after_update'][head][name]
+ t.append('| %s / %s | %.4f%% | %.4f%% | %.6f | %.6f | %.6f | %.6f |'%(head,name,100*a['balanced_accuracy'],100*b['balanced_accuracy'],a['trajectory_bce'],b['trajectory_bce'],a['group_bce'],b['group_bce']))
+z=m['after_update']['ema']['test'];sampling=m['sampling']
+t+=['',
+ 'Raw and EMA train balanced accuracy improve. EMA heldout BA rises slightly (57.5264%→57.9312%), raw heldout BA declines slightly (55.9762%→55.7889%); mixed BCE worsens for both heads on both original distributions. The result is not a uniform improvement or quality-success claim.','',
+ 'Post-update EMA heldout: %d/%d actually mixed (%.4f%%), mean predicted q %.4f%%; ordinary accuracy %.4f%% versus majority %.4f%%. Mixed recall %.4f%%, nonmixed recall %.4f%%, TP%d/FN%d/TN%d/FP%d. The classification remains biased toward predicting mixed.'%(z['mixed_count'],z['count'],100*z['mixed_count']/z['count'],100*z['mean_q'],100*z['accuracy'],100*max(z['mixed_count'],z['nonmixed_count'])/z['count'],100*z['mixed_recall'],100*z['nonmixed_recall'],z['tp'],z['fn'],z['tn'],z['fp']),
+ '',
+ 'Original training pool:284mixed/2276nonmixed. Fitting uses1280+1280 replacement draws, %d unique groups and %.4f%% repeated draws. Post-update train evaluation is over the original2560 groups. Periodic selected284/512 mixed is outcome-assisted selection, not classifier accuracy.'%(sampling['unique_questions'],100*sampling['repeated_fraction']),
+ '', '| Actual changing-batch window | Trajectory BCE | Mixed BCE | Weighted total |','|---|---:|---:|---:|']
+for label,v in windows.items():t.append('| %s | %.6f | %.6f | %.6f |'%(label,v['trajectory_bce'],v['group_bce'],v['total_loss']))
+t+=['',
+ 'These window means are weighted by global question counts over changing balanced batches, not a fixed-data loss curve. Full50-step records are in the JSON. The update loop takes %.6fs; this is not whole-outer runtime.'%m['train_loop_seconds'],
+ '', 'Only code and small scalar metadata are local. No model/hidden/complete trajectories/full predictions were downloaded and no forward, baseline or new training job was run. Current original jobs continue unchanged. Both200, future150/200 QA/final51713 and actual terminal/resource closure remain incomplete.']
+(out/'README.md').write_text('\n'.join(t)+'\n');print(out);print(windows)
