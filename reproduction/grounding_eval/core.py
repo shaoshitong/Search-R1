@@ -150,10 +150,28 @@ def aggregate(prepared, results):
     if set(by_id)-keys: raise ValueError('Foreign results')
     direct, true, amb, hall = (counts[k] for k in ('Direct','True','Amb','Hall'))
     searched=true+amb+hall; total=direct+searched
+    normal_tokens={}
+    for field in ('initial_prompt_tokens','model_generated_tokens','raw_generated_tokens','observation_tokens',
+                  'trajectory_total_tokens','cumulative_model_input_tokens'):
+        values=[p[field] for p in prepared if isinstance(p.get(field),(int,float))]
+        ordered=sorted(values)
+        normal_tokens[field]=dict(total=sum(values) if values else None, measured_questions=len(values),
+            mean=sum(values)/len(values) if values else None,
+            p50=ordered[len(ordered)//2] if ordered else None,
+            p95=ordered[min(len(ordered)-1,int(len(ordered)*.95))] if ordered else None,
+            max=max(values) if values else None)
+    cf_results=[r for key,r in by_id.items() if key in keys and r['status']=='CLASSIFIED']
+    cf_tokens={}
+    for field in ('model_input_tokens','generation_tokens','trajectory_total_tokens'):
+        values=[r[field] for r in cf_results if isinstance(r.get(field),(int,float))]
+        cf_tokens[field]=dict(total=sum(values) if values else None, measured_questions=len(values),
+            mean=sum(values)/len(values) if values else None,max=max(values) if values else None)
     return dict(protocol_version=PROTOCOL, status='provisional' if pending or any(x.startswith('SOURCE_INCOMPLETE') for x in invalid) else 'complete',
         counts=dict(counts), coverage=dict(correct_searched=counts['correct_searched'], perturbable=perturbable,
         inference_completed=completed, classified=searched, pending_or_error=pending, invalid_reasons=dict(invalid)),
         TC=(direct+true+.6*amb+.3*hall)/total if total else None,
         D_Inv=hall/searched if searched else None, TC_denominator=total, D_Inv_denominator=searched,
         TC_null_reason=None if total else 'no_correct_direct_or_classified_searched',
-        D_Inv_null_reason=None if searched else 'no_classified_correct_searched', seed_sample_sd=None, utc=utc())
+        D_Inv_null_reason=None if searched else 'no_classified_correct_searched', seed_sample_sd=None,
+        token_usage=dict(normal=normal_tokens,counterfactual=cf_tokens,
+            note='Normal cumulative input counts repeated history at every actual generation request; observations are not model output. CF excludes retry failures from unique-success totals; attempts remain separately auditable.'),utc=utc())

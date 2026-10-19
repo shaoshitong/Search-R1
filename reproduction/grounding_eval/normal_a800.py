@@ -179,9 +179,33 @@ def extract_rows(batch, source_rows, ordinals, binding, tokenizer):
             gold = gold.tolist()
         gold = [gold] if isinstance(gold, str) else list(gold)
         answer = extract_final_answer(spans)
+        initial_tokens = int(item.batch['attention_mask'][:plen].sum())
+        per_turn = []
+        for turn in turns:
+            per_turn.append(dict(
+                turn_index=int(turn['turn_index']),
+                model_input_tokens=len(turn['actual_request_token_ids']),
+                model_output_tokens_raw=int(turn['raw_generated_token_count']),
+                model_output_tokens_kept=int(turn['kept_token_count']),
+                retrieved_observation_tokens=len(turn['observation_token_ids']),
+                correction_tokens=len(turn['correction_token_ids']),
+                cached_input_tokens=None,
+                cached_input_tokens_reason='Native Common8 sampling provenance does not expose a per-request cache-hit count',
+                finish_reason=turn['finish_reason'], stop_reason=turn['stop_reason']))
         row = dict(qid=str(source['extra_info']['index']), data_source='nq',
                    evaluation_ordinal=int(ordinal), question=question, gold=gold,
                    model_spans=spans, seen_docs=seen, actual_retrieval_calls=calls,
+                   model_generated_tokens=int(mask.sum()),
+                   raw_generated_tokens=sum(t['model_output_tokens_raw'] for t in per_turn),
+                   observation_tokens=int((1 - mask).sum()),
+                   retrieved_observation_tokens=sum(t['retrieved_observation_tokens'] for t in per_turn),
+                   correction_tokens=sum(t['correction_tokens'] for t in per_turn),
+                   initial_prompt_tokens=initial_tokens,
+                   trajectory_response_tokens=width,
+                   trajectory_total_tokens=initial_tokens + width,
+                   cumulative_model_input_tokens=sum(t['model_input_tokens'] for t in per_turn),
+                   cached_input_tokens=None,
+                   per_turn_token_usage=per_turn,
                    original_answer=answer,
                    original_em=int(answer is not None and qa_em.em_check(answer, gold)),
                    model_search_markers=sum(len(re.findall(r'<search>.*?</search>', x, re.S)) for x in spans),
@@ -212,7 +236,11 @@ def run(args):
     run_manifest = json.loads((base / 'logs/run-manifest.json').read_text())
     source_map = run_manifest['source_sha256']
     for name in ('reproduction/common8/generation_behavior.py', 'search_r1/llm_agent/generation.py',
-                 'search_r1/qa_protocol.py', 'search_g1/signals.py'):
+                 'search_r1/qa_protocol.py', 'search_g1/signals.py',
+                 'verl/workers/fsdp_workers.py',
+                 'verl/workers/rollout/vllm_rollout/vllm_rollout.py',
+                 'reproduction/common8/behavior_trace.py',
+                 'reproduction/common8/sampling_capture.py'):
         if sha(runtime / name) != source_map[name]:
             raise ValueError('Historical runtime source differs: ' + name)
     checkpoint = base / 'checkpoints/search-g1-common8/actor/global_step_200'
@@ -245,7 +273,8 @@ def run(args):
     nq = [(i, row) for i, row in enumerate(source_rows) if row['data_source'] == 'nq']
     assert len(source_rows) == 51713 and len(nq) == 3610
     original = json.loads((base / 'logs/resolved-training-config.json').read_text())['resolved_config']
-    normal = dict(controller='historical-common8-generation-behavior-unchanged', greedy=True,
+    normal = dict(record_schema_version=2, token_accounting='actual_native_per_call_raw_and_kept_v1',
+                  controller='historical-common8-generation-behavior-unchanged', greedy=True,
                   max_start_length=2048, max_prompt_length=4096, max_response_length=500,
                   max_obs_length=500, max_turns=4, final_no_search_turn=True, topk=3,
                   retriever=args.retriever, dtype='bfloat16', tensor_parallel_size=1,
@@ -367,9 +396,13 @@ def run(args):
         # Retain this task's diagnostic logs remotely before returning.
         import shutil
         log_root = Path(os.environ['RAY_TMPDIR']) / 'session_latest/logs'
-        if log_root.exists():
-            shutil.copytree(log_root, output / ('ray-diagnostic-logs-' + uuid.uuid4().hex),
-                            symlinks=False)
+        try:
+            if log_root.exists():
+                shutil.copytree(log_root, output / ('ray-diagnostic-logs-' + uuid.uuid4().hex),
+                                symlinks=False, ignore_dangling_symlinks=True)
+        except OSError as error:
+            atomic(output / ('diagnostic-copy-error-' + uuid.uuid4().hex + '.json'),
+                   dict(error=repr(error), checked_at=time.time()))
         os.close(gpu_fd)
         lock.close()
 
