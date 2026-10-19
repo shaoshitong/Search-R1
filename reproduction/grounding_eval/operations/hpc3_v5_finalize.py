@@ -1,6 +1,7 @@
 """Independent CPU acceptance and separately labeled rule replay after HPC3 v5 CF."""
 import argparse
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -34,7 +35,10 @@ def main():
             if rc:raise RuntimeError('CPU acceptance/replay failed, preserve all files')
         report=json.loads(accept.read_text());assert report['state']=='INDEPENDENT_CF_FULL_READ_VERIFIED'
         s=report['cf_summary'];official=json.loads(replay.read_text())['methods'][e['method']]
-        summary['models'].append(dict(method=e['method'],normal_count=s['counts']['normal_questions'],normal_correct=s['counts']['normal_correct'],counts=s['counts'],coverage=s['coverage'],TC=s['TC'],D_Inv=s['D_Inv'],TC_denominator=s['TC_denominator'],DInv_denominator=s['D_Inv_denominator'],token_usage=s['token_usage'],counterfactual_attempts=report['cf_attempts'],cf_result_bytes=report['cf_result_bytes'],cf_result_count=report['cf_results'],cf_results_hash=report['cf_results_hash'],normal_sha256=report['normal_sha256'],manifest_sha256=report['cf_manifest_sha256'],prepared_sha256=report['cf_prepared_sha256'],official_changed_rule_on_v5=official,acceptance_path=str(accept),rule_replay_path=str(replay)))
+        with Path(e['source']).open() as stream:normal=[json.loads(line) for line in stream if line.strip()]
+        canonical=[[r['data_source'],int(r['evaluation_ordinal']),r['question'],sorted(r['gold'])] for r in normal]
+        cross_method_hash=hashlib.sha256(json.dumps(canonical,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+        summary['models'].append(dict(method=e['method'],canonical_question_gold_order_sha256=cross_method_hash,normal_count=s['counts']['normal_questions'],normal_correct=s['counts']['normal_correct'],counts=s['counts'],coverage=s['coverage'],TC=s['TC'],D_Inv=s['D_Inv'],TC_denominator=s['TC_denominator'],DInv_denominator=s['D_Inv_denominator'],token_usage=s['token_usage'],counterfactual_attempts=report['cf_attempts'],cf_result_bytes=report['cf_result_bytes'],cf_result_count=report['cf_results'],cf_results_hash=report['cf_results_hash'],normal_sha256=report['normal_sha256'],manifest_sha256=report['cf_manifest_sha256'],prepared_sha256=report['cf_prepared_sha256'],official_changed_rule_on_v5=official,acceptance_path=str(accept),rule_replay_path=str(replay)))
     summary['completed_at']=time.time();write(seq/'final-summary.json',summary);print(json.dumps(summary))
 
 
