@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=12
 #SBATCH --mem=192G
 #SBATCH --time=12:00:00
 # Submit only after normal/CF pilot acceptance and fresh storage budget checks.
@@ -12,7 +12,8 @@
 set -euo pipefail
 : "${GROUNDING_SOURCE:?explicit deployed source required}"
 : "${GROUNDING_JOB:?explicit frozen job JSON required}"
-export OMP_NUM_THREADS=16 MKL_NUM_THREADS=16
+export OMP_NUM_THREADS="${SLURM_CPUS_PER_TASK:-12}"
+export MKL_NUM_THREADS="$OMP_NUM_THREADS"
 export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 TOKENIZERS_PARALLELISM=false
 export PYTHONNOUSERSITE=1
 RUNTIME=/data/user/jxu957/experiments/topd-20261008/runtime
