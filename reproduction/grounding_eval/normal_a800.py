@@ -212,6 +212,7 @@ def extract_rows(batch, source_rows, ordinals, binding, tokenizer):
                    source_run_id=binding['source_run_id'], source_shard_sha256=binding['dataset_sha256'],
                    checkpoint_id=binding['checkpoint_identity_sha256'],
                    normal_config_sha256=binding['normal_config_sha256'],
+                   execution_batch_questions=len(source_rows),
                    actual_observations=observations,
                    behavior_turns=list(turns), response_token_ids=tokens.tolist(),
                    response_policy_mask=mask.tolist(),
