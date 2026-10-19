@@ -1,0 +1,337 @@
+{
+  "status": "ACTUAL_NEW_FULL_ITERATIONS_AFTER_SOURCE8_NFS_FAULT_RECOVERY",
+  "observed_utc": "20261019T173522669990Z",
+  "original_sha256": "9777cca94a9e71842930a3bf1cf6d347bc0fba74ceb10d5e00fa885fa2b00de5",
+  "whole_200_and_final_QA_complete": false,
+  "arms": {
+    "A": {
+      "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3",
+      "node": "h100-11",
+      "cards": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "complete_outer": 188,
+      "actor_adam_per_rank": [
+        3744,
+        3744,
+        3744,
+        3744
+      ],
+      "probe_adam_per_rank": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "native": {
+        "command": [
+          "/dataset/shaoshitong/Search-G1-common8/env/bin/python",
+          "-m",
+          "reproduction.prefix_selection200.launch",
+          "run",
+          "--base",
+          "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3"
+        ],
+        "config_sha256": "bbce10c241883a39d025c52856b221b9d30b116bdb8e082857db9b3a1628a560",
+        "launched_unix": 1792430187.0903718,
+        "leader": {
+          "command": "/dataset/shaoshitong/Search-G1-common8/env/bin/python -m reproduction.prefix_selection200.launch run --base /mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3 ",
+          "pid": 2122785,
+          "sid": 2122785,
+          "start_ticks": 720861193,
+          "state": "R",
+          "uid": 0
+        },
+        "run_id": "ca37419b494446398fb15234aa3be91a",
+        "source_commit": "6dc4a39e3ddd2bf7a642c33a9343f6044ee69ea4",
+        "status": "ONCE_LAUNCHED_NOT_TRAINING_ACCEPTANCE",
+        "leader_same_birth": true
+      },
+      "next_actual_stage": {
+        "checked_unix": 1792431306.0499759,
+        "outer": 189,
+        "run_id": "ca37419b494446398fb15234aa3be91a",
+        "stage": "outer-000189-continue"
+      },
+      "new_complete_facts": [
+        {
+          "outer": 188,
+          "actor": [
+            {
+              "rank": 0,
+              "writes": 20,
+              "actual_adam_steps": 3744,
+              "ledger_sha256": "700fea0ad8383b150466de44421ca6818aedca4d4b5c823c81065ba8f7052f6c"
+            },
+            {
+              "rank": 1,
+              "writes": 20,
+              "actual_adam_steps": 3744,
+              "ledger_sha256": "dfe16091137611940997aa9032108727b94bfac75c183d7b8c0110a307504520"
+            },
+            {
+              "rank": 2,
+              "writes": 20,
+              "actual_adam_steps": 3744,
+              "ledger_sha256": "b22d91a45d5f011671e7ab4bc6c5c82dbcdd0f5b2b3dc34e2ade55db2329dcc9"
+            },
+            {
+              "rank": 3,
+              "writes": 20,
+              "actual_adam_steps": 3744,
+              "ledger_sha256": "3dcaa81cd5cbaa9b555464be453e130ad61c15e4dc1bf8ceb375c3739235c60a"
+            }
+          ],
+          "probe": [],
+          "probe_actual": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    "B": {
+      "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1",
+      "node": "h100-5",
+      "cards": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "complete_outer": 160,
+      "actor_adam_per_rank": [
+        3200,
+        3200,
+        3200,
+        3200
+      ],
+      "probe_adam_per_rank": [
+        2240,
+        2240,
+        2240,
+        2240
+      ],
+      "native": {
+        "command": [
+          "/dataset/shaoshitong/Search-G1-common8/env/bin/python",
+          "-m",
+          "reproduction.prefix_selection200.launch",
+          "run",
+          "--base",
+          "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1"
+        ],
+        "config_sha256": "b4dbe8b5f5759b1aeadc74804f6cd8d50b9c5ccdca44a8cb78d09fb12ab74e15",
+        "launched_unix": 1792428209.213379,
+        "leader": {
+          "command": "/dataset/shaoshitong/Search-G1-common8/env/bin/python -m reproduction.prefix_selection200.launch run --base /mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1 ",
+          "pid": 1601370,
+          "sid": 1601370,
+          "start_ticks": 1546626629,
+          "state": "R",
+          "uid": 0
+        },
+        "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+        "source_commit": "3b1889a04b94db76cc1239f78d697da7b5b91544",
+        "status": "ONCE_LAUNCHED_NOT_TRAINING_ACCEPTANCE",
+        "leader_same_birth": true
+      },
+      "next_actual_stage": {
+        "checked_unix": 1792431257.684545,
+        "outer": 161,
+        "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+        "stage": "CANDIDATE_POOL_RESERVATION"
+      },
+      "new_complete_facts": [
+        {
+          "outer": 158,
+          "actor": [
+            {
+              "rank": 0,
+              "writes": 20,
+              "actual_adam_steps": 3160,
+              "ledger_sha256": "a725d5a06a6644d425b114a07da88871c817f3395fe53e1c95e553d41a926dc2"
+            },
+            {
+              "rank": 1,
+              "writes": 20,
+              "actual_adam_steps": 3160,
+              "ledger_sha256": "375122a92e36de6ebb1e9a11b116df7adbe7855366b70667b76584f6b275c3ac"
+            },
+            {
+              "rank": 2,
+              "writes": 20,
+              "actual_adam_steps": 3160,
+              "ledger_sha256": "a394e23595a25210e55fe89ee843306b6b05ab53c373f4f384f221724303dc39"
+            },
+            {
+              "rank": 3,
+              "writes": 20,
+              "actual_adam_steps": 3160,
+              "ledger_sha256": "8c36ee714bcc71691c20895637c5aed71660c7ca3800f4ba99d95524088333ee"
+            }
+          ],
+          "probe": [
+            {
+              "rank": 0,
+              "writes": 10,
+              "last_actual": 2180,
+              "ledger_sha256": "bf51da77be9bb6f514c02404f834d5723bec77d4679c5b7878adf343e8f37649"
+            },
+            {
+              "rank": 1,
+              "writes": 10,
+              "last_actual": 2180,
+              "ledger_sha256": "499e3c5bc39aee2561ecd77f3fb50a31df2097d1c48685aa397a30c311f8b090"
+            },
+            {
+              "rank": 2,
+              "writes": 10,
+              "last_actual": 2180,
+              "ledger_sha256": "1c4c0ba61640ec0df78a93fd73e560796d29f5c3ae061454f805d4db570d96dc"
+            },
+            {
+              "rank": 3,
+              "writes": 10,
+              "last_actual": 2180,
+              "ledger_sha256": "9010ebe4597f9b2447f3d699e99db3cba79cb5d025252ef33b8d3e739afc76b3"
+            }
+          ],
+          "probe_actual": [
+            2180,
+            2180,
+            2180,
+            2180
+          ]
+        },
+        {
+          "outer": 159,
+          "actor": [
+            {
+              "rank": 0,
+              "writes": 20,
+              "actual_adam_steps": 3180,
+              "ledger_sha256": "bf763116843ab63cdf07e0c95f898b9bdb302c02e2081ba5ab8d7d24875f9e78"
+            },
+            {
+              "rank": 1,
+              "writes": 20,
+              "actual_adam_steps": 3180,
+              "ledger_sha256": "f685aec449c161d09f2f670cb7b132c85a9865eadfecb881f9c52342bbfa3736"
+            },
+            {
+              "rank": 2,
+              "writes": 20,
+              "actual_adam_steps": 3180,
+              "ledger_sha256": "c996a30bfdb3bf1e80bbba7163538e398bd86ae49080649b0ca021331be9f1b1"
+            },
+            {
+              "rank": 3,
+              "writes": 20,
+              "actual_adam_steps": 3180,
+              "ledger_sha256": "75c1675c60c9823cd7499f91b9a51a4ee637311730f767760dd981b28d7c7052"
+            }
+          ],
+          "probe": [
+            {
+              "rank": 0,
+              "writes": 10,
+              "last_actual": 2190,
+              "ledger_sha256": "bc630eb032e2c91e66cda72e6d1d00bcfb7632956bc2c2363db7e0c9604e024c"
+            },
+            {
+              "rank": 1,
+              "writes": 10,
+              "last_actual": 2190,
+              "ledger_sha256": "fa37a99794347b1cdd8de9a11311496140889ccc5f482967892517c94057e37b"
+            },
+            {
+              "rank": 2,
+              "writes": 10,
+              "last_actual": 2190,
+              "ledger_sha256": "f984639e79e04a25bda43c11f9a45719d7f93f9e7e3381bacae80f342f550391"
+            },
+            {
+              "rank": 3,
+              "writes": 10,
+              "last_actual": 2190,
+              "ledger_sha256": "b31b3e72027d15982879795e718f151abb0df06d7e17d44ff8609d4108003feb"
+            }
+          ],
+          "probe_actual": [
+            2190,
+            2190,
+            2190,
+            2190
+          ]
+        },
+        {
+          "outer": 160,
+          "actor": [
+            {
+              "rank": 0,
+              "writes": 20,
+              "actual_adam_steps": 3200,
+              "ledger_sha256": "8204b0a5209000a7e9a03cefe77a875c3ea2820bc2f2e1ac204637d2007b35dc"
+            },
+            {
+              "rank": 1,
+              "writes": 20,
+              "actual_adam_steps": 3200,
+              "ledger_sha256": "dc7a537539e5111742dca8f7b48883ab42ab173aef12004ae010149108609a78"
+            },
+            {
+              "rank": 2,
+              "writes": 20,
+              "actual_adam_steps": 3200,
+              "ledger_sha256": "52db35e279a5a363b373e74d290449a750471c61b0d3b438e058a0bec5ea59a2"
+            },
+            {
+              "rank": 3,
+              "writes": 20,
+              "actual_adam_steps": 3200,
+              "ledger_sha256": "2cf02e88a6428e65c787d292783854cf530dc373d09f6c5e2b21a66ebdd9c637"
+            }
+          ],
+          "probe": [
+            {
+              "rank": 0,
+              "writes": 50,
+              "last_actual": 2240,
+              "ledger_sha256": "4cd7c2d3c348ea3e15822a83946cf5f8522fd402d4f8bf471fc938c7bab768fd"
+            },
+            {
+              "rank": 1,
+              "writes": 50,
+              "last_actual": 2240,
+              "ledger_sha256": "ef312279a6e2b5c26dea778c6902f03dc3378948d5d6ebb467dc7873c3337fe5"
+            },
+            {
+              "rank": 2,
+              "writes": 50,
+              "last_actual": 2240,
+              "ledger_sha256": "d5ba5b1c15458f9f7a91629b5907766b3c02839892787f72c2218159cc308540"
+            },
+            {
+              "rank": 3,
+              "writes": 50,
+              "last_actual": 2240,
+              "ledger_sha256": "804c4a58b638c0e5732589dd7a08553034754a8e52ff72795cdf477eb5c798b8"
+            }
+          ],
+          "probe_actual": [
+            2240,
+            2240,
+            2240,
+            2240
+          ]
+        }
+      ]
+    }
+  }
+}

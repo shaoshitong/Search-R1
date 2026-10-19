@@ -1,0 +1,26 @@
+import sys;sys.path.insert(0,'/tmp');from g1_target_node import *
+b=json.loads((w/'prefix5-ab-source8-fault-prepared-A.json').read_text())['base']
+inner='base_path='+repr(b)+'\n'+'''import sys,json,subprocess,csv,io,time
+from pathlib import Path
+b=Path(base_path);sys.path.insert(0,str(b/'repo'))
+from reproduction.prefix20_online.launch import read,sha,publish,once
+from reproduction.a800.owned_processes import same,identity
+from reproduction.prefix_selection200.source8_fault_recovery import qualified
+assert not(b/'preparation/submit-intent.json').exists()
+old=read(b/'preparation/native-wait-supervisor-submit-receipt.json')['supervisor']
+assert not same(old)or identity(old['pid'])['state']=='Z'
+assert 'AB arm must own its assigned four-card slot'in(b/'preparation/native-wait-supervisor.log').read_text()
+cpath=b/'preparation/launch-config.json';before=read(cpath);proof=qualified(before['resume_joint']['source_base'])
+assert all(not x['leader_same_birth']for x in proof['checks'])
+rows=list(csv.reader(io.StringIO(subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.free','--format=csv,noheader,nounits'],text=True))))
+rows.sort(key=lambda r:int(r[0]));ids=[0,1,2,3];uuids=[rows[i][1].strip()for i in ids]
+# Actual free memory, not a prospective footprint or a GPU test.
+assert min(int(rows[i][2])for i in ids)>60000
+c=dict(before,physical_gpu_indices=ids,auxiliary_gpu_indices=ids,physical_gpu_uuids=uuids,auxiliary_gpu_uuids=uuids,grounding_physical_gpu=3,grounding_physical_gpu_by_rank=ids,grounding_refit_visible_device=3)
+from reproduction.prefix_selection200.launch import validate_config
+validate_config(c,b)
+record=dict(status='UNSUBMITTED_PLACEMENT_RECONCILED_TO_ORIGINAL_FROZEN_A_SLOT',reason='Original A policy requires0-3, these are the roomiest qualified cards; previous supervisor exited before any native submit intent',old_config_sha256=sha(cpath),old_physical_indices=before['physical_gpu_indices'],new_physical_indices=ids,actual_free_MiB=[int(rows[i][2])for i in ids],source_exit_only_barrier=proof['status'],old_kernel_exit_memory_residue_not_an_active_writer=True,science_changed=False,checked_unix=time.time())
+once(b/'preparation/source8-fault-presubmit-placement-reconcile-v2.json',record);publish(cpath,c)
+print(json.dumps(dict(base=str(b),config_sha256=sha(cpath),cards=ids,node='h100-11',record=record)))
+'''
+v=target_node(inner,'A11-pre-native-placement-reconcile',timeout=120);p=w/'prefix5-ab-source8-fault-prepared-A.json';a=json.loads(p.read_text());a.update(config_sha256=v['config_sha256'],cards=v['cards']);p.write_text(json.dumps(a,indent=2)+'\n');(w/'prefix5-ab-source8-fault-A11-presubmit-reconciliation.json').write_text(json.dumps(v,indent=2)+'\n')

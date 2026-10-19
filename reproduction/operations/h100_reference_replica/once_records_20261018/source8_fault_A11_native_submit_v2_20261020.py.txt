@@ -1,0 +1,22 @@
+import sys;sys.path.insert(0,'/tmp');from g1_target_node import *
+v=json.loads((w/'prefix5-ab-source8-fault-prepared-A.json').read_text());assert v['node']=='h100-11';b=v['base'];code=(repo/'reproduction/operations/h100_reference_replica/native_wait_supervisor.py').read_text()
+inner='base_path='+repr(b)+';helper_source='+repr(code)+'\n'+'''import sys,json,hashlib,subprocess,os,time
+from pathlib import Path
+b=Path(base_path);prep=b/'preparation';path=prep/'native-wait-supervisor.py';raw=helper_source.encode();expected=hashlib.sha256(raw).hexdigest()
+if not path.exists():
+ with path.open('xb')as f:f.write(raw)
+assert hashlib.sha256(path.read_bytes()).hexdigest()==expected
+intent=prep/'native-wait-supervisor-submit-intent-v2.json';receipt=prep/'native-wait-supervisor-submit-receipt-v2.json'
+assert (prep/'source8-fault-presubmit-placement-reconcile-v2.json').exists()
+if intent.exists():print(receipt.read_text()if receipt.exists()else json.dumps(dict(status='EXISTING_INTENT_QUERY_ONLY')))
+else:
+ assert not(prep/'submit-intent.json').exists()
+ with intent.open('x')as f:json.dump(dict(base=str(b),created_unix=time.time(),supervisor_sha256=expected),f);f.flush();os.fsync(f.fileno())
+ with(prep/'native-wait-supervisor-v2.log').open('xb')as f:p=subprocess.Popen([sys.executable,str(path),'--base',str(b)],stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,start_new_session=True,env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1'))
+ sys.path.insert(0,str(b/'repo'))
+ from reproduction.a800.owned_processes import identity
+ r=dict(status='OWNED_NATIVE_SUPERVISOR_STARTED_NOT_TRAINING_ACCEPTANCE',base=str(b),supervisor=identity(p.pid),source_sha256=expected)
+ with receipt.open('x')as f:json.dump(r,f)
+ print(json.dumps(r))
+'''
+r=target_node(inner,'submit-A11-pre-native-reconciled-v2',node='h100-11',timeout=160);(w/'prefix5-ab-source8-fault-submitted-A-before-v2-history.json').write_text((w/'prefix5-ab-source8-fault-submitted-A.json').read_text());(w/'prefix5-ab-source8-fault-submitted-A.json').write_text(json.dumps(r,indent=2)+'\n')

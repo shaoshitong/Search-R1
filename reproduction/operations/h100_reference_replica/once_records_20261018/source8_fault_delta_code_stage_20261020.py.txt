@@ -1,0 +1,27 @@
+import sys;sys.path.insert(0,'/tmp');from g1_fault_target import *
+import io,tarfile,gzip,base64
+commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip();parent='ac79337fc2ae50d7a0c2a0987092c548df560284'
+def tree(c):
+ return {row.split(b'\t',1)[1].decode():row.split(b'\t',1)[0].split()[2].decode()for row in subprocess.check_output(['git','ls-tree','-rz',c],cwd=repo).split(b'\0')if row}
+old=tree(parent);new=tree(commit);expected={};delta={}
+with tarfile.open(fileobj=io.BytesIO(subprocess.check_output(['git','archive',commit],cwd=repo)))as t:
+ for m in t:
+  if not m.isfile()or(m.name.startswith('reproduction/reports/')and not m.name.endswith(('.py','.sh'))):continue
+  raw=t.extractfile(m).read();expected[m.name]=hashlib.sha256(raw).hexdigest()
+  if old.get(m.name)!=new[m.name]:delta[m.name]=base64.b64encode(raw).decode()
+staged='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-'+commit
+source='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-b-progressive-code-retained-20261018-'+parent
+params=base64.b64encode(gzip.compress(json.dumps(dict(staged=staged,source=source,expected=expected,delta=delta,commit=commit)).encode())).decode()
+inner='''import json,base64,gzip,hashlib,os,time
+from pathlib import Path
+p=json.loads(gzip.decompress(base64.b64decode(PAYLOAD)));b=Path(p['staged']);src=Path(p['source']);b.mkdir(exist_ok=True)
+for name,checksum in p['expected'].items():
+ target=b/name;target.parent.mkdir(parents=True,exist_ok=True)
+ if not target.exists():
+  if name in p['delta']:
+   with target.open('xb')as f:f.write(base64.b64decode(p['delta'][name]))
+  else:os.link(src/name,target)
+ assert hashlib.sha256(target.read_bytes()).hexdigest()==checksum,name
+print(json.dumps(dict(physical=str(b),files=len(p['expected']),changed_files=len(p['delta']),commit=p['commit'],full_target_source_sha=True,only_code_deployed=True,source_hardlinks_never_mutated=True)))'''.replace('PAYLOAD',repr(params))
+# Code-only reconcile/clone; no native submit/stop and no automatic retry.
+r=call(inner,'delta-code-stage',timeout=600);v=json.loads(r.stdout);(w/'prefix5-ab-source8-fault-retained-code-stage.json').write_text(json.dumps(v,indent=2)+'\n');print(json.dumps(v))

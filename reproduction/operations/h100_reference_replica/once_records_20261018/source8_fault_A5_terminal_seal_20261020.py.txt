@@ -1,0 +1,28 @@
+import sys;sys.path.insert(0,'/tmp');from g1_fault_target import *
+b=auth['sources']['A']['base']+'-retained-h1005-r1'
+inner='base_path='+repr(b)+'\n'+'''import sys,json,time,hashlib,subprocess
+from pathlib import Path
+b=Path(base_path);sys.path.insert(0,str(b/'repo'))
+from reproduction.prefix20_online.launch import read,sha,once
+from reproduction.a800.owned_processes import same
+from reproduction.prefix_only_correctness_ab.launch import birth_states
+p=b/'preparation/shared-gpu-profile-failure-terminal-full-sha.json'
+if p.exists():print(json.dumps(dict(status='EXISTING_PROOF',path=str(p),sha256=sha(p))))
+else:
+ native=read(b/'preparation/native-actual-waitpid-exit.json');assert native['actual_returncode']==1
+ ledger=read(b/'logs/process-ledger.json');records=[v for j in ledger['jobs'].values()for v in j.get('ledger',{}).values()];checks=[]
+ for _ in range(2):
+  checks.append(dict(unix=time.time(),native_same_birth=same(native['native_leader']),remaining_owned_births=birth_states(records)));time.sleep(.2)
+ assert all(not c['native_same_birth']and not c['remaining_owned_births']for c in checks)
+ files=[]
+ for root in [b/'logs',b/'outers/outer-000188']:
+  for path in root.rglob('*.log'):
+   st=path.stat();h=hashlib.sha256()
+   with path.open('rb')as f:
+    for raw in iter(lambda:f.read(1024**2),b''):h.update(raw)
+   after=path.stat();assert(st.st_ino,st.st_size,st.st_mtime_ns)==(after.st_ino,after.st_size,after.st_mtime_ns)
+   files.append(dict(path=str(path),inode=st.st_ino,bytes=st.st_size,sha256=h.hexdigest()))
+ r=dict(status='ACTUAL_A_SHARED_PROFILE_INIT_FAILURE_ORIGINAL_LOGS_AND_OWNED_RELEASE_VERIFIED',native_exit_proof=str(b/'preparation/native-actual-waitpid-exit.json'),native_exit_proof_sha256=sha(b/'preparation/native-actual-waitpid-exit.json'),actual_native_returncode=1,complete_outer=read(b/'latest-joint.json')['outer'],new_actual_adam_writes=0,source_config_sha256=sha(b/'preparation/launch-config.json'),owned_release_checks=checks,original_inode_log_files=files,old_h10011_source_residue_is_separate=True)
+ once(p,r);print(json.dumps(dict(status=r['status'],proof=str(p),sha256=sha(p),files=len(files),bytes=sum(v['bytes']for v in files))))
+'''
+v=target(inner,'A5-failed-original-terminal-seal');(w/'prefix5-ab-source8-fault-A5-failure-terminal-small-summary.json').write_text(json.dumps(v,indent=2)+'\n')
