@@ -72,6 +72,10 @@ for version,name in [('v4','easy-selection-cf-full-v4'),('v5','easy-selection-cf
 v4=read(base/'easy-selection-cf-full-v4/verified-summary.json');v5=read(base/'easy-selection-cf-strict-v5/verified-summary.json');assert v4['counts']['normal_correct']==v5['counts']['normal_correct']
 normal_tokens=v4['token_usage']['normal'];assert all(v['measured_questions']==3610 for v in normal_tokens.values())
 for key,value in normal_tokens.items():assert nr['token_totals'][key]==value['total']
+correction=nr['token_totals']['environment_correction_tokens'];retained_environment=nr['token_totals']['observation_tokens']+correction
+normal_tokens['environment_correction_tokens']=dict(total=correction,measured_questions=3610,mean=correction/3610)
+normal_tokens['retained_environment_tokens']=dict(total=retained_environment,measured_questions=3610,mean=retained_environment/3610)
+assert normal_tokens['trajectory_total_tokens']['total']==normal_tokens['initial_prompt_tokens']['total']+normal_tokens['model_generated_tokens']['total']+retained_environment
 exits={'pilot96':read(base/'easy-selection-normal-pilot96/control/exit.json')['exit_code'],'normal3610':read(normal/'control/exit.json')['exit_code']}
 for version in('v4','v5'):exits[version+'-CF']=read(control/(version+'-run-exit.json'))['exit_code']
 assert all(v==0 for v in exits.values())
