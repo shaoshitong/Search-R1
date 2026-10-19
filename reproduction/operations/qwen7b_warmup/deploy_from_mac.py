@@ -30,13 +30,24 @@ def main():
 import pathlib,tarfile,hashlib,json
 b=pathlib.Path(base);p=b/'preparation/source.tar.gz'
 assert hashlib.sha256(p.read_bytes()).hexdigest()==publication['archive_sha256']
-repo=b/'repo';assert not (b/'config.json').exists(),'Never hot-overwrite prepared/running source'
+repo=b/'repo'
+if (b/'config.json').exists():
+ assert not (b/'control/sampling-submit-intent.json').exists(),'Never replace submitted sampling source'
+ assert not (b/'control/fit-submit-intent.json').exists(),'Never replace submitted fitting source'
+ controller=b/'control/controller.json'
+ if controller.exists():
+  c=json.loads(controller.read_text());proc=pathlib.Path('/proc')/str(c['pid'])/'stat'
+  assert not proc.exists() or proc.read_text().rsplit(')',1)[1].split()[19]!=c['start_ticks'],'Retire owned waiting coordinator before source update'
 repo.mkdir(exist_ok=True)
 with tarfile.open(str(p),'r:gz') as t:
  for m in t.getmembers():assert not m.name.startswith('/') and '..' not in pathlib.Path(m.name).parts
  t.extractall(str(repo))
 for name,sha in publication['files'].items():assert hashlib.sha256((repo/name).read_bytes()).hexdigest()==sha,name
 (b/'preparation/source-publication.json').write_text(json.dumps(publication,indent=2))
+if (b/'config.json').exists():
+ p=b/'config.json';c=json.loads(p.read_text());old=c['source_commit'];c['source_commit']=publication['commit']
+ p.write_text(json.dumps(c,indent=2))
+ (b/'preparation/source-upgrade-before-sampling.json').write_text(json.dumps(dict(previous_commit=old,new_commit=publication['commit'],accepted_sampling_batches=0,run_id=c['run_id'])))
 for name in ['logs','probe','tmp','cache']:(b/name).mkdir(exist_ok=True)
 print(json.dumps(dict(status='SOURCE_DEPLOYED_ALL_FILES_SHA_MATCH',commit=publication['commit'],files=len(publication['files']))))
 '''

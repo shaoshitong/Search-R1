@@ -156,7 +156,11 @@ def main():
     assert fingerprints(base/'bank/features.json')['sha256']==bank['features']['sha256']
     reader=FeatureReader(features)
     model=Probe(c['model_dir'],c['question_max_tokens'],5).to(device)
-    ddp=DDP(model,device_ids=[local_rank]);ema=copy.deepcopy(model).eval().requires_grad_(False)
+    # Rank group counts can be13/13/13/12, hence7/7/7/6 micro-forwards.
+    # Fixed official native RoPE buffers do not need a collective per forward;
+    # broadcasting them would mismatch the unequal forward/backward order.
+    ddp=DDP(model,device_ids=[local_rank],broadcast_buffers=False)
+    ema=copy.deepcopy(model).eval().requires_grad_(False)
     optimizer=torch.optim.Adam(model.parameters(),lr=5e-6,weight_decay=0)
     root=base/'probe';root.mkdir(exist_ok=True);start_epoch,cursor,steps=1,0,0
     predictions=root/'predictions';predictions.mkdir(exist_ok=True)
