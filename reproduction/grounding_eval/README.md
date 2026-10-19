@@ -13,6 +13,13 @@ question and modified actual seen docs, greedy BF16,512 generated tokens,8,192
 context, no new retrieval, strict terminal nonnested answer parsing. Search tokens
 are not suppressed. These choices are not presented as exact author settings.
 
+The accepted v4 intervention stops at `</answer>` and retains that closing tag.
+Replacement aliases include terminal-punctuation variants. Question-guided types
+handle quantities/dates before person cues; unknown-type fallback is marked in the
+record. Exact normalized injected values and explicit aliases determine True;
+unlisted semantic paraphrases remain Amb. Earlier diagnostic pilots are separate
+and must not be reused by the formal run.
+
 Commands (run from the repository, all paths on the remote persistent filesystem):
 
 ```
@@ -36,6 +43,14 @@ Each normal input JSONL row contains `data_source="nq"`, original
 observations), `actual_retrieval_calls`, and `source_shard_sha256`. Adapters retain
 raw token provenance on the remote side. Model spans cannot be reconstructed from
 untrusted concatenated model+tool text by searching for answer tags.
+
+Token accounting records each model call and the whole retained trajectory:
+initial prompt, retained model generation, observations, and environment corrections.
+Raw generated tokens additionally include tails discarded by the action parser.
+Cumulative model input counts repeated history on every call; it is distinct from
+the single retained trajectory length. Normal and counterfactual usage are reported
+separately. Unavailable per-request KV-cache hits are null, never guessed. Local
+audits contain small aggregates only; raw token IDs and trajectories stay remote.
 
 Independent aggregation recounts Direct/True/Amb/Hall globally and recomputes
 classification from actual injected values. TC includes correct direct answers;
