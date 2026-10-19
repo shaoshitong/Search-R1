@@ -107,8 +107,9 @@ def main():
             assert summary['status'] == 'complete' and summary['counts']['normal_questions'] == 3610
             acceptance = out/'independent-acceptance-20261019.json'
             if not acceptance.exists():
-                step(version+'-independent-acceptance', [job['python'],'-B',config['verifier'],
-                     '--manifest',str(manifest),'--runtime',str(runtime),'--output',str(acceptance)], runtime, cpu=True)
+                step(version+'-independent-acceptance', [job['python'],'-B',job['content_identity_verifier'],
+                     '--legacy-verifier',config['verifier'],'--manifest',str(manifest),
+                     '--runtime',str(runtime),'--output',str(acceptance)], runtime, cpu=True)
             assert json.loads(acceptance.read_text())['state'] == 'INDEPENDENT_CF_FULL_READ_VERIFIED'
             if version == 'v4':
                 replay = out/'official-changed-rule-replay.json'
@@ -116,6 +117,7 @@ def main():
                     step('v4-official-changed-rule', [job['python'],'-B',job['rule_replay'],
                         '--method',job['method'],'--cf-root',str(out),'--output',str(replay)], runtime, cpu=True)
             publish(version+'-accepted.json', dict(protocol=version, acceptance_sha256=sha(acceptance),
+                    normal_content_order_sha256=json.loads(acceptance.read_text())['normal_content_order_sha256'],
                     verified_summary_sha256=sha(out/'verified-summary.json'), at=time.time()))
         publish('complete.json', dict(state='EASY_DUAL_CF_COMPLETE', completed_at=time.time(),
             normal_recomputed=False, protocols_kept_separate=True, job=job))

@@ -24,7 +24,7 @@ def main():
     subprocess.run(['git','-C',str(repo),'merge-base','--is-ancestor',commit,origin], check=True)
     sources = {}
     for name in ('easy_dual_cf_controller.py', 'verify_completed_cf.py',
-                 'verify_completed_strict_v5.py', 'official_changed_rule_replay.py'):
+                 'verify_completed_strict_v5.py', 'official_changed_rule_replay.py','verify_easy_cf_content.py'):
         sources[name] = subprocess.check_output(['git','-C',str(repo),'show',
             commit+':reproduction/grounding_eval/operations/'+name]).decode()
     gate_raw = (audit/'g1-strict-v5-root-acceptance-gate.json').read_bytes()
@@ -39,7 +39,8 @@ def main():
         gpu_uuid='GPU-21508d9d-bd43-ff94-7bee-1227ec7b007b',
         g1_acceptance_gate=control+'/g1-root-gate.json',
         g1_acceptance_gate_sha256=hashlib.sha256(gate_raw).hexdigest(),
-        rule_replay=runtime+'/official_changed_rule_replay.py', protocols={
+        rule_replay=runtime+'/official_changed_rule_replay.py',
+        content_identity_verifier=runtime+'/verify_easy_cf_content.py', protocols={
             'v4':dict(source_commit='21b9ccf4939803c41ed3351415cd90616709735c',
                 runtime=BASE+'/runtime-21b9ccf4',module='reproduction.grounding_eval',
                 output=BASE+'/easy-selection-cf-full-v4',verifier=runtime+'/verify_completed_cf.py'),
