@@ -308,7 +308,9 @@ def run(args):
         atomic(output / 'normal-complete.json', dict(target=len(selected), completed=len(selected), checked_at=time.time()))
         return
     gpu_fd, physical_index = gpu_lease(args.gpu_uuid)
-    os.environ.update(CUDA_VISIBLE_DEVICES=args.gpu_uuid, SEARCH_G1_PROFILE='grounding_normal',
+    # vLLM 0.6.3 NVML mapping parses a numeric visible ordinal; UUID lease
+    # above still authenticates exactly which physical ordinal this is.
+    os.environ.update(CUDA_VISIBLE_DEVICES=str(physical_index), SEARCH_G1_PROFILE='grounding_normal',
                       PYTHONDONTWRITEBYTECODE='1', HF_HOME=str(output / 'cache/hf'),
                       TRANSFORMERS_CACHE=str(output / 'cache/hf'),
                       RAY_TMPDIR='/tmp/gne-' + binding['execution_id'][:12], TOKENIZERS_PARALLELISM='false')

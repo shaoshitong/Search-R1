@@ -111,8 +111,9 @@ def run(args):
     gpu_fd=None
     if args.gpu_uuid:
         from .normal_a800 import gpu_lease
-        gpu_fd,_=gpu_lease(args.gpu_uuid)
-        os.environ['CUDA_VISIBLE_DEVICES']=args.gpu_uuid
+        gpu_fd,physical_index=gpu_lease(args.gpu_uuid)
+        # vLLM0.6.3 NVML platform parsing requires integer physical indices.
+        os.environ['CUDA_VISIBLE_DEVICES']=str(physical_index)
     from transformers import AutoTokenizer
     import torch
     import vllm

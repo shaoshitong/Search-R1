@@ -320,6 +320,8 @@ def main(argv=None):
                     'observation_tokens': sum(len(t) for t in manager.observation_ids[i]),
                     'initial_prompt_tokens': manager.llm_requests[i][0]['input_tokens'],
                     'cumulative_input_tokens': sum(t['input_tokens'] for t in manager.llm_requests[i])}
+                record['raw_generated_tokens'] = record['inference_generated_tokens']
+                record['cumulative_model_input_tokens'] = record['cumulative_input_tokens']
                 record['trajectory_total_tokens'] = (record['initial_prompt_tokens'] +
                     record['model_generated_tokens'] + record['observation_tokens'])
                 record['generated_tokens_discarded_by_action_parser'] = (
@@ -355,7 +357,7 @@ def main(argv=None):
 
 def publish_normal(out, batch_root, binding, selected):
     target = out / 'normal.jsonl'; tmp = out / 'normal.jsonl.tmp'
-    ordinals = []
+    ordinals = []; token_totals = {}
     with open(tmp, 'wb') as f:
         for p in sorted(batch_root.glob('batch-*.json')):
             blob = json.loads(p.read_text())
@@ -364,6 +366,10 @@ def publish_normal(out, batch_root, binding, selected):
             shard_hash = sha(p)
             for row in blob['records']:
                 ordinals.append(row['evaluation_ordinal'])
+                for key in ('model_generated_tokens', 'inference_generated_tokens', 'observation_tokens',
+                        'initial_prompt_tokens', 'cumulative_input_tokens', 'trajectory_total_tokens',
+                        'raw_generated_tokens', 'cumulative_model_input_tokens'):
+                    token_totals[key] = token_totals.get(key, 0) + row.get(key, 0)
                 f.write(canonical(dict(row, source_shard_sha256=shard_hash)) + b'\n')
         f.flush(); os.fsync(f.fileno())
     if ordinals != selected:
@@ -376,7 +382,7 @@ def publish_normal(out, batch_root, binding, selected):
         os.close(fd)
     atomic(out / 'normal-complete.json', {'status': 'NORMAL_NQ_COMPLETE' if len(selected) == 3610 else 'NORMAL_NQ_PILOT',
         'rows': len(selected), 'normal_sha256': sha(target), 'binding_hash': digest(binding),
-        'checkpoint_hash': binding['checkpoint_hash'], 'time': time.time()})
+        'checkpoint_hash': binding['checkpoint_hash'], 'token_totals': token_totals, 'time': time.time()})
 
 
 if __name__ == '__main__':
