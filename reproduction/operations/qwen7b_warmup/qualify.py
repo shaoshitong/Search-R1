@@ -88,10 +88,18 @@ def main():
             group=dict(qid='fixture',data_source='fixture',question_hash='0'*64,split='diagnostic'))
         prefix=prefix_record(fixture);assert prefix['split']=='diagnostic'
         digest=prefix.pop('prefix_sha256');assert hashlib.sha256(canonical(prefix)).hexdigest()==digest
+        import faiss
+        vectors=np.random.randn(17,4).astype('float32');queries=np.random.randn(3,4).astype('float32')
+        complete=faiss.IndexFlatIP(4);complete.add(vectors);shards=faiss.IndexShards(4,False,True);keep=[]
+        for offset in range(0,len(vectors),5):
+            piece=faiss.IndexFlatIP(4);piece.add(vectors[offset:offset+5]);keep.append(piece);shards.add_shard(piece)
+        scores,ids=shards.search(queries,3);reference_scores,reference_ids=complete.search(queries,3)
+        assert np.array_equal(ids,reference_ids) and np.allclose(scores,reference_scores,rtol=1e-6,atol=1e-6)
         report=dict(status='CPU_INVARIANTS_PASSED',lossless_nonidentical_question_features=True,
             short_answer_and_position_gaps=True,prefix5_future15_invariance=True,whole_G5_balance=True,
             unequal_DDP_rank_gradient_matches_global_mean=True,Adam_RNG_next_step_exact=True,
             diagnostic_split_bound_in_prefix_hash=True,
+            complete_Flat_shard_global_ids_and_top3_match=True,
             feature_layer=26,head_layer=27,layer_indexing='zero_based_model.layers',fit_prefix=5,capture_prefix=20,
             gpu_native_capture_and_four_rank_resume='NOT_YET_TESTED')
         atomic(base/'preparation/cpu-qualification.json',report);print(json.dumps(report),flush=True)

@@ -177,7 +177,7 @@ def main():
         retrieval_query_max_length=256, retrieval_use_fp16=True,
         retrieval_batch_size=args.batch_queries)
     started = time.monotonic()
-    resources=[]
+    resources=[];flat_shards=[]
 
     def streamed_flat(cpu,co=None,**kwargs):
         # The all-at-once cloner can allocate a full32GB temporary in addition
@@ -189,23 +189,31 @@ def main():
         resource=faiss.StandardGpuResources();resource.setTempMemory(256*1024**2);resources.append(resource)
         cfg=faiss.GpuIndexFlatConfig();cfg.device=0;cfg.useFloat16=True
         cls=faiss.GpuIndexFlatIP if cpu.metric_type==faiss.METRIC_INNER_PRODUCT else faiss.GpuIndexFlatL2
-        gpu=cls(resource,cpu.d,cfg);gpu.reserveMemory(cpu.ntotal)
         vectors=faiss.rev_swig_ptr(cpu.get_xb(),cpu.ntotal*cpu.d).reshape(cpu.ntotal,cpu.d)
         properties=torch.cuda.get_device_properties(0)
-        for offset in range(0,cpu.ntotal,16384):
-            gpu.add(vectors[offset:offset+16384])
-            if offset%(16384*64)==0 or gpu.ntotal==cpu.ntotal:
-                proof=dict(status='STREAMING_ORIGINAL_FLAT_TO_FP16',added=int(gpu.ntotal),total=int(cpu.ntotal),
+        # Faiss1.8 Python does not expose Flat reserveMemory. Fixed logical
+        # shards on the SAME GPU bound reallocation overlap; all original
+        # vectors are still exhaustively searched, with original global IDs.
+        merged=faiss.IndexShards(cpu.d,False,True)
+        width=(cpu.ntotal+15)//16;added=0;checked=[]
+        for begin in range(0,cpu.ntotal,width):
+            end=min(begin+width,cpu.ntotal);gpu=cls(resource,cpu.d,cfg);flat_shards.append(gpu)
+            for offset in range(begin,end,16384):
+                gpu.add(vectors[offset:min(offset+16384,end)])
+            for offset in (0,(end-begin)//2,end-begin-1):
+                expected=vectors[begin+offset:begin+offset+1].astype(np.float16).astype(np.float32)
+                assert np.array_equal(gpu.reconstruct_n(offset,1),expected),'GPU Flat precision/vector order differs'
+                checked.append(begin+offset)
+            merged.add_shard(gpu);added+=end-begin
+            proof=dict(status='STREAMING_ORIGINAL_FLAT_TO_FP16',added=int(added),total=int(cpu.ntotal),
                     dimension=int(cpu.d),gpu_name=properties.name,gpu_total_bytes=properties.total_memory,
-                    chunk_vectors=16384,temporary_memory_bytes=256*1024**2,elapsed_seconds=time.monotonic()-started)
-                publish(cache/'gpu-index-load-progress.json',proof);print('GPU_INDEX_LOAD='+json.dumps(proof),flush=True)
-        for offset in (0,cpu.ntotal//2,cpu.ntotal-1):
-            expected=vectors[offset:offset+1].astype(np.float16).astype(np.float32)
-            assert np.array_equal(gpu.reconstruct_n(offset,1),expected),'GPU Flat precision/vector order differs'
-        assert gpu.ntotal==cpu.ntotal and gpu.metric_type==cpu.metric_type
+                    chunk_vectors=16384,logical_flat_shards=int(merged.count()),physical_gpus=1,
+                    temporary_memory_bytes=256*1024**2,elapsed_seconds=time.monotonic()-started)
+            publish(cache/'gpu-index-load-progress.json',proof);print('GPU_INDEX_LOAD='+json.dumps(proof),flush=True)
+        assert merged.ntotal==cpu.ntotal and merged.metric_type==cpu.metric_type
         publish(cache/'gpu-index-load-verified.json',dict(proof,status='ORIGINAL_FLAT_FP16_STREAMED_AND_SAMPLED_STORAGE_VERIFIED',
-            sampled_offsets=[0,int(cpu.ntotal//2),int(cpu.ntotal-1)],sampled_storage_exact_FP16=True,metric=int(cpu.metric_type)))
-        return gpu
+            sampled_offsets=checked,sampled_storage_exact_FP16=True,metric=int(cpu.metric_type)))
+        return merged
 
     # This patch is confined to this private retriever process, not shared code.
     upstream.faiss.index_cpu_to_all_gpus=streamed_flat
@@ -213,12 +221,12 @@ def main():
     # IndexShards; do not retain an extra copy of the 64 GB CPU index.
     retriever = upstream.DenseRetriever(config)
     gc.collect()
-    if (retriever.index.count() if hasattr(retriever.index,'count') else 1) != args.gpu_shards or retriever.index.d != 768:
+    if retriever.index.d != 768 or faiss.get_num_gpus()!=args.gpu_shards:
         raise ValueError('Original Flat index did not initialize every assigned shard')
     if retriever.index.ntotal != len(retriever.corpus):
         raise ValueError('Original index and corpus document counts differ')
     ready = dict(run_id=args.run_id, pid=os.getpid(), ready=True,
-        gpu_shards=args.gpu_shards, dimension=int(retriever.index.d), documents=int(retriever.index.ntotal),
+        gpu_shards=args.gpu_shards,logical_flat_shards=int(retriever.index.count()), dimension=int(retriever.index.d), documents=int(retriever.index.ntotal),
         index=str(Path(args.index).resolve()), corpus_archive=str(Path(args.corpus).resolve()),
         encoder=str(Path(args.encoder).resolve()), corpus=extraction,
         encoder_dtype='float16', index_dtype='float16', pooling='mean',
