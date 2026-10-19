@@ -36,3 +36,31 @@ Only verified per-file receipts contribute to `verified_bytes`.
 The authorized synthetic 8MiB sample on 2026-10-19 verified source/sink SHA, with
 1.00 MB/s including SSH setup and 2.87 MB/s during payload. This is not a large
 checkpoint throughput guarantee. No concurrent multi-file upload has been tested.
+
+
+## Authorized execution, 2026-10-19
+
+The parent explicitly authorized execution after the original prepared-only review.
+The single management uploader is PID 3973196, source commit
+`ad09b983cdd6ed47b2640ba81b6ff628e6f4aa7c`. Its task directory is
+`/mnt/lustre/shaoshitong/grounding-eval-20261019/easy-hf-upload`.
+All thirteen original HF files, including original complete.json, are source-bound.
+Three independent model-file streams are actively growing; source read positions
+are not HF verified bytes. Only the pinned post-commit LFS SHA/Git blob receipt
+may authorize the A800 fetch. No model bytes are staged on or passed through Mac.
+
+The A800 destination is the dedicated task path
+`/data/shaoshitong/grounding-eval-20261019/assets/easy-selection-iter200`.
+Its separate migration receipt is `asset-migration-complete.json`, preserving
+original `complete.json`. Fresh independent full-file readback is required before
+normal inference. The retained18 source remains intact.
+
+Easy historical runtime code and occurrence-only identity are deployed on A800 at
+`runtime-easy-legacy-c05602bccc0c`; original full result rows were not transferred.
+The normal-only launch uses pilot96 before full3610 and the actual raw-token
+prefix loop. Adaptive execution is 128 -> 256 -> 512 on an admitted whole80GiB
+GPU, bounded by12GiB real running free memory. A fresh-engine recovery may lower
+execution cap while reusing only sealed, identity-verified batches.
+The owned retriever is now19001, GPU6; former19000 is not used.
+Only UUID/OFD/NVML-admitted GPU5 may be considered; foreign training owns0–4,
+and GPU7 is foreign. CF waits for the parent's repaired strict protocol.
