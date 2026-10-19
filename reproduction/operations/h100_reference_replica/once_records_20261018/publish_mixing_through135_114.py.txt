@@ -1,0 +1,64 @@
+"""Merge sealed local actual records; no remote action or imputed values."""
+import copy, hashlib, json, statistics
+from pathlib import Path
+repo = Path.cwd()
+root = Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+report = repo/'reproduction/reports/h100-prefix5-ab200-20261018'
+sources = [report/'progressive-through-a104-b89/PER-ITERATION.json',
+ root/'work/prefix5-ab-normal100-terminal-facts-20261018T231620.json',
+ root/'work/b-progressive-actual101-complete-reward100-and-latest-journals-20261018T233202603191Z.json',
+ root/'work/prefix5-ab-normal150-history-through-a135-b114-20261019T030602.json']
+old = json.loads(sources[0].read_text())
+rows = {a:{r['outer']:copy.deepcopy(r) for r in old['current'][a]['rows']} for a in ('A','B')}
+for path in sources[1:]:
+ value = json.loads(path.read_text())
+ if 'stdout' in value:
+  assert value['rc'] == 0
+  value = {a:v['facts'] for a,v in json.loads(value['stdout']).items()}
+ else:
+  value = value['facts']
+ for a,facts in value.items():
+  for f in facts:
+   n = f['outer']; m = f['selection_metrics']
+   if n in rows[a]:
+    assert all(rows[a][n]['selected'][k] == m[k] for k in ('mixed','all_wrong','all_correct'))
+   rows[a][n] = dict(outer=n, selected=m, actual_complete_source=str(path))
+limits = {'A':135,'B':114}
+compact = json.loads((root/'work/prefix5-ab-latest-compact.json').read_text())
+for a,limit in limits.items():
+ assert compact['arms'][a]['complete_outer'] >= limit
+ rows[a] = {n:dict(outer=n, prefix_tokens=5 if a=='A' or n<=50 else 20 if n<=100 else 40 if n<=150 else 80,
+  periodic=(n<200 and n%10==0), selected=v['selected'],
+  actual_complete_source=v.get('actual_complete_source',str(sources[0]))) for n,v in rows[a].items() if n<=limit}
+ assert sorted(rows[a]) == list(range(1,limit+1))
+ for v in rows[a].values():
+  m=v['selected']; assert m['questions']==512
+  assert sum(m[k]for k in ('mixed','all_wrong','all_correct'))==512
+  assert m['mixed_fraction']==m['mixed']/512
+windows=[]
+for lo,hi in [(6,9)]+[(n+1,n+9) for n in range(10,110,10)]:
+ ids=list(range(lo,hi+1))
+ windows.append(dict(start=lo,end=hi,arms={a:dict(mean_mixed_count=statistics.mean(rows[a][n]['selected']['mixed']for n in ids),
+  mean_mixed_fraction=statistics.mean(rows[a][n]['selected']['mixed_fraction']for n in ids))for a in rows}))
+out=report/'progressive-through-a135-b114';out.mkdir(exist_ok=True)
+result=dict(observed_utc=compact['observed_utc'],complete_outer=limits,current={a:dict(rows=list(v.values()))for a,v in rows.items()},
+ source_files=[dict(path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest())for p in sources],
+ ordinary_window_means=windows,unobserved_values_fitted=False,B_old_stopped_51_58_excluded=True,
+ ordinary_means_exclude_periodic=True,metric_is_probe_classification_accuracy=False,A_B_post50_differences=old['A_B_post50_differences'])
+(out/'PER-ITERATION.json').write_text(json.dumps(result,indent=2)+'\n')
+text=['# Actual selected mixing through A135 / B114','',
+ 'Actual complete-outer strict-EM group counts only. Mixed means 1–4 correct trajectories among five, denominator 512 questions. No interpolation, fitted values or old stopped B51–58. The closed normal100 observer history and separate actual101 record are merged with the current observer history; observer file rotation does not erase earlier rounds.','',
+ 'A selection head stays frozen. B51–100 uses prefix20/admit768 and B101–150 prefix40/admit1024 with actual-mixed-first final512 reranking; these differences confound an isolated EMA interpretation. Both periodic multiples of10 use outcome-assisted full-pool selection and are excluded from ordinary window means. This metric is not probe classification accuracy or QA EM.','',
+ '| Ordinary rounds | A mean mixed count / ratio | B mean mixed count / ratio |','|---|---:|---:|']
+for w in windows:
+ va,vb=[w['arms'][a]for a in ('A','B')]
+ text.append('| %d–%d | %.2f / %.2f%% | %.2f / %.2f%% |'%(w['start'],w['end'],va['mean_mixed_count'],100*va['mean_mixed_fraction'],vb['mean_mixed_count'],100*vb['mean_mixed_fraction']))
+text+=['','| Outer | Periodic | A mixed count / ratio | B mixed count / ratio |','|---:|---|---:|---:|']
+for n in range(1,136):
+ cells=[]
+ for a in ('A','B'):
+  m=rows[a].get(n,{}).get('selected');cells.append('%d / %.4f%%'%(m['mixed'],100*m['mixed_fraction']) if m else 'not yet observed')
+ text.append('| %d | %s | %s | %s |'%(n,'yes'if n<200 and n%10==0 else 'no',*cells))
+text+=['','Frozen training runtimes and active goals are unchanged. Latest human decision is to keep both current runs without a migration restart. Both200, later QA/final51713 and actual terminal/resource closure remain incomplete.']
+(out/'README.md').write_text('\n'.join(text)+'\n')
+print(json.dumps(dict(output=str(out),complete_outer=limits,rows={a:len(v)for a,v in rows.items()})))
