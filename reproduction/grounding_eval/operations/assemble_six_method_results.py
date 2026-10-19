@@ -45,7 +45,7 @@ def verify_metric(metric, normal):
     proof = metric["proof"]
     assert proof["independent_verified"] is True
     for key in ("acceptance_sha256", "normal_sha256", "manifest_sha256"):
-        assert len(proof[key]) == 64 and int(proof[key], 16) >= 0
+        assert len(proof[key]) == 64 and int(proof[key], 16) > 0
     assert proof["acceptance_path"].startswith("/")
     assert proof["normal_sha256"] == normal["source_sha256"]
 
@@ -71,6 +71,8 @@ def assemble(paths):
         for row in bundle["methods"]:
             method = row["method"]
             assert method in METHODS and method not in rows, method
+            for proof in row["evidence_sources"]:
+                assert hashlib.sha256(Path(proof["path"]).read_bytes()).hexdigest() == proof["sha256"], proof["path"]
             assert row["checkpoint_iteration"] == 200
             assert row["canonical_question_gold_order_sha256"] == NQ_ORDER
             normal = row["normal"]
