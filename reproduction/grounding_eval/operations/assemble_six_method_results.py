@@ -63,7 +63,7 @@ def verify_tokens(tokens, count):
         equal_number(stat["mean"], total / count if count else None)
 
 
-def assemble(paths):
+def assemble(paths, parity_path):
     rows, sources = {}, []
     for path in paths:
         raw = Path(path).read_bytes()
@@ -102,6 +102,21 @@ def assemble(paths):
             rows[method] = row
         sources.append({"path": str(Path(path).resolve()), "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
     assert set(rows) == set(METHODS), {"missing_methods": sorted(set(METHODS) - set(rows))}
+    parity_raw = Path(parity_path).read_bytes()
+    parity = json.loads(parity_raw)
+    assert parity["state"] == "MANIFEST_METADATA_PARITY_VERIFIED"
+    assert parity["two_fresh_read_metadata_identical"] and parity["all_manifest_bindings_valid"]
+    assert len(parity["records"]) == 12 and not parity["missing"]
+    for group in parity["within_protocol"].values():
+        assert group["method_count"] == 6 and group["checkpoint_hashes_all_distinct"]
+        assert group["cf_config_identical"] and group["code_files_mapping_identical"]
+    bindings = {(r["method"], r["protocol_group"]): r for r in parity["records"]}
+    for method, row in rows.items():
+        for key, protocol in (("requested_changed_rule_on_v4", "v4"), ("corrected_strict_v5", "v5")):
+            binding, proof = bindings[(method, protocol)], row[key]["proof"]
+            assert binding["manifest_file_sha256"] == proof["manifest_sha256"]
+            assert binding["normal_source_sha256"] == proof["normal_sha256"]
+    sources.append({"path": str(Path(parity_path).resolve()), "bytes": len(parity_raw), "sha256": hashlib.sha256(parity_raw).hexdigest()})
     return {
         "completed_at_utc": datetime.now(timezone.utc).isoformat(),
         "state": "ALL_SIX_METHODS_COMPLETE_INDEPENDENTLY_VERIFIED",
@@ -126,9 +141,10 @@ def assemble(paths):
 def main():
     p = argparse.ArgumentParser(__doc__)
     p.add_argument("--input", action="append", required=True)
+    p.add_argument("--protocol-parity", required=True)
     p.add_argument("--output", required=True)
     args = p.parse_args()
-    report = assemble(args.input)
+    report = assemble(args.input, args.protocol_parity)
     raw = (json.dumps(report, ensure_ascii=False, indent=2) + "\n").encode()
     # A final report is created only after all six bundles pass validation.
     with Path(args.output).open("xb") as f:
