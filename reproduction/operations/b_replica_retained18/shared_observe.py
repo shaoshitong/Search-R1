@@ -6,7 +6,13 @@ BASE='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-di
 SCRIPT=r'''
 import pathlib,json,time,hashlib
 p=pathlib.Path(BASE)
-def read(f):return json.loads(f.read_text())if f.exists()else None
+def read(f):
+ for attempt in range(12):
+  try:return json.loads(f.read_text())
+  except FileNotFoundError:return None
+  except json.JSONDecodeError as error:
+   if attempt==11:raise RuntimeError('OBSERVATION_JSON_DECODE_RETRIES_EXHAUSTED '+str(f))from error
+   time.sleep(0.25)
 def physical(f):
  s=str(f);prefix='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'
  return pathlib.Path('/mnt/data/shaoshitong')/s[len(prefix):]if s.startswith(prefix)else pathlib.Path(s)
