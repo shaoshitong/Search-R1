@@ -38,7 +38,9 @@ if action=='stage':
  for name,digest in h['parent_handle']['source_files'].items():
   if pathlib.Path(name).suffix in ('.py','.sh') and name not in allowed:
    assert h['source_files'].get(name)==digest,'Unrelated scientific source changed: '+name
- c=read(parent/'preparation/launch-config.json');admitted(c)
+ # CPU staging/qualification must remain possible while approved GPUs are
+ # occupied. The submit gate and native allocation both require them free.
+ c=read(parent/'preparation/launch-config.json')
  c.pop('restart_from_actor50',None);c.pop('recovery_sampling',None)
  c.update(base=str(b),execution_id=h['execution_id'],source_commit=h['source_commit'],
   pool_state_path=str(b/'question-pool/state.json'),prefix_probe_receipt=str(b/'probe/latest.json'),
