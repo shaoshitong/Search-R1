@@ -1,0 +1,50 @@
+# Strict NQ grounding (2026-10-19)
+
+This offline evaluator never imports or changes a trainer. Its normal-input adapter
+must preserve the selected historical checkpoint's normal QA interaction protocol.
+Only the fixed 3,610 NQ occurrences are supplemented when historical full traces
+are unavailable. A question ID is not a unique occurrence: retain original ordinal.
+
+`paper-strict-v1` implements the paper definition, rather than legacy “any answer
+change = True” or its service-error fallback. Operational choices not specified by
+that definition are explicit in `CF_CONFIG`: deterministic boundary-aware alias
+replacement (longest first, no cascading), a single user message containing the
+question and modified actual seen docs, greedy BF16,512 generated tokens,8,192
+context, no new retrieval, strict terminal nonnested answer parsing. Search tokens
+are not suppressed. These choices are not presented as exact author settings.
+
+Commands (run from the repository, all paths on the remote persistent filesystem):
+
+```
+python -m reproduction.grounding_eval prepare --source normal.jsonl --checkpoint HF_DIR --output NEW_DIR --method NAME --run-id ID --normal-config normal-config.json
+python -m reproduction.grounding_eval pilot --manifest NEW_DIR/manifest.json
+python -m reproduction.grounding_eval run --manifest NEW_DIR/manifest.json --max-batch 256
+python -m reproduction.grounding_eval verify --manifest NEW_DIR/manifest.json
+```
+
+Use `--max-batch 256` (space between flag and value). Pilot uses16 valid
+interventions. Full run resumes those atomic result files, starts with16 requests,
+and raises batch size to32/64/128/256. vLLM bounds KV cache and chunked prefill;
+actual OOM reduces the request batch, never converts an error to Amb. Locks prevent
+duplicate workers. Contexts exceeding the frozen budget remain explicitly invalid,
+never silently truncate the original observations. Full model SHA is checked at
+prepare and independent final verification; source/config/code hashes bind caches.
+
+Each normal input JSONL row contains `data_source="nq"`, original
+`evaluation_ordinal`, `qid`, `question`, `gold` (list of aliases), `model_spans`
+(policy actions, excluding observations), `seen_docs` (exact post-truncation tool
+observations), `actual_retrieval_calls`, and `source_shard_sha256`. Adapters retain
+raw token provenance on the remote side. Model spans cannot be reconstructed from
+untrusted concatenated model+tool text by searching for answer tags.
+
+Independent aggregation recounts Direct/True/Amb/Hall globally and recomputes
+classification from actual injected values. TC includes correct direct answers;
+D-Inv does not. Empty denominators are null. Unperturbable/invalid/source/error
+entries are excluded with coverage counts. Recoverable missing/error entries imply
+provisional. One seed has no sample SD. No model/raw-output/credential goes in Git
+or onto the Mac; only code/config and compact audit summaries may be local.
+
+Do not launch all methods before the first checkpoint's pilot and full acceptance.
+Record Slurm allocation or authorized shared-GPU reservation, engine metadata,
+two actual completed-entry/byte measurements, exit status, then final full-SHA and
+classification acceptance. Always keep remote persistent copies of artifacts.
