@@ -1,0 +1,49 @@
+"""Publish existing original B130 paired scalar results; no remote action."""
+import argparse,hashlib,json,math
+from pathlib import Path
+p=argparse.ArgumentParser();p.add_argument('--source',required=True);args=p.parse_args()
+source=Path(args.source);env=json.loads(source.read_text());assert env['rc']==0
+d=json.loads(env['stdout']);m=d['metric_fields']
+assert d['role']=='ORIGINAL_SAME_ACTOR_PERIODIC_PAIR_AND_FOLLOWING_EMA_ADOPTION'
+assert d['outer']==130 and d['training_questions']==2560 and d['heldout_questions']==512
+assert d['qid_overlap']==d['normalized_text_overlap']==0 and d['prefix_tokens']==40
+assert m['learning_rate']==5e-6 and m['ema_rate']==.99 and m['group_loss_weight']==5
+assert d['probe_adam']==[1820]*4 and d['actual_following_adoption']['outer']==131
+assert d['actual_following_adoption']['ema_updates']==1820
+curve=m['global_step_loss_curve'];assert len(curve)==50
+for i,x in enumerate(curve,1):
+ assert x['step']==i and x['actual_adam_steps']==1770+i and x['ema_updates']==1770+i
+ assert math.isclose(x['total_loss'],x['trajectory_bce']+5*x['group_bce'],rel_tol=1e-6,abs_tol=2e-6)
+journalsource=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-h10011-normal-follow-20261019T073945753385Z-actual.json')
+fact=next(x for x in json.loads(journalsource.read_text())['B']['facts']if x['outer']==130)
+assert sorted(x['rank']for x in fact['probe'])==[0,1,2,3]
+assert all(x['writes']==50 and x['last_actual']==1820 for x in fact['probe'])
+def mean(xs,key):return sum(x[key]*x['global_questions']for x in xs)/sum(x['global_questions']for x in xs)
+windows={name:{k:mean(xs,k)for k in ('trajectory_bce','group_bce','total_loss')}for name,xs in [('first10',curve[:10]),('last10',curve[-10:])]}
+result=dict(d,source_original=str(source),source_original_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+ original_probe_journals=fact['probe'],original_journal_observation=str(journalsource),
+ original_journal_observation_sha256=hashlib.sha256(journalsource.read_bytes()).hexdigest(),
+ changing_batch_weighted_loss_windows=windows,not_QA_EM_or_F1=True)
+out=Path('reproduction/reports/h100-prefix5-ab200-20261018/progressive-period130');out.mkdir(exist_ok=True)
+(out/'PAIRED-METRICS-AND-50-STEP-CURVE.json').write_text(json.dumps(result,indent=2)+'\n')
+t=['# B130: original paired probe metrics and actual131 EMA adoption','',
+ 'Actual actor129 produced the original2560G5 pool and fresh fixed512G5 diagnostic using40-token current-actor hidden, head313. Qid and normalized-question overlaps are zero. Before/after use the same trajectories/labels. Later periodic sets use changing actor snapshots and labels; they are not a fixed-label learning curve. These classification metrics are not QA EM/F1.','',
+ 'LR5e-6, EMA.99, trajectoryBCE + 5 × mixedBCE are unchanged. Each of four original journals records50 writes,1770→1820. Actual unlabelled selection131 uses the corresponding EMA130 payload with actor130. This is original receipt adoption evidence, not independent tensor preservation or GPU reloading.','',
+ '| Head / original distribution | Before BA | After BA | Before trajectory BCE | After trajectory BCE | Before mixed BCE | After mixed BCE |',
+ '|---|---:|---:|---:|---:|---:|---:|']
+for head,part in [('raw','train'),('raw','test'),('ema','train'),('ema','test')]:
+ a=m['before_update'][head][part];b=m['after_update'][head][part]
+ t.append('| %s / %s | %.4f%% | %.4f%% | %.6f | %.6f | %.6f | %.6f |'%(head,part,100*a['balanced_accuracy'],100*b['balanced_accuracy'],a['trajectory_bce'],b['trajectory_bce'],a['group_bce'],b['group_bce']))
+z=m['after_update']['ema']['test'];train=m['before_update']['raw']['train'];sampling=m['sampling']
+t+=['',
+ 'Raw train BA improves substantially, but raw heldout BA falls (53.0405%→50.6547%). EMA heldout BA barely changes (49.4555%→49.7716%). There is no verified heldout improvement beyond chance-level balanced discrimination at this point. No threshold/loss/sampling/training change was made.','',
+ 'Post-update EMA heldout:%d/%d actually mixed (%.4f%%), mean predicted q %.4f%%; ordinary accuracy %.4f%% versus majority %.4f%%. Mixed recall %.4f%%, nonmixed recall %.4f%%; TP%d/FN%d/TN%d/FP%d. The probe still overpredicts mixed.'%(z['mixed_count'],z['count'],100*z['mixed_count']/z['count'],100*z['mean_q'],100*z['accuracy'],100*max(z['mixed_count'],z['nonmixed_count'])/z['count'],100*z['mixed_recall'],100*z['nonmixed_recall'],z['tp'],z['fn'],z['tn'],z['fp']),
+ '',
+ 'Original train pool:%dmixed/%dnonmixed; fitting uses1280+1280 replacement draws, %dunique groups, %.4f%% repeated draws. Train evaluation uses all original2560groups, not balanced repeated rows. Selected%d/512 mixed is outcome-assisted periodic selection, not classifier accuracy.'%(train['mixed_count'],train['nonmixed_count'],sampling['unique_questions'],100*sampling['repeated_fraction'],fact['selection_metrics']['mixed']),
+ '', '| Changing balanced-batch window | Trajectory BCE | Mixed BCE | Weighted total |','|---|---:|---:|---:|']
+for name,v in windows.items():t.append('| %s | %.6f | %.6f | %.6f |'%(name,v['trajectory_bce'],v['group_bce'],v['total_loss']))
+t+=['',
+ 'Window means are global-question weighted over changing batches, not fixed-data loss evaluation. Full50-step scalar records are in the JSON. The actual train loop takes %.6fs, not whole-outer time.'%m['train_loop_seconds'],
+ '', 'No weights/hidden/full trajectories/full predictions were downloaded. No new model forward, rollout or GPU test ran. Original A/B leaders continue unchanged; both200, B150/both200 QA/final51713 and actual terminal/resource closure remain incomplete.']
+(out/'README.md').write_text('\n'.join(t)+'\n')
+print(json.dumps(dict(report=str(out),windows=windows)))
