@@ -23,6 +23,34 @@ def sha(path):
     return h.hexdigest()
 
 
+def finish_tools(base):
+    """Expose Python and an offline private pip without changing shared packages."""
+    b = Path(base)
+    source = b / 'repo/reproduction/operations/reference_b_hpc3_prepared/python-runtime.sh'
+    target = b / 'env/bin/python'
+    target.write_bytes(source.read_bytes())
+    target.chmod(0o755)
+    packages = Path('/data/user/jxu957/experiments/topd-20261008/environment/topd-py310/lib/python3.10/site-packages')
+    copied = []
+    for src in [packages / 'pip', *packages.glob('pip-*.dist-info')]:
+        assert src.is_dir(), str(src)
+        dst = b / 'env/overlay' / src.name
+        if not dst.exists():
+            shutil.copytree(src, dst, ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
+        for f in src.rglob('*'):
+            if f.is_file() and '__pycache__' not in f.parts and f.suffix != '.pyc':
+                assert sha(f) == sha(dst / f.relative_to(src)), str(f)
+        copied.append(src.name)
+    pip = b / 'env/bin/pip'
+    pip.write_text('#!/usr/bin/env bash\nset -euo pipefail\nexec "$(dirname "$0")/python" -m pip "$@"\n')
+    pip.chmod(0o755)
+    result = dict(status='PRIVATE_PYTHON_AND_OFFLINE_PIP_READY', copied=copied,
+                  shared_packages_changed=False, pip_source=str(packages),
+                  runtime_wrapper_sha256=sha(target))
+    (b / 'preparation/environment-tools.json').write_text(json.dumps(result, indent=2) + '\n')
+    return result
+
+
 def prepare(base):
     b = Path(base).resolve()
     assert str(b) == BASE
@@ -30,7 +58,7 @@ def prepare(base):
     if (b / 'preparation/prepared-config.json').exists():
         c = json.loads((b / 'preparation/prepared-config.json').read_text())
         assert c['preparation_only'] and c['training_authorized'] is False
-        return dict(status='EXISTING_PREPARATION_RECONCILED_NO_RESTART', base=str(b))
+        return dict(status='EXISTING_PREPARATION_RECONCILED_NO_RESTART', base=str(b), tools=finish_tools(b))
     previous = json.loads((PREVIOUS / 'preparation/launch-config.json').read_text())
     source = b / 'repo/reproduction/operations/reference_b_hpc3_prepared/reference-config.json'
     c = json.loads(source.read_text())
@@ -124,6 +152,7 @@ exec __PYTHON__ "$@"
                   slurm_submitted=False, physical_gpu_binding_pending=True,
                   config_sha256=sha(b / 'preparation/prepared-config.json'))
     (b / 'preparation/prepared-receipt.json').write_text(json.dumps(result, indent=2) + '\n')
+    finish_tools(b)
     return result
 
 
