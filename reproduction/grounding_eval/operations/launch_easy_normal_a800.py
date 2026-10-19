@@ -7,7 +7,7 @@ from pathlib import Path
 import shlex
 import subprocess
 
-ADAPTER_COMMIT = '8cd99761'
+ADAPTER_COMMIT = 'bb1acf09'
 GPU_INDEX = 5
 BASE = '/data/shaoshitong/grounding-eval-20261019'
 
