@@ -1,0 +1,12 @@
+import sys,json,subprocess,concurrent.futures,datetime
+from pathlib import Path
+sys.path.insert(0,'/Users/shaoshitong/Documents/Search-G1/h100-prefix5-reference-replica-20261018')
+from reproduction.operations.h100_reference_replica.b_progressive_remote import ctl
+from reproduction.operations.h100_reference_replica.follow_h10011_ab_normal_boundary import ROOT
+c=ctl();script="import subprocess,json,socket;print(json.dumps(dict(host=socket.gethostname(),gpu=subprocess.run(['nvidia-smi','--query-gpu=index,uuid,memory.total,memory.used,utilization.gpu','--format=csv,noheader'],text=True,capture_output=True,timeout=20).stdout)))"
+def get(host):
+ try:
+  p=subprocess.run(c.route(host,'/usr/bin/python3 -'),input=script,text=True,capture_output=True,timeout=45);return dict(host=host,returncode=p.returncode,stdout=p.stdout,stderr=p.stderr[-1000:])
+ except Exception as e:return dict(host=host,error=str(e))
+with concurrent.futures.ThreadPoolExecutor(max_workers=3)as pool:r=list(pool.map(get,['h100-5','h100-10','h100-11']))
+p=ROOT/('work/source8-fault-available-gpus-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ')+'.json');p.write_text(json.dumps(r,indent=2));print(p);print(json.dumps(r),flush=True)

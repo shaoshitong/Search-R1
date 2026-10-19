@@ -1,3 +1,21 @@
+# October20 source8 failure recovery: current placement is h100-5
+
+Latest human explicitly authorized another H100 after source8 was released. Both original h100-11 native leaders were stuck opening source8 fixed-test identity metadata through dead NFS; A187/B157 were the actual latest complete joints. Exact owned signals stopped both leaders. Original kernel exit events actually recorded signal9; original logs are sealed remotely (A1179 files/1,394,607,629 bytes; B673 files/488,341,640 bytes). Exit-only kernel residue and stale CUDA contexts on11 remain a separate pending resource-release issue; they are not active training writers or a successful native exit0.
+
+A187 and B157 independently passed full-file SHA and actual CPU model/Adam/RNG state readback, each25 files. Actor clocks are A3724 (historical16 skips preserved), B3140; probe clocks A0/B2170. Do not rehash/load these completed source qualifications or roll back to150/50. Qualification proof names under each original `preparation/` are `ab-joint-0187-independent-full-sha-cpu.json` and `ab-joint-0157-independent-full-sha-cpu.json`.
+
+Current destinations are the prior A/B bases suffixed `-retained-h1005-r1`, on h100-5, A cards0–3 /B4–7. Frozen runtime3b1889a04b94db76cc1239f78d697da7b5b91544 has1422 target source files independently matched; no scientific code/recipe/budget change. Both imported the exact latest complete joint and actual pool state, with all optimizer/scheduler/RNG/EMA/grounding150 state retained. New native leaders A1601242/start1546625426 and B1601370/start1546626629. A188/B158 are actually generating, not yet accepted complete in this initial note. Read newer main state/compact first.
+
+Inputs/runtime/corpus-cache use the qualified retained NAS10 private mount view with no source8 mounts. Warmup is not rerun. A remains frozen warmup probe; B remains prefix80/admit1536, balanced raw+EMA.99, loss weight5/LR5e-6. Both retain four-rank actor globalmicro4/local1/accum32 and200/no201.
+
+Unique current local read-only observer: session58030/PID18064, `follow_h10011_ab_normal_boundary --node h100-5 --until200 --verified-a187 --verified-b157 --interval120 --transport retained18 --path-layout h1005-retained`. It owns compact/facts, not primary state; no duplicate observer. It follows actual original journals. Current small artifacts are under root work `prefix5-ab-source8-fault-*`; old reader snapshots were sealed before reassignment. Mainstate/assigned arms now bind new bases/node/configs. Later control publication de08716c changes only reader/control, not runtime.
+
+A direct-parent waitpid supervisor is armed for each new submitted native leader, so final OS exit status is recorded in that base's `preparation/native-actual-waitpid-exit.json`. It sends no training signals and needs no GPU/kernel qualification test. The old11 exit collector is complete, not the collector for these new leaders. Do not replay any consumed stop/CPU/prepare/submit intents.
+
+Each arm still owes completion through200, QA200/final51713 exact input identities/sources, normal200 state qualification, native actualexit0, resource closure and final publication. Earlier ETA was invalidated by the source8 stall and needs new actual iteration timings.
+
+---
+
 # Current A/B200 execution handoff
 
 The authoritative live numbers and source evidence are in `/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/search-g1-prefix5-ab200-state.json`, the current `prefix5-ab-latest-compact.json`, and their named immutable actual observations. Read those before historical snapshots. Both200/no201 objectives, scheduled150/200 QA and final51713, final saved-state/retention/native-exit/resource closure remain incomplete.

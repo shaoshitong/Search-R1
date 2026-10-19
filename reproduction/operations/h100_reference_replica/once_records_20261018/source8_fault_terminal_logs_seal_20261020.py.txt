@@ -1,0 +1,27 @@
+exec(open('/tmp/g1_recover_control.py').read().split("if __name__=='__main__':")[0])
+# Authorization pins the original sources, independently of newly assigned slots.
+sources=auth['sources']
+inner='''import sys,json,time,hashlib,os,subprocess
+from pathlib import Path
+for a,s in SOURCES.items():
+ b=Path(s['base']);intent=b/'preparation/source8-fault-terminal-logs-seal-intent.json';result=b/'preparation/source8-fault-terminal-original-inode-logs.json'
+ if result.exists():print(json.dumps(dict(arm=a,status='EXISTING_PROOF',path=str(result))));continue
+ if intent.exists():print(json.dumps(dict(arm=a,status='EXISTING_INTENT_QUERY_ONLY')));continue
+ with intent.open('x')as f:json.dump(dict(source=s,created_unix=time.time()),f);f.flush();os.fsync(f.fileno())
+ code="""import json,hashlib,time,os
+from pathlib import Path
+b=Path(BASE);proof=json.loads((b/'preparation/source8-fault-writer-barrier.json').read_text());assert proof['status']=='SOURCE8_NFS_FAULT_NO_USERSPACE_WRITERS'
+rows=[]
+for path in sorted((b/'logs').rglob('*.log')):
+ st=path.stat();h=hashlib.sha256()
+ with path.open('rb')as f:
+  for raw in iter(lambda:f.read(8*1024**2),b''):h.update(raw)
+ after=path.stat();assert(st.st_ino,st.st_size,st.st_mtime_ns)==(after.st_ino,after.st_size,after.st_mtime_ns)
+ rows.append(dict(path=str(path),dev=st.st_dev,inode=st.st_ino,bytes=st.st_size,sha256=h.hexdigest()))
+r=dict(status='SOURCE8_FAULT_ORIGINAL_TERMINAL_LOGS_FULL_SHA_SEALED',run_id=proof['run_id'],source_base=str(b),files=rows,actual_native_exit_zero=False,termination_signal=9,original_owned_gpu_release_complete=False,checked_unix=time.time())
+with(b/'preparation/source8-fault-terminal-original-inode-logs.json').open('x')as f:json.dump(r,f);f.flush();os.fsync(f.fileno())
+print(json.dumps(dict(status=r['status'],files=len(rows),bytes=sum(v['bytes']for v in rows))))""".replace('BASE',repr(str(b)))
+ with(b/'preparation/source8-fault-terminal-logs-seal-worker.log').open('xb')as f:p=subprocess.Popen([sys.executable,'-c',code],stdout=f,stderr=subprocess.STDOUT,start_new_session=True,env=dict(os.environ,CUDA_VISIBLE_DEVICES=''))
+ print(json.dumps(dict(arm=a,pid=p.pid,proof=str(result),status='CPU_LOG_SEAL_STARTED')))
+'''.replace('SOURCES',repr(sources))
+call(inner,'terminal-log-seal-start')
