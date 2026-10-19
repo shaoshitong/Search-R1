@@ -1,6 +1,7 @@
 """Publish immutable A800 normal occurrence inputs, never score-only records."""
 import argparse
 import os
+import fcntl
 from pathlib import Path
 from .core import atomic, canonical, digest, read, sha, utc
 
@@ -27,11 +28,15 @@ def main():
             raise ValueError('Incomplete raw normal schema')
         seen.add(key);records.append(row)
     dest=Path(args.output);temp=dest.with_name(dest.name+'.tmp')
+    lock=open(dest.with_name(dest.name+'.export.lock'),'a+')
+    fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
     if dest.exists():
         expected=b''.join(canonical(r)+b'\n' for r in records)
         if dest.read_bytes()!=expected:raise ValueError('Immutable export differs')
         return
-    with open(temp,'xb') as f:
+    # Only this exporter owns this exact task temp path while holding its lock.
+    # An interrupted partial is safely rewritten from immutable source records.
+    with open(temp,'wb') as f:
         for r in records:f.write(canonical(r)+b'\n')
         f.flush();os.fsync(f.fileno())
     os.replace(temp,dest)

@@ -44,8 +44,11 @@ def prepare(args):
     if output.exists() and any(output.iterdir()): raise ValueError('Use a new empty protocol output directory')
     rows, source=source_inventory(args.source,args.expected_count)
     ckpt=checkpoint_inventory(args.checkpoint)
+    from .identity import validate_normal_identity
+    normal_identity=validate_normal_identity(rows,args.checkpoint,args.normal_config)
     config=dict(CF_CONFIG)
     code_files=[Path(__file__), Path(__file__).with_name('core.py'),
+                Path(__file__).with_name('identity.py'),
                 Path(__file__).parents[2]/'search_r1/qa_protocol.py']
     code={str(p.relative_to(Path(__file__).parents[2])):sha(p) for p in code_files}
     config['implementation_sha256']=digest(code)
@@ -53,7 +56,9 @@ def prepare(args):
     except Exception: commit=None
     manifest=dict(schema_version=1, protocol_version=PROTOCOL, method=args.method, scale='3B', seed=args.seed,
         run_id=args.run_id, actor_version='iter200', checkpoint=ckpt, checkpoint_hash=ckpt['checkpoint_hash'],
-        source=source, pilot_only=args.expected_count!=3610, normal_evaluation_config=read(args.normal_config), cf_config=config,
+        source=source, normal_identity=normal_identity,
+        normal_config_path=str(Path(args.normal_config).resolve()),
+        pilot_only=args.expected_count!=3610, normal_evaluation_config=read(args.normal_config), cf_config=config,
         cf_config_sha256=digest(config), code_files=code, code_commit=commit, created_at=utc(), output=str(output))
     manifest['normal_evaluation_config_sha256']=digest(manifest['normal_evaluation_config'])
     manifest['manifest_sha256']=digest(manifest)
@@ -96,6 +101,21 @@ def validated(manifest_path):
     return manifest, list(read_jsonl(out/'prepared.jsonl'))
 
 def result_rows(out): return [read(p) for p in sorted((out/'results').glob('*.json'))]
+
+def attempt_token_usage(out):
+    events=list(read_jsonl(out/'attempts.jsonl')) if (out/'attempts.jsonl').exists() else []
+    started={};success={};errors=0
+    for event in events:
+        if event['status']=='INFERENCE_STARTED':
+            for rid,a in event['attempt_ids'].items():started[(rid,a)]=event['input_tokens_by_id'][rid]
+        elif event['status']=='CLASSIFIED':success[(event['request_id'],event['attempt_id'])]=event.get('generation_tokens')
+        elif event['status']=='INFERENCE_ERROR':errors+=1
+    missing=set(started)-set(success)
+    known_outputs=[v for v in success.values() if isinstance(v,int)]
+    return dict(request_attempts=len(started),known_requested_input_tokens=sum(started.values()),
+        successful_attempt_output_tokens=sum(known_outputs),failed_or_interrupted_attempts=len(missing),
+        errors=errors,total_generated_tokens=sum(known_outputs) if not missing else None,
+        total_generated_tokens_null_reason='failed_or_interrupted_generation_cost_unknown; successful_tokens_are_a_lower_bound' if missing else None)
 
 def run(args):
     manifest, prepared=validated(args.manifest); out=Path(manifest['output'])
@@ -146,8 +166,10 @@ def run(args):
     attempts=Counter()
     if (out/'attempts.jsonl').exists():
         for item in read_jsonl(out/'attempts.jsonl'):
-            for rid in item.get('request_ids', [item.get('request_id')]):
-                if rid: attempts[rid]+=1
+            if 'attempt_ids' in item:
+                for rid,a in item['attempt_ids'].items():attempts[rid]=max(attempts[rid],a)
+            elif item.get('request_id'):
+                attempts[item['request_id']]=max(attempts[item['request_id']],item.get('attempt_id',1))
     def attempt_event(obj):
         with open(out/'attempts.jsonl','ab') as f:
             f.write(canonical(obj)+b'\n'); f.flush();os.fsync(f.fileno())
@@ -165,6 +187,8 @@ def run(args):
         if any(attempts[r['request_id']]>=config['max_attempts'] for r in valid):
             raise RuntimeError('Retry budget exhausted; inspect attempts before explicitly authorizing a new attempt policy')
         for row in valid: attempts[row['request_id']]+=1
+        attempt_event(dict(status='INFERENCE_STARTED',attempt_ids={r['request_id']:attempts[r['request_id']] for r in valid},
+            input_tokens_by_id={r['request_id']:len(p['prompt_token_ids']) for r,p in zip(valid,inputs)},utc=utc()))
         try:
             outputs=engine.generate(inputs,params,use_tqdm=False)
             if len(outputs)!=len(valid): raise RuntimeError('Incomplete engine output batch')
@@ -190,10 +214,12 @@ def run(args):
                     attempt_id=attempts[row['request_id']],
                     completed_at=utc(),elapsed_batch_seconds=time.monotonic()-t)
                 atomic(out/'results'/(row['request_id']+'.json'),result,replace=True)
-                attempt_event(dict(request_id=row['request_id'],attempt_id=attempts[row['request_id']],status='CLASSIFIED',started_at=stamp,completed_at=utc()))
+                attempt_event(dict(request_id=row['request_id'],attempt_id=attempts[row['request_id']],
+                    generation_tokens=len(answer.token_ids),status='CLASSIFIED',started_at=stamp,completed_at=utc()))
                 completed+=1
         except Exception as error:
             attempt_event(dict(request_ids=[r['request_id'] for r in valid],status='INFERENCE_ERROR',
+                attempt_ids={r['request_id']:attempts[r['request_id']] for r in valid},
                 error=type(error).__name__+':'+str(error),batch=batch,utc=utc()))
             # No programming/transport error is converted to a model Amb.
             # CUDA OOM is isolated to this evaluator, never kills other GPU tasks.
@@ -217,7 +243,11 @@ def verify(args):
     manifest,prepared=validated(args.manifest); out=Path(manifest['output'])
     actual=checkpoint_inventory(manifest['checkpoint']['path'])
     if actual!=manifest['checkpoint']: raise ValueError('Checkpoint final full SHA mismatch')
+    from .identity import validate_normal_identity
+    identity=validate_normal_identity(list(read_jsonl(manifest['source']['path'])),manifest['checkpoint']['path'],manifest['normal_config_path'])
+    if identity!=manifest['normal_identity']: raise ValueError('Normal identity changed at final readback')
     summary=aggregate(prepared,result_rows(out))
+    summary['token_usage']['counterfactual_attempts']=attempt_token_usage(out)
     if manifest['pilot_only']:
         summary['status']='pilot_only'
     summary.update(method=manifest['method'],seed=manifest['seed'],checkpoint_hash=manifest['checkpoint_hash'],
@@ -230,7 +260,7 @@ def main():
     p=argparse.ArgumentParser(__doc__); sub=p.add_subparsers(dest='action',required=True)
     prep=sub.add_parser('prepare')
     for k in ('source','checkpoint','output','method','run-id','normal-config'): prep.add_argument('--'+k,required=True)
-    prep.add_argument('--seed',type=int,default=1729)
+    prep.add_argument('--seed',type=int,default=None,help='Actual method training seed if verified; unknown remains null. CF intervention/decode seed is separately frozen.')
     prep.add_argument('--expected-count',type=int,default=3610,help='Other sizes are explicitly pilot-only, never final results')
     prep.add_argument('--reuse-results',help='Identity-checked immutable pilot results from the same source occurrences')
     for name in ('run','pilot','aggregate','verify'):
