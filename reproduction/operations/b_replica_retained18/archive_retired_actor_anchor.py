@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import socket
@@ -61,7 +62,8 @@ def main():
     for f,row in assets:
         assert f.is_relative_to(actor_dir)and not f.is_symlink()and f.stat().st_size==row['bytes']
         st=f.stat();target=archive/f.relative_to(source);target.parent.mkdir(parents=True,exist_ok=True)
-        with f.open('rb')as inp,target.open('xb')as out:shutil.copyfileobj(inp,out,8*1024**2)
+        with f.open('rb')as inp,target.open('xb')as out:
+            shutil.copyfileobj(inp,out,8*1024**2);out.flush();os.fsync(out.fileno())
         assert target.stat().st_size==row['bytes']and digest(target)==row['sha256']
         plan.append(dict(original=str(f),archived=str(target),bytes=st.st_size,inode=st.st_ino,
             mtime_ns=st.st_mtime_ns,sha256=row['sha256']))
