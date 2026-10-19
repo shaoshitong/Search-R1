@@ -95,7 +95,7 @@ class NativeFeatureWriter:
 
 class FeatureReader:
     def __init__(self, manifests):
-        self.records, self.cache = {}, OrderedDict()
+        self.records, self.cache, self.prototypes = {}, OrderedDict(), {}
         for manifest in manifests:
             proof = json.loads(Path(manifest).read_text())
             assert proof['status'] == 'LOSSLESS_NATIVE_FEATURES_COMPLETE'
@@ -109,13 +109,19 @@ class FeatureReader:
         for handles,_ in self.cache.values():
             for handle in handles.values():handle.close()
         self.cache.clear()
+        self.prototypes.clear()
 
     def handles(self, root):
         import numpy as np
         if root not in self.cache:
             base = Path(root)
+            # ~2.6GB/rank for1336 immutable prototypes fits the128GB fit job.
+            # Keep the FD LRU bounded without rereading a2MB prototype for
+            # nearly every randomly shuffled question across20 epochs.
+            if root not in self.prototypes:
+                self.prototypes[root]=np.frombuffer((base/'prototype.bin').read_bytes(),dtype=np.uint16).reshape(QMAX,DIM)
             self.cache[root] = ({name:(base/name).open('rb') for name in ('question.bin','delta.bin','policy.bin')},
-                np.frombuffer((base/'prototype.bin').read_bytes(),dtype=np.uint16).reshape(QMAX,DIM))
+                self.prototypes[root])
             if len(self.cache) > 16:
                 _, (handles, _) = self.cache.popitem(last=False)
                 for handle in handles.values():handle.close()
