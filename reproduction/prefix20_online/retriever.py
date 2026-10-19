@@ -179,38 +179,40 @@ def main():
     started = time.monotonic()
     # DenseRetriever overwrites its CPU Index reference with the cloned GPU
     # IndexShards; do not retain an extra copy of the 64 GB CPU index.
-    reference=[]
-    original_clone=faiss.index_cpu_to_all_gpus
+    consistency=None
     if args.consistency_questions:
-        def clone_with_reference(cpu_index,co=None,ngpu=-1):
-            # Original two-way sharding on GPU4 only; no access to foreign5/6.
-            reference.append(faiss.index_cpu_to_gpus_list(cpu_index,co=co,gpus=[0,0]))
-            # A whole single-GPU clone stages the64GB FP32 matrix on CUDA
-            # before converting toFP16. Clone an empty identical Flat metric
-            # and add bounded original vectors in order instead.
-            flat=faiss.IndexFlat(cpu_index.d,cpu_index.metric_type)
-            actual=original_clone(flat,co=co,ngpu=ngpu)
-            block=65536
-            for offset in range(0,cpu_index.ntotal,block):
-                actual.add(cpu_index.reconstruct_n(offset,min(block,cpu_index.ntotal-offset)))
-                publish(cache/'index-load-progress.json',dict(stage='SINGLE_GPU_FP16_ORDERED_BLOCK_ADD',
-                    documents=int(actual.ntotal),expected_documents=int(cpu_index.ntotal),block_vectors=block,checked_unix=time.time()))
-            return actual
-        faiss.index_cpu_to_all_gpus=clone_with_reference
-    try:retriever = upstream.DenseRetriever(config)
-    finally:faiss.index_cpu_to_all_gpus=original_clone
+        from reproduction.actor50_grpo.single_auxiliary import consistency_queries,check_retrieval
+        # Keep the unchanged DenseRetriever corpus/encoder; clone its exact CPU
+        # Flat vectors ourselves to bound single-GPU conversion memory.
+        config.faiss_gpu=False
+        retriever=upstream.DenseRetriever(config)
+        cpu_index=retriever.index;retriever.index=None
+        queries,query_info=consistency_queries(args.consistency_questions)
+        embeddings=retriever.encoder.encode(queries)
+        co=faiss.GpuMultipleClonerOptions();co.useFloat16=True;co.shard=True
+        reference=faiss.index_cpu_to_gpus_list(cpu_index,co=co,gpus=[0,0])
+        reference_scores,reference_ids=reference.search(embeddings,3)
+        del reference;gc.collect();torch.cuda.empty_cache()
+        # Do not hold both layouts during CUDA capacity growth. The original
+        # whole-index cloner stages64GB FP32; bounded adds stage<=192MiB.
+        flat=faiss.IndexFlat(cpu_index.d,cpu_index.metric_type)
+        retriever.index=faiss.index_cpu_to_all_gpus(flat,co=co)
+        for offset in range(0,cpu_index.ntotal,65536):
+            retriever.index.add(cpu_index.reconstruct_n(offset,min(65536,cpu_index.ntotal-offset)))
+            publish(cache/'index-load-progress.json',dict(stage='SINGLE_GPU_FP16_ORDERED_BLOCK_ADD',
+                documents=int(retriever.index.ntotal),expected_documents=int(cpu_index.ntotal),block_vectors=65536,checked_unix=time.time()))
+        del cpu_index;gc.collect();torch.cuda.empty_cache()
+        consistency=check_retrieval(retriever,reference_scores,reference_ids,embeddings,query_info)
+        publish(cache/'consistency.json',consistency)
+        del embeddings,reference_scores,reference_ids
+    else:
+        retriever=upstream.DenseRetriever(config)
     gc.collect()
     actual_shards=retriever.index.count() if hasattr(retriever.index,'count') else 1
     if actual_shards != args.gpu_shards or retriever.index.d != 768:
         raise ValueError('Original Flat index did not initialize every assigned shard')
     if retriever.index.ntotal != len(retriever.corpus):
         raise ValueError('Original index and corpus document counts differ')
-    consistency=None
-    if args.consistency_questions:
-        from reproduction.actor50_grpo.single_auxiliary import check_retrieval
-        consistency=check_retrieval(retriever,reference[0],args.consistency_questions)
-        publish(cache/'consistency.json',consistency)
-        reference.clear();gc.collect();torch.cuda.empty_cache()
     ready = dict(run_id=args.run_id, pid=os.getpid(), ready=True,
         gpu_shards=args.gpu_shards, dimension=int(retriever.index.d), documents=int(retriever.index.ntotal),
         index=str(Path(args.index).resolve()), corpus_archive=str(Path(args.corpus).resolve()),

@@ -34,33 +34,35 @@ def validate(c):
     return True
 
 
-def check_retrieval(retriever, reference, questions_path):
-    """Compare original two-shard FP16 layout on the one approved physical GPU.
-
-    The reference uses the unchanged FAISS multi-cloner with device list [0,0].
-    It verifies partition/merge semantics, not a two-physical-GPU execution.
-    Questions/embeddings/document payloads never leave the execution host.
-    """
-    import numpy as np
+def consistency_queries(questions_path):
     import pyarrow.parquet as pq
     rows=pq.read_table(questions_path).to_pylist()
     if len(rows)!=512:raise ValueError('Require the retained fixed512 question file')
-    # Evenly spaced deterministic questions cover both halves/source splits.
     ordinals=list(range(0,512,8))
     queries=[rows[i]['prompt'][0]['content'] for i in ordinals]
-    embeddings=retriever.encoder.encode(queries)
+    return queries,dict(question_file_sha256=hashlib.sha256(Path(questions_path).read_bytes()).hexdigest(),
+        query_count=len(queries),query_ordinals=ordinals,query_sha256=digest(queries))
+
+
+def check_retrieval(retriever, reference_scores, reference_ids, embeddings, query_info):
+    """Original two-shard layout and single Flat search share exact embeddings.
+
+    Both reference shards ran sequentially before the single index conversion,
+    on the one approved physical GPU. This is not a two-physical-GPU test.
+    """
+    import numpy as np
     actual_scores,actual_ids=retriever.index.search(embeddings,3)
-    reference_scores,reference_ids=reference.search(embeddings,3)
     if not np.isfinite(actual_scores).all() or not np.isfinite(reference_scores).all():
         raise ValueError('Nonfinite retrieval consistency score')
     matches=np.all(actual_ids==reference_ids,axis=1)
-    result=dict(status='PASS' if bool(matches.all()) else 'FAIL',question_file_sha256=hashlib.sha256(Path(questions_path).read_bytes()).hexdigest(),
-        query_count=len(queries),query_ordinals=ordinals,query_sha256=digest(queries),topk=3,
+    result=dict(status='PASS' if bool(matches.all()) else 'FAIL',**query_info,topk=3,
         exact_ordered_top3_matches=int(matches.sum()),ordered_document_ids_sha256=hashlib.sha256(actual_ids.tobytes()).hexdigest(),
         reference_ordered_document_ids_sha256=hashlib.sha256(reference_ids.tobytes()).hexdigest(),
+        shared_query_embeddings_sha256=hashlib.sha256(embeddings.tobytes()).hexdigest(),
         max_absolute_score_difference=float(np.max(np.abs(actual_scores-reference_scores))),
         reference='original_FAISS_FP16_two_shard_cloner_both_on_approved_GPU4',
         reference_physical_GPUs=1,reference_logical_shards=2,actual_physical_GPUs=1,actual_logical_shards=1,
+        layouts_evaluated_sequentially=True,index_copy_block_vectors=65536,
         encoder='unchanged_E5_FP16_mean_query_prefix',index_dimensions=int(retriever.index.d),documents=int(retriever.index.ntotal),
         question_answers_or_QA_scoring_used=False,actor_or_probe_updates=0)
     if not matches.all():raise ValueError('Single GPU top3 differs from original two-shard layout: '+json.dumps(result))
