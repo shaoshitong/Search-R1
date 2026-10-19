@@ -121,7 +121,9 @@ def save(root, model, ema, optimizer, epoch, cursor, steps, config_sha, bank_sha
             completed_epoch=cursor==0,steps=steps,config_sha256=config_sha,bank_sha256=bank_sha,
             raw=model.state_dict(),ema=ema.state_dict(),optimizer=optimizer.state_dict(),
             raw_buffers=native_buffers(model),ema_buffers=native_buffers(ema),
-            rank_states=all_states,metrics=metrics,actor_updates=0,epoch_time=time.time())
+            rank_states=all_states,metrics=metrics,actor_updates=0,epoch_time=time.time(),
+            fit_code_sha256=fingerprints(Path(__file__))['sha256'],
+            fit_source_commit=json.loads((root.parent/'preparation/postprocess-source-publication.json').read_text())['commit'])
         with temp.open('wb') as handle:
             torch.save(state,handle);handle.flush();os.fsync(handle.fileno())
         temp.replace(path)
@@ -169,6 +171,7 @@ def main():
         assert fingerprints(receipt['path'])['sha256']==receipt['sha256']
         saved=torch.load(receipt['path'],map_location='cpu',weights_only=False)
         assert saved['config_sha256']==config_sha and saved['bank_sha256']==bank_sha and saved['actor_updates']==0
+        assert saved['fit_code_sha256']==fingerprints(Path(__file__))['sha256'],'Explicitly qualify a changed fit implementation before resume'
         model.load_state_dict(saved['raw'],strict=True);ema.load_state_dict(saved['ema'],strict=True)
         restore_buffers(model,saved['raw_buffers']);restore_buffers(ema,saved['ema_buffers']);optimizer.load_state_dict(saved['optimizer'])
         for state in optimizer.state.values():

@@ -25,6 +25,7 @@ def atomic(path, value):
 
 
 def fingerprints(path):
+    path = Path(path)
     size = path.stat().st_size
     sha = hashlib.sha256()
     git = hashlib.sha1(('blob %d\0' % size).encode())

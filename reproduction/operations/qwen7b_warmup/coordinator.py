@@ -20,8 +20,8 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--base',required=True);args=parser.parse_args()
     base=Path(args.base);control=base/'control';control.mkdir(exist_ok=True)
     lock=(control/'coordinator.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-    atomic(control/'controller.json',dict(pid=os.getpid(),start_ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],epoch=time.time()))
-    script=base/'repo/reproduction/operations/qwen7b_warmup'
+    script=Path(__file__).resolve().parent
+    atomic(control/'controller.json',dict(pid=os.getpid(),start_ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],epoch=time.time(),code_root=str(script.parents[2])))
     for name in ('logs','probe'): (base/name).mkdir(exist_ok=True)
     while True:
         if not (base/'assets/qwen25-7b-instruct-a09a35458c70/complete.json').exists():

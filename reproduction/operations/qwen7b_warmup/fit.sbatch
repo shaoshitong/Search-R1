@@ -15,6 +15,6 @@ set -euo pipefail
 BASE=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019
 exec 9>"$BASE/probe/fit.lock"
 flock -n 9
-srun --kill-on-bad-exit=1 bash "$BASE/repo/reproduction/operations/qwen7b_warmup/runtime.sh" \
+srun --kill-on-bad-exit=1 bash "${QWEN7B_CODE_ROOT:-$BASE/repo}/reproduction/operations/qwen7b_warmup/runtime.sh" \
   -u -m torch.distributed.run --standalone --nnodes=1 --nproc-per-node=4 \
   -m reproduction.operations.qwen7b_warmup.train --base "$BASE"

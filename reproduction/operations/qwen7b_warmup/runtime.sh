@@ -3,7 +3,8 @@ set -euo pipefail
 BASE=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019
 SHARED=/data/user/jxu957/experiments/cosearch-continue300-x203-20261008
 PY="$SHARED/runtime/retriever-python310-candidate/bin/python3.10"
-export PYTHONPATH="$BASE/repo:/data/user/jxu957/experiments/dynrpo-reference-b-thread5-prepared-20261019/env/overlay:/data/user/jxu957/experiments/dynrpo-reference-b-thread5-prepared-20261019/retriever-gpu-lib:$SHARED/source/env/lib/python3.10/site-packages"
+CODE_ROOT="${QWEN7B_CODE_ROOT:-$BASE/repo}"
+export PYTHONPATH="$CODE_ROOT:/data/user/jxu957/experiments/dynrpo-reference-b-thread5-prepared-20261019/env/overlay:/data/user/jxu957/experiments/dynrpo-reference-b-thread5-prepared-20261019/retriever-gpu-lib:$SHARED/source/env/lib/python3.10/site-packages"
 export LD_LIBRARY_PATH="$SHARED/runtime/retriever-python310-candidate/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export SEARCH_G1_PHYSICAL_WORLD_SIZE=4
 export SEARCH_G1_B_PREFIX_TOKENS=20
@@ -23,5 +24,5 @@ export TORCH_EXTENSIONS_DIR="$BASE/cache/torch_extensions"
 export TMPDIR="$BASE/tmp"
 mkdir -p "$HF_HOME" "$PIP_CACHE_DIR" "$TORCH_EXTENSIONS_DIR" "$TMPDIR"
 unset PYTHONHOME http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY
-cd "$BASE/repo"
+cd "$CODE_ROOT"
 exec "$PY" "$@"
