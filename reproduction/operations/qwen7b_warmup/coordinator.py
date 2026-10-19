@@ -55,10 +55,10 @@ def main():
     if not fit.exists():
         if (control/'fit-submit-intent.json').exists():raise RuntimeError('Fit submit outcome unknown: reconcile before retry')
         atomic(control/'fit-submit-intent.json',dict(epoch=time.time()))
-        result=subprocess.run(['sbatch','--parsable',str(script/'fit.sbatch')],text=True,capture_output=True)
+        result=subprocess.run(['sbatch','--parsable','--export=ALL,QWEN7B_CODE_ROOT='+str(script.parents[2]),str(script/'fit.sbatch')],text=True,capture_output=True)
         assert result.returncode==0,result.stderr
         job=result.stdout.strip().split(';')[0];assert job.isdigit()
-        atomic(fit,dict(job_id=job,gpus=4,epoch=time.time(),bank_accepted=True))
+        atomic(fit,dict(job_id=job,gpus=4,epoch=time.time(),bank_accepted=True,code_root=str(script.parents[2])))
         print('FULL_BANK_FIT_JOB_ACCEPTED='+job,flush=True)
     atomic(control/'handoff.json',dict(stage='FIT_SUBMITTED_NOT_YET_VALIDATED',fit=read(fit),epoch=time.time()))
 
