@@ -38,6 +38,10 @@ class StrictProtocol(unittest.TestCase):
         self.assertNotEqual(a['request_id'],b['request_id'])
         self.assertNotEqual(a['request_id'],prepare_row(row(),dict(M,checkpoint_hash='other'))['request_id'])
         self.assertNotEqual(a['request_id'],prepare_row(row(),dict(M,cf_config_sha256='other'))['request_id'])
+        # Cross-method qid serialization must not change the injected entity.
+        c=prepare_row(row(qid='different-historical-serialization'),M)
+        self.assertEqual(a['injected_value'],c['injected_value'])
+        self.assertNotEqual(a['request_id'],c['request_id'])
 
     def test_aggregate_idempotent_global_counts(self):
         p=[prepare_row(row(i),M) for i in range(3)]

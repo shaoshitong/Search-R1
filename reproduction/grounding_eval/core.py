@@ -15,7 +15,7 @@ from pathlib import Path
 from search_r1.qa_protocol import extract_final_answer
 
 PROTOCOL = 'paper-strict-v1'
-CF_CONFIG = dict(protocol_version=PROTOCOL, replacement_version='typed-boundary-v1',
+CF_CONFIG = dict(protocol_version=PROTOCOL, replacement_version='typed-boundary-v2-common-occurrence',
     seed=1729, prompt_version='single-user-question-docs-v1',
     parser_version='terminal-nonnested-qa-v1', normalization='qa-em-ascii-punct-articles-v1',
     max_new_tokens=512, max_model_len=8192, temperature=0., top_p=1., top_k=-1,
@@ -113,7 +113,11 @@ def prepare_row(row, manifest):
         return dict(base, status='DIRECT_CORRECT', classification='Direct')
     if not markers or not row['actual_retrieval_calls'] or not row['seen_docs']:
         return dict(base, status='SOURCE_INCOMPLETE', invalid_reason='search_provenance_inconsistent')
-    return dict(base, **intervene(row['seen_docs'], row['gold'], key))
+    # Historical methods sometimes serialize bare qid differently. The immutable
+    # common dataset ordinal/question/golds make the same intervention assignment
+    # across methods; the full original qid still belongs to the resume identity.
+    seed_key=key[:2]+[digest([row['question'],sorted(normalize(g) for g in row['gold'])])]
+    return dict(base, replacement_seed_key=seed_key, **intervene(row['seen_docs'], row['gold'], seed_key))
 
 def messages(row):
     docs = '\n\n'.join(row['modified_docs'])
