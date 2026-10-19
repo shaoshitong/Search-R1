@@ -21,13 +21,21 @@ def main():
     if not cleanup['cleaned'] or not cleanup['owned_births_all_gone']:
         raise ValueError('Original writer cleanup must be confirmed')
     probe = joint['probe']
-    prefix = probe['binding']['prefix_tokens']
+    os.environ.update(CUDA_VISIBLE_DEVICES='', SEARCH_G1_PHYSICAL_WORLD_SIZE='8')
+    # The JSON producer receipt does not contain the dynamic head binding.
+    # Read the retained raw/EMA checkpoint on CPU to select its real dimension.
+    import torch
+    saved_probe = torch.load(joint['probe_snapshot'], map_location='cpu', weights_only=False)
+    prefix = saved_probe['binding']['prefix_tokens']
+    for key in ('model', 'ema_model'):
+        if tuple(saved_probe[key]['output.weight'].shape) != (1, (273 + prefix) * 2048):
+            raise ValueError('Saved probe binding and raw/EMA readout shape differ')
+    del saved_probe
     if prefix not in (20, 40, 80):
         raise ValueError('Retain the actual saved progressive probe dimension')
     if len(joint['actor']['actual_adam_steps_per_rank']) != 8:
         raise ValueError('This recovery retains eight native rank states')
-    os.environ.update(CUDA_VISIBLE_DEVICES='', SEARCH_G1_PHYSICAL_WORLD_SIZE='8',
-                      SEARCH_G1_B_PREFIX_TOKENS=str(prefix))
+    os.environ['SEARCH_G1_B_PREFIX_TOKENS'] = str(prefix)
     # Resolve scientific imports from the retained frozen source, not another
     # experiment or a globally installed package.
     sys.path.insert(0, str(source / 'repo'))
