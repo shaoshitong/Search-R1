@@ -15,6 +15,8 @@ if not target.exists():
  print(json.dumps(dict(completed=False,actor_outer=OUTER,observed_unix=time.time())))
 else:
  raw=target.read_bytes();v=json.loads(raw);rows=[]
+ actor=json.loads((target.parent.parent/'complete.json').read_bytes())['actor']
+ assert v['actor_model_dir']==actor['hf_model_dir']and v['actor_version']==actor['actor_version']
  assert v['qa_count']==512 and v['actor_version'].endswith('-actor%04d'%OUTER)
  assert v['question_source_sha256']=='3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb'
  assert v['evaluation_contract']['temperature']==0 and v['evaluation_contract']['n']==1
@@ -25,7 +27,7 @@ else:
   data=physical(ref['path']).read_bytes();assert hashlib.sha256(data).hexdigest()==ref['sha256']
   r=json.loads(data)
   assert r['rank']==rank and r['qa_count']==64 and len(r['rows'])==64
-  for key in('run_id','actor_version','evaluation_contract','interaction_protocol','question_source_sha256','actual_compute_dtype'):
+  for key in('run_id','actor_version','actor_model_dir','evaluation_contract','interaction_protocol','question_source_sha256','actual_compute_dtype'):
    assert r[key]==v[key],key
   assert {row['evaluation_ordinal']for row in r['rows']}==set(range(rank,512,8))
   rows.extend(r['rows'])
@@ -39,7 +41,7 @@ else:
   sub=[row for row in rows if row['data_source']==source];assert len(sub)==256
   for key in('em','f1'):assert abs(sum(row[key]for row in sub)/256-v['per_source'][source][key])<1e-12
  result=dict(completed=True,observed_unix=time.time(),actor_outer=OUTER,
-  **{key:v[key]for key in('actor_version','qa_count','em','f1','per_source','actual_worker_exit_codes','question_source_sha256','evaluation_contract')},
+  **{key:v[key]for key in('actor_version','actor_model_dir','qa_count','em','f1','per_source','actual_worker_exit_codes','question_source_sha256','evaluation_contract')},
   receipt_sha256=hashlib.sha256(raw).hexdigest(),rank_receipt_sha_verified=True,
   unique_ordinal_qid_verified=True,is_final_51713=False)
  previous=p/'outers/outer-000100/validation/complete.json'
