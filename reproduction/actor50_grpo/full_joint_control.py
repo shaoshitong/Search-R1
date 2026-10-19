@@ -2,6 +2,8 @@
 import argparse
 import base64
 import hashlib
+import io
+import tarfile
 import json
 from pathlib import Path
 import subprocess
@@ -35,6 +37,14 @@ if action=='stage':
  assert read(parent/'logs/cleanup-status.json')['owned_births_all_gone']
  assert sha(parent/'latest-joint.json')==terminal['source_joint_sha256']
  assert not b.exists();b.mkdir();repo.mkdir();(b/'preparation').mkdir();(b/'logs').mkdir();(b/'probe').mkdir()
+ if h.get('source_reuse_handle'):
+  import shutil
+  prior=h['source_reuse_handle'];priorbase=pathlib.Path(prior['base'])
+  assert read(priorbase/'preparation/deployment.json')==prior
+  for name,digest in h['source_files'].items():
+   if prior['source_files'].get(name)==digest:
+    original=priorbase/'repo'/name;assert sha(original)==digest
+    target=repo/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(original,target)
  raw=base64.b64decode(p['archive_b64']);assert hashlib.sha256(raw).hexdigest()==h['archive_sha256']
  with tarfile.open(fileobj=io.BytesIO(raw),mode='r:gz') as tf:
   members=tf.getmembers();assert all(not pathlib.PurePosixPath(x.name).is_absolute() and '..' not in pathlib.PurePosixPath(x.name).parts and (x.isfile() or x.isdir()) for x in members)
@@ -135,11 +145,24 @@ def main():
         if args.single_auxiliary_intent:
             assert args.reuse_qualified_handle and args.reuse_qualified_sha256
             h['single_auxiliary']=json.loads(args.single_auxiliary_intent.read_text())
-            h['reuse_qualified_full_joint']=dict(base=json.loads(args.reuse_qualified_handle.read_text())['base'],sha256=args.reuse_qualified_sha256)
+            prior=json.loads(args.reuse_qualified_handle.read_text())
+            h['reuse_qualified_full_joint']=dict(base=prior['base'],sha256=args.reuse_qualified_sha256)
+            h['source_reuse_handle']=prior
+            # Reuse exact already-published remote source; transmit only changed
+            # code/docs, so the existing65s SSH bound includes a small transfer.
+            delta=io.BytesIO()
+            with tarfile.open(fileobj=io.BytesIO(archive),mode='r:gz') as source,tarfile.open(fileobj=delta,mode='w:gz') as target:
+                for item in source.getmembers():
+                    if item.isfile() and files[item.name]!=prior['source_files'].get(item.name):target.addfile(item,source.extractfile(item))
+            archive=delta.getvalue();h['archive_sha256']=hashlib.sha256(archive).hexdigest()
         args.handle.write_text(json.dumps(h,indent=2)+'\n');payload['archive_b64']=base64.b64encode(archive).decode()
     else:h=json.loads(args.handle.read_text())
-    payload['handle']=h;result=subprocess.run(route(REMOTE),input=json.dumps(payload).encode(),capture_output=True,timeout=65)
+    payload['handle']=h
     path=ROOT/'preparation'/('actor50-full-joint-'+args.action+'-'+str(time.time_ns())+'.json')
+    try:result=subprocess.run(route(REMOTE),input=json.dumps(payload).encode(),capture_output=True,timeout=65)
+    except subprocess.TimeoutExpired as error:
+        path.write_text(json.dumps(dict(checked_unix=time.time(),status='UNKNOWN_SSH_TIMEOUT_DO_NOT_REPLAY',stdout=(error.stdout or b'').decode(),stderr=(error.stderr or b'').decode()),indent=2)+'\n')
+        raise RuntimeError('SSH outcome unknown; inspect actual namespace: '+str(path)) from None
     path.write_text(json.dumps(dict(checked_unix=time.time(),exit_code=result.returncode,stdout=result.stdout.decode(),stderr=result.stderr.decode()),indent=2)+'\n')
     if result.returncode:raise RuntimeError('Inspect actual once-operation receipt: '+str(path))
     print(json.dumps(dict(receipt=str(path),result=json.loads(result.stdout))))
