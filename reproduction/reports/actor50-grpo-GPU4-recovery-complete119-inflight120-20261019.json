@@ -1,0 +1,751 @@
+{
+  "schema_version": 1,
+  "checked_unix": 1792408549.9776995,
+  "execution_id": "21bf70af3e9b4cabbab7862e9532069c",
+  "runtime_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+  "joint": {
+    "outer": 119,
+    "actor_Adam": [
+      2378,
+      2378,
+      2378,
+      2378
+    ],
+    "scheduler": 119,
+    "probe": {
+      "actual_adam_steps_per_rank": [
+        300,
+        300,
+        300,
+        300
+      ],
+      "binding_sha256": "25c411a11004417eb67cfa40fdaabc7488f53a7bed7fa9de9530dcc92fb57032",
+      "bytes": 932688860,
+      "completed_outer": 110,
+      "learning_rate": 5e-06,
+      "observed_utc": "2026-10-19T04:10:47.727615+00:00",
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "sha256": "b20308ff99845cf805ffdbc69b797aa9c7e296514e51f7c8fa6c581723c80bbd"
+    },
+    "rollout_mixed": 0.30078125,
+    "source_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+    "actor50_branch_plan": {
+      "actor_questions": 512,
+      "actual_em_rerank": false,
+      "candidate_questions": 2560,
+      "continuation_questions": 512,
+      "fallback": "probe_score_fill",
+      "mixed_floor": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "outer": 119,
+      "predicted_top_questions": 512,
+      "prefix_tokens": 40,
+      "probe_actual_updates": 0,
+      "probe_training_questions": 0,
+      "probe_update": false
+    },
+    "metadata_sha256": "7e5f57cb80e59c5b55e728de67ee6ae921ea2dff0d4707875019819887eeb2d7",
+    "new_actor_Adam": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "processed_opportunities": 20,
+    "skipped_opportunities": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "mixed_floor": {
+      "candidate_questions": 2560,
+      "completed_candidate_questions": 1280,
+      "exhausted": false,
+      "extra_native_batches": 6,
+      "final_fraction": 0.30078125,
+      "final_mixed": 154,
+      "initial_fraction": 0.150390625,
+      "initial_mixed": 77,
+      "initial_scope_questions": 512,
+      "native_prefix_or_score_regenerated": false,
+      "policy": {
+        "continuation_batch_questions": 128,
+        "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+        "replace_only_nonmixed": true,
+        "stop_when": "154_mixed_or_candidate_pool_exhausted",
+        "target_mixed_questions": 154,
+        "trigger_denominator": 10,
+        "trigger_numerator": 3
+      },
+      "remaining_uncontinued_questions": 1280,
+      "replacements": [
+        {
+          "added": 1162,
+          "removed": 1212
+        },
+        {
+          "added": 2416,
+          "removed": 93
+        },
+        {
+          "added": 2220,
+          "removed": 844
+        },
+        {
+          "added": 1804,
+          "removed": 2176
+        },
+        {
+          "added": 1186,
+          "removed": 1528
+        },
+        {
+          "added": 2403,
+          "removed": 1417
+        },
+        {
+          "added": 877,
+          "removed": 2162
+        },
+        {
+          "added": 1283,
+          "removed": 807
+        },
+        {
+          "added": 2221,
+          "removed": 2480
+        },
+        {
+          "added": 2490,
+          "removed": 1927
+        },
+        {
+          "added": 1229,
+          "removed": 2197
+        },
+        {
+          "added": 1299,
+          "removed": 954
+        },
+        {
+          "added": 1764,
+          "removed": 470
+        },
+        {
+          "added": 160,
+          "removed": 1044
+        },
+        {
+          "added": 631,
+          "removed": 620
+        },
+        {
+          "added": 1339,
+          "removed": 1153
+        },
+        {
+          "added": 1772,
+          "removed": 1047
+        },
+        {
+          "added": 2319,
+          "removed": 1407
+        },
+        {
+          "added": 1259,
+          "removed": 556
+        },
+        {
+          "added": 1638,
+          "removed": 988
+        },
+        {
+          "added": 2296,
+          "removed": 674
+        },
+        {
+          "added": 360,
+          "removed": 2405
+        },
+        {
+          "added": 2551,
+          "removed": 1549
+        },
+        {
+          "added": 578,
+          "removed": 2539
+        },
+        {
+          "added": 1962,
+          "removed": 586
+        },
+        {
+          "added": 1672,
+          "removed": 1991
+        },
+        {
+          "added": 1811,
+          "removed": 1462
+        },
+        {
+          "added": 1045,
+          "removed": 1841
+        },
+        {
+          "added": 1233,
+          "removed": 1007
+        },
+        {
+          "added": 49,
+          "removed": 269
+        },
+        {
+          "added": 179,
+          "removed": 2209
+        },
+        {
+          "added": 1706,
+          "removed": 2538
+        },
+        {
+          "added": 2095,
+          "removed": 2062
+        },
+        {
+          "added": 2411,
+          "removed": 2253
+        },
+        {
+          "added": 1531,
+          "removed": 20
+        },
+        {
+          "added": 820,
+          "removed": 754
+        },
+        {
+          "added": 781,
+          "removed": 336
+        },
+        {
+          "added": 920,
+          "removed": 1250
+        },
+        {
+          "added": 1750,
+          "removed": 1490
+        },
+        {
+          "added": 131,
+          "removed": 811
+        },
+        {
+          "added": 2157,
+          "removed": 1709
+        },
+        {
+          "added": 1189,
+          "removed": 2388
+        },
+        {
+          "added": 1389,
+          "removed": 653
+        },
+        {
+          "added": 695,
+          "removed": 157
+        },
+        {
+          "added": 1957,
+          "removed": 399
+        },
+        {
+          "added": 415,
+          "removed": 1218
+        },
+        {
+          "added": 1215,
+          "removed": 153
+        },
+        {
+          "added": 1838,
+          "removed": 1111
+        },
+        {
+          "added": 72,
+          "removed": 1393
+        },
+        {
+          "added": 2,
+          "removed": 2453
+        },
+        {
+          "added": 2006,
+          "removed": 1286
+        },
+        {
+          "added": 371,
+          "removed": 2536
+        },
+        {
+          "added": 1037,
+          "removed": 285
+        },
+        {
+          "added": 1633,
+          "removed": 810
+        },
+        {
+          "added": 2473,
+          "removed": 795
+        },
+        {
+          "added": 965,
+          "removed": 239
+        },
+        {
+          "added": 776,
+          "removed": 2050
+        },
+        {
+          "added": 623,
+          "removed": 1035
+        },
+        {
+          "added": 2020,
+          "removed": 1944
+        },
+        {
+          "added": 538,
+          "removed": 1370
+        },
+        {
+          "added": 453,
+          "removed": 2216
+        },
+        {
+          "added": 1211,
+          "removed": 1395
+        },
+        {
+          "added": 1730,
+          "removed": 1867
+        },
+        {
+          "added": 2190,
+          "removed": 1950
+        },
+        {
+          "added": 1010,
+          "removed": 274
+        },
+        {
+          "added": 502,
+          "removed": 1990
+        },
+        {
+          "added": 2265,
+          "removed": 1238
+        },
+        {
+          "added": 571,
+          "removed": 107
+        },
+        {
+          "added": 2068,
+          "removed": 2347
+        },
+        {
+          "added": 418,
+          "removed": 748
+        },
+        {
+          "added": 210,
+          "removed": 446
+        },
+        {
+          "added": 521,
+          "removed": 572
+        },
+        {
+          "added": 1597,
+          "removed": 289
+        },
+        {
+          "added": 1117,
+          "removed": 2165
+        },
+        {
+          "added": 2027,
+          "removed": 1644
+        },
+        {
+          "added": 898,
+          "removed": 2242
+        },
+        {
+          "added": 1365,
+          "removed": 432
+        }
+      ],
+      "shortfall": 0,
+      "target_mixed": 154,
+      "target_reached": true,
+      "triggered": true
+    },
+    "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0119",
+    "grounding": {
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "round": 100,
+      "version": "54ac33dcebe64e62a11fe4177f41f116:100:11fa73ffd1ad4cf6b065b8f2b55174a7",
+      "source_actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0100",
+      "encoder": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/actor/outers/outer-0100-attempt-300035b4a61e48d89f0f31e84c900437/huggingface",
+      "encoder_sha256": {
+        "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+        "config.json": "2a4f0584dd79d7e84c337f539044d7323f5e206b4c304830822a7da9cedb181f",
+        "generation_config.json": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96",
+        "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+        "model-00001-of-00004.safetensors": "8de2d2b8631884724bbc8b3e36870f5471bab66a10bfa0c1a4bf859709368037",
+        "model-00002-of-00004.safetensors": "1fb9a911ee96540e5bcb22cd69eab1e27905fbb33a56f7709be16bbc8bd58f3b",
+        "model-00003-of-00004.safetensors": "94ad9f4cc6e0d75254d6090b556808b160745328066aa82161585c7b8b098620",
+        "model-00004-of-00004.safetensors": "a51c4ce6797e01040a5b81b431be78319d002bb862b88da79731519a83069f59",
+        "model.safetensors.index.json": "c0139b4a802a6c6f3b4638e46abb152847b2389e24544d7fd2466e1956ea19e3",
+        "special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+        "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+        "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6",
+        "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      },
+      "head_sha256": {
+        "boundary_probe.pkl": "a9a71599195a0a7132bff2ad68b184bd0750d1df313c74dda9b4cd39d163a9d1",
+        "commit_probe.pkl": "addfb94524f59676ec2c890317205e6b3bfa326c5dbe6fb2cb124c1c97ee0208"
+      },
+      "manifest_sha256": "9ef8b78f79bc5ca578c6df376c0d0f19984df78d9228003d39b7344c7bee3610",
+      "adoption_receipt_sha256": "f2bd61e08982f4667a4717bfc81765eaadfe4a90a5cb19427e02a405b1a72f1f",
+      "freshly_fitted_in_this_run": true,
+      "imported_actual_round0_fit": false,
+      "source_actor_counters": {
+        "actual_adam_steps_per_rank": [
+          1998,
+          1998,
+          1998,
+          1998
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "actor_grounding": {
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "round": 100,
+      "version": "54ac33dcebe64e62a11fe4177f41f116:100:11fa73ffd1ad4cf6b065b8f2b55174a7",
+      "source_actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0100",
+      "encoder": "/data/shaoshitong/search-g1-prefix-selection200-a800-prefix5-54ac33dcebe64e62a11fe4177f41f116-resume-40389d9b00204a80ba68475fac254f9c/actor/outers/outer-0100-attempt-300035b4a61e48d89f0f31e84c900437/huggingface",
+      "encoder_sha256": {
+        "added_tokens.json": "58b54bbe36fc752f79a24a271ef66a0a0830054b4dfad94bde757d851968060b",
+        "config.json": "2a4f0584dd79d7e84c337f539044d7323f5e206b4c304830822a7da9cedb181f",
+        "generation_config.json": "5cbc3d054b73e70801535a65ffc9b427481257fa29f896e48f68e9ea3c285b96",
+        "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+        "model-00001-of-00004.safetensors": "8de2d2b8631884724bbc8b3e36870f5471bab66a10bfa0c1a4bf859709368037",
+        "model-00002-of-00004.safetensors": "1fb9a911ee96540e5bcb22cd69eab1e27905fbb33a56f7709be16bbc8bd58f3b",
+        "model-00003-of-00004.safetensors": "94ad9f4cc6e0d75254d6090b556808b160745328066aa82161585c7b8b098620",
+        "model-00004-of-00004.safetensors": "a51c4ce6797e01040a5b81b431be78319d002bb862b88da79731519a83069f59",
+        "model.safetensors.index.json": "c0139b4a802a6c6f3b4638e46abb152847b2389e24544d7fd2466e1956ea19e3",
+        "special_tokens_map.json": "76862e765266b85aa9459767e33cbaf13970f327a0e88d1c65846c2ddd3a1ecd",
+        "tokenizer.json": "9c5ae00e602b8860cbd784ba82a8aa14e8feecec692e7076590d014d7b7fdafa",
+        "tokenizer_config.json": "7e88129d9769a0b14b1587a7d5e829fe93ac0e1511636471fdfc0811951418e6",
+        "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      },
+      "head_sha256": {
+        "boundary_probe.pkl": "a9a71599195a0a7132bff2ad68b184bd0750d1df313c74dda9b4cd39d163a9d1",
+        "commit_probe.pkl": "addfb94524f59676ec2c890317205e6b3bfa326c5dbe6fb2cb124c1c97ee0208"
+      },
+      "manifest_sha256": "9ef8b78f79bc5ca578c6df376c0d0f19984df78d9228003d39b7344c7bee3610",
+      "adoption_receipt_sha256": "f2bd61e08982f4667a4717bfc81765eaadfe4a90a5cb19427e02a405b1a72f1f",
+      "freshly_fitted_in_this_run": true,
+      "imported_actual_round0_fit": false,
+      "source_actor_counters": {
+        "actual_adam_steps_per_rank": [
+          1998,
+          1998,
+          1998,
+          1998
+        ],
+        "new_adam_steps_per_rank": [
+          20,
+          20,
+          20,
+          20
+        ],
+        "opportunities_processed": 20,
+        "skipped_update_opportunities": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "grounding_snapshot_sha256": "2e85ea016eb3dc12d1748a84352b8a5e3f0156a75af57d16a3a56ec7c626f6a0"
+  },
+  "actor_inflight": [],
+  "recovery_complete_outers": [
+    116,
+    117,
+    118,
+    119
+  ],
+  "recovery_evidence": {
+    "116": {
+      "receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-grpo-observe-1792408550219538000.json",
+      "outer": 116,
+      "metadata_status": "PRESENT",
+      "source_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+      "metadata_sha256": "479b3c626f8ff5d508a4e89bd61b832866d2b452d644222618409b77e9b86991",
+      "actor_Adam": [
+        2318,
+        2318,
+        2318,
+        2318
+      ],
+      "scheduler": 116,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 110,
+      "probe_Adam": [
+        300,
+        300,
+        300,
+        300
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 106,
+        "final_mixed": 154,
+        "initial_fraction": 0.20703125,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 3,
+        "completed_candidate_questions": 896,
+        "remaining_uncontinued_questions": 1664,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 48
+    },
+    "117": {
+      "receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-grpo-observe-1792408550219538000.json",
+      "outer": 117,
+      "metadata_status": "PRESENT",
+      "source_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+      "metadata_sha256": "c8560a320ad246a85f9902246dcd71a549fbb577033c2b7614ff9cde20b4ba98",
+      "actor_Adam": [
+        2338,
+        2338,
+        2338,
+        2338
+      ],
+      "scheduler": 117,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 110,
+      "probe_Adam": [
+        300,
+        300,
+        300,
+        300
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 91,
+        "final_mixed": 154,
+        "initial_fraction": 0.177734375,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 3,
+        "completed_candidate_questions": 896,
+        "remaining_uncontinued_questions": 1664,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 63
+    },
+    "118": {
+      "receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-grpo-observe-1792408550219538000.json",
+      "outer": 118,
+      "metadata_status": "PRESENT",
+      "source_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+      "metadata_sha256": "d9270dfb431ed2e9bc9846fd4d36bd59c43d62da6f4fae46946894cf03066ddb",
+      "actor_Adam": [
+        2358,
+        2358,
+        2358,
+        2358
+      ],
+      "scheduler": 118,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 110,
+      "probe_Adam": [
+        300,
+        300,
+        300,
+        300
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 79,
+        "final_mixed": 154,
+        "initial_fraction": 0.154296875,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 5,
+        "completed_candidate_questions": 1152,
+        "remaining_uncontinued_questions": 1408,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 75
+    },
+    "119": {
+      "receipt": "/Users/shaoshitong/Documents/Search-G1/preparation/actor50-grpo-observe-1792408550219538000.json",
+      "outer": 119,
+      "metadata_status": "PRESENT",
+      "source_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+      "metadata_sha256": "7e5f57cb80e59c5b55e728de67ee6ae921ea2dff0d4707875019819887eeb2d7",
+      "actor_Adam": [
+        2378,
+        2378,
+        2378,
+        2378
+      ],
+      "scheduler": 119,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 110,
+      "probe_Adam": [
+        300,
+        300,
+        300,
+        300
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 77,
+        "final_mixed": 154,
+        "initial_fraction": 0.150390625,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 6,
+        "completed_candidate_questions": 1280,
+        "remaining_uncontinued_questions": 1280,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 77
+    }
+  },
+  "stage": {
+    "checked_unix": 1792408463.5930526,
+    "outer": 120,
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+    "stage": "outer-000120-conditional-mixed30-completion"
+  },
+  "current120_pool_progress": {
+    "batch": "floor-initial",
+    "batch_questions": 2560,
+    "candidate_questions": 2560,
+    "checked_unix": 1792408463.9127226,
+    "completed_candidate_questions": 0,
+    "outer": 120,
+    "stage": "CONTINUING_ORIGINAL_G5"
+  },
+  "metadata_read_bytes": 63279843,
+  "metadata_budget_bytes": 66060288,
+  "failure": null,
+  "exit": null,
+  "cleanup": null,
+  "probe_actual_step": [
+    300,
+    300,
+    300,
+    300
+  ],
+  "no_new_QA": true,
+  "full200_final51713_acceptance": "PENDING",
+  "App_monitor": "PAUSED"
+}
