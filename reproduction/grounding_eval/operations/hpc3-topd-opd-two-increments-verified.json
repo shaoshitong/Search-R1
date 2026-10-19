@@ -1,0 +1,134 @@
+{
+  "checked_at_utc": "2026-10-19T07:02:06.586333+00:00",
+  "status": "BOTH_NORMAL_RERUNS_HAVE_TWO_VERIFIED_RECORD_BYTE_INCREMENTS",
+  "original_jobs_untouched": true,
+  "new_evaluation_jobs_submitted_by_this_agent": 0,
+  "cf_v4_science_core_changed": false,
+  "raw_predictions_on_Mac": false,
+  "jobs": {
+    "737435": {
+      "method": "TOP-D alpha0.1",
+      "state": "737435|RUNNING|ACD1-14|gres/gpu:1|12|192G|13:18|ACD1-14",
+      "allocation": "ACD1-14, 12CPU,192GiB,one existing allocated H10080GB",
+      "physical_gpu_index": 6,
+      "actual_gpu_query": "0, GPU-a6287d71-f3e1-db1b-c908-685d1c417f27, NVIDIA H100 80GB HBM3, 4, 81559, 0",
+      "progress_change_points": [
+        {
+          "observed_at_utc": "2026-10-19T06:50:19.150218+00:00",
+          "records": 0,
+          "bytes": 0,
+          "source": "hpc3-topd-opd-observation-20261019T145019.json"
+        },
+        {
+          "observed_at_utc": "2026-10-19T06:57:42.088127+00:00",
+          "records": 64,
+          "bytes": 2677819,
+          "source": "hpc3-topd-opd-observation-20261019T145742.json"
+        },
+        {
+          "observed_at_utc": "2026-10-19T07:02:06.586333+00:00",
+          "records": 192,
+          "bytes": 7308552,
+          "source": "hpc3-topd-opd-observation-20261019T150207.json"
+        }
+      ],
+      "completed_normal_records": 192,
+      "total_normal_occurrences": 3610,
+      "actual_batch_json_bytes": 7308552,
+      "token_totals": {
+        "model_generated_tokens": 41827,
+        "raw_generated_tokens": 116750,
+        "observation_tokens": 140148,
+        "initial_prompt_tokens": 25030,
+        "trajectory_total_tokens": 207005,
+        "cumulative_model_input_tokens": 380696
+      },
+      "normal_progress": {
+        "batch_size": 128,
+        "completed_unique": 192,
+        "errors": 0,
+        "gpu_allocated_bytes": 48835030528,
+        "gpu_reserved_bytes": 52946796544,
+        "latest_success": 1792393272.948217,
+        "maximum_batch_size": 256,
+        "next_batch_size": 256,
+        "output_bytes": 7308552,
+        "pid": 854405,
+        "seconds": 435.17509388923645,
+        "total": 3610
+      },
+      "errors": {},
+      "normal_error_file": null,
+      "pipeline_failed_file": null,
+      "pipeline_complete_file": null,
+      "larger_batch_note": "Successful64 and128 batches;256 isnext scheduled and not yet claimed verified",
+      "paths": {
+        "normal_root": "/data/user/jxu957/experiments/grounding-eval-strict-20261019/topd-alpha01-v4/normal",
+        "pipeline_root": "/data/user/jxu957/experiments/grounding-eval-strict-20261019/topd-alpha01-v4/pipeline",
+        "cf_root": "/data/user/jxu957/experiments/grounding-eval-strict-20261019/topd-alpha01-v4/cf-paper-strict-v4"
+      }
+    },
+    "737436": {
+      "method": "OPD alpha1",
+      "state": "737436|RUNNING|ACD1-14|gres/gpu:1|12|192G|13:18|ACD1-14",
+      "allocation": "ACD1-14, 12CPU,192GiB,one existing allocated H10080GB",
+      "physical_gpu_index": 7,
+      "actual_gpu_query": "0, GPU-5dd46f1c-8f15-3e76-a261-5f847d8ca903, NVIDIA H100 80GB HBM3, 50985, 81559, 0",
+      "progress_change_points": [
+        {
+          "observed_at_utc": "2026-10-19T06:50:19.150218+00:00",
+          "records": 0,
+          "bytes": 0,
+          "source": "hpc3-topd-opd-observation-20261019T145019.json"
+        },
+        {
+          "observed_at_utc": "2026-10-19T06:57:42.088127+00:00",
+          "records": 64,
+          "bytes": 1662245,
+          "source": "hpc3-topd-opd-observation-20261019T145742.json"
+        },
+        {
+          "observed_at_utc": "2026-10-19T07:00:32.531897+00:00",
+          "records": 192,
+          "bytes": 4298787,
+          "source": "hpc3-topd-opd-observation-20261019T150033.json"
+        }
+      ],
+      "completed_normal_records": 192,
+      "total_normal_occurrences": 3610,
+      "actual_batch_json_bytes": 4298787,
+      "token_totals": {
+        "model_generated_tokens": 17853,
+        "raw_generated_tokens": 46472,
+        "observation_tokens": 91733,
+        "initial_prompt_tokens": 25030,
+        "trajectory_total_tokens": 134616,
+        "cumulative_model_input_tokens": 435180
+      },
+      "normal_progress": {
+        "batch_size": 128,
+        "completed_unique": 192,
+        "errors": 0,
+        "gpu_allocated_bytes": 48835030528,
+        "gpu_reserved_bytes": 52946796544,
+        "latest_success": 1792393160.0980566,
+        "maximum_batch_size": 256,
+        "next_batch_size": 256,
+        "output_bytes": 4298787,
+        "pid": 854406,
+        "seconds": 321.36130452156067,
+        "total": 3610
+      },
+      "errors": {},
+      "normal_error_file": null,
+      "pipeline_failed_file": null,
+      "pipeline_complete_file": null,
+      "larger_batch_note": "Successful64 and128 batches;256 isnext scheduled and not yet claimed verified",
+      "paths": {
+        "normal_root": "/data/user/jxu957/experiments/grounding-eval-strict-20261019/opd-alpha1-v4/normal",
+        "pipeline_root": "/data/user/jxu957/experiments/grounding-eval-strict-20261019/opd-alpha1-v4/pipeline",
+        "cf_root": "/data/user/jxu957/experiments/grounding-eval-strict-20261019/opd-alpha1-v4/cf-paper-strict-v4"
+      }
+    }
+  }
+}
