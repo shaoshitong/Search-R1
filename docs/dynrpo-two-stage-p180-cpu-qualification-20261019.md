@@ -1,4 +1,4 @@
-# R4 P180: three-epoch fitting and probe CPU qualification
+# R4 P180: three epochs, probe CPU qualification and actual181 use accepted
 
 Job733898 remains on ACD1-6 with four shared H100 GPUs. The immutable runtime
 is2000d46a530c64d78be7802bf11175a68b65effe. No training source, allocation,
@@ -17,9 +17,9 @@ probe.
 
 The Prefix80 probe continued2200->2250->2300->2350, three epochs and150
 actual Adam writes per rank. All three epoch receipts and the final joint
-were observed. The separate actual181-use acceptance remains pending and
-will independently check save-before-fit ordering, all update ledgers and
-the exact new head used for next-outer scoring and actor continuity.
+were observed. The separate actual181-use acceptance independently checked
+save-before-fit ordering, all update ledgers and the exact new head used for
+next-outer scoring and actor continuity.
 
 Joint180 SHA:
 `f28010b9090ad2a7f49965332a4ee901fabc7db54541a1c39eafdca81a2b936b`.
@@ -69,13 +69,33 @@ Proof SHA:
 `1f70ad8d45483034b373e6680a857d0cf7726416246bd3596e6a86a7894ebd2c`.
 The exact3243 proof bytes were mirrored locally and SHA-verified.
 
-## Remaining acceptance
+## Actual181 new-head use and actor continuity
 
-Actual181 has entered prefix generation. Scoring with the2350-step head and
-all four actor ranks' restore/write continuity must still be observed before
-claiming actual next-outer use accepted. P190, the200 milestone and fixed512
-QA, final51713, checkpoint retention and owned-resource closure also remain
-required. The full goal remains active.
+The acceptance independently checked actor180's20 writes per rank, all150
+probe writes per rank, three epoch boundaries, student-save-before-fit
+ordering, the qualified probe's stat seals, stored strict G5 labels and
+selected membership. Intermediate epoch payload full SHA and full actor
+CPU loading were not repeated.
+
+Actual181 scored with the exact2350-step head and saved actor0180, Prefix80
+and head capacity353 tokens. Its score-manifest SHA is
+`3501c61eb6abf5670c1dccf1f66fb4426e9d6577254f1edd94534227620b35e8`.
+Its budget is5120 prefix questions,1024 complete original G5s, then512
+outcome-selected questions. The old dynamic candidate formula is superseded.
+The selected batch contained133 strict Mixed questions and379 fills,
+25.9765625% Mixed. All four actor ranks restored Adam3600/scheduler180 and
+FP32 master parameters, then reached3610 at acceptance. These are10 live
+writes per rank and complete-line ledger snapshots, not a claim of a
+completed181 joint or a producer-final ledger hash.
+
+Acceptance status:
+`P10_THREE_EPOCH_CPU_QUALIFIED_AND_NEXT_REAL_NEW_HEAD_ACTOR_USE_ACCEPTED`.
+Remote proof:preparation/two-stage-periodic-000180-actual-next-use.json.
+Proof SHA:
+`22edaa352ba897e7879d91232940989fab9adf3f211301c58e78f8fc07f649d0`.
+
+P190, the200 milestone and fixed512 QA, final51713, checkpoint retention and
+owned-resource closure remain required. The full goal remains active.
 
 The all-history throughput observation exceeded its bounded timeout; no
 training failure was inferred. A bounded171..180 scalar query succeeded and
