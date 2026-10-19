@@ -83,7 +83,9 @@ def prepare(source,base,config,qualification):
  assert q['outer']==n and q['joint_sha256']==sha(s/'latest-joint.json')
  def copy(src,dst):
   dst.parent.mkdir(parents=True,exist_ok=True)
-  with dst.open('xb')as f:f.write(src.read_bytes())
+  # The stopped source's committed history and pending reservation are immutable.
+  # Keep their actual bytes without duplicating gigabytes on the shared disk.
+  os.link(src,dst)
  for i in range(1,n+1):
   root=s/'outers'/('outer-%06d'%i)
   for name in ('complete.json','pool-state-at-completion.json','grounding-state-at-completion.json','grounding-refresh.json'):
