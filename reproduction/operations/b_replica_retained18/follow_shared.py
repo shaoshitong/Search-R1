@@ -11,7 +11,7 @@ def main():
    # Transport failure does not establish that the native writer exited.
    # Keep scientific/ledger failures fatal instead of treating them as SSH loss.
    message=str(error)
-   if not re.search(r'BOUNDED_ESTABLISHED_ROUTE_TIMEOUT|Connection to [^\n]+ port \d+ timed out|ssh: connect to host [^\n]+|kex_exchange_identification:|Connection reset by peer|Connection closed by [^\n]+|Broken pipe',message,re.I):
+   if not re.search(r'BOUNDED_ESTABLISHED_ROUTE_TIMEOUT|Timeout, server [^\r\n]+ not responding\.|Connection to [^\n]+ port \d+ timed out|ssh: connect to host [^\n]+|kex_exchange_identification:|Connection reset by peer|Connection closed by [^\n]+|Broken pipe',message,re.I):
     raise
    failure=dict(observed_unix=time.time(),status='CURRENT_RUNTIME_UNKNOWN_TRANSPORT_FAILURE',
     error=message,retry_after_seconds=1800,native_action='none')
