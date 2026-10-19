@@ -83,8 +83,9 @@ def main():
     items = [item for item in inventory['siblings'] if item['rfilename'] in names or item['rfilename'].endswith('.safetensors')]
     assert all('/' not in item['rfilename'] and item.get('size', 0) > 0 for item in items)
     assert len([item for item in items if item['rfilename'].endswith('.safetensors')]) == 4
+    old_state = json.loads((root / 'progress.json').read_text()) if (root / 'progress.json').exists() else {}
     state = dict(model=MODEL, revision=REVISION, total_bytes=sum(item['size'] for item in items),
-        files={}, errors=0, status='DOWNLOADING', mac_data_used=False)
+        files={}, errors=old_state.get('errors', 0), status='DOWNLOADING', mac_data_used=False)
     mutex = threading.Lock()
 
     def update(name, **fields):
@@ -111,7 +112,10 @@ def main():
                     route = 'raw' if endpoint == 'https://hf-mirror.com' and not weights else 'resolve'
                     url = '%s/%s/%s/%s/%s' % (endpoint, MODEL, route, REVISION, name)
                     connection = direct if endpoint == 'https://hf-mirror.com' else opener
-                    request = urllib.request.Request(url, headers={'Range': 'bytes=%d-' % offset, 'Accept-Encoding': 'identity'})
+                    headers = {'Accept-Encoding': 'identity'}
+                    if weights or offset:
+                        headers['Range'] = 'bytes=%d-' % offset
+                    request = urllib.request.Request(url, headers=headers)
                     with connection.open(request, timeout=25) as response:
                         if response.status == 206:
                             assert response.headers['Content-Range'].startswith('bytes %d-' % offset)
