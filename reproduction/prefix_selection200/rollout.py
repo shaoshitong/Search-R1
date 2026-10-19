@@ -381,7 +381,11 @@ def _build_llm(config, model, seed, free, total):
     attempts = []
     while True:
         try:
-            llm = LLM(model=model, tokenizer=model, trust_remote_code=False, dtype=COMPUTE_DTYPE,
+            from contextlib import nullcontext
+            from .shared_gpu_profile import process_local_profile
+            profile = process_local_profile(int(reserve)) if config.get('shared_gpu_process_local_profile', False) else nullcontext()
+            with profile:
+                llm = LLM(model=model, tokenizer=model, trust_remote_code=False, dtype=COMPUTE_DTYPE,
                       tensor_parallel_size=1, max_model_len=BUDGET['total_tokens'], seed=seed,
                       gpu_memory_utilization=utilization, swap_space=0,
                       enforce_eager=bool(config.get('_capture_actor_hidden') or config.get('rollout_enforce_eager', False)),
