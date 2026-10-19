@@ -27,12 +27,15 @@ def main():
     result=subprocess.run(ssh+['python3 -c '+shlex.quote(code)],input=archive,capture_output=True,timeout=45)
     assert result.returncode==0,result.stderr.decode()
     setup='base='+repr(base)+'\npublication='+repr(publication)+'\n'+'''
-import pathlib,tarfile,hashlib,json
+import pathlib,tarfile,hashlib,json,subprocess
 b=pathlib.Path(base);p=b/'preparation/source.tar.gz'
 assert hashlib.sha256(p.read_bytes()).hexdigest()==publication['archive_sha256']
 repo=b/'repo'
 if (b/'config.json').exists():
- assert not (b/'control/sampling-submit-intent.json').exists(),'Never replace submitted sampling source'
+ if (b/'control/sampling-submit-intent.json').exists():
+  repair=json.loads((b/'control/faiss-initialization-failure-recovery.json').read_text())
+  assert repair['sealed_batches']==0 and not list((b/'sampling').glob('shard-*/batches/*/complete.json'))
+  assert not subprocess.check_output(['squeue','-h','-j',repair['job_id']],universal_newlines=True).strip(),'Never replace active sampling source'
  assert not (b/'control/fit-submit-intent.json').exists(),'Never replace submitted fitting source'
  controller=b/'control/controller.json'
  if controller.exists():
@@ -46,6 +49,17 @@ for name,sha in publication['files'].items():assert hashlib.sha256((repo/name).r
 (b/'preparation/source-publication.json').write_text(json.dumps(publication,indent=2))
 if (b/'config.json').exists():
  p=b/'config.json';c=json.loads(p.read_text());old=c['source_commit'];c['source_commit']=publication['commit']
+ if (b/'control/faiss-initialization-failure-recovery.json').exists():
+  repair=json.loads((b/'control/faiss-initialization-failure-recovery.json').read_text())
+  history=b/'control'/('retired-'+repair['job_id']);history.mkdir(exist_ok=True)
+  for name in ['sampling-submit-intent.json','sampling-submission.json']:
+   source=b/'control'/name
+   if source.exists():source.rename(history/name)
+  for root in (b/'sampling').glob('shard-*'):
+   for name in ['failure.json','controller.json']:
+    source=root/name
+    if source.exists():source.rename(root/(name+'.retired-'+repair['job_id']))
+  c['sampling_partition']='acd_ue'
  p.write_text(json.dumps(c,indent=2))
  (b/'preparation/source-upgrade-before-sampling.json').write_text(json.dumps(dict(previous_commit=old,new_commit=publication['commit'],accepted_sampling_batches=0,run_id=c['run_id'])))
 for name in ['logs','probe','tmp','cache']:(b/name).mkdir(exist_ok=True)

@@ -177,6 +177,38 @@ def main():
         retrieval_query_max_length=256, retrieval_use_fp16=True,
         retrieval_batch_size=args.batch_queries)
     started = time.monotonic()
+    resources=[]
+
+    def streamed_flat(cpu,co=None,**kwargs):
+        # The all-at-once cloner can allocate a full32GB temporary in addition
+        # to permanent FP16 storage. Preserve the identical Flat vectors/order
+        # while bounding each upload/conversion to at most48MiB FP32.
+        import numpy as np
+        assert isinstance(cpu,faiss.IndexFlat) and co.useFloat16
+        assert faiss.get_num_gpus()==1 and cpu.metric_type in (faiss.METRIC_INNER_PRODUCT,faiss.METRIC_L2)
+        resource=faiss.StandardGpuResources();resource.setTempMemory(256*1024**2);resources.append(resource)
+        cfg=faiss.GpuIndexFlatConfig();cfg.device=0;cfg.useFloat16=True
+        cls=faiss.GpuIndexFlatIP if cpu.metric_type==faiss.METRIC_INNER_PRODUCT else faiss.GpuIndexFlatL2
+        gpu=cls(resource,cpu.d,cfg);gpu.reserveMemory(cpu.ntotal)
+        vectors=faiss.rev_swig_ptr(cpu.get_xb(),cpu.ntotal*cpu.d).reshape(cpu.ntotal,cpu.d)
+        properties=torch.cuda.get_device_properties(0)
+        for offset in range(0,cpu.ntotal,16384):
+            gpu.add(vectors[offset:offset+16384])
+            if offset%(16384*64)==0 or gpu.ntotal==cpu.ntotal:
+                proof=dict(status='STREAMING_ORIGINAL_FLAT_TO_FP16',added=int(gpu.ntotal),total=int(cpu.ntotal),
+                    dimension=int(cpu.d),gpu_name=properties.name,gpu_total_bytes=properties.total_memory,
+                    chunk_vectors=16384,temporary_memory_bytes=256*1024**2,elapsed_seconds=time.monotonic()-started)
+                publish(cache/'gpu-index-load-progress.json',proof);print('GPU_INDEX_LOAD='+json.dumps(proof),flush=True)
+        for offset in (0,cpu.ntotal//2,cpu.ntotal-1):
+            expected=vectors[offset:offset+1].astype(np.float16).astype(np.float32)
+            assert np.array_equal(gpu.reconstruct_n(offset,1),expected),'GPU Flat precision/vector order differs'
+        assert gpu.ntotal==cpu.ntotal and gpu.metric_type==cpu.metric_type
+        publish(cache/'gpu-index-load-verified.json',dict(proof,status='ORIGINAL_FLAT_FP16_STREAMED_AND_SAMPLED_STORAGE_VERIFIED',
+            sampled_offsets=[0,int(cpu.ntotal//2),int(cpu.ntotal-1)],sampled_storage_exact_FP16=True,metric=int(cpu.metric_type)))
+        return gpu
+
+    # This patch is confined to this private retriever process, not shared code.
+    upstream.faiss.index_cpu_to_all_gpus=streamed_flat
     # DenseRetriever overwrites its CPU Index reference with the cloned GPU
     # IndexShards; do not retain an extra copy of the 64 GB CPU index.
     retriever = upstream.DenseRetriever(config)

@@ -36,10 +36,11 @@ def main():
         if (control/'sampling-submit-intent.json').exists():
             raise RuntimeError('Previous sampling submission outcome unknown: reconcile squeue/sacct before retry')
         atomic(control/'sampling-submit-intent.json',dict(epoch=time.time(),script=str(script/'sampling.sbatch')))
-        result=subprocess.run(['sbatch','--parsable',str(script/'sampling.sbatch')],text=True,capture_output=True)
+        partition=read(base/'config.json').get('sampling_partition','acd_u')
+        result=subprocess.run(['sbatch','--parsable','--partition='+partition,str(script/'sampling.sbatch')],text=True,capture_output=True)
         assert result.returncode==0,result.stderr
         job=result.stdout.strip().split(';')[0];assert job.isdigit()
-        atomic(submission,dict(job_id=job,epoch=time.time(),shards=8,gpus_per_shard=2,partition='acd_u',qos='normal'))
+        atomic(submission,dict(job_id=job,epoch=time.time(),shards=8,gpus_per_shard=2,partition=partition,qos='normal'))
         print('SAMPLING_ARRAY_ACCEPTED='+job,flush=True)
     while not all((base/'sampling'/('shard-%02d'%i)/'complete.json').exists() for i in range(8)):
         result=subprocess.run(['squeue','-h','-j',read(submission)['job_id'],'-o','%i %T %R'],text=True,capture_output=True)
