@@ -130,6 +130,19 @@ def batch_token_totals(rows):
     return {key: sum(row[key] for row in rows) for key in keys}
 
 
+def checkpoint_inventory(checkpoint):
+    """Bind HF assets, including original publication receipt, not transfer logs."""
+    checkpoint = Path(checkpoint)
+    index = json.loads((checkpoint / 'model.safetensors.index.json').read_text())
+    names = set(index['weight_map'].values()) | {'model.safetensors.index.json'}
+    names.update(name for name in ('config.json', 'generation_config.json', 'tokenizer.json',
+        'tokenizer_config.json', 'special_tokens_map.json', 'added_tokens.json',
+        'merges.txt', 'vocab.json', 'complete.json') if (checkpoint / name).exists())
+    if any(Path(name).name != name for name in names):
+        raise ValueError('Unsafe HF checkpoint shard path')
+    return {name: sha(checkpoint / name) for name in sorted(names)}
+
+
 def seen_document(text):
     """Remove only actual boundary information wrappers, retain cropped body."""
     text = re.sub(r'^\s*<information>', '', text, count=1)
@@ -456,8 +469,7 @@ def main():
             raise ValueError('Historical Easy trace imported from another checkout')
         source_files['behavior_trace'] = sha(trace.__file__)
     normal_config = dict(method=args.method, run_id=args.run_id, checkpoint=str(Path(args.checkpoint).resolve()),
-        checkpoint_files={x.name: sha(x) for x in Path(args.checkpoint).iterdir() if x.is_file()
-            and x.name.endswith(('.json', '.safetensors', '.txt')) and not x.name.startswith('backup-')},
+        checkpoint_files=checkpoint_inventory(args.checkpoint),
         data_path=str(Path(args.data).resolve()), data_sha256=data_sha256,
         source_config_sha256=sha(args.source_config),
         normal_protocol=expected, runtime_sources_sha256=source_files,

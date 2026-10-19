@@ -4,10 +4,22 @@ from pathlib import Path
 import tempfile
 import unittest
 from reproduction.grounding_eval.normal_h100 import (
-    sealed_intervals, validate_saved_rows, batch_token_totals)
+    sealed_intervals, validate_saved_rows, batch_token_totals, checkpoint_inventory)
 
 
 class Batches(unittest.TestCase):
+    def test_model_identity_excludes_mutable_transfer_status(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / 'model.safetensors.index.json').write_text(json.dumps({'weight_map': {'x':'model-01.safetensors'}}))
+            for name in ('model-01.safetensors', 'complete.json', 'config.json', 'asset-status.json', 'asset-migration-complete.json'):
+                (root / name).write_text('{}')
+            inventory = checkpoint_inventory(root)
+            self.assertIn('model-01.safetensors', inventory)
+            self.assertIn('complete.json', inventory)
+            self.assertNotIn('asset-status.json', inventory)
+            self.assertNotIn('asset-migration-complete.json', inventory)
+
     def test_recover_previous_larger_batch_after_lower_execution_cap(self):
         with tempfile.TemporaryDirectory() as folder:
             out = Path(folder)
