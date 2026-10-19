@@ -6,13 +6,17 @@ LLMGenerationManager validation loop. Neither adapter creates an optimizer.
 GPU initialization is deliberately inside main, after identity/lock validation.
 """
 import argparse
+import csv
 import fcntl
 import hashlib
 import importlib
+import io
 import json
 import os
 from pathlib import Path
 import re
+import struct
+import subprocess
 import sys
 import time
 
@@ -103,6 +107,52 @@ def gpu_uuid(index):
     import subprocess
     return subprocess.run(['nvidia-smi', '-i', str(index), '--query-gpu=uuid',
         '--format=csv,noheader'], capture_output=True, text=True, check=True).stdout.strip()
+
+
+def validate_gpu_snapshot(index, expected_uuid, rows, processes, minimum_free_gib):
+    selected = [r for r in rows if r[1].strip() == expected_uuid]
+    if len(selected) != 1 or int(selected[0][0]) != index:
+        raise RuntimeError('Physical numeric index does not match frozen UUID')
+    row = selected[0]
+    if int(row[2]) > 512 or int(row[4]) != 0 or int(row[3]) < minimum_free_gib * 1024:
+        raise RuntimeError('Dedicated GPU memory/utilization admission failed')
+    if any(r and r[0].strip() == expected_uuid for r in processes):
+        raise RuntimeError('GPU already has a compute process')
+
+
+def admit_gpu(index, expected_uuid, directory, minimum_free_gib):
+    """Same UUID OFD lease namespace as standalone training and CF workers."""
+    if not re.fullmatch(r'GPU-[0-9a-f-]+', expected_uuid):
+        raise ValueError('An explicit physical GPU UUID is required')
+    directory = Path(directory); directory.mkdir(parents=True, exist_ok=True)
+    fd = os.open(directory / (expected_uuid + '.lock'),
+                 os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)
+    try:
+        fcntl.fcntl(fd, fcntl.F_OFD_SETLK,
+                    struct.pack('hhqqi4x', fcntl.F_WRLCK, os.SEEK_SET, 0, 0, 0))
+        rows = list(csv.reader(io.StringIO(subprocess.check_output([
+            'nvidia-smi', '--query-gpu=index,uuid,memory.used,memory.free,utilization.gpu',
+            '--format=csv,noheader,nounits'], text=True))))
+        processes = list(csv.reader(io.StringIO(subprocess.check_output([
+            'nvidia-smi', '--query-compute-apps=gpu_uuid,pid', '--format=csv,noheader,nounits'], text=True)))
+        )
+        validate_gpu_snapshot(index, expected_uuid, rows, processes, minimum_free_gib)
+        for process in Path('/proc').iterdir():
+            if not process.name.isdigit() or int(process.name) == os.getpid():
+                continue
+            try:
+                if (process / 'comm').read_text().strip() == 'slurmd':
+                    raise RuntimeError('Scheduler node requires explicit Slurm allocation adapter')
+                command = (process / 'cmdline').read_bytes().split(b'\0')
+                if any(x.startswith((b'reproduction.prefix_selection200.',
+                                     b'reproduction.prefix20_online.')) for x in command):
+                    raise RuntimeError('A training/bootstrap controller may reserve the GPU')
+            except (PermissionError, FileNotFoundError, ProcessLookupError):
+                pass
+        return fd, rows
+    except BaseException:
+        os.close(fd)
+        raise
 
 
 class LocalVLLM:
@@ -279,6 +329,8 @@ def main():
     p.add_argument('--retrieval-url', required=True)
     p.add_argument('--identity-file', help='Historical Easy final-result.json question_ids, required for Easy')
     p.add_argument('--gpu-index', type=int, required=True)
+    p.add_argument('--gpu-uuid', required=True,
+                   help='Frozen physical UUID; numeric CUDA mapping is verified before initialization')
     p.add_argument('--gpu-lock-directory', required=True,
                    help='One common task directory shared by all normal/CF workers')
     p.add_argument('--batch-size', type=int, default=128)
@@ -291,14 +343,19 @@ def main():
     args = p.parse_args()
     out = Path(args.output); out.mkdir(parents=True, exist_ok=True)
     lease = open(out / '.normal.lock', 'a+'); fcntl.flock(lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    physical_uuid = gpu_uuid(args.gpu_index)
-    gpu_locks = Path(args.gpu_lock_directory); gpu_locks.mkdir(parents=True, exist_ok=True)
-    gpu_lease = open(gpu_locks / (physical_uuid+'.lock'), 'a+')
-    fcntl.flock(gpu_lease, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    gpu_fd, admission_rows = admit_gpu(args.gpu_index, args.gpu_uuid,
+                                     args.gpu_lock_directory, args.min_start_free_gib)
+    physical_uuid = args.gpu_uuid
+    # Keep this file descriptor/OFD lease live for the entire evaluation.
+    gpu_lease = os.fdopen(gpu_fd, 'r+')
     gpu_lease.seek(0); gpu_lease.truncate()
     json.dump(dict(pid=os.getpid(), output=str(out), physical_uuid=physical_uuid,
                    started_at=time.time(), argv=sys.argv), gpu_lease)
     gpu_lease.flush(); os.fsync(gpu_lease.fileno())
+    atomic(out / 'gpu-admission.json', dict(physical_uuid=physical_uuid,
+        physical_index=args.gpu_index, inventory=admission_rows, pid=os.getpid(),
+        lock_kind='OFD', gpu_lock_directory=str(Path(args.gpu_lock_directory).resolve()),
+        cuda_visible_devices=str(args.gpu_index), checked_at=time.time()))
     if args.method == 'easy' and not args.identity_file:
         raise ValueError('Easy requires original final-result occurrence identity')
     if not (0 < args.batch_size <= 1024 and 0 < args.limit <= 3610):
@@ -321,7 +378,8 @@ def main():
     expected = dict(max_turns=int(config.max_turns), max_start_length=int(config.data.max_start_length),
         max_prompt_length=int(config.data.max_prompt_length), max_response_length=int(config.data.max_response_length),
         max_obs_length=int(config.data.max_obs_length), num_gpus=1, no_think_rl=False,
-        search_url=args.retrieval_url, topk=int(config.retriever.topk))
+        search_url=args.retrieval_url, topk=int(config.retriever.topk),
+        force_final_answer=bool(config.get('force_final_answer', True)))
     if expected['max_turns'] != 4 or expected['max_response_length'] != 500 or expected['topk'] != 3:
         raise ValueError('Historical normal protocol differs from reviewed adapter')
     generation = GenerationConfig(**{k: v for k, v in expected.items() if k in GenerationConfig.__annotations__})
