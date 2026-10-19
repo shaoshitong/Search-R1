@@ -2,12 +2,12 @@
 import argparse,pathlib,json,hashlib,collections,os,time
 p=argparse.ArgumentParser(__doc__);p.add_argument('--root',required=True);p.add_argument('--output',required=True);a=p.parse_args();b=pathlib.Path(a.root);out={}
 for method,prefix in [('Search-G1','search-g1'),('Soft-to-Hard','soft-to-hard'),('OPSD3304','opsd3304')]:
- cf=b/(prefix+'-cf-strict-v5');m=json.loads((cf/'manifest.json').read_text());assert m['protocol_version']=='strict-v5-conservative-typed';src=pathlib.Path(m['source']['path']);h=hashlib.sha256();totals=collections.Counter();measured=collections.Counter();count=requests=0;cache=[]
+ cf=b/(prefix+'-cf-strict-v5');m=json.loads((cf/'manifest.json').read_text());assert m['protocol_version']=='strict-v5-conservative-typed';src=pathlib.Path(m['source']['path']);h=hashlib.sha256();totals=collections.Counter();measured=collections.Counter();count=requests=0;cache=[];content_order=[]
  with src.open('rb')as f:
   for line in f:
    h.update(line)
    if not line.strip():continue
-   row=json.loads(line);assert row['evaluation_ordinal']==count and row['data_source']=='nq';count+=1
+   row=json.loads(line);content_order.append([row['data_source'],int(row['evaluation_ordinal']),row['question'],sorted(row['gold'])]);assert row['evaluation_ordinal']==count and row['data_source']=='nq';count+=1
    for k in ['retrieved_observation_tokens','correction_tokens','environment_correction_tokens']:
     v=row.get(k)
     if isinstance(v,int):totals[k]+=v;measured[k]+=1
@@ -24,7 +24,8 @@ for method,prefix in [('Search-G1','search-g1'),('Soft-to-Hard','soft-to-hard'),
  for line in(cf/'prepared.jsonl').open():
   v=json.loads(line)
   if v['status']=='READY':types[v['replacement_kind']]+=1
- out[method]=dict(at=time.time(),source_sha256=h.hexdigest(),normal_count=count,normal_actual_generation_requests=dict(total=requests,mean=requests/count),normal_extra_tokens={k:dict(total=v,mean=v/measured[k],measured_questions=measured[k])for k,v in totals.items()},normal_cached_input_tokens=cache_stats(cache),CF_cached_input_tokens=cache_stats(cf_cache),ready_replacement_type_counts=dict(types),notes='A800 reported observation_tokens includes all masked environment; aligned retrieval/correction fields use captured per-turn values. OPSD retrieval/correction were already separate. Cache unknown is never zero.')
+ content_order_sha=hashlib.sha256(json.dumps(content_order,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest();assert content_order_sha=='23c0a8307f38a7a8d1cbd9e71fb115b7bd091421a3d3b10952fb71c8210b551c'
+ out[method]=dict(content_order_sha256=content_order_sha,at=time.time(),source_sha256=h.hexdigest(),normal_count=count,normal_actual_generation_requests=dict(total=requests,mean=requests/count),normal_extra_tokens={k:dict(total=v,mean=v/measured[k],measured_questions=measured[k])for k,v in totals.items()},normal_cached_input_tokens=cache_stats(cache),CF_cached_input_tokens=cache_stats(cf_cache),ready_replacement_type_counts=dict(types),notes='A800 reported observation_tokens includes all masked environment; aligned retrieval/correction fields use captured per-turn values. OPSD retrieval/correction were already separate. Cache unknown is never zero.')
 raw=json.dumps(out,indent=2).encode();p=pathlib.Path(a.output)
 with p.open('xb')as f:f.write(raw);f.flush();os.fsync(f.fileno())
 print(json.dumps(dict(path=str(p),bytes=len(raw),sha256=hashlib.sha256(raw).hexdigest())))
