@@ -50,6 +50,44 @@ def single_gpu_entrypoint(source):
     return source
 
 
+def bounded_single_gpu_clone(faiss, index, options, progress, batch_vectors=65536):
+    """Keep the same Flat FP16 vectors/order without a full FP32 GPU staging copy."""
+    cpu = faiss.downcast_index(index)
+    if faiss.get_num_gpus() != 1 or not isinstance(cpu, faiss.IndexFlat):
+        raise ValueError('Bounded clone only supports one assigned GPU and a plain Flat index')
+    if not options.useFloat16 or not 1 <= batch_vectors <= 65536:
+        raise ValueError('Historical FP16 and bounded reconstruction are required')
+    if cpu.metric_type == faiss.METRIC_INNER_PRODUCT:
+        empty = faiss.IndexFlatIP(cpu.d)
+    elif cpu.metric_type == faiss.METRIC_L2:
+        empty = faiss.IndexFlatL2(cpu.d)
+    else:
+        raise ValueError('Unsupported Flat distance metric')
+    resource = faiss.StandardGpuResources()
+    resource.setTempMemory(256 << 20)
+    clone_options = faiss.GpuClonerOptions()
+    for name in ('useFloat16', 'useFloat16CoarseQuantizer', 'usePrecomputed',
+                 'indicesOptions', 'storeTransposed'):
+        if hasattr(options, name):
+            setattr(clone_options, name, getattr(options, name))
+    clone_options.reserveVecs = cpu.ntotal
+    gpu = faiss.index_cpu_to_gpu(resource, 0, empty, clone_options)
+    # SWIG indexes need a strong Python reference to their resource provider.
+    gpu._grounding_resource = resource
+    for start in range(0, cpu.ntotal, batch_vectors):
+        count = min(batch_vectors, cpu.ntotal - start)
+        vectors = cpu.reconstruct_n(start, count)
+        if vectors.shape != (count, cpu.d):
+            raise ValueError('Incomplete Flat reconstruction')
+        gpu.add(vectors)
+        if gpu.ntotal != start + count:
+            raise ValueError('GPU add changed vector order/count')
+        progress(start + count, cpu.ntotal)
+    if gpu.d != cpu.d or gpu.metric_type != cpu.metric_type:
+        raise ValueError('Bounded clone changed Flat dimensions/metric')
+    return gpu
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -215,6 +253,21 @@ def main():
                    'accept single plain GpuIndex after visible-device count validation'],
             retrieval_computation_changed=False, parity_required_before_listen=True))
         exec(compile(adapted_main, '<grounding-single-gpu-main>', 'exec'), module.__dict__)
+        import faiss
+        clone_started = time.monotonic()
+        def clone_progress(completed, total):
+            atomic(out / 'single-gpu-clone-progress.json', dict(
+                completed_vectors=completed, total_vectors=total,
+                elapsed_seconds=time.monotonic()-clone_started,
+                at=time.time(), bounded_fp32_staging_bytes=65536*768*4,
+                gpu_index_dtype='float16', source_order_preserved=True))
+        def clone_one(index, co=None, ngpu=-1):
+            if ngpu not in (-1, 1):
+                raise ValueError('Unexpected GPU count for bounded single-GPU clone')
+            return bounded_single_gpu_clone(faiss, index, co, clone_progress)
+        # Process-local override of the cloning transport only. The historical
+        # DenseRetriever encoder, search, scoring and batching remain unchanged.
+        faiss.index_cpu_to_all_gpus = clone_one
     original = module.BatchedRequests
     class ParityChecked(original):
         def __init__(self, retriever, **kwargs):

@@ -9,7 +9,7 @@ else:
  with script.open('x')as f:f.write(source);f.flush();os.fsync(f.fileno())
 assert hashlib.sha256(script.read_bytes()).hexdigest()==digest
 assert not pathlib.Path('/proc/941984').exists(),'Prior task-owned retriever must have exited'
-out=base/'retriever-owned-single-c0e14085-port19001';out.mkdir(exist_ok=True)
+out=base/('retriever-owned-single-bounded-'+commit[:8]);out.mkdir(exist_ok=True)
 assert not (out/'launch.json').exists(),'Existing launch must be inspected; never duplicated'
 src=base/'retriever-owned-51bcf912/data-cache';dst=src;assert dst.is_dir()
 for name in ('wiki_dump.jsonl','corpus.json'):
