@@ -21,10 +21,10 @@ for jid,name in [('737435','topd-alpha01-v4'),('737436','opd-alpha1-v4')]:
  r['pipeline']={n:small(pr/n) for n in ['worker.json','progress.json','normal-exit.json','counterfactual-exit.json','failed.json','complete.json']}
  r['normal']={n:small(nr/n) for n in ['worker.json','normal-progress.json','normal-error.json','normal-complete.json','retriever-process.json','retriever-exit.json']}
  r['normal_executions']={p.name:small(p) for p in nr.glob('normal-execution-*.json')}
- batches=list((nr/'normal-batches').glob('batch-*.json'));stats={'batch_files':len(batches),'bytes':sum(p.stat().st_size for p in batches),'records':0,'token_totals':{},'latest_mtime':max([p.stat().st_mtime for p in batches],default=None)}
+ batches=sorted((nr/'normal-batches').glob('batch-*.json'));stats={'batch_files':len(batches),'bytes':sum(p.stat().st_size for p in batches),'records':0,'token_totals':{},'batch_completion_history':[],'latest_mtime':max([p.stat().st_mtime for p in batches],default=None)}
  for p in batches:
   try:
-   d=json.loads(p.read_text());stats['records']+=len(d['records'])
+   d=json.loads(p.read_text());stats['records']+=len(d['records']);stats['batch_completion_history'].append({'file':p.name,'mtime':p.stat().st_mtime,'records':len(d['records']),'bytes':p.stat().st_size,'elapsed_seconds':d.get('elapsed_seconds')})
    for row in d['records']:
     for k in ['model_generated_tokens','raw_generated_tokens','observation_tokens','initial_prompt_tokens','trajectory_total_tokens','cumulative_model_input_tokens']:
      v=row.get(k)
