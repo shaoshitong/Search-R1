@@ -1,4 +1,6 @@
-# Retained-input cold handoff: prepared, awaiting explicit approval
+# Retained-input cold handoff: prepared, human deferred
+
+Latest actual human decision (October19): **保持运行，暂不重启**. The following is a prepared plan only; it must not be executed without a new explicit authorization. Current jobs continue. Decision evidence: `work/prefix5-ab-retained-handoff-human-decision-20261019.json`.
 
 Both current A/B native jobs are healthy on h100-11. Inputs/runtime still use the original source8 private mount namespace. The shared-storage memory records the source8 service release on October20, without an exact time. The goal remains each200/no201 plus all QA/final51713 and actual resource closure.
 
