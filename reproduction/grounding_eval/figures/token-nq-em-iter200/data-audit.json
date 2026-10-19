@@ -1,0 +1,124 @@
+{
+  "axes": {
+    "x": "Mean cumulative actual input + raw generated tokens per NQ question",
+    "y": "Normal inference NQ exact match (%)"
+  },
+  "checkpoint_iteration": 200,
+  "sample_size": 3610,
+  "points": [
+    {
+      "code": "A",
+      "method": "Search-G1",
+      "label": "Search-G1",
+      "iteration": 200,
+      "questions": 3610,
+      "correct": 1613,
+      "em_percent": 44.68144044321329,
+      "input_tokens": 2882268,
+      "raw_generated_tokens": 790560,
+      "total_tokens": 3672828,
+      "mean_tokens": 1017.4038781163434
+    },
+    {
+      "code": "B",
+      "method": "TOP-D alpha=0.1",
+      "label": "TOP-D (α=0.1)",
+      "iteration": 200,
+      "questions": 3610,
+      "correct": 1635,
+      "em_percent": 45.29085872576177,
+      "input_tokens": 7305656,
+      "raw_generated_tokens": 2169825,
+      "total_tokens": 9475481,
+      "mean_tokens": 2624.786980609418
+    },
+    {
+      "code": "C",
+      "method": "OPD alpha=1",
+      "label": "OPD (α=1)",
+      "iteration": 200,
+      "questions": 3610,
+      "correct": 1109,
+      "em_percent": 30.720221606648202,
+      "input_tokens": 8131423,
+      "raw_generated_tokens": 829208,
+      "total_tokens": 8960631,
+      "mean_tokens": 2482.1692520775623
+    },
+    {
+      "code": "D",
+      "method": "OPSD3304",
+      "label": "OPSD",
+      "iteration": 200,
+      "questions": 3610,
+      "correct": 1077,
+      "em_percent": 29.833795013850416,
+      "input_tokens": 3186279,
+      "raw_generated_tokens": 880301,
+      "total_tokens": 4066580,
+      "mean_tokens": 1126.4764542936289
+    },
+    {
+      "code": "E",
+      "method": "Soft-to-Hard",
+      "label": "Soft->Hard",
+      "iteration": 200,
+      "questions": 3610,
+      "correct": 1684,
+      "em_percent": 46.64819944598338,
+      "input_tokens": 2831659,
+      "raw_generated_tokens": 708702,
+      "total_tokens": 3540361,
+      "mean_tokens": 980.7094182825484
+    },
+    {
+      "code": "F",
+      "method": "Easy Selection",
+      "label": "Easy Selection",
+      "iteration": 200,
+      "questions": 3610,
+      "correct": 1733,
+      "em_percent": 48.00554016620499,
+      "input_tokens": 7044613,
+      "raw_generated_tokens": 1292574,
+      "total_tokens": 8337187,
+      "mean_tokens": 2309.470083102493
+    },
+    {
+      "code": "G",
+      "method": "DynRPO",
+      "label": "DynRPO",
+      "iteration": 200,
+      "questions": 3610,
+      "correct": 1706,
+      "em_percent": 47.257617728531855,
+      "input_tokens": 3296013,
+      "raw_generated_tokens": 249129,
+      "total_tokens": 3545142,
+      "mean_tokens": 982.0337950138504
+    }
+  ],
+  "source_files": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/grounding-eval-20261019/six-method-grounding-final-20261019.json",
+      "sha256": "71c14ad2b9849cba433a2ea759490606b930343baee57e24f943210b7f991bc3"
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-03/xia/outputs/dynrpo-nq-token-cost-20261019/dynrpo-normal-token-cost-final.json",
+      "sha256": "3b20ae5d4a4269f07adb423bdea5d01fa3ec3fa9247c9cc4b0aacc8565a4930b"
+    },
+    {
+      "path": "/Users/shaoshitong/Downloads/WWW_2026_PAPER/drawio_figure/time-em-iter50-100/time-em-iter50-100.pdf",
+      "sha256": "ca8482f96f2e6d6148da0d63a2b20a2363d2454c5bd5c59f5f40745703468c36"
+    }
+  ],
+  "canonical_question_gold_order_sha256": "23c0a8307f38a7a8d1cbd9e71fb115b7bd091421a3d3b10952fb71c8210b551c",
+  "limitations": [
+    "Paired measured NQ EM and token cost from the same normal inference evaluation for each model; historical seven-dataset NQ scores are not substituted.",
+    "All actual input history is counted again on each generation request. Raw completion tails discarded by legacy action parsers are included. CF, pilot, training, and probe costs are excluded.",
+    "DynRPO aborts native generation at the first complete action; historical adapters may generate discarded tails. This is a native-implementation usage comparison, not a controlled estimate of policy-only token efficiency.",
+    "Original six adapters retained native per-method loops. Retrieval fanout migration: OPSD 8->2 and Easy Selection 8->1; cropped document parity sampled, not full-run original query parity.",
+    "Single measurement per model; no run-level variance or invented error bars. Points across algorithms are not connected."
+  ],
+  "style": "Latest user-edited time-em-iter50-100 PDF: italic Times, hollow markers, muted blue / brick red, horizontal dotted grid, blue hachure inset legend."
+}
