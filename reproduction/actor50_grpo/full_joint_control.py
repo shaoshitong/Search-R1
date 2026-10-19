@@ -67,9 +67,9 @@ if action=='stage':
   resume_joint=dict(adapter='actor50_full_joint_v1',source_base=str(parent),completed_outer=terminal['completed_outer'],
    source_execution_id=h['parent_handle']['execution_id'],source_commit=h['parent_handle']['source_commit'],
    terminal_path=h['terminal_path'],terminal_sha256=h['terminal_sha256'],source_joint_sha256=terminal['source_joint_sha256']),
-  rollout_max_num_seqs=64,rollout_max_batched_tokens=2048,rollout_utilization_cap=.7,
+  rollout_max_num_seqs=64,rollout_max_batched_tokens=4096,rollout_utilization_cap=.7,
   fault_infrastructure_repair=dict(kind='bounded_native_flash_kvcache_workload',old_sequences=128,new_sequences=64,
-   old_batched_tokens=4096,new_batched_tokens=2048,old_utilization_cap=.85,new_utilization_cap=.7,
+   old_batched_tokens=4096,new_batched_tokens=4096,old_utilization_cap=.85,new_utilization_cap=.7,
    attention_backend_unchanged=True,enforce_eager=True,prefix_cache_enabled=False))
  if h.get('single_auxiliary'):
   sys.path.insert(0,str(repo))

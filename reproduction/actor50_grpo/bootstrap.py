@@ -69,6 +69,8 @@ def validate_config(c,base):
     if c['actor_loss_reduction']!=OBJECTIVE or c['policy_safeguards']!=POLICY_SAFEGUARDS or c['interaction_protocol']!=CONTRACT:
         raise ValueError('I1-I6 actor science and shared BF16 interaction must remain unchanged')
     check_grounding(c)
+    if c.get('rollout_max_batched_tokens',4096)<CONTRACT['max_context_tokens']:
+        raise ValueError('Unchunked native rollout scheduler must admit the complete4096 context')
     from .single_auxiliary import validate as single_auxiliary
     if not single_auxiliary(c) and (len(set(c['physical_gpu_uuids']+c['auxiliary_gpu_uuids']))!=6 or c['auxiliary_gpu_indices']!=[5,6]):
         raise ValueError('Retain four actual actor UUIDs and two approved auxiliary UUIDs')

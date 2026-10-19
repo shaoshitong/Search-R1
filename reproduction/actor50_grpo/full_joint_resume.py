@@ -47,9 +47,11 @@ def prepare_reuse(base,c):
     assert not (old/'preparation/submit-intent.json').exists()
     validate_boundary(old,oldc)
     # Resource, source, ports and own metadata paths may differ; science cannot.
+    assert oldc['rollout_max_batched_tokens']==2048 and c['rollout_max_batched_tokens']==4096
+    assert c['fault_infrastructure_repair']==dict(oldc['fault_infrastructure_repair'],new_batched_tokens=4096)
     allowed={'base','execution_id','source_commit','pool_state_path','prefix_probe_receipt',
         'retrieval_port','search_url','grounding_probe_base_port','auxiliary_gpu_indices','auxiliary_gpu_uuids',
-        'retrieval_gpu_shards','retrieval_logical_shards','retrieval_consistency_reference','approved_single_auxiliary','retrieval_consistency_questions','reuse_qualified_full_joint'}
+        'rollout_max_batched_tokens','fault_infrastructure_repair','retrieval_gpu_shards','retrieval_logical_shards','retrieval_consistency_reference','approved_single_auxiliary','retrieval_consistency_questions','reuse_qualified_full_joint'}
     assert {k:v for k,v in oldc.items() if k not in allowed}=={k:v for k,v in c.items() if k not in allowed},'Qualified scientific configuration changed'
     from reproduction.operations.a800_i1_i6_boundary_handoff import owned_present
     parent=Path(c['resume_joint']['source_base']);terminal=read(c['resume_joint']['terminal_path'])
