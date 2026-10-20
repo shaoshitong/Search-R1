@@ -1,0 +1,201 @@
+{
+  "status": "INDEPENDENT_SEALED_OWN_EM_SHA_G5_METRICS_RECOMPUTED",
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/event",
+  "config_sha256": "749388a1525a59f23a129ab1c057e3b9b553d6b6af99666647444bb873fb8b67",
+  "cursor": 128,
+  "steps": 10592,
+  "checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/event/checkpoints/cursor-000128.pt",
+    "sha256": "17aa134b5f9f325bd7073a5dad1728c3bb88a3940914e8253e29a6f7f0958c08",
+    "bytes": 3745824666,
+    "cursor": 128,
+    "steps": 10592,
+    "config_sha256": "749388a1525a59f23a129ab1c057e3b9b553d6b6af99666647444bb873fb8b67",
+    "matched_binding_sha256": "7646c21216de49c5d3370fce870d24b71dbad12e82d221f74c0e0e8c9c9b04e3",
+    "epoch_time": 1792515379.0652297,
+    "accepted_hashes": {
+      "raw": "42e77828cdc17307f734e19eb4ce723c6682a22e23c68b4211e0f2f8c4f71689",
+      "ema": "b907248e104423daf10e52b7fbe8d0e105d5d9fe8c26d64b39ba662515c9941c",
+      "adam": "c89d8e97fdeee563e1de3e467f10779d9b46e354813c3448a5b86ba508d7f4a1",
+      "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+      "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+    }
+  },
+  "checkpoint_tensor_reload_performed_here": false,
+  "first_update_actual_replay_passed": true,
+  "metrics": {
+    "diagnostic512": {
+      "pool": {
+        "questions": 512,
+        "threshold": 0.5,
+        "confusion": {
+          "tp": 170,
+          "fp": 237,
+          "fn": 35,
+          "tn": 70
+        },
+        "mixed_balanced_accuracy": 0.5286406609994438,
+        "mixed_recall": 0.8292682926829268,
+        "nonmixed_recall": 0.2280130293159609,
+        "mixed_fraction": 0.400390625,
+        "mixed_roc_auc": 0.5326289028362596,
+        "k_histogram": [
+          228,
+          63,
+          50,
+          44,
+          48,
+          79
+        ],
+        "classwise": {
+          "allwrong": {
+            "questions": 228,
+            "predicted_mixed": 162,
+            "mean_q": 0.6581190022917693
+          },
+          "mixed": {
+            "questions": 205,
+            "predicted_mixed": 170,
+            "mean_q": 0.7338825459160456
+          },
+          "allcorrect": {
+            "questions": 79,
+            "predicted_mixed": 75,
+            "mean_q": 0.8133463255966766
+          }
+        }
+      },
+      "selected512": {
+        "questions": 512,
+        "threshold": 0.5,
+        "confusion": {
+          "tp": 170,
+          "fp": 237,
+          "fn": 35,
+          "tn": 70
+        },
+        "mixed_balanced_accuracy": 0.5286406609994438,
+        "mixed_recall": 0.8292682926829268,
+        "nonmixed_recall": 0.2280130293159609,
+        "mixed_fraction": 0.400390625,
+        "mixed_roc_auc": 0.5326289028362596,
+        "k_histogram": [
+          228,
+          63,
+          50,
+          44,
+          48,
+          79
+        ],
+        "classwise": {
+          "allwrong": {
+            "questions": 228,
+            "predicted_mixed": 162,
+            "mean_q": 0.6581190022917693
+          },
+          "mixed": {
+            "questions": 205,
+            "predicted_mixed": 170,
+            "mean_q": 0.7338825459160456
+          },
+          "allcorrect": {
+            "questions": 79,
+            "predicted_mixed": 75,
+            "mean_q": 0.8133463255966766
+          }
+        }
+      },
+      "maximum_probability_formula_error": 1.061522140188842e-07,
+      "prediction_sha256": "2d5f29d4777ecf54741672b5b0a497c8fea4be2ad17a1c6c1a80e8bb04bb7409"
+    },
+    "selection2048": {
+      "pool": {
+        "questions": 2048,
+        "threshold": 0.5,
+        "confusion": {
+          "tp": 566,
+          "fp": 1135,
+          "fn": 75,
+          "tn": 272
+        },
+        "mixed_balanced_accuracy": 0.5381572192525228,
+        "mixed_recall": 0.8829953198127926,
+        "nonmixed_recall": 0.19331911869225302,
+        "mixed_fraction": 0.31298828125,
+        "mixed_roc_auc": 0.5697421073815234,
+        "k_histogram": [
+          1079,
+          164,
+          127,
+          153,
+          197,
+          328
+        ],
+        "classwise": {
+          "allwrong": {
+            "questions": 1079,
+            "predicted_mixed": 815,
+            "mean_q": 0.6678667374410985
+          },
+          "mixed": {
+            "questions": 641,
+            "predicted_mixed": 566,
+            "mean_q": 0.7597154063200244
+          },
+          "allcorrect": {
+            "questions": 328,
+            "predicted_mixed": 320,
+            "mean_q": 0.8271726860051475
+          }
+        }
+      },
+      "selected512": {
+        "questions": 512,
+        "threshold": 0.5,
+        "confusion": {
+          "tp": 195,
+          "fp": 317,
+          "fn": 0,
+          "tn": 0
+        },
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_recall": 1.0,
+        "nonmixed_recall": 0.0,
+        "mixed_fraction": 0.380859375,
+        "mixed_roc_auc": 0.4865971042627194,
+        "k_histogram": [
+          187,
+          45,
+          35,
+          42,
+          73,
+          130
+        ],
+        "classwise": {
+          "allwrong": {
+            "questions": 187,
+            "predicted_mixed": 187,
+            "mean_q": 0.9284627118850137
+          },
+          "mixed": {
+            "questions": 195,
+            "predicted_mixed": 195,
+            "mean_q": 0.9279737934088096
+          },
+          "allcorrect": {
+            "questions": 130,
+            "predicted_mixed": 130,
+            "mean_q": 0.9291093519100776
+          }
+        }
+      },
+      "maximum_probability_formula_error": 1.1952240119850188e-07,
+      "prediction_sha256": "6f11f058b2ecbea4ee2cc0615c2ec3be369463acdb79e983b255ba561b329965"
+    }
+  },
+  "training_modified": false,
+  "time": 1792516934.5925283,
+  "audit_source_commit": "3c2c2f7c3a78b74060a07c8cf73f6172521b8516",
+  "audit_source_sha256": "80d789bcfab5ec3e470cd68391c1c5550ff6c18acd14173ebcf55e64ac15e58a"
+}
