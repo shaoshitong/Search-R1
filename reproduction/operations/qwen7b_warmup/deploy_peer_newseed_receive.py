@@ -9,24 +9,42 @@ from . import peer_newseed_receive as receiver
 
 SNAPSHOT='newseed-20261021-185747-445fc691'
 PREFLIGHT=r'''
-import json,requests,socket,sys,time
-secret=json.loads(sys.stdin.readline());out=[]
-for label,port in [('direct',None),('HKUST2-17894',17894),('HKUST2-17897',17897),('HKUST2-17898',17898)]:
- started=time.monotonic();value=dict(exit=label)
+import concurrent.futures,hashlib,json,requests,socket,sys,time
+from urllib.parse import quote
+secret=json.loads(sys.stdin.readline());record=secret['archive_probe']
+assert record['archive_bytes']>1048576 and len(record['archive_sha256'])==64 and len(record['hf_archive_commit'])==40
+
+def probe(route):
+ label,port=route;started=time.monotonic();value=dict(exit=label,range_bytes_read=0,range_accepted=False)
  try:
   if port:
-   s=socket.create_connection(('127.0.0.1',port),timeout=1);s.close()
+   sock=socket.create_connection(('127.0.0.1',port),timeout=1);sock.close()
   with requests.Session() as session:
    session.trust_env=False;session.headers['Authorization']='Bearer '+secret['hf_token']
    if port:session.proxies={'http':'http://127.0.0.1:'+str(port),'https':'http://127.0.0.1:'+str(port)}
-   response=session.get('https://huggingface.co/api/datasets/Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020',timeout=(3,5))
-   value['http_status']=response.status_code
-   if response.status_code==200:
-    v=response.json();value['status']='PRIVATE_REPO_MATCH' if v.get('private') is True and v.get('id','').lower()=='sutoonq/qwen25-7b-probe-h100-transfer-20261020' else 'REPOSITORY_ID_OR_PRIVACY_MISMATCH'
-   else:value['status']='HTTP_REJECTED'
+   response=session.get('https://huggingface.co/api/datasets/Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020',timeout=(3,5));value['metadata_http_status']=response.status_code
+   response.raise_for_status();info=response.json()
+   assert info.get('private') is True and info.get('id','').lower()=='sutoonq/qwen25-7b-probe-h100-transfer-20261020'
+   value['metadata_status']='PRIVATE_REPO_MATCH'
+   response=session.post('https://huggingface.co/api/datasets/Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020/paths-info/'+record['hf_archive_commit'],json={'paths':[record['hf_archive_path']]},timeout=(3,5));response.raise_for_status();items=response.json()
+   assert len(items)==1 and items[0]['path']==record['hf_archive_path'] and items[0]['size']==record['archive_bytes'] and items[0]['lfs']['oid']==record['archive_sha256']
+   value['pinned_LFS_source_size_SHA_match']=True
+   limit=1048576;h=hashlib.sha256();begin=time.monotonic()
+   url='https://huggingface.co/datasets/Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020/resolve/'+record['hf_archive_commit']+'/'+quote(record['hf_archive_path'],safe='/')
+   with session.get(url,headers={'Range':'bytes=0-'+str(limit-1)},stream=True,timeout=(3,5)) as response:
+    value['range_http_status']=response.status_code;response.raise_for_status()
+    if response.status_code!=206 or response.headers.get('Content-Range')!='bytes 0-%d/%d'%(limit-1,record['archive_bytes']):raise ValueError('Exact bounded range was not honored')
+    for block in response.iter_content(65536):
+     if not block:continue
+     if value['range_bytes_read']+len(block)>limit:raise ValueError('Bounded range exceeded')
+     value['range_bytes_read']+=len(block);h.update(block)
+   assert value['range_bytes_read']==limit
+   value.update(range_accepted=True,range_prefix_SHA256=h.hexdigest(),range_elapsed_seconds=time.monotonic()-begin,status='PRIVATE_API_AND_REAL_PINNED_ARCHIVE_RANGE_ACCEPTED_NOT_FULL_ARCHIVE_SHA')
  except Exception as error:value.update(status='FAILED',error_type=type(error).__name__)
- value['elapsed_seconds']=time.monotonic()-started;out.append(value)
-print(json.dumps(dict(status='READ_ONLY_OFFICIAL_HF_METADATA_PREFLIGHT',exits=out,proxy_environment_inherited=False,Mac_proxy_used=False,archive_bytes_downloaded=0,epoch=time.time())))
+ value['elapsed_seconds']=time.monotonic()-started;return value
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:out=list(pool.map(probe,[('direct',None),('HKUST2-17894',17894),('HKUST2-17897',17897),('HKUST2-17898',17898)]))
+print(json.dumps(dict(status='READ_ONLY_OFFICIAL_HF_METADATA_AND_REAL_RANGE_PREFLIGHT',exits=out,proxy_environment_inherited=False,Mac_proxy_used=False,archive_bytes_read_only_in_remote_RAM=sum(r['range_bytes_read'] for r in out),full_archive_SHA_acceptance=False,epoch=time.time())))
 '''
 COMMON=r'''
 import fcntl,hashlib,json,os,pathlib,subprocess,sys,time
@@ -131,7 +149,7 @@ def token():
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--action',choices=['stage','preflight','start','status'],required=True)
-    parser.add_argument('--control-root',type=Path,required=True);parser.add_argument('--snapshot',default=SNAPSHOT);parser.add_argument('--catalog-commit');parser.add_argument('--hf-proxy');parser.add_argument('--direct-en0',action='store_true');args=parser.parse_args()
+    parser.add_argument('--control-root',type=Path,required=True);parser.add_argument('--snapshot',default=SNAPSHOT);parser.add_argument('--catalog-commit');parser.add_argument('--hf-proxy');parser.add_argument('--direct-en0',action='store_true');parser.add_argument('--archive-binding',type=Path,help='Small actual source-plan/HF-receipt binding for CDN Range preflight');args=parser.parse_args()
     repo=Path(__file__).resolve().parents[3];commit=publication(repo);snapshot=receiver.snapshot_name(args.snapshot);base=receiver.K2/snapshot;digest=hashlib.sha256(Path(receiver.__file__).read_bytes()).hexdigest();code=base/'code'/digest/'peer_newseed_receive.py'
     inputs=dict(base=str(base),snapshot=snapshot,code=str(code),code_sha256=digest,source_commit=commit,prefix=receiver.PREFIX+snapshot,catalog_commit=args.catalog_commit,hf_proxy=args.hf_proxy)
     with route(args.direct_en0) as ssh:
@@ -140,7 +158,14 @@ def main():
             assert actual==code
             script='import pathlib,hashlib,json,time; b=pathlib.Path(%r); p=pathlib.Path(%r); v=dict(status="RECEIVER_CODE_STAGED_ONLY",source_commit=%r,path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest(),bytes=p.stat().st_size,receiver_started=(b/"receiver.lock").exists(),catalog_created=(b/"catalog.json").exists(),epoch=time.time()); (b/"source-publication.json").write_text(json.dumps(v)); print(json.dumps(v))'%(str(base),str(code),commit)
             result=receiver.remote(ssh,'python3 -c '+shlex.quote(script),timeout=45)
-        elif args.action=='preflight':result=receiver.remote(ssh,'python3 -c '+shlex.quote(PREFLIGHT),dict(hf_token=token()),timeout=55)
+        elif args.action=='preflight':
+            if not args.archive_binding:raise ValueError('Actual source/HF first-archive binding required for real CDN preflight')
+            archive=json.loads(args.archive_binding.read_bytes())['first_group']
+            if (not archive['hf_archive_path'].startswith(receiver.PREFIX+snapshot+'/archives/') or
+                    not all(c in '0123456789abcdef' for c in archive['hf_archive_commit']) or len(archive['hf_archive_commit'])!=40 or
+                    not all(c in '0123456789abcdef' for c in archive['archive_sha256']) or len(archive['archive_sha256'])!=64):
+                raise ValueError('Pinned authorized source/HF archive identity required')
+            result=receiver.remote(ssh,'python3 -c '+shlex.quote(PREFLIGHT),dict(hf_token=token(),archive_probe=archive),timeout=55)
         else:
             script=render(inputs,args.action)
             if len(('python3 -c '+shlex.quote(script)).encode())>=16000:raise ValueError('Receiver control command exceeds16KB')

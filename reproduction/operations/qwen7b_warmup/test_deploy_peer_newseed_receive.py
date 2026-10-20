@@ -20,7 +20,9 @@ class DeployTests(unittest.TestCase):
         compile(m.PREFLIGHT,'metadata-preflight','exec')
         self.assertIn('session.trust_env=False',m.PREFLIGHT)
         self.assertIn('17894',m.PREFLIGHT);self.assertIn('17897',m.PREFLIGHT)
-        self.assertNotIn('18092',m.PREFLIGHT);self.assertNotIn('/resolve/',m.PREFLIGHT)
+        self.assertNotIn('18092',m.PREFLIGHT);self.assertIn('stream=True',m.PREFLIGHT)
+        self.assertIn("response.status_code!=206",m.PREFLIGHT);self.assertIn("Content-Range",m.PREFLIGHT)
+        self.assertIn("value['range_bytes_read']==limit",m.PREFLIGHT)
 
 
 if __name__=='__main__':unittest.main()
