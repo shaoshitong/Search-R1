@@ -1,0 +1,149 @@
+{
+  "status": "ACTUAL_CURRENT_COHORT_AND_FUTURE_CODE_ONLY",
+  "epoch": 1792538885.1945376,
+  "raw": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-primary-cohort-follow-actual-1792538881420446000.json",
+  "raw_sha256": "d774e82ea0551aca51c12613e6b142bce6f3ce503d4b4837a3d056bb15d36578",
+  "complete": {
+    "sealed_batches": 399,
+    "questions": 51072,
+    "trajectories": 255360
+  },
+  "whole_and_next_accepted": [
+    "gpu1-tp1",
+    "gpu3-tp1"
+  ],
+  "current_slots": {
+    "gpu1-tp1": {
+      "unit": "sst-q7b-g5-primary10-gpu1-tp1-v2-70188b8e50fd.service",
+      "controller_pid": 2904782,
+      "initialized": true,
+      "own_complete_batches": 1,
+      "phase_progress": [
+        [
+          "batch-000357",
+          "prefix",
+          640
+        ],
+        [
+          "batch-000357",
+          "full",
+          400
+        ]
+      ]
+    },
+    "gpu2-tp1": {
+      "unit": "sst-q7b-g5-primary10-gpu2-tp1-v3-70188b8e50fd.service",
+      "controller_pid": 2941517,
+      "initialized": true,
+      "own_complete_batches": 0,
+      "phase_progress": [
+        [
+          "batch-000362",
+          "prefix",
+          640
+        ],
+        [
+          "batch-000362",
+          "full",
+          200
+        ]
+      ]
+    },
+    "gpu3-tp1": {
+      "unit": "sst-q7b-g5-primary10-gpu3-tp1-v2-70188b8e50fd.service",
+      "controller_pid": 2906630,
+      "initialized": true,
+      "own_complete_batches": 1,
+      "phase_progress": [
+        [
+          "batch-000370",
+          "prefix",
+          640
+        ],
+        [
+          "batch-000370",
+          "full",
+          100
+        ]
+      ]
+    },
+    "gpu5-tp1": {
+      "unit": "sst-q7b-g5-primary10-gpu5-tp1-v3-70188b8e50fd.service",
+      "controller_pid": 2942924,
+      "initialized": true,
+      "own_complete_batches": 0,
+      "phase_progress": [
+        [
+          "batch-000363",
+          "prefix",
+          640
+        ],
+        [
+          "batch-000363",
+          "full",
+          200
+        ]
+      ]
+    },
+    "tp4-0-4-6-7": {
+      "unit": "sst-q7b-g5-primary10-tp4-0-4-6-7-v3-70188b8e50fd.service",
+      "controller_pid": 2943877,
+      "initialized": true,
+      "own_complete_batches": 0,
+      "phase_progress": [
+        [
+          "batch-000364",
+          "prefix",
+          640
+        ],
+        [
+          "batch-000364",
+          "full",
+          0
+        ]
+      ]
+    }
+  },
+  "audit": {
+    "auditor_sha256": "3def055adebfdb38e9326b9db385338c44800160c1b0a64e1ee78d8c3b68b906",
+    "base": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+    "cache_reused_batches": 366,
+    "canonical_unique_input_qids": 169028,
+    "discovered_input_batches": 1322,
+    "epoch": 1792538493.1514585,
+    "expected": {
+      "batches": 1322,
+      "questions": 169028,
+      "trajectories": 845140
+    },
+    "failed_batches": 0,
+    "independently_read_batches": 25,
+    "labels": 250240,
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "policy_tokens": 25786231,
+    "questions": 50048,
+    "response_tokens": 158077627,
+    "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+    "sealed_pending_batches": 3,
+    "seed": 20261021,
+    "short_terminal_prefixes": 22,
+    "states_shards_independently_audited": false,
+    "status": "INCOMPLETE",
+    "strict_em_ones": 84151,
+    "strict_em_recomputed": false,
+    "strict_em_source": "reproduction/prefix20_online/rollout.py:strict_label -> search_g1.signals.decode_segments/contexts -> verl.utils.reward_score.qa_em.em_check",
+    "strict_em_verification": "Exact own-em/full label correspondence only; tokenizer-based strict_label was not rerun",
+    "trajectories": 250240,
+    "uniqueness_basis": "Per-batch exact actual trajectory IDs and G5 indices; globally unique canonical qid and candidate ordinal",
+    "unsealed_batches": 928,
+    "utc": "2026-10-20T23:21:33.151471+00:00",
+    "verified_batches": 391,
+    "verified_unique_qids": 50048,
+    "verified_unique_trajectories": 250240,
+    "first_errors": []
+  },
+  "future_rollover_deployed": false,
+  "current_gpu_runtime_modified": false,
+  "storage": "own shaoshitong retained NAS10 shared directory",
+  "all_experiment_complete": false
+}
