@@ -1,0 +1,698 @@
+{
+  "actual_progress_observations": [
+    {
+      "samples": 3,
+      "stage": "original",
+      "time": 1792538287.6142354
+    },
+    {
+      "samples": 6,
+      "stage": "newseed20261021",
+      "time": 1792538288.6182148
+    },
+    {
+      "samples": 11,
+      "stage": "fixed_validation_firstqid",
+      "time": 1792538290.1270342
+    }
+  ],
+  "code_sha256": "1da4b4c0fe44ae20b9152eb0dbbf97a91ad910750b3e4c98753338966708e94f",
+  "complete": {
+    "bytes": 20593,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix20-chosen-logprob-availability-v1/complete.json",
+    "sha256": "d38529092bb5fc653cefb2cc80181cd06c08fd9951ef36425aa09a924f5e1959"
+  },
+  "published_source_commit": "790d31bf3e58c330b90c2a9b738d58ab3198d164",
+  "remote_command_exit_code": 0,
+  "summary": {
+    "GPU_or_optimizer_used": false,
+    "all_three_paths_and_sealed_prefix_exact": true,
+    "exact_zero_chosen_logprob_tokens": 0,
+    "final_read": false,
+    "full_validation_scored_or_scanned": false,
+    "full_vocabulary_entropy_claim": false,
+    "labels_used": false,
+    "model_or_tensor_read": false,
+    "nonzero_chosen_logprob_tokens": 220,
+    "only_one_frozen_validation_qid_G5_full_records_analyzed": true,
+    "prefix_policy_tokens": 220,
+    "probability_semantics": "Recorded native selected-token behavior logprob; no new forward/recomputation. Sampling settings reported; not a fabricated entropy or correctness probability.",
+    "progress": [
+      {
+        "samples": 3,
+        "stage": "original",
+        "time": 1792538287.6142354
+      },
+      {
+        "samples": 6,
+        "stage": "newseed20261021",
+        "time": 1792538288.6182148
+      },
+      {
+        "samples": 11,
+        "stage": "fixed_validation_firstqid",
+        "time": 1792538290.1270342
+      }
+    ],
+    "samples": 11,
+    "scopes": [
+      {
+        "samples": [
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 72,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -2.3841855067985307e-07,
+            "prefix_mean_logprob": -0.7130242917242853,
+            "prefix_min_logprob": -5.8819193840026855,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 21,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          },
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 107,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -3.1470757676288486e-05,
+            "prefix_mean_logprob": -0.5622255786271125,
+            "prefix_min_logprob": -4.102168083190918,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 21,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          },
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 77,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -5.602820692729438e-06,
+            "prefix_mean_logprob": -0.6458468726431648,
+            "prefix_min_logprob": -4.19341516494751,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 21,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          }
+        ],
+        "scope": "training_original8192_original",
+        "selection": "first frozen identity qid; first3 event-local authentic IDs; no label/score selection"
+      },
+      {
+        "samples": [
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 159,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -2.8013790142722428e-05,
+            "prefix_mean_logprob": -0.5362006164943522,
+            "prefix_min_logprob": -3.3093883991241455,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 20,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          },
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 82,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -5.364403477869928e-06,
+            "prefix_mean_logprob": -0.2539097562408642,
+            "prefix_min_logprob": -1.2755566835403442,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 20,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          },
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 72,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -5.221230458118953e-05,
+            "prefix_mean_logprob": -0.26049821673950646,
+            "prefix_min_logprob": -1.5796185731887817,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 20,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          }
+        ],
+        "scope": "training_original8192_newseed20261021",
+        "selection": "first frozen identity qid; first3 event-local authentic IDs; no label/score selection"
+      },
+      {
+        "samples": [
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 106,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -0.0006081400788389146,
+            "prefix_mean_logprob": -0.4076940531755099,
+            "prefix_min_logprob": -2.6327924728393555,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 21,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          },
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 123,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -5.829164365422912e-05,
+            "prefix_mean_logprob": -0.24969315699509026,
+            "prefix_min_logprob": -3.091536283493042,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 21,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          },
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 142,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -0.0010442048078402877,
+            "prefix_mean_logprob": -0.3334628447599243,
+            "prefix_min_logprob": -1.460218071937561,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 21,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          },
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 241,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -3.099436753473128e-06,
+            "prefix_mean_logprob": -0.36988813388792324,
+            "prefix_min_logprob": -3.091536283493042,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 21,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          },
+          {
+            "all_values_finite": true,
+            "environment_placeholder_positions_excluded": true,
+            "full_schema_chosen_logprob_fields": [
+              "sampling_journal[].selected_logprobs",
+              "behavior_turns[].actual_sampling_chunks[].selected_logprobs",
+              "behavior_turns[].selected_logprobs",
+              "response_log_probs (policy positions only)"
+            ],
+            "kept_prefix_policy_tokens": 20,
+            "native_chosen_logprob_tokens_present": 84,
+            "native_turn_response_chosen_logprobs_exact": true,
+            "positive_logprob_count": 0,
+            "prefix_confidence_is_not_full_vocabulary_entropy": true,
+            "prefix_exact_zero_chosen_logprobs": 0,
+            "prefix_json_has_logprob_fields": [],
+            "prefix_max_logprob": -5.721882189391181e-05,
+            "prefix_mean_logprob": -0.15454873702292388,
+            "prefix_min_logprob": -1.174492597579956,
+            "prefix_nonzero_chosen_logprobs": 20,
+            "sampling_settings": [
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 21,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              },
+              {
+                "frequency_penalty": 0.0,
+                "logprobs": 1,
+                "max_tokens": 480,
+                "min_tokens": 0,
+                "presence_penalty": 0.0,
+                "repetition_penalty": 1.0,
+                "temperature": 1.0,
+                "top_k": -1,
+                "top_p": 1.0
+              }
+            ],
+            "sealed_tokens_positions_contexts_exact": true
+          }
+        ],
+        "scope": "fixed_validation2048_first_qid_G5",
+        "selection": "existing fixed firstqid all5 own IDs; no new G5 selection, no labels read"
+      }
+    ],
+    "source_batch_files_SHA_streamed_and_target_rows_located": true,
+    "source_batch_refs": [
+      {
+        "full": {
+          "bytes": 3585221,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-04/batches/batch-000040/outers/outer-000001/full/rank-0-full.jsonl.gz",
+          "sha256": "82be9db0c546080079586d662f51678ea354ec946f2914180754a690368d3e0c"
+        },
+        "input": {
+          "bytes": 393185,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/inputs/shard-04/batch-000040.json",
+          "sha256": "7457f257a4339178e0c0841929e3b9ee9e771513f9e4cce336ba014bca11c544"
+        },
+        "prefix": {
+          "bytes": 81350,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-04/batches/batch-000040/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz",
+          "sha256": "81b4b583fb5b4231143e4fba3e0544b9fbbe6872ecd89896d7f2b021dfe347db"
+        }
+      },
+      {
+        "full": {
+          "bytes": 3648048,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/newseed-20261021-185747-445fc691/raw/newseed-20261021-185747-445fc691/group-00010/source/sampling/shard-00/batches/batch-000163/outers/outer-000001/full/rank-0-full.jsonl.gz",
+          "sha256": "c4e3c44453494a25caa4cdf1f5ffa1a36cf3a3f783404dc4a76875220218a1a5"
+        },
+        "input": {
+          "bytes": 393195,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/newseed-20261021-185747-445fc691/raw/newseed-20261021-185747-445fc691/group-00010/source/inputs/shard-00/batch-000163.json",
+          "sha256": "3f04125e4d3626dfea5b7b4104c11d56fbeb12cbf0a97050fe108acd8a65de6a"
+        },
+        "prefix": {
+          "bytes": 76527,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-h100-20261021/newseed-20261021-185747-445fc691/raw/newseed-20261021-185747-445fc691/group-00010/source/sampling/shard-00/batches/batch-000163/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz",
+          "sha256": "9789e28c6cff94f3cdd289a47d36ab14ed05ff4af5eced973381f05ae8bf4b57"
+        }
+      },
+      {
+        "full": {
+          "bytes": 3729724,
+          "count": 640,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-A/sampling/shard-02/batches/batch-000001/outers/outer-000001/full/rank-0-full.jsonl.gz",
+          "sha256": "309ae3fe412d8075c17ebd7af16d74c6ed08dd37d48a194cdb6f0585635d9c16"
+        },
+        "input": {
+          "bytes": 418665,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-A/inputs/shard-02/batch-000001.json",
+          "questions": 128,
+          "sha256": "06f9fcd13045f3fc38d3639b961e912a53c61cf5ea2faa822f407e17ac343754",
+          "shard": 2
+        },
+        "prefix": {
+          "bytes": 81963,
+          "count": 640,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-A/sampling/shard-02/batches/batch-000001/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz",
+          "sha256": "b92aebe1344d4e42d3ad60d9c76a8a53769f1e54819aad9532f147c5c1c76977"
+        }
+      },
+      {
+        "full": {
+          "bytes": 3746281,
+          "count": 640,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-B/sampling/shard-02/batches/batch-000001/outers/outer-000001/full/rank-0-full.jsonl.gz",
+          "sha256": "11966db0b89bbfb53897dd069efee954509ea2e204a1998d39be118998540392"
+        },
+        "input": {
+          "bytes": 418665,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-B/inputs/shard-02/batch-000001.json",
+          "questions": 128,
+          "sha256": "06f9fcd13045f3fc38d3639b961e912a53c61cf5ea2faa822f407e17ac343754",
+          "shard": 2
+        },
+        "prefix": {
+          "bytes": 82860,
+          "count": 640,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-B/sampling/shard-02/batches/batch-000001/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz",
+          "sha256": "56606c0efcdb98c87cf158b776401cd2c5ed776d2d9ed3330af09cfe9b36f632"
+        }
+      }
+    ],
+    "source_commit": "790d31bf3e58c330b90c2a9b738d58ab3198d164",
+    "status": "FINITE_SHA_BOUND_PREFIX20_NATIVE_CHOSEN_LOGPROBS_AVAILABLE_AND_CAUSALLY_ALIGNED",
+    "teacher_scores_used": false,
+    "time": 1792538290.144064,
+    "training_identity": {
+      "bytes": 5800345,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/identity-plan.json",
+      "sha256": "a9eaecf82c7bd540fc2313afdf39f16be0431e1caccf9d753b8954b320acdef9"
+    },
+    "training_raw_complete": {
+      "bytes": 10971,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-newseed-20261021-185747-445fc691/complete.json",
+      "sha256": "1fd5c29862267bc202419973ba6238d9c7b66de7ef2199dba725dda7fecf0804"
+    },
+    "training_source_events": {
+      "bytes": 770646,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-newseed-20261021-185747-445fc691/raw-g10/source-events.json",
+      "sha256": "0d626536bcf7100b784288154c49b2afe3a51abc9bb3fa03b089fc49a2b82552"
+    },
+    "validation_complete": {
+      "bytes": 4492,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/complete.json",
+      "sha256": "5ea5197a841d7bd0b226a82350a2436a8ae3d860143a2ea39fe59b7ecb6837d5"
+    },
+    "validation_fixed_G5_plan": {
+      "bytes": 694386,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/fixed-G5-selection.json",
+      "sha256": "b6e5b57fee270c8fa61c1f03f212b5baef1125d205c006475f65a0690ed4aecb"
+    },
+    "validation_source_audit": {
+      "bytes": 169795,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/source-audit.json",
+      "sha256": "9291d51504c0ee35e360ccba7863c7988405289dc077a880a69089f115913973"
+    }
+  }
+}
