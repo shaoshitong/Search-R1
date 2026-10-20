@@ -31,6 +31,11 @@ def bundle(role='upstream', generation='owner-v1', slot=None, instance='r1', ena
     source = source.replace(b"str(stage/'retrieval_relay_owner.py')", b"str(stage/'queued_relay_owner.py')")
     assert source.count(b"str(stage/'relay_slot_consumer_worker.py')") == 1
     source = source.replace(b"str(stage/'relay_slot_consumer_worker.py')", b"str(stage/'queued_slot_consumer.py'),'--slot-mode','node10'")
+    # Historical science import profile (4/8 only), not actual CUDA GPU count.
+    # TP1 still uses one admitted CVD and --tp=1 with the unchanged world1 loop.
+    profile = b"SEARCH_G1_PHYSICAL_WORLD_SIZE=str(slot['tp'])"
+    assert source.count(profile) == 1
+    source = source.replace(profile, b"SEARCH_G1_PHYSICAL_WORLD_SIZE='4'")
     files['relay_generation_bootstrap.py'] = source
     compile(source, 'relay_generation_bootstrap.py', 'exec')
     identity = original.old.digest(original.old.encoded(dict(parent=identity, source_files=manifest['source_files'])))

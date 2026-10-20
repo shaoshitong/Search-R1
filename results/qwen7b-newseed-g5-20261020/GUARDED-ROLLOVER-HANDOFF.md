@@ -212,17 +212,20 @@ running unit or script publication alone is not successful index continuation.
 Use NEW queued controls so both CPU health/readiness and model readiness use
 60s, matching the accepted59s relay budget. Do NOT relaunch legacy old-V6
 primary controls against the new source: those intentionally pin1490214.
-The NEW node10 registry explicitly defaults to all6 finite co-share slots:
-tp4-0-3,tp4-4-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1. Two TP4 groups keep
-8seq/4096tokens/1024blocks/.125GiB reserve; the four TP1 groups declare measured
-64seq/8192tokens/4096blocks/1GiB initial caps. The downstream owns all8 primary
-UUID leases and each overlapping slot holds its separate finite child lease.
-The copied registry is installed by BOTH new CPU-owner and node10-slot entries;
-control-only cap changes are insufficient. No old relay owner file is edited.
-Declaring these six slots is not a fit/acceptance claim: actual per-slot profiles
-and typedOOM retries decide usable concurrency/cache, with4096/seed/G5 fixed.
+The NEW node10 registry preserves the measured current5 topology and adds only
+GPU7TP1:6 finite child slots covering all8 physical cards. The single TP4 is
+[0,4,6,7],8seq/4096tokens/512KVcap/.125GiB reserve (current productive actual469
+KVblocks). All five TP1 groups declare64seq/8192tokens/4096KVcap/1GiB reserve.
+The old two contiguous TP4 groups [0..3]/[4..7] are excluded; they would add
+weights/cache to current productive TP1 cards without a measured free window.
+The downstream owns all8 primary UUID leases. Each overlapping finite slot
+proves those locks and holds its own child lease. Control, CPU owner and model
+entry all share queued_relay_slots.py; no old owner/worker is edited.
+GPU7 is the sole additional model declaration based on retained24005MiB free.
+The declaration does not prove future fit or performance: actual profile and
+eligible typedOOM retry decide capacity with original4096/seed/G5 unchanged.
 
-NODE10_SLOTS=tp4-0-3,tp4-4-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1
+NODE10_SLOTS=tp4-0-4-6-7,gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1,gpu7-tp1
 
 For upstream then downstream, stage their exact bundles before submit:
 python3 -m $M.queued_generation_control upstream stage --generation owner-v2 --enabled-slots "$NODE10_SLOTS" --intent-id queued-up-v2-stage --published-commit "$PUB" --published-ref "$REF"
@@ -232,7 +235,7 @@ python3 -m $M.queued_generation_control downstream submit --generation owner-v2 
 
 The future upstream/downstream chain holds the new source guard dependency
 lease; downstream owns node10's8 primary leases and finite child slots. New
-downstream defaults to the two TP4 slots0..3/4..7 plus four TP1 slots1/2/3/5,
+downstream defaults to the measured TP4 slot0/4/6/7 plus TP1 slots1/2/3/5/7,
 all explicitly named above at stage/submit, with actual GPU profiling later.
 This finite6 topology differs from the retired legacy5-model manifest; do not
 silently substitute either manifest. Tokens are newly generated remotely for
@@ -245,8 +248,15 @@ For GPU3, use the same two commands with --slot gpu3-tp1 and fresh corresponding
 source-gpu3-r1-stage/source-gpu3-r1-submit intents. Declaring a slot never starts
 a model automatically; verify its actual profile and forward progress later.
 For each declared node10 SLOT, e.g.:
-python3 -m $M.queued_generation_control slot stage --generation owner-v2 --enabled-slots "$NODE10_SLOTS" --slot tp4-0-3 --instance r1 --intent-id node10-tp4a-r1-stage --published-commit "$PUB" --published-ref "$REF"
-python3 -m $M.queued_generation_control slot submit --generation owner-v2 --enabled-slots "$NODE10_SLOTS" --slot tp4-0-3 --instance r1 --downstream-owner-ready "$DOWN_READY" --downstream-owner-ready-sha256 "$DOWN_SHA" --intent-id node10-tp4a-r1-submit --published-commit "$PUB" --published-ref "$REF"
+python3 -m $M.queued_generation_control slot stage --generation owner-v2 --enabled-slots "$NODE10_SLOTS" --slot tp4-0-4-6-7 --instance r1 --intent-id node10-tp40467-r1-stage --published-commit "$PUB" --published-ref "$REF"
+python3 -m $M.queued_generation_control slot submit --generation owner-v2 --enabled-slots "$NODE10_SLOTS" --slot tp4-0-4-6-7 --instance r1 --downstream-owner-ready "$DOWN_READY" --downstream-owner-ready-sha256 "$DOWN_SHA" --intent-id node10-tp40467-r1-submit --published-commit "$PUB" --published-ref "$REF"
+
+
+The only additional model beyond the measured current5 topology is GPU7 TP1:
+python3 -m $M.queued_generation_control slot stage --generation owner-v2 --enabled-slots "$NODE10_SLOTS" --slot gpu7-tp1 --instance r1 --intent-id node10-gpu7-r1-stage --published-commit "$PUB" --published-ref "$REF"
+python3 -m $M.queued_generation_control slot submit --generation owner-v2 --enabled-slots "$NODE10_SLOTS" --slot gpu7-tp1 --instance r1 --downstream-owner-ready "$DOWN_READY" --downstream-owner-ready-sha256 "$DOWN_SHA" --intent-id node10-gpu7-r1-submit --published-commit "$PUB" --published-ref "$REF"
+The other four TP1 slot names are exactly gpu1-tp1,gpu2-tp1,gpu3-tp1,gpu5-tp1;
+use distinct corresponding node10-gpuN-r1-stage/submit intent identities.
 
 Record true BF16/model4096 initialization, exact retrieval identity and two
 actual forward observations including complete sealed batches after starting.
@@ -291,7 +301,7 @@ queued_generation_control.py,queued_relay_slots.py,rollover_source_slots.py,roll
 rollover_retrieval_owner.py,test_rollover_terminal.py.
 Latest focused local verification:6 tests passed in0.077s with
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest reproduction.operations.qwen7b_resample.test_rollover_terminal -v
-The later node10 six-slot revision ran only its one new focused CPU case:
+Historical six-slot verification preceded this extension; the current renamed case is:
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest reproduction.operations.qwen7b_resample.test_rollover_terminal.RolloverTests.test_six_node10_slots_match_owner_entry_model_entry_and_actual_bootstrap -v
 PASS1 in0.016s, including real generated bootstrap to fakeexec and matching
 owner/model registry+sourceSHA. Initial fixture path assertion was corrected
@@ -318,3 +328,18 @@ fallback. No live process/unit, GPU or remote operation is part of the fixture.
 Minimal path-regression command:
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest reproduction.operations.qwen7b_resample.test_rollover_terminal.RolloverTests.test_private_alias_then_host_physical_view_capture_collect_and_owner_controls_keep_sha -v
 Actual source/terminal/deployment acceptance remains a later root operation.
+
+Future node10 GPU7 capacity declaration (local code only):
+The default registry now has6 slots (current5 topology+GPU7TP1); GPU7 TP1 starts64seq/8192tokens/4096KVcap/1GiB reserve.
+This does not alter the current five-slot capture or old TERMINALS. GPU7 is not
+claimed to be launched, fitted or productive. Control/owner/model entry share
+the new registry; primary lock proof and per-slot lease remain mandatory.
+Current focused CPU command executes both GPU7TP1 and measured-topology TP4 generated bootstraps to fake exec:
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest reproduction.operations.qwen7b_resample.test_rollover_terminal.RolloverTests.test_six_node10_slots_match_owner_entry_model_entry_and_actual_bootstrap -v
+
+Root final source check:10 focusedCPUtests PASS0.301s after finite6capacity and
+historical importprofile fixes. Newly generated TP1 bootstrap explicitly uses
+SEARCH_G1_PHYSICAL_WORLD_SIZE=4 only for historical4/8-only science imports;
+actual CUDA_VISIBLE_DEVICES=7/--tp1 and perbatchworld1 remain unchanged. Both
+TP1 and TP4 generated environments really imported contract in CPU subprocesses.
+No futuremodel has been launched by these changes.

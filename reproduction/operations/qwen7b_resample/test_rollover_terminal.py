@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import sys
 import shlex
+import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -234,7 +235,7 @@ class RolloverTests(unittest.TestCase):
         ast.parse(files['generation_bootstrap.py'])
         self.assertIn(b"'--slot-mode','source5'", files['generation_bootstrap.py'])
         for role in ('upstream', 'downstream', 'slot'):
-            _, files, manifest = queued.bundle(role, generation='owner-v2', slot='tp4-0-3' if role == 'slot' else None)
+            _, files, manifest = queued.bundle(role, generation='owner-v2', slot='tp4-0-4-6-7' if role == 'slot' else None)
             ast.parse(files['relay_generation_bootstrap.py'])
             self.assertIn(b"str(stage/'retrieval_relay_backpressure.py')", files['relay_generation_bootstrap.py'])
             self.assertIn(b"str(stage/'queued_relay_owner.py')", files['relay_generation_bootstrap.py'])
@@ -249,12 +250,16 @@ class RolloverTests(unittest.TestCase):
         owner_specs = copy.deepcopy(owner_registry)
         _, files, manifest = queued.bundle('downstream')
         declared = json.loads(files['slots.json'])
+        self.assertEqual(len(declared), 6)
+        self.assertEqual(set(index for spec in declared.values() for index in spec['indices']), set(range(8)))
+        self.assertEqual(sum(spec['tp'] == 4 for spec in declared.values()), 1)
+        self.assertNotIn('tp4-0-3', declared);self.assertNotIn('tp4-4-7', declared)
         self.assertEqual(set(declared), set(relay_slots.DEFAULT_SLOTS))
         self.assertEqual(manifest['finite_node10_slots'], declared)
         self.assertEqual(manifest['files']['queued_relay_slots.py']['sha256'],
                          hashlib.sha256(files['queued_relay_slots.py']).hexdigest())
         for name, spec in relay_slots.TP1_SLOTS.items():self.assertEqual(declared[name], spec)
-        for name in ('tp4-0-3', 'tp4-4-7'):self.assertEqual(declared[name], original_specs[name])
+        self.assertEqual(declared['tp4-0-4-6-7'], dict(indices=[0, 4, 6, 7], tp=4, seqs=8, tokens=4096, blocks=512, reserve=.125))
         self.assertIs(queued.original.SLOTS, original_registry)
         self.assertEqual(queued.original.DEFAULT_SLOTS, original_defaults)
         calls = []
@@ -276,45 +281,53 @@ class RolloverTests(unittest.TestCase):
             self.assertEqual(original_registry, original_specs)
         finally:
             owner.SLOTS, owner.DEFAULT_SLOTS, owner.verify_predecessor = owner_registry, owner_defaults, predecessor
-        with tempfile.TemporaryDirectory() as folder:
-            base = Path(folder)
-            with patch.object(queued.original, 'BASE', str(base)):
-                identity, files, manifest = queued.bundle('slot', slot='gpu2-tp1')
-            stage = base / 'preparation' / manifest['directory'] / identity;stage.mkdir(parents=True)
-            for name, data in files.items():(stage / name).write_bytes(data)
-            write(stage / 'manifest.json', manifest)
-            up = base / 'upstream-owner-ready.json';write(up, dict(transport_ready_path=str(base / 'upstream-transport.json')))
-            ready = base / 'downstream-owner-ready.json'
-            write(ready, dict(slots=declared, owner=dict(unit='future-cpu-owner.service'),
-                consumer_deadline_epoch=20000, upstream_owner_ready=str(up), job_ready_path=str(base / 'downstream/relay-owner-ready.json')))
-            write(stage.parent / 'submit-context.json', dict(downstream_owner_ready=str(ready), downstream_owner_ready_sha256=digest(ready)))
-            group = '/system.slice/' + manifest['unit']
-            detail = 'Id=%s\nMainPID=123\nActiveState=active\nControlGroup=%s\nMemoryMax=103079215104\nActiveEnterTimestampMonotonic=1000000\n' % (manifest['unit'], group)
-            real_stat, real_text = os.stat, Path.read_text
-            def stat(path, *a, **k):
-                if str(path) in ('/proc/self/ns/mnt', '/proc/1/ns/mnt', '/proc/self/ns/net', '/proc/1/ns/net'):
-                    return SimpleNamespace(st_ino=2 if str(path) == '/proc/self/ns/mnt' else 1)
-                return real_stat(path, *a, **k)
-            def text(path, *a, **k):return '0::' + group + '\n' if str(path) == '/proc/self/cgroup' else real_text(path, *a, **k)
-            namespace = dict(__file__=str(stage / 'relay_generation_bootstrap.py'))
-            try:
-                with patch('os.geteuid', return_value=0), patch('os.getpid', return_value=123), \
-                     patch('socket.gethostname', return_value='h100-10'), patch('os.stat', side_effect=stat), \
-                     patch.object(Path, 'read_text', text), patch('time.time', return_value=1000), \
-                     patch('time.monotonic', return_value=1), patch('subprocess.check_output', return_value=detail), \
-                     patch('os.dup2'), patch('os.chdir'), patch('builtins.print'), patch('os.execvpe') as execute:
-                    exec(compile(files['relay_generation_bootstrap.py'], namespace['__file__'], 'exec'), namespace)
-            finally:
-                if 'log' in namespace:namespace['log'].close()
-            _, command, env = execute.call_args.args
-            option = lambda key: command[command.index(key) + 1]
-            self.assertIn(str((stage / 'queued_slot_consumer.py').resolve()), command)
-            self.assertEqual(option('--slot-mode'), 'node10')
-            self.assertEqual([option(key) for key in ('--model-gpus', '--tp', '--model-max-seqs', '--model-batch-tokens', '--model-kv-block-cap', '--model-reserve-gib')],
-                             ['2', '1', '64', '8192', '4096', '1.0'])
-            self.assertEqual(env['CUDA_VISIBLE_DEVICES'], '2')
-            self.assertEqual(env['SEARCH_G1_PHYSICAL_WORLD_SIZE'], '1')
-            self.assertEqual(json.loads(files['slots.json']), declared)
+        for chosen, expected in (('gpu7-tp1', ['7', '1', '64', '8192', '4096', '1.0']),
+                                 ('tp4-0-4-6-7', ['0,4,6,7', '4', '8', '4096', '512', '0.125'])):
+            with tempfile.TemporaryDirectory() as folder:
+                base = Path(folder)
+                with patch.object(queued.original, 'BASE', str(base)):
+                    identity, files, manifest = queued.bundle('slot', slot=chosen)
+                stage = base / 'preparation' / manifest['directory'] / identity;stage.mkdir(parents=True)
+                for name, data in files.items():(stage / name).write_bytes(data)
+                write(stage / 'manifest.json', manifest)
+                up = base / 'upstream-owner-ready.json';write(up, dict(transport_ready_path=str(base / 'upstream-transport.json')))
+                ready = base / 'downstream-owner-ready.json'
+                write(ready, dict(slots=declared, owner=dict(unit='future-cpu-owner.service'),
+                    consumer_deadline_epoch=20000, upstream_owner_ready=str(up), job_ready_path=str(base / 'downstream/relay-owner-ready.json')))
+                write(stage.parent / 'submit-context.json', dict(downstream_owner_ready=str(ready), downstream_owner_ready_sha256=digest(ready)))
+                group = '/system.slice/' + manifest['unit']
+                detail = 'Id=%s\nMainPID=123\nActiveState=active\nControlGroup=%s\nMemoryMax=103079215104\nActiveEnterTimestampMonotonic=1000000\n' % (manifest['unit'], group)
+                real_stat, real_text = os.stat, Path.read_text
+                def stat(path, *a, **k):
+                    if str(path) in ('/proc/self/ns/mnt', '/proc/1/ns/mnt', '/proc/self/ns/net', '/proc/1/ns/net'):
+                        return SimpleNamespace(st_ino=2 if str(path) == '/proc/self/ns/mnt' else 1)
+                    return real_stat(path, *a, **k)
+                def text(path, *a, **k):return '0::' + group + '\n' if str(path) == '/proc/self/cgroup' else real_text(path, *a, **k)
+                namespace = dict(__file__=str(stage / 'relay_generation_bootstrap.py'))
+                try:
+                    with patch('os.geteuid', return_value=0), patch('os.getpid', return_value=123), \
+                         patch('socket.gethostname', return_value='h100-10'), patch('os.stat', side_effect=stat), \
+                         patch.object(Path, 'read_text', text), patch('time.time', return_value=1000), \
+                         patch('time.monotonic', return_value=1), patch('subprocess.check_output', return_value=detail), \
+                         patch('os.dup2'), patch('os.chdir'), patch('builtins.print'), patch('os.execvpe') as execute:
+                        exec(compile(files['relay_generation_bootstrap.py'], namespace['__file__'], 'exec'), namespace)
+                finally:
+                    if 'log' in namespace:namespace['log'].close()
+                _, command, env = execute.call_args.args
+                option = lambda key: command[command.index(key) + 1]
+                self.assertIn(str((stage / 'queued_slot_consumer.py').resolve()), command)
+                self.assertEqual(option('--slot-mode'), 'node10')
+                self.assertEqual([option(key) for key in ('--model-gpus', '--tp', '--model-max-seqs', '--model-batch-tokens', '--model-kv-block-cap', '--model-reserve-gib')],
+                                 expected)
+                self.assertEqual(env['CUDA_VISIBLE_DEVICES'], expected[0])
+                # Import compatibility profile is historical4, independent of
+                # the real CVD/--tp assertions above (GPU7 TP1 remains one GPU).
+                self.assertEqual(env['SEARCH_G1_PHYSICAL_WORLD_SIZE'], '4')
+                imported = subprocess.run([sys.executable, '-c',
+                    'from reproduction.prefix_selection200 import contract; assert contract.WORLD == 4; print(contract.WORLD)'],
+                    env=env, cwd=Path(__file__).resolve().parents[3], text=True, capture_output=True, check=True)
+                self.assertEqual(imported.stdout.strip(), '4')
+                self.assertEqual(json.loads(files['slots.json']), declared)
 
     def test_import_contract_and_handoff_commands_use_new_registry_without_global_leaks(self):
         old_owner_slots = queued_cpu.owner.SLOTS
