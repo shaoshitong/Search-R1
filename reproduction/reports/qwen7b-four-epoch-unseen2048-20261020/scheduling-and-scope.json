@@ -1,0 +1,41 @@
+{
+  "partition_adjustment": {
+    "job_id": 741448,
+    "before": "741448_0|PENDING|acd_u|(Priority)\n741448_1|PENDING|acd_u|(Priority)\n741448_2|PENDING|acd_u|(Priority)\n741448_3|PENDING|acd_u|(Priority)\n",
+    "after": "741448_0|PENDING|acd_ue|(None)\n741448_1|PENDING|acd_ue|(None)\n741448_2|PENDING|acd_ue|(None)\n741448_3|PENDING|acd_ue|(None)\n",
+    "from_partition": "acd_u",
+    "to_partition": "acd_ue",
+    "from_priority_tier": 100,
+    "to_priority_tier": 200,
+    "reason": "Ordinary-tier scheduler estimated start2026-10-21T02:20; exercise authorized stepwise escalation after actual wait.",
+    "emergency_acd_used": false,
+    "duplicate_jobs_created": false,
+    "resources_unchanged": true,
+    "time": 1792485437.6135657
+  },
+  "time_limit_adjustment": {
+    "job_id": 741448,
+    "partition": "acd_ue",
+    "priority_tier": 200,
+    "time_limit_from": "08:00:00",
+    "time_limit_to": "02:00:00",
+    "reason": "Each new shard has4 genuine128-question batches; prior167-batch shards completed in2h50m-3h48m. Two hours retains wide margin and permits backfill.",
+    "gpu_cpu_memory_unchanged": true,
+    "duplicate_jobs_created": false,
+    "time": 1792485541.4839728
+  },
+  "effective_scope": {
+    "fit_epochs": 4,
+    "then_compare_ema_epochs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "unseen_questions": 2048,
+    "G": 5,
+    "top_questions": 512,
+    "criterion": "true Mixed fraction among prediction-only top512",
+    "student_RL": false
+  }
+}
