@@ -54,15 +54,18 @@ def validate_snapshot(value, source):
     source = Path(source)
     if (not source.is_absolute() or source.parent != SOURCE_PARENT or
             not re.fullmatch('[A-Za-z0-9_-]{8,80}', source.name) or
+            value['status'] != 'SEALED_CANONICAL_NEWSEED_PREFIX20_G5_SNAPSHOT_EXPORT_COMPLETE' or
             value['source_node'] != 'h100-10' or value['revision'] != REVISION or
             value['snapshot_id'] != source.name or value['actor_updates'] != 0 or
+            value['source_run_id'] != '70188b8e50fd4b45bc420ce58014f46e' or value['seed'] != 20261021 or
+            value['hidden_exported'] is not False or not value['all_archives_fresh_SHA_and_member_SHA_verified'] or
             not value['fresh_all_source_files_SHA256']):
         raise ValueError('Sealed own-NAS10 official7B raw-only source snapshot required')
     names = set(); paths = set()
     for group in value['groups']:
         name = group['group']; archive = Path(group['archive'])
         if (not re.fullmatch('[A-Za-z0-9_-]+', name) or name in names or
-                archive.parent != source or archive.suffixes[-2:] != ['.tar','.gz'] or
+                archive.parent not in (source,source/'archives') or not (archive.suffix == '.tar' or archive.suffixes[-2:] == ['.tar','.gz']) or
                 not re.fullmatch('[0-9a-f]{64}', group['archive_sha256']) or
                 type(group['archive_bytes']) is not int or group['archive_bytes'] < 1):
             raise ValueError('Distinct complete source archives required')

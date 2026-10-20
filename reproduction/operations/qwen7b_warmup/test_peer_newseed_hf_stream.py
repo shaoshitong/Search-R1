@@ -17,7 +17,10 @@ def plan():
     group=dict(group='part-0000',archive=str(root/'part-0000.tar.gz'),archive_bytes=len(data),
         archive_sha256=hashlib.sha256(data).hexdigest(),files=[dict(path='batch0/full.jsonl.gz',bytes=10,sha256='a'*64)],
         source_bytes=10,questions=1,trajectories=5)
-    return root,dict(source_node='h100-10',revision=m.REVISION,snapshot_id=root.name,
+    return root,dict(status='SEALED_CANONICAL_NEWSEED_PREFIX20_G5_SNAPSHOT_EXPORT_COMPLETE',
+        source_run_id='70188b8e50fd4b45bc420ce58014f46e',seed=20261021,hidden_exported=False,
+        all_archives_fresh_SHA_and_member_SHA_verified=True,
+        source_node='h100-10',revision=m.REVISION,snapshot_id=root.name,
         actor_updates=0,fresh_all_source_files_SHA256=True,groups=[group],files=1,payload_bytes=10,questions=1,trajectories=5)
 
 
