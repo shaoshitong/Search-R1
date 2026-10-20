@@ -38,7 +38,10 @@ def accept(base, receipt=None):
     assert receipt['completed_epoch'] == (receipt['cursor'] == 0)
     audit = base / 'mixed-checkpoint-audit'
     audit.mkdir(exist_ok=True)
-    path = audit / ('epoch-%04d-step-%08d.pt' % (receipt['epoch'], receipt['steps']))
+    # The pre-evaluation state and sealed epoch have the same optimizer step,
+    # but distinct cursor/metrics/RNG metadata and file hashes. Keep both.
+    path = audit / ('epoch-%04d-step-%08d-cursor-%04d-%s.pt' %
+                    (receipt['epoch'], receipt['steps'], receipt['cursor'], receipt['sha256'][:12]))
     if not path.exists():
         os.link(receipt['path'], path)
     actual = fingerprints(path)
