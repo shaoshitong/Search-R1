@@ -16,10 +16,10 @@ for i in range(2):
  for phase in ['prefix','full']:
   p=root/'batches'/('batch-%06d'%completed)/'outers/outer-000001'/phase/'rank-0-progress.json'
   if p.exists():v['shard%02d_current_%s'%(i,phase)]=json.loads(p.read_text())
-for i in range(7):
+for i in range(8):
  p=b/'workers'/('worker-%02d'%i)/'progress.json'
  if p.exists():v['worker%02d'%i]=json.loads(p.read_text())
-for n in ['native','retriever']+['sampling-%02d'%i for i in range(7)]:
+for n in ['native','retriever']+['sampling-%02d'%i for i in range(8)]:
  p=b/'logs'/'r6'/(n+'.log')
  if p.exists():
   with p.open('rb')as f:f.seek(max(0,p.stat().st_size-1600));v[n+'_tail']=f.read().decode(errors='replace')
