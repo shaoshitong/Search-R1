@@ -35,8 +35,13 @@ def normalized(value):
 
 
 def terminal(job):
-    live = subprocess.check_output(['squeue', '-h', '-j', str(job), '-o', '%i|%T'], text=True)
-    assert not live.strip(), live
+    query = subprocess.run(['squeue', '-h', '-j', str(job), '-o', '%i|%T'],
+                           stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    # Slurm removes finished IDs from squeue before their durable sacct rows.
+    # An unknown queue ID alone is not evidence of either success or failure.
+    if query.returncode:
+        assert 'Invalid job id specified' in query.stderr, query.stderr
+    assert not query.stdout.strip(), query.stdout
     account = subprocess.check_output(['sacct', '-X', '-n', '-P', '-j', str(job), '--format=JobID,State,ExitCode'], text=True)
     rows = [line.strip().split('|') for line in account.splitlines() if line.strip()]
     assert rows and all(row[1:3] == ['COMPLETED', '0:0'] for row in rows), account
