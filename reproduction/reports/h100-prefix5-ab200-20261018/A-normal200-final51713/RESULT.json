@@ -1,0 +1,108 @@
+{
+  "role": "A_NORMAL200_AND_FINAL51713_ACTUAL_RESULT",
+  "updated_utc": "2026-10-20T01:21:35.687070+00:00",
+  "run_id": "ca37419b494446398fb15234aa3be91a",
+  "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3",
+  "frozen_runtime_commit": "6dc4a39e3ddd2bf7a642c33a9343f6044ee69ea4",
+  "complete_outers": 200,
+  "actor_actual_adam_per_rank": [
+    3984,
+    3984,
+    3984,
+    3984
+  ],
+  "actor_historical_skipped_opportunities": 16,
+  "selection_probe_online_adam_per_rank": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "qa512_200": {
+    "em": 0.435546875,
+    "f1": 0.5082714771572434,
+    "qa_count": 512
+  },
+  "final51713": {
+    "em": 0.41558215535745363,
+    "f1": 0.4825501265662649,
+    "per_source": {
+      "2wikimultihopqa": {
+        "em": 0.31504452926208654,
+        "f1": 0.37215250582197457,
+        "qa_count": 12576
+      },
+      "bamboogle": {
+        "em": 0.136,
+        "f1": 0.23737835497835497,
+        "qa_count": 125
+      },
+      "hotpotqa": {
+        "em": 0.3272113436866982,
+        "f1": 0.43187095935849806,
+        "qa_count": 7405
+      },
+      "musique": {
+        "em": 0.07943731899048408,
+        "f1": 0.15833899010997038,
+        "qa_count": 2417
+      },
+      "nq": {
+        "em": 0.4473684210526316,
+        "f1": 0.5313851649048572,
+        "qa_count": 3610
+      },
+      "popqa": {
+        "em": 0.44157846779280857,
+        "f1": 0.48581989648086327,
+        "qa_count": 14267
+      },
+      "triviaqa": {
+        "em": 0.6171660921064263,
+        "f1": 0.6907142036583587,
+        "qa_count": 11313
+      }
+    },
+    "qa_count": 51713
+  },
+  "actual_source_counts": {
+    "2wikimultihopqa": 12576,
+    "bamboogle": 125,
+    "hotpotqa": 7405,
+    "musique": 2417,
+    "nq": 3610,
+    "popqa": 14267,
+    "triviaqa": 11313
+  },
+  "canonical_input_sha256": "55d515e116a4c6aa63b45282f9bc87202b030156be41be60420c38a9d3ff0ed1",
+  "original_worker_exit_codes": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0
+  },
+  "normal_checkpoint_proof": {
+    "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3/preparation/ab-joint-0200-independent-full-sha-cpu.json",
+    "sha256": "e09d25cbfdeb456637af8560d50f98e86000e652e324d0d35ce0ae99496c4a10",
+    "actual_cpu_load": true,
+    "all_payload_full_sha": true
+  },
+  "final_qa_proof": {
+    "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3/preparation/final51713-original-output-cpu-once.json",
+    "sha256": "d8ad7d9672491992a1ac0de2222602b3656e08854df6245d9460d31a4aeeefc3",
+    "all_original_shards_full_sha_and_cpu_rescored": true
+  },
+  "current_native_exit_release_proof": {
+    "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3/preparation/final-native-exit0-owned-release-once.json",
+    "sha256": "ea81c917198842bc79f9dfdd9a7fece7656fd0cd7f1ecf2f995bf110bc43da0a",
+    "actual_exit_code": 0,
+    "two_actual_owned_release_checks_passed": true
+  },
+  "limitations": [
+    "B is incomplete; this is not a final A/B comparison",
+    "Earlier source11 exit-only kernel residues remain separately documented, not claimed released",
+    "All original weights, optimizer states, trajectories and predictions remain on retained remote storage",
+    "Final publication/whole-goal retention closure is not asserted by this single-arm result"
+  ],
+  "whole_ab_goal_complete": false
+}

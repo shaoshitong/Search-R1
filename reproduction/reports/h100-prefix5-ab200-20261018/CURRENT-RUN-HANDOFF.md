@@ -1,3 +1,21 @@
+# October20 latest: A200/final51713 accepted; B174 typed-OOM recovery
+
+A's actual200 checkpoint passed independent full-file SHA and CPU state readback: four actual actor clocks3984 (16 historical skips retained), frozen selection probe0. Its original final51713 outputs passed full compressed-shard SHA, exact question/ordinal/seven-source coverage, original4worker exit0 and CPU strictEM/F1 rescore. Final aggregate EM0.41558215535745363/F10.4825501265662649; scheduled512QA200 EM0.435546875/F10.5082714771572434. Current A native truly exited0, and two actual checks found its own births/GPU rows gone. See `A-normal200-final51713/RESULT.json`. This does not claim earlier source11 kernel residues released, nor complete the whole A/B goal.
+
+B's original h100-5 leader1601370 truly exited1 after complete174, actor3480/probe2420 per rank. Its outer175 admitted-continuation rank2 raised typed CUDA OOM while other processes occupied the same GPU; no175 actor/probe writes were retained. Original126 terminal files568049335B are fully SHA-sealed remotely, with two actual owned-release checks. Actual latest174 full model/Adam/EMA/scheduler/RNG/pool passed independent full-SHA/CPU readback, proofSHA f7893ccc3a72ac52d26705a61a2409c375250aa75d1cf0b1ad9fa0f3eab28617. Do not rehash/load174 again or roll back to150/50.
+
+New same-run B destination is the previous `-retained-h1005-r1` source suffixed `-resume174-memory8g-r1`, still h100-5 physical4–7. Native40168/start505777, direct-parent supervisor40166/start505726; configSHA de4ef2e9e2fcf7c3331ff73f5f6b7ab7628ceef2c05c65a532b2fc27faca5845. Runtime6dc4a39e3ddd2bf7a642c33a9343f6044ee69ea4 uses the already accepted process-local vLLM profiling fix; all1430 actual target runtime sources match the independently read Git publication (the published tree also has reports, not claimed deployed). Protected actor/reward/probe science remains identical.
+
+Only actual-OOM inference memory settings change: free reserve2→8GiB, maxseq256→128, maxbatched8192→4096, utilcap.95→.65 and process-local profiler enabled. Prefix80/admit1536, candidate/selected/G5 budgets, loss weights/LR, raw+EMA clocks, actor micro4/local1/accum32, grounding150, scheduler174 and reserved175 questions remain intact. Failed unsaved175 rollout is retained as a failure cost and is not stitched into completed training. No warmup, official0/head reset, old checkpoint fallback or foreign-task signal.
+
+The previous local reader25902 actually exited3 on B's true native failure. Its compact/cumulative records are sealed locally with `.closed-b175-oom-20261020`. New sole reader is execsession45688, `follow_h10011_ab_normal_boundary --node assigned --until200 --verified-a199 --verified-b174 --interval180 --transport retained18 --path-layout h1005-retained`. It reads current assigned nodes, never writes primary state or training. Use its new small originals and `work/prefix5-ab-b174-memory-recovery-follow-output.jsonl`; do not restart the old reader. Actual B175 restore/full iteration, then175–179 plus180actual start are pending, not accepted merely from submission.
+
+A is not retrained beyond200. B continues through200/no201 and still owes QA200/final51713, normal200 state and actual native exit0/owned release. All model/Adam/hidden/rollouts/full outputs stay remote. Only small metrics/proofs and code/config/docs are local. One diagnostic accidentally returned a large process ledger; both local full-metadata copies were removed, retaining a13KB failure summary. The original remains remote. No full log/model/rollout artifact is part of this publication.
+
+Later control commitsa8bd9b0d/e6621423/cf63cfc7 are not frozen training runtime deployments. The original standalone failure CPU worker/source controls are in `once_records_20261018`; consumed intents must be queried, never replayed. Main primary state/assigned arms and fresh actual originals supersede all historical snapshots below.
+
+---
+
 # Current correction: A on h100-11 GPU0–3, B on h100-5 GPU4–7
 
 Actual October20 recovery has now completed A188 with all4 original actor ledgers20 new writes to3744/rank and probe0. A189 has started. B158/159 each completed20 actor writes and10 raw/EMA probe writes; B160 is in progress in the initial accepted snapshot. Always read newer primary state/compact/facts first.
