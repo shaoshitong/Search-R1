@@ -317,7 +317,7 @@ for i in range(4):
   p=root/name
   if p.exists():
    if name=='job.id':
-    job=p.read_text().strip();r=subprocess.run(['sacct','-n','-P','-j',job,'-o','JobID,JobName,State,ExitCode'],capture_output=True,text=True,timeout=20);own['job']=job;own['accounting']=r.stdout[-4000:]
+    job=p.read_text().strip();r=subprocess.run(['sacct','-n','-P','-j',job,'-o','JobID,JobName,State,ExitCode'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=20);own['job']=job;own['accounting']=r.stdout[-4000:]
    elif name=='capture/complete.json':v=read(p);own['complete']={k:v.get(k) for k in ('status','questions','trajectories','capture_layers','native_bitexact_equivalence_claim')}
    else:own[name]=read(p)
  out['jobs'].append(own)
@@ -330,10 +330,10 @@ for v in (prep['selections'][i],prep['scripts'][i]):verify(v)
 assert not (root/'capture/complete.json').exists(),'Already complete; do not resubmit'
 if (root/'job.id').exists():print(json.dumps(dict(status='EXISTING_REPLAY_SHARD_JOB_NOT_RESUBMITTED',shard=i,job=(root/'job.id').read_text().strip())));raise SystemExit(0)
 assert not (root/'submission-intent.json').exists(),'Unknown prior submission; inspect queue/accounting before any retry'
-name='q7b-replay-bank-'+str(i);q=subprocess.run(['squeue','-h','-u','mou176','-n',name,'-o','%A|%T|%j'],capture_output=True,text=True,timeout=20);assert q.returncode==0 and not q.stdout.strip(),'Existing same-name job; reconcile identity before submission'
+name='q7b-replay-bank-'+str(i);q=subprocess.run(['squeue','-h','-u','mou176','-n',name,'-o','%A|%T|%j'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=20);assert q.returncode==0 and not q.stdout.strip(),'Existing same-name job; reconcile identity before submission'
 assert not (root/'capture').exists(),'Unowned/partial writer output; preserve and inspect'
 atomic(root/'submission-intent.json',dict(name=name,script=prep['scripts'][i],selection=prep['selections'][i],time=time.time()))
-r=subprocess.run(['sbatch','--parsable',prep['scripts'][i]['path']],capture_output=True,text=True,timeout=25)
+r=subprocess.run(['sbatch','--parsable',prep['scripts'][i]['path']],stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=25)
 assert r.returncode==0,(r.stdout+r.stderr)[-2000:];job=r.stdout.strip().split(';')[0];assert job.isdigit();(root/'job.id').write_text(job+'\n')
 print(json.dumps(dict(status='REPLAY_SHARD_SUBMITTED_NOT_CAPTURE_ACCEPTED',shard=i,job=job,partition='acd_u',qos='normal',dependency=None,gpus=1,time=time.time())))
 '''

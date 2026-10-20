@@ -1,5 +1,6 @@
 """Offline synthetic metadata tests; no real bank/GPU/SSH/submission claims."""
 import copy
+import ast
 import gzip
 import io
 import json
@@ -22,6 +23,18 @@ def group(q):
 
 
 class ReplayBankTests(unittest.TestCase):
+    def test_login_control_fragments_use_Python36_subprocess_keywords(self):
+        from . import deploy_replay_bank as helper
+        forbidden={'capture_output','text'}
+        for name in ('STATUS','SUBMIT','START'):
+            # Syntax alone cannot detect newer stdlib keyword parameters.
+            tree=ast.parse(helper.COMMON+'\n'+getattr(helper,name),feature_version=(3,6))
+            for node in ast.walk(tree):
+                if isinstance(node,ast.Call) and isinstance(node.func,ast.Attribute) and node.func.attr=='run':
+                    self.assertFalse(forbidden&{k.arg for k in node.keywords},name)
+        self.assertIn('universal_newlines=True',helper.SUBMIT)
+        self.assertIn('universal_newlines=True',helper.STATUS)
+
     def test_real_matched_config_SHA_only_refs_and_optional_strict_bytes(self):
         path='/data/user/test/immutable-plan.json'
         actual=dict(path=path,sha256='a'*64,bytes=321)
