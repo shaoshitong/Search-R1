@@ -1,0 +1,111 @@
+{
+  "time": 1792502669.1888697,
+  "epoch": 1,
+  "scope": "sealed train/diagnostic predictions; final trainer metrics and heldout selection pending",
+  "splits": {
+    "train": {
+      "questions": 67199,
+      "trajectory_accuracy": 0.5886099495528208,
+      "mean_p_range": 0.263090998086422,
+      "all5_identical_p_fraction": 0.0001636929120969062,
+      "range_le001_fraction": 0.0031548088513221923,
+      "mean_predicted_mixed": 0.8837707906374724,
+      "three_class_order": [
+        "all_wrong",
+        "mixed",
+        "all_correct"
+      ],
+      "three_class_confusion": [
+        [
+          0,
+          0,
+          0
+        ],
+        [
+          13354,
+          40152,
+          13693
+        ],
+        [
+          0,
+          0,
+          0
+        ]
+      ],
+      "files": [
+        {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-train-rank0.jsonl.gz",
+          "bytes": 1315541,
+          "sha256": "8d60ecfe721a0535b0f603658b479741cd1c9d131db5e507b014d34edef05490"
+        },
+        {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-train-rank1.jsonl.gz",
+          "bytes": 1315401,
+          "sha256": "69a941a1392c0dbce00ebc13f1fa0f9a0a332df890b91854f2effa1b9755ab74"
+        },
+        {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-train-rank2.jsonl.gz",
+          "bytes": 1316893,
+          "sha256": "028c392bec21226b4449c5ba980dc6ba67db7b1d844f96931e54a2a3302eacbc"
+        },
+        {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-train-rank3.jsonl.gz",
+          "bytes": 1317950,
+          "sha256": "2a1ddcb91b3e3407cdf615f353ec81498e37702f64efb312adbda09e428b88de"
+        }
+      ]
+    },
+    "diagnostic": {
+      "questions": 512,
+      "trajectory_accuracy": 0.58828125,
+      "mean_p_range": 0.2293517777325178,
+      "all5_identical_p_fraction": 0.0,
+      "range_le001_fraction": 0.0,
+      "mean_predicted_mixed": 0.8394365310959984,
+      "three_class_order": [
+        "all_wrong",
+        "mixed",
+        "all_correct"
+      ],
+      "three_class_confusion": [
+        [
+          94,
+          90,
+          44
+        ],
+        [
+          58,
+          97,
+          50
+        ],
+        [
+          9,
+          40,
+          30
+        ]
+      ],
+      "files": [
+        {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-diagnostic-rank0.jsonl.gz",
+          "bytes": 10740,
+          "sha256": "d150b2d4c6e73f1b738062c46ca3d13682777ca15a8e7d54d81fbf42a69bba4c"
+        },
+        {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-diagnostic-rank1.jsonl.gz",
+          "bytes": 10684,
+          "sha256": "20b08fe557483e82d0adf6e174da36ca4679a9a93ee79a38f1728f98668b8523"
+        },
+        {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-diagnostic-rank2.jsonl.gz",
+          "bytes": 10782,
+          "sha256": "8b6bd3503fac98e220252f649f608bbcdf123323d41ca347566f7ae79edb4ad2"
+        },
+        {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-diagnostic-rank3.jsonl.gz",
+          "bytes": 10710,
+          "sha256": "7411945d6e21560bfbd8fa9bb0cf5aef555a1b4a432078b2cb88f3669de3a1fd"
+        }
+      ]
+    }
+  }
+}
