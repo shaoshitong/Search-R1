@@ -20,7 +20,7 @@ def main():
   return PARENT/s[len(prefix):]if s.startswith(prefix)else Path(s)
  b=PARENT/NAME;old=PARENT/OLD;first=PARENT/FIRST
  j=read(b/'latest-joint.json');n=j['outer'];c=read(b/'preparation/launch-config.json')
- assert n>=(182 if a.kind=='derived-four'else183)and c['world_size']==4 and c['physical_gpu_indices']==[0,1,2,3]
+ assert n>=(182 if a.kind=='derived-four' else 183)and c['world_size']==4 and c['physical_gpu_indices']==[0,1,2,3]
  assert not(b/'logs/cleanup-status.json').exists()
  # Require committed joint and directly sealed four-rank optimizer journals.
  assert j==read(b/('outers/outer-%06d/complete.json'%n))and j['actor']==read(b/'actor/latest.json')
