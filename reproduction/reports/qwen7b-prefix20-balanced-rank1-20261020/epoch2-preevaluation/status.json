@@ -1,0 +1,156 @@
+{
+  "time": 1792507669.0426235,
+  "job_id": "742276",
+  "queue": "742276|RUNNING|emergency_acd|37:43|ACD1-32|ACD1-32\n",
+  "accounting": "742276|RUNNING|0:0|00:37:43|billing=16,cpu=16,gres/gpu=4,mem=128G,node=1\n742276.batch|RUNNING|0:0|00:37:43|cpu=16,gres/gpu=4,mem=128G,node=1\n742276.extern|RUNNING|0:0|00:37:43|billing=16,cpu=16,gres/gpu=4,mem=128G,node=1\n742276.0|RUNNING|0:0|00:37:43|cpu=16,gres/gpu=4,mem=128G,node=1\n742276.1|COMPLETED|0:0|00:00:00|cpu=1,mem=1G,node=1\n742276.2|COMPLETED|0:0|00:00:00|cpu=1,mem=1G,node=1\n",
+  "restore-acceptance.json": {
+    "status": "ACTUAL_FOUR_RANK_RAW_EMA_ADAM_RNG_RESTORED",
+    "source_checkpoint": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/epoch-0001.pt",
+      "sha256": "02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724",
+      "steps": 10464,
+      "epoch": 1
+    },
+    "adam_steps": 10464,
+    "lr": 5e-06,
+    "epoch_time": 1792505543.176525,
+    "new_objective": true,
+    "prefix_tokens": 20,
+    "prefix_migration": null
+  },
+  "deterministic-warmup.json": {
+    "status": "DDP_GRADIENT_BUCKET_WARMUP_NO_OPTIMIZER_UPDATE",
+    "steps": 10464,
+    "flash_attention_deterministic": true,
+    "cublas_workspace": ":4096:8",
+    "epoch_time": 1792505553.478109
+  },
+  "next-update-proof.json": {
+    "status": "ACTUAL_EPOCH1_FOUR_RANK_BALANCED_RANK1_NEXT_UPDATE_BIT_EXACT",
+    "source_steps": 10464,
+    "continuation_steps": 10465,
+    "raw_sha256": "2a97a79d08b7138227f562e6c011b9f96ea63f6845b56b5ae01a0ff85dae68ef",
+    "ema_sha256": "0283c913081859af751ebc1e118ef7769f7c0ed3a0dc99a5a0d3c0c76f1afdc1",
+    "adam_sha256": "6b88a5639247313ca3b766505c9d19a6ff13f6b108f051fce9397b739302fc35",
+    "rank_count": 4,
+    "rank_proofs": [
+      {
+        "rank": 0,
+        "raw": "2a97a79d08b7138227f562e6c011b9f96ea63f6845b56b5ae01a0ff85dae68ef",
+        "ema": "0283c913081859af751ebc1e118ef7769f7c0ed3a0dc99a5a0d3c0c76f1afdc1",
+        "adam": "6b88a5639247313ca3b766505c9d19a6ff13f6b108f051fce9397b739302fc35",
+        "replayed_bit_exact": true
+      },
+      {
+        "rank": 1,
+        "raw": "2a97a79d08b7138227f562e6c011b9f96ea63f6845b56b5ae01a0ff85dae68ef",
+        "ema": "0283c913081859af751ebc1e118ef7769f7c0ed3a0dc99a5a0d3c0c76f1afdc1",
+        "adam": "6b88a5639247313ca3b766505c9d19a6ff13f6b108f051fce9397b739302fc35",
+        "replayed_bit_exact": true
+      },
+      {
+        "rank": 2,
+        "raw": "2a97a79d08b7138227f562e6c011b9f96ea63f6845b56b5ae01a0ff85dae68ef",
+        "ema": "0283c913081859af751ebc1e118ef7769f7c0ed3a0dc99a5a0d3c0c76f1afdc1",
+        "adam": "6b88a5639247313ca3b766505c9d19a6ff13f6b108f051fce9397b739302fc35",
+        "replayed_bit_exact": true
+      },
+      {
+        "rank": 3,
+        "raw": "2a97a79d08b7138227f562e6c011b9f96ea63f6845b56b5ae01a0ff85dae68ef",
+        "ema": "0283c913081859af751ebc1e118ef7769f7c0ed3a0dc99a5a0d3c0c76f1afdc1",
+        "adam": "6b88a5639247313ca3b766505c9d19a6ff13f6b108f051fce9397b739302fc35",
+        "replayed_bit_exact": true
+      }
+    ],
+    "epoch_time": 1792505567.473574
+  },
+  "progress.json": {
+    "epoch": 2,
+    "batch": 1318,
+    "batches": 1318,
+    "steps": 11782,
+    "source_steps": 10464,
+    "trajectory_bce": 0.6773904644914212,
+    "group_bce": 0.8112579920599537,
+    "pairwise_loss": 1.3717305429520146,
+    "total_loss": 2.860379026782128,
+    "pairwise_accuracy": 0.4594594594594595,
+    "eligible_pairs": 74,
+    "eligible_groups": 15,
+    "mean_p_range": 0.2041701328369879,
+    "mean_rank_step_seconds": 1.0352825371082872,
+    "actor_updates": 0,
+    "epoch_time": 1792507446.8617136
+  },
+  "latest.json": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/inflight.pt",
+    "bytes": 3745807520,
+    "sha256": "b7b8ee112b5627f7cad4489c3e19e4d948705fb2302e4cbc8f59ba449336db1d",
+    "git_blob_sha1": "3bf2f7764c7f4d72a4cc3be888e0685c7ae6db20",
+    "epoch": 2,
+    "cursor": 1318,
+    "steps": 11782,
+    "source_steps": 10464,
+    "completed_epoch": false,
+    "actor_updates": 0,
+    "source_commit": "ea845a85e1ad78bc96359bd88f5aae60466ff5f6",
+    "independent_cpu_reload": true
+  },
+  "phase.json": {
+    "epoch": 2,
+    "phase": "student_frozen_probe_epoch_updated_evaluation_pending",
+    "steps": 11782,
+    "epoch_time": 1792507466.6376863
+  },
+  "evaluation_progress": {
+    "train-rank0": {
+      "epoch": 2,
+      "split": "train",
+      "rank": 0,
+      "completed_local_groups": 2560,
+      "expected_local_groups": 16800,
+      "io_seconds": 190.10966652072966,
+      "compute_seconds": 5.1004415564239025,
+      "elapsed_seconds": 195.40441674459726,
+      "epoch_time": 1792507662.0907254
+    },
+    "train-rank1": {
+      "epoch": 2,
+      "split": "train",
+      "rank": 1,
+      "completed_local_groups": 2560,
+      "expected_local_groups": 16800,
+      "io_seconds": 191.34398220386356,
+      "compute_seconds": 5.1012436132878065,
+      "elapsed_seconds": 196.67610172368586,
+      "epoch_time": 1792507663.168694
+    },
+    "train-rank2": {
+      "epoch": 2,
+      "split": "train",
+      "rank": 2,
+      "completed_local_groups": 2560,
+      "expected_local_groups": 16799,
+      "io_seconds": 190.44433266669512,
+      "compute_seconds": 5.065234582871199,
+      "elapsed_seconds": 195.60836288053542,
+      "epoch_time": 1792507662.1069548
+    },
+    "train-rank3": {
+      "epoch": 2,
+      "split": "train",
+      "rank": 3,
+      "completed_local_groups": 2560,
+      "expected_local_groups": 16799,
+      "io_seconds": 189.2231354061514,
+      "compute_seconds": 5.224090815521777,
+      "elapsed_seconds": 194.5367832928896,
+      "epoch_time": 1792507661.0324762
+    }
+  },
+  "log_bytes": 4132,
+  "log_tail": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/storage.py:414: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  return torch.load(io.BytesIO(b))\n/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/storage.py:414: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  return torch.load(io.BytesIO(b))\n/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/storage.py:414: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  return torch.load(io.BytesIO(b))\n/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/storage.py:414: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  return torch.load(io.BytesIO(b))\n",
+  "observer_received_at": 1792507669.144746,
+  "fresh_control_snapshot": true
+}
