@@ -1,0 +1,62 @@
+{
+  "status": "MATCHED_LOSS128_SUITE_PREPARED_ACTUAL_CPU_TESTS_PASSED",
+  "source_commit": "083f29bfe8faf656c856161e4184e5508b15d384",
+  "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/repo-083f29bfe8fa",
+  "source_checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/epoch-0001.pt",
+    "sha256": "02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724"
+  },
+  "source_adam_steps": 10464,
+  "fit_questions": 6528,
+  "fit_trajectories": 32640,
+  "fit_updates_per_variant": 128,
+  "global_groups": 51,
+  "variants": {
+    "trajectory": {
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/trajectory",
+      "config": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/trajectory/config.json",
+        "sha256": "c9181dae0f35b99623dd5d26aff2a78aecec1a3d2fd100da393fcdaaf1d6aba7"
+      },
+      "sbatch": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/trajectory/fit.sbatch",
+        "sha256": "42c9981182938470bfc8eddb0cb77efc38379e4f35e4bbdffc37bb057d0fe335"
+      }
+    },
+    "joint": {
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/joint",
+      "config": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/joint/config.json",
+        "sha256": "8af0765179cdc737b0eca4a19002dfad7ac08b171d47a346e73834a403292155"
+      },
+      "sbatch": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/joint/fit.sbatch",
+        "sha256": "d50e9b1fab5089c77de9d5b9cd82109fb7e89b28b08f5aee3fbc4ee4cd89c106"
+      }
+    },
+    "event": {
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/event",
+      "config": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/event/config.json",
+        "sha256": "749388a1525a59f23a129ab1c057e3b9b553d6b6af99666647444bb873fb8b67"
+      },
+      "sbatch": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/event/fit.sbatch",
+        "sha256": "586bbaf933755914afeef063a3f118a572ba6336e47a254e41b037457f3040ff"
+      }
+    }
+  },
+  "plan": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/plan.json",
+    "sha256": "3423f65455a60c76d38d09802502e6bc343205fb3ffa2316541e35b80f7d195a"
+  },
+  "cpu_tests_log": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/actual-cpu-tests.log",
+    "sha256": "2e834d2a7df7e7c0ae6dd309043f14cd83bd94b2c3eb296255e825e43b873ad7"
+  },
+  "hardware_topology_changed": true,
+  "no_four_rank_equivalence_claim": true,
+  "actor_updates": 0,
+  "screening_only": true,
+  "time": 1792514285.237135
+}
