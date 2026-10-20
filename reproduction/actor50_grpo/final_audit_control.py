@@ -20,7 +20,7 @@ def who(pid):
   path=pathlib.Path('/proc')/str(pid);line=(path/'stat').read_text();v=line[line.rfind(')')+2:].split()
   return dict(pid=pid,start_ticks=int(v[19]),sid=int(v[3]),uid=path.stat().st_uid,state=v[0])
  except (FileNotFoundError,ProcessLookupError):return None
-assert read(b/'preparation/deployment.json')==h
+assert read(b/'preparation/deployment.json',2*1024**2)==h
 if p['action']=='launch':
  assert read(b/'logs/exit.json')['success'] and read(b/'logs/cleanup-status.json')['owned_births_all_gone']
  old=read(b/'preparation/pipeline-launch.json')['leader'];actual=who(old['pid'])
