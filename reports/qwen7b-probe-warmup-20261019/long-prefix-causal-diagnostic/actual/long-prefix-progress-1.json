@@ -1,0 +1,59 @@
+{
+  "controller": {
+    "CPU_affinity": [
+      0,
+      1
+    ],
+    "address_space_limit_bytes": 3221225472,
+    "already_accepted_questions": 0,
+    "config": {
+      "bytes": 124446,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-long-prefix-causal-diagnostic-v1/config.json",
+      "sha256": "0870307e3286a8926c5e5842c7076c2bebce4281544be87625cd7aad1685ee94"
+    },
+    "pid": 3535781,
+    "status": "CPU2_FROZEN_FULL_JOURNAL_PREFIX_RECONSTRUCTION",
+    "time": 1792537554.9720376
+  },
+  "log_tail": "",
+  "observed_epoch": 1792537603.9242377,
+  "preparation": {
+    "CPU": 2,
+    "config": {
+      "bytes": 124446,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-long-prefix-causal-diagnostic-v1/config.json",
+      "sha256": "0870307e3286a8926c5e5842c7076c2bebce4281544be87625cd7aad1685ee94"
+    },
+    "memory_limit": 3221225472,
+    "questions": 8192,
+    "source_commit": "992da5465e0b6a728b2e400fe4958798a5c81322",
+    "trajectories": 81920,
+    "wall_seconds": 1200
+  },
+  "process": {
+    "actual": {
+      "birth": "124814351",
+      "cmd": "/bin/python3 /data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-long-prefix-causal-diagnostic-v1/code-992da5465e0b/peer_long_prefix_diagnostic.py --action analyze --config-sha256 0870307e3286a8926c5e5842c7076c2bebce4281544be87625cd7aad1685ee94 ",
+      "live": true,
+      "pid": 3535781
+    },
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-long-prefix-causal-diagnostic-v1/code-992da5465e0b",
+    "config": {
+      "bytes": 124446,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-long-prefix-causal-diagnostic-v1/config.json",
+      "sha256": "0870307e3286a8926c5e5842c7076c2bebce4281544be87625cd7aad1685ee94"
+    },
+    "pid": 3535781,
+    "rss": "208720 kB",
+    "started": 1792537553.0941129
+  },
+  "progress": {
+    "already_accepted_questions": 0,
+    "expected_questions": 8192,
+    "old_selected_trajectories": 10895,
+    "per_trajectory_signatures_persisted": false,
+    "stage": "REBUILDING_ORIGINAL_G5_SIGNATURE_CACHE_IN_RAM",
+    "time": 1792537603.4922676
+  },
+  "status": "ACTUAL_CPU_ONLY_LONG_PREFIX_STATE"
+}
