@@ -1,4 +1,5 @@
 import copy,gzip,inspect,json,math,subprocess,tempfile,unittest
+from unittest.mock import patch
 from pathlib import Path
 from . import score_peer_g10_calibration as s
 from . import deploy_peer_g10_calibration as d
@@ -36,6 +37,13 @@ class Tests(unittest.TestCase):
   for action in ('init','chunk','extract','prepare','submit','status'):
    code=d.remote_source(values,action);compile(code,action,'exec');self.assertLess(len(code.encode()),16000)
   self.assertIn('submit-intent.json',d.SUBMIT);self.assertIn("['sbatch','--hold','--parsable'",d.SUBMIT);self.assertIn('EXISTING_CALIBRATION_JOB_NO_DUPLICATE',d.SUBMIT)
+ def test_legacy_sha_only_metadata_preserves_strong_sha(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   p=Path(tmp).resolve()/'metadata.json';p.write_text('{}');r=s.proof(p)
+   with patch.object(s,'B',Path(tmp).resolve()):
+    self.assertEqual(s.checked(dict(path=str(p),sha256=r['sha256'])),p)
+    with self.assertRaises(ValueError):s.checked(dict(r,bytes=r['bytes']+1))
+    with self.assertRaises(ValueError):s.checked(dict(path=str(p),sha256='0'*64))
  def test_no_optimizer_or_local_tensor_loading(self):
   source=inspect.getsource(s);self.assertNotIn('torch.optim.',source);self.assertNotIn('.backward(',source);self.assertIn('torch.inference_mode()',source);self.assertIn('parameters_unchanged=True',source)
 if __name__=='__main__':unittest.main()

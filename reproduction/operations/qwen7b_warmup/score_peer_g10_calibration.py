@@ -5,7 +5,7 @@ No optimizer, response generation, evaluation/final scoring or weight updates.
 import argparse,fcntl,gzip,hashlib,json,math,os,platform,shlex,sys,time,traceback
 from pathlib import Path
 B=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019')
-A=B/'algorithm-improvement-20261021';TRAIN=A/'peer-newseed8192-g10-train-v1';TARGET=A/'peer8192-frozen-calibration-scores-v1'
+A=B/'algorithm-improvement-20261021';TRAIN=A/'peer-newseed8192-g10-train-v1';TARGET=A/'peer8192-frozen-calibration-scores-v2'
 PIN='d8f74420aa09fa56e8ec59207c6d1453fa86f95e';ROLE='SEEN_NQ8192_TRAINING_CALIBRATION_ONLY'
 STATUS='FROZEN_E4_AND_PEER256_REAL_G10_CALIBRATION_SCORES_COMPLETE'
 CP_SHA='36d9bcc3be71ba94eaca3a1e1b292c0ed9a65297fb96a746ea5295432f09c000'
@@ -21,7 +21,7 @@ def checked(r):
  p=Path(r['path'])
  if not p.is_absolute() or p.resolve()!=p or not str(p).startswith(str(B)+'/'):raise ValueError('Remote shared-storage source required')
  actual=proof(p)
- if any(actual[k]!=r[k] for k in ('bytes','sha256')):raise ValueError('Source SHA/size differs: '+str(p))
+ if actual['sha256']!=r['sha256'] or ('bytes' in r and actual['bytes']!=r['bytes']):raise ValueError('Source SHA/size differs: '+str(p))
  return p
 def atomic(p,v):
  p=Path(p);tmp=p.with_suffix(p.suffix+'.tmp')
