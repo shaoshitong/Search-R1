@@ -1,0 +1,7 @@
+# Residual shared uncertainty: limitation of the candidate
+
+The three-event candidate corrects the homogeneous-label output-gradient conflict. It does not ensure that five predicted marginals identify a joint Mixed event when the probe leaves shared latent uncertainty unresolved.
+
+The executable synthetic counterexample has identical observed inputs and equal probability of allwrong or allcorrect, no Mixed outcomes. Its expected candidate objective is1.2*sum_j BCE(p_j,.5), uniquely minimized at all p_j=.5 (zero gradient, Hessian eigenvalues .3). The induced q is .9375 despite actual Mixed0. This is an existence proof, not evidence that actual independently sampled rollouts violate factorization conditional on the complete question/actor. Independently sampled trajectories with correctly conditioned probabilities can satisfy the product formula. Feature limitations and estimation uncertainty can leave residual dependence after conditioning only on what the probe resolves.
+
+CPU test passed locally with Torch2.8; no real dataset read, no live configuration/source changed. Separate actual HPC3 CPU tests verify candidate compatibility and the negative-gradient correction, not heldout selection improvement. The next concrete test is training-prediction-only group-score calibration with question-level80/20 split; external diagnostic and2048 remain excluded from fit and hyperparameter/threshold choice. The internal20% is held out from calibration only, not from original probe training.

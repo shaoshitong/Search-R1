@@ -1,0 +1,19 @@
+{
+  "status": "ACTUAL_HPC3_CPU_EVENT_CANDIDATE_TESTS_PASSED",
+  "commit": "c31877285874c884907b9cba73d4e2aeddc5dcd0",
+  "remote_sha": "c31877285874c884907b9cba73d4e2aeddc5dcd0",
+  "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/control-tools/event-candidate-cpu-c31877285874",
+  "files": {
+    "reproduction/operations/qwen7b_warmup/balanced_loss.py": "c8df8bb7984b2f99ef30ac4e4a1232173b5ed5d684ce95ebc6b47fa8cff7de09",
+    "reproduction/operations/qwen7b_warmup/event_candidate_loss.py": "b93740dc0b772cb67a2200e54d354568fab72311d327746d10ab5afa0434db53",
+    "reproduction/operations/qwen7b_warmup/test_event_candidate_loss.py": "9c8bb9478070775652123acfb95ec65694e2c4a6dfcde4f08d45db804f35f61a",
+    "reproduction/operations/qwen7b_warmup/runtime.sh": "678d4e72c1c1fd90777d76ba63198658b735ecfe513439ee5f5b07f8664d8288",
+    "reproduction/operations/qwen7b_warmup/qualify_event_candidate.py": "8d9bbee442f7b191e4ec3f30cc27a8cc3354d16815713afa2b84a1960e4b7b64",
+    "reproduction/prefix20_group_joint100/loss.py": "ceba4dc4a3eb70882b6a7bf1df6a16fb833a810819bec7b853b1c108cae102ac"
+  },
+  "test_output": "test_mixed_values_and_gradients_are_exactly_unchanged (reproduction.operations.qwen7b_warmup.test_event_candidate_loss.EventCandidateTests) ... ok\ntest_negative_group_gradient_has_correct_direction_including_wrong_basin (reproduction.operations.qwen7b_warmup.test_event_candidate_loss.EventCandidateTests) ... ok\ntest_synthetic_allcorrect_fit_escapes_current_wrong_local_minimum (reproduction.operations.qwen7b_warmup.test_event_candidate_loss.EventCandidateTests) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 9.216s\n\nOK\n",
+  "cpu_only": true,
+  "training_config_changed": false,
+  "gpu_training_changed": false,
+  "time": 1792511969.362327
+}

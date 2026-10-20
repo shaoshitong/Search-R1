@@ -1,0 +1,46 @@
+{
+  "actual_dataset_read": false,
+  "analytic_expected_objective": "(1+1/5)*sum_j BCE(p_j, 0.5)",
+  "analytic_unique_minimum": "p_j=0.5 for every j; Hessian diagonal 0.3",
+  "conclusion": "Negative-gradient repair alone cannot identify residual within-question outcome dependence from five marginals",
+  "evidence_limit": "Synthetic existence proof only; does not establish the magnitude or cause of dependence in actual data",
+  "expected_objective": 4.158883083359672,
+  "gradient": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "hessian_eigenvalues": [
+    0.3,
+    0.3,
+    0.3,
+    0.3,
+    0.3
+  ],
+  "implied_event_probabilities": {
+    "allcorrect": 0.03125,
+    "allwrong": 0.03125,
+    "mixed": 0.9375
+  },
+  "live_training_modified": false,
+  "optimal_trajectory_marginals": [
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5
+  ],
+  "predicted_q": [
+    0.9375,
+    0.9375
+  ],
+  "scenario": "Identical observed inputs; allwrong/allcorrect equiprobable",
+  "test_status": "PASS_SYNTHETIC_CPU_ONLY",
+  "true_event_probabilities": {
+    "allcorrect": 0.5,
+    "allwrong": 0.5,
+    "mixed": 0.0
+  }
+}
