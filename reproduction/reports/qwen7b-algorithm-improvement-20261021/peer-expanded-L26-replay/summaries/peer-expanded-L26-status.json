@@ -1,31 +1,60 @@
 {
   "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1",
-  "epoch": 1792535861.3314455,
+  "epoch": 1792535972.698997,
   "receiver_complete": true,
-  "sacct": "743486|q7b-expanded-L26-00|RUNNING|0:0|00:18:35\n743488|q7b-expanded-L26-01|COMPLETED|0:0|00:16:03\n743489|q7b-expanded-L26-02|COMPLETED|0:0|00:16:23\n743490|q7b-expanded-L26-03|RUNNING|0:0|00:18:35",
+  "sacct": "743486|q7b-expanded-L26-00|COMPLETED|0:0|00:19:48\n743488|q7b-expanded-L26-01|COMPLETED|0:0|00:16:03\n743489|q7b-expanded-L26-02|COMPLETED|0:0|00:16:23\n743490|q7b-expanded-L26-03|COMPLETED|0:0|00:19:13",
   "shards": {
     "0": {
-      "complete_chunks": 168,
+      "complete.json": {
+        "actual_batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 54620,
+          "elapsed_seconds": 333.26473153941333,
+          "model_calls": 1764,
+          "native_bitexact_claim": false,
+          "padded_tokens": 8378892,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 8244259
+        },
+        "batching": {
+          "acceptance": "Explicit operator selected actual scalar/batched golden evidence; no native bitexact claim",
+          "batch_size": 32,
+          "core_sha256": "500911347444a07693fb4405a6f6fbbcad7b70375522a52833953b426970f506",
+          "golden": {
+            "bytes": 12350,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/replay-batched-golden-v3/output/complete.json",
+            "sha256": "3eeeb79b750d2e0bfee81c9a283c7428d0629b0d56815f91909c93e2bd9f5715"
+          },
+          "padded_token_budget": 16384,
+          "window_trajectories": 32
+        },
+        "elapsed_seconds": 1047.882058551535,
+        "questions": 5456,
+        "status": "EXPANDED_ADDITIONAL_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE",
+        "time": 1792535928.2103252,
+        "trajectories": 54560
+      },
+      "complete_chunks": 171,
       "job_id": "743486",
       "logs": {
-        "replay-743486.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:01<00:05,  1.68s/it]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:04<00:04,  2.25s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:06<00:02,  2.33s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:07<00:00,  1.72s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:07<00:00,  1.88s/it]\n"
+        "replay-743486.log": "mup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1/code-bea03d5f1d90/reproduction/operations/qwen7b_warmup/peer_expanded_l26_replay.py\", \"sha256\": \"b1a1564c2c453e8180c8e4af6b45df17bd8394dbc2f8f2024201e33b1ea3ea18\"}, \"source_ingest\": {\"bytes\": 10971, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-newseed-20261021-185747-445fc691/complete.json\", \"sha256\": \"1fd5c29862267bc202419973ba6238d9c7b66de7ef2199dba725dda7fecf0804\"}, \"source_runtime\": \"huggingface_frozen_causal_prefill\", \"source_selection\": {\"bytes\": 6091181, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1/shard-00/inputs/selection.json\", \"sha256\": \"684647d2490d66e4b0529c4e043851c69db8b7f8cbe01160bff9afaf49498021\"}, \"status\": \"EXPANDED_ADDITIONAL_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE\", \"time\": 1792535928.2103252, \"trajectories\": 54560}\n"
       },
       "progress.json": {
         "batching": {
           "actor_optimizer_updates": 0,
-          "contexts": 54139,
-          "elapsed_seconds": 330.09786567185074,
-          "model_calls": 1748,
+          "contexts": 54620,
+          "elapsed_seconds": 333.26473153941333,
+          "model_calls": 1764,
           "native_bitexact_claim": false,
-          "padded_tokens": 8305203,
+          "padded_tokens": 8378892,
           "scalar_batch_bitexact_claim": false,
-          "valid_tokens": 8171584
+          "valid_tokens": 8244259
         },
-        "elapsed_seconds": 981.0271474989131,
+        "elapsed_seconds": 989.4283469682559,
         "expected_trajectories": 54560,
         "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
-        "time": 1792535861.3554134,
-        "trajectories": 54068
+        "time": 1792535869.7566128,
+        "trajectories": 54560
       }
     },
     "1": {
@@ -135,10 +164,39 @@
       }
     },
     "3": {
+      "complete.json": {
+        "actual_batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 54608,
+          "elapsed_seconds": 331.18742293538526,
+          "model_calls": 1751,
+          "native_bitexact_claim": false,
+          "padded_tokens": 8372729,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 8237656
+        },
+        "batching": {
+          "acceptance": "Explicit operator selected actual scalar/batched golden evidence; no native bitexact claim",
+          "batch_size": 32,
+          "core_sha256": "500911347444a07693fb4405a6f6fbbcad7b70375522a52833953b426970f506",
+          "golden": {
+            "bytes": 12350,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/replay-batched-golden-v3/output/complete.json",
+            "sha256": "3eeeb79b750d2e0bfee81c9a283c7428d0629b0d56815f91909c93e2bd9f5715"
+          },
+          "padded_token_budget": 16384,
+          "window_trajectories": 32
+        },
+        "elapsed_seconds": 1095.7802578208502,
+        "questions": 5456,
+        "status": "EXPANDED_ADDITIONAL_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE",
+        "time": 1792535898.301563,
+        "trajectories": 54560
+      },
       "complete_chunks": 171,
       "job_id": "743490",
       "logs": {
-        "replay-743490.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:01<00:03,  1.04s/it]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.25s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:03<00:01,  1.19s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.05it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.03s/it]\n"
+        "replay-743490.log": "rmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1/code-bea03d5f1d90/reproduction/operations/qwen7b_warmup/peer_expanded_l26_replay.py\", \"sha256\": \"b1a1564c2c453e8180c8e4af6b45df17bd8394dbc2f8f2024201e33b1ea3ea18\"}, \"source_ingest\": {\"bytes\": 10971, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-newseed-20261021-185747-445fc691/complete.json\", \"sha256\": \"1fd5c29862267bc202419973ba6238d9c7b66de7ef2199dba725dda7fecf0804\"}, \"source_runtime\": \"huggingface_frozen_causal_prefill\", \"source_selection\": {\"bytes\": 6091871, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1/shard-03/inputs/selection.json\", \"sha256\": \"087f00342b59c2b6af8ef34631e1b1fe1f1a63fdf4f86e3f433d68b46425bac9\"}, \"status\": \"EXPANDED_ADDITIONAL_REAL_G10_QUALIFIED_HF_LAYER26_SHARD_COMPLETE\", \"time\": 1792535898.301563, \"trajectories\": 54560}\n"
       },
       "progress.json": {
         "batching": {
@@ -159,7 +217,7 @@
       }
     }
   },
-  "squeue": "743486|q7b-expanded-L26-00|RUNNING|ACD1-18|ACD1-18\n743490|q7b-expanded-L26-03|RUNNING|ACD1-22|ACD1-22",
+  "squeue": "",
   "stages": {
     "features": {
       "complete": {
