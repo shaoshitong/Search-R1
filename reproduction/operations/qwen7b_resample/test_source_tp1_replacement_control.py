@@ -136,7 +136,7 @@ class RetirementBindingTests(unittest.TestCase):
             fixture.parent, [4] if model is None else model, ['GPU-4'] if uuids is None else uuids)
 
     def test_accepts_each_selected_physical_gpu_with_same_original_parent(self):
-        for index in (4, 6, 7):
+        for index in (3, 4, 6, 7):
             with self.subTest(index=index), retired_fixture() as fixture:
                 binding = self.validate(fixture, [index], ['GPU-%d' % index])
                 self.assertIsInstance(binding, dict)

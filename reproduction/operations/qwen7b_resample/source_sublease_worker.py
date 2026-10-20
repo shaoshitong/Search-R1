@@ -108,7 +108,7 @@ def validate_retired_terminal(pool, value, parent, model, uuids):
                    and allocation['source_parent'] == retired_context['parent'] == parent
                    and retired_context['model_indices'] == allocation['model_indices']
                    and retired_context['model_cuda_uuids'] == allocation['model_cuda_uuids']
-                   and model in ([4], [6], [7]),
+                   and model in ([3], [4], [6], [7]),
                    'Retired allocation or original source binding differs')
     mapping = dict(zip(allocation['model_indices'], allocation['model_cuda_uuids']))
     directory = base / 'pool/gpu-subleases' / pool.RUN_ID / ('%d-%s' % (PARENT_PID, parent['birth']))
