@@ -1,0 +1,478 @@
+{
+  "status": "PREFIX20_FOUR_RANK_EXACT_REPLAY_PASSED_TRAINING_ADVANCING",
+  "source_commit": "e6b2a9f4319ad62bba56087ac52c80260907254c",
+  "source_code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/repo-e6b2a9f4319a",
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020",
+  "job_id": "742046",
+  "partition": "emergency_acd",
+  "gpus": 4,
+  "source_checkpoint_epoch": 2,
+  "source_steps": 9146,
+  "source_checkpoint_sha256": "893e2d71e9b45abb92a9573a6091a1a0fb0a5f7ffd3e4e1201d12061317095ad",
+  "learning_rate": 5e-06,
+  "additional_epochs": 5,
+  "mixed_train_questions": 67199,
+  "trajectories_per_question": 5,
+  "steps_per_epoch": 1318,
+  "loss": {
+    "trajectory_bce_weight": 1,
+    "group_bce_weight": 1,
+    "pairwise_weight": 0.1,
+    "pairwise_formula": "mean_group mean_eligible_pos_neg softplus(1-(z_pos-z_neg))",
+    "pair_eligibility": "same-question positive-negative pair with different actual policy20 tokens or positions",
+    "exclude_identical_policy20_tokens_and_positions": true
+  },
+  "resume": "Source CP2 raw+EMA+Adam+four-rank RNG; separate phase, never overwrites original CP1..4 or stop tail. Fresh actor frozen.",
+  "validation": "Actual\u56dbrank raw/EMA/Adam next-update replay bit exact; sourceCP2 full state preserved; first accepted checkpoint SHA and independentCPU reload passed; five full epochs and heldout quality incomplete",
+  "evaluation": "Unmodified512 diagnostic, Mixed-only subset separation, same unseen2048 predicted Top512 each epoch; none used in fitting.",
+  "latest_observation": {
+    "time": 1792500249.1690054,
+    "job_id": "742046",
+    "queue": "742046|RUNNING|emergency_acd|5:16|ACD1-32|ACD1-32\n",
+    "accounting": "742046|RUNNING|0:0|00:05:16|billing=16,cpu=16,gres/gpu=4,mem=128G,node=1\n742046.batch|RUNNING|0:0|00:05:16|cpu=16,gres/gpu=4,mem=128G,node=1\n742046.extern|RUNNING|0:0|00:05:16|billing=16,cpu=16,gres/gpu=4,mem=128G,node=1\n742046.0|RUNNING|0:0|00:05:16|cpu=16,gres/gpu=4,mem=128G,node=1\n742046.1|COMPLETED|0:0|00:00:00|cpu=1,mem=1G,node=1\n",
+    "restore-acceptance.json": {
+      "status": "ACTUAL_FOUR_RANK_RAW_EMA_ADAM_RNG_RESTORED",
+      "source_checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/epoch-0002.pt",
+        "sha256": "893e2d71e9b45abb92a9573a6091a1a0fb0a5f7ffd3e4e1201d12061317095ad",
+        "steps": 9146,
+        "epoch": 2
+      },
+      "adam_steps": 9146,
+      "lr": 5e-06,
+      "epoch_time": 1792500088.2572532,
+      "new_objective": true,
+      "prefix_tokens": 20,
+      "prefix_migration": {
+        "status": "CP2_PREFIX5_TO20_OLD_PARAMETERS_AND_ADAM_COLUMNS_PRESERVED",
+        "old_prefix": 5,
+        "new_prefix": 20,
+        "old_readout_columns": 996352,
+        "new_readout_columns": 1050112,
+        "new_columns_initialized_to_zero": true,
+        "new_column_moments_zero": true,
+        "existing_block_and_bias_unchanged": true,
+        "existing_moments_and_steps_preserved": true,
+        "steps": 9146,
+        "raw_sha256": "a64bf7fd6bee20b1e1299409a36a073800d5cb4a2a2af3dc7417062547d38251",
+        "ema_sha256": "72f454bc6b8cbb503cbe7e02df504602767fcbde24575ad0b5ce5890aa668470",
+        "optimizer_sha256": "bc476e99840a1fc1abd1f26099ca27160b2540ac5eb25cad2d8ecb5f58478b75"
+      }
+    },
+    "deterministic-warmup.json": {
+      "status": "DDP_GRADIENT_BUCKET_WARMUP_NO_OPTIMIZER_UPDATE",
+      "steps": 9146,
+      "flash_attention_deterministic": true,
+      "cublas_workspace": ":4096:8",
+      "epoch_time": 1792500097.0776918
+    },
+    "next-update-proof.json": {
+      "status": "ACTUAL_CP2_FOUR_RANK_NEW_LOSS_NEXT_UPDATE_BIT_EXACT",
+      "source_steps": 9146,
+      "continuation_steps": 9147,
+      "raw_sha256": "f3dda4f7f48fc8e1d2331f24d071a7acf043f284171bc1b1ef507c3cdca01bcc",
+      "ema_sha256": "fc3fd790c9703aeb973ca9d81c75c89e9c6c73d8db15c57b32498a37a23bc88f",
+      "adam_sha256": "f51050faffa1424bc298c15ff12f35c02779f1b2927f727d7363bba2ab19e68b",
+      "rank_count": 4,
+      "rank_proofs": [
+        {
+          "rank": 0,
+          "raw": "f3dda4f7f48fc8e1d2331f24d071a7acf043f284171bc1b1ef507c3cdca01bcc",
+          "ema": "fc3fd790c9703aeb973ca9d81c75c89e9c6c73d8db15c57b32498a37a23bc88f",
+          "adam": "f51050faffa1424bc298c15ff12f35c02779f1b2927f727d7363bba2ab19e68b",
+          "replayed_bit_exact": true
+        },
+        {
+          "rank": 1,
+          "raw": "f3dda4f7f48fc8e1d2331f24d071a7acf043f284171bc1b1ef507c3cdca01bcc",
+          "ema": "fc3fd790c9703aeb973ca9d81c75c89e9c6c73d8db15c57b32498a37a23bc88f",
+          "adam": "f51050faffa1424bc298c15ff12f35c02779f1b2927f727d7363bba2ab19e68b",
+          "replayed_bit_exact": true
+        },
+        {
+          "rank": 2,
+          "raw": "f3dda4f7f48fc8e1d2331f24d071a7acf043f284171bc1b1ef507c3cdca01bcc",
+          "ema": "fc3fd790c9703aeb973ca9d81c75c89e9c6c73d8db15c57b32498a37a23bc88f",
+          "adam": "f51050faffa1424bc298c15ff12f35c02779f1b2927f727d7363bba2ab19e68b",
+          "replayed_bit_exact": true
+        },
+        {
+          "rank": 3,
+          "raw": "f3dda4f7f48fc8e1d2331f24d071a7acf043f284171bc1b1ef507c3cdca01bcc",
+          "ema": "fc3fd790c9703aeb973ca9d81c75c89e9c6c73d8db15c57b32498a37a23bc88f",
+          "adam": "f51050faffa1424bc298c15ff12f35c02779f1b2927f727d7363bba2ab19e68b",
+          "replayed_bit_exact": true
+        }
+      ],
+      "epoch_time": 1792500115.4284382
+    },
+    "prefix20-initialization-proof.json": {
+      "migration": {
+        "status": "CP2_PREFIX5_TO20_OLD_PARAMETERS_AND_ADAM_COLUMNS_PRESERVED",
+        "old_prefix": 5,
+        "new_prefix": 20,
+        "old_readout_columns": 996352,
+        "new_readout_columns": 1050112,
+        "new_columns_initialized_to_zero": true,
+        "new_column_moments_zero": true,
+        "existing_block_and_bias_unchanged": true,
+        "existing_moments_and_steps_preserved": true,
+        "steps": 9146,
+        "raw_sha256": "a64bf7fd6bee20b1e1299409a36a073800d5cb4a2a2af3dc7417062547d38251",
+        "ema_sha256": "72f454bc6b8cbb503cbe7e02df504602767fcbde24575ad0b5ce5890aa668470",
+        "optimizer_sha256": "bc476e99840a1fc1abd1f26099ca27160b2540ac5eb25cad2d8ecb5f58478b75"
+      },
+      "ranks": [
+        {
+          "rank": 0,
+          "raw": {
+            "status": "GPU_PREFIX20_ZERO_EXTENSION_CAUSAL_INITIALIZATION_CHECK_PASSED",
+            "max_absolute_logit_error": 0.0,
+            "max_absolute_probability_error": 0.0,
+            "probability_tolerance": 0.01,
+            "weight_migration_exact": true,
+            "compute_bit_exact_not_claimed": true
+          },
+          "ema": {
+            "status": "GPU_PREFIX20_ZERO_EXTENSION_CAUSAL_INITIALIZATION_CHECK_PASSED",
+            "max_absolute_logit_error": 0.0,
+            "max_absolute_probability_error": 0.0,
+            "probability_tolerance": 0.01,
+            "weight_migration_exact": true,
+            "compute_bit_exact_not_claimed": true
+          }
+        },
+        {
+          "rank": 1,
+          "raw": {
+            "status": "GPU_PREFIX20_ZERO_EXTENSION_CAUSAL_INITIALIZATION_CHECK_PASSED",
+            "max_absolute_logit_error": 0.0,
+            "max_absolute_probability_error": 0.0,
+            "probability_tolerance": 0.01,
+            "weight_migration_exact": true,
+            "compute_bit_exact_not_claimed": true
+          },
+          "ema": {
+            "status": "GPU_PREFIX20_ZERO_EXTENSION_CAUSAL_INITIALIZATION_CHECK_PASSED",
+            "max_absolute_logit_error": 0.0,
+            "max_absolute_probability_error": 0.0,
+            "probability_tolerance": 0.01,
+            "weight_migration_exact": true,
+            "compute_bit_exact_not_claimed": true
+          }
+        },
+        {
+          "rank": 2,
+          "raw": {
+            "status": "GPU_PREFIX20_ZERO_EXTENSION_CAUSAL_INITIALIZATION_CHECK_PASSED",
+            "max_absolute_logit_error": 0.0,
+            "max_absolute_probability_error": 0.0,
+            "probability_tolerance": 0.01,
+            "weight_migration_exact": true,
+            "compute_bit_exact_not_claimed": true
+          },
+          "ema": {
+            "status": "GPU_PREFIX20_ZERO_EXTENSION_CAUSAL_INITIALIZATION_CHECK_PASSED",
+            "max_absolute_logit_error": 0.0,
+            "max_absolute_probability_error": 0.0,
+            "probability_tolerance": 0.01,
+            "weight_migration_exact": true,
+            "compute_bit_exact_not_claimed": true
+          }
+        },
+        {
+          "rank": 3,
+          "raw": {
+            "status": "GPU_PREFIX20_ZERO_EXTENSION_CAUSAL_INITIALIZATION_CHECK_PASSED",
+            "max_absolute_logit_error": 0.0,
+            "max_absolute_probability_error": 0.0,
+            "probability_tolerance": 0.01,
+            "weight_migration_exact": true,
+            "compute_bit_exact_not_claimed": true
+          },
+          "ema": {
+            "status": "GPU_PREFIX20_ZERO_EXTENSION_CAUSAL_INITIALIZATION_CHECK_PASSED",
+            "max_absolute_logit_error": 0.0,
+            "max_absolute_probability_error": 0.0,
+            "probability_tolerance": 0.01,
+            "weight_migration_exact": true,
+            "compute_bit_exact_not_claimed": true
+          }
+        }
+      ],
+      "source_steps": 9146
+    },
+    "progress.json": {
+      "epoch": 1,
+      "batch": 74,
+      "batches": 1318,
+      "steps": 9220,
+      "source_steps": 9146,
+      "trajectory_bce": 0.8482288531228608,
+      "group_bce": 0.35308809885207343,
+      "pairwise_loss": 1.466679383726681,
+      "total_loss": 1.3479848796246099,
+      "pairwise_accuracy": 0.47639484978540775,
+      "eligible_pairs": 233,
+      "eligible_groups": 51,
+      "mean_p_range": 0.2769593706025797,
+      "mean_rank_step_seconds": 1.391782380407676,
+      "actor_updates": 0,
+      "epoch_time": 1792500248.7015634
+    },
+    "latest.json": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/inflight.pt",
+      "bytes": 3745808864,
+      "sha256": "62d985f34298c1d8ad8fa28c8723631c217f7833aed0a60ab03adbaa395cbd67",
+      "git_blob_sha1": "115e5b33f0783c04cb222661c76fe259bbf49358",
+      "epoch": 1,
+      "cursor": 1,
+      "steps": 9147,
+      "source_steps": 9146,
+      "completed_epoch": false,
+      "actor_updates": 0,
+      "source_commit": "e6b2a9f4319ad62bba56087ac52c80260907254c",
+      "independent_cpu_reload": true
+    },
+    "log_bytes": 4132,
+    "log_tail": "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/storage.py:414: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  return torch.load(io.BytesIO(b))\n/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/storage.py:414: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  return torch.load(io.BytesIO(b))\n/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/storage.py:414: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  return torch.load(io.BytesIO(b))\n/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/torch/storage.py:414: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.\n  return torch.load(io.BytesIO(b))\n"
+  },
+  "time": 1792500249.334572,
+  "replaced_pending_job": "741871",
+  "priority_handoff": {
+    "status": "HIGHER_PRIORITY_REPLACEMENT_RELEASED",
+    "user_instruction": "\u4f18\u5148\u7ea7+1\uff0c\u518d\u6392\u961f\u4e00\u4e2a\u770b\u770b",
+    "user_message_timestamp": "not exposed; recorded receipt time only",
+    "recorded_at_utc": "2026-10-20T11:34:45.909014+00:00",
+    "scope": "Replace only owned pending741871; no running training cancellation",
+    "old_job": "741871",
+    "old_partition": "acd_ue",
+    "new_partition": "emergency_acd",
+    "gpus": 4,
+    "source_commit": "0eeb747d14ba11a1fc5ed1e3e4dec16f9073c435",
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-20261020/repo-0eeb747d14ba",
+    "new_job": "741944",
+    "finished_at": 1792496087.1676567
+  },
+  "total_target_adam_steps": 15736,
+  "replaced_failed_job": "741944",
+  "failure_root_cause": "CPU Adam state tensors shared with reusable checkpoint object in next-update replay; source file immutable; no accepted continuation updates",
+  "source_checkpoint_fresh_sha256": "893e2d71e9b45abb92a9573a6091a1a0fb0a5f7ffd3e4e1201d12061317095ad",
+  "latest_scheduler_estimate": "742046|2026-10-20T22:34:20|(Priority)\n",
+  "goal_objective": "\u76d1\u7763\u76f4\u5230\u5b8c\u6210\u63a2\u9488\u8bad\u7ec35epoch\uff0c\u5982\u679c\u63a2\u9488\u8bad\u7ec35epoch\u8fd8\u6ca1\u8fc7\u62df\u5408\uff0c\u90a3\u4e48\u7ee7\u7eed\u8bad\u7ec3\uff0c\u7136\u540e\u68c0\u67e52048\u9009\u62e9512\u540e\u7684\u6df7\u5408\u6bd4\u4f8b\uff0c\u5982\u679c\u8fd8\u662f\u6709\u95ee\u9898\uff0c\u90a3\u4e48\u7ee7\u7eed\u601d\u8003\uff0c\u89e3\u51b3\u8fc7\u62df\u5408\u95ee\u9898\uff0c\u751a\u81f3\u589e\u52a0\u6570\u636e\u96c6",
+  "goal_created_at": 1792496306,
+  "goal_status": "active",
+  "completion_unproven": true,
+  "goal_turn_classification": "progress: actual four-rank new-objective next-update replay bit exact, first full checkpoint CPU reload passed, genuine accepted updates observed22 then later sample",
+  "prefix_tokens": 20,
+  "source_prefix_tokens": 5,
+  "replaced_held_prefix5_job": "741973",
+  "prefix20_cpu_migration": {
+    "status": "REAL_CP2_PREFIX20_CPU_GEOMETRY_HASH_AND_ADAM_MIGRATION_PASSED",
+    "old_prefix": 5,
+    "new_prefix": 20,
+    "old_readout_columns": 996352,
+    "new_readout_columns": 1050112,
+    "new_columns_initialized_to_zero": true,
+    "new_column_moments_zero": true,
+    "existing_block_and_bias_unchanged": true,
+    "existing_moments_and_steps_preserved": true,
+    "steps": 9146,
+    "raw_sha256": "a64bf7fd6bee20b1e1299409a36a073800d5cb4a2a2af3dc7417062547d38251",
+    "ema_sha256": "72f454bc6b8cbb503cbe7e02df504602767fcbde24575ad0b5ce5890aa668470",
+    "optimizer_sha256": "bc476e99840a1fc1abd1f26099ca27160b2540ac5eb25cad2d8ecb5f58478b75",
+    "CPU_only": true,
+    "GPU_next_update_not_yet_tested": true,
+    "source_cp2_sha256": "893e2d71e9b45abb92a9573a6091a1a0fb0a5f7ffd3e4e1201d12061317095ad",
+    "time": 1792497957.890862
+  },
+  "prefix_length_comparison": {
+    "train_mixed": {
+      "5": {
+        "questions": 67199,
+        "trajectories": 335995,
+        "all5_same": 3357,
+        "any_same_pair": 59247,
+        "any_same_prefix_opposite_EM_pair": 40734,
+        "equal_pairs": 187316,
+        "opposite_EM_equal_pairs": 87968,
+        "min_errors_under_token_equivalence": 47121,
+        "short_trajectories": 0,
+        "all5_same_fraction": 0.04995610053721038,
+        "any_same_pair_fraction": 0.8816649057277638,
+        "any_same_prefix_opposite_EM_pair_fraction": 0.6061697346686706,
+        "equal_pair_fraction": 0.2787481956576735,
+        "opposite_EM_equal_pair_fraction_of_all_pairs": 0.1309067099212786,
+        "token_equivalence_trajectory_accuracy_ceiling": 0.8597568416196669,
+        "token_equivalence_trajectory_BCE_floor": 0.23830855390314432
+      },
+      "10": {
+        "questions": 67199,
+        "trajectories": 335995,
+        "all5_same": 425,
+        "any_same_pair": 30798,
+        "any_same_prefix_opposite_EM_pair": 17443,
+        "equal_pairs": 60885,
+        "opposite_EM_equal_pairs": 28221,
+        "min_errors_under_token_equivalence": 18680,
+        "short_trajectories": 22,
+        "all5_same_fraction": 0.006324498876471376,
+        "any_same_pair_fraction": 0.4583103915236834,
+        "any_same_prefix_opposite_EM_pair_fraction": 0.25957231506421224,
+        "equal_pair_fraction": 0.09060402684563758,
+        "opposite_EM_equal_pair_fraction_of_all_pairs": 0.041996160657152636,
+        "token_equivalence_trajectory_accuracy_ceiling": 0.9444039345823598,
+        "token_equivalence_trajectory_BCE_floor": 0.08844086957108974
+      },
+      "20": {
+        "questions": 67199,
+        "trajectories": 335995,
+        "all5_same": 4,
+        "any_same_pair": 4946,
+        "any_same_prefix_opposite_EM_pair": 2268,
+        "equal_pairs": 6173,
+        "opposite_EM_equal_pairs": 2650,
+        "min_errors_under_token_equivalence": 2299,
+        "short_trajectories": 53,
+        "all5_same_fraction": 5.9524695307965895e-05,
+        "any_same_pair_fraction": 0.07360228574829983,
+        "any_same_prefix_opposite_EM_pair_fraction": 0.03375050223961666,
+        "equal_pair_fraction": 0.009186148603401837,
+        "opposite_EM_equal_pair_fraction_of_all_pairs": 0.003943511064152741,
+        "token_equivalence_trajectory_accuracy_ceiling": 0.9931576362743493,
+        "token_equivalence_trajectory_BCE_floor": 0.009981944711520469
+      }
+    },
+    "diagnostic_mixed": {
+      "5": {
+        "questions": 205,
+        "trajectories": 1025,
+        "all5_same": 12,
+        "any_same_pair": 179,
+        "any_same_prefix_opposite_EM_pair": 127,
+        "equal_pairs": 609,
+        "opposite_EM_equal_pairs": 286,
+        "min_errors_under_token_equivalence": 147,
+        "short_trajectories": 0,
+        "all5_same_fraction": 0.05853658536585366,
+        "any_same_pair_fraction": 0.8731707317073171,
+        "any_same_prefix_opposite_EM_pair_fraction": 0.6195121951219512,
+        "equal_pair_fraction": 0.2970731707317073,
+        "opposite_EM_equal_pair_fraction_of_all_pairs": 0.13951219512195123,
+        "token_equivalence_trajectory_accuracy_ceiling": 0.8565853658536585,
+        "token_equivalence_trajectory_BCE_floor": 0.24694184749530734
+      },
+      "10": {
+        "questions": 205,
+        "trajectories": 1025,
+        "all5_same": 0,
+        "any_same_pair": 84,
+        "any_same_prefix_opposite_EM_pair": 40,
+        "equal_pairs": 158,
+        "opposite_EM_equal_pairs": 62,
+        "min_errors_under_token_equivalence": 42,
+        "short_trajectories": 1,
+        "all5_same_fraction": 0.0,
+        "any_same_pair_fraction": 0.4097560975609756,
+        "any_same_prefix_opposite_EM_pair_fraction": 0.1951219512195122,
+        "equal_pair_fraction": 0.07707317073170732,
+        "opposite_EM_equal_pair_fraction_of_all_pairs": 0.03024390243902439,
+        "token_equivalence_trajectory_accuracy_ceiling": 0.9590243902439024,
+        "token_equivalence_trajectory_BCE_floor": 0.06425612993812012
+      },
+      "20": {
+        "questions": 205,
+        "trajectories": 1025,
+        "all5_same": 0,
+        "any_same_pair": 14,
+        "any_same_prefix_opposite_EM_pair": 6,
+        "equal_pairs": 14,
+        "opposite_EM_equal_pairs": 6,
+        "min_errors_under_token_equivalence": 6,
+        "short_trajectories": 1,
+        "all5_same_fraction": 0.0,
+        "any_same_pair_fraction": 0.06829268292682927,
+        "any_same_prefix_opposite_EM_pair_fraction": 0.02926829268292683,
+        "equal_pair_fraction": 0.006829268292682927,
+        "opposite_EM_equal_pair_fraction_of_all_pairs": 0.002926829268292683,
+        "token_equivalence_trajectory_accuracy_ceiling": 0.9941463414634146,
+        "token_equivalence_trajectory_BCE_floor": 0.008114893821189602
+      }
+    },
+    "unseen_mixed": {
+      "5": {
+        "questions": 641,
+        "trajectories": 3205,
+        "all5_same": 27,
+        "any_same_pair": 579,
+        "any_same_prefix_opposite_EM_pair": 407,
+        "equal_pairs": 1836,
+        "opposite_EM_equal_pairs": 865,
+        "min_errors_under_token_equivalence": 472,
+        "short_trajectories": 0,
+        "all5_same_fraction": 0.0421216848673947,
+        "any_same_pair_fraction": 0.9032761310452418,
+        "any_same_prefix_opposite_EM_pair_fraction": 0.6349453978159126,
+        "equal_pair_fraction": 0.28642745709828393,
+        "opposite_EM_equal_pair_fraction_of_all_pairs": 0.13494539781591264,
+        "token_equivalence_trajectory_accuracy_ceiling": 0.8527301092043682,
+        "token_equivalence_trajectory_BCE_floor": 0.24932357950158746
+      },
+      "10": {
+        "questions": 641,
+        "trajectories": 3205,
+        "all5_same": 0,
+        "any_same_pair": 291,
+        "any_same_prefix_opposite_EM_pair": 161,
+        "equal_pairs": 521,
+        "opposite_EM_equal_pairs": 231,
+        "min_errors_under_token_equivalence": 167,
+        "short_trajectories": 0,
+        "all5_same_fraction": 0.0,
+        "any_same_pair_fraction": 0.4539781591263651,
+        "any_same_prefix_opposite_EM_pair_fraction": 0.25117004680187205,
+        "equal_pair_fraction": 0.0812792511700468,
+        "opposite_EM_equal_pair_fraction_of_all_pairs": 0.03603744149765991,
+        "token_equivalence_trajectory_accuracy_ceiling": 0.9478939157566303,
+        "token_equivalence_trajectory_BCE_floor": 0.08113106082484493
+      },
+      "20": {
+        "questions": 641,
+        "trajectories": 3205,
+        "all5_same": 0,
+        "any_same_pair": 46,
+        "any_same_prefix_opposite_EM_pair": 19,
+        "equal_pairs": 55,
+        "opposite_EM_equal_pairs": 23,
+        "min_errors_under_token_equivalence": 19,
+        "short_trajectories": 0,
+        "all5_same_fraction": 0.0,
+        "any_same_pair_fraction": 0.0717628705148206,
+        "any_same_prefix_opposite_EM_pair_fraction": 0.029641185647425898,
+        "equal_pair_fraction": 0.00858034321372855,
+        "opposite_EM_equal_pair_fraction_of_all_pairs": 0.0035881435257410295,
+        "token_equivalence_trajectory_accuracy_ceiling": 0.9940717628705148,
+        "token_equivalence_trajectory_BCE_floor": 0.008871321508997226
+      }
+    }
+  },
+  "deterministic_recovery": {
+    "status": "DETERMINISTIC_REPLAY_JOB_RELEASED",
+    "old_job": "742009",
+    "time": 1792498881.1506746,
+    "source_commit": "e6b2a9f4319ad62bba56087ac52c80260907254c",
+    "source_steps": 9146,
+    "accepted_continuation_updates": 0,
+    "exact_hash_gate_retained": true,
+    "fixes": [
+      "FlashAttention deterministic=True explicitly supported by actual installed Transformers4.46.3/FlashAttention2.7.4",
+      "CUBLAS4096:8 and torch deterministic algorithms",
+      "Gradient-only DDP bucket warmup without Adam or EMA update",
+      "All-rank exact tensor diagnostics retained on mismatch"
+    ],
+    "fresh_source_cp2_sha256": "893e2d71e9b45abb92a9573a6091a1a0fb0a5f7ffd3e4e1201d12061317095ad",
+    "actual_runtime_cpu_warmup_test": "{\"status\": \"DRY_DDP_GRAPH_WARMUP_PRESERVES_MODEL_EMA_ADAM_COUNTER_AND_MOMENTS\", \"CPU_state_test\": true, \"four_rank_GPU_not_claimed\": true}",
+    "new_job": "742046",
+    "new_code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/repo-e6b2a9f4319a"
+  }
+}
