@@ -1,0 +1,54 @@
+{
+  "epoch": 1792535578.9187222,
+  "sacct": "743486|q7b-expanded-L26-00|RUNNING|0:0|00:13:54\n743488|q7b-expanded-L26-01|RUNNING|0:0|00:13:54\n743489|q7b-expanded-L26-02|RUNNING|0:0|00:13:54\n743490|q7b-expanded-L26-03|RUNNING|0:0|00:13:54",
+  "shards": {
+    "0": {
+      "complete_chunks": 119,
+      "job_id": "743486"
+    },
+    "1": {
+      "complete_chunks": 154,
+      "job_id": "743488"
+    },
+    "2": {
+      "complete_chunks": 151,
+      "job_id": "743489",
+      "progress.json": {
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 48528,
+          "elapsed_seconds": 284.1415553584229,
+          "model_calls": 1563,
+          "native_bitexact_claim": false,
+          "padded_tokens": 7441240,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 7318757
+        },
+        "elapsed_seconds": 777.341823581839,
+        "expected_trajectories": 54560,
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792535579.946966,
+        "trajectories": 48480
+      }
+    },
+    "3": {
+      "complete_chunks": 128,
+      "job_id": "743490"
+    }
+  },
+  "squeue": "743486|q7b-expanded-L26-00|RUNNING|ACD1-18|ACD1-18\n743488|q7b-expanded-L26-01|RUNNING|ACD1-22|ACD1-22\n743489|q7b-expanded-L26-02|RUNNING|ACD1-22|ACD1-22\n743490|q7b-expanded-L26-03|RUNNING|ACD1-22|ACD1-22",
+  "unavailable_optional_observations": [
+    {
+      "error": "FileNotFoundError",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1/shard-00/capture/progress.json"
+    },
+    {
+      "error": "FileNotFoundError",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1/shard-01/capture/progress.json"
+    },
+    {
+      "error": "FileNotFoundError",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1/shard-03/capture/progress.json"
+    }
+  ]
+}

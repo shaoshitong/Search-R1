@@ -7,7 +7,7 @@ head=git('rev-parse','HEAD');cached=git('diff','--cached','--name-only')
 try:parent=git('rev-parse','refs/heads/'+branch)
 except subprocess.CalledProcessError:parent='bea03d5f1d908f357c368684b9e8c086ca0e687b'
 files={R/('reproduction/operations/qwen7b_warmup/'+n):'reproduction/operations/qwen7b_warmup/'+n for n in ('peer_expanded_l26_merge.py','test_peer_expanded_l26_merge.py')}
-files.update({O/n:prefix+'ops/'+n for n in ('deploy-peer-expanded-merge.py','publish-peer-expanded-merge-source.py','publish-peer-expanded-L26-source.py','poll-peer-expanded-L26.py','inspect-expanded-shard0.py')})
+files.update({O/n:prefix+'ops/'+n for n in ('deploy-peer-expanded-merge.py','publish-peer-expanded-merge-source.py','publish-peer-expanded-L26-source.py','poll-peer-expanded-L26.py','inspect-expanded-shard0.py','peer-expanded-L26-independent-audit.py')})
 files.update({p:prefix+'summaries/'+p.name for p in (O/'reports').glob('peer-expanded-L26-*.json') if 'merge-source-publication' not in p.name})
 records={}
 with tempfile.TemporaryDirectory() as tmp:
