@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from . import retrieval_relay_generation_control as original
 from . import queued_relay_slots as slots
+from . import rollover_paths
 
 _bundle = original.bundle
 
@@ -20,7 +21,7 @@ def bundle(role='upstream', generation='owner-v1', slot=None, instance='r1', ena
         identity, files, manifest = _bundle(role, 'queued-' + generation, slot, instance, enabled_slots)
     for name in ('queued_generation_control.py', 'queued_health.py', 'queued_slot_consumer.py',
                  'queued_relay_owner.py', 'queued_relay_slots.py', 'retrieval_relay_backpressure.py',
-                 'rollover_terminal.py', 'predecessor_generation_terminal.py'):
+                 'rollover_terminal.py', 'rollover_paths.py', 'predecessor_generation_terminal.py'):
         files[name] = Path(__file__).with_name(name).read_bytes()
         manifest['source_files'][name] = dict(bytes=len(files[name]), sha256=original.old.digest(files[name]))
     source = files['relay_generation_bootstrap.py']
@@ -41,7 +42,7 @@ def bundle(role='upstream', generation='owner-v1', slot=None, instance='r1', ena
 def remote_source():
     source = original.REMOTE
     assert source.count('import retrieval_relay_owner as runtime') == 1
-    return source.replace('import retrieval_relay_owner as runtime', 'import queued_relay_owner as runtime')
+    return rollover_paths.remote_reads(source.replace('import retrieval_relay_owner as runtime', 'import queued_relay_owner as runtime'))
 
 
 def main():

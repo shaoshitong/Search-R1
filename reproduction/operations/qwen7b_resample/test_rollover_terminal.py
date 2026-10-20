@@ -1,5 +1,6 @@
 """CPU actual-file fixtures for dynamic, terminal-only rollover contracts."""
 import ast
+import base64
 import contextlib
 import copy
 import hashlib
@@ -25,6 +26,7 @@ from . import queued_slot_consumer
 from . import rollover_source_slots as slots
 from . import rollover_retrieval_owner as rollover_owner
 from . import queued_relay_slots as relay_slots
+from . import rollover_paths
 
 
 def write(path, value):
@@ -36,9 +38,11 @@ def digest(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 class RolloverTests(unittest.TestCase):
     @contextlib.contextmanager
-    def fixture(self):
+    def fixture(self, dual_view=False):
         with tempfile.TemporaryDirectory() as folder:
-            base = Path(folder);run = terminal.RUN_ID
+            base = Path(folder) / 'alias' if dual_view else Path(folder)
+            physical = Path(folder) / 'physical' if dual_view else base
+            base.mkdir(exist_ok=True);run = terminal.RUN_ID
             write(base / 'config.json', dict(run_id=run))
             failed = base / 'preparation/old-four-failed/complete.json'
             write(failed, dict(status=terminal.FAILED, node='h100-10', run_id=run,
@@ -46,7 +50,10 @@ class RolloverTests(unittest.TestCase):
                 termination_kind='OBSERVED_NATIVE_FAILURE_NOT_CONTROLLED_STOP', controlled_stop=False,
                 release_observations=[dict(epoch=i, remaining_known_pids=[], own_gpu_contexts=[], loopback_28831_listeners=[], own_cgroups_empty=True) for i in (1, 4)]))
             def row(name, pid, node, borrows=(), kind='model-or-cpu-owner'):
-                root = base / 'pool/jobs' / ('job-' + node + '-' + str(pid)) / 'attempt-fixture'
+                pattern = 'job-' + node + '-'
+                if dual_view and node == 'h100-10':
+                    pattern = 'job-relay10-primary-' if 'primary10-' in name else 'job-legacy-relay-owner-'
+                root = base / 'pool/jobs' / (pattern + str(pid)) / 'attempt-fixture'
                 allocation = root / 'allocation.json'
                 write(allocation, dict(controller_pid=pid, native_unit=name, run_id=run, node=node))
                 (root / 'sampler.log').write_text('genuine original terminal log\n')
@@ -60,6 +67,7 @@ class RolloverTests(unittest.TestCase):
             n10rows.append(row(owner_unit, 7000, 'h100-10'))
             ready = dict(status='LEGACY_SOURCE_RELAY_OWNER_READY', role='current-oldV6-source', run_id=run,
                 slots=cpu.TOPOLOGIES['tp4'], owner=dict(unit=owner_unit, pid=7000, birth='7100'),
+                allocation_path=n10rows[-1]['allocation_path'],
                 allocation_sha256=n10rows[-1]['allocation_sha256'])
             ready_path = base / 'preparation/cpu-ready.json';write(ready_path, ready)
             common = dict(schema_version=2, run_id=run, original_partial_outputs_retained=True, collector_signals_no_processes=True)
@@ -102,14 +110,14 @@ class RolloverTests(unittest.TestCase):
                 def __enter__(self):return self
                 def __exit__(self, *a):pass
                 def bind(self, value):assert value == ('127.0.0.1', 28831)
-            with patch.object(terminal, 'BASE', base), patch.object(terminal, 'PHYSICAL', base), \
-                 patch.object(terminal.core, 'BASE', base), patch.object(terminal.core, 'PHYSICAL', base), \
+            with patch.object(terminal, 'BASE', base), patch.object(terminal, 'PHYSICAL', physical), \
+                 patch.object(terminal.core, 'BASE', base), patch.object(terminal.core, 'PHYSICAL', physical), \
                  patch('os.geteuid', return_value=0), patch.object(terminal.core, 'query', side_effect=query), \
                  patch.object(terminal.core, 'owned', return_value={}), patch.object(terminal.core, 'birth', side_effect=birth), \
                  patch.object(terminal.subprocess, 'check_output', side_effect=command), \
                  patch.object(terminal.time, 'time', side_effect=lambda: clock[0]), patch.object(terminal.time, 'sleep', side_effect=sleep), \
                  patch('os.stat', side_effect=stat), patch.object(Path, 'read_text', text), patch.object(terminal.socket, 'socket', return_value=Socket()):
-                yield SimpleNamespace(base=base, node10=node10, source5=source5, n10path=n10path, n5path=n5path,
+                yield SimpleNamespace(base=base, physical=physical, node10=node10, source5=source5, n10path=n10path, n5path=n5path,
                     failed=failed, queries=queries, births=births, commands=commands)
 
     def test_dynamic_cpu_and_mixed_cohort_then_source5_seals_actual_terminal_inodes(self):
@@ -360,13 +368,120 @@ class RolloverTests(unittest.TestCase):
                 (stage / 'rollover_terminal.py').write_bytes(files['rollover_terminal.py'])
                 spec = importlib.util.spec_from_file_location('staged_rollover_terminal_test', stage / 'rollover_terminal.py')
                 runtime = importlib.util.module_from_spec(spec)
-                with patch.dict(sys.modules, {'predecessor_generation_terminal': terminal.core}):spec.loader.exec_module(runtime)
+                with patch.dict(sys.modules, {'predecessor_generation_terminal': terminal.core, 'rollover_paths': rollover_paths}):spec.loader.exec_module(runtime)
                 runtime.BASE, runtime.PHYSICAL = f.base, f.base
                 proof = f.n5path.parent / 'complete.json'
                 accepted = runtime.verify_source_proof(proof, digest(proof), f.base, terminal.RUN_ID)
                 self.assertEqual(accepted['status'], terminal.STATUS)
                 wrong = runtime.core.read(proof);wrong['status'] = 'OWN_PREDECESSOR_GENERATION_TERMINAL';write(proof, wrong)
                 with self.assertRaises(AssertionError):runtime.verify_source_proof(proof, digest(proof), f.base, terminal.RUN_ID)
+
+    def test_private_alias_then_host_physical_view_capture_collect_and_owner_controls_keep_sha(self):
+        with self.fixture(dual_view=True) as f:
+            physical = terminal.core.physical
+            ready_path = Path(f.node10['cpu_owner_ready_path'])
+            ready = f.node10['cpu_owner_ready'];ready['allocation_path'] = physical(ready['allocation_path'])
+            write(ready_path, ready)
+            identity, files, manifest = control.bundle('h100-10')
+            def stage_bundle(identity, files, manifest, status):
+                root = terminal.readable(f.base) / 'preparation' / manifest['directory']
+                stage = root / identity;stage.mkdir(parents=True)
+                for name, data in files.items():(stage / name).write_bytes(data)
+                write(stage / 'manifest.json', manifest);write(stage / 'stage-receipt.json', dict(status=status))
+                return root, stage
+            capture_root, _ = stage_bundle(identity, files, manifest, 'EXACT_TERMINAL_COLLECTOR_STAGE_SHA_PASS')
+            capture_values = dict(BASE=str(f.base), PHYSICAL=str(f.physical), RUN_ID=terminal.RUN_ID,
+                MANIFEST=manifest, IDENTITY=identity, ACTION='capture',
+                PUBLICATION=dict(status='EXACT_SOURCE_COMMIT_REMOTE_SHA_VERIFIED'),
+                CPU_READY=physical(ready_path), CPU_SHA=digest(ready_path), PRIMARY_INSTANCES=terminal.PRIMARY_INSTANCES,
+                FAILED_PROOF=physical(f.failed), FAILED_SHA=digest(f.failed))
+            live = {row['unit']: row for row in f.node10['ordered_units']}
+            def live_query(name):
+                row = live[name]
+                return dict(Id=name, MainPID=str(row['pid']), ActiveState='active', ControlGroup='/system.slice/' + name)
+            def live_owned(group):return live[group.rsplit('/', 1)[1]]['original_owned_births']
+            def live_birth(pid):return next(row['birth'] for row in live.values() if row['pid'] == pid)
+            with patch('socket.gethostname', return_value='h100-10'), patch.object(terminal.core, 'query', side_effect=live_query), \
+                 patch.object(terminal.core, 'owned', side_effect=live_owned), patch.object(terminal.core, 'birth', side_effect=live_birth), \
+                 patch.dict(sys.modules, {'rollover_terminal': terminal}), patch.object(sys, 'path', list(sys.path)), contextlib.redirect_stdout(io.StringIO()):
+                exec(control.REMOTE, capture_values)
+            captured_path = capture_root / 'plan.json';captured_sha = digest(captured_path)
+            captured = terminal.read(physical(captured_path))
+            self.assertEqual(captured['prior_failed_proof_path'], physical(f.failed))
+            self.assertFalse(Path(captured['prior_failed_proof_path']).exists(), 'Private view must really hide physical paths')
+            f.source5.update(remote_node10_plan_path=physical(captured_path), remote_node10_plan_sha256=captured_sha,
+                remote_node10_proof_path=physical(capture_root / 'complete.json'))
+            write(f.n5path, f.source5);source_sha = digest(f.n5path)
+            with patch('socket.gethostname', return_value='h100-10'):terminal.collect(physical(captured_path), captured_sha)
+            with patch('socket.gethostname', return_value='h100-5'):terminal.collect(physical(f.n5path), source_sha)
+            done10, done5 = physical(capture_root / 'complete.json'), physical(f.n5path.parent / 'complete.json')
+            sha10, sha5 = terminal.sha(done10), terminal.sha(done5)
+            proof5 = terminal.read(done5)
+            self.assertEqual(proof5['source_plan'], physical(f.n5path))
+            self.assertEqual(proof5['remote_node10_proof'], done10)
+            self.assertTrue(all(row['path'].startswith(str(f.physical)) for row in proof5['original_files']))
+            inode = captured_path.stat().st_ino
+
+            def fake_run(command, **kwargs):
+                if command[:2] == ['systemctl', 'show']:
+                    return SimpleNamespace(returncode=0, stdout='Id=%s\nLoadState=not-found\nMainPID=0\nActiveState=inactive\n' % command[2], stderr='')
+                self.assertEqual(command[0], 'systemd-run')
+                return SimpleNamespace(returncode=0, stdout='fake CPU unit start; no process created\n', stderr='')
+
+            def owner_controls(generation):
+                gid, gfiles, gmanifest = guarded.bundle(generation=generation)
+                groot, _ = stage_bundle(gid, gfiles, gmanifest, 'EXACT_OWNER_GENERATION_STAGE_SHA_PASS')
+                common = dict(BASE=str(f.base), PHYSICAL=str(f.physical), RUN_ID=terminal.RUN_ID, ACTION='submit',
+                    PUBLICATION=dict(status='EXACT_SOURCE_COMMIT_REMOTE_SHA_VERIFIED'), INTENT='fixture-' + generation)
+                env = dict(common, IDENTITY=gid, MANIFEST=gmanifest, PREDECESSOR=done5, PREDECESSOR_SHA=sha5,
+                    FILES={name: base64.b64encode(data).decode() for name, data in gfiles.items()})
+                with patch('socket.gethostname', return_value='h100-5'), patch.object(terminal.subprocess, 'run', side_effect=fake_run), \
+                     patch.dict(sys.modules, {'rollover_terminal': terminal}), patch.object(sys, 'path', list(sys.path)), contextlib.redirect_stdout(io.StringIO()):
+                    exec('import re\n' + guarded.remote_source(), env)
+                self.assertEqual(terminal.read(groot / 'submit-context.json')['predecessor_sha256'], sha5)
+                # Exercise the real queued control's proof reader too; systemd
+                # and its future source/upstream are CPU fixtures, never jobs.
+                owner = dict(pid=8100, birth='123')
+                contract = dict(contract=queued_cpu.owner.guard.CONTRACT,
+                    code_sha256=terminal.sha(queued_cpu.owner.guard.__file__),
+                    dependency_path=str(queued_cpu.owner.guard.dependency_path(f.base, terminal.RUN_ID, owner)))
+                allocation = f.base / 'preparation' / ('fixture-source-' + generation) / 'allocation.json'
+                write(terminal.readable(f.base) / allocation.relative_to(f.base),
+                    dict(owner=owner, run_id=terminal.RUN_ID, allocation_role='RETRIEVAL_ONLY_PRIMARY_LEASE_OWNER', remote_relay_guard=contract))
+                source = allocation.with_name('owner-ready.json')
+                write(terminal.readable(f.base) / source.relative_to(f.base), dict(status='RETRIEVAL_ONLY_OWNER_READY', run_id=terminal.RUN_ID,
+                    owner=owner, allocation_path=physical(allocation), allocation_sha256=terminal.sha(allocation),
+                    remote_relay_guard=contract, consumer_deadline_epoch=100000))
+                upstream = source.with_name('upstream-ready.json')
+                write(terminal.readable(f.base) / upstream.relative_to(f.base), dict(role='upstream', run_id=terminal.RUN_ID, source_owner=owner,
+                    job_ready_path=str(upstream.with_name('upstream-job-ready.json'))))
+                qid, qfiles, qmanifest = queued.bundle('downstream', generation=generation)
+                qroot, _ = stage_bundle(qid, qfiles, qmanifest, 'EXACT_RELAY_GENERATION_STAGE_SHA_PASS')
+                env = dict(common, IDENTITY=qid, MANIFEST=qmanifest, PREDECESSOR=done10, PREDECESSOR_SHA=sha10,
+                    SOURCE_READY=physical(source), SOURCE_SHA=terminal.sha(source), UP_READY=physical(upstream), UP_SHA=terminal.sha(upstream),
+                    FILES={name: base64.b64encode(data).decode() for name, data in qfiles.items()})
+                with patch('socket.gethostname', return_value='h100-10'), patch.object(terminal.subprocess, 'run', side_effect=fake_run), \
+                     patch.dict(sys.modules, {'queued_relay_owner': queued_cpu}), patch.object(sys, 'path', list(sys.path)), contextlib.redirect_stdout(io.StringIO()):
+                    exec(queued.remote_source(), env)
+                self.assertEqual(terminal.read(qroot / 'submit-context.json')['predecessor_sha256'], sha10)
+
+            owner_controls('private-v1')
+            f.base.rename(f.physical)
+            self.assertFalse(f.base.exists());self.assertTrue(f.physical.exists())
+            with patch('socket.gethostname', return_value='h100-5'):
+                self.assertEqual(terminal.verify_source_proof(done5, sha5, f.base, terminal.RUN_ID)['status'], terminal.STATUS)
+            with patch('socket.gethostname', return_value='h100-10'):
+                self.assertTrue(queued_cpu.verify_predecessor(None, SimpleNamespace(predecessor_proof=done10, predecessor_sha256=sha10))['actual_terminal_only_proof'])
+                terminal.collect(physical(captured_path), captured_sha)
+                with patch.dict(sys.modules, {'rollover_terminal': terminal}), patch.object(sys, 'path', list(sys.path)), contextlib.redirect_stdout(io.StringIO()):
+                    exec(control.REMOTE, dict(capture_values))
+            self.assertEqual(Path(physical(captured_path)).stat().st_ino, inode)
+            self.assertEqual(terminal.sha(done5), sha5);self.assertEqual(terminal.sha(done10), sha10)
+            owner_controls('host-v1')
+            # If both spellings appear but the preferred alias has wrong bytes,
+            # expected SHA must reject rather than silently try the other file.
+            write(f.failed, dict(status='wrong alias payload'))
+            with self.assertRaises(AssertionError):terminal.verify_prior_failed(captured)
 
 
 if __name__ == '__main__':unittest.main()

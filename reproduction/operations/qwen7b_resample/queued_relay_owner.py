@@ -19,7 +19,7 @@ def __getattr__(name):return getattr(owner, name)
 
 def verify_predecessor(pool, args):
     proof = terminal.verify_proof(args.predecessor_proof, args.predecessor_sha256, 'h100-10')
-    terminal.release(terminal.core.read(proof['source_plan']))
+    terminal.release(terminal.read(proof['source_plan']))
     return dict(path=str(args.predecessor_proof), sha256=args.predecessor_sha256,
                 status=proof['status'], actual_terminal_only_proof=True)
 

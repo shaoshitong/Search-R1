@@ -15,8 +15,10 @@ import subprocess
 import time
 try:
     import predecessor_generation_terminal as core
+    import rollover_paths as paths
 except ModuleNotFoundError:
     from . import predecessor_generation_terminal as core
+    from . import rollover_paths as paths
 
 STATUS = 'OWN_BOUND_COHORT_TERMINAL_RELEASED_V1'
 FAILED = 'OWN_NODE10_NATIVE_FAILURES_ORIGINAL_SHA_RELEASE_PASS'
@@ -32,6 +34,11 @@ PRIMARY_INSTANCES = {
 
 
 def unit(name):return 'sst-q7b-g5-' + name + '-' + RUN_ID[:12] + '.service'
+
+
+def readable(path):return paths.readable(path, BASE, PHYSICAL)
+def read(path):return paths.read(path, BASE, PHYSICAL)
+def sha(path):return paths.sha(path, BASE, PHYSICAL)
 
 
 def primary_instances(value, slots):
@@ -85,8 +92,8 @@ def validate_plan(value):
 
 
 def verify_allocation(row):
-    assert core.sha(row['allocation_path']) == row['allocation_sha256']
-    allocation = core.read(row['allocation_path'])
+    assert sha(row['allocation_path']) == row['allocation_sha256']
+    allocation = read(row['allocation_path'])
     if row.get('allocation_kind') == 'retained-upstream-ready':
         assert allocation['role'] == 'upstream' and allocation['status'] == 'RELAY_LISTENING'
         assert allocation['process']['pid'] == row['pid'] and str(allocation['process']['birth']) == row['birth']
@@ -104,7 +111,7 @@ def captured_row(name, node, allocation, metadata_roots, borrows=(), allocation_
     assert props['ControlGroup'] == group and group not in Path('/proc/self/cgroup').read_text()
     births = core.owned(group);assert births.get(str(pid)) == birth
     row = dict(unit=name, node=node, pid=pid, birth=birth, borrows_units=list(borrows),
-        allocation_path=str(allocation), allocation_sha256=core.sha(allocation),
+        allocation_path=str(allocation), allocation_sha256=sha(allocation),
         metadata_roots=list(map(str, metadata_roots)), original_owned_births=births, captured_unit=props,
         allocation_kind=allocation_kind)
     verify_allocation(row)
@@ -112,8 +119,8 @@ def captured_row(name, node, allocation, metadata_roots, borrows=(), allocation_
 
 
 def verify_prior_failed(plan):
-    assert core.sha(plan['prior_failed_proof_path']) == plan['prior_failed_proof_sha256']
-    value = core.read(plan['prior_failed_proof_path'])
+    assert sha(plan['prior_failed_proof_path']) == plan['prior_failed_proof_sha256']
+    value = read(plan['prior_failed_proof_path'])
     assert value['status'] == FAILED and value['node'] == 'h100-10' and value['run_id'] == RUN_ID
     assert value['predecessor_compatibility_status'] == 'OWN_PREDECESSOR_GENERATION_TERMINAL'
     assert value['termination_kind'] == 'OBSERVED_NATIVE_FAILURE_NOT_CONTROLLED_STOP' and value['controlled_stop'] is False
@@ -124,10 +131,11 @@ def verify_prior_failed(plan):
 
 
 def metadata(rows):
-    paths = set(core.metadata_paths(rows))
+    visible_rows = [dict(row, metadata_roots=[str(readable(path)) for path in row['metadata_roots']]) for row in rows]
+    paths = set(core.metadata_paths(visible_rows))
     for row in rows:
         for raw in row['metadata_roots']:
-            root = Path(raw)
+            root = readable(raw)
             if root.exists():
                 paths.update(path for path in root.rglob('*') if path.is_file() and not path.is_symlink()
                     and path.suffix in ('.py', '.sh') and not any(x in ('cache', 'sampling', 'assets') for x in path.relative_to(root).parts))
@@ -149,13 +157,13 @@ def release(plan):
 
 
 def verify_proof(path, digest, expected_node, expected_plan_sha=None):
-    assert core.sha(path) == digest
-    value = core.read(path)
+    assert sha(path) == digest
+    value = read(path)
     assert value['status'] == STATUS and value['schema_version'] == 2 and value['node'] == expected_node and value['run_id'] == RUN_ID
     assert value['collector_signals_no_processes'] and value['controlled_stop'] is False
     assert value['termination_kind'] == 'OBSERVED_TERMINAL_STATES_NO_SIGNALS_BY_COLLECTOR'
-    assert core.sha(value['source_plan']) == value['source_plan_sha256']
-    plan = validate_plan(core.read(value['source_plan']))
+    assert sha(value['source_plan']) == value['source_plan_sha256']
+    plan = validate_plan(read(value['source_plan']))
     if expected_plan_sha is not None:assert value['source_plan_sha256'] == expected_plan_sha
     assert value['source'] == plan['source'] and value['ordered_units'] == plan['ordered_units']
     assert value['original_owned_births'] == {pid: birth for row in plan['ordered_units'] for pid, birth in row['original_owned_births'].items()}
@@ -172,7 +180,7 @@ def verify_proof(path, digest, expected_node, expected_plan_sha=None):
         verify_prior_failed(plan)
     else:
         assert value['source']['pid'] == 1490214 and value['source']['birth'] == '6807965'
-        assert core.sha(value['remote_node10_proof']) == value['remote_node10_proof_sha256']
+        assert sha(value['remote_node10_proof']) == value['remote_node10_proof_sha256']
         verify_proof(value['remote_node10_proof'], value['remote_node10_proof_sha256'], 'h100-10', plan['remote_node10_plan_sha256'])
     return value
 
@@ -181,23 +189,24 @@ def verify_source_proof(path, digest, base, run_id):
     assert str(base) == str(BASE) and run_id == RUN_ID
     value = verify_proof(path, digest, 'h100-5')
     # Recheck only this node. Never interpret a remote node10 PID locally.
-    plan = core.read(value['source_plan'])
+    plan = read(value['source_plan'])
     release(plan)
     return value
 
 
 def collect(plan_path, plan_sha, watch_seconds=0):
-    assert core.sha(plan_path) == plan_sha
-    plan = validate_plan(core.read(plan_path))
+    plan_path = readable(plan_path)
+    assert sha(plan_path) == plan_sha
+    plan = validate_plan(read(plan_path))
     assert socket.gethostname().split('.')[0] == plan['node'] and os.geteuid() == 0
-    assert core.read(BASE / 'config.json')['run_id'] == RUN_ID
+    assert read(BASE / 'config.json')['run_id'] == RUN_ID
     assert 0 <= watch_seconds <= 7200
     if plan['node'] == 'h100-5':
         assert os.stat('/proc/self/ns/mnt').st_ino == plan['source_mount_ns_inode']
         assert os.stat('/proc/self/ns/net').st_ino == plan['source_net_ns_inode']
     else:
-        assert core.sha(plan['cpu_owner_ready_path']) == plan['cpu_owner_ready_sha256']
-        assert core.read(plan['cpu_owner_ready_path']) == plan['cpu_owner_ready']
+        assert sha(plan['cpu_owner_ready_path']) == plan['cpu_owner_ready_sha256']
+        assert read(plan['cpu_owner_ready_path']) == plan['cpu_owner_ready']
         assert plan['ordered_units'][-1]['allocation_sha256'] == plan['cpu_owner_ready']['allocation_sha256']
     for row in plan['ordered_units']:
         assert '/system.slice/' + row['unit'] not in Path('/proc/self/cgroup').read_text()
@@ -205,7 +214,7 @@ def collect(plan_path, plan_sha, watch_seconds=0):
     root = Path(plan_path).parent;complete = root / 'complete.json'
     with (root / 'collect.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
-        if complete.exists():return verify_proof(complete, core.sha(complete), plan['node'])
+        if complete.exists():return verify_proof(complete, sha(complete), plan['node'])
         deadline = time.monotonic() + watch_seconds
         while True:
             try:
@@ -213,7 +222,7 @@ def collect(plan_path, plan_sha, watch_seconds=0):
                 if plan['node'] == 'h100-10':verify_prior_failed(plan)
                 else:
                     remote = plan['remote_node10_proof_path']
-                    verify_proof(remote, core.sha(remote), 'h100-10', plan['remote_node10_plan_sha256'])
+                    verify_proof(remote, sha(remote), 'h100-10', plan['remote_node10_plan_sha256'])
                 first = release(plan)
                 break
             except (AssertionError, FileNotFoundError):
@@ -229,8 +238,8 @@ def collect(plan_path, plan_sha, watch_seconds=0):
             original_partial_outputs_retained=True, collector_signals_no_processes=True, controlled_stop=False,
             termination_kind='OBSERVED_TERMINAL_STATES_NO_SIGNALS_BY_COLLECTOR', global_goal_complete=False,
             source_plan=core.physical(plan_path), source_plan_sha256=plan_sha,
-            remote_node10_proof=remote, remote_node10_proof_sha256=core.sha(remote) if remote else None,
-            source_code_sha256=core.sha(__file__), epoch=time.time())
+            remote_node10_proof=core.physical(remote) if remote else None, remote_node10_proof_sha256=sha(remote) if remote else None,
+            source_code_sha256=sha(__file__), epoch=time.time())
         core.publish(complete, value)
         return value
 
@@ -242,15 +251,16 @@ def main():
     parser.add_argument('--log-file')
     args = parser.parse_args()
     if args.log_file:
-        fd = os.open(args.log_file, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
+        log = readable(Path(args.log_file).parent) / Path(args.log_file).name
+        fd = os.open(log, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
         os.dup2(fd, 1);os.dup2(fd, 2);os.close(fd)
-    assert core.sha(args.plan) == args.plan_sha256
+    assert sha(args.plan) == args.plan_sha256
     if not args.collect_terminal:
-        plan = validate_plan(core.read(args.plan))
+        plan = validate_plan(read(args.plan))
         print(json.dumps(dict(status='READ_ONLY_BOUND_COHORT_PLAN_NO_SIGNALS', plan=plan)));return
     value = collect(args.plan, args.plan_sha256, args.watch_seconds)
     print(json.dumps(dict(status=value['status'], proof=core.physical(Path(args.plan).parent / 'complete.json'),
-                         sha256=core.sha(Path(args.plan).parent / 'complete.json'), collector_signals_no_processes=True)))
+                         sha256=sha(Path(args.plan).parent / 'complete.json'), collector_signals_no_processes=True)))
 
 
 if __name__ == '__main__':main()

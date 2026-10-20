@@ -79,6 +79,14 @@ or rename their failures as controlled stops.
 -------------------------------------------------------------------------
 Root must first commit/push/full-SHA verify the NEW files. Until that happens,
 PUB above is intentionally unresolved; current017660... does not contain them.
+The first actual capture10 failed before writing plan/intent because its
+private /mnt/data/shaoshitong view is retained assets, not the physical NAS10
+data tree. The NEW rollover_paths resolver now reads the BASE alias first and
+falls back to the physical spelling only when alias is absent. Proof records
+and original inode/SHA bindings still use physical NAS10 paths; SHA mismatch
+never triggers fallback to another file. The path fix creates new immutable
+source identities under the same generation root. Preserve the already staged
+old source directories; do not overwrite them or replay any existing intent.
 
 python3 -m $M.rollover_terminal_control stage --node h100-10 --generation rollover-v1 --published-commit "$PUB" --published-ref "$REF"
 python3 -m $M.rollover_terminal_control stage --node h100-5 --generation rollover-v1 --published-commit "$PUB" --published-ref "$REF"
@@ -279,7 +287,7 @@ Implementation handoff
 NEW files:rollover_terminal.py,rollover_terminal_control.py,
 guarded_rollover_control.py,guarded_rollover_slot_control.py,
 queued_health.py,queued_slot_consumer.py,queued_relay_owner.py,
-queued_generation_control.py,queued_relay_slots.py,rollover_source_slots.py,
+queued_generation_control.py,queued_relay_slots.py,rollover_source_slots.py,rollover_paths.py,
 rollover_retrieval_owner.py,test_rollover_terminal.py.
 Latest focused local verification:6 tests passed in0.077s with
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest reproduction.operations.qwen7b_resample.test_rollover_terminal -v
@@ -301,8 +309,12 @@ ROLLOVER_CASE=reproduction.operations.qwen7b_resample.test_rollover_terminal.Rol
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest "$ROLLOVER_CASE.test_import_contract_and_handoff_commands_use_new_registry_without_global_leaks" "$ROLLOVER_CASE.test_manifest_hashes_and_staged_source_verifier_accept_actual_new_terminal_contract" "$ROLLOVER_CASE.test_six_node10_slots_match_owner_entry_model_entry_and_actual_bootstrap" -v
 Old V5 identity/controlled-proof masquerade, wrong
 slot instance/allocation and missing retriever/active original model reject.
+Namespace-path fix verification:10 focused CPU tests passed in0.243s. New real
+temporary-file regression executes capture/collect/verifier/fake-systemd owner
+controls in a private alias-only view, then renames the same tree into a host
+physical-only view and repeats proof/owner-control admission. Physical records,
+original inode and SHA stay bound; a visible wrong alias rejects without SHA
+fallback. No live process/unit, GPU or remote operation is part of the fixture.
+Minimal path-regression command:
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest reproduction.operations.qwen7b_resample.test_rollover_terminal.RolloverTests.test_private_alias_then_host_physical_view_capture_collect_and_owner_controls_keep_sha -v
 Actual source/terminal/deployment acceptance remains a later root operation.
-
-Root full focused verification before publication: 9 CPU tests PASS in0.292s.
-This records source/control correctness only; no future rollover was staged,
-no predecessor was stopped and no future model fit/acceptance was claimed.

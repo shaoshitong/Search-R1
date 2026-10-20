@@ -8,9 +8,10 @@ import subprocess
 import time
 from . import shared_vram_control as old
 from .rollover_terminal import PRIMARY_INSTANCES
+from . import rollover_paths
 
 ROOT, BASE, PHYSICAL, RUN_ID = old.ROOT, old.BASE, old.PHYSICAL, old.RUN_ID
-SOURCES = ('rollover_terminal_control.py', 'rollover_terminal.py', 'predecessor_generation_terminal.py', 'pool_paths.sh')
+SOURCES = ('rollover_terminal_control.py', 'rollover_terminal.py', 'rollover_paths.py', 'predecessor_generation_terminal.py', 'pool_paths.sh')
 
 
 def bundle(node='h100-10', generation='rollover-v1'):
@@ -126,6 +127,7 @@ else:
   proof_sha256=sha(root/'complete.json')if(root/'complete.json').exists()else None)
 print(json.dumps(value))
 '''
+REMOTE = rollover_paths.remote_reads(REMOTE)
 
 
 def main():

@@ -4,6 +4,7 @@ from pathlib import Path
 from . import retrieval_only_control as original
 from . import retrieval_remote_guard_control as guarded
 from . import rollover_source_slots as slots
+from . import rollover_paths
 
 _slot_bundle = original.bundle
 
@@ -23,7 +24,7 @@ def bundle(role='owner', generation='owner-v2', enabled_slots=slots.DEFAULT_SLOT
         else:identity, files, manifest = _slot_bundle(role, 'guard-rollover-' + generation, enabled_slots, slot, instance)
     for name in ('guarded_rollover_control.py', 'guarded_rollover_slot_control.py', 'rollover_terminal.py',
                  'predecessor_generation_terminal.py', 'queued_slot_consumer.py', 'queued_health.py',
-                 'rollover_source_slots.py', 'rollover_retrieval_owner.py'):
+                 'rollover_source_slots.py', 'rollover_retrieval_owner.py', 'rollover_paths.py'):
         files[name] = Path(__file__).with_name(name).read_bytes()
         manifest['source_files'][name] = dict(bytes=len(files[name]), sha256=original.old.digest(files[name]))
     if role == 'owner':
@@ -53,7 +54,7 @@ def remote_source():
     sys.path.insert(0,str(stage));import rollover_terminal as terminal
     proof=terminal.verify_source_proof(PREDECESSOR,PREDECESSOR_SHA,BASE,RUN_ID)
 """
-    return source[:start] + replacement + source[end:]
+    return rollover_paths.remote_reads(source[:start] + replacement + source[end:])
 
 
 def main(role='owner'):
