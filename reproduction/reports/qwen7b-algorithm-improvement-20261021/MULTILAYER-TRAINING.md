@@ -42,3 +42,15 @@ code_hashes: {repository-relative runtime file: actual published SHA256}
 完整code closure应覆盖runner/model、ReplayFeatureReader、replay_probe_layers、probe_ablation_model、probe_ablation_train、probe_ablation_loss、runtime及它们实际本地import依赖。每层源block从官方shard严格加载后，运行回执另保存实际FP32 block tensor SHA、官方shard checksum、共同head初始SHA和geometry。配置SHA与checkpoint绑定。
 
 6项CPU小测试覆盖：三block独立/共同head/Adam0和EMA初值、padding及梯度、四轮全cohort计划、首更新实际toy双重放、CP0/CP1及下一更新完整恢复、边界先checkpoint后评估且RNG不变、normal单GPU两小时脚本。真实GPU first-update/replay与四轮最终指标仍须执行后验收；本次不提前声称通过。
+
+真实部署helper为`deploy_multilayer_suite.py`，CPU配置准备器为`multilayer_train_prepare.py`，独立目标目录为`algorithm-improvement-20261021/multilayer-four-epoch-v1`。它要求源码HEAD已提交推送且逐文件相符，使用18文件AST依赖闭包、4KiB归档分块和低于16KB的控制命令。实际R2 complete及三个feature-list已由本次控制端只读fresh SHA检查；prepare时仍会重新检查小metadata和来源绑定，不能以交接摘要代替实际文件。
+
+```sh
+python3 -m reproduction.operations.qwen7b_warmup.deploy_multilayer_suite --control-root <control-root> --action prepare
+python3 -m reproduction.operations.qwen7b_warmup.deploy_multilayer_suite --control-root <control-root> --action submit --variant layer21 --submit-authorized
+python3 -m reproduction.operations.qwen7b_warmup.deploy_multilayer_suite --control-root <control-root> --action submit --variant layer24 --submit-authorized
+python3 -m reproduction.operations.qwen7b_warmup.deploy_multilayer_suite --control-root <control-root> --action submit --variant layer27 --submit-authorized
+python3 -m reproduction.operations.qwen7b_warmup.deploy_multilayer_suite --control-root <control-root> --action status
+```
+
+以上只展示入口，本实现未调用submit。独立job.id、同名队列检查与submission-intent用于避免未知提交结果后重复提交；没有任务依赖。新增部署metadata测试与前述训练CPU测试合计10项通过。

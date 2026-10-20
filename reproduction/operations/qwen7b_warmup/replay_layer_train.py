@@ -16,7 +16,7 @@ from .probe_ablation_model import CAPTURE_PAIRS,REVISION
 
 STOP=False
 LOSS=dict(trajectory_weight=1.,three_event_weight=1.)
-TARGET='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/replay-layer-training4epoch-v1'
+TARGET='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/multilayer-four-epoch-v1'
 
 
 def build_plan(reference,seed=1729):
