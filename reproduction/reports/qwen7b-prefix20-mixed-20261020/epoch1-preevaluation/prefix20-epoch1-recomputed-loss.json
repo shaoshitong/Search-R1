@@ -1,0 +1,46 @@
+{
+  "epoch": 1,
+  "time": 1792503200.748011,
+  "weights": "EMA0.99",
+  "scope": "BCE independently recomputed from sealed float32 probabilities; correct saturated predictions contribute0; no clipping; trainer stable-logit receipt pending",
+  "splits": {
+    "train": {
+      "questions": 67199,
+      "trajectory_bce": null,
+      "mixed_bce": 0.1520666088567529,
+      "trajectory_accuracy": 0.5886099495528208,
+      "correct_saturated_counts": [
+        25,
+        0
+      ],
+      "wrong_saturated_counts": [
+        13,
+        0
+      ],
+      "counts_order": [
+        "trajectory",
+        "group"
+      ],
+      "clipping_used": false
+    },
+    "diagnostic": {
+      "questions": 512,
+      "trajectory_bce": 0.6965556168393477,
+      "mixed_bce": 1.3065194059845637,
+      "trajectory_accuracy": 0.58828125,
+      "correct_saturated_counts": [
+        0,
+        0
+      ],
+      "wrong_saturated_counts": [
+        0,
+        0
+      ],
+      "counts_order": [
+        "trajectory",
+        "group"
+      ],
+      "clipping_used": false
+    }
+  }
+}
