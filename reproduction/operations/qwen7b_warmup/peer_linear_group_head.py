@@ -4,7 +4,7 @@ Finite precommitted2x3 grid; grouped inner80/20; winner weights/threshold freeze
 BEFORE any viewed2048 evaluation inputs/labels/predictions are opened. No GPU,
 actor/block update, production substitution, final pool or package installation.
 """
-import argparse,fcntl,gzip,hashlib,json,math,os,sys,time
+import argparse,fcntl,gc,gzip,hashlib,json,math,mmap,os,sys,threading,time
 from collections import Counter,defaultdict
 from pathlib import Path
 import numpy as np
@@ -15,6 +15,7 @@ from .peer_g10_learnability import checked,read,ref,digest,causal_signature
 from .evaluate_frozen_validation import fixed_groups
 
 STATUS='REMOTE_CPU_L26_PREFIX20_DIRECT_MIXED_LINEAR_HEAD_DIAGNOSTIC_COMPLETE'
+RSS_LIMIT=3*1024**3
 GRID=(.001,.01,.1)
 METHODS=('prefix_mean','prefix_last')
 LIMIT_SECONDS=26*60
@@ -143,17 +144,25 @@ def reduce_groups(groups,views,manifests,prefixes,out,methods,progress):
     qrow=defaultdict(list)
     for i,v in enumerate(views):qrow[v['qid']].append((i,v))
     size=2*reader.dimension+3;Xs={m:np.lib.format.open_memmap(out/(m+'.npy'),mode='w+',dtype=np.float32,shape=(len(views),size)) for m in methods}
+    streams={}
     for ordinal,g in enumerate(groups):
         reduced={m:[] for m in methods};lengths=[]
         for tid in g['trajectory_ids']:
-            root,row=reader.records[tid];streams,_=reader.handles(root);n=row['policy_length'];lengths.append(n);b=reader.span(streams['policy.bin'],row['policy_offset'],n*reader.dimension*2);pooled=pool_policy(b,n,reader.dimension)
+            root,row=reader.records[tid];n=row['policy_length'];lengths.append(n)
+            if root not in streams:
+                if len(streams)>=16:streams.pop(next(iter(streams))).close()
+                streams[root]=open(Path(root)/'policy.bin','rb')
+            b=reader.span(streams[root],row['policy_offset'],n*reader.dimension*2);pooled=pool_policy(b,n,reader.dimension)
             for m in methods:reduced[m].append(pooled[m])
         arrays={m:np.stack(reduced[m]) for m in methods};lens=np.asarray(lengths)
         for index,v in qrow[g['qid']]:
             ix=[g['trajectory_ids'].index(t) for t in v['trajectory_ids']]
             for m in methods:Xs[m][index]=group_vector(arrays[m],ix,lens)
-        if ordinal%128==0:progress('REDUCING_ACTUAL_POLICY_SPANS',questions=ordinal+1,expected_questions=len(groups))
-    for x in Xs.values():x.flush()
+        if ordinal%128==0:
+            for x in Xs.values():evict(x)
+            progress('REDUCING_ACTUAL_POLICY_SPANS',questions=ordinal+1,expected_questions=len(groups))
+    for x in Xs.values():evict(x)
+    for stream in streams.values():stream.close()
     reader.close();return Xs,dict(feature_payload_and_manifest_SHA_fresh=True,policy_only_spans_read_for_pooling=True,question_latent_reconstruction=False,row_retained_feature_SHA_reconstructed_in_this_diagnostic=False,prefix_binding=binding,reader=proof,dimension=size)
 
 
@@ -167,17 +176,54 @@ def external_groups(config,train_groups):
     return own,manifests,selection['prefix_files'],done
 
 
+def evict(array):
+    array.flush();array._mmap.madvise(mmap.MADV_DONTNEED)
+
+
+def take_rows(array,mask):
+    indices=np.flatnonzero(mask);result=np.empty((len(indices),array.shape[1]),dtype=np.float32)
+    for start in range(0,len(indices),512):
+        result[start:start+512]=array[indices[start:start+512]];evict(array)
+    return result
+
+
+def standardizer(X):
+    total=np.zeros(X.shape[1],dtype=np.float64);square=total.copy()
+    for start in range(0,len(X),512):
+        chunk=X[start:start+512].astype(np.float64);total+=chunk.sum(axis=0);square+=np.einsum('ij,ij->j',chunk,chunk)
+    mean=total/len(X);scale=np.sqrt(np.maximum(0,square/len(X)-mean**2));scale[scale<1e-5]=1.
+    return mean.astype(np.float32),scale.astype(np.float32)
+
+
+def rss_bytes():
+    for line in Path('/proc/self/status').read_text().splitlines():
+        if line.startswith('VmRSS:'):return int(line.split()[1])*1024
+    raise RuntimeError('Actual Linux RSS required')
+
+
 def run(config,out):
-    if sys.platform=='darwin' or not os.environ.get('SLURM_JOB_ID') or os.environ.get('CUDA_VISIBLE_DEVICES','') not in ('','NoDevFiles','-1') or int(os.environ.get('SLURM_GPUS_ON_NODE','0'))!=0:raise ValueError('Explicit remote CPU-only Slurm allocation required')
+    login=config.get('execution_mode')=='bounded_login_cpu2'
+    if sys.platform=='darwin' or os.environ.get('CUDA_VISIBLE_DEVICES','') not in ('','NoDevFiles','-1') or int(os.environ.get('SLURM_GPUS_ON_NODE','0'))!=0 or (not login and not os.environ.get('SLURM_JOB_ID')):raise ValueError('Explicit authorized remote CPU-only mode required')
+    if login:
+        allowed=sorted(os.sched_getaffinity(0));os.sched_setaffinity(0,allowed[:2])
+
     out=Path(out);out.mkdir(parents=True,exist_ok=True);start=time.monotonic()
     with (out/'run.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         if (out/'complete.json').exists():raise ValueError('Completed diagnostic preserved')
         if (out/'progress.json').exists():raise ValueError('Partial diagnostic preserved; use new isolated published attempt')
         import torch
-        torch.set_num_threads(min(12,int(os.environ.get('SLURM_CPUS_PER_TASK','1'))));torch.set_num_interop_threads(1)
+        torch.set_num_threads(2 if login else min(12,int(os.environ.get('SLURM_CPUS_PER_TASK','1'))));torch.set_num_interop_threads(1)
+        watchdog_stop=threading.Event();peak_rss=[0]
+        def watch():
+            while not watchdog_stop.wait(.25):
+                current=rss_bytes();peak_rss[0]=max(peak_rss[0],current)
+                if current>RSS_LIMIT or time.monotonic()-start>LIMIT_SECONDS:
+                    replay.atomic(out/'failure.json',dict(error_type='OwnCPUResourceCeiling',RSS_bytes=current,RSS_limit=RSS_LIMIT,elapsed_seconds=time.monotonic()-start,time=time.time()));os._exit(70)
+        threading.Thread(target=watch,daemon=True).start()
         def progress(stage,**values):
             if time.monotonic()-start>LIMIT_SECONDS:raise TimeoutError('Precommitted26-minute diagnostic compute bound')
+            if rss_bytes()>RSS_LIMIT:raise MemoryError('Own-process3GiB RSS ceiling')
             replay.atomic(out/'progress.json',dict(stage=stage,elapsed_seconds=time.monotonic()-start,time=time.time(),**values))
         progress('TRAIN_INPUT_ACCEPTANCE');groups,views,manifests,prefixes,binding=read_train(config);(out/'train').mkdir();Xs,proof=reduce_groups(groups,views,manifests,prefixes,out/'train',METHODS,progress);replay.atomic(out/'train/input-audit.json',proof)
         inner=np.asarray([split_question(v['qid']) for v in views]);K=np.asarray([sum(v['labels']) for v in views],dtype=np.int64);y=((K>0)&(K<5)).astype(np.float32);qids=[v['qid'] for v in views]
@@ -185,7 +231,7 @@ def run(config,out):
         replay.atomic(out/'internal-split.json',dict(seed=1729,split='sha256_namespace_plus_qid_mod5_equals0_is_internal_validation',train_questions=len({q for q,z in zip(qids,inner) if not z}),validation_questions=len({q for q,z in zip(qids,inner) if z}),train_ordered_qid_sha256=digest([g['qid'] for g in groups if not split_question(g['qid'])]),validation_ordered_qid_sha256=digest([g['qid'] for g in groups if split_question(g['qid'])]),labels_used_to_split=False,all_views_of_qid_same_split=True))
         results=[];best=None
         for method in METHODS:
-            progress('STANDARDIZE_TRAIN_PART_ONLY',pooling=method);X=np.asarray(Xs[method][~inner]);mean=X.mean(axis=0,dtype=np.float64).astype(np.float32);scale=X.std(axis=0,dtype=np.float64).astype(np.float32);scale[scale<1e-5]=1.;X-=mean;X/=scale;Xv=np.asarray(Xs[method][inner]);Xv-=mean;Xv/=scale
+            progress('STANDARDIZE_TRAIN_PART_ONLY',pooling=method);X=take_rows(Xs[method],~inner);mean,scale=standardizer(X);X-=mean;X/=scale;Xv=take_rows(Xs[method],inner);Xv-=mean;Xv/=scale
             for l2 in GRID:
                 def fit_progress(calls,loss):progress('CPU_LOGISTIC_FIT',pooling=method,L2=l2,closure_calls=calls,regularized_loss=loss)
                 w,b,fit=fit_logistic(X,y[~inner],l2,fit_progress);s=Xv@w+b;threshold=choose_threshold(s,K[inner]);metrics=metric(s,K[inner],[q for q,z in zip(qids,inner) if z],threshold);item=dict(pooling=method,L2=l2,internal=metrics,fit=fit);results.append(item);replay.atomic(out/'internal-grid-results.json',results)
@@ -214,8 +260,8 @@ def run(config,out):
             qs.append(r['predicted_mixed'])
         e4=metric(np.asarray(qs),EK,eq,.5,512);checked(config['E4_baseline_complete']);checked(config['E4_predictions'])
         if ref(out/'frozen-before-external.json')!=freeze:raise ValueError('Frozen winner changed after external evaluation')
-        progress('FINAL_SOURCE_ACCEPTANCE');checked(config['training_input']);checked(config['training_plan']);checked(config['validation_complete']);replay.atomic(out/'complete.json',dict(status=STATUS,source_config=ref(config['_path']),train_binding=binding,train_feature_and_prefix_audit=ref(out/'train/input-audit.json'),external_feature_and_prefix_audit=ref(out/'external/input-audit.json'),frozen_before_external=freeze,winner=winner,internal_grid_results=ref(out/'internal-grid-results.json'),external=external,same_HF_E4_baseline=e4,E4_source=config['E4_baseline_complete'],E4_predictions=config['E4_predictions'],external_predictions=ref(predictions),fixed_G5_sha256=ed['fixed_G5_sha256'],new_G5_selected=False,external_scored_models=1,external_used_for_hyperparameter_selection=False,external_is_viewed_recipe_validation_not_untouched_final=True,final_pool_read=False,diagnostic512_read=False,actor_updates=0,existing_probe_or_Adam_updates=0,production_replacement_authorized=False,CPU_threads=torch.get_num_threads(),GPU_requested=0,job_id=os.environ['SLURM_JOB_ID'],elapsed_seconds=time.monotonic()-start,time=time.time()))
-        return read(out/'complete.json')
+        progress('FINAL_SOURCE_ACCEPTANCE');checked(config['training_input']);checked(config['training_plan']);checked(config['validation_complete']);replay.atomic(out/'complete.json',dict(status=STATUS,source_config=ref(config['_path']),train_binding=binding,train_feature_and_prefix_audit=ref(out/'train/input-audit.json'),external_feature_and_prefix_audit=ref(out/'external/input-audit.json'),frozen_before_external=freeze,winner=winner,internal_grid_results=ref(out/'internal-grid-results.json'),external=external,same_HF_E4_baseline=e4,E4_source=config['E4_baseline_complete'],E4_predictions=config['E4_predictions'],external_predictions=ref(predictions),fixed_G5_sha256=ed['fixed_G5_sha256'],new_G5_selected=False,external_scored_models=1,external_used_for_hyperparameter_selection=False,external_is_viewed_recipe_validation_not_untouched_final=True,final_pool_read=False,diagnostic512_read=False,actor_updates=0,existing_probe_or_Adam_updates=0,production_replacement_authorized=False,CPU_threads=torch.get_num_threads(),execution_mode=config.get('execution_mode','CPU0GPU_Slurm'),peak_observed_RSS_bytes=peak_rss[0],RSS_ceiling_bytes=RSS_LIMIT,GPU_requested=0,job_id=os.environ.get('SLURM_JOB_ID'),elapsed_seconds=time.monotonic()-start,time=time.time()))
+        watchdog_stop.set();return read(out/'complete.json')
 
 
 def main():
