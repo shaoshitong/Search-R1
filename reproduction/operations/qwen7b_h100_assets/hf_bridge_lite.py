@@ -21,13 +21,17 @@ def main(secret):
  from urllib3.util.retry import Retry
  ROOT.mkdir(parents=True,exist_ok=True);lock=(ROOT/'bridge.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  os.environ.update(HTTP_PROXY='http://127.0.0.1:17894',HTTPS_PROXY='http://127.0.0.1:17894',HF_HUB_DISABLE_XET='1',HF_HUB_DISABLE_PROGRESS_BARS='1',HF_HUB_DISABLE_TELEMETRY='1')
+ class BoundedSession(requests.Session):
+  def request(self,method,url,**kwargs):
+   if kwargs.get('timeout')is None:kwargs['timeout']=(15,60)
+   return super().request(method,url,**kwargs)
  def backend():
-  session=requests.Session();session.trust_env=False;session.proxies={'http':'http://127.0.0.1:17894','https':'http://127.0.0.1:17894'};session.mount('https://',HTTPAdapter(max_retries=Retry(total=8,connect=8,read=0,other=8,backoff_factor=.5,allowed_methods=None)));return session
+  session=BoundedSession();session.trust_env=False;session.proxies={'http':'http://127.0.0.1:17894','https':'http://127.0.0.1:17894'};session.mount('https://',HTTPAdapter(max_retries=Retry(total=3,connect=3,read=0,other=3,backoff_factor=.5,allowed_methods=None)));return session
  configure_http_backend(backend_factory=backend)
  api=HfApi(token=secret['hf_token'],endpoint='https://huggingface.co')
  for attempt in range(12):
   try:
-   who=api.whoami();assert who['name'].lower()=='sutoonq';api.create_repo(REPO,repo_type='dataset',private=True,exist_ok=True);assert api.repo_info(REPO,repo_type='dataset').private;break
+   info=api.repo_info(REPO,repo_type='dataset',timeout=30);assert info.private and info.id.lower()==REPO.lower();who={'name':info.id.split('/')[0]};break
   except requests.RequestException as e:
    status=getattr(getattr(e,'response',None),'status_code',None);atomic(ROOT/'auth-network-retry.json',dict(attempt=attempt+1,error_type=type(e).__name__,http_status=status,epoch=time.time()))
    if status in (401,403)or attempt==11:raise
