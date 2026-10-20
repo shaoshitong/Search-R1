@@ -1,0 +1,4 @@
+from pathlib import Path
+import json,hashlib,time
+p=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/fit/independent-internal-audit.json');raw=p.read_bytes();h=hashlib.sha256(raw).hexdigest();assert len(raw)==12716 and h=='f77c10b3868ad895c799574b06cd47191e4968fad8cf90f0d141860249b6cdd6';v=json.loads(raw);assert v['status']=='PREFIX_CONFIDENCE_INTERNAL_FULLSTATE_AND_METRICS_INDEPENDENTLY_PASSED' and v['external_opening_permitted'] is False
+out=dict(status=v['status'],receipt=dict(path=str(p),bytes=len(raw),sha256=h),external_opening_permitted=False,config=v['config'],internal_complete=v['internal_complete'],full_aux_checkpoints=v['full_aux_checkpoints'],only_reference_and_status_returned_no_learned_scalar_normalizer_or_rows=True,observed_epoch=time.time());print(json.dumps(out,sort_keys=True))
