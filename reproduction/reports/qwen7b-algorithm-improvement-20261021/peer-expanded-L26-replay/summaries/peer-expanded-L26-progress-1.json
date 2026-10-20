@@ -1,0 +1,75 @@
+{
+  "epoch": 1792534840.3075771,
+  "sacct": "743486|q7b-expanded-L26-00|RUNNING|0:0|00:01:34\n743488|q7b-expanded-L26-01|RUNNING|0:0|00:01:34\n743489|q7b-expanded-L26-02|RUNNING|0:0|00:01:34\n743490|q7b-expanded-L26-03|RUNNING|0:0|00:01:34",
+  "shards": {
+    "0": {
+      "complete_chunks": 0,
+      "job_id": "743486"
+    },
+    "1": {
+      "complete_chunks": 7,
+      "job_id": "743488",
+      "progress.json": {
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 2338,
+          "elapsed_seconds": 15.432793196290731,
+          "model_calls": 75,
+          "native_bitexact_claim": false,
+          "padded_tokens": 357723,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 352397
+        },
+        "elapsed_seconds": 37.66097103105858,
+        "expected_trajectories": 54560,
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792534840.2669685,
+        "trajectories": 2319
+      }
+    },
+    "2": {
+      "complete_chunks": 7,
+      "job_id": "743489",
+      "progress.json": {
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 2372,
+          "elapsed_seconds": 15.532456669723615,
+          "model_calls": 78,
+          "native_bitexact_claim": false,
+          "padded_tokens": 364702,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 358790
+        },
+        "elapsed_seconds": 37.73245973791927,
+        "expected_trajectories": 54560,
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792534840.3376024,
+        "trajectories": 2346
+      }
+    },
+    "3": {
+      "complete_chunks": 6,
+      "job_id": "743490",
+      "progress.json": {
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 1987,
+          "elapsed_seconds": 13.676589220995083,
+          "model_calls": 65,
+          "native_bitexact_claim": false,
+          "padded_tokens": 305281,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 300251
+        },
+        "elapsed_seconds": 37.832840071991086,
+        "expected_trajectories": 54560,
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792534840.354145,
+        "trajectories": 1972
+      }
+    }
+  },
+  "squeue": "743486|q7b-expanded-L26-00|RUNNING|ACD1-18|ACD1-18\n743488|q7b-expanded-L26-01|RUNNING|ACD1-22|ACD1-22\n743489|q7b-expanded-L26-02|RUNNING|ACD1-22|ACD1-22\n743490|q7b-expanded-L26-03|RUNNING|ACD1-22|ACD1-22",
+  "unavailable_optional_observations": []
+}

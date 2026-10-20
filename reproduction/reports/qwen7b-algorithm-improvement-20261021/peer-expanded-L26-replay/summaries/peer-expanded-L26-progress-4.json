@@ -1,0 +1,80 @@
+{
+  "epoch": 1792535130.5185547,
+  "sacct": "743486|q7b-expanded-L26-00|RUNNING|0:0|00:06:24\n743488|q7b-expanded-L26-01|RUNNING|0:0|00:06:24\n743489|q7b-expanded-L26-02|RUNNING|0:0|00:06:24\n743490|q7b-expanded-L26-03|RUNNING|0:0|00:06:24",
+  "shards": {
+    "0": {
+      "complete_chunks": 43,
+      "job_id": "743486",
+      "progress.json": {
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 13806,
+          "elapsed_seconds": 85.9334868742153,
+          "model_calls": 445,
+          "native_bitexact_claim": false,
+          "padded_tokens": 2114902,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 2083021
+        },
+        "elapsed_seconds": 250.031216991134,
+        "expected_trajectories": 54560,
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792535130.3594828,
+        "trajectories": 13792
+      }
+    },
+    "1": {
+      "complete_chunks": 64,
+      "job_id": "743488"
+    },
+    "2": {
+      "complete_chunks": 64,
+      "job_id": "743489",
+      "progress.json": {
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 20534,
+          "elapsed_seconds": 121.73395000700839,
+          "model_calls": 663,
+          "native_bitexact_claim": false,
+          "padded_tokens": 3146196,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 3097390
+        },
+        "elapsed_seconds": 328.0006564159412,
+        "expected_trajectories": 54560,
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792535130.605799,
+        "trajectories": 20512
+      }
+    },
+    "3": {
+      "complete_chunks": 53,
+      "job_id": "743490",
+      "progress.json": {
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 17143,
+          "elapsed_seconds": 104.88168486463837,
+          "model_calls": 557,
+          "native_bitexact_claim": false,
+          "padded_tokens": 2633172,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 2590679
+        },
+        "elapsed_seconds": 328.14849897287786,
+        "expected_trajectories": 54560,
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792535130.669804,
+        "trajectories": 17111
+      }
+    }
+  },
+  "squeue": "743486|q7b-expanded-L26-00|RUNNING|ACD1-18|ACD1-18\n743488|q7b-expanded-L26-01|RUNNING|ACD1-22|ACD1-22\n743489|q7b-expanded-L26-02|RUNNING|ACD1-22|ACD1-22\n743490|q7b-expanded-L26-03|RUNNING|ACD1-22|ACD1-22",
+  "unavailable_optional_observations": [
+    {
+      "error": "FileNotFoundError",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1/shard-01/capture/progress.json"
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+{
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1",
+  "epoch": 1792535130.5185547,
+  "receiver_complete": true,
+  "sacct": "743486|q7b-expanded-L26-00|RUNNING|0:0|00:06:24\n743488|q7b-expanded-L26-01|RUNNING|0:0|00:06:24\n743489|q7b-expanded-L26-02|RUNNING|0:0|00:06:24\n743490|q7b-expanded-L26-03|RUNNING|0:0|00:06:24",
+  "shards": {
+    "0": {
+      "complete_chunks": 43,
+      "job_id": "743486",
+      "logs": {
+        "replay-743486.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:01<00:05,  1.68s/it]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:04<00:04,  2.25s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:06<00:02,  2.33s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:07<00:00,  1.72s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:07<00:00,  1.88s/it]\n"
+      },
+      "progress.json": {
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 13806,
+          "elapsed_seconds": 85.9334868742153,
+          "model_calls": 445,
+          "native_bitexact_claim": false,
+          "padded_tokens": 2114902,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 2083021
+        },
+        "elapsed_seconds": 250.031216991134,
+        "expected_trajectories": 54560,
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792535130.3594828,
+        "trajectories": 13792
+      }
+    },
+    "1": {
+      "complete_chunks": 64,
+      "job_id": "743488",
+      "logs": {
+        "replay-743488.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:02,  1.04it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.16s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:03<00:01,  1.17s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.07it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.00s/it]\n"
+      }
+    },
+    "2": {
+      "complete_chunks": 64,
+      "job_id": "743489",
+      "logs": {
+        "replay-743489.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:01<00:03,  1.04s/it]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.22s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:03<00:01,  1.20s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.05it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.03s/it]\n"
+      },
+      "progress.json": {
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 20534,
+          "elapsed_seconds": 121.73395000700839,
+          "model_calls": 663,
+          "native_bitexact_claim": false,
+          "padded_tokens": 3146196,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 3097390
+        },
+        "elapsed_seconds": 328.0006564159412,
+        "expected_trajectories": 54560,
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792535130.605799,
+        "trajectories": 20512
+      }
+    },
+    "3": {
+      "complete_chunks": 53,
+      "job_id": "743490",
+      "logs": {
+        "replay-743490.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:01<00:03,  1.04s/it]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.25s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:03<00:01,  1.19s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.05it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:04<00:00,  1.03s/it]\n"
+      },
+      "progress.json": {
+        "batching": {
+          "actor_optimizer_updates": 0,
+          "contexts": 17143,
+          "elapsed_seconds": 104.88168486463837,
+          "model_calls": 557,
+          "native_bitexact_claim": false,
+          "padded_tokens": 2633172,
+          "scalar_batch_bitexact_claim": false,
+          "valid_tokens": 2590679
+        },
+        "elapsed_seconds": 328.14849897287786,
+        "expected_trajectories": 54560,
+        "status": "ACTUAL_ADDITIONAL_G10_LAYER26_FEATURES_ADVANCING",
+        "time": 1792535130.669804,
+        "trajectories": 17111
+      }
+    }
+  },
+  "squeue": "743486|q7b-expanded-L26-00|RUNNING|ACD1-18|ACD1-18\n743488|q7b-expanded-L26-01|RUNNING|ACD1-22|ACD1-22\n743489|q7b-expanded-L26-02|RUNNING|ACD1-22|ACD1-22\n743490|q7b-expanded-L26-03|RUNNING|ACD1-22|ACD1-22",
+  "stages": {
+    "features": {
+      "complete": {
+        "free_space_bytes": 12047802177191936,
+        "questions": 21824,
+        "status": "ADDITIONAL21824_G10_PREFIX_ONLY_FOUR_SHARDS_PREPARED",
+        "trajectories": 218240
+      },
+      "launch": {
+        "pid": 2776707,
+        "start_ticks": "124521617",
+        "status": "PREFIX_PROJECTION_STARTED_NOT_PROGRESS_VERIFIED",
+        "time": 1792534625.7578642
+      },
+      "prepare-progress.json": {
+        "actor_updates": 0,
+        "expected_trajectories": 218240,
+        "stage": "PREFIX_ONLY_ADDITIONAL21824_PROJECTION",
+        "time": 1792534674.8498833,
+        "trajectories": 218112
+      },
+      "same_process_birth": false
+    },
+    "ingest": {
+      "complete": {
+        "elapsed_seconds": 1071.2278168578632,
+        "questions": 31232,
+        "status": "RECEIVED_NEWSEED5_PLUS_CANONICAL_OLD5_RAW_G10_STRICT_EM_CAUSAL_SEEDS_ACCEPTED",
+        "trajectories": 312320
+      },
+      "launch": {
+        "epoch": 1792526519.5792484,
+        "mode": "ingest",
+        "pid": 512815,
+        "source_publication": {
+          "bytes": 4412,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/source-publication.json",
+          "sha256": "49057e794cab1b3b173371bc046296dfb3f80ad837f1f001ebeefef591d68a73"
+        },
+        "start_ticks": "123711000",
+        "status": "CPU_STARTED_NOT_PROGRESS_VERIFIED"
+      },
+      "progress.json": {
+        "epoch": 1792527591.276458,
+        "questions": 31232,
+        "stage": "RECEIVED_NEWSEED5_PLUS_CANONICAL_OLD5_RAW_G10_STRICT_EM_CAUSAL_SEEDS_ACCEPTED",
+        "trajectories": 312320
+      },
+      "same_process_birth": false
+    }
+  },
+  "status": "ACTUAL_READ_ONLY_FEATURE_INGEST_OBSERVATION",
+  "unavailable_optional_observations": [
+    {
+      "error": "FileNotFoundError",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1/shard-01/capture/progress.json"
+    }
+  ]
+}
