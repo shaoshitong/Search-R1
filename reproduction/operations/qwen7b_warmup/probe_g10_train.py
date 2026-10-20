@@ -282,7 +282,10 @@ def blob(model,ema,optimizer,device,cursor,binding,source_ranks):
     return b
 
 
-def run(base):
+def run(base, *, bank_loader=accepted_g10, reader_factory=native_reader):
+    # Explicit call-site adapters support independently accepted raw-peer/HF
+    # banks. Existing native invocations retain their original strict loaders;
+    # config files cannot name or inject executable loader functions.
     c=u.read(base/'config.json');config_sha=u.sha(base/'config.json')
     if type(c['save_every']) is not int or c['save_every']<1:raise ValueError('Positive save cadence required')
     if c['source_checkpoint']['sha256']!=u.SOURCE_SHA:raise ValueError('Pinned sealed E1 required')
@@ -308,7 +311,7 @@ def run(base):
     torch.backends.cuda.matmul.allow_tf32=False
     if (Path(c['model_dir'])/'config.json').resolve()!=paths['model_config'].resolve():
         raise ValueError('Hash-bound official model configuration required')
-    groups,manifests,acceptance=accepted_g10(c['g10_complete']);plan=u.read(paths['plan'])
+    groups,manifests,acceptance=bank_loader(c['g10_complete']);plan=u.read(paths['plan'])
     evaluations=[];external=set();external_hashes=set();evaluation_names=set()
     for e in c['evaluations']:
         if (e['role']!='validation' or not e['name'].replace('_','').isalnum() or
@@ -340,7 +343,7 @@ def run(base):
     from .model import Probe
     model=Probe(c['model_dir'],273,20).to(device);ema=copy.deepcopy(model).eval().requires_grad_(False)
     optimizer=torch.optim.Adam(model.parameters(),lr=5e-6,weight_decay=0)
-    reader=native_reader(manifests)
+    reader=reader_factory(manifests)
     needed={tid for q in plan['cohort_qids'] for tid in lookup[q]['trajectory_ids']}
     if not needed<=set(reader.records):raise ValueError('Missing real original/extra native L26 trajectory features')
     u.atomic(base/'controller.json',dict(pid=os.getpid(),job_id=os.environ.get('SLURM_JOB_ID'),
@@ -404,7 +407,7 @@ def run(base):
         if u.read(base/'latest.json')['cursor']!=cursor:raise ValueError('Final fullstate must be durable before evaluation')
         metrics={};(base/'predictions').mkdir(exist_ok=True)
         for e,frozen in evaluations:
-            er=native_reader(u.read(u.checked(e['features'])))
+            er=reader_factory(u.read(u.checked(e['features'])))
             rng=u.rng_state(device);native=u.buffers(ema)
             try:metrics[e['name']]=u.evaluate(ema,er,frozen,device,base/'predictions'/(e['name']+'.jsonl.gz'))
             finally:u.restore_rng(rng,device);u.restore_buffers(ema,native);er.close()
