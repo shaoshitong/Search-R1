@@ -83,15 +83,17 @@ result['logs']={p.name:p.read_text(errors='replace')[-1000:] for p in (b/'logs')
 print(json.dumps(result))
 '''
 
+def renderer_source():
+ import inspect
+ return 'from pathlib import Path\nimport shlex\nTARGET=Path(%r)\n'%str(TARGET)+inspect.getsource(render_sbatch)+'\n'
+
 def render(inputs,action):
  own=dict(inputs)
  if action not in ('init','extract'):own.pop('files',None)
  if action!='chunk':
   for k in ('chunk_data','chunk_index','chunk_sha256'):own.pop(k,None)
  extra=''
- if action=='finalize':
-  import inspect
-  extra=inspect.getsource(render_sbatch)+'\n'
+ if action=='finalize':extra=renderer_source()
  codes={'init':legacy.INIT,'chunk':legacy.CHUNK,'extract':legacy.EXTRACT,'cpu':CPU,'prepare':PREPARE,'finalize':FINALIZE,'submit':legacy.SUBMIT,'status':STATUS}
  if action not in codes:raise ValueError('Unknown explicit fixed-G5 control action')
  return 'inputs='+repr(own)+'\n'+legacy.COMMON+extra+codes[action]
@@ -115,6 +117,8 @@ def self_test():
   source=render(values,action);compile(source,'control-'+action,'exec');lengths[action]=len(('python3 -c '+shlex.quote(source)).encode())
   if lengths[action]>=16000:raise ValueError('Control command exceeds16KB: '+action)
  script=render_sbatch(str(TARGET),str(TARGET/'code-aaaaaaaaaaaa'),'e'*64);subprocess.run(['bash','-n'],input=script,text=True,check=True)
+ scope={};exec(renderer_source(),scope)
+ assert scope['render_sbatch'](str(TARGET),str(TARGET/'code-aaaaaaaaaaaa'),'e'*64)==script
  assert '--gres=gpu:1' in script and '--qos=normal' in script and '--dependency' not in script
  return dict(status='LOCAL_NEW_FIXED_G5_DEPLOYMENT_RENDER_CHECKS_PASSED',source_files=len(FILES),control_command_bytes=lengths,remote_actions_executed=False)
 
