@@ -1,0 +1,69 @@
+{
+  "epoch": 1792529227.191999,
+  "squeue": "743370|q7b-g20m6528-random|RUNNING|ACD1-7|ACD1-7\n743371|q7b-g20m6528-global-weighted-balanced|RUNNING|ACD1-22|ACD1-22",
+  "sacct": "743370|RUNNING|0:0|00:07:09\n743371|RUNNING|0:0|00:07:09",
+  "variants": {
+    "global-weighted-balanced": {
+      "job_id": "743371",
+      "progress.json": {
+        "components": {
+          "binary_mixed": 0.706120491027832,
+          "inter_rank": 0.2999696731567383,
+          "stat_mean": 0.09999292343854904,
+          "stat_variance": 0.019422713667154312,
+          "three_event": 1.078791618347168,
+          "trajectory": 0.5918485522270203,
+          "within_rank": 0.0
+        },
+        "cursor": 9,
+        "loss": 1.670640230178833,
+        "mixed_balanced_accuracy": 0.5885416666666666,
+        "question_weighted_confusion": {
+          "fn": 5.75,
+          "fp": 14.0,
+          "tn": 10.0,
+          "tp": 18.25
+        },
+        "recomputed_logits_bit_identical": true,
+        "steps": 10473,
+        "time": 1792529220.146687
+      },
+      "next-update-replay.json": {
+        "candidate_steps": 10465,
+        "source_steps": 10464,
+        "status": "PASSED"
+      }
+    },
+    "random": {
+      "job_id": "743370",
+      "progress.json": {
+        "components": {
+          "binary_mixed": 0.879511833190918,
+          "inter_rank": 0.31320807337760925,
+          "stat_mean": 0.09206574410200119,
+          "stat_variance": 0.018713518977165222,
+          "three_event": 1.1497082710266113,
+          "trajectory": 0.5723071694374084,
+          "within_rank": 0.0
+        },
+        "cursor": 12,
+        "loss": 1.722015380859375,
+        "mixed_balanced_accuracy": 0.5416666666666666,
+        "question_weighted_confusion": {
+          "fn": 2.25,
+          "fp": 19.75,
+          "tn": 4.25,
+          "tp": 21.75
+        },
+        "recomputed_logits_bit_identical": true,
+        "steps": 10476,
+        "time": 1792529210.1939294
+      },
+      "next-update-replay.json": {
+        "candidate_steps": 10465,
+        "source_steps": 10464,
+        "status": "PASSED"
+      }
+    }
+  }
+}

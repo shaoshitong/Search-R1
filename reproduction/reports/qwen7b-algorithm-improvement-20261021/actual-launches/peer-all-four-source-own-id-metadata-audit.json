@@ -1,0 +1,122 @@
+{
+  "status": "ALL_FOUR_PEER8192_G10_COMPLETE_SOURCE_MANIFEST_AND_OWN_ID_METADATA_INDEPENDENTLY_VERIFIED",
+  "epoch": 1792529232.5250342,
+  "elapsed_seconds": 37.892460107803345,
+  "questions": 8192,
+  "trajectories": 81920,
+  "metadata_fresh_sha": true,
+  "packed_bulk_fresh_sha_independent": false,
+  "packed_bulk_sha_and_retained_reader_acceptance_inherited_from_each_producer_complete": true,
+  "independent_first_chunk_bulk_audit_already_passed": true,
+  "redundant_full_three_layer_bulk_audit_timeout_is_not_data_failure": true,
+  "tensor_payload_opened": false,
+  "metadata_bytes_hashed": 195558076,
+  "preparation": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-batched-replay-20261021/preparation.json",
+    "bytes": 162311,
+    "sha256": "098fecfc507f894c9dd61837ba9d775f652ceab25225230895e720cf19aae755"
+  },
+  "batching": {
+    "acceptance": "Explicit operator selected actual scalar/batched golden evidence; no native bitexact claim",
+    "batch_size": 32,
+    "core_sha256": "500911347444a07693fb4405a6f6fbbcad7b70375522a52833953b426970f506",
+    "golden": {
+      "bytes": 12350,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/replay-batched-golden-v3/output/complete.json",
+      "sha256": "3eeeb79b750d2e0bfee81c9a283c7428d0629b0d56815f91909c93e2bd9f5715"
+    },
+    "padded_token_budget": 16384,
+    "window_trajectories": 32
+  },
+  "domain_scope": {
+    "cross_domain_or_seven_benchmark_generalization_claim": false,
+    "effect_interpretation": "NQ heldout first; other domains require explicit domainwise validation; untouched finals remain sealed",
+    "kind": "NQ_only_enrichment",
+    "mixed_domain_controlled6528_preserved": true,
+    "question_counts": {
+      "nq": 8192
+    }
+  },
+  "shards": [
+    {
+      "shard": 0,
+      "complete": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-batched-replay-20261021/shard-00/capture/complete.json",
+        "bytes": 99432,
+        "sha256": "9aef34c122db620641596d0d4226b99e56e63803bc61ff5ba23e2d0a7abb7338"
+      },
+      "source_selection": {
+        "bytes": 2288932,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/shard-00/inputs/selection.json",
+        "sha256": "d6917160786c23d0c583245a310c8501dfedd0c01417da70e747382c961ca6bc"
+      },
+      "questions": 2048,
+      "trajectories": 20480,
+      "metadata_manifests": 240,
+      "actual_index_rows": 61440,
+      "declared_packed_bytes": 9906168800,
+      "complete_source_bindings": true,
+      "own_qid_and_trajectory_order": true
+    },
+    {
+      "shard": 1,
+      "complete": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-batched-replay-20261021/shard-01/capture/complete.json",
+        "bytes": 99432,
+        "sha256": "990fdbfcb1e6c72903fc25c0d46abfe08c428434d9c29efb0c801647160344c7"
+      },
+      "source_selection": {
+        "bytes": 2289302,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/shard-01/inputs/selection.json",
+        "sha256": "f98baaac5c8b97073f6e1de8e8e3097d451c595e86f7bd3e9207f1fcfb92ddd7"
+      },
+      "questions": 2048,
+      "trajectories": 20480,
+      "metadata_manifests": 240,
+      "actual_index_rows": 61440,
+      "declared_packed_bytes": 9903906561,
+      "complete_source_bindings": true,
+      "own_qid_and_trajectory_order": true
+    },
+    {
+      "shard": 2,
+      "complete": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-batched-replay-20261021/shard-02/capture/complete.json",
+        "bytes": 99432,
+        "sha256": "f3f9b459080bfc4249a1e00afde3bce949fb36b1c1be9cb0a3f7289b889fe67d"
+      },
+      "source_selection": {
+        "bytes": 2289262,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/shard-02/inputs/selection.json",
+        "sha256": "2b579961132e07f960ac0405937d83f3c3157e37d7ff1501f4f8a0efd99a2f4f"
+      },
+      "questions": 2048,
+      "trajectories": 20480,
+      "metadata_manifests": 240,
+      "actual_index_rows": 61440,
+      "declared_packed_bytes": 9905959453,
+      "complete_source_bindings": true,
+      "own_qid_and_trajectory_order": true
+    },
+    {
+      "shard": 3,
+      "complete": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-batched-replay-20261021/shard-03/capture/complete.json",
+        "bytes": 99433,
+        "sha256": "103b132aeeb73ff01b24167e5e68ec2282f5ec080b5a135fe1b497ba74ea242d"
+      },
+      "source_selection": {
+        "bytes": 2288962,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/shard-03/inputs/selection.json",
+        "sha256": "23e93a909492ef20381a49760da4907a7e3fe596583a1d3d8dd3dff30dea3579"
+      },
+      "questions": 2048,
+      "trajectories": 20480,
+      "metadata_manifests": 240,
+      "actual_index_rows": 61440,
+      "declared_packed_bytes": 9905067524,
+      "complete_source_bindings": true,
+      "own_qid_and_trajectory_order": true
+    }
+  ]
+}

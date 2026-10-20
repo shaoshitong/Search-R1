@@ -1,0 +1,76 @@
+{
+  "epoch": 1792529126.2175777,
+  "status": "G20_FIRST_DURABLE_CP_FILE_SHA_AND_PRODUCER_FULLSTATE_ACCEPTANCE_CHECK",
+  "variants": {
+    "random": {
+      "job_id": "743370",
+      "controller_pid": 661122,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-matched6528-v1/random/checkpoints/cursor-000001.pt",
+        "sha256": "5f716463613bcc363c2adb8938db1983a8f472b1b7bbbe6b26a160e52395843c",
+        "bytes": 3745865690,
+        "cursor": 1,
+        "steps": 10465,
+        "config_sha256": "428161412354177e509fe0336e1b5cf9eb7beb28cd58c0ce7c78c88335338a1c",
+        "matched_binding_sha256": "0e19c75846d1a336d3e0f83a34927327cbbc158337cabe4b45b92a718f2915e3",
+        "epoch_time": 1792528990.2238438,
+        "accepted_hashes": {
+          "raw": "67177e7578ed307b9f2abce3f37b7fa1e52788c37eac8c3f022e7c913133bf60",
+          "ema": "86f757b00cd33aae2d24f27dca5ec3fdd852d07f35e1f4645eab01db4c42c2f5",
+          "adam": "6f7e72bfab9f3d119ffc92b8e88735e057d1de372dedaae1036ac09d0ff3ce5d",
+          "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+          "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        }
+      },
+      "actual_progress": {
+        "cursor": 7,
+        "steps": 10471,
+        "time": 1792529115.8563163,
+        "loss": 3.4611501693725586,
+        "mixed_balanced_accuracy": 0.6052287581699346,
+        "recomputed_logits_bit_identical": true
+      },
+      "next_update_replay": "PASSED",
+      "failure_present": false,
+      "interrupted_present": false,
+      "actual_full_cp_file_sha_independent": true,
+      "fullstate_component_load_hashes_inherited_from_producer": true
+    },
+    "global-weighted-balanced": {
+      "job_id": "743371",
+      "controller_pid": 3352852,
+      "checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-matched6528-v1/global-weighted-balanced/checkpoints/cursor-000001.pt",
+        "sha256": "48f8fc9404bdeb6d50e975c9968d11fa35571506574238da7cacb26d8e609a13",
+        "bytes": 3745865690,
+        "cursor": 1,
+        "steps": 10465,
+        "config_sha256": "7bc535146e8cf69be20e7462fe64ba559eeebe50ba93e7bf1baa9ca6208a5db2",
+        "matched_binding_sha256": "0287f9cdba6808e6c66e4c54fc1fde5443f3108552c9419b00e75d99e8d7e7b8",
+        "epoch_time": 1792529037.3547108,
+        "accepted_hashes": {
+          "raw": "298a45802b99e0acf6b784a49c7322a1dae8edad1ca31c543c3ca6509877b311",
+          "ema": "a4e3aadabfd70aa8425748c8b46414578a9f64619d54126a3b344b95519f9747",
+          "adam": "4eb4302a822b86a43ca39d9d1b9f6aaaa6017cc54482e71c6ab701c1804e44bd",
+          "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+          "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+          "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+        }
+      },
+      "actual_progress": {
+        "cursor": 4,
+        "steps": 10468,
+        "time": 1792529112.1445947,
+        "loss": 2.364128828048706,
+        "mixed_balanced_accuracy": 0.4947916666666667,
+        "recomputed_logits_bit_identical": true
+      },
+      "next_update_replay": "PASSED",
+      "failure_present": false,
+      "interrupted_present": false,
+      "actual_full_cp_file_sha_independent": true,
+      "fullstate_component_load_hashes_inherited_from_producer": true
+    }
+  }
+}
