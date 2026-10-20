@@ -29,8 +29,8 @@ def plan_context_batches(contexts, positions=None, batch_size=16, max_context_to
     whole and run alone. It is never truncated or split into another context.
     """
     contexts, _ = checked_contexts(contexts, positions)
-    if type(batch_size) is not int or not 1 <= batch_size <= 16:
-        raise ValueError('Explicit batch size1..16 required')
+    if type(batch_size) is not int or not 1 <= batch_size <= 32:
+        raise ValueError('Explicit batch size1..32 required')
     if type(max_context_tokens) is not int or max_context_tokens < 1:
         raise ValueError('Positive explicit padded full-context token budget required')
     order = sorted(range(len(contexts)), key=lambda i:(len(contexts[i]), i))

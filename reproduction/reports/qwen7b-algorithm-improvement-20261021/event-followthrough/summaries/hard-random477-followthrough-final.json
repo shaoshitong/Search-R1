@@ -1,0 +1,159 @@
+{
+  "status": "E4_HARD_RANDOM_ACTUAL_GPU_REPLAY_FULL_CP32_AND_CONTINUED_UPDATES_VERIFIED",
+  "observed_epoch": 1792524277.538816,
+  "scoring_questions": 32768,
+  "scoring_trajectories": 163840,
+  "selection_complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/selection-complete.json",
+    "bytes": 8883,
+    "sha256": "b7655e375a2ec5066eda4c3cdc9ee209d64193534fc75db28da9e9908b11d359"
+  },
+  "variants": {
+    "targeted": {
+      "job_id": "743214",
+      "actual_progress_observations": [
+        {
+          "observed_epoch": 1792524086.9640636,
+          "cursor": 13,
+          "steps": 14431
+        },
+        {
+          "observed_epoch": 1792524150.045255,
+          "cursor": 26,
+          "steps": 14444
+        },
+        {
+          "observed_epoch": 1792524210.9165778,
+          "cursor": 36,
+          "steps": 14454
+        }
+      ],
+      "measured_intervals": [
+        {
+          "elapsed_seconds": 63.081191301345825,
+          "actual_accepted_updates": 13,
+          "seconds_per_update": 4.852399330872756
+        },
+        {
+          "elapsed_seconds": 60.87132287025452,
+          "actual_accepted_updates": 10,
+          "seconds_per_update": 6.087132287025452
+        }
+      ],
+      "accepted_complete_updates_at_independent_audit": 42,
+      "actual_adam_steps_at_independent_audit": 14460,
+      "first_checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-vs-random-E4-477-v1/targeted/checkpoints/cursor-000001.pt",
+        "bytes": 3745827738,
+        "sha256": "3e89b5e5a51222e6899bdce28f77d6d50e681ab6b5359025cbfd456783b726db"
+      },
+      "latest_complete_checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-vs-random-E4-477-v1/targeted/checkpoints/cursor-000032.pt",
+        "bytes": 3745827738,
+        "sha256": "f3caa06e5e66f51b295535b300dac193544149986acb9eba505da675dfded5db",
+        "cursor": 32,
+        "steps": 14450
+      },
+      "first_update_double_replay_passed": true,
+      "real_next_updates_after_CP32": true
+    },
+    "random_control": {
+      "job_id": "743218",
+      "actual_progress_observations": [
+        {
+          "observed_epoch": 1792524086.9640636,
+          "cursor": 13,
+          "steps": 14431
+        },
+        {
+          "observed_epoch": 1792524150.045255,
+          "cursor": 26,
+          "steps": 14444
+        },
+        {
+          "observed_epoch": 1792524210.9165778,
+          "cursor": 37,
+          "steps": 14455
+        }
+      ],
+      "measured_intervals": [
+        {
+          "elapsed_seconds": 63.081191301345825,
+          "actual_accepted_updates": 13,
+          "seconds_per_update": 4.852399330872756
+        },
+        {
+          "elapsed_seconds": 60.87132287025452,
+          "actual_accepted_updates": 11,
+          "seconds_per_update": 5.533756624568593
+        }
+      ],
+      "accepted_complete_updates_at_independent_audit": 44,
+      "actual_adam_steps_at_independent_audit": 14462,
+      "first_checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-vs-random-E4-477-v1/random_control/checkpoints/cursor-000001.pt",
+        "bytes": 3745827738,
+        "sha256": "696a64d2a3932fc64ea40044d49d227a5848f0a999e55646d7814742ecfa5f13"
+      },
+      "latest_complete_checkpoint": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-vs-random-E4-477-v1/random_control/checkpoints/cursor-000032.pt",
+        "bytes": 3745827738,
+        "sha256": "ac4378bb44cdc2d07bda3a79c7b3e0ee2af5191d03df44a15b6f4eece14fe0c4",
+        "cursor": 32,
+        "steps": 14450
+      },
+      "first_update_double_replay_passed": true,
+      "real_next_updates_after_CP32": true
+    }
+  },
+  "common_start": {
+    "source_epoch": 4,
+    "source_adam_steps": 14418,
+    "raw_EMA_Adam_preserved": true,
+    "original_four_rank_RNG_archived": true,
+    "canonical_source_RNG_rank": 0,
+    "four_rank_bitexact_resume_claim": false
+  },
+  "controls": {
+    "questions_per_branch": 22896,
+    "common_core_questions": 6528,
+    "supplement_questions": 16368,
+    "global_question_batch": 48,
+    "update_budget": 477,
+    "epochs": 1,
+    "lr": 5e-06,
+    "ema_decay": 0.99,
+    "trajectory_BCE_weight": 1,
+    "three_event_NLL_weight": 1,
+    "inter_group_rank_weight": 1,
+    "same_macro_class_counts": true,
+    "Mixed_internal_K_distribution_matched": false,
+    "untouched_final_read": false,
+    "actor_updates": 0
+  },
+  "scheduler": {
+    "partition": "acd_u",
+    "qos": "normal",
+    "gpus_per_branch": 1,
+    "dependency": null
+  },
+  "complete_training_and_evaluation": false,
+  "claim_of_improved_Mixed_accuracy": false,
+  "audits": {
+    "training-enrichment-independent-audit-final.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/qwen7b-warmup-20261019/reports/training-enrichment-independent-audit-final.json",
+      "bytes": 7650,
+      "sha256": "eabd43aa5f0ec1fa0b090d19f242819de17c869c187563f12d99e4fdd1ee45d3"
+    },
+    "hard-random477-independent-first-audit-final.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/qwen7b-warmup-20261019/reports/hard-random477-independent-first-audit-final.json",
+      "bytes": 4150,
+      "sha256": "a0daae444bfcfc6c266cdb2ccf303527abb61daced46b350ceae5c1bb3f40248"
+    },
+    "hard-random477-independent-cp32-audit.json": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/qwen7b-warmup-20261019/reports/hard-random477-independent-cp32-audit.json",
+      "bytes": 4153,
+      "sha256": "a71751ad5d952621cd0c725d85e2a4dd794cd04a4399438d742134bf6daba194"
+    }
+  }
+}
