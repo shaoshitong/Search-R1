@@ -6,7 +6,7 @@ import argparse,base64,hashlib,importlib.util,inspect,json,shlex,subprocess
 from pathlib import Path
 from .deploy_confirmation_materialization import make_bundle
 B='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019'
-BASE=B+'/algorithm-improvement-20261021/replay-batched-golden-v1'
+BASE=B+'/algorithm-improvement-20261021/replay-batched-golden-v2'
 P='reproduction/operations/qwen7b_warmup/'
 MANIFEST='_batched_golden_manifest.json'
 SEEDS=tuple(P+n for n in ('replay_batched_golden.py','replay_batched_context.py','test_replay_batched_context.py','runtime.sh'))
@@ -110,7 +110,9 @@ for ref in selection['prefix_files']:
  if set(found)==wanted:break
 assert set(found)==wanted
 p=b/'inputs/prefix.jsonl.gz';p.parent.mkdir(exist_ok=True)
-data=b''.join((json.dumps(found[row['trajectory_id']],sort_keys=True,separators=(',',':'))+'\n').encode() for row in ordered);compressed=gzip.compress(data,mtime=0)
+data=b''.join((json.dumps(found[row['trajectory_id']],sort_keys=True,separators=(',',':'))+'\n').encode() for row in ordered);z=io.BytesIO()
+with gzip.GzipFile(fileobj=z,mode='wb',mtime=0) as f:f.write(data)
+compressed=z.getvalue()
 if p.exists():assert p.read_bytes()==compressed
 else:p.write_bytes(compressed)
 fixture=dict(questions=8,trajectories=ordered,labels_read_for_selection=False,selection_rule='hash1729 among R2 shard0 fit qids; original complete G5 unchanged',prefix_files=[fp(p)],source_prefix_files=source_refs,source_R2_complete=fp(r2/'bank-complete.json'),source_R2_selection=prep['selections'][0],source_model_binding=selection['source_model_binding'],model_files=selection['model_files'],model_revision=selection['model_revision'])
