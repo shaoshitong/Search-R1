@@ -1,3 +1,11 @@
+# October20 05:36UTC: B188 complete/189 generation; legacy11 resource closure pending
+
+Same5 native40168/start505777, complete188 with actor3760/probe2600 each4rank; actual189 prefix generation already observed. The unique reader45688 continues200/no201. Current recovery candidate188 or newer. No restart or source change.
+
+A current native completed200/final51713 and exited0 with its current owned resources gone, but old source11 kernel residues remain. Two actual reads at05:35 match originalA1654251/start717048737, stateD, GPU0~7816MiB. Its kernel stack is NFSv4 unlock during do_exit, rpc_wait_bit_killable. Tracked oldB1965432/2059172 areZ with GPU contexts; this A-barrier query did not independently match their old births. Source11 still sameboot24bbc2ee... and another Slurm3393/rba-resume100-200 is RUNNING. No GPU reset/reboot/global mount change/foreign signal attempted. See source8-fault-recovery/SOURCE11-LEGACY-RESOURCE-PENDING.json. Administrator coordination has been requested asynchronously; no reply yet. This is not a new training failure or reason to stop current B, and must not be silently reported as fully released at whole-goal completion. Other B training/evaluation work continues.
+
+---
+
 # Latest actual October20 03:56UTC: B182 complete,183 actor; historical five-round source pinned
 
 The same native40168/start505777 is healthy on physical4–7. Actual182 full actor3640/probe2540 each4rank,183 actor active. Actual180 original4rank journals verify20 actor/50 probe+EMA writes each. Latest recovery candidate182 or newer, never historical179/174 for helper convenience. The historical175–179 acceptance is now explicitly pinned to the immutable02:52 original, with actual180 prefix2400/12800 from actor0179. Current183 prefix rows are not reused as180 evidence. The earlier report folder label b179 was stale while it already contained through182 rows; current consolidated data uses progressive-latest-actual with explicit observed time/counters. No runtime or result values changed.

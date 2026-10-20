@@ -1,0 +1,206 @@
+{
+  "role": "SOURCE11_LEGACY_RESOURCE_CLOSURE_PENDING",
+  "updated_utc": "2026-10-20T05:37:56.048334+00:00",
+  "current_B_on_h1005_not_stopped": true,
+  "A_current_successful_native_exit0_and_own_release_not_repeated": true,
+  "old_source11_gpu_residue_complete_release": false,
+  "A_original1654251_birth_matched": true,
+  "kernel_wait": "NFSv4 POSIX unlock during do_exit / rpc_wait_bit_killable",
+  "nonowned_running_slurm_job": "3393|RUNNING|h100-11|rba-resume100-200",
+  "source11_reboot_gpu_reset_or_foreign_signals_authorized": false,
+  "signals_or_global_changes_performed": false,
+  "administrator_coordination_requested_async": true,
+  "current_B_training_goal_still_active": true,
+  "whole_goal_complete": false,
+  "evidence": [
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-source11-legacy-residue-current-small.json",
+      "sha256": "bfae6456aa0169948d4f93468ba9fc6020f3232a2e8f6273622b953e9718bd09",
+      "value": {
+        "evidence": [
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-source11-legacy-residue-A-status-20261020T053519960967Z.json"
+        ],
+        "arms": {
+          "A": {
+            "status": "TRACKED_SOURCE11_LEGACY_RESIDUE_CURRENT_OBSERVATION",
+            "source_barrier": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/source8-fault-writer-barrier.json",
+            "source_barrier_sha256": "96a74008cf28bcd2e553b876b02609c40f1c5ec87050f1c6e368356bd7a36736",
+            "barrier_top_keys": [
+              "authorization",
+              "checks",
+              "config_sha256",
+              "leader",
+              "original_native_termination_signal",
+              "owned_gpu_release_complete",
+              "remaining_kernel_exit_residue_not_training",
+              "run_id",
+              "source_base",
+              "source_node",
+              "status",
+              "target_node"
+            ],
+            "original_boot_id": "24bbc2ee-c187-492f-bce3-a3afaa2b08e6",
+            "current_boot_id": "24bbc2ee-c187-492f-bce3-a3afaa2b08e6",
+            "expected_tracked_births": {
+              "1654251": {
+                "command": "",
+                "exit_only": true,
+                "flags": 1077936388,
+                "pid": 1654251,
+                "sid": 1654251,
+                "start_ticks": 717048737,
+                "state": "D",
+                "uid": 0
+              }
+            },
+            "checks": [
+              {
+                "checked_unix": 1792474531.2243214,
+                "processes": [
+                  {
+                    "pid": 1654251,
+                    "state": "D",
+                    "start_ticks": 717048737,
+                    "sid": 1654251,
+                    "uid": 0,
+                    "matching_barrier_birth": true
+                  },
+                  {
+                    "pid": 1965432,
+                    "state": "Z",
+                    "start_ticks": 719497835,
+                    "sid": 1965432,
+                    "uid": 0,
+                    "matching_barrier_birth": null
+                  },
+                  {
+                    "pid": 2059172,
+                    "state": "Z",
+                    "start_ticks": 720269935,
+                    "sid": 2059172,
+                    "uid": 0,
+                    "matching_barrier_birth": null
+                  }
+                ],
+                "tracked_gpu_rows": [
+                  "1654251, GPU-db08e3c7-5c80-92c6-3eae-51053aefc87b, 7816",
+                  "1965432, GPU-6508a185-f0d1-4100-196f-bb653d47f50f, 8956",
+                  "2059172, GPU-6508a185-f0d1-4100-196f-bb653d47f50f, 10484",
+                  "2059172, GPU-18030bbd-bc34-8171-942d-f56fec178dd7, 9846",
+                  "2059172, GPU-02524001-4775-0600-1310-b89506702828, 9846",
+                  "2059172, GPU-c5434254-3c16-5a49-6bab-bf4ed5b0833e, 9846"
+                ]
+              },
+              {
+                "checked_unix": 1792474531.60742,
+                "processes": [
+                  {
+                    "pid": 1654251,
+                    "state": "D",
+                    "start_ticks": 717048737,
+                    "sid": 1654251,
+                    "uid": 0,
+                    "matching_barrier_birth": true
+                  },
+                  {
+                    "pid": 1965432,
+                    "state": "Z",
+                    "start_ticks": 719497835,
+                    "sid": 1965432,
+                    "uid": 0,
+                    "matching_barrier_birth": null
+                  },
+                  {
+                    "pid": 2059172,
+                    "state": "Z",
+                    "start_ticks": 720269935,
+                    "sid": 2059172,
+                    "uid": 0,
+                    "matching_barrier_birth": null
+                  }
+                ],
+                "tracked_gpu_rows": [
+                  "1654251, GPU-db08e3c7-5c80-92c6-3eae-51053aefc87b, 7816",
+                  "1965432, GPU-6508a185-f0d1-4100-196f-bb653d47f50f, 8956",
+                  "2059172, GPU-6508a185-f0d1-4100-196f-bb653d47f50f, 10484",
+                  "2059172, GPU-18030bbd-bc34-8171-942d-f56fec178dd7, 9846",
+                  "2059172, GPU-02524001-4775-0600-1310-b89506702828, 9846",
+                  "2059172, GPU-c5434254-3c16-5a49-6bab-bf4ed5b0833e, 9846"
+                ]
+              }
+            ],
+            "signals_or_global_changes_performed": false,
+            "training_modified": false
+          }
+        },
+        "training_modified": false
+      }
+    },
+    {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-source11-residue-cpu-diagnosis-small.json",
+      "sha256": "7ba180e808c6fd5858b03315e30a3dd73e977dbdc771723b05e1ae9e7b8a1e15",
+      "value": {
+        "evidence": [
+          "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-source11-residue-cpu-diagnosis-A-status-20261020T053632228778Z.json"
+        ],
+        "arms": {
+          "A": {
+            "observed_unix": 1792474602.7551286,
+            "commands": {
+              "gpu_processes": {
+                "returncode": 0,
+                "stdout": "1654251, GPU-db08e3c7-5c80-92c6-3eae-51053aefc87b, 7816\n1965432, GPU-6508a185-f0d1-4100-196f-bb653d47f50f, 8956\n2059172, GPU-6508a185-f0d1-4100-196f-bb653d47f50f, 10484\n2059172, GPU-18030bbd-bc34-8171-942d-f56fec178dd7, 9846\n2059172, GPU-02524001-4775-0600-1310-b89506702828, 9846\n2059172, GPU-c5434254-3c16-5a49-6bab-bf4ed5b0833e, 9846\n",
+                "stderr": ""
+              },
+              "slurm_jobs": {
+                "returncode": 0,
+                "stdout": "3393|RUNNING|h100-11|rba-resume100-200\n",
+                "stderr": ""
+              }
+            },
+            "legacy_kernel_diagnostics": {
+              "1654251": {
+                "wchan": "rpc_wait_bit_killable",
+                "stack": "[<0>] rpc_wait_bit_killable+0x25/0xb0 [sunrpc]\n[<0>] __rpc_wait_for_completion_task+0x2d/0x40 [sunrpc]\n[<0>] nfs4_proc_unlck.constprop.0+0xf3/0x170 [nfsv4]\n[<0>] nfs4_proc_lock+0xd2/0x1b0 [nfsv4]\n[<0>] do_unlk+0x8f/0xd0 [nfs]\n[<0>] nfs_lock+0xd1/0x180 [nfs]\n[<0>] locks_remove_posix+0x13a/0x1d0\n[<0>] locks_remove_file+0x4a/0x1e0\n[<0>] __fput+0x71/0x280\n[<0>] ____fput+0xe/0x20\n[<0>] task_work_run+0x6a/0xb0\n[<0>] do_exit+0x227/0x3d0\n[<0>] do_group_exit+0x3b/0xb0\n[<0>] __x64_sys_exit_group+0x18/0x20\n[<0>] x64_sys_call+0x1937/0x1fa0\n[<0>] do_syscall_64+0x56/0xb0\n[<0>] entry_SYSCALL_64_after_hwframe+0x6c/0xd6\n",
+                "status": [
+                  "Name:\tpt_main_thread",
+                  "State:\tD (disk sleep)",
+                  "PPid:\t1",
+                  "Uid:\t0\t0\t0\t0"
+                ]
+              },
+              "1965432": {
+                "wchan": "0",
+                "stack": "",
+                "status": [
+                  "Name:\tpt_main_thread",
+                  "State:\tZ (zombie)",
+                  "PPid:\t1",
+                  "Uid:\t0\t0\t0\t0"
+                ]
+              },
+              "2059172": {
+                "wchan": "0",
+                "stack": "",
+                "status": [
+                  "Name:\tpt_main_thread",
+                  "State:\tZ (zombie)",
+                  "PPid:\t1",
+                  "Uid:\t0\t0\t0\t0"
+                ]
+              }
+            },
+            "signals_or_global_changes_performed": false,
+            "training_modified": false
+          }
+        },
+        "training_modified": false
+      }
+    }
+  ],
+  "limitations": [
+    "B legacy1965432/2059172 tracked by prior history; this A-barrier read did not independently match their old births and preserves that unknown field.",
+    "No model, optimizer, original full trajectory or prediction copied to Mac.",
+    "Do not turn this pending legacy resource issue into permission to stop healthy current5 training or the other3393 job."
+  ]
+}
