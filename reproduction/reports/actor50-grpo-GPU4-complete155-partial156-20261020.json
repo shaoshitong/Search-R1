@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "checked_unix": 1792461536.8921237,
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "21bf70af3e9b4cabbab7862e9532069c",
+  "runtime_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+  "receipt_sha256": "58bd6742d4895b1b9b77553d1cdbf1f6636bbbafdd06a4871978ca918442049b",
+  "pipeline": {
+    "pid": 1166306,
+    "start_ticks": 648248369,
+    "sid": 1166306,
+    "uid": 0,
+    "state": "S"
+  },
+  "stage": {
+    "checked_unix": 1792460873.6380236,
+    "outer": 156,
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+    "stage": "outer-000156-actor-c3d43bb29a5e4a998385cfdb3c613d5f"
+  },
+  "complete_outer": 155,
+  "actor_saved_Adam": [
+    3098,
+    3098,
+    3098,
+    3098
+  ],
+  "scheduler": 155,
+  "total_returned_Adam": 3112,
+  "new_actual_returns_since_previous_read": 34,
+  "new_complete155_Adam": 20,
+  "current156_unsealed_returned_Adam": 14,
+  "current156_complete": false,
+  "current156_actor_inflight": [
+    {
+      "rank": 0,
+      "restore": null,
+      "returned_writes": 14,
+      "latest_actual_Adam": 3112
+    },
+    {
+      "rank": 1,
+      "restore": null,
+      "returned_writes": 14,
+      "latest_actual_Adam": 3112
+    },
+    {
+      "rank": 2,
+      "restore": null,
+      "returned_writes": 14,
+      "latest_actual_Adam": 3112
+    },
+    {
+      "rank": 3,
+      "restore": null,
+      "returned_writes": 14,
+      "latest_actual_Adam": 3112
+    }
+  ],
+  "current156_restore_full_record": "NOT_READ_LARGE_RECURSIVE_GROUNDING_STATE",
+  "four_rank_replicas_count_once": true,
+  "actual155_complete_metadata": {
+    "outer": 155,
+    "metadata_status": "PRESENT_BOUNDED_COMPONENT_PROJECTION",
+    "metadata_read_scope": {
+      "metadata_status": "PRESENT_BOUNDED_COMPONENT_PROJECTION",
+      "bytes": 79999645,
+      "hash_scope": "existing_storage_prune_intent_producer_SHA_not_full_rehash",
+      "equal_size_header_suffix_samples": true,
+      "four_rank_20_opportunity_ledgers": true,
+      "branch_plan_scope": "verified_immutable_runtime_schedule",
+      "large_recursive_grounding_body_not_read": true
+    },
+    "source_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+    "metadata_sha256": "d4ed2f504a2183a9f8032272fca4efa2ad9de061a12583c74462f5e1dcb39b58",
+    "actor_Adam": [
+      3098,
+      3098,
+      3098,
+      3098
+    ],
+    "scheduler": 155,
+    "new_actor_Adam": [
+      20,
+      20,
+      20,
+      20
+    ],
+    "processed_opportunities": 20,
+    "skipped_opportunities": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "probe_completed_outer": 150,
+    "probe_Adam": [
+      500,
+      500,
+      500,
+      500
+    ],
+    "rollout_mixed": 0.30078125,
+    "mixed_floor": {
+      "initial_mixed": 139,
+      "final_mixed": 154,
+      "initial_fraction": 0.271484375,
+      "final_fraction": 0.30078125,
+      "extra_native_batches": 2,
+      "completed_candidate_questions": 1280,
+      "remaining_uncontinued_questions": 1280,
+      "triggered": true,
+      "shortfall": 0,
+      "exhausted": false,
+      "target_mixed": 154,
+      "target_reached": true,
+      "native_prefix_or_score_regenerated": false
+    },
+    "replacement_count": 15
+  },
+  "current156_floor": {
+    "actor_selection_sha256": "60ae8106beda1eacb8cf7cceed88a6517686a04935eda4c705d9ea26eb06f600",
+    "candidate_questions": 2560,
+    "completed_candidate_questions": 1536,
+    "exhausted": false,
+    "extra_native_batches": 4,
+    "final_fraction": 0.30078125,
+    "final_mixed": 154,
+    "full_pool_complete_sha256": "708f0ec293338e99d25a63cec7ce84aeeb2072a24bad944bbec395f36c01568e",
+    "initial_fraction": 0.212890625,
+    "initial_mixed": 109,
+    "initial_scope_questions": 1024,
+    "native_prefix_or_score_regenerated": false,
+    "policy": {
+      "continuation_batch_questions": 128,
+      "remaining_order": "predicted_pMixed_descending_then_original_candidate_ordinal",
+      "replace_only_nonmixed": true,
+      "stop_when": "154_mixed_or_candidate_pool_exhausted",
+      "target_mixed_questions": 154,
+      "trigger_denominator": 10,
+      "trigger_numerator": 3
+    },
+    "predicted_selection_sha256": "09fa280d2afa5173ab6a3b90997e93d32cef38558b25495aa536c4487c7bf539",
+    "remaining_uncontinued_questions": 1024,
+    "shortfall": 0,
+    "target_mixed": 154,
+    "target_reached": true,
+    "triggered": true
+  },
+  "current156_replacement_count": 45,
+  "joint155_metadata_read_scope": {
+    "metadata_status": "PRESENT_BOUNDED_COMPONENT_PROJECTION",
+    "bytes": 79999645,
+    "hash_scope": "existing_storage_prune_intent_producer_SHA_not_full_rehash",
+    "equal_size_header_suffix_samples": true,
+    "four_rank_20_opportunity_ledgers": true,
+    "branch_plan_scope": "verified_immutable_runtime_schedule",
+    "large_recursive_grounding_body_not_read": true
+  },
+  "joint155_full_SHA_not_independently_recomputed": true,
+  "probe_completed_outer": 150,
+  "probe_actual_Adam": [
+    500,
+    500,
+    500,
+    500
+  ],
+  "probe150_test_BA_unchanged": 0.5021429726669902,
+  "QA150_unchanged": {
+    "count": 512,
+    "EM": 0.47265625,
+    "F1": 0.5559771825396826,
+    "metadata_SHA256": "bdad93d249b410dd74b34153016e39837c9f95d5aeda51880dbf3116b7173b6d"
+  },
+  "reward_status": "UNKNOWN_NOT_PROJECTED",
+  "GPU_scope": "UNKNOWN_NOT_PROJECTED_NO_NVML_QUERY",
+  "metadata_read_bytes": 63733424,
+  "metadata_read_budget_bytes": 66060288,
+  "older_optional_metadata_budget_unknown_prior_proofs_retained": true,
+  "hourly_anchor_unchanged": {
+    "complete_outer": 154,
+    "total_returned_Adam": 3078,
+    "next_hour_unix": 1792463398.6985888
+  },
+  "next_normal_read_not_before_unix": 1792463336.8921237,
+  "failure": null,
+  "exit": null,
+  "cleanup": null,
+  "App_monitor": "PAUSED",
+  "full200_final51713_acceptance": "PENDING"
+}
