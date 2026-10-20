@@ -59,7 +59,9 @@ def bounded_exact_update(model,ema,optimizer,reader,groups,device,*,loss_kwargs,
         inter_view_pairs_allocated=0,per_view_python_identity_metadata_allocated=0,
         denominators=result['denominators'],question_weighted_confusion=confusion,
         mixed_recall=tpr,nonmixed_recall=tnr,mixed_balanced_accuracy=(tpr+tnr)/2 if tpr is not None and tnr is not None else None,
-        seconds=time.monotonic()-started,actor_updates=0,supports_G20=size==20)
+        seconds=time.monotonic()-started,actor_updates=0,supports_G20=size==20,
+        CUDA_peak_allocated_bytes=torch.cuda.max_memory_allocated(device) if device.type=='cuda' else None,
+        CUDA_peak_reserved_bytes=torch.cuda.max_memory_reserved(device) if device.type=='cuda' else None)
 
 
 def update_callback(model,ema,optimizer,reader,lookup,qids,config,device,epoch):
@@ -77,9 +79,9 @@ def make_config(reference,plan,*,hashes,commit,launch_authorized=False):
     if not {'reproduction/operations/qwen7b_warmup/'+n for n in REQUIRED}<=set(hashes):raise ValueError('New immutable exact loss/entry/G20-validation bindings required')
     c=copy.deepcopy(reference);c.update(grouping=dict(mode=MODE,source_group_size=10,combination_chunk=64),recipe=dict(id=RECIPE,loss_kwargs=dict(trajectory_weight=1.,three_event_weight=1.)),code_hashes=copy.deepcopy(hashes),source_commit=commit,
         exact_uniform_all_G5=True,source_group_size=10,combinations_per_question=252,original_question_total_weight=1.,view_weight_numerator=1,view_weight_denominator=252,
-        production_replacement_authorized=False,launch_requires_explicit_parent_go_after_G20_final=True,
+        production_replacement_authorized=False,launch_requires_explicit_parent_go=True,
         no_extra_native_model_forwards_relative_to_random4=True,first_order_loss_VJP_only=True,
-        explicit_launch_authorized_after_G20_final=bool(launch_authorized),
+        explicit_launch_authorized=bool(launch_authorized),
         maximum_resident_G5_rows=48*64,maximum_resident_pattern_rows=48*64*32,inter_view_pairs_allocated=0,
         inherited_reference_plan_unchanged=True,inherited_reference_plan=copy.deepcopy(reference['plan']))
     c.pop('max_virtual_views',None);c.pop('max_inter_view_pairs',None)
@@ -89,13 +91,18 @@ def make_config(reference,plan,*,hashes,commit,launch_authorized=False):
 def run(base):
     c=u.read(base/'config.json')
     if c['recipe']!={'id':RECIPE,'loss_kwargs':dict(trajectory_weight=1.,three_event_weight=1.)} or c['grouping']!={'mode':MODE,'source_group_size':10,'combination_chunk':64} or c['global_questions']!=48 or c['update_budget']!=136 or c['fit_questions']!=6528 or c['fit_real_trajectories']!=65280 or c['plan']!=c['inherited_reference_plan']:raise ValueError('Explicit same-source/order/budget exact-uniform experiment required')
-    if not c.get('explicit_launch_authorized_after_G20_final',False):raise ValueError('No new experiment launch until root explicitly authorizes after G20 evidence')
+    if not c.get('explicit_launch_authorized',False):raise ValueError('No new experiment launch until root explicitly authorizes this independent experiment')
     if not {'reproduction/operations/qwen7b_warmup/'+n for n in REQUIRED}<=set(c['code_hashes']):raise ValueError('Immutable exact uniform sources required')
-    inherited.run(base,update_callback=update_callback)
+    normal=False;started=time.time()
+    try:
+        inherited.run(base,update_callback=update_callback);normal=True
+    finally:
+        if torch.cuda.is_initialized():
+            d=torch.cuda.current_device();u.atomic(base/'gpu-memory.json',dict(status='ACTUAL_EXACT_ALL252_SAME_PROCESS_CUDA_PEAK',peak_allocated_bytes=torch.cuda.max_memory_allocated(d),peak_reserved_bytes=torch.cuda.max_memory_reserved(d),device=torch.cuda.get_device_name(d),exit_normally=normal,started=started,time=time.time()))
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--action',choices=('prepare','train'),required=True);p.add_argument('--base',type=Path,required=True);p.add_argument('--reference-config',type=Path);p.add_argument('--code-root',type=Path);p.add_argument('--explicit-go-after-G20-final',action='store_true');a=p.parse_args();base=a.base
+    p=argparse.ArgumentParser();p.add_argument('--action',choices=('prepare','train'),required=True);p.add_argument('--base',type=Path,required=True);p.add_argument('--reference-config',type=Path);p.add_argument('--code-root',type=Path);p.add_argument('--explicit-go',action='store_true');a=p.parse_args();base=a.base
     if not base.is_absolute() or not str(base).startswith('/data/user/jxu957/experiments/') or base.resolve()!=base:raise ValueError('Independent remote shared output required')
     base.mkdir(parents=True,exist_ok=True)
     with (base/'exact-g5-train.lock').open('a') as lock:
@@ -107,7 +114,7 @@ def main():
             hashes={n:v['sha256'] for n,v in pub['files'].items()}
             for n,h in hashes.items():
                 if u.sha(a.code_root/n)!=h:raise ValueError('Unpublished or changed runtime source')
-            c=make_config(reference,plan,hashes=hashes,commit=pub.get('commit',pub.get('source_commit')),launch_authorized=a.explicit_go_after_G20_final);c['reference_config']=dict(path=str(a.reference_config),bytes=a.reference_config.stat().st_size,sha256=u.sha(a.reference_config))
+            c=make_config(reference,plan,hashes=hashes,commit=pub.get('commit',pub.get('source_commit')),launch_authorized=a.explicit_go);c['reference_config']=dict(path=str(a.reference_config),bytes=a.reference_config.stat().st_size,sha256=u.sha(a.reference_config))
             path=base/'config.json'
             if path.exists():
                 if u.read(path)!=c:raise ValueError('Existing prepared experiment preserved')

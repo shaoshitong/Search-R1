@@ -1,0 +1,70 @@
+{
+  "preparation": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/preparation.json",
+    "bytes": 16628,
+    "sha256": "e62b423a5505de7569a899efec1ffca7150bfdfcecf116635e8980e4504c8d18"
+  },
+  "status": "MATCHED6528_G10_SAME_COHORT_B48_136_STRICT_EQUAL_VIEW_SUITE_PREPARED",
+  "reference_config": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/random/config.json",
+    "bytes": 7878,
+    "sha256": "224558c829cb4b1d63330d0008d3fdaa57acb2cba624cc3fb56cb9b9deba49ec"
+  },
+  "source_checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/epoch-0001.pt",
+    "sha256": "02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724"
+  },
+  "source_config": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/config.json",
+    "sha256": "b1beb8aa3b879dc182f1cf5a4582d590ec1787a7f5f8cd8a772fa94f185d4325"
+  },
+  "source_bank": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/bank/groups.json",
+    "sha256": "e5382647c89d0401f5f9bac70f0c5ff42fd12aa714456b68d3e776863fe7e447"
+  },
+  "g10_complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/bank/complete.json",
+    "bytes": 2997,
+    "sha256": "f158668aa439fcb8735a0e311939cc8340d40aa4c44bab8a4a85bbb9bf88d7af"
+  },
+  "plan": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/inputs/plan.json",
+    "bytes": 573412,
+    "sha256": "3bff8f5331bd60634456b1f24a106a752f84b196bc0a0cd8961c5d17405e86d9"
+  },
+  "global_questions": 48,
+  "update_budget": 136,
+  "grouping": {
+    "mode": "random",
+    "views_per_question": 4,
+    "seed": 1729,
+    "on_unbalance": "raise"
+  },
+  "recipe": {
+    "id": "g10-matched6528-random",
+    "loss_kwargs": {
+      "trajectory_weight": 1.0,
+      "three_event_weight": 1.0
+    }
+  },
+  "fit_questions": 6528,
+  "fit_real_trajectories": 65280,
+  "source_adam_steps": 10464,
+  "config_actual": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/random/config.json",
+    "bytes": 7878,
+    "sha256": "224558c829cb4b1d63330d0008d3fdaa57acb2cba624cc3fb56cb9b9deba49ec"
+  },
+  "plan_actual": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/inputs/plan.json",
+    "bytes": 573412,
+    "sha256": "3bff8f5331bd60634456b1f24a106a752f84b196bc0a0cd8961c5d17405e86d9"
+  },
+  "reference_complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/random/complete.json",
+    "bytes": 18253,
+    "sha256": "395d685a5178abcb4fd460fd00dd46177b42bd1f17f75fa068f9b7800ad4c95d"
+  },
+  "existing_same_job": "",
+  "queue_rc": 0
+}
