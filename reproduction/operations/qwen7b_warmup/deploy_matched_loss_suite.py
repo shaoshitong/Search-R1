@@ -2,10 +2,32 @@
 
 Code/config/small audits only cross the control connection; all assets stay HPC3.
 """
-import argparse,base64,hashlib,importlib.util,json,shlex,subprocess,zlib
+import argparse,base64,hashlib,importlib.util,inspect,json,shlex,subprocess,zlib
 from pathlib import Path
 
-NAMES=['probe_ablation_train.py','test_probe_ablation_train.py','probe_ablation_loss.py','test_probe_ablation_loss.py','model.py','packed_features.py','native_capture.py','download_model.py','balanced_sampling.py','probe_ablation_model.py','test_probe_ablation_model.py','g10_grouping.py','test_g10_grouping.py','runtime.sh','event_candidate_loss.py','balanced_loss.py','deploy_matched_loss_suite.py']
+NAMES=['probe_ablation_train.py','test_probe_ablation_train.py','probe_ablation_loss.py','test_probe_ablation_loss.py','model.py','packed_features.py','native_capture.py','download_model.py','balanced_sampling.py','probe_ablation_model.py','test_probe_ablation_model.py','g10_grouping.py','test_g10_grouping.py','runtime.sh','event_candidate_loss.py','balanced_loss.py','deploy_matched_loss_suite.py','test_deploy_matched_loss_suite.py']
+
+def render_matched_sbatch(name, base, root):
+ return """#!/usr/bin/env bash
+#SBATCH --job-name=q7b-loss128-__VARIANT__
+#SBATCH --partition=acd_u
+#SBATCH --account=mou176
+#SBATCH --qos=normal
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=64G
+#SBATCH --gres=gpu:1
+#SBATCH --time=04:00:00
+#SBATCH --signal=USR1@180
+#SBATCH --output=__RUN_BASE__/logs/fit-%j.log
+set -euo pipefail
+export QWEN7B_CODE_ROOT=__CODE_ROOT__
+export FLASH_ATTENTION_DETERMINISTIC=1
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
+export OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8
+srun --kill-on-bad-exit=1 bash __CODE_ROOT__/reproduction/operations/qwen7b_warmup/runtime.sh -u -m reproduction.operations.qwen7b_warmup.probe_ablation_train --base __RUN_BASE__
+""".replace('__VARIANT__',name).replace('__RUN_BASE__',str(base)).replace('__CODE_ROOT__',str(root))
 
 def main():
  p=argparse.ArgumentParser();p.add_argument('--control-root',type=Path,required=True);p.add_argument('--action',choices=['prepare','submit'],default='prepare');p.add_argument('--variant',choices=['trajectory','joint','event'],default='trajectory');a=p.parse_args();repo=Path(__file__).resolve().parents[3]
@@ -26,7 +48,7 @@ def main():
    if sent.returncode:raise RuntimeError('Code-only staging incomplete; no job submitted: '+sent.stderr.decode()[-1000:])
  packed_expression="''.join(__import__('pathlib').Path(%r).joinpath('part-%%04d'%%i).read_text() for i in range(%d))"%(stage,len(chunks)) if a.action=='prepare' else "''"
  prefix='commit='+repr(commit)+'\npacked='+packed_expression+'\nhashes='+repr(hashes)+'\nvariant='+repr(a.variant)+'\n'
- code=prefix+COMMON+(PREPARE if a.action=='prepare' else SUBMIT);assert len(code.encode())<64000
+ code=prefix+inspect.getsource(render_matched_sbatch)+'\n'+COMMON+(PREPARE if a.action=='prepare' else SUBMIT);assert len(code.encode())<64000
  r=m.run('python3 -c '+shlex.quote(code),account='mou176',source_address=address,timeout=150 if a.action=='prepare' else 45)
  values=[json.loads(x) for x in r.stdout.decode().splitlines() if x.startswith('{')]
  out=a.control_root/'outputs/qwen7b-warmup-20261019'/('matched-loss-'+a.action+('-'+a.variant if a.action=='submit' else '')+'.json')
@@ -36,7 +58,7 @@ def main():
 
 COMMON=r'''
 import pathlib,base64,hashlib,json,zlib,os,subprocess,time,fcntl
-B=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019');A=B/'algorithm-improvement-20261021';suite=A/'matched-loss128';root=A/('repo-'+commit[:12]);suite.mkdir(parents=True,exist_ok=True)
+B=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019');A=B/'algorithm-improvement-20261021';suite=A/'matched-loss128-v2';root=A/('repo-'+commit[:12]);suite.mkdir(parents=True,exist_ok=True)
 def read(p):return json.loads(pathlib.Path(p).read_text())
 def sha(p):
  h=hashlib.sha256()
@@ -68,7 +90,7 @@ with (suite/'prepare.lock').open('a') as lock:
   for rel in ['reproduction','reproduction/operations','reproduction/operations/qwen7b_warmup','reproduction/prefix20_group_joint100']:(root/rel/'__init__.py').touch(exist_ok=True)
   pub=dict(commit=commit,remote_sha=commit,code_root=str(root),files=hashes,time=time.time());atomic(suite/'source-publication.json',pub)
   env=dict(os.environ,QWEN7B_CODE_ROOT=str(root),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',CUDA_VISIBLE_DEVICES='')
-  test_run=subprocess.run(['bash',str(root/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-m','unittest','-v','reproduction.operations.qwen7b_warmup.test_probe_ablation_loss','reproduction.operations.qwen7b_warmup.test_probe_ablation_train','reproduction.operations.qwen7b_warmup.test_probe_ablation_model','reproduction.operations.qwen7b_warmup.test_g10_grouping'],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=90)
+  test_run=subprocess.run(['bash',str(root/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-m','unittest','-v','reproduction.operations.qwen7b_warmup.test_probe_ablation_loss','reproduction.operations.qwen7b_warmup.test_probe_ablation_train','reproduction.operations.qwen7b_warmup.test_probe_ablation_model','reproduction.operations.qwen7b_warmup.test_g10_grouping','reproduction.operations.qwen7b_warmup.test_deploy_matched_loss_suite'],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=90)
   tests=test_run.stdout
   (suite/'actual-cpu-tests.log').write_text(tests)
   assert test_run.returncode==0,test_run.stdout
@@ -89,26 +111,7 @@ with (suite/'prepare.lock').open('a') as lock:
    config=dict(model_dir=c['model_dir'],update_budget=128,global_groups=51,micro_groups=2,save_every=16,recipe=dict(id=name,loss_kwargs=dict(trajectory_weight=1.,**group_kwargs)),code_hashes=hashes,source_commit=commit,screening_only=True,source_world_size=4,current_world_size=1,**assets)
    if (base/'config.json').exists():assert read(base/'config.json')==config,'Conflicting prepared config; do not overwrite'
    else:atomic(base/'config.json',config)
-   script="""#!/usr/bin/env bash
-#SBATCH --job-name=q7b-loss128-NAME
-#SBATCH --partition=acd_u
-#SBATCH --account=mou176
-#SBATCH --qos=normal
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=64G
-#SBATCH --gres=gpu:1
-#SBATCH --time=04:00:00
-#SBATCH --signal=USR1@180
-#SBATCH --output=BASE/logs/fit-%j.log
-set -euo pipefail
-export QWEN7B_CODE_ROOT=ROOT
-export FLASH_ATTENTION_DETERMINISTIC=1
-export CUBLAS_WORKSPACE_CONFIG=:4096:8
-export OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8
-srun --kill-on-bad-exit=1 bash ROOT/reproduction/operations/qwen7b_warmup/runtime.sh -u -m reproduction.operations.qwen7b_warmup.probe_ablation_train --base BASE
-""".replace('NAME',name).replace('BASE',str(base)).replace('ROOT',str(root))
+   script=render_matched_sbatch(name,base,root)
    (base/'fit.sbatch').write_text(script);variants[name]=dict(base=str(base),config=ref(base/'config.json'),sbatch=ref(base/'fit.sbatch'))
   acceptance=dict(status='MATCHED_LOSS128_SUITE_PREPARED_ACTUAL_CPU_TESTS_PASSED',source_commit=commit,code_root=str(root),source_checkpoint=sr,source_adam_steps=10464,fit_questions=6528,fit_trajectories=32640,fit_updates_per_variant=128,global_groups=51,variants=variants,plan=ref(suite/'plan.json'),cpu_tests_log=ref(suite/'actual-cpu-tests.log'),hardware_topology_changed=True,no_four_rank_equivalence_claim=True,actor_updates=0,screening_only=True,time=time.time())
   atomic(suite/'preparation.json',acceptance);print(json.dumps(acceptance))
