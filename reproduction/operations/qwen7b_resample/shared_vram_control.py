@@ -29,9 +29,9 @@ RUN_ID = '70188b8e50fd4b45bc420ce58014f46e'
 SEED = 20261021
 FROZEN_COMMIT = '82062fc12c6c0bdb50b9e8681e1af9e6e763af10'
 FROZEN_REPO = BASE + '/code/repo-' + FROZEN_COMMIT
-JOB_NAME = 'sst-q7b-g5-sharedvram-v2-' + RUN_ID[:12]
-CONTROL_DIRECTORY = 'shared-vram-native-control-v2'
-QUEUE_MODE = 'native-spare-vram-bounded-systemd-v2'
+JOB_NAME = 'sst-q7b-g5-sharedvram-v3-' + RUN_ID[:12]
+CONTROL_DIRECTORY = 'shared-vram-native-control-v3'
+QUEUE_MODE = 'native-spare-vram-bounded-systemd-v3'
 SOURCES = ('shared_vram_control.py', 'shared_vram_worker.py', 'shared_vram_retriever.py',
            'shared_vram_vllm_adapter.py', 'pool_worker.py', 'pool_paths.sh')
 UNIT = JOB_NAME + '.service'
@@ -81,7 +81,7 @@ with evidence.open('x') as stream:
         original_cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES')),stream)
 os.chmod(evidence,0o400)
 env=dict(os.environ,PYTHONPATH=FROZEN_REPO+':/dataset/shaoshitong/Search-G1-common8/retriever-gpu-lib',
-    OMP_NUM_THREADS='4',MKL_NUM_THREADS='4',TOKENIZERS_PARALLELISM='false',PYTHONDONTWRITEBYTECODE='1',
+    OMP_NUM_THREADS='4',MKL_NUM_THREADS='4',TOKENIZERS_PARALLELISM='false',PYTHONDONTWRITEBYTECODE='1',PYTHONUTF8='1',
     HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',HF_DATASETS_OFFLINE='1',
     SEARCH_G1_B_PREFIX_TOKENS='20',SEARCH_G1_PHYSICAL_WORLD_SIZE='4',SEARCH_G1_BASE=BASE,
     HF_HOME=BASE+'/cache/huggingface',TORCH_EXTENSIONS_DIR=BASE+'/cache/torch_extensions',

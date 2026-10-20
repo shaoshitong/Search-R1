@@ -119,14 +119,17 @@ def multi_sampler(pool, binding, args):
     launch = Path(args.launch_dir)
 
     def device(rank):
+        if 'device_binding' in s._CACHED:
+            return s._CACHED['device_binding']
         import torch
         require(rank == 0 and torch.cuda.device_count() == 2
                 and os.environ['CUDA_VISIBLE_DEVICES'] == numeric, 'TP2 logical rank/device count differs')
-        actual_uuids(binding['model_cuda_uuids'])
-        return dict(physical_gpu_index=binding['model_indices'][0], gpu_uuid=binding['model_cuda_uuids'][0],
+        result = dict(physical_gpu_index=binding['model_indices'][0], gpu_uuid=binding['model_cuda_uuids'][0],
             physical_gpu_indices=binding['model_indices'], gpu_uuids=binding['model_cuda_uuids'],
             tensor_parallel_size=2, shared_vram=True, normalized_cuda_visible_devices=numeric,
             originally_assigned_device=binding['original_cuda_visible_devices'], native_unit=binding['native_unit'])
+        s._CACHED['device_binding'] = result
+        return result
 
     def fullprefill(config, model, seed, free, total):
         if 'llm' not in s._CACHED:
