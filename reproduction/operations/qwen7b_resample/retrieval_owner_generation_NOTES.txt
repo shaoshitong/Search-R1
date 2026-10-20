@@ -1,0 +1,105 @@
+Next-generation CPU preparation, owner-v1 (not deployed)
+=======================================================
+New files only; old worker/controller/stages, Slurm3967/3976 and shared main
+state are untouched. No remote call, GPU construction, stop, stage, submit,
+commit or push has been executed by this preparation.
+
+Components
+----------
+retrieval_only_owner.py uses existing shared.admit to acquire all eight primary
+UUID leases in a new private mount+network namespace. It launches only the full
+original FP16 64-shard retriever on 0/1/2/5 with weights15/9/20/20, never an LLM.
+An immutable owner-ready.json binds dynamic owner/retriever PID births, cgroups,
+namespace inodes, allocation SHA, finite slots and deadlines. The owner has a
+24-hour soft lifetime with a 25-hour systemd cap; child deadlines must be at
+least1800seconds earlier. Actual hard expiry uses the unit's monotonic start,
+so mount/bootstrap elapsed time does not extend that cap.
+
+Model completion does not affect owner lifetime. Explicit owner drain or soft
+expiry publishes a bound drain-request and waits for all declared slot leases
+to release before stopping its own retriever. At hard-limit exhaustion it fails
+truthfully; this is not an unlimited daemon or a guarantee against external kills.
+
+Default finite slots: base-tp4[3,4,6,7], retrieval-tp4[0,1,2,5], gpu2-tp1[2],
+gpu1-tp1[1]. Optional gpu4-tp1, gpu6-tp1, gpu7-tp1 require explicit inclusion in
+the owner --enabled-slots manifest. Optional capacities are conservative static
+proposals, not GPU-qualified successes. No automatic arbitrary co-share exists.
+
+source_slot_consumer_worker.py overrides only consumer admission and its readonly
+borrowed-source observer. It verifies the dynamic owner allocation, actual root
+POSIX WRITE lock FDs/device/inode, declared slot capacity, physical UUID mapping,
+own independent unit and owner namespace. It locks only slot-specific files:
+pool/gpu-slot-leases/RUN/ownerPID-birth/SLOT/UUID.lock. A second instance of the
+same slot cannot admit while its predecessor owns those leases. Owner/other
+model processes are never owned or signalled by this consumer. Scientific
+sampling still runs via the existing relay_consumer_worker --sampler-loop and
+shared.multi_sampler, with original BF16/token/logprob/seed/batch-lock contracts.
+
+draining_pool_worker.py wraps an independently staged unchanged pool_worker.py.
+It checks verified markers only at existing handoff locations before claiming a
+batch. A marker during prefix does not interrupt its full continuation or whole
+seal. It then emits POOL_WHOLE_BATCH_DRAINED with the actual per-job accepted
+counts. No stopped/unsealed phase is counted complete. Old loops get no new hook.
+
+CLI (examples to review; not executed)
+-------------------------------------
+python3 -m reproduction.operations.qwen7b_resample.retrieval_only_control plan
+python3 -m reproduction.operations.qwen7b_resample.source_slot_control plan --slot gpu2-tp1
+
+Owner/slot stage and submit require --intent-id, --published-commit FULLSHA and
+--published-ref refs/heads/BRANCH, exactly verified against local source rows and
+origin. They stage small immutable source bundles on NAS10. Every unit instance
+has its own immutable once-intent; unknown outcomes must query that same unit,
+never replay start. Old successful/failed/unknown intents are not overwritten.
+
+Owner submit additionally requires --predecessor-proof PATH and
+--predecessor-sha256 SHA. The required immutable proof schema is:
+status=OWN_PREDECESSOR_GENERATION_TERMINAL, run_id=the original run,
+source_unit=sst-q7b-g5-sharedvram-v6-70188b8e50fd.service,
+source_pid=1490214, source_birth="6807965",
+original_owned_births={"1490214":"6807965","1490465":"6808057", ...all old generation PIDs...},
+units=[{"unit":...each old node5 source/model unit...}].
+The controller rechecks listed unit terminal states, disappearance of original
+births and absence of listed original GPU PIDs. Its proof producer is NOT
+implemented here: a reviewer must assemble this from genuine terminal/release
+observations and ensure the old generation PID/unit inventory is complete.
+Actual primary-lock arbitration still occurs atomically in shared.admit; a queue
+worker holding a primary lease causes new-owner admission to fail, not be stolen.
+This prototype's predecessor contract is specifically the existing V6 generation.
+
+After owner READY, slot submit requires --owner-ready PATH and
+--owner-ready-sha256 SHA plus --slot NAME. Use --instance r2 for a distinct later
+model renewal only after the previous actual unit/model/slot lease has released;
+using the same instance never replays a submit. The instance shares one finite
+slot lock, not a new implicit capacity slot. --generation changes names; it does
+not bypass the explicit predecessor/owner proof checks.
+
+The owner/slot control drain action writes a bound marker, without a signal or
+systemctl stop. Own slot marker: DRAIN_AT_WHOLE_BATCH_BOUNDARY, run_id, job_id,
+allocation_sha256. Owner marker: DRAIN_RETRIEVAL_OWNER, run_id, owner_pid,
+owner_allocation_sha256. Status/drain can read the original saved intent/stage
+even if local source later evolves. Preserve all receipts and original stages.
+
+Known limits before actual continuation
+--------------------------------------
+1. This implements node5 owner/slots only. A new-generation independently owned
+   CPU relay lifecycle for the two node10 consumers is not implemented. Current
+   V5/V6 and their relays have not been changed or migrated.
+2. No predecessor proof exists merely because these files/tests exist. Existing
+   frozen loops lack graceful drain and an external stop can retain a newly
+   claimed partial. Do not claim zero work loss or fabricate terminal receipts.
+3. No GPU qualification or production progress claim has been made. New actual
+   owner index construction/health and model full-context construction still
+   need normal production observation if root later publishes/authorizes them.
+4. Owner long-term renewal beyond this first independent generation still needs
+   a later explicit owner-retirement proof contract; extending a systemd cap or
+   editing old deadline JSONs cannot prolong a frozen sampler correctly.
+
+CPU validation
+--------------
+python3 -B -m unittest reproduction.operations.qwen7b_resample.test_retrieval_owner_generation reproduction.operations.qwen7b_resample.test_draining_pool_worker -v
+Eight focused tests cover owner lifetime independent of model completion,
+generated bootstrap unit/deadline/environment forwarding, finite slot binding
+and rejection before CUDA, exact sampler deadline caps after slow admission,
+plus actual core.sample_loop whole-batch drain and
+wrong-run marker rejection. No GPU library was initialized by these tests.

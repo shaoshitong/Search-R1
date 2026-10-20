@@ -13,18 +13,22 @@ NAME = 'operational_reads/source5_model_tp4_controlled_stop.py'
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=('stage', 'execute', 'status'))
+    parser.add_argument('action', choices=('stage', 'execute', 'status', 'stage-recovery', 'recover'))
     parser.add_argument('--published-commit')
     parser.add_argument('--published-ref')
     args = parser.parse_args()
-    source = Path(__file__).with_name('operational_reads') / Path(NAME).name
+    recovery = args.action in ('stage-recovery','recover')
+    name = 'operational_reads/source5_model_tp4_recovered.py' if recovery else NAME
+    action = 'stage' if args.action == 'stage-recovery' else 'execute' if args.action == 'recover' else args.action
+    base = old.PHYSICAL if recovery else old.BASE
+    source = Path(__file__).with_name('operational_reads') / Path(name).name
     raw = source.read_bytes(); sha = hashlib.sha256(raw).hexdigest()
     publication = None
     if args.action != 'status':
         publication = old.verify_publication(args.published_commit, args.published_ref,
-            {NAME: dict(bytes=len(raw), sha256=sha)})
-    destination = old.BASE + '/preparation/source5-model-tp4-to-tp1-v1/control/' + sha + '/' + source.name
-    inner = 'BASE=' + repr(old.BASE) + '\nDEST=' + repr(destination) + '\nSHA=' + repr(sha) + '\nACTION=' + repr(args.action) + '\nDATA=' + repr(base64.b64encode(raw).decode()) + '\nPUBLICATION=' + repr(publication) + '\n' + r'''
+            {name: dict(bytes=len(raw), sha256=sha)})
+    destination = base + '/preparation/source5-model-tp4-to-tp1-v1/control/' + sha + '/' + source.name
+    inner = 'BASE=' + repr(base) + '\nDEST=' + repr(destination) + '\nSHA=' + repr(sha) + '\nACTION=' + repr(action) + '\nDATA=' + repr(base64.b64encode(raw).decode()) + '\nPUBLICATION=' + repr(publication) + '\n' + r'''
 import base64,hashlib,json,os,subprocess,sys
 from pathlib import Path
 path=Path(DEST)
@@ -49,11 +53,11 @@ else:
    data=p.read_bytes();rows[name]=dict(path=str(p),bytes=len(data),sha256=hashlib.sha256(data).hexdigest(),value=json.loads(data))
  print(json.dumps(dict(status='READ_ONLY_FIXED_CONTROLLED_STOP_STATUS',records=rows)))
 '''
-    wrapper = ('import subprocess,sys\nr=subprocess.run(' + repr(['nsenter','--target','1490214','--mount','--net','--','/usr/bin/python3','-'])
+    wrapper = inner if recovery else ('import subprocess,sys\nr=subprocess.run(' + repr(['nsenter','--target','1490214','--mount','--net','--','/usr/bin/python3','-'])
         + ',input=' + repr(inner) + ',text=True,capture_output=True,timeout=105)\nprint(r.stdout,end="");print(r.stderr,end="",file=sys.stderr);raise SystemExit(r.returncode)\n')
     output = old.ROOT/'work'/('qwen7b-source5-tp4-retire-%s-%d.json' % (args.action,time.time_ns()))
     try:
-        result = old.transport(wrapper,'h100-5')
+        result = old.transport(wrapper,'h100-10' if recovery else 'h100-5')
     except subprocess.TimeoutExpired as error:
         output.write_text(json.dumps(dict(status='CONTROL_OUTCOME_UNKNOWN_QUERY_SAME_INTENT_NO_REPLAY',error=str(error),epoch=time.time()))+'\n')
         raise
