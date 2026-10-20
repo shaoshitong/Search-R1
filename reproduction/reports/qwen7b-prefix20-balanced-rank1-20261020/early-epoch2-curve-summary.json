@@ -1,0 +1,37 @@
+{
+  "time": 1792505949.410542,
+  "epoch": 2,
+  "first_batch": 2,
+  "last_batch": 241,
+  "accepted_steps": 10705,
+  "curve_contiguous": true,
+  "finite_losses": true,
+  "rank_weight_one_total_confirmed": true,
+  "first50": {
+    "first_batch": 2,
+    "last_batch": 51,
+    "updates": 50,
+    "means": {
+      "trajectory_bce": 0.7937624686127349,
+      "group_bce": 0.9009121294852855,
+      "pairwise_loss": 1.236234357205092,
+      "pairwise_accuracy": 0.5903489971725606,
+      "mean_p_range": 0.17457786412069617,
+      "mean_rank_step_seconds": 1.6372803112585097
+    }
+  },
+  "last50": {
+    "first_batch": 192,
+    "last_batch": 241,
+    "updates": 50,
+    "means": {
+      "trajectory_bce": 0.6865247176326448,
+      "group_bce": 0.8088680410589657,
+      "pairwise_loss": 1.2449794548282436,
+      "pairwise_accuracy": 0.5893602858377059,
+      "mean_p_range": 0.1674871474924479,
+      "mean_rank_step_seconds": 1.3617928917892277
+    }
+  },
+  "warning": "Different shuffled minibatches, not sealed fixed-EMA evaluation; not a generalization result"
+}
