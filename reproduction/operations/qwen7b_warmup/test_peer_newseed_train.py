@@ -11,6 +11,7 @@ def fixture():
     chosen=[{k:g[k] for k in ('qid','question_hash','trajectory_ids')} for g in groups]
     summary=dict(labels_consulted=False,selected_questions=p.Q,selected_trajectories=p.Q*10,
         controlled6528_and_eval_qids_and_hashes_excluded=True,
+        final_labels_or_rollouts_read=False,
         ordered_qid_sha256=p.raw.digest([g['qid'] for g in groups]),
         trajectory_ids_sha256=p.raw.digest([t for g in groups for t in g['trajectory_ids']]))
     identity=dict(role='train',groups=chosen,summary=summary,domain_scope=dict(kind='NQ_only_enrichment'))

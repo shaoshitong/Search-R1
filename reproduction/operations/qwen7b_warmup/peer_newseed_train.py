@@ -34,6 +34,7 @@ def select_groups(raw_complete,groups,identity):
     if (identity.get('role')!='train' or summary.get('labels_consulted') is not False
             or summary.get('selected_questions')!=Q or summary.get('selected_trajectories')!=Q*10
             or summary.get('controlled6528_and_eval_qids_and_hashes_excluded') is not True
+            or summary.get('final_labels_or_rollouts_read') is not False
             or identity.get('domain_scope',{}).get('kind')!='NQ_only_enrichment'):
         raise ValueError('Precommitted identity-only independent NQ8192 selection required')
     lookup={g['qid']:g for g in groups}
@@ -73,7 +74,7 @@ def build_plan(groups,seed=1729):
         effective_total_weight_per_original_question=1.,domain_scope='NQ_only_enrichment')
 
 
-def collect_features(complete_refs,identity):
+def collect_features(complete_refs,identity,*,identity_ref,raw_ref):
     if len(complete_refs)!=4:raise ValueError('Four real complete feature shards required')
     desired={t:g['qid'] for g in identity['groups'] for t in g['trajectory_ids']}
     manifests=[];seen=set();shards=set();proofs=[]
@@ -90,7 +91,9 @@ def collect_features(complete_refs,identity):
         if (selection.get('role')!='peer_newseed_train_G10' or selection.get('shards')!=4
                 or selection.get('shard') in shards or selection.get('capture_layers')!=[20,23,26]
                 or selection.get('label_blind_selection') is not True
-                or selection.get('real_trajectories_per_question')!=10):
+                or selection.get('real_trajectories_per_question')!=10
+                or selection.get('question_plan')!=identity_ref
+                or selection.get('source_ingest')!=raw_ref):
             raise ValueError('Wrong or repeated complete shard selection')
         shards.add(selection['shard']);rows=selection['trajectories']
         if len(rows)!=20480 or complete.get('trajectories')!=len(rows) or complete.get('questions')!=2048:
@@ -111,7 +114,8 @@ def accept_inputs(output,raw_complete_ref,identity_ref,feature_completes):
     complete=raw.read(raw.checked(raw_complete_ref));identity=raw.read(raw.checked(identity_ref))
     if identity['raw_complete']!=raw_complete_ref:raise ValueError('Identity plan belongs to another raw bank')
     groups=raw.read(raw.checked(complete['outputs']['groups']))['train']
-    selected=select_groups(complete,groups,identity);manifests,proofs=collect_features(feature_completes,identity)
+    selected=select_groups(complete,groups,identity)
+    manifests,proofs=collect_features(feature_completes,identity,identity_ref=identity_ref,raw_ref=raw_complete_ref)
     value=dict(status=INPUT_STATUS,raw_complete=raw_complete_ref,identity_plan=identity_ref,
         feature_shard_completes=proofs,feature_manifests=manifests,
         ordered_qid_sha256=raw.digest([g['qid'] for g in selected]),questions=Q,trajectories=Q*10,
@@ -128,7 +132,8 @@ def accepted_peer_g10(reference):
         raise ValueError('Explicit full peer8192 G10 training acceptance required')
     complete=raw.read(raw.checked(value['raw_complete']));identity=raw.read(raw.checked(value['identity_plan']))
     groups=select_groups(complete,raw.read(raw.checked(complete['outputs']['groups']))['train'],identity)
-    manifests,_=collect_features(value['feature_shard_completes'],identity)
+    manifests,_=collect_features(value['feature_shard_completes'],identity,
+        identity_ref=value['identity_plan'],raw_ref=value['raw_complete'])
     if manifests!=value['feature_manifests']:raise ValueError('Accepted feature list changed')
     return groups,manifests,value
 
@@ -141,6 +146,11 @@ def replay_reader(manifests):
 def run(base):
     from . import probe_g10_train as train
     c=raw.read(base/'config.json')
+    required={'reproduction/operations/qwen7b_warmup/'+name for name in
+        ('peer_newseed_train.py','peer_newseed_replay.py','peer_newseed_ingest.py',
+         'replay_feature_reader.py','replay_probe_layers.py')}
+    if not required<=set(c.get('code_hashes',{})):
+        raise ValueError('Complete immutable peer/HF reader source bindings required')
     if (base!=TARGET or c.get('global_questions')!=32 or c.get('update_budget')!=256
             or c.get('fit_questions')!=8192 or c.get('fit_real_trajectories')!=81920
             or c.get('feature_backend')!='huggingface_frozen_causal_prefill'
