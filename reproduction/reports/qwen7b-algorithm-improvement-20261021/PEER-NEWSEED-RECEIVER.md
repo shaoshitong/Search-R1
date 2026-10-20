@@ -42,3 +42,7 @@ HPC3 默认 Python3.6，target-init/accept/finalize 只用3.6标准库；shlex.j
 独立共享fixture：`/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-receiver-stdlib-fixture-20261021/755ed4ba3eef237ab2244c09c17cdac3966a43fc`。测试拦截了唯一一次合成complete写入，第二次fresh读回确认 synthetic-tmp为空、没有任何持久complete文件；该fixture绝不作为真实源/HF catalog或迁移验收。qualification.json SHA256为1dbd188cd48a1ba656aaa96760806834f635a786347fc07fbb4499eb0c941b3d，receiver源码仍为3d9b43e03217e4cdb1d28491c198b4ef19950ad873fad5632fab0ddba6ab3cc9。
 
 HKUST2/3新SSH连接出现间歇性TCP22超时，也观察过四条别名/直连路径同时成功，故接收代码部署改用本任务短时ControlMaster复用，结束只关闭本任务master；没有改动Mac网络/代理配置。真实HF catalog未出前仍不启动receive。
+
+## 本socket物理绑定修复
+
+实际观察：ssh -B en0/源地址绑定和普通 nc -b en0 曾超时，而 Darwin nc --apple-no-connectx -b en0 实际0.448秒认证HKUST2/xielab2。helper新增 --physical-en0，仅这个SSH socket用Darwin IP_BOUND_IF且关闭connectx，不改Mac全局VPN/网络配置。控制连接继续只承载代码、RAM凭据和小审计，HF归档永不经过Mac。ControlMaster会在每个action结束只关闭本任务实例。
