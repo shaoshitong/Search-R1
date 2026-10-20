@@ -120,6 +120,10 @@ class RetrievalOwnerTests(unittest.TestCase):
         self.assertNotEqual(owner_id, slot_id)
         self.assertNotEqual(manifest['unit'], consumer['unit'])
         self.assertNotIn('gpu4-tp1', manifest['slots'])
+        self.assertNotIn('gpu3-tp1', manifest['slots'])
+        _, _, explicit = control.bundle(enabled_slots=('base-tp4', 'gpu3-tp1'))
+        self.assertEqual(explicit['slots']['gpu3-tp1'], dict(indices=[3], tp=1, seqs=8,
+            tokens=4096, blocks=512, reserve=1.0))
         self.assertEqual(manifest['owner_hard_seconds'], 90000)
         self.assertNotIn('sbatch', control.REMOTE)
 

@@ -22,6 +22,7 @@ SLOTS = {
     'retrieval-tp4': dict(indices=[0, 1, 2, 5], tp=4, seqs=32, tokens=8192, blocks=8192, reserve=.5),
     'gpu2-tp1': dict(indices=[2], tp=1, seqs=128, tokens=16384, blocks=16384, reserve=1.5),
     'gpu1-tp1': dict(indices=[1], tp=1, seqs=64, tokens=8192, blocks=8192, reserve=1.0),
+    'gpu3-tp1': dict(indices=[3], tp=1, seqs=8, tokens=4096, blocks=512, reserve=1.0),
     **{'gpu%d-tp1' % i: dict(indices=[i], tp=1, seqs=8, tokens=4096, blocks=1024, reserve=.5)
        for i in (4, 6, 7)},
 }

@@ -1,0 +1,114 @@
+LOCAL PREPARATION ONLY. No remote query, stage, submit, stop, GPU test or Git
+publication was performed for this change. Old workers, controls and stages
+are unchanged. The root agent owns review, publication and later rollover.
+
+New entry points
+----------------
+1. retrieval_remote_guard_control.py wraps the existing retrieval-only source
+   owner bundle in a distinct guard-* directory/unit. It launches the NEW
+   retrieval_remote_guard_owner.py entry. The source owner's immutable ready
+   and allocation include UPSTREAM_DEPENDENCY_LEASE_V1 and the guard code SHA.
+   An ordinary old owner-ready is deliberately insufficient for the new relay.
+2. retrieval_relay_generation_control.py has upstream/downstream/slot roles,
+   each with plan/stage/submit/status/drain. Every role/slot/instance has its
+   own unit, immutable stage, once-only intent and receipt. Unknown starts
+   require querying that same unit; they are never blindly replayed.
+3. retrieval_relay_owner.py is a CPU-only lifecycle controller. It launches
+   the unchanged retrieval_relay.py HTTP transport as its sole owned child.
+4. relay_slot_consumer_worker.py overrides only admission/borrowed ownership
+   before using the original relay_consumer_worker controller and sampler.
+
+Future sequence (examples; not executed)
+---------------------------------------
+python -m reproduction.operations.qwen7b_resample.retrieval_remote_guard_control plan --generation owner-v2
+python -m reproduction.operations.qwen7b_resample.retrieval_relay_generation_control upstream plan --generation owner-v2
+python -m reproduction.operations.qwen7b_resample.retrieval_relay_generation_control downstream plan --generation owner-v2
+python -m reproduction.operations.qwen7b_resample.retrieval_relay_generation_control slot plan --generation owner-v2 --slot tp4-0-3
+python -m reproduction.operations.qwen7b_resample.retrieval_relay_generation_control slot plan --generation owner-v2 --slot tp4-4-7
+
+Stage/submit additionally require --intent-id, --published-commit and
+--published-ref; exact publication SHA verification is reused unchanged.
+The source owner requires the existing reviewed node5 predecessor proof.
+Upstream submit requires --source-owner-ready PATH --source-owner-ready-sha256
+SHA --listen-host PRIVATE_CLUSTER_IPV4. Downstream submit requires those source
+ready arguments plus --upstream-owner-ready PATH --upstream-owner-ready-sha256
+SHA and --predecessor-proof NODE10_PROOF --predecessor-sha256 SHA. Slot submit
+requires --downstream-owner-ready PATH --downstream-owner-ready-sha256 SHA.
+There are no fixed old controller, relay PID, birth or source unit identities.
+
+The node10 proof schema is OWN_PREDECESSOR_GENERATION_TERMINAL, same run_id,
+node=h100-10, dynamic original_owned_births and units. It must be the actual
+root-produced terminal/release proof, not an invented empty list. Runtime
+rechecks its local original births, terminal units and absent original GPU
+contexts, then acquires all eight primary UUID leases. Source5 PIDs are never
+looked up in node10 /proc. Existing queued 3967/3976 and their policy are not
+changed; cooperating primary UUID lock arbitration remains in place.
+
+Ownership and drain
+-------------------
+New source owner -> upstream CPU owner -> downstream CPU owner -> model slots.
+The upstream holds pool/retrieval-relay-leases/RUN/sourcePID-birth/upstream.lock.
+The guarded source owner waits this lease before stopping its own retriever.
+The downstream holds the matching upstreamPID-birth/downstream.lock; upstream
+waits it before stopping only its HTTP relay. Downstream holds all eight node10
+primary GPU leases, then waits finite per-slot child leases before stopping
+only its local HTTP relay. A completed model never owns/stops that relay.
+
+CPU owner units have finite 25-hour hard limits, with a 24-hour maximum soft
+request. Upstream soft end is also <= source soft end - 900s and own hard end
+- 600s. Downstream soft end is <= upstream soft end - 300s, source soft end
+- 1200s and own hard end - 300s. Model absolute deadlines are capped by the
+source consumer deadline, upstream consumer deadline, downstream soft end
+- 300s and model unit hard end - 45s. Slow admission cannot extend those caps.
+Draining leases must finish before own hard end/source soft end - 120s.
+
+A bound drain-owner request propagates downstream through immutable owner
+identities. New claims stop through the already published draining_pool_worker
+at the genuine whole-batch boundary; accepted prefix/full work can finish and
+seal before leases are returned. Failure, timeout or forced unit/machine exit
+can still retain a genuine partial batch. Such failures are recorded honestly
+and do not claim global completion or zero work loss.
+
+The default node10 manifest declares TP4 0/1/2/3 and TP4 4/5/6/7. Optional
+gpu1-tp1/gpu2-tp1/gpu3-tp1/gpu5-tp1 slots are available ONLY with an explicit
+--enabled-slots list on the downstream owner. Their conservative declared
+limits are 8 seq/4096 batched tokens/1024 KV blocks/.5GiB reserve. These are
+finite topology/capacity declarations, not a claim of actual successful GPU
+initialization. A requested slot absent from the owner's exact manifest is
+rejected. No arbitrary sharing or automatic capacity discovery is performed.
+The source5 slot manifest remains the retrieval-only owner's finite set.
+Root additionally declared optional gpu3-tp1 at 8seq/4096tokens/512blocks/1GiB,
+matching the current independently admitted GPU3 profile. It is absent from
+the default slots and is not automatically launched by either owner.
+
+Network, paths, token and data semantics
+--------------------------------------
+Each CPU owner gets private retained NAS10 mounts and host cluster network.
+Upstream's unchanged child binds the explicit private host IPv4 listener
+before setns into the exact source retriever netns; only backend connections
+use source loopback 127.0.0.1:28831. Downstream's child binds host loopback
+127.0.0.1:28831. Its models share the CPU owner's namespaces in separate units.
+No global routes/firewall/mounts or credentials are changed.
+
+One generation-scoped 0600 token is generated solely on NAS10 during remote
+stage; only its path appears in code/intents/receipts. No token value is
+returned to the Mac or included in Git. The original relay forwards opaque
+GET /health and POST /retrieve bytes/status/content-type and authenticates
+only the extra transport hop. Seed, original full FP16 index/global IDs,
+queries/scores/results/strictEM, original config URL and shared batch locks
+remain the original sampler path. No data traverses the Mac.
+
+Verification and limits
+-----------------------
+python -m unittest reproduction.operations.qwen7b_resample.test_retrieval_relay_generation -v
+7 CPU tests passed, including real cross-process POSIX lease contention,
+both owner dependency drains, dynamic source identity rejection, an actual
+consumer-controller model completion leaving CPU relay/primary leases alive,
+generated bootstrap execution, explicit optional-slot manifests, real HTTP
+opaque POST/GET/status/score forwarding and bad-auth rejection.
+
+No actual future owner/relay or GPU model has been launched or qualified.
+The root's dynamic predecessor terminal producer and the coordinated release
+decision are external prerequisites. Tokens/network reachability, namespaces,
+actual GPU construction and two real progress observations still require
+later authorized deployment/acceptance. This is not a live continuation claim.
