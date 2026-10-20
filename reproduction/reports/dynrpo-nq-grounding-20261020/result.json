@@ -1,0 +1,269 @@
+{
+  "GPUs": 1,
+  "accounting": "742551|COMPLETED|0:0|ACD1-16\n742551.batch|COMPLETED|0:0|ACD1-16\n742551.extern|COMPLETED|0:0|ACD1-16\n",
+  "all_phase_exits": {
+    "export-exit.json": {
+      "checked_unix": 1792509268.127373,
+      "exit_code": 0
+    },
+    "v4-independent-exit.json": {
+      "checked_unix": 1792509735.2033694,
+      "exit_code": 0
+    },
+    "v4-pilot-exit.json": {
+      "checked_unix": 1792509465.3564074,
+      "exit_code": 0
+    },
+    "v4-prepare-exit.json": {
+      "checked_unix": 1792509347.3524764,
+      "exit_code": 0
+    },
+    "v4-rule-replay-exit.json": {
+      "checked_unix": 1792509735.963397,
+      "exit_code": 0
+    },
+    "v4-run-exit.json": {
+      "checked_unix": 1792509569.2487283,
+      "exit_code": 0
+    },
+    "v4-verify-exit.json": {
+      "checked_unix": 1792509669.704247,
+      "exit_code": 0
+    },
+    "v5-independent-exit.json": {
+      "checked_unix": 1792510124.0123644,
+      "exit_code": 0
+    },
+    "v5-pilot-exit.json": {
+      "checked_unix": 1792509892.4770305,
+      "exit_code": 0
+    },
+    "v5-prepare-exit.json": {
+      "checked_unix": 1792509824.7836902,
+      "exit_code": 0
+    },
+    "v5-rule-replay-exit.json": {
+      "checked_unix": 1792510124.4982247,
+      "exit_code": 0
+    },
+    "v5-run-exit.json": {
+      "checked_unix": 1792509961.7228415,
+      "exit_code": 0
+    },
+    "v5-verify-exit.json": {
+      "checked_unix": 1792510071.6368444,
+      "exit_code": 0
+    }
+  },
+  "canonical_question_gold_order_sha256": "23c0a8307f38a7a8d1cbd9e71fb115b7bd091421a3d3b10952fb71c8210b551c",
+  "checked_unix": 1792510236.480148,
+  "checkpoint": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237/huggingface",
+  "checkpoint_full_inventory_hash": "635d4cb6ddb885e0e032653c2aa0b8fa968ace4ce6bc2198a0cad3a8eeca1734",
+  "checkpoint_iteration": 200,
+  "complete_receipt_sha256": "8ecb7ba72a4b65ba164b85f0da94f43114645ca9b9e17b0c2a68153c0b2d8d85",
+  "completed_at": 1792510124.5032318,
+  "corrected_strict_v5": {
+    "DInv_denominator": 273,
+    "D_Inv": 0.15018315018315018,
+    "TC": 0.8128205128205128,
+    "TC_denominator": 273,
+    "counts": {
+      "Amb": 56,
+      "Hall": 41,
+      "True": 176,
+      "correct_searched": 1706,
+      "normal_correct": 1706,
+      "normal_questions": 3610
+    },
+    "coverage": {
+      "classified": 273,
+      "correct_searched": 1706,
+      "inference_completed": 273,
+      "invalid_reasons": {
+        "INVALID_INTERVENTION:conflicting_date_aliases_or_events": 42,
+        "INVALID_INTERVENTION:multiple_distinct_answer_values_or_entities": 54,
+        "INVALID_INTERVENTION:unresolved_middle_name_identity": 25,
+        "INVALID_INTERVENTION:unresolved_person_surname_residual": 80,
+        "INVALID_INTERVENTION:unsupported_or_uncertain_answer_type": 1204,
+        "INVALID_INTERVENTION:unsupported_temporal_or_numeric_range": 18,
+        "UNPERTURBABLE:no_boundary_matched_raw_or_explicit_equivalent_gold": 10
+      },
+      "pending_or_error": 0,
+      "perturbable": 273
+    },
+    "token_usage_CF": {
+      "generation_tokens": {
+        "max": 19,
+        "mean": 10.813186813186814,
+        "measured_questions": 273,
+        "total": 2952
+      },
+      "model_input_tokens": {
+        "max": 1551,
+        "mean": 570.1391941391942,
+        "measured_questions": 273,
+        "total": 155648
+      },
+      "trajectory_total_tokens": {
+        "max": 1565,
+        "mean": 580.952380952381,
+        "measured_questions": 273,
+        "total": 158600
+      }
+    }
+  },
+  "frozen_v4_diagnostic": {
+    "DInv_denominator": 1663,
+    "D_Inv": 0.09500901984365605,
+    "TC": 0.7961515333734215,
+    "TC_denominator": 1663,
+    "counts": {
+      "Amb": 571,
+      "Hall": 158,
+      "True": 934,
+      "correct_searched": 1706,
+      "normal_correct": 1706,
+      "normal_questions": 3610
+    },
+    "coverage": {
+      "classified": 1663,
+      "correct_searched": 1706,
+      "inference_completed": 1663,
+      "invalid_reasons": {
+        "UNPERTURBABLE:no_boundary_matched_gold_in_actual_seen_docs": 43
+      },
+      "pending_or_error": 0,
+      "perturbable": 1663
+    },
+    "token_usage_CF": {
+      "generation_tokens": {
+        "max": 37,
+        "mean": 10.135297654840649,
+        "measured_questions": 1663,
+        "total": 16855
+      },
+      "model_input_tokens": {
+        "max": 1949,
+        "mean": 561.2994588093807,
+        "measured_questions": 1663,
+        "total": 933441
+      },
+      "trajectory_total_tokens": {
+        "max": 1959,
+        "mean": 571.4347564642213,
+        "measured_questions": 1663,
+        "total": 950296
+      }
+    }
+  },
+  "incidents": [
+    "742547 failed before generation: exact4 HF shards owner-only0600; repaired shared-group read0640 without byte/mtime changes; failure preserved",
+    "vLLM background optional usage-statistics thread could not write jxu957/.config; inference and all required subprocesses completed0; actual inference errors0"
+  ],
+  "job": "742551",
+  "limits": [
+    "v4 changed-rule replay is a diagnostic, not full official evaluator reproduction",
+    "v5 metrics conditional on273 eligible originally correct searched examples; coverage16.00%; no full-population causal claim",
+    "Different normal inference stopping adapters remain different across methods"
+  ],
+  "method": "DynRPO / Post Selection",
+  "normal": {
+    "NQ_EM": 0.47257617728531853,
+    "NQ_correct": 1706,
+    "NQ_questions": 3610,
+    "Search_Q": 1.0933518005540166,
+    "actual_retrieval_calls": 3947,
+    "actual_retrieval_calls_mean": 1.0933518005540166,
+    "all_native_counts_equal_parsed": true,
+    "checked_unix": 1792509903.810319,
+    "normal_sha256": "79520298837c0e5e07b0076215f28cb847231483a4a7385d3e1329ff2796e550",
+    "parsed_response_search_markers": 3947
+  },
+  "normal_inference_rerun": false,
+  "proofs": {
+    "v4": {
+      "full_checkpoint_SHA_verified": true,
+      "independent_acceptance_path": "/data/user/jxu957/experiments/dynrpo-nq-grounding-20261020/cf-v4/independent-acceptance.json",
+      "independent_acceptance_sha256": "8737d05d173b76ab126cb17b4fd7bd46d481857b0c1a2799e0d7745788b639e5",
+      "inference_attempts": {
+        "errors": 0,
+        "failed_or_interrupted_attempts": 0,
+        "known_requested_input_tokens": 933441,
+        "request_attempts": 1663,
+        "successful_attempt_output_tokens": 16855,
+        "total_generated_tokens": 16855,
+        "total_generated_tokens_null_reason": null
+      },
+      "manifest_sha256": "9c251456f84afdff2e6f3121d6d646c16bcb4536fac02d976d32130618e4dabe",
+      "prepared_sha256": "5b599fbf8bb597a5b74ec9c5a76b81daef52732031c9232602caae69b850233b",
+      "results_content_sha256": "529af5c3c7c1a462a6e4c4868919e36252e499089a2c0228397850e68d0fc130",
+      "source_normal_sha256": "79520298837c0e5e07b0076215f28cb847231483a4a7385d3e1329ff2796e550"
+    },
+    "v5": {
+      "full_checkpoint_SHA_verified": true,
+      "independent_acceptance_path": "/data/user/jxu957/experiments/dynrpo-nq-grounding-20261020/cf-v5/independent-acceptance.json",
+      "independent_acceptance_sha256": "f8b8837f530af58a32ddd20ebdfcd4d821e7b70a93207c9ed4567c690c442351",
+      "inference_attempts": {
+        "errors": 0,
+        "failed_or_interrupted_attempts": 0,
+        "known_requested_input_tokens": 155648,
+        "request_attempts": 273,
+        "successful_attempt_output_tokens": 2952,
+        "total_generated_tokens": 2952,
+        "total_generated_tokens_null_reason": null
+      },
+      "manifest_sha256": "ebcb827a8e716c3c587a9b54b6d646de9dd8588b479f7e447c402151a1157ec6",
+      "prepared_sha256": "4de6cdb956ac273c0f618904d6bb4833e33bda1344fa0cf4794cbaf78ccadea1",
+      "results_content_sha256": "5787ba078ebfc3ecd45aaf7f9df382ec57fa428e34db0a7b41d1cb0c6dd8bb86",
+      "source_normal_sha256": "79520298837c0e5e07b0076215f28cb847231483a4a7385d3e1329ff2796e550"
+    }
+  },
+  "raw_and_checkpoint_location": "remote HPC3 persistent shared storage only",
+  "reference_pinned_session": "01a14ab9-289c-7e30-ad26-542dea4f30ed",
+  "reference_title": "审查七种算法实现 (2)",
+  "requested_same_six_method_table_rule": {
+    "DInv_denominator": 1663,
+    "D_Inv": 0.09500901984365605,
+    "TC": 0.9334936861094408,
+    "TC_denominator": 1663,
+    "counts": {
+      "Amb": 0,
+      "Direct": 0,
+      "Hall": 158,
+      "True": 1505
+    }
+  },
+  "root": "/data/user/jxu957/experiments/dynrpo-nq-grounding-20261020",
+  "run_id": "cc0de51f2d68495c9664aa888074839c",
+  "runtime_commit": "7c881cc413b916aedfe288443cd9fca838fb1c8b",
+  "single_run_SD": null,
+  "source_rank_proofs": [
+    {
+      "nq_rows": 903,
+      "rank": 0,
+      "sha256": "b326055f14b586cd5926c2325d03353daab5aead02a620e6a647e146424889c5",
+      "source": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/final-evaluation/rank-0-full.jsonl.gz"
+    },
+    {
+      "nq_rows": 903,
+      "rank": 1,
+      "sha256": "924dffe6b903a25c828d2bb4010bb8ea7801f831dea474c36b2c8e5e426d3006",
+      "source": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/final-evaluation/rank-1-full.jsonl.gz"
+    },
+    {
+      "nq_rows": 902,
+      "rank": 2,
+      "sha256": "8577a2ab43a3cd679eb2c7b69b9881f0b046bba5f533dbdc8542a0858a4fc088",
+      "source": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/final-evaluation/rank-2-full.jsonl.gz"
+    },
+    {
+      "nq_rows": 902,
+      "rank": 3,
+      "sha256": "c830d01d6fd7b4beb2ced20ee6a3357a35c0686cf234ad2aa3b2bab5c4e48cea",
+      "source": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/final-evaluation/rank-3-full.jsonl.gz"
+    }
+  ],
+  "source_session": "01a0fcbe-15f8-7600-ae84-9487d924560a",
+  "state": "DYNRPO_ITER200_NQ_GROUNDING_COMPLETE_INDEPENDENTLY_VERIFIED",
+  "training_modified": false
+}
