@@ -16,7 +16,7 @@ from . import shared_vram_control as old
 
 ROOT, BASE, PHYSICAL, RUN_ID = old.ROOT, old.BASE, old.PHYSICAL, old.RUN_ID
 DIRECTORY = 'relay-consumer10-control-v1'
-UNIT = 'sst-q7b-g5-consumer10-v1-' + RUN_ID[:12] + '.service'
+UNIT = 'sst-q7b-g5-consumer10-v2-' + RUN_ID[:12] + '.service'
 UPSTREAM_UNIT = 'sst-q7b-retrieval-relay5-v1-' + RUN_ID[:12] + '.service'
 SOURCE_UNIT = 'sst-q7b-g5-sharedvram-v6-' + RUN_ID[:12] + '.service'
 SOURCES = ('relay_consumer_control.py', 'relay_consumer_worker.py', 'retrieval_relay.py',
@@ -122,7 +122,7 @@ if ACTION=='stage':
 elif ACTION in('start-upstream','submit'):
  verify();assert PUBLICATION['status']=='EXACT_SOURCE_COMMIT_REMOTE_SHA_VERIFIED'
  source=ACTION=='start-upstream';unit=UPSTREAM_UNIT if source else UNIT
- name='upstream'if source else'native';intent=root/(name+'-submit-intent.json');receipt=root/(name+'-submit-receipt.json')
+ name='upstream'if source else'native-v2';intent=root/(name+'-submit-intent.json');receipt=root/(name+'-submit-receipt.json')
  with(root/(name+'-submit.lock')).open('a')as lock:
   fcntl.flock(lock,fcntl.LOCK_EX);old_intent=read(intent);observed=query(unit)
   value['observed']=observed
@@ -150,6 +150,10 @@ elif ACTION in('start-upstream','submit'):
      '--source-pid','1490465','--source-birth',context['source_birth'],'--source-netns-inode',str(context['source_netns_inode']),
      '--token-file',str(shared_root/'relay-secret'),'--ready-file',str(shared_root/'upstream-ready.json')]
    else:
+    previous=query('sst-q7b-g5-consumer10-v1-'+RUN_ID[:12]+'.service')
+    assert previous['properties'].get('MainPID')=='0'and previous['properties'].get('ActiveState')in('inactive','failed')
+    terminal=read(root/'v1-terminal/complete.json')
+    assert terminal and terminal['status']=='OWN_CONSUMER_V1_TERMINAL_FULL_SHA_RELEASE_PASS'and terminal['controller_pid']==2316020
     ready=read(root/'upstream-ready.json');assert ready and ready['role']=='upstream'and ready['source_pid']==1490465
     assert read(root/'source-context.json')['source_sampling_deadline_epoch']>time.time()+1800
     command=['systemd-run','--unit='+unit,'--property=CPUQuota=800%','--property=MemoryMax=96G',
@@ -167,7 +171,7 @@ elif ACTION in('start-upstream','submit'):
 else:
  value.update(status='READ_ONLY_CONSUMER_AND_RELAY_STATUS',observed=query(UNIT),
   upstream_intent=read(root/'upstream-submit-intent.json'),upstream_receipt=read(root/'upstream-submit-receipt.json'),
-  upstream_ready=read(root/'upstream-ready.json'),intent=read(root/'native-submit-intent.json'),receipt=read(root/'native-submit-receipt.json'),
+  upstream_ready=read(root/'upstream-ready.json'),intent=read(root/'native-v2-submit-intent.json'),receipt=read(root/'native-v2-submit-receipt.json'),
   attempts=[dict(directory=str(p),progress=read(p/'progress.json'),failure=read(p/'failure.json'),complete=read(p/'complete.json'))for p in sorted((base/'pool/jobs').glob('job-relay10-*/attempt-*'))],
   global_goal_complete=False)
 print(json.dumps(value))

@@ -50,6 +50,7 @@ def admit(pool, args):
         upstream = pool.read(args.upstream_ready)
         shared.require(upstream['role'] == 'upstream' and upstream['source_pid'] == 1490465,
                        'Retrieval relay is not bound to the currently evidenced original retriever')
+        shared.require(upstream['code_sha256'] == pool.sha(args.relay_script), 'Upstream relay source differs from published transport')
         return dict(job_id='relay10-' + str(os.getpid()), node='h100-10', controller_pid=os.getpid(),
             allocation_kind='HUMAN_AUTHORIZED_NATIVE_MODEL_ONLY_FREE_VRAM_CO_SHARE',
             native_unit=evidence['unit'], native_cgroup=evidence['cgroup'],
@@ -130,7 +131,7 @@ def controller(pool, args):
         history = []
         for ordinal in range(3):
             launch = jobdir / 'sampler-launches' / ('launch-%02d' % ordinal)
-            launch.mkdir()
+            launch.mkdir(parents=True)
             sampler = spawn('sampler', [str(Path(__file__).resolve()), '--sampler-loop', '--base', str(base),
                 '--pool-worker', args.pool_worker, '--job-dir', str(jobdir), '--launch-dir', str(launch),
                 '--deadline', str(deadline), '--handoff-marker', str(marker),

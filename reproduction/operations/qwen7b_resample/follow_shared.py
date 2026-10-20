@@ -10,7 +10,7 @@ b=Path(PHYSICAL)
 def read(p):return json.loads(p.read_text())if p.exists()else None
 rows=[read(p)for p in(b/'sampling').glob('shard-*/batches/batch-*/complete.json')]
 assert all(x['run_id']==RUN_ID for x in rows)
-attempts=sorted((b/'pool/jobs'/('job-shared5-'+PID)).glob('attempt-*'))
+attempts=sorted((b/'pool/jobs'/(globals().get('JOB_PREFIX','job-shared5-')+PID)).glob('attempt-*'))
 assert len(attempts)<=1
 p=attempts[-1]if attempts else None
 value=dict(epoch=time.time(),controller_pid=PID,questions=sum(x['questions']for x in rows),
@@ -24,7 +24,7 @@ if p:
   value['engine_model_initialized']={str(x['engine_index']):[read(q)for q in sorted((Path(x['directory'])/'sampler-launches').glob('launch-*/model-initialized.json'))]for x in engines['engines']}
  if value['failure']:
   value['log_tails']={}
-  for name in ['retriever.log','sampler.log']:
+  for name in ['retriever.log','sampler.log','relay.log']:
    q=p/name
    if q.exists():
     with q.open('rb')as f:f.seek(max(0,q.stat().st_size-5000));value['log_tails'][name]=f.read().decode(errors='replace')
@@ -32,13 +32,13 @@ print(json.dumps(value))
 '''
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--controller-pid',required=True);p.add_argument('--own-batches',type=int,default=2);p.add_argument('--per-engine-batches',type=int,default=0);p.add_argument('--interval',type=int,default=60);p.add_argument('--hours',type=float,default=4)
+ p=argparse.ArgumentParser();p.add_argument('--controller-pid',required=True);p.add_argument('--job-prefix',choices=('job-shared5-','job-relay10-'),default='job-shared5-');p.add_argument('--own-batches',type=int,default=2);p.add_argument('--per-engine-batches',type=int,default=0);p.add_argument('--interval',type=int,default=60);p.add_argument('--hours',type=float,default=4)
  a=p.parse_args();assert a.controller_pid.isdigit()and a.own_batches>0 and a.per_engine_batches>=0 and a.interval>=30
  latest=ROOT/'work/qwen7b-native-first-batches-latest-small.json';until=time.monotonic()+a.hours*3600;last=None
  print(json.dumps(dict(status='READONLY_NATIVE_FIRST_BATCHES_FOLLOWER_STARTED',controller_pid=a.controller_pid,target_own_complete_batches=a.own_batches)),flush=True)
  while time.monotonic()<until:
   try:
-   script='PHYSICAL='+repr(PHYSICAL)+'\nRUN_ID='+repr(RUN_ID)+'\nPID='+repr(a.controller_pid)+'\n'+REMOTE
+   script='PHYSICAL='+repr(PHYSICAL)+'\nRUN_ID='+repr(RUN_ID)+'\nPID='+repr(a.controller_pid)+'\nJOB_PREFIX='+repr(a.job_prefix)+'\n'+REMOTE
    result=transport(script);assert result.returncode==0,result.stderr[-700:];v=json.loads(result.stdout)
    out=ROOT/'work'/('qwen7b-native-first-batches-actual-%d.json'%time.time_ns());out.write_text(json.dumps(v,indent=2)+'\n')
    own=(v.get('progress')or v.get('complete')or{}).get('completed_own_batches',0)
