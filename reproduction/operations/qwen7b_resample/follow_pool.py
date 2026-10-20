@@ -4,7 +4,7 @@ from pathlib import Path
 from .pool_control import BASE,PHYSICAL,ROOT,RUN_ID,transport
 
 REMOTE=r'''
-import json,subprocess,time
+import hashlib,json,subprocess,time
 from pathlib import Path
 b=Path(PHYSICAL);rows=[json.loads(p.read_text())for p in(b/'sampling').glob('shard-*/batches/batch-*/complete.json')]
 assert all(x['run_id']==RUN_ID for x in rows)
@@ -21,6 +21,16 @@ for p in sorted((b/'pool/jobs').glob('job-*/attempt-*')):
   return json.loads(q.read_text())if q.exists()else None
  failure=read('failure.json')or read('sampler-failure.json');complete=read('complete.json');progress=read('progress.json')
  row=dict(path=str(p),state='FAILED'if failure else'COMPLETE'if complete else'SAMPLING'if progress else'STARTING',progress=progress,complete=complete,failure=failure)
+ resolution=read('resolution.json')
+ if failure and resolution:
+  original=p/('failure.json'if(p/'failure.json').exists()else'sampler-failure.json')
+  proof=Path(resolution.get('terminal_proof',''))
+  if(resolution.get('status')=='RECOVERED_FAILED_ATTEMPT_WITH_PRODUCTIVE_REPLACEMENT'
+     and resolution.get('original_failure_sha256')==hashlib.sha256(original.read_bytes()).hexdigest()
+     and str(proof).startswith(str(b/'preparation')+'/') and proof.is_file()
+     and resolution.get('terminal_proof_sha256')==hashlib.sha256(proof.read_bytes()).hexdigest()
+     and resolution.get('replacement_new_complete_batches',0)>=2):
+   row.update(state='FAILED_RECOVERED',resolution=resolution)
  if failure:
   row['tails']={}
   for name in ['sampler.log','retriever.log']:
@@ -28,7 +38,7 @@ for p in sorted((b/'pool/jobs').glob('job-*/attempt-*')):
    if q.exists():
     with q.open('rb')as f:f.seek(max(0,q.stat().st_size-2000));row['tails'][name]=f.read().decode(errors='replace')
  attempts.append(row)
-print(json.dumps(dict(epoch=time.time(),run_id=RUN_ID,pool_jobs=JOBS,questions=sum(x['questions']for x in rows),trajectories=sum(x['trajectories']for x in rows),sealed_batches=len(rows),expected_trajectories=845140,jobs=jobs,attempts=attempts[-32:],all_attempts_failed=sum(x['state']=='FAILED'for x in attempts),goal_complete=False)))
+print(json.dumps(dict(epoch=time.time(),run_id=RUN_ID,pool_jobs=JOBS,questions=sum(x['questions']for x in rows),trajectories=sum(x['trajectories']for x in rows),sealed_batches=len(rows),expected_trajectories=845140,jobs=jobs,attempts=attempts[-32:],all_attempts_failed=sum(x['failure']is not None for x in attempts),unresolved_attempts_failed=sum(x['state']=='FAILED'for x in attempts),goal_complete=False)))
 '''
 
 def main():
@@ -41,11 +51,11 @@ def main():
    r=transport(script);assert r.returncode==0,r.stderr[-500:];value=json.loads(r.stdout)
    snapshot=ROOT/'work'/('qwen7b-pool-follow-actual-%d.json'%time.time_ns());snapshot.write_text(json.dumps(value,indent=2)+'\n')
    states={state:sum(x['state']==state for x in value['jobs'])for state in sorted({x['state']for x in value['jobs']})}
-   summary=dict(epoch=value['epoch'],job=a.job[0]if len(a.job)==1 else a.job,pool_jobs=a.job,questions=value['questions'],trajectories=value['trajectories'],sealed_batches=value['sealed_batches'],job_states=states,failed_attempts=value['all_attempts_failed'],actual=str(snapshot),goal_complete=False)
+   summary=dict(epoch=value['epoch'],job=a.job[0]if len(a.job)==1 else a.job,pool_jobs=a.job,questions=value['questions'],trajectories=value['trajectories'],sealed_batches=value['sealed_batches'],job_states=states,failed_attempts=value['unresolved_attempts_failed'],historical_failed_attempts=value['all_attempts_failed'],actual=str(snapshot),goal_complete=False)
    with receipt.open('a')as f:f.write(json.dumps(summary)+'\n')
    latest.write_text(json.dumps(summary,indent=2)+'\n');change=(value['trajectories'],states,value['all_attempts_failed'])
    if change!=last:print(json.dumps(summary),flush=True);last=change
-   if value['all_attempts_failed']:print('ROOT_ATTENTION_OWN_POOL_ATTEMPT_FAILURE',flush=True);return
+   if value['unresolved_attempts_failed']:print('ROOT_ATTENTION_OWN_POOL_ATTEMPT_FAILURE',flush=True);return
    if value['questions']==169028 and value['trajectories']==845140 and value['sealed_batches']==1322:print('ROOT_ATTENTION_ALL_BATCHES_SEALED_FINAL_AUDIT_AND_OWN_QUEUE_CLEANUP_REQUIRED',flush=True);return
    if not value['jobs']:print('ROOT_ATTENTION_POOL_NO_LONGER_QUEUED_OR_RUNNING_READ_TERMINAL_JOBS',flush=True);return
   except Exception as error:print(json.dumps(dict(status='OBSERVATION_CHANNEL_ERROR_NOT_NATIVE_EXIT',error=str(error)[-700:],epoch=time.time())),flush=True)

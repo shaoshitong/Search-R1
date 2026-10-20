@@ -132,16 +132,25 @@ def multi_sampler(pool, binding, args):
         if 'llm' not in s._CACHED:
             import torch
             from vllm import LLM
+            # The installed 0.6.3 EngineArgs explicitly accepts an executor
+            # class; its MP worker factory imports this sibling in each rank.
+            from shared_vram_vllm_adapter import SharedVramExecutor
             memory = pool.nvml()
             sample = [memory[uuid] for uuid in binding['model_cuda_uuids']]
             reserve = int(1.5 * GIB)
             utilization = min((row['free_bytes'] - reserve) / row['total_bytes'] for row in sample) * .85 ** ordinal
             require(0 < utilization < 1, 'Observed free VRAM cannot accommodate the requested 1.5GiB reserve')
             limits = dict(max_num_seqs=max(1, 8 // (2 ** ordinal)), max_num_batched_tokens=4096)
+            block_cap = max(256, 1024 // (2 ** ordinal))
+            os.environ['Q7B_SHARED_KV_BLOCK_CAP'] = str(block_cap)
+            os.environ['Q7B_SHARED_KV_RESERVE_BYTES'] = str(reserve)
+            os.environ['Q7B_SHARED_KV_PROFILE_DIR'] = str(launch / 'kv-profile')
             initialization = dict(tensor_parallel_size=2, actual_gpu_memory=sample,
                 gpu_memory_utilization=utilization, reserve_bytes_per_gpu=reserve,
                 scheduler_limits=limits, retry_ordinal=ordinal, max_model_len=s.BUDGET['total_tokens'],
                 dtype=s.COMPUTE_DTYPE, eager=True, disable_custom_all_reduce=True,
+                executor_class='shared_vram_vllm_adapter.SharedVramExecutor', kv_block_size=16,
+                kv_block_cap=block_cap, real_profile_run=True, global_free_delta_used=False,
                 first_new_sampling_request_started=False, epoch=time.time())
             pool.publish(launch / 'model-initialization.json', initialization)
             try:
@@ -149,7 +158,8 @@ def multi_sampler(pool, binding, args):
                     tensor_parallel_size=2, max_model_len=s.BUDGET['total_tokens'], seed=seed,
                     gpu_memory_utilization=utilization, swap_space=0, enforce_eager=True,
                     enable_chunked_prefill=False, enable_prefix_caching=False, disable_custom_all_reduce=True,
-                    distributed_executor_backend='mp', disable_async_output_proc=True, disable_log_stats=True, **limits)
+                    distributed_executor_backend=SharedVramExecutor, block_size=16,
+                    disable_async_output_proc=True, disable_log_stats=True, **limits)
             except torch.cuda.OutOfMemoryError as error:
                 # Only this constructor site grants fresh-process retry. Runtime
                 # token-generation/retrieval failures never produce this marker.
@@ -161,7 +171,11 @@ def multi_sampler(pool, binding, args):
             attempts = pool.read(history) if history.exists() else []
             s._CACHED['llm'] = llm, utilization, limits, attempts
             pool.publish(launch / 'model-initialized.json', dict(initialization, actual_model_initialized=True,
-                actual_compute_dtype=str(llm.llm_engine.model_config.dtype), epoch=time.time()))
+                actual_compute_dtype=str(llm.llm_engine.model_config.dtype),
+                actual_num_gpu_blocks=llm.llm_engine.cache_config.num_gpu_blocks,
+                actual_kv_block_size=llm.llm_engine.cache_config.block_size,
+                actual_rank_profile_proofs={str(path): pool.sha(path) for path in sorted((launch / 'kv-profile').glob('rank-*.json'))},
+                epoch=time.time()))
         return s._CACHED['llm']
 
     s._configure_one_visible_gpu, s._build_llm = device, fullprefill
@@ -179,7 +193,7 @@ def controller(pool, args):
     pool.publish(jobdir / 'allocation.json', binding)
     pool.publish(jobdir / 'handoff.json', handoff)
     pool.publish(jobdir / 'sources.json', {str(path): pool.sha(path) for path in
-        (Path(__file__), Path(args.pool_worker), Path(args.retriever_script))})
+        (Path(__file__), Path(args.pool_worker), Path(args.retriever_script), Path(__file__).with_name('shared_vram_vllm_adapter.py'))})
     evidence = pool.read(args.allocation_evidence)
     end = evidence['captured_epoch'] + evidence['resource_limits']['runtime_max_seconds']
     deadline = min(time.time() + args.run_seconds, end - 45)

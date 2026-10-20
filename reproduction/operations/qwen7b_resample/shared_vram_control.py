@@ -29,11 +29,11 @@ RUN_ID = '70188b8e50fd4b45bc420ce58014f46e'
 SEED = 20261021
 FROZEN_COMMIT = '82062fc12c6c0bdb50b9e8681e1af9e6e763af10'
 FROZEN_REPO = BASE + '/code/repo-' + FROZEN_COMMIT
-JOB_NAME = 'sst-q7b-g5-sharedvram-' + RUN_ID[:12]
-CONTROL_DIRECTORY = 'shared-vram-native-control-v1'
-QUEUE_MODE = 'native-spare-vram-bounded-systemd'
+JOB_NAME = 'sst-q7b-g5-sharedvram-v2-' + RUN_ID[:12]
+CONTROL_DIRECTORY = 'shared-vram-native-control-v2'
+QUEUE_MODE = 'native-spare-vram-bounded-systemd-v2'
 SOURCES = ('shared_vram_control.py', 'shared_vram_worker.py', 'shared_vram_retriever.py',
-           'pool_worker.py', 'pool_paths.sh')
+           'shared_vram_vllm_adapter.py', 'pool_worker.py', 'pool_paths.sh')
 UNIT = JOB_NAME + '.service'
 RUN_SECONDS = 28500
 BATCH_RESERVE_SECONDS = 300
@@ -265,7 +265,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=('plan', 'stage', 'submit', 'status'))
     parser.add_argument('--intent-id', help='Explicit operator intent label; mandatory for stage/submit')
-    parser.add_argument('--published-commit', help='Full SHA containing the exact five small source files')
+    parser.add_argument('--published-commit', help='Full SHA containing the exact six small source files')
     parser.add_argument('--published-ref', help='Origin refs/heads/BRANCH verified before stage/submit')
     args = parser.parse_args()
     identity, files, manifest = bundle()
