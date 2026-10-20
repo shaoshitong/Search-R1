@@ -1,0 +1,40 @@
+{
+  "status": "SOURCE_CPU_EXPORT_STARTED_NOT_YET_ACCEPTED",
+  "receipt": {
+    "status": "SOURCE_CPU_EXPORT_STARTED_NOT_YET_ACCEPTED",
+    "command": [
+      "/usr/bin/python3",
+      "-u",
+      "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/_code-2043880a13df/reproduction/operations/qwen7b_warmup/peer_newseed_export.py",
+      "--export",
+      "--snapshot-id",
+      "newseed-20261021-185747-445fc691"
+    ],
+    "commit": "2043880a13df12566d010a8d83edbbfec679d727",
+    "snapshot_path": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/newseed-20261021-185747-445fc691",
+    "source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+    "epoch": 1792522893.260614,
+    "pid": 2243402,
+    "start_ticks": "1958344755",
+    "log": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/_operators/newseed-20261021-185747-445fc691/export.log",
+    "source_publication": "/mnt/data/shaoshitong/qwen7b-newseed-to-hpc3-20261021/_code-2043880a13df/source-publication.json",
+    "actual_cpu_tests_passed": true
+  },
+  "discovery": {
+    "source_base": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+    "source_node": "h100-10",
+    "source_run_id": "70188b8e50fd4b45bc420ce58014f46e",
+    "seed": 20261021,
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "source_input_batches": 1322,
+    "source_all_inputs_sealed": false,
+    "questions": 31232,
+    "trajectories": 156160,
+    "cohort_seal_digest": "9fca10ce05aabb15307f6e001756133aab1de623acd5f70bf186dfadc742b654",
+    "discovery_verified_payloads": false,
+    "selection_rule": "all canonical batches with an already-present valid producer complete.json at snapshot freeze; no label/probe selection",
+    "claimed_sealed_batches": 244,
+    "unsealed_batches_excluded": 1078
+  },
+  "operator_source_sha256": "2e0a24d976f10ee35e7f5e033f749208760113b261124ba0835609ab80366eb5"
+}
