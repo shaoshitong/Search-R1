@@ -22,16 +22,16 @@ def probe(route):
   with requests.Session() as session:
    session.trust_env=False;session.headers['Authorization']='Bearer '+secret['hf_token']
    if port:session.proxies={'http':'http://127.0.0.1:'+str(port),'https':'http://127.0.0.1:'+str(port)}
-   response=session.get('https://huggingface.co/api/datasets/Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020',timeout=(3,5));value['metadata_http_status']=response.status_code
+   response=session.get('https://huggingface.co/api/datasets/Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020',timeout=(8,15));value['metadata_http_status']=response.status_code
    response.raise_for_status();info=response.json()
    assert info.get('private') is True and info.get('id','').lower()=='sutoonq/qwen25-7b-probe-h100-transfer-20261020'
    value['metadata_status']='PRIVATE_REPO_MATCH'
-   response=session.post('https://huggingface.co/api/datasets/Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020/paths-info/'+record['hf_archive_commit'],json={'paths':[record['hf_archive_path']]},timeout=(3,5));response.raise_for_status();items=response.json()
+   response=session.post('https://huggingface.co/api/datasets/Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020/paths-info/'+record['hf_archive_commit'],json={'paths':[record['hf_archive_path']]},timeout=(8,15));response.raise_for_status();items=response.json()
    assert len(items)==1 and items[0]['path']==record['hf_archive_path'] and items[0]['size']==record['archive_bytes'] and items[0]['lfs']['oid']==record['archive_sha256']
    value['pinned_LFS_source_size_SHA_match']=True
    limit=1048576;h=hashlib.sha256();begin=time.monotonic()
    url='https://huggingface.co/datasets/Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020/resolve/'+record['hf_archive_commit']+'/'+quote(record['hf_archive_path'],safe='/')
-   with session.get(url,headers={'Range':'bytes=0-'+str(limit-1)},stream=True,timeout=(3,5)) as response:
+   with session.get(url,headers={'Range':'bytes=0-'+str(limit-1)},stream=True,timeout=(8,15)) as response:
     value['range_http_status']=response.status_code;response.raise_for_status()
     if response.status_code!=206 or response.headers.get('Content-Range')!='bytes 0-%d/%d'%(limit-1,record['archive_bytes']):raise ValueError('Exact bounded range was not honored')
     for block in response.iter_content(65536):
@@ -43,7 +43,10 @@ def probe(route):
  except Exception as error:value.update(status='FAILED',error_type=type(error).__name__)
  value['elapsed_seconds']=time.monotonic()-started;return value
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:out=list(pool.map(probe,[('direct',None),('HKUST2-17894',17894),('HKUST2-17897',17897),('HKUST2-17898',17898)]))
+routes=[('direct',None),('HKUST2-17894',17894),('HKUST2-17897',17897),('HKUST2-17898',17898)]
+if secret.get('probe_port') is not None:
+ assert secret['probe_port'] in (17894,17897,17898);routes=[('HKUST2-'+str(secret['probe_port']),secret['probe_port'])]
+with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:out=list(pool.map(probe,routes))
 print(json.dumps(dict(status='READ_ONLY_OFFICIAL_HF_METADATA_AND_REAL_RANGE_PREFLIGHT',exits=out,proxy_environment_inherited=False,Mac_proxy_used=False,archive_bytes_read_only_in_remote_RAM=sum(r['range_bytes_read'] for r in out),full_archive_SHA_acceptance=False,epoch=time.time())))
 '''
 COMMON=r'''
@@ -194,7 +197,11 @@ def main():
                     not all(c in '0123456789abcdef' for c in archive['hf_archive_commit']) or len(archive['hf_archive_commit'])!=40 or
                     not all(c in '0123456789abcdef' for c in archive['archive_sha256']) or len(archive['archive_sha256'])!=64):
                 raise ValueError('Pinned authorized source/HF archive identity required')
-            result=receiver.remote(ssh,'python3 -c '+shlex.quote(PREFLIGHT),dict(hf_token=token(),archive_probe=archive),timeout=55)
+            probe_port=None
+            if args.hf_proxy:
+                if args.hf_proxy not in ('http://127.0.0.1:17894','http://127.0.0.1:17897','http://127.0.0.1:17898'):raise ValueError('Only existing owned HKUST2 exits can be probed')
+                probe_port=int(args.hf_proxy.rsplit(':',1)[1])
+            result=receiver.remote(ssh,'python3 -c '+shlex.quote(PREFLIGHT),dict(hf_token=token(),archive_probe=archive,probe_port=probe_port),timeout=55)
         else:
             script=render(inputs,args.action)
             if len(('python3 -c '+shlex.quote(script)).encode())>=16000:raise ValueError('Receiver control command exceeds16KB')
