@@ -94,6 +94,7 @@ def lock():
  b.mkdir(parents=True,exist_ok=True);h=(b/'deployment.lock').open('a+');fcntl.flock(h,fcntl.LOCK_EX|fcntl.LOCK_NB);return h
 def command(args,timeout=25):
  p=subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=timeout)
+ if p.returncode and args[0]=='squeue' and 'Invalid job id specified' in p.stderr:return ''
  assert p.returncode==0,(args,p.stdout[-500:],p.stderr[-1500:]);return p.stdout.strip()
 def publication():
  p=read(b/'source-publication.json');root=pathlib.Path(p['code_root'])

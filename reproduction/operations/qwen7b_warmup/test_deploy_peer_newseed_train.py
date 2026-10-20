@@ -8,6 +8,7 @@ from pathlib import Path
 import shlex
 import subprocess
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -102,6 +103,14 @@ class PeerDeploymentTests(unittest.TestCase):
             out=io.StringIO()
             with contextlib.redirect_stdout(out):exec(compile(deploy.remote_source(values,'probe'),'baseline-gate','exec'),{})
             self.assertEqual(json.loads(out.getvalue())['status'],'ACTUAL_COMPLETION_FILES_PRESENT_FULL_METADATA_GATE_PENDING')
+
+    def test_completed_job_purged_from_queue_is_not_a_live_job_failure(self):
+        namespace={'inputs':dict(base=deploy.TARGET,target=deploy.TARGET)}
+        exec(compile(deploy.COMMON,'common','exec'),namespace)
+        result=SimpleNamespace(returncode=1,stdout='',stderr='slurm_load_jobs error: Invalid job id specified\n')
+        with patch.object(namespace['subprocess'],'run',return_value=result):
+            self.assertEqual(namespace['command'](['squeue','-j','1']),'')
+            with self.assertRaises(AssertionError):namespace['command'](['sacct','-j','1'])
 
     def test_preparation_has_no_tensor_deserialization(self):
         tree=ast.parse(Path(op.__file__).read_text())
