@@ -1,8 +1,8 @@
 {
-  "time": 1792502026.3911855,
+  "time": 1792502633.8684595,
   "job_id": "742046",
-  "queue": "742046|RUNNING|emergency_acd|34:53|ACD1-32|ACD1-32\n",
-  "accounting": "742046|RUNNING|0:0|00:34:53|billing=16,cpu=16,gres/gpu=4,mem=128G,node=1\n742046.batch|RUNNING|0:0|00:34:53|cpu=16,gres/gpu=4,mem=128G,node=1\n742046.extern|RUNNING|0:0|00:34:53|billing=16,cpu=16,gres/gpu=4,mem=128G,node=1\n742046.0|RUNNING|0:0|00:34:53|cpu=16,gres/gpu=4,mem=128G,node=1\n742046.1|COMPLETED|0:0|00:00:00|cpu=1,mem=1G,node=1\n",
+  "queue": "742046|RUNNING|emergency_acd|45:00|ACD1-32|ACD1-32\n",
+  "accounting": "742046|RUNNING|0:0|00:45:00|billing=16,cpu=16,gres/gpu=4,mem=128G,node=1\n742046.batch|RUNNING|0:0|00:45:00|cpu=16,gres/gpu=4,mem=128G,node=1\n742046.extern|RUNNING|0:0|00:45:00|billing=16,cpu=16,gres/gpu=4,mem=128G,node=1\n742046.0|RUNNING|0:0|00:45:00|cpu=16,gres/gpu=4,mem=128G,node=1\n742046.1|COMPLETED|0:0|00:00:00|cpu=1,mem=1G,node=1\n",
   "restore-acceptance.json": {
     "status": "ACTUAL_FOUR_RANK_RAW_EMA_ADAM_RNG_RESTORED",
     "source_checkpoint": {
@@ -218,45 +218,89 @@
       "epoch": 1,
       "split": "train",
       "rank": 0,
-      "completed_local_groups": 2304,
+      "completed_local_groups": 16800,
       "expected_local_groups": 16800,
-      "io_seconds": 94.60628804098815,
-      "compute_seconds": 4.475537247955799,
-      "elapsed_seconds": 99.15867028478533,
-      "epoch_time": 1792502020.1909008
+      "io_seconds": 646.7608570195735,
+      "compute_seconds": 32.61980717536062,
+      "elapsed_seconds": 680.9191681453958,
+      "epoch_time": 1792502601.9513984
     },
     "train-rank1": {
       "epoch": 1,
       "split": "train",
       "rank": 1,
-      "completed_local_groups": 2304,
+      "completed_local_groups": 16800,
       "expected_local_groups": 16800,
-      "io_seconds": 94.56305201072246,
-      "compute_seconds": 4.7736769281327724,
-      "elapsed_seconds": 99.42601224407554,
-      "epoch_time": 1792502020.2707894
+      "io_seconds": 646.4914312642068,
+      "compute_seconds": 33.0792043376714,
+      "elapsed_seconds": 681.1631331592798,
+      "epoch_time": 1792502602.0079103
     },
     "train-rank2": {
       "epoch": 1,
       "split": "train",
       "rank": 2,
-      "completed_local_groups": 2304,
+      "completed_local_groups": 16800,
       "expected_local_groups": 16800,
-      "io_seconds": 94.66399770323187,
-      "compute_seconds": 4.540891493670642,
-      "elapsed_seconds": 99.33483027294278,
-      "epoch_time": 1792502020.1603649
+      "io_seconds": 646.8324665408581,
+      "compute_seconds": 32.7957163201645,
+      "elapsed_seconds": 681.2925092838705,
+      "epoch_time": 1792502602.1180434
     },
     "train-rank3": {
       "epoch": 1,
       "split": "train",
       "rank": 3,
-      "completed_local_groups": 2304,
+      "completed_local_groups": 16799,
       "expected_local_groups": 16799,
-      "io_seconds": 94.74679223261774,
-      "compute_seconds": 4.55267939530313,
-      "elapsed_seconds": 99.40010200068355,
-      "epoch_time": 1792502020.2254844
+      "io_seconds": 647.6961546260864,
+      "compute_seconds": 32.75592282228172,
+      "elapsed_seconds": 681.186809505336,
+      "epoch_time": 1792502602.012192
+    },
+    "diagnostic-rank0": {
+      "epoch": 1,
+      "split": "diagnostic",
+      "rank": 0,
+      "completed_local_groups": 128,
+      "expected_local_groups": 128,
+      "io_seconds": 1.1269971234723926,
+      "compute_seconds": 0.24594729486852884,
+      "elapsed_seconds": 1.3770597446709871,
+      "epoch_time": 1792502603.5213673
+    },
+    "diagnostic-rank1": {
+      "epoch": 1,
+      "split": "diagnostic",
+      "rank": 1,
+      "completed_local_groups": 128,
+      "expected_local_groups": 128,
+      "io_seconds": 3.3625855706632137,
+      "compute_seconds": 0.24611883610486984,
+      "elapsed_seconds": 3.611087877303362,
+      "epoch_time": 1792502605.7552867
+    },
+    "diagnostic-rank2": {
+      "epoch": 1,
+      "split": "diagnostic",
+      "rank": 2,
+      "completed_local_groups": 128,
+      "expected_local_groups": 128,
+      "io_seconds": 1.3312947014346719,
+      "compute_seconds": 0.25137856509536505,
+      "elapsed_seconds": 1.5849466370418668,
+      "epoch_time": 1792502603.7326937
+    },
+    "diagnostic-rank3": {
+      "epoch": 1,
+      "split": "diagnostic",
+      "rank": 3,
+      "completed_local_groups": 128,
+      "expected_local_groups": 128,
+      "io_seconds": 1.0751370228827,
+      "compute_seconds": 0.24628936871886253,
+      "elapsed_seconds": 1.3259333213791251,
+      "epoch_time": 1792502603.4661446
     }
   },
   "log_bytes": 4132,
