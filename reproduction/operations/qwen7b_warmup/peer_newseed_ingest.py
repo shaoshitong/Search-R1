@@ -71,6 +71,22 @@ def exclusion_sets(manifests,counts=SCOPES):
     return allq,allh,out
 
 
+def final_identity_projection(value):
+    """Accept only the actual frozen identity schema, never labels/source data."""
+    if value.get('role')!='final' or value.get('frozen') is not True or value.get('labels_read') is not False:
+        raise ValueError('Frozen identity-only final exclusion plan required')
+    allowed={'qid','question_hash','canonical_question_sha256','pool'}
+    result=[]
+    for row in value['questions']:
+        if not {'qid','question_hash'}<=set(row) or not set(row)<=allowed:
+            raise ValueError('Final plan row contains non-identity fields')
+        result.append(dict(qid=row['qid'],question_hash=row['question_hash']))
+    identity_rows(result,4096)
+    expected=hashlib.sha256(json.dumps([g['qid'] for g in result],sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    if value.get('ordered_qid_sha256')!=expected:raise ValueError('Frozen final identity plan SHA differs')
+    return result
+
+
 def own_group(group,g=5):
     tids=group['trajectory_ids'];labels=group['labels']
     if (not isinstance(group['qid'],str) or not group['qid'] or not isinstance(group['question_hash'],str) or
@@ -237,10 +253,7 @@ def prepare(receiver_root,output,original=B,selection=None,final_plan=None):
     final_plan=Path(final_plan or original/'algorithm-improvement-20261021/training-extraG5-matched6528-20261021/final-exclusion-plan.json')
     val=read(selection);selected_proof=read(selection.parent/'complete.json');final=read(final_plan)
     if receiver.sha(selection)!=selected_proof['groups_sha256']:raise ValueError('Accepted selection2048 bank SHA differs')
-    if final.get('role')!='final' or final.get('frozen') is not True:
-        raise ValueError('Frozen identity-only final exclusion plan required')
-    final_ids=final['questions'];identity_rows(final_ids,4096)
-    if final.get('ordered_qid_sha256')!=hashlib.sha256(json.dumps([g['qid'] for g in final_ids],sort_keys=True,separators=(',',':')).encode()).hexdigest(): raise ValueError('Frozen final identity plan SHA differs')
+    final_ids=final_identity_projection(final)
     values={'diagnostic512':bank['diagnostic'],'selection2048':val['selection_validation'],'frozen_final4096':final_ids}
     sources={'diagnostic512':original/'bank/groups.json','selection2048':selection,'frozen_final4096':final_plan}
     exclusions={role:dict(role=role,identity_only=True,groups=[dict(qid=g['qid'],question_hash=g['question_hash']) for g in values[role]],

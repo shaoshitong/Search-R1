@@ -148,6 +148,15 @@ class IngestTests(unittest.TestCase):
             elif change=='future':p['future_information_included']=True
             with self.assertRaises(ValueError):m.audit_trajectory(p,f,s,config,1,strict_score,{},'new')
 
+    def test_actual_final_identity_metadata_projection_never_accepts_label_fields(self):
+        values=[dict(qid='final%d'%i,question_hash=m.digest(i),canonical_question_sha256=m.digest(['text',i]),pool='reserved') for i in range(4096)]
+        value=dict(role='final',frozen=True,labels_read=False,questions=values,source_proofs=[dict(path='/DO_NOT_OPEN_FINAL')],
+            ordered_qid_sha256=m.digest([g['qid'] for g in values]))
+        projected=m.final_identity_projection(value)
+        self.assertEqual(len(projected),4096);self.assertTrue(all(set(g)=={'qid','question_hash'} for g in projected))
+        value['questions'][0]['labels']=[0]
+        with self.assertRaisesRegex(ValueError,'non-identity'):m.final_identity_projection(value)
+
     def test_protocol_sampling_contract_is_not_assumed_equal(self):
         old={key:dict(exact='contract') for key in m.PROTOCOL};new=copy.deepcopy(old)
         self.assertEqual(m.compare_protocol(old,new),old)

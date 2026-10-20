@@ -66,8 +66,11 @@ use `ReplayFeatureReader` for **both** old and new training plus evaluations.
 The existing matched9088 `replay_bank_capture` has an exact fixed9088 gate;
 this raw receipt deliberately does not weaken or monkeypatch that gate.
 No native/HF bit-exact equivalence or GPU replay completion is claimed.
+Actual frozen final identity rows also contain canonical_question_sha256 and
+pool; these metadata fields are whitelist-validated then projected to qid/hash.
+Labels and source_proofs are never followed.
 
-Six narrow CPU tests cover target complete/SHA gates, identity-only exclusions,
+Seven narrow CPU tests cover target complete/SHA gates, identity-only exclusions,
 own G10 IDs/EM, genuine tokenizer strict-EM with tool observations, Prefix20
 multisegment positions, actual seed overlap, and sampling protocol mismatch.
 

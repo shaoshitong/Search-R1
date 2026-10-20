@@ -89,8 +89,11 @@ INIT=r'''
 guard=lock();(b/'logs').mkdir(exist_ok=True);uploads.mkdir(exist_ok=True)
 value={key:inputs[key] for key in ['commit','bundle_sha256','bundle_bytes','chunks','files']}
 p=b/'upload-controller.json'
-if p.exists():assert read(p)==value,'Different immutable source preparation already exists'
-else:atomic(p,value)
+if p.exists() and read(p)!=value:
+ assert not (b/'submission-plan.json').exists() and not (b/'preparation.json').exists(),'Existing GPU/feature preparation; immutable source preserved'
+ assert not list(b.glob('cpu-*-launch.json')) and not list(pathlib.Path(inputs['ingest']).glob('cpu-*-launch.json')),'A CPU writer has already launched; no source handoff'
+ old=read(p);atomic(b/'source-history'/('upload-'+old['commit']+'.json'),old);atomic(p,value)
+elif not p.exists():atomic(p,value)
 print(json.dumps(dict(status='CODE_STAGE_BOUND',chunks=inputs['chunks'])))
 '''
 CHUNK=r'''
@@ -119,8 +122,11 @@ if not code.exists():
  stage.rename(code)
 value=dict(commit=inputs['commit'],remote_sha=inputs['commit'],code_root=str(code),files=inputs['files'])
 p=b/'source-publication.json'
-if p.exists():assert read(p)==value
-else:atomic(p,value)
+if p.exists() and read(p)!=value:
+ assert not (b/'submission-plan.json').exists() and not (b/'preparation.json').exists()
+ assert not list(b.glob('cpu-*-launch.json')) and not list(pathlib.Path(inputs['ingest']).glob('cpu-*-launch.json'))
+ old=read(p);atomic(b/'source-history'/('publication-'+old['commit']+'.json'),old);atomic(p,value)
+elif not p.exists():atomic(p,value)
 publication();print(json.dumps(dict(status='PUBLISHED_CODE_ALL_SHA_ACCEPTED',code_root=str(code),files=len(inputs['files']))))
 '''
 CPU=r'''
@@ -128,7 +134,7 @@ guard=lock();pub,root=publication();env=dict(os.environ,QWEN7B_CODE_ROOT=str(roo
 args=runtime(root,['unittest','reproduction.operations.qwen7b_warmup.test_peer_newseed_ingest','reproduction.operations.qwen7b_warmup.test_peer_newseed_replay'])
 r=subprocess.run(args,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=90)
 (b/'actual-cpu-tests.log').write_text(r.stdout);assert r.returncode==0,r.stdout[-3000:]
-atomic(b/'cpu-qualification.json',dict(status='ACTUAL_REMOTE_CPU_10_TESTS_PASSED',log=fp(b/'actual-cpu-tests.log'),model_tensors_loaded=False,feature_capture_started=False))
+atomic(b/'cpu-qualification.json',dict(status='ACTUAL_REMOTE_CPU_11_TESTS_PASSED',log=fp(b/'actual-cpu-tests.log'),model_tensors_loaded=False,feature_capture_started=False))
 print(json.dumps(read(b/'cpu-qualification.json')))
 '''
 INGEST_PREPARE=r'''
