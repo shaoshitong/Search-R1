@@ -1,0 +1,35 @@
+{
+  "status": "AGGREGATE_COUNTS_AND_WEIGHTED_LOSSES_RECHECKED",
+  "time": 1792494545.22517,
+  "training_source": "96df5a23f23f6da0f24e79e67dcf0e3039f22de0",
+  "scorer_source": "ad3a55aef923f3401d350fe7f3479996293e06c6",
+  "scope": "No training, model changes, GPU jobs or raw data transfer. Read-only scans and aggregate local outputs.",
+  "validation": [
+    "Independent unseen2048 recomputation matches complete scan exactly",
+    "Class counts and weighted class loss match all-group metrics",
+    "Prefix unique-count histograms exhaust all questions"
+  ],
+  "important_interpretation": [
+    "Token duplicate rates are not exact hidden tensor duplicate rates",
+    "All5 identical is distinct from pairwise duplicate rate",
+    "Mixed BCE in trainer is over all groups, not just true Mixed groups",
+    "Losses recomputed from saved FP32 sigmoid p may slightly differ from original stable-logit BCE due to sigmoid saturation",
+    "Replacing each group p_j by its mean is a posthoc sensitivity check, not a retraining causal experiment"
+  ],
+  "epoch4_train_true_mixed": {
+    "n": 67199,
+    "loss": 0.4732221184866018,
+    "equalized_loss": 0.47761570558776356,
+    "all5_p_in_04_06": 5451,
+    "straddles_half": 13345
+  },
+  "epoch2_selected": {
+    "n": 512,
+    "mean_q": 0.9086895434731416,
+    "mean_q_equalized": 0.9076093349852111,
+    "all5_p_in_04_06": 177,
+    "all5_p_in_03_07": 440,
+    "same_question_range_le_005": 178,
+    "p_min_le02_and_p_max_ge09": 0
+  }
+}
