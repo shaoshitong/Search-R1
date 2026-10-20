@@ -60,7 +60,9 @@ with (suite/'prepare.lock').open('a') as lock:
   for rel in ['reproduction','reproduction/operations','reproduction/operations/qwen7b_warmup']:(root/rel/'__init__.py').touch(exist_ok=True)
   pub=dict(commit=commit,remote_sha=commit,code_root=str(root),files=hashes,time=time.time());atomic(suite/'source-publication.json',pub)
   env=dict(os.environ,QWEN7B_CODE_ROOT=str(root),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',CUDA_VISIBLE_DEVICES='')
-  tests=command(['bash',str(root/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-m','unittest','-v','reproduction.operations.qwen7b_warmup.test_probe_ablation_loss','reproduction.operations.qwen7b_warmup.test_probe_ablation_train','reproduction.operations.qwen7b_warmup.test_probe_ablation_model','reproduction.operations.qwen7b_warmup.test_g10_grouping'],90)
+  test_run=subprocess.run(['bash',str(root/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-m','unittest','-v','reproduction.operations.qwen7b_warmup.test_probe_ablation_loss','reproduction.operations.qwen7b_warmup.test_probe_ablation_train','reproduction.operations.qwen7b_warmup.test_probe_ablation_model','reproduction.operations.qwen7b_warmup.test_g10_grouping'],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=90)
+  assert test_run.returncode==0,test_run.stdout
+  tests=test_run.stdout
   (suite/'actual-cpu-tests.log').write_text(tests)
   old=B/'mixed-only-ft-cp2-prefix20-20261020';bal=B/'balanced-rank1-from-epoch1-prefix20-20261020';c=read(bal/'config.json');source=read(old/'probe/epoch-0001.json')
   assert source['completed_epoch'] and source['cursor']==0 and source['steps']==10464 and source['sha256']=='02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724'
