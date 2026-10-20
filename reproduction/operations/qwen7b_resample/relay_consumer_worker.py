@@ -62,6 +62,7 @@ def borrowed_relay(pool, args):
 
 def admit(pool, args):
     shared.require(socket.gethostname().split('.')[0] == 'h100-10', 'Consumer is restricted to retained h100-10')
+    shared.require(args.tp == 4, 'Direct h100-10 admission retains its four-GPU tensor-parallel allocation')
     shared.require(os.stat('/proc/self/ns/mnt').st_ino != os.stat('/proc/1/ns/mnt').st_ino,
                    'Consumer requires its own retained-path mount namespace')
     shared.require(os.stat('/proc/self/ns/net').st_ino == os.stat('/proc/1/ns/net').st_ino,
@@ -185,6 +186,7 @@ def controller(pool, args):
             sampler = spawn('sampler', [str(Path(__file__).resolve()), '--sampler-loop', '--base', str(base),
                 '--pool-worker', args.pool_worker, '--job-dir', str(jobdir), '--launch-dir', str(launch),
                 '--deadline', str(deadline), '--handoff-marker', str(marker),
+                '--tp', str(args.tp),
                 '--model-max-seqs', str(args.model_max_seqs), '--model-batch-tokens', str(args.model_batch_tokens),
                 '--model-kv-block-cap', str(args.model_kv_block_cap), '--model-reserve-gib', str(args.model_reserve_gib),
                 '--batch-reserve-seconds', str(args.batch_reserve_seconds)], binding['model_cuda_visible_devices'],
@@ -239,6 +241,7 @@ def main():
     p.add_argument('--reuse-local-relay-unit')
     p.add_argument('--allocation-evidence', default=os.environ.get('Q7B_RELAY_ALLOCATION_EVIDENCE'))
     p.add_argument('--model-gpus', default='0,1,2,3')
+    p.add_argument('--tp', type=int, choices=(1, 4), default=4)
     p.add_argument('--model-max-seqs', type=int, default=8)
     p.add_argument('--model-batch-tokens', type=int, default=4096)
     p.add_argument('--model-kv-block-cap', type=int, default=1024)
@@ -255,7 +258,6 @@ def main():
     a = p.parse_args()
     shared.require(bool(a.reuse_local_relay_ready) == bool(a.reuse_local_relay_sha256)
                    == bool(a.reuse_local_relay_unit), 'Borrowed relay arguments must be supplied together')
-    a.tp = 4
     if a.cuda_probe:
         print(json.dumps(dict(actual_cuda_runtime_uuids=shared.actual_uuids(a.expected_uuids.split(',')))))
         return

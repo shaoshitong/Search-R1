@@ -34,7 +34,10 @@ class RelayConsumerControllerTests(unittest.TestCase):
     def test_borrowed_relay_is_not_started_or_stopped(self):
         self.run_lifecycle(reuse=True)
 
-    def run_lifecycle(self, reuse):
+    def test_tp1_is_forwarded_to_the_sampler(self):
+        self.run_lifecycle(reuse=True, tp=1)
+
+    def run_lifecycle(self, reuse, tp=4):
         with tempfile.TemporaryDirectory(prefix='q7b-consumer-controller-cpu-') as temporary:
             base = Path(temporary)
 
@@ -64,14 +67,16 @@ class RelayConsumerControllerTests(unittest.TestCase):
                 handoff=lambda _, marker: read(marker), read=read, publish=publish,
                 sha=lambda path: hashlib.sha256(Path(path).read_bytes()).hexdigest(),
                 RUN_ID=run_id, URL='http://127.0.0.1:28831/retrieve')
-            binding = dict(job_id='relay10-test', model_indices=[0, 1, 2, 3],
-                model_cuda_uuids=['GPU-test-%d' % index for index in range(4)],
-                model_cuda_visible_devices='0,1,2,3', shared_retriever_owned_by_consumer=False)
+            model = [2] if tp == 1 else [0, 1, 2, 3]
+            numeric = ','.join(map(str, model))
+            binding = dict(job_id='relay10-test', model_indices=model,
+                model_cuda_uuids=['GPU-test-%d' % index for index in model], tensor_parallel_size=tp,
+                model_cuda_visible_devices=numeric, shared_retriever_owned_by_consumer=False)
             args = argparse.Namespace(base=str(base), handoff_marker=None,
                 pool_worker=str(DIRECTORY / 'pool_worker.py'),
                 relay_script=str(DIRECTORY / 'retrieval_relay.py'), upstream_ready=str(upstream),
                 token_file=str(token), allocation_evidence=str(evidence),
-                run_seconds=60, batch_reserve_seconds=1, model_max_seqs=8,
+                run_seconds=60, batch_reserve_seconds=1, model_max_seqs=8, tp=tp,
                 model_batch_tokens=4096, model_kv_block_cap=1024, model_reserve_gib=.25)
             if reuse:
                 args.reuse_local_relay_ready = str(base / 'borrowed-ready.json')
@@ -96,11 +101,12 @@ class RelayConsumerControllerTests(unittest.TestCase):
                         self.jobdir = Path(flag('--job-dir'))
                         self.launch = Path(flag('--launch-dir'))
                         test.assertEqual(env['Q7B_POOL_INTERNAL'], str(self.jobdir))
-                        test.assertEqual(env['CUDA_VISIBLE_DEVICES'], '0,1,2,3')
+                        test.assertEqual(env['CUDA_VISIBLE_DEVICES'], numeric)
+                        test.assertEqual(flag('--tp'), str(tp))
                         # A functioning sampler writes into the supplied launch
                         # directory; it does not repair controller-owned parents.
                         (self.launch / 'model-initialized.json').write_text(json.dumps(
-                            dict(test_fixture=True, tensor_parallel_size=4)))
+                            dict(test_fixture=True, tensor_parallel_size=tp)))
                     else:
                         test.assertIn('downstream', command)
                         test.assertEqual(flag('--upstream-url'), read(upstream)['listen_url'])

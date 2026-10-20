@@ -16,7 +16,7 @@ import time
 import relay_consumer_worker as consumer
 
 shared = consumer.shared
-PARENT_PID, RETRIEVER_PID = 1490214, 1490465
+PARENT_PID, RETRIEVER_PID, PEER_PID = 1490214, 1490465, 2013773
 
 
 def context(pool, args):
@@ -25,8 +25,12 @@ def context(pool, args):
                    and pool.sha(path) == args.reuse_local_relay_sha256,
                    'Source sublease context path or SHA differs')
     value = pool.read(path)
-    shared.require(value['schema_version'] == 1 and value['mode'] == 'SOURCE5_SAME_RUN_GPU_SUBLEASE'
+    shared.require(value['schema_version'] in (1, 2) and value['mode'] == 'SOURCE5_SAME_RUN_GPU_SUBLEASE'
                    and value['run_id'] == pool.RUN_ID, 'Source sublease run identity differs')
+    tp = 4 if value['schema_version'] == 1 else 1
+    shared.require(len(value['model_indices']) == len(value['model_cuda_uuids']) == tp == args.tp
+                   and value.get('tensor_parallel_size', 4) == tp,
+                   'Source sublease tensor parallel size differs from its schema and arguments')
     parent, retriever = value['parent'], value['retriever']
     shared.require(parent['pid'] == PARENT_PID and retriever['pid'] == RETRIEVER_PID
                    and parent['unit'] == 'sst-q7b-g5-sharedvram-v6-' + pool.RUN_ID[:12] + '.service'
@@ -38,6 +42,17 @@ def context(pool, args):
     return path, value
 
 
+def alive(proof):
+    try:
+        pid = int(proof['pid'])
+        fields = Path('/proc/%d/stat' % pid).read_text().rsplit(')', 1)[1].split()
+        return (fields[0] not in ('Z', 'X') and fields[19] == str(proof['birth'])
+                and Path('/proc/%d/cgroup' % pid).read_text() == proof['cgroup']
+                and os.stat('/proc/%d/ns/net' % pid).st_ino == proof['netns_inode'])
+    except (FileNotFoundError, ProcessLookupError):
+        return False
+
+
 class BorrowedSource:
     """Popen-shaped liveness observation with no stop/wait/ownership methods."""
     def __init__(self, parent, retriever):
@@ -46,17 +61,7 @@ class BorrowedSource:
         self.proof = dict(retriever, source_parent=dict(parent), process_owned=False)
 
     def poll(self):
-        try:
-            for proof in (self.parent, self.proof):
-                pid = int(proof['pid'])
-                fields = Path('/proc/%d/stat' % pid).read_text().rsplit(')', 1)[1].split()
-                if (fields[0] in ('Z', 'X') or fields[19] != str(proof['birth'])
-                        or Path('/proc/%d/cgroup' % pid).read_text() != proof['cgroup']
-                        or os.stat('/proc/%d/ns/net' % pid).st_ino != proof['netns_inode']):
-                    return 1
-        except (FileNotFoundError, ProcessLookupError):
-            return 1
-        return None
+        return None if alive(self.parent) and alive(self.proof) else 1
 
 
 def borrowed_relay(pool, args):
@@ -66,24 +71,60 @@ def borrowed_relay(pool, args):
     return borrowed
 
 
-def parent_lock(base, parent, uuid, expected):
-    """Read the parent's original FD and POSIX lease; never open/lock its file."""
+def held_lock(path, owner, expected, label):
+    """Read another controller's FD and POSIX lease without opening its file."""
     fd = expected['fd']
-    shared.require(type(fd) is int and fd >= 0, 'Invalid parent GPU lock FD')
-    path = base / 'pool/gpu-locks' / (uuid + '.lock')
+    shared.require(type(fd) is int and fd >= 0, 'Invalid ' + label + ' GPU lock FD')
     actual = path.stat()
-    held = os.stat('/proc/%d/fd/%d' % (parent['pid'], fd))
+    held = os.stat('/proc/%d/fd/%d' % (owner['pid'], fd))
     shared.require((actual.st_dev, actual.st_ino) == (held.st_dev, held.st_ino)
-                   == (expected['device'], expected['inode']), 'Parent GPU lock FD device/inode differs')
-    detail = Path('/proc/%d/fdinfo/%d' % (parent['pid'], fd)).read_text()
-    pattern = (r'^lock:\s+\d+:\s+POSIX\s+ADVISORY\s+WRITE\s+' + str(parent['pid'])
+                   == (expected['device'], expected['inode']), label + ' GPU lock FD device/inode differs')
+    detail = Path('/proc/%d/fdinfo/%d' % (owner['pid'], fd)).read_text()
+    pattern = (r'^lock:\s+\d+:\s+POSIX\s+ADVISORY\s+WRITE\s+' + str(owner['pid'])
                + r'\s+([0-9a-fA-F]+):([0-9a-fA-F]+):(\d+)\s+0\s+EOF\s*$')
     matches = re.findall(pattern, detail, re.MULTILINE)
     shared.require(any((int(major, 16), int(minor, 16), int(inode))
                        == (os.major(actual.st_dev), os.minor(actual.st_dev), actual.st_ino)
-                       for major, minor, inode in matches), 'Original parent POSIX WRITE GPU lock is not evidenced')
+                       for major, minor, inode in matches), label + ' POSIX WRITE GPU lock is not evidenced')
     return dict(path=str(path), fd=fd, device=actual.st_dev, inode=actual.st_ino,
                 fdinfo_sha256=hashlib.sha256(detail.encode()).hexdigest())
+
+
+def parent_lock(base, parent, uuid, expected):
+    return held_lock(base / 'pool/gpu-locks' / (uuid + '.lock'), parent, expected, 'Original parent')
+
+
+def peer_admission(pool, value, directory, model, uuids):
+    """A schema2 peer authorizes admission only; it is not a runtime dependency."""
+    peer, parent = value['peer_sublease'], value['parent']
+    shared.require(peer['pid'] == PEER_PID and alive(peer)
+                   and peer['unit'] != parent['unit'] and peer['unit'] in peer['cgroup']
+                   and peer['netns_inode'] == parent['netns_inode']
+                   and os.stat('/proc/%d/ns/mnt' % PEER_PID).st_ino == peer['mntns_inode'] == parent['mntns_inode'],
+                   'Original peer sublease process identity differs')
+    shared.require(pool.sha(peer['allocation_path']) == peer['allocation_sha256'], 'Peer allocation SHA differs')
+    allocation = pool.read(peer['allocation_path'])
+    peer_context = pool.read(allocation['source_context'])
+    shared.require(pool.sha(allocation['source_context']) == allocation['source_context_sha256']
+                   and peer_context['run_id'] == allocation.get('run_id', pool.RUN_ID) == pool.RUN_ID
+                   and peer_context['parent']['pid'] == parent['pid']
+                   and str(peer_context['parent']['birth']) == str(parent['birth'])
+                   and allocation['node'] == 'h100-5' and allocation['controller_pid'] == PEER_PID
+                   and allocation['native_unit'] == peer['unit']
+                   and any(line.split(':', 2)[-1] == allocation['native_cgroup'] for line in peer['cgroup'].splitlines())
+                   and allocation['source_parent']['pid'] == parent['pid']
+                   and str(allocation['source_parent']['birth']) == str(parent['birth'])
+                   and allocation['source_parent']['allocation_sha256'] == parent['allocation_sha256'],
+                   'Peer allocation does not bind this same-run original parent')
+    mapping = dict(zip(allocation['model_indices'], allocation['model_cuda_uuids']))
+    shared.require(all(mapping.get(index) == uuid for index, uuid in zip(model, uuids)),
+                   'Peer allocation does not contain the selected physical GPU UUID')
+    proofs = {}
+    for uuid in uuids:
+        path = directory / (uuid + '.lock')
+        shared.require(Path(allocation['gpu_sublease_paths'][uuid]).samefile(path), 'Peer root-child lease path differs')
+        proofs[uuid] = held_lock(path, peer, peer['gpu_locks'][uuid], 'Original peer')
+    return dict(peer, verified_gpu_locks=proofs, runtime_dependency=False)
 
 
 def admit(pool, args):
@@ -111,7 +152,7 @@ def admit(pool, args):
                    and allocation['native_unit'] == parent['unit']
                    and any(line.split(':', 2)[-1] == allocation['native_cgroup'] for line in parent['cgroup'].splitlines())
                    and allocation.get('run_id', pool.RUN_ID) == pool.RUN_ID, 'Original parent allocation identity differs')
-    model = shared.indices(args.model_gpus, 4)
+    model = shared.indices(args.model_gpus, args.tp)
     inventory = {item['index']: item for item in pool.nvml().values()}
     uuids = [inventory[index]['uuid'] for index in model]
     parent_mapping = dict(zip(allocation['model_indices'] + allocation['retrieval_indices'],
@@ -122,6 +163,10 @@ def admit(pool, args):
     base = Path(args.base)
     parent_locks = {uuid: parent_lock(base, parent, uuid, value['parent_gpu_locks'][uuid]) for uuid in uuids}
     directory = base / 'pool/gpu-subleases' / pool.RUN_ID / ('%d-%s' % (PARENT_PID, parent['birth']))
+    peer = None
+    if value['schema_version'] == 2:
+        peer = peer_admission(pool, value, directory, model, uuids)
+        directory = directory / ('co-share-with-%d-%s' % (peer['pid'], peer['birth']))
     locks, leases = [], {}
     try:
         for uuid in sorted(uuids):
@@ -140,15 +185,16 @@ def admit(pool, args):
         shared.require(upstream['role'] == 'upstream' and upstream['source_pid'] == RETRIEVER_PID
                        and upstream['listen_url'].rstrip('/') == 'http://127.0.0.1:28831',
                        'Direct original retriever endpoint differs')
-        return dict(job_id='source5-model-' + str(os.getpid()), node='h100-5', controller_pid=os.getpid(),
+        return dict(job_id='source5-model-' + str(os.getpid()), node='h100-5', controller_pid=os.getpid(), run_id=pool.RUN_ID,
             allocation_kind='HUMAN_AUTHORIZED_SAME_RUN_SOURCE_GPU_SUBLEASE', gpu_exclusive_allocation=False,
-            native_unit=evidence['unit'], native_cgroup=group, tensor_parallel_size=4, model_engine_count=1,
+            native_unit=evidence['unit'], native_cgroup=group, tensor_parallel_size=args.tp, model_engine_count=1,
             model_indices=model, model_cuda_uuids=uuids, model_cuda_visible_devices=','.join(map(str, model)),
             actual_cuda_runtime_uuids=uuids, original_cuda_visible_devices=evidence.get('original_cuda_visible_devices'),
             initial_gpu_memory=[inventory[index] for index in model],
             observed_existing_gpu_contexts=shared.foreign_contexts(set(uuids)),
             existing_contexts_may_include_same_run_parent=True, foreign_contexts_allowed=True,
             foreign_processes_signalled=False, source_parent=parent, original_parent_gpu_locks=parent_locks,
+            peer_sublease_startup_proof=peer, peer_is_runtime_dependency=False,
             gpu_sublease_paths=leases, primary_gpu_locks_modified=False,
             source_context=str(path), source_context_sha256=pool.sha(path),
             source_sublease_worker_sha256=pool.sha(Path(__file__)),
