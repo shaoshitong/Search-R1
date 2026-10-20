@@ -1,0 +1,97 @@
+{
+  "cpu-prepare-controller": {
+    "args": [
+      "bash",
+      "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/code-b8c3f8a76fa1/reproduction/operations/qwen7b_warmup/runtime.sh",
+      "-u",
+      "-c",
+      "import unittest,sys,runpy; s=unittest.defaultTestLoader.loadTestsFromName('reproduction.operations.qwen7b_warmup.test_peer_append_train'); v=unittest.TextTestRunner(verbosity=2).run(s); assert v.wasSuccessful(); sys.argv=['peer_append_train','--action','prepare']; runpy.run_module('reproduction.operations.qwen7b_warmup.peer_append_train',run_name='__main__')"
+    ],
+    "pid": 3311307,
+    "source_commit": "b8c3f8a76fa195efc7c2e95cfa1a7d36669576ec",
+    "time": 1792536707.749997
+  },
+  "gpu_log_tail": "",
+  "job_id": "743517",
+  "observed_epoch": 1792536852.526961,
+  "preparation": {
+    "CP_tensor_loaded_in_preparation": false,
+    "additional_feature_manifests": 684,
+    "additional_questions": 21824,
+    "additional_updates": 682,
+    "config": {
+      "bytes": 15081,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/config.json",
+      "sha256": "d56668bdd2e9839abe042c0d4f720225cb0cafd62f22924867dbfda883b17a80"
+    },
+    "cumulative_Adam": 11402,
+    "cumulative_cursor": 938,
+    "current_world_size": 1,
+    "full_GPU_restore_and_replay_still_required": true,
+    "hardware_topology_changed": false,
+    "historical_updates_not_retrained": 256,
+    "original_E1_archive_world_size": 4,
+    "sbatch": {
+      "bytes": 1219,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/training.sbatch",
+      "sha256": "3f6a48e1c2ce1394b7a99119d1345b20b879f9441ebef24c84592103f7ee33f4"
+    },
+    "source_Adam": 10720,
+    "source_CP_full_SHA_already_bound_by_selection": true,
+    "source_checkpoint": {
+      "accepted_hashes": {
+        "adam": "e218f85aa848b9442d0cb870c91a95ac5104fb33a5f80de1920d1f9694c48b58",
+        "ema": "b3cacc4eb54e3bfde52af9c5aa792d1421092f36295f49c16c599ca3ed2295f3",
+        "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+        "raw": "f7f5a48ae43da061987bf8de8dd50c33f9fc4d0037b1b1365c1df10534bed711",
+        "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+        "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+      },
+      "bytes": 3745832474,
+      "config_sha256": "16b2fd34e3e8907307b3866298b33216478fd77c2dc1b9ca80638e0929800130",
+      "cursor": 256,
+      "epoch_time": 1792530063.8535395,
+      "matched_binding_sha256": "a0401cef179877ae1c9a27f44ca8880e535962650a551efa33d80087781ba49d",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/checkpoints/cursor-000256.pt",
+      "sha256": "36d9bcc3be71ba94eaca3a1e1b292c0ed9a65297fb96a746ea5295432f09c000",
+      "steps": 10720
+    },
+    "source_cursor": 256,
+    "source_selection": {
+      "bytes": 4166,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-plan-v1/source-selection.json",
+      "sha256": "aa22a83fba470f9f1b014765eb5016ed1a5d116c9d1e97af637e27b7728e3e0b"
+    },
+    "source_world_size": 1,
+    "status": "APPEND_ONLY_CP256_PLUS682_METADATA_AND_PLAN_ACCEPTED_NO_GPU_SUBMISSION"
+  },
+  "sacct": "743517|q7b-peer-append682|RUNNING|0:0|00:01:35|ACD1-22\n743517.batch|batch|RUNNING|0:0|00:01:35|ACD1-22\n743517.extern|extern|RUNNING|0:0|00:01:35|ACD1-22\n743517.0|bash|RUNNING|0:0|00:01:35|ACD1-22",
+  "source-publication": {
+    "base_runtime_commit": "d8f74420aa09fa56e8ec59207c6d1453fa86f95e",
+    "callback_interface_commit": "48eb944281d2e3d6fa5ad66e4d6f0f9eaf18aeec",
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/code-b8c3f8a76fa1",
+    "commit": "b8c3f8a76fa195efc7c2e95cfa1a7d36669576ec"
+  },
+  "squeue": "743517|q7b-peer-append682|RUNNING|1:35|ACD1-22|ACD1-22",
+  "start_estimate": "",
+  "status": "APPEND_ONLY682_ACTUAL_CURRENT_STATE",
+  "submission": {
+    "config": {
+      "bytes": 15081,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/config.json",
+      "sha256": "d56668bdd2e9839abe042c0d4f720225cb0cafd62f22924867dbfda883b17a80"
+    },
+    "dependency": null,
+    "identity": "JobId=743517 JobName=q7b-peer-append682 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=0 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=JobHeldUser Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T06:52:11 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T06:52:11 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3317362 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/training.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/logs/train-743517.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/logs/train-743517.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+    "job_id": "743517",
+    "partition": "acd_u",
+    "qos": "normal",
+    "sbatch": {
+      "bytes": 1219,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/training.sbatch",
+      "sha256": "3f6a48e1c2ce1394b7a99119d1345b20b879f9441ebef24c84592103f7ee33f4"
+    },
+    "source_commit": "b8c3f8a76fa195efc7c2e95cfa1a7d36669576ec",
+    "time": 1792536731.1372669
+  }
+}
