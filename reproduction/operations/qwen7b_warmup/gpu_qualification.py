@@ -34,7 +34,7 @@ def comparison(actual,expected,*,parameter=False):
     return dict(passed=passed,bit_exact=exact,max_absolute_error=maximum,rtol=0 if parameter else 1e-5,atol=1e-7)
 
 
-def qualify(base,c,reader,groups,production,rank,device,config_sha,bank_sha,update,save,restore):
+def qualify(base,c,reader,groups,production,rank,device,config_sha,bank_sha,update,save,restore,evaluate):
     untouched=cpu_tree(production.state_dict());original_rng=rng();start=time.monotonic()
     root=base/('qualification-'+os.environ['SLURM_JOB_ID']);root.mkdir(exist_ok=True)
     shadow=copy.deepcopy(production).train();ddp=DDP(shadow,device_ids=[device.index],broadcast_buffers=False)
@@ -49,6 +49,8 @@ def qualify(base,c,reader,groups,production,rank,device,config_sha,bank_sha,upda
         first=shadow(data);second=shadow(altered)
     assert torch.equal(first,second),'Real GPU native block Prefix5 leaked future15'
     del data,altered,first,second
+    evaluation=evaluate(ema,reader,groups[:51],rank,device,root,0,'qualification')
+    assert evaluation['groups']==51
     update(ddp,shadow,ema,optimizer,reader,groups,list(range(51)),rank,device)
     save(root,shadow,ema,optimizer,1,1,1,config_sha,bank_sha,None,rank,qualification_only=True)
     receipt=json.loads((root/'latest.json').read_text());assert fingerprints(receipt['path'])['sha256']==receipt['sha256']
@@ -71,6 +73,7 @@ def qualify(base,c,reader,groups,production,rank,device,config_sha,bank_sha,upda
     if rank==0:
         proof=dict(status='FOUR_RANK_GPU_RECOVERY_QUALIFICATION_PASSED' if passed else 'FOUR_RANK_GPU_RECOVERY_QUALIFICATION_FAILED',
             qualification_only=True,production_optimizer_updates=0,real_prefix5_future15_invariance=True,
+            real_uneven_rank_evaluation_groups=evaluation['groups'],
             shadow_saved_step=1,shadow_compared_next_step=2,rank_results=all_ranks,checkpoint=receipt,
             elapsed_seconds=time.monotonic()-start,epoch=time.time(),fit_code_sha256=loaded_sha(base))
         (base/'probe-qualification').mkdir(exist_ok=True);atomic(base/'probe-qualification/proof.json',proof);atomic(root/'proof.json',proof)

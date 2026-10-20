@@ -110,21 +110,21 @@ def evaluate(model, reader, groups, rank, device, output, epoch, split):
     own=groups[rank::4]
     # Equal-length synchronized chunks bound rank skew before the final metric
     # reduction; every rank participates even for a short final partition.
-    rounds=math.ceil(math.ceil(len(groups)/4)/2)
+    micro=8;rounds=math.ceil(math.ceil(len(groups)/4)/micro)
     io_seconds=compute_seconds=0.;started=time.monotonic()
     destination=output/('epoch-%04d-%s-rank%d.jsonl.gz'%(epoch,split,rank))
     temporary=destination.with_suffix('.tmp')
     def pulse(iteration,offset,stream):
-        if (iteration+1)%128==0 or iteration+1==rounds:
+        if (iteration+1)%32==0 or iteration+1==rounds:
             stream.flush()
             atomic(output/('eval-%s-rank%d-progress.json'%(split,rank)),dict(epoch=epoch,split=split,rank=rank,
-                completed_local_groups=min(offset+2,len(own)),expected_local_groups=len(own),io_seconds=io_seconds,
+                completed_local_groups=min(offset+micro,len(own)),expected_local_groups=len(own),io_seconds=io_seconds,
                 compute_seconds=compute_seconds,elapsed_seconds=time.monotonic()-started,epoch_time=time.time()))
-            heartbeat=torch.tensor([min(offset+2,len(own))],dtype=torch.long,device=device);dist.all_reduce(heartbeat)
+            heartbeat=torch.tensor([min(offset+micro,len(own))],dtype=torch.long,device=device);dist.all_reduce(heartbeat)
     with torch.no_grad(),gzip.open(temporary,'wt') as stream:
         for iteration in range(rounds):
-            offset=2*iteration
-            selected=own[offset:offset+2];ids=[tid for g in selected for tid in g['trajectory_ids']]
+            offset=micro*iteration
+            selected=own[offset:offset+micro];ids=[tid for g in selected for tid in g['trajectory_ids']]
             if not selected:
                 pulse(iteration,offset,stream);continue
             tick=time.monotonic()
@@ -244,7 +244,7 @@ def main():
         valid=qualification.exists() and json.loads(qualification.read_text()).get('status')=='FOUR_RANK_GPU_RECOVERY_QUALIFICATION_PASSED' and json.loads(qualification.read_text()).get('fit_code_sha256')==fingerprints(Path(__file__))['sha256']
         if not valid:
             from .gpu_qualification import qualify
-            qualify(base,c,reader,groups['train'],model,rank,device,config_sha,bank_sha,apply_update,save,restore_state)
+            qualify(base,c,reader,groups['train'],model,rank,device,config_sha,bank_sha,apply_update,save,restore_state,evaluate)
     if steps==0:
         before={split:evaluate(ema,reader,groups[split],rank,device,predictions,0,split) for split in ('train','diagnostic')}
         if rank==0:atomic(root/'epoch-0000-metrics.json',before)
