@@ -1,0 +1,75 @@
+"""Publish the already-read original180 paired metrics; no remote action."""
+import hashlib
+import json
+import math
+from pathlib import Path
+
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+source=root/'work/prefix5-ab-period180-original-pair-small.json'
+envelope=json.loads(source.read_text());data=envelope['arms']['B'];m=data['metric_fields']
+assert data['outer']==180 and data['training_questions']==2560 and data['heldout_questions']==512
+assert data['qid_overlap']==data['normalized_text_overlap']==0 and data['prefix_tokens']==80
+assert m['learning_rate']==5e-6 and m['ema_rate']==.99 and m['group_loss_weight']==5
+assert data['probe_adam']==[2520]*4 and data['actual_following_adoption']['outer']==181
+assert data['actual_following_adoption']['ema_updates']==2520
+curve=m['global_step_loss_curve'];assert len(curve)==50
+for step,row in enumerate(curve,1):
+    assert row['step']==step and row['actual_adam_steps']==2470+step and row['ema_updates']==2470+step
+    assert math.isclose(row['total_loss'],row['trajectory_bce']+5*row['group_bce'],rel_tol=1e-6,abs_tol=2e-6)
+assert sum(row['global_questions']for row in curve)==2560
+facts=root/'work/prefix5-ab-h10011-normal-follow-actual-facts.json'
+fact=next(row for row in json.loads(facts.read_text())['facts']['B']if row['outer']==180)
+assert len(fact['probe'])==4 and all(row['writes']==50 and row['last_actual']==2520 for row in fact['probe'])
+def average(rows,key):
+    return sum(row[key]*row['global_questions']for row in rows)/sum(row['global_questions']for row in rows)
+windows={name:{key:average(rows,key)for key in ('trajectory_bce','group_bce','total_loss')}
+         for name,rows in [('first10',curve[:10]),('last10',curve[-10:])]}
+result=dict(data,source_original=str(source),source_original_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+    original_probe_journals=fact['probe'],selected_original_groups=fact['selection_metrics'],
+    recorded_phase_timings=fact['phase_timings'],changing_batch_question_weighted_loss_windows=windows,
+    metric_is_QA_EM_or_F1=False,whole_goal_complete=False)
+output=Path('reproduction/reports/h100-prefix5-ab200-20261018/progressive-period180')
+output.mkdir(exist_ok=True)
+(output/'PAIRED-METRICS-AND-50-STEP-CURVE.json').write_text(json.dumps(result,indent=2)+'\n')
+text=['# B180 same-rollout paired probe results','',
+    'Original actor179 generated2560 training questionsG5 and fresh fixed512 diagnostic questionsG5, '
+    'using actual sampling-actor question+80 hidden and head353. Qid and normalized-question intersections are0. '
+    'Before/after evaluations use exactly the same trajectories and own strict-EM labels. '
+    'The training metrics evaluate all original2560 groups, not the repeated balanced draws. '
+    'These metrics are group classification, not QA EM/F1.', '',
+    'Four original journals each record50 real probe/EMA updates2470→2520, LR5e-6/EMA.99, '
+    'trajectoryBCE+5mixedBCE. Actual181 score used EMA180 with actor180; this is producer-receipt '
+    'and actual-score binding, not a new tensor readback or forward test.', '',
+    '| Head / original distribution | Before BA | After BA | Before trajectory BCE | After trajectory BCE | Before mixed BCE | After mixed BCE |',
+    '|---|---:|---:|---:|---:|---:|---:|']
+for head,split in [('raw','train'),('raw','test'),('ema','train'),('ema','test')]:
+    a=m['before_update'][head][split];b=m['after_update'][head][split]
+    text.append('| %s / %s | %.4f%% | %.4f%% | %.6f | %.6f | %.6f | %.6f |'%
+        (head,split,100*a['balanced_accuracy'],100*b['balanced_accuracy'],a['trajectory_bce'],b['trajectory_bce'],a['group_bce'],b['group_bce']))
+z=m['after_update']['ema']['test'];sampling=m['sampling'];original=m['before_update']['raw']['train']
+text+=['',
+    'Raw heldout BA improves, while EMA heldout BA declines. Both heads improve trajectory BCE but worsen '
+    'heldout mixed BCE; training BA improvement therefore does not establish generalization improvement. '
+    'The configured EMA selector, losses and threshold remain unchanged.', '',
+    'Post-update EMA heldout: actual mixed%d/%d=%.4f%%, mean predicted q %.4f%%; ordinary accuracy%.4f%% '
+    'versus majority%.4f%%. Mixed recall%.4f%%, nonmixed recall%.4f%%; TP%d/FN%d/TN%d/FP%d. '
+    'Predicted mixing remains substantially above observed prevalence.'%
+    (z['mixed_count'],z['count'],100*z['mixed_count']/z['count'],100*z['mean_q'],100*z['accuracy'],
+     100*max(z['mixed_count'],z['nonmixed_count'])/z['count'],100*z['mixed_recall'],100*z['nonmixed_recall'],z['tp'],z['fn'],z['tn'],z['fp']), '',
+    'Original fitting pool:%dmixed/%dnonmixed; balanced fitting draws1280+1280 with replacement, '
+    '%d unique groups and%.4f%% repeated draws. The selected%d/512 mixed result is outcome-assisted '
+    'periodic selection, not probe classification accuracy.'%
+    (original['mixed_count'],original['nonmixed_count'],sampling['unique_questions'],100*sampling['repeated_fraction'],fact['selection_metrics']['mixed']), '',
+    '| Changing balanced-batch window | Trajectory BCE | Mixed BCE | Weighted total |',
+    '|---|---:|---:|---:|']
+for name,row in windows.items():
+    text.append('| %s | %.6f | %.6f | %.6f |'%(name,row['trajectory_bce'],row['group_bce'],row['total_loss']))
+text+=['', 'The50 scalar steps are in JSON. Window means weight by actual global question count and '
+    'use changing batches, not a fixed-data loss trace. Actual head train loop%.6fs is not whole-outer time; '
+    'the recorded full training wall is%.6fs.'%
+    (m['train_loop_seconds'],fact['phase_timings']['outer-000180-training-wall']), '',
+    'Only existing small metadata was read. No new rollout, model forward, tensor load or frozen-repo edit. '
+    'Current actor snapshots and labels change between periods, so cross-period values are not a fixed-label '
+    'learning curve. B200, final51713 and native/resource closure remain incomplete.']
+(output/'README.md').write_text('\n'.join(text)+'\n')
+print(json.dumps(dict(report=str(output),loss_windows=windows)))
