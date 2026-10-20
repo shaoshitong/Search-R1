@@ -6,6 +6,7 @@ Only scalar summaries, bounded log tails and current process telemetry return.
 import datetime
 import hashlib
 import json
+import subprocess
 import time
 from pathlib import Path
 
@@ -131,6 +132,9 @@ def observe():
         finally:
             read_ip14_live.SCRIPT = original
     value['verified_training_joint_sha256'] = proof['joint']['sha256']
+    value['observer_source_commit'] = subprocess.check_output(['git','rev-parse','HEAD'],
+        cwd=Path(__file__).resolve().parents[3],text=True).strip()
+    value['observer_file_sha256'] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     path = evidence.with_name(evidence.name.replace('-transport','-actual'))
     value['evidence'] = str(path)
     path.write_text(json.dumps(value,indent=2))
@@ -143,6 +147,10 @@ def observe():
         actual_complete_outer=200,actual_training_running=False,actual_native_running=alive,
         current_runtime_unknown=False,current_stage=(value.get('stage')or{}).get('stage'),current_evidence=str(path),
         post200_evidence=str(path),local_observer_session=None,training_observer_exit_code=0,
+        active_observer_source_commit=value['observer_source_commit'],
+        final51713_completed_lower_bound=value['final51713']['completed_questions_lower_bound'],
+        final51713_completed=bool(value['final51713']['complete']),
+        validation200_completed=bool(value['validation200']['complete']),
         updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
     status_path.write_text(json.dumps(status,ensure_ascii=False,indent=2))
     for directory in (root/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/b-replica-retained18-20261018',
