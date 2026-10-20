@@ -5,8 +5,9 @@ from pathlib import Path
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--control-root',type=Path,required=True);p.add_argument('--base',required=True);p.add_argument('--epoch',type=int,required=True);a=p.parse_args();repo=Path(__file__).resolve().parents[3]
-    assert not subprocess.check_output(['git','status','--porcelain'],cwd=repo).strip()
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip();assert subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/qwen7b-probe-warmup-20261019'],cwd=repo,text=True).split()[0]==commit
+    for source in (Path(__file__),Path(__file__).with_name('audit_epoch_predictions.py')):
+        assert source.read_bytes()==subprocess.check_output(['git','show',commit+':'+str(source.relative_to(repo))],cwd=repo), 'Unpublished audit source'
     raw=Path(__file__).with_name('audit_epoch_predictions.py').read_bytes();digest=hashlib.sha256(raw).hexdigest()
     header='payload='+repr(base64.b64encode(raw).decode())+'\ndigest='+repr(digest)+'\nbase='+repr(a.base)+'\nepoch='+repr(a.epoch)+'\ncommit='+repr(commit)+'\n'
     code=header+'''import pathlib,hashlib,base64,json,runpy\nb=pathlib.Path(base);assert b.parent.name=='dynrpo-qwen25-7b-probe-warmup-20261019'\nroot=b/'control-tools';root.mkdir(exist_ok=True);path=root/('epoch-prediction-audit-'+digest[:12]+'.py');own=base64.b64decode(payload);assert hashlib.sha256(own).hexdigest()==digest\nif path.exists():assert hashlib.sha256(path.read_bytes()).hexdigest()==digest\nelse:path.write_bytes(own)\nmodule=runpy.run_path(str(path));result=module['accept'](b,epoch);result.update(audit_source_sha256=digest,audit_source_commit=commit);print(json.dumps(result))\n'''

@@ -43,7 +43,9 @@ def main():
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[3]
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
-    assert not subprocess.check_output(['git', 'status', '--porcelain'], cwd=repo).strip()
+    for source in (Path(__file__), Path(__file__).with_name('audit_balanced_checkpoint.py')):
+        rel_source=str(source.relative_to(repo))
+        assert source.read_bytes()==subprocess.check_output(['git','show',commit+':'+rel_source],cwd=repo), 'Unpublished audit source'
     assert subprocess.check_output(['git', 'ls-remote', 'origin', 'refs/heads/codex/qwen7b-probe-warmup-20261019'], cwd=repo, text=True).split()[0] == commit
     rel = 'reproduction/operations/qwen7b_warmup/audit_balanced_checkpoint.py'
     data = (repo / rel).read_bytes()

@@ -1,8 +1,10 @@
 """Synthetic state/plan checks; no model, tokens from real data, or GPU are used."""
 import copy
+import subprocess
+from pathlib import Path
 import unittest
 
-from .extra_g5_prepare import ROLE, REVISION, choose_questions, extra_initial_state, validate_config
+from .extra_g5_prepare import ROLE, REVISION, choose_questions, extra_initial_state, validate_config, render_extra_sbatch
 
 
 def config(offset=5):
@@ -28,6 +30,13 @@ def group(i):
 
 
 class ExtraG5Tests(unittest.TestCase):
+    def test_rendered_export_identifier_survives_path_substitution(self):
+        script=render_extra_sbatch(Path('/remote/run'),Path('/remote/repo'))
+        subprocess.run(['bash','-n'],input=script,text=True,check=True)
+        exports='\n'.join(x for x in script.splitlines() if x.startswith('export '))
+        result=subprocess.run(['bash','-euc',exports+'\nprintf %s "$QWEN7B_CODE_ROOT"'],text=True,capture_output=True,check=True)
+        self.assertEqual(result.stdout,'/remote/repo')
+
     def test_offsets_are_real_separate_five_slot_events(self):
         own = group(0)
         own['original_trajectory_ids'] = own['trajectory_ids']

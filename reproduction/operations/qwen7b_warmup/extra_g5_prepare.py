@@ -19,6 +19,27 @@ REVISION = 'a09a35458c702b33eeacc393d103063234e8bc28'
 ROLE = 'ISOLATED_OFFICIAL7B_EXTRA_REAL_G5_FOR_TRAINING_G10'
 
 
+def render_extra_sbatch(base, code_root):
+    package=Path('reproduction/operations/qwen7b_warmup')
+    return '''#!/usr/bin/env bash
+#SBATCH --job-name=q7b-extra-realG5
+#SBATCH --partition=acd_u
+#SBATCH --account=mou176
+#SBATCH --qos=normal
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=128G
+#SBATCH --gres=gpu:2
+#SBATCH --time=12:00:00
+#SBATCH --array=0-3
+#SBATCH --output=OUTPUT/logs/sampling-%A_%a.log
+set -euo pipefail
+export QWEN7B_CODE_ROOT=__CODE_ROOT__
+srun --kill-on-bad-exit=1 bash RUNTIME -u -m reproduction.operations.qwen7b_warmup.extra_g5_sampler --config CONFIG --shard "$SLURM_ARRAY_TASK_ID"
+'''.replace('OUTPUT', str(base)).replace('__CODE_ROOT__', shlex.quote(str(code_root))).replace('RUNTIME', shlex.quote(str(code_root/package/'runtime.sh'))).replace('CONFIG', shlex.quote(str(base/'config.json')))
+
+
 def read(path):
     return json.loads(Path(path).read_text())
 
@@ -257,23 +278,7 @@ def prepare(original, selection_base, final_plan, base, code_root, source_commit
         ordered_qid_sha256=canonical_sha(qids), run_id=new_run, response_indices=list(range(response_offset, response_offset+5)),
         originalG5_preserved=True, model_revision=REVISION))
     atomic(base/'config.json', configuration)
-    script = '''#!/usr/bin/env bash
-#SBATCH --job-name=q7b-extra-realG5
-#SBATCH --partition=acd_u
-#SBATCH --account=mou176
-#SBATCH --qos=normal
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
-#SBATCH --mem=128G
-#SBATCH --gres=gpu:2
-#SBATCH --time=12:00:00
-#SBATCH --array=0-3
-#SBATCH --output=OUTPUT/logs/sampling-%A_%a.log
-set -euo pipefail
-export QWEN7B_CODE_ROOT=CODE
-srun --kill-on-bad-exit=1 bash RUNTIME -u -m reproduction.operations.qwen7b_warmup.extra_g5_sampler --config CONFIG --shard "$SLURM_ARRAY_TASK_ID"
-'''.replace('OUTPUT', str(base)).replace('CODE', shlex.quote(str(code_root))).replace('RUNTIME', shlex.quote(str(code_root/package/'runtime.sh'))).replace('CONFIG', shlex.quote(str(base/'config.json')))
+    script=render_extra_sbatch(base,code_root)
     (base/'sampling.sbatch').write_text(script)
     result = dict(status='EXTRA_REAL_G5_PILOT_PREPARED_NOT_SUBMITTED', role=ROLE,
         base=str(base), questions=budget, trajectories=5*budget, source_commit=source_commit,
