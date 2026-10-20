@@ -1,0 +1,65 @@
+{
+  "status": "COMPLETE_DIAGNOSTIC_PREDICTIONS_PREVIEW_FULL_EPOCH_METRICS_PENDING",
+  "epoch": 2,
+  "steps": 11782,
+  "checkpoint_sha256": "b7b8ee112b5627f7cad4489c3e19e4d948705fb2302e4cbc8f59ba449336db1d",
+  "weight_kind": "EMA0.99",
+  "questions": 512,
+  "group_bce_rounded_probabilities": 0.9490671969557491,
+  "classes": {
+    "all_wrong": {
+      "questions": 228,
+      "mixed_bce_rounded_probabilities": 1.1442570521592919,
+      "mean_predicted_mixed": 0.5600239133785005,
+      "predicted_mixed_fraction": 0.6052631578947368,
+      "mixed_bce_contribution": 0.5095519685396847,
+      "mixed_bce_share": 0.5368976719184225,
+      "trajectory_bce_rounded_probabilities": 0.4278564477846955,
+      "trajectory_accuracy": 0.8026315789473685,
+      "trajectory_confusion": {
+        "tp": 0,
+        "fp": 225,
+        "fn": 0,
+        "tn": 915
+      },
+      "saturated_wrong_trajectory_probabilities": 0
+    },
+    "mixed": {
+      "questions": 205,
+      "mixed_bce_rounded_probabilities": 0.4933108307272233,
+      "mean_predicted_mixed": 0.6824270922054605,
+      "predicted_mixed_fraction": 0.7317073170731707,
+      "mixed_bce_contribution": 0.19751703183414215,
+      "mixed_bce_share": 0.20811701475691347,
+      "trajectory_bce_rounded_probabilities": 0.8772484409796792,
+      "trajectory_accuracy": 0.5521951219512196,
+      "trajectory_confusion": {
+        "tp": 176,
+        "fp": 148,
+        "fn": 311,
+        "tn": 390
+      },
+      "saturated_wrong_trajectory_probabilities": 0
+    },
+    "all_correct": {
+      "questions": 79,
+      "mixed_bce_rounded_probabilities": 1.5683933753157502,
+      "mean_predicted_mixed": 0.7055205510386938,
+      "predicted_mixed_fraction": 0.8227848101265823,
+      "mixed_bce_contribution": 0.2419981965819224,
+      "mixed_bce_share": 0.2549853133246641,
+      "trajectory_bce_rounded_probabilities": 0.9935720051054612,
+      "trajectory_accuracy": 0.45569620253164556,
+      "trajectory_confusion": {
+        "tp": 180,
+        "fp": 0,
+        "fn": 215,
+        "tn": 0
+      },
+      "saturated_wrong_trajectory_probabilities": 0
+    }
+  },
+  "training_updated": false,
+  "final_epoch_metric_claimed": false,
+  "time": 1792508823.0460033
+}
