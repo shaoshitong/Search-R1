@@ -24,6 +24,17 @@ def seal():
  births={str(p):birth(p)for p in owned};before=dict(user_instruction='Keep 02:00 node return; stop this sampling at 01:50',unit=UNIT,run_id=c['run_id'],epoch=time.time(),owned_births=births,full_data_remain_on_nas10=True)
  (out/'intent.json').write_text(json.dumps(before))
  r=subprocess.run(['systemctl','stop',UNIT],text=True,capture_output=True,timeout=100)
+ # Preserve this task's root-local control/native logs before the user-authorized host wipe.
+ import shutil
+ controls=[]
+ target=out/'root-controls';target.mkdir(exist_ok=True)
+ for folder in Path('/root/.local/share/search-g1/qwen7b-newseed-g5').glob('r[0-9]*'):
+  if not folder.is_dir():continue
+  dest=target/folder.name;dest.mkdir(exist_ok=True)
+  for f in folder.iterdir():
+   if f.is_file():
+    st=f.stat();copy=dest/f.name;shutil.copy2(f,copy);original=hashlib.sha256(f.read_bytes()).hexdigest();assert hashlib.sha256(copy.read_bytes()).hexdigest()==original
+    controls.append(dict(original=str(f),original_inode=st.st_ino,bytes=st.st_size,retained=str(copy),sha256=original))
  remaining={p:b for p,b in births.items()if b is not None and birth(int(p))==b};logs=[]
  if not remaining:
   for p in sorted((BASE/'logs/r6').glob('*.log')):
@@ -32,7 +43,7 @@ def seal():
     for block in iter(lambda:f.read(1024**2),b''):h.update(block)
    logs.append(dict(path=str(p),inode=st.st_ino,bytes=st.st_size,sha256=h.hexdigest()))
  rows=[json.loads(p.read_text())for p in (BASE/'sampling').glob('shard-*/batches/batch-*/complete.json')]
- result=dict(status='USER_NODE_RETURN_SAMPLING_STOP_SEALED'if not remaining and r.returncode==0 else 'STOP_NEEDS_ATTENTION',unit=UNIT,epoch=time.time(),questions=sum(x['questions']for x in rows),trajectories=sum(x['trajectories']for x in rows),complete_batches=len(rows),remaining_original_births=remaining,terminal_logs=logs,stop_returncode=r.returncode,service=subprocess.check_output(['systemctl','show',UNIT,'-p','MainPID','-p','Result','-p','ActiveState'],text=True),goal_complete=False,shared_data_deleted=False)
+ result=dict(status='USER_NODE_RETURN_SAMPLING_STOP_SEALED'if not remaining and r.returncode==0 else 'STOP_NEEDS_ATTENTION',unit=UNIT,epoch=time.time(),questions=sum(x['questions']for x in rows),trajectories=sum(x['trajectories']for x in rows),complete_batches=len(rows),remaining_original_births=remaining,terminal_logs=logs,root_control_copies=controls,stop_returncode=r.returncode,service=subprocess.check_output(['systemctl','show',UNIT,'-p','MainPID','-p','Result','-p','ActiveState'],text=True),goal_complete=False,shared_data_deleted=False)
  (out/'complete.json').write_text(json.dumps(result));print(json.dumps(result))
 
 def stage():
@@ -44,7 +55,12 @@ import base64,hashlib,json,subprocess,time
 from pathlib import Path
 root=Path('/root/.local/share/search-g1/qwen7b-newseed-g5/r6');assert(root/'intent.json').is_file()
 p=root/'node-return-stop-intent.json';timer='sst-q7b-before-node-return-r6'
-if p.exists():print(json.dumps({'existing':json.loads(p.read_text()),'not_replayed':True}));raise SystemExit(0)
+if p.exists():
+ assert subprocess.check_output(['systemctl','is-active',timer+'.timer'],text=True).strip()=='active'
+ data=base64.b64decode(SOURCE);assert hashlib.sha256(data).hexdigest()==SHA;f=root/'node_return_stop.py';old=hashlib.sha256(f.read_bytes()).hexdigest()
+ if old!=SHA:
+  (root/('node_return_stop-'+old+'.py')).write_bytes(f.read_bytes());temp=root/'node_return_stop.py.tmp';temp.write_bytes(data);temp.replace(f)
+ result=dict(existing_timer_not_replayed=True,old_source_sha256=old,current_source_sha256=SHA,epoch=time.time());(root/('node-return-stop-refresh-'+SHA+'.json')).write_text(json.dumps(result));print(json.dumps(result));raise SystemExit(0)
 data=base64.b64decode(SOURCE);assert hashlib.sha256(data).hexdigest()==SHA;(root/'node_return_stop.py').write_bytes(data)
 script=root/'stop-at-0150.sh';script.write_text(chr(10).join(['#!/bin/bash','set -euo pipefail','pid=$(systemctl show sst-q7b-newseed-g5-20261020-r6.service -p MainPID --value)','if [[ "$pid" = 0 ]]; then echo "Service already stopped; accepted batches remain on NAS10"; exit 0; fi','exec nsenter --mount --target "$pid" /usr/bin/python3 '+str(root/'node_return_stop.py')+' --seal','']))
 v=dict(epoch=time.time(),deadline='2026-10-21 01:50:00 Asia/Shanghai',only_unit='sst-q7b-newseed-g5-20261020-r6.service',source_sha256=SHA,keep_existing_0200_wipe=True)
