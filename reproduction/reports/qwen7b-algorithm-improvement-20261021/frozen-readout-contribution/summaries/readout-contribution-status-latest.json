@@ -1,0 +1,649 @@
+{
+  "complete": {
+    "actor_updates": 0,
+    "calibration_fitted": false,
+    "config": {
+      "bytes": 5121,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-readout-question-prefix-diagnostic-v1/config.json",
+      "sha256": "db07bf0f848527b35d026a97f5e83d3a1e0aaef62ce83f47be4c687e5257828c"
+    },
+    "diagnostic_only": true,
+    "dimension": 3584,
+    "final_pool_read": false,
+    "flatten_width": 1050112,
+    "models": {
+      "E4": {
+        "actor_updates": 0,
+        "checkpoint": {
+          "bytes": 3745810528,
+          "epoch": 4,
+          "model_dir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70",
+          "name": "E4",
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/epoch-0004.pt",
+          "sha256": "e29168c36de152a57294f055e7d420cbba25cae31aeace32e793ba1098bf97a8",
+          "source_config": {
+            "bytes": 2437,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/config.json",
+            "sha256": "cc1d8e68109d955636717ace7ddb09b1e6858513641efacfd5aa69707f6de796"
+          },
+          "source_receipt": {
+            "bytes": 4155,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/inputs/E4-source-sealed-receipt.json",
+            "sha256": "139e6b01c5e45e3b8c48dc7e418e75e9cf60ab8febb6bda49c727c3e0c4c6bed"
+          },
+          "steps": 14418
+        },
+        "compute_seconds": 6.464019554667175,
+        "config": {
+          "bytes": 5121,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-readout-question-prefix-diagnostic-v1/config.json",
+          "sha256": "db07bf0f848527b35d026a97f5e83d3a1e0aaef62ce83f47be4c687e5257828c"
+        },
+        "diagnostic_only": true,
+        "elapsed_seconds": 51.52096720505506,
+        "ema_buffers_sha256": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+        "ema_sha256": "a9e82905d2addd41d4da14957a79b051219867bbceca99029efe751c72720ef0",
+        "feature_io_seconds": 38.831574093550444,
+        "final_pool_read": false,
+        "optimizer_constructed": false,
+        "parameters_unchanged": true,
+        "probe_updates": 0,
+        "questions": 2048,
+        "rows": {
+          "bytes": 440563,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-readout-question-prefix-diagnostic-v1/E4/decomposition.jsonl.gz",
+          "sha256": "5ac3b4f81456ad0495ecd3b577057a971fce6a2c8d3c5cedc19308b0aa4fdd89"
+        },
+        "status": "ONE_FROZEN_NATIVE_READOUT_CONTRIBUTION_DIAGNOSTIC_COMPLETE",
+        "summary": {
+          "components": {
+            "legacy": {
+              "RMS_logit": 2.2607700260319477,
+              "between_question_mean_variance": 3.651143528910049,
+              "corr_logit_trajectory_EM": 0.3150730851028657,
+              "corr_probability_trajectory_EM": 0.3070182952048935,
+              "corr_q_trueMixed": 0.1260645909582273,
+              "corr_question_mean_logit_trueMixed": 0.083828753699718,
+              "corr_within_variance_trueMixed": 0.030338895899697245,
+              "eligible_within_pairs": 3188,
+              "mean_absolute_logit": 1.8295572087168694,
+              "mixed_questions": 663,
+              "total_population_variance": 3.874576609012098,
+              "within_correct_minus_wrong_logit": 0.10563251155893548,
+              "within_correct_minus_wrong_probability": 0.015672449262619823,
+              "within_fraction": 0.05766645046644681,
+              "within_pair_micro_AUC": 0.5327791718946048,
+              "within_question_macro_AUC": 0.5354449472096531,
+              "within_question_population_variance": 0.22343308010204965
+            },
+            "prefix": {
+              "RMS_logit": 1.512965477237604,
+              "between_question_mean_variance": 0.7997405304902026,
+              "corr_logit_trajectory_EM": 0.2612937462329506,
+              "corr_probability_trajectory_EM": 0.2505262138108435,
+              "corr_q_trueMixed": -0.03817878371725304,
+              "corr_question_mean_logit_trueMixed": 0.07595880097979653,
+              "corr_within_variance_trueMixed": 0.030132683023979097,
+              "eligible_within_pairs": 3188,
+              "mean_absolute_logit": 1.26885883197192,
+              "mixed_questions": 663,
+              "total_population_variance": 1.0231662753641064,
+              "within_correct_minus_wrong_logit": 0.10569456173903029,
+              "within_correct_minus_wrong_probability": 0.018492574808425005,
+              "within_fraction": 0.2183669949387211,
+              "within_pair_micro_AUC": 0.533249686323714,
+              "within_question_macro_AUC": 0.5358848667672197,
+              "within_question_population_variance": 0.22342574487390396
+            },
+            "question": {
+              "RMS_logit": 2.654273680555484,
+              "between_question_mean_variance": 2.0635057570264594,
+              "corr_logit_trajectory_EM": 0.24776590193056947,
+              "corr_probability_trajectory_EM": 0.2295601988358717,
+              "corr_q_trueMixed": 0.07802584709228225,
+              "corr_question_mean_logit_trueMixed": 0.06422212266594635,
+              "corr_within_variance_trueMixed": null,
+              "eligible_within_pairs": 3188,
+              "mean_absolute_logit": 2.326745824803311,
+              "mixed_questions": 663,
+              "total_population_variance": 2.06350575702646,
+              "within_correct_minus_wrong_logit": 0.0,
+              "within_correct_minus_wrong_probability": -3.7153956800709894e-19,
+              "within_fraction": 0.0,
+              "within_pair_micro_AUC": 0.5,
+              "within_question_macro_AUC": 0.5,
+              "within_question_population_variance": 0.0
+            },
+            "shadow_full": {
+              "RMS_logit": 2.2582832586468866,
+              "between_question_mean_variance": 3.6513170747618124,
+              "corr_logit_trajectory_EM": 0.31508072548339433,
+              "corr_probability_trajectory_EM": 0.30708815418139046,
+              "corr_q_trueMixed": 0.12604147658677062,
+              "corr_question_mean_logit_trueMixed": 0.0838285445551829,
+              "corr_within_variance_trueMixed": 0.03013269720946905,
+              "eligible_within_pairs": 3188,
+              "mean_absolute_logit": 1.8273475386175277,
+              "mixed_questions": 663,
+              "total_population_variance": 3.8747428107355217,
+              "within_correct_minus_wrong_logit": 0.10569454911730335,
+              "within_correct_minus_wrong_probability": 0.01569274446807253,
+              "within_fraction": 0.0576620815592398,
+              "within_pair_micro_AUC": 0.533249686323714,
+              "within_question_macro_AUC": 0.5358848667672197,
+              "within_question_population_variance": 0.22342573597370974
+            }
+          },
+          "decomposition": {
+            "bitexact_claim": false,
+            "corr_legacy_q_prefix_only_q": -0.3388999726341582,
+            "corr_legacy_q_question_only_q": 0.5669663828102963,
+            "full_FP32_minus_sum_abs_max": 2.9802322387695312e-06,
+            "full_FP32_minus_sum_abs_mean": 5.113485940455575e-07,
+            "mean_abs_prefix_share": 0.3528916421834635,
+            "mean_abs_question_share": 0.6471083578165364,
+            "prefix_has_no_bias": true,
+            "prefix_hidden_retains_question_context": true,
+            "question_includes_original_bias": true,
+            "question_prefix_global_covariance": 0.39403542182483997,
+            "shadow_FP32_minus_legacy_abs_max": 0.028089523315429688,
+            "shadow_FP32_minus_legacy_abs_mean": 0.005611159299292012,
+            "signed_total_variance_prefix_share": 0.365753745838921,
+            "signed_total_variance_question_share": 0.6342462710150297,
+            "signed_within_variance_prefix_share": 1.0000000398351343,
+            "signed_within_variance_question_share": 0.0
+          },
+          "scores": {
+            "legacy": {
+              "AC_FPR": 0.7151515151515152,
+              "AUC": 0.5764760333458571,
+              "AW_FPR": 0.5118483412322274,
+              "BA": 0.5577138158790315,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.43971119133574005,
+              "TPR": 0.6757164404223228,
+              "Top512": 196,
+              "Top512_fraction": 0.3828125,
+              "calibration_fitted": false,
+              "confusion": {
+                "fn": 215,
+                "fp": 776,
+                "tn": 609,
+                "tp": 448
+              },
+              "diagnostic_only": true,
+              "questions": 2048,
+              "threshold": 0.5,
+              "true_Mixed": 663
+            },
+            "prefix": {
+              "AC_FPR": 0.6606060606060606,
+              "AUC": 0.4698640355892426,
+              "AW_FPR": 0.8938388625592417,
+              "BA": 0.4994184621918748,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.16173285198555956,
+              "TPR": 0.8371040723981901,
+              "Top512": 143,
+              "Top512_fraction": 0.279296875,
+              "calibration_fitted": false,
+              "confusion": {
+                "fn": 108,
+                "fp": 1161,
+                "tn": 224,
+                "tp": 555
+              },
+              "diagnostic_only": true,
+              "questions": 2048,
+              "threshold": 0.5,
+              "true_Mixed": 663
+            },
+            "question": {
+              "AC_FPR": 0.6,
+              "AUC": 0.5512020081567757,
+              "AW_FPR": 0.3023696682464455,
+              "BA": 0.5373393011745103,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.6267148014440433,
+              "TPR": 0.4479638009049774,
+              "Top512": 177,
+              "Top512_fraction": 0.345703125,
+              "calibration_fitted": false,
+              "confusion": {
+                "fn": 366,
+                "fp": 517,
+                "tn": 868,
+                "tp": 297
+              },
+              "diagnostic_only": true,
+              "questions": 2048,
+              "threshold": 0.5,
+              "true_Mixed": 663
+            },
+            "shadow_full": {
+              "AC_FPR": 0.7151515151515152,
+              "AUC": 0.5765261283630364,
+              "AW_FPR": 0.5146919431279621,
+              "BA": 0.5566307833880567,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.4375451263537906,
+              "TPR": 0.6757164404223228,
+              "Top512": 196,
+              "Top512_fraction": 0.3828125,
+              "calibration_fitted": false,
+              "confusion": {
+                "fn": 215,
+                "fp": 779,
+                "tn": 606,
+                "tp": 448
+              },
+              "diagnostic_only": true,
+              "questions": 2048,
+              "threshold": 0.5,
+              "true_Mixed": 663
+            }
+          },
+          "sealed_legacy_reproduction": {
+            "bitexact_probabilities": true,
+            "ownIDs_EM_exact": true,
+            "p_abs_max": 0.0,
+            "p_abs_mean": 0.0,
+            "p_exact_matches": 10240,
+            "p_total": 10240,
+            "q_abs_max": 0.0,
+            "q_abs_mean": 0.0,
+            "source": {
+              "bytes": 155299,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/E4-same-HF-validation/E4/predictions.jsonl.gz",
+              "sha256": "66cdf3e7c748bda7f508c4f381ad0456a413d5d73c73e5d9f1eb774b71bdb707"
+            },
+            "source_baseline_unchanged": true
+          }
+        },
+        "trajectories": 10240
+      },
+      "peer256": {
+        "actor_updates": 0,
+        "checkpoint": {
+          "accepted_hashes": {
+            "adam": "e218f85aa848b9442d0cb870c91a95ac5104fb33a5f80de1920d1f9694c48b58",
+            "ema": "b3cacc4eb54e3bfde52af9c5aa792d1421092f36295f49c16c599ca3ed2295f3",
+            "ema_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+            "raw": "f7f5a48ae43da061987bf8de8dd50c33f9fc4d0037b1b1365c1df10534bed711",
+            "raw_buffers": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+            "rng": "2cc4efbd1fb8bd993757ea62d3762c442026f7f73f42ef983dbbeed5e928c2e8"
+          },
+          "bytes": 3745832474,
+          "cursor": 256,
+          "name": "peer256",
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/checkpoints/cursor-000256.pt",
+          "sha256": "36d9bcc3be71ba94eaca3a1e1b292c0ed9a65297fb96a746ea5295432f09c000",
+          "source_config": {
+            "bytes": 10640,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/config.json",
+            "sha256": "16b2fd34e3e8907307b3866298b33216478fd77c2dc1b9ca80638e0929800130"
+          },
+          "source_receipt": {
+            "bytes": 1049,
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/latest.json",
+            "sha256": "92fe9836243114b33c9f5c655b9559e9db8cfd397870e3c8ce13047e7ff0e1bb"
+          },
+          "steps": 10720
+        },
+        "compute_seconds": 4.117509015835822,
+        "config": {
+          "bytes": 5121,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-readout-question-prefix-diagnostic-v1/config.json",
+          "sha256": "db07bf0f848527b35d026a97f5e83d3a1e0aaef62ce83f47be4c687e5257828c"
+        },
+        "diagnostic_only": true,
+        "elapsed_seconds": 45.390042911982164,
+        "ema_buffers_sha256": "62ade6a2a0fd54b240f2ef1b3e9ced7e086f1f37e0872ea23ad34de274daa339",
+        "ema_sha256": "b3cacc4eb54e3bfde52af9c5aa792d1421092f36295f49c16c599ca3ed2295f3",
+        "feature_io_seconds": 34.976052697980776,
+        "final_pool_read": false,
+        "optimizer_constructed": false,
+        "parameters_unchanged": true,
+        "probe_updates": 0,
+        "questions": 2048,
+        "rows": {
+          "bytes": 435255,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-readout-question-prefix-diagnostic-v1/peer256/decomposition.jsonl.gz",
+          "sha256": "1083c5732612efb03233a3a706c5af31ad71698ede0a3adc3328976217519407"
+        },
+        "status": "ONE_FROZEN_NATIVE_READOUT_CONTRIBUTION_DIAGNOSTIC_COMPLETE",
+        "summary": {
+          "components": {
+            "legacy": {
+              "RMS_logit": 2.1010229516004126,
+              "between_question_mean_variance": 1.970609124184254,
+              "corr_logit_trajectory_EM": 0.29754447490358,
+              "corr_probability_trajectory_EM": 0.2863662470592017,
+              "corr_q_trueMixed": 0.10212428511270684,
+              "corr_question_mean_logit_trueMixed": 0.09020899780874965,
+              "corr_within_variance_trueMixed": 0.022473643370096087,
+              "eligible_within_pairs": 3188,
+              "mean_absolute_logit": 1.7391875848174094,
+              "mixed_questions": 663,
+              "total_population_variance": 2.11856108550372,
+              "within_correct_minus_wrong_logit": 0.078918773484266,
+              "within_correct_minus_wrong_probability": 0.009708887834688148,
+              "within_fraction": 0.06983606105664301,
+              "within_pair_micro_AUC": 0.5356022584692597,
+              "within_question_macro_AUC": 0.5385872297637004,
+              "within_question_population_variance": 0.14795196131946567
+            },
+            "prefix": {
+              "RMS_logit": 1.1895235113281875,
+              "between_question_mean_variance": 0.5840262661182198,
+              "corr_logit_trajectory_EM": 0.2266561067497139,
+              "corr_probability_trajectory_EM": 0.22360050876516308,
+              "corr_q_trueMixed": -0.04270839910348913,
+              "corr_question_mean_logit_trueMixed": 0.0787795465467842,
+              "corr_within_variance_trueMixed": 0.022295903572418424,
+              "eligible_within_pairs": 3188,
+              "mean_absolute_logit": 0.9790406843153505,
+              "mixed_questions": 663,
+              "total_population_variance": 0.7320089308824544,
+              "within_correct_minus_wrong_logit": 0.07886624594358095,
+              "within_correct_minus_wrong_probability": 0.017209282292966335,
+              "within_fraction": 0.2021596438527573,
+              "within_pair_micro_AUC": 0.5357590966122961,
+              "within_question_macro_AUC": 0.5390271493212669,
+              "within_question_population_variance": 0.14798266476423463
+            },
+            "question": {
+              "RMS_logit": 2.53578383993541,
+              "between_question_mean_variance": 0.9484435584630293,
+              "corr_logit_trajectory_EM": 0.24555933576036024,
+              "corr_probability_trajectory_EM": 0.2300159430076611,
+              "corr_q_trueMixed": 0.06910871411153853,
+              "corr_question_mean_logit_trueMixed": 0.06817179309493679,
+              "corr_within_variance_trueMixed": null,
+              "eligible_within_pairs": 3188,
+              "mean_absolute_logit": 2.3492051806480276,
+              "mixed_questions": 663,
+              "total_population_variance": 0.9484435584630294,
+              "within_correct_minus_wrong_logit": 0.0,
+              "within_correct_minus_wrong_probability": 2.2240044563805218e-20,
+              "within_fraction": 0.0,
+              "within_pair_micro_AUC": 0.5,
+              "within_question_macro_AUC": 0.5,
+              "within_question_population_variance": 0.0
+            },
+            "shadow_full": {
+              "RMS_logit": 2.1007935429526614,
+              "between_question_mean_variance": 1.9704159290694712,
+              "corr_logit_trajectory_EM": 0.29754393259146944,
+              "corr_probability_trajectory_EM": 0.2863862119514644,
+              "corr_q_trueMixed": 0.10210871233534778,
+              "corr_question_mean_logit_trueMixed": 0.09018626568924132,
+              "corr_within_variance_trueMixed": 0.022295890716775704,
+              "eligible_within_pairs": 3188,
+              "mean_absolute_logit": 1.7389943326874568,
+              "mixed_questions": 663,
+              "total_population_variance": 2.1183985909198406,
+              "within_correct_minus_wrong_logit": 0.07886625503999853,
+              "within_correct_minus_wrong_probability": 0.009711052500772078,
+              "within_fraction": 0.069855910254412,
+              "within_pair_micro_AUC": 0.5357590966122961,
+              "within_question_macro_AUC": 0.5390271493212669,
+              "within_question_population_variance": 0.14798266185036918
+            }
+          },
+          "decomposition": {
+            "bitexact_claim": false,
+            "corr_legacy_q_prefix_only_q": -0.5204919013615269,
+            "corr_legacy_q_question_only_q": 0.7426488830077912,
+            "full_FP32_minus_sum_abs_max": 3.6209821701049805e-06,
+            "full_FP32_minus_sum_abs_mean": 1.4986117459869775e-06,
+            "mean_abs_prefix_share": 0.2941611659828873,
+            "mean_abs_question_share": 0.7058388340171127,
+            "prefix_has_no_bias": true,
+            "prefix_hidden_retains_question_context": true,
+            "question_includes_original_bias": true,
+            "question_prefix_global_covariance": 0.2189729862656023,
+            "shadow_FP32_minus_legacy_abs_max": 0.01749134063720703,
+            "shadow_FP32_minus_legacy_abs_mean": 0.0027240394118191345,
+            "signed_total_variance_prefix_share": 0.4489154785243347,
+            "signed_total_variance_question_share": 0.5510844605602395,
+            "signed_within_variance_prefix_share": 1.000000019690587,
+            "signed_within_variance_question_share": 0.0
+          },
+          "scores": {
+            "legacy": {
+              "AC_FPR": 0.8454545454545455,
+              "AUC": 0.5598989387479513,
+              "AW_FPR": 0.5023696682464455,
+              "BA": 0.5465546062912807,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.41588447653429605,
+              "TPR": 0.6772247360482655,
+              "Top512": 182,
+              "Top512_fraction": 0.35546875,
+              "calibration_fitted": false,
+              "confusion": {
+                "fn": 214,
+                "fp": 809,
+                "tn": 576,
+                "tp": 449
+              },
+              "diagnostic_only": true,
+              "questions": 2048,
+              "threshold": 0.5,
+              "true_Mixed": 663
+            },
+            "prefix": {
+              "AC_FPR": 0.8636363636363636,
+              "AUC": 0.47339791234461015,
+              "AW_FPR": 0.9582938388625593,
+              "BA": 0.49743916450223524,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.06425992779783393,
+              "TPR": 0.9306184012066365,
+              "Top512": 149,
+              "Top512_fraction": 0.291015625,
+              "calibration_fitted": false,
+              "confusion": {
+                "fn": 46,
+                "fp": 1296,
+                "tn": 89,
+                "tp": 617
+              },
+              "diagnostic_only": true,
+              "questions": 2048,
+              "threshold": 0.5,
+              "true_Mixed": 663
+            },
+            "question": {
+              "AC_FPR": 0.5303030303030303,
+              "AUC": 0.5482180875682681,
+              "AW_FPR": 0.2502369668246445,
+              "BA": 0.5262824596653435,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.6830324909747293,
+              "TPR": 0.3695324283559578,
+              "Top512": 176,
+              "Top512_fraction": 0.34375,
+              "calibration_fitted": false,
+              "confusion": {
+                "fn": 418,
+                "fp": 439,
+                "tn": 946,
+                "tp": 245
+              },
+              "diagnostic_only": true,
+              "questions": 2048,
+              "threshold": 0.5,
+              "true_Mixed": 663
+            },
+            "shadow_full": {
+              "AC_FPR": 0.8454545454545455,
+              "AUC": 0.5598956716816135,
+              "AW_FPR": 0.5033175355450237,
+              "BA": 0.5461935954609558,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.4151624548736462,
+              "TPR": 0.6772247360482655,
+              "Top512": 182,
+              "Top512_fraction": 0.35546875,
+              "calibration_fitted": false,
+              "confusion": {
+                "fn": 214,
+                "fp": 810,
+                "tn": 575,
+                "tp": 449
+              },
+              "diagnostic_only": true,
+              "questions": 2048,
+              "threshold": 0.5,
+              "true_Mixed": 663
+            }
+          },
+          "sealed_legacy_reproduction": {
+            "bitexact_probabilities": true,
+            "ownIDs_EM_exact": true,
+            "p_abs_max": 0.0,
+            "p_abs_mean": 0.0,
+            "p_exact_matches": 10240,
+            "p_total": 10240,
+            "q_abs_max": 0.0,
+            "q_abs_mean": 0.0,
+            "source": {
+              "bytes": 149749,
+              "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/predictions/selection2048FreshG5HF.jsonl.gz",
+              "sha256": "b02c86bc81923c48f34bb13467b02dfbb4ac90a158f3bcdc3ce62d0079c57ac7"
+            },
+            "source_baseline_unchanged": true
+          }
+        },
+        "trajectories": 10240
+      }
+    },
+    "normal_exit": true,
+    "optimizer_constructed": false,
+    "parameters_unchanged": true,
+    "prefix_tokens": 20,
+    "probe_updates": 0,
+    "question_tokens": 273,
+    "status": "FROZEN_E4_PEER256_QUESTION_PREFIX_READOUT_DIAGNOSTIC_COMPLETE",
+    "time": 1792536694.8579097
+  },
+  "complete_ref": {
+    "bytes": 18043,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-readout-question-prefix-diagnostic-v1/complete.json",
+    "sha256": "351d18bcc410c9f24bf6e7a37147de184ce13ca3fb624409d75040f8d100e622"
+  },
+  "controller": {
+    "config": {
+      "bytes": 5121,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-readout-question-prefix-diagnostic-v1/config.json",
+      "sha256": "db07bf0f848527b35d026a97f5e83d3a1e0aaef62ce83f47be4c687e5257828c"
+    },
+    "input_features": 1050112,
+    "job_id": "743513",
+    "pid": 542892,
+    "question_split": 978432,
+    "status": "FROZEN_NATIVE_FLATTEN_READOUT_ACCEPTED",
+    "time": 1792536584.3253915
+  },
+  "gpu_log_tail": "{\"model\": \"E4\", \"status\": \"ONE_FROZEN_NATIVE_READOUT_CONTRIBUTION_DIAGNOSTIC_COMPLETE\", \"questions\": 2048}\n{\"model\": \"peer256\", \"status\": \"ONE_FROZEN_NATIVE_READOUT_CONTRIBUTION_DIAGNOSTIC_COMPLETE\", \"questions\": 2048}\n{\"status\": \"FROZEN_E4_PEER256_QUESTION_PREFIX_READOUT_DIAGNOSTIC_COMPLETE\"}\n",
+  "job_id": "743513",
+  "observed_epoch": 1792536712.5565813,
+  "preparation": {
+    "config": {
+      "bytes": 5121,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-readout-question-prefix-diagnostic-v1/config.json",
+      "sha256": "db07bf0f848527b35d026a97f5e83d3a1e0aaef62ce83f47be4c687e5257828c"
+    },
+    "models": [
+      "E4",
+      "peer256"
+    ],
+    "questions": 2048,
+    "sbatch": {
+      "bytes": 1395,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-readout-question-prefix-diagnostic-v1/scoring.sbatch",
+      "sha256": "9ff0599df262c3d85f3c537b7bbf611ae049ee6a1772230f3a0ae5025d321f28"
+    },
+    "status": "FROZEN_READOUT_DIAGNOSTIC_PREPARED",
+    "tensor_payloads_loaded": false
+  },
+  "progress": {
+    "actor_updates": 0,
+    "completed_questions": 2048,
+    "completed_trajectories": 10240,
+    "compute_seconds": 4.117509015835822,
+    "elapsed_seconds": 41.10797959193587,
+    "expected_questions": 2048,
+    "feature_io_seconds": 34.976052697980776,
+    "model": "peer256",
+    "probe_updates": 0,
+    "time": 1792536690.5700555
+  },
+  "sacct": "743513|q7b-readout-contribution|COMPLETED|0:0|00:02:28|ACD1-22\n743513.batch|batch|COMPLETED|0:0|00:02:28|ACD1-22\n743513.extern|extern|COMPLETED|0:0|00:02:28|ACD1-22\n743513.0|bash|COMPLETED|0:0|00:02:28|ACD1-22",
+  "source-publication": {
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/frozen-readout-question-prefix-diagnostic-v1/code-f2caf54b9d13",
+    "commit": "f2caf54b9d138eb00eee8df4e2edbd64cc9e34db",
+    "pinned_runtime_commit": "d8f74420aa09fa56e8ec59207c6d1453fa86f95e"
+  },
+  "squeue": "",
+  "start_estimate": "",
+  "status": "SEALED_E2_SAME_HF_ACTUAL_STATE"
+}
