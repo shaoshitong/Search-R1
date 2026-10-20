@@ -1,0 +1,34 @@
+{
+  "status": "IMPLEMENTED_PUBLISHED_DEPLOYED_CPU_QUALIFIED_GPU_PENDING",
+  "source_commit": "0eeb747d14ba11a1fc5ed1e3e4dec16f9073c435",
+  "source_code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-20261020/repo-0eeb747d14ba",
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-20261020",
+  "job_id": "741871",
+  "partition": "acd_ue",
+  "gpus": 4,
+  "source_checkpoint_epoch": 2,
+  "source_steps": 9146,
+  "source_checkpoint_sha256": "893e2d71e9b45abb92a9573a6091a1a0fb0a5f7ffd3e4e1201d12061317095ad",
+  "learning_rate": 5e-06,
+  "additional_epochs": 4,
+  "mixed_train_questions": 67199,
+  "trajectories_per_question": 5,
+  "steps_per_epoch": 1318,
+  "loss": {
+    "trajectory_bce_weight": 1,
+    "group_bce_weight": 1,
+    "pairwise_weight": 0.1,
+    "pairwise_formula": "mean_group mean_eligible_pos_neg softplus(1-(z_pos-z_neg))",
+    "exclude_identical_policy5_tokens_and_positions": true
+  },
+  "resume": "Source CP2 raw+EMA+Adam+four-rank RNG; separate phase, never overwrites original CP1..4 or stop tail. Fresh actor frozen.",
+  "validation": "CPU local+actual HPC3 torch2.4 gradient/plan qualification passed; actual four-GPU CP2 next-update proof and training progress not yet tested because PENDING.",
+  "evaluation": "Unmodified512 diagnostic, Mixed-only subset separation, same unseen2048 predicted Top512 each epoch; none used in fitting.",
+  "latest_observation": {
+    "time": 1792495316.3467305,
+    "job_id": "741871",
+    "queue": "741871|PENDING|acd_ue|0:00||(Priority)\n",
+    "accounting": "741871|PENDING|0:0|00:00:00|\n"
+  },
+  "time": 1792495398.8017302
+}
