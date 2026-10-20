@@ -56,4 +56,15 @@ class HorizonTest(unittest.TestCase):
   merged=d.combine(single,single);twice=d.empty_group(5);d.add(group,twice);d.add(group,twice);self.assertEqual(merged,twice)
   r=d.report({'test':single})['test']['lengths']['20']['representations']['full_causal_input'];self.assertAlmostEqual(r['distinguishable_correct_wrong_pair_fraction'],1/3)
 
+class IndependentAuditTest(unittest.TestCase):
+ def test_independent_integer_reducer_and_report(self):
+  from . import audit_long_prefix_diagnostic as audit
+  f=fixture();p=sealed(f);a=d.qualify_row(p,f,dict(qid='q',question_hash='h',trajectory_id='t',label=1));b=copy.deepcopy(a);b['label']=0
+  group=[a,b,a,b,a];one=d.empty_group(5);d.add(group,one);two=d.combine(one,one)
+  self.assertEqual(audit.reduce_values([one,one]),two)
+  rows=audit.check_scope(two,d.report({'x':two})['x'],[[1,0,1,0,1]]*2)
+  self.assertEqual([v['prefix'] for v in rows],[5,20,40,80,160]);self.assertEqual(rows[0]['correct_wrong_pairs'],12)
+  broken=copy.deepcopy(two);broken['K_histogram'][0]+=1
+  with self.assertRaises(AssertionError):audit.check_scope(broken,d.report({'x':two})['x'],[[1,0,1,0,1]]*2)
+
 if __name__=='__main__':unittest.main()
