@@ -176,11 +176,16 @@ class Audit:
         if probe_steps:
             validate_adam(saved['optimizer'], [v.shape for v in saved['model'].values()], probe_steps,
                           saved['learning_rate'], weight_decay=0.)
-        else: assert not saved['optimizer']['state']
-        assert len(saved['rank_rng']) == 4
-        for rank, rng in enumerate(saved['rank_rng']):
-            assert rng['rank'] == rank and rng['actual_adam_steps'] == probe_steps
-            validate_rng(rng)
+        else:
+            # initialize() deliberately stores weights only before the first
+            # online update; no optimizer/RNG exists yet to validate or invent.
+            assert saved['optimizer'] is None and saved['rank_rng'] is None
+            assert saved['completed_outer'] in (0, 50)
+        if probe_steps:
+            assert len(saved['rank_rng']) == 4
+            for rank, rng in enumerate(saved['rank_rng']):
+                assert rng['rank'] == rank and rng['actual_adam_steps'] == probe_steps
+                validate_rng(rng)
         probe_binding = saved['binding']; del saved; gc.collect()
         if outer >= 100:
             assert probe_binding['prefix_tokens'] == 40 and probe_binding['head_max_tokens'] == 313
