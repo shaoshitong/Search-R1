@@ -4,7 +4,7 @@ from .test_prefix_logprob_availability import data
 class DataTest(unittest.TestCase):
  def test_six_only_actual_policy_and_short_prefix(self):
   x=d.six_features([-1.,-2.,-3.]);self.assertEqual(x[0],-2.);self.assertAlmostEqual(x[1],math.sqrt(2/3));self.assertEqual(x[2:],[-3.,-2.,-2.,.15])
-  with self.assertRaises(AssertionError):d.six_features([0.]*20)
+  self.assertEqual(d.six_features([0.]*20),[0.,0.,0.,0.,0.,1.]) # legal native probability rounding after causal verification
  def test_projection_matches_causal_seal_and_six_definition(self):
   p,f=data();x=d.projection(p,f);self.assertEqual(len(x['features']),6);self.assertEqual(len(x['lp']),20);self.assertEqual(x['features'],d.six_features(x['lp']))
  def test_qid_split_fixed_whole_question_label_free(self):

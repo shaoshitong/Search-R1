@@ -22,7 +22,7 @@ def split_ids(qids):
  assert len(qids)==len(set(qids))==8192;held=set(sorted(qids,key=lambda q:(hashlib.sha256(('prefix-confidence-qid-9137:'+str(q)).encode()).hexdigest(),str(q)))[:2048]);fit=[q for q in qids if q not in held];hold=[q for q in qids if q in held]
  return dict(seed=9137,fit_qids=fit,held_qids=hold,fit_questions=6144,held_questions=2048,fit_ordered_qid_sha256=digest(fit),held_ordered_qid_sha256=digest(hold),labels_or_scores_used=False,views_whole_question_isolated=True,internal_assessment_indices=[5,6,7,8,9])
 def six_features(values):
- assert 0<len(values)<=20 and all(math.isfinite(x) and x<=1e-6 for x in values) and any(x!=0 for x in values);n=len(values);mean=math.fsum(values)/n;std=math.sqrt(math.fsum((x-mean)**2 for x in values)/n);return [mean,std,min(values),math.fsum(values[:5])/len(values[:5]),math.fsum(values[-5:])/len(values[-5:]),n/20]
+ assert 0<len(values)<=20 and all(math.isfinite(x) and x<=1e-6 for x in values);n=len(values);mean=math.fsum(values)/n;std=math.sqrt(math.fsum((x-mean)**2 for x in values)/n);return [mean,std,min(values),math.fsum(values[:5])/len(values[:5]),math.fsum(values[-5:])/len(values[-5:]),n/20]
 def projection(prefix,full):
  check=a.project(prefix,full);values=[lp for turn in full['behavior_turns'] for lp in turn['selected_logprobs'][:turn['kept_token_count']]][:20];features=six_features(values)
  assert len(values)==check['kept_prefix_policy_tokens'] and math.isclose(features[0],check['prefix_mean_logprob'],rel_tol=1e-14,abs_tol=1e-14);signature=digest(dict(initial_prompt=prefix['initial_prompt_token_ids'],policy_tokens=prefix['policy_token_ids'],positions=prefix['policy_position_ids'],segments=[{k:v for k,v in s.items() if k!='turn_index'} for s in prefix['prefix_segments']]))
