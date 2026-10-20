@@ -1,8 +1,8 @@
 {
-  "observed_utc": "20261020T061654533964Z",
+  "observed_utc": "20261020T064105890485Z",
   "complete_outer": {
     "A": 200,
-    "B": 188
+    "B": 189
   },
   "current": {
     "A": {
@@ -6606,6 +6606,23 @@
             "questions": 512
           },
           "actual_complete_source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-h10011-normal-follow-actual-facts.json.closed-b189-reservation-20261020"
+        },
+        {
+          "outer": 189,
+          "periodic": false,
+          "prefix_tokens": 80,
+          "selected": {
+            "all_correct": 98,
+            "all_correct_fraction": 0.19140625,
+            "all_wrong": 230,
+            "all_wrong_fraction": 0.44921875,
+            "mean_selection_q": 0.9253009648902489,
+            "mixed": 184,
+            "mixed_fraction": 0.359375,
+            "no_uncontinued_candidate_accuracy_claim": true,
+            "questions": 512
+          },
+          "actual_complete_source": "reproduction/reports/h100-prefix5-ab200-20261018/progressive-latest-actual/NEW-OBSERVED-FACTS.json"
         }
       ]
     }
@@ -6629,7 +6646,7 @@
     },
     {
       "path": "reproduction/reports/h100-prefix5-ab200-20261018/progressive-latest-actual/NEW-OBSERVED-FACTS.json",
-      "sha256": "ea575cd8f7d4537b57ed42b948c755e8aac10d08e0d883c188608c8c2181aff3"
+      "sha256": "29c500fc384e89405bff22a04269c75f4bdb47988f9a1804c3e67f767727b27b"
     }
   ],
   "ordinary_window_means": [
@@ -7336,11 +7353,12 @@
             185,
             186,
             187,
-            188
+            188,
+            189
           ],
-          "complete_window": false,
-          "mean_mixed_count": 202.625,
-          "mean_mixed_fraction": 0.395751953125
+          "complete_window": true,
+          "mean_mixed_count": 200.55555555555554,
+          "mean_mixed_fraction": 0.3917100694444444
         }
       }
     },
