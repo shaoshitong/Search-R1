@@ -3,6 +3,15 @@ from . import deploy_peer_newseed_receive as m
 
 
 class DeployTests(unittest.TestCase):
+    def test_master_enabled_once_and_reuse_cannot_fallback(self):
+        args=m.master_args('hkust2','/tmp/own.sock','ssh -W %h:%p hkust1')
+        self.assertNotIn('-M',args)
+        self.assertEqual(args.count('-oControlMaster=yes'),1)
+        self.assertEqual(args[-1],'hkust2')
+        client=m.master_client('hkust2','/tmp/own.sock')
+        self.assertIn('-oControlMaster=no',client)
+        self.assertIn('-oProxyCommand=false',client)
+
     def test_controls_bounded_and_secret_only_stdin(self):
         values=dict(base='/data/shaoshitong/qwen7b-peer-newseed-to-hpc3-20261021/'+m.SNAPSHOT,
             snapshot=m.SNAPSHOT,code='/data/code/peer_newseed_receive.py',code_sha256='a'*64,

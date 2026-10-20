@@ -1,0 +1,80 @@
+{
+  "control_hostname": "ACD-Login-2",
+  "routes": [
+    {
+      "route": "existing_BatchMode_Login1",
+      "returncode": 255,
+      "seconds": 0.08042621612548828,
+      "observations": [],
+      "error_tail": "No ED25519 host key is known for acd-login-1 and you have requested strict checking.\r\nHost key verification failed.\r\n"
+    },
+    {
+      "route": "existing_743214_CPU_overlap",
+      "returncode": 0,
+      "seconds": 4.988266706466675,
+      "observations": [
+        {
+          "source_hostname": "ACD1-11",
+          "epoch": 1792524697.5148072,
+          "checks": [
+            {
+              "target": "10.120.17.102",
+              "kind": "22",
+              "connected": false,
+              "error_type": "timeout",
+              "seconds": 2.002807855606079
+            },
+            {
+              "target": "10.120.17.102",
+              "kind": "17895",
+              "connected": false,
+              "error_type": "timeout",
+              "seconds": 2.0016398429870605
+            },
+            {
+              "target": "10.120.17.102",
+              "kind": "ping1",
+              "returncode": 1,
+              "seconds": 1.0238454341888428
+            },
+            {
+              "target": "10.120.17.122",
+              "kind": "22",
+              "connected": false,
+              "error_type": "timeout",
+              "seconds": 2.0012364387512207
+            },
+            {
+              "target": "10.120.17.122",
+              "kind": "17895",
+              "connected": false,
+              "error_type": "timeout",
+              "seconds": 2.0019724369049072
+            },
+            {
+              "target": "10.120.17.122",
+              "kind": "ping1",
+              "returncode": 1,
+              "seconds": 1.0224707126617432
+            }
+          ],
+          "public_HF": {
+            "returncode": 7,
+            "http_status": 0,
+            "bytes_read": 0,
+            "seconds": 2.848689556121826,
+            "token_used": false,
+            "proxy_used": false
+          },
+          "CUDA_VISIBLE_DEVICES": null,
+          "actor_updates": 0,
+          "probe_updates": 0
+        }
+      ],
+      "error_tail": null
+    }
+  ],
+  "extra_GPU_requested": 0,
+  "training_code_or_state_modified": false,
+  "epoch": 1792524697.5419197
+}

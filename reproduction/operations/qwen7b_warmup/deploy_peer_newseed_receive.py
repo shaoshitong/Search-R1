@@ -110,28 +110,51 @@ def render(inputs,action):
     return 'inputs='+repr(inputs)+'\n'+COMMON+(START if action=='start' else STATUS)
 
 
+def master_args(host,socket,proxy=None):
+    # -M together with ControlMaster=yes changes OpenSSH to ASK mode.  The
+    # noninteractive master then refuses sessions; never enable it twice.
+    args=['ssh','-T','-S',socket,'-oControlMaster=yes','-oControlPersist=180','-fN',
+        '-oBatchMode=yes','-oStrictHostKeyChecking=yes','-oConnectTimeout=8',
+        '-oServerAliveInterval=15','-oServerAliveCountMax=3','-oProxyJump=none']
+    if proxy:args+=['-oProxyCommand='+proxy]
+    return args+[host]
+
+
+def master_client(host,socket):
+    # A lost/denied master must fail instead of silently opening another route.
+    return ['ssh','-T','-S',socket,'-oControlMaster=no','-oBatchMode=yes',
+        '-oStrictHostKeyChecking=yes','-oConnectTimeout=8','-oProxyJump=none',
+        '-oProxyCommand=false',host]
+
+
 @contextlib.contextmanager
-def route(direct=False,physical=False):
+def route(direct=False,physical=False,via_hkust1=False):
     """Never alter user SSH config or reuse/stop another task's master."""
     with tempfile.TemporaryDirectory(prefix='q7recv-',dir='/tmp') as folder:
-        socket=str(Path(folder)/'ssh.sock')
-        args=['ssh','-T','-S',socket,'-oControlMaster=yes','-oControlPersist=180','-M','-fN',
-            '-oBatchMode=yes','-oStrictHostKeyChecking=yes','-oConnectTimeout=8','-oServerAliveInterval=15','-oServerAliveCountMax=3']
+        socket=str(Path(folder)/'ssh.sock');first='hkust1' if via_hkust1 else 'hkust2'
+        args=master_args(first,socket)
         if direct:
             ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0']).decode().strip()
-            args+=['-B','en0','-b',ip,'-oProxyCommand=none','-oProxyJump=none']
+            args[-1:-1]=['-B','en0','-b',ip,'-oProxyCommand=none']
         if physical:
             if direct:raise ValueError('Choose one explicit SSH socket binding')
-            args+=['-oProxyJump=none','-oProxyCommand=/usr/bin/nc --apple-no-connectx -b en0 -G 8 %h %p']
-        args+=['hkust2']
+            args[-1:-1]=['-oProxyCommand=/usr/bin/nc --apple-no-connectx -b en0 -G 8 %h %p']
+        masters=[(socket,first)]
         try:
             result=subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=15)
             if result.returncode:raise RuntimeError('HKUST2 control authentication unavailable')
-            client=['ssh','-T','-S',socket,'-oControlMaster=no','-oBatchMode=yes','-oStrictHostKeyChecking=yes','-oConnectTimeout=8']
-            if physical:client+=['-oProxyJump=none','-oProxyCommand=/usr/bin/nc --apple-no-connectx -b en0 -G 8 %h %p']
-            client+=['hkust2'];yield client
+            if via_hkust1:
+                hop=master_client('hkust1',socket);hop[-1:-1]=['-W','%h:%p']
+                second=str(Path(folder)/'hkust2.sock');masters.append((second,'hkust2'))
+                result=subprocess.run(master_args('hkust2',second,shlex.join(hop)),stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=15)
+                if result.returncode:raise RuntimeError('HKUST2 strict authentication through HKUST1 unavailable')
+                socket=second
+            check=subprocess.run(['ssh','-S',socket,'-O','check','hkust2'],stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=8)
+            if check.returncode:raise RuntimeError('Receiver control master is not actually available')
+            yield master_client('hkust2',socket)
         finally:
-            if Path(socket).exists():subprocess.run(['ssh','-S',socket,'-O','exit','hkust2'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=10)
+            for own_socket,host in reversed(masters):
+                if Path(own_socket).exists():subprocess.run(['ssh','-S',own_socket,'-O','exit',host],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=10)
 
 
 def publication(repo):
@@ -154,10 +177,11 @@ def token():
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--action',choices=['stage','preflight','start','status'],required=True)
-    parser.add_argument('--control-root',type=Path,required=True);parser.add_argument('--snapshot',default=SNAPSHOT);parser.add_argument('--catalog-commit');parser.add_argument('--hf-proxy');parser.add_argument('--direct-en0',action='store_true');parser.add_argument('--physical-en0',action='store_true',help='Darwin IP_BOUND_IF SSH socket only, no connectx or global route changes');parser.add_argument('--archive-binding',type=Path,help='Small actual source-plan/HF-receipt binding for CDN Range preflight');args=parser.parse_args()
+    parser.add_argument('--control-root',type=Path,required=True);parser.add_argument('--snapshot',default=SNAPSHOT);parser.add_argument('--catalog-commit');parser.add_argument('--hf-proxy');parser.add_argument('--direct-en0',action='store_true');parser.add_argument('--physical-en0',action='store_true',help='Darwin IP_BOUND_IF SSH socket only, no connectx or global route changes');parser.add_argument('--archive-binding',type=Path,help='Small actual source-plan/HF-receipt binding for CDN Range preflight')
+    parser.add_argument('--via-hkust1',action='store_true',help='Task-owned HKUST1 TCP SSH control hop; existing local HKUST2 authentication, no payload transit');args=parser.parse_args()
     repo=Path(__file__).resolve().parents[3];commit=publication(repo);snapshot=receiver.snapshot_name(args.snapshot);base=receiver.K2/snapshot;digest=hashlib.sha256(Path(receiver.__file__).read_bytes()).hexdigest();code=base/'code'/digest/'peer_newseed_receive.py'
     inputs=dict(base=str(base),snapshot=snapshot,code=str(code),code_sha256=digest,source_commit=commit,prefix=receiver.PREFIX+snapshot,catalog_commit=args.catalog_commit,hf_proxy=args.hf_proxy)
-    with route(args.direct_en0,args.physical_en0) as ssh:
+    with route(args.direct_en0,args.physical_en0,args.via_hkust1) as ssh:
         if args.action=='stage':
             actual=receiver.install_code(ssh,base)
             assert actual==code
