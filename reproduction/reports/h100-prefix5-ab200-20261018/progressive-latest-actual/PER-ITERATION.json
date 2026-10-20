@@ -1,8 +1,8 @@
 {
-  "observed_utc": "20261020T101041374944Z",
+  "observed_utc": "20261020T103713166506Z",
   "complete_outer": {
     "A": 200,
-    "B": 198
+    "B": 200
   },
   "current": {
     "A": {
@@ -6776,6 +6776,40 @@
             "questions": 512
           },
           "actual_complete_source": "reproduction/reports/h100-prefix5-ab200-20261018/progressive-latest-actual/NEW-OBSERVED-FACTS.json"
+        },
+        {
+          "outer": 199,
+          "periodic": false,
+          "prefix_tokens": 80,
+          "selected": {
+            "all_correct": 222,
+            "all_correct_fraction": 0.43359375,
+            "all_wrong": 63,
+            "all_wrong_fraction": 0.123046875,
+            "mean_selection_q": 0.9162767242381388,
+            "mixed": 227,
+            "mixed_fraction": 0.443359375,
+            "no_uncontinued_candidate_accuracy_claim": true,
+            "questions": 512
+          },
+          "actual_complete_source": "reproduction/reports/h100-prefix5-ab200-20261018/progressive-latest-actual/NEW-OBSERVED-FACTS.json"
+        },
+        {
+          "outer": 200,
+          "periodic": false,
+          "prefix_tokens": 80,
+          "selected": {
+            "all_correct": 245,
+            "all_correct_fraction": 0.478515625,
+            "all_wrong": 83,
+            "all_wrong_fraction": 0.162109375,
+            "mean_selection_q": 0.9186732816877435,
+            "mixed": 184,
+            "mixed_fraction": 0.359375,
+            "no_uncontinued_candidate_accuracy_claim": true,
+            "questions": 512
+          },
+          "actual_complete_source": "reproduction/reports/h100-prefix5-ab200-20261018/progressive-latest-actual/NEW-OBSERVED-FACTS.json"
         }
       ]
     }
@@ -6803,7 +6837,7 @@
     },
     {
       "path": "reproduction/reports/h100-prefix5-ab200-20261018/progressive-latest-actual/NEW-OBSERVED-FACTS.json",
-      "sha256": "aad316c3d77399b58c2dd9473eadeed3903940597131290b47d91811d47de32d"
+      "sha256": "d4ce5794e4ceb351999a59901fddc44e3495baf204b50117e9eb5ba1aec2316d"
     }
   ],
   "ordinary_window_means": [
@@ -7549,11 +7583,13 @@
             195,
             196,
             197,
-            198
+            198,
+            199,
+            200
           ],
-          "complete_window": false,
-          "mean_mixed_count": 209.875,
-          "mean_mixed_fraction": 0.409912109375
+          "complete_window": true,
+          "mean_mixed_count": 209,
+          "mean_mixed_fraction": 0.408203125
         }
       }
     }
