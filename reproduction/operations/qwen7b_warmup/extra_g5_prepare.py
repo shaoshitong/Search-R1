@@ -121,7 +121,7 @@ def extra_initial_state(c, outer, group, local_index, tokenizer, factory=None):
     return value
 
 
-def choose_questions(train, diagnostic, heldout, final_questions, budget, seed):
+def choose_questions(train, diagnostic, heldout, final_questions, budget, seed, ordered_qids=None):
     """Label-blind question selection with explicit exclusion and identity checks."""
     if type(budget) is not int or budget < 4 or budget > len(train):
         raise ValueError('Pilot requires4..len(train) distinct training questions')
@@ -134,7 +134,17 @@ def choose_questions(train, diagnostic, heldout, final_questions, budget, seed):
     eligible = [r for r in train if r['qid'] not in excluded and r['question_hash'] not in excluded_hashes]
     if len(eligible) < budget:
         raise ValueError('Insufficient training-only questions after validation/final exclusions')
-    selected = sorted(eligible, key=lambda r: (canonical_sha(['extra-g5-question-plan', seed, r['qid']]), r['qid']))[:budget]
+    if ordered_qids is None:
+        selected = sorted(eligible, key=lambda r: (canonical_sha(['extra-g5-question-plan', seed, r['qid']]), r['qid']))[:budget]
+    else:
+        if (not isinstance(ordered_qids,list) or len(ordered_qids)!=budget or
+                any(not isinstance(q,str) or not q for q in ordered_qids) or
+                len(set(ordered_qids))!=budget):
+            raise ValueError('Matched cohort must declare exactly budget distinct question IDs')
+        lookup={r['qid']:r for r in eligible}
+        if not set(ordered_qids)<=set(lookup):
+            raise ValueError('Matched cohort contains excluded or nontraining questions')
+        selected=[lookup[q] for q in ordered_qids]
     for row in selected:
         if len(row['trajectory_ids']) != 5 or len(set(row['trajectory_ids'])) != 5:
             raise ValueError('Original G5 is incomplete')
@@ -143,7 +153,8 @@ def choose_questions(train, diagnostic, heldout, final_questions, budget, seed):
     return selected
 
 
-def prepare(original, selection_base, final_plan, base, code_root, source_commit, budget, seed, response_offset=5):
+def prepare(original, selection_base, final_plan, base, code_root, source_commit, budget, seed, response_offset=5,
+            cohort_plan=None,cohort_plan_sha256=None):
     original, selection_base, base, code_root = map(remote, (original, selection_base, base, code_root))
     final_plan = remote(final_plan)
     if base.exists():
@@ -165,7 +176,20 @@ def prepare(original, selection_base, final_plan, base, code_root, source_commit
         raise ValueError('Explicit frozen final question-plan manifest required before extra training generation')
     if final.get('ordered_qid_sha256') != canonical_sha([r['qid'] for r in final['questions']]):
         raise ValueError('Final ordered question IDs do not match frozen manifest SHA')
-    chosen = choose_questions(bank['train'], bank['diagnostic'], heldout, final['questions'], budget, seed)
+    cohort_proof=None;ordered_qids=None
+    if (cohort_plan is None)!=(cohort_plan_sha256 is None):
+        raise ValueError('Matched cohort requires both an explicit plan and pinned SHA')
+    if cohort_plan is not None:
+        cohort_plan=remote(cohort_plan)
+        if sha(cohort_plan)!=cohort_plan_sha256:
+            raise ValueError('Predeclared matched cohort plan SHA differs')
+        plan=read(cohort_plan);ordered_qids=plan['cohort_qids']
+        if not isinstance(plan.get('batches'),list) or set(q for batch in plan['batches'] for q in batch)!=set(ordered_qids):
+            raise ValueError('Matched cohort differs from its predeclared update batches')
+        cohort_proof=file_proof(cohort_plan)
+    chosen = choose_questions(bank['train'], bank['diagnostic'], heldout, final['questions'], budget, seed,ordered_qids)
+    selection_rule=('exact predeclared matched-cohort IDs; no EM/probe scores' if cohort_proof else
+                    'deterministic identity hash; no EM/probe scores')
     wanted = {r['qid']:r for r in chosen}
     actor_proof = Path(c['model_dir'])/'complete.json'
     actor = read(actor_proof)
@@ -250,6 +274,7 @@ def prepare(original, selection_base, final_plan, base, code_root, source_commit
         extra_shards=4, sampling_shards=4, gpus_per_sampling_job=2, fit_epochs=0,
         source_commit=source_commit, code_root=str(code_root), code_files_sha256=publication_files,
         final_plan=file_proof(final_plan), selection_base=str(selection_base),
+        matched_cohort_plan=cohort_proof,question_selection=selection_rule,
         original_actor_complete=file_proof(actor_proof), full_actor_SHA_recheck_required_at_sampler_start=True,
         original_bank=file_proof(original/'bank/groups.json'),
         original_config=file_proof(original/'config.json'),
@@ -271,7 +296,7 @@ def prepare(original, selection_base, final_plan, base, code_root, source_commit
     qids = [g['qid'] for g in chosen]
     atomic(base/'inputs/questions.json', dict(role=ROLE, groups=chosen, ordered_qid_sha256=canonical_sha(qids),
         final_plan=configuration['final_plan'], validation_qids_excluded=True, final_qids_excluded=True,
-        question_selection='deterministic identity hash; no EM/probe scores', original_batches=original_batches,
+        question_selection=selection_rule,matched_cohort_plan=cohort_proof,original_batches=original_batches,
         original_native_seeds_by_qid=original_seeds,
         original_input_batches=list({r['path']:r for r in inputs.values()}.values())))
     atomic(base/'inputs/manifest.json', dict(role=ROLE, batches=entries, questions=budget, trajectories=5*budget,
@@ -301,6 +326,9 @@ if __name__ == '__main__':
     p.add_argument('--questions', type=int, default=128)
     p.add_argument('--seed', type=int, default=20261021)
     p.add_argument('--response-offset', type=int, choices=(5, 10, 15), default=5)
+    p.add_argument('--cohort-plan')
+    p.add_argument('--cohort-plan-sha256')
     a = p.parse_args()
     print(json.dumps(prepare(a.original_base, a.selection_base, a.final_plan, a.base, a.code_root,
-                             a.source_commit, a.questions, a.seed, a.response_offset)), flush=True)
+                             a.source_commit, a.questions, a.seed, a.response_offset,
+                             a.cohort_plan,a.cohort_plan_sha256)), flush=True)

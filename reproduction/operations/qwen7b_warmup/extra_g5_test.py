@@ -92,6 +92,20 @@ class ExtraG5Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             extra_initial_state(config(), 1, own, 0, None, factory=colliding)
 
+    def test_matched_cohort_preserves_exact_order_and_exclusions(self):
+        rows=[group(i) for i in range(10)]
+        ids=['q9','q4','q7','q3']
+        selected=choose_questions(rows,[],[],[],4,17,ordered_qids=ids)
+        self.assertEqual([r['qid'] for r in selected],ids)
+        changed=copy.deepcopy(rows)
+        for row in changed:row['labels']=[1-y for y in row['labels']]
+        self.assertEqual([r['qid'] for r in choose_questions(changed,[],[],[],4,98,ordered_qids=ids)],ids)
+        for bad in (['q9','q4','q7','q9'],['q9','q4','q7','unknown'],ids[:3]):
+            with self.assertRaises(ValueError):
+                choose_questions(rows,[],[],[],4,17,ordered_qids=bad)
+        with self.assertRaises(ValueError):
+            choose_questions(rows,[],[],[dict(qid='other-id',question_hash='h9')],4,17,ordered_qids=ids)
+
 
 if __name__ == '__main__':
     unittest.main()
