@@ -10,7 +10,7 @@ from . import peer_newseed_receive as receiver
 SNAPSHOT='newseed-20261021-185747-445fc691'
 PREFLIGHT=r'''
 import concurrent.futures,hashlib,json,requests,socket,sys,time
-from urllib.parse import quote
+from urllib.parse import quote,urlsplit
 secret=json.loads(sys.stdin.readline());record=secret['archive_probe']
 assert record['archive_bytes']>1048576 and len(record['archive_sha256'])==64 and len(record['hf_archive_commit'])==40
 
@@ -40,7 +40,11 @@ def probe(route):
      value['range_bytes_read']+=len(block);h.update(block)
    assert value['range_bytes_read']==limit
    value.update(range_accepted=True,range_prefix_SHA256=h.hexdigest(),range_elapsed_seconds=time.monotonic()-begin,status='PRIVATE_API_AND_REAL_PINNED_ARCHIVE_RANGE_ACCEPTED_NOT_FULL_ARCHIVE_SHA')
- except Exception as error:value.update(status='FAILED',error_type=type(error).__name__)
+ except Exception as error:
+  value.update(status='FAILED',error_type=type(error).__name__)
+  # Signed CDN query strings and exception messages must never be emitted.
+  request=getattr(error,'request',None)
+  if request is not None:value['failed_request_host_only']=urlsplit(request.url).hostname
  value['elapsed_seconds']=time.monotonic()-started;return value
 
 routes=[('direct',None),('HKUST2-17894',17894),('HKUST2-17897',17897),('HKUST2-17898',17898)]
