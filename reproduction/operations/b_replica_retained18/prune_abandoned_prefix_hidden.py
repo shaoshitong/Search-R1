@@ -1,4 +1,4 @@
-"""Reclaim only failed pre-score hidden tensors after complete CPU qualification."""
+"""Reclaim failed, unconsumed hidden tensors after complete CPU qualification."""
 import argparse
 import hashlib
 import json
@@ -10,6 +10,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--source', required=True)
     parser.add_argument('--outer', type=int, required=True)
+    parser.add_argument('--failed-stage', choices=['score','expanded-continuation-rerank'], default='score')
+    parser.add_argument('--live-base')
     args = parser.parse_args()
     source = Path(args.source)
     if source.parent != Path('/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong') or not source.name.startswith('search-g1-prefix-selection200-'):
@@ -30,7 +32,23 @@ def main():
     assert not (root/'complete.json').exists()
     assert not list((source/'actor/outers').glob('outer-%04d-attempt-*'%outer))
     assert not (root/'probe-update').exists()
-    assert read(source/'logs/pipeline-status.json')['stage'] == 'outer-%06d-score'%outer
+    assert read(source/'logs/pipeline-status.json')['stage'] == 'outer-%06d-%s'%(outer,args.failed_stage)
+    if args.live_base:
+        live=Path(args.live_base)
+        assert live.parent==source.parent and live!=source
+        live_joint=read(live/'latest-joint.json')
+        assert live_joint['run_id']==joint['run_id'] and live_joint['outer']>=outer+7
+        assert not(live/'logs/cleanup-status.json').exists()
+        descendant=live; visited=set()
+        while descendant!=source:
+            assert descendant not in visited and descendant.parent==source.parent
+            visited.add(descendant)
+            config=read(descendant/'preparation/launch-config.json')
+            assert config['run_id']==joint['run_id']
+            descendant=Path(config['resume_joint']['source_base'])
+        assert len(visited)>=1
+    elif args.failed_stage!='score':
+        raise ValueError('Later recovery lineage required for abandoned continuation features')
     scan = read(root/'prefix/scan/scan-complete.json')
     assert scan['run_id'] == joint['run_id'] and scan['actor_hidden_native']
     rows = []
@@ -48,6 +66,7 @@ def main():
     with intent.open('x') as handle:
         json.dump(dict(created_unix=time.time(),reason='Failed before optimizer work; pending sampling will be recomputed',
             qualified_joint=outer-1,actor_writes=0,probe_writes=0,assets=rows,
+            failed_stage=args.failed_stage,live_base=args.live_base,
             keep='checkpoint, tokens, trajectories, diversity, scan manifests, failure logs and costs'),handle)
     for row in rows:
         f = Path(row['path']);st = f.stat()
