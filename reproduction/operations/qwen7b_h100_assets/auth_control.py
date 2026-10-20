@@ -2,7 +2,7 @@
 import argparse, getpass, hashlib, importlib.util, json, shlex, subprocess
 from pathlib import Path
 ROOT=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
-REMOTE='/backup/shaoshitong/qwen7b-h100-transfer-20261020'
+REMOTE='/data/shaoshitong/qwen7b-h100-transfer-20261020'
 PYTHON='/home/shaoshitong/anaconda3/bin/python'
 
 def main():
@@ -11,7 +11,7 @@ def main():
  secret=dict(hf_token=token)
  if a.action=='preflight':
   code='''import os,json,sys
-os.environ.update(HTTP_PROXY='http://127.0.0.1:17896',HTTPS_PROXY='http://127.0.0.1:17896',HF_HUB_DISABLE_XET='1',HF_HUB_DISABLE_TELEMETRY='1')
+os.environ.update(HTTP_PROXY='http://127.0.0.1:17894',HTTPS_PROXY='http://127.0.0.1:17894',HF_HUB_DISABLE_XET='1',HF_HUB_DISABLE_TELEMETRY='1')
 from huggingface_hub import HfApi
 s=json.loads(sys.stdin.readline())
 try:
@@ -25,7 +25,7 @@ except Exception as e:
   raw=Path(__file__).with_name('hf_bridge.py').read_bytes();digest=hashlib.sha256(raw).hexdigest()
   code='SHA='+repr(digest)+'\n'+'''import os,json,sys,subprocess,time,hashlib
 from pathlib import Path
-s=json.loads(sys.stdin.readline());b=Path('/backup/shaoshitong/qwen7b-h100-transfer-20261020');p=b/('hf-bridge-'+SHA+'.py');assert hashlib.sha256(p.read_bytes()).hexdigest()==SHA;r=b/'bridge-launch-receipt.json'
+s=json.loads(sys.stdin.readline());b=Path('/data/shaoshitong/qwen7b-h100-transfer-20261020');p=b/('hf-bridge-'+SHA+'.py');assert hashlib.sha256(p.read_bytes()).hexdigest()==SHA;r=b/'bridge-launch-receipt.json'
 if r.exists():print(json.dumps(dict(status='EXISTING_BRIDGE_RECEIPT_NO_REPLAY',receipt=json.loads(r.read_text()))))
 else:
  with(b/'bridge.log').open('xb')as f:q=subprocess.Popen(['/home/shaoshitong/anaconda3/bin/python',str(p)],stdin=subprocess.PIPE,stdout=f,stderr=subprocess.STDOUT,start_new_session=True,env=dict(os.environ,HF_HUB_DISABLE_XET='1',HF_HUB_DISABLE_PROGRESS_BARS='1',HF_HUB_VERBOSITY='error'))
@@ -33,7 +33,7 @@ else:
  with r.open('x')as f:json.dump(v,f)
  print(json.dumps(dict(status='BRIDGE_LAUNCHED_NOT_MIGRATION_COMPLETE',receipt=v)))
 '''
- command=shlex.join([PYTHON,'-c',code]);r=subprocess.run(['ssh','-T','-oBatchMode=yes','-oConnectTimeout=8','hkust3',command],input=json.dumps(secret)+'\n',text=True,capture_output=True,timeout=80)
+ command=shlex.join([PYTHON,'-c',code]);r=subprocess.run(['ssh','-T','-oBatchMode=yes','-oConnectTimeout=8','hkust2',command],input=json.dumps(secret)+'\n',text=True,capture_output=True,timeout=80)
  # Never save the stdin payload. The remote emits sanitized scalar metadata only.
  out=ROOT/('work/qwen7b-hf-'+a.action+'-sanitized-result.json');out.write_text(json.dumps(dict(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr),indent=2)+'\n');print(r.stdout);print('returncode',r.returncode);raise SystemExit(r.returncode)
 

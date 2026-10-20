@@ -1,11 +1,11 @@
-"""HPC3 -> HKUST3 -> private HF. Secrets arrive only via stdin/RAM."""
+"""HPC3 -> HKUST2 -> private HF. Secrets arrive only via stdin/RAM."""
 import concurrent.futures, fcntl, hashlib, json, os, shlex, subprocess, sys, threading, time
 from pathlib import Path
 
-ROOT=Path('/backup/shaoshitong/qwen7b-h100-transfer-20261020')
+ROOT=Path('/data/shaoshitong/qwen7b-h100-transfer-20261020')
 SOURCE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/migration-export-h100-20261020'
 REPO='Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020'
-SSH=['sshpass','-e','ssh','-T','-oStrictHostKeyChecking=yes','-oHostKeyAlias=hpc3login.hpc.hkust-gz.edu.cn','-oUserKnownHostsFile=/backup/shaoshitong/topd-hf-migration-20261009/hpc3-known-hosts','-oBatchMode=no','-oNumberOfPasswordPrompts=1','-oConnectTimeout=10','-oServerAliveInterval=20','-oServerAliveCountMax=3','-oControlMaster=no','-S','none','mou176@10.120.81.30']
+SSH=['sshpass','-e','ssh','-T','-oStrictHostKeyChecking=yes','-oHostKeyAlias=hpc3login.hpc.hkust-gz.edu.cn','-oUserKnownHostsFile=/data/shaoshitong/qwen7b-h100-transfer-20261020/control/hpc3-known-hosts','-oBatchMode=no','-oNumberOfPasswordPrompts=1','-oConnectTimeout=10','-oServerAliveInterval=20','-oServerAliveCountMax=3','-oControlMaster=no','-S','none','mou176@10.120.81.30']
 
 def atomic(p,v):
  p=Path(p);p.parent.mkdir(parents=True,exist_ok=True);t=p.with_name(p.name+'.%d-%d.tmp'%(os.getpid(),threading.get_ident()));t.write_text(json.dumps(v,indent=2));t.replace(p)
@@ -17,7 +17,7 @@ def sha(p):
 def main(secret):
  from huggingface_hub import HfApi
  ROOT.mkdir(parents=True,exist_ok=True);lock=(ROOT/'bridge.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
- os.environ.update(HTTP_PROXY='http://127.0.0.1:17896',HTTPS_PROXY='http://127.0.0.1:17896',HF_HUB_DISABLE_XET='1',HF_HUB_DISABLE_PROGRESS_BARS='1',HF_HUB_DISABLE_TELEMETRY='1')
+ os.environ.update(HTTP_PROXY='http://127.0.0.1:17894',HTTPS_PROXY='http://127.0.0.1:17894',HF_HUB_DISABLE_XET='1',HF_HUB_DISABLE_PROGRESS_BARS='1',HF_HUB_DISABLE_TELEMETRY='1')
  api=HfApi(token=secret['hf_token']);who=api.whoami();assert who['name'].lower()=='sutoonq';api.create_repo(REPO,repo_type='dataset',private=True,exist_ok=True);assert api.repo_info(REPO,repo_type='dataset').private
  env=dict(os.environ,SSHPASS=secret['hpc_password']);secret['hpc_password']=None
  atomic(ROOT/'controller.json',dict(pid=os.getpid(),start_ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],repo_id=REPO,private=True,account=who['name'],source=SOURCE,credentials_saved=False,mac_data_transit=False,started=time.time()))
@@ -40,7 +40,7 @@ print(json.dumps(v))''')
   name=g['group'];done=ROOT/'uploaded'/(name+'.json')
   if done.exists():return json.loads(done.read_text())
   local=ROOT/'incoming'/(name+'.tar.zst');local.parent.mkdir(exist_ok=True)
-  atomic(ROOT/'progress'/(name+'.json'),dict(stage='COPYING_HPC3_TO_HKUST3',expected_bytes=g['archive_bytes'],epoch=time.time()))
+  atomic(ROOT/'progress'/(name+'.json'),dict(stage='COPYING_HPC3_TO_HKUST2',expected_bytes=g['archive_bytes'],epoch=time.time()))
   if not local.exists()or local.stat().st_size!=g['archive_bytes']:
    args=['rsync','--partial','--append-verify','--protect-args','-e',shlex.join(SSH[:-1]),SSH[-1]+':'+g['archive'],str(local)]
    r=subprocess.run(args,env=env,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE,timeout=3600)
@@ -53,7 +53,7 @@ print(json.dumps(v))''')
   infos=api.get_paths_info(REPO,paths=['archives/'+local.name],repo_type='dataset');assert len(infos)==1 and infos[0].size==g['archive_bytes'];lfs=infos[0].lfs;oid=lfs.get('sha256')if isinstance(lfs,dict)else lfs.sha256;assert oid==g['archive_sha256']
   receipt.update(hf_repo=REPO,repo_type='dataset',private=True,hf_archive_path='archives/'+local.name,hf_archive_commit=commit.oid,hf_lfs_sha256=oid,intermediate_full_sha_verified=True)
   raw=json.dumps(receipt,sort_keys=True).encode();manifest_commit=api.upload_file(path_or_fileobj=raw,path_in_repo='receipts/'+name+'.json',repo_id=REPO,repo_type='dataset',commit_message='Source payload manifest '+name)
-  accepted=dict(status='SOURCE_HKUST3_HF_ARCHIVE_SHA_PASS',group=name,archive_bytes=g['archive_bytes'],source_bytes=g['source_bytes'],archive_sha256=g['archive_sha256'],archive_commit=commit.oid,manifest_commit=manifest_commit.oid,hf_repo=REPO,private=True,completed=time.time());atomic(done,accepted);atomic(ROOT/'progress'/(name+'.json'),accepted);return accepted
+  accepted=dict(status='SOURCE_HKUST2_HF_ARCHIVE_SHA_PASS',group=name,archive_bytes=g['archive_bytes'],source_bytes=g['source_bytes'],archive_sha256=g['archive_sha256'],archive_commit=commit.oid,manifest_commit=manifest_commit.oid,hf_repo=REPO,private=True,completed=time.time());atomic(done,accepted);atomic(ROOT/'progress'/(name+'.json'),accepted);return accepted
  submitted=set();running={};summary_published=False
  with concurrent.futures.ThreadPoolExecutor(max_workers=2)as pool:
   while True:
