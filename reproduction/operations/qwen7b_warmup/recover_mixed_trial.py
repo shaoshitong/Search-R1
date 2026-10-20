@@ -57,8 +57,7 @@ r=subprocess.run(['sbatch','--hold','--parsable','--partition=emergency_acd','--
 new=r.stdout.strip().split(';')[0];assert new.isdigit();record.update(new_job=new,new_code_root=str(root),status='REPAIR_FIVE_EPOCH_JOB_HELD');atomic(record_path,record)
 shutil.copyfile(str(b/'submission.json'),str(b/('submission-'+old+'.json')))
 atomic(b/'submission.json',dict(job_id=new,partition='emergency_acd',gpus=4,code_root=str(root),source_commit=new_commit,replaces_failed_trial=old,additional_epochs=5,time=time.time()))
-t=b/'job.id.tmp';t.write_text(new+'
-');t.replace(b/'job.id');command(['scontrol','release',new])
+t=b/'job.id.tmp';t.write_text(new+chr(10));t.replace(b/'job.id');command(['scontrol','release',new])
 record.update(status='REPAIRED_FIVE_EPOCH_JOB_RELEASED',time=time.time());atomic(record_path,record)
 print(json.dumps(record));print(command(['squeue','-h','-u','mou176','-o','%i|%j|%T|%P|%R']))
 '''
