@@ -1,0 +1,135 @@
+{
+  "utc": "2026-10-20T21:08:16.623658+00:00",
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "scientific_model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "seed": 20261021,
+  "full_goal": {
+    "questions": 169028,
+    "trajectories": 845140,
+    "complete": false
+  },
+  "storage": {
+    "owner": "shaoshitong",
+    "physical_node": "h100-10",
+    "physical_path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+    "alias": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+    "no_foreign_directory": true,
+    "no_node11_local_output": true
+  },
+  "bank": {
+    "epoch": 1792530411.8729434,
+    "sealed_batches": 266,
+    "questions": 34048,
+    "trajectories": 170240,
+    "actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-pool-follow-actual-1792530412588735000.json"
+  },
+  "incremental_audit": {
+    "cache_reused_batches": 264,
+    "epoch": 1792530433.159468,
+    "failed_batches": 0,
+    "independently_read_batches": 2,
+    "labels": 170240,
+    "states_shards_independently_audited": false,
+    "status": "INCOMPLETE",
+    "strict_em_recomputed": false,
+    "verified_batches": 266,
+    "verified_unique_qids": 34048,
+    "verified_unique_trajectories": 170240,
+    "actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-audit-control-1792530455483305000.json",
+    "sha256": "00227e30409a5b9e5e9a8bcf5d7e42f91ae6744a931ec8edbada510783a69a5f",
+    "goal_complete": false
+  },
+  "parallel10": {
+    "controller_pid": 2452973,
+    "own_complete_batches": 2,
+    "watcher13936": "NATURAL_EXIT0",
+    "same_unit_continues": true,
+    "actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-native-first-batches-actual-1792530181569508000.json",
+    "actual_sha256": "41881d65b791b423a8921126401f3c7ad02d9ea4e8b0359729a9304614c78474"
+  },
+  "source5_groups": {
+    "groups": {
+      "retrieval": {
+        "epoch": 1792530429.1421254,
+        "unit": "sst-q7b-g5-source5-extra-retrieval-v1-70188b8e50fd.service",
+        "observed": {
+          "returncode": 0,
+          "properties": {
+            "MainPID": "2013773",
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "ControlGroup": "/system.slice/sst-q7b-g5-source5-extra-retrieval-v1-70188b8e50fd.service",
+            "LoadState": "loaded",
+            "ActiveState": "active"
+          },
+          "stderr": ""
+        },
+        "model_ready": true,
+        "actual_kv_blocks": 8192,
+        "own_complete_batches": 2,
+        "next_input_started": true,
+        "phases": [
+          {
+            "batch": "batch-000235",
+            "phase": "prefix",
+            "completed": 640,
+            "actual_sampled_tokens": 12800,
+            "utc": "2026-10-20T21:01:29.831213+00:00"
+          },
+          {
+            "batch": "batch-000235",
+            "phase": "full",
+            "completed": 400,
+            "actual_sampled_tokens": 32381,
+            "utc": "2026-10-20T21:06:51.183595+00:00"
+          }
+        ],
+        "failure": null,
+        "native_complete": null,
+        "actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-source-sublease-retrieval-status-1792530420829039000.json",
+        "actual_sha256": "2d395e3bdb7ca8a0ab3a2b890767706757d7fc8e0e1152b03c6f98ddfee4bc8c"
+      },
+      "model": {
+        "epoch": 1792530437.7298682,
+        "unit": "sst-q7b-g5-source5-extra-model-v1-70188b8e50fd.service",
+        "observed": {
+          "returncode": 0,
+          "properties": {
+            "MainPID": "2021698",
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "ControlGroup": "/system.slice/sst-q7b-g5-source5-extra-model-v1-70188b8e50fd.service",
+            "LoadState": "loaded",
+            "ActiveState": "active"
+          },
+          "stderr": ""
+        },
+        "model_ready": true,
+        "actual_kv_blocks": 8192,
+        "own_complete_batches": 1,
+        "next_input_started": true,
+        "phases": [
+          {
+            "batch": "batch-000237",
+            "phase": "prefix",
+            "completed": 200,
+            "actual_sampled_tokens": 4012,
+            "utc": "2026-10-20T21:07:15.760658+00:00"
+          }
+        ],
+        "failure": null,
+        "native_complete": null,
+        "actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-source-sublease-model-status-1792530429486971000.json",
+        "actual_sha256": "4fbb096d66979b7a631c5c982396a81d744846863a6eb9ad4477ad10423d7450"
+      }
+    },
+    "goal_complete": false,
+    "epoch": 1792530438.04508
+  },
+  "source5_watcher27788": "NATURAL_EXIT0_BOTH_WHOLE_AND_NEXT_PREFIX",
+  "initial_acceptance_complete_all_five": true,
+  "speedup_established": false,
+  "five_initialized_model_engines_over_physical_cards": 16,
+  "sole_confirmed_live_local_observer": 80605,
+  "full_goal_complete": false
+}
