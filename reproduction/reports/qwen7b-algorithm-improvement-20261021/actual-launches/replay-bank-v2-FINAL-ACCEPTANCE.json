@@ -1,0 +1,94 @@
+{
+  "status": "ACTUAL_MULTILAYER_BANK_CAPTURE_FULLSHA_ROLE_AND_SOURCE_PLAN_ACCEPTED",
+  "time": 1792519887.0198207,
+  "source_commit": "65f08f72b4e61cf72e3c43a202bda0508830a160",
+  "controller_commit": "92bf7117404fb2b6c4dd23794a49773b777b67ed",
+  "remote_base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021",
+  "bank_complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/bank-complete.json",
+    "bytes": 2756,
+    "sha256": "c593363dfaca0edf3f142e1fa5f93bd7f461432ce7b0f1e186101039ac163dc4"
+  },
+  "features_by_capture_layer": {
+    "20": {
+      "features": {
+        "bytes": 38306,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/features-layer-20.json",
+        "sha256": "378053edf25605803b6752f633c985bbb8e2bbdd08845da42767a9d1e61edf09"
+      },
+      "manifest_count": 144,
+      "trajectories": 45440
+    },
+    "23": {
+      "features": {
+        "bytes": 38306,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/features-layer-23.json",
+        "sha256": "242c788f66a8c28012c58e42f95e7b76a09cba8abadc8ff538e1fb43cb245c65"
+      },
+      "manifest_count": 144,
+      "trajectories": 45440
+    },
+    "26": {
+      "features": {
+        "bytes": 38306,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/features-layer-26.json",
+        "sha256": "d248a82c87a1a59297829f74d4cfdf977368f9f16fec129873b7e7ea6684aced"
+      },
+      "manifest_count": 144,
+      "trajectories": 45440
+    }
+  },
+  "group_identities": {
+    "bytes": 4065790,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/group-identities.json",
+    "sha256": "fd153748d2cddd8952267af9a5e3d18dbcf1cd191dea6c8277aeb4bbcec6553f"
+  },
+  "actual_role_counts": {
+    "fit": 6528,
+    "diagnostic512": 512,
+    "selection2048": 2048
+  },
+  "source_own_EM_banks": {
+    "selection": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/bank/groups.json",
+      "sha256": "ad5a2dd78464750b63154eb598935033758b2c926f75d25f60f1f7f380788d58"
+    },
+    "train_and_diagnostic": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/bank/groups.json",
+      "sha256": "03ffc0117f6ec71a43b874e34bd2e7ba6d5a5bb75d3df9b31e638f5a875da829"
+    }
+  },
+  "source_matched_plan": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/matched-loss128-v2/plan.json",
+    "sha256": "3423f65455a60c76d38d09802502e6bc343205fb3ffa2316541e35b80f7d195a"
+  },
+  "source_plan_and_selection_verified": true,
+  "capture_jobs": [
+    "743087",
+    "743088",
+    "743089",
+    "743090"
+  ],
+  "all_capture_jobs_completed_0": true,
+  "merge_returncode": 0,
+  "merge_process_exited": true,
+  "full_shared_file_SHA_verified": true,
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "source_runtime": "huggingface_frozen_causal_prefill",
+  "reader": "reproduction.operations.qwen7b_warmup.replay_feature_reader.ReplayFeatureReader",
+  "human_block_layers": [
+    21,
+    24,
+    27
+  ],
+  "capture_layers": [
+    20,
+    23,
+    26
+  ],
+  "prefix_tokens": 20,
+  "native_bitexact_equivalence_claim": false,
+  "permitted_use": "all variant fit and evaluation use the same new HF replay backend",
+  "weights_features_and_own_EM_remain_remote": true,
+  "student_updates": 0
+}
