@@ -1,3 +1,5 @@
+> FINAL: job743417 completed136 real updates/fullCP/native fixedG5 validation/independent acceptance; Slurm COMPLETED0:0. BA55.3908%,AUC57.4850%,Top197/512; joint gate versus nativeE4 FAILED. See [RESULTS.md](RESULTS.md). Earlier preparation/progress text below is historical.
+
 # 实验实现：精确均匀平均全部真实G5组合
 
 最新：父任务已明确GO并实际提交唯一作业743417；执行和验收进度见 [DEPLOYMENT.md](DEPLOYMENT.md)。下文记录79743d75实施准备时的设计与CPU资格，历史等待约束已被最新GO覆盖。

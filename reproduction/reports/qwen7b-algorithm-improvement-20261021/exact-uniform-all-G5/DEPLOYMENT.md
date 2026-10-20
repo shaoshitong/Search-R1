@@ -1,3 +1,5 @@
+> FINAL: job743417 completed136 real updates/fullCP/native fixedG5 validation/independent acceptance; Slurm COMPLETED0:0. BA55.3908%,AUC57.4850%,Top197/512; joint gate versus nativeE4 FAILED. See [RESULTS.md](RESULTS.md). Earlier preparation/progress text below is historical.
+
 # 已授权实际执行：唯一 all252 G10 作业
 
 父任务最新明确GO覆盖此前“等待G20最终证据后才可启动”的预备约束。本次只新启动这一个独立同源G10对照，不更改或停止既有任务。
