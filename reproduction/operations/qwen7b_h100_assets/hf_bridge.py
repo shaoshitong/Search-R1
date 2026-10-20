@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT=Path('/data/shaoshitong/qwen7b-h100-transfer-20261020')
 SOURCE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/migration-export-h100-20261020'
 REPO='Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020'
-SSH=['sshpass','-e','ssh','-T','-oStrictHostKeyChecking=yes','-oHostKeyAlias=hpc3login.hpc.hkust-gz.edu.cn','-oUserKnownHostsFile=/data/shaoshitong/qwen7b-h100-transfer-20261020/control/hpc3-known-hosts','-oBatchMode=no','-oNumberOfPasswordPrompts=1','-oConnectTimeout=10','-oServerAliveInterval=20','-oServerAliveCountMax=3','-oControlMaster=no','-S','none','mou176@10.120.81.30']
+SSH=['/data/shaoshitong/qwen7b-h100-transfer-20261020/bin/sshpass','-e','ssh','-T','-oStrictHostKeyChecking=yes','-oHostKeyAlias=hpc3login.hpc.hkust-gz.edu.cn','-oUserKnownHostsFile=/data/shaoshitong/qwen7b-h100-transfer-20261020/control/hpc3-known-hosts','-oBatchMode=no','-oNumberOfPasswordPrompts=1','-oConnectTimeout=10','-oServerAliveInterval=20','-oServerAliveCountMax=3','-oControlMaster=no','-S','none','mou176@10.120.81.30']
 
 def atomic(p,v):
  p=Path(p);p.parent.mkdir(parents=True,exist_ok=True);t=p.with_name(p.name+'.%d-%d.tmp'%(os.getpid(),threading.get_ident()));t.write_text(json.dumps(v,indent=2));t.replace(p)
