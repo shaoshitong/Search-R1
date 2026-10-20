@@ -33,13 +33,14 @@ assert not any((b/'probe'/name).exists() for name in ['progress.json','restore-a
 with (b/'probe/fit.lock').open('a') as h:fcntl.flock(h,fcntl.LOCK_EX|fcntl.LOCK_NB)
 record_path=b/'five-epoch-amendment.json';assert not record_path.exists(),'Inspect previous outcome first'
 publication=json.loads((b/'preparation/source-publication.json').read_text());config=json.loads((b/'config.json').read_text());assert config['fit_epochs']==4
+previous_publication=json.loads(json.dumps(publication))
 record=dict(status='GOAL_FIVE_EPOCH_AMENDMENT_INTENT',goal_created_at=1792496306,goal='监督直到完成探针训练5epoch，如果探针训练5epoch还没过拟合，那么继续训练，然后检查2048选择512后的混合比例，如果还是有问题，那么继续思考，解决过拟合问题，甚至增加数据集',recorded_time=time.time(),scope='Only replace never-started owned pending741944, no running process cancellation',old_job=old,old_source_commit=publication['commit'],new_source_commit=new_commit,previous_epochs=4,new_epochs=5)
 atomic(record_path,record);command(['scontrol','hold',old]);assert 'JobHeldUser' in row(old)[-1]
 new_root=b/('repo-'+new_commit[:12]);assert not new_root.exists();shutil.copytree(publication['code_root'],str(new_root))
 for rel,proof in new_files.items():
  data=base64.b64decode(proof['data']);assert hashlib.sha256(data).hexdigest()==proof['sha256'];(new_root/rel).write_bytes(data);publication['files'][rel]=proof['sha256']
 for rel,digest in publication['files'].items():assert hashlib.sha256((new_root/rel).read_bytes()).hexdigest()==digest,rel
-atomic(b/'preparation/source-before-five-epoch.json',publication)
+atomic(b/'preparation/source-before-five-epoch.json',previous_publication)
 publication.update(commit=new_commit,remote_sha=new_commit,code_root=str(new_root),time=time.time())
 config.update(fit_epochs=5,source_commit=new_commit,fit_file_sha256=new_files['reproduction/operations/qwen7b_warmup/mixed_finetune.py']['sha256'])
 old_config_path=b/'preparation/config-before-five-epoch.json';shutil.copyfile(str(b/'config.json'),str(old_config_path))
