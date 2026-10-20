@@ -1,0 +1,81 @@
+{
+  "cpu-prepare-controller": {
+    "args": [
+      "bash",
+      "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/code-d8f74420aa09/reproduction/operations/qwen7b_warmup/runtime.sh",
+      "-u",
+      "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29/score_peer_g10_calibration.py",
+      "--action",
+      "prepare"
+    ],
+    "pid": 1768267,
+    "source_commit": "c17b52780e299fe52bc5d64a679f46722c6004b1",
+    "time": 1792530969.3263109
+  },
+  "failure": {
+    "job_id": "743412",
+    "message": "'bytes'",
+    "time": 1792531032.8424768,
+    "traceback": "Traceback (most recent call last):\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29/score_peer_g10_calibration.py\", line 191, in main\n    result=prepare() if a.action=='prepare' else run(a.config_sha256);print(json.dumps(result if a.action=='prepare' else dict(status=result['status'],identities=result['identities'])),flush=True)\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29/score_peer_g10_calibration.py\", line 147, in run\n    checked(c['source_plan']);checked(c['source_training_complete']);checked(c['model_config']);checked(c['source_training_config'])\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29/score_peer_g10_calibration.py\", line 24, in checked\n    if any(actual[k]!=r[k] for k in ('bytes','sha256')):raise ValueError('Source SHA/size differs: '+str(p))\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29/score_peer_g10_calibration.py\", line 24, in <genexpr>\n    if any(actual[k]!=r[k] for k in ('bytes','sha256')):raise ValueError('Source SHA/size differs: '+str(p))\nKeyError: 'bytes'\n",
+    "type": "KeyError"
+  },
+  "gpu_log_tail": "Traceback (most recent call last):\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29/score_peer_g10_calibration.py\", line 193, in <module>\n    if __name__=='__main__':main()\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29/score_peer_g10_calibration.py\", line 191, in main\n    result=prepare() if a.action=='prepare' else run(a.config_sha256);print(json.dumps(result if a.action=='prepare' else dict(status=result['status'],identities=result['identities'])),flush=True)\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29/score_peer_g10_calibration.py\", line 147, in run\n    checked(c['source_plan']);checked(c['source_training_complete']);checked(c['model_config']);checked(c['source_training_config'])\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29/score_peer_g10_calibration.py\", line 24, in checked\n    if any(actual[k]!=r[k] for k in ('bytes','sha256')):raise ValueError('Source SHA/size differs: '+str(p))\n  File \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29/score_peer_g10_calibration.py\", line 24, in <genexpr>\n    if any(actual[k]!=r[k] for k in ('bytes','sha256')):raise ValueError('Source SHA/size differs: '+str(p))\nKeyError: 'bytes'\nsrun: error: ACD1-14: task 0: Exited with exit code 1\nsrun: Terminating StepId=743412.0\n",
+  "job_id": "743412",
+  "observed_epoch": 1792531097.2812126,
+  "preparation": {
+    "checkpoint_payloads_loaded": false,
+    "config": {
+      "bytes": 5501,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/config.json",
+      "sha256": "1836bb92aa8940449dc37b8ae830a28f639a35916badc0445826dff81acdb307"
+    },
+    "feature_payloads_loaded": false,
+    "identities": {
+      "ordered_own_strict_em_sha256": "f283946ef078d4c947e4cd6343d0c7478bb13052fe192b7065f25752648513fe",
+      "ordered_own_trajectory_ids_sha256": "ad1a0018a612c626584546c375cd6e28f10ed405bed34055cc3b91fb2e082cb7",
+      "ordered_qids_sha256": "8795c4379029f4d945516cf77db43095d101dd4a5960155932751e00edf22256",
+      "questions": 8192,
+      "trajectories": 81920
+    },
+    "optimizer_constructed": false,
+    "sbatch": {
+      "bytes": 1373,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/scoring.sbatch",
+      "sha256": "ffb58f03d56222c68ba1965d31782e37ce24c176a80368fc04de33a5fea56228"
+    },
+    "source_publication": {
+      "bytes": 906,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/source-publication.json",
+      "sha256": "39a0358ab7409331a45cccedfdeccf8b5d5ae4b0b5ae5879890015644cdd6575"
+    },
+    "status": "FROZEN_PEER8192_CALIBRATION_SCORER_PREPARED"
+  },
+  "sacct": "743412|q7b-peer8192-frozen-cal|FAILED|1:0|00:00:13|ACD1-14\n743412.batch|batch|FAILED|1:0|00:00:13|ACD1-14\n743412.extern|extern|COMPLETED|0:0|00:00:13|ACD1-14\n743412.0|bash|FAILED|1:0|00:00:13|ACD1-14",
+  "source-publication": {
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/code-c17b52780e29",
+    "commit": "c17b52780e299fe52bc5d64a679f46722c6004b1",
+    "pinned_runtime_commit": "d8f74420aa09fa56e8ec59207c6d1453fa86f95e"
+  },
+  "squeue": "",
+  "start_estimate": "",
+  "status": "FROZEN_CALIBRATION_CURRENT_ACTUAL_STATE",
+  "submission": {
+    "config": {
+      "bytes": 5501,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/config.json",
+      "sha256": "1836bb92aa8940449dc37b8ae830a28f639a35916badc0445826dff81acdb307"
+    },
+    "dependency": null,
+    "identity": "JobId=743412 JobName=q7b-peer8192-frozen-cal UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=0 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=JobHeldUser Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-21T05:16:34 EligibleTime=Unknown AccrueTime=Unknown StartTime=Unknown EndTime=Unknown Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T05:16:34 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:1775032 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/scoring.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/logs/scoring-743412.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/logs/scoring-743412.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+    "job_id": "743412",
+    "partition": "acd_u",
+    "qos": "normal",
+    "sbatch": {
+      "bytes": 1373,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v1/scoring.sbatch",
+      "sha256": "ffb58f03d56222c68ba1965d31782e37ce24c176a80368fc04de33a5fea56228"
+    },
+    "source_commit": "c17b52780e299fe52bc5d64a679f46722c6004b1",
+    "time": 1792530994.8056157
+  }
+}

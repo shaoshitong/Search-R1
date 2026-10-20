@@ -1,0 +1,328 @@
+{
+  "E2_job": {
+    "EMA_same_as_original_native_E2": true,
+    "Mixed_questions": 663,
+    "actor_updates": 0,
+    "calibration_grid_member": false,
+    "comparison_same_HF_frozen2048": {
+      "E1": {
+        "AUC": 0.5544369483422361,
+        "BA": 0.5067628273192087,
+        "Mixed_recall": 0.995475113122172,
+        "Top512_fraction": 0.361328125,
+        "Top512_mixed": 185,
+        "allcorrect_FPR": 0.996969696969697,
+        "allwrong_FPR": 0.9772511848341232,
+        "nonMixed_recall": 0.018050541516245487
+      },
+      "E2": {
+        "AUC": 0.5690532586264164,
+        "BA": 0.5625049686633887,
+        "Mixed_recall": 0.7481146304675717,
+        "Top512_fraction": 0.353515625,
+        "Top512_mixed": 181,
+        "allcorrect_FPR": 0.8121212121212121,
+        "allwrong_FPR": 0.5639810426540285,
+        "nonMixed_recall": 0.3768953068592058
+      },
+      "E4": {
+        "AUC": 0.5764760333458571,
+        "BA": 0.5577138158790315,
+        "Mixed_recall": 0.6757164404223228,
+        "Top512_fraction": 0.3828125,
+        "Top512_mixed": 196,
+        "allcorrect_FPR": 0.7151515151515152,
+        "allwrong_FPR": 0.5118483412322274,
+        "nonMixed_recall": 0.43971119133574005
+      },
+      "peer256": {
+        "AUC": 0.5598989387479513,
+        "BA": 0.5465546062912807,
+        "Mixed_recall": 0.6772247360482655,
+        "Top512_fraction": 0.35546875,
+        "Top512_mixed": 182,
+        "allcorrect_FPR": 0.8454545454545455,
+        "allwrong_FPR": 0.5023696682464455,
+        "nonMixed_recall": 0.41588447653429605
+      }
+    },
+    "complete": {
+      "bytes": 5644,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/complete.json",
+      "sha256": "5c2b36c78f86d70f793a8b1404895f80819f288a661260265004d3ddfdffaf5b"
+    },
+    "config": {
+      "bytes": 3506,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/config.json",
+      "sha256": "8c220fcad095ee96d330986f41d58b1c00cf8c2731ba160a8397d59870542798"
+    },
+    "confusion": {
+      "fn": 167,
+      "fp": 863,
+      "tn": 522,
+      "tp": 496
+    },
+    "ema_sha256": "458220794416386b9349851c85bd78b950225c6728cf450df0c30e619284d44d",
+    "final_pool_read": false,
+    "fixed_G5_sha256": "c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7",
+    "job_id": "743436",
+    "predictions": {
+      "bytes": 155453,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/predictions.jsonl.gz",
+      "sha256": "e0dc53be8c0847e8a736401452d309771bcdca98d5c129e6cef49afa3b12c2ac"
+    },
+    "probe_updates": 0,
+    "q_formula_max_error": 1.681662221697522e-07,
+    "questions": 2048,
+    "sacct": "743436|COMPLETED|0:0|00:01:44|ACD1-6\n743436.batch|COMPLETED|0:0|00:01:44|ACD1-6\n743436.extern|COMPLETED|0:0|00:01:44|ACD1-6\n743436.0|COMPLETED|0:0|00:01:44|ACD1-6",
+    "status": "SEALED_E2_SAME_HF_FIXED_G5_OWN_EM_BA_AUC_FPRS_AND_TOP512_INDEPENDENTLY_VERIFIED",
+    "terminal_normal_exit": true,
+    "time": 1792532369.36827,
+    "trajectories": 10240
+  },
+  "E2_runtime_commit": "6fc0ac0894c093632f5c1dbdeaf06c2f3ada668e",
+  "actor_updates": 0,
+  "decision": {
+    "best_BA": 0.5625049686633887,
+    "best_BA_model": "E2",
+    "best_Top512": 196,
+    "best_Top512_model": "E4",
+    "larger_goal_solved": false,
+    "peer_new_data_recipe_beats_both_primary_gates": false,
+    "untouched_final_confirmation_started": false
+  },
+  "failures": {
+    "fix": "Preserve mandatory SHA; validate bytes only when present; actual12 metadata refs preflight passed; immutable v2 only",
+    "initial_job743412": "FAILED1:0 before any scores due to legacy SHA-only model_config missing bytes",
+    "no_live_hotfix": true
+  },
+  "final_pool_read": false,
+  "model_or_feature_payload_local": false,
+  "observed_epoch": 1792532413.5611038,
+  "optimizer_created": false,
+  "pinned_model_reader_runtime_commit": "d8f74420aa09fa56e8ec59207c6d1453fa86f95e",
+  "primary_job": {
+    "CPU_compatible_inputs": {
+      "bytes": 5096,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/CPU-compatible-inputs.json",
+      "sha256": "74a320493427df82f57ebeef46309c445df9ce925285b31afa1ca48cc9788586"
+    },
+    "complete": {
+      "bytes": 7087,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/complete.json",
+      "sha256": "5660631604565664ee8d6aab20bacc3adf91fbf2407c251bfcd2c8cce6cd5c42"
+    },
+    "config": {
+      "bytes": 5501,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/config.json",
+      "sha256": "587efd8fbda1c3105174e6066e7a04681d7db5a88724ddd85178cbe06a6f3043"
+    },
+    "groups": {
+      "bytes": 6265928,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/groups-8192.json",
+      "sha256": "2c94b6413261c7cdbcd53f20dbfd69f3838c71665749e01d83928ede81c2ceeb"
+    },
+    "identities": {
+      "ordered_own_strict_em_sha256": "f283946ef078d4c947e4cd6343d0c7478bb13052fe192b7065f25752648513fe",
+      "ordered_own_trajectory_ids_sha256": "ad1a0018a612c626584546c375cd6e28f10ed405bed34055cc3b91fb2e082cb7",
+      "ordered_qids_sha256": "8795c4379029f4d945516cf77db43095d101dd4a5960155932751e00edf22256",
+      "questions": 8192,
+      "trajectories": 81920
+    },
+    "job_id": "743416",
+    "models": {
+      "E4": {
+        "G10_K": {
+          "0": 3844,
+          "1": 532,
+          "10": 859,
+          "2": 356,
+          "3": 317,
+          "4": 275,
+          "5": 252,
+          "6": 285,
+          "7": 368,
+          "8": 460,
+          "9": 644
+        },
+        "classwise": {
+          "allcorrect": {
+            "correct_count": 8590,
+            "mean_p_correct": 0.6734007787136675,
+            "mean_p_j": 0.6734007787136672,
+            "mean_p_wrong": null,
+            "mean_q_G10": 0.7381741165701985,
+            "questions": 859,
+            "wrong_count": 0,
+            "wrong_p_sum": 0.0
+          },
+          "allwrong": {
+            "correct_count": 0,
+            "correct_p_sum": 0.0,
+            "mean_p_correct": null,
+            "mean_p_j": 0.20198398564298511,
+            "mean_p_wrong": 0.20198398564298523,
+            "mean_q_G10": 0.5954307265991027,
+            "questions": 3844,
+            "wrong_count": 38440
+          },
+          "mixed": {
+            "correct_count": 18317,
+            "mean_p_correct": 0.473590779371008,
+            "mean_p_j": 0.39857947081009354,
+            "mean_p_wrong": 0.3156746171981805,
+            "mean_q_G10": 0.8525330050576667,
+            "questions": 3489,
+            "wrong_count": 16573
+          }
+        },
+        "ema_sha256": "a9e82905d2addd41d4da14957a79b051219867bbceca99029efe751c72720ef0",
+        "predictions": {
+          "bytes": 1751028,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/E4/predictions.jsonl.gz",
+          "sha256": "969faa1c8fc3ff9a81afa72e9abdd8fccad3fec78ddeb99844a54e3275994f3a"
+        },
+        "timing": {
+          "compute_seconds": 33.76571990479715,
+          "elapsed_seconds": 365.02796905091964,
+          "feature_io_seconds": 324.48632832127623,
+          "questions": 8192,
+          "trajectories": 81920
+        },
+        "training_calibration_only": true,
+        "trajectory_bce": 0.5367723940231872,
+        "verification": {
+          "all_logits_and_p_finite": true,
+          "labels_used_for_score": false,
+          "own_IDs_strict_EM_and_order_exact": true,
+          "questions": 8192,
+          "trajectories": 81920
+        }
+      },
+      "peer256": {
+        "G10_K": {
+          "0": 3844,
+          "1": 532,
+          "10": 859,
+          "2": 356,
+          "3": 317,
+          "4": 275,
+          "5": 252,
+          "6": 285,
+          "7": 368,
+          "8": 460,
+          "9": 644
+        },
+        "classwise": {
+          "allcorrect": {
+            "correct_count": 8590,
+            "mean_p_correct": 0.6136630416316511,
+            "mean_p_j": 0.6136630416316512,
+            "mean_p_wrong": null,
+            "mean_q_G10": 0.8852775757243052,
+            "questions": 859,
+            "wrong_count": 0,
+            "wrong_p_sum": 0.0
+          },
+          "allwrong": {
+            "correct_count": 0,
+            "correct_p_sum": 0.0,
+            "mean_p_correct": null,
+            "mean_p_j": 0.13758955803907613,
+            "mean_p_wrong": 0.13758955803907638,
+            "mean_q_G10": 0.5893127141992922,
+            "questions": 3844,
+            "wrong_count": 38440
+          },
+          "mixed": {
+            "correct_count": 18317,
+            "mean_p_correct": 0.3648684972905892,
+            "mean_p_j": 0.30220366271992066,
+            "mean_p_wrong": 0.23294451984711806,
+            "mean_q_G10": 0.839911545155198,
+            "questions": 3489,
+            "wrong_count": 16573
+          }
+        },
+        "ema_sha256": "b3cacc4eb54e3bfde52af9c5aa792d1421092f36295f49c16c599ca3ed2295f3",
+        "predictions": {
+          "bytes": 1700062,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/peer256/predictions.jsonl.gz",
+          "sha256": "33b7aa23ed5752231c48efe1c01244678b9ea858d676d93b88c9e32391a93964"
+        },
+        "timing": {
+          "compute_seconds": 30.232771589420736,
+          "elapsed_seconds": 359.2707590679638,
+          "feature_io_seconds": 322.8009209812153,
+          "questions": 8192,
+          "trajectories": 81920
+        },
+        "training_calibration_only": true,
+        "trajectory_bce": 0.4895745209588108,
+        "verification": {
+          "all_logits_and_p_finite": true,
+          "labels_used_for_score": false,
+          "own_IDs_strict_EM_and_order_exact": true,
+          "questions": 8192,
+          "trajectories": 81920
+        }
+      }
+    },
+    "sacct": "743416|COMPLETED|0:0|00:14:17|ACD1-14\n743416.batch|COMPLETED|0:0|00:14:17|ACD1-14\n743416.extern|COMPLETED|0:0|00:14:17|ACD1-14\n743416.0|COMPLETED|0:0|00:14:17|ACD1-14",
+    "scope": "seen training NQ8192 G10 calibration, not unseen performance",
+    "terminal_normal_exit": true
+  },
+  "probe_updates": 0,
+  "same_HF_fair_grid": {
+    "E1": {
+      "AUC": 0.5544369483422361,
+      "BA": 0.5067628273192087,
+      "Mixed_recall": 0.995475113122172,
+      "Top512_fraction": 0.361328125,
+      "Top512_mixed": 185,
+      "allcorrect_FPR": 0.996969696969697,
+      "allwrong_FPR": 0.9772511848341232,
+      "nonMixed_recall": 0.018050541516245487
+    },
+    "E2": {
+      "AUC": 0.5690532586264164,
+      "BA": 0.5625049686633887,
+      "Mixed_recall": 0.7481146304675717,
+      "Top512_fraction": 0.353515625,
+      "Top512_mixed": 181,
+      "allcorrect_FPR": 0.8121212121212121,
+      "allwrong_FPR": 0.5639810426540285,
+      "nonMixed_recall": 0.3768953068592058
+    },
+    "E4": {
+      "AUC": 0.5764760333458571,
+      "BA": 0.5577138158790315,
+      "Mixed_recall": 0.6757164404223228,
+      "Top512_fraction": 0.3828125,
+      "Top512_mixed": 196,
+      "allcorrect_FPR": 0.7151515151515152,
+      "allwrong_FPR": 0.5118483412322274,
+      "nonMixed_recall": 0.43971119133574005
+    },
+    "peer256": {
+      "AUC": 0.5598989387479513,
+      "BA": 0.5465546062912807,
+      "Mixed_recall": 0.6772247360482655,
+      "Top512_fraction": 0.35546875,
+      "Top512_mixed": 182,
+      "allcorrect_FPR": 0.8454545454545455,
+      "allwrong_FPR": 0.5023696682464455,
+      "nonMixed_recall": 0.41588447653429605
+    }
+  },
+  "scorer_runtime_commit": "a0f41cb45daa41ed811577037d950f4ff12dfe44",
+  "source_branch": "codex/peer8192-frozen-calibration-scoring-20261021",
+  "source_weights_Adam_unchanged": true,
+  "status": "FROZEN_PEER_G10_CALIBRATION_SCORES_AND_E2_SAME_HF_BASELINE_FULLY_VERIFIED",
+  "tests": {
+    "E2_cpu_regressions": 3,
+    "actual_export_execution_and_bash_n": true,
+    "actual_metadata_preflights": true,
+    "primary_cpu_regressions": 8
+  }
+}

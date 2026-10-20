@@ -1,0 +1,179 @@
+{
+  "CPU_compatible_inputs": {
+    "bytes": 5096,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/CPU-compatible-inputs.json",
+    "sha256": "74a320493427df82f57ebeef46309c445df9ce925285b31afa1ca48cc9788586"
+  },
+  "actor_updates": 0,
+  "complete": {
+    "bytes": 7087,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/complete.json",
+    "sha256": "5660631604565664ee8d6aab20bacc3adf91fbf2407c251bfcd2c8cce6cd5c42"
+  },
+  "config": {
+    "bytes": 5501,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/config.json",
+    "sha256": "587efd8fbda1c3105174e6066e7a04681d7db5a88724ddd85178cbe06a6f3043"
+  },
+  "evaluation_or_final_scored": false,
+  "groups": {
+    "bytes": 6265928,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/groups-8192.json",
+    "sha256": "2c94b6413261c7cdbcd53f20dbfd69f3838c71665749e01d83928ede81c2ceeb"
+  },
+  "identities": {
+    "ordered_own_strict_em_sha256": "f283946ef078d4c947e4cd6343d0c7478bb13052fe192b7065f25752648513fe",
+    "ordered_own_trajectory_ids_sha256": "ad1a0018a612c626584546c375cd6e28f10ed405bed34055cc3b91fb2e082cb7",
+    "ordered_qids_sha256": "8795c4379029f4d945516cf77db43095d101dd4a5960155932751e00edf22256",
+    "questions": 8192,
+    "trajectories": 81920
+  },
+  "job_id": "743416",
+  "models": {
+    "E4": {
+      "G10_K": {
+        "0": 3844,
+        "1": 532,
+        "10": 859,
+        "2": 356,
+        "3": 317,
+        "4": 275,
+        "5": 252,
+        "6": 285,
+        "7": 368,
+        "8": 460,
+        "9": 644
+      },
+      "classwise": {
+        "allcorrect": {
+          "correct_count": 8590,
+          "mean_p_correct": 0.6734007787136675,
+          "mean_p_j": 0.6734007787136672,
+          "mean_p_wrong": null,
+          "mean_q_G10": 0.7381741165701985,
+          "questions": 859,
+          "wrong_count": 0,
+          "wrong_p_sum": 0.0
+        },
+        "allwrong": {
+          "correct_count": 0,
+          "correct_p_sum": 0.0,
+          "mean_p_correct": null,
+          "mean_p_j": 0.20198398564298511,
+          "mean_p_wrong": 0.20198398564298523,
+          "mean_q_G10": 0.5954307265991027,
+          "questions": 3844,
+          "wrong_count": 38440
+        },
+        "mixed": {
+          "correct_count": 18317,
+          "mean_p_correct": 0.473590779371008,
+          "mean_p_j": 0.39857947081009354,
+          "mean_p_wrong": 0.3156746171981805,
+          "mean_q_G10": 0.8525330050576667,
+          "questions": 3489,
+          "wrong_count": 16573
+        }
+      },
+      "ema_sha256": "a9e82905d2addd41d4da14957a79b051219867bbceca99029efe751c72720ef0",
+      "predictions": {
+        "bytes": 1751028,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/E4/predictions.jsonl.gz",
+        "sha256": "969faa1c8fc3ff9a81afa72e9abdd8fccad3fec78ddeb99844a54e3275994f3a"
+      },
+      "timing": {
+        "compute_seconds": 33.76571990479715,
+        "elapsed_seconds": 365.02796905091964,
+        "feature_io_seconds": 324.48632832127623,
+        "questions": 8192,
+        "trajectories": 81920
+      },
+      "training_calibration_only": true,
+      "trajectory_bce": 0.5367723940231872,
+      "verification": {
+        "all_logits_and_p_finite": true,
+        "labels_used_for_score": false,
+        "own_IDs_strict_EM_and_order_exact": true,
+        "questions": 8192,
+        "trajectories": 81920
+      }
+    },
+    "peer256": {
+      "G10_K": {
+        "0": 3844,
+        "1": 532,
+        "10": 859,
+        "2": 356,
+        "3": 317,
+        "4": 275,
+        "5": 252,
+        "6": 285,
+        "7": 368,
+        "8": 460,
+        "9": 644
+      },
+      "classwise": {
+        "allcorrect": {
+          "correct_count": 8590,
+          "mean_p_correct": 0.6136630416316511,
+          "mean_p_j": 0.6136630416316512,
+          "mean_p_wrong": null,
+          "mean_q_G10": 0.8852775757243052,
+          "questions": 859,
+          "wrong_count": 0,
+          "wrong_p_sum": 0.0
+        },
+        "allwrong": {
+          "correct_count": 0,
+          "correct_p_sum": 0.0,
+          "mean_p_correct": null,
+          "mean_p_j": 0.13758955803907613,
+          "mean_p_wrong": 0.13758955803907638,
+          "mean_q_G10": 0.5893127141992922,
+          "questions": 3844,
+          "wrong_count": 38440
+        },
+        "mixed": {
+          "correct_count": 18317,
+          "mean_p_correct": 0.3648684972905892,
+          "mean_p_j": 0.30220366271992066,
+          "mean_p_wrong": 0.23294451984711806,
+          "mean_q_G10": 0.839911545155198,
+          "questions": 3489,
+          "wrong_count": 16573
+        }
+      },
+      "ema_sha256": "b3cacc4eb54e3bfde52af9c5aa792d1421092f36295f49c16c599ca3ed2295f3",
+      "predictions": {
+        "bytes": 1700062,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/peer256/predictions.jsonl.gz",
+        "sha256": "33b7aa23ed5752231c48efe1c01244678b9ea858d676d93b88c9e32391a93964"
+      },
+      "timing": {
+        "compute_seconds": 30.232771589420736,
+        "elapsed_seconds": 359.2707590679638,
+        "feature_io_seconds": 322.8009209812153,
+        "questions": 8192,
+        "trajectories": 81920
+      },
+      "training_calibration_only": true,
+      "trajectory_bce": 0.4895745209588108,
+      "verification": {
+        "all_logits_and_p_finite": true,
+        "labels_used_for_score": false,
+        "own_IDs_strict_EM_and_order_exact": true,
+        "questions": 8192,
+        "trajectories": 81920
+      }
+    }
+  },
+  "no_optimizer_created": true,
+  "peer_training_unchanged_Adam_steps": 10720,
+  "peer_training_unchanged_cursor": 256,
+  "probe_updates": 0,
+  "sacct": "743416|COMPLETED|0:0|00:14:17|ACD1-14\n743416.batch|COMPLETED|0:0|00:14:17|ACD1-14\n743416.extern|COMPLETED|0:0|00:14:17|ACD1-14\n743416.0|COMPLETED|0:0|00:14:17|ACD1-14",
+  "status": "BOTH_FROZEN_G10_MODELS_OWN_EM_LOGITS_SIGMOID_8192_IDS_AND_FILES_INDEPENDENTLY_VERIFIED",
+  "terminal_normal_exit": true,
+  "time": 1792532099.0484626,
+  "unseen_performance_claim": false
+}

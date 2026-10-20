@@ -1,0 +1,88 @@
+{
+  "E4": {
+    "ema_sha256": "a9e82905d2addd41d4da14957a79b051219867bbceca99029efe751c72720ef0",
+    "predictions": {
+      "bytes": 1751028,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/E4/predictions.jsonl.gz",
+      "sha256": "969faa1c8fc3ff9a81afa72e9abdd8fccad3fec78ddeb99844a54e3275994f3a"
+    },
+    "status": "ONE_FROZEN_TRAINING_G10_CALIBRATION_MODEL_COMPLETE",
+    "timing": {
+      "compute_seconds": 33.76571990479715,
+      "elapsed_seconds": 365.02796905091964,
+      "feature_io_seconds": 324.48632832127623,
+      "questions": 8192,
+      "trajectories": 81920
+    },
+    "verification": {
+      "all_logits_and_p_finite": true,
+      "labels_used_for_score": false,
+      "own_IDs_strict_EM_and_order_exact": true,
+      "questions": 8192,
+      "trajectories": 81920
+    }
+  },
+  "complete": {
+    "actor_updates": 0,
+    "groups": {
+      "bytes": 6265928,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/groups-8192.json",
+      "sha256": "2c94b6413261c7cdbcd53f20dbfd69f3838c71665749e01d83928ede81c2ceeb"
+    },
+    "identities": {
+      "ordered_own_strict_em_sha256": "f283946ef078d4c947e4cd6343d0c7478bb13052fe192b7065f25752648513fe",
+      "ordered_own_trajectory_ids_sha256": "ad1a0018a612c626584546c375cd6e28f10ed405bed34055cc3b91fb2e082cb7",
+      "ordered_qids_sha256": "8795c4379029f4d945516cf77db43095d101dd4a5960155932751e00edf22256",
+      "questions": 8192,
+      "trajectories": 81920
+    },
+    "normal_exit": true,
+    "probe_updates": 0,
+    "status": "FROZEN_E4_AND_PEER256_REAL_G10_CALIBRATION_SCORES_COMPLETE"
+  },
+  "complete_ref": {
+    "bytes": 7087,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/complete.json",
+    "sha256": "5660631604565664ee8d6aab20bacc3adf91fbf2407c251bfcd2c8cce6cd5c42"
+  },
+  "gpu_log_tail": "{\"model\": \"E4\", \"status\": \"ONE_FROZEN_TRAINING_G10_CALIBRATION_MODEL_COMPLETE\", \"questions\": 8192, \"elapsed_seconds\": 365.02796905091964}\n{\"model\": \"peer256\", \"status\": \"ONE_FROZEN_TRAINING_G10_CALIBRATION_MODEL_COMPLETE\", \"questions\": 8192, \"elapsed_seconds\": 359.2707590679638}\n{\"status\": \"FROZEN_E4_AND_PEER256_REAL_G10_CALIBRATION_SCORES_COMPLETE\", \"identities\": {\"ordered_own_strict_em_sha256\": \"f283946ef078d4c947e4cd6343d0c7478bb13052fe192b7065f25752648513fe\", \"ordered_own_trajectory_ids_sha256\": \"ad1a0018a612c626584546c375cd6e28f10ed405bed34055cc3b91fb2e082cb7\", \"ordered_qids_sha256\": \"8795c4379029f4d945516cf77db43095d101dd4a5960155932751e00edf22256\", \"questions\": 8192, \"trajectories\": 81920}}\n",
+  "job_id": "743416",
+  "observed_epoch": 1792532093.7594094,
+  "peer256": {
+    "ema_sha256": "b3cacc4eb54e3bfde52af9c5aa792d1421092f36295f49c16c599ca3ed2295f3",
+    "predictions": {
+      "bytes": 1700062,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/peer256/predictions.jsonl.gz",
+      "sha256": "33b7aa23ed5752231c48efe1c01244678b9ea858d676d93b88c9e32391a93964"
+    },
+    "status": "ONE_FROZEN_TRAINING_G10_CALIBRATION_MODEL_COMPLETE",
+    "timing": {
+      "compute_seconds": 30.232771589420736,
+      "elapsed_seconds": 359.2707590679638,
+      "feature_io_seconds": 322.8009209812153,
+      "questions": 8192,
+      "trajectories": 81920
+    },
+    "verification": {
+      "all_logits_and_p_finite": true,
+      "labels_used_for_score": false,
+      "own_IDs_strict_EM_and_order_exact": true,
+      "questions": 8192,
+      "trajectories": 81920
+    }
+  },
+  "progress": {
+    "actor_updates": 0,
+    "checkpoint": "peer256",
+    "completed_questions": 8192,
+    "completed_trajectories": 81920,
+    "compute_seconds": 30.232771589420736,
+    "elapsed_seconds": 359.25842104805633,
+    "expected_questions": 8192,
+    "feature_io_seconds": 322.8009209812153,
+    "observed_epoch": 1792532077.711393,
+    "probe_updates": 0
+  },
+  "sacct": "743416|q7b-peer8192-frozen-cal|COMPLETED|0:0|00:14:17|ACD1-14\n743416.batch|batch|COMPLETED|0:0|00:14:17|ACD1-14\n743416.extern|extern|COMPLETED|0:0|00:14:17|ACD1-14\n743416.0|bash|COMPLETED|0:0|00:14:17|ACD1-14",
+  "squeue": ""
+}

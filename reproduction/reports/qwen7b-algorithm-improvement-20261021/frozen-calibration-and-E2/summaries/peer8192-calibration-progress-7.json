@@ -1,0 +1,42 @@
+{
+  "E4": {
+    "ema_sha256": "a9e82905d2addd41d4da14957a79b051219867bbceca99029efe751c72720ef0",
+    "predictions": {
+      "bytes": 1751028,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/E4/predictions.jsonl.gz",
+      "sha256": "969faa1c8fc3ff9a81afa72e9abdd8fccad3fec78ddeb99844a54e3275994f3a"
+    },
+    "status": "ONE_FROZEN_TRAINING_G10_CALIBRATION_MODEL_COMPLETE",
+    "timing": {
+      "compute_seconds": 33.76571990479715,
+      "elapsed_seconds": 365.02796905091964,
+      "feature_io_seconds": 324.48632832127623,
+      "questions": 8192,
+      "trajectories": 81920
+    },
+    "verification": {
+      "all_logits_and_p_finite": true,
+      "labels_used_for_score": false,
+      "own_IDs_strict_EM_and_order_exact": true,
+      "questions": 8192,
+      "trajectories": 81920
+    }
+  },
+  "gpu_log_tail": "{\"model\": \"E4\", \"status\": \"ONE_FROZEN_TRAINING_G10_CALIBRATION_MODEL_COMPLETE\", \"questions\": 8192, \"elapsed_seconds\": 365.02796905091964}\n",
+  "job_id": "743416",
+  "observed_epoch": 1792531844.9380186,
+  "progress": {
+    "actor_updates": 0,
+    "checkpoint": "peer256",
+    "completed_questions": 2864,
+    "completed_trajectories": 28640,
+    "compute_seconds": 10.579519033664837,
+    "elapsed_seconds": 125.9689998049289,
+    "expected_questions": 8192,
+    "feature_io_seconds": 113.66312754200771,
+    "observed_epoch": 1792531844.4219718,
+    "probe_updates": 0
+  },
+  "sacct": "743416|q7b-peer8192-frozen-cal|RUNNING|0:0|00:10:15|ACD1-14\n743416.batch|batch|RUNNING|0:0|00:10:15|ACD1-14\n743416.extern|extern|RUNNING|0:0|00:10:15|ACD1-14\n743416.0|bash|RUNNING|0:0|00:10:15|ACD1-14",
+  "squeue": "743416|q7b-peer8192-frozen-cal|RUNNING|10:14|ACD1-14|ACD1-14"
+}

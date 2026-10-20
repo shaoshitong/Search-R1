@@ -1,0 +1,222 @@
+{
+  "complete": {
+    "actor_updates": 0,
+    "calibration_grid_member": false,
+    "checkpoint": {
+      "bytes": 3745810528,
+      "epoch": 2,
+      "model_dir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70",
+      "name": "E2",
+      "original_source_receipt": {
+        "bytes": 5767,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/epoch-0002.json",
+        "sha256": "4aa9271af7cbd7cf20bdd4301478b5697c7886653173838da612f674038d7674"
+      },
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/epoch-0002.pt",
+      "sha256": "6a970815ff3aec26eedf4d6a65589bbebac3c4ccbdf8eefdf859a83e2a11bd2d",
+      "source_config": {
+        "bytes": 2437,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/config.json",
+        "sha256": "cc1d8e68109d955636717ace7ddb09b1e6858513641efacfd5aa69707f6de796"
+      },
+      "source_receipt": {
+        "bytes": 5767,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/frozen-validation-ema3-20261021/inputs/source-E2-sealed-receipt.json",
+        "sha256": "4aa9271af7cbd7cf20bdd4301478b5697c7886653173838da612f674038d7674"
+      },
+      "steps": 11782
+    },
+    "config": {
+      "bytes": 3506,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/config.json",
+      "sha256": "8c220fcad095ee96d330986f41d58b1c00cf8c2731ba160a8397d59870542798"
+    },
+    "ema_sha256": "458220794416386b9349851c85bd78b950225c6728cf450df0c30e619284d44d",
+    "final_pool_read": false,
+    "fixed_G5_sha256": "c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7",
+    "groups": {
+      "bytes": 765709,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/groups-fixedG5.json",
+      "sha256": "ba073c5f0742e3969a9cafcb954c3dc8cca2b7e95890182b243e21e9a5d2e7e1"
+    },
+    "metrics": {
+      "diagnostic_losses": {
+        "group_bce": 1.015674326918088,
+        "group_event_nll": 1.9097367544891313,
+        "trajectory_bce": 0.6378532844246365
+      },
+      "labels_used_to_select": false,
+      "ordered_own_trajectory_ids_sha256": "acf5e010707351cdc442e844a7dc6d1a03bdb8d60fcbafe2b7907f749ddfac3c",
+      "ordered_qids_sha256": "bfbaf519144a2052799270b0313cc7ddef7afa3ed00f6f25099518d940c81ad7",
+      "pool": {
+        "allcorrect_false_positive_rate": 0.8121212121212121,
+        "allwrong_false_positive_rate": 0.5639810426540285,
+        "classwise": {
+          "allcorrect": {
+            "correct_group_recall": 0.18787878787878787,
+            "false_negative_rate": null,
+            "false_positive_rate": 0.8121212121212121,
+            "mean_q": 0.713279498642254,
+            "predicted_mixed": 268,
+            "predicted_mixed_fraction": 0.8121212121212121,
+            "questions": 330
+          },
+          "allwrong": {
+            "correct_group_recall": 0.43601895734597157,
+            "false_negative_rate": null,
+            "false_positive_rate": 0.5639810426540285,
+            "mean_q": 0.5592827432440214,
+            "predicted_mixed": 595,
+            "predicted_mixed_fraction": 0.5639810426540285,
+            "questions": 1055
+          },
+          "mixed": {
+            "correct_group_recall": 0.7481146304675717,
+            "false_negative_rate": 0.25188536953242835,
+            "false_positive_rate": null,
+            "mean_q": 0.6729950852850859,
+            "predicted_mixed": 496,
+            "predicted_mixed_fraction": 0.7481146304675717,
+            "questions": 663
+          }
+        },
+        "confusion": {
+          "fn": 167,
+          "fp": 863,
+          "tn": 522,
+          "tp": 496
+        },
+        "fixed_threshold": 0.5,
+        "k_histogram": [
+          1055,
+          181,
+          136,
+          132,
+          214,
+          330
+        ],
+        "mean_q": 0.6209088233488274,
+        "mixed_balanced_accuracy": 0.5625049686633887,
+        "mixed_false_negative_rate": 0.25188536953242835,
+        "mixed_fraction": 0.32373046875,
+        "mixed_questions": 663,
+        "mixed_recall": 0.7481146304675717,
+        "mixed_roc_auc": 0.5690532586264164,
+        "nonmixed_false_positive_rate": 0.6231046931407942,
+        "nonmixed_recall": 0.3768953068592058,
+        "questions": 2048
+      },
+      "selected512": {
+        "allcorrect_false_positive_rate": 1.0,
+        "allwrong_false_positive_rate": 1.0,
+        "classwise": {
+          "allcorrect": {
+            "correct_group_recall": 0.0,
+            "false_negative_rate": null,
+            "false_positive_rate": 1.0,
+            "mean_q": 0.9226490540000108,
+            "predicted_mixed": 104,
+            "predicted_mixed_fraction": 1.0,
+            "questions": 104
+          },
+          "allwrong": {
+            "correct_group_recall": 0.0,
+            "false_negative_rate": null,
+            "false_positive_rate": 1.0,
+            "mean_q": 0.9224182939739479,
+            "predicted_mixed": 227,
+            "predicted_mixed_fraction": 1.0,
+            "questions": 227
+          },
+          "mixed": {
+            "correct_group_recall": 1.0,
+            "false_negative_rate": 0.0,
+            "false_positive_rate": null,
+            "mean_q": 0.920935096003074,
+            "predicted_mixed": 181,
+            "predicted_mixed_fraction": 1.0,
+            "questions": 181
+          }
+        },
+        "confusion": {
+          "fn": 0,
+          "fp": 331,
+          "tn": 0,
+          "tp": 181
+        },
+        "fixed_threshold": 0.5,
+        "k_histogram": [
+          227,
+          35,
+          29,
+          46,
+          71,
+          104
+        ],
+        "mean_q": 0.9219408334465697,
+        "mixed_balanced_accuracy": 0.5,
+        "mixed_false_negative_rate": 0.0,
+        "mixed_fraction": 0.353515625,
+        "mixed_questions": 181,
+        "mixed_recall": 1.0,
+        "mixed_roc_auc": 0.4713324765068184,
+        "nonmixed_false_positive_rate": 1.0,
+        "nonmixed_recall": 0.0,
+        "questions": 512
+      },
+      "selected_qids_sha256": "5202c7a12000ae0ef627dc8754e90610f374bce2baf371d45b808cc8a36e09ed",
+      "selection_budget": 512,
+      "threshold_fitted": false,
+      "tie_break": "descending_q_then_lexicographic_string_qid",
+      "timing": {
+        "compute_seconds": 6.619347454048693,
+        "elapsed_seconds": 45.23248803499155,
+        "feature_io_seconds": 38.41096733836457
+      }
+    },
+    "normal_exit": true,
+    "optimizer_constructed": false,
+    "parameters_unchanged": true,
+    "predictions": {
+      "bytes": 155453,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/predictions.jsonl.gz",
+      "sha256": "e0dc53be8c0847e8a736401452d309771bcdca98d5c129e6cef49afa3b12c2ac"
+    },
+    "probe_updates": 0,
+    "status": "SEALED_E2_SAME_QUALIFIED_NEW_HF_FIXED_G5_BASELINE_COMPLETE"
+  },
+  "complete_ref": {
+    "bytes": 5644,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/complete.json",
+    "sha256": "5c2b36c78f86d70f793a8b1404895f80819f288a661260265004d3ddfdffaf5b"
+  },
+  "controller": {
+    "config": {
+      "bytes": 3506,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/config.json",
+      "sha256": "8c220fcad095ee96d330986f41d58b1c00cf8c2731ba160a8397d59870542798"
+    },
+    "ema_sha256": "458220794416386b9349851c85bd78b950225c6728cf450df0c30e619284d44d",
+    "job_id": "743436",
+    "pid": 2766649,
+    "time": 1792532246.5468132
+  },
+  "gpu_log_tail": "184, \"classwise\": {\"allwrong\": {\"questions\": 227, \"predicted_mixed\": 227, \"predicted_mixed_fraction\": 1.0, \"mean_q\": 0.9224182939739479, \"false_positive_rate\": 1.0, \"false_negative_rate\": null, \"correct_group_recall\": 0.0}, \"mixed\": {\"questions\": 181, \"predicted_mixed\": 181, \"predicted_mixed_fraction\": 1.0, \"mean_q\": 0.920935096003074, \"false_positive_rate\": null, \"false_negative_rate\": 0.0, \"correct_group_recall\": 1.0}, \"allcorrect\": {\"questions\": 104, \"predicted_mixed\": 104, \"predicted_mixed_fraction\": 1.0, \"mean_q\": 0.9226490540000108, \"false_positive_rate\": 1.0, \"false_negative_rate\": null, \"correct_group_recall\": 0.0}}, \"k_histogram\": [227, 35, 29, 46, 71, 104], \"mean_q\": 0.9219408334465697, \"allwrong_false_positive_rate\": 1.0, \"allcorrect_false_positive_rate\": 1.0, \"fixed_threshold\": 0.5}, \"selection_budget\": 512, \"selected_qids_sha256\": \"5202c7a12000ae0ef627dc8754e90610f374bce2baf371d45b808cc8a36e09ed\", \"ordered_qids_sha256\": \"bfbaf519144a2052799270b0313cc7ddef7afa3ed00f6f25099518d940c81ad7\", \"ordered_own_trajectory_ids_sha256\": \"acf5e010707351cdc442e844a7dc6d1a03bdb8d60fcbafe2b7907f749ddfac3c\", \"labels_used_to_select\": false, \"threshold_fitted\": false, \"tie_break\": \"descending_q_then_lexicographic_string_qid\", \"diagnostic_losses\": {\"trajectory_bce\": 0.6378532844246365, \"group_bce\": 1.015674326918088, \"group_event_nll\": 1.9097367544891313}, \"timing\": {\"elapsed_seconds\": 45.23248803499155, \"feature_io_seconds\": 38.41096733836457, \"compute_seconds\": 6.619347454048693}}}\n",
+  "job_id": "743436",
+  "observed_epoch": 1792532363.4428308,
+  "progress": {
+    "actor_optimizer_updates": 0,
+    "checkpoint": "E2-same-HF",
+    "completed_questions": 2048,
+    "completed_trajectories": 10240,
+    "compute_seconds": 6.619347454048693,
+    "elapsed_seconds": 45.15044486708939,
+    "expected_questions": 2048,
+    "feature_io_seconds": 38.41096733836457,
+    "observed_epoch": 1792532291.7042406,
+    "probe_optimizer_updates": 0
+  },
+  "sacct": "743436|q7b-E2-same-HF|COMPLETED|0:0|00:01:44|ACD1-6\n743436.batch|batch|COMPLETED|0:0|00:01:44|ACD1-6\n743436.extern|extern|COMPLETED|0:0|00:01:44|ACD1-6\n743436.0|bash|COMPLETED|0:0|00:01:44|ACD1-6",
+  "squeue": "",
+  "start_estimate": ""
+}

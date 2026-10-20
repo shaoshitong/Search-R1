@@ -1,0 +1,81 @@
+{
+  "EMA_same_as_original_native_E2": true,
+  "Mixed_questions": 663,
+  "actor_updates": 0,
+  "calibration_grid_member": false,
+  "comparison_same_HF_frozen2048": {
+    "E1": {
+      "AUC": 0.5544369483422361,
+      "BA": 0.5067628273192087,
+      "Mixed_recall": 0.995475113122172,
+      "Top512_fraction": 0.361328125,
+      "Top512_mixed": 185,
+      "allcorrect_FPR": 0.996969696969697,
+      "allwrong_FPR": 0.9772511848341232,
+      "nonMixed_recall": 0.018050541516245487
+    },
+    "E2": {
+      "AUC": 0.5690532586264164,
+      "BA": 0.5625049686633887,
+      "Mixed_recall": 0.7481146304675717,
+      "Top512_fraction": 0.353515625,
+      "Top512_mixed": 181,
+      "allcorrect_FPR": 0.8121212121212121,
+      "allwrong_FPR": 0.5639810426540285,
+      "nonMixed_recall": 0.3768953068592058
+    },
+    "E4": {
+      "AUC": 0.5764760333458571,
+      "BA": 0.5577138158790315,
+      "Mixed_recall": 0.6757164404223228,
+      "Top512_fraction": 0.3828125,
+      "Top512_mixed": 196,
+      "allcorrect_FPR": 0.7151515151515152,
+      "allwrong_FPR": 0.5118483412322274,
+      "nonMixed_recall": 0.43971119133574005
+    },
+    "peer256": {
+      "AUC": 0.5598989387479513,
+      "BA": 0.5465546062912807,
+      "Mixed_recall": 0.6772247360482655,
+      "Top512_fraction": 0.35546875,
+      "Top512_mixed": 182,
+      "allcorrect_FPR": 0.8454545454545455,
+      "allwrong_FPR": 0.5023696682464455,
+      "nonMixed_recall": 0.41588447653429605
+    }
+  },
+  "complete": {
+    "bytes": 5644,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/complete.json",
+    "sha256": "5c2b36c78f86d70f793a8b1404895f80819f288a661260265004d3ddfdffaf5b"
+  },
+  "config": {
+    "bytes": 3506,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/config.json",
+    "sha256": "8c220fcad095ee96d330986f41d58b1c00cf8c2731ba160a8397d59870542798"
+  },
+  "confusion": {
+    "fn": 167,
+    "fp": 863,
+    "tn": 522,
+    "tp": 496
+  },
+  "ema_sha256": "458220794416386b9349851c85bd78b950225c6728cf450df0c30e619284d44d",
+  "final_pool_read": false,
+  "fixed_G5_sha256": "c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7",
+  "job_id": "743436",
+  "predictions": {
+    "bytes": 155453,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/predictions.jsonl.gz",
+    "sha256": "e0dc53be8c0847e8a736401452d309771bcdca98d5c129e6cef49afa3b12c2ac"
+  },
+  "probe_updates": 0,
+  "q_formula_max_error": 1.681662221697522e-07,
+  "questions": 2048,
+  "sacct": "743436|COMPLETED|0:0|00:01:44|ACD1-6\n743436.batch|COMPLETED|0:0|00:01:44|ACD1-6\n743436.extern|COMPLETED|0:0|00:01:44|ACD1-6\n743436.0|COMPLETED|0:0|00:01:44|ACD1-6",
+  "status": "SEALED_E2_SAME_HF_FIXED_G5_OWN_EM_BA_AUC_FPRS_AND_TOP512_INDEPENDENTLY_VERIFIED",
+  "terminal_normal_exit": true,
+  "time": 1792532369.36827,
+  "trajectories": 10240
+}
