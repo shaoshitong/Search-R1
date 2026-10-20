@@ -91,6 +91,10 @@ def main():
                          'scheduler_completed_outer': 151, 'status': 'complete'},
                         sort_keys=True, indent=2).encode()
     assert value['json_suffix'](pretty, 'sampling_actor_version')['scheduler_completed_outer'] == 151
+    partial = _Path(b'{"event":"ACTUAL_ADAM_WRITE"}\n{"event":')
+    value['os'] = SimpleNamespace(fstat=lambda fd: SimpleNamespace(st_size=partial.size))
+    rows, prefix = value['ledger_rows'](partial)
+    assert rows == [{'event': 'ACTUAL_ADAM_WRITE'}] and prefix is None
     print(json.dumps(dict(
         status='PASS', old_8MiB_boundary_bytes=size,
         joint_per_file_limit_bytes=16 * 1024**2,

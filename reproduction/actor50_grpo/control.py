@@ -54,11 +54,12 @@ def json_prefix(raw,key,closures=b'}'):
  raise ValueError('Bounded JSON prefix anchor absent: '+key)
 def ledger_rows(path):
  size=path.stat().st_size
- if size<2*1024**2:return [json.loads(line) for line in file_bytes(path,2*1024**2).splitlines() if line],None
+ if size<2*1024**2:lines=file_bytes(path,2*1024**2).splitlines();prefix=None
  # Round150 embeds its previous actor receipt in the first restore event.
  # Read its small scalar prefix and complete recent lines, never the huge event.
- prefix=json_prefix(file_range(path,0,65536),'grounding_state')
- raw=file_range(path,-2097152,2097152);lines=raw.splitlines()[1:]
+ else:
+  prefix=json_prefix(file_range(path,0,65536),'grounding_state')
+  raw=file_range(path,-2097152,2097152);lines=raw.splitlines()[1:]
  rows=[]
  for i,line in enumerate(lines):
   try:rows.append(json.loads(line))
