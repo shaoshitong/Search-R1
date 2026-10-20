@@ -60,7 +60,8 @@ if same:
   pr=[]
   for p in sorted((base/'outers'/('outer-%06d'%committed)/'probe-update').glob('rank-*-updates.jsonl')):
    rows=[json.loads(line) for line in p.read_bytes().splitlines()]
-   pr.append(dict(rank=rows[0]['rank'],writes=len(rows),first_adam=rows[0]['actual_adam_steps'],last_adam=rows[-1]['actual_adam_steps'],learning_rates=sorted({row['actual_learning_rate'] for row in rows})))
+   rates={row.get('actual_learning_rate',row.get('learning_rate')) for row in rows}
+   pr.append(dict(rank=rows[0]['rank'],writes=len(rows),first_adam=rows[0]['actual_adam_steps'],last_adam=rows[-1]['actual_adam_steps'],learning_rates=sorted(rate for rate in rates if rate is not None),learning_rate_record_missing=None in rates))
   probe_meta={k:v for k,v in joint['probe'].items() if isinstance(v,(str,int,float,bool,type(None))) or (isinstance(v,list) and len(v)<=16 and all(isinstance(x,(str,int,float,bool,type(None))) for x in v))}
   result['joint']=dict(outer=committed,sha256=sha,actor=joint['actor']['actual_adam_steps_per_rank'],scheduler=joint['actor']['scheduler_completed_outer'],probe=joint['probe']['actual_adam_steps_per_rank'],probe_meta=probe_meta,probe_ranks=pr,phase_timings=joint.get('phase_timings'),selection_metrics=joint.get('selection_metrics'),ranks=ar)
 print(json.dumps(result))
