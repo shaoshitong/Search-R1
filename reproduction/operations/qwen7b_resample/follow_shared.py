@@ -57,9 +57,10 @@ print(json.dumps(value))
 '''
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--controller-pid',required=True);p.add_argument('--job-prefix',choices=('job-shared5-','job-relay10-'),default='job-shared5-');p.add_argument('--own-batches',type=int,default=2);p.add_argument('--per-engine-batches',type=int,default=0);p.add_argument('--interval',type=int,default=60);p.add_argument('--hours',type=float,default=4)
+ p=argparse.ArgumentParser();p.add_argument('--latest-name',default='qwen7b-native-first-batches-latest-small.json');p.add_argument('--controller-pid',required=True);p.add_argument('--job-prefix',choices=('job-shared5-','job-relay10-'),default='job-shared5-');p.add_argument('--own-batches',type=int,default=2);p.add_argument('--per-engine-batches',type=int,default=0);p.add_argument('--interval',type=int,default=60);p.add_argument('--hours',type=float,default=4)
  a=p.parse_args();assert a.controller_pid.isdigit()and a.own_batches>0 and a.per_engine_batches>=0 and a.interval>=30
- latest=ROOT/'work/qwen7b-native-first-batches-latest-small.json';until=time.monotonic()+a.hours*3600;last=None
+ assert Path(a.latest_name).name==a.latest_name and a.latest_name.endswith('.json')
+ latest=ROOT/'work'/a.latest_name;until=time.monotonic()+a.hours*3600;last=None
  print(json.dumps(dict(status='READONLY_NATIVE_FIRST_BATCHES_FOLLOWER_STARTED',controller_pid=a.controller_pid,target_own_complete_batches=a.own_batches)),flush=True)
  while time.monotonic()<until:
   try:

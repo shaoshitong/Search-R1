@@ -1,0 +1,88 @@
+{
+  "status": "THREE_UNITS_ACTIVE_ALL_16_GPU_OWN_CONTEXTS_PASS",
+  "source": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-three-unit-context-fresh-20261021-summary.json",
+  "source_sha256": "642c1ce486b1fe5063d57c2ceb9a3f5db0fb310b050da814440c415186f7622a",
+  "nodes": [
+    {
+      "node": "h100-5",
+      "epoch": 1792527607.3663316,
+      "gpu_indices_with_own_context": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "units": [
+        {
+          "unit": "sst-q7b-g5-sharedvram-v6-70188b8e50fd.service",
+          "main_pid": 1490214,
+          "birth_ticks": "6807965",
+          "active_state": "active",
+          "sub_state": "running",
+          "cgroup_pids": [
+            1490214,
+            1490465,
+            1498502,
+            1499832,
+            1499833,
+            1499834,
+            1499835
+          ]
+        }
+      ]
+    },
+    {
+      "node": "h100-10",
+      "epoch": 1792527605.4427514,
+      "gpu_indices_with_own_context": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "units": [
+        {
+          "unit": "sst-q7b-g5-consumer10-v5-70188b8e50fd.service",
+          "main_pid": 2371322,
+          "birth_ticks": "1958624331",
+          "active_state": "active",
+          "sub_state": "running",
+          "cgroup_pids": [
+            2371322,
+            2371352,
+            2371361,
+            2372106,
+            2372107,
+            2372108,
+            2372109
+          ]
+        },
+        {
+          "unit": "sst-q7b-g5-consumer10-parallel-v1-70188b8e50fd.service",
+          "main_pid": 2452973,
+          "birth_ticks": "1958806278",
+          "active_state": "active",
+          "sub_state": "running",
+          "cgroup_pids": [
+            2452973,
+            2453002,
+            2453888,
+            2453889,
+            2453890,
+            2453891
+          ]
+        }
+      ]
+    }
+  ],
+  "foreign_signalled": false,
+  "goal_complete": false
+}
