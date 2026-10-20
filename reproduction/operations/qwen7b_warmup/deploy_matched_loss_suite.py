@@ -79,7 +79,7 @@ with (suite/'prepare.lock').open('a') as lock:
    config=dict(model_dir=c['model_dir'],update_budget=128,global_groups=51,micro_groups=2,save_every=16,recipe=dict(id=name,loss_kwargs=dict(trajectory_weight=1.,**group_kwargs)),code_hashes=hashes,source_commit=commit,screening_only=True,source_world_size=4,current_world_size=1,**assets)
    if (base/'config.json').exists():assert read(base/'config.json')==config,'Conflicting prepared config; do not overwrite'
    else:atomic(base/'config.json',config)
-   script='''#!/usr/bin/env bash
+   script="""#!/usr/bin/env bash
 #SBATCH --job-name=q7b-loss128-NAME
 #SBATCH --partition=acd_u
 #SBATCH --account=mou176
@@ -98,7 +98,7 @@ export FLASH_ATTENTION_DETERMINISTIC=1
 export CUBLAS_WORKSPACE_CONFIG=:4096:8
 export OMP_NUM_THREADS=8 MKL_NUM_THREADS=8 OPENBLAS_NUM_THREADS=8
 srun --kill-on-bad-exit=1 bash ROOT/reproduction/operations/qwen7b_warmup/runtime.sh -u -m reproduction.operations.qwen7b_warmup.probe_ablation_train --base BASE
-'''.replace('NAME',name).replace('BASE',str(base)).replace('ROOT',str(root))
+""".replace('NAME',name).replace('BASE',str(base)).replace('ROOT',str(root))
    (base/'fit.sbatch').write_text(script);variants[name]=dict(base=str(base),config=ref(base/'config.json'),sbatch=ref(base/'fit.sbatch'))
   acceptance=dict(status='MATCHED_LOSS128_SUITE_PREPARED_ACTUAL_CPU_TESTS_PASSED',source_commit=commit,code_root=str(root),source_checkpoint=sr,source_adam_steps=10464,fit_questions=6528,fit_trajectories=32640,fit_updates_per_variant=128,global_groups=51,variants=variants,plan=ref(suite/'plan.json'),cpu_tests_log=ref(suite/'actual-cpu-tests.log'),hardware_topology_changed=True,no_four_rank_equivalence_claim=True,actor_updates=0,screening_only=True,time=time.time())
   atomic(suite/'preparation.json',acceptance);print(json.dumps(acceptance))
