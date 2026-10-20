@@ -22,7 +22,7 @@ def atomic(p,v):
 def command(args):
  r=subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.PIPE,universal_newlines=True,timeout=45);assert r.returncode==0,(args,r.stderr);return r.stdout.strip()
 old=(b/'job.id').read_text().strip();assert old=='742009'
-assert not command(['squeue','-h','-j',old,'-o','%T']);accounting=command(['sacct','-X','-n','-P','-j',old,'--format=JobID,State,ExitCode']);assert accounting.startswith(old+'|FAILED|1:0'),accounting
+assert old not in command(['squeue','-h','-u','mou176','-o','%i']).splitlines();accounting=command(['sacct','-X','-n','-P','-j',old,'--format=JobID,State,ExitCode']);assert accounting.startswith(old+'|FAILED|1:0'),accounting
 assert not any((b/'probe'/n).exists() for n in ['progress.json','latest.json','next-update-proof.json']),'Do not discard accepted progress'
 with (b/'probe/fit.lock').open('a') as h:fcntl.flock(h,fcntl.LOCK_EX|fcntl.LOCK_NB)
 record_path=b/'preparation/deterministic-recovery.json';assert not record_path.exists(),'Resolve existing attempt first'
