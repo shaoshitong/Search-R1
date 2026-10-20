@@ -16,6 +16,7 @@ import random
 import signal
 import time
 from contextlib import nullcontext
+from datetime import timedelta
 import numpy as np
 import torch
 import torch.distributed as dist
@@ -41,7 +42,7 @@ def model_hash(model):
 
 
 def actual_steps(optimizer):
-    values={int(s['step'].item()) for s in optimizer.state.values()}
+    values={int(s['step'].item()) for s in optimizer.state.values() if s}
     return next(iter(values)) if len(values)==1 else (0 if not values else -1)
 
 
@@ -49,7 +50,7 @@ def optimizer_hash(optimizer):
     h=hashlib.sha256()
     for group in optimizer.param_groups:
         for parameter in group['params']:
-            for key,value in sorted(optimizer.state[parameter].items()):
+            for key,value in sorted(optimizer.state.get(parameter,{}).items()):
                 h.update(key.encode())
                 h.update(value.detach().cpu().contiguous().numpy().tobytes() if torch.is_tensor(value) else repr(value).encode())
     return h.hexdigest()
@@ -71,15 +72,64 @@ def balanced_plan(groups, seed, epoch):
     return batches,dict(original_counts={k:len(v) for k,v in buckets.items()},balanced_per_class=n,groups=3*n)
 
 
+def apply_update(ddp,model,ema,optimizer,reader,groups,indices,rank,device):
+    own=indices[rank::4];optimizer.zero_grad(set_to_none=True);summaries=[];io=0.;started=time.monotonic()
+    before=actual_steps(optimizer)
+    for offset in range(0,len(own),2):
+        part=own[offset:offset+2];selected=[groups[i] for i in part];tick=time.monotonic()
+        data=reader.get([tid for g in selected for tid in g['trajectory_ids']],device);io+=time.monotonic()-tick
+        labels=torch.tensor([g['labels'] for g in selected],dtype=torch.float32,device=device)
+        context=ddp.no_sync() if offset+2<len(own) else nullcontext()
+        with context:
+            with torch.autocast('cuda',dtype=torch.bfloat16):logits=ddp(data).reshape(len(part),5)
+            loss=joint_loss(logits,labels,group_weight=1.)
+            (loss['loss']*(4*len(part)/len(indices))).backward()
+        summaries.append((len(part),float(loss['trajectory_bce'].detach()),float(loss['group_bce'].detach())))
+    finite=torch.tensor(int(all(p.grad is None or bool(torch.isfinite(p.grad).all()) for p in model.parameters())),device=device)
+    dist.all_reduce(finite,op=dist.ReduceOp.MIN);assert finite.item()==1,'Nonfinite probe gradient'
+    optimizer.step();assert actual_steps(optimizer)==before+1
+    with torch.no_grad():
+        for target,value in zip(ema.parameters(),model.parameters()):target.mul_(.99).add_(value,alpha=.01)
+    stats=torch.tensor([sum(n*t for n,t,g in summaries),sum(n*g for n,t,g in summaries),len(own),io,time.monotonic()-started],device=device,dtype=torch.float64)
+    dist.all_reduce(stats)
+    return dict(trajectory_bce=float(stats[0]/stats[2]),group_bce=float(stats[1]/stats[2]),total_loss=float((stats[0]+stats[1])/stats[2]),mean_rank_io_seconds=float(stats[3]/4),mean_rank_step_seconds=float(stats[4]/4))
+
+
+def restore_state(model,ema,optimizer,saved,rank,device):
+    model.load_state_dict(saved['raw'],strict=True);ema.load_state_dict(saved['ema'],strict=True)
+    restore_buffers(model,saved['raw_buffers']);restore_buffers(ema,saved['ema_buffers']);optimizer.load_state_dict(saved['optimizer'])
+    for state in optimizer.state.values():
+        for key,value in state.items():
+            if torch.is_tensor(value) and key!='step':state[key]=value.to(device)
+    own=saved['rank_states'][rank]['rng'];random.setstate(own['python']);np.random.set_state(own['numpy']);torch.set_rng_state(own['torch']);torch.cuda.set_rng_state(own['cuda'])
+    assert actual_steps(optimizer)==saved['steps']
+
+
 def evaluate(model, reader, groups, rank, device, output, epoch, split):
     model.eval();stats=torch.zeros(20,dtype=torch.float64,device=device)
     own=groups[rank::4]
+    # Equal-length synchronized chunks bound rank skew before the final metric
+    # reduction; every rank participates even for a short final partition.
+    rounds=math.ceil(math.ceil(len(groups)/4)/2)
+    io_seconds=compute_seconds=0.;started=time.monotonic()
     destination=output/('epoch-%04d-%s-rank%d.jsonl.gz'%(epoch,split,rank))
     temporary=destination.with_suffix('.tmp')
+    def pulse(iteration,offset,stream):
+        if (iteration+1)%128==0 or iteration+1==rounds:
+            stream.flush()
+            atomic(output/('eval-%s-rank%d-progress.json'%(split,rank)),dict(epoch=epoch,split=split,rank=rank,
+                completed_local_groups=min(offset+2,len(own)),expected_local_groups=len(own),io_seconds=io_seconds,
+                compute_seconds=compute_seconds,elapsed_seconds=time.monotonic()-started,epoch_time=time.time()))
+            heartbeat=torch.tensor([min(offset+2,len(own))],dtype=torch.long,device=device);dist.all_reduce(heartbeat)
     with torch.no_grad(),gzip.open(temporary,'wt') as stream:
-        for offset in range(0,len(own),2):
+        for iteration in range(rounds):
+            offset=2*iteration
             selected=own[offset:offset+2];ids=[tid for g in selected for tid in g['trajectory_ids']]
+            if not selected:
+                pulse(iteration,offset,stream);continue
+            tick=time.monotonic()
             data=reader.get(ids,device);labels=torch.tensor([g['labels'] for g in selected],device=device,dtype=torch.float32)
+            io_seconds+=time.monotonic()-tick;tick=time.monotonic()
             with torch.autocast('cuda',dtype=torch.bfloat16):logits=model(data).reshape(-1,5)
             loss=joint_loss(logits,labels,group_weight=1.);pred=loss['mixed_probability']>=.5;target=loss['mixed_label'].bool()
             predicted_count=(logits>=0).sum(1);true_count=labels.sum(1)
@@ -95,6 +145,8 @@ def evaluate(model, reader, groups, rank, device, output, epoch, split):
                 stream.write(json.dumps(dict(qid=g['qid'],trajectory_ids=g['trajectory_ids'],p_j=p,
                     predicted_mixed=q,strict_em=g['labels'],true_mixed=0<sum(g['labels'])<5,
                     epoch=epoch,split=split,weight_kind='EMA0.99'))+'\n')
+            compute_seconds+=time.monotonic()-tick
+            pulse(iteration,offset,stream)
     temporary.replace(destination)
     dist.all_reduce(stats);n,tb,gb,tp,fp,fn,tn,correct,trajectories,pmean,mixed=stats[:11].tolist()
     assert int(n)==len(groups)
@@ -106,7 +158,7 @@ def evaluate(model, reader, groups, rank, device, output, epoch, split):
         prediction_file_pattern=str(output/('epoch-%04d-%s-rank*.jsonl.gz'%(epoch,split))))
 
 
-def save(root, model, ema, optimizer, epoch, cursor, steps, config_sha, bank_sha, metrics, rank):
+def save(root, model, ema, optimizer, epoch, cursor, steps, config_sha, bank_sha, metrics, rank,qualification_only=False):
     rng=dict(python=random.getstate(),numpy=np.random.get_state(),torch=torch.get_rng_state(),cuda=torch.cuda.get_rng_state())
     local=dict(rank=rank,model_sha256=model_hash(model),ema_sha256=model_hash(ema),
         optimizer_sha256=optimizer_hash(optimizer),steps=actual_steps(optimizer),rng=rng)
@@ -115,10 +167,11 @@ def save(root, model, ema, optimizer, epoch, cursor, steps, config_sha, bank_sha
     assert [s['steps'] for s in all_states]==[steps]*4
     assert len({s['optimizer_sha256'] for s in all_states})==1
     if rank==0:
-        name='epoch-%04d.pt'%epoch if cursor==0 else 'inflight.pt'
+        completed=cursor==0 and steps>0
+        name='initial.pt' if steps==0 else ('epoch-%04d.pt'%epoch if completed else 'inflight.pt')
         path=root/name;temp=path.with_suffix('.tmp')
         state=dict(role='QWEN7B_NATIVE_LAYER26_BLOCK27_PREFIX5_FULL_BANK_WARMUP',epoch=epoch,cursor=cursor,
-            completed_epoch=cursor==0,steps=steps,config_sha256=config_sha,bank_sha256=bank_sha,
+            completed_epoch=completed,steps=steps,config_sha256=config_sha,bank_sha256=bank_sha,qualification_only=qualification_only,
             raw=model.state_dict(),ema=ema.state_dict(),optimizer=optimizer.state_dict(),
             raw_buffers=native_buffers(model),ema_buffers=native_buffers(ema),
             rank_states=all_states,metrics=metrics,actor_updates=0,epoch_time=time.time(),
@@ -131,14 +184,14 @@ def save(root, model, ema, optimizer, epoch, cursor, steps, config_sha, bank_sha
         assert loaded['steps']==steps and loaded['cursor']==cursor and len(loaded['rank_states'])==4
         for part in ('raw','ema'):
             assert all(bool(torch.isfinite(value).all()) for value in loaded[part].values())
-        assert {int(s['step']) for s in loaded['optimizer']['state'].values()}=={steps}
-        assert all(bool(torch.isfinite(s[key]).all()) for s in loaded['optimizer']['state'].values() for key in ('exp_avg','exp_avg_sq'))
+        assert ({int(s['step']) for s in loaded['optimizer']['state'].values() if s} or {0})=={steps}
+        assert all(bool(torch.isfinite(s[key]).all()) for s in loaded['optimizer']['state'].values() if s for key in ('exp_avg','exp_avg_sq'))
         del loaded
         item=dict(path=str(path),**fingerprints(path),epoch=epoch,cursor=cursor,steps=steps,
-            config_sha256=config_sha,bank_sha256=bank_sha,completed_epoch=cursor==0,actor_updates=0,
+            config_sha256=config_sha,bank_sha256=bank_sha,completed_epoch=completed,actor_updates=0,qualification_only=qualification_only,
             independent_cpu_reload=True,all_rank_optimizer_moments_match=True)
         atomic(root/'latest.json',item)
-        if cursor==0:atomic(root/('epoch-%04d.json'%epoch),dict(item,metrics=metrics))
+        if completed:atomic(root/('epoch-%04d.json'%epoch),dict(item,metrics=metrics))
     dist.barrier()
 
 
@@ -146,7 +199,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--base',required=True);args=parser.parse_args()
     base=Path(args.base);c=json.loads((base/'config.json').read_text())
     rank=int(os.environ['RANK']);local_rank=int(os.environ['LOCAL_RANK']);assert int(os.environ['WORLD_SIZE'])==4
-    torch.cuda.set_device(local_rank);device=torch.device('cuda',local_rank);dist.init_process_group('nccl')
+    torch.cuda.set_device(local_rank);device=torch.device('cuda',local_rank);dist.init_process_group('nccl',timeout=timedelta(minutes=30))
     for sig in (signal.SIGTERM,signal.SIGUSR1):signal.signal(sig,stop)
     random.seed(c['seed']+rank);np.random.seed(c['seed']+rank);torch.manual_seed(c['seed']+rank)
     os.environ['QWEN7B_QUESTION_MAX_TOKENS']=str(c['question_max_tokens'])
@@ -171,7 +224,8 @@ def main():
         assert fingerprints(receipt['path'])['sha256']==receipt['sha256']
         saved=torch.load(receipt['path'],map_location='cpu',weights_only=False)
         assert saved['config_sha256']==config_sha and saved['bank_sha256']==bank_sha and saved['actor_updates']==0
-        assert saved['fit_code_sha256']==fingerprints(Path(__file__))['sha256'],'Explicitly qualify a changed fit implementation before resume'
+        assert not saved.get('qualification_only',False),'Shadow qualification is not a warmup checkpoint'
+        assert saved['steps']==0 or saved['fit_code_sha256']==fingerprints(Path(__file__))['sha256'],'Explicitly qualify a changed fit implementation before resume'
         model.load_state_dict(saved['raw'],strict=True);ema.load_state_dict(saved['ema'],strict=True)
         restore_buffers(model,saved['raw_buffers']);restore_buffers(ema,saved['ema_buffers']);optimizer.load_state_dict(saved['optimizer'])
         for state in optimizer.state.values():
@@ -183,6 +237,14 @@ def main():
     elif rank==0:
         atomic(root/'initialization.json',dict(native_block=27,feature_layer=26,fit_prefix=5,capture_prefix=20,
             actor_updates=0,rank_count=4,actual_adam=0,epoch=time.time()))
+    if not (root/'latest.json').exists():
+        save(root,model,ema,optimizer,1,0,0,config_sha,bank_sha,None,rank)
+    qualification=base/'probe-qualification/proof.json'
+    if steps==0:
+        valid=qualification.exists() and json.loads(qualification.read_text()).get('status')=='FOUR_RANK_GPU_RECOVERY_QUALIFICATION_PASSED' and json.loads(qualification.read_text()).get('fit_code_sha256')==fingerprints(Path(__file__))['sha256']
+        if not valid:
+            from .gpu_qualification import qualify
+            qualify(base,c,reader,groups['train'],model,rank,device,config_sha,bank_sha,apply_update,save,restore_state)
     if steps==0:
         before={split:evaluate(ema,reader,groups[split],rank,device,predictions,0,split) for split in ('train','diagnostic')}
         if rank==0:atomic(root/'epoch-0000-metrics.json',before)
@@ -191,28 +253,10 @@ def main():
         model.train()
         for index,indices in enumerate(batches):
             if epoch==start_epoch and index<cursor:continue
-            own=indices[rank::4];optimizer.zero_grad(set_to_none=True);summaries=[]
-            for offset in range(0,len(own),2):
-                part=own[offset:offset+2];selected=[groups['train'][i] for i in part]
-                data=reader.get([tid for g in selected for tid in g['trajectory_ids']],device)
-                labels=torch.tensor([g['labels'] for g in selected],dtype=torch.float32,device=device)
-                context=ddp.no_sync() if offset+2<len(own) else nullcontext()
-                with context:
-                    with torch.autocast('cuda',dtype=torch.bfloat16):logits=ddp(data).reshape(len(part),5)
-                    loss=joint_loss(logits,labels,group_weight=1.)
-                    (loss['loss']*(4*len(part)/len(indices))).backward()
-                summaries.append((len(part),float(loss['trajectory_bce'].detach()),float(loss['group_bce'].detach())))
-            finite=torch.tensor(int(all(p.grad is None or bool(torch.isfinite(p.grad).all()) for p in model.parameters())),device=device)
-            dist.all_reduce(finite,op=dist.ReduceOp.MIN);assert finite.item()==1,'Nonfinite probe gradient'
-            optimizer.step();steps+=1;assert actual_steps(optimizer)==steps
-            with torch.no_grad():
-                for target,value in zip(ema.parameters(),model.parameters()):target.mul_(.99).add_(value,alpha=.01)
-            stats=torch.tensor([sum(n*t for n,t,g in summaries),sum(n*g for n,t,g in summaries),len(own)],device=device,dtype=torch.float64)
-            dist.all_reduce(stats)
+            metrics=apply_update(ddp,model,ema,optimizer,reader,groups['train'],indices,rank,device);steps+=1
             if rank==0:
                 row=dict(epoch=epoch,batch=index+1,batches=len(batches),steps=steps,ema_steps=steps,
-                    trajectory_bce=float(stats[0]/stats[2]),group_bce=float(stats[1]/stats[2]),
-                    total_loss=float((stats[0]+stats[1])/stats[2]),actor_updates=0,epoch_time=time.time())
+                    **metrics,actor_updates=0,epoch_time=time.time())
                 with (root/'curve.jsonl').open('a') as handle:handle.write(json.dumps(row)+'\n');handle.flush()
                 atomic(root/'progress.json',row)
             flag=torch.tensor(int(STOP),device=device);dist.all_reduce(flag,op=dist.ReduceOp.MAX)

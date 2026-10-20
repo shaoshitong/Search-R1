@@ -134,20 +134,32 @@ class FeatureReader:
         features = torch.zeros((len(ids), WIDTH, DIM), dtype=torch.bfloat16)
         mask = torch.zeros((len(ids), WIDTH), dtype=torch.bool)
         positions = torch.zeros((len(ids), WIDTH), dtype=torch.long)
+        bases, variants = {}, {}
         for i, tid in enumerate(ids):
             root, row = self.records[tid]
             handles, prototype = self.handles(root)
             qlen, plen = row['question_length'], row['policy_length']
-            handle = handles['question.bin']; handle.seek(row['question_offset'])
-            delta = np.frombuffer(zlib.decompress(handle.read(row['question_bytes'])),dtype=np.uint16).reshape(qlen,DIM)
-            q = np.bitwise_xor(prototype[:qlen],delta)
+            key=(root,row['question_offset'],qlen)
+            if key not in bases:
+                handle = handles['question.bin']; handle.seek(row['question_offset'])
+                delta = np.frombuffer(zlib.decompress(handle.read(row['question_bytes'])),dtype=np.uint16).reshape(qlen,DIM)
+                bases[key]=np.bitwise_xor(prototype[:qlen],delta)
+            payload=b''
             if row['delta_bytes']:
                 handle = handles['delta.bin']; handle.seek(row['delta_offset'])
-                delta = np.frombuffer(zlib.decompress(handle.read(row['delta_bytes'])), dtype=np.uint16).reshape(q.shape)
-                np.bitwise_xor(q, delta, out=q)
+                payload=handle.read(row['delta_bytes'])
+            variant=(key,payload)
+            if variant not in variants:
+                q=bases[key]
+                if payload:
+                    delta=np.frombuffer(zlib.decompress(payload),dtype=np.uint16).reshape(q.shape)
+                    q=np.bitwise_xor(q,delta)
+                variants[variant]=(q,hashlib.sha256(q.tobytes()))
+            q,question_hash=variants[variant]
             handle = handles['policy.bin']; handle.seek(row['policy_offset'])
             p = np.frombuffer(handle.read(plen*DIM*2), dtype=np.uint16).reshape(plen,DIM).copy()
-            assert hashlib.sha256(q.tobytes()+p.tobytes()).hexdigest() == row['retained_feature_sha256']
+            digest=question_hash.copy();digest.update(p.tobytes())
+            assert digest.hexdigest() == row['retained_feature_sha256']
             features[i,:qlen] = torch.from_numpy(q).view(torch.bfloat16)
             features[i,QMAX:QMAX+plen] = torch.from_numpy(p).view(torch.bfloat16)
             mask[i,:qlen] = True; mask[i,QMAX:QMAX+plen] = True
