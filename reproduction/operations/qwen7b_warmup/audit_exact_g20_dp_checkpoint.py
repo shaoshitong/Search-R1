@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 import time
 import torch
-from . import probe_ablation_train as u
+from reproduction.operations.qwen7b_warmup import probe_ablation_train as u
 
 BASE = Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-exact-uniform15504-dp-v1')
 CONFIG_SHA = 'af679a2a8ff93642a4573bb297f23ff954cca38b6749f0c7ff10c111e2cce4f4'
