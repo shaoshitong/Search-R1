@@ -30,7 +30,9 @@ BRANCH = 'refs/heads/codex/qwen7b-probe-warmup-20261019'
 PACKAGE = 'reproduction/operations/qwen7b_warmup/'
 SEEDS = tuple(PACKAGE+name for name in (
     'deploy_confirmation_materialization.py', 'confirmation_materialize.py',
-    'test_confirmation_materialize.py', 'g10_grouping.py', 'shard.py', 'sampling.py',
+    'test_confirmation_materialize.py', 'validation_g10_materialize.py', 'test_validation_g10_materialize.py',
+    'extra_g5_prepare.py', 'extra_g5_sampler.py', 'extra_g5_merge.py',
+    'g10_grouping.py', 'shard.py', 'sampling.py',
     'retriever.py', 'native_capture.py', 'packed_features.py', 'download_model.py', 'runtime.sh'))
 RESOURCE_FILES = ('verl/version/version',)
 MANIFEST_NAME = '_confirmation_source_manifest.json'
@@ -252,7 +254,7 @@ print(json.dumps({'status':'ACTUAL_CPU_CRITICAL_COLLECTOR_IMPORTS_FROM_ISOLATED_
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--control-root', type=Path)
-    p.add_argument('--action', choices=('prepare', 'status'), default='prepare')
+    p.add_argument('--action', choices=('prepare', 'stage', 'status'), default='prepare')
     p.add_argument('--remote-base', default=DEFAULT_BASE)
     p.add_argument('--frozen-manifest', default=DEFAULT_FROZEN)
     p.add_argument('--prepared-commit')
@@ -274,7 +276,7 @@ def main():
         raise ValueError('Use a new isolated child of the authorized experiment root')
     if not str(Path(a.frozen_manifest).resolve()).startswith(PARENT+'/'):
         raise ValueError('Frozen manifest must remain in the authorized experiment')
-    if a.action == 'prepare':
+    if a.action in ('prepare', 'stage'):
         commit, bundle, report = published_bundle(repo, a.prepared_commit)
     else:
         commit = subprocess.check_output(['git', 'rev-parse', a.prepared_commit or 'HEAD'], cwd=repo, text=True).strip()
@@ -314,6 +316,9 @@ def main():
             print(json.dumps(dict(stage='CODE_ONLY_UPLOAD_PROGRESS', verified_chunks=index+1,
                                   total_chunks=len(chunks), last=result)), flush=True)
     print(json.dumps(call(EXTRACT)), flush=True)
+    if a.action == 'stage':
+        print(json.dumps(call(STATUS)), flush=True)
+        return
     print(json.dumps(call(START)), flush=True)
 
 
@@ -420,7 +425,8 @@ launch=result.get('cpu_launch',{});controller=result.get('cpu_controller',{})
 result['runner_identity_live']=identity(launch['pid'],launch['start_ticks']) if launch else False
 result['worker_identity_live']=identity(controller['pid'],controller['start_ticks']) if controller else False
 result['child_identity_live']=identity(controller['child_pid'],controller['child_start_ticks']) if controller.get('child_pid') else False
-result['status']=result.get('cpu_result',{}).get('status','CPU_MATERIALIZATION_LIVE' if result['runner_identity_live'] or result['worker_identity_live'] or result['child_identity_live'] else 'OUTCOME_UNPROVEN_INSPECT_DURABLE_INTENT_DO_NOT_RESTART')
+default_status='CPU_MATERIALIZATION_LIVE' if result['runner_identity_live'] or result['worker_identity_live'] or result['child_identity_live'] else ('CODE_STAGED_NO_CPU_MATERIALIZATION' if result.get('source_publication') and not (b/'launch-intent.json').exists() else 'OUTCOME_UNPROVEN_INSPECT_DURABLE_INTENT_DO_NOT_RESTART')
+result['status']=result.get('cpu_result',{}).get('status',default_status)
 if (b/'materialization.log').exists():result['cpu_log_bytes']=(b/'materialization.log').stat().st_size
 print(json.dumps(result))
 '''
