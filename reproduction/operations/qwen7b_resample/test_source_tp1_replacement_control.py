@@ -282,6 +282,23 @@ class RetirementBindingTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.worker.context(fixture.pool, args)
 
+    def test_gpu3_accepts_small_cache_but_rejects_larger_card_profile(self):
+        with retired_fixture() as fixture:
+            fixture.value.update(model_indices=[3], model_cuda_uuids=['GPU-3'],
+                model_limits=dict(seqs=8, tokens=4096, blocks=512, reserve=1.0))
+            context_path = fixture.base / 'context.json'
+            write(context_path, fixture.value)
+            args = argparse.Namespace(reuse_local_relay_ready=str(context_path),
+                reuse_local_relay_sha256=FakePool.sha(context_path),
+                reuse_local_relay_unit=PARENT_UNIT, tp=1, base=str(fixture.base),
+                model_max_seqs=8, model_batch_tokens=4096,
+                model_kv_block_cap=512, model_reserve_gib=1.0)
+            with patch.dict(os.environ, Q7B_SOURCE_SUBLEASE_CONTEXT=str(context_path)):
+                self.worker.context(fixture.pool, args)
+                args.model_kv_block_cap = 4096
+                with self.assertRaisesRegex(ValueError, 'capacity'):
+                    self.worker.context(fixture.pool, args)
+
     def test_schema3_rejects_peer_dependency_and_insufficient_source_cutoff(self):
         for change in (dict(peer_sublease={}), dict(model_deadline_epoch=6000)):
             with self.subTest(change=change), retired_fixture() as fixture:
@@ -371,7 +388,7 @@ class ReplacementBootstrapTests(unittest.TestCase):
 
     def test_bundle_binds_distinct_single_gpu_units_and_immutable_retirement_proof(self):
         control = self.control
-        self.assertEqual(control.GROUPS, {'gpu4': [4], 'gpu6': [6], 'gpu7': [7]})
+        self.assertEqual(control.GROUPS, {'gpu3': [3], 'gpu4': [4], 'gpu6': [6], 'gpu7': [7]})
         self.assertEqual(control.SOURCE_CUTOFF_SECONDS, 3600)
         terminal = control.TERMINAL_PROOF
         identities, units, directories = set(), set(), set()
@@ -392,21 +409,22 @@ class ReplacementBootstrapTests(unittest.TestCase):
                 self.assertEqual(manifest['context_schema_version'], 3)
                 self.assertEqual(manifest['source_deadline_reserve_seconds'], 3600)
                 self.assertEqual(manifest['maximum_run_seconds'], 14400)
-                self.assertEqual(manifest['model_limits'], dict(seqs=32, tokens=8192, blocks=4096, reserve=1.0))
+                expected_limits = dict(seqs=8, tokens=4096, blocks=512, reserve=1.0) if group == 'gpu3' else dict(seqs=32, tokens=8192, blocks=4096, reserve=1.0)
+                self.assertEqual(manifest['model_limits'], expected_limits)
                 self.assertEqual(set(files), set(manifest['files']))
                 for name, data in files.items():
                     self.assertEqual(manifest['files'][name],
                                      dict(bytes=len(data), sha256=hashlib.sha256(data).hexdigest()))
                 changed_identity, _, _ = control.bundle(group, terminal, 'e' * 64)
                 self.assertNotEqual(identity, changed_identity)
-        self.assertEqual(len(identities), 3)
-        self.assertEqual(len(units), 3)
-        self.assertEqual(len(directories), 3)
+        self.assertEqual(len(identities), 4)
+        self.assertEqual(len(units), 4)
+        self.assertEqual(len(directories), 4)
 
     def test_bundle_rejects_unapproved_gpu_proof_or_runtime(self):
         control = self.control
         for group, terminal, digest, seconds in (
-                ('gpu3', control.TERMINAL_PROOF, 'f' * 64, 14400),
+                ('gpu0', control.TERMINAL_PROOF, 'f' * 64, 14400),
                 ('gpu4', '/mnt/data/another-proof.json', 'f' * 64, 14400),
                 ('gpu4', control.TERMINAL_PROOF, 'not-a-sha', 14400),
                 ('gpu4', control.TERMINAL_PROOF, 'f' * 64, 14401),
@@ -424,9 +442,9 @@ class ReplacementBootstrapTests(unittest.TestCase):
                 self.assertTrue(executable.endswith('/env/bin/python'))
                 self.assertEqual(option('--tp'), '1')
                 self.assertEqual(option('--model-gpus'), ','.join(map(str, fixture.model)))
-                self.assertEqual(option('--model-max-seqs'), '32')
-                self.assertEqual(option('--model-batch-tokens'), '8192')
-                self.assertEqual(option('--model-kv-block-cap'), '4096')
+                self.assertEqual(option('--model-max-seqs'), '8' if group == 'gpu3' else '32')
+                self.assertEqual(option('--model-batch-tokens'), '4096' if group == 'gpu3' else '8192')
+                self.assertEqual(option('--model-kv-block-cap'), '512' if group == 'gpu3' else '4096')
                 self.assertEqual(float(option('--model-reserve-gib')), 1.0)
                 self.assertEqual(option('--run-seconds'), '4000')
                 self.assertEqual(option('--batch-reserve-seconds'), '1200')

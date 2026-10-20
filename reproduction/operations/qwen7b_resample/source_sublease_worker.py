@@ -43,14 +43,15 @@ def context(pool, args):
                    and retriever['netns_inode'] == parent['netns_inode'],
                    'Original parent or retriever binding differs')
     if value['schema_version'] == 3:
-        shared.require('peer_sublease' not in value and value['model_indices'] in ([4], [6], [7])
+        shared.require('peer_sublease' not in value and value['model_indices'] in ([3], [4], [6], [7])
                        and value['base'] == str(args.base)
                        and bool(value['retired_terminal'])
                        and value['model_deadline_epoch'] <= value['source_sampling_deadline_epoch'] - 3600,
                        'Schema3 requires an independent retired root-child lease and conservative source cutoff')
-        shared.require(value['model_limits'] == dict(seqs=32, tokens=8192, blocks=4096, reserve=1.0)
+        limits = dict(seqs=8, tokens=4096, blocks=512, reserve=1.0) if value['model_indices'] == [3] else dict(seqs=32, tokens=8192, blocks=4096, reserve=1.0)
+        shared.require(value['model_limits'] == limits
                        and (args.model_max_seqs, args.model_batch_tokens, args.model_kv_block_cap, args.model_reserve_gib)
-                           == (32, 8192, 4096, 1.0), 'Schema3 initial TP1 capacity limits differ')
+                           == (limits['seqs'], limits['tokens'], limits['blocks'], limits['reserve']), 'Schema3 initial TP1 capacity limits differ')
     return path, value
 
 

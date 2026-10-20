@@ -22,8 +22,11 @@ RETIRED_PID, RETIRED_BIRTH = 2021698, '7430669'
 RETIRED_UNIT = 'sst-q7b-g5-source5-extra-model-v1-' + RUN_ID[:12] + '.service'
 TERMINAL_PROOF = BASE + '/preparation/source5-model-tp4-to-tp1-v1/complete.json'
 SOURCE_CUTOFF_SECONDS = 3600
-GROUPS = {'gpu4': [4], 'gpu6': [6], 'gpu7': [7]}
+GROUPS = {'gpu3': [3], 'gpu4': [4], 'gpu6': [6], 'gpu7': [7]}
 LIMITS = {name: dict(seqs=32, tokens=8192, blocks=4096, reserve=1.0) for name in GROUPS}
+# GPU3's twice-observed 17.73GiB residual requires a smaller actual KV profile.
+# Context length and full trajectories stay 4096; only concurrency/cache shrink.
+LIMITS['gpu3'] = dict(seqs=8, tokens=4096, blocks=512, reserve=1.0)
 SOURCES = ('source_tp1_replacement_control.py', 'source_sublease_worker.py', 'relay_consumer_worker.py',
            'shared_vram_worker.py', 'shared_vram_vllm_adapter.py', 'pool_worker.py', 'retrieval_relay.py')
 
