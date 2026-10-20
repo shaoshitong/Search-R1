@@ -1,0 +1,438 @@
+{
+  "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-g10-learnability-20261021/output/complete.json",
+  "bytes": 12047,
+  "sha256": "576fdd9dc0248bf34da97749ef971fe4a003c019c837396e31257bc2d60bf5cb",
+  "result": {
+    "BCE_bound_scope": "Finite observed training-sample lower bound for one fixed deterministic trajectory-scoring function of exactly the declared signature, within-question conflicts only. Not a test Bayes bound, not a Mixed BA ceiling, and not a lower bound for pre-update losses evaluated at changing model checkpoints. Extra observed inputs/batch numeric artifacts invalidate treating those records as exactly identical model inputs.",
+    "actor_updates": 0,
+    "actual_context_counts": {
+      "multisegment_trajectories": 84,
+      "segments": 82004,
+      "short_prefix": 1
+    },
+    "actual_fit_config": {
+      "source": {
+        "bytes": 10640,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/config.json",
+        "sha256": "16b2fd34e3e8907307b3866298b33216478fd77c2dc1b9ca80638e0929800130"
+      },
+      "status": "ACTUAL_FIT_CONFIG_PRESENT_AND_PROTOCOL_MATCHED"
+    },
+    "actual_four_random_G5_views": {
+      "G10_Mixed_does_not_imply_each_G5_view_is_Mixed": true,
+      "actual_question_weighted_trajectory_BCE_empirical_minimum_nats": 0.005600622213007655,
+      "count_fraction_equals_weighted_fraction_because_four_equal_views_per_question": true,
+      "epoch": 0,
+      "mode": "random",
+      "per_question_total_weight_verified": true,
+      "per_source_G10_K": [
+        {
+          "K": 0,
+          "actual_G5_Mixed_fraction": 0.0,
+          "actual_Mixed_views": 0,
+          "actual_views": 15376,
+          "source_questions": 3844,
+          "uniform252_G5_Mixed_probability": 0.0
+        },
+        {
+          "K": 1,
+          "actual_G5_Mixed_fraction": 0.5032894736842105,
+          "actual_Mixed_views": 1071,
+          "actual_views": 2128,
+          "source_questions": 532,
+          "uniform252_G5_Mixed_probability": 0.5
+        },
+        {
+          "K": 2,
+          "actual_G5_Mixed_fraction": 0.7759831460674157,
+          "actual_Mixed_views": 1105,
+          "actual_views": 1424,
+          "source_questions": 356,
+          "uniform252_G5_Mixed_probability": 0.7777777777777778
+        },
+        {
+          "K": 3,
+          "actual_G5_Mixed_fraction": 0.9203470031545742,
+          "actual_Mixed_views": 1167,
+          "actual_views": 1268,
+          "source_questions": 317,
+          "uniform252_G5_Mixed_probability": 0.9166666666666666
+        },
+        {
+          "K": 4,
+          "actual_G5_Mixed_fraction": 0.9827272727272728,
+          "actual_Mixed_views": 1081,
+          "actual_views": 1100,
+          "source_questions": 275,
+          "uniform252_G5_Mixed_probability": 0.9761904761904762
+        },
+        {
+          "K": 5,
+          "actual_G5_Mixed_fraction": 0.9910714285714286,
+          "actual_Mixed_views": 999,
+          "actual_views": 1008,
+          "source_questions": 252,
+          "uniform252_G5_Mixed_probability": 0.9920634920634921
+        },
+        {
+          "K": 6,
+          "actual_G5_Mixed_fraction": 0.9754385964912281,
+          "actual_Mixed_views": 1112,
+          "actual_views": 1140,
+          "source_questions": 285,
+          "uniform252_G5_Mixed_probability": 0.9761904761904762
+        },
+        {
+          "K": 7,
+          "actual_G5_Mixed_fraction": 0.9211956521739131,
+          "actual_Mixed_views": 1356,
+          "actual_views": 1472,
+          "source_questions": 368,
+          "uniform252_G5_Mixed_probability": 0.9166666666666666
+        },
+        {
+          "K": 8,
+          "actual_G5_Mixed_fraction": 0.7929347826086957,
+          "actual_Mixed_views": 1459,
+          "actual_views": 1840,
+          "source_questions": 460,
+          "uniform252_G5_Mixed_probability": 0.7777777777777778
+        },
+        {
+          "K": 9,
+          "actual_G5_Mixed_fraction": 0.5019409937888198,
+          "actual_Mixed_views": 1293,
+          "actual_views": 2576,
+          "source_questions": 644,
+          "uniform252_G5_Mixed_probability": 0.5
+        },
+        {
+          "K": 10,
+          "actual_G5_Mixed_fraction": 0.0,
+          "actual_Mixed_views": 0,
+          "actual_views": 3436,
+          "source_questions": 859,
+          "uniform252_G5_Mixed_probability": 0.0
+        }
+      ],
+      "questions": 8192,
+      "questions_by_number_Mixed_of_four_views": [
+        4767,
+        321,
+        626,
+        842,
+        1636
+      ],
+      "questions_per_update": 32,
+      "realized_G5_K_histogram": [
+        16876,
+        2798,
+        2207,
+        2287,
+        3351,
+        5249
+      ],
+      "realized_G5_K_weighted_mass": [
+        "4219",
+        "1399/2",
+        "2207/4",
+        "2287/4",
+        "3351/4",
+        "5249/4"
+      ],
+      "realized_Mixed_fraction": 0.324798583984375,
+      "realized_Mixed_views": 10643,
+      "realized_minus_expected_Mixed_fraction": 0.00164794921875,
+      "realized_nonMixed_views": 22125,
+      "realized_weighted_Mixed_fraction": 0.324798583984375,
+      "realized_weighted_Mixed_mass": "10643/4",
+      "realized_weighted_nonMixed_mass": "22125/4",
+      "reference_standard_error_is_sampling_design_reference_not_test_confidence_interval": true,
+      "seed": 1729,
+      "selected_update_ordered_views_sha256": "0944f258ca11695dad22536e3aecf2e3a0b7a8f505342c51be7504f7a71f5cea",
+      "theoretical_uniform252_expected_G5_K_fraction": [
+        0.5155121334015377,
+        0.08460974314856151,
+        0.06599983336433532,
+        0.07118685283358135,
+        0.10135420541914683,
+        0.1613372318328373
+      ],
+      "theoretical_uniform252_expected_Mixed_fraction": 0.323150634765625,
+      "theoretical_uniform252_expected_weighted_G5_K_mass": [
+        "1064215/252",
+        "174667/252",
+        "136249/252",
+        "146957/252",
+        "104617/126",
+        "166531/126"
+      ],
+      "theoretical_uniform252_expected_weighted_Mixed_mass": "10589/4",
+      "total_weight_per_question": "1",
+      "trajectory_occurrence_count_histogram": [
+        4866,
+        20690,
+        30913,
+        20480,
+        4971
+      ],
+      "uniform_without_replacement_reference_standard_error": 0.0013598094254104,
+      "unique_views_per_question": 4,
+      "updates": 256,
+      "views": 32768,
+      "weight_per_view": "1/4"
+    },
+    "authentic_G10": {
+      "K_histogram": [
+        3844,
+        532,
+        356,
+        317,
+        275,
+        252,
+        285,
+        368,
+        460,
+        644,
+        859
+      ],
+      "allcorrect_questions": 859,
+      "allwrong_questions": 3844,
+      "mixed_fraction": 0.4259033203125,
+      "mixed_questions": 3489,
+      "questions": 8192
+    },
+    "conceptual_input_definition": "official frozen revision/L26; initial prompt; all full saved causal contexts and positions0..L-1; context attention1; question/policy gather indices;293-slot masks and positions; own Prefix20 token IDs/length. Ignores qid/tid/seed/run/file locators.",
+    "domain_scope": "NQ-only precommitted independent8192 enrichment; not unseen initial-warmup questions",
+    "duplicate_question_hash_questions": 0,
+    "elapsed_seconds": 17.63651728630066,
+    "final_pool_read": false,
+    "full_causal_input": {
+      "all_ten_identical_fraction": 0.0,
+      "all_ten_identical_questions": 0,
+      "all_within_question_correct_wrong_pairs": 57765,
+      "all_within_question_pairs": 368640,
+      "distinct_inputs_per_question_histogram": [
+        0,
+        0,
+        1,
+        4,
+        11,
+        39,
+        160,
+        396,
+        1349,
+        6232
+      ],
+      "excess_duplicate_trajectories": 2863,
+      "excess_duplicate_trajectory_fraction": 0.03494873046875,
+      "finite_sample_Mixed_G10_only_BCE_minimum_nats": 0.01521493509247719,
+      "finite_sample_trajectory_BCE_minimum_nats": 0.006480091374225209,
+      "identical_input_fraction_of_correct_wrong_pairs": 0.008742318012637411,
+      "identical_input_opposite_EM_pairs": 505,
+      "identical_input_pair_fraction": 0.009941948784722222,
+      "identical_input_pairs": 3665,
+      "opposite_EM_fraction_among_identical_input_pairs": 0.1377899045020464,
+      "question_any_duplicate_fraction": 0.2392578125,
+      "questions": 8192,
+      "questions_with_any_duplicate": 1960,
+      "trajectories": 81920,
+      "trajectories_with_duplicate_peer": 5140,
+      "trajectory_duplicate_peer_fraction": 0.062744140625,
+      "true_G10_Mixed_input_conflict_fraction": 0.0879908283175695,
+      "true_G10_Mixed_questions": 3489,
+      "true_G10_Mixed_questions_with_input_conflict": 307
+    },
+    "grouping_code": {
+      "bytes": 14093,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-g10-learnability-20261021/code-c1ea22d2ed4e/reproduction/operations/qwen7b_warmup/g10_grouping.py",
+      "sha256": "3a40d313e351f086ac5d3d6ba62165792c69c2847b64ba7a967aa9cf4f2cb9af"
+    },
+    "hidden_or_tensor_files_read": false,
+    "identical_policy_token_clusters_with_different_causal_inputs": 0,
+    "identity_plan": {
+      "bytes": 5800345,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/identity-plan.json",
+      "sha256": "a9eaecf82c7bd540fc2313afdf39f16be0431e1caccf9d753b8954b320acdef9"
+    },
+    "labels_source": "SHA-accepted raw G10 groups; no raw full-response/EM payload reopened",
+    "model_or_probe_loaded": false,
+    "newseed_G5": {
+      "K_histogram": [
+        4216,
+        711,
+        527,
+        574,
+        841,
+        1323
+      ],
+      "allcorrect_questions": 1323,
+      "allwrong_questions": 4216,
+      "mixed_fraction": 0.3238525390625,
+      "mixed_questions": 2653,
+      "questions": 8192
+    },
+    "old_new_K_transition": [
+      [
+        3844,
+        273,
+        78,
+        30,
+        8,
+        3
+      ],
+      [
+        259,
+        203,
+        115,
+        64,
+        25,
+        7
+      ],
+      [
+        75,
+        142,
+        129,
+        116,
+        69,
+        27
+      ],
+      [
+        30,
+        67,
+        87,
+        120,
+        163,
+        113
+      ],
+      [
+        7,
+        20,
+        83,
+        143,
+        246,
+        314
+      ],
+      [
+        1,
+        6,
+        35,
+        101,
+        330,
+        859
+      ]
+    ],
+    "ordered_qid_sha256": "8795c4379029f4d945516cf77db43095d101dd4a5960155932751e00edf22256",
+    "ordered_trajectory_sha256": "eb32b8b125fcc58dd1485f7b7e06e655bc1994d0abd56f8a9b7ab37a8566bff0",
+    "original_G5": {
+      "K_histogram": [
+        4236,
+        673,
+        558,
+        580,
+        813,
+        1332
+      ],
+      "allcorrect_questions": 1332,
+      "allwrong_questions": 4236,
+      "mixed_fraction": 0.3203125,
+      "mixed_questions": 2624,
+      "questions": 8192
+    },
+    "own_EM_labels_read": true,
+    "policy_token_only": {
+      "all_ten_identical_fraction": 0.0,
+      "all_ten_identical_questions": 0,
+      "all_within_question_correct_wrong_pairs": 57765,
+      "all_within_question_pairs": 368640,
+      "distinct_inputs_per_question_histogram": [
+        0,
+        0,
+        1,
+        4,
+        11,
+        39,
+        160,
+        396,
+        1349,
+        6232
+      ],
+      "excess_duplicate_trajectories": 2863,
+      "excess_duplicate_trajectory_fraction": 0.03494873046875,
+      "finite_sample_Mixed_G10_only_BCE_minimum_nats": 0.01521493509247719,
+      "finite_sample_trajectory_BCE_minimum_nats": 0.006480091374225209,
+      "identical_input_fraction_of_correct_wrong_pairs": 0.008742318012637411,
+      "identical_input_opposite_EM_pairs": 505,
+      "identical_input_pair_fraction": 0.009941948784722222,
+      "identical_input_pairs": 3665,
+      "opposite_EM_fraction_among_identical_input_pairs": 0.1377899045020464,
+      "question_any_duplicate_fraction": 0.2392578125,
+      "questions": 8192,
+      "questions_with_any_duplicate": 1960,
+      "trajectories": 81920,
+      "trajectories_with_duplicate_peer": 5140,
+      "trajectory_duplicate_peer_fraction": 0.062744140625,
+      "true_G10_Mixed_input_conflict_fraction": 0.0879908283175695,
+      "true_G10_Mixed_questions": 3489,
+      "true_G10_Mixed_questions_with_input_conflict": 307
+    },
+    "prefix_sources": [
+      {
+        "bytes": 2498081,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/shard-00/inputs/prefix.jsonl.gz",
+        "sha256": "7a4b2b6461a7792a17a9ceb7db00673c1f9b1416f060d7af2b26af8325053275"
+      },
+      {
+        "bytes": 2485443,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/shard-01/inputs/prefix.jsonl.gz",
+        "sha256": "1da59c4652e71dba81d15961fd3e9d7f5bdeeb7e720cf66040330e834a58f934"
+      },
+      {
+        "bytes": 2504460,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/shard-02/inputs/prefix.jsonl.gz",
+        "sha256": "4ceee9f8da183eec6b2180b13c23474d57b98fcbafc5369a33bb33c297f202a9"
+      },
+      {
+        "bytes": 2500205,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-replay-20261021/shard-03/inputs/prefix.jsonl.gz",
+        "sha256": "555e21b346e598e87aaddd4392485cb88bf30cd96a8936c697c0cf388287fa9a"
+      }
+    ],
+    "probe_scores_read": false,
+    "probe_updates": 0,
+    "question_selection_changed": false,
+    "questions": 8192,
+    "raw_complete": {
+      "bytes": 10971,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-newseed-20261021-185747-445fc691/complete.json",
+      "sha256": "1fd5c29862267bc202419973ba6238d9c7b66de7ef2199dba725dda7fecf0804"
+    },
+    "raw_groups": {
+      "bytes": 46117850,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed-ingest-newseed-20261021-185747-445fc691/raw-g10/groups.json",
+      "sha256": "e38154c5c049ff2250ed0b8108624861752835813fe45ee73e2e47168e80d979"
+    },
+    "real_trajectories": 81920,
+    "source_preparation": {
+      "bytes": 162311,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-batched-replay-20261021/preparation.json",
+      "sha256": "098fecfc507f894c9dd61837ba9d775f652ceab25225230895e720cf19aae755"
+    },
+    "source_writer_modified": false,
+    "status": "FIXED_PEER8192_AUTHENTIC_G10_VIEWS_AND_CAUSAL_INPUT_LEARNABILITY_COMPLETE",
+    "time": 1792528636.7449903,
+    "training_factory_source": {
+      "bytes": 33315,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-g10-learnability-20261021/code-c1ea22d2ed4e/reproduction/operations/qwen7b_warmup/peer_newseed_fit_operation.py",
+      "sha256": "5707c6b9cb5c218123340c71b3a6ef0513c223001dfcf4d396ea96d3c976f952"
+    },
+    "training_plan_source": {
+      "bytes": 11254,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-g10-learnability-20261021/code-c1ea22d2ed4e/reproduction/operations/qwen7b_warmup/peer_newseed_train.py",
+      "sha256": "8c4025663dd4955a034abbb8e50c20fe2cc6fe5550aacafad0ee2963afdde473"
+    },
+    "trajectory_BCE_reduction": "G5 mean over5; views each1/4; mean over original questions. Bound concerns only trajectory BCE, not total event/rank loss.",
+    "unique_qids": 8192,
+    "unique_question_hashes": 8192
+  }
+}
