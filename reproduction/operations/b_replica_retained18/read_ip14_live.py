@@ -13,7 +13,7 @@ import time
 from .control import OUT
 
 SCRIPT = r'''
-import json,pathlib,time
+import json,pathlib,time,hashlib
 proc=pathlib.Path('/proc')/str(PID)
 stat=(proc/'stat').read_text() if proc.exists() else None
 same=bool(stat and int(stat.rsplit(')',1)[1].split()[19])==START and stat.rsplit(')',1)[1].split()[0]!='Z')
@@ -41,11 +41,28 @@ if same:
     elif event=='OPPORTUNITY':opportunities+=1
     elif 'SKIP' in str(event):skips+=1
   result['actor'].append(dict(path=str(p.relative_to(base)),restore=restore,writes=writes,opportunities=opportunities,last_adam=last,skip_events=skips))
+ if AUDIT:
+  # All large metadata is parsed here on H100. Only compact facts leave it.
+  latest=base/'latest-joint.json';raw=latest.read_bytes();joint=json.loads(raw)
+  committed=joint['outer'];complete=base/'outers'/('outer-%06d'%committed)/'complete.json'
+  sha=hashlib.sha256(raw).hexdigest()
+  assert hashlib.sha256(complete.read_bytes()).hexdigest()==sha,'Latest atomic joint differs from sealed complete'
+  ar=[]
+  for receipt in joint['actor']['rank_receipts']:
+   p=root/receipt['ledger_path'].lstrip('/');before=p.stat()
+   ledger=p.read_bytes();after=p.stat()
+   assert (before.st_ino,before.st_size,before.st_mtime_ns)==(after.st_ino,after.st_size,after.st_mtime_ns)
+   assert hashlib.sha256(ledger).hexdigest()==receipt['ledger_sha256']
+   rows=[json.loads(line) for line in ledger.splitlines()]
+   restore=next(row for row in rows if row['event']=='ACTUAL_RESTORE')
+   writes=[row for row in rows if row['event']=='ACTUAL_ADAM_WRITE']
+   ar.append(dict(rank=receipt['rank'],restored_outer=restore['restored_completed_outer'],adam_before=restore['actual_adam_before'],scheduler_before=restore['restored_scheduler'],opportunities=sum(row['event']=='OPPORTUNITY' for row in rows),writes=len(writes),last_adam=writes[-1]['actual_adam_steps'] if writes else None,ledger_sha_matches=True))
+  result['joint']=dict(outer=committed,sha256=sha,actor=joint['actor']['actual_adam_steps_per_rank'],probe=joint['probe']['actual_adam_steps_per_rank'],phase_timings=joint.get('phase_timings'),selection_metrics=joint.get('selection_metrics'),ranks=ar)
 print(json.dumps(result))
 '''
 
 
-def read(base, pid, start):
+def read(base, pid, start, *, audit_joint=False):
     from reproduction.h1008_qprobe.established_controller_transport import _controller
     ctl = _controller()
     c = ctl.H100_ACCESS
@@ -61,7 +78,7 @@ def read(base, pid, start):
     worker = prefix+['-o','HostKeyAlias=10.33.4.14','-o','ProxyCommand='+gateway,
                      '-o','KnownHostsCommand='+shlex.join(['/bin/echo','\n'.join(keys)]),
                      c['user']+'@10.32.0.11','/usr/bin/python3 -']
-    script = 'BASE='+repr(base)+'\nPID='+repr(int(pid))+'\nSTART='+repr(int(start))+'\n'+SCRIPT
+    script = 'BASE='+repr(base)+'\nPID='+repr(int(pid))+'\nSTART='+repr(int(start))+'\nAUDIT='+repr(bool(audit_joint))+'\n'+SCRIPT
     path = OUT/('ip14-native-read-'+str(time.time_ns())+'.json')
     record = dict(route='mgmt-host -> known5 SSH-W -> IP14 verified LAN alias',
                   base=base,pid=pid,start_ticks=start,script_sha256=hashlib.sha256(script.encode()).hexdigest(),
@@ -85,4 +102,5 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--base',required=True);parser.add_argument('--pid',type=int,required=True)
     parser.add_argument('--start',type=int,required=True)
-    a=parser.parse_args();print(json.dumps(read(a.base,a.pid,a.start),ensure_ascii=False))
+    parser.add_argument('--audit-joint',action='store_true')
+    a=parser.parse_args();print(json.dumps(read(a.base,a.pid,a.start,audit_joint=a.audit_joint),ensure_ascii=False))
