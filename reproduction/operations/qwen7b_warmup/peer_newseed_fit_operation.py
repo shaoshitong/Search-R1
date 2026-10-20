@@ -30,6 +30,13 @@ VALIDATION_READER_AUDIT = dict(path=str(raw.A/'validation-fixedG5-hf-replay-2026
 COMPLETE_STATUS = 'REAL_G10_QUESTION_WEIGHTED_PROBE_BUDGET_AND_VALIDATION_COMPLETE'
 
 
+def checked(reference):
+    """Old sealed receipts bind SHA but may omit bytes; preserve their exact SHA."""
+    item=dict(reference)
+    if 'bytes' not in item:item['bytes']=Path(item['path']).stat().st_size
+    return raw.checked(item)
+
+
 def metadata_features(manifests, groups, *, allow_unused=False):
     """Bind actual replay index rows, without hashing all feature payloads twice."""
     from .replay_feature_reader import ReplayFeatureReader, FILES
@@ -40,7 +47,7 @@ def metadata_features(manifests, groups, *, allow_unused=False):
     seen = set(); paths = set(); selected = []; all_ids = set(); prompts = {}
     checker = object.__new__(ReplayFeatureReader); checker.layer = 26; checker.dimension = 3584
     for descriptor in manifests:
-        path = raw.checked(descriptor)
+        path = checked(descriptor)
         if str(path) in paths: raise ValueError('Repeated feature manifest')
         paths.add(str(path)); m = raw.read(path)
         if (m.get('status') != 'LOSSLESS_HF_REPLAY_FEATURES_COMPLETE'
@@ -60,7 +67,7 @@ def metadata_features(manifests, groups, *, allow_unused=False):
             p = Path(item['path'])
             if p != path.parent/name or not p.is_file() or p.stat().st_size != item['bytes']:
                 raise ValueError('Feature payload locator/actual bytes differ')
-        raw.checked(m['files']['index.jsonl'])
+        checked(m['files']['index.jsonl'])
         if m['files']['prototype.bin']['bytes'] != 273*3584*2:
             raise ValueError('Feature prototype dimensions differ')
         count = 0; relevant = False
@@ -157,8 +164,8 @@ def validation_inputs(validation_complete):
             or validation.get('new_responses_generated')!=0 or validation.get('final_pool_read') is not False):
         raise ValueError('Actual NEW precommitted fixed2048 G5 HF capture required, never old R2 selection')
     for key in ('source_complete','source_selection','source_groups','source_fixed_G5','features'):
-        raw.checked(validation[key])
-    audit=raw.read(raw.checked(VALIDATION_READER_AUDIT))
+        checked(validation[key])
+    audit=raw.read(checked(VALIDATION_READER_AUDIT))
     if (audit.get('status')!='ALL_10240_NEW_FIXED_G5_HF_ROWS_RECONSTRUCTED_RETAINED_SHA_PASSED'
             or audit.get('complete')!=raw.ref(validation_complete) or audit.get('features')!=validation['features']
             or audit.get('all_manifest_and_payload_SHA256') is not True
@@ -196,7 +203,7 @@ def sealed_e4(base):
 
 def sealed_e1(base):
     prep=raw.read(raw.A/'matched-loss128-v2/preparation.json')
-    reference=raw.read(raw.checked(prep['variants']['event']['config']))
+    reference=raw.read(checked(prep['variants']['event']['config']))
     source=reference['source_checkpoint'];receipt=raw.read(Path(source['path']).with_suffix('.json'))
     if (receipt.get('sha256')!='02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724'
             or receipt.get('steps')!=10464 or receipt.get('epoch')!=1 or receipt.get('completed_epoch') is not True
@@ -213,7 +220,7 @@ def prepare_baseline(base,validation_complete):
     base=Path(base)
     if base!=TARGET:raise ValueError('Only isolated peer8192 parent is allowed')
     pub=raw.read(base/'source-publication.json');root=Path(pub['code_root'])
-    for name,item in pub['files'].items():raw.checked(dict(path=str(root/name),**item))
+    for name,item in pub['files'].items():checked(dict(path=str(root/name),**item))
     validation,groups,proof,e=validation_inputs(validation_complete)
     (base/'inputs').mkdir(exist_ok=True);(base/'logs').mkdir(exist_ok=True)
     source=sealed_e4(base);e1=sealed_e1(base)
@@ -247,22 +254,22 @@ def prepare(base, raw_complete, identity_plan, feature_completes, validation_com
     pub=raw.read(base/'source-publication.json');root=Path(pub['code_root'])
     if root.parent != base or root.name != 'code-'+pub['commit'][:12]:
         raise ValueError('Immutable published code root required')
-    for name,item in pub['files'].items():raw.checked(dict(path=str(root/name),**item))
+    for name,item in pub['files'].items():checked(dict(path=str(root/name),**item))
     if (base/'preparation.json').exists():
         old=raw.read(base/'preparation.json')
         expected=[raw.ref(p) for p in paths]
         if old['source_refs']!=expected or old['commit']!=pub['commit']:
             raise ValueError('Existing preparation belongs to different immutable sources')
-        for key in ('config','sbatch','training_input','source_plan','cpu_tests'):raw.checked(old[key])
+        for key in ('config','sbatch','training_input','source_plan','cpu_tests'):checked(old[key])
         return old
     validation,valgroups,valproof,valevaluation=validation_inputs(validation_complete)
     reference_preparation=raw.read(raw.A/'matched-loss128-v2/preparation.json')
     if reference_preparation['status']!='MATCHED_LOSS128_SUITE_PREPARED_ACTUAL_CPU_TESTS_PASSED':
         raise ValueError('Accepted E1 reference preparation required')
-    reference=raw.read(raw.checked(reference_preparation['variants']['event']['config']))
+    reference=raw.read(checked(reference_preparation['variants']['event']['config']))
     # Source state is not deserialized on the login node. The GPU runner hashes,
     # loads and exactly checks all raw/EMA/Adam/RNG state before its first update.
-    for key in ('source_config','source_bank','model_config','bank'):raw.checked(reference[key])
+    for key in ('source_config','source_bank','model_config','bank'):checked(reference[key])
     source_checkpoint=Path(reference['source_checkpoint']['path'])
     if not source_checkpoint.is_file() or source_checkpoint.stat().st_size<1024**3:
         raise ValueError('Actual full source checkpoint file is missing')
@@ -274,7 +281,7 @@ def prepare(base, raw_complete, identity_plan, feature_completes, validation_com
             or d['source_runtime']!='huggingface_frozen_causal_prefill' or d['actor_updates']!=0
             or d['new_responses_generated']!=0 or d['full_replay_shared_file_SHA_verified'] is not True):
         raise ValueError('Accepted R2 HF replay required only for original diagnostic512')
-    dmanifests=raw.read(raw.checked(d['features_by_capture_layer']['26']))
+    dmanifests=raw.read(checked(d['features_by_capture_layer']['26']))
     dmanifests,diagproof=metadata_features(dmanifests,diagnostic,allow_unused=True)
     rc,ip=raw.ref(raw_complete),raw.ref(identity_plan);fc=[raw.ref(p) for p in feature_completes]
     if (base/'training-input.json').exists():
@@ -345,7 +352,7 @@ def evaluate_e4_baseline(base):
     if (dest/'complete.json').exists():
         done=raw.read(dest/'complete.json')
         if any(done[k]!=v for k,v in binding.items()):raise ValueError('Prior same-HF E4 baseline binding differs')
-        for value in done['checkpoints'].values():raw.checked(value['predictions'])
+        for value in done['checkpoints'].values():checked(value['predictions'])
         return done
     if not torch.cuda.is_available() or not os.environ.get('SLURM_JOB_ID') or torch.cuda.device_count()!=1:
         raise ValueError('Same-HF E4 baseline requires the owned single GPU job')
@@ -361,10 +368,10 @@ def evaluate_e4_baseline(base):
         if Path(name).is_absolute() or '..' in Path(name).parts or u.sha(root/name)!=want:
             raise ValueError('Immutable early EMA comparison runtime changed')
     device=torch.device('cuda',0);torch.cuda.set_device(device)
-    raw.checked(c['model_config']);model=Probe(c['model_dir'],273,20).to(device).eval().requires_grad_(False)
+    checked(c['model_config']);model=Probe(c['model_dir'],273,20).to(device).eval().requires_grad_(False)
     groups=__import__(__package__+'.probe_g10_train',fromlist=['frozen_validation']).frozen_validation(
-        raw.read(raw.checked(e['bank']))[e['split']],raw.read(raw.checked(e['fixed_g5'])))
-    reader=fit.replay_reader(raw.read(raw.checked(e['features'])))
+        raw.read(checked(e['bank']))[e['split']],raw.read(checked(e['fixed_g5'])))
+    reader=fit.replay_reader(raw.read(checked(e['features'])))
     results={}
     try:
         for descriptor in (e1,source):
@@ -373,9 +380,9 @@ def evaluate_e4_baseline(base):
             if (output/'complete.json').exists():
                 v=raw.read(output/'complete.json')
                 if any(v[k]!=value for k,value in own.items()):raise ValueError('Prior EMA comparison binding differs')
-                raw.checked(v['predictions']);results[name]=v;continue
-            receipt=raw.read(raw.checked(descriptor['source_receipt']));sc=raw.read(raw.checked(descriptor['source_config']))
-            state=torch.load(raw.checked(descriptor),map_location='cpu',mmap=True,weights_only=False)
+                checked(v['predictions']);results[name]=v;continue
+            receipt=raw.read(checked(descriptor['source_receipt']));sc=raw.read(checked(descriptor['source_config']))
+            state=torch.load(checked(descriptor),map_location='cpu',mmap=True,weights_only=False)
             if name=='E4':validate_checkpoint_metadata(descriptor,receipt,sc,state)
             elif (state.get('steps')!=10464 or state.get('epoch')!=1 or state.get('completed_epoch') is not True
                     or state.get('cursor')!=0 or state.get('actor_updates')!=0

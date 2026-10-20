@@ -9,6 +9,7 @@ import shlex
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from . import peer_newseed_fit_operation as op
 from . import deploy_peer_newseed_train as deploy
@@ -46,6 +47,16 @@ class PeerDeploymentTests(unittest.TestCase):
         self.assertEqual(c['recipe']['loss_kwargs'],dict(trajectory_weight=1.,three_event_weight=1.))
         self.assertFalse(c['optimizer_reset']);self.assertTrue(c['source_all_four_rank_RNG_preserved'])
         self.assertFalse(c['four_rank_bitexact_resume_claim'])
+
+    def test_legacy_SHA_only_reference_adds_actual_bytes_without_changing_hash(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'old-sealed-source.json';path.write_text('{}')
+            ref=dict(path=str(path),sha256='a'*64)
+            with patch.object(op.raw,'checked',side_effect=lambda item:item) as check:
+                result=op.checked(ref)
+            self.assertEqual(result,dict(ref,bytes=2))
+            self.assertEqual(ref,dict(path=str(path),sha256='a'*64))
+            self.assertEqual(check.call_count,1)
 
     def test_exact_resume_and_evaluation_only_cursors(self):
         self.assertEqual(op.resume_decision(None),'INITIAL_SOURCE_FORK')
