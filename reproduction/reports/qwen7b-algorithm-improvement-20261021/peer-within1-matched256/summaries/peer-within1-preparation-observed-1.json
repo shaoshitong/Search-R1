@@ -1,0 +1,151 @@
+{
+  "cpu-prepare-controller": {
+    "args": [
+      "bash",
+      "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-within1-matched256-v1/code-ebc452595fdd/reproduction/operations/qwen7b_warmup/runtime.sh",
+      "-u",
+      "-m",
+      "reproduction.operations.qwen7b_warmup.peer_within1_matched",
+      "--action",
+      "prepare"
+    ],
+    "pid": 2341414,
+    "source_commit": "ebc452595fddfd5eb095b45091a642c1e02ea060",
+    "time": 1792533092.4718707
+  },
+  "cpu-signature-progress": {
+    "elapsed": 13.802631855010986,
+    "expected": 81920,
+    "time": 1792533108.151756,
+    "trajectories": 81920
+  },
+  "matched-control-audit": {
+    "changed_loss": {
+      "after": {
+        "three_event_weight": 1.0,
+        "trajectory_weight": 1.0,
+        "within_rank_weight": 1.0
+      },
+      "before": {
+        "three_event_weight": 1.0,
+        "trajectory_weight": 1.0
+      }
+    },
+    "config": {
+      "bytes": 12077,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-within1-matched256-v1/config.json",
+      "sha256": "45456823ca6d8b210c0614653f8a9c39318eb6ccafe8c223b6bacbc414b2163a"
+    },
+    "forward_loss_otherwise_D8_unchanged": true,
+    "necessary_source_changes": [
+      "probe_g10_train.py callback-only interface48eb944",
+      "canonical-token intersected within1 callback and SHA-bound source signatures"
+    ],
+    "optimizer_reset": false,
+    "same_B32_updates256_random4views_seed1729": true,
+    "same_evaluations": [
+      {
+        "backend": "huggingface_frozen_causal_prefill",
+        "bank": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/bank/groups.json",
+          "sha256": "03ffc0117f6ec71a43b874e34bd2e7ba6d5a5bb75d3df9b31e638f5a875da829"
+        },
+        "features": {
+          "bytes": 3194,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/inputs/diagnostic512-features-HF.json",
+          "sha256": "2895e5a8648e18fcfb7dece5a857b94b28416ee44978918137a82d118c4cdd82"
+        },
+        "fixed_g5": {
+          "bytes": 181581,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/inputs/diagnostic512-fixed-G5.json",
+          "sha256": "c078dd2c0589184e36400a71f28a95beb73330053dcae977b54700a9b4d9df97"
+        },
+        "name": "diagnostic512",
+        "old_R2_selection2048_evaluated": false,
+        "previously_observed": true,
+        "role": "validation",
+        "split": "diagnostic"
+      },
+      {
+        "backend": "huggingface_frozen_causal_prefill",
+        "bank": {
+          "bytes": 3450654,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/groups.json",
+          "sha256": "73ac10cc9bb6b734871399030bcb0f84736e47afff042fbc2ccaa2341f06c6a0"
+        },
+        "features": {
+          "bytes": 8994,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture/features-layer26.json",
+          "sha256": "f65c1d5466ff3576eee19e5332664b36e2bd26195ce0c8c236295ff20a4982fc"
+        },
+        "fixed_g5": {
+          "bytes": 694386,
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/fixed-G5-selection.json",
+          "sha256": "b6e5b57fee270c8fa61c1f03f212b5baef1125d205c006475f65a0690ed4aecb"
+        },
+        "name": "selection2048FreshG5HF",
+        "new_G5_selected": false,
+        "role": "validation",
+        "split": "validation",
+        "untouched_final": false
+      }
+    ],
+    "same_plan": {
+      "bytes": 506918,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/plan.json",
+      "sha256": "0b2212b46e2046d097f7c1a90490406ba67babf81002f15b129a61efe4dba012"
+    },
+    "same_source_checkpoint": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/epoch-0001.pt",
+      "sha256": "02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724"
+    },
+    "same_training_input": {
+      "bytes": 97501,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/training-input.json",
+      "sha256": "8bbd6feb4c8a9f2ca2ce4a9394b8f546b50386bb1cd43b1910be6ac0a8276f94"
+    },
+    "source_Adam10464_and_all_four_RNG_preserved": true,
+    "source_config": {
+      "bytes": 10640,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/config.json",
+      "sha256": "16b2fd34e3e8907307b3866298b33216478fd77c2dc1b9ca80638e0929800130"
+    },
+    "status": "MATCHED_PEER8192_CONFIG_ONLY_WITHIN1_AND_REQUIRED_CAUSAL_CALLBACK_BINDING_DIFFER"
+  },
+  "observed_epoch": 1792533135.3162382,
+  "preparation": {
+    "causal_signatures": {
+      "bytes": 2389,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-within1-matched256-v1/causal-signatures-complete.json",
+      "sha256": "5077b7b1244d2d8e20253c943028a9948e45732c3b600715836f0f4f40f93473"
+    },
+    "config": {
+      "bytes": 12077,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-within1-matched256-v1/config.json",
+      "sha256": "45456823ca6d8b210c0614653f8a9c39318eb6ccafe8c223b6bacbc414b2163a"
+    },
+    "matched_control_audit": {
+      "bytes": 3952,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-within1-matched256-v1/matched-control-audit.json",
+      "sha256": "bd800fbaaee6f7237f22e5999f738bb0f0cdb05dd22e205f0e07ff73d33b5ee4"
+    },
+    "no_model_checkpoint_tensor_loaded": true,
+    "questions": 8192,
+    "sbatch": {
+      "bytes": 1212,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-within1-matched256-v1/training.sbatch",
+      "sha256": "51b8c69f99f177738ea2be17af05b72ed1410c0696a6d11522c4de4415f5550a"
+    },
+    "source_steps": 10464,
+    "status": "MATCHED_REAL_G10_WITHIN1_PREPARED",
+    "trajectories": 81920,
+    "updates": 256
+  },
+  "source-publication": {
+    "base_runtime_commit": "d8f74420aa09fa56e8ec59207c6d1453fa86f95e",
+    "callback_interface_commit": "48eb944281d2e3d6fa5ad66e4d6f0f9eaf18aeec",
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-within1-matched256-v1/code-ebc452595fdd",
+    "commit": "ebc452595fddfd5eb095b45091a642c1e02ea060"
+  },
+  "status": "MATCHED_WITHIN1_ACTUAL_CURRENT_STATE"
+}
