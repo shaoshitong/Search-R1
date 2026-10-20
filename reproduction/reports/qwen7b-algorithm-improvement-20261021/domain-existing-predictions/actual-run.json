@@ -1,0 +1,1984 @@
+{
+  "status": "ACTUAL_DOMAIN_DECOMPOSITION_COMPLETE",
+  "receipt": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/existing-predictions-domain-cursor512-v2/complete.json",
+    "bytes": 51622,
+    "sha256": "7b9d3fe8f4b1d36cb23812c69a7fc1ed68221dd10195ab194805a1907749f570"
+  },
+  "result": {
+    "GPU_used": false,
+    "NQ_to_other_domain_shift_explanation_supported": false,
+    "elapsed_seconds": 4.081627368927002,
+    "external_domain_metadata_counts": {
+      "nq": 2048
+    },
+    "external_fixed_G5_bank": {
+      "bytes": 3450654,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/groups.json",
+      "sha256": "73ac10cc9bb6b734871399030bcb0f84736e47afff042fbc2ccaa2341f06c6a0"
+    },
+    "external_fixed_G5_plan": {
+      "bytes": 694386,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/fixed-G5-selection.json",
+      "sha256": "b6e5b57fee270c8fa61c1f03f212b5baef1125d205c006475f65a0690ed4aecb"
+    },
+    "external_models": {
+      "E2": {
+        "absent_domain_metric": null,
+        "domains": {
+          "2wikimultihopqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "bamboogle": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "hotpotqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "musique": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "nq": {
+            "covered": true,
+            "original_global_Top512_members": {
+              "AUC": 0.4713324765068184,
+              "BA": 0.5,
+              "K_histogram": [
+                227,
+                35,
+                29,
+                46,
+                71,
+                104
+              ],
+              "TNR": 0.0,
+              "TPR": 1.0,
+              "allcorrect_FPR": 1.0,
+              "allwrong_FPR": 1.0,
+              "confusion": {
+                "fn": 0,
+                "fp": 331,
+                "tn": 0,
+                "tp": 181
+              },
+              "mixed_fraction": 0.353515625,
+              "mixed_questions": 181,
+              "questions": 512,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": 0.5690532586264164,
+              "BA": 0.5625049686633887,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.3768953068592058,
+              "TPR": 0.7481146304675717,
+              "allcorrect_FPR": 0.8121212121212121,
+              "allwrong_FPR": 0.5639810426540285,
+              "confusion": {
+                "fn": 167,
+                "fp": 863,
+                "tn": 522,
+                "tp": 496
+              },
+              "mixed_fraction": 0.32373046875,
+              "mixed_questions": 663,
+              "questions": 2048,
+              "threshold": 0.5
+            }
+          },
+          "popqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "triviaqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          }
+        },
+        "global_Top512": {
+          "AUC": 0.4713324765068184,
+          "BA": 0.5,
+          "K_histogram": [
+            227,
+            35,
+            29,
+            46,
+            71,
+            104
+          ],
+          "TNR": 0.0,
+          "TPR": 1.0,
+          "allcorrect_FPR": 1.0,
+          "allwrong_FPR": 1.0,
+          "confusion": {
+            "fn": 0,
+            "fp": 331,
+            "tn": 0,
+            "tp": 181
+          },
+          "mixed_fraction": 0.353515625,
+          "mixed_questions": 181,
+          "questions": 512,
+          "threshold": 0.5
+        },
+        "global_Top512_ordered_qids_sha256": "5202c7a12000ae0ef627dc8754e90610f374bce2baf371d45b808cc8a36e09ed",
+        "per_domain_reselection": false,
+        "pool": {
+          "AUC": 0.5690532586264164,
+          "BA": 0.5625049686633887,
+          "K_histogram": [
+            1055,
+            181,
+            136,
+            132,
+            214,
+            330
+          ],
+          "TNR": 0.3768953068592058,
+          "TPR": 0.7481146304675717,
+          "allcorrect_FPR": 0.8121212121212121,
+          "allwrong_FPR": 0.5639810426540285,
+          "confusion": {
+            "fn": 167,
+            "fp": 863,
+            "tn": 522,
+            "tp": 496
+          },
+          "mixed_fraction": 0.32373046875,
+          "mixed_questions": 663,
+          "questions": 2048,
+          "threshold": 0.5
+        }
+      },
+      "E4": {
+        "absent_domain_metric": null,
+        "domains": {
+          "2wikimultihopqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "bamboogle": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "hotpotqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "musique": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "nq": {
+            "covered": true,
+            "original_global_Top512_members": {
+              "AUC": 0.5242508395763369,
+              "BA": 0.5,
+              "K_histogram": [
+                209,
+                44,
+                38,
+                46,
+                68,
+                107
+              ],
+              "TNR": 0.0,
+              "TPR": 1.0,
+              "allcorrect_FPR": 1.0,
+              "allwrong_FPR": 1.0,
+              "confusion": {
+                "fn": 0,
+                "fp": 316,
+                "tn": 0,
+                "tp": 196
+              },
+              "mixed_fraction": 0.3828125,
+              "mixed_questions": 196,
+              "questions": 512,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": 0.5764760333458571,
+              "BA": 0.5577138158790315,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.43971119133574005,
+              "TPR": 0.6757164404223228,
+              "allcorrect_FPR": 0.7151515151515152,
+              "allwrong_FPR": 0.5118483412322274,
+              "confusion": {
+                "fn": 215,
+                "fp": 776,
+                "tn": 609,
+                "tp": 448
+              },
+              "mixed_fraction": 0.32373046875,
+              "mixed_questions": 663,
+              "questions": 2048,
+              "threshold": 0.5
+            }
+          },
+          "popqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "triviaqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          }
+        },
+        "global_Top512": {
+          "AUC": 0.5242508395763369,
+          "BA": 0.5,
+          "K_histogram": [
+            209,
+            44,
+            38,
+            46,
+            68,
+            107
+          ],
+          "TNR": 0.0,
+          "TPR": 1.0,
+          "allcorrect_FPR": 1.0,
+          "allwrong_FPR": 1.0,
+          "confusion": {
+            "fn": 0,
+            "fp": 316,
+            "tn": 0,
+            "tp": 196
+          },
+          "mixed_fraction": 0.3828125,
+          "mixed_questions": 196,
+          "questions": 512,
+          "threshold": 0.5
+        },
+        "global_Top512_ordered_qids_sha256": "365973d9336281de51c149f9574110eb2cb816e0fe7e2b395610cf44d331e7ee",
+        "per_domain_reselection": false,
+        "pool": {
+          "AUC": 0.5764760333458571,
+          "BA": 0.5577138158790315,
+          "K_histogram": [
+            1055,
+            181,
+            136,
+            132,
+            214,
+            330
+          ],
+          "TNR": 0.43971119133574005,
+          "TPR": 0.6757164404223228,
+          "allcorrect_FPR": 0.7151515151515152,
+          "allwrong_FPR": 0.5118483412322274,
+          "confusion": {
+            "fn": 215,
+            "fp": 776,
+            "tn": 609,
+            "tp": 448
+          },
+          "mixed_fraction": 0.32373046875,
+          "mixed_questions": 663,
+          "questions": 2048,
+          "threshold": 0.5
+        }
+      },
+      "append512": {
+        "absent_domain_metric": null,
+        "domains": {
+          "2wikimultihopqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "bamboogle": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "hotpotqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "musique": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "nq": {
+            "covered": true,
+            "original_global_Top512_members": {
+              "AUC": 0.5001239771881973,
+              "BA": 0.5,
+              "K_histogram": [
+                197,
+                44,
+                30,
+                48,
+                63,
+                130
+              ],
+              "TNR": 0.0,
+              "TPR": 1.0,
+              "allcorrect_FPR": 1.0,
+              "allwrong_FPR": 1.0,
+              "confusion": {
+                "fn": 0,
+                "fp": 327,
+                "tn": 0,
+                "tp": 185
+              },
+              "mixed_fraction": 0.361328125,
+              "mixed_questions": 185,
+              "questions": 512,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": 0.5665996918067422,
+              "BA": 0.5568801694518407,
+              "K_histogram": [
+                1055,
+                181,
+                136,
+                132,
+                214,
+                330
+              ],
+              "TNR": 0.40938628158844764,
+              "TPR": 0.7043740573152338,
+              "allcorrect_FPR": 0.8515151515151516,
+              "allwrong_FPR": 0.5090047393364929,
+              "confusion": {
+                "fn": 196,
+                "fp": 818,
+                "tn": 567,
+                "tp": 467
+              },
+              "mixed_fraction": 0.32373046875,
+              "mixed_questions": 663,
+              "questions": 2048,
+              "threshold": 0.5
+            }
+          },
+          "popqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "triviaqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          }
+        },
+        "global_Top512": {
+          "AUC": 0.5001239771881973,
+          "BA": 0.5,
+          "K_histogram": [
+            197,
+            44,
+            30,
+            48,
+            63,
+            130
+          ],
+          "TNR": 0.0,
+          "TPR": 1.0,
+          "allcorrect_FPR": 1.0,
+          "allwrong_FPR": 1.0,
+          "confusion": {
+            "fn": 0,
+            "fp": 327,
+            "tn": 0,
+            "tp": 185
+          },
+          "mixed_fraction": 0.361328125,
+          "mixed_questions": 185,
+          "questions": 512,
+          "threshold": 0.5
+        },
+        "global_Top512_ordered_qids_sha256": "f081f717242a28abf1a7ffba9a53bccaa7bf2a3196c03df14478eaf0a3b4dc4d",
+        "per_domain_reselection": false,
+        "pool": {
+          "AUC": 0.5665996918067422,
+          "BA": 0.5568801694518407,
+          "K_histogram": [
+            1055,
+            181,
+            136,
+            132,
+            214,
+            330
+          ],
+          "TNR": 0.40938628158844764,
+          "TPR": 0.7043740573152338,
+          "allcorrect_FPR": 0.8515151515151516,
+          "allwrong_FPR": 0.5090047393364929,
+          "confusion": {
+            "fn": 196,
+            "fp": 818,
+            "tn": 567,
+            "tp": 467
+          },
+          "mixed_fraction": 0.32373046875,
+          "mixed_questions": 663,
+          "questions": 2048,
+          "threshold": 0.5
+        }
+      }
+    },
+    "external_predictions": {
+      "E2": {
+        "bytes": 155453,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/predictions.jsonl.gz",
+        "sha256": "e0dc53be8c0847e8a736401452d309771bcdca98d5c129e6cef49afa3b12c2ac"
+      },
+      "E4": {
+        "bytes": 155299,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/E4-same-HF-validation/E4/predictions.jsonl.gz",
+        "sha256": "66cdf3e7c748bda7f508c4f381ad0456a413d5d73c73e5d9f1eb774b71bdb707"
+      },
+      "append512": {
+        "bytes": 150942,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/evaluations/cursor-000512/selection2048FreshG5HF.jsonl.gz",
+        "sha256": "be30b5a856e85a4afd48850aed023abd083dfd9ed88dff1d529709bbe86d36db"
+      }
+    },
+    "final_pool_read": false,
+    "internal_confidence": {
+      "E4": {
+        "absent_domain_metric": null,
+        "domains": {
+          "2wikimultihopqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "bamboogle": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "hotpotqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "musique": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "nq": {
+            "covered": true,
+            "original_global_Top512_members": {
+              "AUC": 0.5413880880819482,
+              "BA": 0.5,
+              "K_histogram": [
+                180,
+                59,
+                39,
+                47,
+                93,
+                94
+              ],
+              "TNR": 0.0,
+              "TPR": 1.0,
+              "allcorrect_FPR": 1.0,
+              "allwrong_FPR": 1.0,
+              "confusion": {
+                "fn": 0,
+                "fp": 274,
+                "tn": 0,
+                "tp": 238
+              },
+              "mixed_fraction": 0.46484375,
+              "mixed_questions": 238,
+              "questions": 512,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": 0.6806584722960495,
+              "BA": 0.6405188428511148,
+              "K_histogram": [
+                1080,
+                181,
+                111,
+                143,
+                220,
+                313
+              ],
+              "TNR": 0.5161521895190236,
+              "TPR": 0.7648854961832061,
+              "allcorrect_FPR": 0.6869009584664537,
+              "allwrong_FPR": 0.425,
+              "confusion": {
+                "fn": 154,
+                "fp": 674,
+                "tn": 719,
+                "tp": 501
+              },
+              "mixed_fraction": 0.31982421875,
+              "mixed_questions": 655,
+              "questions": 2048,
+              "threshold": 0.5
+            }
+          },
+          "popqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          },
+          "triviaqa": {
+            "covered": false,
+            "original_global_Top512_members": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            },
+            "per_domain_reselection": false,
+            "pool": {
+              "AUC": null,
+              "BA": null,
+              "K_histogram": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "TNR": null,
+              "TPR": null,
+              "allcorrect_FPR": null,
+              "allwrong_FPR": null,
+              "confusion": {
+                "fn": 0,
+                "fp": 0,
+                "tn": 0,
+                "tp": 0
+              },
+              "mixed_fraction": null,
+              "mixed_questions": 0,
+              "questions": 0,
+              "threshold": 0.5
+            }
+          }
+        },
+        "global_Top512": {
+          "AUC": 0.5413880880819482,
+          "BA": 0.5,
+          "K_histogram": [
+            180,
+            59,
+            39,
+            47,
+            93,
+            94
+          ],
+          "TNR": 0.0,
+          "TPR": 1.0,
+          "allcorrect_FPR": 1.0,
+          "allwrong_FPR": 1.0,
+          "confusion": {
+            "fn": 0,
+            "fp": 274,
+            "tn": 0,
+            "tp": 238
+          },
+          "mixed_fraction": 0.46484375,
+          "mixed_questions": 238,
+          "questions": 512,
+          "threshold": 0.5
+        },
+        "global_Top512_ordered_qids_sha256": "38280cda25b40492f63e845f0ca5e4e0a69e72cebcc3502522e6aa4ac318700e",
+        "per_domain_reselection": false,
+        "pool": {
+          "AUC": 0.6806584722960495,
+          "BA": 0.6405188428511148,
+          "K_histogram": [
+            1080,
+            181,
+            111,
+            143,
+            220,
+            313
+          ],
+          "TNR": 0.5161521895190236,
+          "TPR": 0.7648854961832061,
+          "allcorrect_FPR": 0.6869009584664537,
+          "allwrong_FPR": 0.425,
+          "confusion": {
+            "fn": 154,
+            "fp": 674,
+            "tn": 719,
+            "tp": 501
+          },
+          "mixed_fraction": 0.31982421875,
+          "mixed_questions": 655,
+          "questions": 2048,
+          "threshold": 0.5
+        }
+      },
+      "all8192_domain_counts": {
+        "nq": 8192
+      },
+      "domain_metadata_input_refs_count": 244,
+      "domain_metadata_input_refs_sha256": "5bd683002fbe84aa1ab12686256c32a517c5fcb80e9e1e47cefe3d1ee8ec6ea2",
+      "groups": {
+        "bytes": 6265928,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/groups-8192.json",
+        "sha256": "2c94b6413261c7cdbcd53f20dbfd69f3838c71665749e01d83928ede81c2ceeb"
+      },
+      "held2048_domain_counts": {
+        "nq": 2048
+      },
+      "scope": "heldout_newseed5_same_native_warmup_seen_questions_NQ_training_cohort",
+      "source_predictions": {
+        "bytes": 1751028,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/E4/predictions.jsonl.gz",
+        "sha256": "969faa1c8fc3ff9a81afa72e9abdd8fccad3fec78ddeb99844a54e3275994f3a"
+      },
+      "split": {
+        "bytes": 261384,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/split.json",
+        "sha256": "5fb7cdaa2f46534de4e4d972381229ff405c5500b7daff6c52d56d05a584a46f"
+      }
+    },
+    "model_tensor_read": false,
+    "new_model_scores_created": false,
+    "no_per_domain_top512_reselection": true,
+    "parameters_fitted": false,
+    "peak_RSS_bytes": 338993152,
+    "q_formula_max_errors": {
+      "E2": 1.681662221697522e-07,
+      "E4": 2.2803979934926666e-07,
+      "append512": 1.5553727461536937e-07
+    },
+    "real_scalar_calibrator_state_read": false,
+    "role": "descriptive_existing_predictions_only",
+    "source_files": {
+      "append_audit": {
+        "bytes": 12907,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/evaluations/cursor-000512/independent-audit.json",
+        "sha256": "fef550807527ff089e9a305d159bc82862e0738d738f89302052f3ccb72affeb"
+      },
+      "append_config": {
+        "bytes": 15081,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-only-train-v2/config.json",
+        "sha256": "d56668bdd2e9839abe042c0d4f720225cb0cafd62f22924867dbfda883b17a80"
+      },
+      "data_config": {
+        "bytes": 6432,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/config.json",
+        "sha256": "457fd8deba5242eece98239b6bae8812b6c96e2141c6454fe99242c8a593d827"
+      },
+      "external_questions": {
+        "bytes": 6670546,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/inputs/questions.json",
+        "sha256": "9c26795ae1fd4095b3d3af46f2bbefb162897e40dd4ded8e8f94bf41eb0ecc0a"
+      },
+      "internal_audit": {
+        "bytes": 12716,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/fit/independent-internal-audit.json",
+        "sha256": "f77c10b3868ad895c799574b06cd47191e4968fad8cf90f0d141860249b6cdd6"
+      },
+      "internal_config": {
+        "bytes": 5131,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/fit-config-v2.json",
+        "sha256": "3ec15b790d5b0db67b88fdc22e74ea692eb216e34e0955853f4c273a30392371"
+      },
+      "paired_manifest": {
+        "bytes": 1841,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-append-stability-1a0f5b4/cursor-000512-v2/manifest.json",
+        "sha256": "aff8cd750ab734159cc95e6f0a2e064e6ca8d9f81394898ed0cd9f2f879a6015"
+      }
+    },
+    "status": "EXISTING_PREDICTIONS_DOMAIN_ID_OWN_EM_Q_DECOMPOSITION_COMPLETE",
+    "threshold_fitted": false,
+    "time": 1792540336.5349305,
+    "warmup_membership": {
+      "canonical_parquet": {
+        "bytes": 17823593,
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/train.parquet",
+        "source_stat_pre_post_identical": true,
+        "this_audit_fresh_full_file_SHA": false,
+        "whole_file_sha256_inherited_from_accepted_producer": "5d40180ba54d35513bb780408caa068d7d60123214a49b0739f835a2ae47c8a1"
+      },
+      "canonical_questions": 169028,
+      "columns_read": [
+        "prompt",
+        "data_source",
+        "extra_info.index"
+      ],
+      "domain_counts": {
+        "hotpotqa": 90157,
+        "nq": 78871
+      },
+      "external_fixedHF2048": {
+        "matching_qid_and_hash": 0,
+        "qid_overlap": 0,
+        "question_hash_overlap": 0,
+        "questions": 2048
+      },
+      "gold_reward_EM_columns_read": false,
+      "internal8192": {
+        "matching_qid_and_hash": 8192,
+        "qid_overlap": 8192,
+        "question_hash_overlap": 8192,
+        "questions": 8192
+      },
+      "internal_fit6144": {
+        "matching_qid_and_hash": 6144,
+        "qid_overlap": 6144,
+        "question_hash_overlap": 6144,
+        "questions": 6144
+      },
+      "internal_held2048": {
+        "matching_qid_and_hash": 2048,
+        "qid_overlap": 2048,
+        "question_hash_overlap": 2048,
+        "questions": 2048
+      },
+      "ordered_warmup_qid_sha256": "dd2a29d71bb36f918c46ab26932183c344e3b47b7f1b2bc2731c44ee111a7553",
+      "producer_identity_rule": "qid=json([str(data_source),str(extra_info.index)]); hash=sha256(newline-joined prompt contents)",
+      "source_config": {
+        "bytes": 2468,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/config.json",
+        "sha256": "7ec5eca1afe1fcc92f8a156bece5f7f93d9e3b8df3bf8ab2c571dbdafa01dd18"
+      },
+      "source_input_manifest": {
+        "bytes": 377318,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/inputs/manifest.json",
+        "sha256": "b6f18320975bc0fe067937bc6d7e46e95d1466d8bdbd80d79ab0c46718db05e2"
+      }
+    }
+  }
+}
