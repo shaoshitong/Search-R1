@@ -70,3 +70,32 @@ No native/HF bit-exact equivalence or GPU replay completion is claimed.
 Six narrow CPU tests cover target complete/SHA gates, identity-only exclusions,
 own G10 IDs/EM, genuine tokenizer strict-EM with tool observations, Prefix20
 multisegment positions, actual seed overlap, and sampling protocol mismatch.
+
+## Authorized8192-question feature-only follow-up
+
+`peer_newseed_replay.py` now implements the separate HF replay adapter. It
+selects exactly8192 accepted raw training questions using identity hash seed1729,
+excluding controlled6528 and all three evaluation scopes by qid **and** hash.
+Insufficient eligible questions fail closed with the real available count.
+Labels/probe scores do not enter selection or the projected prefix inputs.
+Each selected question keeps all10 genuine old5/new5 trajectories.
+
+`deploy_peer_newseed_replay.py` provides explicit `stage`, `ingest-prepare`,
+`ingest-start`, `features-start`, `finalize`, per-shard `submit` and `status`.
+It stages28 exact published files in4KiB SHA chunks; every rendered control
+command is below10KB. Unknown launch/submission receipts refuse duplication.
+Finalization creates four independent normal/acd_u scripts, each1GPU/8CPU/64G,
+2h and **no dependency**. No retriever/second GPU is requested.
+
+Feature preparation checks actual shared free space at least600GiB. The
+uncompressed dense retained-feature upper bound for8192×10×three layers is
+516GB; lossless per-question/XOR packing usually reduces it. All features stay
+on shared storage. Workers use the exact Q1-qualified R2 replay primitive and
+official model view;256-trajectory chunks are immutable and complete chunks
+can be verified/reused. They preserve per-trajectory causal tool contexts and
+positions, import the real ReplayFeatureReader, and check actual row coverage.
+
+The reused R2 evaluation features cover only R2's **original G5** diagnostic512
+and already-viewed selection2048. They do not cover the new validation G10
+random fixed5; those distinct tokens require a separate same-backend replay.
+Untouched final pools are neither generated nor opened by this feature adapter.
