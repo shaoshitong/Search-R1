@@ -184,7 +184,7 @@ def main():
         metrics['selection2048']=selection(ema,held_reader,held_groups,rank,device,pred/('epoch-%04d-unseen2048.jsonl.gz'%e))
         save(base,model,ema,optimizer,e,0,steps,metrics,rank,c)
         if rank==0:atomic(root/'metrics-latest.json',dict(epoch=e,steps=steps,metrics=metrics,epoch_time=time.time()))
-    if rank==0:atomic(root/'complete.json',dict(status='CP2_MIXED_ONLY_FINETUNE4_COMPLETE',additional_epochs=c['fit_epochs'],source_steps=9146,steps=steps,latest=read(root/'latest.json'),actor_updates=0,epoch_time=time.time()))
+    if rank==0:atomic(root/'complete.json',dict(status='CP2_MIXED_ONLY_FINETUNE_COMPLETE',additional_epochs=c['fit_epochs'],source_steps=9146,steps=steps,latest=read(root/'latest.json'),actor_updates=0,epoch_time=time.time()))
     dist.destroy_process_group()
 
 if __name__=='__main__':main()
