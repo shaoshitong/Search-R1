@@ -1,0 +1,96 @@
+{
+  "classification_threshold": 0.5,
+  "created_utc": "2026-10-20T21:47:48.522889+00:00",
+  "grid": [
+    {
+      "E2_weight": 0.25,
+      "E4_weight": 0.75,
+      "formula": "p_j=w*pE2_j+(1-w)*pE4_j; score=1-prod(p_j)-prod(1-p_j)",
+      "id": "trajectory_probability_mix-w25",
+      "kind": "trajectory_probability_mix"
+    },
+    {
+      "E2_weight": 0.5,
+      "E4_weight": 0.5,
+      "formula": "p_j=w*pE2_j+(1-w)*pE4_j; score=1-prod(p_j)-prod(1-p_j)",
+      "id": "trajectory_probability_mix-w50",
+      "kind": "trajectory_probability_mix"
+    },
+    {
+      "E2_weight": 0.75,
+      "E4_weight": 0.25,
+      "formula": "p_j=w*pE2_j+(1-w)*pE4_j; score=1-prod(p_j)-prod(1-p_j)",
+      "id": "trajectory_probability_mix-w75",
+      "kind": "trajectory_probability_mix"
+    },
+    {
+      "E2_weight": 0.25,
+      "E4_weight": 0.75,
+      "formula": "score=w*qE2+(1-w)*qE4; direct Mixed score; not a single independent-Bernoulli formula",
+      "id": "direct_Mixed_score_mix-w25",
+      "kind": "direct_Mixed_score_mix"
+    },
+    {
+      "E2_weight": 0.5,
+      "E4_weight": 0.5,
+      "formula": "score=w*qE2+(1-w)*qE4; direct Mixed score; not a single independent-Bernoulli formula",
+      "id": "direct_Mixed_score_mix-w50",
+      "kind": "direct_Mixed_score_mix"
+    },
+    {
+      "E2_weight": 0.75,
+      "E4_weight": 0.25,
+      "formula": "score=w*qE2+(1-w)*qE4; direct Mixed score; not a single independent-Bernoulli formula",
+      "id": "direct_Mixed_score_mix-w75",
+      "kind": "direct_Mixed_score_mix"
+    }
+  ],
+  "joint_gate": "score BA strictly greater than independently recomputed exact E2 baseline BA AND selected512 Mixed count strictly greater than independently recomputed E4 count (expected196).",
+  "label_binding": "Fresh SHA-checked bank and frozen label-blind fixedG5 plan; join each selected trajectory own strict EM. Both score files must match exactly the same qid/trajectory order and labels.",
+  "prior_knowledge": "Single-model E2/E4 validation baselines already observed; no six-grid combination result has been read or computed before this file.",
+  "ranking": "(-score,str(qid)) ascending; Top512",
+  "reject_rules": [
+    "Any source SHA/bytes, row count2048, duplicate qid/tid or frozen own-ID/strict-EM mismatch: reject entire analysis.",
+    "Any p_j nonfinite/outside[0,1], wrong G5 shape, own q formula absolute error>=1e-6: reject.",
+    "Any source model checkpoint/feature backend/frozen selection mismatch: reject.",
+    "No threshold fitting, calibration fitting, new weights, new score formulas, grid extension or final4096 access."
+  ],
+  "reports": [
+    "BA",
+    "Mixed recall",
+    "NonMixed recall",
+    "allwrong FPR",
+    "allcorrect FPR",
+    "AUC",
+    "pool and selected K0..5 composition",
+    "selected512 actual Mixed",
+    "paired errors/complementarity of E2/E4",
+    "per-candidate exact deltas and strict joint pass"
+  ],
+  "role": "PREVIOUSLY_VIEWED_RECIPE_SELECTION_VALIDATION_ONLY",
+  "scope_limits": {
+    "CPU_only": true,
+    "Platt_grid_changed": false,
+    "external_final_read": false,
+    "fitting_performed": false,
+    "heldout_generalization_claim": false,
+    "max_address_space_bytes": 3221225472,
+    "max_cpus": 2,
+    "no_new_GPU": true,
+    "post_selection_winner_is_validation_candidate_only": true
+  },
+  "sources": {
+    "E2": {
+      "bytes": 155453,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-same-HF-baseline-20261021/predictions.jsonl.gz",
+      "sha256": "e0dc53be8c0847e8a736401452d309771bcdca98d5c129e6cef49afa3b12c2ac"
+    },
+    "E4": {
+      "bytes": 155299,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/E4-same-HF-validation/E4/predictions.jsonl.gz",
+      "sha256": "66cdf3e7c748bda7f508c4f381ad0456a413d5d73c73e5d9f1eb774b71bdb707"
+    }
+  },
+  "status": "FIXED_SIX_ITEM_GRID_PREREGISTERED_BEFORE_ANY_COMBINATION_RESULTS",
+  "winner_rule": "Among joint-pass items: largest Mixed BA, then largest Top512 Mixed count, then largest AUC, then lexicographically smallest fixed id. If none pass, promote none."
+}
