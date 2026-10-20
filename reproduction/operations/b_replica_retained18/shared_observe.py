@@ -25,7 +25,7 @@ def reusable(row,complete):
  except(OSError,KeyError):return False
 config=read(p/'preparation/launch-config.json')
 execution_node=config['expected_execution_node']
-if execution_node not in ('h100-5','h100-8','h100-10'):raise ValueError('Require activated allowed shared node; H10011 excluded')
+if execution_node not in ('h100-5','h100-8','h100-10','h100-11'):raise ValueError('Require activated authorized shared node')
 resume_outer=int(config.get('resume_joint',{}).get('completed_outer',64))
 stage=read(p/'logs/pipeline-status.json');n=max(resume_outer+1,(stage or{}).get('outer',resume_outer+1));root=p/'outers'/('outer-%06d'%n)
 progress={str(f.relative_to(p)):read(f)for f in root.rglob('*progress*.json')if f.stat().st_size<15000}
@@ -85,7 +85,7 @@ print(json.dumps(dict(observed_unix=time.time(),same_birth=same,stat=st,**gpu)))
  observed200=v.get('complete_outer')==200
  status='SHARED_NATIVE_200_OBSERVED_AWAITING_AUDIT'if observed200 else('SHARED_NATIVE_CONTINUING'if alive else'SHARED_NATIVE_EXITED_NEEDS_DIAGNOSIS')
  if alive and not v.get('actual_node_health',{}).get('gpu_observation_valid',True):status='SHARED_NATIVE_GPU_OBSERVATION_UNKNOWN_NEEDS_CHECK'
- root=OUT.parents[1];s=json.loads((root/'outputs/STATUS.json').read_text());s.update(status=status,actual_native_running=alive,actual_training_running=alive and not observed200,actual_complete_outer=v['complete_outer'],current_stage=(v['stage']or{}).get('stage'),node=v['node'],ip={'h100-5':'10.33.0.5','h100-8':'10.33.0.8','h100-10':'10.33.0.18'}[v['node']],world_size=v['world_size'],resume_job_id=None,cancelled_pending_job=3674,base=receipt['command'][-1]if receipt else None,physical_base=BASE,source_commit=receipt['source_commit']if receipt else None,native_leader=leader,training_started=bool(receipt),owned_births_all_gone=bool((v['cleanup']or{}).get('owned_births_all_gone')),execution_node_pending=False,current_evidence=str(dest),updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
+ root=OUT.parents[1];s=json.loads((root/'outputs/STATUS.json').read_text());s.update(status=status,actual_native_running=alive,actual_training_running=alive and not observed200,actual_complete_outer=v['complete_outer'],current_stage=(v['stage']or{}).get('stage'),node=v['node'],ip={'h100-5':'10.33.0.5','h100-8':'10.33.0.8','h100-10':'10.33.0.18','h100-11':'10.33.4.14'}[v['node']],world_size=v['world_size'],resume_job_id=None,cancelled_pending_job=3674,base=receipt['command'][-1]if receipt else None,physical_base=BASE,source_commit=receipt['source_commit']if receipt else None,native_leader=leader,training_started=bool(receipt),owned_births_all_gone=bool((v['cleanup']or{}).get('owned_births_all_gone')),execution_node_pending=False,current_evidence=str(dest),updated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat())
  (root/'outputs/STATUS.json').write_text(json.dumps(s,ensure_ascii=False,indent=2))
  for target in (OUT,root/'work/tree-grpo/reproduction/baselines/tree-validation-20261002/b-replica-retained18-20261018',Path('/Users/shaoshitong/Documents/remote_codex_control/research/search-r1-baselines/results/tree-grpo/b-replica-retained18-20261018')):
   (target/'SHARED_RESUME64_STATUS.json').write_text(json.dumps(v,ensure_ascii=False,indent=2))
