@@ -1,0 +1,142 @@
+{
+  "status": "ALL_SIX_PREREG_OWN_EM_FORMULA_METRICS_AND_JOINT_GATE_INDEPENDENTLY_VERIFIED_FAIL_ALL",
+  "epoch": 1792533189.0934181,
+  "elapsed_seconds": 0.28269481658935547,
+  "source_complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-E4-fixedG5-ensemble-validation-20261021/complete.json",
+    "bytes": 18535,
+    "sha256": "45e8f5a21061f5e130d64c9eade3f3c99ac8504e9c3c68806c234c40882ecbec"
+  },
+  "baseline_exact": {
+    "E2": {
+      "BA": 0.5625049686633887,
+      "Top512Mixed": 181
+    },
+    "E4": {
+      "BA": 0.5577138158790315,
+      "Top512Mixed": 196
+    }
+  },
+  "recipes": [
+    {
+      "id": "trajectory_probability_mix-w25",
+      "q_formula_max_error": 0.0,
+      "own_ID_EM_exact": true,
+      "metrics_and_ranking_exact": true,
+      "joint": false
+    },
+    {
+      "id": "trajectory_probability_mix-w50",
+      "q_formula_max_error": 0.0,
+      "own_ID_EM_exact": true,
+      "metrics_and_ranking_exact": true,
+      "joint": false
+    },
+    {
+      "id": "trajectory_probability_mix-w75",
+      "q_formula_max_error": 0.0,
+      "own_ID_EM_exact": true,
+      "metrics_and_ranking_exact": true,
+      "joint": false
+    },
+    {
+      "id": "direct_Mixed_score_mix-w25",
+      "q_formula_max_error": 0.0,
+      "own_ID_EM_exact": true,
+      "metrics_and_ranking_exact": true,
+      "joint": false
+    },
+    {
+      "id": "direct_Mixed_score_mix-w50",
+      "q_formula_max_error": 0.0,
+      "own_ID_EM_exact": true,
+      "metrics_and_ranking_exact": true,
+      "joint": false
+    },
+    {
+      "id": "direct_Mixed_score_mix-w75",
+      "q_formula_max_error": 0.0,
+      "own_ID_EM_exact": true,
+      "metrics_and_ranking_exact": true,
+      "joint": false
+    }
+  ],
+  "archive_format": "tar",
+  "archive": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/E2-E4-fixedG5-ensemble-validation-20261021/six-fixed-validation-results.tar",
+    "bytes": 778240,
+    "sha256": "73ed359590f1363ce5925574391f4c67acf151bff37ded4ffd36770edc5418d7"
+  },
+  "archive_members": [
+    {
+      "path": "complete.json",
+      "bytes": 18535,
+      "sha256": "45e8f5a21061f5e130d64c9eade3f3c99ac8504e9c3c68806c234c40882ecbec"
+    },
+    {
+      "path": "source-publication.json",
+      "bytes": 678,
+      "sha256": "5eaca2177642a8c45aa5b6edc9a16b8019e92cc7e268807fe3fc5cc1693000f4"
+    },
+    {
+      "path": "cpu-intent.json",
+      "bytes": 785,
+      "sha256": "58d0eeaefef7d9b14431c3e794f61481ba8b327e4562d074cf7fe66bd31a9958"
+    },
+    {
+      "path": "cpu-exit.json",
+      "bytes": 47,
+      "sha256": "f8d3b47ffd118466487eb80df1c75d80f6ad4da2335f715213ab1ec28be520c8"
+    },
+    {
+      "path": "code-75a9c4e9ed22/prereg.json",
+      "bytes": 4190,
+      "sha256": "dbe441765052455989e14fc82c9b7aa3ad7e671ccc46cc74a611fdc5fe824b8d"
+    },
+    {
+      "path": "code-75a9c4e9ed22/e2_e4_fixed_ensemble.py",
+      "bytes": 11851,
+      "sha256": "18544951a5ecf2bf1ca85a8f4c534eb0e56a9c621bab0139bc799d9c3cb83515"
+    },
+    {
+      "path": "trajectory_probability_mix-w25.jsonl.gz",
+      "bytes": 176507,
+      "sha256": "12386cd6b3a93a383bd9c05116a2e4ec6e0c92b855881d26351c56c6f52a8250"
+    },
+    {
+      "path": "trajectory_probability_mix-w50.jsonl.gz",
+      "bytes": 176262,
+      "sha256": "b78fbd4f503757c1073d5442be2e4353598018bac40558fabb5d45060d257a66"
+    },
+    {
+      "path": "trajectory_probability_mix-w75.jsonl.gz",
+      "bytes": 176336,
+      "sha256": "2d6dffb77297b008fe0cc8dc8b2b3cc8419e5fa2b355483a9d78e8de5d7999cb"
+    },
+    {
+      "path": "direct_Mixed_score_mix-w25.jsonl.gz",
+      "bytes": 65743,
+      "sha256": "983208c09ad70e029bb909a1aea6da9b775287e30fb29e3bae3590ddcb293531"
+    },
+    {
+      "path": "direct_Mixed_score_mix-w50.jsonl.gz",
+      "bytes": 65686,
+      "sha256": "04a9fe9798ebf89b237814440fd1cc1178003c1a5a03703e2d6bde62e65a3d94"
+    },
+    {
+      "path": "direct_Mixed_score_mix-w75.jsonl.gz",
+      "bytes": 65668,
+      "sha256": "c265156d19c35ee9e45b80525b54703f31e711b72922d7462b4718a0a903eca3"
+    }
+  ],
+  "CPU_exit0": true,
+  "own_lock_free": true,
+  "raw_probability_rows_returned_to_Mac": false,
+  "model_or_feature_read": false,
+  "new_GPU": false,
+  "fitting_or_threshold_tuning": false,
+  "Platt_grid_changed": false,
+  "final4096_read": false,
+  "winner": null,
+  "promote_none": true
+}
