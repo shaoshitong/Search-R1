@@ -1,5 +1,5 @@
 """Original 7B native G5 sampler, no hidden writer; a shared local retriever."""
-import argparse,gzip,json,os,time
+import argparse,gzip,json,os,time,signal,traceback
 from pathlib import Path
 from reproduction.operations.qwen7b_warmup import sampling as s
 from reproduction.operations.qwen7b_warmup.download_model import atomic,fingerprints,REVISION
@@ -69,4 +69,14 @@ def main():
   x=dict(run_id=c['run_id'],input_sha256=digest(inp),batch=inp.stem,questions=len(batch['rows']),trajectories=5*len(batch['rows']),prefix=prefix,full=full,hidden_cached=False,model_revision=REVISION,actor_optimizer_updates=0,epoch=time.time());atomic(receipt,x);accepted.append(x)
   progress=dict(shard=a.shard,completed_batches=len(accepted),total_batches=len(list((base/'inputs'/('shard-%02d'%a.shard)).glob('batch-*.json'))),questions=sum(x['questions']for x in accepted),trajectories=sum(x['trajectories']for x in accepted),elapsed=time.monotonic()-started,epoch=time.time());atomic(root/'progress.json',progress);print(json.dumps(progress),flush=True)
  atomic(root/'complete.json',dict(status='ALL_NEW_SEED_G5_BATCHES_COMPLETE',run_id=c['run_id'],shard=a.shard,questions=sum(x['questions']for x in accepted),trajectories=sum(x['trajectories']for x in accepted),batches=len(accepted),epoch=time.time()))
-if __name__=='__main__':main()
+if __name__=='__main__':
+ def terminate(signum,frame):raise SystemExit(128+signum)
+ signal.signal(signal.SIGTERM,terminate)
+ try:main()
+ except BaseException as e:
+  traceback.print_exc()
+  base=Path(__import__('sys').argv[__import__('sys').argv.index('--base')+1]);shard=__import__('sys').argv[__import__('sys').argv.index('--shard')+1]
+  try:atomic(base/('worker-failure-'+shard+'.json'),dict(error_type=type(e).__name__,detail=str(e)[:1000],traceback=traceback.format_exc(),epoch=time.time()))
+  except BaseException:pass
+  raise
+

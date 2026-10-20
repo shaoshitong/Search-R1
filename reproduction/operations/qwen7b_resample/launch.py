@@ -23,12 +23,32 @@ def main():
  boot='BASE='+repr(BASE)+'\n'+r'''
 import base64,gzip,hashlib,json,os,subprocess,sys,time
 from pathlib import Path
-b=Path(BASE);b.mkdir(exist_ok=True);(b/'code').mkdir(exist_ok=True);(b/'logs').mkdir(exist_ok=True);v=json.loads(gzip.decompress(sys.stdin.buffer.read()));p=b/'launch-intent.json';unit='sst-q7b-newseed-g5-20261020-r3'
-if p.exists():print(json.dumps({'existing_intent':json.loads(p.read_text()),'unit':unit,'not_replayed':True}));raise SystemExit(0)
-with p.open('x')as f:json.dump({'unit':unit,'epoch':time.time(),'source_commit':v['plan'][0]['commit'],'seed':20261021,'questions':169028,'trajectories':845140,'cards':[1,2,3]},f)
-(b/'code/delta.json').write_text(json.dumps(v['delta']));(b/'code/direct-plan.json').write_text(json.dumps(v['plan']));(b/'code/fetch-code.py').write_text(v['worker']);(b/'entry.py').write_text(v['entry']);(b/'retrieval-config.json').write_text(json.dumps(v['retrieval']))
-args=['systemd-run','--unit='+unit,'--setenv=HTTP_PROXY=http://10.33.0.18:3128','--setenv=HTTPS_PROXY=http://10.33.0.18:3128','--property=KillMode=control-group','--property=TimeoutStopSec=60','--property=Restart=no','--property=MemoryMax=256G','--property=TasksMax=2048','--property=StandardOutput=append:'+str(b/'logs/native.log'),'--property=StandardError=append:'+str(b/'logs/native.log'),'/usr/bin/python3',str(b/'entry.py')]
-r=subprocess.run(args,env={**os.environ,'HTTP_PROXY':'http://10.33.0.18:3128','HTTPS_PROXY':'http://10.33.0.18:3128'},capture_output=True,text=True);receipt={'unit':unit,'returncode':r.returncode,'stdout':r.stdout,'stderr':r.stderr,'epoch':time.time()};(b/'launch-receipt.json').write_text(json.dumps(receipt));print(json.dumps(receipt));assert r.returncode==0
+unit='sst-q7b-newseed-g5-20261020-r4';local=Path('/root/.local/share/search-g1/qwen7b-newseed-g5/r4');local.mkdir(parents=True,exist_ok=True)
+p=local/'intent.json'
+if p.exists():print(json.dumps({'existing_intent':json.loads(p.read_text()),'not_replayed':True}));raise SystemExit(0)
+for old in ['sst-q7b-newseed-g5-20261020-r3']:
+ assert subprocess.check_output(['systemctl','show',old,'-p','MainPID','--value'],text=True).strip()=='0'
+v=json.loads(gzip.decompress(sys.stdin.buffer.read()))
+with p.open('x')as f:json.dump(dict(unit=unit,epoch=time.time(),commit=v['plan'][0]['commit'],resume_existing_sealed_batches=True),f)
+(local/'payload.json').write_text(json.dumps(v))
+bootstrap="""import json,os,runpy,subprocess
+from pathlib import Path
+BASE=Path("""+repr(BASE)+""")
+local=Path("""+repr(str(local))+""")
+canonical=Path('/mnt/data/sihe-share5/workspace/training_data_node_10')
+target=Path('/mnt/shared/workspace/training_data_node_10')
+target.mkdir(parents=True,exist_ok=True)
+subprocess.run(['mount','--bind',str(canonical),str(target)],check=True)
+assert (BASE/'config.json').is_file()
+v=json.loads((local/'payload.json').read_text());control=BASE/'attempts/r4';(control/'code').mkdir(parents=True,exist_ok=True)
+(control/'code/delta.json').write_text(json.dumps(v['delta']));(control/'code/direct-plan.json').write_text(json.dumps(v['plan']));(control/'entry.py').write_text(v['entry']);(control/'retrieval-config.json').write_text(json.dumps(v['retrieval']))
+os.environ['Q7B_CONTROL']=str(control);os.environ['Q7B_ATTEMPT']='r4'
+runpy.run_path(str(control/'entry.py'),run_name='__main__')
+"""
+(local/'bootstrap.py').write_text(bootstrap)
+wrapper='/root/.local/share/search-g1/source8-fault-recovery/b2d62068695e156dcc90fc42e112ad24c676a1e7531fc26e2c0c6a01dbbfc1c1/retained-fault-paths.sh'
+args=['systemd-run','--unit='+unit,'--property=KillMode=control-group','--property=TimeoutStopSec=60','--property=Restart=no','--property=MemoryMax=256G','--property=TasksMax=2048','--property=StandardOutput=append:'+str(local/'native.log'),'--property=StandardError=append:'+str(local/'native.log'),'unshare','--mount','--propagation','private','bash',wrapper,'h100-11','/usr/bin/python3',str(local/'bootstrap.py')]
+r=subprocess.run(args,capture_output=True,text=True);receipt=dict(unit=unit,returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,epoch=time.time());(local/'receipt.json').write_text(json.dumps(receipt));print(json.dumps(receipt));assert r.returncode==0
 '''
  for n,p in [('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py'),('route','/Users/shaoshitong/Documents/Search-G1/h100-prefix5-reference-replica-20261018/reproduction/operations/h100_reference_replica/readonly_management_route.py')]:
   spec=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);globals()[n]=m
