@@ -4,7 +4,7 @@ from .control import REPO,OUT,remote
 
 SCRIPT=r'''
 import pathlib,json,time,socket,subprocess,base64,hashlib
-assert socket.gethostname()==TARGET and TARGET in ('h100-5','h100-8','h100-10')
+assert socket.gethostname()==TARGET and TARGET in ('h100-5','h100-10','h100-11')
 p=pathlib.Path('/run')/UNIT;p.mkdir(exist_ok=False)
 for name,data in BUNDLE.items():
  f=p/name;f.write_bytes(base64.b64decode(data));assert hashlib.sha256(f.read_bytes()).hexdigest()==HASHES[name]
@@ -43,7 +43,7 @@ print(r.stdout)
 '''
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--name',required=True);p.add_argument('--unit',required=True);p.add_argument('--outer',required=True,type=int);p.add_argument('--target',required=True,choices=['h100-5','h100-8','h100-10']);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--name',required=True);p.add_argument('--unit',required=True);p.add_argument('--outer',required=True,type=int);p.add_argument('--target',required=True,choices=['h100-5','h100-10','h100-11']);a=p.parse_args()
  assert a.name.startswith('search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp%d-four-'%a.outer)and '/'not in a.name and '..'not in a.name
  assert a.unit.startswith('sst-b-diverse-cp%d-four-'%a.outer)and all(x in'abcdefghijklmnopqrstuvwxyz0123456789-'for x in a.unit)
  assert not subprocess.check_output(['git','status','--porcelain'],cwd=REPO)

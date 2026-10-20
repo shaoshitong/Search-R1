@@ -9,7 +9,7 @@ def main():
  a=argparse.ArgumentParser();a.add_argument('--base',required=True);args=a.parse_args();b=Path(args.base)
  initial=read(b/'preparation/launch-config.json')
  node=socket.gethostname()
- assert node in ('h100-5','h100-8','h100-10') and node==initial['expected_execution_node']
+ assert node in ('h100-5','h100-8','h100-10','h100-11') and node==initial['expected_execution_node']
  assert not(b/'preparation/submit-intent.json').exists(),'Reconcile an existing native submission instead'
  q=subprocess.check_output(['squeue','-h','-n','sst-b-diverse-cp64-eight','-o','%T'],text=True).strip()
  assert not q or q=='CANCELLED','Own queued execution must be cancelled before native launch'

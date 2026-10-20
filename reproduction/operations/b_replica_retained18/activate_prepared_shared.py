@@ -14,8 +14,8 @@ def main():
     args = parser.parse_args()
     base = Path(args.base)
     node = socket.gethostname()
-    if node not in ('h100-5', 'h100-8', 'h100-10'):
-        raise ValueError('Only authorized same-cluster targets; H10011 excluded')
+    if node not in ('h100-5', 'h100-8', 'h100-10', 'h100-11'):
+        raise ValueError('Only explicitly authorized same-cluster targets')
     from reproduction.prefix20_online.launch import read, once, publish, sha
     from reproduction.prefix_selection200.launch import validate_config
     if ((base / 'preparation/submit-intent.json').exists()

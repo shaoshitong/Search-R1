@@ -2,13 +2,13 @@
 # Private namespace only. Payloads and outputs remain on retained H10018.
 set -euo pipefail
 node=$(hostname)
-[[ $node == h100-8 || $node == h100-10 || $node == h100-5 ]]
+[[ $node == h100-8 || $node == h100-10 || $node == h100-5 || $node == h100-11 ]]
 [[ $(readlink /proc/self/ns/mnt) != $(readlink /proc/1/ns/mnt) ]]
 stash=/run/search-g1-diverse-retained18-shared
 mkdir -p "$stash"
 if [[ $node == h100-10 ]]; then
   mount --bind /mnt/data/shaoshitong "$stash"
-elif [[ $node == h100-5 ]]; then
+elif [[ $node == h100-5 || $node == h100-11 ]]; then
   export_root=/run/search-g1-retained18-export
   mkdir -p "$export_root"
   mount -t nfs4 -o rw,vers=4.2 10.33.0.18:/mnt/data "$export_root"
