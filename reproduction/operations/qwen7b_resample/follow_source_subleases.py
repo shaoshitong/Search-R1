@@ -1,6 +1,7 @@
 """Read-only initial whole-batch follow of the two extra source5 consumers."""
 import argparse
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -14,19 +15,26 @@ def main():
     p.add_argument('--interval',type=int,default=60)
     p.add_argument('--own-batches',type=int,default=1)
     p.add_argument('--tp1',action='store_true',help='Observe only the separately admitted gpu2/gpu1 TP1 units')
-    a=p.parse_args();assert a.interval>=30 and a.own_batches>=1
-    if a.tp1:
+    p.add_argument('--tp1-replacements',action='store_true',help='Observe only new independent GPU4/6/7 replacement units')
+    p.add_argument('--retired-terminal-sha256')
+    a=p.parse_args();assert a.interval>=30 and a.own_batches>=1 and not(a.tp1 and a.tp1_replacements)
+    if a.tp1_replacements:
+        assert re.fullmatch(r'[0-9a-f]{64}',a.retired_terminal_sha256 or ''),'Replacement follow requires actual terminal proof SHA'
+    if a.tp1_replacements:
+        from . import source_tp1_replacement_control as control
+    elif a.tp1:
         from . import source_tp1_control as control
     else:
         from . import source_sublease_control as control
-    latest=ROOT/'work'/('qwen7b-source5-tp1-first-batches-latest-small.json'if a.tp1 else'qwen7b-source5-extra-first-batches-latest-small.json')
+    latest=ROOT/'work'/('qwen7b-source5-tp1-replacement-first-batches-latest-small.json'if a.tp1_replacements else'qwen7b-source5-tp1-first-batches-latest-small.json'if a.tp1 else'qwen7b-source5-extra-first-batches-latest-small.json')
     until=time.monotonic()+a.hours*3600;last=None
     while time.monotonic()<until:
         rows={}
         for group in control.GROUPS:
             try:
+                extra=['--retired-terminal-sha256',a.retired_terminal_sha256]if a.tp1_replacements else[]
                 r=subprocess.run([sys.executable,'-m',control.__name__,
-                    'status','--group',group],text=True,capture_output=True,timeout=110)
+                    'status','--group',group,*extra],text=True,capture_output=True,timeout=110)
                 assert r.returncode==0,r.stderr[-1000:]
                 outer=json.loads(r.stdout);v=json.loads(outer['stdout']);s=v.get('sampler')or{};progress=s.get('progress')or{}
                 model=s.get('model_initialized')or[]
