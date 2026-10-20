@@ -1,0 +1,2 @@
+import pathlib,json
+B=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019');p=B/'mixed-only-ft-cp2-prefix20-20261020/probe/epoch-0001.json';v=json.loads(p.read_text());p2=B/'algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/independent-reader-audit.json';a=json.loads(p2.read_text());print(json.dumps({'E1':{k:v[k] for k in ['path','sha256','bytes','steps','epoch','completed_epoch','cursor','independent_cpu_reload'] if k in v},'validation_independent_audit':a}))

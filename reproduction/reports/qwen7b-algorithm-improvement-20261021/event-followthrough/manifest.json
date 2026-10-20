@@ -1,0 +1,238 @@
+{
+  "base_commit": "3fc8f70908761d7a8ceff33a987fe0720d6aa64c",
+  "branch": "codex/qwen7b-event-followthrough-audits-20261020T204047Z",
+  "created_utc": "20261020T204047Z",
+  "files": {
+    "reproduction/operations/qwen7b_warmup/replay_batched_context.py": {
+      "bytes": 11673,
+      "sha256": "500911347444a07693fb4405a6f6fbbcad7b70375522a52833953b426970f506"
+    },
+    "reproduction/operations/qwen7b_warmup/test_replay_batched_context.py": {
+      "bytes": 6599,
+      "sha256": "0f65cbb738581004f6739a217b4cb1fede9875bed6c02a5bd8b7eb4d8e2e4924"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/advance-peer8192-fit.py": {
+      "bytes": 933,
+      "sha256": "eb77dce90008f34f8f73bf47916c4934e43625fd0d950b8f510632294b8f98fe"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/backup-event-followthrough-audits.py": {
+      "bytes": 5630,
+      "sha256": "335324b6f55526bcd69f8e9894204f0ad184876514a4782d698a4ba558b74a1f"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/build-hard-random-followthrough-report.py": {
+      "bytes": 3476,
+      "sha256": "5199db708bb390199f4d4e5b832d4b80bb9acfed66154766e8a172e5e9abb178"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/four-probe-final-independent-audit.py": {
+      "bytes": 10710,
+      "sha256": "c83d550a5fb5f998edb89ac73433d15843371dada74c7211add215012a6080a8"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/four-probe-jobs-readonly-status.py": {
+      "bytes": 3595,
+      "sha256": "4cbf31ccaae72e5781c10dcf2de3211544d6bf3414fadec0b720d7fc04d20395"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/frozen-validation-independent-audit.py": {
+      "bytes": 6304,
+      "sha256": "be8954a4320a7180c8838ac4d96ed19e07d6e8000feb6e399dcf0611e409a32c"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/g10-first-updates-independent-audit.py": {
+      "bytes": 5841,
+      "sha256": "c381d2e59427dc060235fc6fcc2f9be801d1add6af0703a53a711027f0cb7ca2"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/g10-prefix-native-first-batch-audit.py": {
+      "bytes": 5616,
+      "sha256": "a70cf00b12cbc6d430ebc9eeb4566935fa1129ade16890f5673daec063d78f24"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/hard-random477-independent-first-audit.py": {
+      "bytes": 4596,
+      "sha256": "258b592169c7441ae221572611329cf824f8dc6beb03f4584f665c05ffd0babf"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/hard-random477-readonly-status.py": {
+      "bytes": 2668,
+      "sha256": "f556a197baa1cd735dd38a05ffc46438c61d4f7c174f1e7464467c54056824f2"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/multilayer-epoch1-independent-audit.py": {
+      "bytes": 7180,
+      "sha256": "763e287ad79b513be27a9ac7b3855be9a6a3e8f592df67872f313aae29ac77cd"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/multilayer-final-independent-audit.py": {
+      "bytes": 8044,
+      "sha256": "9f369b7b42af97e095d7e58d3d9ca5976f1a78f2e0837c6c916b1168dcc739fc"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/multilayer-readonly-checkpoint-status.py": {
+      "bytes": 2407,
+      "sha256": "e5ff3130eca1ac1ee4f6190edafdfd3b93845a3ca75abeae6229e09e7b88083b"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/peer8192-E1-E4-baseline-independent-audit.py": {
+      "bytes": 3923,
+      "sha256": "5f6cdfdc3811322b70ea59d884e4309a7e833e21c2b543b1d336de97c1f965b2"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/peer8192-baseline-binding-readonly.py": {
+      "bytes": 515,
+      "sha256": "36de7fe91acebba80852f4fec62fa32996e3c87a0c090e3c8727c42ea9442f03"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/peer8192-feature-gate-readonly.py": {
+      "bytes": 1103,
+      "sha256": "779490f79a4e41efcc9b2a300a189c9c8fd236517b629fcb3d7c4346359ee51b"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/peer8192-fit-independent-audit.py": {
+      "bytes": 5465,
+      "sha256": "ffc75e64d8d80e3e885512d9262d096feef6cc33d56cbfbd6587b51ba91b35d8"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/peer8192-fit-init-readonly.py": {
+      "bytes": 836,
+      "sha256": "cd0c1e8d010578bf73b28f70abed0fc1512b19577cedcf7b75f028d864e8d6c9"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/peer8192-fit-source-readonly.py": {
+      "bytes": 936,
+      "sha256": "7fc0d5a14d69c4070faa49f2a58e34b0f74d6024e7ffb634f9667c643d43f6f7"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/peer8192-prepare-failure-handoff.py": {
+      "bytes": 2070,
+      "sha256": "88d39b53305f990726f76f939eb309e5f289069c3e71be78b66446915db35d26"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/peer8192-source-preflight.py": {
+      "bytes": 2855,
+      "sha256": "500a068efd66fd9fff241e2c3ac771629f1e9a50f62a1ad35dd0a3289321bb93"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/poll-candidate-and-layer-progress.py": {
+      "bytes": 2447,
+      "sha256": "e43055ac30bac90b73a882d4eaad671017b38a2117dfeac8fe4a273874e23015"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/poll-four-probe-jobs.py": {
+      "bytes": 2605,
+      "sha256": "9a9b844dfc780560a69b36978215ca899367e14a14f73548617f6a3a3a53ea2d"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/poll-peer8192-fit.py": {
+      "bytes": 1209,
+      "sha256": "1338b7f0e9c764201b96dd4fe0a912ff69296c42173e50e3c6f95f2fdc56a44d"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/training-enrichment-independent-audit.py": {
+      "bytes": 8726,
+      "sha256": "a455effedfd30d3f0eec086eb5743d1fcdebe44b4167b9d3e82858ea44ba68e5"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/ops/training-enrichment-select-control.py": {
+      "bytes": 6391,
+      "sha256": "ec07fca836834ce021b0b5cd815e1192c96823b772e32cfa9efe7d4b139dfb48"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/four-probe-final-independent-audit-final.json": {
+      "bytes": 16251,
+      "sha256": "a27a2644841ef5bcf8b9ce1c6a4ac6d37a6de538f3c5238b4a2a8565147c6123"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/four-probe-final-summary.json": {
+      "bytes": 4699,
+      "sha256": "e5a380ab090d2ae9379a74c4579814aabb135a8f68d23e2de90a98303b9ae65c"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/four-probe-jobs-actual-22.json": {
+      "bytes": 55547,
+      "sha256": "62bfaffc24a710ad9f393e2e58fcb88196b874ed38865397ec593665a339d6a2"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/frozen-validation-followthrough-final.json": {
+      "bytes": 11679,
+      "sha256": "86981f56fec2811a9e50fabd388a4f50c373aa1244c99809529fee1749051c8a"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/frozen-validation-independent-audit-final.json": {
+      "bytes": 6095,
+      "sha256": "d4148b8de7289d4df3ccd0379a9f06a2c9607297d8ea94adfd920e9f65557322"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/g10-first-updates-independent-audit-final.json": {
+      "bytes": 3195,
+      "sha256": "52b07800d8e9051e9a5437fff15397aa5ae6588bcb77fd52d34e3b212bb17a5f"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/g10-prefix-native-first-batch-audit-final.json": {
+      "bytes": 1543,
+      "sha256": "d8dea1bee5f7dce041aff5d9873b75143e8e5ec6a0d3d3fc13ad1c225f679358"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/hard-random477-actual-7.json": {
+      "bytes": 10586,
+      "sha256": "535fb80bbbec7c1850f6ef7f1a9a076610ef8f5965def738a71bc6ba6d389ab7"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/hard-random477-followthrough-final.json": {
+      "bytes": 6067,
+      "sha256": "69a66a086793f638f63b2c3ca5cf623c72ac5d9dca2bc201ce2937fbf07b187b"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/hard-random477-independent-cp32-audit.json": {
+      "bytes": 4153,
+      "sha256": "a71751ad5d952621cd0c725d85e2a4dd794cd04a4399438d742134bf6daba194"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/hard-random477-independent-first-audit-final.json": {
+      "bytes": 4150,
+      "sha256": "a0daae444bfcfc6c266cdb2ccf303527abb61daced46b350ceae5c1bb3f40248"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/multilayer-epoch1-independent-audit-final.json": {
+      "bytes": 22937,
+      "sha256": "8455913c5479dfdfe35564641ca8904d5fcc0906c3bc4fea617d79f6a57e5d07"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/multilayer-final-independent-audit-final.json": {
+      "bytes": 23945,
+      "sha256": "33f8b5a4e4b00b9fb5ffd8bfb89cbe6d2e849544bee3e2be2b5b1e5ddb535b77"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/multilayer-first-epoch-followthrough-final.json": {
+      "bytes": 45608,
+      "sha256": "c653e5a3ea65a9692da30b39f3361de103a131b5fda4f8e8edb7c55d53fc6b3f"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-E1-E4-baseline-independent-audit.json": {
+      "bytes": 1485,
+      "sha256": "41a86755b76b09a70741359a71f91f76fd05ad60678bb82d0cb46bc66c1269f1"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-baseline-first-progress.json": {
+      "bytes": 2326,
+      "sha256": "7cc8c55e017972988845f998c1fc18ba0aeac0c6236ec8a6b356692da881f394"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-baseline-second-progress.json": {
+      "bytes": 5895,
+      "sha256": "4b8e110aebb76a38c486bf2f8f1c4f5b11cb8a452e206885086ce45f0187851c"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-fit-advance-baseline-latest.json": {
+      "bytes": 814,
+      "sha256": "9bd3194edebcce855e9e512189adc7f37da968817946477075fc5807eb59a51c"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-fit-independent-first-audit.json": {
+      "bytes": 1827,
+      "sha256": "0344444de429b14d50525309ce83d630cbe68dfc4b91487829a2b4892e4cd71f"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-fit-init-readonly.json": {
+      "bytes": 250,
+      "sha256": "be0b1429b73fcda73f2c4430c339242166875eb07842fcf62832985878615d87"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-fit-prepare-baseline-latest.json": {
+      "bytes": 93,
+      "sha256": "eff1bdb5e68a4bd006c9f981d813479e5d9a1e02a63e88dd3acf952cae89ae64"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-fit-status-1.json": {
+      "bytes": 7003,
+      "sha256": "a94e6d0ffaf6cadc550034276cdffcaf13720059634670e767908201d0722dc1"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-fit-status-2.json": {
+      "bytes": 8731,
+      "sha256": "8c7f2af3a5a3407983cc768372c4fdd6745e33a9f825416c224fec7e02c8d80a"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-fit-submit-latest.json": {
+      "bytes": 1007,
+      "sha256": "c878bb28fa749170ea2a6b922c495b6efd89d93d5a8e4681b0eb8c64a60bfca1"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-prepare-failure-handoff.json": {
+      "bytes": 712,
+      "sha256": "9c773c464dd27248e3dab8a6f2cae99b9906076c88b5d72699152bdf86bbf032"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/peer8192-source-preflight.json": {
+      "bytes": 1209,
+      "sha256": "25ba48cab313999608e0e1fb626d6dfca5d898c43c6fa8844f4aec9a6a140926"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/replay-batched-context-cpu-tests.json": {
+      "bytes": 709,
+      "sha256": "398fe23fbd40fdfd06c34e300094929b8b2e889f51f7d8d3fd12f7c8e75318f8"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/training-candidate-followthrough-status-24.json": {
+      "bytes": 2389,
+      "sha256": "429280ad7bb71e51ea584555ca85e9c503843790f50aed76ebcdfa366e2561f8"
+    },
+    "reproduction/reports/qwen7b-algorithm-improvement-20261021/event-followthrough/summaries/training-enrichment-independent-audit-final.json": {
+      "bytes": 7650,
+      "sha256": "eabd43aa5f0ec1fa0b090d19f242819de17c869c187563f12d99e4fdd1ee45d3"
+    }
+  },
+  "model_checkpoint_optimizer_raw_predictions_or_credentials_included": false,
+  "shared_checkout_or_index_modified": false,
+  "status": "OWNED_CODE_AND_SMALL_AGGREGATE_AUDIT_BACKUP"
+}
