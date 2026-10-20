@@ -29,7 +29,17 @@ ROLE_COUNTS={'fit':6528,'diagnostic512':512,'selection2048':2048}
 def digest(value):return hashlib.sha256(canonical(value)).hexdigest()
 
 
-def checked(ref):return Path(checked_file(ref)['path'])
+def checked(ref):
+    """Matched-plan REF permits SHA-only; sealed payload REF also binds bytes.
+
+    The qualified legacy checked_file requires bytes and remains unchanged.
+    Here absent size is measured, never guessed; supplied size is still strict.
+    """
+    path=remote(ref['path']);actual=fingerprints(path)
+    if (actual['sha256']!=ref['sha256'] or
+            ('bytes' in ref and actual['bytes']!=ref['bytes'])):
+        raise ValueError('SHA/size mismatch for declared preparation source: '+str(path))
+    return path
 
 
 def once(path,value):

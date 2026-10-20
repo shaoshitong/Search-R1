@@ -10,7 +10,8 @@ import tempfile
 import tarfile
 import sys
 import unittest
-from .replay_bank_prepare import partition_questions,render_sbatch
+from unittest.mock import patch
+from .replay_bank_prepare import partition_questions,render_sbatch,checked
 from .replay_bank_capture import load_fixture
 from .replay_probe_layers import canonical,fingerprints
 from .test_replay_probe_layers import row as prefix_row
@@ -21,6 +22,17 @@ def group(q):
 
 
 class ReplayBankTests(unittest.TestCase):
+    def test_real_matched_config_SHA_only_refs_and_optional_strict_bytes(self):
+        path='/data/user/test/immutable-plan.json'
+        actual=dict(path=path,sha256='a'*64,bytes=321)
+        with patch('reproduction.operations.qwen7b_warmup.replay_bank_prepare.fingerprints',return_value=actual):
+            self.assertEqual(checked(dict(path=path,sha256='a'*64)),Path(path))
+            self.assertEqual(checked(actual),Path(path))
+            with self.assertRaisesRegex(ValueError,'SHA/size'):
+                checked(dict(path=path,sha256='b'*64))
+            with self.assertRaisesRegex(ValueError,'SHA/size'):
+                checked(dict(path=path,sha256='a'*64,bytes=320))
+
     def test_full_declared9088_scope_four_disjoint_complete_G5s(self):
         class NoEM(dict):
             def __getitem__(self,key):

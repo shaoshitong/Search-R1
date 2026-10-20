@@ -166,6 +166,15 @@ def worker(request_path):
                 jobs_submitted=False,replay_features_generated=0,time=time.time())
         except BaseException as error:
             done=dict(status='CPU_REPLAY_BANK_PREPARATION_FAILED',type=type(error).__name__,error=str(error)[:1000],time=time.time(),jobs_submitted=False)
+            if 'rc' in locals():done['child_returncode']=rc
+            log_path=base/'cpu-prepare.log'
+            if log_path.exists():
+                with log_path.open('rb') as f:
+                    f.seek(max(0,log_path.stat().st_size-8192));tail=f.read(8192)
+                done['cpu_log']=dict(path=str(log_path),bytes=log_path.stat().st_size,
+                    sha256=digest(log_path.read_bytes()))
+                lines=[line for line in tail.decode(errors='replace').splitlines() if line.strip()]
+                done['last_actual_log_line']=lines[-1][:2000] if lines else None
         atomic(base/'cpu-result.json',done)
 
 
