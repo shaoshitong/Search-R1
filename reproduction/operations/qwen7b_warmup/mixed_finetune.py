@@ -134,7 +134,7 @@ def main():
     assert fingerprints(Path(__file__))['sha256']==c['fit_file_sha256']
     source=Path(c['training_base']);reader=FeatureReader(read(source/'bank/features.json'))
     heldout=Path(c['selection_base']);held_groups=read(heldout/'bank/groups.json')['selection_validation'];held_reader=FeatureReader(read(heldout/'bank/features.json'))
-    model=Probe(c['model_dir'],273,5).to(device);ddp=DDP(model,device_ids=[local],broadcast_buffers=False);ema=copy.deepcopy(model).eval().requires_grad_(False)
+    model=Probe(c['model_dir'],273,c['prefix_tokens']).to(device);ddp=DDP(model,device_ids=[local],broadcast_buffers=False);ema=copy.deepcopy(model).eval().requires_grad_(False)
     optimizer=torch.optim.Adam(model.parameters(),lr=5e-6,weight_decay=0);root=base/'probe';pred=root/'predictions';pred.mkdir(exist_ok=True)
     resumed=(root/'latest.json').exists()
     receipt=read(root/'latest.json') if resumed else c['source_checkpoint']
@@ -147,13 +147,25 @@ def main():
         assert saved['steps']==9146 and saved['epoch']==2 and saved['completed_epoch'] and saved['actor_updates']==0
         assert saved['config_sha256']==fingerprints(source/'config.json')['sha256'] and saved['bank_sha256']==fingerprints(source/'bank/complete.json')['sha256']
         epoch=1;cursor=0;steps=9146
+    migration=None
+    if not resumed and c['prefix_tokens']==20:
+        from .prefix_migration import extend
+        saved,migration=extend(saved,[name for name,_ in model.named_parameters()])
     restore(saved,model,ema,optimizer,rank,device)
     dist.barrier()
-    if rank==0:atomic(root/'restore-acceptance.json',dict(status='ACTUAL_FOUR_RANK_RAW_EMA_ADAM_RNG_RESTORED',source_checkpoint=receipt,adam_steps=steps,lr=5e-6,epoch_time=time.time(),new_objective=True))
+    if rank==0:atomic(root/'restore-acceptance.json',dict(status='ACTUAL_FOUR_RANK_RAW_EMA_ADAM_RNG_RESTORED',source_checkpoint=receipt,adam_steps=steps,lr=5e-6,epoch_time=time.time(),new_objective=True,prefix_tokens=c['prefix_tokens'],prefix_migration=migration))
     if not resumed:
         # Actual production CP2 next update is executed twice from restored state;
         # equality is checked, then the second identical result is continued once.
-        first=plan(len(groups['train']),c['seed'],1)[0];model.train()
+        first=plan(len(groups['train']),c['seed'],1)[0]
+        if c['prefix_tokens']==20:
+            from .prefix_migration import qualify
+            raw_check=qualify(model,reader,[groups['train'][i] for i in first],device)
+            ema_check=qualify(ema,reader,[groups['train'][i] for i in first],device)
+            all_checks=[None]*4;dist.all_gather_object(all_checks,dict(rank=rank,raw=raw_check,ema=ema_check))
+            if rank==0:atomic(root/'prefix20-initialization-proof.json',dict(migration=migration,ranks=all_checks,source_steps=9146))
+            restore(saved,model,ema,optimizer,rank,device)
+        model.train()
         update(ddp,model,ema,optimizer,reader,groups['train'],first,rank,device,c)
         expected=(model_hash(model),model_hash(ema),optimizer_hash(optimizer))
         restore(saved,model,ema,optimizer,rank,device);model.train()
@@ -165,6 +177,7 @@ def main():
             atomic(root/'next-update-proof.json',dict(status='ACTUAL_CP2_FOUR_RANK_NEW_LOSS_NEXT_UPDATE_BIT_EXACT',source_steps=9146,continuation_steps=steps,raw_sha256=actual[0],ema_sha256=actual[1],adam_sha256=actual[2],rank_count=4,rank_proofs=proof_ranks,epoch_time=time.time()))
             atomic(root/'progress.json',dict(epoch=1,batch=1,batches=math.ceil(len(groups['train'])/51),steps=steps,**initial,epoch_time=time.time()))
     del saved
+    if not resumed:save(base,model,ema,optimizer,1,1,steps,None,rank,c)
     for e in range(epoch,c['fit_epochs']+1):
         batches=plan(len(groups['train']),c['seed'],e);model.train()
         for index,indices in enumerate(batches):

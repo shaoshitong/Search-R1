@@ -1,6 +1,7 @@
 """Official 7B block27 on frozen native layer26 question+first5 features.
 
 The sampler retains20 policy features, but the warmup head sees only the first5.
+Supports Prefix5 or Prefix20 without replacing the trained block.
 Raw FP32 parameters and native RoPE are preserved under BF16 compute autocast.
 """
 import inspect
@@ -20,7 +21,7 @@ class Probe(nn.Module):
         config = Qwen2Config.from_pretrained(str(root),local_files_only=True)
         assert (config.num_hidden_layers,config.hidden_size,config.num_attention_heads,
             config.num_key_value_heads,config.intermediate_size)==(28,3584,28,4,18944)
-        assert prefix_tokens == 5
+        assert prefix_tokens in (5,20)
         config._attn_implementation = 'flash_attention_2'
         self.qmax,self.prefix = question_max_tokens,prefix_tokens
         self.width = question_max_tokens+prefix_tokens
@@ -40,8 +41,7 @@ class Probe(nn.Module):
         self.cache_position = 'cache_position' in inspect.signature(self.block.forward).parameters
 
     def forward(self, batch):
-        # A prefix20 capture is retained remotely; features after prefix5 never
-        # enter this model or its loss graph.
+        # Slice precisely to the configured policy prefix, never beyond it.
         features=batch['features'][:,:self.width].detach().contiguous()
         mask=batch['attention_mask'][:,:self.width].contiguous()
         positions=batch['position_ids'][:,:self.width].contiguous()
