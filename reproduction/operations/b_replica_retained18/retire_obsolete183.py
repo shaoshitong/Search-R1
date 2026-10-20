@@ -3,7 +3,7 @@
 Protect current native recovery state, all milestones, raw data and journals.
 The exact namespace and outer are intentional; this cannot sweep shared run IDs.
 """
-import hashlib,json,re,shutil,time
+import fcntl,json,re,shutil,time
 from pathlib import Path
 
 BASE=Path('/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp181-four-shared5-20261020-r2')
@@ -44,6 +44,9 @@ def main():
   assert f.is_relative_to(root) and f not in protected and not f.is_symlink()
   st=f.stat();assert st.st_size==row['bytes'] and st.st_nlink==1 and re.fullmatch('[0-9a-f]{64}',row['sha256'])
   plan.append(dict(path=str(f),dev=st.st_dev,inode=st.st_ino,bytes=st.st_size,mtime_ns=st.st_mtime_ns,producer_sha256=row['sha256']))
+ lock=(b/'preparation/storage-prune.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+ assert read(b/'latest-joint.json')['outer']==184,'Native commit advanced; reconcile instead of racing native prune'
+ assert read(b/'logs/pipeline-status.json')['stage'].startswith('outer-000185-actor-')
  value=dict(started_unix=time.time(),source_outer=183,protected_complete_outer=j['outer'],active_outer=active['outer'],active185_restored184_ranks=restores,assets=plan,latest_and_milestones_preserved=True,foreign_operations=False)
  audit=b/'preparation/retired-obsolete183-intent.json'
  with audit.open('x')as f:json.dump(value,f)
