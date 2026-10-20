@@ -21,6 +21,7 @@ def validate(config):
     if any(config.get(k) != v for k, v in expected.items()):
         raise ValueError('AB learning rate/loss/EMA differs from human protocol')
     slot = list(range(8)) if WORLD == 8 and arm == BALANCED else ([0, 1, 2, 3] if arm == FROZEN else [4, 5, 6, 7])
+    if WORLD==4 and arm==BALANCED and config.get('resume_joint',{}).get('recovery_mode')=='diverse_eight_to_four_cp181_v1':slot=[0,1,2,3]
     if config['physical_gpu_indices'] != slot or config.get('world_size', WORLD) != WORLD:
         raise ValueError('AB arm must own its assigned four-card slot')
     return config

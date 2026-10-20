@@ -25,7 +25,7 @@ def main():
  protected={physical(row['path'])for row in q['files']}
  for row in q['files']:
   st=physical(row['path']).stat();assert(st.st_size,st.st_ino,st.st_mtime_ns)==(row['bytes'],row['inode'],row['mtime_ns'])
- converted=parent/'search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp181-four-shared5-20261020-r1'
+ converted=parent/'search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp181-four-shared5-20261020-r2'
  ready=read(converted/'preparation/native-recovery-complete.json');assert ready['outer']==181 and ready['world_size']==4 and not ready['optimizer_reset']
  migration=read(converted/'preparation/actor-cp181-8to4-reshard.json');assert migration['all_moments_bitwise_preserved']and migration['new_optimizer_steps']==0
  assert migration['source_joint_sha256']==q['joint_sha256']

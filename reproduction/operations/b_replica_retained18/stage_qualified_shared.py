@@ -45,6 +45,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--source', required=True)
     p.add_argument('--four',action='store_true')
+    p.add_argument('--reuse-four',action='store_true')
     p.add_argument('--base', required=True)
     p.add_argument('--outer', required=True, type=int)
     p.add_argument('--source-commit', required=True)
@@ -68,7 +69,7 @@ def main():
         if name in changed:
             packet['changed'][name] = base64.b64encode(data).decode()
     header = '\n'.join(k+'='+repr(v) for k,v in dict(SOURCE=a.source, BASE=a.base, OUTER=a.outer,
-        COMMIT=commit, WORLD=4 if a.four else 8, PREPARE_MODULE='reproduction.operations.b_replica_retained18.prepare_four_latest'if a.four else'reproduction.operations.b_replica_retained18.prepare_shared_latest', PACKET=base64.b64encode(gzip.compress(json.dumps(packet).encode())).decode()).items())
+        COMMIT=commit, WORLD=4 if a.four else 8, PREPARE_MODULE='reproduction.operations.b_replica_retained18.repair_four_prepared'if a.reuse_four else'reproduction.operations.b_replica_retained18.prepare_four_latest'if a.four else'reproduction.operations.b_replica_retained18.prepare_shared_latest', PACKET=base64.b64encode(gzip.compress(json.dumps(packet).encode())).decode()).items())
     evidence = OUT/('stage-qualified-%d-transport.json'%time.time_ns())
     value = json.loads(remote(header+'\n'+SCRIPT, evidence, target='h100-10', established_controller=True))
     (OUT/('CP%d_STAGE_RECEIPT.json'%a.outer)).write_text(json.dumps(value,indent=2))

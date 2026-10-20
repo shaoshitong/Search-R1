@@ -15,10 +15,10 @@ from .diverse_resume import read, sha, once, digest, flat_numels
 MODE = 'diverse_eight_to_four_cp181_v1'
 STATUS = 'DIVERSE_CP181_EIGHT_TO_FOUR_FULL_STATE'
 # Only the three narrow hardware/boundary dispatches differ in scientific files.
-UNCHANGED = ('actor.py','actor_safety.py','probe.py','ab_probe.py','ab_policy.py',
+UNCHANGED = ('actor.py','actor_safety.py','probe.py','ab_probe.py',
              'probe_plan.py','rollout.py','actor_hidden.py','prefix_diversity.py',
              'interaction_protocol.py','pool.py','launch.py')
-DISPATCH = ('storage.py','grounding.py','b_progressive.py')
+DISPATCH = ('storage.py','grounding.py','b_progressive.py','ab_policy.py')
 
 
 def validate_compatibility(c, p):
