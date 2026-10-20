@@ -31,7 +31,8 @@ def main():
    atomic(b/'progress.json',dict(stage='STARTING_SHARED_RETRIEVER',epoch=time.time()));time.sleep(2)
   workers=[spawn('sampling-%02d'%i,['reproduction.operations.qwen7b_resample.worker','--base',str(b),'--shard',str(i)],'%d,3'%(i+1))for i in range(2)]
   while any(p.poll()is None for p in workers):
-   for proc in [retr,*workers]:
+   if retr.poll()is not None:raise RuntimeError('Owned retrieval service exited during sampling')
+   for proc in workers:
     if proc.poll()not in(None,0):raise RuntimeError('Own sampling child exited %d'%proc.returncode)
    progress=[]
    for i in range(2):
