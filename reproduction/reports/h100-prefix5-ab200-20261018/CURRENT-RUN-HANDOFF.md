@@ -1,3 +1,11 @@
+# October20 closure and GPU coordination update
+
+A normal5/50/100/150/200 referenced HF/rank/driver/probe/pool/grounding/selection payloads are still present with producer byte sizes matched; metadata-only proof SHA63e1c4eea728133c93b929112bd8441e6113496a83245414feaaea48886e0768. No repeated large hashes or tensor loads. QA200 canonical512 and original4worker exit0 confirmed. See A-normal200-final51713/RETENTION.json. Whole A/B goal remains incomplete.
+
+User authorized coordination with thread01a0fcbc-0b46-7502-8b66-d8b21a0e032d. Actual B occupies h100-5 physical4–7, native40168/start505777. Peer acknowledged resource contention and is checking/withdrawing its unactivated CP181 CPU auto-activation waiter; final acknowledgment is still pending. Do not treat instantaneous free memory as a reservation or add competing GPU processes. No healthy/foreign process signaled by this session. Current sole observer45688 is live,175 actor12 partial at013823UTC, not yet175 complete.
+
+---
+
 # October20 latest: A200/final51713 accepted; B174 typed-OOM recovery
 
 A's actual200 checkpoint passed independent full-file SHA and CPU state readback: four actual actor clocks3984 (16 historical skips retained), frozen selection probe0. Its original final51713 outputs passed full compressed-shard SHA, exact question/ordinal/seven-source coverage, original4worker exit0 and CPU strictEM/F1 rescore. Final aggregate EM0.41558215535745363/F10.4825501265662649; scheduled512QA200 EM0.435546875/F10.5082714771572434. Current A native truly exited0, and two actual checks found its own births/GPU rows gone. See `A-normal200-final51713/RESULT.json`. This does not claim earlier source11 kernel residues released, nor complete the whole A/B goal.

@@ -1,0 +1,62 @@
+"""A completed-run metadata closure only; no tensor load, inference or training."""
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+repo = Path(__file__).resolve().parents[4]
+sys.path.insert(0, str(repo))
+from reproduction.operations.h100_reference_replica.assigned_cpu_control import execute
+root = Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+entry = json.loads((root/'work/prefix5-ab-assigned-arms.json').read_text())['A']
+
+
+def inner(arms):
+    return 'entry='+repr(entry)+'\n'+r'''
+import hashlib,json,os,stat,time
+from pathlib import Path
+b=Path(entry['base']);proof=b/'preparation/final-a-retention-qa200-metadata-once.json'
+def digest(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+def read(p):return json.loads(Path(p).read_text())
+if proof.exists():
+ result={'status':'EXISTING_METADATA_PROOF_NO_REPLAY','proof':str(proof),'sha256':digest(proof),'result':read(proof)}
+else:
+ assert digest(b/'preparation/launch-config.json')==entry['config_sha256']
+ release=read(b/'preparation/final-native-exit0-owned-release-once.json')
+ # The existing independently accepted final-exit proof is retained verbatim.
+ assert digest(b/'preparation/final-native-exit0-owned-release-once.json')=='ea81c917198842bc79f9dfdd9a7fece7656fd0cd7f1ecf2f995bf110bc43da0a'
+ def metadata(path,expected_bytes=None):
+  p=Path(path);s=p.stat()
+  assert stat.S_ISREG(s.st_mode),str(p)
+  if expected_bytes is not None:assert s.st_size==expected_bytes,(str(p),s.st_size,expected_bytes)
+  return {'path':str(p),'bytes':s.st_size,'dev':s.st_dev,'inode':s.st_ino,'mtime_ns':s.st_mtime_ns}
+ checkpoints=[]
+ for outer in (5,50,100,150,200):
+  jointpath=b/'outers'/('outer-%06d'%outer)/'complete.json';j=read(jointpath)
+  assert j['run_id']==entry['run_id'] and j['outer']==outer
+  a=j['actor'];p=j['probe'];assert a['completed_outer']==outer and len(a['rank_states'])==4
+  files=[metadata(row['path'],row['bytes']) for row in a['rank_states']]
+  files.append(metadata(a['driver_state']['path'],a['driver_state']['bytes']))
+  # probe_snapshot is a path string; its producer size lives in probe receipt.
+  files.append(metadata(j['probe_snapshot'],p['bytes']))
+  files.extend(metadata(Path(a['hf_model_dir'])/name,value['bytes']) for name,value in a['hf_files'].items())
+  files.extend(metadata(j[name])for name in ('pool_snapshot','grounding_snapshot','actor_selection_path'))
+  checkpoints.append({'outer':outer,'complete_sha256':digest(jointpath),'files':files,
+   'actor_actual_adam_per_rank':a['actual_adam_steps_per_rank'],'probe_actual_adam_per_rank':p['actual_adam_steps_per_rank']})
+  del j
+ qpath=b/'outers/outer-000200/validation/complete.json';q=read(qpath)
+ extra=[str(p)for p in (b/'outers').glob('outer-*')if p.is_dir()and p.name[6:].isdigit()and int(p.name[6:])>200]
+ assert not extra,extra
+ value={'status':'A_MILESTONE_RETENTION_AND_QA200_METADATA_CAPTURED','observed_unix':time.time(),
+  'run_id':entry['run_id'],'config_sha256':entry['config_sha256'],'checkpoints':checkpoints,
+  'qa200_receipt_sha256':digest(qpath),'qa200':q,'outers_above200':extra,
+  'existing_final_exit_release_proof_sha256':digest(b/'preparation/final-native-exit0-owned-release-once.json'),
+  'metadata_only':True,'repeated_large_hash_or_tensor_load':False,'training_modified':False}
+ with proof.open('x')as f:json.dump(value,f,sort_keys=True);f.flush();os.fsync(f.fileno())
+ result={'status':value['status'],'proof':str(proof),'sha256':digest(proof),'result':value}
+print(json.dumps({'A':result}))
+'''
+
+
+if __name__ == '__main__':
+    print(json.dumps(execute({'A':entry},inner,'start','lan5','a-final-retention-qa200')))
