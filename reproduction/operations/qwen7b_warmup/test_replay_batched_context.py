@@ -44,6 +44,8 @@ class BatchedReplayTests(unittest.TestCase):
         self.assertEqual([v[26].shape[0] for v in values],[5,1,4,30,2])
         self.assertEqual(cap.last_capture['oversized_single_contexts'],1)
         self.assertEqual(cap.last_capture['contexts_truncated'],0)
+        self.assertEqual([len(b) for b in plan_context_batches([[1]]*33,batch_size=32,max_context_tokens=16384)],[32,1])
+        with self.assertRaises(ValueError):plan_context_batches([[1]],batch_size=33)
 
     def test_scalar_batch_actual_positions_padding_masks_and_order(self):
         contexts=[[7,8,9,10],[1],[3,4],[11,12,13]]

@@ -6,7 +6,7 @@ import argparse,base64,hashlib,importlib.util,inspect,json,shlex,subprocess
 from pathlib import Path
 from .deploy_confirmation_materialization import make_bundle
 B='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019'
-BASE=B+'/algorithm-improvement-20261021/replay-batched-golden-v2'
+BASE=B+'/algorithm-improvement-20261021/replay-batched-golden-v3'
 P='reproduction/operations/qwen7b_warmup/'
 MANIFEST='_batched_golden_manifest.json'
 SEEDS=tuple(P+n for n in ('replay_batched_golden.py','replay_batched_context.py','test_replay_batched_context.py','runtime.sh'))
