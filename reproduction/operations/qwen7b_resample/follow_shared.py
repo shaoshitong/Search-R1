@@ -4,7 +4,7 @@ from pathlib import Path
 from .pool_control import PHYSICAL,ROOT,RUN_ID,transport
 
 REMOTE=r'''
-import json,time
+import json,os,time
 from pathlib import Path
 b=Path(PHYSICAL)
 def read(p):return json.loads(p.read_text())if p.exists()else None
@@ -19,6 +19,31 @@ if p:
  value.update(directory=str(p),progress=read(p/'progress.json'),failure=read(p/'failure.json'),complete=read(p/'complete.json'),
   index_progress=read(p/'retrieval/gpu-index-load-progress.json'))
  value['model_initialized']=[read(q)for q in sorted((p/'sampler-launches').glob('launch-*/model-initialized.json'))]
+ # The NAS10 consumer's own open batch-lock FD identifies its active input;
+ # observe only metadata from that input, without scanning raw trajectories.
+ value['active_phases']=[]
+ allocation=read(p/'allocation.json')or{};children=read(p/'children.json')or{}
+ cgroup=allocation.get('native_cgroup')
+ for child in children.get('own_process_groups',[]):
+  try:
+   if not cgroup or cgroup not in Path('/proc/%d/cgroup'%child).read_text():continue
+   for fd in Path('/proc/%d/fd'%child).iterdir():
+    try:target=os.readlink(fd)
+    except OSError:continue
+    if '/pool/batch-locks/'not in target:continue
+    prefix,relative=target.split('/pool/batch-locks/',1)
+    if not prefix.endswith('/shaoshitong/'+b.name):continue
+    tail=Path(relative)
+    if len(tail.parts)!=2 or tail.suffix!='.lock':continue
+    dest=b/'sampling'/tail.parent/tail.stem
+    for phase in('prefix','full'):
+     source=dest/'outers/outer-000001'/phase/'rank-0-progress.json'
+     detail=read(source)
+     if detail is not None:
+      value['active_phases'].append(dict(batch=tail.stem,phase=phase,source=str(source),
+       metadata={key:detail.get(key)for key in('stage','completed_trajectories','expected_trajectories',
+        'actual_sampled_tokens','generation_requests','elapsed_seconds','utc')}))
+  except (FileNotFoundError,ProcessLookupError,PermissionError):continue
  engines=read(p/'engines.json')
  if engines:
   value['engine_model_initialized']={str(x['engine_index']):[read(q)for q in sorted((Path(x['directory'])/'sampler-launches').glob('launch-*/model-initialized.json'))]for x in engines['engines']}
@@ -44,8 +69,8 @@ def main():
    own=(v.get('progress')or v.get('complete')or{}).get('completed_own_batches',0)
    engines=(v.get('progress')or v.get('complete')or{}).get('engines',[])
    counts={str(x['engine_index']):x['completed_own_batches']for x in engines}
-   small=dict(epoch=v['epoch'],controller_pid=a.controller_pid,own_complete_batches=own,engine_complete_batches=counts,sealed_batches=v['sealed_batches'],questions=v['questions'],trajectories=v['trajectories'],failure=v.get('failure'),native_complete=v.get('complete'),actual=str(out),goal_complete=False)
-   latest.write_text(json.dumps(small,indent=2)+'\n');change=(own,tuple(sorted(counts.items())),v['trajectories'],bool(v.get('failure')))
+   small=dict(epoch=v['epoch'],controller_pid=a.controller_pid,own_complete_batches=own,engine_complete_batches=counts,active_phases=v.get('active_phases',[]),sealed_batches=v['sealed_batches'],questions=v['questions'],trajectories=v['trajectories'],failure=v.get('failure'),native_complete=v.get('complete'),actual=str(out),goal_complete=False)
+   latest.write_text(json.dumps(small,indent=2)+'\n');change=(own,tuple(sorted(counts.items())),v['trajectories'],bool(v.get('failure')),tuple((x['batch'],x['phase'],x['metadata'].get('completed_trajectories'))for x in v.get('active_phases',[])))
    if change!=last:print(json.dumps(small),flush=True);last=change
    if v.get('failure'):print('ROOT_ATTENTION_ACTUAL_NATIVE_FAILURE',flush=True);return
    accepted=own>=a.own_batches and(not a.per_engine_batches or bool(counts)and min(counts.values())>=a.per_engine_batches)
