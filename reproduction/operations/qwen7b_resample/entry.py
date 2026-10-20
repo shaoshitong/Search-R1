@@ -29,7 +29,8 @@ unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY
 cd "'''+str(repo)+'''"
 exec /dataset/shaoshitong/Search-G1-common8/env/bin/python -u "$@"
 ''')
- prefix=['unshare','--mount','--propagation','private','bash',WRAPPER,'h100-11','bash',str(runtime)]
+ # The bootstrap already owns the retained mount namespace; do not stack it twice.
+ prefix=['bash',str(runtime)]
  subprocess.run(prefix+['-m','reproduction.operations.qwen7b_resample.prepare','--base',str(BASE),'--assets',assets,'--retrieval-config',str(control/'retrieval-config.json')],check=True)
  subprocess.run(prefix+['-m','reproduction.operations.qwen7b_resample.pipeline','--base',str(BASE)],check=True)
 if __name__=='__main__':

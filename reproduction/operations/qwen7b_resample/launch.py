@@ -23,10 +23,10 @@ def main():
  boot='BASE='+repr(BASE)+'\n'+r'''
 import base64,gzip,hashlib,json,os,subprocess,sys,time
 from pathlib import Path
-unit='sst-q7b-newseed-g5-20261020-r4';local=Path('/root/.local/share/search-g1/qwen7b-newseed-g5/r4');local.mkdir(parents=True,exist_ok=True)
+unit='sst-q7b-newseed-g5-20261020-r5';local=Path('/root/.local/share/search-g1/qwen7b-newseed-g5/r5');local.mkdir(parents=True,exist_ok=True)
 p=local/'intent.json'
 if p.exists():print(json.dumps({'existing_intent':json.loads(p.read_text()),'not_replayed':True}));raise SystemExit(0)
-for old in ['sst-q7b-newseed-g5-20261020-r3']:
+for old in ['sst-q7b-newseed-g5-20261020-r3','sst-q7b-newseed-g5-20261020-r4']:
  assert subprocess.check_output(['systemctl','show',old,'-p','MainPID','--value'],text=True).strip()=='0'
 v=json.loads(gzip.decompress(sys.stdin.buffer.read()))
 with p.open('x')as f:json.dump(dict(unit=unit,epoch=time.time(),commit=v['plan'][0]['commit'],resume_existing_sealed_batches=True),f)
@@ -40,9 +40,9 @@ target=Path('/mnt/shared/workspace/training_data_node_10')
 target.mkdir(parents=True,exist_ok=True)
 subprocess.run(['mount','--bind',str(canonical),str(target)],check=True)
 assert (BASE/'config.json').is_file()
-v=json.loads((local/'payload.json').read_text());control=BASE/'attempts/r4';(control/'code').mkdir(parents=True,exist_ok=True)
+v=json.loads((local/'payload.json').read_text());control=BASE/'attempts/r5';(control/'code').mkdir(parents=True,exist_ok=True)
 (control/'code/delta.json').write_text(json.dumps(v['delta']));(control/'code/direct-plan.json').write_text(json.dumps(v['plan']));(control/'entry.py').write_text(v['entry']);(control/'retrieval-config.json').write_text(json.dumps(v['retrieval']))
-os.environ['Q7B_CONTROL']=str(control);os.environ['Q7B_ATTEMPT']='r4'
+os.environ['Q7B_CONTROL']=str(control);os.environ['Q7B_ATTEMPT']='r5'
 runpy.run_path(str(control/'entry.py'),run_name='__main__')
 """
 (local/'bootstrap.py').write_text(bootstrap)

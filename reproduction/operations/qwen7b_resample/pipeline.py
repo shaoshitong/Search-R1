@@ -20,7 +20,7 @@ def main():
  def spawn(name,args,visible):
   f=(logs/(name+'.log')).open('ab');handles.append(f);env=dict(os.environ,CUDA_VISIBLE_DEVICES=visible);proc=subprocess.Popen([sys.executable,'-u','-m',*args],env=env,stdout=f,stderr=f);children.append(proc);return proc
  try:
-  retr=spawn('retriever',['reproduction.operations.qwen7b_warmup.retriever','--index',c['retrieval_index'],'--corpus',c['retrieval_corpus'],'--encoder',c['retrieval_encoder'],'--data-cache',c['retrieval_data_cache'],'--cache',str(b/'retrieval'),'--run-id',c['run_id'],'--port','28831','--batch-queries','512'],'3');start=time.monotonic()
+  retr=spawn('retriever',['reproduction.operations.qwen7b_warmup.retriever','--index',c['retrieval_index'],'--corpus',c['retrieval_corpus'],'--encoder',str(b.parent/'search-g1-prefix5-h10011-runtime-assets-20261018/common8/assets/e5-base-v2'),'--data-cache',c['retrieval_data_cache'],'--cache',str(b/'retrieval'),'--run-id',c['run_id'],'--port','28831','--batch-queries','512'],'3');start=time.monotonic()
   while True:
    if retr.poll()is not None:raise RuntimeError('Owned retriever exited: see logs/retriever.log')
    try:
