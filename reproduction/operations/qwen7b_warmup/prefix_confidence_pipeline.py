@@ -6,7 +6,7 @@ sealed E4 predictions remain unopened unless full8 passes the frozen jointgate.
 import argparse,fcntl,gzip,hashlib,json,math,os,threading,time
 from pathlib import Path
 from . import prefix_confidence_data as d
-BASE=d.BASE;FIT=BASE/'fit'
+BASE=d.BASE;FIT=BASE/'fit';FIT_CONFIG='fit-config-v2.json'
 def read(p):return d.read(p)
 def ref(p):return d.ref(p)
 def checked(v):return d.checked(v)
@@ -18,7 +18,7 @@ def gate_decision(raw,control,full):
 def prepare(code,commit,protocol_commit):
  code=Path(code);extract=ref(BASE/'data/complete.json');accepted=read(extract['path']);assert accepted['status']==d.STATUS and accepted['questions']==8192 and accepted['trajectories']==81920 and accepted['availability_qualified'] is True and accepted['all_own_ID_EM_order_native_LP_and_P20_exact'] is True;checked(accepted['features']);c=read(checked(accepted['config']));protocol=ref(code/'reproduction/reports/qwen7b-algorithm-improvement-20261021/prefix-confidence-PROTOCOL.md');assert protocol_commit=='a1ec8bbe44a24deb9ada77b59f3edf57cdc653e2'
  config=dict(role='PREREGISTERED_PREFIX_CONFIDENCE_INFORMATION_TEST_V2',source_commit=commit,code_root=str(code),protocol=protocol,protocol_git_commit=protocol_commit,extract_complete=extract,features=accepted['features'],groups=accepted['groups'],split=accepted['split'],E4_predictions=accepted['E4_predictions'],source_checkpoint=accepted['source_checkpoint'],source_EMA_sha256=accepted['source_EMA_sha256'],external_predictions=c['external_predictions'],external_validation_complete=c['external_validation_complete'],external_groups=c['external_groups'],external_fixed_G5_plan=c['external_fixed_G5_plan'],external_source_audit=c['external_source_audit'],modes=['matched_platt2','prefix_full8'],objective='trajectory_BCE1+uniform_all252_threeevent_NLL1',regularizer=.01,CPU=2,RSS_limit_bytes=3*1024**3,whole_fit_stage_deadline_seconds=1560,internal_G5_indices=[5,6,7,8,9],external_candidate='prefix_full8_only',external_gate='strict BA and Top512 improve raw E4; neither decrease vs matched2 and at least one strict',external_payload_opened=False,final_read=False)
- FIT.mkdir(exist_ok=True);once(BASE/'fit-config.json',config);return dict(status='PREFIX_CONFIDENCE_V2_REAL_DATA_AND_QID_SPLIT_ACCEPTED_FIT_NOT_STARTED',config=ref(BASE/'fit-config.json'),extract_complete=extract)
+ FIT.mkdir(exist_ok=True);once(BASE/FIT_CONFIG,config);return dict(status='PREFIX_CONFIDENCE_V2_REAL_DATA_AND_QID_SPLIT_ACCEPTED_FIT_NOT_STARTED',config=ref(BASE/FIT_CONFIG),extract_complete=extract)
 def load_features(reference,groups):
  import numpy as np
  rows=[];ordered=[]
@@ -56,6 +56,20 @@ def extract_external(config,freeze):
  with gzip.open(output,'wb') as f:
   for g in groups:f.write(d.a.canonical(dict(qid=g['qid'],trajectory_ids=g['trajectory_ids'],features=[found[t] for t in g['trajectory_ids']]))+b'\n')
  return groups,found,dict(features=ref(output),source_batches=proofs,trajectories=10240,freeze=freeze,all_selected_native_LP_and_P20_exact=True)
+
+def external_after_independent_gate(config,freezeref,state,checkpoint,train_qids):
+ import numpy as np
+ import torch
+ from . import prefix_confidence_calibration as c,platt_g10_calibration as p
+ atomic(FIT/'external-open-intent.json',dict(frozen_candidate=freezeref,checkpoint=checkpoint,open_once=True,time=time.time()));groups,featuremap,qualification=extract_external(config,freezeref);by={g['qid']:g for g in read(checked(config['external_groups']))['validation']};expected={g['qid']:g for g in groups};seen=set();output=[]
+ with gzip.open(checked(config['external_predictions']),'rt') as f:
+  for line in f:
+   row=json.loads(line);qid=row['qid'];assert qid in expected and qid not in seen and qid not in train_qids;seen.add(qid);g=expected[qid];truthmap=dict(zip(by[qid]['trajectory_ids'],by[qid]['labels']));assert row['trajectory_ids']==g['trajectory_ids'] and row['strict_em']==[truthmap[t] for t in g['trajectory_ids']];output.append(row)
+ assert len(output)==2048 and seen==set(expected);eq=[g['qid'] for g in output];ep=np.asarray([g['p_j'] for g in output]);ez=c.probability_logits(ep);ey=np.asarray([g['strict_em'] for g in output]);ex=np.asarray([[featuremap[t] for t in g['trajectory_ids']] for g in output]);measured=c.summary(ez,ey,ex,eq,state);original=p.raw_probability_summary(ep,ey,eq);clipped_external=p.raw_probability_summary(1/(1+np.exp(-ez)),ey,eq);scores=c.score(ez,ex,state);newz=c.calibrated(ez,ex,state['raw'],state['normalizer'],use_prefix=True);newp=torch.sigmoid(newz).detach().numpy();pred=FIT/'external-frozen-full8-predictions.jsonl.gz'
+ with gzip.open(pred,'wb') as f:
+  for i,g in enumerate(output):f.write(d.a.canonical(dict(qid=g['qid'],trajectory_ids=g['trajectory_ids'],strict_em=g['strict_em'],original_p_j=g['p_j'],prefix_features=ex[i].tolist(),p_j=newp[i].tolist(),q=float(scores[i])))+b'\n')
+ external=dict(metrics=measured,uncalibrated_E4=original,clipped_identity_E4=clipped_external,predictions=ref(pred),qualification=qualification,external_source_predictions=config['external_predictions'],frozen_checkpoint=checkpoint,fixed_G5_plan=config['external_fixed_G5_plan'],fixed_E2_BA_frontier=.5625049686633887,fixed_E4_Top512_frontier=196,frontier_joint_pass=measured['balanced_accuracy']>.5625049686633887 and measured['Top512']['Mixed']>196,source_payload_opened_once=True,refit_or_threshold_tuning=False)
+ return external
 
 def run(config_ref):
  import numpy as np
@@ -95,23 +109,31 @@ def run(config_ref):
     reports[mode]['internal_predictions']=ref(pred);atomic(FIT/('internal-'+mode+'.json'),dict(mode=mode,checkpoint=cprefs[mode],metrics=internals[mode],predictions=ref(pred),phase='CP_SAVED_AND_RELOADED_BEFORE_THIS_INTERNAL_ASSESSMENT',external_payload_opened=False))
    raw=p.raw_probability_summary(p5,y5,hold_q);identity_p=1/(1+np.exp(-z5));clipped=p.raw_probability_summary(identity_p,y5,hold_q);gate=gate_decision(raw,internals['matched_platt2'],internals['prefix_full8']);clipinfo=dict(original_raw=raw,clipped_identity=clipped,probability_clip=1e-6,threshold_flips=int(((1-p5.prod(1)-(1-p5).prod(1)>=.5)!=(1-identity_p.prod(1)-(1-identity_p).prod(1)>=.5)).sum()))
    freeze=dict(mode='prefix_full8',checkpoint=cprefs['prefix_full8'],control_checkpoint=cprefs['matched_platt2'],config=config_ref,protocol=config['protocol'],internal_gate=gate,internal_raw_E4=raw,internal_matched2=internals['matched_platt2'],internal_full8=internals['prefix_full8'],external_payload_opened=False,original_probe_file_stamp=cpstat,source_probe_optimizer_reset=False,time=time.time());once(FIT/'frozen-candidate-and-gate.json',freeze);freezeref=ref(FIT/'frozen-candidate-and-gate.json');external=None
-   if gate['passed']:
-    atomic(FIT/'external-open-intent.json',dict(frozen_candidate=freezeref,checkpoint=cprefs['prefix_full8'],open_once=True,time=time.time()));groups,featuremap,qualification=extract_external(config,freezeref);by={g['qid']:g for g in read(checked(config['external_groups']))['validation']};expected={g['qid']:g for g in groups};seen=set();output=[]
-    with gzip.open(checked(config['external_predictions']),'rt') as f:
-     for line in f:
-      row=json.loads(line);qid=row['qid'];assert qid in expected and qid not in seen and qid not in qids;seen.add(qid);g=expected[qid];truthmap=dict(zip(by[qid]['trajectory_ids'],by[qid]['labels']));assert row['trajectory_ids']==g['trajectory_ids'] and row['strict_em']==[truthmap[t] for t in g['trajectory_ids']];output.append(row)
-    assert len(output)==2048 and seen==set(expected);eq=[g['qid'] for g in output];ep=np.asarray([g['p_j'] for g in output]);ez=c.probability_logits(ep);ey=np.asarray([g['strict_em'] for g in output]);ex=np.asarray([[featuremap[t] for t in g['trajectory_ids']] for g in output]);state=states['prefix_full8'];measured=c.summary(ez,ey,ex,eq,state);original=p.raw_probability_summary(ep,ey,eq);clipped_external=p.raw_probability_summary(1/(1+np.exp(-ez)),ey,eq);scores=c.score(ez,ex,state);newz=c.calibrated(ez,ex,state['raw'],state['normalizer'],use_prefix=True);newp=torch.sigmoid(newz).detach().numpy();pred=FIT/'external-frozen-full8-predictions.jsonl.gz'
-    with gzip.open(pred,'wb') as f:
-     for i,g in enumerate(output):f.write(d.a.canonical(dict(qid=g['qid'],trajectory_ids=g['trajectory_ids'],strict_em=g['strict_em'],original_p_j=g['p_j'],prefix_features=ex[i].tolist(),p_j=newp[i].tolist(),q=float(scores[i])))+b'\n')
-    external=dict(metrics=measured,uncalibrated_E4=original,clipped_identity_E4=clipped_external,predictions=ref(pred),qualification=qualification,external_source_predictions=config['external_predictions'],frozen_checkpoint=cprefs['prefix_full8'],fixed_G5_plan=config['external_fixed_G5_plan'],fixed_E2_BA_frontier=.5625049686633887,fixed_E4_Top512_frontier=196,frontier_joint_pass=measured['balanced_accuracy']>.5625049686633887 and measured['Top512']['Mixed']>196,source_payload_opened_once=True,refit_or_threshold_tuning=False)
    assert d.stamp(config['source_checkpoint']['path'])==cpstat
-   final=dict(status='PREFIX_CONFIDENCE_V2_SINGLE_INFORMATION_TEST_COMPLETE',config=config_ref,extract_complete=config['extract_complete'],full_aux_checkpoints=cprefs,checkpoint_reload_audits=readbacks,fit_reports=reports,internal_raw_and_clipping=clipinfo,internal_metrics=internals,internal_gate=gate,frozen_candidate=freezeref,external=external,external_payload_opened=gate['passed'],fit_loss_progress_observations=counter,source_probe_file_stat_unchanged=True,source_probe_model_or_Adam_loaded=False,source_probe_updates=0,actor_updates=0,GPU_used=False,final_read=False,elapsed_seconds=time.monotonic()-start,time=time.time());once(FIT/'complete.json',final);return final
+   final=dict(status=('PREFIX_CONFIDENCE_V2_INTERNAL_COMPLETE_AWAITING_INDEPENDENT_AUDIT' if gate['passed'] else 'PREFIX_CONFIDENCE_V2_SINGLE_INFORMATION_TEST_COMPLETE'),config=config_ref,extract_complete=config['extract_complete'],full_aux_checkpoints=cprefs,checkpoint_reload_audits=readbacks,fit_reports=reports,internal_raw_and_clipping=clipinfo,internal_metrics=internals,internal_gate=gate,frozen_candidate=freezeref,external=external,external_payload_opened=False,fit_loss_progress_observations=counter,source_probe_file_stat_unchanged=True,source_probe_model_or_Adam_loaded=False,source_probe_updates=0,actor_updates=0,GPU_used=False,final_read=False,elapsed_seconds=time.monotonic()-start,time=time.time());once(FIT/'internal-complete.json',final)
+   if not gate['passed']:once(FIT/'complete.json',final)
+   return final
   finally:stop.set()
+
+def finish_external(config_ref,audit_ref):
+ import torch
+ from . import prefix_confidence_calibration as c
+ config=read(checked(config_ref));internal_ref=ref(FIT/'internal-complete.json');internal=read(internal_ref['path']);audit=read(checked(audit_ref))
+ assert audit['status']=='PREFIX_CONFIDENCE_INTERNAL_FULLSTATE_AND_METRICS_INDEPENDENTLY_PASSED' and audit['config']==config_ref and audit['internal_complete']==internal_ref and audit['full_aux_checkpoints']==internal['full_aux_checkpoints'] and audit['external_opening_permitted'] is True and internal['internal_gate']['passed']
+ with (FIT/'calibration.lock').open('a') as lock:
+  fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+  if (FIT/'complete.json').exists():return read(FIT/'complete.json')
+  if (FIT/'external-open-intent.json').exists():raise ValueError('Prior external opening preserved; no implicit rescore')
+  cp=internal['full_aux_checkpoints']['prefix_full8'];checked(cp);state=torch.load(cp['path'],map_location='cpu',weights_only=False);c.restore(state);truth=read(checked(config['groups']));truth=truth['groups'] if isinstance(truth,dict) else truth
+  external=external_after_independent_gate(config,internal['frozen_candidate'],state,cp,[g['qid'] for g in truth]);final=dict(internal,status='PREFIX_CONFIDENCE_V2_SINGLE_INFORMATION_TEST_COMPLETE',external=external,external_payload_opened=True,independent_internal_audit=audit_ref,external_completed_epoch=time.time());once(FIT/'complete.json',final);return final
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--action',choices=('prepare','run'),required=True);p.add_argument('--code-root');p.add_argument('--commit');p.add_argument('--protocol-commit');p.add_argument('--config-sha256');a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--action',choices=('prepare','run','external'),required=True);p.add_argument('--code-root');p.add_argument('--commit');p.add_argument('--protocol-commit');p.add_argument('--config-sha256');p.add_argument('--internal-audit-sha256');a=p.parse_args()
  try:
   if a.action=='prepare':v=prepare(a.code_root,a.commit,a.protocol_commit)
   else:
-   r=ref(BASE/'fit-config.json');assert r['sha256']==a.config_sha256;v=run(r)
+   r=ref(BASE/FIT_CONFIG);assert r['sha256']==a.config_sha256
+   if a.action=='run':v=run(r)
+   else:
+    audit=ref(FIT/'independent-internal-audit.json');assert audit['sha256']==a.internal_audit_sha256;v=finish_external(r,audit)
   print(json.dumps(dict(status=v['status'],internal_gate=v.get('internal_gate'),external_payload_opened=v.get('external_payload_opened'),elapsed_seconds=v.get('elapsed_seconds')),sort_keys=True),flush=True)
  except BaseException as e:atomic(FIT/'failure.json',dict(type=type(e).__name__,message=str(e)[:1500],time=time.time()));raise

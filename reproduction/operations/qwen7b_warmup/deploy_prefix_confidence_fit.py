@@ -3,7 +3,7 @@ import argparse,base64,hashlib,importlib.util,json,shlex,subprocess
 from pathlib import Path
 from .deploy_confirmation_materialization import make_bundle
 from . import prefix_confidence_data as d
-BRANCH='codex/prefix-confidence-incremental-20261021';P='reproduction/operations/qwen7b_warmup/';ROOT=d.BASE/'fit-deployment';MANIFEST='_prefix_confidence_source_manifest.json';SEEDS=tuple(P+n for n in ('prefix_confidence_pipeline.py','test_prefix_confidence_pipeline.py','prefix_confidence_calibration.py','test_prefix_confidence_calibration.py','runtime.sh'));PROTOCOL='reproduction/reports/qwen7b-algorithm-improvement-20261021/prefix-confidence-PROTOCOL.md';PROTOCOL_COMMIT='a1ec8bbe44a24deb9ada77b59f3edf57cdc653e2'
+BRANCH='codex/prefix-confidence-incremental-20261021';P='reproduction/operations/qwen7b_warmup/';ROOT=d.BASE/'fit-deployment-v2';MANIFEST='_prefix_confidence_source_manifest.json';SEEDS=tuple(P+n for n in ('prefix_confidence_pipeline.py','test_prefix_confidence_pipeline.py','prefix_confidence_calibration.py','test_prefix_confidence_calibration.py','runtime.sh'));PROTOCOL='reproduction/reports/qwen7b-algorithm-improvement-20261021/prefix-confidence-PROTOCOL.md';PROTOCOL_COMMIT='a1ec8bbe44a24deb9ada77b59f3edf57cdc653e2'
 COMMON=r'''
 import base64,fcntl,gzip,hashlib,io,json,os,subprocess,tarfile,time
 from pathlib import Path
@@ -48,7 +48,7 @@ for name,x in files.items():assert fp(code/name)==dict(path=str(code/name),**x)
 pub=dict(commit=meta['commit'],code_root=str(code),files=files,manifest=fp(code/v['manifest']),code_only=True);once(b/'source-publication.json',pub);env=dict(os.environ,QWEN7B_CODE_ROOT=str(code),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
 r=subprocess.run(['bash',str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-m','unittest','reproduction.operations.qwen7b_warmup.test_prefix_confidence_calibration','reproduction.operations.qwen7b_warmup.test_prefix_confidence_pipeline'],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=50);(b/'actual-cpu-tests.log').write_text(r.stdout);assert r.returncode==0,r.stdout[-2500:]
 r=subprocess.run(['bash',str(code/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-m','reproduction.operations.qwen7b_warmup.prefix_confidence_pipeline','--action','prepare','--code-root',str(code),'--commit',meta['commit'],'--protocol-commit',v['protocol_commit']],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=45);(b/'actual-input-preflight.log').write_text(r.stdout);assert r.returncode==0,r.stdout[-2500:]
-prepared=dict(status='V2_IMMUTABLE_FIT_SOURCE_CPU_FIXTURES_AND_ACTUAL_INPUT_PREFLIGHT_PASSED',publication=fp(b/'source-publication.json'),tests=fp(b/'actual-cpu-tests.log'),config=fp(experiment/'fit-config.json'),protocol=fp(code/'reproduction/reports/qwen7b-algorithm-improvement-20261021/prefix-confidence-PROTOCOL.md'),code_root=str(code),external_payload_opened=False,real_optimizer_started=False);once(b/'preparation.json',prepared);print(json.dumps(prepared))
+prepared=dict(status='V2_IMMUTABLE_FIT_SOURCE_CPU_FIXTURES_AND_ACTUAL_INPUT_PREFLIGHT_PASSED',publication=fp(b/'source-publication.json'),tests=fp(b/'actual-cpu-tests.log'),config=fp(experiment/'fit-config-v2.json'),protocol=fp(code/'reproduction/reports/qwen7b-algorithm-improvement-20261021/prefix-confidence-PROTOCOL.md'),code_root=str(code),external_payload_opened=False,real_optimizer_started=False);once(b/'preparation.json',prepared);print(json.dumps(prepared))
 '''
 
 def render_script(code,sha):
@@ -69,7 +69,7 @@ EXIT
 exit "$result"
 '''.replace('@@CODE@@',shlex.quote(code)).replace('@@ROOT@@',shlex.quote(str(ROOT))).replace('@@SHA@@',shlex.quote(sha))
 START=r'''
-g=guard();prep=read(b/'preparation.json');pub=read(b/'source-publication.json');assert fp(b/'source-publication.json')==prep['publication'] and fp(experiment/'fit-config.json')==prep['config']
+g=guard();prep=read(b/'preparation.json');pub=read(b/'source-publication.json');assert fp(b/'source-publication.json')==prep['publication'] and fp(experiment/'fit-config-v2.json')==prep['config']
 for name,x in pub['files'].items():assert fp(Path(pub['code_root'])/name)==dict(path=str(Path(pub['code_root'])/name),**x)
 if (b/'launch.json').exists():print(json.dumps(dict(status='EXISTING_SINGLE_FIT_LAUNCH_PRESERVED',launch=read(b/'launch.json'))))
 else:
@@ -87,6 +87,7 @@ for name in ('launch.json','exit.json'):
 for name in ('fit-started.json','progress.json','failure.json','frozen-candidate-and-gate.json','external-progress.json'):
  p=experiment/'fit'/name
  if p.exists():x[name[:-5]]=read(p)
+if (experiment/'fit/internal-complete.json').exists():x['internal_complete_ref']=fp(experiment/'fit/internal-complete.json');x['internal_complete']=read(experiment/'fit/internal-complete.json')
 if (experiment/'fit/complete.json').exists():x['complete_ref']=fp(experiment/'fit/complete.json');x['complete']=read(experiment/'fit/complete.json')
 if (b/'analysis.log').exists():x['log_tail']=(b/'analysis.log').read_text()[-2000:]
 print(json.dumps(x))
