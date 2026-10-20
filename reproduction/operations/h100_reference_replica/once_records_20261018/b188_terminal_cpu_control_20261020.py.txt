@@ -1,0 +1,54 @@
+"""Actual189 reservation-failure once CPU source188 qualification; never start native training."""
+import base64
+import datetime
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+repo = Path(__file__).resolve().parents[4]
+sys.path.insert(0, str(repo))
+from reproduction.operations.h100_reference_replica.assigned_cpu_control import execute
+root = Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+entry = json.loads((root/'work/prefix5-ab-assigned-arms.json').read_text())['B']
+payload = (repo/'reproduction/operations/h100_reference_replica/recovery_terminal_cpu_once.py').read_bytes()
+checksum = hashlib.sha256(payload).hexdigest()
+
+
+def inner(arms):
+    return 'base_path='+repr(entry['base'])+'\nexpected_config='+repr(entry['config_sha256'])+'\npayload='+repr(base64.b64encode(payload).decode())+'\nchecksum='+repr(checksum)+'\n'+'''
+import base64,hashlib,json,os,subprocess,time
+from pathlib import Path
+b=Path(base_path);prep=b/'preparation'
+intent=prep/'recovery-0188-control-intent.json';receipt=prep/'recovery-0188-control-receipt.json'
+result=prep/'recovery-0188-terminal-and-cpu-result.json';log=prep/'recovery-0188-terminal-and-cpu.log'
+v={'base':str(b),'run_id':'d9e5385ebec24ea8ab6cb8db8d2f825a'}
+if result.exists():v.update(status='EXISTING_RESULT_NO_REPLAY',result=json.loads(result.read_text()))
+elif intent.exists():v.update(status='EXISTING_INTENT_NO_REPLAY',receipt=json.loads(receipt.read_text())if receipt.exists()else None)
+else:
+ assert hashlib.sha256((prep/'launch-config.json').read_bytes()).hexdigest()==expected_config
+ c=json.loads((prep/'launch-config.json').read_text());j=json.loads((b/'latest-joint.json').read_text())
+ t=json.loads((prep/'native-actual-waitpid-exit.json').read_text())
+ assert c['run_id']==j['run_id']==v['run_id'] and j['outer']==188 and t['actual_returncode']==1
+ raw=base64.b64decode(payload);assert hashlib.sha256(raw).hexdigest()==checksum
+ worker=prep/'failure-source-tools'/checksum/'recovery_terminal_cpu_once.py';worker.parent.mkdir(parents=True,exist_ok=True)
+ if not worker.exists():
+  with worker.open('xb')as f:f.write(raw)
+ assert hashlib.sha256(worker.read_bytes()).hexdigest()==checksum
+ with intent.open('x')as f:json.dump(dict(run_id=c['run_id'],outer=188,worker_sha256=checksum,created_unix=time.time()),f);f.flush();os.fsync(f.fileno())
+ env=dict(os.environ,CUDA_VISIBLE_DEVICES='',PYTHONDONTWRITEBYTECODE='1',SEARCH_G1_B_PREFIX_TOKENS='80',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
+ with log.open('xb')as f:p=subprocess.Popen(['/dataset/shaoshitong/Search-G1-common8/env/bin/python',str(worker),'--base',str(b),'--outer','188','--run-id',c['run_id']],stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,start_new_session=True,env=env)
+ fields=Path('/proc/'+str(p.pid)+'/stat').read_text().rsplit(')',1)[1].split()
+ r=dict(status='SOURCE_TERMINAL_AND_LATEST_CPU_READBACK_STARTED_NOT_PASS',pid=p.pid,start_ticks=int(fields[19]),worker_sha256=checksum,result=str(result),log=str(log))
+ with receipt.open('x')as f:json.dump(r,f)
+ v.update(r)
+if log.exists():
+ with log.open('rb')as f:f.seek(max(0,log.stat().st_size-3500));v['log_tail']=f.read().decode(errors='replace')
+print(json.dumps({'B':v}))
+'''
+
+
+answer = execute({'B':entry}, inner, 'start', 'retained18', 'b188-source-cpu')
+path = root/('work/prefix5-ab-b188-source-cpu-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')+'.json')
+path.write_text(json.dumps(answer,indent=2)+'\n')
+print(json.dumps(dict(evidence=str(path),arms=answer['arms'])))
