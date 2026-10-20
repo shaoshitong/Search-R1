@@ -1,0 +1,206 @@
+{
+  "status": "BALANCED_PREFIX20_INDEPENDENT_CPU_SHA_RAW_EMA_ADAM_FOUR_RANK_RNG_VERIFIED",
+  "immutable_checkpoint": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/balanced-checkpoint-audit/epoch-0003-step-00013100-cursor-0000-c49a86b08eb6.pt",
+  "checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/epoch-0003.pt",
+    "bytes": 3745810528,
+    "sha256": "c49a86b08eb69032e5271d7cd4ce7964599685c2633311d0c34225813558b483",
+    "git_blob_sha1": "66ced481e44014b18a97a5f8b3eb932e9244ceca",
+    "epoch": 3,
+    "cursor": 0,
+    "steps": 13100,
+    "source_steps": 10464,
+    "completed_epoch": true,
+    "actor_updates": 0,
+    "source_commit": "ea845a85e1ad78bc96359bd88f5aae60466ff5f6",
+    "metrics": {
+      "train": {
+        "groups": 67198,
+        "trajectories": 335990,
+        "trajectory_bce": 0.5193209353135989,
+        "group_bce": 0.5452469244376261,
+        "total_loss": 1.0645678597512251,
+        "mixed_accuracy": 0.7681776243340576,
+        "mixed_balanced_accuracy": 0.7681776243340576,
+        "trajectory_accuracy": 0.7393940295842139,
+        "mean_predicted_mixed": 0.5919571067867239,
+        "true_mixed_fraction": 0.5,
+        "confusion": {
+          "tp": 30060,
+          "fp": 12039,
+          "fn": 3539,
+          "tn": 21560
+        },
+        "weight_kind": "EMA0.99",
+        "resampled": false,
+        "three_class_order": [
+          "all_wrong",
+          "mixed",
+          "all_correct"
+        ],
+        "three_class_confusion": [
+          [
+            21248.0,
+            2066.0,
+            2236.0
+          ],
+          [
+            13791.0,
+            14017.0,
+            5791.0
+          ],
+          [
+            1348.0,
+            760.0,
+            5941.0
+          ]
+        ],
+        "prediction_file_pattern": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/predictions/epoch-0003-train-rank*.jsonl.gz"
+      },
+      "diagnostic": {
+        "groups": 512,
+        "trajectories": 2560,
+        "trajectory_bce": 0.7140130377374589,
+        "group_bce": 0.9854950744193047,
+        "total_loss": 1.6995081121567637,
+        "mixed_accuracy": 0.513671875,
+        "mixed_balanced_accuracy": 0.5442202272185588,
+        "trajectory_accuracy": 0.651171875,
+        "mean_predicted_mixed": 0.6112172938883305,
+        "true_mixed_fraction": 0.400390625,
+        "confusion": {
+          "tp": 143,
+          "fp": 187,
+          "fn": 62,
+          "tn": 120
+        },
+        "weight_kind": "EMA0.99",
+        "resampled": false,
+        "three_class_order": [
+          "all_wrong",
+          "mixed",
+          "all_correct"
+        ],
+        "three_class_confusion": [
+          [
+            158.0,
+            47.0,
+            23.0
+          ],
+          [
+            111.0,
+            54.0,
+            40.0
+          ],
+          [
+            29.0,
+            22.0,
+            28.0
+          ]
+        ],
+        "prediction_file_pattern": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/predictions/epoch-0003-diagnostic-rank*.jsonl.gz"
+      },
+      "sampling_plan": {
+        "questions": 67198,
+        "mixed": 33599,
+        "nonmixed": 33599,
+        "all_wrong": 25550,
+        "all_correct": 8049,
+        "updates": 1318,
+        "sha256": "1204878f6d3fc862553fd5563064741535361383e364a21ae6c2eb4b84c146c2",
+        "unique_questions": 67198,
+        "sampling": "1:1 Mixed/nonMixed; without replacement within epoch; negatives naturally sampled"
+      },
+      "train_separation": {
+        "questions": 67198,
+        "trajectory_bce": 0.5193209353135989,
+        "group_bce": 0.5452469244376262,
+        "pairwise_loss": 1.0692142499502957,
+        "eligible_pairs": 163524,
+        "pairwise_accuracy": 0.7115224676500086,
+        "range_le001_fraction": 0.05626655555224858,
+        "all_p_in04_06_fraction": 0.011190809250275307,
+        "mean_p_range": 0.17876247402260945,
+        "trajectory_accuracy": 0.7393940295842137
+      },
+      "diagnostic_mixed_separation": {
+        "questions": 205,
+        "trajectory_bce": 0.9199402759714824,
+        "group_bce": 0.5790262270264509,
+        "pairwise_loss": 1.2727862730258848,
+        "eligible_pairs": 1002,
+        "pairwise_accuracy": 0.562874251497006,
+        "range_le001_fraction": 0.014634146341463414,
+        "all_p_in04_06_fraction": 0.0,
+        "mean_p_range": 0.19956081553203303,
+        "trajectory_accuracy": 0.5541463414634147
+      },
+      "selection2048": {
+        "pool": {
+          "questions": 2048,
+          "trajectories": 10240,
+          "K_histogram": [
+            1079,
+            164,
+            127,
+            153,
+            197,
+            328
+          ],
+          "true_mixed": 641,
+          "true_mixed_fraction": 0.31298828125,
+          "all_wrong_fraction": 0.52685546875,
+          "all_correct_fraction": 0.16015625,
+          "mixed_fraction_wilson95": [
+            0.29327112912862074,
+            0.33340568027737383
+          ],
+          "trajectory_strict_EM": 0.32275390625,
+          "mean_predicted_mixed": 0.6025511405579941
+        },
+        "selected512": {
+          "questions": 512,
+          "trajectories": 2560,
+          "K_histogram": [
+            218,
+            47,
+            42,
+            42,
+            59,
+            104
+          ],
+          "true_mixed": 190,
+          "true_mixed_fraction": 0.37109375,
+          "all_wrong_fraction": 0.42578125,
+          "all_correct_fraction": 0.203125,
+          "mixed_fraction_wilson95": [
+            0.33035334729761556,
+            0.4137540761309402
+          ],
+          "trajectory_strict_EM": 0.395703125,
+          "mean_predicted_mixed": 0.9229524746007739
+        },
+        "predictions": {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/predictions/epoch-0003-unseen2048.jsonl.gz",
+          "bytes": 150071,
+          "sha256": "0663f0f4fc894ca5b24670a413b99f70cede760e3a1eac80b9734de19febb6fd",
+          "git_blob_sha1": "1fbb764ca757a4fbeca5a652089413daddbec2e3"
+        },
+        "evaluation_only": true
+      }
+    },
+    "independent_cpu_reload": true
+  },
+  "hashes": {
+    "raw": "19cc2a0bc328dd3b9acb3bfe02980ca2bea2b4f233418f2c9ea9b34500627f92",
+    "ema": "af1cc9c1fa89285a430005774b1c7f6e52332a638a8a0fec0e8cc890cc97930b",
+    "adam": "22c7c203e70d6cb057e2b9d1d6787b4fc39c4a1f1485a17832bff841108e96cd"
+  },
+  "checked_ranks": 4,
+  "optimizer_parameter_tensors": 14,
+  "pending_evaluation": false,
+  "next_update_proof": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/next-update-proof.json",
+  "audit_source_sha256": "4442f6448b91b150ee1041ac4340dc9b5d5ca4bf8a4c84f2d603487be612351c",
+  "time": 1792514511.9018776,
+  "experiment_completion_claimed": false
+}
