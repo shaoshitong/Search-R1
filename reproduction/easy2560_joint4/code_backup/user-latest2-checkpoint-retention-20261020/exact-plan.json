@@ -1,0 +1,1416 @@
+{
+  "plan_root": "/tmp/easy-authorized-latest2-eebf738cb45d434cb9cebb167145cf6f",
+  "plan_sha256": "2282bd9a2c8d6be8368fa1042c9d24450ba55346da7b39d21be30f649e9114e4",
+  "plan": {
+    "schema_version": 1,
+    "created_unix": 1792469650.6637402,
+    "plan_root": "/tmp/easy-authorized-latest2-eebf738cb45d434cb9cebb167145cf6f",
+    "user_authorization": "用户2026-10-20明确：TOPD保留200，DynRPO r2/r3/r4、CoSearch只保留最新两个，删除更早checkpoint",
+    "scope": "HPC3 checkpoint tensor payloads only, latest two distinct complete steps per independent experiment",
+    "groups": [
+      {
+        "name": "DynRPO r2",
+        "kept_steps": [
+          115,
+          116
+        ],
+        "kept_checkpoint_dirs": [
+          "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0115-attempt-a49eb1add0e0460db85c4eba3573ad3c",
+          "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0116-attempt-d5dad47e53b94e90974b18a5a3058480"
+        ],
+        "delete_steps": [
+          9,
+          50
+        ],
+        "delete_checkpoint_dirs": [
+          "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0009-attempt-e1f5b92a318343e89c462155bdaf2c4c",
+          "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0050-attempt-6a3cd1a1b1584611aaa793e275ba3897"
+        ],
+        "delete_tensor_files": 18,
+        "delete_allocated_path_bytes": 76553887744
+      },
+      {
+        "name": "DynRPO r3",
+        "kept_steps": [
+          60,
+          61
+        ],
+        "kept_checkpoint_dirs": [
+          "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0060-attempt-e4d148a14a5c403d89893a295e405adf",
+          "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0061-attempt-064dcef28ab844d0a0b4059833f9991d"
+        ],
+        "delete_steps": [],
+        "delete_checkpoint_dirs": [],
+        "delete_tensor_files": 0,
+        "delete_allocated_path_bytes": 0
+      },
+      {
+        "name": "DynRPO r4",
+        "kept_steps": [
+          199,
+          200
+        ],
+        "kept_checkpoint_dirs": [
+          "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0199-attempt-3c03fae544e8450e8c310549cea5e1fc",
+          "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237"
+        ],
+        "delete_steps": [
+          100,
+          150
+        ],
+        "delete_checkpoint_dirs": [
+          "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0100-attempt-b8fae52bb33846098b2565965750f57f",
+          "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0150-attempt-a641865d87d2464091e41c08ae8e5d50"
+        ],
+        "delete_tensor_files": 18,
+        "delete_allocated_path_bytes": 76556660736
+      },
+      {
+        "name": "TOPD topd-hpc3-707690",
+        "kept_steps": [
+          200
+        ],
+        "kept_checkpoint_dirs": [
+          "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-707690/evidence/checkpoints/actor/global_step_200"
+        ],
+        "delete_steps": [],
+        "delete_checkpoint_dirs": [],
+        "delete_tensor_files": 0,
+        "delete_allocated_path_bytes": 0
+      },
+      {
+        "name": "TOPD topd-hpc3-713717",
+        "kept_steps": [
+          150,
+          200
+        ],
+        "kept_checkpoint_dirs": [
+          "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_150",
+          "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_200"
+        ],
+        "delete_steps": [
+          50,
+          100
+        ],
+        "delete_checkpoint_dirs": [
+          "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_50",
+          "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_100"
+        ],
+        "delete_tensor_files": 16,
+        "delete_allocated_path_bytes": 101278334976
+      }
+    ],
+    "delete_files": [
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0009-attempt-e1f5b92a318343e89c462155bdaf2c4c/rank-2.pt",
+        "bytes": 6171932268,
+        "allocated_bytes": 6171934720,
+        "device": 49,
+        "inode": 11021750717,
+        "nlink": 2,
+        "mtime_ns": 1792232437566679000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0009-attempt-e1f5b92a318343e89c462155bdaf2c4c/rank-0.pt",
+        "bytes": 6171932332,
+        "allocated_bytes": 6171934720,
+        "device": 49,
+        "inode": 11021642309,
+        "nlink": 2,
+        "mtime_ns": 1792232437441451000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0009-attempt-e1f5b92a318343e89c462155bdaf2c4c/rank-3.pt",
+        "bytes": 6171932332,
+        "allocated_bytes": 6171934720,
+        "device": 49,
+        "inode": 11021610413,
+        "nlink": 2,
+        "mtime_ns": 1792232437475275000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0009-attempt-e1f5b92a318343e89c462155bdaf2c4c/rank-1.pt",
+        "bytes": 6171932332,
+        "allocated_bytes": 6171934720,
+        "device": 49,
+        "inode": 11021605845,
+        "nlink": 2,
+        "mtime_ns": 1792232437500504000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0009-attempt-e1f5b92a318343e89c462155bdaf2c4c/driver.pt",
+        "bytes": 730840,
+        "allocated_bytes": 733184,
+        "device": 49,
+        "inode": 11021661722,
+        "nlink": 2,
+        "mtime_ns": 1792232460312191000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0009-attempt-e1f5b92a318343e89c462155bdaf2c4c/huggingface/model-00003-of-00004.safetensors",
+        "bytes": 3917843680,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11021569785,
+        "nlink": 2,
+        "mtime_ns": 1792232450002909000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0009-attempt-e1f5b92a318343e89c462155bdaf2c4c/huggingface/model-00001-of-00004.safetensors",
+        "bytes": 3929249504,
+        "allocated_bytes": 3929251840,
+        "device": 49,
+        "inode": 11021605855,
+        "nlink": 2,
+        "mtime_ns": 1792232449076207000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0009-attempt-e1f5b92a318343e89c462155bdaf2c4c/huggingface/model-00004-of-00004.safetensors",
+        "bytes": 1823527024,
+        "allocated_bytes": 1823531008,
+        "device": 49,
+        "inode": 11021569786,
+        "nlink": 2,
+        "mtime_ns": 1792232450200210000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0009-attempt-e1f5b92a318343e89c462155bdaf2c4c/huggingface/model-00002-of-00004.safetensors",
+        "bytes": 3917843656,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11021592998,
+        "nlink": 2,
+        "mtime_ns": 1792232449430766000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0050-attempt-6a3cd1a1b1584611aaa793e275ba3897/rank-2.pt",
+        "bytes": 6171932780,
+        "allocated_bytes": 6171934720,
+        "device": 49,
+        "inode": 11027351391,
+        "nlink": 1,
+        "mtime_ns": 1792263356805288000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0050-attempt-6a3cd1a1b1584611aaa793e275ba3897/rank-0.pt",
+        "bytes": 6171932844,
+        "allocated_bytes": 6171934720,
+        "device": 49,
+        "inode": 11027411021,
+        "nlink": 1,
+        "mtime_ns": 1792263357033468000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0050-attempt-6a3cd1a1b1584611aaa793e275ba3897/rank-3.pt",
+        "bytes": 6171932844,
+        "allocated_bytes": 6171934720,
+        "device": 49,
+        "inode": 11027372108,
+        "nlink": 1,
+        "mtime_ns": 1792263356901596000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0050-attempt-6a3cd1a1b1584611aaa793e275ba3897/driver.pt",
+        "bytes": 731352,
+        "allocated_bytes": 733184,
+        "device": 49,
+        "inode": 11027185137,
+        "nlink": 1,
+        "mtime_ns": 1792263379141706000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0050-attempt-6a3cd1a1b1584611aaa793e275ba3897/rank-1.pt",
+        "bytes": 6171932844,
+        "allocated_bytes": 6171934720,
+        "device": 49,
+        "inode": 11027153495,
+        "nlink": 1,
+        "mtime_ns": 1792263356953075000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0050-attempt-6a3cd1a1b1584611aaa793e275ba3897/huggingface/model-00003-of-00004.safetensors",
+        "bytes": 3917843680,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11027281390,
+        "nlink": 1,
+        "mtime_ns": 1792263368953363000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0050-attempt-6a3cd1a1b1584611aaa793e275ba3897/huggingface/model-00001-of-00004.safetensors",
+        "bytes": 3929249504,
+        "allocated_bytes": 3929251840,
+        "device": 49,
+        "inode": 11027176059,
+        "nlink": 1,
+        "mtime_ns": 1792263368462917000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0050-attempt-6a3cd1a1b1584611aaa793e275ba3897/huggingface/model-00004-of-00004.safetensors",
+        "bytes": 1823527024,
+        "allocated_bytes": 1823531008,
+        "device": 49,
+        "inode": 11027351466,
+        "nlink": 1,
+        "mtime_ns": 1792263369258554000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0050-attempt-6a3cd1a1b1584611aaa793e275ba3897/huggingface/model-00002-of-00004.safetensors",
+        "bytes": 3917843656,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11027281389,
+        "nlink": 1,
+        "mtime_ns": 1792263368535897000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0100-attempt-b8fae52bb33846098b2565965750f57f/rank-2.pt",
+        "bytes": 6171983980,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11043276811,
+        "nlink": 1,
+        "mtime_ns": 1792335606612518000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0100-attempt-b8fae52bb33846098b2565965750f57f/rank-0.pt",
+        "bytes": 6171983980,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11043518039,
+        "nlink": 1,
+        "mtime_ns": 1792335606771117000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0100-attempt-b8fae52bb33846098b2565965750f57f/rank-3.pt",
+        "bytes": 6171984044,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11043146429,
+        "nlink": 1,
+        "mtime_ns": 1792335606788948000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0100-attempt-b8fae52bb33846098b2565965750f57f/driver.pt",
+        "bytes": 780248,
+        "allocated_bytes": 782336,
+        "device": 49,
+        "inode": 11043295270,
+        "nlink": 1,
+        "mtime_ns": 1792335630887365000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0100-attempt-b8fae52bb33846098b2565965750f57f/rank-1.pt",
+        "bytes": 6171984044,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11043097544,
+        "nlink": 1,
+        "mtime_ns": 1792335606802263000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0100-attempt-b8fae52bb33846098b2565965750f57f/huggingface/model-00003-of-00004.safetensors",
+        "bytes": 3917843680,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11043047298,
+        "nlink": 1,
+        "mtime_ns": 1792335619721957000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0100-attempt-b8fae52bb33846098b2565965750f57f/huggingface/model-00001-of-00004.safetensors",
+        "bytes": 3929249504,
+        "allocated_bytes": 3929251840,
+        "device": 49,
+        "inode": 11043532761,
+        "nlink": 1,
+        "mtime_ns": 1792335618892729000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0100-attempt-b8fae52bb33846098b2565965750f57f/huggingface/model-00004-of-00004.safetensors",
+        "bytes": 1823527024,
+        "allocated_bytes": 1823531008,
+        "device": 49,
+        "inode": 11043514238,
+        "nlink": 1,
+        "mtime_ns": 1792335619752920000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0100-attempt-b8fae52bb33846098b2565965750f57f/huggingface/model-00002-of-00004.safetensors",
+        "bytes": 3917843656,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11043514236,
+        "nlink": 1,
+        "mtime_ns": 1792335619299811000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0150-attempt-a641865d87d2464091e41c08ae8e5d50/rank-2.pt",
+        "bytes": 6172435244,
+        "allocated_bytes": 6172438528,
+        "device": 49,
+        "inode": 11049403975,
+        "nlink": 1,
+        "mtime_ns": 1792366642824849000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0150-attempt-a641865d87d2464091e41c08ae8e5d50/rank-0.pt",
+        "bytes": 6172435244,
+        "allocated_bytes": 6172438528,
+        "device": 49,
+        "inode": 11050137017,
+        "nlink": 1,
+        "mtime_ns": 1792366642718662000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0150-attempt-a641865d87d2464091e41c08ae8e5d50/rank-3.pt",
+        "bytes": 6172435244,
+        "allocated_bytes": 6172438528,
+        "device": 49,
+        "inode": 11050161512,
+        "nlink": 1,
+        "mtime_ns": 1792366642751553000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0150-attempt-a641865d87d2464091e41c08ae8e5d50/driver.pt",
+        "bytes": 1227544,
+        "allocated_bytes": 1228800,
+        "device": 49,
+        "inode": 11050111356,
+        "nlink": 1,
+        "mtime_ns": 1792366666457850000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0150-attempt-a641865d87d2464091e41c08ae8e5d50/rank-1.pt",
+        "bytes": 6172435308,
+        "allocated_bytes": 6172438528,
+        "device": 49,
+        "inode": 11049235923,
+        "nlink": 1,
+        "mtime_ns": 1792366642931694000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0150-attempt-a641865d87d2464091e41c08ae8e5d50/huggingface/model-00003-of-00004.safetensors",
+        "bytes": 3917843680,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11050063477,
+        "nlink": 1,
+        "mtime_ns": 1792366655124413000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0150-attempt-a641865d87d2464091e41c08ae8e5d50/huggingface/model-00001-of-00004.safetensors",
+        "bytes": 3929249504,
+        "allocated_bytes": 3929251840,
+        "device": 49,
+        "inode": 11050078608,
+        "nlink": 1,
+        "mtime_ns": 1792366655433682000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0150-attempt-a641865d87d2464091e41c08ae8e5d50/huggingface/model-00004-of-00004.safetensors",
+        "bytes": 1823527024,
+        "allocated_bytes": 1823531008,
+        "device": 49,
+        "inode": 11049249541,
+        "nlink": 1,
+        "mtime_ns": 1792366655545866000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0150-attempt-a641865d87d2464091e41c08ae8e5d50/huggingface/model-00002-of-00004.safetensors",
+        "bytes": 3917843656,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11050063476,
+        "nlink": 1,
+        "mtime_ns": 1792366655447608000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_50/resume-rank2.pt",
+        "bytes": 9260952386,
+        "allocated_bytes": 9260953600,
+        "device": 49,
+        "inode": 10956912871,
+        "nlink": 1,
+        "mtime_ns": 1791886850082913000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_50/model-00002-of-00003.safetensors",
+        "bytes": 4932949336,
+        "allocated_bytes": 4932952064,
+        "device": 49,
+        "inode": 10956912865,
+        "nlink": 1,
+        "mtime_ns": 1791886842750734000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_50/resume-rank0.pt",
+        "bytes": 9260952386,
+        "allocated_bytes": 9260953600,
+        "device": 49,
+        "inode": 10956758507,
+        "nlink": 1,
+        "mtime_ns": 1791886850394165000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_50/model-00001-of-00003.safetensors",
+        "bytes": 4982131536,
+        "allocated_bytes": 4982132736,
+        "device": 49,
+        "inode": 10956879432,
+        "nlink": 1,
+        "mtime_ns": 1791886842304229000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_50/resume-rank3.pt",
+        "bytes": 9260952386,
+        "allocated_bytes": 9260953600,
+        "device": 49,
+        "inode": 10956879440,
+        "nlink": 1,
+        "mtime_ns": 1791886850191270000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_50/model-00003-of-00003.safetensors",
+        "bytes": 3673383040,
+        "allocated_bytes": 3673387008,
+        "device": 49,
+        "inode": 10956954634,
+        "nlink": 1,
+        "mtime_ns": 1791886843094604000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_50/resume-rank1.pt",
+        "bytes": 9260952386,
+        "allocated_bytes": 9260953600,
+        "device": 49,
+        "inode": 10956954639,
+        "nlink": 1,
+        "mtime_ns": 1791886850190423000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_50/driver-resume.pt",
+        "bytes": 728284,
+        "allocated_bytes": 729088,
+        "device": 49,
+        "inode": 10956693071,
+        "nlink": 1,
+        "mtime_ns": 1791886866360944000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_100/resume-rank2.pt",
+        "bytes": 9264026050,
+        "allocated_bytes": 9264029696,
+        "device": 49,
+        "inode": 10962938810,
+        "nlink": 1,
+        "mtime_ns": 1791920521240059000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_100/model-00002-of-00003.safetensors",
+        "bytes": 4932949336,
+        "allocated_bytes": 4932952064,
+        "device": 49,
+        "inode": 10963178460,
+        "nlink": 1,
+        "mtime_ns": 1791920513480586000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_100/resume-rank0.pt",
+        "bytes": 9264026050,
+        "allocated_bytes": 9264029696,
+        "device": 49,
+        "inode": 10963080208,
+        "nlink": 1,
+        "mtime_ns": 1791920521137074000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_100/model-00001-of-00003.safetensors",
+        "bytes": 4982131536,
+        "allocated_bytes": 4982132736,
+        "device": 49,
+        "inode": 10962929983,
+        "nlink": 1,
+        "mtime_ns": 1791920512964526000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_100/resume-rank3.pt",
+        "bytes": 9264026050,
+        "allocated_bytes": 9264029696,
+        "device": 49,
+        "inode": 10962929997,
+        "nlink": 1,
+        "mtime_ns": 1791920521134814000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_100/model-00003-of-00003.safetensors",
+        "bytes": 3673383040,
+        "allocated_bytes": 3673387008,
+        "device": 49,
+        "inode": 10962938807,
+        "nlink": 1,
+        "mtime_ns": 1791920513806724000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_100/resume-rank1.pt",
+        "bytes": 9264026050,
+        "allocated_bytes": 9264029696,
+        "device": 49,
+        "inode": 10963142062,
+        "nlink": 1,
+        "mtime_ns": 1791920521114836000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_100/driver-resume.pt",
+        "bytes": 728284,
+        "allocated_bytes": 729088,
+        "device": 49,
+        "inode": 10963126707,
+        "nlink": 1,
+        "mtime_ns": 1791920538591809000,
+        "uid": 21930
+      }
+    ],
+    "preserved_payload_members": [
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0115-attempt-a49eb1add0e0460db85c4eba3573ad3c/rank-2.pt",
+        "bytes": 6172434348,
+        "allocated_bytes": 6172434432,
+        "device": 49,
+        "inode": 11034972504,
+        "nlink": 1,
+        "mtime_ns": 1792304113917440000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0115-attempt-a49eb1add0e0460db85c4eba3573ad3c/rank-0.pt",
+        "bytes": 6172434348,
+        "allocated_bytes": 6172434432,
+        "device": 49,
+        "inode": 11035235614,
+        "nlink": 1,
+        "mtime_ns": 1792304114147040000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0115-attempt-a49eb1add0e0460db85c4eba3573ad3c/rank-3.pt",
+        "bytes": 6172434412,
+        "allocated_bytes": 6172434432,
+        "device": 49,
+        "inode": 11035092676,
+        "nlink": 1,
+        "mtime_ns": 1792304114144659000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0115-attempt-a49eb1add0e0460db85c4eba3573ad3c/driver.pt",
+        "bytes": 1226392,
+        "allocated_bytes": 1228800,
+        "device": 49,
+        "inode": 11035087317,
+        "nlink": 1,
+        "mtime_ns": 1792304136120766000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0115-attempt-a49eb1add0e0460db85c4eba3573ad3c/rank-1.pt",
+        "bytes": 6172434412,
+        "allocated_bytes": 6172434432,
+        "device": 49,
+        "inode": 11034929450,
+        "nlink": 1,
+        "mtime_ns": 1792304114060160000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0115-attempt-a49eb1add0e0460db85c4eba3573ad3c/huggingface/model-00003-of-00004.safetensors",
+        "bytes": 3917843680,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11034406430,
+        "nlink": 1,
+        "mtime_ns": 1792304125985223000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0115-attempt-a49eb1add0e0460db85c4eba3573ad3c/huggingface/model-00001-of-00004.safetensors",
+        "bytes": 3929249504,
+        "allocated_bytes": 3929251840,
+        "device": 49,
+        "inode": 11034978355,
+        "nlink": 1,
+        "mtime_ns": 1792304126105184000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0115-attempt-a49eb1add0e0460db85c4eba3573ad3c/huggingface/model-00004-of-00004.safetensors",
+        "bytes": 1823527024,
+        "allocated_bytes": 1823531008,
+        "device": 49,
+        "inode": 11034978359,
+        "nlink": 1,
+        "mtime_ns": 1792304126150825000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0115-attempt-a49eb1add0e0460db85c4eba3573ad3c/huggingface/model-00002-of-00004.safetensors",
+        "bytes": 3917843656,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11034798055,
+        "nlink": 1,
+        "mtime_ns": 1792304125976316000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0116-attempt-d5dad47e53b94e90974b18a5a3058480/rank-2.pt",
+        "bytes": 6172434348,
+        "allocated_bytes": 6172434432,
+        "device": 49,
+        "inode": 11035238041,
+        "nlink": 1,
+        "mtime_ns": 1792304826505292000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0116-attempt-d5dad47e53b94e90974b18a5a3058480/rank-0.pt",
+        "bytes": 6172434348,
+        "allocated_bytes": 6172434432,
+        "device": 49,
+        "inode": 11034938589,
+        "nlink": 1,
+        "mtime_ns": 1792304826482073000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0116-attempt-d5dad47e53b94e90974b18a5a3058480/rank-3.pt",
+        "bytes": 6172434412,
+        "allocated_bytes": 6172434432,
+        "device": 49,
+        "inode": 11034508869,
+        "nlink": 1,
+        "mtime_ns": 1792304826535667000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0116-attempt-d5dad47e53b94e90974b18a5a3058480/driver.pt",
+        "bytes": 1226392,
+        "allocated_bytes": 1228800,
+        "device": 49,
+        "inode": 11034406836,
+        "nlink": 1,
+        "mtime_ns": 1792304847872689000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0116-attempt-d5dad47e53b94e90974b18a5a3058480/rank-1.pt",
+        "bytes": 6172434412,
+        "allocated_bytes": 6172434432,
+        "device": 49,
+        "inode": 11034803503,
+        "nlink": 1,
+        "mtime_ns": 1792304826491914000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0116-attempt-d5dad47e53b94e90974b18a5a3058480/huggingface/model-00003-of-00004.safetensors",
+        "bytes": 3917843680,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11034860090,
+        "nlink": 1,
+        "mtime_ns": 1792304837851991000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0116-attempt-d5dad47e53b94e90974b18a5a3058480/huggingface/model-00001-of-00004.safetensors",
+        "bytes": 3929249504,
+        "allocated_bytes": 3929251840,
+        "device": 49,
+        "inode": 11034860088,
+        "nlink": 1,
+        "mtime_ns": 1792304837146281000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0116-attempt-d5dad47e53b94e90974b18a5a3058480/huggingface/model-00004-of-00004.safetensors",
+        "bytes": 1823527024,
+        "allocated_bytes": 1823531008,
+        "device": 49,
+        "inode": 11034852818,
+        "nlink": 1,
+        "mtime_ns": 1792304838212203000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r2/actor/outers/outer-0116-attempt-d5dad47e53b94e90974b18a5a3058480/huggingface/model-00002-of-00004.safetensors",
+        "bytes": 3917843656,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11034943184,
+        "nlink": 1,
+        "mtime_ns": 1792304837598272000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0060-attempt-e4d148a14a5c403d89893a295e405adf/rank-2.pt",
+        "bytes": 6171983980,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11036433418,
+        "nlink": 1,
+        "mtime_ns": 1792313058170067000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0060-attempt-e4d148a14a5c403d89893a295e405adf/rank-0.pt",
+        "bytes": 6171983980,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11036435015,
+        "nlink": 1,
+        "mtime_ns": 1792313058306642000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0060-attempt-e4d148a14a5c403d89893a295e405adf/rank-3.pt",
+        "bytes": 6171984044,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11036614695,
+        "nlink": 1,
+        "mtime_ns": 1792313058212742000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0060-attempt-e4d148a14a5c403d89893a295e405adf/driver.pt",
+        "bytes": 780248,
+        "allocated_bytes": 782336,
+        "device": 49,
+        "inode": 11036240446,
+        "nlink": 1,
+        "mtime_ns": 1792313080627469000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0060-attempt-e4d148a14a5c403d89893a295e405adf/rank-1.pt",
+        "bytes": 6171984044,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11036488558,
+        "nlink": 1,
+        "mtime_ns": 1792313058159252000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0060-attempt-e4d148a14a5c403d89893a295e405adf/huggingface/model-00003-of-00004.safetensors",
+        "bytes": 3917843680,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11036440479,
+        "nlink": 1,
+        "mtime_ns": 1792313070757887000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0060-attempt-e4d148a14a5c403d89893a295e405adf/huggingface/model-00001-of-00004.safetensors",
+        "bytes": 3929249504,
+        "allocated_bytes": 3929251840,
+        "device": 49,
+        "inode": 11036335148,
+        "nlink": 1,
+        "mtime_ns": 1792313069457703000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0060-attempt-e4d148a14a5c403d89893a295e405adf/huggingface/model-00004-of-00004.safetensors",
+        "bytes": 1823527024,
+        "allocated_bytes": 1823531008,
+        "device": 49,
+        "inode": 11036235481,
+        "nlink": 1,
+        "mtime_ns": 1792313070716262000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0060-attempt-e4d148a14a5c403d89893a295e405adf/huggingface/model-00002-of-00004.safetensors",
+        "bytes": 3917843656,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11036240430,
+        "nlink": 1,
+        "mtime_ns": 1792313070387813000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0061-attempt-064dcef28ab844d0a0b4059833f9991d/rank-2.pt",
+        "bytes": 6171983980,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11036273502,
+        "nlink": 1,
+        "mtime_ns": 1792313545011912000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0061-attempt-064dcef28ab844d0a0b4059833f9991d/rank-0.pt",
+        "bytes": 6171983980,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11036383515,
+        "nlink": 1,
+        "mtime_ns": 1792313544956168000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0061-attempt-064dcef28ab844d0a0b4059833f9991d/rank-3.pt",
+        "bytes": 6171984044,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11036278078,
+        "nlink": 1,
+        "mtime_ns": 1792313545181024000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0061-attempt-064dcef28ab844d0a0b4059833f9991d/driver.pt",
+        "bytes": 780248,
+        "allocated_bytes": 782336,
+        "device": 49,
+        "inode": 11036045197,
+        "nlink": 1,
+        "mtime_ns": 1792313566289744000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0061-attempt-064dcef28ab844d0a0b4059833f9991d/rank-1.pt",
+        "bytes": 6171984044,
+        "allocated_bytes": 6171987968,
+        "device": 49,
+        "inode": 11036337241,
+        "nlink": 1,
+        "mtime_ns": 1792313544944259000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0061-attempt-064dcef28ab844d0a0b4059833f9991d/huggingface/model-00003-of-00004.safetensors",
+        "bytes": 3917843680,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11036640204,
+        "nlink": 1,
+        "mtime_ns": 1792313556765104000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0061-attempt-064dcef28ab844d0a0b4059833f9991d/huggingface/model-00001-of-00004.safetensors",
+        "bytes": 3929249504,
+        "allocated_bytes": 3929251840,
+        "device": 49,
+        "inode": 11036412375,
+        "nlink": 1,
+        "mtime_ns": 1792313555690157000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0061-attempt-064dcef28ab844d0a0b4059833f9991d/huggingface/model-00004-of-00004.safetensors",
+        "bytes": 1823527024,
+        "allocated_bytes": 1823531008,
+        "device": 49,
+        "inode": 11036236263,
+        "nlink": 1,
+        "mtime_ns": 1792313556775883000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r3/actor/outers/outer-0061-attempt-064dcef28ab844d0a0b4059833f9991d/huggingface/model-00002-of-00004.safetensors",
+        "bytes": 3917843656,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11036524612,
+        "nlink": 1,
+        "mtime_ns": 1792313556071409000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0199-attempt-3c03fae544e8450e8c310549cea5e1fc/rank-2.pt",
+        "bytes": 6176945644,
+        "allocated_bytes": 6176948224,
+        "device": 49,
+        "inode": 11058990240,
+        "nlink": 1,
+        "mtime_ns": 1792408940526314000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0199-attempt-3c03fae544e8450e8c310549cea5e1fc/rank-0.pt",
+        "bytes": 6176945708,
+        "allocated_bytes": 6176948224,
+        "device": 49,
+        "inode": 11059206636,
+        "nlink": 1,
+        "mtime_ns": 1792408940520167000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0199-attempt-3c03fae544e8450e8c310549cea5e1fc/rank-3.pt",
+        "bytes": 6176945708,
+        "allocated_bytes": 6176948224,
+        "device": 49,
+        "inode": 11058900441,
+        "nlink": 1,
+        "mtime_ns": 1792408940502676000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0199-attempt-3c03fae544e8450e8c310549cea5e1fc/driver.pt",
+        "bytes": 5698072,
+        "allocated_bytes": 5701632,
+        "device": 49,
+        "inode": 11059111600,
+        "nlink": 1,
+        "mtime_ns": 1792408962937752000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0199-attempt-3c03fae544e8450e8c310549cea5e1fc/rank-1.pt",
+        "bytes": 6176945708,
+        "allocated_bytes": 6176948224,
+        "device": 49,
+        "inode": 11058961667,
+        "nlink": 1,
+        "mtime_ns": 1792408940529771000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0199-attempt-3c03fae544e8450e8c310549cea5e1fc/huggingface/model-00003-of-00004.safetensors",
+        "bytes": 3917843680,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11059062575,
+        "nlink": 1,
+        "mtime_ns": 1792408952323206000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0199-attempt-3c03fae544e8450e8c310549cea5e1fc/huggingface/model-00001-of-00004.safetensors",
+        "bytes": 3929249504,
+        "allocated_bytes": 3929251840,
+        "device": 49,
+        "inode": 11059160138,
+        "nlink": 1,
+        "mtime_ns": 1792408951486211000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0199-attempt-3c03fae544e8450e8c310549cea5e1fc/huggingface/model-00004-of-00004.safetensors",
+        "bytes": 1823527024,
+        "allocated_bytes": 1823531008,
+        "device": 49,
+        "inode": 11059160143,
+        "nlink": 1,
+        "mtime_ns": 1792408952437367000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0199-attempt-3c03fae544e8450e8c310549cea5e1fc/huggingface/model-00002-of-00004.safetensors",
+        "bytes": 3917843656,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11059062573,
+        "nlink": 1,
+        "mtime_ns": 1792408951937489000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237/rank-2.pt",
+        "bytes": 6176945644,
+        "allocated_bytes": 6176948224,
+        "device": 49,
+        "inode": 11059186543,
+        "nlink": 1,
+        "mtime_ns": 1792409756911145000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237/rank-0.pt",
+        "bytes": 6176945708,
+        "allocated_bytes": 6176948224,
+        "device": 49,
+        "inode": 11059158437,
+        "nlink": 1,
+        "mtime_ns": 1792409756914188000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237/rank-3.pt",
+        "bytes": 6176945708,
+        "allocated_bytes": 6176948224,
+        "device": 49,
+        "inode": 11059279675,
+        "nlink": 1,
+        "mtime_ns": 1792409756876977000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237/driver.pt",
+        "bytes": 5698072,
+        "allocated_bytes": 5701632,
+        "device": 49,
+        "inode": 11059384890,
+        "nlink": 1,
+        "mtime_ns": 1792409780044291000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237/rank-1.pt",
+        "bytes": 6176945708,
+        "allocated_bytes": 6176948224,
+        "device": 49,
+        "inode": 11059137535,
+        "nlink": 1,
+        "mtime_ns": 1792409756884496000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237/huggingface/model-00003-of-00004.safetensors",
+        "bytes": 3917843680,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11059372061,
+        "nlink": 1,
+        "mtime_ns": 1792409769676515000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237/huggingface/model-00001-of-00004.safetensors",
+        "bytes": 3929249504,
+        "allocated_bytes": 3929251840,
+        "device": 49,
+        "inode": 11059397016,
+        "nlink": 1,
+        "mtime_ns": 1792409768556794000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237/huggingface/model-00004-of-00004.safetensors",
+        "bytes": 1823527024,
+        "allocated_bytes": 1823531008,
+        "device": 49,
+        "inode": 11059332529,
+        "nlink": 1,
+        "mtime_ns": 1792409769597199000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/dynrpo-prefix5-thread5-20261017-r4/actor/outers/outer-0200-attempt-d3eadfec8ccd440f82136d69c35cf237/huggingface/model-00002-of-00004.safetensors",
+        "bytes": 3917843656,
+        "allocated_bytes": 3917844480,
+        "device": 49,
+        "inode": 11059239109,
+        "nlink": 1,
+        "mtime_ns": 1792409769658207000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-707690/evidence/checkpoints/actor/global_step_200/resume-rank2.pt",
+        "bytes": 9270169858,
+        "allocated_bytes": 9270173696,
+        "device": 49,
+        "inode": 10939903150,
+        "nlink": 1,
+        "mtime_ns": 1791790402985444000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-707690/evidence/checkpoints/actor/global_step_200/model-00002-of-00003.safetensors",
+        "bytes": 4932949336,
+        "allocated_bytes": 4932952064,
+        "device": 49,
+        "inode": 10939932013,
+        "nlink": 1,
+        "mtime_ns": 1791790394307491000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-707690/evidence/checkpoints/actor/global_step_200/resume-rank0.pt",
+        "bytes": 9270169858,
+        "allocated_bytes": 9270173696,
+        "device": 49,
+        "inode": 10939903151,
+        "nlink": 1,
+        "mtime_ns": 1791790403001240000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-707690/evidence/checkpoints/actor/global_step_200/resume-rank3.pt",
+        "bytes": 9270169858,
+        "allocated_bytes": 9270173696,
+        "device": 49,
+        "inode": 10940076891,
+        "nlink": 1,
+        "mtime_ns": 1791790402724523000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-707690/evidence/checkpoints/actor/global_step_200/model-00001-of-00003.safetensors",
+        "bytes": 4982131536,
+        "allocated_bytes": 4982132736,
+        "device": 49,
+        "inode": 10940060168,
+        "nlink": 1,
+        "mtime_ns": 1791790393453032000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-707690/evidence/checkpoints/actor/global_step_200/model-00003-of-00003.safetensors",
+        "bytes": 3673383040,
+        "allocated_bytes": 3673387008,
+        "device": 49,
+        "inode": 10939968222,
+        "nlink": 1,
+        "mtime_ns": 1791790394749816000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-707690/evidence/checkpoints/actor/global_step_200/resume-rank1.pt",
+        "bytes": 9270169858,
+        "allocated_bytes": 9270173696,
+        "device": 49,
+        "inode": 10940134008,
+        "nlink": 1,
+        "mtime_ns": 1791790403332682000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-707690/evidence/checkpoints/actor/global_step_200/driver-resume.pt",
+        "bytes": 728220,
+        "allocated_bytes": 729088,
+        "device": 49,
+        "inode": 10939968234,
+        "nlink": 1,
+        "mtime_ns": 1791790421261269000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_150/resume-rank2.pt",
+        "bytes": 9267099778,
+        "allocated_bytes": 9267101696,
+        "device": 49,
+        "inode": 10966970356,
+        "nlink": 1,
+        "mtime_ns": 1791946663361282000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_150/model-00002-of-00003.safetensors",
+        "bytes": 4932949336,
+        "allocated_bytes": 4932952064,
+        "device": 49,
+        "inode": 10967038457,
+        "nlink": 1,
+        "mtime_ns": 1791946655422216000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_150/resume-rank0.pt",
+        "bytes": 9267099778,
+        "allocated_bytes": 9267101696,
+        "device": 49,
+        "inode": 10967038501,
+        "nlink": 1,
+        "mtime_ns": 1791946663309052000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_150/model-00001-of-00003.safetensors",
+        "bytes": 4982131536,
+        "allocated_bytes": 4982132736,
+        "device": 49,
+        "inode": 10967169386,
+        "nlink": 1,
+        "mtime_ns": 1791946654933886000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_150/resume-rank3.pt",
+        "bytes": 9267099778,
+        "allocated_bytes": 9267101696,
+        "device": 49,
+        "inode": 10967140977,
+        "nlink": 1,
+        "mtime_ns": 1791946663299553000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_150/model-00003-of-00003.safetensors",
+        "bytes": 3673383040,
+        "allocated_bytes": 3673387008,
+        "device": 49,
+        "inode": 10966974013,
+        "nlink": 1,
+        "mtime_ns": 1791946655760617000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_150/resume-rank1.pt",
+        "bytes": 9267099778,
+        "allocated_bytes": 9267101696,
+        "device": 49,
+        "inode": 10967169417,
+        "nlink": 1,
+        "mtime_ns": 1791946663696195000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_150/driver-resume.pt",
+        "bytes": 728284,
+        "allocated_bytes": 729088,
+        "device": 49,
+        "inode": 10967141097,
+        "nlink": 1,
+        "mtime_ns": 1791946680507788000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_200/resume-rank2.pt",
+        "bytes": 9270173442,
+        "allocated_bytes": 9270173696,
+        "device": 49,
+        "inode": 10973383349,
+        "nlink": 1,
+        "mtime_ns": 1791968305674808000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_200/model-00002-of-00003.safetensors",
+        "bytes": 4932949336,
+        "allocated_bytes": 4932952064,
+        "device": 49,
+        "inode": 10973383345,
+        "nlink": 1,
+        "mtime_ns": 1791968297653589000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_200/resume-rank0.pt",
+        "bytes": 9270173442,
+        "allocated_bytes": 9270173696,
+        "device": 49,
+        "inode": 10973334629,
+        "nlink": 1,
+        "mtime_ns": 1791968305554495000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_200/model-00001-of-00003.safetensors",
+        "bytes": 4982131536,
+        "allocated_bytes": 4982132736,
+        "device": 49,
+        "inode": 10973845055,
+        "nlink": 1,
+        "mtime_ns": 1791968297035440000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_200/resume-rank3.pt",
+        "bytes": 9270173442,
+        "allocated_bytes": 9270173696,
+        "device": 49,
+        "inode": 10973439662,
+        "nlink": 1,
+        "mtime_ns": 1791968305606496000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_200/model-00003-of-00003.safetensors",
+        "bytes": 3673383040,
+        "allocated_bytes": 3673387008,
+        "device": 49,
+        "inode": 10973395258,
+        "nlink": 1,
+        "mtime_ns": 1791968297863960000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_200/resume-rank1.pt",
+        "bytes": 9270173442,
+        "allocated_bytes": 9270173696,
+        "device": 49,
+        "inode": 10973371098,
+        "nlink": 1,
+        "mtime_ns": 1791968305921205000,
+        "uid": 21930
+      },
+      {
+        "path": "/data/user/jxu957/experiments/topd-20261008/runtime/logs/topd-hpc3-713717/evidence/checkpoints/actor/global_step_200/driver-resume.pt",
+        "bytes": 728284,
+        "allocated_bytes": 729088,
+        "device": 49,
+        "inode": 10973334666,
+        "nlink": 1,
+        "mtime_ns": 1791968323840315000,
+        "uid": 21930
+      }
+    ],
+    "expected_reclaimable_allocated_bytes": 216111939584,
+    "logical_unlink_path_allocated_bytes": 254388883456,
+    "active_mou_queue": "740358|RUNNING|q7b-native-probe\n",
+    "active_retired_checkpoint_references": [],
+    "source_code_or_logs_deleted": false,
+    "Easy_or_q7b_modified": false,
+    "remote_archives_modified": false,
+    "execution_performed": false
+  }
+}
