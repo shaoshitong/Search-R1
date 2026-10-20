@@ -16,7 +16,7 @@ from . import shared_vram_control as old
 
 ROOT, BASE, PHYSICAL, RUN_ID = old.ROOT, old.BASE, old.PHYSICAL, old.RUN_ID
 DIRECTORY = 'relay-consumer10-control-v1'
-UNIT = 'sst-q7b-g5-consumer10-v4-' + RUN_ID[:12] + '.service'
+UNIT = 'sst-q7b-g5-consumer10-v5-' + RUN_ID[:12] + '.service'
 UPSTREAM_UNIT = 'sst-q7b-retrieval-relay5-v1-' + RUN_ID[:12] + '.service'
 SOURCE_UNIT = 'sst-q7b-g5-sharedvram-v6-' + RUN_ID[:12] + '.service'
 SOURCES = ('relay_consumer_control.py', 'relay_consumer_worker.py', 'retrieval_relay.py',
@@ -64,7 +64,7 @@ command=['/dataset/shaoshitong/Search-G1-common8/env/bin/python','-u',str(stage/
  '--base',BASE,'--allocation-evidence',str(evidence),'--pool-worker',str(stage/'pool_worker.py'),
  '--relay-script',str(stage/'retrieval_relay.py'),'--token-file',str(root/'relay-secret'),
  '--upstream-ready',str(root/'upstream-ready.json'),'--model-gpus','0,1,2,3',
- '--model-max-seqs','8','--model-batch-tokens','4096','--model-kv-block-cap','1024','--model-reserve-gib','.25',
+ '--model-max-seqs','8','--model-batch-tokens','4096','--model-kv-block-cap','1024','--model-reserve-gib','.125',
  '--run-seconds',str(run_seconds),'--batch-reserve-seconds','300']
 print(json.dumps(dict(status='MODEL_ONLY_CONSUMER_BOOTSTRAP',actual_pid=os.getpid(),source_context=context,
  model_gpus=[0,1,2,3],tensor_parallel_size=4,source_retriever_owned=False,epoch=time.time())),flush=True)
@@ -124,7 +124,7 @@ if ACTION=='stage':
 elif ACTION in('start-upstream','submit'):
  verify();assert PUBLICATION['status']=='EXACT_SOURCE_COMMIT_REMOTE_SHA_VERIFIED'
  source=ACTION=='start-upstream';unit=UPSTREAM_UNIT if source else UNIT
- name='upstream'if source else'native-v4';intent=root/(name+'-submit-intent.json');receipt=root/(name+'-submit-receipt.json')
+ name='upstream'if source else'native-v5';intent=root/(name+'-submit-intent.json');receipt=root/(name+'-submit-receipt.json')
  with(root/(name+'-submit.lock')).open('a')as lock:
   fcntl.flock(lock,fcntl.LOCK_EX);old_intent=read(intent);observed=query(unit)
   value['observed']=observed
@@ -152,10 +152,10 @@ elif ACTION in('start-upstream','submit'):
      '--source-pid','1490465','--source-birth',context['source_birth'],'--source-netns-inode',str(context['source_netns_inode']),
      '--token-file',str(shared_root/'relay-secret'),'--ready-file',str(shared_root/'upstream-ready.json')]
    else:
-    previous=query('sst-q7b-g5-consumer10-v3-'+RUN_ID[:12]+'.service')
+    previous=query('sst-q7b-g5-consumer10-v4-'+RUN_ID[:12]+'.service')
     assert previous['properties'].get('MainPID')=='0'and previous['properties'].get('ActiveState')in('inactive','failed')
-    terminal=read(root/'v3-terminal/complete.json')
-    assert terminal and terminal['status']=='OWN_CONSUMER_V3_TERMINAL_FULL_SHA_RELEASE_PASS'and terminal['controller_pid']==2351003
+    terminal=read(root/'v4-terminal/complete.json')
+    assert terminal and terminal['status']=='OWN_CONSUMER_V4_TERMINAL_FULL_SHA_RELEASE_PASS'and terminal['controller_pid']==2362735
     ready=read(root/'upstream-ready.json');assert ready and ready['role']=='upstream'and ready['source_pid']==1490465
     assert read(root/'source-context.json')['source_sampling_deadline_epoch']>time.time()+1800
     command=['systemd-run','--unit='+unit,'--property=CPUQuota=800%','--property=MemoryMax=96G',
@@ -173,7 +173,7 @@ elif ACTION in('start-upstream','submit'):
 else:
  value.update(status='READ_ONLY_CONSUMER_AND_RELAY_STATUS',observed=query(UNIT),
   upstream_intent=read(root/'upstream-submit-intent.json'),upstream_receipt=read(root/'upstream-submit-receipt.json'),
-  upstream_ready=read(root/'upstream-ready.json'),intent=read(root/'native-v4-submit-intent.json'),receipt=read(root/'native-v4-submit-receipt.json'),
+  upstream_ready=read(root/'upstream-ready.json'),intent=read(root/'native-v5-submit-intent.json'),receipt=read(root/'native-v5-submit-receipt.json'),
   attempts=[dict(directory=str(p),progress=read(p/'progress.json'),failure=read(p/'failure.json'),complete=read(p/'complete.json'))for p in sorted((base/'pool/jobs').glob('job-relay10-*/attempt-*'))],
   global_goal_complete=False)
 print(json.dumps(value))
