@@ -1,0 +1,118 @@
+{
+  "status": "CPU_TRAIN_ONLY32768_CANDIDATES_TWICE_INDEPENDENTLY_ACCEPTED_NOT_SCORED",
+  "source_commit": "dfb183ddf35a7116ef118d1d2e1e5b49dcbb21c7",
+  "candidate": {
+    "bytes": 15436509,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/candidates.json",
+    "sha256": "b0118d67ed31187ed0e380cd81d62649852a2806fc9f5d8f16af381f8c4b2832"
+  },
+  "complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/prepare-complete.json",
+    "bytes": 3991,
+    "sha256": "b07eaa03189e15e401cfaddb1deaa9a242a9bf4ef775ed17bbea86f81d072770"
+  },
+  "exclusions": {
+    "bytes": 1660462,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/identity-exclusions.json",
+    "sha256": "fb114f35d59407bcd87297ba97493cc61381d9922c846153a3668c219bb9d7f5"
+  },
+  "source_bank": {
+    "bytes": 205127077,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/bank/groups.json",
+    "sha256": "03ffc0117f6ec71a43b874e34bd2e7ba6d5a5bb75d3df9b31e638f5a875da829"
+  },
+  "features": {
+    "bytes": 224450,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/bank/features.json",
+    "sha256": "6d2ff5e6f522c4be37a01d9af130be1ab656d7e903d813d48ad0cf29de6ec7ff"
+  },
+  "checkpoint": {
+    "bytes": 3745810528,
+    "epoch": 4,
+    "model_dir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70",
+    "name": "E4",
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/epoch-0004.pt",
+    "sha256": "e29168c36de152a57294f055e7d420cbba25cae31aeace32e793ba1098bf97a8",
+    "source_config": {
+      "bytes": 2437,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/config.json",
+      "sha256": "cc1d8e68109d955636717ace7ddb09b1e6858513641efacfd5aa69707f6de796"
+    },
+    "source_receipt": {
+      "bytes": 5751,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/epoch-0004.json",
+      "sha256": "7057eddf694aeeb66e3325e2fc4747b26f509c110797024f7565c77a7b12677f"
+    },
+    "steps": 14418
+  },
+  "summary": {
+    "duplicate_eligible_question_hashes_pruned": 6,
+    "eligible_after_exclusions": 162500,
+    "eligible_distinct_question_hashes": 162494,
+    "eligible_source_questions": 169028,
+    "excluded_current_fit_questions": 6528,
+    "excluded_current_matched6528_fit": true,
+    "exclusion": {
+      "declared_scopes": [
+        "diagnostic512",
+        "frozen_final",
+        "matched_fit",
+        "selection2048"
+      ],
+      "duplicate_identity_rows": 0,
+      "final_source_files_opened": false,
+      "question_hashes": 13184,
+      "questions": 13184
+    },
+    "ordered_own_trajectory_ids_sha256": "16297a4cc6cb381c9f7090ef6797eba4653ef31bf90abad29918d1fb3b622653",
+    "ordered_qid_sha256": "e27791caaad67d49caa526b63639a3be3196a393b05355e8d5e868719f9026e3",
+    "own_EM_joined_after_question_selection": true,
+    "question_selection_uses_labels": false,
+    "question_selection_uses_scores": false,
+    "questions": 32768,
+    "seed": 20261021,
+    "selection_uses_labels": false,
+    "source_actor_optimizer_updates": 0,
+    "source_bank_train_is_not_an_exclusion_set": true,
+    "trajectories": 163840,
+    "unseen_in_initial169028_warmup_claim": false,
+    "unseen_in_previous_finetuning_claim": false,
+    "unseen_initial_warmup": false,
+    "unseen_previous_ft": false,
+    "uses_scores": false,
+    "validation_or_final_questions_used": false
+  },
+  "candidate_K_histogram": [
+    15230,
+    3403,
+    2889,
+    2938,
+    3652,
+    4656
+  ],
+  "common_reachable_fourstratum_quota": 4656,
+  "requested_quota": 4092,
+  "observation_epochs": [
+    1792520680.4896498,
+    1792520721.6568356
+  ],
+  "observation_gap_seconds": 41.16718578338623,
+  "all_four_output_sizes_mtimes_unchanged": true,
+  "final_source_response_files_read": false,
+  "checkpoint_tensor_read": false,
+  "GPU_used": false,
+  "actor_updates": 0,
+  "probe_updates": 0,
+  "failure_receipt_present": false,
+  "prepare_lock": "FREE",
+  "process_identity_live": false,
+  "process_exit_code_not_captured": true,
+  "source_refs": {
+    "first_observation": "hard-enrichment-final-observation1.json",
+    "second_observation": "hard-enrichment-final-observation2.json",
+    "worker": "hard-enrichment-cpu-worker.py",
+    "stage": "hard-enrichment-stage.py",
+    "launch": "hard-enrichment-start-cpu.py",
+    "status": "hard-enrichment-cpu-status.py"
+  }
+}

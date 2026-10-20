@@ -1,0 +1,184 @@
+{
+  "status": "ACTUAL_CPU_HARD_ENRICHMENT_STATUS",
+  "time": 1792520721.6568356,
+  "prepare-launch.json": {
+    "GPU_used": false,
+    "pid": 2994646,
+    "source_commit": "dfb183ddf35a7116ef118d1d2e1e5b49dcbb21c7",
+    "start_ticks": "123124086",
+    "status": "CPU_PREPARATION_STARTED_NOT_YET_ACCEPTED",
+    "tensor_load_authorized": false,
+    "time": 1792520650.434061,
+    "worker": {
+      "bytes": 8333,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/control-763b98947659/cpu-prepare.py",
+      "sha256": "763b98947659f12f976dfbd4d57bf06ac3f352a3f6cb9c91c06243863126817a"
+    }
+  },
+  "prepare-controller.json": {
+    "code": {
+      "bytes": 24416,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/code-dfb183ddf35a/hard_enrichment.py",
+      "sha256": "7b13a4cb6ac126a9c3c972ab66c8458be2af3c6bf9191df132707c11f4415ca1"
+    },
+    "pid": 2994646,
+    "source_commit": "dfb183ddf35a7116ef118d1d2e1e5b49dcbb21c7",
+    "start_ticks": "123124086"
+  },
+  "prepare-progress.json": {
+    "GPU_used": false,
+    "candidate_plan": {
+      "bytes": 15436509,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/candidates.json",
+      "sha256": "b0118d67ed31187ed0e380cd81d62649852a2806fc9f5d8f16af381f8c4b2832"
+    },
+    "complete": {
+      "bytes": 3991,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/prepare-complete.json",
+      "sha256": "b07eaa03189e15e401cfaddb1deaa9a242a9bf4ef775ed17bbea86f81d072770"
+    },
+    "phase": "COMPLETE",
+    "pid": 2994646,
+    "questions": 32768,
+    "tensor_loaded": false,
+    "time": 1792520658.1061237,
+    "trajectories": 163840
+  },
+  "actual_process_identity_live": false,
+  "prepare_lock": "FREE",
+  "identity-exclusions.json": {
+    "bytes": 1660462,
+    "mtime_ns": 1792520654784257000
+  },
+  "prepare-config.json": {
+    "bytes": 2348,
+    "mtime_ns": 1792520655225267000
+  },
+  "candidates.json": {
+    "bytes": 15436509,
+    "mtime_ns": 1792520658044347000
+  },
+  "prepare-complete.json": {
+    "bytes": 3991,
+    "mtime_ns": 1792520658107526000
+  },
+  "actual_candidate_K_histogram": [
+    15230,
+    3403,
+    2889,
+    2938,
+    3652,
+    4656
+  ],
+  "common_reachable_fourstratum_quota": 4656,
+  "complete": {
+    "GPU_used": false,
+    "actor_updates": 0,
+    "actual_saved_candidate_fresh_SHA_verified": true,
+    "candidate_plan": {
+      "bytes": 15436509,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/candidates.json",
+      "sha256": "b0118d67ed31187ed0e380cd81d62649852a2806fc9f5d8f16af381f8c4b2832"
+    },
+    "canonical_train_equivalence": true,
+    "checkpoint_tensor_read": false,
+    "exclusions": {
+      "bytes": 1660462,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/identity-exclusions.json",
+      "sha256": "fb114f35d59407bcd87297ba97493cc61381d9922c846153a3668c219bb9d7f5"
+    },
+    "features": {
+      "bytes": 224450,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/bank/features.json",
+      "sha256": "6d2ff5e6f522c4be37a01d9af130be1ab656d7e903d813d48ad0cf29de6ec7ff"
+    },
+    "native_metadata": {
+      "dimension": 3584,
+      "feature_layer": 26,
+      "prefix_tokens": 20,
+      "question_max_tokens": 273,
+      "verified_manifests": 1336
+    },
+    "probe_updates": 0,
+    "source_bank": {
+      "bytes": 205127077,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/bank/groups.json",
+      "sha256": "03ffc0117f6ec71a43b874e34bd2e7ba6d5a5bb75d3df9b31e638f5a875da829"
+    },
+    "source_checkpoint": {
+      "bytes": 3745810528,
+      "epoch": 4,
+      "model_dir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70",
+      "name": "E4",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/epoch-0004.pt",
+      "sha256": "e29168c36de152a57294f055e7d420cbba25cae31aeace32e793ba1098bf97a8",
+      "source_config": {
+        "bytes": 2437,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/config.json",
+        "sha256": "cc1d8e68109d955636717ace7ddb09b1e6858513641efacfd5aa69707f6de796"
+      },
+      "source_receipt": {
+        "bytes": 5751,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/balanced-rank1-from-epoch1-prefix20-20261020/probe/epoch-0004.json",
+        "sha256": "7057eddf694aeeb66e3325e2fc4747b26f509c110797024f7565c77a7b12677f"
+      },
+      "steps": 14418
+    },
+    "source_code": {
+      "bytes": 24416,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/code-dfb183ddf35a/hard_enrichment.py",
+      "sha256": "7b13a4cb6ac126a9c3c972ab66c8458be2af3c6bf9191df132707c11f4415ca1"
+    },
+    "source_commit": "dfb183ddf35a7116ef118d1d2e1e5b49dcbb21c7",
+    "source_config": {
+      "bytes": 2348,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/prepare-config.json",
+      "sha256": "b3072a3d42180205427d7a22d08c9e8d1520feafc0c69bbbb2bbc845890d503b"
+    },
+    "status": "TRAIN_ONLY32768_HASH_CANDIDATES_PREPARED_NOT_SCORED",
+    "summary": {
+      "duplicate_eligible_question_hashes_pruned": 6,
+      "eligible_after_exclusions": 162500,
+      "eligible_distinct_question_hashes": 162494,
+      "eligible_source_questions": 169028,
+      "excluded_current_fit_questions": 6528,
+      "excluded_current_matched6528_fit": true,
+      "exclusion": {
+        "declared_scopes": [
+          "diagnostic512",
+          "frozen_final",
+          "matched_fit",
+          "selection2048"
+        ],
+        "duplicate_identity_rows": 0,
+        "final_source_files_opened": false,
+        "question_hashes": 13184,
+        "questions": 13184
+      },
+      "ordered_own_trajectory_ids_sha256": "16297a4cc6cb381c9f7090ef6797eba4653ef31bf90abad29918d1fb3b622653",
+      "ordered_qid_sha256": "e27791caaad67d49caa526b63639a3be3196a393b05355e8d5e868719f9026e3",
+      "own_EM_joined_after_question_selection": true,
+      "question_selection_uses_labels": false,
+      "question_selection_uses_scores": false,
+      "questions": 32768,
+      "seed": 20261021,
+      "selection_uses_labels": false,
+      "source_actor_optimizer_updates": 0,
+      "source_bank_train_is_not_an_exclusion_set": true,
+      "trajectories": 163840,
+      "unseen_in_initial169028_warmup_claim": false,
+      "unseen_in_previous_finetuning_claim": false,
+      "unseen_initial_warmup": false,
+      "unseen_previous_ft": false,
+      "uses_scores": false,
+      "validation_or_final_questions_used": false
+    },
+    "complete_ref": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021/prepare-complete.json",
+      "bytes": 3991,
+      "sha256": "b07eaa03189e15e401cfaddb1deaa9a242a9bf4ef775ed17bbea86f81d072770"
+    },
+    "independent_readback_unique_questions": 32768,
+    "independent_readback_own_trajectories": 163840
+  }
+}

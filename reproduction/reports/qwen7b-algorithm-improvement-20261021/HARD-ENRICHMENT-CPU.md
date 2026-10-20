@@ -26,4 +26,16 @@ The random control uses hash selection within the same macro classes: 4,092 all-
 
 Insufficient classes produce `quota-unreachable.json` with actual counts and the maximum common reachable quota. There is no invented label, repeated question, partial-pool selection, or validation fallback. `groups.json` contains the training branch only; a downstream trainer must reference the unchanged diagnostic fixture separately, not move it into training.
 
-Verification: 9 hard-enrichment tests plus 8 scorer tests, 17/17 passed on CPU. Covered label-blind candidate selection, scorer schema compatibility, exact coverage/own IDs/EM/q, source binding, deterministic strata, equal macro-class budgets, score-independent random control, and explicit insufficient-quota failure. Model/feature/scoring files remain remote. Real 32,768 scoring and actual class reachability are pending deployment by the parent task.
+Verification: 9 hard-enrichment tests plus 8 scorer tests, 17/17 passed on CPU. Covered label-blind candidate selection, scorer schema compatibility, exact coverage/own IDs/EM/q, source binding, deterministic strata, equal macro-class budgets, score-independent random control, and explicit insufficient-quota failure. Model/feature/scoring files remain remote.
+
+The parent published commit `dfb183ddf35a7116ef118d1d2e1e5b49dcbb21c7`; the CPU candidate preparation has now completed remotely, using an isolated source file SHA `7b13a4cb6ac126a9c3c972ab66c8458be2af3c6bf9191df132707c11f4415ca1`. Two independent readbacks 41.17 seconds apart verified candidate SHA, source bank/features, all own IDs/EM, unique counts, and unchanged output mtimes. The durable complete receipt exists and the process has exited with no failure receipt and a free lock; its process exit code was not captured, so completion rests on the full artifact/readback acceptance rather than a claimed exit code.
+
+Remote output root: `/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/hard-enrichment-20261021`.
+
+- `candidates.json`: 15,436,509 bytes; SHA `b0118d67ed31187ed0e380cd81d62649852a2806fc9f5d8f16af381f8c4b2832`.
+- `prepare-complete.json`: 3,991 bytes; SHA `b07eaa03189e15e401cfaddb1deaa9a242a9bf4ef775ed17bbea86f81d072770`.
+- `identity-exclusions.json`: 1,660,462 bytes; SHA `fb114f35d59407bcd87297ba97493cc61381d9922c846153a3668c219bb9d7f5`; 13,184 disjoint identities across four scopes.
+
+The eligible canonical pool after exclusions contains 162,500 questions; six repeated question hashes are pruned label-blind, leaving 162,494 distinct contents before selecting the frozen 32,768. All 1,336 native feature manifests actually satisfy L26/Prefix20/Q273/D3584. The balanced bank has no independent `features.json`: it reuses the original bank's native Prefix20 manifest list, whose real SHA is bound in the receipt. Canonical and balanced banks' 169,028 own qid/hash/ordered-five-IDs/EM were verified equal.
+
+Actual candidate K=0..5 histogram is `[15230, 3403, 2889, 2938, 3652, 4656]`. This makes the requested four-stratum quota 4,092 reachable (maximum common quota 4,656); no class-driven candidate resampling occurred. Frozen E4 GPU scoring and score-driven targeted/random branch selection remain pending. Compact acceptance and immutable worker/controller backups are in `actual-launches/hard-enrichment-FINAL-ACCEPTANCE.json` and adjacent code/observation files; no raw candidate or feature rows were downloaded.
