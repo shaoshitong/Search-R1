@@ -1,0 +1,251 @@
+{
+  "observed_epoch": 1792521756.570078,
+  "before_queue": {
+    "returncode": 0,
+    "stdout": "743149_0|mou176|q7b-g5-m6528-o15|PENDING|4:00:00|(Priority)\n743149_1|mou176|q7b-g5-m6528-o15|PENDING|4:00:00|(Priority)\n743149_2|mou176|q7b-g5-m6528-o15|PENDING|4:00:00|(Priority)\n743149_3|mou176|q7b-g5-m6528-o15|PENDING|4:00:00|(Priority)\n743148_0|mou176|q7b-g5-m6528-o10|PENDING|4:00:00|(Priority)\n743148_1|mou176|q7b-g5-m6528-o10|PENDING|4:00:00|(Priority)\n743148_2|mou176|q7b-g5-m6528-o10|PENDING|4:00:00|(Priority)\n743148_3|mou176|q7b-g5-m6528-o10|PENDING|4:00:00|(Priority)\n743115_1|mou176|q7b-G10matched-6528-20261021|PENDING|4:00:00|(Priority)\n743115_2|mou176|q7b-G10matched-6528-20261021|PENDING|4:00:00|(Priority)\n743115_3|mou176|q7b-G10matched-6528-20261021|PENDING|4:00:00|(Priority)\n743115_0|mou176|q7b-G10matched-6528-20261021|RUNNING|4:00:00|ACD1-28",
+    "stderr": ""
+  },
+  "updates": [
+    {
+      "task": "743115_1",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743115 ArrayJobId=743115 ArrayTaskId=1 ArrayTaskThrottle=4 JobName=q7b-G10matched-6528-20261021 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:12:31 EligibleTime=2026-10-21T02:12:31 AccrueTime=2026-10-21T02:12:31 StartTime=2026-10-21T05:13:52 EndTime=2026-10-21T09:13:52 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:2787804 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-28 NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/sampling.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_1.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_1.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743169 ArrayJobId=743115 ArrayTaskId=1 ArrayTaskThrottle=4 JobName=q7b-G10matched-6528-20261021 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:12:31 EligibleTime=2026-10-21T02:12:31 AccrueTime=2026-10-21T02:12:31 StartTime=2026-10-21T05:13:52 EndTime=2026-10-21T07:13:52 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:2787804 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-28 NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/sampling.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_1.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_1.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521756.6165297
+    },
+    {
+      "task": "743115_2",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743115 ArrayJobId=743115 ArrayTaskId=2 ArrayTaskThrottle=4 JobName=q7b-G10matched-6528-20261021 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:12:31 EligibleTime=2026-10-21T02:12:31 AccrueTime=2026-10-21T02:12:31 StartTime=2026-10-21T05:13:52 EndTime=2026-10-21T09:13:52 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:2787804 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/sampling.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_2.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_2.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743170 ArrayJobId=743115 ArrayTaskId=2 ArrayTaskThrottle=4 JobName=q7b-G10matched-6528-20261021 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:12:31 EligibleTime=2026-10-21T02:12:31 AccrueTime=2026-10-21T02:12:31 StartTime=2026-10-21T05:13:52 EndTime=2026-10-21T07:13:52 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:2787804 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/sampling.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_2.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_2.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521756.6563213
+    },
+    {
+      "task": "743115_3",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743115 ArrayJobId=743115 ArrayTaskId=3 ArrayTaskThrottle=4 JobName=q7b-G10matched-6528-20261021 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:12:31 EligibleTime=2026-10-21T02:12:31 AccrueTime=2026-10-21T02:12:31 StartTime=2026-10-21T05:13:52 EndTime=2026-10-21T09:13:52 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:2787804 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/sampling.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_3.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_3.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743115 ArrayJobId=743115 ArrayTaskId=3 ArrayTaskThrottle=4 JobName=q7b-G10matched-6528-20261021 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:12:31 EligibleTime=2026-10-21T02:12:31 AccrueTime=2026-10-21T02:12:31 StartTime=2026-10-21T05:13:52 EndTime=2026-10-21T07:13:52 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:2787804 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/sampling.sbatch WorkDir=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_3.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/logs/sampling-743115_3.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521756.6950572
+    },
+    {
+      "task": "743148_0",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743148 ArrayJobId=743148 ArrayTaskId=0 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o10 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:07 EligibleTime=2026-10-21T02:25:07 AccrueTime=2026-10-21T02:25:07 StartTime=2026-10-21T06:41:13 EndTime=2026-10-21T10:41:13 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3012053 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-33 NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_0.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_0.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743171 ArrayJobId=743148 ArrayTaskId=0 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o10 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:07 EligibleTime=2026-10-21T02:25:07 AccrueTime=2026-10-21T02:25:07 StartTime=2026-10-21T06:41:13 EndTime=2026-10-21T08:41:13 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3012053 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-33 NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_0.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_0.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521756.733752
+    },
+    {
+      "task": "743148_1",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743148 ArrayJobId=743148 ArrayTaskId=1 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o10 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:07 EligibleTime=2026-10-21T02:25:07 AccrueTime=2026-10-21T02:25:07 StartTime=2026-10-21T06:41:13 EndTime=2026-10-21T10:41:13 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3012053 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_1.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_1.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743172 ArrayJobId=743148 ArrayTaskId=1 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o10 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:07 EligibleTime=2026-10-21T02:25:07 AccrueTime=2026-10-21T02:25:07 StartTime=2026-10-21T06:41:13 EndTime=2026-10-21T08:41:13 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3012053 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_1.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_1.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521756.775253
+    },
+    {
+      "task": "743148_2",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743148 ArrayJobId=743148 ArrayTaskId=2 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o10 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:07 EligibleTime=2026-10-21T02:25:07 AccrueTime=2026-10-21T02:25:07 StartTime=2026-10-21T06:41:13 EndTime=2026-10-21T10:41:13 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3012053 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_2.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_2.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743173 ArrayJobId=743148 ArrayTaskId=2 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o10 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:07 EligibleTime=2026-10-21T02:25:07 AccrueTime=2026-10-21T02:25:07 StartTime=2026-10-21T06:41:13 EndTime=2026-10-21T08:41:13 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3012053 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_2.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_2.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521756.8131638
+    },
+    {
+      "task": "743148_3",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743148 ArrayJobId=743148 ArrayTaskId=3 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o10 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:07 EligibleTime=2026-10-21T02:25:07 AccrueTime=2026-10-21T02:25:07 StartTime=2026-10-21T06:41:13 EndTime=2026-10-21T10:41:13 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3012053 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_3.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_3.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743148 ArrayJobId=743148 ArrayTaskId=3 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o10 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:07 EligibleTime=2026-10-21T02:25:07 AccrueTime=2026-10-21T02:25:07 StartTime=2026-10-21T06:41:13 EndTime=2026-10-21T08:41:13 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3012053 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_3.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset10-20261021/materialized/logs/sampling-743148_3.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521756.8540533
+    },
+    {
+      "task": "743149_0",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743149 ArrayJobId=743149 ArrayTaskId=0 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o15 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:14 EligibleTime=2026-10-21T02:25:14 AccrueTime=2026-10-21T02:25:14 StartTime=2026-10-21T10:41:00 EndTime=2026-10-21T14:41:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3014037 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-28 NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_0.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_0.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743174 ArrayJobId=743149 ArrayTaskId=0 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o15 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:14 EligibleTime=2026-10-21T02:25:14 AccrueTime=2026-10-21T02:25:14 StartTime=2026-10-21T10:41:00 EndTime=2026-10-21T12:41:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3014037 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-28 NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_0.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_0.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521756.8932514
+    },
+    {
+      "task": "743149_1",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743149 ArrayJobId=743149 ArrayTaskId=1 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o15 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:14 EligibleTime=2026-10-21T02:25:14 AccrueTime=2026-10-21T02:25:14 StartTime=2026-10-21T10:41:00 EndTime=2026-10-21T14:41:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3014037 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_1.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_1.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743175 ArrayJobId=743149 ArrayTaskId=1 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o15 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:14 EligibleTime=2026-10-21T02:25:14 AccrueTime=2026-10-21T02:25:14 StartTime=2026-10-21T10:41:00 EndTime=2026-10-21T12:41:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3014037 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_1.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_1.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521756.9316862
+    },
+    {
+      "task": "743149_2",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743149 ArrayJobId=743149 ArrayTaskId=2 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o15 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:14 EligibleTime=2026-10-21T02:25:14 AccrueTime=2026-10-21T02:25:14 StartTime=2026-10-21T10:41:00 EndTime=2026-10-21T14:41:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3014037 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_2.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_2.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743176 ArrayJobId=743149 ArrayTaskId=2 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o15 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:14 EligibleTime=2026-10-21T02:25:14 AccrueTime=2026-10-21T02:25:14 StartTime=2026-10-21T10:41:00 EndTime=2026-10-21T12:41:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3014037 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_2.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_2.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521756.9728107
+    },
+    {
+      "task": "743149_3",
+      "status": "PENDING_TASK_TIMELIMIT_TWO_HOURS_CONFIRMED",
+      "old_time_limit": "04:00:00",
+      "new_time_limit": "02:00:00",
+      "before": "JobId=743149 ArrayJobId=743149 ArrayTaskId=3 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o15 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=04:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:14 EligibleTime=2026-10-21T02:25:14 AccrueTime=2026-10-21T02:25:14 StartTime=2026-10-21T10:41:00 EndTime=2026-10-21T14:41:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:21 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3014037 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_3.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_3.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+      "change": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "after": {
+        "returncode": 0,
+        "stdout": "JobId=743149 ArrayJobId=743149 ArrayTaskId=3 ArrayTaskThrottle=2 JobName=q7b-g5-m6528-o15 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3349 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=02:00:00 TimeMin=N/A SubmitTime=2026-10-21T02:25:14 EligibleTime=2026-10-21T02:25:14 AccrueTime=2026-10-21T02:25:14 StartTime=2026-10-21T10:41:00 EndTime=2026-10-21T12:41:00 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T02:42:36 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:3014037 ReqNodeList=(null) ExcNodeList=(null) NodeList= NumNodes=1-1 NumCPUs=16 NumTasks=1 CPUs/Task=16 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=16,mem=128G,node=1,billing=16,gres/gpu=2 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=16 MinMemoryNode=128G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/sampling.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_3.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-offset15-20261021/materialized/logs/sampling-743149_3.log Power= TresPerNode=gres/gpu:2 TresPerTask=cpu:16",
+        "stderr": ""
+      },
+      "no_cancel_no_resubmit": true,
+      "QOS_normal_unchanged": true,
+      "source_script_unchanged": true,
+      "epoch": 1792521757.0125024
+    }
+  ],
+  "after_queue": {
+    "returncode": 0,
+    "stdout": "743149_0|mou176|q7b-g5-m6528-o15|PENDING|2:00:00|(Priority)\n743149_1|mou176|q7b-g5-m6528-o15|PENDING|2:00:00|(Priority)\n743149_2|mou176|q7b-g5-m6528-o15|PENDING|2:00:00|(Priority)\n743149_3|mou176|q7b-g5-m6528-o15|PENDING|2:00:00|(None)\n743148_0|mou176|q7b-g5-m6528-o10|PENDING|2:00:00|(Priority)\n743148_1|mou176|q7b-g5-m6528-o10|PENDING|2:00:00|(Priority)\n743148_2|mou176|q7b-g5-m6528-o10|PENDING|2:00:00|(Priority)\n743148_3|mou176|q7b-g5-m6528-o10|PENDING|2:00:00|(Priority)\n743115_1|mou176|q7b-G10matched-6528-20261021|PENDING|2:00:00|(Priority)\n743115_2|mou176|q7b-G10matched-6528-20261021|PENDING|2:00:00|(Priority)\n743115_3|mou176|q7b-G10matched-6528-20261021|PENDING|2:00:00|(Priority)\n743115_0|mou176|q7b-G10matched-6528-20261021|RUNNING|4:00:00|ACD1-28",
+    "stderr": ""
+  },
+  "squeue_start": {
+    "returncode": 0,
+    "stdout": "JOBID|NAME|STATE|START_TIME|NODELIST(REASON)\n743115_1|q7b-G10matched-6528-20261021|PENDING|2026-10-21T05:13:52|(Priority)\n743115_2|q7b-G10matched-6528-20261021|PENDING|2026-10-21T05:13:52|(Priority)\n743115_3|q7b-G10matched-6528-20261021|PENDING|2026-10-21T05:13:52|(Priority)\n743148_0|q7b-g5-m6528-o10|PENDING|2026-10-21T06:41:13|(Priority)\n743148_1|q7b-g5-m6528-o10|PENDING|2026-10-21T06:41:13|(Priority)\n743148_2|q7b-g5-m6528-o10|PENDING|2026-10-21T06:41:13|(Priority)\n743148_3|q7b-g5-m6528-o10|PENDING|2026-10-21T06:41:13|(Priority)\n743149_0|q7b-g5-m6528-o15|PENDING|2026-10-21T10:41:00|(Priority)\n743149_1|q7b-g5-m6528-o15|PENDING|2026-10-21T10:41:00|(Priority)\n743149_2|q7b-g5-m6528-o15|PENDING|2026-10-21T10:41:00|(Priority)\n743149_3|q7b-g5-m6528-o15|PENDING|2026-10-21T10:41:00|(None)",
+    "stderr": ""
+  }
+}
