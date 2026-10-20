@@ -1,0 +1,454 @@
+{
+  "status": "BOTH_VALIDATION_G10_ARRAYS_FIRST_REAL_BATCH_VERIFIED_CONTINUING",
+  "observed_epoch": 1792517802.846953,
+  "source_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+  "queue_and_progress": {
+    "observed_epoch": 1792517775.5788348,
+    "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized",
+    "events": {
+      "event-A": {
+        "job_id": "743024",
+        "config": {
+          "source_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+          "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-data-preparation-code-20261021/code-c8b02d3b22b6",
+          "validation_role": "RECIPE_SELECTION_VALIDATION_TWO_FRESH_G5_NOT_UNTOUCHED_FINAL",
+          "evaluation_only": true,
+          "untouched_final": false,
+          "fitting_authorized": false,
+          "actor_updates_authorized": false,
+          "capture_prefix_tokens": 20,
+          "feature_layer": 26,
+          "run_id": "7276b1c76cfc4d639b2e7c7ed03c4271",
+          "sampling_attempt_id": "recipe-validation-7276b1c76cfc4d639b2e7c7ed03c4271",
+          "event_index": 0
+        },
+        "queue": {
+          "code": 0,
+          "stdout": "743024_[1-3%1]|q7b-validG10-A-20261021|PENDING|acd_ue|0:00||(JobArrayTaskLimit)\n743024_0|q7b-validG10-A-20261021|RUNNING|acd_ue|4:27|ACD1-17|ACD1-17\n",
+          "stderr": ""
+        },
+        "accounting": {
+          "code": 0,
+          "stdout": "743024_0|RUNNING|0:0|00:04:27|ACD1-17\n743024_[1-3%1]|PENDING|0:0|00:00:00|None assigned\n",
+          "stderr": ""
+        },
+        "estimate": {
+          "code": 0,
+          "stdout": "743024_[1-3%1]|PENDING|acd_ue|N/A|(JobArrayTaskLimit)\n",
+          "stderr": ""
+        },
+        "shards": {
+          "0": {
+            "exists": true,
+            "controller.json": {
+              "pid": 2324424,
+              "start_ticks": "798795571",
+              "job_id": "743036",
+              "epoch": 1792517534.1591437,
+              "generation_devices": 1,
+              "retrieval_devices": 1
+            },
+            "progress.json": {
+              "epoch": 1792517734.809983,
+              "completed_batches": 1,
+              "total_batches": 4,
+              "questions": 128,
+              "trajectories": 640,
+              "elapsed": 200.64283986203372
+            },
+            "batch_directory_count": 2,
+            "first_and_latest_batches": [
+              {
+                "batch": "batch-000000",
+                "prefix": {
+                  "stage": "NATIVE_RANK_PHASE_COMPLETE",
+                  "phase": "prefix",
+                  "utc": "2026-10-20T17:34:51.834318+00:00",
+                  "completed_trajectories": 640,
+                  "expected_trajectories": 640,
+                  "retained_prefixes": 640,
+                  "active_trajectories": 0,
+                  "pending_generation": 0,
+                  "pending_retrieval": 0,
+                  "generation_requests": 640,
+                  "actual_sampled_tokens": 13440,
+                  "elapsed_seconds": 9.678357114084065,
+                  "initialization_oom_attempts": []
+                },
+                "prefix-complete": {
+                  "questions": 128,
+                  "trajectories": 640,
+                  "feature_layer": 26
+                },
+                "full": {
+                  "stage": "NATIVE_RANK_PHASE_COMPLETE",
+                  "phase": "continue",
+                  "utc": "2026-10-20T17:35:34.704236+00:00",
+                  "completed_trajectories": 640,
+                  "expected_trajectories": 640,
+                  "retained_prefixes": null,
+                  "active_trajectories": 0,
+                  "pending_generation": 0,
+                  "pending_retrieval": 0,
+                  "generation_requests": 1327,
+                  "actual_sampled_tokens": 49533,
+                  "elapsed_seconds": 42.30615848209709,
+                  "initialization_oom_attempts": []
+                },
+                "full-complete": {
+                  "questions": 128,
+                  "trajectories": 640,
+                  "labels": 640,
+                  "actor_optimizer_updates": 0
+                },
+                "batch_complete": {
+                  "questions": 128,
+                  "trajectories": 640,
+                  "feature_layer": 26,
+                  "actor_optimizer_updates": 0,
+                  "epoch": 1792517734.8044415
+                }
+              },
+              {
+                "batch": "batch-000001",
+                "prefix": {
+                  "stage": "NATIVE_RANK_PHASE_COMPLETE",
+                  "phase": "prefix",
+                  "utc": "2026-10-20T17:35:44.503398+00:00",
+                  "completed_trajectories": 640,
+                  "expected_trajectories": 640,
+                  "retained_prefixes": 640,
+                  "active_trajectories": 0,
+                  "pending_generation": 0,
+                  "pending_retrieval": 0,
+                  "generation_requests": 640,
+                  "actual_sampled_tokens": 13440,
+                  "elapsed_seconds": 9.08315818104893,
+                  "initialization_oom_attempts": []
+                },
+                "prefix-complete": {
+                  "questions": 128,
+                  "trajectories": 640,
+                  "feature_layer": 26
+                },
+                "full": {
+                  "stage": "NATIVE_PHASE_ADVANCING",
+                  "phase": "continue",
+                  "utc": "2026-10-20T17:36:15.601758+00:00",
+                  "completed_trajectories": 500,
+                  "expected_trajectories": 640,
+                  "retained_prefixes": null,
+                  "active_trajectories": 140,
+                  "pending_generation": 136,
+                  "pending_retrieval": 4,
+                  "generation_requests": 1234,
+                  "actual_sampled_tokens": 36741,
+                  "elapsed_seconds": 30.52693338226527,
+                  "initialization_oom_attempts": []
+                }
+              }
+            ],
+            "retriever_log": {
+              "bytes": 168728,
+              "mtime": 1792517775.716139,
+              "error_lines": []
+            }
+          },
+          "1": {
+            "exists": false,
+            "batch_directory_count": 0,
+            "first_and_latest_batches": []
+          },
+          "2": {
+            "exists": false,
+            "batch_directory_count": 0,
+            "first_and_latest_batches": []
+          },
+          "3": {
+            "exists": false,
+            "batch_directory_count": 0,
+            "first_and_latest_batches": []
+          }
+        },
+        "logs": {
+          "sampling-743024_0.log": {
+            "bytes": 5000,
+            "mtime": 1792517745.108722,
+            "error_lines": [
+              "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/vllm/connections.py:8: RuntimeWarning: Failed to read commit hash:"
+            ]
+          }
+        }
+      },
+      "event-B": {
+        "job_id": "743025",
+        "config": {
+          "source_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+          "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-data-preparation-code-20261021/code-c8b02d3b22b6",
+          "validation_role": "RECIPE_SELECTION_VALIDATION_TWO_FRESH_G5_NOT_UNTOUCHED_FINAL",
+          "evaluation_only": true,
+          "untouched_final": false,
+          "fitting_authorized": false,
+          "actor_updates_authorized": false,
+          "capture_prefix_tokens": 20,
+          "feature_layer": 26,
+          "run_id": "b5a4ca3fb459439fb35b47556a080460",
+          "sampling_attempt_id": "recipe-validation-b5a4ca3fb459439fb35b47556a080460",
+          "event_index": 1
+        },
+        "queue": {
+          "code": 0,
+          "stdout": "743025_[1-3%1]|q7b-validG10-B-20261021|PENDING|acd_ue|0:00||(JobArrayTaskLimit)\n743025_0|q7b-validG10-B-20261021|RUNNING|acd_ue|4:27|ACD1-17|ACD1-17\n",
+          "stderr": ""
+        },
+        "accounting": {
+          "code": 0,
+          "stdout": "743025_0|RUNNING|0:0|00:04:27|ACD1-17\n743025_[1-3%1]|PENDING|0:0|00:00:00|None assigned\n",
+          "stderr": ""
+        },
+        "estimate": {
+          "code": 0,
+          "stdout": "743025_[1-3%1]|PENDING|acd_ue|N/A|(JobArrayTaskLimit)\n",
+          "stderr": ""
+        },
+        "shards": {
+          "0": {
+            "exists": true,
+            "controller.json": {
+              "pid": 2324426,
+              "start_ticks": "798795571",
+              "job_id": "743037",
+              "epoch": 1792517534.1581542,
+              "generation_devices": 1,
+              "retrieval_devices": 1
+            },
+            "progress.json": {
+              "epoch": 1792517732.840633,
+              "completed_batches": 1,
+              "total_batches": 4,
+              "questions": 128,
+              "trajectories": 640,
+              "elapsed": 198.67509118188173
+            },
+            "batch_directory_count": 2,
+            "first_and_latest_batches": [
+              {
+                "batch": "batch-000000",
+                "prefix": {
+                  "stage": "NATIVE_RANK_PHASE_COMPLETE",
+                  "phase": "prefix",
+                  "utc": "2026-10-20T17:34:51.372160+00:00",
+                  "completed_trajectories": 640,
+                  "expected_trajectories": 640,
+                  "retained_prefixes": 640,
+                  "active_trajectories": 0,
+                  "pending_generation": 0,
+                  "pending_retrieval": 0,
+                  "generation_requests": 641,
+                  "actual_sampled_tokens": 13441,
+                  "elapsed_seconds": 9.216263809241354,
+                  "initialization_oom_attempts": []
+                },
+                "prefix-complete": {
+                  "questions": 128,
+                  "trajectories": 640,
+                  "feature_layer": 26
+                },
+                "full": {
+                  "stage": "NATIVE_RANK_PHASE_COMPLETE",
+                  "phase": "continue",
+                  "utc": "2026-10-20T17:35:32.739915+00:00",
+                  "completed_trajectories": 640,
+                  "expected_trajectories": 640,
+                  "retained_prefixes": null,
+                  "active_trajectories": 0,
+                  "pending_generation": 0,
+                  "pending_retrieval": 0,
+                  "generation_requests": 1328,
+                  "actual_sampled_tokens": 50569,
+                  "elapsed_seconds": 40.8020316651091,
+                  "initialization_oom_attempts": []
+                },
+                "full-complete": {
+                  "questions": 128,
+                  "trajectories": 640,
+                  "labels": 640,
+                  "actor_optimizer_updates": 0
+                },
+                "batch_complete": {
+                  "questions": 128,
+                  "trajectories": 640,
+                  "feature_layer": 26,
+                  "actor_optimizer_updates": 0,
+                  "epoch": 1792517732.834292
+                }
+              },
+              {
+                "batch": "batch-000001",
+                "prefix": {
+                  "stage": "NATIVE_RANK_PHASE_COMPLETE",
+                  "phase": "prefix",
+                  "utc": "2026-10-20T17:35:42.497317+00:00",
+                  "completed_trajectories": 640,
+                  "expected_trajectories": 640,
+                  "retained_prefixes": 640,
+                  "active_trajectories": 0,
+                  "pending_generation": 0,
+                  "pending_retrieval": 0,
+                  "generation_requests": 640,
+                  "actual_sampled_tokens": 13440,
+                  "elapsed_seconds": 9.07863571960479,
+                  "initialization_oom_attempts": []
+                },
+                "prefix-complete": {
+                  "questions": 128,
+                  "trajectories": 640,
+                  "feature_layer": 26
+                },
+                "full": {
+                  "stage": "NATIVE_PHASE_ADVANCING",
+                  "phase": "continue",
+                  "utc": "2026-10-20T17:36:13.571066+00:00",
+                  "completed_trajectories": 500,
+                  "expected_trajectories": 640,
+                  "retained_prefixes": null,
+                  "active_trajectories": 140,
+                  "pending_generation": 136,
+                  "pending_retrieval": 4,
+                  "generation_requests": 1249,
+                  "actual_sampled_tokens": 37018,
+                  "elapsed_seconds": 30.526267455890775,
+                  "initialization_oom_attempts": []
+                }
+              }
+            ],
+            "retriever_log": {
+              "bytes": 171849,
+              "mtime": 1792517775.949632,
+              "error_lines": []
+            }
+          },
+          "1": {
+            "exists": false,
+            "batch_directory_count": 0,
+            "first_and_latest_batches": []
+          },
+          "2": {
+            "exists": false,
+            "batch_directory_count": 0,
+            "first_and_latest_batches": []
+          },
+          "3": {
+            "exists": false,
+            "batch_directory_count": 0,
+            "first_and_latest_batches": []
+          }
+        },
+        "logs": {
+          "sampling-743025_0.log": {
+            "bytes": 5000,
+            "mtime": 1792517750.051512,
+            "error_lines": [
+              "/data/user/jxu957/experiments/cosearch-continue300-x203-20261008/source/env/lib/python3.10/site-packages/vllm/connections.py:8: RuntimeWarning: Failed to read commit hash:"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "independent_first_batches": {
+    "observed_epoch": 1792517776.4178624,
+    "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized",
+    "verified_batches": [
+      {
+        "event": "event-A",
+        "job_id": "743024",
+        "shard": 0,
+        "batch": "batch-000000",
+        "questions": 128,
+        "trajectories": 640,
+        "own_EM_counts": {
+          "1": 196,
+          "0": 444
+        },
+        "K5_histogram": {
+          "0": 72,
+          "1": 10,
+          "2": 6,
+          "3": 7,
+          "4": 12,
+          "5": 21
+        },
+        "mixed_questions": 35,
+        "local_response_index_counts": {
+          "0": 128,
+          "1": 128,
+          "2": 128,
+          "3": 128,
+          "4": 128
+        },
+        "exact_precommitted_event_ids_verified": true,
+        "prefix_full_own_EM_SHA_verified": true,
+        "native_layer26_manifest_SHA_verified": true,
+        "real_sampling_journal_chunks": 1967,
+        "actor_optimizer_updates": 0,
+        "recipe_selection_validation_not_untouched_final": true
+      },
+      {
+        "event": "event-B",
+        "job_id": "743025",
+        "shard": 0,
+        "batch": "batch-000000",
+        "questions": 128,
+        "trajectories": 640,
+        "own_EM_counts": {
+          "1": 183,
+          "0": 457
+        },
+        "K5_histogram": {
+          "0": 75,
+          "1": 9,
+          "2": 7,
+          "3": 4,
+          "4": 17,
+          "5": 16
+        },
+        "mixed_questions": 37,
+        "local_response_index_counts": {
+          "0": 128,
+          "1": 128,
+          "2": 128,
+          "3": 128,
+          "4": 128
+        },
+        "exact_precommitted_event_ids_verified": true,
+        "prefix_full_own_EM_SHA_verified": true,
+        "native_layer26_manifest_SHA_verified": true,
+        "real_sampling_journal_chunks": 1969,
+        "actor_optimizer_updates": 0,
+        "recipe_selection_validation_not_untouched_final": true
+      }
+    ],
+    "observed_A_B_ID_intersection": 0
+  },
+  "control_scripts": {
+    "validation-g10-readonly-status.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/qwen7b-warmup-20261019/validation-g10-readonly-status.py",
+      "bytes": 3509,
+      "sha256": "774044b3014555ace093ddee2c42e3845504415b27908b424274eff3fa343832"
+    },
+    "validation-g10-first-batch-verify.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/qwen7b-warmup-20261019/validation-g10-first-batch-verify.py",
+      "bytes": 4114,
+      "sha256": "9ea6ded303c9be860155bc5a48148f5f0650421c20f3842138ce7cf1a42309f9"
+    },
+    "validation-g10-poll.py": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-5/outputs/qwen7b-warmup-20261019/validation-g10-poll.py",
+      "bytes": 1853,
+      "sha256": "65db73d74409c87c9c3c0847a5f358f6e54f6fb596eb2aae4cef0dc55e402a7d"
+    }
+  },
+  "all2048_G10_completion_claimed": false,
+  "slurm_or_live_source_mutated": false,
+  "raw_trajectories_or_tensors_transferred_to_local": false
+}
