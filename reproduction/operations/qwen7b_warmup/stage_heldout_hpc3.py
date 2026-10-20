@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import shlex
+import socket
 import sys
 import time
 
@@ -29,7 +30,11 @@ def main():
     client = paramiko.SSHClient()
     client.load_host_keys(str(hosts))
     client.set_missing_host_key_policy(paramiko.RejectPolicy())
-    client.connect(payload['host'], username=payload['account'], password=payload.pop('password'),
+    # The established control connection pins this HostKeyAlias, while routing
+    # its TCP socket directly to the campus IP. Preserve the same trust binding.
+    sock = socket.create_connection((payload['host'], 22), timeout=15)
+    client.connect('hpc3login.hpc.hkust-gz.edu.cn', sock=sock,
+                   username=payload['account'], password=payload.pop('password'),
                    look_for_keys=False, allow_agent=False, timeout=15, auth_timeout=15, banner_timeout=15)
     try:
         sftp = client.open_sftp()
