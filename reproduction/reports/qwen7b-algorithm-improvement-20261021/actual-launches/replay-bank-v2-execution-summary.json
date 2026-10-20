@@ -1,0 +1,145 @@
+{
+  "status": "FOUR_REAL_REPLAY_SHARDS_RUNNING_TWO_POSITIVE_CHUNK_AND_BYTE_OBSERVATIONS_EACH_VERIFIED",
+  "latest_observed_time": 1792519153.5244703,
+  "controller_commit": "92bf7117404fb2b6c4dd23794a49773b777b67ed",
+  "prepared_and_capture_commit": "65f08f72b4e61cf72e3c43a202bda0508830a160",
+  "preparation_sha256": "a7fa015dd655ef40d371172375ae30e4280503375485bd61ed6ab49baf5c1fd9",
+  "remote_base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021",
+  "expected_questions": 9088,
+  "expected_trajectories": 45440,
+  "expected_per_shard_trajectories": 11360,
+  "observed_trajectories": 15785,
+  "actual_capture_file_bytes": 8417201381,
+  "completed_chunks": 47,
+  "records": [
+    {
+      "shard": 0,
+      "job": "743087",
+      "state": "RUNNING",
+      "partition": "acd_u",
+      "node": "ACD1-11",
+      "latest": {
+        "time": 1792519153.5244703,
+        "snapshot": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/actual-launches/replay-bank-v2-observation-1792519153.json",
+        "snapshot_sha256": "78954132fbef9d0bb32ce9b1b1a794534ae7f0539e75f4eeb6d271804911bd91",
+        "trajectories": 6611,
+        "bytes": 3521551992,
+        "chunks": 20
+      },
+      "previous": {
+        "time": 1792519095.9091103,
+        "snapshot": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/actual-launches/replay-bank-v2-observation-1792519095.json",
+        "snapshot_sha256": "a373d23e9a863da1a58c5f9307acd37d308c21383290ee3309c86df9dd2052b5",
+        "trajectories": 5210,
+        "bytes": 2778569413,
+        "chunks": 16
+      },
+      "elapsed_seconds": 57.61536002159119,
+      "delta_bytes": 742982579,
+      "delta_chunks": 4,
+      "delta_trajectories": 1401,
+      "both_writer_locks_held": true,
+      "failure": null,
+      "full_bank_acceptance": false
+    },
+    {
+      "shard": 1,
+      "job": "743088",
+      "state": "RUNNING",
+      "partition": "acd_ue",
+      "node": "ACD1-8",
+      "latest": {
+        "time": 1792519153.5244703,
+        "snapshot": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/actual-launches/replay-bank-v2-observation-1792519153.json",
+        "snapshot_sha256": "78954132fbef9d0bb32ce9b1b1a794534ae7f0539e75f4eeb6d271804911bd91",
+        "trajectories": 2333,
+        "bytes": 1242083070,
+        "chunks": 7
+      },
+      "previous": {
+        "time": 1792519095.9091103,
+        "snapshot": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/actual-launches/replay-bank-v2-observation-1792519095.json",
+        "snapshot_sha256": "a373d23e9a863da1a58c5f9307acd37d308c21383290ee3309c86df9dd2052b5",
+        "trajectories": 960,
+        "bytes": 517182280,
+        "chunks": 3
+      },
+      "elapsed_seconds": 57.61536002159119,
+      "delta_bytes": 724900790,
+      "delta_chunks": 4,
+      "delta_trajectories": 1373,
+      "both_writer_locks_held": true,
+      "failure": null,
+      "full_bank_acceptance": false
+    },
+    {
+      "shard": 2,
+      "job": "743089",
+      "state": "RUNNING",
+      "partition": "acd_ue",
+      "node": "ACD1-36",
+      "latest": {
+        "time": 1792519153.5244703,
+        "snapshot": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/actual-launches/replay-bank-v2-observation-1792519153.json",
+        "snapshot_sha256": "78954132fbef9d0bb32ce9b1b1a794534ae7f0539e75f4eeb6d271804911bd91",
+        "trajectories": 4141,
+        "bytes": 2209697565,
+        "chunks": 12
+      },
+      "previous": {
+        "time": 1792519095.9091103,
+        "snapshot": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/actual-launches/replay-bank-v2-observation-1792519095.json",
+        "snapshot_sha256": "a373d23e9a863da1a58c5f9307acd37d308c21383290ee3309c86df9dd2052b5",
+        "trajectories": 2787,
+        "bytes": 1481469154,
+        "chunks": 8
+      },
+      "elapsed_seconds": 57.61536002159119,
+      "delta_bytes": 728228411,
+      "delta_chunks": 4,
+      "delta_trajectories": 1354,
+      "both_writer_locks_held": true,
+      "failure": null,
+      "full_bank_acceptance": false
+    },
+    {
+      "shard": 3,
+      "job": "743090",
+      "state": "RUNNING",
+      "partition": "acd_ue",
+      "node": "ACD1-17",
+      "latest": {
+        "time": 1792519153.5244703,
+        "snapshot": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/actual-launches/replay-bank-v2-observation-1792519153.json",
+        "snapshot_sha256": "78954132fbef9d0bb32ce9b1b1a794534ae7f0539e75f4eeb6d271804911bd91",
+        "trajectories": 2700,
+        "bytes": 1443868754,
+        "chunks": 8
+      },
+      "previous": {
+        "time": 1792519095.9091103,
+        "snapshot": "work/qwen7b-probe-warmup-20261019/reproduction/reports/qwen7b-algorithm-improvement-20261021/actual-launches/replay-bank-v2-observation-1792519095.json",
+        "snapshot_sha256": "a373d23e9a863da1a58c5f9307acd37d308c21383290ee3309c86df9dd2052b5",
+        "trajectories": 1241,
+        "bytes": 661459043,
+        "chunks": 3
+      },
+      "elapsed_seconds": 57.61536002159119,
+      "delta_bytes": 782409711,
+      "delta_chunks": 5,
+      "delta_trajectories": 1459,
+      "both_writer_locks_held": true,
+      "failure": null,
+      "full_bank_acceptance": false
+    }
+  ],
+  "submission_once_per_shard": true,
+  "dependencies_used": false,
+  "emergency_used": false,
+  "scheduler_changes": "Shard0 stayednormal/acd_u; pending1/2/3 moved SAME IDs toacd_ue only after actual >30min queue estimates, with separate immutablebefore/after audits.",
+  "source_or_fixture_hotmodified": false,
+  "student_training_started": false,
+  "model_or_features_local": false,
+  "stage_is_running_not_complete": true,
+  "final_reader_SHA_merge_pending": true
+}

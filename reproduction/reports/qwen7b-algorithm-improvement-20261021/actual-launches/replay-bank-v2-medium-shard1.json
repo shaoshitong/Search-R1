@@ -1,0 +1,19 @@
+{
+  "status": "R2_PENDING_SHARD1_SCHEDULER_ONLY_ESCALATION",
+  "time": 1792518963.0916884,
+  "reason": "Shard1 actual normal estimate changed from02:19to02:47:02 at01:55(~51min), above authorized30min threshold; sameID only, no GPU writer yet. Shard0/shard2 running and shard3 alreadymiddle remain unchanged.",
+  "records": [
+    {
+      "shard": 1,
+      "job": "743088",
+      "action": "SAME_PENDING_ID_NORMAL_TO_MIDDLE_ACTUAL_ETA_OVER30MIN",
+      "before": "JobId=743088 JobName=q7b-replay-bank-1 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3343 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-21T01:53:10 EligibleTime=2026-10-21T01:53:10 AccrueTime=2026-10-21T01:53:10 StartTime=2026-10-21T02:47:02 EndTime=2026-10-21T03:47:02 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T01:56:00 Scheduler=Main Partition=acd_u AllocNode:Sid=ACD-Login-2:2453414 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-32 NumNodes=1-1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-01/replay.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-01/logs/replay-743088.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-01/logs/replay-743088.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+      "after": "JobId=743088 JobName=q7b-replay-bank-1 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=6676 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-21T01:53:10 EligibleTime=2026-10-21T01:53:10 AccrueTime=Unknown StartTime=2026-10-21T02:47:02 EndTime=2026-10-21T03:47:02 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T01:56:00 Scheduler=Main Partition=acd_ue AllocNode:Sid=ACD-Login-2:2453414 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-32 NumNodes=1-1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-01/replay.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-01/logs/replay-743088.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-01/logs/replay-743088.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8"
+    }
+  ],
+  "no_resubmission": true,
+  "emergency_used": false,
+  "source_or_fixture_changed": false,
+  "prepared_commit": "65f08f72b4e61cf72e3c43a202bda0508830a160",
+  "controller_commit": "92bf7117404fb2b6c4dd23794a49773b777b67ed"
+}

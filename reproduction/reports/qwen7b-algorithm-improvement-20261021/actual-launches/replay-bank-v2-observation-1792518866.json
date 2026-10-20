@@ -1,0 +1,95 @@
+{
+  "status": "ACTUAL_READONLY_REPLAY_BANK_SHARD_OBSERVATION",
+  "time": 1792518866.5742917,
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021",
+  "source_commit": "65f08f72b4e61cf72e3c43a202bda0508830a160",
+  "rows": [
+    {
+      "shard": 0,
+      "job_id": "743087",
+      "run_lock": "HELD",
+      "capture_lock": "HELD",
+      "capture_exists": true,
+      "scontrol": {
+        "returncode": 0,
+        "stdout": "JobId=743087 JobName=q7b-replay-bank-0 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3343 Nice=0 Account=mou176 QOS=normal JobState=RUNNING Reason=None Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:52 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-21T01:53:08 EligibleTime=2026-10-21T01:53:08 AccrueTime=2026-10-21T01:53:08 StartTime=2026-10-21T01:53:34 EndTime=2026-10-21T02:53:34 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T01:53:34 Scheduler=Backfill Partition=acd_u AllocNode:Sid=ACD-Login-2:2452824 ReqNodeList=(null) ExcNodeList=(null) NodeList=ACD1-11 BatchHost=ACD1-11 NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 AllocTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-00/replay.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-00/logs/replay-743087.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-00/logs/replay-743087.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+        "stderr": ""
+      },
+      "accounting": {
+        "returncode": 0,
+        "stdout": "743087|q7b-replay-bank-0|RUNNING|0:0|00:00:52|2026-10-21T01:53:34|Unknown\n743087.batch|batch|RUNNING|0:0|00:00:52|2026-10-21T01:53:34|Unknown\n743087.extern|extern|RUNNING|0:0|00:00:52|2026-10-21T01:53:34|Unknown\n743087.0|bash|RUNNING|0:0|00:00:52|2026-10-21T01:53:34|Unknown",
+        "stderr": ""
+      },
+      "actual_capture_file_bytes": 0,
+      "actual_capture_payload_files": 0,
+      "completed_chunks": 0,
+      "completed_chunk_trajectories": 0,
+      "log": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-00/logs/replay-743087.log",
+        "bytes": 172,
+        "tail": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n"
+      }
+    },
+    {
+      "shard": 1,
+      "job_id": "743088",
+      "run_lock": "ABSENT",
+      "capture_lock": "ABSENT",
+      "capture_exists": false,
+      "scontrol": {
+        "returncode": 0,
+        "stdout": "JobId=743088 JobName=q7b-replay-bank-1 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3343 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-21T01:53:10 EligibleTime=2026-10-21T01:53:10 AccrueTime=2026-10-21T01:53:10 StartTime=2026-10-21T02:19:06 EndTime=2026-10-21T03:19:06 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T01:54:04 Scheduler=Backfill:* Partition=acd_u AllocNode:Sid=ACD-Login-2:2453414 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-67 NumNodes=1-1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-01/replay.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-01/logs/replay-743088.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-01/logs/replay-743088.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+        "stderr": ""
+      },
+      "accounting": {
+        "returncode": 0,
+        "stdout": "743088|q7b-replay-bank-1|PENDING|0:0|00:00:00|Unknown|Unknown",
+        "stderr": ""
+      }
+    },
+    {
+      "shard": 2,
+      "job_id": "743089",
+      "run_lock": "ABSENT",
+      "capture_lock": "ABSENT",
+      "capture_exists": false,
+      "scontrol": {
+        "returncode": 0,
+        "stdout": "JobId=743089 JobName=q7b-replay-bank-2 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3343 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-21T01:53:12 EligibleTime=2026-10-21T01:53:12 AccrueTime=2026-10-21T01:53:12 StartTime=2026-10-21T02:47:02 EndTime=2026-10-21T03:47:02 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T01:54:04 Scheduler=Backfill:* Partition=acd_u AllocNode:Sid=ACD-Login-2:2453570 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-32 NumNodes=1-1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-02/replay.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-02/logs/replay-743089.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-02/logs/replay-743089.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+        "stderr": ""
+      },
+      "accounting": {
+        "returncode": 0,
+        "stdout": "743089|q7b-replay-bank-2|PENDING|0:0|00:00:00|Unknown|Unknown",
+        "stderr": ""
+      }
+    },
+    {
+      "shard": 3,
+      "job_id": "743090",
+      "run_lock": "ABSENT",
+      "capture_lock": "ABSENT",
+      "capture_exists": false,
+      "scontrol": {
+        "returncode": 0,
+        "stdout": "JobId=743090 JobName=q7b-replay-bank-3 UserId=mou176(21930) GroupId=mhq_share(21919) MCS_label=N/A Priority=3343 Nice=0 Account=mou176 QOS=normal JobState=PENDING Reason=Priority Dependency=(null) Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0 RunTime=00:00:00 TimeLimit=01:00:00 TimeMin=N/A SubmitTime=2026-10-21T01:53:13 EligibleTime=2026-10-21T01:53:13 AccrueTime=2026-10-21T01:53:13 StartTime=2026-10-21T02:47:02 EndTime=2026-10-21T03:47:02 Deadline=N/A SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-21T01:54:04 Scheduler=Backfill:* Partition=acd_u AllocNode:Sid=ACD-Login-2:2453936 ReqNodeList=(null) ExcNodeList=(null) NodeList= SchedNodeList=ACD1-55 NumNodes=1-1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:* ReqTRES=cpu=8,mem=64G,node=1,billing=8,gres/gpu=1 AllocTRES=(null) Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=* MinCPUsNode=8 MinMemoryNode=64G MinTmpDiskNode=0 Features=(null) DelayBoot=00:00:00 OverSubscribe=OK Contiguous=0 Licenses=(null) Network=(null) Command=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-03/replay.sbatch WorkDir=/data/user/mou176 StdErr=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-03/logs/replay-743090.log StdIn=/dev/null StdOut=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-matched9088-bank-v2-20261021/prepared/shard-03/logs/replay-743090.log Power= TresPerNode=gres/gpu:1 TresPerTask=cpu:8",
+        "stderr": ""
+      },
+      "accounting": {
+        "returncode": 0,
+        "stdout": "743090|q7b-replay-bank-3|PENDING|0:0|00:00:00|Unknown|Unknown",
+        "stderr": ""
+      }
+    }
+  ],
+  "queue": {
+    "returncode": 0,
+    "stdout": "743089|q7b-replay-bank-2|PENDING|acd_u|(Priority)|gres/gpu:1\n743090|q7b-replay-bank-3|PENDING|acd_u|(Priority)|gres/gpu:1\n743088|q7b-replay-bank-1|PENDING|acd_u|(Priority)|gres/gpu:1\n743087|q7b-replay-bank-0|RUNNING|acd_u|ACD1-11|gres/gpu:1\n743024_3|q7b-validG10-A-20261021|RUNNING|acd_ue|ACD1-17|gres/gpu:2\n743025_3|q7b-validG10-B-20261021|RUNNING|acd_ue|ACD1-17|gres/gpu:2\n742276|q7b-bal-rank1|RUNNING|emergency_acd|ACD1-32|gres/gpu:4",
+    "stderr": ""
+  },
+  "estimates": {
+    "returncode": 0,
+    "stdout": "743088|q7b-replay-bank-1|PENDING|2026-10-21T02:19:06|(Priority)\n743089|q7b-replay-bank-2|PENDING|2026-10-21T02:47:02|(Priority)\n743090|q7b-replay-bank-3|PENDING|2026-10-21T02:47:02|(Priority)",
+    "stderr": ""
+  }
+}
