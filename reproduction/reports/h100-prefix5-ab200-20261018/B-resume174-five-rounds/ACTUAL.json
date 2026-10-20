@@ -32,56 +32,60 @@
     2470,
     2470
   ],
-  "original_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-assigned-normal-follow-20261020T035648251509Z-actual.json",
-  "original_observation_sha256": "45307d6d4a66d6038ad1c12721dbb12f641fdc9e730de291422127731d1fdfcd",
+  "original_observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-assigned-normal-follow-20261020T025229945793Z-actual.json",
+  "original_observation_sha256": "9414df0ec094c077483d2be1d4baadd9d8019fc26fb38c5eb24dd1850dd34c82",
   "next180_actual_prefix_progress": [
     {
       "rank": 0,
-      "completed": 6400,
-      "expected": 6400,
+      "completed": 600,
+      "expected": 3200,
       "device_binding": {
         "cuda_device_order": "PCI_BUS_ID",
         "gpu_uuid": "GPU-a8eff387-7a27-4358-0257-90320ab1ebc0",
         "originally_assigned_device": "4",
         "physical_gpu_index": 4
       },
-      "utc": "2026-10-20T03:49:35.335917+00:00"
+      "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0179",
+      "utc": "2026-10-20T02:52:46.541425+00:00"
     },
     {
       "rank": 1,
-      "completed": 6400,
-      "expected": 6400,
+      "completed": 600,
+      "expected": 3200,
       "device_binding": {
         "cuda_device_order": "PCI_BUS_ID",
         "gpu_uuid": "GPU-26e47632-03c7-ed47-78bb-70a48ad6f5c9",
         "originally_assigned_device": "5",
         "physical_gpu_index": 5
       },
-      "utc": "2026-10-20T03:49:34.447108+00:00"
+      "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0179",
+      "utc": "2026-10-20T02:52:47.391456+00:00"
     },
     {
       "rank": 2,
-      "completed": 6400,
-      "expected": 6400,
+      "completed": 600,
+      "expected": 3200,
       "device_binding": {
         "cuda_device_order": "PCI_BUS_ID",
         "gpu_uuid": "GPU-6c5b821c-fa0d-d42f-0087-74a68c1d96dd",
         "originally_assigned_device": "6",
         "physical_gpu_index": 6
       },
-      "utc": "2026-10-20T03:49:46.086860+00:00"
+      "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0179",
+      "utc": "2026-10-20T02:52:46.706497+00:00"
     },
     {
       "rank": 3,
-      "completed": 6400,
-      "expected": 6400,
+      "completed": 600,
+      "expected": 3200,
       "device_binding": {
         "cuda_device_order": "PCI_BUS_ID",
         "gpu_uuid": "GPU-5b62f3fb-95a8-cc9f-4398-66164aaf65dd",
         "originally_assigned_device": "7",
         "physical_gpu_index": 7
       },
-      "utc": "2026-10-20T03:49:44.610726+00:00"
+      "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0179",
+      "utc": "2026-10-20T02:52:48.572218+00:00"
     }
   ],
   "ordinary_training_wall_seconds": {
@@ -1163,5 +1167,31 @@
   "whole_goal_complete": false,
   "continues_same_process_to200_no201": true,
   "additional_gpu_tests_performed": false,
-  "training_modified": false
+  "training_modified": false,
+  "historical_five_round_acceptance_observed_utc": "20261020T025229945793Z",
+  "current_progress_at_publication": {
+    "observed_utc": "20261020T040008998476Z",
+    "complete_outer": 183,
+    "actor_adam": [
+      3660,
+      3660,
+      3660,
+      3660
+    ],
+    "probe_adam": [
+      2550,
+      2550,
+      2550,
+      2550
+    ],
+    "stage": {
+      "checked_unix": 1792468808.22528,
+      "outer": 184,
+      "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+      "stage": "CANDIDATE_POOL_RESERVATION"
+    },
+    "original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-assigned-normal-follow-20261020T040008998476Z-actual.json",
+    "original_sha256": "fb44dfb7dbb06a004e551738984d9003fa6d82b9bb23d599df8a19d1ca3edc5e"
+  },
+  "provenance_correction": "Historical next180 prefix rows are bound to the immutable025229 observation, never substituted with later183 prefix rows. Current progress is recorded separately."
 }
