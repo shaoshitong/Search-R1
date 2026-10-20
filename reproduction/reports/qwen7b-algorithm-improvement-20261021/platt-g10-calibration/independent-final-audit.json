@@ -1,0 +1,189 @@
+{
+  "status": "PLATT_FINAL_INDEPENDENT_FROZEN_SOURCE_OWN_EM_G5_METRICS_SHA_AUDIT_PASS",
+  "epoch": 1792532209.0687706,
+  "complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/complete.json",
+    "bytes": 74200,
+    "sha256": "6828379386baa625352eb38ed8fcbb3d6ba1dcb9d2aae2ed749ea96f2a106ab2"
+  },
+  "freeze": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/candidate-freeze.json",
+    "bytes": 5561,
+    "sha256": "6cf923b3544d84ef9af0ff5eaad31b1da83397a36af880e89684a3a442c6d648"
+  },
+  "winner": "peer256--trajectory+three-event--0",
+  "external": {
+    "balanced_accuracy": 0.5445660519136841,
+    "Mixed_recall": 0.7194570135746606,
+    "nonMixed_recall": 0.36967509025270756,
+    "allwrong_FPR": 0.5630331753554503,
+    "allcorrect_FPR": 0.8454545454545455,
+    "AUC": 0.561361495445165,
+    "confusion": {
+      "tp": 477,
+      "fp": 873,
+      "fn": 186,
+      "tn": 512
+    },
+    "questions": 2048,
+    "Top512": {
+      "Mixed": 189,
+      "Mixed_fraction": 0.369140625,
+      "K_histogram": [
+        192,
+        40,
+        29,
+        51,
+        69,
+        131
+      ],
+      "questions": 512
+    }
+  },
+  "uncalibrated_same_model": {
+    "balanced_accuracy": 0.5465546062912807,
+    "Mixed_recall": 0.6772247360482655,
+    "nonMixed_recall": 0.41588447653429605,
+    "allwrong_FPR": 0.5023696682464455,
+    "allcorrect_FPR": 0.8454545454545455,
+    "AUC": 0.5598989387479513,
+    "confusion": {
+      "tp": 449,
+      "fp": 809,
+      "fn": 214,
+      "tn": 576
+    },
+    "questions": 2048,
+    "Top512": {
+      "Mixed": 182,
+      "Mixed_fraction": 0.35546875,
+      "K_histogram": [
+        188,
+        38,
+        28,
+        47,
+        69,
+        142
+      ],
+      "questions": 512
+    }
+  },
+  "same_HF_E4": {
+    "balanced_accuracy": 0.5577138158790315,
+    "Mixed_recall": 0.6757164404223228,
+    "nonMixed_recall": 0.43971119133574005,
+    "allwrong_FPR": 0.5118483412322274,
+    "allcorrect_FPR": 0.7151515151515152,
+    "AUC": 0.5764760333458571,
+    "confusion": {
+      "tp": 448,
+      "fp": 776,
+      "fn": 215,
+      "tn": 609
+    },
+    "questions": 2048,
+    "Top512": {
+      "Mixed": 196,
+      "Mixed_fraction": 0.3828125,
+      "K_histogram": [
+        209,
+        44,
+        38,
+        46,
+        68,
+        107
+      ],
+      "questions": 512
+    }
+  },
+  "checkpoint_refs": [
+    {
+      "id": "E4--trajectory--0",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/E4--trajectory--0.pt",
+      "bytes": 26940,
+      "sha256": "f7e3c63dfe605e9572a0a28553c31b3ca1606d6058c7bb353207507162297df9"
+    },
+    {
+      "id": "E4--trajectory--0.01",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/E4--trajectory--0.01.pt",
+      "bytes": 23771,
+      "sha256": "507d5e5df1cb88fda39c60c676d2f86f7e93c108e1022ec0a6573ec7544b639f"
+    },
+    {
+      "id": "E4--trajectory--0.1",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/E4--trajectory--0.1.pt",
+      "bytes": 22670,
+      "sha256": "d41b0d82eb039d46198d5b612060cbd830dc7a43670fd19a6a124d731a41994a"
+    },
+    {
+      "id": "E4--trajectory+three-event--0",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/E4--trajectory+three-event--0.pt",
+      "bytes": 25208,
+      "sha256": "62c09862f99191907a72d25f78abdd28a5fe50ab4b202638c5f6ed5bc369c9b9"
+    },
+    {
+      "id": "E4--trajectory+three-event--0.01",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/E4--trajectory+three-event--0.01.pt",
+      "bytes": 25371,
+      "sha256": "a72facc7eeac793a957b973be1d30460083017c4abcc944a5a17a066e89d69c5"
+    },
+    {
+      "id": "E4--trajectory+three-event--0.1",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/E4--trajectory+three-event--0.1.pt",
+      "bytes": 25338,
+      "sha256": "d47fcf4bdc5469112666362fef42e4698e35ccd703c83603ebf07e0456c55b49"
+    },
+    {
+      "id": "peer256--trajectory--0",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/peer256--trajectory--0.pt",
+      "bytes": 26573,
+      "sha256": "6eb42156dc3e9d65374741fc29eb5a878f1cf94ee190d4b14df0f3bb88dbb7f7"
+    },
+    {
+      "id": "peer256--trajectory--0.01",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/peer256--trajectory--0.01.pt",
+      "bytes": 26684,
+      "sha256": "17fa11c093af65a3ab905178c17c625bd1b4c9a7edd578e023d6fdc264555f09"
+    },
+    {
+      "id": "peer256--trajectory--0.1",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/peer256--trajectory--0.1.pt",
+      "bytes": 26647,
+      "sha256": "0ee4abaeeb360b21c151f296a7a2faac5e0a2fea83c6cccd9c68ac9a4dcffdac"
+    },
+    {
+      "id": "peer256--trajectory+three-event--0",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/peer256--trajectory+three-event--0.pt",
+      "bytes": 27017,
+      "sha256": "cb8d17b3cc3149c4d3f8513831bd57428048c2edea9648ff4e99daeff1b03a64"
+    },
+    {
+      "id": "peer256--trajectory+three-event--0.01",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/peer256--trajectory+three-event--0.01.pt",
+      "bytes": 25984,
+      "sha256": "282a251d1b8f970c525c42d87f0495723d47c1474c82d1976cc4050c40e6f9b2"
+    },
+    {
+      "id": "peer256--trajectory+three-event--0.1",
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/platt-g10-calibration-v1/output/checkpoints/peer256--trajectory+three-event--0.1.pt",
+      "bytes": 25951,
+      "sha256": "79f0af42ac9f3d37e5cd2a22ab403e3c71dfc3aa985f54a4abb3ff27d3afed9a"
+    }
+  ],
+  "full_checkpoint_load_acceptance_inherited_from_producer": true,
+  "checkpoint_SHA_all12_independent_fresh": true,
+  "own_EM_fixed_ID_order_exact": true,
+  "q_formula_original_max_error": 1.2009609162699775e-07,
+  "source_predictions": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-newseed8192-g10-train-v1/predictions/selection2048FreshG5HF.jsonl.gz",
+    "bytes": 149749,
+    "sha256": "b02c86bc81923c48f34bb13467b02dfbb4ac90a158f3bcdc3ce62d0079c57ac7"
+  },
+  "joint_gain_versus_same_model": false,
+  "joint_gain_versus_same_HF_E4": false,
+  "elapsed_seconds": 25.20877432823181,
+  "peak_RSS_bytes": 568586240,
+  "learned_scalars_exported": false,
+  "raw_rows_exported": false,
+  "final_pool_read": false
+}
