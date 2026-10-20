@@ -1,0 +1,4 @@
+import pathlib,json,hashlib,shutil,time
+A=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021')
+def read(p):return json.loads(pathlib.Path(p).read_text())
+t=read(A/'peer-newseed8192-g10-train-v1/training-input.json');p=read(t['identity_plan']['path']);r=read(t['raw_complete']['path']);print(json.dumps(dict(epoch=time.time(),identity_summary=p['summary'],identity_ref=t['identity_plan'],raw_complete_ref=t['raw_complete'],raw_groups_ref=r['outputs']['groups'],ingest_config_ref=r['config'],controlled_plan=p['controlled6528'],already_captured_questions=len(p['groups']),remaining_by_accepted_eligibility=p['summary']['eligible_questions']-len(p['groups']),shared_free_bytes=shutil.disk_usage(A).free,labels_opened_for_this_count=False,source_writes=False)))
