@@ -1,0 +1,855 @@
+{
+  "status": "BOTH200_AND_FINAL51713_ACCEPTED",
+  "completed_utc": "2026-10-20T11:24:57.774314+00:00",
+  "arms": {
+    "A": {
+      "run_id": "ca37419b494446398fb15234aa3be91a",
+      "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3",
+      "frozen_runtime_commit": "6dc4a39e3ddd2bf7a642c33a9343f6044ee69ea4",
+      "complete_outers": 200,
+      "actor_actual_adam_per_rank": [
+        3984,
+        3984,
+        3984,
+        3984
+      ],
+      "probe_actual_adam_per_rank": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "qa512_200": {
+        "outer": 200,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3/outers/outer-000200/validation/complete.json",
+        "sha256": "22942793318d3f0ef42a344632ad3fa21ef44d7a1356c5096d7dd2968e92aa63",
+        "qa_count": 512,
+        "em": 0.435546875,
+        "f1": 0.5082714771572434,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      },
+      "final51713": {
+        "em": 0.41558215535745363,
+        "f1": 0.4825501265662649,
+        "per_source": {
+          "2wikimultihopqa": {
+            "em": 0.31504452926208654,
+            "f1": 0.37215250582197457,
+            "qa_count": 12576
+          },
+          "bamboogle": {
+            "em": 0.136,
+            "f1": 0.23737835497835497,
+            "qa_count": 125
+          },
+          "hotpotqa": {
+            "em": 0.3272113436866982,
+            "f1": 0.43187095935849806,
+            "qa_count": 7405
+          },
+          "musique": {
+            "em": 0.07943731899048408,
+            "f1": 0.15833899010997038,
+            "qa_count": 2417
+          },
+          "nq": {
+            "em": 0.4473684210526316,
+            "f1": 0.5313851649048572,
+            "qa_count": 3610
+          },
+          "popqa": {
+            "em": 0.44157846779280857,
+            "f1": 0.48581989648086327,
+            "qa_count": 14267
+          },
+          "triviaqa": {
+            "em": 0.6171660921064263,
+            "f1": 0.6907142036583587,
+            "qa_count": 11313
+          }
+        },
+        "qa_count": 51713
+      },
+      "final_qa_proof": {
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3/preparation/final51713-original-output-cpu-once.json",
+        "sha256": "d8ad7d9672491992a1ac0de2222602b3656e08854df6245d9460d31a4aeeefc3"
+      },
+      "original_output_full_sha_cpu_rescore_pass": true,
+      "exact_qids_and_ordinals": true,
+      "exact_seven_source_counts": {
+        "2wikimultihopqa": 12576,
+        "bamboogle": 125,
+        "hotpotqa": 7405,
+        "musique": 2417,
+        "nq": 3610,
+        "popqa": 14267,
+        "triviaqa": 11313
+      },
+      "four_final_workers_exit0": true,
+      "actual_native_exit0": true
+    },
+    "B": {
+      "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+      "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2",
+      "frozen_runtime_commit": "6dc4a39e3ddd2bf7a642c33a9343f6044ee69ea4",
+      "complete_outers": 200,
+      "actor_actual_adam_per_rank": [
+        4000,
+        4000,
+        4000,
+        4000
+      ],
+      "probe_actual_adam_per_rank": [
+        2760,
+        2760,
+        2760,
+        2760
+      ],
+      "qa512_200": {
+        "outer": 200,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2/outers/outer-000200/validation/complete.json",
+        "sha256": "f170667f23134426bc6252c6e46189e959f7e17ee432c61c483a5640970d6e9f",
+        "qa_count": 512,
+        "em": 0.490234375,
+        "f1": 0.5739025297619048,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      },
+      "final51713": {
+        "em": 0.48148434629590237,
+        "f1": 0.5517755221418854,
+        "per_source": {
+          "2wikimultihopqa": {
+            "em": 0.42930979643765904,
+            "f1": 0.49273826023622724,
+            "qa_count": 12576
+          },
+          "bamboogle": {
+            "em": 0.368,
+            "f1": 0.4855999999999999,
+            "qa_count": 125
+          },
+          "hotpotqa": {
+            "em": 0.450101282916948,
+            "f1": 0.5718832112991434,
+            "qa_count": 7405
+          },
+          "musique": {
+            "em": 0.2039718659495242,
+            "f1": 0.29661459974133925,
+            "qa_count": 2417
+          },
+          "nq": {
+            "em": 0.47506925207756234,
+            "f1": 0.5583999161001647,
+            "qa_count": 3610
+          },
+          "popqa": {
+            "em": 0.4707366650311909,
+            "f1": 0.5107628012898929,
+            "qa_count": 14267
+          },
+          "triviaqa": {
+            "em": 0.6361707769822328,
+            "f1": 0.7090959043067936,
+            "qa_count": 11313
+          }
+        },
+        "qa_count": 51713
+      },
+      "final_qa_proof": {
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2/preparation/final51713-original-output-cpu-once.json",
+        "sha256": "e2df517ead79161408b1a1d738abd2cc38616e805de53a58118d52936100bf64"
+      },
+      "original_output_full_sha_cpu_rescore_pass": true,
+      "exact_qids_and_ordinals": true,
+      "exact_seven_source_counts": {
+        "2wikimultihopqa": 12576,
+        "bamboogle": 125,
+        "hotpotqa": 7405,
+        "musique": 2417,
+        "nq": 3610,
+        "popqa": 14267,
+        "triviaqa": 11313
+      },
+      "four_final_workers_exit0": true,
+      "actual_native_exit0": true
+    }
+  },
+  "B_minus_A_percentage_points": {
+    "em": 6.5902190938448735,
+    "f1": 6.922539557562052
+  },
+  "normal_checkpoints": {
+    "A": [
+      {
+        "outer": 5,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0005-independent-full-sha-cpu.json",
+        "sha256": "f13cf7402eef4d334d27bbe90f59b7d9b3dbfadfcb3c4c02f40fc41b7ae13952",
+        "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+        "actor_adam": [
+          100,
+          100,
+          100,
+          100
+        ],
+        "probe_adam": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "independent_backup": false,
+        "no_repeated_large_hash_or_load": true
+      },
+      {
+        "outer": 50,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0050-independent-full-sha-cpu.json",
+        "sha256": "c1e6135380e32e94a9b4e82457791bc798980c9251046a15b7be1daf857dcaf0",
+        "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+        "actor_adam": [
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "probe_adam": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "independent_backup": false,
+        "no_repeated_large_hash_or_load": true
+      },
+      {
+        "outer": 100,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0100-independent-full-sha-cpu.json",
+        "sha256": "a9a0197bc03603949781ff76fc7695f6679e86520d5ac441c584fab689c2cc97",
+        "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+        "actor_adam": [
+          1997,
+          1997,
+          1997,
+          1997
+        ],
+        "probe_adam": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "independent_backup": false,
+        "no_repeated_large_hash_or_load": true
+      },
+      {
+        "outer": 150,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0150-independent-full-sha-cpu.json",
+        "sha256": "5a9fd6a11fe76b9d3dac2abf062ce5f136dd1f07db4c45608ceed0f06241b750",
+        "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+        "actor_adam": [
+          2997,
+          2997,
+          2997,
+          2997
+        ],
+        "probe_adam": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "independent_backup": false,
+        "no_repeated_large_hash_or_load": true
+      },
+      {
+        "outer": 200,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3/preparation/ab-joint-0200-independent-full-sha-cpu.json",
+        "sha256": "e09d25cbfdeb456637af8560d50f98e86000e652e324d0d35ce0ae99496c4a10",
+        "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+        "actor_adam": [
+          3984,
+          3984,
+          3984,
+          3984
+        ],
+        "probe_adam": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "independent_backup": false,
+        "no_repeated_large_hash_or_load": true
+      }
+    ],
+    "B": [
+      {
+        "outer": 5,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0005-independent-full-sha-cpu.json",
+        "sha256": "23914a16668385bfbd8720fa21b7f2df416e9a69587d231dcc46d63e78cf7d20",
+        "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+        "actor_adam": [
+          100,
+          100,
+          100,
+          100
+        ],
+        "probe_adam": [
+          50,
+          50,
+          50,
+          50
+        ],
+        "independent_backup": false,
+        "no_repeated_large_hash_or_load": true
+      },
+      {
+        "outer": 50,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/preparation/ab-joint-0050-independent-full-sha-cpu.json",
+        "sha256": "2f8ce1af061246b28d27c418a0ce327f7efd76a6fd080ec9f8c42be8c26508bc",
+        "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+        "actor_adam": [
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "probe_adam": [
+          700,
+          700,
+          700,
+          700
+        ],
+        "independent_backup": false,
+        "no_repeated_large_hash_or_load": true
+      },
+      {
+        "outer": 100,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2/preparation/ab-joint-0100-independent-full-sha-cpu.json",
+        "sha256": "5c42967db2df36577b2484f51c2549d979a8c252d1449f73dd31ba40b8ddd508",
+        "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+        "actor_adam": [
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "probe_adam": [
+          1400,
+          1400,
+          1400,
+          1400
+        ],
+        "independent_backup": false,
+        "no_repeated_large_hash_or_load": true
+      },
+      {
+        "outer": 150,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2/preparation/ab-joint-0150-independent-full-sha-cpu.json",
+        "sha256": "3d082f106e922b6e80e9b4cf0bee2740f37eef5a52f2062b93cb1deda984ee74",
+        "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+        "actor_adam": [
+          3000,
+          3000,
+          3000,
+          3000
+        ],
+        "probe_adam": [
+          2100,
+          2100,
+          2100,
+          2100
+        ],
+        "independent_backup": false,
+        "no_repeated_large_hash_or_load": true
+      },
+      {
+        "outer": 200,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2/preparation/ab-joint-0200-independent-full-sha-cpu.json",
+        "sha256": "64095c1458297d18b9a8806e197d83159a8453349754707e66fac24b52ebaa6f",
+        "status": "AB_JOINT_FULL_SHA_CPU_PASS",
+        "actor_adam": [
+          4000,
+          4000,
+          4000,
+          4000
+        ],
+        "probe_adam": [
+          2760,
+          2760,
+          2760,
+          2760
+        ],
+        "independent_backup": false,
+        "no_repeated_large_hash_or_load": true
+      }
+    ]
+  },
+  "qa512_history": {
+    "A": [
+      {
+        "outer": 5,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/complete.json",
+        "sha256": "3d6b1f4e085d83d2cd4ac8e1caef90bd2459d3877f32bf1d9a825aa9a1733cd8",
+        "qa_count": 512,
+        "em": 0.275390625,
+        "f1": 0.3618067172791212,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      },
+      {
+        "outer": 50,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000050/validation/complete.json",
+        "sha256": "607bb9e0e5f45c429bcd3f6a81813a232e9f3e1989263c3bd51b03a369c8da09",
+        "qa_count": 512,
+        "em": 0.39453125,
+        "f1": 0.48032163366147757,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      },
+      {
+        "outer": 100,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000100/validation/complete.json",
+        "sha256": "dd6dc3b0a24989062d8681a898bf651f2e1232399f440b408640f510ffda62ca",
+        "qa_count": 512,
+        "em": 0.419921875,
+        "f1": 0.5028851573773451,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      },
+      {
+        "outer": 150,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000150/validation/complete.json",
+        "sha256": "ed78c9e34dff124f7750f2c2ab0e88a9b6012e43693b6faf334fee9d2ac43330",
+        "qa_count": 512,
+        "em": 0.412109375,
+        "f1": 0.4923130580357144,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      },
+      {
+        "outer": 200,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3/outers/outer-000200/validation/complete.json",
+        "sha256": "22942793318d3f0ef42a344632ad3fa21ef44d7a1356c5096d7dd2968e92aa63",
+        "qa_count": 512,
+        "em": 0.435546875,
+        "f1": 0.5082714771572434,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      }
+    ],
+    "B": [
+      {
+        "outer": 5,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000005/validation/complete.json",
+        "sha256": "920d593dd0395394f6e613f16a33b9cf14b4408e11bfde721cff3ed7e2185614",
+        "qa_count": 512,
+        "em": 0.28515625,
+        "f1": 0.3731497838113931,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      },
+      {
+        "outer": 50,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1/outers/outer-000050/validation/complete.json",
+        "sha256": "635de53fac53c7664ccd2f9619205330b04e67bcf44fe4ec4cf931e437dfe666",
+        "qa_count": 512,
+        "em": 0.431640625,
+        "f1": 0.5139975420691076,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      },
+      {
+        "outer": 100,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2/outers/outer-000100/validation/complete.json",
+        "sha256": "64fbc8d545b3461674692c43041f4c5d94a12ab4d5b055cb0c3cfa336526e4c9",
+        "qa_count": 512,
+        "em": 0.453125,
+        "f1": 0.5407598586309524,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      },
+      {
+        "outer": 150,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2/outers/outer-000150/validation/complete.json",
+        "sha256": "d2aecd0e35dd29d7a91fa3a53d6723a4a83c10aa4db603276f36186a2303dbee",
+        "qa_count": 512,
+        "em": 0.494140625,
+        "f1": 0.5713495163690476,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      },
+      {
+        "outer": 200,
+        "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2/outers/outer-000200/validation/complete.json",
+        "sha256": "f170667f23134426bc6252c6e46189e959f7e17ee432c61c483a5640970d6e9f",
+        "qa_count": 512,
+        "em": 0.490234375,
+        "f1": 0.5739025297619048,
+        "actual_worker_exit_codes": {
+          "0": 0,
+          "1": 0,
+          "2": 0,
+          "3": 0
+        },
+        "actual_compute_dtype": "torch.bfloat16",
+        "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+      }
+    ]
+  },
+  "B_current_execution_retention_and_release": {
+    "status": "FINAL_RETENTION_AND_ACTUAL_OWNED_EXIT0_PASS",
+    "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+    "config_sha256": "bfdad872c8aae7c51d7da1fdf1a4f9fb61dc7bc27088cabbba9bccd1283e9d2b",
+    "actual_native_returncode": 0,
+    "native_terminal_sha256": "8ac9990ad3aea8f20b3915bef2df6b4edaf2c43f88d183b3aeea8307d996a29f",
+    "submit_receipt_sha256": "9e8ff9e9f363c9119ef8d024b635d78996e089b2ac37d88fa96412559489f612",
+    "owned_release_checks": [
+      {
+        "checked_unix": 1792495173.4539237,
+        "native_same_birth": false,
+        "owned_gpu_pid_rows": [],
+        "remaining_owned_births": [],
+        "supervisor_same_birth": false
+      },
+      {
+        "checked_unix": 1792495173.890263,
+        "native_same_birth": false,
+        "owned_gpu_pid_rows": [],
+        "remaining_owned_births": [],
+        "supervisor_same_birth": false
+      }
+    ],
+    "process_ledger_sha256": "a7db62df70a36b11935c3d888bcaa8627e3d027831bed4dde7dab6c7783d5c1e",
+    "cleanup_status_sha256": "c0d08ef757fb8d639f58776518af49da5e79d5bfc4a320ccc031f213cbf245ff",
+    "final_checkpoint_cpu_proof_sha256": "64095c1458297d18b9a8806e197d83159a8453349754707e66fac24b52ebaa6f",
+    "final_qa_cpu_proof_sha256": "e2df517ead79161408b1a1d738abd2cc38616e805de53a58118d52936100bf64",
+    "complete_outers": 200,
+    "no_outer201": true,
+    "retained_selected_question_groups": 102400,
+    "retained_selected_trajectories": 512000,
+    "historical_other_execution_residue_is_separate": true,
+    "retained_payload_checks_are_metadata_only": true,
+    "repeated_large_tensor_hash_or_load": false,
+    "no_new_inference_or_gpu_test": true,
+    "foreign_processes_modified": false,
+    "original_models_and_outputs_copied_to_mac": false,
+    "completed_unix": 1792495201.5886846,
+    "proof": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2/preparation/final-completion-retention-owned-release-once.json",
+    "proof_sha256": "40c6fa872319779422dba7c762b2ac41e58dd20292a5f0f2466f6d811fde43da",
+    "milestones": [
+      {
+        "outer": 5,
+        "referenced_files": 21,
+        "referenced_bytes": 39536520892,
+        "actor_adam": [
+          100,
+          100,
+          100,
+          100
+        ],
+        "probe_adam": [
+          50,
+          50,
+          50,
+          50
+        ]
+      },
+      {
+        "outer": 50,
+        "referenced_files": 21,
+        "referenced_bytes": 39536559358,
+        "actor_adam": [
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "probe_adam": [
+          700,
+          700,
+          700,
+          700
+        ]
+      },
+      {
+        "outer": 100,
+        "referenced_files": 21,
+        "referenced_bytes": 39537412465,
+        "actor_adam": [
+          2000,
+          2000,
+          2000,
+          2000
+        ],
+        "probe_adam": [
+          1400,
+          1400,
+          1400,
+          1400
+        ]
+      },
+      {
+        "outer": 150,
+        "referenced_files": 21,
+        "referenced_bytes": 39541386552,
+        "actor_adam": [
+          3000,
+          3000,
+          3000,
+          3000
+        ],
+        "probe_adam": [
+          2100,
+          2100,
+          2100,
+          2100
+        ]
+      },
+      {
+        "outer": 200,
+        "referenced_files": 21,
+        "referenced_bytes": 39575840765,
+        "actor_adam": [
+          4000,
+          4000,
+          4000,
+          4000
+        ],
+        "probe_adam": [
+          2760,
+          2760,
+          2760,
+          2760
+        ]
+      }
+    ],
+    "retained_selected_payload_file_references": 1400
+  },
+  "A_current_execution_release": {
+    "actor_adam_per_rank": [
+      3984,
+      3984,
+      3984,
+      3984
+    ],
+    "actual_native_returncode": 0,
+    "checkpoint_proof_sha256": "e09d25cbfdeb456637af8560d50f98e86000e652e324d0d35ce0ae99496c4a10",
+    "checks": [
+      {
+        "checked_unix": 1792459057.1682074,
+        "native_same_birth": false,
+        "owned_gpu_rows": [],
+        "remaining_owned_births": []
+      },
+      {
+        "checked_unix": 1792459057.9122741,
+        "native_same_birth": false,
+        "owned_gpu_rows": [],
+        "remaining_owned_births": []
+      }
+    ],
+    "complete_outer": 200,
+    "earlier_source_kernel_residues_not_claimed_released": true,
+    "final_qa_proof_sha256": "d8ad7d9672491992a1ac0de2222602b3656e08854df6245d9460d31a4aeeefc3",
+    "native_exit_proof_sha256": "414833f269792292292f1e5ee6e6e0f37a99ef8cc90ea3367015ad5b37c36ef2",
+    "probe_adam_per_rank": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "run_id": "ca37419b494446398fb15234aa3be91a",
+    "shared_root_cgroup_not_claimed_empty": true,
+    "status": "CURRENT_EXECUTION_FINAL_NATIVE_EXIT0_AND_OWNED_RELEASE_PASS",
+    "whole_ab_goal_complete": false
+  },
+  "A_milestone_retention": {
+    "status": "A_MILESTONE_PAYLOAD_METADATA_RETAINED_QA200_512_FOUR_WORKER_EXIT0",
+    "observed_unix": 1792460468.2868173,
+    "proof": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3/preparation/final-a-retention-qa200-metadata-once.json",
+    "proof_sha256": "63e1c4eea728133c93b929112bd8441e6113496a83245414feaaea48886e0768",
+    "small_original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-a-final-retention-qa200-A-start-20261020T014058863002Z.json",
+    "small_original_sha256": "731f156503ba1c766aedc03725f19857d35e380ad08da1d57c88883430a871b4",
+    "checkpoints": [
+      {
+        "outer": 5,
+        "referenced_files": 22,
+        "referenced_bytes": 38605026915,
+        "actor_adam": [
+          100,
+          100,
+          100,
+          100
+        ],
+        "probe_adam": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "outer": 50,
+        "referenced_files": 22,
+        "referenced_bytes": 38605050440,
+        "actor_adam": [
+          1000,
+          1000,
+          1000,
+          1000
+        ],
+        "probe_adam": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "outer": 100,
+        "referenced_files": 22,
+        "referenced_bytes": 38605414450,
+        "actor_adam": [
+          1997,
+          1997,
+          1997,
+          1997
+        ],
+        "probe_adam": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "outer": 150,
+        "referenced_files": 22,
+        "referenced_bytes": 38608770180,
+        "actor_adam": [
+          2997,
+          2997,
+          2997,
+          2997
+        ],
+        "probe_adam": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "outer": 200,
+        "referenced_files": 22,
+        "referenced_bytes": 38642319324,
+        "actor_adam": [
+          3984,
+          3984,
+          3984,
+          3984
+        ],
+        "probe_adam": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "qa200": {
+      "em": 0.435546875,
+      "f1": 0.5082714771572434,
+      "qa_count": 512,
+      "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "actual_worker_exit_codes": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      }
+    },
+    "metadata_only": true,
+    "no_outer201": true,
+    "large_hash_or_tensor_load_repeated": false,
+    "independent_backup_asserted": false
+  },
+  "per_iteration_data": "progressive-latest-actual/PER-ITERATION.csv",
+  "unobserved_values_fitted": false,
+  "interpretation": "B also changes prefix length and outcome-assisted admission/reranking after50; this is not an isolated EMA ablation.",
+  "A_historical_actor_skips": 16,
+  "independent_physical_backup_claimed": false,
+  "historical_source11_kernel_residues": "Separately documented; no claim that other/historical executions or the whole shared root cgroup were cleared.",
+  "models_optimizer_trajectories_full_predictions_stay_remote": true,
+  "peer_resource_release_notice_delivered": true,
+  "no_201": true
+}

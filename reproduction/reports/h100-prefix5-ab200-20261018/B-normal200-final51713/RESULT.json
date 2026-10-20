@@ -1,0 +1,93 @@
+{
+  "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+  "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2",
+  "frozen_runtime_commit": "6dc4a39e3ddd2bf7a642c33a9343f6044ee69ea4",
+  "complete_outers": 200,
+  "actor_actual_adam_per_rank": [
+    4000,
+    4000,
+    4000,
+    4000
+  ],
+  "probe_actual_adam_per_rank": [
+    2760,
+    2760,
+    2760,
+    2760
+  ],
+  "qa512_200": {
+    "outer": 200,
+    "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2/outers/outer-000200/validation/complete.json",
+    "sha256": "f170667f23134426bc6252c6e46189e959f7e17ee432c61c483a5640970d6e9f",
+    "qa_count": 512,
+    "em": 0.490234375,
+    "f1": 0.5739025297619048,
+    "actual_worker_exit_codes": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+    },
+    "actual_compute_dtype": "torch.bfloat16",
+    "canonical_qid_ordinal_and_original_rank_aggregates_checked": true
+  },
+  "final51713": {
+    "em": 0.48148434629590237,
+    "f1": 0.5517755221418854,
+    "per_source": {
+      "2wikimultihopqa": {
+        "em": 0.42930979643765904,
+        "f1": 0.49273826023622724,
+        "qa_count": 12576
+      },
+      "bamboogle": {
+        "em": 0.368,
+        "f1": 0.4855999999999999,
+        "qa_count": 125
+      },
+      "hotpotqa": {
+        "em": 0.450101282916948,
+        "f1": 0.5718832112991434,
+        "qa_count": 7405
+      },
+      "musique": {
+        "em": 0.2039718659495242,
+        "f1": 0.29661459974133925,
+        "qa_count": 2417
+      },
+      "nq": {
+        "em": 0.47506925207756234,
+        "f1": 0.5583999161001647,
+        "qa_count": 3610
+      },
+      "popqa": {
+        "em": 0.4707366650311909,
+        "f1": 0.5107628012898929,
+        "qa_count": 14267
+      },
+      "triviaqa": {
+        "em": 0.6361707769822328,
+        "f1": 0.7090959043067936,
+        "qa_count": 11313
+      }
+    },
+    "qa_count": 51713
+  },
+  "final_qa_proof": {
+    "path": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2/preparation/final51713-original-output-cpu-once.json",
+    "sha256": "e2df517ead79161408b1a1d738abd2cc38616e805de53a58118d52936100bf64"
+  },
+  "original_output_full_sha_cpu_rescore_pass": true,
+  "exact_qids_and_ordinals": true,
+  "exact_seven_source_counts": {
+    "2wikimultihopqa": 12576,
+    "bamboogle": 125,
+    "hotpotqa": 7405,
+    "musique": 2417,
+    "nq": 3610,
+    "popqa": 14267,
+    "triviaqa": 11313
+  },
+  "four_final_workers_exit0": true,
+  "actual_native_exit0": true
+}

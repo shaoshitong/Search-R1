@@ -1,7 +1,7 @@
-# B normal200 and final51713
+# B：200轮及最终51713题已完成
 
-Training completed200; actor4000 and raw/EMA2760 actual Adam per each of four ranks. The final joint passed independent complete SHA and CPU model/Adam/RNG/state readback. No201 is launched.
+固定512题：EM49.0234375%，F157.3902529762%。最终51713题：EM48.1484346296%，F155.1775522142%。四个原始评测进程均exit0，全部七集、题目ID及顺序覆盖通过，原始gzip完整SHA及逐题CPU重算分数通过。
 
-QA200 fixed512: EM251/512=49.0234375%, F157.3902529762%. All four original workers exited0; exact canonical IDs/ordinals, two256-question sources, receipt SHAs and aggregate scores are checked. Actor200 reward uses actual grounding150; no refit200 is expected.
+Actor4000、raw/EMA probe2760实际Adam/rank。完整第200轮状态及5/50/100/150保存点已做独立全SHA和CPU状态读回；既有通过点没有重复大文件检查。当前native实际exit0，当前自有birth/GPU两次释放核对通过。全部200轮所选题目/完整轨迹和保存点原件留远端，Mac仅小摘要。见RESULT.json和RETENTION-AND-RELEASE.json。
 
-Final51713 is still running in the same native process; progress is recorded in PROGRESS.json. Final scores, original-output CPU acceptance and actual native exit0/current-owned release remain pending. Models and full outputs stay remote.
+历史source11 NFS退出残留另记；不声称清理所有历史/外来GPU进程，也不声称完成独立物理备份。未执行201轮。

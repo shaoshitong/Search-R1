@@ -1,3 +1,5 @@
+> Final accepted result: [FINAL-RESULTS.md](FINAL-RESULTS.md). Both arms200 and final51713 are complete; historical progress below is time-stamped history.
+
 # Prefix5 A/B on h100-11: actual progress
 
 ## Per-iteration selected mixing through42

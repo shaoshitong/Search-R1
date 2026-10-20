@@ -1,0 +1,15 @@
+PROOFS={'A': {5: '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1', 50: '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1', 100: '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1', 150: '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1', 200: '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-a-20261018-ca37419b4944-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1-retained-h10011-cards4-7-r3'}, 'B': {5: '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1', 50: '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-cache-repair1-kv-profile-repair1-actor-memory-repair1-h10011-r1', 100: '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2', 150: '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2', 200: '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2'}}
+RUNS={'A': 'ca37419b494446398fb15234aa3be91a', 'B': 'd9e5385ebec24ea8ab6cb8db8d2f825a'}
+import json,hashlib
+from pathlib import Path
+result={}
+for arm,points in PROOFS.items():
+ out=[]
+ for outer,base in points.items():
+  p=Path(base)/'preparation'/('ab-joint-%04d-independent-full-sha-cpu.json'%outer)
+  raw=p.read_bytes();v=json.loads(raw)
+  assert v['status']=='AB_JOINT_FULL_SHA_CPU_PASS' and v['outer']==outer and v['actual_cpu_deserialization']
+  assert v['run_id']==RUNS[arm]
+  out.append(dict(outer=outer,path=str(p),sha256=hashlib.sha256(raw).hexdigest(),status=v['status'],actor_adam=v['actor_actual_adam_steps_per_rank'],probe_adam=v['probe_actual_adam_steps_per_rank'],independent_backup=v.get('independent_backup_performed',False),no_repeated_large_hash_or_load=True))
+ result[arm]=out
+print(json.dumps({'B':result}))
