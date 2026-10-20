@@ -1,0 +1,18 @@
+# New validation fixed-G5 on the qualified HF backend
+
+The original new-G10 recipe-selection validation questions and precommitted fixed-G5 identities are unchanged. This is viewed validation, not an untouched final pool. No trajectory was chosen by EM or probe score; neither full-response/own-EM payloads nor the final4096 pools were opened. The source is `algorithm-improvement-20261021/validation-g10-20261021/materialized`, complete SHA `5ea5197a841d7bd0b226a82350a2436a8ae3d860143a2ea39fe59b7ecb6837d5`. The existing fixed-G5 file SHA remains `b6e5b57fee270c8fa61c1f03f212b5baef1125d205c006475f65a0690ed4aecb`; its selected-ID digest remains `c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7`.
+
+All 32 accepted Prefix20 source files were SHA verified and the exact 10,240 selected rows projected without decoding/re-tokenizing or reconstructing another context. Official 7B revision `a09a35458c702b33eeacc393d103063234e8bc28`, full saved causal contexts, positions and initial question slots are preserved. The capture uses the same qualified HF/FA2 primitive as the peer8192 branch: batched core SHA `500911347444a07693fb4405a6f6fbbcad7b70375522a52833953b426970f506`, context batch/window32 and padded-token budget16384. Golden v3 SHA is `3eeeb79b750d2e0bfee81c9a283c7428d0629b0d56815f91909c93e2bd9f5715`. Root explicitly accepted this numeric HF branch; it is not claimed bit-exact to scalar or native vLLM. Fair E4/candidate comparison must reevaluate both on these same HF features.
+
+The isolated immutable code root is `validation-fixedG5-hf-replay-20261021/code-70f43e7708ea`. Six metadata tests actually passed on HPC3. CPU preparation completed in 3.356 seconds. The single actual Slurm job743330 used normal acd_u, one GPU/eight CPUs/64G/two-hour limit with no dependency. It completed0:0 in4m19s. Two actual intervals verified data growth (6→17→32 sealed chunks, 0.335→0.938→1.726GB); the final capture contains 2048 questions/10240 real trajectories in32 chunks, with actor/probe optimizer updates0. Feature capture itself took182.46 seconds. Only layer26 (human block27 input) is durably stored.
+
+Remote output root:
+`/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/capture`.
+
+- `complete.json`:23003B, SHA `54453790ae4f2ed2c1cdd0b87a17b383fe6737d5ada3dba640b3ee78b7605056`.
+- `features-layer26.json`:8994B, SHA `f65c1d5466ff3576eee19e5332664b36e2bd26195ce0c8c236295ff20a4982fc`; JSON list of32 SHA-bound replay-manifest descriptors.
+- `complete.feature_manifests_by_capture_layer['26']` contains that same descriptor list. `source_groups`, `source_fixed_G5` and `source_complete` preserve the source bank bindings for downstream evaluation.
+
+The capture checked all manifest/payload SHA values and reader identity coverage. The separate full-row CPU audit actually passed in 55.611 seconds, as recorded in `independent-all-rows-audit.json`; it reconstructed every one of 10,240 rows and verified each retained BF16 feature SHA. The remote `independent-reader-audit.json` is 2595 bytes, SHA `7c37920375dc13eff72cf0fef1b99153a03bed3113bd9e5c22646d60c99a8b6f`. All feature bytes and tensors remain remote. No student training or new responses were started by this operation.
+
+Actual replay statistics were 10,252 complete causal contexts, 332 model calls and 1,545,999 valid context tokens. Twelve trajectories have retained-policy position gaps from real intervening tool context. These were preserved and executed; this does not claim a new scalar-versus-batched numeric equivalence result for all 10,240 trajectories. All retained prefixes have length20.

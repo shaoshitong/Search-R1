@@ -1,0 +1,66 @@
+{
+  "status": "ACTUAL_READ_ONLY_NEW_FIXED_G5_HF_CAPTURE_OBSERVATION",
+  "epoch": 1792527498.697651,
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021",
+  "cpu-qualification.json": {
+    "status": "ACTUAL_METADATA_ONLY_FIXED_G5_6_TESTS_PASSED"
+  },
+  "cpu-prepare-launch.json": {
+    "status": "CPU_PREPARE_STARTED_NOT_VERIFIED",
+    "pid": 706692,
+    "start_ticks": "123789551",
+    "same_process_birth": false
+  },
+  "prepare-progress.json": {
+    "trajectories": 10240,
+    "expected_trajectories": 10240
+  },
+  "preparation.json": {
+    "status": "NEW_VALIDATION_FIXED_G5_PREFIX_ONLY_PREPARED_NOT_CAPTURED",
+    "questions": 2048,
+    "trajectories": 10240,
+    "selection": {
+      "bytes": 1150609,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-fixedG5-hf-replay-20261021/inputs/selection.json",
+      "sha256": "40043fbdd641adbb38f963ce0834128cb837477a0a1e0cd9f004af84f2c529ec"
+    },
+    "batching": {
+      "acceptance": "Explicit operator selected actual scalar/batched golden evidence; no native bitexact claim",
+      "batch_size": 32,
+      "core_sha256": "500911347444a07693fb4405a6f6fbbcad7b70375522a52833953b426970f506",
+      "golden": {
+        "bytes": 12350,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/replay-batched-golden-v3/output/complete.json",
+        "sha256": "3eeeb79b750d2e0bfee81c9a283c7428d0629b0d56815f91909c93e2bd9f5715"
+      },
+      "padded_token_budget": 16384,
+      "window_trajectories": 32
+    },
+    "source_complete": {
+      "bytes": 4492,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/complete.json",
+      "sha256": "5ea5197a841d7bd0b226a82350a2436a8ae3d860143a2ea39fe59b7ecb6837d5"
+    },
+    "source_fixed_G5": {
+      "bytes": 694386,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/fixed-G5-selection.json",
+      "sha256": "b6e5b57fee270c8fa61c1f03f212b5baef1125d205c006475f65a0690ed4aecb"
+    }
+  },
+  "CPU_log_tail": "pling/shard-03/batches/batch-000001/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"d2fd510d8ca1edacd73d8b2cad149da3c56b7740fe3e6d96ad5a9da7696177d3\"}, {\"bytes\": 80255, \"count\": 640, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-B/sampling/shard-03/batches/batch-000002/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"45f7f2c0606d7fef55fd4793b6b5e9e81e7ed8d1dd67c92a94ce75a672c5c456\"}, {\"bytes\": 82460, \"count\": 640, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-B/sampling/shard-03/batches/batch-000003/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz\", \"sha256\": \"82715eaa3a1c7af0d7f48716390d04d402d24993e878296c039cd914e320c834\"}], \"status\": \"NEW_VALIDATION_FIXED_G5_PREFIX_ONLY_PREPARED_NOT_CAPTURED\", \"time\": 1792527308.4401627, \"trajectories\": 10240}\n",
+  "complete_chunks": 17,
+  "actual_capture_bytes": 938333335,
+  "progress.json": {
+    "status": "ACTUAL_NEW_VALIDATION_FIXED_G5_HF_REPLAY_ADVANCING",
+    "trajectories": 5574,
+    "expected_trajectories": 10240,
+    "elapsed_seconds": 96.71921361004934,
+    "time": 1792527498.8102314
+  },
+  "job_id": "743330",
+  "squeue": "743330|q7b-newval-fixed5-hfreplay|RUNNING|ACD1-11|ACD1-11",
+  "sacct": "743330|q7b-newval-fixed5-hfreplay|RUNNING|0:0|00:02:52",
+  "logs": {
+    "capture-743330.log": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\nLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\nLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:02,  1.37it/s]\nLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.45s/it]\nLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:03<00:01,  1.12s/it]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.28it/s]\nLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.09it/s]\n"
+  }
+}
