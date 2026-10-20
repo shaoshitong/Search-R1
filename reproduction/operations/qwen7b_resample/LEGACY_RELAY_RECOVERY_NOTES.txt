@@ -1,0 +1,111 @@
+LOCAL ONLY: no remote query, stage, submit, stop, GPU test or Git publication.
+Existing retrieval_relay.py, source5 V6/upstream and sampler code are untouched.
+
+Observed source behavior, not a historical diagnosis
+--------------------------------------------------
+retrieval_relay.py process_request immediately writes 503 when its nonblocking
+16-slot semaphore cannot be acquired. The rejection precedes HTTP/query parse.
+search_g1/async_rollout_runtime.py BoundedRetriever retries immediately with no
+backoff, then records only the exception class. The actual warmup sampling.py
+constructor uses 16 retrieval threads per model, default tool timeout60 and
+two retries (three attempts). Generation seq64 is not itself64 HTTP threads.
+Aggregate models can exceed16. HTTPError alone cannot identify whether the
+historical status was503/400/403/500/502; retained relay logging has no status
+counter. This code demonstrates a possible mechanism, not a proved incident
+attribution. No failure is converted to empty successful retrieval.
+
+NEW retrieval_relay_backpressure.py
+---------------------------------
+Uses the original auth/route/opaque-byte HTTP handler. A fixed pool starts
+only at serve_forever, after upstream setns when used in that role. New CPU
+downstream uses8 backend workers versus retained upstream16. Queue128 and
+listen backlog256 cover the finite80-client default topology (and96-client
+test). No queued request creates a new thread. Userspace holds at most8 active
++128 queued+1 admission socket. Kernel backlog remains finite as well.
+
+Queue wait is45s, not the unsupported initial5s. Every accepted request shares
+an absolute59s budget. The backend timeout is min(50,59-elapsed); request body,
+connect and response share the remaining budget. A deadline timer shuts owned
+backend sockets to prevent a slow-drip response from renewing per-read timeouts.
+Queue-full/queue-expired remain explicit503; backend failure/deadline remains
+a real HTTP/transport error. Request/result bytes, status, content-type,
+top3, ordering and scores are unchanged. No reduction of scientific context or
+retrieval algorithm budget, no alternate corpus/index and no empty-doc fallback.
+
+backpressure-stats.json records bounded queue/active peaks, queue rejects,
+remaining backend budget and attempted HTTP statuses, without token/query/
+response values. It is written at most once per5s plus final shutdown.
+The 59s request bound assumes the unchanged actual client timeout is60s;
+changing that scientific/runtime client contract would require matching bounds.
+Arbitrarily sustained overload can still fail honestly; no finite queue can
+guarantee success beyond the preserved client deadline.
+
+NEW legacy_relay_owner.py / legacy_relay_control.py
+-------------------------------------------------
+Explicit role current-oldV6-source. Reuses the existing remote-only files:
+BASE/preparation/relay-consumer10-control-v1/source-context.json
+BASE/preparation/relay-consumer10-control-v1/upstream-ready.json
+BASE/preparation/relay-consumer10-control-v1/relay-secret
+No secret is generated, copied to Mac or printed. Ready records its path+SHA.
+The source context and upstream original PID/birth/netns/code are SHA-bound.
+No future source guard is required or claimed for this still-live old source.
+
+Unique instance v1 unit:
+sst-q7b-g5-cpu-relay10-v1-70188b8e50fd.service
+Unique remote directory:
+BASE/preparation/legacy-relay10-independent-v1
+CPU ready:
+that directory/owner-ready.json
+
+Plan command (local):
+python -m reproduction.operations.qwen7b_resample.legacy_relay_control plan --topology tp4 --instance v1
+Stage/submit require exact published commit/ref+intent-id. Submit also requires
+--predecessor-proof PATH --predecessor-sha256 SHA. Failed/unknown intent is
+never replayed; query that same unit. A later retry requires a fresh instance.
+
+Actual prerequisite proof is the data agent's honest failed-terminal status
+OWN_NODE10_NATIVE_FAILURES_ORIGINAL_SHA_RELEASE_PASS, with separately scoped
+predecessor compatibility status. All four exact old node10 units, two release
+observations>=3s, original PID/birth evidence and missing historical births
+are retained honestly. Runtime checks old local units/context/PIDs again and
+requires loopback28831 unbound. It never checks source5 PIDs in node10 /proc.
+
+CPU owner owns only its downstream listener child and no GPU/primary lease.
+Private retained NAS10 mounts plus hostNET are proven with own unit/PID/birth/
+cgroup/mntns/netns. Soft deadline=min(start+4h,old source deadline-900,
+actual unit hard end-300); consumer cap=soft deadline-600. Unit hard limit4h.
+Source may end early: actual /health failure is terminal, only the owned relay
+is stopped, model controllers must observe dependency failure and clean up
+their own children. CPU health timeout60 tolerates the bounded request queue.
+
+Ready status LEGACY_SOURCE_RELAY_OWNER_READY includes role/run/node, owner and
+relay process proofs, allocation_path/SHA, job_ready_path, source_context_path/
+SHA+full bound context, upstream_ready_path/SHA, token_file/SHA(no value),
+transport_ready_path/SHA, exact slots and absolute deadlines. job ready and
+published ready contain identical JSON bytes/SHA. owner_drain_path is explicitly
+job_ready_path.parent/drain-owner.json.
+
+Default explicit topology tp4 is four TP1s GPU1/2/3/5 (64seq/8192 tokens/4096
+blocks/1GiB reserve) plus TP4 0/4/6/7 (8seq/4096/512/.125). Alternative tp2-pairs
+is only selected explicitly, with16seq/4096/1024/.5 per TP2. No automatic
+capacity selection or memory-fit claim is made.
+
+Each model directly owns its primary UUID locks and holds the additional live
+lease legacy_relay_owner.lease_path(BASE,RUN_ID,ready.owner,slot):
+BASE/pool/relay-live-slots/RUN_ID/<ownerPID>-<birth>/<slot>.lock
+until every owned sampler child is cleaned. The CPU does not own model PIDs.
+Model completion never stops the relay. Explicit drain or soft expiry publishes
+the same bound drain-owner.json. Existing draining_pool_worker checks it before
+the next atomic claim, allowing accepted prefix/full work to finish and seal.
+CPU waits live leases, bounded by its hard/source deadline. Genuine partials
+remain possible on source failure or hard timeout; no zero-loss claim is made.
+
+CPU verification
+----------------
+python -m unittest reproduction.operations.qwen7b_resample.test_retrieval_relay_backpressure reproduction.operations.qwen7b_resample.test_legacy_relay_owner -v
+Latest:8 tests passed in3.431s. Includes real old16-slot 3x503 reproduction,
+96 real two-hop HTTP clients through new8->old16, clock-scaled queue>8s with
+exact bytes/status/top3 preserved and shrinking backend budget, queue overflow/
+expiry truthful errors, slow-drip absolute deadline failure, independent owner
+lease drain, actual source disconnect terminal behavior, original release-proof
+rejection and generated CPU bootstrap execution. No GPU or remote test run.
