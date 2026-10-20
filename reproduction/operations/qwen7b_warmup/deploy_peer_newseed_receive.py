@@ -1,0 +1,156 @@
+"""Code-only immutable receiver deployment and guarded RAM-only launch.
+
+A short-lived task-owned SSH ControlMaster carries code/credentials/small audit
+summaries only. Archive payloads move HF->HKUST2->HKUST3->HPC3 independently.
+"""
+import argparse,contextlib,hashlib,importlib.util,json,os,shlex,stat,subprocess,tempfile,time
+from pathlib import Path
+from . import peer_newseed_receive as receiver
+
+SNAPSHOT='newseed-20261021-185747-445fc691'
+PREFLIGHT=r'''
+import json,requests,socket,sys,time
+secret=json.loads(sys.stdin.readline());out=[]
+for label,port in [('direct',None),('HKUST2-17894',17894),('HKUST2-17897',17897),('HKUST2-17898',17898)]:
+ started=time.monotonic();value=dict(exit=label)
+ try:
+  if port:
+   s=socket.create_connection(('127.0.0.1',port),timeout=1);s.close()
+  with requests.Session() as session:
+   session.trust_env=False;session.headers['Authorization']='Bearer '+secret['hf_token']
+   if port:session.proxies={'http':'http://127.0.0.1:'+str(port),'https':'http://127.0.0.1:'+str(port)}
+   response=session.get('https://huggingface.co/api/datasets/Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020',timeout=(3,5))
+   value['http_status']=response.status_code
+   if response.status_code==200:
+    v=response.json();value['status']='PRIVATE_REPO_MATCH' if v.get('private') is True and v.get('id','').lower()=='sutoonq/qwen25-7b-probe-h100-transfer-20261020' else 'REPOSITORY_ID_OR_PRIVACY_MISMATCH'
+   else:value['status']='HTTP_REJECTED'
+ except Exception as error:value.update(status='FAILED',error_type=type(error).__name__)
+ value['elapsed_seconds']=time.monotonic()-started;out.append(value)
+print(json.dumps(dict(status='READ_ONLY_OFFICIAL_HF_METADATA_PREFLIGHT',exits=out,proxy_environment_inherited=False,Mac_proxy_used=False,archive_bytes_downloaded=0,epoch=time.time())))
+'''
+COMMON=r'''
+import fcntl,hashlib,json,os,pathlib,subprocess,sys,time
+b=pathlib.Path(inputs['base']);p=pathlib.Path(inputs['code']);assert b.parent==pathlib.Path('/data/shaoshitong/qwen7b-peer-newseed-to-hpc3-20261021') and b.name==inputs['snapshot']
+assert p==b/'code'/inputs['code_sha256']/'peer_newseed_receive.py'
+assert p.is_file() and hashlib.sha256(p.read_bytes()).hexdigest()==inputs['code_sha256']
+def atomic(p,v):
+ q=p.with_name(p.name+'.%d.tmp'%os.getpid())
+ with q.open('w') as f:json.dump(v,f,sort_keys=True);f.write(chr(10));f.flush();os.fsync(f.fileno())
+ q.replace(p)
+def identity(pid):
+ try:return pathlib.Path('/proc/%d/stat'%pid).read_text().rsplit(')',1)[1].split()[19]
+ except FileNotFoundError:return None
+def live(value):return identity(value['pid'])==value['start_ticks']
+'''
+START=r'''
+secret=json.loads(sys.stdin.readline());assert set(secret)=={'hf_token','hpc3_password'} and all(secret.values())
+assert len(inputs['catalog_commit'])==40 and all(c in '0123456789abcdef' for c in inputs['catalog_commit'])
+with (b/'launch.lock').open('a') as guard:
+ fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
+ if (b/'launch.json').exists():
+  v=json.loads((b/'launch.json').read_text());print(json.dumps(dict(status='EXISTING_RECEIVER_LAUNCH_NOT_REPLAYED',launch=v,actual_process_same_birth=live(v))))
+ else:
+  assert not (b/'launch-intent.json').exists(),'Unknown prior launch result; inspect before retry'
+  if (b/'controller.json').exists():
+   c=json.loads((b/'controller.json').read_text());cmd=pathlib.Path('/proc/%d/cmdline'%c['pid'])
+   assert not cmd.exists() or str(p).encode() not in cmd.read_bytes(),'Existing receiver writer has no launcher receipt'
+  intent=dict(status='RECEIVER_LAUNCH_INTENT_NOT_SUCCESS',code_sha256=inputs['code_sha256'],source_commit=inputs['source_commit'],catalog_commit=inputs['catalog_commit'],prefix=inputs['prefix'],hf_proxy=inputs['hf_proxy'],epoch=time.time())
+  atomic(b/'launch-intent.json',intent)
+  args=['python3','-u',str(p),'--action','receive','--base',str(b),'--snapshot',inputs['snapshot'],'--prefix',inputs['prefix'],'--catalog-commit',inputs['catalog_commit']]
+  if inputs['hf_proxy']:args+=['--hf-proxy',inputs['hf_proxy']]
+  env=dict(os.environ,CUDA_VISIBLE_DEVICES='',PYTHONDONTWRITEBYTECODE='1')
+  for key in ('HF_TOKEN','HUGGING_FACE_HUB_TOKEN','SSHPASS'):env.pop(key,None)
+  with (b/'receiver.log').open('ab') as log:
+   child=subprocess.Popen(args,stdin=subprocess.PIPE,stdout=log,stderr=subprocess.DEVNULL,env=env,start_new_session=True)
+   child.stdin.write(json.dumps(secret).encode()+bytes([10]));child.stdin.close()
+  value=dict(intent,status='RECEIVER_STARTED_NOT_PROGRESS_VERIFIED',pid=child.pid,start_ticks=identity(child.pid),token_saved=False,password_saved=False,Mac_data_transit=False)
+  atomic(b/'launch.json',value);print(json.dumps(value))
+'''
+STATUS=r'''
+out=dict(base=str(b),observed_epoch=time.time(),code_sha256=inputs['code_sha256'],source_commit=inputs['source_commit'])
+for name in ('source-publication.json','launch.json','controller.json','progress.json','retry.json','failure.json','complete.json'):
+ q=b/name
+ if q.exists():out[name]=json.loads(q.read_text())
+if (b/'launch.json').exists():
+ v=out['launch.json'];out['actual_process_same_birth']=live(v)
+ if out['actual_process_same_birth']:
+  cmd=pathlib.Path('/proc/%d/cmdline'%v['pid']).read_bytes();out['actual_owned_command']=str(p).encode() in cmd and str(b).encode() in cmd
+  q=pathlib.Path('/proc/%d/io'%v['pid'])
+  if q.exists():out['actual_io_counters']={k:int(v) for k,v in (s.split(':',1) for s in q.read_text().splitlines())}
+out['actual_archive_files']={}
+for q in (b/'archives').glob('*'):
+ if q.is_file() and not q.is_symlink():out['actual_archive_files'][q.name]=q.stat().st_size
+for name in ('download-accepted','target-accepted'):
+ records=[json.loads(q.read_text()) for q in (b/name).glob('*.json')]
+ out[name]=dict(groups=len(records),bytes=sum(r.get('archive_bytes',r.get('bytes',0)) for r in records))
+print(json.dumps(out))
+'''
+
+
+def render(inputs,action):
+    if action not in ('start','status'):raise ValueError('Unknown receiver control action')
+    return 'inputs='+repr(inputs)+'\n'+COMMON+(START if action=='start' else STATUS)
+
+
+@contextlib.contextmanager
+def route(direct=False):
+    """Never alter user SSH config or reuse/stop another task's master."""
+    with tempfile.TemporaryDirectory(prefix='q7recv-',dir='/tmp') as folder:
+        socket=str(Path(folder)/'ssh.sock')
+        args=['ssh','-T','-S',socket,'-oControlMaster=yes','-oControlPersist=180','-M','-fN',
+            '-oBatchMode=yes','-oStrictHostKeyChecking=yes','-oConnectTimeout=8','-oServerAliveInterval=15','-oServerAliveCountMax=3']
+        if direct:
+            ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0']).decode().strip()
+            args+=['-B','en0','-b',ip,'-oProxyCommand=none','-oProxyJump=none']
+        args+=['hkust2']
+        try:
+            result=subprocess.run(args,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,timeout=15)
+            if result.returncode:raise RuntimeError('HKUST2 control authentication unavailable')
+            yield ['ssh','-T','-S',socket,'-oControlMaster=no','-oBatchMode=yes','-oStrictHostKeyChecking=yes','-oConnectTimeout=8','hkust2']
+        finally:
+            if Path(socket).exists():subprocess.run(['ssh','-S',socket,'-O','exit','hkust2'],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=10)
+
+
+def publication(repo):
+    commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=str(repo)).decode().strip()
+    remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/qwen7b-probe-warmup-20261019'],cwd=str(repo)).split()[0].decode()
+    if commit!=remote:raise ValueError('Publish exact current receiver controls before using them')
+    for path in (Path(receiver.__file__),Path(__file__)):
+        if path.read_bytes()!=subprocess.check_output(['git','show',commit+':'+str(path.relative_to(repo))],cwd=str(repo)):
+            raise ValueError('Unpublished receiver/control bytes')
+    return commit
+
+
+def token():
+    p=Path.home()/'.cache/huggingface/token'
+    if stat.S_IMODE(p.stat().st_mode)!=0o600:raise ValueError('HF token input file must have mode600')
+    result=p.read_text().strip()
+    if not result:raise ValueError('RAM HF token unavailable')
+    return result
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--action',choices=['stage','preflight','start','status'],required=True)
+    parser.add_argument('--control-root',type=Path,required=True);parser.add_argument('--snapshot',default=SNAPSHOT);parser.add_argument('--catalog-commit');parser.add_argument('--hf-proxy');parser.add_argument('--direct-en0',action='store_true');args=parser.parse_args()
+    repo=Path(__file__).resolve().parents[3];commit=publication(repo);snapshot=receiver.snapshot_name(args.snapshot);base=receiver.K2/snapshot;digest=hashlib.sha256(Path(receiver.__file__).read_bytes()).hexdigest();code=base/'code'/digest/'peer_newseed_receive.py'
+    inputs=dict(base=str(base),snapshot=snapshot,code=str(code),code_sha256=digest,source_commit=commit,prefix=receiver.PREFIX+snapshot,catalog_commit=args.catalog_commit,hf_proxy=args.hf_proxy)
+    with route(args.direct_en0) as ssh:
+        if args.action=='stage':
+            actual=receiver.install_code(ssh,base)
+            assert actual==code
+            script='import pathlib,hashlib,json,time; b=pathlib.Path(%r); p=pathlib.Path(%r); v=dict(status="RECEIVER_CODE_STAGED_ONLY",source_commit=%r,path=str(p),sha256=hashlib.sha256(p.read_bytes()).hexdigest(),bytes=p.stat().st_size,receiver_started=(b/"receiver.lock").exists(),catalog_created=(b/"catalog.json").exists(),epoch=time.time()); (b/"source-publication.json").write_text(json.dumps(v)); print(json.dumps(v))'%(str(base),str(code),commit)
+            result=receiver.remote(ssh,'python3 -c '+shlex.quote(script),timeout=45)
+        elif args.action=='preflight':result=receiver.remote(ssh,'python3 -c '+shlex.quote(PREFLIGHT),dict(hf_token=token()),timeout=55)
+        else:
+            script=render(inputs,args.action)
+            if len(('python3 -c '+shlex.quote(script)).encode())>=16000:raise ValueError('Receiver control command exceeds16KB')
+            secret=None
+            if args.action=='start':
+                if not args.catalog_commit:raise ValueError('Pinned actual HF catalog commit required before start')
+                p=args.control_root/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py';spec=importlib.util.spec_from_file_location('receiver_private_control',str(p));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+                secret=dict(hf_token=token(),hpc3_password=m.password_for('mou176').decode())
+            result=receiver.remote(ssh,'python3 -c '+shlex.quote(script),secret,timeout=55)
+    out=args.control_root/'outputs/qwen7b-warmup-20261019'/('peer-newseed-receiver-'+args.action+'.json');out.write_text(json.dumps(result,sort_keys=True,indent=2)+'\n');print(json.dumps(result))
+
+
+if __name__=='__main__':main()

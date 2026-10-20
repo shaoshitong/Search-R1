@@ -34,3 +34,11 @@ python3 /immutable/code/peer_newseed_receive.py --action receive \
 只读真实路线已成功：HKUST2 xielab2 → HKUST3 xielab3 → HPC3 ACD-Login-1/uid21930。HKUST2 rsync/flock/requests2.31 可用、余2.492TB；HKUST3 rsync/flock/sshpass 可用、余9.880TB。证据为 actual-launches/peer-newseed-receiver-readonly-route.json。未执行远端写入或真实数据下载。
 
 HPC3 默认 Python3.6，target-init/accept/finalize 只用3.6标准库；shlex.join 位于只在 HKUST2/3 调用的安装/传输路径。实际远端 tiny fixture 接受和 readback 在发布后进行；本地测试不代替此实际证明。
+
+## 2026-10-21 实际标准库资格补记
+
+发布 commit755ed4ba3eef237ab2244c09c17cdac3966a43fc 后，在 HPC3 ACD-Login 的实际 Python3.6.8 上执行9项目标端测试，0失败/0错误，包含真实合成 target_accept、全部文件独立SHA读回和篡改拒绝。另两项仅测试HKUST2/3 shlex.join传输路径，已在本地13项联合测试通过，未错误地要求HPC3运行它们。
+
+独立共享fixture：`/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/peer-newseed-receiver-stdlib-fixture-20261021/755ed4ba3eef237ab2244c09c17cdac3966a43fc`。测试拦截了唯一一次合成complete写入，第二次fresh读回确认 synthetic-tmp为空、没有任何持久complete文件；该fixture绝不作为真实源/HF catalog或迁移验收。qualification.json SHA256为1dbd188cd48a1ba656aaa96760806834f635a786347fc07fbb4499eb0c941b3d，receiver源码仍为3d9b43e03217e4cdb1d28491c198b4ef19950ad873fad5632fab0ddba6ab3cc9。
+
+HKUST2/3新SSH连接出现间歇性TCP22超时，也观察过四条别名/直连路径同时成功，故接收代码部署改用本任务短时ControlMaster复用，结束只关闭本任务master；没有改动Mac网络/代理配置。真实HF catalog未出前仍不启动receive。
