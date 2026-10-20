@@ -1,0 +1,7 @@
+# Updated human scope: four epochs and unseen2048 selection
+
+The newer direct human request ends warmup after complete epoch4 and compares epoch1/2/3/4 EMA on one immutable bank of2048 unseen questions with five fresh trajectories per question. Older automatic twenty-epoch goal replays must not restart epoch5 training. Raw UI message time is unavailable; receipt observation is recorded separately.
+
+Exclude all169028 warmup questions,512 diagnostics and reserved51713 final questions by ID and normalized text. Fix the pool before observing rollout EM. Rank each checkpoint by predicted q=1-product(p_j)-product(1-p_j), choose512 whole question groups with deterministic ID ties, and then disclose real Mixed count/512, allwrong/allcorrect fractions, full2048 Mixed base rate, uplift and per-source counts. All checkpoints share identical original trajectories/features/labels; scoring never uses EM. Preserve all four complete checkpoints and optimizer/RNG states. Select by highest held-out realMixed@512; report ties and supporting diagnostics. This is validation for checkpoint selection, not a new final QA score.
+
+The active trainer is immutable. An independent control watcher validates the complete epoch4 checkpoint and signals only its four verified ranks through their existing graceful-save handler using a CPU-only step in the same allocation. Record any already-started epoch5 tail separately; retain it, but do not include it among the four compared checkpoints. No broad scancel or new GPU allocation is used for stopping. No student RL is authorized.
