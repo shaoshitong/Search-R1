@@ -26,6 +26,8 @@ def main():
     c.update(mixed_floor=d.get('mixed_floor'),mixed_floor_progress=d.get('mixed_floor_progress'),
         prepare_restart_exit=d.get('prepare_restart_exit'),floor_native_progress=d.get('floor_native_progress'))
     c.update(metadata_read_bytes=d.get('metadata_read_bytes'),metadata_read_budget_bytes=d.get('metadata_read_budget_bytes'))
+    c.update(final_evaluation_progress=d.get('final_evaluation_progress'),final_evaluation=d.get('final_evaluation'),
+        completion_metadata_scope=d.get('completion_metadata_scope'))
     c.update(probe_diagnostics=d.get('probe_diagnostics'),latest_milestone_QA=d.get('latest_milestone_QA'),
         prefix40_transition=d.get('prefix40_transition'),grounding_lifecycle=d.get('grounding_lifecycle'),
         recent_complete_metadata=d.get('recent_complete_metadata'),

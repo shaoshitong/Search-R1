@@ -108,6 +108,29 @@ def main():
         exec(selection, phase)
         assert phase.get('attempt') == expected
         assert phase['value']['actor_inflight'] == []
+    # Execute the actual final receipt projection without loading recursive joint.
+    projection = textwrap.dedent(REMOTE[REMOTE.index(' def pipeline_completion_projection('):
+        REMOTE.index(' completed,completion_scope=')])
+    reads = []
+    def bounded_fixture_range(path, start, length):
+        reads.append((start, length))
+        return path.raw[:length] if start == 0 else path.raw[-length:]
+    final_namespace = dict(json=json, hashlib=hashlib, h={'run_id': 'fixture'},
+        file_bytes=lambda path, limit: path.raw, file_range=bounded_fixture_range,
+        json_prefix=value['json_prefix'], json_suffix=value['json_suffix'])
+    exec(projection, final_namespace)
+    project = final_namespace['pipeline_completion_projection']
+    raw = json.dumps(dict(complete_outers=200,
+        final_evaluation={'qa_count': 51713, 'run_id': 'fixture'},
+        latest_joint={'outer': 200}, run_id='fixture'), sort_keys=True).encode()
+    item, scope = project(_Path(raw))
+    assert item['complete_outers'] == 200 and scope['metadata_status'] == 'PRESENT'
+    item, scope = project(_Path(raw, 80 * 1024**2))
+    assert item['final_evaluation']['qa_count'] == 51713
+    assert scope['hash_scope'] == 'UNKNOWN_NOT_FULL_REHASH' and scope['recursive_joint_body_not_read']
+    assert reads == [(0, 131072), (-65536, 65536)]
+    item, scope = project(SimpleNamespace(is_file=lambda: False))
+    assert item is None and scope['metadata_status'] == 'NOT_YET_RECORDED'
     print(json.dumps(dict(
         status='PASS', old_8MiB_boundary_bytes=size,
         joint_per_file_limit_bytes=16 * 1024**2,

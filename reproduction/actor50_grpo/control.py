@@ -241,9 +241,42 @@ else:
   prepare_restart_exit=small(b/'preparation/prepare-restart-exit.json'),
   probe=small(b/'probe/latest.json'),failure=small(b/'logs/failure.json'),exit=small(b/'logs/exit.json'),
   cleanup=small(b/'logs/cleanup-status.json'),prefix40_transition=value_transition,grounding_lifecycle=grounding_lifecycle)
- completed=small(b/'logs/pipeline-complete.json')
+ def pipeline_completion_projection(path):
+  if not path.is_file():return None,dict(metadata_status='NOT_YET_RECORDED')
+  size=path.stat().st_size
+  if size<8*1024**2:
+   raw=file_bytes(path,8*1024**2-1);item=json.loads(raw)
+   scope=dict(metadata_status='PRESENT',bytes=size,metadata_sha256=hashlib.sha256(raw).hexdigest())
+  else:
+   # The immutable pipeline embeds the same recursive80MB joint in its final
+   # receipt. Read only the scalar prefix and run identity suffix, not that body.
+   item=json_prefix(file_range(path,0,131072),'latest_joint')
+   tail=json_suffix(file_range(path,-65536,65536),'run_id')
+   item['run_id']=tail['run_id']
+   scope=dict(metadata_status='PRESENT_BOUNDED_COMPONENT_PROJECTION',bytes=size,
+    full_metadata_sha256=None,hash_scope='UNKNOWN_NOT_FULL_REHASH',recursive_joint_body_not_read=True)
+  assert item['run_id']==h['run_id'] and item['complete_outers']==200
+  assert item['final_evaluation']['qa_count']==51713
+  return item,scope
+ completed,completion_scope=pipeline_completion_projection(b/'logs/pipeline-complete.json')
+ value['completion_metadata_scope']=completion_scope
  value['complete']=None if completed is None else dict(run_id=completed['run_id'],complete_outers=completed['complete_outers'],
   final_evaluation=qa_summary(completed['final_evaluation']))
+ final_path=b/'final-evaluation/complete.json';final_item=small(final_path)
+ value['final_evaluation']=None
+ if final_item is not None:
+  assert final_item['run_id']==h['run_id'] and final_item['qa_count']==51713
+  value['final_evaluation']=dict(metrics=qa_summary(final_item),complete_metadata_sha256=sha(final_path))
+ value['final_evaluation_progress']=[]
+ for rank in range(4):
+  path=b/'final-evaluation'/('rank-%d-progress.json'%rank);item=small(path)
+  if item is None:
+   value['final_evaluation_progress'].append(dict(rank=rank,metadata_status='NOT_YET_RECORDED'))
+  else:
+   assert item['rank']==rank and item['expected_questions']==len(range(rank,51713,4))
+   assert type(item['completed_questions']) is int and 0<=item['completed_questions']<=item['expected_questions']
+   value['final_evaluation_progress'].append(dict(item,metadata_status='PRESENT',mtime_ns=path.stat().st_mtime_ns,
+    count_scope='LAST_FLUSHED_16_QUESTION_PROGRESS_LOWER_BOUND_NOT_FINAL_ACCEPTANCE'))
  probe_outer=(value['probe'] or {}).get('completed_outer',50)
  value['probe_diagnostics']=None
  if 50<probe_outer<200 and probe_outer%10==0:
