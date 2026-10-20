@@ -23,9 +23,12 @@ class LinearGroupHeadTests(unittest.TestCase):
         x=np.random.default_rng(1729).normal(size=(1300,12)).astype(np.float32);x[:,0]=1.;mean,scale=m.standardizer(x);np.testing.assert_allclose(mean,x.mean(axis=0),atol=1e-6);expected=x.std(axis=0);expected[0]=1.;np.testing.assert_allclose(scale,expected,atol=1e-6)
     def test_mmap_bounded_take_preserves_order_and_data(self):
         with tempfile.TemporaryDirectory() as d:
-            a=np.lib.format.open_memmap(Path(d)/'synthetic.npy',mode='w+',shape=(1100,7),dtype=np.float32);a[:]=np.arange(7700).reshape(1100,7);mask=np.arange(1100)%5==0;actual=m.take_rows(a,mask) if hasattr(a._mmap,'madvise') else None
-            if actual is None:self.skipTest('Linux madvise-only production path')
-            np.testing.assert_array_equal(actual,np.arange(7700).reshape(1100,7)[mask])
+            a=np.lib.format.open_memmap(Path(d)/'synthetic.npy',mode='w+',shape=(1100,7),dtype=np.float32)
+            try:
+                a[:]=np.arange(7700).reshape(1100,7)
+                if not hasattr(a._mmap,'madvise'):self.skipTest('Linux madvise-only production path')
+                actual=m.take_rows(a,np.arange(1100)%5==0);np.testing.assert_array_equal(actual,np.arange(7700).reshape(1100,7)[np.arange(1100)%5==0])
+            finally:a._mmap.close()
     def test_grid_budget_is_finite_and_two_methods_only(self):
         self.assertEqual(m.METHODS,('prefix_mean','prefix_last'));self.assertEqual(m.GRID,(.001,.01,.1));self.assertLess(m.LIMIT_SECONDS,30*60)
 

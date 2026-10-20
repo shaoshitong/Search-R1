@@ -1,7 +1,7 @@
 """Code-only immutable staging and guarded remote CPU2 linear-head diagnostic."""
 import argparse,base64,gzip,hashlib,importlib.util,io,json,shlex,subprocess,tarfile
 from pathlib import Path
-BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-linear-group-head-cpu2-20261021'
+BASE='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-linear-group-head-cpu2-v2-20261021'
 JOB='q7b-peer8192-linear-cpu'
 P='reproduction/operations/qwen7b_warmup/'
 FILES=tuple(P+n for n in ('peer_linear_group_head.py','test_peer_linear_group_head.py','deploy_peer_linear_group_head.py','replay_feature_reader.py','replay_probe_layers.py','peer_g10_learnability.py','g10_grouping.py','evaluate_frozen_validation.py','runtime.sh'))
@@ -69,10 +69,10 @@ for name,value in [('source-publication.json',json.dumps(pub,sort_keys=True)+'\\
  else:p.write_text(value)
 (b/'logs').mkdir(exist_ok=True)
 env=dict(os.environ,QWEN7B_CODE_ROOT=str(root),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2');r=subprocess.run(['bash',str(root/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-m','unittest','reproduction.operations.qwen7b_warmup.test_peer_linear_group_head'],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=50);(b/'actual-cpu-tests.log').write_text(r.stdout);assert r.returncode==0,r.stdout[-1500:]
-old=pathlib.Path(str(b).replace('peer8192-linear-group-head-cpu2-20261021','peer8192-linear-group-head-20261021'))/'actual-debug-cpu-plugin-test.log';assert old.exists() and 'Requested node configuration is not available' in old.read_text()
+old=pathlib.Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-linear-group-head-20261021/actual-debug-cpu-plugin-test.log');assert old.exists() and 'Requested node configuration is not available' in old.read_text()
 resource=dict(mode='parent_authorized_bounded_login_CPU2_RSS3GiB_26min',debug_test_failure=fp(old),debug_failure_text=old.read_text(),actual_login_allowed_affinity=sorted(os.sched_getaffinity(0)),actual_cgroup=pathlib.Path('/proc/self/cgroup').read_text(),GPU_requested=0)
 (b/'actual-cpu-resource-mode.json').write_text(json.dumps(resource))
-result=dict(status='IMMUTABLE_DIRECT_MIXED_CPU2_HEAD_PREPARED_6_TESTS_PASSED',source_publication=fp(b/'source-publication.json'),config=fp(b/'config.json'),script=fp(b/'analysis.sh'),CPU_test=fp(b/'actual-cpu-tests.log'),resource_mode=fp(b/'actual-cpu-resource-mode.json'),GPU_requested=0)
+result=dict(status='IMMUTABLE_DIRECT_MIXED_CPU2_HEAD_PREPARED_8_TESTS_PASSED',source_publication=fp(b/'source-publication.json'),config=fp(b/'config.json'),script=fp(b/'analysis.sh'),CPU_test=fp(b/'actual-cpu-tests.log'),resource_mode=fp(b/'actual-cpu-resource-mode.json'),GPU_requested=0)
 (b/'preparation.json').write_text(json.dumps(result));print(json.dumps(result))
 ''';print(json.dumps(call(s)))
     elif args.action=='submit':
