@@ -67,6 +67,8 @@ def main():
  assert read(b/'latest-joint.json')['outer']>=n
  for row in plan:
   f=Path(row['path']);st=f.stat();assert(st.st_dev,st.st_ino,st.st_size,st.st_mtime_ns)==(row['dev'],row['inode'],row['bytes'],row['mtime_ns']);f.unlink()
+ if a.kind=='derived-four':
+  with(first/'preparation/derived181-payload-retired.json').open('x')as h:json.dump(dict(current_base=str(b),successor_complete=n,retirement_intent=str(audit),original_eight181_retained=True,derived_rank_payloads_no_longer_exist=True),h)
  unique={(r['dev'],r['inode']):r['bytes']for r in plan}
  value.update(status='SUPERSEDED181_PAYLOAD_RETIRED_NOT_REPLAYABLE',removed_unique_bytes=sum(unique.values()),free_bytes=shutil.disk_usage(b).free,completed_unix=time.time())
  with(b/'preparation'/('retired181-'+a.kind+'-complete.json')).open('x')as h:json.dump(value,h)

@@ -101,6 +101,9 @@ def validate_imported(base,c):
         or read(b/'question-pool/state.json')!=r['pool_state']
         or j['probe']['actual_adam_steps_per_rank']!=[2530]*4):
         raise ValueError('Four-rank imported actor/probe/data boundary differs')
+    for row in j['actor']['rank_states']:
+        if Path(row['path']).stat().st_size!=row['bytes']:
+            raise ValueError('Imported four-rank payload missing/retired or changed')
     return 181
 
 
