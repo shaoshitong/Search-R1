@@ -10,9 +10,13 @@ Native unit: `sst-q7b-newseed-g5-20261020-r3.service`. Original 21,015,324-vecto
 
 Compute adapter: available-VRAM KV budget cap90% with3GiB reserve, TP1, max512 sequences/32768 batched tokens, eager XFormers **full-prefill** on this H100 runtime. These are execution adapters, not claims of BF16 bitwise equality to the HPC3 kernels/batch shapes. Actual constructor OOM alone allows cache/concurrency reduction before any committed sample. Accepted batch receipts are reused, never regenerated; unsealed data are quarantined and retained on recovery.
 
-## Latest productive continuation
+## Latest actual continuation
 
-At epoch1792516374 the retained NAS10 bank had **174 sealed batches / 22,272 questions / 111,360 trajectories**. Slurm array3967 has actual productive jobs3968/3969/3970/3971 on h100-10 physicalGPUs6/5/2/1. All four have independently assigned real UUIDs, ready original full Flat/E5 local retrieval, loaded official7B weights, and actual new complete G5 batches (4/4/2/1). A prior separate snapshot had106,240 trajectories, proving forward increment. The first5 new batches were independently read in full and passed input/token/replay/EM correspondence and full-file SHA, reusing163 old proof bindings. At that audit107,520 trajectories were verified; later sealed data still need their normal incremental audit. No new actor/probe training, OOM, sampling failure or scientific setting change was observed. This is productive continuation, not full845,140 completion. See pool-first-four-real-g5-acceptance.json.
+At2026-10-21 01:32CST, the retained NAS10 bank has **242 sealed batches / 30,976 questions / 154,880 trajectories**. All242 were independently read and passed full-file SHA, input/G5 identity, token/replay and own-EM correspondence; this latest CPU audit reused168 prior bindings and read74 new batches. Tokenizer-based strict EM was not recomputed. No failed batch was found. Full845,140 completion remains pending.
+
+The first four one-GPU Slurm jobs3968–3971 completed normally at their batch time boundary after19/20/20/20new batches. Samplers exited0; each controller stopped and reaped its own retriever. Their GPUs were then assigned to foreign queued jobs. Array3967 retains124pending elements; no own GPU was running at that observation. See pool-first-cohort-complete-small.json. The short30-minute mode incurred repeated queue waits, so the controller now also supports an independent **8-hour persistent queue** (16one-GPU tasks, up to16concurrent across5/10). The original3967 submission and immutable code stay unchanged. Shared batch and physical GPU locks apply to both modes; no scientific input/model/seed/rollout change is introduced. A persistent submission is only actual after its own intent/receipt and Slurm observation, not implied by this source publication.
+
+All full outputs and weights remain in our own shaoshitong directory on retained NAS10; no returning11 local disk or another user's directory is used. Mac retains code/config/docs/small summaries only.
 
 ## Source failure and retained bank history (2026-10-21 CST)
 
