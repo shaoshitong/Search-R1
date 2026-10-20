@@ -40,3 +40,13 @@
 当前已进入全量拟合前评估，逐rank计数持续推进且保持接近；正式Adam更新尚待确认。必须完成baseline、20epoch逐epoch训练/诊断与raw/EMA/Adam/RNG checkpoint验收、最佳EMA选择及最终交付，才能报告目标完成。不可把shadow资格测试的更新计入warmup预算。
 
 权威进度：`probe/predictions/eval-*-rank*-progress.json`、`probe/progress.json`、`probe/curve.jsonl`、`probe/latest.json`、各epoch回执及最终`probe/complete.json`。本地仅保存代码/小摘要，无模型、tensor或完整rollout。
+
+## 10:13 CST 更新：正式拟合与实际checkpoint均已通过
+
+完整train169028题/845140轨迹和dev512题/2560轨迹的baseline已结束。独立复核全部预测的qid、轨迹身份、真实EM、p_j范围和Mixed公式，重算混淆矩阵/轨迹准确率一致；最大公式误差train3.35e-7、dev1.73e-7。初始诊断联合loss2.0534204258583486，轨迹accuracy47.734375%，Mixed balanced accuracy49.43513148486534%。这些是拟合前基线，未声称泛化已改善。
+
+正式Adam实测14→53→99→130→216→257步持续推进，actor更新0，无新错误。每轮真实计划4573步，仍处于epoch1/20。20轮计划已逐一核对：每轮覆盖全部169028题，三类各77725组，共233175组，补采64147组；最小全局批次4，各rank非空。计划核验不能替代20轮实际执行验收。
+
+训练程序在第100/200步均写出完整状态，独立CPU审计器另保存并接受第200步不可变硬链接：`base/checkpoint-audit/epoch-0001-step-00000200.pt`，3744946400B，SHA256 `2b5cfe5798c70cb5276ce8586ddf008dd5b31d571443ecb6b89be75cb125a11a`。raw/EMA、14个参数张量的Adam、四rank RNG、源码/配置/bank版本全部通过，回执`checkpoint-audit/step-00000200.json`。审计期间及之后正式训练继续，未从0重启，未重生成bank。
+
+独立审计器已提交推送`b7cf82d39fb750e27278590a49236bdf1f206f2f`；运行fit的代码仍为不可变96df5a2，不热改。Goal保持active，尚需完成全部20epoch、逐epoch验证与checkpoint、最佳EMA选择和最终交付。
