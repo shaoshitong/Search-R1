@@ -1,35 +1,35 @@
 {
+  "epoch": 1792511871.592897,
   "run_id": "70188b8e50fd4b45bc420ce58014f46e",
   "seed": 20261021,
-  "unit": "sst-q7b-newseed-g5-20261020-r5.service",
-  "runtime_commit": "0b735b9b5daf9a291078086de30594ecbbac7c2a",
-  "observation_epoch": 1792510039.298055,
-  "sealed_questions": 5632,
-  "sealed_trajectories": 28160,
-  "expected_questions": 169028,
+  "unit": "sst-q7b-newseed-g5-20261020-r6.service",
+  "runtime_commit": "82062fc12c6c0bdb50b9e8681e1af9e6e763af10",
+  "sealed_questions": 10496,
+  "sealed_trajectories": 52480,
   "expected_trajectories": 845140,
-  "shards": [
-    {
-      "shard": 0,
-      "completed_batches": 22,
-      "total_batches": 661,
-      "questions": 2816,
-      "trajectories": 14080,
-      "elapsed": 66.18331724125892,
-      "epoch": 1792510023.9832158
-    },
-    {
-      "shard": 1,
-      "completed_batches": 22,
-      "total_batches": 661,
-      "questions": 2816,
-      "trajectories": 14080,
-      "elapsed": 68.8541543809697,
-      "epoch": 1792510026.6546211
-    }
+  "completed_batches": 82,
+  "generation_gpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
   ],
+  "retrieval_gpu": 4,
+  "verified_owned_gpu_uuids": 8,
+  "all8_workers_completed_new_batches": true,
+  "stop_before_node_return": {
+    "user_instruction": "Keep 02:00 node return; stop sampling at01:50 and preserve checkpoint",
+    "stop_time": "2026-10-21 01:50:00 Asia/Shanghai",
+    "timer": "sst-q7b-before-node-return-r6.timer",
+    "timer_verified_active": true,
+    "other_0200_wipe_not_modified": true,
+    "helper_sha256": "27f7286148b795a86b2301302f57b6ed068f4957d7e169dd5ed418769efb566f",
+    "outputs_on_nas10": true
+  },
   "actor_updates": 0,
-  "probe_updates": 0,
-  "hidden_cached": false,
-  "old_sealed_batches_preserved": true
+  "probe_updates": 0
 }

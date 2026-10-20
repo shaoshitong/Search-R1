@@ -22,3 +22,12 @@ The repaired service has now actually completed both first batches: 256 question
 The r3 service exited at 23:02 CST with 42 complete batches retained (5,376 questions / 26,880 trajectories). Its coordinator did not retain both worker exit codes; the downstream missing-shard assertion is not the original cause. No kernel OOM/kill line was found in the bounded 22:40–23:05 kernel journal. Original terminal logs were hashed on NAS10. The host-global shared mount was absent at the subsequent observation; neither observation proves why the workers exited.
 
 A private shared-storage binding was added. The r4 startup then exposed an unavailable retained encoder alias after FAISS loading, before any new sampling worker. The r5 revision uses one private mount namespace and the canonical retained NAS10 encoder directory. It preserves the exact run, seed, model, retrieval recipe and complete batch receipts; it records terminal worker return codes explicitly. No actor/probe updates or hidden cache are introduced. Only r5 actual new batch receipts establish resumed productive sampling.
+
+
+## Eight available cards and the confirmed node return
+
+The user explicitly reiterated use of all available H100 cards. Fresh GPU inventory found h100-5/h100-10 busy on all16 GPUs (only0.3–10GiB spare per card). h100-11 had61–81GiB spare per card. The r6 service now runs8 TP1 generators on physical0–7; GPU4 additionally shares the unchanged local retriever. Original unrelated contexts are preserved. Complete original input batches are disjointly assigned across8 workers, with every old accepted receipt reused, no repartition/reset/relabel. All8 workers have actually sealed new batches; sealed total52,480 trajectories at epoch1792511871.592897. Two actual positive observations and8 owned GPU UUIDs were verified.
+
+The r5 workers both received SIGTERM(143); sender remains unproven. Original terminal logs were hashed remotely. R6 retains signal source metadata without recording general syscalls.
+
+The user explicitly keeps the existing h100-11 02:00 return/wipe. A separate task-only timer stops r6 at01:50, seals accepted counts/original logs/owned births and copies our root-local controls to NAS10. The existing02:00 timer was not changed. Full sampling remains incomplete and is not guaranteed to finish before the return; accepted shared NAS10 data are retained for continuation.
