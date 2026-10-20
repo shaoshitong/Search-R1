@@ -31,17 +31,53 @@ def atomic(path, value):
 
 
 def queue(job):
-    return subprocess.check_output(['squeue', '-h', '-j', str(job), '-o', '%i|%T|%M|%R'], universal_newlines=True)
+    result = subprocess.run(['squeue', '-h', '-j', str(job), '-o', '%i|%T|%M|%R'],
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    if result.returncode:
+        assert 'Invalid job id specified' in result.stderr, result.stderr
+        rows = [line.split('|') for line in accounting(job).splitlines() if line.strip()]
+        terminal = {'COMPLETED', 'FAILED', 'CANCELLED', 'TIMEOUT', 'OUT_OF_MEMORY', 'NODE_FAIL', 'PREEMPTED'}
+        assert rows and all(row[1].split()[0] in terminal for row in rows), rows
+        return ''
+    return result.stdout
 
 
 def accounting(job):
     return subprocess.check_output(['sacct', '-X', '-n', '-P', '-j', str(job), '--format=JobID,State,ExitCode'], universal_newlines=True)
 
 
+def score_entrypoint(base, code, runtime, script):
+    # Unique tokens cannot replace CODE inside QWEN7B_CODE_ROOT.
+    entry = '''#!/usr/bin/env bash
+#SBATCH --job-name=q7b-score4-unseen
+#SBATCH --partition=acd_ue
+#SBATCH --account=mou176
+#SBATCH --qos=normal
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=64G
+#SBATCH --gres=gpu:1
+#SBATCH --time=00:30:00
+#SBATCH --output=@@BASE@@/logs/score-%j.log
+set -euo pipefail
+exec 9>@@BASE@@/control/scoring.lock
+flock -n 9
+export QWEN7B_CODE_ROOT=@@CODE@@
+srun --kill-on-bad-exit=1 bash @@RUNTIME@@ -u @@SCRIPT@@ --mode score --base @@BASE@@ --micro-groups 32
+'''
+    for token, value in [('@@BASE@@', str(base)), ('@@CODE@@', shlex.quote(str(code))),
+                         ('@@RUNTIME@@', shlex.quote(str(runtime))), ('@@SCRIPT@@', shlex.quote(str(script)))]:
+        entry = entry.replace(token, value)
+    assert '@@' not in entry and entry.count('export QWEN7B_CODE_ROOT=') == 1
+    return entry
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--base', type=Path, required=True)
     parser.add_argument('--selection-script', type=Path, required=True)
+    parser.add_argument('--resume-after-failed-score', type=int)
     args = parser.parse_args()
     base, script = args.base, args.selection_script
     cfg = read(base / 'config.json')
@@ -49,6 +85,27 @@ def main():
     control = base / 'control'
     lock = (control / 'coordinator.lock').open('a')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    if args.resume_after_failed_score is not None:
+        failed = args.resume_after_failed_score
+        request_path = training / 'control/human-epoch4-selection-request.json'
+        assert sha(request_path) == cfg['human_request_sha256'] and read(request_path)['enabled']
+        previous = read(control / 'score-submission.json')
+        assert previous['job_id'] == failed and not queue(failed)
+        assert sha(base / 'score.sbatch') == previous['entrypoint_sha256']
+        assert 'not a valid identifier' in (base / 'logs' / ('score-%d.log' % failed)).read_text()
+        rows = [line.split('|') for line in accounting(failed).splitlines() if line.strip()]
+        assert [str(failed), 'FAILED', '1:0'] in [row[:3] for row in rows], rows
+        assert not list((base / 'results').glob('epoch-*.json')), 'Explicit reconciliation required for existing scores'
+        archive = control / ('failed-score-%d' % failed)
+        archive.mkdir(exist_ok=False)
+        for name in ('score-submission.json', 'score-submission-intent.json', 'score-scheduling-adjustment.json',
+                     'coordinator-failure.json', 'coordinator-controller.json', 'coordinator-progress.json'):
+            path = control / name
+            if path.exists():
+                path.rename(archive / name)
+        (base / 'score.sbatch').rename(archive / 'score.sbatch')
+        atomic(archive / 'recovery.json', dict(failed_job=failed, accounting=rows,
+               no_prediction_outputs=True, reason='Invalid exported variable in generated shell entrypoint', time=time.time()))
     publication = dict(pid=os.getpid(), start_ticks=Path('/proc/self/stat').read_text().rsplit(')', 1)[1].split()[19],
                        script_sha256=sha(__file__), selection_script=str(script), selection_sha256=sha(script), time=time.time())
     atomic(control / 'coordinator-controller.json', publication)
@@ -112,25 +169,14 @@ def main():
     subprocess.check_call(['python3', str(auditors / 'audit_predictions.py'), '--base', str(training), '--epoch', '4'])
     subprocess.check_call(['bash', str(runtime), '-u', str(auditors / 'audit_checkpoint.py'), '--base', str(training),
                           '--receipt', str(training / 'probe/epoch-0004.json')], env=environment)
-    entry = '''#!/usr/bin/env bash
-#SBATCH --job-name=q7b-score4-unseen
-#SBATCH --partition=acd_u
-#SBATCH --account=mou176
-#SBATCH --qos=normal
-#SBATCH --nodes=1
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=64G
-#SBATCH --gres=gpu:1
-#SBATCH --time=02:00:00
-#SBATCH --output=BASE/logs/score-%j.log
-set -euo pipefail
-exec 9>BASE/control/scoring.lock
-flock -n 9
-export QWEN7B_CODE_ROOT=CODE
-srun --kill-on-bad-exit=1 bash RUNTIME -u SCRIPT --mode score --base BASE --micro-groups 32
-'''.replace('BASE', str(base)).replace('CODE', str(code)).replace('RUNTIME', shlex.quote(str(runtime))).replace('SCRIPT', shlex.quote(str(script)))
+    entry = score_entrypoint(base, code, runtime, script)
     (base / 'score.sbatch').write_text(entry)
+    subprocess.check_call(['bash', '-n', str(base / 'score.sbatch')])
+    exported = next(line for line in entry.splitlines() if line.startswith('export QWEN7B_CODE_ROOT='))
+    actual = subprocess.check_output(['bash', '-c', exported + '\nprintf "%s" "$QWEN7B_CODE_ROOT"'], universal_newlines=True)
+    assert actual == str(code), 'Actual shell export differs from immutable code root'
+    atomic(control / 'score-entrypoint-qualification.json', dict(entrypoint_sha256=sha(base / 'score.sbatch'),
+           actual_code_root=actual, shell_syntax_passed=True, actual_export_passed=True, time=time.time()))
     submission = control / 'score-submission.json'
     if submission.exists():
         scored = read(submission)
