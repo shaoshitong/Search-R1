@@ -1,0 +1,35 @@
+# 7B Mixed discrimination and selection: active experiment protocol
+
+The updated human goal supersedes “train five epochs then decide”. Current742276 is retained as a convergence/reference baseline, not the success criterion. No trained actor is changed; only independent probe branches. All large data/weights/features/results remain HPC3 shared storage. Existing source/checkpoints and the two untouched confirmation question pools remain immutable.
+
+## Acceptance and dataset roles
+
+Primary: Mixed balanced accuracy=(TPR+TNR)/2; report both recalls, allwrong/allcorrect false-positive rates, Mixed@512, ROC AUC, K0..5 composition. Trajectory accuracy and training loss are auxiliary. The viewed2048 is selection validation, never an untouched final test. Two new disjoint2048-question pools have been frozen before generating trajectories or predictions, excluding canonical train/dev/stage/final and viewed2048. Freeze artifact and fresh readback SHA/disjointness verification are attached. Final groups are label-blind authenticG5, no oracle selection. Candidate parameters/threshold/recipe must be frozen before either final pool's results are inspected. Compare candidate and baseline on exactly the same final trajectories, not separately generated answers.
+
+Final success requires BOTH Mixed BA and predicted-score Mixed@512 improvement over paired baseline, plus Mixed@512>182/512, and consistent direction on the two confirmation pools and declared subsets. Report prevalence and random-selection baseline, uncertainty/paired question bootstrap, not a bare absolute percentage. If final results are used for another change, that pool is validation thereafter; the remaining2613 unassigned source questions are not silently reused as fresh repeated tests.
+
+## Matched loss/ranking/stat experiments
+
+First fixed source is sealed Prefix20 E1 checkpoint SHA02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724, Adam10464. Every variant starts from the same raw/EMA/Adam and canonical source rank0 RNG in a NEW single-H100 branch. All original four-rank RNG are archived; no claim that single-GPU execution is four-rank bit-exact. Identical explicit qid/batch plan, globalB51, LR5e-6, EMA.99, microbatch, data and code hashes. Full global logits retain graphs for one backward; inter-group ranking must not use detached pseudo-global gathers.
+
+StageA: trajectory BCE; trajectory+BCE(Mixed); trajectory+three-event NLL. StageB: none / within / inter / within+inter on the supported base loss. StageC: mean MSE / population-variance MSE / both, separately and with supported ranking. Initial weights and margins are explicit; no final-pool tuning. Within ranking excludes identical-input/opposite-label pairs. Inter ranking compares actual Mixed against nonMixed stable event logits, with an explicit highest-score negative option. Report each optimized component separately from diagnostic binaryMixed BCE. Variance uses unbiased=False; uniformp=.5 is still a stationary point of variance MSE alone, so loss-decrease is not proof of separation.
+
+A128-update pilot with6528 fixed complete trainingG5 is SCREENING ONLY. No claim of final quality or full-data fitting from a pilot. Confirm shortlisted recipes with the same full67218-question balanced cohort,1318 B51 updates and independent initial states. This slightly exceeds the prior67198 cohort by20 questions so every matched batch is completeB51; all variants use the same frozen plan. Only evidence-supported recipes advance. Preserve every accepted checkpoint/Adam/RNG/cursor and evaluation record.
+
+## Depth and pooling
+
+Zero-based matching capture->trainable native block:20->21,23->24,26->27. Existing bank supports26->27 only. Saved prefix contexts permit frozen multi-layer replay without regenerating answers; actual source SHA and HF-vLLM L26 numerical qualification precede use. Never infer earlier hidden layers from L26. Record both index and semantic residual boundary.
+
+Compare last valid token / prefix mean / learned attention, each with prefix-only or question+prefix POOLING. All variants keep the full valid question+prefix causal context in the trainable block; this isolates readout contribution. Empty-prefix and padding are explicitly handled. Attention weights are audited remotely. Native official blocks initialize independent new architecture branches; existing trained probe parameters are not reset. Architecture comparisons match budgets/data/seeds, and supported losses are reconfirmed in the shortlisted architecture rather than claiming a legacy-flat-head winner automatically transfers.
+
+## Genuine G10 augmentation
+
+Generate five additional authentic independent trajectories per declared training question with new event/run/attempt/responseindices5..9, same frozen actor/protocol/retriever/strictEM. Preserve originalG5, pack extraG5 separately. Join only verified ten unique IDs and each own EM; repeated sampled text is allowed. No invented/sibling/copied labels. Pilot first; extend to the full declared training question population only when supported. Compare randomG5 and count-balancedG5 virtual subsets, up to252 unique combinations. Each question's all selected views have exact total weight1; report count balance separately from weighted class mass. Impossible homogenous balancing is reported/rejected, not manufactured. Integrate these weights into every relevant training loss before any G10 result is accepted. Final evaluation stays the original/frozen label-blindG5.
+
+## Actual evidence so far
+
+E2 rawq: viewed2048 BA56.3608%, AUC.578071, Mixed@512182. Train-only symmetric-statistic logistic ablation (fit53750/internal13448; no external fitting/tuning) yields BA55.2785%, AUC.583146,188/51236.71875%. It fails the BOTH-metrics gate and is not deployed. Train-internal AUC.8156 versus external.5831 points to poor generalization; not proof that no other function/representation can help. Negative-loss direction conflict is confirmed and the three-event candidate passed actual HPC3 CPU tests, but no GPU performance improvement has been established.
+
+## Execution gates
+
+Commit+push+remoteSHA all source/config/runtime scripts before use. Isolated roots/locks/outputs, no hot edits or duplicate submissions. Start ordinaryacd_u/normal before escalating from observed queue evidence. Every launch must pass actual target CPU/GPU checks and first next-update replay, then at least two observations of accepted progress; submission or RUNNING alone is insufficient. Save before evaluation; first1, periodic and final checkpoints are independently reloaded and hashed. Actor training and other users' processes remain out of scope.

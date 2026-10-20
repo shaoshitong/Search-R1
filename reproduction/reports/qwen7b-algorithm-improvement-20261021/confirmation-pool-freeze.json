@@ -1,0 +1,58 @@
+{
+  "status": "TWO_DISJOINT_UNTOUCHED_2048_QUESTION_POOLS_FROZEN",
+  "source_sha256": "10d5ee25e813f3e2092247a5d2797793dd47ef5853959989cb34bf80a110d607",
+  "source_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/source/nq-dev-bcafb8dd07d4.jsonl",
+  "source_revision": "bcafb8dd07d453be3cbeeeb3f78be1841bddf92c",
+  "source_commit": "1500cf79f7768f40fc2600bccfdd13fec45fc5c6",
+  "pools": {
+    "confirmation2048": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/confirmation/confirmation2048.json",
+      "sha256": "0a98f643b655355504056d63947eb54226c0a168f9a934b9c113c0e6b487644e",
+      "questions": 2048,
+      "ordered_source_id_sha256": "e704c2c7107e08f1199b51cae91290130400809ab4ba6ecf7f34b4a79fab9acb"
+    },
+    "stability2048": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/confirmation/stability2048.json",
+      "sha256": "0ed9423dbeea1fc80673059c4047d6f4c20dec37c011d6892988957d68ae9450",
+      "questions": 2048,
+      "ordered_source_id_sha256": "8c62808ed63103d1e0ddf548181a08d0b603ef67066ba99f5e6fa15dd0d43bc1"
+    }
+  },
+  "remaining_unassigned": 2613,
+  "removed": {
+    "viewed_validation": 2048,
+    "canonical_overlap": 0,
+    "duplicate_text": 0
+  },
+  "excluded_canonical": {
+    "train": {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/train.jsonl",
+      "sha256": "531e2417adbfb48045919c532b0f2f07e929fa0fe9967e4b871a84fc3978a168"
+    },
+    "validation": {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/validation.jsonl",
+      "sha256": "6c772b2829b99e8ee9197ed1dccb8893059cc64ea3a4037feb25ad1c83eefd68"
+    },
+    "stage": {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/stage.jsonl",
+      "sha256": "79f1dbf221ed1b5d0f716d60e8ca4c0086d653b7a592b9551627eddee369ceef"
+    },
+    "final": {
+      "path": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/final.jsonl",
+      "sha256": "7b666cc8128cb7473c3e322395670fc0aa7d03a09a6bd2f28a7b9e3de069b486"
+    }
+  },
+  "excluded_viewed2048_sha256": "9c26795ae1fd4095b3d3af46f2bbefb162897e40dd4ded8e8f94bf41eb0ecc0a",
+  "score_or_generated_EM_observed": false,
+  "fit_or_tuning_allowed": false,
+  "no_reserved_final_QA_rows_used": true,
+  "old_data_or_jobs_changed": false,
+  "time": 1792512753.2067366,
+  "deployed_source": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/control-tools/confirmation-freeze-1500cf79f776/freeze_confirmation_pools.py",
+    "sha256": "f37f570adb823a5e0c563e3ad858bb6a2b2010f4fcb1afe929063517cbdca015",
+    "commit": "1500cf79f7768f40fc2600bccfdd13fec45fc5c6"
+  },
+  "second_read_SHA_and_disjointness_passed": true,
+  "verified_at": 1792512753.2664797
+}

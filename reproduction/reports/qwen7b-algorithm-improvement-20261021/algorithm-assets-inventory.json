@@ -1,0 +1,112 @@
+{
+  "time": 1792512544.3462996,
+  "uid": 21930,
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "model_dir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70",
+  "canonical_train": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/train.parquet",
+  "bank_keys": [
+    "status",
+    "train_questions",
+    "train_trajectories",
+    "diagnostic_questions",
+    "diagnostic_trajectories",
+    "features",
+    "groups",
+    "model_revision",
+    "feature_layer",
+    "capture_prefix_tokens",
+    "fit_prefix_tokens",
+    "run_id",
+    "actor_updates",
+    "epoch"
+  ],
+  "input_batches": 1336,
+  "bank_manifest_sha256": "6f7a5510eb092bd4a414b13f4f7a8a7f1dbe836dbfdd55fd5db97a19ba2c303e",
+  "heldout_eligible_unique_rows": 8757,
+  "heldout_original_rows": 8757,
+  "heldout_exclusions": {
+    "existing_id": 0,
+    "existing_qid": 0,
+    "existing_text": 0,
+    "internal_duplicate": 0,
+    "overlong_prompt": 0
+  },
+  "heldout_selected_questions": 2048,
+  "heldout_inputs_sha256": "9c26795ae1fd4095b3d3af46f2bbefb162897e40dd4ded8e8f94bf41eb0ecc0a",
+  "source": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/source/nq-dev-bcafb8dd07d4.jsonl",
+    "exists": true,
+    "bytes": 1073443
+  },
+  "model_receipt": {
+    "status": "MIGRATION_ALL_SELECTED_ASSETS_VERIFIED",
+    "keys": [
+      "model",
+      "revision",
+      "files",
+      "total_bytes",
+      "status",
+      "epoch",
+      "fresh_all_files_SHA256",
+      "route",
+      "mac_data_used"
+    ]
+  },
+  "first_batch_payloads": {
+    "prefix": {
+      "states": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-states.jsonl.gz",
+        "exists": true,
+        "bytes": 424794
+      },
+      "prefix": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz",
+        "exists": true,
+        "bytes": 80715,
+        "sha256": "44de2df24dff354b8b77596bda67d77bdd0a37c98187f98d74f8930b170ea9f8",
+        "sha_matches_receipt": true
+      },
+      "actor_hidden": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-packed/complete.json",
+        "exists": true,
+        "bytes": 1741,
+        "sha256": "71528f297532559b2aa602f84c6d8c1ce585c8960181adbe1306335468353946",
+        "sha_matches_receipt": true
+      }
+    },
+    "full": {
+      "full": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/full/rank-0-full.jsonl.gz",
+        "exists": true,
+        "bytes": 3460791
+      },
+      "own_em": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/full/rank-0-own-em.jsonl",
+        "exists": true,
+        "bytes": 289225,
+        "sha256": "5d1d7eec42bbae17a16f5b7d7a15e9b4dbb9c5640e893e5fd7fc77e5405f64c0",
+        "sha_matches_receipt": true
+      }
+    }
+  },
+  "sample_generation_proofs": [
+    {
+      "shard": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/complete.json",
+      "proof_path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/complete.json",
+      "keys": [
+        "run_id",
+        "input_sha256",
+        "batch",
+        "questions",
+        "trajectories",
+        "prefix",
+        "full",
+        "feature_layer",
+        "model_revision",
+        "actor_optimizer_updates",
+        "epoch"
+      ]
+    }
+  ],
+  "own_queue": "742276|q7b-bal-rank1|RUNNING|emergency_acd|gres/gpu:4|ACD1-32"
+}
