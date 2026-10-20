@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import subprocess
 from .follow_h10011_ab_normal_boundary import ROOT
-from .readonly_management_route import run_readonly,lan5_argv
+from .readonly_management_route import run_readonly,lan5_argv,management_argv
 
 
 def namespace_command(entry,inner):
@@ -48,7 +48,7 @@ def execute(arms,build_inner,action,transport,label):
                 response,route=run_readonly(ctl,node,'/usr/bin/python3 -',input_text=scripts[arm],timeout=60,mode=mode)
             else:
                 argv=lan5_argv(ctl,node,'/usr/bin/python3 -')if transport=='lan5'else ctl.route(node,'/usr/bin/python3 -')
-                response=subprocess.run(argv,input=scripts[arm],text=True,capture_output=True,timeout=60)
+                response=subprocess.run(management_argv(argv),input=scripts[arm],text=True,capture_output=True,timeout=60)
                 route=dict(route=transport,auto_retry=False)
         except subprocess.TimeoutExpired:
             path.write_text(json.dumps(dict(status='TIMEOUT_QUERY_SAME_ONCE_STATE_DO_NOT_REPLAY',arm=arm,node=node,

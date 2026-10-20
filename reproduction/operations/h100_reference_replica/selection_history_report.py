@@ -29,7 +29,8 @@ def main():
     sources = [baseline] + [ROOT / 'work' / name for name in (
         'prefix5-ab-h10011-normal-follow-actual-facts.json.closed-source8-fault-20261020',
         'prefix5-ab-h10011-normal-follow-actual-facts.json.closed-b175-oom-20261020',
-        'prefix5-ab-h10011-normal-follow-actual-facts.json.closed-b189-reservation-20261020')]
+        'prefix5-ab-h10011-normal-follow-actual-facts.json.closed-b189-reservation-20261020',
+        'prefix5-ab-h10011-normal-follow-actual-facts.json.closed-management-route-20261020')]
     compact = read(ROOT / 'work/prefix5-ab-latest-compact.json')
     # The live reader replaces its cumulative small file. Retain exactly the
     # version used here so this publication's source digest remains verifiable.

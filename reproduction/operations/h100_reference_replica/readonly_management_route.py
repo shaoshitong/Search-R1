@@ -6,8 +6,24 @@ as HostKeyAlias. Never use automatic retries for submit, cancel or once writers.
 """
 import shlex
 import subprocess
+import os
 
 MODES = ('retained18', 'lan5', 'retained18_fallback_lan5')
+
+
+def management_argv(argv):
+    """Opt in only this task's outer SSH to the existing local7892 proxy.
+
+    Inner retained18 routing, credentials, strict host keys and remote command
+    stay unchanged. Unset means the original direct argv, byte for byte.
+    """
+    mode = os.environ.get('PREFIX5_AB_MGMT_EXISTING_PROXY', '')
+    if not mode:
+        return argv
+    if mode != '1' or not argv or argv[0] not in ('ssh', '/usr/bin/ssh') or argv.count('mgmt-host') != 1:
+        raise ValueError('Only the explicit task management SSH proxy opt-in is supported')
+    return argv[:1] + ['-o', 'ProxyCommand=nc -X 5 -x 127.0.0.1:7892 %h %p',
+                       '-o', 'ProxyJump=none'] + argv[1:]
 
 
 def lan5_argv(ctl, target, command):
@@ -44,6 +60,7 @@ def run_readonly(ctl, target, command, *, input_text, timeout, mode='retained18'
         attempts.append(('lan5',lan5_argv(ctl,target,command)))
     failures = []
     for name, argv in attempts:
+        argv = management_argv(argv)
         try:
             response = subprocess.run(argv,input=input_text,text=True,capture_output=True,timeout=timeout)
         except subprocess.TimeoutExpired:
@@ -55,6 +72,9 @@ def run_readonly(ctl, target, command, *, input_text, timeout, mode='retained18'
             failures.append(dict(route=name,returncode=255,stderr=response.stderr[-2000:]))
             continue
         # Remote Python/report failures must be surfaced, not silently replayed.
-        return response, dict(route=name,earlier_transport_failures=failures,
-                              training_or_global_configuration_changed=False)
+        metadata = dict(route=name,earlier_transport_failures=failures,
+                        training_or_global_configuration_changed=False)
+        if os.environ.get('PREFIX5_AB_MGMT_EXISTING_PROXY') == '1':
+            metadata['management_transport'] = 'task-only existing local7892 proxy'
+        return response, metadata
     raise RuntimeError('No read-only observation route returned')
