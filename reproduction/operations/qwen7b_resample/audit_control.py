@@ -26,7 +26,7 @@ if q.exists():
  x=json.loads(q.read_text());v['audit']={k:z for k,z in x.items()if k not in ['unsealed_inputs','sealed_pending_inputs','errors']};v['audit']['first_errors']=x.get('errors',[])[:5]
 print(json.dumps(v))
 '''
- for n,p in [('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py'),('route','/Users/shaoshitong/Documents/Search-G1/h100-prefix5-reference-replica-20261018/reproduction/operations/h100_reference_replica/readonly_management_route.py')]:
+ for n,p in [('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py')]:
   s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);globals()[n]=m
- os.environ['PREFIX5_AB_MGMT_EXISTING_PROXY']='1';r=subprocess.run(route.management_argv(ctl.route('h100-10','/usr/bin/python3 -')),input=remote,text=True,capture_output=True,timeout=60);assert r.returncode==0,r.stderr;value=json.loads(r.stdout);stamp=time.time_ns();(ROOT/'work'/('qwen7b-audit-control-%d.json'%stamp)).write_text(json.dumps(value,indent=2));print(json.dumps(value))
+ r=subprocess.run(ctl.route('h100-10','/usr/bin/python3 -'),input=remote,text=True,capture_output=True,timeout=60);assert r.returncode==0,r.stderr;value=json.loads(r.stdout);stamp=time.time_ns();(ROOT/'work'/('qwen7b-audit-control-%d.json'%stamp)).write_text(json.dumps(value,indent=2));print(json.dumps(value))
 if __name__=='__main__':main()

@@ -266,14 +266,13 @@ print(json.dumps(value,sort_keys=True))
 
 def transport(script):
     modules = {}
-    for name, path in [('ctl', '/Users/shaoshitong/Documents/remote_codex_control/control.py'),
-                       ('route', '/Users/shaoshitong/Documents/Search-G1/h100-prefix5-reference-replica-20261018/reproduction/operations/h100_reference_replica/readonly_management_route.py')]:
+    for name, path in [('ctl', '/Users/shaoshitong/Documents/remote_codex_control/control.py')]:
         spec = importlib.util.spec_from_file_location('pool_' + name, path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         modules[name] = module
-    os.environ['PREFIX5_AB_MGMT_EXISTING_PROXY'] = '1'
-    argv = modules['route'].management_argv(modules['ctl'].route('h100-10', '/usr/bin/python3 -'))
+    # Match the configured direct mgmt-host route; no task-forced Mac SOCKS.
+    argv = modules['ctl'].route('h100-10', '/usr/bin/python3 -')
     return subprocess.run(argv, input=script, text=True, capture_output=True, timeout=110)
 
 
