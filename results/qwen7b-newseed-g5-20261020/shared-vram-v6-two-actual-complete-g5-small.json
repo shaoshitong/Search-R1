@@ -1,0 +1,87 @@
+{
+  "status": "ACTUAL_V6_TWO_WHOLE_G5_AND_NEXT_BATCH_WITH_INDEPENDENT_INCREMENTAL_AUDIT",
+  "utc": "2026-10-20T19:14:32.045085+00:00",
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "source_runtime": "9d6bfeb73f696d603d3d2a9bed940188f30a4d74",
+  "unit": "sst-q7b-g5-sharedvram-v6-70188b8e50fd.service",
+  "controller_pid": 1490214,
+  "actual_model_gpus": [
+    3,
+    4,
+    6,
+    7
+  ],
+  "tensor_parallel_size": 4,
+  "actual_retrieval_gpus": [
+    0,
+    1,
+    2,
+    5
+  ],
+  "original_index_vectors": 21015324,
+  "new_complete_batches": 2,
+  "new_complete_questions": 256,
+  "new_complete_trajectories": 1280,
+  "sealed_bank": {
+    "batches": 246,
+    "questions": 31488,
+    "trajectories": 157440
+  },
+  "audit": {
+    "epoch": 1792523604.4999099,
+    "verified_batches": 246,
+    "questions": 31488,
+    "trajectories": 157440,
+    "failed_batches": 0,
+    "cache_reused_batches": 245,
+    "independently_read_batches": 1,
+    "strict_em_recomputed": false,
+    "states_shards_independently_audited": false
+  },
+  "original_own_g5_token_replay_and_label_correspondence": true,
+  "first_batch_reused_original_v5_prefixes": true,
+  "second_batch_actual_whole_tp4": true,
+  "second_batch_seconds": 487.371368601991,
+  "initialization_excluded_from_second_batch": true,
+  "next_actual_batch": "000213",
+  "next_prefix_trajectories": 640,
+  "readonly_initial_follower_natural_exit": 0,
+  "actual_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-native-first-batches-actual-1792523584895678000.json",
+  "actual_evidence_sha256": "b0e337c6cdcb3d6b5dede4ccbf9c4b259824de4ed674ba275ef46b4d38db4f0c",
+  "audit_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-v6-two-whole-batches-audit-recheck-status.json",
+  "audit_evidence_sha256": "5d32e7ca647745648e1063508067a5fc17ee9c9cbc99c618947ffd1147d71a34",
+  "next_evidence": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-v6-third-batch-actual-1792523607371841000.json",
+  "next_evidence_sha256": "282e6d3615496953f4078659711219e63d5f3aba915d6c43e690b1987a4c62b7",
+  "historical_resolutions": {
+    "resolutions": [
+      {
+        "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-shared5-1259750/attempt-1792519826605366240-1259750/resolution.json",
+        "sha256": "bd5e30371711d8c2ba927a098d3b1552c059b8af79c0c0a4e7ee6f5950b2681a",
+        "replacement_batches": 2,
+        "status": "RECOVERED_FAILED_ATTEMPT_WITH_PRODUCTIVE_REPLACEMENT"
+      },
+      {
+        "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-shared5-1437188/attempt-1792521847048153583-1437188/resolution.json",
+        "sha256": "afaec1710442d128a9a518a2cb8a6280509787fcfff779e99371bd0aafbc2f44",
+        "replacement_batches": 2,
+        "status": "RECOVERED_FAILED_ATTEMPT_WITH_PRODUCTIVE_REPLACEMENT"
+      },
+      {
+        "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-shared5-1437188-engine-00/attempt-1792521847048153583-1437188/resolution.json",
+        "sha256": "263a6a061359a319b7bbb15ef0c67fb9a500e7a9d34563931f787e555653793e",
+        "replacement_batches": 2,
+        "status": "RECOVERED_FAILED_ATTEMPT_WITH_PRODUCTIVE_REPLACEMENT"
+      },
+      {
+        "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-shared5-1437188-engine-01/attempt-1792521847048153583-1437188/resolution.json",
+        "sha256": "a861eaccaf4a94e0ace816bd3013f250814e913e6a37d384cf6d34f0da18f613",
+        "replacement_batches": 2,
+        "status": "RECOVERED_FAILED_ATTEMPT_WITH_PRODUCTIVE_REPLACEMENT"
+      }
+    ],
+    "whole_goal_complete": false
+  },
+  "all_outputs_own_retained_nas10": true,
+  "goal_complete": false,
+  "expected_trajectories": 845140
+}
