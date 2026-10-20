@@ -11,7 +11,7 @@ import tempfile
 import time
 from types import SimpleNamespace
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from . import relay_primary_control as control
 
@@ -51,18 +51,33 @@ class PrimaryTests(unittest.TestCase):
         self.assertEqual(worker.source_path(base, '/mnt/shared/workspace/training_data_node_10/shaoshitong/test-run/a.json'), base / 'a.json')
         with self.assertRaises(ValueError): worker.source_path(base, '/mnt/data/shaoshitong/test-run/../foreign/a')
 
-    def test_v1_is_read_only_and_v2_has_separate_native_identity(self):
+    def test_old_instances_are_read_only_and_v3_has_separate_native_identity(self):
         for slot in control.TOPOLOGIES['tp4']:
-            self.assertEqual(control.names(slot, 'v2'), worker.names(slot, 'v2'))
-            self.assertNotEqual(control.names(slot, 'v1'), control.names(slot, 'v2'))
+            self.assertEqual(control.names(slot, 'v3'), worker.names(slot, 'v3'))
+            self.assertNotEqual(control.names(slot, 'v2'), control.names(slot, 'v3'))
             old, _, old_manifest = control.bundle(slot, instance='v1')
-            new, _, new_manifest = control.bundle(slot, instance='v2')
+            new, _, new_manifest = control.bundle(slot, instance='v3')
             self.assertNotEqual(old, new)
             self.assertNotEqual(old_manifest['directory'], new_manifest['directory'])
-        with patch.object(sys, 'argv', ['primary', 'submit', '--slot', 'gpu1-tp1', '--instance', 'v1']), \
-                patch.object(control.old, 'transport') as transport:
-            with self.assertRaisesRegex(ValueError, 'read-only status'): control.main()
-            transport.assert_not_called()
+        for instance in ('v1', 'v2'):
+            with patch.object(sys, 'argv', ['primary', 'submit', '--slot', 'gpu1-tp1', '--instance', instance]), \
+                    patch.object(control.old, 'transport') as transport:
+                with self.assertRaisesRegex(ValueError, 'read-only status'): control.main()
+                transport.assert_not_called()
+
+    def test_private_health_proxy_preserves_all_other_request_arguments(self):
+        target = SimpleNamespace(urlopen=Mock(return_value=object()), passthrough=object())
+        proxy = worker.ControllerHealthRequest(target)
+        ordinary, payload, context = 'http://127.0.0.1:28831/retrieve', b'unchanged', object()
+        proxy.urlopen(ordinary, payload, timeout=3, context=context)
+        target.urlopen.assert_called_once_with(ordinary, payload, timeout=3, context=context)
+        self.assertIs(proxy.passthrough, target.passthrough)
+        target.urlopen.reset_mock()
+        proxy.urlopen('http://127.0.0.1:28831/health', timeout=3)
+        target.urlopen.assert_called_once_with('http://127.0.0.1:28831/health', timeout=60)
+        target.urlopen.reset_mock()
+        proxy.urlopen('http://127.0.0.1:28831/health?other=1', payload, 7)
+        target.urlopen.assert_called_once_with('http://127.0.0.1:28831/health?other=1', payload, 7)
 
     def run_pipeline(self, fail=False):
         """No preamble globals injected: actual CLI builds and executes REMOTE."""
@@ -98,7 +113,7 @@ class PrimaryTests(unittest.TestCase):
                 job_ready_path=str(cpu_job / 'owner-ready.json'), deadline_epoch=26000, consumer_deadline_epoch=25400)
             write(cpu_ready_path, ready); write(cpu_job / 'owner-ready.json', ready)
             write(base / 'preparation/pool-handoff.json', dict(run_id=control.RUN_ID))
-            contexts, stops, starts, models, locks, assemblies = [], [], [], [], [], []
+            contexts, stops, starts, models, locks, assemblies, health_timeouts = [], [], [], [], [], [], []
             inventory = {'GPU-%d' % i: dict(index=i, uuid='GPU-%d' % i, free_bytes=23 * 1024**3) for i in range(8)}
             def lock(path):
                 Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -187,7 +202,7 @@ class PrimaryTests(unittest.TestCase):
                 return SimpleNamespace(returncode=0, stdout=output.getvalue(), stderr='')
             def invoke(action):
                 argv = ['relay_primary_control', action, '--slot', slot, '--cpu-ready', str(cpu_ready_path),
-                    '--instance', 'v2',
+                    '--instance', 'v3',
                     '--cpu-ready-sha256', sha(cpu_ready_path), '--intent-id', 'cpu-once',
                     '--published-commit', 'f' * 40, '--published-ref', 'refs/heads/codex/cpu-only']
                 with patch.object(sys, 'argv', argv): control.main()
@@ -196,7 +211,14 @@ class PrimaryTests(unittest.TestCase):
                 with patch('time.time', return_value=now + 4 * len(contexts)):
                     value = original_capture(*args)
                 contexts.append(value); return value
+            def health(url, **kwargs):
+                self.assertEqual(url, 'http://127.0.0.1:28831/health')
+                health_timeouts.append(kwargs['timeout'])
+                return io.BytesIO(json.dumps(dict(ready=True, pid=1490465,
+                    run_id=control.RUN_ID, gpu_shards=4, logical_flat_shards=64, encoder_dtype='float16', index_dtype='float16',
+                    original_global_ids=True, endpoint=pool.URL)).encode())
             original_file = worker.consumer.__file__
+            original_urllib = worker.consumer.urllib
             try:
                 patches = [patch.object(control, 'ROOT', local), patch.object(control, 'BASE', str(base)), patch.object(control, 'PHYSICAL', str(base)),
                     patch.object(control.old, 'transport', side_effect=transport),
@@ -209,9 +231,7 @@ class PrimaryTests(unittest.TestCase):
                     patch('subprocess.Popen', side_effect=Model), patch('time.time', return_value=now), patch('time.sleep'),
                     patch('signal.signal'), patch('os.dup2'), patch('os.chdir'), patch.object(sys, 'platform', 'linux'),
                     patch.object(sys, 'path', list(sys.path)), contextlib.redirect_stdout(io.StringIO()),
-                    patch('urllib.request.urlopen', return_value=io.BytesIO(json.dumps(dict(ready=True, pid=1490465,
-                        run_id=control.RUN_ID, gpu_shards=4, logical_flat_shards=64, encoder_dtype='float16', index_dtype='float16',
-                        original_global_ids=True, endpoint=pool.URL)).encode()))]
+                    patch('urllib.request.urlopen', side_effect=health)]
                 with contextlib.ExitStack() as stack:
                     for item in patches: stack.enter_context(item)
                     invoke('stage')
@@ -219,13 +239,15 @@ class PrimaryTests(unittest.TestCase):
                     write(root / 'slot-context.json', dict(run_id=control.RUN_ID, unit=unit, unsubmitted=True))
                     original = (root / 'slot-context.json').read_bytes()
                     invoke('submit'); intent = (root / 'native-submit-intent.json').read_bytes()
-                    self.assertEqual(json.loads(intent)['instance'], 'v2')
-                    self.assertEqual(read(root / 'slot-context.json')['instance'], 'v2')
+                    self.assertEqual(json.loads(intent)['instance'], 'v3')
+                    self.assertEqual(read(root / 'slot-context.json')['instance'], 'v3')
                     invoke('submit')
                     self.assertEqual((root / 'native-submit-intent.json').read_bytes(), intent)
                     self.assertEqual((root / ('preintent-context-' + hashlib.sha256(original).hexdigest() + '.json')).read_bytes(), original)
             finally: worker.consumer.__file__ = original_file
             self.assertEqual((len(starts), len(contexts), len(models), len(assemblies)), (1, 2, 1, 3))
+            self.assertEqual(health_timeouts, [60])
+            self.assertIs(worker.consumer.urllib, original_urllib)
             self.assertEqual(set(stops), {900}); self.assertNotIn(700, stops); self.assertNotIn(701, stops)
             self.assertEqual(len(locks), 2)
             self.assertTrue(any('/pool/gpu-locks/GPU-1.lock' in path for path, _ in locks))
@@ -237,7 +259,7 @@ class PrimaryTests(unittest.TestCase):
             self.assertEqual((allocation['controller_birth'], allocation['boot_id']), (500, 'test-real-boot-id'))
             self.assertEqual(allocation['source_owner'], cpu_owner)
             self.assertEqual(allocation['source_owner_allocation_sha256'], sha(cpu_job / 'allocation.json'))
-            self.assertEqual(allocation['instance'], 'v2')
+            self.assertEqual(allocation['instance'], 'v3')
             self.assertIn('original_cuda_visible_devices', allocation)
             self.assertEqual(models[0].argv[models[0].argv.index('--tp') + 1], '1')
             if fail:

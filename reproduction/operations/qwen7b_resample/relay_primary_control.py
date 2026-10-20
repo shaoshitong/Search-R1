@@ -25,13 +25,13 @@ SOURCES = ('relay_primary_control.py', 'relay_primary_worker.py', 'test_relay_pr
            'draining_pool_worker.py', 'pool_worker.py', 'pool_paths.sh', 'retrieval_relay.py', 'retrieval_relay_backpressure.py')
 
 
-def names(slot, instance='v2'):
+def names(slot, instance='v3'):
     if slot not in SLOTS: raise ValueError('Unknown finite primary slot')
-    if instance not in ('v1', 'v2'): raise ValueError('Unknown primary instance')
+    if instance not in ('v1', 'v2', 'v3'): raise ValueError('Unknown primary instance')
     return ('sst-q7b-g5-primary10-' + slot + '-' + instance + '-' + RUN_ID[:12] + '.service', 'relay-primary10-' + slot + '-' + instance)
 
 
-def bootstrap(slot, topology='tp4', instance='v2'):
+def bootstrap(slot, topology='tp4', instance='v3'):
     config = TOPOLOGIES[topology][slot]
     return ('BASE=' + repr(BASE) + '\nUNIT=' + repr(names(slot, instance)[0]) + '\nINSTANCE=' + repr(instance) + '\nCONFIG=' + repr(config)
             + '\nFROZEN_REPO=' + repr(old.FROZEN_REPO) + '\n' + r'''
@@ -95,7 +95,7 @@ os.execvpe(command[0],command,env)
 ''').encode()
 
 
-def bundle(slot, topology='tp4', instance='v2'):
+def bundle(slot, topology='tp4', instance='v3'):
     if topology not in TOPOLOGIES or slot not in TOPOLOGIES[topology]: raise ValueError('Slot is outside chosen topology')
     unit, directory = names(slot, instance)
     config = TOPOLOGIES[topology][slot]
@@ -149,7 +149,7 @@ if ACTION=='stage':
  if not(stage/'stage-receipt.json').exists():immutable(stage/'stage-receipt.json',dict(status='NODE10_PRIMARY_SMALL_CODE_FULL_SHA_PASS',publication=PUBLICATION,files=MANIFEST['files'],epoch=time.time()))
  verify();value.update(status='NODE10_PRIMARY_CODE_ONLY_STAGED',stage=str(stage),files=MANIFEST['files'])
 elif ACTION=='submit':
- assert MANIFEST['instance']=='v2','v1 is retained for read-only status; never replay its start'
+ assert MANIFEST['instance']=='v3','v1/v2 are retained for read-only status; never replay their starts'
  with(root/'native-submit.lock').open('a')as lock:
   fcntl.flock(lock,fcntl.LOCK_EX)
   if intent.exists():value.update(status='EXISTING_INTENT_NO_START_REPLAY',intent=read(intent),receipt=read(receipt))
@@ -203,7 +203,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=('plan', 'stage', 'submit', 'status'))
     parser.add_argument('--slot', choices=SLOTS, required=True)
-    parser.add_argument('--instance', choices=('v1', 'v2'), default='v2')
+    parser.add_argument('--instance', choices=('v1', 'v2', 'v3'), default='v3')
     parser.add_argument('--topology', choices=tuple(TOPOLOGIES), default='tp4')
     parser.add_argument('--cpu-ready', default=BASE + '/preparation/legacy-relay10-independent-v1/owner-ready.json')
     parser.add_argument('--cpu-ready-sha256')
@@ -211,8 +211,8 @@ def main():
     parser.add_argument('--published-commit')
     parser.add_argument('--published-ref')
     args = parser.parse_args()
-    if args.instance == 'v1' and args.action in ('stage', 'submit'):
-        raise ValueError('v1 is retained for read-only status; use a new v2 intent')
+    if args.instance in ('v1', 'v2') and args.action in ('stage', 'submit'):
+        raise ValueError('v1/v2 are retained for read-only status; use a new v3 intent')
     identity, files, manifest = bundle(args.slot, args.topology, args.instance)
     if args.action == 'plan':
         print(json.dumps(manifest, indent=2)); return

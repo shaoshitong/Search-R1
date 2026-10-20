@@ -15,6 +15,7 @@ import subprocess
 import sys
 import time
 import traceback
+from types import SimpleNamespace
 
 import relay_consumer_worker as consumer
 import legacy_relay_owner as owner
@@ -23,6 +24,23 @@ shared = consumer.shared
 RUN_ID = '70188b8e50fd4b45bc420ce58014f46e'
 TOPOLOGIES = owner.TOPOLOGIES
 MAX_SECONDS, CUTOFF, BATCH_RESERVE = 14400, 600, 1200
+
+
+class ControllerHealthRequest:
+    """Private request proxy; only the controller's exact health URL gets 60s."""
+    def __init__(self, request):
+        self.request = request
+
+    def __getattr__(self, name):
+        return getattr(self.request, name)
+
+    def urlopen(self, url, *args, **kwargs):
+        if isinstance(url, str) and url == 'http://127.0.0.1:28831/health':
+            if len(args) >= 2:
+                args = (args[0], 60, *args[2:])
+            else:
+                kwargs['timeout'] = 60
+        return self.request.urlopen(url, *args, **kwargs)
 
 
 def read(path):
@@ -56,9 +74,9 @@ def alive(proof):
         return False
 
 
-def names(slot, instance='v2'):
+def names(slot, instance='v3'):
     shared.require(any(slot in slots for slots in TOPOLOGIES.values()), 'Unknown finite node10 slot')
-    shared.require(instance in ('v1', 'v2'), 'Unknown primary instance')
+    shared.require(instance in ('v1', 'v2', 'v3'), 'Unknown primary instance')
     return ('sst-q7b-g5-primary10-' + slot + '-' + instance + '-' + RUN_ID[:12] + '.service',
             'relay-primary10-' + slot + '-' + instance)
 
@@ -89,7 +107,7 @@ def validate_configuration(value, slot):
         'Model deadline exceeds CPU/source cutoff or four hours')
 
 
-def capture_context(base, slot, canonical_base, cpu_ready_path, cpu_ready_sha256, topology, instance='v2'):
+def capture_context(base, slot, canonical_base, cpu_ready_path, cpu_ready_sha256, topology, instance='v3'):
     """Submit-time observations only; primary leases are acquired by the model."""
     base = Path(base)
     shared.require(topology in TOPOLOGIES and slot in TOPOLOGIES[topology], 'Slot is outside the chosen topology')
@@ -293,14 +311,15 @@ def main():
                 traceback=traceback.format_exc(), global_goal_complete=False, epoch=time.time()))
             raise
     else:
-        original = consumer.admit, consumer.borrowed_relay, consumer.__file__
+        original = consumer.admit, consumer.borrowed_relay, consumer.__file__, consumer.urllib
         try:
             consumer.admit, consumer.borrowed_relay = admit, borrowed_relay
             # The reused lifecycle starts this same entry for probes and sampler children.
             consumer.__file__ = __file__
+            consumer.urllib = SimpleNamespace(request=ControllerHealthRequest(original[3].request))
             consumer.controller(pool, args)
         finally:
-            consumer.admit, consumer.borrowed_relay, consumer.__file__ = original
+            consumer.admit, consumer.borrowed_relay, consumer.__file__, consumer.urllib = original
 
 
 if __name__ == '__main__': main()
