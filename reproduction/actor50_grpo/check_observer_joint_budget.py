@@ -87,6 +87,10 @@ def main():
     assert value['json_prefix'](head, 'grounding_state', b'}}')['actor']['completed_outer'] == 151
     tail = value['file_range'](small, -40, 40)
     assert value['json_suffix'](tail, 'observed_unix')['outer'] == 151
+    pretty = json.dumps({'rank_receipts': [], 'sampling_actor_version': 'actor0150',
+                         'scheduler_completed_outer': 151, 'status': 'complete'},
+                        sort_keys=True, indent=2).encode()
+    assert value['json_suffix'](pretty, 'sampling_actor_version')['scheduler_completed_outer'] == 151
     print(json.dumps(dict(
         status='PASS', old_8MiB_boundary_bytes=size,
         joint_per_file_limit_bytes=16 * 1024**2,

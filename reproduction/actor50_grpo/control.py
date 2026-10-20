@@ -41,19 +41,17 @@ def file_range(path,start,length):
   stream.seek(start);raw=stream.read(length)
  metadata_read_used+=len(raw);return raw
 def json_suffix(raw,key):
- marker=(', "'+key+'":').encode();offset=0
- while True:
-  offset=raw.find(marker,offset)
-  if offset<0:raise ValueError('Bounded JSON suffix anchor absent: '+key)
-  try:return json.loads(b'{'+raw[offset+2:])
-  except (ValueError,UnicodeDecodeError):offset+=len(marker)
+ import re
+ for match in re.finditer(br',\s*"'+re.escape(key.encode())+br'"\s*:',raw):
+  try:return json.loads(b'{'+raw[match.start()+1:].lstrip())
+  except (ValueError,UnicodeDecodeError):pass
+ raise ValueError('Bounded JSON suffix anchor absent: '+key)
 def json_prefix(raw,key,closures=b'}'):
- marker=(', "'+key+'":').encode();offset=0
- while True:
-  offset=raw.find(marker,offset)
-  if offset<0:raise ValueError('Bounded JSON prefix anchor absent: '+key)
-  try:return json.loads(raw[:offset]+closures)
-  except (ValueError,UnicodeDecodeError):offset+=len(marker)
+ import re
+ for match in re.finditer(br',\s*"'+re.escape(key.encode())+br'"\s*:',raw):
+  try:return json.loads(raw[:match.start()]+closures)
+  except (ValueError,UnicodeDecodeError):pass
+ raise ValueError('Bounded JSON prefix anchor absent: '+key)
 def ledger_rows(path):
  size=path.stat().st_size
  if size<2*1024**2:return [json.loads(line) for line in file_bytes(path,2*1024**2).splitlines() if line],None
