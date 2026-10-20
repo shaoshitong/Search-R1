@@ -70,6 +70,50 @@ value=dict(status='FOUR_QUALIFIED_BATCHED_PEER8192_1GPU_SCRIPTS_READY_NOT_SUBMIT
 '''
 
 
+STATUS=r'''
+# A progress rename/metadata visibility race is an unavailable observation,
+# never a reason to restart or classify an otherwise live feature writer.
+read_errors=[]
+def optional(p):
+ try:return read(p)
+ except (FileNotFoundError,json.JSONDecodeError) as exc:
+  if not isinstance(exc,FileNotFoundError) or p.exists():read_errors.append(dict(path=str(p),error=type(exc).__name__))
+  return None
+def small_log(p):
+ try:return p.read_text(errors='replace')[-1000:]
+ except FileNotFoundError:return None
+result=dict(status='ACTUAL_READ_ONLY_FEATURE_INGEST_OBSERVATION',epoch=time.time(),base=str(b),receiver_complete=(pathlib.Path(inputs['receiver'])/'complete.json').exists(),stages={},shards={})
+for label,out in [('ingest',pathlib.Path(inputs['ingest'])),('features',b)]:
+ own={}
+ for name in ['progress.json','prepare-progress.json','failure.json']:
+  v=optional(out/name)
+  if v is not None:own[name]=v
+ v=optional(out/('cpu-'+label+'-launch.json'))
+ if v is not None:own['launch']=v;own['same_process_birth']=ticks(v['pid'])==v['start_ticks']
+ p=out/'complete.json' if label=='ingest' else out/'preparation.json';v=optional(p)
+ if v is not None:own['complete']={k:v[k] for k in ['status','questions','trajectories','elapsed_seconds','free_space_bytes'] if k in v}
+ result['stages'][label]=own
+ids=[]
+for shard in range(4):
+ out=b/('shard-%02d'%shard);own=dict(complete_chunks=len(list((out/'capture').glob('chunk-*/complete.json'))))
+ try:own['job_id']=(out/'job.id').read_text().strip();ids.append(own['job_id'])
+ except FileNotFoundError:pass
+ for name in ['progress.json','failure.json','complete.json']:
+  v=optional(out/'capture'/name)
+  if v is not None:own[name]={k:v[k] for k in ['status','questions','trajectories','expected_trajectories','elapsed_seconds','max_cuda_memory_allocated','batching','actual_batching','time'] if k in v}
+ own['logs']={}
+ for p in (out/'logs').glob('*.log'):
+  text=small_log(p)
+  if text is not None:own['logs'][p.name]=text
+ result['shards'][str(shard)]=own
+if ids:
+ result['squeue']=command(['squeue','-h','-j',','.join(ids),'-o','%i|%j|%T|%R|%N'])
+ result['sacct']=command(['sacct','-X','-n','-P','-j',','.join(ids),'--format=JobID,JobName,State,ExitCode,Elapsed'])
+result['unavailable_optional_observations']=read_errors
+print(json.dumps(result))
+'''
+
+
 def bundle(repo):
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip();remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/qwen7b-probe-warmup-20261019'],cwd=repo,text=True).split()[0];assert commit==remote,'Publish source first'
     data=io.BytesIO();files={}
@@ -83,7 +127,7 @@ def bundle(repo):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--control-root',type=Path);p.add_argument('--action',choices=('stage','prepare-start','finalize','submit','status'),default='status');p.add_argument('--batch-size',type=int,choices=(16,32),default=16);p.add_argument('--shard',type=int);p.add_argument('--submit-authorized',action='store_true');p.add_argument('--self-test',action='store_true');a=p.parse_args();repo=Path(__file__).resolve().parents[3]
     inputs=dict(base=str(TARGET),target=str(TARGET),receiver=str(legacy.RECEIVER),ingest=str(legacy.INGEST),golden=str(GOLDEN),batch_size=a.batch_size,commit='a'*40,bundle_sha256='b'*64,bundle_bytes=100,chunks=1,files={n:dict(bytes=100,sha256='c'*64) for n in FILES},shard=a.shard)
-    blocks=dict(init=legacy.INIT,chunk=legacy.CHUNK,extract=legacy.EXTRACT,cpu=CPU,start=START,finalize=FINALIZE,submit=legacy.SUBMIT,status=legacy.STATUS)
+    blocks=dict(init=legacy.INIT,chunk=legacy.CHUNK,extract=legacy.EXTRACT,cpu=CPU,start=START,finalize=FINALIZE,submit=legacy.SUBMIT,status=STATUS)
     def source(action,extra=None):
         own=dict(inputs);own.update(extra or {})
         if action not in ('init','extract'):own.pop('files',None)
