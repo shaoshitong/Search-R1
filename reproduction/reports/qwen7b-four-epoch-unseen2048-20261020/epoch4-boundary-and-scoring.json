@@ -1,0 +1,148 @@
+{
+  "time": 1792489669.1488848,
+  "score_submission": {
+    "job_id": 741662,
+    "name": "q7b-score4-unseen-84b7ec8c",
+    "script_sha256": "e93e801b27139868f7e48430ab6b509ff5d42512e0879544e62eeed7f0fc459f",
+    "entrypoint_sha256": "8905d06f91ccaa3d2c04dee1fe05d99e9cdb2923443be47cfd8eb7031b6e7c51",
+    "config_sha256": "2ed21976cb09983ed855fa2fd8d3ac7e866c13067552427325cd1765653fce45",
+    "time": 1792489542.4358869
+  },
+  "stop": {
+    "status": "USER_REQUESTED_FOUR_EPOCH_BOUNDARY_STOP_OBSERVED",
+    "accounting": "740358|COMPLETED|0:0\n740358.batch|COMPLETED|0:0\n740358.extern|COMPLETED|0:0\n740358.0|COMPLETED|0:0\n740358.1|COMPLETED|0:0\n740358.2|COMPLETED|0:0\n740358.3|COMPLETED|0:0\n740358.4|COMPLETED|0:0\n740358.5|COMPLETED|0:0\n",
+    "latest": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/inflight.pt",
+      "bytes": 3744946400,
+      "sha256": "58587c9f7639758e748c55e304d3bde0f76d83c657b95d9d31ec7300d9ccf676",
+      "git_blob_sha1": "6e31609efd940a08996841510593951b2b9e330b",
+      "epoch": 5,
+      "cursor": 4,
+      "steps": 18296,
+      "config_sha256": "7ec5eca1afe1fcc92f8a156bece5f7f93d9e3b8df3bf8ab2c571dbdafa01dd18",
+      "bank_sha256": "6f7a5510eb092bd4a414b13f4f7a8a7f1dbe836dbfdd55fd5db97a19ba2c303e",
+      "completed_epoch": false,
+      "actor_updates": 0,
+      "qualification_only": false,
+      "independent_cpu_reload": true,
+      "all_rank_optimizer_moments_match": true
+    },
+    "epoch4": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/epoch-0004.pt",
+      "bytes": 3744947936,
+      "sha256": "c559ab711422019d95e805dedc375d756eff551a7a8ff9e751f40cd8af51f75f",
+      "git_blob_sha1": "ee247354507d96d0a0ddceebd8d2dc1e632aa3ff",
+      "epoch": 4,
+      "cursor": 0,
+      "steps": 18292,
+      "config_sha256": "7ec5eca1afe1fcc92f8a156bece5f7f93d9e3b8df3bf8ab2c571dbdafa01dd18",
+      "bank_sha256": "6f7a5510eb092bd4a414b13f4f7a8a7f1dbe836dbfdd55fd5db97a19ba2c303e",
+      "completed_epoch": true,
+      "actor_updates": 0,
+      "qualification_only": false,
+      "independent_cpu_reload": true,
+      "all_rank_optimizer_moments_match": true,
+      "metrics": {
+        "train": {
+          "groups": 169028,
+          "trajectories": 845140,
+          "trajectory_bce": 0.5166599949749805,
+          "group_bce": 0.48465185165076,
+          "total_loss": 1.0013118466257405,
+          "mixed_accuracy": 0.7947263175331898,
+          "mixed_balanced_accuracy": 0.8004302974952353,
+          "trajectory_accuracy": 0.7454291596658542,
+          "mean_predicted_mixed": 0.45843980316718286,
+          "true_mixed_fraction": 0.39756135078211896,
+          "confusion": {
+            "tp": 55659,
+            "fp": 23157,
+            "fn": 11540,
+            "tn": 78672
+          },
+          "weight_kind": "EMA0.99",
+          "resampled": false,
+          "three_class_order": [
+            "all_wrong",
+            "mixed",
+            "all_correct"
+          ],
+          "three_class_confusion": [
+            [
+              64045.0,
+              2166.0,
+              11514.0
+            ],
+            [
+              31201.0,
+              13345.0,
+              22653.0
+            ],
+            [
+              2363.0,
+              251.0,
+              21490.0
+            ]
+          ],
+          "prediction_file_pattern": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/predictions/epoch-0004-train-rank*.jsonl.gz"
+        },
+        "diagnostic": {
+          "groups": 512,
+          "trajectories": 2560,
+          "trajectory_bce": 0.8604674264788628,
+          "group_bce": 0.9488139594905078,
+          "total_loss": 1.8092813859693706,
+          "mixed_accuracy": 0.5390625,
+          "mixed_balanced_accuracy": 0.5459442281719233,
+          "trajectory_accuracy": 0.633203125,
+          "mean_predicted_mixed": 0.5137269168626517,
+          "true_mixed_fraction": 0.400390625,
+          "confusion": {
+            "tp": 119,
+            "fp": 150,
+            "fn": 86,
+            "tn": 157
+          },
+          "weight_kind": "EMA0.99",
+          "resampled": false,
+          "three_class_order": [
+            "all_wrong",
+            "mixed",
+            "all_correct"
+          ],
+          "three_class_confusion": [
+            [
+              157.0,
+              15.0,
+              56.0
+            ],
+            [
+              120.0,
+              21.0,
+              64.0
+            ],
+            [
+              27.0,
+              8.0,
+              44.0
+            ]
+          ],
+          "prediction_file_pattern": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/predictions/epoch-0004-diagnostic-rank*.jsonl.gz"
+        },
+        "balance": {
+          "original_counts": {
+            "all_wrong": 77725,
+            "mixed": 67199,
+            "all_correct": 24104
+          },
+          "balanced_per_class": 77725,
+          "groups": 233175
+        }
+      }
+    },
+    "request_sha256": "18fccde8e632af60580063f4a5cde98394de7f14746461d5f17173d01d70955d",
+    "time": 1792489497.9346435,
+    "original_twenty_epoch_goal_superseded": true
+  },
+  "start": "741662|PENDING|2026-10-20T18:46:16|(Priority)\n"
+}
