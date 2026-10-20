@@ -2,7 +2,7 @@
 from pathlib import Path
 import json,hashlib,os,subprocess,tempfile,time
 C=Path(__file__).resolve().parents[2];R=C/'work/qwen7b-probe-warmup-20261019';O=C/'outputs/qwen7b-warmup-20261019';P=O/'reports';branch='codex/peer8192-within1-matched256-20261021';prefix='reproduction/reports/qwen7b-algorithm-improvement-20261021/peer-within1-matched256/'
-ops=[O/n for n in ('publish-peer-within1-source.py','read-peer-control-runtime-publication.py','poll-peer-within1.py','peer-within1-first-independent-audit.py','peer-within1-final-independent-audit.py','backup-peer-within1-audits.py')]
+ops=[O/n for n in ('publish-peer-within1-source.py','read-peer-control-runtime-publication.py','poll-peer-within1.py','peer-within1-first-independent-audit.py','peer-within1-final-independent-audit.py','fetch-peer-within1-final-audit.py','read-peer-within1-final-audit-remote.py','backup-peer-within1-audits.py')]
 reports=sorted(p for p in P.glob('peer-within1-*.json') if 'backup-publication' not in p.name);reports.append(P/'peer-control-D8-runtime-source-publication.json');files={p:prefix+'ops/'+p.name for p in ops if p.exists()};files.update({p:prefix+'summaries/'+p.name for p in reports if p.exists()})
 def git(*args,env=None,input=None):return subprocess.check_output(['git',*args],cwd=R,env=env,input=input).decode().strip()
 head=git('rev-parse','HEAD');cached=git('diff','--cached','--name-only');parent=git('rev-parse','refs/heads/'+branch);records={}
