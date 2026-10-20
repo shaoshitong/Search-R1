@@ -1,3 +1,13 @@
+# Latest actual October20 02:52UTC: B179 complete; five-round recovery accepted;180 actual prefix
+
+Same B native40168/start505777 on h100-5 physical4–7 completed175–179 in sequence: all4rank100 actual actor and50 probe/EMA writes, currentactor3580/probe2470. Original per-rank full journal SHA/counts accepted by the existing reader; first175 GPU restore evidence separately retained. Actual180 prefix2400/12800 at latest reading, not180 complete. Five-new-round acceptance is complete and must not be repeated. Same process continues200/no201; latest complete recovery candidate179 or later, never old174 merely audited. Ordinary175–179 mean trainingwall 992.569s, range935.085–1022.776; QA/periodic/final costs excluded. See B-resume174-five-rounds/ACTUAL.json.
+
+Peer thread01a0fcbc now runs its separately authorized4card native58382/start769096 on physical0–3, retrieval19710/grounding19720–19723; our4–7 services18510/18520–18523 remain unchanged. No cross-task signal, budget expansion or new GPU test. Initial conflicting peer8card startup was separately terminated with its actual own-release proofs retained.
+
+B180 periodic work remains part of the current run; do not stop on180. B200 normal checkpoint qualification, scheduledQA200 and final51713 original-output/count/rescore/nativeexit/resource closure/retention/publication remain pending. A200/final51713 accepted. No whole-goal completion asserted.
+
+---
+
 # Latest actual October20 01:45UTC: B175 complete,176 started; GPU conflict closed
 
 The sole reader45688 is live. B actual175 completed all4rank20 actor writes3481–3500 and10 probe/EMA writes2421–2430; direct original ACTUAL_RESTORE events verify source174/scheduler174/Adam3480/LR1e-6/FP32 masters/globalmicro4. Original first175 complete selected202/512 mixed=.39453125, meanq.91252322584, allwrong141/allcorrect169. Whole training-wall935.085230358s; actor367.4066s/prefix389.2864s/expanded continuation123.3573s/probe24.1379s/score26.9491s. This is the first recovered round, not a steady-state ETA. Actual next176 prefix has started; five-new175–179 plus180-start acceptance is still pending. Same job continues200/no201. Latest recovery candidate175 or newer, never174 merely because it was CPU-audited. See B-resume174-first175/ACTUAL.json.
