@@ -1,0 +1,25 @@
+# Preregistered prefix-confidence information test (preparation only)
+
+Hypothesis: actual actor chosen-token log probabilities available during Prefix20 generation may add rollout-specific information that the frozen probe probabilities miss. This is distinct from the previously completed two-parameter Platt test. No claim that confidence or token uniqueness predicts correctness is made before actual evidence.
+
+## Availability gate
+
+Use only source-bound real vLLM selected-token log probabilities. For the exact first20 kept policy tokens, token IDs/cuts/positions must agree with the accepted causal Prefix20. Exclude environment placeholders, discarded post-search tails, future policy tokens, all future answer statistics, teacher values and EM-derived inputs. Check finite, genuinely non-placeholder values and identical semantics for old5/new5 and the fixed2048 genuine G5 process. Prefix-only records not containing these values are not evidence of absence if the full journal contains them. Do not invent entropy from a single chosen-token probability. No GPU, new rollout or validation-wide analysis before this gate.
+
+## Frozen scope and observables
+
+One model only: the already sealed E4 HF replay probabilities on accepted8192 real-G10 training questions. No candidate/source/loss/regularizer grid, no E2 rescoring, no modification to the ongoing682-step probe trainer. Preserve the original raw/EMA/Adam/RNG. These question texts were seen in the original native warmup; only the scalar calibrator split is question-held-out.
+
+Each trajectory uses six strictly Prefix20 observables: mean chosen logp, population standard deviation, minimum, first-five mean, last-five mean, and actual kept-prefix length/20. For naturally short trajectories, reduce only over actual policy tokens; never over padding. Normalize the six features with fit-question statistics only, with scale floored at1e-6. No full-response feature may enter. The existing probe logit is derived from stored p_j clipped at1e-6, exactly the same declared interface for fit and evaluation.
+
+A single eight-scalar correction is z_new = exp(3*tanh(a))*z_old + b + dot(w, standardized_prefix_features), with b=10*tanh(raw_b), six w values, all new raw values initialized0. Penalize .01*(log_scale^2+b^2+sum(w^2)), toward identity. The frozen original probe is not updated. This new scalar optimizer is not a reset of its Adam.
+
+Freeze a qid-only SHA split before looking at scores or EM: seed9137, select the first2048 SHA-ranked unique qids as internal holdout and fit on the remaining6144. Fit the already selected trajectory BCE + three-event NLL (weights1:1), all252 genuine G5 subsets per G10 with total question weight1. Keep this objective and .01 regularizer fixed; reuse the bounded CPU Platt math, preserving full scalar/optimizer/RNG/normalizer/source/split state and loss curve. CPU2, <=3GiB, <=26min; no GPU or model tensor loads.
+
+## Qualification and one external score
+
+Assess the frozen candidate on the internal2048 holdout NEWSEED5 trajectories only (indices5..9), against the same E4 raw p/q. Report BA, both recalls, AW/AC FPR, AUC, Top512 count and K histogram. Require strict improvement in both BA and Top512 over this internal raw E4 before opening external validation prediction payloads. Otherwise stop this hypothesis as negative without external scoring. No holdout threshold tuning, refit, rerun or hyperparameter adjustment.
+
+Only if that internal gate passes, freeze the exact scalar checkpoint and score the already-viewed fixed2048 same-HF ownG5 validation ONCE. Compare against the sealed same-HF E2 BA0.5625049686633887 and E4 Top196 frontier, with thresholds/fractions unchanged. Report raw versus clipped identity baselines so clipping is not counted as learned improvement; if clipping changes classifications or ties, report it explicitly. Verify calibrated p_j and q numerically, own EM/IDs and readout provenance. A successful candidate then receives the frozen paired-subset/bootstrap analysis and untouched4096 confirmation under the existing goal; this protocol never opens final pools by itself.
+
+Current status: availability sample audit in progress. This document authorizes no launch on missing data. A finite CPU implementation and real preflight will precede actual fitting; publication and remote source/hash verification remain required.
