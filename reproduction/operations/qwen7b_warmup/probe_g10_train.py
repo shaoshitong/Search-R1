@@ -19,6 +19,7 @@ from contextlib import nullcontext
 import torch
 from . import probe_ablation_train as u
 from .g10_grouping import _validate, build_training_views, fixed_g5
+from .g10_weighted_balanced import build_training_views as build_global_training_views
 from .g10_question_loss import g10_question_loss
 # CPU reference for tests/qualification only; production uses bounded VJP below.
 from .g10_question_update import question_weighted_update as joined_graph_reference
@@ -54,7 +55,7 @@ def input_pair_mask(reader,groups,device):
 def bounded_question_update(model,ema,optimizer,reader,groups,device,*,
         grouping_kwargs,loss_kwargs,micro_trajectories=5,
         distinguishable_pair_mask=None,ema_decay=.99,max_virtual_views=2048,
-        max_inter_view_pairs=1000000):
+        max_inter_view_pairs=1000000,grouping_builder=build_training_views):
     """Same complete-question loss, exact chain rule, bounded activation graphs.
 
     Pass1 uses the SAME grad-enabled training forward as pass2, but detaches each
@@ -69,7 +70,7 @@ def bounded_question_update(model,ema,optimizer,reader,groups,device,*,
     if not 0<=float(ema_decay)<1:raise ValueError('EMA decay must be in [0,1)')
     if {'logits','source_groups','views','distinguishable_pair_mask'}&set(loss_kwargs):
         raise ValueError('Recipe cannot inject identities, labels or masks')
-    grouping=build_training_views(groups,role='train',**grouping_kwargs)
+    grouping=grouping_builder(groups,role='train',**grouping_kwargs)
     views=grouping['groups'];positive=sum(v['true_mixed'] for v in views)
     if len(views)>max_virtual_views or positive*(len(views)-positive)>max_inter_view_pairs:
         raise ValueError('Explicit virtual-view/loss-pair memory budget exceeded')
@@ -220,6 +221,13 @@ def validate_plan(plan,groups,config,forbidden=()):
             raise ValueError('Each global update must contain exactly declared distinct original questions')
         if type(epoch) is not int or epoch<0:raise ValueError('Nonnegative predeclared grouping epoch required')
         used.update(batch)
+        if config.get('grouping',{}).get('mode')=='global-weighted-balanced':
+            if (config['grouping'].get('weighting')!='equal-view-quota' or
+                    config['grouping'].get('on_unbalance')!='raise'):
+                raise ValueError('Global balanced experiment requires exact equal-view quotas, never silent fallback')
+            if any(q not in lookup for q in batch):raise ValueError('Unknown training question')
+            if 2*sum(0<sum(lookup[q]['labels'])<10 for q in batch)<len(batch):
+                raise ValueError('Declared batch cannot attain1:1 with original-question weight1')
     if used!=set(cohort) or not used<=set(lookup):raise ValueError('Cohort/batch/G10 bank mismatch')
     return lookup
 
@@ -259,10 +267,12 @@ def run_update(model,ema,optimizer,reader,lookup,qids,config,device,epoch):
     selected=[lookup[q] for q in qids];loss=config['recipe']['loss_kwargs']
     mask=input_pair_mask(reader,selected,device) if float(loss.get('within_rank_weight',0.)) else None
     grouping=dict(config['grouping']);grouping['epoch']=epoch
+    builder=build_global_training_views if grouping['mode']=='global-weighted-balanced' else build_training_views
     return bounded_question_update(model,ema,optimizer,reader,selected,device,
         grouping_kwargs=grouping,loss_kwargs=loss,
         micro_trajectories=config['micro_trajectories'],distinguishable_pair_mask=mask,
-        max_virtual_views=config['max_virtual_views'],max_inter_view_pairs=config['max_inter_view_pairs'])
+        max_virtual_views=config['max_virtual_views'],max_inter_view_pairs=config['max_inter_view_pairs'],
+        grouping_builder=builder)
 
 
 def blob(model,ema,optimizer,device,cursor,binding,source_ranks):
@@ -280,7 +290,7 @@ def run(base):
     paths={k:u.checked(c[k]) for k in required}
     repo=Path(__file__).resolve().parents[3]
     code_required={'reproduction/operations/qwen7b_warmup/'+n for n in
-        ('probe_g10_train.py','g10_question_loss.py','g10_question_update.py','g10_grouping.py',
+        ('probe_g10_train.py','g10_question_loss.py','g10_question_update.py','g10_grouping.py','g10_weighted_balanced.py',
          'probe_ablation_train.py','probe_ablation_loss.py','model.py','packed_features.py','native_capture.py')}
     if not code_required<=set(c['code_hashes']):raise ValueError('Missing immutable runtime code bindings')
     for name,want in c['code_hashes'].items():

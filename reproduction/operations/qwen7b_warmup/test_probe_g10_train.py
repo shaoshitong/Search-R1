@@ -155,6 +155,28 @@ class ProbeG10TrainTests(unittest.TestCase):
         final_plan=fixed_g5(groups,selection='random',role='final',seed=19)
         with self.assertRaisesRegex(ValueError,'label-blind'):frozen_validation(groups,final_plan)
 
+    def test_global_balance_routes_real_update_and_rejects_infeasible_plan(self):
+        from .probe_g10_train import run_update
+        model,ema,opt,groups,mask,source=setup(dropout=True)
+        groups=groups[:2];groups[0]['labels']=[0]*10
+        qids=[g['qid'] for g in groups];lookup={g['qid']:g for g in groups}
+        c=dict(global_questions=2,update_budget=1,smaller_question_budget_acknowledged=True,
+            grouping=dict(mode='global-weighted-balanced',views_per_question=4,seed=17,
+                          on_unbalance='raise',weighting='equal-view-quota'),
+            recipe=dict(loss_kwargs=dict(trajectory_weight=1.,three_event_weight=1.)),
+            micro_trajectories=3,max_virtual_views=64,max_inter_view_pairs=4096)
+        plan=dict(cohort_qids=qids,batches=[qids],batch_epochs=[0])
+        self.assertEqual(len(validate_plan(plan,groups,c)),2)
+        result=run_update(model,ema,opt,ToyReader(),lookup,qids,c,torch.device('cpu'),0)
+        self.assertEqual(result['grouping']['mixed_views'],4)
+        self.assertEqual(result['grouping']['nonmixed_views'],4)
+        self.assertTrue(result['grouping']['count_balanced'])
+        self.assertTrue(result['grouping']['weighted_class_mass_balanced'])
+        self.assertTrue(result['grouping']['per_question_total_weight_exactly_one'])
+        self.assertEqual(u.steps(opt),10465)
+        groups[1]['labels']=[1]*10
+        with self.assertRaisesRegex(ValueError,'cannot attain'):validate_plan(plan,groups,c)
+
     def test_accepted_merge_rejoins_actual_old_and_extra_own_EM(self):
         *_,groups,mask,source=setup()
         with tempfile.TemporaryDirectory() as directory:
