@@ -1,4 +1,4 @@
-# Actual selected mixing: A200 / B189
+# Actual selected mixing: A200 / B193
 
 Each observed value is from an actually completed outer, strict-EM G5 group counts, denominator512. Empty B cells mean not completed, never fitted/interpolated. The stopped old B51–58 is excluded. This is selected group prevalence, not probe classification accuracy or QA EM/F1.
 
@@ -25,6 +25,6 @@ A uses frozen warmup/prefix5. Human-authorized B changed after50: prefix20/admit
 | 161–169 | 34.89 / 6.81% | 204.56 / 39.95% |
 | 171–179 | 30.78 / 6.01% | 219.67 / 42.90% |
 | 181–189 | 29.11 / 5.69% | 200.56 / 39.17% |
-| 191–200 | 27.90 / 5.45% | pending |
+| 191–200 | 27.90 / 5.45% | 199.67 / 39.00% (partial) |
 
 A200 and final51713 are accepted. B training, final QA and true native exit/resource closure remain pending; no whole-goal completion is asserted. See PER-ITERATION.csv for every actual row.
