@@ -162,6 +162,7 @@ def score(base, micro):
         complete = results / ('epoch-%04d.json' % epoch)
         if complete.exists():
             previous = read(complete)
+            assert previous['score_source_sha256'] == sha(__file__), 'Explicitly qualify changed scoring before reusing predictions'
             assert previous['bank_sha256'] == sha(base / 'bank/complete.json')
             assert sha(previous['predictions']['path']) == previous['predictions']['sha256']
             continue
@@ -204,6 +205,7 @@ def score(base, micro):
                selected=[dict(row, true_EM=truth[row['qid']]) for row in chosen]))
         cutoff = chosen[-1]['predicted_mixed']
         result = dict(status='EMA_UNSEEN2048_PREDICTED_TOP512_SCORED', epoch=epoch,
+                      score_source_sha256=sha(__file__),
                       checkpoint=receipt, weight_key='ema', ema_sha256=expected_ema_hash,
                       bank_sha256=sha(base / 'bank/complete.json'), pool=pool, selected512=selected,
                       uplift_percentage_points=100 * (selected['true_mixed_fraction'] - pool['true_mixed_fraction']),
@@ -230,6 +232,7 @@ def report(base):
     for epoch in range(1, 5):
         receipt = read(results / ('epoch-%04d.json' % epoch))
         assert receipt['epoch'] == epoch and receipt['weight_key'] == 'ema'
+        assert receipt['score_source_sha256'] == sha(__file__)
         assert receipt['bank_sha256'] == sha(base / 'bank/complete.json')
         assert receipt['score_prefix_tokens'] == 5 and receipt['retained_prefix_tokens'] == 20
         checkpoint = read(Path(config['training_base']) / 'probe' / ('epoch-%04d.json' % epoch))
