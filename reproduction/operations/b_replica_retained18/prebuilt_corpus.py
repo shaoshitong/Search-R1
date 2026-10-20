@@ -18,10 +18,11 @@ def load(cache):
         if actual==row['identity']:continue
         # st_dev is a client-local filesystem number. The exact same retained18
         # inode exported over NFS has a different st_dev on another H100 node.
+        # The verified10.32.0.18 data interface is the same retained18 server.
         # Never relax inode/size/data-mtime, shard order, or the prior full SHA.
         if actual[1:]!=row['identity'][1:]:raise ValueError('Qualified Arrow identity changed')
         source,fstype=subprocess.check_output(['findmnt','-T',row['path'],'-n','-o','SOURCE,FSTYPE'],text=True).split()
-        if fstype!='nfs4' or source not in ('10.33.0.18:/mnt/data','10.33.0.18:/mnt/data/shaoshitong'):
+        if fstype!='nfs4' or source not in tuple(host+':'+root for host in ('10.33.0.18','10.32.0.18') for root in ('/mnt/data','/mnt/data/shaoshitong')):
             raise ValueError('Device translation requires the exact retained18 NFS export')
         if len(row.get('sha256',''))!=64:raise ValueError('Missing original full-file SHA qualification')
         translations.append(dict(path=row['path'],source_identity=row['identity'],client_identity=actual,original_full_sha256=row['sha256'],nfs_source=source))
