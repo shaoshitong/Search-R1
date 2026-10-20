@@ -35,7 +35,7 @@ if p:
     if not prefix.endswith('/shaoshitong/'+b.name):continue
     tail=Path(relative)
     if len(tail.parts)!=2 or tail.suffix!='.lock':continue
-    dest=b/'sampling'/tail.parent/tail.stem
+    dest=b/'sampling'/tail.parent/'batches'/tail.stem
     for phase in('prefix','full'):
      source=dest/'outers/outer-000001'/phase/'rank-0-progress.json'
      detail=read(source)
