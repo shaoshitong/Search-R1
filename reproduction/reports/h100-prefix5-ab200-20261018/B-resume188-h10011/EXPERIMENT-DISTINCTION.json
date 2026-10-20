@@ -1,0 +1,85 @@
+{
+  "checked_utc": "2026-10-20T06:34:54.774982+00:00",
+  "status": "DIFFERENT_EXPERIMENT_BRANCHES_SHARED_CP50_ANCESTOR",
+  "inherited_run_id_same": true,
+  "inherited_run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+  "ours": {
+    "experiment": "B progressive native five prefixes",
+    "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1-resume188-h10011-cards4-7-r2",
+    "commit": "6dc4a39e3ddd2bf7a642c33a9343f6044ee69ea4",
+    "config_sha256": "bfdad872c8aae7c51d7da1fdf1a4f9fb61dc7bc27088cabbba9bccd1283e9d2b",
+    "physical_gpu_indices": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "native_prefixes_per_question": 5,
+    "actual_prefix_counter_evidence": {
+      "questions": 5120,
+      "total_native_prefixes": 25600,
+      "expected_per_rank": 6400,
+      "all_four_rank_completed": true,
+      "source_small": "work/prefix5-ab-b189-rollout-progress-B-status-20261020T063018342044Z.json"
+    }
+  },
+  "peer": {
+    "experiment": "B diverse10to5",
+    "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-diverse10to5-cp188-four-h10011-20261020-r2",
+    "commit": "2384d73c8b3626d1a1c05986afac7d8808b5a274",
+    "config_sha256": "a793c5715fc6ee8c3690d05c3adf66c20e191a2d3c4c41061f2e18df8451e5e2",
+    "physical_gpu_indices": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "native_prefixes_per_question": 10,
+    "retained_prefixes_per_question": 5,
+    "selection": "Outcome-free/probe-free farthest-first token-prefix diversity",
+    "local_actual_reference": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/b-replica-retained18-20261018/SHARED_RESUME64_LATEST.json",
+    "confirmed_native_birth": {
+      "pid": 2580524,
+      "start_ticks": 725589138
+    },
+    "shared_progressive_protocol_retained": true,
+    "actual_prefix_counter_evidence": [
+      {
+        "rank": 3,
+        "expected_trajectories": 12800,
+        "prefix_candidates_per_question": 10,
+        "completed_trajectories": 12500,
+        "retained_prefixes": 6250,
+        "utc": "2026-10-20T06:43:00.306323+00:00"
+      },
+      {
+        "rank": 2,
+        "expected_trajectories": 12800,
+        "prefix_candidates_per_question": 10,
+        "completed_trajectories": 12500,
+        "retained_prefixes": 6250,
+        "utc": "2026-10-20T06:43:00.209319+00:00"
+      },
+      {
+        "rank": 1,
+        "expected_trajectories": 12800,
+        "prefix_candidates_per_question": 10,
+        "completed_trajectories": 11900,
+        "retained_prefixes": 5950,
+        "utc": "2026-10-20T06:42:30.506798+00:00"
+      },
+      {
+        "rank": 0,
+        "expected_trajectories": 12800,
+        "prefix_candidates_per_question": 10,
+        "completed_trajectories": 12200,
+        "retained_prefixes": 6095,
+        "utc": "2026-10-20T06:42:40.777883+00:00"
+      }
+    ],
+    "actual_reference_sha256": "cb0ba95c01ca283d1dd87de42bef0a9eb7154271d6a0c23aeb7a9becbaeb8f54"
+  },
+  "distinction": "Use experiment branch + base + configSHA + actual process birth, never inherited run_id alone",
+  "training_changed": false,
+  "peer_confirmation_received": true
+}
