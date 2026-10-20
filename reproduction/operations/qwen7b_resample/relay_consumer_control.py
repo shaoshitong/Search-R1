@@ -46,14 +46,14 @@ evidence=launch/'allocation-evidence.json'
 evidence.write_text(json.dumps(dict(mode='NATIVE_MODEL_ONLY_SHARED_VRAM',node='h100-10',unit=UNIT,
  main_pid=os.getpid(),cgroup=values['ControlGroup'],unit_show=detail,captured_epoch=time.time(),
  resource_limits=dict(cpu_quota_percent=800,memory_max_bytes=103079215104,runtime_max_seconds=28800),
- communication_environment=dict(NCCL_NVLS_ENABLE='0',NCCL_BUFFSIZE='1048576',NCCL_DEBUG='INFO'),
+ communication_environment=dict(NCCL_NVLS_ENABLE='0',NCCL_BUFFSIZE='1048576',NCCL_MAX_NCHANNELS='4',NCCL_DEBUG='INFO'),
  original_cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'))));os.chmod(evidence,0o400)
 env=dict(os.environ,PYTHONPATH=FROZEN_REPO+':/dataset/shaoshitong/Search-G1-common8/retriever-gpu-lib',
  OMP_NUM_THREADS='4',MKL_NUM_THREADS='4',PYTHONUTF8='1',PYTHONDONTWRITEBYTECODE='1',TOKENIZERS_PARALLELISM='false',
  HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',HF_DATASETS_OFFLINE='1',SEARCH_G1_B_PREFIX_TOKENS='20',
  SEARCH_G1_PHYSICAL_WORLD_SIZE='4',SEARCH_G1_BASE=BASE,HF_HOME=BASE+'/cache/huggingface',
  TORCH_EXTENSIONS_DIR=BASE+'/cache/torch_extensions',TMPDIR=str(launch/'tmp'),
- CUDA_VISIBLE_DEVICES='0,1,2,3',NCCL_NVLS_ENABLE='0',NCCL_BUFFSIZE='1048576',NCCL_DEBUG='INFO',VLLM_ATTENTION_BACKEND='XFORMERS',VLLM_HOST_IP='127.0.0.1',
+ CUDA_VISIBLE_DEVICES='0,1,2,3',NCCL_NVLS_ENABLE='0',NCCL_BUFFSIZE='1048576',NCCL_MAX_NCHANNELS='4',NCCL_DEBUG='INFO',VLLM_ATTENTION_BACKEND='XFORMERS',VLLM_HOST_IP='127.0.0.1',
  CPATH='/mnt/data/shaoshitong/search-r1-rl/gigpo/tools/python310-headers-v1/extracted/usr/include:'
  '/mnt/data/shaoshitong/search-r1-rl/gigpo/tools/python310-headers-v1/extracted/usr/include/python3.10:'
  '/mnt/data/shaoshitong/search-r1-rl/gigpo/tools/python310-headers-v1/extracted/usr/include/x86_64-linux-gnu/python3.10')
@@ -83,7 +83,7 @@ def bundle():
         source_files=rows, files={k: dict(bytes=len(v), sha256=old.digest(v)) for k, v in files.items()},
         same_cluster_retrieval_only=True, original_index_reused_without_reencoding=True,
         model_gpus=[0,1,2,3], tensor_parallel_size=4, no_actor_or_probe_updates=True,
-        communication_environment=dict(NCCL_NVLS_ENABLE='0',NCCL_BUFFSIZE='1048576',NCCL_DEBUG='INFO'))
+        communication_environment=dict(NCCL_NVLS_ENABLE='0',NCCL_BUFFSIZE='1048576',NCCL_MAX_NCHANNELS='4',NCCL_DEBUG='INFO'))
     return identity, files, manifest
 
 
