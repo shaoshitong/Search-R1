@@ -2,6 +2,8 @@
 import hashlib
 import json
 import os
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
@@ -22,7 +24,7 @@ class SourceBootstrapTest(unittest.TestCase):
                     parent=dict(mntns_inode=20, netns_inode=30, unit=control.SOURCE_UNIT),
                     source_sampling_deadline_epoch=5000)))
                 (stage / 'manifest.json').write_text(json.dumps(dict(run_id=control.RUN_ID, files={})))
-                unit = 'sst-q7b-g5-source5-extra-' + group + '-v2-' + control.RUN_ID[:12] + '.service'
+                unit = 'sst-q7b-g5-source5-extra-' + group + '-v3-' + control.RUN_ID[:12] + '.service'
                 cgroup = '/system.slice/' + unit
                 detail = 'Id=%s\nMainPID=123\nActiveState=active\nControlGroup=%s\n' % (unit, cgroup)
                 original_stat, original_read = os.stat, Path.read_text
@@ -59,11 +61,15 @@ class SourceBootstrapTest(unittest.TestCase):
                 self.assertEqual(option('--run-seconds'), '3400')
                 self.assertEqual(option('--batch-reserve-seconds'), '1200')
                 self.assertEqual(option('--tp'), '1')
-                self.assertEqual(env['SEARCH_G1_PHYSICAL_WORLD_SIZE'], '1')
+                self.assertEqual(env['SEARCH_G1_PHYSICAL_WORLD_SIZE'], '4')
                 self.assertEqual(option('--model-max-seqs'), str(control.LIMITS[group]['seqs']))
                 self.assertEqual(option('--model-batch-tokens'), str(control.LIMITS[group]['tokens']))
                 self.assertEqual(option('--model-kv-block-cap'), str(control.LIMITS[group]['blocks']))
                 self.assertEqual(option('--model-reserve-gib'), str(control.LIMITS[group]['reserve']))
+                imported = subprocess.run([sys.executable, '-c',
+                    'from reproduction.prefix_selection200.contract import WORLD,PREFIX_TOKENS; '
+                    'assert WORLD==4 and PREFIX_TOKENS==20'], env=env, text=True, capture_output=True)
+                self.assertEqual(imported.returncode, 0, imported.stderr)
                 self.assertEqual(env['NCCL_NVLS_ENABLE'], '0')
                 self.assertFalse((stage.parent / 'relay-secret').exists())
 

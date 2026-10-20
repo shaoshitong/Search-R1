@@ -5,7 +5,7 @@ from pathlib import Path
 import subprocess
 import sys
 import time
-from .source_sublease_control import ROOT, GROUPS
+from .source_sublease_control import ROOT
 
 
 def main():
@@ -13,14 +13,19 @@ def main():
     p.add_argument('--hours',type=float,default=4)
     p.add_argument('--interval',type=int,default=60)
     p.add_argument('--own-batches',type=int,default=1)
+    p.add_argument('--tp1',action='store_true',help='Observe only the separately admitted gpu2/gpu1 TP1 units')
     a=p.parse_args();assert a.interval>=30 and a.own_batches>=1
-    latest=ROOT/'work/qwen7b-source5-extra-first-batches-latest-small.json'
+    if a.tp1:
+        from . import source_tp1_control as control
+    else:
+        from . import source_sublease_control as control
+    latest=ROOT/'work'/('qwen7b-source5-tp1-first-batches-latest-small.json'if a.tp1 else'qwen7b-source5-extra-first-batches-latest-small.json')
     until=time.monotonic()+a.hours*3600;last=None
     while time.monotonic()<until:
         rows={}
-        for group in GROUPS:
+        for group in control.GROUPS:
             try:
-                r=subprocess.run([sys.executable,'-m','reproduction.operations.qwen7b_resample.source_sublease_control',
+                r=subprocess.run([sys.executable,'-m',control.__name__,
                     'status','--group',group],text=True,capture_output=True,timeout=110)
                 assert r.returncode==0,r.stderr[-1000:]
                 outer=json.loads(r.stdout);v=json.loads(outer['stdout']);s=v.get('sampler')or{};progress=s.get('progress')or{}

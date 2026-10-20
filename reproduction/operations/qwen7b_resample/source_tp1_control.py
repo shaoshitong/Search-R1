@@ -50,10 +50,12 @@ evidence=launch/'allocation-evidence.json'
 evidence.write_text(json.dumps(dict(node='h100-5',unit=UNIT,main_pid=os.getpid(),unit_show=detail,
  cgroup=props['ControlGroup'],captured_epoch=time.time(),resource_limits=dict(cpu_quota_percent=800,memory_max_bytes=103079215104,runtime_max_seconds=28800),
  original_cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'))));os.chmod(evidence,0o400)
+# Retain the historical rollout utility import profile (4); canonical sampling
+# config.world_size=1 and the actual tensor topology --tp=1 remain independent.
 env=dict(os.environ,PYTHONPATH=FROZEN_REPO+':/dataset/shaoshitong/Search-G1-common8/retriever-gpu-lib',
  OMP_NUM_THREADS='4',MKL_NUM_THREADS='4',PYTHONUTF8='1',PYTHONDONTWRITEBYTECODE='1',TOKENIZERS_PARALLELISM='false',
  HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',HF_DATASETS_OFFLINE='1',SEARCH_G1_B_PREFIX_TOKENS='20',
- SEARCH_G1_PHYSICAL_WORLD_SIZE=str(len(MODEL)),SEARCH_G1_BASE=BASE,HF_HOME=BASE+'/cache/huggingface',
+ SEARCH_G1_PHYSICAL_WORLD_SIZE='4',SEARCH_G1_BASE=BASE,HF_HOME=BASE+'/cache/huggingface',
  TORCH_EXTENSIONS_DIR=BASE+'/cache/torch_extensions',TMPDIR=str(launch/'tmp'),
  CUDA_VISIBLE_DEVICES=','.join(map(str,MODEL)),NCCL_NVLS_ENABLE='0',NCCL_BUFFSIZE='1048576',NCCL_MAX_NCHANNELS='4',
  NCCL_DEBUG='INFO',VLLM_ATTENTION_BACKEND='XFORMERS',VLLM_HOST_IP='127.0.0.1',
@@ -80,8 +82,8 @@ os.execvpe(command[0],command,env)
 
 
 def bundle(group):
-    unit = 'sst-q7b-g5-source5-extra-' + group + '-v2-' + RUN_ID[:12] + '.service'
-    directory = 'source5-model-sublease-' + group + '-v2'
+    unit = 'sst-q7b-g5-source5-extra-' + group + '-v3-' + RUN_ID[:12] + '.service'
+    directory = 'source5-model-sublease-' + group + '-v3'
     files = {name: Path(__file__).with_name(name).read_bytes() for name in SOURCES}
     rows = {name: dict(bytes=len(data), sha256=old.digest(data)) for name, data in files.items()}
     identity = old.digest(old.encoded(dict(mode=directory, source_files=rows)))
