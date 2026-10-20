@@ -1,3 +1,11 @@
+# Latest actual October20 01:45UTC: B175 complete,176 started; GPU conflict closed
+
+The sole reader45688 is live. B actual175 completed all4rank20 actor writes3481–3500 and10 probe/EMA writes2421–2430; direct original ACTUAL_RESTORE events verify source174/scheduler174/Adam3480/LR1e-6/FP32 masters/globalmicro4. Original first175 complete selected202/512 mixed=.39453125, meanq.91252322584, allwrong141/allcorrect169. Whole training-wall935.085230358s; actor367.4066s/prefix389.2864s/expanded continuation123.3573s/probe24.1379s/score26.9491s. This is the first recovered round, not a steady-state ETA. Actual next176 prefix has started; five-new175–179 plus180-start acceptance is still pending. Same job continues200/no201. Latest recovery candidate175 or newer, never174 merely because it was CPU-audited. See B-resume174-first175/ACTUAL.json.
+
+Peer thread01a0fcbc acknowledged competition on h100-5 and stopped only its newly racing CP181 startup (48221/start613584), with0 new actor/probe updates. Two actual observations confirm its main/resources unitsinactive/MainPID0,27ownedbirthgone and our40168/start505777 still live. Its goal remains active; it will seek18/8, not automatically launch8cards against our variable4–7memory. Do not touch peer or foreign tasks or expand our budget. User-authorized coordination only.
+
+---
+
 # October20 closure and GPU coordination update
 
 A normal5/50/100/150/200 referenced HF/rank/driver/probe/pool/grounding/selection payloads are still present with producer byte sizes matched; metadata-only proof SHA63e1c4eea728133c93b929112bd8441e6113496a83245414feaaea48886e0768. No repeated large hashes or tensor loads. QA200 canonical512 and original4worker exit0 confirmed. See A-normal200-final51713/RETENTION.json. Whole A/B goal remains incomplete.

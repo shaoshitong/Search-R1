@@ -1,0 +1,338 @@
+{
+  "status": "B174_COMPLETE_RECOVERY_TO_ACTUAL175_AND_NEXT176",
+  "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+  "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1",
+  "source_complete_outer": 174,
+  "actual_first_complete": 175,
+  "actual_next_started": 176,
+  "observed_utc": "20261020T014506609593Z",
+  "observation": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-assigned-normal-follow-20261020T014506609593Z-actual.json",
+  "observation_sha256": "588f7530a2ce9a42bf104c2994b5a87568fc40800ec7e72db8ead4db4c1af90b",
+  "actual_restore_and_writes": {
+    "status": "B175_ACTUAL_FOUR_GPU_RESTORE_AND_FULL_UPDATE_JOURNALS_READ",
+    "base": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1",
+    "run_id": "d9e5385ebec24ea8ab6cb8db8d2f825a",
+    "outer": 175,
+    "actor": [
+      {
+        "rank": 0,
+        "ledger": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1/actor/outers/outer-0175-attempt-ffed3605229e4afe98f772705a9384f2/rank-0-updates.jsonl",
+        "ledger_sha256": "992b859026589797f969b8eb962b689e48e16c86c4d1ff516afc2a2aa00c97ca",
+        "restore": {
+          "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0174",
+          "restored_completed_outer": 174,
+          "actual_adam_before": 3480,
+          "restored_scheduler": 174,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_model_master_dtypes": [
+            "torch.float32"
+          ],
+          "actual_global_micro": 4
+        },
+        "actual_first_write": 3481,
+        "actual_last_write": 3500,
+        "writes": 20
+      },
+      {
+        "rank": 1,
+        "ledger": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1/actor/outers/outer-0175-attempt-ffed3605229e4afe98f772705a9384f2/rank-1-updates.jsonl",
+        "ledger_sha256": "9b1d393de8ded1e6725111329b52462ebb79c5d13629e3606ff19d966b3b4dcc",
+        "restore": {
+          "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0174",
+          "restored_completed_outer": 174,
+          "actual_adam_before": 3480,
+          "restored_scheduler": 174,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_model_master_dtypes": [
+            "torch.float32"
+          ],
+          "actual_global_micro": 4
+        },
+        "actual_first_write": 3481,
+        "actual_last_write": 3500,
+        "writes": 20
+      },
+      {
+        "rank": 2,
+        "ledger": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1/actor/outers/outer-0175-attempt-ffed3605229e4afe98f772705a9384f2/rank-2-updates.jsonl",
+        "ledger_sha256": "7bb7c960d6f842422dbf58ad05bd12f593ed0ef7353ace8bfa5919502a932bf3",
+        "restore": {
+          "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0174",
+          "restored_completed_outer": 174,
+          "actual_adam_before": 3480,
+          "restored_scheduler": 174,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_model_master_dtypes": [
+            "torch.float32"
+          ],
+          "actual_global_micro": 4
+        },
+        "actual_first_write": 3481,
+        "actual_last_write": 3500,
+        "writes": 20
+      },
+      {
+        "rank": 3,
+        "ledger": "/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1/actor/outers/outer-0175-attempt-ffed3605229e4afe98f772705a9384f2/rank-3-updates.jsonl",
+        "ledger_sha256": "1603aabc4c92249bda55745552254efb76596ecaf55eb88c84e4d55ab036c160",
+        "restore": {
+          "actor_version": "d9e5385ebec24ea8ab6cb8db8d2f825a-actor0174",
+          "restored_completed_outer": 174,
+          "actual_adam_before": 3480,
+          "restored_scheduler": 174,
+          "actual_learning_rates": [
+            1e-06
+          ],
+          "actual_model_master_dtypes": [
+            "torch.float32"
+          ],
+          "actual_global_micro": 4
+        },
+        "actual_first_write": 3481,
+        "actual_last_write": 3500,
+        "writes": 20
+      }
+    ],
+    "probe_actual_adam_per_rank": [
+      2430,
+      2430,
+      2430,
+      2430
+    ],
+    "new_model_forward_or_tensor_load": false,
+    "training_modified": false
+  },
+  "actual_restore_small_original": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/prefix5-ab-b175-actual-restored-journals-B-status-20261020T014628883912Z.json",
+  "actual_restore_small_original_sha256": "ad22a3f5157cf0b4c6564529a8c68b577ba9a33b37a857537ca095fe8a05c0ce",
+  "complete175_fact": {
+    "outer": 175,
+    "actor": [
+      {
+        "rank": 0,
+        "writes": 20,
+        "actual_adam_steps": 3500,
+        "ledger_sha256": "992b859026589797f969b8eb962b689e48e16c86c4d1ff516afc2a2aa00c97ca"
+      },
+      {
+        "rank": 1,
+        "writes": 20,
+        "actual_adam_steps": 3500,
+        "ledger_sha256": "9b1d393de8ded1e6725111329b52462ebb79c5d13629e3606ff19d966b3b4dcc"
+      },
+      {
+        "rank": 2,
+        "writes": 20,
+        "actual_adam_steps": 3500,
+        "ledger_sha256": "7bb7c960d6f842422dbf58ad05bd12f593ed0ef7353ace8bfa5919502a932bf3"
+      },
+      {
+        "rank": 3,
+        "writes": 20,
+        "actual_adam_steps": 3500,
+        "ledger_sha256": "1603aabc4c92249bda55745552254efb76596ecaf55eb88c84e4d55ab036c160"
+      }
+    ],
+    "probe": [
+      {
+        "rank": 0,
+        "writes": 10,
+        "last_actual": 2430,
+        "ledger_sha256": "86861b4abfdfc0bbf7140c2381c3dd486149b265f6c7d9d4e33d4389ccd08b51"
+      },
+      {
+        "rank": 1,
+        "writes": 10,
+        "last_actual": 2430,
+        "ledger_sha256": "f04522ce3e05ddfb08552f02c24e2b17579732c9bf633920c9a9c24159bd20ee"
+      },
+      {
+        "rank": 2,
+        "writes": 10,
+        "last_actual": 2430,
+        "ledger_sha256": "954e5fa012ca9b43323a96df726a564f3ccfdb16102236bd724afb8402c3dc2a"
+      },
+      {
+        "rank": 3,
+        "writes": 10,
+        "last_actual": 2430,
+        "ledger_sha256": "953017a9e7f1cfdd00df7d52e92a0c66ecc85ce40287b283c0abd194389bd6c8"
+      }
+    ],
+    "probe_actual": [
+      2430,
+      2430,
+      2430,
+      2430
+    ],
+    "ema_updates": 2430,
+    "selection_metrics": {
+      "all_correct": 169,
+      "all_correct_fraction": 0.330078125,
+      "all_wrong": 141,
+      "all_wrong_fraction": 0.275390625,
+      "mean_selection_q": 0.9125232258413873,
+      "mixed": 202,
+      "mixed_fraction": 0.39453125,
+      "no_uncontinued_candidate_accuracy_claim": true,
+      "questions": 512
+    },
+    "phase_timings": {
+      "outer-000175-actor-ffed3605229e4afe98f772705a9384f2": {
+        "elapsed_seconds": 367.4066123960001,
+        "exit_code": 0
+      },
+      "outer-000175-expanded-continuation-rerank": {
+        "elapsed_seconds": 123.3572863240006,
+        "exit_code": 0
+      },
+      "outer-000175-prefix": {
+        "elapsed_seconds": 389.28641864400015,
+        "exit_code": 0
+      },
+      "outer-000175-probe-update": {
+        "elapsed_seconds": 24.13792123300027,
+        "exit_code": 0
+      },
+      "outer-000175-score": {
+        "elapsed_seconds": 26.949062254999262,
+        "exit_code": 0
+      },
+      "outer-000175-training-wall": 935.0852303580004
+    },
+    "probe_metrics": {
+      "new_adam_steps_per_rank": 10,
+      "sampling": {
+        "original_counts": [
+          310,
+          202
+        ],
+        "repeated_fraction": 0.34765625,
+        "sampled_counts": [
+          256,
+          256
+        ],
+        "status": "BALANCED_RESAMPLED_ONE_PASS",
+        "unique_questions": 334
+      },
+      "before_update": {
+        "ema": {
+          "train": {
+            "accuracy": 0.39453125,
+            "balanced_accuracy": 0.5,
+            "count": 512,
+            "fn": 0,
+            "formula": "1-prod(p_j)-prod(1-p_j)",
+            "fp": 310,
+            "group_bce": 1.6931843495450143,
+            "group_weight": 5.0,
+            "mean_q": 0.9125232063614604,
+            "mixed_count": 202,
+            "mixed_recall": 1.0,
+            "nonmixed_count": 310,
+            "nonmixed_recall": 0.0,
+            "threshold": 0.5,
+            "tn": 0,
+            "total_loss": 9.16392881445399,
+            "tp": 202,
+            "trajectory_bce": 0.6980070667289191,
+            "true_mixed": "0<sum(own_strict_em)<5"
+          }
+        },
+        "raw": {
+          "train": {
+            "accuracy": 0.521484375,
+            "balanced_accuracy": 0.5306770999680613,
+            "count": 512,
+            "fn": 86,
+            "formula": "1-prod(p_j)-prod(1-p_j)",
+            "fp": 159,
+            "group_bce": 0.75544038143357,
+            "group_weight": 5.0,
+            "mean_q": 0.5270791763394257,
+            "mixed_count": 202,
+            "mixed_recall": 0.5742574257425742,
+            "nonmixed_count": 310,
+            "nonmixed_recall": 0.4870967741935484,
+            "threshold": 0.5,
+            "tn": 151,
+            "total_loss": 4.882273918554043,
+            "tp": 116,
+            "trajectory_bce": 1.105072011386193,
+            "true_mixed": "0<sum(own_strict_em)<5"
+          }
+        }
+      },
+      "after_update": {
+        "ema": {
+          "train": {
+            "accuracy": 0.39453125,
+            "balanced_accuracy": 0.5,
+            "count": 512,
+            "fn": 0,
+            "formula": "1-prod(p_j)-prod(1-p_j)",
+            "fp": 310,
+            "group_bce": 1.655980163478783,
+            "group_weight": 5.0,
+            "mean_q": 0.9076565822531301,
+            "mixed_count": 202,
+            "mixed_recall": 1.0,
+            "nonmixed_count": 310,
+            "nonmixed_recall": 0.0,
+            "threshold": 0.5,
+            "tn": 0,
+            "total_loss": 8.985605711470763,
+            "tp": 202,
+            "trajectory_bce": 0.7057048940768479,
+            "true_mixed": "0<sum(own_strict_em)<5"
+          }
+        },
+        "raw": {
+          "train": {
+            "accuracy": 0.501953125,
+            "balanced_accuracy": 0.5326572979878633,
+            "count": 512,
+            "fn": 65,
+            "formula": "1-prod(p_j)-prod(1-p_j)",
+            "fp": 190,
+            "group_bce": 0.6888641106699804,
+            "group_weight": 5.0,
+            "mean_q": 0.5660153956766077,
+            "mixed_count": 202,
+            "mixed_recall": 0.6782178217821783,
+            "nonmixed_count": 310,
+            "nonmixed_recall": 0.3870967741935484,
+            "threshold": 0.5,
+            "tn": 120,
+            "total_loss": 4.508771763772821,
+            "tp": 137,
+            "trajectory_bce": 1.0644512104229193,
+            "true_mixed": "0<sum(own_strict_em)<5"
+          }
+        }
+      },
+      "train_loop_seconds": 1.5760779390002426
+    }
+  },
+  "resource_coordination": {
+    "peer_thread": "01a0fcbc-0b46-7502-8b66-d8b21a0e032d",
+    "peer_conflicting_entry_released": true,
+    "peer_actual_proofs": [
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/b-replica-retained18-20261018/CP181_COORDINATION_TERMINAL_TWO_OBSERVATIONS.json",
+        "sha256": "d988eb02367fc8a1e560050c847dfa2f85dd79dd563eeb4d111d2085bb7b12cc"
+      },
+      {
+        "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/b-replica-retained18-20261018/CP181_COORDINATION_OWN_RELEASE_AND_COST.json",
+        "sha256": "edbf17f7c088d96223e1072101d9b76a8b5d886f7302460603b58995798aeb84"
+      }
+    ]
+  },
+  "five_new175_to179_then180_acceptance_complete": false,
+  "goal_complete": false
+}

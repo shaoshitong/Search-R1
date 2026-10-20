@@ -1,0 +1,40 @@
+"""Read actual completed175 restore/write journals, no tensor load or mutation."""
+import json
+from pathlib import Path
+import sys
+
+repo = Path(__file__).resolve().parents[4]
+sys.path.insert(0,str(repo))
+from reproduction.operations.h100_reference_replica.assigned_cpu_control import execute
+root=Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+entry=json.loads((root/'work/prefix5-ab-assigned-arms.json').read_text())['B']
+
+
+def inner(arms):
+    return 'entry='+repr(entry)+'\n'+r'''
+import hashlib,json
+from pathlib import Path
+b=Path(entry['base']);j=json.loads((b/'outers/outer-000175/complete.json').read_text())
+assert j['outer']==175 and j['run_id']==entry['run_id']
+ranks=[]
+for item in sorted(j['actor']['rank_receipts'],key=lambda x:x['rank']):
+ path=Path(item['ledger_path']);raw=path.read_bytes();assert hashlib.sha256(raw).hexdigest()==item['ledger_sha256']
+ rows=[json.loads(line)for line in raw.splitlines()];restores=[v for v in rows if v['event']=='ACTUAL_RESTORE']
+ writes=[v for v in rows if v['event']=='ACTUAL_ADAM_WRITE'];assert len(restores)==1 and len(writes)==20
+ r=restores[0];assert r['rank']==item['rank'] and r['restored_completed_outer']==174 and r['actual_adam_before']==3480
+ assert r['restored_scheduler']==174 and r['actual_learning_rates']==[1e-6]
+ assert r['actual_model_master_dtypes']==['torch.float32'] and r['actual_global_micro']==4
+ assert [v['actual_adam_steps']for v in writes]==list(range(3481,3501))
+ ranks.append({'rank':item['rank'],'ledger':str(path),'ledger_sha256':item['ledger_sha256'],
+  'restore':{k:r[k]for k in ('actor_version','restored_completed_outer','actual_adam_before','restored_scheduler','actual_learning_rates','actual_model_master_dtypes','actual_global_micro')},
+  'actual_first_write':writes[0]['actual_adam_steps'],'actual_last_write':writes[-1]['actual_adam_steps'],'writes':len(writes)})
+assert j['actor']['actual_adam_steps_per_rank']==[3500]*4 and j['probe']['actual_adam_steps_per_rank']==[2430]*4
+print(json.dumps({'B':{'status':'B175_ACTUAL_FOUR_GPU_RESTORE_AND_FULL_UPDATE_JOURNALS_READ',
+ 'base':str(b),'run_id':entry['run_id'],'outer':175,'actor':ranks,'probe_actual_adam_per_rank':[2430]*4,
+ 'new_model_forward_or_tensor_load':False,'training_modified':False}}))
+'''
+
+
+if __name__=='__main__':
+    result=execute({'B':entry},inner,'status','retained18','b175-actual-restored-journals')
+    print(json.dumps(result))
