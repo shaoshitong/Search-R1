@@ -16,7 +16,7 @@ from . import shared_vram_control as old
 
 ROOT, BASE, PHYSICAL, RUN_ID = old.ROOT, old.BASE, old.PHYSICAL, old.RUN_ID
 DIRECTORY = 'relay-consumer10-control-v1'
-UNIT = 'sst-q7b-g5-consumer10-v3-' + RUN_ID[:12] + '.service'
+UNIT = 'sst-q7b-g5-consumer10-v4-' + RUN_ID[:12] + '.service'
 UPSTREAM_UNIT = 'sst-q7b-retrieval-relay5-v1-' + RUN_ID[:12] + '.service'
 SOURCE_UNIT = 'sst-q7b-g5-sharedvram-v6-' + RUN_ID[:12] + '.service'
 SOURCES = ('relay_consumer_control.py', 'relay_consumer_worker.py', 'retrieval_relay.py',
@@ -46,14 +46,14 @@ evidence=launch/'allocation-evidence.json'
 evidence.write_text(json.dumps(dict(mode='NATIVE_MODEL_ONLY_SHARED_VRAM',node='h100-10',unit=UNIT,
  main_pid=os.getpid(),cgroup=values['ControlGroup'],unit_show=detail,captured_epoch=time.time(),
  resource_limits=dict(cpu_quota_percent=800,memory_max_bytes=103079215104,runtime_max_seconds=28800),
- communication_environment=dict(NCCL_NVLS_ENABLE='0',NCCL_DEBUG='INFO'),
+ communication_environment=dict(NCCL_NVLS_ENABLE='0',NCCL_BUFFSIZE='1048576',NCCL_DEBUG='INFO'),
  original_cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'))));os.chmod(evidence,0o400)
 env=dict(os.environ,PYTHONPATH=FROZEN_REPO+':/dataset/shaoshitong/Search-G1-common8/retriever-gpu-lib',
  OMP_NUM_THREADS='4',MKL_NUM_THREADS='4',PYTHONUTF8='1',PYTHONDONTWRITEBYTECODE='1',TOKENIZERS_PARALLELISM='false',
  HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',HF_DATASETS_OFFLINE='1',SEARCH_G1_B_PREFIX_TOKENS='20',
  SEARCH_G1_PHYSICAL_WORLD_SIZE='4',SEARCH_G1_BASE=BASE,HF_HOME=BASE+'/cache/huggingface',
  TORCH_EXTENSIONS_DIR=BASE+'/cache/torch_extensions',TMPDIR=str(launch/'tmp'),
- CUDA_VISIBLE_DEVICES='0,1,2,3',NCCL_NVLS_ENABLE='0',NCCL_DEBUG='INFO',VLLM_ATTENTION_BACKEND='XFORMERS',VLLM_HOST_IP='127.0.0.1',
+ CUDA_VISIBLE_DEVICES='0,1,2,3',NCCL_NVLS_ENABLE='0',NCCL_BUFFSIZE='1048576',NCCL_DEBUG='INFO',VLLM_ATTENTION_BACKEND='XFORMERS',VLLM_HOST_IP='127.0.0.1',
  CPATH='/mnt/data/shaoshitong/search-r1-rl/gigpo/tools/python310-headers-v1/extracted/usr/include:'
  '/mnt/data/shaoshitong/search-r1-rl/gigpo/tools/python310-headers-v1/extracted/usr/include/python3.10:'
  '/mnt/data/shaoshitong/search-r1-rl/gigpo/tools/python310-headers-v1/extracted/usr/include/x86_64-linux-gnu/python3.10')
@@ -83,7 +83,7 @@ def bundle():
         source_files=rows, files={k: dict(bytes=len(v), sha256=old.digest(v)) for k, v in files.items()},
         same_cluster_retrieval_only=True, original_index_reused_without_reencoding=True,
         model_gpus=[0,1,2,3], tensor_parallel_size=4, no_actor_or_probe_updates=True,
-        communication_environment=dict(NCCL_NVLS_ENABLE='0',NCCL_DEBUG='INFO'))
+        communication_environment=dict(NCCL_NVLS_ENABLE='0',NCCL_BUFFSIZE='1048576',NCCL_DEBUG='INFO'))
     return identity, files, manifest
 
 
@@ -124,7 +124,7 @@ if ACTION=='stage':
 elif ACTION in('start-upstream','submit'):
  verify();assert PUBLICATION['status']=='EXACT_SOURCE_COMMIT_REMOTE_SHA_VERIFIED'
  source=ACTION=='start-upstream';unit=UPSTREAM_UNIT if source else UNIT
- name='upstream'if source else'native-v3';intent=root/(name+'-submit-intent.json');receipt=root/(name+'-submit-receipt.json')
+ name='upstream'if source else'native-v4';intent=root/(name+'-submit-intent.json');receipt=root/(name+'-submit-receipt.json')
  with(root/(name+'-submit.lock')).open('a')as lock:
   fcntl.flock(lock,fcntl.LOCK_EX);old_intent=read(intent);observed=query(unit)
   value['observed']=observed
@@ -152,10 +152,10 @@ elif ACTION in('start-upstream','submit'):
      '--source-pid','1490465','--source-birth',context['source_birth'],'--source-netns-inode',str(context['source_netns_inode']),
      '--token-file',str(shared_root/'relay-secret'),'--ready-file',str(shared_root/'upstream-ready.json')]
    else:
-    previous=query('sst-q7b-g5-consumer10-v2-'+RUN_ID[:12]+'.service')
+    previous=query('sst-q7b-g5-consumer10-v3-'+RUN_ID[:12]+'.service')
     assert previous['properties'].get('MainPID')=='0'and previous['properties'].get('ActiveState')in('inactive','failed')
-    terminal=read(root/'v2-terminal/complete.json')
-    assert terminal and terminal['status']=='OWN_CONSUMER_V2_TERMINAL_FULL_SHA_RELEASE_PASS'and terminal['controller_pid']==2327023
+    terminal=read(root/'v3-terminal/complete.json')
+    assert terminal and terminal['status']=='OWN_CONSUMER_V3_TERMINAL_FULL_SHA_RELEASE_PASS'and terminal['controller_pid']==2351003
     ready=read(root/'upstream-ready.json');assert ready and ready['role']=='upstream'and ready['source_pid']==1490465
     assert read(root/'source-context.json')['source_sampling_deadline_epoch']>time.time()+1800
     command=['systemd-run','--unit='+unit,'--property=CPUQuota=800%','--property=MemoryMax=96G',
@@ -173,7 +173,7 @@ elif ACTION in('start-upstream','submit'):
 else:
  value.update(status='READ_ONLY_CONSUMER_AND_RELAY_STATUS',observed=query(UNIT),
   upstream_intent=read(root/'upstream-submit-intent.json'),upstream_receipt=read(root/'upstream-submit-receipt.json'),
-  upstream_ready=read(root/'upstream-ready.json'),intent=read(root/'native-v3-submit-intent.json'),receipt=read(root/'native-v3-submit-receipt.json'),
+  upstream_ready=read(root/'upstream-ready.json'),intent=read(root/'native-v4-submit-intent.json'),receipt=read(root/'native-v4-submit-receipt.json'),
   attempts=[dict(directory=str(p),progress=read(p/'progress.json'),failure=read(p/'failure.json'),complete=read(p/'complete.json'))for p in sorted((base/'pool/jobs').glob('job-relay10-*/attempt-*'))],
   global_goal_complete=False)
 print(json.dumps(value))
