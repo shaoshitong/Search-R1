@@ -1,10 +1,18 @@
 """Standalone native service entry: exact code fetch, prepare, sample; no credentials."""
-import json,os,subprocess,sys,time
+import base64,hashlib,json,os,subprocess,sys,time
 from pathlib import Path
 BASE=Path('/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020')
 WRAPPER='/root/.local/share/search-g1/source8-fault-recovery/b2d62068695e156dcc90fc42e112ad24c676a1e7531fc26e2c0c6a01dbbfc1c1/retained-fault-paths.sh'
 def main():
- c=json.loads((BASE/'code/direct-plan.json').read_text())[0];subprocess.run(['/usr/bin/python3',str(BASE/'code/fetch-code.py')],check=True)
+ c=json.loads((BASE/'code/direct-plan.json').read_text())[0]
+ reuse=Path('/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-probe-assets-20261020/code/migration-44944c26745213d7c2761037639f59be006b8b62');delta=json.loads((BASE/'code/delta.json').read_text());dest=BASE/'code'/('repo-'+c['commit']);dest.mkdir(exist_ok=True)
+ for name,row in c['files'].items():
+  path=dest/name;path.parent.mkdir(parents=True,exist_ok=True)
+  if not path.exists():
+   if name in delta:path.write_bytes(base64.b64decode(delta[name]))
+   else:os.link(reuse/name,path)
+  data=path.read_bytes();assert len(data)==row['bytes']and hashlib.sha256(data).hexdigest()==row['sha256'],name
+ (BASE/'code/complete.json').write_text(json.dumps(dict(status='ALL_CODE_FILES_FRESH_SHA_VERIFIED_SHARED_REUSE',commit=c['commit'],files=len(c['files']),changed_files=len(delta),epoch=time.time())))
  repo=BASE/'code'/('repo-'+c['commit']);assets='/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-probe-assets-20261020'
  runtime=BASE/'runtime.sh';runtime.write_text('''#!/bin/bash
 set -euo pipefail

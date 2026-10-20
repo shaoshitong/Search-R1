@@ -5,7 +5,7 @@ from .launch import BASE,ROOT
 REMOTE='BASE='+repr(BASE)+'\n'+'''
 import pathlib,json,time,subprocess
 b=pathlib.Path(BASE);v={'epoch':time.time(),'base':BASE}
-v['unit']=subprocess.check_output(['systemctl','show','sst-q7b-newseed-g5-20261020','-p','ActiveState','-p','SubState','-p','MainPID','-p','Result'],text=True)
+v['unit']=subprocess.check_output(['systemctl','show','sst-q7b-newseed-g5-20261020-r2','-p','ActiveState','-p','SubState','-p','MainPID','-p','Result'],text=True)
 for n in ['entry-failure.json','failure.json','controller.json','progress.json','code/complete.json','code/direct-failure.json','retrieval/gpu-index-load-progress.json','retrieval/ready.json','complete.json']:
  p=b/n
  if p.exists():
