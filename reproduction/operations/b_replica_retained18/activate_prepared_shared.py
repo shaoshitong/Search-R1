@@ -36,7 +36,8 @@ def main():
         '--format=csv,noheader,nounits'], text=True)
     cards = [[item.strip() for item in line.split(',')] for line in raw.splitlines()]
     cards.sort(key=lambda row: int(row[0]))
-    if [int(row[0]) for row in cards] != list(range(8)):
+    cards=[row for row in cards if int(row[0])in config['physical_gpu_indices']]
+    if [int(row[0]) for row in cards] != config['physical_gpu_indices']:
         raise ValueError('Require the actual eight physical GPU indices')
     before = sha(config_path)
     uuids = [row[1] for row in cards]

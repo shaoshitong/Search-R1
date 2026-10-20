@@ -180,6 +180,10 @@ def checked_state(config, state, *, require_adopted=True, _historical_world=None
 
 def checked_actor_grounding(config, actor):
     """Historical four-rank evidence stays four-rank; live adoption stays WORLD."""
+    if actor.get('imported_8to4_cp181'):
+        from .diverse_four_resume import imported_actor_boundary
+        if not imported_actor_boundary(actor,181):raise ValueError('Unqualified 8to4 grounding boundary')
+        return checked_state(config, actor['grounding_state'], _historical_world=8)
     if not actor.get('imported_4to8_cp50'):
         return checked_state(config, actor['grounding_state'])
     from .diverse_resume import imported_actor_boundary

@@ -106,6 +106,9 @@ def imported_actor_boundary(actor,outer):
 
 
 def validate_imported(base,config):
+    if config.get('resume_joint',{}).get('recovery_mode')=='diverse_eight_to_four_cp181_v1':
+        from .diverse_four_resume import validate_imported as four_validate
+        return four_validate(base,config)
     if config.get('resume_joint',{}).get('recovery_mode')=='diverse_same_eight_latest_joint_v1':
         from .diverse_native_resume import validate_imported as native_validate
         return native_validate(base,config)

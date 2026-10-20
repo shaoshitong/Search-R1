@@ -32,7 +32,7 @@ for row in packet['manifest']:
   os.link(original,target)
  assert hashlib.sha256(target.read_bytes()).hexdigest()==row['sha256'],str(rel)
 (base/'preparation/source-full-sha.json').write_text(json.dumps(dict(commit=COMMIT,files=packet['manifest'],checked_unix=time.time())))
-cmd=['unshare','--mount','--propagation','private','bash',str(base/'repo/reproduction/operations/b_replica_retained18/private_shared_paths.sh'),'env','CUDA_VISIBLE_DEVICES=','SEARCH_G1_PHYSICAL_WORLD_SIZE=8','SEARCH_G1_B_PREFIX_TOKENS=80','OMP_NUM_THREADS=2','MKL_NUM_THREADS=2','PYTHONDONTWRITEBYTECODE=1','PYTHONPATH='+canonical+BASE+'/repo','/dataset/shaoshitong/Search-G1-common8/env/bin/python','-u','-m','reproduction.operations.b_replica_retained18.prepare_shared_latest','--source',canonical+SOURCE,'--base',canonical+BASE,'--outer',str(OUTER),'--commit',COMMIT]
+cmd=['unshare','--mount','--propagation','private','bash',str(base/'repo/reproduction/operations/b_replica_retained18/private_shared_paths.sh'),'env','CUDA_VISIBLE_DEVICES=','SEARCH_G1_PHYSICAL_WORLD_SIZE='+str(WORLD),'SEARCH_G1_B_PREFIX_TOKENS=80','OMP_NUM_THREADS=2','MKL_NUM_THREADS=2','PYTHONDONTWRITEBYTECODE=1','PYTHONPATH='+canonical+BASE+'/repo','/dataset/shaoshitong/Search-G1-common8/env/bin/python','-u','-m',PREPARE_MODULE,'--source',canonical+SOURCE,'--base',canonical+BASE,'--outer',str(OUTER),'--commit',COMMIT]
 with(base/'logs/native-preparation.log').open('xb')as log:
  proc=subprocess.Popen(cmd,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
 st=pathlib.Path('/proc',str(proc.pid),'stat').read_text().rsplit(')',1)[1].split()
@@ -44,6 +44,7 @@ receipt=dict(pid=proc.pid,start_ticks=int(st[19]),command=cmd,commit=COMMIT,crea
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--source', required=True)
+    p.add_argument('--four',action='store_true')
     p.add_argument('--base', required=True)
     p.add_argument('--outer', required=True, type=int)
     p.add_argument('--source-commit', required=True)
@@ -67,7 +68,7 @@ def main():
         if name in changed:
             packet['changed'][name] = base64.b64encode(data).decode()
     header = '\n'.join(k+'='+repr(v) for k,v in dict(SOURCE=a.source, BASE=a.base, OUTER=a.outer,
-        COMMIT=commit, PACKET=base64.b64encode(gzip.compress(json.dumps(packet).encode())).decode()).items())
+        COMMIT=commit, WORLD=4 if a.four else 8, PREPARE_MODULE='reproduction.operations.b_replica_retained18.prepare_four_latest'if a.four else'reproduction.operations.b_replica_retained18.prepare_shared_latest', PACKET=base64.b64encode(gzip.compress(json.dumps(packet).encode())).decode()).items())
     evidence = OUT/('stage-qualified-%d-transport.json'%time.time_ns())
     value = json.loads(remote(header+'\n'+SCRIPT, evidence, target='h100-10', established_controller=True))
     (OUT/('CP%d_STAGE_RECEIPT.json'%a.outer)).write_text(json.dumps(value,indent=2))

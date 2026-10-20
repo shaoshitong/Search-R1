@@ -6,6 +6,9 @@ BINDING_COMMIT='c3ced09047dd4ccd66e5d232f36b5952c178a7ce'
 
 def validate_runtime_compatibility(c):
  ref=c['runtime_compatibility'];proof=read(ref['path'])
+ if proof.get('status')=='DIVERSE_CP181_EIGHT_TO_FOUR_FULL_STATE':
+  from .diverse_four_resume import validate_compatibility
+  return validate_compatibility(c,proof)
  if proof.get('status')=='DIVERSE_SAME_EIGHT_NATIVE_RECOVERY':
   from .diverse_native_resume import validate_compatibility
   return validate_compatibility(c,proof)
