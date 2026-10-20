@@ -1,0 +1,99 @@
+"""Incident-scoped prepare/submit/status for the actual B188 cross-node resource recovery.
+
+Uses already-published A6dc runtime infrastructure, unchanged protected science.
+No original training namespace, foreign process, global network or model payload
+is modified. A consumed submit intent is queried rather than replayed.
+"""
+import argparse
+import base64
+import datetime
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+repo = Path(__file__).resolve().parents[4]
+sys.path.insert(0, str(repo))
+from reproduction.operations.h100_reference_replica.assigned_cpu_control import execute
+root = Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control')
+entries = json.loads((root/'work/prefix5-ab-assigned-arms.json').read_text())
+source = '/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/search-g1-prefix-selection200-reference-replica-b-20261018-d9e5385ebec2-progressive-cp50-r2-retained-h1005-r1-resume174-memory8g-r1'
+destination = source+'-resume188-h10011-cards0-3-r1'
+runtime = '6dc4a39e3ddd2bf7a642c33a9343f6044ee69ea4'
+staged = entries['A']['base']+'/repo'
+supervisor = (repo/'reproduction/operations/h100_reference_replica/native_wait_supervisor.py').read_bytes()
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('action', choices=('prepare','submit','status'))
+args = parser.parse_args()
+
+
+def inner(arms):
+    return ('source='+repr(source)+'\ndestination='+repr(destination)+'\nstaged='+repr(staged)+
+            '\nruntime='+repr(runtime)+'\naction='+repr(args.action)+
+            '\nsupervisor_payload='+repr(base64.b64encode(supervisor).decode())+'\n'+'''
+import base64,hashlib,json,os,subprocess,sys,time
+from pathlib import Path
+sys.path.insert(0,staged)
+from reproduction.prefix20_online.launch import read,sha,once,publish
+source=Path(source);b=Path(destination);prep=b/'preparation'
+record=prep/'b188-memory-recovery-prepared.json'
+if action=='prepare':
+ if record.exists():v=dict(status='EXISTING_PREPARATION_NO_REPLAY',prepared=read(record))
+ elif b.exists():v=dict(status='EXISTING_PARTIAL_NAMESPACE_REQUIRES_RECONCILIATION',base=str(b))
+ else:
+  proof=read(source/'preparation/ab-joint-0188-independent-full-sha-cpu.json')
+  assert proof['status']=='AB_JOINT_FULL_SHA_CPU_PASS'and proof['outer']==188
+  assert sha(source/'preparation/ab-joint-0188-independent-full-sha-cpu.json')=='a566437628135a3c65596d9576ccfe87ded066252cea7c2eec41d1b42d92b976'
+  from reproduction.prefix_selection200.b_progressive_resume import prepare_latest,verify,validate_imported
+  v=prepare_latest(source,b,staged,runtime)
+  path=prep/'launch-config.json';c=read(path);before={k:c.get(k)for k in ('expected_execution_node','physical_gpu_indices','auxiliary_gpu_indices','physical_gpu_uuids','auxiliary_gpu_uuids','grounding_physical_gpu','grounding_physical_gpu_by_rank','grounding_refit_visible_device')}
+  ids=[0,1,2,3];uuids=['GPU-db08e3c7-5c80-92c6-3eae-51053aefc87b','GPU-21ad233e-ce4f-de0b-f3e0-ce1fbb7a95eb','GPU-88dcd1f6-1efc-5fb0-59e5-2d11e87f1d9d','GPU-1760ed5d-0687-f06a-b72b-c61393195962'];c.update(expected_execution_node='h100-11',physical_gpu_indices=ids,auxiliary_gpu_indices=ids,physical_gpu_uuids=uuids,auxiliary_gpu_uuids=uuids,grounding_physical_gpu=3,grounding_physical_gpu_by_rank=ids,grounding_refit_visible_device=3)
+  compat_path=Path(c['source_compatibility']);compat=read(compat_path)
+  delta=dict(reason='Actual outer189 rank2 reservation failed after foreign worldplay/score occupied source5; no new actor/probe Adam. Source release independently qualified on source5; target11 placement only.',source_terminal=str(source/'preparation/native-actual-waitpid-exit.json'),source_terminal_sha256=sha(source/'preparation/native-actual-waitpid-exit.json'),before=before,after={k:c[k]for k in before},science_objective_data_and_actor_optimizer_unchanged=True,pending_outer189_reservation_preserved=True,failed_unsaved_rollout_is_not_counted_as_completed_outer=True)
+  compat['authorized_infrastructure_delta']=delta;publish(compat_path,compat);c['source_compatibility_sha256']=sha(compat_path);publish(path,c)
+  verify(c);assert validate_imported(b,c)==188
+  from reproduction.prefix_selection200.ab_policy import validate
+  validate(c)
+  v.update(config_sha256=sha(path),node='h100-11',cards=c['physical_gpu_indices'],placement_recovery_delta=delta,actual_actor_adam=[3760]*4,actual_probe_adam=[2600]*4,source_latest_outer=188,next_outer=189)
+  once(record,v);v=dict(status='PREPARED_NOT_LAUNCHED',prepared=v,target_source_manifest=read(prep/'source-full-sha.json'))
+elif action=='submit':
+ assert record.exists();r=read(record);assert sha(prep/'launch-config.json')==r['config_sha256']
+ intent=prep/'native-wait-supervisor-submit-intent.json';receipt=prep/'native-wait-supervisor-submit-receipt.json'
+ if intent.exists():v=dict(status='EXISTING_SUPERVISOR_INTENT_NO_REPLAY',receipt=read(receipt)if receipt.exists()else None)
+ else:
+  assert not(prep/'submit-intent.json').exists()
+  raw=base64.b64decode(supervisor_payload);checksum=hashlib.sha256(raw).hexdigest();path=prep/'native-wait-supervisor.py'
+  if not path.exists():
+   with path.open('xb')as f:f.write(raw)
+  assert sha(path)==checksum
+  once(intent,dict(base=str(b),created_unix=time.time(),supervisor_sha256=checksum,source_latest_complete=188))
+  env=dict(os.environ,SEARCH_G1_B_PREFIX_TOKENS='80',PYTHONDONTWRITEBYTECODE='1')
+  with(prep/'native-wait-supervisor.log').open('xb')as f:p=subprocess.Popen(['/dataset/shaoshitong/Search-G1-common8/env/bin/python',str(path),'--base',str(b)],stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,start_new_session=True,env=env)
+  from reproduction.a800.owned_processes import identity
+  v=dict(status='NATIVE_SUPERVISOR_STARTED_NOT_RESTORE_ACCEPTANCE',base=str(b),supervisor=identity(p.pid),source_sha256=checksum)
+  once(receipt,v)
+else:
+ v=dict(base=str(b),preparation_exists=record.exists())
+ for name in ('native-wait-supervisor-submit-receipt.json','native-wait-supervisor-armed.json','submit-receipt.json','native-actual-waitpid-exit.json'):
+  p=prep/name
+  if p.exists():v[name]=read(p)
+ for name in ('native-wait-supervisor.log',):
+  p=prep/name
+  if p.exists():
+   with p.open('rb')as f:f.seek(max(0,p.stat().st_size-3500));v[name]=f.read().decode(errors='replace')
+ for name in ('logs/stage.json','logs/cleanup-status.json'):
+  p=b/name
+  if p.exists():v[name]=read(p)
+print(json.dumps({'B':v}))
+''')
+
+
+transport_entry=dict(entries['B'] if args.action=='prepare' else entries['A']);transport_entry['required_process_environment']={'SEARCH_G1_B_PREFIX_TOKENS':'80'}
+answer = execute({'B':transport_entry}, inner, 'status' if args.action=='status' else 'start',
+                 'retained18' if args.action=='prepare' else 'retained18_fallback_lan5' if args.action=='status' else 'lan5', 'b188-node11-'+args.action)
+path = root/('work/prefix5-ab-b188-memory-'+args.action+'-'+datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')+'.json')
+path.write_text(json.dumps(answer,indent=2)+'\n')
+value = dict(answer['arms']['B'])
+if 'target_source_manifest' in value:
+    manifest=value.pop('target_source_manifest');value['target_source_files']=len(manifest['files'])
+print(json.dumps(dict(evidence=str(path),result=value)))
