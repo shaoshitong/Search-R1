@@ -113,7 +113,10 @@ def save(base,model,ema,optimizer,epoch,cursor,steps,metrics,rank,c):
     dist.barrier()
 
 def restore(saved,model,ema,optimizer,rank,device):
-    restore_state(model,ema,optimizer,saved,rank,device)
+    # Adam.load_state_dict can retain the CPU step tensors by reference.
+    # A trial update must never mutate the reusable checkpoint object in RAM.
+    isolated=dict(saved);isolated['optimizer']=copy.deepcopy(saved['optimizer'])
+    restore_state(model,ema,optimizer,isolated,rank,device)
     assert model_hash(model)==saved['rank_states'][rank]['model_sha256']
     assert model_hash(ema)==saved['rank_states'][rank]['ema_sha256']
     assert optimizer_hash(optimizer)==saved['rank_states'][rank]['optimizer_sha256']
