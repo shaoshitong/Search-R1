@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "goal_updated_by_user": true,
+  "same_generation_contract_for_train_validation_confirmation": true,
+  "question_pools_unchanged": true,
+  "rollouts_per_question_initial": 10,
+  "possible_next_stage": 20,
+  "escalation_uses": "validation evidence only; no guarantee that budget growth improves results",
+  "primary_event_definition": "0<sum(own strict EM in selected5)<5",
+  "primary_view": "uniform random5 from10, seed frozen before any generatedEM or scores",
+  "primary_seed": 20261021,
+  "extra_stability_views": 3,
+  "stability_aggregation": "cluster by question; each question totalweight1; paired baseline and candidate use same exact5",
+  "forbidden": [
+    "label-based final G5 selection",
+    "copying predicted/sibling EM",
+    "training on confirmation qids",
+    "choosing winner orG after confirmation inspection"
+  ],
+  "actor_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "prefix_tokens": 20,
+  "rollout_materializer_status": "not yet implemented or run for new confirmation pools"
+}
