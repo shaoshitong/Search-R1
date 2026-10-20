@@ -10,8 +10,15 @@ from pathlib import Path
 import time
 
 import torch
-from .audit_checkpoint import state_hash
 from .download_model import atomic, fingerprints
+
+
+def state_hash(state):
+    digest = hashlib.sha256()
+    for name, value in state.items():
+        digest.update(name.encode())
+        digest.update(value.detach().cpu().contiguous().numpy().tobytes())
+    return digest.hexdigest()
 
 
 def accept(base, receipt=None):
