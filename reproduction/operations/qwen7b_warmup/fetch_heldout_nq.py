@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import shlex
+import shutil
 import subprocess
 import time
 
@@ -26,12 +27,21 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', type=Path, default=Path('/data/shaoshitong/qwen7b-probe-heldout2048-20261020'))
     parser.add_argument('--proxy', default='http://127.0.0.1:17894')
+    parser.add_argument('--cached-source', type=Path)
     parser.add_argument('--forward-hkust3', action='store_true')
     args = parser.parse_args()
     source = args.root / 'source'
     source.mkdir(parents=True, exist_ok=True)
     assert os.statvfs(str(source)).f_bavail * os.statvfs(str(source)).f_frsize > 16 * 1024 * 1024
     path = source / NAME
+    if not path.exists() and args.cached_source:
+        assert args.cached_source.stat().st_size == EXPECTED_BYTES and sha(args.cached_source) == EXPECTED_SHA
+        temporary = path.with_suffix('.jsonl.cache-copy')
+        shutil.copyfile(str(args.cached_source), str(temporary))
+        assert temporary.stat().st_size == EXPECTED_BYTES and sha(temporary) == EXPECTED_SHA
+        os.rename(str(temporary), str(path))
+        (source / 'verified-cache-origin.json').write_text(json.dumps(dict(source=str(args.cached_source),
+             sha256=EXPECTED_SHA, bytes=EXPECTED_BYTES, original_untouched=True), indent=2))
     if path.exists():
         assert path.stat().st_size == EXPECTED_BYTES and sha(path) == EXPECTED_SHA
     else:
