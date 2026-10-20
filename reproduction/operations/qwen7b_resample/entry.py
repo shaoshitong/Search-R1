@@ -24,6 +24,7 @@ export SEARCH_G1_BASE="'''+str(BASE)+'''"
 export HF_HOME="$SEARCH_G1_BASE/cache/huggingface" TORCH_EXTENSIONS_DIR="$SEARCH_G1_BASE/cache/torch_extensions" TMPDIR="$SEARCH_G1_BASE/tmp"
 mkdir -p "$HF_HOME" "$TORCH_EXTENSIONS_DIR" "$TMPDIR"
 export VLLM_ATTENTION_BACKEND=XFORMERS
+export CPATH=/mnt/data/shaoshitong/search-r1-rl/gigpo/tools/python310-headers-v1/extracted/usr/include:/mnt/data/shaoshitong/search-r1-rl/gigpo/tools/python310-headers-v1/extracted/usr/include/python3.10:/mnt/data/shaoshitong/search-r1-rl/gigpo/tools/python310-headers-v1/extracted/usr/include/x86_64-linux-gnu/python3.10
 unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY
 cd "'''+str(repo)+'''"
 exec /dataset/shaoshitong/Search-G1-common8/env/bin/python -u "$@"

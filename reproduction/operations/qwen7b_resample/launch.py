@@ -23,7 +23,7 @@ def main():
  boot='BASE='+repr(BASE)+'\n'+r'''
 import base64,gzip,hashlib,json,os,subprocess,sys,time
 from pathlib import Path
-b=Path(BASE);b.mkdir(exist_ok=True);(b/'code').mkdir(exist_ok=True);(b/'logs').mkdir(exist_ok=True);v=json.loads(gzip.decompress(sys.stdin.buffer.read()));p=b/'launch-intent.json';unit='sst-q7b-newseed-g5-20261020-r2'
+b=Path(BASE);b.mkdir(exist_ok=True);(b/'code').mkdir(exist_ok=True);(b/'logs').mkdir(exist_ok=True);v=json.loads(gzip.decompress(sys.stdin.buffer.read()));p=b/'launch-intent.json';unit='sst-q7b-newseed-g5-20261020-r3'
 if p.exists():print(json.dumps({'existing_intent':json.loads(p.read_text()),'unit':unit,'not_replayed':True}));raise SystemExit(0)
 with p.open('x')as f:json.dump({'unit':unit,'epoch':time.time(),'source_commit':v['plan'][0]['commit'],'seed':20261021,'questions':169028,'trajectories':845140,'cards':[1,2,3]},f)
 (b/'code/delta.json').write_text(json.dumps(v['delta']));(b/'code/direct-plan.json').write_text(json.dumps(v['plan']));(b/'code/fetch-code.py').write_text(v['worker']);(b/'entry.py').write_text(v['entry']);(b/'retrieval-config.json').write_text(json.dumps(v['retrieval']))

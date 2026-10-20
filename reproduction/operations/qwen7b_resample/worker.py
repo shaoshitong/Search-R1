@@ -12,6 +12,21 @@ def validate(config_path,config,outer,phase,rank,path):
  return row,None
 s.validate_rank_receipt=validate
 
+def fullprefill(config,model,seed,free,total):
+ if 'llm'not in s._CACHED:
+  from vllm import LLM
+  import gc,torch
+  utilization=min(float(config.get('rollout_utilization_cap',.90)),(free-3*1024**3)/total);limits=dict(max_num_seqs=int(config.get('rollout_max_num_seqs',512)),max_num_batched_tokens=int(config.get('rollout_max_batched_tokens',32768)));attempts=[]
+  while True:
+   try:
+    llm=LLM(model=model,tokenizer=model,trust_remote_code=False,dtype=s.COMPUTE_DTYPE,tensor_parallel_size=1,max_model_len=s.BUDGET['total_tokens'],seed=seed,gpu_memory_utilization=utilization,swap_space=0,enforce_eager=True,enable_chunked_prefill=False,enable_prefix_caching=False,disable_async_output_proc=True,disable_log_stats=True,**limits);break
+   except Exception as e:
+    if 'out of memory'not in str(e).lower()or len(attempts)>=2:raise
+    attempts.append(dict(actual_oom=True,utilization=utilization,limits=dict(limits)));gc.collect();torch.cuda.empty_cache();utilization*=.85;limits['max_num_seqs']=max(32,limits['max_num_seqs']//2);limits['max_num_batched_tokens']=max(4096,limits['max_num_batched_tokens']//2)
+  s._CACHED['llm']=llm,utilization,limits,attempts
+ return s._CACHED['llm']
+s._build_llm=fullprefill
+
 def phase(path,mode):
  c=read(path);root=s.root_dir(c,1);out=root/('prefix'if mode=='prefix'else'full');out.mkdir(parents=True,exist_ok=True)
  if not(out/'rank-0-complete.json').exists():

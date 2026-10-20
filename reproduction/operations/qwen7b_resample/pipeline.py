@@ -39,6 +39,7 @@ def main():
     f=b/'sampling'/('shard-%02d'%i)/'progress.json'
     if f.exists():progress.append(json.loads(f.read_text()))
    atomic(b/'progress.json',dict(stage='SAMPLING_NEW_G5',questions=sum(x['questions']for x in progress),trajectories=sum(x['trajectories']for x in progress),expected_questions=169028,expected_trajectories=845140,shards=progress,epoch=time.time()));time.sleep(15)
+  assert all((b/'sampling'/('shard-%02d'%i)/'complete.json').is_file()for i in range(2)),'Worker exited without a sealed shard; inspect original sampling logs'
   result=[json.loads((b/'sampling'/('shard-%02d'%i)/'complete.json').read_text())for i in range(2)];assert sum(x['questions']for x in result)==169028 and sum(x['trajectories']for x in result)==845140
   atomic(b/'complete.json',dict(status='ALL_169028_QUESTIONS_NEW_SEED_G5_COMPLETE',run_id=c['run_id'],seed=c['seed'],questions=169028,trajectories=845140,hidden_cached=False,actor_updates=0,probe_updates=0,shards=result,epoch=time.time()))
  except BaseException as error:atomic(b/'failure.json',dict(error_type=type(error).__name__,error=str(error)[:300],epoch=time.time()));raise
