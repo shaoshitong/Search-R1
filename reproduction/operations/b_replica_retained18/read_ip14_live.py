@@ -57,7 +57,12 @@ if same:
    restore=next(row for row in rows if row['event']=='ACTUAL_RESTORE')
    writes=[row for row in rows if row['event']=='ACTUAL_ADAM_WRITE']
    ar.append(dict(rank=receipt['rank'],restored_outer=restore['restored_completed_outer'],adam_before=restore['actual_adam_before'],scheduler_before=restore['restored_scheduler'],opportunities=sum(row['event']=='OPPORTUNITY' for row in rows),writes=len(writes),last_adam=writes[-1]['actual_adam_steps'] if writes else None,ledger_sha_matches=True))
-  result['joint']=dict(outer=committed,sha256=sha,actor=joint['actor']['actual_adam_steps_per_rank'],probe=joint['probe']['actual_adam_steps_per_rank'],phase_timings=joint.get('phase_timings'),selection_metrics=joint.get('selection_metrics'),ranks=ar)
+  pr=[]
+  for p in sorted((base/'outers'/('outer-%06d'%committed)/'probe-update').glob('rank-*-updates.jsonl')):
+   rows=[json.loads(line) for line in p.read_bytes().splitlines()]
+   pr.append(dict(rank=rows[0]['rank'],writes=len(rows),first_adam=rows[0]['actual_adam_steps'],last_adam=rows[-1]['actual_adam_steps'],learning_rates=sorted({row['actual_learning_rate'] for row in rows})))
+  probe_meta={k:v for k,v in joint['probe'].items() if isinstance(v,(str,int,float,bool,type(None))) or (isinstance(v,list) and len(v)<=16 and all(isinstance(x,(str,int,float,bool,type(None))) for x in v))}
+  result['joint']=dict(outer=committed,sha256=sha,actor=joint['actor']['actual_adam_steps_per_rank'],scheduler=joint['actor']['scheduler_completed_outer'],probe=joint['probe']['actual_adam_steps_per_rank'],probe_meta=probe_meta,probe_ranks=pr,phase_timings=joint.get('phase_timings'),selection_metrics=joint.get('selection_metrics'),ranks=ar)
 print(json.dumps(result))
 '''
 
