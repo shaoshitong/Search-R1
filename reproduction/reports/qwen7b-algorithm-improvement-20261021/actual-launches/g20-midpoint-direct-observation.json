@@ -1,0 +1,83 @@
+{
+  "epoch": 1792530525.7997637,
+  "status": "FRESH_G20_DIRECT_QUEUE_PROGRESS_DURABLE_CP_LOG_ERROR_EXIT_OBSERVATION",
+  "variants": {
+    "random": {
+      "job_id": "743370",
+      "queue": {
+        "JobState": "RUNNING",
+        "RunTime": "00:28:47",
+        "TimeLimit": "02:00:00",
+        "NodeList": "ACD1-7",
+        "QOS": "normal",
+        "Partition": "acd_u",
+        "ExitCode": "0:0",
+        "Reason": "None"
+      },
+      "progress": {
+        "cursor": 87,
+        "steps": 10551,
+        "time": 1792530509.9628458,
+        "loss": 4.2963385581970215,
+        "mixed_balanced_accuracy": 0.39969604863221886,
+        "recomputed_logits_bit_identical": true
+      },
+      "durable_checkpoint": {
+        "cursor": 80,
+        "steps": 10544,
+        "bytes": 3745865690,
+        "sha256": "ecae96660a4b7245790ef2d952b3aa1fffa39ee481d1f9a9921c405b9d483dc4"
+      },
+      "first_update_replay": "PASSED",
+      "failure": null,
+      "logs": [
+        {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-matched6528-v1/random/logs/train-743370.log",
+          "bytes": 182298,
+          "mtime_epoch": 1792530517.038095,
+          "tail_error_lines": []
+        }
+      ],
+      "recent_log_error_lines": []
+    },
+    "global-weighted-balanced": {
+      "job_id": "743371",
+      "queue": {
+        "JobState": "RUNNING",
+        "RunTime": "00:28:47",
+        "TimeLimit": "02:00:00",
+        "NodeList": "ACD1-22",
+        "QOS": "normal",
+        "Partition": "acd_u",
+        "ExitCode": "0:0",
+        "Reason": "None"
+      },
+      "progress": {
+        "cursor": 80,
+        "steps": 10544,
+        "time": 1792530520.0384798,
+        "loss": 2.1275744438171387,
+        "mixed_balanced_accuracy": 0.515625,
+        "recomputed_logits_bit_identical": true
+      },
+      "durable_checkpoint": {
+        "cursor": 64,
+        "steps": 10528,
+        "bytes": 3745865690,
+        "sha256": "fdd77f87d709675533c68df981b0145a59101d1bf0b2fcd1d24d2756f2c6a91a"
+      },
+      "first_update_replay": "PASSED",
+      "failure": null,
+      "logs": [
+        {
+          "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-matched6528-v1/global-weighted-balanced/logs/train-743371.log",
+          "bytes": 167187,
+          "mtime_epoch": 1792530525.669869,
+          "tail_error_lines": []
+        }
+      ],
+      "recent_log_error_lines": []
+    }
+  },
+  "sacct": "743370|RUNNING|0:0|00:28:47\n743371|RUNNING|0:0|00:28:47"
+}
