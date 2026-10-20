@@ -17,10 +17,12 @@ def sha(p):
 def main(secret):
  from huggingface_hub import HfApi, configure_http_backend
  import requests
+ from requests.adapters import HTTPAdapter
+ from urllib3.util.retry import Retry
  ROOT.mkdir(parents=True,exist_ok=True);lock=(ROOT/'bridge.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  os.environ.update(HTTP_PROXY='http://127.0.0.1:17894',HTTPS_PROXY='http://127.0.0.1:17894',HF_HUB_DISABLE_XET='1',HF_HUB_DISABLE_PROGRESS_BARS='1',HF_HUB_DISABLE_TELEMETRY='1')
  def backend():
-  session=requests.Session();session.trust_env=False;session.proxies={'http':'http://127.0.0.1:17894','https':'http://127.0.0.1:17894'};return session
+  session=requests.Session();session.trust_env=False;session.proxies={'http':'http://127.0.0.1:17894','https':'http://127.0.0.1:17894'};session.mount('https://',HTTPAdapter(max_retries=Retry(total=8,connect=8,read=0,other=8,backoff_factor=.5,allowed_methods=None)));return session
  configure_http_backend(backend_factory=backend)
  api=HfApi(token=secret['hf_token'],endpoint='https://huggingface.co')
  for attempt in range(12):
@@ -56,15 +58,21 @@ print(json.dumps(v))''')
    args=['rsync','--partial','--append-verify','--protect-args','-e',shlex.join(SSH[:-1]),SSH[-1]+':'+g['archive'],str(local)]
    r=subprocess.run(args,env=env,stdout=subprocess.DEVNULL,stderr=subprocess.PIPE,timeout=3600)
    if r.returncode:raise RuntimeError('RSYNC_RETURN_%d'%r.returncode)
-  assert local.stat().st_size==g['archive_bytes']and sha(local)==g['archive_sha256']
+  assert local.stat().st_size==g['archive_bytes']
+  stat=local.stat();identity=[stat.st_dev,stat.st_ino,stat.st_size,stat.st_mtime_ns];seal=ROOT/'incoming'/(name+'-verified.json');old=json.loads(seal.read_text())if seal.exists()else{}
+  if old.get('identity')!=identity or old.get('sha256')!=g['archive_sha256']:
+   assert sha(local)==g['archive_sha256'];atomic(seal,dict(identity=identity,sha256=g['archive_sha256']))
   receipt=remote('import json;print(json.dumps(json.load(open('+repr(SOURCE+'/'+name+'.json')+'))))')
   assert receipt['archive_sha256']==g['archive_sha256']and receipt['archive_bytes']==g['archive_bytes']
   atomic(ROOT/'progress'/(name+'.json'),dict(stage='UPLOADING_PRIVATE_HF_NOT_ACCEPTED',archive_bytes=g['archive_bytes'],epoch=time.time()))
-  commit=api.upload_file(path_or_fileobj=str(local),path_in_repo='archives/'+local.name,repo_id=REPO,repo_type='dataset',commit_message='Verified source archive '+name)
+  existing=api.get_paths_info(REPO,paths=['archives/'+local.name],repo_type='dataset')
+  if existing:
+   item=existing[0];assert item.size==g['archive_bytes'];value=item.lfs;value=value.get('sha256')if isinstance(value,dict)else value.sha256;assert value==g['archive_sha256'];archive_commit=api.repo_info(REPO,repo_type='dataset').sha
+  else:archive_commit=api.upload_file(path_or_fileobj=str(local),path_in_repo='archives/'+local.name,repo_id=REPO,repo_type='dataset',commit_message='Verified source archive '+name).oid
   infos=api.get_paths_info(REPO,paths=['archives/'+local.name],repo_type='dataset');assert len(infos)==1 and infos[0].size==g['archive_bytes'];lfs=infos[0].lfs;oid=lfs.get('sha256')if isinstance(lfs,dict)else lfs.sha256;assert oid==g['archive_sha256']
-  receipt.update(hf_repo=REPO,repo_type='dataset',private=True,hf_archive_path='archives/'+local.name,hf_archive_commit=commit.oid,hf_lfs_sha256=oid,intermediate_full_sha_verified=True)
+  receipt.update(hf_repo=REPO,repo_type='dataset',private=True,hf_archive_path='archives/'+local.name,hf_archive_commit=archive_commit,hf_lfs_sha256=oid,intermediate_full_sha_verified=True)
   raw=json.dumps(receipt,sort_keys=True).encode();manifest_commit=api.upload_file(path_or_fileobj=raw,path_in_repo='receipts/'+name+'.json',repo_id=REPO,repo_type='dataset',commit_message='Source payload manifest '+name)
-  accepted=dict(status='SOURCE_HKUST2_HF_ARCHIVE_SHA_PASS',group=name,archive_bytes=g['archive_bytes'],source_bytes=g['source_bytes'],archive_sha256=g['archive_sha256'],archive_commit=commit.oid,manifest_commit=manifest_commit.oid,hf_repo=REPO,private=True,completed=time.time());atomic(done,accepted);atomic(ROOT/'progress'/(name+'.json'),accepted);return accepted
+  accepted=dict(status='SOURCE_HKUST2_HF_ARCHIVE_SHA_PASS',group=name,archive_bytes=g['archive_bytes'],source_bytes=g['source_bytes'],archive_sha256=g['archive_sha256'],archive_commit=archive_commit,manifest_commit=manifest_commit.oid,hf_repo=REPO,private=True,completed=time.time());atomic(done,accepted);atomic(ROOT/'progress'/(name+'.json'),accepted);return accepted
  submitted=set();running={};summary_published=False
  with concurrent.futures.ThreadPoolExecutor(max_workers=2)as pool:
   while True:
@@ -84,7 +92,7 @@ print(json.dumps(v))''')
       if attempt>=8:atomic(ROOT/'failure.json',dict(stage='BRIDGE',group=g['group'],error_type=type(e).__name__,epoch=time.time()));raise
       submitted.remove(g['group'])
    uploaded=list((ROOT/'uploaded').glob('*.json'))if(ROOT/'uploaded').exists()else[]
-   atomic(ROOT/'progress.json',dict(stage='SOURCE_TO_PRIVATE_HF',groups_verified=len(uploaded),groups_expected=len(c.get('groups',[])),hf_verified_archive_bytes=sum(json.loads(p.read_text())['archive_bytes']for p in uploaded),active_groups=[g['group']for g in running.values()],partial_archives=[dict(group=p.stem,bytes=p.stat().st_size)for p in(ROOT/'incoming').glob('*.tar.zst')],epoch=time.time()))
+   atomic(ROOT/'progress.json',dict(stage='SOURCE_TO_PRIVATE_HF',groups_verified=len(uploaded),groups_expected=len(c.get('groups',[])),hf_verified_archive_bytes=sum(json.loads(p.read_text())['archive_bytes']for p in uploaded),active_groups=[g['group']for f,g in running.items()if f.running()],queued_groups=sum(not f.running()for f in running),partial_archives=[dict(group=p.stem,bytes=p.stat().st_size)for p in(ROOT/'incoming').glob('*.tar.zst')],epoch=time.time()))
    if c['plan_ready']and len(uploaded)==len(c['groups'])and not running:break
    time.sleep(10)
  atomic(ROOT/'complete.json',dict(status='ALL_SELECTED_ARCHIVES_PRIVATE_HF_SHA_ACCEPTED_NOT_H100_COMPLETE',groups=len(c['groups']),files=c['files'],payload_bytes=c['payload_bytes'],repo_id=REPO,completed=time.time(),credentials_saved=False))
