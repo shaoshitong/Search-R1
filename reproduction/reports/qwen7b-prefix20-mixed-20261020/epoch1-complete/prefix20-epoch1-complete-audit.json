@@ -1,0 +1,197 @@
+{
+  "status": "EPOCH1_METRIC_RECEIPT_AND_UNSEEN2048_PREDICTED_TOP512_INDEPENDENTLY_RECOMPUTED",
+  "epoch": 1,
+  "steps": 10464,
+  "metrics": {
+    "train": {
+      "groups": 67199,
+      "trajectories": 335995,
+      "trajectory_bce": 0.6952329879200961,
+      "group_bce": 0.15206660973560768,
+      "total_loss": 0.8472995976557038,
+      "mixed_accuracy": 0.9866962305986696,
+      "mixed_balanced_accuracy": null,
+      "trajectory_accuracy": 0.5886099495528208,
+      "mean_predicted_mixed": 0.8837707908925674,
+      "true_mixed_fraction": 1.0,
+      "confusion": {
+        "tp": 66305,
+        "fp": 0,
+        "fn": 894,
+        "tn": 0
+      },
+      "weight_kind": "EMA0.99",
+      "resampled": false,
+      "three_class_order": [
+        "all_wrong",
+        "mixed",
+        "all_correct"
+      ],
+      "three_class_confusion": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          13354.0,
+          40152.0,
+          13693.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "prediction_file_pattern": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-train-rank*.jsonl.gz"
+    },
+    "diagnostic": {
+      "groups": 512,
+      "trajectories": 2560,
+      "trajectory_bce": 0.6965556428767741,
+      "group_bce": 1.3065193928778172,
+      "total_loss": 2.0030750357545912,
+      "mixed_accuracy": 0.421875,
+      "mixed_balanced_accuracy": 0.5138635099706046,
+      "trajectory_accuracy": 0.58828125,
+      "mean_predicted_mixed": 0.8394365347921848,
+      "true_mixed_fraction": 0.400390625,
+      "confusion": {
+        "tp": 200,
+        "fp": 291,
+        "fn": 5,
+        "tn": 16
+      },
+      "weight_kind": "EMA0.99",
+      "resampled": false,
+      "three_class_order": [
+        "all_wrong",
+        "mixed",
+        "all_correct"
+      ],
+      "three_class_confusion": [
+        [
+          94.0,
+          90.0,
+          44.0
+        ],
+        [
+          58.0,
+          97.0,
+          50.0
+        ],
+        [
+          9.0,
+          40.0,
+          30.0
+        ]
+      ],
+      "prediction_file_pattern": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-diagnostic-rank*.jsonl.gz"
+    },
+    "train_separation": {
+      "questions": 67199,
+      "trajectory_bce": 0.6952329879200961,
+      "group_bce": 0.15206660973560768,
+      "pairwise_loss": 1.2281544904013182,
+      "eligible_pairs": 327204,
+      "pairwise_accuracy": 0.6005763988215302,
+      "range_le001_fraction": 0.0031548088513221923,
+      "all_p_in04_06_fraction": 0.0567270346284915,
+      "mean_p_range": 0.2630909982798229,
+      "trajectory_accuracy": 0.5886099495528208
+    },
+    "diagnostic_mixed_separation": {
+      "questions": 205,
+      "trajectory_bce": 0.7456987770592294,
+      "group_bce": 0.17001846585331892,
+      "pairwise_loss": 1.2794372349250607,
+      "eligible_pairs": 1002,
+      "pairwise_accuracy": 0.5568862275449101,
+      "range_le001_fraction": 0.0,
+      "all_p_in04_06_fraction": 0.04878048780487805,
+      "mean_p_range": 0.24260043487316224,
+      "trajectory_accuracy": 0.551219512195122
+    },
+    "selection2048": {
+      "pool": {
+        "questions": 2048,
+        "trajectories": 10240,
+        "K_histogram": [
+          1079,
+          164,
+          127,
+          153,
+          197,
+          328
+        ],
+        "true_mixed": 641,
+        "true_mixed_fraction": 0.31298828125,
+        "all_wrong_fraction": 0.52685546875,
+        "all_correct_fraction": 0.16015625,
+        "mixed_fraction_wilson95": [
+          0.29327112912862074,
+          0.33340568027737383
+        ],
+        "trajectory_strict_EM": 0.32275390625,
+        "mean_predicted_mixed": 0.8636089937343521
+      },
+      "selected512": {
+        "questions": 512,
+        "trajectories": 2560,
+        "K_histogram": [
+          249,
+          44,
+          33,
+          49,
+          56,
+          81
+        ],
+        "true_mixed": 182,
+        "true_mixed_fraction": 0.35546875,
+        "all_wrong_fraction": 0.486328125,
+        "all_correct_fraction": 0.158203125,
+        "mixed_fraction_wilson95": [
+          0.3152250946767785,
+          0.3978650467431173
+        ],
+        "trajectory_strict_EM": 0.34609375,
+        "mean_predicted_mixed": 0.9406133020382464
+      },
+      "predictions": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-unseen2048.jsonl.gz",
+        "bytes": 151224,
+        "sha256": "454ef526321cfc2eaf2278f324a334adff16234ce7452073b83be9b9ddc31c18",
+        "git_blob_sha1": "33112148a126e8b6ea8faf64faeef0e702ced500"
+      },
+      "evaluation_only": true
+    }
+  },
+  "checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/epoch-0001.pt",
+    "bytes": 3745811744,
+    "sha256": "02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724",
+    "git_blob_sha1": "ff347a2207f1a92ad1935c5bcaf0df7eb0ecbfda",
+    "epoch": 1,
+    "cursor": 0,
+    "steps": 10464,
+    "source_steps": 9146,
+    "completed_epoch": true,
+    "actor_updates": 0,
+    "source_commit": "e6b2a9f4319ad62bba56087ac52c80260907254c",
+    "independent_cpu_reload": true
+  },
+  "selected_histogram": [
+    249,
+    44,
+    33,
+    49,
+    56,
+    81
+  ],
+  "pool_mixed": 641,
+  "selected_mixed": 182,
+  "selected_fraction": 0.35546875,
+  "ranked_without_truth": true,
+  "time": 1792503379.5103893
+}
