@@ -31,6 +31,42 @@ def read(f):
  f=pathlib.Path(f);assert f.resolve()==f and not f.is_symlink() and f.stat().st_size<8*1024**2
  return json.loads(file_bytes(f,8*1024**2-1))
 def sha(f):return hashlib.sha256(file_bytes(f)).hexdigest()
+def file_range(path,start,length):
+ global metadata_read_used
+ path=pathlib.Path(path);assert path.resolve()==path and not path.is_symlink()
+ with path.open('rb') as stream:
+  size=os.fstat(stream.fileno()).st_size;start=max(0,start if start>=0 else size+start)
+  length=min(length,max(0,size-start))
+  if metadata_read_used+length>metadata_read_limit:raise RuntimeError('Metadata range exceeds shared budget')
+  stream.seek(start);raw=stream.read(length)
+ metadata_read_used+=len(raw);return raw
+def json_suffix(raw,key):
+ marker=(', "'+key+'":').encode();offset=0
+ while True:
+  offset=raw.find(marker,offset)
+  if offset<0:raise ValueError('Bounded JSON suffix anchor absent: '+key)
+  try:return json.loads(b'{'+raw[offset+2:])
+  except (ValueError,UnicodeDecodeError):offset+=len(marker)
+def json_prefix(raw,key,closures=b'}'):
+ marker=(', "'+key+'":').encode();offset=0
+ while True:
+  offset=raw.find(marker,offset)
+  if offset<0:raise ValueError('Bounded JSON prefix anchor absent: '+key)
+  try:return json.loads(raw[:offset]+closures)
+  except (ValueError,UnicodeDecodeError):offset+=len(marker)
+def ledger_rows(path):
+ size=path.stat().st_size
+ if size<2*1024**2:return [json.loads(line) for line in file_bytes(path,2*1024**2).splitlines() if line],None
+ # Round150 embeds its previous actor receipt in the first restore event.
+ # Read its small scalar prefix and complete recent lines, never the huge event.
+ prefix=json_prefix(file_range(path,0,65536),'grounding_state')
+ raw=file_range(path,-2097152,2097152);lines=raw.splitlines()[1:]
+ rows=[]
+ for i,line in enumerate(lines):
+  try:rows.append(json.loads(line))
+  except ValueError:
+   if i!=len(lines)-1:raise
+ return rows,prefix
 def once(f,v):
  f=pathlib.Path(f);f.parent.mkdir(parents=True,exist_ok=True)
  with f.open('x') as out:json.dump(v,out,sort_keys=True,allow_nan=False)
@@ -161,8 +197,9 @@ else:
   path=pathlib.Path(path);assert path.is_relative_to(b) and path.resolve()==path and not path.is_symlink()
   if not path.is_file():return None,dict(metadata_status='NOT_YET_RECORDED')
   size=path.stat().st_size
-  if size>1024**2:return None,dict(metadata_status='ABOVE_1MIB_READ_BUDGET',bytes=size)
-  raw=file_bytes(path,1024**2);assert len(raw)<=1024**2
+  if size>16*1024**2:return None,dict(metadata_status='ABOVE_16MIB_READ_BUDGET',bytes=size)
+  if metadata_read_used+size>metadata_read_limit:return None,dict(metadata_status='TOTAL_METADATA_READ_BUDGET',bytes=size)
+  raw=file_bytes(path,16*1024**2);assert len(raw)<=16*1024**2
   return json.loads(raw),dict(metadata_status='PRESENT',metadata_sha256=hashlib.sha256(raw).hexdigest(),bytes=len(raw))
  def grounding_summary(item):
   keys=('run_id','round','version','source_actor_version','encoder','encoder_sha256','head_sha256',
@@ -232,17 +269,58 @@ else:
  value['workers']={}
  for name in ('prepare-actor','prepare-seed','prepare-recover','prepare-restart','pipeline'):
   item=small(b/'preparation'/(name+'-launch.json'));value['workers'][name]=same(item['leader']) if item else None
- # Grounding refresh snapshots can make joint JSON exceed8MiB after round150.
- # Permit16MiB for these JSON records while retaining the shared63MiB budget.
+ def large_joint(path):
+  # Recursive source_actor_receipt copies make round151 joint JSON about80MB.
+  # Bind bounded scalar ranges to existing producer SHA and all four ledgers.
+  size=path.stat().st_size
+  header=json_prefix(file_range(path,0,65536),'grounding_state',b'}}')['actor']
+  suffix=json_suffix(file_range(path,-524288,524288),'observed_unix')
+  ordinal=suffix['outer'];root=b/'outers'/('outer-%06d'%ordinal)
+  assert suffix['run_id']==h['run_id'] and suffix['source_commit']==h['source_commit']
+  assert header['completed_outer']==ordinal and header['complete_outer'] and header['actor_version']==h['run_id']+'-actor%04d'%ordinal
+  attempts=[x for x in (b/'actor/outers').glob('outer-%04d-attempt-*'%ordinal) if (x/'complete.json').is_file()]
+  assert len(attempts)==1;directory=attempts[0]
+  actor_tail=json_suffix(file_range(directory/'complete.json',-65536,65536),'sampling_actor_version')
+  assert actor_tail['scheduler_completed_outer']==ordinal and actor_tail['status']=='complete' and actor_tail['source_commit']==h['source_commit']
+  writes=[];skips=[]
+  for rank in range(4):
+   rows,prefix=ledger_rows(directory/('rank-%d-updates.jsonl'%rank))
+   updates=[x for x in rows if x.get('event')=='ACTUAL_ADAM_WRITE'];opps=[x for x in rows if x.get('event')=='OPPORTUNITY']
+   assert len(opps)==20 and len({x['opportunity'] for x in opps})==20 and 1<=len(updates)<=20
+   assert len({x['opportunity'] for x in updates})==len(updates) and all(x['rank']==rank and x['outer']==ordinal for x in updates+opps)
+   assert updates[-1]['actual_adam_steps']==header['actual_adam_steps_per_rank'][rank]
+   if prefix:assert prefix['grounding_probe_version']==header['grounding_probe_version']
+   writes.append(len(updates));skips.append(20-len(updates))
+  assert len(set(writes))==1 and skips==actor_tail['skipped_update_opportunities']
+  seal=small(root/'storage-prune-intent.json');producer_sha=None if seal is None else seal['joint_complete_sha256']
+  if seal:assert seal['run_id']==h['run_id'] and seal['outer']==ordinal
+  canonical=root/'complete.json';assert canonical.stat().st_size==size
+  if canonical!=path:
+   assert file_range(canonical,0,65536)==file_range(path,0,65536)
+   assert file_range(canonical,-524288,524288)==file_range(path,-524288,524288)
+  header.update(new_adam_steps_per_rank=writes,opportunities_processed=20,skipped_update_opportunities=skips,
+   scheduler_completed_outer=actor_tail['scheduler_completed_outer'])
+  state=grounding_latest if grounding_latest and grounding_latest['version']==header['grounding_probe_version'] else None
+  header['grounding_state']=state
+  suffix.update(actor=header,grounding=state)
+  sys.path.insert(0,str(repo));from reproduction.actor50_grpo.schedule import outer_plan
+  suffix['actor50_branch_plan']=outer_plan(ordinal)
+  return suffix,producer_sha,dict(metadata_status='PRESENT_BOUNDED_COMPONENT_PROJECTION',bytes=size,
+   hash_scope='existing_storage_prune_intent_producer_SHA_not_full_rehash',
+   equal_size_header_suffix_samples=True,four_rank_20_opportunity_ledgers=True,
+   branch_plan_scope='verified_immutable_runtime_schedule',large_recursive_grounding_body_not_read=True)
  joint_metadata_limit=16*1024**2
- joint_path=b/'latest-joint.json';joint_raw=file_bytes(joint_path,joint_metadata_limit) if joint_path.is_file() else None
+ joint_path=b/'latest-joint.json';joint_raw=None;joint=None;joint_sha=None;joint_meta={}
+ if joint_path.is_file() and joint_path.stat().st_size>joint_metadata_limit:
+  joint,joint_sha,joint_meta=large_joint(joint_path)
+ elif joint_path.is_file():
+  joint_raw=file_bytes(joint_path,joint_metadata_limit);joint=json.loads(joint_raw);joint_sha=hashlib.sha256(joint_raw).hexdigest()
  assert joint_raw is None or len(joint_raw)<=joint_metadata_limit
- joint=json.loads(joint_raw) if joint_raw is not None else None
  if joint:
   a=joint['actor'];value['joint']=dict(outer=joint['outer'],actor_Adam=a['actual_adam_steps_per_rank'],
    scheduler=a['scheduler_completed_outer'],probe=joint['probe'],rollout_mixed=joint['rollout'].get('actual_selected_mixed_fraction'),
    source_commit=joint['source_commit'],actor50_branch_plan=joint.get('actor50_branch_plan'),
-   metadata_sha256=hashlib.sha256(joint_raw).hexdigest(),new_actor_Adam=a.get('new_adam_steps_per_rank'),
+   metadata_sha256=joint_sha,metadata_read_scope=joint_meta,new_actor_Adam=a.get('new_adam_steps_per_rank'),
    processed_opportunities=a.get('opportunities_processed'),skipped_opportunities=a.get('skipped_update_opportunities'),
    mixed_floor=joint['rollout'].get('mixed_floor'),actor_version=a.get('actor_version'),
    grounding=grounding_summary(joint.get('grounding')),actor_grounding=grounding_summary(a.get('grounding_state')),
@@ -256,18 +334,24 @@ else:
      result.append(dict(outer=ordinal,metadata_status='MISSING'));continue
     assert recent_path.resolve()==recent_path and not recent_path.is_symlink()
     size=recent_path.stat().st_size
+    projected=False;scope={}
     if size>joint_metadata_limit:
-     result.append(dict(outer=ordinal,metadata_status='ABOVE_16MIB_READ_BUDGET',bytes=size));continue
-    if metadata_read_used+size>metadata_read_limit:
+     if ordinal==joint['outer']:recent=joint;recent_sha=joint_sha;scope=joint_meta
+     elif metadata_read_used+12*1024**2<=metadata_read_limit:recent,recent_sha,scope=large_joint(recent_path)
+     else:
+      result.append(dict(outer=ordinal,metadata_status='TOTAL_METADATA_READ_BUDGET',bytes=size));continue
+     projected=True
+    elif metadata_read_used+size>metadata_read_limit:
      result.append(dict(outer=ordinal,metadata_status='TOTAL_METADATA_READ_BUDGET',bytes=size));continue
-    recent_raw=file_bytes(recent_path,joint_metadata_limit);assert len(recent_raw)<=joint_metadata_limit
-    recent=json.loads(recent_raw);assert recent['run_id']==h['run_id'] and recent['outer']==ordinal
+    else:
+     recent_raw=file_bytes(recent_path,joint_metadata_limit);recent=json.loads(recent_raw);recent_sha=hashlib.sha256(recent_raw).hexdigest()
+    assert recent['run_id']==h['run_id'] and recent['outer']==ordinal
     actor=recent['actor'];probe=recent['probe'];floor=recent['rollout'].get('mixed_floor') or {}
     floor_keys=('initial_mixed','final_mixed','initial_fraction','final_fraction','extra_native_batches',
      'completed_candidate_questions','remaining_uncontinued_questions','triggered','shortfall','exhausted',
      'target_mixed','target_reached','native_prefix_or_score_regenerated')
-    result.append(dict(outer=ordinal,metadata_status='PRESENT',
-     source_commit=recent.get('source_commit'),metadata_sha256=hashlib.sha256(recent_raw).hexdigest(),
+    result.append(dict(outer=ordinal,metadata_status='PRESENT_BOUNDED_COMPONENT_PROJECTION' if projected else 'PRESENT',metadata_read_scope=scope,
+     source_commit=recent.get('source_commit'),metadata_sha256=recent_sha,
      actor_Adam=actor['actual_adam_steps_per_rank'],scheduler=actor['scheduler_completed_outer'],
      new_actor_Adam=actor.get('new_adam_steps_per_rank'),
      processed_opportunities=actor.get('opportunities_processed'),skipped_opportunities=actor.get('skipped_update_opportunities'),
@@ -320,11 +404,7 @@ else:
    for rank in range(4):
     path=directory/('rank-%d-updates.jsonl'%rank)
     if not path.exists():value['actor_inflight'].append(None);continue
-    assert path.stat().st_size<2*1024**2;lines=file_bytes(path,2*1024**2-1).decode().splitlines();rows=[]
-    for i,line in enumerate(lines):
-     try:rows.append(json.loads(line))
-     except json.JSONDecodeError:
-      if i!=len(lines)-1:raise
+    rows,restore_prefix=ledger_rows(path)
     restored=next((x for x in rows if x['event']=='ACTUAL_RESTORE'),None)
     writes=[x for x in rows if x['event']=='ACTUAL_ADAM_WRITE']
     value['actor_inflight'].append(dict(rank=rank,restore=None if restored is None else

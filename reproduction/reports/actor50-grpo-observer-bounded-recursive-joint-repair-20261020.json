@@ -1,0 +1,42 @@
+{
+  "checked_unix": 1792455901.4376829,
+  "scope": "OBSERVER_ONLY_NO_LIVE_RUNTIME_MUTATION",
+  "execution_id": "21bf70af3e9b4cabbab7862e9532069c",
+  "runtime_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+  "actual_stat_diagnostic_sha256": "94d4290f7bee6c1b9898ae7af57a95469fd04ae4e777c8ab62ce074405327f32",
+  "actual_joint_bytes": {
+    "latest-joint.json": 80004496,
+    "outers/outer-000150/complete.json": 8026809,
+    "outers/outer-000151/complete.json": 80004496,
+    "outers/outer-000152/complete.json": null
+  },
+  "actual_pipeline": {
+    "pid": 1166306,
+    "start_ticks": 648248369,
+    "sid": 1166306,
+    "uid": 0,
+    "state": "R"
+  },
+  "actual_stage": {
+    "checked_unix": 1792455525.9021482,
+    "outer": 152,
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+    "stage": "outer-000152-actor-f6424f5f83694880b3f24d68af2f1904"
+  },
+  "failure": null,
+  "exit": null,
+  "cleanup": null,
+  "cause": "Grounding fit state embeds source_actor_receipt, recursively repeated in actor/driver/rank/joint receipts. Latest joint exceeds total64MiB read budget.",
+  "repair": "Bounded JSON header/suffix fields plus existing storage-prune-intent joint producerSHA and fourrank20-opportunity ledger tails; do not read recursive body.",
+  "hash_scope": "producer_recorded_SHA_not_independent_full_rehash; equal size/header/suffix samples checked betweenlatest and ownedcomplete",
+  "ledger_tail_max_bytes_per_rank": 2097152,
+  "aggregate_metadata_limit_bytes": 66060288,
+  "proc_reserve_bytes": 1048576,
+  "output_limit_bytes": 131072,
+  "max_recent_complete": 5,
+  "actual_remote_source_compilation": "PASS",
+  "local_actual_reader_boundary_and_JSON_range_fixture": "PASS",
+  "actual_repaired_observation": "PENDING_AFTER_PUBLICATION",
+  "old_16MiB_only_fix": "INSUFFICIENT_SUPERSEDED",
+  "no_GPU_sampling_new_eval_tensor_probability_or_raw_rollout_reads": true
+}

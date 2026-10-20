@@ -1,5 +1,6 @@
 """Exercise the actual observer joint reader in memory; no SSH or disk payloads."""
 import io
+import hashlib
 import json
 import textwrap
 from types import SimpleNamespace
@@ -24,6 +25,15 @@ class _Path:
     def is_file(self):
         return True
 
+    def stat(self):
+        return SimpleNamespace(st_size=self.size)
+
+    def resolve(self):
+        return self
+
+    def is_symlink(self):
+        return False
+
     def open(self, mode):
         assert mode == 'rb'
         return _Reader(self.raw)
@@ -31,7 +41,7 @@ class _Path:
 
 def _read(path, used=0):
     namespace = dict(
-        b=path, p={'action': 'observe'}, json=json,
+        b=path, p={'action': 'observe'}, json=json, hashlib=hashlib,
         pathlib=SimpleNamespace(Path=lambda value: value),
         os=SimpleNamespace(fstat=lambda fd: SimpleNamespace(st_size=path.size)),
         metadata_read_used=used, metadata_read_limit=63 * 1024**2,
@@ -53,7 +63,6 @@ def main():
     assert value['joint'] == {'outer': 151}
     assert value['metadata_read_used'] == size
     for candidate, used, expected in (
-        (_Path(b'', 16 * 1024**2 + 1), 0, 'per-file budget'),
         (path, 63 * 1024**2 - size + 1, 'byte budget exhausted'),
     ):
         try:
@@ -62,11 +71,28 @@ def main():
             assert expected in str(error)
         else:
             raise AssertionError('Observer budget guard did not reject oversized read')
+    value['os'] = SimpleNamespace(fstat=lambda fd: SimpleNamespace(st_size=16 * 1024**2 + 1))
+    try:
+        value['file_bytes'](_Path(b'', 16 * 1024**2 + 1), 16 * 1024**2)
+    except RuntimeError as error:
+        assert 'per-file budget' in str(error)
+    else:
+        raise AssertionError('Single-file guard did not reject oversized direct read')
+    # Exercise the actual seek reader and JSON anchors without reading a large body.
+    helpers = REMOTE[REMOTE.index('def file_range('):REMOTE.index('def once(')]
+    exec(helpers, value)
+    small = _Path(b'{"actor": {"completed_outer":151, "grounding_state":null}, "observed_unix":1, "outer":151}')
+    value['os'] = SimpleNamespace(fstat=lambda fd: SimpleNamespace(st_size=small.size))
+    head = value['file_range'](small, 0, 55)
+    assert value['json_prefix'](head, 'grounding_state', b'}}')['actor']['completed_outer'] == 151
+    tail = value['file_range'](small, -40, 40)
+    assert value['json_suffix'](tail, 'observed_unix')['outer'] == 151
     print(json.dumps(dict(
         status='PASS', old_8MiB_boundary_bytes=size,
         joint_per_file_limit_bytes=16 * 1024**2,
         aggregate_limit_bytes=63 * 1024**2,
         per_file_and_aggregate_rejection=True,
+        bounded_seek_and_JSON_prefix_suffix=True,
         remote_queries=0, disk_payload_bytes=0,
     )))
 
