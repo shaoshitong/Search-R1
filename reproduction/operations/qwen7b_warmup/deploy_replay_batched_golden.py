@@ -41,7 +41,7 @@ srun --kill-on-bad-exit=1 bash "$QWEN7B_CODE_ROOT/reproduction/operations/qwen7b
 '''.replace('BASEQ',shlex.quote(base)).replace('BASE',base).replace('@@GOLDEN_CODE@@',shlex.quote(code)).replace('SHA',config_sha)
 
 COMMON=r'''
-import pathlib,json,hashlib,os,time,fcntl,subprocess,base64,io,tarfile,gzip
+import pathlib,json,hashlib,os,time,fcntl,subprocess,base64,io,tarfile,gzip,shlex
 b=pathlib.Path(inputs['base']);B=pathlib.Path(inputs['parent']);root=b/('code-'+inputs['commit'][:12]);u=b/('upload-'+inputs['bundle_sha256'][:12])
 def read(p):return json.loads(pathlib.Path(p).read_text())
 def fp(p):
@@ -142,6 +142,7 @@ def main():
  p=argparse.ArgumentParser();p.add_argument('--control-root',type=Path);p.add_argument('--action',choices=('prepare','submit','status'),default='status');p.add_argument('--submit-authorized',action='store_true');p.add_argument('--self-test',action='store_true');a=p.parse_args();repo=Path(__file__).resolve().parents[3]
  values=dict(base=BASE,parent=B,manifest=MANIFEST,commit='a'*40,bundle_sha256='b'*64,manifest_sha256='c'*64,chunks=2)
  if a.self_test:
+  namespace={'inputs':values};exec(COMMON+'\n'+inspect.getsource(script),namespace);assert namespace['script'](BASE,BASE+'/code-a','a'*64)==script(BASE,BASE+'/code-a','a'*64)
   lengths={}
   for name,block in [('init',INIT),('chunk',CHUNK),('extract',EXTRACT),('prepare',PREPARE),('submit',SUBMIT),('status',STATUS)]:
    own=dict(values,index=0,chunk_data=base64.b64encode(b'x'*4096).decode());code='inputs='+repr(own)+'\n'+COMMON+'\n'+(inspect.getsource(script) if name=='prepare' else '')+'\n'+block;compile(code,name,'exec');lengths[name]=len(('python3 -c '+shlex.quote(code)).encode());assert lengths[name]<16000
