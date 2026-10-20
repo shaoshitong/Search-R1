@@ -1,0 +1,13 @@
+# Peer sealed newseed transfer: actual startup repair
+
+The selected source is the frozen 244 sealed-batch snapshot `newseed-20261021-185747-445fc691`: 31,232 questions, 156,160 real G5 trajectories, 16 archives (1,366,896,640 bytes). Source archive/member fresh SHA verification passed. It contains raw Prefix20/full/own-EM/state records and no hidden tensors. The peer sampler and source copies remain untouched.
+
+The first management uploader PID1827947 exited before uploading with ImportError. Read-only inspection found installed huggingface_hub1.23.0 uses httpx and set_client_factory; the old requests-only configure_http_backend export is absent. Commit7198f27 supports both versions with bounded requests and preserves native HF hooks. Six targeted CPU tests passed. The old PID was verified absent and its writer lock free before its intent, receipt and failure were archived, then the new uploader was started once.
+
+Actual replacement PID1837671, birth185739234; staged source SHA f208cf2ea1d52e897187f58d4d15a0ff5c92abfdd8b9b5ac9642c840e370f282. Actual official HF accepted progress increased 1->2->4->7->10->13 groups, with LFS SHA/size verified; no new retries or errors in those observations. Credentials only RAM/encrypted stdin. H100-to-management archive reads are bounded RAM streams, with no management/Mac payload staging.
+
+All16/16 archived payloads subsequently passed HF LFS acceptance (1,366,896,640 bytes), with catalog revision55923224d54e209aedc40505ceb175c8a7ff1276; the uploader completed normally.
+
+HF progress is not HPC3 migration completion. The receiver still requires its actual catalog revision, fresh archive/member acceptance and target complete. Initial campus SSH connectivity was intermittent; ACD-Login-2 to HKUST2/3 also timed out, so this was not attributed to a proven Mac-only proxy issue. No Mac network configuration was changed. Actual ACD-Login-2 public HF HEAD/GET probes returned connection timeout/HTTP000/0bytes. Management-to-HPC3 campus22 also timed out after3s (connect_ex errno11); the public login name did not resolve there. None is a usable alternate route. Any future actual bypass must record its real route and never fabricate intermediate-hop receipts.
+
+The raw-data consumer also requires original question/trajectory binding, identity-only exclusion of evaluation pools, tokenizer-recomputed own strict EM, matching Prefix20/context/positions, and independent old/new native seed identities before feature projection. A planned 8,192 training-question, four-shard HF replay captures the ten original+new trajectories per question with the qualified uniform backend. This is preparation, not an accepted hidden bank or a trained/improved probe.

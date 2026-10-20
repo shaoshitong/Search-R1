@@ -1,0 +1,70 @@
+{
+  "status": "MATCHED6528_G10_SAME_COHORT_B48_136_STRICT_EQUAL_VIEW_SUITE_PREPARED",
+  "commit": "abc4ec11bdc9806e07d51a36d8f50be460364034",
+  "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/code-abc4ec11bdc9",
+  "g10_complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-matched6528-20261021/materialized/bank/complete.json",
+    "bytes": 2997,
+    "sha256": "f158668aa439fcb8735a0e311939cc8340d40aa4c44bab8a4a85bbb9bf88d7af"
+  },
+  "validation_g10_complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/complete.json",
+    "bytes": 4492,
+    "sha256": "5ea5197a841d7bd0b226a82350a2436a8ae3d860143a2ea39fe59b7ecb6837d5"
+  },
+  "source_plan": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/inputs/plan.json",
+    "bytes": 573412,
+    "sha256": "3bff8f5331bd60634456b1f24a106a752f84b196bc0a0cd8961c5d17405e86d9"
+  },
+  "fixed_g5": {
+    "bytes": 694386,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/fixed-G5-selection.json",
+    "sha256": "b6e5b57fee270c8fa61c1f03f212b5baef1125d205c006475f65a0690ed4aecb"
+  },
+  "variants": {
+    "random": {
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/random",
+      "job_name": "q7b-g10m6528-random",
+      "config": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/random/config.json",
+        "bytes": 7878,
+        "sha256": "224558c829cb4b1d63330d0008d3fdaa57acb2cba624cc3fb56cb9b9deba49ec"
+      },
+      "sbatch": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/random/fit.sbatch",
+        "bytes": 1134,
+        "sha256": "3c20643dd003231a47a93463b4e166dcedf5cbf5bca927c4574e522d0cbe0ecd"
+      }
+    },
+    "global-weighted-balanced": {
+      "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/global-weighted-balanced",
+      "job_name": "q7b-g10m6528-global-weighted-balanced",
+      "config": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/global-weighted-balanced/config.json",
+        "bytes": 7951,
+        "sha256": "9b2a41501a05821cb1cb983d146f9737f3afd3ec4e116de72644c759cab1498f"
+      },
+      "sbatch": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g10-matched6528-v1/global-weighted-balanced/fit.sbatch",
+        "bytes": 1188,
+        "sha256": "d9e0f865fff2ffdab7144899def030b95377d5632e3b98e3762b69d741b7b908"
+      }
+    }
+  },
+  "heterogeneous_questions": 3861,
+  "questions": 6528,
+  "real_train_trajectories": 65280,
+  "global_original_questions": 48,
+  "updates": 136,
+  "views_per_question": 4,
+  "uniform_view_weight": "1/4",
+  "source_Adam_steps": 10464,
+  "optimizer_reset": false,
+  "smaller_question_budget_acknowledged": true,
+  "equal_budget_to_B51_128_baseline_claim": false,
+  "same6528_cohort_as_old_matched128": true,
+  "no_automatic_submission": true,
+  "no_dependency": true,
+  "final_pool_read": false
+}
