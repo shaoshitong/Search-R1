@@ -1,7 +1,7 @@
 """Small code-only isolated deployment/run for the fixed existing-score audit."""
 import argparse,base64,hashlib,importlib.util,json,pathlib,shlex,subprocess
 P='reproduction/operations/qwen7b_warmup/'
-ROOT='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/existing-predictions-domain-cursor512-v1'
+ROOT='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/existing-predictions-domain-cursor512-v2'
 RUNTIME='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/independent-internal-audit-deployment-v1/code-39d5af483d5d'
 COMMON='''import base64,fcntl,hashlib,json,os,pathlib,subprocess,time
 b=pathlib.Path(values['base']);b.mkdir(exist_ok=True);lock=(b/'operator.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)

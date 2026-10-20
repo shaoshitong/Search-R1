@@ -16,7 +16,7 @@ import time
 
 B=Path('/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019')
 A=B/'algorithm-improvement-20261021'
-OUT=A/'existing-predictions-domain-cursor512-v1'
+OUT=A/'existing-predictions-domain-cursor512-v2'
 EXPECTED={'nq','triviaqa','popqa','hotpotqa','2wikimultihopqa','musique','bamboogle'}
 
 
@@ -193,8 +193,8 @@ def main():
         models[key]=domain_summary(rs,external_domains);predrefs[key]=proof(actual);qerrors[key]=err
     a.output.with_name('progress.json').write_text(json.dumps(dict(stage='EXTERNAL_EXISTING_THREE_MODELS_OWN_IDS_Q_DOMAIN_COMPLETE',models=list(models),questions=2048,time=time.time()))+'\n')
     cfg=read(pins['internal_config']);dc=read(pins['data_config']);groups=read(checked(cfg['groups']));split=read(checked(cfg['split']))
-    ordered=sorted((g['qid'] for g in groups),key=lambda q:hashlib.sha256(('prefix-confidence-qid-9137:'+q).encode()).hexdigest())
-    assert split['held_qids']==ordered[:2048] and split['fit_qids']==ordered[2048:]
+    qids=[g['qid'] for g in groups];held_members=set(sorted(qids,key=lambda q:(hashlib.sha256(('prefix-confidence-qid-9137:'+q).encode()).hexdigest(),q))[:2048])
+    assert split['held_qids']==[q for q in qids if q in held_members] and split['fit_qids']==[q for q in qids if q not in held_members]
     ids=read(checked(dc['identity_plan']));assert [g['qid'] for g in ids['groups']]==[g['qid'] for g in groups]
     events=read(checked(dc['source_events']));event=next(e for e in events['events'] if e['event']=='newseed20261021');want={g['qid']:g for g in groups};metadata=[];inputrefs=[]
     for batch in event['batches']:
