@@ -20,6 +20,46 @@ import urllib.request
 import shared_vram_worker as shared
 
 
+class BorrowedRelay:
+    """Observe a verified sibling relay; never own, stop or reap its process."""
+    def __init__(self, proof):
+        self.proof = proof
+        self.pid = int(proof['pid'])
+
+    def poll(self):
+        try:
+            stat = Path('/proc/%d/stat' % self.pid).read_text().rsplit(')', 1)[1].split()
+            if (stat[0] == 'Z' or stat[19] != str(self.proof['birth'])
+                    or Path('/proc/%d/cgroup' % self.pid).read_text() != self.proof['cgroup']
+                    or os.stat('/proc/%d/ns/net' % self.pid).st_ino != self.proof['netns_inode']):
+                return 1
+        except (FileNotFoundError, ProcessLookupError):
+            return 1
+        return None
+
+
+def borrowed_relay(pool, args):
+    path = getattr(args, 'reuse_local_relay_ready', None)
+    if not path:
+        return None
+    shared.require(pool.sha(path) == args.reuse_local_relay_sha256, 'Borrowed relay ready proof changed')
+    ready = pool.read(path)
+    shared.require(ready['status'] == 'RELAY_LISTENING' and ready['role'] == 'downstream'
+                   and ready['listen'] == dict(host='127.0.0.1', port=28831)
+                   and ready['listen_url'] == 'http://127.0.0.1:28831'
+                   and ready['code_sha256'] == pool.sha(args.relay_script)
+                   and ready['upstream_proof']['sha256'] == pool.sha(args.upstream_ready),
+                   'Borrowed local relay identity or upstream differs')
+    owner = args.reuse_local_relay_unit
+    shared.require(owner.startswith('sst-q7b-g5-consumer10-') and owner.endswith('.service')
+                   and '/' not in owner and owner in ready['process']['cgroup'], 'Borrowed relay owner differs')
+    shared.require(ready['process']['netns_inode'] == os.stat('/proc/1/ns/net').st_ino,
+                   'Borrowed relay is not in the shared host network')
+    relay = BorrowedRelay(ready['process'])
+    shared.require(relay.poll() is None, 'Borrowed relay original PID/birth is no longer live')
+    return relay
+
+
 def admit(pool, args):
     shared.require(socket.gethostname().split('.')[0] == 'h100-10', 'Consumer is restricted to retained h100-10')
     shared.require(os.stat('/proc/self/ns/mnt').st_ino != os.stat('/proc/1/ns/mnt').st_ino,
@@ -45,8 +85,10 @@ def admit(pool, args):
         value = subprocess.check_output([sys.executable, str(Path(__file__).resolve()),
                     '--cuda-probe', '--expected-uuids', ','.join(uuids)], env=env, text=True, timeout=45)
         shared.require(json.loads(value)['actual_cuda_runtime_uuids'] == uuids, 'Consumer physical UUID order differs')
-        with socket.socket() as check:
-            check.bind(('127.0.0.1', 28831))
+        borrowed = borrowed_relay(pool, args)
+        if borrowed is None:
+            with socket.socket() as check:
+                check.bind(('127.0.0.1', 28831))
         upstream = pool.read(args.upstream_ready)
         shared.require(upstream['role'] == 'upstream' and upstream['source_pid'] == 1490465,
                        'Retrieval relay is not bound to the currently evidenced original retriever')
@@ -60,6 +102,8 @@ def admit(pool, args):
             initial_gpu_memory=[inventory[x] for x in model],
             foreign_initial_contexts=shared.foreign_contexts(set(uuids)),
             foreign_contexts_allowed=True, foreign_processes_signalled=False,
+            local_relay_reused=borrowed is not None,
+            local_relay_process=borrowed.proof if borrowed else None,
             shared_retriever_owned_by_consumer=False, upstream_ready=str(args.upstream_ready),
             upstream_ready_sha256=pool.sha(args.upstream_ready),
             allocation_evidence=str(args.allocation_evidence), allocation_evidence_sha256=pool.sha(args.allocation_evidence),
@@ -106,10 +150,16 @@ def controller(pool, args):
 
     result = None
     try:
-        local_ready = jobdir / 'relay-ready.json'
-        relay = spawn('relay', [args.relay_script, 'downstream', '--listen-host', '127.0.0.1', '--listen-port', '28831',
-            '--upstream-url', upstream['listen_url'], '--upstream-ready-file', args.upstream_ready, '--token-file', args.token_file,
-            '--ready-file', str(local_ready)], '')
+        relay = borrowed_relay(pool, args)
+        if relay is None:
+            local_ready = jobdir / 'relay-ready.json'
+            relay = spawn('relay', [args.relay_script, 'downstream', '--listen-host', '127.0.0.1', '--listen-port', '28831',
+                '--upstream-url', upstream['listen_url'], '--upstream-ready-file', args.upstream_ready, '--token-file', args.token_file,
+                '--ready-file', str(local_ready)], '')
+        else:
+            local_ready = Path(args.reuse_local_relay_ready)
+            pool.publish(jobdir / 'borrowed-local-relay.json', dict(ready_file=str(local_ready),
+                ready_sha256=pool.sha(local_ready), process=relay.proof, process_owned=False))
         ready = None
         while ready is None:
             shared.require(relay.poll() is None, 'Own local relay failed; see relay.log')
@@ -184,6 +234,9 @@ def main():
     p.add_argument('--relay-script', default=str(Path(__file__).with_name('retrieval_relay.py')))
     p.add_argument('--upstream-ready')
     p.add_argument('--token-file')
+    p.add_argument('--reuse-local-relay-ready')
+    p.add_argument('--reuse-local-relay-sha256')
+    p.add_argument('--reuse-local-relay-unit')
     p.add_argument('--allocation-evidence', default=os.environ.get('Q7B_RELAY_ALLOCATION_EVIDENCE'))
     p.add_argument('--model-gpus', default='0,1,2,3')
     p.add_argument('--model-max-seqs', type=int, default=8)
@@ -200,6 +253,8 @@ def main():
     p.add_argument('--deadline', type=float)
     p.add_argument('--handoff-marker')
     a = p.parse_args()
+    shared.require(bool(a.reuse_local_relay_ready) == bool(a.reuse_local_relay_sha256)
+                   == bool(a.reuse_local_relay_unit), 'Borrowed relay arguments must be supplied together')
     a.tp = 4
     if a.cuda_probe:
         print(json.dumps(dict(actual_cuda_runtime_uuids=shared.actual_uuids(a.expected_uuids.split(',')))))

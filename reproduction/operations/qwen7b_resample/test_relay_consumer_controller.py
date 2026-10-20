@@ -29,6 +29,12 @@ with patch.object(sys, 'path', [str(DIRECTORY)] + sys.path):
 
 class RelayConsumerControllerTests(unittest.TestCase):
     def test_normal_lifecycle_seals_batch_and_reaps_only_local_children(self):
+        self.run_lifecycle(reuse=False)
+
+    def test_borrowed_relay_is_not_started_or_stopped(self):
+        self.run_lifecycle(reuse=True)
+
+    def run_lifecycle(self, reuse):
         with tempfile.TemporaryDirectory(prefix='q7b-consumer-controller-cpu-') as temporary:
             base = Path(temporary)
 
@@ -67,6 +73,9 @@ class RelayConsumerControllerTests(unittest.TestCase):
                 token_file=str(token), allocation_evidence=str(evidence),
                 run_seconds=60, batch_reserve_seconds=1, model_max_seqs=8,
                 model_batch_tokens=4096, model_kv_block_cap=1024, model_reserve_gib=.25)
+            if reuse:
+                args.reuse_local_relay_ready = str(base / 'borrowed-ready.json')
+                publish(args.reuse_local_relay_ready, dict(test_fixture=True))
             processes, stopped = [], []
             test = self
 
@@ -125,7 +134,9 @@ class RelayConsumerControllerTests(unittest.TestCase):
                     encoder_dtype='float16', index_dtype='float16',
                     original_global_ids=True, endpoint=pool.URL)).encode())
 
+            borrowed = types.SimpleNamespace(pid=9000, proof=dict(pid=9000, birth='123'), poll=lambda: None) if reuse else None
             with patch.object(CONSUMER, 'admit', return_value=(binding, [])), \
+                    patch.object(CONSUMER, 'borrowed_relay', return_value=borrowed), \
                     patch.object(CONSUMER.subprocess, 'Popen', side_effect=FakeProcess), \
                     patch.object(CONSUMER.urllib.request, 'urlopen', side_effect=health), \
                     patch.object(CONSUMER.time, 'sleep', return_value=None), \
@@ -141,11 +152,13 @@ class RelayConsumerControllerTests(unittest.TestCase):
             self.assertTrue(complete['own_children_reaped'])
             self.assertFalse(complete['upstream_retriever_signalled'])
             self.assertFalse((jobdir / 'failure.json').exists())
-            self.assertEqual([process.kind for process in processes], ['local-relay', 'sampler'])
+            self.assertEqual([process.kind for process in processes], ['sampler'] if reuse else ['local-relay', 'sampler'])
             self.assertCountEqual(stopped, [process.pid for process in processes])
             self.assertNotIn(upstream_pid, stopped)
             self.assertNotIn(7000, stopped, 'The upstream relay is owned independently')
-            self.assertTrue((processes[1].launch / 'model-initialized.json').is_file())
+            self.assertNotIn(9000, stopped, 'Borrowed local relay must never be stopped')
+            self.assertTrue((processes[-1].launch / 'model-initialized.json').is_file())
+            self.assertEqual((jobdir / 'borrowed-local-relay.json').exists(), reuse)
             self.assertEqual(read(jobdir / 'retriever-ready.json')['pid'], upstream_pid)
 
 
