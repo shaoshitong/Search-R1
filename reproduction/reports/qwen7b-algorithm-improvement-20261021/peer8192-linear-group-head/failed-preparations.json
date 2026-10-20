@@ -1,0 +1,25 @@
+{
+  "status": "ACTUAL_FAILED_PREPARATION_ATTEMPTS_PRESERVED_NO_MODEL_WRITER_STARTED",
+  "attempts": [
+    {
+      "remote_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-linear-group-head-20261021",
+      "source": "964baac6a564a7838006035c747c2629300bf756",
+      "actual_cpu_tests": 6,
+      "result": "debug CPU0GPU sbatch --test-only rejected: Requested node configuration is not available",
+      "actual_partition_node": "ACD1-63 drained per captured scontrol/sinfo",
+      "actual_job_submitted": false,
+      "diagnosis": "actual-debug-plugin-diagnosis.json"
+    },
+    {
+      "remote_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-linear-group-head-cpu2-20261021",
+      "source": "0013b626ae96b37910da4f8e256abba309a477aa",
+      "actual_tests_run": 8,
+      "result": "synthetic mmap test NFS cleanup OSError39 because mmap was open during TemporaryDirectory cleanup",
+      "actual_model_diagnostic_started": false,
+      "preserved_remote_log": "actual-cpu-tests.log",
+      "fixed_in": "a8bdba2e3d25558d73b6c55b6de15b8616806b3e"
+    }
+  ],
+  "final_successful_source": "a8bdba2e3d25558d73b6c55b6de15b8616806b3e",
+  "source_or_active_writers_hotpatched": false
+}

@@ -1,0 +1,19 @@
+{
+  "actual-cpu-tests.log": "......\n----------------------------------------------------------------------\nRan 6 tests in 8.494s\n\nOK\n",
+  "actual-debug-cpu-plugin-test.log": "allocation failure: Requested node configuration is not available\n",
+  "partition": {
+    "returncode": 0,
+    "stdout": "PartitionName=debug\n   AllowGroups=formal,admin AllowAccounts=ALL AllowQos=ALL\n   AllocNodes=ALL Default=NO QoS=debug_qos\n   DefaultTime=00:30:00 DisableRootJobs=NO ExclusiveUser=NO GraceTime=0 Hidden=NO\n   MaxNodes=UNLIMITED MaxTime=00:30:00 MinNodes=0 LLN=NO MaxCPUsPerNode=UNLIMITED MaxCPUsPerSocket=UNLIMITED\n   Nodes=ACD1-63\n   PriorityJobFactor=1 PriorityTier=1 RootOnly=NO ReqResv=NO OverSubscribe=NO\n   OverTimeLimit=NONE PreemptMode=OFF\n   State=UP TotalCPUs=96 TotalNodes=1 SelectTypeParameters=NONE\n   JobDefaults=(null)\n   DefMemPerCPU=10240 MaxMemPerNode=UNLIMITED\n   TRES=cpu=96,mem=2000000M,node=1,billing=96,gres/gpu=8\n\n",
+    "stderr": ""
+  },
+  "nodes": {
+    "returncode": 0,
+    "stdout": "ACD1-63|96|2000000|gpu:8|drained\n",
+    "stderr": ""
+  },
+  "allpartition": {
+    "returncode": 0,
+    "stdout": "acd_u*|up|7-00:00:00|40|gpu:8\nacd_ue|up|7-00:00:00|40|gpu:8\nemergency_acd|up|7-00:00:00|40|gpu:8\ndebug|up|30:00|1|gpu:8\n",
+    "stderr": ""
+  }
+}
