@@ -1,5 +1,6 @@
 """Small CPU tests of global graph, lineage, cursor and scoring; no GPU claims."""
 import copy
+import gc
 import random
 import tempfile
 from pathlib import Path
@@ -100,6 +101,9 @@ class ProbeAblationTrainTests(unittest.TestCase):
             restore_blob(loaded,model,ema,opt,device)
             self.assertEqual(state_hashes(model,ema,opt,device),before)
             with self.assertRaises(ValueError):save_checkpoint(Path(d),accepted)
+            # Release the mapped archive before NFS temporary-directory cleanup.
+            del loaded
+            gc.collect()
         self.assertEqual(source['steps'],1)
 
     def test_mixed_balanced_accuracy_auc_and_class_errors_are_primary(self):

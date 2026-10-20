@@ -5,14 +5,14 @@ Code/config/small audits only cross the control connection; all assets stay HPC3
 import argparse,base64,hashlib,importlib.util,json,shlex,subprocess,zlib
 from pathlib import Path
 
-NAMES=['probe_ablation_train.py','test_probe_ablation_train.py','probe_ablation_loss.py','test_probe_ablation_loss.py','model.py','packed_features.py','native_capture.py','download_model.py','balanced_sampling.py','probe_ablation_model.py','test_probe_ablation_model.py','g10_grouping.py','test_g10_grouping.py','runtime.sh','deploy_matched_loss_suite.py']
+NAMES=['probe_ablation_train.py','test_probe_ablation_train.py','probe_ablation_loss.py','test_probe_ablation_loss.py','model.py','packed_features.py','native_capture.py','download_model.py','balanced_sampling.py','probe_ablation_model.py','test_probe_ablation_model.py','g10_grouping.py','test_g10_grouping.py','runtime.sh','event_candidate_loss.py','balanced_loss.py','deploy_matched_loss_suite.py']
 
 def main():
  p=argparse.ArgumentParser();p.add_argument('--control-root',type=Path,required=True);p.add_argument('--action',choices=['prepare','submit'],default='prepare');p.add_argument('--variant',choices=['trajectory','joint','event'],default='trajectory');a=p.parse_args();repo=Path(__file__).resolve().parents[3]
  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip();assert subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/qwen7b-probe-warmup-20261019'],cwd=repo,text=True).split()[0]==commit
  payload={};hashes={}
- for name in NAMES:
-  rel='reproduction/operations/qwen7b_warmup/'+name;raw=(repo/rel).read_bytes();assert raw==subprocess.check_output(['git','show',commit+':'+rel],cwd=repo),'Unpublished '+rel
+ for rel in ['reproduction/operations/qwen7b_warmup/'+name for name in NAMES]+['reproduction/prefix20_group_joint100/loss.py']:
+  raw=(repo/rel).read_bytes();assert raw==subprocess.check_output(['git','show',commit+':'+rel],cwd=repo),'Unpublished '+rel
   payload[rel]=base64.b64encode(raw).decode();hashes[rel]=hashlib.sha256(raw).hexdigest()
  packed=base64.b64encode(zlib.compress(json.dumps(payload).encode(),9)).decode()
  spec=importlib.util.spec_from_file_location('control',a.control_root/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
@@ -65,13 +65,13 @@ with (suite/'prepare.lock').open('a') as lock:
    raw=base64.b64decode(encoded);assert hashlib.sha256(raw).hexdigest()==hashes[rel];dest=root/rel;dest.parent.mkdir(parents=True,exist_ok=True)
    if dest.exists():assert dest.read_bytes()==raw,'Unknown source conflict'
    else:dest.write_bytes(raw)
-  for rel in ['reproduction','reproduction/operations','reproduction/operations/qwen7b_warmup']:(root/rel/'__init__.py').touch(exist_ok=True)
+  for rel in ['reproduction','reproduction/operations','reproduction/operations/qwen7b_warmup','reproduction/prefix20_group_joint100']:(root/rel/'__init__.py').touch(exist_ok=True)
   pub=dict(commit=commit,remote_sha=commit,code_root=str(root),files=hashes,time=time.time());atomic(suite/'source-publication.json',pub)
   env=dict(os.environ,QWEN7B_CODE_ROOT=str(root),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',CUDA_VISIBLE_DEVICES='')
   test_run=subprocess.run(['bash',str(root/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-m','unittest','-v','reproduction.operations.qwen7b_warmup.test_probe_ablation_loss','reproduction.operations.qwen7b_warmup.test_probe_ablation_train','reproduction.operations.qwen7b_warmup.test_probe_ablation_model','reproduction.operations.qwen7b_warmup.test_g10_grouping'],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=90)
-  assert test_run.returncode==0,test_run.stdout
   tests=test_run.stdout
   (suite/'actual-cpu-tests.log').write_text(tests)
+  assert test_run.returncode==0,test_run.stdout
   old=B/'mixed-only-ft-cp2-prefix20-20261020';bal=B/'balanced-rank1-from-epoch1-prefix20-20261020';c=read(bal/'config.json');source=read(old/'probe/epoch-0001.json')
   assert source['completed_epoch'] and source['cursor']==0 and source['steps']==10464 and source['sha256']=='02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724'
   sr=ref(pathlib.Path(source['path']));assert sr['sha256']==source['sha256']
