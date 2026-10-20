@@ -90,9 +90,11 @@ def read(base, pid, start, *, audit_joint=False):
                   base=base,pid=pid,start_ticks=start,script_sha256=hashlib.sha256(script.encode()).hexdigest(),
                   training_modified=False,global_configuration_modified=False)
     # Reserve an evidence path; observation is never a training submission.
+    from .observation_transport import management_ssh, enabled as socks_enabled, MODE
+    record['management_transport'] = MODE if socks_enabled() else 'existing_direct_alias'
     with path.open('x') as evidence:
         try:
-            r = subprocess.run(ctl.ssh('mgmt-host')+[shlex.join(worker)],input=script,
+            r = subprocess.run(management_ssh(ctl)+[shlex.join(worker)],input=script,
                                text=True,capture_output=True,timeout=60)
             record.update(returncode=r.returncode,stdout=r.stdout,stderr=r.stderr)
         except subprocess.TimeoutExpired:

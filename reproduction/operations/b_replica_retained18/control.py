@@ -2,7 +2,10 @@
 import argparse,base64,gzip,hashlib,io,json,pathlib,subprocess,sys,tarfile,time
 REPO=pathlib.Path(__file__).resolve().parents[3]
 sys.path.insert(0,'/Users/shaoshitong/Documents/Search-G1/prefix1024-diversity512-20261016')
-from reproduction.h1008_qprobe.management_transport import remote
+if __package__:
+ from .observation_transport import remote
+else:
+ from observation_transport import remote
 OUT=pathlib.Path('/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control-2/outputs/b-replica-retained18-20261018')
 PHYSICAL='/mnt/data/shaoshitong/search-g1-prefix-selection200-reference-replica-b-own-20261018-cache1-kvcap1-blocks1'
 CANONICAL='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'+PHYSICAL.rsplit('/',1)[1]
