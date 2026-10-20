@@ -1,0 +1,37 @@
+{
+  "time": 1792497021.3530853,
+  "status": "MIXED_TOKEN_EQUIVALENCE_AMBIGUITY_AGGREGATE",
+  "assumption": "Question+policy5 token IDs and positions predict identically; native BF16 numerical jitter is not model information. This is not a strict bound on potentially different cached feature bit patterns.",
+  "train": {
+    "questions": 67199,
+    "trajectories": 335995,
+    "groups_with_conflicting_identical_prefix": 40734,
+    "all5_same_prefix_with_conflicting_labels": 3357,
+    "minimum_wrong_trajectories": 47121,
+    "excluded_positive_negative_pairs": 87968,
+    "eligible_positive_negative_pairs": 241886,
+    "token_equivalence_maximum_training_trajectory_accuracy": 0.8597568416196669,
+    "token_equivalence_trajectory_BCE_lower_bound": 0.23830855390314432,
+    "minimum_mistakes_per_group_histogram": {
+      "0": 26465,
+      "1": 34347,
+      "2": 6387
+    }
+  },
+  "diagnostic_mixed": {
+    "questions": 205,
+    "trajectories": 1025,
+    "groups_with_conflicting_identical_prefix": 127,
+    "all5_same_prefix_with_conflicting_labels": 12,
+    "minimum_wrong_trajectories": 147,
+    "excluded_positive_negative_pairs": 286,
+    "eligible_positive_negative_pairs": 722,
+    "token_equivalence_maximum_training_trajectory_accuracy": 0.8565853658536585,
+    "token_equivalence_trajectory_BCE_lower_bound": 0.24694184749530734,
+    "minimum_mistakes_per_group_histogram": {
+      "1": 107,
+      "2": 20,
+      "0": 78
+    }
+  }
+}
