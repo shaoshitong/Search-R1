@@ -17,7 +17,15 @@ def main():
  packed=base64.b64encode(zlib.compress(json.dumps(payload).encode(),9)).decode()
  spec=importlib.util.spec_from_file_location('control',a.control_root/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
  address=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],text=True).strip()
- prefix='commit='+repr(commit)+'\npacked='+repr(packed)+'\nhashes='+repr(hashes)+'\nvariant='+repr(a.variant)+'\n'
+ stage='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/source-staging/'+commit
+ chunks=[packed[i:i+16000] for i in range(0,len(packed),16000)]
+ if a.action=='prepare':
+  for index,chunk in enumerate(chunks):
+   upload='import pathlib,hashlib; p=pathlib.Path('+repr(stage)+')/('+repr('part-%04d'%index)+'); data='+repr(chunk)+'; p.parent.mkdir(parents=True,exist_ok=True); assert not p.exists() or p.read_text()==data; p.write_text(data); assert hashlib.sha256(p.read_text().encode()).hexdigest()=='+repr(hashlib.sha256(chunk.encode()).hexdigest())
+   sent=m.run('python3 -c '+shlex.quote(upload),account='mou176',source_address=address,timeout=35)
+   if sent.returncode:raise RuntimeError('Code-only staging incomplete; no job submitted: '+sent.stderr.decode()[-1000:])
+ packed_expression="''.join(__import__('pathlib').Path(%r).joinpath('part-%%04d'%%i).read_text() for i in range(%d))"%(stage,len(chunks)) if a.action=='prepare' else "''"
+ prefix='commit='+repr(commit)+'\npacked='+packed_expression+'\nhashes='+repr(hashes)+'\nvariant='+repr(a.variant)+'\n'
  code=prefix+COMMON+(PREPARE if a.action=='prepare' else SUBMIT);assert len(code.encode())<64000
  r=m.run('python3 -c '+shlex.quote(code),account='mou176',source_address=address,timeout=150 if a.action=='prepare' else 45)
  values=[json.loads(x) for x in r.stdout.decode().splitlines() if x.startswith('{')]
