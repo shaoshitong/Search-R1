@@ -2,6 +2,14 @@
 
 No training is launched. The source peer checkout and jobs are unchanged.
 
+## Current final status — 2026-10-20 22:21:27 China time
+
+**User-approved migration is complete.** Raw payload: 34/34 archive groups, 21,645 files, 8,948,733,182 bytes; all target payloads freshly SHA256-read and matched. Compressed archive transport was 6,976,829,053 bytes, not an additional dataset. Official model, source snapshots and retained epoch2 probe were already separately accepted. Destination `lite-complete.json` SHA256 `4fd43055a812f9529869cdbcfe8f91175640fef347bc8b5d2d3b790e65d8beac`; actual status `MIGRATION_RAW_ASSETS_VERIFIED_HIDDEN_RECOMPUTE_REQUIRED`. H100-5 and H100-11 independently read the same completion receipt from their shared mount, checked probe size and all four official weight-shard sizes. Receiver and bridge processes are gone, no partial downloads or receiver retries remain. Training and feature regeneration have **not** started.
+
+Final small receipts: `final-raw-migration-receipt.json`. Per-file manifests and full outputs remain remote. Use `H100-RAW-PATHS.json` to locate original token/context/EM files, canonical Parquets and probe. Original feature manifests are provenance only; they still refer to source feature paths. Full hidden cache is intentionally incomplete under the newer user instruction, and regenerated features require new mappings/SHA identities. No model semantic reload is claimed.
+
+The sections below retain the initial full-cache plan and subsequent scope change as history; their earlier in-progress labels do not override this final raw-scope receipt.
+
 ## Destination
 
 H100-10 local path: `/mnt/data/shaoshitong/qwen7b-probe-assets-20261020`.

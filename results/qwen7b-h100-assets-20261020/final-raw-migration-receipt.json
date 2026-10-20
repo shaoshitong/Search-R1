@@ -1,0 +1,145 @@
+{
+  "target_observation": {
+    "epoch": 1792506170.9329445,
+    "data-receiver-lite/controller.json": {
+      "pid": 1418857,
+      "start_ticks": "1956481175",
+      "repo_id": "Sutoonq/Qwen25-7B-Probe-H100-Transfer-20261020",
+      "private_credentials_saved": false,
+      "source": "HPC3 via private HF",
+      "target": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020",
+      "started": 1792504257.6314213,
+      "GPU_used": false,
+      "mac_data_transit": false
+    },
+    "data-receiver-lite/progress.json": {
+      "groups_verified": 34,
+      "groups_expected": 34,
+      "source_payload_bytes_verified": 8948733182,
+      "total_source_payload_bytes": 8948733182,
+      "archive_bytes_verified": 6976829053,
+      "active_groups": [],
+      "epoch": 1792506087.6664665
+    },
+    "lite-complete.json": {
+      "status": "MIGRATION_RAW_ASSETS_VERIFIED_HIDDEN_RECOMPUTE_REQUIRED",
+      "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+      "source_run_id": "bdbb550fd9324cefab979728acb0f5e1",
+      "groups": 34,
+      "payload_files": 21645,
+      "payload_bytes": 8948733182,
+      "fresh_all_files_SHA256": true,
+      "train_questions": 169028,
+      "train_trajectories": 845140,
+      "diagnostic_questions": 512,
+      "unseen_questions": 2048,
+      "best_checkpoint_previously_verified": true,
+      "official_model_bytes": 15242788168,
+      "code": {
+        "status": "ALL_SELECTED_CODE_SNAPSHOTS_FRESH_FULL_SHA_VERIFIED",
+        "snapshots": [
+          {
+            "role": "sampling",
+            "commit": "f2d5ae7de92d198692abf5bf82143e309d91c271",
+            "code_root": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020/code/sampling-f2d5ae7de92d198692abf5bf82143e309d91c271",
+            "files": 1568,
+            "all_target_files_fresh_sha_match": true
+          },
+          {
+            "role": "warmup",
+            "commit": "96df5a23f23f6da0f24e79e67dcf0e3039f22de0",
+            "code_root": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020/code/warmup-96df5a23f23f6da0f24e79e67dcf0e3039f22de0",
+            "files": 1570,
+            "all_target_files_fresh_sha_match": true
+          },
+          {
+            "role": "mixed_finetune",
+            "commit": "0eeb747d14ba11a1fc5ed1e3e4dec16f9073c435",
+            "code_root": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020/code/mixed_finetune-0eeb747d14ba11a1fc5ed1e3e4dec16f9073c435",
+            "files": 1610,
+            "all_target_files_fresh_sha_match": true
+          },
+          {
+            "role": "migration",
+            "commit": "44944c26745213d7c2761037639f59be006b8b62",
+            "code_root": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020/code/migration-44944c26745213d7c2761037639f59be006b8b62",
+            "files": 1623,
+            "all_target_files_fresh_sha_match": true
+          }
+        ],
+        "code_download": "GITHUB_TO_H100",
+        "model_or_data_mac_transport": false,
+        "training_not_started": true,
+        "completed": 1792498819.9838026
+      },
+      "training_started": false,
+      "mac_model_or_data_transit": false,
+      "credentials_saved": false,
+      "completed": 1792506087.8386097
+    },
+    "H100-RAW-PATHS.json": {
+      "imported_original_base": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020/imported/source",
+      "official_model_dir": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020/official-qwen2.5-7b-instruct-a09a35458c70",
+      "groups": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020/imported/source/bank/groups.json",
+      "best_checkpoint": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020/imported/source/probe/epoch-0002.pt",
+      "canonical_train": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020/imported/canonical/train.parquet",
+      "diagnostic": "/mnt/data/shaoshitong/qwen7b-probe-assets-20261020/imported/canonical/validation.parquet",
+      "original_metadata_bytes_unchanged": true,
+      "hidden_arrays_complete": false,
+      "hidden_recompute_required": true,
+      "training_not_started": true
+    },
+    "partials": [],
+    "retries": [],
+    "receiver_process": null,
+    "model": {
+      "status": "OFFICIAL_SNAPSHOT_ALL_FILES_FRESH_SHA_VERIFIED",
+      "snapshots": 0,
+      "total_bytes": 15242788168
+    },
+    "code": {
+      "status": "ALL_SELECTED_CODE_SNAPSHOTS_FRESH_FULL_SHA_VERIFIED",
+      "snapshots": 4,
+      "total_bytes": null
+    }
+  },
+  "shared_visibility": {
+    "h100-5": {
+      "hostname": "h100-5",
+      "epoch": 1792506211.7329907,
+      "root": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-probe-assets-20261020",
+      "status": "MIGRATION_RAW_ASSETS_VERIFIED_HIDDEN_RECOMPUTE_REQUIRED",
+      "receipt_sha256": "4fd43055a812f9529869cdbcfe8f91175640fef347bc8b5d2d3b790e65d8beac",
+      "payload_files": 21645,
+      "payload_bytes": 8948733182,
+      "probe_bytes": 3744947872,
+      "model_shard_sizes": [
+        3945441440,
+        3864726352,
+        3864726424,
+        3556377672
+      ],
+      "raw_paths_mapping_exists": true
+    },
+    "h100-11": {
+      "hostname": "h100-11",
+      "epoch": 1792506212.6652324,
+      "root": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-probe-assets-20261020",
+      "status": "MIGRATION_RAW_ASSETS_VERIFIED_HIDDEN_RECOMPUTE_REQUIRED",
+      "receipt_sha256": "4fd43055a812f9529869cdbcfe8f91175640fef347bc8b5d2d3b790e65d8beac",
+      "payload_files": 21645,
+      "payload_bytes": 8948733182,
+      "probe_bytes": 3744947872,
+      "model_shard_sizes": [
+        3945441440,
+        3864726352,
+        3864726424,
+        3556377672
+      ],
+      "raw_paths_mapping_exists": true
+    }
+  },
+  "scope": "User-approved raw assets plus already verified model/code/probe; full hidden caches excluded",
+  "training_started": false,
+  "semantic_model_reload_performed": false
+}
