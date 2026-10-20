@@ -1,0 +1,20 @@
+{
+  "status": "LOCAL_SYNTHETIC_10_FOCUSED_TESTS_PASSED",
+  "tests": 10,
+  "seconds": 2.35,
+  "real_GPU_qualification": false,
+  "remote_actions": false,
+  "checks": [
+    "G10 independent brute double value and gradient",
+    "exact G10/G20 combinatorial Mixed mass for every K",
+    "source permutation value/gradient invariance",
+    "chunk-size invariance",
+    "G20 extreme finite logits and bounded first-order gradient",
+    "uniform trajectory BCE source-G identity",
+    "unsupported nonzero loss weights and duplicate IDs rejected",
+    "two-pass native/model gradient Adam EMA vs independent joined brute",
+    "Dropout/native buffers/RNG double replay + complete in-memory fullstate next update",
+    "old API default unchanged + actual B48x136 plan descriptor preserved",
+    "existing full checkpoint save/load next-update regression"
+  ]
+}

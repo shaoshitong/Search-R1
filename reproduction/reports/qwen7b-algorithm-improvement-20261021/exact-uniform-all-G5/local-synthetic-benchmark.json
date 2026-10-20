@@ -1,0 +1,42 @@
+{
+  "status": "LOCAL_SYNTHETIC_CPU1_EXACT_VALUE_AND_GRADIENT_BENCHMARK_NOT_GPU_QUALIFICATION",
+  "platform": "macOS-15.3-arm64-arm-64bit",
+  "torch": "2.8.0",
+  "threads": 1,
+  "real_data_read": false,
+  "remote_actions": false,
+  "results": [
+    {
+      "source_G": 10,
+      "questions": 48,
+      "chunk": 64,
+      "combinations_per_question": 252,
+      "exact_virtual_G5": 12096,
+      "CPU_seconds": 0.09563008299999998,
+      "peak_process_RSS_native_units": 208044032,
+      "increment_peak_RSS_native_units": 28524544,
+      "ru_maxrss_unit": "bytes",
+      "maximum_resident_G5_rows": 3072,
+      "maximum_resident_pattern_rows": 98304,
+      "saved_VJP_elements": 480,
+      "finite_gradient": true,
+      "native_model_forwards": 0
+    },
+    {
+      "source_G": 20,
+      "questions": 48,
+      "chunk": 64,
+      "combinations_per_question": 15504,
+      "exact_virtual_G5": 744192,
+      "CPU_seconds": 0.8108996249999998,
+      "peak_process_RSS_native_units": 224198656,
+      "increment_peak_RSS_native_units": 16039936,
+      "ru_maxrss_unit": "bytes",
+      "maximum_resident_G5_rows": 3072,
+      "maximum_resident_pattern_rows": 98304,
+      "saved_VJP_elements": 960,
+      "finite_gradient": true,
+      "native_model_forwards": 0
+    }
+  ]
+}
