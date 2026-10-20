@@ -29,14 +29,14 @@ RUN_ID = '70188b8e50fd4b45bc420ce58014f46e'
 SEED = 20261021
 FROZEN_COMMIT = '82062fc12c6c0bdb50b9e8681e1af9e6e763af10'
 FROZEN_REPO = BASE + '/code/repo-' + FROZEN_COMMIT
-JOB_NAME = 'sst-q7b-g5-sharedvram-v5-' + RUN_ID[:12]
-CONTROL_DIRECTORY = 'shared-vram-native-control-v5'
-QUEUE_MODE = 'native-spare-vram-bounded-systemd-v5'
+JOB_NAME = 'sst-q7b-g5-sharedvram-v6-' + RUN_ID[:12]
+CONTROL_DIRECTORY = 'shared-vram-native-control-v6'
+QUEUE_MODE = 'native-spare-vram-bounded-systemd-v6'
 SOURCES = ('shared_vram_control.py', 'shared_vram_worker.py', 'shared_vram_retriever.py',
            'shared_vram_vllm_adapter.py', 'pool_worker.py', 'pool_paths.sh')
 UNIT = JOB_NAME + '.service'
 PREDECESSOR_UNIT = 'sst-q7b-g5-sharedvram-v3-' + RUN_ID[:12] + '.service'
-PREDECESSOR_UNITS = (PREDECESSOR_UNIT, 'sst-q7b-g5-sharedvram-v4-' + RUN_ID[:12] + '.service')
+PREDECESSOR_UNITS = tuple('sst-q7b-g5-sharedvram-v%d-' % version + RUN_ID[:12] + '.service' for version in (3, 4, 5))
 RUN_SECONDS = 28500
 BATCH_RESERVE_SECONDS = 300
 
@@ -104,12 +104,13 @@ command=['unshare','--net','/bin/bash','-c',
     '--allocation-evidence',str(evidence),'--pool-worker',str(stage/'pool_worker.py'),
     '--retriever-script',str(stage/'shared_vram_retriever.py'),
     '--model-gpus','3,4,6,7','--retrieval-gpus','0,1,2,5','--retrieval-weights','15,9,20,20',
+    '--tensor-parallel-size','4',
     '--retrieval-shards','64','--model-max-seqs','128','--model-batch-tokens','16384','--model-kv-block-cap','16384',
     '--encoder',BASE.rsplit('/',1)[0]+'/search-g1-prefix5-h10011-runtime-assets-20261018/common8/assets/e5-base-v2',
     '--run-seconds',str(RUN_SECONDS),'--batch-reserve-seconds',str(BATCH_RESERVE_SECONDS)]
 print(json.dumps(dict(status='EXACT_SHARED_VRAM_STAGE_VERIFIED_ENTERING_PRIVATE_NET',
     source_bundle_sha256=manifest['source_bundle_sha256'],queue_mode=QUEUE_MODE,unit=unit,main_pid=os.getpid(),
-    model_devices='3,4,6,7',model_pairs=[[3,4],[6,7]],retrieval_devices='0,1,2,5',retrieval_weights='15,9,20,20',
+    model_devices='3,4,6,7',model_groups=[[3,4,6,7]],tensor_parallel_size=4,retrieval_devices='0,1,2,5',retrieval_weights='15,9,20,20',
     retrieval_logical_shards=64,model_max_num_seqs=128,model_max_batched_tokens=16384,model_kv_block_cap=16384,
     worker=str(stage/'shared_vram_worker.py'),allocation_evidence=str(evidence),epoch=time.time())),flush=True)
 os.execvpe(command[0],command,env)
@@ -134,7 +135,8 @@ def bundle():
     manifest = dict(version=1, source_bundle_sha256=identity, queue_mode=QUEUE_MODE,
                     native_unit=UNIT, explicit_native_spare_vram_sharing=True,
                     resource_limits=dict(cpu_quota_percent=1600,memory_max_bytes=171798691840,runtime_max_seconds=28800),
-                    model_gpus=[3,4,6,7], model_pairs=[[3,4],[6,7]], retrieval_gpus=[0,1,2,5], retrieval_weights=[15,9,20,20],
+                    model_gpus=[3,4,6,7], model_groups=[[3,4,6,7]], tensor_parallel_size=4, model_engine_count=1,
+                    retrieval_gpus=[0,1,2,5], retrieval_weights=[15,9,20,20],
                     retrieval_logical_shards=64, model_max_num_seqs=128, model_max_batched_tokens=16384,
                     model_kv_block_cap=16384,
                     run_id=RUN_ID, seed=SEED, frozen_runtime_commit=FROZEN_COMMIT, canonical_base=BASE,

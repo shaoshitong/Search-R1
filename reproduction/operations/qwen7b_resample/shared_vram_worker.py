@@ -1,4 +1,4 @@
-"""Native bounded shared-VRAM TP2 sampler; only its own process groups stop.
+"""Native bounded shared-VRAM TP2/TP4 sampler; only its own process groups stop.
 
 The launcher supplies private mount/network namespaces and native unit evidence.
 Existing foreign GPU contexts are explicitly permitted and recorded. The staged
@@ -74,6 +74,7 @@ def admit(pool, args):
     require(any(line.split(':', 2)[-1] == group for line in Path('/proc/self/cgroup').read_text().splitlines()),
             'Controller is outside its own evidenced native cgroup')
     model, retrieval = indices(args.model_gpus, (2, 4)), indices(args.retrieval_gpus, (4, 5))
+    require(len(model) % args.tp == 0, 'Model GPU count must be divisible by tensor parallel size')
     all_indices = model + retrieval
     require(len(set(all_indices)) == len(all_indices), 'All model and retrieval GPUs must be distinct')
     inventory = {row['index']: row for row in pool.nvml().values()}
@@ -97,7 +98,7 @@ def admit(pool, args):
             native_unit=evidence['unit'], native_cgroup=group, controller_pid=os.getpid(),
             model_indices=model, model_cuda_uuids=expected[:len(model)], retrieval_indices=retrieval,
             retrieval_cuda_uuids=expected[len(model):], actual_cuda_runtime_uuids=runtime,
-            model_engine_count=len(model) // 2,
+            model_engine_count=len(model) // args.tp, tensor_parallel_size=args.tp,
             model_cuda_visible_devices=','.join(map(str, model)),
             retrieval_cuda_visible_devices=','.join(map(str, retrieval)),
             original_cuda_visible_devices=evidence.get('original_cuda_visible_devices', os.environ.get('CUDA_VISIBLE_DEVICES')),
@@ -114,12 +115,12 @@ def admit(pool, args):
 
 def multi_sampler(pool, binding, args):
     numeric = binding['model_cuda_visible_devices']
-    require(os.environ.get('CUDA_VISIBLE_DEVICES') == numeric, 'TP2 sampler CVD differs from controller')
+    require(os.environ.get('CUDA_VISIBLE_DEVICES') == numeric, 'Sampler CVD differs from controller')
     os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
     # The root controller already validated every numeric device in one probe.
-    # Each sampler receives only its own admitted TP2 pair and acquires no locks.
-    require(len(binding['model_indices']) == len(binding['model_cuda_uuids']) == 2,
-            'Each sampler must receive exactly its own admitted TP2 pair')
+    # Each sampler receives only its admitted TP group and acquires no locks.
+    require(len(binding['model_indices']) == len(binding['model_cuda_uuids']) == args.tp,
+            'Each sampler must receive exactly its own admitted tensor-parallel group')
     from reproduction.operations.qwen7b_resample import worker
     s = worker.s
     ordinal = int(os.environ.get('Q7B_SHARED_RETRY_ORDINAL', '0'))
@@ -129,11 +130,11 @@ def multi_sampler(pool, binding, args):
         if 'device_binding' in s._CACHED:
             return s._CACHED['device_binding']
         import torch
-        require(rank == 0 and torch.cuda.device_count() == 2
-                and os.environ['CUDA_VISIBLE_DEVICES'] == numeric, 'TP2 logical rank/device count differs')
+        require(rank == 0 and torch.cuda.device_count() == args.tp
+                and os.environ['CUDA_VISIBLE_DEVICES'] == numeric, 'Tensor-parallel logical rank/device count differs')
         result = dict(physical_gpu_index=binding['model_indices'][0], gpu_uuid=binding['model_cuda_uuids'][0],
             physical_gpu_indices=binding['model_indices'], gpu_uuids=binding['model_cuda_uuids'],
-            tensor_parallel_size=2, shared_vram=True, normalized_cuda_visible_devices=numeric,
+            tensor_parallel_size=args.tp, shared_vram=True, normalized_cuda_visible_devices=numeric,
             originally_assigned_device=binding['original_cuda_visible_devices'], native_unit=binding['native_unit'])
         s._CACHED['device_binding'] = result
         return result
@@ -156,7 +157,7 @@ def multi_sampler(pool, binding, args):
             os.environ['Q7B_SHARED_KV_BLOCK_CAP'] = str(block_cap)
             os.environ['Q7B_SHARED_KV_RESERVE_BYTES'] = str(reserve)
             os.environ['Q7B_SHARED_KV_PROFILE_DIR'] = str(launch / 'kv-profile')
-            initialization = dict(tensor_parallel_size=2, actual_gpu_memory=sample,
+            initialization = dict(tensor_parallel_size=args.tp, actual_gpu_memory=sample,
                 gpu_memory_utilization=utilization, reserve_bytes_per_gpu=reserve,
                 scheduler_limits=limits, retry_ordinal=ordinal, max_model_len=s.BUDGET['total_tokens'],
                 dtype=s.COMPUTE_DTYPE, eager=True, disable_custom_all_reduce=True,
@@ -166,7 +167,7 @@ def multi_sampler(pool, binding, args):
             pool.publish(launch / 'model-initialization.json', initialization)
             try:
                 llm = LLM(model=model, tokenizer=model, trust_remote_code=False, dtype=s.COMPUTE_DTYPE,
-                    tensor_parallel_size=2, max_model_len=s.BUDGET['total_tokens'], seed=seed,
+                    tensor_parallel_size=args.tp, max_model_len=s.BUDGET['total_tokens'], seed=seed,
                     gpu_memory_utilization=utilization, swap_space=0, enforce_eager=True,
                     enable_chunked_prefill=False, enable_prefix_caching=False, disable_custom_all_reduce=True,
                     distributed_executor_backend=SharedVramExecutor, block_size=16,
@@ -193,14 +194,16 @@ def multi_sampler(pool, binding, args):
     return worker
 
 
-def engine_binding(binding, index):
-    start = 2 * index
-    pair = binding['model_indices'][start:start + 2]
-    uuids = binding['model_cuda_uuids'][start:start + 2]
-    require(len(pair) == len(uuids) == 2, 'Missing admitted TP2 engine pair')
-    multiple = len(binding['model_indices']) == 4
+def engine_binding(binding, index, tp=2):
+    require(tp in (2, 4) and len(binding['model_indices']) % tp == 0,
+            'Invalid admitted tensor-parallel topology')
+    start = tp * index
+    pair = binding['model_indices'][start:start + tp]
+    uuids = binding['model_cuda_uuids'][start:start + tp]
+    require(len(pair) == len(uuids) == tp, 'Missing admitted tensor-parallel engine group')
+    multiple = len(binding['model_indices']) // tp > 1
     return dict(binding, job_id=binding['job_id'] + ('-engine-%02d' % index if multiple else ''),
-        parent_job_id=binding['job_id'], engine_index=index, model_engine_count=1,
+        parent_job_id=binding['job_id'], engine_index=index, model_engine_count=1, tensor_parallel_size=tp,
         model_indices=pair, model_cuda_uuids=uuids, model_cuda_visible_devices=','.join(map(str, pair)),
         root_controller_actual_cuda_runtime_uuids=binding['actual_cuda_runtime_uuids'],
         actual_cuda_runtime_uuids=uuids, shared_retriever_owned_by_parent=True)
@@ -237,9 +240,11 @@ def controller(pool, args):
         VLLM_ATTENTION_BACKEND='XFORMERS', VLLM_WORKER_MULTIPROC_METHOD='spawn',
         PYTHONDONTWRITEBYTECODE='1')
     children, handles, engines = [], [], []
-    multiple = len(binding['model_indices']) == 4
-    for index in range(len(binding['model_indices']) // 2):
-        child_binding = engine_binding(binding, index)
+    require(len(binding['model_indices']) % args.tp == 0, 'Admitted model GPU count differs from tensor parallel size')
+    engine_count = len(binding['model_indices']) // args.tp
+    multiple = engine_count > 1
+    for index in range(engine_count):
+        child_binding = engine_binding(binding, index, args.tp)
         directory = base / 'pool/jobs' / ('job-' + child_binding['job_id']) / attempt if multiple else jobdir
         if multiple:
             directory.mkdir(parents=True)
@@ -277,6 +282,7 @@ def controller(pool, args):
         engine['process'] = spawn('sampler', [str(Path(__file__).resolve()), '--sampler-loop', '--base', str(base),
             '--pool-worker', args.pool_worker, '--handoff-marker', str(marker), '--job-dir', str(directory),
             '--launch-dir', str(launch), '--deadline', str(deadline),
+            '--tensor-parallel-size', str(args.tp),
             '--model-max-seqs', str(args.model_max_seqs), '--model-batch-tokens', str(args.model_batch_tokens),
             '--model-kv-block-cap', str(args.model_kv_block_cap),
             '--batch-reserve-seconds', str(args.batch_reserve_seconds)],
@@ -356,7 +362,7 @@ def controller(pool, args):
                     result = pool.read(engine['jobdir'] / 'sampler-exit.json')
                     require(result['run_id'] == pool.RUN_ID and result['job_id'] == engine['binding']['job_id'],
                             'Engine terminal receipt identity differs')
-                    result.update(controller_status='OWN_SHARED_VRAM_ENGINE_FINISHED', tensor_parallel_size=2,
+                    result.update(controller_status='OWN_SHARED_VRAM_ENGINE_FINISHED', tensor_parallel_size=args.tp,
                         engine_index=engine['index'], shared_retriever_pid=retriever.pid,
                         shared_retriever_owned_by_parent=True, own_sampler_reaped=True,
                         sampler_returncode=0, global_goal_complete=False, foreign_processes_signalled=False,
@@ -381,7 +387,7 @@ def controller(pool, args):
             if any(engine['result'] is None for engine in engines):
                 time.sleep(1)
         result = aggregate('OWN_SHARED_VRAM_ENGINES_FINISHED') if multiple else dict(engines[0]['result'])
-        result.update(controller_status='OWN_SHARED_VRAM_JOB_FINISHED', tensor_parallel_size=2,
+        result.update(controller_status='OWN_SHARED_VRAM_JOB_FINISHED', tensor_parallel_size=args.tp,
             model_engine_count=len(engines), retrieval_physical_gpus=len(binding['retrieval_indices']),
             global_goal_complete=False, foreign_processes_signalled=False)
     except BaseException as error:
@@ -418,6 +424,7 @@ def main():
     parser.add_argument('--handoff-marker')
     parser.add_argument('--allocation-evidence', default=os.environ.get('Q7B_SHARED_VRAM_ALLOCATION_EVIDENCE'))
     parser.add_argument('--model-gpus', '--model-devices', default='3,4')
+    parser.add_argument('--tensor-parallel-size', dest='tp', type=int, choices=(2, 4), default=2)
     parser.add_argument('--retrieval-gpus', '--retrieval-devices', default='0,2,5,6,7')
     parser.add_argument('--retrieval-weights', default='17,22,22,33,34')
     parser.add_argument('--retrieval-shards', type=int, default=128)
