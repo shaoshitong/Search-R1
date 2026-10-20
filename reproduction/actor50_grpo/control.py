@@ -380,9 +380,11 @@ else:
    directory=root/('full-pool' if (outer%10==0 and outer<200) else batch)
    value['floor_native_progress']=[small(directory/('rank-%d-progress.json'%r)) for r in range(4)]
   name=(value['stage'] or {}).get('stage','');value['actor_inflight']=[]
-  if '-actor-' in name:
-   import re
-   attempt=name.rsplit('-actor-',1)[1];assert re.fullmatch('[0-9a-f]{32}',attempt)
+  # current-actor-diagnostic is a probe diagnostic phase, not an Adam attempt.
+  actor_match=re.fullmatch(r'outer-(\d{6})-actor-([0-9a-f]{32})',name)
+  if actor_match:
+   assert int(actor_match.group(1))==outer
+   attempt=actor_match.group(2)
    directory=b/'actor/outers'/('outer-%04d-attempt-%s'%(outer,attempt))
    advantage=small(directory/'advantage-statistics.json')
    value['advantage_summary']=None if advantage is None else advantage.get('summary')

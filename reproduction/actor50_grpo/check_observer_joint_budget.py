@@ -95,6 +95,19 @@ def main():
     value['os'] = SimpleNamespace(fstat=lambda fd: SimpleNamespace(st_size=partial.size))
     rows, prefix = value['ledger_rows'](partial)
     assert rows == [{'event': 'ACTUAL_ADAM_WRITE'}] and prefix is None
+    # Execute the actual phase-selection block: periodic diagnostics contain
+    # '-actor-' but must not be mistaken for an actor attempt UUID.
+    selection = textwrap.dedent(REMOTE[REMOTE.index('  name=(value'):
+        REMOTE.index('   advantage=small(directory')])
+    for name, expected in (
+        ('outer-000190-current-actor-diagnostic', None),
+        ('outer-000190-probe-update', None),
+        ('outer-000190-actor-' + 'a' * 32, 'a' * 32),
+    ):
+        phase = dict(value={'stage': {'stage': name}}, outer=190, b=__import__('pathlib').Path('/remote'), re=__import__('re'))
+        exec(selection, phase)
+        assert phase.get('attempt') == expected
+        assert phase['value']['actor_inflight'] == []
     print(json.dumps(dict(
         status='PASS', old_8MiB_boundary_bytes=size,
         joint_per_file_limit_bytes=16 * 1024**2,
