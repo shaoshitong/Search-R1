@@ -17,6 +17,9 @@ import relay_consumer_worker as consumer
 
 shared = consumer.shared
 PARENT_PID, RETRIEVER_PID, PEER_PID = 1490214, 1490465, 2013773
+RETIRED_PID, RETIRED_BIRTH = 2021698, '7430669'
+RETIRED_UNIT = 'sst-q7b-g5-source5-extra-model-v1-70188b8e50fd.service'
+RETIRED_STATUS = 'OWN_SOURCE5_MODEL_TP4_CONTROLLED_THROUGHPUT_STOP_FULL_SHA_RELEASE_PASS'
 
 
 def context(pool, args):
@@ -25,7 +28,7 @@ def context(pool, args):
                    and pool.sha(path) == args.reuse_local_relay_sha256,
                    'Source sublease context path or SHA differs')
     value = pool.read(path)
-    shared.require(value['schema_version'] in (1, 2) and value['mode'] == 'SOURCE5_SAME_RUN_GPU_SUBLEASE'
+    shared.require(value['schema_version'] in (1, 2, 3) and value['mode'] == 'SOURCE5_SAME_RUN_GPU_SUBLEASE'
                    and value['run_id'] == pool.RUN_ID, 'Source sublease run identity differs')
     tp = 4 if value['schema_version'] == 1 else 1
     shared.require(len(value['model_indices']) == len(value['model_cuda_uuids']) == tp == args.tp
@@ -39,7 +42,106 @@ def context(pool, args):
                    and retriever['cgroup'] == parent['cgroup']
                    and retriever['netns_inode'] == parent['netns_inode'],
                    'Original parent or retriever binding differs')
+    if value['schema_version'] == 3:
+        shared.require('peer_sublease' not in value and value['model_indices'] in ([4], [6], [7])
+                       and value['base'] == str(args.base)
+                       and bool(value['retired_terminal'])
+                       and value['model_deadline_epoch'] <= value['source_sampling_deadline_epoch'] - 3600,
+                       'Schema3 requires an independent retired root-child lease and conservative source cutoff')
+        shared.require(value['model_limits'] == dict(seqs=32, tokens=8192, blocks=4096, reserve=1.0)
+                       and (args.model_max_seqs, args.model_batch_tokens, args.model_kv_block_cap, args.model_reserve_gib)
+                           == (32, 8192, 4096, 1.0), 'Schema3 initial TP1 capacity limits differ')
     return path, value
+
+
+def source_path(base, recorded):
+    """Access physical-NAS proof references through the original private mount."""
+    base, recorded = Path(os.path.normpath(base)), Path(os.path.normpath(recorded))
+    physical = Path('/mnt/data/shaoshitong') / base.name
+    if recorded.is_relative_to(physical):
+        recorded = base / recorded.relative_to(physical)
+    shared.require(recorded.is_relative_to(base), 'Retired proof references another data root')
+    return recorded
+
+
+def validate_retired_terminal(pool, value, parent, model, uuids):
+    shared.require(len(model) == len(uuids) == 1, 'Retired replacement must be one TP1 physical GPU')
+    binding = value['retired_terminal']
+    base = Path(value['base'])
+    path = source_path(base, binding['path'])
+    shared.require(pool.sha(path) == binding['sha256'], 'Retired terminal proof SHA differs')
+    proof = pool.read(path)
+    retired = proof['retired']
+    shared.require(proof['status'] == RETIRED_STATUS and proof['run_id'] == pool.RUN_ID
+                   and retired['pid'] == RETIRED_PID and str(retired['birth']) == RETIRED_BIRTH
+                   and retired['unit'] == RETIRED_UNIT, 'Retired terminal identity differs')
+    shared.require(all(proof['source_parent'][key] == parent[key] for key in ('pid', 'birth', 'unit'))
+                   and proof['source_parent_and_retriever_preserved'] is True
+                   and proof['stopped_after_at_least_own_batches'] >= 1
+                   and proof['original_partial_outputs_retained'] is True
+                   and proof['global_goal_complete'] is False, 'Retired terminal source or data retention proof differs')
+    observations = proof['release_observations']
+    shared.require(len(observations) >= 2 and observations[-1]['epoch'] - observations[0]['epoch'] >= 3
+                   and all(row['unit_main_pid'] == 0 and row['original_births_gone'] is True
+                           and row['own_cgroup_gone'] is True and row['own_gpu_contexts'] == []
+                           and row['foreign_signalled'] is False for row in observations),
+                   'Retired terminal lacks two actual owned release observations')
+    known = proof['original_owned_births']
+    shared.require(known.get(str(RETIRED_PID)) == RETIRED_BIRTH
+                   and not {str(PARENT_PID), str(RETRIEVER_PID), str(PEER_PID)} & set(known),
+                   'Retired owned birth set includes a retained source or differs')
+    allocation_path = source_path(base, retired['allocation_path'])
+    shared.require(pool.sha(allocation_path) == retired['allocation_sha256']
+                   and any(source_path(base, row['path']) == allocation_path
+                           and row['sha256'] == retired['allocation_sha256'] for row in proof['original_files']),
+                   'Retired allocation is not bound by the retained original-file proof')
+    allocation = pool.read(allocation_path)
+    context_path = source_path(base, allocation['source_context'])
+    shared.require(pool.sha(context_path) == allocation['source_context_sha256'], 'Retired source context SHA differs')
+    retired_context = pool.read(context_path)
+    shared.require(allocation['controller_pid'] == RETIRED_PID and allocation['native_unit'] == RETIRED_UNIT
+                   and allocation['native_cgroup'] == '/system.slice/' + RETIRED_UNIT
+                   and allocation['node'] == 'h100-5' and retired_context['run_id'] == pool.RUN_ID
+                   and ('run_id' not in allocation or allocation['run_id'] == pool.RUN_ID)
+                   and allocation['tensor_parallel_size'] == 4 and allocation['model_indices'] == [3, 4, 6, 7]
+                   and allocation['source_parent'] == retired_context['parent'] == parent
+                   and retired_context['model_indices'] == allocation['model_indices']
+                   and retired_context['model_cuda_uuids'] == allocation['model_cuda_uuids']
+                   and model in ([4], [6], [7]),
+                   'Retired allocation or original source binding differs')
+    mapping = dict(zip(allocation['model_indices'], allocation['model_cuda_uuids']))
+    directory = base / 'pool/gpu-subleases' / pool.RUN_ID / ('%d-%s' % (PARENT_PID, parent['birth']))
+    shared.require(all(mapping.get(index) == uuid
+                       and source_path(base, allocation['gpu_sublease_paths'][uuid]) == directory / (uuid + '.lock')
+                       for index, uuid in zip(model, uuids)), 'Retired allocation does not bind this physical root-child GPU lease')
+    return dict(path=str(path), sha256=binding['sha256'], retired=retired, original_owned_births=known,
+                source_parent_preserved=True, partial_outputs_retained=True)
+
+
+def retired_release(binding):
+    """Observe only the retired unit/owned births; never signal a process."""
+    raw = subprocess.check_output(['systemctl', 'show', RETIRED_UNIT, '-p', 'MainPID', '-p', 'ActiveState',
+                                  '-p', 'ControlGroup'], text=True, timeout=15)
+    props = dict(line.split('=', 1) for line in raw.splitlines() if '=' in line)
+    group = '/system.slice/' + RETIRED_UNIT
+    shared.require(props['MainPID'] == '0' and props['ActiveState'] in ('inactive', 'failed')
+                   and props['ControlGroup'] in ('', group), 'Retired unit is not actually terminal')
+    remaining, original_or_absent = {}, set()
+    for pid, expected in binding['original_owned_births'].items():
+        try:
+            fields = Path('/proc/%s/stat' % pid).read_text().rsplit(')', 1)[1].split()
+            if fields[19] == str(expected):
+                remaining[pid] = expected
+                original_or_absent.add(int(pid))
+        except (FileNotFoundError, ProcessLookupError):
+            original_or_absent.add(int(pid))
+    directory = Path('/sys/fs/cgroup') / group.lstrip('/')
+    members = sorted({int(x) for p in directory.rglob('cgroup.procs') for x in p.read_text().split()}) if directory.exists() else []
+    apps = subprocess.check_output(['nvidia-smi', '--query-compute-apps=pid', '--format=csv,noheader,nounits'], text=True, timeout=15)
+    own_gpu = sorted({int(x.strip()) for x in apps.splitlines() if x.strip().isdigit()} & original_or_absent)
+    shared.require(not remaining and not members and not own_gpu, 'Retired owned processes, cgroup or GPU contexts remain')
+    return dict(epoch=time.time(), unit_main_pid=0, original_births_gone=True, own_cgroup_gone=True,
+                own_gpu_contexts=own_gpu, foreign_signalled=False)
 
 
 def alive(proof):
@@ -164,9 +266,15 @@ def admit(pool, args):
     parent_locks = {uuid: parent_lock(base, parent, uuid, value['parent_gpu_locks'][uuid]) for uuid in uuids}
     directory = base / 'pool/gpu-subleases' / pool.RUN_ID / ('%d-%s' % (PARENT_PID, parent['birth']))
     peer = None
+    retirement, release_observations = None, []
     if value['schema_version'] == 2:
         peer = peer_admission(pool, value, directory, model, uuids)
         directory = directory / ('co-share-with-%d-%s' % (peer['pid'], peer['birth']))
+    elif value['schema_version'] == 3:
+        retirement = validate_retired_terminal(pool, value, parent, model, uuids)
+        release_observations.append(retired_release(retirement))
+        shared.require(inventory[model[0]]['free_bytes'] > 1024 ** 3,
+                       'Observed free VRAM does not leave the fixed one-GiB model reserve')
     locks, leases = [], {}
     try:
         for uuid in sorted(uuids):
@@ -180,12 +288,16 @@ def admit(pool, args):
             '--cuda-probe', '--expected-uuids', ','.join(uuids)], env=env, text=True, timeout=45)
         shared.require(json.loads(result)['actual_cuda_runtime_uuids'] == uuids,
                        'Subleased numeric CUDA mapping differs from the actual UUIDs')
+        if retirement is not None:
+            release_observations.append(retired_release(retirement))
+            shared.require(value['model_deadline_epoch'] > time.time() + args.batch_reserve_seconds + 60,
+                           'Conservative source lifetime is too short for a new batch')
         shared.require(borrowed.poll() is None, 'Original source identity changed during sublease admission')
         upstream = pool.read(args.upstream_ready)
         shared.require(upstream['role'] == 'upstream' and upstream['source_pid'] == RETRIEVER_PID
                        and upstream['listen_url'].rstrip('/') == 'http://127.0.0.1:28831',
                        'Direct original retriever endpoint differs')
-        return dict(job_id='source5-model-' + str(os.getpid()), node='h100-5', controller_pid=os.getpid(), run_id=pool.RUN_ID,
+        binding = dict(job_id='source5-model-' + str(os.getpid()), node='h100-5', controller_pid=os.getpid(), run_id=pool.RUN_ID,
             allocation_kind='HUMAN_AUTHORIZED_SAME_RUN_SOURCE_GPU_SUBLEASE', gpu_exclusive_allocation=False,
             native_unit=evidence['unit'], native_cgroup=group, tensor_parallel_size=args.tp, model_engine_count=1,
             model_indices=model, model_cuda_uuids=uuids, model_cuda_visible_devices=','.join(map(str, model)),
@@ -202,7 +314,13 @@ def admit(pool, args):
             shared_retriever_owned_by_consumer=False, source_parent_owned=False,
             upstream_ready=str(args.upstream_ready), upstream_ready_sha256=pool.sha(args.upstream_ready),
             allocation_evidence=str(args.allocation_evidence), allocation_evidence_sha256=pool.sha(args.allocation_evidence),
-            native_resource_limits=evidence['resource_limits'], captured_epoch=time.time()), locks
+            native_resource_limits=evidence['resource_limits'], captured_epoch=time.time())
+        if retirement is not None:
+            binding.update(source_model_deadline_epoch=value['model_deadline_epoch'],
+                source_deadline_reserve_seconds=3600, source_parent_may_return_early=True,
+                retired_terminal_startup_proof=retirement, retired_current_release_observations=release_observations,
+                independent_root_child_lease=True, peer_sublease_startup_proof=None)
+        return binding, locks
     except BaseException:
         for fd in locks:
             os.close(fd)

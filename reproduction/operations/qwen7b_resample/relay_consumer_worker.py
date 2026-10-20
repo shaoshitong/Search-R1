@@ -131,7 +131,7 @@ def controller(pool, args):
     upstream = pool.read(args.upstream_ready)
     evidence = pool.read(args.allocation_evidence)
     end = evidence['captured_epoch'] + evidence['resource_limits']['runtime_max_seconds']
-    deadline = min(time.time() + args.run_seconds, end - 45)
+    deadline = min(time.time() + args.run_seconds, end - 45, binding.get('source_model_deadline_epoch', float('inf')))
     children, streams = [], []
     env = dict(os.environ, PYTHONUTF8='1', PYTHONDONTWRITEBYTECODE='1', VLLM_HOST_IP='127.0.0.1',
                VLLM_ATTENTION_BACKEND='XFORMERS', VLLM_WORKER_MULTIPROC_METHOD='spawn',
