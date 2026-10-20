@@ -1,0 +1,91 @@
+{
+  "epoch": 1792526857.974932,
+  "complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/complete.json",
+    "bytes": 4492,
+    "sha256": "5ea5197a841d7bd0b226a82350a2436a8ae3d860143a2ea39fe59b7ecb6837d5"
+  },
+  "consumer_inputs": {
+    "features": {
+      "bytes": 7714,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/features.json",
+      "sha256": "1748ce0dbc37f48e39ec5736783d0e54c3195bbcfaeed2e0fc28e5c8e8f1d0bd"
+    },
+    "features_format": "flat_list_of_native_complete_paths",
+    "fixed_G5_plan": {
+      "bytes": 694386,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/fixed-G5-selection.json",
+      "sha256": "b6e5b57fee270c8fa61c1f03f212b5baef1125d205c006475f65a0690ed4aecb"
+    },
+    "group_split": "validation",
+    "groups": {
+      "bytes": 3450654,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/groups.json",
+      "sha256": "73ac10cc9bb6b734871399030bcb0f84736e47afff042fbc2ccaa2341f06c6a0"
+    },
+    "selection_labels_consulted": false
+  },
+  "outputs": {
+    "feature-sources-by-event.json": {
+      "bytes": 11258,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/feature-sources-by-event.json",
+      "sha256": "5cceb3da71d940a704caa021f3d33820a1a82a91ccd0fda9d07a2e6d616d72f8"
+    },
+    "features.json": {
+      "bytes": 7714,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/features.json",
+      "sha256": "1748ce0dbc37f48e39ec5736783d0e54c3195bbcfaeed2e0fc28e5c8e8f1d0bd"
+    },
+    "fixed-G5-selection.json": {
+      "bytes": 694386,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/fixed-G5-selection.json",
+      "sha256": "b6e5b57fee270c8fa61c1f03f212b5baef1125d205c006475f65a0690ed4aecb"
+    },
+    "fixed-G5.json": {
+      "bytes": 737723,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/fixed-G5.json",
+      "sha256": "af602218dc269165e091c6916d677f17a29e9682a68777f89ab0a5abf0f23f98"
+    },
+    "groups.json": {
+      "bytes": 3450654,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/groups.json",
+      "sha256": "73ac10cc9bb6b734871399030bcb0f84736e47afff042fbc2ccaa2341f06c6a0"
+    },
+    "source-audit.json": {
+      "bytes": 169795,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/source-audit.json",
+      "sha256": "9291d51504c0ee35e360ccba7863c7988405289dc077a880a69089f115913973"
+    }
+  },
+  "fixed_summary": {
+    "epoch": 0,
+    "labels_consulted": false,
+    "original_fixed5_preserved": false,
+    "qid_sha256": "bfbaf519144a2052799270b0313cc7ddef7afa3ed00f6f25099518d940c81ad7",
+    "questions": 2048,
+    "role": "validation",
+    "seed": 20261021,
+    "selected_g5_sha256": "c55de2b4f66f45dcd94a8e246bfca97e53bdedc4ca85180c75e60c574dfc04b7",
+    "selection": "random",
+    "trajectories": 10240
+  },
+  "events": {
+    "event-A": 16,
+    "event-B": 16
+  },
+  "prefix_sources": 32,
+  "first_prefix_ref": {
+    "bytes": 80694,
+    "count": 640,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-A/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz",
+    "sha256": "bfaec7b54e37df1f1e8cfacf57af2f9de951c2f579d1ec4272670a2d134df48a"
+  },
+  "last_prefix_ref": {
+    "bytes": 82460,
+    "count": 640,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/event-B/sampling/shard-03/batches/batch-000003/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz",
+    "sha256": "82715eaa3a1c7af0d7f48716390d04d402d24993e878296c039cd914e320c834"
+  },
+  "groups_or_labels_read": false,
+  "final_pool_read": false
+}
