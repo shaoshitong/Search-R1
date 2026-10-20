@@ -49,3 +49,9 @@ The user explicitly reiterated use of all available H100 cards. Fresh GPU invent
 The r5 workers both received SIGTERM(143); sender remains unproven. Original terminal logs were hashed remotely. R6 retains signal source metadata without recording general syscalls.
 
 The user explicitly keeps the existing h100-11 02:00 return/wipe. A separate task-only timer stops r6 at01:50, seals accepted counts/original logs/owned births and copies our root-local controls to NAS10. The existing02:00 timer was not changed. Full sampling remains incomplete and is not guaranteed to finish before the return; accepted shared NAS10 data are retained for continuation.
+
+## Spare-VRAM continuation adapter (source prepared, not yet GPU-accepted)
+
+H100-5 has about69.2GiB free across7cards, though another long-running job reserves all Slurm CPU/GPU resources. Human-authorized native sharing uses an independent bounded systemd cgroup (CPUQuota1600%, MemoryMax160GiB,8hours), without changing that reservation or signalling foreign tasks. ModelTP2 uses physical3/4 with8sequences/4096batchedtokens, eagerBF16XFormers; fulloriginalFP16Flat/E5 retrieval uses0/2/5/6/7 with128small contiguous logical shards allocated17/22/22/33/34. All21,015,324vectors/globalIDs and originaltop3 are retained; E5 remainsFP16mean and querybatch32. GPU1 is unused. This hardware/batch adaptation does not promise BF16 bitwise identity toTP1.
+
+The new adapter imports the original shared batch claimant, retains the same run/seed/canonicalinputs/strictEM scorer, and reuses every sealed batch. It never emits hidden caches or trains actor/probe. Only an actual typed CUDAOOM in the first model constructor may retry in a fresh owned process at lower KV/concurrency; runtime failures are retained. All code/fulloutputs/ownlogs remain on NAS10. The source plan alone is not a claim of successful allocation, model initialization, or new accepted trajectories.
