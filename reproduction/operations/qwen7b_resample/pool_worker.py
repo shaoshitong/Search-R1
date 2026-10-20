@@ -63,6 +63,45 @@ def publish(path, value):
 
 def handoff(base, marker):
     value = read(marker)
+    if value.get('status') == 'R6_NATIVE_PIPELINE_FAILED_NODE_DOWN':
+        require(value['run_id'] == RUN_ID and value['seed'] == SEED,
+                'Withdrawn-node recovery belongs to another run')
+        receipt = Path(value['r6_terminal_receipt'])
+        require(sha(receipt) == value['r6_terminal_receipt_sha256'],
+                'Withdrawn-node terminal proof SHA differs')
+        stopped = read(receipt)
+        require(stopped['status'] == 'R6_NATIVE_WORKERS_TERMINAL_NODE_WITHDRAWN'
+                and stopped['run_id'] == RUN_ID and stopped['seed'] == SEED
+                and stopped['source_node'] == 'h100-11' and stopped['source_attempt'] == 'r6',
+                'Source failure identity differs')
+        require(stopped['actual_worker_returncodes'] == [-9] * 8
+                and len(set(stopped['actual_worker_pids'])) == 8,
+                'All original source workers must have actual terminal returncodes')
+        failure = stopped['original_pipeline_failure']
+        require(failure['error_type'] == 'RuntimeError' and failure['error'] ==
+                'Sampling worker terminal returncodes: [-9, -9, -9, -9, -9, -9, -9, -9]',
+                'Original source pipeline failure differs')
+        observations = stopped['observations']
+        require(len(observations) == 2 and stopped['observations_elapsed_seconds'] >= 60
+                and observations[-1]['observed_epoch'] - observations[0]['observed_epoch'] >= 60
+                and stopped['stable_terminal_files'] and stopped['stable_closed_batch_fingerprint'],
+                'Source terminal records and sealed bank were not stable across two observations')
+        require(all(x['source_node_down'] and x['source_node_jobs'] == []
+                    and 'DOWN' in x['source_node_state'] for x in observations),
+                'Source node withdrawal was not confirmed twice')
+        require(observations[0]['closed_batch_fingerprint_sha256'] ==
+                observations[1]['closed_batch_fingerprint_sha256']
+                and observations[0]['terminal_files'] == observations[1]['terminal_files'],
+                'Terminal source proof contains conflicting observations')
+        require(stopped['source_native_unit_status'] == 'UNAVAILABLE_SOURCE_HOST_WITHDRAWN'
+                and stopped['source_gpu_cleanup_status'] == 'UNAVAILABLE_SOURCE_HOST_WITHDRAWN'
+                and stopped['r6_cgroup_status'] == 'UNAVAILABLE_SOURCE_HOST_WITHDRAWN'
+                and stopped['unsealed_partials_retained'] and not stopped['global_goal_complete'],
+                'Withdrawn source must retain the explicit unknown native cleanup status')
+        return dict(marker=str(marker), marker_sha256=sha(marker),
+                    r6_terminal_receipt=str(receipt),
+                    r6_terminal_receipt_sha256=value['r6_terminal_receipt_sha256'],
+                    source_native_cleanup_confirmed=False)
     require(value['status'] == 'R6_STOP_CONFIRMED_POOL_HANDOFF'
             and value['run_id'] == RUN_ID and value['seed'] == SEED,
             'Missing explicit same-run r6-to-pool handoff')
@@ -187,12 +226,24 @@ def completed(receipt, inp, config):
 
 
 def single_gpu_sampler(binding):
+    # vLLM 0.6.3 parses CVD tokens with int(). Do this before importing torch
+    # (including through the frozen sampling modules), in this fresh process.
+    visible = [x.strip() for x in os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',') if x.strip()]
+    require(len(visible) == 1, 'Sampler requires one admitted CUDA device before normalization')
+    require(nvml()[binding['gpu_uuid']]['index'] == binding['physical_gpu_index'],
+            'Admitted NVML physical index/UUID mapping changed')
+    if visible[0].startswith('GPU-'):
+        require(visible[0] == binding['gpu_uuid'], 'Sampler UUID CVD differs from admitted UUID')
+    os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
+    os.environ['CUDA_VISIBLE_DEVICES'] = str(binding['physical_gpu_index'])
+    from reproduction.common8.native_allocation import cuda_uuids
+    require(cuda_uuids(1) == [binding['gpu_uuid']], 'Normalized numeric CVD maps to a different actual CUDA UUID')
     # Import the original science only inside the dedicated sampler process.
     from reproduction.operations.qwen7b_resample import worker
     s = worker.s
 
     def device(rank):
-        require(rank == 0 and len(os.environ['CUDA_VISIBLE_DEVICES'].split(',')) == 1,
+        require(rank == 0 and os.environ['CUDA_VISIBLE_DEVICES'] == str(binding['physical_gpu_index']),
                 'TP1 sampler lost its single Slurm-visible device')
         from reproduction.common8.native_allocation import cuda_uuids
         import torch
@@ -200,6 +251,7 @@ def single_gpu_sampler(binding):
                 'Sampler runtime CUDA UUID differs from admitted Slurm device')
         return dict(physical_gpu_index=binding['physical_gpu_index'], gpu_uuid=binding['gpu_uuid'],
                     originally_assigned_device=binding['originally_assigned_device'],
+                    normalized_cuda_visible_devices=os.environ['CUDA_VISIBLE_DEVICES'],
                     slurm_job_id=binding['job_id'])
 
     def fullprefill(config, model, seed, free, total):
@@ -388,7 +440,8 @@ def controller(args):
     deadline = min(time.time() + args.run_seconds, binding['slurm_end_epoch'] - 45)
     children, handles = [], []
     env = dict(os.environ, VLLM_HOST_IP='127.0.0.1', Q7B_POOL_INTERNAL=str(jobdir),
-               Q7B_POOL_CONTROLLER_PID=str(os.getpid()), PYTHONDONTWRITEBYTECODE='1')
+               Q7B_POOL_CONTROLLER_PID=str(os.getpid()), PYTHONDONTWRITEBYTECODE='1',
+               CUDA_DEVICE_ORDER='PCI_BUS_ID', CUDA_VISIBLE_DEVICES=str(binding['physical_gpu_index']))
     encoder = args.encoder or str(Path(config['base']).parent / 'search-g1-prefix5-h10011-runtime-assets-20261018/common8/assets/e5-base-v2')
 
     def spawn(name, arguments, file_direct=False):
