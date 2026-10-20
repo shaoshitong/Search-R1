@@ -30,7 +30,7 @@ if inputs['action']=='stage':
  else:code.write_bytes(payload);code.chmod(0o444)
  immutable(root/'source-publication.json',dict(commit=inputs['commit'],source=ref(code),no_GPU_or_data_operation=True));print(json.dumps(dict(status='IMMUTABLE_PAIRED_STABILITY_CPU_SOURCE_STAGED',source=ref(code),commit=inputs['commit'])));sys.exit(0)
 pub=read(root/'source-publication.json');assert pub['commit']=='1a0f5b411e9c31ff9a3b64a02aa9644156eee6c0' and pub['source']==ref(code)
-cursor=inputs['cursor'];base=pathlib.Path(inputs['base']);assert base.name=='peer-expanded-append-only-train-v2';milestone=base/'evaluations'/('cursor-%06d'%cursor);work=root/('cursor-%06d'%cursor);work.mkdir(exist_ok=True)
+cursor=inputs['cursor'];base=pathlib.Path(inputs['base']);assert base.name=='peer-expanded-append-only-train-v2';milestone=base/'evaluations'/('cursor-%06d'%cursor);work=root/('cursor-%06d-v2'%cursor);work.mkdir(exist_ok=True)
 if inputs['action']=='status':
  result=dict(status='PAIRED_CPU_CURRENT_STATE',cursor=cursor,time=time.time())
  for name in ('controller.json','worker-exit.json'):
@@ -51,7 +51,8 @@ manifest=dict(role='already_viewed_recipe_selection_validation',questions=2048,b
 immutable(work/'manifest.json',manifest)
 # The pure-stdlib worker sets affinity2, address-space3GB, CPU180s itself.
 args=['python3',str(code),'--manifest',str(work/'manifest.json'),'--output',str(work/'result.json')]
-worker="import subprocess,json,pathlib,time; a="+repr(args)+"; p=subprocess.run(a); pathlib.Path("+repr(str(work/'worker-exit.json'))+").write_text(json.dumps(dict(returncode=p.returncode,time=time.time()))+'\\n'); raise SystemExit(p.returncode)"
+worker="import subprocess,json,pathlib,time; a="+repr(args)+"; p=subprocess.run(a); pathlib.Path("+repr(str(work/'worker-exit.json'))+").write_text(json.dumps(dict(returncode=p.returncode,time=time.time()))); raise SystemExit(p.returncode)"
+compile(worker,'paired-worker','exec')
 env=dict(os.environ,CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2',PYTHONDONTWRITEBYTECODE='1');log=(work/'worker.log').open('ab',0)
 child=subprocess.Popen(['python3','-c',worker],stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT,env=env,start_new_session=True)
 immutable(work/'controller.json',dict(pid=child.pid,source=pub,manifest=ref(work/'manifest.json'),CPU_only=True,bounded_seconds=180,time=time.time()));print(json.dumps(dict(status='FINITE_PAIRED_CPU_STABILITY_STARTED',cursor=cursor,pid=child.pid,manifest=ref(work/'manifest.json'))))
