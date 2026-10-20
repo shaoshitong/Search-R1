@@ -1,0 +1,98 @@
+{
+  "utc": "2026-10-20T21:26:17.014605+00:00",
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "runtime_commit": "a8683a4f4f12aa04eb9af998aff882f799187bc9",
+  "source5_tp1_actual": {
+    "groups": {
+      "gpu2": {
+        "epoch": 1792531509.7382448,
+        "unit": "sst-q7b-g5-source5-extra-gpu2-v3-70188b8e50fd.service",
+        "observed": {
+          "returncode": 0,
+          "properties": {
+            "MainPID": "2193217",
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "ControlGroup": "/system.slice/sst-q7b-g5-source5-extra-gpu2-v3-70188b8e50fd.service",
+            "LoadState": "loaded",
+            "ActiveState": "active"
+          },
+          "stderr": ""
+        },
+        "model_ready": true,
+        "actual_kv_blocks": 16384,
+        "own_complete_batches": 1,
+        "next_input_started": true,
+        "phases": [
+          {
+            "batch": "batch-000243",
+            "phase": "prefix",
+            "completed": 640,
+            "actual_sampled_tokens": 12800,
+            "utc": "2026-10-20T21:25:07.517354+00:00"
+          },
+          {
+            "batch": "batch-000243",
+            "phase": "full",
+            "completed": 0,
+            "actual_sampled_tokens": 0,
+            "utc": "2026-10-20T21:25:07.908221+00:00"
+          }
+        ],
+        "failure": null,
+        "native_complete": null,
+        "actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-source-sublease-gpu2-status-1792531501229799000.json"
+      },
+      "gpu1": {
+        "epoch": 1792531518.5403342,
+        "unit": "sst-q7b-g5-source5-extra-gpu1-v3-70188b8e50fd.service",
+        "observed": {
+          "returncode": 0,
+          "properties": {
+            "MainPID": "2194351",
+            "Result": "success",
+            "ExecMainStatus": "0",
+            "ControlGroup": "/system.slice/sst-q7b-g5-source5-extra-gpu1-v3-70188b8e50fd.service",
+            "LoadState": "loaded",
+            "ActiveState": "active"
+          },
+          "stderr": ""
+        },
+        "model_ready": true,
+        "actual_kv_blocks": 6702,
+        "own_complete_batches": 0,
+        "next_input_started": false,
+        "phases": [
+          {
+            "batch": "batch-000242",
+            "phase": "prefix",
+            "completed": 640,
+            "actual_sampled_tokens": 12800,
+            "utc": "2026-10-20T21:23:17.119949+00:00"
+          },
+          {
+            "batch": "batch-000242",
+            "phase": "full",
+            "completed": 300,
+            "actual_sampled_tokens": 22932,
+            "utc": "2026-10-20T21:24:49.365983+00:00"
+          }
+        ],
+        "failure": null,
+        "native_complete": null,
+        "actual": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-source-sublease-gpu1-status-1792531510070139000.json"
+      }
+    },
+    "goal_complete": false,
+    "epoch": 1792531518.839571
+  },
+  "v2_terminal_proof_sha256": "ecd0c04602b2bf972a2c9abc946e072b243e6b9b9239875664e0bd1cb059494d",
+  "v2_original_files": 11,
+  "v2_original_bytes": 21831,
+  "v2_release_observations": 2,
+  "v2_gpu_model_initialized": false,
+  "v2_new_complete_batches": 0,
+  "v2_independent_full_small_proof": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-source5-gpu2-v2-full-small-proof-1792531491223578000.json",
+  "other_five_samplers_preserved": true,
+  "full_goal_complete": false
+}
