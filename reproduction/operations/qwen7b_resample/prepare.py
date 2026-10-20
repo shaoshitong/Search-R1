@@ -13,6 +13,8 @@ def main():
   if v['split']=='train':rows.extend(v['rows'])
  rows.sort(key=lambda x:x['source_ordinal']);assert len(rows)==169028 and len({x['qid']for x in rows})==169028
  assert all(x['split']=='train'for x in rows)
+ original_manifest=json.loads((assets/'imported/source/inputs/manifest.json').read_text());assert hashlib.sha256(json.dumps([x['qid']for x in rows]).encode()).hexdigest()==original_manifest['ordered_train_qid_sha256']
+ model_receipt=json.loads((assets/'official-qwen2.5-7b-instruct-a09a35458c70/complete.json').read_text());assert model_receipt['revision']==original['model_revision']and model_receipt['status']=='OFFICIAL_SNAPSHOT_ALL_FILES_FRESH_SHA_VERIFIED'
  r=json.loads(Path(a.retrieval_config).read_text());c=dict(original,base=str(b),model_dir=str(assets/'official-qwen2.5-7b-instruct-a09a35458c70'),seed=20261021,run_id=uuid.uuid4().hex,sampling_attempt_id='independent-seed20261021-g5-20261020',train_questions=169028,train_trajectories=845140,diagnostic_questions=0,diagnostic_trajectories=0,sampling_shards=2,warmup_only=True,actor_hidden_native=False,actor_optimizer_updates=0,search_url='http://127.0.0.1:28831/retrieve',source_seed=original['seed'],source_run_id=original['run_id'],source_input_root=str(assets/'imported/source/inputs'),hidden_cached=False,source_commit=r['new_source_commit'])
  for k in ['retrieval_index','retrieval_corpus','retrieval_encoder','retrieval_data_cache']:c[k]=r[k]
  manifest=[]
