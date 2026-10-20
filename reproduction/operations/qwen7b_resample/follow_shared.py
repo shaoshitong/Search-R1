@@ -19,6 +19,9 @@ if p:
  value.update(directory=str(p),progress=read(p/'progress.json'),failure=read(p/'failure.json'),complete=read(p/'complete.json'),
   index_progress=read(p/'retrieval/gpu-index-load-progress.json'))
  value['model_initialized']=[read(q)for q in sorted((p/'sampler-launches').glob('launch-*/model-initialized.json'))]
+ engines=read(p/'engines.json')
+ if engines:
+  value['engine_model_initialized']={str(x['engine_index']):[read(q)for q in sorted((Path(x['directory'])/'sampler-launches').glob('launch-*/model-initialized.json'))]for x in engines['engines']}
  if value['failure']:
   value['log_tails']={}
   for name in ['retriever.log','sampler.log']:
@@ -29,8 +32,8 @@ print(json.dumps(value))
 '''
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--controller-pid',required=True);p.add_argument('--own-batches',type=int,default=2);p.add_argument('--interval',type=int,default=60);p.add_argument('--hours',type=float,default=4)
- a=p.parse_args();assert a.controller_pid.isdigit()and a.own_batches>0 and a.interval>=30
+ p=argparse.ArgumentParser();p.add_argument('--controller-pid',required=True);p.add_argument('--own-batches',type=int,default=2);p.add_argument('--per-engine-batches',type=int,default=0);p.add_argument('--interval',type=int,default=60);p.add_argument('--hours',type=float,default=4)
+ a=p.parse_args();assert a.controller_pid.isdigit()and a.own_batches>0 and a.per_engine_batches>=0 and a.interval>=30
  latest=ROOT/'work/qwen7b-native-first-batches-latest-small.json';until=time.monotonic()+a.hours*3600;last=None
  print(json.dumps(dict(status='READONLY_NATIVE_FIRST_BATCHES_FOLLOWER_STARTED',controller_pid=a.controller_pid,target_own_complete_batches=a.own_batches)),flush=True)
  while time.monotonic()<until:
@@ -39,11 +42,14 @@ def main():
    result=transport(script);assert result.returncode==0,result.stderr[-700:];v=json.loads(result.stdout)
    out=ROOT/'work'/('qwen7b-native-first-batches-actual-%d.json'%time.time_ns());out.write_text(json.dumps(v,indent=2)+'\n')
    own=(v.get('progress')or v.get('complete')or{}).get('completed_own_batches',0)
-   small=dict(epoch=v['epoch'],controller_pid=a.controller_pid,own_complete_batches=own,sealed_batches=v['sealed_batches'],questions=v['questions'],trajectories=v['trajectories'],failure=v.get('failure'),native_complete=v.get('complete'),actual=str(out),goal_complete=False)
-   latest.write_text(json.dumps(small,indent=2)+'\n');change=(own,v['trajectories'],bool(v.get('failure')))
+   engines=(v.get('progress')or v.get('complete')or{}).get('engines',[])
+   counts={str(x['engine_index']):x['completed_own_batches']for x in engines}
+   small=dict(epoch=v['epoch'],controller_pid=a.controller_pid,own_complete_batches=own,engine_complete_batches=counts,sealed_batches=v['sealed_batches'],questions=v['questions'],trajectories=v['trajectories'],failure=v.get('failure'),native_complete=v.get('complete'),actual=str(out),goal_complete=False)
+   latest.write_text(json.dumps(small,indent=2)+'\n');change=(own,tuple(sorted(counts.items())),v['trajectories'],bool(v.get('failure')))
    if change!=last:print(json.dumps(small),flush=True);last=change
    if v.get('failure'):print('ROOT_ATTENTION_ACTUAL_NATIVE_FAILURE',flush=True);return
-   if own>=a.own_batches:print('ROOT_ATTENTION_FIRST_REAL_NATIVE_BATCHES_COMPLETE_AUDIT_NEW_BATCHES_AND_CONTINUE',flush=True);return
+   accepted=own>=a.own_batches and(not a.per_engine_batches or bool(counts)and min(counts.values())>=a.per_engine_batches)
+   if accepted:print('ROOT_ATTENTION_FIRST_REAL_NATIVE_BATCHES_COMPLETE_AUDIT_NEW_BATCHES_AND_CONTINUE',flush=True);return
    if v.get('complete'):print('ROOT_ATTENTION_NATIVE_JOB_ENDED_BEFORE_TARGET_READ_ACTUAL_REASON',flush=True);return
   except Exception as error:print(json.dumps(dict(status='READ_CHANNEL_ERROR_NOT_NATIVE_EXIT',error=str(error)[-700:],epoch=time.time())),flush=True)
   time.sleep(a.interval)

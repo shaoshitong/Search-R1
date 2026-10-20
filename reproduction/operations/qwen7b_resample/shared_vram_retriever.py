@@ -1,4 +1,4 @@
-"""Original FP16 E5/Flat retrieval, with the whole Flat index on five GPUs.
+"""Original FP16 E5/Flat retrieval, with the whole Flat index on four/five GPUs.
 
 Only device placement and bounded upload/query batching differ from the frozen
 retriever. Corpus order, all original vectors, global IDs and top3 are retained.
@@ -23,10 +23,10 @@ def require(condition, message):
 
 def shard_counts(weights, logical_shards=128):
     require(logical_shards in (64, 128), 'Expected 64 or 128 logical retrieval shards')
-    require(len(weights) == 5 and all(math.isfinite(x) and x > 0 for x in weights), 'Five positive retrieval weights required')
+    require(len(weights) in (4, 5) and all(math.isfinite(x) and x > 0 for x in weights), 'Four or five positive retrieval weights required')
     shares = [logical_shards * x / sum(weights) for x in weights]
     counts = [math.floor(x) for x in shares]
-    for index in sorted(range(5), key=lambda i: (shares[i] - counts[i], -i), reverse=True)[:logical_shards - sum(counts)]:
+    for index in sorted(range(len(weights)), key=lambda i: (shares[i] - counts[i], -i), reverse=True)[:logical_shards - sum(counts)]:
         counts[index] += 1
     require(sum(counts) == logical_shards and min(counts) > 0, 'Weights must place every logical shard across five GPUs')
     return counts
@@ -183,15 +183,16 @@ class AsyncBatchedRequests:
 def build_backend(args, allocation, counts):
     """Called only by OwnerThreadRetriever, including all CUDA imports/checks."""
     indices, expected = allocation['retrieval_indices'], allocation['retrieval_cuda_uuids']
+    devices = len(indices)
     from reproduction.common8.native_allocation import cuda_uuids
-    require(cuda_uuids(5) == expected, 'Retriever actual CUDA UUIDs differ from allocation')
+    require(cuda_uuids(devices) == expected, 'Retriever actual CUDA UUIDs differ from allocation')
     import datasets
     import faiss
     import numpy as np
     import torch
     from search_r1.search import retrieval_server as upstream
     from reproduction.operations.qwen7b_warmup import retriever as original
-    require(torch.cuda.device_count() == faiss.get_num_gpus() == 5, 'Retriever requires exactly its five admitted GPUs')
+    require(torch.cuda.device_count() == faiss.get_num_gpus() == devices, 'Retriever device count differs from its admitted GPUs')
     cache, data_cache = Path(args.cache), Path(args.data_cache)
     cache.mkdir(parents=True, exist_ok=True)
     corpus_path, extraction = original.prepare_corpus(args.corpus, data_cache)
@@ -211,7 +212,7 @@ def build_backend(args, allocation, counts):
     def cleanup():
         nonlocal retriever
         errors = []
-        for device in range(5):
+        for device in range(devices):
             try:
                 torch.cuda.synchronize(device)
             except Exception as error:
@@ -220,7 +221,7 @@ def build_backend(args, allocation, counts):
         flat_shards.clear()
         resources.clear()
         gc.collect()
-        for device in range(5):
+        for device in range(devices):
             try:
                 with torch.cuda.device(device):
                     torch.cuda.empty_cache()
@@ -236,14 +237,14 @@ def build_backend(args, allocation, counts):
         vectors = faiss.rev_swig_ptr(cpu.get_xb(), cpu.ntotal * cpu.d).reshape(cpu.ntotal, cpu.d)
         # One resource per physical GPU. Uploads stay on this initialization
         # thread; no threaded FAISS search uses these shared CUDA resources.
-        for _ in range(5):
+        for _ in range(devices):
             resource = faiss.StandardGpuResources()
             resource.setTempMemory(128 * 1024 ** 2)
             resources.append(resource)
         merged = faiss.IndexShards(cpu.d, False, True)
         cls = faiss.GpuIndexFlatIP if cpu.metric_type == faiss.METRIC_INNER_PRODUCT else faiss.GpuIndexFlatL2
         ordinal = added = 0
-        checked, by_device = [], [0] * 5
+        checked, by_device = [], [0] * devices
         for device, number in enumerate(counts):
             for _ in range(number):
                 begin, end = cpu.ntotal * ordinal // args.logical_shards, cpu.ntotal * (ordinal + 1) // args.logical_shards
@@ -266,8 +267,8 @@ def build_backend(args, allocation, counts):
                 ordinal += 1
                 added += end - begin
                 by_device[device] += (end - begin) * cpu.d * 2
-                progress = dict(status='STREAMING_FULL_ORIGINAL_FLAT_FP16_ACROSS_FIVE_GPUS', added=added,
-                    total=int(cpu.ntotal), dimension=int(cpu.d), physical_gpus=5, logical_flat_shards=ordinal,
+                progress = dict(status='STREAMING_FULL_ORIGINAL_FLAT_FP16_ACROSS_ADMITTED_GPUS', added=added,
+                    total=int(cpu.ntotal), dimension=int(cpu.d), physical_gpus=devices, logical_flat_shards=ordinal,
                     shard_counts=counts, fp16_vector_bytes_by_device=by_device, scratch_bytes_per_device=128 * 1024 ** 2,
                     upload_vectors=16384, original_global_ids=True, elapsed_seconds=time.monotonic() - started)
                 original.publish(cache / 'gpu-index-load-progress.json', progress)
@@ -291,8 +292,8 @@ def build_backend(args, allocation, counts):
         gc.collect()
         torch.cuda.set_device(0)
         require(retriever.index.d == 768 and retriever.index.ntotal == len(retriever.corpus)
-                and retriever.index.count() == args.logical_shards and cuda_uuids(5) == expected, 'Original corpus/index/UUID binding differs')
-        ready = dict(run_id=args.run_id, pid=os.getpid(), ready=True, gpu_shards=5,
+                and retriever.index.count() == args.logical_shards and cuda_uuids(devices) == expected, 'Original corpus/index/UUID binding differs')
+        ready = dict(run_id=args.run_id, pid=os.getpid(), ready=True, gpu_shards=devices,
             logical_flat_shards=args.logical_shards, dimension=int(retriever.index.d), documents=int(retriever.index.ntotal),
             index=str(Path(args.index).resolve()), corpus_archive=str(Path(args.corpus).resolve()),
             encoder=str(Path(args.encoder).resolve()), corpus=extraction, encoder_dtype='float16', index_dtype='float16',
@@ -326,9 +327,10 @@ def main():
     args = parser.parse_args()
     allocation = json.loads(Path(args.allocation_file).read_text())
     indices = allocation['retrieval_indices']
-    require(len(indices) == 5 and os.environ.get('CUDA_VISIBLE_DEVICES') == ','.join(map(str, indices)), 'Retriever numeric CVD differs from admitted five devices')
+    require(len(indices) in (4, 5) and os.environ.get('CUDA_VISIBLE_DEVICES') == ','.join(map(str, indices)), 'Retriever numeric CVD differs from admitted devices')
     os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
     counts = shard_counts([float(x) for x in args.weights.split(',')], args.logical_shards)
+    require(len(counts) == len(indices), 'Retrieval weight/device counts differ')
     import uvicorn
     from fastapi import FastAPI, HTTPException
     owner = OwnerThreadRetriever(lambda: build_backend(args, allocation, counts))

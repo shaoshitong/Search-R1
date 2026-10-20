@@ -36,7 +36,9 @@ def load_pool(path):
 
 def indices(value, size):
     items = [int(x) for x in value.split(',')]
-    require(len(items) == len(set(items)) == size and min(items) >= 0, 'Invalid physical GPU list')
+    sizes = (size,) if isinstance(size, int) else size
+    require(len(items) == len(set(items)) and len(items) in sizes and min(items) >= 0,
+            'Invalid physical GPU list')
     return items
 
 
@@ -71,10 +73,11 @@ def admit(pool, args):
             'Native unit evidence does not bind its active MainPID/cgroup')
     require(any(line.split(':', 2)[-1] == group for line in Path('/proc/self/cgroup').read_text().splitlines()),
             'Controller is outside its own evidenced native cgroup')
-    model, retrieval = indices(args.model_gpus, 2), indices(args.retrieval_gpus, 5)
+    model, retrieval = indices(args.model_gpus, (2, 4)), indices(args.retrieval_gpus, (4, 5))
     all_indices = model + retrieval
-    require(len(set(all_indices)) == 7, 'TP2 and five retrieval GPUs must be distinct')
+    require(len(set(all_indices)) == len(all_indices), 'All model and retrieval GPUs must be distinct')
     inventory = {row['index']: row for row in pool.nvml().values()}
+    require(all(index in inventory for index in all_indices), 'Requested physical GPU is unavailable')
     expected = [inventory[index]['uuid'] for index in all_indices]
     locks = []
     try:
@@ -86,14 +89,15 @@ def admit(pool, args):
         output = subprocess.check_output([sys.executable, str(Path(__file__).resolve()), '--cuda-probe',
                     '--expected-uuids', ','.join(expected)], env=env, text=True, timeout=45)
         runtime = json.loads(output)['actual_cuda_runtime_uuids']
-        require(runtime == expected, 'Seven-device runtime mapping differs')
+        require(runtime == expected, 'Full root-controller device mapping differs')
         with socket.socket() as probe:
             probe.bind(('127.0.0.1', 28831))
         binding = dict(job_id='shared5-' + str(os.getpid()), node='h100-5',
             allocation_kind='HUMAN_AUTHORIZED_NATIVE_FREE_VRAM_CO_SHARE', gpu_exclusive_allocation=False,
             native_unit=evidence['unit'], native_cgroup=group, controller_pid=os.getpid(),
-            model_indices=model, model_cuda_uuids=expected[:2], retrieval_indices=retrieval,
-            retrieval_cuda_uuids=expected[2:], actual_cuda_runtime_uuids=runtime,
+            model_indices=model, model_cuda_uuids=expected[:len(model)], retrieval_indices=retrieval,
+            retrieval_cuda_uuids=expected[len(model):], actual_cuda_runtime_uuids=runtime,
+            model_engine_count=len(model) // 2,
             model_cuda_visible_devices=','.join(map(str, model)),
             retrieval_cuda_visible_devices=','.join(map(str, retrieval)),
             original_cuda_visible_devices=evidence.get('original_cuda_visible_devices', os.environ.get('CUDA_VISIBLE_DEVICES')),
@@ -112,7 +116,10 @@ def multi_sampler(pool, binding, args):
     numeric = binding['model_cuda_visible_devices']
     require(os.environ.get('CUDA_VISIBLE_DEVICES') == numeric, 'TP2 sampler CVD differs from controller')
     os.environ['CUDA_DEVICE_ORDER'] = 'PCI_BUS_ID'
-    actual_uuids(binding['model_cuda_uuids'])  # Before any torch/vLLM import.
+    # The root controller already validated every numeric device in one probe.
+    # Each sampler receives only its own admitted TP2 pair and acquires no locks.
+    require(len(binding['model_indices']) == len(binding['model_cuda_uuids']) == 2,
+            'Each sampler must receive exactly its own admitted TP2 pair')
     from reproduction.operations.qwen7b_resample import worker
     s = worker.s
     ordinal = int(os.environ.get('Q7B_SHARED_RETRY_ORDINAL', '0'))
@@ -186,36 +193,118 @@ def multi_sampler(pool, binding, args):
     return worker
 
 
+def engine_binding(binding, index):
+    start = 2 * index
+    pair = binding['model_indices'][start:start + 2]
+    uuids = binding['model_cuda_uuids'][start:start + 2]
+    require(len(pair) == len(uuids) == 2, 'Missing admitted TP2 engine pair')
+    multiple = len(binding['model_indices']) == 4
+    return dict(binding, job_id=binding['job_id'] + ('-engine-%02d' % index if multiple else ''),
+        parent_job_id=binding['job_id'], engine_index=index, model_engine_count=1,
+        model_indices=pair, model_cuda_uuids=uuids, model_cuda_visible_devices=','.join(map(str, pair)),
+        root_controller_actual_cuda_runtime_uuids=binding['actual_cuda_runtime_uuids'],
+        actual_cuda_runtime_uuids=uuids, shared_retriever_owned_by_parent=True)
+
+
+def engine_counts(pool, engine):
+    directory = engine['jobdir']
+    result = engine['result']
+    progress = result if result is not None else pool.read(directory / 'progress.json') if (directory / 'progress.json').exists() else {}
+    counts = {key: progress.get(key, 0) for key in ('completed_own_batches', 'questions', 'trajectories')}
+    require(all(type(value) is int and value >= 0 for value in counts.values()), 'Invalid engine receipt counts')
+    require(counts['trajectories'] == counts['questions'] * 5, 'Engine receipt G5 counts differ')
+    return counts
+
+
 def controller(pool, args):
     base = Path(args.base)
     config = pool.configuration(base)
     marker = Path(args.handoff_marker or str(base / 'preparation/pool-handoff.json'))
     handoff = pool.handoff(base, marker)
     binding, locks = admit(pool, args)
-    jobdir = base / 'pool/jobs' / ('job-' + binding['job_id']) / ('attempt-%d-%d' % (time.time_ns(), os.getpid()))
+    attempt = 'attempt-%d-%d' % (time.time_ns(), os.getpid())
+    jobdir = base / 'pool/jobs' / ('job-' + binding['job_id']) / attempt
     jobdir.mkdir(parents=True)
     pool.publish(jobdir / 'allocation.json', binding)
     pool.publish(jobdir / 'handoff.json', handoff)
-    pool.publish(jobdir / 'sources.json', {str(path): pool.sha(path) for path in
-        (Path(__file__), Path(args.pool_worker), Path(args.retriever_script), Path(__file__).with_name('shared_vram_vllm_adapter.py'))})
+    sources = {str(path): pool.sha(path) for path in
+        (Path(__file__), Path(args.pool_worker), Path(args.retriever_script), Path(__file__).with_name('shared_vram_vllm_adapter.py'))}
+    pool.publish(jobdir / 'sources.json', sources)
     evidence = pool.read(args.allocation_evidence)
     end = evidence['captured_epoch'] + evidence['resource_limits']['runtime_max_seconds']
     deadline = min(time.time() + args.run_seconds, end - 45)
     env = dict(os.environ, CUDA_DEVICE_ORDER='PCI_BUS_ID', VLLM_HOST_IP='127.0.0.1',
         VLLM_ATTENTION_BACKEND='XFORMERS', VLLM_WORKER_MULTIPROC_METHOD='spawn',
-        Q7B_POOL_INTERNAL=str(jobdir), PYTHONDONTWRITEBYTECODE='1')
-    children, handles = [], []
+        PYTHONDONTWRITEBYTECODE='1')
+    children, handles, engines = [], [], []
+    multiple = len(binding['model_indices']) == 4
+    for index in range(len(binding['model_indices']) // 2):
+        child_binding = engine_binding(binding, index)
+        directory = base / 'pool/jobs' / ('job-' + child_binding['job_id']) / attempt if multiple else jobdir
+        if multiple:
+            directory.mkdir(parents=True)
+            pool.publish(directory / 'allocation.json', child_binding)
+            pool.publish(directory / 'handoff.json', handoff)
+            pool.publish(directory / 'sources.json', sources)
+        engines.append(dict(index=index, binding=child_binding, jobdir=directory,
+            ordinal=0, history=[], process=None, launch=None, result=None, returncode=None))
+    pool.publish(jobdir / 'engines.json', dict(engine_count=len(engines),
+        engines=[dict(engine_index=x['index'], directory=str(x['jobdir']),
+            model_indices=x['binding']['model_indices'], model_cuda_uuids=x['binding']['model_cuda_uuids']) for x in engines],
+        shared_retriever_owned_by_parent=True, epoch=time.time()))
 
-    def spawn(name, command, cuda):
-        child_env = dict(env, CUDA_VISIBLE_DEVICES=cuda)
-        stream = (jobdir / (name + '.log')).open('ab')
+    def publish_children(last_reaped=None):
+        pool.publish(jobdir / 'children.json', dict(own_process_groups=[p.pid for p in children],
+            engine_processes={str(x['index']): x['process'].pid for x in engines if x['process'] is not None},
+            last_reaped_sampler_pid=last_reaped, foreign_processes_signalled=False, epoch=time.time()))
+
+    def spawn(name, command, cuda, directory, extra_env=None):
+        child_env = dict(env, CUDA_VISIBLE_DEVICES=cuda, Q7B_POOL_INTERNAL=str(directory))
+        child_env.update(extra_env or {})
+        stream = (directory / (name + '.log')).open('ab')
         handles.append(stream)
         process = subprocess.Popen([sys.executable, '-u', *command], env=child_env,
             stdout=stream, stderr=subprocess.STDOUT, start_new_session=True)
         children.append(process)
-        pool.publish(jobdir / 'children.json', dict(own_process_groups=[p.pid for p in children],
-            foreign_processes_signalled=False, epoch=time.time()))
+        publish_children()
         return process
+
+    def launch_engine(engine):
+        directory = engine['jobdir']
+        launch = directory / 'sampler-launches' / ('launch-%02d' % engine['ordinal'])
+        launch.mkdir(parents=True)
+        engine['launch'] = launch
+        engine['process'] = spawn('sampler', [str(Path(__file__).resolve()), '--sampler-loop', '--base', str(base),
+            '--pool-worker', args.pool_worker, '--handoff-marker', str(marker), '--job-dir', str(directory),
+            '--launch-dir', str(launch), '--deadline', str(deadline),
+            '--model-max-seqs', str(args.model_max_seqs), '--model-batch-tokens', str(args.model_batch_tokens),
+            '--model-kv-block-cap', str(args.model_kv_block_cap),
+            '--batch-reserve-seconds', str(args.batch_reserve_seconds)],
+            engine['binding']['model_cuda_visible_devices'], directory,
+            dict(Q7B_SHARED_RETRY_ORDINAL=str(engine['ordinal'])))
+        if multiple:
+            pool.publish(directory / 'children.json', dict(own_process_groups=[engine['process'].pid],
+                parent_controller_pid=os.getpid(), foreign_processes_signalled=False, epoch=time.time()))
+        publish_children()
+
+    last_progress = None
+
+    def aggregate(status):
+        nonlocal last_progress
+        summaries = [dict(engine_index=x['index'], directory=str(x['jobdir']),
+            model_indices=x['binding']['model_indices'],
+            state='COMPLETE' if x['result'] is not None else 'SAMPLING' if x['process'] is not None else 'STARTING',
+            **engine_counts(pool, x)) for x in engines]
+        result = dict(status=status, run_id=pool.RUN_ID, job_id=binding['job_id'], engine_count=len(engines),
+            completed_own_batches=sum(x['completed_own_batches'] for x in summaries),
+            questions=sum(x['questions'] for x in summaries), trajectories=sum(x['trajectories'] for x in summaries),
+            engines=summaries, aggregate_of_engine_receipts=True, global_goal_complete=False,
+            foreign_processes_signalled=False, epoch=time.time())
+        fingerprint = json.dumps(summaries, sort_keys=True)
+        if multiple and fingerprint != last_progress:
+            pool.publish(jobdir / 'progress.json', result)
+            last_progress = fingerprint
+        return result
 
     try:
         encoder = args.encoder or str(Path(config['base']).parent / 'search-g1-prefix5-h10011-runtime-assets-20261018/common8/assets/e5-base-v2')
@@ -223,18 +312,19 @@ def controller(pool, args):
             '--corpus', config['retrieval_corpus'], '--encoder', encoder, '--data-cache', config['retrieval_data_cache'],
             '--cache', str(jobdir / 'retrieval'), '--run-id', pool.RUN_ID, '--allocation-file', str(jobdir / 'allocation.json'),
             '--weights', args.retrieval_weights, '--logical-shards', str(args.retrieval_shards),
-            '--port', '28831'], binding['retrieval_cuda_visible_devices'])
+            '--port', '28831'], binding['retrieval_cuda_visible_devices'], jobdir)
         ready = None
         import urllib.request
         while ready is None:
-            require(retriever.poll() is None, 'Own five-GPU retriever initialization failed; see retriever.log')
+            require(retriever.poll() is None, 'Own shared retriever initialization failed; see retriever.log')
             require(time.time() < deadline - args.batch_reserve_seconds, 'Retriever initialization exhausted batch time')
             try:
                 with urllib.request.urlopen('http://127.0.0.1:28831/health', timeout=2) as response:
                     value = json.load(response)
                 if value.get('ready'):
                     require(value['pid'] == retriever.pid and value['run_id'] == pool.RUN_ID
-                        and value['gpu_shards'] == 5 and value['logical_flat_shards'] == args.retrieval_shards
+                        and value['gpu_shards'] == len(binding['retrieval_indices'])
+                        and value['logical_flat_shards'] == args.retrieval_shards
                         and value['encoder_dtype'] == value['index_dtype'] == 'float16'
                         and value['actual_cuda_uuids'] == binding['retrieval_cuda_uuids']
                         and value['original_global_ids'] and value['endpoint'] == pool.URL,
@@ -243,42 +333,67 @@ def controller(pool, args):
             except (OSError, json.JSONDecodeError):
                 time.sleep(1)
         pool.publish(jobdir / 'retriever-ready.json', ready)
-        history = []
-        for ordinal in range(3):
-            launch = jobdir / 'sampler-launches' / ('launch-%02d' % ordinal)
-            launch.mkdir(parents=True)
-            env['Q7B_SHARED_RETRY_ORDINAL'] = str(ordinal)
-            sampler = spawn('sampler', [str(Path(__file__).resolve()), '--sampler-loop', '--base', str(base),
-                '--pool-worker', args.pool_worker, '--handoff-marker', str(marker), '--job-dir', str(jobdir),
-                '--launch-dir', str(launch), '--deadline', str(deadline),
-                '--model-max-seqs', str(args.model_max_seqs), '--model-batch-tokens', str(args.model_batch_tokens),
-                '--model-kv-block-cap', str(args.model_kv_block_cap),
-                '--batch-reserve-seconds', str(args.batch_reserve_seconds)], binding['model_cuda_visible_devices'])
-            while sampler.poll() is None:
-                require(retriever.poll() is None, 'Own retriever exited during actual sampling')
-                require(time.time() < end - 10, 'Own native runtime deadline reached; preserve partial batch')
+        for engine in engines:
+            if multiple:
+                pool.publish(engine['jobdir'] / 'retriever-ready.json', dict(ready, shared_parent_directory=str(jobdir)))
+            launch_engine(engine)
+        while any(engine['result'] is None for engine in engines):
+            require(retriever.poll() is None, 'Own shared retriever exited during actual sampling')
+            require(time.time() < end - 10, 'Own native runtime deadline reached; preserve partial batch')
+            for engine in engines:
+                sampler = engine['process']
+                if sampler is None or sampler.poll() is None:
+                    continue
+                pool.stop_group(sampler)
+                children.remove(sampler)  # Never replay a reaped PGID after long-running work.
+                engine['process'], engine['returncode'] = None, sampler.returncode
+                if multiple:
+                    pool.publish(engine['jobdir'] / 'children.json', dict(own_process_groups=[],
+                        last_reaped_sampler_pid=sampler.pid, own_sampler_reaped=True,
+                        foreign_processes_signalled=False, epoch=time.time()))
+                publish_children(sampler.pid)
+                if sampler.returncode == 0:
+                    result = pool.read(engine['jobdir'] / 'sampler-exit.json')
+                    require(result['run_id'] == pool.RUN_ID and result['job_id'] == engine['binding']['job_id'],
+                            'Engine terminal receipt identity differs')
+                    result.update(controller_status='OWN_SHARED_VRAM_ENGINE_FINISHED', tensor_parallel_size=2,
+                        engine_index=engine['index'], shared_retriever_pid=retriever.pid,
+                        shared_retriever_owned_by_parent=True, own_sampler_reaped=True,
+                        sampler_returncode=0, global_goal_complete=False, foreign_processes_signalled=False,
+                        epoch=time.time())
+                    engine['result'] = result
+                    if multiple:
+                        pool.publish(engine['jobdir'] / 'complete.json', result)
+                    continue
+                oom = engine['launch'] / 'typed-model-initialization-oom.json'
+                counts = engine_counts(pool, engine)
+                require(engine['ordinal'] < 2 and oom.exists() and counts['completed_own_batches'] == 0,
+                        'Engine %d actually failed with exit %d; no eligible local typed constructor OOM retry' %
+                        (engine['index'], sampler.returncode))
+                fact = pool.read(oom)
+                require(fact['actual_typed_cuda_oom'] and fact['before_first_new_sampling_request'],
+                        'Invalid engine constructor OOM marker')
+                engine['history'].append(fact)
+                pool.publish(engine['jobdir'] / 'typed-initialization-oom-history.json', engine['history'])
+                engine['ordinal'] += 1
+                launch_engine(engine)
+            aggregate('OWN_SHARED_VRAM_ENGINES_ADVANCING')
+            if any(engine['result'] is None for engine in engines):
                 time.sleep(1)
-            pool.stop_group(sampler)
-            children.remove(sampler)  # Never replay a reaped PGID at the end of an eight-hour run.
-            pool.publish(jobdir / 'children.json', dict(own_process_groups=[p.pid for p in children],
-                last_reaped_sampler_pid=sampler.pid, foreign_processes_signalled=False, epoch=time.time()))
-            if sampler.returncode == 0:
-                break
-            oom = launch / 'typed-model-initialization-oom.json'
-            progress = pool.read(jobdir / 'progress.json') if (jobdir / 'progress.json').exists() else {}
-            require(ordinal < 2 and oom.exists() and progress.get('completed_own_batches', 0) == 0,
-                    'Own sampler actually failed; no eligible typed constructor OOM retry')
-            fact = pool.read(oom)
-            require(fact['actual_typed_cuda_oom'] and fact['before_first_new_sampling_request'], 'Invalid constructor OOM marker')
-            history.append(fact)
-            pool.publish(jobdir / 'typed-initialization-oom-history.json', history)
-        result = pool.read(jobdir / 'sampler-exit.json')
+        result = aggregate('OWN_SHARED_VRAM_ENGINES_FINISHED') if multiple else dict(engines[0]['result'])
         result.update(controller_status='OWN_SHARED_VRAM_JOB_FINISHED', tensor_parallel_size=2,
-            retrieval_physical_gpus=5, global_goal_complete=False, foreign_processes_signalled=False)
+            model_engine_count=len(engines), retrieval_physical_gpus=len(binding['retrieval_indices']),
+            global_goal_complete=False, foreign_processes_signalled=False)
     except BaseException as error:
-        pool.publish(jobdir / 'failure.json', dict(status='OWN_SHARED_VRAM_JOB_INTERRUPTED_OR_FAILED',
+        failure = dict(status='OWN_SHARED_VRAM_JOB_INTERRUPTED_OR_FAILED',
             error_type=type(error).__name__, error=str(error), traceback=traceback.format_exc(),
-            global_goal_complete=False, foreign_processes_signalled=False, epoch=time.time()))
+            global_goal_complete=False, foreign_processes_signalled=False, epoch=time.time())
+        pool.publish(jobdir / 'failure.json', failure)
+        for engine in engines:
+            if multiple and engine['result'] is None:
+                pool.publish(engine['jobdir'] / 'failure.json', dict(failure,
+                    status='OWN_SHARED_VRAM_ENGINE_INTERRUPTED_OR_FAILED', engine_index=engine['index'],
+                    sampler_returncode=engine['returncode'], **engine_counts(pool, engine)))
         raise
     finally:
         for process in reversed(children):
@@ -287,8 +402,10 @@ def controller(pool, args):
             stream.close()
         for fd in locks:
             os.close(fd)
-    result.update(sampler_returncode=sampler.returncode, retriever_returncode=retriever.returncode,
-                  own_children_reaped=True, epoch=time.time())
+    result.update(sampler_returncodes=[engine['returncode'] for engine in engines],
+        retriever_returncode=retriever.returncode, own_children_reaped=True, epoch=time.time())
+    if not multiple:
+        result['sampler_returncode'] = engines[0]['returncode']
     pool.publish(jobdir / 'complete.json', result)
     print(json.dumps(dict(result, job_directory=str(jobdir))), flush=True)
 
