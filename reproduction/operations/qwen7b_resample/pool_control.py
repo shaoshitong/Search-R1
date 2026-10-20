@@ -273,6 +273,8 @@ def transport(script):
         modules[name] = module
     # Match the configured direct mgmt-host route; no task-forced Mac SOCKS.
     argv = modules['ctl'].route('h100-10', '/usr/bin/python3 -')
+    from .management_session import apply
+    argv = apply(argv)
     return subprocess.run(argv, input=script, text=True, capture_output=True, timeout=110)
 
 

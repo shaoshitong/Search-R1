@@ -271,6 +271,8 @@ def transport(script, node):
         modules[name] = module
     # Honor the user's configured direct mgmt-host alias; never force Mac7892.
     argv = modules['ctl'].route(node, '/usr/bin/python3 -')
+    from .management_session import apply
+    argv = apply(argv)
     return subprocess.run(argv, input=script, text=True, capture_output=True, timeout=110)
 
 
