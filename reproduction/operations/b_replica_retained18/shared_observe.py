@@ -16,6 +16,13 @@ def read(f):
 def physical(f):
  s=str(f);prefix='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'
  return pathlib.Path('/mnt/data/shaoshitong')/s[len(prefix):]if s.startswith(prefix)else pathlib.Path(s)
+def identity(f):
+ st=f.stat();return dict(dev=st.st_dev,inode=st.st_ino,bytes=st.st_size,mtime_ns=st.st_mtime_ns)
+def reusable(row,complete):
+ cache=row.get('observation_cache',{})
+ try:
+  return cache.get('complete_identity')==identity(complete)and len(cache['ledger_identities'])==8 and all(identity(physical(r['path']))==r['identity']for r in cache['ledger_identities'])
+ except(OSError,KeyError):return False
 config=read(p/'preparation/launch-config.json')
 execution_node=config['expected_execution_node']
 if execution_node not in ('h100-5','h100-8','h100-10'):raise ValueError('Require activated allowed shared node; H10011 excluded')
@@ -24,13 +31,19 @@ stage=read(p/'logs/pipeline-status.json');n=max(resume_outer+1,(stage or{}).get(
 progress={str(f.relative_to(p)):read(f)for f in root.rglob('*progress*.json')if f.stat().st_size<15000}
 facts=[]
 for i in range(resume_outer+1,201):
- j=read(p/'outers'/('outer-%06d'%i)/'complete.json')
+ complete=p/'outers'/('outer-%06d'%i)/'complete.json'
+ cached=CACHED_FACTS.get(i)
+ if cached and reusable(cached,complete):
+  facts.append(dict(cached,reused_immutable_fact=True));continue
+ j=read(complete)
  if not j:continue
- ranks=[]
+ ranks=[];ledger_identities=[]
  for r in j['actor']['rank_receipts']:
-  f=physical(r['ledger_path']);records=[json.loads(s)for s in f.read_text().splitlines()];restore=next(x for x in records if x['event']=='ACTUAL_RESTORE')
-  ranks.append(dict(rank=r['rank'],restored_outer=restore['restored_completed_outer'],adam_before=restore['actual_adam_before'],scheduler_before=restore['restored_scheduler'],writes=sum(x['event']=='ACTUAL_ADAM_WRITE'for x in records),opportunities=sum(x['event']=='OPPORTUNITY'for x in records),ledger_sha_matches=hashlib.sha256(f.read_bytes()).hexdigest()==r['ledger_sha256']))
- facts.append(dict(outer=i,actor=j['actor']['actual_adam_steps_per_rank'],probe=j['probe']['actual_adam_steps_per_rank'],selection_metrics=j['selection_metrics'],phase_timings=j['phase_timings'],ranks=ranks))
+  f=physical(r['ledger_path']);before=identity(f);raw=f.read_bytes();records=[json.loads(s)for s in raw.splitlines()];restore=next(x for x in records if x['event']=='ACTUAL_RESTORE')
+  if identity(f)!=before:raise RuntimeError('Sealed actor ledger changed during observation: '+str(f))
+  ledger_identities.append(dict(path=str(f),identity=before))
+  ranks.append(dict(rank=r['rank'],restored_outer=restore['restored_completed_outer'],adam_before=restore['actual_adam_before'],scheduler_before=restore['restored_scheduler'],writes=sum(x['event']=='ACTUAL_ADAM_WRITE'for x in records),opportunities=sum(x['event']=='OPPORTUNITY'for x in records),ledger_sha_matches=hashlib.sha256(raw).hexdigest()==r['ledger_sha256']))
+ facts.append(dict(outer=i,actor=j['actor']['actual_adam_steps_per_rank'],probe=j['probe']['actual_adam_steps_per_rank'],selection_metrics=j['selection_metrics'],phase_timings=j['phase_timings'],ranks=ranks,reused_immutable_fact=False,observation_cache=dict(complete_identity=identity(complete),ledger_identities=ledger_identities,actual_full_read_verified_unix=time.time())))
 active=[]
 for f in(p/'actor/outers').glob('outer-%04d-attempt-*/rank-*-updates.jsonl'%n):
  rows=[json.loads(s)for s in f.read_text().splitlines()if s];r=next((x for x in rows if x['event']=='ACTUAL_RESTORE'),None);w=[x for x in rows if x['event']=='ACTUAL_ADAM_WRITE']
@@ -44,7 +57,12 @@ print(json.dumps(dict(observed_unix=time.time(),node=execution_node,base=BASE,re
 
 def observe():
  f=OUT/('shared-follow-'+str(time.time_ns())+'-transport.json')
- v=json.loads(remote('BASE='+repr(BASE)+'\n'+SCRIPT,f,target='h100-10',established_controller=True))
+ cached={}
+ try:
+  last=json.loads((OUT/'SHARED_RESUME64_LATEST.json').read_text())
+  if last.get('base')==BASE:cached={row['outer']:row for row in last['facts']if row.get('observation_cache')}
+ except(OSError,ValueError,KeyError):pass
+ v=json.loads(remote('BASE='+repr(BASE)+'\nCACHED_FACTS='+repr(cached)+'\n'+SCRIPT,f,target='h100-10',established_controller=True))
  receipt=v.get('receipt');leader=receipt['leader']if receipt else None
  if leader:
   code='WHO='+repr(leader)+'\n'+r'''
