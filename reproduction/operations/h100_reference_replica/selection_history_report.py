@@ -88,7 +88,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / 'PER-ITERATION.json').write_text(json.dumps(result, indent=2) + '\n')
     with (args.output / 'PER-ITERATION.csv').open('w', newline='') as stream:
-        writer = csv.writer(stream)
+        writer = csv.writer(stream, lineterminator='\n')
         writer.writerow(['outer', 'periodic', 'A_prefix', 'A_mixed_count', 'A_mixed_fraction',
             'A_all_wrong', 'A_all_correct', 'A_mean_q', 'B_prefix', 'B_mixed_count', 'B_mixed_fraction',
             'B_all_wrong', 'B_all_correct', 'B_mean_q'])
