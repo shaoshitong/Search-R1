@@ -106,6 +106,11 @@ def run():
     if (BASE / 'failure.json').exists() or (BASE / 'interrupted.json').exists():
         raise ValueError('Terminal error/interruption must be resolved explicitly')
     old_config, old_done = n.read(REFERENCE / 'config.json'), n.read(REFERENCE / 'complete.json')
+    if (n.proof(REFERENCE / 'config.json') != config['reference_config']
+            or old_done['config_sha256'] != config['reference_config']['sha256']
+            or old_done['cursor'] != 136 or old_done['steps'] != 10600
+            or old_done['actor_updates'] != 0 or old_done['optimizer_reset']):
+        raise ValueError('Original completed matched random4 reference lineage differs')
     for key in ('source_checkpoint', 'plan', 'g20_complete', 'evaluations',
             'global_questions', 'update_budget', 'micro_trajectories', 'fit_questions', 'fit_real_trajectories'):
         if config[key] != old_config[key]:
