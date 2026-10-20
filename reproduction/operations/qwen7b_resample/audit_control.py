@@ -28,5 +28,6 @@ print(json.dumps(v))
 '''
  for n,p in [('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py')]:
   s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);globals()[n]=m
- r=subprocess.run(ctl.route('h100-10','/usr/bin/python3 -'),input=remote,text=True,capture_output=True,timeout=60);assert r.returncode==0,r.stderr;value=json.loads(r.stdout);stamp=time.time_ns();(ROOT/'work'/('qwen7b-audit-control-%d.json'%stamp)).write_text(json.dumps(value,indent=2));print(json.dumps(value))
+ from .management_session import apply
+ r=subprocess.run(apply(ctl.route('h100-10','/usr/bin/python3 -')),input=remote,text=True,capture_output=True,timeout=60);assert r.returncode==0,r.stderr;value=json.loads(r.stdout);stamp=time.time_ns();(ROOT/'work'/('qwen7b-audit-control-%d.json'%stamp)).write_text(json.dumps(value,indent=2));print(json.dumps(value))
 if __name__=='__main__':main()
