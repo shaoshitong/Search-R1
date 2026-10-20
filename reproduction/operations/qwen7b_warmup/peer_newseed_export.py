@@ -205,7 +205,7 @@ def verify_frozen_source(base,plan):
 
 
 def export(base,output_root,snapshot_id,*,batches_per_archive=16):
- if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,95}',snapshot_id) or '..' in snapshot_id:raise ValueError('Unique safe explicit snapshot-id required')
+ if not re.fullmatch(r'[A-Za-z0-9_-]{8,80}',snapshot_id) or '..' in snapshot_id:raise ValueError('Unique safe explicit snapshot-id required')
  if not 16<=batches_per_archive<=32:raise ValueError('Use16..32 complete source batches per archive group')
  base,output_root=Path(base),Path(output_root);root=output_root/snapshot_id
  if output_root.resolve()!=output_root or output_root.is_symlink() or base.resolve()!=base:raise ValueError('Physical canonical source/output roots required')
