@@ -52,10 +52,12 @@ def main():
     constants=dict(NAME=a.name,OUTER=a.outer,NODE=a.node,UNIT=a.unit,COMMIT=commit,FILES=manifest,
         ACTIVATION_SHA=next(r['sha256']for r in manifest if r['path'].endswith('/activate_prepared_shared.py')))
     code='\n'.join(k+'='+repr(v)for k,v in constants.items())+'\n'+INNER
-    script='BUNDLE='+repr(files)+'\nUNIT='+repr(a.unit)+'\nCODE='+repr(code)+'\n'+r'''
-import pathlib,base64,subprocess,json
+    expected={r['path'].rsplit('/',1)[1]:r['sha256']for r in manifest}
+    script='BUNDLE='+repr(files)+'\nEXPECTED='+repr(expected)+'\nUNIT='+repr(a.unit)+'\nCODE='+repr(code)+'\n'+r'''
+import pathlib,base64,subprocess,json,hashlib
 p=pathlib.Path('/run')/UNIT;p.mkdir(exist_ok=False)
-for name,data in BUNDLE.items():(p/name).write_bytes(base64.b64decode(data))
+for name,data in BUNDLE.items():
+ f=p/name;f.write_bytes(base64.b64decode(data));assert hashlib.sha256(f.read_bytes()).hexdigest()==EXPECTED[name]
 command=['unshare','--mount','--propagation','private','bash',str(p/'private_shared_paths.sh'),'/usr/bin/python3','-c',CODE]
 r=subprocess.run(command,capture_output=True,text=True,timeout=160)
 if r.returncode:raise RuntimeError('DISPATCH_RECONCILE_EXISTING_INTENT '+r.stdout+r.stderr)
