@@ -85,7 +85,7 @@ Each selected question keeps all10 genuine old5/new5 trajectories.
 
 `deploy_peer_newseed_replay.py` provides explicit `stage`, `ingest-prepare`,
 `ingest-start`, `features-start`, `finalize`, per-shard `submit` and `status`.
-It stages28 exact published files in4KiB SHA chunks; every rendered control
+It stages29 exact published files in4KiB SHA chunks; every rendered control
 command is below10KB. Unknown launch/submission receipts refuse duplication.
 Finalization creates four independent normal/acd_u scripts, each1GPU/8CPU/64G,
 2h and **no dependency**. No retriever/second GPU is requested.
@@ -102,3 +102,7 @@ The reused R2 evaluation features cover only R2's **original G5** diagnostic512
 and already-viewed selection2048. They do not cover the new validation G10
 random fixed5; those distinct tokens require a separate same-backend replay.
 Untouched final pools are neither generated nor opened by this feature adapter.
+
+The remote CPU qualification also executes the unchanged production strict_label
+through its real verl package import and authored-token mask, in addition to
+the narrow fixtures. This catches package-closure issues before ingest starts.

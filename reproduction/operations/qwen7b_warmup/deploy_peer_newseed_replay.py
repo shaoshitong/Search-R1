@@ -20,7 +20,7 @@ FILES=tuple(PACKAGE+n for n in ('peer_newseed_replay.py','peer_newseed_ingest.py
  'reproduction/prefix20_online/rollout.py','reproduction/prefix20_online/pool.py',
  'search_g1/__init__.py','search_g1/signals.py','search_r1/__init__.py','search_r1/qa_protocol.py',
  'verl/__init__.py','verl/protocol.py','verl/version/version','verl/utils/__init__.py',
- 'verl/utils/logging_utils.py','verl/utils/py_functional.py','verl/utils/reward_score/__init__.py','verl/utils/reward_score/qa_em.py')
+ 'verl/utils/logging_utils.py','verl/utils/tokenizer.py','verl/utils/py_functional.py','verl/utils/reward_score/__init__.py','verl/utils/reward_score/qa_em.py')
 
 
 def render_sbatch(shard,base,code,selection_sha):
@@ -134,7 +134,10 @@ guard=lock();pub,root=publication();env=dict(os.environ,QWEN7B_CODE_ROOT=str(roo
 args=runtime(root,['unittest','reproduction.operations.qwen7b_warmup.test_peer_newseed_ingest','reproduction.operations.qwen7b_warmup.test_peer_newseed_replay'])
 r=subprocess.run(args,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=90)
 (b/'actual-cpu-tests.log').write_text(r.stdout);assert r.returncode==0,r.stdout[-3000:]
-atomic(b/'cpu-qualification.json',dict(status='ACTUAL_REMOTE_CPU_11_TESTS_PASSED',log=fp(b/'actual-cpu-tests.log'),model_tensors_loaded=False,feature_capture_started=False))
+smoke="from reproduction.prefix20_online.rollout import strict_label; from reproduction.operations.qwen7b_warmup.test_peer_newseed_ingest import CharTokenizer; x=list(map(ord,'<answer>Paris</answer>')); assert strict_label(CharTokenizer(),x,[1]*len(x),{'target':['Paris']})==1; assert strict_label(CharTokenizer(),x,[0]*len(x),{'target':['Paris']})==0; print('UNCHANGED_PRODUCTION_STRICT_LABEL_IMPORT_AND_MASK_PASS')"
+r=subprocess.run(['bash',str(root/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-c',smoke],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=60)
+(b/'actual-production-strict-EM-smoke.log').write_text(r.stdout);assert r.returncode==0,r.stdout[-3000:]
+atomic(b/'cpu-qualification.json',dict(status='ACTUAL_REMOTE_CPU_11_TESTS_PASSED',log=fp(b/'actual-cpu-tests.log'),production_strict_label_smoke=fp(b/'actual-production-strict-EM-smoke.log'),model_tensors_loaded=False,feature_capture_started=False))
 print(json.dumps(read(b/'cpu-qualification.json')))
 '''
 INGEST_PREPARE=r'''
