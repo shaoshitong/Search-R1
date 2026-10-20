@@ -106,3 +106,11 @@ Untouched final pools are neither generated nor opened by this feature adapter.
 The remote CPU qualification also executes the unchanged production strict_label
 through its real verl package import and authored-token mask, in addition to
 the narrow fixtures. This catches package-closure issues before ingest starts.
+
+The real source diagnostic established that this fixed244-batch snapshot is
+**NQ only** (31232/31232), not a mixed-domain sample. The8192 feature-input
+plan, each shard selection and final feature receipt now explicitly bind
+`domain_scope.kind=NQ_only_enrichment`. The existing mixed-domain6528 control
+is retained. Effects should first be interpreted on NQ heldout; no seven-domain
+or seven-benchmark gain is inferred from this enrichment. Domainwise viewed
+validation may be analyzed later, while untouched finals remain sealed.

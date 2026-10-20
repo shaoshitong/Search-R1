@@ -1,6 +1,6 @@
 """Independent Prefix20 feature-only replay of accepted peer raw G10.
 
-Explicit budget8192, hash-random seed1729; exclude controlled6528 and evaluation
+NQ-only enrichment, explicit budget8192, hash-random seed1729; exclude controlled6528 and evaluation
 identities before choosing. Both old5/new5 use the SAME qualified HF causal
 backend. No full response/EM files, retriever, new rollout or training is used.
 """
@@ -99,6 +99,13 @@ def prepare(base,raw_complete,controlled_plan,code_root,source_commit,*,budget=Q
     controlled=[dict(qid=q,question_hash=lookup[q]['question_hash']) for q in cohort]
     exclusions=[v['groups'] for v in conf['exclusions'].values()]
     selected,identity=choose(groups,controlled,exclusions,budget=budget,seed=seed)
+    domains={}
+    for group in selected:
+        domain=json.loads(group['qid'])[0]
+        domains[domain]=domains.get(domain,0)+1
+    if domains!={'nq':8192}:raise ValueError('This accepted partial snapshot is authorized as NQ-only enrichment; actual domain scope differs')
+    domain_scope=dict(kind='NQ_only_enrichment',question_counts=domains,mixed_domain_controlled6528_preserved=True,
+        cross_domain_or_seven_benchmark_generalization_claim=False,effect_interpretation='NQ heldout first; other domains require explicit domainwise validation; untouched finals remain sealed')
     q1,model_binding=q1_model_binding();source_events=read(checked(accepted['outputs']['source-events']))
     paths=[];seenpaths=set()
     for event in source_events['events']:
@@ -115,7 +122,7 @@ def prepare(base,raw_complete,controlled_plan,code_root,source_commit,*,budget=Q
     with (base/'prepare.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         immutable(base/'identity-plan.json',dict(role='train',groups=selected,summary=identity,
-            raw_complete=raw_complete,controlled6528=controlled_plan,labels_consulted=False))
+            raw_complete=raw_complete,controlled6528=controlled_plan,labels_consulted=False,domain_scope=domain_scope))
         parts=[selected[i::SHARDS] for i in range(SHARDS)];tidshard={t:i for i,part in enumerate(parts) for g in part for t in g['trajectory_ids']}
         wanted={t:g['qid'] for g in selected for t in g['trajectory_ids']};counts=[0]*SHARDS;streams=[];temporary=[];prefix_refs=[]
         try:
@@ -137,7 +144,7 @@ def prepare(base,raw_complete,controlled_plan,code_root,source_commit,*,budget=Q
                 questions=len(own),trajectories=[dict(qid=g['qid'],trajectory_id=t) for g in own for t in g['trajectory_ids']],
                 real_trajectories_per_question=10,label_blind_selection=True,prefix_tokens=20,capture_layers=list(r.LAYERS),
                 prefix_files=[ref(path)],model_files=q1['model_files'],source_model_binding=model_binding,
-                source_ingest=raw_complete,controlled_plan=controlled_plan,question_plan=ref(base/'identity-plan.json'),
+                source_ingest=raw_complete,controlled_plan=controlled_plan,domain_scope=domain_scope,question_plan=ref(base/'identity-plan.json'),
                 source_commit=source_commit,expected_code_root=str(code_root),shard=shard,shards=SHARDS,
                 eval_backend='R2_existing_original_G5_diagnostic512_and_viewed_selection2048_only',native_bitexact_equivalence_claim=False)
             p=base/('shard-%02d'%shard)/'inputs/selection.json';immutable(p,selection);selections.append(ref(p))
@@ -145,7 +152,7 @@ def prepare(base,raw_complete,controlled_plan,code_root,source_commit,*,budget=Q
             controlled_plan=controlled_plan,source_commit=source_commit,code_root=str(code_root),identity=identity,
             selections=selections,prefix_inputs=prefix_refs,source_prefix_files=paths,free_space_bytes=free,
             minimum_free_bytes=minimum_free_bytes,dense_uncompressed_upper_bytes=dense_upper_bytes(budget),
-            questions=budget,trajectories=10*budget,layers=list(r.LAYERS),feature_bank_created=False,
+            questions=budget,trajectories=10*budget,layers=list(r.LAYERS),domain_scope=domain_scope,feature_bank_created=False,
             actor_updates=0,probe_updates=0,full_or_own_EM_files_opened=False,new_rollouts_generated=0,
             GPU_jobs_submitted=False,source_model_binding=model_binding,time=time.time())
         immutable(base/'preparation.json',result);return result
@@ -232,7 +239,7 @@ def capture(selection_path,selection_sha,output,device_name='cuda:0'):
             reader.get([allids[0],allids[-1]],'cpu');reader.close()
         result=dict(status=STATUS,source_selection=source_ref,questions=selection['questions'],trajectories=len(selected),
             feature_manifests_by_capture_layer=layers,chunks=chunks,capture_layers=list(r.LAYERS),human_block_layers=[21,24,27],
-            source_runtime='huggingface_frozen_causal_prefill',attention_implementation='flash_attention_2',model_revision=r.REVISION,model_files=proofs,
+            source_runtime='huggingface_frozen_causal_prefill',attention_implementation='flash_attention_2',model_revision=r.REVISION,model_files=proofs,domain_scope=selection['domain_scope'],
             actor_frozen=True,actor_updates=0,probe_updates=0,new_responses_generated=0,native_bitexact_equivalence_claim=False,
             eval_backend='R2_existing_original_G5_diagnostic512_and_viewed_selection2048_only',max_cuda_memory_allocated=torch.cuda.max_memory_allocated(device),
             job_id=os.environ['SLURM_JOB_ID'],elapsed_seconds=time.monotonic()-started,runtime_code=ref(__file__),qualified_primitive=ref(r.__file__),time=time.time())
