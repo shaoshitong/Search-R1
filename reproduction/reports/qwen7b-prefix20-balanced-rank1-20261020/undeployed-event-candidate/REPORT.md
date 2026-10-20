@@ -1,0 +1,7 @@
+Undeployed candidate only. Current job742276 continues unchanged toward epoch5; do not silently replace its loss.
+
+For negative(homogeneous) G5, current binary groupBCE merges allwrong and allcorrect event masses, allowing an inverted extreme local minimum despite own-trajectory BCE. Candidate keeps every Mixed group's current loss and gradients bit-for-bit unchanged. On known allcorrect/allwrong groups it adds log(A+B)-log(A) or log(A+B)-log(B), respectively; A=prod(p),B=prod(1-p). The resulting group target is a3-event likelihood(allwrong,Mixed,allcorrect), with the same underlying five probabilities and unchanged q ranking/inference. No new model parameters or actor updates.
+
+Three synthetic CPU tests passed in localTorch2.8. They establish exact Mixed objective preservation, correctly signed negative-group logit gradients, and escape in a synthetic independent-logit Adam example where the current loss remains at wrongp≈.167. This does not establish real-model fit or generalization. No targetGPU qualification, actual trained checkpoint, or heldout selection result exists for this candidate.
+
+API distinction: `group_bce` stays the binary diagnostic; `group_event_nll` is the candidate's actual group optimization term. A future opt-in phase must log the distinction, inherit the then-latest complete raw/EMA/Adam/RNG checkpoint, qualify restore/next-update on real4ranks, and keep the active runtime immutable. Decide whether any next phase is needed from complete epoch5 fit and independently audited2048selection evidence.
