@@ -7,7 +7,7 @@ def command(args):
 def atomic(p,v):
  t=p.with_suffix('.tmp');t.write_text(json.dumps(v,indent=2));t.replace(p)
 with (b/'sampling-submit.lock').open('a') as guard:
- fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);proof=read(p);assert proof['status']=='EXTRA_REAL_G5_MATCHED6528_PREPARED_NOT_SUBMITTED' and proof['questions']==6528 and proof['trajectories']==32640
+ fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB);proof=read(p);assert proof['status']=='EXTRA_REAL_G5_PILOT_PREPARED_NOT_SUBMITTED' and proof['questions']==6528 and proof['trajectories']==32640
  for key in ['config','input_manifest','sampling_script']:assert sha(proof[key]['path'])==proof[key]['sha256']
  config=read(proof['config']['path']);assert config['warmup_only'] and not config['actor_updates_authorized'] and config['extra_response_indices']==list(range(5,10))
  script=pathlib.Path(proof['sampling_script']['path']);command(['bash','-n',str(script)])
