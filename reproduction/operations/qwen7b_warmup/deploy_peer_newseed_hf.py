@@ -50,13 +50,27 @@ else:
 pub=dict(status='PUBLISHED_HF_RAM_STREAM_CODE_STAGED_ONLY',source_commit=inputs['commit'],source=str(source),path=str(path),sha256=inputs['code_sha256'],bytes=len(raw),epoch=time.time())
 atomic(b/'source-publication.json',pub);print(json.dumps(pub))
 '''
-    elif action=='start':
+    elif action in ('start','resume-failed'):
+        if action=='resume-failed':
+            inputs=dict(inputs,resume_failed=True)
+            code='inputs='+repr(inputs)+'\n'+REMOTE
         code+=r'''
 assert sha(path)==inputs['code_sha256']
 secret=json.loads(sys.stdin.readline());assert secret['hf_token'] and set(secret)=={'hf_token'}
 with (b/'launch.lock').open('a') as guard:
  fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
  receipt=b/'launch.json'
+ if inputs.get('resume_failed'):
+  assert receipt.exists() and (b/'failure.json').exists() and not (b/'complete.json').exists()
+  previous=read(receipt);assert identity(previous['pid']) is None,'Prior uploader PID still exists'
+  with (b/'uploader.lock').open('a') as writer:
+   fcntl.flock(writer,fcntl.LOCK_EX|fcntl.LOCK_NB)
+  history=b/'failed-attempts'/('pid-%d-%s'%(previous['pid'],previous['start_ticks']))
+  history.mkdir(parents=True,exist_ok=False)
+  atomic(history/'retirement.json',dict(previous_launch=previous,verified_pid_absent=True,verified_writer_lock_free=True,epoch=time.time()))
+  for filename in ('launch.json','launch-intent.json','failure.json','controller.json','retry.json'):
+   old=b/filename
+   if old.exists():old.replace(history/filename)
  if receipt.exists():
   v=read(receipt);print(json.dumps(dict(status='EXISTING_LAUNCH_NOT_REPLAYED',launch=v,actual_start_ticks=identity(v['pid']))))
  else:
@@ -92,7 +106,7 @@ print(json.dumps(out))
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--action',choices=['stage','start','status'],required=True);p.add_argument('--control-root',type=Path,required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--action',choices=['stage','start','resume-failed','status'],required=True);p.add_argument('--control-root',type=Path,required=True);a=p.parse_args()
     repo=Path(__file__).resolve().parents[3];raw=Path(__file__).with_name('peer_newseed_hf_stream.py').read_bytes()
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
     if a.action=='stage':
@@ -118,9 +132,9 @@ def main():
         for i in range(inputs['chunks']):
             data=raw[i*4096:(i+1)*4096];call('chunk',dict(index=i,data=base64.b64encode(data).decode(),chunk_sha256=hashlib.sha256(data).hexdigest()))
         result=call('stage')
-    elif a.action=='start':
+    elif a.action in ('start','resume-failed'):
         token=(Path.home()/'.cache/huggingface/token').read_text().strip()
-        result=call('start',secret=dict(hf_token=token));token=None
+        result=call(a.action,secret=dict(hf_token=token));token=None
     else:result=call('status')
     out=a.control_root/'outputs/qwen7b-warmup-20261019'/('peer-newseed-hf-'+a.action+'.json')
     out.write_text(json.dumps(result,indent=2)+chr(10));print(json.dumps(result))

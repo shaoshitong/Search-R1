@@ -6,6 +6,9 @@ import tempfile
 import unittest
 import base64
 import shlex
+import sys
+import types
+from unittest.mock import patch
 
 from . import peer_newseed_hf_stream as m
 from . import deploy_peer_newseed_hf as deploy
@@ -25,6 +28,26 @@ def plan():
 
 
 class StreamTests(unittest.TestCase):
+    def test_installed_hub1_bounded_factory_keeps_native_hooks(self):
+        clients=[];factories=[]
+        def default_factory():
+            client=types.SimpleNamespace(timeout=None,hooks='native');clients.append(client);return client
+        fake=types.ModuleType('huggingface_hub');fake.set_client_factory=factories.append
+        internal=types.ModuleType('huggingface_hub.utils._http');internal.default_client_factory=default_factory
+        httpx=types.ModuleType('httpx');httpx.Timeout=lambda value,connect:(value,connect)
+        with patch.dict(sys.modules,{'huggingface_hub':fake,'huggingface_hub.utils._http':internal,'httpx':httpx}):
+            self.assertEqual(m.configure_bounded_http(),'httpx')
+            client=factories[0]()
+        self.assertEqual(client.timeout,(60,15));self.assertEqual(client.hooks,'native')
+
+    def test_hub0_uses_legacy_factory_only_when_needed(self):
+        factories=[];fake=types.ModuleType('huggingface_hub')
+        fake.configure_http_backend=lambda **kw:factories.append(kw['backend_factory'])
+        requests=types.ModuleType('requests');requests.Session=object
+        with patch.dict(sys.modules,{'huggingface_hub':fake,'requests':requests}):
+            self.assertEqual(m.configure_bounded_http(),'requests')
+        self.assertEqual(len(factories),1)
+
     def test_archive_and_member_scope_rejects_escape_or_hidden(self):
         root,value=plan();self.assertEqual(m.validate_snapshot(value,root),value)
         for name in ['../secret','/absolute','hidden.bin','model.pt']:
@@ -68,7 +91,7 @@ class StreamTests(unittest.TestCase):
         inputs=dict(base=deploy.PARENT+'/'+root.name,source=str(root),snapshot=root.name,
             code_sha256=hashlib.sha256(source).hexdigest(),commit='a'*40,chunks=3,
             index=0,data=base64.b64encode(b'x'*4096).decode(),chunk_sha256='a'*64)
-        for action in ('chunk','stage','start','status'):
+        for action in ('chunk','stage','start','resume-failed','status'):
             code=deploy.render(inputs,action);compile(code,'control-'+action,'exec')
             self.assertLess(len(('python3 -c '+shlex.quote(code)).encode()),16000)
         self.assertIn('secret=json.loads(sys.stdin.readline())',deploy.render(inputs,'start'))

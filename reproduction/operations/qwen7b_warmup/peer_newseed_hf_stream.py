@@ -146,6 +146,27 @@ def remote_snapshot(source):
     return validate_snapshot(json.loads(result.stdout), source)
 
 
+def configure_bounded_http():
+    """Support installed hub 0.x/1.x without changing its environment."""
+    import huggingface_hub as hub
+    if hasattr(hub, 'set_client_factory'):
+        import httpx
+        from huggingface_hub.utils._http import default_client_factory
+        def factory():
+            client = default_client_factory()
+            client.timeout = httpx.Timeout(60, connect=15)
+            return client
+        hub.set_client_factory(factory)
+        return 'httpx'
+    import requests
+    class BoundedSession(requests.Session):
+        def request(self, method, url, **kwargs):
+            if kwargs.get('timeout') is None: kwargs['timeout'] = (15,60)
+            return super().request(method, url, **kwargs)
+    hub.configure_http_backend(backend_factory=BoundedSession)
+    return 'requests'
+
+
 def run(base, source, token):
     if (not str(base).startswith('/home/lichen/qwen7b-newseed-to-hpc3-20261021/') or
             not token or not Path('/home/lichen').is_dir()):
@@ -153,14 +174,9 @@ def run(base, source, token):
     base.mkdir(parents=True, exist_ok=True)
     with (base/'uploader.lock').open('a') as guard:
         fcntl.flock(guard, fcntl.LOCK_EX|fcntl.LOCK_NB)
-        from huggingface_hub import HfApi, CommitOperationAdd, configure_http_backend
+        from huggingface_hub import HfApi, CommitOperationAdd
         from huggingface_hub.lfs import UploadInfo
-        import requests
-        class BoundedSession(requests.Session):
-            def request(self, method, url, **kwargs):
-                if kwargs.get('timeout') is None: kwargs['timeout'] = (15,60)
-                return super().request(method, url, **kwargs)
-        configure_http_backend(backend_factory=BoundedSession)
+        backend = configure_bounded_http()
         api = HfApi(token=token)
         info = api.repo_info(REPO, repo_type='dataset', timeout=30)
         if not info.private or info.id.lower() != REPO.lower(): raise ValueError('Exact authorized private repository required')
@@ -171,7 +187,7 @@ def run(base, source, token):
         prefix = 'peer-newseed-to-hpc3-20261021/'+plan['snapshot_id']
         atomic(base/'controller.json', dict(pid=os.getpid(),start_ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],
             source=str(source),repo=REPO,repo_type='dataset',private=True,prefix=prefix,
-            token_saved=False,source_staging_only=True,management_data_disk_staging=False,Mac_data_transit=False,epoch=time.time()))
+            token_saved=False,source_staging_only=True,management_data_disk_staging=False,Mac_data_transit=False,http_backend=backend,epoch=time.time()))
         accepted = []
         for group in plan['groups']:
             done = base/'uploaded'/(group['group']+'.json')
