@@ -54,7 +54,18 @@ logs=[]
 for f in sorted((p/'logs').glob('*.log'),key=lambda f:f.stat().st_mtime,reverse=True)[:4]:
  with f.open('rb')as q:q.seek(max(0,f.stat().st_size-3000));tail=q.read().decode(errors='replace')
  logs.append(dict(path=str(f.relative_to(p)),tail=tail,bytes=f.stat().st_size,mtime=f.stat().st_mtime))
-print(json.dumps(dict(observed_unix=time.time(),node=execution_node,base=BASE,resume_outer=resume_outer,world_size=config['world_size'],stage=stage,complete_outer=committed_outer,facts=facts,active_actor=active,progress=progress,receipt=read(p/'preparation/submit-receipt.json'),cleanup=read(p/'logs/cleanup-status.json'),logs=logs)))
+resource_latest=None;resource_verified=False
+resource_path=p/'logs/shared-resource-samples-5s.jsonl'
+producer=p/'repo/reproduction/operations/b_replica_retained18/shared_resources.py'
+if resource_path.exists()and producer.exists()and hashlib.sha256(producer.read_bytes()).hexdigest()==RESOURCES_SHA:
+ with resource_path.open('rb')as stream:
+  stream.seek(max(0,resource_path.stat().st_size-32000));tail=stream.read()
+ for line in tail.splitlines(keepends=True):
+  if line.endswith(b'\n'):
+   try:resource_latest=json.loads(line)
+   except ValueError:pass
+ resource_verified=resource_latest is not None
+print(json.dumps(dict(observed_unix=time.time(),node=execution_node,base=BASE,resume_outer=resume_outer,world_size=config['world_size'],stage=stage,complete_outer=committed_outer,facts=facts,active_actor=active,progress=progress,receipt=read(p/'preparation/submit-receipt.json'),cleanup=read(p/'logs/cleanup-status.json'),logs=logs,resource_latest=resource_latest,resource_origin_verified=resource_verified)))
 '''
 
 def observe():
@@ -64,7 +75,7 @@ def observe():
   last=json.loads((OUT/'SHARED_RESUME64_LATEST.json').read_text())
   if last.get('base')==BASE:cached={row['outer']:row for row in last['facts']if row.get('observation_cache')}
  except(OSError,ValueError,KeyError):pass
- v=json.loads(remote('BASE='+repr(BASE)+'\nCACHED_FACTS='+repr(cached)+'\n'+SCRIPT,f,target='h100-10',established_controller=True))
+ v=json.loads(remote('BASE='+repr(BASE)+'\nCACHED_FACTS='+repr(cached)+'\nRESOURCES_SHA='+repr(__import__('hashlib').sha256((Path(__file__).with_name('shared_resources.py')).read_bytes()).hexdigest())+'\n'+SCRIPT,f,target='h100-10',established_controller=True))
  receipt=v.get('receipt');leader=receipt['leader']if receipt else None
  if leader:
   code='WHO='+repr(leader)+'\n'+r'''
@@ -78,7 +89,23 @@ except subprocess.TimeoutExpired:
  gpu=dict(gpu=None,gpu_query_returncode=None,gpu_query_stderr='NVML_QUERY_TIMEOUT',gpu_observation_valid=False)
 print(json.dumps(dict(observed_unix=time.time(),same_birth=same,stat=st,**gpu)))
 '''
-  v['actual_node_health']=json.loads(remote(code,OUT/('shared-follow-health-'+str(time.time_ns())+'.json'),target=v['node'],established_controller=True))
+  sample=v.get('resource_latest');age=time.time()-(sample or{}).get('observed_unix',0)
+  if v.get('resource_origin_verified')and sample and 0<=age<=20 and sample['observed_unix']>=receipt['launched_unix']:
+   # The published5s producer performs the exact PID/start-ticks check on-node.
+   # A fresh complete producer record is direct process telemetry, not liveness
+   # inferred from a lock or a stale status file. Avoid redundant flaky SSH.
+   valid=sample.get('gpu_query',{}).get('valid',False);rows=[]
+   if valid:
+    for line in(sample.get('gpu')or'').splitlines():
+     fields=[x.strip()for x in line.split(',')]
+     if len(fields)==5:rows.append(', '.join(fields[i]for i in(0,2,3,4)))
+   valid=valid and len(rows)==8
+   v['actual_node_health']=dict(observed_unix=sample['observed_unix'],same_birth=sample['leader_same_birth'],
+    pid=leader['pid'],start_ticks=leader['start_ticks'],stat=None,source='fresh_published_on_node_birth_sampler',
+    telemetry_age_seconds=age,gpu='\n'.join(rows)+'\n'if valid else None,gpu_observation_valid=valid,
+    gpu_query_returncode=sample.get('gpu_query',{}).get('returncode'),gpu_query_stderr=sample.get('gpu_query',{}).get('stderr'))
+  else:
+   v['actual_node_health']=json.loads(remote(code,OUT/('shared-follow-health-'+str(time.time_ns())+'.json'),target=v['node'],established_controller=True))
  dest=f.with_name(f.name.replace('-transport','-actual'));dest.write_text(json.dumps(v,ensure_ascii=False,indent=2));v['evidence']=str(dest)
  (OUT/'SHARED_RESUME64_LATEST.json').write_text(json.dumps(v,ensure_ascii=False,indent=2))
  alive=bool(v.get('actual_node_health',{}).get('same_birth'))and not bool(v['cleanup'])
