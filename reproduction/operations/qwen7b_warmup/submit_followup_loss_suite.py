@@ -51,5 +51,5 @@ def main():
  r=m.run('python3 -c '+shlex.quote(code),account='mou176',source_address=address,timeout=90)
  values=[json.loads(x) for x in r.stdout.decode().splitlines() if x.startswith('{')]
  if r.returncode or not values:raise RuntimeError('Submission outcome requires inspection; do not repeat blindly: '+r.stderr.decode()[-1500:]+' '+r.stdout.decode()[-1000:])
- (a.control_root/'outputs/qwen7b-warmup-20261019/followup-'+a.group_base+'-submissions.json').write_text(json.dumps(values[-1],indent=2));print(json.dumps(values[-1]))
+ (a.control_root/'outputs/qwen7b-warmup-20261019'/('followup-'+a.group_base+'-submissions.json')).write_text(json.dumps(values[-1],indent=2));print(json.dumps(values[-1]))
 if __name__=='__main__':main()

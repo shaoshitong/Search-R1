@@ -1,0 +1,151 @@
+{
+  "time": 1792515861.3777068,
+  "jobs": {
+    "validation-g10-20261021": {
+      "launch.json": {
+        "pid": 1418100,
+        "start_ticks": "122623119",
+        "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021",
+        "kind": "validation",
+        "request": {
+          "kind": "validation",
+          "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021",
+          "collector_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+          "worker_sha256": "96372ab1ff9618e72ab8057bd12adff2539e95e410f3147abaae522d4181abf6",
+          "driver_commit": "5d205ac8e3a90ceafc7d960e52accc2bd39a9106"
+        },
+        "time": 1792515640.770581,
+        "no_generation": true,
+        "no_submission": true
+      },
+      "controller.json": {
+        "pid": 1418100,
+        "start_ticks": "122623119",
+        "kind": "validation",
+        "started": 1792515644.8476202,
+        "worker_sha256": "96372ab1ff9618e72ab8057bd12adff2539e95e410f3147abaae522d4181abf6",
+        "driver_commit": "5d205ac8e3a90ceafc7d960e52accc2bd39a9106",
+        "collector_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+        "no_GPU": true,
+        "no_submission": true,
+        "responses_generated": 0
+      },
+      "result.json": {
+        "status": "ALGORITHM_DATA_PREPARATION_COMPLETE_NOT_GENERATED",
+        "kind": "validation",
+        "result": {
+          "status": "RECIPE_SELECTION_VALIDATION_TWO_FRESH_G5_PLANS_PREPARED_NOT_GENERATED",
+          "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized",
+          "source_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+          "final_exclusion_plan": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/final-exclusion-plan.json",
+            "bytes": 1166193,
+            "sha256": "140581c9c0fa08465466952fb27cf1fa250e419a77e7c3b6edd194ccb7439839"
+          },
+          "isolation": {
+            "validation_questions": 2048,
+            "validation_qid_sha256": "172ff22c6ba0436c02ddc9898dfde9570665ef872bf6548413ea09f001cc6016",
+            "validation_question_hash_sha256": "a0e23833973a96f8a264e52afe0c7b21b72d35525e2fe3b845dded0d25e0926d",
+            "validation_normalized_question_sha256": "e090bdf13d279f167486627e5e96e756a69564524e06e72785b961f62a3e7686",
+            "disjoint_train_and512diagnostic": true,
+            "disjoint_confirmation_and_stability": true
+          },
+          "questions": 2048
+        },
+        "worker": {
+          "pid": 1418100,
+          "start_ticks": "122623119",
+          "kind": "validation",
+          "started": 1792515644.8476202,
+          "worker_sha256": "96372ab1ff9618e72ab8057bd12adff2539e95e410f3147abaae522d4181abf6",
+          "driver_commit": "5d205ac8e3a90ceafc7d960e52accc2bd39a9106",
+          "collector_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+          "no_GPU": true,
+          "no_submission": true,
+          "responses_generated": 0
+        },
+        "finished": 1792515658.5012155,
+        "responses_generated": 0,
+        "jobs_submitted": 0
+      },
+      "process_identity_live": false,
+      "log_bytes": 358,
+      "log_tail": "{\"status\": \"ALGORITHM_DATA_PREPARATION_COMPLETE_NOT_GENERATED\", \"kind\": \"validation\", \"result_status\": \"RECIPE_SELECTION_VALIDATION_TWO_FRESH_G5_PLANS_PREPARED_NOT_GENERATED\", \"base\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021\", \"responses_generated\": 0, \"jobs_submitted\": 0}\n"
+    },
+    "training-extraG5-128-20261021": {
+      "launch.json": {
+        "pid": 1418106,
+        "start_ticks": "122623120",
+        "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-128-20261021",
+        "kind": "extra128",
+        "request": {
+          "kind": "extra128",
+          "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-128-20261021",
+          "collector_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+          "worker_sha256": "96372ab1ff9618e72ab8057bd12adff2539e95e410f3147abaae522d4181abf6",
+          "driver_commit": "5d205ac8e3a90ceafc7d960e52accc2bd39a9106"
+        },
+        "time": 1792515640.7854476,
+        "no_generation": true,
+        "no_submission": true
+      },
+      "controller.json": {
+        "pid": 1418106,
+        "start_ticks": "122623120",
+        "kind": "extra128",
+        "started": 1792515644.8476732,
+        "worker_sha256": "96372ab1ff9618e72ab8057bd12adff2539e95e410f3147abaae522d4181abf6",
+        "driver_commit": "5d205ac8e3a90ceafc7d960e52accc2bd39a9106",
+        "collector_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+        "no_GPU": true,
+        "no_submission": true,
+        "responses_generated": 0
+      },
+      "result.json": {
+        "status": "ALGORITHM_DATA_PREPARATION_COMPLETE_NOT_GENERATED",
+        "kind": "extra128",
+        "result": {
+          "status": "EXTRA_REAL_G5_PILOT_PREPARED_NOT_SUBMITTED",
+          "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-128-20261021/materialized",
+          "questions": 128,
+          "trajectories": 640,
+          "source_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+          "source_qid_plan_sha256": "82a137df1f7ea7ad54e160f8ce78056f87591033ccef246fc3de3aa90bcbb745",
+          "config": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-128-20261021/materialized/config.json",
+            "bytes": 8237,
+            "sha256": "e7107480afe8b2fd5db1fd85fb8b466d15f6b98660e1fbd19146f8f5f9c0843d"
+          },
+          "input_manifest": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-128-20261021/materialized/inputs/manifest.json",
+            "bytes": 1843,
+            "sha256": "60578eb53029ce3e057d7ac975ce46e44a65ac49cb4aaa9cf82d8fd91ec69247"
+          },
+          "sampling_script": {
+            "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-128-20261021/materialized/sampling.sbatch",
+            "bytes": 1094,
+            "sha256": "8a7b3aead814e22dbf85db23f7f76cbe7d3df28e8f180b3c5c0d8952ab543960"
+          }
+        },
+        "worker": {
+          "pid": 1418106,
+          "start_ticks": "122623120",
+          "kind": "extra128",
+          "started": 1792515644.8476732,
+          "worker_sha256": "96372ab1ff9618e72ab8057bd12adff2539e95e410f3147abaae522d4181abf6",
+          "driver_commit": "5d205ac8e3a90ceafc7d960e52accc2bd39a9106",
+          "collector_commit": "c8b02d3b22b6a3267481e7c632b2f7113b018e93",
+          "no_GPU": true,
+          "no_submission": true,
+          "responses_generated": 0
+        },
+        "finished": 1792515727.442494,
+        "responses_generated": 0,
+        "jobs_submitted": 0
+      },
+      "process_identity_live": false,
+      "log_bytes": 335,
+      "log_tail": "{\"status\": \"ALGORITHM_DATA_PREPARATION_COMPLETE_NOT_GENERATED\", \"kind\": \"extra128\", \"result_status\": \"EXTRA_REAL_G5_PILOT_PREPARED_NOT_SUBMITTED\", \"base\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-extraG5-128-20261021\", \"responses_generated\": 0, \"jobs_submitted\": 0}\n"
+    }
+  }
+}

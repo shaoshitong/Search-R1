@@ -1,0 +1,226 @@
+{
+  "time": 1792515125.0852451,
+  "job_id": "742884",
+  "queue": "",
+  "accounting": "742884|COMPLETED|0:0|00:01:22\n",
+  "progress.json": {
+    "actor_optimizer_updates": 0,
+    "causal_prefill_passes": 10,
+    "elapsed_seconds": 2.315072120167315,
+    "epoch_time": 1792515107.5596445,
+    "expected_trajectories": 10,
+    "retained_policy_tokens": 200,
+    "status": "ACTUAL_FROZEN_CAUSAL_RECAPTURE_ADVANCING",
+    "trajectories": 10
+  },
+  "complete.json": {
+    "accepted_for_training": false,
+    "actor_frozen": true,
+    "actor_optimizer_updates": 0,
+    "attention_implementation": "flash_attention_2",
+    "bit_exact_native_vllm_claimed": false,
+    "capture_kind": "post_block_residual",
+    "capture_layers": [
+      20,
+      23,
+      26
+    ],
+    "causal_prefill_passes": 10,
+    "code": {
+      "bytes": 35121,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/code-18c46affb9c6/reproduction/operations/qwen7b_warmup/replay_probe_layers.py",
+      "sha256": "6a980269c8eab2b07845f8af88ea5aafb27d2a8ca07fbd803e3987719665deaa"
+    },
+    "code_files": {
+      "download_model.py": {
+        "bytes": 10662,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/code-18c46affb9c6/reproduction/operations/qwen7b_warmup/download_model.py",
+        "sha256": "ddcb2520e11913ff899b21238a5c042346ff5f114bc7b1020e306925e26d384f"
+      },
+      "native_capture.py": {
+        "bytes": 8461,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/code-18c46affb9c6/reproduction/operations/qwen7b_warmup/native_capture.py",
+        "sha256": "f4e2570fd89bf65086dcf9f55ab97ca9c04f04cac0acf8af9e5dd797f6d43bd4"
+      },
+      "packed_features.py": {
+        "bytes": 8993,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/code-18c46affb9c6/reproduction/operations/qwen7b_warmup/packed_features.py",
+        "sha256": "cfba55067bfa836e4d420097a3eb97b1a684ea313e1e0e3d0f7bc7db1dab6f54"
+      },
+      "replay_probe_layers.py": {
+        "bytes": 35121,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/code-18c46affb9c6/reproduction/operations/qwen7b_warmup/replay_probe_layers.py",
+        "sha256": "6a980269c8eab2b07845f8af88ea5aafb27d2a8ca07fbd803e3987719665deaa"
+      }
+    },
+    "comparison_file": {
+      "bytes": 1130,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/qualification-output/native-layer26-comparison.json",
+      "sha256": "7e98be6af4e9e71cbe842ee4cd8610b0a200ae65f27183ddcb65a9f5cb3779d5"
+    },
+    "device": "cuda:0",
+    "epoch_time": 1792515107.7697349,
+    "expected_causal_prefill_passes": 10,
+    "feature_manifests": {
+      "20": {
+        "bytes": 1779,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/qualification-output/layer-20/complete.json",
+        "sha256": "bba517ba92bb5e3acc4b8bf0fbeb8c7c50435b74220739aa29f8121c935a2730"
+      },
+      "23": {
+        "bytes": 1779,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/qualification-output/layer-23/complete.json",
+        "sha256": "fd70c3be54f580c989a235519ce77e53b64144d994d8977e41b1268af7980340"
+      },
+      "26": {
+        "bytes": 1779,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/qualification-output/layer-26/complete.json",
+        "sha256": "ac62cadab64be763ca5f71c1d1c6e75fa0e133e3f76a11b05f02c3093dc90400"
+      }
+    },
+    "full_bank_recapture_claimed": false,
+    "future_generated_tokens_used": false,
+    "gpu_name": "NVIDIA H100 80GB HBM3",
+    "hf_hidden_state_indices": [
+      21,
+      24,
+      27
+    ],
+    "job_id": "742884",
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "model_files": {
+      "config.json": {
+        "bytes": 663,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/config.json",
+        "sha256": "7463bb0ea78315365e6c6b74de4e73bbcc8359dfb0c5a737584e077d42c0b03c"
+      },
+      "model-00001-of-00004.safetensors": {
+        "bytes": 3945441440,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/model-00001-of-00004.safetensors",
+        "sha256": "a1333e6293854747c481288ea83b348226af178dd565c49b6f9495ba1966aba7"
+      },
+      "model-00002-of-00004.safetensors": {
+        "bytes": 3864726352,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/model-00002-of-00004.safetensors",
+        "sha256": "f5d25a2772cb825164a2a2c0fb6d51a87e282abf21e4dd75bc5cfb3cd0ea6185"
+      },
+      "model-00003-of-00004.safetensors": {
+        "bytes": 3864726424,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/model-00003-of-00004.safetensors",
+        "sha256": "8efdec4c1bc12317ae1a38dc42b595ce777738a64deea3fcb8a0a91381bcdfd5"
+      },
+      "model-00004-of-00004.safetensors": {
+        "bytes": 3556377672,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/model-00004-of-00004.safetensors",
+        "sha256": "1a72d403cdf0c1ec3cb7f289f17b394a01e64394c2e9b3c0f94dbce3faf879bd"
+      },
+      "model.safetensors.index.json": {
+        "bytes": 27752,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/model.safetensors.index.json",
+        "sha256": "624bf7c47cd12468fdc16e38a47cf4f19e0415b859a223ba3c027eed2f0e1028"
+      },
+      "official-inventory.json": {
+        "bytes": 10931,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/official-snapshot-view/official-inventory.json",
+        "sha256": "1c074aba09f1e0a65e07bb36aebeab07e9cedfe62d0c9fd0594d4d2360e82b36"
+      }
+    },
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "policy_source": "own_saved_actual_request_and_retained_segment_tokens_only",
+    "prefix_tokens": 20,
+    "question_max_tokens": 273,
+    "question_source": "first_turn0_initial_prompt_slots_only_causal_attention",
+    "source_native_files": [
+      {
+        "bytes": 1741,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-packed/complete.json",
+        "sha256": "71528f297532559b2aa602f84c6d8c1ce585c8960181adbe1306335468353946"
+      },
+      {
+        "bytes": 11869391,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-packed/question.bin",
+        "sha256": "d9436e2e36fe1fb0d3c49f2c44909bf0b3e7f22965a58efddd429c818a3d827a"
+      },
+      {
+        "bytes": 0,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-packed/delta.bin",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "bytes": 91750400,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-packed/policy.bin",
+        "sha256": "59b59bc3eaab8b7e5d60c35bce02dc1ee4efb7acb88fbdd03ae8daf971da7b0c"
+      },
+      {
+        "bytes": 300763,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-packed/index.jsonl",
+        "sha256": "8e633516fa32e051e3df29ffa9cabbb28336b19dadcb4295f12ba4c2edb95c77"
+      },
+      {
+        "bytes": 1956864,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-packed/prototype.bin",
+        "sha256": "482dd065b6975c8c5555084e78f64428c75ddab0bbe769c6ed9ae60a7b72a9c6"
+      }
+    ],
+    "source_prefix_files": [
+      {
+        "bytes": 80715,
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/sampling/shard-00/batches/batch-000000/outers/outer-000001/prefix/rank-0-prefix.jsonl.gz",
+        "sha256": "44de2df24dff354b8b77596bda67d77bdd0a37c98187f98d74f8930b170ea9f8"
+      }
+    ],
+    "source_selection": {
+      "bytes": 3020,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/inputs/fixture-selection.json",
+      "sha256": "6f9fdb370eea01df6600d31d3993b34b4dfc768d4c1be2808134bb8c71ca982e"
+    },
+    "status": "BOUNDED_HF_REPLAY_CAPTURE_AND_NATIVE_COMPARISON_COMPLETE",
+    "torch_version": "2.4.0+cu121",
+    "trajectories": 10,
+    "transformers_version": "4.46.3"
+  },
+  "native-layer26-comparison.json": {
+    "accepted_for_training": false,
+    "bit_exact_claimed": false,
+    "metrics": {
+      "all_retained": {
+        "elements": 5376000,
+        "global_cosine": 0.9998926306974466,
+        "max_absolute_error": 4.0,
+        "mean_absolute_error": 0.09063523394720895,
+        "mean_token_cosine": 0.9997560212993604,
+        "min_token_cosine": 0.9991107664190417,
+        "relative_l2": 0.014653839510670107,
+        "tokens": 1500,
+        "valid_nonzero_cosine_tokens": 1500
+      },
+      "initial_question": {
+        "elements": 4659200,
+        "global_cosine": 0.9998906930300497,
+        "max_absolute_error": 4.0,
+        "mean_absolute_error": 0.0945590180355114,
+        "mean_token_cosine": 0.9997317960845,
+        "min_token_cosine": 0.9991107664190417,
+        "relative_l2": 0.014785830807351503,
+        "tokens": 1300,
+        "valid_nonzero_cosine_tokens": 1300
+      },
+      "policy_prefix20": {
+        "elements": 716800,
+        "global_cosine": 0.9999146387545383,
+        "max_absolute_error": 4.0,
+        "mean_absolute_error": 0.06513063737324305,
+        "mean_token_cosine": 0.9999134851959542,
+        "min_token_cosine": 0.9997738408700363,
+        "relative_l2": 0.013073648154445054,
+        "tokens": 200,
+        "valid_nonzero_cosine_tokens": 200
+      }
+    },
+    "numeric_acceptance_pending": true,
+    "reference": "vllm_actual_native_sampling_postblock26_hidden_plus_residual",
+    "replay": "huggingface_causal_prefill_hidden_states27"
+  },
+  "log_bytes": 1943,
+  "log_tail": "You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.\n\rLoading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]\rLoading checkpoint shards:  25%|\u2588\u2588\u258c       | 1/4 [00:00<00:01,  1.65it/s]\rLoading checkpoint shards:  50%|\u2588\u2588\u2588\u2588\u2588     | 2/4 [00:02<00:02,  1.21s/it]\rLoading checkpoint shards:  75%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u258c  | 3/4 [00:03<00:01,  1.21s/it]\rLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.24it/s]\rLoading checkpoint shards: 100%|\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588| 4/4 [00:03<00:00,  1.10it/s]\n{\"status\": \"BOUNDED_HF_REPLAY_CAPTURE_AND_NATIVE_COMPARISON_COMPLETE\", \"output\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-layer-qualification-20261021/qualification-output\", \"trajectories\": 10, \"causal_prefill_passes\": 10, \"native_comparison\": {\"all_retained\": {\"tokens\": 1500, \"elements\": 5376000, \"mean_absolute_error\": 0.09063523394720895, \"max_absolute_error\": 4.0, \"relative_l2\": 0.014653839510670107, \"global_cosine\": 0.9998926306974466, \"mean_token_cosine\": 0.9997560212993604, \"min_token_cosine\": 0.9991107664190417, \"valid_nonzero_cosine_tokens\": 1500}, \"initial_question\": {\"tokens\": 1300, \"elements\": 4659200, \"mean_absolute_error\": 0.0945590180355114, \"max_absolute_error\": 4.0, \"relative_l2\": 0.014785830807351503, \"global_cosine\": 0.9998906930300497, \"mean_token_cosine\": 0.9997317960845, \"min_token_cosine\": 0.9991107664190417, \"valid_nonzero_cosine_tokens\": 1300}, \"policy_prefix20\": {\"tokens\": 200, \"elements\": 716800, \"mean_absolute_error\": 0.06513063737324305, \"max_absolute_error\": 4.0, \"relative_l2\": 0.013073648154445054, \"global_cosine\": 0.9999146387545383, \"mean_token_cosine\": 0.9999134851959542, \"min_token_cosine\": 0.9997738408700363, \"valid_nonzero_cosine_tokens\": 200}}, \"accepted_for_training\": false}\n"
+}

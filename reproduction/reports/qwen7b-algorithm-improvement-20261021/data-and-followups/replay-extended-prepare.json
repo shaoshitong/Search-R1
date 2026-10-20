@@ -1,0 +1,63 @@
+{
+  "status": "BOUNDED_REPLAY_EXTENDED_FIXTURE_PREPARED",
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-extended-qualification-20261021",
+  "selection": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/replay-extended-qualification-20261021/inputs/fixture-selection.json",
+    "bytes": 18765,
+    "sha256": "11009065ef0451de603f75dad3eb09ba85829292a1b91f64f44adcf14ac408cb"
+  },
+  "questions": 24,
+  "trajectories": 120,
+  "coverage": {
+    "selection_rule": "first-declared-sealed-batch-of-first4-sorted-sealed-shards; complete-authentic-G5-only; anchors=most-multisegment,largest-later-context-gap,longest-prompt,shortest-prompt,short-terminal-policy,longest-causal-context; then-SHA256(replay-extended-v1:NUL:qid); capped24questions; no-full-or-EM-read",
+    "label_blind": true,
+    "anchors": [
+      {
+        "qid": "[\"nq\", \"nq:train:37844\"]",
+        "reason": "most_multisegment_prefix_trajectories"
+      },
+      {
+        "qid": "[\"nq\", \"nq:train:37760\"]",
+        "reason": "largest_observed_later_causal_context_gap"
+      },
+      {
+        "qid": "[\"nq\", \"nq:train:40544\"]",
+        "reason": "longest_initial_prompt"
+      },
+      {
+        "qid": "[\"nq\", \"nq:train:6407\"]",
+        "reason": "shortest_initial_prompt"
+      }
+    ],
+    "available": {
+      "questions": 512,
+      "trajectories": 2560,
+      "multisegment_trajectories": 4,
+      "later_turn_trajectories": 4,
+      "positive_later_context_gap_trajectories": 4,
+      "prompt_length_min": 128,
+      "prompt_length_max": 141,
+      "short_terminal_policy_trajectories": 0,
+      "max_actual_causal_context_tokens": 648
+    },
+    "selected": {
+      "questions": 24,
+      "trajectories": 120,
+      "multisegment_trajectories": 2,
+      "later_turn_trajectories": 2,
+      "positive_later_context_gap_trajectories": 2,
+      "prompt_length_min": 128,
+      "prompt_length_max": 141,
+      "short_terminal_policy_trajectories": 0,
+      "max_actual_causal_context_tokens": 648
+    },
+    "multisegment_present": true,
+    "additional_later_context_present": true,
+    "semantic_tool_calls_confirmed": false,
+    "tool_coverage_claim": "No semantic tool-call claim: only saved causal token/turn metadata inspected",
+    "full_rollouts_read": false,
+    "own_EM_read": false
+  },
+  "immutable_Q1_code_and_model_reused": true,
+  "submitted": false
+}

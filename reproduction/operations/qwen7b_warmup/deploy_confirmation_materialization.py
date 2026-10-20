@@ -43,14 +43,16 @@ def digest(raw):
     return hashlib.sha256(raw).hexdigest()
 
 
-def import_closure(paths, load):
+def import_closure(paths, load, seeds=None, resource_files=None):
     """Conservative all-branches static closure; no source import/execution.
 
     Runtime-loaded third-party libraries remain in the already-qualified remote
     environment. The local retriever subprocess is an explicit entry seed.
     """
     paths = set(paths)
-    pending, chosen, outside, unresolved = list(SEEDS)+list(RESOURCE_FILES), set(), set(), set()
+    seeds = SEEDS if seeds is None else tuple(seeds)
+    resource_files = RESOURCE_FILES if resource_files is None else tuple(resource_files)
+    pending, chosen, outside, unresolved = list(seeds)+list(resource_files), set(), set(), set()
     local_roots = {'reproduction', 'search_g1', 'search_r1', 'verl'}
     def add_module(parts, required=False):
         if not parts:
@@ -104,18 +106,20 @@ def import_closure(paths, load):
     return sorted(chosen), sorted(outside), sorted(unresolved)
 
 
-def make_bundle(paths, load, commit):
-    selected, external, unresolved = import_closure(paths, load)
+def make_bundle(paths, load, commit, seeds=None, resource_files=None, manifest_name=MANIFEST_NAME):
+    own_seeds = SEEDS if seeds is None else tuple(seeds)
+    own_resources = RESOURCE_FILES if resource_files is None else tuple(resource_files)
+    selected, external, unresolved = import_closure(paths, load, own_seeds, own_resources)
     contents = {name:load(name) for name in selected}
     files = {name:dict(bytes=len(raw), sha256=digest(raw)) for name, raw in contents.items()}
-    manifest = dict(commit=commit, files=files, entry_seeds=SEEDS,
-        resource_files=RESOURCE_FILES, closure='recursive AST imports including conditional/function bodies and package initializers',
-        explicit_subprocess_entry='reproduction.operations.qwen7b_warmup.retriever',
+    manifest = dict(commit=commit, files=files, entry_seeds=own_seeds,
+        resource_files=own_resources, closure='recursive AST imports including conditional/function bodies and package initializers',
+        explicit_subprocess_entry=('reproduction.operations.qwen7b_warmup.retriever' if seeds is None else None),
         external_environment_import_roots=external,
         unresolved_repository_optional_imports=unresolved,
         critical_runtime_import_smoke_required=True, code_only=True)
     manifest_raw = json.dumps(manifest, sort_keys=True, separators=(',', ':')).encode()
-    contents[MANIFEST_NAME] = manifest_raw
+    contents[manifest_name] = manifest_raw
     stream = io.BytesIO()
     with gzip.GzipFile(fileobj=stream, mode='wb', mtime=0, filename='') as zipped:
         with tarfile.open(fileobj=zipped, mode='w') as archive:
@@ -125,7 +129,7 @@ def make_bundle(paths, load, commit):
                 archive.addfile(member, io.BytesIO(raw))
     return stream.getvalue(), dict(source_manifest_sha256=digest(manifest_raw),
         files=len(files), source_bytes=sum(len(raw) for raw in contents.values()),
-        entry_seeds=list(SEEDS), resource_files=list(RESOURCE_FILES),
+        entry_seeds=list(own_seeds), resource_files=list(own_resources),
         external_environment_import_roots=external,
         unresolved_repository_optional_imports=unresolved)
 
