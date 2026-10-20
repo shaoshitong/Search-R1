@@ -1,0 +1,271 @@
+{
+  "status": "NINE_PRODUCTIVE_MODEL_ENGINES_FULL_CANONICAL_DATASET_INCOMPLETE",
+  "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+  "seed": 20261021,
+  "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+  "bank": {
+    "epoch": 1792534491.5150769,
+    "questions": 41344,
+    "trajectories": 206720,
+    "sealed_batches": 323,
+    "unresolved_attempts_failed": 0,
+    "all_attempts_failed": 12
+  },
+  "bank_original": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-pool-follow-actual-1792534492284116000.json",
+    "sha256": "51991a7b52850f1410147150233bf00997c6f1c6e4a1a4ef06c894d76dcfb57e"
+  },
+  "independent_incremental_audit": {
+    "auditor_sha256": "3def055adebfdb38e9326b9db385338c44800160c1b0a64e1ee78d8c3b68b906",
+    "base": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+    "cache_reused_batches": 299,
+    "canonical_unique_input_qids": 169028,
+    "discovered_input_batches": 1322,
+    "epoch": 1792534198.2468426,
+    "expected": {
+      "batches": 1322,
+      "questions": 169028,
+      "trajectories": 845140
+    },
+    "failed_batches": 0,
+    "independently_read_batches": 17,
+    "labels": 202240,
+    "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "policy_tokens": 20045697,
+    "questions": 40448,
+    "response_tokens": 122924902,
+    "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+    "sealed_pending_batches": 0,
+    "seed": 20261021,
+    "short_terminal_prefixes": 7,
+    "states_shards_independently_audited": false,
+    "status": "INCOMPLETE",
+    "strict_em_ones": 67178,
+    "strict_em_recomputed": false,
+    "strict_em_source": "reproduction/prefix20_online/rollout.py:strict_label -> search_g1.signals.decode_segments/contexts -> verl.utils.reward_score.qa_em.em_check",
+    "strict_em_verification": "Exact own-em/full label correspondence only; tokenizer-based strict_label was not rerun",
+    "trajectories": 202240,
+    "uniqueness_basis": "Per-batch exact actual trajectory IDs and G5 indices; globally unique canonical qid and candidate ordinal",
+    "unsealed_batches": 1006,
+    "utc": "2026-10-20T22:09:58.246852+00:00",
+    "verified_batches": 316,
+    "verified_unique_qids": 40448,
+    "verified_unique_trajectories": 202240,
+    "first_errors": []
+  },
+  "audit_original": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-audit-control-1792534230042261000.json",
+    "sha256": "9c77c475b9010470ddadbf8d84fcd3f2de43c1b97a50c25a356ba74465739a29"
+  },
+  "active_engine_progress": [
+    {
+      "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-relay10-2371322/attempt-1792525689967603814-2371322",
+      "progress": {
+        "completed_own_batches": 6,
+        "deadline_epoch": 1792550334.9709504,
+        "epoch": 1792533852.2299554,
+        "global_goal_complete": false,
+        "job_id": "relay10-2371322",
+        "latest_batch_seconds": 1363.9227119609714,
+        "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-00/batch-000257.json",
+        "longest_batch_seconds": 1398.3423019684851,
+        "questions": 768,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+        "trajectories": 3840
+      }
+    },
+    {
+      "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-relay10-2452973/attempt-1792527509477160673-2452973",
+      "progress": {
+        "completed_own_batches": 5,
+        "deadline_epoch": 1792550035.480702,
+        "epoch": 1792534333.5198221,
+        "global_goal_complete": false,
+        "job_id": "relay10-2452973",
+        "latest_batch_seconds": 1353.6707807816565,
+        "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-00/batch-000265.json",
+        "longest_batch_seconds": 1460.7776028625667,
+        "questions": 640,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+        "trajectories": 3200
+      }
+    },
+    {
+      "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-shared5-1490214/attempt-1792522434235917966-1490214",
+      "progress": {
+        "completed_own_batches": 18,
+        "deadline_epoch": 1792550934.2405615,
+        "epoch": 1792533685.9494324,
+        "global_goal_complete": false,
+        "job_id": "shared5-1490214",
+        "latest_batch_seconds": 930.8909782400005,
+        "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-00/batch-000262.json",
+        "longest_batch_seconds": 1179.0281113820092,
+        "questions": 2304,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+        "trajectories": 11520
+      }
+    },
+    {
+      "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source5-model-2013773/attempt-1792528575096814109-2013773",
+      "progress": {
+        "completed_own_batches": 5,
+        "deadline_epoch": 1792550334.1008775,
+        "epoch": 1792533264.768847,
+        "global_goal_complete": false,
+        "job_id": "source5-model-2013773",
+        "latest_batch_seconds": 1400.2510883520008,
+        "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-00/batch-000250.json",
+        "longest_batch_seconds": 1416.4918262549909,
+        "questions": 640,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+        "trajectories": 3200
+      }
+    },
+    {
+      "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source5-model-2193217/attempt-1792531341247659337-2193217",
+      "progress": {
+        "completed_own_batches": 20,
+        "deadline_epoch": 1792550334.251657,
+        "epoch": 1792534475.219184,
+        "global_goal_complete": false,
+        "job_id": "source5-model-2193217",
+        "latest_batch_seconds": 177.8966743409983,
+        "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-00/batch-000292.json",
+        "longest_batch_seconds": 188.80740605600295,
+        "questions": 2560,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+        "trajectories": 12800
+      }
+    },
+    {
+      "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source5-model-2194351/attempt-1792531357302964383-2194351",
+      "progress": {
+        "completed_own_batches": 13,
+        "deadline_epoch": 1792550334.3082783,
+        "epoch": 1792534347.9096117,
+        "global_goal_complete": false,
+        "job_id": "source5-model-2194351",
+        "latest_batch_seconds": 225.63120757399884,
+        "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-00/batch-000289.json",
+        "longest_batch_seconds": 249.1111923319986,
+        "questions": 1664,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+        "trajectories": 8320
+      }
+    },
+    {
+      "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source5-model-2271442/attempt-1792533221802950738-2271442",
+      "progress": {
+        "completed_own_batches": 4,
+        "deadline_epoch": 1792547334.2405615,
+        "epoch": 1792534462.272528,
+        "global_goal_complete": false,
+        "job_id": "source5-model-2271442",
+        "latest_batch_seconds": 312.6323289169959,
+        "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-00/batch-000290.json",
+        "longest_batch_seconds": 320.9315464169922,
+        "questions": 512,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+        "trajectories": 2560
+      }
+    },
+    {
+      "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source5-model-2272406/attempt-1792533234513606385-2272406",
+      "progress": {
+        "completed_own_batches": 4,
+        "deadline_epoch": 1792547334.2405615,
+        "epoch": 1792534482.1951084,
+        "global_goal_complete": false,
+        "job_id": "source5-model-2272406",
+        "latest_batch_seconds": 305.4924503140064,
+        "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-00/batch-000291.json",
+        "longest_batch_seconds": 317.47998241298774,
+        "questions": 512,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+        "trajectories": 2560
+      }
+    },
+    {
+      "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source5-model-2272887/attempt-1792533246892376691-2272887",
+      "progress": {
+        "completed_own_batches": 3,
+        "deadline_epoch": 1792547334.2405615,
+        "epoch": 1792534371.64932,
+        "global_goal_complete": false,
+        "job_id": "source5-model-2272887",
+        "latest_batch_seconds": 396.35545745299896,
+        "latest_input": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/inputs/shard-00/batch-000287.json",
+        "longest_batch_seconds": 396.35545745299896,
+        "questions": 384,
+        "run_id": "70188b8e50fd4b45bc420ce58014f46e",
+        "status": "POOL_OWN_SEALED_BATCH_ADVANCED",
+        "trajectories": 1920
+      }
+    }
+  ],
+  "new_tp1_initial_two_whole_plus_next_complete": true,
+  "new_tp1_latest_direct_status": {
+    "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-three-replacement-one-connection-actual-1792534469965909000.json",
+    "sha256": "ae9d4018b79141f8bc86b0753d580a767a0fbcc91a87a478f98f11e5f5d1004c"
+  },
+  "controlled_retired_tp4": {
+    "pid": 2021698,
+    "birth": "7430669",
+    "retained_own_complete_batches": 1,
+    "original_unsealed_full_progress": 600,
+    "unsealed_phase_retained_and_replayed_not_stitched": true,
+    "root_and_retriever_and_other_engines_not_signalled": true,
+    "terminal_proof_sha256": "67b096a2d6852b3791184e05c8c44cf9be45cd826f367124cec27bec90a8024c",
+    "independent_closure_full_small_readback": {
+      "path": "/Users/shaoshitong/Documents/Codex/2026-10-02/users-shaoshitong-documents-remote-codex-control/work/qwen7b-tp4-to-three-tp1-closure-full-small-readback-1792534309335809000.json",
+      "sha256": "55ae10a6d344be852f4d5ad10c5a6192eda89428f67ae15193dbe565a826bfa3",
+      "artifacts": [
+        {
+          "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/pool/jobs/job-source5-model-2021698/attempt-1792528661046672282-2021698/resolution.json",
+          "bytes": 1744,
+          "sha256": "df2000822a7097bd88a104de951c3510091c22ba2f458fc4c361ef4c8b87b551"
+        },
+        {
+          "path": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020/preparation/source5-model-tp4-to-tp1-v1/tp1-productive-closure/complete.json",
+          "bytes": 75238,
+          "sha256": "3a7c9ef629e84995db4f144708e2d6326bbca566469ad1a123b6f352102facac"
+        }
+      ]
+    }
+  },
+  "transport": {
+    "mode": "configured direct mgmt-host with retained18 inner route",
+    "removed_task_forced_Mac7892_proxy_from": [
+      "shared_vram_control.py",
+      "pool_control.py",
+      "audit_control.py"
+    ],
+    "global_sampling_not_restarted": true,
+    "disconnect_root_cause_not_isolated": true,
+    "current_persistent_readonly_session": 48516,
+    "previous_proxy_observer49023_local_only_retired": true,
+    "previous_sequential_observer11270_local_only_retired_after_acceptance": true
+  },
+  "storage": {
+    "physical_own_directory": "/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+    "shared_alias": "/mnt/shared/workspace/training_data_node_10/shaoshitong/qwen7b-resample-seed20261021-g5-20261020",
+    "physical_node": "h100-10",
+    "other_user_disk_not_used": true,
+    "full_outputs_weights_tensors_on_Mac": false
+  },
+  "expected_questions": 169028,
+  "expected_trajectories": 845140,
+  "actor_updates": 0,
+  "probe_updates": 0,
+  "hidden_cached": false,
+  "full_goal_complete": false
+}
