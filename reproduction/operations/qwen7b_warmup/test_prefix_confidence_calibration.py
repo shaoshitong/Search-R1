@@ -18,9 +18,9 @@ def features(q=4):
     return np.stack((lp.mean(-1),lp.std(-1),lp.min(-1),lp[...,:5].mean(-1),lp[...,-5:].mean(-1),np.ones((q,10))),-1)
 
 
-def binding():
+def binding(mode='prefix_full8'):
     return dict(qualification_only=True,availability_qualified=True,
-                availability_receipt=dict(path='synthetic-only',bytes=0,sha256='0'*64),source_kind='CPU_TOY_NO_REAL_DATA')
+                availability_receipt=dict(path='synthetic-only',bytes=0,sha256='0'*64),source_kind='CPU_TOY_NO_REAL_DATA',calibration_mode=mode)
 
 
 class PrefixCalibrationTest(unittest.TestCase):
@@ -82,11 +82,26 @@ class PrefixCalibrationTest(unittest.TestCase):
 
     def test_identity_clipping_interface_and_frozen_g5_inference(self):
         p=np.array([[0,1,.2,.5,.9]]*4);z=m.probability_logits(p)
-        state=dict(raw=torch.zeros(8,dtype=torch.float64),normalizer=m.normalizer_fit(features(4),list('abcd')))
+        state=dict(raw=torch.zeros(8,dtype=torch.float64),normalizer=m.normalizer_fit(features(4),list('abcd')),use_prefix=True)
         x=features(4)[:,:5];scores=m.score(z,x,state)
         pp=np.clip(p,1e-6,1-1e-6);expected=1-pp.prod(1)-(1-pp).prod(1)
         np.testing.assert_allclose(scores,expected,atol=2e-15,rtol=2e-15)
         self.assertTrue(np.isfinite(z).all());self.assertEqual(m.MAX_ITER,40);self.assertEqual(m.MAX_EVAL,60)
+
+    def test_matched2_ignores_features_identity_mode_binding_and_timeout_state(self):
+        x=features(8);z=np.random.default_rng(4).normal(size=(8,10));y=(z>.2).astype(float);qids=['q%d'%i for i in range(8)]
+        raw=torch.zeros(8,dtype=torch.float64)
+        self.assertTrue(torch.equal(m.calibrated(z,None,raw,None,False),torch.tensor(z)))
+        state,report=m.fit(z,y,None,qids,binding('matched_platt2'),use_prefix=False,qualification_only=True,max_iter=2,max_eval=8)
+        self.assertIsNone(state['normalizer']);self.assertTrue(torch.equal(state['raw'][2:],torch.zeros(6,dtype=torch.float64)))
+        restored=m.restore(state);self.assertFalse(restored['use_prefix'])
+        bad=copy.deepcopy(state);bad['mode']='prefix_full8'
+        with self.assertRaisesRegex(ValueError,'mode'):m.restore(bad)
+        partial=[]
+        with self.assertRaises(TimeoutError):
+            m.fit(z,y,x,qids,binding(),qualification_only=True,deadline_monotonic=0,checkpoint_callback=lambda v:partial.append(v))
+        self.assertEqual(len(partial),1);self.assertFalse(partial[0]['accepted']);self.assertFalse(partial[0]['holdout_assessed'])
+        with self.assertRaises(ValueError):m.restore(partial[0])
 
 
 if __name__=='__main__':unittest.main()
