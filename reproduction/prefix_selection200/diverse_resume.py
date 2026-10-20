@@ -109,7 +109,7 @@ def validate_imported(base,config):
     if config.get('resume_joint',{}).get('recovery_mode')=='diverse_eight_to_four_cp181_v1':
         from .diverse_four_resume import validate_imported as four_validate
         return four_validate(base,config)
-    if config.get('resume_joint',{}).get('recovery_mode')=='diverse_same_eight_latest_joint_v1':
+    if config.get('resume_joint',{}).get('recovery_mode')in ('diverse_same_eight_latest_joint_v1','diverse_same_four_latest_joint_v1'):
         from .diverse_native_resume import validate_imported as native_validate
         return native_validate(base,config)
     b=Path(base);ref=read(b/'preparation/resume-joint-receipt.json');j=read(b/'latest-joint.json')

@@ -23,7 +23,7 @@ def validate(config):
     if not enabled(config):return
     from .contract import WORLD
     cards=list(range(8)) if WORLD==8 else [4,5,6,7]
-    if WORLD==4 and config.get('resume_joint',{}).get('recovery_mode')=='diverse_eight_to_four_cp181_v1':cards=[0,1,2,3]
+    if WORLD==4 and config.get('resume_joint',{}).get('recovery_mode')in ('diverse_eight_to_four_cp181_v1','diverse_same_four_latest_joint_v1'):cards=[0,1,2,3]
     if config.get('selection_probe_experiment')!='balanced_online_ema' or config['physical_gpu_indices']!=cards:raise ValueError('Configured B cards only')
     if config['b_progressive'].get('resume_outer')!=50:raise ValueError('Initial fork is complete CP50')
 

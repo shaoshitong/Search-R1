@@ -9,7 +9,7 @@ def validate_runtime_compatibility(c):
  if proof.get('status')=='DIVERSE_CP181_EIGHT_TO_FOUR_FULL_STATE':
   from .diverse_four_resume import validate_compatibility
   return validate_compatibility(c,proof)
- if proof.get('status')=='DIVERSE_SAME_EIGHT_NATIVE_RECOVERY':
+ if proof.get('status')in ('DIVERSE_SAME_EIGHT_NATIVE_RECOVERY','DIVERSE_SAME_FOUR_NATIVE_RECOVERY'):
   from .diverse_native_resume import validate_compatibility
   return validate_compatibility(c,proof)
  if (sha(ref['path'])!=ref['sha256'] or proof['status']!='EIGHT_MONITOR_MAPPING_ZERO_WRITE_REPAIR'
