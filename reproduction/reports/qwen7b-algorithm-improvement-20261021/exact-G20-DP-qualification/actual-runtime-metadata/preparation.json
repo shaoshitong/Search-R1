@@ -1,0 +1,67 @@
+{
+  "status": "ACTUAL_NATIVE_G20_ALL15504_MATCHED136_PREPARED_NOT_SUBMITTED",
+  "config": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-exact-uniform15504-dp-v1/config.json",
+    "bytes": 43969,
+    "sha256": "af679a2a8ff93642a4573bb297f23ff954cca38b6749f0c7ff10c111e2cce4f4"
+  },
+  "source_publication": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-exact-uniform15504-dp-v1/source-publication.json",
+    "bytes": 43550,
+    "sha256": "44bd58f9536fdd02d88322fb0c41a980c525e85e9b7e58599fca82a450120bcb"
+  },
+  "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-exact-uniform15504-dp-v1/code-994185fad1c8",
+  "source_commit": "994185fad1c8d8ab9a9440a52fdda8d1a48c2d6a",
+  "reference_config": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-matched6528-v1/random/config.json",
+    "bytes": 42705,
+    "sha256": "428161412354177e509fe0336e1b5cf9eb7beb28cd58c0ce7c78c88335338a1c"
+  },
+  "plan": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-matched6528-v1/inputs/plan.json",
+    "bytes": 570327,
+    "sha256": "9d2ec808aa4365d80c7c7031487e0e746ad2165ceb2bfd59214aa631ab587e7a"
+  },
+  "source_checkpoint": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/epoch-0001.pt",
+    "sha256": "02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724"
+  },
+  "g20_complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/training-G20-matched6528-20261021/materialized/bank/complete.json",
+    "bytes": 11787,
+    "sha256": "81e3e6b74666e3a0eb32d1b0a0fb9e6db13d54f30a351437ce57f13be46bc229"
+  },
+  "validation_g10_complete": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/validation-g10-20261021/materialized/bank/complete.json",
+    "bytes": 4492,
+    "sha256": "5ea5197a841d7bd0b226a82350a2436a8ae3d860143a2ea39fe59b7ecb6837d5"
+  },
+  "CPU_preparation": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/g20-exact-uniform15504-dp-preparation-v1/preparation.json",
+    "bytes": 2890,
+    "sha256": "7cee9092eefdc4795679b6844c2ba8872be834f4fc1e5517c882d445e8a92c85"
+  },
+  "source_Adam_steps": 10464,
+  "questions": 6528,
+  "real_trajectories": 130560,
+  "global_original_questions": 48,
+  "updates": 136,
+  "actual_grouping": {
+    "mode": "exact_uniform_G20_all15504",
+    "source_group_size": 20,
+    "combinations_per_question": 15504,
+    "views_per_question": 15504,
+    "view_weight_numerator": 1,
+    "view_weight_denominator": 15504,
+    "original_question_total_weight": 1,
+    "combination_chunk": 256,
+    "all_combinations_exactly_once": true,
+    "no_inter_view_pair_matrix": true
+  },
+  "optimizer_reset": false,
+  "actor_updates": 0,
+  "GPU_requested": 0,
+  "GPU_training_authorized": true,
+  "actual_GPU_qualification": false,
+  "epoch": 1792534677.336238
+}
