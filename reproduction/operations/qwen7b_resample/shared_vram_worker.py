@@ -143,8 +143,9 @@ def multi_sampler(pool, binding, args):
             reserve = int(1.5 * GIB)
             utilization = min((row['free_bytes'] - reserve) / row['total_bytes'] for row in sample) * .85 ** ordinal
             require(0 < utilization < 1, 'Observed free VRAM cannot accommodate the requested 1.5GiB reserve')
-            limits = dict(max_num_seqs=max(1, 8 // (2 ** ordinal)), max_num_batched_tokens=4096)
-            block_cap = max(256, 1024 // (2 ** ordinal))
+            limits = dict(max_num_seqs=max(1, args.model_max_seqs // (2 ** ordinal)),
+                          max_num_batched_tokens=max(s.BUDGET['total_tokens'], args.model_batch_tokens // (2 ** ordinal)))
+            block_cap = max(256, args.model_kv_block_cap // (2 ** ordinal))
             os.environ['Q7B_SHARED_KV_BLOCK_CAP'] = str(block_cap)
             os.environ['Q7B_SHARED_KV_RESERVE_BYTES'] = str(reserve)
             os.environ['Q7B_SHARED_KV_PROFILE_DIR'] = str(launch / 'kv-profile')
@@ -221,7 +222,8 @@ def controller(pool, args):
         retriever = spawn('retriever', [args.retriever_script, '--index', config['retrieval_index'],
             '--corpus', config['retrieval_corpus'], '--encoder', encoder, '--data-cache', config['retrieval_data_cache'],
             '--cache', str(jobdir / 'retrieval'), '--run-id', pool.RUN_ID, '--allocation-file', str(jobdir / 'allocation.json'),
-            '--weights', args.retrieval_weights, '--port', '28831'], binding['retrieval_cuda_visible_devices'])
+            '--weights', args.retrieval_weights, '--logical-shards', str(args.retrieval_shards),
+            '--port', '28831'], binding['retrieval_cuda_visible_devices'])
         ready = None
         import urllib.request
         while ready is None:
@@ -232,7 +234,7 @@ def controller(pool, args):
                     value = json.load(response)
                 if value.get('ready'):
                     require(value['pid'] == retriever.pid and value['run_id'] == pool.RUN_ID
-                        and value['gpu_shards'] == 5 and value['logical_flat_shards'] == 128
+                        and value['gpu_shards'] == 5 and value['logical_flat_shards'] == args.retrieval_shards
                         and value['encoder_dtype'] == value['index_dtype'] == 'float16'
                         and value['actual_cuda_uuids'] == binding['retrieval_cuda_uuids']
                         and value['original_global_ids'] and value['endpoint'] == pool.URL,
@@ -249,6 +251,8 @@ def controller(pool, args):
             sampler = spawn('sampler', [str(Path(__file__).resolve()), '--sampler-loop', '--base', str(base),
                 '--pool-worker', args.pool_worker, '--handoff-marker', str(marker), '--job-dir', str(jobdir),
                 '--launch-dir', str(launch), '--deadline', str(deadline),
+                '--model-max-seqs', str(args.model_max_seqs), '--model-batch-tokens', str(args.model_batch_tokens),
+                '--model-kv-block-cap', str(args.model_kv_block_cap),
                 '--batch-reserve-seconds', str(args.batch_reserve_seconds)], binding['model_cuda_visible_devices'])
             while sampler.poll() is None:
                 require(retriever.poll() is None, 'Own retriever exited during actual sampling')
@@ -299,6 +303,10 @@ def main():
     parser.add_argument('--model-gpus', '--model-devices', default='3,4')
     parser.add_argument('--retrieval-gpus', '--retrieval-devices', default='0,2,5,6,7')
     parser.add_argument('--retrieval-weights', default='17,22,22,33,34')
+    parser.add_argument('--retrieval-shards', type=int, default=128)
+    parser.add_argument('--model-max-seqs', type=int, default=8)
+    parser.add_argument('--model-batch-tokens', type=int, default=4096)
+    parser.add_argument('--model-kv-block-cap', type=int, default=1024)
     parser.add_argument('--encoder')
     parser.add_argument('--run-seconds', type=int, default=28500)
     parser.add_argument('--batch-reserve-seconds', type=int, default=300)
@@ -314,6 +322,8 @@ def main():
         return
     require(sys.platform == 'linux' and args.base, 'Shared-VRAM execution requires remote Linux and --base')
     require(args.run_seconds > 0 and args.batch_reserve_seconds > 0, 'Positive run duration/batch reserve required')
+    require(args.model_max_seqs > 0 and args.model_batch_tokens >= 4096
+            and args.model_kv_block_cap >= 256 and args.retrieval_shards in (64, 128), 'Invalid execution batch/cache/index limits')
     pool = load_pool(args.pool_worker)
 
     def terminate(signum, frame):

@@ -29,12 +29,13 @@ RUN_ID = '70188b8e50fd4b45bc420ce58014f46e'
 SEED = 20261021
 FROZEN_COMMIT = '82062fc12c6c0bdb50b9e8681e1af9e6e763af10'
 FROZEN_REPO = BASE + '/code/repo-' + FROZEN_COMMIT
-JOB_NAME = 'sst-q7b-g5-sharedvram-v3-' + RUN_ID[:12]
-CONTROL_DIRECTORY = 'shared-vram-native-control-v3'
-QUEUE_MODE = 'native-spare-vram-bounded-systemd-v3'
+JOB_NAME = 'sst-q7b-g5-sharedvram-v4-' + RUN_ID[:12]
+CONTROL_DIRECTORY = 'shared-vram-native-control-v4'
+QUEUE_MODE = 'native-spare-vram-bounded-systemd-v4'
 SOURCES = ('shared_vram_control.py', 'shared_vram_worker.py', 'shared_vram_retriever.py',
            'shared_vram_vllm_adapter.py', 'pool_worker.py', 'pool_paths.sh')
 UNIT = JOB_NAME + '.service'
+PREDECESSOR_UNIT = 'sst-q7b-g5-sharedvram-v3-' + RUN_ID[:12] + '.service'
 RUN_SECONDS = 28500
 BATCH_RESERVE_SECONDS = 300
 
@@ -101,12 +102,14 @@ command=['unshare','--net','/bin/bash','-c',
     '--base',BASE,'--handoff-marker',BASE+'/preparation/pool-handoff.json',
     '--allocation-evidence',str(evidence),'--pool-worker',str(stage/'pool_worker.py'),
     '--retriever-script',str(stage/'shared_vram_retriever.py'),
-    '--model-gpus','3,4','--retrieval-gpus','0,2,5,6,7','--retrieval-weights','17,22,22,33,34',
+    '--model-gpus','3,4','--retrieval-gpus','0,2,5,6,7','--retrieval-weights','8,11,11,17,17',
+    '--retrieval-shards','64','--model-max-seqs','128','--model-batch-tokens','16384','--model-kv-block-cap','16384',
     '--encoder',BASE.rsplit('/',1)[0]+'/search-g1-prefix5-h10011-runtime-assets-20261018/common8/assets/e5-base-v2',
     '--run-seconds',str(RUN_SECONDS),'--batch-reserve-seconds',str(BATCH_RESERVE_SECONDS)]
 print(json.dumps(dict(status='EXACT_SHARED_VRAM_STAGE_VERIFIED_ENTERING_PRIVATE_NET',
     source_bundle_sha256=manifest['source_bundle_sha256'],queue_mode=QUEUE_MODE,unit=unit,main_pid=os.getpid(),
-    model_devices='3,4',retrieval_devices='0,2,5,6,7',retrieval_weights='17,22,22,33,34',
+    model_devices='3,4',retrieval_devices='0,2,5,6,7',retrieval_weights='8,11,11,17,17',
+    retrieval_logical_shards=64,model_max_num_seqs=128,model_max_batched_tokens=16384,model_kv_block_cap=16384,
     worker=str(stage/'shared_vram_worker.py'),allocation_evidence=str(evidence),epoch=time.time())),flush=True)
 os.execvpe(command[0],command,env)
 ''').encode()
@@ -130,7 +133,9 @@ def bundle():
     manifest = dict(version=1, source_bundle_sha256=identity, queue_mode=QUEUE_MODE,
                     native_unit=UNIT, explicit_native_spare_vram_sharing=True,
                     resource_limits=dict(cpu_quota_percent=1600,memory_max_bytes=171798691840,runtime_max_seconds=28800),
-                    model_gpus=[3,4], retrieval_gpus=[0,2,5,6,7], retrieval_weights=[17,22,22,33,34],
+                    model_gpus=[3,4], retrieval_gpus=[0,2,5,6,7], retrieval_weights=[8,11,11,17,17],
+                    retrieval_logical_shards=64, model_max_num_seqs=128, model_max_batched_tokens=16384,
+                    model_kv_block_cap=16384,
                     run_id=RUN_ID, seed=SEED, frozen_runtime_commit=FROZEN_COMMIT, canonical_base=BASE,
                     source_files=source_rows, files={name: dict(bytes=len(data), sha256=digest(data))
                                                     for name, data in files.items()})
@@ -174,14 +179,14 @@ def publish(p,value):
     temp=p.with_name(p.name+'.tmp-'+str(os.getpid()))
     with temp.open('x') as f:json.dump(value,f,indent=2,sort_keys=True);f.flush();os.fsync(f.fileno())
     os.replace(temp,p)
-def query():
+def query(unit=UNIT):
     props=['Id','LoadState','MainPID','ActiveState','SubState','Result','ExecMainStatus','ControlGroup',
            'RuntimeMaxUSec','CPUQuotaPerSecUSec','MemoryMax']
-    command=['systemctl','show',UNIT,*['--property='+x for x in props]]
+    command=['systemctl','show',unit,*['--property='+x for x in props]]
     r=subprocess.run(command,text=True,capture_output=True,timeout=30)
     values=dict(x.split('=',1)for x in r.stdout.splitlines()if'='in x)
     known=values.get('LoadState')in('loaded','not-found')
-    return dict(unit=UNIT,present=values.get('LoadState')=='loaded',known=known,
+    return dict(unit=unit,present=values.get('LoadState')=='loaded',known=known,
         properties=values,returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,epoch=time.time())
 def verify_stage():
     saved=read(stage/'manifest.json');assert saved==MANIFEST,'Different stage manifest'
@@ -226,6 +231,10 @@ elif ACTION=='submit':
         elif observed['present']:value.update(status='EXISTING_NATIVE_UNIT_FOUND_NO_START',observed=observed)
         else:
             assert observed['known'],'Cannot prove unique unit name is absent'
+            previous=query(PREDECESSOR_UNIT);value['predecessor']=previous
+            assert previous['known'] and int(previous['properties'].get('MainPID','0'))==0 \
+                and previous['properties'].get('ActiveState')not in('active','activating','deactivating'), \
+                'Previous own native sampler is still active; keep it running and do not create a second intent'
             proposed=dict(status='NATIVE_UNIT_INTENT_RECORDED',intent_id=INTENT,queue_mode=QUEUE_MODE,
                 run_id=RUN_ID,seed=SEED,source_bundle_sha256=IDENTITY,unit=UNIT,
                 argv=LAUNCH,publication=PUBLICATION,epoch=time.time())
@@ -280,6 +289,7 @@ def main():
     publication = verify_publication(args.published_commit,args.published_ref,manifest['source_files']) if args.action in ('stage','submit') else None
     values = dict(PHYSICAL=PHYSICAL,IDENTITY=identity,BASE=BASE,RUN_ID=RUN_ID,SEED=SEED,
                   JOB_NAME=JOB_NAME,QUEUE_MODE=QUEUE_MODE,CONTROL_DIRECTORY=CONTROL_DIRECTORY,
+                  PREDECESSOR_UNIT=PREDECESSOR_UNIT,
                   ACTION=args.action,INTENT=args.intent_id,PUBLICATION=publication,
                   MANIFEST=manifest,FILES={name:base64.b64encode(data).decode() for name,data in files.items()},
                   UNIT=UNIT,LAUNCH=launch_arguments(Path(BASE)/'preparation'/CONTROL_DIRECTORY/identity,files['shared_vram_native_paths.sh']))
