@@ -1,0 +1,140 @@
+{
+  "status": "VERIFIED_FOUR_EPOCH_ARTIFACT_PATHS_AND_PUBLICATION",
+  "time": 1792490653.9074066,
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019",
+  "official_model": {
+    "directory": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70",
+    "revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+    "migration_receipt": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70/complete.json",
+    "migration_receipt_sha256": "0a6f93fb501dd84b128a017961c7fd7980d68d22957bc8c2eed173bd1f037f83"
+  },
+  "data": {
+    "canonical_train": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/train.parquet",
+    "diagnostic_questions": 512,
+    "reserved_final_not_used": "/data/user/jxu957/experiments/topd-20261008/runtime/assets/common-instruct-0b002b/final.parquet",
+    "full_train_and_diagnostic_bank": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/bank/complete.json",
+    "groups": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/bank/groups.json",
+    "native_layer26_prefix20_feature_manifest": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/bank/features.json",
+    "input_manifest": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/inputs/manifest.json",
+    "train_questions": 169028,
+    "train_trajectories": 845140,
+    "diagnostic_trajectories": 2560,
+    "unseen2048_source": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/source/nq-dev-bcafb8dd07d4.jsonl",
+    "unseen2048_exclusion_proof": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/preparation/question-plan-acceptance.json",
+    "unseen2048_verified_bank": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/bank/complete.json",
+    "unseen2048_groups": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/bank/groups.json",
+    "unseen2048_features": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/bank/features.json"
+  },
+  "full_raw_EMA_Adam_four_rank_RNG_checkpoints": [
+    {
+      "epoch": 1,
+      "steps": 4573,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/epoch-0001.pt",
+      "sha256": "a6a7a255588b50d65860710c513203de341a8b7f686b9ecbf18717bb6dca716b",
+      "bytes": 3744947872
+    },
+    {
+      "epoch": 2,
+      "steps": 9146,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/epoch-0002.pt",
+      "sha256": "893e2d71e9b45abb92a9573a6091a1a0fb0a5f7ffd3e4e1201d12061317095ad",
+      "bytes": 3744947872
+    },
+    {
+      "epoch": 3,
+      "steps": 13719,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/epoch-0003.pt",
+      "sha256": "9ef2385a29dd5b970f7ca11fe27ee2b31e2b77c23b769b43fbadaa6162c2186d",
+      "bytes": 3744947936
+    },
+    {
+      "epoch": 4,
+      "steps": 18292,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/epoch-0004.pt",
+      "sha256": "c559ab711422019d95e805dedc375d756eff551a7a8ff9e751f40cd8af51f75f",
+      "bytes": 3744947936
+    }
+  ],
+  "recommended": {
+    "epoch": 2,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/epoch-0002.pt",
+    "sha256": "893e2d71e9b45abb92a9573a6091a1a0fb0a5f7ffd3e4e1201d12061317095ad",
+    "weight_key": "ema",
+    "criterion": "Highest true Mixed in512 questions ranked only by predicted q on identical unseen2048 pool"
+  },
+  "all_p_j_q_same_trajectory_EM_results": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/results",
+  "gpu_restore_qualification": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe-qualification/proof.json",
+  "preserved_four_update_stop_tail": {
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/inflight.pt",
+    "bytes": 3744946400,
+    "sha256": "58587c9f7639758e748c55e304d3bde0f76d83c657b95d9d31ec7300d9ccf676",
+    "git_blob_sha1": "6e31609efd940a08996841510593951b2b9e330b",
+    "epoch": 5,
+    "cursor": 4,
+    "steps": 18296,
+    "config_sha256": "7ec5eca1afe1fcc92f8a156bece5f7f93d9e3b8df3bf8ab2c571dbdafa01dd18",
+    "bank_sha256": "6f7a5510eb092bd4a414b13f4f7a8a7f1dbe836dbfdd55fd5db97a19ba2c303e",
+    "completed_epoch": false,
+    "actor_updates": 0,
+    "qualification_only": false,
+    "independent_cpu_reload": true,
+    "all_rank_optimizer_moments_match": true
+  },
+  "runtime_source_commit": "96df5a23f23f6da0f24e79e67dcf0e3039f22de0",
+  "runtime_source_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/repo-postprocess-96df5a23f23f",
+  "scoring_and_control_publication": {
+    "commit": "0b7bdec20e41b8a76e5ab07e5b16fff1ca928fa1",
+    "files": {
+      "heldout_selection.py": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/control-tools/ad3a55aef923f3401d350fe7f3479996293e06c6/heldout_selection.py",
+        "sha256": "e93e801b27139868f7e48430ab6b509ff5d42512e0879544e62eeed7f0fc459f"
+      },
+      "heldout_coordinator.py": {
+        "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/control-tools/0b7bdec20e41b8a76e5ab07e5b16fff1ca928fa1/heldout_coordinator.py",
+        "sha256": "dfc44a6c18c1e042b67ce97002058dda6db45d1befd2b3456f1721a1a32c4865"
+      }
+    },
+    "time": 1792490039.4426117,
+    "remote_sha": "0b7bdec20e41b8a76e5ab07e5b16fff1ca928fa1"
+  },
+  "scoring_entrypoint": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/score.sbatch",
+  "scoring_entrypoint_qualification": {
+    "entrypoint_sha256": "af96788b16e3d3a59f20a52a838369a78e3fe400c4d998c4d7e3425fa5dd4058",
+    "actual_code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/repo-postprocess-96df5a23f23f",
+    "shell_syntax_passed": true,
+    "actual_export_passed": true,
+    "time": 1792490057.7632852
+  },
+  "recovered_score_job": 741673,
+  "recovered_entrypoint_incident": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020/control/failed-score-741662",
+  "latest_explicit_human_scope": {
+    "source": "latest_direct_human_message",
+    "enabled": true,
+    "observed_at_epoch": 1792483348.868799,
+    "original_message_timestamp": null,
+    "original_timestamp_note": "Original UI timestamp unavailable; this is the directly received newer human message, not an old summary or goal replay.",
+    "human_message": "epoch4\u5b8c\u6210\u5c31\u5dee\u4e0d\u591a\u4e86\uff0c\u7136\u540e\u4f60\u53ef\u4ee5\u6d4b\u4e00\u4e0bepoch1,2,3,4\u8fd9\u56db\u4e2ackpt\uff0c\u5bf9\u4e8e\u672a\u77e5\uff082048*5\uff09\u6761\u8f68\u8ff9\uff0c\u5404\u81ea\u9009\u51fa\u6700\u9ad8\u7684512\u6761\uff0c\u7136\u540e\u5224\u522b\u6df7\u5408\u6982\u7387\u7684\u6bd4\u4f8b\u662f\u591a\u5c11\uff1f\u6211\u4eec\u9009\u6700\u597d\u7684\u90a3\u4e2a",
+    "human_clarification": "\u4f7f\u7528\u672a\u53c2\u4e0ewarmup\u7684\u72ec\u7acb\u95ee\u9898\uff08\u63a8\u8350\uff09",
+    "job_id": 740358,
+    "stop_after_epoch": 4,
+    "supersedes_previous_fit_epochs": 20,
+    "new_scope": "Complete and verify four full epochs, stop this fit, then compare four EMA checkpoints on the same unseen2048 questions x5 new trajectories and select the best by trueMixed@512.",
+    "evaluation_questions": 2048,
+    "responses_per_question": 5,
+    "selected_questions": 512,
+    "exclude_all_warmup_questions": true,
+    "exclude_existing_diagnostic512": true,
+    "exclude_reserved_final51713": true,
+    "no_student_RL": true,
+    "later_resume_authorization": null,
+    "scope_judgment": "Later explicit human instruction supersedes the twenty-epoch budget only; all storage, recovery, source publication and isolation requirements remain."
+  },
+  "primary_complete_receipt_sha256": "2e1c67848464a9c2022abcc2de7c1e5060b95e9014b2015dd29d1bd4336bc335",
+  "active_owned_jobs": [],
+  "original_sampling_accounting": "739426_0|COMPLETED|0:0\n739426_1|COMPLETED|0:0\n739426_2|COMPLETED|0:0\n739426_3|COMPLETED|0:0\n739426_4|COMPLETED|0:0\n739426_5|COMPLETED|0:0\n739426_6|COMPLETED|0:0\n739426_7|COMPLETED|0:0\n",
+  "all_accepted_job_accounting": {
+    "fit": "740358|COMPLETED|0:0\n",
+    "sampling": "741448_0|COMPLETED|0:0\n741448_1|COMPLETED|0:0\n741448_2|COMPLETED|0:0\n741448_3|COMPLETED|0:0\n",
+    "scoring": "741673|COMPLETED|0:0\n"
+  }
+}

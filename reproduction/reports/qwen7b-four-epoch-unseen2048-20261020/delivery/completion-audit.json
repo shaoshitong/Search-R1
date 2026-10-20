@@ -1,0 +1,75 @@
+{
+  "status": "LATEST_HUMAN_SCOPE_REQUIREMENT_BY_REQUIREMENT_ACCEPTED",
+  "effective_scope": "Four full warmup epochs plus four-checkpoint independent2048x5 selection; original20 budget explicitly superseded by later human instruction",
+  "human_request_sha256": "18fccde8e632af60580063f4a5cde98394de7f14746461d5f17173d01d70955d",
+  "primary_complete_sha256": "2e1c67848464a9c2022abcc2de7c1e5060b95e9014b2015dd29d1bd4336bc335",
+  "artifact_catalog_sha256": "694c3a5c0875414008dca8713fa4698c033ae699a125231d7911a915a7a1ec21",
+  "requirements": [
+    {
+      "item": 1,
+      "requirement": "Official pinned7B migration and independent reference port",
+      "status": "PROVED",
+      "evidence": "Official model receipt/fresh model SHA verified by finalizer; PORT.json pins reference9f90733 and documents independent7B26/27 Prefix5/capture20 mapping."
+    },
+    {
+      "item": 2,
+      "requirement": "Native structure and frozen actor",
+      "status": "PROVED",
+      "evidence": "Runtime96df source and pinned config verify feature26, native block27,3584 width,28 layers; all checkpoint and bank actor update counters0. One probe and one Adam initialized before epoch loop."
+    },
+    {
+      "item": 3,
+      "requirement": "Prefix5 and retained native Prefix20",
+      "status": "PROVED",
+      "evidence": "Actual native features, token IDs, masks and RoPE positions retained remotely; real GPU future15-invariance qualification passed; source slices/detaches before Prefix5 forward."
+    },
+    {
+      "item": 4,
+      "requirement": "Unchanged complete training and diagnostic splits",
+      "status": "PROVED",
+      "evidence": "169028x5+512x5 accepted;169540 distinct canonical groups, common manifest pinned; reserved51713 excluded. Independent2048 questions additionally excluded by ID and normalized text."
+    },
+    {
+      "item": 5,
+      "requirement": "Eight independent2GPU authentic G5 sampling tasks",
+      "status": "PROVED",
+      "evidence": "Original739426_0..7 accounting COMPLETED0:0; full native feature/own strictEM bank accepted. New4x2GPU2048-question validation sampling also COMPLETED0:0."
+    },
+    {
+      "item": 6,
+      "requirement": "Effective four-epoch fit and unchanged loss/optimizer",
+      "status": "PROVED",
+      "evidence": "Latest direct human four-epoch request overrides old20 goal replay;18292 contiguous updates, each epoch all169028 unique/233175 balanced groups. Actual source Adam5e-6 weight_decay0,EMA.99,trajectory+Mixed BCE1:1; actor0."
+    },
+    {
+      "item": 7,
+      "requirement": "Complete learning curves and independent checkpoint selection",
+      "status": "PROVED",
+      "evidence": "All epoch0..4 natural train/dev p_j, q and trueEM independently audited; raw+EMA saved. Four EMA scores use one identical unseen bank and predicted-only top512 ranking. Counts169/181/177/178; epoch2 selected. Final PNG visually inspected; downloaded bytes match inspected SHA."
+    },
+    {
+      "item": 8,
+      "requirement": "Full recovery and preservation of actual progress",
+      "status": "PROVED",
+      "evidence": "All four full checkpoints retain raw/EMA/Adam/four-rank RNG and cursors, CPU reload and SHA audited. Real four-rank GPU shadow next-update equality passed. Separate four-update graceful-stop tail retained and CPU audited at18296; no silent rollback/reset."
+    },
+    {
+      "item": 9,
+      "requirement": "Remote storage and gradual scheduling",
+      "status": "PROVED",
+      "evidence": "Official models, raw trajectories/features/checkpoints/env/cache stay remote; local scope contains code and small summaries/figures. Ordinary scheduling tried before middle; no emergency partition used. Owned active job list empty and locks released."
+    },
+    {
+      "item": 10,
+      "requirement": "Publication, verified runtime and final delivery",
+      "status": "PROVED",
+      "evidence": "Source96df/runtime,ad3/scorer,f622/finalizer and repaired coordinator0b7 pushed and hash verified; actual scoring repair741673 completed0:0 after archived741662 entrypoint failure. Full finalizer passed, files fresh SHA matched, required catalog/curves/report delivered."
+    }
+  ],
+  "limitations": [
+    "NQ-only selection validation; no final seven-benchmark QA score claimed.",
+    "GPU checkpoint recovery qualification is a real four-rank shadow next-update test; each production epoch additionally passed independent CPU/SHA/state validation.",
+    "Four preserved post-boundary updates are separate from the sealed epoch4 and do not enter checkpoint selection."
+  ],
+  "time": 1792490749.953345
+}

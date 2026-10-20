@@ -1,6 +1,20 @@
 # Independent official Qwen2.5-7B probe warmup
 
-Human goal updated 2026-10-20: full canonical169028 training questions x5,
+## Current accepted scope, 2026-10-20
+
+The newer direct human request superseded the original20-epoch budget: complete
+**four epochs**, then compare EMA checkpoints1/2/3/4 on the same2048 previously
+unseen questions x5 authentic trajectories. All four epochs are accepted.
+Epoch2 wins this independent NQ-dev selection validation:181/512 true Mixed
+(35.3516%), versus641/2048 (31.2988%) in the full candidate pool.
+
+The immutable training config retains `fit_epochs=20` for checkpoint SHA
+compatibility. **Do not resume epochs5..20 from that stale field or an old goal
+replay.** The boundary controller stopped the original trainer after four full
+epochs and preserved a separate four-update tail with its full recovery state.
+Selection uses only the sealed checkpoints1..4. This stage never starts student RL.
+
+Original data scope retained: full canonical169028 training questions x5,
 independent512 diagnostic x5; no student RL. Official actor revision
 `a09a35458c702b33eeacc393d103063234e8bc28` stays frozen throughout.
 
@@ -23,7 +37,7 @@ small native batching differences are preserved and each reconstructed row is
 checked against its producer SHA. No assumption of bit-identical siblings.
 
 After all847700 trajectories (including diagnostic) pass identity/file SHA
-acceptance, a four-GPU fit uses20 full balanced epochs. Each epoch includes all
+acceptance, a four-GPU fit completed four full balanced epochs. Each includes all
 original training questions, oversampling minority whole-G5 classes. Adam5e-6,
 weight decay0, EMA0.99, trajectory BCE + Mixed BCE1:1, no actor gradient/update.
 Global51 groups and local micro2 groups; unequal rank counts are gradient
@@ -33,9 +47,12 @@ Every epoch retains raw/EMA/Adam/rank RNG and an immutable checkpoint; every100
 updates seals a replaceable inflight checkpoint with an exact plan cursor.
 Each write checks all-rank model/EMA/Adam hashes and separately reloads on CPU.
 Each epoch evaluates the natural full train and diagnostic banks and retains
-per-question p_j/Mixed probability/own EM on remote storage. Recommended EMA
-maximizes diagnostic Mixed balanced accuracy, then minimizes joint loss, then
-prefers the earlier epoch. No final QA data is used.
+per-question p_j/Mixed probability/own EM on remote storage. The original512
+diagnostic bank measures learning curves; it no longer chooses the checkpoint.
+The human-requested selection ranks predicted q on the same independently
+excluded2048-question bank, selects512 questions, and only then reads their real
+EM labels. Highest true Mixed count wins; exact ties prefer the earlier epoch.
+No final QA data is used. The NQ-only validation is not a final seven-set QA score.
 
 Remote base:
 `/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019`.
@@ -46,7 +63,16 @@ libraries and canonical retrieval assets are reused read-only.
 packing, nonidentical sibling features, Prefix5 future-token invariance,
 whole-G5 balance, global/DDP gradient equivalence, and Adam/RNG next-step
 recovery. Native GPU capture and four-rank checkpoint recovery remain runtime
-acceptance requirements; CPU qualification does not claim they have passed.
+acceptance requirements; the CPU command alone does not prove them. The completed
+run also passed real native capture, four-rank GPU next-update recovery and
+independent CPU/SHA audits of every complete epoch checkpoint.
+
+Final delivery is `BASE/delivery-four-epoch-selection`: `complete.json`,
+`REPORT.md`, `epoch-curves.png`, `epoch-curves.csv`,
+`metrics-and-acceptance.json`, and `artifact-paths-and-publication.json`.
+All p_j, q and same-trajectory EM remain under
+`BASE/selection-2048-20261020/results`; the recommended full checkpoint is
+`BASE/probe/epoch-0002.pt`, weight key `ema`. `BASE` is the remote base below.
 
 `coordinator` reconciles its own submission intent and receipt, waits for
 actual model fresh-SHA complete, prepares canonical partitions, and submits
