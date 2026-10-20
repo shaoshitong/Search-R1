@@ -32,7 +32,7 @@ def plan(n,seed,epoch):
     assert sorted(i for b in batches for i in b)==list(range(n)) and min(map(len,batches))>=4
     return batches
 
-def update(ddp,model,ema,optimizer,reader,groups,indices,rank,device,c):
+def update(ddp,model,ema,optimizer,reader,groups,indices,rank,device,c,commit=True):
     own=indices[rank::4];optimizer.zero_grad(set_to_none=True);before=actual_steps(optimizer)
     stats=torch.zeros(10,dtype=torch.float64,device=device);started=time.monotonic()
     for offset in range(0,len(own),2):
@@ -47,9 +47,12 @@ def update(ddp,model,ema,optimizer,reader,groups,indices,rank,device,c):
         stats+=torch.tensor([n,n*float(loss['trajectory_bce'].detach()),n*float(loss['group_bce'].detach()),n*float(loss['pairwise_loss'].detach()),n*float(loss['loss'].detach()),float(loss['eligible_pairs']),float(loss['pairwise_correct']),float(loss['eligible_groups']),n*float(loss['mean_p_range'].detach()),0.],device=device,dtype=torch.float64)
     finite=torch.tensor(int(all(p.grad is None or bool(torch.isfinite(p.grad).all()) for p in model.parameters())),device=device)
     dist.all_reduce(finite,op=dist.ReduceOp.MIN);assert finite.item()==1,'Nonfinite probe gradient'
-    optimizer.step();assert actual_steps(optimizer)==before+1
-    with torch.no_grad():
-        for target,value in zip(ema.parameters(),model.parameters()):target.mul_(.99).add_(value,alpha=.01)
+    if commit:
+        optimizer.step();assert actual_steps(optimizer)==before+1
+        with torch.no_grad():
+            for target,value in zip(ema.parameters(),model.parameters()):target.mul_(.99).add_(value,alpha=.01)
+    else:
+        assert actual_steps(optimizer)==before,'Reducer warmup must not perform an optimizer update'
     stats[9]=time.monotonic()-started;dist.all_reduce(stats);n=float(stats[0])
     return dict(trajectory_bce=float(stats[1]/n),group_bce=float(stats[2]/n),pairwise_loss=float(stats[3]/n),total_loss=float(stats[4]/n),pairwise_accuracy=float(stats[6]/stats[5]) if stats[5] else None,eligible_pairs=int(stats[5]),eligible_groups=int(stats[7]),mean_p_range=float(stats[8]/n),mean_rank_step_seconds=float(stats[9]/4))
 
@@ -125,6 +128,11 @@ def restore(saved,model,ema,optimizer,rank,device):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--base',type=Path,required=True);a=p.parse_args();base=a.base;c=read(base/'config.json')
     rank=int(os.environ['RANK']);local=int(os.environ['LOCAL_RANK']);assert int(os.environ['WORLD_SIZE'])==4
+    assert os.environ.get('FLASH_ATTENTION_DETERMINISTIC')=='1'
+    assert os.environ.get('CUBLAS_WORKSPACE_CONFIG')==':4096:8'
+    torch.use_deterministic_algorithms(True)
+    torch.backends.cudnn.benchmark=False
+    torch.backends.cuda.matmul.allow_tf32=False
     torch.cuda.set_device(local);device=torch.device('cuda',local);dist.init_process_group('nccl',timeout=timedelta(minutes=30))
     for sig in (signal.SIGUSR1,signal.SIGTERM):signal.signal(sig,stop)
     os.environ['QWEN7B_QUESTION_MAX_TOKENS']='273'
@@ -154,6 +162,13 @@ def main():
     restore(saved,model,ema,optimizer,rank,device)
     dist.barrier()
     if rank==0:atomic(root/'restore-acceptance.json',dict(status='ACTUAL_FOUR_RANK_RAW_EMA_ADAM_RNG_RESTORED',source_checkpoint=receipt,adam_steps=steps,lr=5e-6,epoch_time=time.time(),new_objective=True,prefix_tokens=c['prefix_tokens'],prefix_migration=migration))
+    # Stabilize DDP first-backward bucket layout without changing parameters,
+    # EMA, Adam, cursor, or accepted update count. Restore RNG/buffers afterward.
+    warm_batch=plan(len(groups['train']),c['seed'],epoch)[0 if cursor>=len(plan(len(groups['train']),c['seed'],epoch)) else cursor]
+    model.train();update(ddp,model,ema,optimizer,reader,groups['train'],warm_batch,rank,device,c,commit=False)
+    restore(saved,model,ema,optimizer,rank,device)
+    dist.barrier()
+    if rank==0:atomic(root/'deterministic-warmup.json',dict(status='DDP_GRADIENT_BUCKET_WARMUP_NO_OPTIMIZER_UPDATE',steps=steps,flash_attention_deterministic=True,cublas_workspace=':4096:8',epoch_time=time.time()))
     if not resumed:
         # Actual production CP2 next update is executed twice from restored state;
         # equality is checked, then the second identical result is continued once.
@@ -168,9 +183,17 @@ def main():
         model.train()
         update(ddp,model,ema,optimizer,reader,groups['train'],first,rank,device,c)
         expected=(model_hash(model),model_hash(ema),optimizer_hash(optimizer))
+        from .replay_diagnostics import snapshot,compare
+        reference_snapshot=snapshot(model,ema,optimizer)
         restore(saved,model,ema,optimizer,rank,device);model.train()
         initial=update(ddp,model,ema,optimizer,reader,groups['train'],first,rank,device,c)
-        actual=(model_hash(model),model_hash(ema),optimizer_hash(optimizer));assert actual==expected,'CP2 next-update replay mismatch'
+        actual=(model_hash(model),model_hash(ema),optimizer_hash(optimizer))
+        if actual!=expected:
+            differences=compare(reference_snapshot,snapshot(model,ema,optimizer))
+            atomic(root/('next-update-replay-diagnostics-rank%d.json'%rank),dict(rank=rank,expected_hashes=expected,actual_hashes=actual,differences=differences,deterministic_attention=True,DDP_gradient_warmup=True))
+        del reference_snapshot
+        exact=torch.tensor(int(actual==expected),device=device);dist.all_reduce(exact,op=dist.ReduceOp.MIN)
+        assert exact.item()==1,'CP2 next-update replay mismatch; exact tensor diagnostics saved'
         cursor=1;steps=9147
         proof_ranks=[None]*4;dist.all_gather_object(proof_ranks,dict(rank=rank,raw=actual[0],ema=actual[1],adam=actual[2],replayed_bit_exact=True))
         if rank==0:

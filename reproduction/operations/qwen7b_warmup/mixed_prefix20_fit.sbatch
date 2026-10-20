@@ -17,6 +17,8 @@ BASE=/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-
 exec 9>"$BASE/probe/fit.lock"
 flock -n 9
 export PYTHONFAULTHANDLER=1
+export FLASH_ATTENTION_DETERMINISTIC=1
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
 srun --kill-on-bad-exit=1 bash "$QWEN7B_CODE_ROOT/reproduction/operations/qwen7b_warmup/runtime.sh" \
   -u -m torch.distributed.run --standalone --nnodes=1 --nproc-per-node=4 \
   -m reproduction.operations.qwen7b_warmup.mixed_finetune --base "$BASE"
