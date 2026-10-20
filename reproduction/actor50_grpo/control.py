@@ -232,8 +232,11 @@ else:
  value['workers']={}
  for name in ('prepare-actor','prepare-seed','prepare-recover','prepare-restart','pipeline'):
   item=small(b/'preparation'/(name+'-launch.json'));value['workers'][name]=same(item['leader']) if item else None
- joint_path=b/'latest-joint.json';joint_raw=file_bytes(joint_path,8*1024**2-1) if joint_path.is_file() else None
- assert joint_raw is None or len(joint_raw)<8*1024**2
+ # Grounding refresh snapshots can make joint JSON exceed8MiB after round150.
+ # Permit16MiB for these JSON records while retaining the shared63MiB budget.
+ joint_metadata_limit=16*1024**2
+ joint_path=b/'latest-joint.json';joint_raw=file_bytes(joint_path,joint_metadata_limit) if joint_path.is_file() else None
+ assert joint_raw is None or len(joint_raw)<=joint_metadata_limit
  joint=json.loads(joint_raw) if joint_raw is not None else None
  if joint:
   a=joint['actor'];value['joint']=dict(outer=joint['outer'],actor_Adam=a['actual_adam_steps_per_rank'],
@@ -253,11 +256,11 @@ else:
      result.append(dict(outer=ordinal,metadata_status='MISSING'));continue
     assert recent_path.resolve()==recent_path and not recent_path.is_symlink()
     size=recent_path.stat().st_size
-    if size>8*1024**2:
-     result.append(dict(outer=ordinal,metadata_status='ABOVE_8MIB_READ_BUDGET',bytes=size));continue
+    if size>joint_metadata_limit:
+     result.append(dict(outer=ordinal,metadata_status='ABOVE_16MIB_READ_BUDGET',bytes=size));continue
     if metadata_read_used+size>metadata_read_limit:
      result.append(dict(outer=ordinal,metadata_status='TOTAL_METADATA_READ_BUDGET',bytes=size));continue
-    recent_raw=file_bytes(recent_path,8*1024**2);assert len(recent_raw)<=8*1024**2
+    recent_raw=file_bytes(recent_path,joint_metadata_limit);assert len(recent_raw)<=joint_metadata_limit
     recent=json.loads(recent_raw);assert recent['run_id']==h['run_id'] and recent['outer']==ordinal
     actor=recent['actor'];probe=recent['probe'];floor=recent['rollout'].get('mixed_floor') or {}
     floor_keys=('initial_mixed','final_mixed','initial_fraction','final_fraction','extra_native_batches',

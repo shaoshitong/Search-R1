@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "checked_unix": 1792455496.935293,
+  "scope": "LOCAL_METADATA_OBSERVER_ONLY_RUNTIME_UNCHANGED_NO_TRAINING_RESTART",
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "21bf70af3e9b4cabbab7862e9532069c",
+  "runtime_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+  "failed_observation_checked_unix": 1792455386.5573509,
+  "failed_observation_receipt_sha256": "43a25aa63282e2187d09d33377f89cad7abd47f0318727663ed0de59866f86d5",
+  "failed_observation_error": "Existing metadata exceeds per-file budget",
+  "failed_observation_location": "REMOTE line222: latest-joint.json read with 8MiB-1 limit",
+  "training_state_from_failed_read": "UNKNOWN_NOT_TERMINAL_EVIDENCE",
+  "changed_files": [
+    "reproduction/actor50_grpo/control.py",
+    "reproduction/actor50_grpo/check_observer_joint_budget.py"
+  ],
+  "old_joint_per_file_max_bytes": 8388607,
+  "new_joint_per_file_max_bytes": 16777216,
+  "aggregate_metadata_limit_bytes": 66060288,
+  "proc_identity_reserved_bytes": 1048576,
+  "output_limit_bytes": 131072,
+  "recent_complete_limit_count": 5,
+  "recent_complete_order": "newest_first_with_shared_aggregate_budget",
+  "local_boundary_check": {
+    "command": "python3 -m reproduction.actor50_grpo.check_observer_joint_budget",
+    "status": "PASS",
+    "actual_remote_source_compilation": true,
+    "old_8MiB_boundary_bytes": 8388609,
+    "per_file_and_aggregate_rejection": true,
+    "remote_queries": 0,
+    "disk_payload_bytes": 0
+  },
+  "actual_repaired_read": "PENDING_AFTER_PUBLICATION",
+  "no_model_tensor_probability_rollout_or_new_evaluation_reads": true,
+  "no_SSH_auth_knownhosts_changes": true
+}
