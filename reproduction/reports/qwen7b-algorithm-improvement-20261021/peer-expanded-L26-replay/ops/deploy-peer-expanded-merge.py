@@ -19,7 +19,7 @@ def ticks(pid):
 pub=read(b/'source-publication.json');root=pathlib.Path(pub['code_root']);assert pub['commit']=='bea03d5f1d908f357c368684b9e8c086ca0e687b' and root.parent==b
 '''.replace('BASE',repr(A)).replace('COMMIT',repr(a.commit))
 def call(code):
- command='python3 -c '+shlex.quote(common+'\n'+code);assert len(command.encode())<16000
+ program=common+'\n'+code;compile(program,'expanded-cpu-merge-control','exec');command='python3 -c '+shlex.quote(program);assert len(command.encode())<16000
  r=ctl.run(command,account='mou176',source_address=ip,timeout=55);rows=[json.loads(x) for x in r.stdout.decode(errors='replace').splitlines() if x.startswith('{')]
  if r.returncode or not rows:raise RuntimeError(r.stderr.decode(errors='replace')[-1000:]+' '+r.stdout.decode(errors='replace')[-1500:])
  return rows[-1]
@@ -35,16 +35,16 @@ print(json.dumps(fp(p)))
 '''.replace('ENCODED',repr(encoded)).replace('SHA',repr(sha)).replace('NAME',repr(name)));files[name]=value
  loader="import importlib.util,sys,pathlib; base=pathlib.Path("+repr(A+'/cpu-merge-code-'+a.commit[:12])+ "); p=base/'peer_expanded_l26_merge.py'; s=importlib.util.spec_from_file_location('reproduction.operations.qwen7b_warmup.peer_expanded_l26_merge',p); m=importlib.util.module_from_spec(s); sys.modules[s.name]=m; s.loader.exec_module(m); "
  tests=loader+"p=base/'test_peer_expanded_l26_merge.py'; s=importlib.util.spec_from_file_location('reproduction.operations.qwen7b_warmup.test_peer_expanded_l26_merge',p); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); import unittest; result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromModule(m)); assert result.wasSuccessful()"
- value=call('''files=FILES
+ value=call('''files=@@FILESMAP@@
 for item in files.values():assert fp(item['path'])==item
 for name,item in pub['files'].items():assert fp(root/name)==dict(item,path=str(root/name))
 env=dict(os.environ,QWEN7B_CODE_ROOT=str(root),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
-r=subprocess.run(['bash',str(root/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-c',TESTS],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=40);(d/'cpu-tests.log').write_text(r.stdout);assert r.returncode==0,r.stdout[-1500:]
-value=dict(status='IMMUTABLE_METADATA_ONLY_MERGE_SOURCE_AND_CPU_TESTS_ACCEPTED',commit=COMMIT,files=files,foundation=fp(b/'source-publication.json'),log=fp(d/'cpu-tests.log'),loader=LOADER);p=d/'publication.json'
+r=subprocess.run(['bash',str(root/'reproduction/operations/qwen7b_warmup/runtime.sh'),'-c',@@TESTCODE@@],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,universal_newlines=True,timeout=40);(d/'cpu-tests.log').write_text(r.stdout);assert r.returncode==0,r.stdout[-1500:]
+value=dict(status='IMMUTABLE_METADATA_ONLY_MERGE_SOURCE_AND_CPU_TESTS_ACCEPTED',commit=@@SOURCECOMMIT@@,files=files,foundation=fp(b/'source-publication.json'),log=fp(d/'cpu-tests.log'),loader=@@LOADCODE@@);p=d/'publication.json'
 if p.exists():assert read(p)==value
 else:atomic(p,value)
 print(json.dumps(dict(status=value['status'],publication=fp(p))))
-'''.replace('FILES',repr(files)).replace('TESTS',repr(tests)).replace('COMMIT',repr(a.commit)).replace('LOADER',repr(loader)))
+'''.replace('@@FILESMAP@@',repr(files)).replace('@@TESTCODE@@',repr(tests)).replace('@@SOURCECOMMIT@@',repr(a.commit)).replace('@@LOADCODE@@',repr(loader)))
 elif a.action=='run':
  value=call('''publication=read(d/'publication.json')
 for item in publication['files'].values():assert fp(item['path'])==item
