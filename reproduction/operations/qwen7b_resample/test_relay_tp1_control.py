@@ -2,11 +2,14 @@
 import ast
 import contextlib
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
+import sys
 import tempfile
-from types import SimpleNamespace
+import time
+from types import ModuleType, SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -139,6 +142,68 @@ class RemoteBranchTests(unittest.TestCase):
             self.assertEqual(fixture.namespace['value']['status'],'EXISTING_INTENT_NO_START_REPLAY')
             fixture.run.assert_not_called();self.assertEqual(path.read_bytes(),original)
             self.assertFalse((fixture.root/'slot-context.json').exists())
+
+    def test_real_main_assembly_full_submit_preserves_preintent_context_and_never_replays(self):
+        """Run main's actual preamble; never inject missing globals such as RUN_ID."""
+        with tempfile.TemporaryDirectory() as folder:
+            base=Path(folder);remote=base/'nas';local=base/'local';(local/'work').mkdir(parents=True)
+            unit,directory=control.names('gpu1');root=remote/'preparation'/directory
+            now=time.time();starts=[];assemblies=[];captures=[]
+            dependency=dict(run_id=control.RUN_ID,unit=unit,slot='gpu1',model_indices=[1],model_cuda_uuids=['GPU-1'],
+                lease_owner=dict(pid=2371322,birth='1958624331'),relay_owner=dict(pid=2371322,birth='1958624331'),
+                relay=dict(pid=2371352,birth='1958624426'),source=dict(source_pid=1490465,source_birth='6808057'),
+                primary_gpu_lock=dict(fd=90,device=1,inode=2),model_deadline_epoch=now+3600,
+                reuse_local_relay_sha256='a'*64,upstream_ready_sha256='b'*64,source_context_sha256='c'*64,
+                initial_gpu_memory=dict(index=1,uuid='GPU-1',free_bytes=23*1024**3))
+            stub=ModuleType('relay_tp1_worker')
+            def capture(actual_base,slot,canonical_base):
+                self.assertEqual((Path(actual_base),slot,canonical_base),(remote,'gpu1',str(remote)))
+                result=json.loads(json.dumps(dependency));result['captured_epoch']=now+4*len(captures)
+                captures.append(result);return result
+            stub.capture_context=capture
+            def command(argv,**kwargs):
+                if argv[0]=='systemctl':
+                    props=('LoadState=loaded\nMainPID=456\nActiveState=active\n' if starts else
+                           'LoadState=not-found\nMainPID=0\nActiveState=inactive\n')
+                    return SimpleNamespace(returncode=0,stdout=props,stderr='')
+                self.assertEqual(argv[0],'systemd-run');starts.append(argv)
+                return SimpleNamespace(returncode=0,stdout='',stderr='')
+            def transport(script,node):
+                self.assertEqual(node,'h100-10');assemblies.append(script)
+                output=io.StringIO()
+                with contextlib.redirect_stdout(output):
+                    # Empty globals: all remote constants must come from real main().
+                    exec(compile(script,'<actual-main-transport>','exec'),{})
+                return SimpleNamespace(returncode=0,stdout=output.getvalue(),stderr='')
+            def invoke(action):
+                argv=['relay_tp1_control',action,'--slot','gpu1','--intent-id','cpu-once',
+                      '--published-commit','f'*40,'--published-ref','refs/heads/codex/cpu-only']
+                with patch.object(sys,'argv',argv),contextlib.redirect_stdout(io.StringIO()):control.main()
+            with patch.object(control,'ROOT',local),patch.object(control,'BASE',str(remote)), \
+                 patch.object(control,'PHYSICAL',str(remote)),patch.object(control.old,'transport',side_effect=transport), \
+                 patch.object(control.old,'verify_publication',return_value=dict(status='EXACT_SOURCE_COMMIT_REMOTE_SHA_VERIFIED')), \
+                 patch('socket.gethostname',return_value='h100-10'),patch('os.geteuid',return_value=0), \
+                 patch('subprocess.run',side_effect=command),patch('time.sleep'), \
+                 patch.dict(sys.modules,relay_tp1_worker=stub),patch.object(sys,'path',list(sys.path)):
+                invoke('stage')
+                old=root/'slot-context.json';write(old,dict(run_id=control.RUN_ID,unit=unit,unsubmitted_original=True))
+                original,original_inode=old.read_bytes(),old.stat().st_ino
+                self.assertFalse((root/'native-submit-intent.json').exists())
+                invoke('submit')
+                intent=root/'native-submit-intent.json';receipt=root/'native-submit-receipt.json'
+                accepted=intent.read_bytes();value=json.loads(accepted)
+                self.assertEqual(value['run_id'],control.RUN_ID)
+                self.assertEqual(json.loads(receipt.read_text())['status'],'OWN_NODE10_TP1_STARTED_ONCE')
+                archive=root/('preintent-context-'+hashlib.sha256(original).hexdigest()+'.json')
+                self.assertEqual(archive.read_bytes(),original);self.assertEqual(archive.stat().st_ino,original_inode)
+                current=json.loads(old.read_text());self.assertNotIn('unsubmitted_original',current)
+                self.assertEqual(len(current['window_observations']),2)
+                self.assertGreaterEqual(current['window_observations'][1]['epoch']-current['window_observations'][0]['epoch'],3)
+                self.assertEqual(len(starts),1)
+                invoke('submit')
+                self.assertEqual(intent.read_bytes(),accepted)
+                self.assertEqual(len(starts),1);self.assertEqual(len(captures),2)
+            self.assertEqual(len(assemblies),3)
 
 
 if __name__=='__main__':unittest.main()

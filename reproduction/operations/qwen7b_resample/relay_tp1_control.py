@@ -160,7 +160,14 @@ elif ACTION=='submit':
    context['model_deadline_epoch']=min(context['model_deadline_epoch'],first['model_deadline_epoch'])
    context['unit']=UNIT;context['window_observations']=[dict(epoch=row['captured_epoch'],gpu=row['initial_gpu_memory'])for row in(first,context)]
    assert context['window_observations'][1]['epoch']-context['window_observations'][0]['epoch']>=3
-   immutable(root/'slot-context.json',context)
+   context_path=root/'slot-context.json'
+   if context_path.exists():
+    previous=read(context_path);assert previous['run_id']==RUN_ID and previous['unit']==UNIT
+    archived=root/('preintent-context-'+sha(context_path)+'.json')
+    if archived.exists():assert archived.read_bytes()==context_path.read_bytes()
+    else:os.link(context_path,archived)
+    context_path.unlink()
+   immutable(context_path,context)
    shared_stage=Path(BASE)/'preparation'/MANIFEST['directory']/IDENTITY
    command=['systemd-run','--unit='+UNIT,'--property=CPUQuota=800%','--property=MemoryMax=96G',
     '--property=RuntimeMaxSec=14400','--property=KillMode=control-group','--property=TimeoutStopSec=60',
@@ -220,7 +227,7 @@ def main():
         if not re.fullmatch(r'[A-Za-z0-9._-]{1,120}', args.intent_id or ''):
             raise ValueError('An explicit immutable intent identity is required')
         publication = old.verify_publication(args.published_commit, args.published_ref, manifest['source_files'])
-    values = dict(BASE=BASE, PHYSICAL=PHYSICAL, IDENTITY=identity, ACTION=args.action, INTENT=args.intent_id,
+    values = dict(BASE=BASE, PHYSICAL=PHYSICAL, RUN_ID=RUN_ID, IDENTITY=identity, ACTION=args.action, INTENT=args.intent_id,
                   PUBLICATION=publication, MANIFEST=manifest,
                   FILES={name: base64.b64encode(data).decode() for name, data in files.items()})
     script = '\n'.join(key + '=' + repr(value) for key, value in values.items()) + '\n' + REMOTE
