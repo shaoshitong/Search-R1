@@ -23,10 +23,14 @@ os.environ.update(CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',PYTHONDONTWRITEBYT
 import numpy as np,torch,pyarrow.parquet as pq
 torch.set_num_threads(2)
 started=time.time();cpu=time.process_time();p=pathlib.Path(BASE)
+asset_root=pathlib.Path('/mnt/data/shaoshitong/search-g1-prefix5-h10011-retained-fixed-assets-20261018/shaoshitong')
 def read(f):return json.loads(pathlib.Path(f).read_text())
 def physical(f):
  s=str(f);prefix='/mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong/'
- return pathlib.Path('/mnt/data/shaoshitong')/s[len(prefix):] if s.startswith(prefix) else pathlib.Path(s)
+ if s.startswith(prefix):return pathlib.Path('/mnt/data/shaoshitong')/s[len(prefix):]
+ if s==BASE or s.startswith(BASE+'/') or s.startswith(str(asset_root)+'/'):return pathlib.Path(s)
+ native='/mnt/data/shaoshitong/'
+ return asset_root/s[len(native):] if s.startswith(native) else pathlib.Path(s)
 def ident(f):
  s=f.stat();return (s.st_dev,s.st_ino,s.st_size,s.st_mtime_ns)
 files=[]
@@ -200,7 +204,7 @@ def main():
         expected={name:hashlib.sha256(subprocess.check_output(['git','show',SOURCE+':'+name],cwd=REPO)).hexdigest() for name in FILES}
         proof=json.loads((OUT/'CP200_COMPLETE_AUDIT_OBSERVATION1.json').read_text())
         prelude='BASE='+repr(PHYSICAL)+'\nSOURCE='+repr(SOURCE)+'\nEXPECTED_SOURCE='+repr(expected)+'\nJOINT_SHA='+repr(proof['joint']['sha256'])+'\n'
-        script="import subprocess,os\nenv=dict(os.environ,CUDA_VISIBLE_DEVICES='',PYTHONDONTWRITEBYTECODE='1',OMP_NUM_THREADS='2')\nr=subprocess.run(['/dataset/shaoshitong/Search-G1-common8/env/bin/python','-'],input="+repr(prelude+ARTIFACTS)+",text=True,capture_output=True,env=env,timeout=220)\nassert r.returncode==0,r.stderr\nprint(r.stdout)"
+        script="import subprocess,os\nenv=dict(os.environ,CUDA_VISIBLE_DEVICES='',PYTHONDONTWRITEBYTECODE='1',OMP_NUM_THREADS='2')\nr=subprocess.run(['/mnt/data/shaoshitong/search-g1-prefix5-h10011-runtime-assets-20261018/common8/env/bin/python','-'],input="+repr(prelude+ARTIFACTS)+",text=True,capture_output=True,env=env,timeout=220)\nassert r.returncode==0,r.stderr\nprint(r.stdout)"
         value=json.loads(remote(script,evidence,target='h100-10',established_controller=True))
         path=OUT/'FINAL200_ARTIFACT_AUDIT.json';value['evidence']=str(evidence);path.write_text(json.dumps(value,indent=2))
         print(json.dumps(dict(status=value['status'],elapsed_seconds=value['elapsed_seconds'],files=len(value['files']),qa=value['evaluations']['final51713']['qa_count'],evidence=str(path))))
