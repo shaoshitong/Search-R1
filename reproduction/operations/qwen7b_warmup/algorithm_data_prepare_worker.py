@@ -27,8 +27,8 @@ def run(request):
  assert not (base/'result.json').exists() and not (base/'materialized').exists(),'Existing output must be inspected; never reprepare'
  pub=json.loads((CODE_STAGE/'source-publication.json').read_text());code=Path(pub['code_root'])
  assert pub['commit']==r['collector_commit'] and str(code)==os.environ['QWEN7B_CODE_ROOT']
- manifest=json.loads((code/'source-bundle-manifest.json').read_text())
- assert sha(code/'source-bundle-manifest.json')==pub['source_manifest_sha256']
+ manifest=json.loads((code/'_confirmation_source_manifest.json').read_text())
+ assert sha(code/'_confirmation_source_manifest.json')==pub['source_manifest_sha256']
  for name,item in manifest['files'].items():assert sha(code/name)==item['sha256'],name
  assert sha(Path(__file__))==r['worker_sha256'] and sha(FINAL)==FINAL_SHA
  controller=dict(pid=os.getpid(),start_ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],kind=kind,started=time.time(),worker_sha256=r['worker_sha256'],driver_commit=r['driver_commit'],collector_commit=pub['commit'],no_GPU=True,no_submission=True,responses_generated=0)
