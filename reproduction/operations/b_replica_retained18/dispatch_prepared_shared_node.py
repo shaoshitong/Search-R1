@@ -19,12 +19,15 @@ q=subprocess.check_output(['squeue','-h','-n','sst-b-diverse-cp64-eight','-o','%
 gpu=subprocess.run(['nvidia-smi','--query-gpu=index,uuid,memory.used,memory.total','--format=csv,noheader,nounits'],capture_output=True,text=True,timeout=20);assert gpu.returncode==0,gpu.stdout+gpu.stderr
 cards=[line.split(',')for line in gpu.stdout.splitlines()];assert sorted(int(r[0])for r in cards)==list(range(8))
 footprint=[38546,36690,37428,41628,52502,32836,39296,44202]
-assert all(int(r[3])-int(r[2])>=footprint[int(r[0])]for r in cards),'Actual shared GPU footprint currently does not fit'
+fits=all(int(r[3])-int(r[2])>=footprint[int(r[0])]for r in cards)
+assert fits or WAIT_FOR_CAPACITY,'Actual shared GPU footprint currently does not fit'
+# This flag starts only the existing CPU waiter; its five-second admission still
+# requires the observed footprint before any native GPU activation.
 stash=pathlib.Path('/run')/UNIT
 env=['/usr/bin/env','CUDA_DEVICE_ORDER=PCI_BUS_ID','SEARCH_G1_PHYSICAL_WORLD_SIZE=8','SEARCH_G1_B_PREFIX_TOKENS=80','OMP_NUM_THREADS=2','MKL_NUM_THREADS=2','PYTHONDONTWRITEBYTECODE=1','PYTHONPATH='+c+'/repo']
 common=['/usr/bin/unshare','--mount','--propagation','private','/bin/bash',str(stash/'private_shared_paths.sh')]+env+['/dataset/shaoshitong/Search-G1-common8/env/bin/python','-u']
 command=['systemd-run','--unit='+UNIT+'.service','--service-type=exec','--property=Restart=no','--property=CPUQuota=3200%','--property=MemoryMax=256G']+common+[str(stash/'wait_prepared_shared.py'),'--base',c,'--activation',str(stash/'activate_prepared_shared.py'),'--activation-sha256',ACTIVATION_SHA]
-intent=dict(time=time.time(),node=NODE,command=command,bootstrap_commit=COMMIT,native_commit=ready['source_commit'],files=FILES,inventory=gpu.stdout,own_queue=q,slurm_reserved_gpus=0)
+intent=dict(time=time.time(),node=NODE,command=command,bootstrap_commit=COMMIT,native_commit=ready['source_commit'],files=FILES,inventory=gpu.stdout,own_queue=q,slurm_reserved_gpus=0,initial_footprint_fits=fits,wait_for_capacity=WAIT_FOR_CAPACITY)
 with(p/'preparation/target-node-dispatch-intent.json').open('x')as f:json.dump(intent,f)
 r=subprocess.run(command,capture_output=True,text=True,timeout=25);result=dict(time=time.time(),returncode=r.returncode,stdout=r.stdout,stderr=r.stderr,unit=UNIT+'.service')
 with(p/'preparation/target-node-dispatch-result.json').open('x')as f:json.dump(result,f)
@@ -39,7 +42,8 @@ print(json.dumps(dict(node=NODE,main=result,resources=resource,files=FILES,nativ
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--name',required=True);p.add_argument('--outer',required=True,type=int)
-    p.add_argument('--node',required=True,choices=['h100-5','h100-8','h100-10']);p.add_argument('--unit',required=True);a=p.parse_args()
+    p.add_argument('--node',required=True,choices=['h100-5','h100-8','h100-10']);p.add_argument('--unit',required=True)
+    p.add_argument('--wait-for-capacity',action='store_true');a=p.parse_args()
     if not a.name.startswith('search-g1-prefix-selection200-')or '/'in a.name or '..'in a.name or not a.unit.startswith('sst-b-diverse-')or any(x not in 'abcdefghijklmnopqrstuvwxyz0123456789-'for x in a.unit):raise ValueError('Task namespace/unit required')
     if subprocess.check_output(['git','status','--porcelain'],cwd=REPO):raise ValueError('Publish code before dispatch')
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip()
@@ -49,7 +53,7 @@ def main():
     for name in('private_shared_paths.sh','activate_prepared_shared.py','wait_prepared_shared.py','wait_shared_resources.py'):
         raw=(REPO/'reproduction/operations/b_replica_retained18'/name).read_bytes();files[name]=base64.b64encode(raw).decode()
         manifest.append(dict(path='/run/'+a.unit+'/'+name,sha256=hashlib.sha256(raw).hexdigest()))
-    constants=dict(NAME=a.name,OUTER=a.outer,NODE=a.node,UNIT=a.unit,COMMIT=commit,FILES=manifest,
+    constants=dict(NAME=a.name,OUTER=a.outer,NODE=a.node,UNIT=a.unit,COMMIT=commit,FILES=manifest,WAIT_FOR_CAPACITY=a.wait_for_capacity,
         ACTIVATION_SHA=next(r['sha256']for r in manifest if r['path'].endswith('/activate_prepared_shared.py')))
     code='\n'.join(k+'='+repr(v)for k,v in constants.items())+'\n'+INNER
     expected={r['path'].rsplit('/',1)[1]:r['sha256']for r in manifest}
