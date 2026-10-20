@@ -1,0 +1,414 @@
+{
+  "complete": {
+    "bytes": 72920,
+    "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/data/complete.json",
+    "sha256": "ccc6d0c1686aa11e52496dc2879c26f3047748f0f09803228a19749fe42f8d7a"
+  },
+  "controller": {
+    "CPU_affinity": [
+      0,
+      1
+    ],
+    "config": {
+      "bytes": 6432,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/config.json",
+      "sha256": "457fd8deba5242eece98239b6bae8812b6c96e2141c6454fe99242c8a593d827"
+    },
+    "external_payload_opened": false,
+    "pid": 3876541,
+    "started": 1792538741.2249405
+  },
+  "log_tail": "{\"config\": {\"bytes\": 6432, \"path\": \"/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/config.json\", \"sha256\": \"457fd8deba5242eece98239b6bae8812b6c96e2141c6454fe99242c8a593d827\"}, \"elapsed_seconds\": 258.190112932818, \"questions\": 8192, \"status\": \"ALL8192_REAL_G10_PREFIX20_NATIVE_CHOSEN_CONFIDENCE_EXTRACTED_AND_ID_VERIFIED\", \"trajectories\": 81920}\n",
+  "observed_epoch": 1792539013.0369766,
+  "process": {
+    "actual": {
+      "live": false,
+      "pid": 3876541
+    },
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/code-4c8194d3d9aa",
+    "config": {
+      "bytes": 6432,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/config.json",
+      "sha256": "457fd8deba5242eece98239b6bae8812b6c96e2141c6454fe99242c8a593d827"
+    },
+    "pid": 3876541,
+    "started": 1792538738.4197547
+  },
+  "progress": {
+    "completed_units": 244,
+    "expected_questions": 8192,
+    "external_payload_opened": false,
+    "peak_RSS_bytes": 132861952,
+    "questions": 8192,
+    "stage": "REAL_G10_SIX_PREFIX_FEATURES_COMPLETE_BATCHES",
+    "time": 1792538994.853828,
+    "trajectories": 81920
+  },
+  "status": "ACTUAL_PREFIX_CONFIDENCE_CPU_EXTRACTION",
+  "summary": {
+    "all_own_ID_EM_order_native_LP_and_P20_exact": true,
+    "elapsed_seconds": 258.190112932818,
+    "external_payload_opened": false,
+    "feature_names": [
+      "mean_logp",
+      "std_logp",
+      "min_logp",
+      "first5_mean_logp",
+      "last5_mean_logp",
+      "actual_len_over20"
+    ],
+    "features": {
+      "bytes": 4026019,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/data/features.jsonl.gz",
+      "sha256": "1c96d5fb2b520826f5627395e0a3aa7b1dc88e39b3336cb4bd76a06bd3b7a814"
+    },
+    "groups": {
+      "bytes": 6265928,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer8192-frozen-calibration-scores-v2/groups-8192.json",
+      "sha256": "2c94b6413261c7cdbcd53f20dbfd69f3838c71665749e01d83928ede81c2ceeb"
+    },
+    "peak_RSS_bytes": 134217728,
+    "quality_by_seed": {
+      "newseed": {
+        "constant_logprob_trajectories": 0,
+        "constant_logprob_trajectory_fraction": 0.0,
+        "feature_names": [
+          "mean_logp",
+          "std_logp",
+          "min_logp",
+          "first5_mean_logp",
+          "last5_mean_logp",
+          "actual_len_over20"
+        ],
+        "feature_zero_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          4.8828125e-05,
+          0.0
+        ],
+        "feature_zero_trajectories": [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0
+        ],
+        "global_constant_feature": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          true
+        ],
+        "length_histogram": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          40960
+        ],
+        "max": [
+          -0.015369592016997658,
+          4.467808521401439,
+          -0.17812827229499817,
+          -0.007689041906269267,
+          0.0,
+          1.0
+        ],
+        "mean": [
+          -0.4648863180637016,
+          0.8201044554422319,
+          -3.183975602918872,
+          -0.3823213890353466,
+          -0.5194619941818772,
+          1.0
+        ],
+        "min": [
+          -3.338363718590699,
+          0.03918223989245916,
+          -17.467069625854492,
+          -5.8767077221535144,
+          -6.780020451545715,
+          1.0
+        ],
+        "policy_tokens": 819200,
+        "questions": 8192,
+        "std": [
+          0.26440986627360186,
+          0.4595383539435368,
+          1.95684549813269,
+          0.37376745378764437,
+          0.544924773074497,
+          0.0
+        ],
+        "sum": [
+          -19041.743587889217,
+          33591.47849491382,
+          -130415.640695557,
+          -15659.884094887799,
+          -21277.16328168969,
+          40960.0
+        ],
+        "sumsq": [
+          11715.86523568739,
+          36198.26960717148,
+          572086.0648875937,
+          11709.307044856452,
+          23215.463289229505,
+          40960.0
+        ],
+        "trajectories": 40960,
+        "within_G5_constant_feature_fraction": [
+          0.000244140625,
+          0.000244140625,
+          0.000244140625,
+          0.0665283203125,
+          0.000244140625,
+          1.0
+        ],
+        "within_G5_constant_feature_questions": [
+          2,
+          2,
+          2,
+          545,
+          2,
+          8192
+        ],
+        "zero_logprob_tokens": 14790
+      },
+      "original": {
+        "constant_logprob_trajectories": 0,
+        "constant_logprob_trajectory_fraction": 0.0,
+        "feature_names": [
+          "mean_logp",
+          "std_logp",
+          "min_logp",
+          "first5_mean_logp",
+          "last5_mean_logp",
+          "actual_len_over20"
+        ],
+        "feature_zero_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          7.32421875e-05,
+          0.0
+        ],
+        "feature_zero_trajectories": [
+          0,
+          0,
+          0,
+          0,
+          3,
+          0
+        ],
+        "global_constant_feature": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "length_histogram": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          40959
+        ],
+        "max": [
+          -0.014539586497458856,
+          4.2797458478179795,
+          -0.17942000925540924,
+          -0.007367500066175125,
+          0.0,
+          1.0
+        ],
+        "mean": [
+          -0.4683802437160689,
+          0.825144702416523,
+          -3.204844429267541,
+          -0.3860631315337823,
+          -0.5212136028279785,
+          0.999998779296875
+        ],
+        "min": [
+          -2.9590551650122507,
+          0.039231715874746116,
+          -17.84183692932129,
+          -5.548828830179991,
+          -6.274606680870056,
+          0.95
+        ],
+        "policy_tokens": 819199,
+        "questions": 8192,
+        "std": [
+          0.2650996477701991,
+          0.46250316156631927,
+          1.9695557606075396,
+          0.3691143681234953,
+          0.5435735404200557,
+          0.0002470499263733767
+        ],
+        "sum": [
+          -19184.854782610182,
+          33797.927010980784,
+          -131270.4278227985,
+          -15813.145867623723,
+          -21348.909171834,
+          40959.95
+        ],
+        "sumsq": [
+          11864.38659896966,
+          36649.90021160523,
+          579591.2789995329,
+          11685.48488334859,
+          23229.88292578163,
+          40959.9025
+        ],
+        "trajectories": 40960,
+        "within_G5_constant_feature_fraction": [
+          0.0,
+          0.0,
+          0.0,
+          0.06396484375,
+          0.0,
+          0.9998779296875
+        ],
+        "within_G5_constant_feature_questions": [
+          0,
+          0,
+          0,
+          524,
+          0,
+          8191
+        ],
+        "zero_logprob_tokens": 14632
+      }
+    },
+    "questions": 8192,
+    "same_causal_LP_numeric_differences": {
+      "all": {
+        "absolute_difference_sum": 368.51781729375153,
+        "max_abs_histogram": [
+          1587,
+          0,
+          0,
+          0,
+          36,
+          1513,
+          529
+        ],
+        "max_absolute_difference": 0.3760579824447632,
+        "mean_absolute_token_difference": 0.005027528203188971,
+        "mean_pair_mean_absolute_difference": 0.005027528203188972,
+        "nonidentical_float_pairs": 2078,
+        "pair_mean_absolute_difference_sum": 18.42589086468758,
+        "pairs": 3665,
+        "token_comparisons": 73300
+      },
+      "cross_event": {
+        "absolute_difference_sum": 359.55052325005414,
+        "max_abs_histogram": [
+          0,
+          0,
+          0,
+          0,
+          34,
+          1486,
+          510
+        ],
+        "max_absolute_difference": 0.3760579824447632,
+        "mean_absolute_token_difference": 0.008855924217981629,
+        "mean_pair_mean_absolute_difference": 0.008855924217981629,
+        "nonidentical_float_pairs": 2030,
+        "pair_mean_absolute_difference_sum": 17.977526162502706,
+        "pairs": 2030,
+        "token_comparisons": 40600
+      },
+      "newseed_newseed": {
+        "absolute_difference_sum": 2.433899974454249,
+        "max_abs_histogram": [
+          808,
+          0,
+          0,
+          0,
+          0,
+          5,
+          6
+        ],
+        "max_absolute_difference": 0.2619725465774536,
+        "mean_absolute_token_difference": 0.00014858974203017393,
+        "mean_pair_mean_absolute_difference": 0.00014858974203017393,
+        "nonidentical_float_pairs": 11,
+        "pair_mean_absolute_difference_sum": 0.12169499872271246,
+        "pairs": 819,
+        "token_comparisons": 16380
+      },
+      "original_original": {
+        "absolute_difference_sum": 6.533394069243222,
+        "max_abs_histogram": [
+          779,
+          0,
+          0,
+          0,
+          2,
+          22,
+          13
+        ],
+        "max_absolute_difference": 0.2163466215133667,
+        "mean_absolute_token_difference": 0.00040033051894872683,
+        "mean_pair_mean_absolute_difference": 0.0004003305189487268,
+        "nonidentical_float_pairs": 37,
+        "pair_mean_absolute_difference_sum": 0.32666970346216107,
+        "pairs": 816,
+        "token_comparisons": 16320
+      }
+    },
+    "split": {
+      "bytes": 261384,
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/prefix-confidence-incremental-v1/split.json",
+      "sha256": "5fb7cdaa2f46534de4e4d972381229ff405c5500b7daff6c52d56d05a584a46f"
+    },
+    "status": "ALL8192_REAL_G10_PREFIX20_NATIVE_CHOSEN_CONFIDENCE_EXTRACTED_AND_ID_VERIFIED",
+    "trajectories": 81920
+  }
+}
