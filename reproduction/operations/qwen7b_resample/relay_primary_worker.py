@@ -56,17 +56,18 @@ def alive(proof):
         return False
 
 
-def names(slot):
+def names(slot, instance='v2'):
     shared.require(any(slot in slots for slots in TOPOLOGIES.values()), 'Unknown finite node10 slot')
-    return ('sst-q7b-g5-primary10-' + slot + '-v1-' + RUN_ID[:12] + '.service',
-            'relay-primary10-' + slot + '-v1')
+    shared.require(instance in ('v1', 'v2'), 'Unknown primary instance')
+    return ('sst-q7b-g5-primary10-' + slot + '-' + instance + '-' + RUN_ID[:12] + '.service',
+            'relay-primary10-' + slot + '-' + instance)
 
 
 def validate_configuration(value, slot):
     slots = TOPOLOGIES[value['topology']]
     shared.require(slot in slots and value['schema_version'] == 1
         and value['mode'] == 'NODE10_INDEPENDENT_PRIMARY_RELAY_CONSUMER'
-        and value['run_id'] == RUN_ID and value['slot'] == slot and value['unit'] == names(slot)[0]
+        and value['run_id'] == RUN_ID and value['slot'] == slot and value['unit'] == names(slot, value['instance'])[0]
         and value['slot_configuration'] == slots[slot]
         and value['model_indices'] == slots[slot]['indices']
         and len(value['model_cuda_uuids']) == slots[slot]['tp']
@@ -88,7 +89,7 @@ def validate_configuration(value, slot):
         'Model deadline exceeds CPU/source cutoff or four hours')
 
 
-def capture_context(base, slot, canonical_base, cpu_ready_path, cpu_ready_sha256, topology):
+def capture_context(base, slot, canonical_base, cpu_ready_path, cpu_ready_sha256, topology, instance='v2'):
     """Submit-time observations only; primary leases are acquired by the model."""
     base = Path(base)
     shared.require(topology in TOPOLOGIES and slot in TOPOLOGIES[topology], 'Slot is outside the chosen topology')
@@ -129,7 +130,7 @@ def capture_context(base, slot, canonical_base, cpu_ready_path, cpu_ready_sha256
     config = TOPOLOGIES[topology][slot]
     now = time.time()
     value = dict(schema_version=1, mode='NODE10_INDEPENDENT_PRIMARY_RELAY_CONSUMER', run_id=RUN_ID,
-        base=str(canonical_base), slot=slot, topology=topology, unit=names(slot)[0], slot_configuration=config,
+        base=str(canonical_base), slot=slot, topology=topology, instance=instance, unit=names(slot, instance)[0], slot_configuration=config,
         model_indices=config['indices'], model_cuda_uuids=[inventory[i]['uuid'] for i in config['indices']],
         initial_gpu_memory=[inventory[i] for i in config['indices']], cpu_ready=ready, source=source,
         cpu_ready_path=canonical(path), cpu_ready_sha256=cpu_ready_sha256,
@@ -233,10 +234,12 @@ def admit(pool, args):
         shared.require(not source_path(args.base, value['owner_drain_path']).exists()
             and value['model_deadline_epoch'] > time.time() + BATCH_RESERVE + 60, 'CPU owner drained or lifetime expired during admission')
         return dict(job_id='relay10-primary-' + str(os.getpid()), node='h100-10', run_id=RUN_ID,
+            instance=value['instance'],
             controller_pid=os.getpid(), controller_birth=int(actual['birth']), boot_id=boot_id,
             allocation_kind='HUMAN_AUTHORIZED_NODE10_INDEPENDENT_PRIMARY', native_unit=evidence['unit'], native_cgroup=group,
             model_indices=model, model_cuda_uuids=uuids, model_cuda_visible_devices=','.join(map(str, model)),
             actual_cuda_runtime_uuids=uuids, tensor_parallel_size=args.tp, model_engine_count=1,
+            original_cuda_visible_devices=evidence.get('original_cuda_visible_devices', os.environ.get('CUDA_VISIBLE_DEVICES')),
             initial_gpu_memory=[inventory[i] for i in model], foreign_initial_contexts=shared.foreign_contexts(set(uuids)),
             foreign_contexts_allowed=True, foreign_processes_signalled=False, primary_uuid_lock_paths=primary_paths,
             cpu_live_slot_lease=str(lease), source_owner=value['cpu_ready']['owner'],

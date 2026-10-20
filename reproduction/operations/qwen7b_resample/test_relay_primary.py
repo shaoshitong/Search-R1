@@ -51,6 +51,19 @@ class PrimaryTests(unittest.TestCase):
         self.assertEqual(worker.source_path(base, '/mnt/shared/workspace/training_data_node_10/shaoshitong/test-run/a.json'), base / 'a.json')
         with self.assertRaises(ValueError): worker.source_path(base, '/mnt/data/shaoshitong/test-run/../foreign/a')
 
+    def test_v1_is_read_only_and_v2_has_separate_native_identity(self):
+        for slot in control.TOPOLOGIES['tp4']:
+            self.assertEqual(control.names(slot, 'v2'), worker.names(slot, 'v2'))
+            self.assertNotEqual(control.names(slot, 'v1'), control.names(slot, 'v2'))
+            old, _, old_manifest = control.bundle(slot, instance='v1')
+            new, _, new_manifest = control.bundle(slot, instance='v2')
+            self.assertNotEqual(old, new)
+            self.assertNotEqual(old_manifest['directory'], new_manifest['directory'])
+        with patch.object(sys, 'argv', ['primary', 'submit', '--slot', 'gpu1-tp1', '--instance', 'v1']), \
+                patch.object(control.old, 'transport') as transport:
+            with self.assertRaisesRegex(ValueError, 'read-only status'): control.main()
+            transport.assert_not_called()
+
     def run_pipeline(self, fail=False):
         """No preamble globals injected: actual CLI builds and executes REMOTE."""
         with tempfile.TemporaryDirectory() as folder:
@@ -112,12 +125,29 @@ class PrimaryTests(unittest.TestCase):
                     return 'Id=%s\nMainPID=314\nActiveState=active\nControlGroup=%s\n' % (unit, own_group)
                 self.assertIn('--cuda-probe', argv)
                 return json.dumps(dict(actual_cuda_runtime_uuids=['GPU-1']))
+            test = self
             class Model:
                 def __init__(self, argv, env, **kwargs):
                     self.pid, self.returncode, self.polls = 900, None, 0; models.append(self)
                     self.job = Path(argv[argv.index('--job-dir') + 1])
                     self.launch = Path(argv[argv.index('--launch-dir') + 1])
                     self.env, self.argv = env, argv
+                    # Exercise the real continuation-time device callback with
+                    # the actual admission binding, before any fake batch result.
+                    # Only CUDA's device-count boundary is a CPU substitute.
+                    from reproduction.operations.qwen7b_resample import worker as scientific
+                    s = scientific.s
+                    with patch.dict(os.environ, env), patch.dict(sys.modules,
+                            torch=SimpleNamespace(cuda=SimpleNamespace(device_count=lambda: 1))), \
+                            patch.dict(s._CACHED, {}, clear=True), \
+                            patch.object(s, '_configure_one_visible_gpu', s._configure_one_visible_gpu), \
+                            patch.object(s, '_build_llm', s._build_llm):
+                        binding = read(self.job / 'allocation.json')
+                        installed = worker.shared.multi_sampler(pool, binding, SimpleNamespace(tp=1, launch_dir=str(self.launch)))
+                        device = installed.s._configure_one_visible_gpu(0)
+                        test.assertEqual(device['originally_assigned_device'], binding['original_cuda_visible_devices'])
+                        test.assertEqual(device['gpu_uuids'], ['GPU-1'])
+                        test.assertEqual(device['native_unit'], unit)
                     if not fail: write(self.launch / 'model-initialized.json', dict(max_model_len=4096))
                 def poll(self):
                     self.polls += 1
@@ -157,6 +187,7 @@ class PrimaryTests(unittest.TestCase):
                 return SimpleNamespace(returncode=0, stdout=output.getvalue(), stderr='')
             def invoke(action):
                 argv = ['relay_primary_control', action, '--slot', slot, '--cpu-ready', str(cpu_ready_path),
+                    '--instance', 'v2',
                     '--cpu-ready-sha256', sha(cpu_ready_path), '--intent-id', 'cpu-once',
                     '--published-commit', 'f' * 40, '--published-ref', 'refs/heads/codex/cpu-only']
                 with patch.object(sys, 'argv', argv): control.main()
@@ -188,6 +219,8 @@ class PrimaryTests(unittest.TestCase):
                     write(root / 'slot-context.json', dict(run_id=control.RUN_ID, unit=unit, unsubmitted=True))
                     original = (root / 'slot-context.json').read_bytes()
                     invoke('submit'); intent = (root / 'native-submit-intent.json').read_bytes()
+                    self.assertEqual(json.loads(intent)['instance'], 'v2')
+                    self.assertEqual(read(root / 'slot-context.json')['instance'], 'v2')
                     invoke('submit')
                     self.assertEqual((root / 'native-submit-intent.json').read_bytes(), intent)
                     self.assertEqual((root / ('preintent-context-' + hashlib.sha256(original).hexdigest() + '.json')).read_bytes(), original)
@@ -204,6 +237,8 @@ class PrimaryTests(unittest.TestCase):
             self.assertEqual((allocation['controller_birth'], allocation['boot_id']), (500, 'test-real-boot-id'))
             self.assertEqual(allocation['source_owner'], cpu_owner)
             self.assertEqual(allocation['source_owner_allocation_sha256'], sha(cpu_job / 'allocation.json'))
+            self.assertEqual(allocation['instance'], 'v2')
+            self.assertIn('original_cuda_visible_devices', allocation)
             self.assertEqual(models[0].argv[models[0].argv.index('--tp') + 1], '1')
             if fail:
                 self.assertTrue((job / 'failure.json').exists()); self.assertFalse((job / 'complete.json').exists())

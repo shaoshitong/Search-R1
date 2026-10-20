@@ -25,14 +25,15 @@ SOURCES = ('relay_primary_control.py', 'relay_primary_worker.py', 'test_relay_pr
            'draining_pool_worker.py', 'pool_worker.py', 'pool_paths.sh', 'retrieval_relay.py', 'retrieval_relay_backpressure.py')
 
 
-def names(slot):
+def names(slot, instance='v2'):
     if slot not in SLOTS: raise ValueError('Unknown finite primary slot')
-    return ('sst-q7b-g5-primary10-' + slot + '-v1-' + RUN_ID[:12] + '.service', 'relay-primary10-' + slot + '-v1')
+    if instance not in ('v1', 'v2'): raise ValueError('Unknown primary instance')
+    return ('sst-q7b-g5-primary10-' + slot + '-' + instance + '-' + RUN_ID[:12] + '.service', 'relay-primary10-' + slot + '-' + instance)
 
 
-def bootstrap(slot, topology='tp4'):
+def bootstrap(slot, topology='tp4', instance='v2'):
     config = TOPOLOGIES[topology][slot]
-    return ('BASE=' + repr(BASE) + '\nUNIT=' + repr(names(slot)[0]) + '\nCONFIG=' + repr(config)
+    return ('BASE=' + repr(BASE) + '\nUNIT=' + repr(names(slot, instance)[0]) + '\nINSTANCE=' + repr(instance) + '\nCONFIG=' + repr(config)
             + '\nFROZEN_REPO=' + repr(old.FROZEN_REPO) + '\n' + r'''
 import hashlib,json,os,socket,subprocess,time
 from pathlib import Path
@@ -44,6 +45,7 @@ for name,row in manifest['files'].items():
 intent=json.loads((root/'native-submit-intent.json').read_text())
 path=root/'slot-context.json';raw=path.read_bytes();context=json.loads(raw);cpu=context['cpu_ready']
 assert intent['unit']==UNIT and intent['source_bundle_sha256']==manifest['source_bundle_sha256']
+assert intent['instance']==context['instance']==manifest['instance']==INSTANCE
 assert hashlib.sha256(raw).hexdigest()==intent['dependency_context_sha256']
 assert context['unit']==UNIT and context['run_id']==manifest['run_id']and context['slot_configuration']==CONFIG
 assert context['model_deadline_epoch']<=cpu['consumer_deadline_epoch']<=cpu['deadline_epoch']-600
@@ -93,16 +95,16 @@ os.execvpe(command[0],command,env)
 ''').encode()
 
 
-def bundle(slot, topology='tp4'):
+def bundle(slot, topology='tp4', instance='v2'):
     if topology not in TOPOLOGIES or slot not in TOPOLOGIES[topology]: raise ValueError('Slot is outside chosen topology')
-    unit, directory = names(slot)
+    unit, directory = names(slot, instance)
     config = TOPOLOGIES[topology][slot]
     files = {name: Path(__file__).with_name(name).read_bytes() for name in SOURCES}
     rows = {name: dict(bytes=len(data), sha256=old.digest(data)) for name, data in files.items()}
     identity = old.digest(old.encoded(dict(mode=directory, topology=topology, source_files=rows, model_configuration=config)))
-    files.update({'relay_primary_bootstrap.py': bootstrap(slot, topology),
+    files.update({'relay_primary_bootstrap.py': bootstrap(slot, topology, instance),
                   'consumer_paths.sh': old.native_paths_source(files['pool_paths.sh'])})
-    manifest = dict(source_bundle_sha256=identity, run_id=RUN_ID, seed=20261021, slot=slot, topology=topology,
+    manifest = dict(source_bundle_sha256=identity, run_id=RUN_ID, seed=20261021, slot=slot, topology=topology, instance=instance,
         slots=TOPOLOGIES[topology], unit=unit, directory=directory, model_gpus=config['indices'], tensor_parallel_size=config['tp'],
         model_configuration=config, max_model_len=4096, maximum_run_seconds=14400, batch_reserve_seconds=1200,
         owner_deadline_cutoff_seconds=600, local_relay_owned=False, primary_uuid_locks_owned=True,
@@ -133,7 +135,7 @@ def verify():
  for name,row in MANIFEST['files'].items():
   data=(stage/name).read_bytes();assert len(data)==row['bytes']and hashlib.sha256(data).hexdigest()==row['sha256'],name
  assert(read(stage/'stage-receipt.json')or{}).get('status')=='NODE10_PRIMARY_SMALL_CODE_FULL_SHA_PASS'
-value=dict(action=ACTION,slot=MANIFEST['slot'],unit=UNIT,bundle_sha256=IDENTITY,epoch=time.time())
+value=dict(action=ACTION,slot=MANIFEST['slot'],instance=MANIFEST['instance'],unit=UNIT,bundle_sha256=IDENTITY,epoch=time.time())
 intent=root/'native-submit-intent.json';receipt=root/'native-submit-receipt.json'
 if ACTION=='stage':
  assert PUBLICATION['status']=='EXACT_SOURCE_COMMIT_REMOTE_SHA_VERIFIED'
@@ -147,6 +149,7 @@ if ACTION=='stage':
  if not(stage/'stage-receipt.json').exists():immutable(stage/'stage-receipt.json',dict(status='NODE10_PRIMARY_SMALL_CODE_FULL_SHA_PASS',publication=PUBLICATION,files=MANIFEST['files'],epoch=time.time()))
  verify();value.update(status='NODE10_PRIMARY_CODE_ONLY_STAGED',stage=str(stage),files=MANIFEST['files'])
 elif ACTION=='submit':
+ assert MANIFEST['instance']=='v2','v1 is retained for read-only status; never replay its start'
  with(root/'native-submit.lock').open('a')as lock:
   fcntl.flock(lock,fcntl.LOCK_EX)
   if intent.exists():value.update(status='EXISTING_INTENT_NO_START_REPLAY',intent=read(intent),receipt=read(receipt))
@@ -155,8 +158,8 @@ elif ACTION=='submit':
    observed=query(UNIT);value['observed']=observed
    assert observed['returncode']==0 and observed['properties'].get('LoadState')=='not-found'
    sys.path.insert(0,str(stage));import relay_primary_worker as worker
-   first=worker.capture_context(base,MANIFEST['slot'],BASE,CPU_READY,CPU_SHA,MANIFEST['topology']);time.sleep(3)
-   context=worker.capture_context(base,MANIFEST['slot'],BASE,CPU_READY,CPU_SHA,MANIFEST['topology'])
+   first=worker.capture_context(base,MANIFEST['slot'],BASE,CPU_READY,CPU_SHA,MANIFEST['topology'],MANIFEST['instance']);time.sleep(3)
+   context=worker.capture_context(base,MANIFEST['slot'],BASE,CPU_READY,CPU_SHA,MANIFEST['topology'],MANIFEST['instance'])
    for key in('cpu_ready','cpu_ready_sha256','source','model_cuda_uuids','reuse_local_relay_sha256','upstream_ready_sha256','source_context_sha256'):
     assert context[key]==first[key],'Dependency or physical GPU changed across submit windows: '+key
    context['model_deadline_epoch']=min(context['model_deadline_epoch'],first['model_deadline_epoch'])
@@ -174,7 +177,7 @@ elif ACTION=='submit':
     '--property=RuntimeMaxSec=14400','--property=KillMode=control-group','--property=TimeoutStopSec=60',
     '--setenv=Q7B_NATIVE_UNIT_INSTANCE='+UNIT,'unshare','--mount','--propagation','private','/bin/bash',
     str(stage/'consumer_paths.sh'),'h100-10','/usr/bin/python3',str(Path(BASE)/'preparation'/MANIFEST['directory']/IDENTITY/'relay_primary_bootstrap.py')]
-   immutable(intent,dict(intent_id=INTENT,unit=UNIT,run_id=RUN_ID,source_bundle_sha256=IDENTITY,
+   immutable(intent,dict(intent_id=INTENT,unit=UNIT,run_id=RUN_ID,instance=MANIFEST['instance'],source_bundle_sha256=IDENTITY,
     argv=command,dependency_context_sha256=sha(path),dependency=context,publication=PUBLICATION,epoch=time.time()))
    try:
     r=subprocess.run(command,text=True,capture_output=True,timeout=45)
@@ -200,6 +203,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('action', choices=('plan', 'stage', 'submit', 'status'))
     parser.add_argument('--slot', choices=SLOTS, required=True)
+    parser.add_argument('--instance', choices=('v1', 'v2'), default='v2')
     parser.add_argument('--topology', choices=tuple(TOPOLOGIES), default='tp4')
     parser.add_argument('--cpu-ready', default=BASE + '/preparation/legacy-relay10-independent-v1/owner-ready.json')
     parser.add_argument('--cpu-ready-sha256')
@@ -207,7 +211,9 @@ def main():
     parser.add_argument('--published-commit')
     parser.add_argument('--published-ref')
     args = parser.parse_args()
-    identity, files, manifest = bundle(args.slot, args.topology)
+    if args.instance == 'v1' and args.action in ('stage', 'submit'):
+        raise ValueError('v1 is retained for read-only status; use a new v2 intent')
+    identity, files, manifest = bundle(args.slot, args.topology, args.instance)
     if args.action == 'plan':
         print(json.dumps(manifest, indent=2)); return
     publication = None
@@ -220,7 +226,7 @@ def main():
         CPU_READY=args.cpu_ready, CPU_SHA=args.cpu_ready_sha256, PUBLICATION=publication, MANIFEST=manifest,
         FILES={name: base64.b64encode(data).decode() for name, data in files.items()})
     script = '\n'.join(key + '=' + repr(value) for key, value in values.items()) + '\n' + REMOTE
-    out = ROOT / 'work' / ('qwen7b-node10-primary-%s-%s-%d.json' % (args.slot, args.action, time.time_ns()))
+    out = ROOT / 'work' / ('qwen7b-node10-primary-%s-%s-%s-%d.json' % (args.instance, args.slot, args.action, time.time_ns()))
     try: result = old.transport(script, 'h100-10')
     except subprocess.TimeoutExpired:
         out.write_text(json.dumps(dict(action=args.action, status='TRANSPORT_UNKNOWN_QUERY_SAME_INTENT_NO_REPLAY', epoch=time.time())))
