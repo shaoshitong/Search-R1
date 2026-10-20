@@ -1,0 +1,185 @@
+{
+  "estimate": "741973|2026-10-20T23:45:44|(Priority)\n",
+  "publication": {
+    "commit": "0ade29a21ad30d63f5e3b112fa62344f842ad5c6",
+    "remote_sha": "0ade29a21ad30d63f5e3b112fa62344f842ad5c6",
+    "branch": "codex/qwen7b-probe-warmup-20261019",
+    "code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-20261020/repo-0ade29a21ad3",
+    "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-20261020",
+    "files": {
+      "reproduction/operations/qwen7b_warmup/mixed_loss.py": "bbda7e810e195735472e8bd286c3e071973ea3b4c7b205dc4efcba8799108d4f",
+      "reproduction/operations/qwen7b_warmup/mixed_finetune.py": "5a97b44f502c9513d4cb3de03929904d8f0b627b8d3f80c9a92d261a03459cf7",
+      "reproduction/operations/qwen7b_warmup/mixed_prepare.py": "89cd04bf3799e8b827dbf4e28888150d2081b8d73b582ad979ec73bb9ed34272",
+      "reproduction/operations/qwen7b_warmup/mixed_fit.sbatch": "85acb9f5432af16f7f62eeb4ad46ac6857bbde1799f0b025d30ec7673cc50754",
+      "reproduction/operations/qwen7b_warmup/heldout_selection.py": "e93e801b27139868f7e48430ab6b509ff5d42512e0879544e62eeed7f0fc459f",
+      "reproduction/operations/qwen7b_warmup/train.py": "b2585327b69aa001e7285767558c3822379680ccaf099a184f9999640bf9e599",
+      "reproduction/operations/qwen7b_warmup/model.py": "1ad3bea61bf6ad28e25d099ad97f6a0331f4239b9c704ec5c686dd1dadd7fb6d",
+      "reproduction/operations/qwen7b_warmup/packed_features.py": "cfba55067bfa836e4d420097a3eb97b1a684ea313e1e0e3d0f7bc7db1dab6f54",
+      "reproduction/operations/qwen7b_warmup/native_capture.py": "f4e2570fd89bf65086dcf9f55ab97ca9c04f04cac0acf8af9e5dd797f6d43bd4",
+      "reproduction/operations/qwen7b_warmup/runtime.sh": "678d4e72c1c1fd90777d76ba63198658b735ecfe513439ee5f5b07f8664d8288",
+      "reproduction/prefix20_group_joint100/loss.py": "ceba4dc4a3eb70882b6a7bf1df6a16fb833a810819bec7b853b1c108cae102ac",
+      "reproduction/operations/qwen7b_warmup/test_restore_isolation.py": "96475f4c9661210df31edb6803f19dd00b52ce3f24413860d0d137fb3dfce4ad"
+    },
+    "time": 1792496776.3431637,
+    "inherited_code_source": "96df5a23f23f6da0f24e79e67dcf0e3039f22de0"
+  },
+  "config": {
+    "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-20261020",
+    "run_id": "1d0c8b2616984c96bed37c0b95c89991",
+    "training_base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019",
+    "selection_base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/selection-2048-20261020",
+    "source_checkpoint": {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/epoch-0002.pt",
+      "bytes": 3744947872,
+      "sha256": "893e2d71e9b45abb92a9573a6091a1a0fb0a5f7ffd3e4e1201d12061317095ad",
+      "git_blob_sha1": "00682d3a4aa327e44a07511d758c82fb1fab15cc",
+      "epoch": 2,
+      "cursor": 0,
+      "steps": 9146,
+      "config_sha256": "7ec5eca1afe1fcc92f8a156bece5f7f93d9e3b8df3bf8ab2c571dbdafa01dd18",
+      "bank_sha256": "6f7a5510eb092bd4a414b13f4f7a8a7f1dbe836dbfdd55fd5db97a19ba2c303e",
+      "completed_epoch": true,
+      "actor_updates": 0,
+      "qualification_only": false,
+      "independent_cpu_reload": true,
+      "all_rank_optimizer_moments_match": true,
+      "metrics": {
+        "train": {
+          "groups": 169028,
+          "trajectories": 845140,
+          "trajectory_bce": 0.6205663913784,
+          "group_bce": 0.7367322514893344,
+          "total_loss": 1.3572986428677345,
+          "mixed_accuracy": 0.6472182123671818,
+          "mixed_balanced_accuracy": 0.6684193322103285,
+          "trajectory_accuracy": 0.6968608751212817,
+          "mean_predicted_mixed": 0.545361856388073,
+          "true_mixed_fraction": 0.39756135078211896,
+          "confusion": {
+            "tp": 51871,
+            "fp": 44302,
+            "fn": 15328,
+            "tn": 57527
+          },
+          "weight_kind": "EMA0.99",
+          "resampled": false,
+          "three_class_order": [
+            "all_wrong",
+            "mixed",
+            "all_correct"
+          ],
+          "three_class_confusion": [
+            [
+              57569.0,
+              3999.0,
+              16157.0
+            ],
+            [
+              32943.0,
+              8828.0,
+              25428.0
+            ],
+            [
+              3614.0,
+              749.0,
+              19741.0
+            ]
+          ],
+          "prediction_file_pattern": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/predictions/epoch-0002-train-rank*.jsonl.gz"
+        },
+        "diagnostic": {
+          "groups": 512,
+          "trajectories": 2560,
+          "trajectory_bce": 0.7746337400749326,
+          "group_bce": 0.9034362258389592,
+          "total_loss": 1.6780699659138918,
+          "mixed_accuracy": 0.517578125,
+          "mixed_balanced_accuracy": 0.5328910780964486,
+          "trajectory_accuracy": 0.63359375,
+          "mean_predicted_mixed": 0.551058086566627,
+          "true_mixed_fraction": 0.400390625,
+          "confusion": {
+            "tp": 125,
+            "fp": 167,
+            "fn": 80,
+            "tn": 140
+          },
+          "weight_kind": "EMA0.99",
+          "resampled": false,
+          "three_class_order": [
+            "all_wrong",
+            "mixed",
+            "all_correct"
+          ],
+          "three_class_confusion": [
+            [
+              153.0,
+              13.0,
+              62.0
+            ],
+            [
+              110.0,
+              13.0,
+              82.0
+            ],
+            [
+              24.0,
+              6.0,
+              49.0
+            ]
+          ],
+          "prediction_file_pattern": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/probe/predictions/epoch-0002-diagnostic-rank*.jsonl.gz"
+        },
+        "balance": {
+          "original_counts": {
+            "all_wrong": 77725,
+            "mixed": 67199,
+            "all_correct": 24104
+          },
+          "balanced_per_class": 77725,
+          "groups": 233175
+        }
+      }
+    },
+    "source_commit": "0ade29a21ad30d63f5e3b112fa62344f842ad5c6",
+    "model_dir": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/assets/qwen25-7b-instruct-a09a35458c70",
+    "question_max_tokens": 273,
+    "prefix_tokens": 5,
+    "capture_prefix_tokens": 20,
+    "feature_layer": 26,
+    "native_head_layer": 27,
+    "fit_epochs": 5,
+    "fit_lr": 5e-06,
+    "fit_ema": 0.99,
+    "pair_weight": 0.1,
+    "pair_margin": 1.0,
+    "fit_world": 4,
+    "fit_global_groups": 51,
+    "fit_micro_groups": 2,
+    "seed": 1729,
+    "train_questions": 67199,
+    "train_trajectories": 335995,
+    "sampling": "unique_genuine_Mixed_once_each_epoch_no_replacement",
+    "pair_eligibility": "same_question_positive_negative_different_policy5_tokens_or_positions",
+    "actor_updates_authorized": false,
+    "mixed_bank_sha256": "06ed4852a25791ab2fbd8406c1c063fd584a6ddf3fc36162bf90e86847ac1161",
+    "fit_file_sha256": "5a97b44f502c9513d4cb3de03929904d8f0b627b8d3f80c9a92d261a03459cf7",
+    "source_config_sha256": "7ec5eca1afe1fcc92f8a156bece5f7f93d9e3b8df3bf8ab2c571dbdafa01dd18",
+    "source_bank_sha256": "6f7a5510eb092bd4a414b13f4f7a8a7f1dbe836dbfdd55fd5db97a19ba2c303e"
+  },
+  "repair": {
+    "status": "REPAIRED_FIVE_EPOCH_JOB_RELEASED",
+    "old_job": "741944",
+    "old_job_state": "741944|FAILED|1:0",
+    "time": 1792496777.6159492,
+    "root_cause": "CPU Adam state tensors shared with reusable checkpoint object in next-update replay; source file immutable; no accepted continuation updates",
+    "source_steps": 9146,
+    "new_epochs": 5,
+    "new_source_commit": "0ade29a21ad30d63f5e3b112fa62344f842ad5c6",
+    "goal_created_at": 1792496306,
+    "source_cp2_fresh_sha256": "893e2d71e9b45abb92a9573a6091a1a0fb0a5f7ffd3e4e1201d12061317095ad",
+    "hpc3_cpu_regression": "{\"status\": \"ADAM_RESTORE_ALIAS_REGRESSION_AND_PROTECTED_REPLAY_PASSED\", \"torch\": \"2.4.0+cu121\", \"source_state_unchanged_with_copy\": true, \"replay_model_and_optimizer_bit_exact\": true, \"unprotected_alias_reproduced\": true}",
+    "new_job": "741973",
+    "new_code_root": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-20261020/repo-0ade29a21ad3"
+  }
+}
