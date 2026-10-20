@@ -8,10 +8,17 @@ stash=/run/search-g1-diverse-retained18-shared
 mkdir -p "$stash"
 if [[ $node == h100-10 ]]; then
   mount --bind /mnt/data/shaoshitong "$stash"
-elif [[ $node == h100-5 || $node == h100-11 ]]; then
+elif [[ $node == h100-5 ]]; then
   export_root=/run/search-g1-retained18-export
   mkdir -p "$export_root"
   mount -t nfs4 -o rw,vers=4.2 10.33.0.18:/mnt/data "$export_root"
+  mount --bind "$export_root/shaoshitong" "$stash"
+elif [[ $node == h100-11 ]]; then
+  # This is retained18's existing data-network address, not another store.
+  # Keep the stale host autofs mount and global routes untouched.
+  export_root=/run/search-g1-retained18-data-export
+  mkdir -p "$export_root"
+  mount -t nfs4 -o rw,vers=4.2,nosharecache 10.32.0.18:/mnt/data "$export_root"
   mount --bind "$export_root/shaoshitong" "$stash"
 else
   mount --bind /mnt/data/sihe-share5/workspace/training_data_node_10/shaoshitong "$stash"
