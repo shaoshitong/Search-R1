@@ -148,9 +148,9 @@ def multi_sampler(pool, binding, args):
             from shared_vram_vllm_adapter import SharedVramExecutor
             memory = pool.nvml()
             sample = [memory[uuid] for uuid in binding['model_cuda_uuids']]
-            reserve = int(1.5 * GIB)
+            reserve = int(getattr(args, 'model_reserve_gib', 1.5) * GIB)
             utilization = min((row['free_bytes'] - reserve) / row['total_bytes'] for row in sample) * .85 ** ordinal
-            require(0 < utilization < 1, 'Observed free VRAM cannot accommodate the requested 1.5GiB reserve')
+            require(0 < utilization < 1, 'Observed free VRAM cannot accommodate the configured model reserve')
             limits = dict(max_num_seqs=max(1, args.model_max_seqs // (2 ** ordinal)),
                           max_num_batched_tokens=max(s.BUDGET['total_tokens'], args.model_batch_tokens // (2 ** ordinal)))
             block_cap = max(256, args.model_kv_block_cap // (2 ** ordinal))
