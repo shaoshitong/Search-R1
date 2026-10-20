@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "status": "FULL200_FINAL51713_INDEPENDENT_ACCEPTANCE_COMPLETE",
+  "checked_unix": 1792530868.6042418,
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "21bf70af3e9b4cabbab7862e9532069c",
+  "runtime_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+  "training": {
+    "complete_outers": 200,
+    "processed_opportunities": 4000,
+    "actual_returned_Adam": 3998,
+    "skipped_opportunities": 2,
+    "historical_skipped_outer": 88,
+    "four_rank_replicas_count_once": true,
+    "scheduler_completed_outer": 200,
+    "probe_completed_outer": 190,
+    "probe_actual_Adam_per_rank": [
+      700,
+      700,
+      700,
+      700
+    ]
+  },
+  "fixed512_QA200": {
+    "correct": 255,
+    "qa_count": 512,
+    "EM": 0.498046875,
+    "F1": 0.5786892361111112,
+    "metadata_SHA256": "05d5f3027238fcd4ba0cac686d4c334aab6b1a5421c854cf25cb0f73e2a42f57"
+  },
+  "final51713": {
+    "correct": 24588,
+    "complete_metadata": {
+      "bytes": 5054,
+      "canonical_finite_sha256": "f886f09927784698bfb824b45aa15747fe994c15389d32924ebadd2ca818743e",
+      "independent_full_sha": true,
+      "sha256": "cf535b1a96768887321aaf4821e08e7ac6790ed4796a842bb03ce395b6fb3f3a"
+    },
+    "em": 0.4754703846228221,
+    "expected_ordered_ids_sha256": "9a112050e40c01c450672f01ab645e423dee846d4653864c04de570eff0e770b",
+    "f1": 0.5483563237412402,
+    "ordered_ids_sha256": "9a112050e40c01c450672f01ab645e423dee846d4653864c04de570eff0e770b",
+    "per_source": {
+      "2wikimultihopqa": {
+        "em": 0.4321723918575064,
+        "f1": 0.4988973345006087,
+        "qa_count": 12576
+      },
+      "bamboogle": {
+        "em": 0.368,
+        "f1": 0.4730666666666666,
+        "qa_count": 125
+      },
+      "hotpotqa": {
+        "em": 0.4264686022957461,
+        "f1": 0.5456837494746876,
+        "qa_count": 7405
+      },
+      "musique": {
+        "em": 0.20645428216797684,
+        "f1": 0.3004466771008371,
+        "qa_count": 2417
+      },
+      "nq": {
+        "em": 0.46232686980609417,
+        "f1": 0.5482037387271432,
+        "qa_count": 3610
+      },
+      "popqa": {
+        "em": 0.4648489521272867,
+        "f1": 0.5094888219651674,
+        "qa_count": 14267
+      },
+      "triviaqa": {
+        "em": 0.631927870591355,
+        "f1": 0.7079487363584124,
+        "qa_count": 11313
+      }
+    },
+    "question_count": 51713,
+    "sources": {
+      "2wikimultihopqa": 12576,
+      "bamboogle": 125,
+      "hotpotqa": 7405,
+      "musique": 2417,
+      "nq": 3610,
+      "popqa": 14267,
+      "triviaqa": 11313
+    },
+    "strict_rescored": 51713
+  },
+  "independent_acceptance": {
+    "status": "INDEPENDENT_FULL200_CHECKPOINTS_FINAL51713_STRICT_CPU_ACCEPTANCE_PASS",
+    "proof_sha256": "150715f718ea0252fc05b5e6661153066b48f1561657667065c10822f9ca47c5",
+    "chain_count": 200,
+    "chain_sha256": "db508a96219c8dca7aacbd649eeabaf0ff8460caca17db068fe6377e2fb413ba",
+    "full_metadata_canonical_finite_SHA": true,
+    "actual_four_rank_opportunity_and_Adam_ledgers_verified_for_all200": true,
+    "retained_milestones_full_SHA_CPU_finite_Adam_scheduler_RNG_pool_verified": [
+      5,
+      50,
+      100,
+      150,
+      200
+    ],
+    "grounding_actual_fits_and_four_rank_adoption_before_use_verified": true,
+    "all51713_ordered_question_identities_and_saved_native_strict_EM_F1_rescored": true,
+    "source_code_file_hashes_match_immutable_deployment": true,
+    "pipeline_complete": {
+      "bytes": 80009668,
+      "canonical_finite_sha256": "a0303240c4dc08e95a3dda1964f82cc289ab574205a468770b1786fb13a79527",
+      "independent_full_sha": true,
+      "sha256": "6fc3301f10e47023f9360b27312385165fcc51aa72e203d1b9f3a0013a436c59"
+    },
+    "CUDA_initialized": false,
+    "no_new_rollout_or_forward": true,
+    "no_existing_training_or_evaluation_file_modified": true
+  },
+  "terminal": {
+    "pipeline_exit_success": true,
+    "evaluation_worker_exit_codes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "owned_writers_gone": true,
+    "CPU_audit_process_gone": true,
+    "original_App_monitor": "PAUSED_UNCHANGED"
+  },
+  "source_audit_commit": "ccdc71bd65a53eb55d8f6936d61d10f90b46fcfa",
+  "audit_source_sha256": "91ef0a24502cf272bab25ba50c0b59a6d0877eab691e68c00e6f1c368c6d8929",
+  "actual_terminal_audit_receipt_sha256": "e6208b919bfcf4c038951b4c5ccac898a191126d1e3b30bc9784f56d65c343b4"
+}
