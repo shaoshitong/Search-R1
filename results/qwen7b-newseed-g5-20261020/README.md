@@ -10,7 +10,11 @@ Native unit: `sst-q7b-newseed-g5-20261020-r3.service`. Original 21,015,324-vecto
 
 Compute adapter: available-VRAM KV budget cap90% with3GiB reserve, TP1, max512 sequences/32768 batched tokens, eager XFormers **full-prefill** on this H100 runtime. These are execution adapters, not claims of BF16 bitwise equality to the HPC3 kernels/batch shapes. Actual constructor OOM alone allows cache/concurrency reduction before any committed sample. Accepted batch receipts are reused, never regenerated; unsealed data are quarantined and retained on recovery.
 
-## Current actual state (2026-10-21 CST)
+## Latest productive continuation
+
+At epoch1792516374 the retained NAS10 bank had **174 sealed batches / 22,272 questions / 111,360 trajectories**. Slurm array3967 has actual productive jobs3968/3969/3970/3971 on h100-10 physicalGPUs6/5/2/1. All four have independently assigned real UUIDs, ready original full Flat/E5 local retrieval, loaded official7B weights, and actual new complete G5 batches (4/4/2/1). A prior separate snapshot had106,240 trajectories, proving forward increment. The first5 new batches were independently read in full and passed input/token/replay/EM correspondence and full-file SHA, reusing163 old proof bindings. At that audit107,520 trajectories were verified; later sealed data still need their normal incremental audit. No new actor/probe training, OOM, sampling failure or scientific setting change was observed. This is productive continuation, not full845,140 completion. See pool-first-four-real-g5-acceptance.json.
+
+## Source failure and retained bank history (2026-10-21 CST)
 
 The full goal remains **845,140** fresh trajectories. **163 complete batches / 20,864 questions / 104,320 trajectories** are retained on our own physical NAS10 directory `/mnt/data/shaoshitong/qwen7b-resample-seed20261021-g5-20261020`, exported to the recorded shared alias. All163 batches have been independently read: input/G5 identity, prefix/full token and replay records, own-EM correspondence, and complete-file SHA pass. This does not recompute strict EM with a tokenizer and does not claim the remaining740,820 trajectories are complete.
 
