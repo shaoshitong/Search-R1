@@ -247,7 +247,8 @@ def blob(model,ema,optimizer,device,cursor,binding,source_ranks):
     return b
 
 
-def run(base, *, bank_loader=accepted_g20, reader_factory=native_reader):
+def run(base, *, bank_loader=accepted_g20, reader_factory=native_reader,
+        update_callback=run_update, plan_validator=validate_plan):
     # Explicit call-site adapters support independently accepted raw-peer/HF
     # banks. Existing native invocations retain their original strict loaders;
     # config files cannot name or inject executable loader functions.
@@ -294,7 +295,7 @@ def run(base, *, bank_loader=accepted_g20, reader_factory=native_reader):
     if not evaluations:raise ValueError('Frozen label-blind G5 validation required')
     if ({g['qid'] for g in groups}&external or {g['question_hash'] for g in groups}&external_hashes):
         raise ValueError('Evaluation qid/question hash appears in accepted train G20')
-    lookup=validate_plan(plan,groups,c,external)
+    lookup=plan_validator(plan,groups,c,external)
     source=torch.load(paths['source_checkpoint'],map_location='cpu',mmap=True,weights_only=False)
     if (source['steps']!=10464 or source['epoch']!=1 or not source['completed_epoch'] or source['cursor']!=0 or
             source['actor_updates']!=0 or source['config_sha256']!=c['source_config']['sha256'] or
@@ -337,10 +338,10 @@ def run(base, *, bank_loader=accepted_g20, reader_factory=native_reader):
             for k,current in [('model_sha256',u.model_hash(model)),('ema_sha256',u.model_hash(ema)),('optimizer_sha256',u.optimizer_hash(optimizer))]:
                 if any(s[k]!=current for s in source_ranks):raise ValueError('Source fullstate '+k+' mismatch')
             u.atomic(base/'update-intent.json',dict(next_cursor=1,state='FIRST_UPDATE_REPLAY_IN_PROGRESS'))
-            run_update(model,ema,optimizer,reader,lookup,plan['batches'][0],c,device,plan['batch_epochs'][0])
+            update_callback(model,ema,optimizer,reader,lookup,plan['batches'][0],c,device,plan['batch_epochs'][0])
             expected=u.state_hashes(model,ema,optimizer,device)
             u.restore_blob(source,model,ema,optimizer,device)
-            initial=run_update(model,ema,optimizer,reader,lookup,plan['batches'][0],c,device,plan['batch_epochs'][0])
+            initial=update_callback(model,ema,optimizer,reader,lookup,plan['batches'][0],c,device,plan['batch_epochs'][0])
             actual=u.state_hashes(model,ema,optimizer,device)
             u.atomic(base/'next-update-replay.json',dict(status='PASSED' if actual==expected else 'FAILED',
                 expected=expected,actual=actual,source_steps=10464,candidate_steps=10465,
@@ -357,7 +358,7 @@ def run(base, *, bank_loader=accepted_g20, reader_factory=native_reader):
         del source
         while cursor<c['update_budget'] and not STOP:
             u.atomic(base/'update-intent.json',dict(next_cursor=cursor+1,state='OPTIMIZER_TRANSACTION_IN_PROGRESS'))
-            metrics=run_update(model,ema,optimizer,reader,lookup,plan['batches'][cursor],c,device,plan['batch_epochs'][cursor])
+            metrics=update_callback(model,ema,optimizer,reader,lookup,plan['batches'][cursor],c,device,plan['batch_epochs'][cursor])
             cursor+=1;row=dict(cursor=cursor,steps=u.steps(optimizer),time=time.time(),**metrics)
             u.atomic(base/'progress.json',row)
             with (base/'curve.jsonl').open('a') as f:f.write(__import__('json').dumps(row)+'\n');f.flush()
