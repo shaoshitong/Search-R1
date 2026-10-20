@@ -11,7 +11,7 @@ import torch
 from torch import nn
 from .packed_features import NativeFeatureWriter,FeatureReader,DIM,QMAX,PREFIX,WIDTH
 from .model import Probe
-from .train import balanced_plan
+from .train import balanced_plan,actual_steps,optimizer_hash
 from .sampling import prefix_record,canonical
 import hashlib
 from .download_model import atomic
@@ -72,6 +72,8 @@ def main():
                 local[ix]=torch.autograd.grad(value,v)[0]/4
             assert torch.allclose(full,local,rtol=1e-12,atol=1e-12)
         model=nn.Linear(3,1).double();adam=torch.optim.Adam(model.parameters(),lr=5e-6)
+        assert actual_steps(adam)==0 and not adam.state
+        optimizer_hash(adam);assert actual_steps(adam)==0 and not adam.state
         def step():
             x=torch.randn(5,3,dtype=torch.float64);y=torch.randn(5,1,dtype=torch.float64)
             adam.zero_grad();((model(x)-y)**2).mean().backward();adam.step()
