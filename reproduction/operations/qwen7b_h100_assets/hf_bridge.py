@@ -15,10 +15,21 @@ def sha(p):
   for b in iter(lambda:f.read(8*1024**2),b''):h.update(b)
  return h.hexdigest()
 def main(secret):
- from huggingface_hub import HfApi
+ from huggingface_hub import HfApi, configure_http_backend
+ import requests
  ROOT.mkdir(parents=True,exist_ok=True);lock=(ROOT/'bridge.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
  os.environ.update(HTTP_PROXY='http://127.0.0.1:17894',HTTPS_PROXY='http://127.0.0.1:17894',HF_HUB_DISABLE_XET='1',HF_HUB_DISABLE_PROGRESS_BARS='1',HF_HUB_DISABLE_TELEMETRY='1')
- api=HfApi(token=secret['hf_token']);who=api.whoami();assert who['name'].lower()=='sutoonq';api.create_repo(REPO,repo_type='dataset',private=True,exist_ok=True);assert api.repo_info(REPO,repo_type='dataset').private
+ def backend():
+  session=requests.Session();session.trust_env=False;session.proxies={'http':'http://127.0.0.1:17894','https':'http://127.0.0.1:17894'};return session
+ configure_http_backend(backend_factory=backend)
+ api=HfApi(token=secret['hf_token'],endpoint='https://huggingface.co')
+ for attempt in range(12):
+  try:
+   who=api.whoami();assert who['name'].lower()=='sutoonq';api.create_repo(REPO,repo_type='dataset',private=True,exist_ok=True);assert api.repo_info(REPO,repo_type='dataset').private;break
+  except requests.RequestException as e:
+   status=getattr(getattr(e,'response',None),'status_code',None);atomic(ROOT/'auth-network-retry.json',dict(attempt=attempt+1,error_type=type(e).__name__,http_status=status,epoch=time.time()))
+   if status in (401,403)or attempt==11:raise
+   time.sleep(min(20,attempt+2))
  env=dict(os.environ,SSHPASS=secret['hpc_password']);secret['hpc_password']=None
  atomic(ROOT/'controller.json',dict(pid=os.getpid(),start_ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],repo_id=REPO,private=True,account=who['name'],source=SOURCE,credentials_saved=False,mac_data_transit=False,started=time.time()))
  def remote(code,timeout=60):
