@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "checked_unix": 1792527828.232139,
+  "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+  "execution_id": "21bf70af3e9b4cabbab7862e9532069c",
+  "runtime_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+  "metadata_operator_commit": "f29ef5cfd091c53cf84cdfc26f7d75ca1f1a8f94",
+  "receipt_sha256": "0d4df7e0307a9f99ae379820a61d2b3fdee61b18b3f94c12de91207128e1c008",
+  "pipeline": {
+    "pid": 1166306,
+    "start_ticks": 648248369,
+    "sid": 1166306,
+    "uid": 0,
+    "state": "S"
+  },
+  "stage": {
+    "checked_unix": 1792527447.1518822,
+    "outer": 200,
+    "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+    "stage": "final51713"
+  },
+  "complete_outer": 200,
+  "actor_saved_Adam": [
+    3998,
+    3998,
+    3998,
+    3998
+  ],
+  "scheduler": 200,
+  "joint_metadata_sha256": "f69bfba35b4bfaa97961089a3d175a32a3adf80dbafd07fa70b69c8ab80bdb1a",
+  "joint_metadata_read_scope": {
+    "metadata_status": "PRESENT_BOUNDED_COMPONENT_PROJECTION",
+    "bytes": 80004295,
+    "hash_scope": "existing_storage_prune_intent_producer_SHA_not_full_rehash",
+    "equal_size_header_suffix_samples": true,
+    "four_rank_20_opportunity_ledgers": true,
+    "branch_plan_scope": "verified_immutable_runtime_schedule",
+    "large_recursive_grounding_body_not_read": true
+  },
+  "new_actual_actor_returns_since_previous_read": 20,
+  "hourly_window": {
+    "previous_complete_outer": 197,
+    "previous_total_returned_Adam": 3949,
+    "total_returned_Adam": 3998,
+    "new_total_returned_Adam": 49,
+    "new_completed_outers": [
+      198,
+      199,
+      200
+    ],
+    "outer198_prior_partial_already_counted": 11,
+    "saved_counter_delta": 60,
+    "independently_projected_outers": [
+      199,
+      200
+    ],
+    "independently_verified_opportunities": 40,
+    "independently_verified_successes": 40,
+    "independently_verified_skips": 0,
+    "outer198_independent_complete_metadata": "TOTAL_METADATA_READ_BUDGET_UNKNOWN_FINALAUDIT_PENDING"
+  },
+  "four_rank_replicas_count_once": true,
+  "recent_complete_metadata": [
+    {
+      "outer": 196,
+      "metadata_status": "TOTAL_METADATA_READ_BUDGET",
+      "bytes": 80006518
+    },
+    {
+      "outer": 197,
+      "metadata_status": "TOTAL_METADATA_READ_BUDGET",
+      "bytes": 80006553
+    },
+    {
+      "outer": 198,
+      "metadata_status": "TOTAL_METADATA_READ_BUDGET",
+      "bytes": 80006280
+    },
+    {
+      "outer": 199,
+      "metadata_status": "TOTAL_METADATA_READ_BUDGET",
+      "bytes": 80004027
+    },
+    {
+      "outer": 200,
+      "metadata_status": "PRESENT_BOUNDED_COMPONENT_PROJECTION",
+      "metadata_read_scope": {
+        "metadata_status": "PRESENT_BOUNDED_COMPONENT_PROJECTION",
+        "bytes": 80004295,
+        "hash_scope": "existing_storage_prune_intent_producer_SHA_not_full_rehash",
+        "equal_size_header_suffix_samples": true,
+        "four_rank_20_opportunity_ledgers": true,
+        "branch_plan_scope": "verified_immutable_runtime_schedule",
+        "large_recursive_grounding_body_not_read": true
+      },
+      "source_commit": "2d9712395f6c666cd0b53f843f8bc1bfb6e5d11d",
+      "metadata_sha256": "f69bfba35b4bfaa97961089a3d175a32a3adf80dbafd07fa70b69c8ab80bdb1a",
+      "actor_Adam": [
+        3998,
+        3998,
+        3998,
+        3998
+      ],
+      "scheduler": 200,
+      "new_actor_Adam": [
+        20,
+        20,
+        20,
+        20
+      ],
+      "processed_opportunities": 20,
+      "skipped_opportunities": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probe_completed_outer": 190,
+      "probe_Adam": [
+        700,
+        700,
+        700,
+        700
+      ],
+      "rollout_mixed": 0.30078125,
+      "mixed_floor": {
+        "initial_mixed": 113,
+        "final_mixed": 154,
+        "initial_fraction": 0.220703125,
+        "final_fraction": 0.30078125,
+        "extra_native_batches": 4,
+        "completed_candidate_questions": 1536,
+        "remaining_uncontinued_questions": 1024,
+        "triggered": true,
+        "shortfall": 0,
+        "exhausted": false,
+        "target_mixed": 154,
+        "target_reached": true,
+        "native_prefix_or_score_regenerated": false
+      },
+      "replacement_count": 41
+    }
+  ],
+  "probe_completed_outer": 190,
+  "probe_Adam": [
+    700,
+    700,
+    700,
+    700
+  ],
+  "probe_test_BA_unchanged": 0.5269396551724138,
+  "QA200": {
+    "outer": 200,
+    "metrics": {
+      "run_id": "54ac33dcebe64e62a11fe4177f41f116",
+      "actor_version": "54ac33dcebe64e62a11fe4177f41f116-actor0200",
+      "evaluation_contract": {
+        "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+        "actor_loss_dtype": "float32",
+        "actor_master_dtype": "float32",
+        "answer_reserve_tokens": 500,
+        "asynchronous_generation": true,
+        "compute_dtype": "bfloat16",
+        "early_final": true,
+        "kind": "shared_new_context_stream_bf16",
+        "max_action_tokens": 500,
+        "max_context_tokens": 4096,
+        "max_model_tokens": 4096,
+        "max_observation_tokens": 500,
+        "max_request_tokens": 3596,
+        "max_search_turns": 4,
+        "max_start_tokens": 2048,
+        "n": 1,
+        "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+        "natural_eos": "terminal_without_environment_correction",
+        "observation_truncation": "clip_before_input_preserve_information_wrapper",
+        "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+        "temperature": 0.0,
+        "top_k": -1,
+        "top_p": 1.0,
+        "train_compute_dtype": "bfloat16"
+      },
+      "interaction_protocol": {
+        "action_boundary": "first_complete_action_seen_in_actual_chunk_stream",
+        "actor_loss_dtype": "float32",
+        "actor_master_dtype": "float32",
+        "answer_reserve_tokens": 500,
+        "asynchronous_generation": true,
+        "compute_dtype": "bfloat16",
+        "early_final": true,
+        "kind": "shared_new_context_stream_bf16",
+        "max_action_tokens": 500,
+        "max_context_tokens": 4096,
+        "max_model_tokens": 4096,
+        "max_observation_tokens": 500,
+        "max_request_tokens": 3596,
+        "max_search_turns": 4,
+        "max_start_tokens": 2048,
+        "native_output_commit": "synchronous_token_ids_and_selected_logprobs_snapshot_before_action_abort",
+        "natural_eos": "terminal_without_environment_correction",
+        "observation_truncation": "clip_before_input_preserve_information_wrapper",
+        "protocol_id": "new_context4096_action500_reserve500_stream_first_action_bf16_v1",
+        "train_compute_dtype": "bfloat16"
+      },
+      "actual_compute_dtype": "torch.bfloat16",
+      "qa_count": 512,
+      "question_source_sha256": "3d6318365b5bb98039f1e28ca6bc7d1de98eccc5cc833600e39ce1c2306f9ceb",
+      "em": 0.498046875,
+      "f1": 0.5786892361111112,
+      "per_source": {
+        "hotpotqa": {
+          "em": 0.5703125,
+          "f1": 0.6219029017857144,
+          "qa_count": 256
+        },
+        "nq": {
+          "em": 0.42578125,
+          "f1": 0.5354755704365081,
+          "qa_count": 256
+        }
+      },
+      "completed_utc": "2026-10-20T20:16:38.685720+00:00",
+      "actual_worker_exit_codes": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      }
+    },
+    "complete_metadata_sha256": "05d5f3027238fcd4ba0cac686d4c334aab6b1a5421c854cf25cb0f73e2a42f57"
+  },
+  "QA200_vs150": {
+    "previous_EM": 0.47265625,
+    "new_correct_questions": 13,
+    "EM_change_percentage_points": 2.5390625,
+    "F1_change_percentage_points": 2.271205357142858
+  },
+  "final51713_status": "PIPELINE_PHASE_STARTED_NOT_COMPLETED",
+  "final51713_completed_questions": "UNKNOWN_NOT_PROJECTED",
+  "reward_window": "UNKNOWN_NOT_PROJECTED",
+  "GPU_current_window_peak_idle": "UNKNOWN_NOT_PROJECTED_NO_NEW_NVML_QUERY",
+  "metadata_read_bytes": 54770493,
+  "next_normal_read_not_before_unix": 1792529628.232139,
+  "failure": null,
+  "exit": null,
+  "cleanup": null,
+  "full200_chain_final51713_acceptance": "PENDING"
+}
