@@ -1,0 +1,124 @@
+{
+  "status": "SEALED_DIAGNOSTIC_AND_INDEPENDENT_SELECTION_RECOMPUTED",
+  "base": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020",
+  "epoch": 1,
+  "steps": 10464,
+  "checkpoint_sha256": "02884a3c76e88d1014c4876e1ee2ff4b4405e7f94de7b9112881fed183862724",
+  "diagnostic_stable_logit_metrics": {
+    "groups": 512,
+    "trajectories": 2560,
+    "trajectory_bce": 0.6965556428767741,
+    "group_bce": 1.3065193928778172,
+    "total_loss": 2.0030750357545912,
+    "mixed_accuracy": 0.421875,
+    "mixed_balanced_accuracy": 0.5138635099706046,
+    "trajectory_accuracy": 0.58828125,
+    "mean_predicted_mixed": 0.8394365347921848,
+    "true_mixed_fraction": 0.400390625,
+    "confusion": {
+      "tp": 200,
+      "fp": 291,
+      "fn": 5,
+      "tn": 16
+    },
+    "weight_kind": "EMA0.99",
+    "resampled": false,
+    "three_class_order": [
+      "all_wrong",
+      "mixed",
+      "all_correct"
+    ],
+    "three_class_confusion": [
+      [
+        94.0,
+        90.0,
+        44.0
+      ],
+      [
+        58.0,
+        97.0,
+        50.0
+      ],
+      [
+        9.0,
+        40.0,
+        30.0
+      ]
+    ],
+    "prediction_file_pattern": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-diagnostic-rank*.jsonl.gz"
+  },
+  "diagnostic_classwise": {
+    "all_wrong": {
+      "questions": 228,
+      "mixed_bce_from_rounded_probability": 2.019086045488695,
+      "mean_predicted_q": 0.8211582389970621,
+      "predicted_mixed_fraction": 0.9429824561403509,
+      "all_five_p_identical": 0,
+      "mean_p_range": 0.21680813045812802,
+      "rounded_wrong_saturation": 0
+    },
+    "mixed": {
+      "questions": 205,
+      "mixed_bce_from_rounded_probability": 0.17001847145994484,
+      "mean_predicted_q": 0.8534652881506013,
+      "predicted_mixed_fraction": 0.975609756097561,
+      "all_five_p_identical": 0,
+      "mean_p_range": 0.24260043431891173,
+      "rounded_wrong_saturation": 0
+    },
+    "all_correct": {
+      "questions": 79,
+      "mixed_bce_from_rounded_probability": 2.199145960042855,
+      "mean_predicted_q": 0.8557853336575665,
+      "predicted_mixed_fraction": 0.9620253164556962,
+      "all_five_p_identical": 0,
+      "mean_p_range": 0.23117427112935465,
+      "rounded_wrong_saturation": 0
+    }
+  },
+  "diagnostic_rounded_probability_bce": 1.306519405984564,
+  "diagnostic_prediction_files": [
+    {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-diagnostic-rank0.jsonl.gz",
+      "sha256": "d150b2d4c6e73f1b738062c46ca3d13682777ca15a8e7d54d81fbf42a69bba4c"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-diagnostic-rank1.jsonl.gz",
+      "sha256": "20b08fe557483e82d0adf6e174da36ca4679a9a93ee79a38f1728f98668b8523"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-diagnostic-rank2.jsonl.gz",
+      "sha256": "8b6bd3503fac98e220252f649f608bbcdf123323d41ca347566f7ae79edb4ad2"
+    },
+    {
+      "path": "/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/mixed-only-ft-cp2-prefix20-20261020/probe/predictions/epoch-0001-diagnostic-rank3.jsonl.gz",
+      "sha256": "7411945d6e21560bfbd8fa9bb0cf5aef555a1b4a432078b2cb88f3669de3a1fd"
+    }
+  ],
+  "selection_prediction_sha256": "454ef526321cfc2eaf2278f324a334adff16234ce7452073b83be9b9ddc31c18",
+  "pool_K_histogram": [
+    1079,
+    164,
+    127,
+    153,
+    197,
+    328
+  ],
+  "selected_K_histogram": [
+    249,
+    44,
+    33,
+    49,
+    56,
+    81
+  ],
+  "pool_mixed": 641,
+  "selected_mixed": 182,
+  "selected_mixed_fraction": 0.35546875,
+  "ranked_without_truth": true,
+  "metrics_source": "sealed epoch receipt, never mutable metrics-latest",
+  "training_updated": false,
+  "time": 1792506471.9160304,
+  "audit_source_sha256": "aa8f075cbe1d6345cbf42ea0d2d4026f57595f15df3de7e8d9f6b3a384835191",
+  "audit_source_commit": "5481575af8fdbd3ca25e43cfb89f1ac8d57ac06f"
+}
