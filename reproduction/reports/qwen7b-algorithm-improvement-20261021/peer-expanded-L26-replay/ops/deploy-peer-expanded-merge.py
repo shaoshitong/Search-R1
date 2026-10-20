@@ -4,7 +4,9 @@ import argparse,base64,hashlib,importlib.util,json,shlex,subprocess
 C=Path(__file__).resolve().parents[2];R=C/'work/qwen7b-probe-warmup-20261019';P=C/'outputs/qwen7b-warmup-20261019/reports';PACKAGE='reproduction/operations/qwen7b_warmup/'
 A='/data/user/jxu957/experiments/dynrpo-qwen25-7b-probe-warmup-20261019/algorithm-improvement-20261021/peer-expanded-L26-replay-v1'
 ap=argparse.ArgumentParser();ap.add_argument('--commit',required=True);ap.add_argument('--action',choices=('stage','run','status'),required=True);a=ap.parse_args()
-remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/peer-expanded-L26-merge-20261021'],cwd=R,text=True).split()[0];assert remote==a.commit
+remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/peer-expanded-L26-merge-20261021'],cwd=R,text=True).split()[0]
+# A later audit-only backup must not invalidate the explicitly pinned runtime.
+subprocess.run(['git','merge-base','--is-ancestor',a.commit,remote],cwd=R,check=True)
 s=importlib.util.spec_from_file_location('private_cpu_merge',C/'work/prefix-schedule-cp50-20261018/reproduction/hpc3_prefix5/direct_control.py');ctl=importlib.util.module_from_spec(s);s.loader.exec_module(ctl);ip=subprocess.check_output(['/usr/sbin/ipconfig','getifaddr','en0'],text=True).strip()
 common='''import pathlib,json,hashlib,os,subprocess,time,fcntl
 b=pathlib.Path(BASE);d=b/('cpu-merge-code-'+COMMIT[:12]);d.mkdir(exist_ok=True);guard=(d/'operator.lock').open('a');fcntl.flock(guard,fcntl.LOCK_EX|fcntl.LOCK_NB)
