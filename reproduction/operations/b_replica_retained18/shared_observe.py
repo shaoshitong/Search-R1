@@ -29,8 +29,10 @@ if execution_node not in ('h100-5','h100-8','h100-10'):raise ValueError('Require
 resume_outer=int(config.get('resume_joint',{}).get('completed_outer',64))
 stage=read(p/'logs/pipeline-status.json');n=max(resume_outer+1,(stage or{}).get('outer',resume_outer+1));root=p/'outers'/('outer-%06d'%n)
 progress={str(f.relative_to(p)):read(f)for f in root.rglob('*progress*.json')if f.stat().st_size<15000}
+latest_joint=read(p/'latest-joint.json')
+committed_outer=(latest_joint or{}).get('outer',resume_outer)
 facts=[]
-for i in range(resume_outer+1,201):
+for i in range(resume_outer+1,min(committed_outer,200)+1):
  complete=p/'outers'/('outer-%06d'%i)/'complete.json'
  cached=CACHED_FACTS.get(i)
  if cached and reusable(cached,complete):
@@ -46,13 +48,13 @@ for i in range(resume_outer+1,201):
  facts.append(dict(outer=i,actor=j['actor']['actual_adam_steps_per_rank'],probe=j['probe']['actual_adam_steps_per_rank'],selection_metrics=j['selection_metrics'],phase_timings=j['phase_timings'],ranks=ranks,reused_immutable_fact=False,observation_cache=dict(complete_identity=identity(complete),ledger_identities=ledger_identities,actual_full_read_verified_unix=time.time())))
 active=[]
 for f in(p/'actor/outers').glob('outer-%04d-attempt-*/rank-*-updates.jsonl'%n):
- rows=[json.loads(s)for s in f.read_text().splitlines()if s];r=next((x for x in rows if x['event']=='ACTUAL_RESTORE'),None);w=[x for x in rows if x['event']=='ACTUAL_ADAM_WRITE']
+ rows=[json.loads(s)for s in f.read_bytes().splitlines(keepends=True)if s.strip()and s.endswith(b'\n')];r=next((x for x in rows if x['event']=='ACTUAL_RESTORE'),None);w=[x for x in rows if x['event']=='ACTUAL_ADAM_WRITE']
  active.append(dict(rank=r['rank']if r else None,restore={k:r.get(k)for k in ('restored_completed_outer','actual_adam_before','restored_scheduler','actual_model_master_dtypes','actual_learning_rates','actual_global_micro')}if r else None,writes=len(w),opportunities=sum(x['event']=='OPPORTUNITY'for x in rows),last_adam=w[-1]['actual_adam_steps']if w else None))
 logs=[]
 for f in sorted((p/'logs').glob('*.log'),key=lambda f:f.stat().st_mtime,reverse=True)[:4]:
  with f.open('rb')as q:q.seek(max(0,f.stat().st_size-3000));tail=q.read().decode(errors='replace')
  logs.append(dict(path=str(f.relative_to(p)),tail=tail,bytes=f.stat().st_size,mtime=f.stat().st_mtime))
-print(json.dumps(dict(observed_unix=time.time(),node=execution_node,base=BASE,resume_outer=resume_outer,stage=stage,complete_outer=(read(p/'latest-joint.json')or{}).get('outer'),facts=facts,active_actor=active,progress=progress,receipt=read(p/'preparation/submit-receipt.json'),cleanup=read(p/'logs/cleanup-status.json'),logs=logs)))
+print(json.dumps(dict(observed_unix=time.time(),node=execution_node,base=BASE,resume_outer=resume_outer,stage=stage,complete_outer=committed_outer,facts=facts,active_actor=active,progress=progress,receipt=read(p/'preparation/submit-receipt.json'),cleanup=read(p/'logs/cleanup-status.json'),logs=logs)))
 '''
 
 def observe():
