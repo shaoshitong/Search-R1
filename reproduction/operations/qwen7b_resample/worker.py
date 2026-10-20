@@ -56,19 +56,20 @@ def phase(path,mode):
  return row
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--shard',type=int,required=True);a=p.parse_args();base=Path(a.base);c=read(base/'config.json');root=base/'sampling'/('shard-%02d'%a.shard);root.mkdir(parents=True,exist_ok=True);accepted=[];started=time.monotonic()
- # Sampler TP1 uses visible ordinal0; ordinal1 is only the separately managed retriever.
+ p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--shard',type=int,required=True);p.add_argument('--workers',type=int,default=8);a=p.parse_args();base=Path(a.base);c=read(base/'config.json');root=base/'workers'/('worker-%02d'%a.shard);root.mkdir(parents=True,exist_ok=True);accepted=[];started=time.monotonic()
  assert len(os.environ['CUDA_VISIBLE_DEVICES'].split(','))==2
- for inp in sorted((base/'inputs'/('shard-%02d'%a.shard)).glob('batch-*.json')):
-  batch=read(inp);dest=root/'batches'/inp.stem;receipt=dest/'complete.json'
+ inputs=sorted((base/'inputs').glob('shard-*/batch-*.json'));own=inputs[a.shard::a.workers]
+ atomic(root/'assignment.json',dict(worker=a.shard,workers=a.workers,batches=[str(p)for p in own],run_id=c['run_id']))
+ for inp in own:
+  batch=read(inp);dest=base/'sampling'/inp.parent.name/'batches'/inp.stem;receipt=dest/'complete.json'
   if receipt.exists():
    x=read(receipt);assert x['input_sha256']==digest(inp)and x['run_id']==c['run_id'];accepted.append(x);continue
   outer=dest/'outers/outer-000001';outer.mkdir(parents=True,exist_ok=True);atomic(outer/'questions.json',dict(outer=1,rows=batch['rows']))
   cfg=dict(c,base=str(dest),world_size=1,actor_model_dir=c['model_dir'],actor_version='official7b-'+REVISION,actor_hidden_native=False,prefix_policy_tokens=20,rollout_memory_utilization='auto',rollout_utilization_cap=.90,rollout_free_reserve_gib=3,rollout_max_num_seqs=512,rollout_max_batched_tokens=32768,rollout_enforce_eager=True,rollout_retry_initialization_oom=True)
   atomic(dest/'config.json',cfg);prefix=phase(dest/'config.json','prefix');full=phase(dest/'config.json','continue')
   x=dict(run_id=c['run_id'],input_sha256=digest(inp),batch=inp.stem,questions=len(batch['rows']),trajectories=5*len(batch['rows']),prefix=prefix,full=full,hidden_cached=False,model_revision=REVISION,actor_optimizer_updates=0,epoch=time.time());atomic(receipt,x);accepted.append(x)
-  progress=dict(shard=a.shard,completed_batches=len(accepted),total_batches=len(list((base/'inputs'/('shard-%02d'%a.shard)).glob('batch-*.json'))),questions=sum(x['questions']for x in accepted),trajectories=sum(x['trajectories']for x in accepted),elapsed=time.monotonic()-started,epoch=time.time());atomic(root/'progress.json',progress);print(json.dumps(progress),flush=True)
- atomic(root/'complete.json',dict(status='ALL_NEW_SEED_G5_BATCHES_COMPLETE',run_id=c['run_id'],shard=a.shard,questions=sum(x['questions']for x in accepted),trajectories=sum(x['trajectories']for x in accepted),batches=len(accepted),epoch=time.time()))
+  progress=dict(worker=a.shard,completed_assigned_batches=len(accepted),total_assigned_batches=len(own),questions=sum(x['questions']for x in accepted),trajectories=sum(x['trajectories']for x in accepted),latest_input=str(inp),elapsed=time.monotonic()-started,epoch=time.time());atomic(root/'progress.json',progress);print(json.dumps(progress),flush=True)
+ atomic(root/'complete.json',dict(status='ASSIGNED_NEW_G5_BATCHES_COMPLETE',run_id=c['run_id'],worker=a.shard,questions=sum(x['questions']for x in accepted),trajectories=sum(x['trajectories']for x in accepted),batches=len(accepted),epoch=time.time()))
 if __name__=='__main__':
  def terminate(signum,frame):raise SystemExit(128+signum)
  signal.signal(signal.SIGTERM,terminate)

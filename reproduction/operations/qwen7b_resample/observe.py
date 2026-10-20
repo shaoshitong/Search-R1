@@ -5,8 +5,8 @@ from .launch import BASE,ROOT
 REMOTE='BASE='+repr(BASE)+'\n'+'''
 import pathlib,json,time,subprocess
 b=pathlib.Path(BASE);v={'epoch':time.time(),'base':BASE}
-v['unit']=subprocess.check_output(['systemctl','show','sst-q7b-newseed-g5-20261020-r5','-p','ActiveState','-p','SubState','-p','MainPID','-p','Result'],text=True)
-for n in ['attempts/r5/entry-failure.json','worker-exits.json','worker-failure-0.json','worker-failure-1.json','controller.json','progress.json','attempts/r5/code/complete.json','code/direct-failure.json','retrieval/gpu-index-load-progress.json','retrieval/ready.json','complete.json']:
+v['unit']=subprocess.check_output(['systemctl','show','sst-q7b-newseed-g5-20261020-r6','-p','ActiveState','-p','SubState','-p','MainPID','-p','Result'],text=True)
+for n in ['attempts/r6/entry-failure.json','worker-exits.json','worker-failure-0.json','worker-failure-1.json','controller.json','progress.json','attempts/r6/code/complete.json','code/direct-failure.json','retrieval/gpu-index-load-progress.json','retrieval/ready.json','complete.json']:
  p=b/n
  if p.exists():
   x=json.loads(p.read_text());x.pop('snapshots',None);v[n]=x
@@ -16,15 +16,18 @@ for i in range(2):
  for phase in ['prefix','full']:
   p=root/'batches'/('batch-%06d'%completed)/'outers/outer-000001'/phase/'rank-0-progress.json'
   if p.exists():v['shard%02d_current_%s'%(i,phase)]=json.loads(p.read_text())
-for n in ['native','retriever','sampling-00','sampling-01']:
- p=b/'logs'/'r5'/(n+'.log')
+for i in range(7):
+ p=b/'workers'/('worker-%02d'%i)/'progress.json'
+ if p.exists():v['worker%02d'%i]=json.loads(p.read_text())
+for n in ['native','retriever']+['sampling-%02d'%i for i in range(7)]:
+ p=b/'logs'/'r6'/(n+'.log')
  if p.exists():
   with p.open('rb')as f:f.seek(max(0,p.stat().st_size-1600));v[n+'_tail']=f.read().decode(errors='replace')
 v['observation_path_available']=b.is_dir()
 print(json.dumps(v))
 '''
 BODY=REMOTE
-REMOTE="import subprocess,json\nunit='sst-q7b-newseed-g5-20261020-r5'\npid=subprocess.check_output(['systemctl','show',unit,'-p','MainPID','--value'],text=True).strip()\nbody="+repr(BODY)+"\nif pid!='0':\n r=subprocess.run(['nsenter','--mount','--target',pid,'/usr/bin/python3','-'],input=body,text=True,capture_output=True);print(r.stdout,end='');assert r.returncode==0,r.stderr\nelse:exec(body)\n"
+REMOTE="import subprocess,json\nunit='sst-q7b-newseed-g5-20261020-r6'\npid=subprocess.check_output(['systemctl','show',unit,'-p','MainPID','--value'],text=True).strip()\nbody="+repr(BODY)+"\nif pid!='0':\n r=subprocess.run(['nsenter','--mount','--target',pid,'/usr/bin/python3','-'],input=body,text=True,capture_output=True);print(r.stdout,end='');assert r.returncode==0,r.stderr\nelse:exec(body)\n"
 def main():
  for n,p in [('ctl','/Users/shaoshitong/Documents/remote_codex_control/control.py'),('route','/Users/shaoshitong/Documents/Search-G1/h100-prefix5-reference-replica-20261018/reproduction/operations/h100_reference_replica/readonly_management_route.py')]:
   s=importlib.util.spec_from_file_location(n,p);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);globals()[n]=m
