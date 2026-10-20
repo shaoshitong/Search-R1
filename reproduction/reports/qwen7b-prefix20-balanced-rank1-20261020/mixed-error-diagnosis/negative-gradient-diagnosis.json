@@ -1,0 +1,29 @@
+{
+  "status": "ACTUAL_E2_PREDICTION_LOGIT_GRADIENT_DIAGNOSIS",
+  "negative_group_ranking_gradient_zero": true,
+  "weights": "trajectory mean BCE1 + binary Mixed BCE1; G5",
+  "result": {
+    "allwrong": {
+      "n": 1079,
+      "trajectories": 5395,
+      "current_objective_wrong_direction_trajectories": 683,
+      "current_objective_at_least_one_wrong_direction_groups": 185,
+      "current_objective_allfive_wrong_direction_groups": 81,
+      "binary_group_term_wrong_direction_trajectories": 988,
+      "candidate_wrong_direction_trajectories": 0,
+      "current_mean_logit_gradient": 0.13028111242614265
+    },
+    "allcorrect": {
+      "n": 328,
+      "trajectories": 1640,
+      "current_objective_wrong_direction_trajectories": 489,
+      "current_objective_at_least_one_wrong_direction_groups": 132,
+      "current_objective_allfive_wrong_direction_groups": 56,
+      "binary_group_term_wrong_direction_trajectories": 735,
+      "candidate_wrong_direction_trajectories": 0,
+      "current_mean_logit_gradient": -0.10586372703899181
+    }
+  },
+  "caveat": "Output-logit gradients at actual EMA outputs, not a replayed shared-network parameter update or proof of convergence",
+  "time": 1792511653.6492572
+}
